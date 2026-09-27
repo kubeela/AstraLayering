@@ -1,0 +1,45 @@
+{
+  "input_sha256": "03c809a85f8cf16ad930bb6ace5dc5a460f2b266dfbf5d7f3886ae30e689a72e",
+  "candidate_sha256": "204149deb52a238e54af321258ca3059aa9a534cd2e9868b981f4418e01b71eb",
+  "plan_sha256": "459f82982d648c44f4b54468c9d4a8c391f68ea16be896fb7ae9126717e87569",
+  "frozen_geometry_changes_against_input": [],
+  "frozen_geometry_changes_against_approved_line_art": [],
+  "existing_attribute_changes": [
+    {
+      "id": "eye_right",
+      "attr": "data-stage"
+    }
+  ],
+  "completed_subparts_xml_unchanged": {
+    "eye_right_sclera": true,
+    "eye_right_iris": true,
+    "eye_right_pupil": true,
+    "eye_right_upper_eyelid": true,
+    "eye_right_lower_eyelid": true,
+    "eye_right_upper_lashes": true,
+    "eye_right_lower_lashes": true,
+    "eye_right_eyelid_skin": true,
+    "eye_right_highlights": true
+  },
+  "old_resources_xml_unchanged": true,
+  "non_eye_top_level_xml_unchanged": true,
+  "skin_layer_ids": [
+    "eye_right_skin_socket_warm",
+    "eye_right_skin_upper_lid_volume",
+    "eye_right_skin_upper_outer_chroma",
+    "eye_right_skin_upper_inner_transition",
+    "eye_right_skin_upper_plane_light",
+    "eye_right_skin_outer_corner_warm",
+    "eye_right_skin_lower_outer_transition",
+    "eye_right_skin_lower_lid_volume",
+    "eye_right_skin_lower_plane_light",
+    "eye_right_skin_inner_corner_light",
+    "eye_right_skin_inner_bridge_transition"
+  ],
+  "skin_above_face_below_eye_ink": true,
+  "outside_gaze": true,
+  "duplicate_ids": [],
+  "broken_refs": [],
+  "new_effect_nodes": 0,
+  "highlights_display": "none"
+}

@@ -1,0 +1,170 @@
+{
+  "scope": "SVG/render evidence only; artistic and planning judgment separate",
+  "inputs_unchanged": {
+    "guide.png": true,
+    "mouth-input.svg": true,
+    "parts.yaml": true,
+    "reference.png": true,
+    "shadow-input.svg": true,
+    "shadow-palette.json": true,
+    "shadow-parts.json": true,
+    "shadow-reference.png": true,
+    "structure-input.svg": true
+  },
+  "shadow": {
+    "A": {
+      "valid_resources": true,
+      "resource_error": null,
+      "effect_ids": [
+        "cast_hair_front_right_on_face",
+        "cast_hair_front_right_on_ear"
+      ],
+      "source_target": [
+        {
+          "id": "cast_hair_front_right_on_face",
+          "data-effect": "cast-shadow",
+          "data-source-part": "hair_front_right",
+          "data-target-part": "face_base",
+          "data-target-id": "face_surface",
+          "clip-path": "url(#hair_shadow_face_clip)"
+        },
+        {
+          "id": "cast_hair_front_right_on_ear",
+          "data-effect": "cast-shadow",
+          "data-source-part": "hair_front_right",
+          "data-target-part": "face_base",
+          "data-target-id": "ear_surface",
+          "clip-path": "url(#hair_shadow_ear_clip)"
+        }
+      ],
+      "toggle_changed_pixels": 1401,
+      "pixels_outside_receiver": 0,
+      "off_vs_input_changed_pixels": 0,
+      "reference_shadow_pixels": 1452,
+      "footprint_iou": 0.9264010803511141,
+      "mean_rgb_error_reference_shadow": 2.9476584022038566,
+      "mean_rgb_error_union_region": 3.0663965788881384
+    },
+    "B": {
+      "valid_resources": true,
+      "resource_error": null,
+      "effect_ids": [
+        "hair_front_right_shadow_on_face",
+        "hair_front_right_shadow_on_ear"
+      ],
+      "source_target": [
+        {
+          "id": "hair_front_right_shadow_on_face",
+          "data-effect": "cast-shadow",
+          "data-source-part": "hair_front_right",
+          "data-target-part": "face_base",
+          "data-target-id": "face_surface",
+          "clip-path": "url(#hair_front_right_face_clip)"
+        },
+        {
+          "id": "hair_front_right_shadow_on_ear",
+          "data-effect": "cast-shadow",
+          "data-source-part": "hair_front_right",
+          "data-target-part": "face_base",
+          "data-target-id": "ear_surface",
+          "clip-path": "url(#hair_front_right_ear_clip)"
+        }
+      ],
+      "toggle_changed_pixels": 1304,
+      "pixels_outside_receiver": 0,
+      "off_vs_input_changed_pixels": 0,
+      "reference_shadow_pixels": 1452,
+      "footprint_iou": 0.8902606310013718,
+      "mean_rgb_error_reference_shadow": 4.601010101010101,
+      "mean_rgb_error_union_region": 4.734567901234568
+    }
+  },
+  "mouth": {
+    "A": {
+      "valid_resources": true,
+      "resource_error": null,
+      "components": {
+        "mouth_inside": [
+          {
+            "id": "mouth_inside",
+            "geometry_count": 1
+          }
+        ],
+        "tongue": [
+          {
+            "id": "mouth_tongue",
+            "geometry_count": 1
+          }
+        ],
+        "teeth_lower": [
+          {
+            "id": "mouth_teeth_lower",
+            "geometry_count": 1
+          }
+        ],
+        "teeth_upper": [
+          {
+            "id": "mouth_teeth_upper",
+            "geometry_count": 1
+          }
+        ],
+        "mouth_lower": [
+          {
+            "id": "mouth_lower",
+            "geometry_count": 3
+          }
+        ],
+        "mouth_upper": [
+          {
+            "id": "mouth_upper",
+            "geometry_count": 3
+          }
+        ]
+      },
+      "changed_nonmouth_top_level_ids": []
+    },
+    "B": {
+      "valid_resources": true,
+      "resource_error": null,
+      "components": {
+        "mouth_inside": [
+          {
+            "id": "mouth_inside",
+            "geometry_count": 1
+          }
+        ],
+        "teeth_upper": [
+          {
+            "id": "mouth_teeth_upper",
+            "geometry_count": 1
+          }
+        ],
+        "tongue": [
+          {
+            "id": "mouth_tongue",
+            "geometry_count": 1
+          }
+        ],
+        "teeth_lower": [
+          {
+            "id": "mouth_teeth_lower",
+            "geometry_count": 1
+          }
+        ],
+        "mouth_lower": [
+          {
+            "id": "mouth_lower",
+            "geometry_count": 3
+          }
+        ],
+        "mouth_upper": [
+          {
+            "id": "mouth_upper",
+            "geometry_count": 3
+          }
+        ]
+      },
+      "changed_nonmouth_top_level_ids": []
+    }
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "candidate_sha256": "afd8eff767543f3ae9627066a1928ab1bba08d2176cbbd35d59bf6e1655128fe",
+  "all_effects_off_vs_clean_changed_pixels": 0,
+  "all_effects_off_vs_clean_max_channel_difference": 0,
+  "normal_render_changed_pixels": 82,
+  "normal_render_changed_bbox": [
+    406,
+    195,
+    432,
+    204
+  ],
+  "per_effect_clip_checks": {
+    "fx_eye_right_upper_lid_on_sclera": {
+      "rendered_pixels": 20776,
+      "complete_path_pixels": 324378,
+      "pixels_outside_surface_and_aperture": 0,
+      "max_alpha": 76
+    },
+    "fx_eye_right_lower_lid_on_sclera": {
+      "rendered_pixels": 12628,
+      "complete_path_pixels": 236324,
+      "pixels_outside_surface_and_aperture": 0,
+      "max_alpha": 100
+    },
+    "fx_eye_right_upper_lid_on_iris": {
+      "rendered_pixels": 12629,
+      "complete_path_pixels": 324378,
+      "pixels_outside_surface_and_aperture": 0,
+      "max_alpha": 102
+    },
+    "fx_eye_right_lower_lid_on_iris": {
+      "rendered_pixels": 3070,
+      "complete_path_pixels": 233490,
+      "pixels_outside_surface_and_aperture": 0,
+      "max_alpha": 38
+    },
+    "fx_eye_right_iris_main_reflection": {
+      "rendered_pixels": 2658,
+      "complete_path_pixels": 2666,
+      "pixels_outside_surface_and_aperture": 0,
+      "max_alpha": 255
+    }
+  },
+  "highlight_samples": {
+    "(418, 196)": {
+      "reference": [
+        145,
+        154,
+        171
+      ],
+      "clean": [
+        19,
+        35,
+        73
+      ],
+      "final": [
+        156,
+        168,
+        190
+      ]
+    },
+    "(418, 197)": {
+      "reference": [
+        194,
+        207,
+        226
+      ],
+      "clean": [
+        34,
+        54,
+        93
+      ],
+      "final": [
+        145,
+        159,
+        183
+      ]
+    },
+    "(419, 197)": {
+      "reference": [
+        185,
+        198,
+        214
+      ],
+      "clean": [
+        38,
+        58,
+        98
+      ],
+      "final": [
+        97,
+        113,
+        145
+      ]
+    },
+    "(419, 198)": {
+      "reference": [
+        60,
+        85,
+        123
+      ],
+      "clean": [
+        61,
+        85,
+        123
+      ],
+      "final": [
+        61,
+        85,
+        123
+      ]
+    }
+  },
+  "source_and_effects_off_vs_clean_source_off": {
+    "upper": {
+      "changed_pixels": 0,
+      "max_channel_difference": 0
+    },
+    "lower": {
+      "changed_pixels": 0,
+      "max_channel_difference": 0
+    }
+  }
+}

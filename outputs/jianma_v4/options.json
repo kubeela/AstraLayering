@@ -1,3 +1,5 @@
 {
-  "simplify": false
+  "simplify": false,
+  "eyes_symmetric": true,
+  "hair_reference_needed": false
 }

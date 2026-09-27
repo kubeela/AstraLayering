@@ -1,0 +1,80 @@
+{
+  "lower_outer_skin": {
+    "xy": [
+      411,
+      204
+    ],
+    "rgb": [
+      196,
+      149,
+      148
+    ],
+    "hex": "#C49594",
+    "radius": 0
+  },
+  "lower_mid_skin": {
+    "xy": [
+      414,
+      205
+    ],
+    "rgb": [
+      216,
+      181,
+      178
+    ],
+    "hex": "#D8B5B2",
+    "radius": 0
+  },
+  "lower_center_skin": {
+    "xy": [
+      418,
+      205
+    ],
+    "rgb": [
+      229,
+      194,
+      195
+    ],
+    "hex": "#E5C2C3",
+    "radius": 0
+  },
+  "lower_inner_skin": {
+    "xy": [
+      422,
+      205
+    ],
+    "rgb": [
+      246,
+      218,
+      215
+    ],
+    "hex": "#F6DAD7",
+    "radius": 0
+  },
+  "inner_corner_light": {
+    "xy": [
+      432,
+      201
+    ],
+    "rgb": [
+      255,
+      253,
+      253
+    ],
+    "hex": "#FFFDFD",
+    "radius": 0
+  },
+  "upper_inner_skin": {
+    "xy": [
+      426,
+      194
+    ],
+    "rgb": [
+      213,
+      178,
+      178
+    ],
+    "hex": "#D5B2B2",
+    "radius": 0
+  }
+}

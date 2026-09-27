@@ -149,7 +149,7 @@ plan.json保留locked=true、参考版本、队列、镜像关系及eye_hair_ord
 
 产物均在 refinement/groups/{group.id}/：3.眼部色盘/；4.逐眼着色/{eye.id}/各子步骤/；5.逐眼投影与高光/{eye.id}/；6.镜像组装与成稿审查/。每次绘制交完整 SVG、预览、对照与简短说明。第2步和线稿审查路径保持原样，最终审查仍为 reviews/refinement/{group.id}/审查.md。旧第3–5步的产物不能直接标记为本版阶段完成。
 
-`jianma_v4` 已完成从 face、eyes、mouth 到 hair、body、lower_body、arms、physics_details 及素体整理的实际制作，独立衣装也已交付；已发布[成稿快照与对照](../../../demos/jianma-current-case/readme.md)。早期眼睛和头发失败轮次仍保存在本地 `old-*` 归档中，供问题回溯，不作为当前输入或完成依据；这些中间归档不随成果快照打包。special_parts 与 generic 的模板已建立，仍需在有对应部件的素材上继续验证。
+`jianma_v4` 已完成从 face、eyes、mouth 到 hair、body、lower_body、arms、physics_details 及素体整理的实际制作，独立衣装也已交付；已发布[成稿快照与对照](../../../demos/jianma-current-case/readme.md)。早期眼睛、嘴部和头发轮次连同审查证据已保存到 [Jianma v4 实跑档案](../../../outputs/jianma_v4/readme.md)，供问题回溯，不作为当前输入或完成依据。special_parts 与 generic 的模板已建立，仍需在有对应部件的素材上继续验证。
 
 后续直接读取各任务保存的文件，最新整图路径由总控记入 `运行记录.md`，阶段目录不再另做导出。
 

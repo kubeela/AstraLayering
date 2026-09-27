@@ -1,0 +1,34 @@
+{
+  "input_sha256": "99f1ac47a4da4ca2268dcac6821cff8d31b9d8eef8380bdab891a2d9aea88755",
+  "candidate_sha256": "27c7a07f3eb84547c4c0e72c2b108e1259b9113927a06164543bd926f817894e",
+  "base_color_sha256": "157bc95b94178886d3ebcb9c77bd02099c4d44585a58d5a86a43232948233db3",
+  "frozen_geometry_changes": [],
+  "new_material_layers": [
+    "eye_right_iris_vertical_tones",
+    "eye_right_iris_center_transition",
+    "eye_right_iris_left_lower_band",
+    "eye_right_iris_right_local_band",
+    "eye_right_iris_left_peripheral_depth",
+    "eye_right_iris_right_peripheral_depth",
+    "eye_right_pupil_vertical_depth",
+    "eye_right_pupil_peripheral_transition"
+  ],
+  "non_eye_top_level_xml_unchanged": true,
+  "other_eye_subparts_xml_unchanged": {
+    "eye_right_sclera": true,
+    "eye_right_upper_eyelid": true,
+    "eye_right_lower_eyelid": true,
+    "eye_right_upper_lashes": true,
+    "eye_right_lower_lashes": true,
+    "eye_right_eyelid_skin": true,
+    "eye_right_highlights": true
+  },
+  "duplicate_ids": [],
+  "broken_refs": [],
+  "guides_display": "none",
+  "highlights_display": "none",
+  "new_masks": 0,
+  "new_effect_nodes": 0,
+  "approved_line_art_sha256": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e",
+  "frozen_geometry_changes_against_approved_line_art": []
+}

@@ -1,0 +1,65 @@
+{
+  "input_svg": "refinement\\groups\\eyes\\2.逐眼线稿\\eye_right\\character.svg",
+  "input_sha256": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e",
+  "candidate_sha256": "99f1ac47a4da4ca2268dcac6821cff8d31b9d8eef8380bdab891a2d9aea88755",
+  "palette_json_sha256": "da48e73f6ce8ae5f39e577389f9bc76347553c8cd88cae4b79240b373dcbe956",
+  "plan_sha256": "459f82982d648c44f4b54468c9d4a8c391f68ea16be896fb7ae9126717e87569",
+  "frozen_geometry_changes": [],
+  "existing_node_attribute_changes": [
+    {
+      "id": "eye_right",
+      "attribute": "data-stage",
+      "before": "line-art-calibrated",
+      "after": "contour-coloring-4.1"
+    },
+    {
+      "id": "eye_right_sclera_fill",
+      "attribute": "fill",
+      "before": "#f6f6f6",
+      "after": "url(#eye41_right_sclera_surface_color)"
+    },
+    {
+      "id": "eye_right_highlights",
+      "attribute": "display",
+      "before": null,
+      "after": "none"
+    },
+    {
+      "id": "eye_right_lower_lid_rim",
+      "attribute": "fill",
+      "before": "#89858a",
+      "after": "url(#eye41_right_lower_lid_color)"
+    },
+    {
+      "id": "eye_right_upper_lid_ink",
+      "attribute": "fill",
+      "before": "#30313a",
+      "after": "url(#eye41_right_upper_lid_color)"
+    }
+  ],
+  "non_eye_top_level_xml_unchanged": true,
+  "deferred_parts_xml_unchanged": {
+    "eye_right_iris": true,
+    "eye_right_pupil": true,
+    "eye_right_upper_lashes": true,
+    "eye_right_lower_lashes": true,
+    "eye_right_eyelid_skin": true
+  },
+  "duplicate_ids": [],
+  "unresolved_references": [],
+  "guides_display": "none",
+  "highlight_display": "none",
+  "new_mask_count": 0,
+  "new_effect_count": 0,
+  "eye_layer_index": 40,
+  "hair_front_indexes": [
+    50,
+    51
+  ],
+  "sclera_cool_mix": {
+    "02": "#F4F0F5",
+    "03": "#DCDFED",
+    "weight_03": 0.25,
+    "result": "#EEECF3"
+  }
+}

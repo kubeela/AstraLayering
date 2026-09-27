@@ -1,0 +1,762 @@
+{
+  "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_v4\\references\\base-subject.png",
+  "source_sha256": "7448a2575ec8619e43cd8ee9565ab35035272dd4702cd4b2ae58db4d748d34c3",
+  "canvas": [
+    941,
+    1672
+  ],
+  "coordinates": "EXIF-transposed source image pixels",
+  "interpretation": "Caller-chosen groups and methods; color_origin distinguishes pixels, statistics and provided colors.",
+  "presentation": {
+    "title": "手臂与手部色盘 / 双侧原图取色",
+    "region": "左右大臂、小臂与手部",
+    "footer": "角色左在画面右；肩根SVG接口单列于JSON，隐藏补色属推断。",
+    "groups": {
+      "skin": "肤色 · 双侧基础与冷暖",
+      "volume": "体积 · 肩臂与前臂转面",
+      "junction": "连接 · 肩肘腕与掌面",
+      "nail": "指尖 · 甲面与指节",
+      "comparison": "对照 · 接触暗部与高光"
+    }
+  },
+  "samples": [
+    {
+      "name": "右肩峰亮肤",
+      "part_id": "upper_arm_right",
+      "role": "skin",
+      "region": "画面左肩峰中央",
+      "usage": "肩圆弧亮面小范围软过渡至大臂正面；不扩成整臂白带。",
+      "basis": "原图可见右肩皮肤，避开肩带与发丝。",
+      "method": "median",
+      "x": 336,
+      "y": 349,
+      "radius": 2,
+      "id": "01",
+      "box": [
+        334,
+        347,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        252,
+        238,
+        236
+      ],
+      "alpha": 255,
+      "hex": "#FCEEEC",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右大臂正面",
+      "part_id": "upper_arm_right",
+      "role": "skin",
+      "region": "画面左大臂中段",
+      "usage": "大臂主要肤色，沿肩至肘保持连续，侧缘微暗。",
+      "basis": "原图右大臂可见正面净肤。",
+      "method": "median",
+      "x": 331,
+      "y": 463,
+      "radius": 3,
+      "id": "02",
+      "box": [
+        328,
+        460,
+        7,
+        7
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        250,
+        240,
+        239
+      ],
+      "alpha": 255,
+      "hex": "#FAF0EF",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左肩峰亮肤",
+      "part_id": "upper_arm_left",
+      "role": "skin",
+      "region": "画面右肩峰中央",
+      "usage": "左肩圆弧的小面积亮面，向外下方柔和落入大臂底色。",
+      "basis": "原图左肩皮肤，避开发丝与肩带。",
+      "method": "median",
+      "x": 545,
+      "y": 348,
+      "radius": 2,
+      "id": "03",
+      "box": [
+        543,
+        346,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        252,
+        240,
+        238
+      ],
+      "alpha": 255,
+      "hex": "#FCF0EE",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左大臂正面",
+      "part_id": "upper_arm_left",
+      "role": "skin",
+      "region": "画面右大臂中段",
+      "usage": "左大臂主要肤色，肩下至肘保持宽幅低对比。",
+      "basis": "原图左大臂可见正面净肤。",
+      "method": "median",
+      "x": 566,
+      "y": 463,
+      "radius": 3,
+      "id": "04",
+      "box": [
+        563,
+        460,
+        7,
+        7
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        252,
+        243,
+        242
+      ],
+      "alpha": 255,
+      "hex": "#FCF3F2",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右前臂正面",
+      "part_id": "forearm_right",
+      "role": "skin",
+      "region": "画面左小臂近腕段",
+      "usage": "前臂宽面底色，肘下至腕部顺长度轻微渐亮。",
+      "basis": "原图右前臂可见净肤。",
+      "method": "median",
+      "x": 277,
+      "y": 673,
+      "radius": 3,
+      "id": "05",
+      "box": [
+        274,
+        670,
+        7,
+        7
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        249,
+        237,
+        235
+      ],
+      "alpha": 255,
+      "hex": "#F9EDEB",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左前臂正面",
+      "part_id": "forearm_left",
+      "role": "skin",
+      "region": "画面右小臂近腕段",
+      "usage": "前臂正面底色，接腕部时缓和过渡。",
+      "basis": "原图左前臂可见净肤。",
+      "method": "median",
+      "x": 608,
+      "y": 665,
+      "radius": 3,
+      "id": "06",
+      "box": [
+        605,
+        662,
+        7,
+        7
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        250,
+        238,
+        237
+      ],
+      "alpha": 255,
+      "hex": "#FAEEED",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右掌背亮肤",
+      "part_id": "hand_right",
+      "role": "skin",
+      "region": "画面左手背上半部",
+      "usage": "手背表面底色，向指根收窄，避免使用身后发色。",
+      "basis": "原图右手背可见肤色。",
+      "method": "median",
+      "x": 237,
+      "y": 794,
+      "radius": 2,
+      "id": "07",
+      "box": [
+        235,
+        792,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        251,
+        236,
+        234
+      ],
+      "alpha": 255,
+      "hex": "#FBECEA",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左掌背亮肤",
+      "part_id": "hand_left",
+      "role": "skin",
+      "region": "画面右手背上半部",
+      "usage": "手背底色，向指根过渡并保留两侧冷暖差。",
+      "basis": "原图左手背可见肤色。",
+      "method": "median",
+      "x": 646,
+      "y": 792,
+      "radius": 2,
+      "id": "08",
+      "box": [
+        644,
+        790,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        251,
+        238,
+        236
+      ],
+      "alpha": 255,
+      "hex": "#FBEEEC",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右肩内侧转面",
+      "part_id": "upper_arm_right",
+      "role": "volume",
+      "region": "画面左腋旁上臂内侧",
+      "usage": "肩窝下方窄幅暖暗软转面，与肩圆弧亮面分开。",
+      "basis": "原图可见右上臂内侧皮肤；不采衣物。",
+      "method": "median",
+      "x": 344,
+      "y": 412,
+      "radius": 2,
+      "id": "09",
+      "box": [
+        342,
+        410,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        246,
+        231,
+        228
+      ],
+      "alpha": 255,
+      "hex": "#F6E7E4",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左肩内侧转面",
+      "part_id": "upper_arm_left",
+      "role": "volume",
+      "region": "画面右腋旁上臂内侧",
+      "usage": "左上臂内侧略暖的短幅转面，柔和衔接胸廓边。",
+      "basis": "原图可见左上臂内侧皮肤；避开衣边。",
+      "method": "median",
+      "x": 548,
+      "y": 415,
+      "radius": 2,
+      "id": "10",
+      "box": [
+        546,
+        413,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        249,
+        235,
+        233
+      ],
+      "alpha": 255,
+      "hex": "#F9EBE9",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右肘外下转面",
+      "part_id": "forearm_right",
+      "role": "volume",
+      "region": "画面左肘下外侧",
+      "usage": "肘下向前臂的局部暖灰过渡，软边沿臂向下淡出。",
+      "basis": "原图右肘下可见皮肤，不含后发蓝影。",
+      "method": "median",
+      "x": 309,
+      "y": 579,
+      "radius": 2,
+      "id": "11",
+      "box": [
+        307,
+        577,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        251,
+        240,
+        239
+      ],
+      "alpha": 255,
+      "hex": "#FBF0EF",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左肘内下转面",
+      "part_id": "forearm_left",
+      "role": "volume",
+      "region": "画面右肘下内侧",
+      "usage": "左肘下暖暗向前臂正面淡出，不画硬肘缝。",
+      "basis": "原图左肘下可见皮肤。",
+      "method": "median",
+      "x": 590,
+      "y": 578,
+      "radius": 2,
+      "id": "12",
+      "box": [
+        588,
+        576,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        247,
+        229,
+        227
+      ],
+      "alpha": 255,
+      "hex": "#F7E5E3",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右前臂侧暖灰",
+      "part_id": "forearm_right",
+      "role": "volume",
+      "region": "画面左小臂中下段侧面",
+      "usage": "小臂侧向手腕收束的柔暗，与正面肤色缓变。",
+      "basis": "原图右前臂侧面皮肤，避开外轮廓线。",
+      "method": "median",
+      "x": 262,
+      "y": 710,
+      "radius": 2,
+      "id": "13",
+      "box": [
+        260,
+        708,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        245,
+        230,
+        228
+      ],
+      "alpha": 255,
+      "hex": "#F5E6E4",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左前臂侧暖灰",
+      "part_id": "forearm_left",
+      "role": "volume",
+      "region": "画面右小臂中下段侧面",
+      "usage": "左前臂外侧窄幅柔暗，顺腕部收拢。",
+      "basis": "原图左前臂侧面皮肤，避开轮廓线。",
+      "method": "median",
+      "x": 627,
+      "y": 711,
+      "radius": 2,
+      "id": "14",
+      "box": [
+        625,
+        709,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        251,
+        239,
+        238
+      ],
+      "alpha": 255,
+      "hex": "#FBEFEE",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右腕接掌",
+      "part_id": "hand_right",
+      "role": "junction",
+      "region": "画面左腕与手背交接",
+      "usage": "腕部从前臂宽面接手背，柔和减亮，交接处不断色。",
+      "basis": "原图右腕可见皮肤。",
+      "method": "median",
+      "x": 237,
+      "y": 758,
+      "radius": 2,
+      "id": "15",
+      "box": [
+        235,
+        756,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        252,
+        242,
+        240
+      ],
+      "alpha": 255,
+      "hex": "#FCF2F0",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左腕接掌",
+      "part_id": "hand_left",
+      "role": "junction",
+      "region": "画面右腕与手背交接",
+      "usage": "左腕延续前臂底色并略暖地进入手背。",
+      "basis": "原图左腕可见皮肤。",
+      "method": "median",
+      "x": 643,
+      "y": 758,
+      "radius": 2,
+      "id": "16",
+      "box": [
+        641,
+        756,
+        5,
+        5
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        252,
+        242,
+        241
+      ],
+      "alpha": 255,
+      "hex": "#FCF2F1",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右指根暖肤",
+      "part_id": "hand_right",
+      "role": "junction",
+      "region": "画面左手指根外侧",
+      "usage": "指根弯曲处局部暖色，小面积沿指节转面。",
+      "basis": "原图右手可见指根皮肤。",
+      "method": "median",
+      "x": 220,
+      "y": 820,
+      "radius": 1,
+      "id": "17",
+      "box": [
+        219,
+        819,
+        3,
+        3
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        252,
+        240,
+        239
+      ],
+      "alpha": 255,
+      "hex": "#FCF0EF",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左指根暖肤",
+      "part_id": "hand_left",
+      "role": "junction",
+      "region": "画面右手指根外侧",
+      "usage": "左手指根暖肤向可见指节接续，保持小范围。",
+      "basis": "原图左手可见指根皮肤。",
+      "method": "median",
+      "x": 658,
+      "y": 822,
+      "radius": 1,
+      "id": "18",
+      "box": [
+        657,
+        821,
+        3,
+        3
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        252,
+        241,
+        238
+      ],
+      "alpha": 255,
+      "hex": "#FCF1EE",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右指尖甲面",
+      "part_id": "hand_right",
+      "role": "nail",
+      "region": "画面左弯指末端可见甲面",
+      "usage": "仅用于实际露出的甲面微亮层，不作为手指肤色。",
+      "basis": "原图右手可见甲面。",
+      "method": "median",
+      "x": 244,
+      "y": 840,
+      "radius": 1,
+      "id": "19",
+      "box": [
+        243,
+        839,
+        3,
+        3
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        251,
+        227,
+        223
+      ],
+      "alpha": 255,
+      "hex": "#FBE3DF",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左指尖甲面",
+      "part_id": "hand_left",
+      "role": "nail",
+      "region": "画面右弯指末端可见甲面",
+      "usage": "仅用于实际露出的甲面，不延伸至隐藏甲面。",
+      "basis": "原图左手可见甲面。",
+      "method": "median",
+      "x": 635,
+      "y": 838,
+      "radius": 1,
+      "id": "20",
+      "box": [
+        634,
+        837,
+        3,
+        3
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        247,
+        224,
+        222
+      ],
+      "alpha": 255,
+      "hex": "#F7E0DE",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "右指节接触暗",
+      "part_id": "hand_right",
+      "role": "comparison",
+      "region": "画面左屈指相接小凹处",
+      "usage": "手指相接的局部接触暗对照；不可作整手底色，边界较紧。",
+      "basis": "原图右手可见屈指接触暗部。",
+      "method": "median",
+      "x": 240,
+      "y": 848,
+      "radius": 1,
+      "id": "21",
+      "box": [
+        239,
+        847,
+        3,
+        3
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        213,
+        183,
+        185
+      ],
+      "alpha": 255,
+      "hex": "#D5B7B9",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    },
+    {
+      "name": "左指节接触暗",
+      "part_id": "hand_left",
+      "role": "comparison",
+      "region": "画面右屈指相接小凹处",
+      "usage": "左手屈指叠压的短窄暗部对照，不随手背铺开。",
+      "basis": "原图左手可见屈指接触暗部。",
+      "method": "median",
+      "x": 639,
+      "y": 848,
+      "radius": 1,
+      "id": "22",
+      "box": [
+        638,
+        847,
+        3,
+        3
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        212,
+        178,
+        181
+      ],
+      "alpha": 255,
+      "hex": "#D4B2B5",
+      "actual_pixel": null,
+      "color_origin": "source_statistic"
+    }
+  ],
+  "group": {
+    "id": "arms",
+    "kind": "arms",
+    "part_ids": [
+      "upper_arm_left",
+      "upper_arm_right",
+      "forearm_left",
+      "forearm_right",
+      "hand_left",
+      "hand_right"
+    ],
+    "side_convention": "角色左=画面右；角色右=画面左。"
+  },
+  "upstream_svg_interface": {
+    "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_v4\\refinement\\groups\\body\\5.身体承影与成稿\\character.svg",
+    "source_type": "上游SVG接口参考；此节颜色不是原图像素实测。",
+    "body_desc": "torso_trunk_base 的短肩根连接边：角色右/画面左 x=349.2–361.0，角色左/画面右 x=528.0–539.8，y=332–389；与现有 upper_arm_* 内侧仅约 1.5–4 px 重合。肩圆弧和三角肌归 arms，需接顺上臂内缘。",
+    "base_gradient": {
+      "id": "body3_continuous_skin_base",
+      "stops": [
+        "#FAF0EF",
+        "#FAF0F0",
+        "#FAEEED",
+        "#FAEDEC"
+      ]
+    },
+    "shoulder_light": {
+      "ids": [
+        "body3_right_shoulder_light",
+        "body3_left_shoulder_light"
+      ],
+      "color": "#FCEFED",
+      "role": "肩峰叠加亮层，非整臂纯色"
+    },
+    "socket_turn": {
+      "ids": [
+        "body3_right_shoulder_socket_turn",
+        "body3_left_shoulder_socket_turn"
+      ],
+      "colors": [
+        "#F1DAD9",
+        "#F4E1DF"
+      ],
+      "role": "低透明度肩窝转面，不作净肤底色"
+    },
+    "connection": "两侧臂根分别从各自肩峰原图样本 01/03 向大臂正面 02/04 软过渡；内缘与 body 的短肩根连接边轻微搭接，不沿肩带或发束做肤色分界。"
+  },
+  "spatial_guidance": {
+    "skin_vs_shadow": "01–08、15–18 为可见皮肤的区域统计；09–14 是本体局部转面；21–22 是指节相接形成的局部接触暗对照，不混入大面积底色。19–20 仅用于实际露出的甲面。",
+    "arm_flow": "画面左（角色右）从 01/02 经 11/05、13 至 15/07；画面右（角色左）从 03/04 经 12/06、14 至 16/08。各段以软边沿臂长衔接，靠轮廓侧面只作窄幅变化。",
+    "sampling_limits": "原图可见六个部件各有采样；指缝遮挡和肩带后方没有可测净肤。灰蓝后发、白衣与肩带均未用作皮肤色；指节接触暗也不代表全手固有肤色。"
+  },
+  "inferred_colors": [
+    {
+      "part_id": "upper_arm_right",
+      "region": "画面左肩带旁被躯干遮住的肩根",
+      "source_sample_ids": [
+        "01",
+        "02",
+        "09"
+      ],
+      "usage": "延续大臂正面底色，靠 body 接口处与其 #FAF0EF 系底色低对比搭接，肩窝仅窄幅偏暖。",
+      "basis": "该根部被遮挡，按邻近可见右肩皮肤及上游SVG肩根短连接边推断；不以肩带颜色作皮肤。"
+    },
+    {
+      "part_id": "upper_arm_left",
+      "region": "画面右肩带旁被躯干遮住的肩根",
+      "source_sample_ids": [
+        "03",
+        "04",
+        "10"
+      ],
+      "usage": "延续左肩亮肤至大臂底色，向 body 的肩根连接面柔和收暗，保持少量原图左右差异。",
+      "basis": "遮挡处无原图净肤像素，依本侧可见肩臂样本及上游SVG接口推断。"
+    },
+    {
+      "part_id": "hand_right",
+      "region": "画面左手屈指背面及指缝隐藏段",
+      "source_sample_ids": [
+        "07",
+        "17",
+        "19",
+        "21"
+      ],
+      "usage": "隐藏指背沿可见手背与指根暖肤延续；相接凹处可参考 21 小范围压暗，隐藏甲面不新增颜色。",
+      "basis": "隐藏面不能实测；根据同手可见表面延续，不从后发、衣物或指缝背景取色。"
+    },
+    {
+      "part_id": "hand_left",
+      "region": "画面右手屈指背面及指缝隐藏段",
+      "source_sample_ids": [
+        "08",
+        "18",
+        "20",
+        "22"
+      ],
+      "usage": "隐藏指背延续本手手背和指根色；22 只提示紧窄接触暗，不将其作为指肤底色。",
+      "basis": "隐藏面不能实测；由同手可见肤色、甲面和指节关系推断。"
+    }
+  ]
+}

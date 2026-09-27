@@ -1,0 +1,216 @@
+{
+  "started": "2026-09-27T17:01:17.291260",
+  "root": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo",
+  "cases": {
+    "structure": {
+      "node": "physics_details/1.结构分析",
+      "model": "gpt-6-sol",
+      "effort": "medium",
+      "group": {
+        "id": "physics_details_sample",
+        "kind": "physics_details",
+        "part_ids": [
+          "earring_left",
+          "foot_chain_left"
+        ]
+      },
+      "inputs": {
+        "reference": "reference.png",
+        "parts": "parts.yaml",
+        "svg": "structure-input.svg"
+      },
+      "outputs": {
+        "structure": "结构安排.md",
+        "reference_brief": "补全要求.txt"
+      },
+      "runs": {
+        "r": {
+          "workdir": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\r",
+          "prompt_sha256": "7ff7eb1f02b1fcb38d7cdc78a63c2449e2ef8eb192cd11fe33a6a65a6f021d9a",
+          "bindings": {
+            "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\reference.png",
+            "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\parts.yaml",
+            "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\structure-input.svg",
+            "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py"
+          }
+        },
+        "s": {
+          "workdir": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\s",
+          "prompt_sha256": "4e9173495b6c5a1c53908a8efaec92dc277231dfb13342eef86f3f5032d41a85",
+          "bindings": {
+            "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\reference.png",
+            "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\parts.yaml",
+            "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\structure-input.svg",
+            "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py",
+            "tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\s\\inputs\\9.物理饰品与衣服细节.txt",
+            "depth_tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\s\\inputs\\1.立体感的来源与制作.txt",
+            "split_tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\s\\inputs\\13.判断拆分与否.txt"
+          }
+        }
+      }
+    },
+    "mouth": {
+      "node": "mouth/1.嘴型校准与完整线稿",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "group": {
+        "id": "mouth",
+        "kind": "mouth",
+        "part_ids": [
+          "mouth"
+        ]
+      },
+      "inputs": {
+        "reference": "reference.png",
+        "parts": "parts.yaml",
+        "svg": "mouth-input.svg",
+        "guide": "guide.png"
+      },
+      "outputs": {
+        "svg": "character.svg",
+        "comparison": "结构对照.png"
+      },
+      "runs": {
+        "r": {
+          "workdir": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\mouth\\r",
+          "prompt_sha256": "e04602bb8dee5ee63c93953fd4fb7e3f34365a331e86cdecdd19c30a81319160",
+          "bindings": {
+            "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\reference.png",
+            "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\parts.yaml",
+            "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\mouth-input.svg",
+            "guide": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\guide.png",
+            "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py"
+          }
+        },
+        "s": {
+          "workdir": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\mouth\\s",
+          "prompt_sha256": "1a1d578bced53e96e9e069a977b23cca9a82c7f3e493de610e9618804a818cee",
+          "bindings": {
+            "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\reference.png",
+            "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\parts.yaml",
+            "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\mouth-input.svg",
+            "guide": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\guide.png",
+            "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py",
+            "tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\mouth\\s\\inputs\\4.嘴巴拆分和制作.txt"
+          }
+        }
+      }
+    },
+    "shadow": {
+      "node": "hair/5.关联投影与成稿",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "group": {
+        "id": "hair",
+        "kind": "hair",
+        "part_ids": [
+          "hair_front_right"
+        ]
+      },
+      "inputs": {
+        "reference": "shadow-reference.png",
+        "parts": "shadow-parts.json",
+        "svg": "shadow-input.svg",
+        "palette_json": "shadow-palette.json"
+      },
+      "outputs": {
+        "svg": "character.svg",
+        "preview": "preview.png"
+      },
+      "runs": {
+        "r": {
+          "workdir": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shadow\\r",
+          "prompt_sha256": "68ec6c5c88f6c257237c1872c5728ca201e582d63165fcb1033942005a6b0e36",
+          "bindings": {
+            "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-reference.png",
+            "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-parts.json",
+            "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-input.svg",
+            "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py",
+            "palette_json": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-palette.json"
+          }
+        },
+        "s": {
+          "workdir": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shadow\\s",
+          "prompt_sha256": "165dbf6d413e0dfefe2f3e128ccfe4f070139738ef3f4c7b8cd1bd0a057ff96b",
+          "bindings": {
+            "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-reference.png",
+            "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-parts.json",
+            "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-input.svg",
+            "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py",
+            "effects_tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shadow\\s\\inputs\\14.透明，阴影，高光的拆分方式.txt",
+            "palette_json": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-palette.json"
+          }
+        }
+      }
+    }
+  },
+  "variant_map": {
+    "r": "new integrated prompts",
+    "s": "old prompt with original tutorial bindings"
+  },
+  "agents": {
+    "structure/r": "/root/sample_structure_r",
+    "structure/s": "/root/sample_structure_s",
+    "mouth/s": "/root/sample_mouth_s",
+    "mouth/r": "/root/sample_mouth_r",
+    "shadow/r": "/root/sample_shadow_r",
+    "shadow/s": "/root/sample_shadow_s"
+  },
+  "inputs": {
+    "guide.png": {
+      "sha256": "eb12a7ba49d64d294d4a9683e2a301e006dbd75776ed5dc654622670fb2edd13",
+      "bytes": 1039789
+    },
+    "mouth-input.svg": {
+      "sha256": "c7f775b90d84a970a528b9b56b9f7a43f3f484de002133270832f9dc8cadc83e",
+      "bytes": 120448
+    },
+    "parts.yaml": {
+      "sha256": "ab63bc2b14fbd81f53d45dec0233198df95210438c15394266b32404d4ff3379",
+      "bytes": 9795
+    },
+    "reference.png": {
+      "sha256": "7448a2575ec8619e43cd8ee9565ab35035272dd4702cd4b2ae58db4d748d34c3",
+      "bytes": 1476818
+    },
+    "shadow-input.svg": {
+      "sha256": "419c941d36f0206d1c6d553e856702e3dbcebf9414f9a1a2f8742914f994592c",
+      "bytes": 841
+    },
+    "shadow-palette.json": {
+      "sha256": "459702367cbe62b54262b350823a86b7875ef5798bba4936c3b25c8a575fe6ba",
+      "bytes": 14
+    },
+    "shadow-parts.json": {
+      "sha256": "c27c2e9b8133c00365d0b5352aae0683366eef85d851aa37fb62f8304e4d3ea1",
+      "bytes": 84
+    },
+    "shadow-reference.png": {
+      "sha256": "b75e5e2ec63eed8b1417cc9f54ff0d1ec71e350429890db3397fb4f34f88aba6",
+      "bytes": 6096
+    },
+    "structure-input.svg": {
+      "sha256": "3744e4c6272a60e31ff4702a0540082b9707c2d0809a89e392c1c291eed23f9f",
+      "bytes": 3601606
+    }
+  },
+  "evaluator": {
+    "agent": "/root/blind_sample_evaluation",
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "candidate_versions_hidden": true,
+    "read_scope": "explicit input snapshots and anonymous candidate artifacts only"
+  },
+  "persistent_snapshot": "run-snapshot",
+  "notes": [
+    "旧/新运行各一次，仅当前节点及节点内已有自查，未接完整流程。",
+    "shared输入已冻结；实验快照中的旧教程仅用于对照，不接入生产工作流。",
+    "shadow.inputs在记录中按实际任务.json字段palette_json归一；实际派发双方均为palette_json。"
+  ],
+  "finished_local": "2026-09-27T17:20:02",
+  "verdict": {
+    "structure_new": "pass; old has reversed ear visibility direction",
+    "mouth_new": "complete structure; visible mouth contour flatter than reference and old candidate",
+    "shadow_new": "same use requirements satisfied; small geometric/render differences"
+  }
+}

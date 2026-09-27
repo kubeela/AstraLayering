@@ -1,0 +1,78 @@
+{
+  "candidate_sha256": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e",
+  "plan_sha256": "459f82982d648c44f4b54468c9d4a8c391f68ea16be896fb7ae9126717e87569",
+  "reference_sha256": "7448a2575ec8619e43cd8ee9565ab35035272dd4702cd4b2ae58db4d748d34c3",
+  "candidate_viewBox": "0 0 941 1672",
+  "baseline_viewBox": "0 0 941 1672",
+  "reference_dimensions": [
+    941,
+    1672
+  ],
+  "duplicate_ids": [],
+  "missing_references": [],
+  "changed_top_level_ids": [
+    "eye_right"
+  ],
+  "added_top_level_ids": [],
+  "removed_top_level_ids": [],
+  "eye_order": {
+    "eye_right": 40,
+    "hair_front_right": 50,
+    "hair_front_left": 51
+  },
+  "outside_eye_references": [],
+  "gaze_children": [
+    "eye_right_iris",
+    "eye_right_pupil",
+    "eye_right_highlights"
+  ],
+  "default_guide_display": "none",
+  "plan": {
+    "locked": true,
+    "eyes_symmetric": true,
+    "reference_sha256": "7448a2575ec8619e43cd8ee9565ab35035272dd4702cd4b2ae58db4d748d34c3",
+    "part_ids": [
+      "eye_left",
+      "eye_right"
+    ],
+    "eyes": [
+      {
+        "id": "eye_right",
+        "part_id": "eye_right"
+      }
+    ],
+    "mirror": {
+      "source": "eye_right",
+      "target": "eye_left",
+      "axis": [
+        [
+          444,
+          180
+        ],
+        [
+          444,
+          220
+        ]
+      ]
+    },
+    "eye_hair_order": "behind"
+  },
+  "method": "Original canvas preserved. Direct Sharp/librsvg rendering. Hair disabled only in diagnostic clone. No candidate registration.",
+  "upper-lashes": {
+    "independent_direct_render_scale": 24,
+    "single_alpha_threshold": 128,
+    "connected_components": 1,
+    "areas": [
+      5930
+    ]
+  },
+  "lower-lashes": {
+    "independent_direct_render_scale": 24,
+    "single_alpha_threshold": 128,
+    "connected_components": 1,
+    "areas": [
+      2222
+    ]
+  },
+  "candidate_sha256_after_review": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e"
+}

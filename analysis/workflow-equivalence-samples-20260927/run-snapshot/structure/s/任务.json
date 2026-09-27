@@ -1,0 +1,23 @@
+{
+  "group": {
+    "id": "physics_details_sample",
+    "kind": "physics_details",
+    "part_ids": [
+      "earring_left",
+      "foot_chain_left"
+    ]
+  },
+  "inputs": {
+    "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\reference.png",
+    "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\parts.yaml",
+    "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\structure-input.svg",
+    "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py",
+    "tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\s\\inputs\\9.物理饰品与衣服细节.txt",
+    "depth_tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\s\\inputs\\1.立体感的来源与制作.txt",
+    "split_tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\structure\\s\\inputs\\13.判断拆分与否.txt"
+  },
+  "outputs": {
+    "structure": "结构安排.md",
+    "reference_brief": "补全要求.txt"
+  }
+}

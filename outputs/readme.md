@@ -10,7 +10,8 @@
 
 | 案例 | 当前状态 | 入口 |
 | --- | --- | --- |
-| jianma_v4 / jianma_clothing | 已有完整素体与默认穿戴衣装；本次发布成稿快照，未打包本地全部中间运行文件 | [新版案例与成稿](../demos/jianma-current-case/readme.md) |
+| jianma_v4 | 分层素体完整实跑，保存各部件阶段稿、old-* 历史轮次、取色脚本与审查证据 | [实跑索引](./jianma_v4/readme.md)、[成果展示](../demos/jianma-current-case/readme.md) |
+| jianma_clothing | 衣装结构、生成参考、8 批线稿与 8 批着色、审查返修及最终交付 | [完整实跑](./jianma_clothing/readme.md) |
 | jianma_v2 | 早期按 kind 绘制试验，保留线稿失败稿、色块返修与审查证据 | [运行记录](./jianma_v2/运行记录.md) |
 | jianma_v1 | 参考改绘、连体服替换与语义部件识别首轮试验 | [运行记录](./jianma_v1/运行记录.md) |
 | milly_v1 | 自动调度完成参考准备与阶段1—5，四个指定独立review节点均有通过记录 | [产物与审查记录](./milly_v1/readme.md) |

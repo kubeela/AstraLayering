@@ -6,6 +6,11 @@
 
 | 目录 | 用途与入口 |
 | --- | --- |
+| [教程迁移抽样对比](./workflow-equivalence-samples-20260927/抽样对比报告.md) | 三类任务的新旧段落实际试跑、匿名评估、绘制结果和冻结输入；结论保留各项差异，不宣称所有画面完全等价 |
+| [教程知识融合报告](./workflow-tutorial-migration-20260927/教程融合报告.md) | 逐节点提示词改动、修改前快照及知识点落实位置 |
+| [教程引用早期自测](./workflow-tutorial-audit-20260927/自测报告.md) | 当时的静态检查与试跑记录，作为历史过程保留；后续以融合报告和抽样实跑为准 |
+| [衣装动画素材核查](./clothing-animation-readiness-20260927/动画素材核查.md) | 背面、连接与透明袖尾的独显证据，说明静态素材与动态绑定之间的实际待办 |
+| [Milly 手部拆分取样](./arms-planning-20260927/) | 原 PSD 图层清单、六件拆分板与本角色手部参考 |
 | [miku-v3-review](./miku-v3-review/) | [最新完整结果复核](./miku-v3-review/readme.md)：阶段1—5归档，脸缘与头型改善的同坐标证据，眼睑、手足及材质遗留问题；线稿独立审查与工作投入仅记录、未实施 |
 | [case3-miku-v2-review](./case3-miku-v2-review/) | [本轮尝试与下一轮计划](./case3-miku-v2-review/readme.md)：已到阶段4，线稿与色盘的实际反馈，脸型／眼白问题追溯，阶段3五步拆分与阶段5待验证项 |
 | [stage4-palette-demo](./stage4-palette-demo/) | [程序取色样例](./stage4-palette-demo/readme.md)：底色候选、明暗对照、来源局部与准确色值；已用于case3阶段4，用户反馈配色帮助明显 |
@@ -22,4 +27,4 @@ SVG 显示实验只是对既有图形的显隐或描边调整，不能据此还�
 
 检查页需要同源访问 iframe。可在仓库根目录运行 `python3 -m http.server 8000`，然后打开 `http://localhost:8000/analysis/svg-preview-tests/checks.html`，点击“运行交互检查”。
 
-返回 [主工作流](../archive/svg-layering/workflows/readme.md) 或 [当前验证区](../outputs/readme.md)。
+返回 [人物分层技能](../.agents/skills/live2d-layering/readme.md) 或 [当前验证区](../outputs/readme.md)。

@@ -1,0 +1,48 @@
+{
+  "left": {
+    "tail_children": [
+      [
+        "desc",
+        null
+      ],
+      [
+        "path",
+        "gauze_sleeve_left_tail_surface"
+      ]
+    ],
+    "parent_material_children": [
+      "gauze_sleeve_left_front_surface",
+      "gauze_sleeve_left_tail",
+      "gauze_sleeve_left_front_intrinsic_volume"
+    ],
+    "outside_tail_present": [
+      "gauze_sleeve_left_opening_roll",
+      "gauze_sleeve_left_opening_edge",
+      "gauze_sleeve_left_white_embroidery",
+      "gauze_sleeve_left_tail_surface_reflection"
+    ]
+  },
+  "right": {
+    "tail_children": [
+      [
+        "desc",
+        null
+      ],
+      [
+        "path",
+        "gauze_sleeve_right_tail_surface"
+      ]
+    ],
+    "parent_material_children": [
+      "gauze_sleeve_right_front_surface",
+      "gauze_sleeve_right_tail",
+      "gauze_sleeve_right_front_intrinsic_volume"
+    ],
+    "outside_tail_present": [
+      "gauze_sleeve_right_opening_roll",
+      "gauze_sleeve_right_opening_edge",
+      "gauze_sleeve_right_white_embroidery",
+      "gauze_sleeve_right_tail_surface_reflection"
+    ]
+  }
+}

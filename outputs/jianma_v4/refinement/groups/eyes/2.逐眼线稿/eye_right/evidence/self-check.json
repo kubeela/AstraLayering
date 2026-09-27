@@ -1,0 +1,53 @@
+{
+  "upper_lashes": {
+    "render_scale": 24,
+    "alpha_cutoff": 128,
+    "connected_components": 1,
+    "component_pixel_areas": [
+      5930
+    ]
+  },
+  "lower_lashes": {
+    "render_scale": 24,
+    "alpha_cutoff": 128,
+    "connected_components": 1,
+    "component_pixel_areas": [
+      2222
+    ]
+  },
+  "visible_sclera_chords_at_y199_5": {
+    "method": "opaque exact sclera fill at one ray, excludes antialias boundary",
+    "x_spans": [
+      [
+        407.625,
+        411.125
+      ],
+      [
+        425.25,
+        428.833
+      ]
+    ]
+  },
+  "complete_iris": {
+    "center": [
+      418.18,
+      196.75
+    ],
+    "radii": [
+      7.62,
+      7.18
+    ],
+    "complete_bbox": [
+      410.56,
+      189.57,
+      425.8,
+      203.93
+    ]
+  },
+  "plan_sha256": "459f82982d648c44f4b54468c9d4a8c391f68ea16be896fb7ae9126717e87569",
+  "candidate_sha256": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e",
+  "readback_preview_dimensions": [
+    941,
+    1672
+  ]
+}

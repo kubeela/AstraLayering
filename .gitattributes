@@ -1,2 +1,11 @@
 # Keep the delivered options bytes consistent with its SHA-256 manifest.
 outputs/jianma_v4/options.json text eol=lf
+
+# Preserve recorded run artifacts byte-for-byte across platforms.
+outputs/jianma_v4/refinement/** -text
+outputs/jianma_v4/reviews/** -text
+outputs/jianma_v4/tmp/** -text
+outputs/jianma_v4/*.md -text
+outputs/jianma_clothing/** -text
+analysis/*20260927/** -text
+rigging/milly/v3/video-work/** -text

@@ -1,0 +1,814 @@
+{
+  "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_v4\\references\\base-subject.png",
+  "source_sha256": "7448a2575ec8619e43cd8ee9565ab35035272dd4702cd4b2ae58db4d748d34c3",
+  "canvas": [
+    941,
+    1672
+  ],
+  "coordinates": "EXIF-transposed source image pixels",
+  "method": "Nearest real opaque source pixel to the per-channel patch median; center-nearest tie break.",
+  "interpretation": "Observed colors; semantic roles are supplied by the caller, not inferred by this program.",
+  "samples": [
+    {
+      "name": "外侧眼白暖粉",
+      "part_id": "eye_right",
+      "x": 410,
+      "y": 200,
+      "radius": 0,
+      "role": "sclera",
+      "region": "画面左侧窄眼白",
+      "usage": "眼白暖面",
+      "basis": "避开外眼角眼线和虹膜",
+      "id": "01",
+      "rgb": [
+        250,
+        235,
+        241
+      ],
+      "hex": "#FAEBF1",
+      "actual_pixel": [
+        410,
+        200
+      ]
+    },
+    {
+      "name": "外侧眼白冷亮",
+      "part_id": "eye_right",
+      "x": 411,
+      "y": 201,
+      "radius": 0,
+      "role": "sclera",
+      "region": "虹膜左下邻接",
+      "usage": "眼白明部",
+      "id": "02",
+      "rgb": [
+        244,
+        240,
+        245
+      ],
+      "hex": "#F4F0F5",
+      "actual_pixel": [
+        411,
+        201
+      ]
+    },
+    {
+      "name": "内侧眼白冷灰",
+      "part_id": "eye_right",
+      "x": 425,
+      "y": 200,
+      "radius": 0,
+      "role": "sclera",
+      "region": "虹膜右侧至内眼角之间",
+      "usage": "眼白自身冷变化；可能含上睑弱投影",
+      "id": "03",
+      "rgb": [
+        220,
+        223,
+        237
+      ],
+      "hex": "#DCDFED",
+      "actual_pixel": [
+        425,
+        200
+      ]
+    },
+    {
+      "name": "内眼角眼白亮面",
+      "part_id": "eye_right",
+      "x": 426,
+      "y": 201,
+      "radius": 0,
+      "role": "sclera",
+      "region": "画面右侧窄眼白",
+      "usage": "眼白亮面",
+      "id": "04",
+      "rgb": [
+        250,
+        242,
+        244
+      ],
+      "hex": "#FAF2F4",
+      "actual_pixel": [
+        426,
+        201
+      ]
+    },
+    {
+      "name": "虹膜上左深蓝",
+      "part_id": "eye_right",
+      "x": 413,
+      "y": 196,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜上部偏外缘",
+      "usage": "自身深层",
+      "id": "05",
+      "rgb": [
+        48,
+        54,
+        86
+      ],
+      "hex": "#303656",
+      "actual_pixel": [
+        413,
+        196
+      ]
+    },
+    {
+      "name": "虹膜上中深蓝",
+      "part_id": "eye_right",
+      "x": 416,
+      "y": 196,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜上部中央、瞳孔邻域",
+      "usage": "上半部深层",
+      "id": "06",
+      "rgb": [
+        19,
+        26,
+        55
+      ],
+      "hex": "#131A37",
+      "actual_pixel": [
+        416,
+        196
+      ]
+    },
+    {
+      "name": "虹膜上右蓝灰",
+      "part_id": "eye_right",
+      "x": 423,
+      "y": 197,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜上部偏内缘",
+      "usage": "边缘自身层次；避开独立亮斑",
+      "id": "07",
+      "rgb": [
+        42,
+        55,
+        84
+      ],
+      "hex": "#2A3754",
+      "actual_pixel": [
+        423,
+        197
+      ]
+    },
+    {
+      "name": "虹膜外缘蓝",
+      "part_id": "eye_right",
+      "x": 412,
+      "y": 198,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜左外缘中段",
+      "usage": "边缘深色",
+      "id": "08",
+      "rgb": [
+        76,
+        96,
+        144
+      ],
+      "hex": "#4C6090",
+      "actual_pixel": [
+        412,
+        198
+      ]
+    },
+    {
+      "name": "虹膜左中亮蓝",
+      "part_id": "eye_right",
+      "x": 414,
+      "y": 199,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜左中段",
+      "usage": "局部亮蓝层",
+      "id": "09",
+      "rgb": [
+        139,
+        176,
+        217
+      ],
+      "hex": "#8BB0D9",
+      "actual_pixel": [
+        414,
+        199
+      ]
+    },
+    {
+      "name": "虹膜中心蓝灰",
+      "part_id": "eye_right",
+      "x": 418,
+      "y": 198,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜中心上方",
+      "usage": "瞳孔外围过渡",
+      "id": "10",
+      "rgb": [
+        81,
+        109,
+        148
+      ],
+      "hex": "#516D94",
+      "actual_pixel": [
+        418,
+        198
+      ]
+    },
+    {
+      "name": "瞳孔核心深蓝",
+      "part_id": "eye_right",
+      "x": 416,
+      "y": 197,
+      "radius": 0,
+      "role": "iris",
+      "region": "瞳孔可见核心",
+      "usage": "瞳孔底深色",
+      "id": "11",
+      "rgb": [
+        19,
+        36,
+        75
+      ],
+      "hex": "#13244B",
+      "actual_pixel": [
+        416,
+        197
+      ]
+    },
+    {
+      "name": "中心右侧深蓝",
+      "part_id": "eye_right",
+      "x": 419,
+      "y": 198,
+      "radius": 0,
+      "role": "iris",
+      "region": "瞳孔右侧外围",
+      "usage": "瞳孔至虹膜过渡",
+      "id": "12",
+      "rgb": [
+        60,
+        85,
+        123
+      ],
+      "hex": "#3C557B",
+      "actual_pixel": [
+        419,
+        198
+      ]
+    },
+    {
+      "name": "虹膜右中灰蓝",
+      "part_id": "eye_right",
+      "x": 423,
+      "y": 199,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜右中段边缘",
+      "usage": "边缘与中心差异",
+      "id": "13",
+      "rgb": [
+        92,
+        126,
+        168
+      ],
+      "hex": "#5C7EA8",
+      "actual_pixel": [
+        423,
+        199
+      ]
+    },
+    {
+      "name": "虹膜右中亮弧",
+      "part_id": "eye_right",
+      "x": 422,
+      "y": 199,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜右中局部亮带",
+      "usage": "局部自身亮蓝；邻近独立高光",
+      "id": "14",
+      "rgb": [
+        152,
+        187,
+        223
+      ],
+      "hex": "#98BBDF",
+      "actual_pixel": [
+        422,
+        199
+      ]
+    },
+    {
+      "name": "虹膜下左浅蓝",
+      "part_id": "eye_right",
+      "x": 414,
+      "y": 201,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜下部偏外",
+      "usage": "下半部亮层",
+      "id": "15",
+      "rgb": [
+        198,
+        221,
+        242
+      ],
+      "hex": "#C6DDF2",
+      "actual_pixel": [
+        414,
+        201
+      ]
+    },
+    {
+      "name": "虹膜下中淡蓝",
+      "part_id": "eye_right",
+      "x": 418,
+      "y": 201,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜下部中央",
+      "usage": "下半部亮层",
+      "id": "16",
+      "rgb": [
+        172,
+        195,
+        227
+      ],
+      "hex": "#ACC3E3",
+      "actual_pixel": [
+        418,
+        201
+      ]
+    },
+    {
+      "name": "虹膜下右冰蓝",
+      "part_id": "eye_right",
+      "x": 421,
+      "y": 201,
+      "radius": 0,
+      "role": "iris",
+      "region": "虹膜下部偏内",
+      "usage": "下半部局部高亮",
+      "id": "17",
+      "rgb": [
+        191,
+        209,
+        242
+      ],
+      "hex": "#BFD1F2",
+      "actual_pixel": [
+        421,
+        201
+      ]
+    },
+    {
+      "name": "虹膜最下浅边",
+      "part_id": "eye_right",
+      "x": 418,
+      "y": 202,
+      "radius": 0,
+      "role": "iris",
+      "region": "下缘、下睑投影之前",
+      "usage": "柔和下缘",
+      "id": "18",
+      "rgb": [
+        200,
+        216,
+        243
+      ],
+      "hex": "#C8D8F3",
+      "actual_pixel": [
+        418,
+        202
+      ]
+    },
+    {
+      "name": "上睫毛主线",
+      "part_id": "eye_right",
+      "x": 416,
+      "y": 195,
+      "radius": 0,
+      "role": "contour",
+      "region": "中央上眼睑",
+      "usage": "浓暗线色",
+      "id": "19",
+      "rgb": [
+        26,
+        28,
+        45
+      ],
+      "hex": "#1A1C2D",
+      "actual_pixel": [
+        416,
+        195
+      ]
+    },
+    {
+      "name": "上睫毛外端暖黑",
+      "part_id": "eye_right",
+      "x": 409,
+      "y": 194,
+      "radius": 0,
+      "role": "contour",
+      "region": "外眼角上缘",
+      "usage": "暖褐黑渐变",
+      "id": "20",
+      "rgb": [
+        52,
+        31,
+        38
+      ],
+      "hex": "#341F26",
+      "actual_pixel": [
+        409,
+        194
+      ]
+    },
+    {
+      "name": "外眼角睫毛紫灰",
+      "part_id": "eye_right",
+      "x": 406,
+      "y": 198,
+      "radius": 0,
+      "role": "contour",
+      "region": "外端睫毛延伸",
+      "usage": "向端部变淡",
+      "id": "21",
+      "rgb": [
+        72,
+        59,
+        74
+      ],
+      "hex": "#483B4A",
+      "actual_pixel": [
+        406,
+        198
+      ]
+    },
+    {
+      "name": "外眼角下睫毛",
+      "part_id": "eye_right",
+      "x": 408,
+      "y": 201,
+      "radius": 0,
+      "role": "contour",
+      "region": "外侧下缘根部",
+      "usage": "下睫毛暖深色",
+      "id": "22",
+      "rgb": [
+        115,
+        64,
+        76
+      ],
+      "hex": "#73404C",
+      "actual_pixel": [
+        408,
+        201
+      ]
+    },
+    {
+      "name": "下眼缘灰粉",
+      "part_id": "eye_right",
+      "x": 415,
+      "y": 203,
+      "radius": 0,
+      "role": "contour",
+      "region": "中央下眼缘",
+      "usage": "柔和下睑轮廓",
+      "id": "23",
+      "rgb": [
+        152,
+        137,
+        151
+      ],
+      "hex": "#988997",
+      "actual_pixel": [
+        415,
+        203
+      ]
+    },
+    {
+      "name": "内眼角暖线",
+      "part_id": "eye_right",
+      "x": 429,
+      "y": 200,
+      "radius": 0,
+      "role": "contour",
+      "region": "画面右侧内眼角",
+      "usage": "内端较暖眼线",
+      "id": "24",
+      "rgb": [
+        141,
+        85,
+        88
+      ],
+      "hex": "#8D5558",
+      "actual_pixel": [
+        429,
+        200
+      ]
+    },
+    {
+      "name": "眼皮褶线暗粉",
+      "part_id": "eye_right",
+      "x": 411,
+      "y": 191,
+      "radius": 0,
+      "role": "contour",
+      "region": "上眼皮外侧折线",
+      "usage": "眼皮褶线；低清柔边",
+      "id": "25",
+      "rgb": [
+        193,
+        155,
+        154
+      ],
+      "hex": "#C19B9A",
+      "actual_pixel": [
+        411,
+        191
+      ]
+    },
+    {
+      "name": "上眼窝亮肤",
+      "part_id": "eye_right",
+      "x": 416,
+      "y": 189,
+      "radius": 0,
+      "role": "skin",
+      "region": "上眼皮上缘",
+      "usage": "皮肤亮部",
+      "id": "26",
+      "rgb": [
+        252,
+        240,
+        238
+      ],
+      "hex": "#FCF0EE",
+      "actual_pixel": [
+        416,
+        189
+      ]
+    },
+    {
+      "name": "上眼窝暖肤",
+      "part_id": "eye_right",
+      "x": 425,
+      "y": 189,
+      "radius": 0,
+      "role": "skin",
+      "region": "上眼皮内侧",
+      "usage": "皮肤暖面",
+      "id": "27",
+      "rgb": [
+        244,
+        215,
+        215
+      ],
+      "hex": "#F4D7D7",
+      "actual_pixel": [
+        425,
+        189
+      ]
+    },
+    {
+      "name": "眼皮靠睫毛暗肤",
+      "part_id": "eye_right",
+      "x": 416,
+      "y": 192,
+      "radius": 0,
+      "role": "skin",
+      "region": "上眼皮中部、上睑之前",
+      "usage": "皮肤暗部；可能含眼妆混色",
+      "id": "28",
+      "rgb": [
+        206,
+        172,
+        172
+      ],
+      "hex": "#CEACAC",
+      "actual_pixel": [
+        416,
+        192
+      ]
+    },
+    {
+      "name": "外眼角粉肤",
+      "part_id": "eye_right",
+      "x": 406,
+      "y": 205,
+      "radius": 0,
+      "role": "skin",
+      "region": "外眼角下外侧",
+      "usage": "皮肤暖暗面",
+      "id": "29",
+      "rgb": [
+        227,
+        184,
+        185
+      ],
+      "hex": "#E3B8B9",
+      "actual_pixel": [
+        406,
+        205
+      ]
+    },
+    {
+      "name": "眼下粉肤过渡",
+      "part_id": "eye_right",
+      "x": 412,
+      "y": 206,
+      "radius": 0,
+      "role": "skin",
+      "region": "下眼缘外侧下方",
+      "usage": "眼周向脸底衔接",
+      "id": "30",
+      "rgb": [
+        237,
+        204,
+        201
+      ],
+      "hex": "#EDCCC9",
+      "actual_pixel": [
+        412,
+        206
+      ]
+    },
+    {
+      "name": "眼下亮肤",
+      "part_id": "eye_right",
+      "x": 420,
+      "y": 208,
+      "radius": 0,
+      "role": "skin",
+      "region": "下眼缘下方中央",
+      "usage": "柔和亮部",
+      "id": "31",
+      "rgb": [
+        253,
+        232,
+        227
+      ],
+      "hex": "#FDE8E3",
+      "actual_pixel": [
+        420,
+        208
+      ]
+    },
+    {
+      "name": "内眼角亮肤",
+      "part_id": "eye_right",
+      "x": 435,
+      "y": 204,
+      "radius": 0,
+      "role": "skin",
+      "region": "内眼角外侧鼻梁方向",
+      "usage": "亮肤衔接",
+      "id": "32",
+      "rgb": [
+        253,
+        239,
+        238
+      ],
+      "hex": "#FDEFEE",
+      "actual_pixel": [
+        435,
+        204
+      ]
+    },
+    {
+      "name": "鼻梁侧脸底肤",
+      "part_id": "eye_right",
+      "x": 435,
+      "y": 192,
+      "radius": 0,
+      "role": "skin",
+      "region": "内侧眼周、远离眼线",
+      "usage": "与 face 底肤对照",
+      "id": "33",
+      "rgb": [
+        246,
+        230,
+        228
+      ],
+      "hex": "#F6E6E4",
+      "actual_pixel": [
+        435,
+        192
+      ]
+    },
+    {
+      "name": "上睑外侧粉棕",
+      "part_id": "eye_right",
+      "x": 410,
+      "y": 192,
+      "radius": 0,
+      "role": "comparison",
+      "region": "上睫毛外侧上方",
+      "usage": "疑似妆色与体积暗部混合",
+      "basis": "低清原图不能可靠拆开眼妆与眼窝阴影",
+      "id": "34",
+      "rgb": [
+        169,
+        124,
+        126
+      ],
+      "hex": "#A97C7E",
+      "actual_pixel": [
+        410,
+        192
+      ]
+    },
+    {
+      "name": "上眼皮淡粉晕染",
+      "part_id": "eye_right",
+      "x": 423,
+      "y": 191,
+      "radius": 0,
+      "role": "comparison",
+      "region": "上眼皮内侧渐淡处",
+      "usage": "妆色或眼窝柔影对照",
+      "id": "35",
+      "rgb": [
+        246,
+        215,
+        215
+      ],
+      "hex": "#F6D7D7",
+      "actual_pixel": [
+        423,
+        191
+      ]
+    },
+    {
+      "name": "虹膜独立高光",
+      "part_id": "eye_right",
+      "x": 418,
+      "y": 197,
+      "radius": 0,
+      "role": "comparison",
+      "region": "瞳孔右上侧矩形反光",
+      "usage": "独立高光；交第5步",
+      "id": "36",
+      "rgb": [
+        194,
+        207,
+        226
+      ],
+      "hex": "#C2CFE2",
+      "actual_pixel": [
+        418,
+        197
+      ]
+    },
+    {
+      "name": "上睑下方冷暗对照",
+      "part_id": "eye_right",
+      "x": 414,
+      "y": 196,
+      "radius": 0,
+      "role": "comparison",
+      "region": "上睫毛正下方",
+      "usage": "上睑遮光下的虹膜暗部对照；第5步结合原图判断投影",
+      "basis": "与虹膜深色相邻，不能替代虹膜底色",
+      "id": "37",
+      "rgb": [
+        62,
+        77,
+        102
+      ],
+      "hex": "#3E4D66",
+      "actual_pixel": [
+        414,
+        196
+      ]
+    },
+    {
+      "name": "下眼缘冷灰投影",
+      "part_id": "eye_right",
+      "x": 418,
+      "y": 203,
+      "radius": 0,
+      "role": "comparison",
+      "region": "虹膜下缘和下睑接触处",
+      "usage": "下眼睑投影/柔边对照；交第5步",
+      "id": "38",
+      "rgb": [
+        191,
+        189,
+        207
+      ],
+      "hex": "#BFBDCF",
+      "actual_pixel": [
+        418,
+        203
+      ]
+    }
+  ]
+}

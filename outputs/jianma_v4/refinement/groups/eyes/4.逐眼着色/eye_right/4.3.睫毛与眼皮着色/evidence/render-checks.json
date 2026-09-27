@@ -1,0 +1,13 @@
+{
+  "candidate_sha256": "03c809a85f8cf16ad930bb6ace5dc5a460f2b266dfbf5d7f3886ae30e689a72e",
+  "normal_render_changed_pixels": 76,
+  "normal_render_changed_bbox": [
+    403,
+    191,
+    431,
+    204
+  ],
+  "changes_outside_eye_roi_397_188_437_211": 0,
+  "upper_lid_lash_overlap_max_rgba_difference": 1.8059154172078706e-10,
+  "lower_lid_lash_overlap_max_rgba_difference": 0.0
+}

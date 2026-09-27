@@ -1,0 +1,21 @@
+{
+  "group": {
+    "id": "hair",
+    "kind": "hair",
+    "part_ids": [
+      "hair_front_right"
+    ]
+  },
+  "inputs": {
+    "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-reference.png",
+    "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-parts.json",
+    "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-input.svg",
+    "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py",
+    "effects_tutorial": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shadow\\s\\inputs\\14.透明，阴影，高光的拆分方式.txt",
+    "palette_json": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\shadow-palette.json"
+  },
+  "outputs": {
+    "svg": "character.svg",
+    "preview": "preview.png"
+  }
+}

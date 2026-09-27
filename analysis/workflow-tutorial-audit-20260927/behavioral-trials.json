@@ -1,0 +1,14 @@
+{
+  "trial_root": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-ab-20260927-hpo2negz",
+  "variants": {
+    "a": "before tutorial input cleanup",
+    "b": "after node summaries"
+  },
+  "clothing_baseline_provenance": "Initial clothing prompt reconstructed by exactly reversing the recorded tutorial-summary patch; original six tutorial files copied unchanged.",
+  "inputs": {
+    "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-ab-20260927-hpo2negz\\inputs\\reference.png",
+    "base_svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-ab-20260927-hpo2negz\\inputs\\base_svg.svg",
+    "outfit_source": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-ab-20260927-hpo2negz\\inputs\\outfit_source.svg",
+    "handoff": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-ab-20260927-hpo2negz\\inputs\\handoff.md"
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "candidate_sha256": "c7f775b90d84a970a528b9b56b9f7a43f3f484de002133270832f9dc8cadc83e",
+  "plan_sha256": "459f82982d648c44f4b54468c9d4a8c391f68ea16be896fb7ae9126717e87569",
+  "reference_sha256": "7448a2575ec8619e43cd8ee9565ab35035272dd4702cd4b2ae58db4d748d34c3",
+  "duplicates": [],
+  "broken_refs": [],
+  "approved_master_geometry_differences": [],
+  "master_unchanged_since_step5": true,
+  "non_target_top_level_changes": [],
+  "target_transform": "matrix(-1 0 0 1 888 0)",
+  "target_external_refs": [
+    "face_base_shape"
+  ],
+  "mirror_mapped_attribute_differences": [],
+  "hair_order": {
+    "eye_right": {
+      "hair_front_right": true,
+      "hair_front_left": true
+    },
+    "eye_left": {
+      "hair_front_right": true,
+      "hair_front_left": true
+    }
+  },
+  "effects": [
+    {
+      "id": "fx_eye_right_upper_lid_on_sclera",
+      "data-part": "eye_right",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_right",
+      "data-target-id": "eye_right_sclera_complete_shape",
+      "data-complete-path": "eye5_right_upper_cast_complete",
+      "clip-path": "url(#eye_right_aperture_clip)",
+      "data-source-part": "eye_right",
+      "data-source-id": "eye_right_upper_eyelid",
+      "data-driven-by": "eye_right_upper_eyelid"
+    },
+    {
+      "id": "fx_eye_right_lower_lid_on_sclera",
+      "data-part": "eye_right",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_right",
+      "data-target-id": "eye_right_sclera_complete_shape",
+      "data-complete-path": "eye5_right_lower_cast_complete",
+      "clip-path": "url(#eye_right_aperture_clip)",
+      "data-source-part": "eye_right",
+      "data-source-id": "eye_right_lower_eyelid",
+      "data-driven-by": "eye_right_lower_eyelid"
+    },
+    {
+      "id": "fx_eye_right_upper_lid_on_iris",
+      "data-part": "eye_right",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_right",
+      "data-target-id": "eye_right_iris_complete_shape",
+      "data-complete-path": "eye5_right_upper_cast_complete",
+      "clip-path": "url(#eye_right_aperture_clip)",
+      "data-source-part": "eye_right",
+      "data-source-id": "eye_right_upper_eyelid",
+      "data-driven-by": "eye_right_upper_eyelid"
+    },
+    {
+      "id": "fx_eye_right_lower_lid_on_iris",
+      "data-part": "eye_right",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_right",
+      "data-target-id": "eye_right_iris_complete_shape",
+      "data-complete-path": "eye5_right_lower_cast_complete",
+      "clip-path": "url(#eye_right_aperture_clip)",
+      "data-source-part": "eye_right",
+      "data-source-id": "eye_right_lower_eyelid",
+      "data-driven-by": "eye_right_lower_eyelid"
+    },
+    {
+      "id": "fx_eye_right_iris_main_reflection",
+      "data-part": "eye_right",
+      "data-kind": "eyes",
+      "data-effect": "highlight",
+      "data-target-part": "eye_right",
+      "data-target-id": "eye_right_iris_complete_shape",
+      "data-complete-path": "eye_right_highlight_main_shape",
+      "clip-path": "url(#eye_right_aperture_clip)",
+      "data-role": "independent-intraocular-reflection",
+      "data-follows-part": "eye_right",
+      "data-follows-id": "eye_right_gaze",
+      "data-follow-relation": "corneal-reflection-relative-to-gaze"
+    },
+    {
+      "id": "fx_eye_left_upper_lid_on_sclera",
+      "data-part": "eye_left",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_left",
+      "data-target-id": "eye_left_sclera_complete_shape",
+      "data-complete-path": "eye5_left_upper_cast_complete",
+      "clip-path": "url(#eye_left_aperture_clip)",
+      "data-source-part": "eye_left",
+      "data-source-id": "eye_left_upper_eyelid",
+      "data-driven-by": "eye_left_upper_eyelid"
+    },
+    {
+      "id": "fx_eye_left_lower_lid_on_sclera",
+      "data-part": "eye_left",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_left",
+      "data-target-id": "eye_left_sclera_complete_shape",
+      "data-complete-path": "eye5_left_lower_cast_complete",
+      "clip-path": "url(#eye_left_aperture_clip)",
+      "data-source-part": "eye_left",
+      "data-source-id": "eye_left_lower_eyelid",
+      "data-driven-by": "eye_left_lower_eyelid"
+    },
+    {
+      "id": "fx_eye_left_upper_lid_on_iris",
+      "data-part": "eye_left",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_left",
+      "data-target-id": "eye_left_iris_complete_shape",
+      "data-complete-path": "eye5_left_upper_cast_complete",
+      "clip-path": "url(#eye_left_aperture_clip)",
+      "data-source-part": "eye_left",
+      "data-source-id": "eye_left_upper_eyelid",
+      "data-driven-by": "eye_left_upper_eyelid"
+    },
+    {
+      "id": "fx_eye_left_lower_lid_on_iris",
+      "data-part": "eye_left",
+      "data-kind": "eyes",
+      "data-effect": "cast-shadow",
+      "data-target-part": "eye_left",
+      "data-target-id": "eye_left_iris_complete_shape",
+      "data-complete-path": "eye5_left_lower_cast_complete",
+      "clip-path": "url(#eye_left_aperture_clip)",
+      "data-source-part": "eye_left",
+      "data-source-id": "eye_left_lower_eyelid",
+      "data-driven-by": "eye_left_lower_eyelid"
+    },
+    {
+      "id": "fx_eye_left_iris_main_reflection",
+      "data-part": "eye_left",
+      "data-kind": "eyes",
+      "data-effect": "highlight",
+      "data-target-part": "eye_left",
+      "data-target-id": "eye_left_iris_complete_shape",
+      "data-complete-path": "eye_left_highlight_main_shape",
+      "clip-path": "url(#eye_left_aperture_clip)",
+      "data-role": "independent-intraocular-reflection",
+      "data-follows-part": "eye_left",
+      "data-follows-id": "eye_left_gaze",
+      "data-follow-relation": "corneal-reflection-relative-to-gaze"
+    }
+  ],
+  "stage_sha256": {
+    "2.逐眼线稿\\eye_right\\character.svg": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e",
+    "3.眼部色盘\\palette.json": "da48e73f6ce8ae5f39e577389f9bc76347553c8cd88cae4b79240b373dcbe956",
+    "4.逐眼着色\\eye_right\\4.1.轮廓部件着色\\character.svg": "99f1ac47a4da4ca2268dcac6821cff8d31b9d8eef8380bdab891a2d9aea88755",
+    "4.逐眼着色\\eye_right\\4.2.眼黑颜色与层次\\character.svg": "27c7a07f3eb84547c4c0e72c2b108e1259b9113927a06164543bd926f817894e",
+    "4.逐眼着色\\eye_right\\4.3.睫毛与眼皮着色\\character.svg": "03c809a85f8cf16ad930bb6ace5dc5a460f2b266dfbf5d7f3886ae30e689a72e",
+    "4.逐眼着色\\eye_right\\4.4.眼周皮肤明暗\\character.svg": "204149deb52a238e54af321258ca3059aa9a534cd2e9868b981f4418e01b71eb",
+    "5.逐眼投影与高光\\eye_right\\character.svg": "afd8eff767543f3ae9627066a1928ab1bba08d2176cbbd35d59bf6e1655128fe"
+  },
+  "reused_evidence": "Same candidate SHA-256 verified for step6 audit and render-checks; symmetry pixel experiment not repeated.",
+  "render_checks": {
+    "effects_off_master_vs_clean_4_4": {
+      "pixels": 0,
+      "max_channel": 0
+    },
+    "intrinsic_iris_vs_vertical_only": {
+      "pixels": 18783,
+      "max_channel": 63
+    },
+    "local_bands_on_vs_off": {
+      "pixels": 9287,
+      "max_channel": 32
+    },
+    "skin_on_vs_off_with_step5_disabled": {
+      "pixels": 152745,
+      "max_channel": 121
+    }
+  },
+  "candidate_sha256_after": "c7f775b90d84a970a528b9b56b9f7a43f3f484de002133270832f9dc8cadc83e"
+}

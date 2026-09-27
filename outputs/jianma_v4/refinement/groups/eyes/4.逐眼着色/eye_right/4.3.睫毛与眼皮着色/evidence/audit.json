@@ -1,0 +1,68 @@
+{
+  "plan_sha256": "459f82982d648c44f4b54468c9d4a8c391f68ea16be896fb7ae9126717e87569",
+  "input_sha256": "27c7a07f3eb84547c4c0e72c2b108e1259b9113927a06164543bd926f817894e",
+  "candidate_sha256": "03c809a85f8cf16ad930bb6ace5dc5a460f2b266dfbf5d7f3886ae30e689a72e",
+  "approved_line_art_sha256": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e",
+  "frozen_geometry_changes_against_input": [],
+  "frozen_geometry_changes_against_approved_line_art": [],
+  "existing_attribute_changes": [
+    {
+      "id": "eye_right",
+      "attribute": "data-stage",
+      "old": "eye-black-color-layers-4.2",
+      "new": "lashes-and-eyelid-fold-color-4.3"
+    },
+    {
+      "id": "eye_right_upper_fold",
+      "attribute": "stroke",
+      "old": "#929094",
+      "new": "url(#eye43_right_fold_color)"
+    },
+    {
+      "id": "eye_right_upper_lash_sweep",
+      "attribute": "fill",
+      "old": "#30313a",
+      "new": "url(#eye43_right_upper_lashes_color)"
+    },
+    {
+      "id": "eye_right_upper_lash_outer_taper",
+      "attribute": "fill",
+      "old": "#30313a",
+      "new": "url(#eye43_right_upper_lashes_color)"
+    },
+    {
+      "id": "eye_right_lower_lash_outer_root",
+      "attribute": "fill",
+      "old": "#5c575f",
+      "new": "url(#eye43_right_lower_lashes_color)"
+    }
+  ],
+  "retained_color_subparts_xml_unchanged": {
+    "eye_right_sclera": true,
+    "eye_right_iris": true,
+    "eye_right_pupil": true,
+    "eye_right_highlights": true,
+    "eye_right_upper_eyelid": true,
+    "eye_right_lower_eyelid": true,
+    "eye_right_construction_guides": true
+  },
+  "previous_resources_unchanged": true,
+  "non_eye_top_level_xml_unchanged": true,
+  "eye_internal_order_unchanged": true,
+  "hair_order": {
+    "hair_front_right": true,
+    "hair_front_left": true
+  },
+  "decorations_descend_from_eye": {
+    "eye_right_upper_lash_sweep": true,
+    "eye_right_upper_lash_outer_taper": true,
+    "eye_right_lower_lash_outer_root": true,
+    "eye_right_upper_fold": true
+  },
+  "new_geometry_nodes": 0,
+  "new_effect_nodes": 0,
+  "duplicate_ids": [],
+  "broken_refs": [],
+  "guides_display": "none",
+  "highlights_display": "none"
+}

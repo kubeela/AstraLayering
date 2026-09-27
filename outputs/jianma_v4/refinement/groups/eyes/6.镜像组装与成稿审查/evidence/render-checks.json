@@ -1,0 +1,34 @@
+{
+  "candidate_sha256": "c7f775b90d84a970a528b9b56b9f7a43f3f484de002133270832f9dc8cadc83e",
+  "source_before_vs_after": {
+    "changed_pixels": 0,
+    "max_channel_difference": 0
+  },
+  "target_vs_source_svg_mirrored_before_render": {
+    "changed_pixels": 0,
+    "max_channel_difference": 0
+  },
+  "all_effects_off_vs_expected_mirrored_clean": {
+    "changed_pixels": 0,
+    "max_channel_difference": 0
+  },
+  "source_full_composite_eye_roi_394_182_443_216": {
+    "changed_pixels": 0,
+    "max_channel_difference": 0
+  },
+  "bitmap_flip_diagnostic": {
+    "note": "Flipping an already rasterized PNG differs slightly from rendering mirrored SVG curves/filters; the SVG-before-render check above tests the actual required operation.",
+    "entire_eye": {
+      "mean_rgb_difference_on_white": 0.0322198323773954,
+      "max_channel_difference_on_white": 15
+    },
+    "gaze": {
+      "mean_rgb_difference_on_white": 0.01041527722199991,
+      "max_channel_difference_on_white": 20
+    },
+    "skin": {
+      "mean_rgb_difference_on_white": 0.016969287715086035,
+      "max_channel_difference_on_white": 6
+    }
+  }
+}

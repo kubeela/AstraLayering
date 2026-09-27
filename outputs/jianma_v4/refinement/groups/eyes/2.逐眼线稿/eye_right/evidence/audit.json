@@ -1,0 +1,24 @@
+{
+  "source_svg": "refinement\\groups\\face\\6.投影与高光效果\\character.svg",
+  "source_sha256": "f1aeceebb66e560a45aaecd5bc192eab8316ffb5286ca6f58c3e983842ccc54e",
+  "candidate_sha256": "314a57f9bf89580e3192adf3ab64e164aecbad520802147597ee3145e07f480e",
+  "non_target_top_level_xml_unchanged": true,
+  "canvas": {
+    "width": "941",
+    "height": "1672",
+    "viewBox": "0 0 941 1672"
+  },
+  "duplicate_ids": [],
+  "unresolved_references": [],
+  "eye_right_top_level_index": 40,
+  "hair_front_right_top_level_index": 50,
+  "hair_front_left_top_level_index": 51,
+  "gaze_children": [
+    "eye_right_iris",
+    "eye_right_pupil",
+    "eye_right_highlights"
+  ],
+  "guides_default_display": "none",
+  "face_base_residual_eye_nodes": [],
+  "eye_left_unchanged": true
+}

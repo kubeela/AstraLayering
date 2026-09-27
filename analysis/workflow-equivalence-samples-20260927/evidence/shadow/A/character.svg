@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="220" viewBox="0 0 300 220">
+<defs><filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.5"/></filter><clipPath id="hair_shadow_face_clip" clipPathUnits="userSpaceOnUse"><use href="#face_surface" clip-rule="nonzero"/></clipPath>
+<clipPath id="hair_shadow_ear_clip" clipPathUnits="userSpaceOnUse"><use href="#ear_surface" clip-rule="nonzero"/></clipPath></defs>
+<rect id="background" width="300" height="220" fill="#f2f4f6"/>
+<g id="face_base" data-part="face_base" data-kind="face" transform="translate(55 15)">
+<path id="face_surface" d="M 100 20 C 164 20 168 103 142 148 Q 102 202 66 148 C 42 112 43 40 72 25 Q 86 19 100 20 Z" fill="#F8DDD2"/>
+<path id="ear_surface" d="M 48 97 C 24 78 27 127 51 137 Q 60 118 48 97 Z" fill="#F8DDD2"/>
+<g id="cast_hair_front_right_on_face" data-effect="cast-shadow" data-source-part="hair_front_right" data-target-part="face_base" data-target-id="face_surface" clip-path="url(#hair_shadow_face_clip)">
+<path id="hair_front_right_face_shadow_shape" d="M 101 18 C 57 8 35 39 35 89 Q 29 116 32 143 L 52 141 Q 64 113 65 79 C 64 48 80 35 107 36 Z" fill="#CDA9AB" filter="url(#soft)"/>
+</g>
+<g id="cast_hair_front_right_on_ear" data-effect="cast-shadow" data-source-part="hair_front_right" data-target-part="face_base" data-target-id="ear_surface" clip-path="url(#hair_shadow_ear_clip)">
+<path id="hair_front_right_ear_shadow_shape" d="M 101 18 C 57 8 35 39 35 89 Q 29 116 32 143 L 52 141 Q 64 113 65 79 C 64 48 80 35 107 36 Z" fill="#CDA9AB" filter="url(#soft)"/>
+</g>
+</g>
+
+<g id="hair_front_right" data-part="hair_front_right" data-kind="hair" transform="translate(55 15)">
+<path id="hair_surface" d="M 95 16 C 53 5 31 38 31 89 Q 24 114 28 142 L 47 139 Q 56 107 56 78 Q 55 34 99 33 Z" fill="#8F9BB5"/>
+</g></svg>

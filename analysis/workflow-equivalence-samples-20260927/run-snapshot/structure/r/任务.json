@@ -1,0 +1,20 @@
+{
+  "group": {
+    "id": "physics_details_sample",
+    "kind": "physics_details",
+    "part_ids": [
+      "earring_left",
+      "foot_chain_left"
+    ]
+  },
+  "inputs": {
+    "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\reference.png",
+    "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\parts.yaml",
+    "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\structure-input.svg",
+    "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py"
+  },
+  "outputs": {
+    "structure": "结构安排.md",
+    "reference_brief": "补全要求.txt"
+  }
+}

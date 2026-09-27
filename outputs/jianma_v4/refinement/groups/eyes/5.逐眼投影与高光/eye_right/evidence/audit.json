@@ -1,0 +1,88 @@
+{
+  "input_sha256": "204149deb52a238e54af321258ca3059aa9a534cd2e9868b981f4418e01b71eb",
+  "candidate_sha256": "afd8eff767543f3ae9627066a1928ab1bba08d2176cbbd35d59bf6e1655128fe",
+  "plan_sha256": "459f82982d648c44f4b54468c9d4a8c391f68ea16be896fb7ae9126717e87569",
+  "verified_intrinsic_layer_count": 8,
+  "verified_eye_skin_layer_count": 11,
+  "frozen_geometry_changes_against_input": [],
+  "frozen_geometry_changes_against_approved_line_art": [],
+  "completed_subparts_xml_unchanged": {
+    "eye_right_surround_skin": true,
+    "eye_right_sclera": true,
+    "eye_right_gaze": true,
+    "eye_right_upper_eyelid": true,
+    "eye_right_lower_eyelid": true,
+    "eye_right_upper_lashes": true,
+    "eye_right_lower_lashes": true,
+    "eye_right_eyelid_skin": true
+  },
+  "old_resources_xml_unchanged": true,
+  "non_eye_top_level_xml_unchanged": true,
+  "new_effects": [
+    {
+      "id": "fx_eye_right_upper_lid_on_sclera",
+      "type": "cast-shadow",
+      "source_id": "eye_right_upper_eyelid",
+      "target_id": "eye_right_sclera_complete_shape",
+      "full_path": "eye5_right_upper_cast_complete",
+      "surface_clip": "eye5_right_sclera_surface_clip",
+      "aperture_clip": "eye_right_aperture_clip",
+      "filter": "eye5_right_cast_soft",
+      "control_id": "fx_eye_right_upper_lid_on_sclera",
+      "relative_motion": "source-driven, outside gaze"
+    },
+    {
+      "id": "fx_eye_right_lower_lid_on_sclera",
+      "type": "cast-shadow",
+      "source_id": "eye_right_lower_eyelid",
+      "target_id": "eye_right_sclera_complete_shape",
+      "full_path": "eye5_right_lower_cast_complete",
+      "surface_clip": "eye5_right_sclera_surface_clip",
+      "aperture_clip": "eye_right_aperture_clip",
+      "filter": "eye5_right_lower_cast_soft",
+      "control_id": "fx_eye_right_lower_lid_on_sclera",
+      "relative_motion": "source-driven, outside gaze"
+    },
+    {
+      "id": "fx_eye_right_upper_lid_on_iris",
+      "type": "cast-shadow",
+      "source_id": "eye_right_upper_eyelid",
+      "target_id": "eye_right_iris_complete_shape",
+      "full_path": "eye5_right_upper_cast_complete",
+      "surface_clip": "eye5_right_iris_surface_clip",
+      "aperture_clip": "eye_right_aperture_clip",
+      "filter": "eye5_right_cast_soft",
+      "control_id": "fx_eye_right_upper_lid_on_iris",
+      "relative_motion": "source-driven, outside gaze"
+    },
+    {
+      "id": "fx_eye_right_lower_lid_on_iris",
+      "type": "cast-shadow",
+      "source_id": "eye_right_lower_eyelid",
+      "target_id": "eye_right_iris_complete_shape",
+      "full_path": "eye5_right_lower_cast_complete",
+      "surface_clip": "eye5_right_iris_surface_clip",
+      "aperture_clip": "eye_right_aperture_clip",
+      "filter": "eye5_right_lower_cast_soft",
+      "control_id": "fx_eye_right_lower_lid_on_iris",
+      "relative_motion": "source-driven, outside gaze"
+    },
+    {
+      "id": "fx_eye_right_iris_main_reflection",
+      "type": "highlight",
+      "source_id": null,
+      "target_id": "eye_right_iris_complete_shape",
+      "full_path": "eye_right_highlight_main_shape",
+      "surface_clip": "eye5_right_iris_surface_clip",
+      "aperture_clip": "eye_right_aperture_clip",
+      "filter": "eye5_right_reflection_soft",
+      "control_id": "fx_eye_right_iris_main_reflection",
+      "relative_motion": "intraocular; relative to eye_right_gaze; static relationship only"
+    }
+  ],
+  "shadows_outside_gaze": true,
+  "effect_relation_refs_valid": true,
+  "duplicate_ids": [],
+  "broken_refs": [],
+  "original_highlight_placeholder_display": "none"
+}

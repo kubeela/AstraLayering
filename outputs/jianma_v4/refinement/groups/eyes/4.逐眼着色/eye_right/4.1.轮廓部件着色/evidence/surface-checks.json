@@ -1,0 +1,65 @@
+{
+  "candidate_sha256": "99f1ac47a4da4ca2268dcac6821cff8d31b9d8eef8380bdab891a2d9aea88755",
+  "full_sclera_surface_samples": {
+    "visible_outer": {
+      "xy": [
+        410,
+        200
+      ],
+      "rgba": [
+        250,
+        235,
+        241,
+        255
+      ]
+    },
+    "hidden_under_upper_lid": {
+      "xy": [
+        416,
+        193
+      ],
+      "rgba": [
+        244,
+        240,
+        245,
+        255
+      ]
+    },
+    "behind_iris": {
+      "xy": [
+        418,
+        199
+      ],
+      "rgba": [
+        244,
+        240,
+        245,
+        255
+      ]
+    },
+    "visible_inner": {
+      "xy": [
+        427,
+        201
+      ],
+      "rgba": [
+        250,
+        242,
+        244,
+        255
+      ]
+    }
+  },
+  "hidden_highlight_underlying_pupil": {
+    "xy": [
+      419,
+      197
+    ],
+    "rgba": [
+      66,
+      71,
+      81,
+      255
+    ]
+  }
+}

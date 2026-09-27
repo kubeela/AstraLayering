@@ -1,0 +1,323 @@
+{
+  "candidate_sha256": "204149deb52a238e54af321258ca3059aa9a534cd2e9868b981f4418e01b71eb",
+  "all_skin_off_vs_input_changed_pixels": 0,
+  "all_skin_off_vs_input_max_channel_difference": 0,
+  "normal_render_changed_pixels": 582,
+  "normal_render_changed_bbox": [
+    400,
+    185,
+    441,
+    213
+  ],
+  "skin_pixels_inside_fully_protected_eye_and_ink": 0,
+  "skin_max_alpha_inside_fully_protected_eye_and_ink": 0,
+  "layer_nontransparent_pixel_counts": {
+    "eye_right_skin_socket_warm": 126844,
+    "eye_right_skin_upper_lid_volume": 66202,
+    "eye_right_skin_upper_outer_chroma": 37189,
+    "eye_right_skin_upper_inner_transition": 30848,
+    "eye_right_skin_upper_plane_light": 79725,
+    "eye_right_skin_outer_corner_warm": 82903,
+    "eye_right_skin_lower_outer_transition": 64715,
+    "eye_right_skin_lower_lid_volume": 53943,
+    "eye_right_skin_lower_plane_light": 90957,
+    "eye_right_skin_inner_corner_light": 39374,
+    "eye_right_skin_inner_bridge_transition": 70688
+  },
+  "same_coordinate_skin_samples": {
+    "upper_outer": {
+      "xy": [
+        410,
+        192
+      ],
+      "reference": [
+        169,
+        124,
+        126
+      ],
+      "input": [
+        252,
+        244,
+        242
+      ],
+      "final": [
+        169,
+        124,
+        126
+      ]
+    },
+    "upper_volume": {
+      "xy": [
+        416,
+        192
+      ],
+      "reference": [
+        206,
+        172,
+        172
+      ],
+      "input": [
+        241,
+        226,
+        224
+      ],
+      "final": [
+        203,
+        169,
+        168
+      ]
+    },
+    "upper_light": {
+      "xy": [
+        416,
+        189
+      ],
+      "reference": [
+        252,
+        240,
+        238
+      ],
+      "input": [
+        253,
+        244,
+        242
+      ],
+      "final": [
+        251,
+        240,
+        237
+      ]
+    },
+    "upper_inner": {
+      "xy": [
+        425,
+        189
+      ],
+      "reference": [
+        244,
+        215,
+        215
+      ],
+      "input": [
+        253,
+        242,
+        239
+      ],
+      "final": [
+        246,
+        219,
+        219
+      ]
+    },
+    "upper_inner_pink": {
+      "xy": [
+        423,
+        191
+      ],
+      "reference": [
+        246,
+        215,
+        215
+      ],
+      "input": [
+        253,
+        242,
+        239
+      ],
+      "final": [
+        245,
+        217,
+        217
+      ]
+    },
+    "outer_corner": {
+      "xy": [
+        406,
+        205
+      ],
+      "reference": [
+        227,
+        184,
+        185
+      ],
+      "input": [
+        252,
+        236,
+        234
+      ],
+      "final": [
+        230,
+        192,
+        191
+      ]
+    },
+    "lower_outer": {
+      "xy": [
+        412,
+        206
+      ],
+      "reference": [
+        237,
+        204,
+        201
+      ],
+      "input": [
+        252,
+        234,
+        232
+      ],
+      "final": [
+        237,
+        208,
+        206
+      ]
+    },
+    "lower_plane": {
+      "xy": [
+        420,
+        208
+      ],
+      "reference": [
+        253,
+        232,
+        227
+      ],
+      "input": [
+        252,
+        236,
+        234
+      ],
+      "final": [
+        253,
+        233,
+        228
+      ]
+    },
+    "inner_bridge": {
+      "xy": [
+        435,
+        204
+      ],
+      "reference": [
+        253,
+        239,
+        238
+      ],
+      "input": [
+        252,
+        238,
+        236
+      ],
+      "final": [
+        253,
+        239,
+        237
+      ]
+    },
+    "lower_edge_volume": {
+      "xy": [
+        411,
+        204
+      ],
+      "reference": [
+        196,
+        149,
+        148
+      ],
+      "input": [
+        252,
+        236,
+        233
+      ],
+      "final": [
+        203,
+        160,
+        158
+      ]
+    },
+    "lower_mid": {
+      "xy": [
+        414,
+        205
+      ],
+      "reference": [
+        216,
+        181,
+        178
+      ],
+      "input": [
+        252,
+        236,
+        233
+      ],
+      "final": [
+        218,
+        182,
+        180
+      ]
+    },
+    "lower_center": {
+      "xy": [
+        418,
+        205
+      ],
+      "reference": [
+        229,
+        194,
+        195
+      ],
+      "input": [
+        253,
+        238,
+        235
+      ],
+      "final": [
+        234,
+        203,
+        202
+      ]
+    },
+    "lower_inner": {
+      "xy": [
+        422,
+        205
+      ],
+      "reference": [
+        246,
+        218,
+        215
+      ],
+      "input": [
+        252,
+        238,
+        236
+      ],
+      "final": [
+        250,
+        227,
+        225
+      ]
+    },
+    "inner_canthus": {
+      "xy": [
+        432,
+        201
+      ],
+      "reference": [
+        255,
+        253,
+        253
+      ],
+      "input": [
+        252,
+        239,
+        236
+      ],
+      "final": [
+        253,
+        246,
+        245
+      ]
+    }
+  }
+}

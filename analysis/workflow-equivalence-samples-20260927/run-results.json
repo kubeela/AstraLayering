@@ -1,0 +1,124 @@
+{
+  "frozen_at_local": "2026-09-27T17:12:50",
+  "candidates": [
+    {
+      "case": "structure",
+      "variant": "r",
+      "prompt_unchanged": true,
+      "outputs": {
+        "structure": {
+          "file": "结构安排.md",
+          "sha256": "44a3bcbc4ed9c3a83ed9ab82d82539f092c4ad802ad9f4575076b5d546eb2490",
+          "bytes": 5318,
+          "last_saved_local": "2026-09-27T17:03:42"
+        },
+        "reference_brief": {
+          "file": "补全要求.txt",
+          "sha256": "3c901710d6c03d7ace775cabe382c7eb7efdd12ea733343b4dc93b3b359fb371",
+          "bytes": 1547,
+          "last_saved_local": "2026-09-27T17:03:42"
+        }
+      }
+    },
+    {
+      "case": "structure",
+      "variant": "s",
+      "prompt_unchanged": true,
+      "outputs": {
+        "structure": {
+          "file": "结构安排.md",
+          "sha256": "b0340fbd6c651a094344cc21cf79d03c460fa93f80576d0023bc0f5777cdc5ae",
+          "bytes": 4753,
+          "last_saved_local": "2026-09-27T17:03:42"
+        },
+        "reference_brief": {
+          "file": "补全要求.txt",
+          "sha256": "64e7a25feef99d2f8a762f016d7c84b1f0fbc55bfff658316c591a596ee2a593",
+          "bytes": 1326,
+          "last_saved_local": "2026-09-27T17:03:42"
+        }
+      }
+    },
+    {
+      "case": "mouth",
+      "variant": "r",
+      "prompt_unchanged": true,
+      "outputs": {
+        "svg": {
+          "file": "character.svg",
+          "sha256": "fab728d1fe37092a6ae160839e9b7c4e418b4707517d958f5b071f8c83d0024f",
+          "bytes": 125268,
+          "last_saved_local": "2026-09-27T17:08:03"
+        },
+        "comparison": {
+          "file": "结构对照.png",
+          "sha256": "edde0a065004d05ee57ca7aa7a322e6b7b75f3c481952c7e71102a66f7351c79",
+          "bytes": 65442,
+          "last_saved_local": "2026-09-27T17:08:03"
+        }
+      }
+    },
+    {
+      "case": "mouth",
+      "variant": "s",
+      "prompt_unchanged": true,
+      "outputs": {
+        "svg": {
+          "file": "character.svg",
+          "sha256": "c85bfb332842fd761ff2d882ebd9b48fbb7fe7355c5bc05d7cfd9c20b1456ddd",
+          "bytes": 125745,
+          "last_saved_local": "2026-09-27T17:07:46"
+        },
+        "comparison": {
+          "file": "结构对照.png",
+          "sha256": "639a0a7e60b557f944b7753d6b0728a086bb28791cccf1fcf1afe51b4aa6b0cd",
+          "bytes": 112311,
+          "last_saved_local": "2026-09-27T17:07:46"
+        }
+      }
+    },
+    {
+      "case": "shadow",
+      "variant": "r",
+      "prompt_unchanged": true,
+      "outputs": {
+        "svg": {
+          "file": "character.svg",
+          "sha256": "2b63ad4fe2710261d0e067d07307439314413872abd5a88a6d2050ad6cea45c0",
+          "bytes": 1861,
+          "last_saved_local": "2026-09-27T17:06:25"
+        },
+        "preview": {
+          "file": "preview.png",
+          "sha256": "5495365767f338e354ddbee3ac6f4fd57dc175435aeb45831cda69d622e6afdc",
+          "bytes": 6198,
+          "last_saved_local": "2026-09-27T17:06:25"
+        }
+      }
+    },
+    {
+      "case": "shadow",
+      "variant": "s",
+      "prompt_unchanged": true,
+      "outputs": {
+        "svg": {
+          "file": "character.svg",
+          "sha256": "bfcde43a77058411fffc09365fd0ebf1a6a2673c6607aafd4d40691f65cc9c5c",
+          "bytes": 1861,
+          "last_saved_local": "2026-09-27T17:09:01"
+        },
+        "preview": {
+          "file": "preview.png",
+          "sha256": "f5ea695943f35cd2edd8861329db60fc3de5132096e5dbdf823380afc0a1ea86",
+          "bytes": 6177,
+          "last_saved_local": "2026-09-27T17:09:01"
+        }
+      }
+    }
+  ],
+  "notes": [
+    "last_saved_local记录文件保存时间，不等同模型执行时长。",
+    "所有执行者初次交付已完成；未对任一候选追加返修或重新抽样。",
+    "run-snapshot仅保留本次对照实验输入与提示词，不是生产工作流依赖。"
+  ]
+}

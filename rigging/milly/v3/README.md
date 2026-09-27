@@ -27,6 +27,8 @@ v2 的脸底形使用近似平面的深度，眼睛与嘴巴主要移动锚点�
 
 ## 文件
 
+- [35 秒动作对照视频](milly-v3-35s-comparison.mp4)：保存的实际演示视频；生成与验证脚本在 [video-work](video-work/)。
+
 - `index.html`：交互演示。
 - `milly-animation.svg`：修正后的分层 SVG。
 - `build.py`、`rig.js`、`template.html`：构建入口与实现。修改后执行 `python3 rigging/milly/v3/build.py`。

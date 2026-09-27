@@ -1,0 +1,1248 @@
+{
+  "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_v4\\references\\base-subject.png",
+  "source_sha256": "7448a2575ec8619e43cd8ee9565ab35035272dd4702cd4b2ae58db4d748d34c3",
+  "canvas": [
+    941,
+    1672
+  ],
+  "coordinates": "EXIF-transposed source image pixels",
+  "interpretation": "Caller-chosen groups and methods; color_origin distinguishes pixels, statistics and provided colors.",
+  "presentation": {
+    "title": "物理饰品色盘 / 原图观测与材料层次",
+    "region": "头冠、耳饰、飘带、足链",
+    "footer": "飘带像素为背景合成观测；材质透过率、隐藏背色和旧投影接口另记在 JSON。",
+    "groups": [
+      [
+        "base",
+        "本体 · 固有色"
+      ],
+      [
+        "volume",
+        "形体 · 体积与局部层次"
+      ],
+      [
+        "reflection",
+        "材质 · 反光与通透"
+      ],
+      [
+        "contour",
+        "边缘与纹样"
+      ],
+      [
+        "comparison",
+        "投影与高光 · 对照色"
+      ]
+    ]
+  },
+  "samples": [
+    {
+      "name": "头环银灰",
+      "part_id": "headdress_halo",
+      "x": 442,
+      "y": 14,
+      "method": "point",
+      "role": "base",
+      "region": "顶弧中央外侧",
+      "usage": "硬环正面银灰主体；沿弧走向保留窄幅明暗，不铺成等宽平色。",
+      "basis": "原图像素；环宽很细，此点仅代表该局部。",
+      "id": "01",
+      "box": [
+        442,
+        14,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        155,
+        156,
+        164
+      ],
+      "alpha": 255,
+      "hex": "#9B9CA4",
+      "actual_pixel": [
+        442,
+        14
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "头环深缘",
+      "part_id": "headdress_halo",
+      "x": 442,
+      "y": 15,
+      "method": "point",
+      "role": "contour",
+      "region": "顶弧中央内侧",
+      "usage": "硬环内缘和厚度转折的冷深灰；细线贴弧，末端随枝饰遮挡。",
+      "basis": "原图像素；相邻银灰点01构成局部边缘对照。",
+      "id": "02",
+      "box": [
+        442,
+        15,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        122,
+        125,
+        135
+      ],
+      "alpha": 255,
+      "hex": "#7A7D87",
+      "actual_pixel": [
+        442,
+        15
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右枝蓝脊",
+      "part_id": "headdress_branch_right",
+      "x": 383,
+      "y": 102,
+      "method": "point",
+      "role": "base",
+      "region": "画面左枝根蓝色内脊",
+      "usage": "硬枝正面蓝脊主体；从根向外岔枝转折，和银边分面。",
+      "basis": "原图可见蓝脊像素；角色右对应画面左。",
+      "id": "03",
+      "box": [
+        383,
+        102,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        152,
+        174,
+        201
+      ],
+      "alpha": 255,
+      "hex": "#98AEC9",
+      "actual_pixel": [
+        383,
+        102
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左枝蓝脊",
+      "part_id": "headdress_branch_left",
+      "x": 507,
+      "y": 77,
+      "method": "point",
+      "role": "reflection",
+      "region": "画面右枝上竖脊亮面",
+      "usage": "蓝脊沿向上弯曲方向的窄亮带；不等同整枝固有色。",
+      "basis": "原图像素，明显受局部高光影响。",
+      "id": "04",
+      "box": [
+        507,
+        77,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        189,
+        215,
+        244
+      ],
+      "alpha": 255,
+      "hex": "#BDD7F4",
+      "actual_pixel": [
+        507,
+        77
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左枝中蓝",
+      "part_id": "headdress_branch_left",
+      "x": 500,
+      "y": 101,
+      "method": "point",
+      "role": "volume",
+      "region": "画面右枝内根",
+      "usage": "硬枝蓝面从亮脊过渡到根部的中间调；叉口厚面另留暗边。",
+      "basis": "原图像素，保留根部局部体积。",
+      "id": "05",
+      "box": [
+        500,
+        101,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        166,
+        187,
+        208
+      ],
+      "alpha": 255,
+      "hex": "#A6BBD0",
+      "actual_pixel": [
+        500,
+        101
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右枝银边",
+      "part_id": "headdress_branch_right",
+      "x": 336,
+      "y": 103,
+      "method": "point",
+      "role": "volume",
+      "region": "画面左叉翼银边",
+      "usage": "叉翼向外伸出的银灰侧缘；沿叉缘随曲率变暗。",
+      "basis": "原图像素，未用线稿中性填色。",
+      "id": "06",
+      "box": [
+        336,
+        103,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        149,
+        160,
+        182
+      ],
+      "alpha": 255,
+      "hex": "#95A0B6",
+      "actual_pixel": [
+        336,
+        103
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左枝银边",
+      "part_id": "headdress_branch_left",
+      "x": 550,
+      "y": 103,
+      "method": "point",
+      "role": "base",
+      "region": "画面右叉翼银边",
+      "usage": "右画面叉翼的冷银灰面；与本侧蓝脊分层。",
+      "basis": "原图像素，左右造型与亮度各自采样。",
+      "id": "07",
+      "box": [
+        550,
+        103,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        158,
+        172,
+        188
+      ],
+      "alpha": 255,
+      "hex": "#9EACBC",
+      "actual_pixel": [
+        550,
+        103
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "枝角孔深缘",
+      "part_id": "headdress_branch_right",
+      "x": 377,
+      "y": 77,
+      "method": "point",
+      "role": "contour",
+      "region": "画面左上枝孔内缘",
+      "usage": "金属孔和分叉内侧的深灰轮廓；局部硬边，勿铺满蓝脊。",
+      "basis": "原图像素；只适合孔缘和转折。",
+      "id": "08",
+      "box": [
+        377,
+        77,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        96,
+        104,
+        128
+      ],
+      "alpha": 255,
+      "hex": "#606880",
+      "actual_pixel": [
+        377,
+        77
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "冠石蓝正面",
+      "part_id": "headdress_center",
+      "x": 443,
+      "y": 69,
+      "method": "point",
+      "role": "base",
+      "region": "中央头冠蓝石上半面",
+      "usage": "中央硬石正面蓝色；从尖顶向下与深色切面分段渐变。",
+      "basis": "原图宝石像素。",
+      "id": "09",
+      "box": [
+        443,
+        69,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        135,
+        174,
+        238
+      ],
+      "alpha": 255,
+      "hex": "#87AEEE",
+      "actual_pixel": [
+        443,
+        69
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "冠石深切面",
+      "part_id": "headdress_center",
+      "x": 429,
+      "y": 85,
+      "method": "point",
+      "role": "volume",
+      "region": "中央头冠宝石画面左下切面",
+      "usage": "宝石下侧切面深蓝；边界较硬，区别于银叶柔和体积。",
+      "basis": "原图宝石像素。",
+      "id": "10",
+      "box": [
+        429,
+        85,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        98,
+        140,
+        208
+      ],
+      "alpha": 255,
+      "hex": "#628CD0",
+      "actual_pixel": [
+        429,
+        85
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "冠石镜面",
+      "part_id": "headdress_center",
+      "x": 443,
+      "y": 75,
+      "method": "point",
+      "role": "reflection",
+      "region": "中央头冠蓝石中央白亮点",
+      "usage": "局部尖亮反射，面积很小；叠在蓝石上，不作为石体本色。",
+      "basis": "原图宝石反射像素。",
+      "id": "11",
+      "box": [
+        443,
+        75,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        240,
+        244,
+        249
+      ],
+      "alpha": 255,
+      "hex": "#F0F4F9",
+      "actual_pixel": [
+        443,
+        75
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "冠叶冷银",
+      "part_id": "headdress_center",
+      "x": 420,
+      "y": 81,
+      "method": "point",
+      "role": "base",
+      "region": "中央冠画面左花叶",
+      "usage": "花叶正面浅紫银；叶尖至根部随翻面加深。",
+      "basis": "原图花叶像素，与蓝石分材质。",
+      "id": "12",
+      "box": [
+        420,
+        81,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        216,
+        221,
+        242
+      ],
+      "alpha": 255,
+      "hex": "#D8DDF2",
+      "actual_pixel": [
+        420,
+        81
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "冠叶浅亮",
+      "part_id": "headdress_center",
+      "x": 468,
+      "y": 81,
+      "method": "point",
+      "role": "reflection",
+      "region": "中央冠画面右花叶上缘",
+      "usage": "银叶上缘冷白反射；薄条顺叶片走向，底部仍用叶面调。",
+      "basis": "原图花叶亮面像素。",
+      "id": "13",
+      "box": [
+        468,
+        81,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        228,
+        229,
+        240
+      ],
+      "alpha": 255,
+      "hex": "#E4E5F0",
+      "actual_pixel": [
+        468,
+        81
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "额石透蓝",
+      "part_id": "forehead_jewel",
+      "x": 443,
+      "y": 150,
+      "method": "point",
+      "role": "base",
+      "region": "发际菱形石中央上面",
+      "usage": "额饰硬石正面清浅蓝；由顶端向下侧切面转深。",
+      "basis": "原图宝石像素；亮色仍带底层蓝。",
+      "id": "14",
+      "box": [
+        443,
+        150,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        191,
+        227,
+        248
+      ],
+      "alpha": 255,
+      "hex": "#BFE3F8",
+      "actual_pixel": [
+        443,
+        150
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "额石下切面",
+      "part_id": "forehead_jewel",
+      "x": 443,
+      "y": 158,
+      "method": "point",
+      "role": "volume",
+      "region": "发际菱形石下尖",
+      "usage": "额石下尖硬切面的深蓝；收紧下缘，与额前肤色隔开。",
+      "basis": "原图宝石像素。",
+      "id": "15",
+      "box": [
+        443,
+        158,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        86,
+        125,
+        180
+      ],
+      "alpha": 255,
+      "hex": "#567DB4",
+      "actual_pixel": [
+        443,
+        158
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "额坠蓝滴",
+      "part_id": "forehead_jewel",
+      "x": 443,
+      "y": 171,
+      "method": "point",
+      "role": "base",
+      "region": "眉间小坠中央",
+      "usage": "小坠独立亮蓝；上部连接银链，向下形成窄暗边。",
+      "basis": "原图小坠像素。",
+      "id": "16",
+      "box": [
+        443,
+        171,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        108,
+        170,
+        218
+      ],
+      "alpha": 255,
+      "hex": "#6CAADA",
+      "actual_pixel": [
+        443,
+        171
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左悬珠亮蓝",
+      "part_id": "streamer_left",
+      "x": 556,
+      "y": 131,
+      "method": "point",
+      "role": "base",
+      "region": "画面右枝角下第一颗珠",
+      "usage": "硬珠中心的明蓝体色；珠侧用更深蓝，和软带分层。",
+      "basis": "原图珠体像素；角色左对应画面右。",
+      "id": "17",
+      "box": [
+        556,
+        131,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        111,
+        194,
+        239
+      ],
+      "alpha": 255,
+      "hex": "#6FC2EF",
+      "actual_pixel": [
+        556,
+        131
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左带头深银",
+      "part_id": "streamer_left",
+      "x": 556,
+      "y": 145,
+      "method": "point",
+      "role": "contour",
+      "region": "画面右金属带头中线",
+      "usage": "金属带头与下挂链的深银灰线；硬边，不延伸为软带阴影。",
+      "basis": "原图带头像素。",
+      "id": "18",
+      "box": [
+        556,
+        145,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        109,
+        117,
+        128
+      ],
+      "alpha": 255,
+      "hex": "#6D7580",
+      "actual_pixel": [
+        556,
+        145
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右带头冷银",
+      "part_id": "streamer_right",
+      "x": 329,
+      "y": 145,
+      "method": "point",
+      "role": "volume",
+      "region": "画面左金属带头侧面",
+      "usage": "金属带头冷蓝银中间调；菱形硬件的侧缘另压深。",
+      "basis": "原图带头像素。",
+      "id": "19",
+      "box": [
+        329,
+        145,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        146,
+        189,
+        215
+      ],
+      "alpha": 255,
+      "hex": "#92BDD7",
+      "actual_pixel": [
+        329,
+        145
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右带上端蓝",
+      "part_id": "streamer_right",
+      "x": 326,
+      "y": 184,
+      "method": "point",
+      "role": "base",
+      "region": "画面左软带靠近带头处",
+      "usage": "半透明带在白底前的观测蓝；顺垂向由上端饱和蓝过渡到下段浅蓝。不能直接据此定材质本色或alpha。",
+      "basis": "原图合成像素；此处带较窄且近白底。",
+      "id": "20",
+      "box": [
+        326,
+        184,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        137,
+        174,
+        222
+      ],
+      "alpha": 255,
+      "hex": "#89AEDE",
+      "actual_pixel": [
+        326,
+        184
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左带上端蓝",
+      "part_id": "streamer_left",
+      "x": 558,
+      "y": 184,
+      "method": "point",
+      "role": "base",
+      "region": "画面右软带靠近带头处",
+      "usage": "半透明带在白底前的观测蓝；与画面左带分别取样，不直接镜像。",
+      "basis": "原图合成像素；包含背景贡献。",
+      "id": "21",
+      "box": [
+        558,
+        184,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        181,
+        206,
+        245
+      ],
+      "alpha": 255,
+      "hex": "#B5CEF5",
+      "actual_pixel": [
+        558,
+        184
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右带腰部浅蓝",
+      "part_id": "streamer_right",
+      "x": 310,
+      "y": 310,
+      "method": "point",
+      "role": "volume",
+      "region": "画面左带身中段",
+      "usage": "带身中段被白底稀释的浅蓝；纵向渐变和边缘的蓝线分开。",
+      "basis": "原图合成像素；不能单独推断透明度。",
+      "id": "22",
+      "box": [
+        310,
+        310,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        215,
+        228,
+        251
+      ],
+      "alpha": 255,
+      "hex": "#D7E4FB",
+      "actual_pixel": [
+        310,
+        310
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左带腰部浅蓝",
+      "part_id": "streamer_left",
+      "x": 580,
+      "y": 310,
+      "method": "point",
+      "role": "volume",
+      "region": "画面右带身中段",
+      "usage": "带身中段的冷浅蓝观测值；沿下垂方向继续变浅，翻面可另增密度。",
+      "basis": "原图合成像素；不可直接当不透明材质色。",
+      "id": "23",
+      "box": [
+        580,
+        310,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        218,
+        231,
+        251
+      ],
+      "alpha": 255,
+      "hex": "#DAE7FB",
+      "actual_pixel": [
+        580,
+        310
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左带漫反射",
+      "part_id": "streamer_left",
+      "x": 612,
+      "y": 430,
+      "method": "point",
+      "role": "reflection",
+      "region": "画面右带身肩外侧",
+      "usage": "宽而软的浅色区域；叠加在薄带内侧，边界柔，不以白实色盖掉背景。",
+      "basis": "原图合成像素；受白底和透光共同影响。",
+      "id": "24",
+      "box": [
+        612,
+        430,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        223,
+        231,
+        247
+      ],
+      "alpha": 255,
+      "hex": "#DFE7F7",
+      "actual_pixel": [
+        612,
+        430
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右耳石亮蓝",
+      "part_id": "earring_right",
+      "x": 395,
+      "y": 239,
+      "method": "point",
+      "role": "base",
+      "region": "画面左耳坠主石上半面",
+      "usage": "短耳坠主蓝石正面；上亮下暗，硬石切面与软链分开。",
+      "basis": "原图宝石像素。",
+      "id": "25",
+      "box": [
+        395,
+        239,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        146,
+        195,
+        236
+      ],
+      "alpha": 255,
+      "hex": "#92C3EC",
+      "actual_pixel": [
+        395,
+        239
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右耳末坠中蓝",
+      "part_id": "earring_right",
+      "x": 395,
+      "y": 261,
+      "method": "point",
+      "role": "volume",
+      "region": "画面左耳饰下方小坠",
+      "usage": "较短尾端蓝石中间调；向下用更深的窄边。",
+      "basis": "原图末坠像素。",
+      "id": "26",
+      "box": [
+        395,
+        261,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        127,
+        168,
+        214
+      ],
+      "alpha": 255,
+      "hex": "#7FA8D6",
+      "actual_pixel": [
+        395,
+        261
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右耳钉银灰",
+      "part_id": "earring_right",
+      "x": 394,
+      "y": 228,
+      "method": "point",
+      "role": "contour",
+      "region": "画面左耳钉与短链",
+      "usage": "细银链、钩的冷灰轮廓；线条与宝石体色分别控制。",
+      "basis": "原图耳钉附近像素。",
+      "id": "27",
+      "box": [
+        394,
+        228,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        162,
+        162,
+        177
+      ],
+      "alpha": 255,
+      "hex": "#A2A2B1",
+      "actual_pixel": [
+        394,
+        228
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左耳石亮蓝",
+      "part_id": "earring_left",
+      "x": 493,
+      "y": 239,
+      "method": "point",
+      "role": "reflection",
+      "region": "画面右耳坠主石上半面",
+      "usage": "长耳坠主石中央较亮的蓝色反射；下侧体色需向深蓝收。",
+      "basis": "原图宝石像素；不代表整石固有色。",
+      "id": "28",
+      "box": [
+        493,
+        239,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        162,
+        209,
+        249
+      ],
+      "alpha": 255,
+      "hex": "#A2D1F9",
+      "actual_pixel": [
+        493,
+        239
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左耳细链灰",
+      "part_id": "earring_left",
+      "x": 492,
+      "y": 228,
+      "method": "point",
+      "role": "contour",
+      "region": "画面右耳钉下细链",
+      "usage": "长耳坠金属细链与钩的灰紫轮廓；细线不扩成阴影面。",
+      "basis": "原图链钩像素。",
+      "id": "29",
+      "box": [
+        492,
+        228,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        150,
+        144,
+        156
+      ],
+      "alpha": 255,
+      "hex": "#96909C",
+      "actual_pixel": [
+        492,
+        228
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右足上珠蓝",
+      "part_id": "foot_chain_right",
+      "x": 410,
+      "y": 1514,
+      "method": "point",
+      "role": "base",
+      "region": "画面左脚背上方大蓝珠下半面",
+      "usage": "硬蓝珠下半面中蓝；亮点集中在上侧，脚背链另用淡银灰。",
+      "basis": "原图足链宝珠像素；角色右对应画面左。",
+      "id": "30",
+      "box": [
+        410,
+        1514,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        171,
+        201,
+        231
+      ],
+      "alpha": 255,
+      "hex": "#ABC9E7",
+      "actual_pixel": [
+        410,
+        1514
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右足珠亮点",
+      "part_id": "foot_chain_right",
+      "x": 410,
+      "y": 1510,
+      "method": "point",
+      "role": "reflection",
+      "region": "画面左脚背上方大蓝珠亮点",
+      "usage": "小面积冷白反射；只叠在蓝珠上，勿当足背肤色或链色。",
+      "basis": "原图宝珠反光像素。",
+      "id": "31",
+      "box": [
+        410,
+        1510,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        251,
+        254,
+        252
+      ],
+      "alpha": 255,
+      "hex": "#FBFEFC",
+      "actual_pixel": [
+        410,
+        1510
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "右足链银蓝",
+      "part_id": "foot_chain_right",
+      "x": 410,
+      "y": 1525,
+      "method": "point",
+      "role": "volume",
+      "region": "画面左脚背大珠下的连接小珠",
+      "usage": "脚背细链与小珠的冷银蓝中间调；顺纵链细线向下连接。",
+      "basis": "原图链珠局部像素。",
+      "id": "32",
+      "box": [
+        410,
+        1525,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        158,
+        177,
+        206
+      ],
+      "alpha": 255,
+      "hex": "#9EB1CE",
+      "actual_pixel": [
+        410,
+        1525
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左足上珠深蓝",
+      "part_id": "foot_chain_left",
+      "x": 478,
+      "y": 1504,
+      "method": "point",
+      "role": "volume",
+      "region": "画面右脚背上方大蓝珠左侧",
+      "usage": "另一脚宝珠侧面深蓝；圆珠上侧加高光，边缘保持硬轮廓。",
+      "basis": "原图宝珠像素，左右差异保留。",
+      "id": "33",
+      "box": [
+        478,
+        1504,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        126,
+        139,
+        172
+      ],
+      "alpha": 255,
+      "hex": "#7E8BAC",
+      "actual_pixel": [
+        478,
+        1504
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左足上珠亮蓝",
+      "part_id": "foot_chain_left",
+      "x": 478,
+      "y": 1514,
+      "method": "point",
+      "role": "base",
+      "region": "画面右脚背上方大蓝珠下半面",
+      "usage": "宝珠正面蓝体色；沿上亮下深的体积使用。",
+      "basis": "原图宝珠像素。",
+      "id": "34",
+      "box": [
+        478,
+        1514,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        100,
+        164,
+        211
+      ],
+      "alpha": 255,
+      "hex": "#64A4D3",
+      "actual_pixel": [
+        478,
+        1514
+      ],
+      "color_origin": "source_pixel"
+    },
+    {
+      "name": "左足末滴浅蓝",
+      "part_id": "foot_chain_left",
+      "x": 478,
+      "y": 1574,
+      "method": "point",
+      "role": "reflection",
+      "region": "画面右脚背纵链末端吊滴",
+      "usage": "小吊滴的浅青蓝高亮；面积窄，外缘压深蓝。",
+      "basis": "原图末坠像素。",
+      "id": "35",
+      "box": [
+        478,
+        1574,
+        1,
+        1
+      ],
+      "min_alpha": 1,
+      "rgb": [
+        197,
+        233,
+        251
+      ],
+      "alpha": 255,
+      "hex": "#C5E9FB",
+      "actual_pixel": [
+        478,
+        1574
+      ],
+      "color_origin": "source_pixel"
+    }
+  ],
+  "inferred_colors": [
+    {
+      "part_id": [
+        "streamer_right",
+        "streamer_left"
+      ],
+      "region": "两条半透明软带的原生蓝色与透明度",
+      "source_sample_ids": [
+        "20",
+        "21",
+        "22",
+        "23",
+        "24"
+      ],
+      "usage": "这些色样仅是白底前的合成观测色。着色时用偏蓝的薄带材质层加独立透明度和柔光，沿带身、翻面、边缘分别调节；背后换成头发或肤色时须重新合成。alpha 未能从单张原图唯一反推。",
+      "basis": "原图带体亮度随位置、背景与重叠变化；白底观测像素含背景贡献，不能作为不透明材质本色。",
+      "color_origin": "inferred_transparency"
+    },
+    {
+      "part_id": [
+        "streamer_right",
+        "streamer_left"
+      ],
+      "region": "软带翻折背面及被发束遮挡段",
+      "source_sample_ids": [
+        "20",
+        "21",
+        "22",
+        "23"
+      ],
+      "usage": "翻面先沿用本侧软带蓝相，局部略降亮度并提高层叠密度；软硬交界在金属带头下方保持清楚。",
+      "basis": "线稿衔接记录中 *_ribbon_reverse/front 和隐藏上段；原图只直接呈现部分正面，背面是结构推断。",
+      "color_origin": "inferred_hidden_surface"
+    },
+    {
+      "part_id": [
+        "headdress_halo",
+        "headdress_branch_left",
+        "headdress_branch_right",
+        "headdress_center"
+      ],
+      "region": "头环端部、枝角根座、冠石侧背面",
+      "source_sample_ids": [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "12"
+      ],
+      "usage": "隐藏硬件背面延续正面银蓝材质；侧面更窄、更暗，外露反光只放在转折与边缘；不取线稿中性色作原图色。",
+      "basis": "同件可见正面材料与线稿记载的完整背形、薄侧缘、根座、插接。",
+      "color_origin": "inferred_hidden_surface"
+    },
+    {
+      "part_id": [
+        "forehead_jewel",
+        "earring_left",
+        "earring_right"
+      ],
+      "region": "额饰后座、耳后钩与宝石背切面",
+      "source_sample_ids": [
+        "14",
+        "15",
+        "16",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29"
+      ],
+      "usage": "后座与耳钩延续冷银细线，宝石侧背面沿对应正面蓝相压暗；保持宝石硬边，隐藏链段不取肤色/发色。",
+      "basis": "原图可见石体与链钩，加上已审线稿中记录的后座、后钩与完整石背。",
+      "color_origin": "inferred_hidden_surface"
+    },
+    {
+      "part_id": [
+        "foot_chain_left",
+        "foot_chain_right"
+      ],
+      "region": "踝后完整链环与足背后链",
+      "source_sample_ids": [
+        "30",
+        "32",
+        "33",
+        "34",
+        "35"
+      ],
+      "usage": "后段沿用前链冷银蓝，但受踝遮挡时减亮；蓝珠背面跟随本脚正面蓝相压暗，左右各自接续，不强制镜像。",
+      "basis": "可见前链珠色与线稿衔接记录中的完整隐藏后环、足背回链。",
+      "color_origin": "inferred_hidden_surface"
+    },
+    {
+      "part_id": "forehead_jewel",
+      "region": "小坠投到额头上的旧承影接口",
+      "source_sample_ids": [],
+      "hex": "#956970",
+      "usage": "仅用于接续 SVG 中 fx_forehead_jewel_on_face / face6_jewel_shade 的原投影色；既有渐变 stop-opacity 为 0.08、0.4、0.4、0，且另有软化。它不是原图实测额饰材质色，也不替代最终承影核对。",
+      "basis": "已审第3步 character.svg 的 face6_jewel_shade 渐变及 fx_forehead_jewel_editable_path 引用。",
+      "color_origin": "upstream_svg_interface"
+    }
+  ],
+  "scope": {
+    "group_id": "physics_details",
+    "part_ids": [
+      "headdress_halo",
+      "headdress_branch_left",
+      "headdress_branch_right",
+      "headdress_center",
+      "forehead_jewel",
+      "streamer_left",
+      "streamer_right",
+      "earring_left",
+      "earring_right",
+      "foot_chain_left",
+      "foot_chain_right"
+    ],
+    "line_art_sha256": "0b2e53db3fe8542714ef0443760e6c85a55f7ac2e284a166fd1cb15aa8a5f6aa"
+  }
+}

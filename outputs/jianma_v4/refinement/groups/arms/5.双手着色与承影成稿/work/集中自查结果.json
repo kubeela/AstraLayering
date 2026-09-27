@@ -1,0 +1,17 @@
+{
+  "effect_id": "fx_arms5_hand_right_thumb_on_pinky",
+  "changed_preview_pixels": 1098,
+  "preview_scale": 6,
+  "changed_pixels_above_5": 343,
+  "max_channel_difference": 41,
+  "diff_bounds_root_viewBox": [
+    235.667,
+    807.167,
+    247.833,
+    850.0
+  ],
+  "changed_outside_receiver_alpha": 0,
+  "visible_observation": "Small-finger skin next to inner thumb and below its tip darkens; turning off this contact shadow preserves intrinsic finger color and volume.",
+  "geometry": "All twelve reviewed complete_shape d values unchanged.",
+  "resources": "All final files rendered through svg_preview.py resource validation."
+}

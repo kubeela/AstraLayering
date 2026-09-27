@@ -1,0 +1,20 @@
+{
+  "group": {
+    "id": "mouth",
+    "kind": "mouth",
+    "part_ids": [
+      "mouth"
+    ]
+  },
+  "inputs": {
+    "reference": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\reference.png",
+    "parts": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\parts.yaml",
+    "svg": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\mouth-input.svg",
+    "guide": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\guide.png",
+    "preview_tool": "C:\\Users\\22129\\AppData\\Local\\Temp\\workflow-equivalence-20260927-9mzgs8zo\\shared\\tools\\svg_preview.py"
+  },
+  "outputs": {
+    "svg": "character.svg",
+    "comparison": "结构对照.png"
+  }
+}

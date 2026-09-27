@@ -1,0 +1,31 @@
+{
+  "candidate_sha256": "27c7a07f3eb84547c4c0e72c2b108e1259b9113927a06164543bd926f817894e",
+  "all_layers_vs_vertical_only": {
+    "changed_pixels": 52577,
+    "max_channel_difference": 73
+  },
+  "local_band_toggle": {
+    "changed_pixels": 21053,
+    "max_channel_difference": 32
+  },
+  "highlight_underlying_color": {
+    "xy": [
+      419,
+      197
+    ],
+    "rgba": [
+      24,
+      42,
+      82,
+      255
+    ]
+  },
+  "material_layer_pixels_outside_complete_iris": {
+    "eye_right_iris_vertical_tones": 0,
+    "eye_right_iris_center_transition": 0,
+    "eye_right_iris_left_lower_band": 0,
+    "eye_right_iris_right_local_band": 0,
+    "eye_right_iris_left_peripheral_depth": 0,
+    "eye_right_iris_right_peripheral_depth": 0
+  }
+}
