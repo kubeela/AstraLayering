@@ -1,14 +1,26 @@
 # AstraLayering
 
-利用AI将角色参考重绘成**可编辑、可分层、具备遮挡补全的SVG**，为人物还原、服装替换和后续2D动画探索提供部件基础。
+利用 AI 将角色参考重绘成**可编辑、可分层、具备遮挡补全的 SVG**，为人物还原、服装替换和后续 2D 动画提供部件基础。
 
-主要入口是 **`svg-layering` 自动化skill**：提供角色图和目标，由总控依次调度参考准备、SVG绘制、独立审查与返修。各节点的提示词、模型配置、素材和工具统一收在skill内的 `workflows/` 资料包中。
+当前有两个正式技能：**`live2d-layering` 制作人物素体，`live2d-clothing` 制作可替换衣装**；它们各自按节点配置调度绘制，通用执行规则放在 SKILL.md，具体步骤和制作要求放在对应节点。
 
-[效果展示](#效果展示) · [使用skill](#使用svg-layering) · [运行投入](#运行时间与额度) · [调度规则](./.agents/skills/svg-layering/SKILL.md) · [开发进度](./.agents/skills/svg-layering/workflows/开发进度.md) · [SVG预览器](./loading/svg-preview.html)
+[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 预览器](./loading/svg-preview.html)
 
 ## 效果展示
 
-每组左侧为本轮基础角色彩图，右侧为阶段5最终SVG的实际渲染。点击图片可查看大图。
+### Jianma：新版人物分层与衣装还原
+
+左侧为穿衣参考，中间为人物分层流程交付的素体，右侧为衣装流程交付的完整 SVG 渲染；以下图片和 SVG 保存自实际运行结果。
+
+[![Jianma 穿衣参考、分层素体与衣装还原](./demos/jianma-current-case/overview.png)](./demos/jianma-current-case/overview.png)
+
+[查看完整穿戴 SVG](./demos/jianma-current-case/character.svg) · [查看素体 SVG](./demos/jianma-current-case/base.svg) · [独立衣装 SVG](./demos/jianma-current-case/clothing.svg) · [案例说明与原图对照](./demos/jianma-current-case/readme.md)
+
+人物部分已完成眼口内部件、分区头发、身体与手足及配饰的实际细化；衣装包含内外多层、背面补全、袖口前后片和独立附件。当前是默认姿态的静态素材，后续仍须绑定和动态验证；例如纱袖长尾的底形与纹样需统一运动控制，不能只移动底形组。
+
+### 历史流程成果
+
+以下 Milly 与 Miku 案例保留其原始结果和阶段记录，图中左侧为该轮基础角色彩图，右侧为旧流程阶段 5 的 SVG 渲染；当前调用入口统一使用上面的两个新技能。
 
 ### Milly v1
 
@@ -32,60 +44,69 @@
 
 眼睑与睫毛、手足线条以及头发色带和光泽仍有差异。具体证据见[本轮复核](./analysis/miku-v3-review/readme.md)；v3与v2采用不同基础彩图，跨轮评价分别以各自原图为准。
 
-## 使用svg-layering
+## 使用技能
 
-在Codex中打开本仓库，调用 `$svg-layering`，提供实际图片、执行目标和工作根目录。例如，将下列路径替换为自己的路径：
+在 Codex 中打开本仓库，技能位于 `.agents/skills/`；将示例里的路径替换为自己的绝对路径。
 
-```text
-使用 $svg-layering，从前置开始，完成到阶段4平涂。
-原角色图：/绝对路径/角色.png
-工作根目录：/绝对路径/本轮输出
-服装采用已有的基础连体服。
-```
-
-要生成完整彩图，将目标改为“完成到阶段5”。续跑时说明起点并提供已有案例目录及对应素材，例如：
+### 1. 从角色图制作分层素体
 
 ```text
-使用 $svg-layering，从阶段3继续，完成到阶段5。
-工作根目录：/绝对路径/已有案例
-使用该目录中本轮已完成的参考图、规划和阶段2结果。
+使用 $live2d-layering，完成角色分层与素体制作。
+角色参考图：/绝对路径/角色.png
+输出目录：/绝对路径/人物输出
 ```
 
-总控按[流程表](./.agents/skills/svg-layering/references/流程.md)准备或复用前置素材，再顺序派发绘制任务。在阶段2、阶段3 step2、阶段4及阶段5 step1完成后，调用独立reviewer；需要返修时交回原worker，复验通过后继续。
+必需输入是**一张角色图与输出目录**；已有适配参考图时可额外提供。流程按实际部件识别并调度专项，眼口、头发、身体、手足与附属件各有自己的制作方法；临时衣物仅用于中间参考，最终整理为可复用素体。
 
-每轮产物统一写入工作根目录，包含 `references/`、`reference-palette/` 和各 `stepXX-base-character/`。缺少参考图或绝对输出路径时，总控会先询问，信息齐备后开始调度。总控向子agent传递实际输入和节点提示词路径。
+### 2. 在素体上制作衣装
 
-**模型配置：** 各节点从 `.model` 文件名读取模型。当前前置语言任务使用 `gpt-5.6-sol`／`xhigh`，SVG绘制与审查使用 `gpt-6-astra`／`xhigh`；生图指定 `image2.5`，需要可确认该模型的生图入口，也可提供对应的已生成图片继续。
+```text
+使用 $live2d-clothing，按参考完成衣装还原。
+素体 SVG：/绝对路径/人物素体.svg
+穿衣参考图：/绝对路径/衣装参考.png
+输出目录：/绝对路径/衣装输出
+```
 
-skill位于 [.agents/skills/svg-layering/](./.agents/skills/svg-layering/)，其中 `SKILL.md`定义通用调度规则，`references/流程.md`定义顺序与输入输出，`workflows/`保存各节点资料。提示词和工具只在这份资料包中维护。
+只需**素体 SVG、穿衣参考图、输出目录**，无需提供旧任务、归档或额外交接文件。参考可以是原衣装，也可以是用户指定的新款式；技能负责实际衣层、依附附件、必要补形及穿插，不改变输入素体文件。
+
+衣装最终交付 `final/character.svg`、`clothing.svg`、`clothing-index.json`、预览和对照图；独立衣装需按索引穿插到素体各层之间，不能直接当作一张置顶图片。
+
+### 续跑、环境与维护
+
+续跑时使用对应技能，提供原输出目录并说明继续位置，例如：
+
+```text
+使用 $live2d-layering，继续 /绝对路径/人物输出 中尚未完成的部件。
+```
+
+总控根据本轮实际产物、运行记录和当前节点配置接续；模型及推理强度读取各节点 `.model`，独立审查只按配置触发。技能使用语言子 agent 和生图工具，图像生成能力需在运行环境中可用。
+
+工具使用 Python 3.8+、Pillow 9.1+、NumPy、Node.js 与 sharp，配置方式见[工具说明](./.agents/skills/live2d-layering/tools/readme.md)；选项保存为 JSON，选项工具只依赖 Python 标准库。复制到其他仓库时，将 **`live2d-layering` 与 `live2d-clothing` 两个目录一起放入 `.agents/skills/`**，衣装技能复用前者的公共工具。
+
+`SKILL.md` 仅放通用规则；节点的 `流程.yaml`、提示词、模型标记维护具体制作方法。根目录原 `workflows/` 和 `workflow_clothing/` 已分别迁入两个技能，不保留另一份执行副本；旧 `svg-layering` 已移至 [archive/svg-layering](./archive/svg-layering/SKILL.md)，不再注册为技能。
+
+## 当前工作流
+
+| 技能 | 处理过程 | 最终用途 |
+| --- | --- | --- |
+| [live2d-layering](./.agents/skills/live2d-layering/SKILL.md) | 参考准备 → 结构识别 → 大层分层 → 按组细化与素体整理 | 具备完整底形、连接面及独立效果的人物素体 |
+| [live2d-clothing](./.agents/skills/live2d-clothing/SKILL.md) | 结构与穿戴分析 → 按需补全参考 → 分批线稿及集中结构审查 → 色盘 → 分批着色与导出 | 可替换衣装与完整穿戴稿 |
+
+人物专项已覆盖 `face`、`eyes`、`mouth`、`hair`、`body`、`lower_body`、`arms`、`physics_details`、`special_parts`、`clothing`、`generic`；按角色实际存在的部件执行，素体流程里的 `clothing` 负责临时衣物整理，原衣还原由独立衣装技能完成。
+
+运行时只向 worker 交接对应节点提示词、本轮素材、上游产物和工具；拆分、补全、材质和投影知识已落实在对应提示词，教程原文仅作维护者的设计参考。
 
 ## 运行时间与额度
 
-以Milly完整运行至阶段5的一次实跑为参考：
+以下为**旧流程 Milly 案例**的一次用户实测估算，不代表两个新技能的耗时：
 
-| 项目 | 估算 |
+| 项目 | 历史估算 |
 | --- | --- |
-| 完整运行耗时 | 约2小时50分钟 |
-| 额度消耗 | Pro5x约10%额度 |
-| Token消耗 | 约5kw token |
+| 完整运行至旧阶段 5 | 约 2 小时 50 分钟 |
+| 额度消耗 | Pro 5x 约 10% |
+| Token 消耗 | 约 5kw token |
 
-这些是本轮用户实测估算，额度周期与token统计口径未细分；实际投入会随角色复杂度、模型配置和返修次数变化。
-
-## 工作流
-
-skill先准备基础角色彩图、部件色块参考、线稿参考和基础色盘，再按下列阶段生成可继续编辑的产物。
-
-| 阶段 | 主要工作 | 产物 |
-| --- | --- | --- |
-| 1. 规划范围 | 确认基础角色、关键遮挡与补全范围 | 规划Markdown |
-| 2. 完整部件与遮挡 | 建立闭合底形、隐藏补全和叠放关系，校准头脸与发束 | 分层色块SVG＋检查图 |
-| 3. 可用线稿 | 头型与发型 → 面部与表情 → 其余主轮廓 → 其余内部线 → 全局精修 | 五轮线稿SVG＋检查图 |
-| 4. 基础填色 | 依据彩图与色盘恢复部件基础色 | 分层平涂SVG＋检查图 |
-| 5. 明暗与材质 | 大明暗与体积 → 局部色彩、眼部层次与材质光泽 | 两轮彩图SVG＋检查图 |
-
-彩图决定可见造型与遮挡，色块图辅助分件，线稿辅助辨认轮廓。通过同坐标并排、透明叠加和部件独显，分别检查参考贴合与分层完整性。
-
-各阶段输入、输出和执行提示词见[工作流说明](./.agents/skills/svg-layering/workflows/readme.md)。阶段6的线色与边缘收尾仍为候选，尚未制定或执行。
+额度周期与 token 统计口径未细分；实际投入随角色复杂度、模型、制作范围和返修次数变化。
 
 ## 完整部件与遮挡补全
 
@@ -115,44 +136,31 @@ SVG按实体部件组织，保留当前姿态所需的隐藏底形：例如发�
 
 </details>
 
-## 当前不足与后续方向
+## 当前状态与后续方向
 
-| 方向 | 下一步关注 |
-| --- | --- |
-| 人物还原与线条质量 | 保留已改善的头脸，继续校准眼睑睫毛、手足及局部接线；阶段3 step2后的头部独立review已在Milly实跑 |
-| 色彩与材质还原 | 改善头发色带、亮斑范围、皮肤与服装的软硬过渡，并核对投影显隐关系 |
-| 衣服自由更替 | 基于完整身体与独立衣片，探索服装适配、遮挡及换装后的明暗更新 |
-| 2D动画 | 在 [rigging](./rigging/readme.md) 里做初步的模型能力与建模尝试，尚未接入主流程 |
+目前验证的是静态分层素材与默认穿戴画面；隐藏补形和独立图层为动画提供基础，X/Y 转向、网格变形、物理摆动、动态遮挡与投影跟随仍需在绑定阶段实际验证，相关实验见 [rigging](./rigging/readme.md)。
 
-目前验证的是静态分层彩图。自动换装、动画绑定和跨角色稳定性仍需进一步验证；独立审查是否执行按各案例记录，v3终稿注明该轮独立审查不可用。
-
-绘制与审查由[svg-layering skill](./.agents/skills/svg-layering/SKILL.md)顺序调度，工具随各[审查节点](./.agents/skills/svg-layering/references/流程.md#再运行主流程)的review目录提供；完整实跑记录见[Milly v1](./outputs/milly_v1/readme.md)。
-
-详细问题、证据与阶段定位见[开发进度](./.agents/skills/svg-layering/workflows/开发进度.md)和[最新复核](./analysis/miku-v3-review/readme.md)。
+衣装细节和复杂材质的还原仍有差异，跨角色的稳定性也需要更多案例；历史案例的审查状态按各自记录保留，Miku v3 终稿注明该轮独立审查不可用。
 
 ## 案例与仓库导航
 
-| 案例 | 验证范围 |
-| --- | --- |
-| [Milly v1](./outputs/milly_v1/readme.md) | 自动调度完整流程、四个指定review节点及本轮运行投入 |
-| [Miku v3](./outputs/miku_v3/readme.md) | 完整阶段1—5；头脸校准、阶段3五步与最终彩图 |
-| [Miku v2](./outputs/case3_miku_v2/readme.md) | 到阶段4；线稿参考、程序色盘及旧版头脸问题 |
-| [首次完整Miku](./demos/first-complete-case/readme.md) | 阶段1—5首例、部件树与独显展示 |
-| [case2](./outputs/case2/readme.md) | 另一角色的参考与阶段1—2产物 |
-
 | 入口 | 内容 |
 | --- | --- |
-| [svg-layering skill](./.agents/skills/svg-layering/SKILL.md) | 自动调度入口、模型读取、素材交接与审查返修规则 |
-| [skill内的workflows](./.agents/skills/svg-layering/workflows/readme.md) | 节点资料包：参考准备、绘制与审查提示词、输入说明和工具 |
-| [outputs](./outputs/readme.md) | 各案例的原始参考、逐阶段SVG、检查图和归档记录 |
-| [analysis](./analysis/readme.md) | 实际差异与原因追溯、失败复盘、Suzuran／physics-band画法研究 |
-| [demos](./demos/readme.md) | 完整部件展示、深海少女等历史示例与画法对比 |
+| [Jianma 新版成果](./demos/jianma-current-case/readme.md) | 分层素体、独立衣装、默认穿戴及实际使用限制 |
+| [Milly v1](./outputs/milly_v1/readme.md) | 旧流程完整运行、指定 review 及历史投入 |
+| [Miku v3](./outputs/miku_v3/readme.md) | 旧阶段 1—5、头脸校准与最终彩图 |
+| [人物分层技能](./.agents/skills/live2d-layering/readme.md) | 人物分组模板、节点配置、提示词与公共工具 |
+| [衣装技能](./.agents/skills/live2d-clothing/readme.md) | 多层衣装、附件、补形与穿插的制作节点 |
+| [工作流配置格式](./.agents/skills/live2d-layering/docs/workflow-dsl.md) | 输入输出、条件、循环、会话复用与审查规则 |
+| [outputs](./outputs/readme.md) | 案例逐阶段参考、SVG 与记录 |
+| [analysis](./analysis/readme.md) | 复核、问题原因与画法研究 |
+| [demos](./demos/readme.md) | 新旧成果、完整部件展示与画法对比 |
 | [output_bad_cases](./output_bad_cases/readme.md) | 早期失败产物及问题记录 |
 
 <details>
-<summary>历史提示词与格式</summary>
+<summary>历史资料</summary>
 
-[prompt.txt](./prompt.txt)仅保留作历史参考；当前提示词统一放在[workflows](./.agents/skills/svg-layering/workflows/readme.md)。[图层契约](./loading/layer-contract.md)和[契约示例](./loading/examples.md)用于阅读早期Demos，不是现行流程要求。当前预览器直接读取SVG原生层级。
+[旧 svg-layering 资料包](./archive/svg-layering/workflows/readme.md)与 [prompt.txt](./prompt.txt)保留作回溯；[图层契约](./loading/layer-contract.md)和[契约示例](./loading/examples.md)用于阅读早期示例。现行执行入口为两个新技能，预览器读取 SVG 原生分组。
 
 </details>
 

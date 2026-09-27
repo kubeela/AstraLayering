@@ -1,0 +1,12 @@
+根据原彩图为已审body整理肤色与明暗色盘；保持SVG原样，不改变几何、不重判拆分。区域、数量、分类与采样方法由你按图片决定，palette_tool只提供快速采样和排版。
+
+先区别三类颜色：身体皮肤自身的基础/冷暖/体积；下巴、头发或衣物落在body上的外来投影；被衣物或头发遮住后需要推断的身体颜色。不能从标色稿、生图线稿或白色连体服的明暗直接取作衣下肤色，阴影最深处也不自动代表基础肤色。
+实际可见的颈部正侧面、锁骨/肩窝、胸部露肤、胸腹腰和连接面分别按需要取样；同一肤色族共享样本，不机械重复。以原图分布说明宽幅受光、局部凹凸、冷暖和软硬，胸腹被遮挡时从相邻真实皮肤推断，不能编造测得的隐藏像素。
+颈根、躯干肩根和腰口需有可接续的基础色与过渡用途；只提取body的配色及必要邻接颜色参照，不以arms/lower_body当前标记色为目标，更不修改外部部件。
+
+使用本节点palette_tool：python <palette_tool> <原彩图> <取样JSON> <palette.png>；该入口调用公共extract_palette.py，依赖Pillow，字体可通过--font指定。样本可用数组，或用{"samples":[...],"title":"...","groups":{"自定role":"显示名"}}覆盖展示。
+每项写name、实际part_id、自定role及region/usage/basis，明确适用部位、方向、覆盖范围和过渡；skin/volume/junction/contour/comparison只是展示建议。method可选point、nearest、mean、median，或自行取色后传provided与rgb/hex，具体方法由你决定，不强制单点或单层渐变。
+坐标按EXIF校正后的原图像素，取样范围用x/y/radius或box；保留method、color_origin等来源信息。统计色没有唯一像素，外部提供色说明方法，推断不能冒充原图实测；空间说明直接写入palette.json，不另写色盘报告。
+
+在palette.json追加inferred_colors数组，记录part_id、region、source_sample_ids、usage和basis，确需新色时写推断hex；无需推断则为空数组。区分颈肩、胸腹腰各自的层次与接口用途，后续绘制者据此连续上色。
+只交palette.png和palette.json，取样JSON留工作根tmp，简短说明实测范围和主要推断；不输出SVG、不启动独立审查。

@@ -1,0 +1,14 @@
+id: arms_hand_coloring
+worker: hands_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.arms_hand_line_art.svg
+  palette_image: nodes.arms_palette.palette_image
+  palette_json: nodes.arms_palette.palette_json
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/5.双手着色与承影成稿/character.svg
+  preview: refinement/groups/{group.id}/5.双手着色与承影成稿/preview.png
+  comparison: refinement/groups/{group.id}/5.双手着色与承影成稿/成稿对照.png

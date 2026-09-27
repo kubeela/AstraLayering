@@ -1,0 +1,34 @@
+id: clothing_color_batches
+worker: clothing_drawing
+inputs:
+  svg: nodes.clothing_line_review.svg
+  approved_line_art: nodes.clothing_line_review.svg
+  reference: inputs.outfit_reference
+  structure: nodes.clothing_structure.structure
+  palette_image: nodes.clothing_palette.palette_image
+  palette_json: nodes.clothing_palette.palette_json
+  preview_tool:
+    asset: ../../live2d-layering/tools/svg_preview.py
+foreach:
+  from: inputs.structure
+  items: color_batches
+  as: batch
+  mode: serial
+  carry: [svg]
+outputs:
+  svg: 5.分批着色与成稿/{batch.id}/character.svg
+  final_svg:
+    path: final/character.svg
+    when: last_item
+  clothing_svg:
+    path: final/clothing.svg
+    when: last_item
+  index:
+    path: final/clothing-index.json
+    when: last_item
+  preview:
+    path: final/preview.png
+    when: last_item
+  comparison:
+    path: final/成稿对照.png
+    when: last_item

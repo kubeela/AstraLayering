@@ -1,0 +1,7 @@
+id: hair_reference
+inputs:
+  reference: inputs.reference # 图1：本轮角色彩图，造型依据。
+outputs:
+  image: refinement/groups/{group.id}/1.线稿与补全参考/头发线稿与拆解补全.png
+imagegen:
+  prompt: 生成提示词.txt

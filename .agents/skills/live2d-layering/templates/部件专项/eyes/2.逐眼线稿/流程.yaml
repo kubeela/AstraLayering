@@ -1,0 +1,33 @@
+id: eye_line_art
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  plan: refinement/groups/{group.id}/1.制作计划/plan.json
+  symmetry: options.eyes_symmetric
+  closeup_reference: refinement/groups/{group.id}/1.眼部参考/眼部放大线稿.png
+foreach:
+  from: inputs.plan
+  items: eyes
+  as: eye
+  mode: serial
+  carry: [svg]
+outputs:
+  svg: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/character.svg
+  preview: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/preview.png
+  comparison: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/校准对照.png
+  notes: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/说明.md
+review:
+  run: review/
+  inputs:
+    reference: inputs.reference
+    parts: inputs.parts
+    baseline: inputs.svg
+    closeup_reference: inputs.closeup_reference
+    candidate: self.svg
+    comparison: self.comparison
+    plan: inputs.plan
+    symmetry: inputs.symmetry
+  outputs:
+    report: reviews/refinement/{group.id}/line-art/{eye.id}/审查.md

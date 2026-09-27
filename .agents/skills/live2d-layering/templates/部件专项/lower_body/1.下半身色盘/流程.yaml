@@ -1,0 +1,13 @@
+id: lower_body_palette
+worker: lower_body_palette
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  palette_tool:
+    asset: 提取色盘.py
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  palette_image: refinement/groups/{group.id}/1.下半身色盘/palette.png
+  palette_json: refinement/groups/{group.id}/1.下半身色盘/palette.json

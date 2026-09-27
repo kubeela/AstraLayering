@@ -1,0 +1,4260 @@
+{
+  "outfit_id": "jianma_blue_white_ceremonial",
+  "viewBox": "0 0 941 1672",
+  "canvas": [
+    941,
+    1672
+  ],
+  "coordinate_system": "原画布绝对坐标，当前实体无待展开的祖先变换。",
+  "files": {
+    "character_svg": "character.svg",
+    "clothing_svg": "clothing.svg",
+    "preview": "preview.png",
+    "comparison": "成稿对照.png"
+  },
+  "usage": "clothing.svg 是分层素材集合。按 parts.draw_order 的实际 parent_id/previous_id/next_id 穿插回同版素体；不得整张置顶。将集合中独立的素体承影效果插回其实际承影父节点。",
+  "layers": [
+    {
+      "id": "inner_top",
+      "name": "贴身白色内搭与立领",
+      "entity_ids": [
+        "inner_bodice_back",
+        "collar_back",
+        "inner_bodice",
+        "collar_front_right",
+        "collar_front_left"
+      ],
+      "dependent_effect_ids": [
+        "fx_outfit_collar_back_on_inner_bodice_back",
+        "fx_outfit_collar_front_right_on_inner_bodice",
+        "fx_outfit_collar_front_left_on_inner_bodice",
+        "fx_outfit_chest_ornament_right_silver_base_on_inner_bodice",
+        "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice",
+        "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice",
+        "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice",
+        "fx_outfit_chest_ornament_center_socket_on_inner_bodice",
+        "fx_outfit_mantle_front_right_on_inner_bodice",
+        "fx_outfit_coat_front_right_on_inner_bodice",
+        "fx_outfit_mantle_front_left_on_inner_bodice",
+        "fx_outfit_coat_front_left_on_inner_bodice",
+        "fx_outfit_waist_front_on_inner_bodice"
+      ],
+      "when_disabled": {
+        "hide_entity_ids": [
+          "inner_bodice_back",
+          "collar_back",
+          "inner_bodice",
+          "collar_front_right",
+          "collar_front_left"
+        ],
+        "hide_effect_ids": [
+          "fx_outfit_collar_back_on_inner_bodice_back",
+          "fx_outfit_collar_front_right_on_inner_bodice",
+          "fx_outfit_collar_front_left_on_inner_bodice",
+          "fx_outfit_chest_ornament_right_silver_base_on_inner_bodice",
+          "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice",
+          "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice",
+          "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice",
+          "fx_outfit_chest_ornament_center_socket_on_inner_bodice",
+          "fx_outfit_mantle_front_right_on_inner_bodice",
+          "fx_outfit_coat_front_right_on_inner_bodice",
+          "fx_outfit_mantle_front_left_on_inner_bodice",
+          "fx_outfit_coat_front_left_on_inner_bodice",
+          "fx_outfit_waist_front_on_inner_bodice"
+        ],
+        "restore_base_attributes": [
+          {
+            "id": "fx_body5_face_on_neck",
+            "attributes": {
+              "mask": null
+            }
+          }
+        ]
+      },
+      "when_enabled": {
+        "show_entity_ids": [
+          "inner_bodice_back",
+          "collar_back",
+          "inner_bodice",
+          "collar_front_right",
+          "collar_front_left"
+        ],
+        "effects_condition": "仅当 depends_on_layers 中的全部衣层开启、真实来源/承影实体也可见时启用；本图无动画绑定。",
+        "apply_base_attributes": [
+          {
+            "id": "fx_body5_face_on_neck",
+            "attributes": {
+              "mask": "url(#outfit_inner_collar_neck_occlusion)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "shoulder_mantle",
+      "name": "白色纹样肩披",
+      "entity_ids": [
+        "mantle_back",
+        "mantle_front_left",
+        "mantle_front_right"
+      ],
+      "dependent_effect_ids": [
+        "fx_outfit_mantle_front_right_on_inner_bodice",
+        "fx_outfit_mantle_front_left_on_inner_bodice",
+        "fx_outfit_mantle_front_right_on_opaque_upper_right",
+        "fx_outfit_mantle_front_left_on_opaque_upper_left",
+        "fx_outfit_mantle_front_right_on_gauze_sleeve_right",
+        "fx_outfit_mantle_front_left_on_gauze_sleeve_left",
+        "fx_outfit_hair_front_left_on_mantle_front_left",
+        "fx_outfit_hair_front_right_on_mantle_front_right"
+      ],
+      "when_disabled": {
+        "hide_entity_ids": [
+          "mantle_back",
+          "mantle_front_left",
+          "mantle_front_right"
+        ],
+        "hide_effect_ids": [
+          "fx_outfit_mantle_front_right_on_inner_bodice",
+          "fx_outfit_mantle_front_left_on_inner_bodice",
+          "fx_outfit_mantle_front_right_on_opaque_upper_right",
+          "fx_outfit_mantle_front_left_on_opaque_upper_left",
+          "fx_outfit_mantle_front_right_on_gauze_sleeve_right",
+          "fx_outfit_mantle_front_left_on_gauze_sleeve_left",
+          "fx_outfit_hair_front_left_on_mantle_front_left",
+          "fx_outfit_hair_front_right_on_mantle_front_right"
+        ],
+        "restore_base_attributes": []
+      },
+      "when_enabled": {
+        "show_entity_ids": [
+          "mantle_back",
+          "mantle_front_left",
+          "mantle_front_right"
+        ],
+        "effects_condition": "仅当 depends_on_layers 中的全部衣层开启、真实来源/承影实体也可见时启用；本图无动画绑定。",
+        "apply_base_attributes": []
+      }
+    },
+    {
+      "id": "sleeves",
+      "name": "绣纹袖与蓝色透明垂袖",
+      "entity_ids": [
+        "gauze_sleeve_right_back",
+        "gauze_sleeve_left_back",
+        "opaque_upper_right_back",
+        "opaque_upper_left_back",
+        "opaque_lower_right_back",
+        "opaque_lower_left_back",
+        "opaque_upper_right",
+        "opaque_lower_right",
+        "opaque_upper_left",
+        "opaque_lower_left",
+        "gauze_sleeve_right",
+        "gauze_sleeve_left",
+        "opaque_lower_right_cuff_front",
+        "opaque_lower_left_cuff_front"
+      ],
+      "dependent_effect_ids": [
+        "fx_outfit_mantle_front_right_on_opaque_upper_right",
+        "fx_outfit_opaque_upper_right_on_opaque_lower_right",
+        "fx_outfit_mantle_front_left_on_opaque_upper_left",
+        "fx_outfit_opaque_upper_left_on_opaque_lower_left",
+        "gauze_sleeve_right_front_surface_reflection",
+        "gauze_sleeve_right_tail_surface_reflection",
+        "fx_outfit_mantle_front_right_on_gauze_sleeve_right",
+        "fx_outfit_opaque_upper_right_on_gauze_sleeve_right",
+        "fx_outfit_opaque_lower_right_on_gauze_sleeve_right",
+        "gauze_sleeve_left_front_surface_reflection",
+        "gauze_sleeve_left_tail_surface_reflection",
+        "fx_outfit_mantle_front_left_on_gauze_sleeve_left",
+        "fx_outfit_opaque_upper_left_on_gauze_sleeve_left",
+        "fx_outfit_opaque_lower_left_on_gauze_sleeve_left",
+        "fx_outfit_opaque_lower_right_cuff_on_hand_right_palm",
+        "fx_outfit_opaque_lower_left_cuff_on_hand_left_palm"
+      ],
+      "when_disabled": {
+        "hide_entity_ids": [
+          "gauze_sleeve_right_back",
+          "gauze_sleeve_left_back",
+          "opaque_upper_right_back",
+          "opaque_upper_left_back",
+          "opaque_lower_right_back",
+          "opaque_lower_left_back",
+          "opaque_upper_right",
+          "opaque_lower_right",
+          "opaque_upper_left",
+          "opaque_lower_left",
+          "gauze_sleeve_right",
+          "gauze_sleeve_left",
+          "opaque_lower_right_cuff_front",
+          "opaque_lower_left_cuff_front"
+        ],
+        "hide_effect_ids": [
+          "fx_outfit_mantle_front_right_on_opaque_upper_right",
+          "fx_outfit_opaque_upper_right_on_opaque_lower_right",
+          "fx_outfit_mantle_front_left_on_opaque_upper_left",
+          "fx_outfit_opaque_upper_left_on_opaque_lower_left",
+          "gauze_sleeve_right_front_surface_reflection",
+          "gauze_sleeve_right_tail_surface_reflection",
+          "fx_outfit_mantle_front_right_on_gauze_sleeve_right",
+          "fx_outfit_opaque_upper_right_on_gauze_sleeve_right",
+          "fx_outfit_opaque_lower_right_on_gauze_sleeve_right",
+          "gauze_sleeve_left_front_surface_reflection",
+          "gauze_sleeve_left_tail_surface_reflection",
+          "fx_outfit_mantle_front_left_on_gauze_sleeve_left",
+          "fx_outfit_opaque_upper_left_on_gauze_sleeve_left",
+          "fx_outfit_opaque_lower_left_on_gauze_sleeve_left",
+          "fx_outfit_opaque_lower_right_cuff_on_hand_right_palm",
+          "fx_outfit_opaque_lower_left_cuff_on_hand_left_palm"
+        ],
+        "restore_base_attributes": []
+      },
+      "when_enabled": {
+        "show_entity_ids": [
+          "gauze_sleeve_right_back",
+          "gauze_sleeve_left_back",
+          "opaque_upper_right_back",
+          "opaque_upper_left_back",
+          "opaque_lower_right_back",
+          "opaque_lower_left_back",
+          "opaque_upper_right",
+          "opaque_lower_right",
+          "opaque_upper_left",
+          "opaque_lower_left",
+          "gauze_sleeve_right",
+          "gauze_sleeve_left",
+          "opaque_lower_right_cuff_front",
+          "opaque_lower_left_cuff_front"
+        ],
+        "effects_condition": "仅当 depends_on_layers 中的全部衣层开启、真实来源/承影实体也可见时启用；本图无动画绑定。",
+        "apply_base_attributes": []
+      }
+    },
+    {
+      "id": "outer_coat",
+      "name": "白色敞襟长外衣",
+      "entity_ids": [
+        "coat_back",
+        "coat_front_right",
+        "coat_front_left"
+      ],
+      "dependent_effect_ids": [
+        "fx_outfit_coat_front_right_on_inner_bodice",
+        "fx_outfit_coat_front_left_on_inner_bodice",
+        "fx_outfit_coat_front_right_on_skirt_outer_right",
+        "fx_outfit_coat_front_left_on_skirt_outer_left",
+        "fx_outfit_hair_front_right_on_coat_front_right",
+        "fx_outfit_hair_front_left_on_coat_front_left"
+      ],
+      "when_disabled": {
+        "hide_entity_ids": [
+          "coat_back",
+          "coat_front_right",
+          "coat_front_left"
+        ],
+        "hide_effect_ids": [
+          "fx_outfit_coat_front_right_on_inner_bodice",
+          "fx_outfit_coat_front_left_on_inner_bodice",
+          "fx_outfit_coat_front_right_on_skirt_outer_right",
+          "fx_outfit_coat_front_left_on_skirt_outer_left",
+          "fx_outfit_hair_front_right_on_coat_front_right",
+          "fx_outfit_hair_front_left_on_coat_front_left"
+        ],
+        "restore_base_attributes": []
+      },
+      "when_enabled": {
+        "show_entity_ids": [
+          "coat_back",
+          "coat_front_right",
+          "coat_front_left"
+        ],
+        "effects_condition": "仅当 depends_on_layers 中的全部衣层开启、真实来源/承影实体也可见时启用；本图无动画绑定。",
+        "apply_base_attributes": []
+      }
+    },
+    {
+      "id": "waist",
+      "name": "蓝白叠腰带与前结",
+      "entity_ids": [
+        "waist_back",
+        "waist_front",
+        "waist_tails",
+        "waist_knot"
+      ],
+      "dependent_effect_ids": [
+        "fx_outfit_waist_front_on_inner_bodice",
+        "fx_outfit_waist_front_on_skirt_inner_front",
+        "fx_outfit_waist_front_on_skirt_blue_front",
+        "fx_outfit_waist_front_on_skirt_outer_right",
+        "fx_outfit_waist_front_on_skirt_outer_left",
+        "fx_outfit_waist_knot_back_mount_on_waist_front",
+        "fx_outfit_waist_knot_right_wing_on_waist_front",
+        "fx_outfit_waist_knot_left_wing_on_waist_front",
+        "fx_outfit_pendant_anchor_waist_mount_on_waist_front",
+        "fx_outfit_pendant_chain_on_waist_front",
+        "fx_outfit_waist_knot_back_mount_on_waist_tail_right",
+        "fx_outfit_waist_knot_right_wing_on_waist_tail_right",
+        "fx_outfit_waist_knot_left_wing_on_waist_tail_right",
+        "fx_outfit_waist_knot_back_mount_on_waist_tail_left",
+        "fx_outfit_waist_knot_right_wing_on_waist_tail_left",
+        "fx_outfit_waist_knot_left_wing_on_waist_tail_left"
+      ],
+      "when_disabled": {
+        "hide_entity_ids": [
+          "waist_back",
+          "waist_front",
+          "waist_tails",
+          "waist_knot"
+        ],
+        "hide_effect_ids": [
+          "fx_outfit_waist_front_on_inner_bodice",
+          "fx_outfit_waist_front_on_skirt_inner_front",
+          "fx_outfit_waist_front_on_skirt_blue_front",
+          "fx_outfit_waist_front_on_skirt_outer_right",
+          "fx_outfit_waist_front_on_skirt_outer_left",
+          "fx_outfit_waist_knot_back_mount_on_waist_front",
+          "fx_outfit_waist_knot_right_wing_on_waist_front",
+          "fx_outfit_waist_knot_left_wing_on_waist_front",
+          "fx_outfit_pendant_anchor_waist_mount_on_waist_front",
+          "fx_outfit_pendant_chain_on_waist_front",
+          "fx_outfit_waist_knot_back_mount_on_waist_tail_right",
+          "fx_outfit_waist_knot_right_wing_on_waist_tail_right",
+          "fx_outfit_waist_knot_left_wing_on_waist_tail_right",
+          "fx_outfit_waist_knot_back_mount_on_waist_tail_left",
+          "fx_outfit_waist_knot_right_wing_on_waist_tail_left",
+          "fx_outfit_waist_knot_left_wing_on_waist_tail_left"
+        ],
+        "restore_base_attributes": []
+      },
+      "when_enabled": {
+        "show_entity_ids": [
+          "waist_back",
+          "waist_front",
+          "waist_tails",
+          "waist_knot"
+        ],
+        "effects_condition": "仅当 depends_on_layers 中的全部衣层开启、真实来源/承影实体也可见时启用；本图无动画绑定。",
+        "apply_base_attributes": []
+      }
+    },
+    {
+      "id": "skirts",
+      "name": "白色内裙、蓝色中裙与白色外裙",
+      "entity_ids": [
+        "skirt_outer_back",
+        "skirt_blue_back",
+        "skirt_inner_back",
+        "skirt_inner_front",
+        "skirt_blue_front",
+        "skirt_outer_right",
+        "skirt_outer_left",
+        "skirt_outer_right_flounce",
+        "skirt_outer_left_flounce"
+      ],
+      "dependent_effect_ids": [
+        "fx_outfit_skirt_outer_back_on_skirt_blue_back",
+        "fx_outfit_skirt_blue_back_on_skirt_inner_back",
+        "fx_outfit_skirt_outer_back_on_skirt_inner_back",
+        "fx_outfit_waist_front_on_skirt_inner_front",
+        "fx_outfit_skirt_blue_front_on_skirt_inner_front",
+        "fx_outfit_skirt_outer_right_on_skirt_inner_front",
+        "fx_outfit_skirt_outer_left_on_skirt_inner_front",
+        "fx_outfit_waist_front_on_skirt_blue_front",
+        "fx_outfit_skirt_outer_right_on_skirt_blue_front",
+        "fx_outfit_skirt_outer_left_on_skirt_blue_front",
+        "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front",
+        "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front",
+        "fx_outfit_pendant_chain_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_sphere_3_back_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_0_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_20_on_skirt_blue_front",
+        "fx_outfit_coat_front_right_on_skirt_outer_right",
+        "fx_outfit_waist_front_on_skirt_outer_right",
+        "fx_outfit_coat_front_left_on_skirt_outer_left",
+        "fx_outfit_waist_front_on_skirt_outer_left"
+      ],
+      "when_disabled": {
+        "hide_entity_ids": [
+          "skirt_outer_back",
+          "skirt_blue_back",
+          "skirt_inner_back",
+          "skirt_inner_front",
+          "skirt_blue_front",
+          "skirt_outer_right",
+          "skirt_outer_left",
+          "skirt_outer_right_flounce",
+          "skirt_outer_left_flounce"
+        ],
+        "hide_effect_ids": [
+          "fx_outfit_skirt_outer_back_on_skirt_blue_back",
+          "fx_outfit_skirt_blue_back_on_skirt_inner_back",
+          "fx_outfit_skirt_outer_back_on_skirt_inner_back",
+          "fx_outfit_waist_front_on_skirt_inner_front",
+          "fx_outfit_skirt_blue_front_on_skirt_inner_front",
+          "fx_outfit_skirt_outer_right_on_skirt_inner_front",
+          "fx_outfit_skirt_outer_left_on_skirt_inner_front",
+          "fx_outfit_waist_front_on_skirt_blue_front",
+          "fx_outfit_skirt_outer_right_on_skirt_blue_front",
+          "fx_outfit_skirt_outer_left_on_skirt_blue_front",
+          "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front",
+          "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front",
+          "fx_outfit_pendant_chain_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_sphere_3_back_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_0_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_20_on_skirt_blue_front",
+          "fx_outfit_coat_front_right_on_skirt_outer_right",
+          "fx_outfit_waist_front_on_skirt_outer_right",
+          "fx_outfit_coat_front_left_on_skirt_outer_left",
+          "fx_outfit_waist_front_on_skirt_outer_left"
+        ],
+        "restore_base_attributes": []
+      },
+      "when_enabled": {
+        "show_entity_ids": [
+          "skirt_outer_back",
+          "skirt_blue_back",
+          "skirt_inner_back",
+          "skirt_inner_front",
+          "skirt_blue_front",
+          "skirt_outer_right",
+          "skirt_outer_left",
+          "skirt_outer_right_flounce",
+          "skirt_outer_left_flounce"
+        ],
+        "effects_condition": "仅当 depends_on_layers 中的全部衣层开启、真实来源/承影实体也可见时启用；本图无动画绑定。",
+        "apply_base_attributes": []
+      }
+    },
+    {
+      "id": "ornaments",
+      "name": "胸前蓝银饰及裙前长坠",
+      "entity_ids": [
+        "chest_ornament",
+        "pendant_chain",
+        "pendant_anchor",
+        "pendant_beads",
+        "pendant_tassel"
+      ],
+      "dependent_effect_ids": [
+        "fx_outfit_chest_ornament_right_silver_base_on_inner_bodice",
+        "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice",
+        "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice",
+        "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice",
+        "fx_outfit_chest_ornament_center_socket_on_inner_bodice",
+        "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front",
+        "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front",
+        "fx_outfit_pendant_chain_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front",
+        "fx_outfit_pendant_beads_sphere_3_back_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_0_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front",
+        "fx_outfit_pendant_tassel_thread_20_on_skirt_blue_front",
+        "fx_outfit_pendant_anchor_waist_mount_on_waist_front",
+        "fx_outfit_pendant_chain_on_waist_front",
+        "chest_ornament_right_silver_highlight",
+        "chest_ornament_left_silver_highlight",
+        "pendant_beads_sphere_1_highlight",
+        "pendant_beads_sphere_2_highlight",
+        "pendant_beads_sphere_3_highlight"
+      ],
+      "when_disabled": {
+        "hide_entity_ids": [
+          "chest_ornament",
+          "pendant_chain",
+          "pendant_anchor",
+          "pendant_beads",
+          "pendant_tassel"
+        ],
+        "hide_effect_ids": [
+          "fx_outfit_chest_ornament_right_silver_base_on_inner_bodice",
+          "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice",
+          "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice",
+          "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice",
+          "fx_outfit_chest_ornament_center_socket_on_inner_bodice",
+          "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front",
+          "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front",
+          "fx_outfit_pendant_chain_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front",
+          "fx_outfit_pendant_beads_sphere_3_back_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_0_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front",
+          "fx_outfit_pendant_tassel_thread_20_on_skirt_blue_front",
+          "fx_outfit_pendant_anchor_waist_mount_on_waist_front",
+          "fx_outfit_pendant_chain_on_waist_front",
+          "chest_ornament_right_silver_highlight",
+          "chest_ornament_left_silver_highlight",
+          "pendant_beads_sphere_1_highlight",
+          "pendant_beads_sphere_2_highlight",
+          "pendant_beads_sphere_3_highlight"
+        ],
+        "restore_base_attributes": []
+      },
+      "when_enabled": {
+        "show_entity_ids": [
+          "chest_ornament",
+          "pendant_chain",
+          "pendant_anchor",
+          "pendant_beads",
+          "pendant_tassel"
+        ],
+        "effects_condition": "仅当 depends_on_layers 中的全部衣层开启、真实来源/承影实体也可见时启用；本图无动画绑定。",
+        "apply_base_attributes": []
+      }
+    }
+  ],
+  "parts": [
+    {
+      "id": "coat_back",
+      "logical_part": "coat_back",
+      "name": "敞襟外衣后片",
+      "layer_id": "outer_coat",
+      "origin": "new-drawing",
+      "attach_to": "inner_bodice 肩背与腰背，固定 (354,333)/(535,333)/(374,536)/(518,536)",
+      "fixed_points_canvas": [
+        [
+          354.0,
+          333.0
+        ],
+        [
+          535.0,
+          333.0
+        ],
+        [
+          374.0,
+          536.0
+        ],
+        [
+          518.0,
+          536.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 11,
+        "previous_id": "streamer_left",
+        "next_id": "skirt_outer_back"
+      },
+      "nested_control": false,
+      "notes": "完整敞襟长外衣后片，后颈根、肩背、侧腰及独立长后摆均为实际布面。attach_to=inner_bodice 肩背与腰背，固定 (354,333)/(535,333)/(374,536)/(518,536)；draw_order=后发前、身体和前衣片后，后裙各层在其内。背面原图未示，按正面两侧衣量保守推断；source=null。\n后外衣身体段和长摆完整铺底；采用12/13与推断后片色 #E5EDF8，左右侧转暗、中背宽光和裙量纵褶独立，背面光照为保守推断。"
+    },
+    {
+      "id": "skirt_outer_back",
+      "logical_part": "skirt_outer_back",
+      "name": "白色外裙后摆",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "pelvis 后腰及前片两侧，固定 (370,541)/(522,541)",
+      "fixed_points_canvas": [
+        [
+          370.0,
+          541.0
+        ],
+        [
+          522.0,
+          541.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 12,
+        "previous_id": "coat_back",
+        "next_id": "skirt_blue_back"
+      },
+      "nested_control": false,
+      "notes": "白外裙完整独立后幅：腰后、两侧展开面、折侧与宽后摆。attach_to=pelvis 后腰及前片两侧，固定 (370,541)/(522,541)；draw_order=coat_back 内、skirt_blue_back 外，双腿后。后幅按正面裙量保守推断，完全独立于内裙和蓝裙；source=null。\n白外裙独立后幅采用28/29/30同族色，完整腰后至展开后摆均铺满；大纵褶、侧返冷面与下摆横向反射分开，隐藏光向和后裙量褶向均为保守推断。"
+    },
+    {
+      "id": "skirt_blue_back",
+      "logical_part": "skirt_blue_back",
+      "name": "蓝色中裙后片",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "pelvis 后腰 (381,540)/(510,540)，接 skirt_blue_front 两侧",
+      "fixed_points_canvas": [
+        [
+          381.0,
+          540.0
+        ],
+        [
+          510.0,
+          540.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 13,
+        "previous_id": "skirt_outer_back",
+        "next_id": "skirt_inner_back"
+      },
+      "nested_control": false,
+      "notes": "独立完整蓝中裙后片，从腰背绕腿后到独立下摆。attach_to=pelvis 后腰 (381,540)/(510,540)，接 skirt_blue_front 两侧；draw_order=coat_back 内、skirt_inner_back 外，白外裙后片内。后宽按前片和裙量保守补全，不与其它后摆合并；source=null。\n24/25蓝轻绸宽面、26窄冷褶与27翻摆冷底分层；长纵亮面和末端横卷透光分别绘制。以完整不透明实体表现轻薄透光，单张合成图不足以唯一反求材质 alpha；背面光向和隐藏后摆折向为保守推断。"
+    },
+    {
+      "id": "skirt_inner_back",
+      "logical_part": "skirt_inner_back",
+      "name": "白色内裙后片",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "pelvis 后腰 (376,543)/(516,543)，侧缝接 skirt_inner_front",
+      "fixed_points_canvas": [
+        [
+          376.0,
+          543.0
+        ],
+        [
+          516.0,
+          543.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 14,
+        "previous_id": "skirt_blue_back",
+        "next_id": "pelvis"
+      },
+      "nested_control": false,
+      "notes": "独立完整白内裙后片；腰后、腿后包围面、左右侧与后摆连续。attach_to=pelvis 后腰 (376,543)/(516,543)，侧缝接 skirt_inner_front；draw_order=coat_back / 蓝裙后片内侧，双腿后。隐藏裆部与腿根区域补足，不删身体；source=null，后幅依正面布量保守推断。\n22轻白内裙与23冷蓝细褶完整覆盖腰根至下摆；纵向长褶、局部亮脊和横向内折分离。前幅中心即使被蓝裙遮住仍完整，后幅色光及不可见褶向按同材料保守推断。保持不透明，非通过露出腿色制造薄感。"
+    },
+    {
+      "id": "mantle_back",
+      "logical_part": "mantle_back",
+      "name": "白色肩披后片",
+      "layer_id": "shoulder_mantle",
+      "origin": "new-drawing",
+      "attach_to": "collar_back 与 inner_bodice 双肩，固定 (412,307)/(478,307)/(341,344)/(552,344)",
+      "fixed_points_canvas": [
+        [
+          412.0,
+          307.0
+        ],
+        [
+          478.0,
+          307.0
+        ],
+        [
+          341.0,
+          344.0
+        ],
+        [
+          552.0,
+          344.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 16,
+        "previous_id": "pelvis",
+        "next_id": "waist_back"
+      },
+      "nested_control": false,
+      "notes": "完整短肩披后片，跨双肩背面、侧折返和颈后内面。attach_to=collar_back 与 inner_bodice 双肩，固定 (412,307)/(478,307)/(341,344)/(552,344)；两端接前肩披，随上臂牵动保留布量。draw_order=coat_back 前、torso/上臂后；背面按前片短肩披保守补形，无兜帽；source=null。\n后肩披不可见，采用05/06/07的白绸材料及保守背面冷光推断；完整内缘有04同族冷蓝，未从生成参考抄入新纹章。"
+    },
+    {
+      "id": "waist_back",
+      "logical_part": "waist_back",
+      "name": "蓝白腰带后环",
+      "layer_id": "waist",
+      "origin": "new-drawing",
+      "attach_to": "inner_bodice 腰背，两侧 (364,507)/(533,507) 与前段接合",
+      "fixed_points_canvas": [
+        [
+          364.0,
+          507.0
+        ],
+        [
+          533.0,
+          507.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 17,
+        "previous_id": "mantle_back",
+        "next_id": "inner_bodice_back"
+      },
+      "nested_control": false,
+      "notes": "腰带完整后环与侧转入段。attach_to=inner_bodice 腰背，两侧 (364,507)/(533,507) 与前段接合；draw_order=内搭背片外、身体和前腰后，外衣后片内侧。后环由完整宽布面构成，非细边条；背面原图未见部分以腰围保守延续；source=null。\n隐藏后环铺完整不透明白织带，侧弯变冷；蓝白叠带材料延续前腰，背向受光保守推断。"
+    },
+    {
+      "id": "inner_bodice_back",
+      "logical_part": "inner_bodice",
+      "name": "白色合身胸衣",
+      "layer_id": "inner_top",
+      "origin": "new-drawing",
+      "attach_to": "torso 双肩/侧腰，固定点 (366,336)/(522,337)/(377,545)/(514,545)",
+      "fixed_points_canvas": [
+        [
+          366.0,
+          336.0
+        ],
+        [
+          522.0,
+          337.0
+        ],
+        [
+          377.0,
+          545.0
+        ],
+        [
+          514.0,
+          545.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 18,
+        "previous_id": "waist_back",
+        "next_id": "collar_back"
+      },
+      "nested_control": false,
+      "notes": "完整内搭背片；attach_to=torso 双肩/侧腰，固定点 (366,336)/(522,337)/(377,545)/(514,545)。draw_order=在 neck、torso 与上臂后、后发前；侧缝与前胸衣接合。原图背面不可见，依可见肩宽和胸腰布量保守补形。source=null。\n背片不可见，采用样本01/02 同材料冷白延续，宽面与侧暗属保守推断。"
+    },
+    {
+      "id": "collar_back",
+      "logical_part": "collar_back",
+      "name": "高立领后环",
+      "layer_id": "inner_top",
+      "origin": "new-drawing",
+      "attach_to": "neck 颈根与 inner_bodice 肩颈，固定点 (410,267)/(478,267)/(412,311)/(478,311)",
+      "fixed_points_canvas": [
+        [
+          410.0,
+          267.0
+        ],
+        [
+          478.0,
+          267.0
+        ],
+        [
+          412.0,
+          311.0
+        ],
+        [
+          478.0,
+          311.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 19,
+        "previous_id": "inner_bodice_back",
+        "next_id": "neck"
+      },
+      "nested_control": false,
+      "notes": "独立后领环：完整后弧、内外壁及两侧折返。attach_to=neck 颈根与 inner_bodice 肩颈，固定点 (410,267)/(478,267)/(412,311)/(478,311)；draw_order=后发前、neck 后、两前领后，前发保持在外。后段属保守推断，侧端按原图；source=null。\n后领环外面由样本03亮领面延续；内面沿样本04 #C7D7ED 冷蓝推断，后背受光与颈后接触均无直接参考，不新增背面花纹。"
+    },
+    {
+      "id": "inner_bodice",
+      "logical_part": "inner_bodice",
+      "name": "白色合身胸衣",
+      "layer_id": "inner_top",
+      "origin": "new-drawing",
+      "attach_to": "torso，肩点 (365,335)/(525,336)，侧腰 (373,535)/(518,535)，裙腰延伸至 y=607",
+      "fixed_points_canvas": [
+        [
+          365.0,
+          335.0
+        ],
+        [
+          525.0,
+          336.0
+        ],
+        [
+          373.0,
+          535.0
+        ],
+        [
+          518.0,
+          535.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 24,
+        "previous_id": "fx_hair5_left_long_on_torso",
+        "next_id": "collar_front_right"
+      },
+      "nested_control": false,
+      "notes": "完整白色内搭前片，左右侧转面与腰下隐藏余量各为实际闭合路径；背片 inner_bodice_back 在身体后。attach_to=torso，肩点 (365,335)/(525,336)，侧腰 (373,535)/(518,535)，裙腰延伸至 y=607；draw_order=torso 与其原有皮肤投影前，肩披/外衣/胸饰/腰带后，发束前置不动。胸口开口按原图的领下三角与中轴菱形组织，胸腹纵褶依衣料受力，不复制皮肤胸下线。reference 与 SVG 均 941×1672，直接同坐标校准。source=null；外衣遮住的肩侧、腋侧与下摆按布量补全。\n上色：样本01 #F2F7FB 与02 #DFE7F7 作完整中面/冷折基准；宽面胸光、腰侧转暗、细纵褶、褶脊亮带分别独立。R1 已审开口及外轮廓完全不变；侧背和 y>550 腰下颜色由相同白绸推断，不沿皮肤胸线着色。"
+    },
+    {
+      "id": "collar_front_right",
+      "logical_part": "collar_front_right",
+      "name": "右前高领片",
+      "layer_id": "inner_top",
+      "origin": "new-drawing",
+      "attach_to": "collar_back 右颈侧和 inner_bodice 右锁骨，固定 (408,263)/(413,313)",
+      "fixed_points_canvas": [
+        [
+          408.0,
+          263.0
+        ],
+        [
+          413.0,
+          313.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 25,
+        "previous_id": "inner_bodice",
+        "next_id": "collar_front_left"
+      },
+      "nested_control": false,
+      "notes": "角色右前领（画面左）完整外面、内折面与侧厚；attach_to=collar_back 右颈侧和 inner_bodice 右锁骨，固定 (408,263)/(413,313)；draw_order=颈前、胸衣前，胸饰与肩披将覆盖 y=326–346 根部，前发仍在外。领端保留布厚和中心开口；source=null。\n立领样本03/04为底；横向挺布转面、纵向根部冷暗和弧形宽反光分别处理。外/内/侧面不透明，后根隐藏颜色沿材质推断，正式线条保留实际折角并以蓝灰融入。"
+    },
+    {
+      "id": "collar_front_left",
+      "logical_part": "collar_front_left",
+      "name": "左前高领片",
+      "layer_id": "inner_top",
+      "origin": "new-drawing",
+      "attach_to": "collar_back 左颈侧和 inner_bodice 左锁骨，固定 (478,263)/(477,313)",
+      "fixed_points_canvas": [
+        [
+          478.0,
+          263.0
+        ],
+        [
+          477.0,
+          313.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 26,
+        "previous_id": "collar_front_right",
+        "next_id": "foot_chain_right_2"
+      },
+      "nested_control": false,
+      "notes": "角色左前领（画面右）完整外面、内折面与侧厚；attach_to=collar_back 左颈侧和 inner_bodice 左锁骨，固定 (478,263)/(477,313)；draw_order=颈前、胸衣前，胸饰与肩披覆盖根部，前发前置不动。上缘与颈皮肤间保留布厚；source=null。\n立领样本03/04为底；横向挺布转面、纵向根部冷暗和弧形宽反光分别处理。外/内/侧面不透明，后根隐藏颜色沿材质推断，正式线条保留实际折角并以蓝灰融入。"
+    },
+    {
+      "id": "skirt_inner_front",
+      "logical_part": "skirt_inner_front",
+      "name": "白色内裙前片",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "pelvis 前腰、skirt_inner_back 侧缝",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 37,
+        "previous_id": "foot_chain_left",
+        "next_id": "skirt_blue_front"
+      },
+      "nested_control": false,
+      "notes": "白内裙完整前幅，从腰根盖过双腿延到近踝；左右侧接后幅，裙口内折为独立实体。attach_to=pelvis 前腰、skirt_inner_back 侧缝；draw_order=腿前、蓝裙和白外裙后，腰带覆盖 y=538–558 根部。中心虽被蓝裙盖住仍连续；source=null。\n22轻白内裙与23冷蓝细褶完整覆盖腰根至下摆；纵向长褶、局部亮脊和横向内折分离。前幅中心即使被蓝裙遮住仍完整，后幅色光及不可见褶向按同材料保守推断。保持不透明，非通过露出腿色制造薄感。"
+    },
+    {
+      "id": "skirt_blue_front",
+      "logical_part": "skirt_blue_front",
+      "name": "正中蓝色长裙片",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "skirt_blue_back 腰侧与 waist_front 下缘，固定 (405,548)/(489,548)",
+      "fixed_points_canvas": [
+        [
+          405.0,
+          548.0
+        ],
+        [
+          489.0,
+          548.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 38,
+        "previous_id": "skirt_inner_front",
+        "next_id": "skirt_outer_right"
+      },
+      "nested_control": false,
+      "notes": "正中蓝色长裙前幅，腰至近踝单片连续，两侧和翻起下摆内面独立。attach_to=skirt_blue_back 腰侧与 waist_front 下缘，固定 (405,548)/(489,548)；draw_order=白内裙前、白外裙开口后，腰带/双尾/裙坠在其前。保留饰物和外裙后被遮的完整中段；不把长流苏画进裙面；source=null。\n24/25蓝轻绸宽面、26窄冷褶与27翻摆冷底分层；长纵亮面和末端横卷透光分别绘制。以完整不透明实体表现轻薄透光，单张合成图不足以唯一反求材质 alpha；背面光向和隐藏后摆折向为保守推断。"
+    },
+    {
+      "id": "skirt_outer_right",
+      "logical_part": "skirt_outer_right",
+      "name": "右白色层叠外裙前摆",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "skirt_outer_back 同侧侧缝及 waist_front 下缘，腰固定 (375,547)/(514,547)",
+      "fixed_points_canvas": [
+        [
+          375.0,
+          547.0
+        ],
+        [
+          514.0,
+          547.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 39,
+        "previous_id": "skirt_blue_front",
+        "next_id": "skirt_outer_left"
+      },
+      "nested_control": false,
+      "notes": "完整白外裙前片、侧转面与腰根。attach_to=skirt_outer_back 同侧侧缝及 waist_front 下缘，腰固定 (375,547)/(514,547)；draw_order=蓝中裙/白内裙前，外衣长摆在其外侧，连续荷叶翻边于裙侧从外衣内缘前方翻出。前片没有逐褶拆成独立部件，隐藏腰根和侧背相连；source=null。\n28白外裙主体、29浅蓝宽褶和30冷折分别沿裙面落下；保持完整白底及侧缝隐藏余量，细边为绸布光而非金属线。"
+    },
+    {
+      "id": "skirt_outer_left",
+      "logical_part": "skirt_outer_left",
+      "name": "左白色层叠外裙前摆",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "skirt_outer_back 同侧侧缝及 waist_front 下缘，腰固定 (375,547)/(514,547)",
+      "fixed_points_canvas": [
+        [
+          375.0,
+          547.0
+        ],
+        [
+          514.0,
+          547.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 40,
+        "previous_id": "skirt_outer_right",
+        "next_id": "waist_front"
+      },
+      "nested_control": false,
+      "notes": "完整白外裙前片、侧转面与腰根。attach_to=skirt_outer_back 同侧侧缝及 waist_front 下缘，腰固定 (375,547)/(514,547)；draw_order=蓝中裙/白内裙前，外衣长摆在其外侧，连续荷叶翻边于裙侧从外衣内缘前方翻出。前片没有逐褶拆成独立部件，隐藏腰根和侧背相连；source=null。\n28白外裙主体、29浅蓝宽褶和30冷折分别沿裙面落下；保持完整白底及侧缝隐藏余量，细边为绸布光而非金属线。"
+    },
+    {
+      "id": "waist_front",
+      "logical_part": "waist_front",
+      "name": "蓝白叠腰带前段",
+      "layer_id": "waist",
+      "origin": "new-drawing",
+      "attach_to": "waist_back 两侧/inner_bodice 腰线，顶 y=500、中带 y=523–535、底 y=556",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 41,
+        "previous_id": "skirt_outer_left",
+        "next_id": "coat_front_right"
+      },
+      "nested_control": false,
+      "notes": "完整三层叠腰带前段与两侧转折。attach_to=waist_back 两侧/inner_bodice 腰线，顶 y=500、中带 y=523–535、底 y=556；draw_order=内搭及裙腰前、左右外衣襟后、软结和长坠座后。结下带面连续完整，所有侧端伸入外衣遮挡处；source=null。\n16/17为中间蓝织带与深蓝细界，18为上下白叠带；水平腰围宽光、斜向压褶、窄纺织亮线分别塑形。结下与侧端底布连续完整，未改变叠带边界。"
+    },
+    {
+      "id": "coat_front_right",
+      "logical_part": "coat_front_right",
+      "name": "右敞襟与长前摆",
+      "layer_id": "outer_coat",
+      "origin": "new-drawing",
+      "attach_to": "coat_back 肩侧及 inner_bodice 胸腰",
+      "fixed_points_canvas": [
+        [
+          342.0,
+          336.0
+        ],
+        [
+          547.0,
+          336.0
+        ],
+        [
+          376.0,
+          530.0
+        ],
+        [
+          513.0,
+          530.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 42,
+        "previous_id": "waist_front",
+        "next_id": "coat_front_left"
+      },
+      "nested_control": false,
+      "notes": "角色right侧敞襟长前片；连续肩胸、侧腰及外侧拖摆，内翻面单独实体，活动长摆有自控身份。attach_to=coat_back 肩侧及 inner_bodice 胸腰；肩 (342,336)/(547,336)，腰 (376,530)/(513,530)。draw_order=内搭前、肩披前片后，后续裙前摆覆盖内缘而白长衣摆保留外侧；腰结/胸饰在其前，发束位置不变。内侧被饰物与裙覆盖区域完整；source=null。\n前襟与长摆以12 #F5F7FB、13 #E7EFF9、15 #F9F9FC 为主，宽绸面、曲线长褶冷面、下摆横向返光与细滚边分别落在实际布面；侧内面与隐藏长摆依据相邻白绸推断。线稿轮廓/长度/翻襟不变。"
+    },
+    {
+      "id": "coat_front_left",
+      "logical_part": "coat_front_left",
+      "name": "左敞襟与长前摆",
+      "layer_id": "outer_coat",
+      "origin": "new-drawing",
+      "attach_to": "coat_back 肩侧及 inner_bodice 胸腰",
+      "fixed_points_canvas": [
+        [
+          342.0,
+          336.0
+        ],
+        [
+          547.0,
+          336.0
+        ],
+        [
+          376.0,
+          530.0
+        ],
+        [
+          513.0,
+          530.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 43,
+        "previous_id": "coat_front_right",
+        "next_id": "gauze_sleeve_right_back"
+      },
+      "nested_control": false,
+      "notes": "角色left侧敞襟长前片；连续肩胸、侧腰及外侧拖摆，内翻面单独实体，活动长摆有自控身份。attach_to=coat_back 肩侧及 inner_bodice 胸腰；肩 (342,336)/(547,336)，腰 (376,530)/(513,530)。draw_order=内搭前、肩披前片后，后续裙前摆覆盖内缘而白长衣摆保留外侧；腰结/胸饰在其前，发束位置不变。内侧被饰物与裙覆盖区域完整；source=null。\n前襟与长摆以12 #F5F7FB、13 #E7EFF9、15 #F9F9FC 为主，宽绸面、曲线长褶冷面、下摆横向返光与细滚边分别落在实际布面；侧内面与隐藏长摆依据相邻白绸推断。线稿轮廓/长度/翻襟不变。"
+    },
+    {
+      "id": "gauze_sleeve_right_back",
+      "logical_part": "gauze_sleeve_right",
+      "name": "右蓝色透明垂袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "mantle_front_right 肩外点与 opaque_upper_right 袖后点",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 44,
+        "previous_id": "coat_front_left",
+        "next_id": "gauze_sleeve_left_back"
+      },
+      "nested_control": false,
+      "notes": "透明垂袖完整后幅，含肩后固定根、臂后纱面及独立长尾的后侧；attach_to=mantle_front_right 肩外点与 opaque_upper_right 袖后点。draw_order=coat_front 前、opaque_upper/forearm 后；与前幅沿实际纵向折返线接合，无大圆弧重复透明覆盖。原图看不见后根部分为保守延伸，source=null。\n背幅用同组单次 alpha .35，并独立沿弯曲轮廓制作透光及冷蓝褶面；与前幅沿已审纵向分界分区，无重叠接口。后根底色和受光为推断。"
+    },
+    {
+      "id": "gauze_sleeve_left_back",
+      "logical_part": "gauze_sleeve_left",
+      "name": "左蓝色透明垂袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "mantle_front_left 肩外点与 opaque_upper_left 袖后点",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 45,
+        "previous_id": "gauze_sleeve_right_back",
+        "next_id": "skirt_outer_right_flounce"
+      },
+      "nested_control": false,
+      "notes": "透明垂袖完整后幅，含肩后固定根、臂后纱面及独立长尾的后侧；attach_to=mantle_front_left 肩外点与 opaque_upper_left 袖后点。draw_order=coat_front 前、opaque_upper/forearm 后；与前幅沿实际纵向折返线接合，无大圆弧重复透明覆盖。原图看不见后根部分为保守延伸，source=null。\n背幅用同组单次 alpha .35，并独立沿弯曲轮廓制作透光及冷蓝褶面；与前幅沿已审纵向分界分区，无重叠接口。后根底色和受光为推断。"
+    },
+    {
+      "id": "skirt_outer_right_flounce",
+      "logical_part": "skirt_outer_right",
+      "name": "右白色层叠外裙前摆",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "skirt_outer_back 右腰侧；waist_front 右下缘。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 46,
+        "previous_id": "gauze_sleeve_left_back",
+        "next_id": "skirt_outer_left_flounce"
+      },
+      "nested_control": false,
+      "notes": "与前裙连续的整条荷叶翻边，含正面及真实折返内面；控制身份归同一前片，不把每一褶拆成部件。draw_order=外衣内缘前、纱袖后；从完整腰根延至独立下摆，真实翻转处保留尖折与负形，source=null。\n连续荷叶边各大折分别设局部方向渐变：外翻面宽白光、内回面29/30冷蓝及31薄边亮。真实内折压在主体纵褶之上，未把一条通长渐变当作全部翻卷明暗。"
+    },
+    {
+      "id": "skirt_outer_left_flounce",
+      "logical_part": "skirt_outer_left",
+      "name": "左白色层叠外裙前摆",
+      "layer_id": "skirts",
+      "origin": "new-drawing",
+      "attach_to": "skirt_outer_back 左腰侧；waist_front 左下缘。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 47,
+        "previous_id": "skirt_outer_right_flounce",
+        "next_id": "waist_tails"
+      },
+      "nested_control": false,
+      "notes": "与前裙连续的整条荷叶翻边，含正面及真实折返内面；控制身份归同一前片，不把每一褶拆成部件。draw_order=外衣内缘前、纱袖后；从完整腰根延至独立下摆，真实翻转处保留尖折与负形，source=null。\n连续荷叶边各大折分别设局部方向渐变：外翻面宽白光、内回面29/30冷蓝及31薄边亮。真实内折压在主体纵褶之上，未把一条通长渐变当作全部翻卷明暗。"
+    },
+    {
+      "id": "waist_tails",
+      "logical_part": "waist_tails",
+      "name": "腰结双垂带",
+      "layer_id": "waist",
+      "origin": "new-drawing",
+      "attach_to": "waist_knot 两下缘 (436,537)/(452,538)",
+      "fixed_points_canvas": [
+        [
+          436.0,
+          537.0
+        ],
+        [
+          452.0,
+          538.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 48,
+        "previous_id": "skirt_outer_left_flounce",
+        "next_id": "waist_knot"
+      },
+      "nested_control": false,
+      "notes": "软结左右垂带分别为完整可控几何，含根部、正背和反折；attach_to=waist_knot 两下缘 (436,537)/(452,538)。draw_order=腰带/中裙/裙腰前、结心后，裙前长链在其前。长度按原图不对称，右侧短尾 y≈650、左侧长尾 y≈700（角色侧别）；source=null。"
+    },
+    {
+      "id": "waist_knot",
+      "logical_part": "waist_knot",
+      "name": "腰间蓝色软结",
+      "layer_id": "waist",
+      "origin": "new-drawing",
+      "attach_to": "waist_front 中线 (443,532)",
+      "fixed_points_canvas": [
+        [
+          443.0,
+          532.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 49,
+        "previous_id": "waist_tails",
+        "next_id": "opaque_upper_right_back"
+      },
+      "nested_control": false,
+      "notes": "完整软结，包括结后固定压面、左右折翼和结心。attach_to=waist_front 中线 (443,532)；双尾根藏入翼/结后，固定面与前带贴合。draw_order=waist_tails 根部前、裙前长坠座后；硬件归后续饰物批，source=null。\n19蓝缎软结，横向结翼宽亮、卷入暗口和结心绕布分开；结后固定压面完整，保留双尾根的遮挡。"
+    },
+    {
+      "id": "opaque_upper_right_back",
+      "logical_part": "opaque_upper_right",
+      "name": "右绣纹上袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "upper_arm_right",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 50,
+        "previous_id": "waist_knot",
+        "next_id": "upper_arm_right"
+      },
+      "nested_control": false,
+      "notes": "上袖完整后侧布面，attach_to=upper_arm_right；在上臂后，肩顶与肘内均保留隐藏余量。此实面用于上臂转向时显露，非仅边条。source=null。\n完整背袖以09/10白绸及保守背面冷蓝延续；被手臂遮住的根部同样铺满，不以当前露出边条代替后片。隐藏照明为推断。"
+    },
+    {
+      "id": "opaque_upper_left_back",
+      "logical_part": "opaque_upper_left",
+      "name": "左绣纹上袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "upper_arm_left",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 52,
+        "previous_id": "upper_arm_right",
+        "next_id": "upper_arm_left"
+      },
+      "nested_control": false,
+      "notes": "上袖完整后侧布面，attach_to=upper_arm_left；在上臂后，肩顶与肘内均保留隐藏余量。此实面用于上臂转向时显露，非仅边条。source=null。\n完整背袖以09/10白绸及保守背面冷蓝延续；被手臂遮住的根部同样铺满，不以当前露出边条代替后片。隐藏照明为推断。"
+    },
+    {
+      "id": "opaque_lower_right_back",
+      "logical_part": "opaque_lower_right",
+      "name": "右绣纹下袖与袖口",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "forearm_right",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 54,
+        "previous_id": "upper_arm_left",
+        "next_id": "forearm_right"
+      },
+      "nested_control": false,
+      "notes": "下袖完整后侧与宽腕口后片，attach_to=forearm_right；在小臂/手腕后，完整后布面延伸至 y=773，袖口后壁有实际面积。source=null。\n完整背袖以09/10白绸及保守背面冷蓝延续；被手臂遮住的根部同样铺满，不以当前露出边条代替后片。隐藏照明为推断。"
+    },
+    {
+      "id": "opaque_lower_left_back",
+      "logical_part": "opaque_lower_left",
+      "name": "左绣纹下袖与袖口",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "forearm_left",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 56,
+        "previous_id": "forearm_right",
+        "next_id": "forearm_left"
+      },
+      "nested_control": false,
+      "notes": "下袖完整后侧与宽腕口后片，attach_to=forearm_left；在小臂/手腕后，完整后布面延伸至 y=773，袖口后壁有实际面积。source=null。\n完整背袖以09/10白绸及保守背面冷蓝延续；被手臂遮住的根部同样铺满，不以当前露出边条代替后片。隐藏照明为推断。"
+    },
+    {
+      "id": "opaque_upper_right",
+      "logical_part": "opaque_upper_right",
+      "name": "右绣纹上袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "upper_arm_right 肩顶/上臂，肩点 (346,337)/(543,337)、肘点 (294,577)/(595,577)",
+      "fixed_points_canvas": [
+        [
+          346.0,
+          337.0
+        ],
+        [
+          543.0,
+          337.0
+        ],
+        [
+          294.0,
+          577.0
+        ],
+        [
+          595.0,
+          577.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 58,
+        "previous_id": "forearm_left",
+        "next_id": "opaque_lower_right"
+      },
+      "nested_control": false,
+      "notes": "完整绣纹上袖前面与侧面。attach_to=upper_arm_right 肩顶/上臂，肩点 (346,337)/(543,337)、肘点 (294,577)/(595,577)；draw_order=上臂前、mantle_front 后，透明垂袖后。肩顶补至 y=329 并藏入肩披，肘圆封口 y=578–609 只填色不描边，下袖覆盖其前；source=null。\n09白绸完整铺底，10冷蓝褶影沿臂部布量、肘压褶与腕部收束分别塑形；11银蓝绣纹保持原卷纹几何并添加顺纹细亮。隐藏侧面和连接内面采用相邻白绸保守延续，正式线柔化而接头不添封口描边。"
+    },
+    {
+      "id": "opaque_lower_right",
+      "logical_part": "opaque_lower_right",
+      "name": "右绣纹下袖与袖口",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "forearm_right 与 opaque_upper_right 肘附近，腰侧袖根在 y=551–609 圆顺重叠，隐藏封口无横描边",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 59,
+        "previous_id": "opaque_upper_right",
+        "next_id": "opaque_upper_left"
+      },
+      "nested_control": false,
+      "notes": "完整绣纹下袖前面，独立于上袖；attach_to=forearm_right 与 opaque_upper_right 肘附近，腰侧袖根在 y=551–609 圆顺重叠，隐藏封口无横描边。draw_order=小臂和上袖末端前；袖口后片在手腕后，袖口前环在手腕前，手指保持可见；source=null。\n09白绸完整铺底，10冷蓝褶影沿臂部布量、肘压褶与腕部收束分别塑形；11银蓝绣纹保持原卷纹几何并添加顺纹细亮。隐藏侧面和连接内面采用相邻白绸保守延续，正式线柔化而接头不添封口描边。"
+    },
+    {
+      "id": "opaque_upper_left",
+      "logical_part": "opaque_upper_left",
+      "name": "左绣纹上袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "upper_arm_left 肩顶/上臂，肩点 (346,337)/(543,337)、肘点 (294,577)/(595,577)",
+      "fixed_points_canvas": [
+        [
+          346.0,
+          337.0
+        ],
+        [
+          543.0,
+          337.0
+        ],
+        [
+          294.0,
+          577.0
+        ],
+        [
+          595.0,
+          577.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 60,
+        "previous_id": "opaque_lower_right",
+        "next_id": "opaque_lower_left"
+      },
+      "nested_control": false,
+      "notes": "完整绣纹上袖前面与侧面。attach_to=upper_arm_left 肩顶/上臂，肩点 (346,337)/(543,337)、肘点 (294,577)/(595,577)；draw_order=上臂前、mantle_front 后，透明垂袖后。肩顶补至 y=329 并藏入肩披，肘圆封口 y=578–609 只填色不描边，下袖覆盖其前；source=null。\n09白绸完整铺底，10冷蓝褶影沿臂部布量、肘压褶与腕部收束分别塑形；11银蓝绣纹保持原卷纹几何并添加顺纹细亮。隐藏侧面和连接内面采用相邻白绸保守延续，正式线柔化而接头不添封口描边。"
+    },
+    {
+      "id": "opaque_lower_left",
+      "logical_part": "opaque_lower_left",
+      "name": "左绣纹下袖与袖口",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "forearm_left 与 opaque_upper_left 肘附近，腰侧袖根在 y=551–609 圆顺重叠，隐藏封口无横描边",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 61,
+        "previous_id": "opaque_upper_left",
+        "next_id": "gauze_sleeve_right"
+      },
+      "nested_control": false,
+      "notes": "完整绣纹下袖前面，独立于上袖；attach_to=forearm_left 与 opaque_upper_left 肘附近，腰侧袖根在 y=551–609 圆顺重叠，隐藏封口无横描边。draw_order=小臂和上袖末端前；袖口后片在手腕后，袖口前环在手腕前，手指保持可见；source=null。\n09白绸完整铺底，10冷蓝褶影沿臂部布量、肘压褶与腕部收束分别塑形；11银蓝绣纹保持原卷纹几何并添加顺纹细亮。隐藏侧面和连接内面采用相邻白绸保守延续，正式线柔化而接头不添封口描边。"
+    },
+    {
+      "id": "gauze_sleeve_right",
+      "logical_part": "gauze_sleeve_right",
+      "name": "右蓝色透明垂袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "mantle_front_right 肩外 (314,385)/(575,385)，opaque_upper_right (305,425)/(584,425) 与 opaque_lower_right 腕外 (217,750)/(672,750)",
+      "fixed_points_canvas": [
+        [
+          314.0,
+          385.0
+        ],
+        [
+          575.0,
+          385.0
+        ],
+        [
+          305.0,
+          425.0
+        ],
+        [
+          584.0,
+          425.0
+        ],
+        [
+          217.0,
+          750.0
+        ],
+        [
+          672.0,
+          750.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 62,
+        "previous_id": "opaque_lower_left",
+        "next_id": "gauze_sleeve_left"
+      },
+      "nested_control": false,
+      "notes": "完整透明垂袖前幅、翻折内面与长尾。attach_to=mantle_front_right 肩外 (314,385)/(575,385)，opaque_upper_right (305,425)/(584,425) 与 opaque_lower_right 腕外 (217,750)/(672,750)；肩臂两端实际固定，宽幅松量在两点之间自然下垂。draw_order=绣袖/躯干/裙前面，手掌和手指在前，肩根由肩披覆盖。前幅与后幅不重叠，前身/长尾接口 y=884 是平接；同一材质组统一 alpha，不制造拼接深带。原衣图决定可见形态；source=null。\n依据推断本色 #76B0E8 校准，单层前幅 alpha .38、后幅 .35；亮褶改变组内固有色，真实内翻面另加 .22 层（合成覆盖 .5164）。y=884 前幅/长尾同组同色连续平接，不积双 alpha。36/37 只指导不透明绣边，32–35 为合成对照而非再透明的布料本色。透明参数与不可见肩后根部为保守推断；纱下人物、绣袖与裙实体完整保留。"
+    },
+    {
+      "id": "gauze_sleeve_left",
+      "logical_part": "gauze_sleeve_left",
+      "name": "左蓝色透明垂袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "mantle_front_left 肩外 (314,385)/(575,385)，opaque_upper_left (305,425)/(584,425) 与 opaque_lower_left 腕外 (217,750)/(672,750)",
+      "fixed_points_canvas": [
+        [
+          314.0,
+          385.0
+        ],
+        [
+          575.0,
+          385.0
+        ],
+        [
+          305.0,
+          425.0
+        ],
+        [
+          584.0,
+          425.0
+        ],
+        [
+          217.0,
+          750.0
+        ],
+        [
+          672.0,
+          750.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 63,
+        "previous_id": "gauze_sleeve_right",
+        "next_id": "mantle_front_left"
+      },
+      "nested_control": false,
+      "notes": "完整透明垂袖前幅、翻折内面与长尾。attach_to=mantle_front_left 肩外 (314,385)/(575,385)，opaque_upper_left (305,425)/(584,425) 与 opaque_lower_left 腕外 (217,750)/(672,750)；肩臂两端实际固定，宽幅松量在两点之间自然下垂。draw_order=绣袖/躯干/裙前面，手掌和手指在前，肩根由肩披覆盖。前幅与后幅不重叠，前身/长尾接口 y=884 是平接；同一材质组统一 alpha，不制造拼接深带。原衣图决定可见形态；source=null。\n依据推断本色 #76B0E8 校准，单层前幅 alpha .38、后幅 .35；亮褶改变组内固有色，真实内翻面另加 .22 层（合成覆盖 .5164）。y=884 前幅/长尾同组同色连续平接，不积双 alpha。36/37 只指导不透明绣边，32–35 为合成对照而非再透明的布料本色。透明参数与不可见肩后根部为保守推断；纱下人物、绣袖与裙实体完整保留。"
+    },
+    {
+      "id": "mantle_front_left",
+      "logical_part": "mantle_front_left",
+      "name": "左肩披前片",
+      "layer_id": "shoulder_mantle",
+      "origin": "new-drawing",
+      "attach_to": "mantle_back 同侧肩、inner_bodice 锁骨及 upper_arm_left 肩顶",
+      "fixed_points_canvas": [
+        [
+          402.0,
+          324.0
+        ],
+        [
+          487.0,
+          324.0
+        ],
+        [
+          342.0,
+          339.0
+        ],
+        [
+          547.0,
+          339.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 64,
+        "previous_id": "gauze_sleeve_left",
+        "next_id": "mantle_front_right"
+      },
+      "nested_control": false,
+      "notes": "完整肩披前片与隐藏肩臂双连接。attach_to=mantle_back 同侧肩、inner_bodice 锁骨及 upper_arm_left 肩顶；锁骨固定点 (402,324)/(487,324)，肩端固定点 (342,339)/(547,339)，袖根滑移余量 y=346–397。draw_order=coat_front / inner_bodice 与上臂前，前发及胸饰后。短肩披外缘按原图，腋侧补隐藏连续面；source=null。\n肩披按05/06/08分别铺完整白绸、肩圆蓝灰体积与短反折暗面；07银白卷纹随肩坡和胸侧折向分布，细凸纹阴/亮分离，未穿过折面贴平花纹。腋前与隐藏根部沿相同材料延续。"
+    },
+    {
+      "id": "mantle_front_right",
+      "logical_part": "mantle_front_right",
+      "name": "右肩披前片",
+      "layer_id": "shoulder_mantle",
+      "origin": "new-drawing",
+      "attach_to": "mantle_back 同侧肩、inner_bodice 锁骨及 upper_arm_right 肩顶",
+      "fixed_points_canvas": [
+        [
+          402.0,
+          324.0
+        ],
+        [
+          487.0,
+          324.0
+        ],
+        [
+          342.0,
+          339.0
+        ],
+        [
+          547.0,
+          339.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 65,
+        "previous_id": "mantle_front_left",
+        "next_id": "chest_ornament"
+      },
+      "nested_control": false,
+      "notes": "完整肩披前片与隐藏肩臂双连接。attach_to=mantle_back 同侧肩、inner_bodice 锁骨及 upper_arm_right 肩顶；锁骨固定点 (402,324)/(487,324)，肩端固定点 (342,339)/(547,339)，袖根滑移余量 y=346–397。draw_order=coat_front / inner_bodice 与上臂前，前发及胸饰后。短肩披外缘按原图，腋侧补隐藏连续面；source=null。\n肩披按05/06/08分别铺完整白绸、肩圆蓝灰体积与短反折暗面；07银白卷纹随肩坡和胸侧折向分布，细凸纹阴/亮分离，未穿过折面贴平花纹。腋前与隐藏根部沿相同材料延续。"
+    },
+    {
+      "id": "chest_ornament",
+      "logical_part": "chest_ornament",
+      "name": "蓝银胸口羽翼与中宝石",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "inner_bodice 胸口固定 (413,403)/(474,403)/(444,414)，上冠在前领间 (444,329)",
+      "fixed_points_canvas": [
+        [
+          413.0,
+          403.0
+        ],
+        [
+          474.0,
+          403.0
+        ],
+        [
+          444.0,
+          414.0
+        ],
+        [
+          444.0,
+          329.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 66,
+        "previous_id": "mantle_front_right",
+        "next_id": "pendant_chain"
+      },
+      "nested_control": false,
+      "notes": "完整胸前蓝银硬饰，包含领下小冠、胸口双翼、中心宝石、银质托座与下缘卷脚。attach_to=inner_bodice 胸口固定 (413,403)/(474,403)/(444,414)，上冠在前领间 (444,329)；背座完整，前发可跨饰面。draw_order=前领根/内搭/外衣襟前，前发后；source=null，不与既有 forehead_jewel 合并。\n38蓝釉中面、39小面积冷暗、40银边与41青蓝亮石分层；银饰宽面反射与宝石硬切面不同，珍珠和高光小而有实体裁切。首批既有五条胸饰→胸衣投影原 id 继续使用，不叠新影。"
+    },
+    {
+      "id": "pendant_chain",
+      "logical_part": "pendant_chain",
+      "name": "裙前软链与小珠连接",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "pendant_anchor 腰端/花座挂眼，并连接 pendant_beads 上方水滴",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 67,
+        "previous_id": "chest_ornament",
+        "next_id": "pendant_anchor"
+      },
+      "nested_control": false,
+      "notes": "从腰挂眼到硬珠的完整软链和小珠连接，实际路径在花座和小叶饰后连续。attach_to=pendant_anchor 腰端/花座挂眼，并连接 pendant_beads 上方水滴；draw_order=蓝裙/腰尾前，花座硬面前后局部穿过。整链同组随动，不逐珠拆控；source=null。\n细软银链42灰银线与逐段珠光分开，完整芯线在花座后连续；两侧软绳为白银织线，阴影用完整开放路径描边而非无面积填色。"
+    },
+    {
+      "id": "pendant_anchor",
+      "logical_part": "pendant_anchor",
+      "name": "裙前长坠金属固定座",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "waist_knot 下方、waist_front 正中。",
+      "fixed_points_canvas": [
+        [
+          443.0,
+          548.0
+        ],
+        [
+          438.0,
+          687.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 68,
+        "previous_id": "pendant_chain",
+        "next_id": "pendant_beads"
+      },
+      "nested_control": false,
+      "notes": "完整腰下金属固定座与背面挂带；上座固定于 waist_knot 下缘 (443,548)，柔软背带完整延至花座 (438,687)，随腰固定点垂落。花座正面、侧厚与背扣均完整，链从其挂眼穿过而保持连续；draw_order=腰带/双尾/蓝裙前，软链根与硬花座合理穿插；source=null。\n固定带为细白蓝织带，硬花座与背扣为灰银；以42银链同族色及40银边材料铺完整背/侧面。花瓣实体沿原几何保留，亮暗由金属反射区分。"
+    },
+    {
+      "id": "pendant_beads",
+      "logical_part": "pendant_beads",
+      "name": "三枚蓝色硬珠与水滴坠",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "pendant_chain 下端",
+      "fixed_points_canvas": [
+        [
+          438.0,
+          896.0
+        ],
+        [
+          438.0,
+          933.0
+        ],
+        [
+          438.0,
+          966.0
+        ],
+        [
+          438.0,
+          852.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 69,
+        "previous_id": "pendant_anchor",
+        "next_id": "pendant_tassel"
+      },
+      "nested_control": false,
+      "notes": "完整硬质水滴坠、三枚圆珠与连接孔，软链和硬珠材质分控。attach_to=pendant_chain 下端；珠心 (438,896)/(438,933)/(438,966)，上水滴 (438,852)；各珠含完整侧背和前面，连接托圈位于球体前后。draw_order=蓝裙前，流苏结位于最下珠下方；source=null。\n43深蓝硬珠与44亮蓝面分离；球体有冷暗包边、渐变体积、细银夹托和裁于真球面的少量反射，滴形石保持浅青透亮而不整体降 alpha。三个球体仍各自可控。"
+    },
+    {
+      "id": "pendant_tassel",
+      "logical_part": "pendant_tassel",
+      "name": "长坠末端白蓝流苏",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "pendant_beads 最下连接 (438,992)",
+      "fixed_points_canvas": [
+        [
+          438.0,
+          992.0
+        ]
+      ],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 70,
+        "previous_id": "pendant_beads",
+        "next_id": "hair_crown_complete_cap"
+      },
+      "nested_control": false,
+      "notes": "完整下端丝束，含结后固定面、软翼结、丝线前后束及渐长末端；attach_to=pendant_beads 最下连接 (438,992)。线束从 y=1004 延至 y≈1409，丝隙透出蓝裙，不逐丝拆成控制部件；draw_order=蓝裙正前；source=null。\n45蓝结头与46冷白丝束分控；浅束底只补丝束密度，21根独立丝线保留缝隙和不同长短，冷紫蓝细暗线避免整片白塑料。完整丝源用于很淡的布面投影。"
+    },
+    {
+      "id": "opaque_lower_right_cuff_front",
+      "logical_part": "opaque_lower_right",
+      "name": "右绣纹下袖与袖口",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "opaque_lower_right 腕口",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 103,
+        "previous_id": "hand_right",
+        "next_id": "hand_left"
+      },
+      "nested_control": false,
+      "notes": "腕口独立前环和内缘，attach_to=opaque_lower_right 腕口；draw_order=手腕根前、手指与掌身未遮，后环在 forearm 后。完整环包腕；两端有布厚，不以单边代替实体。\n前后袖口与内缘完整不透明着色，窄亮边依布厚塑形，内唇为冷蓝反折而非皮肤补片。"
+    },
+    {
+      "id": "opaque_lower_left_cuff_front",
+      "logical_part": "opaque_lower_left",
+      "name": "左绣纹下袖与袖口",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "opaque_lower_left 腕口",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 105,
+        "previous_id": "hand_left",
+        "next_id": "headdress_branch_right_2"
+      },
+      "nested_control": false,
+      "notes": "腕口独立前环和内缘，attach_to=opaque_lower_left 腕口；draw_order=手腕根前、手指与掌身未遮，后环在 forearm 后。完整环包腕；两端有布厚，不以单边代替实体。\n前后袖口与内缘完整不透明着色，窄亮边依布厚塑形，内唇为冷蓝反折而非皮肤补片。"
+    },
+    {
+      "id": "gauze_sleeve_left_tail",
+      "logical_part": "gauze_sleeve_left",
+      "name": "左蓝色透明垂袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "mantle_front_left 肩外；opaque_upper_left 上袖外侧与 opaque_lower_left 近腕固定点。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "gauze_sleeve_left_front_material",
+        "child_order": 1,
+        "previous_id": "gauze_sleeve_left_front_surface",
+        "next_id": "gauze_sleeve_left_front_intrinsic_volume"
+      },
+      "nested_control": true,
+      "notes": "可独立摆动的长尾实体，上接口 y=884 与前幅平接；隐藏连接受共同材质层 alpha 控制，非半透明弧形搭接。"
+    },
+    {
+      "id": "gauze_sleeve_right_tail",
+      "logical_part": "gauze_sleeve_right",
+      "name": "右蓝色透明垂袖",
+      "layer_id": "sleeves",
+      "origin": "new-drawing",
+      "attach_to": "mantle_front_right 肩外；opaque_upper_right 上袖外侧与 opaque_lower_right 近腕固定点。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "gauze_sleeve_right_front_material",
+        "child_order": 1,
+        "previous_id": "gauze_sleeve_right_front_surface",
+        "next_id": "gauze_sleeve_right_front_intrinsic_volume"
+      },
+      "nested_control": true,
+      "notes": "可独立摆动的长尾实体，上接口 y=884 与前幅平接；隐藏连接受共同材质层 alpha 控制，非半透明弧形搭接。"
+    },
+    {
+      "id": "pendant_beads_sphere_1",
+      "logical_part": "pendant_beads",
+      "name": "三枚蓝色硬珠与水滴坠",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "pendant_chain 下端；连接 pendant_tassel。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "pendant_beads",
+        "child_order": 4,
+        "previous_id": "pendant_beads_upper_drop_facet",
+        "next_id": "pendant_beads_link_0_873"
+      },
+      "nested_control": true,
+      "notes": "完整圆珠前后表面和银托，球体沿软连接独立随动；侧背面有实际实体。"
+    },
+    {
+      "id": "pendant_beads_sphere_2",
+      "logical_part": "pendant_beads",
+      "name": "三枚蓝色硬珠与水滴坠",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "pendant_chain 下端；连接 pendant_tassel。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "pendant_beads",
+        "child_order": 7,
+        "previous_id": "pendant_beads_link_0_918",
+        "next_id": "pendant_beads_link_1_913"
+      },
+      "nested_control": true,
+      "notes": "完整圆珠前后表面和银托，球体沿软连接独立随动；侧背面有实际实体。"
+    },
+    {
+      "id": "pendant_beads_sphere_3",
+      "logical_part": "pendant_beads",
+      "name": "三枚蓝色硬珠与水滴坠",
+      "layer_id": "ornaments",
+      "origin": "new-drawing",
+      "attach_to": "pendant_chain 下端；连接 pendant_tassel。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "pendant_beads",
+        "child_order": 10,
+        "previous_id": "pendant_beads_link_1_952",
+        "next_id": "pendant_beads_link_2_947"
+      },
+      "nested_control": true,
+      "notes": "完整圆珠前后表面和银托，球体沿软连接独立随动；侧背面有实际实体。"
+    },
+    {
+      "id": "waist_tail_left",
+      "logical_part": "waist_tails",
+      "name": "腰结双垂带",
+      "layer_id": "waist",
+      "origin": "new-drawing",
+      "attach_to": "waist_knot 下缘，两尾各自固定。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "waist_tails",
+        "child_order": 2,
+        "previous_id": "waist_tail_right",
+        "next_id": null
+      },
+      "nested_control": true,
+      "notes": "角色左长垂带；长前面与底部折返背面独立，固定于结心后。\n20亮蓝垂带与21冷背折分别着色，长短尾正背和藏结根部完整；反光随各自纵向曲折，细织纹不跨到反折背面。"
+    },
+    {
+      "id": "waist_tail_right",
+      "logical_part": "waist_tails",
+      "name": "腰结双垂带",
+      "layer_id": "waist",
+      "origin": "new-drawing",
+      "attach_to": "waist_knot 下缘，两尾各自固定。",
+      "fixed_points_canvas": [],
+      "draw_order": {
+        "parent_id": "waist_tails",
+        "child_order": 1,
+        "previous_id": null,
+        "next_id": "waist_tail_left"
+      },
+      "nested_control": true,
+      "notes": "角色右短垂带，根藏入结后，独立摆动；完整背面反折保留。\n20亮蓝垂带与21冷背折分别着色，长短尾正背和藏结根部完整；反光随各自纵向曲折，细织纹不跨到反折背面。"
+    }
+  ],
+  "reused_base_parts": [
+    {
+      "id": "foot_chain_left",
+      "origin": "base-svg-reuse",
+      "layer_id": "base:foot_jewelry",
+      "exported": false,
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 36,
+        "previous_id": "foot_chain_right",
+        "next_id": "skirt_inner_front"
+      },
+      "original_draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 70,
+        "previous_id": "foot_chain_right",
+        "next_id": "hair5_effect_provenance"
+      },
+      "notes": "素体保有原节点、原色及投影；本套不赋 outfit_id，不复制进 clothing.svg。"
+    },
+    {
+      "id": "foot_chain_right",
+      "origin": "base-svg-reuse",
+      "layer_id": "base:foot_jewelry",
+      "exported": false,
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 35,
+        "previous_id": "foot_left",
+        "next_id": "foot_chain_left"
+      },
+      "original_draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 69,
+        "previous_id": "fx_hair5_left_long_on_earring",
+        "next_id": "foot_chain_left"
+      },
+      "notes": "素体保有原节点、原色及投影；本套不赋 outfit_id，不复制进 clothing.svg。"
+    },
+    {
+      "id": "foot_chain_left_2",
+      "origin": "base-svg-reuse",
+      "layer_id": "base:foot_jewelry",
+      "exported": false,
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 28,
+        "previous_id": "foot_chain_right_2",
+        "next_id": "calf_right"
+      },
+      "original_draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 17,
+        "previous_id": "foot_chain_right_2",
+        "next_id": "calf_right"
+      },
+      "notes": "素体保有原节点、原色及投影；本套不赋 outfit_id，不复制进 clothing.svg。"
+    },
+    {
+      "id": "foot_chain_right_2",
+      "origin": "base-svg-reuse",
+      "layer_id": "base:foot_jewelry",
+      "exported": false,
+      "draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 27,
+        "previous_id": "collar_front_left",
+        "next_id": "foot_chain_left_2"
+      },
+      "original_draw_order": {
+        "parent_id": "svg-root",
+        "child_order": 16,
+        "previous_id": "fx_hair5_left_long_on_torso",
+        "next_id": "foot_chain_left_2"
+      },
+      "notes": "素体保有原节点、原色及投影；本套不赋 outfit_id，不复制进 clothing.svg。"
+    }
+  ],
+  "effects": [
+    {
+      "id": "fx_outfit_skirt_outer_back_on_skirt_blue_back",
+      "type": "cast-shadow",
+      "source_id": "skirt_outer_back_surface",
+      "source_part": "skirt_outer_back",
+      "target_id": "skirt_blue_back_surface",
+      "target_part": "skirt_blue_back",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_outer_back_on_skirt_blue_back_complete_projection",
+      "receiver_clip": "url(#skirt_blue_back_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_skirt_outer_back_on_skirt_blue_back_visibility)",
+      "paint_order": {
+        "parent_id": "skirt_blue_back",
+        "child_order": 6,
+        "previous_id": "skirt_blue_back_hem",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_skirt_blue_back_on_skirt_inner_back",
+      "type": "cast-shadow",
+      "source_id": "skirt_blue_back_surface",
+      "source_part": "skirt_blue_back",
+      "target_id": "skirt_inner_back_surface",
+      "target_part": "skirt_inner_back",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_blue_back_on_skirt_inner_back_complete_projection",
+      "receiver_clip": "url(#skirt_inner_back_surface_clip)",
+      "visibility_mask": "url(#outfit_blue_back_contact_visibility)",
+      "paint_order": {
+        "parent_id": "skirt_inner_back",
+        "child_order": 6,
+        "previous_id": "skirt_inner_back_hem",
+        "next_id": "fx_outfit_skirt_outer_back_on_skirt_inner_back"
+      }
+    },
+    {
+      "id": "fx_outfit_skirt_outer_back_on_skirt_inner_back",
+      "type": "cast-shadow",
+      "source_id": "skirt_outer_back_surface",
+      "source_part": "skirt_outer_back",
+      "target_id": "skirt_inner_back_surface",
+      "target_part": "skirt_inner_back",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_outer_back_on_skirt_inner_back_complete_projection",
+      "receiver_clip": "url(#skirt_inner_back_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_skirt_outer_back_on_skirt_inner_back_visibility)",
+      "paint_order": {
+        "parent_id": "skirt_inner_back",
+        "child_order": 7,
+        "previous_id": "fx_outfit_skirt_blue_back_on_skirt_inner_back",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_collar_back_on_inner_bodice_back",
+      "type": "cast-shadow",
+      "source_id": "collar_back_outer_surface",
+      "source_part": "collar_back",
+      "target_id": "inner_bodice_back_surface",
+      "target_part": "inner_bodice_back",
+      "source_layer": "inner_top",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top"
+      ],
+      "complete_projection_id": "fx_outfit_collar_back_on_inner_bodice_back_complete_projection",
+      "receiver_clip": "url(#inner_bodice_back_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice_back",
+        "child_order": 4,
+        "previous_id": "inner_bodice_back_seam",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_collar_front_right_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "collar_front_right_outer_surface",
+      "source_part": "collar_front_right",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "inner_top",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top"
+      ],
+      "complete_projection_id": "fx_outfit_collar_front_right_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice",
+        "child_order": 13,
+        "previous_id": "inner_bodice_lower_overlap",
+        "next_id": "fx_outfit_collar_front_left_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_collar_front_left_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "collar_front_left_outer_surface",
+      "source_part": "collar_front_left",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "inner_top",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top"
+      ],
+      "complete_projection_id": "fx_outfit_collar_front_left_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice",
+        "child_order": 14,
+        "previous_id": "fx_outfit_collar_front_right_on_inner_bodice",
+        "next_id": "inner_bodice_chest_ornament_shadows"
+      }
+    },
+    {
+      "id": "fx_outfit_chest_ornament_right_silver_base_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "chest_ornament_right_silver_base",
+      "source_part": "chest_ornament",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "ornaments",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "ornaments"
+      ],
+      "complete_projection_id": "fx_outfit_chest_ornament_right_silver_base_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice_chest_ornament_shadows",
+        "child_order": 1,
+        "previous_id": null,
+        "next_id": "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "chest_ornament_left_silver_base",
+      "source_part": "chest_ornament",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "ornaments",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "ornaments"
+      ],
+      "complete_projection_id": "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice_chest_ornament_shadows",
+        "child_order": 2,
+        "previous_id": "fx_outfit_chest_ornament_right_silver_base_on_inner_bodice",
+        "next_id": "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "chest_ornament_right_lower_leaf",
+      "source_part": "chest_ornament",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "ornaments",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "ornaments"
+      ],
+      "complete_projection_id": "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice_chest_ornament_shadows",
+        "child_order": 3,
+        "previous_id": "fx_outfit_chest_ornament_left_silver_base_on_inner_bodice",
+        "next_id": "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "chest_ornament_left_lower_leaf",
+      "source_part": "chest_ornament",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "ornaments",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "ornaments"
+      ],
+      "complete_projection_id": "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice_chest_ornament_shadows",
+        "child_order": 4,
+        "previous_id": "fx_outfit_chest_ornament_right_lower_leaf_on_inner_bodice",
+        "next_id": "fx_outfit_chest_ornament_center_socket_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_chest_ornament_center_socket_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "chest_ornament_center_socket",
+      "source_part": "chest_ornament",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "ornaments",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "ornaments"
+      ],
+      "complete_projection_id": "fx_outfit_chest_ornament_center_socket_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice_chest_ornament_shadows",
+        "child_order": 5,
+        "previous_id": "fx_outfit_chest_ornament_left_lower_leaf_on_inner_bodice",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_mantle_front_right_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "mantle_front_right_surface",
+      "source_part": "mantle_front_right",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "shoulder_mantle",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "shoulder_mantle"
+      ],
+      "complete_projection_id": "fx_outfit_mantle_front_right_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice",
+        "child_order": 16,
+        "previous_id": "inner_bodice_chest_ornament_shadows",
+        "next_id": "fx_outfit_coat_front_right_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_coat_front_right_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "coat_front_right_surface",
+      "source_part": "coat_front_right",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "outer_coat",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "outer_coat"
+      ],
+      "complete_projection_id": "fx_outfit_coat_front_right_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice",
+        "child_order": 17,
+        "previous_id": "fx_outfit_mantle_front_right_on_inner_bodice",
+        "next_id": "fx_outfit_mantle_front_left_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_mantle_front_left_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "mantle_front_left_surface",
+      "source_part": "mantle_front_left",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "shoulder_mantle",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "shoulder_mantle"
+      ],
+      "complete_projection_id": "fx_outfit_mantle_front_left_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice",
+        "child_order": 18,
+        "previous_id": "fx_outfit_coat_front_right_on_inner_bodice",
+        "next_id": "fx_outfit_coat_front_left_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_coat_front_left_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "coat_front_left_surface",
+      "source_part": "coat_front_left",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "outer_coat",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "outer_coat"
+      ],
+      "complete_projection_id": "fx_outfit_coat_front_left_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice",
+        "child_order": 19,
+        "previous_id": "fx_outfit_mantle_front_left_on_inner_bodice",
+        "next_id": "fx_outfit_waist_front_on_inner_bodice"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_front_on_inner_bodice",
+      "type": "cast-shadow",
+      "source_id": "waist_front_surface",
+      "source_part": "waist_front",
+      "target_id": "inner_bodice_front_surface",
+      "target_part": "inner_bodice",
+      "source_layer": "waist",
+      "target_layer": "inner_top",
+      "depends_on_layers": [
+        "inner_top",
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_front_on_inner_bodice_complete_projection",
+      "receiver_clip": "url(#inner_bodice_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "inner_bodice",
+        "child_order": 20,
+        "previous_id": "fx_outfit_coat_front_left_on_inner_bodice",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_waist_front_on_skirt_inner_front",
+      "type": "cast-shadow",
+      "source_id": "waist_front_surface",
+      "source_part": "waist_front",
+      "target_id": "skirt_inner_front_surface",
+      "target_part": "skirt_inner_front",
+      "source_layer": "waist",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts",
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_front_on_skirt_inner_front_complete_projection",
+      "receiver_clip": "url(#skirt_inner_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_inner_front",
+        "child_order": 8,
+        "previous_id": "skirt_inner_front_hem_line",
+        "next_id": "fx_outfit_skirt_blue_front_on_skirt_inner_front"
+      }
+    },
+    {
+      "id": "fx_outfit_skirt_blue_front_on_skirt_inner_front",
+      "type": "cast-shadow",
+      "source_id": "skirt_blue_front_surface",
+      "source_part": "skirt_blue_front",
+      "target_id": "skirt_inner_front_surface",
+      "target_part": "skirt_inner_front",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_blue_front_on_skirt_inner_front_complete_projection",
+      "receiver_clip": "url(#skirt_inner_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_inner_front",
+        "child_order": 10,
+        "previous_id": "fx_outfit_waist_front_on_skirt_inner_front",
+        "next_id": "fx_outfit_skirt_outer_right_on_skirt_inner_front"
+      }
+    },
+    {
+      "id": "fx_outfit_skirt_outer_right_on_skirt_inner_front",
+      "type": "cast-shadow",
+      "source_id": "skirt_outer_right_surface",
+      "source_part": "skirt_outer_right",
+      "target_id": "skirt_inner_front_surface",
+      "target_part": "skirt_inner_front",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_outer_right_on_skirt_inner_front_complete_projection",
+      "receiver_clip": "url(#skirt_inner_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_inner_front",
+        "child_order": 11,
+        "previous_id": "fx_outfit_skirt_blue_front_on_skirt_inner_front",
+        "next_id": "fx_outfit_skirt_outer_left_on_skirt_inner_front"
+      }
+    },
+    {
+      "id": "fx_outfit_skirt_outer_left_on_skirt_inner_front",
+      "type": "cast-shadow",
+      "source_id": "skirt_outer_left_surface",
+      "source_part": "skirt_outer_left",
+      "target_id": "skirt_inner_front_surface",
+      "target_part": "skirt_inner_front",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_outer_left_on_skirt_inner_front_complete_projection",
+      "receiver_clip": "url(#skirt_inner_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_inner_front",
+        "child_order": 12,
+        "previous_id": "fx_outfit_skirt_outer_right_on_skirt_inner_front",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_waist_front_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "waist_front_surface",
+      "source_part": "waist_front",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "waist",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts",
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_front_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 11,
+        "previous_id": "skirt_blue_front_hem_edge",
+        "next_id": "fx_outfit_skirt_outer_right_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_skirt_outer_right_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "skirt_outer_right_surface",
+      "source_part": "skirt_outer_right",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_outer_right_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 13,
+        "previous_id": "fx_outfit_waist_front_on_skirt_blue_front",
+        "next_id": "fx_outfit_skirt_outer_left_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_skirt_outer_left_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "skirt_outer_left_surface",
+      "source_part": "skirt_outer_left",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "skirts",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_skirt_outer_left_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 14,
+        "previous_id": "fx_outfit_skirt_outer_right_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_anchor_hanging_tape",
+      "source_part": "pendant_anchor",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 15,
+        "previous_id": "fx_outfit_skirt_outer_left_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_anchor_flower_side",
+      "source_part": "pendant_anchor",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 16,
+        "previous_id": "fx_outfit_pendant_anchor_hanging_tape_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_chain_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_chain_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_chain_complete_core",
+      "source_part": "pendant_chain",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_chain_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 17,
+        "previous_id": "fx_outfit_pendant_anchor_flower_side_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_beads_upper_drop_socket",
+      "source_part": "pendant_beads",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 18,
+        "previous_id": "fx_outfit_pendant_chain_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_beads_sphere_1_back",
+      "source_part": "pendant_beads",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 19,
+        "previous_id": "fx_outfit_pendant_beads_upper_drop_socket_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_beads_sphere_2_back",
+      "source_part": "pendant_beads",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 20,
+        "previous_id": "fx_outfit_pendant_beads_sphere_1_back_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_beads_sphere_3_back_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_beads_sphere_3_back_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_beads_sphere_3_back",
+      "source_part": "pendant_beads",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_beads_sphere_3_back_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_blue_front",
+        "child_order": 21,
+        "previous_id": "fx_outfit_pendant_beads_sphere_2_back_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_0_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_0",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_0_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 1,
+        "previous_id": null,
+        "next_id": "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_1",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 2,
+        "previous_id": "fx_outfit_pendant_tassel_thread_0_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_2",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 3,
+        "previous_id": "fx_outfit_pendant_tassel_thread_1_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_3",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 4,
+        "previous_id": "fx_outfit_pendant_tassel_thread_2_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_4",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 5,
+        "previous_id": "fx_outfit_pendant_tassel_thread_3_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_5",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 6,
+        "previous_id": "fx_outfit_pendant_tassel_thread_4_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_6",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 7,
+        "previous_id": "fx_outfit_pendant_tassel_thread_5_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_7",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 8,
+        "previous_id": "fx_outfit_pendant_tassel_thread_6_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_8",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 9,
+        "previous_id": "fx_outfit_pendant_tassel_thread_7_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_9",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 10,
+        "previous_id": "fx_outfit_pendant_tassel_thread_8_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_10",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 11,
+        "previous_id": "fx_outfit_pendant_tassel_thread_9_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_11",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 12,
+        "previous_id": "fx_outfit_pendant_tassel_thread_10_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_12",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 13,
+        "previous_id": "fx_outfit_pendant_tassel_thread_11_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_13",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 14,
+        "previous_id": "fx_outfit_pendant_tassel_thread_12_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_14",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 15,
+        "previous_id": "fx_outfit_pendant_tassel_thread_13_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_15",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 16,
+        "previous_id": "fx_outfit_pendant_tassel_thread_14_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_16",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 17,
+        "previous_id": "fx_outfit_pendant_tassel_thread_15_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_17",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 18,
+        "previous_id": "fx_outfit_pendant_tassel_thread_16_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_18",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 19,
+        "previous_id": "fx_outfit_pendant_tassel_thread_17_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_19",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 20,
+        "previous_id": "fx_outfit_pendant_tassel_thread_18_on_skirt_blue_front",
+        "next_id": "fx_outfit_pendant_tassel_thread_20_on_skirt_blue_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_tassel_thread_20_on_skirt_blue_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_tassel_thread_20",
+      "source_part": "pendant_tassel",
+      "target_id": "skirt_blue_front_surface",
+      "target_part": "skirt_blue_front",
+      "source_layer": "ornaments",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "ornaments",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_tassel_thread_20_on_skirt_blue_front_complete_projection",
+      "receiver_clip": "url(#skirt_blue_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_pendant_tassel_on_skirt_blue_front_composite",
+        "child_order": 21,
+        "previous_id": "fx_outfit_pendant_tassel_thread_19_on_skirt_blue_front",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_coat_front_right_on_skirt_outer_right",
+      "type": "cast-shadow",
+      "source_id": "coat_front_right_surface",
+      "source_part": "coat_front_right",
+      "target_id": "skirt_outer_right_surface",
+      "target_part": "skirt_outer_right",
+      "source_layer": "outer_coat",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "outer_coat",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_coat_front_right_on_skirt_outer_right_complete_projection",
+      "receiver_clip": "url(#skirt_outer_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_outer_right",
+        "child_order": 5,
+        "previous_id": "skirt_outer_right_side_seam",
+        "next_id": "fx_outfit_waist_front_on_skirt_outer_right"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_front_on_skirt_outer_right",
+      "type": "cast-shadow",
+      "source_id": "waist_front_surface",
+      "source_part": "waist_front",
+      "target_id": "skirt_outer_right_surface",
+      "target_part": "skirt_outer_right",
+      "source_layer": "waist",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts",
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_front_on_skirt_outer_right_complete_projection",
+      "receiver_clip": "url(#skirt_outer_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_outer_right",
+        "child_order": 6,
+        "previous_id": "fx_outfit_coat_front_right_on_skirt_outer_right",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_coat_front_left_on_skirt_outer_left",
+      "type": "cast-shadow",
+      "source_id": "coat_front_left_surface",
+      "source_part": "coat_front_left",
+      "target_id": "skirt_outer_left_surface",
+      "target_part": "skirt_outer_left",
+      "source_layer": "outer_coat",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "outer_coat",
+        "skirts"
+      ],
+      "complete_projection_id": "fx_outfit_coat_front_left_on_skirt_outer_left_complete_projection",
+      "receiver_clip": "url(#skirt_outer_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_outer_left",
+        "child_order": 5,
+        "previous_id": "skirt_outer_left_side_seam",
+        "next_id": "fx_outfit_waist_front_on_skirt_outer_left"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_front_on_skirt_outer_left",
+      "type": "cast-shadow",
+      "source_id": "waist_front_surface",
+      "source_part": "waist_front",
+      "target_id": "skirt_outer_left_surface",
+      "target_part": "skirt_outer_left",
+      "source_layer": "waist",
+      "target_layer": "skirts",
+      "depends_on_layers": [
+        "skirts",
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_front_on_skirt_outer_left_complete_projection",
+      "receiver_clip": "url(#skirt_outer_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "skirt_outer_left",
+        "child_order": 6,
+        "previous_id": "fx_outfit_coat_front_left_on_skirt_outer_left",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_back_mount_on_waist_front",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_back_mount",
+      "source_part": "waist_knot",
+      "target_id": "waist_front_surface",
+      "target_part": "waist_front",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_back_mount_on_waist_front_complete_projection",
+      "receiver_clip": "url(#waist_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_front_composite",
+        "child_order": 1,
+        "previous_id": null,
+        "next_id": "fx_outfit_waist_knot_right_wing_on_waist_front"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_right_wing_on_waist_front",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_right_wing",
+      "source_part": "waist_knot",
+      "target_id": "waist_front_surface",
+      "target_part": "waist_front",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_right_wing_on_waist_front_complete_projection",
+      "receiver_clip": "url(#waist_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_front_composite",
+        "child_order": 2,
+        "previous_id": "fx_outfit_waist_knot_back_mount_on_waist_front",
+        "next_id": "fx_outfit_waist_knot_left_wing_on_waist_front"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_left_wing_on_waist_front",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_left_wing",
+      "source_part": "waist_knot",
+      "target_id": "waist_front_surface",
+      "target_part": "waist_front",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_left_wing_on_waist_front_complete_projection",
+      "receiver_clip": "url(#waist_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_front_composite",
+        "child_order": 3,
+        "previous_id": "fx_outfit_waist_knot_right_wing_on_waist_front",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_anchor_waist_mount_on_waist_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_anchor_waist_mount",
+      "source_part": "pendant_anchor",
+      "target_id": "waist_front_surface",
+      "target_part": "waist_front",
+      "source_layer": "ornaments",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "ornaments",
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_anchor_waist_mount_on_waist_front_complete_projection",
+      "receiver_clip": "url(#waist_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "waist_front",
+        "child_order": 12,
+        "previous_id": "fx_outfit_waist_knot_on_waist_front_composite",
+        "next_id": "fx_outfit_pendant_chain_on_waist_front"
+      }
+    },
+    {
+      "id": "fx_outfit_pendant_chain_on_waist_front",
+      "type": "cast-shadow",
+      "source_id": "pendant_chain_complete_core",
+      "source_part": "pendant_chain",
+      "target_id": "waist_front_surface",
+      "target_part": "waist_front",
+      "source_layer": "ornaments",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "ornaments",
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_pendant_chain_on_waist_front_complete_projection",
+      "receiver_clip": "url(#waist_front_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "waist_front",
+        "child_order": 13,
+        "previous_id": "fx_outfit_pendant_anchor_waist_mount_on_waist_front",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_hair_front_right_on_coat_front_right",
+      "type": "cast-shadow",
+      "source_id": "hair_front_right_long_ribbon_shape",
+      "source_part": "hair_front_right",
+      "target_id": "coat_front_right_surface",
+      "target_part": "coat_front_right",
+      "source_layer": "base:hair",
+      "target_layer": "outer_coat",
+      "depends_on_layers": [
+        "outer_coat"
+      ],
+      "complete_projection_id": "fx_outfit_hair_front_right_on_coat_front_right_complete_projection",
+      "receiver_clip": "url(#coat_front_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "coat_front_right",
+        "child_order": 6,
+        "previous_id": "coat_front_right_color_material",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_hair_front_left_on_coat_front_left",
+      "type": "cast-shadow",
+      "source_id": "hair_front_left_long_ribbon_shape",
+      "source_part": "hair_front_left",
+      "target_id": "coat_front_left_surface",
+      "target_part": "coat_front_left",
+      "source_layer": "base:hair",
+      "target_layer": "outer_coat",
+      "depends_on_layers": [
+        "outer_coat"
+      ],
+      "complete_projection_id": "fx_outfit_hair_front_left_on_coat_front_left_complete_projection",
+      "receiver_clip": "url(#coat_front_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "coat_front_left",
+        "child_order": 6,
+        "previous_id": "coat_front_left_color_material",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_back_mount_on_waist_tail_right",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_back_mount",
+      "source_part": "waist_knot",
+      "target_id": "waist_tail_right_surface",
+      "target_part": "waist_tail_right",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_back_mount_on_waist_tail_right_complete_projection",
+      "receiver_clip": "url(#waist_tail_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_tail_right_composite",
+        "child_order": 1,
+        "previous_id": null,
+        "next_id": "fx_outfit_waist_knot_right_wing_on_waist_tail_right"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_right_wing_on_waist_tail_right",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_right_wing",
+      "source_part": "waist_knot",
+      "target_id": "waist_tail_right_surface",
+      "target_part": "waist_tail_right",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_right_wing_on_waist_tail_right_complete_projection",
+      "receiver_clip": "url(#waist_tail_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_tail_right_composite",
+        "child_order": 2,
+        "previous_id": "fx_outfit_waist_knot_back_mount_on_waist_tail_right",
+        "next_id": "fx_outfit_waist_knot_left_wing_on_waist_tail_right"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_left_wing_on_waist_tail_right",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_left_wing",
+      "source_part": "waist_knot",
+      "target_id": "waist_tail_right_surface",
+      "target_part": "waist_tail_right",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_left_wing_on_waist_tail_right_complete_projection",
+      "receiver_clip": "url(#waist_tail_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_tail_right_composite",
+        "child_order": 3,
+        "previous_id": "fx_outfit_waist_knot_right_wing_on_waist_tail_right",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_back_mount_on_waist_tail_left",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_back_mount",
+      "source_part": "waist_knot",
+      "target_id": "waist_tail_left_surface",
+      "target_part": "waist_tail_left",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_back_mount_on_waist_tail_left_complete_projection",
+      "receiver_clip": "url(#waist_tail_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_tail_left_composite",
+        "child_order": 1,
+        "previous_id": null,
+        "next_id": "fx_outfit_waist_knot_right_wing_on_waist_tail_left"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_right_wing_on_waist_tail_left",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_right_wing",
+      "source_part": "waist_knot",
+      "target_id": "waist_tail_left_surface",
+      "target_part": "waist_tail_left",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_right_wing_on_waist_tail_left_complete_projection",
+      "receiver_clip": "url(#waist_tail_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_tail_left_composite",
+        "child_order": 2,
+        "previous_id": "fx_outfit_waist_knot_back_mount_on_waist_tail_left",
+        "next_id": "fx_outfit_waist_knot_left_wing_on_waist_tail_left"
+      }
+    },
+    {
+      "id": "fx_outfit_waist_knot_left_wing_on_waist_tail_left",
+      "type": "cast-shadow",
+      "source_id": "waist_knot_left_wing",
+      "source_part": "waist_knot",
+      "target_id": "waist_tail_left_surface",
+      "target_part": "waist_tail_left",
+      "source_layer": "waist",
+      "target_layer": "waist",
+      "depends_on_layers": [
+        "waist"
+      ],
+      "complete_projection_id": "fx_outfit_waist_knot_left_wing_on_waist_tail_left_complete_projection",
+      "receiver_clip": "url(#waist_tail_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "fx_outfit_waist_knot_on_waist_tail_left_composite",
+        "child_order": 3,
+        "previous_id": "fx_outfit_waist_knot_right_wing_on_waist_tail_left",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_mantle_front_right_on_opaque_upper_right",
+      "type": "cast-shadow",
+      "source_id": "mantle_front_right_surface",
+      "source_part": "mantle_front_right",
+      "target_id": "opaque_upper_right_surface",
+      "target_part": "opaque_upper_right",
+      "source_layer": "shoulder_mantle",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "shoulder_mantle",
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_mantle_front_right_on_opaque_upper_right_complete_projection",
+      "receiver_clip": "url(#opaque_upper_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "opaque_upper_right",
+        "child_order": 9,
+        "previous_id": "opaque_upper_right_embroidery_gleam",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_upper_right_on_opaque_lower_right",
+      "type": "cast-shadow",
+      "source_id": "opaque_upper_right_surface",
+      "source_part": "opaque_upper_right",
+      "target_id": "opaque_lower_right_surface",
+      "target_part": "opaque_lower_right",
+      "source_layer": "sleeves",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_upper_right_on_opaque_lower_right_complete_projection",
+      "receiver_clip": "url(#opaque_lower_right_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_opaque_upper_right_on_opaque_lower_right_contact_visibility)",
+      "paint_order": {
+        "parent_id": "opaque_lower_right",
+        "child_order": 9,
+        "previous_id": "opaque_lower_right_embroidery_gleam",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_mantle_front_left_on_opaque_upper_left",
+      "type": "cast-shadow",
+      "source_id": "mantle_front_left_surface",
+      "source_part": "mantle_front_left",
+      "target_id": "opaque_upper_left_surface",
+      "target_part": "opaque_upper_left",
+      "source_layer": "shoulder_mantle",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "shoulder_mantle",
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_mantle_front_left_on_opaque_upper_left_complete_projection",
+      "receiver_clip": "url(#opaque_upper_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "opaque_upper_left",
+        "child_order": 9,
+        "previous_id": "opaque_upper_left_embroidery_gleam",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_upper_left_on_opaque_lower_left",
+      "type": "cast-shadow",
+      "source_id": "opaque_upper_left_surface",
+      "source_part": "opaque_upper_left",
+      "target_id": "opaque_lower_left_surface",
+      "target_part": "opaque_lower_left",
+      "source_layer": "sleeves",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_upper_left_on_opaque_lower_left_complete_projection",
+      "receiver_clip": "url(#opaque_lower_left_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_opaque_upper_left_on_opaque_lower_left_contact_visibility)",
+      "paint_order": {
+        "parent_id": "opaque_lower_left",
+        "child_order": 9,
+        "previous_id": "opaque_lower_left_embroidery_gleam",
+        "next_id": null
+      }
+    },
+    {
+      "id": "gauze_sleeve_right_front_surface_reflection",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "gauze_sleeve_right_front_surface",
+      "target_part": "gauze_sleeve_right",
+      "source_layer": null,
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#gauze_sleeve_right_front_surface_reflection_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "gauze_sleeve_right",
+        "child_order": 10,
+        "previous_id": "gauze_sleeve_right_white_embroidery",
+        "next_id": "gauze_sleeve_right_tail_surface_reflection"
+      }
+    },
+    {
+      "id": "gauze_sleeve_right_tail_surface_reflection",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "gauze_sleeve_right_tail_surface",
+      "target_part": "gauze_sleeve_right",
+      "source_layer": null,
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#gauze_sleeve_right_tail_surface_reflection_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "gauze_sleeve_right",
+        "child_order": 11,
+        "previous_id": "gauze_sleeve_right_front_surface_reflection",
+        "next_id": "fx_outfit_mantle_front_right_on_gauze_sleeve_right"
+      }
+    },
+    {
+      "id": "fx_outfit_mantle_front_right_on_gauze_sleeve_right",
+      "type": "cast-shadow",
+      "source_id": "mantle_front_right_surface",
+      "source_part": "mantle_front_right",
+      "target_id": "gauze_sleeve_right_front_surface",
+      "target_part": "gauze_sleeve_right",
+      "source_layer": "shoulder_mantle",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "shoulder_mantle",
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_mantle_front_right_on_gauze_sleeve_right_complete_projection",
+      "receiver_clip": "url(#gauze_sleeve_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "gauze_sleeve_right",
+        "child_order": 12,
+        "previous_id": "gauze_sleeve_right_tail_surface_reflection",
+        "next_id": "fx_outfit_opaque_upper_right_on_gauze_sleeve_right"
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_upper_right_on_gauze_sleeve_right",
+      "type": "cast-shadow",
+      "source_id": "opaque_upper_right_surface",
+      "source_part": "opaque_upper_right",
+      "target_id": "gauze_sleeve_right_front_surface",
+      "target_part": "gauze_sleeve_right",
+      "source_layer": "sleeves",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_upper_right_on_gauze_sleeve_right_complete_projection",
+      "receiver_clip": "url(#gauze_sleeve_right_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_opaque_upper_right_on_gauze_sleeve_right_contact_visibility)",
+      "paint_order": {
+        "parent_id": "gauze_sleeve_right",
+        "child_order": 13,
+        "previous_id": "fx_outfit_mantle_front_right_on_gauze_sleeve_right",
+        "next_id": "fx_outfit_opaque_lower_right_on_gauze_sleeve_right"
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_lower_right_on_gauze_sleeve_right",
+      "type": "cast-shadow",
+      "source_id": "opaque_lower_right_surface",
+      "source_part": "opaque_lower_right",
+      "target_id": "gauze_sleeve_right_front_surface",
+      "target_part": "gauze_sleeve_right",
+      "source_layer": "sleeves",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_lower_right_on_gauze_sleeve_right_complete_projection",
+      "receiver_clip": "url(#gauze_sleeve_right_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_opaque_lower_right_on_gauze_sleeve_right_contact_visibility)",
+      "paint_order": {
+        "parent_id": "gauze_sleeve_right",
+        "child_order": 14,
+        "previous_id": "fx_outfit_opaque_upper_right_on_gauze_sleeve_right",
+        "next_id": null
+      }
+    },
+    {
+      "id": "gauze_sleeve_left_front_surface_reflection",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "gauze_sleeve_left_front_surface",
+      "target_part": "gauze_sleeve_left",
+      "source_layer": null,
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#gauze_sleeve_left_front_surface_reflection_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "gauze_sleeve_left",
+        "child_order": 10,
+        "previous_id": "gauze_sleeve_left_white_embroidery",
+        "next_id": "gauze_sleeve_left_tail_surface_reflection"
+      }
+    },
+    {
+      "id": "gauze_sleeve_left_tail_surface_reflection",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "gauze_sleeve_left_tail_surface",
+      "target_part": "gauze_sleeve_left",
+      "source_layer": null,
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#gauze_sleeve_left_tail_surface_reflection_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "gauze_sleeve_left",
+        "child_order": 11,
+        "previous_id": "gauze_sleeve_left_front_surface_reflection",
+        "next_id": "fx_outfit_mantle_front_left_on_gauze_sleeve_left"
+      }
+    },
+    {
+      "id": "fx_outfit_mantle_front_left_on_gauze_sleeve_left",
+      "type": "cast-shadow",
+      "source_id": "mantle_front_left_surface",
+      "source_part": "mantle_front_left",
+      "target_id": "gauze_sleeve_left_front_surface",
+      "target_part": "gauze_sleeve_left",
+      "source_layer": "shoulder_mantle",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "shoulder_mantle",
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_mantle_front_left_on_gauze_sleeve_left_complete_projection",
+      "receiver_clip": "url(#gauze_sleeve_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "gauze_sleeve_left",
+        "child_order": 12,
+        "previous_id": "gauze_sleeve_left_tail_surface_reflection",
+        "next_id": "fx_outfit_opaque_upper_left_on_gauze_sleeve_left"
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_upper_left_on_gauze_sleeve_left",
+      "type": "cast-shadow",
+      "source_id": "opaque_upper_left_surface",
+      "source_part": "opaque_upper_left",
+      "target_id": "gauze_sleeve_left_front_surface",
+      "target_part": "gauze_sleeve_left",
+      "source_layer": "sleeves",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_upper_left_on_gauze_sleeve_left_complete_projection",
+      "receiver_clip": "url(#gauze_sleeve_left_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_opaque_upper_left_on_gauze_sleeve_left_contact_visibility)",
+      "paint_order": {
+        "parent_id": "gauze_sleeve_left",
+        "child_order": 13,
+        "previous_id": "fx_outfit_mantle_front_left_on_gauze_sleeve_left",
+        "next_id": "fx_outfit_opaque_lower_left_on_gauze_sleeve_left"
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_lower_left_on_gauze_sleeve_left",
+      "type": "cast-shadow",
+      "source_id": "opaque_lower_left_surface",
+      "source_part": "opaque_lower_left",
+      "target_id": "gauze_sleeve_left_front_surface",
+      "target_part": "gauze_sleeve_left",
+      "source_layer": "sleeves",
+      "target_layer": "sleeves",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_lower_left_on_gauze_sleeve_left_complete_projection",
+      "receiver_clip": "url(#gauze_sleeve_left_surface_clip)",
+      "visibility_mask": "url(#fx_outfit_opaque_lower_left_on_gauze_sleeve_left_contact_visibility)",
+      "paint_order": {
+        "parent_id": "gauze_sleeve_left",
+        "child_order": 14,
+        "previous_id": "fx_outfit_opaque_upper_left_on_gauze_sleeve_left",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_hair_front_left_on_mantle_front_left",
+      "type": "cast-shadow",
+      "source_id": "hair_front_left_long_ribbon_shape",
+      "source_part": "hair_front_left",
+      "target_id": "mantle_front_left_surface",
+      "target_part": "mantle_front_left",
+      "source_layer": "base:hair",
+      "target_layer": "shoulder_mantle",
+      "depends_on_layers": [
+        "shoulder_mantle"
+      ],
+      "complete_projection_id": "fx_outfit_hair_front_left_on_mantle_front_left_complete_projection",
+      "receiver_clip": "url(#mantle_front_left_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "mantle_front_left",
+        "child_order": 8,
+        "previous_id": "mantle_front_left_fold_marks",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_hair_front_right_on_mantle_front_right",
+      "type": "cast-shadow",
+      "source_id": "hair_front_right_long_ribbon_shape",
+      "source_part": "hair_front_right",
+      "target_id": "mantle_front_right_surface",
+      "target_part": "mantle_front_right",
+      "source_layer": "base:hair",
+      "target_layer": "shoulder_mantle",
+      "depends_on_layers": [
+        "shoulder_mantle"
+      ],
+      "complete_projection_id": "fx_outfit_hair_front_right_on_mantle_front_right_complete_projection",
+      "receiver_clip": "url(#mantle_front_right_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "mantle_front_right",
+        "child_order": 8,
+        "previous_id": "mantle_front_right_fold_marks",
+        "next_id": null
+      }
+    },
+    {
+      "id": "chest_ornament_right_silver_highlight",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "chest_ornament_right_silver_base",
+      "target_part": "chest_ornament",
+      "source_layer": null,
+      "target_layer": "ornaments",
+      "depends_on_layers": [
+        "ornaments"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#chest_ornament_right_silver_highlight_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "chest_ornament_wing_right",
+        "child_order": 12,
+        "previous_id": "chest_ornament_right_rim_pearl_2",
+        "next_id": null
+      }
+    },
+    {
+      "id": "chest_ornament_left_silver_highlight",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "chest_ornament_left_silver_base",
+      "target_part": "chest_ornament",
+      "source_layer": null,
+      "target_layer": "ornaments",
+      "depends_on_layers": [
+        "ornaments"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#chest_ornament_left_silver_highlight_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "chest_ornament_wing_left",
+        "child_order": 12,
+        "previous_id": "chest_ornament_left_rim_pearl_2",
+        "next_id": null
+      }
+    },
+    {
+      "id": "pendant_beads_sphere_1_highlight",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "pendant_beads_sphere_1_front",
+      "target_part": "pendant_beads",
+      "source_layer": null,
+      "target_layer": "ornaments",
+      "depends_on_layers": [
+        "ornaments"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#pendant_beads_sphere_1_highlight_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "pendant_beads_sphere_1",
+        "child_order": 6,
+        "previous_id": "pendant_beads_sphere_1_hole",
+        "next_id": null
+      }
+    },
+    {
+      "id": "pendant_beads_sphere_2_highlight",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "pendant_beads_sphere_2_front",
+      "target_part": "pendant_beads",
+      "source_layer": null,
+      "target_layer": "ornaments",
+      "depends_on_layers": [
+        "ornaments"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#pendant_beads_sphere_2_highlight_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "pendant_beads_sphere_2",
+        "child_order": 6,
+        "previous_id": "pendant_beads_sphere_2_hole",
+        "next_id": null
+      }
+    },
+    {
+      "id": "pendant_beads_sphere_3_highlight",
+      "type": "highlight",
+      "source_id": null,
+      "source_part": null,
+      "target_id": "pendant_beads_sphere_3_front",
+      "target_part": "pendant_beads",
+      "source_layer": null,
+      "target_layer": "ornaments",
+      "depends_on_layers": [
+        "ornaments"
+      ],
+      "complete_projection_id": null,
+      "receiver_clip": "url(#pendant_beads_sphere_3_highlight_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "pendant_beads_sphere_3",
+        "child_order": 6,
+        "previous_id": "pendant_beads_sphere_3_hole",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_lower_right_cuff_on_hand_right_palm",
+      "type": "cast-shadow",
+      "source_id": "opaque_lower_right_cuff_front_surface",
+      "source_part": "opaque_lower_right",
+      "target_id": "hand_right_palm_complete_shape",
+      "target_part": "hand_right_palm",
+      "source_layer": "sleeves",
+      "target_layer": "base:arms",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_lower_right_cuff_on_hand_right_palm_complete_projection",
+      "receiver_clip": "url(#hand_right_palm_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "hand_right_palm",
+        "child_order": 4,
+        "previous_id": "hand_right_palm_visible_lines",
+        "next_id": null
+      }
+    },
+    {
+      "id": "fx_outfit_opaque_lower_left_cuff_on_hand_left_palm",
+      "type": "cast-shadow",
+      "source_id": "opaque_lower_left_cuff_front_surface",
+      "source_part": "opaque_lower_left",
+      "target_id": "hand_left_palm_complete_shape",
+      "target_part": "hand_left_palm",
+      "source_layer": "sleeves",
+      "target_layer": "base:arms",
+      "depends_on_layers": [
+        "sleeves"
+      ],
+      "complete_projection_id": "fx_outfit_opaque_lower_left_cuff_on_hand_left_palm_complete_projection",
+      "receiver_clip": "url(#hand_left_palm_surface_clip)",
+      "visibility_mask": null,
+      "paint_order": {
+        "parent_id": "hand_left_palm",
+        "child_order": 4,
+        "previous_id": "hand_left_palm_visible_lines",
+        "next_id": null
+      }
+    }
+  ],
+  "visibility_dependencies": [
+    {
+      "id": "fx_body5_face_on_neck",
+      "type": "base_effect_outfit_occlusion",
+      "layers": [
+        "inner_top"
+      ],
+      "source_id": "face_base",
+      "target_id": "neck",
+      "original_attributes": {
+        "mask": null
+      },
+      "default_attributes": {
+        "mask": "url(#outfit_inner_collar_neck_occlusion)"
+      },
+      "when_layer_disabled": "remove mask attribute; retain original face-to-neck effect and original body3_neck_surface_clip",
+      "mask_id": "outfit_inner_collar_neck_occlusion"
+    },
+    {
+      "id": "fx_hair5_right_long_on_torso",
+      "type": "base_effect_physical_occlusion",
+      "layers": [
+        "inner_top",
+        "shoulder_mantle",
+        "outer_coat"
+      ],
+      "source_id": "hair_front_right_long_ribbon",
+      "target_id": "torso",
+      "original_attributes": {
+        "display": null,
+        "clip-path": "url(#hair5_surface_torso)"
+      },
+      "default_attributes": {
+        "display": null,
+        "clip-path": "url(#hair5_surface_torso)"
+      },
+      "when_layer_disabled": "keep original torso effect unchanged; visibility follows actual torso exposure after removing disabled opaque layer roots",
+      "covering_ids": [
+        "inner_bodice",
+        "mantle_front_right",
+        "coat_front_right"
+      ]
+    },
+    {
+      "id": "fx_hair5_left_long_on_torso",
+      "type": "base_effect_physical_occlusion",
+      "layers": [
+        "inner_top",
+        "shoulder_mantle",
+        "outer_coat"
+      ],
+      "source_id": "hair_front_left_long_ribbon",
+      "target_id": "torso",
+      "original_attributes": {
+        "display": null,
+        "clip-path": "url(#hair5_surface_torso)"
+      },
+      "default_attributes": {
+        "display": null,
+        "clip-path": "url(#hair5_surface_torso)"
+      },
+      "when_layer_disabled": "keep original torso effect unchanged; visibility follows actual torso exposure after removing disabled opaque layer roots",
+      "covering_ids": [
+        "inner_bodice",
+        "mantle_front_left",
+        "coat_front_left"
+      ]
+    },
+    {
+      "id": "arms2_upper_arm_right_material",
+      "type": "base_material_physical_occlusion",
+      "layers": [
+        "sleeves"
+      ],
+      "source_id": "upper_arm_right",
+      "target_id": "upper_arm_right",
+      "original_attributes": {
+        "display": null
+      },
+      "default_attributes": {
+        "display": null
+      },
+      "when_layer_disabled": "keep original skin material and visibility unchanged; removing opaque sleeve surfaces exposes its complete intrinsic arm shading",
+      "covering_ids": [
+        "opaque_upper_right",
+        "opaque_lower_right"
+      ]
+    },
+    {
+      "id": "arms2_forearm_right_material",
+      "type": "base_material_physical_occlusion",
+      "layers": [
+        "sleeves"
+      ],
+      "source_id": "forearm_right",
+      "target_id": "forearm_right",
+      "original_attributes": {
+        "display": null
+      },
+      "default_attributes": {
+        "display": null
+      },
+      "when_layer_disabled": "keep original skin material and visibility unchanged; removing opaque sleeve surfaces exposes its complete intrinsic arm shading",
+      "covering_ids": [
+        "opaque_upper_right",
+        "opaque_lower_right"
+      ]
+    },
+    {
+      "id": "arms2_upper_arm_left_material",
+      "type": "base_material_physical_occlusion",
+      "layers": [
+        "sleeves"
+      ],
+      "source_id": "upper_arm_left",
+      "target_id": "upper_arm_left",
+      "original_attributes": {
+        "display": null
+      },
+      "default_attributes": {
+        "display": null
+      },
+      "when_layer_disabled": "keep original skin material and visibility unchanged; removing opaque sleeve surfaces exposes its complete intrinsic arm shading",
+      "covering_ids": [
+        "opaque_upper_left",
+        "opaque_lower_left"
+      ]
+    },
+    {
+      "id": "arms2_forearm_left_material",
+      "type": "base_material_physical_occlusion",
+      "layers": [
+        "sleeves"
+      ],
+      "source_id": "forearm_left",
+      "target_id": "forearm_left",
+      "original_attributes": {
+        "display": null
+      },
+      "default_attributes": {
+        "display": null
+      },
+      "when_layer_disabled": "keep original skin material and visibility unchanged; removing opaque sleeve surfaces exposes its complete intrinsic arm shading",
+      "covering_ids": [
+        "opaque_upper_left",
+        "opaque_lower_left"
+      ]
+    },
+    {
+      "id": "fx_lower3_foot_chain_right_on_calf",
+      "type": "base_effect_physical_occlusion",
+      "layers": [
+        "skirts"
+      ],
+      "source_id": "foot_chain_right",
+      "target_id": "calf_right",
+      "original_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_calf_right_clip)"
+      },
+      "default_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_calf_right_clip)"
+      },
+      "when_layer_disabled": "keep original foot-chain skin shadow unchanged; removal of skirt surfaces naturally reveals the original complete leg and foot shading",
+      "covering_ids": [
+        "skirt_inner_front",
+        "skirt_blue_front",
+        "skirt_outer_right",
+        "skirt_outer_left"
+      ]
+    },
+    {
+      "id": "fx_lower3_foot_chain_right_on_foot",
+      "type": "base_effect_physical_occlusion",
+      "layers": [
+        "skirts"
+      ],
+      "source_id": "foot_chain_right",
+      "target_id": "foot_right",
+      "original_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_foot_right_clip)"
+      },
+      "default_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_foot_right_clip)"
+      },
+      "when_layer_disabled": "keep original foot-chain skin shadow unchanged; removal of skirt surfaces naturally reveals the original complete leg and foot shading",
+      "covering_ids": [
+        "skirt_inner_front",
+        "skirt_blue_front",
+        "skirt_outer_right",
+        "skirt_outer_left"
+      ]
+    },
+    {
+      "id": "fx_lower3_foot_chain_left_on_calf",
+      "type": "base_effect_physical_occlusion",
+      "layers": [
+        "skirts"
+      ],
+      "source_id": "foot_chain_left",
+      "target_id": "calf_left",
+      "original_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_calf_left_clip)"
+      },
+      "default_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_calf_left_clip)"
+      },
+      "when_layer_disabled": "keep original foot-chain skin shadow unchanged; removal of skirt surfaces naturally reveals the original complete leg and foot shading",
+      "covering_ids": [
+        "skirt_inner_front",
+        "skirt_blue_front",
+        "skirt_outer_right",
+        "skirt_outer_left"
+      ]
+    },
+    {
+      "id": "fx_lower3_foot_chain_left_on_foot",
+      "type": "base_effect_physical_occlusion",
+      "layers": [
+        "skirts"
+      ],
+      "source_id": "foot_chain_left",
+      "target_id": "foot_left",
+      "original_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_foot_left_clip)"
+      },
+      "default_attributes": {
+        "display": null,
+        "clip-path": "url(#lower3_foot_left_clip)"
+      },
+      "when_layer_disabled": "keep original foot-chain skin shadow unchanged; removal of skirt surfaces naturally reveals the original complete leg and foot shading",
+      "covering_ids": [
+        "skirt_inner_front",
+        "skirt_blue_front",
+        "skirt_outer_right",
+        "skirt_outer_left"
+      ]
+    },
+    {
+      "id": "foot_chain_left",
+      "type": "base_draw_order_adjustment",
+      "layers": [
+        "skirts"
+      ],
+      "original_placement": {
+        "parent_id": "svg-root",
+        "child_order": 70,
+        "previous_id": "foot_chain_right",
+        "next_id": "hair5_effect_provenance"
+      },
+      "default_placement": {
+        "parent_id": "svg-root",
+        "child_order": 36,
+        "previous_id": "foot_chain_right",
+        "next_id": "skirt_inner_front"
+      },
+      "when_outfit_removed": "可恢复原素体绘制位置；默认穿戴时足链位于裙前片之前，由真实裙脚遮挡。无需删除或重画原足链。"
+    },
+    {
+      "id": "foot_chain_right",
+      "type": "base_draw_order_adjustment",
+      "layers": [
+        "skirts"
+      ],
+      "original_placement": {
+        "parent_id": "svg-root",
+        "child_order": 69,
+        "previous_id": "fx_hair5_left_long_on_earring",
+        "next_id": "foot_chain_left"
+      },
+      "default_placement": {
+        "parent_id": "svg-root",
+        "child_order": 35,
+        "previous_id": "foot_left",
+        "next_id": "foot_chain_left"
+      },
+      "when_outfit_removed": "可恢复原素体绘制位置；默认穿戴时足链位于裙前片之前，由真实裙脚遮挡。无需删除或重画原足链。"
+    }
+  ],
+  "resource_only_base_shapes": [
+    "hand_left_palm_complete_shape",
+    "hand_right_palm_complete_shape"
+  ],
+  "inferences": [
+    "白绸不可见背片按对应前片材料补全；背光与隐藏褶向为保守推断。",
+    "透明纱采用推断本色 #76B0E8；前幅/长尾共用 .38，后幅 .35，真实内翻面另加 .22，实际双层有效覆盖约 .5164。人工平接口 y=884 不累加 alpha。",
+    "蓝中裙保持完整不透明轻绸，浅蓝透光感由独立亮面及薄边体现；单张合成参考不能唯一确定布料 alpha。",
+    "软结短影落在实际腰带/尾根，底下内搭与裙腰在腰带遮挡区不重复显影。"
+  ],
+  "status": {
+    "default_pose": "colored static final",
+    "layer_toggle_check": "饰物层整体关闭及内搭领层关闭，连带承影/遮罩同步处理；仅静态自查。",
+    "not_bound": [
+      "衣层开关运行时绑定",
+      "肩肘腕和腰部固定点跟随",
+      "软链和垂带/纱尾的动态响应",
+      "珠体/丝穗摆动",
+      "姿态变化后的投影更新与动态角度验证"
+    ]
+  }
+}

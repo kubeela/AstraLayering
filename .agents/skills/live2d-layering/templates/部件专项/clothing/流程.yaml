@@ -1,0 +1,16 @@
+id: clothing_base_cleanup
+worker: clothing_cleanup
+inputs:
+  reference: inputs.reference # 临时连体服参考，用于识别待移出的衣物。
+  original_reference: inputs.original_reference # 原始角色与衣装图。
+  prepared_reference: inputs.prepared_reference # 换连体服前实际使用的角色参考。
+  parts: inputs.parts
+  svg: inputs.svg # 当前最新完整carry，不取旧绘制会话中的稿件。
+  preview_tool:
+    asset: ../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/character.svg
+  preview: refinement/groups/{group.id}/preview.png
+  handoff: refinement/groups/{group.id}/交接.md
+  outfit_source: refinement/groups/{group.id}/衣装来源.svg
+  outfit_references: refinement/groups/{group.id}/衣装参考/

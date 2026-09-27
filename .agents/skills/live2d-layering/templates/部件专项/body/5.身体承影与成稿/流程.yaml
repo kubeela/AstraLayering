@@ -1,0 +1,12 @@
+id: body_effects
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.body_torso_coloring.svg
+  palette_json: nodes.body_palette.palette_json
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/5.身体承影与成稿/character.svg
+  preview: refinement/groups/{group.id}/5.身体承影与成稿/preview.png

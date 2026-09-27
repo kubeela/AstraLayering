@@ -1,0 +1,9 @@
+为已通过完整部件审查的嘴部独立整理色盘和隐藏素材的补全配色，位置、数量、分组与提取方法由你根据图片判断；脚本提供采样和排版能力，不替你决定该取哪些颜色，不修改SVG或重新做制作计划。
+
+依据原彩图和当前SVG定位嘴线/嘴角、实际上下唇色、邻近皮肤，以及原图可见的嘴内、牙齿、舌头；投影和高光单独标明用途。按实际颜色变化选择有代表性的样本，不要求固定数量或为简单嘴部凑复杂色层；有唇色时覆盖上下唇及中央/边缘的实际深浅转折。
+复用同目录提取色盘.py，命令：python <提取色盘.py> <原彩图> <取样JSON> <输出palette.png>。工具需要Pillow，可用--font指定可用中文字体；采样JSON放工作根的tmp中复用。
+每项含name、part_id和自定role，part_id沿用原嘴id；contour/cavity/interior/lips/skin/comparison只是默认展示建议，不限制新类别。数组可直接传入，也可用{"samples":[...],"title":"...","groups":{"自定role":"显示名"}}覆盖标题与分组。
+按实际图像选method：point读取x/y精确像素；nearest从x/y/radius或box=[X,Y,W,H]找接近区域中位数的真实像素；mean/median得到区域统计色。可用--method统一指定，各项仍可覆盖；坐标按EXIF校正后的原图像素，min_alpha可调整参与取样的透明度范围。
+脚本方法不适用时，可自行选色、用外部工具取色或计算颜色，以method=provided和rgb或hex交给工具直接生成色盘；basis注明方法与来源，不能把提供色或统计色伪称为工具直接取出的某个像素。用region、usage、basis简记位置、变化方向、用途和软硬，直接保存在色盘数据里，不另写长篇层次说明。
+无法从原图取样的口腔、上牙、下牙、舌头必须在补全配色.json逐项有配色依据，格式为{"inferred_colors":[{"part_id":"原嘴id","role":"teeth_lower","hex":"#颜色","basis":"与画风及邻近色的关系","source_sample_ids":[]}]}，其余role为mouth_inside、teeth_upper、tongue。隐藏不等于省略；推断色不伪造像素坐标、不混入实测samples，已有真实样本的部件无需重复推断。
+交付palette.png、palette.json、补全配色.json，回复只指出取色范围和推断项；默认嘴型及六项完整底形沿用线稿。

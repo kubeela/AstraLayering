@@ -1,0 +1,10 @@
+# 用户提供这两份素材，并在调用时指定输出目录作为本轮工作根目录。
+inputs:
+  base_svg:
+    type: svg
+    required: true
+    description: 完成素体整理后的最新完整分层 SVG，只读输入
+  outfit_reference:
+    type: image
+    required: true
+    description: 原始穿衣角色图或用户指定的新衣装设计，作为本轮款式和颜色依据

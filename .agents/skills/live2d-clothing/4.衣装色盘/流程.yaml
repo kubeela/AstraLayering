@@ -1,0 +1,11 @@
+id: clothing_palette
+worker: clothing_palette
+inputs:
+  reference: inputs.outfit_reference
+  svg: nodes.clothing_line_review.svg
+  structure: nodes.clothing_structure.structure
+  palette_tool:
+    asset: 提取色盘.py
+outputs:
+  palette_image: 4.衣装色盘/palette.png
+  palette_json: 4.衣装色盘/palette.json

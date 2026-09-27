@@ -1,0 +1,10 @@
+id: mouth_palette
+worker: mouth_palette
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+outputs:
+  palette_image: refinement/groups/{group.id}/2.嘴部色盘/palette.png
+  palette_json: refinement/groups/{group.id}/2.嘴部色盘/palette.json
+  inferred_palette: refinement/groups/{group.id}/2.嘴部色盘/补全配色.json

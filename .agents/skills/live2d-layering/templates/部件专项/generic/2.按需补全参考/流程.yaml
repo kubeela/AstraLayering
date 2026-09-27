@@ -1,0 +1,16 @@
+id: generic_reference
+inputs:
+  reference: inputs.reference # 图1：原图，造型依据。
+  line_art: inputs.line_art # 不生成时沿用的既有线稿参考。
+  structure: nodes.generic_structure.structure # 仅供总控读取分支决定。
+  reference_brief: nodes.generic_structure.reference_brief
+if: structure 中的 reference_needed 为 true
+then:
+  outputs:
+    image: refinement/groups/{group.id}/2.按需补全参考/补全参考.png
+  imagegen:
+    prompt: 生成提示词.txt
+    inputs: [reference, reference_brief]
+else:
+  outputs:
+    image: inputs.line_art

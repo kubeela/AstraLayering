@@ -1,0 +1,10 @@
+# GPT-6 Sol-medium；只在开工前决定策略。
+id: eyes_plan
+worker: eyes_planning
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+writes_options: [eyes_symmetric]
+outputs:
+  plan: refinement/groups/{group.id}/1.制作计划/plan.json
+  notes: refinement/groups/{group.id}/1.制作计划/说明.md

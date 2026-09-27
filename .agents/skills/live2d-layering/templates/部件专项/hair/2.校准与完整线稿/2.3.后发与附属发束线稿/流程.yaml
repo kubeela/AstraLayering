@@ -1,0 +1,25 @@
+id: hair_line_art
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.hair_front_side_line_art.svg
+  guide: nodes.hair_reference.image
+  preview_tool:
+    asset: ../../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/character.svg
+  head_comparison: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/头部结构对照.png
+  back_comparison: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/后发结构对照.png
+review:
+  run: review/
+  inputs:
+    reference: inputs.reference
+    parts: inputs.parts
+    guide: inputs.guide
+    candidate: self.svg
+    head_comparison: self.head_comparison
+    back_comparison: self.back_comparison
+    preview_tool: inputs.preview_tool
+  outputs:
+    report: reviews/refinement/{group.id}/line-art/审查.md

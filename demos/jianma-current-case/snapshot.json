@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-27",
+  "description": "原样保存本轮素体与衣装交付，未重画或改变 SVG 结构",
+  "files": [
+    {
+      "file": "base.svg",
+      "source": "outputs/jianma_v4/refinement/groups/clothing/character.svg",
+      "sha256": "fcef2841d01952b17e355cc7e378784eb51b063b47989edfbadf0be0e7afc4b4"
+    },
+    {
+      "file": "base-preview.png",
+      "source": "outputs/jianma_v4/refinement/groups/clothing/preview.png",
+      "sha256": "b23c8e2e6e9c87ce9a4693283a0a7e0dbd828f8618e04da10a0307761dc82dfc"
+    },
+    {
+      "file": "outfit-reference.png",
+      "source": "outputs/jianma_clothing/inputs/outfit_reference.png",
+      "sha256": "670e4ad3511dce9cee9c9f700e7f7056162e826be6bc05c350e14e91db0afbd0"
+    },
+    {
+      "file": "character.svg",
+      "source": "outputs/jianma_clothing/final/character.svg",
+      "sha256": "5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9"
+    },
+    {
+      "file": "clothing.svg",
+      "source": "outputs/jianma_clothing/final/clothing.svg",
+      "sha256": "4b81812dd7c9fa3522f2ca4ff9e5cbb207050f0d1ecef8b9b524db22813a4554"
+    },
+    {
+      "file": "clothing-index.json",
+      "source": "outputs/jianma_clothing/final/clothing-index.json",
+      "sha256": "799aaca91d28346dc5356526985ee064368e1cde459bd3623f37509867278bfd"
+    },
+    {
+      "file": "preview.png",
+      "source": "outputs/jianma_clothing/final/preview.png",
+      "sha256": "f47e63ca016f40c09df9865c7914aa0b311643e85b6b0a76ad6abf36e96a31f1"
+    },
+    {
+      "file": "comparison.png",
+      "source": "outputs/jianma_clothing/final/成稿对照.png",
+      "sha256": "082aaa83bd21db1896889be3370e45e53dc0ef91479fb282a1f0fa66b8f9bfa4"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+id: mouth_coloring
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  palette_image: nodes.mouth_palette.palette_image
+  palette_json: nodes.mouth_palette.palette_json
+  inferred_palette: nodes.mouth_palette.inferred_palette
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/3.嘴部着色成稿/character.svg
+  preview: refinement/groups/{group.id}/3.嘴部着色成稿/preview.png

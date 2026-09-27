@@ -1,0 +1,11 @@
+id: hair_front_side_line_art
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.hair_crown_line_art.svg
+  guide: nodes.hair_reference.image
+  preview_tool:
+    asset: ../../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/2.校准与完整线稿/2.2.前发与侧发线稿/character.svg

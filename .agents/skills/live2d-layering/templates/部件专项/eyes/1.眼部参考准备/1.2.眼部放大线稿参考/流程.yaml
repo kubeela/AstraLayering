@@ -1,0 +1,7 @@
+id: eyes_closeup_reference
+inputs:
+  reference: inputs.reference # 图1：原角色彩图。
+outputs:
+  image: refinement/groups/{group.id}/1.眼部参考/眼部放大线稿.png
+imagegen:
+  prompt: 生成提示词.txt

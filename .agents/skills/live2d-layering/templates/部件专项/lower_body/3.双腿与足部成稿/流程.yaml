@@ -1,0 +1,15 @@
+id: lower_body_legs
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.lower_body_pelvis.svg
+  guide: inputs.line_art
+  palette_image: nodes.lower_body_palette.palette_image
+  palette_json: nodes.lower_body_palette.palette_json
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/3.双腿与足部成稿/character.svg
+  preview: refinement/groups/{group.id}/3.双腿与足部成稿/preview.png
+  comparison: refinement/groups/{group.id}/3.双腿与足部成稿/衔接与投影对照.png

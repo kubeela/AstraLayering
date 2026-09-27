@@ -1,0 +1,317 @@
+{
+  "source": "C:/Users/22129/Downloads/米粒模型配布4.1版本用/Milly原画.psd",
+  "canvas": [
+    3200,
+    4800
+  ],
+  "layers": [
+    {
+      "path": "/上身/左臂",
+      "kind": "group",
+      "bbox": [
+        1811,
+        1242,
+        2225,
+        2582
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/腕带后L",
+      "kind": "layer",
+      "bbox": [
+        2014,
+        2283,
+        2135,
+        2344
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/手L",
+      "kind": "group",
+      "bbox": [
+        2031,
+        2281,
+        2225,
+        2582
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/手L/指5L",
+      "kind": "layer",
+      "bbox": [
+        2106,
+        2374,
+        2192,
+        2495
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/手L/指4L",
+      "kind": "layer",
+      "bbox": [
+        2100,
+        2395,
+        2183,
+        2511
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/手L/指3L",
+      "kind": "layer",
+      "bbox": [
+        2106,
+        2411,
+        2218,
+        2546
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/手L/指2L",
+      "kind": "layer",
+      "bbox": [
+        2135,
+        2367,
+        2225,
+        2582
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/手L/手掌L",
+      "kind": "layer",
+      "bbox": [
+        2031,
+        2281,
+        2204,
+        2451
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/手L/指1L",
+      "kind": "layer",
+      "bbox": [
+        2042,
+        2343,
+        2147,
+        2529
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/小臂L",
+      "kind": "layer",
+      "bbox": [
+        1882,
+        1877,
+        2106,
+        2292
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/腕带前L",
+      "kind": "layer",
+      "bbox": [
+        2000,
+        2240,
+        2135,
+        2340
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/袖子后L",
+      "kind": "layer",
+      "bbox": [
+        1823,
+        1545,
+        2098,
+        1681
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/大臂L",
+      "kind": "layer",
+      "bbox": [
+        1838,
+        1565,
+        2003,
+        1935
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/左臂/袖子前L",
+      "kind": "layer",
+      "bbox": [
+        1811,
+        1242,
+        2100,
+        1681
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂",
+      "kind": "group",
+      "bbox": [
+        975,
+        1239,
+        1406,
+        2582
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/腕带后R",
+      "kind": "layer",
+      "bbox": [
+        1055,
+        2283,
+        1181,
+        2356
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/手R",
+      "kind": "group",
+      "bbox": [
+        975,
+        2281,
+        1169,
+        2582
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/手R/指5R",
+      "kind": "layer",
+      "bbox": [
+        1008,
+        2374,
+        1094,
+        2495
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/手R/指4R",
+      "kind": "layer",
+      "bbox": [
+        1017,
+        2395,
+        1100,
+        2511
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/手R/指3R",
+      "kind": "layer",
+      "bbox": [
+        982,
+        2411,
+        1094,
+        2546
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/手R/指2R",
+      "kind": "layer",
+      "bbox": [
+        975,
+        2367,
+        1065,
+        2582
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/手R/手掌R",
+      "kind": "layer",
+      "bbox": [
+        996,
+        2281,
+        1169,
+        2451
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/手R/指1R",
+      "kind": "layer",
+      "bbox": [
+        1053,
+        2343,
+        1158,
+        2529
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/小臂R",
+      "kind": "layer",
+      "bbox": [
+        1101,
+        1852,
+        1320,
+        2256
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/腕带前R",
+      "kind": "layer",
+      "bbox": [
+        1055,
+        2198,
+        1218,
+        2350
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/袖子后R",
+      "kind": "layer",
+      "bbox": [
+        1100,
+        1526,
+        1380,
+        1682
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/大臂R",
+      "kind": "layer",
+      "bbox": [
+        1197,
+        1565,
+        1362,
+        1935
+      ],
+      "visible": true
+    },
+    {
+      "path": "/上身/右臂/袖子前R",
+      "kind": "layer",
+      "bbox": [
+        1099,
+        1239,
+        1406,
+        1680
+      ],
+      "visible": true
+    }
+  ]
+}

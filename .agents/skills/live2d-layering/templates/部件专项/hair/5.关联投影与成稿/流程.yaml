@@ -1,0 +1,12 @@
+id: hair_effects
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.hair_coloring.svg
+  palette_json: nodes.hair_palette.palette_json
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/5.关联投影与成稿/character.svg
+  preview: refinement/groups/{group.id}/5.关联投影与成稿/preview.png

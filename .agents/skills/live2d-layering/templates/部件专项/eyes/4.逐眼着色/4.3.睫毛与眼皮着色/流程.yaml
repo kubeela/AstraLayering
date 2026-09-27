@@ -1,0 +1,17 @@
+id: eye_decoration_coloring
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  plan: inputs.plan
+  symmetry: inputs.symmetry
+  palette_image: inputs.palette_image
+  palette_json: inputs.palette_json
+  palette_notes: inputs.palette_notes
+  approved_line_art: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/character.svg
+outputs:
+  svg: refinement/groups/{group.id}/4.逐眼着色/{eye.id}/4.3.睫毛与眼皮着色/character.svg
+  preview: refinement/groups/{group.id}/4.逐眼着色/{eye.id}/4.3.睫毛与眼皮着色/preview.png
+  comparison: refinement/groups/{group.id}/4.逐眼着色/{eye.id}/4.3.睫毛与眼皮着色/对照.png
+  notes: refinement/groups/{group.id}/4.逐眼着色/{eye.id}/4.3.睫毛与眼皮着色/说明.md

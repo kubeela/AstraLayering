@@ -1,0 +1,12 @@
+id: eyes_palette
+worker: eyes_palette
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  plan: refinement/groups/{group.id}/1.制作计划/plan.json
+  symmetry: options.eyes_symmetric
+outputs:
+  palette_image: refinement/groups/{group.id}/3.眼部色盘/palette.png
+  palette_json: refinement/groups/{group.id}/3.眼部色盘/palette.json
+  notes: refinement/groups/{group.id}/3.眼部色盘/说明.md

@@ -1,0 +1,24 @@
+id: eye_effects
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  plan: refinement/groups/{group.id}/1.制作计划/plan.json
+  symmetry: options.eyes_symmetric
+  approved_line_art: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/character.svg
+  clean_coloring: refinement/groups/{group.id}/4.逐眼着色/{eye.id}/4.4.眼周皮肤明暗/character.svg
+  palette_image: refinement/groups/{group.id}/3.眼部色盘/palette.png
+  palette_json: refinement/groups/{group.id}/3.眼部色盘/palette.json
+  palette_notes: refinement/groups/{group.id}/3.眼部色盘/说明.md
+foreach:
+  from: inputs.plan
+  items: eyes
+  as: eye
+  mode: serial
+  carry: [svg]
+outputs:
+  svg: refinement/groups/{group.id}/5.逐眼投影与高光/{eye.id}/character.svg
+  preview: refinement/groups/{group.id}/5.逐眼投影与高光/{eye.id}/preview.png
+  comparison: refinement/groups/{group.id}/5.逐眼投影与高光/{eye.id}/效果对照.png
+  notes: refinement/groups/{group.id}/5.逐眼投影与高光/{eye.id}/说明.md

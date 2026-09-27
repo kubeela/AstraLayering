@@ -1,0 +1,17 @@
+id: physics_details_coloring
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  approved_line_art: nodes.physics_details_line_art.svg
+  structure: nodes.physics_details_structure.structure
+  handoff: nodes.physics_details_line_art.handoff
+  palette_image: nodes.physics_details_palette.palette_image
+  palette_json: nodes.physics_details_palette.palette_json
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/5.着色与效果成稿/character.svg
+  preview: refinement/groups/{group.id}/5.着色与效果成稿/preview.png
+  comparison: refinement/groups/{group.id}/5.着色与效果成稿/成稿对照.png

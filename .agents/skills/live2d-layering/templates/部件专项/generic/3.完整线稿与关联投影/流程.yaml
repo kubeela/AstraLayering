@@ -1,0 +1,27 @@
+id: generic_line_art
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  structure: nodes.generic_structure.structure
+  guide: nodes.generic_reference.image
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/3.完整线稿与关联投影/character.svg
+  comparison: refinement/groups/{group.id}/3.完整线稿与关联投影/结构对照.png
+  handoff: refinement/groups/{group.id}/3.完整线稿与关联投影/衔接记录.md
+review:
+  run: review/
+  inputs:
+    reference: inputs.reference
+    parts: inputs.parts
+    structure: inputs.structure
+    baseline: inputs.svg
+    candidate: self.svg
+    comparison: self.comparison
+    handoff: self.handoff
+    preview_tool: inputs.preview_tool
+  outputs:
+    report: reviews/refinement/{group.id}/line-art/审查.md

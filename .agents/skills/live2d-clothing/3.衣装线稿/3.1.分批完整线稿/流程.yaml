@@ -1,0 +1,20 @@
+id: clothing_line_batches
+worker: clothing_drawing
+inputs:
+  svg: inputs.base_svg
+  reference: inputs.outfit_reference
+  structure: nodes.clothing_structure.structure
+  guide: nodes.clothing_reference.image
+  preview_tool:
+    asset: ../../../live2d-layering/tools/svg_preview.py
+foreach:
+  from: inputs.structure
+  items: line_batches
+  as: batch
+  mode: serial
+  carry: [svg]
+outputs:
+  svg: 3.衣装线稿/{batch.id}/character.svg
+  comparison:
+    path: 3.衣装线稿/结构对照.png
+    when: last_item

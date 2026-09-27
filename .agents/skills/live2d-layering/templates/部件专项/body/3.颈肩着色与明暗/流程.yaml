@@ -1,0 +1,12 @@
+id: body_neck_shoulder_coloring
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.body_line_art.svg
+  palette_image: nodes.body_palette.palette_image
+  palette_json: nodes.body_palette.palette_json
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/3.颈肩着色与明暗/character.svg

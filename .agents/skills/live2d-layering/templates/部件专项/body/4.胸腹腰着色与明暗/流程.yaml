@@ -1,0 +1,12 @@
+id: body_torso_coloring
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: nodes.body_neck_shoulder_coloring.svg
+  palette_image: nodes.body_palette.palette_image
+  palette_json: nodes.body_palette.palette_json
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  svg: refinement/groups/{group.id}/4.胸腹腰着色与明暗/character.svg

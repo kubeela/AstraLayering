@@ -1,0 +1,22 @@
+id: eyes_assembly
+worker: refinement_drawing
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  plan: refinement/groups/{group.id}/1.制作计划/plan.json
+  symmetry: options.eyes_symmetric
+outputs:
+  svg: refinement/groups/{group.id}/6.镜像组装与成稿审查/character.svg
+  preview: refinement/groups/{group.id}/6.镜像组装与成稿审查/preview.png
+  notes: refinement/groups/{group.id}/6.镜像组装与成稿审查/说明.md
+review:
+  run: review/
+  inputs:
+    reference: inputs.reference
+    parts: inputs.parts
+    candidate: self.svg
+    plan: inputs.plan
+    symmetry: inputs.symmetry
+  outputs:
+    report: reviews/refinement/{group.id}/审查.md

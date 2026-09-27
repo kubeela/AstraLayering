@@ -1,0 +1,15 @@
+id: clothing_reference
+inputs:
+  reference: inputs.outfit_reference
+  structure: nodes.clothing_structure.structure
+  reference_brief: nodes.clothing_structure.reference_brief
+if: structure 中的 reference_needed 为 true
+then:
+  outputs:
+    image: 2.按需补全参考/衣装制作参考.png
+  imagegen:
+    prompt: 生成提示词.txt
+    inputs: [reference, reference_brief]
+else:
+  outputs:
+    image: inputs.reference

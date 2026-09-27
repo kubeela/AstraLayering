@@ -1,0 +1,9 @@
+为本轮arms制作原图色盘，供后续双臂与双手绘制使用；范围以group.part_ids和parts为准，本步只取色，不修改SVG。
+
+观察原图两侧大臂、小臂、掌面、指节和实际可见甲面，按画风和空间变化选择肤色、冷暖、体积层次、轮廓及承影/高光参照；采样位置、数量、分类与方法由你根据本图决定，不强制每区固定数量或一种渐变。区分皮肤自身明暗和其它实体投来的影，用usage说明颜色的位置、变化方向、软硬与用途；这只是取色，不新增全局光源判断、lighting计划或动作投影分析。
+读取已完成body肩口的接口desc和着色，标明双臂接续需要的底色、过渡位置与方向，来源记为“上游SVG接口参考”；它不能冒充原图像素。手部隐藏区域按相邻真实肤色及本手表面推断，不采粗色块、衣物颜色或生成参考的灰阶作为皮肤颜色，也不以遮挡物边界划分肤色。
+
+使用python <palette_tool> <原彩图> <取样JSON> <palette.png>采样与排版；此入口只设可覆盖的展示名称，公共extract_palette.py提供通用方法。取样可为数组或含samples/title/groups的对象，role可自定；每项保留name、实际part_id、region、usage、basis。method可用point、nearest、mean、median，或自行计算后用provided与rgb/hex，不限定你如何合理取色。
+坐标按EXIF校正后的原图像素，范围用x/y/radius或box；保留method与color_origin，统计色不能伪称唯一实测像素。需要看肩口时复用preview_tool，不重写渲染脚本。
+在palette.json追加inferred_colors，记录隐藏补色的part_id、region、source_sample_ids、usage和basis，确需新色时写hex，无需推断则为空；接口参照和颜色空间用途也写入此文件，不另建报告或计划文件。
+只交palette.png和palette.json，取样JSON放工作根tmp，简述实测/上游参照/推断范围；没有SVG输出，保持最新carry。

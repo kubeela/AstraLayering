@@ -1,0 +1,9 @@
+为本轮lower_body整理原图肤色与层次色盘，供下一任务先完成骨盆、再由一个任务完成双腿和足部；本步只取色，不修改SVG或拆分。范围以group.part_ids和parts为准，已有独立大腿/小腿/脚或整腿结构均可，不能根据取色分组新增实体部件。
+
+先看原彩图中实际可见的胯侧、腿根、大腿、膝、小腿、脚踝和足部，判断基础肤色、宽幅体积、局部冷暖与细微受光；按原图风格决定位置、数量、分类和采样方法，不强制每区取相同数量，也不把身体简化成一个肤色加一层通用渐变。区分皮肤自身明暗与衣缘、头发、配饰或另一独立部件投来的影；当前SVG粗色块、白色衣料及生图线稿不是肤色来源。
+读取当前SVG中torso腰口的接口desc和已完成着色，为骨盆接续标明可沿用的底色、过渡位置与方向；这些标为“上游SVG接口参考”，不能冒充原图采样。被衣物遮住的骨盆与腿根仅根据相邻真实皮肤、体块和接口色推断，不凭衣服的白色、边缘或褶皱生成皮肤颜色。
+
+使用python <palette_tool> <原彩图> <取样JSON> <palette.png>快速采样和排版；该入口只设默认展示，公共extract_palette.py负责通用方法。取样可为数组或含samples/title/groups的对象，role可自定；每项保留name、实际part_id、region、usage、basis，说明覆盖范围、变化方向和软硬。method可选point、nearest、mean、median，或自行取色后用provided与rgb/hex；不限制模型采用其它合理取色方法。
+坐标按EXIF校正后的原图像素，范围用x/y/radius或box；保留method与color_origin，统计色不伪称唯一实测像素。确需看上游腰口时复用preview_tool，不重写渲染脚本。
+在palette.json中追加inferred_colors数组，记录隐藏补色的part_id、region、source_sample_ids、usage和basis，确需新色时写hex；无需推断则为空。接口参考及空间用途同样写在palette.json，不另建规划或色盘报告。
+只交palette.png和palette.json，临时取样JSON放工作根tmp，简述实测/推断范围；无SVG输出，保持最新carry，供绘制者继续。

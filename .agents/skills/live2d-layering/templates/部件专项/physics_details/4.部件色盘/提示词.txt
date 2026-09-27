@@ -1,0 +1,8 @@
+独立提取本轮物理饰品的原图色盘，覆盖group.part_ids及已审线稿实际内部面；读取结构安排与衔接记录了解材料和需匹配的投影，本任务不修改SVG。
+按实际金属、宝石、绳链、布带等材料分别观察固有色、体积梯度、反射亮暗、通透感和轮廓线色；相似饰品可共用有依据的色样，但记录各自使用位置。
+区分固有色、自身体积、局部纹理、需要独立变化的反光/透明/发光和外来投影，usage写清具体part/内部面、空间位置、渐变方向、层次叠加及边缘软硬；不是只列一行十六进制颜色，也不假设每种材质只有一条渐变。
+采样数量、位置、分类与方法由实际图片决定，默认展示分类可覆盖；透明物的原图像素包含背景合成色，不能直接冒充材质本色和alpha，推断必须说明依据。隐藏色根据同物/相邻面推断，不取旧粗色块、中性线稿填色或生成图作为原图实测；已有接触面/投影的上游SVG颜色可作接口参照，但标明来源，不重判全局光照。
+
+使用python <palette_tool> <原彩图> <取样JSON> <palette.png>，取样文件放tmp；可用数组或含samples/title/groups的对象，自定role及展示。method支持point/nearest/mean/median，也可自行计算后用provided与rgb/hex，每项记录name、part_id、region、usage、basis；像素坐标按EXIF校正后的原图，统计色与提供色不冒充单个实测像素。
+工具只负责通用采样和快速排版，不限制取色方法；需要复杂分布自行选点或计算，不把专属策略写进公共脚本。检查输出palette.json中的method/color_origin，再在inferred_colors记录隐藏补色、透明材料推断或上游接口参考的part_id/region/source_sample_ids/usage/basis，必要时hex，无项为空。
+只交palette.png与palette.json，颜色层次说明直接进入样本usage与inferred_colors；不另写色盘报告或SVG，保持最新carry。

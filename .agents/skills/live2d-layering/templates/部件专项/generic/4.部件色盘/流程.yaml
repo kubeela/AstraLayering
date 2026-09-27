@@ -1,0 +1,15 @@
+id: generic_palette
+worker: generic_palette
+inputs:
+  reference: inputs.reference
+  parts: inputs.parts
+  svg: inputs.svg
+  structure: nodes.generic_structure.structure
+  handoff: nodes.generic_line_art.handoff
+  palette_tool:
+    asset: 提取色盘.py
+  preview_tool:
+    asset: ../../../../tools/svg_preview.py
+outputs:
+  palette_image: refinement/groups/{group.id}/4.部件色盘/palette.png
+  palette_json: refinement/groups/{group.id}/4.部件色盘/palette.json
