@@ -5,11 +5,13 @@ description: 执行 SVG 边界关键形 agent 工作流：模型设计12轴基�
 
 # SVG 参数边界工作流
 
-执行入口为 [workflow.yaml](workflow.yaml)，调度语义见 [DSL 文档](docs/workflow-dsl.md)。只有显式 `tasks`、`needs` 和产物引用决定执行，不扫描旧编号目录。角色形变使用 0.3 `boundary_recipe` / `boundary_rig`，不再用 0.2 自动闭眼/张嘴公式作为主创作方式。
+执行入口为 [workflow.yaml](workflow.yaml)，调度语义见 [DSL 文档](docs/workflow-dsl.md)。只有显式 `tasks`、`needs` 和产物引用决定执行；编号目录标明步骤归属，不靠扫描目录调度。角色形变使用 0.3 `boundary_recipe` / `boundary_rig`，不再用 0.2 自动闭眼/张嘴公式作为主创作方式。
 
 标准工作流固定采用 [basic-face-v1](docs/basic-face-v1.md)：双眼开合/弧形、双眉高度/角度/弧形和嘴开合/形状，共12轴，不能由规格作者省略后仍宣称完成。通用0.3格式仍可加载未声明profile的旧局部试验，它们不满足本工作流。
 
 本阶段目标是让每个公开参数拥有合理、足够宽、可验证的可达范围。模型先像 rig 作者一样调整有限的极值关键形，程序计算它们之间的连续变化。**不生成情绪预设、离散五官替换、附件或语义表情组合。** 修改工作流的任务不自动启动角色生产。
+
+本技能遵守上游工具归属：跨步骤共用工具放在 [tools](tools/readme.md)，盘点、编译、扫描工具分别放在对应编号步骤的 `tools/`；提示词与步骤同目录。所有资源从本技能根目录解析，不引用技能外或另一技能的工具。交接使用解析后的绝对路径，输入与技能只读，输出写入本轮工作根目录。
 
 ## 本地工具依赖
 
@@ -17,7 +19,7 @@ description: 执行 SVG 边界关键形 agent 工作流：模型设计12轴基�
 
 ## 开始与调度
 
-绑定用户给定的只读 `base_svg`、新的绝对输出目录及可选参考、需求。用户不需要填写最大张口、闭眼接触线或控制点；这些都是作者职责。先执行公共 [workflow_plan.py](tools/expressions/workflow_plan.py) 的 `validate` 和 `plan`。
+绑定用户给定的只读 `base_svg`、新的绝对输出目录及可选参考、需求。用户不需要填写最大张口、闭眼接触线或控制点；这些都是作者职责。先执行公共 [workflow_plan.py](tools/workflow_plan.py) 的 `validate` 和 `plan`。
 
 计划器只解析 DAG、路径、签名和状态，不调用模型或执行命令。调度 agent 使用真实任务 prompt、模型配置和解析后的 `argv`；不得用脚本填入成功状态模拟完整 agent 工作流。工具的实现、schema 和 runtime 都参与输入签名。
 

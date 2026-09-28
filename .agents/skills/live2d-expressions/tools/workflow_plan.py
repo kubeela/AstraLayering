@@ -12,6 +12,7 @@ import hashlib
 from itertools import product
 import json
 import math
+import re
 from pathlib import Path, PurePosixPath
 import sys
 
@@ -19,10 +20,9 @@ import jsonschema
 import yaml
 
 
-TOOLS = Path(__file__).resolve().parents[1]
+TOOLS = Path(__file__).resolve().parent
 SCHEMA = Path(__file__).with_name('workflow.schema.json')
-DEFAULT_CONFIG = (TOOLS.parent / 'workflow.yaml' if (TOOLS.parent / 'workflow.yaml').is_file()
-                  else TOOLS.parent / 'workflows/expressions/workflow.yaml')
+DEFAULT_CONFIG = TOOLS.parent / 'workflow.yaml'
 BASIC_FACE_V1_GROUPS = (
     ('eye.left.open', 'eye.left.curve'), ('eye.right.open', 'eye.right.curve'),
     ('brow.left.height', 'brow.left.angle', 'brow.left.curve'),
@@ -203,13 +203,12 @@ class Workflow:
         self.tasks = self.data['tasks']
         self.resources = {}
         for name, value in self.data['resources'].items():
-            # Resources may use ../ to reach the shared tool directory, but may
-            # never escape the workflow package and the known agent-tools root.
-            if Path(value).is_absolute() or '\\' in value or ':' in value:
-                raise WorkflowError(f'resource {name}: expected a relative local path')
-            target = (self.path.parent / value).resolve()
-            if not any(within(target, root) for root in (self.path.parent, TOOLS)):
-                raise WorkflowError(f'resource {name}: outside workflow/agent-tools: {value}')
+            # Every package resolves resources from its own skill root. No
+            # legacy agent-tools fallback or cross-skill resource dependency.
+            relative = relative_path(value, 'resource ' + name)
+            target = (self.path.parent / relative).resolve()
+            if not within(target, self.path.parent):
+                raise WorkflowError(f'resource {name}: outside skill root: {value}')
             if not target.is_file():
                 raise WorkflowError(f'resource {name}: missing file: {target}')
             self.resources[name] = target
@@ -281,8 +280,12 @@ class Workflow:
                     raise WorkflowError(f'{name}: unknown model profile {task["model"]}')
             else:
                 entry = self._resource(task['command']['entry'], name)
-                if not within(entry, TOOLS):
-                    raise WorkflowError(f'{name}: executable entry must be in agent-tools')
+                parts = entry.relative_to(self.path.parent).parts
+                shared = len(parts) >= 2 and parts[0] == 'tools'
+                step = (len(parts) >= 3 and re.fullmatch(r'[1-9][0-9]*\..+', parts[0])
+                        and 'tools' in parts[1:-1])
+                if not (shared or step):
+                    raise WorkflowError(f'{name}: executable entry must be in skill tools or numbered step tools')
                 for arg in task['command']['args']:
                     if isinstance(arg, dict):
                         key = 'input' if 'input' in arg else 'output'
@@ -489,7 +492,7 @@ class Run:
                 def local_schema(uri):
                     from urllib.parse import unquote, urlparse
                     target = Path(unquote(urlparse(uri).path)).resolve()
-                    if not any(within(target, p) for p in (self.workflow.path.parent, TOOLS)):
+                    if not within(target, self.workflow.path.parent):
                         raise WorkflowError(f'schema reference outside resource roots: {uri}')
                     return read_json(target)
                 def no_network(uri):

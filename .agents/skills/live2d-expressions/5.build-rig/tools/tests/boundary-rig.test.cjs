@@ -5,9 +5,9 @@ const {
   interpolate,
   Runtime,
   validate,
-} = require("../preview/svg-boundary-runtime.js");
-const { open } = require("../expressions/boundary-rig.cjs"),
-  { mount } = require("../expressions/svg-source.cjs");
+} = require("../../../tools/preview/svg-boundary-runtime.js");
+const { open } = require("../build-rig.cjs"),
+  { mount } = require("../../../tools/svg-source.cjs");
 const rig = () => ({
   schema_version: "0.3.0",
   document_type: "boundary_rig",
@@ -196,7 +196,7 @@ test("browser compilation preserves source and makes both mirrored eye apertures
 
 
 test("basic face requires every functional axis, including curve at fully closed eyes", () => {
-  const { BASIC_FACE_GROUPS, validateCapabilityProfile } = require("../preview/svg-boundary-runtime.js");
+  const { BASIC_FACE_GROUPS, validateCapabilityProfile } = require("../../../tools/preview/svg-boundary-runtime.js");
   const r = { ...rig(), capability_profile: "basic-face-v1", parameters: {}, regions: [], bindings: [] };
   for (const ids of BASIC_FACE_GROUPS) {
     const axes = ids.map(id => {

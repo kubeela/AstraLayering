@@ -81,7 +81,7 @@
 
 模型设计参数边界关键形，程序编译连续插值。`basic-face-v1` 包含双眼开合与曲率、双眉高度/角度/曲率、嘴部开合与嘴型，共 12 轴；闭眼时曲率仍能调整。不生成情绪预设，不重画原 SVG，不需要用户手调最大张口或眼睑控制点。
 
-[技能与安装依赖](./.agents/skills/live2d-expressions/SKILL.md) · [边界 JSON 契约](./.agents/skills/live2d-expressions/tools/expressions/boundary-rig.md) · [独立参数预览](./.agents/skills/live2d-expressions/tools/preview/boundary-preview.html)。数值通过后仍须逐图和连续调参审查；不承诺任意角色自动获得相同美术质量。
+[技能与安装依赖](./.agents/skills/live2d-expressions/SKILL.md) · [边界 JSON 契约](./.agents/skills/live2d-expressions/docs/boundary-rig.md) · [独立参数预览](./.agents/skills/live2d-expressions/tools/preview/boundary-preview.html)。数值通过后仍须逐图和连续调参审查；不承诺任意角色自动获得相同美术质量。
 
 ### 续跑、环境与维护
 

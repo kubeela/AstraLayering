@@ -13,7 +13,7 @@
   → 可离线加载的 SVG + 参数 JSON + 作者关键形与证据
 ```
 
-[workflow.yaml](workflow.yaml) 是调度权威，[SKILL.md](SKILL.md) 定义执行职责；[basic-face-v1](docs/basic-face-v1.md) 固定12轴基本面部能力；[形变契约](tools/expressions/boundary-rig.md) 定义 0.3 `boundary_recipe` 和 `boundary_rig`。调度 DSL 仍为 0.2，与角色 rig 版本分开。历史输出不覆盖、不自动迁移。
+[workflow.yaml](workflow.yaml) 是调度权威，[SKILL.md](SKILL.md) 定义执行职责；[basic-face-v1](docs/basic-face-v1.md) 固定12轴基本面部能力；[形变契约](docs/boundary-rig.md) 定义 0.3 `boundary_recipe` 和 `boundary_rig`。调度 DSL 仍为 0.2，与角色 rig 版本分开。历史输出不覆盖、不自动迁移。
 
 ```text
 执行 live2d-expressions skill 的 SVG 参数边界工作流。
@@ -27,11 +27,13 @@
 
 原 SVG 字节和结构始终不变。作者 JSON 只改变既有几何的坐标并保持拓扑；不增加器官，不补图，不修改设计好的睫毛束数。中性、每轴极值、二维角点和内插样本都会生成图像，独立 reviewer 必须逐项记录所见。数值合法和连续不等于美术通过。
 
+工具归属见 [工具说明](tools/readme.md)：共享能力留根 `tools/`，盘点、编译、扫描分别在 `1.inspect`、`5.build-rig`、`6.scan-boundaries` 的 `tools/`；模型提示词也随步骤保存。参数预览由审查和交付共用，仍在 `tools/preview/`。
+
 从本skill目录运行，依赖安装见 [tools/package.json](tools/package.json) 与 [tools/requirements.txt](tools/requirements.txt)。最小命令：
 
 ```bash
-python3 tools/expressions/workflow_plan.py validate
-python3 tools/expressions/workflow_plan.py plan \
+python3 tools/workflow_plan.py validate
+python3 tools/workflow_plan.py plan \
   --run-root /absolute/output \
   --input base_svg=/absolute/character.svg \
   --text 'requirements=完整闭眼和足够大的二维嘴型范围' \

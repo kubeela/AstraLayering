@@ -2,23 +2,23 @@
 
 模型设计有限的参数边界关键形，程序一次编译同拓扑数值关键形，预览器只计算连续插值。本版不包含情绪预设、五官替换或附件。角色原 SVG 字节和节点层级始终保留，最大张口与眼睑闭合由作者校准，用户只操作已经可用的参数。
 
-[expressions 工作流](../../SKILL.md) 使用两个独立文档：
+[expressions 工作流](../SKILL.md) 使用两个独立文档：
 
 | 文件 | document_type | 职责 |
 | --- | --- | --- |
-| [boundary-recipe.schema.json](boundary-recipe.schema.json) | `boundary_recipe` | 模型创作的边界曲线、参数轴、原稿区域和随动绑定 |
-| [boundary-rig.schema.json](boundary-rig.schema.json) | `boundary_rig` | 程序编译的固定数值关键形，供运行时直接插值 |
+| [boundary-recipe.schema.json](../contracts/boundary-recipe.schema.json) | `boundary_recipe` | 模型创作的边界曲线、参数轴、原稿区域和随动绑定 |
+| [boundary-rig.schema.json](../contracts/boundary-rig.schema.json) | `boundary_rig` | 程序编译的固定数值关键形，供运行时直接插值 |
 
-标准工作流额外要求 [basic-face-v1](../../docs/basic-face-v1.md)：双眼开合/弧形、双眉高度/角度/弧形、嘴开合/形状共12轴，恰有每眼二维、每眉三维和嘴二维联合region，每轴包含min/default/max。标准recipe/rig顶层声明 `capability_profile:"basic-face-v1"`。通用0.3文档可省略profile以继续读取历史局部试验，但不能算标准工作流完成。
+标准工作流额外要求 [basic-face-v1](basic-face-v1.md)：双眼开合/弧形、双眉高度/角度/弧形、嘴开合/形状共12轴，恰有每眼二维、每眉三维和嘴二维联合region，每轴包含min/default/max。标准recipe/rig顶层声明 `capability_profile:"basic-face-v1"`。通用0.3文档可省略profile以继续读取历史局部试验，但不能算标准工作流完成。
 
 两者都使用 `schema_version: "0.3.0"`，未知字段报错。调度工作流和run-state仍为各自的0.2协议。作者配方中没有脚本、可执行表达式或每帧模型调用。
 
 ## 命令与证据
 
 ```sh
-node tools/expressions/boundary-rig.cjs inspect --svg character.svg --out source/inspection/inventory.json
-node tools/expressions/boundary-rig.cjs build --svg character.svg --recipe boundary.recipe.json --out-dir compiled/rig
-node tools/expressions/boundary-rig.cjs check --svg compiled/rig/character.svg --rig compiled/rig/controls.json --out-dir evidence/boundaries
+node 1.inspect/tools/inspect-svg.cjs --svg character.svg --out source/inspection/inventory.json
+node 5.build-rig/tools/build-rig.cjs --svg character.svg --recipe boundary.recipe.json --out-dir compiled/rig
+node 6.scan-boundaries/tools/scan-boundaries.cjs check --svg compiled/rig/character.svg --rig compiled/rig/controls.json --out-dir evidence/boundaries
 ```
 
 工具需要Node、Playwright、Chrome/Chromium，以及工作流已有的Python jsonschema依赖；已有浏览器可用 `ASTRA_BROWSER` 指定，Python可用 `ASTRA_PYTHON` 指定。CLI在build时严格校验输入recipe和输出rig，在check时严格校验输入rig。`inspect` 输出真实节点、变换、边界和baseline.png。`build` 核对源哈希，输出原字节 character.svg、controls.json和build-report.json，不写回输入。
@@ -30,7 +30,7 @@ profile扫描还会保存capabilities：每个基础轴min/max的最大实际d/t
 总览按20张分页，生成contact-sheet.png及后续contact-sheet-2.png等；这些仅供导航，原始逐case PNG仍是审查依据。扫描完成帧后保存scan-state.json及输入/图像SHA。若仅总览/报告组装中断，可执行以下恢复，不重拍未变化帧：
 
 ```sh
-node tools/expressions/boundary-rig.cjs finalize --svg compiled/rig/character.svg --rig compiled/rig/controls.json --out-dir evidence/boundaries
+node 6.scan-boundaries/tools/scan-boundaries.cjs finalize --svg compiled/rig/character.svg --rig compiled/rig/controls.json --out-dir evidence/boundaries
 ```
 
 finalize必须核对输入和全部帧哈希，且实际成功退出后才能记录scan成功。输入或帧变化则重新扫描；缺少持久扫描状态不能伪造成功、计时或审查记录。程序恢复报告应保留实际中断和恢复来源。
@@ -116,14 +116,14 @@ compiled region仅保留id、space、bounds和axes。每个binding包含：
 
 默认值要保持原中性的可见外观。可直接回到原属性的binding使用default_source_passthrough；原闭口稿的隐藏口腔/牙舌可能需要派生压合，不能把隐藏节点的d文本还原与原SVG文件字节保护混为一谈。reset回到参数default，dispose恢复所有被改动的实例属性。
 
-[svg-boundary-runtime.js](../preview/svg-boundary-runtime.js) 暴露 `AstraBoundaryRig.Runtime(svgElement, rig)`：`setParameters(partial)`、`reset()`、`dispose()`。未变化的区域不更新DOM；越界/非数值参数明确报错。文件、存档或网络同步不属于该运行时。
+[svg-boundary-runtime.js](../tools/preview/svg-boundary-runtime.js) 暴露 `AstraBoundaryRig.Runtime(svgElement, rig)`：`setParameters(partial)`、`reset()`、`dispose()`。未变化的区域不更新DOM；越界/非数值参数明确报错。文件、存档或网络同步不属于该运行时。
 
 ## 便携预览
 
-打开 [boundary-preview.html](../preview/boundary-preview.html)，选择原SVG和controls.json。预览器验证SVG哈希，动态创建min/default/max滑杆，支持面部/全身定位与原值复位；没有预设区。输入在requestAnimationFrame中合并，避免一次滑动反复重算同一帧。
+打开 [boundary-preview.html](../tools/preview/boundary-preview.html)，选择原SVG和controls.json。预览器验证SVG哈希，动态创建min/default/max滑杆，支持面部/全身定位与原值复位；没有预设区。输入在requestAnimationFrame中合并，避免一次滑动反复重算同一帧。
 
 自动审查可调用 `await window.boundaryPreview.load(svgText, rig)`，随后 `setParameters(values)`、`reset()`、`snapshot()`。此入口只消费已编译的controls，不包含编译器。它是便携验稿界面；60fps性能目标应在正式工作台与实际角色路径上测量，不能由这里的脚本执行耗时推断。
 
 ## Reproducible Jianma trial
 
-`examples/jianma-boundary.recipe.json` targets the unchanged `outputs/jianma_clothing/final/character.svg`. Compile it with `boundary-rig.cjs build`, then scan with `check`. This is a four-axis eye/mouth trial, without expression presets. The browser interpolates the authored endpoints; it does not call a model.
+[Jianma 局部试验配方](../4.author-boundaries/examples/jianma-boundary.recipe.json) targets the unchanged `outputs/jianma_clothing/final/character.svg`. Compile it with `node 5.build-rig/tools/build-rig.cjs`, then scan with `node 6.scan-boundaries/tools/scan-boundaries.cjs check`. This is a four-axis eye/mouth trial, without expression presets. The browser interpolates the authored endpoints; it does not call a model.

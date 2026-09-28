@@ -1,91 +1,13 @@
 #!/usr/bin/env node
-/* Deterministic local compilation/scan. LLM authors the recipe; this tool never calls a model. */
-const fs = require("node:fs"),
-  path = require("node:path");
-const sourceSvg = require("./svg-source.cjs");
-const { validateCapabilityProfile } = require("../preview/svg-boundary-runtime.js");
-const { execFileSync } = require("node:child_process");
-function schemaCheck(value, name) {
-  execFileSync(
-    process.env.ASTRA_PYTHON || "python3",
-    [
-      "-c",
-      "import json,sys,jsonschema; jsonschema.Draft202012Validator(json.load(open(sys.argv[1]))).validate(json.load(sys.stdin))",
-      path.join(__dirname, name),
-    ],
-    {
-      input: JSON.stringify(value),
-      encoding: "utf8",
-      stdio: ["pipe", "pipe", "pipe"],
-    },
-  );
-}
-const read = (p) => fs.readFileSync(p, "utf8"),
-  json = (p) => JSON.parse(read(p));
-const write = (p, v) => fs.writeFileSync(p, JSON.stringify(v, null, 2) + "\n");
-const check = (ok, m) => {
-  if (!ok) throw Error(m);
-};
+/* Deterministic local tool; never calls a model. */
+const fs = require("node:fs"), path = require("node:path");
+const sourceSvg = require("../../tools/svg-source.cjs");
+const { validateCapabilityProfile } = require("../../tools/preview/svg-boundary-runtime.js");
+const { read, json, write, check, schemaCheck, runCli } = require("../../tools/tool-common.cjs");
 async function open(options) {
   const result = await sourceSvg.open(options);
-  for (const p of [
-    "../preview/svg-boundary-runtime.js",
-    "boundary-compiler.js",
-  ])
-    await result.page.addScriptTag({ path: path.resolve(__dirname, p) });
+  await result.page.addScriptTag({ path: path.resolve(__dirname, "../../tools/preview/svg-boundary-runtime.js") });
   return result;
-}
-async function inspect(options) {
-  const result = await sourceSvg.inspect(options),
-    inv = json(options.out);
-  inv.schema_version = "0.3.0";
-  write(options.out, inv);
-  return result;
-}
-async function build(options) {
-  const bytes = fs.readFileSync(options.svg),
-    recipeText = read(options.recipe),
-    recipe = JSON.parse(recipeText),
-    out = path.resolve(options["out-dir"]);
-  schemaCheck(recipe, "boundary-recipe.schema.json");
-  check(
-    sourceSvg.sha(bytes) === recipe.source_sha256,
-    "Source SVG fingerprint mismatch",
-  );
-  for (const file of ["character.svg", "controls.json", "build-report.json"])
-    check(
-      ![options.svg, options.recipe].some(
-        (p) => path.resolve(p) === path.join(out, file),
-      ),
-      "Output cannot overwrite author source",
-    );
-  const { browser, page } = await open(options);
-  try {
-    await sourceSvg.mount(page, bytes.toString("utf8"));
-    const result = await page.evaluate(
-      (recipe) => AstraBoundaryCompiler.compile(rigSvg, recipe),
-      recipe,
-    );
-    result.rig.source.recipe_sha256 = sourceSvg.sha(recipeText);
-    schemaCheck(result.rig, "boundary-rig.schema.json");
-    fs.mkdirSync(out, { recursive: true });
-    fs.writeFileSync(path.join(out, "character.svg"), bytes);
-    write(path.join(out, "controls.json"), result.rig);
-    const report = {
-      status: "compiled",
-      visual_status: "not_reviewed",
-      source: result.rig.source,
-      bindings: result.rig.bindings.length,
-      coordinates: result.rig.bindings.reduce((n, b) => n + b.rest.length, 0),
-      warnings: result.warnings,
-      diagnostics: result.diagnostics,
-      capabilities: validateCapabilityProfile(result.rig),
-    };
-    write(path.join(out, "build-report.json"), report);
-    return report;
-  } finally {
-    await browser.close();
-  }
 }
 function casesFor(rig) {
   const defaults = Object.fromEntries(
@@ -319,41 +241,6 @@ async function finalizeScan(options) {
     await browser.close();
   }
 }
-async function main() {
-  const [command, ...args] = process.argv.slice(2),
-    options = {};
-  if (command === "--help" || !command) {
-    console.log(
-      "boundary-rig.cjs inspect --svg SVG --out inventory.json\nboundary-rig.cjs build --svg SVG --recipe recipe.json --out-dir DIR\nboundary-rig.cjs check --svg SVG --rig controls.json --out-dir DIR\nboundary-rig.cjs finalize --svg SVG --rig controls.json --out-dir DIR",
-    );
-    return;
-  }
-  check(args.length % 2 === 0, "Options require --key value pairs");
-  for (let i = 0; i < args.length; i += 2) {
-    check(args[i].startsWith("--"), "Invalid option");
-    options[args[i].slice(2)] = args[i + 1];
-  }
-  const fn = { inspect, build, check: checkRig, finalize: finalizeScan }[command];
-  check(fn, "Unknown command");
-  const result = await fn(options);
-  console.log(
-    JSON.stringify(
-      ["check", "finalize"].includes(command)
-        ? {
-            status: result.status,
-            cases: result.visual_cases.length,
-            failures: result.failures,
-          }
-        : result,
-      null,
-      2,
-    ),
-  );
-  if (result.status === "failed") process.exitCode = 1;
-}
-module.exports = { open, inspect, build, checkRig, finalizeScan, casesFor };
-if (require.main === module)
-  main().catch((e) => {
-    console.error(e.stack);
-    process.exitCode = 1;
-  });
+module.exports = { checkRig, finalizeScan, casesFor };
+if (require.main === module) runCli({ check: checkRig, finalize: finalizeScan },
+  "scan-boundaries.cjs check|finalize --svg SVG --rig controls.json --out-dir DIR");

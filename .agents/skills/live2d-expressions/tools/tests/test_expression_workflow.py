@@ -6,7 +6,6 @@ from copy import deepcopy
 from html.parser import HTMLParser
 from itertools import product
 import json
-import os
 from pathlib import Path
 import re
 import subprocess
@@ -18,12 +17,12 @@ import yaml
 import jsonschema
 
 TOOLS = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(TOOLS / 'expressions'))
+sys.path.insert(0, str(TOOLS))
 from workflow_plan import (Workflow, WorkflowError, read_json, validate_capability_profile,
                            validate_capability_evidence, BASIC_FACE_V1_GROUPS, BASIC_FACE_V1_PARAMETERS)
 
-ROOT = TOOLS.parent if (TOOLS.parent / 'workflow.yaml').is_file() else TOOLS.parent / 'workflows/expressions'
-SVG = TOOLS / 'expressions/examples/contract-fixture.svg'
+ROOT = TOOLS.parent
+SVG = TOOLS / 'tests/fixtures/contract-fixture.svg'
 
 
 def basic_face_fixture(document_type='boundary_recipe', corrective_key=False):
@@ -71,8 +70,8 @@ def basic_face_scan_evidence():
 
 class BoundaryContractTests(unittest.TestCase):
     def setUp(self):
-        self.recipe_schema = read_json(TOOLS / 'expressions/boundary-recipe.schema.json')
-        self.rig_schema = read_json(TOOLS / 'expressions/boundary-rig.schema.json')
+        self.recipe_schema = read_json(ROOT / 'contracts/boundary-recipe.schema.json')
+        self.rig_schema = read_json(ROOT / 'contracts/boundary-rig.schema.json')
         parameter = {'type': 'number', 'label': '开合', 'min': 0, 'max': 1, 'default': 1}
         axes = [{'parameter': 'eye.open', 'keys': [0, 1]}]
         self.recipe = {'schema_version': '0.3.0', 'document_type': 'boundary_recipe', 'character_id': 'fixture',
@@ -151,7 +150,7 @@ class BasicFaceProfileTests(unittest.TestCase):
     def test_full_profile_and_generic_partial_contracts_remain_distinct(self):
         for kind, filename in (('boundary_recipe', 'boundary-recipe.schema.json'),
                                ('boundary_rig', 'boundary-rig.schema.json')):
-            schema = read_json(TOOLS / 'expressions' / filename)
+            schema = read_json(ROOT / 'contracts' / filename)
             fixture = basic_face_fixture(kind)
             jsonschema.Draft202012Validator(schema).validate(fixture)
             validate_capability_profile(fixture, 'basic-face-v1')
@@ -181,7 +180,7 @@ class BasicFaceProfileTests(unittest.TestCase):
         ]
         for kind, filename in (('boundary_recipe', 'boundary-recipe.schema.json'),
                                ('boundary_rig', 'boundary-rig.schema.json')):
-            schema = read_json(TOOLS / 'expressions' / filename)
+            schema = read_json(ROOT / 'contracts' / filename)
             for edit in edits:
                 with self.subTest(kind=kind, edit=edit):
                     fixture = basic_face_fixture(kind); edit(fixture)
@@ -235,7 +234,7 @@ class BasicFaceProfileTests(unittest.TestCase):
                 validate_capability_profile(candidate, 'basic-face-v1')
 
     def test_curve_keyforms_and_offset_are_only_valid_for_curve_source(self):
-        schema = read_json(TOOLS / 'expressions/boundary-recipe.schema.json')
+        schema = read_json(ROOT / 'contracts/boundary-recipe.schema.json')
         fixture = basic_face_fixture()
         region = fixture['regions'][2]
         region['source']['kind'] = 'curve'
@@ -289,8 +288,8 @@ class RealWorkflowTests(unittest.TestCase):
             self.assertEqual(plan['ready'], ['inspect'])
             inspect = plan['tasks'][0]
             self.assertEqual(inspect['argv'][0], 'node')
-            self.assertEqual(inspect['argv'][2:4], ['inspect', '--svg'])
-            self.assertEqual(inspect['argv'][4], str(SVG.resolve()))
+            self.assertEqual(inspect['argv'][2], '--svg')
+            self.assertEqual(inspect['argv'][3], str(SVG.resolve()))
             self.assertTrue(inspect['argv'][-1].endswith('source/inspection/inventory.json'))
             scope = next(t for t in plan['tasks'] if t['id'] == 'scope')
             self.assertIsNone(scope['inputs']['reference'])
@@ -306,7 +305,7 @@ class RealWorkflowTests(unittest.TestCase):
                     continue
                 target = (document.parent / href.split('#', 1)[0]).resolve()
                 self.assertTrue(target.is_file(), f'{document}: {target}')
-        self.assertFalse(list(ROOT.glob('[0-9]*')))
+        self.assertFalse((ROOT / 'tools/expressions').exists())
         self.assertFalse((ROOT / '流程.yaml').exists())
 
     def test_tool_implementation_and_offline_html_dependencies_are_declared(self):
@@ -314,9 +313,12 @@ class RealWorkflowTests(unittest.TestCase):
         for name in ('inspect', 'build_rig', 'scan_boundaries'):
             task = workflow.tasks[name]
             bound_resources = {ref['resource'] for ref in task['inputs'].values() if 'resource' in ref}
-            self.assertTrue({'source_tool', 'geometry_js', 'boundary_runtime_js', 'boundary_compiler_js'} <= bound_resources, name)
-            if name.startswith('build_'):
-                self.assertIn('recipe_schema', bound_resources)
+            expected = {'source_tool', 'geometry_js', 'common_tool'}
+            if name != 'inspect':
+                expected |= {'boundary_runtime_js', 'controls_schema'}
+            if name == 'build_rig':
+                expected |= {'boundary_compiler_js', 'recipe_schema'}
+            self.assertEqual(bound_resources, expected, name)
         deliver = workflow.tasks['deliver']
         copied = {workflow.resources[ref['resource']] for ref in deliver['inputs'].values() if 'resource' in ref}
         required = set(deliver['outputs']['final']['required_files'])
@@ -359,7 +361,7 @@ class RealWorkflowTests(unittest.TestCase):
         self.assertEqual(coverage['controls_input'], 'controls')
 
     def test_real_cli_validate_and_plan(self):
-        tool = str(TOOLS / 'expressions/workflow_plan.py')
+        tool = str(TOOLS / 'workflow_plan.py')
         result = subprocess.run([sys.executable, tool, 'validate'], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue(json.loads(result.stdout)['valid'])
@@ -377,6 +379,8 @@ class PlannerTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         self.package = self.root / 'workflow'
         self.package.mkdir()
+        (self.package / 'tools').mkdir()
+        (self.package / 'tools/renderer.py').write_text('# Fixture executable; never run by planner.\n')
         self.output = self.root / 'run'
         self.source = self.root / 'original.svg'
         self.source.write_bytes(SVG.read_bytes())
@@ -401,7 +405,7 @@ class PlannerTests(unittest.TestCase):
             'schema_version': '0.2.0', 'document_type': 'expression_workflow', 'id': 'test_rig',
             'inputs': {'base_svg': {'type': 'file', 'required': True, 'description': 'source'},
                        'requirements': {'type': 'text', 'required': False, 'description': 'optional'}},
-            'resources': {'renderer': os.path.relpath(TOOLS / 'expressions/workflow_plan.py', self.package),
+            'resources': {'renderer': 'tools/renderer.py',
                           'implementation': 'implementation.js',
                           'author_prompt': 'author.md', 'side_prompt': 'side.md',
                           'review_prompt': 'review.md', 'delivery_prompt': 'delivery.md',
@@ -506,6 +510,36 @@ class PlannerTests(unittest.TestCase):
                 self.save(data)
                 with self.assertRaises(WorkflowError):
                     Workflow(self.config)
+
+    def test_step_tools_resolve_from_package_root(self):
+        for resource in ('1.inspect/tools/renderer.py', '1.素材盘点/1.1.原稿/tools/renderer.py'):
+            with self.subTest(resource=resource):
+                entry = self.package / resource
+                entry.parent.mkdir(parents=True)
+                entry.write_text('# Step-owned fixture executable.\n')
+                self.data['resources']['renderer'] = resource
+                self.save()
+                plan = Workflow(self.config).bind(self.output, {'base_svg': str(self.source)}).plan()
+                task = next(task for task in plan['tasks'] if task['id'] == 'inspect')
+                self.assertEqual(task['argv'][1], str(entry))
+
+    def test_resources_cannot_reach_another_skill_even_through_a_symlink(self):
+        peer = self.root / 'other-skill/tools'
+        peer.mkdir(parents=True)
+        (peer / 'tool.py').write_text('# Another skill owns this tool.\n')
+        (self.package / 'tools/peer').symlink_to(peer, target_is_directory=True)
+        for resource in ('../other-skill/tools/tool.py', 'tools/peer/tool.py'):
+            with self.subTest(resource=resource):
+                self.data['resources']['renderer'] = resource
+                self.save()
+                with self.assertRaises(WorkflowError):
+                    Workflow(self.config)
+
+    def test_executable_must_live_in_shared_or_step_tools(self):
+        self.data['resources']['renderer'] = 'author.md'
+        self.save()
+        with self.assertRaisesRegex(WorkflowError, 'executable entry'):
+            Workflow(self.config)
 
     def test_path_escape_overlap_and_missing_resources_are_rejected(self):
         cases = [
