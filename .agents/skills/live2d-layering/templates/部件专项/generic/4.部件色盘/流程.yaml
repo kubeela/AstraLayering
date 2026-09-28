@@ -1,5 +1,5 @@
 id: generic_palette
-run: .
+run: templates/部件专项/generic/4.部件色盘
 worker: generic_palette
 inputs:
   reference: inputs.reference
@@ -8,9 +8,9 @@ inputs:
   structure: nodes.generic_structure.structure
   handoff: nodes.generic_line_art.handoff
   palette_tool:
-    asset: ../../../../../../../agent-tools/palettes/generic.py
+    asset: templates/部件专项/generic/4.部件色盘/tools/palette.py
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   palette_image: refinement/groups/{group.id}/4.部件色盘/palette.png
   palette_json: refinement/groups/{group.id}/4.部件色盘/palette.json

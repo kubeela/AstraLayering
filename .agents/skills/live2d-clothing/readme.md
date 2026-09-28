@@ -34,4 +34,4 @@
 
 ## 工具依赖
 
-`SKILL.md` 所在目录是任务资料根，DSL 说明在 [docs/](docs/workflow-dsl.md)，工具统一放在仓库根 [agent-tools](../../../agent-tools/readme.md)；迁移时携带公共工具目录与本技能，保持相对位置，无需同时安装人物分层技能。Python 3.8+、Pillow 9.1+、Node.js 与 sharp 用于工具执行。
+`SKILL.md` 所在目录是任务资料根，DSL 说明在 [docs/](docs/workflow-dsl.md)，通用工具放在本技能的 [tools](tools/readme.md)，衣装色盘入口放在具体步骤的 `tools/`；迁移时直接携带本技能目录。Python 3.8+、Pillow 9.1+、Node.js 与 sharp 用于工具执行。

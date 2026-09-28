@@ -5,11 +5,11 @@ inputs:
   reference_brief: nodes.clothing_structure.reference_brief
 if: structure 中的 reference_needed 为 true
 then:
-  run: .
+  run: 2.按需补全参考
   outputs:
     image: 2.按需补全参考/衣装制作参考.png
   imagegen:
-    prompt: 生成提示词.txt
+    prompt: 2.按需补全参考/生成提示词.txt
     inputs: [reference, reference_brief]
 else:
   outputs:

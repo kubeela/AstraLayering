@@ -6,11 +6,11 @@ inputs:
   reference_brief: nodes.physics_details_structure.reference_brief
 if: structure 中的 reference_needed 为 true
 then:
-  run: .
+  run: templates/部件专项/physics_details/2.按需补全参考
   outputs:
     image: refinement/groups/{group.id}/2.按需补全参考/补全参考.png
   imagegen:
-    prompt: 生成提示词.txt
+    prompt: templates/部件专项/physics_details/2.按需补全参考/生成提示词.txt
     inputs: [reference, reference_brief]
 else:
   outputs:

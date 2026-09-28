@@ -1,12 +1,12 @@
 id: clothing_palette
-run: .
+run: 4.衣装色盘
 worker: clothing_palette
 inputs:
   reference: inputs.outfit_reference
   svg: nodes.clothing_line_review.svg
   structure: nodes.clothing_structure.structure
   palette_tool:
-    asset: ../../../../agent-tools/palettes/clothing.py
+    asset: 4.衣装色盘/tools/palette.py
 outputs:
   palette_image: 4.衣装色盘/palette.png
   palette_json: 4.衣装色盘/palette.json

@@ -4,15 +4,7 @@
 
 当前有两个正式技能：**`live2d-layering` 制作人物素体，`live2d-clothing` 制作可替换衣装**；它们各自按节点配置调度绘制，通用执行规则放在 SKILL.md，具体步骤和制作要求放在对应节点。
 
-[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 预览器](./loading/svg-preview.html) · [表情控制台](./loading/expression-preview.html)
-
-### 离线表情预览
-
-用浏览器打开 [expression-preview.html](./loading/expression-preview.html)，选择角色 SVG 与对应的表情控制 JSON，即可调整公开参数、组合表情、播放和定位动画；也可以从 SVG 预览器的「表情」按钮带入当前角色，详细说明见 [控制台使用说明](./loading/expression-preview.md)。
-
-制作表情素材与控制 JSON 使用 [人物表情工作流](./workflows/expressions/README.md)，包含风格参考、分部件关键形制作、集中审查及参数动画联调。
-
-控制台自带可运行的协议样例；上方链接的 Jianma 成果仍是静态素材，尚未制作配套表情关键形与控制 JSON。
+[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 预览器](./loading/svg-preview.html)
 
 ## 效果展示
 
@@ -89,7 +81,7 @@
 
 总控根据本轮实际产物、运行记录和当前节点配置接续；模型及推理强度读取各节点 `.model`，独立审查只按配置触发。技能使用语言子 agent 和生图工具，图像生成能力需在运行环境中可用。
 
-工具统一存放在仓库根 [agent-tools](./agent-tools/readme.md)，使用 Python、Pillow、NumPy、Node.js 与 sharp；选项工具只依赖 Python 标准库。复制到其他仓库时，携带所需 skill 和根目录 `agent-tools/` 并保持相对位置，各技能均不从另一技能读取工具；表情工具额外依赖 jsonschema，维护检查依赖 PyYAML。
+两个技能各自携带通用 `tools/`；单步骤工具位于该编号步骤的 `tools/`。复制技能时携带对应技能目录即可。运行工具使用 Python、Pillow、Node.js 与 sharp；流程配置校验需要 PyYAML。
 
 `SKILL.md` 仅放通用规则；节点的 `流程.yaml`、提示词、模型标记维护具体制作方法。根目录原 `workflows/` 和 `workflow_clothing/` 已分别迁入两个技能，不保留另一份执行副本；旧 `svg-layering` 已移至 [archive/svg-layering](./archive/svg-layering/SKILL.md)，不再注册为技能。
 

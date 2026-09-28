@@ -1,5 +1,5 @@
 id: arms_limb_coloring
-run: .
+run: templates/部件专项/arms/2.双臂构型与着色
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -9,6 +9,6 @@ inputs:
   palette_image: nodes.arms_palette.palette_image
   palette_json: nodes.arms_palette.palette_json
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/2.双臂构型与着色/character.svg

@@ -1,9 +1,9 @@
 id: kind_reference
-run: .
+run: 3.大层分层稿/3.1.部件分组参考
 inputs:
   reference: nodes.base_subject.image
   parts: nodes.part_inventory.parts
 outputs:
   image: references/kind-groups.png
 imagegen:
-  prompt: 生成提示词.txt
+  prompt: 3.大层分层稿/3.1.部件分组参考/生成提示词.txt

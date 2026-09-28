@@ -8,13 +8,13 @@ inputs:
   palette_image: nodes.clothing_palette.palette_image
   palette_json: nodes.clothing_palette.palette_json
   preview_tool:
-    asset: ../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 foreach:
   from: inputs.structure
   items: color_batches
   as: batch
   mode: serial
-  run: .
+  run: 5.分批着色与成稿
   carry: [svg]
 outputs:
   svg: 5.分批着色与成稿/{batch.id}/character.svg

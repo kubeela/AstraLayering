@@ -14,5 +14,5 @@ foreach:
   per_part: [generic]
   priority: [face, eyes, mouth, hair, body, lower_body, arms, physics_details, special_parts, clothing, generic]
   mode: serial
-  run: ../../templates/部件专项/{group.kind}/
+  run: templates/部件专项/{group.kind}
   carry: [svg]

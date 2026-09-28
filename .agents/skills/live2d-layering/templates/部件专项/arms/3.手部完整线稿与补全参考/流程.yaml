@@ -1,10 +1,10 @@
 id: arms_hand_reference
-run: .
+run: templates/部件专项/arms/3.手部完整线稿与补全参考
 inputs:
   reference: inputs.reference # 图1：本轮角色彩图，双手姿态与造型依据。
   milly_reference:
-    asset: ../references/milly-hand-layers.png # 图2：六件拆法示例，不复制其人物造型。
+    asset: templates/部件专项/arms/references/milly-hand-layers.png # 图2：六件拆法示例，不复制其人物造型。
 outputs:
   image: refinement/groups/{group.id}/3.手部完整线稿与补全参考/双手线稿与补全.png
 imagegen:
-  prompt: 生成提示词.txt
+  prompt: templates/部件专项/arms/3.手部完整线稿与补全参考/生成提示词.txt

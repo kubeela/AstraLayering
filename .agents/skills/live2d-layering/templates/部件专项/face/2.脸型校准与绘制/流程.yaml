@@ -1,5 +1,5 @@
 id: face_drawing
-run: .
+run: templates/部件专项/face/2.脸型校准与绘制
 worker: refinement_drawing
 inputs:
   reference: inputs.reference

@@ -1,12 +1,12 @@
 id: body_palette
-run: .
+run: templates/部件专项/body/2.身体色盘
 worker: body_palette
 inputs:
   reference: inputs.reference
   parts: inputs.parts
   svg: nodes.body_line_art.svg
   palette_tool:
-    asset: ../../../../../../../agent-tools/palettes/body.py
+    asset: templates/部件专项/body/2.身体色盘/tools/palette.py
 outputs:
   palette_image: refinement/groups/{group.id}/2.身体色盘/palette.png
   palette_json: refinement/groups/{group.id}/2.身体色盘/palette.json

@@ -1,14 +1,14 @@
 id: arms_palette
-run: .
+run: templates/部件专项/arms/1.手臂与手部色盘
 worker: arms_palette
 inputs:
   reference: inputs.reference
   parts: inputs.parts
   svg: inputs.svg
   palette_tool:
-    asset: ../../../../../../../agent-tools/palettes/arms.py
+    asset: templates/部件专项/arms/1.手臂与手部色盘/tools/palette.py
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   palette_image: refinement/groups/{group.id}/1.手臂与手部色盘/palette.png
   palette_json: refinement/groups/{group.id}/1.手臂与手部色盘/palette.json

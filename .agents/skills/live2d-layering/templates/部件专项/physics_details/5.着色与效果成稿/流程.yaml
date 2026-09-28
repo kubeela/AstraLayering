@@ -1,5 +1,5 @@
 id: physics_details_coloring
-run: .
+run: templates/部件专项/physics_details/5.着色与效果成稿
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -11,7 +11,7 @@ inputs:
   palette_image: nodes.physics_details_palette.palette_image
   palette_json: nodes.physics_details_palette.palette_json
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/5.着色与效果成稿/character.svg
   preview: refinement/groups/{group.id}/5.着色与效果成稿/preview.png

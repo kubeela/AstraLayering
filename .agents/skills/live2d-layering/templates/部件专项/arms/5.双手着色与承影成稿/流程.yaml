@@ -1,5 +1,5 @@
 id: arms_hand_coloring
-run: .
+run: templates/部件专项/arms/5.双手着色与承影成稿
 worker: hands_drawing
 inputs:
   reference: inputs.reference
@@ -8,7 +8,7 @@ inputs:
   palette_image: nodes.arms_palette.palette_image
   palette_json: nodes.arms_palette.palette_json
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/5.双手着色与承影成稿/character.svg
   preview: refinement/groups/{group.id}/5.双手着色与承影成稿/preview.png

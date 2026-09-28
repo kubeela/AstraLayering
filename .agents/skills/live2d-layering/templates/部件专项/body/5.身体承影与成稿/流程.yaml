@@ -1,5 +1,5 @@
 id: body_effects
-run: .
+run: templates/部件专项/body/5.身体承影与成稿
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -7,7 +7,7 @@ inputs:
   svg: nodes.body_torso_coloring.svg
   palette_json: nodes.body_palette.palette_json
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/5.身体承影与成稿/character.svg
   preview: refinement/groups/{group.id}/5.身体承影与成稿/preview.png

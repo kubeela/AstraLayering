@@ -1,5 +1,5 @@
 id: kind_layers
-run: .
+run: 3.大层分层稿/3.2.建立色块分层
 worker: kind_block_drawing
 inputs:
   reference: nodes.base_subject.image
@@ -9,10 +9,10 @@ outputs:
   svg: block-layers/character.svg
   preview: block-layers/preview.png
 review:
-  run: review/
+  run: 3.大层分层稿/3.2.建立色块分层/review
   inputs:
     compare_tool:
-      asset: ../../../../../agent-tools/compare.py
+      asset: 3.大层分层稿/3.2.建立色块分层/tools/compare.py
     reference: nodes.base_subject.image
     parts: nodes.part_inventory.parts
     candidate: self.svg

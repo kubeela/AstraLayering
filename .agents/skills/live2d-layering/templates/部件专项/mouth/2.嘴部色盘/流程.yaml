@@ -1,5 +1,5 @@
 id: mouth_palette
-run: .
+run: templates/部件专项/mouth/2.嘴部色盘
 worker: mouth_palette
 inputs:
   reference: inputs.reference

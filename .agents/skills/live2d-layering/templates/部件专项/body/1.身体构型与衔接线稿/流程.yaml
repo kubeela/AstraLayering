@@ -1,5 +1,5 @@
 id: body_line_art
-run: .
+run: templates/部件专项/body/1.身体构型与衔接线稿
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -7,12 +7,12 @@ inputs:
   svg: inputs.svg
   guide: inputs.line_art
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/1.身体构型与衔接线稿/character.svg
   comparison: refinement/groups/{group.id}/1.身体构型与衔接线稿/构型与衔接对照.png
 review:
-  run: review/
+  run: templates/部件专项/body/1.身体构型与衔接线稿/review
   inputs:
     reference: inputs.reference
     parts: inputs.parts

@@ -1,8 +1,8 @@
 id: eyes_closeup_reference
-run: .
+run: templates/部件专项/eyes/1.眼部参考准备/1.2.眼部放大线稿参考
 inputs:
   reference: inputs.reference # 图1：原角色彩图。
 outputs:
   image: refinement/groups/{group.id}/1.眼部参考/眼部放大线稿.png
 imagegen:
-  prompt: 生成提示词.txt
+  prompt: templates/部件专项/eyes/1.眼部参考准备/1.2.眼部放大线稿参考/生成提示词.txt

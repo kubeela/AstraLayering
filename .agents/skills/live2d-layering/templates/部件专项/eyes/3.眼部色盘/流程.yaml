@@ -1,9 +1,9 @@
 id: eyes_palette
-run: .
+run: templates/部件专项/eyes/3.眼部色盘
 worker: eyes_palette
 inputs:
   palette_tool:
-    asset: ../../../../../../../agent-tools/palettes/eyes.py
+    asset: templates/部件专项/eyes/3.眼部色盘/tools/palette.py
   reference: inputs.reference
   parts: inputs.parts
   svg: inputs.svg

@@ -1,5 +1,5 @@
 id: eye_periocular_coloring
-run: .
+run: templates/部件专项/eyes/4.逐眼着色/4.4.眼周皮肤明暗
 worker: refinement_drawing
 inputs:
   reference: inputs.reference

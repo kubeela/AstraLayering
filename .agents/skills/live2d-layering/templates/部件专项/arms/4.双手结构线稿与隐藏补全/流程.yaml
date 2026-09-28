@@ -1,5 +1,5 @@
 id: arms_hand_line_art
-run: .
+run: templates/部件专项/arms/4.双手结构线稿与隐藏补全
 worker: hands_drawing
 inputs:
   reference: inputs.reference
@@ -7,14 +7,14 @@ inputs:
   svg: nodes.arms_limb_coloring.svg
   hand_reference: nodes.arms_hand_reference.image
   milly_reference:
-    asset: ../references/milly-hand-layers.png
+    asset: templates/部件专项/arms/references/milly-hand-layers.png
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/4.双手结构线稿与隐藏补全/character.svg
   comparison: refinement/groups/{group.id}/4.双手结构线稿与隐藏补全/结构对照.png
 review:
-  run: review/
+  run: templates/部件专项/arms/4.双手结构线稿与隐藏补全/review
   inputs:
     reference: inputs.reference
     parts: inputs.parts

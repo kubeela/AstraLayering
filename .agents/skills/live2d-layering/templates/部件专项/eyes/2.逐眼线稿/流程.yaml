@@ -12,7 +12,7 @@ foreach:
   items: eyes
   as: eye
   mode: serial
-  run: .
+  run: templates/部件专项/eyes/2.逐眼线稿
   carry: [svg]
 outputs:
   svg: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/character.svg
@@ -20,7 +20,7 @@ outputs:
   comparison: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/校准对照.png
   notes: refinement/groups/{group.id}/2.逐眼线稿/{eye.id}/说明.md
 review:
-  run: review/
+  run: templates/部件专项/eyes/2.逐眼线稿/review
   inputs:
     reference: inputs.reference
     parts: inputs.parts

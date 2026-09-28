@@ -1,5 +1,5 @@
 id: face_neighbors
-run: .
+run: templates/部件专项/face/3.关联部件校准
 worker: refinement_drawing
 inputs:
   reference: inputs.reference

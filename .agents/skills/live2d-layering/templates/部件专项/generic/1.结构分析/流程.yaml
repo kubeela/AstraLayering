@@ -1,12 +1,12 @@
 id: generic_structure
-run: .
+run: templates/部件专项/generic/1.结构分析
 worker: generic_structure
 inputs:
   reference: inputs.reference
   parts: inputs.parts
   svg: inputs.svg
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   structure: refinement/groups/{group.id}/1.结构分析/结构安排.md
   reference_brief: refinement/groups/{group.id}/1.结构分析/补全要求.txt

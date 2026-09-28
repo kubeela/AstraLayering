@@ -1,12 +1,12 @@
 id: hair_palette
-run: .
+run: templates/部件专项/hair/3.头发色盘
 worker: hair_palette
 inputs:
   reference: inputs.reference
   parts: inputs.parts
   svg: nodes.hair_line_art.svg
   palette_tool:
-    asset: ../../../../../../../agent-tools/palettes/hair.py
+    asset: templates/部件专项/hair/3.头发色盘/tools/palette.py
 outputs:
   palette_image: refinement/groups/{group.id}/3.头发色盘/palette.png
   palette_json: refinement/groups/{group.id}/3.头发色盘/palette.json

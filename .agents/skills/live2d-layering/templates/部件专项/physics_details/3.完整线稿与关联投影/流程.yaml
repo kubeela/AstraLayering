@@ -1,5 +1,5 @@
 id: physics_details_line_art
-run: .
+run: templates/部件专项/physics_details/3.完整线稿与关联投影
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -8,13 +8,13 @@ inputs:
   structure: nodes.physics_details_structure.structure
   guide: nodes.physics_details_reference.image
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/3.完整线稿与关联投影/character.svg
   comparison: refinement/groups/{group.id}/3.完整线稿与关联投影/结构对照.png
   handoff: refinement/groups/{group.id}/3.完整线稿与关联投影/衔接记录.md
 review:
-  run: review/
+  run: templates/部件专项/physics_details/3.完整线稿与关联投影/review
   inputs:
     reference: inputs.reference
     parts: inputs.parts

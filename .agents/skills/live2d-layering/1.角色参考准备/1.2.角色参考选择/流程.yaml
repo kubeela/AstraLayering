@@ -10,9 +10,9 @@ then:
   outputs:
     image: inputs.original
 else:
-  run: .
+  run: 1.角色参考准备/1.2.角色参考选择
   outputs:
     image: references/simplified-character.png
   imagegen:
     when: simplified 未提供
-    prompt: 生成提示词.txt
+    prompt: 1.角色参考准备/1.2.角色参考选择/生成提示词.txt

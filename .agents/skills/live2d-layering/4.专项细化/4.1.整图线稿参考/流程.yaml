@@ -1,8 +1,8 @@
 id: line_art_reference
-run: .
+run: 4.专项细化/4.1.整图线稿参考
 inputs:
   reference: nodes.base_subject.image
 outputs:
   image: references/line-art.png
 imagegen:
-  prompt: 生成提示词.txt
+  prompt: 4.专项细化/4.1.整图线稿参考/生成提示词.txt

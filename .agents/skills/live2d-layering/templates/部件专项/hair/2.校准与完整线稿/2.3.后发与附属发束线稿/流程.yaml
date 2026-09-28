@@ -1,5 +1,5 @@
 id: hair_line_art
-run: .
+run: templates/部件专项/hair/2.校准与完整线稿/2.3.后发与附属发束线稿
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -7,13 +7,13 @@ inputs:
   svg: nodes.hair_front_side_line_art.svg
   guide: nodes.hair_reference.image
   preview_tool:
-    asset: ../../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/character.svg
   head_comparison: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/头部结构对照.png
   back_comparison: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/后发结构对照.png
 review:
-  run: review/
+  run: templates/部件专项/hair/2.校准与完整线稿/2.3.后发与附属发束线稿/review
   inputs:
     reference: inputs.reference
     parts: inputs.parts

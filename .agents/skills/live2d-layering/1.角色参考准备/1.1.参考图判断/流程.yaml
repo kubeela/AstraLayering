@@ -2,13 +2,13 @@ id: reference_decision
 worker: reference_prep
 inputs:
   options_tool:
-    asset: ../../../../../agent-tools/options.py
+    asset: tools/options.py
   options_manual:
-    asset: ../../../../../agent-tools/readme.md
+    asset: tools/readme.md
   original: inputs.original
   simplified:
     from: inputs.simplified
     required: false
 
-run: .
+run: 1.角色参考准备/1.1.参考图判断
 writes_options: [simplify]

@@ -1,12 +1,12 @@
 # GPT-6 Sol-medium；只在开工前决定策略。
 id: eyes_plan
-run: .
+run: templates/部件专项/eyes/1.眼部参考准备/1.1.对称性与制作计划
 worker: eyes_planning
 inputs:
   options_tool:
-    asset: ../../../../../../../../agent-tools/options.py
+    asset: tools/options.py
   plan_validator:
-    asset: ../../../../../../../../agent-tools/eyes/validate_plan.py
+    asset: templates/部件专项/eyes/1.眼部参考准备/1.1.对称性与制作计划/tools/validate_plan.py
   reference: inputs.reference
   parts: inputs.parts
 writes_options: [eyes_symmetric]

@@ -4,14 +4,14 @@ inputs:
 
 if: reference 含可换装的人形角色
 then:
-  run: .
+  run: 1.角色参考准备/1.3.连体服替换
   inputs:
     outfit:
-      asset: 可复用结果.jpg
+      asset: 1.角色参考准备/1.3.连体服替换/可复用结果.jpg
   outputs:
     image: references/base-subject.png
   imagegen:
-    prompt: 生成提示词.txt
+    prompt: 1.角色参考准备/1.3.连体服替换/生成提示词.txt
 else:
   outputs:
     image: inputs.reference

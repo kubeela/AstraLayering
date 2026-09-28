@@ -1,9 +1,9 @@
 id: face_palette
-run: .
+run: templates/部件专项/face/1.脸部色盘
 worker: face_palette
 inputs:
   palette_tool:
-    asset: ../../../../../../../agent-tools/palettes/face.py
+    asset: templates/部件专项/face/1.脸部色盘/tools/palette.py
   reference: inputs.reference
   parts: inputs.parts
 outputs:

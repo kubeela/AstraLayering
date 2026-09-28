@@ -1,5 +1,5 @@
 id: mouth_coloring
-run: .
+run: templates/部件专项/mouth/3.嘴部着色成稿
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -9,7 +9,7 @@ inputs:
   palette_json: nodes.mouth_palette.palette_json
   inferred_palette: nodes.mouth_palette.inferred_palette
   preview_tool:
-    asset: ../../../../../../../agent-tools/svg_preview.py
+    asset: tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/3.嘴部着色成稿/character.svg
   preview: refinement/groups/{group.id}/3.嘴部着色成稿/preview.png

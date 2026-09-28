@@ -1,5 +1,5 @@
 id: eyes_assembly
-run: .
+run: templates/部件专项/eyes/6.镜像组装与成稿审查
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -12,7 +12,7 @@ outputs:
   preview: refinement/groups/{group.id}/6.镜像组装与成稿审查/preview.png
   notes: refinement/groups/{group.id}/6.镜像组装与成稿审查/说明.md
 review:
-  run: review/
+  run: templates/部件专项/eyes/6.镜像组装与成稿审查/review
   inputs:
     reference: inputs.reference
     parts: inputs.parts

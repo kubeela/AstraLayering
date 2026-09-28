@@ -1,5 +1,5 @@
 id: part_inventory
-run: .
+run: 2.皮套结构识别
 worker: part_planning
 inputs:
   reference: nodes.base_subject.image

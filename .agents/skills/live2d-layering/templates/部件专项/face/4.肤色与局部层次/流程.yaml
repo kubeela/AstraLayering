@@ -1,5 +1,5 @@
 id: face_coloring
-run: .
+run: templates/部件专项/face/4.肤色与局部层次
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
