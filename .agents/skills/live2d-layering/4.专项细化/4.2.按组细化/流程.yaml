@@ -5,7 +5,7 @@ inputs:
   prepared_reference: nodes.character_reference.image
   line_art: nodes.line_art_reference.image
   parts: nodes.part_inventory.parts
-  svg: nodes.group_layers.svg
+  svg: nodes.kind_layers.svg
 foreach:
   from: inputs.parts
   items: parts

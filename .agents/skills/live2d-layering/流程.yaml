@@ -3,14 +3,15 @@ inputs:
     type: image
     required: true
     description: 用户提供的原始角色图
+  simplified:
+    type: image
+    required: false
+    description: 用户已准备的、适合结构识别与分层重绘的角色参考图
 
 options:
   simplify:
     type: boolean
-    description: 是否需要按第 1 步的风格参考转换人物画风；眼部可见时优先比较眼部和脸部，否则比较其他可见部位的画法
-  wear_cloth:
-    type: boolean
-    description: 原图前景主体是否穿着需要在本流程中替换的衣物
+    description: 是否需要画法适配或消除结构辨认障碍；结构清楚的插画优先直接使用，材质透明与待替换服装的复杂度不单独触发改绘
   eyes_symmetric:
     type: boolean
     description: 是否采用主眼制作后镜像复用的策略；由计划节点在开工前一次决定并锁定，用户明确选择优先，下游不得自行切换

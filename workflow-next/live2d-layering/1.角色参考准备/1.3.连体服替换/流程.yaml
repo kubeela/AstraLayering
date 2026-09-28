@@ -1,8 +1,9 @@
 id: base_subject
 inputs:
+  original: inputs.original
   reference: nodes.character_reference.image
 
-if: reference 含可换装的人形角色
+if: options.wear_cloth == true
 then:
   run: 1.角色参考准备/1.3.连体服替换
   inputs:
@@ -12,6 +13,12 @@ then:
     image: references/base-subject.png
   imagegen:
     prompt: 1.角色参考准备/1.3.连体服替换/生成提示词.txt
+    inputs: [reference, outfit]
 else:
-  outputs:
-    image: inputs.reference
+  if: options.simplify == false
+  then:
+    outputs:
+      image: inputs.original
+  else:
+    outputs:
+      image: inputs.reference

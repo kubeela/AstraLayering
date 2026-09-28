@@ -94,7 +94,7 @@
 | [live2d-layering](./.agents/skills/live2d-layering/SKILL.md) | 参考准备 → 结构识别 → 大层分层 → 按组细化与素体整理 | 具备完整底形、连接面及独立效果的人物素体 |
 | [live2d-clothing](./.agents/skills/live2d-clothing/SKILL.md) | 结构与穿戴分析 → 按需补全参考 → 分批线稿及集中结构审查 → 色盘 → 分批着色与导出 | 可替换衣装与完整穿戴稿 |
 
-旧版人物专项资料包含 `face`、`eyes`、`mouth`、`hair`、`body`、`lower_body`、`arms`、`physics_details`、`special_parts`、`clothing`、`generic`；当前分组与色稿不建立 `clothing` group，独立衣装由衣装技能制作。第 4 步旧专项仍待迁移。
+当前生效的人物分层技能恢复为工具归位后的旧流程。[新流程建设稿](./workflow-next/live2d-layering/readme.md)放在仓库根目录，1—3 步和树游标已建立，第 4 步专项模板仍待迁移。独立衣装由衣装技能制作。
 
 运行时只向 worker 交接对应节点提示词、本轮素材、上游产物和工具；拆分、补全、材质和投影知识已落实在对应提示词，教程原文仅作维护者的设计参考。
 

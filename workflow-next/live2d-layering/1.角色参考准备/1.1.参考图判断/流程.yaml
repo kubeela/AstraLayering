@@ -1,14 +1,13 @@
 id: reference_decision
 worker: reference_prep
 inputs:
+  original: inputs.original
+  style_reference_1:
+    asset: 1.角色参考准备/风格参考/3.全身立绘.png
   options_tool:
     asset: tools/options.py
   options_manual:
     asset: tools/readme.md
-  original: inputs.original
-  simplified:
-    from: inputs.simplified
-    required: false
 
 run: 1.角色参考准备/1.1.参考图判断
-writes_options: [simplify]
+writes_options: [simplify, wear_cloth]

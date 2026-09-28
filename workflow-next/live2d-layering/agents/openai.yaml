@@ -1,0 +1,4 @@
+interface:
+  display_name: "Live2D 人物分层"
+  short_description: "从角色参考制作分层素体，补全隐藏部件并保留独立材质与光影"
+  default_prompt: "使用 $live2d-layering，根据我提供的角色参考图和输出目录完成分层素体制作。"

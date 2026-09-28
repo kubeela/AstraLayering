@@ -1,0 +1,13 @@
+inputs:
+  original:
+    type: image
+    required: true
+    description: 用户提供的原始角色图
+
+options:
+  simplify:
+    type: boolean
+    description: 是否需要按第 1 步的风格参考转换人物画风；眼部可见时优先比较眼部和脸部，否则比较其他可见部位的画法
+  wear_cloth:
+    type: boolean
+    description: 原图前景主体是否穿着需要在本流程中替换的衣物

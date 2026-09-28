@@ -1,0 +1,52 @@
+id: refine_groups
+inputs:
+  reference: nodes.base_subject.image
+  groups: nodes.group_inventory.groups
+  svg: nodes.group_layers.svg
+  cursor_tool:
+    asset: 4.专项细化/tools/group_cursor.py
+dispatch:
+  document: inputs.groups
+  state: structure/groups.dispatch.json
+  tool: inputs.cursor_tool
+  order: depth_first
+  mode: serial
+  tree:
+    root_key: groups
+    child_edges:
+      groups: group
+      parts: part
+    terminal_types: [part]
+  routes:
+    group:
+      face: templates/部件专项/face
+      eyes: templates/部件专项/eyes
+      mouth: templates/部件专项/mouth
+      hair: templates/部件专项/hair
+      body: templates/部件专项/body
+      arms: templates/部件专项/arms
+      lower_body: templates/部件专项/lower_body
+    part: {}
+  fallback: templates/部件专项/generic
+  unmatched_node_with_children: descend
+  call_stack: last_in_first_out
+  pointer: checkpointed_step
+  call_selectors: [targets, match_node, remaining]
+  lifecycle:
+    start: init
+    select: next
+    run: enter_route
+    active: resume_pointer
+    done: publish_carry
+    after_change: select
+    on_error: stop
+  identity: state.nodes[{path}].id
+  once: completed_node_id
+  expand: append_pending_children
+  complete: after_output_and_review
+  completion_scopes: [node, subtree]
+  carry: [svg]
+outputs:
+  groups: inputs.groups
+  state: structure/groups.dispatch.json
+  svg: carry.svg
