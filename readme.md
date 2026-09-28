@@ -4,7 +4,9 @@
 
 当前有两个正式技能：**`live2d-layering` 制作人物素体，`live2d-clothing` 制作可替换衣装**；它们各自按节点配置调度绘制，通用执行规则放在 SKILL.md，具体步骤和制作要求放在对应节点。
 
-[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 预览器](./loading/svg-preview.html)
+人物分层技能的初始分组已改为 `group` 树，第 3 步按最底层 group 绘制和检查色稿；第 4 步及后续接口仍待迁移。
+
+[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [分组树查看器](./loading/groups-preview.html) · [SVG 预览器](./loading/svg-preview.html)
 
 ## 效果展示
 
@@ -119,6 +121,8 @@ SVG按实体部件组织，保留当前姿态所需的隐藏底形：例如发�
 [首例完整展示](./demos/first-complete-case/readme.md) · [部件树长图](./demos/first-complete-case/parts-tree-full.png) · [独显示例大图](./demos/first-complete-case/isolated-parts.png)
 
 ## 查看与对比结果
+
+用浏览器打开[loading/groups-preview.html](./loading/groups-preview.html)，选择或拖入分组步骤生成的 `structure/groups.json`，可以展开、搜索分组树，并查看每个 group 的完整路径和备注。页面可离线使用。
 
 用浏览器打开[loading/svg-preview.html](./loading/svg-preview.html)，拖入生成的SVG与对应彩图，检查整体、局部贴合和图层显隐。预览器可离线使用，无需构建或启动服务。
 

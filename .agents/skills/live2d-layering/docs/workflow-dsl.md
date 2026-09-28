@@ -79,7 +79,7 @@ live2d-layering/
 
 执行节点声明 `id`、`inputs` 和明确的 `run`，用 `outputs` 声明后续可引用的结果，或用 `writes_options` 声明它要写入的配置字段。配置是本轮运行状态，不算节点产物。纯分组/循环容器不配置 worker 提示词与模型；单任务也可以直接声明 `foreach.run` 指向本节点的根相对目录，无需外包一层子目录。条件分支采用 `if / then / else`；输出别名分支直接发布已有路径，执行分支显式声明 `run`，生图任务同时声明 `imagegen`。
 
-`id` 标识工作成果，`worker` 标识可延续的语言 worker 上下文。串行节点使用相同 `worker` 值时，继续原会话；并行分支共用已有 `worker` 时，从分支前的共同上下文分别 fork。不同值启动新的 worker；省略 `worker` 的普通任务以节点 `id` 区分。复用与 fork 要求语言模型与推理强度一致。只引用已有文件的分支不派发 worker；`imagegen` 由总控直接调用，也不派发语言 worker。
+`id` 标识工作成果，`worker` 标识可延续的语言 worker 上下文。总控每次派发前按执行分支 `worker` → 节点 `worker` → 节点 `id` 的顺序确定会话身份，查询该身份已记录的实际 agent ID；有可续做会话就向该 ID 派发下一任务，没有才新建并记录 ID。独立 review 的会话身份取 `review.worker`，否则取 `<节点 id>:review`，与绘制者隔离。串行节点使用相同 `worker` 值时，继续原会话；并行分支共用已有 `worker` 时，从分支前的共同上下文分别 fork。不同值启动新的 worker。复用与 fork 要求语言模型与推理强度一致。只引用已有文件的分支不派发 worker；`imagegen` 由总控直接调用，也不派发语言 worker。
 
 ### 会话与 fork
 
@@ -99,20 +99,17 @@ fork 在共同前序任务完成后发起，所有分支继承该完成点的上
 
 ## 3. 外部输入与节点输入
 
-根目录 `流程.yaml` 声明用户可以提供什么。下面是语法示例，选项默认值由具体流程决定：
+根目录 `流程.yaml` 声明用户需要提供的素材；本技能只有 `original`。绝对输出目录作为本轮工作根目录单独提供，不写入 `inputs`。选项默认值由具体流程决定：
 
 ```yaml
 inputs:
   original:
     type: image
     required: true
-  simplified:
-    type: image
-    required: false
 options:
   simplify:
     type: boolean
-    description: 是否需要画法适配或消除结构辨认障碍；结构清楚的插画优先直接使用
+    description: 是否需要按第 1 步的三张风格参考转换原图画法
 ```
 
 `type` 说明输入用途与形态；`required` 省略时为 `true`。根目录的 `options` 只声明选项，不保存本轮实际选择。可以按需要声明 `default`；需要结合输入图判断的选项可以不设默认值。
@@ -138,7 +135,7 @@ options:
 | `options.simplify` | 本轮已确定的运行选项 |
 | `refinement/groups/{group.id}/1.脸部色盘/palette.json` | 相对本轮工作根目录的文件路径；循环中替换当前分组值 |
 | `{ asset: 1.角色参考准备/1.3.连体服替换/可复用结果.jpg }` | 从技能根目录索引的包内素材，本节点明确选用它 |
-| `{ from: inputs.simplified, required: false }` | 本节点接受该输入缺省 |
+| `{ from: nodes.optional_step.image, required: false }` | 本节点接受该上游产物缺省 |
 
 短写 `reference: nodes.character_reference.image` 等价于声明一个必需输入。可选输入为空时，总控明确记录“未提供”；按节点定义选择分支，或把这一事实交给允许缺省的 worker。文件不可读、上游失败和版本不匹配属于执行问题，与可选输入未提供分别处理。
 
@@ -152,9 +149,12 @@ options:
 id: character_reference
 inputs:
   original: inputs.original
-  simplified:
-    from: inputs.simplified
-    required: false
+  style_reference_1:
+    asset: 1.角色参考准备/风格参考/1.全身角色.jpg
+  style_reference_2:
+    asset: 1.角色参考准备/风格参考/2.面部细节.png
+  style_reference_3:
+    asset: 1.角色参考准备/风格参考/3.全身立绘.png
 if: options.simplify == false
 then:
   outputs:
@@ -164,8 +164,8 @@ else:
   outputs:
     image: references/simplified-character.png
   imagegen:
-    when: simplified 未提供
     prompt: 1.角色参考准备/1.2.角色参考选择/生成提示词.txt
+    inputs: [original, style_reference_1, style_reference_2, style_reference_3]
 ```
 
 执行规则：
@@ -173,8 +173,8 @@ else:
 1. `if` 判断条件，成立走 `then`，否则走 `else`。缺少 `else` 时，该节点在条件不成立的情况下跳过。选项尚未确定时，先执行负责写入该选项的节点。
 2. `outputs.image: inputs.original` 表示本节点的 `image` 结果就是已有原图。它保留原文件路径与格式，不复制文件、不派发绘图任务。
 3. `outputs.image: references/…` 表示本轮要保存的文件路径。分支继承节点输入，可按需添加自己的 `inputs`。
-4. 上例始终发布 `nodes.character_reference.image`。简化分支若收到用户提供的简化图，总控将其按指定格式保存为结果；否则总控读取根相对路径所指的 `生成提示词.txt`，以原图调用 `imagegen` 一次并保存返回图。用户明确选原图时，即使提供了简化图，也使用原图。
-5. `imagegen.when` 仅决定是否调用生图工具；其余分支仍使用同一个 `outputs.image` 路径。工具调用失败时记录节点失败并处理卡点，不自动切到其他分支。
+4. 上例始终发布 `nodes.character_reference.image`。需要简化时，总控读取根相对路径所指的 `生成提示词.txt`，按 `imagegen.inputs` 的顺序传原图和三张内置风格参考，调用 `imagegen` 一次并保存返回图；无需用户准备简化图。
+5. 工具调用失败时记录节点失败并处理卡点，不自动切到其他分支。其他节点可用 `imagegen.when` 限制生图条件；本节点的简化分支一经选中就执行生图。
 
 条件也可明确要求总控读取绑定文本中的决定，例如`if: structure 中的 reference_needed 为 true`：读取本组structure文件开头的唯一`reference_needed: true/false`，true走then，false走else；缺失、重复或非布尔值属于上游交付错误，交原分析worker修正，不能按false跳过。该决定作用于当前group，不自动写入全局options。
 
@@ -185,23 +185,25 @@ else:
 下面是普通绘制节点的示例：
 
 ```yaml
-id: parts
-run: 3.大层分层稿/3.2.建立色块分层
+id: group_layers
+run: 3.大层分层稿/3.1.分组色稿
 inputs:
-  reference: nodes.character_reference.image
+  reference: nodes.base_subject.image
+  groups: nodes.group_inventory.groups
 outputs:
-  svg: parts/角色.svg
-  check: parts/结构检查.png
+  svg: block-layers/character.svg
+  preview: block-layers/preview.png
 review:
-  run: 3.大层分层稿/3.2.建立色块分层/review
+  run: 3.大层分层稿/3.1.分组色稿/review
   inputs:
-    reference: nodes.character_reference.image
+    reference: nodes.base_subject.image
+    groups: nodes.group_inventory.groups
     candidate: self.svg
   outputs:
-    report: reviews/parts/审查.md
+    report: reviews/group_layers/审查.md
 ```
 
-`outputs` 的键是下游引用名。值为 `inputs.<名称>` 或 `nodes.<id>.<名称>` 时，直接引用已有文件；其他字符串是相对工作根目录的待写文件路径。例如 `nodes.parts.svg` 绑定到保存完成的 SVG。`self.svg` 仅在该节点的 review 中指向当前待审输出。
+`outputs` 的键是下游引用名。值为 `inputs.<名称>` 或 `nodes.<id>.<名称>` 时，直接引用已有文件；其他字符串是相对工作根目录的待写文件路径。例如 `nodes.group_layers.svg` 绑定到保存完成的 SVG。`self.svg` 仅在该节点的 review 中指向当前待审输出。
 
 路径分成两个基准：
 
@@ -270,7 +272,7 @@ inputs:
   prepared_reference: nodes.character_reference.image
   line_art: nodes.line_art_reference.image
   parts: nodes.part_inventory.parts
-  svg: nodes.kind_layers.svg
+  svg: nodes.group_layers.svg
 foreach:
   from: inputs.parts
   items: parts

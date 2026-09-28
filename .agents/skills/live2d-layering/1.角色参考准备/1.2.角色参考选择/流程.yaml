@@ -1,9 +1,12 @@
 id: character_reference
 inputs:
   original: inputs.original
-  simplified:
-    from: inputs.simplified
-    required: false
+  style_reference_1:
+    asset: 1.角色参考准备/风格参考/1.全身角色.jpg
+  style_reference_2:
+    asset: 1.角色参考准备/风格参考/2.面部细节.png
+  style_reference_3:
+    asset: 1.角色参考准备/风格参考/3.全身立绘.png
 
 if: options.simplify == false
 then:
@@ -14,5 +17,5 @@ else:
   outputs:
     image: references/simplified-character.png
   imagegen:
-    when: simplified 未提供
     prompt: 1.角色参考准备/1.2.角色参考选择/生成提示词.txt
+    inputs: [original, style_reference_1, style_reference_2, style_reference_3]
