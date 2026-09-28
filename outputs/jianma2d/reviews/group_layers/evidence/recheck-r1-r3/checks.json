@@ -1,0 +1,95 @@
+{
+  "svg_sha256": "a8720ccafcac13cc71042c40b00d973d239ee87c9865fca1a131c48750a5dda3",
+  "scope": "R1–R3 and affected neighbours only",
+  "groups": [
+    {
+      "id": "torso",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/torso.png"
+    },
+    {
+      "id": "right_upper_arm",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/right_upper_arm.png"
+    },
+    {
+      "id": "left_upper_arm",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/left_upper_arm.png"
+    },
+    {
+      "id": "right_ear",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/right_ear.png",
+      "alpha_128_four_connected_components": [
+        500
+      ]
+    },
+    {
+      "id": "left_ear",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/left_ear.png",
+      "alpha_128_four_connected_components": [
+        598
+      ]
+    },
+    {
+      "id": "crown_hair",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/crown_hair.png"
+    },
+    {
+      "id": "right_bangs",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/right_bangs.png"
+    },
+    {
+      "id": "left_bangs",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/left_bangs.png"
+    },
+    {
+      "id": "right_side_lock",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/right_side_lock.png"
+    },
+    {
+      "id": "left_side_lock",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/left_side_lock.png"
+    },
+    {
+      "id": "right_earring",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/right_earring.png",
+      "alpha_128_four_connected_components": [
+        140
+      ]
+    },
+    {
+      "id": "left_earring",
+      "isolation_nonempty": true,
+      "hide_changes_full_render": true,
+      "isolated_file": "reviews/group_layers/evidence/recheck-r1-r3/leaves/left_earring.png",
+      "alpha_128_four_connected_components": [
+        137
+      ]
+    }
+  ],
+  "matches_author_current_render": true,
+  "shoulder_min_alpha": {
+    "screen_left": 255,
+    "screen_right": 255
+  }
+}

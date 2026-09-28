@@ -1,0 +1,893 @@
+{
+  "svg_sha256": "e2cbc656722895d36bd977fe22b10d2e0e14f5bd5d39f75003e4cb7be9888cbc",
+  "leaf_count": 45,
+  "major_classes": [
+    {
+      "path": "face",
+      "evidence": "block-layers/evidence/categories/face.png",
+      "leaf_count": 9
+    },
+    {
+      "path": "hair",
+      "evidence": "block-layers/evidence/categories/hair.png",
+      "leaf_count": 8
+    },
+    {
+      "path": "body",
+      "evidence": "block-layers/evidence/categories/body.png",
+      "leaf_count": 15
+    },
+    {
+      "path": "headdress",
+      "evidence": "block-layers/evidence/categories/headdress.png",
+      "leaf_count": 7
+    },
+    {
+      "path": "earrings",
+      "evidence": "block-layers/evidence/categories/earrings.png",
+      "leaf_count": 2
+    },
+    {
+      "path": "sandals",
+      "evidence": "block-layers/evidence/categories/sandals.png",
+      "leaf_count": 4
+    }
+  ],
+  "leaves": [
+    {
+      "index": 1,
+      "path": "hair/right_back_hair",
+      "id": "right_back_hair",
+      "color": "#A89A50",
+      "isolation_bbox": [
+        413,
+        253,
+        499,
+        641
+      ],
+      "visible_bbox": [
+        420,
+        284,
+        493,
+        641
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/01.png"
+    },
+    {
+      "index": 2,
+      "path": "hair/left_back_hair",
+      "id": "left_back_hair",
+      "color": "#569BA6",
+      "isolation_bbox": [
+        534,
+        252,
+        618,
+        640
+      ],
+      "visible_bbox": [
+        541,
+        285,
+        612,
+        636
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/01.png"
+    },
+    {
+      "index": 3,
+      "path": "headdress/rear_arch",
+      "id": "rear_arch",
+      "color": "#78B696",
+      "isolation_bbox": [
+        433,
+        79,
+        594,
+        150
+      ],
+      "visible_bbox": [
+        452,
+        79,
+        577,
+        324
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/01.png"
+    },
+    {
+      "index": 4,
+      "path": "hair/top_bun",
+      "id": "top_bun",
+      "color": "#BDD58B",
+      "isolation_bbox": [
+        475,
+        93,
+        555,
+        158
+      ],
+      "visible_bbox": [
+        475,
+        93,
+        555,
+        146
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/01.png"
+    },
+    {
+      "index": 5,
+      "path": "headdress/right_branch/right_branch_base",
+      "id": "right_branch_base",
+      "color": "#DD9760",
+      "isolation_bbox": [
+        382,
+        117,
+        478,
+        198
+      ],
+      "visible_bbox": [
+        382,
+        117,
+        470,
+        197
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/01.png"
+    },
+    {
+      "index": 6,
+      "path": "headdress/left_branch/left_branch_base",
+      "id": "left_branch_base",
+      "color": "#CF8CB8",
+      "isolation_bbox": [
+        558,
+        117,
+        648,
+        196
+      ],
+      "visible_bbox": [
+        560,
+        117,
+        648,
+        196
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/02.png"
+    },
+    {
+      "index": 7,
+      "path": "headdress/right_branch/right_hanging_streamer",
+      "id": "right_hanging_streamer",
+      "color": "#59B8AF",
+      "isolation_bbox": [
+        342,
+        183,
+        412,
+        605
+      ],
+      "visible_bbox": [
+        342,
+        183,
+        412,
+        605
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/02.png"
+    },
+    {
+      "index": 8,
+      "path": "headdress/left_branch/left_hanging_streamer",
+      "id": "left_hanging_streamer",
+      "color": "#6E9FDC",
+      "isolation_bbox": [
+        624,
+        183,
+        691,
+        605
+      ],
+      "visible_bbox": [
+        624,
+        183,
+        691,
+        605
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/02.png"
+    },
+    {
+      "index": 9,
+      "path": "sandals/right_sandal/right_sole",
+      "id": "right_sole",
+      "color": "#E0B249",
+      "isolation_bbox": [
+        441,
+        1434,
+        504,
+        1472
+      ],
+      "visible_bbox": [
+        441,
+        291,
+        570,
+        1472
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/02.png"
+    },
+    {
+      "index": 10,
+      "path": "sandals/left_sandal/left_sole",
+      "id": "left_sole",
+      "color": "#8AAC45",
+      "isolation_bbox": [
+        524,
+        1434,
+        587,
+        1472
+      ],
+      "visible_bbox": [
+        524,
+        1434,
+        587,
+        1472
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/02.png"
+    },
+    {
+      "index": 11,
+      "path": "body/lower_body/right_leg/right_calf",
+      "id": "right_calf",
+      "color": "#BF788E",
+      "isolation_bbox": [
+        439,
+        1000,
+        513,
+        1336
+      ],
+      "visible_bbox": [
+        439,
+        1023,
+        509,
+        1336
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/03.png"
+    },
+    {
+      "index": 12,
+      "path": "body/lower_body/left_leg/left_calf",
+      "id": "left_calf",
+      "color": "#429C9C",
+      "isolation_bbox": [
+        521,
+        1000,
+        594,
+        1336
+      ],
+      "visible_bbox": [
+        524,
+        1031,
+        594,
+        1336
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/03.png"
+    },
+    {
+      "index": 13,
+      "path": "body/lower_body/right_leg/right_thigh",
+      "id": "right_thigh",
+      "color": "#D88979",
+      "isolation_bbox": [
+        402,
+        681,
+        513,
+        1031
+      ],
+      "visible_bbox": [
+        402,
+        283,
+        513,
+        1031
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/03.png"
+    },
+    {
+      "index": 14,
+      "path": "body/lower_body/left_leg/left_thigh",
+      "id": "left_thigh",
+      "color": "#81B891",
+      "isolation_bbox": [
+        521,
+        683,
+        630,
+        1031
+      ],
+      "visible_bbox": [
+        521,
+        774,
+        630,
+        1031
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/03.png"
+    },
+    {
+      "index": 15,
+      "path": "body/lower_body/right_leg/right_foot",
+      "id": "right_foot",
+      "color": "#A182BD",
+      "isolation_bbox": [
+        441,
+        1309,
+        503,
+        1467
+      ],
+      "visible_bbox": [
+        441,
+        1309,
+        503,
+        1466
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/03.png"
+    },
+    {
+      "index": 16,
+      "path": "body/lower_body/left_leg/left_foot",
+      "id": "left_foot",
+      "color": "#5C85B8",
+      "isolation_bbox": [
+        525,
+        1309,
+        586,
+        1466
+      ],
+      "visible_bbox": [
+        525,
+        290,
+        603,
+        1465
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/04.png"
+    },
+    {
+      "index": 17,
+      "path": "body/lower_body/pelvis",
+      "id": "pelvis",
+      "color": "#CABA61",
+      "isolation_bbox": [
+        402,
+        592,
+        630,
+        785
+      ],
+      "visible_bbox": [
+        402,
+        592,
+        630,
+        784
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/04.png"
+    },
+    {
+      "index": 18,
+      "path": "body/torso",
+      "id": "torso",
+      "color": "#E6A16A",
+      "isolation_bbox": [
+        426,
+        358,
+        607,
+        641
+      ],
+      "visible_bbox": [
+        430,
+        371,
+        604,
+        640
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/04.png"
+    },
+    {
+      "index": 19,
+      "path": "body/arms/right_arm/right_upper_arm",
+      "id": "right_upper_arm",
+      "color": "#B278BA",
+      "isolation_bbox": [
+        381,
+        374,
+        445,
+        605
+      ],
+      "visible_bbox": [
+        383,
+        375,
+        444,
+        584
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/04.png"
+    },
+    {
+      "index": 20,
+      "path": "body/arms/left_arm/left_upper_arm",
+      "id": "left_upper_arm",
+      "color": "#D57063",
+      "isolation_bbox": [
+        589,
+        375,
+        653,
+        607
+      ],
+      "visible_bbox": [
+        590,
+        376,
+        652,
+        591
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/04.png"
+    },
+    {
+      "index": 21,
+      "path": "body/arms/right_arm/right_forearm",
+      "id": "right_forearm",
+      "color": "#CC81AA",
+      "isolation_bbox": [
+        330,
+        580,
+        423,
+        776
+      ],
+      "visible_bbox": [
+        336,
+        580,
+        423,
+        747
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/05.png"
+    },
+    {
+      "index": 22,
+      "path": "body/arms/left_arm/left_forearm",
+      "id": "left_forearm",
+      "color": "#DB9561",
+      "isolation_bbox": [
+        610,
+        580,
+        702,
+        776
+      ],
+      "visible_bbox": [
+        454,
+        189,
+        694,
+        754
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/05.png"
+    },
+    {
+      "index": 23,
+      "path": "body/arms/right_arm/right_hand",
+      "id": "right_hand",
+      "color": "#E4A493",
+      "isolation_bbox": [
+        312,
+        747,
+        360,
+        868
+      ],
+      "visible_bbox": [
+        312,
+        249,
+        552,
+        868
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/05.png"
+    },
+    {
+      "index": 24,
+      "path": "body/arms/left_arm/left_hand",
+      "id": "left_hand",
+      "color": "#E5B66E",
+      "isolation_bbox": [
+        672,
+        747,
+        716,
+        869
+      ],
+      "visible_bbox": [
+        493,
+        317,
+        716,
+        869
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/05.png"
+    },
+    {
+      "index": 25,
+      "path": "body/neck",
+      "id": "neck",
+      "color": "#E2B54E",
+      "isolation_bbox": [
+        451,
+        307,
+        582,
+        389
+      ],
+      "visible_bbox": [
+        453,
+        313,
+        580,
+        389
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/05.png"
+    },
+    {
+      "index": 26,
+      "path": "face/right_ear",
+      "id": "right_ear",
+      "color": "#DF8B66",
+      "isolation_bbox": [
+        464,
+        268,
+        480,
+        292
+      ],
+      "visible_bbox": [
+        467,
+        283,
+        604,
+        501
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/06.png"
+    },
+    {
+      "index": 27,
+      "path": "face/left_ear",
+      "id": "left_ear",
+      "color": "#F4CA84",
+      "isolation_bbox": [
+        553,
+        268,
+        568,
+        292
+      ],
+      "visible_bbox": [
+        558,
+        276,
+        566,
+        291
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/06.png"
+    },
+    {
+      "index": 28,
+      "path": "face/face_base",
+      "id": "face_base",
+      "color": "#EDAF96",
+      "isolation_bbox": [
+        467,
+        192,
+        564,
+        330
+      ],
+      "visible_bbox": [
+        470,
+        220,
+        561,
+        330
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/06.png"
+    },
+    {
+      "index": 29,
+      "path": "earrings/right_earring",
+      "id": "right_earring",
+      "color": "#50C7CA",
+      "isolation_bbox": [
+        463,
+        290,
+        476,
+        327
+      ],
+      "visible_bbox": [
+        464,
+        291,
+        475,
+        327
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/06.png"
+    },
+    {
+      "index": 30,
+      "path": "earrings/left_earring",
+      "id": "left_earring",
+      "color": "#F0BB3C",
+      "isolation_bbox": [
+        557,
+        290,
+        572,
+        331
+      ],
+      "visible_bbox": [
+        558,
+        291,
+        571,
+        331
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/06.png"
+    },
+    {
+      "index": 31,
+      "path": "hair/crown_hair",
+      "id": "crown_hair",
+      "color": "#A998E2",
+      "isolation_bbox": [
+        444,
+        158,
+        589,
+        286
+      ],
+      "visible_bbox": [
+        444,
+        160,
+        589,
+        285
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/07.png"
+    },
+    {
+      "index": 32,
+      "path": "hair/right_bangs",
+      "id": "right_bangs",
+      "color": "#C065B9",
+      "isolation_bbox": [
+        447,
+        191,
+        516,
+        285
+      ],
+      "visible_bbox": [
+        447,
+        192,
+        514,
+        282
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/07.png"
+    },
+    {
+      "index": 33,
+      "path": "hair/left_bangs",
+      "id": "left_bangs",
+      "color": "#7E64C3",
+      "isolation_bbox": [
+        517,
+        192,
+        588,
+        286
+      ],
+      "visible_bbox": [
+        514,
+        192,
+        597,
+        348
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/07.png"
+    },
+    {
+      "index": 34,
+      "path": "hair/right_side_lock",
+      "id": "right_side_lock",
+      "color": "#CE7191",
+      "isolation_bbox": [
+        429,
+        252,
+        477,
+        375
+      ],
+      "visible_bbox": [
+        430,
+        254,
+        476,
+        374
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/07.png"
+    },
+    {
+      "index": 35,
+      "path": "hair/left_side_lock",
+      "id": "left_side_lock",
+      "color": "#706CCB",
+      "isolation_bbox": [
+        557,
+        252,
+        606,
+        385
+      ],
+      "visible_bbox": [
+        512,
+        206,
+        606,
+        380
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/07.png"
+    },
+    {
+      "index": 36,
+      "path": "face/right_eyebrow",
+      "id": "right_eyebrow",
+      "color": "#87462E",
+      "isolation_bbox": [
+        480,
+        249,
+        503,
+        255
+      ],
+      "visible_bbox": [
+        480,
+        249,
+        500,
+        254
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/08.png"
+    },
+    {
+      "index": 37,
+      "path": "face/left_eyebrow",
+      "id": "left_eyebrow",
+      "color": "#8A4368",
+      "isolation_bbox": [
+        528,
+        249,
+        554,
+        255
+      ],
+      "visible_bbox": [
+        532,
+        249,
+        553,
+        254
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/08.png"
+    },
+    {
+      "index": 38,
+      "path": "face/eyes/right_eye",
+      "id": "right_eye",
+      "color": "#284B8D",
+      "isolation_bbox": [
+        474,
+        259,
+        504,
+        274
+      ],
+      "visible_bbox": [
+        475,
+        260,
+        502,
+        273
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/08.png"
+    },
+    {
+      "index": 39,
+      "path": "face/eyes/left_eye",
+      "id": "left_eye",
+      "color": "#165D95",
+      "isolation_bbox": [
+        530,
+        259,
+        563,
+        274
+      ],
+      "visible_bbox": [
+        532,
+        260,
+        562,
+        273
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/08.png"
+    },
+    {
+      "index": 40,
+      "path": "face/nose",
+      "id": "nose",
+      "color": "#A0493D",
+      "isolation_bbox": [
+        511,
+        291,
+        520,
+        296
+      ],
+      "visible_bbox": [
+        512,
+        292,
+        513,
+        294
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/08.png"
+    },
+    {
+      "index": 41,
+      "path": "face/mouth",
+      "id": "mouth",
+      "color": "#D93669",
+      "isolation_bbox": [
+        505,
+        304,
+        529,
+        310
+      ],
+      "visible_bbox": [
+        505,
+        305,
+        527,
+        310
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/09.png"
+    },
+    {
+      "index": 42,
+      "path": "headdress/lotus_crest",
+      "id": "lotus_crest",
+      "color": "#45A7CA",
+      "isolation_bbox": [
+        471,
+        115,
+        559,
+        170
+      ],
+      "visible_bbox": [
+        471,
+        116,
+        559,
+        169
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/09.png"
+    },
+    {
+      "index": 43,
+      "path": "headdress/forehead_ornament",
+      "id": "forehead_ornament",
+      "color": "#486FCE",
+      "isolation_bbox": [
+        503,
+        171,
+        531,
+        244
+      ],
+      "visible_bbox": [
+        504,
+        171,
+        530,
+        243
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/09.png"
+    },
+    {
+      "index": 44,
+      "path": "sandals/right_sandal/right_jeweled_strap",
+      "id": "right_jeweled_strap",
+      "color": "#64E0D8",
+      "isolation_bbox": [
+        456,
+        1345,
+        501,
+        1445
+      ],
+      "visible_bbox": [
+        456,
+        1345,
+        501,
+        1445
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/09.png"
+    },
+    {
+      "index": 45,
+      "path": "sandals/left_sandal/left_jeweled_strap",
+      "id": "left_jeweled_strap",
+      "color": "#ECBF38",
+      "isolation_bbox": [
+        529,
+        1343,
+        573,
+        1445
+      ],
+      "visible_bbox": [
+        529,
+        1343,
+        573,
+        1445
+      ],
+      "sheet": "block-layers/evidence/leaf-sheets/09.png"
+    }
+  ]
+}

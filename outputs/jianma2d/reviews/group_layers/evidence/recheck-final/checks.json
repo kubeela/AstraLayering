@@ -1,0 +1,81 @@
+{
+  "svg_sha256": "38bab0527ec626c10fbc531c5551a64b780a4955335870a5ef25b75859dce9e3",
+  "logical_leaf_count": 45,
+  "segment_count": 47,
+  "ids_unique": true,
+  "paths_match_groups": true,
+  "clip_or_mask_resources": [],
+  "groups": [
+    {
+      "path": "hair/crown_hair",
+      "ids": [
+        "crown_hair"
+      ],
+      "isolation_nonempty": true,
+      "hide_changes_render": true
+    },
+    {
+      "path": "hair/right_bangs",
+      "ids": [
+        "right_bangs"
+      ],
+      "isolation_nonempty": true,
+      "hide_changes_render": true
+    },
+    {
+      "path": "hair/left_bangs",
+      "ids": [
+        "left_bangs"
+      ],
+      "isolation_nonempty": true,
+      "hide_changes_render": true
+    },
+    {
+      "path": "face/right_ear",
+      "ids": [
+        "right_ear",
+        "right_ear_helix_front"
+      ],
+      "isolation_nonempty": true,
+      "hide_changes_render": true
+    },
+    {
+      "path": "face/left_ear",
+      "ids": [
+        "left_ear",
+        "left_ear_helix_front"
+      ],
+      "isolation_nonempty": true,
+      "hide_changes_render": true
+    },
+    {
+      "path": "hair/right_side_lock",
+      "ids": [
+        "right_side_lock"
+      ],
+      "isolation_nonempty": true,
+      "hide_changes_render": true
+    },
+    {
+      "path": "hair/left_side_lock",
+      "ids": [
+        "left_side_lock"
+      ],
+      "isolation_nonempty": true,
+      "hide_changes_render": true
+    }
+  ],
+  "matches_author_current_render": true,
+  "change_bbox_from_previous": [
+    446,
+    272,
+    588,
+    283
+  ],
+  "changed_rgba_pixels_from_previous": 66,
+  "hair_holes_at_4x": {
+    "hair/crown_hair": [],
+    "hair/right_bangs": [],
+    "hair/left_bangs": []
+  }
+}
