@@ -1,0 +1,14 @@
+# 用户指定输出目录作为本轮工作根目录；不要求用户准备中间 JSON。
+inputs:
+  base_svg:
+    type: svg
+    required: true
+    description: 最新完整分层角色 SVG，只读；保留原默认面容及现有身体、衣装与配饰
+  reference:
+    type: image
+    required: false
+    description: 原画或用户指定画风参考；未提供时以角色 SVG 的实际渲染作为风格基准
+  requirements:
+    type: text
+    required: false
+    description: 用户表情需求、样式选择和明确排除项；未提供时按基础清单和角色画风采用具体默认方案并执行

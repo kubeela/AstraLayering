@@ -1,4 +1,5 @@
 id: mouth_palette
+run: .
 worker: mouth_palette
 inputs:
   reference: inputs.reference

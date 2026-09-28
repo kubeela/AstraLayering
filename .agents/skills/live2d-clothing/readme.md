@@ -30,8 +30,8 @@
 
 最终目录 `final/` 包含完整穿戴稿 `character.svg`、独立衣装集合 `clothing.svg`、穿插与效果索引 `clothing-index.json`、默认预览和成稿对照；衣装集合须按索引放到素体各层之间，不能整张置顶。
 
-当前产物是静态分层素材，保留必要补形及效果关系；转向、物理摆动、透明接口和投影的动态跟随需要后续绑定验证。[Jianma 案例](../../../demos/jianma-current-case/readme.md)展示已完成的实跑结果及具体限制。
+当前产物是静态分层素材，保留必要补形及效果关系；转向、物理摆动、透明接口和投影的动态跟随需要后续绑定验证。仓库首页另有 Jianma 实跑案例展示，案例不属于技能运行依赖。
 
 ## 工具依赖
 
-本技能复用同级 [live2d-layering/tools](../live2d-layering/tools/readme.md) 的预览与色盘公共工具；在其他仓库使用时将这两个技能目录一起复制到 `.agents/skills/`，保持同级名称。Python 3.8+、Pillow 9.1+、Node.js 与 sharp 用于工具执行，具体配置见工具说明；无需 Ruby 或 YAML 解析运行脚本。
+`SKILL.md` 所在目录是任务资料根，DSL 说明在 [docs/](docs/workflow-dsl.md)，工具统一放在仓库根 [agent-tools](../../../agent-tools/readme.md)；迁移时携带公共工具目录与本技能，保持相对位置，无需同时安装人物分层技能。Python 3.8+、Pillow 9.1+、Node.js 与 sharp 用于工具执行。

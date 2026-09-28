@@ -1,4 +1,5 @@
 id: part_inventory
+run: .
 worker: part_planning
 inputs:
   reference: nodes.base_subject.image

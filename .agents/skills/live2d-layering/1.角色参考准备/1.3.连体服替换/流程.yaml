@@ -4,6 +4,7 @@ inputs:
 
 if: reference 含可换装的人形角色
 then:
+  run: .
   inputs:
     outfit:
       asset: 可复用结果.jpg

@@ -1,0 +1,25 @@
+id: expression_bindings
+run: .
+worker: expression_binding
+inputs:
+  svg: nodes.expression_symbols.svg
+  materials: nodes.expression_symbols.materials
+  keyforms: nodes.expression_key_review.keyforms
+  shape_review: nodes.expression_key_review.report
+  specification: nodes.expression_spec.specification
+  baseline: inputs.base_svg
+  style_source: nodes.expression_spec.style_source
+  style_guide: nodes.expression_style.image
+  schema:
+    asset: ../../../../agent-tools/expressions/expression.schema.json
+  validator:
+    asset: ../../../../agent-tools/expressions/validate_contract.py
+  preview_app:
+    asset: ../../../../agent-tools/preview/expression-preview.html
+  preview_manual:
+    asset: ../../../../agent-tools/preview/expression-preview.md
+  preview_tool:
+    asset: ../../../../agent-tools/svg_preview.py
+outputs:
+  svg: 2.参数绑定与动态交付/2.1.参数与形变绑定/character.svg
+  controls: 2.参数绑定与动态交付/2.1.参数与形变绑定/controls.json

@@ -1,4 +1,5 @@
 id: hair_line_art
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -6,7 +7,7 @@ inputs:
   svg: nodes.hair_front_side_line_art.svg
   guide: nodes.hair_reference.image
   preview_tool:
-    asset: ../../../../../tools/svg_preview.py
+    asset: ../../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/character.svg
   head_comparison: refinement/groups/{group.id}/2.校准与完整线稿/2.3.后发与附属发束线稿/头部结构对照.png

@@ -1,0 +1,27 @@
+id: expression_symbols
+worker: expression_drawing
+inputs:
+  svg: nodes.expression_face_effects.svg
+  materials: nodes.expression_face_effects.materials
+  specification: nodes.expression_spec.specification
+  style_source: nodes.expression_spec.style_source
+  character_face: nodes.expression_spec.character_face
+  style_guide: nodes.expression_style.image
+  schema:
+    asset: ../../../../agent-tools/expressions/expression.schema.json
+  materials_tool:
+    asset: ../../../../agent-tools/expressions/expression_assets.py
+  preview_tool:
+    asset: ../../../../agent-tools/svg_preview.py
+if: specification 中存在归属 expression_symbols 且 enabled 为 true 的能力
+then:
+  run: .
+  outputs:
+    svg: 1.素材与关键形制作/1.7.外部符号制作/character.svg
+    materials: 1.素材与关键形制作/1.7.外部符号制作/materials.json
+    comparison: 1.素材与关键形制作/1.7.外部符号制作/关键形对照.png
+else:
+  outputs:
+    svg: inputs.svg
+    materials: inputs.materials
+    comparison: inputs.character_face

@@ -1,4 +1,5 @@
 id: generic_line_art
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -7,7 +8,7 @@ inputs:
   structure: nodes.generic_structure.structure
   guide: nodes.generic_reference.image
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/3.完整线稿与关联投影/character.svg
   comparison: refinement/groups/{group.id}/3.完整线稿与关联投影/结构对照.png

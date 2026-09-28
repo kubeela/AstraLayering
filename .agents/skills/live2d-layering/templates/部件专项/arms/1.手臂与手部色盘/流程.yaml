@@ -1,13 +1,14 @@
 id: arms_palette
+run: .
 worker: arms_palette
 inputs:
   reference: inputs.reference
   parts: inputs.parts
   svg: inputs.svg
   palette_tool:
-    asset: 提取色盘.py
+    asset: ../../../../../../../agent-tools/palettes/arms.py
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   palette_image: refinement/groups/{group.id}/1.手臂与手部色盘/palette.png
   palette_json: refinement/groups/{group.id}/1.手臂与手部色盘/palette.json

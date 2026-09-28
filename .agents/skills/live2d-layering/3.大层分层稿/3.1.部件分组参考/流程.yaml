@@ -1,4 +1,5 @@
 id: kind_reference
+run: .
 inputs:
   reference: nodes.base_subject.image
   parts: nodes.part_inventory.parts

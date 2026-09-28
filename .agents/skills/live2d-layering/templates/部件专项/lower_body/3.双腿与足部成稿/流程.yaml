@@ -1,4 +1,5 @@
 id: lower_body_legs
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -8,7 +9,7 @@ inputs:
   palette_image: nodes.lower_body_palette.palette_image
   palette_json: nodes.lower_body_palette.palette_json
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/3.双腿与足部成稿/character.svg
   preview: refinement/groups/{group.id}/3.双腿与足部成稿/preview.png

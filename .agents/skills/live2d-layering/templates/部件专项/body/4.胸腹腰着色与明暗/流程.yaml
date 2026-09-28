@@ -1,4 +1,5 @@
 id: body_torso_coloring
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -7,6 +8,6 @@ inputs:
   palette_image: nodes.body_palette.palette_image
   palette_json: nodes.body_palette.palette_json
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/4.胸腹腰着色与明暗/character.svg

@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1.0",
+  "document_type": "command",
+  "character_id": "contract_demo",
+  "actions": [
+    {
+      "op": "apply_expression",
+      "expression": "surprised",
+      "instance_id": "reaction",
+      "weight": 0.8
+    }
+  ]
+}

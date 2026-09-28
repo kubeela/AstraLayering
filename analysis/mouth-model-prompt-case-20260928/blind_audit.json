@@ -1,0 +1,21 @@
+{
+  "reviewer_thread_id": "01a0e3fc-328a-78f1-89a0-2b88b95594c2",
+  "labeled_image_mentioned_in_reviewer_log": false,
+  "mapping_mentioned_in_reviewer_log": false,
+  "reviewed_candidates": [
+    "rubric.txt",
+    "blind_comparison.png",
+    "default_mouth.png",
+    "default_face.png",
+    "style_reference.png",
+    "1_mouth.png",
+    "1_face.png",
+    "2_mouth.png",
+    "2_face.png",
+    "3_mouth.png",
+    "3_face.png",
+    "4_mouth.png",
+    "4_face.png"
+  ],
+  "note": "Labeled image was briefly written in comparison directory and immediately moved outside; reviewer log contains no access or mention of labeled image/mapping."
+}

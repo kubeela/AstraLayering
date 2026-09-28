@@ -1,0 +1,23 @@
+你负责把已审关键造型与后续素材绑定成现有 schema 的 rig，不重新设计角色。读取 svg、materials、keyforms、shape_review、specification、schema、validator、preview_app 和 preview_manual；shape_review 必须是 pass，使用最新完整 SVG，不能把早期的整张姿态副本覆盖到新稿而丢失泪液、符号等后续内容。
+
+一、从已审造型构造参数网格
+keyforms 按职责/姿态 id 保存 character.svg 和标准 command.json；直接读取命令中的 reset + set_parameters 确定该目标的控制值，按 components.svg_ids 定位对应造型和材质，提取实际目标，不从默认嘴/眼用一套纵向位移重新生成所有端点。
+将 materials.parameters、已有 bindings 与 anchors 纳入控制定义，缺少眉眼嘴 path_morph 是当前交接的预期状态；先以已审静态目标为准建立相容拓扑，再补真实需要的网格交点与中间键。贝塞尔分段与控制点重排应保形，默认关键形和实际 SVG 同步归一化；路径用显式绝对 M/L/C/Q/Z，1D 线性、2D 双线性完整网格，同一属性只有一个写入者。
+普通闭眼、笑眼、半闭眼、张嘴及吐舌的已审形状和材质不得被公式覆盖；公式可用于合格目标之间的过渡，插值结果若出现曲率突变、比例走样或阴影滞留，修对应过渡或定点交原绘制者补目标。保留参数名与角色左右语义，不擅自改范围、镜像或削掉已确认能力。
+嘴开合×悲喜、眼开合×笑眼是路径维度；眉位置/角度、视线、舌体伸出等通过真实独立控制层处理，不把多于两个形变参数塞到同一路径。若第一阶段缺少必要关键形或蒙版，定点交回 components.owner_node 的原绘制者补齐，接收最新完整 SVG 和数据后继续，不能用一条缩放把所有结构压扁。
+
+二、控制映射与材质协调
+使用 scalar_map 映射 opacity/translate_x/translate_y/scale_x/scale_y/rotate，写实际局部单位和 pivot；控制层是初始无 transform 的独立 g，原定位变换放在内部或合适父级，同一层的旋转/缩放中心一致。不要通过改 style 抹掉已有皮肤色形或投影。
+眼内的眼珠、高光和星星/爱心保持共同视线与开口裁切；睫毛、眼皮、积泪接合、嘴边肤色、唇彩与柔影分别使用其真实关键形或正确共同层。锚点只承诺位置或仿射跟随，不能把单点 attachment 当任意材质网格变形；检查斜向视线及关键形中间态是否有颜色漂移、硬边和露缝。
+目标 SVG 中不只是 d 的差异：逐项落实局部 transform、显隐/透明度、渐变和蒙版的变化。共同坐标层负责形状与光场一起运动，可控色形与强度表达体积变化；现有 schema 不支持任意 gradientTransform/stop 属性动画，不伪造字段，也不能直接忽略这些差异造成原位眼影或唇彩。需要调整材料结构时保持已审外观，并交原绘制者处理实际缺口。
+variant 对每个枚举选择列实际组 id，所有 choices 覆盖完整，组间不争 opacity 控制；显现强度需要再加父包装层，不能同组既 variant 又 scalar opacity。普通/替换眼型或嘴型遵循规格中的静态/动态能力，已确认组合不能被随意禁用。
+
+三、锚点与阶段边界
+continuous attachment 用真实 point 或形变后 path_vertex，在目标父空间内采样，选择 position/affine，避免重复继承头部变换；检查 source 祖先和目标之间没有依赖循环。出生包装层与移动层独立保留。
+需要 cycle_start 的泪滴/汗珠出生绑定由下一节点与真实循环动画一起写入，当前不得引用尚不存在的 clock 或造一个空时钟骗过校验；依据已审 materials.components.motion 保留其明确安排。本步可以先完成连续跟随及静态调节，不声称全部动画已交付。
+
+四、输出有效静态控制定义
+rig 严格使用 schema_version/document_type/character_id/svg/parameters/anchors/attachments/bindings/animations/expressions/constraints，不能添加代码或自创运行时字段；parameters 使用 number/enum 及 access/role，动态相位是 animation 访问的 0—1 phase，用户可调的形状/强度是 public control。
+本步 animations 可为空；expressions 至少有一个中性入口（label、description、parameters、animations、fade_in_s、fade_out_s 齐全），用作原默认形验证，不提前伪称整套配方都完成。svg 为相对本步 controls.json 的实际 SVG 路径。
+先保存同目录完整 character.svg 和 controls.json，运行 validator；然后在共用 expression-preview 加载这对文件，执行代表性已审目标的 command，与对应静态目标按同尺寸局部比较，确认实际绑定复现睫毛厚度、眼周明暗、唇体与连续舌体，再看少量中间值、斜向视线及默认复位。这里验证绑定保形，不重复开展造型审查；不能以默认像素一致或文件合法替代实际姿态对照。修复范围限于具体绑定问题，不重写共用运行时；协议确实不能表达已确认需求时报告具体缺口。
+交默认状态的完整 SVG 与合法 rig，下一节点由你继续补动画和表情配方；不增加单独的“再组装/再导出”worker。

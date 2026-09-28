@@ -1,0 +1,559 @@
+{
+  "schema_version": "0.1.0",
+  "document_type": "rig",
+  "character_id": "contract_demo",
+  "svg": "contract-fixture.svg",
+  "parameters": {
+    "eye.left.open": {
+      "type": "number",
+      "label": "左眼开度",
+      "description": "左眼开度",
+      "min": 0,
+      "max": 1,
+      "default": 1,
+      "access": "public",
+      "role": "control"
+    },
+    "eye.left.iris": {
+      "type": "enum",
+      "label": "左眼眼黑变体",
+      "description": "选择既有眼黑素材",
+      "choices": [
+        "normal",
+        "glow"
+      ],
+      "default": "normal",
+      "access": "public"
+    },
+    "mouth.open": {
+      "type": "number",
+      "label": "嘴开度",
+      "description": "嘴开度",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "access": "public",
+      "role": "control"
+    },
+    "mouth.form": {
+      "type": "number",
+      "label": "嘴型悲喜",
+      "description": "嘴型悲喜",
+      "min": -1,
+      "max": 1,
+      "default": 0,
+      "access": "public",
+      "role": "control"
+    },
+    "star.amount": {
+      "type": "number",
+      "label": "星星显现强度",
+      "description": "星星显现强度",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "access": "public",
+      "role": "control"
+    },
+    "star.pulse": {
+      "type": "number",
+      "label": "星星缩放循环",
+      "description": "星星缩放循环",
+      "min": 0.8,
+      "max": 1.2,
+      "default": 1,
+      "access": "animation",
+      "role": "control"
+    },
+    "tear.amount": {
+      "type": "number",
+      "label": "泪液显现强度",
+      "description": "泪液显现强度",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "access": "public",
+      "role": "control"
+    },
+    "tear.phase": {
+      "type": "number",
+      "label": "泪滴下落相位",
+      "description": "泪滴下落相位",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "access": "animation",
+      "role": "phase"
+    },
+    "symbol.exclamation.phase": {
+      "type": "number",
+      "label": "感叹号单次出现相位",
+      "description": "感叹号单次出现相位",
+      "min": 0,
+      "max": 1,
+      "default": 0,
+      "access": "animation",
+      "role": "phase"
+    }
+  },
+  "anchors": {
+    "lower_lid": {
+      "type": "path_vertex",
+      "svg_id": "eye_aperture",
+      "command_index": 2
+    },
+    "head_side": {
+      "type": "point",
+      "svg_id": "head",
+      "point": [
+        85,
+        20
+      ]
+    }
+  },
+  "attachments": {
+    "tear_origin": {
+      "svg_id": "tear_origin",
+      "anchor": "lower_lid",
+      "offset": [
+        0,
+        0
+      ],
+      "follow": "position",
+      "sample": "cycle_start",
+      "clock": "tear_flow"
+    },
+    "mark_origin": {
+      "svg_id": "mark_origin",
+      "anchor": "head_side",
+      "offset": [
+        0,
+        0
+      ],
+      "follow": "affine",
+      "sample": "continuous"
+    }
+  },
+  "bindings": {
+    "eye_aperture": {
+      "type": "path_morph",
+      "svg_id": "eye_aperture",
+      "parameters": [
+        "eye.left.open"
+      ],
+      "interpolation": "linear",
+      "keys": [
+        {
+          "at": [
+            0
+          ],
+          "d": "M 20 30 C 30 30 50 30 60 30 C 50 30 45 30 40 30 C 35 30 25 30 20 30 Z"
+        },
+        {
+          "at": [
+            1
+          ],
+          "d": "M 20 30 C 30 12 50 12 60 30 C 50 40 45 42 40 42 C 35 42 25 40 20 30 Z"
+        }
+      ]
+    },
+    "iris_variant": {
+      "type": "variant",
+      "parameter": "eye.left.iris",
+      "cases": {
+        "normal": [
+          "iris_normal"
+        ],
+        "glow": [
+          "iris_glow"
+        ]
+      }
+    },
+    "mouth_shape": {
+      "type": "path_morph",
+      "svg_id": "mouth_contour",
+      "parameters": [
+        "mouth.open",
+        "mouth.form"
+      ],
+      "interpolation": "bilinear",
+      "keys": [
+        {
+          "at": [
+            0,
+            -1
+          ],
+          "d": "M 30 77 C 40 77 60 77 70 77 C 60 77 40 77 30 77 Z"
+        },
+        {
+          "at": [
+            0,
+            0
+          ],
+          "d": "M 30 74 C 40 74 60 74 70 74 C 60 74 40 74 30 74 Z"
+        },
+        {
+          "at": [
+            0,
+            1
+          ],
+          "d": "M 30 71 C 40 71 60 71 70 71 C 60 71 40 71 30 71 Z"
+        },
+        {
+          "at": [
+            1,
+            -1
+          ],
+          "d": "M 30 77 C 40 71 60 71 70 77 C 60 91 40 91 30 77 Z"
+        },
+        {
+          "at": [
+            1,
+            0
+          ],
+          "d": "M 30 74 C 40 68 60 68 70 74 C 60 88 40 88 30 74 Z"
+        },
+        {
+          "at": [
+            1,
+            1
+          ],
+          "d": "M 30 71 C 40 65 60 65 70 71 C 60 85 40 85 30 71 Z"
+        }
+      ]
+    },
+    "star_visible": {
+      "type": "scalar_map",
+      "svg_id": "star_presence",
+      "parameter": "star.amount",
+      "property": "opacity",
+      "pivot": [
+        0,
+        0
+      ],
+      "keys": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "interpolation": "linear"
+    },
+    "star_scale_x": {
+      "type": "scalar_map",
+      "svg_id": "star_motion",
+      "parameter": "star.pulse",
+      "property": "scale_x",
+      "pivot": [
+        40,
+        30
+      ],
+      "keys": [
+        [
+          0.8,
+          0.8
+        ],
+        [
+          1.2,
+          1.2
+        ]
+      ],
+      "interpolation": "linear"
+    },
+    "star_scale_y": {
+      "type": "scalar_map",
+      "svg_id": "star_motion",
+      "parameter": "star.pulse",
+      "property": "scale_y",
+      "pivot": [
+        40,
+        30
+      ],
+      "keys": [
+        [
+          0.8,
+          0.8
+        ],
+        [
+          1.2,
+          1.2
+        ]
+      ],
+      "interpolation": "linear"
+    },
+    "tear_visible": {
+      "type": "scalar_map",
+      "svg_id": "tear_presence",
+      "parameter": "tear.amount",
+      "property": "opacity",
+      "pivot": [
+        0,
+        0
+      ],
+      "keys": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "interpolation": "linear"
+    },
+    "tear_fall": {
+      "type": "scalar_map",
+      "svg_id": "tear_motion",
+      "parameter": "tear.phase",
+      "property": "translate_y",
+      "pivot": [
+        0,
+        0
+      ],
+      "keys": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          30
+        ]
+      ],
+      "interpolation": "linear"
+    },
+    "tear_fade": {
+      "type": "scalar_map",
+      "svg_id": "tear_motion",
+      "parameter": "tear.phase",
+      "property": "opacity",
+      "pivot": [
+        0,
+        0
+      ],
+      "keys": [
+        [
+          0,
+          0
+        ],
+        [
+          0.15,
+          1
+        ],
+        [
+          0.75,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "interpolation": "linear"
+    },
+    "mark_fade": {
+      "type": "scalar_map",
+      "svg_id": "mark_motion",
+      "parameter": "symbol.exclamation.phase",
+      "property": "opacity",
+      "pivot": [
+        0,
+        0
+      ],
+      "keys": [
+        [
+          0,
+          0
+        ],
+        [
+          0.15,
+          1
+        ],
+        [
+          0.75,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "interpolation": "linear"
+    },
+    "mark_lift": {
+      "type": "scalar_map",
+      "svg_id": "mark_motion",
+      "parameter": "symbol.exclamation.phase",
+      "property": "translate_y",
+      "pivot": [
+        0,
+        0
+      ],
+      "keys": [
+        [
+          0,
+          6
+        ],
+        [
+          0.2,
+          -2
+        ],
+        [
+          0.35,
+          0
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "interpolation": "smoothstep"
+    }
+  },
+  "animations": {
+    "star_pulse": {
+      "label": "星星跳动",
+      "description": "星星跳动",
+      "duration_s": 1.2,
+      "loop": true,
+      "seam": "continuous",
+      "fade_in_s": 0.1,
+      "fade_out_s": 0.15,
+      "exit": "fade",
+      "tracks": [
+        {
+          "parameter": "star.pulse",
+          "blend": "replace",
+          "interpolation": "linear",
+          "keys": [
+            {
+              "time_s": 0,
+              "value": 1
+            },
+            {
+              "time_s": 0.6,
+              "value": 1.15
+            },
+            {
+              "time_s": 1.2,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "tear_flow": {
+      "label": "泪滴下落",
+      "description": "泪滴下落",
+      "duration_s": 1.6,
+      "loop": true,
+      "seam": "hidden_reset",
+      "fade_in_s": 0.1,
+      "fade_out_s": 0.15,
+      "exit": "finish_cycle",
+      "tracks": [
+        {
+          "parameter": "tear.phase",
+          "blend": "replace",
+          "interpolation": "linear",
+          "keys": [
+            {
+              "time_s": 0,
+              "value": 0
+            },
+            {
+              "time_s": 1.6,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    "exclamation_pop": {
+      "label": "感叹号出现",
+      "description": "感叹号出现",
+      "duration_s": 1.0,
+      "loop": false,
+      "seam": "not_applicable",
+      "fade_in_s": 0.1,
+      "fade_out_s": 0.15,
+      "exit": "fade",
+      "tracks": [
+        {
+          "parameter": "symbol.exclamation.phase",
+          "blend": "replace",
+          "interpolation": "linear",
+          "keys": [
+            {
+              "time_s": 0,
+              "value": 0
+            },
+            {
+              "time_s": 1,
+              "value": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expressions": {
+    "starry": {
+      "label": "星星眼",
+      "description": "星星眼；仅用于验证协议结构的简化样例",
+      "parameters": {
+        "star.amount": 1
+      },
+      "animations": [
+        {
+          "animation": "star_pulse",
+          "speed": 1,
+          "weight": 1
+        }
+      ],
+      "fade_in_s": 0.15,
+      "fade_out_s": 0.2
+    },
+    "cry": {
+      "label": "哭泣",
+      "description": "哭泣；仅用于验证协议结构的简化样例",
+      "parameters": {
+        "eye.left.open": 0.5,
+        "mouth.form": -1,
+        "tear.amount": 0.8
+      },
+      "animations": [
+        {
+          "animation": "tear_flow",
+          "speed": 1,
+          "weight": 1
+        }
+      ],
+      "fade_in_s": 0.15,
+      "fade_out_s": 0.2
+    },
+    "surprised": {
+      "label": "惊讶与感叹号",
+      "description": "惊讶与感叹号；仅用于验证协议结构的简化样例",
+      "parameters": {
+        "mouth.open": 0.7,
+        "mouth.form": 0
+      },
+      "animations": [
+        {
+          "animation": "exclamation_pop",
+          "speed": 1,
+          "weight": 1
+        }
+      ],
+      "fade_in_s": 0.15,
+      "fade_out_s": 0.2
+    }
+  },
+  "constraints": []
+}

@@ -7,5 +7,7 @@ outputs/jianma_v4/reviews/** -text
 outputs/jianma_v4/tmp/** -text
 outputs/jianma_v4/*.md -text
 outputs/jianma_clothing/** -text
+outputs/jianma_expression2/** -text
+analysis/mouth-model-prompt-case-20260928/** -text
 analysis/*20260927/** -text
 rigging/milly/v3/video-work/** -text

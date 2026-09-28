@@ -6,12 +6,13 @@ inputs:
   structure: nodes.clothing_structure.structure
   guide: nodes.clothing_reference.image
   preview_tool:
-    asset: ../../../live2d-layering/tools/svg_preview.py
+    asset: ../../../../../agent-tools/svg_preview.py
 foreach:
   from: inputs.structure
   items: line_batches
   as: batch
   mode: serial
+  run: .
   carry: [svg]
 outputs:
   svg: 3.衣装线稿/{batch.id}/character.svg

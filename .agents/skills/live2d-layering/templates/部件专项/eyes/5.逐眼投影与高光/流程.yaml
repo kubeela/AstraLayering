@@ -16,6 +16,7 @@ foreach:
   items: eyes
   as: eye
   mode: serial
+  run: .
   carry: [svg]
 outputs:
   svg: refinement/groups/{group.id}/5.逐眼投影与高光/{eye.id}/character.svg

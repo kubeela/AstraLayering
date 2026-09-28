@@ -1,4 +1,5 @@
 id: physics_details_palette
+run: .
 worker: physics_details_palette
 inputs:
   reference: inputs.reference
@@ -7,9 +8,9 @@ inputs:
   structure: nodes.physics_details_structure.structure
   handoff: nodes.physics_details_line_art.handoff
   palette_tool:
-    asset: 提取色盘.py
+    asset: ../../../../../../../agent-tools/palettes/physics_details.py
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   palette_image: refinement/groups/{group.id}/4.部件色盘/palette.png
   palette_json: refinement/groups/{group.id}/4.部件色盘/palette.json

@@ -1,0 +1,26 @@
+# status: pass 才发布通过的实际候选路径；返修后更新绑定，不复制或重新组装。
+id: expression_key_review
+run: .
+worker: expression_key_review
+inputs:
+  baseline: inputs.base_svg
+  candidate: nodes.expression_mouth.svg
+  materials: nodes.expression_mouth.materials
+  keyforms: nodes.expression_mouth.keyforms
+  specification: nodes.expression_spec.specification
+  style_source: nodes.expression_spec.style_source
+  character_face: nodes.expression_spec.character_face
+  style_guide: nodes.expression_style.image
+  schema:
+    asset: ../../../../agent-tools/expressions/expression.schema.json
+  materials_tool:
+    asset: ../../../../agent-tools/expressions/expression_assets.py
+  preview_tool:
+    asset: ../../../../agent-tools/svg_preview.py
+  expression_eyes_comparison: nodes.expression_eyes.comparison
+  expression_mouth_comparison: nodes.expression_mouth.comparison
+outputs:
+  report: 1.素材与关键形制作/1.5.眉眼嘴关键造型审查/审查.md
+  svg: inputs.candidate
+  materials: inputs.materials
+  keyforms: inputs.keyforms

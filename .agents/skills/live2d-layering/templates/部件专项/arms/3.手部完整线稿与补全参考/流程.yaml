@@ -1,4 +1,5 @@
 id: arms_hand_reference
+run: .
 inputs:
   reference: inputs.reference # 图1：本轮角色彩图，双手姿态与造型依据。
   milly_reference:

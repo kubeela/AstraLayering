@@ -1,0 +1,98 @@
+{
+  "runs": [
+    {
+      "arm": "a",
+      "thread_id": "01a0e3f6-761c-7c01-95c1-102f594d9ae3",
+      "runtime": {
+        "model": "gpt-6-sol",
+        "effort": "xhigh"
+      },
+      "start": "2026-09-27T17:42:55.477Z",
+      "end": "2026-09-27T17:47:47.127Z",
+      "usage": {
+        "input_tokens": 1059511,
+        "cached_input_tokens": 1004672,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 12968,
+        "reasoning_output_tokens": 5158,
+        "total_tokens": 1072479
+      }
+    },
+    {
+      "arm": "b",
+      "thread_id": "01a0e3f6-b56e-7351-ab3e-31e395da3d42",
+      "runtime": {
+        "model": "gpt-6-sol",
+        "effort": "xhigh"
+      },
+      "start": "2026-09-27T17:43:11.691Z",
+      "end": "2026-09-27T17:48:36.751Z",
+      "usage": {
+        "input_tokens": 1993239,
+        "cached_input_tokens": 1942912,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 12880,
+        "reasoning_output_tokens": 4766,
+        "total_tokens": 2006119
+      }
+    },
+    {
+      "arm": "c",
+      "thread_id": "01a0e3f6-39e4-72a2-b54d-0abaaf99cd0e",
+      "runtime": {
+        "model": "gpt-6-astra",
+        "effort": "xhigh"
+      },
+      "start": "2026-09-27T17:42:40.077Z",
+      "end": "2026-09-27T17:44:45.983Z",
+      "usage": {
+        "input_tokens": 581773,
+        "cached_input_tokens": 509824,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 6307,
+        "reasoning_output_tokens": 1187,
+        "total_tokens": 588080
+      }
+    },
+    {
+      "arm": "d",
+      "thread_id": "01a0e3f8-b75e-7863-8daf-ad9c2b171008",
+      "runtime": {
+        "model": "gpt-6-astra",
+        "effort": "xhigh"
+      },
+      "start": "2026-09-27T17:45:23.262Z",
+      "end": "2026-09-27T17:48:24.559Z",
+      "usage": {
+        "input_tokens": 523661,
+        "cached_input_tokens": 473856,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 4965,
+        "reasoning_output_tokens": 627,
+        "total_tokens": 528626
+      }
+    }
+  ],
+  "invariants": {
+    "a": {
+      "outside_mouth_xml_exact": true,
+      "duplicate_ids": 0,
+      "source_unchanged": true
+    },
+    "b": {
+      "outside_mouth_xml_exact": true,
+      "duplicate_ids": 0,
+      "source_unchanged": true
+    },
+    "c": {
+      "outside_mouth_xml_exact": true,
+      "duplicate_ids": 0,
+      "source_unchanged": true
+    },
+    "d": {
+      "outside_mouth_xml_exact": true,
+      "duplicate_ids": 0,
+      "source_unchanged": true
+    }
+  }
+}

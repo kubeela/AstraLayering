@@ -1,0 +1,28 @@
+id: expression_delivery
+run: .
+worker: expression_binding
+inputs:
+  svg: nodes.expression_bindings.svg
+  materials: nodes.expression_symbols.materials
+  keyforms: nodes.expression_key_review.keyforms
+  specification: nodes.expression_spec.specification
+  baseline: inputs.base_svg
+  style_source: nodes.expression_spec.style_source
+  style_guide: nodes.expression_style.image
+  schema:
+    asset: ../../../../agent-tools/expressions/expression.schema.json
+  validator:
+    asset: ../../../../agent-tools/expressions/validate_contract.py
+  preview_app:
+    asset: ../../../../agent-tools/preview/expression-preview.html
+  preview_manual:
+    asset: ../../../../agent-tools/preview/expression-preview.md
+  preview_tool:
+    asset: ../../../../agent-tools/svg_preview.py
+  controls: nodes.expression_bindings.controls
+outputs:
+  final_svg: final/character.svg
+  final_controls: final/controls.json
+  commands: final/commands
+  acceptance: final/验收.md
+  preview: final/表情对照.png

@@ -5,6 +5,7 @@ inputs:
   reference_brief: nodes.clothing_structure.reference_brief
 if: structure 中的 reference_needed 为 true
 then:
+  run: .
   outputs:
     image: 2.按需补全参考/衣装制作参考.png
   imagegen:

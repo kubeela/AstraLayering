@@ -10,6 +10,7 @@ then:
   outputs:
     image: inputs.original
 else:
+  run: .
   outputs:
     image: references/simplified-character.png
   imagegen:

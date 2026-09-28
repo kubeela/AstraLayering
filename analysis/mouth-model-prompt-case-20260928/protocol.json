@@ -1,0 +1,72 @@
+{
+  "case": "neutral_half_open",
+  "sources": {
+    "base.svg": {
+      "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_expression2\\1.素材与关键形制作\\1.3.眉眼制作\\character.svg",
+      "sha256": "af4f28352b14e8e3c8b7ba4497033ba71cb0d6980cea790b7c77623527b84781"
+    },
+    "style.png": {
+      "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_expression2\\1.素材与关键形制作\\1.2.表情风格参考\\表情风格参考.png",
+      "sha256": "bce918aef856198ea83508933453d164b73e0d0059ab0807a2939141a0cd614d"
+    },
+    "face.png": {
+      "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_expression2\\1.素材与关键形制作\\1.1.能力盘点与规格确认\\角色面部.png",
+      "sha256": "4edf5dad3945775b1b559270064b8bd4796339dc9fcd465fed9e038e5135a7df"
+    },
+    "source_style.png": {
+      "source": "D:\\Resources\\workspace\\AstraLayering\\outputs\\jianma_expression2\\1.素材与关键形制作\\1.1.能力盘点与规格确认\\原画风格参考.png",
+      "sha256": "f83a7b2269d4a686bc46ca143d21b7b8eed1db544b92fdfe726e78c4b619c7ab"
+    },
+    "prompt_current.txt": {
+      "source": "D:\\Resources\\workspace\\AstraLayering\\workflows\\expressions\\1.素材与关键形制作\\1.4.嘴部制作\\提示词.txt",
+      "sha256": "40d613f0267a964a4a0510ac77b9028e73ff4a922013a8ff55ab1b866962df5b"
+    }
+  },
+  "design": "2 x 2; one sample per cell; current vs additive continuity prompt; same inputs/time/tools/output; no claim of statistical reliability or full workflow reproduction",
+  "rubric": [
+    "original character mouth identity",
+    "continuous corners and lip volume around aperture",
+    "credible interior depth and occlusion",
+    "natural soft material and full-face expression"
+  ],
+  "task": "One neutral half-open target, mouth_open=0.5; keep outside mouth unchanged; no new image generation; one self-check and at most one correction; each cell timebox 6 minutes excluding external tool waiting.",
+  "arms": {
+    "a": {
+      "model": "gpt-6-sol",
+      "reasoning": "xhigh",
+      "prompt": "prompt_current.txt",
+      "thread_id": "01a0e3f6-761c-7c01-95c1-102f594d9ae3"
+    },
+    "b": {
+      "model": "gpt-6-sol",
+      "reasoning": "xhigh",
+      "prompt": "prompt_continuity.txt",
+      "thread_id": "01a0e3f6-b56e-7351-ab3e-31e395da3d42"
+    },
+    "c": {
+      "model": "gpt-6-astra",
+      "reasoning": "xhigh",
+      "prompt": "prompt_current.txt",
+      "thread_id": "01a0e3f6-39e4-72a2-b54d-0abaaf99cd0e"
+    },
+    "d": {
+      "model": "gpt-6-astra",
+      "reasoning": "xhigh",
+      "prompt": "prompt_continuity.txt",
+      "thread_id": "01a0e3f8-b75e-7863-8daf-ad9c2b171008"
+    }
+  },
+  "model_verification": "All four runtime turn_context records confirm intended model and xhigh effort",
+  "blinded_order": [
+    "b",
+    "d",
+    "a",
+    "c"
+  ],
+  "visual_scale": {
+    "0": "clear failure",
+    "1": "partly achieved, visible material defect",
+    "2": "meets this limited neutral-half-open requirement"
+  },
+  "gate": "At least 7/8, no zero in identity or lip continuity, and a visibly half-open mouth; image judgment only, not animation acceptance"
+}

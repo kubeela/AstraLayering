@@ -1,4 +1,5 @@
 id: special_parts_coloring
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -10,7 +11,7 @@ inputs:
   palette_image: nodes.special_parts_palette.palette_image
   palette_json: nodes.special_parts_palette.palette_json
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/5.着色与效果成稿/character.svg
   preview: refinement/groups/{group.id}/5.着色与效果成稿/preview.png

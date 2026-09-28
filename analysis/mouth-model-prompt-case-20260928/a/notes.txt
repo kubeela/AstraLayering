@@ -1,0 +1,2 @@
+Method: Reused the source SVG's mouth cavity, upper and lower teeth, and one complete tongue. Redrew a narrow neutral half-open aperture, upper/lower lip and skin boundaries, rims, and the moved lip light and cast shadow. Retargeted local gradients and clipping to the new volume. mouth_open=0.5; mouth_valence=0. The rest of the SVG is unchanged.
+Known limitation: This is one static target pose only; it has no parameter binding or interpolation. At normal face size the tongue and upper teeth are intentionally subtle, and the mouth remains darker than the closed source.

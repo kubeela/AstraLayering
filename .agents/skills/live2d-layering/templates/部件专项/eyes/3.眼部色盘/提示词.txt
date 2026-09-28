@@ -13,7 +13,7 @@
 二、取样与色盘
 写取样 JSON 数组，每项含 name、part_id、x、y、radius、role；role 使用 sclera、iris、contour、skin、comparison。瞳孔归 iris，眼皮和睫毛线色归 contour，皮肤体积层次归 skin，独立妆色/投影/高光对照归 comparison。
 可增加 region（该眼内的空间位置）、usage（底色/自身层次/妆色/投影/独立高光）与 basis（用途判断、可能混色）。脚本保留这些附加字段。坐标以原图为准，小部件可用 radius=0；不要让采样窗口跨过皮肤、发丝或眼线，混在一起平均。
-运行同目录 提取色盘.py：python3 <脚本> <原彩图> <取样JSON> <输出palette.png>。需要 Python 3 和 Pillow；工具会同时保存真实像素色值、坐标、参考 SHA-256 的 palette.json。观察输出的标注局部，误取样时修正。不能手改 hex 或 rgb 冒充原图实测值。
+运行输入 palette_tool：python3 <脚本> <原彩图> <取样JSON> <输出palette.png>。需要 Python 3 和 Pillow；工具会同时保存真实像素色值、坐标、参考 SHA-256 的 palette.json。观察输出的标注局部，误取样时修正。不能手改 hex 或 rgb 冒充原图实测值。
 
 三、给绘制者的层次说明
 按每只眼给一张简短表：部件/区域、样本 id、颜色分布方向与范围、过渡软硬、后续用途。对复杂虹膜明确哪些变化是纵向的，哪些发生在边缘/中心或局部区域，以及瞳孔与其周边如何过渡；指出“一条纵向渐变仍无法表达”的实际差异。纯色区域也记录判断依据。

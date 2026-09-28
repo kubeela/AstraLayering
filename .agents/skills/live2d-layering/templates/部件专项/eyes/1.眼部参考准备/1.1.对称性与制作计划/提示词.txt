@@ -6,7 +6,7 @@
 3. 确定整眼与前发的层序 eye_hair_order，默认 behind（完整眼睛在前发后）。原设计明确整眼位于头发前或用户如此指定才用 in_front。整只眼的眼白、眼内、眼睑及睫毛遵守同一个相对前发层序；不允许只让睫毛尖端跨到头发上方。发下若隐若现由头发材质透明度表现，眼部阶段不制造露出窗口或更改发片形状/透明度。
 4. 结果注明本轮已决定的策略、主眼和轴或逐眼顺序、整眼层序及简短依据，设置 locked=true。一旦开始线稿，这些字段冻结。下游发现疑问只报告，不切到两眼重画；改变策略须有用户新的明确指示，创建新计划并由总控重置受影响进度。不要把锁定标志当成可自动解除的建议。
 
-调用 ../../../../../tools/options.py set --work-root <工作根> eyes_symmetric true（或 false），保留其他选项。计划格式：
+调用输入 options_tool：python <options_tool> set --work-root <工作根> eyes_symmetric true（或 false），保留其他选项。计划格式：
 {
   "locked": true,
   "eyes_symmetric": true,
@@ -18,4 +18,4 @@
 }
 部件名与坐标均是示意，使用本轮数据。false 时 mirror=null，eyes 包含每个实际部件且各一次；part_ids 保持本组顺序。只产出这份轻量计划和简短说明，不为它生成图板。
 
-用同目录 validate_plan.py --plan <计划> --options <options.json> --reference <原图> --part-id <实际id>（逐个追加）校验。把工具返回的 plan_sha256 交给总控，记录为本轮冻结版本；后续校验都带 --expected-sha256 <该哈希>，不能把改写后的新哈希自动当作基准。
+用输入 plan_validator：python <plan_validator> --plan <计划> --options <options.json> --reference <原图> --part-id <实际id>（逐个追加）校验。把工具返回的 plan_sha256 交给总控，记录为本轮冻结版本；后续校验都带 --expected-sha256 <该哈希>，不能把改写后的新哈希自动当作基准。

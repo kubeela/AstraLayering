@@ -1,4 +1,5 @@
 id: arms_hand_line_art
+run: .
 worker: hands_drawing
 inputs:
   reference: inputs.reference
@@ -8,7 +9,7 @@ inputs:
   milly_reference:
     asset: ../references/milly-hand-layers.png
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/4.双手结构线稿与隐藏补全/character.svg
   comparison: refinement/groups/{group.id}/4.双手结构线稿与隐藏补全/结构对照.png

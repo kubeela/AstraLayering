@@ -7,7 +7,7 @@
 同一发束上的基础色、体积、反光与纹理是绘制层次，是否成为独立动画控制由实际需求决定，不能用取样数量决定拆分数量。
 
 二、复用工具一次提取
-使用输入 palette_tool（本节点的提取色盘.py）：python <palette_tool> <原彩图> <取样JSON> <palette.png>，工具需要 Pillow，字体不适用时用 --font 指定可用字体。
+使用输入 palette_tool：python <palette_tool> <原彩图> <取样JSON> <palette.png>，工具需要 Pillow，字体不适用时用 --font 指定可用字体。
 每项写 name、part_id 和自定 role；part_id 是所属原 hair part，base/volume/local/reflection/contour/comparison 只是默认展示建议，可新增、合并或改名。输入可用数组，也可用 {"samples":[...],"title":"...","groups":{"自定role":"显示名"}} 覆盖标题与分组。
 按图片选择方法：method=point 读取 x/y 精确像素；nearest 从 x/y/radius 或 box=[X,Y,W,H] 找接近区域中位数的真实像素；mean/median 计算区域统计色；方法也可通过 --method 统一指定、各项覆盖。坐标按 EXIF 校正后原图像素，半透明区域可用 min_alpha 选择参与取样的像素。
 这些方法只是便捷函数；需要沿发束多点取色、聚类、外部取色或自行选色时可以自行决定，然后传 method=provided 与 rgb 或 hex，脚本直接排成色盘。用 basis 说明来源和方法，工具会将其标为提供色，不冒充程序直接取出的像素。

@@ -1,6 +1,9 @@
 id: face_palette
+run: .
 worker: face_palette
 inputs:
+  palette_tool:
+    asset: ../../../../../../../agent-tools/palettes/face.py
   reference: inputs.reference
   parts: inputs.parts
 outputs:

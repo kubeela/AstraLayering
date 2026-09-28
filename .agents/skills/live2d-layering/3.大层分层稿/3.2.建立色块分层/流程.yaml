@@ -1,4 +1,5 @@
 id: kind_layers
+run: .
 worker: kind_block_drawing
 inputs:
   reference: nodes.base_subject.image
@@ -10,6 +11,8 @@ outputs:
 review:
   run: review/
   inputs:
+    compare_tool:
+      asset: ../../../../../agent-tools/compare.py
     reference: nodes.base_subject.image
     parts: nodes.part_inventory.parts
     candidate: self.svg

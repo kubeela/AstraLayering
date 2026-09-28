@@ -1,4 +1,5 @@
 id: mouth_line_art
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -6,7 +7,7 @@ inputs:
   svg: inputs.svg
   guide: inputs.line_art
   preview_tool:
-    asset: ../../../../tools/svg_preview.py
+    asset: ../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/1.嘴型校准与完整线稿/character.svg
   comparison: refinement/groups/{group.id}/1.嘴型校准与完整线稿/结构对照.png

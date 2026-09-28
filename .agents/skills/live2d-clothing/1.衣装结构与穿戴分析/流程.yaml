@@ -1,10 +1,11 @@
 id: clothing_structure
+run: .
 worker: clothing_structure
 inputs:
   base_svg: inputs.base_svg
   reference: inputs.outfit_reference
   preview_tool:
-    asset: ../../live2d-layering/tools/svg_preview.py
+    asset: ../../../../agent-tools/svg_preview.py
 outputs:
   structure: 1.衣装结构与穿戴分析/结构安排.json
   reference_brief: 1.衣装结构与穿戴分析/补全要求.txt

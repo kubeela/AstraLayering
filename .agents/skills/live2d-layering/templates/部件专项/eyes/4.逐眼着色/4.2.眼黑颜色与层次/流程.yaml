@@ -1,4 +1,5 @@
 id: eye_iris_coloring
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference

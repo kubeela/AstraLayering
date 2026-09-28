@@ -4,4 +4,4 @@
 
 整体画法主要依赖 3D、写实渲染或厚涂，转成插画能明显降低保留部件的重绘难度，或环境光、炫光、纹理确实妨碍辨认这些部件时，选择 `simplify: true`，简短指出具体障碍。没有明确障碍时直接使用原图。改绘仍应保留人物特征、必要体积和材质关系。
 
-读取本提示词目录下 `../../tools/readme.md`，确认可用的 Python 3 解释器后调用 `../../tools/options.py`。核对根目录 `流程.yaml` 声明，将布尔选项 `simplify` 以 `true` 或 `false` 通过工具的 `set` 命令写入本轮工作根目录的 `options.json`；工具会在文件不存在时创建它。只报告选择及简短依据。
+读取输入 options_manual，确认可用的 Python 3 解释器后调用输入 options_tool。核对根目录 `流程.yaml` 声明，将布尔选项 `simplify` 以 `true` 或 `false` 通过工具的 `set` 命令写入本轮工作根目录的 `options.json`；工具会在文件不存在时创建它。只报告选择及简短依据。

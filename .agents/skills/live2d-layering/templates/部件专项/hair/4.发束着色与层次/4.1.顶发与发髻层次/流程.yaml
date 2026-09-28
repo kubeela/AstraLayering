@@ -1,4 +1,5 @@
 id: hair_crown_coloring
+run: .
 worker: refinement_drawing
 inputs:
   reference: inputs.reference
@@ -7,6 +8,6 @@ inputs:
   palette_image: nodes.hair_palette.palette_image
   palette_json: nodes.hair_palette.palette_json
   preview_tool:
-    asset: ../../../../../tools/svg_preview.py
+    asset: ../../../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/4.发束着色与层次/4.1.顶发与发髻层次/character.svg

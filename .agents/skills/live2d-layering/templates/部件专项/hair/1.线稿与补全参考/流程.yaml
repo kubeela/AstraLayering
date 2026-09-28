@@ -1,4 +1,5 @@
 id: hair_reference
+run: .
 inputs:
   reference: inputs.reference # 图1：本轮角色彩图，造型依据。
 outputs:

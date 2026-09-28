@@ -1,0 +1,17 @@
+id: expression_style
+inputs:
+  specification: nodes.expression_spec.specification
+  style_source: nodes.expression_spec.style_source
+  character_face: nodes.expression_spec.character_face
+  reference_brief: nodes.expression_spec.reference_brief
+if: specification 中的 style_reference_needed 为 true
+then:
+  run: .
+  outputs:
+    image: 1.素材与关键形制作/1.2.表情风格参考/表情风格参考.png
+  imagegen:
+    prompt: 生成提示词.txt
+    inputs: [style_source, character_face, reference_brief]
+else:
+  outputs:
+    image: inputs.style_source

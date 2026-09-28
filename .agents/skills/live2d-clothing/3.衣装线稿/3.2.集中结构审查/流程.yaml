@@ -1,4 +1,5 @@
 id: clothing_line_review
+run: .
 worker: clothing_line_review
 inputs:
   baseline: inputs.base_svg
@@ -7,7 +8,7 @@ inputs:
   structure: nodes.clothing_structure.structure
   comparison: 3.衣装线稿/结构对照.png
   preview_tool:
-    asset: ../../../live2d-layering/tools/svg_preview.py
+    asset: ../../../../../agent-tools/svg_preview.py
 outputs:
   report: 3.衣装线稿/审查.md
   svg: inputs.candidate # 只有报告 status 为 pass 才发布此别名，不复制或重新组装。

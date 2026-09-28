@@ -1,4 +1,5 @@
 id: eyes_closeup_reference
+run: .
 inputs:
   reference: inputs.reference # 图1：原角色彩图。
 outputs:

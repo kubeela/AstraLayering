@@ -1,4 +1,5 @@
 id: clothing_base_cleanup
+run: .
 worker: clothing_cleanup
 inputs:
   reference: inputs.reference # 临时连体服参考，用于识别待移出的衣物。
@@ -7,7 +8,7 @@ inputs:
   parts: inputs.parts
   svg: inputs.svg # 当前最新完整carry，不取旧绘制会话中的稿件。
   preview_tool:
-    asset: ../../../tools/svg_preview.py
+    asset: ../../../../../../agent-tools/svg_preview.py
 outputs:
   svg: refinement/groups/{group.id}/character.svg
   preview: refinement/groups/{group.id}/preview.png
