@@ -109,7 +109,10 @@ inputs:
 options:
   simplify:
     type: boolean
-    description: 是否需要按第 1 步的三张风格参考转换原图画法
+    description: 是否需要按第 1 步的风格参考转换原图画法
+  wear_cloth:
+    type: boolean
+    description: 原图前景主体是否穿着需要替换的衣物
 ```
 
 `type` 说明输入用途与形态；`required` 省略时为 `true`。根目录的 `options` 只声明选项，不保存本轮实际选择。可以按需要声明 `default`；需要结合输入图判断的选项可以不设默认值。
@@ -118,13 +121,14 @@ options:
 
 ```json
 {
-  "simplify": true
+  "simplify": true,
+  "wear_cloth": true
 }
 ```
 
 确定值时，用户本轮明确要求优先，其次是本轮已有的 `options.json` 值，再次是声明的默认值。需要结合图片判断的选项由相应判断节点处理；用户明确改变选择时，也交该节点写入新值。旧运行仅有 `options.yaml` 时，由该 agent 核对后逐项调用工具迁移，保留旧文件；已有 `options.json` 时以它为准。无可用判断依据时，该节点报告缺项，由总控询问用户。未用到的选项可以暂时不写入。
 
-若节点声明 `writes_options: [simplify]`，表示该节点负责修改本轮 `options.json` 中的 `simplify` 字段。判断 agent 使用外层 [选项工具](../tools/readme.md) 写入，后续节点读取 `options.simplify`。工具默认接收布尔值 `true`/`false`，整数和字符串分别通过 `--type integer`、`--type string` 指定；枚举按字符串保存。agent 按根流程核对名称、声明类型和枚举范围，工具校验存储格式与值类型、保留其他值并保护并发写入。`writes_options` 不发布 `nodes.<id>` 产物，也不等同于 `outputs`。
+若节点声明 `writes_options: [simplify, wear_cloth]`，表示该节点负责修改本轮 `options.json` 中的两个布尔字段。判断 agent 使用外层 [选项工具](../tools/readme.md) 写入，后续节点读取 `options.simplify` 和 `options.wear_cloth`。工具默认接收布尔值 `true`/`false`，整数和字符串分别通过 `--type integer`、`--type string` 指定；枚举按字符串保存。agent 按根流程核对名称、声明类型和枚举范围，工具校验存储格式与值类型、保留其他值并保护并发写入。`writes_options` 不发布 `nodes.<id>` 产物，也不等同于 `outputs`。
 
 节点输入的来源统一写法如下：
 
@@ -133,6 +137,7 @@ options:
 | `inputs.original` | 本轮外部输入 |
 | `nodes.character_reference.image` | 本轮 `character_reference` 节点名为 `image` 的输出 |
 | `options.simplify` | 本轮已确定的运行选项 |
+| `options.wear_cloth` | 前景主体是否穿着待替换衣物 |
 | `refinement/groups/{group.id}/1.脸部色盘/palette.json` | 相对本轮工作根目录的文件路径；循环中替换当前分组值 |
 | `{ asset: 1.角色参考准备/1.3.连体服替换/可复用结果.jpg }` | 从技能根目录索引的包内素材，本节点明确选用它 |
 | `{ from: nodes.optional_step.image, required: false }` | 本节点接受该上游产物缺省 |
@@ -143,17 +148,13 @@ options:
 
 ## 4. 条件分支与按需生成
 
-先由 `1.1.参考图判断` 根据用户要求及图片写入 `options.simplify`；`1.2.角色参考选择` 再读取它。后者的配置是：
+先由 `1.1.参考图判断` 根据用户要求及图片写入 `options.simplify` 与 `options.wear_cloth`；`1.2.角色参考选择` 按画法选择参考图：
 
 ```yaml
 id: character_reference
 inputs:
   original: inputs.original
   style_reference_1:
-    asset: 1.角色参考准备/风格参考/1.全身角色.jpg
-  style_reference_2:
-    asset: 1.角色参考准备/风格参考/2.面部细节.png
-  style_reference_3:
     asset: 1.角色参考准备/风格参考/3.全身立绘.png
 if: options.simplify == false
 then:
@@ -165,15 +166,17 @@ else:
     image: references/simplified-character.png
   imagegen:
     prompt: 1.角色参考准备/1.2.角色参考选择/生成提示词.txt
-    inputs: [original, style_reference_1, style_reference_2, style_reference_3]
+    inputs: [original, style_reference_1]
 ```
+
+随后 `1.3.连体服替换` 对衣物使用嵌套分支：`wear_cloth: true` 时以 1.2 选出的图生成连体服参考；为 `false` 时，`simplify: false` 透传原图，`simplify: true` 透传简化图。
 
 执行规则：
 
 1. `if` 判断条件，成立走 `then`，否则走 `else`。缺少 `else` 时，该节点在条件不成立的情况下跳过。选项尚未确定时，先执行负责写入该选项的节点。
 2. `outputs.image: inputs.original` 表示本节点的 `image` 结果就是已有原图。它保留原文件路径与格式，不复制文件、不派发绘图任务。
 3. `outputs.image: references/…` 表示本轮要保存的文件路径。分支继承节点输入，可按需添加自己的 `inputs`。
-4. 上例始终发布 `nodes.character_reference.image`。需要简化时，总控读取根相对路径所指的 `生成提示词.txt`，按 `imagegen.inputs` 的顺序传原图和三张内置风格参考，调用 `imagegen` 一次并保存返回图；无需用户准备简化图。
+4. 上例始终发布 `nodes.character_reference.image`。需要简化时，总控按 `imagegen.inputs` 的顺序传原图和内置风格参考，调用 `imagegen` 一次并保存返回图，与 `wear_cloth` 的值无关。1.3 再决定生成连体服参考或直接发布已选的参考图。
 5. 工具调用失败时记录节点失败并处理卡点，不自动切到其他分支。其他节点可用 `imagegen.when` 限制生图条件；本节点的简化分支一经选中就执行生图。
 
 条件也可明确要求总控读取绑定文本中的决定，例如`if: structure 中的 reference_needed 为 true`：读取本组structure文件开头的唯一`reference_needed: true/false`，true走then，false走else；缺失、重复或非布尔值属于上游交付错误，交原分析worker修正，不能按false跳过。该决定作用于当前group，不自动写入全局options。
@@ -186,7 +189,7 @@ else:
 
 ```yaml
 id: group_layers
-run: 3.大层分层稿/3.1.分组色稿
+run: 3.大层分层稿
 inputs:
   reference: nodes.base_subject.image
   groups: nodes.group_inventory.groups
@@ -194,7 +197,7 @@ outputs:
   svg: block-layers/character.svg
   preview: block-layers/preview.png
 review:
-  run: 3.大层分层稿/3.1.分组色稿/review
+  run: 3.大层分层稿/review
   inputs:
     reference: nodes.base_subject.image
     groups: nodes.group_inventory.groups

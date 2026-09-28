@@ -1,5 +1,5 @@
 id: group_layers
-run: 3.大层分层稿/3.1.分组色稿
+run: 3.大层分层稿
 worker: group_layer_drawing
 inputs:
   reference: nodes.base_subject.image
@@ -7,12 +7,12 @@ inputs:
   preview_tool:
     asset: tools/svg_preview.py
   compare_tool:
-    asset: 3.大层分层稿/3.1.分组色稿/tools/compare.py
+    asset: 3.大层分层稿/tools/compare.py
 outputs:
   svg: block-layers/character.svg
   preview: block-layers/preview.png
 review:
-  run: 3.大层分层稿/3.1.分组色稿/review
+  run: 3.大层分层稿/review
   inputs:
     reference: nodes.base_subject.image
     groups: nodes.group_inventory.groups
@@ -20,6 +20,6 @@ review:
     preview_tool:
       asset: tools/svg_preview.py
     compare_tool:
-      asset: 3.大层分层稿/3.1.分组色稿/tools/compare.py
+      asset: 3.大层分层稿/tools/compare.py
   outputs:
     report: reviews/group_layers/审查.md
