@@ -1,0 +1,243 @@
+{
+  "leaf_count": 45,
+  "svg_group_count": 45,
+  "duplicate_ids": [],
+  "missing": [],
+  "extra": [],
+  "duplicate_paths": [],
+  "undesignated_paint": [],
+  "empty_groups": [],
+  "inputs": {
+    "block-layers/character.svg": "e2cbc656722895d36bd977fe22b10d2e0e14f5bd5d39f75003e4cb7be9888cbc",
+    "structure/groups.json": "26fd89923adba6dc1a2844e15944a1bce59ed585dc0ab53cecb3af4f3d845fb5",
+    "references/base-subject.png": "aa87608003d53fc003572dad79b1b4b8b933c62526d3c4dd19a4f2440b5966ec"
+  },
+  "leaves": [
+    {
+      "id": "right_back_hair",
+      "group_path": "hair/right_back_hair",
+      "paint_count": 1
+    },
+    {
+      "id": "left_back_hair",
+      "group_path": "hair/left_back_hair",
+      "paint_count": 1
+    },
+    {
+      "id": "rear_arch",
+      "group_path": "headdress/rear_arch",
+      "paint_count": 1
+    },
+    {
+      "id": "top_bun",
+      "group_path": "hair/top_bun",
+      "paint_count": 1
+    },
+    {
+      "id": "right_branch_base",
+      "group_path": "headdress/right_branch/right_branch_base",
+      "paint_count": 1
+    },
+    {
+      "id": "left_branch_base",
+      "group_path": "headdress/left_branch/left_branch_base",
+      "paint_count": 1
+    },
+    {
+      "id": "right_hanging_streamer",
+      "group_path": "headdress/right_branch/right_hanging_streamer",
+      "paint_count": 1
+    },
+    {
+      "id": "left_hanging_streamer",
+      "group_path": "headdress/left_branch/left_hanging_streamer",
+      "paint_count": 1
+    },
+    {
+      "id": "right_sole",
+      "group_path": "sandals/right_sandal/right_sole",
+      "paint_count": 1
+    },
+    {
+      "id": "left_sole",
+      "group_path": "sandals/left_sandal/left_sole",
+      "paint_count": 1
+    },
+    {
+      "id": "right_calf",
+      "group_path": "body/lower_body/right_leg/right_calf",
+      "paint_count": 1
+    },
+    {
+      "id": "left_calf",
+      "group_path": "body/lower_body/left_leg/left_calf",
+      "paint_count": 1
+    },
+    {
+      "id": "right_thigh",
+      "group_path": "body/lower_body/right_leg/right_thigh",
+      "paint_count": 1
+    },
+    {
+      "id": "left_thigh",
+      "group_path": "body/lower_body/left_leg/left_thigh",
+      "paint_count": 1
+    },
+    {
+      "id": "right_foot",
+      "group_path": "body/lower_body/right_leg/right_foot",
+      "paint_count": 1
+    },
+    {
+      "id": "left_foot",
+      "group_path": "body/lower_body/left_leg/left_foot",
+      "paint_count": 1
+    },
+    {
+      "id": "pelvis",
+      "group_path": "body/lower_body/pelvis",
+      "paint_count": 1
+    },
+    {
+      "id": "torso",
+      "group_path": "body/torso",
+      "paint_count": 1
+    },
+    {
+      "id": "right_upper_arm",
+      "group_path": "body/arms/right_arm/right_upper_arm",
+      "paint_count": 1
+    },
+    {
+      "id": "left_upper_arm",
+      "group_path": "body/arms/left_arm/left_upper_arm",
+      "paint_count": 1
+    },
+    {
+      "id": "right_forearm",
+      "group_path": "body/arms/right_arm/right_forearm",
+      "paint_count": 1
+    },
+    {
+      "id": "left_forearm",
+      "group_path": "body/arms/left_arm/left_forearm",
+      "paint_count": 1
+    },
+    {
+      "id": "right_hand",
+      "group_path": "body/arms/right_arm/right_hand",
+      "paint_count": 1
+    },
+    {
+      "id": "left_hand",
+      "group_path": "body/arms/left_arm/left_hand",
+      "paint_count": 1
+    },
+    {
+      "id": "neck",
+      "group_path": "body/neck",
+      "paint_count": 1
+    },
+    {
+      "id": "right_ear",
+      "group_path": "face/right_ear",
+      "paint_count": 1
+    },
+    {
+      "id": "left_ear",
+      "group_path": "face/left_ear",
+      "paint_count": 1
+    },
+    {
+      "id": "face_base",
+      "group_path": "face/face_base",
+      "paint_count": 1
+    },
+    {
+      "id": "right_earring",
+      "group_path": "earrings/right_earring",
+      "paint_count": 1
+    },
+    {
+      "id": "left_earring",
+      "group_path": "earrings/left_earring",
+      "paint_count": 1
+    },
+    {
+      "id": "crown_hair",
+      "group_path": "hair/crown_hair",
+      "paint_count": 1
+    },
+    {
+      "id": "right_bangs",
+      "group_path": "hair/right_bangs",
+      "paint_count": 1
+    },
+    {
+      "id": "left_bangs",
+      "group_path": "hair/left_bangs",
+      "paint_count": 1
+    },
+    {
+      "id": "right_side_lock",
+      "group_path": "hair/right_side_lock",
+      "paint_count": 1
+    },
+    {
+      "id": "left_side_lock",
+      "group_path": "hair/left_side_lock",
+      "paint_count": 1
+    },
+    {
+      "id": "right_eyebrow",
+      "group_path": "face/right_eyebrow",
+      "paint_count": 1
+    },
+    {
+      "id": "left_eyebrow",
+      "group_path": "face/left_eyebrow",
+      "paint_count": 1
+    },
+    {
+      "id": "right_eye",
+      "group_path": "face/eyes/right_eye",
+      "paint_count": 1
+    },
+    {
+      "id": "left_eye",
+      "group_path": "face/eyes/left_eye",
+      "paint_count": 1
+    },
+    {
+      "id": "nose",
+      "group_path": "face/nose",
+      "paint_count": 1
+    },
+    {
+      "id": "mouth",
+      "group_path": "face/mouth",
+      "paint_count": 1
+    },
+    {
+      "id": "lotus_crest",
+      "group_path": "headdress/lotus_crest",
+      "paint_count": 1
+    },
+    {
+      "id": "forehead_ornament",
+      "group_path": "headdress/forehead_ornament",
+      "paint_count": 1
+    },
+    {
+      "id": "right_jeweled_strap",
+      "group_path": "sandals/right_sandal/right_jeweled_strap",
+      "paint_count": 1
+    },
+    {
+      "id": "left_jeweled_strap",
+      "group_path": "sandals/left_sandal/left_jeweled_strap",
+      "paint_count": 1
+    }
+  ],
+  "existing_evidence_pixels_match": true
+}

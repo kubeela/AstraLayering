@@ -1,0 +1,857 @@
+[
+  {
+    "id": "right_back_hair",
+    "group_path": "hair/right_back_hair",
+    "isolated_bbox": [
+      413,
+      253,
+      499,
+      641
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      420,
+      283,
+      493,
+      641
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_back_hair.png"
+  },
+  {
+    "id": "left_back_hair",
+    "group_path": "hair/left_back_hair",
+    "isolated_bbox": [
+      534,
+      252,
+      618,
+      640
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      540,
+      283,
+      612,
+      637
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_back_hair.png"
+  },
+  {
+    "id": "rear_arch",
+    "group_path": "headdress/rear_arch",
+    "isolated_bbox": [
+      433,
+      79,
+      594,
+      150
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      452,
+      79,
+      577,
+      124
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/rear_arch.png"
+  },
+  {
+    "id": "top_bun",
+    "group_path": "hair/top_bun",
+    "isolated_bbox": [
+      475,
+      93,
+      555,
+      158
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      475,
+      93,
+      555,
+      147
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/top_bun.png"
+  },
+  {
+    "id": "right_branch_base",
+    "group_path": "headdress/right_branch/right_branch_base",
+    "isolated_bbox": [
+      382,
+      117,
+      478,
+      198
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      382,
+      117,
+      471,
+      197
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_branch_base.png"
+  },
+  {
+    "id": "left_branch_base",
+    "group_path": "headdress/left_branch/left_branch_base",
+    "isolated_bbox": [
+      558,
+      117,
+      648,
+      196
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      559,
+      117,
+      648,
+      196
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_branch_base.png"
+  },
+  {
+    "id": "right_hanging_streamer",
+    "group_path": "headdress/right_branch/right_hanging_streamer",
+    "isolated_bbox": [
+      342,
+      183,
+      412,
+      605
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      342,
+      183,
+      412,
+      605
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_hanging_streamer.png"
+  },
+  {
+    "id": "left_hanging_streamer",
+    "group_path": "headdress/left_branch/left_hanging_streamer",
+    "isolated_bbox": [
+      624,
+      183,
+      691,
+      605
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      624,
+      183,
+      691,
+      605
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_hanging_streamer.png"
+  },
+  {
+    "id": "right_sole",
+    "group_path": "sandals/right_sandal/right_sole",
+    "isolated_bbox": [
+      441,
+      1434,
+      504,
+      1472
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      441,
+      1434,
+      504,
+      1472
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_sole.png"
+  },
+  {
+    "id": "left_sole",
+    "group_path": "sandals/left_sandal/left_sole",
+    "isolated_bbox": [
+      524,
+      1434,
+      587,
+      1472
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      524,
+      1434,
+      587,
+      1472
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_sole.png"
+  },
+  {
+    "id": "right_calf",
+    "group_path": "body/lower_body/right_leg/right_calf",
+    "isolated_bbox": [
+      439,
+      1000,
+      513,
+      1336
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      439,
+      1023,
+      509,
+      1336
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_calf.png"
+  },
+  {
+    "id": "left_calf",
+    "group_path": "body/lower_body/left_leg/left_calf",
+    "isolated_bbox": [
+      521,
+      1000,
+      594,
+      1336
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      524,
+      1031,
+      594,
+      1336
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_calf.png"
+  },
+  {
+    "id": "right_thigh",
+    "group_path": "body/lower_body/right_leg/right_thigh",
+    "isolated_bbox": [
+      402,
+      681,
+      513,
+      1031
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      402,
+      745,
+      513,
+      1031
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_thigh.png"
+  },
+  {
+    "id": "left_thigh",
+    "group_path": "body/lower_body/left_leg/left_thigh",
+    "isolated_bbox": [
+      521,
+      683,
+      630,
+      1031
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      521,
+      769,
+      630,
+      1031
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_thigh.png"
+  },
+  {
+    "id": "right_foot",
+    "group_path": "body/lower_body/right_leg/right_foot",
+    "isolated_bbox": [
+      441,
+      1309,
+      503,
+      1467
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      441,
+      1309,
+      503,
+      1467
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_foot.png"
+  },
+  {
+    "id": "left_foot",
+    "group_path": "body/lower_body/left_leg/left_foot",
+    "isolated_bbox": [
+      525,
+      1309,
+      586,
+      1466
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      525,
+      1309,
+      586,
+      1466
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_foot.png"
+  },
+  {
+    "id": "pelvis",
+    "group_path": "body/lower_body/pelvis",
+    "isolated_bbox": [
+      402,
+      592,
+      630,
+      785
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      402,
+      592,
+      630,
+      785
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/pelvis.png"
+  },
+  {
+    "id": "torso",
+    "group_path": "body/torso",
+    "isolated_bbox": [
+      426,
+      358,
+      607,
+      641
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      429,
+      369,
+      604,
+      641
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/torso.png"
+  },
+  {
+    "id": "right_upper_arm",
+    "group_path": "body/arms/right_arm/right_upper_arm",
+    "isolated_bbox": [
+      381,
+      374,
+      445,
+      605
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      383,
+      374,
+      445,
+      584
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_upper_arm.png"
+  },
+  {
+    "id": "left_upper_arm",
+    "group_path": "body/arms/left_arm/left_upper_arm",
+    "isolated_bbox": [
+      589,
+      375,
+      653,
+      607
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      589,
+      375,
+      652,
+      591
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_upper_arm.png"
+  },
+  {
+    "id": "right_forearm",
+    "group_path": "body/arms/right_arm/right_forearm",
+    "isolated_bbox": [
+      330,
+      580,
+      423,
+      776
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      336,
+      580,
+      423,
+      747
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_forearm.png"
+  },
+  {
+    "id": "left_forearm",
+    "group_path": "body/arms/left_arm/left_forearm",
+    "isolated_bbox": [
+      610,
+      580,
+      702,
+      776
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      610,
+      580,
+      694,
+      754
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_forearm.png"
+  },
+  {
+    "id": "right_hand",
+    "group_path": "body/arms/right_arm/right_hand",
+    "isolated_bbox": [
+      312,
+      747,
+      360,
+      868
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      312,
+      747,
+      360,
+      868
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_hand.png"
+  },
+  {
+    "id": "left_hand",
+    "group_path": "body/arms/left_arm/left_hand",
+    "isolated_bbox": [
+      672,
+      747,
+      716,
+      869
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      672,
+      747,
+      716,
+      869
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_hand.png"
+  },
+  {
+    "id": "neck",
+    "group_path": "body/neck",
+    "isolated_bbox": [
+      451,
+      307,
+      582,
+      389
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      451,
+      312,
+      582,
+      389
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/neck.png"
+  },
+  {
+    "id": "right_ear",
+    "group_path": "face/right_ear",
+    "isolated_bbox": [
+      464,
+      268,
+      480,
+      292
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      466,
+      279,
+      473,
+      292
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_ear.png"
+  },
+  {
+    "id": "left_ear",
+    "group_path": "face/left_ear",
+    "isolated_bbox": [
+      553,
+      268,
+      568,
+      292
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      557,
+      275,
+      567,
+      292
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_ear.png"
+  },
+  {
+    "id": "face_base",
+    "group_path": "face/face_base",
+    "isolated_bbox": [
+      467,
+      192,
+      564,
+      330
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      469,
+      219,
+      562,
+      330
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/face_base.png"
+  },
+  {
+    "id": "right_earring",
+    "group_path": "earrings/right_earring",
+    "isolated_bbox": [
+      463,
+      290,
+      476,
+      327
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      463,
+      290,
+      476,
+      327
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_earring.png"
+  },
+  {
+    "id": "left_earring",
+    "group_path": "earrings/left_earring",
+    "isolated_bbox": [
+      557,
+      290,
+      572,
+      331
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      557,
+      290,
+      572,
+      331
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_earring.png"
+  },
+  {
+    "id": "crown_hair",
+    "group_path": "hair/crown_hair",
+    "isolated_bbox": [
+      444,
+      158,
+      589,
+      286
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      444,
+      160,
+      589,
+      286
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/crown_hair.png"
+  },
+  {
+    "id": "right_bangs",
+    "group_path": "hair/right_bangs",
+    "isolated_bbox": [
+      447,
+      191,
+      516,
+      285
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      447,
+      191,
+      515,
+      283
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_bangs.png"
+  },
+  {
+    "id": "left_bangs",
+    "group_path": "hair/left_bangs",
+    "isolated_bbox": [
+      517,
+      192,
+      588,
+      286
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      519,
+      192,
+      588,
+      285
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_bangs.png"
+  },
+  {
+    "id": "right_side_lock",
+    "group_path": "hair/right_side_lock",
+    "isolated_bbox": [
+      429,
+      252,
+      477,
+      375
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      429,
+      252,
+      477,
+      375
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_side_lock.png"
+  },
+  {
+    "id": "left_side_lock",
+    "group_path": "hair/left_side_lock",
+    "isolated_bbox": [
+      557,
+      252,
+      606,
+      385
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      557,
+      252,
+      606,
+      385
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_side_lock.png"
+  },
+  {
+    "id": "right_eyebrow",
+    "group_path": "face/right_eyebrow",
+    "isolated_bbox": [
+      480,
+      249,
+      503,
+      255
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      480,
+      249,
+      503,
+      255
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_eyebrow.png"
+  },
+  {
+    "id": "left_eyebrow",
+    "group_path": "face/left_eyebrow",
+    "isolated_bbox": [
+      528,
+      249,
+      554,
+      255
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      528,
+      249,
+      554,
+      255
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_eyebrow.png"
+  },
+  {
+    "id": "right_eye",
+    "group_path": "face/eyes/right_eye",
+    "isolated_bbox": [
+      474,
+      259,
+      504,
+      274
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      474,
+      259,
+      504,
+      274
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_eye.png"
+  },
+  {
+    "id": "left_eye",
+    "group_path": "face/eyes/left_eye",
+    "isolated_bbox": [
+      530,
+      259,
+      563,
+      274
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      530,
+      259,
+      563,
+      274
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_eye.png"
+  },
+  {
+    "id": "nose",
+    "group_path": "face/nose",
+    "isolated_bbox": [
+      511,
+      291,
+      520,
+      296
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      511,
+      291,
+      520,
+      296
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/nose.png"
+  },
+  {
+    "id": "mouth",
+    "group_path": "face/mouth",
+    "isolated_bbox": [
+      505,
+      304,
+      529,
+      310
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      505,
+      304,
+      529,
+      310
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/mouth.png"
+  },
+  {
+    "id": "lotus_crest",
+    "group_path": "headdress/lotus_crest",
+    "isolated_bbox": [
+      471,
+      115,
+      559,
+      170
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      471,
+      115,
+      559,
+      170
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/lotus_crest.png"
+  },
+  {
+    "id": "forehead_ornament",
+    "group_path": "headdress/forehead_ornament",
+    "isolated_bbox": [
+      503,
+      171,
+      531,
+      244
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      503,
+      171,
+      531,
+      244
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/forehead_ornament.png"
+  },
+  {
+    "id": "right_jeweled_strap",
+    "group_path": "sandals/right_sandal/right_jeweled_strap",
+    "isolated_bbox": [
+      456,
+      1345,
+      501,
+      1445
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      456,
+      1345,
+      501,
+      1445
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/right_jeweled_strap.png"
+  },
+  {
+    "id": "left_jeweled_strap",
+    "group_path": "sandals/left_sandal/left_jeweled_strap",
+    "isolated_bbox": [
+      529,
+      1343,
+      573,
+      1445
+    ],
+    "isolation_nonempty": true,
+    "hide_changes_full_render": true,
+    "hide_diff_bbox": [
+      529,
+      1343,
+      573,
+      1445
+    ],
+    "isolated_file": "reviews/group_layers/evidence/leaves/left_jeweled_strap.png"
+  }
+]

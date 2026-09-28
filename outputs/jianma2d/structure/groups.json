@@ -1,0 +1,138 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "name": "face",
+      "groups": [
+        {"name": "face_base", "groups": []},
+        {
+          "name": "eyes",
+          "groups": [
+            {"name": "left_eye", "groups": []},
+            {"name": "right_eye", "groups": []}
+          ]
+        },
+        {"name": "left_eyebrow", "groups": []},
+        {"name": "right_eyebrow", "groups": []},
+        {"name": "nose", "groups": []},
+        {"name": "mouth", "groups": []},
+        {"name": "left_ear", "groups": []},
+        {"name": "right_ear", "groups": []}
+      ]
+    },
+    {
+      "name": "hair",
+      "groups": [
+        {"name": "crown_hair", "groups": []},
+        {"name": "top_bun", "groups": [], "note": "头顶花饰后方的白色圆形发髻。"},
+        {"name": "left_bangs", "groups": []},
+        {"name": "right_bangs", "groups": []},
+        {"name": "left_side_lock", "groups": []},
+        {"name": "right_side_lock", "groups": []},
+        {"name": "left_back_hair", "groups": []},
+        {"name": "right_back_hair", "groups": []}
+      ]
+    },
+    {
+      "name": "body",
+      "note": "以临时连体服判断胸腹及骨盆轮廓，补全被遮住的身体；连体服不入组。",
+      "groups": [
+        {"name": "neck", "groups": []},
+        {"name": "torso", "groups": []},
+        {
+          "name": "arms",
+          "groups": [
+            {
+              "name": "left_arm",
+              "groups": [
+                {"name": "left_upper_arm", "groups": []},
+                {"name": "left_forearm", "groups": []},
+                {"name": "left_hand", "groups": []}
+              ]
+            },
+            {
+              "name": "right_arm",
+              "groups": [
+                {"name": "right_upper_arm", "groups": []},
+                {"name": "right_forearm", "groups": []},
+                {"name": "right_hand", "groups": []}
+              ]
+            }
+          ]
+        },
+        {
+          "name": "lower_body",
+          "groups": [
+            {"name": "pelvis", "groups": []},
+            {
+              "name": "left_leg",
+              "groups": [
+                {"name": "left_thigh", "groups": []},
+                {"name": "left_calf", "groups": []},
+                {"name": "left_foot", "groups": []}
+              ]
+            },
+            {
+              "name": "right_leg",
+              "groups": [
+                {"name": "right_thigh", "groups": []},
+                {"name": "right_calf", "groups": []},
+                {"name": "right_foot", "groups": []}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "headdress",
+      "note": "左右均按角色自身方向命名，画面右侧是角色左侧。",
+      "groups": [
+        {"name": "rear_arch", "groups": [], "note": "发髻后方横跨头顶的银白弧形饰架。"},
+        {"name": "lotus_crest", "groups": [], "note": "发髻前方蓝色莲瓣状冠饰。"},
+        {"name": "forehead_ornament", "groups": [], "note": "沿发际垂至眉心的蓝色菱形额饰。"},
+        {
+          "name": "left_branch",
+          "groups": [
+            {"name": "left_branch_base", "groups": [], "note": "伸向画面右侧的银色枝状侧饰。"},
+            {"name": "left_hanging_streamer", "groups": [], "note": "由珠串悬接的画面右侧长条蓝色垂饰。"}
+          ]
+        },
+        {
+          "name": "right_branch",
+          "groups": [
+            {"name": "right_branch_base", "groups": [], "note": "伸向画面左侧的银色枝状侧饰。"},
+            {"name": "right_hanging_streamer", "groups": [], "note": "由珠串悬接的画面左侧长条蓝色垂饰。"}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "earrings",
+      "groups": [
+        {"name": "left_earring", "groups": []},
+        {"name": "right_earring", "groups": []}
+      ]
+    },
+    {
+      "name": "sandals",
+      "note": "裸露足背上的蓝宝石珠链连接到脚趾，脚下可见浅色薄底。",
+      "groups": [
+        {
+          "name": "left_sandal",
+          "groups": [
+            {"name": "left_jeweled_strap", "groups": []},
+            {"name": "left_sole", "groups": []}
+          ]
+        },
+        {
+          "name": "right_sandal",
+          "groups": [
+            {"name": "right_jeweled_strap", "groups": []},
+            {"name": "right_sole", "groups": []}
+          ]
+        }
+      ]
+    }
+  ]
+}
