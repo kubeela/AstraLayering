@@ -25,8 +25,7 @@
                   "name": "right_eye",
                   "groups": []
                 }
-              ],
-              "display_order": 35
+              ]
             },
             {
               "name": "eyebrows",
@@ -49,8 +48,7 @@
               "name": "mouth",
               "groups": []
             }
-          ],
-          "display_order": 20
+          ]
         },
         {
           "name": "ears",
@@ -63,8 +61,7 @@
               "name": "right_ear",
               "groups": []
             }
-          ],
-          "display_order": 18
+          ]
         },
         {
           "name": "hair",
@@ -73,8 +70,7 @@
             {
               "name": "top_bun",
               "note": "头顶中央、花形冠心下方的扇形盘发。",
-              "groups": [],
-              "display_order": 22
+              "groups": []
             },
             {
               "name": "bangs",
@@ -88,8 +84,7 @@
                   "name": "right_bang",
                   "groups": []
                 }
-              ],
-              "display_order": 28
+              ]
             },
             {
               "name": "face_framing_hair",
@@ -117,11 +112,9 @@
                   "name": "right_back_hair",
                   "groups": []
                 }
-              ],
-              "display_order": 8
+              ]
             }
-          ],
-          "display_order": 26
+          ]
         }
       ]
     },
@@ -232,8 +225,7 @@
             }
           ]
         }
-      ],
-      "display_order": 10
+      ]
     },
     {
       "name": "accessories",
@@ -245,8 +237,7 @@
             {
               "name": "halo_arc",
               "note": "盘发上方连接两侧的细白色弧形冠环。",
-              "groups": [],
-              "display_order": 9
+              "groups": []
             },
             {
               "name": "central_crest",
@@ -271,14 +262,12 @@
             {
               "name": "left_ribbon_streamer",
               "note": "角色左侧枝角下的整串蓝白珠坠、端饰和延伸到腿旁的完整长飘带。",
-              "groups": [],
-              "display_order": 5
+              "groups": []
             },
             {
               "name": "right_ribbon_streamer",
               "note": "角色右侧枝角下的整串蓝白珠坠、端饰和延伸到腿旁的完整长飘带。",
-              "groups": [],
-              "display_order": 5
+              "groups": []
             }
           ]
         },
@@ -317,16 +306,7 @@
             }
           ]
         }
-      ],
-      "display_order": 40
+      ]
     }
-  ],
-  "display_notes": {
-    "head/face/eyes": "左右整眼（含主睫毛、眼睑、眼白和虹膜）有效层级 35，高于刘海 28 和面颊侧发 26；参考图中外眼角轮廓在侧发前方，保持整眼可读。",
-    "head/hair/bangs": "刘海在面部底形和侧发之上；侧发被刘海遮住的发束仍完整保留在原归属组中。",
-    "head/hair/back_hair": "灰紫色内层长发在颈部、肩部及面部底形之后；其有效层级 8 低于身体 10。",
-    "accessories/headdress/halo_arc": "细白冠环从盘发后方拱起，层级 9；冠心和外伸枝角继承饰品层级 40，位于前景。",
-    "accessories/headdress/left_ribbon_streamer": "角色左侧（画面右侧）的长飘带垂在身体外侧。浅蓝白色深浅是本体渐变与阴影，参考图未见背景透出，整组不设透明度。",
-    "accessories/headdress/right_ribbon_streamer": "角色右侧（画面左侧）的长飘带经过右手附近时位于手后。浅蓝白色深浅是本体渐变与阴影，参考图未见背景透出，整组不设透明度。"
-  }
+  ]
 }

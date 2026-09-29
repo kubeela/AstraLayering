@@ -1,0 +1,117 @@
+{
+  "status": "complete",
+  "scope": "step3_group_layers_only",
+  "created_at_utc": "2026-09-28T19:08:43.474705+00:00",
+  "reference_sha256": "a6aeecb0356607a5712466e6de5a350eeb45e441465c808d6f7a103578ddc33a",
+  "groups_sha256": "40a9c8feba298b4091f6701b2325acc2a7cd4a784a698cf2b7042fbd27d542a2",
+  "face_status": "pass",
+  "face_metrics": {
+    "edge_max_px": 0.5,
+    "width_max_px": 0.5,
+    "center_max_px": 0.25
+  },
+  "display_status": "pass",
+  "leaf_count": 43,
+  "known_limits": [
+    "Hidden body and hair-covered face/ear continuations are inferred, not source measurements.",
+    "Internal fine detail is intentionally reserved for later workflow steps."
+  ],
+  "files": {
+    "character.svg": {
+      "sha256": "9c1acdba8f10fc286074d8c586027b40913ef485f5de6b3246d6bf6422ccd12b",
+      "bytes": 67190
+    },
+    "preview.png": {
+      "sha256": "b317ec03de72a7342a6c1f10da5b35242e7edcb8bed1dc64d71b4df6c804b06d",
+      "bytes": 54211
+    },
+    "checks/face-guide.json": {
+      "sha256": "cf6df080a8e868694eeb111f9598460c1c664b34abc26acf9287fbd24cc22a21",
+      "bytes": 1992
+    },
+    "checks/face-target.json": {
+      "sha256": "1368a0300ac63fcc7f5a2ac067676124c851df46fde42b5ef18ccbbc67004c89",
+      "bytes": 3323
+    },
+    "checks/face-target.source.png": {
+      "sha256": "34531257a29be174de69eaa55808e1b03a52a2c428c13f7b3b15e9a7cd9edf44",
+      "bytes": 110296
+    },
+    "checks/face/report.json": {
+      "sha256": "c5c1f51984eb988efc2717a923c3f62c9a8a0dc150e2a77bb4161029a85c1150",
+      "bytes": 3978
+    },
+    "checks/face/comparison.png": {
+      "sha256": "d4c321dfcfd30650358bfa90c299919e19abe0fe660af6bd3fb8ff07bc71928a",
+      "bytes": 129585
+    },
+    "checks/face-eyes-board.png": {
+      "sha256": "96e81aacab9134f25b85262c94cfc687a6c66b85e16e3df42382497773d57a91",
+      "bytes": 352389
+    },
+    "checks/display-report.json": {
+      "sha256": "7f7d358aafe5ab44de938b9498fb068fd05475f89d04ae488d484241b561e73f",
+      "bytes": 10036
+    },
+    "checks/leaf-contact-sheet.png": {
+      "sha256": "1003c90b6231ebc7cfd5ad50fb63155a857ef12e14d07ffade70ca5a0c88796d",
+      "bytes": 104824
+    },
+    "checks/leaf-geometry.json": {
+      "sha256": "db19c69c05edb04050b77e2d7286322c1529a98c9c82c983e5d9ee2d528ad085",
+      "bytes": 8611
+    },
+    "self-review.md": {
+      "sha256": "82fea72f072410bacf3cf496a6cc74bc39f54618a2a4419d86e6c097f0f9bc4e",
+      "bytes": 7686
+    },
+    "checks/forehead-repair/source-arc-observation.json": {
+      "sha256": "2b184242dda0834785ad96c3bc5483f9181ec77e7f13d3874af38454e5c4cb81",
+      "bytes": 774
+    },
+    "checks/forehead-repair/source-arc-observation.png": {
+      "sha256": "f944aa9e1fa90d25d17d1b6d62677784d8c088970da506f0dedac69231647a8c",
+      "bytes": 104356
+    },
+    "checks/forehead-repair/upper-face-board.png": {
+      "sha256": "982aaf16739beab90ef71ca6447fc05018768af407aff9432a5b02a0e3924d33",
+      "bytes": 238401
+    },
+    "checks/forehead-repair/changed-hair-board.png": {
+      "sha256": "b46aee4f6f4006faf9c0af0e5c222d66bfb9f6fc8220b58e74a3df04d0e0cc80",
+      "bytes": 44275
+    },
+    "checks/forehead-repair/change-scope.json": {
+      "sha256": "8af7844253f32c04f7eb9dbc2b042eb22d344a32daa93de1e9821bd911d8f1e6",
+      "bytes": 537
+    },
+    "checks/browser/preview.png": {
+      "sha256": "a2b6d2d1b52812d36d8573583526ba4d2b32b45a381cde3146e27a171688d8b7",
+      "bytes": 298965
+    },
+    "checks/browser/report.json": {
+      "sha256": "58be042126e3cea2c7467d452dad6e3f8f372fdb3e3d78ab0add068f9a87bd4f",
+      "bytes": 368
+    }
+  },
+  "updated_at_utc": "2026-09-28T19:18:33.423702+00:00",
+  "revision": "local_forehead_arch_repair",
+  "local_repair": {
+    "before_svg_sha256": "c7d29af96893e448f2874f5cceb32b0da9eae31b068438dbd944f271a2de5b04",
+    "after_svg_sha256": "9c1acdba8f10fc286074d8c586027b40913ef485f5de6b3246d6bf6422ccd12b",
+    "changed_groups": [
+      "head/hair/face_framing_hair/left_face_framing_lock",
+      "head/hair/face_framing_hair/right_face_framing_lock",
+      "head/hair/bangs/left_bang",
+      "head/hair/bangs/right_bang"
+    ],
+    "unchanged_count": 39,
+    "face_base_unchanged": true,
+    "target_sha256": "1368a0300ac63fcc7f5a2ac067676124c851df46fde42b5ef18ccbbc67004c89"
+  },
+  "independent_review": {
+    "status": "pass",
+    "report": "../reviews/group_layers/审查.md",
+    "svg_sha256": "9c1acdba8f10fc286074d8c586027b40913ef485f5de6b3246d6bf6422ccd12b"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "status": "complete_through_step3",
+  "step_id": "group_layers",
+  "step_yaml": "workflow-next/live2d-layering/3.大层分层稿/流程.yaml",
+  "work_root": "outputs/jianma2d",
+  "prepared_at_utc": "2026-09-28T18:53:42.889965+00:00",
+  "reference": "outputs/jianma2d/references/base-subject.png",
+  "groups": "outputs/jianma2d/structure/groups.json",
+  "display_tool": "workflow-next/live2d-layering/2.皮套结构识别/tools/display_order.py",
+  "face_tool": "workflow-next/live2d-layering/3.大层分层稿/tools/face_compare.py",
+  "preview_tool": "workflow-next/live2d-layering/tools/svg_preview.py",
+  "compare_tool": "workflow-next/live2d-layering/3.大层分层稿/tools/compare.py",
+  "inputs_sha256": {
+    "reference": "a6aeecb0356607a5712466e6de5a350eeb45e441465c808d6f7a103578ddc33a",
+    "groups": "40a9c8feba298b4091f6701b2325acc2a7cd4a784a698cf2b7042fbd27d542a2"
+  },
+  "outputs": {
+    "svg": "outputs/jianma2d/block-layers/character.svg",
+    "preview": "outputs/jianma2d/block-layers/preview.png",
+    "face_target": "outputs/jianma2d/block-layers/checks/face-target.json",
+    "face_report": "outputs/jianma2d/block-layers/checks/face/report.json",
+    "review_report": "outputs/jianma2d/reviews/group_layers/审查.md"
+  },
+  "drawing": {
+    "run": "workflow-next/live2d-layering/3.大层分层稿",
+    "prompt": "workflow-next/live2d-layering/3.大层分层稿/提示词.txt",
+    "model_file": "workflow-next/live2d-layering/3.大层分层稿/gpt-6-astra-xhigh.model",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "xhigh",
+    "worker_identity": "group_layer_drawing",
+    "worker_id": "/root/jianma2d_drawing_fresh",
+    "outputs": {
+      "svg": "outputs/jianma2d/block-layers/character.svg",
+      "preview": "outputs/jianma2d/block-layers/preview.png",
+      "face_target": "outputs/jianma2d/block-layers/checks/face-target.json",
+      "face_report": "outputs/jianma2d/block-layers/checks/face/report.json"
+    },
+    "started_at_utc": "2026-09-28T18:54:40.174437+00:00",
+    "status": "complete"
+  },
+  "review": {
+    "run": "workflow-next/live2d-layering/3.大层分层稿/review",
+    "prompt": "workflow-next/live2d-layering/3.大层分层稿/review/提示词.txt",
+    "model_file": "workflow-next/live2d-layering/3.大层分层稿/review/gpt-6-astra-xhigh.model",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "xhigh",
+    "worker_identity": "group_layers:review",
+    "worker_id": "/root/jianma2d_review_fresh",
+    "inputs": {
+      "reference": "outputs/jianma2d/references/base-subject.png",
+      "groups": "outputs/jianma2d/structure/groups.json",
+      "candidate": "outputs/jianma2d/block-layers/character.svg",
+      "face_target": "outputs/jianma2d/block-layers/checks/face-target.json",
+      "face_report": "outputs/jianma2d/block-layers/checks/face/report.json",
+      "display_tool": "workflow-next/live2d-layering/2.皮套结构识别/tools/display_order.py",
+      "face_tool": "workflow-next/live2d-layering/3.大层分层稿/tools/face_compare.py",
+      "preview_tool": "workflow-next/live2d-layering/tools/svg_preview.py",
+      "compare_tool": "workflow-next/live2d-layering/3.大层分层稿/tools/compare.py"
+    },
+    "outputs": {
+      "report": "outputs/jianma2d/reviews/group_layers/审查.md"
+    },
+    "started_at_utc": "2026-09-28T19:08:39.503276+00:00",
+    "status": "pass"
+  },
+  "completed_at_utc": "2026-09-28T19:23:03.665891+00:00",
+  "elapsed_seconds": 2577.1,
+  "step4_executed": false,
+  "final_svg_sha256": "9c1acdba8f10fc286074d8c586027b40913ef485f5de6b3246d6bf6422ccd12b",
+  "path_base": "repository"
+}

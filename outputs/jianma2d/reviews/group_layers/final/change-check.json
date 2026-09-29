@@ -1,0 +1,13 @@
+{
+  "candidate_sha256": "9c1acdba8f10fc286074d8c586027b40913ef485f5de6b3246d6bf6422ccd12b",
+  "comparison_baseline": "reviewer scratch tmp/review/0.svg (initial unisolated render of c7d29af...)",
+  "changed_groups": [
+    "head/hair/face_framing_hair/left_face_framing_lock",
+    "head/hair/face_framing_hair/right_face_framing_lock",
+    "head/hair/bangs/left_bang",
+    "head/hair/bangs/right_bang"
+  ],
+  "unchanged_count": 39,
+  "face_base_unchanged": true,
+  "whole_eyes_unchanged": true
+}

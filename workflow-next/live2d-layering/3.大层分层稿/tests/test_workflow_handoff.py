@@ -17,7 +17,6 @@ import yaml
 
 STEP = Path(__file__).resolve().parents[1]
 SKILL = STEP.parent
-REPO = SKILL.parent.parent
 sys.path.insert(0, str(STEP/'tools'))
 sys.path.insert(0, str(SKILL/'2.皮套结构识别/tools'))
 import face_compare as face
@@ -158,8 +157,10 @@ class HandoffTests(unittest.TestCase):
         self.assertIn('center_max_px', measured['unmeasured'])
 
     def test_jianma_old_face_and_eye_fragments_require_revision(self):
-        reference = REPO/'outputs/jianma2d/references/base-subject.png'
-        svg = REPO/'outputs/jianma2d/block-layers/character.svg'
+        # The old failure must remain reproducible when Jianma outputs are rerun.
+        fixture = STEP/'tests/fixtures/jianma-old-face'
+        reference = fixture/'reference.png'
+        svg = fixture/'candidate.svg'
         target = self.out/'target.json'
         before = face.sha(svg)
         face.trace(reference, face.load(STEP/'tests/fixtures/jianma-face-guide.json'), target)

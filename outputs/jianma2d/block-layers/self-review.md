@@ -1,48 +1,56 @@
-# 第 3 步：大层分组色稿自查
+# 本轮步骤 3 制作自查
 
-当前完成剩余 R2 发组隐藏底形返修及绘制者自查，待同一独立 reviewer 复验。上一版 `a8720ccafcac13cc71042c40b00d973d239ee87c9865fca1a131c48750a5dda3` 的独立复验已通过 R1、R3 和可见耳部；本次保持这些结果，只调整耳部与发层的叠放结构。
+本文件为制作 worker 的自查；独立审查由总控另派。范围止于本轮 `group_layers`，未运行后续专项细化。
 
-## 当前交付与版本
+## 输入与执行
 
-- `block-layers/character.svg`：1024 × 1536，透明背景；45 个不同的完整 `data-group-path`，共 47 个唯一 ID 的绘制 `<g>`。
-- `block-layers/preview.png`：绑定 `svg_preview.py` 从当前 SVG 渲染的白底预览；像素与同版透明渲染叠白底后的 RGBA 字节一致。
-- `block-layers/evidence/review-manifest.json`：当前总 manifest；各叶的 `ids` 列出全部绘制段，整体显隐须聚合这些 ID。
-- `block-layers/evidence/revision-r2-bases/manifest.json`：本次 R2 差异、聚合显隐、证据及版本记录。
+- 仅使用本轮 `references/base-subject.png` 与 `structure/groups.json`，未读取旧 Jianma 输出或 Git 历史几何；未修改工作流、技能或输入。
+- 源图为 1024 × 1536，SHA256：`a6aeecb0356607a5712466e6de5a350eeb45e441465c808d6f7a103578ddc33a`。
+- 43 个叶组各有独立根级 `g`、唯一 ID、完整 `data-group-path`。没有衣物组、位图嵌入、mask、clipPath、嵌套绘制单位或可见残片组。
+- 使用纯色诊断色区分组；完整作者底形直接保存在 SVG，SVG 背景透明。`preview.png` 是最终同一 SVG 的原生工具白底渲染。
+- 所有叶组首稿建立完成后立即运行 `display_order.py apply`，之后每次几何更新均重新应用。最终 `display_order.py check` 为 pass；JSON、metadata#group-structure、SVG 参数和实际绘制顺序一致。整眼层级 35，高于刘海 28 与侧发 26。飘带按当前 display_notes 保持不透明。
 
-SVG SHA-256：`38bab0527ec626c10fbc531c5551a64b780a4955335870a5ef25b75859dce9e3`。
+## 脸廓与整眼：优先检查与修正
 
-Preview SHA-256：`3aa6e4a7808f1d445725b5196eb59cdf8ae44feb5507a907e20b8221d7daad8a`。
+1. 在候选创建前先观察源图脸部，并建立 `checks/face-guide.json`。选取 y=298、302、306、310、314、318、322、326、330、334、338、340 共 12 行双侧窄搜索区，预先规定原生 2 px 容差；不对头发遮挡的上半脸边界造目标。
+2. 执行 trace 后实际查看 `checks/face-target.source.png`。绿色点位于可见皮肤边界，从两颊经下颌至下巴，未采到发丝或颈部阴影。总控也独立查看了该源图取边证据。目标此后保持不变。
+3. 首轮检查最大边缘误差为 3 px，主要在 y=340 的下巴右缘。保留首轮报告于 `checks/initial-face/`，并先修脸型。最终基于固定源图采样点重建连续曲线，未为通过检查放宽目标或容差。
+4. 最终 `checks/face/report.json`：pass；最大边缘误差 0.5 px，最大脸宽误差 0.5 px，最大中线偏移 0.25 px。最终双轮廓标记与混合图已实际查看。
+5. 首稿双眼完整但上沿偏高、外眼角过宽。依据当前源图整眼局部重新校正；分别查看无遮罩作者底形，以及合成中的外形、位置、眼距和显影。两眼各为真实整眼实心底形，连接面积分别为左眼 296 px、右眼 285 px；没有细桥、切碎后拼接或遮罩伪装。
+6. `checks/face-eyes-board.png` 提供参考／当前合成／混合及两只独立底形。整眼保留完整外形，眼白、虹膜和睫毛内部纹理在此阶段合为主色块；后续专项再细分，未提前绘制细小高光或睫毛丝。
 
-## R2 结构修正
+以上 face pass 只证明已采样的可见轮廓和整眼连通性。它不代表所有脸部边界、表情或全图几何自动通过。
 
-删除 `ear_visibility_windows`，不再裁切任何发组。`hair/crown_hair`、`hair/right_bangs`、`hair/left_bangs` 恢复为首轮已通过完整底形的原始向量几何，序列化内容与首轮一致；当前 8 倍绑定渲染确认原三角孔和边缘缺口消失。
+## 其余主要轮廓：实际观察结果
 
-双耳仍各保留原来的完整底形，并把参考中露出的耳廓小片作为同叶组的前置段，放在刘海之上、鬓发之下：
+- 已查看整图、脸部板和全部 43 叶组的紧凑接触表；针对疑点查看头部、身体、下半身对照与腕部局部。
+- 上臂初始通用前景提取混入了旁侧飘带细条，右前臂腕侧出现同来源尖突。修正后上臂保留整臂主外廓，前臂改用源图皮肤区提取；接触表与 `checks/arm-repair-board.png` 中这些残片已消失，腕部仍覆盖源图皮肤。
+- 手掌与可见手指、腿、脚及趾端主要外缘沿当前源图提取；没有用简化尖角替代手指。下半身叠加对照中，腿足外轮廓沿源图，关节处保留可编辑重叠。
+- 临时连体服仅用来判断姿态和身体外缘。躯干、骨盆与腿根补全为连续身体底形，不保留领口、肩带、衣料分片或服装组。大色块的分界为解剖叶组边界。
+- 刘海、侧发和后发保留完整发束及隐藏延续；镂空枝角的主轮廓与孔洞来源于当前源图前景。额饰首稿整体偏低，已依源图局部校正至纵向饰条、菱石与下垂珠的实际范围；冠心的顶点、两翼和底缘也已校正。没有展开饰品纹理专项。
+- 飘带保留整串挂珠及完整长带，经过右手附近的隐藏带身在原同组中延续，按全局层级位于手后。
 
-| 叶路径 | 整体控制的全部 ID |
-|---|---|
-| `face/right_ear` | `right_ear`、`right_ear_helix_front` |
-| `face/left_ear` | `left_ear`、`left_ear_helix_front` |
+## 明确的范围与不确定项
 
-新增的两段各有唯一 ID，并共享其所属耳叶的完整路径与颜色；它们不是新叶组。耳底形原有坐标未改，发底形没有替代性的遮罩、裁切或穿孔。参考图、groups 和其余内容结构保持不变。
+- 刘海下的额头、发后耳廓、颈部侧缘、连体服下的胸腹／骨盆和关节隐藏部分属于合理补全，源图不能直接验证这些隐藏几何；没有把它们计入脸廓真值。
+- 此稿是大色块阶段。发丝走向、冠心内瓣分色、耳饰和足链的小珠／刻面、眼白虹膜分色、手足内部褶线尚未细化。当前结果不能宣称完成整套 Live2D 细分。
+- 源图提取的外缘保留原生像素级轮廓，极高倍率下能看到少量折线；这里未为光滑而偏移已核实的可见边界。
+- 制作自查未发现尚待本轮修正的明确对象归属残片或显影配置冲突；总体几何是否验收通过由独立 reviewer 判断。生成对照图片本身不等于 reviewed/pass。
 
-相对上一版仅 5 个叶路径变化：双耳的分段结构，以及头顶发块、双侧刘海的裁切移除；其余 40 个叶路径序列化内容相同。当前整图只有 66 个 RGBA 像素变化，范围为 `x=446–587, y=272–282`，来自耳区叠放边缘；肩部和耳坠等该区域之外的像素完全一致。因此 R1、R3 沿用上一版独立通过结果，没有重新改动或重画。
+## 文件与时间
 
-## 本次检查与证据
+- 声明交付：`character.svg`、`preview.png`、`checks/face-target.json`、`checks/face/report.json`。
+- 补充证据：`checks/face-target.source.png`、`checks/face/comparison.png`、`checks/face-eyes-board.png`、`checks/leaf-contact-sheet.png`、`checks/head/`、`checks/body/`、`checks/lower-body/`、`checks/arm-repair-board.png`、`checks/display-report.json`。
+- `delivery.json` 记录最终文件哈希。临时制作脚本留在本地 `tmp/drawing/`，不纳入交付；完整可编辑几何保存在 SVG。
+- 计时起点采用首张源图观察产物时间 2026-09-28 18:54:47 UTC，自查完成约 19:08 UTC，共约 13 分钟，包含观察、绘制与工具检查；这是本 worker 的本轮制作墙钟时间近似值。
+- 没有提交 Git，没有写独立审查结论，没有改动运行记录或其他输出目录。
 
-- `block-layers/evidence/revision-r2-bases/hair-bases-comparison.png`：四处原窗口的旧稿／当前／混合板。当前列为绑定工具直接 8 倍 SVG 渲染；旧稿列来自上一版 1 倍独显图的放大，已在板上明确标记。
-- `block-layers/evidence/revision-r2-bases/complete-hair-bases.png`：头顶发块、右刘海、左刘海的完整底形，当前没有耳形穿孔或裁切缺口。
-- `block-layers/evidence/revision-r2-bases/ear-leaf-aggregation.png`：双耳分别按两个 ID 聚合后的完整叶组，以及隐藏整叶后的结果。外耳廓与内耳垂一起消失，不会残留前置段。
-- `block-layers/evidence/revision-r2-bases/current-right-ear/`、`current-left-ear/`、`ears/`：绑定 `compare.py` 的局部轮廓叠加与混合对照。整图、头部以及 face/hair 大类证据也已刷新。
-- 共复查 7 个相关叶路径：头顶发块、双侧刘海、双耳、双侧鬓发。7/7 按路径聚合独显非空，7/7 按路径聚合隐藏后实际改变整图；耳组操作始终包含全部段。
-- 无 `clipPath`、mask、嵌入位图或渐变；45 个路径集合与 `groups.json` 相同，47 个绘制段 ID 唯一。当前 SVG 与 preview 的 SHA、画布和渲染一致性已核对。
 
-作者辅助脚本为 `block-layers/draw_layers.py`。`block-layers/review_layers.py` 和 `block-layers/review_revision.py` 均已按 `data-group-path` 聚合所有段；不会将两个耳廓前置段当作新叶，也不会只检查一个耳底形 ID。脚本与文档使用相对工作根路径，绑定技能工具只读。
+## 独立审查后的额部局部返修
 
-首轮整图、六大类及 45 叶组检查继续保留为历史；本次没有重新阅读全部叶组页。上一版 R1/R3 证据保留在 `block-layers/evidence/revision-r1-r3/`，本次 R2 证据使用独立目录与新 SHA，manifest 明确区分版本。
-
-## 仍不确定的轮廓
-
-临时连体服下的身体和其他完全遮挡结构继续采用已审查的合理底形延续。耳廓、细发梢、耳饰与珠链等细部受参考图分辨率限制，边缘仍可能有约 1–3 像素偏差。本步不增加耳内细线、材质、发丝精修或动画绑定。
-
-未修改参考图、groups、技能、独立审查报告、workflow 或运行记录，未执行后续步骤。此记录仅为绘制者自查，独立复验尚待执行。
+- 复核 reviewer 的 `upper-face-board.png` 与 `forehead-native-grid.png` 后，亲自重新观察本轮源图。明确依据是浅色发束与灰色内层带相接的**上方拱形边缘**，源图约在 x496、x518 达拱顶，然后向中央饰物下降；原候选内端继续向上挑，在 x498–502、x513–516 附近约早露皮 3–5 px。
+- 灰带下方 y233 左右的水平色界存在内层发根／皮肤投影歧义，未将其认定为完整头发下界，没有整条下移或添加阴影细节。`checks/forehead-repair/source-arc-observation.png` 是只看源图核实的拱形上缘标记；被饰物遮住的中央段未制造边界真值。
+- 只调整两侧已有 bangs 与 face_framing_lock 的额部内端控制点，恢复先拱起后向饰物下降的形状。`checks/forehead-repair/change-scope.json` 以规范化元素内容比较确认只变更四个发束组，其余 39 组（包括 face_base 和完整整眼）完全相同；固定 face-target SHA256 仍为 `1368a0300ac63fcc7f5a2ac067676124c851df46fde42b5ef18ccbbc67004c89`。
+- 已查看变化发束的完整底形、额部前后混合图与受影响的脸部合成。源图拱形上缘与返修后的开口对应；没有新增组、遮罩或残片。该局部观察仍需原 reviewer 复验。
+- 已重新 apply，更新同一 SVG 的白底 preview、脸部报告与显影检查。face check 仍 pass（边缘 0.5 px、宽度 0.5 px、中线 0.25 px），display check 为 pass。接触表只重画四个变化发束格，其余 39 格与身体／下半身证据复用。
+- 辅助变更范围脚本首跑因 XML 默认命名空间序列化方式不一致，将所有组报告为不同；改为规范化元素标签、属性、文本与子节点比较后，确认实际仅上述四组变化。未以减弱几何断言处理此脚本问题。

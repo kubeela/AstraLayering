@@ -1,0 +1,518 @@
+[
+  {
+    "index": 1,
+    "path": "accessories/headdress/left_ribbon_streamer",
+    "id": "g-accessories-headdress-left_ribbon_streamer",
+    "bbox": [
+      611,
+      205,
+      762,
+      807
+    ],
+    "png": "tmp/review/1.png"
+  },
+  {
+    "index": 2,
+    "path": "accessories/headdress/right_ribbon_streamer",
+    "id": "g-accessories-headdress-right_ribbon_streamer",
+    "bbox": [
+      310,
+      205,
+      406,
+      982
+    ],
+    "png": "tmp/review/2.png"
+  },
+  {
+    "index": 3,
+    "path": "head/hair/back_hair/left_back_hair",
+    "id": "g-head-hair-back_hair-left_back_hair",
+    "bbox": [
+      530,
+      267,
+      591,
+      389
+    ],
+    "png": "tmp/review/3.png"
+  },
+  {
+    "index": 4,
+    "path": "head/hair/back_hair/right_back_hair",
+    "id": "g-head-hair-back_hair-right_back_hair",
+    "bbox": [
+      427,
+      268,
+      486,
+      388
+    ],
+    "png": "tmp/review/4.png"
+  },
+  {
+    "index": 5,
+    "path": "accessories/headdress/halo_arc",
+    "id": "g-accessories-headdress-halo_arc",
+    "bbox": [
+      438,
+      89,
+      577,
+      146
+    ],
+    "png": "tmp/review/5.png"
+  },
+  {
+    "index": 6,
+    "path": "body/neck",
+    "id": "g-body-neck",
+    "bbox": [
+      453,
+      322,
+      564,
+      402
+    ],
+    "png": "tmp/review/6.png"
+  },
+  {
+    "index": 7,
+    "path": "body/torso",
+    "id": "g-body-torso",
+    "bbox": [
+      422,
+      370,
+      591,
+      655
+    ],
+    "png": "tmp/review/7.png"
+  },
+  {
+    "index": 8,
+    "path": "body/arms/left_arm/left_upper_arm",
+    "id": "g-body-arms-left_arm-left_upper_arm",
+    "bbox": [
+      562,
+      383,
+      646,
+      612
+    ],
+    "png": "tmp/review/8.png"
+  },
+  {
+    "index": 9,
+    "path": "body/arms/left_arm/left_forearm",
+    "id": "g-body-arms-left_arm-left_forearm",
+    "bbox": [
+      605,
+      587,
+      683,
+      772
+    ],
+    "png": "tmp/review/9.png"
+  },
+  {
+    "index": 10,
+    "path": "body/arms/left_arm/left_hand",
+    "id": "g-body-arms-left_arm-left_hand",
+    "bbox": [
+      656,
+      742,
+      703,
+      850
+    ],
+    "png": "tmp/review/10.png"
+  },
+  {
+    "index": 11,
+    "path": "body/arms/right_arm/right_upper_arm",
+    "id": "g-body-arms-right_arm-right_upper_arm",
+    "bbox": [
+      375,
+      385,
+      453,
+      612
+    ],
+    "png": "tmp/review/11.png"
+  },
+  {
+    "index": 12,
+    "path": "body/arms/right_arm/right_forearm",
+    "id": "g-body-arms-right_arm-right_forearm",
+    "bbox": [
+      324,
+      587,
+      413,
+      771
+    ],
+    "png": "tmp/review/12.png"
+  },
+  {
+    "index": 13,
+    "path": "body/arms/right_arm/right_hand",
+    "id": "g-body-arms-right_arm-right_hand",
+    "bbox": [
+      306,
+      742,
+      352,
+      850
+    ],
+    "png": "tmp/review/13.png"
+  },
+  {
+    "index": 14,
+    "path": "body/lower_body/pelvis",
+    "id": "g-body-lower_body-pelvis",
+    "bbox": [
+      409,
+      601,
+      602,
+      784
+    ],
+    "png": "tmp/review/14.png"
+  },
+  {
+    "index": 15,
+    "path": "body/lower_body/left_leg/left_thigh",
+    "id": "g-body-lower_body-left_leg-left_thigh",
+    "bbox": [
+      507,
+      658,
+      619,
+      1052
+    ],
+    "png": "tmp/review/15.png"
+  },
+  {
+    "index": 16,
+    "path": "body/lower_body/left_leg/left_lower_leg",
+    "id": "g-body-lower_body-left_leg-left_lower_leg",
+    "bbox": [
+      509,
+      1019,
+      588,
+      1337
+    ],
+    "png": "tmp/review/16.png"
+  },
+  {
+    "index": 17,
+    "path": "body/lower_body/left_leg/left_foot",
+    "id": "g-body-lower_body-left_leg-left_foot",
+    "bbox": [
+      524,
+      1310,
+      580,
+      1450
+    ],
+    "png": "tmp/review/17.png"
+  },
+  {
+    "index": 18,
+    "path": "body/lower_body/right_leg/right_thigh",
+    "id": "g-body-lower_body-right_leg-right_thigh",
+    "bbox": [
+      390,
+      658,
+      502,
+      1052
+    ],
+    "png": "tmp/review/18.png"
+  },
+  {
+    "index": 19,
+    "path": "body/lower_body/right_leg/right_lower_leg",
+    "id": "g-body-lower_body-right_leg-right_lower_leg",
+    "bbox": [
+      429,
+      1019,
+      501,
+      1337
+    ],
+    "png": "tmp/review/19.png"
+  },
+  {
+    "index": 20,
+    "path": "body/lower_body/right_leg/right_foot",
+    "id": "g-body-lower_body-right_leg-right_foot",
+    "bbox": [
+      449,
+      1310,
+      505,
+      1452
+    ],
+    "png": "tmp/review/20.png"
+  },
+  {
+    "index": 21,
+    "path": "head/ears/left_ear",
+    "id": "g-head-ears-left_ear",
+    "bbox": [
+      545,
+      275,
+      563,
+      304
+    ],
+    "png": "tmp/review/21.png"
+  },
+  {
+    "index": 22,
+    "path": "head/ears/right_ear",
+    "id": "g-head-ears-right_ear",
+    "bbox": [
+      450,
+      275,
+      469,
+      304
+    ],
+    "png": "tmp/review/22.png"
+  },
+  {
+    "index": 23,
+    "path": "head/face/face_base",
+    "id": "g-head-face-face_base",
+    "bbox": [
+      459,
+      193,
+      556,
+      343
+    ],
+    "png": "tmp/review/23.png"
+  },
+  {
+    "index": 24,
+    "path": "head/face/eyebrows/left_eyebrow",
+    "id": "g-head-face-eyebrows-left_eyebrow",
+    "bbox": [
+      521,
+      260,
+      549,
+      267
+    ],
+    "png": "tmp/review/24.png"
+  },
+  {
+    "index": 25,
+    "path": "head/face/eyebrows/right_eyebrow",
+    "id": "g-head-face-eyebrows-right_eyebrow",
+    "bbox": [
+      466,
+      260,
+      494,
+      268
+    ],
+    "png": "tmp/review/25.png"
+  },
+  {
+    "index": 26,
+    "path": "head/face/nose",
+    "id": "g-head-face-nose",
+    "bbox": [
+      505,
+      295,
+      510,
+      306
+    ],
+    "png": "tmp/review/26.png"
+  },
+  {
+    "index": 27,
+    "path": "head/face/mouth",
+    "id": "g-head-face-mouth",
+    "bbox": [
+      497,
+      317,
+      518,
+      321
+    ],
+    "png": "tmp/review/27.png"
+  },
+  {
+    "index": 28,
+    "path": "head/hair/top_bun",
+    "id": "g-head-hair-top_bun",
+    "bbox": [
+      463,
+      109,
+      551,
+      177
+    ],
+    "png": "tmp/review/28.png"
+  },
+  {
+    "index": 29,
+    "path": "head/hair/face_framing_hair/left_face_framing_lock",
+    "id": "g-head-hair-face_framing_hair-left_face_framing_lock",
+    "bbox": [
+      514,
+      213,
+      587,
+      359
+    ],
+    "png": "tmp/review/29.png"
+  },
+  {
+    "index": 30,
+    "path": "head/hair/face_framing_hair/right_face_framing_lock",
+    "id": "g-head-hair-face_framing_hair-right_face_framing_lock",
+    "bbox": [
+      428,
+      213,
+      501,
+      360
+    ],
+    "png": "tmp/review/30.png"
+  },
+  {
+    "index": 31,
+    "path": "head/hair/bangs/left_bang",
+    "id": "g-head-hair-bangs-left_bang",
+    "bbox": [
+      502,
+      172,
+      582,
+      287
+    ],
+    "png": "tmp/review/31.png"
+  },
+  {
+    "index": 32,
+    "path": "head/hair/bangs/right_bang",
+    "id": "g-head-hair-bangs-right_bang",
+    "bbox": [
+      433,
+      172,
+      512,
+      287
+    ],
+    "png": "tmp/review/32.png"
+  },
+  {
+    "index": 33,
+    "path": "head/face/eyes/left_eye",
+    "id": "g-head-face-eyes-left_eye",
+    "bbox": [
+      521,
+      271,
+      551,
+      288
+    ],
+    "png": "tmp/review/33.png"
+  },
+  {
+    "index": 34,
+    "path": "head/face/eyes/right_eye",
+    "id": "g-head-face-eyes-right_eye",
+    "bbox": [
+      465,
+      271,
+      494,
+      288
+    ],
+    "png": "tmp/review/34.png"
+  },
+  {
+    "index": 35,
+    "path": "accessories/headdress/central_crest",
+    "id": "g-accessories-headdress-central_crest",
+    "bbox": [
+      463,
+      130,
+      552,
+      180
+    ],
+    "png": "tmp/review/35.png"
+  },
+  {
+    "index": 36,
+    "path": "accessories/headdress/forehead_jewel",
+    "id": "g-accessories-headdress-forehead_jewel",
+    "bbox": [
+      498,
+      183,
+      516,
+      254
+    ],
+    "png": "tmp/review/36.png"
+  },
+  {
+    "index": 37,
+    "path": "accessories/headdress/left_filigree_wing",
+    "id": "g-accessories-headdress-left_filigree_wing",
+    "bbox": [
+      549,
+      120,
+      636,
+      212
+    ],
+    "png": "tmp/review/37.png"
+  },
+  {
+    "index": 38,
+    "path": "accessories/headdress/right_filigree_wing",
+    "id": "g-accessories-headdress-right_filigree_wing",
+    "bbox": [
+      383,
+      122,
+      464,
+      212
+    ],
+    "png": "tmp/review/38.png"
+  },
+  {
+    "index": 39,
+    "path": "accessories/earrings/left_earring",
+    "id": "g-accessories-earrings-left_earring",
+    "bbox": [
+      547,
+      303,
+      567,
+      405
+    ],
+    "png": "tmp/review/39.png"
+  },
+  {
+    "index": 40,
+    "path": "accessories/earrings/right_earring",
+    "id": "g-accessories-earrings-right_earring",
+    "bbox": [
+      447,
+      303,
+      465,
+      405
+    ],
+    "png": "tmp/review/40.png"
+  },
+  {
+    "index": 41,
+    "path": "accessories/chest_pendant",
+    "id": "g-accessories-chest_pendant",
+    "bbox": [
+      486,
+      371,
+      528,
+      424
+    ],
+    "png": "tmp/review/41.png"
+  },
+  {
+    "index": 42,
+    "path": "accessories/foot_chains/left_foot_chain",
+    "id": "g-accessories-foot_chains-left_foot_chain",
+    "bbox": [
+      530,
+      1319,
+      574,
+      1443
+    ],
+    "png": "tmp/review/42.png"
+  },
+  {
+    "index": 43,
+    "path": "accessories/foot_chains/right_foot_chain",
+    "id": "g-accessories-foot_chains-right_foot_chain",
+    "bbox": [
+      454,
+      1319,
+      501,
+      1443
+    ],
+    "png": "tmp/review/43.png"
+  }
+]

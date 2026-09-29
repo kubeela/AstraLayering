@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "drawing_units": 43,
+  "parent_override": true,
+  "child_independence": true,
+  "clear_restores_inheritance": true,
+  "actual_dom_reorder": true,
+  "reset": true,
+  "json_export_matches": true,
+  "page_errors": [],
+  "roundtrip_display_check": "pass",
+  "source_svg_sha256": "9c1acdba8f10fc286074d8c586027b40913ef485f5de6b3246d6bf6422ccd12b"
+}
