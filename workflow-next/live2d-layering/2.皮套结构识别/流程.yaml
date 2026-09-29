@@ -1,1 +1,9 @@
-id: structure_preparation
+id: group_inventory
+run: 2.皮套结构识别
+worker: group_planning
+inputs:
+  reference: nodes.base_subject.image
+  group_tool:
+    asset: tools/groups.py
+outputs:
+  groups: structure/groups.json

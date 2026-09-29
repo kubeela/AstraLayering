@@ -132,7 +132,8 @@ def validate_config(path, config):
             error(scope, 'expected an object')
             return
         allowed = {'id', 'inputs', 'outputs', 'worker', 'if', 'then', 'else',
-                   'run', 'prompt', 'imagegen', 'review', 'writes_options', 'dispatch'}
+                   'run', 'prompt', 'imagegen', 'review', 'final_review',
+                   'writes_options', 'dispatch'}
         unsupported = set(block) - allowed
         if unsupported:
             error(scope, f'unsupported node keys: {sorted(unsupported)}')
@@ -145,12 +146,12 @@ def validate_config(path, config):
                 error(scope, 'dispatch must be a task-free node')
                 return
             required = {
-                'order': 'depth_first', 'mode': 'serial',
-                'unmatched_node_with_children': 'descend',
-                'call_stack': 'last_in_first_out', 'identity': 'state.nodes[{path}].id',
+                'order': 'breadth_first_keyword_priority', 'mode': 'serial',
+                'identity': 'state.nodes[{path}].id',
                 'pointer': 'checkpointed_step',
-                'once': 'completed_node_id', 'expand': 'append_pending_children',
-                'complete': 'after_output_and_review',
+                'once': 'completed_group_id', 'expand': 'append_direct_children',
+                'complete': 'after_group_output_and_review',
+                'completion_unit': 'group',
             }
             for key, expected in required.items():
                 if dispatch.get(key) != expected:
@@ -172,12 +173,14 @@ def validate_config(path, config):
             tree = dispatch.get('tree')
             name_pattern = r'[a-z][a-z0-9]*(?:_[a-z0-9]+)*'
             types = set()
+            dispatched = set()
             if not isinstance(tree, dict):
                 error(scope, 'dispatch.tree must declare a root key and child edges')
             else:
                 edges = tree.get('child_edges')
                 root_key = tree.get('root_key')
                 terminal = tree.get('terminal_types')
+                dispatch_types = tree.get('dispatch_types')
                 if (not isinstance(edges, dict) or not edges
                         or not isinstance(root_key, str) or root_key not in edges
                         or not all(isinstance(key, str) and re.fullmatch(name_pattern, key)
@@ -185,25 +188,35 @@ def validate_config(path, config):
                                    for key, kind in edges.items())
                         or not isinstance(terminal, list)
                         or len(terminal) != len(set(terminal))
-                        or not set(terminal) <= set(edges.values())):
-                    error(scope, 'invalid dispatch.tree root, edges, or terminal types')
+                        or not set(terminal) <= set(edges.values())
+                        or not isinstance(dispatch_types, list) or not dispatch_types
+                        or len(dispatch_types) != len(set(dispatch_types))
+                        or not set(dispatch_types) <= set(edges.values()) - set(terminal)):
+                    error(scope, 'invalid dispatch.tree root, edges, terminal, or dispatch types')
                 else:
                     types = set(edges.values())
-            if dispatch.get('call_selectors') != ['targets', 'match_node', 'remaining']:
-                error(scope, 'dispatch.call_selectors must define supported target selection')
-            if dispatch.get('completion_scopes') != ['node', 'subtree']:
-                error(scope, 'dispatch.completion_scopes must define node and subtree')
+                    dispatched = set(dispatch_types)
+            priority = dispatch.get('priority_keywords')
+            if (not isinstance(priority, list) or len(priority) != len(set(priority))
+                    or any(not isinstance(name, str) or not re.fullmatch(name_pattern, name)
+                           for name in priority)):
+                error(scope, 'dispatch.priority_keywords must be a unique list of keywords')
+            if dispatch.get('completion_requires') != [
+                    'direct_children_exist', 'current_group_direct_parts_finished',
+                    'current_group_review_passed']:
+                error(scope, 'dispatch.completion_requires must define group completion gates')
             if dispatch.get('lifecycle') != {
                     'start': 'init', 'select': 'next', 'run': 'enter_route',
-                    'active': 'resume_pointer', 'done': 'publish_carry',
-                    'after_change': 'select', 'on_error': 'stop'}:
+                    'active': 'resume_pointer', 'complete': 'complete',
+                    'done': 'final_review_then_publish',
+                    'after_change': 'select', 'repair': 'reopen', 'on_error': 'stop'}:
                 error(scope, 'dispatch.lifecycle must define the complete cursor loop')
             if dispatch.get('carry') != ['svg'] or block.get('outputs') != {
                     'groups': document, 'state': state, 'svg': 'carry.svg'}:
                 error(scope, 'dispatch must publish its tree, state, and final SVG carry')
             routes = dispatch.get('routes')
-            if not isinstance(routes, dict) or set(routes) != types:
-                error(scope, 'dispatch.routes must map every declared node type')
+            if not isinstance(routes, dict) or set(routes) != dispatched:
+                error(scope, 'dispatch.routes must map every dispatched node type')
             else:
                 for kind in routes:
                     mapping = routes[kind]
@@ -215,6 +228,11 @@ def validate_config(path, config):
                             error(scope, f'invalid route name: {name}')
                         check_target(target, {}, f'{scope}.routes.{kind}.{name}')
             check_target(dispatch.get('fallback'), {}, scope + '.fallback')
+            final_review = block.get('final_review')
+            if not isinstance(final_review, dict) or 'run' not in final_review:
+                error(scope, 'dispatch requires final_review.run')
+            else:
+                check_target(final_review['run'], final_review, scope + '.final_review')
             return
         if 'if' in block:
             if any(k in block for k in ('run', 'imagegen', 'review', 'outputs', 'writes_options')):
@@ -227,10 +245,11 @@ def validate_config(path, config):
             return
         if 'run' in block:
             check_target(block['run'], block, scope)
+        elif children(directory):
+            if list(directory.glob('*.model')) or prompts(directory):
+                error(scope, 'container cannot also define a local task')
         elif not aliases_only(block):
-            if (list(directory.glob('*.model')) or prompts(directory) or not children(directory)
-                    or any(k in block for k in ('imagegen', 'writes_options', 'outputs', 'review'))):
-                error(scope, 'task requires explicit run; no implicit local dispatch')
+            error(scope, 'task requires explicit run; no implicit local dispatch')
         if 'review' in block:
             review = block['review']
             if not isinstance(review, dict) or 'run' not in review:

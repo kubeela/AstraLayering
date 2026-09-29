@@ -5,11 +5,13 @@ inputs:
   svg: nodes.group_layers.svg
   cursor_tool:
     asset: 4.专项细化/tools/group_cursor.py
+  preview_tool:
+    asset: tools/svg_preview.py
 dispatch:
   document: inputs.groups
   state: structure/groups.dispatch.json
   tool: inputs.cursor_tool
-  order: depth_first
+  order: breadth_first_keyword_priority
   mode: serial
   tree:
     root_key: groups
@@ -17,35 +19,42 @@ dispatch:
       groups: group
       parts: part
     terminal_types: [part]
+    dispatch_types: [group]
+  priority_keywords: [body, face]
   routes:
-    group:
-      face: templates/部件专项/face
-      eyes: templates/部件专项/eyes
-      mouth: templates/部件专项/mouth
-      hair: templates/部件专项/hair
-      body: templates/部件专项/body
-      arms: templates/部件专项/arms
-      lower_body: templates/部件专项/lower_body
-    part: {}
+    group: {}
   fallback: templates/部件专项/generic
-  unmatched_node_with_children: descend
-  call_stack: last_in_first_out
   pointer: checkpointed_step
-  call_selectors: [targets, match_node, remaining]
   lifecycle:
     start: init
     select: next
     run: enter_route
     active: resume_pointer
-    done: publish_carry
+    complete: complete
+    done: final_review_then_publish
     after_change: select
+    repair: reopen
     on_error: stop
   identity: state.nodes[{path}].id
-  once: completed_node_id
-  expand: append_pending_children
-  complete: after_output_and_review
-  completion_scopes: [node, subtree]
+  once: completed_group_id
+  expand: append_direct_children
+  complete: after_group_output_and_review
+  completion_unit: group
+  completion_requires:
+    - direct_children_exist
+    - current_group_direct_parts_finished
+    - current_group_review_passed
   carry: [svg]
+final_review:
+  run: 4.专项细化/review
+  worker: refine_groups_final_review
+  inputs:
+    reference: inputs.reference
+    groups: inputs.groups
+    candidate: carry.svg
+    preview_tool: inputs.preview_tool
+  outputs:
+    report: reviews/refine_groups/final.md
 outputs:
   groups: inputs.groups
   state: structure/groups.dispatch.json

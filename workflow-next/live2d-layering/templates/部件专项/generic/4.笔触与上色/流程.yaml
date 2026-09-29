@@ -1,0 +1,18 @@
+id: direct_rendering_stack
+if:
+  direct_parts_of: inputs.target
+  in: nodes.direct_blocks.groups
+then:
+  run: templates/部件专项/generic/4.笔触与上色
+  worker: generic_rendering:{target.id}
+  outputs:
+    svg: block-layers/character.svg
+else:
+  outputs:
+    svg: nodes.direct_geometry.svg
+inputs:
+  target: inputs.target
+  reference: inputs.reference
+  groups: nodes.direct_blocks.groups
+  svg: nodes.direct_geometry.svg
+  preview_tool: inputs.preview_tool

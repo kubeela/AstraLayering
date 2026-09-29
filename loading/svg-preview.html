@@ -28,7 +28,44 @@
 .stage.comparing .canvas-meta{display:none}.stage.comparing .top-tools{top:auto;bottom:84px;left:16px;right:auto}.stage.comparing .navigator,.stage.comparing .nav-restore{bottom:84px}
 @media(max-width:1000px){.reference-open-label{display:none}.compare-bar{padding:10px 12px}.compare-lock{margin-left:0}.compare-adjust input{width:90px}}
 @media(max-width:620px){.compare-bar{padding:9px 10px;gap:8px}.reference-info{flex-basis:150px}.compare-controls{gap:8px}.compare-modes{width:100%}.compare-modes button{flex:1;padding:7px 5px;font-size:10px}.compare-lock{margin-left:auto;font-size:9px}.compare-adjust input{width:95px}.compare-badge{top:12px}.compare-badge:first-child{left:10px}.stage[data-compare="side"] .compare-badge:last-child{left:calc(50% + 10px)}.stage.comparing .top-tools{left:10px;bottom:70px}.header-actions #openReference{padding:8px}.reference-meta{font-size:9px}}
-.display-settings{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}.display-settings label{display:block;font-size:11px;color:#b5c8d0;margin:7px 0}.display-settings select{width:100%;padding:6px;background:#14191f;color:#dce6eb;border:1px solid var(--line);border-radius:5px}.display-value{display:flex;gap:5px;align-items:center}.display-value input{width:95px;min-width:0;background:#14191f;color:#dce6eb;border:1px solid var(--line);border-radius:5px;padding:6px}.display-value button,.display-files button{font-size:11px;padding:6px}.display-files{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}.display-info{font-size:10px;color:#a8c8cc;line-height:1.7;margin-top:6px;overflow-wrap:anywhere}
+
+.group-content{display:flex;flex-direction:column;flex:1;min-height:0}
+.group-tools{display:flex;align-items:center;gap:4px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.group-tools input{width:0;min-width:0;flex:1;padding:6px 8px;background:#14191f;color:#dce6eb;border:1px solid var(--line);border-radius:5px}
+.group-tools button,.layer-head #importGroups{font-size:10px;padding:5px 7px;border-color:var(--line)}
+.group-tree{list-style:none;margin:0;padding:4px 0;overflow:auto;flex:1;min-height:0;scrollbar-width:thin;scrollbar-color:#465461 transparent}
+.group-tree ul{list-style:none;margin:0;padding:0}
+.group-row,.group-unit-row{display:flex;align-items:center;gap:5px;min-height:31px;padding:3px 9px 3px var(--indent);cursor:pointer}
+.group-row:hover,.group-unit-row:hover{background:#ffffff0b}
+.group-row.selected{background:#9ee0e21b;color:var(--accent)}
+.group-row button{width:18px;padding:0;font-size:11px;flex:none}
+.group-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.group-kind{color:#8498a6;font-size:9px;flex:none}
+.group-visible{accent-color:var(--accent);width:14px;height:14px;margin:0;flex:none}
+.group-spacer{width:18px;flex:none}
+.group-unit-row{color:#9fb2bd;background:#ffffff04}
+.group-unit-row .group-name{font-size:10px}
+.group-unit[data-unit-kind="guide"] .group-kind,.group-unit[data-unit-kind="part-guide"] .group-kind{color:#89d9dd}
+.group-unit[data-unit-kind="art"] .group-kind{color:#e7bf8e}
+.group-unit[data-unit-kind="untyped"] .group-kind{color:#c4abb0}
+.group-inspector{border-top:1px solid var(--line);flex:none;max-height:min(42vh,300px);overflow:auto}
+.group-inspector summary{display:flex;align-items:center;gap:7px;min-height:36px;padding:7px 12px;cursor:pointer;list-style:none;font-size:11px;color:#d7e6e9}
+.group-inspector summary::-webkit-details-marker{display:none}
+.group-inspector summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.group-inspector summary:before{content:'▸';color:var(--accent)}
+.group-inspector[open] summary:before{content:'▾'}
+.group-inspector summary span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.group-inspector summary span:last-child{color:#8fa4b0;flex:none}
+.group-detail{padding:0 12px 10px}
+.group-path{font-size:11px;color:#d7e6e9;overflow-wrap:anywhere}
+.group-note{font-size:10px;color:#a8bac4;line-height:1.5;margin-top:4px;white-space:pre-wrap;overflow-wrap:anywhere}
+.display-files{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.display-files button{font-size:11px;padding:6px}
+.group-info{font-size:10px;color:#a8c8cc;line-height:1.7;margin-top:6px;overflow-wrap:anywhere}
+.panel-notice{padding:5px 12px 8px;margin:0;max-height:56px;overflow:auto;border-top:1px solid var(--line)}
+.panel-notice:empty{display:none}
+.layer-panel.group-mode .layer-search,.layer-panel.group-mode .layer-options,.layer-panel.group-mode .layer-spatial,.layer-panel.group-mode .layer-actions,.layer-panel.group-mode .layer-foot,.layer-panel.group-mode #layerCount{display:none}
+.layer-panel.no-native .layer-search,.layer-panel.no-native .layer-options,.layer-panel.no-native .layer-spatial,.layer-panel.no-native .layer-actions,.layer-panel.no-native .layer-foot{display:none}
 </style>
 </head>
 <body>
@@ -82,39 +119,39 @@
   </nav>
   <aside id="navigator" hidden class="navigator floating" aria-label="导航缩略图"><div class="nav-head"><span>导航</span><button id="hideNavigator" aria-label="隐藏导航" title="隐藏导航"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8m0-8-8 8"/></svg></button></div><div id="navBody" class="nav-body" aria-label="点击或拖动定位画布"><img id="thumbnail" alt="图像 A 全图缩略图" draggable="false"><div id="navView" class="nav-view"></div><div id="navDot" class="nav-dot"></div></div></aside>
   <button id="showNavigator" class="nav-restore floating" hidden>显示导航</button>
-  <div id="emptyState" class="empty-state"><div class="empty-card"><svg class="empty-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M22 10H12a2 2 0 0 0-2 2v10m32-12h10a2 2 0 0 1 2 2v10M10 42v10a2 2 0 0 0 2 2h10m32-12v10a2 2 0 0 1-2 2H42M22 40l10-17 10 17M26 34h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><h1>拖入图像，开始预览</h1><p>任意组合两份 SVG 或位图进行对比<br>滚轮缩放 · 拖动平移 · 框选查看细节</p><button id="emptyOpen" class="primary">选择图像 A</button></div></div>
+  <div id="emptyState" class="empty-state"><div class="empty-card"><svg class="empty-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M22 10H12a2 2 0 0 0-2 2v10m32-12h10a2 2 0 0 1 2 2v10M10 42v10a2 2 0 0 0 2 2h10m32-12v10a2 2 0 0 1-2 2H42M22 40l10-17 10 17M26 34h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><h1>拖入图像，开始预览</h1><p>任意组合两份 SVG 或位图进行对比<br>也可拖入 groups.json，在右侧查看分组树</p><button id="emptyOpen" class="primary">选择图像 A</button></div></div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
  </main>
  </section>
- <aside id="layerPanel" class="layer-panel" aria-label="原生 SVG 图层">
+ <aside id="layerPanel" class="layer-panel no-native" aria-label="SVG 分组图层">
   <div class="layer-head">
-   <div class="layer-heading"><h2>原生图层</h2><button id="closeLayers" class="icon-only" aria-label="关闭图层面板" title="关闭图层面板">×</button></div>
+   <div class="layer-heading"><h2 id="layerTitle">SVG 图层</h2><button id="closeLayers" class="icon-only" aria-label="关闭图层面板" title="关闭图层面板">×</button></div>
    <div id="layerCount" class="layer-count" role="status">读取 SVG 中的分组与图形</div>
+   <div id="groupCount" class="layer-count" role="status" hidden></div>
+   <div class="display-files"><button id="importGroups">载入 groups.json</button><input id="groupFile" type="file" accept=".json,application/json" hidden></div>
    <input id="layerSearch" class="layer-search" type="search" placeholder="搜索名称、ID 或元素类型" aria-label="搜索 SVG 图层" disabled>
    <div class="layer-options"><select id="layerOrder" class="layer-order" aria-label="图层列表顺序" disabled><option value="front">前景在上 · 顶 → 底</option><option value="back">绘制顺序 · 底 → 顶</option></select><button id="expandLayers" disabled>展开全部</button><button id="collapseLayers" disabled>收起</button></div>
    <label class="layer-spatial"><input id="spatialLayers" type="checkbox" disabled>识别独立图块 <span class="layer-count">空间估计</span></label>
    <div class="layer-actions"><button id="showAllLayers" disabled>全部显示</button><button id="hideAllLayers" disabled>全部隐藏</button><button id="restoreLayers" disabled>恢复原始</button></div>
-   <div class="display-settings" id="displaySettings" hidden>
-    <label for="displayNode">显影设置 · group / part 归属树</label>
-    <select id="displayNode" aria-label="选择显影 group 或 part"></select>
-    <label for="displayValue">显式层级 · 留空继承</label>
-    <div class="display-value"><input id="displayValue" type="number" step="any" placeholder="继承" aria-label="显式显影层级"><button id="inheritDisplay">恢复继承</button><button id="resetDisplay">恢复层级</button></div>
-    <div id="displayInfo" class="display-info" role="status"></div>
-    <div class="display-files"><button id="exportDisplaySvg" title="保存显影层级，不含预览临时显隐">导出 SVG</button><button id="exportDisplayJson">导出 JSON</button></div>
-   </div>
-   <div class="display-files"><button id="importDisplay" disabled>载入分组 JSON</button><input id="displayFile" type="file" accept=".json,application/json" hidden></div>
-   <div id="displayNotice" class="display-info" role="status"></div>
   </div>
   <p id="layerEmpty" class="layer-empty">当图像 A 为 SVG 时，可查看嵌套分组和绘制顺序。交换 A / B 可检查另一份 SVG。</p>
   <ul id="layerTree" class="layer-tree" role="tree" aria-label="SVG 层级结构" hidden></ul>
+  <div id="groupContent" class="group-content" hidden>
+    <div class="group-tools"><input id="groupSearch" type="search" placeholder="搜索名称、路径或备注" aria-label="搜索分组"><button id="expandGroups">展开</button><button id="collapseGroups">收起</button></div>
+    <ul id="groupTree" class="group-tree" role="tree" aria-label="分组层级"></ul>
+    <details id="groupInspector" class="group-inspector"><summary><span id="groupSummary">选择分组</span><span>范围与备注</span></summary><div class="group-detail">
+     <div id="groupPath" class="group-path"></div><div id="groupNote" class="group-note"></div>
+     <div class="display-files"><button id="restoreGroupVisibility">恢复图形显隐</button></div>
+    </div></details>
+  </div>
+  <div id="groupNotice" class="group-info panel-notice" role="status"></div>
   <div class="layer-foot"><div id="layerOrderNote">前景在上；序号对应同级元素在 SVG 中的绘制顺序。</div><div>父组显隐会影响子项，子项开关独立保留。</div><div id="spatialNote" class="layer-notice" hidden>按相邻图形的包围盒估计分块；原始分组、路径和叠放顺序保持完整。</div></div>
  </aside>
  </div>
  <footer class="statusbar"><div><span class="desktop-hint" id="hint">滚轮缩放 · 拖动平移 · 双击放大</span><span class="touch-hint" hidden>双指缩放 · 单指拖动</span></div><div class="right"><span class="local-note"><span class="status-light"></span>文件在本地处理</span><button id="reset" disabled>重置视图</button></div></footer>
 </div>
-<div id="dropMask" class="drop-mask" hidden><div><strong>松开，导入画布</strong><p>支持 SVG 与浏览器可解码的位图格式<br>一次拖入两张图会依次放入 A / B</p></div></div>
-<dialog id="helpDialog" class="help" aria-labelledby="helpTitle"><div class="help-header"><h2 id="helpTitle">把细节放大看</h2><button id="closeHelp" class="icon-only" aria-label="关闭操作说明"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12m0-12L6 18"/></svg></button></div><p>将鼠标放在想看的细节上滚动，缩放会围绕该位置进行。也可以拖出选区，直接放大到那一部分。</p><div class="shortcuts"><span>放大 / 缩小</span><kbd>滚轮 · + / −</kbd><span>平移</span><kbd>拖动 · 方向键</kbd><span>适应窗口 / 实际大小</span><kbd>F 或 0 / 1</kbd><span>框选放大 / 取消</span><kbd>B / Esc</kbd><span>打开图像 A</span><kbd>Ctrl / ⌘ + O</kbd></div><p>触控设备支持双指捏合缩放。点击右下角导航，可快速回到作品的任意位置。缩放框支持直接输入比例，例如 <b>10000</b> 或 <b>1e6</b>。</p><p>两个槽位都支持 SVG 以及浏览器可解码的 PNG、JPEG、WebP、GIF、AVIF、BMP 等位图。两张图会按各自最长边等权归一化，再居中放进同一个对比画布；交换 A / B 不会改变对齐结果。左右、叠加和滑动模式共用缩放与平移。</p><p>图层面板读取当前图像 A 的 SVG 嵌套结构。若 B 也是 SVG，可用“交换 A / B”查看和控制它的原生图层。位图没有原生 SVG 图层。</p><p class="footnote">不设固定缩放倍率上限。SVG 会随视图重新绘制；位图和 SVG 内嵌位图仍受原始分辨率限制。</p></dialog>
-<script src="../workflow-next/live2d-layering/2.皮套结构识别/tools/display-model.cjs"></script>
+<div id="dropMask" class="drop-mask" hidden><div><strong>松开，导入文件</strong><p>支持 groups.json、SVG 与浏览器可解码的位图<br>一次拖入两张图会依次放入 A / B</p></div></div>
+<dialog id="helpDialog" class="help" aria-labelledby="helpTitle"><div class="help-header"><h2 id="helpTitle">把细节放大看</h2><button id="closeHelp" class="icon-only" aria-label="关闭操作说明"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12m0-12L6 18"/></svg></button></div><p>将鼠标放在想看的细节上滚动，缩放会围绕该位置进行。也可以拖出选区，直接放大到那一部分。</p><div class="shortcuts"><span>放大 / 缩小</span><kbd>滚轮 · + / −</kbd><span>平移</span><kbd>拖动 · 方向键</kbd><span>适应窗口 / 实际大小</span><kbd>F 或 0 / 1</kbd><span>框选放大 / 取消</span><kbd>B / Esc</kbd><span>打开图像 A</span><kbd>Ctrl / ⌘ + O</kbd></div><p>触控设备支持双指捏合缩放。点击右下角导航，可快速回到作品的任意位置。缩放框支持直接输入比例，例如 <b>10000</b> 或 <b>1e6</b>。</p><p>两个槽位都支持 SVG 以及浏览器可解码的 PNG、JPEG、WebP、GIF、AVIF、BMP 等位图。两张图会按各自最长边等权归一化，再居中放进同一个对比画布；交换 A / B 不会改变对齐结果。左右、叠加和滑动模式共用缩放与平移。</p><p>图层面板读取当前图像 A 的 SVG 嵌套结构。载入 groups.json 后，`groups.svg` 分别显示组轮廓和部件轮廓，`character.svg` 显示部件绘制；两份图可放入 A / B 对比。位图没有原生 SVG 图层。</p><p class="footnote">不设固定缩放倍率上限。SVG 会随视图重新绘制；位图和 SVG 内嵌位图仍受原始分辨率限制。</p></dialog>
 <script>
 'use strict';
 (() => {
@@ -128,7 +165,7 @@
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  let artwork=null, layerRoot=null, nativeLayers=[], layerLookup=new Map(), expandedLayers=new Set();
  let spatialChildren=null, thumbnailTimer=0, focusedLayer='native-0';
- let displayDocument=null, originalDisplay=null;
+ let groupDocument=null, groupSource=null, groupCompatible=false, groupEntries=[], expandedGroups=new Set(), selectedGroupPath='';
  let fastPreviewReady=false, fastReferenceReady=false, fastPreviewActive=false, fastPreviewGeneration=0, fastReferenceGeneration=0, fastPreviewEndTimer=0, fastPreviewReveal=0;
  const fastPreview=$('fastPreview'),fastCanvas=$('fastCanvas'),fastReferenceCanvas=$('fastReferenceCanvas');
  const containers=new Set(['svg','g','a','switch']);
@@ -292,6 +329,7 @@
  // The tree is a view of the existing DOM. Never move artwork nodes or include
  // resource subtrees (defs, masks, clip paths, symbols, filters, etc.).
  function buildLayers(svg){
+  $('layerPanel').classList.remove('no-native');
   nativeLayers=[];layerLookup=new Map();spatialChildren=null;expandedLayers=new Set();focusedLayer='native-0';
   function visit(element,parent,index){
    const tag=element.localName;
@@ -312,13 +350,17 @@
   renderLayers();
  }
  function clearLayers(){
+  $('layerPanel').classList.add('no-native');
   layerRoot=null;nativeLayers=[];layerLookup=new Map();expandedLayers=new Set();spatialChildren=null;
   $('layerTree').replaceChildren();$('layerTree').hidden=true;$('layerSearch').value='';
   $('layerCount').textContent='图像 A 是位图，没有 SVG 原生图层';
   $('layerEmpty').hidden=false;$('layerEmpty').textContent='位图没有可读取的矢量层级。将 SVG 放入 A，或交换 A / B 后即可检查 SVG 图层。';
   $('spatialNote').hidden=true;
   for(const id of ['layerSearch','layerOrder','expandLayers','collapseLayers','spatialLayers','showAllLayers','hideAllLayers','restoreLayers'])$(id).disabled=true;
-  displayDocument=null;originalDisplay=null;$('displaySettings').hidden=true;$('importDisplay').disabled=true;$('displayNotice').textContent='';
+  groupCompatible=false;
+  if(groupSource==='embedded')clearGroupDocument();
+  else if(groupDocument){$('restoreGroupVisibility').disabled=true;$('groupNotice').textContent='分组树已载入；放入 SVG 后可查看对应图形。';renderGroupTree();}
+  else $('groupNotice').textContent='';
  }
  function childrenOf(node){return spatialChildren?.get(node.key)||node.children;}
  function orderedChildren(node){
@@ -384,8 +426,8 @@
    return item;
   }
   const hasMatch=!query||matches.get(layerRoot.key);
-  tree.replaceChildren(...(hasMatch?[row(layerRoot,0,1,1)]:[]));tree.hidden=!hasMatch;
-  $('layerEmpty').hidden=hasMatch;$('layerEmpty').textContent=hasMatch?'':'没有匹配的分组或图形。';
+  tree.replaceChildren(...(hasMatch?[row(layerRoot,0,1,1)]:[]));tree.hidden=!hasMatch||!!groupDocument;
+  $('layerEmpty').hidden=hasMatch||!!groupDocument;$('layerEmpty').textContent=hasMatch?'':'没有匹配的分组或图形。';
   if(hasMatch&&!tree.querySelector('[tabindex="0"]')){const first=tree.querySelector('.layer-item');first.tabIndex=0;focusedLayer=first.dataset.key;}
   const groups=nativeLayers.filter(node=>node.tag==='g').length,shapes=nativeLayers.filter(node=>!node.isContainer).length;
   const blocks=spatialChildren?[...layerLookup.values()].filter(node=>node.kind==='spatial').length:0;
@@ -414,78 +456,153 @@
   const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(snapshot)],{type:'image/svg+xml'}));
   disposeAsset(primary);primary.svg=snapshot;primary.url=url;
  }
- function layersChanged(){renderLayers();fastPreviewReady=false;stopFastPreview(true);clearTimeout(thumbnailTimer);thumbnailTimer=setTimeout(refreshThumbnail,120);}
- function refreshDisplayFields(){
-  if(!displayDocument)return;
-  const entry=LayerDisplay.resolve(displayDocument).find(item=>item.path===$('displayNode').value);
-  if(!entry)return;
-  $('displayValue').value=entry.explicit===null?'':String(entry.explicit);
-  $('displayInfo').textContent='有效层级：'+entry.effective+' · '+(entry.explicit!==null?'自身设置':entry.source?'继承自 '+entry.source:'默认值 0')+'；数值越大越靠前。';
+ function layersChanged(){renderLayers();renderGroupTree();fastPreviewReady=false;stopFastPreview(true);clearTimeout(thumbnailTimer);thumbnailTimer=setTimeout(refreshThumbnail,120);}
+ function resolveGroups(data){
+  if(!data||!Array.isArray(data.groups))throw Error('缺少 groups 数组');
+  const entries=[],paths=new Set();
+  function visit(nodes,parent,kind,names=new Set()){
+   if(!Array.isArray(nodes))throw Error('子节点必须是数组');
+   for(const node of nodes){
+    if(!node||typeof node.name!=='string'||!/^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/.test(node.name)||names.has(node.name))throw Error('无效或重复的同级名称');
+    names.add(node.name);
+    const path=parent?parent+'/'+node.name:node.name;
+    if(paths.has(path))throw Error('重复路径：'+path);
+    paths.add(path);
+    if(kind==='group'&&!Array.isArray(node.groups))throw Error(path+' 缺少 groups 数组');
+    if(kind==='part'&&('groups' in node||'parts' in node))throw Error(path+' 的 part 不能有子节点');
+    if(node.parts!==undefined&&!Array.isArray(node.parts))throw Error(path+' 的 parts 必须是数组');
+    const groups=kind==='group'?node.groups:[],parts=kind==='group'?(node.parts||[]):[];
+    entries.push({path,parent,kind,leaf:kind==='part'||(!groups.length&&!parts.length)});
+    const childNames=new Set();visit(groups,path,'group',childNames);visit(parts,path,'part',childNames);
+   }
+  }
+  visit(data.groups,'','group');
+  return entries;
  }
- function refreshDisplayChoices(){
-  const selected=$('displayNode').value;
-  $('displayNode').replaceChildren(...LayerDisplay.resolve(displayDocument).map(entry=>{
-   const option=document.createElement('option');option.value=entry.path;
-   option.textContent='　'.repeat(entry.path.split('/').length-1)+entry.kind+' · '+entry.path.split('/').pop();option.title=entry.path;return option;
-  }));
-  if([...$('displayNode').options].some(option=>option.value===selected))$('displayNode').value=selected;
-  refreshDisplayFields();
+ function groupNodeAt(path){
+  let nodes=groupDocument.groups,node;
+  for(const name of path.split('/')){node=nodes.find(item=>item.name===name);if(!node)return null;nodes=[...(node.groups||[]),...(node.parts||[])];}
+  return node;
  }
- function useDisplayDocument(documentData,apply=false){
-  LayerDisplay.drawings(artwork,documentData);
-  if(apply)LayerDisplay.apply(artwork,documentData);
-  displayDocument=JSON.parse(JSON.stringify(documentData));originalDisplay=JSON.parse(JSON.stringify(documentData));
-  $('displaySettings').hidden=false;$('displayNotice').textContent='子项未设则继承，显式设置独立生效；父子层级不相加。';
-  refreshDisplayChoices();
+ function drawingUnit(item){
+  if(item.tag!=='g')return null;
+  const node=item.element,groupPath=node.getAttribute('data-group-path'),partPath=node.getAttribute('data-part-path');
+  const path=partPath||groupPath;if(!path)return null;
+  const key=partPath?'data-part-path':'data-group-path';
+  for(let parent=node.parentElement;parent&&parent!==artwork;parent=parent.parentElement)if(parent.getAttribute(key)===path)return null;
+  const file=primary?.name?.toLocaleLowerCase();
+  const kind=groupPath&&partPath?'untyped':file==='groups.svg'?(partPath?'part-guide':'guide'):file==='character.svg'?(partPath?'art':'untyped'):partPath?'part':'guide';
+  return {path,kind};
  }
- function loadDisplayDocument(){
-  $('importDisplay').disabled=false;displayDocument=null;originalDisplay=null;$('displaySettings').hidden=true;
+ function groupDrawingNodes(path,descendants=true){
+  if(!groupCompatible||!artwork)return [];
+  return nativeLayers.filter(item=>{
+   const unit=drawingUnit(item);
+   return unit&&(unit.path===path||(descendants&&unit.path.startsWith(path+'/')));
+  });
+ }
+ function renderGroupTree(){
+  if(!groupDocument)return;
+  const tree=$('groupTree'),scrollTop=tree.scrollTop,selected=selectedGroupPath,query=$('groupSearch').value.trim().toLocaleLowerCase();
+  const drawingVisible=unit=>{const style=frame.contentWindow.getComputedStyle(unit.element);return style.display!=='none'&&style.visibility==='visible';};
+  const children=new Map(),matches=new Map();
+  for(const entry of groupEntries){if(!children.has(entry.parent))children.set(entry.parent,[]);children.get(entry.parent).push(entry);}
+  function match(entry){
+   const node=groupNodeAt(entry.path),units=groupDrawingNodes(entry.path,false);
+   const own=[entry.path,node?.note,...units.map(unit=>unit.name+' '+unit.element.id)].filter(Boolean).join(' ').toLocaleLowerCase().includes(query);
+   const descendant=(children.get(entry.path)||[]).map(match).some(Boolean);
+   matches.set(entry.path,own||descendant);return own||descendant;
+  }
+  if(query)(children.get('')||[]).forEach(match);
+  function unitRow(unit,path,depth){
+   const item=element('li','group-unit');item.setAttribute('role','treeitem');item.setAttribute('aria-level',String(depth+1));item.dataset.layerKey=unit.key;item.dataset.path=path;
+   const kind=drawingUnit(unit).kind,itemLabel=kind==='guide'?'组轮廓':kind==='part-guide'?'部件轮廓':kind==='art'?'部件绘制':kind==='part'?'部件图形':'未分类绘制';item.dataset.unitKind=kind;
+   const line=element('div','group-unit-row');line.style.setProperty('--indent',(7+Math.min(depth,10)*14)+'px');line.append(element('span','group-spacer'));
+   const check=element('input','group-visible');check.type='checkbox';check.dataset.action='visible';check.checked=drawingVisible(unit);check.setAttribute('aria-label','显示 SVG 绘制段 '+unit.element.id);line.append(check);
+   const label=element('span','group-name',unit.name);label.title='SVG <g> #'+unit.element.id+' · '+itemLabel+' · 绘制序号 '+unit.order;line.append(label,element('span','group-kind',itemLabel));item.append(line);return item;
+  }
+  function row(entry,depth){
+   const node=groupNodeAt(entry.path),descendants=(children.get(entry.path)||[]).filter(item=>!query||matches.get(item.path));
+   const units=groupDrawingNodes(entry.path,false).filter(unit=>!query||[unit.name,unit.element.id,entry.path].join(' ').toLocaleLowerCase().includes(query));
+   const open=(descendants.length>0||units.length>0)&&(query||expandedGroups.has(entry.path));
+   const item=element('li','group-item');item.setAttribute('role','treeitem');item.setAttribute('aria-level',String(depth+1));item.dataset.path=entry.path;
+   if(descendants.length||units.length)item.setAttribute('aria-expanded',String(open));
+   const line=element('div','group-row');line.style.setProperty('--indent',(7+Math.min(depth,10)*14)+'px');line.classList.toggle('selected',entry.path===selected);
+   if(descendants.length||units.length){const toggle=element('button','',open?'▾':'▸');toggle.type='button';toggle.dataset.action='expand';toggle.setAttribute('aria-label',(open?'收起 ':'展开 ')+entry.path);line.append(toggle);}
+   else line.append(element('span','group-spacer'));
+   const allUnits=groupDrawingNodes(entry.path);
+   if(allUnits.length){const check=element('input','group-visible');check.type='checkbox';check.dataset.action='visible';const visible=allUnits.filter(drawingVisible);check.checked=visible.length===allUnits.length;check.indeterminate=visible.length>0&&visible.length<allUnits.length;check.setAttribute('aria-label','显示 '+entry.path);line.append(check);}
+   const name=element('span','group-name',node.name);name.title=entry.path;line.append(name,element('span','group-kind',entry.kind));item.append(line);
+   if(open){const list=element('ul');list.setAttribute('role','group');descendants.forEach(child=>list.append(row(child,depth+1)));units.forEach(unit=>list.append(unitRow(unit,entry.path,depth+1)));item.append(list);}
+   return item;
+  }
+  const roots=(children.get('')||[]).filter(item=>!query||matches.get(item.path));
+  tree.replaceChildren(...roots.map(entry=>row(entry,0)));if(!roots.length)tree.append(element('li','layer-empty','没有匹配的分组。'));
+  tree.scrollTop=scrollTop;
+ }
+ function clearGroupDocument(){
+  groupDocument=null;groupSource=null;groupCompatible=false;groupEntries=[];expandedGroups=new Set();selectedGroupPath='';
+  $('layerPanel').classList.remove('group-mode');$('layerTitle').textContent='SVG 图层';$('importGroups').textContent='载入 groups.json';
+  $('groupContent').hidden=true;$('groupInspector').open=false;$('groupSummary').textContent='选择分组';$('groupTree').replaceChildren();$('groupCount').hidden=true;$('groupCount').textContent='';$('groupNotice').textContent='';
+  if(layerRoot)renderLayers();
+ }
+ function connectGroupDocument(){
+  groupCompatible=primary?.kind==='svg'&&!!artwork;
+  const linked=groupCompatible&&groupEntries.some(entry=>groupDrawingNodes(entry.path,false).length);
+  $('groupNotice').textContent=!groupCompatible?'分组树已载入；放入 SVG 后可查看对应图形。':linked?'':'分组树已载入；当前 SVG 没有匹配的分组路径。';
+  $('restoreGroupVisibility').disabled=!groupCompatible;renderGroupTree();
+ }
+ function refreshGroupDetails(){
+  const node=selectedGroupPath&&groupNodeAt(selectedGroupPath);
+  $('groupPath').textContent=node?selectedGroupPath:'';
+  $('groupSummary').textContent=node?selectedGroupPath:'选择分组';
+  $('groupNote').textContent=node&&node.note?String(node.note):'';
+  renderGroupTree();
+ }
+ function useGroupDocument(data,source='file'){
+  const entries=resolveGroups(data);
+  groupDocument=data;groupEntries=entries;groupSource=source;selectedGroupPath='';
+  expandedGroups=new Set(entries.filter(entry=>!entry.parent).map(entry=>entry.path));$('groupSearch').value='';
+  $('groupInspector').open=false;
+  $('layerPanel').classList.add('group-mode');$('layerTitle').textContent='分组图层';$('importGroups').textContent='更换 groups.json';
+  $('layerTree').hidden=true;$('layerEmpty').hidden=true;$('groupContent').hidden=false;$('groupCount').hidden=false;
+  $('groupCount').textContent=entries.length+' 个节点'+(source==='embedded'?' · SVG 内嵌':'');
+  connectGroupDocument();
+ }
+ function loadGroupDocument(){
+  if(groupSource==='file'&&groupDocument){connectGroupDocument();return;}
+  clearGroupDocument();
   const metadata=[...artwork.children].find(node=>node.localName==='metadata'&&node.id==='group-structure');
-  if(!metadata){$('displayNotice').textContent='此 SVG 未附分组配置；可载入对应 JSON 后调整显影。';return;}
-  try{
-   const data=JSON.parse(metadata.textContent);useDisplayDocument(data);
-   const units=LayerDisplay.drawings(artwork,data);
-   const mismatch=units.some((item,index)=>item.element.getAttribute('data-display-order')===null||Number(item.element.getAttribute('data-display-order'))!==item.entry.effective||(index&&units[index-1].entry.effective>item.entry.effective));
-   if(mismatch)$('displayNotice').textContent='SVG 绘制顺序或参数与配置不一致；调整设置或恢复层级时将同步。';
-  }catch(error){displayDocument=null;$('displaySettings').hidden=true;$('displayNotice').textContent='显影配置不可用：'+error.message;}
+  if(!metadata){$('groupNotice').textContent='此 SVG 未附分组配置；可载入对应的 groups.json。';return;}
+  try{useGroupDocument(JSON.parse(metadata.textContent),'embedded');}
+  catch(error){clearGroupDocument();$('groupNotice').textContent='分组配置不可用：'+error.message;}
  }
- function applyDisplayChange(){
-  const previous=new Map(nativeLayers.map(node=>[node.element,{style:node.originalStyle,mode:node.mode,expanded:expandedLayers.has(node.key)}]));
-  LayerDisplay.apply(artwork,displayDocument);buildLayers(artwork);
-  for(const node of nativeLayers){const saved=previous.get(node.element);if(saved){node.originalStyle=saved.style;node.mode=saved.mode;if(saved.expanded)expandedLayers.add(node.key);}}
-  refreshDisplayFields();layersChanged();$('displayNotice').textContent='已同步 JSON、SVG 显影参数与实际绘制顺序。';
- }
- function editDisplay(value){
-  if(!displayDocument)return;
-  const before=JSON.parse(JSON.stringify(displayDocument));
-  try{LayerDisplay.setOrder(displayDocument,$('displayNode').value,value);applyDisplayChange();}
-  catch(error){displayDocument=before;refreshDisplayFields();toast(error.message);}
- }
- function downloadDisplay(name,content,type){
-  const url=URL.createObjectURL(new Blob([content],{type})),link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
- }
- $('displayNode').addEventListener('change',refreshDisplayFields);
- $('displayValue').addEventListener('change',()=>{const value=$('displayValue').value.trim();if($('displayValue').validity.badInput){toast('请输入有限数值，或清空以继承');return;}editDisplay(value===''?null:Number(value));});
- $('inheritDisplay').addEventListener('click',()=>editDisplay(null));
- $('resetDisplay').addEventListener('click',()=>{if(originalDisplay){displayDocument=JSON.parse(JSON.stringify(originalDisplay));applyDisplayChange();refreshDisplayChoices();}});
- $('importDisplay').addEventListener('click',()=>$('displayFile').click());
- $('displayFile').addEventListener('change',async event=>{
-  const file=event.target.files[0];event.target.value='';if(!file||primary?.kind!=='svg')return;
-  const mounted=artwork;
-  try{const data=JSON.parse(await file.text());if(artwork!==mounted)return;useDisplayDocument(data);applyDisplayChange();}
+ $('groupSearch').addEventListener('input',renderGroupTree);
+ $('expandGroups').addEventListener('click',()=>{expandedGroups=new Set(groupEntries.map(entry=>entry.path));renderGroupTree();});
+ $('collapseGroups').addEventListener('click',()=>{expandedGroups=new Set();renderGroupTree();});
+ $('groupTree').addEventListener('click',event=>{
+  const item=event.target.closest('.group-item');if(!item)return;
+  const path=item.dataset.path;
+  if(event.target.closest('[data-action="expand"]')){if(expandedGroups.has(path))expandedGroups.delete(path);else expandedGroups.add(path);renderGroupTree();return;}
+  if(event.target.closest('input'))return;
+  selectedGroupPath=path;refreshGroupDetails();
+ });
+ $('groupTree').addEventListener('change',event=>{
+  if(event.target.dataset.action!=='visible')return;
+  const unit=event.target.closest('.group-unit');
+  if(unit){const node=layerLookup.get(unit.dataset.layerKey);if(node)changeLayer(node,event.target.checked);layersChanged();return;}
+  const item=event.target.closest('.group-item');
+  for(const node of groupDrawingNodes(item.dataset.path))changeLayer(node,event.target.checked);
+  layersChanged();
+ });
+ $('restoreGroupVisibility').addEventListener('click',()=>{nativeLayers.forEach(node=>{restoreStyle(node);node.mode=null;});layersChanged();});
+ $('importGroups').addEventListener('click',()=>$('groupFile').click());
+ async function loadGroupFile(file){
+  if(!file)return;
+  try{const data=JSON.parse(await file.text());useGroupDocument(data,'file');$('groupCount').textContent=groupEntries.length+' 个节点 · '+file.name;}
   catch(error){toast('无法载入分组配置：'+error.message);}
- });
- $('exportDisplayJson').addEventListener('click',()=>{if(displayDocument)downloadDisplay('groups.json',JSON.stringify(displayDocument,null,2)+'\n','application/json');});
- $('exportDisplaySvg').addEventListener('click',()=>{
-  if(!displayDocument)return;
-  const snapshot=artwork.cloneNode(true),sourceNodes=[artwork,...artwork.querySelectorAll('*')],copies=[snapshot,...snapshot.querySelectorAll('*')];
-  const styles=new Map(nativeLayers.map(node=>[node.element,node.originalStyle]));
-  sourceNodes.forEach((node,index)=>{if(styles.has(node)){const style=styles.get(node);if(style===null)copies[index].removeAttribute('style');else copies[index].setAttribute('style',style);}});
-  for(const attr of [...snapshot.attributes])snapshot.removeAttributeNode(attr);
-  for(const attr of primary.originalRoot.attributes)snapshot.setAttributeNS(attr.namespaceURI,attr.name,attr.value);
-  LayerDisplay.apply(snapshot,displayDocument);
-  downloadDisplay(primary.name.replace(/\.svg$/i,'')+'-display.svg',new XMLSerializer().serializeToString(snapshot),'image/svg+xml');
- });
+ }
+ $('groupFile').addEventListener('change',async event=>{const file=event.target.files[0];event.target.value='';await loadGroupFile(file);});
  function setLayerPanel(open){
   $('layerPanel').hidden=!open;$('workspace').classList.toggle('layers-closed',!open);
   $('toggleLayers').setAttribute('aria-expanded',String(open));$('toggleLayers').setAttribute('aria-pressed',String(open));
@@ -633,7 +750,7 @@
    artwork.setAttribute('href',asset.url);artwork.setAttribute('preserveAspectRatio','none');
   }
   cameraSvg.append(artwork);doc.body.replaceChildren(cameraSvg);outer=cameraSvg;primary=asset;updateLayouts();cancelGesture();setTool('pan');
-  clearTimeout(thumbnailTimer);if(asset.kind==='svg'){buildLayers(artwork);loadDisplayDocument();}else clearLayers();refreshThumbnail();
+  clearTimeout(thumbnailTimer);if(asset.kind==='svg'){buildLayers(artwork);loadGroupDocument();}else clearLayers();refreshThumbnail();
   $('fileName').textContent='A · '+asset.name;$('fileName').title=asset.name;$('fileMeta').textContent=`${asset.format} · ${Number(asset.w.toPrecision(7))} × ${Number(asset.h.toPrecision(7))} · ${byteSize(asset.bytes)}`;
   $('canvasMeta').querySelector('b').textContent=`图像 A · ${asset.format}`;$('emptyState').hidden=true;$('canvasMeta').hidden=false;hit.classList.remove('empty');
   document.querySelectorAll('.dock button,.dock input,#reset').forEach(control=>control.disabled=false);if(firstLoad)$('navigator').hidden=false;
@@ -674,14 +791,14 @@
  $('hideNavigator').addEventListener('click',()=>{$('navigator').hidden=true;$('showNavigator').hidden=false;});$('showNavigator').addEventListener('click',()=>{$('navigator').hidden=false;$('showNavigator').hidden=true;paintNavigator();});
  let dropDepth=0;document.addEventListener('dragenter',e=>{if(e.dataTransfer?.types.includes('Files')){e.preventDefault();dropDepth++;$('dropMask').hidden=false;}});document.addEventListener('dragover',e=>{if(e.dataTransfer?.types.includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';}});document.addEventListener('dragleave',()=>{dropDepth=Math.max(0,dropDepth-1);if(!dropDepth)$('dropMask').hidden=true;});document.addEventListener('drop',async e=>{
   e.preventDefault();dropDepth=0;$('dropMask').hidden=true;
-  const files=[...e.dataTransfer.files].filter(isSupportedFile);
-  if(!files.length){toast('请拖入 SVG 或浏览器可解码的位图文件。');return;}
+  const dropped=[...e.dataTransfer.files],files=dropped.filter(isSupportedFile),groups=dropped.filter(file=>/\.json$/i.test(file.name));
+  if(!files.length&&!groups.length){toast('请拖入 groups.json、SVG 或浏览器可解码的位图。');return;}
   if(files.length>=2){
    if(!await readFile(files[0]))return;
    await readReference(files[1]);
-   if(files.length>2)toast('已导入前两张图像，其余文件未处理。');
-  }else if(!primary)await readFile(files[0]);
-  else await readReference(files[0]);
+   if(files.length>2)toast('已导入前两张图像，其余图像未处理。');
+  }else if(files.length===1){if(!primary)await readFile(files[0]);else await readReference(files[0]);}
+  if(groups.length)await loadGroupFile(groups[0]);
  });
  $('help').addEventListener('click',()=>$('helpDialog').showModal());$('closeHelp').addEventListener('click',()=>$('helpDialog').close());$('helpDialog').addEventListener('click',e=>{if(e.target===$('helpDialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
  if(!document.fullscreenEnabled)$('fullscreen').hidden=true;$('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('当前窗口无法进入全屏。');}});

@@ -4,21 +4,17 @@ worker: group_layer_drawing
 inputs:
   reference: nodes.base_subject.image
   groups: nodes.group_inventory.groups
-  display_tool:
-    asset: 2.皮套结构识别/tools/display_order.py
   preview_tool:
     asset: tools/svg_preview.py
 outputs:
-  svg: block-layers/character.svg
+  guide_svg: block-layers/groups.svg
   preview: block-layers/preview.png
 review:
   run: 3.大层分层稿/review
   inputs:
     reference: nodes.base_subject.image
     groups: nodes.group_inventory.groups
-    candidate: self.svg
-    display_tool:
-      asset: 2.皮套结构识别/tools/display_order.py
+    candidate: self.guide_svg
     preview_tool:
       asset: tools/svg_preview.py
   outputs:

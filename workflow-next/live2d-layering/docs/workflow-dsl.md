@@ -22,13 +22,17 @@
 
 `dispatch` 是纯调度节点。它声明 `document`、`state`、`tool`、`tree`、`routes`、`fallback`、`lifecycle` 和 `carry`；自身不执行制作任务。状态文件与树文件同目录，结构数据与完成标记分别保存。
 
-`tree.root_key` 指向 JSON 顶层节点数组。`tree.child_edges` 是子数组字段到节点类型的有序映射；一个节点可在多个字段下生长任意数量的子节点。`tree.terminal_types` 指定不可继续生长的类型。相同父节点下各子数组的名称共同保持唯一。调度器依照配置读取树，不预设业务字段名。
+`tree.root_key` 指向 JSON 顶层节点数组。`tree.child_edges` 是子数组字段到节点类型的有序映射；一个节点可在多个字段下生长任意数量的子节点。`tree.terminal_types` 指定不可继续生长的类型，`tree.dispatch_types` 指定需要派发和标记完成的类型。其他类型仍参与结构读取，但没有独立的调度状态。相同父节点下各子数组的名称共同保持唯一。调度器依照配置读取树，不预设业务字段名。
 
-`routes` 以节点类型和名称匹配专用模板。遇到匹配节点时进入模板；未匹配且有子节点时继续下探；未匹配的叶节点进入 `fallback`。外层每次从当前有限树中只选一个待办目标；模板可通过 `call` 选择其范围内的后代并调用平级模板。调用返回后继续上层保存的指针。模板可以用 `expand` 增长树，新增节点在下一次选择中进入待办。
+`routes` 以待派发节点的类型和名称匹配专用模板；其余待派发节点进入 `fallback`，无论是否已有子节点。外层按树深度广度遍历：所有较外层的待办 group 先于内层 group。`priority_keywords` 只在同一深度内对节点名称作软排序：完全同名优先，其次按列表顺序匹配名称中包含的关键词，未命中者按文档顺序；它不改变待办集合。每次只执行一个 group，完成后再选择下一项。模板可以用 `expand` 增长当前 group 的直属子节点；新增的待派发节点进入后续层级，终止类型节点由所在模板处理。
 
-游标状态保存稳定节点 ID、完成状态、调用栈与步骤指针。产物与声明的 review 通过后，`complete` 按 `node` 或 `subtree` 范围完成当前目标；已完成 ID 不重复派发。`carry` 从上一个成功任务传递最新产物，内部调用返回后继续传递。结构路径消失、类型变化或状态不一致时停止核对。
+游标状态只为 `dispatch_types` 保存稳定 ID、完成状态、当前目标与步骤指针。当前目标的产物及声明的 review 通过后，`complete` 只完成该目标；子节点仍按自身状态派发。已完成 ID 不重复派发，已完成目标的直属结构不可再改；如需返修，先按运行记录显式重开受影响目标。`carry` 从上一个成功任务传递最新产物。结构路径消失、类型变化或状态不一致时停止核对。
 
-`lifecycle` 声明各操作的推进顺序。总控调用 YAML 绑定的工具执行 `init`、`next`、`expand`、`call`、`checkpoint` 和 `complete`，并依据返回结果进入路由。worker 只做当前制作任务；选下一个目标、完成标记和返回上层均由总控管理。
+路由目录的 `流程.yaml` 与普通容器节点一样按编号执行子步骤；其 `inputs` 可引用 `dispatch.target`、`dispatch.document`、`dispatch.tool`、`dispatch.inputs.*`、`dispatch.carry.*`。路由内的 `nodes.*` 限于当前目标，`{target.id}` 在资源路径和 worker 身份中替换为稳定目标 ID。路由声明的 review 通过后，总控才调用 `complete`。`if.direct_parts_of` 与 `in` 表示在指定树中检查目标的直属终止节点是否存在，以选择制作任务或透传分支。
+
+`lifecycle` 声明各操作的推进顺序。总控调用 YAML 绑定的工具执行 `init`、`next`、`expand`、`checkpoint` 和 `complete`，并依据返回结果进入路由。已完成目标需要返修时，总控先用 `reopen` 显式撤销该目标的完成标记，再重新派发；子目标的标记独立保留。worker 只做当前制作任务；选下一个目标、完成标记均由总控管理。初始化工具时把 `tree.root_key`、每项 `tree.child_edges`、`tree.terminal_types`、`tree.dispatch_types`、`routes` 中的名称及 `priority_keywords` 按对应命令参数绑定；后续命令使用同一树和状态文件。
+
+`final_review` 在调度器返回 `done` 后执行，通过后才发布 `dispatch` 的输出。返修时按审查指出的目标重开，重新派发并复验，直到最终审查通过。
 
 ## 完成与续跑
 

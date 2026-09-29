@@ -6,7 +6,7 @@
 
 人物分层技能的初始分组已改为 `group` 树，第 3 步按最底层 group 绘制和检查色稿；第 4 步及后续接口仍待迁移。
 
-[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [分组树查看器](./loading/groups-preview.html) · [SVG 预览器](./loading/svg-preview.html)
+[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 与分组预览器](./loading/svg-preview.html)
 
 ## 效果展示
 
@@ -122,9 +122,7 @@ SVG按实体部件组织，保留当前姿态所需的隐藏底形：例如发�
 
 ## 查看与对比结果
 
-用浏览器打开[loading/groups-preview.html](./loading/groups-preview.html)，选择或拖入分组步骤生成的 `structure/groups.json`，可以展开、搜索分组树，并查看每个 group 的完整路径和备注。页面可离线使用。
-
-用浏览器打开[loading/svg-preview.html](./loading/svg-preview.html)，拖入生成的SVG与对应彩图，检查整体、局部贴合和图层显隐。预览器可离线使用，无需构建或启动服务。
+用浏览器打开[loading/svg-preview.html](./loading/svg-preview.html)，选择或拖入 `structure/groups.json`，右侧图层列表会按 group 树展示；载入匹配的 SVG 后，实际绘制段出现在所属 group 下，可逐级展开、搜索和控制显隐。拖入生成的 SVG 与对应彩图，还可检查整体与局部贴合。页面可离线使用，无需构建或启动服务。
 
 <details>
 <summary>SVG预览器功能与常用操作</summary>

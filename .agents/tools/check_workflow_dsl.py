@@ -1,6 +1,6 @@
-"""Lint dispatch declarations; does not execute workers or generate artwork.
+"""Lint the production skills without executing workers or generating artwork.
 
-Requires PyYAML. Run without arguments to check the containing skill.
+Requires PyYAML. Run without arguments to check both production skills.
 """
 from pathlib import Path
 import argparse
@@ -10,8 +10,9 @@ import sys
 import yaml
 
 
-SKILL_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ROOTS = [SKILL_ROOT]
+SKILLS_ROOT = Path(__file__).resolve().parents[1] / 'skills'
+DEFAULT_ROOTS = [SKILLS_ROOT / 'live2d-layering',
+                 SKILLS_ROOT / 'live2d-clothing']
 
 
 class UniqueLoader(yaml.SafeLoader):

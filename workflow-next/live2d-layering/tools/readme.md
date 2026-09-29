@@ -11,4 +11,6 @@
 
 预览示例：`python3 tools/svg_preview.py drawing.svg preview.png`。查看某个元素的边缘，可加 `--reference reference.png --crop X Y W H --scale 2 --only 元素id --edge-overlay`；多个元素可重复 `--only`。描边从透明底渲染结果提取，因此包括裁剪、遮罩和孔洞的可见边界，不追踪内部色彩变化。
 
+轮廓色块保存在 `groups.svg`：group 的绘制 `<g>` 使用完整 `data-group-path`，part 的轮廓 `<g>` 使用完整 `data-part-path`。同画布的 `character.svg` 只绘制 part 的真实形状，也使用完整 `data-part-path`。色块边缘叠图是预览诊断，不写入正式 SVG 描线。`loading/svg-preview.html` 按文件区分“组轮廓／部件轮廓”和“部件绘制”。
+
 阶段内工具的测试在对应步骤的 `tests/`。

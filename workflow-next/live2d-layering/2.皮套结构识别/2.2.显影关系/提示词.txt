@@ -1,5 +1,0 @@
-复制 semantic_groups 的归属树，依据 reference 给现有 group 设置显影先后，交付 structure/groups.json。每项前后关系落在能够统一代表它的最大 group，后代直接继承；只有子 group 的前后关系确实不同，才在该子 group 单独设置。例如整眼位于相关刘海前时，在 `eyes` 设置层级，`left_eye` 和 `right_eye` 继承。此步判断整组之间的显影，止于现有 group。
-
-`display_order` 是全局数值，越大越靠前；缺省继承最近祖先，没有设置时为 0。显式值覆盖继承，不与父级相加；相同值保持已有绘制顺序。`display_notes` 仅记录具体组间遮挡或透明依据。
-
-调用 `python3 <display_tool> validate --groups <输出 JSON> --semantic <输入 JSON>`，核对归属树保持原样。存在无法由当前 group 表达的显影关系时，说明涉及的组与交叠位置，交回语义分组节点处理。

@@ -1,0 +1,23 @@
+观察角色参考图，建立主体的初始 group 树，交付 `structure/groups.json`。本轮只拆一层：列出覆盖前景主体的主要结构 group。后续处理每个 group 时，再拆它的直属子 group 或 part。
+
+具有人体结构的角色，第一层按 `head`、`neck`、`body`、`arms`、`pelvis`、`legs` 分组，按实际可见区域取舍。`neck` 是颈部，锁骨归 `body`；`pelvis` 从肚脐附近延伸至骨盆。头发、五官、头饰归 `head`，手归 `arms`，脚归 `legs`，翅膀及其他附着在躯干上的配饰归 `body`。无法归入这些范围的独立大元素可另建具体名称的 group。动物、器物、机械等主体按自身结构确定这一层。临时连体服只用于辨认身体姿态和范围，本身不建立 group。
+
+每个 group 代表一个能对照参考图辨认整体外轮廓的形体范围，可以包含多个相连或分开的对象。确保主体的可见区域都有归属，不同 group 的范围可以重叠。本轮以大形体的可见外轮廓和归属准确为准，遮挡下的形状留待后续补全。
+
+本轮人体 group 的标准名为 `head`、`neck`、`body`、`arms`、`pelvis`、`legs`。其他独立大元素用具体对象名，采用小写英文 snake_case。同级名称唯一，一个对象在树中归属一次。
+
+JSON 顶层包含 `subject`（`character` 或 `other`）和 `groups` 数组。每个节点包含 `name` 和 `groups: []`，可附简短 `note` 说明完整范围。本轮只建立这一层 group，树的顺序不表示显影先后。例如：
+
+{
+  "subject": "character",
+  "groups": [
+    {"name": "head", "groups": []},
+    {"name": "neck", "groups": []},
+    {"name": "body", "groups": []},
+    {"name": "arms", "groups": []},
+    {"name": "pelvis", "groups": []},
+    {"name": "legs", "groups": []}
+  ]
+}
+
+示例按实际角色取舍。先在工作根的临时目录写草稿，再用 `python3 <group_tool> publish-initial --draft <草稿 JSON> --out <工作根>/structure/groups.json` 校验并发布。

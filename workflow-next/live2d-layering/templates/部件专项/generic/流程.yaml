@@ -1,0 +1,23 @@
+id: generic_group
+inputs:
+  target: dispatch.target
+  reference: dispatch.inputs.reference
+  groups: dispatch.document
+  svg: dispatch.carry.svg
+  cursor_tool: dispatch.tool
+  preview_tool:
+    asset: tools/svg_preview.py
+outputs:
+  groups: structure/groups.json
+  svg: block-layers/character.svg
+review:
+  run: templates/部件专项/generic/review
+  worker: generic_group_review:{target.id}
+  inputs:
+    target: inputs.target
+    reference: inputs.reference
+    groups: self.groups
+    candidate: self.svg
+    preview_tool: inputs.preview_tool
+  outputs:
+    report: reviews/refine_groups/{target.id}/审查.md
