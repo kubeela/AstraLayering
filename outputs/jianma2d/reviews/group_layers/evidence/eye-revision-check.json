@@ -1,0 +1,36 @@
+{
+  "scope": "two-eye revision only; independent review pending",
+  "baseline_sha256": "6bab69876e19e00f9492de7486d7be2b870b06a2c45a23d39a2c18e900f3edd1",
+  "changed_leaf_groups": [
+    "head/face/eyes/right_eye",
+    "head/face/eyes/left_eye"
+  ],
+  "changed_attributes": "Only the d attribute of the one path in each eye group.",
+  "unchanged_leaf_groups": 43,
+  "unchanged_contracts": [
+    "all colors",
+    "all ids",
+    "all display metadata and draw order",
+    "all other geometry",
+    "reference image",
+    "groups JSON"
+  ],
+  "leaf_coverage": 45,
+  "single_color_leaf_groups": 45,
+  "display_check": "pass",
+  "preview_size": [
+    1024,
+    1536
+  ],
+  "sha256": {
+    "block-layers/character.svg": "6f109862651c66ddc0d140a9f90e5315edf9250ef9ce0e4753e31ffbe7021d25",
+    "block-layers/preview.png": "35aaa209186ed4d10ea38f162aaafde1ca11d8baa1389a01cb8cf037f1d470a3"
+  },
+  "evidence": [
+    "reviews/group_layers/evidence/revised-eye-left.png",
+    "reviews/group_layers/evidence/revised-eye-right.png",
+    "reviews/group_layers/evidence/revised-eye-pair.png",
+    "reviews/group_layers/evidence/eye-revision-path-changes.json"
+  ],
+  "notes": "Reference-aligned eye contour adjustment only; no iris, sclera, shading or internal detail added."
+}

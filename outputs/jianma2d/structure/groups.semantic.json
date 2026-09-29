@@ -1,0 +1,236 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "name": "head",
+      "groups": [
+        {
+          "name": "face",
+          "groups": [
+            {
+              "name": "eyes",
+              "groups": [
+                {
+                  "name": "left_eye",
+                  "groups": [],
+                  "note": "角色左眼（画面右侧）的完整眼部，从内眼角至外眼角，包含被发丝遮住的连续部分。"
+                },
+                {
+                  "name": "right_eye",
+                  "groups": [],
+                  "note": "角色右眼（画面左侧）的完整眼部，从内眼角至外眼角，包含被发丝遮住的连续部分。"
+                }
+              ]
+            },
+            {
+              "name": "eyebrows",
+              "groups": [
+                { "name": "left_eyebrow", "groups": [] },
+                { "name": "right_eyebrow", "groups": [] }
+              ]
+            },
+            { "name": "nose", "groups": [] },
+            { "name": "mouth", "groups": [] },
+            {
+              "name": "face_base",
+              "groups": [],
+              "note": "额头、双颊、下颌及下巴构成的完整面部皮肤区域。"
+            }
+          ]
+        },
+        {
+          "name": "ears",
+          "groups": [
+            {
+              "name": "left_ear",
+              "groups": [
+                { "name": "ear_base", "groups": [] },
+                {
+                  "name": "earring",
+                  "groups": [],
+                  "note": "角色左耳（画面右侧）耳垂下方的珠饰与长形垂坠，整体属于左耳。"
+                }
+              ]
+            },
+            {
+              "name": "right_ear",
+              "groups": [
+                { "name": "ear_base", "groups": [] },
+                {
+                  "name": "earring",
+                  "groups": [],
+                  "note": "角色右耳（画面左侧）耳垂下方的珠饰与长形垂坠，整体属于右耳。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "hair",
+          "groups": [
+            {
+              "name": "top_bun",
+              "groups": [],
+              "note": "头顶高束起的圆髻，位于扇形冠饰下方。"
+            },
+            {
+              "name": "bangs",
+              "groups": [
+                { "name": "left_bang", "groups": [] },
+                { "name": "right_bang", "groups": [] }
+              ],
+              "note": "从中分处向两侧额角延伸的两片前额发束。"
+            },
+            {
+              "name": "side_hair",
+              "groups": [
+                { "name": "left_side_hair", "groups": [] },
+                { "name": "right_side_hair", "groups": [] }
+              ],
+              "note": "头部两侧由发顶延伸到耳旁的宽幅层叠发束。"
+            },
+            {
+              "name": "face_framing_locks",
+              "groups": [
+                { "name": "left_face_framing_lock", "groups": [] },
+                { "name": "right_face_framing_lock", "groups": [] }
+              ],
+              "note": "从两侧鬓部垂至肩附近并向外弯回的细长发束。"
+            },
+            {
+              "name": "back_hair",
+              "groups": [
+                { "name": "left_back_hair", "groups": [] },
+                { "name": "right_back_hair", "groups": [] }
+              ],
+              "note": "面部与耳后两侧垂向肩部的浅灰色后发；两条延伸至腿旁的长带属于头饰。"
+            }
+          ]
+        },
+        {
+          "name": "headdress",
+          "groups": [
+            {
+              "name": "crown",
+              "groups": [
+                { "name": "fan_crest", "groups": [] },
+                { "name": "central_gem_setting", "groups": [] }
+              ],
+              "note": "圆髻顶端的扇形冠饰及其蓝色宝石基座。"
+            },
+            {
+              "name": "halo_arc",
+              "groups": [],
+              "note": "跨越圆髻上方、连接两侧枝饰的细弧形饰件。"
+            },
+            {
+              "name": "left_side_ornament",
+              "groups": [
+                { "name": "branch", "groups": [] },
+                {
+                  "name": "hanging_streamer",
+                  "groups": [],
+                  "note": "固定在角色左侧枝饰外端的珠串、菱形坠饰与垂至手旁的整条浅蓝长带。"
+                }
+              ]
+            },
+            {
+              "name": "right_side_ornament",
+              "groups": [
+                { "name": "branch", "groups": [] },
+                {
+                  "name": "hanging_streamer",
+                  "groups": [],
+                  "note": "固定在角色右侧枝饰外端的珠串、菱形坠饰与垂至手旁的整条浅蓝长带。"
+                }
+              ]
+            },
+            {
+              "name": "forehead_ornament",
+              "groups": [],
+              "note": "沿中分发际至额心纵向排列的蓝色菱形宝石与小坠饰，属于头饰。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "body",
+      "groups": [
+        { "name": "neck", "groups": [] },
+        {
+          "name": "torso",
+          "groups": [],
+          "note": "从肩颈交界经胸、腰至髋上缘的身体躯干，包含临时连体服遮住的部分。"
+        }
+      ]
+    },
+    {
+      "name": "arms",
+      "groups": [
+        {
+          "name": "left_arm",
+          "groups": [
+            { "name": "upper_arm", "groups": [] },
+            { "name": "forearm", "groups": [] },
+            { "name": "hand", "groups": [] }
+          ]
+        },
+        {
+          "name": "right_arm",
+          "groups": [
+            { "name": "upper_arm", "groups": [] },
+            { "name": "forearm", "groups": [] },
+            { "name": "hand", "groups": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lower_body",
+      "groups": [
+        {
+          "name": "pelvis",
+          "groups": [],
+          "note": "腰下至双腿根部之间的骨盆与髋部区域，包含临时连体服遮住的部分。"
+        },
+        {
+          "name": "left_leg",
+          "groups": [
+            { "name": "thigh", "groups": [] },
+            { "name": "lower_leg", "groups": [] },
+            {
+              "name": "foot",
+              "groups": [
+                { "name": "foot_base", "groups": [] },
+                {
+                  "name": "foot_jewelry",
+                  "groups": [],
+                  "note": "环绕左踝、沿足背延伸并连至脚趾的整件蓝白色链饰，属于左足。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "right_leg",
+          "groups": [
+            { "name": "thigh", "groups": [] },
+            { "name": "lower_leg", "groups": [] },
+            {
+              "name": "foot",
+              "groups": [
+                { "name": "foot_base", "groups": [] },
+                {
+                  "name": "foot_jewelry",
+                  "groups": [],
+                  "note": "环绕右踝、沿足背延伸并连至脚趾的整件蓝白色链饰，属于右足。"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
