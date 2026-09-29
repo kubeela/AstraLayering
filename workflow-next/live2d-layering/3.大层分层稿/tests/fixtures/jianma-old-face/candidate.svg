@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1536" viewBox="0 0 1024 1536"><g id="face_base" data-group-path="face/face_base" fill="#EDAF96" fill-rule="nonzero">
+<title>Full forehead base retained behind the hair and forehead jewellery.</title>
+<path d="M 474 221 C 482 199 506 191 521 193 C 543 194 559 207 562 231 C 565 254 563 273 559 286 C 555 301 544 311 530 321 C 525 325 521 330 516 330 C 511 330 506 326 501 323 C 487 313 477 304 472 290 C 465 271 466 244 474 221 Z" />
+</g>
+<g id="right_eye" data-group-path="face/eyes/right_eye" fill="#284B8D" fill-rule="nonzero">
+<path d="M 478 264 C 482 259 488 259 493 261 C 498 262 502 264 504 268 C 499 265 498 266 497 270 C 491 276 482 273 479 269 L 477 266 Z M 475 262 L 474 265 L 476 265 L 477 262 Z" />
+</g>
+<g id="left_eye" data-group-path="face/eyes/left_eye" fill="#165D95" fill-rule="nonzero">
+<path d="M 530 268 C 534 263 539 261 545 260 C 551 259 556 260 558 264 L 557 269 C 553 273 544 275 539 272 C 535 270 536 265 530 268 Z M 559 262 L 562 263 L 563 266 L 560 265 Z" />
+</g>
+</svg>

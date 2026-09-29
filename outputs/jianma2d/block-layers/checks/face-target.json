@@ -1,0 +1,219 @@
+{
+  "reference_sha256": "a6aeecb0356607a5712466e6de5a350eeb45e441465c808d6f7a103578ddc33a",
+  "canvas": [
+    1024,
+    1536
+  ],
+  "status": "measured",
+  "guide": {
+    "group_path": "head/face/face_base",
+    "roi": [
+      450,
+      275,
+      116,
+      75
+    ],
+    "tolerance_px": 2,
+    "eyes": [
+      "head/face/eyes/left_eye",
+      "head/face/eyes/right_eye"
+    ],
+    "rows": [
+      {
+        "y": 298,
+        "left": [
+          463,
+          469
+        ],
+        "right": [
+          546,
+          552
+        ]
+      },
+      {
+        "y": 302,
+        "left": [
+          465,
+          471
+        ],
+        "right": [
+          545,
+          551
+        ]
+      },
+      {
+        "y": 306,
+        "left": [
+          466,
+          472
+        ],
+        "right": [
+          543,
+          549
+        ]
+      },
+      {
+        "y": 310,
+        "left": [
+          468,
+          474
+        ],
+        "right": [
+          541,
+          547
+        ]
+      },
+      {
+        "y": 314,
+        "left": [
+          470,
+          476
+        ],
+        "right": [
+          539,
+          545
+        ]
+      },
+      {
+        "y": 318,
+        "left": [
+          472,
+          478
+        ],
+        "right": [
+          537,
+          543
+        ]
+      },
+      {
+        "y": 322,
+        "left": [
+          476,
+          482
+        ],
+        "right": [
+          533,
+          539
+        ]
+      },
+      {
+        "y": 326,
+        "left": [
+          480,
+          486
+        ],
+        "right": [
+          529,
+          535
+        ]
+      },
+      {
+        "y": 330,
+        "left": [
+          486,
+          492
+        ],
+        "right": [
+          523,
+          529
+        ]
+      },
+      {
+        "y": 334,
+        "left": [
+          491,
+          497
+        ],
+        "right": [
+          518,
+          524
+        ]
+      },
+      {
+        "y": 338,
+        "left": [
+          497,
+          503
+        ],
+        "right": [
+          512,
+          518
+        ]
+      },
+      {
+        "y": 340,
+        "left": [
+          501,
+          507
+        ],
+        "right": [
+          508,
+          514
+        ]
+      }
+    ],
+    "source_observation": "Native source image visually inspected before candidate creation. Corridors follow the visible skin edge from cheek at y=298 through jaw and chin at y=340; regions occluded by hair are not target constraints."
+  },
+  "rows": [
+    {
+      "y": 298,
+      "left": 466.0,
+      "right": 549.0
+    },
+    {
+      "y": 302,
+      "left": 468.0,
+      "right": 548.0
+    },
+    {
+      "y": 306,
+      "left": 469.0,
+      "right": 546.0
+    },
+    {
+      "y": 310,
+      "left": 471.0,
+      "right": 544.0
+    },
+    {
+      "y": 314,
+      "left": 473.0,
+      "right": 542.0
+    },
+    {
+      "y": 318,
+      "left": 475.0,
+      "right": 539.5
+    },
+    {
+      "y": 322,
+      "left": 479.0,
+      "right": 536.0
+    },
+    {
+      "y": 326,
+      "left": 483.0,
+      "right": 532.0
+    },
+    {
+      "y": 330,
+      "left": 489.0,
+      "right": 526.0
+    },
+    {
+      "y": 334,
+      "left": 494.0,
+      "right": 521.0
+    },
+    {
+      "y": 338,
+      "left": 500.0,
+      "right": 514.5
+    },
+    {
+      "y": 340,
+      "left": 504.0,
+      "right": 511.0
+    }
+  ]
+}

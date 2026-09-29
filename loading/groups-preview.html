@@ -91,7 +91,8 @@ aside{min-width:0;border-left:1px solid var(--line);background:var(--panel);padd
         const path = parent ? `${parent}/${group.name}` : group.name;
         if (!Array.isArray(group.groups)) throw new Error(`${path} 缺少 groups 数组。`);
         if (group.note !== undefined && typeof group.note !== 'string') throw new Error(`${path} 的 note 必须是文字。`);
-        const unknown = Object.keys(group).filter(key => !['name','groups','note'].includes(key));
+        if (group.display_order !== undefined && (typeof group.display_order !== 'number' || !Number.isFinite(group.display_order))) throw new Error(`${path} 的 display_order 必须是有限数值。`);
+        const unknown = Object.keys(group).filter(key => !['name','groups','note','display_order'].includes(key));
         if (unknown.length) throw new Error(`${path} 含有当前分组格式之外的字段：${unknown.join('、')}。`);
         total++;
         if (total > 5000) throw new Error('分组超过 5000 个，无法在此页面流畅显示。');

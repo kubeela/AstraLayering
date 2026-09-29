@@ -1,0 +1,164 @@
+{
+  "reference_sha256": "a6aeecb0356607a5712466e6de5a350eeb45e441465c808d6f7a103578ddc33a",
+  "target_sha256": "1368a0300ac63fcc7f5a2ac067676124c851df46fde42b5ef18ccbbc67004c89",
+  "svg_sha256": "a2ee39014da47402f8620fae18fbdb3b427d479fc0818dc72fe3af318f112a40",
+  "scope": "sampled visible face edges and specified whole-eye connectivity; visual review still required",
+  "status": "revise",
+  "metrics": {
+    "edge_max_px": 3.0,
+    "width_max_px": 4.0,
+    "center_max_px": 1.0
+  },
+  "limits": {
+    "edge_max_px": 2,
+    "width_max_px": 4,
+    "center_max_px": 2
+  },
+  "failed": [
+    "edge_max_px"
+  ],
+  "missing_rows": [],
+  "rows": [
+    {
+      "y": 298,
+      "candidate_left": 466,
+      "candidate_right": 548,
+      "reference_left": 466.0,
+      "left_error_px": 0.0,
+      "reference_right": 549.0,
+      "right_error_px": -1.0,
+      "width_error_px": -1.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 302,
+      "candidate_left": 468,
+      "candidate_right": 547,
+      "reference_left": 468.0,
+      "left_error_px": 0.0,
+      "reference_right": 548.0,
+      "right_error_px": -1.0,
+      "width_error_px": -1.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 306,
+      "candidate_left": 469,
+      "candidate_right": 545,
+      "reference_left": 469.0,
+      "left_error_px": 0.0,
+      "reference_right": 546.0,
+      "right_error_px": -1.0,
+      "width_error_px": -1.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 310,
+      "candidate_left": 471,
+      "candidate_right": 543,
+      "reference_left": 471.0,
+      "left_error_px": 0.0,
+      "reference_right": 544.0,
+      "right_error_px": -1.0,
+      "width_error_px": -1.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 314,
+      "candidate_left": 473,
+      "candidate_right": 541,
+      "reference_left": 473.0,
+      "left_error_px": 0.0,
+      "reference_right": 542.0,
+      "right_error_px": -1.0,
+      "width_error_px": -1.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 318,
+      "candidate_left": 476,
+      "candidate_right": 538,
+      "reference_left": 475.0,
+      "left_error_px": 1.0,
+      "reference_right": 539.5,
+      "right_error_px": -1.5,
+      "width_error_px": -2.5,
+      "center_shift_px": -0.25
+    },
+    {
+      "y": 322,
+      "candidate_left": 479,
+      "candidate_right": 535,
+      "reference_left": 479.0,
+      "left_error_px": 0.0,
+      "reference_right": 536.0,
+      "right_error_px": -1.0,
+      "width_error_px": -1.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 326,
+      "candidate_left": 484,
+      "candidate_right": 530,
+      "reference_left": 483.0,
+      "left_error_px": 1.0,
+      "reference_right": 532.0,
+      "right_error_px": -2.0,
+      "width_error_px": -3.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 330,
+      "candidate_left": 489,
+      "candidate_right": 525,
+      "reference_left": 489.0,
+      "left_error_px": 0.0,
+      "reference_right": 526.0,
+      "right_error_px": -1.0,
+      "width_error_px": -1.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 334,
+      "candidate_left": 495,
+      "candidate_right": 519,
+      "reference_left": 494.0,
+      "left_error_px": 1.0,
+      "reference_right": 521.0,
+      "right_error_px": -2.0,
+      "width_error_px": -3.0,
+      "center_shift_px": -0.5
+    },
+    {
+      "y": 338,
+      "candidate_left": 501,
+      "candidate_right": 513,
+      "reference_left": 500.0,
+      "left_error_px": 1.0,
+      "reference_right": 514.5,
+      "right_error_px": -1.5,
+      "width_error_px": -2.5,
+      "center_shift_px": -0.25
+    },
+    {
+      "y": 340,
+      "candidate_left": 505,
+      "candidate_right": 508,
+      "reference_left": 504.0,
+      "left_error_px": 1.0,
+      "reference_right": 511.0,
+      "right_error_px": -3.0,
+      "width_error_px": -4.0,
+      "center_shift_px": -1.0
+    }
+  ],
+  "unmeasured": [],
+  "eye_components_px": {
+    "head/face/eyes/left_eye": [
+      427
+    ],
+    "head/face/eyes/right_eye": [
+      381
+    ]
+  }
+}

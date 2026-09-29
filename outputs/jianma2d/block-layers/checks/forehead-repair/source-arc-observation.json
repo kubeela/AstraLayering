@@ -1,0 +1,51 @@
+{
+  "reference_sha256": "a6aeecb0356607a5712466e6de5a350eeb45e441465c808d6f7a103578ddc33a",
+  "scope": "source-only visual observation of pale hair / gray root-band upper arch, not the ambiguous horizontal gray-band lower boundary",
+  "points_native_xy": [
+    [
+      489,
+      230
+    ],
+    [
+      492,
+      227
+    ],
+    [
+      494,
+      225
+    ],
+    [
+      496,
+      225
+    ],
+    [
+      498,
+      226
+    ],
+    [
+      516,
+      225
+    ],
+    [
+      518,
+      225
+    ],
+    [
+      520,
+      226
+    ],
+    [
+      522,
+      227
+    ],
+    [
+      524,
+      229
+    ],
+    [
+      526,
+      231
+    ]
+  ],
+  "not_measured": "The jewel occludes the central continuation. Pixels adjacent to its outline are not assigned independent edge truth."
+}

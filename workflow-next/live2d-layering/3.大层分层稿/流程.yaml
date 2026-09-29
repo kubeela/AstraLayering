@@ -4,6 +4,10 @@ worker: group_layer_drawing
 inputs:
   reference: nodes.base_subject.image
   groups: nodes.group_inventory.groups
+  display_tool:
+    asset: 2.皮套结构识别/tools/display_order.py
+  face_tool:
+    asset: 3.大层分层稿/tools/face_compare.py
   preview_tool:
     asset: tools/svg_preview.py
   compare_tool:
@@ -11,12 +15,20 @@ inputs:
 outputs:
   svg: block-layers/character.svg
   preview: block-layers/preview.png
+  face_target: block-layers/checks/face-target.json
+  face_report: block-layers/checks/face/report.json
 review:
   run: 3.大层分层稿/review
   inputs:
     reference: nodes.base_subject.image
     groups: nodes.group_inventory.groups
     candidate: self.svg
+    face_target: self.face_target
+    face_report: self.face_report
+    display_tool:
+      asset: 2.皮套结构识别/tools/display_order.py
+    face_tool:
+      asset: 3.大层分层稿/tools/face_compare.py
     preview_tool:
       asset: tools/svg_preview.py
     compare_tool:

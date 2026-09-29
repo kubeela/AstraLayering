@@ -1,0 +1,10 @@
+id: group_inventory
+run: 2.皮套结构识别/2.2.显影关系
+worker: group_display
+inputs:
+  reference: nodes.base_subject.image
+  semantic_groups: nodes.group_semantics.groups
+  display_tool:
+    asset: 2.皮套结构识别/tools/display_order.py
+outputs:
+  groups: structure/groups.json

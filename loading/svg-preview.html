@@ -28,6 +28,7 @@
 .stage.comparing .canvas-meta{display:none}.stage.comparing .top-tools{top:auto;bottom:84px;left:16px;right:auto}.stage.comparing .navigator,.stage.comparing .nav-restore{bottom:84px}
 @media(max-width:1000px){.reference-open-label{display:none}.compare-bar{padding:10px 12px}.compare-lock{margin-left:0}.compare-adjust input{width:90px}}
 @media(max-width:620px){.compare-bar{padding:9px 10px;gap:8px}.reference-info{flex-basis:150px}.compare-controls{gap:8px}.compare-modes{width:100%}.compare-modes button{flex:1;padding:7px 5px;font-size:10px}.compare-lock{margin-left:auto;font-size:9px}.compare-adjust input{width:95px}.compare-badge{top:12px}.compare-badge:first-child{left:10px}.stage[data-compare="side"] .compare-badge:last-child{left:calc(50% + 10px)}.stage.comparing .top-tools{left:10px;bottom:70px}.header-actions #openReference{padding:8px}.reference-meta{font-size:9px}}
+.display-settings{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}.display-settings label{display:block;font-size:11px;color:#b5c8d0;margin:7px 0}.display-settings select{width:100%;padding:6px;background:#14191f;color:#dce6eb;border:1px solid var(--line);border-radius:5px}.display-value{display:flex;gap:5px;align-items:center}.display-value input{width:95px;min-width:0;background:#14191f;color:#dce6eb;border:1px solid var(--line);border-radius:5px;padding:6px}.display-value button,.display-files button{font-size:11px;padding:6px}.display-files{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}.display-info{font-size:10px;color:#a8c8cc;line-height:1.7;margin-top:6px;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -93,6 +94,16 @@
    <div class="layer-options"><select id="layerOrder" class="layer-order" aria-label="图层列表顺序" disabled><option value="front">前景在上 · 顶 → 底</option><option value="back">绘制顺序 · 底 → 顶</option></select><button id="expandLayers" disabled>展开全部</button><button id="collapseLayers" disabled>收起</button></div>
    <label class="layer-spatial"><input id="spatialLayers" type="checkbox" disabled>识别独立图块 <span class="layer-count">空间估计</span></label>
    <div class="layer-actions"><button id="showAllLayers" disabled>全部显示</button><button id="hideAllLayers" disabled>全部隐藏</button><button id="restoreLayers" disabled>恢复原始</button></div>
+   <div class="display-settings" id="displaySettings" hidden>
+    <label for="displayNode">显影设置 · group / part 归属树</label>
+    <select id="displayNode" aria-label="选择显影 group 或 part"></select>
+    <label for="displayValue">显式层级 · 留空继承</label>
+    <div class="display-value"><input id="displayValue" type="number" step="any" placeholder="继承" aria-label="显式显影层级"><button id="inheritDisplay">恢复继承</button><button id="resetDisplay">恢复层级</button></div>
+    <div id="displayInfo" class="display-info" role="status"></div>
+    <div class="display-files"><button id="exportDisplaySvg" title="保存显影层级，不含预览临时显隐">导出 SVG</button><button id="exportDisplayJson">导出 JSON</button></div>
+   </div>
+   <div class="display-files"><button id="importDisplay" disabled>载入分组 JSON</button><input id="displayFile" type="file" accept=".json,application/json" hidden></div>
+   <div id="displayNotice" class="display-info" role="status"></div>
   </div>
   <p id="layerEmpty" class="layer-empty">当图像 A 为 SVG 时，可查看嵌套分组和绘制顺序。交换 A / B 可检查另一份 SVG。</p>
   <ul id="layerTree" class="layer-tree" role="tree" aria-label="SVG 层级结构" hidden></ul>
@@ -103,6 +114,7 @@
 </div>
 <div id="dropMask" class="drop-mask" hidden><div><strong>松开，导入画布</strong><p>支持 SVG 与浏览器可解码的位图格式<br>一次拖入两张图会依次放入 A / B</p></div></div>
 <dialog id="helpDialog" class="help" aria-labelledby="helpTitle"><div class="help-header"><h2 id="helpTitle">把细节放大看</h2><button id="closeHelp" class="icon-only" aria-label="关闭操作说明"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12m0-12L6 18"/></svg></button></div><p>将鼠标放在想看的细节上滚动，缩放会围绕该位置进行。也可以拖出选区，直接放大到那一部分。</p><div class="shortcuts"><span>放大 / 缩小</span><kbd>滚轮 · + / −</kbd><span>平移</span><kbd>拖动 · 方向键</kbd><span>适应窗口 / 实际大小</span><kbd>F 或 0 / 1</kbd><span>框选放大 / 取消</span><kbd>B / Esc</kbd><span>打开图像 A</span><kbd>Ctrl / ⌘ + O</kbd></div><p>触控设备支持双指捏合缩放。点击右下角导航，可快速回到作品的任意位置。缩放框支持直接输入比例，例如 <b>10000</b> 或 <b>1e6</b>。</p><p>两个槽位都支持 SVG 以及浏览器可解码的 PNG、JPEG、WebP、GIF、AVIF、BMP 等位图。两张图会按各自最长边等权归一化，再居中放进同一个对比画布；交换 A / B 不会改变对齐结果。左右、叠加和滑动模式共用缩放与平移。</p><p>图层面板读取当前图像 A 的 SVG 嵌套结构。若 B 也是 SVG，可用“交换 A / B”查看和控制它的原生图层。位图没有原生 SVG 图层。</p><p class="footnote">不设固定缩放倍率上限。SVG 会随视图重新绘制；位图和 SVG 内嵌位图仍受原始分辨率限制。</p></dialog>
+<script src="../workflow-next/live2d-layering/2.皮套结构识别/tools/display-model.cjs"></script>
 <script>
 'use strict';
 (() => {
@@ -116,6 +128,7 @@
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  let artwork=null, layerRoot=null, nativeLayers=[], layerLookup=new Map(), expandedLayers=new Set();
  let spatialChildren=null, thumbnailTimer=0, focusedLayer='native-0';
+ let displayDocument=null, originalDisplay=null;
  let fastPreviewReady=false, fastReferenceReady=false, fastPreviewActive=false, fastPreviewGeneration=0, fastReferenceGeneration=0, fastPreviewEndTimer=0, fastPreviewReveal=0;
  const fastPreview=$('fastPreview'),fastCanvas=$('fastCanvas'),fastReferenceCanvas=$('fastReferenceCanvas');
  const containers=new Set(['svg','g','a','switch']);
@@ -305,6 +318,7 @@
   $('layerEmpty').hidden=false;$('layerEmpty').textContent='位图没有可读取的矢量层级。将 SVG 放入 A，或交换 A / B 后即可检查 SVG 图层。';
   $('spatialNote').hidden=true;
   for(const id of ['layerSearch','layerOrder','expandLayers','collapseLayers','spatialLayers','showAllLayers','hideAllLayers','restoreLayers'])$(id).disabled=true;
+  displayDocument=null;originalDisplay=null;$('displaySettings').hidden=true;$('importDisplay').disabled=true;$('displayNotice').textContent='';
  }
  function childrenOf(node){return spatialChildren?.get(node.key)||node.children;}
  function orderedChildren(node){
@@ -401,6 +415,77 @@
   disposeAsset(primary);primary.svg=snapshot;primary.url=url;
  }
  function layersChanged(){renderLayers();fastPreviewReady=false;stopFastPreview(true);clearTimeout(thumbnailTimer);thumbnailTimer=setTimeout(refreshThumbnail,120);}
+ function refreshDisplayFields(){
+  if(!displayDocument)return;
+  const entry=LayerDisplay.resolve(displayDocument).find(item=>item.path===$('displayNode').value);
+  if(!entry)return;
+  $('displayValue').value=entry.explicit===null?'':String(entry.explicit);
+  $('displayInfo').textContent='有效层级：'+entry.effective+' · '+(entry.explicit!==null?'自身设置':entry.source?'继承自 '+entry.source:'默认值 0')+'；数值越大越靠前。';
+ }
+ function refreshDisplayChoices(){
+  const selected=$('displayNode').value;
+  $('displayNode').replaceChildren(...LayerDisplay.resolve(displayDocument).map(entry=>{
+   const option=document.createElement('option');option.value=entry.path;
+   option.textContent='　'.repeat(entry.path.split('/').length-1)+entry.kind+' · '+entry.path.split('/').pop();option.title=entry.path;return option;
+  }));
+  if([...$('displayNode').options].some(option=>option.value===selected))$('displayNode').value=selected;
+  refreshDisplayFields();
+ }
+ function useDisplayDocument(documentData,apply=false){
+  LayerDisplay.drawings(artwork,documentData);
+  if(apply)LayerDisplay.apply(artwork,documentData);
+  displayDocument=JSON.parse(JSON.stringify(documentData));originalDisplay=JSON.parse(JSON.stringify(documentData));
+  $('displaySettings').hidden=false;$('displayNotice').textContent='子项未设则继承，显式设置独立生效；父子层级不相加。';
+  refreshDisplayChoices();
+ }
+ function loadDisplayDocument(){
+  $('importDisplay').disabled=false;displayDocument=null;originalDisplay=null;$('displaySettings').hidden=true;
+  const metadata=[...artwork.children].find(node=>node.localName==='metadata'&&node.id==='group-structure');
+  if(!metadata){$('displayNotice').textContent='此 SVG 未附分组配置；可载入对应 JSON 后调整显影。';return;}
+  try{
+   const data=JSON.parse(metadata.textContent);useDisplayDocument(data);
+   const units=LayerDisplay.drawings(artwork,data);
+   const mismatch=units.some((item,index)=>item.element.getAttribute('data-display-order')===null||Number(item.element.getAttribute('data-display-order'))!==item.entry.effective||(index&&units[index-1].entry.effective>item.entry.effective));
+   if(mismatch)$('displayNotice').textContent='SVG 绘制顺序或参数与配置不一致；调整设置或恢复层级时将同步。';
+  }catch(error){displayDocument=null;$('displaySettings').hidden=true;$('displayNotice').textContent='显影配置不可用：'+error.message;}
+ }
+ function applyDisplayChange(){
+  const previous=new Map(nativeLayers.map(node=>[node.element,{style:node.originalStyle,mode:node.mode,expanded:expandedLayers.has(node.key)}]));
+  LayerDisplay.apply(artwork,displayDocument);buildLayers(artwork);
+  for(const node of nativeLayers){const saved=previous.get(node.element);if(saved){node.originalStyle=saved.style;node.mode=saved.mode;if(saved.expanded)expandedLayers.add(node.key);}}
+  refreshDisplayFields();layersChanged();$('displayNotice').textContent='已同步 JSON、SVG 显影参数与实际绘制顺序。';
+ }
+ function editDisplay(value){
+  if(!displayDocument)return;
+  const before=JSON.parse(JSON.stringify(displayDocument));
+  try{LayerDisplay.setOrder(displayDocument,$('displayNode').value,value);applyDisplayChange();}
+  catch(error){displayDocument=before;refreshDisplayFields();toast(error.message);}
+ }
+ function downloadDisplay(name,content,type){
+  const url=URL.createObjectURL(new Blob([content],{type})),link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }
+ $('displayNode').addEventListener('change',refreshDisplayFields);
+ $('displayValue').addEventListener('change',()=>{const value=$('displayValue').value.trim();if($('displayValue').validity.badInput){toast('请输入有限数值，或清空以继承');return;}editDisplay(value===''?null:Number(value));});
+ $('inheritDisplay').addEventListener('click',()=>editDisplay(null));
+ $('resetDisplay').addEventListener('click',()=>{if(originalDisplay){displayDocument=JSON.parse(JSON.stringify(originalDisplay));applyDisplayChange();refreshDisplayChoices();}});
+ $('importDisplay').addEventListener('click',()=>$('displayFile').click());
+ $('displayFile').addEventListener('change',async event=>{
+  const file=event.target.files[0];event.target.value='';if(!file||primary?.kind!=='svg')return;
+  const mounted=artwork;
+  try{const data=JSON.parse(await file.text());if(artwork!==mounted)return;useDisplayDocument(data);applyDisplayChange();}
+  catch(error){toast('无法载入分组配置：'+error.message);}
+ });
+ $('exportDisplayJson').addEventListener('click',()=>{if(displayDocument)downloadDisplay('groups.json',JSON.stringify(displayDocument,null,2)+'\n','application/json');});
+ $('exportDisplaySvg').addEventListener('click',()=>{
+  if(!displayDocument)return;
+  const snapshot=artwork.cloneNode(true),sourceNodes=[artwork,...artwork.querySelectorAll('*')],copies=[snapshot,...snapshot.querySelectorAll('*')];
+  const styles=new Map(nativeLayers.map(node=>[node.element,node.originalStyle]));
+  sourceNodes.forEach((node,index)=>{if(styles.has(node)){const style=styles.get(node);if(style===null)copies[index].removeAttribute('style');else copies[index].setAttribute('style',style);}});
+  for(const attr of [...snapshot.attributes])snapshot.removeAttributeNode(attr);
+  for(const attr of primary.originalRoot.attributes)snapshot.setAttributeNS(attr.namespaceURI,attr.name,attr.value);
+  LayerDisplay.apply(snapshot,displayDocument);
+  downloadDisplay(primary.name.replace(/\.svg$/i,'')+'-display.svg',new XMLSerializer().serializeToString(snapshot),'image/svg+xml');
+ });
  function setLayerPanel(open){
   $('layerPanel').hidden=!open;$('workspace').classList.toggle('layers-closed',!open);
   $('toggleLayers').setAttribute('aria-expanded',String(open));$('toggleLayers').setAttribute('aria-pressed',String(open));
@@ -525,7 +610,7 @@
   if(file.type==='image/svg+xml'||/\.svg$/i.test(file.name)){
    const parsed=parse(await file.text(),file.name);
    const serialized=new XMLSerializer().serializeToString(parsed.svg);
-   return {...parsed,kind:'svg',format:'SVG',url:URL.createObjectURL(new Blob([serialized],{type:'image/svg+xml'}))};
+   return {...parsed,originalRoot:parsed.svg.cloneNode(false),kind:'svg',format:'SVG',url:URL.createObjectURL(new Blob([serialized],{type:'image/svg+xml'}))};
   }
   const url=URL.createObjectURL(file);
   try{
@@ -548,7 +633,7 @@
    artwork.setAttribute('href',asset.url);artwork.setAttribute('preserveAspectRatio','none');
   }
   cameraSvg.append(artwork);doc.body.replaceChildren(cameraSvg);outer=cameraSvg;primary=asset;updateLayouts();cancelGesture();setTool('pan');
-  clearTimeout(thumbnailTimer);if(asset.kind==='svg')buildLayers(artwork);else clearLayers();refreshThumbnail();
+  clearTimeout(thumbnailTimer);if(asset.kind==='svg'){buildLayers(artwork);loadDisplayDocument();}else clearLayers();refreshThumbnail();
   $('fileName').textContent='A · '+asset.name;$('fileName').title=asset.name;$('fileMeta').textContent=`${asset.format} · ${Number(asset.w.toPrecision(7))} × ${Number(asset.h.toPrecision(7))} · ${byteSize(asset.bytes)}`;
   $('canvasMeta').querySelector('b').textContent=`图像 A · ${asset.format}`;$('emptyState').hidden=true;$('canvasMeta').hidden=false;hit.classList.remove('empty');
   document.querySelectorAll('.dock button,.dock input,#reset').forEach(control=>control.disabled=false);if(firstLoad)$('navigator').hidden=false;

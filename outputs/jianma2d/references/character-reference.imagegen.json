@@ -1,0 +1,32 @@
+{
+  "node": "character_reference",
+  "branch": "else",
+  "tool": "mcp__forgeax_images__imagegen",
+  "model": "gpt-image-2",
+  "quality": "medium",
+  "size": "1024x1536",
+  "format": "png",
+  "prompt_source": "workflow-next/live2d-layering/1.角色参考准备/1.2.角色参考选择/生成提示词.txt",
+  "exact_prompt_copy": "outputs/jianma2d/references/character-reference.prompt.txt",
+  "prompt_sha256": "2af5258389b45fa020d8d6c6ba3843a302922b2d72d0d44afc2e232b03f03ae9",
+  "inputs": [
+    {
+      "name": "original",
+      "source": "outputs/jianma2d/references/original.png",
+      "sha256": "3184521f5d79b6c366e9b782a0ec53ca278af5f405fe8544a38f851d7166cd57"
+    },
+    {
+      "name": "style_reference_1",
+      "source": "workflow-next/live2d-layering/1.角色参考准备/风格参考/3.全身立绘.png",
+      "sha256": "c8fe7692f0df44689acf51fb3987049b04f643cba8e9c11659d55a55037d57a8"
+    }
+  ],
+  "output": "outputs/jianma2d/references/simplified-character.png",
+  "requested_at_utc": "2026-09-28T18:44:05.064086+00:00",
+  "status": "complete",
+  "completed_at_utc": "2026-09-28T18:45:08.812658+00:00",
+  "output_sha256": "bd39c3eae753b12d6cae5477e9b6897a5b6db1210dc66d481c503b7c369d1c58",
+  "output_bytes": 901112,
+  "path_base": "repository",
+  "temporary_output_name": "simplified-character-152ad63335.png"
+}

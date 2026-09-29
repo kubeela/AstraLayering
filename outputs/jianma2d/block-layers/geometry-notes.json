@@ -1,0 +1,221 @@
+{
+  "source_sha256": "a6aeecb0356607a5712466e6de5a350eeb45e441465c808d6f7a103578ddc33a",
+  "leaf_count": 43,
+  "groups": {
+    "head/face/face_base": {
+      "id": "g-head-face-face_base",
+      "fill": "#f4c8b3",
+      "note": "Visible cheek/jaw curve constrained by independently traced source target. Forehead and lateral regions behind bangs are complete inferred continuation."
+    },
+    "head/face/eyes/left_eye": {
+      "id": "g-head-face-eyes-left_eye",
+      "fill": "#4d87a6",
+      "note": "Single filled whole-eye base, including connected outer lash mass. Source left eye = screen right."
+    },
+    "head/face/eyes/right_eye": {
+      "id": "g-head-face-eyes-right_eye",
+      "fill": "#466f96",
+      "note": "Single filled whole-eye base, including connected outer lash mass; no clip/mask or thin bridging. Source right eye = screen left."
+    },
+    "head/face/eyebrows/left_eyebrow": {
+      "id": "g-head-face-eyebrows-left_eyebrow",
+      "fill": "#837c9a",
+      "note": ""
+    },
+    "head/face/eyebrows/right_eyebrow": {
+      "id": "g-head-face-eyebrows-right_eyebrow",
+      "fill": "#927d93",
+      "note": ""
+    },
+    "head/face/nose": {
+      "id": "g-head-face-nose",
+      "fill": "#d8a38f",
+      "note": ""
+    },
+    "head/face/mouth": {
+      "id": "g-head-face-mouth",
+      "fill": "#ba7d82",
+      "note": ""
+    },
+    "head/ears/left_ear": {
+      "id": "g-head-ears-left_ear",
+      "fill": "#deae97",
+      "note": "Whole auricle continued beneath front hair."
+    },
+    "head/ears/right_ear": {
+      "id": "g-head-ears-right_ear",
+      "fill": "#dcaa9e",
+      "note": "Whole auricle continued beneath front hair."
+    },
+    "head/hair/top_bun": {
+      "id": "g-head-hair-top_bun",
+      "fill": "#c5bada",
+      "note": ""
+    },
+    "head/hair/bangs/left_bang": {
+      "id": "g-head-hair-bangs-left_bang",
+      "fill": "#bbbddf",
+      "note": ""
+    },
+    "head/hair/bangs/right_bang": {
+      "id": "g-head-hair-bangs-right_bang",
+      "fill": "#d0cbec",
+      "note": "Complete major front-hair mass; separated from side locks. Source hair internal striations reserved for refinement."
+    },
+    "head/hair/face_framing_hair/left_face_framing_lock": {
+      "id": "g-head-hair-face_framing_hair-left_face_framing_lock",
+      "fill": "#cfd8ee",
+      "note": "Continuous full lock through the region hidden by bangs. Curled free tip preserved."
+    },
+    "head/hair/face_framing_hair/right_face_framing_lock": {
+      "id": "g-head-hair-face_framing_hair-right_face_framing_lock",
+      "fill": "#dae0ef",
+      "note": "Continuous full lock through the region hidden by bangs. Curled free tip preserved."
+    },
+    "head/hair/back_hair/left_back_hair": {
+      "id": "g-head-hair-back_hair-left_back_hair",
+      "fill": "#9992b7",
+      "note": ""
+    },
+    "head/hair/back_hair/right_back_hair": {
+      "id": "g-head-hair-back_hair-right_back_hair",
+      "fill": "#8986ad",
+      "note": ""
+    },
+    "body/neck": {
+      "id": "g-body-neck",
+      "fill": "#dfa78e",
+      "note": "Complete neck under the face and rear hair; chest join is covered by torso."
+    },
+    "body/torso": {
+      "id": "g-body-torso",
+      "fill": "#eabf9b",
+      "note": "Smooth complete torso reconstructed under temporary garment; garment neckline, straps and seams are omitted."
+    },
+    "body/arms/left_arm/left_upper_arm": {
+      "id": "g-body-arms-left_arm-left_upper_arm",
+      "fill": "#e9a4a4",
+      "note": "Source outer shoulder/elbow with complete inner upper-arm continuation."
+    },
+    "body/arms/left_arm/left_forearm": {
+      "id": "g-body-arms-left_arm-left_forearm",
+      "fill": "#e6b39d",
+      "note": "Complete forearm with joint overlap."
+    },
+    "body/arms/left_arm/left_hand": {
+      "id": "g-body-arms-left_arm-left_hand",
+      "fill": "#edc5ad",
+      "note": "Source skin contour preserves whole palm and all visible fingers."
+    },
+    "body/arms/right_arm/right_upper_arm": {
+      "id": "g-body-arms-right_arm-right_upper_arm",
+      "fill": "#ecab94",
+      "note": "Outer shoulder/elbow sampled from current source foreground. Upper inner continuation ends beneath torso."
+    },
+    "body/arms/right_arm/right_forearm": {
+      "id": "g-body-arms-right_arm-right_forearm",
+      "fill": "#e6b385",
+      "note": "Complete forearm with small hidden overlap at elbow and wrist."
+    },
+    "body/arms/right_arm/right_hand": {
+      "id": "g-body-arms-right_arm-right_hand",
+      "fill": "#f0c593",
+      "note": "Source skin contour preserves whole palm and every visible finger; no invented polygon finger silhouette."
+    },
+    "body/lower_body/pelvis": {
+      "id": "g-body-lower_body-pelvis",
+      "fill": "#dab6bc",
+      "note": "Complete pelvic core beneath garment; overlaps natural thigh roots. No separate garment asset."
+    },
+    "body/lower_body/left_leg/left_thigh": {
+      "id": "g-body-lower_body-left_leg-left_thigh",
+      "fill": "#e6b3c2",
+      "note": "Outer hip and thigh source-derived. Hidden root is extended into pelvis."
+    },
+    "body/lower_body/left_leg/left_lower_leg": {
+      "id": "g-body-lower_body-left_leg-left_lower_leg",
+      "fill": "#c6a9cb",
+      "note": "Complete source calf/shin from overlapping knee to ankle."
+    },
+    "body/lower_body/left_leg/left_foot": {
+      "id": "g-body-lower_body-left_leg-left_foot",
+      "fill": "#cdafd8",
+      "note": "Complete source foot and toes; jewelry stays a separate upper layer."
+    },
+    "body/lower_body/right_leg/right_thigh": {
+      "id": "g-body-lower_body-right_leg-right_thigh",
+      "fill": "#e7a4ab",
+      "note": "Outer hip and thigh source-derived. Hidden root is extended up inside pelvis."
+    },
+    "body/lower_body/right_leg/right_lower_leg": {
+      "id": "g-body-lower_body-right_leg-right_lower_leg",
+      "fill": "#d3aac8",
+      "note": "Complete source calf/shin from overlapping knee to ankle."
+    },
+    "body/lower_body/right_leg/right_foot": {
+      "id": "g-body-lower_body-right_leg-right_foot",
+      "fill": "#ddb5d5",
+      "note": "Complete source foot and toes; jewelry stays a separate upper layer."
+    },
+    "accessories/headdress/halo_arc": {
+      "id": "g-accessories-headdress-halo_arc",
+      "fill": "#9dceda",
+      "note": "Native opaque thin arc behind bun."
+    },
+    "accessories/headdress/central_crest": {
+      "id": "g-accessories-headdress-central_crest",
+      "fill": "#6bb8d8",
+      "note": "Whole flower crown silhouette, central gem and wing petals retained as one large group."
+    },
+    "accessories/headdress/forehead_jewel": {
+      "id": "g-accessories-headdress-forehead_jewel",
+      "fill": "#4594bf",
+      "note": ""
+    },
+    "accessories/headdress/left_filigree_wing": {
+      "id": "g-accessories-headdress-left_filigree_wing",
+      "fill": "#76b4d1",
+      "note": "Source foreground vectorized, retaining openwork holes."
+    },
+    "accessories/headdress/right_filigree_wing": {
+      "id": "g-accessories-headdress-right_filigree_wing",
+      "fill": "#7fc9d7",
+      "note": "Source foreground vectorized with native openwork holes; upper inner occlusion continued by intact object contour."
+    },
+    "accessories/headdress/left_ribbon_streamer": {
+      "id": "g-accessories-headdress-left_ribbon_streamer",
+      "fill": "#9babce",
+      "note": "Opaque whole opposite ribbon and hanging jewel string."
+    },
+    "accessories/headdress/right_ribbon_streamer": {
+      "id": "g-accessories-headdress-right_ribbon_streamer",
+      "fill": "#94b6d2",
+      "note": "Whole opaque ribbon plus jewel string. Hidden span behind right hand supplied as continuous broad ribbon, not a visible fragment group."
+    },
+    "accessories/earrings/left_earring": {
+      "id": "g-accessories-earrings-left_earring",
+      "fill": "#51aac8",
+      "note": ""
+    },
+    "accessories/earrings/right_earring": {
+      "id": "g-accessories-earrings-right_earring",
+      "fill": "#48b8c9",
+      "note": "Complete ear chain, jewel and shoulder-length drop; internal facet detail deferred."
+    },
+    "accessories/chest_pendant": {
+      "id": "g-accessories-chest_pendant",
+      "fill": "#69b4bf",
+      "note": ""
+    },
+    "accessories/foot_chains/left_foot_chain": {
+      "id": "g-accessories-foot_chains-left_foot_chain",
+      "fill": "#6babd2",
+      "note": ""
+    },
+    "accessories/foot_chains/right_foot_chain": {
+      "id": "g-accessories-foot_chains-right_foot_chain",
+      "fill": "#68b9c6",
+      "note": ""
+    }
+  }
+}
