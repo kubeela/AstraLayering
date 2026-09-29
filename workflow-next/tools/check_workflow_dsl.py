@@ -1,6 +1,6 @@
-"""Lint dispatch declarations; does not execute workers or generate artwork.
+"""Lint workflow declarations without executing workers or generating artwork.
 
-Requires PyYAML. Run without arguments to check the containing skill.
+Requires PyYAML. Run without arguments to check skills under workflow-next.
 """
 from pathlib import Path
 import argparse
@@ -10,8 +10,7 @@ import sys
 import yaml
 
 
-SKILL_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ROOTS = [SKILL_ROOT]
+DEFAULT_ROOTS = [Path(__file__).resolve().parents[1]]
 
 
 class UniqueLoader(yaml.SafeLoader):
@@ -59,6 +58,8 @@ def validate_config(path, config):
     errors = []
     directory = path.parent
     skill_root = next((p.resolve() for p in (directory, *directory.parents) if (p / 'SKILL.md').is_file()), None)
+    if skill_root is None:
+        return [f'{path}: no containing SKILL.md']
 
     def resource(name, scope):
         if (not isinstance(name, str) or not name or Path(name).is_absolute()

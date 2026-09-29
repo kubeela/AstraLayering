@@ -5,11 +5,10 @@
 | 工具 | 用途 |
 | --- | --- |
 | `options.py` | 维护本轮 `options.json` |
-| `svg_preview.py`、`render_svg.cjs` | 渲染 SVG、独显绘制段和生成局部预览 |
-| `check_workflow_dsl.py` | 检查节点配置、资源根相对路径和执行入口 |
+| `svg_preview.py`、`render_svg.cjs` | 渲染 SVG、独显元素，生成局部、混合及可见形状描边叠加图 |
 
 选项示例：`python3 tools/options.py set --work-root /绝对路径/输出 simplify true`。已有字段会保留。
 
-预览示例：`python3 tools/svg_preview.py character.svg preview.png`。可按实际审查需要指定 `--only`、`--hide`、`--crop` 等参数。
+预览示例：`python3 tools/svg_preview.py drawing.svg preview.png`。查看某个元素的边缘，可加 `--reference reference.png --crop X Y W H --scale 2 --only 元素id --edge-overlay`；多个元素可重复 `--only`。描边从透明底渲染结果提取，因此包括裁剪、遮罩和孔洞的可见边界，不追踪内部色彩变化。
 
-维护时运行 `python3 tools/check_workflow_dsl.py`；阶段内工具的测试在对应步骤的 `tests/`。
+阶段内工具的测试在对应步骤的 `tests/`。

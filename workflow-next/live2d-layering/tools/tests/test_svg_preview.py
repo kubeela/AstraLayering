@@ -106,13 +106,41 @@ class PreviewTests(unittest.TestCase):
         legacy = self.render('legacy.png', '--reference', previous)
         self.assertEqual(legacy.size, (60, 20+PREVIEW.LABEL_HEIGHT))
 
+    def test_edge_overlay_uses_isolated_alpha_shape_even_when_fill_matches_reference(self):
+        self.svg.write_text('''<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+          <g id="group"><rect x="5" y="5" width="10" height="10" fill="white"/></g>
+          <g id="other"><rect x="16" y="5" width="2" height="10" fill="blue"/></g>
+        </svg>''', encoding='utf-8')
+        reference = self.folder / 'reference.png'
+        Image.new('RGB', (20, 20), 'white').save(reference)
+        image = self.render('edges.png', '--reference', reference, '--only', 'group', '--edge-overlay')
+        self.assertEqual(self.cell_pixel(image, 3, 0, 0, size=(20, 20)), (255, 255, 255))
+        self.assertEqual(self.cell_pixel(image, 3, 10, 10, size=(20, 20)), (255, 255, 255))
+        edge = self.cell_pixel(image, 3, 5, 10, size=(20, 20))
+        self.assertGreater(edge[0], edge[1])
+        self.assertGreater(edge[2], edge[1])
+        self.assertEqual(self.cell_pixel(image, 3, 16, 10, size=(20, 20)), (255, 255, 255))
+
+    def test_edge_overlay_follows_rendered_mask_and_not_gradient_color(self):
+        reference = self.folder / 'reference.png'
+        Image.new('RGB', (80, 60), 'white').save(reference)
+        image = self.render('mask-edges.png', '--reference', reference,
+                            '--only', 'hair', '--edge-overlay')
+        # The selected gradient is clipped to x=10..29 and masked to y=10..24.
+        self.assertEqual(self.cell_pixel(image, 3, 20, 17), (255, 255, 255))
+        self.assertEqual(self.cell_pixel(image, 3, 40, 17), (255, 255, 255))
+        for x, y in ((10, 17), (29, 17), (20, 24)):
+            edge = self.cell_pixel(image, 3, x, y)
+            self.assertGreater(edge[0], edge[1], (x, y))
+
     def test_checker_background_and_validation_before_render(self):
         image = self.render('checker.png', '--only', 'ribbon', '--background', 'checker')
         self.assertEqual(image.getpixel((1, 1)), (238, 238, 238))
         self.assertEqual(image.getpixel((17, 1)), (204, 204, 204))
         source_bytes = self.svg.read_bytes()
         for flags in [('--part', 'missing'), ('--hide', 'clip'), ('--crop', 0, 0, 81, 60),
-                      ('--blend', 'nan'), ('--diff',), ('--reference-crop', 0, 0, 10, 10)]:
+                      ('--blend', 'nan'), ('--diff',), ('--edge-overlay',),
+                      ('--reference-crop', 0, 0, 10, 10)]:
             with self.subTest(flags=flags), mock.patch.object(PREVIEW.subprocess, 'run') as run:
                 with self.assertRaises(ValueError):
                     self.render('invalid.png', *flags)

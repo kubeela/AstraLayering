@@ -16,7 +16,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
-from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 
 SVG_NS = 'http://www.w3.org/2000/svg'
@@ -261,6 +261,17 @@ def background(size, value):
     return Image.new('RGBA', size, ImageColor.getcolor(value, 'RGBA'))
 
 
+def visible_edges_on_reference(reference, candidate):
+    """Outline the rendered alpha shape, including clips and holes, on a reference."""
+    shape = candidate.getchannel('A').point(lambda value: 255 if value >= 8 else 0)
+    coverage = ImageChops.subtract(shape.filter(ImageFilter.MaxFilter(3)),
+                                   shape.filter(ImageFilter.MinFilter(3)))
+    coverage = coverage.point(lambda value: min(value, 220))
+    ink = Image.new('RGBA', candidate.size, (220, 20, 150, 0))
+    ink.putalpha(coverage)
+    return Image.alpha_composite(reference.convert('RGBA'), ink).convert('RGB')
+
+
 def label_font(custom=None):
     if custom:
         return ImageFont.truetype(str(custom), 16)
@@ -293,6 +304,9 @@ def parser():
     p.add_argument('--blend', type=float, default=.5, metavar='ALPHA',
                    help='Candidate weight in blends, 0..1 (default: 0.5)')
     p.add_argument('--diff', action='store_true', help='Add absolute color difference cells; no scores')
+    p.add_argument('--edge-overlay', action='store_true',
+                   help='Outline the rendered candidate silhouette on the aligned reference; '
+                        'use --only to select SVG ids')
     p.add_argument('--background', help='checker or a Pillow color; default transparent PNG / white board')
     p.add_argument('--columns', type=int, choices=range(1, 9), default=3)
     p.add_argument('--font', type=Path, help='Optional TTF/TTC font for board labels')
@@ -312,6 +326,8 @@ def preview(a):
         raise ValueError('--reference-crop requires --reference')
     if a.diff and not (a.reference or a.compare):
         raise ValueError('--diff requires --reference or --compare')
+    if a.edge_overlay and not a.reference:
+        raise ValueError('--edge-overlay requires --reference')
     if a.background and a.background != 'checker':
         if ImageColor.getcolor(a.background, 'RGBA')[3] != 255:
             raise ValueError('Background must be opaque; omit it for a transparent single preview')
@@ -321,7 +337,8 @@ def preview(a):
     box = crop_box(a.crop, size)
     output_size = box[2]*a.scale, box[3]*a.scale
     count = (1 + len(a.part) + len(a.toggle)
-             + (2+int(a.diff)) * (bool(a.reference) + bool(a.compare)))
+             + (2+int(a.diff)) * (bool(a.reference) + bool(a.compare))
+             + int(a.edge_overlay))
     columns = min(a.columns, count)
     rows = (count+columns-1)//columns
     if columns*rows*output_size[0]*(output_size[1]+LABEL_HEIGHT) > MAX_PIXELS:
@@ -385,6 +402,8 @@ def preview(a):
             if i:
                 append(label, other)
             append('blend %s %g%%' % (label, a.blend*100), Image.blend(other, flat_candidate, a.blend))
+            if label == 'reference' and a.edge_overlay:
+                append('candidate outline on reference', visible_edges_on_reference(other, candidate))
             if a.diff:
                 append('difference '+label, ImageChops.difference(other, flat_candidate))
         for label, value in diagnostics:

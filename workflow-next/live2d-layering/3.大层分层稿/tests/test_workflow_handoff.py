@@ -24,24 +24,21 @@ import display_order as display
 from svg_preview import RenderBatch, SVG_NS
 
 
-def structure(parts=False):
+def structure():
     return {'subject': 'character', 'groups': [
         {'name': 'face', 'groups': [
             {'name': 'face_base', 'groups': []},
-            ({'name': 'eyes', 'groups': [], 'parts': [{'name': 'left_eye'}]} if parts else
-             {'name': 'eyes', 'groups': [{'name': 'left_eye', 'groups': []}]})]},
+            {'name': 'eyes', 'groups': [{'name': 'left_eye', 'groups': []}]}]},
         {'name': 'hair', 'groups': [{'name': 'bangs', 'groups': []}]}]}
 
 
-def artwork(parts=False):
+def artwork():
     root = ET.Element('{%s}svg' % SVG_NS, {'width': '100', 'height': '100', 'viewBox': '0 0 100 100'})
-    for identity, group_path, part_path, x, y, w, h, color in [
-        ('base', 'face/face_base', None, 30, 20, 40, 65, '#ffcc88'),
-        ('eye', 'face/eyes' if parts else 'face/eyes/left_eye', 'face/eyes/left_eye' if parts else None, 40, 40, 10, 8, '#00ff00'),
-        ('hair', 'hair/bangs', None, 20, 30, 60, 25, '#0000ff')]:
+    for identity, group_path, x, y, w, h, color in [
+        ('base', 'face/face_base', 30, 20, 40, 65, '#ffcc88'),
+        ('eye', 'face/eyes/left_eye', 40, 40, 10, 8, '#00ff00'),
+        ('hair', 'hair/bangs', 20, 30, 60, 25, '#0000ff')]:
         group = ET.SubElement(root, '{%s}g' % SVG_NS, {'id': identity, 'data-group-path': group_path})
-        if part_path:
-            group.set('data-part-path', part_path)
         ET.SubElement(group, '{%s}rect' % SVG_NS,
                       dict(zip(('x', 'y', 'width', 'height', 'fill'), map(str, (x, y, w, h, color)))))
     return root
@@ -117,7 +114,7 @@ class HandoffTests(unittest.TestCase):
             display.drawing_groups(root, entries)
 
     def test_unmasked_complete_shape_can_be_checked_independently_of_display(self):
-        root = artwork(parts=True)
+        root = artwork()
         defs = ET.SubElement(root, '{%s}defs' % SVG_NS)
         clip = ET.SubElement(defs, '{%s}clipPath' % SVG_NS, {'id': 'slice'})
         ET.SubElement(clip, '{%s}rect' % SVG_NS, {'x': '40', 'y': '40', 'width': '5', 'height': '8'})
