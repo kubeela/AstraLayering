@@ -1,32 +1,5 @@
-分组已经完成。复制 semantic_groups 的归属树，独立判断显影，在相关 group 节点写可选的 display_order，交付 structure/groups.json。输入文件只读；归属与显影分别表达，不按树的遍历顺序推导前后。
+复制 semantic_groups 的归属树，依据 reference 给现有 group 设置显影先后，交付 structure/groups.json。每项前后关系落在能够统一代表它的最大 group，后代直接继承；只有子 group 的前后关系确实不同，才在该子 group 单独设置。例如整眼位于相关刘海前时，在 `eyes` 设置层级，`left_eye` 和 `right_eye` 继承。此步判断整组之间的显影，止于现有 group。
 
-显影规则：
-- display_order 是全局数值，越大越靠前。未定义时继承最近一个显式设置的祖先；没有祖先设置时为 0。显式值独立生效，不与父级相加。0 是有效显式设置，不等于未定义。
-- 修改父 group 只影响仍在继承它的后代。子 group 自己定义后，成为其未定义后代的新默认；part 自己定义后独立生效。清除字段恢复继承。同层级保持已有绘制顺序。
-- group 是归属容器，最终由 part 显影。第 3 步尚无 part 时，叶 group 的大色块暂作绘制单位；后续长出 part 后改由 part 承接，同一套继承规则继续生效。不能让父级形成一个无法跨出的 SVG 层叠块。
-- 对本流程的二维角色画法，整眼在相关刘海／鬓发之上是明确的风格要求。应设定 face 底形、hair 和 eyes 的有效层级，使眼部可读；不要以物理遮挡强行把整眼压到发后。用户或输入明确另有画法时说明依据。
-- 分组完整性不随显影改变。外露睫毛不能另开组或成为眼组内的零散残片。透明与前后顺序分别观察；确有透明时在 display_notes 记录具体节点、透明程度和依据，由 SVG 使用原生 opacity 表达，不把层序当透明。
+`display_order` 是全局数值，越大越靠前；缺省继承最近祖先，没有设置时为 0。显式值覆盖继承，不与父级相加；相同值保持已有绘制顺序。`display_notes` 仅记录具体组间遮挡或透明依据。
 
-格式示例（只说明局部，实际文件须保留全部原有分组）：
-{
-  "subject":"character",
-  "groups":[
-    {"name":"face","display_order":10,"groups":[
-      {"name":"face_base","groups":[]},
-      {"name":"eyes","display_order":30,"groups":[
-        {"name":"left_eye","groups":[]},
-        {"name":"right_eye","groups":[]}
-      ]}
-    ]},
-    {"name":"hair","display_order":20,"groups":[
-      {"name":"bangs","groups":[]}
-    ]}
-  ],
-  "display_notes":{"face/eyes":"整眼在相关头发之上，保持面部可读性"}
-}
-
-本例脸底形继承 10，刘海继承 20，左右眼继承 30。后续 parts 数组中的 part 节点也可拥有 display_order；part 是终端节点，不带 groups 或 parts。这里只判断现有 group，不提前新增 part。
-
-调用 python3 <display_tool> validate --groups <输出 JSON> --semantic <输入 JSON>，确认只增加显影设置、未改归属。若归属有问题，交回分组节点修正，再重做受影响判断。给出有歧义的具体交叠处，不生成一份脱离 SVG 的层序说明就视作完成。
-
-SVG 交接：绘制单位沿用平铺的 g，保留唯一 id、data-group-path；part 另记完整 data-part-path。实际 DOM 按有效层级排序；data-display-order 记有效值，data-display-source 记继承来源，data-display-explicit 仅在自身显式设置时存在。JSON 同步写进 metadata#group-structure，供 svg-preview.html 显示归属树、调整设置和导出；它是同一配置的随图副本，不是第二套规则。无需强制改造为 defs/use。第 3 步首稿与每次调整后调用 display_tool apply，立即让显影在画面中生效。
+调用 `python3 <display_tool> validate --groups <输出 JSON> --semantic <输入 JSON>`，核对归属树保持原样。存在无法由当前 group 表达的显影关系时，说明涉及的组与交叠位置，交回语义分组节点处理。
