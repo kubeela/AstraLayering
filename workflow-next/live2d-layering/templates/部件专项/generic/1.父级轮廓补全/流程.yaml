@@ -9,5 +9,6 @@ inputs:
   guide_svg: carry.guide_svg
   preview_tool: dispatch.inputs.preview_tool
 outputs:
-  guide_svg: refinement/groups/{group_path}/1.父级轮廓补全/groups.svg
+  guide_svg: block-layers/groups.svg
+  preview: block-layers/preview.png
   completion_note: refinement/groups/{group_path}/1.父级轮廓补全/补全说明.md

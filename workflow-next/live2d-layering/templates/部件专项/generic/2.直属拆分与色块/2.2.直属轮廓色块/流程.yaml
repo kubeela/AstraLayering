@@ -11,6 +11,6 @@ inputs:
   bounds_tool:
     asset: tools/svg_containment.py
 outputs:
-  guide_svg: refinement/groups/{group_path}/2.直属拆分与色块/2.2.直属轮廓色块/groups.svg
-  preview: refinement/groups/{group_path}/2.直属拆分与色块/2.2.直属轮廓色块/preview.png
+  guide_svg: block-layers/groups.svg
+  preview: block-layers/preview.png
   bounds_check: refinement/groups/{group_path}/2.直属拆分与色块/2.2.直属轮廓色块/轮廓检查.json

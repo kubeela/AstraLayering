@@ -1,4 +1,4 @@
-"""Regression checks for explicit data sources and immutable SVG handoffs."""
+"""Regression checks for explicit data sources and shared current artifacts."""
 
 import copy
 import importlib.util
@@ -63,7 +63,7 @@ class WorkflowDSLTest(unittest.TestCase):
             'groups': 'dispatch.inputs.groups', 'guide_svg': 'carry.guide_svg',
             'preview_tool': 'dispatch.inputs.preview_tool',
         }, {
-            'guide_svg': 'refinement/groups/{group_path}/1.complete/groups.svg',
+            'guide_svg': 'block-layers/groups.svg',
             'note': 'refinement/groups/{group_path}/1.complete/note.md',
         })
 
@@ -134,8 +134,16 @@ class WorkflowDSLTest(unittest.TestCase):
                                       'outputs': {'guide_svg': 'nodes.group_completion.guide_svg'}})
         self.assertIn('numbered-child containers must omit 流程.yaml', self.errors())
 
-    def test_overwriting_svg_seed_is_rejected_even_through_carry(self):
-        self.configs[self.completion_path]['outputs']['guide_svg'] = 'block-layers/groups.svg'
+    def test_shared_svg_is_updated_through_carry(self):
+        self.assertEqual(self.errors(), '')
+
+    def test_update_cannot_overwrite_a_different_input(self):
+        self.configs[self.completion_path]['outputs']['guide_svg'] = 'references/base.png'
+        self.assertIn('saved output overwrites an input artifact', self.errors())
+
+    def test_update_cannot_overwrite_a_literal_input(self):
+        self.configs[self.completion_path]['inputs']['guide_svg'] = 'existing/input.svg'
+        self.configs[self.completion_path]['outputs']['guide_svg'] = 'existing/input.svg'
         self.assertIn('saved output overwrites an input artifact', self.errors())
 
     def test_declared_deliverables_cannot_be_temporary(self):
@@ -146,15 +154,26 @@ class WorkflowDSLTest(unittest.TestCase):
         self.configs[self.completion_path]['outputs']['note'] = 'refinement/{missing}/1.complete/note.md'
         self.assertIn('placeholder {missing} has no declared task input', self.errors())
 
-    def test_loop_output_must_be_isolated_by_current_item(self):
+    def test_loop_can_publish_a_shared_path(self):
         self.configs[self.completion_path]['outputs']['note'] = 'refinement/1.complete/note.md'
-        self.assertIn('dispatch task output must be isolated', self.errors())
+        self.assertEqual(self.errors(), '')
 
-    def test_svg_input_from_an_upstream_node_is_also_read_only(self):
+    def test_same_named_artifact_can_update_an_upstream_node_output(self):
         path = self.root / '3.block' / '流程.yaml'
         self.configs[path]['outputs']['guide_svg'] = 'prior/groups.svg'
         self.configs[self.completion_path]['inputs']['guide_svg'] = 'nodes.group_layers.guide_svg'
         self.configs[self.completion_path]['outputs']['guide_svg'] = 'prior/groups.svg'
+        self.assertEqual(self.errors(), '')
+
+    def test_review_cannot_update_its_candidate(self):
+        review = self.task('review', 'fixture_review', {}, {'report': 'reviews/report.md'})
+        self.configs[self.completion_path]['review'] = {
+            'run': 'review', 'working_dir': '{working_dir}',
+            'inputs': {'guide_svg': 'nodes.group_layers.guide_svg'},
+            'outputs': {'guide_svg': 'block-layers/groups.svg'},
+        }
+        # This directory is a resource for the embedded review, not a numbered task.
+        del self.configs[review]
         self.assertIn('saved output overwrites an input artifact', self.errors())
 
     def test_valid_stage_to_stage_svg_handoff(self):
@@ -164,11 +183,11 @@ class WorkflowDSLTest(unittest.TestCase):
         }, {'guide_svg': 'refinement/groups/{group_path}/2.split/groups.svg'})
         self.assertEqual(self.errors(), '')
 
-    def test_later_stage_cannot_overwrite_current_carry(self):
+    def test_later_stage_updates_the_same_current_carry(self):
         self.task('templates/generic/2.split', 'group_split', {
             'group_path': 'dispatch.item.path', 'guide_svg': 'carry.guide_svg',
-        }, {'guide_svg': 'refinement/groups/{group_path}/1.complete/groups.svg'})
-        self.assertIn('saved output overwrites an input artifact', self.errors())
+        }, {'guide_svg': 'block-layers/groups.svg'})
+        self.assertEqual(self.errors(), '')
 
     def test_node_reference_must_be_upstream_not_just_declared(self):
         self.configs[self.completion_path]['inputs']['guide_svg'] = 'nodes.group_split.guide_svg'

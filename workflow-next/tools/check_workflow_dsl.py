@@ -469,8 +469,6 @@ def validate_bindings(skill_root, configs):
                     if isinstance(value, dict):
                         value = value.get('from')
                     sources.update(resolve(value, context, path, self_outputs))
-                item_inputs = {name for name, value in bindings.items()
-                               if isinstance(value, str) and value.startswith('dispatch.item.')}
                 for name, value in outputs.items():
                     target_scope = scope + '.outputs.' + name
                     if not isinstance(value, str) or not value:
@@ -485,13 +483,15 @@ def validate_bindings(skill_root, configs):
                         error(target_scope, 'saved output must remain relative to working_dir')
                     if parts and parts[0].lower() in {'tmp', 'temp'}:
                         error(target_scope, 'declared deliverables must be saved outside temporary directories')
-                    if normalized(value) in sources:
+                    same_input = bindings.get(name)
+                    if isinstance(same_input, dict):
+                        same_input = same_input.get('from')
+                    updates_artifact = (self_outputs is None
+                            and isinstance(same_input, str)
+                            and same_input.startswith(('nodes.', 'dispatch.inputs.', 'carry.'))
+                            and normalized(value) in resolve(same_input, context, path, self_outputs))
+                    if normalized(value) in sources and not updates_artifact:
                         error(target_scope, f'saved output overwrites an input artifact: {value}')
-                    if is_item and 'run' in block:
-                        if not any('{' + key + '}' in value for key in item_inputs):
-                            error(target_scope, 'dispatch task output must be isolated by a bound item input')
-                        if path.parent.name not in parts:
-                            error(target_scope, 'dispatch task output must be in its own stage directory')
                 for key in ('then', 'else'):
                     visit(block.get(key), scope + '.' + key, bindings, self_outputs)
                 reviewed_outputs = output_values(block)

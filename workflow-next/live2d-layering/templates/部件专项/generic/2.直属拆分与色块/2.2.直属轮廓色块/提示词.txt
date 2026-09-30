@@ -1,9 +1,9 @@
-依据 `<reference>` 和 `<groups>`，为本轮组件画出轮廓色块。`<group_path>` 为空时，画树的顶层 group；有值时，画该 group 的直属 group 和 part，用 `<preview_tool>` 独显输入 `<guide_svg>` 中的当前 group 作为形体底稿。已有输入 SVG 时，保留原有底稿，在输出稿中加入或更新本轮组件；交付包含此前内容的完整输出 `<guide_svg>`，保持画布坐标。
+依据 `<reference>` 和 `<groups>`，为本轮组件画出轮廓色块。`<group_path>` 为空时，画树的顶层 group；有值时，画该 group 的直属 group 和 part，用 `<preview_tool>` 独显输入 `<guide_svg>` 中的当前 group 作为形体底稿。在 `working_dir` 内的临时稿中绘制和自检，完成后更新输出 `<guide_svg>`。已有输入 SVG 时，保留此前内容，加入或更新本轮组件，保持画布坐标。
 
 每个组件用一个有唯一 `id` 的 `<g>` 包住色块。group 用完整 `data-group-path`，part 用完整 `data-part-path` 对齐树中的节点；分开的区域可以画成多块，放在同一个 `<g>` 中。内部嵌套 `<g>` 沿用所属组件的同一路径。当前组底稿与孩子色块使用各自独立的容器。相同组件保持同色，相邻组件用不同纯色区分。色块是闭合填色形状，`stroke="none"`，填色边缘就是组件轮廓。
 
 参考图决定组件的可见范围和外轮廓。色块之间可以重叠，最终显影顺序留给后续 part。临时连体服用于辨认身体范围，画对应身体结构。检查本轮组件合起来覆盖对应形体的可见区域，主要外形基本对准，轮廓平滑，连接处没有明显缝隙、断裂或越界。已有父 group 底稿时，所有孩子色块容纳在输入父色块范围内，父底稿保持原样。
 
-提交前用 `<preview_tool> --reference <reference> --blend 0.5` 看一次整图混合叠加，再逐个独显本轮组件，放大查看可见外缘和相接处；有明显偏移、漏画或断裂就修正。有 `<group_path>` 时，用 `python3 <bounds_tool> --parent-svg <输入 guide_svg> --candidate <输出 guide_svg> --groups <groups> --group-path <group_path> --out <bounds_check>` 检查全部直属孩子；根据返回的越界位置和诊断图修正，直到检查通过。
+提交前用 `<preview_tool> --reference <reference> --blend 0.5` 看一次临时稿的整图混合叠加，再逐个独显本轮组件，放大查看可见外缘和相接处；有明显偏移、漏画或断裂就修正。有 `<group_path>` 时，用 `python3 <bounds_tool> --parent-svg <输入 guide_svg> --candidate <临时稿路径> --groups <groups> --group-path <group_path> --out <bounds_check>` 检查全部直属孩子；根据返回的越界位置和诊断图修正，直到检查通过。
 
-交付完整输出 `<guide_svg>`，以及从它渲染的白底 `<preview>`。有 `<group_path>` 时同时交付通过的 `<bounds_check>`。
+更新完整输出 `<guide_svg>`，以及从它渲染的白底 `<preview>`。有 `<group_path>` 时同时交付通过的 `<bounds_check>`。
