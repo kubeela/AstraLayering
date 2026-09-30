@@ -3,8 +3,30 @@
   "groups": [
     {
       "name": "head",
-      "groups": [],
-      "note": "头部、五官、发饰与全部长发；长发延伸至腰臀两侧。"
+      "groups": [
+        {
+          "name": "face",
+          "groups": [],
+          "note": "Head skin from forehead through jaw, both ears, and facial features; eyes, brows, mouth, and ear occlusion need separate controls later."
+        },
+        {
+          "name": "hair",
+          "groups": [],
+          "note": "All brown hair: crown, bangs, face-framing locks, flyaways, and completed rear curtain down to both hip-level tips; front and rear locks sway and overlap differently."
+        },
+        {
+          "name": "hair_bow",
+          "groups": [],
+          "note": "White bow and flower at the viewer-right temple; knot, loops, and tails sway differently, while the flower differs from the fabric in stiffness."
+        }
+      ],
+      "note": "头部、五官、发饰与全部长发；长发延伸至腰臀两侧。",
+      "parts": [
+        {
+          "name": "bang_hairpin",
+          "note": "Thin curved rigid pin crossing the viewer-right bangs above the eye."
+        }
+      ]
     },
     {
       "name": "neck",
@@ -13,8 +35,33 @@
     },
     {
       "name": "body",
-      "groups": [],
-      "note": "锁骨、肩、胸和腹部至肚脐附近；项链归此范围。"
+      "groups": [
+        {
+          "name": "chest",
+          "groups": [],
+          "note": "锁骨、胸廓和双侧胸部至下肋缘；双侧胸部需要分别软变形。"
+        },
+        {
+          "name": "necklace",
+          "groups": [],
+          "note": "颈前垂至胸口的项链；链条与吊坠的摆动和软硬变形不同。"
+        }
+      ],
+      "note": "锁骨、肩、胸和腹部至肚脐附近；项链归此范围。",
+      "parts": [
+        {
+          "name": "left_shoulder",
+          "note": "角色左肩（画面右侧）的肩峰和三角肌肩帽，随左臂独立抬转。"
+        },
+        {
+          "name": "right_shoulder",
+          "note": "角色右肩（画面左侧）的肩峰和三角肌肩帽，随右臂独立抬转。"
+        },
+        {
+          "name": "abdomen",
+          "note": "下肋缘至腰线的腹部，独立于胸廓弯曲；按连体服下的身体推断。"
+        }
+      ]
     },
     {
       "name": "arms",
