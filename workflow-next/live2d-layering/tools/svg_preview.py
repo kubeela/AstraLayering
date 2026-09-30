@@ -1,22 +1,32 @@
 """Render a PNG or an aligned comparison/component board without editing inputs.
 
-Requires Python 3.8+, Pillow 9.1+, Node.js and sharp.
+Requires Python 3.9+, Pillow and pyvips[binary] from requirements.txt.
 Crop coordinates are pixels of the original SVG viewport, not viewBox units.
 """
 import argparse
 import copy
+import io
 import json
 import math
 import os
 from pathlib import Path
 import re
-import shutil
-import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
-from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageFilter, ImageFont, ImageOps
+try:
+    import PIL
+    from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageFilter, ImageFont, ImageOps
+except ImportError:
+    sys.exit('SVG preview requires Pillow. Install the dependencies declared in '
+             + str(Path(__file__).with_name('requirements.txt')))
+
+try:
+    import pyvips
+except (ImportError, OSError) as exc:
+    sys.exit('SVG preview requires pyvips[binary]. Install the dependencies declared in '
+             + str(Path(__file__).with_name('requirements.txt')) + '\n' + str(exc))
 
 
 SVG_NS = 'http://www.w3.org/2000/svg'
@@ -181,20 +191,19 @@ def crop_svg(root, size, box, output_size):
     return wrapper
 
 
-def node_runtime():
-    if os.environ.get('REVIEW_NODE'):
-        return os.environ['REVIEW_NODE']
-    if shutil.which('node'):
-        return shutil.which('node')
-    bundled = Path.home() / '.cache/codex-runtimes/codex-primary-runtime/dependencies/node'
-    for p in (bundled / 'node.exe', bundled / 'bin/node.exe', bundled / 'bin/node'):
-        if p.is_file():
-            return str(p)
-    raise ValueError('Node.js unavailable; set REVIEW_NODE to its executable')
+def render_svg(content):
+    """Use the same libvips SVG rasterizer at 72 DPI, directly from Python."""
+    try:
+        image = pyvips.Image.svgload_buffer(content, dpi=72)
+        if image.width * image.height > MAX_PIXELS:
+            raise ValueError('SVG render too large; reduce crop or scale')
+        return image.pngsave_buffer()
+    except pyvips.Error as exc:
+        raise ValueError('SVG rendering failed: ' + str(exc)) from exc
 
 
 class RenderBatch:
-    """A single Node process for all SVG cells in one invocation."""
+    """Render each distinct SVG cell once, sequentially in this Python process."""
     def __init__(self, scratch, output_size):
         self.scratch = scratch
         self.output_size = output_size
@@ -210,18 +219,14 @@ class RenderBatch:
         content = ET.tostring(doc, encoding='utf-8', xml_declaration=True)
         if content in self.cache:
             return self.cache[content]
-        source = self.scratch / ('%d.svg' % len(self.jobs))
-        output = source.with_suffix('.png')
-        source.write_bytes(content)
-        self.jobs.append({'input': str(source), 'output': str(output)})
+        output = self.scratch / ('%d.png' % len(self.jobs))
+        self.jobs.append((content, output))
         self.cache[content] = output
         return output
 
     def run(self):
-        manifest = self.scratch / 'renders.json'
-        manifest.write_text(json.dumps(self.jobs), encoding='utf-8')
-        subprocess.run([node_runtime(), str(Path(__file__).with_name('render_svg.cjs')),
-                        '--batch', str(manifest)], check=True, capture_output=True, text=True)
+        for content, output in self.jobs:
+            output.write_bytes(render_svg(content))
 
 
 def comparison_input(path, expected_size, box, output_size, batch, explicit_crop=None):
@@ -289,8 +294,10 @@ def label_font(custom=None):
 
 def parser():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('svg', type=Path)
-    p.add_argument('output', type=Path)
+    p.add_argument('svg', type=Path, nargs='?')
+    p.add_argument('output', type=Path, nargs='?')
+    p.add_argument('--check-deps', action='store_true',
+                   help='Check Python/Pillow/pyvips and render a tiny SVG in memory; no files written')
     p.add_argument('--reference', type=Path, help='Aligned original image or SVG')
     p.add_argument('--compare', type=Path, help='Aligned previous PNG/image or SVG; stays unmodified')
     p.add_argument('--crop', type=int, nargs=4, metavar=('X', 'Y', 'W', 'H'))
@@ -415,12 +422,24 @@ def main():
     p = parser()
     a = p.parse_args()
     try:
+        if a.check_deps:
+            tiny_svg = (b'<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1">'
+                        b'<rect width="1" height="1" fill="red"/></svg>')
+            with Image.open(io.BytesIO(render_svg(tiny_svg))) as image:
+                if image.size != (1, 1) or image.convert('RGBA').getpixel((0, 0)) != (255, 0, 0, 255):
+                    raise ValueError('SVG dependency check rendered unexpected pixels')
+            dependencies = dict(python=sys.version.split()[0], pillow=PIL.__version__,
+                                pyvips=pyvips.__version__,
+                                libvips='.'.join(str(pyvips.version(i)) for i in range(3)),
+                                svg_render='ok')
+            print(json.dumps(dependencies))
+            return
+        if a.svg is None or a.output is None:
+            p.error('svg and output are required unless --check-deps is used')
         preview(a)
         print(a.output)
-    except (ValueError, OSError, ET.ParseError, Image.DecompressionBombError,
-            subprocess.CalledProcessError) as exc:
-        detail = exc.stderr.strip() if isinstance(exc, subprocess.CalledProcessError) else str(exc)
-        p.exit(2, 'Error: '+detail+'\n')
+    except (ValueError, OSError, ET.ParseError, Image.DecompressionBombError) as exc:
+        p.exit(2, 'Error: '+str(exc)+'\n')
 
 
 if __name__ == '__main__':

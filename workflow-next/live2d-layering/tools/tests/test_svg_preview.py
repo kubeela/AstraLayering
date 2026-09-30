@@ -1,8 +1,10 @@
-"""Exercise rendered pixels, input preservation and one-process board rendering."""
+"""Exercise rendered pixels, input preservation and cached Python rendering."""
 import importlib.util
 import io
+import json
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -53,6 +55,43 @@ class PreviewTests(unittest.TestCase):
         return image.getpixel(((index % columns)*size[0]+x,
                                (index//columns)*(size[1]+PREVIEW.LABEL_HEIGHT)+PREVIEW.LABEL_HEIGHT+y))
 
+    def test_dependency_check_renders_without_creating_files(self):
+        before = set(self.folder.iterdir())
+        result = subprocess.run([sys.executable, str(SCRIPT), '--check-deps'],
+                                cwd=self.folder, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        status = json.loads(result.stdout)
+        self.assertEqual(status['svg_render'], 'ok')
+        self.assertEqual(status['libvips'], '8.18.6')
+        self.assertEqual(status['pyvips'], '3.2.0')
+        self.assertEqual(set(self.folder.iterdir()), before)
+
+    def test_missing_pillow_reports_the_dependency_manifest(self):
+        result = subprocess.run([sys.executable, '-S', str(SCRIPT), '--check-deps'],
+                                capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('requires Pillow', result.stderr)
+        self.assertIn('requirements.txt', result.stderr)
+        self.assertNotIn('Traceback', result.stderr)
+
+    def test_missing_renderer_reports_dependency_manifest(self):
+        loader = '''import builtins, runpy, sys
+original = builtins.__import__
+def missing(name, *args, **kwargs):
+    if name == 'pyvips':
+        raise ImportError('Fixture: pyvips is unavailable')
+    return original(name, *args, **kwargs)
+builtins.__import__ = missing
+sys.argv = [sys.argv[1], '--check-deps']
+runpy.run_path(sys.argv[0], run_name='__main__')
+'''
+        result = subprocess.run([sys.executable, '-c', loader, str(SCRIPT)],
+                                capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('requires pyvips[binary]', result.stderr)
+        self.assertIn('requirements.txt', result.stderr)
+        self.assertNotIn('Traceback', result.stderr)
+
     def test_isolation_preserves_transforms_clips_masks_and_gradients(self):
         image = self.render('only.png', '--only', 'hair', '--only', 'ribbon')
         self.assertEqual(image.mode, 'RGBA')
@@ -64,10 +103,9 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(image.getpixel((45, 15)), (0, 0, 255, 255))
 
     def test_one_batch_for_parts_toggle_and_hidden_control(self):
-        with mock.patch.object(PREVIEW.subprocess, 'run', wraps=subprocess.run) as run:
+        with mock.patch.object(PREVIEW, 'render_svg', wraps=PREVIEW.render_svg) as run:
             image = self.render('board.png', '--part', 'ribbon', '--part', 'hidden', '--toggle', 'hair')
-        self.assertEqual(run.call_count, 1)
-        self.assertIn('--batch', run.call_args[0][0])
+        self.assertEqual(run.call_count, 4)
         self.assertEqual(self.cell_pixel(image, 1, 45, 15), (0, 0, 255))
         self.assertEqual(self.cell_pixel(image, 2, 35, 45), (255, 255, 0))
         self.assertEqual(self.cell_pixel(image, 3, 15, 15), (238, 238, 238))
@@ -79,8 +117,7 @@ class PreviewTests(unittest.TestCase):
           viewBox="10 20 100 100"><rect x="10" y="20" width="50%" height="100%" fill="red"/>
           <circle cx="70" cy="80" r="10" fill="blue"/></svg>''', encoding='utf-8')
         full = self.folder / 'direct.png'
-        subprocess.run([PREVIEW.node_runtime(), str(SCRIPT.with_name('render_svg.cjs')),
-                        str(self.svg), str(full)], check=True, capture_output=True)
+        full.write_bytes(PREVIEW.render_svg(self.svg.read_bytes()))
         actual = self.render('cropped.png', '--crop', 40, 10, 100, 80)
         with Image.open(full) as im:
             expected = im.convert('RGBA').crop((40, 10, 140, 90))
@@ -141,7 +178,7 @@ class PreviewTests(unittest.TestCase):
         for flags in [('--part', 'missing'), ('--hide', 'clip'), ('--crop', 0, 0, 81, 60),
                       ('--blend', 'nan'), ('--diff',), ('--edge-overlay',),
                       ('--reference-crop', 0, 0, 10, 10)]:
-            with self.subTest(flags=flags), mock.patch.object(PREVIEW.subprocess, 'run') as run:
+            with self.subTest(flags=flags), mock.patch.object(PREVIEW, 'render_svg') as run:
                 with self.assertRaises(ValueError):
                     self.render('invalid.png', *flags)
                 run.assert_not_called()
@@ -175,7 +212,7 @@ class PreviewTests(unittest.TestCase):
                 self.svg.write_text('<svg xmlns="http://www.w3.org/2000/svg" '
                                     'width="80" height="60">'+content+'</svg>', encoding='utf-8')
                 original = self.svg.read_bytes()
-                with mock.patch.object(PREVIEW.subprocess, 'run') as run:
+                with mock.patch.object(PREVIEW, 'render_svg') as run:
                     with self.assertRaisesRegex(ValueError, diagnostic):
                         self.render('invalid.png')
                     run.assert_not_called()
@@ -205,11 +242,18 @@ class PreviewTests(unittest.TestCase):
             self.assertEqual(image.getpixel(point)[3], 0, point)
 
     def test_unchanged_toggle_warns_without_extra_render(self):
-        with mock.patch.object(PREVIEW.subprocess, 'run', wraps=subprocess.run) as run:
+        with mock.patch.object(PREVIEW, 'render_svg', wraps=PREVIEW.render_svg) as run:
             with mock.patch.object(PREVIEW.sys, 'stderr', new_callable=io.StringIO) as stderr:
                 self.render('hidden-toggle.png', '--toggle', 'hidden')
-        self.assertEqual(run.call_count, 1)
+        self.assertEqual(run.call_count, 2)
         self.assertIn('--toggle hidden has no visible change', stderr.getvalue())
+
+    def test_duplicate_cells_share_one_render(self):
+        with mock.patch.object(PREVIEW, 'render_svg', wraps=PREVIEW.render_svg) as run:
+            image = self.render('reused.png', '--only', 'ribbon', '--part', 'ribbon', '--part', 'ribbon')
+        self.assertEqual(run.call_count, 1)
+        for i in range(3):
+            self.assertEqual(self.cell_pixel(image, i, 45, 15), (0, 0, 255))
 
 
 if __name__ == '__main__':
