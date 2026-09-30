@@ -19,15 +19,14 @@
 @media(max-width:1000px){.workspace{grid-template-columns:minmax(0,1fr) 280px}.layers-label{display:none}.layer-head{padding:11px}.navigator{width:108px}.nav-body{height:125px}}
 @media(max-width:700px){.workspace{grid-template-columns:minmax(0,1fr)}.layer-panel{position:absolute;inset:0 0 0 auto;width:min(320px,90%);box-shadow:-12px 0 30px #0004}.header-actions #fullscreen{display:none}.layer-row{min-height:44px}.layer-disclosure{height:32px}.layer-options button,.layer-actions button{min-height:34px}}
 .canvas-workspace{min-width:0;min-height:0;display:flex;flex-direction:column}.canvas-workspace>.stage{flex:1}
-.compare-bar{flex:none;padding:12px 18px;background:#1b2027;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}.reference-info{flex:1 1 220px;min-width:0}.reference-name{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.reference-name b{font-size:10px;color:var(--accent);margin-right:8px}.reference-meta{font-size:10px;color:var(--muted);line-height:1.7;margin-top:4px}.compare-file-actions{display:flex;gap:4px}.compare-file-actions button{font-size:11px;border-color:var(--line);padding:6px 9px}.compare-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;width:100%}.compare-modes{display:flex;gap:3px;padding:3px;background:#11171c;border:1px solid var(--line);border-radius:9px}.compare-modes button{font-size:11px;padding:7px 10px}.compare-adjust{display:flex;align-items:center;gap:9px;font-size:11px;color:#c1cfd7}.compare-adjust input{width:110px;accent-color:var(--accent);cursor:pointer}.compare-adjust output{min-width:32px;color:var(--accent);font-variant-numeric:tabular-nums}.compare-lock{font-size:10px;color:#8fa8b1;margin-left:auto}
-.reference-view{position:absolute;inset:0;overflow:hidden;pointer-events:none}.reference-view svg{display:block;width:100%;height:100%;overflow:hidden}.compare-labels{position:absolute;inset:0;pointer-events:none;user-select:none}.compare-badge{position:absolute;top:17px;padding:5px 9px;background:#20252be8;color:#dbe6ec;border:1px solid #70838c66;border-radius:5px;font-size:10px;letter-spacing:.4px}.compare-badge:first-child{left:16px}.compare-badge:last-child{right:16px;color:#b6ece8}.pane-divider{position:absolute;top:0;bottom:0;left:50%;width:1px;background:#73868b66;pointer-events:none}
+.compare-bar{flex:none;padding:12px 18px;background:#1b2027;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}.compare-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;width:100%}.compare-modes{display:flex;gap:3px;padding:3px;background:#11171c;border:1px solid var(--line);border-radius:9px}.compare-modes button{font-size:11px;padding:7px 10px}.compare-adjust{display:flex;align-items:center;gap:9px;font-size:11px;color:#c1cfd7}.compare-adjust input{width:110px;accent-color:var(--accent);cursor:pointer}.compare-adjust output{min-width:32px;color:var(--accent);font-variant-numeric:tabular-nums}
+.compare-badge{position:absolute;top:17px;padding:5px 9px;background:#20252be8;color:#dbe6ec;border:1px solid #70838c66;border-radius:5px;font-size:10px;letter-spacing:.4px}
 .wipe-divider{position:absolute;top:0;bottom:0;width:32px;transform:translateX(-50%);z-index:2;cursor:ew-resize;touch-action:none;outline:none}.wipe-divider:before{content:"";position:absolute;left:15px;top:0;bottom:0;width:2px;background:#d1ffff;box-shadow:0 0 0 1px #25434d66}.wipe-grip{position:absolute;top:50%;left:0;width:32px;height:44px;transform:translateY(-50%);border:1px solid #b6eeec;border-radius:9px;display:grid;place-items:center;background:#23414b;color:#d5ffff;font-size:16px;box-shadow:0 2px 10px #102c3d44}.wipe-divider:focus-visible .wipe-grip,.wipe-divider:hover .wipe-grip{outline:2px solid var(--accent);outline-offset:3px;background:#315866}
-.stage[data-compare="side"] .art-frame{width:50%}.stage[data-compare="side"] .reference-view{left:50%}.stage[data-compare="side"] .compare-badge:last-child{left:calc(50% + 16px);right:auto}.stage[data-compare="side"] .art-frame{clip-path:none}.stage[data-compare="swipe"] .art-frame{clip-path:inset(0 calc(100% - var(--wipe,50%)) 0 0)}.stage[data-compare="swipe"] .reference-view{clip-path:inset(0 0 0 var(--wipe,50%))}.stage[data-compare="overlay"] .reference-view{opacity:var(--reference-opacity,.5)}
-.fast-preview{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:inherit;z-index:1}.fast-pane{position:absolute;inset:0;overflow:hidden}.fast-pane canvas{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}.stage[data-compare="none"] .fast-b{display:none}.stage[data-compare="side"] .fast-a{right:auto;width:50%}.stage[data-compare="side"] .fast-b{left:50%;width:50%}.stage[data-compare="swipe"] .fast-a{clip-path:inset(0 calc(100% - var(--wipe,50%)) 0 0)}.stage[data-compare="swipe"] .fast-b{clip-path:inset(0 0 0 var(--wipe,50%))}.stage[data-compare="overlay"] .fast-b{opacity:var(--reference-opacity,.5)}
-.canvas-meta,.compare-labels,.pane-divider{z-index:2}
+.canvas-meta{z-index:2}
 .stage.comparing .canvas-meta{display:none}.stage.comparing .top-tools{top:auto;bottom:84px;left:16px;right:auto}.stage.comparing .navigator,.stage.comparing .nav-restore{bottom:84px}
-@media(max-width:1000px){.reference-open-label{display:none}.compare-bar{padding:10px 12px}.compare-lock{margin-left:0}.compare-adjust input{width:90px}}
-@media(max-width:620px){.compare-bar{padding:9px 10px;gap:8px}.reference-info{flex-basis:150px}.compare-controls{gap:8px}.compare-modes{width:100%}.compare-modes button{flex:1;padding:7px 5px;font-size:10px}.compare-lock{margin-left:auto;font-size:9px}.compare-adjust input{width:95px}.compare-badge{top:12px}.compare-badge:first-child{left:10px}.stage[data-compare="side"] .compare-badge:last-child{left:calc(50% + 10px)}.stage.comparing .top-tools{left:10px;bottom:70px}.header-actions #openReference{padding:8px}.reference-meta{font-size:9px}}
+.art-frame{opacity:0;width:100%!important}.composition{position:absolute;inset:0;display:grid;grid-template-columns:1fr;pointer-events:none;overflow:hidden}.composition[data-mode="side"]{grid-template-columns:repeat(2,minmax(0,1fr))}.composition[data-mode="triple"]{grid-template-columns:repeat(3,minmax(0,1fr))}.composition[data-mode="swipe"]{display:block}.view-pane{position:relative;min-width:0;overflow:hidden;border-right:1px solid #73868b66}.view-pane:last-child{border-right:0}.view-pane svg{display:block;width:100%;height:100%;overflow:hidden}.view-pane .compare-badge{left:12px;right:auto}.composition[data-mode="swipe"] .view-pane{position:absolute;inset:0;border:0}.composition[data-mode="swipe"] .view-pane:first-child{clip-path:inset(0 calc(100% - var(--wipe,50%)) 0 0)}.composition[data-mode="swipe"] .view-pane:nth-child(2){clip-path:inset(0 0 0 var(--wipe,50%))}.view-selectors{display:flex;flex-wrap:wrap;gap:7px}.view-selectors label{display:flex;align-items:center;gap:5px;color:#b9ccd4;font-size:11px}.view-selectors select{min-width:78px;max-width:130px;background:#14191f;color:#dce6eb;border:1px solid var(--line);border-radius:5px;padding:5px}.source-summary{display:flex;flex-wrap:wrap;gap:8px;flex:1}.source-card{min-width:140px;max-width:290px;display:flex;align-items:center;gap:6px;font-size:11px;color:#b9ccd4}.source-card b{color:var(--accent)}.source-card span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}.source-card button{padding:4px 6px;font-size:10px;border-color:var(--line)}
+@media(max-width:1000px){.reference-open-label{display:none}.compare-bar{padding:10px 12px}.compare-adjust input{width:90px}}
+@media(max-width:620px){.compare-bar{padding:9px 10px;gap:8px}.compare-controls{gap:8px}.compare-modes{width:100%}.compare-modes button{flex:1;padding:7px 5px;font-size:10px}.compare-adjust input{width:95px}.compare-badge{top:12px}.stage.comparing .top-tools{left:10px;bottom:70px}.header-actions #openReference{padding:8px}}
 
 .group-content{display:flex;flex-direction:column;flex:1;min-height:0}
 .group-tools{display:flex;align-items:center;gap:4px;padding:9px 10px;border-bottom:1px solid var(--line)}
@@ -48,6 +47,8 @@
 .group-unit[data-unit-kind="guide"] .group-kind,.group-unit[data-unit-kind="part-guide"] .group-kind{color:#89d9dd}
 .group-unit[data-unit-kind="art"] .group-kind{color:#e7bf8e}
 .group-unit[data-unit-kind="untyped"] .group-kind{color:#c4abb0}
+.group-unit-row.selected{background:#9ee0e21b;color:var(--accent)}
+.group-unmatched{border-top:1px solid var(--line);margin-top:5px}
 .group-inspector{border-top:1px solid var(--line);flex:none;max-height:min(42vh,300px);overflow:auto}
 .group-inspector summary{display:flex;align-items:center;gap:7px;min-height:36px;padding:7px 12px;cursor:pointer;list-style:none;font-size:11px;color:#d7e6e9}
 .group-inspector summary::-webkit-details-marker{display:none}
@@ -76,6 +77,7 @@
   <div class="header-actions">
    <button id="open" class="primary" title="打开或更换图像 A · Ctrl / ⌘ + O"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19V6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v2M3 19l3-8h16l-3 8H3Z"/></svg><span class="open-label">图像 A</span></button>
    <button id="openReference" disabled aria-label="打开或更换图像 B" title="打开或更换图像 B · SVG / 位图"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18M3 16l5-5 4 5m3-8h3m-1.5-1.5v3"/></svg><span class="reference-open-label">图像 B</span></button>
+   <button id="openThird" disabled aria-label="打开或更换图像 C" title="打开或更换图像 C · SVG / 位图">图像 C</button>
    <button id="toggleLayers" aria-label="图层面板" aria-controls="layerPanel" aria-expanded="true" aria-pressed="true" title="显示或隐藏图层面板"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 9-4 9 4-9 4-9-4Zm0 5 9 4 9-4M3 17l9 4 9-4"/></svg><span class="layers-label">图层</span></button>
    <span class="separator"></span>
    <button id="fullscreen" class="icon-only" aria-label="全屏" title="全屏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>
@@ -83,26 +85,23 @@
   </div>
   <input id="fileInput" type="file" accept=".svg,image/svg+xml,image/*" hidden>
   <input id="referenceInput" type="file" accept=".svg,image/svg+xml,image/*" hidden>
+  <input id="thirdInput" type="file" accept=".svg,image/svg+xml,image/*" hidden>
  </header>
  <div id="workspace" class="workspace">
  <section class="canvas-workspace" aria-label="预览工作台">
  <div id="compareBar" class="compare-bar" hidden>
-  <div class="reference-info"><div class="reference-name"><b>图像 B</b><span id="referenceName"></span></div><div id="referenceMeta" class="reference-meta"></div></div>
-  <div class="compare-file-actions"><button id="swapImages" title="交换后可查看另一份 SVG 的原生图层">交换 A / B</button><button id="replaceReference">更换 B</button><button id="removeReference">移除 B</button></div>
+  <div class="source-summary"><div id="sourceB" class="source-card" hidden><b>B</b><span id="referenceName"></span><button id="swapImages" title="交换后可查看 B 的分组与 SVG 图层">交换 A/B</button><button id="removeReference">移除</button></div><div id="sourceC" class="source-card" hidden><b>C</b><span id="thirdName"></span><button id="swapThird" title="交换后可查看 C 的分组与 SVG 图层">交换 A/C</button><button id="removeThird">移除</button></div></div>
   <div class="compare-controls">
-   <div class="compare-modes" role="group" aria-label="对比模式"><button data-compare-mode="none" aria-pressed="false">仅 A</button><button data-compare-mode="side" aria-pressed="true">左右对比</button><button data-compare-mode="overlay" aria-pressed="false">透明叠加</button><button data-compare-mode="swipe" aria-pressed="false">滑动对比</button></div>
-   <label id="opacityControl" class="compare-adjust" hidden>图像 B 不透明度<input id="opacityInput" type="range" min="0" max="100" value="50" aria-label="图像 B 不透明度，0 为完全透明，100 为完全显示"><output id="opacityValue" for="opacityInput">50%</output></label>
+   <div class="compare-modes" role="group" aria-label="显示方式"><button data-compare-mode="none" aria-pressed="false">单画面</button><button data-compare-mode="side" aria-pressed="true">并排</button><button data-compare-mode="triple" aria-pressed="false">三列</button><button data-compare-mode="swipe" aria-pressed="false">滑动</button></div>
+   <div class="view-selectors"><label>画面 1<select id="expression0" aria-label="画面 1 内容"></select></label><label id="expressionLabel1">画面 2<select id="expression1" aria-label="画面 2 内容"></select></label><label id="expressionLabel2" hidden>画面 3<select id="expression2" aria-label="画面 3 内容"></select></label></div>
+   <label id="mixControl" class="compare-adjust" hidden>双图混合<input id="mixInput" type="range" min="0" max="100" value="50" aria-label="双图混合时后一个图像的比例"><output id="mixValue" for="mixInput">50%</output></label>
    <label id="wipeControl" class="compare-adjust" hidden>分割位置<input id="wipeInput" type="range" min="0" max="100" value="50" aria-label="分割位置"><output id="wipeValue" for="wipeInput">50%</output></label>
-   <span class="compare-lock">等权归一化对齐 · 缩放 / 平移同步</span>
   </div>
  </div>
  <main id="stage" class="stage" data-background="gray" data-compare="none" aria-label="图像预览与对比区域">
   <iframe id="artFrame" class="art-frame" title="图像 A 画布" sandbox="allow-same-origin" tabindex="-1"></iframe>
-   <div id="fastPreview" class="fast-preview" hidden aria-hidden="true"><div class="fast-pane fast-a"><canvas id="fastCanvas"></canvas></div><div class="fast-pane fast-b"><canvas id="fastReferenceCanvas"></canvas></div></div>
-  <div id="referenceView" class="reference-view" hidden><svg id="referenceCanvas" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" role="img" aria-label="图像 B 画布"><image id="referenceImage" preserveAspectRatio="none"/></svg></div>
+  <div id="composition" class="composition" data-mode="none" hidden aria-label="组合画面"></div>
   <div id="interaction" class="interaction empty" tabindex="0" role="application" aria-label="可缩放图像画布。滚轮缩放，拖动平移，F 适应窗口，B 框选放大。"></div>
-  <div id="compareLabels" class="compare-labels" hidden><span id="primaryBadge" class="compare-badge">图像 A</span><span id="referenceBadge" class="compare-badge">图像 B</span></div>
-  <div id="paneDivider" class="pane-divider" hidden></div>
   <div id="wipeDivider" class="wipe-divider" role="slider" tabindex="0" aria-label="拖动分割轴，左侧图像 A，右侧图像 B" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" hidden><span class="wipe-grip" aria-hidden="true">↔</span></div>
   <div id="canvasMeta" class="canvas-meta" hidden><b>图像 A</b><br><span id="canvasCaption">移动到细节上，滚动放大</span></div>
   <div class="top-tools"><div class="backgrounds floating" role="group" aria-label="画布背景"><button class="swatch" data-bg="checker" aria-label="棋盘格背景" title="棋盘格" aria-pressed="false"></button><button class="swatch" data-bg="gray" aria-label="浅灰背景" title="浅灰" aria-pressed="true"></button><button class="swatch" data-bg="dark" aria-label="深色背景" title="深色" aria-pressed="false"></button><button class="swatch" data-bg="white" aria-label="白色背景" title="白色" aria-pressed="false"></button></div></div>
@@ -119,7 +118,7 @@
   </nav>
   <aside id="navigator" hidden class="navigator floating" aria-label="导航缩略图"><div class="nav-head"><span>导航</span><button id="hideNavigator" aria-label="隐藏导航" title="隐藏导航"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8m0-8-8 8"/></svg></button></div><div id="navBody" class="nav-body" aria-label="点击或拖动定位画布"><img id="thumbnail" alt="图像 A 全图缩略图" draggable="false"><div id="navView" class="nav-view"></div><div id="navDot" class="nav-dot"></div></div></aside>
   <button id="showNavigator" class="nav-restore floating" hidden>显示导航</button>
-  <div id="emptyState" class="empty-state"><div class="empty-card"><svg class="empty-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M22 10H12a2 2 0 0 0-2 2v10m32-12h10a2 2 0 0 1 2 2v10M10 42v10a2 2 0 0 0 2 2h10m32-12v10a2 2 0 0 1-2 2H42M22 40l10-17 10 17M26 34h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><h1>拖入图像，开始预览</h1><p>任意组合两份 SVG 或位图进行对比<br>也可拖入 groups.json，在右侧查看分组树</p><button id="emptyOpen" class="primary">选择图像 A</button></div></div>
+  <div id="emptyState" class="empty-state"><div class="empty-card"><svg class="empty-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M22 10H12a2 2 0 0 0-2 2v10m32-12h10a2 2 0 0 1 2 2v10M10 42v10a2 2 0 0 0 2 2h10m32-12v10a2 2 0 0 1-2 2H42M22 40l10-17 10 17M26 34h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><h1>拖入图像，开始预览</h1><p>最多放入三份 SVG 或位图，自由组合对比<br>也可拖入 groups.json，在右侧查看分组树</p><button id="emptyOpen" class="primary">选择图像 A</button></div></div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
  </main>
  </section>
@@ -134,7 +133,7 @@
    <label class="layer-spatial"><input id="spatialLayers" type="checkbox" disabled>识别独立图块 <span class="layer-count">空间估计</span></label>
    <div class="layer-actions"><button id="showAllLayers" disabled>全部显示</button><button id="hideAllLayers" disabled>全部隐藏</button><button id="restoreLayers" disabled>恢复原始</button></div>
   </div>
-  <p id="layerEmpty" class="layer-empty">当图像 A 为 SVG 时，可查看嵌套分组和绘制顺序。交换 A / B 可检查另一份 SVG。</p>
+  <p id="layerEmpty" class="layer-empty">当图像 A 为 SVG 时，可查看嵌套分组和绘制顺序。交换图像可检查 B 或 C 的 SVG。</p>
   <ul id="layerTree" class="layer-tree" role="tree" aria-label="SVG 层级结构" hidden></ul>
   <div id="groupContent" class="group-content" hidden>
     <div class="group-tools"><input id="groupSearch" type="search" placeholder="搜索名称、路径或备注" aria-label="搜索分组"><button id="expandGroups">展开</button><button id="collapseGroups">收起</button></div>
@@ -150,8 +149,8 @@
  </div>
  <footer class="statusbar"><div><span class="desktop-hint" id="hint">滚轮缩放 · 拖动平移 · 双击放大</span><span class="touch-hint" hidden>双指缩放 · 单指拖动</span></div><div class="right"><span class="local-note"><span class="status-light"></span>文件在本地处理</span><button id="reset" disabled>重置视图</button></div></footer>
 </div>
-<div id="dropMask" class="drop-mask" hidden><div><strong>松开，导入文件</strong><p>支持 groups.json、SVG 与浏览器可解码的位图<br>一次拖入两张图会依次放入 A / B</p></div></div>
-<dialog id="helpDialog" class="help" aria-labelledby="helpTitle"><div class="help-header"><h2 id="helpTitle">把细节放大看</h2><button id="closeHelp" class="icon-only" aria-label="关闭操作说明"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12m0-12L6 18"/></svg></button></div><p>将鼠标放在想看的细节上滚动，缩放会围绕该位置进行。也可以拖出选区，直接放大到那一部分。</p><div class="shortcuts"><span>放大 / 缩小</span><kbd>滚轮 · + / −</kbd><span>平移</span><kbd>拖动 · 方向键</kbd><span>适应窗口 / 实际大小</span><kbd>F 或 0 / 1</kbd><span>框选放大 / 取消</span><kbd>B / Esc</kbd><span>打开图像 A</span><kbd>Ctrl / ⌘ + O</kbd></div><p>触控设备支持双指捏合缩放。点击右下角导航，可快速回到作品的任意位置。缩放框支持直接输入比例，例如 <b>10000</b> 或 <b>1e6</b>。</p><p>两个槽位都支持 SVG 以及浏览器可解码的 PNG、JPEG、WebP、GIF、AVIF、BMP 等位图。两张图会按各自最长边等权归一化，再居中放进同一个对比画布；交换 A / B 不会改变对齐结果。左右、叠加和滑动模式共用缩放与平移。</p><p>图层面板读取当前图像 A 的 SVG 嵌套结构。载入 groups.json 后，`groups.svg` 分别显示组轮廓和部件轮廓，`character.svg` 显示部件绘制；两份图可放入 A / B 对比。位图没有原生 SVG 图层。</p><p class="footnote">不设固定缩放倍率上限。SVG 会随视图重新绘制；位图和 SVG 内嵌位图仍受原始分辨率限制。</p></dialog>
+<div id="dropMask" class="drop-mask" hidden><div><strong>松开，导入文件</strong><p>支持 groups.json、SVG 与浏览器可解码的位图<br>一次拖入三张图会依次放入 A / B / C</p></div></div>
+<dialog id="helpDialog" class="help" aria-labelledby="helpTitle"><div class="help-header"><h2 id="helpTitle">把细节放大看</h2><button id="closeHelp" class="icon-only" aria-label="关闭操作说明"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12m0-12L6 18"/></svg></button></div><p>在 A / B / C 放入 SVG 或位图。选择单画面、并排、三列或滑动，再为各画面选择原图或混合组合。例如左侧 A+B，右侧 C；滑动也能比较这样的组合。双图混合可调整比例，三图混合等比叠加。画面同步缩放和平移。</p><p>将鼠标放在细节上滚动，或拖出选区放大。点击分组树中的节点，可定位到对应图形；没有匹配的 SVG 图形仍显示为普通图层。</p><div class="shortcuts"><span>放大 / 缩小</span><kbd>滚轮 · + / −</kbd><span>平移</span><kbd>拖动 · 方向键</kbd><span>适应窗口 / 实际大小</span><kbd>F 或 0 / 1</kbd><span>框选放大 / 取消</span><kbd>B / Esc</kbd><span>打开图像 A</span><kbd>Ctrl / ⌘ + O</kbd></div><p>图像按最长边等权归一化并居中对齐。图层面板读取 A 的 SVG 绘制顺序；载入 groups.json 后，匹配的图形归入 group／part 树。交换 A / B 或 A / C 可以检查其他 SVG 的图层。</p><p class="footnote">位图和 SVG 内嵌位图受原始分辨率限制。</p></dialog>
 <script>
 'use strict';
 (() => {
@@ -159,15 +158,13 @@
  const stage=$('stage'), hit=$('interaction'), frame=$('artFrame');
  const camera={cx:0,cy:0,upp:1,fit:true};
  let primary=null, model=null, outer=null, thumbnailURL=null, loadTicket=0, raf=0, timer=0;
- let reference=null, referenceTicket=0, compareMode='none', wipePosition=50, wipeDrag=null;
+ let reference=null, referenceTicket=0, tertiary=null, tertiaryTicket=0, compareMode='none', viewExpressions=['A','B','C'], wipePosition=50, wipeDrag=null;
  let size={w:1,h:1}, tool='pan', space=false, drag=null, selection=null, pinch=null, lastTap=null;
  const pointers=new Map();
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  let artwork=null, layerRoot=null, nativeLayers=[], layerLookup=new Map(), expandedLayers=new Set();
  let spatialChildren=null, thumbnailTimer=0, focusedLayer='native-0';
- let groupDocument=null, groupSource=null, groupCompatible=false, groupEntries=[], expandedGroups=new Set(), selectedGroupPath='';
- let fastPreviewReady=false, fastReferenceReady=false, fastPreviewActive=false, fastPreviewGeneration=0, fastReferenceGeneration=0, fastPreviewEndTimer=0, fastPreviewReveal=0;
- const fastPreview=$('fastPreview'),fastCanvas=$('fastCanvas'),fastReferenceCanvas=$('fastReferenceCanvas');
+ let groupDocument=null, groupCompatible=false, groupModeActive=false, groupEntries=[], groupByPath=new Map(), groupByName=new Map(), expandedGroups=new Set(), selectedGroupPath='', selectedLayerKey='', unmatchedOpen=false;
  const containers=new Set(['svg','g','a','switch']);
  const graphics=new Set(['path','rect','circle','ellipse','line','polyline','polygon','text','image','use','foreignObject']);
  const tagNames={g:'未命名分组',svg:'嵌套画布',a:'链接分组',switch:'条件分组',path:'路径',rect:'矩形',circle:'圆形',ellipse:'椭圆',line:'线段',polyline:'折线',polygon:'多边形',text:'文字',image:'图片',use:'引用图形',foreignObject:'嵌入内容'};
@@ -175,7 +172,7 @@
  function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(timer);timer=setTimeout(()=>$('toast').hidden=true,3400);}
  // Both panes use the same camera. Keep the gesture's starting pane while
  // captured, including both fingers of a pinch across the separator.
- function local(event){const r=hit.getBoundingClientRect(),x=event.clientX-r.left,pane=compareMode==='side'?(pointers.get(event.pointerId)?.pane??pointers.values().next().value?.pane??(x>=size.w?size.w:0)):0;return {x:x-pane,y:event.clientY-r.top,pane};}
+ function local(event){const r=hit.getBoundingClientRect(),x=event.clientX-r.left,columns=compareMode==='triple'?3:compareMode==='side'?2:1,pane=columns>1?(pointers.get(event.pointerId)?.pane??pointers.values().next().value?.pane??clamp(Math.floor(x/size.w),0,columns-1)*size.w):0;return {x:x-pane,y:event.clientY-r.top,pane};}
  function world(point){return {x:camera.cx+(point.x-size.w/2)*camera.upp,y:camera.cy+(point.y-size.h/2)*camera.upp};}
  function center(){return {x:size.w/2,y:size.h/2};}
  function formatZoom(){const p=100/camera.upp;if(p>=1e8||p<.001)return p.toExponential(3).replace(/\.?(0+)e/,'e');return new Intl.NumberFormat('en-US',{maximumFractionDigits:p<1?4:1}).format(p);}
@@ -186,50 +183,12 @@
  function fit(){if(!model)return;const pad=Math.min(40,size.w*.07,size.h*.06),bottom=Math.min(90,size.h*.2),upp=Math.max(model.w/Math.max(1,size.w-pad*2),model.h/Math.max(1,size.h-pad-bottom));commit(model.w/2,model.h/2+(bottom-pad)/2*upp,upp,true);}
  function actual(){if(model)commit(camera.cx,camera.cy,1);}
  function schedule(){if(!raf)raf=requestAnimationFrame(paint);}
- // During a gesture, move a bounded raster copy and update the SVG only when it settles.
- function paint(){raf=0;if(!outer||!model)return;const w=size.w*camera.upp,h=size.h*camera.upp,viewBox=`${camera.cx-w/2} ${camera.cy-h/2} ${w} ${h}`;if(fastPreviewActive)positionFastPreview();else{outer.setAttribute('viewBox',viewBox);$('referenceCanvas').setAttribute('viewBox',viewBox);}if(document.activeElement!==$('zoomInput'))$('zoomInput').value=formatZoom();paintNavigator();}
- function positionFastCanvas(canvas,layout){
-  const left=camera.cx-size.w*camera.upp/2,top=camera.cy-size.h*camera.upp/2;
-  canvas.style.width=layout.w+'px';canvas.style.height=layout.h+'px';
-  canvas.style.transform=`translate3d(${(layout.x-left)/camera.upp}px,${(layout.y-top)/camera.upp}px,0) scale(${1/camera.upp})`;
- }
- function positionFastPreview(){positionFastCanvas(fastCanvas,primary.layout);if(compareMode!=='none')positionFastCanvas(fastReferenceCanvas,reference.layout);}
- function stopFastPreview(immediate=false){
-  clearTimeout(fastPreviewEndTimer);if(!fastPreviewActive){if(immediate){++fastPreviewReveal;fastPreview.hidden=true;}return;}
-  fastPreviewActive=false;const reveal=++fastPreviewReveal;schedule();
-  if(immediate)fastPreview.hidden=true;
-  else requestAnimationFrame(()=>requestAnimationFrame(()=>{if(reveal===fastPreviewReveal&&!fastPreviewActive)fastPreview.hidden=true;}));
- }
- function beginFastPreview(){
-  if(!fastPreviewReady||(compareMode!=='none'&&!fastReferenceReady))return false;
-  clearTimeout(fastPreviewEndTimer);++fastPreviewReveal;
-  if(!fastPreviewActive){fastPreviewActive=true;fastPreview.hidden=false;}
-  return true;
- }
- function settleFastPreview(){if(fastPreviewActive){clearTimeout(fastPreviewEndTimer);fastPreviewEndTimer=setTimeout(()=>stopFastPreview(),350);}}
- function drawFastImage(url,asset,canvas,isCurrent,onReady){
-  const source=new Image();source.src=url;
-  source.decode().then(()=>{
-   if(!isCurrent())return;
-   const ratio=Math.min(4,2048/Math.max(asset.w,asset.h),Math.sqrt(4000000/(asset.w*asset.h)));
-   canvas.width=Math.max(1,Math.round(asset.w*ratio));canvas.height=Math.max(1,Math.round(asset.h*ratio));
-   canvas.getContext('2d').drawImage(source,0,0,canvas.width,canvas.height);
-   onReady();
-  }).catch(()=>{});
- }
- function prepareFastPreview(url,asset){
-  const generation=++fastPreviewGeneration;fastPreviewReady=false;stopFastPreview(true);
-  drawFastImage(url,asset,fastCanvas,()=>generation===fastPreviewGeneration,()=>fastPreviewReady=true);
- }
- function prepareFastReference(){
-  const generation=++fastReferenceGeneration;fastReferenceReady=false;stopFastPreview(true);
-  if(reference)drawFastImage(reference.url,reference,fastReferenceCanvas,()=>generation===fastReferenceGeneration,()=>fastReferenceReady=true);
- }
+ function paint(){raf=0;if(!outer||!model)return;const w=size.w*camera.upp,h=size.h*camera.upp,viewBox=`${camera.cx-w/2} ${camera.cy-h/2} ${w} ${h}`;outer.setAttribute('viewBox',viewBox);for(const svg of $('composition').querySelectorAll('.view-canvas'))svg.setAttribute('viewBox',viewBox);if(document.activeElement!==$('zoomInput'))$('zoomInput').value=formatZoom();paintNavigator();}
  function paintNavigator(){if(!model||!primary||$('navigator').hidden)return;const box=$('navBody'),w=box.clientWidth,h=box.clientHeight;if(!w||!h)return;const k=Math.min(w/model.w,h/model.h),ox=(w-model.w*k)/2,oy=(h-model.h*k)/2,layout=primary.layout;Object.assign($('thumbnail').style,{left:ox+layout.x*k+'px',top:oy+layout.y*k+'px',width:layout.w*k+'px',height:layout.h*k+'px'});const x1=clamp(camera.cx-size.w*camera.upp/2,0,model.w),y1=clamp(camera.cy-size.h*camera.upp/2,0,model.h),x2=clamp(camera.cx+size.w*camera.upp/2,0,model.w),y2=clamp(camera.cy+size.h*camera.upp/2,0,model.h);$('navView').hidden=x2<=x1||y2<=y1;Object.assign($('navView').style,{left:ox+x1*k+'px',top:oy+y1*k+'px',width:Math.max(2,(x2-x1)*k)+'px',height:Math.max(2,(y2-y1)*k)+'px'});$('navDot').hidden=camera.cx<0||camera.cx>model.w||camera.cy<0||camera.cy>model.h;Object.assign($('navDot').style,{left:ox+clamp(camera.cx,0,model.w)*k+'px',top:oy+clamp(camera.cy,0,model.h)*k+'px'});}
  function setTool(next){tool=next;hit.classList.toggle('selecting',next==='box'&&!space);$('box').setAttribute('aria-pressed',String(next==='box'));$('hint').textContent=next==='box'?'拖出选区放大 · 空格临时平移 · Esc 取消':'滚轮缩放 · 拖动平移 · 双击放大';}
- function cancelGesture(){drag=null;selection=null;pinch=null;const ids=[...pointers.keys()];pointers.clear();for(const id of ids)if(hit.hasPointerCapture(id))hit.releasePointerCapture(id);$('selection').hidden=true;hit.classList.remove('dragging');settleFastPreview();}
+ function cancelGesture(){drag=null;selection=null;pinch=null;const ids=[...pointers.keys()];pointers.clear();for(const id of ids)if(hit.hasPointerCapture(id))hit.releasePointerCapture(id);$('selection').hidden=true;hit.classList.remove('dragging');}
 
- function measureStage(){size={w:Math.max(1,stage.clientWidth/(compareMode==='side'?2:1)),h:Math.max(1,stage.clientHeight)};}
+ function measureStage(){size={w:Math.max(1,stage.clientWidth/(compareMode==='triple'?3:compareMode==='side'?2:1)),h:Math.max(1,stage.clientHeight)};}
  function positionAsset(element,layout){
   if(!element||!layout)return;
   const {x,y,w:width,h:height}=layout;
@@ -246,71 +205,101 @@
  function centered(size,canvas){return {x:(canvas.w-size.w)/2,y:(canvas.h-size.h)/2,...size};}
  function updateLayouts(){
   if(!primary){model=null;return;}
-  const a=reference?normalizedSize(primary):{w:primary.w,h:primary.h};
-  const b=reference?normalizedSize(reference):null;
-  model=b?{w:Math.max(a.w,b.w),h:Math.max(a.h,b.h)}:{...a};
-  primary.layout=centered(a,model);
-  if(reference)reference.layout=centered(b,model);
+  const assets=[primary,reference,tertiary].filter(Boolean),normalized=assets.length>1;
+  const sizes=assets.map(asset=>normalized?normalizedSize(asset):{w:asset.w,h:asset.h});
+  model={w:Math.max(...sizes.map(item=>item.w)),h:Math.max(...sizes.map(item=>item.h))};
+  assets.forEach((asset,index)=>asset.layout=centered(sizes[index],model));
   positionAsset(artwork,primary.layout);
-  if(reference)positionAsset($('referenceImage'),reference.layout);
  }
- function updateReferenceInfo(){
-  if(!reference||!primary)return;
-  $('referenceName').textContent=reference.name;$('referenceName').title=reference.name;
-  const different=Math.abs(reference.w/reference.h-primary.w/primary.h)>1e-6;
-  $('referenceMeta').textContent=`${reference.format} · ${reference.w} × ${reference.h} · ${byteSize(reference.bytes)}${different?' · 比例不同，居中留白':''}`;
-  $('referenceMeta').title='A / B 按各自最长边等权归一化后居中对齐；交换顺序不会改变尺寸或位置。';
+ function availableSources(){return [['A',primary],['B',reference],['C',tertiary]].filter(([,asset])=>!!asset);}
+ function expressionOptions(){
+  const names=availableSources().map(([name])=>name),options=[];
+  for(let size=1;size<=names.length;size++)for(let mask=1;mask<(1<<names.length);mask++){
+   const selected=names.filter((_,index)=>mask&(1<<index));if(selected.length===size)options.push(selected.join('+'));
+  }
+  return options;
+ }
+ function viewCount(){return compareMode==='triple'?3:compareMode==='side'||compareMode==='swipe'?2:1;}
+ function syncExpressionSelectors(){
+  const options=expressionOptions(),fallback=availableSources().map(([name])=>name);
+  for(let index=0;index<3;index++){
+   if(!options.includes(viewExpressions[index]))viewExpressions[index]=fallback[index]||fallback[0]||'A';
+   const select=$('expression'+index);select.replaceChildren(...options.map(value=>{const item=document.createElement('option');item.value=value;item.textContent=value.replaceAll('+',' + ');return item;}));select.value=viewExpressions[index];
+  }
+  $('expressionLabel1').hidden=viewCount()<2;$('expressionLabel2').hidden=viewCount()<3;
+  $('mixControl').hidden=!viewExpressions.slice(0,viewCount()).some(value=>value.split('+').length===2);
+  $('wipeControl').hidden=compareMode!=='swipe';
+ }
+ function renderComposition(){
+  const host=$('composition');host.hidden=!primary;if(!primary||!model)return;
+  host.dataset.mode=compareMode;host.replaceChildren();
+  const assets={A:primary,B:reference,C:tertiary},mix=Number($('mixInput').value)/100;
+  for(let index=0;index<viewCount();index++){
+   const expression=viewExpressions[index],sources=expression.split('+'),pane=document.createElement('div'),svg=document.createElementNS(NS,'svg');
+   pane.className='view-pane';svg.classList.add('view-canvas');svg.setAttribute('preserveAspectRatio','none');
+   sources.forEach((name,layer)=>{
+    const asset=assets[name];if(!asset)return;
+    const image=document.createElementNS(NS,'image'),layout=asset.layout;
+    image.setAttribute('href',asset.url);image.setAttribute('x',String(layout.x));image.setAttribute('y',String(layout.y));image.setAttribute('width',String(layout.w));image.setAttribute('height',String(layout.h));image.setAttribute('preserveAspectRatio','none');
+    if(layer)image.setAttribute('opacity',String(sources.length===2?mix:1/(layer+1)));
+    svg.append(image);
+   });
+   const badge=document.createElement('span');badge.className='compare-badge';badge.textContent=expression.replaceAll('+',' + ');
+   pane.append(svg,badge);host.append(pane);
+  }
+  schedule();
  }
  function setCompareMode(next,refit=false){
-  cancelGesture();cancelWipe();stopFastPreview(true);compareMode=reference&&model?next:'none';
+  cancelGesture();cancelWipe();
+  const count=availableSources().length;
+  compareMode=next==='triple'&&count<3?'side':next!=='none'&&count<2?'none':next;
   stage.dataset.compare=compareMode;stage.classList.toggle('comparing',compareMode!=='none');
-  $('compareBar').hidden=!reference;$('referenceView').hidden=compareMode==='none';$('compareLabels').hidden=compareMode==='none';
-  $('paneDivider').hidden=compareMode!=='side';$('wipeDivider').hidden=compareMode!=='swipe';
-  $('opacityControl').hidden=compareMode!=='overlay';$('wipeControl').hidden=compareMode!=='swipe';
-  document.querySelectorAll('[data-compare-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.compareMode===compareMode)));
-  updateReferenceInfo();updateOpacity();measureStage();
+  $('compareBar').hidden=count<2;
+  $('wipeDivider').hidden=compareMode!=='swipe';
+  $('sourceB').hidden=!reference;$('sourceC').hidden=!tertiary;
+  $('referenceName').textContent=reference?.name||'';$('thirdName').textContent=tertiary?.name||'';
+  document.querySelectorAll('[data-compare-mode]').forEach(button=>{button.disabled=button.dataset.compareMode==='triple'?count<3:['side','swipe'].includes(button.dataset.compareMode)&&count<2;button.setAttribute('aria-pressed',String(button.dataset.compareMode===compareMode));});
+  syncExpressionSelectors();measureStage();renderComposition();setWipe(wipePosition);
   if(refit)fit();else{camera.fit=false;schedule();}
  }
- async function readReference(file){
-  if(!file)return false;if(!primary){toast('请先打开图像 A，再添加图像 B。');return false;}
-  const ticket=++referenceTicket;let asset=null;
+ async function readAuxiliary(file,slot){
+  if(!file)return false;if(!primary){toast('请先打开图像 A。');return false;}
+  const ticket=slot==='B'?++referenceTicket:++tertiaryTicket;let asset=null;
   try{
    asset=await readAsset(file);
-   if(ticket!==referenceTicket){disposeAsset(asset);asset=null;return false;}
-   const previous=reference;reference=asset;asset=null;
-    $('referenceImage').setAttribute('href',reference.url);
-    updateLayouts();
-    prepareFastReference();
-    if(previous)disposeAsset(previous);
-   setCompareMode(previous?compareMode:'side',true);
+   if(ticket!==(slot==='B'?referenceTicket:tertiaryTicket)){disposeAsset(asset);asset=null;return false;}
+   const previous=slot==='B'?reference:tertiary;
+   if(slot==='B')reference=asset;else tertiary=asset;asset=null;
+   updateLayouts();
+   if(previous)disposeAsset(previous);
+   setCompareMode(compareMode==='none'?'side':compareMode,true);
    return true;
-  }catch(error){if(ticket===referenceTicket)toast(error.name==='EncodingError'?'无法解码图像 B，请检查文件是否完整。':error.message);return false;}
+  }catch(error){if(ticket===(slot==='B'?referenceTicket:tertiaryTicket))toast(error.name==='EncodingError'?'无法解码图像 '+slot+'。':error.message);return false;}
   finally{if(asset)disposeAsset(asset);}
  }
- for(const id of ['openReference','replaceReference'])$(id).addEventListener('click',()=>$('referenceInput').click());
+ const readReference=file=>readAuxiliary(file,'B'),readThird=file=>readAuxiliary(file,'C');
+ $('openReference').addEventListener('click',()=>$('referenceInput').click());$('openThird').addEventListener('click',()=>$('thirdInput').click());
  $('referenceInput').addEventListener('change',async event=>{const file=event.target.files[0];event.target.value='';await readReference(file);});
- $('removeReference').addEventListener('click',()=>{
-   ++referenceTicket;const previous=reference;reference=null;$('referenceImage').removeAttribute('href');prepareFastReference();
-  if(previous)disposeAsset(previous);updateLayouts();setCompareMode('none',true);$('openReference').focus({preventScroll:true});
- });
- $('swapImages').addEventListener('click',async()=>{
-  if(!primary||!reference)return;
-  snapshotPrimarySvg();
-  const oldA=primary,oldB=reference,mode=compareMode;
-  ++referenceTicket;reference=oldA;
-   if(!await mountPrimary(oldB,++loadTicket,false)){reference=oldB;return;}
-   $('referenceImage').setAttribute('href',reference.url);
-   prepareFastReference();
-  updateLayouts();setCompareMode(mode,true);
-  toast('已交换图像 A / B。');
- });
+ $('thirdInput').addEventListener('change',async event=>{const file=event.target.files[0];event.target.value='';await readThird(file);});
+ $('removeReference').addEventListener('click',()=>{++referenceTicket;const previous=reference;reference=null;if(previous)disposeAsset(previous);updateLayouts();setCompareMode(compareMode==='triple'?'side':compareMode,true);});
+ $('removeThird').addEventListener('click',()=>{++tertiaryTicket;const previous=tertiary;tertiary=null;if(previous)disposeAsset(previous);updateLayouts();setCompareMode(compareMode==='triple'?'side':compareMode,true);});
+ async function swapWithPrimary(slot){
+  const auxiliary=slot==='B'?reference:tertiary;if(!primary||!auxiliary)return;
+  snapshotPrimarySvg();const oldA=primary,mode=compareMode;
+  if(slot==='B'){++referenceTicket;reference=oldA;}else{++tertiaryTicket;tertiary=oldA;}
+  if(!await mountPrimary(auxiliary,++loadTicket,false)){if(slot==='B')reference=auxiliary;else tertiary=auxiliary;return;}
+  updateLayouts();setCompareMode(mode,true);toast('已交换图像 A / '+slot+'。');
+ }
+ $('swapImages').addEventListener('click',()=>swapWithPrimary('B'));
+ $('swapThird').addEventListener('click',()=>swapWithPrimary('C'));
  document.querySelectorAll('[data-compare-mode]').forEach(button=>button.addEventListener('click',()=>setCompareMode(button.dataset.compareMode)));
- function updateOpacity(){const value=Number($('opacityInput').value);stage.style.setProperty('--reference-opacity',String(value/100));$('opacityValue').value=value+'%';$('primaryBadge').textContent=primary?`A · ${primary.format}`:'图像 A';$('referenceBadge').textContent=compareMode==='overlay'?`B · ${reference?.format||'图像'} · ${value}%`:`B · ${reference?.format||'图像'}`;}
- $('opacityInput').addEventListener('input',updateOpacity);
+ for(let index=0;index<3;index++)$('expression'+index).addEventListener('change',event=>{viewExpressions[index]=event.target.value;syncExpressionSelectors();renderComposition();setWipe(wipePosition);});
+ $('mixInput').addEventListener('input',event=>{$('mixValue').value=event.target.value+'%';renderComposition();});
  function setWipe(value){
   wipePosition=clamp(value,0,100);stage.style.setProperty('--wipe',wipePosition+'%');$('wipeDivider').style.left=wipePosition+'%';
   const rounded=Math.round(wipePosition);$('wipeInput').value=String(rounded);$('wipeValue').value=rounded+'%';
-  $('wipeDivider').setAttribute('aria-valuenow',String(rounded));$('wipeDivider').setAttribute('aria-valuetext',`左侧图像 A ${rounded}%，右侧图像 B ${100-rounded}%`);
+  $('wipeDivider').setAttribute('aria-label',`拖动分割轴，左侧 ${viewExpressions[0]}，右侧 ${viewExpressions[1]}`);
+  $('wipeDivider').setAttribute('aria-valuenow',String(rounded));$('wipeDivider').setAttribute('aria-valuetext',`左侧 ${viewExpressions[0]} ${rounded}%，右侧 ${viewExpressions[1]} ${100-rounded}%`);
  }
  function cancelWipe(){const id=wipeDrag;wipeDrag=null;if(id!==null&&$('wipeDivider').hasPointerCapture(id))$('wipeDivider').releasePointerCapture(id);}
  function moveWipe(event){const box=stage.getBoundingClientRect();setWipe((event.clientX-box.left)/box.width*100);}
@@ -354,12 +343,11 @@
   layerRoot=null;nativeLayers=[];layerLookup=new Map();expandedLayers=new Set();spatialChildren=null;
   $('layerTree').replaceChildren();$('layerTree').hidden=true;$('layerSearch').value='';
   $('layerCount').textContent='图像 A 是位图，没有 SVG 原生图层';
-  $('layerEmpty').hidden=false;$('layerEmpty').textContent='位图没有可读取的矢量层级。将 SVG 放入 A，或交换 A / B 后即可检查 SVG 图层。';
+  $('layerEmpty').hidden=false;$('layerEmpty').textContent='位图没有可读取的矢量层级。将 SVG 放入 A，或与 B / C 交换后检查 SVG 图层。';
   $('spatialNote').hidden=true;
   for(const id of ['layerSearch','layerOrder','expandLayers','collapseLayers','spatialLayers','showAllLayers','hideAllLayers','restoreLayers'])$(id).disabled=true;
   groupCompatible=false;
-  if(groupSource==='embedded')clearGroupDocument();
-  else if(groupDocument){$('restoreGroupVisibility').disabled=true;$('groupNotice').textContent='分组树已载入；放入 SVG 后可查看对应图形。';renderGroupTree();}
+  if(groupDocument)connectGroupDocument();
   else $('groupNotice').textContent='';
  }
  function childrenOf(node){return spatialChildren?.get(node.key)||node.children;}
@@ -426,8 +414,8 @@
    return item;
   }
   const hasMatch=!query||matches.get(layerRoot.key);
-  tree.replaceChildren(...(hasMatch?[row(layerRoot,0,1,1)]:[]));tree.hidden=!hasMatch||!!groupDocument;
-  $('layerEmpty').hidden=hasMatch||!!groupDocument;$('layerEmpty').textContent=hasMatch?'':'没有匹配的分组或图形。';
+  tree.replaceChildren(...(hasMatch?[row(layerRoot,0,1,1)]:[]));tree.hidden=!hasMatch||groupModeActive;
+  $('layerEmpty').hidden=hasMatch||groupModeActive;$('layerEmpty').textContent=hasMatch?'':'没有匹配的分组或图形。';
   if(hasMatch&&!tree.querySelector('[tabindex="0"]')){const first=tree.querySelector('.layer-item');first.tabIndex=0;focusedLayer=first.dataset.key;}
   const groups=nativeLayers.filter(node=>node.tag==='g').length,shapes=nativeLayers.filter(node=>!node.isContainer).length;
   const blocks=spatialChildren?[...layerLookup.values()].filter(node=>node.kind==='spatial').length:0;
@@ -443,8 +431,8 @@
    thumb.removeAttribute('x');thumb.removeAttribute('y');
    if(frame.contentWindow.getComputedStyle(artwork).display==='none')thumb.replaceChildren();
    const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(thumb)],{type:'image/svg+xml'}));
-   thumbnailURL=url;$('thumbnail').src=url;prepareFastPreview(url,primary);
-  }else{thumbnailURL=null;$('thumbnail').src=primary.url;prepareFastPreview(primary.url,primary);}
+   thumbnailURL=url;$('thumbnail').src=url;
+  }else{thumbnailURL=null;$('thumbnail').src=primary.url;}
   if(previous)URL.revokeObjectURL(previous);paintNavigator();
  }
  function snapshotPrimarySvg(){
@@ -456,7 +444,7 @@
   const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(snapshot)],{type:'image/svg+xml'}));
   disposeAsset(primary);primary.svg=snapshot;primary.url=url;
  }
- function layersChanged(){renderLayers();renderGroupTree();fastPreviewReady=false;stopFastPreview(true);clearTimeout(thumbnailTimer);thumbnailTimer=setTimeout(refreshThumbnail,120);}
+ function layersChanged(){renderLayers();renderGroupTree();clearTimeout(thumbnailTimer);thumbnailTimer=setTimeout(()=>{snapshotPrimarySvg();renderComposition();refreshThumbnail();},120);}
  function resolveGroups(data){
   if(!data||!Array.isArray(data.groups))throw Error('缺少 groups 数组');
   const entries=[],paths=new Set();
@@ -484,15 +472,69 @@
   for(const name of path.split('/')){node=nodes.find(item=>item.name===name);if(!node)return null;nodes=[...(node.groups||[]),...(node.parts||[])];}
   return node;
  }
+ function namedGroupEntry(node){
+  const groupPath=node.getAttribute('data-group-path'),partPath=node.getAttribute('data-part-path');
+  if(groupPath||partPath){
+   if(groupPath&&partPath)return null;
+   const entry=groupByPath.get(groupPath||partPath);
+   return entry?.kind===(partPath?'part':'group')?entry:null;
+  }
+  const label=node.getAttribute('data-name')||node.getAttributeNS('http://www.inkscape.org/namespaces/inkscape','label')||node.getAttribute('aria-label')||[...node.children].find(child=>child.localName==='title')?.textContent.trim()||node.id;
+  const name=label?.trim();
+  return name&&(groupByPath.get(name)||groupByPath.get(groupByName.get(name)))||null;
+ }
  function drawingUnit(item){
   if(item.tag!=='g')return null;
-  const node=item.element,groupPath=node.getAttribute('data-group-path'),partPath=node.getAttribute('data-part-path');
-  const path=partPath||groupPath;if(!path)return null;
-  const key=partPath?'data-part-path':'data-group-path';
-  for(let parent=node.parentElement;parent&&parent!==artwork;parent=parent.parentElement)if(parent.getAttribute(key)===path)return null;
+  const node=item.element,entry=namedGroupEntry(node);if(!entry)return null;
+  const path=entry.path;
+  for(let parent=node.parentElement;parent&&parent!==artwork;parent=parent.parentElement)if(parent.localName==='g'&&namedGroupEntry(parent)?.path===path)return null;
   const file=primary?.name?.toLocaleLowerCase();
-  const kind=groupPath&&partPath?'untyped':file==='groups.svg'?(partPath?'part-guide':'guide'):file==='character.svg'?(partPath?'art':'untyped'):partPath?'part':'guide';
+  const kind=file==='groups.svg'?(entry.kind==='part'?'part-guide':'guide'):file==='character.svg'?(entry.kind==='part'?'art':'guide'):entry.kind==='part'?'part':'guide';
   return {path,kind};
+ }
+ function unmatchedNativeLayers(){
+  if(!layerRoot)return [];
+  const matched=new Set(nativeLayers.filter(node=>drawingUnit(node)).map(node=>node.element));
+  const wrappers=new Set();
+  for(const node of nativeLayers)if(matched.has(node.element))for(let parent=node.parent;parent;parent=parent.parent)wrappers.add(parent.element);
+  const candidates=nativeLayers.filter(node=>{
+   if(node===layerRoot||matched.has(node.element))return false;
+   for(let parent=node.parent;parent;parent=parent.parent)if(matched.has(parent.element))return false;
+   return node.tag==='g'?!wrappers.has(node.element):!node.isContainer;
+  });
+  const candidateGroups=new Set(candidates.filter(node=>node.tag==='g').map(node=>node.element));
+  return candidates.filter(node=>{
+   for(let parent=node.parent;parent;parent=parent.parent)if(candidateGroups.has(parent.element))return false;
+   return true;
+  }).reverse();
+ }
+ function focusSvgNodes(nodes){
+  if(!model||!outer||!nodes.length)return false;
+  const inverse=outer.getScreenCTM()?.inverse();if(!inverse)return false;
+  let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
+  const revealed=new Map();
+  for(const unit of nodes)for(let el=unit.element;el&&el!==outer;el=el.parentElement){
+   if(el.namespaceURI!==NS)break;
+   if(frame.contentWindow.getComputedStyle(el).display==='none'&&!revealed.has(el)){
+    revealed.set(el,el.getAttribute('style'));el.style.setProperty('display','inline','important');
+   }
+  }
+  try{
+   for(const unit of nodes){
+    try{
+     const box=unit.element.getBBox(),ctm=unit.element.getScreenCTM();if(!ctm)continue;
+     const m=inverse.multiply(ctm);
+     for(const [x,y] of [[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]]){
+      const px=m.a*x+m.c*y+m.e,py=m.b*x+m.d*y+m.f;
+      if(Number.isFinite(px)&&Number.isFinite(py)){left=Math.min(left,px);top=Math.min(top,py);right=Math.max(right,px);bottom=Math.max(bottom,py);}
+     }
+    }catch{}
+   }
+  }finally{for(const [el,style] of revealed)if(style===null)el.removeAttribute('style');else el.setAttribute('style',style);}
+  if(![left,top,right,bottom].every(Number.isFinite))return false;
+  const minimum=Math.max(1,Math.min(model.w,model.h)*.01),w=Math.max(right-left,minimum),h=Math.max(bottom-top,minimum);
+  focusRect((left+right-w)/2,(top+bottom-h)/2,w,h,Math.min(45,size.w*.12,size.h*.12));
+  return true;
  }
  function groupDrawingNodes(path,descendants=true){
   if(!groupCompatible||!artwork)return [];
@@ -517,7 +559,7 @@
   function unitRow(unit,path,depth){
    const item=element('li','group-unit');item.setAttribute('role','treeitem');item.setAttribute('aria-level',String(depth+1));item.dataset.layerKey=unit.key;item.dataset.path=path;
    const kind=drawingUnit(unit).kind,itemLabel=kind==='guide'?'组轮廓':kind==='part-guide'?'部件轮廓':kind==='art'?'部件绘制':kind==='part'?'部件图形':'未分类绘制';item.dataset.unitKind=kind;
-   const line=element('div','group-unit-row');line.style.setProperty('--indent',(7+Math.min(depth,10)*14)+'px');line.append(element('span','group-spacer'));
+   const line=element('div','group-unit-row');line.classList.toggle('selected',unit.key===selectedLayerKey);line.style.setProperty('--indent',(7+Math.min(depth,10)*14)+'px');line.append(element('span','group-spacer'));
    const check=element('input','group-visible');check.type='checkbox';check.dataset.action='visible';check.checked=drawingVisible(unit);check.setAttribute('aria-label','显示 SVG 绘制段 '+unit.element.id);line.append(check);
    const label=element('span','group-name',unit.name);label.title='SVG <g> #'+unit.element.id+' · '+itemLabel+' · 绘制序号 '+unit.order;line.append(label,element('span','group-kind',itemLabel));item.append(line);return item;
   }
@@ -537,20 +579,46 @@
    return item;
   }
   const roots=(children.get('')||[]).filter(item=>!query||matches.get(item.path));
-  tree.replaceChildren(...roots.map(entry=>row(entry,0)));if(!roots.length)tree.append(element('li','layer-empty','没有匹配的分组。'));
+  const unmatched=unmatchedNativeLayers().filter(unit=>!query||[unit.name,unit.element.id,unit.order,unit.tag].join(' ').toLocaleLowerCase().includes(query));
+  const items=roots.map(entry=>row(entry,0));
+  if(unmatched.length){
+   const root=element('li','group-item group-unmatched');root.dataset.unmatchedRoot='';
+   const line=element('div','group-row');line.style.setProperty('--indent','7px');
+   const toggle=element('button','',unmatchedOpen||query?'▾':'▸');toggle.type='button';toggle.dataset.action='unmatched';toggle.setAttribute('aria-label','展开未匹配 SVG 图层');
+   line.append(toggle,element('span','group-name','未匹配 SVG 图层'),element('span','group-kind',unmatched.length+' 项'));root.append(line);
+   if(unmatchedOpen||query){
+    const list=element('ul');list.setAttribute('role','group');
+    for(const unit of unmatched){
+     const item=element('li','group-unit');item.dataset.nativeKey=unit.key;item.setAttribute('role','treeitem');
+     const row=element('div','group-unit-row');row.classList.toggle('selected',unit.key===selectedLayerKey);row.style.setProperty('--indent','21px');row.append(element('span','group-spacer'));
+     const check=element('input','group-visible');check.type='checkbox';check.dataset.action='visible';const style=frame.contentWindow.getComputedStyle(unit.element);check.checked=style.display!=='none'&&style.visibility==='visible';check.setAttribute('aria-label','显示 SVG 图层 '+unit.name);
+     const label=element('span','group-name',unit.name);label.title='SVG <'+unit.tag+'> · 绘制序号 '+unit.order;
+     row.append(check,label,element('span','group-kind','#'+unit.order));item.append(row);list.append(item);
+    }
+    root.append(list);
+   }
+   items.push(root);
+  }
+  tree.replaceChildren(...items);if(!items.length)tree.append(element('li','layer-empty','没有匹配的分组或图层。'));
   tree.scrollTop=scrollTop;
  }
  function clearGroupDocument(){
-  groupDocument=null;groupSource=null;groupCompatible=false;groupEntries=[];expandedGroups=new Set();selectedGroupPath='';
+  groupDocument=null;groupCompatible=false;groupModeActive=false;groupEntries=[];groupByPath=new Map();groupByName=new Map();expandedGroups=new Set();selectedGroupPath='';selectedLayerKey='';unmatchedOpen=false;
   $('layerPanel').classList.remove('group-mode');$('layerTitle').textContent='SVG 图层';$('importGroups').textContent='载入 groups.json';
   $('groupContent').hidden=true;$('groupInspector').open=false;$('groupSummary').textContent='选择分组';$('groupTree').replaceChildren();$('groupCount').hidden=true;$('groupCount').textContent='';$('groupNotice').textContent='';
   if(layerRoot)renderLayers();
  }
  function connectGroupDocument(){
   groupCompatible=primary?.kind==='svg'&&!!artwork;
-  const linked=groupCompatible&&groupEntries.some(entry=>groupDrawingNodes(entry.path,false).length);
-  $('groupNotice').textContent=!groupCompatible?'分组树已载入；放入 SVG 后可查看对应图形。':linked?'':'分组树已载入；当前 SVG 没有匹配的分组路径。';
-  $('restoreGroupVisibility').disabled=!groupCompatible;renderGroupTree();
+  const linkedPaths=groupCompatible?new Set(nativeLayers.map(drawingUnit).filter(Boolean).map(unit=>unit.path)):new Set();
+  const linked=linkedPaths.size>0;
+  groupModeActive=!groupCompatible||linked;
+  $('layerPanel').classList.toggle('group-mode',groupModeActive);$('layerTitle').textContent=groupModeActive?'分组图层':'SVG 图层';
+  $('groupContent').hidden=!groupModeActive;$('layerTree').hidden=groupModeActive;$('layerEmpty').hidden=groupModeActive;
+  $('groupCount').hidden=false;$('groupCount').textContent=groupEntries.length+' 个节点'+(groupCompatible?' · '+linkedPaths.size+' 个已关联 SVG':'');$('importGroups').textContent='更换 groups.json';
+  $('groupNotice').textContent=!groupCompatible?'分组树已载入；放入 SVG 后可查看对应图形。':linked?'':'当前 SVG 没有匹配的分组，按原生 SVG 图层显示。';
+  $('restoreGroupVisibility').disabled=!groupCompatible;
+  if(layerRoot)renderLayers();if(groupModeActive)renderGroupTree();
  }
  function refreshGroupDetails(){
   const node=selectedGroupPath&&groupNodeAt(selectedGroupPath);
@@ -559,36 +627,38 @@
   $('groupNote').textContent=node&&node.note?String(node.note):'';
   renderGroupTree();
  }
- function useGroupDocument(data,source='file'){
+ function useGroupDocument(data){
   const entries=resolveGroups(data);
-  groupDocument=data;groupEntries=entries;groupSource=source;selectedGroupPath='';
+  groupDocument=data;groupEntries=entries;selectedGroupPath='';selectedLayerKey='';unmatchedOpen=false;
+  groupByPath=new Map(entries.map(entry=>[entry.path,entry]));groupByName=new Map();
+  for(const entry of entries){const name=entry.path.split('/').pop();groupByName.set(name,groupByName.has(name)?null:entry.path);}
   expandedGroups=new Set(entries.filter(entry=>!entry.parent).map(entry=>entry.path));$('groupSearch').value='';
   $('groupInspector').open=false;
-  $('layerPanel').classList.add('group-mode');$('layerTitle').textContent='分组图层';$('importGroups').textContent='更换 groups.json';
-  $('layerTree').hidden=true;$('layerEmpty').hidden=true;$('groupContent').hidden=false;$('groupCount').hidden=false;
-  $('groupCount').textContent=entries.length+' 个节点'+(source==='embedded'?' · SVG 内嵌':'');
   connectGroupDocument();
  }
  function loadGroupDocument(){
-  if(groupSource==='file'&&groupDocument){connectGroupDocument();return;}
-  clearGroupDocument();
-  const metadata=[...artwork.children].find(node=>node.localName==='metadata'&&node.id==='group-structure');
-  if(!metadata){$('groupNotice').textContent='此 SVG 未附分组配置；可载入对应的 groups.json。';return;}
-  try{useGroupDocument(JSON.parse(metadata.textContent),'embedded');}
-  catch(error){clearGroupDocument();$('groupNotice').textContent='分组配置不可用：'+error.message;}
+  if(groupDocument){connectGroupDocument();return;}
+  clearGroupDocument();$('groupNotice').textContent='载入对应的 groups.json 后可关联 SVG 图层。';
  }
  $('groupSearch').addEventListener('input',renderGroupTree);
  $('expandGroups').addEventListener('click',()=>{expandedGroups=new Set(groupEntries.map(entry=>entry.path));renderGroupTree();});
  $('collapseGroups').addEventListener('click',()=>{expandedGroups=new Set();renderGroupTree();});
  $('groupTree').addEventListener('click',event=>{
+  if(event.target.closest('[data-unmatched-root]')&&!event.target.closest('[data-native-key]')){unmatchedOpen=!unmatchedOpen;renderGroupTree();return;}
+  const native=event.target.closest('[data-native-key]');
+  if(native&&!event.target.closest('input')){const unit=layerLookup.get(native.dataset.nativeKey);selectedLayerKey=unit?.key||'';selectedGroupPath='';if(unit&&!focusSvgNodes([unit]))toast('此图层暂时无法定位。');refreshGroupDetails();return;}
+  const drawing=event.target.closest('.group-unit');
+  if(drawing&&!event.target.closest('input')){const unit=layerLookup.get(drawing.dataset.layerKey);selectedLayerKey=unit?.key||'';selectedGroupPath=drawing.dataset.path;if(unit&&!focusSvgNodes([unit]))toast('此绘制段暂时无法定位。');refreshGroupDetails();return;}
   const item=event.target.closest('.group-item');if(!item)return;
   const path=item.dataset.path;
   if(event.target.closest('[data-action="expand"]')){if(expandedGroups.has(path))expandedGroups.delete(path);else expandedGroups.add(path);renderGroupTree();return;}
   if(event.target.closest('input'))return;
-  selectedGroupPath=path;refreshGroupDetails();
+  selectedGroupPath=path;selectedLayerKey='';const units=groupDrawingNodes(path);if(units.length&&!focusSvgNodes(units))toast('此分组暂时无法定位。');refreshGroupDetails();
  });
  $('groupTree').addEventListener('change',event=>{
   if(event.target.dataset.action!=='visible')return;
+  const native=event.target.closest('[data-native-key]');
+  if(native){const unit=layerLookup.get(native.dataset.nativeKey);if(unit)changeLayer(unit,event.target.checked);layersChanged();return;}
   const unit=event.target.closest('.group-unit');
   if(unit){const node=layerLookup.get(unit.dataset.layerKey);if(node)changeLayer(node,event.target.checked);layersChanged();return;}
   const item=event.target.closest('.group-item');
@@ -599,7 +669,7 @@
  $('importGroups').addEventListener('click',()=>$('groupFile').click());
  async function loadGroupFile(file){
   if(!file)return;
-  try{const data=JSON.parse(await file.text());useGroupDocument(data,'file');$('groupCount').textContent=groupEntries.length+' 个节点 · '+file.name;}
+  try{const data=JSON.parse(await file.text());useGroupDocument(data);$('groupCount').textContent+=' · '+file.name;}
   catch(error){toast('无法载入分组配置：'+error.message);}
  }
  $('groupFile').addEventListener('change',async event=>{const file=event.target.files[0];event.target.value='';await loadGroupFile(file);});
@@ -754,9 +824,9 @@
   $('fileName').textContent='A · '+asset.name;$('fileName').title=asset.name;$('fileMeta').textContent=`${asset.format} · ${Number(asset.w.toPrecision(7))} × ${Number(asset.h.toPrecision(7))} · ${byteSize(asset.bytes)}`;
   $('canvasMeta').querySelector('b').textContent=`图像 A · ${asset.format}`;$('emptyState').hidden=true;$('canvasMeta').hidden=false;hit.classList.remove('empty');
   document.querySelectorAll('.dock button,.dock input,#reset').forEach(control=>control.disabled=false);if(firstLoad)$('navigator').hidden=false;
-  document.title=asset.name+' · 图像对比器';$('openReference').disabled=false;
-  setCompareMode(reference?compareMode:'none',true);
-  if(disposePrevious&&previous&&previous!==reference)disposeAsset(previous);
+  document.title=asset.name+' · 图像对比器';$('openReference').disabled=false;$('openThird').disabled=false;
+  setCompareMode(reference||tertiary?compareMode:'none',true);
+  if(disposePrevious&&previous&&previous!==reference&&previous!==tertiary)disposeAsset(previous);
   return true;
  }
  async function readFile(file){
@@ -778,12 +848,12 @@
  $('zoomInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur();hit.focus({preventScroll:true});}else if(e.key==='Escape'){zoomEdited=false;e.target.blur();hit.focus({preventScroll:true});}});$('zoomInput').addEventListener('blur',applyZoom);
  document.querySelectorAll('[data-bg]').forEach(button=>button.addEventListener('click',()=>{stage.dataset.background=button.dataset.bg;document.querySelectorAll('[data-bg]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));try{localStorage.setItem('astra-svg-background',button.dataset.bg);}catch{}}));
  try{const bg=localStorage.getItem('astra-svg-background');if(['gray','white','checker','dark'].includes(bg))document.querySelector(`[data-bg="${bg}"]`).click();}catch{}
- hit.addEventListener('wheel',e=>{e.preventDefault();if(!model)return;beginFastPreview();const unit=e.deltaMode===1?16:e.deltaMode===2?size.h:1;zoomAt(Math.exp(-clamp(e.deltaY*unit,-800,800)*.0018),local(e));settleFastPreview();},{passive:false});
+ hit.addEventListener('wheel',e=>{e.preventDefault();if(!model)return;const unit=e.deltaMode===1?16:e.deltaMode===2?size.h:1;zoomAt(Math.exp(-clamp(e.deltaY*unit,-800,800)*.0018),local(e));},{passive:false});
  hit.addEventListener('dblclick',e=>{e.preventDefault();if(tool==='pan')zoomAt(e.shiftKey?.5:2,local(e));});
  function pinchState(){const a=[...pointers.values()];return a.length<2?null:{mid:{x:(a[0].x+a[1].x)/2,y:(a[0].y+a[1].y)/2},distance:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)};}
  hit.addEventListener('pointerdown',e=>{if(!model||![0,1].includes(e.button))return;e.preventDefault();hit.focus({preventScroll:true});const pt=local(e);pointers.set(e.pointerId,pt);hit.setPointerCapture(e.pointerId);if(pointers.size>1){selection=null;$('selection').hidden=true;drag=null;pinch=pinchState();return;}drag={id:e.pointerId,last:pt,start:pt,moved:false,touch:e.pointerType==='touch'};if(tool==='box'&&!space&&e.button!==1){selection={start:pt,end:pt};$('selection').hidden=false;paintSelection();}else hit.classList.add('dragging');});
  function paintSelection(){if(!selection)return;const a=selection.start,b=selection.end;Object.assign($('selection').style,{left:((a.pane||0)+Math.min(a.x,b.x))+'px',top:Math.min(a.y,b.y)+'px',width:Math.abs(b.x-a.x)+'px',height:Math.abs(b.y-a.y)+'px'});}
- hit.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const pt=local(e);pointers.set(e.pointerId,pt);if(pointers.size>1){const next=pinchState();if(pinch&&pinch.distance>1&&next.distance>1){beginFastPreview();zoomAt(next.distance/pinch.distance,pinch.mid,next.mid);}pinch=next;return;}if(!drag)return;if(Math.hypot(pt.x-drag.start.x,pt.y-drag.start.y)>3)drag.moved=true;if(selection){selection.end={...pt,x:clamp(pt.x,0,size.w),y:clamp(pt.y,0,size.h)};paintSelection();}else{beginFastPreview();commit(camera.cx-(pt.x-drag.last.x)*camera.upp,camera.cy-(pt.y-drag.last.y)*camera.upp,camera.upp);}drag.last=pt;});
+ hit.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const pt=local(e);pointers.set(e.pointerId,pt);if(pointers.size>1){const next=pinchState();if(pinch&&pinch.distance>1&&next.distance>1)zoomAt(next.distance/pinch.distance,pinch.mid,next.mid);pinch=next;return;}if(!drag)return;if(Math.hypot(pt.x-drag.start.x,pt.y-drag.start.y)>3)drag.moved=true;if(selection){selection.end={...pt,x:clamp(pt.x,0,size.w),y:clamp(pt.y,0,size.h)};paintSelection();}else commit(camera.cx-(pt.x-drag.last.x)*camera.upp,camera.cy-(pt.y-drag.last.y)*camera.upp,camera.upp);drag.last=pt;});
  function pointerEnd(e){if(!pointers.has(e.pointerId))return;const wasPinch=!!pinch;pointers.delete(e.pointerId);if(pointers.size){const [id,pt]=[...pointers.entries()][0];drag={id,last:pt,start:pt,moved:true,touch:true};pinch=null;return;}if(selection&&e.type==='pointerup'){const a=world(selection.start),b=world(selection.end);if(Math.abs(selection.end.x-selection.start.x)>5&&Math.abs(selection.end.y-selection.start.y)>5)focusRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(a.x-b.x),Math.abs(a.y-b.y),24);setTool('pan');}else if(drag?.touch&&!drag.moved&&!wasPinch&&e.type==='pointerup'){const now=performance.now(),pt=local(e);if(lastTap&&now-lastTap.time<280&&Math.hypot(pt.x-lastTap.x,pt.y-lastTap.y)<24){zoomAt(2,pt);lastTap=null;}else lastTap={...pt,time:now};}cancelGesture();}
  hit.addEventListener('pointerup',pointerEnd);hit.addEventListener('pointercancel',pointerEnd);hit.addEventListener('lostpointercapture',e=>{if(pointers.has(e.pointerId))pointerEnd(e);});hit.addEventListener('contextmenu',e=>e.preventDefault());
  let navDrag=null;function navMove(e){if(!model)return;const r=$('navBody').getBoundingClientRect(),k=Math.min(r.width/model.w,r.height/model.h),ox=(r.width-model.w*k)/2,oy=(r.height-model.h*k)/2;commit(clamp((e.clientX-r.left-ox)/k,0,model.w),clamp((e.clientY-r.top-oy)/k,0,model.h),camera.upp);}
@@ -796,16 +866,17 @@
   if(files.length>=2){
    if(!await readFile(files[0]))return;
    await readReference(files[1]);
-   if(files.length>2)toast('已导入前两张图像，其余图像未处理。');
-  }else if(files.length===1){if(!primary)await readFile(files[0]);else await readReference(files[0]);}
+   if(files[2])await readThird(files[2]);
+   if(files.length>3)toast('已导入前三张图像，其余图像未处理。');
+  }else if(files.length===1){if(!primary)await readFile(files[0]);else if(!reference)await readReference(files[0]);else await readThird(files[0]);}
   if(groups.length)await loadGroupFile(groups[0]);
  });
  $('help').addEventListener('click',()=>$('helpDialog').showModal());$('closeHelp').addEventListener('click',()=>$('helpDialog').close());$('helpDialog').addEventListener('click',e=>{if(e.target===$('helpDialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
  if(!document.fullscreenEnabled)$('fullscreen').hidden=true;$('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('当前窗口无法进入全屏。');}});
  document.addEventListener('keydown',e=>{if($('helpDialog').open||e.target.closest('input,textarea,select,[contenteditable="true"]'))return;const key=e.key.toLowerCase();if((e.ctrlKey||e.metaKey)&&key==='o'){e.preventDefault();$('fileInput').click();return;}if(e.ctrlKey||e.metaKey||e.altKey)return;if(e.target.closest('#layerPanel,button,a')){if(key==='escape'&&e.target.closest('#layerPanel'))setLayerPanel(false);return;}if(key===' '){e.preventDefault();space=true;hit.classList.remove('selecting');}else if(key==='+'||key==='='){e.preventDefault();zoomAt(1.5);}else if(key==='-'||key==='_'){e.preventDefault();zoomAt(1/1.5);}else if(key==='f'||key==='0'){e.preventDefault();fit();}else if(key==='1'){e.preventDefault();actual();}else if(key==='b'&&model){e.preventDefault();cancelGesture();setTool(tool==='box'?'pan':'box');}else if(key==='escape'){cancelGesture();setTool('pan');}else if(key==='?')$('helpDialog').showModal();else if(key.startsWith('arrow')&&model){e.preventDefault();const n=(e.shiftKey?150:50)*camera.upp;commit(camera.cx+(key==='arrowright'?n:key==='arrowleft'?-n:0),camera.cy+(key==='arrowdown'?n:key==='arrowup'?-n:0),camera.upp);}});
  document.addEventListener('keyup',e=>{if(e.key===' '){space=false;hit.classList.toggle('selecting',tool==='box');}});window.addEventListener('blur',()=>{space=false;cancelGesture();cancelWipe();hit.classList.toggle('selecting',tool==='box');});
- new ResizeObserver(()=>{cancelGesture();cancelWipe();stopFastPreview(true);measureStage();if(model&&camera.fit)fit();else schedule();}).observe(stage);
- window.addEventListener('beforeunload',()=>{if(thumbnailURL)URL.revokeObjectURL(thumbnailURL);disposeAsset(primary);disposeAsset(reference);});
+ new ResizeObserver(()=>{cancelGesture();cancelWipe();measureStage();if(model&&camera.fit)fit();else schedule();}).observe(stage);
+ window.addEventListener('beforeunload',()=>{if(thumbnailURL)URL.revokeObjectURL(thumbnailURL);disposeAsset(primary);disposeAsset(reference);disposeAsset(tertiary);});
 })();
 </script>
 </body>

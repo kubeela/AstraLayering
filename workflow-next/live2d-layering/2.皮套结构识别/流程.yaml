@@ -1,6 +1,7 @@
 id: group_inventory
 run: 2.皮套结构识别
 worker: group_planning
+working_dir: "{working_dir}"
 inputs:
   reference: nodes.base_subject.image
   group_tool:

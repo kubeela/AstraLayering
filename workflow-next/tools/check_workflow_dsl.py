@@ -43,8 +43,9 @@ def prompts(directory):
 
 
 def children(directory):
-    return sorted(p for p in directory.iterdir()
-                  if p.is_dir() and re.match(r'^[1-9]\d*\.', p.name))
+    return sorted((p for p in directory.iterdir()
+                   if p.is_dir() and re.match(r'^[1-9]\d*\.', p.name)),
+                  key=lambda p: tuple(int(n) for n in re.match(r'^[\d.]+', p.name)[0].split('.') if n))
 
 
 def aliases_only(block):
@@ -60,6 +61,9 @@ def validate_config(path, config):
     skill_root = next((p.resolve() for p in (directory, *directory.parents) if (p / 'SKILL.md').is_file()), None)
     if skill_root is None:
         return [f'{path}: no containing SKILL.md']
+    if directory.resolve() != skill_root and children(directory):
+        return [f'{path}: numbered-child containers must omit 流程.yaml; '
+                'declare inputs and outputs on their actual tasks']
 
     def resource(name, scope):
         if (not isinstance(name, str) or not name or Path(name).is_absolute()
@@ -90,6 +94,14 @@ def validate_config(path, config):
         elif isinstance(value, list):
             for item in value:
                 check_assets(item)
+
+    def check_working_dir(block, scope, required=False):
+        value = block.get('working_dir')
+        if value is None and not required:
+            return
+        if (not isinstance(value, str) or not value
+                or value != '{working_dir}' and not Path(value).is_absolute()):
+            error(scope, 'working_dir must be {working_dir} or an absolute directory')
 
     def check_target(run, block, scope):
         if not isinstance(run, str) or not run.strip():
@@ -133,11 +145,12 @@ def validate_config(path, config):
             return
         allowed = {'id', 'inputs', 'outputs', 'worker', 'if', 'then', 'else',
                    'run', 'prompt', 'imagegen', 'review', 'final_review',
-                   'writes_options', 'dispatch'}
+                   'writes_options', 'dispatch', 'working_dir'}
         unsupported = set(block) - allowed
         if unsupported:
             error(scope, f'unsupported node keys: {sorted(unsupported)}')
             return
+        check_working_dir(block, scope, required='run' in block or 'dispatch' in block)
         if 'dispatch' in block:
             dispatch = block['dispatch']
             if (not isinstance(dispatch, dict) or any(key in block for key in
@@ -145,27 +158,24 @@ def validate_config(path, config):
                     or list(directory.glob('*.model')) or prompts(directory) or children(directory)):
                 error(scope, 'dispatch must be a task-free node')
                 return
-            required = {
-                'order': 'breadth_first_keyword_priority', 'mode': 'serial',
-                'identity': 'state.nodes[{path}].id',
-                'pointer': 'checkpointed_step',
-                'once': 'completed_group_id', 'expand': 'append_direct_children',
-                'complete': 'after_group_output_and_review',
-                'completion_unit': 'group',
-            }
-            for key, expected in required.items():
-                if dispatch.get(key) != expected:
-                    error(scope, f'dispatch.{key} must be {expected}')
+            supported = {'document', 'state', 'tool', 'item', 'order', 'tree',
+                         'routes', 'fallback', 'carry'}
+            if set(dispatch) - supported:
+                error(scope, f'unsupported dispatch keys: {sorted(set(dispatch) - supported)}')
+            if dispatch.get('order') != 'breadth_first':
+                error(scope, 'dispatch.order must be breadth_first')
+            if dispatch.get('item') != 'tool.next.target':
+                error(scope, 'dispatch.item must bind tool.next.target')
             bindings = block.get('inputs', {})
             document = dispatch.get('document')
             tool = dispatch.get('tool')
             if (not isinstance(bindings, dict) or not isinstance(document, str)
-                    or not document.startswith('inputs.')
-                    or document[7:] not in bindings
-                    or not isinstance(tool, str) or not tool.startswith('inputs.')
-                    or not isinstance(bindings.get(tool[7:]), dict)
-                    or 'asset' not in bindings[tool[7:]]):
-                error(scope, 'dispatch document and tool must bind declared inputs')
+                    or not document.startswith('dispatch.inputs.')
+                    or document[16:] not in bindings):
+                error(scope, 'dispatch.document must bind dispatch.inputs.<declared name>')
+            if (not isinstance(tool, dict) or set(tool) != {'asset'}
+                    or not isinstance(tool.get('asset'), str)):
+                error(scope, 'dispatch.tool must declare its orchestrator asset directly')
             state = dispatch.get('state')
             if (not isinstance(state, str) or Path(state).is_absolute()
                     or '..' in Path(state).parts or not state.endswith('.json')):
@@ -196,24 +206,24 @@ def validate_config(path, config):
                 else:
                     types = set(edges.values())
                     dispatched = set(dispatch_types)
-            priority = dispatch.get('priority_keywords')
-            if (not isinstance(priority, list) or len(priority) != len(set(priority))
-                    or any(not isinstance(name, str) or not re.fullmatch(name_pattern, name)
-                           for name in priority)):
-                error(scope, 'dispatch.priority_keywords must be a unique list of keywords')
-            if dispatch.get('completion_requires') != [
-                    'direct_children_exist', 'current_group_direct_parts_finished',
-                    'current_group_review_passed']:
-                error(scope, 'dispatch.completion_requires must define group completion gates')
-            if dispatch.get('lifecycle') != {
-                    'start': 'init', 'select': 'next', 'run': 'enter_route',
-                    'active': 'resume_pointer', 'complete': 'complete',
-                    'done': 'final_review_then_publish',
-                    'after_change': 'select', 'repair': 'reopen', 'on_error': 'stop'}:
-                error(scope, 'dispatch.lifecycle must define the complete cursor loop')
-            if dispatch.get('carry') != ['svg'] or block.get('outputs') != {
-                    'groups': document, 'state': state, 'svg': 'carry.svg'}:
-                error(scope, 'dispatch must publish its tree, state, and final SVG carry')
+            carry = dispatch.get('carry')
+            valid_carry = (isinstance(carry, dict) and bool(carry)
+                    and not any(not isinstance(name, str) or not re.fullmatch(name_pattern, name)
+                           or name in {'groups', 'state'}
+                           or initial is not None and (
+                               not isinstance(initial, str)
+                               or not initial.startswith('dispatch.inputs.')
+                               or not isinstance(bindings, dict)
+                               or initial[16:] not in bindings)
+                           for name, initial in carry.items()))
+            if not valid_carry:
+                error(scope, 'dispatch.carry must map artifact names to dispatch.inputs.<name> or null')
+            outputs = block.get('outputs')
+            expected_outputs = {'groups': document, 'state': state}
+            if valid_carry:
+                expected_outputs.update({name: 'carry.' + name for name in carry})
+            if outputs != expected_outputs:
+                error(scope, 'dispatch outputs must publish its tree, state, and named carry artifacts')
             routes = dispatch.get('routes')
             if not isinstance(routes, dict) or set(routes) != dispatched:
                 error(scope, 'dispatch.routes must map every dispatched node type')
@@ -228,11 +238,13 @@ def validate_config(path, config):
                             error(scope, f'invalid route name: {name}')
                         check_target(target, {}, f'{scope}.routes.{kind}.{name}')
             check_target(dispatch.get('fallback'), {}, scope + '.fallback')
-            final_review = block.get('final_review')
-            if not isinstance(final_review, dict) or 'run' not in final_review:
-                error(scope, 'dispatch requires final_review.run')
-            else:
-                check_target(final_review['run'], final_review, scope + '.final_review')
+            if 'final_review' in block:
+                final_review = block['final_review']
+                if not isinstance(final_review, dict) or 'run' not in final_review:
+                    error(scope, 'final_review requires run')
+                else:
+                    check_working_dir(final_review, scope + '.final_review', required=True)
+                    check_target(final_review['run'], final_review, scope + '.final_review')
             return
         if 'if' in block:
             if any(k in block for k in ('run', 'imagegen', 'review', 'outputs', 'writes_options')):
@@ -255,13 +267,243 @@ def validate_config(path, config):
             if not isinstance(review, dict) or 'run' not in review:
                 error(scope, 'review requires run')
             else:
+                check_working_dir(review, scope + '.review', required=True)
                 check_target(review['run'], review, scope + '.review')
 
     check_assets(config)
     if 'id' in config:
         visit(config, config['id'])
-    elif set(config) - {'inputs', 'options'}:
+    elif set(config) - {'inputs', 'options', 'working_dir'}:
         error('root', 'root input definition cannot dispatch a task')
+    else:
+        check_working_dir(config, 'root', required=True)
+    return errors
+
+
+REFERENCE = re.compile(r'^(inputs|nodes|options|self|carry|dispatch)\.')
+EXPRESSION_REFERENCES = re.compile(r'\b(?:inputs|nodes|options|self|carry|dispatch)\.[a-zA-Z_0-9.]+')
+ITEM_FIELDS = {'id', 'kind', 'name', 'path', 'parent_path'}
+
+
+def output_values(block):
+    result = {}
+    outputs = block.get('outputs', {})
+    if isinstance(outputs, dict):
+        for name, value in outputs.items():
+            result.setdefault(name, []).append(value)
+    for key in ('then', 'else'):
+        child = block.get(key)
+        if isinstance(child, dict):
+            for name, values in output_values(child).items():
+                result.setdefault(name, []).extend(values)
+    return result
+
+
+def validate_bindings(skill_root, configs):
+    """Check explicit namespaces and saved artifact paths across one skill."""
+    errors = []
+    root = configs.get(skill_root / '流程.yaml', {})
+    root_inputs = root.get('inputs', {})
+    root_options = root.get('options', {})
+    if not isinstance(root_inputs, dict):
+        errors.append(f'{skill_root / "流程.yaml"}: root inputs must be a map')
+        root_inputs = {}
+    if not isinstance(root_options, dict):
+        errors.append(f'{skill_root / "流程.yaml"}: root options must be a map')
+        root_options = {}
+    nodes = {config['id']: (path, config) for path, config in configs.items()
+             if isinstance(config.get('id'), str)}
+    dispatches = [(path, config) for path, config in configs.items()
+                  if isinstance(config.get('dispatch'), dict)]
+
+    def contexts(path):
+        result = []
+        for dispatch_path, config in dispatches:
+            dispatch = config['dispatch']
+            targets = [dispatch.get('fallback')]
+            routes = dispatch.get('routes', {})
+            for mapping in routes.values() if isinstance(routes, dict) else []:
+                if isinstance(mapping, dict):
+                    targets.extend(mapping.values())
+            for target in targets:
+                if isinstance(target, str):
+                    directory = (skill_root / target).resolve()
+                    if path.parent == directory or directory in path.parents:
+                        result.append((dispatch_path, config))
+                        break
+        return result
+
+    def normalized(value):
+        return str(Path(value))
+
+    def order(path):
+        result = []
+        for part in path.relative_to(skill_root).parts:
+            number = re.match(r'^([\d.]+)', part)
+            if number:
+                result.append((0, tuple(int(n) for n in number[1].split('.') if n), part))
+            else:
+                result.append((1, (), part))
+        return tuple(result)
+
+    def resolve(value, context, path, self_outputs=None, seen=frozenset()):
+        if not isinstance(value, str) or value in seen:
+            return set()
+        if not REFERENCE.match(value):
+            return {normalized(value)}
+        seen = seen | {value}
+        parts = value.split('.')
+        candidates = []
+        if len(parts) == 3 and parts[0] == 'nodes' and parts[1] in nodes:
+            candidates = output_values(nodes[parts[1]][1]).get(parts[2], [])
+        elif len(parts) == 3 and parts[:2] == ['dispatch', 'inputs'] and context:
+            candidate = context[1].get('inputs', {}).get(parts[2])
+            if isinstance(candidate, dict):
+                candidate = candidate.get('from')
+            candidates = [candidate]
+        elif len(parts) == 2 and parts[0] == 'carry' and context:
+            candidates = [context[1]['dispatch'].get('carry', {}).get(parts[1])]
+            for earlier_path, earlier_config in configs.items():
+                if context in contexts(earlier_path) and order(earlier_path) < order(path):
+                    candidates.extend(output_values(earlier_config).get(parts[1], []))
+        elif len(parts) == 2 and parts[0] == 'self':
+            candidates = (self_outputs or {}).get(parts[1], [])
+        result = set()
+        for candidate in candidates:
+            result.update(resolve(candidate, context, path, self_outputs, seen))
+        return result
+
+    for path, config in configs.items():
+        if path == skill_root / '流程.yaml':
+            continue
+        owners = contexts(path)
+        if 'dispatch' in config:
+            owners = [(path, config)]
+        for context in owners or [None]:
+            is_item = context is not None and context[0] != path
+            dispatch_inputs = context[1].get('inputs', {}) if context else {}
+            carry = context[1]['dispatch'].get('carry', {}) if context else {}
+
+            def error(scope, message):
+                errors.append(f'{path} [{scope}]: {message}')
+
+            def reference(value, scope, self_outputs=None):
+                if not isinstance(value, str) or not REFERENCE.match(value):
+                    return
+                parts = value.split('.')
+                if parts[0] == 'inputs':
+                    if len(parts) != 2 or parts[1] not in root_inputs:
+                        error(scope, f'{value} is not a declared root input; '
+                              'use nodes.*, dispatch.inputs.*, or carry.* for workflow data')
+                elif parts[0] == 'nodes':
+                    if (len(parts) != 3 or parts[1] not in nodes
+                            or parts[2] not in output_values(nodes[parts[1]][1])):
+                        error(scope, f'unknown upstream output: {value}')
+                    else:
+                        other_path = nodes[parts[1]][0]
+                        other_owners = contexts(other_path)
+                        if other_owners and context not in other_owners:
+                            error(scope, f'output belongs to another dispatch route: {value}')
+                        elif (other_owners and order(other_path) >= order(path)
+                              or not other_owners and order(other_path) >= order(context[0] if is_item else path)):
+                            error(scope, f'output is not from an earlier task: {value}')
+                elif parts[0] == 'options':
+                    if len(parts) != 2 or parts[1] not in root_options:
+                        error(scope, f'unknown root option: {value}')
+                elif parts[0] == 'self':
+                    if len(parts) != 2 or parts[1] not in (self_outputs or {}):
+                        error(scope, f'self.* is only a reviewed task output: {value}')
+                elif parts[0] == 'carry':
+                    if len(parts) != 2 or parts[1] not in carry:
+                        error(scope, f'unknown dispatch carry: {value}')
+                elif (len(parts) == 3 and parts[1] == 'inputs'
+                      and parts[2] in dispatch_inputs):
+                    pass
+                elif (len(parts) == 3 and parts[1] == 'item'
+                      and parts[2] in ITEM_FIELDS and is_item):
+                    pass
+                else:
+                    error(scope, f'unknown dispatch binding: {value}')
+
+            def placeholders(value, bindings, scope):
+                if not isinstance(value, str):
+                    return
+                for name in re.findall(r'\{([^{}]+)\}', value):
+                    if name not in bindings:
+                        error(scope, f'placeholder {{{name}}} has no declared task input')
+
+            def visit(block, scope, inherited=None, self_outputs=None):
+                if not isinstance(block, dict):
+                    return
+                declared = block.get('inputs', {})
+                if not isinstance(declared, dict):
+                    error(scope, 'inputs must be a map')
+                    return
+                bindings = dict(inherited or {})
+                bindings.update(declared)
+                for name, value in declared.items():
+                    if isinstance(value, dict):
+                        if set(value) - {'asset', 'from', 'required'}:
+                            error(scope + '.inputs.' + name, 'typed external inputs belong only in the root definition')
+                        value = value.get('from')
+                    reference(value, scope + '.inputs.' + name, self_outputs)
+                condition = block.get('if')
+                if isinstance(condition, str):
+                    for value in EXPRESSION_REFERENCES.findall(condition):
+                        reference(value, scope + '.if', self_outputs)
+                elif isinstance(condition, dict):
+                    for value in condition.values():
+                        reference(value, scope + '.if', self_outputs)
+                imagegen = block.get('imagegen')
+                if isinstance(imagegen, dict):
+                    for name in imagegen.get('inputs', []):
+                        if name not in bindings:
+                            error(scope + '.imagegen', f'undeclared imagegen input: {name}')
+                placeholders(block.get('worker'), bindings, scope + '.worker')
+                outputs = block.get('outputs', {})
+                if not isinstance(outputs, dict):
+                    error(scope, 'outputs must be a map')
+                    return
+                sources = set()
+                for value in bindings.values():
+                    if isinstance(value, dict):
+                        value = value.get('from')
+                    sources.update(resolve(value, context, path, self_outputs))
+                item_inputs = {name for name, value in bindings.items()
+                               if isinstance(value, str) and value.startswith('dispatch.item.')}
+                for name, value in outputs.items():
+                    target_scope = scope + '.outputs.' + name
+                    if not isinstance(value, str) or not value:
+                        error(target_scope, 'output must be an explicit reference or saved path')
+                        continue
+                    reference(value, target_scope, self_outputs)
+                    if REFERENCE.match(value):
+                        continue
+                    placeholders(value, bindings, target_scope)
+                    parts = Path(value).parts
+                    if Path(value).is_absolute() or '..' in parts or re.match(r'^[A-Za-z]:', value):
+                        error(target_scope, 'saved output must remain relative to working_dir')
+                    if parts and parts[0].lower() in {'tmp', 'temp'}:
+                        error(target_scope, 'declared deliverables must be saved outside temporary directories')
+                    if normalized(value) in sources:
+                        error(target_scope, f'saved output overwrites an input artifact: {value}')
+                    if is_item and 'run' in block:
+                        if not any('{' + key + '}' in value for key in item_inputs):
+                            error(target_scope, 'dispatch task output must be isolated by a bound item input')
+                        if path.parent.name not in parts:
+                            error(target_scope, 'dispatch task output must be in its own stage directory')
+                for key in ('then', 'else'):
+                    visit(block.get(key), scope + '.' + key, bindings, self_outputs)
+                reviewed_outputs = output_values(block)
+                for key in ('review', 'final_review'):
+                    visit(block.get(key), scope + '.' + key, bindings, reviewed_outputs)
+                dispatch = block.get('dispatch')
+                if isinstance(dispatch, dict):
+                    reference(dispatch.get('document'), scope + '.dispatch.document')
+                    for name, value in dispatch.get('carry', {}).items():
+                        reference(value, scope + '.dispatch.carry.' + name)
+
+            visit(config, config.get('id', 'node'))
     return errors
 
 
@@ -270,6 +512,7 @@ def main():
     parser.add_argument('roots', nargs='*', type=Path)
     args = parser.parse_args()
     errors, count = [], 0
+    skill_configs = {}
     for root in args.roots or DEFAULT_ROOTS:
         files = sorted(root.rglob('流程.yaml'))
         if not files:
@@ -285,8 +528,14 @@ def main():
                         errors.append(f'{path}: duplicate node id {identity}')
                     ids.add(identity)
                 errors.extend(validate_config(path, config))
+                skill_root = next((p.resolve() for p in (path.parent, *path.parent.parents)
+                                   if (p / 'SKILL.md').is_file()), None)
+                if skill_root is not None:
+                    skill_configs.setdefault(skill_root, {})[path.resolve()] = config
             except (ValueError, yaml.YAMLError, OSError) as exc:
                 errors.append(f'{path}: {exc}')
+    for skill_root, configs in skill_configs.items():
+        errors.extend(validate_bindings(skill_root, configs))
     for item in errors:
         print(item, file=sys.stderr)
     print(f'{count} workflow configurations checked; {len(errors)} errors')

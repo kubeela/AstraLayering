@@ -1,6 +1,7 @@
 id: group_layers
 run: 3.大层分层稿
 worker: group_layer_drawing
+working_dir: "{working_dir}"
 inputs:
   reference: nodes.base_subject.image
   groups: nodes.group_inventory.groups
@@ -11,6 +12,7 @@ outputs:
   preview: block-layers/preview.png
 review:
   run: 3.大层分层稿/review
+  working_dir: "{working_dir}"
   inputs:
     reference: nodes.base_subject.image
     groups: nodes.group_inventory.groups

@@ -1,3 +1,0 @@
-依据参考图和当前 group 的色块，检查直属 group、part 的可见范围、相互接触与遮挡关系。
-
-把当前 group 的色块细化到全部直属节点：已有子 group 沿用色块；新增子 group 和直属 part 在 `character.svg` 中画可独显的底形。每个绘制 `<g>` 对应 `groups.json` 中的一个节点，使用完整路径和唯一 id。沿参考图核对可见外缘、连接与遮挡。用 <preview_tool> 检查当前层色块及整图。

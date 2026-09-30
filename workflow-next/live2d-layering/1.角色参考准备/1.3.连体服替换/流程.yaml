@@ -5,6 +5,7 @@ inputs:
 
 if: options.wear_cloth == true
 then:
+  working_dir: "{working_dir}"
   run: 1.角色参考准备/1.3.连体服替换
   inputs:
     outfit:
@@ -21,4 +22,4 @@ else:
       image: inputs.original
   else:
     outputs:
-      image: inputs.reference
+      image: nodes.character_reference.image

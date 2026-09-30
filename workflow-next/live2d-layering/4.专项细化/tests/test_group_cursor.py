@@ -46,8 +46,7 @@ class GroupCursorTest(unittest.TestCase):
         return self.command(
             "init", "--root-key", "groups", "--child-edge", "groups:group",
             "--child-edge", "parts:part", "--terminal-type", "part",
-            "--dispatch-type", "group", "--priority-keyword", "body",
-            "--priority-keyword", "face", "--route-name", "group:eyes",
+            "--dispatch-type", "group", "--route-name", "group:eyes",
         )
 
     def patch(self, value):
@@ -55,17 +54,14 @@ class GroupCursorTest(unittest.TestCase):
         path.write_text(json.dumps(value), encoding="utf-8")
         return path
 
-    def test_breadth_priority_and_group_only_state(self):
+    def test_breadth_first_growth_and_group_only_state(self):
         self.assertEqual(self.init()["groups"], 6)
         self.assertEqual(self.init()["action"], "already_initialized")
-        body = self.command("next")
-        self.assertEqual(body["targets"][0]["path"], "body")
-        self.assertEqual(body["route"], "generic")
-        self.command("complete")
         head = self.command("next")
-        self.assertEqual(head["targets"][0]["path"], "head")
-        self.command("checkpoint", "--pointer", "direct_blocks")
-        new = self.command("expand", "--parent", head["targets"][0]["id"],
+        self.assertEqual(head["target"]["path"], "head")
+        self.assertEqual(head["route"], "generic")
+        self.command("checkpoint", "--pointer", "group_completion")
+        new = self.command("expand", "--parent", head["target"]["id"],
                            "--patch", str(self.patch({
                                "groups": [{"name": "headdress", "groups": [], "parts": []}],
                                "parts": [{"name": "head_base"}],
@@ -73,50 +69,57 @@ class GroupCursorTest(unittest.TestCase):
         self.assertEqual(new["added"], 2)
         self.assertNotIn("id", next(node for node in new["nodes"]
                                     if node["kind"] == "part"))
-        self.assertEqual(self.command("next")["pointer"], "direct_blocks")
+        resumed = self.command("next")
+        self.assertEqual(resumed["action"], "active")
+        self.assertEqual(resumed["target"], head["target"])
+        self.assertEqual(resumed["pointer"], "group_completion")
+        self.command("complete")
+        self.assertEqual(self.command("next")["target"]["path"], "body")
         self.command("complete")
         face = self.command("next")
-        self.assertEqual(face["targets"][0]["path"], "head/face")
+        self.assertEqual(face["target"]["path"], "head/face")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "head/headdress")
+        self.assertEqual(self.command("next")["target"]["path"], "head/headdress")
         progress = json.loads(self.state.read_text(encoding="utf-8"))
         self.assertNotIn("body/torso", progress["nodes"])
         self.assertNotIn("head/head_base", progress["nodes"])
         self.assertEqual(progress["nodes"]["head/face/eyes"]["status"], "pending")
 
-    def test_keyword_match_only_orders_within_same_depth(self):
+    def test_breadth_first_preserves_document_order(self):
         tree = json.loads(self.tree.read_text(encoding="utf-8"))
         tree["groups"].append({"name": "lower_body", "groups": [],
                                 "parts": [{"name": "leg"}]})
         self.tree.write_text(json.dumps(tree), encoding="utf-8")
         self.init()
-        self.assertEqual(self.command("next")["targets"][0]["path"], "body")
+        self.assertEqual(self.command("next")["target"]["path"], "head")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "lower_body")
+        self.assertEqual(self.command("next")["target"]["path"], "body")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "head")
+        self.assertEqual(self.command("next")["target"]["path"], "lower_body")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "head/face")
+        self.assertEqual(self.command("next")["target"]["path"], "head/face")
 
     def test_parent_completion_does_not_complete_descendants(self):
         self.init()
-        self.command("next")
+        self.assertEqual(self.command("next")["target"]["path"], "head")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "head")
+        self.assertEqual(self.command("next")["target"]["path"], "body")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "head/face")
+        self.assertEqual(self.command("next")["target"]["path"], "head/face")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "head/face/eyes")
+        eyes = self.command("next")
+        self.assertEqual(eyes["target"]["path"], "head/face/eyes")
+        self.assertEqual(eyes["route"], "group:eyes")
         self.command("complete")
         left = self.command("next")
-        self.assertEqual(left["targets"][0]["path"], "head/face/eyes/left_eye")
+        self.assertEqual(left["target"]["path"], "head/face/eyes/left_eye")
         self.assertIn("group must contain", self.command("complete", succeeds=False))
-        self.command("expand", "--parent", left["targets"][0]["id"],
+        self.command("expand", "--parent", left["target"]["id"],
                      "--patch", str(self.patch({"parts": [{"name": "eye_base"}]})))
         self.command("complete")
         right = self.command("next")
-        self.assertEqual(right["targets"][0]["path"], "head/face/eyes/right_eye")
-        self.command("expand", "--parent", right["targets"][0]["id"],
+        self.assertEqual(right["target"]["path"], "head/face/eyes/right_eye")
+        self.command("expand", "--parent", right["target"]["id"],
                      "--patch", str(self.patch({"parts": [{"name": "eye_base"}]})))
         self.command("complete")
         self.assertEqual(self.command("next")["action"], "done")
@@ -124,6 +127,8 @@ class GroupCursorTest(unittest.TestCase):
     def test_completed_direct_structure_is_immutable(self):
         self.init()
         self.command("next")
+        self.command("complete")
+        self.assertEqual(self.command("next")["target"]["path"], "body")
         self.command("complete")
         changed = json.loads(self.tree.read_text(encoding="utf-8"))
         changed["groups"][1]["parts"].append({"name": "extra"})
@@ -133,23 +138,27 @@ class GroupCursorTest(unittest.TestCase):
 
     def test_explicit_reopen_allows_later_repair(self):
         self.init()
+        self.command("next")
+        self.command("complete")
         body = self.command("next")
         self.command("complete")
-        self.assertEqual(self.command("reopen", "--target", body["targets"][0]["id"])
+        self.assertEqual(self.command("reopen", "--target", body["target"]["id"])
                          ["action"], "reopened")
         selected = self.command("next")
-        self.assertEqual(selected["targets"][0]["path"], "body")
-        self.command("expand", "--parent", selected["targets"][0]["id"],
+        self.assertEqual(selected["target"]["path"], "body")
+        self.command("expand", "--parent", selected["target"]["id"],
                      "--patch", str(self.patch({"parts": [{"name": "neck"}]})))
         self.command("complete")
         self.assertEqual(json.loads(self.state.read_text())["nodes"]["body"]["status"], "done")
 
     def test_invalid_expansion_preserves_files(self):
         self.init()
+        self.command("next")
+        self.command("complete")
         body = self.command("next")
         before = self.tree.read_bytes()
         state_before = self.state.read_bytes()
-        self.command("expand", "--parent", body["targets"][0]["id"],
+        self.command("expand", "--parent", body["target"]["id"],
                      "--patch", str(self.patch({"parts": [{"name": "torso"}]})),
                      succeeds=False)
         self.assertEqual(self.tree.read_bytes(), before)
@@ -166,9 +175,9 @@ class GroupCursorTest(unittest.TestCase):
                      "--child-edge", "branches:branch",
                      "--child-edge", "atoms:atom",
                      "--terminal-type", "atom", "--dispatch-type", "branch")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "root")
+        self.assertEqual(self.command("next")["target"]["path"], "root")
         self.command("complete")
-        self.assertEqual(self.command("next")["targets"][0]["path"], "root/branch")
+        self.assertEqual(self.command("next")["target"]["path"], "root/branch")
         self.command("complete")
         self.assertEqual(self.command("next")["action"], "done")
         self.assertNotIn("root/branch/detail",

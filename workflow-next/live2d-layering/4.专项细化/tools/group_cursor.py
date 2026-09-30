@@ -53,7 +53,7 @@ def save_json(path, value):
             temporary.unlink(missing_ok=True)
 
 
-def validate_spec(tree, routes, priority_keywords):
+def validate_spec(tree, routes):
     if not isinstance(tree, dict) or not isinstance(routes, dict):
         raise ValueError("tree specification and routes must be objects")
     root = tree.get("root_key")
@@ -74,11 +74,6 @@ def validate_spec(tree, routes, priority_keywords):
         raise ValueError("invalid tree root, child edges, or terminal types")
     if set(routes) != set(dispatched):
         raise ValueError("routes must contain every dispatched node type")
-    if (not isinstance(priority_keywords, list)
-            or len(priority_keywords) != len(set(priority_keywords))
-            or any(not isinstance(name, str) or not NAME.fullmatch(name)
-                   for name in priority_keywords)):
-        raise ValueError("invalid priority keyword list")
     for kind, names in routes.items():
         if (not isinstance(names, list) or len(names) != len(set(names))
                 or any(not isinstance(name, str) or not NAME.fullmatch(name)
@@ -124,10 +119,9 @@ def enumerate_tree(document, tree):
     return entries
 
 
-def make_state(tree, routes, priority_keywords):
+def make_state(tree, routes):
     return {
         "version": 4, "tree": tree, "routes": routes,
-        "priority_keywords": priority_keywords,
         "next_id": 1, "nodes": {}, "active": None,
     }
 
@@ -139,8 +133,7 @@ def reconcile(document, state):
             or state.get("active") is not None
             and not isinstance(state.get("active"), dict)):
         raise ValueError("invalid dispatch state")
-    validate_spec(state.get("tree"), state.get("routes"),
-                  state.get("priority_keywords"))
+    validate_spec(state.get("tree"), state.get("routes"))
     entries = enumerate_tree(document, state["tree"])
     dispatched = set(state["tree"]["dispatch_types"])
     current_paths = {entry["path"] for entry in entries if entry["kind"] in dispatched}
@@ -200,7 +193,7 @@ def public(entry):
 def frame_result(frame, by_id, action):
     return {
         "action": action, "route": frame["route"],
-        "targets": [public(by_id[frame["target"]])],
+        "target": public(by_id[frame["target"]]),
         "pointer": frame.get("pointer"),
     }
 
@@ -214,19 +207,7 @@ def select_next(document, state, entries, by_id):
         if any(entry["status"] != "done" for entry in entries if "id" in entry):
             raise ValueError("dispatched nodes remain unfinished")
         return {"action": "done"}, False
-    keywords = state["priority_keywords"]
-
-    def rank(item):
-        index, entry = item
-        name = entry["name"]
-        depth = entry["path"].count("/")
-        if name in keywords:
-            return depth, 0, keywords.index(name), index
-        match = next((position for position, keyword in enumerate(keywords)
-                      if keyword in name), len(keywords))
-        return depth, (1 if match < len(keywords) else 2), match, index
-
-    _, entry = min(pending, key=rank)
+    _, entry = min(pending, key=lambda item: (item[1]["path"].count("/"), item[0]))
     route = (f"{entry['kind']}:{entry['name']}"
              if entry["name"] in state["routes"][entry["kind"]] else "generic")
     state["nodes"][entry["path"]]["status"] = "active"
@@ -294,7 +275,6 @@ def main():
     init.add_argument("--child-edge", action="append", required=True)
     init.add_argument("--terminal-type", action="append", default=[])
     init.add_argument("--dispatch-type", action="append", required=True)
-    init.add_argument("--priority-keyword", action="append", default=[])
     init.add_argument("--route-name", action="append", default=[])
     commands.add_parser("next")
     expand_command = commands.add_parser("expand")
@@ -329,15 +309,14 @@ def main():
                 "terminal_types": args.terminal_type,
                 "dispatch_types": args.dispatch_type,
             }
-            validate_spec(tree, routes, args.priority_keyword)
+            validate_spec(tree, routes)
             if args.state.exists():
                 state = read_json(args.state)
-                if (state.get("tree") != tree or state.get("routes") != routes
-                        or state.get("priority_keywords") != args.priority_keyword):
+                if state.get("tree") != tree or state.get("routes") != routes:
                     raise ValueError("saved state uses another tree specification or route table")
                 result_action = "already_initialized"
             else:
-                state = make_state(tree, routes, args.priority_keyword)
+                state = make_state(tree, routes)
                 result_action = "initialized"
                 state_changed = True
             entries, by_id, reconciled = reconcile(document, state)

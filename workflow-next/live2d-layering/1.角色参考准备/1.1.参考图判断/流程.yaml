@@ -1,5 +1,6 @@
 id: reference_decision
 worker: reference_prep
+working_dir: "{working_dir}"
 inputs:
   original: inputs.original
   style_reference_1:

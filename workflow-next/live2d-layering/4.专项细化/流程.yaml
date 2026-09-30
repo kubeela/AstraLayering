@@ -1,18 +1,18 @@
 id: refine_groups
+working_dir: "{working_dir}"
 inputs:
   reference: nodes.base_subject.image
   groups: nodes.group_inventory.groups
-  svg: nodes.group_layers.svg
-  cursor_tool:
-    asset: 4.专项细化/tools/group_cursor.py
+  guide_svg: nodes.group_layers.guide_svg
   preview_tool:
     asset: tools/svg_preview.py
 dispatch:
-  document: inputs.groups
+  document: dispatch.inputs.groups
   state: structure/groups.dispatch.json
-  tool: inputs.cursor_tool
-  order: breadth_first_keyword_priority
-  mode: serial
+  tool:
+    asset: 4.专项细化/tools/group_cursor.py
+  item: tool.next.target # 本轮选中的树节点；模板通过 inputs 接收需要的值
+  order: breadth_first
   tree:
     root_key: groups
     child_edges:
@@ -20,42 +20,14 @@ dispatch:
       parts: part
     terminal_types: [part]
     dispatch_types: [group]
-  priority_keywords: [body, face]
   routes:
     group: {}
   fallback: templates/部件专项/generic
-  pointer: checkpointed_step
-  lifecycle:
-    start: init
-    select: next
-    run: enter_route
-    active: resume_pointer
-    complete: complete
-    done: final_review_then_publish
-    after_change: select
-    repair: reopen
-    on_error: stop
-  identity: state.nodes[{path}].id
-  once: completed_group_id
-  expand: append_direct_children
-  complete: after_group_output_and_review
-  completion_unit: group
-  completion_requires:
-    - direct_children_exist
-    - current_group_direct_parts_finished
-    - current_group_review_passed
-  carry: [svg]
-final_review:
-  run: 4.专项细化/review
-  worker: refine_groups_final_review
-  inputs:
-    reference: inputs.reference
-    groups: inputs.groups
-    candidate: carry.svg
-    preview_tool: inputs.preview_tool
-  outputs:
-    report: reviews/refine_groups/final.md
+  carry:
+    guide_svg: dispatch.inputs.guide_svg
+    artwork_svg: null # 首次尚无正式绘制，由模板交付后更新
 outputs:
-  groups: inputs.groups
+  groups: dispatch.inputs.groups
   state: structure/groups.dispatch.json
-  svg: carry.svg
+  guide_svg: carry.guide_svg
+  artwork_svg: carry.artwork_svg

@@ -1,3 +1,4 @@
+working_dir: "{working_dir}"
 inputs:
   original:
     type: image
