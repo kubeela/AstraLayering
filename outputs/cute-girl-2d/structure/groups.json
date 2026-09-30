@@ -1,0 +1,40 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "name": "head",
+      "groups": [],
+      "note": "头部、五官、发饰与全部长发；长发延伸至腰臀两侧。"
+    },
+    {
+      "name": "neck",
+      "groups": [],
+      "note": "下颌至锁骨上方的可见颈部。"
+    },
+    {
+      "name": "body",
+      "groups": [],
+      "note": "锁骨、肩、胸和腹部至肚脐附近；项链归此范围。"
+    },
+    {
+      "name": "arms",
+      "groups": [],
+      "note": "双臂和双手，包括抬起持杯的手。"
+    },
+    {
+      "name": "pelvis",
+      "groups": [],
+      "note": "肚脐附近至胯部及双侧髋部的骨盆范围。"
+    },
+    {
+      "name": "legs",
+      "groups": [],
+      "note": "双腿和双脚，包含腿套与鞋。"
+    },
+    {
+      "name": "mug",
+      "groups": [],
+      "note": "抬起的手所持马克杯，包含杯身与杯柄。"
+    }
+  ]
+}
