@@ -120,6 +120,42 @@ class WorkflowDSLTest(unittest.TestCase):
         self.configs[self.completion_path]['inputs']['guide_svg'] = 'carry.missing'
         self.assertIn('unknown dispatch carry', self.errors())
 
+    def test_carry_passthrough_is_valid_in_nodes_and_branches(self):
+        alias = {'outputs': {'guide_svg': 'carry.guide_svg'}}
+        upstream = {'outputs': {'guide_svg': 'nodes.group_layers.guide_svg'}}
+        cases = {
+            'node': {'id': 'group_completion', **alias},
+            'then': {'id': 'group_completion', 'if': 'options.simplify == false',
+                     'then': alias, 'else': upstream},
+            'else': {'id': 'group_completion', 'if': 'options.simplify == false',
+                     'then': upstream, 'else': alias},
+        }
+        for name, config in cases.items():
+            with self.subTest(placement=name):
+                self.configs[self.completion_path] = copy.deepcopy(config)
+                self.assertEqual(self.errors(), '')
+
+    def test_carry_passthrough_rejects_undeclared_artifact(self):
+        self.configs[self.completion_path] = {
+            'id': 'group_completion', 'if': 'options.simplify == false',
+            'then': {'outputs': {'guide_svg': 'carry.guide_svg'}},
+            'else': {'outputs': {'guide_svg': 'carry.missing'}},
+        }
+        self.assertIn('unknown dispatch carry: carry.missing', self.errors())
+
+    def test_carry_passthrough_requires_dispatch_context(self):
+        path = self.root / '1.reference' / '流程.yaml'
+        self.configs[path] = {'id': 'base_subject',
+                              'outputs': {'image': 'carry.guide_svg'}}
+        self.assertIn('unknown dispatch carry: carry.guide_svg', self.errors())
+
+    def test_carry_passthrough_rejects_extra_reference_segments(self):
+        self.configs[self.completion_path] = {
+            'id': 'group_completion',
+            'outputs': {'guide_svg': 'carry.guide_svg.extra'},
+        }
+        self.assertIn('unknown dispatch carry: carry.guide_svg.extra', self.errors())
+
     def test_removed_dispatch_alias_is_rejected(self):
         self.configs[self.completion_path]['inputs']['guide_svg'] = 'dispatch.carry.guide_svg'
         self.assertIn('unknown dispatch binding', self.errors())

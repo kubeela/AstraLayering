@@ -2,6 +2,7 @@ id: refine_groups
 working_dir: "{working_dir}"
 inputs:
   reference: nodes.base_subject.image
+  line_reference: nodes.line_reference.image
   groups: nodes.group_inventory.groups
   guide_svg: nodes.group_layers.guide_svg
   preview_tool:

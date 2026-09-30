@@ -1,0 +1,18 @@
+id: part_tone_boundaries
+if:
+  direct_parts_of: dispatch.item.path
+  in: dispatch.inputs.groups
+then:
+  run: templates/部件专项/generic/3.geometry/3.3.明暗范围线
+  worker: group_geometry
+  working_dir: "{working_dir}"
+  inputs:
+    group_path: dispatch.item.path
+    reference: dispatch.inputs.reference
+    line_reference: dispatch.inputs.line_reference
+    groups: dispatch.inputs.groups
+    guide_svg: carry.guide_svg
+    artwork_svg: nodes.part_structure.artwork_svg
+    preview_tool: dispatch.inputs.preview_tool
+  outputs:
+    artwork_svg: refinement/character.svg

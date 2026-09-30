@@ -1,0 +1,10 @@
+id: line_reference
+run: 1.角色参考准备/1.4.全图线稿参考
+working_dir: "{working_dir}"
+inputs:
+  reference: nodes.base_subject.image
+outputs:
+  image: references/line-reference.png
+imagegen:
+  prompt: 1.角色参考准备/1.4.全图线稿参考/生成提示词.txt
+  inputs: [reference]

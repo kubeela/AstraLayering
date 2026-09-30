@@ -51,7 +51,8 @@ def children(directory):
 def aliases_only(block):
     outputs = block.get('outputs', {})
     return (bool(outputs) and isinstance(outputs, dict)
-            and all(isinstance(v, str) and v.startswith(('inputs.', 'nodes.')) for v in outputs.values())
+            and all(isinstance(v, str) and v.startswith(('inputs.', 'nodes.', 'carry.'))
+                    for v in outputs.values())
             and not any(k in block for k in ('imagegen', 'writes_options', 'review')))
 
 

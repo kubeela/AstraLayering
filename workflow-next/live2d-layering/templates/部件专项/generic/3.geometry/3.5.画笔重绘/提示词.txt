@@ -1,0 +1,7 @@
+聚焦输入 `<artwork_svg>` 中 `<group_path>` 的直属 part，按 `<groups>` 定位对应容器，读取各曲线的 `<desc>`，将标注的粗细、起收笔、虚实与软硬实现为可见笔触。画笔依赖在 `<brush_requirements>` 中声明，使用 `perfect-freehand==1.2.0`，导入名为 `perfect_freehand`。
+
+沿原曲线密集采样，每点提供 `(x, y, pressure)`，根据沿线位置设置压力。用 `perfect_freehand.get_stroke` 生成笔触轮廓，将返回的点写成闭合填色 SVG 路径：`size` 控制基础宽度，`thinning` 配合压力控制粗细，`taper_start/end` 控制首尾收尖。使用 `simulate_pressure=False`、`streamline=0` 保持显式压力与采样位置，首尾缓动可用 `lambda t: t*t*(3-2*t)`。
+
+按描述的留白区间分段生成笔触。渐隐用透明度或渐变蒙版，软边用渐变蒙版或滤镜；几何平滑与边缘软化分别处理。原曲线与说明保留，重绘笔触归入同一 part 并标明来源曲线。填色辅助边界与纯定位线作为隐藏路径保存；由色面接管或融入明暗的线保留相应说明供后续处理。线色暂用便于检查的中性色。
+
+笔触覆盖范围沿用 `<guide_svg>` 中对应 part 的色块，边缘笔触可用该色块裁切。保留其他 part，在 `working_dir` 内的临时稿中实现。用 `<preview_tool>` 逐个独显 part，放大查看粗细、断笔、起收笔与软边，再对照输入曲线和 `<reference>` 核对位置、转折与连接。修正后更新完整输出 `<artwork_svg>`，并从同一 SVG 渲染白底 `<preview>`。
