@@ -20,4 +20,4 @@ JSON 顶层包含 `subject`（`character` 或 `other`）和 `groups` 数组。�
   ]
 }
 
-示例按实际角色取舍。先在工作根的临时目录写草稿，再用 `python3 <group_tool> publish-initial --draft <草稿 JSON> --out <工作根>/structure/groups.json` 校验并发布。
+示例按实际角色取舍。用 `python3 <group_tool> publish-initial --draft <草稿 JSON> --out <工作根>/structure/groups.json` 校验草稿并发布。
