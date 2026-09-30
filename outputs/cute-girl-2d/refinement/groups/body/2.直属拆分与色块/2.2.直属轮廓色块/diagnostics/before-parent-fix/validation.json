@@ -1,5 +1,5 @@
 {
-  "source": "refinement/groups/head/1.遮挡补全/groups.svg",
+  "source": "refinement/groups/head/1.父级轮廓补全/groups.svg",
   "candidate": "refinement/groups/body/2.直属拆分与色块/2.2.直属轮廓色块/groups.svg",
   "original_input_byte_preserved_after_removing_addition": true,
   "viewport": [

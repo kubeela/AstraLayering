@@ -1,4 +1,4 @@
-# body 遮挡补全说明
+# body 父级轮廓补全说明
 
 本轮执行 `group_completion`，目标为 `body` / `group-body`。已读取绑定的流程、逐字提示词及 `gpt-6-astra-xhigh.model`（内容为一个换行，模型选择由文件名声明）。`body` 是树中的顶层 group，没有需要申请扩大的父范围。
 
@@ -23,7 +23,7 @@
 
 ```text
 --only group-body --reference references/base-subject.png
---compare refinement/groups/body/1.遮挡补全/diagnostics/input-body-only.png
+--compare refinement/groups/body/1.父级轮廓补全/diagnostics/input-body-only.png
 --edge-overlay --crop X Y W H --scale 4 --columns 2
 ```
 

@@ -1,7 +1,7 @@
 {
   "status": "pass",
   "group_path": "head",
-  "parent_svg": "refinement/groups/head/1.遮挡补全/groups.svg",
+  "parent_svg": "refinement/groups/head/1.父级轮廓补全/groups.svg",
   "parent_ids": [
     "group-head"
   ],

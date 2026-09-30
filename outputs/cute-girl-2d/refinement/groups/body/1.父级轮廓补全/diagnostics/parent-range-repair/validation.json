@@ -1,7 +1,7 @@
 {
   "status": "pass",
-  "source": "refinement/groups/head/1.遮挡补全/groups.svg",
-  "output": "refinement/groups/body/1.遮挡补全/groups.svg",
+  "source": "refinement/groups/head/1.父级轮廓补全/groups.svg",
+  "output": "refinement/groups/body/1.父级轮廓补全/groups.svg",
   "source_sha256": "453441608fe33a51258dcd9ff73ea9a27bdec28e60c895ed88d30cba506f5212",
   "output_sha256": "ba23ff9438451681e8ea6b025d6a97fd7435fbbb8b1e04f6c8d43e2b0746a45a",
   "viewport": [

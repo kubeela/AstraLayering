@@ -1,5 +1,5 @@
 id: group_completion
-run: templates/部件专项/generic/1.遮挡补全
+run: templates/部件专项/generic/1.父级轮廓补全
 worker: group_completion
 working_dir: "{working_dir}"
 inputs:
@@ -9,5 +9,5 @@ inputs:
   guide_svg: carry.guide_svg
   preview_tool: dispatch.inputs.preview_tool
 outputs:
-  guide_svg: refinement/groups/{group_path}/1.遮挡补全/groups.svg
-  completion_note: refinement/groups/{group_path}/1.遮挡补全/补全说明.md
+  guide_svg: refinement/groups/{group_path}/1.父级轮廓补全/groups.svg
+  completion_note: refinement/groups/{group_path}/1.父级轮廓补全/补全说明.md
