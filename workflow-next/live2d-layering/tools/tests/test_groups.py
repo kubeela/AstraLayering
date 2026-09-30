@@ -1,4 +1,5 @@
 import importlib.util
+import copy
 import json
 from pathlib import Path
 import tempfile
@@ -57,6 +58,79 @@ class InitialGroupTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 groups.publish_initial(draft, output)
             self.assertEqual(output.read_text(), "existing")
+
+
+class ChildProposalTests(unittest.TestCase):
+    def test_mixed_direct_children_validate_without_changing_inputs(self):
+        document = example()
+        patch = {"groups": [{"name": "hair", "groups": []}],
+                 "parts": [{"name": "face_shape", "note": "脸部完整底形"}]}
+        before = copy.deepcopy((document, patch))
+        groups.validate_children(document, "head", patch)
+        self.assertEqual((document, patch), before)
+
+    def test_locates_nested_group_and_rejects_part_as_target(self):
+        document = example()
+        document["groups"][0]["groups"] = [{"name": "face", "groups": [],
+                                             "parts": [{"name": "nose"}]}]
+        groups.validate_children(document, "head/face", {"groups": [], "parts": [{"name": "mouth"}]})
+        with self.assertRaisesRegex(ValueError, "找不到 group"):
+            groups.validate_children(document, "head/face/nose", {"groups": [], "parts": [{"name": "tip"}]})
+
+    def test_rejects_duplicate_names_across_types_and_existing_children(self):
+        document = example()
+        document["groups"][0]["parts"] = [{"name": "nose"}]
+        for patch in [
+            {"groups": [{"name": "eyes", "groups": []}], "parts": [{"name": "eyes"}]},
+            {"groups": [], "parts": [{"name": "nose"}]},
+            {"groups": [{"name": "nose", "groups": []}], "parts": []},
+        ]:
+            with self.subTest(patch=patch), self.assertRaisesRegex(ValueError, "重名"):
+                groups.validate_children(document, "head", patch)
+
+    def test_rejects_nested_proposals_and_non_structural_fields(self):
+        invalid = [
+            {"groups": [{"name": "eyes", "groups": [{"name": "left_eye", "groups": []}]}], "parts": []},
+            {"groups": [{"name": "eyes", "groups": [], "parts": [{"name": "iris"}]}], "parts": []},
+            {"groups": [], "parts": [{"name": "nose", "groups": []}]},
+            {"groups": [], "parts": [{"name": "nose", "display_order": 3}]},
+            {"groups": [], "parts": [{"name": "left-eye"}]},
+            {"groups": {}, "parts": []},
+            {"parts": [{"name": "nose"}]},
+        ]
+        for patch in invalid:
+            with self.subTest(patch=patch), self.assertRaises(ValueError):
+                groups.validate_children(example(), "head", patch)
+
+    def test_empty_proposal_requires_existing_children(self):
+        document = example()
+        patch = {"groups": [], "parts": []}
+        with self.assertRaisesRegex(ValueError, "至少需要一个"):
+            groups.validate_children(document, "body", patch)
+        document["groups"][2]["parts"] = [{"name": "torso"}]
+        groups.validate_children(document, "body", patch)
+
+    def test_file_check_keeps_tree_and_proposal_unchanged(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tree = root / "groups.json"
+            patch = root / "children.json"
+            tree.write_text(json.dumps(example()), encoding="utf-8")
+            patch.write_text(json.dumps({"groups": [], "parts": [{"name": "torso"}]}), encoding="utf-8")
+            before = tree.read_bytes(), patch.read_bytes()
+            self.assertEqual(groups.main(["check-children", "--groups", str(tree),
+                                         "--group-path", "body", "--patch", str(patch)]), 0)
+            self.assertEqual((tree.read_bytes(), patch.read_bytes()), before)
+
+    def test_rejects_invalid_target_and_malformed_existing_tree(self):
+        patch = {"groups": [], "parts": [{"name": "torso"}]}
+        for target in ("", "/body", "body/../head", "missing"):
+            with self.subTest(target=target), self.assertRaises(ValueError):
+                groups.validate_children(example(), target, patch)
+        document = example()
+        document["groups"][0]["parts"] = [{"name": "invalid", "groups": []}]
+        with self.assertRaises(ValueError):
+            groups.validate_children(document, "body", patch)
 
 
 if __name__ == "__main__":

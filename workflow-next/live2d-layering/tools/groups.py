@@ -1,4 +1,4 @@
-"""Validate and publish the initial group tree for step 2."""
+"""Validate the initial group tree and one-level group/part growth proposals."""
 
 import argparse
 import json
@@ -50,6 +50,75 @@ def read_and_validate(path):
     return document
 
 
+def validate_children(document, group_path, patch):
+    """Check a proposed addition without changing the tree or dispatch state."""
+    if not isinstance(document, dict) or set(document) != {"subject", "groups"}:
+        raise ValueError("顶层字段必须恰好为 subject、groups")
+    if document["subject"] not in ("character", "other"):
+        raise ValueError("subject 必须为 character 或 other")
+    if (not isinstance(group_path, str) or not group_path
+            or any(not NAME.fullmatch(name) for name in group_path.split("/"))):
+        raise ValueError("group_path 必须为完整的 group 路径")
+    lookup = {}
+
+    def siblings(group_nodes, part_nodes, parent_path="", direct_only=False):
+        if not isinstance(group_nodes, list) or not isinstance(part_nodes, list):
+            raise ValueError("groups、parts 必须是数组")
+        seen = set()
+        for kind, nodes in (("group", group_nodes), ("part", part_nodes)):
+            for node in nodes:
+                required = {"name", "groups"} if kind == "group" else {"name"}
+                allowed = required | {"note"}
+                if kind == "group":
+                    allowed.add("parts")
+                if (not isinstance(node, dict) or not required <= set(node)
+                        or set(node) - allowed):
+                    raise ValueError(f"{kind} 节点字段不符合结构格式")
+                name = node["name"]
+                if not isinstance(name, str) or not NAME.fullmatch(name):
+                    raise ValueError(f"无效的 {kind} 名称：{name!r}")
+                if name in seen:
+                    raise ValueError(f"同级 group/part 重名：{name}")
+                seen.add(name)
+                if "note" in node and (not isinstance(node["note"], str)
+                                       or not node["note"].strip()):
+                    raise ValueError(f"{name} 的 note 必须是非空字符串")
+                path = f"{parent_path}/{name}" if parent_path else name
+                if kind == "group":
+                    children = node["groups"]
+                    parts = node.get("parts", [])
+                    if direct_only:
+                        if children != [] or parts != []:
+                            raise ValueError("本轮只新增一层直属 group/part")
+                    else:
+                        lookup[path] = node
+                        siblings(children, parts, path)
+        return seen
+
+    if not isinstance(document["groups"], list) or not document["groups"]:
+        raise ValueError("顶层 groups 必须是非空数组")
+    siblings(document["groups"], [])
+    target = lookup.get(group_path)
+    if target is None:
+        raise ValueError(f"找不到 group：{group_path}")
+    if not isinstance(patch, dict) or set(patch) != {"groups", "parts"}:
+        raise ValueError("孩子清单必须包含 groups、parts 两个数组")
+    proposed = siblings(patch["groups"], patch["parts"], group_path, direct_only=True)
+    existing = {node["name"] for edge in ("groups", "parts")
+                for node in target.get(edge, [])}
+    repeated = existing & proposed
+    if repeated:
+        raise ValueError(f"已有直属节点重名：{', '.join(sorted(repeated))}")
+    if not existing and not proposed:
+        raise ValueError("当前 group 至少需要一个直属 group 或 part")
+
+
+def check_children(groups, group_path, patch):
+    document = json.loads(groups.read_text(encoding="utf-8"))
+    children = json.loads(patch.read_text(encoding="utf-8"))
+    validate_children(document, group_path, children)
+
+
 def publish_initial(draft, out):
     if draft.resolve() == out.resolve():
         raise ValueError("草稿与正式输出必须是不同文件")
@@ -78,10 +147,16 @@ def main(argv=None):
     publish.add_argument("--out", type=Path, required=True)
     check = subparsers.add_parser("check-initial")
     check.add_argument("--groups", type=Path, required=True)
+    children = subparsers.add_parser("check-children")
+    children.add_argument("--groups", type=Path, required=True)
+    children.add_argument("--group-path", required=True)
+    children.add_argument("--patch", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "publish-initial":
             publish_initial(args.draft, args.out)
+        elif args.command == "check-children":
+            check_children(args.groups, args.group_path, args.patch)
         else:
             read_and_validate(args.groups)
     except (OSError, ValueError) as exc:

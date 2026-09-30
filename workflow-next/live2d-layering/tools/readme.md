@@ -5,13 +5,17 @@
 | 工具 | 用途 |
 | --- | --- |
 | `options.py` | 维护本轮 `options.json` |
+| `groups.py` | 校验并发布初始 group 树，校验当前 group 的一层新增 group/part 清单 |
 | `svg_preview.py` | 渲染 SVG、独显元素，生成局部、混合及可见形状描边叠加图；依赖 Python、Pillow 和 pyvips[binary] |
+| `svg_containment.py` | 逐个检查直属 group/part 色块是否越出输入父 group，失败时输出越界坐标和红色诊断图；沿用预览工具依赖 |
 
 选项示例：`python3 tools/options.py set --work-root /绝对路径/输出 simplify true`。已有字段会保留。
 
 预览示例：`python3 tools/svg_preview.py drawing.svg preview.png`。查看某个元素的边缘，可加 `--reference reference.png --crop X Y W H --scale 2 --only 元素id --edge-overlay`；多个元素可重复 `--only`。描边从透明底渲染结果提取，因此包括裁剪、遮罩和孔洞的可见边界，不追踪内部色彩变化。
 
 轮廓色块保存在 `groups.svg`：group 的绘制 `<g>` 使用完整 `data-group-path`，part 的轮廓 `<g>` 使用完整 `data-part-path`。同画布的 `character.svg` 只绘制 part 的真实形状，也使用完整 `data-part-path`。色块边缘叠图是预览诊断，不写入正式 SVG 描线。`loading/svg-preview.html` 按文件区分“组轮廓／部件轮廓”和“部件绘制”。
+
+范围检查：`python3 tools/svg_containment.py --parent-svg 输入底稿.svg --candidate 输出底稿.svg --groups groups.json --group-path body --out 轮廓检查.json`。按树自动检查全部直属孩子，用输入父色块的实际填色范围作边界，保留孔洞、分离区域、变换和裁剪效果。逐个独显孩子，其他色块不会遮住越界。默认每像素边长采样 4 次、透明度阈值 128，采样网格中任一越界即失败；这是渲染形状的包含检查。缺少绑定或空色块也失败。通过返回 0，检查失败返回 1，输入或环境错误返回 2。蓝色为父边缘，绿色为孩子，红色为越界；坐标使用原画布像素。
 
 阶段内工具的测试在对应步骤的 `tests/`。
 

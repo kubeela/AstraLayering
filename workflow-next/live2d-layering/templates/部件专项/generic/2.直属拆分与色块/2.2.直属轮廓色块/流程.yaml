@@ -1,0 +1,16 @@
+id: group_child_layers
+run: templates/部件专项/generic/2.直属拆分与色块/2.2.直属轮廓色块
+worker: group_layer_drawing
+working_dir: "{working_dir}"
+inputs:
+  group_path: dispatch.item.path
+  reference: dispatch.inputs.reference
+  groups: dispatch.inputs.groups
+  guide_svg: carry.guide_svg
+  preview_tool: dispatch.inputs.preview_tool
+  bounds_tool:
+    asset: tools/svg_containment.py
+outputs:
+  guide_svg: refinement/groups/{group_path}/2.直属拆分与色块/2.2.直属轮廓色块/groups.svg
+  preview: refinement/groups/{group_path}/2.直属拆分与色块/2.2.直属轮廓色块/preview.png
+  bounds_check: refinement/groups/{group_path}/2.直属拆分与色块/2.2.直属轮廓色块/轮廓检查.json

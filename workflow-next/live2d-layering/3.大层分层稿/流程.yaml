@@ -3,10 +3,13 @@ run: 3.大层分层稿
 worker: group_layer_drawing
 working_dir: "{working_dir}"
 inputs:
+  group_path: ""
   reference: nodes.base_subject.image
   groups: nodes.group_inventory.groups
+  guide_svg: null
   preview_tool:
     asset: tools/svg_preview.py
+  bounds_tool: null
 outputs:
   guide_svg: block-layers/groups.svg
   preview: block-layers/preview.png

@@ -1,0 +1,14 @@
+id: group_split
+run: templates/部件专项/generic/2.直属拆分与色块/2.1.直属结构拆分
+worker: group_split
+working_dir: "{working_dir}"
+inputs:
+  group_path: dispatch.item.path
+  reference: dispatch.inputs.reference
+  groups: dispatch.inputs.groups
+  guide_svg: carry.guide_svg
+  preview_tool: dispatch.inputs.preview_tool
+  group_tool:
+    asset: tools/groups.py
+outputs:
+  children: refinement/groups/{group_path}/2.直属拆分与色块/2.1.直属结构拆分/children.json
