@@ -1,0 +1,18 @@
+id: rendering_composite
+run: 5.渲染层组合
+worker: rendering_composite
+working_dir: '{working_dir}'
+inputs:
+  reference: nodes.base_subject.image
+  groups: nodes.refine_groups.groups
+  guide_svg: nodes.refine_groups.guide_svg
+  artwork_svg: nodes.refine_groups.artwork_svg
+  rendering: nodes.refine_groups.rendering
+  preview_tool:
+    asset: tools/svg_preview.py
+  rendering_tool:
+    asset: tools/rendering.py
+outputs:
+  artwork_svg: refinement/character.svg
+  rendering: structure/rendering.json
+  preview: refinement/preview.png

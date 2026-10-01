@@ -127,7 +127,7 @@
    <div class="layer-heading"><h2 id="layerTitle">SVG 图层</h2><button id="closeLayers" class="icon-only" aria-label="关闭图层面板" title="关闭图层面板">×</button></div>
    <div id="layerCount" class="layer-count" role="status">读取 SVG 中的分组与图形</div>
    <div id="groupCount" class="layer-count" role="status" hidden></div>
-   <div class="display-files"><button id="importGroups">载入 groups.json</button><input id="groupFile" type="file" accept=".json,application/json" hidden></div>
+   <div class="display-files"><button id="importGroups">载入 groups.json</button><input id="groupFile" type="file" accept=".json,application/json" hidden><button id="importRendering">载入 rendering.json</button><input id="renderingFile" type="file" accept=".json,application/json" hidden></div>
    <input id="layerSearch" class="layer-search" type="search" placeholder="搜索名称、ID 或元素类型" aria-label="搜索 SVG 图层" disabled>
    <div class="layer-options"><select id="layerOrder" class="layer-order" aria-label="图层列表顺序" disabled><option value="front">前景在上 · 顶 → 底</option><option value="back">绘制顺序 · 底 → 顶</option></select><button id="expandLayers" disabled>展开全部</button><button id="collapseLayers" disabled>收起</button></div>
    <label class="layer-spatial"><input id="spatialLayers" type="checkbox" disabled>识别独立图块 <span class="layer-count">空间估计</span></label>
@@ -149,8 +149,8 @@
  </div>
  <footer class="statusbar"><div><span class="desktop-hint" id="hint">滚轮缩放 · 拖动平移 · 双击放大</span><span class="touch-hint" hidden>双指缩放 · 单指拖动</span></div><div class="right"><span class="local-note"><span class="status-light"></span>文件在本地处理</span><button id="reset" disabled>重置视图</button></div></footer>
 </div>
-<div id="dropMask" class="drop-mask" hidden><div><strong>松开，导入文件</strong><p>支持 groups.json、SVG 与浏览器可解码的位图<br>一次拖入三张图会依次放入 A / B / C</p></div></div>
-<dialog id="helpDialog" class="help" aria-labelledby="helpTitle"><div class="help-header"><h2 id="helpTitle">把细节放大看</h2><button id="closeHelp" class="icon-only" aria-label="关闭操作说明"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12m0-12L6 18"/></svg></button></div><p>在 A / B / C 放入 SVG 或位图。选择单画面、并排、三列或滑动，再为各画面选择原图或混合组合。例如左侧 A+B，右侧 C；滑动也能比较这样的组合。双图混合可调整比例，三图混合等比叠加。画面同步缩放和平移。</p><p>将鼠标放在细节上滚动，或拖出选区放大。点击分组树中的节点，可定位到对应图形；没有匹配的 SVG 图形仍显示为普通图层。</p><div class="shortcuts"><span>放大 / 缩小</span><kbd>滚轮 · + / −</kbd><span>平移</span><kbd>拖动 · 方向键</kbd><span>适应窗口 / 实际大小</span><kbd>F 或 0 / 1</kbd><span>框选放大 / 取消</span><kbd>B / Esc</kbd><span>打开图像 A</span><kbd>Ctrl / ⌘ + O</kbd></div><p>图像按最长边等权归一化并居中对齐。图层面板读取 A 的 SVG 绘制顺序；载入 groups.json 后，匹配的图形归入 group／part 树。交换 A / B 或 A / C 可以检查其他 SVG 的图层。</p><p class="footnote">位图和 SVG 内嵌位图受原始分辨率限制。</p></dialog>
+<div id="dropMask" class="drop-mask" hidden><div><strong>松开，导入文件</strong><p>支持 groups.json、rendering.json、SVG 与浏览器可解码的位图<br>一次拖入三张图会依次放入 A / B / C</p></div></div>
+<dialog id="helpDialog" class="help" aria-labelledby="helpTitle"><div class="help-header"><h2 id="helpTitle">把细节放大看</h2><button id="closeHelp" class="icon-only" aria-label="关闭操作说明"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12m0-12L6 18"/></svg></button></div><p>在 A / B / C 放入 SVG 或位图。选择单画面、并排、三列或滑动，再为各画面选择原图或混合组合。例如左侧 A+B，右侧 C；滑动也能比较这样的组合。双图混合可调整比例，三图混合等比叠加。画面同步缩放和平移。</p><p>将鼠标放在细节上滚动，或拖出选区放大。点击分组树中的节点，可定位到对应图形；没有匹配的 SVG 图形仍显示为普通图层。</p><div class="shortcuts"><span>放大 / 缩小</span><kbd>滚轮 · + / −</kbd><span>平移</span><kbd>拖动 · 方向键</kbd><span>适应窗口 / 实际大小</span><kbd>F 或 0 / 1</kbd><span>框选放大 / 取消</span><kbd>B / Esc</kbd><span>打开图像 A</span><kbd>Ctrl / ⌘ + O</kbd></div><p>图像按最长边等权归一化并居中对齐。图层面板读取 A 的 SVG 绘制顺序；载入 groups.json 后，匹配的图形归入 group／part 树。载入 rendering.json 后，独立渲染层按同名 id 关联，并显示在 owner 节点下。交换 A / B 或 A / C 可以检查其他 SVG 的图层。</p><p class="footnote">位图和 SVG 内嵌位图受原始分辨率限制。</p></dialog>
 <script>
 'use strict';
 (() => {
@@ -164,6 +164,7 @@
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  let artwork=null, layerRoot=null, nativeLayers=[], layerLookup=new Map(), expandedLayers=new Set();
  let spatialChildren=null, thumbnailTimer=0, focusedLayer='native-0';
+ let renderingById=new Map();
  let groupDocument=null, groupCompatible=false, groupModeActive=false, groupEntries=[], groupByPath=new Map(), groupByName=new Map(), expandedGroups=new Set(), selectedGroupPath='', selectedLayerKey='', unmatchedOpen=false;
  const containers=new Set(['svg','g','a','switch']);
  const graphics=new Set(['path','rect','circle','ellipse','line','polyline','polygon','text','image','use','foreignObject']);
@@ -485,7 +486,9 @@
  }
  function drawingUnit(item){
   if(item.tag!=='g')return null;
-  const node=item.element,entry=namedGroupEntry(node);if(!entry)return null;
+  const node=item.element,render=renderingById.get(node.id);
+  if(render&&groupByPath.has(render.owner))return {path:render.owner,kind:'render',layer:render};
+  const entry=namedGroupEntry(node);if(!entry)return null;
   const path=entry.path;
   for(let parent=node.parentElement;parent&&parent!==artwork;parent=parent.parentElement)if(parent.localName==='g'&&namedGroupEntry(parent)?.path===path)return null;
   const file=primary?.name?.toLocaleLowerCase();
@@ -558,10 +561,10 @@
   if(query)(children.get('')||[]).forEach(match);
   function unitRow(unit,path,depth){
    const item=element('li','group-unit');item.setAttribute('role','treeitem');item.setAttribute('aria-level',String(depth+1));item.dataset.layerKey=unit.key;item.dataset.path=path;
-   const kind=drawingUnit(unit).kind,itemLabel=kind==='guide'?'组轮廓':kind==='part-guide'?'部件轮廓':kind==='art'?'部件绘制':kind==='part'?'部件图形':'未分类绘制';item.dataset.unitKind=kind;
+   const matched=drawingUnit(unit),kind=matched.kind,itemLabel=kind==='render'?'渲染 · '+matched.layer.type:kind==='guide'?'组轮廓':kind==='part-guide'?'部件轮廓':kind==='art'?'部件绘制':kind==='part'?'部件图形':'未分类绘制';item.dataset.unitKind=kind;
    const line=element('div','group-unit-row');line.classList.toggle('selected',unit.key===selectedLayerKey);line.style.setProperty('--indent',(7+Math.min(depth,10)*14)+'px');line.append(element('span','group-spacer'));
    const check=element('input','group-visible');check.type='checkbox';check.dataset.action='visible';check.checked=drawingVisible(unit);check.setAttribute('aria-label','显示 SVG 绘制段 '+unit.element.id);line.append(check);
-   const label=element('span','group-name',unit.name);label.title='SVG <g> #'+unit.element.id+' · '+itemLabel+' · 绘制序号 '+unit.order;line.append(label,element('span','group-kind',itemLabel));item.append(line);return item;
+   const label=element('span','group-name',unit.name);label.title='SVG <g> #'+unit.element.id+' · '+itemLabel+' · 绘制序号 '+unit.order+(matched.layer?' · 跟随 '+(matched.layer.follow||'固定')+' · 裁切 '+(matched.layer.clip_to.join(', ')||'无'):'');line.append(label,element('span','group-kind',itemLabel));item.append(line);return item;
   }
   function row(entry,depth){
    const node=groupNodeAt(entry.path),descendants=(children.get(entry.path)||[]).filter(item=>!query||matches.get(item.path));
@@ -615,7 +618,7 @@
   groupModeActive=!groupCompatible||linked;
   $('layerPanel').classList.toggle('group-mode',groupModeActive);$('layerTitle').textContent=groupModeActive?'分组图层':'SVG 图层';
   $('groupContent').hidden=!groupModeActive;$('layerTree').hidden=groupModeActive;$('layerEmpty').hidden=groupModeActive;
-  $('groupCount').hidden=false;$('groupCount').textContent=groupEntries.length+' 个节点'+(groupCompatible?' · '+linkedPaths.size+' 个已关联 SVG':'');$('importGroups').textContent='更换 groups.json';
+  $('groupCount').hidden=false;$('groupCount').textContent=groupEntries.length+' 个节点'+(groupCompatible?' · '+linkedPaths.size+' 个已关联 SVG':'')+(renderingById.size?' · '+renderingById.size+' 个渲染层':'');$('importGroups').textContent='更换 groups.json';
   $('groupNotice').textContent=!groupCompatible?'分组树已载入；放入 SVG 后可查看对应图形。':linked?'':'当前 SVG 没有匹配的分组，按原生 SVG 图层显示。';
   $('restoreGroupVisibility').disabled=!groupCompatible;
   if(layerRoot)renderLayers();if(groupModeActive)renderGroupTree();
@@ -667,10 +670,24 @@
  });
  $('restoreGroupVisibility').addEventListener('click',()=>{nativeLayers.forEach(node=>{restoreStyle(node);node.mode=null;});layersChanged();});
  $('importGroups').addEventListener('click',()=>$('groupFile').click());
+ $('importRendering').addEventListener('click',()=>$('renderingFile').click());
+ $('renderingFile').addEventListener('change',async event=>{const file=event.target.files[0];event.target.value='';await loadGroupFile(file);});
  async function loadGroupFile(file){
   if(!file)return;
-  try{const data=JSON.parse(await file.text());useGroupDocument(data);$('groupCount').textContent+=' · '+file.name;}
-  catch(error){toast('无法载入分组配置：'+error.message);}
+  try{
+   const data=JSON.parse(await file.text());
+   if(Array.isArray(data.layers)&&!Object.hasOwn(data,'groups')){
+    const next=new Map(),name=/^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/,path=/^[a-z][a-z0-9]*(?:_[a-z0-9]+)*(?:\/[a-z][a-z0-9]*(?:_[a-z0-9]+)*)*$/;
+    if(Object.keys(data).some(key=>key!=='layers'))throw new Error('rendering.json 顶层只包含 layers');
+    for(const layer of data.layers){
+     if(!layer||typeof layer.id!=='string'||typeof layer.type!=='string'||typeof layer.owner!=='string'||!name.test(layer.id)||!name.test(layer.type)||!path.test(layer.owner)||!(layer.follow===null||typeof layer.follow==='string'&&path.test(layer.follow))||!Array.isArray(layer.clip_to)||layer.clip_to.some(p=>typeof p!=='string'||!path.test(p))||new Set(layer.clip_to).size!==layer.clip_to.length||next.has(layer.id))throw new Error('渲染层的 id、type、owner、follow 或 clip_to 无效');
+     next.set(layer.id,layer);
+    }
+    renderingById=next;$('importRendering').textContent='更换 rendering.json';
+    if(groupDocument)connectGroupDocument();
+    toast('已载入 '+next.size+' 个渲染层'+(groupDocument?'':'；载入 groups.json 后可关联归属。'));
+   }else{useGroupDocument(data);$('groupCount').textContent+=' · '+file.name;}
+  }catch(error){toast('无法载入配置：'+error.message);}
  }
  $('groupFile').addEventListener('change',async event=>{const file=event.target.files[0];event.target.value='';await loadGroupFile(file);});
  function setLayerPanel(open){
@@ -862,14 +879,14 @@
  let dropDepth=0;document.addEventListener('dragenter',e=>{if(e.dataTransfer?.types.includes('Files')){e.preventDefault();dropDepth++;$('dropMask').hidden=false;}});document.addEventListener('dragover',e=>{if(e.dataTransfer?.types.includes('Files')){e.preventDefault();e.dataTransfer.dropEffect='copy';}});document.addEventListener('dragleave',()=>{dropDepth=Math.max(0,dropDepth-1);if(!dropDepth)$('dropMask').hidden=true;});document.addEventListener('drop',async e=>{
   e.preventDefault();dropDepth=0;$('dropMask').hidden=true;
   const dropped=[...e.dataTransfer.files],files=dropped.filter(isSupportedFile),groups=dropped.filter(file=>/\.json$/i.test(file.name));
-  if(!files.length&&!groups.length){toast('请拖入 groups.json、SVG 或浏览器可解码的位图。');return;}
+  if(!files.length&&!groups.length){toast('请拖入 groups.json、rendering.json、SVG 或浏览器可解码的位图。');return;}
   if(files.length>=2){
    if(!await readFile(files[0]))return;
    await readReference(files[1]);
    if(files[2])await readThird(files[2]);
    if(files.length>3)toast('已导入前三张图像，其余图像未处理。');
   }else if(files.length===1){if(!primary)await readFile(files[0]);else if(!reference)await readReference(files[0]);else await readThird(files[0]);}
-  if(groups.length)await loadGroupFile(groups[0]);
+  for(const file of groups)await loadGroupFile(file);
  });
  $('help').addEventListener('click',()=>$('helpDialog').showModal());$('closeHelp').addEventListener('click',()=>$('helpDialog').close());$('helpDialog').addEventListener('click',e=>{if(e.target===$('helpDialog')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
  if(!document.fullscreenEnabled)$('fullscreen').hidden=true;$('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('当前窗口无法进入全屏。');}});

@@ -27,8 +27,10 @@ dispatch:
   carry:
     guide_svg: dispatch.inputs.guide_svg
     artwork_svg: null # 首次尚无正式绘制，由模板交付后更新
+    rendering: null
 outputs:
   groups: dispatch.inputs.groups
   state: structure/groups.dispatch.json
   guide_svg: carry.guide_svg
   artwork_svg: carry.artwork_svg
+  rendering: carry.rendering

@@ -1,0 +1,9 @@
+所有 group 的 part 已完成。读取 `<groups>`、`<rendering>` 与 `<artwork_svg>`，对照 `<reference>` 组合独立渲染层，交付最终 `<artwork_svg>`、`<rendering>` 和同稿渲染的 `<preview>`。
+
+逐项核对登记层的同名 `<g id>`、归属 owner、跟随对象 follow 和裁切对象 clip_to。原来只定位到大区域的关系，结合现有 part 和说明确认受影范围；使用实际树路径，通过 `<rendering_tool> merge` 更新登记，保持 group/part 结构与 `<guide_svg>`。
+
+依据遮挡关系安排绘制顺序，独立效果可以与逻辑归属分开叠放。投影应落在受影面上方，在遮光物下方；同一个独立层有不同受影对象时，clip_to 可包含多条路径。
+
+调用 `python3 <rendering_tool> apply --groups <groups> --rendering <rendering> --svg <artwork_svg> --out <临时SVG>`。工具以受影 part 已完成的实际透明形状建立 SVG alpha 蒙版；group 路径使用其后代 part 的形状合集。完整投影保存在原 `<g>` 中，裁切加在外层，原图形和原有软边效果保留。此绑定只实现裁切，follow 的运动关系保存在登记表，动画阶段再落实。
+
+用 `<preview_tool>` 放大查看每个独立效果与受影面的组合，核对边界、孔洞、遮挡、颜色和重叠是否正确，再查看整图。需要查看未裁切形状时，用 `python3 <rendering_tool> extract --svg <临时SVG> --layer <渲染层id> --raw --out <独显SVG>` 后预览。通过 `python3 <rendering_tool> check --groups <groups> --rendering <rendering> --svg <临时SVG> --complete` 检查绑定结构，再更新输出与预览。工具通过不代表艺术效果正确，仍以实际组合图检查为准。
