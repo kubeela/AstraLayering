@@ -15,6 +15,6 @@
 
 涉及连体服覆盖的区域时，忽略连体服本身，根据姿态、可见身体轮廓和关节位置推断衣下的身体部件。
 
-本轮只拆一层。沿用已有直属节点，清单只列本轮新增节点。名称采用具体对象的小写英文 snake_case，同级 group 与 part 名称共同唯一。
+本轮只拆一层，按当前可辨认的组件确定结构，运动中可能露出的缺失后片与内壁由 2.3 判断和补齐。沿用已有直属节点，清单只列本轮新增节点。名称采用具体对象的小写英文 snake_case，同级 group 与 part 名称共同唯一。
 
 最后交付 `<children>`，格式为 `{"groups": [...], "parts": [...]}`。group 节点包含 `name`、`groups: []`；part 节点包含 `name`；可加简短 `note` 说明范围和拆分依据。用 `python3 <group_tool> check-children --groups <groups> --group-path <group_path> --patch <children>` 校验，再由总控用工具写入 `groups.json`。输入文件保持只读；这一层的轮廓色块由下一步绘制。

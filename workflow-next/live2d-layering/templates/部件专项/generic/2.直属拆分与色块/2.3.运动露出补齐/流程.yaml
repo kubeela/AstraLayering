@@ -1,0 +1,27 @@
+id: part_motion_completion
+if:
+  direct_parts_of: dispatch.item.path
+  in: dispatch.inputs.groups
+then:
+  run: templates/部件专项/generic/2.直属拆分与色块/2.3.运动露出补齐
+  worker: group_motion_completion
+  working_dir: "{working_dir}"
+  inputs:
+    group_path: dispatch.item.path
+    reference: dispatch.inputs.reference
+    groups: dispatch.inputs.groups
+    guide_svg: carry.guide_svg
+    preview_tool: dispatch.inputs.preview_tool
+    group_tool:
+      asset: tools/groups.py
+    bounds_tool:
+      asset: tools/svg_containment.py
+    collar_wrist_example:
+      asset: templates/部件专项/generic/2.直属拆分与色块/2.3.运动露出补齐/references/milly-collar-wrist.png
+    sleeve_shoe_example:
+      asset: templates/部件专项/generic/2.直属拆分与色块/2.3.运动露出补齐/references/milly-sleeve-shoe.png
+  outputs:
+    children: refinement/groups/{group_path}/2.直属拆分与色块/2.3.运动露出补齐/children.json
+    guide_svg: block-layers/groups.svg
+    preview: block-layers/preview.png
+    bounds_check: refinement/groups/{group_path}/2.直属拆分与色块/2.3.运动露出补齐/轮廓检查.json

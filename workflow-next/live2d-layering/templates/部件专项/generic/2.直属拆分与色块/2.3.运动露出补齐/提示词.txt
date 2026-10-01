@@ -1,0 +1,15 @@
+按 `<group_path>` 在 `<groups>` 中定位当前 group，本轮依次检查该节点 `parts` 数组中的既有直属 part。子 group 内部的 part 留到该子 group 被调度时处理。用 `<preview_tool>` 逐个独显 `<guide_svg>` 中的本轮 part，对照 `<reference>` 判断正常转动、摆动或相对位移后，哪些被遮住的区域可能露出。每处补齐先明确遮挡对象、预计动作和露出位置；已有范围足够时沿用。
+
+补齐范围由运动后可能露出的区域决定，形状由已有结构决定。从露出位置向遮挡内部延续形体，保持走向、厚度和连接连续，覆盖预计露出范围并留适量余量。可见外缘保持原样，隐藏区域用简洁、平滑的闭合底形承接，精细程度以露出后能接上现有画面为准。
+
+实际打开 `<collar_wrist_example>` 和 `<sleeve_shoe_example>`。这些是 Milly PSD 的独显与组合示例：例如后领用宽而简单的底形藏在脖子后，腕带后层用椭圆底形承接手腕，袖口和鞋口的内壁也只补足必要覆盖。借鉴它们按露出需求补齐、给连接留余量的思路，具体形状与拆分由当前对象决定。同样的判断适用于兽耳、容器内壁、机械包围构件等对象。
+
+同一表面的隐藏延伸更新原直属 part 的色块；需要独立叠放的后片或内壁，新增到当前 group 的 `parts` 数组，与原 part 同级。沿用已有节点名称，新增名称采用具体对象的小写英文 snake_case，同级唯一。新 part 的简短 note 说明归属、遮挡对象与补齐依据。
+
+交付 `<children>`，格式为 `{"groups": [], "parts": [...]}`，只列新增 part；每个包含 name，可加 note。没有新增时交付空清单。用 `python3 <group_tool> check-children --groups <groups> --group-path <group_path> --patch <children>` 校验。原树保持只读，清单交付后由总控按现有 expand 写入，后续 Geometry 读取更新后的树。
+
+在 `working_dir` 内的临时 SVG 中补齐色块，保持画布坐标、父级底稿和其他组件。每个 part 用有唯一 id 的 `<g>` 与完整 `data-part-path` 绑定；相同 part 保持同色，新增 part 用不同纯色，闭合填色且 `stroke="none"`。新增色块与已有 part 使用独立容器。用简短 `<desc>` 保留补齐依据。
+
+用 `<preview_tool>` 实际查看补齐前后同坐标对照、与参考图的混合叠加，放大检查连接与预计露出的位置。原有可见轮廓保持准确，补片连续且有足够覆盖余量。将原树加上通过校验的 `<children>` 生成临时树，用 `python3 <bounds_tool> --parent-svg <输入 guide_svg> --candidate <临时SVG> --groups <临时树> --group-path <group_path> --out <bounds_check>` 检查直属组件范围。需要扩大父级范围时，交回具体位置和依据，待父范围更新后继续。
+
+自检及范围检查通过后，更新输出 `<guide_svg>` 和白底 `<preview>`，交付 `<children>` 与 `<bounds_check>`。
