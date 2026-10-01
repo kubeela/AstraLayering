@@ -1,0 +1,252 @@
+{
+  "schema_version": "1.0",
+  "study_id": "haru_eye_psd_motion_evidence_2026_10_01",
+  "language": "zh-CN",
+  "purpose": "用于之后整理到 tutorial/live2d-guidance 的原创建模学习证据；不修改工作流或自动生成绑定",
+  "asset_root_hint": ".",
+  "copyright_handling": "仅分析元数据、少量事实与原创结论；不内嵌或再发布 PSD、纹理、模型二进制、完整动作曲线",
+  "inventory": [
+    {
+      "package": "haru_greeter_ja.zip",
+      "model_config": "haru_greeter_ja/runtime/haru_greeter_t05.model3.json",
+      "archive_references_checked": 33,
+      "missing_references": [],
+      "display_parameter_count": 42,
+      "motion_count": 27,
+      "texture_count": 2,
+      "binary_files": [
+        {
+          "path": "haru_greeter_ja/runtime/haru_greeter_t05.moc3",
+          "bytes": 387392,
+          "magic_hex": "4d4f433301000000",
+          "sha256": "597571191064a12ffe592bcb5fade586ef5876bbbcf78905c348a78a0991432a",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        },
+        {
+          "path": "haru_greeter_ja/haru_greeter_t03.can3",
+          "bytes": 411252,
+          "magic_hex": "434146460000002d",
+          "sha256": "b0aea5d6f27694178124ab9aff0cb152711308ef420d7268f9708834d7fbcbcf",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        },
+        {
+          "path": "haru_greeter_ja/haru_greeter_t05.cmo3",
+          "bytes": 11820163,
+          "magic_hex": "434146460000002d",
+          "sha256": "20a8cc5a1bb417da77c079714013f0e7468dcd889e68a1f7ae28df0fd4dfeecd",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        }
+      ]
+    },
+    {
+      "package": "koharu_haruto_ja.zip",
+      "model_config": "koharu_haruto_ja/haruto/runtime/haruto.model3.json",
+      "archive_references_checked": 15,
+      "missing_references": [],
+      "display_parameter_count": 51,
+      "motion_count": 11,
+      "texture_count": 1,
+      "binary_files": [
+        {
+          "path": "koharu_haruto_ja/haruto/haruto_t01.cmo3",
+          "bytes": 3805016,
+          "magic_hex": "434146460000002d",
+          "sha256": "1cfeb30ba4b99c30d2d0244d5ae90d0c57985b7417e7d7236b8a5727a0ac0e5f",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        },
+        {
+          "path": "koharu_haruto_ja/haruto/runtime/haruto.moc3",
+          "bytes": 281664,
+          "magic_hex": "4d4f433303000000",
+          "sha256": "43f320a45f27777a2ab1aad9a53f06287ed18a274dc2d36951176dc8cc66abe5",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        },
+        {
+          "path": "koharu_haruto_ja/haruto/SD_mtn_t01.can3",
+          "bytes": 144399,
+          "magic_hex": "434146460000002d",
+          "sha256": "71362d2e5ac065c97b371ad7b99b735ea6de5cde59652b29e3e718091c67835b",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        }
+      ]
+    },
+    {
+      "package": "koharu_haruto_ja.zip",
+      "model_config": "koharu_haruto_ja/koharu/runtime/koharu.model3.json",
+      "archive_references_checked": 15,
+      "missing_references": [],
+      "display_parameter_count": 52,
+      "motion_count": 11,
+      "texture_count": 1,
+      "binary_files": [
+        {
+          "path": "koharu_haruto_ja/koharu/koharu_t01.cmo3",
+          "bytes": 4437982,
+          "magic_hex": "434146460000002d",
+          "sha256": "e9df39ddeb293dc4330b859c9839b1d449f93ed67a537173832a74571bde8503",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        },
+        {
+          "path": "koharu_haruto_ja/koharu/runtime/koharu.moc3",
+          "bytes": 281472,
+          "magic_hex": "4d4f433303000000",
+          "sha256": "cb5d270b6aeea5cb2a70d8728f52db49cee833f2a66a53db7f80a9e34ed5e005",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        },
+        {
+          "path": "koharu_haruto_ja/koharu/SD_mtn_t01.can3",
+          "bytes": 143399,
+          "magic_hex": "434146460000002d",
+          "sha256": "94b8add7a4bf84ab7e0a3e44d2c36c2249ebda6eaa3d40dad830fbfcf57bf4b1",
+          "inspection": "presence, size and header only; no deformer/keyform decoding"
+        }
+      ]
+    }
+  ],
+  "focus": {
+    "region": "eyes",
+    "psd_observation": {
+      "source": "haru_greeter_ja/haru_受付スーツ_インポート_t07.psd",
+      "method": "单层像素视觉检查与 PSD 元数据读取",
+      "facts_zh": [
+        "眼白与虹膜为完整独立形状，高光、分段睫毛和名为 clipping 的层分别存在",
+        "PSD 中的 clipping 层名不足以证明实际模型遮罩绑定"
+      ]
+    },
+    "runtime_observations": [
+      {
+        "source": "haru_greeter_ja/runtime/haru_greeter_t05.model3.json",
+        "locator": "Groups[Name=EyeBlink].Ids",
+        "fact_zh": "SDK 眨眼组指定 ParamEyeLOpen 与 ParamEyeROpen"
+      },
+      {
+        "source": "haru_greeter_ja/runtime/haru_greeter_t05.cdi3.json",
+        "locator": "Parameters and CombinedParameters",
+        "fact_zh": "开闭、笑眼、眼形、虹膜缩放、注视 XY 分别有参数；CombinedParameters 将注视 X 和 Y 列为一对",
+        "parameter_ids": [
+          "ParamEyeLOpen",
+          "ParamEyeROpen",
+          "ParamEyeLSmile",
+          "ParamEyeRSmile",
+          "ParamEyeForm",
+          "ParamEyeBallForm",
+          "ParamEyeBallX",
+          "ParamEyeBallY"
+        ],
+        "limitation_zh": "显示分组不是变形器父子树，也不包含模型实际最小最大值"
+      },
+      {
+        "source": "haru_greeter_ja/runtime/motion/haru_g_idle.motion3.json",
+        "fact_zh": "10 秒 idle 中，左右眼开闭曲线相同；开闭与注视使用独立曲线",
+        "derived_facts": {
+          "left_right_open_segments_equal": true,
+          "blink_one": {
+            "close_endpoint_seconds": 2.333,
+            "closed_until_seconds": 2.4,
+            "reopen_endpoint_seconds": 2.567
+          },
+          "gaze_endpoint_range_not_model_limits": {
+            "ParamEyeBallX": [
+              -0.49,
+              0.23
+            ],
+            "ParamEyeBallY": [
+              -0.17,
+              0.29
+            ]
+          }
+        }
+      },
+      {
+        "source": "haru_greeter_ja/runtime/motion/haru_g_m09.motion3.json",
+        "fact_zh": "动作明确包含大于普通睁眼 1 的开眼值；并非只在 0 与 1 间切换",
+        "derived_facts": {
+          "parameters": [
+            "ParamEyeLOpen",
+            "ParamEyeROpen"
+          ],
+          "selected_curve_endpoints": [
+            {
+              "seconds": 1.133,
+              "value": 1.1
+            },
+            {
+              "seconds": 1.667,
+              "value": 0
+            },
+            {
+              "seconds": 2.5,
+              "value": 0.2
+            },
+            {
+              "seconds": 2.733,
+              "value": 1.1
+            }
+          ]
+        },
+        "limitation_zh": "这是动作请求值，不证明渲染时未被模型范围截断；贝塞尔控制点不当作关键端点或实际最小最大值"
+      }
+    ],
+    "substantial_insight_zh": "眼部拆分应支持眼睑形状、虹膜注视、笑眼与开眼幅度的组合控制。完整虹膜和眼白为遮罩及相对运动提供素材；实际动作证据说明验收不能只看普通睁眼与闭眼两个端点，还应测试半闭、超过普通睁眼值和注视偏移的组合。",
+    "application_zh": [
+      "先区分眼白边界的闭合责任与虹膜的注视运动责任，再决定部件和控制关系",
+      "建立闭眼、半闭、普通睁眼、较大睁眼 × 注视中位与四角的检查矩阵",
+      "若有笑眼或虹膜缩放，增加其极值组合；测试夹缝、虹膜外溢、高光露出和睫毛接缝"
+    ],
+    "not_established": [
+      "Haru 具体哪个 ArtMesh 使用哪个 clipping ID",
+      "Haru 眼部变形器的父子顺序及 keyform 顶点",
+      "1.1 在本模型最终渲染出的外观",
+      "Cubism 中实际测试后的变形质量"
+    ],
+    "next_editor_checks": [
+      {
+        "task_zh": "打开 haru_greeter_t05.cmo3，选眼白、虹膜与睫毛，记录变形器树和 clipping ID",
+        "expected_evidence": "editor screenshot plus exact IDs"
+      },
+      {
+        "task_zh": "在实际参数范围内复现开闭、笑眼、注视组合，比较中间插值而非只看端点",
+        "expected_evidence": "parameter values plus rendered frames"
+      },
+      {
+        "task_zh": "核对 1.1 的模型范围与 m09 播放，确认有无钳制",
+        "expected_evidence": "parameter min/max and playback observation"
+      }
+    ]
+  },
+  "official_guidance": [
+    {
+      "url": "https://docs.live2d.com/en/cubism-editor-tutorials/expression/",
+      "scope": "官方 Hiyori 教程；用于解释机制，不声称就是 Haru 的内部实现",
+      "paraphrase_zh": "睫毛在闭眼参数处调整形状；虹膜可用眼白的 ID 裁切，眼白闭合后将其隐藏。"
+    },
+    {
+      "url": "https://docs.live2d.com/en/cubism-editor-manual/standard-parameter-list/",
+      "paraphrase_zh": "普通闭眼与睁眼通常用 0 和 1，特殊表情可扩展范围。"
+    },
+    {
+      "url": "https://docs.live2d.com/en/cubism-editor-manual/deformer/",
+      "paraphrase_zh": "网格或 warp 直接做大角度旋转时，线性插值可能收缩；需要保形旋转时考虑 rotation deformer。此处未据此推断 Haru 的实际层级。"
+    }
+  ],
+  "motion_parsing_method": {
+    "source": "https://github.com/Live2D/CubismUnityComponents/blob/304d0d0c827b7bcb86c6f5d9b0a6398eaccda556/Assets/Live2D/Cubism/Framework/Json/CubismMotion3Json.cs",
+    "method": "Read initial time/value, then skip 7 values for Bezier type 1 and 3 for types 0/2/3; collect segment endpoints. No playback or geometry evaluation."
+  },
+  "source_pages": [
+    "https://www.live2d.com/en/learn/sample/haru-receptionist/",
+    "https://www.live2d.com/en/learn/sample/koharu-haruto/"
+  ],
+  "limits": {
+    "cmo3_decoded": false,
+    "moc3_executed": false,
+    "editor_installed": false,
+    "source_code_from_zip_executed": false,
+    "runtime_rendered": false,
+    "windows_repository_modified": false
+  },
+  "additional_verified_finding": {
+    "source": "haru_greeter_ja/runtime/haru_greeter_t05.pose3.json",
+    "fact_zh": "有两组 A/B 手臂部件配对，证明 PSD 的 A/B 不是仅参考图命名，还对应运行时 pose 配置；左右显示名称与 ID 有不一致，不能仅凭标签决定解剖侧别。"
+  }
+}

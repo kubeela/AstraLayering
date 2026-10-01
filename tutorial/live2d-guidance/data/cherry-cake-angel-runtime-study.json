@@ -1,0 +1,4303 @@
+{
+  "schemaVersion": 1,
+  "asset": {
+    "name": "A樱桃蛋糕天使免费版",
+    "source": null,
+    "author": null,
+    "license": "No standalone license found; texture watermark forbids uploading without permission and restricts use to purchaser. Free-version filename is not proof of permission.",
+    "localAssetRelativePath": "local-assets/cherry-cake-angel"
+  },
+  "resources": [
+    {
+      "path": "A樱桃蛋糕天使免费版.8192/texture_00.png",
+      "bytes": 31387887,
+      "sha256": "c70c9218344b5820171ddb8a182de11faae1287e3b3850bb987cb0719a55e167",
+      "role": "png"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.8192/texture_01.png",
+      "bytes": 39462035,
+      "sha256": "5fba28df18a2deab67b3bad3fdf37fa9b9f70525915629facadb7dca65b54298",
+      "role": "png"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.cdi3.json",
+      "bytes": 22886,
+      "sha256": "55434a102c25a17584d62e732daaf25be6c8e5e69abaa02c9dd548d9010599ae",
+      "role": "json"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.moc3",
+      "bytes": 11236160,
+      "sha256": "8950424a756a49b2fc71c63907bdf417a5ef5e9b9c2e68414aee45908efbcab4",
+      "role": "moc3"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.model3.json",
+      "bytes": 537,
+      "sha256": "3420918e32f2bc947c5840c68161b491c6eb39b4f5fe19609bb47f0bef1240b9",
+      "role": "json"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.physics3.json",
+      "bytes": 111998,
+      "sha256": "54d8c2887ef18df03772775789c77e17a690b6065dd9b08223a42aa26ba56e97",
+      "role": "json"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.vtube.json",
+      "bytes": 16966,
+      "sha256": "a24af200f9111b61773517a5d6d5198099672b3407b8d252b07e7d317d79fa69",
+      "role": "json"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.xyplugin.json",
+      "bytes": 91,
+      "sha256": "d9e56d0bd21215df54a964dbdc43f4c08d81d5374edcfd4d45a49bd93ff47679",
+      "role": "json"
+    },
+    {
+      "path": "icon.png",
+      "bytes": 102368,
+      "sha256": "f6cde0d9596b677746ddbe8951be7a736bd86ba60e3b61a44d67ec9455f476f1",
+      "role": "png"
+    },
+    {
+      "path": "items_pinned_to_model.json",
+      "bytes": 449,
+      "sha256": "34efd49aaa3140fd4d29164b78ff65610f2028010d1e8eee47f423d9e7736d95",
+      "role": "json"
+    },
+    {
+      "path": "循环动画.motion3.json",
+      "bytes": 1352,
+      "sha256": "4f779f8d3c4d6ec2554ad13f14eeb911d70964085917e54c84dc5ae673b748ee",
+      "role": "json"
+    }
+  ],
+  "modelVersion": 3,
+  "resourceReferences": [
+    {
+      "role": "Moc",
+      "path": "A樱桃蛋糕天使免费版.moc3",
+      "exists": true
+    },
+    {
+      "role": "Textures",
+      "path": "A樱桃蛋糕天使免费版.8192/texture_00.png",
+      "exists": true
+    },
+    {
+      "role": "Textures",
+      "path": "A樱桃蛋糕天使免费版.8192/texture_01.png",
+      "exists": true
+    },
+    {
+      "role": "Physics",
+      "path": "A樱桃蛋糕天使免费版.physics3.json",
+      "exists": true
+    },
+    {
+      "role": "DisplayInfo",
+      "path": "A樱桃蛋糕天使免费版.cdi3.json",
+      "exists": true
+    }
+  ],
+  "controlGroups": [
+    {
+      "name": "LipSync",
+      "target": "Parameter",
+      "ids": []
+    },
+    {
+      "name": "EyeBlink",
+      "target": "Parameter",
+      "ids": [
+        "ParamEyeROpen",
+        "ParamEyeLOpen"
+      ]
+    }
+  ],
+  "displayParameters": [
+    {
+      "id": "ParamAngleXX",
+      "name": "●角度 X",
+      "groupId": ""
+    },
+    {
+      "id": "ParamAngleYY",
+      "name": "●角度 Y",
+      "groupId": ""
+    },
+    {
+      "id": "xin",
+      "name": "xin",
+      "groupId": "ParamGroup5"
+    },
+    {
+      "id": "yin",
+      "name": "yin",
+      "groupId": "ParamGroup5"
+    },
+    {
+      "id": "zin",
+      "name": "zin",
+      "groupId": "ParamGroup5"
+    },
+    {
+      "id": "xinb",
+      "name": "xinb",
+      "groupId": "ParamGroup5"
+    },
+    {
+      "id": "yinb",
+      "name": "yinb",
+      "groupId": "ParamGroup5"
+    },
+    {
+      "id": "zinb",
+      "name": "zinb",
+      "groupId": "ParamGroup5"
+    },
+    {
+      "id": "ParamEyeROpen",
+      "name": "右眼　开闭",
+      "groupId": "ParamGroup2"
+    },
+    {
+      "id": "ParamEyeRSmile",
+      "name": "右眼　微笑",
+      "groupId": "ParamGroup2"
+    },
+    {
+      "id": "ParamEyeLOpen",
+      "name": "左眼　开闭",
+      "groupId": "ParamGroup2"
+    },
+    {
+      "id": "ParamEyeLSmile",
+      "name": "左眼　微笑",
+      "groupId": "ParamGroup2"
+    },
+    {
+      "id": "ParamEyeBallX",
+      "name": "眼珠 X",
+      "groupId": "ParamGroup2"
+    },
+    {
+      "id": "ParamEyeBallY",
+      "name": "眼珠 Y",
+      "groupId": "ParamGroup2"
+    },
+    {
+      "id": "Param77",
+      "name": "花边x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param78",
+      "name": "花边x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param79",
+      "name": "花边y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param80",
+      "name": "花边y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param100",
+      "name": "身体蝴蝶结x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param101",
+      "name": "身体蝴蝶结x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param102",
+      "name": "身体蝴蝶结y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param103",
+      "name": "身体蝴蝶结y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param118",
+      "name": "项链x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param119",
+      "name": "项链x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param120",
+      "name": "项链y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param121",
+      "name": "项链y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param126",
+      "name": "胸x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param127",
+      "name": "胸x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param128",
+      "name": "胸y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param129",
+      "name": "胸y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param81",
+      "name": "大蝴蝶结x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param82",
+      "name": "大蝴蝶结x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param92",
+      "name": "大蝴蝶结x3",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param83",
+      "name": "大蝴蝶结y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param84",
+      "name": "大蝴蝶结y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param93",
+      "name": "大蝴蝶结y3",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param96",
+      "name": "小蝴蝶结x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param97",
+      "name": "小蝴蝶结x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param98",
+      "name": "小蝴蝶结y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param99",
+      "name": "小蝴蝶结y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param108",
+      "name": "裙子x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param109",
+      "name": "裙子x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param110",
+      "name": "裙子x3",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param111",
+      "name": "裙子y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param112",
+      "name": "裙子y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param113",
+      "name": "裙子y3",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param114",
+      "name": "腿蝴蝶结x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param115",
+      "name": "腿蝴蝶结x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param116",
+      "name": "腿蝴蝶结y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param117",
+      "name": "腿蝴蝶结y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param130",
+      "name": "蛋糕x1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param131",
+      "name": "蛋糕x2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param132",
+      "name": "蛋糕y1",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param133",
+      "name": "蛋糕y2",
+      "groupId": "ParamGroup14"
+    },
+    {
+      "id": "Param31",
+      "name": "前发x1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param32",
+      "name": "前发x2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param33",
+      "name": "前发x3",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param85",
+      "name": "前发x4",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param34",
+      "name": "前发y1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param35",
+      "name": "前发y2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param36",
+      "name": "前发y3",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param86",
+      "name": "前发y4",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param37",
+      "name": "头巾x1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param38",
+      "name": "头巾x2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param39",
+      "name": "头巾y1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param40",
+      "name": "头巾y2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param41",
+      "name": "蝴蝶结x1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param42",
+      "name": "蝴蝶结x2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param44",
+      "name": "蝴蝶结y1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param45",
+      "name": "蝴蝶结y2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param51",
+      "name": "后发x1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param52",
+      "name": "后发x2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param53",
+      "name": "后发x3",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param54",
+      "name": "后发x4",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param55",
+      "name": "后发y1",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param56",
+      "name": "后发y2",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param57",
+      "name": "后发y3",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param58",
+      "name": "后发y4",
+      "groupId": "ParamGroup9"
+    },
+    {
+      "id": "Param24",
+      "name": "翅膀R1",
+      "groupId": "ParamGroup10"
+    },
+    {
+      "id": "Param25",
+      "name": "翅膀R2",
+      "groupId": "ParamGroup10"
+    },
+    {
+      "id": "Param26",
+      "name": "翅膀R3",
+      "groupId": "ParamGroup10"
+    },
+    {
+      "id": "Param27",
+      "name": "翅膀L1",
+      "groupId": "ParamGroup10"
+    },
+    {
+      "id": "Param28",
+      "name": "翅膀L2",
+      "groupId": "ParamGroup10"
+    },
+    {
+      "id": "Param29",
+      "name": "翅膀L3",
+      "groupId": "ParamGroup10"
+    },
+    {
+      "id": "Param60",
+      "name": "大臂R1",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param61",
+      "name": "大臂R2",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param62",
+      "name": "大臂R3",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param63",
+      "name": "大臂R4",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param64",
+      "name": "大臂R1x1",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param65",
+      "name": "大臂R1x2",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param66",
+      "name": "大臂R2x1",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param67",
+      "name": "大臂R2x2",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param68",
+      "name": "大臂L1",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param69",
+      "name": "大臂L2",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param70",
+      "name": "大臂L3",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param71",
+      "name": "大臂L4",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param72",
+      "name": "大臂L1x1",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param73",
+      "name": "大臂L1x2",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param74",
+      "name": "大臂L2x1",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "Param75",
+      "name": "大臂L2x2",
+      "groupId": "ParamGroup13"
+    },
+    {
+      "id": "ParamBodyAngleX",
+      "name": "身体旋转　X",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "ParamBodyAngleX2",
+      "name": "身体旋转　X2",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "ParamBodyAngleX4",
+      "name": "身体旋转　X2Q",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "ParamBodyAngleX3",
+      "name": "身体旋转　X3",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "ParamBodyAngleY",
+      "name": "身体旋转　Y",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "ParamBodyAngleZ",
+      "name": "身体旋转　Z",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "Param59",
+      "name": "腰x",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "ParamBreath",
+      "name": "呼吸",
+      "groupId": "ParamGroup12"
+    },
+    {
+      "id": "ParamAngleX",
+      "name": "角度 X",
+      "groupId": "ParamGroup6"
+    },
+    {
+      "id": "ParamAngleY",
+      "name": "角度 Y",
+      "groupId": "ParamGroup6"
+    },
+    {
+      "id": "ParamAngleZ",
+      "name": "角度 Z",
+      "groupId": "ParamGroup6"
+    },
+    {
+      "id": "ParamMouthForm",
+      "name": "嘴　变形",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamMouthOpenY",
+      "name": "嘴　张开和闭合",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamMouthFunnel",
+      "name": "MouthFunnel",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamMouthshrug",
+      "name": "Mouthshrug",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamMouthPress",
+      "name": "MouthPress",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamMouthPucker",
+      "name": "MouthPucker",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamCheekPuff",
+      "name": "CheekPuff",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamJawOpen",
+      "name": "JawOpen",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "ParamMouthX",
+      "name": "MouthX",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "Param12",
+      "name": "鼻子",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "Param13",
+      "name": "脸p",
+      "groupId": "ParamGroup4"
+    },
+    {
+      "id": "Param2",
+      "name": "eye r1",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param3",
+      "name": "eye r2",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param152",
+      "name": "eye r3",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param163",
+      "name": "eye r4",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param154",
+      "name": "eye r11",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param155",
+      "name": "eye r12",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param4",
+      "name": "eye l1",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param5",
+      "name": "eye l2",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param153",
+      "name": "eye l3",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param164",
+      "name": "eye l4",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param156",
+      "name": "eye l11",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param157",
+      "name": "eye l12",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param6",
+      "name": "eye rs",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param7",
+      "name": "eye ls",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param8",
+      "name": "eye x",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param9",
+      "name": "eye y",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param10",
+      "name": "eye rlx",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param11",
+      "name": "eye rly",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "Param151",
+      "name": "mx2",
+      "groupId": "ParamGroup3"
+    },
+    {
+      "id": "ParamBrowRY",
+      "name": "右眉　上下",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "ParamBrowRX",
+      "name": "右眉　左右",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "ParamBrowRAngle",
+      "name": "右眉　角度",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "ParamBrowRForm",
+      "name": "右眉　変形",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "ParamBrowLY",
+      "name": "左眉   上下",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "ParamBrowLX",
+      "name": "左眉　左右",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "ParamBrowLAngle",
+      "name": "左眉　角度",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "ParamBrowLForm",
+      "name": "左眉　変形",
+      "groupId": "ParamGroup"
+    },
+    {
+      "id": "Param14",
+      "name": "猫耳r1",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param15",
+      "name": "猫耳r2",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param16",
+      "name": "猫耳ry",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param106",
+      "name": "猫耳rx",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param18",
+      "name": "猫耳r朝向",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param17",
+      "name": "猫耳R转",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param19",
+      "name": "猫耳l1",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param20",
+      "name": "猫耳l2",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param21",
+      "name": "猫耳ly",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param76",
+      "name": "猫耳lx",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param22",
+      "name": "猫耳l朝向",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "Param23",
+      "name": "猫耳l转",
+      "groupId": "ParamGroup7"
+    },
+    {
+      "id": "ParamCheek",
+      "name": "脸颊泛红",
+      "groupId": ""
+    },
+    {
+      "id": "ParamHairFront",
+      "name": "摇动 前发",
+      "groupId": ""
+    },
+    {
+      "id": "ParamHairSide",
+      "name": "摇动 侧发",
+      "groupId": ""
+    },
+    {
+      "id": "ParamHairBack",
+      "name": "摇动 后发",
+      "groupId": ""
+    },
+    {
+      "id": "Param_Angle_Rotation_1_ArtMesh276",
+      "name": "[0]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_2_ArtMesh276",
+      "name": "[1]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_3_ArtMesh276",
+      "name": "[2]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_4_ArtMesh276",
+      "name": "[3]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_5_ArtMesh276",
+      "name": "[4]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_6_ArtMesh276",
+      "name": "[5]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_7_ArtMesh276",
+      "name": "[6]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_8_ArtMesh276",
+      "name": "[7]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_9_ArtMesh276",
+      "name": "[8]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_10_ArtMesh276",
+      "name": "[9]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_11_ArtMesh276",
+      "name": "[10]发尾1",
+      "groupId": "ParamGroup11"
+    },
+    {
+      "id": "Param_Angle_Rotation_1_ArtMesh288",
+      "name": "[0]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_2_ArtMesh288",
+      "name": "[1]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_3_ArtMesh288",
+      "name": "[2]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_4_ArtMesh288",
+      "name": "[3]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_5_ArtMesh288",
+      "name": "[4]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_6_ArtMesh288",
+      "name": "[5]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_7_ArtMesh288",
+      "name": "[6]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_8_ArtMesh288",
+      "name": "[7]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_9_ArtMesh288",
+      "name": "[8]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_10_ArtMesh288",
+      "name": "[9]发尾1",
+      "groupId": "ParamGroup16"
+    },
+    {
+      "id": "Param_Angle_Rotation_11_ArtMesh288",
+      "name": "[10]发尾1",
+      "groupId": "ParamGroup16"
+    }
+  ],
+  "displayGroups": [
+    {
+      "id": "ParamGroup5",
+      "name": "in",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup2",
+      "name": "眼睛",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup14",
+      "name": "身体物理",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup9",
+      "name": "头部物理",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup10",
+      "name": "头翅膀物理",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup13",
+      "name": "手臂",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup12",
+      "name": "身体",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup6",
+      "name": "头部旋转",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup4",
+      "name": "嘴巴",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup3",
+      "name": "眼睛物理",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup",
+      "name": "眉毛",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup7",
+      "name": "猫耳",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup11",
+      "name": "发尾1",
+      "parentGroupId": ""
+    },
+    {
+      "id": "ParamGroup16",
+      "name": "发尾1",
+      "parentGroupId": ""
+    }
+  ],
+  "displayParts": [
+    {
+      "id": "Part105",
+      "name": "月蒙版.psd"
+    },
+    {
+      "id": "Part37",
+      "name": "低马尾R.psd"
+    },
+    {
+      "id": "Part101",
+      "name": "草莓蛋糕天使修改-补.psd"
+    },
+    {
+      "id": "Part104",
+      "name": "模板"
+    },
+    {
+      "id": "Part36",
+      "name": "低马尾R"
+    },
+    {
+      "id": "Part108",
+      "name": "身体旋转"
+    },
+    {
+      "id": "Part102",
+      "name": "头部旋转"
+    },
+    {
+      "id": "Part",
+      "name": "手势"
+    },
+    {
+      "id": "Part19",
+      "name": "头"
+    },
+    {
+      "id": "Part58",
+      "name": "上半身"
+    },
+    {
+      "id": "Part75",
+      "name": "拿棉花棒R"
+    },
+    {
+      "id": "Part76",
+      "name": "拿蛋糕"
+    },
+    {
+      "id": "Part65",
+      "name": "下裙"
+    },
+    {
+      "id": "Part72",
+      "name": "双臂"
+    },
+    {
+      "id": "Part79",
+      "name": "双腿"
+    },
+    {
+      "id": "Part82",
+      "name": "翅膀"
+    },
+    {
+      "id": "Part88",
+      "name": "后发"
+    },
+    {
+      "id": "Part2",
+      "name": "拿话筒"
+    },
+    {
+      "id": "Part6",
+      "name": "拿棉花棒"
+    },
+    {
+      "id": "Part9",
+      "name": "拿蛋糕"
+    },
+    {
+      "id": "Part14",
+      "name": "玩游戏"
+    },
+    {
+      "id": "Part18",
+      "name": "对手指"
+    },
+    {
+      "id": "Part20",
+      "name": "发饰"
+    },
+    {
+      "id": "Part24",
+      "name": "前发"
+    },
+    {
+      "id": "Part28",
+      "name": "耳发"
+    },
+    {
+      "id": "Part31",
+      "name": "五官"
+    },
+    {
+      "id": "Part52",
+      "name": "头饰后"
+    },
+    {
+      "id": "Part59",
+      "name": "脖子花边"
+    },
+    {
+      "id": "Part60",
+      "name": "项链"
+    },
+    {
+      "id": "Part61",
+      "name": "胸前蝴蝶结"
+    },
+    {
+      "id": "Part62",
+      "name": "上衣"
+    },
+    {
+      "id": "Part63",
+      "name": "肩颈"
+    },
+    {
+      "id": "Part64",
+      "name": "灯笼袖"
+    },
+    {
+      "id": "Part66",
+      "name": "腰部"
+    },
+    {
+      "id": "Part67",
+      "name": "蝴蝶结M"
+    },
+    {
+      "id": "Part68",
+      "name": "蝴蝶结R"
+    },
+    {
+      "id": "Part69",
+      "name": "蝴蝶结L"
+    },
+    {
+      "id": "Part70",
+      "name": "爱心褶皱"
+    },
+    {
+      "id": "Part71",
+      "name": "裙子"
+    },
+    {
+      "id": "Part73",
+      "name": "拿游戏手柄L"
+    },
+    {
+      "id": "Part74",
+      "name": "拿话筒/拿游戏手柄R"
+    },
+    {
+      "id": "Part77",
+      "name": "手R"
+    },
+    {
+      "id": "Part78",
+      "name": "手L"
+    },
+    {
+      "id": "Part80",
+      "name": "腿R"
+    },
+    {
+      "id": "Part81",
+      "name": "腿L"
+    },
+    {
+      "id": "Part83",
+      "name": "翅膀R"
+    },
+    {
+      "id": "Part85",
+      "name": "翅膀L"
+    },
+    {
+      "id": "Part89",
+      "name": "低马尾"
+    },
+    {
+      "id": "Part92",
+      "name": "短发"
+    },
+    {
+      "id": "Part95",
+      "name": "默认"
+    },
+    {
+      "id": "Part3",
+      "name": "话筒蝴蝶结"
+    },
+    {
+      "id": "Part4",
+      "name": "话筒本体"
+    },
+    {
+      "id": "Part5",
+      "name": "小臂"
+    },
+    {
+      "id": "Part7",
+      "name": "棉花棒"
+    },
+    {
+      "id": "Part8",
+      "name": "小臂"
+    },
+    {
+      "id": "Part10",
+      "name": "拿蛋糕"
+    },
+    {
+      "id": "Part12",
+      "name": "拿叉子"
+    },
+    {
+      "id": "Part15",
+      "name": "碎糖装饰"
+    },
+    {
+      "id": "Part16",
+      "name": "碎糖装饰阴影"
+    },
+    {
+      "id": "Part17",
+      "name": "游戏机"
+    },
+    {
+      "id": "L",
+      "name": "L"
+    },
+    {
+      "id": "R",
+      "name": "R"
+    },
+    {
+      "id": "Part21",
+      "name": "光环"
+    },
+    {
+      "id": "Part22",
+      "name": "头巾蝴蝶结"
+    },
+    {
+      "id": "Part23",
+      "name": "头巾"
+    },
+    {
+      "id": "Part103",
+      "name": "发饰1"
+    },
+    {
+      "id": "Part25",
+      "name": "侧发R"
+    },
+    {
+      "id": "Part26",
+      "name": "侧发L"
+    },
+    {
+      "id": "Part27",
+      "name": "刘海"
+    },
+    {
+      "id": "Part29",
+      "name": "长鬓发"
+    },
+    {
+      "id": "Part30",
+      "name": "麻花"
+    },
+    {
+      "id": "Part32",
+      "name": "表情"
+    },
+    {
+      "id": "Part38",
+      "name": "眉毛"
+    },
+    {
+      "id": "Part39",
+      "name": "眼睛R"
+    },
+    {
+      "id": "Part41",
+      "name": "眼睛L"
+    },
+    {
+      "id": "Part43",
+      "name": "嘴巴"
+    },
+    {
+      "id": "Part48",
+      "name": "鼻子"
+    },
+    {
+      "id": "Part49",
+      "name": "腮红"
+    },
+    {
+      "id": "Part50",
+      "name": "脸皮"
+    },
+    {
+      "id": "Part51",
+      "name": "耳朵"
+    },
+    {
+      "id": "Part53",
+      "name": "头巾后"
+    },
+    {
+      "id": "Part54",
+      "name": "耳羽R"
+    },
+    {
+      "id": "Part55",
+      "name": "耳羽L"
+    },
+    {
+      "id": "Part56",
+      "name": "耳朵R"
+    },
+    {
+      "id": "Part57",
+      "name": "耳朵L"
+    },
+    {
+      "id": "Part84",
+      "name": "奶油R"
+    },
+    {
+      "id": "Part86",
+      "name": "奶油L"
+    },
+    {
+      "id": "Part87",
+      "name": "蝴蝶结"
+    },
+    {
+      "id": "Part90",
+      "name": "低马尾R"
+    },
+    {
+      "id": "ArtMesh288_Skinning",
+      "name": "发尾1(蒙皮)"
+    },
+    {
+      "id": "Part107",
+      "name": "发尾1(旋转)"
+    },
+    {
+      "id": "ArtMesh276_Skinning",
+      "name": "发尾1(蒙皮)"
+    },
+    {
+      "id": "Part106",
+      "name": "发尾1(旋转)"
+    },
+    {
+      "id": "Part91",
+      "name": "低马尾L"
+    },
+    {
+      "id": "Part93",
+      "name": "小啾啾"
+    },
+    {
+      "id": "Part94",
+      "name": "短发"
+    },
+    {
+      "id": "Part96",
+      "name": "高双马尾R"
+    },
+    {
+      "id": "Part97",
+      "name": "高双马尾L"
+    },
+    {
+      "id": "Part98",
+      "name": "散发"
+    },
+    {
+      "id": "Part11",
+      "name": "蛋糕"
+    },
+    {
+      "id": "Part13",
+      "name": "叉子"
+    },
+    {
+      "id": "Part33",
+      "name": "流眼泪"
+    },
+    {
+      "id": "Part40",
+      "name": "眼珠"
+    },
+    {
+      "id": "Part34",
+      "name": "流眼泪"
+    },
+    {
+      "id": "Part42",
+      "name": "眼珠"
+    },
+    {
+      "id": "Part45",
+      "name": "吐舌头"
+    },
+    {
+      "id": "Part46",
+      "name": "气鼓鼓"
+    },
+    {
+      "id": "Part47",
+      "name": "张嘴"
+    },
+    {
+      "id": "Part99",
+      "name": "侧发R"
+    },
+    {
+      "id": "Part100",
+      "name": "侧发L"
+    }
+  ],
+  "physicsLinkIndex": [
+    {
+      "id": "PhysicsSetting1",
+      "inputLinks": [
+        {
+          "sourceId": "xin",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamAngleX",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting2",
+      "inputLinks": [
+        {
+          "sourceId": "yin",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 95,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamAngleY",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting3",
+      "inputLinks": [
+        {
+          "sourceId": "zin",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamAngleZ",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting4",
+      "inputLinks": [
+        {
+          "sourceId": "xinb",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamBodyAngleX",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting5",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamBodyAngleX2",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting6",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX2",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamBodyAngleX3",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting7",
+      "inputLinks": [
+        {
+          "sourceId": "yinb",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamBodyAngleY",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting8",
+      "inputLinks": [
+        {
+          "sourceId": "zinb",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamBodyAngleZ",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting9",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 70,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 40,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param59",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting10",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeROpen",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 35,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeRSmile",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeBallX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamEyeBallY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 25,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param2",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param3",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param152",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param163",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting11",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeLOpen",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 35,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeLSmile",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeBallX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamEyeBallY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 25,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param4",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param5",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param153",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param164",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting12",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeROpen",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 35,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeRSmile",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeBallX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamEyeBallY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 25,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param154",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param155",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting13",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeLOpen",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 35,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeLSmile",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeBallX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamEyeBallY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 25,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param156",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param157",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting14",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 40,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 40,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 20,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeROpen",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBrowRY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamMouthForm",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param24",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param25",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param26",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting15",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 40,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 40,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 20,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamEyeLOpen",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBrowLY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamMouthForm",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param27",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param28",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param29",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting16",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBrowRY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 40,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeROpen",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param6",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting17",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBrowLY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 40,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamEyeLOpen",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param7",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting18",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeBallX",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 90,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param8",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting19",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeBallY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 90,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param9",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting20",
+      "inputLinks": [
+        {
+          "sourceId": "ParamMouthForm",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param10",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting21",
+      "inputLinks": [
+        {
+          "sourceId": "ParamMouthForm",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamMouthOpenY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param11",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting22",
+      "inputLinks": [
+        {
+          "sourceId": "ParamMouthX",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param151",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting23",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBrowRY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 15,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBrowLY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 15,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamMouthForm",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 70,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "ParamBrowRX",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "ParamBrowRAngle",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "ParamBrowRForm",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "ParamBrowLX",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "ParamBrowLAngle",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "ParamBrowLForm",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting24",
+      "inputLinks": [
+        {
+          "sourceId": "ParamMouthForm",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 80,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamMouthOpenY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 70,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param12",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting25",
+      "inputLinks": [
+        {
+          "sourceId": "ParamMouthForm",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param13",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting26",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param31",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param32",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param33",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param85",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting27",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param37",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param38",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting28",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 80,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 50,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param41",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param42",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting29",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param51",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param52",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param53",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param54",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting30",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 30,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 30,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param_Angle_Rotation_1_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_2_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_3_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_4_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_5_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_6_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_7_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_8_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_9_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_10_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_11_ArtMesh276",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 15
+    },
+    {
+      "id": "PhysicsSetting31",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 30,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 30,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param_Angle_Rotation_1_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_2_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_3_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_4_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_5_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_6_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_7_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_8_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_9_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_10_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param_Angle_Rotation_11_ArtMesh288",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 15
+    },
+    {
+      "id": "PhysicsSetting32",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param34",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param35",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param36",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param86",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting33",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param44",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param45",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting34",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param39",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param40",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting35",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param55",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param56",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param57",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param58",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting36",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param60",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param61",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param62",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param63",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting37",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param68",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param69",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param70",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param71",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting38",
+      "inputLinks": [
+        {
+          "sourceId": "Param60",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param64",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param65",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting39",
+      "inputLinks": [
+        {
+          "sourceId": "Param68",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param72",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param73",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting40",
+      "inputLinks": [
+        {
+          "sourceId": "Param61",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param66",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param67",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting41",
+      "inputLinks": [
+        {
+          "sourceId": "Param69",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param74",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param75",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting42",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param77",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param78",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting43",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param100",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param101",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting44",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param118",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param119",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting45",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 70,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param81",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param82",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param92",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting46",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 70,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param96",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param97",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting47",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param108",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param109",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param110",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting48",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param114",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param115",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting49",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param126",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param127",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting50",
+      "inputLinks": [
+        {
+          "sourceId": "ParamBodyAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBodyAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 60,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param130",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param131",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 3
+    },
+    {
+      "id": "PhysicsSetting51",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param79",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param80",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting52",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param102",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param103",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting53",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param120",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param121",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting54",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param83",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param84",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param93",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting55",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param98",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param99",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting56",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 3,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param111",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param112",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param113",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting57",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param116",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param117",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting58",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBreath",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 5,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param128",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param129",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting59",
+      "inputLinks": [
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 50,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param132",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param133",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 4
+    },
+    {
+      "id": "PhysicsSetting60",
+      "inputLinks": [
+        {
+          "sourceId": "ParamMouthX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 30,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamBrowLY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 70,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param22",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting61",
+      "inputLinks": [
+        {
+          "sourceId": "ParamMouthX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 30,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamBrowRY",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 70,
+          "reflect": false
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param18",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        }
+      ],
+      "particleCount": 2
+    },
+    {
+      "id": "PhysicsSetting62",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeLOpen",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "Param22",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param19",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param20",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param21",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param76",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    },
+    {
+      "id": "PhysicsSetting63",
+      "inputLinks": [
+        {
+          "sourceId": "ParamEyeROpen",
+          "sourceTarget": "Parameter",
+          "type": "Angle",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleX",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "ParamAngleY",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        },
+        {
+          "sourceId": "ParamAngleZ",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": false
+        },
+        {
+          "sourceId": "Param18",
+          "sourceTarget": "Parameter",
+          "type": "X",
+          "weight": 10,
+          "reflect": true
+        }
+      ],
+      "outputLinks": [
+        {
+          "destinationId": "Param14",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param15",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": true
+        },
+        {
+          "destinationId": "Param16",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        },
+        {
+          "destinationId": "Param106",
+          "destinationTarget": "Parameter",
+          "type": "Angle",
+          "weight": 100,
+          "reflect": false
+        }
+      ],
+      "particleCount": 5
+    }
+  ],
+  "counts": {
+    "parameters": 187,
+    "physicsSettings": 63,
+    "resources": 11,
+    "displayGroups": 14,
+    "displayParts": 110
+  },
+  "notParsed": [
+    "moc3 binary",
+    "texture pixels",
+    "vtube configuration semantics",
+    "xyplugin semantics",
+    "deformer hierarchy",
+    "mesh vertices",
+    "keyforms",
+    "PSD layers"
+  ],
+  "interpretationLimits": [
+    "Display labels are not drawing-layer hierarchy",
+    "No PSD or cmo3 provided; no drawing layers inferred",
+    "Parameter ranges/defaults are not present in CDI; not guessed",
+    "Original configuration files remain local; this is a selective relationship index"
+  ],
+  "archive": {
+    "archiveName": "A樱桃蛋糕天使免费版.zip",
+    "archiveBytes": 68357883,
+    "archiveSha256": "411f1a554c66c35b4aa43a2e860b2e7e492be876be0522cdd02d64b6d1eb7da1",
+    "entries": 13,
+    "files": 11,
+    "uncompressedBytes": 82342729,
+    "nameEncoding": "UTF-8 Unicode Path extra field 0x7075 (UTF-8 flag absent)"
+  },
+  "formatEvidence": [
+    {
+      "path": "A樱桃蛋糕天使免费版.moc3",
+      "magicHex": "4d4f433305000000",
+      "inspection": "Header only; not decoded or executed"
+    }
+  ],
+  "editableProjectEvidence": {
+    "psdPresent": false,
+    "cmo3Present": false,
+    "can3Present": false,
+    "caveat": "CDI Parts with names ending in .psd refer to labels, not supplied PSD files"
+  },
+  "textureMetadata": [
+    {
+      "path": "A樱桃蛋糕天使免费版.8192/texture_00.png",
+      "width": 8192,
+      "height": 8192,
+      "mode": "RGBA"
+    },
+    {
+      "path": "A樱桃蛋糕天使免费版.8192/texture_01.png",
+      "width": 8192,
+      "height": 8192,
+      "mode": "RGBA"
+    }
+  ],
+  "motionStudy": {
+    "path": "循环动画.motion3.json",
+    "sha256": "4f779f8d3c4d6ec2554ad13f14eeb911d70964085917e54c84dc5ae673b748ee",
+    "durationSeconds": 3.967,
+    "fps": 30.0,
+    "loop": true,
+    "curves": [
+      {
+        "target": "Parameter",
+        "id": "Param87",
+        "cdiLabelFound": false,
+        "endpointCount": 3,
+        "endpointValueRange": [
+          -1,
+          1
+        ]
+      },
+      {
+        "target": "Parameter",
+        "id": "Param43",
+        "cdiLabelFound": false,
+        "endpointCount": 3,
+        "endpointValueRange": [
+          -1,
+          1
+        ]
+      },
+      {
+        "target": "Parameter",
+        "id": "Param50",
+        "cdiLabelFound": false,
+        "endpointCount": 2,
+        "endpointValueRange": [
+          0,
+          3
+        ]
+      },
+      {
+        "target": "Parameter",
+        "id": "Param90",
+        "cdiLabelFound": false,
+        "endpointCount": 5,
+        "endpointValueRange": [
+          -5,
+          5
+        ]
+      },
+      {
+        "target": "Parameter",
+        "id": "Param91",
+        "cdiLabelFound": false,
+        "endpointCount": 5,
+        "endpointValueRange": [
+          -5,
+          5
+        ]
+      }
+    ],
+    "registeredInModelConfig": false,
+    "limitations": [
+      "Only segment endpoint statistics; no curve payload copied or playback performed",
+      "None of five motion parameter IDs match CDI labels; do not assume intended motion mapping",
+      "Endpoint range is not model min/max or rendered deformation"
+    ]
+  },
+  "visualStudy": {
+    "method": "Actual local inspection of icon and both texture atlases, with alpha-composited watermark detail",
+    "observations": [
+      {
+        "source": "A樱桃蛋糕天使免费版.8192/texture_01.png",
+        "fact": "Oval face base and separate outline are stored as separate atlas islands; not a complete flattened portrait",
+        "approximateRois": [
+          {
+            "label": "face-base candidate",
+            "bounds": [
+              1280,
+              3661,
+              2304,
+              4731
+            ]
+          },
+          {
+            "label": "outline candidate",
+            "bounds": [
+              0,
+              3968,
+              973,
+              5172
+            ]
+          }
+        ]
+      },
+      {
+        "source": "A樱桃蛋糕天使免费版.8192/texture_00.png",
+        "fact": "Several long hair locks, a large skirt-shaped island and small accessory islands are separate in the atlas"
+      },
+      {
+        "source": "A樱桃蛋糕天使免费版.8192/texture_01.png",
+        "fact": "Long ruffle/trim strips, limb-shaped skin pieces and cake/accessory islands are separate"
+      }
+    ],
+    "insight": "Atlas evidence supports separating contours, base fills and ornamental strips for analysis; atlas island count and position do not reveal PSD layer or deformer hierarchy.",
+    "limitations": [
+      "ROI rectangles are approximate visual locators in original 8192 pixel coordinates, not segmentation masks",
+      "Semantic candidates require mesh mapping; no ArtMesh identity inferred",
+      "Overlap completeness and deformation quality not verified"
+    ]
+  }
+}

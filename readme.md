@@ -171,3 +171,8 @@ SVG按实体部件组织，保留当前姿态所需的隐藏底形：例如发�
 欢迎通过 [Issues](https://github.com/wu-tian807/AstraLayering/issues) 讨论问题，或通过 [Pull Requests](https://github.com/wu-tian807/AstraLayering/pulls) 提交工作流改进、SVG 示例、失败案例和动画绑定实验。
 
 分享结果时请注明参考图、所用模型与提示词、阶段目标和实际问题。展示结果放入 `demos/`，当前流程的逐阶段验证放入 `outputs/`，失败复盘放入 `output_bad_cases/`。
+
+
+## 教程与学习资料
+
+参见 [tutorial](./tutorial/readme.md)：原文字教程、绘画资料与真实 Live2D 资料学习索引，供流程设计者按需查阅。

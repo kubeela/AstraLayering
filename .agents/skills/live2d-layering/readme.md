@@ -155,7 +155,7 @@ plan.json保留locked=true、参考版本、队列、镜像关系及eye_hair_ord
 
 ### mouth：完整部件优先，三步成稿
 
-[mouth模板](templates/部件专项/mouth)承接eyes成稿，按[嘴部教程](../../../live2d-tutorial-text/4.嘴巴拆分和制作.txt)保留轮廓、内部件和实际装饰。
+[mouth模板](templates/部件专项/mouth)承接eyes成稿，按[嘴部教程](../../../tutorial/live2d-tutorial-text/4.嘴巴拆分和制作.txt)保留轮廓、内部件和实际装饰。
 
 | 节点 | 模型 | 制作内容与交付 |
 | --- | --- | --- |
@@ -191,7 +191,7 @@ plan.json保留locked=true、参考版本、队列、镜像关系及eye_hair_ord
 
 ### body：身体本体、连接面与承影
 
-body接在hair之后，当前jianma_v4范围为neck/torso；大臂/手属于arms，骨盆/腿属于lower_body，连体服属于clothing，本组只以它们为接口参照。按[身体教程](../../../live2d-tutorial-text/7.身体的拆分与制作.txt)完善身体构型、胸部轮廓与隐藏底形，再完成自身肤色和落在身体上的影。
+body接在hair之后，当前jianma_v4范围为neck/torso；大臂/手属于arms，骨盆/腿属于lower_body，连体服属于clothing，本组只以它们为接口参照。按[身体教程](../../../tutorial/live2d-tutorial-text/7.身体的拆分与制作.txt)完善身体构型、胸部轮廓与隐藏底形，再完成自身肤色和落在身体上的影。
 
 | 步骤 | 模型 | 具体工作与交付 |
 | --- | --- | --- |
@@ -207,7 +207,7 @@ body接在hair之后，当前jianma_v4范围为neck/torso；大臂/手属于arms
 
 ### lower_body：取色后先骨盆，再一次完成双腿和足部
 
-[lower_body模板](templates/部件专项/lower_body)承接body最新完整SVG，依据[下半身教程](../../../live2d-tutorial-text/8.下半身的拆分与制作)处理腰胯、腿根、膝踝衔接和足部体积，按区域完成制作。
+[lower_body模板](templates/部件专项/lower_body)承接body最新完整SVG，依据[下半身教程](../../../tutorial/live2d-tutorial-text/8.下半身的拆分与制作.txt)处理腰胯、腿根、膝踝衔接和足部体积，按区域完成制作。
 
 | 步骤 | 模型/会话 | 具体工作与交付 |
 | --- | --- | --- |
@@ -225,7 +225,7 @@ body接在hair之后，当前jianma_v4范围为neck/torso；大臂/手属于arms
 
 ### arms：双臂一起完成，手部专门补全
 
-[arms模板](templates/部件专项/arms)接在lower_body之后，依据[手臂教程](../../../live2d-tutorial-text/12.手臂细节拆分.txt)和[Milly手部拆分板](templates/部件专项/arms/references/milly-hand-layers.png)，保留大臂/小臂/手的外层身份，每手内部完成一个完整手掌和五根完整手指。
+[arms模板](templates/部件专项/arms)接在lower_body之后，依据[手臂教程](../../../tutorial/live2d-tutorial-text/12.手臂细节拆分.txt)和[Milly手部拆分板](templates/部件专项/arms/references/milly-hand-layers.png)，保留大臂/小臂/手的外层身份，每手内部完成一个完整手掌和五根完整手指。
 
 | 任务 | 模型与会话 | 主要交付 |
 | --- | --- | --- |
@@ -271,7 +271,7 @@ Live2D 的素材制作允许部件包含线条、填色、滤镜效果，也允�
 
 以下链接供流程编写与维护时追溯来源，不是 worker 的阅读清单；各节点已内置具体操作要求，运行输入不附教程原文。
 
-- [Live2D 教程文字](../../../live2d-tutorial-text)：通用拆分、眼口与头发制作、身体连接、透明材质和光影。
+- [Live2D 教程文字](../../../tutorial/live2d-tutorial-text)：通用拆分、眼口与头发制作、身体连接、透明材质和光影。
 - [旧版历史流程](../../../archive/svg-layering/references/流程.md)：参考准备、分层绘制、线稿、底色、明暗材质及审查。
 - [Milly 动画试验](../../../rigging/milly/v3/README.md)：素材进入动画后的实际表现。
 - [接缝与纸片感原因分析](../../../rigging/milly/v3/evidence/root-cause-review/ROOT-CAUSE.md)：隐藏封口墨线应在素材阶段处理；连接区变形不一致还需要绑定修正。
