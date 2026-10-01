@@ -1,6 +1,6 @@
 id: group_split
 run: templates/部件专项/generic/2.直属拆分与色块/2.1.直属结构拆分
-worker: "group:{group_path}"
+worker: "group_split:{group_path}"
 working_dir: "{working_dir}"
 inputs:
   group_path: dispatch.item.path
