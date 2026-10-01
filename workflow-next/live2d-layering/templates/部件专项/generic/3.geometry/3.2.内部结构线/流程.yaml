@@ -4,7 +4,7 @@ if:
   in: dispatch.inputs.groups
 then:
   run: templates/部件专项/generic/3.geometry/3.2.内部结构线
-  worker: group_geometry
+  worker: "group:{group_path}"
   working_dir: "{working_dir}"
   inputs:
     group_path: dispatch.item.path

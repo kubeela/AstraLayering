@@ -4,7 +4,7 @@ if:
   in: dispatch.inputs.groups
 then:
   run: templates/部件专项/generic/2.直属拆分与色块/2.3.运动露出补齐
-  worker: group_motion_completion
+  worker: "group:{group_path}"
   working_dir: "{working_dir}"
   inputs:
     group_path: dispatch.item.path

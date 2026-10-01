@@ -1,6 +1,6 @@
 id: group_child_layers
 run: templates/部件专项/generic/2.直属拆分与色块/2.2.直属轮廓色块
-worker: group_layer_drawing
+worker: "group:{group_path}"
 working_dir: "{working_dir}"
 inputs:
   group_path: dispatch.item.path

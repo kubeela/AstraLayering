@@ -1,6 +1,6 @@
 id: group_completion
 run: templates/部件专项/generic/1.父级轮廓补全
-worker: group_completion
+worker: "group:{group_path}"
 working_dir: "{working_dir}"
 inputs:
   group_path: dispatch.item.path

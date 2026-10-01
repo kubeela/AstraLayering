@@ -4,7 +4,7 @@ if:
   in: dispatch.inputs.groups
 then:
   run: templates/部件专项/generic/4.rendering stack/4.4.局部暗部细化
-  worker: group_rendering
+  worker: "group:{group_path}"
   working_dir: '{working_dir}'
   inputs:
     group_path: dispatch.item.path
