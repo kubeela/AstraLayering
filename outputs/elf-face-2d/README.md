@@ -1,8 +1,20 @@
-# Elf Face：完整 Geometry 测试样例
+# Elf Face：右眼 Rendering Stack 测试
 
-现有 9 个 group、31 个 part 已按广度优先完成 Geometry，可作为后续 Rendering Stack 的输入。分组、色块和原始参考保持不变；本轮没有执行 Rendering Stack，也没有重跑拆分或运动露出补齐。
+右眼子树的 3 个 group、9 个 part 已完成上色流程，结果沿用 `refinement/character.svg` 与 `refinement/preview.png`。其余 22 个 part 保持原 Geometry。
 
-- [最终 Geometry SVG](refinement/character.svg) · [白底预览](refinement/preview.png)
+- [当前 SVG](refinement/character.svg) · [当前预览](refinement/preview.png)
+- [本轮运行记录与逐组快照](history/rendering-right-eye/运行记录.md) · [Rendering Stack 检查](structure/rendering-right-eye-check.json)
+- [上色前完整 Geometry](history/before-rendering-right-eye/refinement/character.svg) · [上色前预览](history/before-rendering-right-eye/refinement/preview.png)
+
+按当前 `generic` 模板执行 Rendering Stack，每组新建 Astra xhigh worker。原图、分组树、色块稿与工作流未改；后置渲染层组合尚未执行。以下保留上轮完整 Geometry 的制作说明，其哈希和检查结论对应上色前快照。
+
+三组 worker 均未确认可独立分离的投影，`rendering.json` 保持空表。本轮制作调度耗时 143.3 分钟，具体节点、网络重连及压缩恢复见运行记录。发布整理仅规范化报告文件链接和模型标记路径；模型标记按仓库根目录解析，成稿 SVG、PNG 和结论保持不变。完整原始交接与临时证据保留在本地 `.runtime/`、`tmp/`。
+
+## 完整 Geometry 制作记录
+
+现有 9 个 group、31 个 part 已按广度优先完成 Geometry，可作为后续 Rendering Stack 的输入。分组、色块和原始参考保持不变；该 Geometry 轮没有执行 Rendering Stack，也没有重跑拆分或运动露出补齐。
+
+- [最终 Geometry SVG](history/before-rendering-right-eye/refinement/character.svg) · [白底预览](history/before-rendering-right-eye/refinement/preview.png)
 - [分组树](structure/groups.json) · [结构色块](block-layers/groups.svg)
 - [原图](references/original.jpg) · [已有线稿参考](references/line-reference.png)
 - [Geometry 范围与状态](structure/geometry-scope.json) · [BFS 指针](structure/groups.geometry.dispatch.json)
