@@ -28,6 +28,7 @@
 @media(max-width:1000px){.reference-open-label{display:none}.compare-bar{padding:10px 12px}.compare-adjust input{width:90px}}
 @media(max-width:620px){.compare-bar{padding:9px 10px;gap:8px}.compare-controls{gap:8px}.compare-modes{width:100%}.compare-modes button{flex:1;padding:7px 5px;font-size:10px}.compare-adjust input{width:95px}.compare-badge{top:12px}.stage.comparing .top-tools{left:10px;bottom:70px}.header-actions #openReference{padding:8px}}
 
+.view-surface{position:absolute;inset:0;overflow:hidden;pointer-events:none}.view-image{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;will-change:transform;pointer-events:none}
 .group-content{display:flex;flex-direction:column;flex:1;min-height:0}
 .group-tools{display:flex;align-items:center;gap:4px;padding:9px 10px;border-bottom:1px solid var(--line)}
 .group-tools input{width:0;min-width:0;flex:1;padding:6px 8px;background:#14191f;color:#dce6eb;border:1px solid var(--line);border-radius:5px}
@@ -99,7 +100,7 @@
   </div>
  </div>
  <main id="stage" class="stage" data-background="gray" data-compare="none" aria-label="图像预览与对比区域">
-  <iframe id="artFrame" class="art-frame" title="图像 A 画布" sandbox="allow-same-origin" tabindex="-1"></iframe>
+  <iframe id="artFrame" class="art-frame" title="图像 A 画布" sandbox="allow-same-origin" tabindex="-1" aria-hidden="true"></iframe>
   <div id="composition" class="composition" data-mode="none" hidden aria-label="组合画面"></div>
   <div id="interaction" class="interaction empty" tabindex="0" role="application" aria-label="可缩放图像画布。滚轮缩放，拖动平移，F 适应窗口，B 框选放大。"></div>
   <div id="wipeDivider" class="wipe-divider" role="slider" tabindex="0" aria-label="拖动分割轴，左侧图像 A，右侧图像 B" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" hidden><span class="wipe-grip" aria-hidden="true">↔</span></div>
@@ -159,6 +160,8 @@
  const camera={cx:0,cy:0,upp:1,fit:true};
  let primary=null, model=null, outer=null, thumbnailURL=null, loadTicket=0, raf=0, timer=0;
  let reference=null, referenceTicket=0, tertiary=null, tertiaryTicket=0, compareMode='none', viewExpressions=['A','B','C'], wipePosition=50, wipeDrag=null;
+ let compositionSurfaces=[], viewportTimer=0, viewportBusy=false, viewportPending=false;
+ const viewportCaches=new Map();
  let size={w:1,h:1}, tool='pan', space=false, drag=null, selection=null, pinch=null, lastTap=null;
  const pointers=new Map();
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
@@ -184,7 +187,7 @@
  function fit(){if(!model)return;const pad=Math.min(40,size.w*.07,size.h*.06),bottom=Math.min(90,size.h*.2),upp=Math.max(model.w/Math.max(1,size.w-pad*2),model.h/Math.max(1,size.h-pad-bottom));commit(model.w/2,model.h/2+(bottom-pad)/2*upp,upp,true);}
  function actual(){if(model)commit(camera.cx,camera.cy,1);}
  function schedule(){if(!raf)raf=requestAnimationFrame(paint);}
- function paint(){raf=0;if(!outer||!model)return;const w=size.w*camera.upp,h=size.h*camera.upp,viewBox=`${camera.cx-w/2} ${camera.cy-h/2} ${w} ${h}`;outer.setAttribute('viewBox',viewBox);for(const svg of $('composition').querySelectorAll('.view-canvas'))svg.setAttribute('viewBox',viewBox);if(document.activeElement!==$('zoomInput'))$('zoomInput').value=formatZoom();paintNavigator();}
+ function paint(){raf=0;if(!outer||!model)return;paintComposition();queueViewportRender();if(document.activeElement!==$('zoomInput'))$('zoomInput').value=formatZoom();paintNavigator();}
  function paintNavigator(){if(!model||!primary||$('navigator').hidden)return;const box=$('navBody'),w=box.clientWidth,h=box.clientHeight;if(!w||!h)return;const k=Math.min(w/model.w,h/model.h),ox=(w-model.w*k)/2,oy=(h-model.h*k)/2,layout=primary.layout;Object.assign($('thumbnail').style,{left:ox+layout.x*k+'px',top:oy+layout.y*k+'px',width:layout.w*k+'px',height:layout.h*k+'px'});const x1=clamp(camera.cx-size.w*camera.upp/2,0,model.w),y1=clamp(camera.cy-size.h*camera.upp/2,0,model.h),x2=clamp(camera.cx+size.w*camera.upp/2,0,model.w),y2=clamp(camera.cy+size.h*camera.upp/2,0,model.h);$('navView').hidden=x2<=x1||y2<=y1;Object.assign($('navView').style,{left:ox+x1*k+'px',top:oy+y1*k+'px',width:Math.max(2,(x2-x1)*k)+'px',height:Math.max(2,(y2-y1)*k)+'px'});$('navDot').hidden=camera.cx<0||camera.cx>model.w||camera.cy<0||camera.cy>model.h;Object.assign($('navDot').style,{left:ox+clamp(camera.cx,0,model.w)*k+'px',top:oy+clamp(camera.cy,0,model.h)*k+'px'});}
  function setTool(next){tool=next;hit.classList.toggle('selecting',next==='box'&&!space);$('box').setAttribute('aria-pressed',String(next==='box'));$('hint').textContent=next==='box'?'拖出选区放大 · 空格临时平移 · Esc 取消':'滚轮缩放 · 拖动平移 · 双击放大';}
  function cancelGesture(){drag=null;selection=null;pinch=null;const ids=[...pointers.keys()];pointers.clear();for(const id of ids)if(hit.hasPointerCapture(id))hit.releasePointerCapture(id);$('selection').hidden=true;hit.classList.remove('dragging');}
@@ -211,6 +214,8 @@
   model={w:Math.max(...sizes.map(item=>item.w)),h:Math.max(...sizes.map(item=>item.h))};
   assets.forEach((asset,index)=>asset.layout=centered(sizes[index],model));
   positionAsset(artwork,primary.layout);
+  // This hidden DOM only supports the layer tree and geometry measurements.
+  outer?.setAttribute('viewBox',`0 0 ${model.w} ${model.h}`);
  }
  function availableSources(){return [['A',primary],['B',reference],['C',tertiary]].filter(([,asset])=>!!asset);}
  function expressionOptions(){
@@ -232,23 +237,79 @@
   $('wipeControl').hidden=compareMode!=='swipe';
  }
  function renderComposition(){
-  const host=$('composition');host.hidden=!primary;if(!primary||!model)return;
+  const host=$('composition');host.hidden=!primary;compositionSurfaces=[];if(!primary||!model)return;
   host.dataset.mode=compareMode;host.replaceChildren();
-  const assets={A:primary,B:reference,C:tertiary},mix=Number($('mixInput').value)/100;
+  const assets={A:primary,B:reference,C:tertiary};
   for(let index=0;index<viewCount();index++){
-   const expression=viewExpressions[index],sources=expression.split('+'),pane=document.createElement('div'),svg=document.createElementNS(NS,'svg');
-   pane.className='view-pane';svg.classList.add('view-canvas');svg.setAttribute('preserveAspectRatio','none');
+   const expression=viewExpressions[index],sources=expression.split('+'),pane=document.createElement('div');
+   pane.className='view-pane';
    sources.forEach((name,layer)=>{
     const asset=assets[name];if(!asset)return;
-    const image=document.createElementNS(NS,'image'),layout=asset.layout;
-    image.setAttribute('href',asset.url);image.setAttribute('x',String(layout.x));image.setAttribute('y',String(layout.y));image.setAttribute('width',String(layout.w));image.setAttribute('height',String(layout.h));image.setAttribute('preserveAspectRatio','none');
-    if(layer)image.setAttribute('opacity',String(sources.length===2?mix:1/(layer+1)));
-    svg.append(image);
+    const surface=document.createElement('div'),fallback=document.createElement('img'),detail=document.createElement('img');
+    surface.className='view-surface';surface.setAttribute('aria-hidden','true');
+    for(const image of [fallback,detail]){image.className='view-image';image.alt='';image.draggable=false;}
+    fallback.src=asset.url;detail.hidden=true;surface.append(fallback,detail);pane.append(surface);
+    compositionSurfaces.push({asset,surface,fallback,detail,layer,count:sources.length});
    });
    const badge=document.createElement('span');badge.className='compare-badge';badge.textContent=expression.replaceAll('+',' + ');
-   pane.append(svg,badge);host.append(pane);
+   pane.append(badge);host.append(pane);
   }
-  schedule();
+  paintMix();schedule();
+ }
+ function paintMix(){const mix=Number($('mixInput').value)/100;for(const item of compositionSurfaces)item.surface.style.opacity=String(item.layer?(item.count===2?mix:1/(item.layer+1)):1);}
+ function viewportBox(){const w=size.w*camera.upp,h=size.h*camera.upp;return {x:camera.cx-w/2,y:camera.cy-h/2,w,h};}
+ function layoutKey(asset){return Object.values(asset.layout).join(',');}
+ function covers(box,view){const epsilon=view.w*1e-9;return box.x<=view.x+epsilon&&box.y<=view.y+epsilon&&box.x+box.w>=view.x+view.w-epsilon&&box.y+box.h>=view.y+view.h-epsilon;}
+ function currentCache(asset){const cache=viewportCaches.get(asset);return cache?.source===asset.url&&cache.layout===layoutKey(asset)?cache:null;}
+ function placeImage(image,box,upp){
+  image.style.width=box.w/upp+'px';image.style.height=box.h/upp+'px';
+  image.style.transform=`translate(${(box.x-camera.cx)/camera.upp+size.w/2}px,${(box.y-camera.cy)/camera.upp+size.h/2}px) scale(${upp/camera.upp})`;
+ }
+ function paintComposition(){
+  const view=viewportBox();
+  for(const {asset,fallback,detail} of compositionSurfaces){
+   const cache=currentCache(asset),useDetail=cache&&covers(cache.box,view);
+   fallback.hidden=!!useDetail;detail.hidden=!useDetail;
+   if(useDetail){if(detail.getAttribute('src')!==cache.url)detail.src=cache.url;placeImage(detail,cache.box,cache.upp);}
+   else placeImage(fallback,asset.layout,1);
+  }
+ }
+ function queueViewportRender(){clearTimeout(viewportTimer);viewportTimer=setTimeout(refreshViewportCaches,180);}
+ async function renderViewport(asset,view,upp,dpr){
+  // Render just the visible region (plus a pan margin) at display resolution.
+  // One raster per source is shared by every pane; gestures only move images.
+  const margin=.18,box={x:view.x-view.w*margin,y:view.y-view.h*margin,w:view.w*(1+2*margin),h:view.h*(1+2*margin)};
+  const width=Math.ceil(box.w/upp*dpr),height=Math.ceil(box.h/upp*dpr),source=asset.url,layout=layoutKey(asset);
+  const svg=document.createElementNS(NS,'svg');
+  for(const [key,value] of Object.entries({width,height,viewBox:`${box.x} ${box.y} ${box.w} ${box.h}`,preserveAspectRatio:'none'}))svg.setAttribute(key,String(value));
+  const content=asset.svg.cloneNode(true);content.style.setProperty('overflow','hidden','important');positionAsset(content,asset.layout);svg.append(content);
+  const svgURL=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml'}));
+  let canvas=null,url=null;
+  try{
+   const image=new Image();image.src=svgURL;await image.decode();
+   if(asset.url!==source||layoutKey(asset)!==layout)return;
+   canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+   const context=canvas.getContext('2d');if(!context)throw new Error('无法创建预览画布。');context.drawImage(image,0,0);
+   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw new Error('无法生成局部预览。');
+   url=URL.createObjectURL(blob);const decoded=new Image();decoded.src=url;await decoded.decode();
+   if(asset.url!==source||layoutKey(asset)!==layout||!compositionSurfaces.some(item=>item.asset===asset))return;
+   const previous=viewportCaches.get(asset);viewportCaches.set(asset,{source,layout,box,upp,dpr,url});url=null;
+   paintComposition();if(previous)URL.revokeObjectURL(previous.url);
+  }finally{URL.revokeObjectURL(svgURL);if(url)URL.revokeObjectURL(url);if(canvas){canvas.width=1;canvas.height=1;}}
+ }
+ async function refreshViewportCaches(){
+  if(viewportBusy){viewportPending=true;return;}
+  if(pointers.size||navDrag!==null){queueViewportRender();return;}
+  viewportBusy=true;viewportPending=false;
+  const view=viewportBox(),upp=camera.upp,dpr=window.devicePixelRatio||1;
+  try{
+   for(const asset of new Set(compositionSurfaces.map(item=>item.asset))){
+    if(asset.kind!=='svg')continue;
+    const cache=currentCache(asset);if(cache&&cache.upp===upp&&cache.dpr===dpr&&covers(cache.box,view))continue;
+    try{await renderViewport(asset,view,upp,dpr);}catch(error){if(compositionSurfaces.some(item=>item.asset===asset)&&asset.previewError!==asset.url){asset.previewError=asset.url;toast('局部清晰预览未完成：'+error.message);}}
+    if(camera.upp!==upp||!covers(view,viewportBox())){viewportPending=true;break;}
+   }
+  }finally{viewportBusy=false;if(viewportPending)queueViewportRender();}
  }
  function setCompareMode(next,refit=false){
   cancelGesture();cancelWipe();
@@ -295,7 +356,7 @@
  $('swapThird').addEventListener('click',()=>swapWithPrimary('C'));
  document.querySelectorAll('[data-compare-mode]').forEach(button=>button.addEventListener('click',()=>setCompareMode(button.dataset.compareMode)));
  for(let index=0;index<3;index++)$('expression'+index).addEventListener('change',event=>{viewExpressions[index]=event.target.value;syncExpressionSelectors();renderComposition();setWipe(wipePosition);});
- $('mixInput').addEventListener('input',event=>{$('mixValue').value=event.target.value+'%';renderComposition();});
+ $('mixInput').addEventListener('input',event=>{$('mixValue').value=event.target.value+'%';paintMix();});
  function setWipe(value){
   wipePosition=clamp(value,0,100);stage.style.setProperty('--wipe',wipePosition+'%');$('wipeDivider').style.left=wipePosition+'%';
   const rounded=Math.round(wipePosition);$('wipeInput').value=String(rounded);$('wipeValue').value=rounded+'%';
@@ -808,7 +869,7 @@
   return name.replace(/^jpeg$/i,'jpg').toUpperCase();
  }
  function isSupportedFile(file){return !!file&&(file.type==='image/svg+xml'||/\.(svg|png|jpe?g|webp|gif|avif|bmp|ico|tiff?)$/i.test(file.name)||file.type.startsWith('image/'));}
- function disposeAsset(asset){if(asset?.url)URL.revokeObjectURL(asset.url);}
+ function disposeAsset(asset){if(asset?.url)URL.revokeObjectURL(asset.url);const cache=viewportCaches.get(asset);if(cache){URL.revokeObjectURL(cache.url);viewportCaches.delete(asset);}}
  async function readAsset(file){
   if(!isSupportedFile(file))throw new Error('请选择 SVG 或浏览器可解码的位图文件。');
   if(file.type==='image/svg+xml'||/\.svg$/i.test(file.name)){
@@ -823,7 +884,8 @@
    return {kind:'bitmap',format:formatName(file),name:file.name,w:image.naturalWidth,h:image.naturalHeight,bytes:file.size,url};
   }catch(error){URL.revokeObjectURL(url);throw error;}
  }
- const frameReady=new Promise(resolve=>{frame.addEventListener('load',resolve,{once:true});frame.srcdoc='<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'; connect-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; font-src data:; base-uri \'none\'; form-action \'none\'"><style>html,body{width:100%;height:100%;margin:0;overflow:hidden;background:transparent}body>svg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;transform:none!important;pointer-events:none!important}</style></head><body></body></html>';});
+ const artworkFrameHTML='<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'; connect-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; font-src data:; base-uri \'none\'; form-action \'none\'"><style>html,body{width:100%;height:100%;margin:0;overflow:hidden;background:transparent}body>svg{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;transform:none!important;pointer-events:none!important}</style></head><body></body></html>';
+ const frameReady=new Promise(resolve=>{frame.addEventListener('load',resolve,{once:true});frame.srcdoc=artworkFrameHTML;});
  async function mountPrimary(asset,ticket,disposePrevious=true){
   if(ticket!==loadTicket)return false;
   await frameReady;if(ticket!==loadTicket)return false;
