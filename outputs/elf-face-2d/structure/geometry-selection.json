@@ -1,65 +1,106 @@
 {
+  "scope": "all_groups",
+  "order": "breadth_first",
   "group_count": 9,
   "part_count": 31,
-  "empty_group_leaves": [],
-  "ranked_groups": [
+  "geometry_status": "completed",
+  "groups": [
     {
       "group_path": "head",
-      "direct_parts": 7,
-      "direct_groups": 4
-    },
-    {
-      "group_path": "head/left_eye",
-      "direct_parts": 5,
-      "direct_groups": 1
-    },
-    {
-      "group_path": "head/right_eye",
-      "direct_parts": 5,
-      "direct_groups": 1
+      "direct_parts": [
+        "head/face_base",
+        "head/left_eyebrow",
+        "head/right_eyebrow",
+        "head/nose",
+        "head/mouth",
+        "head/left_cheek_blush",
+        "head/right_cheek_blush"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head"
     },
     {
       "group_path": "head/left_ear",
-      "direct_parts": 3,
-      "direct_groups": 0
-    },
-    {
-      "group_path": "head/left_eye/eyeball/iris",
-      "direct_parts": 3,
-      "direct_groups": 0
+      "direct_parts": [
+        "head/left_ear/outer_ear_shell",
+        "head/left_ear/inner_ear",
+        "head/left_ear/front_root_fold"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/left_ear"
     },
     {
       "group_path": "head/right_ear",
-      "direct_parts": 3,
-      "direct_groups": 0
+      "direct_parts": [
+        "head/right_ear/outer_ear_shell",
+        "head/right_ear/inner_ear",
+        "head/right_ear/front_root_fold"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/right_ear"
     },
     {
-      "group_path": "head/right_eye/eyeball/iris",
-      "direct_parts": 3,
-      "direct_groups": 0
+      "group_path": "head/left_eye",
+      "direct_parts": [
+        "head/left_eye/upper_eyelid",
+        "head/left_eye/upper_eyelashes",
+        "head/left_eye/lower_eyelid",
+        "head/left_eye/lower_eyelashes",
+        "head/left_eye/upper_lid_crease"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/left_eye"
+    },
+    {
+      "group_path": "head/right_eye",
+      "direct_parts": [
+        "head/right_eye/upper_eyelid",
+        "head/right_eye/upper_eyelashes",
+        "head/right_eye/lower_eyelid",
+        "head/right_eye/lower_eyelashes",
+        "head/right_eye/upper_lid_crease"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/right_eye"
     },
     {
       "group_path": "head/left_eye/eyeball",
-      "direct_parts": 1,
-      "direct_groups": 1
+      "direct_parts": [
+        "head/left_eye/eyeball/sclera"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/left_eye/eyeball"
     },
     {
       "group_path": "head/right_eye/eyeball",
-      "direct_parts": 1,
-      "direct_groups": 1
+      "direct_parts": [
+        "head/right_eye/eyeball/sclera"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/right_eye/eyeball"
+    },
+    {
+      "group_path": "head/left_eye/eyeball/iris",
+      "direct_parts": [
+        "head/left_eye/eyeball/iris/iris_disc",
+        "head/left_eye/eyeball/iris/pupil",
+        "head/left_eye/eyeball/iris/iris_reflections"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/left_eye/eyeball/iris"
+    },
+    {
+      "group_path": "head/right_eye/eyeball/iris",
+      "direct_parts": [
+        "head/right_eye/eyeball/iris/iris_disc",
+        "head/right_eye/eyeball/iris/pupil",
+        "head/right_eye/eyeball/iris/iris_reflections"
+      ],
+      "completed": true,
+      "snapshot": "history/geometry-bfs/head/right_eye/eyeball/iris"
     }
   ],
-  "selected_group": "head",
-  "selected_direct_part_count": 7,
-  "selection_reason": "按直属 part 数量选择最多的一组，执行该组 geometry 3.1–3.5。",
-  "geometry_status": "completed",
-  "completed_steps": [
-    "3.1",
-    "3.2",
-    "3.3",
-    "3.4",
-    "3.5"
-  ],
   "artwork_svg": "refinement/character.svg",
-  "preview": "refinement/preview.png"
+  "preview": "refinement/preview.png",
+  "rendering_stack_executed": false
 }
