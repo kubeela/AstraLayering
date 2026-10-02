@@ -1,29 +1,39 @@
-本轮使用仓库基线 `238c85a` 和用户提供的特殊面部结构图，按 `workflow-next/live2d-layering/SKILL.md` 及节点 YAML 执行。产物均保存在 `outputs/elf-face-2d`。
+# Elf Face：完整 Geometry 测试样例
 
-已完成主流程 1–3；随后对 9 个 group 执行 generic 父级轮廓补全、直属结构拆分和直属轮廓色块，得到 31 个 part，全部叶子为 part。结构测试的独立调度状态只表示 generic 1、2.1、2.2 完成，不表示完整 generic 路由完成。
+现有 9 个 group、31 个 part 已按广度优先完成 Geometry，可作为后续 Rendering Stack 的输入。分组、色块和原始参考保持不变；本轮没有执行 Rendering Stack，也没有重跑拆分或运动露出补齐。
 
-按直属 part 数量选择最多的 `head`，对其 7 个直属 part（面底、双眉、鼻、口、双颊红晕）执行 geometry 3.1–3.5。最终含 34 条可见压力笔触，保留 49 条隐藏源曲线及说明。眼、耳等嵌套子组没有进入这次 geometry；最终 geometry 预览因此只显示选定范围的笔触。全部 rendering stack 未执行。
+- [最终 Geometry SVG](refinement/character.svg) · [白底预览](refinement/preview.png)
+- [分组树](structure/groups.json) · [结构色块](block-layers/groups.svg)
+- [原图](references/original.jpg) · [已有线稿参考](references/line-reference.png)
+- [Geometry 范围与状态](structure/geometry-scope.json) · [BFS 指针](structure/groups.geometry.dispatch.json)
+- [最终文件与绑定检查](structure/geometry-bfs-check.json) · [逐节点运行记录](运行记录.md)
 
-- [完整递归结构 SVG](block-layers/groups.svg) · [结构白底预览](block-layers/preview.png)
-- [所选 7 个 part 的 geometry SVG](refinement/character.svg) · [geometry 白底预览](refinement/preview.png)
-- [结构树](structure/groups.json) · [选择依据](structure/geometry-selection.json) · [文件与绑定检查](structure/final-check.json)
-- [主步骤 3 审查报告](reviews/group_layers/审查.md) · [逐节点运行记录](运行记录.md)
-- `history/after-step3/` 保存主步骤 3 的验收稿，`history/after-recursive-structure/` 保存递归拆分完成稿，`history/after-head-geometry/` 保存本次 geometry 成稿。
-- `refinement/groups/` 保留各组的补全说明、直属拆分清单、轮廓检查及 geometry 自检报告。实际模型、worker ID 与步骤耗时见运行记录。完整任务消息和事件保留在本地 `.runtime/orchestrator/`，临时自检材料保留在本地 `tmp/`；这两个目录不纳入提交，报告中指向它们的路径仅供本地追溯。
-- 提交整理只将报告及元数据中的本机绝对路径转换为工作根目录相对路径；技能资源以 `../../workflow-next/` 引用。原始报告留存于本地 `.runtime/publish/original-reports/`，报告结论、SVG 与图片内容保持不变。
+最终续跑基线为 `382e956cc054d9cf37d90d32cc870fd0b4618db1`。head 与双耳保留上一阶段的成功交付；随后按用户要求及新版 YAML，剩余六个 group 分别新建 `group:{group_path}` 会话，组内五个 Geometry 节点续用同一 worker，全部使用 `gpt-6-astra xhigh`。Geometry 绘制提示词未变。总控负责派发、保留每步交付和机械检查；视觉自检由制作 worker 按原提示词完成，没有增加独立 reviewer 或由总控指导绘制。
 
-参考判断及结构拆分按模型标记使用 Sol xhigh，绘制、主步骤 3 独立审查及 geometry 使用 Astra xhigh；全图线稿参考通过 imagegen 的 `gpt-image-2.5-sunburst` 生成。原图作为主轮廓依据保留。generic 节点执行其原有制作自检，未额外增加独立 reviewer。
+`head` 的 3.1、3.2 已核对提示词、输入与原成功交付哈希，因此复用历史 3.2 成稿。新版 3.3 增加了明暗来源、投影物与受影 part 的说明要求，head 从 3.3 续做；其余八个 group 各执行 3.1–3.5。合计复用 2 个节点、新执行 43 个节点。
 
-本轮原图 `simplify=false`、`wear_cloth=false`，未进行风格转换或连体服替换。主步骤 3 首轮审查指出右眼外侧短睫毛漏描及相邻外扩，原制作 worker 返修后原 reviewer 对可见轮廓复验通过。原图没有完整头顶、侧额和下颌外轮廓，缺失外缘仍不可核验，不能据此声称完整头形通过。
+左耳 3.4 的第一次调用曾因历史输入图像超过接口 50 张上限失败，正式 SVG 未改动。原始记录已备份；通过原生会话历史回退和压缩恢复同一 worker，随后在节点之间定期原生压缩。已交付节点未因这次恢复而重跑，流程提示词与模型没有改变。相关记录保存在本地 `.runtime/geometry-bfs/recovery/`。
 
-文件检查确认：原始输入和 66 个技能文件哈希未变；9 个结构子路由完成；树中 31 个 part 与结构 SVG 绑定一致；geometry SVG 只绑定所选 7 个 part；SVG ID 唯一，画布一致；全部最终预览可读。视觉结论来自对应 worker/reviewer 报告，总控只做调度与文件、绑定检查。
+旧共享会话在左眼 3.1 曾两次调用失败，期间出现图片处理拦截与网络断流，正式 SVG 和预览未改动。用户随后更新流程，指定每个 group 使用新 worker；此次从最后成功交付开始执行新版绑定。旧临时稿、状态和脚本保存在 `.runtime/geometry-bfs/recovery/per-group-20261002/`，原始错误保留在逐次调用记录中。按组独立的 worker ID 以及此次接口错误记录见 `structure/geometry-bfs-check.json`；完成这次样例不代表接口永不再发生拦截或网络问题。
 
-Geometry 节点实际调用耗时（包含该调用中的自动重连）：
+收尾的工具兼容检查发现左眼白四条辅助 path 使用了保留给 g 容器的 part 绑定属性；已交回原左眼球 worker，只修正曲线归属元数据，保留所有路径几何、显示、说明和原有预览。修复前后 SVG 渲染一致，记录见最终检查报告。同一 part 内嵌套 g 的重复归属标记按仓库工具契约允许；最终检查按最外层部件容器计数，并校验全部绑定节点类型。
 
-| 节点 | 耗时 | 状态 |
-| --- | --- | --- |
-| 3.1 外轮廓与接界 | 11 分 13.0 秒 | 完成，制作自检通过 |
-| 3.2 内部结构线 | 5 分 11.2 秒 | 完成，制作自检通过 |
-| 3.3 明暗范围线 | 7 分 35.4 秒 | 完成，制作自检通过 |
-| 3.4 细节与纹理线 | 10 分 3.6 秒 | 完成，制作自检通过 |
-| 3.5 画笔重绘 | 8 分 7.3 秒 | 完成，制作自检通过 |
+交付整理清理了 SVG 空白行的行尾空格，并将报告中剩余的本机绝对路径转换为相对路径；XML 内容、预览与报告结论保持不变。新增的 `预览命令.json` 路径以仓库根目录为基准，自检 JSON 中转换的成稿路径以本样例目录为基准。报告里的 `tmp/` 与 `.runtime/` 证据仅保留在本地，不随 PR 提交。
+
+| 广度优先顺序 | 直属 part 数 | 本轮步骤 | 新调用耗时 |
+| --- | --- | --- | --- |
+| `head` | 7 | 复用 3.1、3.2；续做 3.3–3.5 | 25.2 分钟 |
+| `head/left_ear` | 3 | 3.1–3.5 | 44.7 分钟 |
+| `head/right_ear` | 3 | 3.1–3.5 | 33.6 分钟 |
+| `head/left_eye` | 5 | 3.1–3.5 | 45.8 分钟 |
+| `head/right_eye` | 5 | 3.1–3.5 | 39.8 分钟 |
+| `head/left_eye/eyeball` | 1 | 3.1–3.5 | 24.9 分钟 |
+| `head/right_eye/eyeball` | 1 | 3.1–3.5 | 22.8 分钟 |
+| `head/left_eye/eyeball/iris` | 3 | 3.1–3.5 | 39.3 分钟 |
+| `head/right_eye/eyeball/iris` | 3 | 3.1–3.5 | 34.5 分钟 |
+
+每组完成后的累计 SVG 与预览保存在 `history/geometry-bfs/<group_path>/`。此前只有 head 直属 part 的 Geometry 成稿及报告保存在 `history/before-geometry-bfs/`；用于续跑的原 3.2 成稿保存在 `history/reused-head-geometry-3.2/`。旧的结构拆分指针与本次 Geometry 指针分开保存；两者均不表示完整 generic 路由或 Rendering Stack 已完成。
+
+最终机械检查确认 31 个 part 与树逐一绑定、SVG ID 唯一、画布保持 1918 × 886、预览与最后一次交付哈希一致，全部参考、分组树和色块哈希未变，最新基线的技能资源未经本地修改。完整任务、事件、输入快照与逐步冻结交付保留在本地 `.runtime/geometry-bfs/`；临时制作证据留在本地 `tmp/`，执行环境和缓存不作为交付样例。
+
+该样例仍使用用户提供的特殊面部结构图。原图未包含完整头顶、侧额及下颌外缘；这些隐藏/缺失范围沿用已有补全，没有把它们标记为已由原图核验。早期主步骤 1–3 与递归拆分记录仍保留在 `运行记录.md` 和对应历史目录。

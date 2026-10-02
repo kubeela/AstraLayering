@@ -2,16 +2,16 @@
   "status": "pass",
   "node": "part_detail_lines",
   "worker": "group_geometry",
-  "worker_id": "01a0f43e-f275-7740-88be-7fa0ae053e40",
-  "dispatch_round": "head-geometry-34",
   "group_path": "head",
   "model_marker": "gpt-6-astra-xhigh.model",
-  "marker_bytes": 0,
-  "artwork_input": "refinement/character.svg",
-  "artwork_output": "refinement/character.svg",
-  "input_snapshot": "tmp/part_detail_lines/head/character.before.svg",
-  "input_sha256": "99464968680c1a41ea4fabb7b00da6e6bff52e00c577a2d6b10bf692a4cfc6da",
-  "output_sha256": "f364452e7431fe43c990a4cea591d682e6abc67d2e5b704a90f0a82c2e63d923",
+  "model_marker_bytes": 0,
+  "input_sha256": "04c574d80757040e3358085d36257484ac16980767781313c3a0ddb89d1eace1",
+  "candidate_sha256": "88801c6d638e594f64b88675996f43b44714d205be327f5a5488c8f4b746e329",
+  "canvas": [
+    1918,
+    886
+  ],
+  "direct_parts": 7,
   "new_texture_curves": 28,
   "by_part": {
     "head/right_cheek_blush": 13,
@@ -19,243 +19,230 @@
   },
   "existing_path_contents_preserved": 22,
   "unchanged_part_subtrees": [
-    "face_base",
-    "left_eyebrow",
-    "right_eyebrow",
+    "face-base",
+    "left-eyebrow",
+    "right-eyebrow",
     "nose",
     "mouth"
   ],
-  "technical_checks": {
-    "status": "pass",
-    "node": "part_detail_lines",
-    "worker": "group_geometry",
-    "group_path": "head",
-    "direct_parts": 7,
-    "new_texture_curves": 28,
-    "by_side": {
-      "right_cheek_blush": 13,
-      "left_cheek_blush": 15
+  "all_existing_ids_retained": true,
+  "previous_contours_structures_tone_descriptions_and_caster_uncertainties_preserved": true,
+  "parent_clip_unchanged": true,
+  "unique_ids": true,
+  "svg_local_resources_valid": true,
+  "new_curves_open_and_unfilled": true,
+  "all_curve_descriptions_complete": true,
+  "monotone_x_curves": true,
+  "stroke_containment": [
+    {
+      "curve": "detail-head-right-cheek-hatch-01",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
     },
-    "existing_path_subtrees_identical": 22,
-    "unchanged_part_subtrees": [
-      "face_base",
-      "left_eyebrow",
-      "right_eyebrow",
-      "nose",
-      "mouth"
-    ],
-    "existing_contours_structures_tone_ranges_and_clips_preserved": true,
-    "all_curve_descriptions_complete": true,
-    "unique_ids": true,
-    "monotone_x_strokes": true,
-    "strokes_are_open_unfilled": true,
-    "new_stroke_containment": [
-      {
-        "curve": "detail-head-right-cheek-hatch-01",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-02",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-03",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-04",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-05",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-06",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-07",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-08",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-09",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-10",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-11",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-12",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-right-cheek-hatch-13",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-01",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-02",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-03",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-04",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-05",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-06",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-07",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-08",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-09",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-10",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-11",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-12",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-13",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-14",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      },
-      {
-        "curve": "detail-head-left-cheek-hatch-15",
-        "scale": 4,
-        "outside_part_samples": 0,
-        "visible_geometry": true
-      }
-    ],
-    "input_hashes_unchanged_before_delivery": true,
-    "previous_geometry_checks": "reused for the unchanged original geometry"
-  },
+    {
+      "curve": "detail-head-right-cheek-hatch-02",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-03",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-04",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-05",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-06",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-07",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-08",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-09",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-10",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-11",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-12",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-right-cheek-hatch-13",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-01",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-02",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-03",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-04",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-05",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-06",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-07",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-08",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-09",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-10",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-11",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-12",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-13",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-14",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    },
+    {
+      "curve": "detail-head-left-cheek-hatch-15",
+      "scale": 4,
+      "stroke_samples_outside_part": 0,
+      "visible": true
+    }
+  ],
+  "inputs_unchanged_before_delivery": true,
+  "dispatch_unchanged_before_delivery": true,
   "visual_self_check": {
     "status": "pass",
     "parts_reviewed": 7,
-    "independent_part_rendering": true,
-    "reference": "Original reference determines positions and texture density.",
-    "line_reference_use": "Style and line reading only; original composition retained.",
-    "part_isolation_scales": {
+    "part_scales": {
       "face_base": 2,
       "left_eyebrow": 5,
       "right_eyebrow": 5,
       "nose": 8,
-      "mouth": 7,
+      "mouth": 8,
       "left_cheek_blush": 4,
       "right_cheek_blush": 4
     },
-    "part_blend_alpha": 0.5,
-    "reviewed_sheet": "tmp/part_detail_lines/head/all-parts-review.png",
-    "detail_only_preview": "refinement/character-detail-lines.png",
-    "combined_preview": "refinement/character-detail-review.png",
-    "findings": "双颊逐侧对照，方向、疏密、长短与断续符合参考；未发现越界、误接或机械镜像。"
+    "direct_reference_cheek_crops_viewed": true,
+    "direct_line_reference_cheek_crops_viewed": true,
+    "unchanged_full_reference_and_guide_views_reused": true,
+    "combined_head_preview_viewed": true,
+    "texture_only_and_texture_overlay_viewed": true,
+    "finding": "两侧逐线对应原参考的浅红晕纹理，长短错落、下段渐短渐淡；未见错误连接、越界或机械镜像。"
   },
   "no_extra_detail_decisions": {
-    "head/face_base": "参考中的皮肤平滑，无可辨毛孔或皱褶；沿用已有形体、结构与明暗范围。",
-    "head/left_eyebrow": "窄眉未呈现可分辨独立毛丝；原子树完整保留。",
-    "head/right_eyebrow": "同侧细眉的形状已由现有曲线表达，无依据添加排线。",
-    "head/nose": "已有短结构标记足以表达鼻端，不增画鼻孔、毛孔或重复中心线。",
-    "head/mouth": "细唇缝无可辨独立唇纹；保留既有结构线和口角明暗分区。"
+    "face_base": "平滑皮肤无可辨额外毛孔或皱褶。",
+    "left_eyebrow": "细眉无可辨独立毛丝。",
+    "right_eyebrow": "细眉无可辨独立毛丝。",
+    "nose": "已有短标足够，未见额外纹理。",
+    "mouth": "已有细唇缝足够，未见可辨唇纹。"
   },
-  "stage": "细线几何稿；最终软边、起收笔与淡出要求记录在各曲线 desc 中。",
-  "inputs_unchanged_before_delivery": true,
-  "input_snapshot_retained": true,
+  "stage": "simple fine-line geometry; final taper, softness and fade specified in desc for later brush node",
   "subsequent_dispatch": "orchestrator only",
+  "artwork_input": "refinement/character.svg",
+  "artwork_output": "refinement/character.svg",
+  "output_sha256": "88801c6d638e594f64b88675996f43b44714d205be327f5a5488c8f4b746e329",
+  "delivery_verified": true,
   "inputs_except_authorized_inplace_artwork_unchanged": true,
-  "delivered_artwork_matches_reviewed_candidate": true,
-  "delivered_previews_match_reviewed_renders": true,
-  "dispatch_state_modified": false
+  "dispatch_unchanged_after_delivery": true,
+  "preview_files": {
+    "refinement/character-detail-review.png": "d106ac7ee43c774d1295b51dbcff6d4bc2a21d240ec652cb7c850242c8fe2775",
+    "refinement/character-detail-lines.png": "a501bd51b4cecc2cc992396c39b9f5583834aae4c01902be9e7e9a46a13fb677",
+    "refinement/character-preview.png": "afeadbfc1baf59c99eac0cc75a2d9687a900662a4835ebae4dde7373adb57a35",
+    "refinement/preview.png": "afeadbfc1baf59c99eac0cc75a2d9687a900662a4835ebae4dde7373adb57a35"
+  }
 }
