@@ -12,6 +12,10 @@ import os
 import re
 import tempfile
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+from groups import validate_batches
 
 
 NAME = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
@@ -227,7 +231,9 @@ def expand(document, state, entries, by_id, parent_id, patch):
             or state["nodes"][parent_entry["path"]]["status"] == "done"):
         raise ValueError("cannot expand a terminal or completed node")
     edges = state["tree"]["child_edges"]
-    if (not isinstance(patch, dict) or not patch or set(patch) - set(edges)
+    # Mirror records belong to the document root, outside its structural edges.
+    metadata = {"batches"} - set(edges)
+    if (not isinstance(patch, dict) or not patch or set(patch) - set(edges) - metadata
             or any(not isinstance(value, list) for value in patch.values())
             or not any(patch.values())):
         raise ValueError("patch must add nodes through declared child edges")
@@ -237,6 +243,20 @@ def expand(document, state, entries, by_id, parent_id, patch):
         if edge in patch:
             parent.setdefault(edge, []).extend(copy.deepcopy(patch[edge]))
     new_entries = enumerate_tree(document, state["tree"])
+    if "batches" in metadata and "batches" in patch:
+        additions = patch["batches"]
+        current = document.get("batches", [])
+        if not isinstance(current, list):
+            raise ValueError("batches must be an array")
+        combined = current + copy.deepcopy(additions)
+        validate_batches({"batches": combined},
+                         {entry["path"]: entry["kind"] for entry in new_entries})
+        for batch in additions:
+            if not any(path.rpartition("/")[0] == parent_entry["path"]
+                       for path in batch["members"]):
+                raise ValueError("new batch must include a direct group of the active target")
+        if additions:
+            document["batches"] = combined
     new_paths = [entry["path"] for entry in new_entries if entry["path"] not in before]
     reconciled, _, _ = reconcile(document, state)
     lookup = {entry["path"]: entry for entry in reconciled}

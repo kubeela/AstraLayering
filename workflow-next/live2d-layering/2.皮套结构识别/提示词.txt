@@ -4,9 +4,13 @@
 
 每个 group 代表一个能对照参考图辨认整体外轮廓的形体范围，可以包含多个相连或分开的对象。确保主体的可见区域都有归属，不同 group 的范围可以重叠。本轮以大形体的可见外轮廓和归属准确为准，遮挡下的形状留待后续补全。
 
-本轮人体 group 的标准名为 `head`、`neck`、`body`、`arms`、`pelvis`、`legs`。其他独立大元素用具体对象名，采用小写英文 snake_case。同级名称唯一，一个对象在树中归属一次。
+本轮人体 group 的标准名为 `head`、`neck`、`body`、`arms`、`pelvis`、`legs`。其他节点用具体对象名，采用小写英文 snake_case。同级 group 与 part 名称共同唯一，一个对象在树中归属一次。可用简短 `note` 说明范围和拆分依据。
 
-JSON 顶层包含 `subject`（`character` 或 `other`）和 `groups` 数组。每个节点包含 `name` 和 `groups: []`，可附简短 `note` 说明完整范围。本轮只建立这一层 group，树的顺序不表示显影先后。例如：
+一次交付本轮分组及对应的镜像关联。JSON 顶层包含 `subject`（`character` 或 `other`）、`groups` 数组和可选 `batches`。每个 group 包含 `name` 和 `groups: []`。本轮只建立这一层 group，树的顺序不表示显影先后。
+
+形体与结构近似镜像的两个独立 group 用 `batches` 关联，每条包含 `name`、`mode: "mirror"` 和 `members`（两个同层 group 的完整路径）。将结构更完整的一侧列在前面；批次名采用 snake_case、全图唯一，每个 group 至多属于一个批次。
+
+例如：
 
 {
   "subject": "character",

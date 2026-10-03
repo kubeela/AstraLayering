@@ -183,6 +183,46 @@ class GroupCursorTest(unittest.TestCase):
         self.assertNotIn("root/branch/detail",
                          json.loads(self.state.read_text())["nodes"])
 
+    def test_mirror_records_are_appended_in_the_round_the_members_exist(self):
+        self.tree.write_text(json.dumps({"subject": "character", "groups": [
+            {"name": "head", "groups": []}]}), encoding="utf-8")
+        self.init()
+        head = self.command("next")["target"]
+        eyes = {"name": "paired_eyes", "mode": "mirror",
+                "members": ["head/right_eye", "head/left_eye"]}
+        self.command("expand", "--parent", head["id"], "--patch", str(self.patch({
+            "groups": [{"name": "right_eye", "groups": []},
+                       {"name": "left_eye", "groups": []}], "parts": [], "batches": [eyes]})))
+        self.command("complete")
+        right = self.command("next")["target"]
+        self.assertEqual(right["path"], "head/right_eye")
+        self.command("expand", "--parent", right["id"], "--patch", str(self.patch({
+            "groups": [{"name": "eyeball", "groups": []}], "parts": []})))
+        self.assertEqual(json.loads(self.tree.read_text())["batches"], [eyes])
+        self.command("complete")
+        left = self.command("next")["target"]
+        eyeballs = {"name": "paired_eyeballs", "mode": "mirror",
+                    "members": ["head/right_eye/eyeball", "head/left_eye/eyeball"]}
+        self.command("expand", "--parent", left["id"], "--patch", str(self.patch({
+            "groups": [{"name": "eyeball", "groups": []}], "parts": [], "batches": [eyeballs]})))
+        self.assertEqual(json.loads(self.tree.read_text())["batches"], [eyes, eyeballs])
+        progress = json.loads(self.state.read_text())
+        self.assertNotIn("paired_eyes", progress["nodes"])
+        self.assertEqual(progress["nodes"]["head/right_eye/eyeball"]["status"], "pending")
+        self.assertEqual(progress["nodes"]["head/left_eye"]["status"], "active")
+
+    def test_invalid_batch_rolls_back_children_and_progress(self):
+        self.tree.write_text(json.dumps({"subject": "character", "groups": [
+            {"name": "head", "groups": []}]}), encoding="utf-8")
+        self.init()
+        head = self.command("next")["target"]
+        before = self.tree.read_bytes(), self.state.read_bytes()
+        self.command("expand", "--parent", head["id"], "--patch", str(self.patch({
+            "groups": [{"name": "right_eye", "groups": []}], "parts": [], "batches": [
+                {"name": "paired_eyes", "mode": "mirror",
+                 "members": ["head/right_eye", "head/left_eye"]}]})), succeeds=False)
+        self.assertEqual((self.tree.read_bytes(), self.state.read_bytes()), before)
+
 
 if __name__ == "__main__":
     unittest.main()

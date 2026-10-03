@@ -12,11 +12,41 @@ import tempfile
 NAME = re.compile(r"[a-z][a-z0-9]*(?:_[a-z0-9]+)*\Z")
 
 
-def validate_initial(document):
-    if not isinstance(document, dict) or set(document) != {"subject", "groups"}:
-        raise ValueError("顶层字段必须恰好为 subject、groups")
+def validate_header(document):
+    if (not isinstance(document, dict) or not {"subject", "groups"} <= set(document)
+            or set(document) - {"subject", "groups", "batches"}):
+        raise ValueError("顶层必须包含 subject、groups，可选 batches")
     if document["subject"] not in ("character", "other"):
         raise ValueError("subject 必须为 character 或 other")
+
+
+def validate_batches(document, index):
+    """Ordered mirror associations; tree ownership and progress stay separate."""
+    batches = document.get("batches", [])
+    if not isinstance(batches, list):
+        raise ValueError("batches 必须是数组")
+    names, members_used = set(), set()
+    for batch in batches:
+        if (not isinstance(batch, dict) or set(batch) != {"name", "mode", "members"}
+                or not isinstance(batch["name"], str)
+                or not NAME.fullmatch(batch["name"]) or batch["name"] in names):
+            raise ValueError("批次包含唯一的 name、mode、members")
+        names.add(batch["name"])
+        members = batch["members"]
+        if (batch["mode"] != "mirror" or not isinstance(members, list)
+                or len(members) != 2
+                or any(not isinstance(path, str) or index.get(path) != "group"
+                       for path in members)):
+            raise ValueError("mirror 批次须引用两个已有 group 的完整路径")
+        if len(set(members)) != 2 or members[0].count("/") != members[1].count("/"):
+            raise ValueError("批次成员须为同层的两个不同 group")
+        if members_used.intersection(members):
+            raise ValueError("同一个 group 至多属于一个批次")
+        members_used.update(members)
+
+
+def validate_initial(document):
+    validate_header(document)
 
     def visit(nodes):
         if not isinstance(nodes, list) or not nodes:
@@ -42,6 +72,7 @@ def validate_initial(document):
                 raise ValueError(f"{name} 的初始分组只能有一层 group")
 
     visit(document["groups"])
+    validate_batches(document, {node["name"]: "group" for node in document["groups"]})
 
 
 def read_and_validate(path):
@@ -52,14 +83,11 @@ def read_and_validate(path):
 
 def validate_children(document, group_path, patch):
     """Check a proposed addition without changing the tree or dispatch state."""
-    if not isinstance(document, dict) or set(document) != {"subject", "groups"}:
-        raise ValueError("顶层字段必须恰好为 subject、groups")
-    if document["subject"] not in ("character", "other"):
-        raise ValueError("subject 必须为 character 或 other")
+    validate_header(document)
     if (not isinstance(group_path, str) or not group_path
             or any(not NAME.fullmatch(name) for name in group_path.split("/"))):
         raise ValueError("group_path 必须为完整的 group 路径")
-    lookup = {}
+    lookup, index = {}, {}
 
     def siblings(group_nodes, part_nodes, parent_path="", direct_only=False):
         if not isinstance(group_nodes, list) or not isinstance(part_nodes, list):
@@ -84,6 +112,8 @@ def validate_children(document, group_path, patch):
                                        or not node["note"].strip()):
                     raise ValueError(f"{name} 的 note 必须是非空字符串")
                 path = f"{parent_path}/{name}" if parent_path else name
+                if not direct_only:
+                    index[path] = kind
                 if kind == "group":
                     children = node["groups"]
                     parts = node.get("parts", [])
@@ -98,11 +128,13 @@ def validate_children(document, group_path, patch):
     if not isinstance(document["groups"], list) or not document["groups"]:
         raise ValueError("顶层 groups 必须是非空数组")
     siblings(document["groups"], [])
+    validate_batches(document, index)
     target = lookup.get(group_path)
     if target is None:
         raise ValueError(f"找不到 group：{group_path}")
-    if not isinstance(patch, dict) or set(patch) != {"groups", "parts"}:
-        raise ValueError("孩子清单必须包含 groups、parts 两个数组")
+    if (not isinstance(patch, dict) or not {"groups", "parts"} <= set(patch)
+            or set(patch) - {"groups", "parts", "batches"}):
+        raise ValueError("孩子清单必须包含 groups、parts，可选 batches")
     proposed = siblings(patch["groups"], patch["parts"], group_path, direct_only=True)
     existing = {node["name"] for edge in ("groups", "parts")
                 for node in target.get(edge, [])}
@@ -111,6 +143,18 @@ def validate_children(document, group_path, patch):
         raise ValueError(f"已有直属节点重名：{', '.join(sorted(repeated))}")
     if not existing and not proposed:
         raise ValueError("当前 group 至少需要一个直属 group 或 part")
+    # Validate against this round's resulting tree, including newly added groups.
+    index.update({f"{group_path}/{node['name']}": kind
+                  for kind, edge in (("group", "groups"), ("part", "parts"))
+                  for node in patch[edge]})
+    additions = patch.get("batches", [])
+    if not isinstance(additions, list):
+        raise ValueError("batches 必须是数组")
+    validate_batches({"batches": document.get("batches", []) + additions}, index)
+    for batch in additions:
+        if not any(path.rpartition("/")[0] == group_path
+                   for path in batch["members"]):
+            raise ValueError("新增批次至少关联当前 group 的一个直属 group")
 
 
 def check_children(groups, group_path, patch):

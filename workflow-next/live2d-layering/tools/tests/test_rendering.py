@@ -49,6 +49,15 @@ class RenderingTests(unittest.TestCase):
         R.check(self.groups,self.registry,self.out,True)
         return result
 
+    def test_group_batches_are_metadata_for_rendering(self):
+        tree = copy.deepcopy(self.tree)
+        tree["batches"] = [{"name": "paired_groups", "mode": "mirror",
+                            "members": ["hair", "body"]}]
+        self.assertEqual(R.tree_index(tree), R.tree_index(self.tree))
+        tree["batches"][0]["members"][1] = "body/torso"
+        with self.assertRaises(ValueError):
+            R.tree_index(tree)
+
     def test_union_holes_and_blue_receiver_alpha(self):
         self.apply(); image=self.image(self.out)
         self.assertEqual(image.getpixel((15,15)),(255,0,0,255))

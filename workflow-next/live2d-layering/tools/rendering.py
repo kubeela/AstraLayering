@@ -15,7 +15,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
-from groups import NAME
+from groups import NAME, validate_header, validate_batches
 from svg_preview import (SVG_NS, LOCAL_URL, PAINT, RESOURCES, component, isolate,
                          local_tag, read_svg, validate_svg_resources)
 from svg_containment import alpha_image
@@ -26,10 +26,7 @@ IDENTITY = (1., 0., 0., 1., 0., 0.)
 
 
 def tree_index(document):
-    if not isinstance(document, dict) or set(document) != {'subject', 'groups'}:
-        raise ValueError('groups.json requires subject and groups')
-    if document['subject'] not in ('character', 'other'):
-        raise ValueError('Invalid subject')
+    validate_header(document)
     index = {}
 
     def visit(groups, parts, prefix=''):
@@ -51,6 +48,7 @@ def tree_index(document):
                 if kind == 'group':
                     visit(node['groups'], node.get('parts', []), path)
     visit(document['groups'], [])
+    validate_batches(document, index)
     return index
 
 

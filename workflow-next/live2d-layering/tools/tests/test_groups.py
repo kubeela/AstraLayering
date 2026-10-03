@@ -24,6 +24,22 @@ def example():
 
 
 class InitialGroupTests(unittest.TestCase):
+    def test_initial_mirror_pairs_validate_only_existing_groups(self):
+        document = {"subject": "other", "groups": [
+            {"name": "left_wing", "groups": []},
+            {"name": "right_wing", "groups": []}], "batches": [
+                {"name": "paired_wings", "mode": "mirror",
+                 "members": ["left_wing", "right_wing"]}]}
+        groups.validate_initial(document)
+        for mode in ("copy", "serial", "parallel"):
+            invalid = copy.deepcopy(document)
+            invalid["batches"][0]["mode"] = mode
+            with self.subTest(mode=mode), self.assertRaises(ValueError):
+                groups.validate_initial(invalid)
+        document["batches"][0]["members"][1] = "right_wing/tip"
+        with self.assertRaises(ValueError):
+            groups.validate_initial(document)
+
     def test_publishes_valid_one_level_tree(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -61,6 +77,37 @@ class InitialGroupTests(unittest.TestCase):
 
 
 class ChildProposalTests(unittest.TestCase):
+    def test_pair_grows_with_second_side_and_preserves_previous_records(self):
+        document = {"subject": "character", "groups": [{"name": "head", "groups": [
+            {"name": "right_eye", "groups": [{"name": "eyeball", "groups": []}]},
+            {"name": "left_eye", "groups": []}]}], "batches": [
+                {"name": "paired_eyes", "mode": "mirror",
+                 "members": ["head/right_eye", "head/left_eye"]}]}
+        patch = {"groups": [{"name": "eyeball", "groups": []}], "parts": [],
+                 "batches": [{"name": "paired_eyeballs", "mode": "mirror",
+                              "members": ["head/right_eye/eyeball", "head/left_eye/eyeball"]}]}
+        before = copy.deepcopy((document, patch))
+        groups.validate_children(document, "head/left_eye", patch)
+        self.assertEqual((document, patch), before)
+        patch["groups"] = []
+        patch["parts"] = [{"name": "eye_fold"}]
+        with self.assertRaisesRegex(ValueError, "已有 group"):
+            groups.validate_children(document, "head/left_eye", patch)
+
+    def test_batch_cannot_reuse_members_or_register_unrelated_groups(self):
+        document = example()
+        batch = {"name": "paired_regions", "mode": "mirror", "members": ["head", "body"]}
+        patch = {"groups": [], "parts": [{"name": "nose"}], "batches": [batch]}
+        with self.assertRaisesRegex(ValueError, "直属 group"):
+            groups.validate_children(document, "head", patch)
+        document["groups"][0]["groups"] = [
+            {"name": "left_eye", "groups": []}, {"name": "right_eye", "groups": []}]
+        batch["members"] = ["head/left_eye", "head/right_eye"]
+        document["batches"] = [copy.deepcopy(batch)]
+        batch["name"] = "another_pair"
+        with self.assertRaisesRegex(ValueError, "至多属于一个"):
+            groups.validate_children(document, "head", patch)
+
     def test_mixed_direct_children_validate_without_changing_inputs(self):
         document = example()
         patch = {"groups": [{"name": "hair", "groups": []}],
