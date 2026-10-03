@@ -1,12 +1,23 @@
-# Elf Face：右眼 Rendering Stack 测试
+# Elf Face：Rendering Stack 提示词试验
 
-右眼子树的 3 个 group、9 个 part 已完成上色流程，结果沿用 `refinement/character.svg` 与 `refinement/preview.png`。其余 22 个 part 保持原 Geometry。
+本次流程变更集中于提示词：撤回 `3fefca7` 的接界／覆盖增补，保留隐藏区域补全要求；修改 4.1 的参考复核方式，以及 4.7 对完整上色结果的修正和自检要求。
+
+最新试验仅重跑右上眼睑，8 个节点已完成。原有连续浅粉色边带已消除，局部遮挡、接界软边和相邻睫毛灰边等剩余差异明确记录为未解决。原有几何、裁切与其他 30 个 part 保持，较完整的虹膜沿用前轮。
+
+- [最新候选 SVG](comparison/upper-eyelid-prompt-trial/after/character.svg) · [整眼对比](comparison/upper-eyelid-prompt-trial/eye-comparison.png) · [局部对比](comparison/upper-eyelid-prompt-trial/rim-before-after.png) · [试验报告](comparison/upper-eyelid-prompt-trial/报告.md)
+- [前一轮双部件重跑](comparison/rendering-replay/报告.md) · [交互对比](comparison/rendering-replay/index.html)；这一轮完成虹膜隐藏区域补齐，仍保留浅色边带。`refinement/character.svg` 保留这份对照稿，最新候选单独位于上方对比目录。
+
+完整原始交接和临时证据保留在本地 `.runtime/`、`tmp/`；发布副本规范化了机器路径及链接表示，SVG、PNG、节点提示词与 YAML 快照保持原始内容。
+
+## 初次右眼 Rendering Stack 记录
+
+初次上色完成了右眼子树的 3 个 group、9 个 part；后续局部重跑记录见上方链接。其余 22 个 part 保持原 Geometry。
 
 - [当前 SVG](refinement/character.svg) · [当前预览](refinement/preview.png)
 - [本轮运行记录与逐组快照](history/rendering-right-eye/运行记录.md) · [Rendering Stack 检查](structure/rendering-right-eye-check.json)
 - [上色前完整 Geometry](history/before-rendering-right-eye/refinement/character.svg) · [上色前预览](history/before-rendering-right-eye/refinement/preview.png)
 
-按当前 `generic` 模板执行 Rendering Stack，每组新建 Astra xhigh worker。原图、分组树、色块稿与工作流未改；后置渲染层组合尚未执行。以下保留上轮完整 Geometry 的制作说明，其哈希和检查结论对应上色前快照。
+按当时的 `generic` 模板执行 Rendering Stack，每组新建 Astra xhigh worker。原图、分组树、色块稿与工作流未改；后置渲染层组合尚未执行。以下保留上轮完整 Geometry 的制作说明，其哈希和检查结论对应上色前快照。
 
 三组 worker 均未确认可独立分离的投影，`rendering.json` 保持空表。本轮制作调度耗时 143.3 分钟，具体节点、网络重连及压缩恢复见运行记录。发布整理仅规范化报告文件链接和模型标记路径；模型标记按仓库根目录解析，成稿 SVG、PNG 和结论保持不变。完整原始交接与临时证据保留在本地 `.runtime/`、`tmp/`。
 
