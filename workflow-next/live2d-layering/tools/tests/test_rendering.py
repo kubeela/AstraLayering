@@ -49,12 +49,12 @@ class RenderingTests(unittest.TestCase):
         R.check(self.groups,self.registry,self.out,True)
         return result
 
-    def test_group_batches_are_metadata_for_rendering(self):
+    def test_group_mirror_pairs_are_metadata_for_rendering(self):
         tree = copy.deepcopy(self.tree)
-        tree["batches"] = [{"name": "paired_groups", "mode": "mirror",
+        tree["mirror_pairs"] = [{"name": "paired_groups",
                             "members": ["hair", "body"]}]
         self.assertEqual(R.tree_index(tree), R.tree_index(self.tree))
-        tree["batches"][0]["members"][1] = "body/torso"
+        tree["mirror_pairs"][0]["members"][1] = "body/torso"
         with self.assertRaises(ValueError):
             R.tree_index(tree)
 

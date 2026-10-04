@@ -24,19 +24,25 @@ def example():
 
 
 class InitialGroupTests(unittest.TestCase):
+    def test_previous_batch_field_is_not_an_alias(self):
+        document = example()
+        document['batches'] = []
+        with self.assertRaisesRegex(ValueError, 'mirror_pairs'):
+            groups.validate_initial(document)
+
     def test_initial_mirror_pairs_validate_only_existing_groups(self):
         document = {"subject": "other", "groups": [
             {"name": "left_wing", "groups": []},
-            {"name": "right_wing", "groups": []}], "batches": [
-                {"name": "paired_wings", "mode": "mirror",
+            {"name": "right_wing", "groups": []}], "mirror_pairs": [
+                {"name": "paired_wings",
                  "members": ["left_wing", "right_wing"]}]}
         groups.validate_initial(document)
-        for mode in ("copy", "serial", "parallel"):
+        for mode in ("mirror", "copy", "serial", "parallel"):
             invalid = copy.deepcopy(document)
-            invalid["batches"][0]["mode"] = mode
+            invalid["mirror_pairs"][0]["mode"] = mode
             with self.subTest(mode=mode), self.assertRaises(ValueError):
                 groups.validate_initial(invalid)
-        document["batches"][0]["members"][1] = "right_wing/tip"
+        document["mirror_pairs"][0]["members"][1] = "right_wing/tip"
         with self.assertRaises(ValueError):
             groups.validate_initial(document)
 
@@ -80,11 +86,11 @@ class ChildProposalTests(unittest.TestCase):
     def test_pair_grows_with_second_side_and_preserves_previous_records(self):
         document = {"subject": "character", "groups": [{"name": "head", "groups": [
             {"name": "right_eye", "groups": [{"name": "eyeball", "groups": []}]},
-            {"name": "left_eye", "groups": []}]}], "batches": [
-                {"name": "paired_eyes", "mode": "mirror",
+            {"name": "left_eye", "groups": []}]}], "mirror_pairs": [
+                {"name": "paired_eyes",
                  "members": ["head/right_eye", "head/left_eye"]}]}
         patch = {"groups": [{"name": "eyeball", "groups": []}], "parts": [],
-                 "batches": [{"name": "paired_eyeballs", "mode": "mirror",
+                 "mirror_pairs": [{"name": "paired_eyeballs",
                               "members": ["head/right_eye/eyeball", "head/left_eye/eyeball"]}]}
         before = copy.deepcopy((document, patch))
         groups.validate_children(document, "head/left_eye", patch)
@@ -94,18 +100,18 @@ class ChildProposalTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "已有 group"):
             groups.validate_children(document, "head/left_eye", patch)
 
-    def test_batch_cannot_reuse_members_or_register_unrelated_groups(self):
+    def test_mirror_pair_cannot_reuse_members_or_register_unrelated_groups(self):
         document = example()
-        batch = {"name": "paired_regions", "mode": "mirror", "members": ["head", "body"]}
-        patch = {"groups": [], "parts": [{"name": "nose"}], "batches": [batch]}
+        pair = {"name": "paired_regions", "members": ["head", "body"]}
+        patch = {"groups": [], "parts": [{"name": "nose"}], "mirror_pairs": [pair]}
         with self.assertRaisesRegex(ValueError, "直属 group"):
             groups.validate_children(document, "head", patch)
         document["groups"][0]["groups"] = [
             {"name": "left_eye", "groups": []}, {"name": "right_eye", "groups": []}]
-        batch["members"] = ["head/left_eye", "head/right_eye"]
-        document["batches"] = [copy.deepcopy(batch)]
-        batch["name"] = "another_pair"
-        with self.assertRaisesRegex(ValueError, "至多属于一个"):
+        pair["members"] = ["head/left_eye", "head/right_eye"]
+        document["mirror_pairs"] = [copy.deepcopy(pair)]
+        pair["name"] = "another_pair"
+        with self.assertRaisesRegex(ValueError, "至多属于一条"):
             groups.validate_children(document, "head", patch)
 
     def test_mixed_direct_children_validate_without_changing_inputs(self):

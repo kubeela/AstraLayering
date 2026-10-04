@@ -49,11 +49,15 @@ class WorkflowDSLTest(unittest.TestCase):
                 'document': 'dispatch.inputs.groups',
                 'state': 'structure/groups.dispatch.json',
                 'tool': {'asset': 'tools/cursor.py'},
-                'item': 'tool.next.target', 'order': 'breadth_first',
+                'sequences': 'tool.next.sequences', 'order': 'breadth_first',
                 'tree': {'root_key': 'groups', 'child_edges': {'groups': 'group', 'parts': 'part'},
                          'terminal_types': ['part'], 'dispatch_types': ['group']},
                 'routes': {'group': {}}, 'fallback': 'templates/generic',
                 'carry': {'guide_svg': 'dispatch.inputs.guide_svg'},
+                'parallel': {'for': 'dispatch.sequences', 'as': 'dispatch.sequence',
+                             'serial': {'for': 'dispatch.sequence.items', 'as': 'dispatch.item',
+                                        'run': 'dispatch.route'}},
+                'aggregate': {'tool': {'asset': 'tools/cursor.py'}},
             },
             'outputs': {'groups': 'dispatch.inputs.groups', 'state': 'structure/groups.dispatch.json',
                         'guide_svg': 'carry.guide_svg'},
@@ -91,6 +95,118 @@ class WorkflowDSLTest(unittest.TestCase):
     def test_valid_workflow_and_root_input_keep_one_meaning(self):
         self.configs[self.completion_path]['inputs']['original'] = 'inputs.original'
         self.assertEqual(self.errors(), '')
+
+    def test_draft_is_valid_but_does_not_relax_resource_checks(self):
+        self.configs[self.dispatch_path]['status'] = 'draft'
+        self.assertEqual(self.errors(), '')
+        self.configs[self.dispatch_path]['dispatch']['aggregate']['tool']['asset'] = 'tools/missing.py'
+        self.assertIn('missing resource', self.errors())
+
+    def test_removed_single_item_dispatch_is_rejected(self):
+        dispatch = self.configs[self.dispatch_path]['dispatch']
+        dispatch['item'] = 'tool.next.target'
+        del dispatch['sequences']
+        self.assertIn('unsupported dispatch keys', self.errors())
+        self.assertIn('dispatch.sequences must bind', self.errors())
+
+    def test_dispatch_plan_and_loop_variables_have_explicit_sources(self):
+        dispatch = self.configs[self.dispatch_path]['dispatch']
+        cases = [
+            ('source', lambda: dispatch.update(sequences='tool.next.branches')),
+            ('outer', lambda: dispatch['parallel'].update(**{'for': 'dispatch.sequence.items'})),
+            ('inner', lambda: dispatch['parallel']['serial'].update(**{'for': 'dispatch.item.items'})),
+            ('alias', lambda: dispatch['parallel']['serial'].update(**{'as': 'dispatch.sequence'})),
+            ('route', lambda: dispatch['parallel']['serial'].update(run='dispatch.missing')),
+        ]
+        original = copy.deepcopy(dispatch)
+        for name, change in cases:
+            with self.subTest(name=name):
+                dispatch.clear()
+                dispatch.update(copy.deepcopy(original))
+                change()
+                self.assertNotEqual(self.errors(), '')
+
+    def test_parallel_members_cannot_replace_serial_members(self):
+        dispatch = self.configs[self.dispatch_path]['dispatch']
+        dispatch['parallel']['parallel'] = dispatch['parallel'].pop('serial')
+        self.assertIn('sequences require parallel with a serial body', self.errors())
+
+    def test_dispatch_requires_aggregate_and_rejects_concurrency_setting(self):
+        dispatch = self.configs[self.dispatch_path]['dispatch']
+        del dispatch['aggregate']
+        self.assertIn('aggregate must declare tool.asset', self.errors())
+        dispatch['concurrency'] = 3
+        self.assertIn('unsupported dispatch keys', self.errors())
+
+    def test_dynamic_route_cannot_be_run_without_current_item(self):
+        self.configs[self.completion_path]['run'] = 'dispatch.route'
+        self.assertIn('dispatch.route requires the current serial dispatch.item', self.errors())
+
+    def test_parallel_and_serial_controls_can_wrap_ordinary_tasks(self):
+        root = self.root / '流程.yaml'
+        self.configs[root]['inputs']['collections'] = {'type': 'array', 'required': True}
+        path = self.root / '1.reference' / '流程.yaml'
+        task = copy.deepcopy(self.configs[path])
+        body = {key: value for key, value in task.items() if key not in {'id', 'working_dir'}}
+        body['inputs']['original'] = 'sample.image'
+        self.configs[path] = {
+            'id': 'base_subject', 'working_dir': '{working_dir}',
+            'parallel': {'for': 'inputs.collections', 'as': 'collection',
+                         'serial': {'for': 'collection.samples', 'as': 'sample', **body}},
+            'aggregate': {'tool': {'asset': 'tools/cursor.py'}},
+            'outputs': task['outputs'],
+        }
+        self.assertEqual(self.errors(), '')
+        self.configs[path]['parallel']['serial']['as'] = 'collection'
+        self.assertIn('unique loop variable', self.errors())
+
+    def test_ordinary_loop_alias_cannot_be_used_after_the_loop(self):
+        path = self.root / '1.reference' / '流程.yaml'
+        self.configs[self.root / '流程.yaml']['inputs']['samples'] = {'type': 'array'}
+        body = {key: value for key, value in self.configs[path].items()
+                if key not in {'id', 'working_dir'}}
+        self.configs[path] = {
+            'id': 'base_subject', 'working_dir': '{working_dir}',
+            'serial': {'for': 'inputs.samples', 'as': 'sample', **body},
+            'outputs': {'image': 'sample.image'},
+        }
+        self.assertIn('loop variable is outside its scope', self.errors())
+
+    def test_scalar_root_input_cannot_be_an_iteration_source(self):
+        path = self.root / '1.reference' / '流程.yaml'
+        body = {key: value for key, value in self.configs[path].items()
+                if key not in {'id', 'working_dir'}}
+        self.configs[path] = {
+            'id': 'base_subject', 'working_dir': '{working_dir}',
+            'serial': {'for': 'inputs.original', 'as': 'sample', **body},
+            'outputs': body['outputs'],
+        }
+        self.assertIn('for requires an array, not image', self.errors())
+
+    def test_unknown_iteration_source_and_reserved_alias_are_rejected(self):
+        dispatch = self.configs[self.dispatch_path]['dispatch']
+        for source, alias in [('missing.items', 'sample'), ('dispatch.sequences', 'inputs')]:
+            with self.subTest(source=source, alias=alias):
+                dispatch['parallel']['for'] = source
+                dispatch['parallel']['as'] = alias
+                self.assertNotEqual(self.errors(), '')
+
+    def test_aggregate_cannot_be_attached_to_a_serial_control(self):
+        path = self.root / '1.reference' / '流程.yaml'
+        self.configs[self.root / '流程.yaml']['inputs']['samples'] = {'type': 'array'}
+        body = {key: value for key, value in self.configs[path].items()
+                if key not in {'id', 'working_dir'}}
+        self.configs[path] = {
+            'id': 'base_subject', 'working_dir': '{working_dir}',
+            'serial': {'for': 'inputs.samples', 'as': 'sample', **body},
+            'aggregate': {'tool': {'asset': 'tools/cursor.py'}},
+            'outputs': body['outputs'],
+        }
+        self.assertIn('aggregate belongs to a parallel control', self.errors())
+
+    def test_loop_alias_does_not_escape_into_dispatch_outputs(self):
+        self.configs[self.dispatch_path]['outputs']['guide_svg'] = 'dispatch.sequence.items'
+        self.assertIn('loop variable is outside its scope', self.errors())
 
     def test_ordinary_task_cannot_read_its_local_parameter_as_root_input(self):
         path = self.root / '3.block' / '流程.yaml'

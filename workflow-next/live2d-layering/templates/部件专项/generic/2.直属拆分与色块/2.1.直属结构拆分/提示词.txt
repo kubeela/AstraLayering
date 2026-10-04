@@ -19,8 +19,8 @@
 
 本轮只拆一层，沿用已有直属节点，清单只列本轮新增节点。运动中可能露出的缺失后片与内壁由 2.3 判断和补齐。节点用具体对象名，采用小写英文 snake_case。同级 group 与 part 名称共同唯一，一个对象在树中归属一次。可用简短 `note` 说明范围和拆分依据。
 
-一次交付本轮新增分组及对应的镜像关联：`<children>` 格式为 `{"groups": [...], "parts": [...], "batches": [...]}`，`batches` 可省略。group 包含 `name`、`groups: []`，part 包含 `name`。结合本轮分组与已有树识别关联，清单只列新增记录。
+一次交付本轮新增分组及对应的镜像关联：`<children>` 格式为 `{"groups": [...], "parts": [...], "mirror_pairs": [...]}`，`mirror_pairs` 可省略。group 包含 `name`、`groups: []`，part 包含 `name`。结合本轮分组与已有树识别关联，清单只列新增记录。
 
-形体与结构近似镜像的两个独立 group 用 `batches` 关联，每条包含 `name`、`mode: "mirror"` 和 `members`（两个同层 group 的完整路径）。将结构更完整的一侧列在前面；批次名采用 snake_case、全图唯一，每个 group 至多属于一个批次。
+形体与结构近似镜像的两个独立 group 用 `mirror_pairs` 关联，每条包含 `name` 和 `members`（两个同层 group 的完整路径）。将结构更完整的一侧列在前面；关联名采用 snake_case、全图唯一，每个 group 至多属于一条镜像关联。
 
-用 `python3 <group_tool> check-children --groups <groups> --group-path <group_path> --patch <children>` 校验。输入文件保持只读；总控用现有 `expand` 一次写入直属节点和顶层 `batches`。
+用 `python3 <group_tool> check-children --groups <groups> --group-path <group_path> --patch <children>` 校验。输入文件保持只读；总控用现有 `expand` 一次写入直属节点和顶层 `mirror_pairs`。
