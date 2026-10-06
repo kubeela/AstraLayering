@@ -18,62 +18,39 @@
 
 ## 编号与任务入口
 
-编号目录使用 `<编号>.<名称>`，按数字逐段排序。相同编号的兄弟目录全部带 `.parallel.` 时是并行批次，完成并汇合后进入下一编号。容器展开子节点；每个有制作任务的叶节点显式声明 `run`。
+编号目录使用 `<编号>.<名称>`，按数字逐段排序并串行执行。容器展开子节点；每个有制作任务的叶节点显式声明 `run`。
 
-`run` 指向任务资料目录。语言任务从目录读取提示词与 `.model`；生图任务读取 `imagegen.prompt` 与 `imagegen.inputs`，由总控直接调用。条件节点使用 `if / then / else`，只进入选中的分支；该分支可以声明 `run`，也可以通过 `outputs` 直接发布已有输入。`review.run` 指向独立审查目录，审查通过后才发布任务输出。`status: draft` 表示建设中的声明，等待实现后执行；省略或设为 `ready` 时可执行。
+`run` 指向任务资料目录。语言任务从目录读取提示词与 `.model`；生图任务读取 `imagegen.prompt` 与 `imagegen.inputs`，由总控直接调用。条件节点使用 `if / then / else`，只进入选中的分支；该分支可以声明 `run`，也可以通过 `outputs` 直接发布已有输入。`review.run` 指向独立审查目录，审查通过后才发布任务输出。`status: draft` 等待建设完成后执行。
 
-节点的 `id` 标识产物；`worker` 标识可续做的会话。派发语言任务前，按选中分支 `worker` → 节点 `worker` → 节点 `id` 取得身份，查本轮记录的 worker_id：可续做则继续，新身份则创建并记录。独立 review 使用 `review.worker`，否则使用 `<节点 id>:review`。并行分支共用已有 worker 时，从共同前序完成点各自 fork；汇合后把分支产物交回原会话。返修回到原制作会话，再由原 reviewer 复验。
-
-## `parallel`、`serial` 与 `aggregate`
-
-两种循环都用 `for` 引用数组，用 `as` 绑定当前项，再声明 `run` 或嵌套循环。数组在循环开始时固定；`as` 只在本循环体内有效，嵌套循环可以读取外层变量，变量名在有效范围内唯一。
-
-`parallel` 的各项可以同时执行，`serial` 按数组顺序逐项完成。它们是通用控制语法，可包住普通任务或动态路由。循环体继承外层的输入绑定和工作目录，任务仍按自己的 `inputs`、`outputs`、`worker` 交接。
-
-并行项从同一个成功基稿开始，各自绑定独立的 `working_dir`；文件参数映射到该项的副本，资源与原始素材保持只读。相同的相对输出路径在各自目录内解析。并行项的 `nodes.*`、指针和产物隔离；同一项内部的串行步骤继续使用自己的最新产物。
-
-`aggregate.tool.asset` 声明收集并行结果的工具。工具接收共同基稿、按原数组顺序排列的成功结果及外层交付路径；按基稿与各项结果的差异合并，保留未变内容与原有叠放次序。对同一内容的冲突修改报错，汇合结果与完成状态在聚合成功后发布。交付时记录实际制作节点与 worker；聚合拒绝返回具体修复对象，返修恢复该项输入并重跑依赖它的串行后项，其余并行结果保留。工具故障单独返回，由调度者停止并交回工具问题。
+节点的 `id` 标识产物；`worker` 标识可续做的会话。派发语言任务前，按选中分支 `worker` → 节点 `worker` → 节点 `id` 取得身份，查本轮记录的 worker_id：可续做则继续，新身份则创建并记录。独立 review 使用 `review.worker`，否则使用 `<节点 id>:review`。返修回到原制作会话，再由原 reviewer 复验。
 
 ## `dispatch`：动态树调度
 
-`dispatch` 选择本轮目标，再通过循环执行各自路由。`document` 绑定树文件，`state` 声明独立状态文件，`tool.asset` 声明选择与进度工具；这些工具由总控调用。
+`dispatch` 是纯调度节点。总控每次选择一个目标，执行其路由，完成后再选择下一项。`document` 绑定输入中的树文件，`state` 指定同目录下独立的状态文件，`tool.asset` 指定总控使用的工具。
 
-`tree.root_key` 指向顶层节点数组，`tree.child_edges` 是子数组字段到节点类型的有序映射。`terminal_types` 指定终止类型，`dispatch_types` 指定需要执行路由的类型。相同父节点下各子数组的名称共同唯一，树文件只维护结构。
+`item: tool.next.target` 将工具 `next` 返回的节点绑定为本轮循环项。返回 `action: run` 时开始该项，返回 `action: active` 时续做同一项；节点包含稳定 `id`、类型 `kind`、`name`、完整 `path` 和 `parent_path`。返回 `action: done` 时结束选择。
 
-`order: breadth_first` 选择最浅的未完成层。同层按文档中的父节点顺序、`child_edges` 字段顺序及子数组顺序排列。工具将本层目标组织成执行序列；具有关联的目标按关联记录的成员顺序放入同一序列，其他目标各为一个单项序列。一个目标本轮只出现一次。
+调用哪个流程由 `routes` 与 `fallback` 指定。每个实际模板任务按需要在 `inputs` 中接收当前项的值，例如 `group_path: dispatch.item.path`。提示词读取 `<group_path>`，worker 身份和产物路径可引用 `{group_path}`。
 
-`sequences: tool.next.sequences` 显式绑定 `next` 的结果。每个序列包含稳定 `id` 和有序 `items`；每个 item 包含稳定 `id`、类型 `kind`、`name`、完整 `path` 和 `parent_path`。返回 `action: run` 开始本轮，`active` 续跑当前计划，`done` 结束调度。续跑保留已选序列、成员顺序与成功项。
+`dispatch.item` 是本轮循环项，`dispatch.inputs` 是该调度节点在 YAML 中明确声明并绑定的参数。模板任务通过 `dispatch.inputs.<名称>` 接收这些参数，通过 `dispatch.item.<字段>` 接收当前项，通过 `carry.<名称>` 接收最新成功产物；`inputs.*` 的根输入含义保持一致。
 
-```yaml
-dispatch:
-  sequences: tool.next.sequences
-  parallel:
-    for: dispatch.sequences
-    as: dispatch.sequence
-    serial:
-      for: dispatch.sequence.items
-      as: dispatch.item
-      run: dispatch.route
-  aggregate:
-    tool:
-      asset: <聚合工具的技能内路径>
-```
+`tree.root_key` 指向 JSON 顶层节点数组。`tree.child_edges` 是子数组字段到节点类型的有序映射；一个节点可在多个字段下生长任意数量的子节点。`tree.terminal_types` 指定不可继续生长的类型，`tree.dispatch_types` 指定需要派发和标记完成的类型。其他类型仍参与结构读取，但没有独立的调度状态。相同父节点下各子数组的名称共同保持唯一。调度器依照配置读取树，不预设业务字段名。
 
-这段声明表示：序列之间并行，序列内的目标串行，所有序列交付后聚合。进入下一层之前先完成本层聚合；本轮长出的目标由下一轮重新选择。
+`order: breadth_first` 表示较外层的待办先于内层。同层按文档中的父节点顺序、`child_edges` 字段顺序及各子数组顺序选择。`routes` 是节点类型 → 节点名称 → 模板目录的映射；某类型的空表表示该类型全部进入 `fallback`，非空表按名称精确匹配专用模板，其余目标进入 `fallback`。路由完成本目标的终止类型子节点；新增的待派发子节点进入后续层级。
 
-`dispatch.sequences` 是本轮计划，`dispatch.sequence` 是当前并行序列，`dispatch.item` 是当前串行树节点。`dispatch.route` 按当前 item 的类型和名称，通过 `routes` 与 `fallback` 解析实际任务目录。`routes` 是类型 → 名称 → 模板目录的映射；空表表示全部进入 `fallback`，非空表按名称精确匹配，其余进入 `fallback`。
+`carry` 是产物名到初值的映射，初值通过 `dispatch.inputs.<名称>` 引用调度节点已绑定的输入；`null` 表示尚未产出。路由内每个任务及其声明的 review 通过后，同名输出更新本项的当前值，后续步骤通过 `carry.<名称>` 接收最新路径；没有同名输出时保留已有值。本项全部完成后，将最新值交给下一项。任务需要的产物仍为 `null` 时停止并核对；发布调度结果前所有声明的交付产物都应存在。
 
-`dispatch.inputs` 始终是该调度节点在 YAML 中绑定的参数。模板按需要显式绑定，例如 `group_path: dispatch.item.path`；`inputs.*` 始终引用根输入。worker 身份和分项输出路径中的占位符来自当前任务的 `inputs`。
+`outputs` 指定当前交付路径；后续任务可更新同名工作产物的已有路径。绘制先在临时稿中修改和自检，再更新当前稿；对照和范围检查使用更新前的稿与临时稿。`carry` 继续传递成功产物的路径。
 
-`carry` 声明产物名与初值，初值是 `dispatch.inputs.<名称>` 或 `null`。每个并行序列从同一基稿复制自己的 carry；路由任务及声明的 review 成功后，同名输出更新本序列 carry，其余值保留。当前 item 结束后，下一 item 接收本序列最新产物。所有序列聚合后，外层 carry 更新为汇合结果，供下一轮使用。`null` 表示尚未产生文件，聚合时使用实际产物；引用必需产物时它仍为空则停止核对。
+只有编号子步骤的路由目录直接按编号展开，由每个子步骤自己的 `流程.yaml` 声明任务；容器不另设根 `流程.yaml` 或复制输入输出。路由内的 `nodes.*` 限于当前循环项。全部步骤及声明的 review 通过后，总控才调用 `complete`。`if.direct_parts_of` 指定节点路径引用，`in` 指定树文件，用于检查是否有直属终止节点，以选择制作任务或透传分支。
 
-固定 `outputs` 路径按当前任务的 `working_dir` 解析。绘制在临时稿中修改和自检后更新当前稿；`carry` 传递成功产物路径。辅助文件由 worker 在当前工作目录内组织。
+循环的共有产物可使用固定路径；分项文件可用本任务 `inputs` 绑定的占位符区分当前项。
 
-路由目录按编号展开，由实际任务自己的 `流程.yaml` 声明输入输出；只有编号子步骤的容器省略根 `流程.yaml`。路由内的 `nodes.*` 限于当前 item。`if.direct_parts_of` 绑定节点路径，`in` 绑定树文件，用于选择有直属终止节点时的制作任务或透传分支。
+调度的固定顺序为 `init` → `next` → 执行路由 → `complete` → `next`。总控初始化工具时绑定 `document`、`state`、`tree` 和路由名称，后续调用使用同一文件。任务交付 `children` 清单时，总控通过 `expand` 写入当前目标；空清单保持原树。阶段完成后用 `checkpoint` 保存步骤指针，续跑从该指针推进。当前目标有直属节点、路由完成其终止类型子节点的制作、全部步骤及声明的 review 通过后才调用 `complete`。完成只标记当前目标，子目标独立调度，已完成 ID 自动跳过。
 
-总控依次初始化、选择、执行本轮循环、聚合，再重新选择。任务交付 `children` 时，由总控向本序列的树副本写入当前节点；空清单保留原结构。阶段完成保存当前 item 的指针；路由完成其直属终止节点、全部步骤及声明的 review 通过后，登记该 item 已交付。序列内下一项可继续使用该结果，主状态在聚合成功后才标记完成；完成单位始终是单个目标。
+工具只为 `dispatch_types` 保存稳定 ID、完成状态、当前目标与指针。已完成目标的直属结构保持固定；返修由总控先 `reopen` 对应目标，再派发原 worker，子目标的状态独立保留。worker 执行当前任务，选目标和完成标记由总控负责。路径消失、类型变化、状态不一致或执行失败时停止核对。
 
-已完成目标的直属结构保持固定。返修先重开对应目标，再派发原 worker；子目标状态独立保留。worker 完成当前任务，选择与进度由总控负责。出现结构或产物冲突时停止核对。工具返回 `done` 后发布 `dispatch.outputs`；声明了 `final_review` 时，审查通过后发布。
+调度器返回 `done` 后发布 `dispatch` 的输出。若声明了可选的 `final_review`，先执行该审查，通过后再发布；返修时按审查指出的目标重开，重新派发并复验。
 
 ## 完成与续跑
 

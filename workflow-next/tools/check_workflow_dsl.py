@@ -48,46 +48,12 @@ def children(directory):
                   key=lambda p: tuple(int(n) for n in re.match(r'^[\d.]+', p.name)[0].split('.') if n))
 
 
-def aliases_only(block, variables=()):
+def aliases_only(block):
     outputs = block.get('outputs', {})
     return (bool(outputs) and isinstance(outputs, dict)
-            and all(isinstance(v, str) and (v.startswith(('inputs.', 'nodes.', 'carry.'))
-                    or any(v == name or v.startswith(name + '.') for name in variables))
+            and all(isinstance(v, str) and v.startswith(('inputs.', 'nodes.', 'carry.'))
                     for v in outputs.values())
             and not any(k in block for k in ('imagegen', 'writes_options', 'review')))
-
-
-NODE_KEYS = {'id', 'inputs', 'outputs', 'worker', 'if', 'then', 'else',
-             'run', 'prompt', 'imagegen', 'review', 'final_review',
-             'writes_options', 'dispatch', 'working_dir', 'status',
-             'parallel', 'serial', 'aggregate'}
-NAME_PATTERN = r'[a-z][a-z0-9]*(?:_[a-z0-9]+)*'
-RESERVED_NAMES = {'inputs', 'nodes', 'options', 'self', 'carry', 'dispatch', 'tool'}
-
-
-def iteration_binding(source, alias, bindings, in_dispatch=False):
-    """Check a lexical loop binding; return its known item shape, if any."""
-    if not isinstance(source, str) or not source:
-        raise ValueError('for must reference an array')
-    if (not isinstance(alias, str)
-            or not re.fullmatch(NAME_PATTERN + r'(?:\.' + NAME_PATTERN + r')?', alias)
-            or alias in RESERVED_NAMES or alias in bindings):
-        raise ValueError('as must declare a unique loop variable')
-    if '.' in alias and (not in_dispatch or alias not in {'dispatch.sequence', 'dispatch.item'}):
-        raise ValueError('qualified loop variables are dispatch.sequence or dispatch.item')
-    shape = None
-    if in_dispatch and source == 'dispatch.sequences':
-        shape = 'sequence'
-    elif source.endswith('.items') and bindings.get(source[:-6]) == 'sequence':
-        shape = 'item'
-    elif in_dispatch:
-        raise ValueError('dispatch for must read dispatch.sequences or a bound sequence.items')
-    elif (not REFERENCE.match(source)
-          and not any(source == name or source.startswith(name + '.') for name in bindings)):
-        raise ValueError('for must reference declared data or an outer loop variable')
-    if in_dispatch and alias != 'dispatch.' + shape:
-        raise ValueError(f'{source} must bind dispatch.{shape}')
-    return shape
 
 
 def validate_config(path, config):
@@ -174,65 +140,20 @@ def validate_config(path, config):
             if target == directory.resolve() and bool(imagegen) != any(p.name == 'imagegen.model' for p in models):
                 error(scope, 'local imagegen configuration and model marker disagree')
 
-    def check_aggregate(value, scope):
-        if (not isinstance(value, dict) or set(value) != {'tool'}
-                or not isinstance(value['tool'], dict) or set(value['tool']) != {'asset'}
-                or not isinstance(value['tool']['asset'], str)):
-            error(scope, 'aggregate must declare tool.asset')
-
-    def check_loop(mode, loop, scope, bindings=None, in_dispatch=False, working_dir=None):
-        bindings = dict(bindings or {})
-        if (not isinstance(loop, dict) or not {'for', 'as'} <= set(loop)
-                or set(loop) - (NODE_KEYS | {'for', 'as'})):
-            error(scope, f'{mode} requires for, as, and an execution body')
-            return
-        try:
-            shape = iteration_binding(loop['for'], loop['as'], bindings, in_dispatch)
-        except ValueError as exc:
-            error(scope, str(exc))
-            return
-        bindings[loop['as']] = shape
-        body = {key: value for key, value in loop.items() if key not in {'for', 'as'}}
-        if in_dispatch:
-            # The plan defines parallel sequences containing serial tree items.
-            if shape == 'sequence' and (mode != 'parallel' or set(body) != {'serial'}):
-                error(scope, 'dispatch sequences require parallel with a serial body')
-                return
-            if shape == 'item' and (mode != 'serial' or body != {'run': 'dispatch.route'}):
-                error(scope, 'dispatch items require serial with run: dispatch.route')
-                return
-        visit(body, scope, bindings, in_dispatch, working_dir)
-
-    def visit(block, scope, loop_bindings=None, in_dispatch=False, inherited_dir=None):
+    def visit(block, scope):
         if not isinstance(block, dict):
             error(scope, 'expected an object')
             return
-        unsupported = set(block) - NODE_KEYS
+        allowed = {'id', 'inputs', 'outputs', 'worker', 'if', 'then', 'else',
+                   'run', 'prompt', 'imagegen', 'review', 'final_review',
+                   'writes_options', 'dispatch', 'working_dir', 'status'}
+        unsupported = set(block) - allowed
         if unsupported:
             error(scope, f'unsupported node keys: {sorted(unsupported)}')
             return
         if 'status' in block and block['status'] not in ('draft', 'ready'):
             error(scope, 'status must be draft or ready')
-        working_dir = block.get('working_dir', inherited_dir)
-        dynamic_route = block.get('run') == 'dispatch.route'
-        check_working_dir(block, scope,
-                          required=inherited_dir is None and ('run' in block or 'dispatch' in block))
-        controls = [key for key in ('parallel', 'serial') if key in block]
-        if controls:
-            if len(controls) != 1 or any(key in block for key in
-                    ('run', 'if', 'imagegen', 'review', 'writes_options', 'dispatch')):
-                error(scope, 'one parallel or serial control owns the execution body')
-                return
-            mode = controls[0]
-            check_loop(mode, block[mode], scope + '.' + mode,
-                       loop_bindings, in_dispatch, working_dir)
-            if 'aggregate' in block:
-                if mode != 'parallel':
-                    error(scope, 'aggregate belongs to a parallel control')
-                check_aggregate(block['aggregate'], scope + '.aggregate')
-            return
-        if 'aggregate' in block:
-            error(scope, 'aggregate requires a parallel control')
+        check_working_dir(block, scope, required='run' in block or 'dispatch' in block)
         if 'dispatch' in block:
             dispatch = block['dispatch']
             if (not isinstance(dispatch, dict) or any(key in block for key in
@@ -240,17 +161,14 @@ def validate_config(path, config):
                     or list(directory.glob('*.model')) or prompts(directory) or children(directory)):
                 error(scope, 'dispatch must be a task-free node')
                 return
-            supported = {'document', 'state', 'tool', 'sequences', 'order', 'tree',
-                         'routes', 'fallback', 'carry', 'parallel', 'aggregate'}
+            supported = {'document', 'state', 'tool', 'item', 'order', 'tree',
+                         'routes', 'fallback', 'carry'}
             if set(dispatch) - supported:
                 error(scope, f'unsupported dispatch keys: {sorted(set(dispatch) - supported)}')
             if dispatch.get('order') != 'breadth_first':
                 error(scope, 'dispatch.order must be breadth_first')
-            if dispatch.get('sequences') != 'tool.next.sequences':
-                error(scope, 'dispatch.sequences must bind tool.next.sequences')
-            check_loop('parallel', dispatch.get('parallel'), scope + '.dispatch.parallel',
-                       in_dispatch=True, working_dir=working_dir)
-            check_aggregate(dispatch.get('aggregate'), scope + '.dispatch.aggregate')
+            if dispatch.get('item') != 'tool.next.target':
+                error(scope, 'dispatch.item must bind tool.next.target')
             bindings = block.get('inputs', {})
             document = dispatch.get('document')
             tool = dispatch.get('tool')
@@ -338,17 +256,14 @@ def validate_config(path, config):
                 error(scope, 'if requires then')
             for key in ('then', 'else'):
                 if key in block:
-                    visit(block[key], scope + '.' + key, loop_bindings, in_dispatch, working_dir)
+                    visit(block[key], scope + '.' + key)
             return
-        if dynamic_route:
-            if not in_dispatch or (loop_bindings or {}).get('dispatch.item') != 'item':
-                error(scope, 'dispatch.route requires the current serial dispatch.item')
-        elif 'run' in block:
+        if 'run' in block:
             check_target(block['run'], block, scope)
         elif children(directory):
             if list(directory.glob('*.model')) or prompts(directory):
                 error(scope, 'container cannot also define a local task')
-        elif not aliases_only(block, loop_bindings or {}):
+        elif not aliases_only(block):
             error(scope, 'task requires explicit run; no implicit local dispatch')
         if 'review' in block:
             review = block['review']
@@ -368,7 +283,7 @@ def validate_config(path, config):
     return errors
 
 
-REFERENCE = re.compile(r'^(inputs|nodes|options|self|carry|dispatch|tool)\.')
+REFERENCE = re.compile(r'^(inputs|nodes|options|self|carry|dispatch)\.')
 EXPRESSION_REFERENCES = re.compile(r'\b(?:inputs|nodes|options|self|carry|dispatch)\.[a-zA-Z_0-9.]+')
 ITEM_FIELDS = {'id', 'kind', 'name', 'path', 'parent_path'}
 
@@ -403,17 +318,6 @@ def validate_bindings(skill_root, configs):
              if isinstance(config.get('id'), str)}
     dispatches = [(path, config) for path, config in configs.items()
                   if isinstance(config.get('dispatch'), dict)]
-
-    def declared_aliases(value):
-        result = set()
-        if isinstance(value, dict):
-            for mode in ('parallel', 'serial'):
-                loop = value.get(mode)
-                if isinstance(loop, dict) and isinstance(loop.get('as'), str):
-                    result.add(loop['as'])
-            for child in value.values():
-                result.update(declared_aliases(child))
-        return result
 
     def contexts(path):
         result = []
@@ -482,25 +386,12 @@ def validate_bindings(skill_root, configs):
             is_item = context is not None and context[0] != path
             dispatch_inputs = context[1].get('inputs', {}) if context else {}
             carry = context[1]['dispatch'].get('carry', {}) if context else {}
-            known_aliases = declared_aliases(config)
 
             def error(scope, message):
                 errors.append(f'{path} [{scope}]: {message}')
 
-            def reference(value, scope, self_outputs=None, loop_aliases=None):
-                if not isinstance(value, str):
-                    return
-                for alias, shape in (loop_aliases or {}).items():
-                    if value == alias or value.startswith(alias + '.'):
-                        fields = {'id', 'items'} if shape == 'sequence' else ITEM_FIELDS if shape == 'item' else None
-                        field = value[len(alias) + 1:]
-                        if fields is not None and value != alias and field not in fields:
-                            error(scope, f'unknown loop field: {value}')
-                        return
-                if any(value == alias or value.startswith(alias + '.') for alias in known_aliases):
-                    error(scope, f'loop variable is outside its scope: {value}')
-                    return
-                if not REFERENCE.match(value):
+            def reference(value, scope, self_outputs=None):
+                if not isinstance(value, str) or not REFERENCE.match(value):
                     return
                 parts = value.split('.')
                 if parts[0] == 'inputs':
@@ -534,8 +425,6 @@ def validate_bindings(skill_root, configs):
                 elif (len(parts) == 3 and parts[1] == 'item'
                       and parts[2] in ITEM_FIELDS and is_item):
                     pass
-                elif value == 'dispatch.sequences' and context and not is_item:
-                    pass
                 else:
                     error(scope, f'unknown dispatch binding: {value}')
 
@@ -546,20 +435,7 @@ def validate_bindings(skill_root, configs):
                     if name not in bindings:
                         error(scope, f'placeholder {{{name}}} has no declared task input')
 
-            def array_reference(value, scope, self_outputs=None, loop_aliases=None):
-                reference(value, scope, self_outputs, loop_aliases)
-                if not isinstance(value, str):
-                    return
-                parts = value.split('.')
-                definition = None
-                if len(parts) == 2 and parts[0] == 'inputs':
-                    definition = root_inputs.get(parts[1])
-                elif len(parts) == 2 and parts[0] == 'options':
-                    definition = root_options.get(parts[1])
-                if isinstance(definition, dict) and definition.get('type') not in (None, 'array'):
-                    error(scope, f'for requires an array, not {definition["type"]}: {value}')
-
-            def visit(block, scope, inherited=None, self_outputs=None, loop_aliases=None):
+            def visit(block, scope, inherited=None, self_outputs=None):
                 if not isinstance(block, dict):
                     return
                 declared = block.get('inputs', {})
@@ -573,14 +449,14 @@ def validate_bindings(skill_root, configs):
                         if set(value) - {'asset', 'from', 'required'}:
                             error(scope + '.inputs.' + name, 'typed external inputs belong only in the root definition')
                         value = value.get('from')
-                    reference(value, scope + '.inputs.' + name, self_outputs, loop_aliases)
+                    reference(value, scope + '.inputs.' + name, self_outputs)
                 condition = block.get('if')
                 if isinstance(condition, str):
                     for value in EXPRESSION_REFERENCES.findall(condition):
-                        reference(value, scope + '.if', self_outputs, loop_aliases)
+                        reference(value, scope + '.if', self_outputs)
                 elif isinstance(condition, dict):
                     for value in condition.values():
-                        reference(value, scope + '.if', self_outputs, loop_aliases)
+                        reference(value, scope + '.if', self_outputs)
                 imagegen = block.get('imagegen')
                 if isinstance(imagegen, dict):
                     for name in imagegen.get('inputs', []):
@@ -601,9 +477,8 @@ def validate_bindings(skill_root, configs):
                     if not isinstance(value, str) or not value:
                         error(target_scope, 'output must be an explicit reference or saved path')
                         continue
-                    reference(value, target_scope, self_outputs, loop_aliases)
-                    if REFERENCE.match(value) or any(value == alias or value.startswith(alias + '.')
-                                                     for alias in (loop_aliases or {})):
+                    reference(value, target_scope, self_outputs)
+                    if REFERENCE.match(value):
                         continue
                     placeholders(value, bindings, target_scope)
                     parts = Path(value).parts
@@ -621,43 +496,15 @@ def validate_bindings(skill_root, configs):
                     if normalized(value) in sources and not updates_artifact:
                         error(target_scope, f'saved output overwrites an input artifact: {value}')
                 for key in ('then', 'else'):
-                    visit(block.get(key), scope + '.' + key, bindings, self_outputs, loop_aliases)
-                for mode in ('parallel', 'serial'):
-                    loop = block.get(mode)
-                    if not isinstance(loop, dict):
-                        continue
-                    source = loop.get('for')
-                    array_reference(source, scope + '.' + mode + '.for', self_outputs, loop_aliases)
-                    aliases = dict(loop_aliases or {})
-                    try:
-                        shape = iteration_binding(source, loop.get('as'), aliases,
-                                                  in_dispatch='dispatch' in block or bool(
-                                                      any(name.startswith('dispatch.') for name in aliases)))
-                    except ValueError:
-                        continue # validate_config reports the malformed control.
-                    aliases[loop['as']] = shape
-                    body = {key: value for key, value in loop.items() if key not in {'for', 'as'}}
-                    visit(body, scope + '.' + mode, bindings, self_outputs, aliases)
+                    visit(block.get(key), scope + '.' + key, bindings, self_outputs)
                 reviewed_outputs = output_values(block)
                 for key in ('review', 'final_review'):
-                    visit(block.get(key), scope + '.' + key, bindings, reviewed_outputs, loop_aliases)
+                    visit(block.get(key), scope + '.' + key, bindings, reviewed_outputs)
                 dispatch = block.get('dispatch')
                 if isinstance(dispatch, dict):
                     reference(dispatch.get('document'), scope + '.dispatch.document')
                     for name, value in dispatch.get('carry', {}).items():
                         reference(value, scope + '.dispatch.carry.' + name)
-                    # Runtime plan is declared once; loop aliases are lexical.
-                    loop = dispatch.get('parallel')
-                    if isinstance(loop, dict):
-                        reference(loop.get('for'), scope + '.dispatch.parallel.for')
-                        try:
-                            shape = iteration_binding(loop.get('for'), loop.get('as'), {}, True)
-                        except ValueError:
-                            pass
-                        else:
-                            body = {key: value for key, value in loop.items() if key not in {'for', 'as'}}
-                            visit(body, scope + '.dispatch.parallel', bindings, self_outputs,
-                                  {loop['as']: shape})
 
             visit(config, config.get('id', 'node'))
     return errors
