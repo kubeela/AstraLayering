@@ -1989,5 +1989,101 @@
     "followup_task": 144,
     "sleep": 22,
     "request_user_input_async": 1
+  },
+  "wall_clock_audit": {
+    "basis": "原始主会话事件时间与子任务实际回合时间；时间跨度包含调度、等待和恢复，不是纯绘制时间。",
+    "span_seconds": 63665,
+    "no_progress_record_gap": {
+      "start_local": "2026-10-06T07:22:10.908000+08:00",
+      "end_local": "2026-10-06T12:24:15.757000+08:00",
+      "seconds": 18124.849,
+      "cause": "模型连接中断后无推进；随后configd watchdog系统崩溃、重启并等待FileVault解锁，至12:21解锁后应用重新启动。",
+      "finding": "主会话没有新事件记录，子任务没有回合推进；空档开始前的等待和工具调用已返回。",
+      "causal_limit": "未证明07:22模型断线一定由后来configd无响应导致。"
+    },
+    "span_excluding_gap_seconds": 45540.151,
+    "correction": "此前将恢复后的整个8小时30分跨度称为持续运行时间不准确。"
+  },
+  "observed_concurrency": {
+    "basis": "按实际回合 startedAt/completedAt 的秒级时间区间计算，裁切至总控核对窗口；衡量同时活跃的子任务回合，不代表CPU利用率。",
+    "peak_active_child_turns": 3,
+    "active_child_turn_seconds": 88965,
+    "histogram_wall_seconds": {
+      "0": 21488.0,
+      "1": 13459.0,
+      "2": 10648.0,
+      "3": 18070.0
+    },
+    "average_active_child_turns_whole_span": 1.3973926019005734,
+    "average_active_child_turns_excluding_gap": 1.9535508347348256,
+    "zero_active_note": "无子任务回合的区间也可能包含总控、工具或参考准备，不能全部视为停工。"
+  },
+  "interruption_diagnosis": {
+    "events_local": [
+      {
+        "time": "2026-10-06T07:22:10+08:00",
+        "event": "总控与两个子任务同时发生TLS连接非正常断开",
+        "source": "logs_2.sqlite/codex_core::responses_retry"
+      },
+      {
+        "time": "2026-10-06T07:22:11+08:00",
+        "event": "尝试重连，随后旧执行进程无新日志",
+        "source": "logs_2.sqlite/codex_api::endpoint::responses_websocket"
+      },
+      {
+        "time": "2026-10-06T08:18:36+08:00",
+        "event": "configd watchdog超时，IPConfigurationAgentQueue无响应",
+        "source": "/Library/Logs/DiagnosticReports/Retired/configd-2026-10-06-081836.ips"
+      },
+      {
+        "time": "2026-10-06T08:20:38.932434+08:00",
+        "event": "configd连续180秒无响应，导致内核panic",
+        "source": "/Library/Logs/DiagnosticReports/Retired/panic-full-2026-10-06-122121.0002.panic / panicString Calendar"
+      },
+      {
+        "time": "2026-10-06T08:21:03.615117+08:00",
+        "event": "系统启动",
+        "source": "kern.boottime，统一日志中的内核启动记录"
+      },
+      {
+        "time": "2026-10-06T08:21:10+08:00",
+        "event": "处于FileVault解锁阶段，无用户登录",
+        "source": "系统统一日志/SecurityAgent"
+      },
+      {
+        "time": "2026-10-06T12:21:18.645640+08:00",
+        "event": "FileVault数据卷解锁",
+        "source": "系统统一日志/SecurityAgent"
+      },
+      {
+        "time": "2026-10-06T12:21:33.893+08:00",
+        "event": "Codex启动新的本地执行进程",
+        "source": "Codex桌面日志/stdio_transport_spawned"
+      },
+      {
+        "time": "2026-10-06T12:24:15.757+08:00",
+        "event": "主会话载入，12:27用户消息启动后续回合",
+        "source": "原始主会话事件记录"
+      }
+    ],
+    "connection_error_excerpt": "stream disconnected before completion: IO error: peer closed connection without sending TLS close_notify",
+    "panic_excerpt": "userspace watchdog timeout: no successful checkins from configd (1 induced crashes) in 180 seconds",
+    "limit": "早期模型断线与后续系统网络配置服务故障的直接因果未证实；没有据此判定并发引起系统故障。"
+  },
+  "merge_repair_diagnosis": {
+    "first_rejection_local": "2026-10-06T00:39:40.592+08:00",
+    "first_rejection_command_duration_seconds": 0.024255417,
+    "successful_aggregate_local": "2026-10-06T02:58:42.017+08:00",
+    "successful_aggregate_command_duration_seconds": 0.143913458,
+    "wall_between_attempts_seconds": 8341.425,
+    "conflict_location": "svg/tag:{http://www.w3.org/2000/svg}defs",
+    "repair_groups": [
+      "neck",
+      "body",
+      "pelvis"
+    ],
+    "policy": "restart: group，恢复开始前快照及carry，清除当前group步骤记录，重跑整路。",
+    "verified_synthetic_reproduction": "有id的defs与匿名defs导致同一共享容器冲突；仅规范未引用容器id可保持绘制路径不变并通过合并。",
+    "limit": "复现为合成样例；期间包含实际接界、透明范围返修及恢复，不能将全部2小时19分视为单纯修改defs的时间。"
   }
 }
