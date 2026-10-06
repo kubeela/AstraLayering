@@ -1,0 +1,65 @@
+{
+  "time": "2026-10-05T23:17:33.261048+00:00",
+  "actual_worker_id": "/root/group_head_shading_recovery",
+  "worker": "group:head",
+  "target": "head",
+  "selected_branch": "then",
+  "direct_parts": [
+    "topknot_bun",
+    "earring_left",
+    "earring_right"
+  ],
+  "nodes": [
+    {
+      "id": "part_local_shading",
+      "yaml": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/4.rendering stack/4.4.局部暗部细化/流程.yaml",
+      "sha256": "c80d40a64381aead948a7a440cdc8d69edb4739a8ce13d84b72489c2a8291d8b",
+      "selected_branch": "then",
+      "selected_branch_yaml": "  run: templates/部件专项/generic/4.rendering stack/4.4.局部暗部细化\n  worker: \"group:{group_path}\"\n  working_dir: '{working_dir}'\n  inputs:\n    group_path: dispatch.item.path\n    reference: dispatch.inputs.reference\n    groups: dispatch.inputs.groups\n    guide_svg: carry.guide_svg\n    artwork_svg: nodes.part_color_transitions.artwork_svg\n    rendering: carry.rendering\n    preview_tool: dispatch.inputs.preview_tool\n    rendering_tool:\n      asset: tools/rendering.py\n  outputs:\n    artwork_svg: refinement/character.svg\n    rendering: structure/rendering.json\n",
+      "model": "gpt-6-astra-xhigh.model"
+    },
+    {
+      "id": "cast_shadow_relations",
+      "yaml": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/4.rendering stack/4.5.投影处理/4.5.1.投影识别与关系定义/流程.yaml",
+      "sha256": "bafddb64716c1ea42d7886a90bf6733f285151f70321f4ca3b851576748f3662",
+      "selected_branch": "then",
+      "selected_branch_yaml": "  run: templates/部件专项/generic/4.rendering stack/4.5.投影处理/4.5.1.投影识别与关系定义\n  worker: \"group:{group_path}\"\n  working_dir: '{working_dir}'\n  inputs:\n    group_path: dispatch.item.path\n    reference: dispatch.inputs.reference\n    groups: dispatch.inputs.groups\n    guide_svg: carry.guide_svg\n    artwork_svg: nodes.part_local_shading.artwork_svg\n    rendering: carry.rendering\n    preview_tool: dispatch.inputs.preview_tool\n    rendering_tool:\n      asset: tools/rendering.py\n  outputs:\n    artwork_svg: refinement/character.svg\n    rendering: structure/rendering.json\n",
+      "model": "gpt-6-astra-xhigh.model"
+    },
+    {
+      "id": "cast_shadow_artwork",
+      "yaml": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/4.rendering stack/4.5.投影处理/4.5.2.独立投影绘制/流程.yaml",
+      "sha256": "65258a0da2012b840f866362aed94365d0a568d4008e8936a4039f4cb5256b9c",
+      "selected_branch": "then",
+      "selected_branch_yaml": "  run: templates/部件专项/generic/4.rendering stack/4.5.投影处理/4.5.2.独立投影绘制\n  worker: \"group:{group_path}\"\n  working_dir: '{working_dir}'\n  inputs:\n    group_path: dispatch.item.path\n    reference: dispatch.inputs.reference\n    groups: dispatch.inputs.groups\n    guide_svg: carry.guide_svg\n    artwork_svg: nodes.cast_shadow_relations.artwork_svg\n    rendering: carry.rendering\n    preview_tool: dispatch.inputs.preview_tool\n    rendering_tool:\n      asset: tools/rendering.py\n  outputs:\n    artwork_svg: refinement/character.svg\n    rendering: structure/rendering.json\n",
+      "model": "gpt-6-astra-xhigh.model"
+    },
+    {
+      "id": "part_highlights",
+      "yaml": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/4.rendering stack/4.6.高光与反光/流程.yaml",
+      "sha256": "187d41042a41c06f353384e57288ac5fbc780754769fc6fe9a568d5746e38980",
+      "selected_branch": "then",
+      "selected_branch_yaml": "  run: templates/部件专项/generic/4.rendering stack/4.6.高光与反光\n  worker: \"group:{group_path}\"\n  working_dir: '{working_dir}'\n  inputs:\n    group_path: dispatch.item.path\n    reference: dispatch.inputs.reference\n    groups: dispatch.inputs.groups\n    guide_svg: carry.guide_svg\n    artwork_svg: nodes.cast_shadow_artwork.artwork_svg\n    rendering: carry.rendering\n    preview_tool: dispatch.inputs.preview_tool\n    rendering_tool:\n      asset: tools/rendering.py\n  outputs:\n    artwork_svg: refinement/character.svg\n    rendering: structure/rendering.json\n",
+      "model": "gpt-6-astra-xhigh.model"
+    },
+    {
+      "id": "part_rendered",
+      "yaml": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/4.rendering stack/4.7.线色融合与材质细化/流程.yaml",
+      "sha256": "c7bf50f1336025943cf7d299571d4e8cb3bf914bbc162a04cf5a1c4267c018a7",
+      "selected_branch": "then",
+      "selected_branch_yaml": "  run: templates/部件专项/generic/4.rendering stack/4.7.线色融合与材质细化\n  worker: \"group:{group_path}\"\n  working_dir: '{working_dir}'\n  inputs:\n    group_path: dispatch.item.path\n    reference: dispatch.inputs.reference\n    groups: dispatch.inputs.groups\n    guide_svg: carry.guide_svg\n    artwork_svg: nodes.part_highlights.artwork_svg\n    rendering: carry.rendering\n    preview_tool: dispatch.inputs.preview_tool\n    rendering_tool:\n      asset: tools/rendering.py\n  outputs:\n    artwork_svg: refinement/character.svg\n    rendering: structure/rendering.json\n    preview: refinement/preview.png\n",
+      "model": "gpt-6-astra-xhigh.model"
+    }
+  ],
+  "original_completed_nodes_retained": [
+    "part_contours",
+    "part_structure",
+    "part_tone_boundaries",
+    "part_detail_lines",
+    "part_brush_lines",
+    "part_base_colors",
+    "part_volume",
+    "part_color_transitions"
+  ],
+  "audit": "tmp/worker-handoffs/head/repeated-bad-request-post-motion-20261006-01/audit.json"
+}

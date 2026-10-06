@@ -1,0 +1,16 @@
+{
+  "time": "2026-10-06T06:52:44.034870+08:00",
+  "files": [
+    {
+      "source": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/block-layers/groups.svg",
+      "saved": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/tmp/history/head-motion-current-20261006-01/block-layers/groups.svg",
+      "sha256": "dc53125f3eab4c6f0e3fe016146df7bffeca8903368ea0508cc28f05691e749b"
+    },
+    {
+      "source": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/block-layers/preview.png",
+      "saved": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/tmp/history/head-motion-current-20261006-01/block-layers/preview.png",
+      "sha256": "684a181c9e446f27e4dc7daf9790a42e0a5d1ab3e8c9e6d1c55e7deec209b22e"
+    }
+  ],
+  "recursive_copy": false
+}

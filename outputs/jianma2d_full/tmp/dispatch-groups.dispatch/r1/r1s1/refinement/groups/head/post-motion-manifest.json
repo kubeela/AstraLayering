@@ -1,0 +1,807 @@
+{
+  "worker": "group:head",
+  "producer": "/root/group_head_motion_recovery",
+  "group_path": "head",
+  "nodes": [
+    {
+      "id": "part_contours",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_contours/character.svg",
+          "sha256": "3bfb1fc93eebf678bec26e0cd89c5f68f234a7cd18cff4f4c1b36473b7956f20"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_contours/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_contours/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_contours/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        }
+      ],
+      "judgment": "实际查看三 part 独显、参考、混合图。完整闭合色面沿用已通过 guide；发髻 y134 和右杆 y269.4 隐藏余量保留。已消除右顶杆内部 y275 接缝描线，耳坠杆线在宝石连接处留白，闭合填色连续。",
+      "unresolved": []
+    },
+    {
+      "id": "part_structure",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_structure/character.svg",
+          "sha256": "d69ef91133a6c1127a2408697b18677ff79dca10c96d8510cd24b1ace6f5b801"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_structure/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_structure/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_structure/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        }
+      ],
+      "judgment": "已实际看三 part 的独显/参考/混合放大图。发髻七条主束谷从上弧向下根连续收束，冠饰覆盖下的走向延续；左右宝石中心棱与侧面交界对准各自坐标。线条将于后续收细、淡化并由体积色接管部分分界。",
+      "unresolved": []
+    },
+    {
+      "id": "part_tone_boundaries",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_tone_boundaries/character.svg",
+          "sha256": "cd8e1386098306b959471b127a1fb0cb0d142d2746e42f40ed1afedcc81f522b"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_tone_boundaries/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_tone_boundaries/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_tone_boundaries/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        }
+      ],
+      "judgment": "已实际查看三 part。发髻上左亮、两侧与下根转暗；蓝宝石左面亮、右面和尖端较深。新增明暗定位曲线仅作辅助，后续由色面接管；没有把冠饰蓝色边界误认为发髻纹理，也没有据不明来源强加投影。",
+      "unresolved": []
+    },
+    {
+      "id": "part_detail_lines",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_detail_lines/character.svg",
+          "sha256": "2291656aa60f04e37aa5cba67cef96a1c1d2c1e1aee7e939a4fee871b25e0286"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_detail_lines/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_detail_lines/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_detail_lines/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        }
+      ],
+      "judgment": "已实际查看三 part，发髻补14条疏密有变化的细束纹，顺主束转面并在冠饰遮挡下延续；左右银杆和小晶体表面光滑，无参考支持的额外刻纹，保持既有结构。",
+      "unresolved": []
+    },
+    {
+      "id": "part_brush_lines",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "preview": "refinement/preview.png"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_brush_lines/character.svg",
+          "sha256": "a2128fc66196ec62a7d1ed358c49fb7f9acaf244da66ed5058f090ce8e1f5288"
+        },
+        "preview": {
+          "path": "refinement/groups/head/checkpoints/part_brush_lines/preview.png",
+          "sha256": "f091a73ac6a58426a9d1e9e5548538576024bedc5355e1a061f5dbf549157ea0"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_brush_lines/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_brush_lines/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_brush_lines/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        }
+      ],
+      "judgment": "实际使用 perfect_freehand 1.2.0，33次闭合笔触生成调用，共5108个显式压力样点；simulate_pressure=False、streamline=0。源曲线与说明隐藏保留，辅助明暗线不显影；所有笔触按完整part裁切。三part实际放大查看了粗细、起收笔与连接，原结构位置保持。",
+      "unresolved": []
+    },
+    {
+      "id": "part_base_colors",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_base_colors/character.svg",
+          "sha256": "05636258c3fecbb06fbfbb4fff03bb2e0f2e3f77405d598d581b3fd94558a950"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/part_base_colors/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_base_colors/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_base_colors/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_base_colors/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_base_colors/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        }
+      ],
+      "judgment": "已实际查看三part独显与同坐标组合。发髻基色为淡银紫白、耳坠细杆和下链为冷银色、晶体为浅青蓝；完整隐藏面连续铺色。参考无其他材质分区，树/guide不变，rendering表首次由工具init为空。",
+      "unresolved": []
+    },
+    {
+      "id": "part_volume",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_volume/character.svg",
+          "sha256": "b7f9db2464fa098db7138fd1804e5cdefb480c00a6ac6cd9533e455259171e26"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/part_volume/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_volume/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_volume/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_volume/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_volume/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        }
+      ],
+      "judgment": "已实际查看三part及组合。发髻上左受光、两侧及圆顺下根转暗，侧边软化保持银白体积；耳坠以银杆横向亮暗和晶体切面建立体积。均为所属表面自身明暗，未添加外来投影，登记关系沿用。",
+      "unresolved": []
+    },
+    {
+      "id": "part_color_transitions",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_color_transitions/character.svg",
+          "sha256": "988e09efcc6d7333fde487fdf86e18d3a115ed94dc6b995959f7254f51d60432"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/part_color_transitions/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_color_transitions/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_color_transitions/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_color_transitions/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_color_transitions/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        }
+      ],
+      "judgment": "已实际查看三part和组合。发髻上中部加低强度淡紫、左侧加冷蓝过渡，保持银白主色；晶体亮面补青色过渡而不改变切面边界，银杆继续保持冷中性色。",
+      "unresolved": []
+    },
+    {
+      "id": "part_local_shading",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_local_shading/character.svg",
+          "sha256": "5a84969251cb1e72e1b2fa0ed07bfc1caa62ea2b290597d7fc0731f242b7a046"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/part_local_shading/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_local_shading/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_local_shading/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_local_shading/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_local_shading/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        }
+      ],
+      "judgment": "已实际查看三part及组合。束谷旁的窄暗面以低透明度软边渐隐，与大体积一致；晶体上下尖角少量加深以连接银杆。暗部均附属自身表面，没有外来遮光形状。",
+      "unresolved": []
+    },
+    {
+      "id": "cast_shadow_relations",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_relations/character.svg",
+          "sha256": "5a84969251cb1e72e1b2fa0ed07bfc1caa62ea2b290597d7fc0731f242b7a046"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_relations/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_relations/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_relations/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_relations/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_relations/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        }
+      ],
+      "judgment": "已逐part核对明暗说明并实际查看参考/独显/组合。可见发髻暗部为转面与束谷，耳坠为切面和银杆体积；三part未分辨出需独立跟随的外来投影。关系patch为空，经rendering merge校验，原SVG字节保留；依据详见投影判断.json。",
+      "unresolved": []
+    },
+    {
+      "id": "cast_shadow_artwork",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_artwork/character.svg",
+          "sha256": "5a84969251cb1e72e1b2fa0ed07bfc1caa62ea2b290597d7fc0731f242b7a046"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_artwork/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_artwork/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_artwork/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_artwork/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/cast_shadow_artwork/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        }
+      ],
+      "judgment": "已再次实际查看三part与组合；本轮独立投影登记为0，因此保留输入SVG/JSON，不制造投影层。rendering.py check通过（layers=0，complete=false）；不应用最终receiver蒙版。",
+      "unresolved": []
+    },
+    {
+      "id": "part_highlights",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_highlights/character.svg",
+          "sha256": "f89bd63a489f655058542b68be05dfadd351dbc0f24b73eef4c627e2c3154c41"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/part_highlights/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_highlights/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_highlights/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_highlights/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_highlights/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        }
+      ],
+      "judgment": "已实际查看三part及组合。发髻亮边沿束脊延续，银杆有窄白反光、青蓝晶体左上面有柔亮斑和下尖反光；亮部都随自身表面，无需独立渲染层。",
+      "unresolved": []
+    },
+    {
+      "id": "part_rendered",
+      "status": "pass",
+      "outputs": {
+        "artwork_svg": "refinement/character.svg",
+        "rendering": "structure/rendering.json",
+        "preview": "refinement/preview.png"
+      },
+      "snapshots": {
+        "artwork_svg": {
+          "path": "refinement/groups/head/checkpoints/part_rendered/character.svg",
+          "sha256": "91ab600becfd1da33d6a0c7041a02729979a4649df08a3724a41a4572b15a552"
+        },
+        "rendering": {
+          "path": "refinement/groups/head/checkpoints/part_rendered/rendering.json",
+          "sha256": "84a85ffc5fc8fb631d570121d95635c56d065e8f61f3add991dfd62867890907"
+        },
+        "preview": {
+          "path": "refinement/groups/head/checkpoints/part_rendered/preview.png",
+          "sha256": "04a6e112d5bb582bb1bf9d06a04719c55234d7e207aeb0dcaaedfea1a393b563"
+        }
+      },
+      "evidence": [
+        {
+          "path": "refinement/groups/head/checkpoints/part_rendered/topknot_bun.png",
+          "part": "head/topknot_bun",
+          "scale": 4,
+          "crop": [
+            380,
+            38,
+            115,
+            105
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_rendered/earring_left.png",
+          "part": "head/earring_left",
+          "scale": 8,
+          "crop": [
+            374,
+            262,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_rendered/earring_right.png",
+          "part": "head/earring_right",
+          "scale": 8,
+          "crop": [
+            482,
+            260,
+            25,
+            56
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_rendered/combined.png",
+          "part": "head direct parts combined",
+          "scale": 3,
+          "crop": [
+            370,
+            35,
+            145,
+            292
+          ]
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_rendered/bun-neighbor-4x.png",
+          "part": "head direct parts with reference neighbors",
+          "scale": 4,
+          "diagnostic_only": true
+        },
+        {
+          "path": "refinement/groups/head/checkpoints/part_rendered/ears-neighbor-4x.png",
+          "part": "head direct parts with reference neighbors",
+          "scale": 4,
+          "diagnostic_only": true
+        }
+      ],
+      "judgment": "实际查看最终三part独显/参考/混合及组合，并用参考邻接诊断图逐项核对：发髻为银白束发，较蓝冠低饱和、上脊亮、两侧软暗，冠下露出的根条调回浅银色以衔接前发；耳坠在偏灰后发旁呈浅青蓝高明度晶体，左上亮斑与银杆反光方向一致。主束线融入淡紫灰体积，切面辅助线淡入色面，隐藏底根和右顶杆完整保留。最终own-surface alpha mask使用与guide完全相同的发髻d，消除多层边缘抗锯齿叠加；全12孩子复核0越界，结构check通过。邻接图仅是参考诊断，未冒称其他9子group已绘制。",
+      "unresolved": []
+    }
+  ]
+}

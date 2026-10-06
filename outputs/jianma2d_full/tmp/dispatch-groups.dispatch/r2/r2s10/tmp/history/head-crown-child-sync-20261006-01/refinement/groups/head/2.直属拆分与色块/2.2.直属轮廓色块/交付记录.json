@@ -1,0 +1,24 @@
+{
+  "actual_worker": "/root/group_head_ear_gap_recovery",
+  "logical_worker": "group:head",
+  "node": "group_child_layers",
+  "status": "right_ear_scope_complete_awaiting_independent_review",
+  "candidate_sha256": "a3d9513e5fae1bf11d1aee0705211ae4dacea555da9d72d78e7accc2fa821d94",
+  "guide_sha256": "a3d9513e5fae1bf11d1aee0705211ae4dacea555da9d72d78e7accc2fa821d94",
+  "changed": [
+    "head-framing-right-loop@d"
+  ],
+  "bounds": {
+    "scale": 4,
+    "alpha_threshold": 128,
+    "passed_children": 12,
+    "outside_samples": 0
+  },
+  "new_children": 0,
+  "crown_new_evidence_unresolved": {
+    "source": "root coordinator notice during this turn",
+    "location": "x376–377 y120–124",
+    "issue": "Reported 0.6–0.9px crown beam/wing connection gap; pending parallel crown repair and aggregation."
+  },
+  "no_current_2_3_formal_cursor_state_or_agent_operations": true
+}

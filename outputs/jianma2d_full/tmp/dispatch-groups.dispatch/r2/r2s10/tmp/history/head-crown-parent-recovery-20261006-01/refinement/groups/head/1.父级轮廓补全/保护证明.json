@@ -1,0 +1,54 @@
+{
+  "status": "pass",
+  "input_guide_sha256": "9ded844a4cb4e08ff9c32277452ab7cfa8c60168a378df4884411b9187469232",
+  "output_guide_sha256": "5e0b95940c5c8dcd306a72ccb49cf7e396f3154afc8959bdfb6632052c2c240f",
+  "actual_worker": "/root/group_head_ear_gap_recovery",
+  "only_added_id": "head-ear-tail-turn-continuation",
+  "all_original_svg_bytes_after_removing_single_added_path_equal_input": true,
+  "all_original_head_paths_unchanged": true,
+  "all_12_head_direct_children_unchanged": true,
+  "standard_right_ear_d_unchanged": true,
+  "all_other_objects_resources_root_attributes_preserved": true,
+  "unique_ids": true,
+  "protected_files": {
+    "structure/groups.json": {
+      "before_sha256": "370bd39b4c3ff961f3cc6b874b81b02b2515c7425e806a17a637a3789b441450",
+      "after_sha256": "370bd39b4c3ff961f3cc6b874b81b02b2515c7425e806a17a637a3789b441450",
+      "byte_identical": true
+    },
+    "structure/rendering.json": {
+      "before_sha256": "2161a993a2b5d1dfc38da4cc998cccacbb61f1aaa6a6e00ecacb425f80a5f48e",
+      "after_sha256": "2161a993a2b5d1dfc38da4cc998cccacbb61f1aaa6a6e00ecacb425f80a5f48e",
+      "byte_identical": true
+    },
+    "refinement/character.svg": {
+      "before_sha256": "2990a1dadcc3cef4195b79459e4e6383214e50616d86e1f74ee46448784bcdc9",
+      "after_sha256": "2990a1dadcc3cef4195b79459e4e6383214e50616d86e1f74ee46448784bcdc9",
+      "byte_identical": true
+    },
+    "references/base-subject.png": {
+      "before_sha256": "7f17481a8416753247fc54c3e2433723ebf5464764a320f91cae279d356dfd3b",
+      "after_sha256": "7f17481a8416753247fc54c3e2433723ebf5464764a320f91cae279d356dfd3b",
+      "byte_identical": true
+    },
+    "references/line-reference.png": {
+      "before_sha256": "0bf1b4919180b96727f3faf09900ca06c523833cb2bed225d0d4b912550fcee4",
+      "after_sha256": "0bf1b4919180b96727f3faf09900ca06c523833cb2bed225d0d4b912550fcee4",
+      "byte_identical": true
+    },
+    "options.json": {
+      "before_sha256": "b65db1d70858cea08753032b386cea69a9aaf0006ff694870dd7227c14349ca8",
+      "after_sha256": "b65db1d70858cea08753032b386cea69a9aaf0006ff694870dd7227c14349ca8",
+      "byte_identical": true
+    }
+  },
+  "fixture_only_changes_right_ear_d_against_published_candidate": true,
+  "correct_right_source_sha256": "e2d8966bb6e8ebca25fd4ed4ce291ce7a0b76bee26b5b944b81c1218a0073bc3",
+  "full_head_alpha_4x_difference_bbox": [
+    527.75,
+    313.5,
+    6.75,
+    24.5
+  ],
+  "no_global_state_or_formal_writes": true
+}

@@ -1,0 +1,77 @@
+{
+  "actual_worker": "/root/group_head_ear_gap_recovery",
+  "candidate_sha256": "5e0b95940c5c8dcd306a72ccb49cf7e396f3154afc8959bdfb6632052c2c240f",
+  "time": "2026-10-06T05:27:03.731227+08:00",
+  "tool": "view_image",
+  "line_reference_dimensions": [
+    895,
+    1757
+  ],
+  "guide_dimensions": [
+    895,
+    1758
+  ],
+  "line_reference_alignment": "Explicit same-coordinate reference-crop; no whole-image scaling.",
+  "images": [
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/before-head-ear-base-8x.png",
+      "sha256": "980c25fea5df043042c6eba4c143a90c547ea6e55ff89670fc27ae0360b1c84d",
+      "actually_opened": true,
+      "judgment": "修改前：耳尾回转薄区未覆盖向左下回收的正确细尾。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/head-ear-base-8x.png",
+      "sha256": "c05d4643847bead426fef883be78806fe9ad06a1e21ff9c536cf0bc4240ac9f4",
+      "actually_opened": true,
+      "judgment": "最终：薄补形沿参考耳尾方向连接，宽度和外侧接入平顺。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/head-ear-line-8x.png",
+      "sha256": "6031593f1dc34f19fb1a1afb481e72297b84f4224cbabbe46ae69ed4502ad1ef",
+      "actually_opened": true,
+      "judgment": "最终：明确同坐标参考，内外走向连续，耳弧两侧负形可见。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/head-before-after-8x.png",
+      "sha256": "3dac36eb02df5d95888a5d645a5e769e18c0b32c5240bc176b69c4abb8dbdbc1",
+      "actually_opened": true,
+      "judgment": "最终：差异只在薄区，原有路径不变，上端无第一版突起。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/head-and-correct-right-8x.png",
+      "sha256": "fb76b142f99dfcc2d2fcc3c5bc527c55373554b34957784ba341c3418f12b669",
+      "actually_opened": true,
+      "judgment": "最终fixture：正确细尾经过的缺口闭合且保有轻微容纳量。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/correct-right-alone-8x.png",
+      "sha256": "02bad45e3420a828a57fac0a6fc584fb624c79b0662f2e7940db702a8f849f53",
+      "actually_opened": true,
+      "judgment": "最终fixture：完整耳弧向左下渐尖，尾形未裁短以求包含通过。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/head-alone-full.png",
+      "sha256": "543e813fab765ef83bf2161327e0a079dd68b6ebbdb284f7ba35e28b0a209cfb",
+      "actually_opened": true,
+      "judgment": "最终父独显：其余头部轮廓、长发、冠、垂带和现有开孔维持输入范围。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/head-overview-base.png",
+      "sha256": "f4789cc18157c39b9ab90703d808bd005a0297f6c4e069a35348842e4b378e90",
+      "actually_opened": true,
+      "judgment": "最终父参考混合：耳旁局部补全未改变其余头部结构。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/refinement/groups/head/1.父级轮廓补全/evidence/full-context.png",
+      "sha256": "6be6b3c8a69dd9e6aa181b96b73a62afccbbd37e426e5a6499d679c4cd01e769",
+      "actually_opened": true,
+      "judgment": "最终标准稿整图组合：旧直属孩子保持，整图范围和叠放保持。"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/tmp/dispatch-groups.dispatch/r2/r2s10/block-layers/preview.png",
+      "sha256": "536f9b9d81a8c9b375de10d2431bfd4338416db974d838933b007606b2d748cf",
+      "actually_opened": true,
+      "judgment": "已打开最终标准白底整图，受保护旧孩子保持原状。"
+    }
+  ]
+}

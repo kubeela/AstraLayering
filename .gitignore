@@ -44,3 +44,7 @@ node_modules/
 /outputs/jianma2d-opus55-20261005/tmp/
 /outputs/jianma2d-opus55-20261005/.runtime/
 /outputs/jianma2d-opus55-20261005/structure/*.lock
+
+# Local dependencies and locks from the paused Jianma run.
+/outputs/jianma2d_full/.runtime/
+/outputs/jianma2d_full/structure/*.lock

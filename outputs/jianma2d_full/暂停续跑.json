@@ -1,0 +1,57 @@
+{
+  "status": "paused_by_user",
+  "time": "2026-10-06T12:30:50.605179+08:00",
+  "reason": "用户明确选择保存当前进度，先暂停；额度接近用完",
+  "dispatch_round": "r2",
+  "ready_sequences": [
+    "r2s1",
+    "r2s2",
+    "r2s3",
+    "r2s5"
+  ],
+  "pending_sequences": [
+    {
+      "sequence": "r2s4",
+      "target": "head/rear_hair_left",
+      "pointer": "group_split"
+    },
+    {
+      "sequence": "r2s6",
+      "target": "head/hanging_ribbon_left",
+      "pointer": null
+    },
+    {
+      "sequence": "r2s7",
+      "target": "arms/arm_left",
+      "pointer": null
+    },
+    {
+      "sequence": "r2s8",
+      "target": "legs/left_leg",
+      "pointer": null
+    },
+    {
+      "sequence": "r2s9",
+      "target": "legs/left_anklet",
+      "pointer": null
+    },
+    {
+      "sequence": "r2s10",
+      "target": "head",
+      "pointer": "part_highlights"
+    }
+  ],
+  "aggregate_pending": true,
+  "stage5_started": false,
+  "checkpoint_hashes": {
+    "structure/groups.dispatch.json": "b399161309c87730b54bb3dcdd8c5c3609e74ddd4a1420d889409fc142fcdf24",
+    "structure/dispatch-plan.json": "2a106de3e77b266432b2e72582afb7d75838c747a283ea0615096de9a45a6c20",
+    "structure/review-ledger.json": "53a2b1905195e8b2321a08887c26d431b66efac0338cfadd9e81b17c498272d5",
+    "workers.json": "589ee3749fa2c7633c0060da10a3a1cc5567a8ffef9046df61ba9e24659fa299",
+    "block-layers/groups.svg": "9ded844a4cb4e08ff9c32277452ab7cfa8c60168a378df4884411b9187469232",
+    "refinement/character.svg": "2990a1dadcc3cef4195b79459e4e6383214e50616d86e1f74ee46448784bcdc9",
+    "structure/rendering.json": "2161a993a2b5d1dfc38da4cc998cccacbb61f1aaa6a6e00ecacb425f80a5f48e"
+  },
+  "active_subagents_observed": [],
+  "resume_instructions": "先读续跑说明.md、当前source YAML和实际dispatch state；续用真实会话身份，已成功作者/历史不可改名。"
+}

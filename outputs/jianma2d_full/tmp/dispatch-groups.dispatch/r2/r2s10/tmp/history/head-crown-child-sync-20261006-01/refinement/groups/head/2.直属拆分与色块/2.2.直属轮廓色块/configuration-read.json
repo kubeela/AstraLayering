@@ -1,0 +1,26 @@
+{
+  "logical_worker": "group:head",
+  "actual_worker": "/root/group_head_ear_gap_recovery",
+  "node": "group_child_layers",
+  "model_filename": "gpt-6-astra-xhigh.model",
+  "time": "2026-10-06T05:35:21.520983+08:00",
+  "files": [
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/outputs/jianma2d_full/group-route-instructions.md",
+      "sha256": "91471671b1516f9abcac75e9a8a72ce2a741a5abf39b39600623505000fa179b"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/2.直属拆分与色块/2.2.直属轮廓色块/流程.yaml",
+      "sha256": "f59c7288fe7323a916eedbbf685c738ac8d309f046bd89da164f8d87901f2f6e"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/2.直属拆分与色块/2.2.直属轮廓色块/提示词.txt",
+      "sha256": "ba632b522d6094e6627da3cfcc75d2e8ef56c6f9a79cfc18847146eb70ba84c5"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/live2d-layering/templates/部件专项/generic/2.直属拆分与色块/2.2.直属轮廓色块/gpt-6-astra-xhigh.model",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "boundary": "Current 2.2 only; waiting for independent review. No 2.3, formal, cursor, state or agent operations."
+}
