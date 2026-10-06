@@ -39,3 +39,8 @@ node_modules/
 !/tutorial/drawing-tutorial/画画的基本步骤.mp4
 !/tutorial/drawing-tutorial/上色皮肤肉体的步骤.mp4
 !/tutorial/drawing-tutorial/头发画法.mp4
+
+# Scratch files and preview runtime from the Jianma Opus 5.5 workflow-next run.
+/outputs/jianma2d-opus55-20261005/tmp/
+/outputs/jianma2d-opus55-20261005/.runtime/
+/outputs/jianma2d-opus55-20261005/structure/*.lock

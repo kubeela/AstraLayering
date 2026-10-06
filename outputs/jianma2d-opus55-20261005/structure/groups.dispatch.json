@@ -1,0 +1,463 @@
+{
+  "version": 6,
+  "tree": {
+    "root_key": "groups",
+    "child_edges": {
+      "groups": "group",
+      "parts": "part"
+    },
+    "terminal_types": [
+      "part"
+    ],
+    "dispatch_types": [
+      "group"
+    ]
+  },
+  "routes": {
+    "group": []
+  },
+  "working_dir": "/data/home/lockliu/workspaces/forgeax/ai-weapon-spirit/.forgeax/astra-layering-20260924/AstraLayering/outputs/jianma2d-opus55-20261005",
+  "document": "structure/groups.json",
+  "bindings": {
+    "reference": "/data/home/lockliu/workspaces/forgeax/ai-weapon-spirit/.forgeax/astra-layering-20260924/AstraLayering/outputs/jianma2d-opus55-20261005/references/base-subject.png",
+    "line_reference": "/data/home/lockliu/workspaces/forgeax/ai-weapon-spirit/.forgeax/astra-layering-20260924/AstraLayering/outputs/jianma2d-opus55-20261005/references/line-reference.png",
+    "preview_tool": "/data/home/lockliu/workspaces/forgeax/ai-weapon-spirit/.forgeax/astra-layering-20260924/AstraLayering/workflow-next/live2d-layering/tools/svg_preview.py"
+  },
+  "carry": {
+    "artwork_svg": "refinement/character.svg",
+    "guide_svg": "block-layers/groups.svg",
+    "rendering": "structure/rendering.json"
+  },
+  "next_id": 36,
+  "next_round": 5,
+  "nodes": {
+    "head": {
+      "id": "n1",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/back_hair",
+        "head/face",
+        "head/forehead_pendant",
+        "head/hair_bun",
+        "head/hair_cap",
+        "head/halo_ring",
+        "head/left_earring",
+        "head/left_head_ornament",
+        "head/left_side_hair",
+        "head/right_earring",
+        "head/right_head_ornament",
+        "head/right_side_hair"
+      ]
+    },
+    "neck": {
+      "id": "n2",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "neck/neck_skin"
+      ]
+    },
+    "body": {
+      "id": "n3",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "body/chest",
+        "body/left_breast",
+        "body/right_breast",
+        "body/waist"
+      ]
+    },
+    "arms": {
+      "id": "n4",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "arms/left_arm",
+        "arms/right_arm"
+      ]
+    },
+    "pelvis": {
+      "id": "n5",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "pelvis/hips",
+        "pelvis/waist"
+      ]
+    },
+    "legs": {
+      "id": "n6",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/left_leg",
+        "legs/right_leg"
+      ]
+    },
+    "head/face": {
+      "id": "n7",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/face/face_skin",
+        "head/face/left_ear",
+        "head/face/left_eye",
+        "head/face/left_eyebrow",
+        "head/face/mouth",
+        "head/face/nose",
+        "head/face/right_ear",
+        "head/face/right_eye",
+        "head/face/right_eyebrow"
+      ]
+    },
+    "head/hair_bun": {
+      "id": "n8",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/hair_bun/bun",
+        "head/hair_bun/shell_crown"
+      ]
+    },
+    "head/left_side_hair": {
+      "id": "n9",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/left_side_hair/main_lock",
+        "head/left_side_hair/outer_loose_strands",
+        "head/left_side_hair/temple_strand"
+      ]
+    },
+    "head/right_side_hair": {
+      "id": "n10",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/right_side_hair/cheek_lock",
+        "head/right_side_hair/main_lock",
+        "head/right_side_hair/outer_lock",
+        "head/right_side_hair/temple_strand"
+      ]
+    },
+    "head/left_head_ornament": {
+      "id": "n11",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/left_head_ornament/bead_chain",
+        "head/left_head_ornament/diamond_pendant",
+        "head/left_head_ornament/flame_hairpin",
+        "head/left_head_ornament/ribbon"
+      ]
+    },
+    "head/right_head_ornament": {
+      "id": "n12",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/right_head_ornament/bead_chain",
+        "head/right_head_ornament/diamond_pendant",
+        "head/right_head_ornament/flame_hairpin",
+        "head/right_head_ornament/ribbon"
+      ]
+    },
+    "head/left_earring": {
+      "id": "n13",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/left_earring/earring_stud",
+        "head/left_earring/pendant_bead",
+        "head/left_earring/tassel"
+      ]
+    },
+    "head/right_earring": {
+      "id": "n14",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/right_earring/earring_stud",
+        "head/right_earring/pendant_bead",
+        "head/right_earring/tassel"
+      ]
+    },
+    "head/forehead_pendant": {
+      "id": "n15",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/forehead_pendant/forehead_gem",
+        "head/forehead_pendant/pendant_chain",
+        "head/forehead_pendant/teardrop_drop",
+        "head/forehead_pendant/upper_diamond_gem"
+      ]
+    },
+    "arms/right_arm": {
+      "id": "n16",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "arms/right_arm/right_forearm",
+        "arms/right_arm/right_hand",
+        "arms/right_arm/right_upper_arm"
+      ]
+    },
+    "arms/left_arm": {
+      "id": "n17",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "arms/left_arm/left_forearm",
+        "arms/left_arm/left_hand",
+        "arms/left_arm/left_upper_arm"
+      ]
+    },
+    "legs/right_leg": {
+      "id": "n18",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/right_leg/right_anklet",
+        "legs/right_leg/right_foot",
+        "legs/right_leg/right_shin",
+        "legs/right_leg/right_thigh"
+      ]
+    },
+    "legs/left_leg": {
+      "id": "n19",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/left_leg/left_anklet",
+        "legs/left_leg/left_foot",
+        "legs/left_leg/left_shin",
+        "legs/left_leg/left_thigh"
+      ]
+    },
+    "head/face/left_eye": {
+      "id": "n20",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/face/left_eye/eye_white",
+        "head/face/left_eye/iris",
+        "head/face/left_eye/lower_eyelid",
+        "head/face/left_eye/upper_eyelid"
+      ]
+    },
+    "head/face/right_eye": {
+      "id": "n21",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/face/right_eye/eye_white",
+        "head/face/right_eye/iris",
+        "head/face/right_eye/lower_eyelid",
+        "head/face/right_eye/upper_eyelid"
+      ]
+    },
+    "head/face/mouth": {
+      "id": "n22",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/face/mouth/lower_lip",
+        "head/face/mouth/mouth_interior",
+        "head/face/mouth/mouth_line",
+        "head/face/mouth/upper_lip"
+      ]
+    },
+    "head/hair_bun/shell_crown": {
+      "id": "n23",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/hair_bun/shell_crown/flower_cluster",
+        "head/hair_bun/shell_crown/left_side_petal",
+        "head/hair_bun/shell_crown/right_side_petal",
+        "head/hair_bun/shell_crown/shell_plate"
+      ]
+    },
+    "head/left_side_hair/main_lock": {
+      "id": "n24",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/left_side_hair/main_lock/curled_tip",
+        "head/left_side_hair/main_lock/inner_thin_strands",
+        "head/left_side_hair/main_lock/main_mass"
+      ]
+    },
+    "head/right_side_hair/main_lock": {
+      "id": "n25",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/right_side_hair/main_lock/curled_tip",
+        "head/right_side_hair/main_lock/inner_thin_strands",
+        "head/right_side_hair/main_lock/main_mass"
+      ]
+    },
+    "arms/right_arm/right_hand": {
+      "id": "n26",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "arms/right_arm/right_hand/fingers",
+        "arms/right_arm/right_hand/palm",
+        "arms/right_arm/right_hand/thumb"
+      ]
+    },
+    "arms/left_arm/left_hand": {
+      "id": "n27",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "arms/left_arm/left_hand/back_of_hand",
+        "arms/left_arm/left_hand/fingers",
+        "arms/left_arm/left_hand/thumb"
+      ]
+    },
+    "legs/right_leg/right_foot": {
+      "id": "n28",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/right_leg/right_foot/foot_body",
+        "legs/right_leg/right_foot/toes"
+      ]
+    },
+    "legs/right_leg/right_anklet": {
+      "id": "n29",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/right_leg/right_anklet/back_chain",
+        "legs/right_leg/right_anklet/center_bead",
+        "legs/right_leg/right_anklet/crystal_drop",
+        "legs/right_leg/right_anklet/front_chain"
+      ]
+    },
+    "legs/left_leg/left_foot": {
+      "id": "n30",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/left_leg/left_foot/foot_body",
+        "legs/left_leg/left_foot/toes"
+      ]
+    },
+    "legs/left_leg/left_anklet": {
+      "id": "n31",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/left_leg/left_anklet/back_chain",
+        "legs/left_leg/left_anklet/center_bead",
+        "legs/left_leg/left_anklet/crystal_drop",
+        "legs/left_leg/left_anklet/front_chain"
+      ]
+    },
+    "arms/right_arm/right_hand/fingers": {
+      "id": "n32",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "arms/right_arm/right_hand/fingers/index_finger",
+        "arms/right_arm/right_hand/fingers/little_finger",
+        "arms/right_arm/right_hand/fingers/middle_finger",
+        "arms/right_arm/right_hand/fingers/ring_finger"
+      ]
+    },
+    "arms/left_arm/left_hand/fingers": {
+      "id": "n33",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "arms/left_arm/left_hand/fingers/index_finger",
+        "arms/left_arm/left_hand/fingers/little_finger",
+        "arms/left_arm/left_hand/fingers/middle_finger",
+        "arms/left_arm/left_hand/fingers/ring_finger"
+      ]
+    },
+    "legs/right_leg/right_foot/toes": {
+      "id": "n34",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/right_leg/right_foot/toes/big_toe",
+        "legs/right_leg/right_foot/toes/fourth_toe",
+        "legs/right_leg/right_foot/toes/little_toe",
+        "legs/right_leg/right_foot/toes/middle_toe",
+        "legs/right_leg/right_foot/toes/second_toe"
+      ]
+    },
+    "legs/left_leg/left_foot/toes": {
+      "id": "n35",
+      "kind": "group",
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "legs/left_leg/left_foot/toes/big_toe",
+        "legs/left_leg/left_foot/toes/fourth_toe",
+        "legs/left_leg/left_foot/toes/little_toe",
+        "legs/left_leg/left_foot/toes/middle_toe",
+        "legs/left_leg/left_foot/toes/second_toe"
+      ]
+    }
+  },
+  "active": null,
+  "publishing": null,
+  "last_aggregate": {
+    "round": "r4",
+    "covered_ids": [
+      "n32",
+      "n33",
+      "n34",
+      "n35"
+    ],
+    "carry": {
+      "artwork_svg": "/data/home/lockliu/workspaces/forgeax/ai-weapon-spirit/.forgeax/astra-layering-20260924/AstraLayering/outputs/jianma2d-opus55-20261005/refinement/character.svg",
+      "guide_svg": "/data/home/lockliu/workspaces/forgeax/ai-weapon-spirit/.forgeax/astra-layering-20260924/AstraLayering/outputs/jianma2d-opus55-20261005/block-layers/groups.svg",
+      "rendering": "/data/home/lockliu/workspaces/forgeax/ai-weapon-spirit/.forgeax/astra-layering-20260924/AstraLayering/outputs/jianma2d-opus55-20261005/structure/rendering.json"
+    }
+  },
+  "rejection": null
+}
