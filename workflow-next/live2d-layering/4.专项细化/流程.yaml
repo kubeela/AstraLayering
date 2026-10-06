@@ -12,6 +12,7 @@ dispatch:
   # next 返回序列各自的 working_dir、inputs、carry 和 current；用这些路径交接当前 item 的路由。
   # expand、checkpoint、complete 均传 --worker <YAML选定身份> --worker-id <实际会话id>；expand、complete 另传 --node <制作节点id>。
   # children 通过 expand --parent <item.id> --patch <清单> 写入树副本；checkpoint --target <item.id> --pointer <节点id> --outputs <产物路径JSON> 保存步骤。
+  # 节点声明 review 时，由总控派发独立审查，pass 后再 checkpoint 并推进；revise 交回原制作 worker，再由原 reviewer 复验。
   # 路由交付后 complete --target <item.id>，序列内继续；全部 ready 后 aggregate，再 next。
   # aggregate 拒绝时返回 JSON：repairs 指定原 worker、group、文件和失效后项。先 repair --rejection <rejection_id> 恢复输入，再按 next 返回的 workers 和 repair 交接重跑。
   # 返修从该 group 路由开头执行，串行后项重跑，无关序列保留；blocked / tool_error 停止，交回输入或工具问题。退出码分别为 3 / 4 / 5。

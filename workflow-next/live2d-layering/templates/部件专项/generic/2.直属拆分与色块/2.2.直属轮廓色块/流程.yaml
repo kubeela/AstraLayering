@@ -14,3 +14,16 @@ outputs:
   guide_svg: block-layers/groups.svg
   preview: block-layers/preview.png
   bounds_check: refinement/groups/{group_path}/2.直属拆分与色块/2.2.直属轮廓色块/轮廓检查.json
+review:
+  run: templates/部件专项/generic/2.直属拆分与色块/2.2.直属轮廓色块/review
+  worker: "group_child_layers:{group_path}:review"
+  working_dir: "{working_dir}"
+  inputs:
+    group_path: dispatch.item.path
+    reference: dispatch.inputs.reference
+    groups: dispatch.inputs.groups
+    candidate: self.guide_svg
+    bounds_check: self.bounds_check
+    preview_tool: dispatch.inputs.preview_tool
+  outputs:
+    report: reviews/group_child_layers/{group_path}/审查.md
