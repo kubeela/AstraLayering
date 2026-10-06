@@ -1,0 +1,602 @@
+{
+  "layers": [
+    {
+      "id": "hair_bun_shadow_on_hair_cap",
+      "type": "shadow",
+      "owner": "head/hair_cap",
+      "follow": "head/hair_bun",
+      "clip_to": [
+        "head/hair_cap"
+      ],
+      "note": "发髻（含底部额饰挂钩）压在头顶发上的投影：参考图发髻下缘 y 124–130 可见浅暗带，范围见 head_hair_cap_t10（x 468–556，中分处最低 y≈137），柔和过渡约 4 px；向上延续到发髻背后的部分隐藏，发髻与头部相对摆动时随发髻移动，只落在 hair_cap 上。"
+    },
+    {
+      "id": "neck_chin_cast_shadow",
+      "type": "shadow",
+      "owner": "neck/neck_skin",
+      "follow": "head/face/face_skin",
+      "clip_to": [
+        "neck/neck_skin"
+      ],
+      "note": "head 的下巴/脸部在顶光略偏前下投在颈上段的倒 V 形投影（参考 #e4bcb8–#eac5be，下沿硬分界自左颈缘 x482.3,y316.5 经中轴尖点 x506,y336.2 至右颈缘 x529.8,y318，贴下巴处有更深核心带并带约 1px 暖红下缘）。遮光物为 head，随低头/仰头/转头相对颈部移动，故 follow 为 head；当前 groups.json 中 head 尚无具体 part，follow 先记 group 路径，下巴所在脸部 part 出现后可改为其完整路径。受影仅 neck/neck_skin，上端隐藏段延伸到颈顶半圆顶（y274），仰头时下沿随下巴上移。几何参考 neck_skin_tone_chin_shadow_edge/core/region。 步骤5：下巴属 head/face/face_skin，follow 由 head 细化为该 part。"
+    },
+    {
+      "id": "body_right_breast_cast_shadow",
+      "type": "shadow",
+      "owner": "body/right_breast",
+      "follow": "body/right_breast",
+      "clip_to": [
+        "body/waist"
+      ],
+      "note": "右乳（图左）挡住上前方光，投在腰部乳下区域（约 x405-506, y500-530）；参考中泳衣乳下的柔和暗带为依据，乳房独立晃动，投影需随乳房移动并裁切在腰部"
+    },
+    {
+      "id": "body_left_breast_cast_shadow",
+      "type": "shadow",
+      "owner": "body/left_breast",
+      "follow": "body/left_breast",
+      "clip_to": [
+        "body/waist"
+      ],
+      "note": "左乳（图右）投在腰部乳下区域（约 x506-610, y500-530），依据同右乳；随左乳移动、裁切在腰部"
+    },
+    {
+      "id": "body_chest_arm_cast_shadow",
+      "type": "shadow",
+      "owner": "body/chest",
+      "follow": "arms/right_arm/right_upper_arm",
+      "clip_to": [
+        "body/chest"
+      ],
+      "note": "右上臂（图左）内侧在腋下与胸侧（约 x372-416, y400-505）投下窄阴影，随右上臂摆动，裁切在胸部。步骤5：原双臂合层按跟随手臂拆分，此 id 保留图左一侧，图右一侧见 body_chest_left_arm_cast_shadow。参考里此处较弱且部分被泳衣覆盖，强度保守。"
+    },
+    {
+      "id": "hair_cap_cast_shadow_on_face",
+      "type": "shadow",
+      "owner": "head/face/face_skin",
+      "follow": "head/hair_cap",
+      "clip_to": [
+        "head/face/face_skin"
+      ],
+      "note": "刘海/发盖下缘落在额头的暖暗带：参考图 x480 y190-196 约 #eabcb9-#e4b6b3，x532 y192-198 约 #e5babc-#e3b9b1，带宽约4-8px，中缝 x490-522 附近收窄到1-2px。头发随头部摆动与面部有相对位移，需跟随 hair_cap 单独移动并裁切到 face_skin。"
+    },
+    {
+      "id": "right_side_hair_cast_shadow_on_face",
+      "type": "shadow",
+      "owner": "head/face/face_skin",
+      "follow": "head/right_side_hair",
+      "clip_to": [
+        "head/face/face_skin"
+      ],
+      "note": "角色右侧（画面左）鬓发内缘落在太阳穴与脸颊外缘的暗带：参考图 y215 x470 约 #e3b1b6，y230 x464-472 约 #e2c2bf-#d9b6b4，沿发缘向下延续到约 y245。head/right_side_hair 目前没有 part，follow 先记录完整 group 路径；具体遮光 part 出现后再细化。"
+    },
+    {
+      "id": "left_side_hair_cast_shadow_on_face",
+      "type": "shadow",
+      "owner": "head/face/face_skin",
+      "follow": "head/left_side_hair",
+      "clip_to": [
+        "head/face/face_skin"
+      ],
+      "note": "角色左侧（画面右）鬓发内缘落在太阳穴与脸颊外缘的暗带：参考图 y215 x540 约 #e3c0bd，y230 x538-546 约 #dab9af，沿发缘向下延续到约 y245。head/left_side_hair 目前没有 part，follow 先记录完整 group 路径。"
+    },
+    {
+      "id": "right_side_hair_cast_shadow_on_right_ear",
+      "type": "shadow",
+      "owner": "head/face/right_ear",
+      "follow": "head/right_side_hair",
+      "clip_to": [
+        "head/face/right_ear"
+      ],
+      "note": "右耳露出部分整体偏暗（参考图约 #d9a9a9-#e7c2b9），主要来自覆盖其上的右侧鬓发投影；耳自身的耳轮/耳甲明暗已留在 right_ear 的体积层。头发摆动时投影需跟随 head/right_side_hair（尚无 part），裁切到 right_ear。"
+    },
+    {
+      "id": "left_side_hair_cast_shadow_on_left_ear",
+      "type": "shadow",
+      "owner": "head/face/left_ear",
+      "follow": "head/left_side_hair",
+      "clip_to": [
+        "head/face/left_ear"
+      ],
+      "note": "左耳露出部分整体偏暗（参考图约 #d9a9a9-#e7c2b9），来自左侧鬓发投影；耳自身明暗留在 left_ear 体积层。follow 为尚无 part 的 head/left_side_hair，裁切到 left_ear。"
+    },
+    {
+      "id": "mouth_cast_shadow_on_face",
+      "type": "shadow",
+      "owner": "head/face/face_skin",
+      "follow": "head/face/mouth/lower_lip",
+      "clip_to": [
+        "head/face/face_skin"
+      ],
+      "note": "下唇下方的浅暖投影带（参考图 y287-290 约 #f8ded0），由下唇挡光落在颏唇沟皮肤上，张口/嘴形变化时随 mouth 变形。head/face/mouth 目前没有 part，follow 先记录完整 group 路径；已有颏唇沟笔触位于 y291，略低于该投影带。 步骤5：唇下投影的遮光物为下唇，follow 由 mouth 组细化为 head/face/mouth/lower_lip。"
+    },
+    {
+      "id": "hair_cap_shadow_on_temple_strand",
+      "type": "shadow",
+      "owner": "head/left_side_hair/temple_strand",
+      "follow": "head/hair_cap",
+      "clip_to": [
+        "head/left_side_hair/temple_strand"
+      ],
+      "note": "hair_cap 下缘压在鬓边细发束发根的窄投影：参考 y≈248–259 发束亮度约 190–206，t02（y≈259.5）以下回升到 234–242，下沿软边约 2–3 px，向上延入 hair_cap 遮挡边（c04_hidden）下。细发束会相对头顶发摆动，投影随 hair_cap 下缘固定、受影只裁在 temple_strand。也可能含发根自身转面，来源存疑，暂按投影登记；几何依据 head_left_side_hair_temple_strand_t02。"
+    },
+    {
+      "id": "ribbon_shadow_on_outer_loose_strands",
+      "type": "shadow",
+      "owner": "head/left_side_hair/outer_loose_strands",
+      "follow": "head/left_head_ornament",
+      "clip_to": [
+        "head/left_side_hair/outer_loose_strands"
+      ],
+      "note": "左头饰彩带压过长散发上端的投影：参考 y≈627–657 长散发主体亮度约 196–200、外侧亮带也减弱，t02（y≈659）以下回升至 208–212，下沿软边约 4 px（y 656–661），上端接彩带切口 c06_hidden。彩带与散发各自飘动，投影随彩带移动、只裁在 outer_loose_strands。head/left_head_ornament 目前只有 group，彩带 part 出现后 follow 改为其完整路径；也可能含发束进入彩带下的自身暗部，来源存疑。几何依据 head_left_side_hair_outer_loose_strands_t02。"
+    },
+    {
+      "id": "hair_cap_shadow_on_right_temple_strand",
+      "type": "shadow",
+      "owner": "head/right_side_hair/temple_strand",
+      "follow": "head/hair_cap",
+      "clip_to": [
+        "head/right_side_hair/temple_strand"
+      ],
+      "note": "hair_cap 下缘交叉发束压在右鬓细发束上的两条横向投影：上带 y 216–223（t00 偏硬上缘、t01 柔和下缘，约 1 px 渐回），下带 y 239–243（t02 上缘、t03 下缘，向下 1–1.5 px 渐回）；参考暗带亮度约 190–200，上下亮面 230–240。细发束相对头顶发摆动，投影随 hair_cap 移动、只裁在 temple_strand。下带也可能含发束扭转处自身转暗，来源存疑；上带在 guide 中属被 hair_cap 覆盖的 c00_hidden 段但参考可见。当前 SVG 仍由 temple_strand 自身明暗表达，尚未单独绘制层。几何依据 head_right_side_hair_temple_strand_t00–t03。"
+    },
+    {
+      "id": "ribbon_shadow_on_right_outer_lock",
+      "type": "shadow",
+      "owner": "head/right_side_hair/outer_lock",
+      "follow": "head/right_head_ornament",
+      "clip_to": [
+        "head/right_side_hair/outer_lock"
+      ],
+      "note": "右头饰肩部缎带压在外侧长发束根部的小块投影：x 331–336、y 548–556，参考约 180–190，下缘柔和约 1 px 渐回受光面，上端接缎带遮挡边 c00_hidden。缎带与发束各自飘动，投影随缎带移动、只裁在 outer_lock。head/right_head_ornament 目前只有 group，缎带 part 出现后 follow 改为其完整路径。尚未单独绘制层；几何依据 head_right_side_hair_outer_lock_t01。"
+    },
+    {
+      "id": "left_head_ornament_pendant_cast_shadow",
+      "type": "shadow",
+      "owner": "head/left_head_ornament/diamond_pendant",
+      "follow": "head/left_head_ornament/diamond_pendant",
+      "clip_to": [
+        "head/left_head_ornament/ribbon"
+      ],
+      "note": "菱形坠子挡住左上方主光，投在丝带上段坠框下方（约 x 620–637, y 196–212，参考 #9daad8–#aeb5d8，较丝带本色暗一档）；下界见 head_left_head_ornament__ribbon_t01_pendant_cast_shadow，向下约 2–3 px 软边淡出。坠子在细链上摆动、相对丝带移动，故跟随坠子并只裁切在丝带上；心形小挂饰（fill_1）画在丝带之上，不进投影。"
+    },
+    {
+      "id": "left_head_ornament_ribbon_arm_cast_shadow",
+      "type": "shadow",
+      "owner": "head/left_head_ornament/ribbon",
+      "follow": "arms/left_arm/left_upper_arm",
+      "clip_to": [
+        "head/left_head_ornament/ribbon"
+      ],
+      "note": "左上臂外缘在丝带经过臂后处（约 x 631–641, y 380–398）投下贴臂轮廓 1–3 px 的窄接触暗带，内界见 head_left_head_ornament__ribbon_t02_arm_cast_shadow，软边约 1 px。手臂摆动与丝带飘动相对独立，故跟随手臂、裁切在丝带上；arms/left_arm 目前只有 group，后置绑定时改为其上臂 part。来源较确定，但可能部分为丝带绕到臂后的自身转暗。 步骤5：受影段 y380-398 位于左上臂外缘，follow 细化为 arms/left_arm/left_upper_arm。"
+    },
+    {
+      "id": "right_head_ornament_pendant_cast_shadow",
+      "type": "shadow",
+      "owner": "head/right_head_ornament/diamond_pendant",
+      "follow": "head/right_head_ornament/diamond_pendant",
+      "clip_to": [
+        "head/right_head_ornament/ribbon"
+      ],
+      "note": "菱形坠与心形小坠挡住左上方主光，投在丝带上段坠框下方（约 x 370–389, y 200–212，参考较丝带本色暗一档的灰蓝）；下界见 head_right_head_ornament__ribbon_t01_pendant_cast_shadow，向下约 1.5 px 软边淡出。坠子在细链上摆动、相对丝带移动，故跟随坠子并只裁切在丝带上。"
+    },
+    {
+      "id": "right_head_ornament_ribbon_arm_cast_shadow",
+      "type": "shadow",
+      "owner": "head/right_head_ornament/ribbon",
+      "follow": "arms/right_arm/right_upper_arm",
+      "clip_to": [
+        "head/right_head_ornament/ribbon"
+      ],
+      "note": "右上臂（图左）外缘在丝带经过臂后处（约 x 357–376, y 392–544）投下贴臂轮廓约 4 px 的接触暗带，内界见 head_right_head_ornament__ribbon_t02_arm_contact_shade，上端 3 px 渐隐、软边约 2 px。手臂摆动与丝带飘动相对独立，故跟随手臂、裁切在丝带上；arms/right_arm 目前只有 group，后置绑定时改为其上臂 part。可能部分为丝带绕到臂后的自身转暗。 步骤5：受影段 y392-544 在右上臂范围内（前臂自约 y570 起），follow 细化为 arms/right_arm/right_upper_arm。"
+    },
+    {
+      "id": "right_head_ornament_hairpin_hair_contact_shadow",
+      "type": "shadow",
+      "owner": "head/right_head_ornament/flame_hairpin",
+      "follow": "head/hair_cap",
+      "clip_to": [
+        "head/right_head_ornament/flame_hairpin"
+      ],
+      "note": "发簪根部插入头发处、被头顶发遮挡轮廓内侧约 1.5 px 的接触暗边（起 x432.1,y153.1 止 x461.3,y129.7），见 head_right_head_ornament__flame_hairpin_t06_hair_contact_shade，两端渐隐。遮挡边主要来自 head/hair_cap（右上端靠近 head/hair_bun），头发与发簪可相对晃动，暗边随头发遮挡边移动、只裁切在发簪上。"
+    },
+    {
+      "id": "left_earring_knot_shadow_on_tassel",
+      "type": "shadow",
+      "owner": "head/left_earring/pendant_bead",
+      "follow": "head/left_earring/pendant_bead",
+      "clip_to": [
+        "head/left_earring/tassel"
+      ],
+      "note": "pendant_bead 的深蓝结帽压在 tassel 顶端，光从左上来，在流苏顶部形成投影。参考：紧贴结帽下缘 y 292.6–293.7 的暗带亮度约 176–185，下方回升到约 205。范围见 head_left_earring_tassel_t00_knot_cast。边缘较硬，宽约 1 px；向上延续到被结帽遮住的流苏顶端 y 285–292.6，那部分完全处在投影中。流苏摆动时相对结帽移动，投影随结帽走，所以 follow 为 pendant_bead，只裁切到 tassel。"
+    },
+    {
+      "id": "left_earring_tassel_shadow_on_hair",
+      "type": "shadow",
+      "owner": "head/left_earring/tassel",
+      "follow": "head/left_earring/tassel",
+      "clip_to": [
+        "head/left_side_hair/main_lock/main_mass",
+        "head/back_hair"
+      ],
+      "note": "流苏落在身后头发上的柔和投影，光从左上来，投影偏向右下。参考：流苏右侧 x 563–564、y 296–324 的发色亮度约 177–179，同行更右侧约 184–185；左侧 x 555 只暗约 3，基本不可见。强度弱、边缘很软，宽约 1–1.5 px。受影区域推测为 head/left_side_hair 中靠近脸侧的发丝；目前只有 group 路径，具体 part 出现后在后置绑定中改为对应 part。若该处实际是 head/right_side_hair 或脸侧皮肤，需要改 clip_to。耳钉和吊珠在发上没有可辨的投影，未登记。 步骤5：实测受影面——流苏右侧发色为 head/left_side_hair/main_lock/main_mass；main_mass 在流苏下留有空洞，空洞边缘露出 head/back_hair，故 clip_to 改为两者。"
+    },
+    {
+      "id": "right_earring_knot_shadow_on_tassel",
+      "type": "shadow",
+      "owner": "head/right_earring/pendant_bead",
+      "follow": "head/right_earring/pendant_bead",
+      "clip_to": [
+        "head/right_earring/tassel"
+      ],
+      "note": "pendant_bead 的结帽压在 tassel 顶端，光从左上来，在流苏颈部形成投影。参考：结帽底边 y≈292.4 以下 y292–293 亮度约 179–201，流苏中线最暗，y295 起回升到 211–217。范围见 head_right_earring_tassel_t00_knot_cast（x 450.0–453.5，下界 y≈294–294.6）。上缘被结帽压住，边缘硬，宽约 1–2 px；向上延续到被结帽遮住的流苏顶端 y 285–292.4，那部分完全处在投影中。流苏摆动时相对结帽移动，投影随结帽走，所以 follow 为 pendant_bead，只裁切到 tassel。流苏两侧发色约 173–174，未见流苏在 head/right_side_hair 上的可辨投影，未登记；耳钉顶部被耳垂/发丝遮的偏粉暗带归本 part 自身明暗，见 earring_stud_t00_occlusion_top。"
+    },
+    {
+      "id": "right_leg_left_leg_contact_shadow",
+      "type": "shadow",
+      "owner": "legs/right_leg/right_thigh",
+      "follow": "legs/left_leg/left_thigh",
+      "clip_to": [
+        "legs/right_leg/right_thigh",
+        "legs/right_leg/right_shin"
+      ],
+      "note": "Soft contact/occlusion darkening from legs/left_leg on the inner (image-right) edge of the right thigh and knee, about x 494-506, y 984-1061, where the legs touch in the reference (inner edge ~(236,203,190) versus a lit (249,229,221)). It follows the left leg because the legs move relative to each other. Not painted yet: the inner shade band currently covers it (legs_right_leg_right_thigh_tone_inner_shade). Separating it from the self shade is uncertain. Step 5: the occluding part over x494-506, y984-1061 is legs/left_leg/left_thigh (it reaches y≈1097; left_shin starts lower), so follow is refined to that part; the shadow is now painted as a light multiply band."
+    },
+    {
+      "id": "left_eye_upper_lash_cast_shadow",
+      "type": "shadow",
+      "owner": "head/face/left_eye/eye_white",
+      "follow": "head/face/left_eye/upper_eyelid",
+      "clip_to": [
+        "head/face/left_eye/eye_white",
+        "head/face/left_eye/iris"
+      ],
+      "note": "上睑睫毛带（含外眼角竖向睫毛线）挡住左上前方主光，投在其下方的眼白与虹膜上：眼白外侧段 x 545–551、y 235.3–240.6 灰紫 #cec0c3（下界见 head_face_left_eye_eye_white_tone_lid_shadow_outer），内侧段 x 524–527.6 眼白上沿约 1–1.5px 偏灰（见 eye_white_tone_lid_shadow_inner）；虹膜上部 y 235–240 #3f334c–#626481 深带，向下 y 240.5–242 软过渡（见 iris_tone_upper_dark，该区为虹膜碗形自身上暗与睫毛投影的混合，自身部分保留在 iris_volume，独立层只承担贴睫毛下缘的投影带）。眨眼时上睑下移、投影随之下压，视线移动时虹膜在投影下滑动，故跟随 upper_eyelid、裁切到 eye_white 与 iris；SVG 中以同名独立 <g> 绘制（iris 之上、上下睑之下，普通混合 #653d4e×0.3），完整色面上缘延伸到睫毛带核心、左右越过眼角作运动余量，不自带裁切，由后置 apply 绑定 eye_white/iris 受影蒙版。"
+    },
+    {
+      "id": "left_eye_iris_catchlight",
+      "type": "highlight",
+      "owner": "head/face/left_eye/iris",
+      "follow": "head/face/left_eye/iris",
+      "clip_to": [
+        "head/face/left_eye/iris"
+      ],
+      "note": "角膜主光镜面反射点（瞳孔左上 (531.7,237.6)，约 2.3px，#f2f6fd→#d0d6e6，硬边）。落在上睑睫毛投影范围内但不应被压暗，故作为独立层画在 left_eye_upper_lash_cast_shadow 之上、上下睑之下；随虹膜（视线）移动，裁切到 iris。"
+    },
+    {
+      "id": "right_eye_upper_lash_cast_shadow",
+      "type": "shadow",
+      "owner": "head/face/right_eye/eye_white",
+      "follow": "head/face/right_eye/upper_eyelid",
+      "clip_to": [
+        "head/face/right_eye/eye_white",
+        "head/face/right_eye/iris"
+      ],
+      "note": "上睑睫毛带（含外眼角竖向睫毛线）挡住左上前方主光，投在其下方的眼白与虹膜上：眼白外侧段（画面左）x 460.8–466.4、y 235.5–241 灰紫，参考 #c0b3bd–#cbccd8（下界见 head_face_right_eye_eye_white_tone_lid_shadow_outer），内侧段 x 484.6–488 眼白上沿约 1px 偏灰（见 eye_white_tone_lid_shadow_inner）；虹膜上部 y 235–240 #565569–#7379a1 深带，向下 y 240–242 软过渡（见 iris_tone_upper_dark，该区为虹膜碗形自身上暗与睫毛投影的混合，自身部分保留在 iris_volume，独立层只承担贴睫毛下缘的投影加深）。眨眼时上睑下移、投影随之下压，视线移动时虹膜在投影下滑动，故跟随 upper_eyelid、裁切到 eye_white 与 iris；与左眼 left_eye_upper_lash_cast_shadow 镜像对应，色面在 4.5.2 绘制。"
+    },
+    {
+      "id": "right_eye_iris_catchlight",
+      "type": "highlight",
+      "owner": "head/face/right_eye/iris",
+      "follow": "head/face/right_eye/iris",
+      "clip_to": [
+        "head/face/right_eye/iris"
+      ],
+      "note": "角膜主光镜面反射点（瞳孔顶部偏左 (475.95,237.4)，约 2.4×3.4px 竖向椭圆，#eef6fb→#c8d0e2，硬边）。落在上睑睫毛投影范围内但不应被压暗，故作为独立层画在 right_eye_upper_lash_cast_shadow 之上、上下睑之下；随虹膜（视线）移动，裁切到 iris。与左眼 left_eye_iris_catchlight 对应。"
+    },
+    {
+      "id": "upper_lip_cast_shadow_on_lower_lip",
+      "type": "shadow",
+      "owner": "head/face/mouth/lower_lip",
+      "follow": "head/face/mouth/upper_lip",
+      "clip_to": [
+        "head/face/mouth/lower_lip"
+      ],
+      "note": "上唇挡光在下唇上缘紧贴唇缝下方形成约 0.3px 窄投影带（参考 y285 两端偏暗，中段几乎与唇缝重合），边界见 lower_lip_tone_cast_edge；上下唇开合时相对运动，需跟随上唇并裁在下唇内。"
+    },
+    {
+      "id": "upper_lip_cast_shadow_on_mouth_interior",
+      "type": "shadow",
+      "owner": "head/face/mouth/mouth_interior",
+      "follow": "head/face/mouth/upper_lip",
+      "clip_to": [
+        "head/face/mouth/mouth_interior"
+      ],
+      "note": "张口时上唇遮挡在口腔内上部（含上齿面）形成投影，边界见 mouth_interior_tone_lip_shadow；闭口时完全被遮挡不可见，参考无张口图，范围按体积推定，随上唇移动并裁在口腔内。"
+    },
+    {
+      "id": "shell_crown_right_petal_shadow_on_shell_plate",
+      "type": "shadow",
+      "owner": "head/hair_bun/shell_crown/right_side_petal",
+      "follow": "head/hair_bun/shell_crown/right_side_petal",
+      "clip_to": [
+        "head/hair_bun/shell_crown/shell_plate"
+      ],
+      "note": "右侧花瓣（图左）挡住左上主光，投在其下方的冠板上。静止时大部分被花瓣本体遮住：范围见 head_hair_bun_shell_crown_shell_plate_t03h_petal_cast（隐藏延续，约沿花瓣 c02/s02 上方 1–2 px），以及花瓣杯段之下下扇露出面 x 474–486、y 107.5–112 的一部分（参考亮度约 192–196）。边缘软，宽约 2 px。花瓣可相对冠板上扬/下摆 2–4 px，故随花瓣移动、只裁切在冠板上。下扇整体暗区目前按 4.2 自身凹面绘制，投影与凹面的分界留 4.5.2 判定。"
+    },
+    {
+      "id": "shell_crown_left_petal_shadow_on_shell_plate",
+      "type": "shadow",
+      "owner": "head/hair_bun/shell_crown/left_side_petal",
+      "follow": "head/hair_bun/shell_crown/left_side_petal",
+      "clip_to": [
+        "head/hair_bun/shell_crown/shell_plate"
+      ],
+      "note": "左侧花瓣（图右）投在冠板上，与右侧花瓣按 x′=1011−x 镜像（t03h 镜像段；下扇露出面 x 525–537、y 107.5–112，参考亮度约 181–191，比图左暗一阶）。边缘软，宽约 2 px；随花瓣移动、只裁切在冠板上。"
+    },
+    {
+      "id": "shell_crown_flower_cluster_cast_shadow",
+      "type": "shadow",
+      "owner": "head/hair_bun/shell_crown/flower_cluster",
+      "follow": "head/hair_bun/shell_crown/flower_cluster",
+      "clip_to": [
+        "head/hair_bun/shell_crown/shell_plate",
+        "head/hair_bun/shell_crown/right_side_petal",
+        "head/hair_bun/shell_crown/left_side_petal"
+      ],
+      "note": "花簇（菱瓣与两侧圆叶）挡住左上主光，投在其后下方：一是两侧花瓣杯面贴圆叶外缘的最深核区下沿（见两花瓣 t01_cup_shade_core 至 c02，x 476–486 / 525–535、y 106–109），二是冠板下扇靠花簇一侧的较深区（见 shell_plate t01/t02_lower_fan_shade 以内，x 487–494 / 517–524、y 108–116）。边缘较软，宽约 1.5–3 px，图右略深。花簇是独立摆动的饰件，可相对花瓣和冠板移动，故随花簇、裁切到冠板与两花瓣。目前这些区域按 4.2/4.4 自身明暗绘制，4.5.2 时拆出投影部分并相应减轻原色面。"
+    },
+    {
+      "id": "main_mass_face_jaw_cast_shadow",
+      "type": "shadow",
+      "owner": "head/left_side_hair/main_lock/main_mass",
+      "follow": "head/face/face_skin",
+      "clip_to": [
+        "head/left_side_hair/main_lock/main_mass"
+      ],
+      "note": "下颌/脸颊在主发束上的投影：tb00 左侧并沿 c16/c17 内缘，x 531–550，y 274–354；参考亮度 146–160，周围中间调 170–180；柔边约 6–8 px。发束相对脸部摆动，投影需随脸平移、按发束裁切，故独立。疑问：其中部分可能是发束转向颈侧的自身背光，占比不能完全分离，tb00 曲线说明已记录。"
+    },
+    {
+      "id": "main_mass_body_contact_shadow",
+      "type": "shadow",
+      "owner": "head/left_side_hair/main_lock/main_mass",
+      "follow": "body/waist",
+      "clip_to": [
+        "head/left_side_hair/main_lock/main_mass"
+      ],
+      "note": "躯干腰侧/胯侧对主发束的接触遮蔽：沿 c13 腰部贴合段 y 594–650（发内侧 129–175）与 c12 胯侧段 y 650–812（136–186），腰带内核约 160–170；贴边处最暗，向外 4–6 px 软化。身体扭转、呼吸与发束摆动会改变贴合位置，故独立并随躯干。疑问：上段 y 490–594 的暗部，躯干与上臂各占多少不确定；c15 处肩带/胸侧极小暗块（y 354–359，130–165）一并归入，未单独建层。"
+    },
+    {
+      "id": "main_mass_left_forearm_contact_shadow",
+      "type": "shadow",
+      "owner": "head/left_side_hair/main_lock/main_mass",
+      "follow": "arms/left_arm/left_forearm",
+      "clip_to": [
+        "head/left_side_hair/main_lock/main_mass"
+      ],
+      "note": "左前臂压在主发束外缘的接触投影：沿 c06，y 661–771，边缘窄带 169–199，宽约 3–5 px，柔边。手臂与发束独立运动，需随前臂移动并裁切到主发束。疑问：手部（left_hand 组暂无部件）可能也参与下段遮挡；前臂缺口（请求 A）待父组扩展后再确认形状。"
+    },
+    {
+      "id": "inner_thin_strands_left_forearm_contact_shadow",
+      "type": "shadow",
+      "owner": "head/left_side_hair/main_lock/inner_thin_strands",
+      "follow": "arms/left_arm/left_forearm",
+      "clip_to": [
+        "head/left_side_hair/main_lock/inner_thin_strands"
+      ],
+      "note": "左前臂在内侧细发束上的接触投影：沿 c00，y 718–772，参考 149–190，贴边最暗，向内约 4 px 渐亮。随前臂移动、按细发束裁切。疑问同主发束前臂投影：手部可能参与。"
+    },
+    {
+      "id": "main_mass_left_thigh_contact_shadow",
+      "type": "shadow",
+      "owner": "head/left_side_hair/main_lock/main_mass",
+      "follow": "legs/left_leg/left_thigh",
+      "clip_to": [
+        "head/left_side_hair/main_lock/main_mass"
+      ],
+      "note": "左大腿在主发束下段的接触遮蔽：沿 c11，y 812–982 贴边 4–6 px（160–178）；t00 左侧尖梢暗部（172–180，y 958 以下消失）；x 580–615、y 880–900 约 165。腿部抬起/迈步时相对发梢移动，需独立跟随大腿。疑问：t00 左侧暗部中发梢内转的自身背光与腿部投影占比不确定，t00 曲线说明已记录，原画保持。"
+    },
+    {
+      "id": "inner_thin_strands_left_thigh_contact_shadow",
+      "type": "shadow",
+      "owner": "head/left_side_hair/main_lock/inner_thin_strands",
+      "follow": "legs/left_leg/left_thigh",
+      "clip_to": [
+        "head/left_side_hair/main_lock/inner_thin_strands"
+      ],
+      "note": "左大腿在内侧细发束下端的接触投影：沿 c03，y 836–875，参考 124–179，贴边最暗，柔边约 4 px。随大腿移动、按细发束裁切。"
+    },
+    {
+      "id": "curled_tip_inner_strands_cast_shadow",
+      "type": "shadow",
+      "owner": "head/left_side_hair/main_lock/curled_tip",
+      "follow": "head/left_side_hair/main_lock/inner_thin_strands",
+      "clip_to": [
+        "head/left_side_hair/main_lock/curled_tip"
+      ],
+      "note": "细发束根部压在卷梢上方的投影：s00 左侧 y 884–905，参考 171–183，对侧 195–200，柔边 2–3 px。两部件可相对摆动，故独立。疑问：投影物也可能是主发束下缘而非细发束，且 y 877–892 交接处（166–178）与卷梢自身背光难以区分；s00 曲线说明已记录，原画保持。"
+    },
+    {
+      "id": "right_main_mass_face_jaw_cast_shadow",
+      "type": "shadow",
+      "owner": "head/right_side_hair/main_lock/main_mass",
+      "follow": "head/face/face_skin",
+      "clip_to": [
+        "head/right_side_hair/main_lock/main_mass"
+      ],
+      "note": "下颌/脸颊挡住左上主光，投在主发束颈侧发面上：tb01 右侧至外轮廓，x 461–481，y 286–350；参考亮度 145–155，左侧背光中间调 165–175。上段斜边 (481,301)–(463.5,286) 较硬（约 2 px），竖段柔和约 4 px，y 340–350 渐隐。发束相对脸部摆动，投影需随脸部移动、按主发束裁切，故独立。疑问：其中部分为发面转向颈后的自身背光，比例不能完全分离（tb01 曲线说明已记录）；right_ear 与右耳坠流苏可能也参与遮挡，未单独建层；该区域当前被 neck_skin 覆盖（3.1 未解决项）。"
+    },
+    {
+      "id": "right_main_mass_waist_contact_shadow",
+      "type": "shadow",
+      "owner": "head/right_side_hair/main_lock/main_mass",
+      "follow": "body/waist",
+      "clip_to": [
+        "head/right_side_hair/main_lock/main_mass"
+      ],
+      "note": "躯干腰侧贴着主发束前臂—腰露出段右缘的接触遮蔽：沿右外缘 y 520–632，贴边 2–3 px 为 120–165，y 595–630 最深（115–140），向内约 4 px 渐亮到 160–171。身体扭转与发束摆动会改变贴合位置，故独立并随腰部。疑问：tb02 记录的环境遮蔽同时来自右前臂/右上臂与躯干，前臂遮挡边一侧参考未见明显接触暗边，暂只登记腰侧；贴边最暗的 1 px 可能部分属于线稿。"
+    },
+    {
+      "id": "right_main_mass_upper_arm_cast_shadow",
+      "type": "shadow",
+      "owner": "head/right_side_hair/main_lock/main_mass",
+      "follow": "arms/right_arm/right_upper_arm",
+      "clip_to": [
+        "head/right_side_hair/main_lock/main_mass"
+      ],
+      "note": "右上臂/肘部挡光投在主发束外侧窄条上端：x 322–357，y 555–594；参考 181–190，下方同一窄条受光 231–237；下缘约 3 px 柔和过渡，上端接手臂遮挡边。手臂摆动时相对发束移动，故独立。疑问：右头饰缎带在 y 548–556 已登记压在 outer_lock 的投影（ribbon_shadow_on_right_outer_lock，由其他 group 管理），本处暗部也可能部分来自缎带；遮光物是上臂还是肘/前臂上端也不能完全确定。"
+    },
+    {
+      "id": "right_main_mass_thigh_contact_shadow",
+      "type": "shadow",
+      "owner": "head/right_side_hair/main_lock/main_mass",
+      "follow": "legs/right_leg/right_thigh",
+      "clip_to": [
+        "head/right_side_hair/main_lock/main_mass"
+      ],
+      "note": "右大腿在主发束下段右缘的接触遮蔽：沿右外缘 y 860–935，贴边 2–3 px 为 146–165，向内约 4 px 渐亮到 180–185；y 940 以下尖梢不再贴腿，消失。腿部抬起/迈步时相对发梢移动，故独立跟随大腿。疑问：贴边最暗处与线稿、背景缝隙相邻，强度有限，可能只需很淡的接触暗边。"
+    },
+    {
+      "id": "right_hand_cast_shadow_on_main_lock",
+      "type": "shadow",
+      "owner": "arms/right_arm/right_hand/palm",
+      "follow": "arms/right_arm/right_hand/palm",
+      "clip_to": [
+        "head/right_side_hair/main_lock/main_mass"
+      ],
+      "note": "手背（palm）右缘在左上光下投到身后右侧主发束上的窄蓝灰带：参考 x≈326–331、y≈738–792 紧贴 palm_inner 外侧约 4–6 px，色 #afb7d0–#b5bdd3，外侧主发束受光色约 #e8e5f2，分界较硬；y≈794 以下发束外露处为黑色背景，影子不可见。手与发束相对独立运动，故随 palm 移动、裁切在 head/right_side_hair/main_lock（guide 中该处为 main_lock 色块）。该 group 目前尚无具体 part，后置绑定时改为其实际绘制的 part。腕段上接 right_forearm 右缘，前臂流程判定前臂投影不可辨，未登记；如两者需连贯，可在后置组合时把本层向上延伸到腕。来源较确定，但也可能部分是发束自身内侧暗缘。 步骤5：x322-340,y728-806 的受影发束实测仅 main_mass（inner_thin_strands、curled_tip 不在该处），clip_to 细化；SVG 中移到 right_side_hair/main_lock 之后、前臂与手之前，避免蒙版范围内的前臂被压暗。"
+    },
+    {
+      "id": "right_hand_thumb_cast_shadow_on_fingers",
+      "type": "shadow",
+      "owner": "arms/right_arm/right_hand/thumb",
+      "follow": "arms/right_arm/right_hand/thumb",
+      "clip_to": [
+        "arms/right_arm/right_hand/fingers/index_finger",
+        "arms/right_arm/right_hand/fingers/middle_finger",
+        "arms/right_arm/right_hand/fingers/ring_finger"
+      ],
+      "note": "拇指尖（约 x 315–327, y 825–838）向下投在其正下方手指指尖上的软影：参考 x≈321–331、y≈836–846 指尖色 #ebbab9、#eab3b3、#e4a9aa，比手指其他处（#e3bcb4、#e0b8ae）更红更暗。拇指与手指分别弯曲，需随拇指移动、裁切在 fingers。fingers 目前只有 group、尚无具体 part，后置绑定时改为其绘制完成的指尖 part。来源存疑：也可能是手指自身背光，强度待 fingers 绘制后确定。 步骤5：实测 x313–331,y816–845 投影覆盖食指尖、中指与无名指上缘，小指在其外，clip_to 由 fingers 组细化为这三根手指。"
+    },
+    {
+      "id": "left_hand_thumb_cast_shadow_on_back_of_hand",
+      "type": "shadow",
+      "owner": "arms/left_arm/left_hand/back_of_hand",
+      "follow": "arms/left_arm/left_hand/thumb",
+      "clip_to": [
+        "arms/left_arm/left_hand/back_of_hand"
+      ],
+      "note": "拇指根在虎口窝（约 x695–700, y789–802）对手背的遮光：参考贴 thumb_inner_edge 右侧 1–2 px 有窄接触暗带（y795–799 x697 #f4cfca–#ecc8c6），向孔洞上尖加深；依据 back_of_hand_tone_web_shadow 说明（投影物 thumb，受影 back_of_hand）。拇指外展/内收时相对手掌移动，故跟随 thumb、裁切到 back_of_hand。虎口窝自身凹陷深度已由 back_of_hand_vol_web_hollow 与 back_of_hand_ls_web_crevice 画到接近参考，4.5 绘制只补贴拇指内缘的窄接触带，避免重复叠深。"
+    },
+    {
+      "id": "left_hand_thumb_cast_shadow_on_fingers",
+      "type": "shadow",
+      "owner": "arms/left_arm/left_hand/thumb",
+      "follow": "arms/left_arm/left_hand/thumb",
+      "clip_to": [
+        "arms/left_arm/left_hand/fingers/index_finger"
+      ],
+      "note": "拇指尖压在弯曲手指掌面之前（约 x683–694, y836–840）的接触投影：参考指尖下缘外侧 1 px 有 #d6a7a4–#ce9c98 的接触暗线，其下手指掌面为均匀粉色 #e0b6b0–#e8b6b4，无明显大面积投影，强度弱、来源与描线难完全区分，待 fingers 绘制后复核。拇指与手指分别弯曲，故跟随 thumb；fingers 目前只有 group（无 part），后置绑定时改用其绘制完成的 part。 步骤5：实测 x683–694,y831–840 的受影指面只属 index_finger（中指从约 y840 以下开始），clip_to 由 fingers 组细化为 index_finger。"
+    },
+    {
+      "id": "right_anklet_bead_cast_shadow_on_crystal",
+      "type": "shadow",
+      "owner": "legs/right_leg/right_anklet/crystal_drop",
+      "follow": "legs/right_leg/right_anklet/center_bead",
+      "clip_to": [
+        "legs/right_leg/right_anklet/crystal_drop"
+      ],
+      "note": "center_bead 挡光，投在 crystal_drop 顶端尖部与挂环下方（参考图约 185 灰度的小暗块，见 crystal_drop_tone_top_shadow）；吊坠摆动时与珠子相对运动，投影跟随珠子、裁切到吊坠。"
+    },
+    {
+      "id": "left_anklet_bead_cast_shadow_on_crystal",
+      "type": "shadow",
+      "owner": "legs/left_leg/left_anklet/crystal_drop",
+      "follow": "legs/left_leg/left_anklet/center_bead",
+      "clip_to": [
+        "legs/left_leg/left_anklet/crystal_drop"
+      ],
+      "note": "center_bead 挡住上方光，投在 crystal_drop 顶端颈部与挂环下方：参考图 x533–535、y1404–1409 有一条约 189–202 灰度的暗茎（两侧约 235），y1410 起回升到 213 并接入水晶上段亮带；下界见 legs_left_leg_left_anklet_crystal_drop_tone_top_shadow（y≈1409.2），边缘偏硬约 0.3 px。吊坠在挂环上摆动，与珠子有相对运动，所以投影跟随 center_bead，只裁切到 crystal_drop。暗茎也可能部分是挂环/颈部自身的暗面（4.4 的 crystal_drop_dark_neck 已画一个淡点），来源存疑。前链、后链和端珠在小腿皮肤上没有可辨的投影（链下方皮肤约 250,233,221，与周围相同），所以未登记。"
+    },
+    {
+      "id": "right_fourth_toe_cast_shadow_on_little_toe",
+      "type": "shadow",
+      "owner": "legs/right_leg/right_foot/toes/fourth_toe",
+      "follow": "legs/right_leg/right_foot/toes/fourth_toe",
+      "clip_to": [
+        "legs/right_leg/right_foot/toes/little_toe"
+      ],
+      "note": "fourth_toe 叠在 little_toe 右侧（toes 叠放顺序 little→big，上层趾压住下层趾右缘），挡光投在 little_toe 沿 gap 1 的右侧带：参考图 gap 线左侧暗粉带宽 1.5-1.8 px，范围 x ~436-438, y ~1463-1482，中段最暗，贴 gap 线硬边、向趾面约 1 px 软化；位置见 legs__right_leg__right_foot__toes__little_toe_tone_right_gap_occlusion_shade（同时含 little_toe 自身侧面转入，自身转面已在 4.2/4.4 留给所属 part）。两趾可分别弯曲、张开，故投影跟随 fourth_toe、裁切到 little_toe；张趾时沿 little_toe 隐藏根部叠压区继续同宽。"
+    },
+    {
+      "id": "right_middle_toe_cast_shadow_on_fourth_toe",
+      "type": "shadow",
+      "owner": "legs/right_leg/right_foot/toes/middle_toe",
+      "follow": "legs/right_leg/right_foot/toes/middle_toe",
+      "clip_to": [
+        "legs/right_leg/right_foot/toes/fourth_toe"
+      ],
+      "note": "middle_toe 叠在 fourth_toe 右侧（toes 叠放顺序 little→big，上层趾压住下层趾右缘），挡光投在 fourth_toe 沿 gap 2 的右侧带：参考图 gap 线左侧暗粉带宽 1.5-1.8 px，范围 x ~446-449, y ~1466-1488，中段最暗，贴 gap 线硬边、向趾面约 1 px 软化；位置见 legs__right_leg__right_foot__toes__fourth_toe_tone_right_gap_occlusion_shade（同时含 fourth_toe 自身侧面转入，自身转面已在 4.2/4.4 留给所属 part）。两趾可分别弯曲、张开，故投影跟随 middle_toe、裁切到 fourth_toe；张趾时沿 fourth_toe 隐藏根部叠压区继续同宽。"
+    },
+    {
+      "id": "right_second_toe_cast_shadow_on_middle_toe",
+      "type": "shadow",
+      "owner": "legs/right_leg/right_foot/toes/second_toe",
+      "follow": "legs/right_leg/right_foot/toes/second_toe",
+      "clip_to": [
+        "legs/right_leg/right_foot/toes/middle_toe"
+      ],
+      "note": "second_toe 叠在 middle_toe 右侧（toes 叠放顺序 little→big，上层趾压住下层趾右缘），挡光投在 middle_toe 沿 gap 3 的右侧带：参考图 gap 线左侧暗粉带宽 1.5-1.8 px，范围 x ~458-461, y ~1467-1491，中段最暗，贴 gap 线硬边、向趾面约 1 px 软化；位置见 legs__right_leg__right_foot__toes__middle_toe_tone_right_gap_occlusion_shade（同时含 middle_toe 自身侧面转入，自身转面已在 4.2/4.4 留给所属 part）。两趾可分别弯曲、张开，故投影跟随 second_toe、裁切到 middle_toe；张趾时沿 middle_toe 隐藏根部叠压区继续同宽。"
+    },
+    {
+      "id": "right_big_toe_cast_shadow_on_second_toe",
+      "type": "shadow",
+      "owner": "legs/right_leg/right_foot/toes/big_toe",
+      "follow": "legs/right_leg/right_foot/toes/big_toe",
+      "clip_to": [
+        "legs/right_leg/right_foot/toes/second_toe"
+      ],
+      "note": "big_toe 叠在 second_toe 右侧（toes 叠放顺序 little→big，上层趾压住下层趾右缘），挡光投在 second_toe 沿 gap 4 的右侧带：参考图 gap 线左侧暗粉带宽 1.5-2.6 px, near-black in the slit，范围 x ~470-474, y ~1465-1490 (darkest x 470-472, y 1472-1488)，中段最暗，贴 gap 线硬边、向趾面约 1 px 软化；位置见 legs__right_leg__right_foot__toes__second_toe_tone_right_gap_occlusion_shade（同时含 second_toe 自身侧面转入，自身转面已在 4.2/4.4 留给所属 part）。两趾可分别弯曲、张开，故投影跟随 big_toe、裁切到 second_toe；张趾时沿 second_toe 隐藏根部叠压区继续同宽。"
+    },
+    {
+      "id": "left_big_toe_cast_shadow_on_second_toe",
+      "type": "shadow",
+      "owner": "legs/left_leg/left_foot/toes/big_toe",
+      "follow": "legs/left_leg/left_foot/toes/big_toe",
+      "clip_to": [
+        "legs/left_leg/left_foot/toes/second_toe"
+      ],
+      "note": "big_toe 叠在 second_toe 左侧（左脚与右脚镜像；toes 叠放顺序 little→big，上层趾压住下层趾的 image-left 缘），挡光/接触遮挡投在 second_toe 沿 gap 1 的根部叠压带与缝隙。静止时可见部分即 gap 1 深缝：参考图 x 526-529, y 1467-1489 的接触暗缝，跨 gap 线 3-4 px 宽，y 1476 处近黑 G 3、y 1470-1479 线右侧 second_toe 一侧 G 79-208；目前由 3.5 加粗加深的 legs__left_leg__left_foot__toes__big_toe_right_gap_contour 笔触 (#3a2022, y 1474-1488) 承担，范围见 legs__left_leg__left_foot__toes__second_toe_tone_slit_occlusion_shade；隐藏根部叠压带见 legs__left_leg__left_foot__toes__second_toe_tone_hidden_lap_occlusion (x 521.5-525.4, y 1453-1472, 顶部宽 ~3.0 px, y~1472 收为 0)。两趾可分别弯曲、张开，故投影跟随 big_toe、裁切到 second_toe；张趾时沿 second_toe 露出的叠压带显示，紧贴 gap 线最暗、向隐藏边约 1 px 软化。参考图左脚 gap 两侧均为亮边（3.3 已记为 edge light），自身转面与亮边留在所属 part；foot_body 对趾根无投影（y 1456-1462 与趾面同亮）。"
+    },
+    {
+      "id": "left_second_toe_cast_shadow_on_middle_toe",
+      "type": "shadow",
+      "owner": "legs/left_leg/left_foot/toes/second_toe",
+      "follow": "legs/left_leg/left_foot/toes/second_toe",
+      "clip_to": [
+        "legs/left_leg/left_foot/toes/middle_toe"
+      ],
+      "note": "second_toe 叠在 middle_toe 左侧（左脚与右脚镜像；toes 叠放顺序 little→big，上层趾压住下层趾的 image-left 缘），挡光/接触遮挡投在 middle_toe 沿 gap 2 的根部叠压带与缝隙。静止时被 second_toe 盖住，参考图 gap 2 只见线 (y 1467-1488 线上 G 120-195，线右侧 1 px 即回到 G 228-234)，无额外投影带；隐藏根部叠压带见 legs__left_leg__left_foot__toes__middle_toe_tone_hidden_lap_occlusion (x 536.5-540.1, y 1456-1473, 顶部宽 ~2.6 px, y~1473 收为 0)。两趾可分别弯曲、张开，故投影跟随 second_toe、裁切到 middle_toe；张趾时沿 middle_toe 露出的叠压带显示，紧贴 gap 线最暗、向隐藏边约 1 px 软化。参考图左脚 gap 两侧均为亮边（3.3 已记为 edge light），自身转面与亮边留在所属 part；foot_body 对趾根无投影（y 1456-1462 与趾面同亮）。"
+    },
+    {
+      "id": "left_middle_toe_cast_shadow_on_fourth_toe",
+      "type": "shadow",
+      "owner": "legs/left_leg/left_foot/toes/middle_toe",
+      "follow": "legs/left_leg/left_foot/toes/middle_toe",
+      "clip_to": [
+        "legs/left_leg/left_foot/toes/fourth_toe"
+      ],
+      "note": "middle_toe 叠在 fourth_toe 左侧（左脚与右脚镜像；toes 叠放顺序 little→big，上层趾压住下层趾的 image-left 缘），挡光/接触遮挡投在 fourth_toe 沿 gap 3 的根部叠压带与缝隙。静止时被 middle_toe 盖住，参考图 gap 3 只见线 (y 1465-1483 线上 G 112-209，线右侧 1 px 即回到 G 224-235)，无额外投影带；隐藏根部叠压带见 legs__left_leg__left_foot__toes__fourth_toe_tone_hidden_lap_occlusion (x 548.4-551.8, y 1455-1472, 顶部宽 ~2.7 px, y~1472 收为 0)。两趾可分别弯曲、张开，故投影跟随 middle_toe、裁切到 fourth_toe；张趾时沿 fourth_toe 露出的叠压带显示，紧贴 gap 线最暗、向隐藏边约 1 px 软化。参考图左脚 gap 两侧均为亮边（3.3 已记为 edge light），自身转面与亮边留在所属 part；foot_body 对趾根无投影（y 1456-1462 与趾面同亮）。"
+    },
+    {
+      "id": "left_fourth_toe_cast_shadow_on_little_toe",
+      "type": "shadow",
+      "owner": "legs/left_leg/left_foot/toes/fourth_toe",
+      "follow": "legs/left_leg/left_foot/toes/fourth_toe",
+      "clip_to": [
+        "legs/left_leg/left_foot/toes/little_toe"
+      ],
+      "note": "fourth_toe 叠在 little_toe 左侧（左脚与右脚镜像；toes 叠放顺序 little→big，上层趾压住下层趾的 image-left 缘），挡光/接触遮挡投在 little_toe 沿 gap 4 的根部叠压带与缝隙。静止时被 fourth_toe 盖住，参考图 gap 4 只见线 (y 1462-1477 线上 G 125-209，线右侧 1 px 即回到 G 213-232)，无额外投影带；隐藏根部叠压带见 legs__left_leg__left_foot__toes__little_toe_tone_hidden_lap_occlusion (x 559.3-562.9, y 1453-1472, 顶部宽 ~3.0 px, y~1472 收为 0)。两趾可分别弯曲、张开，故投影跟随 fourth_toe、裁切到 little_toe；张趾时沿 little_toe 露出的叠压带显示，紧贴 gap 线最暗、向隐藏边约 1 px 软化。参考图左脚 gap 两侧均为亮边（3.3 已记为 edge light），自身转面与亮边留在所属 part；foot_body 对趾根无投影（y 1456-1462 与趾面同亮）。"
+    },
+    {
+      "id": "body_chest_left_arm_cast_shadow",
+      "type": "shadow",
+      "owner": "body/chest",
+      "follow": "arms/left_arm/left_upper_arm",
+      "clip_to": [
+        "body/chest"
+      ],
+      "note": "左上臂（图右）内侧在腋下与胸侧（约 x596-640, y400-505）投下窄阴影，随左上臂摆动，裁切在胸部；步骤5 从 body_chest_arm_cast_shadow 拆出，几何未变。参考里此处较弱，强度保守。"
+    }
+  ]
+}

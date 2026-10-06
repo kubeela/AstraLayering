@@ -1,0 +1,743 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "name": "head",
+      "groups": [
+        {
+          "name": "face",
+          "groups": [
+            {
+              "name": "left_eye",
+              "groups": [],
+              "note": "character-left eye (image right, ~x 513-552, y 240-262): upper lid line with lashes and outer wing, lower lid, eye white, blue iris with pupil and highlights; lids close for blinks while iris moves for gaze, so it is split further",
+              "parts": [
+                {
+                  "name": "upper_eyelid",
+                  "note": "dark upper lash line from the inner corner (~x 521, y 245) arcing over the eye to the flicked outer wing (~x 558, y 237), with the thin double-lid crease above it (~x 522-552, y 229-234); lowers over the eye as one unit for blinks"
+                },
+                {
+                  "name": "lower_eyelid",
+                  "note": "thin warm lower lid line and the short outer-corner lash marks along the bottom of the eye (~x 527-553, y 249-255); rises slightly for blinks and smiles"
+                },
+                {
+                  "name": "eye_white",
+                  "note": "white sclera filling the eye opening between the lids (~x 522-555, y 236-255); stable socket base behind the iris, clipped by the lids when closing"
+                },
+                {
+                  "name": "iris",
+                  "note": "blue iris with dark pupil and white catch-light highlights (~x 527-545, y 234-255), partly covered by the upper lid; slides inside the eye white for gaze as one unit"
+                }
+              ]
+            },
+            {
+              "name": "right_eye",
+              "groups": [],
+              "note": "character-right eye (image left, ~x 460-499, y 240-262): upper lid with lashes, lower lid, eye white, iris and highlights; blink and gaze move separately",
+              "parts": [
+                {
+                  "name": "upper_eyelid",
+                  "note": "dark upper lash line from the flicked outer wing at image left (~x 454, y 237) arcing over the eye to the inner corner (~x 490, y 244), with the thin double-lid crease above it (~x 458-490, y 230-234); lowers over the eye as one unit for blinks (mirror of left_eye/upper_eyelid)"
+                },
+                {
+                  "name": "lower_eyelid",
+                  "note": "thin warm lower lid line and the short outer-corner lash marks along the bottom of the eye (~x 458-486, y 248-255); rises slightly for blinks and smiles"
+                },
+                {
+                  "name": "eye_white",
+                  "note": "white sclera filling the eye opening between the lids (~x 457-490, y 235-254); stable socket base behind the iris, clipped by the lids when closing"
+                },
+                {
+                  "name": "iris",
+                  "note": "blue iris with dark pupil and white catch-light highlights (~x 467-485, y 234-254), partly covered by the upper lid; slides inside the eye white for gaze as one unit"
+                }
+              ]
+            },
+            {
+              "name": "mouth",
+              "groups": [],
+              "note": "small closed lips at ~(506, 292); upper lip, lower lip and the hidden mouth interior/teeth change shape separately when talking",
+              "parts": [
+                {
+                  "name": "upper_lip",
+                  "note": "thin pale-pink upper lip band (~x 498-514, y 282-285), slightly wider than the lower lip; lifts and reshapes on its own when talking or smiling"
+                },
+                {
+                  "name": "lower_lip",
+                  "note": "soft lower lip with the faint pink tone below the seam (~x 499-513, y 285-288); drops and stretches separately from the upper lip when the mouth opens"
+                },
+                {
+                  "name": "mouth_line",
+                  "note": "darker lip seam running across the closed mouth with the two dark mauve corner accents (~x 497-515, y 284-286); stretches, curves into smile/frown and separates into the opening edge independently of the lip fills"
+                },
+                {
+                  "name": "mouth_interior",
+                  "note": "mouth cavity/teeth back layer of head/face/mouth, fully hidden behind upper_lip, lower_lip and mouth_line when closed; elliptical base spanning the lip area so lip lift/drop and seam opening when talking reveal interior instead of face skin"
+                }
+              ]
+            }
+          ],
+          "note": "face skin from hairline to chin with ears hidden under hair, eyes, brows, nose and mouth; features animate independently of the face base",
+          "parts": [
+            {
+              "name": "face_skin",
+              "note": "face base skin: completed forehead dome under the hair cap, temples, cheeks with their soft blush, jaw and pointed chin (~x 452-559, y 167-312); the stable base the features sit on"
+            },
+            {
+              "name": "left_ear",
+              "note": "character-left ear (image right, ~x 556-568, y 243-288), mostly under the side hair with only the lower rim visible; shifts and foreshortens differently from the face plane on head turn"
+            },
+            {
+              "name": "right_ear",
+              "note": "character-right ear (image left, ~x 444-457, y 243-288), mostly hidden under hair; mirror of left_ear"
+            },
+            {
+              "name": "left_eyebrow",
+              "note": "character-left thin pale brow above the eye (~x 515-548, y 222-232); raises and tilts for expression as one stroke"
+            },
+            {
+              "name": "right_eyebrow",
+              "note": "character-right thin pale brow (~x 464-497, y 222-232)"
+            },
+            {
+              "name": "nose",
+              "note": "faint nose bridge highlight and tip/nostril shading at ~(506, 270-280); single small unit shifting with head turn"
+            }
+          ]
+        },
+        {
+          "name": "hair_bun",
+          "groups": [
+            {
+              "name": "shell_crown",
+              "groups": [],
+              "note": "rigid ornament at the front-bottom of the bun (~x 458-555, y 72-123): pale-blue fan-shell plate with radiating ribs, the blue petal flower cluster and white centre bud at its base, and the two white leaf-shaped petals flaring out left and right; the side petals flutter separately from the rigid shell plate and flower",
+              "parts": [
+                {
+                  "name": "shell_plate",
+                  "note": "rigid pale-blue fan-shell plate with radiating ribs and white rim (~x 476-536, y 72-118), sits behind the flower; anchors the ornament to the bun"
+                },
+                {
+                  "name": "flower_cluster",
+                  "note": "blue petal flower cluster with the white centre bud at the bottom-middle of the shell (~x 485-525, y 92-123); small rigid bloom drawn over the shell plate, can tilt/bob slightly as one unit"
+                },
+                {
+                  "name": "right_side_petal",
+                  "note": "white leaf-shaped petal flaring out on the image left (character right, ~x 457-485, y 99-118) including the small inner white petal tucked against the shell; flutters separately from the rigid shell"
+                },
+                {
+                  "name": "left_side_petal",
+                  "note": "white leaf-shaped petal flaring out on the image right (character left, ~x 527-554, y 99-118) including the small inner white petal tucked against the shell; flutters separately from the rigid shell"
+                }
+              ]
+            }
+          ],
+          "note": "round shell-shaped updo bun on top of the head plus the blue fan-shell crown and white petals at its front; bun and crown ornament differ in rigidity",
+          "parts": [
+            {
+              "name": "bun",
+              "note": "lavender-white shell-shaped hair bun with vertical ridges, the whole rounded mass from its top (~y 41) down behind the crown to its base hidden by hair_cap (~y 136, including the occluded lower bulge); soft hair mass that bounces as one unit behind the crown"
+            }
+          ]
+        },
+        {
+          "name": "left_side_hair",
+          "groups": [
+            {
+              "name": "main_lock",
+              "groups": [],
+              "note": "main hanging side-hair mass from the temple under hair_cap (around the earring, cutout for the tassel), past the shoulder and behind the upper arm/torso side down along the thigh to about y=950; its lower end fans into separate strand tips (inner thin strands x~640-660 y~775-845, curled tip x~622-650 y~830-950, long tip to y~983) that sway with different lengths and rhythms, so it is a group",
+              "parts": [
+                {
+                  "name": "main_mass",
+                  "note": "the continuous hanging hair mass of the lock: root under hair_cap at the temple (~589,207), around the earring with the tassel cutout, past the shoulder, behind the upper arm and torso side (completed area), along the outer thigh and tapering to the long lowest tip (~583,990); includes the outer edge strands that stay attached to the mass; one soft sheet that sways and bends as one mesh"
+                },
+                {
+                  "name": "inner_thin_strands",
+                  "note": "the two to three thin strands that peel off the mass's outer side below the forearm and arc outward toward the hand (~x 625-685, y 775-895, with the gaps between them); light strands with a shorter, quicker sway than main_mass"
+                },
+                {
+                  "name": "curled_tip",
+                  "note": "the separate strand that branches off the mass at ~y 880-935 and curls outward to its pointed end near (~650,960); a free tip that flicks with its own lagging rhythm"
+                }
+              ]
+            }
+          ],
+          "note": "character-left (image right) long hair falling from temple past shoulder and arm to the thighs, including thin face-framing locks and loose outer strands; strands sway with different lengths and rhythms",
+          "parts": [
+            {
+              "name": "temple_strand",
+              "note": "thin face-framing strand that leaves the hairline at about (589,207), arcs outward beside the main lock (outer edge of the background gap x~580-604, y~276-364) and rejoins it near the shoulder; a light lock that flutters on its own"
+            },
+            {
+              "name": "outer_loose_strands",
+              "note": "loose strands escaping outside the arm silhouette: short piece between ribbon and arm x~652-670 y~571-611 and the longer strand x~679-711 y~625-743 beside the forearm; they sway together, separate from main_lock behind the arm"
+            }
+          ]
+        },
+        {
+          "name": "right_side_hair",
+          "groups": [
+            {
+              "name": "main_lock",
+              "groups": [],
+              "note": "main hanging side-hair mass from the hairline at about (426,205) under hair_cap, down around the earring (tassel cutout) past the shoulder, behind the upper arm/forearm (completed area x~300-470, y~350-760) and between arm and torso, then along the thigh to about y=983; includes the hair seen between the fingers (~x310-315, y~803-820); its lower end fans into separate strand tips (x~350-430, y~850-983, incl. the outward curl near (350,950) and the long tip to (428,983)) that sway with different lengths and rhythms, so it is a group",
+              "parts": [
+                {
+                  "name": "main_mass",
+                  "note": "the continuous hanging hair mass of the lock: root under hair_cap at the hairline (~426,205), along the cheek_lock edge and around the earring with the tassel cutout, past the shoulder, behind the upper arm/forearm and between arm and torso (completed area), down along the outer thigh and tapering to the long lowest tip (~428,983); includes the outer edge strands that stay attached to the mass and the hair island seen between the fingers (~x310-315, y803-820), which belongs to the mass hidden behind the hand; one soft sheet that sways and bends as one mesh"
+                },
+                {
+                  "name": "inner_thin_strands",
+                  "note": "the thin strands that peel off the mass's thigh side with dark gaps between them: the strand along the thigh edge ending at (~380,797) (x~362-381, y~745-797), the diagonal strand ending in the flick at (~391,855), and the short strand in the lower fan (x~395-415, y~900-937); light strands with a shorter, quicker sway than main_mass"
+                },
+                {
+                  "name": "curled_tip",
+                  "note": "the separate strand that branches off the mass's outer side at ~y 915-930 and curls outward to its pointed end near (~350,952); a free tip that flicks with its own lagging rhythm (mirror of the left lock's curled_tip)"
+                }
+              ]
+            }
+          ],
+          "note": "character-right (image left) long hair falling from temple past shoulder and arm to the thighs, including thin face-framing locks and loose outer strands",
+          "parts": [
+            {
+              "name": "temple_strand",
+              "note": "thin outer face-framing strand that leaves the hairline near (418-427,205-260), arcs outward around the background gap (x~413-425, y~282-320) beside the main lock and rejoins it at about y~330-365; a light lock that flutters on its own"
+            },
+            {
+              "name": "cheek_lock",
+              "note": "thin lock lying along the cheek and jaw from the temple (~x435-445, y~210-240) down to its pointed tip at the chin side (~508,311); sways and lifts off the face independently of the main lock"
+            },
+            {
+              "name": "outer_lock",
+              "note": "loose lock escaping outside the arm silhouette: from about (336,525) beside the shoulder ribbon, flaring outward along the forearm (left edge x~259-300) down to its tip near (285,792), including the thin inner strand x~301-305, y~680-727 and the sliver at x~335-339, y~523-532; sways as one unit, separate from main_lock behind the arm"
+            }
+          ]
+        },
+        {
+          "name": "left_head_ornament",
+          "groups": [],
+          "note": "character-left flame-shaped hairpiece at the bun side with its hanging bead chain, diamond pendant and the long pale-blue ribbon to about y=860; rigid flame vs swinging pendant vs soft ribbon",
+          "parts": [
+            {
+              "name": "flame_hairpin",
+              "note": "rigid pale-blue flame-shaped hairpiece inserted at the bun side (~x 560-650, y 65-190): upward curl, horizontal flame wings and the rounded root hidden behind the hair cap; one carved rigid piece that turns with the head"
+            },
+            {
+              "name": "bead_chain",
+              "note": "short hanging chain from the flame tip (~x 615-635, y 135-215) with the small faceted crystal beads; soft swinging link between the rigid hairpin and the heavy pendant"
+            },
+            {
+              "name": "diamond_pendant",
+              "note": "framed diamond gem with the small drop mark at the head of the ribbon (~x 615-645, y 205-260); heavier rigid drop that swings on the chain and overlaps the ribbon top"
+            },
+            {
+              "name": "ribbon",
+              "note": "long pale-blue ribbon from under the diamond pendant (~y 230) falling past the shoulder and arm, twisting and flaring to the tail tip at ~y 865; soft cloth that bends and flutters along its length, deformed as one mesh"
+            }
+          ]
+        },
+        {
+          "name": "right_head_ornament",
+          "groups": [],
+          "note": "character-right flame-shaped hairpiece with hanging bead chain, diamond pendant and long pale-blue ribbon",
+          "parts": [
+            {
+              "name": "flame_hairpin",
+              "note": "rigid pale-blue flame-shaped hairpiece at the bun's image-left side (~x 360-480, y 60-160): tall upward curl with round boss, horizontal flame wings pointing outward and the root tucked behind the hair cap; one carved rigid piece turning with the head (mirror of left flame_hairpin)"
+            },
+            {
+              "name": "bead_chain",
+              "note": "short hanging chain from the outer flame wing tip (~x 375-390, y 135-185) with small faceted crystal bead and white bead; soft swinging link between rigid hairpin and heavier pendant"
+            },
+            {
+              "name": "diamond_pendant",
+              "note": "framed diamond gem with small heart/drop mark at the head of the ribbon (~x 370-395, y 180-225); rigid drop swinging on the chain, overlapping the ribbon top"
+            },
+            {
+              "name": "ribbon",
+              "note": "long pale-blue ribbon from under the diamond pendant (~y 220) falling outside the hair and shoulder, passing behind the upper arm and continuing (completion region) to the tail tip at ~y 648; soft cloth bending along its length, one mesh"
+            }
+          ]
+        },
+        {
+          "name": "left_earring",
+          "groups": [],
+          "note": "character-left earring: stud/bead under the ear and the blue tassel hanging below; tassel swings separately",
+          "parts": [
+            {
+              "name": "earring_stud",
+              "note": "white oval stud/bead on the earlobe under the hair, y~258-271 at x~557-562; fixed to the ear, moves with the head"
+            },
+            {
+              "name": "pendant_bead",
+              "note": "short connector, pale diamond-shaped bead and the blue knotted cap below it, y~271-293; rigid drop hanging from the stud, swings as a unit"
+            },
+            {
+              "name": "tassel",
+              "note": "pale-blue thread tassel fanning from under the knot cap down to y~326; soft fringe with its own lagging sway"
+            }
+          ]
+        },
+        {
+          "name": "right_earring",
+          "groups": [],
+          "note": "character-right earring: stud/bead and hanging blue tassel",
+          "parts": [
+            {
+              "name": "earring_stud",
+              "note": "white oval stud/bead on the earlobe under the hair, y~260-271 at x~448-453; fixed to the ear, moves with the head"
+            },
+            {
+              "name": "pendant_bead",
+              "note": "short blue connector, pale diamond-shaped bead and the blue knotted cap below it, y~271-296 at x~449-455; rigid drop hanging from the stud, swings as a unit"
+            },
+            {
+              "name": "tassel",
+              "note": "pale-blue thread tassel fanning from under the knot cap down to y~326 at x~446-457; soft fringe with its own lagging sway"
+            }
+          ]
+        },
+        {
+          "name": "forehead_pendant",
+          "groups": [],
+          "note": "jewel chain from the crown down the center part to the forehead gem and teardrop drop; chain and drop gem move differently",
+          "parts": [
+            {
+              "name": "pendant_chain",
+              "note": "thin vertical chain rod from under the shell crown tip (hidden top, y~116) down the center part through the small round bead (center ~506,133) to the top of the upper diamond (y~145); flexible link that hangs and bends"
+            },
+            {
+              "name": "upper_diamond_gem",
+              "note": "small pale-blue diamond gem on the hair part line, y~145-165, half-width ~4.6; rigid gem linking chain to forehead gem, swings slightly on its own"
+            },
+            {
+              "name": "forehead_gem",
+              "note": "large pale-blue diamond centerpiece at the hairline/forehead, y~165-190, half-width ~7, including its glow edge; rests on the forehead and acts as the pendant anchor"
+            },
+            {
+              "name": "teardrop_drop",
+              "note": "teardrop gem hanging below the forehead gem tip, y~191-210, half-width ~5.3, including the thin hanger neck; swings independently with a faster rhythm"
+            }
+          ]
+        }
+      ],
+      "note": "face, features, ears with earrings, updo bun with shell crown, halo ring and flame-like hair ornaments, hanging pendants and ribbons, and the long hair falling down both sides to the thighs",
+      "parts": [
+        {
+          "name": "hair_cap",
+          "note": "swept-back hair covering the skull from the center-parted hairline up into the bun base, framing the forehead; moves as one unit with head turn"
+        },
+        {
+          "name": "halo_ring",
+          "note": "thin pale-blue ring arc behind the bun and flame ornaments, partly occluded by the bun"
+        },
+        {
+          "name": "back_hair",
+          "note": "back hair sheet behind neck, shoulders, torso and arms (including the completed occluded area down to y~760), connecting the two side hair masses"
+        }
+      ]
+    },
+    {
+      "name": "neck",
+      "groups": [],
+      "note": "visible neck between chin and collarbones",
+      "parts": [
+        {
+          "name": "neck_skin",
+          "note": "bare neck column from under the chin to the collarbone base, including the neck-shoulder slope; plain skin with no necklace or accessory, so it moves as one unit with head tilt"
+        }
+      ]
+    },
+    {
+      "name": "body",
+      "groups": [],
+      "note": "shoulders, collarbones, chest and torso down to around the navel",
+      "parts": [
+        {
+          "name": "chest",
+          "note": "bare body under the one-piece swimsuit, which is ignored: shoulder tops, collarbones, upper chest and ribcage from the neck base down to just below the breasts (~y 352-505), including the torso extension hidden behind the arms; bends/breathes as the upper-torso unit"
+        },
+        {
+          "name": "waist",
+          "note": "lower ribcage to navel (~y 495-608), the narrowing waist down to the pelvis seam; split from chest so the trunk can bend and twist at the waist; overlaps chest at the underbust"
+        },
+        {
+          "name": "left_breast",
+          "note": "character's left breast (image right, ~x 506-610, y 420-505); sways/bounces independently of the chest wall"
+        },
+        {
+          "name": "right_breast",
+          "note": "character's right breast (image left, ~x 405-506, y 420-505); sways/bounces independently of the chest wall"
+        }
+      ]
+    },
+    {
+      "name": "arms",
+      "groups": [
+        {
+          "name": "right_arm",
+          "groups": [
+            {
+              "name": "right_hand",
+              "groups": [
+                {
+                  "name": "fingers",
+                  "groups": [],
+                  "note": "the four curled fingers below the palm (~x 284-333, y 795-865): the darker index finger curled inward behind the thumb (forming the small see-through gap with it), the two finger tips pointing to image right (~y 838-852) and the long lowest finger ending at ~(304, 862); each finger curls/bends at its own knuckles, so it is split further",
+                  "parts": [
+                    {
+                      "name": "index_finger",
+                      "note": "darker finger curled inward behind/left of the thumb (~x 299-316, y 800-835), its curl forms the see-through gap with the thumb; bends as one curled unit"
+                    },
+                    {
+                      "name": "middle_finger",
+                      "note": "upper finger whose tip points to image right (~x 310-334, y 811-845), partly hidden under the thumb tip"
+                    },
+                    {
+                      "name": "ring_finger",
+                      "note": "finger below it with tip pointing right (~x 305-332, y 838-853)"
+                    },
+                    {
+                      "name": "little_finger",
+                      "note": "long lowest outer finger along the hand's left edge ending at ~(304-318, 862); outermost contour of the curled fingers"
+                    }
+                  ]
+                }
+              ],
+              "note": "hand from the wrist crease (~y 745) to the fingertips (~y 865): back of hand/palm, thumb tucked inward and the curled fingers; fingers and thumb bend separately from the palm",
+              "parts": [
+                {
+                  "name": "palm",
+                  "note": "back of hand / palm from the wrist crease (~y 721-745, overlapping the forearm end) down to the knuckle line (~y 800-830), including the outer (image-left) hand edge; rigid base that rotates at the wrist and carries thumb and fingers"
+                },
+                {
+                  "name": "thumb",
+                  "note": "thumb tucked in front on the image-right side of the hand, from its base on the palm (~y 790) down to the nailed tip at ~(307, 830), overlapping the curled index finger; bends separately from palm and fingers and sits in front of them"
+                }
+              ]
+            }
+          ],
+          "note": "character's right arm (image left), bare, from rounded shoulder joint cap through upper arm, elbow, forearm, wrist to the hand with fingers; upper arm, forearm and hand move separately",
+          "parts": [
+            {
+              "name": "right_upper_arm",
+              "note": "rounded shoulder joint cap and upper arm from ~y 383 down past the elbow (~y 600), overlapping chest at the shoulder; rotates at the shoulder as one rigid segment"
+            },
+            {
+              "name": "right_forearm",
+              "note": "forearm from the elbow joint (~y 585, overlapping the upper arm end) down to the wrist (~y 755, overlapping the hand base); bends at the elbow as one unit"
+            }
+          ]
+        },
+        {
+          "name": "left_arm",
+          "groups": [
+            {
+              "name": "left_hand",
+              "groups": [
+                {
+                  "name": "fingers",
+                  "groups": [],
+                  "note": "curled fingers below the knuckles (~x 675-716, y 828-868): the pink palm-side curled fingers tucked inward behind the thumb (~x 675-705, y 835-860) and the long light outer finger reaching the lowest tip (~x 690-716, y 840-868); each finger has its own tip and bends at its own joints, so it is a group to split per finger next",
+                  "parts": [
+                    {
+                      "name": "index_finger",
+                      "note": "finger nearest the thumb: pink palm-side curled finger whose inner strip shows in the thumb/back_of_hand see-through gap (~x 690-700, y 795-830) and curls down under the thumb nail to the upper pointed tip at image left (~x 675-690, y 832-845); curls at its own knuckles as one unit, behind the thumb"
+                    },
+                    {
+                      "name": "middle_finger",
+                      "note": "second pink curled finger below the index finger (~x 676-700, y 840-855), its tip pointing to image left at ~(677, 852) between the index tip and the long outer finger; curls separately from its neighbours"
+                    },
+                    {
+                      "name": "ring_finger",
+                      "note": "long light (back-side) outer finger running from the knuckle line along the image-right hand edge (~x 688-720, y 828-866) down to the lowest tip at ~(691, 864); in front of the curled pink fingers; bends at its knuckle as one unit"
+                    },
+                    {
+                      "name": "little_finger",
+                      "note": "outermost finger, hidden behind ring_finger along the image-right edge (~x 700-720, y 830-860) in this pose; kept as its own part so it can separate from ring_finger when the fingers spread or curl differently"
+                    }
+                  ]
+                }
+              ],
+              "note": "character's left hand (image right) from the wrist crease (~y 760) to the fingertips (~y 865): back of hand/palm, thumb tucked inward and the curled fingers; fingers and thumb bend separately from the palm",
+              "parts": [
+                {
+                  "name": "back_of_hand",
+                  "note": "back of hand / palm from the wrist end cap (~y 722, overlapping the forearm wrist) down to the knuckle line (~y 830-845), outer edge x~704-725 and inner edge x~676-682 including the inner palm shadow; the rigid base the thumb and fingers hinge from, rotates at the wrist as one unit"
+                },
+                {
+                  "name": "thumb",
+                  "note": "thumb tucked inward along the palm's inner (image-left) side, its pale nail tip visible at ~(687, 830) in front of the curled fingers (~x 676-692, y 800-842); bends from its base separately from the fingers and overlaps them in front"
+                }
+              ]
+            }
+          ],
+          "note": "character's left arm (image right), bare, from rounded shoulder joint cap through upper arm, elbow, forearm, wrist to the hand with fingers; upper arm, forearm and hand move separately",
+          "parts": [
+            {
+              "name": "left_upper_arm",
+              "note": "rounded shoulder joint cap and upper arm from ~y 383 down past the elbow (~y 610), including the inner edge hidden behind the chest/swimsuit side, overlapping chest at the shoulder; rotates at the shoulder as one rigid segment"
+            },
+            {
+              "name": "left_forearm",
+              "note": "forearm from the elbow joint (~y 595, overlapping the upper arm end) down to the wrist (~y 765, overlapping the hand base); bends at the elbow as one unit"
+            }
+          ]
+        }
+      ],
+      "note": "both arms from shoulder joint to hands, hanging at the sides",
+      "parts": []
+    },
+    {
+      "name": "pelvis",
+      "groups": [],
+      "note": "from around the navel through hips and crotch to the upper thigh line",
+      "parts": [
+        {
+          "name": "waist",
+          "note": "lower abdomen from navel (y~580) down to the hip-bone / leotard leg-opening line (y~640-660), between both waist sides; bends and twists relative to the hips, overlaps body at the top. Bodysuit ignored per rule, skin body shape inferred"
+        },
+        {
+          "name": "hips",
+          "note": "hip mass from the hip-bone line through both hip sides, lower belly, crotch and the upper-thigh joint caps down to y~894, including the crotch gap line; tilts as one unit relative to the waist and overlaps the legs thigh tops"
+        }
+      ]
+    },
+    {
+      "name": "legs",
+      "groups": [
+        {
+          "name": "right_leg",
+          "groups": [
+            {
+              "name": "right_foot",
+              "groups": [
+                {
+                  "name": "toes",
+                  "groups": [],
+                  "note": "the five toes at the front of the foot (~x 426-493, y ~1458-1501, upper ends overlapping under foot_body at the toe roots): four small toes on the image-left/outer side (~x 426-470, gaps from ~y 1462) and the larger big toe with its pink nail on the image-right/inner side (~x 471-493, separated from ~y 1476); they curl together at the ball of the foot but the big toe and each small toe spread and bend separately, so it is a group",
+                  "parts": [
+                    {
+                      "name": "little_toe",
+                      "note": "outermost (image-left) smallest toe with its tiny round nail, ~x 426-437, tip ~y 1475-1482; root overlaps under foot_body; bends separately"
+                    },
+                    {
+                      "name": "fourth_toe",
+                      "note": "second toe from the outer side with small round nail, ~x 436-448, tip ~y 1482-1489; separated from neighbours by gaps from ~y 1462"
+                    },
+                    {
+                      "name": "middle_toe",
+                      "note": "middle of the four small toes with small nail, ~x 447-460, tip ~y 1488-1493"
+                    },
+                    {
+                      "name": "second_toe",
+                      "note": "small toe next to the big toe with small nail, ~x 458-472, tip ~y 1490-1495; dark gap to the big toe from ~y 1476"
+                    },
+                    {
+                      "name": "big_toe",
+                      "note": "largest inner (image-right) toe including its pink nail, ~x 470-494, tip ~y 1495; nail moves with the toe so it stays one part"
+                    }
+                  ]
+                }
+              ],
+              "note": "bare right foot (image left) from the ankle bones (~y 1385) through instep and sole to the five toes (~y 1525); ankle rotation moves the whole foot while the toes curl and spread separately",
+              "parts": [
+                {
+                  "name": "foot_body",
+                  "note": "rigid foot mass from the ankle cap hidden under the shin (~y 1358) through the ankle bones, instep under the anklet and the sole/heel edges down to the ball of the foot and toe roots (~y 1470, x ~426-494); rotates at the ankle as one unit and carries the toes"
+                }
+              ]
+            },
+            {
+              "name": "right_anklet",
+              "groups": [],
+              "note": "beaded chain looped around the ankle/instep (~x 445-490, y 1395-1440) with the hanging diamond-shaped crystal drop at the front (~y 1430-1455); soft bead chain and swinging rigid pendant move with different rhythms, and the chain wraps around the ankle needing front/back interleave",
+              "parts": [
+                {
+                  "name": "front_chain",
+                  "note": "visible V-shaped bead chain on the front of the ankle (~x 445-489, y 1370-1404), from both side end beads at the ankle edges down to the center bead; soft strand that sags and sways with the pendant weight and draws in front of the shin/foot, controlled as one bead string"
+                },
+                {
+                  "name": "back_chain",
+                  "note": "inferred rear arc of the chain passing behind the ankle (~x 445-489, y 1366-1373), joining both side ends of the front chain; hidden by the leg and drawn behind it, separated from the front chain for the front/back interleave around the ankle"
+                },
+                {
+                  "name": "center_bead",
+                  "note": "round bead at the V apex of the chain (~x 462-470, y 1399-1406) that links the chain to the pendant; acts as the pendant's pivot, kept separate so the drop can swing around it"
+                },
+                {
+                  "name": "crystal_drop",
+                  "note": "rigid diamond-shaped blue crystal hanging below the center bead (~x 461-471, y 1405-1428); swings as a pendulum with its own rhythm from the bead pivot, one rigid unit"
+                }
+              ]
+            }
+          ],
+          "note": "character's right leg (image left), bare, from the hip joint cap hidden under the pelvis through thigh, knee, shin, ankle to the bare foot with toes, plus the beaded anklet with crystal drop worn on the ankle/instep; thigh, shin and foot bend separately and the anklet chain and pendant swing on the foot",
+          "parts": [
+            {
+              "name": "right_thigh",
+              "note": "thigh from the hip joint cap hidden under the pelvis (top ~y 698) down through the inner-thigh contact zone to the top of the knee (~y 1160); bends at the hip as one unit"
+            },
+            {
+              "name": "right_shin",
+              "note": "knee cap and lower leg from the knee (~y 1130, overlapping the thigh bottom for the bend) through calf and shin to the ankle (~y 1400, overlapping the foot top); bends at the knee as one unit"
+            }
+          ]
+        },
+        {
+          "name": "left_leg",
+          "groups": [
+            {
+              "name": "left_foot",
+              "groups": [
+                {
+                  "name": "toes",
+                  "groups": [],
+                  "note": "the five toes at the front of the foot (~x 506-575, y ~1462-1495, upper ends overlapping under foot_body at the toe roots): the larger big toe with its pink nail on the image-left/inner side (~x 506-529, separated from ~y 1474) and four small toes on the image-right/outer side (~x 529-575, gaps from ~y 1468); they curl together at the ball of the foot but the big toe and each small toe spread and bend separately, so it is a group",
+                  "parts": [
+                    {
+                      "name": "big_toe",
+                      "note": "largest inner (image-left) toe including its pink nail, ~x 505-530, tip ~y 1494; dark gap to the second toe from ~y 1474; root overlaps under foot_body; nail moves with the toe so it stays one part"
+                    },
+                    {
+                      "name": "second_toe",
+                      "note": "small toe next to the big toe with small round nail, ~x 528-543, tip ~y 1490-1493; separated from neighbours by gaps from ~y 1466; bends separately"
+                    },
+                    {
+                      "name": "middle_toe",
+                      "note": "middle of the four small toes with small nail, ~x 541-554, tip ~y 1489-1491"
+                    },
+                    {
+                      "name": "fourth_toe",
+                      "note": "second toe from the outer side with small round nail, ~x 552-564, tip ~y 1485-1487"
+                    },
+                    {
+                      "name": "little_toe",
+                      "note": "outermost (image-right) smallest toe with its tiny round nail, ~x 562-575, tip ~y 1479-1481; root overlaps under foot_body; bends separately"
+                    }
+                  ]
+                }
+              ],
+              "note": "bare left foot (image right, ~x 505-575) from the ankle bones (~y 1395) through instep and sole to the five toes (~y 1525); ankle rotation moves the whole foot while the toes curl and spread separately",
+              "parts": [
+                {
+                  "name": "foot_body",
+                  "note": "rigid foot mass from the ankle cap hidden under the shin (~y 1358) through the ankle bones, instep under the anklet and the sole/heel edges down to the ball of the foot and toe roots (~y 1470, x ~505-575); rotates at the ankle as one unit and carries the toes"
+                }
+              ]
+            },
+            {
+              "name": "left_anklet",
+              "groups": [],
+              "note": "beaded chain looped around the ankle/instep (~x 508-555, y 1395-1430) with the hanging diamond-shaped crystal drop at the front (~x 528-540, y 1425-1458); soft bead chain and swinging rigid pendant move with different rhythms, and the chain wraps around the ankle needing front/back interleave",
+              "parts": [
+                {
+                  "name": "front_chain",
+                  "note": "visible V-shaped bead chain on the front of the ankle (~x 509-556, y 1376-1407), from the larger side end beads at both ankle edges (~y 1381) down to the center bead; soft strand that sags and sways with the pendant weight and draws in front of the shin/foot, controlled as one bead string"
+                },
+                {
+                  "name": "back_chain",
+                  "note": "inferred rear arc of the chain passing behind the ankle (~x 510-556, y 1370-1381), joining both side end beads of the front chain; hidden by the leg and drawn behind it, separated from the front chain for the front/back interleave around the ankle"
+                },
+                {
+                  "name": "center_bead",
+                  "note": "round white bead at the V apex of the chain (~x 529-537, y 1404-1412) that links the chain to the pendant; acts as the pendant's pivot, kept separate so the drop can swing around it"
+                },
+                {
+                  "name": "crystal_drop",
+                  "note": "rigid diamond-shaped blue crystal hanging below the center bead (~x 529-538, y 1412-1434); swings as a pendulum with its own rhythm from the bead pivot, one rigid unit"
+                }
+              ]
+            }
+          ],
+          "note": "character's left leg (image right), bare, from the hip joint cap hidden under the pelvis through thigh, knee, shin, ankle to the bare foot with toes, plus the beaded anklet with crystal drop worn on the ankle/instep; thigh, shin and foot bend separately and the anklet chain and pendant swing on the foot",
+          "parts": [
+            {
+              "name": "left_thigh",
+              "note": "thigh from the hip joint cap hidden under the pelvis (top ~y 704, x ~509-626) down through the inner-thigh contact zone (x ~506) to the top of the knee (~y 1130); bends at the hip as one unit"
+            },
+            {
+              "name": "left_shin",
+              "note": "knee cap and lower leg from the knee (~y 1040, overlapping the thigh bottom for the bend) through calf and shin to the ankle (~y 1405, overlapping the foot top); bends at the knee as one unit"
+            }
+          ]
+        }
+      ],
+      "note": "both legs from thighs to bare feet, including the beaded anklets",
+      "parts": []
+    }
+  ],
+  "mirror_pairs": [
+    {
+      "name": "side_hair_pair",
+      "members": [
+        "head/left_side_hair",
+        "head/right_side_hair"
+      ]
+    },
+    {
+      "name": "head_ornament_pair",
+      "members": [
+        "head/left_head_ornament",
+        "head/right_head_ornament"
+      ]
+    },
+    {
+      "name": "earring_pair",
+      "members": [
+        "head/left_earring",
+        "head/right_earring"
+      ]
+    },
+    {
+      "name": "arms_mirror",
+      "members": [
+        "arms/right_arm",
+        "arms/left_arm"
+      ]
+    },
+    {
+      "name": "legs_mirror",
+      "members": [
+        "legs/right_leg",
+        "legs/left_leg"
+      ]
+    },
+    {
+      "name": "eye_pair",
+      "members": [
+        "head/face/left_eye",
+        "head/face/right_eye"
+      ]
+    },
+    {
+      "name": "side_hair_main_lock_pair",
+      "members": [
+        "head/left_side_hair/main_lock",
+        "head/right_side_hair/main_lock"
+      ]
+    },
+    {
+      "name": "foot_mirror",
+      "members": [
+        "legs/right_leg/right_foot",
+        "legs/left_leg/left_foot"
+      ]
+    },
+    {
+      "name": "anklet_mirror",
+      "members": [
+        "legs/right_leg/right_anklet",
+        "legs/left_leg/left_anklet"
+      ]
+    },
+    {
+      "name": "toes_mirror",
+      "members": [
+        "legs/right_leg/right_foot/toes",
+        "legs/left_leg/left_foot/toes"
+      ]
+    }
+  ]
+}
