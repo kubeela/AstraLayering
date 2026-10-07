@@ -1,5 +1,5 @@
 {
-  "schema": "astra.head-nine-key.v1",
+  "schema": "astra.head-nine-key.v2",
   "character": "jianma2d",
   "parameters": {
     "x": {
@@ -67,20 +67,16 @@
     ],
     "neckPivot": [
       506,
-      330
+      350
     ],
     "yawRadians": 0.46,
     "pitchUpRadians": 0.29,
     "pitchDownRadians": 0.3,
     "faceRadius": 79,
     "faceDepth": 52,
-    "skullRadius": 108,
-    "skullDepth": 62,
     "earDepth": -3,
     "jawStart": 268,
-    "chinY": 312,
-    "neckPinY": 378,
-    "hairPinY": 690
+    "chinY": 312
   },
   "cornerCorrection": {
     "jawTurnUp": 3.0,
@@ -99,8 +95,283 @@
     "meshStep": 7
   },
   "notes": [
-    "X and Y use normalized rig parameters, not measured Euler degrees.",
-    "Nine keys are whole-surface boundary poses. Z rotates around the neck with attachment weights.",
-    "Every intermediate frame is interpolated in the browser; the model is not redrawn or prompted per frame."
-  ]
+    "The source SVG stays pinned; artwork-repairs.svg supplies reveal surfaces and neck-shoulder bridges.",
+    "Front scalp, rear scalp, hanging tresses and rigid ornaments have separate authored surfaces and guides.",
+    "Skin spans the neck and upper chest; fixed boundary is at the actual torso interface.",
+    "Nine boundary surfaces are interpolated on the GPU; hanging parts use a root-attached roll frame."
+  ],
+  "neck": {
+    "followY": 300,
+    "fixedY": 364,
+    "torsoCoverY": [
+      354,
+      365
+    ],
+    "rollRadius": 38
+  },
+  "surfaces": {
+    "fringe": {
+      "topDepth": 31,
+      "thickness": 5,
+      "topY": 110,
+      "frontY": 195,
+      "radius": 86,
+      "templeStart": 210,
+      "templeEnd": 280,
+      "cornerUp": 2.5,
+      "cornerDown": 1.4
+    },
+    "rear": {
+      "anchor": [
+        506,
+        236
+      ],
+      "depth": -22,
+      "bendEndY": 650,
+      "guides": [
+        [
+          160,
+          506,
+          1,
+          1
+        ],
+        [
+          275,
+          506,
+          1,
+          0.85
+        ],
+        [
+          370,
+          506,
+          0.78,
+          0.5
+        ],
+        [
+          550,
+          506,
+          0.35,
+          0.1
+        ],
+        [
+          765,
+          506,
+          0.03,
+          0
+        ]
+      ]
+    },
+    "sideL": {
+      "anchor": [
+        556,
+        239
+      ],
+      "bendEndY": 570,
+      "guides": [
+        [
+          220,
+          556,
+          1,
+          1
+        ],
+        [
+          285,
+          565,
+          1,
+          0.9
+        ],
+        [
+          380,
+          590,
+          0.78,
+          0.5
+        ],
+        [
+          640,
+          627,
+          0.36,
+          0.1
+        ],
+        [
+          990,
+          628,
+          0.04,
+          0
+        ]
+      ]
+    },
+    "sideR": {
+      "anchor": [
+        451,
+        240
+      ],
+      "bendEndY": 570,
+      "guides": [
+        [
+          205,
+          451,
+          1,
+          1
+        ],
+        [
+          285,
+          438,
+          1,
+          0.9
+        ],
+        [
+          380,
+          425,
+          0.78,
+          0.5
+        ],
+        [
+          640,
+          385,
+          0.36,
+          0.1
+        ],
+        [
+          990,
+          426,
+          0.04,
+          0
+        ]
+      ]
+    },
+    "ribbonL": {
+      "anchor": [
+        621,
+        163
+      ],
+      "depth": 18,
+      "bendEndY": 430,
+      "guides": [
+        [
+          173,
+          621,
+          1,
+          1
+        ],
+        [
+          280,
+          637,
+          1,
+          0.85
+        ],
+        [
+          450,
+          653,
+          0.76,
+          0.45
+        ],
+        [
+          700,
+          691,
+          0.3,
+          0.08
+        ],
+        [
+          1060,
+          710,
+          0.02,
+          0
+        ]
+      ]
+    },
+    "ribbonR": {
+      "anchor": [
+        375,
+        160
+      ],
+      "depth": 18,
+      "bendEndY": 430,
+      "guides": [
+        [
+          170,
+          375,
+          1,
+          1
+        ],
+        [
+          280,
+          360,
+          1,
+          0.85
+        ],
+        [
+          450,
+          345,
+          0.76,
+          0.45
+        ],
+        [
+          700,
+          323,
+          0.3,
+          0.08
+        ],
+        [
+          1060,
+          280,
+          0.02,
+          0
+        ]
+      ]
+    },
+    "earringL": {
+      "anchor": [
+        554,
+        261
+      ]
+    },
+    "earringR": {
+      "anchor": [
+        451,
+        262
+      ]
+    },
+    "bun": {
+      "anchor": [
+        506,
+        95
+      ],
+      "depth": 8
+    },
+    "crown": {
+      "anchor": [
+        506,
+        124
+      ],
+      "depth": 35
+    },
+    "halo": {
+      "anchor": [
+        506,
+        92
+      ],
+      "depth": -35
+    },
+    "ornamentL": {
+      "anchor": [
+        579,
+        140
+      ],
+      "depth": 18
+    },
+    "ornamentR": {
+      "anchor": [
+        438,
+        137
+      ],
+      "depth": 18
+    },
+    "forehead": {
+      "anchor": [
+        506,
+        124
+      ],
+      "depth": 35
+    }
+  }
 }

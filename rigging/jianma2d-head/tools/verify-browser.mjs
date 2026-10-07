@@ -1,6 +1,7 @@
 import {strict as assert} from 'node:assert';
 import fs from 'node:fs/promises';
-const {chromium}=await import(process.env.ASTRA_PLAYWRIGHT||'playwright');
+const driver=await import(process.env.ASTRA_PLAYWRIGHT||'playwright');
+const {chromium}=driver.default??driver;
 const base=process.argv[2]||'http://127.0.0.1:8796/rigging/jianma2d-head/';
 const out=process.argv[3]||'/tmp/jianma-head-evidence';await fs.mkdir(out,{recursive:true});
 const b=await chromium.launch({headless:true,...(process.env.ASTRA_CHROMIUM?{executablePath:process.env.ASTRA_CHROMIUM}:{}),args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});

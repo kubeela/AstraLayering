@@ -3,7 +3,9 @@
   "commit": "f24e5e66fc96ea78701061d1663395a3d28349d4",
   "path": "outputs/jianma2d-opus55-20261005/refinement/character.svg",
   "sourceSha256": "229e72538cdffb5994e4e1cbff0614c7123689973d52c805acf67f7c9c470631",
-  "preview": "Layer textures rasterized directly from this unchanged SVG. Cache only; same field supports SVG coordinates.",
+  "preview": "Layer textures rasterized from a clone of this pinned SVG after explicit repairs. Cache only; shared mapping supports SVG coordinates.",
   "layerManifest": "layers.json",
-  "sourceBytes": 75451380
+  "sourceBytes": 75451380,
+  "supplementalArtwork": "artwork-repairs.svg",
+  "preparation": "tools/prepare-artwork.mjs"
 }
