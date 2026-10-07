@@ -1,0 +1,106 @@
+{
+  "schema": "astra.head-nine-key.v1",
+  "character": "jianma2d",
+  "parameters": {
+    "x": {
+      "label": "左右转头",
+      "min": -30,
+      "max": 30,
+      "default": 0
+    },
+    "y": {
+      "label": "抬头 / 低头",
+      "min": -30,
+      "max": 30,
+      "default": 0
+    },
+    "z": {
+      "label": "侧倾",
+      "min": -20,
+      "max": 20,
+      "default": 0
+    }
+  },
+  "keyCoordinates": [
+    [
+      -1,
+      -1
+    ],
+    [
+      0,
+      -1
+    ],
+    [
+      1,
+      -1
+    ],
+    [
+      -1,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      -1,
+      1
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "interpolation": "tensor-quadratic-3x3",
+  "head": {
+    "center": [
+      506,
+      224
+    ],
+    "neckPivot": [
+      506,
+      330
+    ],
+    "yawRadians": 0.46,
+    "pitchUpRadians": 0.29,
+    "pitchDownRadians": 0.3,
+    "faceRadius": 79,
+    "faceDepth": 52,
+    "skullRadius": 108,
+    "skullDepth": 62,
+    "earDepth": -3,
+    "jawStart": 268,
+    "chinY": 312,
+    "neckPinY": 378,
+    "hairPinY": 690
+  },
+  "cornerCorrection": {
+    "jawTurnUp": 3.0,
+    "jawTurnDown": 1.8,
+    "featureSlant": 1.8,
+    "farEyeLift": 0.8
+  },
+  "preview": {
+    "viewBox": [
+      290,
+      -15,
+      435,
+      400
+    ],
+    "textureScale": 3,
+    "meshStep": 7
+  },
+  "notes": [
+    "X and Y use normalized rig parameters, not measured Euler degrees.",
+    "Nine keys are whole-surface boundary poses. Z rotates around the neck with attachment weights.",
+    "Every intermediate frame is interpolated in the browser; the model is not redrawn or prompted per frame."
+  ]
+}
