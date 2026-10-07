@@ -6,7 +6,7 @@ const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
 const close=(a,b,epsilon=1e-8)=>assert.ok(Math.abs(a-b)<epsilon,`${a} != ${b}`);
 const pointClose=(a,b,e)=>a.forEach((v,i)=>close(v,b[i],e));
 test('neutral and nine exact keys remain reproducible, with a partition of unity',()=>{
- for(const kind of ['body','skin','fringe','face','faceBare','feature','nose','earL','earR',...Object.keys(rig.surfaces)])for(const [x,y] of [[400,200],[444,265],[492,320],[355,600]]){
+ for(const kind of ['body','skin','fringe','face','faceBare','collar',...Object.keys(rig.features),'earL','earR',...Object.keys(rig.surfaces)])for(const [x,y] of [[400,200],[444,265],[492,320],[355,600]]){
   pointClose(evaluatePoint(x,y,kind,{x:0,y:0,z:0},rig),[x,y]);
   for(const [kx,ky] of rig.keyCoordinates)pointClose(boundaryPoint(x,y,kind,kx,ky,rig),evaluatePoint(x,y,kind,{x:kx*30,y:ky*30,z:0},rig));
  }
@@ -22,12 +22,12 @@ test('actual torso boundary is fixed and skin joins its fixed region continuousl
   }
  }
 });
-test('face, scalp and front/rear hair roots share the same parent cage at every corner',()=>{
+test('front/rear hair roots share the scalp parent at every corner',()=>{
  for(const kind of ['sideL','sideR','rearL','rearR'])for(const [kx,ky] of rig.keyCoordinates)for(const z of [-20,0,20]){
   const [x,y]=rig.surfaces[kind].anchor,p={x:kx*30,y:ky*30,z};
   pointClose(evaluatePoint(x,y,kind,p,rig),evaluatePoint(x,y,'fringe',p,rig));
  }
- for(const kind of ['face','feature','fringe'])pointClose(boundaryPoint(405,200,kind,1,1,rig),boundaryPoint(405,200,'face',1,1,rig));
+
  const near=boundaryPoint(410,200,'face',1,0,rig),far=boundaryPoint(478,200,'face',1,0,rig);
  assert(near[0]-410>far[0]-478,'far side must compress relative to near side');
  assert.equal(classify('hair_crown',rig),'fringe');assert.equal(classify('forehead_jewel',rig),'forehead');
@@ -38,13 +38,12 @@ test('rigid head ornaments preserve straight lines instead of bending with the s
  for(const kind of ['crown','bun','halo','ornamentL','ornamentR','forehead'])for(const [kx,ky] of rig.keyCoordinates){
   const [x,y]=rig.surfaces[kind].anchor,p={x:kx*30,y:ky*30,z:17};
   const a=evaluatePoint(x-15,y-10,kind,p,rig),b=evaluatePoint(x+15,y+10,kind,p,rig),m=evaluatePoint(x,y,kind,p,rig);
-  pointClose(m,a.map((v,i)=>(v+b[i])/2));
+  close((b[0]-a[0])*(m[1]-a[1])-(b[1]-a[1])*(m[0]-a[0]),0,1e-7);
  }
 });
-test('face detail shares one surface; crossing either center axis is continuous',()=>{
- for(const [kx,ky] of rig.keyCoordinates)pointClose(boundaryPoint(423,210,'face',kx,ky,rig),boundaryPoint(423,210,'feature',kx,ky,rig));
+test('crossing either center axis is continuous for all authored parts',()=>{
  const eps=.0001;
- for(const kind of ['face','fringe','sideL','rearL','skin'])for(const axis of ['x','y'])for(const other of [-25,0,25]){
+ for(const kind of ['face','fringe','sideL','rearL','skin',...Object.keys(rig.features)])for(const axis of ['x','y'])for(const other of [-25,0,25]){
   const value=v=>evaluatePoint(420,kind==='skin'?295:215,kind,{x:axis==='x'?v:other,y:axis==='y'?v:other,z:0},rig);
   const a=value(-eps),b=value(0),c=value(eps);
   for(let k=0;k<2;k++)close((b[k]-a[k])/eps,(c[k]-b[k])/eps,.0001);
@@ -73,6 +72,25 @@ test('exact dressed expression source and explicit layer ownership are recorded'
  for(const kind of ['rearL','rearR'])assert(manifest.layers.find(l=>l.kind===kind).box[3]>400);
  for(const l of manifest.layers){
   assert.ok(fs.statSync(new URL(l.file,import.meta.url)).size>0);
-  for(const id of l.groups){const role=classify(id,rig);assert(role===l.kind||['face','faceBare'].includes(l.kind)&&['face','feature','nose'].includes(role),id+' leaked into '+l.kind);}
+  for(const id of l.groups){const role=classify(id,rig);assert(role===l.kind||['face','faceBare'].includes(l.kind)&&['face','collar',...Object.keys(rig.features)].includes(role),id+' leaked into '+l.kind);}
  }
+});
+
+test('individual eyes and lips keep affine drawing proportions inside each keyform',()=>{
+ for(const kind of Object.keys(rig.features))for(const [kx,ky] of rig.keyCoordinates){
+  const [x,y]=rig.features[kind].anchor;
+  const a=boundaryPoint(x-9,y-4,kind,kx,ky,rig),b=boundaryPoint(x+9,y+4,kind,kx,ky,rig),m=boundaryPoint(x,y,kind,kx,ky,rig);
+  pointClose(m,a.map((v,i)=>(v+b[i])/2));
+ }
+ const near=boundaryPoint(429.5,198.5,'eyeR',1,0,rig)[0]-boundaryPoint(409.5,198.5,'eyeR',1,0,rig)[0];
+ const far=boundaryPoint(478.5,198.5,'eyeL',1,0,rig)[0]-boundaryPoint(458.5,198.5,'eyeL',1,0,rig)[0];
+ assert(near>far && near/20>.9 && far/20>.75);
+});
+test('collar opening follows the neck partially while its sewn edge stays fixed',()=>{
+ for(const [kx,ky] of rig.keyCoordinates)for(const z of [-20,0,20]){
+  const p={x:kx*30,y:ky*30,z};
+  pointClose(evaluatePoint(410,rig.collar.fixedY,'collar',p,rig),[410,rig.collar.fixedY]);
+ }
+ const a=evaluatePoint(444,270,'collar',{x:30,y:0,z:0},rig);
+ assert(a[0]>444 && a[0]<evaluatePoint(444,270,'skin',{x:30,y:0,z:0},rig)[0]);
 });

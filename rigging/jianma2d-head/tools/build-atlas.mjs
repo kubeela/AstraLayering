@@ -22,7 +22,7 @@ try{
  const groups=await page.evaluate(()=>[...document.querySelector('svg').children].filter(n=>n.localName==='g').map(n=>n.id));
  for(const id of Object.keys(rig.bindings))if(!groups.includes(id))throw Error('Binding has no source group: '+id);
  const batches=[];
- for(const id of groups){const role=classify(id,rig),kind=['feature','nose'].includes(role)?'face':role,prior=batches.at(-1);if(prior?.kind===kind)prior.groups.push(id);else batches.push({kind,groups:[id]});}
+ for(const id of groups){const kind=classify(id,rig),prior=batches.at(-1);if(prior?.kind===kind)prior.groups.push(id);else batches.push({kind,groups:[id]});}
  const face=batches.find(b=>b.kind==='face');
  const bare={kind:'faceBare',groups:face.groups.filter(id=>!id.startsWith('fx_hair_')&&!id.startsWith('fx_forehead_'))};
  batches.splice(batches.indexOf(face)+1,0,bare);

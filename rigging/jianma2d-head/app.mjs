@@ -12,7 +12,7 @@ function sync(){
 }
 function setPose(values,immediate=false){
  playing=false;for(const k of ['x','y','z'])if(values[k]!==undefined)target[k]=clamp(Number(values[k]),rig.parameters[k].min,rig.parameters[k].max);
- if(immediate)p={...target};sync();requestDraw();
+ if(immediate){p={...target};renderer.resetPhysics(p);}sync();requestDraw();
 }
 function requestDraw(){if(!frame&&ready&&!document.hidden)frame=requestAnimationFrame(tick);}
 function tick(now){
@@ -20,10 +20,10 @@ function tick(now){
  if(playing){clock+=dt;target.x=30*Math.sin(clock*.52);target.y=30*Math.sin(clock*.37+.5);target.z=7*Math.sin(clock*.29);sync();}
  let moving=false;const alpha=1-Math.exp(-dt*13);
  for(const k of ['x','y','z']){const d=target[k]-p[k];if(Math.abs(d)>.006){p[k]+=d*alpha;moving=true;}else p[k]=target[k];}
- const start=performance.now();renderer.draw(p);drawGuides();const cpu=performance.now()-start;
- if(playing||moving){frames++;elapsed+=dt;if(elapsed>.75){$('status').textContent=`${Math.round(frames/elapsed)} fps · ${cpu.toFixed(1)} ms`;frames=0;elapsed=0;}}
+ const start=performance.now();const swinging=renderer.advance(p,dt);renderer.draw(p);drawGuides();const cpu=performance.now()-start;
+ if(playing||moving||swinging){frames++;elapsed+=dt;if(elapsed>.75){$('status').textContent=`${Math.round(frames/elapsed)} fps · ${cpu.toFixed(1)} ms`;frames=0;elapsed=0;}}
  else{$('status').textContent='姿态保持';last=0;frames=0;elapsed=0;}
- if(playing||moving)requestDraw();
+ if(playing||moving||swinging)requestDraw();
 }
 function drawGuides(){
  const svg=$('guides');svg.replaceChildren();if(!$('grid').checked)return;
@@ -50,13 +50,14 @@ async function start(){
  const resize=()=>{renderer.resize($('closeup').checked);requestDraw();};new ResizeObserver(resize).observe($('stage'));resize();sync();
  $('play').disabled=$('reset').disabled=false;
  $('reset').onclick=()=>setPose({x:0,y:0,z:0});$('play').onclick=()=>{playing=!playing;last=0;sync();requestDraw();};
+ $('physics').onchange=()=>{renderer.setPhysics($('physics').checked,p);requestDraw();};
  $('grid').onchange=requestDraw;$('bare').onchange=()=>{renderer.hiddenHair=$('bare').checked;requestDraw();};$('closeup').onchange=resize;
  let drag=false;const move=e=>{const r=$('pad').getBoundingClientRect();setPose({x:clamp(((e.clientX-r.left)/r.width-.5)/.46,-1,1)*30,y:clamp((.5-(e.clientY-r.top)/r.height)/.46,-1,1)*30});};
  $('pad').onpointerdown=e=>{drag=true;$('pad').setPointerCapture(e.pointerId);move(e);};$('pad').onpointermove=e=>{if(drag)move(e);};$('pad').onpointerup=$('pad').onpointercancel=()=>drag=false;
  $('pad').onkeydown=e=>{const map={ArrowLeft:['x',-2],ArrowRight:['x',2],ArrowUp:['y',2],ArrowDown:['y',-2]};if(map[e.key]){e.preventDefault();const [k,v]=map[e.key];setPose({[k]:target[k]+v});}};
- document.addEventListener('visibilitychange',()=>{last=0;if(document.hidden){cancelAnimationFrame(frame);frame=0;}else requestDraw();});
+ document.addEventListener('visibilitychange',()=>{last=0;renderer.resetPhysics(p);if(document.hidden){cancelAnimationFrame(frame);frame=0;}else requestDraw();});
  $('stage').addEventListener('webglcontextlost',e=>{e.preventDefault();ready=false;cancelAnimationFrame(frame);frame=0;$('status').textContent='图形上下文已暂停，等待恢复…';});
- $('stage').addEventListener('webglcontextrestored',async()=>{try{await renderer.init();ready=true;resize();}catch(e){fail(e);}});
+ $('stage').addEventListener('webglcontextrestored',async()=>{try{await renderer.init();renderer.resetPhysics(p);ready=true;resize();}catch(e){fail(e);}});
  window.addEventListener('pagehide',e=>{cancelAnimationFrame(frame);frame=0;if(!e.persisted)renderer.destroy();});
  window.addEventListener('pageshow',e=>{if(e.persisted){last=0;resize();}});
  // Bounded inspection API for reproducible geometric and browser acceptance checks.

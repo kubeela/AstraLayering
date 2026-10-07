@@ -7,6 +7,11 @@
       "target": "fx_body5_face_on_neck",
       "operation": "defer-collar-occlusion-to-draw-order",
       "originalMask": "outfit_inner_collar_neck_occlusion"
+    },
+    {
+      "target": "mouth",
+      "operation": "reuse-skin-occluder-paths-as-cavity-mask",
+      "preserved": "original lip lines, aperture, local color and shadows"
     }
   ],
   "clip": [
@@ -146,16 +151,30 @@
         "pelvis",
         "mantle_back",
         "waist_back",
-        "inner_bodice_back",
-        "collar_back"
+        "inner_bodice_back"
       ],
       "file": "textures/08-body.png",
       "blend": "normal",
       "box": [
         294.33333333333337,
-        247,
+        296.6666666666667,
         301.3333333333333,
-        575
+        525.3333333333334
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "collar",
+      "groups": [
+        "collar_back"
+      ],
+      "file": "textures/09-collar.png",
+      "blend": "normal",
+      "box": [
+        398.6666666666667,
+        247,
+        88.66666666666667,
+        77.33333333333333
       ],
       "scale": 3
     },
@@ -164,7 +183,7 @@
       "groups": [
         "neck"
       ],
-      "file": "textures/09-skin.png",
+      "file": "textures/10-skin.png",
       "blend": "normal",
       "box": [
         395.3333333333333,
@@ -180,9 +199,37 @@
         "torso",
         "fx_hair5_right_long_on_torso",
         "fx_hair5_left_long_on_torso",
-        "inner_bodice",
+        "inner_bodice"
+      ],
+      "file": "textures/11-body.png",
+      "blend": "normal",
+      "box": [
+        340,
+        304.6666666666667,
+        209.66666666666666,
+        305.3333333333333
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "collar",
+      "groups": [
         "collar_front_right",
-        "collar_front_left",
+        "collar_front_left"
+      ],
+      "file": "textures/12-collar.png",
+      "blend": "normal",
+      "box": [
+        383,
+        256.3333333333333,
+        124.66666666666667,
+        89.33333333333333
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "body",
+      "groups": [
         "foot_chain_right_2",
         "foot_chain_left_2",
         "calf_right",
@@ -228,13 +275,13 @@
         "pendant_beads",
         "pendant_tassel"
       ],
-      "file": "textures/10-body.png",
+      "file": "textures/13-body.png",
       "blend": "normal",
       "box": [
         136,
-        256.3333333333333,
+        303.3333333333333,
         617,
-        565.6666666666666
+        518.6666666666666
       ],
       "scale": 3
     },
@@ -243,7 +290,7 @@
       "groups": [
         "hair_crown_complete_cap"
       ],
-      "file": "textures/11-fringe.png",
+      "file": "textures/14-fringe.png",
       "blend": "normal",
       "box": [
         365,
@@ -258,7 +305,7 @@
       "groups": [
         "earring_right_back"
       ],
-      "file": "textures/12-earringR.png",
+      "file": "textures/15-earringR.png",
       "blend": "normal",
       "box": [
         388.3333333333333,
@@ -275,7 +322,7 @@
         "fx_hair_side_right_on_ear",
         "fx_hair5_right_long_on_ear"
       ],
-      "file": "textures/13-earR.png",
+      "file": "textures/16-earR.png",
       "blend": "normal",
       "box": [
         385,
@@ -290,7 +337,7 @@
       "groups": [
         "earring_left_back"
       ],
-      "file": "textures/14-earringL.png",
+      "file": "textures/17-earringL.png",
       "blend": "normal",
       "box": [
         486.3333333333333,
@@ -307,7 +354,7 @@
         "fx_hair_side_left_on_ear",
         "fx_hair5_left_long_on_ear"
       ],
-      "file": "textures/15-earL.png",
+      "file": "textures/18-earL.png",
       "blend": "normal",
       "box": [
         482,
@@ -328,16 +375,9 @@
         "fx_forehead_jewel_on_face",
         "fx_face_edge_reflection",
         "blush_right",
-        "blush_left",
-        "eye_right",
-        "eye_left",
-        "brow_right",
-        "brow_left",
-        "nose",
-        "fx_nose_tip_highlight",
-        "mouth"
+        "blush_left"
       ],
-      "file": "textures/16-face.png",
+      "file": "textures/19-face.png",
       "blend": "normal",
       "box": [
         386,
@@ -353,16 +393,9 @@
         "face_base",
         "fx_face_edge_reflection",
         "blush_right",
-        "blush_left",
-        "eye_right",
-        "eye_left",
-        "brow_right",
-        "brow_left",
-        "nose",
-        "fx_nose_tip_highlight",
-        "mouth"
+        "blush_left"
       ],
-      "file": "textures/17-faceBare.png",
+      "file": "textures/20-faceBare.png",
       "blend": "normal",
       "box": [
         386,
@@ -373,11 +406,102 @@
       "scale": 3
     },
     {
+      "kind": "eyeR",
+      "groups": [
+        "eye_right"
+      ],
+      "file": "textures/21-eyeR.png",
+      "blend": "normal",
+      "box": [
+        397,
+        182,
+        45.333333333333336,
+        33.333333333333336
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "eyeL",
+      "groups": [
+        "eye_left"
+      ],
+      "file": "textures/22-eyeL.png",
+      "blend": "normal",
+      "box": [
+        445.6666666666667,
+        182,
+        45.333333333333336,
+        33.333333333333336
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "browR",
+      "groups": [
+        "brow_right"
+      ],
+      "file": "textures/23-browR.png",
+      "blend": "normal",
+      "box": [
+        401,
+        180,
+        35,
+        10
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "browL",
+      "groups": [
+        "brow_left"
+      ],
+      "file": "textures/24-browL.png",
+      "blend": "normal",
+      "box": [
+        452.3333333333333,
+        179.66666666666666,
+        35.333333333333336,
+        10.333333333333334
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "nose",
+      "groups": [
+        "nose",
+        "fx_nose_tip_highlight"
+      ],
+      "file": "textures/25-nose.png",
+      "blend": "normal",
+      "box": [
+        434,
+        219.33333333333334,
+        19.333333333333332,
+        20.333333333333332
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "mouth",
+      "groups": [
+        "mouth"
+      ],
+      "file": "textures/26-mouth.png",
+      "blend": "normal",
+      "box": [
+        428.6666666666667,
+        237.66666666666666,
+        30.333333333333332,
+        14
+      ],
+      "scale": 3
+    },
+    {
       "kind": "forehead",
       "groups": [
         "forehead_jewel_back"
       ],
-      "file": "textures/18-forehead.png",
+      "file": "textures/27-forehead.png",
       "blend": "normal",
       "box": [
         437.3333333333333,
@@ -392,7 +516,7 @@
       "groups": [
         "hair_crown"
       ],
-      "file": "textures/19-fringe.png",
+      "file": "textures/28-fringe.png",
       "blend": "normal",
       "box": [
         364.6666666666667,
@@ -407,7 +531,7 @@
       "groups": [
         "hair_side_right"
       ],
-      "file": "textures/20-sideR.png",
+      "file": "textures/29-sideR.png",
       "blend": "normal",
       "box": [
         356,
@@ -422,7 +546,7 @@
       "groups": [
         "hair_side_left"
       ],
-      "file": "textures/21-sideL.png",
+      "file": "textures/30-sideL.png",
       "blend": "normal",
       "box": [
         457,
@@ -437,7 +561,7 @@
       "groups": [
         "hair_front_right"
       ],
-      "file": "textures/22-sideR.png",
+      "file": "textures/31-sideR.png",
       "blend": "normal",
       "box": [
         357,
@@ -452,7 +576,7 @@
       "groups": [
         "hair_front_left"
       ],
-      "file": "textures/23-sideL.png",
+      "file": "textures/32-sideL.png",
       "blend": "normal",
       "box": [
         441,
@@ -470,7 +594,7 @@
         "hand_left",
         "opaque_lower_left_cuff_front"
       ],
-      "file": "textures/24-body.png",
+      "file": "textures/33-body.png",
       "blend": "normal",
       "box": [
         205.33333333333331,
@@ -485,7 +609,7 @@
       "groups": [
         "headdress_branch_right_2"
       ],
-      "file": "textures/25-ornamentR.png",
+      "file": "textures/34-ornamentR.png",
       "blend": "normal",
       "box": [
         308.33333333333337,
@@ -500,7 +624,7 @@
       "groups": [
         "headdress_branch_left_2"
       ],
-      "file": "textures/26-ornamentL.png",
+      "file": "textures/35-ornamentL.png",
       "blend": "normal",
       "box": [
         504,
@@ -515,7 +639,7 @@
       "groups": [
         "headdress_center"
       ],
-      "file": "textures/27-crown.png",
+      "file": "textures/36-crown.png",
       "blend": "normal",
       "box": [
         396.6666666666667,
@@ -530,7 +654,7 @@
       "groups": [
         "forehead_jewel"
       ],
-      "file": "textures/28-forehead.png",
+      "file": "textures/37-forehead.png",
       "blend": "normal",
       "box": [
         429.3333333333333,
@@ -546,7 +670,7 @@
         "earring_right",
         "fx_hair5_right_long_on_earring"
       ],
-      "file": "textures/29-earringR.png",
+      "file": "textures/38-earringR.png",
       "blend": "normal",
       "box": [
         389.3333333333333,
@@ -562,7 +686,7 @@
         "earring_left",
         "fx_hair5_left_long_on_earring"
       ],
-      "file": "textures/30-earringL.png",
+      "file": "textures/39-earringL.png",
       "blend": "normal",
       "box": [
         488,

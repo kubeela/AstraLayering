@@ -1,5 +1,5 @@
 {
-  "schema": "astra.head-nine-key.v3",
+  "schema": "astra.head-nine-key.v4",
   "character": "jianma-clothing",
   "parameters": {
     "x": {
@@ -105,16 +105,15 @@
     "meshStep": 5
   },
   "notes": [
-    "Exact immutable SVG shared with the Jianma expression workbench.",
-    "All source groups have explicit bindings. Receiver-clipped effects stay with their receiver.",
-    "Head, scalp, face and front hair share one authored cage before local corrections.",
-    "Long hair hangs from this same scalp cage, with a smooth root-to-tip transition.",
-    "Original complete rear-hair, scalp and neck surfaces provide reveal coverage. No replacement artwork."
+    "Exact immutable dressed expression SVG.",
+    "Face silhouette keyforms and local feature keyforms are separate. No radial/cosine image warp.",
+    "Scalp and hair attachment keys share a frame; hanging tails have bounded-substep damped inertia.",
+    "Jewels/hairpins/halo have anchored perspective planes; collar follows the cervical twist and has a fixed sewn edge."
   ],
   "neck": {
-    "followY": 263,
-    "fixedY": 322,
-    "rollRadius": 33
+    "followY": 264,
+    "fixedY": 329,
+    "rollRadius": 34
   },
   "surfaces": {
     "rearR": {
@@ -154,7 +153,11 @@
           0
         ]
       ],
-      "bendEndY": 490
+      "bendEndY": 490,
+      "rootBlend": [
+        225,
+        325
+      ]
     },
     "rearL": {
       "anchor": [
@@ -193,7 +196,11 @@
           0
         ]
       ],
-      "bendEndY": 490
+      "bendEndY": 490,
+      "rootBlend": [
+        225,
+        325
+      ]
     },
     "sideR": {
       "anchor": [
@@ -232,7 +239,11 @@
           0
         ]
       ],
-      "bendEndY": 470
+      "bendEndY": 470,
+      "rootBlend": [
+        225,
+        325
+      ]
     },
     "sideL": {
       "anchor": [
@@ -271,7 +282,11 @@
           0
         ]
       ],
-      "bendEndY": 470
+      "bendEndY": 470,
+      "rootBlend": [
+        225,
+        325
+      ]
     },
     "ribbonR": {
       "anchor": [
@@ -304,7 +319,8 @@
           0
         ]
       ],
-      "bendEndY": 420
+      "bendEndY": 420,
+      "parent": "ornamentR"
     },
     "ribbonL": {
       "anchor": [
@@ -337,55 +353,62 @@
           0
         ]
       ],
-      "bendEndY": 420
+      "bendEndY": 420,
+      "parent": "ornamentL"
     },
     "earringR": {
       "anchor": [
         394,
-        225
+        223
       ]
     },
     "earringL": {
       "anchor": [
         493,
-        225
+        223
       ]
     },
     "bun": {
       "anchor": [
         444,
-        67
-      ]
+        92
+      ],
+      "depth": -12
     },
     "crown": {
       "anchor": [
         444,
-        78
-      ]
+        92
+      ],
+      "depth": 18
     },
     "halo": {
       "anchor": [
         444,
-        44
-      ]
+        92
+      ],
+      "depth": -35
     },
     "ornamentR": {
       "anchor": [
         368,
         108
-      ]
+      ],
+      "depth": 5
     },
     "ornamentL": {
       "anchor": [
         520,
         108
-      ]
+      ],
+      "depth": 5
     },
     "forehead": {
       "anchor": [
         444,
-        148
-      ]
+        151
+      ],
+      "depth": 28
     }
   },
   "bindings": {
@@ -405,14 +428,14 @@
     "mantle_back": "body",
     "waist_back": "body",
     "inner_bodice_back": "body",
-    "collar_back": "body",
+    "collar_back": "collar",
     "neck": "skin",
     "torso": "body",
     "fx_hair5_right_long_on_torso": "body",
     "fx_hair5_left_long_on_torso": "body",
     "inner_bodice": "body",
-    "collar_front_right": "body",
-    "collar_front_left": "body",
+    "collar_front_right": "collar",
+    "collar_front_left": "collar",
     "foot_chain_right_2": "body",
     "foot_chain_left_2": "body",
     "calf_right": "body",
@@ -475,13 +498,13 @@
     "fx_face_edge_reflection": "face",
     "blush_right": "face",
     "blush_left": "face",
-    "eye_right": "feature",
-    "eye_left": "feature",
-    "brow_right": "feature",
-    "brow_left": "feature",
+    "eye_right": "eyeR",
+    "eye_left": "eyeL",
+    "brow_right": "browR",
+    "brow_left": "browL",
     "nose": "nose",
     "fx_nose_tip_highlight": "nose",
-    "mouth": "feature",
+    "mouth": "mouth",
     "forehead_jewel_back": "forehead",
     "hair_crown": "fringe",
     "hair_side_right": "sideR",
@@ -501,95 +524,416 @@
     "earring_left": "earringL",
     "fx_hair5_left_long_on_earring": "earringL"
   },
-  "cage": {
+  "faceCage": {
+    "columns": [
+      380,
+      412,
+      444,
+      476,
+      508
+    ],
     "rows": [
+      103,
+      155,
+      195,
+      230,
+      270
+    ],
+    "rightDx": [
+      [
+        8,
+        10,
+        10,
+        6,
+        0
+      ],
+      [
+        9,
+        15,
+        16,
+        10,
+        0
+      ],
       [
         10,
-        365,
-        444,
-        523,
-        3,
-        0.94,
-        -1,
-        5,
-        0.96,
-        1.01
-      ],
-      [
-        92,
-        365,
-        444,
-        523,
-        7,
-        0.92,
-        -4,
-        7,
-        0.98,
-        1.0
-      ],
-      [
-        140,
-        365,
-        444,
-        523,
-        17,
-        0.91,
-        -11,
-        9,
-        1.0,
-        0.99
-      ],
-      [
-        185,
-        374,
-        444,
-        514,
-        23,
-        0.9,
-        -16,
+        18,
+        19,
         11,
-        1.015,
-        0.985
+        -1
       ],
       [
-        218,
-        386,
-        444,
-        502,
-        26,
-        0.88,
-        -17,
         11,
-        1.025,
-        0.98
+        21,
+        21,
+        12,
+        -1
       ],
       [
-        240,
-        398,
-        444,
-        490,
-        25,
-        0.89,
-        -14,
-        8,
-        1.035,
-        0.96
-      ],
-      [
-        270,
-        430,
-        444,
-        458,
-        17,
-        0.92,
-        -9,
-        0,
-        1.025,
-        0.95
+        12,
+        22,
+        22,
+        10,
+        -2
       ]
     ],
-    "outerShift": 0.18,
-    "cornerSlant": 2.8,
-    "faceDepthOffset": 0
+    "upDy": [
+      5,
+      -5,
+      -11,
+      -14,
+      -8
+    ],
+    "downDy": [
+      -1,
+      5,
+      9,
+      8,
+      0
+    ],
+    "cornerSlope": 0.055
+  },
+  "scalpCage": {
+    "columns": [
+      365,
+      405,
+      444,
+      484,
+      523
+    ],
+    "rows": [
+      40,
+      92,
+      140,
+      190,
+      230,
+      280
+    ],
+    "rightDx": [
+      [
+        12,
+        14,
+        12,
+        6,
+        -1
+      ],
+      [
+        14,
+        17,
+        16,
+        9,
+        0
+      ],
+      [
+        14,
+        17,
+        21,
+        13,
+        1
+      ],
+      [
+        13,
+        17,
+        23,
+        15,
+        1
+      ],
+      [
+        12,
+        18,
+        24,
+        14,
+        0
+      ],
+      [
+        12,
+        18,
+        22,
+        12,
+        -1
+      ]
+    ],
+    "upDy": [
+      6,
+      3,
+      -4,
+      -10,
+      -13,
+      -8
+    ],
+    "downDy": [
+      -2,
+      1,
+      5,
+      8,
+      7,
+      0
+    ],
+    "cornerSlope": 0.05
+  },
+  "features": {
+    "eyeR": {
+      "anchor": [
+        419.5,
+        198.5
+      ],
+      "right": [
+        18,
+        0,
+        0.96,
+        1
+      ],
+      "left": [
+        -12,
+        1,
+        0.83,
+        1
+      ],
+      "up": [
+        0,
+        -10,
+        1,
+        0.95
+      ],
+      "down": [
+        0,
+        9,
+        1,
+        0.95
+      ]
+    },
+    "eyeL": {
+      "anchor": [
+        468.5,
+        198.5
+      ],
+      "right": [
+        12,
+        1,
+        0.83,
+        1
+      ],
+      "left": [
+        -18,
+        0,
+        0.96,
+        1
+      ],
+      "up": [
+        0,
+        -10,
+        1,
+        0.95
+      ],
+      "down": [
+        0,
+        9,
+        1,
+        0.95
+      ]
+    },
+    "browR": {
+      "anchor": [
+        419,
+        185
+      ],
+      "right": [
+        17,
+        0,
+        0.97,
+        1
+      ],
+      "left": [
+        -12,
+        1,
+        0.84,
+        1
+      ],
+      "up": [
+        0,
+        -9,
+        1,
+        0.98
+      ],
+      "down": [
+        0,
+        8,
+        1,
+        0.98
+      ]
+    },
+    "browL": {
+      "anchor": [
+        469,
+        185
+      ],
+      "right": [
+        12,
+        1,
+        0.84,
+        1
+      ],
+      "left": [
+        -17,
+        0,
+        0.97,
+        1
+      ],
+      "up": [
+        0,
+        -9,
+        1,
+        0.98
+      ],
+      "down": [
+        0,
+        8,
+        1,
+        0.98
+      ]
+    },
+    "nose": {
+      "anchor": [
+        444,
+        228
+      ],
+      "right": [
+        24,
+        0,
+        0.86,
+        1
+      ],
+      "left": [
+        -24,
+        0,
+        0.86,
+        1
+      ],
+      "up": [
+        0,
+        -13,
+        1,
+        0.94
+      ],
+      "down": [
+        0,
+        8,
+        1,
+        0.94
+      ]
+    },
+    "mouth": {
+      "anchor": [
+        444,
+        244
+      ],
+      "right": [
+        22,
+        0,
+        0.91,
+        1
+      ],
+      "left": [
+        -22,
+        0,
+        0.91,
+        1
+      ],
+      "up": [
+        0,
+        -12,
+        1,
+        0.96
+      ],
+      "down": [
+        0,
+        6,
+        1,
+        0.94
+      ]
+    }
+  },
+  "collar": {
+    "followY": 256,
+    "fixedY": 344,
+    "headFollow": 0.32,
+    "rollFollow": 0.24,
+    "twist": 0.045
+  },
+  "perspective": {
+    "yawRadians": 0.48,
+    "upRadians": 0.22,
+    "downRadians": 0.24,
+    "focalLength": 750
+  },
+  "physics": {
+    "step": 0.008333333333333333,
+    "maxCatchup": 0.1,
+    "threshold": 0.018,
+    "strands": {
+      "sideL": {
+        "frequency": 2.7,
+        "damping": 0.64,
+        "startY": 225,
+        "endY": 415,
+        "maxOffset": 9,
+        "rollLever": 65
+      },
+      "sideR": {
+        "frequency": 2.9,
+        "damping": 0.64,
+        "startY": 225,
+        "endY": 415,
+        "maxOffset": 9,
+        "rollLever": 65
+      },
+      "rearL": {
+        "frequency": 1.8,
+        "damping": 0.68,
+        "startY": 228,
+        "endY": 660,
+        "maxOffset": 13,
+        "rollLever": 100
+      },
+      "rearR": {
+        "frequency": 2.0,
+        "damping": 0.68,
+        "startY": 228,
+        "endY": 660,
+        "maxOffset": 13,
+        "rollLever": 100
+      },
+      "ribbonL": {
+        "frequency": 1.6,
+        "damping": 0.52,
+        "startY": 118,
+        "endY": 560,
+        "maxOffset": 17,
+        "rollLever": 115
+      },
+      "ribbonR": {
+        "frequency": 1.7,
+        "damping": 0.52,
+        "startY": 118,
+        "endY": 560,
+        "maxOffset": 17,
+        "rollLever": 115
+      },
+      "earringL": {
+        "frequency": 3.8,
+        "damping": 0.4,
+        "startY": 228,
+        "endY": 312,
+        "maxOffset": 5,
+        "rollLever": 40
+      },
+      "earringR": {
+        "frequency": 4.2,
+        "damping": 0.4,
+        "startY": 228,
+        "endY": 266,
+        "maxOffset": 4,
+        "rollLever": 23
+      }
+    }
   }
 }

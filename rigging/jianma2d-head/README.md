@@ -28,12 +28,22 @@
 使用与游戏原表情页完全一致的 `outputs/jianma_clothing/final/character.svg`，固定提交 `0049060aa29c684dda998d883a06947d4736cae1`，SHA-256 为 `5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9`。此前误接的 Opus55 研究稿及其补绘已撤下。原 SVG 的路径、颜色、拓扑不变。
 
 - `rig.json` 的 `bindings` 明确列出全部原始顶层组。未知组必须报错，不按名字猜测脸、头发或头饰。投影归属于接收表面。
-- `cage.rows` 是作者设置的共同头部边界：头顶、额头、眼线、脸颊、嘴、下巴分别定义左右转向的中心位移、横向收缩和俯仰校正。脸、五官、头皮、前后发根使用同一个父变形，避免独立投影把它们拉开。
-- 远侧宽度压缩、近侧展开；四角同时施加眉眼线倾斜。九个组合边界作 3 × 3 二次插值。±30 是参数端点，不冒充实测的三维欧拉角。
-- 原图完整的后发帘和头皮底层承担遮挡。长发从共同发根平滑过渡到独立垂发导线；肩部以下逐渐减弱跟随。没有额外补绘白片。
-- Z 使用绕颈部的旋转，颈根固定在衣领内，长发末端衰减；头饰保留刚性形状，耳坠根部跟随耳朵并受实际脸轮廓遮挡。
-- 原颈部阴影含有静止衣领的预裁口。`tools/prepare-artwork.mjs` 只在显示克隆里移除该重复遮罩，由仍在原绘制顺序中的衣领遮挡完整颈部。操作在缓存清单中记录。
-- 隐藏头发时使用不带头发、额饰投影的脸部诊断缓存，避免把投影误当成脸部结构。原表情绑定仍保持独立可用。
+- `faceCage` 只塑造脸型；`features` 独立保存双眼、双眉、鼻、嘴的局部关键形。每只眼睛整体平移、压缩与倾斜，内部不再受到变化强度不同的横向弯曲。
+- `scalpCage` 塑造头壳与发际线，前后发根挂在同一头皮。长发沿垂发导线过渡到肩部以下，顶部锁定，发梢可以延迟摆动。
+- X/Y 的九个组合边界作 3 × 3 二次插值。四角包含眼线倾斜校正；±30 是参数端点，不冒充实测的三维欧拉角。
+- 头饰、光环、发髻使用锚定透视平面，耳坠按真实脸轮廓遮挡。飘带的根挂在变形后的发饰挂点。
+- Z 绕颈部旋转。颈根和衣领缝合边固定，领口以小于头部的比例跟随扭动。
+- `physics.mjs` 的两级阻尼弹簧驱动八组发束、飘带、耳坠的弯曲幅度；顶部权重及一阶导数为零。振幅限制在作者边界内，停止输入后仍计算到收敛，随后停止 RAF。隐藏页面、关闭惯性或长时间中断会清空旧速度。
+- 原 SVG 不变。`tools/prepare-artwork.mjs` 在显示克隆中把衣领遮挡交回实际绘制顺序；嘴部重复肤色填充的路径改用于遮挡完整口腔，保留原唇线、开口、局部颜色和阴影，由脸层提供底色，避免移动矩形肤色块。操作记入缓存清单。
+- 隐藏头发时使用不带头发、额饰投影的脸部诊断缓存。原表情绑定仍独立可用。
+
+## psd2live 九轴参考
+
+阅读 [psd2live](https://github.com/tsunehimatoi/psd2live/tree/4002ac28c084112f3f0103b2575aa9841693d856)，固定提交 `4002ac28c084112f3f0103b2575aa9841693d856`。本轮具体查阅 `NinePoseFaceRig.kt`、`RigBuilder.kt` 的 `headContainerPoint` / `hairFollowPoint` / `hairPhysicsPoint` / `buildDeformers`、`RigTuning.kt` 和 `SwingDeformer.kt`。
+
+可借鉴的核心是层级：头壳容器下，脸部与前后发是同级；脸型有单独轮廓校正，五官有局部校正；头发先跟随头部角度，再接受物理输出。近侧眼睛尽量保持原宽度，远侧做受限收缩；四角单独加入透视校正。物理的固定边与摆动边分开定义，不能直接晃动整个头皮。
+
+本例据此重新组织剑妈的绑定，使用自己的关键形、透视与弹簧实现，没有移植仓库代码，也没有把该仓库示例效果当成剑妈已通过的证据。本轮未重新将剑妈转 PSD 跑该程序；此前的 PSD 对照与这次源码研究是不同工作。
 
 ## 官方 Live2D 对照
 
@@ -45,23 +55,23 @@
 
 ## 显示缓存与重建
 
-SVG 是作者源；PNG 只作可重建显示缓存。按实际 Alpha 计算纹理范围，避免 `getBBox()` 把隐藏引导线或 defs 算入包围盒。脸与五官在九轴页使用共同缓存，消除独立纹理边界的采样缝。GPU 插值九套关键形和 Z，鼠标移动时不重新栅格化 SVG。
+SVG 是作者源；PNG 只作可重建显示缓存。按实际 Alpha 计算纹理范围，避免 `getBBox()` 把隐藏引导线或 defs 算入包围盒。脸、五官与衣领保持独立缓存，纹理在采样前预乘 Alpha，避免透明边缘暗线。GPU 插值九套关键形和 Z，鼠标移动时不重新栅格化 SVG。
 
 ```sh
 python3 -m http.server 8796
 # http://localhost:8796/rigging/jianma2d-head/
-node --test rigging/jianma2d-head/deformer.test.mjs
+node --test rigging/jianma2d-head/deformer.test.mjs rigging/jianma2d-head/physics.test.mjs
 git show 0049060aa29c684dda998d883a06947d4736cae1:outputs/jianma_clothing/final/character.svg > /tmp/jianma-source.svg
 node rigging/jianma2d-head/tools/build-atlas.mjs /tmp/jianma-source.svg
 node rigging/jianma2d-head/tools/verify-browser.mjs http://localhost:8796/rigging/jianma2d-head/
 ```
 
-重建需要 Playwright/Chromium 与 Python Pillow。`ASTRA_PLAYWRIGHT` 可指定 Playwright 模块路径，`ASTRA_CHROMIUM` 可指定浏览器。源图哈希不匹配时拒绝重建。仅调整 cage 不需要重建纹理。
+重建需要 Playwright/Chromium 与 Python Pillow。`ASTRA_PLAYWRIGHT` 可指定 Playwright 模块路径，`ASTRA_CHROMIUM` 可指定浏览器。源图哈希不匹配时拒绝重建。仅调整关键形或物理参数不需要重建纹理。
 
 ## 验证范围与限制
 
-7 项数学/来源测试和 Chromium 交互检查通过；Mac M4 Pro / Chrome 154 实测 6 秒连续巡览为 59.99 fps，p95 帧间隔 18.2 ms，画布 1564 × 1640，31 个缓存图层（普通视图绘制其中 30 个）。该数字只代表此设备与视图。
+14 项几何、来源及惯性测试覆盖独立五官的比例、发根挂接、衣领固定边、透视直线、组合姿态不翻折、快速反向限幅、停止后的收敛，以及 30 / 60 / 144 帧下的物理一致性。Chromium 交互检查覆盖九宫格、连续巡览、惯性开关、上下文恢复和窄屏滚动。静态边界与连续反转序列另作画面复看；数值通过不等于用户已认可视觉效果。
 
-本轮检查覆盖原画一致性、显式图层归属、共同发根、颈根固定、刚性饰品、零位连续性及组合极限不翻折。九个边界及叠加 Z 的实际画面单独复看；数学测试不代替视觉验收。原表情页的 SVG 和表情 JSON 没有改写。
+Mac M4 Pro / Chrome 154 的 6 秒连续巡览实测 60.00 fps，p95 帧间隔 18.4 ms，GPU 提交 CPU 耗时 p95 0.5 ms，画布 1564 × 1640，40 个缓存图层（普通视图绘制其中 39 个）。该数字只代表此设备与视图。Safari 自动化尚未启用。
 
-这是穿戴稿头部九轴研究例，尚无头发物理、动态照明或 Cubism 工程导出；未把表情参数和头部参数合成同一个渲染器。`deformer.mjs` 可映射 SVG 坐标，但当前没有精确的变形 SVG 曲线导出。Safari 自动化尚未启用，不把其他浏览器的结果写成 Safari 验收通过。
+这是穿戴稿头部九轴研究例。头发物理为独立阻尼弹簧，并非 Cubism 求解器；尚无动态照明、Cubism 工程导出，也未把表情参数和头部参数合成同一个渲染器。`deformer.mjs` 可映射 SVG 坐标，当前没有精确变形 SVG 曲线导出。姿态与物理状态不写入存档、不导出或同步。
