@@ -22,7 +22,7 @@ in vec2 vUV;uniform sampler2D uTexture;
 uniform bool uMask;out vec4 color;
 void main(){vec4 t=texture(uTexture,vUV);if(uMask&&t.a<.15)discard;color=vec4(t.rgb*t.a,t.a);}`;
 function shader(gl,kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
-const hairKinds=new Set(['rear','sideL','sideR','ribbonL','ribbonR','fringe','bun','crown','halo','ornamentL','ornamentR','forehead','earringL','earringR']);
+const hairKinds=new Set(['rearL','rearR','sideL','sideR','ribbonL','ribbonR','fringe','bun','crown','halo','ornamentL','ornamentR','forehead','earringL','earringR']);
 export class Renderer {
  constructor(canvas,rig,layers){this.canvas=canvas;this.rig=rig;this.layers=layers;this.meshes=[];this.view=rig.preview.viewBox.slice();this.hiddenHair=false;}
  async init(){
@@ -58,7 +58,7 @@ export class Renderer {
  resize(faceOnly=false){
   const c=this.canvas,dpr=Math.min(devicePixelRatio||1,2),r=c.getBoundingClientRect();
   c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.max(1,Math.round(r.height*dpr));
-  let [x,y,w,h]=faceOnly?[355,110,340,285]:this.rig.preview.viewBox;
+  let [x,y,w,h]=faceOnly?this.rig.preview.closeup:this.rig.preview.viewBox;
   const aspect=c.width/c.height;if(w/h<aspect){const next=h*aspect;x-=(next-w)/2;w=next;}else{const next=w/aspect;y-=faceOnly?(next-h)/2:(next-h);h=next;}
   this.view=[x,y,w,h];
  }
@@ -73,28 +73,21 @@ export class Renderer {
   const gl=this.gl;if(!gl||gl.isContextLost())return;
   gl.viewport(0,0,this.canvas.width,this.canvas.height);gl.stencilMask(255);gl.disable(gl.STENCIL_TEST);gl.clearColor(.918,.902,.875,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);gl.useProgram(this.program);
   gl.uniform1fv(this.uniforms.uKeys,weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)));gl.uniform1f(this.uniforms.uRoll,clamp(p.z,-20,20)*Math.PI/180);gl.uniform4fv(this.uniforms.uView,this.view);
-  const skin=this.meshes.find(m=>m.layer.kind==='skin'),shadow=this.meshes.find(m=>m.layer.kind==='skinShadow');
-  const face=this.meshes.find(m=>m.layer.kind==='face'&&m.layer.blend==='normal');
-  let skinRestored=false,faceMask=false;
+  const face=this.meshes.find(m=>m.layer.kind==='face');
+  let faceMask=false;
   const outsideFace=()=>{
-   if(!face){gl.disable(gl.STENCIL_TEST);return;}
+   if(!face)return;
    if(!faceMask){gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.ALWAYS,1,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.REPLACE);gl.colorMask(false,false,false,false);this.drawMesh(face,p,{mask:true});gl.colorMask(true,true,true,true);gl.stencilMask(0);faceMask=true;}
    gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.EQUAL,0,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.KEEP);
   };
-  const restoreSkin=()=>{
-   if(!skin)return;
-   // Long tresses sit behind the actual neck/chest silhouette. A horizontal
-   // fade exposed the old hair cutouts and made rectangular seams at shoulders.
-   // The face stencil keeps this continuous skin pass behind the chin.
-   outsideFace();this.drawMesh(skin,p);if(shadow)this.drawMesh(shadow,p);
-  };
   for(const m of this.meshes){
-   if(m.layer.kind.startsWith('earring')&&!skinRestored){restoreSkin();skinRestored=true;}
    if(this.hiddenHair&&hairKinds.has(m.layer.kind))continue;
+   if(m.layer.kind==='faceBare'&&!this.hiddenHair||m.layer.kind==='face'&&this.hiddenHair)continue;
+   // Earrings are hanging objects, clipped by the real moving face silhouette.
    if(m.layer.kind.startsWith('earring'))outsideFace();else gl.disable(gl.STENCIL_TEST);
    this.drawMesh(m,p);
   }
-  if(!skinRestored)restoreSkin();gl.disable(gl.STENCIL_TEST);gl.bindVertexArray(null);
+  gl.disable(gl.STENCIL_TEST);gl.bindVertexArray(null);
  }
  destroy(){const gl=this.gl;if(!gl)return;for(const m of this.meshes){gl.deleteTexture(m.texture);gl.deleteBuffer(m.buffer);gl.deleteBuffer(m.indexBuffer);gl.deleteVertexArray(m.vao);}gl.deleteProgram(this.program);this.meshes=[];}
 }

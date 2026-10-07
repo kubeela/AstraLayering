@@ -30,9 +30,10 @@ function drawGuides(){
  svg.setAttribute('viewBox',renderer.view.join(' '));
  const ns='http://www.w3.org/2000/svg';
  const add=(points,color,width)=>{const path=document.createElementNS(ns,'path');path.setAttribute('d',points.map((q,i)=>(i?'L':'M')+q.map(v=>v.toFixed(2)).join(' ')).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke',color);path.setAttribute('stroke-width',width);path.setAttribute('vector-effect','non-scaling-stroke');svg.append(path);};
- for(let y=170;y<=310;y+=20){const points=[];for(let x=440;x<=572;x+=4)points.push(evaluatePoint(x,y,'face',p,rig));add(points,'#26728699',1);}
- for(let x=446;x<=566;x+=20){const points=[];for(let y=168;y<=312;y+=4)points.push(evaluatePoint(x,y,'face',p,rig));add(points,'#26728699',1);}
- const center=[];for(let y=165;y<=312;y+=3)center.push(evaluatePoint(506,y,'face',p,rig));add(center,'#be685be0',1.7);
+ const [fx,fy,fw,fh]=rig.head.faceBounds;
+ for(let y=fy;y<=fy+fh;y+=20){const points=[];for(let x=fx;x<=fx+fw;x+=4)points.push(evaluatePoint(x,y,'face',p,rig));add(points,'#26728699',1);}
+ for(let x=fx;x<=fx+fw;x+=20){const points=[];for(let y=fy;y<=fy+fh;y+=4)points.push(evaluatePoint(x,y,'face',p,rig));add(points,'#26728699',1);}
+ const center=[];for(let y=fy;y<=fy+fh;y+=3)center.push(evaluatePoint(rig.head.center[0],y,'face',p,rig));add(center,'#be685be0',1.7);
  const c=document.createElementNS(ns,'circle');c.setAttribute('cx',rig.head.neckPivot[0]);c.setAttribute('cy',rig.head.neckPivot[1]);c.setAttribute('r','2.5');c.setAttribute('fill','#b65a52');svg.append(c);
 }
 async function start(){

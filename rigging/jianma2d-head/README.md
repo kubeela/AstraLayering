@@ -23,55 +23,45 @@
 
 视频示范主体隐藏了头发。因此，本例的发根 / 长发 / 头饰绑定是把“父级整体变形”的原则扩展到剑妈的分层，不能称为视频给出了她的发型绑定参数。
 
-## 整体变形的实现
+## 当前模型与整体绑定
 
-1. **大框架**：用连续的颅骨与脸曲面设计九个边界形。脸颊、额头、下巴、五官的屏幕运动来自同一个转动，X / Y 联合旋转产生自然的交叉项。
-2. **脸部局部层**：眼白、虹膜、睫毛、眉毛、嘴及面部色层共用脸场。鼻子只增加少量深度。保留睫毛轮廓，不为转头重画眼睛或开新洞。
-3. **四角校正**：在斜角增加下颌和五官线的组合校正。`rig.json` 分别记录抬头 / 低头和组合形参数。
-4. **发根与体积**：前发、后脑与垂发分开绑定。前发贴合太阳穴；两侧发根使用相同的头皮位置；后发使用相反深度产生前后视差。长发按纵向导线逐段衰减跟随，不能把发尾当成头顶一起旋转。
-5. **连接与遮挡**：颈部和上胸合成一个连续皮肤面，肩侧补片和原图描边共用一条外轮廓，固定边界设在真实肩胸接口 Y=364；颈椎横截面限制旋转臂长，避免远处肩部被拧折。颈肩轮廓遮挡后方长发，并以变形后的脸做 stencil 保护下巴；不使用横向渐隐带掩盖接口。耳坠保留在头发前，同样按脸遮挡。冠、发髻、圆环和发饰使用独立刚性平面，珠链根部与对应发饰严格对齐。
-6. **连续参数**：九个边界形通过 3 × 3 张量二次插值混合，穿过零位没有速度断缝。Z 在混合后围绕颈部旋转，颈根和长发末端使用绑定权重。
+使用与游戏原表情页完全一致的 `outputs/jianma_clothing/final/character.svg`，固定提交 `0049060aa29c684dda998d883a06947d4736cae1`，SHA-256 为 `5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9`。此前误接的 Opus55 研究稿及其补绘已撤下。原 SVG 的路径、颜色、拓扑不变。
 
-`X/Y ±30` 是参数范围；这一版边界约使用 ±26.4° 水平转向、约 ±17° 俯仰。它们不是对视频原模型欧拉角的测量。源码里的原始不对称保留。
+- `rig.json` 的 `bindings` 明确列出全部原始顶层组。未知组必须报错，不按名字猜测脸、头发或头饰。投影归属于接收表面。
+- `cage.rows` 是作者设置的共同头部边界：头顶、额头、眼线、脸颊、嘴、下巴分别定义左右转向的中心位移、横向收缩和俯仰校正。脸、五官、头皮、前后发根使用同一个父变形，避免独立投影把它们拉开。
+- 远侧宽度压缩、近侧展开；四角同时施加眉眼线倾斜。九个组合边界作 3 × 3 二次插值。±30 是参数端点，不冒充实测的三维欧拉角。
+- 原图完整的后发帘和头皮底层承担遮挡。长发从共同发根平滑过渡到独立垂发导线；肩部以下逐渐减弱跟随。没有额外补绘白片。
+- Z 使用绕颈部的旋转，颈根固定在衣领内，长发末端衰减；头饰保留刚性形状，耳坠根部跟随耳朵并受实际脸轮廓遮挡。
+- 原颈部阴影含有静止衣领的预裁口。`tools/prepare-artwork.mjs` 只在显示克隆里移除该重复遮罩，由仍在原绘制顺序中的衣领遮挡完整颈部。操作在缓存清单中记录。
+- 隐藏头发时使用不带头发、额饰投影的脸部诊断缓存，避免把投影误当成脸部结构。原表情绑定仍保持独立可用。
 
-## 原 SVG 与预览渲染
+## 官方 Live2D 对照
 
-美术源是 [Jianma2D Opus55 的完整分层 SVG](../../outputs/jianma2d-opus55-20261005/refinement/character.svg)，固定提交与 SHA-256 记录在 [source.json](./source.json)。新的 `jianma2d_full` 当时仍在续跑，尚缺虹膜等部件，本例没有修改或接管那个流程。
+实际下载、加载并设置了官方 [Haru](https://www.live2d.com/en/learn/sample/haru/)、[Hiyori](https://www.live2d.com/en/learn/sample/momose-hiyori/)、[Mark](https://www.live2d.com/en/learn/sample/mark/) 的模型。来源为 [CubismWebSamples](https://github.com/Live2D/CubismWebSamples/tree/b1de66b0b1f1cb881d95fb6158622aeb6a2827bd/Samples/Resources)，固定提交 `b1de66b0b1f1cb881d95fb6158622aeb6a2827bd`。在私有对照页设置 `ParamAngleX/Y` 为 0、±30，查看左右与右上、右下，保留了比较截图。下载模型仅作研究，没有收入本项目或替代剑妈。
 
-原 SVG 约 75 MB，包含大量重复的遮罩快照。预览按角色分层离线栅格化为 **32 个图层、约 1.52 MB** 的缓存纹理；保留色层和遮罩，并在克隆的 SVG 上应用明确记录的修复。长发缓存覆盖完整发尾，避免侧倾时露出原先 Y=435 的裁切边。每层由同一个变形函数生成九套顶点；运行时 GPU 只插值关键形与 Z，不逐帧解析 SVG、改大量 `d` 属性或重新栅格化。已有投影随接收面变形，没有重算光照。
+对照观察：Haru 的脸部中心、下巴与刘海一起转向，远侧眼睛和脸宽收缩；Hiyori 的头发连接面保有遮挡余量；Mark 的整体形变较简单，仍维持五官与头壳的一致性。不同画风的具体关键形不能直接复制给剑妈。
 
-这是“SVG 作为作者源，网格作为实时显示”的例子。`deformer.mjs` 是独立的坐标变换函数，也可以作用到 SVG 曲线点；**目前没有实现变形后 SVG 的精确曲线导出，也不是 Cubism 工程导出器**。纹理缓存不是新的美术真源。原 SVG 文件及其 SHA-256 完全保留。独立的 [artwork-repairs.svg](./artwork-repairs.svg) 是补绘作者源；[prepare-artwork.mjs](./tools/prepare-artwork.mjs) 只在克隆中填补原来为耳坠挖出的洞，并同步重复遮罩、补齐后发轮廓与发束、完整圆环和颈肩桥接。`layers.json` 记录原图与补绘哈希及实际操作，重建时拒绝不匹配的源图。
+参考官方 [Warp Deformer](https://docs.live2d.com/en/cubism-editor-manual/making-and-placement-of-warp-deformer/)、[About Deformers](https://docs.live2d.com/en/cubism-editor-manual/deformer/) 和 [Auto generation of facial motion](https://docs.live2d.com/en/cubism-editor-manual/face-auto-edit/)：父变形器共同带动子对象，面部各部件保留独立语义，X/Y 后仍要生成并检查四角，刚性转动用旋转变形器。此例实现相同的组织原则，不声称读取或复现了官方 `.cmo3` 内部变形器树。
 
-## 运行和重建
+## 显示缓存与重建
 
-在仓库根目录启动静态服务：
+SVG 是作者源；PNG 只作可重建显示缓存。按实际 Alpha 计算纹理范围，避免 `getBBox()` 把隐藏引导线或 defs 算入包围盒。脸与五官在九轴页使用共同缓存，消除独立纹理边界的采样缝。GPU 插值九套关键形和 Z，鼠标移动时不重新栅格化 SVG。
 
 ```sh
 python3 -m http.server 8796
-# 浏览器打开 http://localhost:8796/rigging/jianma2d-head/
-```
-
-运行数学和来源检查：
-
-```sh
+# http://localhost:8796/rigging/jianma2d-head/
 node --test rigging/jianma2d-head/deformer.test.mjs
-```
-
-重建缓存需要 Playwright / Chromium。`ASTRA_PLAYWRIGHT` 可指定已安装的 `playwright/index.mjs`，`ASTRA_CHROMIUM` 可指定浏览器可执行文件；没有设置时使用普通 Playwright 安装。先从 `source.json` 固定的提交取原图，再运行：
-
-```sh
-git show f24e5e66fc96ea78701061d1663395a3d28349d4:outputs/jianma2d-opus55-20261005/refinement/character.svg > /tmp/jianma-source.svg
+git show 0049060aa29c684dda998d883a06947d4736cae1:outputs/jianma_clothing/final/character.svg > /tmp/jianma-source.svg
 node rigging/jianma2d-head/tools/build-atlas.mjs /tmp/jianma-source.svg
 node rigging/jianma2d-head/tools/verify-browser.mjs http://localhost:8796/rigging/jianma2d-head/
 ```
 
-更改纹理缓存的采样比例 / 素材后重建缓存；只改变九轴边界参数时不必重建纹理。
+重建需要 Playwright/Chromium 与 Python Pillow。`ASTRA_PLAYWRIGHT` 可指定 Playwright 模块路径，`ASTRA_CHROMIUM` 可指定浏览器。源图哈希不匹配时拒绝重建。仅调整 cage 不需要重建纹理。
 
-## 验证与当前边界
+## 验证范围与限制
 
-- 7 项测试通过：零位与九个边界、颈肩固定边连续性、发根 / 珠链接点与前后视差、刚性饰品、面部从属与零位连续性、完整图层矩形在组合极限下的面积、素材来源及补绘记录。采样最小面积比为 0.3256，没有翻折；这是采样检查，不是对任意点的数学证明。
-- Chromium 实际页面通过九宫格、拖动相关输入、近景 / 辅助线、连续巡览、WebGL 丢失后恢复、390 px 页面滚动和无存储写入检查。
-- 本轮真实 Mac M4 Pro / Chrome 154：32 层，画布 1884 × 1186，6 秒连续巡览平均 **60.0 fps**，帧间隔 p95 **18.1 ms**。这只描述该设备和该视图，不外推为全部设备保证。
-- Safari 实际启动成功，但该 Mac 未开启“允许远程自动化”，因此没有把 Safari WebDriver / 帧率列为通过。
+7 项数学/来源测试和 Chromium 交互检查通过；Mac M4 Pro / Chrome 154 实测 6 秒连续巡览为 59.99 fps，p95 帧间隔 18.2 ms，画布 1564 × 1640，31 个缓存图层（普通视图绘制其中 30 个）。该数字只代表此设备与视图。
 
-九个边界、叠加侧倾及隔离后发 / 颈部图已实际审阅；修复了转头露洞、后发空白和颈肩断缝。保留的素材局限包括隐藏头发后不完整的额顶轮廓，以及原图少量笔刷描边粗细不均。此例用于检查整体头部转向；没有添加身体动作、表情生成、头发弹簧物理或全角度背面补图。
+本轮检查覆盖原画一致性、显式图层归属、共同发根、颈根固定、刚性饰品、零位连续性及组合极限不翻折。九个边界及叠加 Z 的实际画面单独复看；数学测试不代替视觉验收。原表情页的 SVG 和表情 JSON 没有改写。
+
+这是穿戴稿头部九轴研究例，尚无头发物理、动态照明或 Cubism 工程导出；未把表情参数和头部参数合成同一个渲染器。`deformer.mjs` 可映射 SVG 坐标，但当前没有精确的变形 SVG 曲线导出。Safari 自动化尚未启用，不把其他浏览器的结果写成 Safari 验收通过。

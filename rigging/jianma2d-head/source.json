@@ -1,11 +1,9 @@
 {
   "repository": "https://github.com/wu-tian807/AstraLayering",
-  "commit": "f24e5e66fc96ea78701061d1663395a3d28349d4",
-  "path": "outputs/jianma2d-opus55-20261005/refinement/character.svg",
-  "sourceSha256": "229e72538cdffb5994e4e1cbff0614c7123689973d52c805acf67f7c9c470631",
-  "preview": "Layer textures rasterized from a clone of this pinned SVG after explicit repairs. Cache only; shared mapping supports SVG coordinates.",
-  "layerManifest": "layers.json",
-  "sourceBytes": 75451380,
-  "supplementalArtwork": "artwork-repairs.svg",
-  "preparation": "tools/prepare-artwork.mjs"
+  "commit": "0049060aa29c684dda998d883a06947d4736cae1",
+  "path": "outputs/jianma_clothing/final/character.svg",
+  "sourceSha256": "5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9",
+  "sourceBytes": 4928237,
+  "preview": "Raster cache of the exact immutable dressed SVG used by the expression workbench. Explicit group binding, shared head cage.",
+  "layerManifest": "layers.json"
 }

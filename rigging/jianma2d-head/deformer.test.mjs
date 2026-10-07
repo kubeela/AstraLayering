@@ -1,13 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createHash} from 'node:crypto';
 import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify} from './deformer.mjs';
 const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
 const close=(a,b,epsilon=1e-8)=>assert.ok(Math.abs(a-b)<epsilon,`${a} != ${b}`);
 const pointClose=(a,b,e)=>a.forEach((v,i)=>close(v,b[i],e));
 test('neutral and nine exact keys remain reproducible, with a partition of unity',()=>{
- for(const kind of ['skin','skinShadow','face','feature','nose','earL','earR',...Object.keys(rig.surfaces)])for(const [x,y] of [[470,240],[506,300],[554,356],[430,600]]){
+ for(const kind of ['body','skin','fringe','face','faceBare','feature','nose','earL','earR',...Object.keys(rig.surfaces)])for(const [x,y] of [[400,200],[444,265],[492,320],[355,600]]){
   pointClose(evaluatePoint(x,y,kind,{x:0,y:0,z:0},rig),[x,y]);
   for(const [kx,ky] of rig.keyCoordinates)pointClose(boundaryPoint(x,y,kind,kx,ky,rig),evaluatePoint(x,y,kind,{x:kx*30,y:ky*30,z:0},rig));
  }
@@ -16,28 +15,24 @@ test('neutral and nine exact keys remain reproducible, with a partition of unity
 test('actual torso boundary is fixed and skin joins its fixed region continuously',()=>{
  for(const [kx,ky] of rig.keyCoordinates)for(const z of [-20,0,20]){
   const p={x:kx*30,y:ky*30,z};
-  for(const x of [440,480,506,540,575]){
+  for(const x of [400,420,444,467,488]){
    pointClose(evaluatePoint(x,rig.neck.fixedY,'skin',p,rig),[x,rig.neck.fixedY]);
    const a=evaluatePoint(x,rig.neck.fixedY-.001,'skin',p,rig);
    pointClose(a,[x,rig.neck.fixedY-.001],.00001);
   }
  }
 });
-test('scalp roots stay attached while rear volume has genuine opposite parallax',()=>{
- for(const kind of ['sideL','sideR'])for(const [kx,ky] of rig.keyCoordinates){
-  const [x,y]=rig.surfaces[kind].anchor;
-  pointClose(boundaryPoint(x,y,kind,kx,ky,rig),boundaryPoint(x,y,'fringe',kx,ky,rig));
-  pointClose(evaluatePoint(x,y,kind,{x:kx*30,y:ky*30,z:20},rig),evaluatePoint(x,y,'fringe',{x:kx*30,y:ky*30,z:20},rig));
+test('face, scalp and front/rear hair roots share the same parent cage at every corner',()=>{
+ for(const kind of ['sideL','sideR','rearL','rearR'])for(const [kx,ky] of rig.keyCoordinates)for(const z of [-20,0,20]){
+  const [x,y]=rig.surfaces[kind].anchor,p={x:kx*30,y:ky*30,z};
+  pointClose(evaluatePoint(x,y,kind,p,rig),evaluatePoint(x,y,'fringe',p,rig));
  }
- assert(evaluateRoot('rear',{x:30,y:0,z:0},rig)[0]<506);
- assert(boundaryPoint(506,224,'face',1,0,rig)[0]>506);
- for(const side of ['L','R'])for(const [kx,ky] of rig.keyCoordinates){
-  const [x,y]=rig.surfaces['ribbon'+side].anchor;
-  pointClose(boundaryPoint(x,y,'ribbon'+side,kx,ky,rig),boundaryPoint(x,y,'ornament'+side,kx,ky,rig));
- }
- assert.equal(classify('head_left_earring_parts'),'earringL');
- assert.equal(classify('part_head_hair_cap'),'fringe');
- assert.equal(classify('part_head_hair_bun_shell_crown_shell_plate'),'crown');
+ for(const kind of ['face','feature','fringe'])pointClose(boundaryPoint(405,200,kind,1,1,rig),boundaryPoint(405,200,'face',1,1,rig));
+ const near=boundaryPoint(410,200,'face',1,0,rig),far=boundaryPoint(478,200,'face',1,0,rig);
+ assert(near[0]-410>far[0]-478,'far side must compress relative to near side');
+ assert.equal(classify('hair_crown',rig),'fringe');assert.equal(classify('forehead_jewel',rig),'forehead');
+ assert.equal(classify('fx_hair_front_right_on_face',rig),'face');
+ assert.throws(()=>classify('new_unbound_art',rig),/Unbound SVG group/);
 });
 test('rigid head ornaments preserve straight lines instead of bending with the scalp',()=>{
  for(const kind of ['crown','bun','halo','ornamentL','ornamentR','forehead'])for(const [kx,ky] of rig.keyCoordinates){
@@ -47,10 +42,10 @@ test('rigid head ornaments preserve straight lines instead of bending with the s
  }
 });
 test('face detail shares one surface; crossing either center axis is continuous',()=>{
- for(const [kx,ky] of rig.keyCoordinates)pointClose(boundaryPoint(478,241,'face',kx,ky,rig),boundaryPoint(478,241,'feature',kx,ky,rig));
+ for(const [kx,ky] of rig.keyCoordinates)pointClose(boundaryPoint(423,210,'face',kx,ky,rig),boundaryPoint(423,210,'feature',kx,ky,rig));
  const eps=.0001;
- for(const kind of ['face','fringe','sideL','rear','skin'])for(const axis of ['x','y'])for(const other of [-25,0,25]){
-  const value=v=>evaluatePoint(478,kind==='skin'?342:260,kind,{x:axis==='x'?v:other,y:axis==='y'?v:other,z:0},rig);
+ for(const kind of ['face','fringe','sideL','rearL','skin'])for(const axis of ['x','y'])for(const other of [-25,0,25]){
+  const value=v=>evaluatePoint(420,kind==='skin'?295:215,kind,{x:axis==='x'?v:other,y:axis==='y'?v:other,z:0},rig);
   const a=value(-eps),b=value(0),c=value(eps);
   for(let k=0;k<2;k++)close((b[k]-a[k])/eps,(c[k]-b[k])/eps,.0001);
  }
@@ -67,13 +62,17 @@ test('sampled visible and full hanging surfaces do not fold at combined paramete
  }
  console.log('Minimum sampled area ratio:',minimum.toFixed(4));
 });
-test('source, supplemental art, repaired masks and full tress bounds are recorded',()=>{
+test('exact dressed expression source and explicit layer ownership are recorded',()=>{
  const source=JSON.parse(fs.readFileSync(new URL('./source.json',import.meta.url))),manifest=JSON.parse(fs.readFileSync(new URL('./layers.json',import.meta.url)));
- assert.equal(source.sourceSha256,manifest.inputSha256);
- assert.equal(manifest.supplementalSha256,createHash('sha256').update(fs.readFileSync(new URL('./artwork-repairs.svg',import.meta.url))).digest('hex'));
- assert.equal(manifest.repairs.filter(r=>r.operation==='fill-earring-occlusion'&&r.maskCopiesUpdated>1).length,2);
- for(const kind of ['sideL','sideR'])assert(manifest.layers.filter(l=>l.kind===kind).some(l=>l.box[1]+l.box[3]>980));
- assert.equal(manifest.layers.filter(l=>l.kind==='skin').length,1);
- assert(manifest.repairs.some(r=>r.operation==='unify-neck-shoulder-contour'));
- for(const l of manifest.layers)assert.ok(fs.statSync(new URL(l.file,import.meta.url)).size>0);
+ assert.equal(source.sourceSha256,'5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9');
+ assert.equal(source.sourceSha256,manifest.inputSha256);assert.equal(manifest.sourcePreserved,true);
+ assert.equal(source.path,'outputs/jianma_clothing/final/character.svg');
+ assert(manifest.preparation.some(p=>p.operation==='defer-collar-occlusion-to-draw-order'));
+ const bare=manifest.layers.find(l=>l.kind==='faceBare');assert(bare);
+ assert(!bare.groups.some(id=>id.startsWith('fx_hair_')||id.startsWith('fx_forehead_')));
+ for(const kind of ['rearL','rearR'])assert(manifest.layers.find(l=>l.kind===kind).box[3]>400);
+ for(const l of manifest.layers){
+  assert.ok(fs.statSync(new URL(l.file,import.meta.url)).size>0);
+  for(const id of l.groups){const role=classify(id,rig);assert(role===l.kind||['face','faceBare'].includes(l.kind)&&['face','feature','nose'].includes(role),id+' leaked into '+l.kind);}
+ }
 });

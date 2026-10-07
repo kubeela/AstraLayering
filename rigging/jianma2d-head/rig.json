@@ -1,6 +1,6 @@
 {
-  "schema": "astra.head-nine-key.v2",
-  "character": "jianma2d",
+  "schema": "astra.head-nine-key.v3",
+  "character": "jianma-clothing",
   "parameters": {
     "x": {
       "label": "左右转头",
@@ -62,312 +62,534 @@
   "interpolation": "tensor-quadratic-3x3",
   "head": {
     "center": [
-      506,
-      224
+      444,
+      199
     ],
     "neckPivot": [
-      506,
-      350
+      444,
+      285
     ],
-    "yawRadians": 0.46,
-    "pitchUpRadians": 0.29,
-    "pitchDownRadians": 0.3,
-    "faceRadius": 79,
-    "faceDepth": 52,
-    "earDepth": -3,
-    "jawStart": 268,
-    "chinY": 312
-  },
-  "cornerCorrection": {
-    "jawTurnUp": 3.0,
-    "jawTurnDown": 1.8,
-    "featureSlant": 1.8,
-    "farEyeLift": 0.8
+    "bounds": [
+      364,
+      92,
+      160,
+      179
+    ],
+    "faceBounds": [
+      387,
+      125,
+      114,
+      145
+    ]
   },
   "preview": {
     "viewBox": [
-      290,
-      -15,
-      435,
-      400
+      250,
+      -8,
+      390,
+      425
+    ],
+    "closeup": [
+      328,
+      87,
+      232,
+      239
+    ],
+    "atlasClip": [
+      80,
+      -8,
+      745,
+      830
     ],
     "textureScale": 3,
-    "meshStep": 7
+    "meshStep": 5
   },
   "notes": [
-    "The source SVG stays pinned; artwork-repairs.svg supplies reveal surfaces and neck-shoulder bridges.",
-    "Front scalp, rear scalp, hanging tresses and rigid ornaments have separate authored surfaces and guides.",
-    "Skin spans the neck and upper chest; fixed boundary is at the actual torso interface.",
-    "Nine boundary surfaces are interpolated on the GPU; hanging parts use a root-attached roll frame."
+    "Exact immutable SVG shared with the Jianma expression workbench.",
+    "All source groups have explicit bindings. Receiver-clipped effects stay with their receiver.",
+    "Head, scalp, face and front hair share one authored cage before local corrections.",
+    "Long hair hangs from this same scalp cage, with a smooth root-to-tip transition.",
+    "Original complete rear-hair, scalp and neck surfaces provide reveal coverage. No replacement artwork."
   ],
   "neck": {
-    "followY": 300,
-    "fixedY": 364,
-    "rollRadius": 38
+    "followY": 263,
+    "fixedY": 322,
+    "rollRadius": 33
   },
   "surfaces": {
-    "fringe": {
-      "topDepth": 31,
-      "thickness": 5,
-      "topY": 110,
-      "frontY": 195,
-      "radius": 86,
-      "templeStart": 210,
-      "templeEnd": 280,
-      "cornerUp": 2.5,
-      "cornerDown": 1.4
-    },
-    "rear": {
+    "rearR": {
       "anchor": [
-        506,
-        236
+        393,
+        220
       ],
-      "depth": -22,
-      "bendEndY": 650,
       "guides": [
         [
-          160,
+          150,
+          393,
+          1,
+          1
+        ],
+        [
+          240,
+          382,
+          1,
+          1
+        ],
+        [
+          345,
+          362,
+          0.64,
+          0.7
+        ],
+        [
+          540,
+          320,
+          0.22,
+          0.2
+        ],
+        [
+          780,
+          295,
+          0,
+          0
+        ]
+      ],
+      "bendEndY": 490
+    },
+    "rearL": {
+      "anchor": [
+        495,
+        220
+      ],
+      "guides": [
+        [
+          150,
+          495,
+          1,
+          1
+        ],
+        [
+          240,
           506,
           1,
           1
         ],
         [
-          275,
-          506,
-          1,
-          0.85
+          345,
+          526,
+          0.64,
+          0.7
         ],
         [
-          370,
-          506,
-          0.78,
-          0.5
+          540,
+          568,
+          0.22,
+          0.2
         ],
         [
-          550,
-          506,
-          0.35,
-          0.1
-        ],
-        [
-          765,
-          506,
-          0.03,
+          780,
+          593,
+          0,
           0
         ]
-      ]
-    },
-    "sideL": {
-      "anchor": [
-        556,
-        239
       ],
-      "bendEndY": 570,
-      "guides": [
-        [
-          220,
-          556,
-          1,
-          1
-        ],
-        [
-          285,
-          565,
-          1,
-          0.9
-        ],
-        [
-          380,
-          590,
-          0.78,
-          0.5
-        ],
-        [
-          640,
-          627,
-          0.36,
-          0.1
-        ],
-        [
-          990,
-          628,
-          0.04,
-          0
-        ]
-      ]
+      "bendEndY": 490
     },
     "sideR": {
       "anchor": [
-        451,
-        240
+        389,
+        220
       ],
-      "bendEndY": 570,
       "guides": [
         [
-          205,
-          451,
+          140,
+          397,
           1,
           1
         ],
         [
-          285,
-          438,
-          1,
-          0.9
-        ],
-        [
-          380,
-          425,
-          0.78,
-          0.5
-        ],
-        [
-          640,
+          230,
           385,
-          0.36,
-          0.1
-        ],
-        [
-          990,
-          426,
-          0.04,
-          0
-        ]
-      ]
-    },
-    "ribbonL": {
-      "anchor": [
-        621,
-        163
-      ],
-      "depth": 18,
-      "bendEndY": 430,
-      "guides": [
-        [
-          173,
-          621,
           1,
           1
         ],
         [
-          280,
-          637,
-          1,
-          0.85
+          300,
+          382,
+          0.9,
+          0.7
         ],
         [
-          450,
-          653,
-          0.76,
-          0.45
+          410,
+          374,
+          0.55,
+          0.25
         ],
         [
-          700,
-          691,
-          0.3,
-          0.08
-        ],
-        [
-          1060,
-          710,
-          0.02,
+          570,
+          370,
+          0,
           0
         ]
-      ]
+      ],
+      "bendEndY": 470
+    },
+    "sideL": {
+      "anchor": [
+        499,
+        220
+      ],
+      "guides": [
+        [
+          140,
+          491,
+          1,
+          1
+        ],
+        [
+          230,
+          503,
+          1,
+          1
+        ],
+        [
+          300,
+          506,
+          0.9,
+          0.7
+        ],
+        [
+          410,
+          514,
+          0.55,
+          0.25
+        ],
+        [
+          570,
+          518,
+          0,
+          0
+        ]
+      ],
+      "bendEndY": 470
     },
     "ribbonR": {
       "anchor": [
-        375,
-        160
+        341,
+        113
       ],
-      "depth": 18,
-      "bendEndY": 430,
       "guides": [
         [
-          170,
-          375,
+          113,
+          341,
           1,
           1
         ],
         [
-          280,
-          360,
-          1,
-          0.85
+          290,
+          321,
+          0.85,
+          0.6
         ],
         [
-          450,
-          345,
-          0.76,
-          0.45
-        ],
-        [
-          700,
-          323,
+          530,
+          273,
           0.3,
-          0.08
+          0.1
         ],
         [
-          1060,
-          280,
-          0.02,
+          800,
+          220,
+          0,
           0
         ]
+      ],
+      "bendEndY": 420
+    },
+    "ribbonL": {
+      "anchor": [
+        547,
+        113
+      ],
+      "guides": [
+        [
+          113,
+          547,
+          1,
+          1
+        ],
+        [
+          290,
+          567,
+          0.85,
+          0.6
+        ],
+        [
+          530,
+          615,
+          0.3,
+          0.1
+        ],
+        [
+          840,
+          668,
+          0,
+          0
+        ]
+      ],
+      "bendEndY": 420
+    },
+    "earringR": {
+      "anchor": [
+        394,
+        225
       ]
     },
     "earringL": {
       "anchor": [
-        554,
-        261
-      ]
-    },
-    "earringR": {
-      "anchor": [
-        451,
-        262
+        493,
+        225
       ]
     },
     "bun": {
       "anchor": [
-        506,
-        95
-      ],
-      "depth": 8
+        444,
+        67
+      ]
     },
     "crown": {
       "anchor": [
-        506,
-        124
-      ],
-      "depth": 35
+        444,
+        78
+      ]
     },
     "halo": {
       "anchor": [
-        506,
-        92
-      ],
-      "depth": -35
-    },
-    "ornamentL": {
-      "anchor": [
-        579,
-        140
-      ],
-      "depth": 18
+        444,
+        44
+      ]
     },
     "ornamentR": {
       "anchor": [
-        438,
-        137
-      ],
-      "depth": 18
+        368,
+        108
+      ]
+    },
+    "ornamentL": {
+      "anchor": [
+        520,
+        108
+      ]
     },
     "forehead": {
       "anchor": [
-        506,
-        124
-      ],
-      "depth": 35
+        444,
+        148
+      ]
     }
+  },
+  "bindings": {
+    "hair_back_right": "rearR",
+    "hair_back_left": "rearL",
+    "headdress_halo": "halo",
+    "hair_bun": "bun",
+    "headdress_branch_right": "ornamentR",
+    "headdress_branch_left": "ornamentL",
+    "streamer_right": "ribbonR",
+    "streamer_left": "ribbonL",
+    "coat_back": "body",
+    "skirt_outer_back": "body",
+    "skirt_blue_back": "body",
+    "skirt_inner_back": "body",
+    "pelvis": "body",
+    "mantle_back": "body",
+    "waist_back": "body",
+    "inner_bodice_back": "body",
+    "collar_back": "body",
+    "neck": "skin",
+    "torso": "body",
+    "fx_hair5_right_long_on_torso": "body",
+    "fx_hair5_left_long_on_torso": "body",
+    "inner_bodice": "body",
+    "collar_front_right": "body",
+    "collar_front_left": "body",
+    "foot_chain_right_2": "body",
+    "foot_chain_left_2": "body",
+    "calf_right": "body",
+    "calf_left": "body",
+    "thigh_right": "body",
+    "thigh_left": "body",
+    "foot_right": "body",
+    "foot_left": "body",
+    "foot_chain_right": "body",
+    "foot_chain_left": "body",
+    "skirt_inner_front": "body",
+    "skirt_blue_front": "body",
+    "skirt_outer_right": "body",
+    "skirt_outer_left": "body",
+    "waist_front": "body",
+    "coat_front_right": "body",
+    "coat_front_left": "body",
+    "gauze_sleeve_right_back": "body",
+    "gauze_sleeve_left_back": "body",
+    "skirt_outer_right_flounce": "body",
+    "skirt_outer_left_flounce": "body",
+    "waist_tails": "body",
+    "waist_knot": "body",
+    "opaque_upper_right_back": "body",
+    "upper_arm_right": "body",
+    "opaque_upper_left_back": "body",
+    "upper_arm_left": "body",
+    "opaque_lower_right_back": "body",
+    "forearm_right": "body",
+    "opaque_lower_left_back": "body",
+    "forearm_left": "body",
+    "opaque_upper_right": "body",
+    "opaque_lower_right": "body",
+    "opaque_upper_left": "body",
+    "opaque_lower_left": "body",
+    "gauze_sleeve_right": "body",
+    "gauze_sleeve_left": "body",
+    "mantle_front_left": "body",
+    "mantle_front_right": "body",
+    "chest_ornament": "body",
+    "pendant_chain": "body",
+    "pendant_anchor": "body",
+    "pendant_beads": "body",
+    "pendant_tassel": "body",
+    "hair_crown_complete_cap": "fringe",
+    "earring_right_back": "earringR",
+    "ear_right": "earR",
+    "fx_hair_side_right_on_ear": "earR",
+    "fx_hair5_right_long_on_ear": "earR",
+    "earring_left_back": "earringL",
+    "ear_left": "earL",
+    "fx_hair_side_left_on_ear": "earL",
+    "fx_hair5_left_long_on_ear": "earL",
+    "face_base": "face",
+    "fx_hair_front_right_on_face": "face",
+    "fx_hair_front_left_on_face": "face",
+    "fx_hair_side_right_on_face": "face",
+    "fx_hair_side_left_on_face": "face",
+    "fx_forehead_jewel_on_face": "face",
+    "fx_face_edge_reflection": "face",
+    "blush_right": "face",
+    "blush_left": "face",
+    "eye_right": "feature",
+    "eye_left": "feature",
+    "brow_right": "feature",
+    "brow_left": "feature",
+    "nose": "nose",
+    "fx_nose_tip_highlight": "nose",
+    "mouth": "feature",
+    "forehead_jewel_back": "forehead",
+    "hair_crown": "fringe",
+    "hair_side_right": "sideR",
+    "hair_side_left": "sideL",
+    "hair_front_right": "sideR",
+    "hair_front_left": "sideL",
+    "hand_right": "body",
+    "opaque_lower_right_cuff_front": "body",
+    "hand_left": "body",
+    "opaque_lower_left_cuff_front": "body",
+    "headdress_branch_right_2": "ornamentR",
+    "headdress_branch_left_2": "ornamentL",
+    "headdress_center": "crown",
+    "forehead_jewel": "forehead",
+    "earring_right": "earringR",
+    "fx_hair5_right_long_on_earring": "earringR",
+    "earring_left": "earringL",
+    "fx_hair5_left_long_on_earring": "earringL"
+  },
+  "cage": {
+    "rows": [
+      [
+        10,
+        365,
+        444,
+        523,
+        3,
+        0.94,
+        -1,
+        5,
+        0.96,
+        1.01
+      ],
+      [
+        92,
+        365,
+        444,
+        523,
+        7,
+        0.92,
+        -4,
+        7,
+        0.98,
+        1.0
+      ],
+      [
+        140,
+        365,
+        444,
+        523,
+        17,
+        0.91,
+        -11,
+        9,
+        1.0,
+        0.99
+      ],
+      [
+        185,
+        374,
+        444,
+        514,
+        23,
+        0.9,
+        -16,
+        11,
+        1.015,
+        0.985
+      ],
+      [
+        218,
+        386,
+        444,
+        502,
+        26,
+        0.88,
+        -17,
+        11,
+        1.025,
+        0.98
+      ],
+      [
+        240,
+        398,
+        444,
+        490,
+        25,
+        0.89,
+        -14,
+        8,
+        1.035,
+        0.96
+      ],
+      [
+        270,
+        430,
+        444,
+        458,
+        17,
+        0.92,
+        -9,
+        0,
+        1.025,
+        0.95
+      ]
+    ],
+    "outerShift": 0.18,
+    "cornerSlant": 2.8,
+    "faceDepthOffset": 0
   }
 }
