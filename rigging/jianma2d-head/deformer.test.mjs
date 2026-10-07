@@ -74,5 +74,6 @@ test('source, supplemental art, repaired masks and full tress bounds are recorde
  assert.equal(manifest.repairs.filter(r=>r.operation==='fill-earring-occlusion'&&r.maskCopiesUpdated>1).length,2);
  for(const kind of ['sideL','sideR'])assert(manifest.layers.filter(l=>l.kind===kind).some(l=>l.box[1]+l.box[3]>980));
  assert.equal(manifest.layers.filter(l=>l.kind==='skin').length,1);
+ assert(manifest.repairs.some(r=>r.operation==='unify-neck-shoulder-contour'));
  for(const l of manifest.layers)assert.ok(fs.statSync(new URL(l.file,import.meta.url)).size>0);
 });

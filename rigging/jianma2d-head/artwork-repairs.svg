@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1536">
   <desc>Rigging reveal surfaces, authored separately from the pinned character.svg. Silver lavender hair continues behind the moving earrings and head; the neck and upper chest share a continuous surface.</desc>
   <defs>
+    <clipPath id="repair-skin-junction-clip"><path d="M0 -100H430V359.35C443 356.6 468 351.25 475.1 342.95V-100H539.5V343.35C543.6 347.65 573 356.4 585 358.35V-100H1100V1600H0Z"/></clipPath>
     <path id="repair-rear-silhouette" d="M428 187C435 159 472 153 508 154C552 155 579 165 585 194C590 228 574 250 575 278C574 316 588 335 588 368C590 414 614 461 613 514C613 600 640 669 623 752C604 742 590 761 571 750C552 764 536 751 519 761C498 751 479 764 459 752C439 765 419 746 400 751C386 682 398 612 395 535C389 460 415 410 424 366C429 340 438 313 433 278C428 250 417 221 428 187Z"/>
     <linearGradient id="repair-halo-metal" x1="420" y1="30" x2="600" y2="155" gradientUnits="userSpaceOnUse"><stop stop-color="#bfd7eb"/><stop offset=".28" stop-color="#eef7fc"/><stop offset=".6" stop-color="#a5c8e1"/><stop offset="1" stop-color="#cee8f4"/></linearGradient>
     <linearGradient id="repair-rear-base" x1="0" y1="165" x2="0" y2="770" gradientUnits="userSpaceOnUse"><stop stop-color="#bec3dd"/><stop offset=".18" stop-color="#a6aecb"/><stop offset=".43" stop-color="#b9c0db"/><stop offset=".78" stop-color="#c9cbe1"/><stop offset="1" stop-color="#aaaecb"/></linearGradient>
     <linearGradient id="repair-rear-shade"><stop stop-color="#727eaa" stop-opacity="0"/><stop offset=".44" stop-color="#8e99bd" stop-opacity=".75"/><stop offset="1" stop-color="#9ca5c7" stop-opacity="0"/></linearGradient>
     <linearGradient id="repair-rear-sheen"><stop stop-color="#f1eff9" stop-opacity="0"/><stop offset=".4" stop-color="#e4e5f3" stop-opacity=".8"/><stop offset="1" stop-color="#eeeaf7" stop-opacity="0"/></linearGradient>
     <linearGradient id="repair-neck-skin" x1="0" y1="345" x2="0" y2="366" gradientUnits="userSpaceOnUse"><stop stop-color="#f9e5dc"/><stop offset="1" stop-color="#f9e6dc"/></linearGradient>
-    <linearGradient id="repair-neck-ink"><stop stop-color="#b68d8a" stop-opacity="0"/><stop offset=".23" stop-color="#a67d7e"/><stop offset=".77" stop-color="#a67d7e"/><stop offset="1" stop-color="#aa8184" stop-opacity="0"/></linearGradient>
     <filter id="repair-hair-soft" x="-.2" y="-.05" width="1.4" height="1.1"><feGaussianBlur stdDeviation="1.3"/></filter>
   </defs>
   <g id="repair-complete-halo" data-repair-target="part_head_halo_ring" data-repair-mode="replace" fill="none">
@@ -36,7 +36,7 @@
     </g>
   </g>
   <g id="repair-neck-shoulder-bridges" data-rig-surface="skin">
-    <path fill="url(#repair-neck-skin)" d="M434 360C449 358 465 352 474.8 344L479 347C469 358 456 365 441 369Z M538 344C548 352 563 358 577 360L571 369C555 365 542 358 533 347Z"/>
-    <path fill="none" stroke="url(#repair-neck-ink)" stroke-width=".85" stroke-linecap="round" d="M434 360C449 358 465 352 474.8 344M538 344C548 352 563 358 577 360"/>
+    <path fill="url(#repair-neck-skin)" d="M430 360.5C443 357.75 468 352.4 475.1 344.1L479 347C469 358 451 365 430 367Z M539.5 344.5C543.6 348.8 573 357.55 585 359.5L585 367C563 365 546 358 535 347Z"/>
+    <path fill="none" stroke="#af8584" stroke-width="1.6" stroke-linecap="round" d="M430 360.5C443 357.75 468 352.4 475.1 344.1M539.5 344.5C543.6 348.8 573 357.55 585 359.5"/>
   </g>
 </svg>

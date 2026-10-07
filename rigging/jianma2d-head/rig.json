@@ -103,10 +103,6 @@
   "neck": {
     "followY": 300,
     "fixedY": 364,
-    "torsoCoverY": [
-      354,
-      365
-    ],
     "rollRadius": 38
   },
   "surfaces": {

@@ -40,5 +40,14 @@ export function prepareArtwork(svg, supplemental) {
     } else svg.append(node);
     changes.push({id: source.id, operation: target ? 'supplement-hidden-hair' : 'neck-shoulder-bridge'});
   }
+  // Trim the old shoulder fill/brush stubs to the same authored junction used by
+  // the bridge. A shared alpha boundary prevents steps between overlapping parts.
+  for (const group of [...svg.children]) {
+    if (!/^(neck_skin|body_chest(?:_|$)|body_(left|right)_breast$|arms_(left|right)_arm_(left|right)_upper_arm$|repair-neck-shoulder)/.test(group.id)) continue;
+    const wrapper = document.createElementNS(ns, 'g');
+    wrapper.setAttribute('clip-path', 'url(#repair-skin-junction-clip)');
+    wrapper.append(...group.childNodes); group.append(wrapper);
+  }
+  changes.push({id:'repair-skin-junction-clip',operation:'unify-neck-shoulder-contour'});
   return changes;
 }

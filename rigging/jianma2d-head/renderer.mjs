@@ -6,21 +6,21 @@ layout(location=1) in float aWeight;
 ${Array.from({length:9},(_,i)=>`layout(location=${i+2}) in vec2 aK${i};`).join('\n')}
 layout(location=11) in float aBend;
 uniform float uKeys[9];uniform vec4 uView;uniform vec2 uPivot;uniform float uRoll;
-uniform bool uSkin;uniform float uSkinRadius;uniform bool uHanging;uniform vec2 uRoot;uniform vec4 uBox;
-out vec2 vUV;out float vRestY;
+uniform bool uSkin;uniform float uSkinRadius;uniform bool uHanging;uniform vec2 uRoot;
+out vec2 vUV;
 vec2 rotate(vec2 v,float a){float c=cos(a),s=sin(a);return vec2(v.x*c-v.y*s,v.x*s+v.y*c);}
 void main(){
  vec2 p=${Array.from({length:9},(_,i)=>`aK${i}*uKeys[${i}]`).join('+')};
  if(uHanging){vec2 d=uRoot-uPivot;p+=(rotate(d,uRoll)-d)*aWeight;vec2 local=${Array.from({length:9},(_,i)=>`aK${i}*uKeys[${i}]`).join('+')}-uRoot;p+=rotate(local,uRoll*aBend)-local;}
  else{vec2 d=p-uPivot;if(uSkin)d.x=clamp(d.x,-uSkinRadius,uSkinRadius);p+= (rotate(d,uRoll)-d)*aWeight;}
  vec2 q=(p-uView.xy)/uView.zw;
- gl_Position=vec4(q.x*2.-1.,1.-q.y*2.,0.,1.);vUV=aUV;vRestY=uBox.y+aUV.y*uBox.w;
+ gl_Position=vec4(q.x*2.-1.,1.-q.y*2.,0.,1.);vUV=aUV;
 }`;
 const FRAG=`#version 300 es
 precision highp float;
-in vec2 vUV;in float vRestY;uniform sampler2D uTexture;
-uniform bool uMask;uniform bool uTorso;uniform vec2 uTorsoBand;out vec4 color;
-void main(){vec4 t=texture(uTexture,vUV);if(uMask&&t.a<.15)discard;if(uTorso)t.a*=smoothstep(uTorsoBand.x,uTorsoBand.y,vRestY);color=vec4(t.rgb*t.a,t.a);}`;
+in vec2 vUV;uniform sampler2D uTexture;
+uniform bool uMask;out vec4 color;
+void main(){vec4 t=texture(uTexture,vUV);if(uMask&&t.a<.15)discard;color=vec4(t.rgb*t.a,t.a);}`;
 function shader(gl,kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
 const hairKinds=new Set(['rear','sideL','sideR','ribbonL','ribbonR','fringe','bun','crown','halo','ornamentL','ornamentR','forehead','earringL','earringR']);
 export class Renderer {
@@ -31,10 +31,10 @@ export class Renderer {
   const vs=shader(gl,gl.VERTEX_SHADER,VERT),fs=shader(gl,gl.FRAGMENT_SHADER,FRAG),program=gl.createProgram();
   gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
-  this.program=program;gl.useProgram(program);this.uniforms=Object.fromEntries(['uSkin','uSkinRadius','uKeys','uView','uPivot','uRoll','uTexture','uHanging','uRoot','uBox','uMask','uTorso','uTorsoBand'].map(n=>[n,gl.getUniformLocation(program,n)]));
+  this.program=program;gl.useProgram(program);this.uniforms=Object.fromEntries(['uSkin','uSkinRadius','uKeys','uView','uPivot','uRoll','uTexture','uHanging','uRoot','uMask'].map(n=>[n,gl.getUniformLocation(program,n)]));
   const images=await Promise.all(this.layers.map(l=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('无法加载 '+l.file));im.src=new URL(l.file,import.meta.url).href;})));
   this.meshes=this.layers.map((layer,i)=>this.createMesh(layer,images[i]));
-  gl.enable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.uniform1i(this.uniforms.uTexture,0);gl.uniform2fv(this.uniforms.uPivot,this.rig.head.neckPivot);gl.uniform2fv(this.uniforms.uTorsoBand,this.rig.neck.torsoCoverY);
+  gl.enable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.uniform1i(this.uniforms.uTexture,0);gl.uniform2fv(this.uniforms.uPivot,this.rig.head.neckPivot);
  }
  createMesh(layer,image){
   const gl=this.gl,step=this.rig.preview.meshStep,[x,y,w,h]=layer.box;
@@ -62,10 +62,10 @@ export class Renderer {
   const aspect=c.width/c.height;if(w/h<aspect){const next=h*aspect;x-=(next-w)/2;w=next;}else{const next=w/aspect;y-=faceOnly?(next-h)/2:(next-h);h=next;}
   this.view=[x,y,w,h];
  }
- drawMesh(m,p,{mask=false,torso=false}={}) {
+ drawMesh(m,p,{mask=false}={}) {
   const gl=this.gl,u=this.uniforms,hanging=isHanging(m.layer.kind,this.rig);
   gl.uniform1i(u.uSkin,m.layer.kind==='skin'||m.layer.kind==='skinShadow'?1:0);gl.uniform1f(u.uSkinRadius,this.rig.neck.rollRadius);gl.uniform1i(u.uHanging,hanging?1:0);if(hanging)gl.uniform2fv(u.uRoot,evaluateRoot(m.layer.kind,p,this.rig));
-  gl.uniform4fv(u.uBox,m.layer.box);gl.uniform1i(u.uMask,mask?1:0);gl.uniform1i(u.uTorso,torso?1:0);
+  gl.uniform1i(u.uMask,mask?1:0);
   gl.blendFunc(m.layer.blend==='multiply'?gl.DST_COLOR:gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   gl.bindVertexArray(m.vao);gl.bindTexture(gl.TEXTURE_2D,m.texture);gl.drawElements(gl.TRIANGLES,m.count,gl.UNSIGNED_SHORT,0);
  }
@@ -73,18 +73,28 @@ export class Renderer {
   const gl=this.gl;if(!gl||gl.isContextLost())return;
   gl.viewport(0,0,this.canvas.width,this.canvas.height);gl.stencilMask(255);gl.disable(gl.STENCIL_TEST);gl.clearColor(.918,.902,.875,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);gl.useProgram(this.program);
   gl.uniform1fv(this.uniforms.uKeys,weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)));gl.uniform1f(this.uniforms.uRoll,clamp(p.z,-20,20)*Math.PI/180);gl.uniform4fv(this.uniforms.uView,this.view);
-  const skin=this.meshes.find(m=>m.layer.kind==='skin'),face=this.meshes.find(m=>m.layer.kind==='face'&&m.layer.blend==='normal');
-  let torsoDrawn=false,faceMask=false;
+  const skin=this.meshes.find(m=>m.layer.kind==='skin'),shadow=this.meshes.find(m=>m.layer.kind==='skinShadow');
+  const face=this.meshes.find(m=>m.layer.kind==='face'&&m.layer.blend==='normal');
+  let skinRestored=false,faceMask=false;
+  const outsideFace=()=>{
+   if(!face){gl.disable(gl.STENCIL_TEST);return;}
+   if(!faceMask){gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.ALWAYS,1,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.REPLACE);gl.colorMask(false,false,false,false);this.drawMesh(face,p,{mask:true});gl.colorMask(true,true,true,true);gl.stencilMask(0);faceMask=true;}
+   gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.EQUAL,0,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.KEEP);
+  };
+  const restoreSkin=()=>{
+   if(!skin)return;
+   // Long tresses sit behind the actual neck/chest silhouette. A horizontal
+   // fade exposed the old hair cutouts and made rectangular seams at shoulders.
+   // The face stencil keeps this continuous skin pass behind the chin.
+   outsideFace();this.drawMesh(skin,p);if(shadow)this.drawMesh(shadow,p);
+  };
   for(const m of this.meshes){
-   if(m.layer.kind.startsWith('earring')&&!torsoDrawn){if(skin)this.drawMesh(skin,p,{torso:true});torsoDrawn=true;}
+   if(m.layer.kind.startsWith('earring')&&!skinRestored){restoreSkin();skinRestored=true;}
    if(this.hiddenHair&&hairKinds.has(m.layer.kind))continue;
-   if(m.layer.kind.startsWith('earring')&&face){
-    if(!faceMask){gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.ALWAYS,1,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.REPLACE);gl.colorMask(false,false,false,false);this.drawMesh(face,p,{mask:true});gl.colorMask(true,true,true,true);gl.stencilMask(0);faceMask=true;}
-    gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.EQUAL,0,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.KEEP);
-   }else gl.disable(gl.STENCIL_TEST);
+   if(m.layer.kind.startsWith('earring'))outsideFace();else gl.disable(gl.STENCIL_TEST);
    this.drawMesh(m,p);
   }
-  gl.disable(gl.STENCIL_TEST);if(skin&&!torsoDrawn)this.drawMesh(skin,p,{torso:true});gl.bindVertexArray(null);
+  if(!skinRestored)restoreSkin();gl.disable(gl.STENCIL_TEST);gl.bindVertexArray(null);
  }
  destroy(){const gl=this.gl;if(!gl)return;for(const m of this.meshes){gl.deleteTexture(m.texture);gl.deleteBuffer(m.buffer);gl.deleteBuffer(m.indexBuffer);gl.deleteVertexArray(m.vao);}gl.deleteProgram(this.program);this.meshes=[];}
 }

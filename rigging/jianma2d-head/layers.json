@@ -1,7 +1,7 @@
 {
   "schema": "astra.svg-preview-textures.v2",
   "inputSha256": "229e72538cdffb5994e4e1cbff0614c7123689973d52c805acf67f7c9c470631",
-  "supplementalSha256": "9d34d69dfa85ca5e5cceb1f43d3708d5c7bdd5cadff742cc19fa93cb0a8f24a4",
+  "supplementalSha256": "72ec91ebb023eee76010b11ce687ce22ae56d6e590dce01ba2c4e7ace1ca4b63",
   "repairs": [
     {
       "id": "head_left_side_hair_main_lock_main_mass_fill",
@@ -28,6 +28,10 @@
     {
       "id": "repair-neck-shoulder-bridges",
       "operation": "neck-shoulder-bridge"
+    },
+    {
+      "id": "repair-skin-junction-clip",
+      "operation": "unify-neck-shoulder-contour"
     }
   ],
   "scale": 3,
