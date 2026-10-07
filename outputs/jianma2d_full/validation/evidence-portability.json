@@ -1,5 +1,5 @@
 {
-  "scope": "Portable exports of JSON evidence for completed steps and the explicitly unaccepted n29 candidate; frozen SVG candidates and ledger reports are unchanged.",
+  "scope": "Portable exports of JSON evidence for completed steps and explicitly unaccepted n29/n30 candidates; frozen SVG candidates and ledger reports are unchanged.",
   "operation": "Replace machine-specific repository/working-directory prefixes with paths relative to outputs/jianma2d_full. Measurements, conclusions, hashes, image bytes and non-path arguments are unchanged.",
   "originals": "Original bytes preserved locally under ignored .runtime/evidence-portability/originals; original SHA-256 values recorded below.",
   "entries": [
@@ -364,6 +364,48 @@
       "portable_sha256": "a0417a0659f46bb784df2a45c8507527f9aaa11fe1ac6b4de0899ea642c626c5",
       "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/inner_back_curtain/2.直属拆分与色块/2.3.运动露出补齐/轮廓检查.json",
       "batch": "progress-pr-20261007"
+    },
+    {
+      "file": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/before-containment.json",
+      "original_sha256": "5445faca3b9f3ce15ada8b4de3422f6d0b83a588c9cf2f2052ce70dfc1032050",
+      "portable_sha256": "6a9946f265a2024d1701dbf02d710160f65f26a2023fb4ca063f829099ac51f2",
+      "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/before-containment.json"
+    },
+    {
+      "file": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/diagnostic-render-commands.json",
+      "original_sha256": "ca7ee226f97a26bb47bc1562b6c532c7bfe9435f126e71b4d3ea74babd9d8d52",
+      "portable_sha256": "30bc3c13857129aad56ca72abb631d108a3d3a88f8f073d0c432b1c2857688a2",
+      "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/diagnostic-render-commands.json"
+    },
+    {
+      "file": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/input-render-commands.json",
+      "original_sha256": "d2a09259d3318c8fdc7be00d4b2239ca712118cf7a7348fdf59ff1d7932fbbcb",
+      "portable_sha256": "aad8c7f0dd3587bd43fb3e8b7577565da7256f9b41a3f23e8002dac04b3dd1bf",
+      "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/input-render-commands.json"
+    },
+    {
+      "file": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r1-command.json",
+      "original_sha256": "a6a8e03a3ed0fb9f946bf11bafb5056eec2649a7dec7aa20bb60779f92f55eb1",
+      "portable_sha256": "1b5a19083cd3c701bb19f9e78844c1a40a1dcfe9c1260ff89e6d6234a72b54df",
+      "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r1-command.json"
+    },
+    {
+      "file": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r1-containment.json",
+      "original_sha256": "b5e1df134d5c792af9c4358b3a0c16be3edbeb7adc793784fcbeb1576b769c32",
+      "portable_sha256": "56fa981c40c9fd4c42088f78df08ac6249042262bc42648fe998bf189133b187",
+      "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r1-containment.json"
+    },
+    {
+      "file": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r2-command.json",
+      "original_sha256": "e6a485db2a91a86345b4c2c658e754c0ec382f542f694355b9d8992acfffefc1",
+      "portable_sha256": "674141c602b654e61ce54a64d28cd1b586e8e9bcd7d54fbc391c915bba4dd8b1",
+      "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r2-command.json"
+    },
+    {
+      "file": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r2-containment.json",
+      "original_sha256": "c27397c84bf24884d792a36988184e318aad4d25bc5b17f685572df56b7912d3",
+      "portable_sha256": "a07f3bbd5f2af9716b5c0f4812fc7455271c9d33a80887da27fa0247ac82f485",
+      "original_local_copy": ".runtime/evidence-portability/originals/refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/r2-containment.json"
     }
   ]
 }

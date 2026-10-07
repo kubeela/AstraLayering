@@ -10,13 +10,8 @@
     "preview": "refinement/preview.png",
     "groups": "structure/groups.json",
     "rendering": "structure/rendering.json",
-    "pending_review": "review-n29.html"
+    "accepted_n29_review": "review-n29.html",
+    "pending_review": "review-n30.html"
   },
-  "progress_snapshot": "validation/progress-pr-snapshot.json",
-  "artifacts_sha256": {
-    "artwork": "d14a7c67e5f37d3b3bd03bf57d83592680846e12c0b792aaaf2a0bc94f301195",
-    "preview": "474421dc2f57bc137c09542bec4969aafabb6c9ec49ec3efd5a3ca9e65154835",
-    "groups": "ad31de8f389efab4028d7153ca37045b7a3c1c079523b3f8b7e723156ac2ce04",
-    "rendering": "d897cf000f79799c4a02f3835456af1b9f40e900c308fef50979fb26c3e6b65d"
-  }
+  "progress_snapshot": "validation/progress-pr-snapshot.json"
 }

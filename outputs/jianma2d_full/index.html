@@ -28,6 +28,7 @@
   <a href="structure/groups.json">部件树</a>
   <a href="structure/rendering.json">渲染关系</a>
   <a href="layers.html">分层检查器</a>
+  <a href="review-n30.html">第 30 组待人工查看</a>
 </nav>
 <main>
   <figure><figcaption>本轮角色参考</figcaption><img src="references/base-subject.png" alt="银白长发、蓝眼与银蓝冠饰的剑妈角色参考"></figure>
@@ -46,7 +47,7 @@
       const active = rows.find(([, node]) => node.id === state.active?.target)?.[0];
       let delivery = null;
       let label = `${done} / ${rows.length} 组已完成`;
-      if (active) label += ` · 正在制作 ${active}`;
+      if (active) label += ` · 当前分组 ${active}`;
       else if (done < rows.length) label += ' · 正在准备下一组';
       else label += ' · 最终组合与交付检查中';
       if (done === rows.length && !active) {

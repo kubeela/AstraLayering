@@ -16,7 +16,7 @@
   "routes": {
     "group": []
   },
-  "next_id": 52,
+  "next_id": 53,
   "nodes": {
     "head": {
       "id": "n1",
@@ -345,12 +345,17 @@
     "head/rear_hair_left/inner_back_curtain": {
       "id": "n29",
       "kind": "group",
-      "status": "active"
+      "status": "done",
+      "completed_by": "generic",
+      "completed_children": [
+        "head/rear_hair_left/inner_back_curtain/inner_side_lock",
+        "head/rear_hair_left/inner_back_curtain/nape_back_sheet"
+      ]
     },
     "head/rear_hair_left/outer_back_curtain": {
       "id": "n30",
       "kind": "group",
-      "status": "pending"
+      "status": "active"
     },
     "head/rear_hair_right/inner_back_curtain": {
       "id": "n31",
@@ -456,11 +461,16 @@
       "id": "n51",
       "kind": "group",
       "status": "pending"
+    },
+    "head/rear_hair_left/outer_back_curtain/inner_forked_lock": {
+      "id": "n52",
+      "kind": "group",
+      "status": "pending"
     }
   },
   "active": {
-    "target": "n29",
+    "target": "n30",
     "route": "generic",
-    "pointer": "part_highlights"
+    "pointer": "group_split"
   }
 }

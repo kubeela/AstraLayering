@@ -2176,9 +2176,9 @@
     "worker_id": "/root/jianma_runner_recovery/maker_n29_render",
     "model": "gpt-6-astra",
     "reasoning": "xhigh",
-    "selected_node": "part_highlights",
+    "selected_node": "part_rendered",
     "logical_worker": "group:head/rear_hair_left/inner_back_curtain",
-    "status": "awaiting_actual_user_visual_confirmation",
+    "status": "complete",
     "node_workers": {
       "group_completion": "/root/jianma_runner_recovery/maker_n29",
       "group_child_layers": "/root/jianma_runner_recovery/maker_n29",
@@ -2194,10 +2194,11 @@
       "part_local_shading": "/root/jianma_runner_recovery/maker_n29_render",
       "cast_shadow_relations": "/root/jianma_runner_recovery/maker_n29_render",
       "cast_shadow_artwork": "/root/jianma_runner_recovery/maker_n29_render",
-      "part_highlights": "/root/jianma_runner_recovery/maker_n29_render"
+      "part_highlights": "/root/jianma_runner_recovery/maker_n29_render",
+      "part_rendered": "/root/jianma_runner_recovery"
     },
     "context": "Fresh no-history continuation after prior maker39images at successful4.1; logical worker unchanged, old actual views attributed only to old actor",
-    "last_successful_node": "part_highlights",
+    "last_successful_node": "part_rendered",
     "completed_nodes": [
       "group_completion",
       "part_motion_completion",
@@ -2212,7 +2213,8 @@
       "part_local_shading",
       "cast_shadow_relations",
       "cast_shadow_artwork",
-      "part_highlights"
+      "part_highlights",
+      "part_rendered"
     ],
     "node1_result": "refinement/groups/head/rear_hair_left/inner_back_curtain/1.父级轮廓补全/node1-result.json",
     "actual_viewed_image_count": 18,
@@ -2238,7 +2240,15 @@
       }
     ],
     "actual_actor": "/root/jianma_runner_recovery/maker_n29_render",
-    "runtime_failure": "refinement/groups/head/rear_hair_left/inner_back_curtain/runtime-policy-failure-20261007.json"
+    "runtime_failure": "refinement/groups/head/rear_hair_left/inner_back_curtain/runtime-policy-failure-20261007.json",
+    "manual_approval": "validation/manual-n29-review.json",
+    "node_acceptance_actors": {
+      "part_rendered": {
+        "author": "/root/jianma_runner_recovery/maker_n29_render",
+        "acceptance_executor": "/root/jianma_runner_recovery",
+        "visual_reviewer": "user"
+      }
+    }
   },
   "group_split:head/rear_hair_left/inner_back_curtain": {
     "worker_id": "/root/jianma_runner_recovery/split_n29",
@@ -2256,5 +2266,50 @@
     "selected_node": "group_child_layers",
     "status": "complete",
     "context": "Fresh independent reviewer; root only verified returned hashes. Actual15views and per-component records in report."
+  },
+  "group:head/rear_hair_left/outer_back_curtain": {
+    "worker_id": "/root/jianma_runner_recovery/maker_n30",
+    "model": "gpt-6-astra",
+    "reasoning": "xhigh",
+    "selected_node": "group_child_layers",
+    "logical_worker": "group:head/rear_hair_left/outer_back_curtain",
+    "status": "frozen_pending_manual_review_after_independent_policy_error",
+    "node_workers": {
+      "group_completion": "/root/jianma_runner_recovery/maker_n30",
+      "group_child_layers": "/root/jianma_runner_recovery/maker_n30"
+    },
+    "last_successful_node": "group_completion",
+    "completed_nodes": [
+      "group_completion"
+    ],
+    "actual_viewed_image_count": 40,
+    "node1_result": "refinement/groups/head/rear_hair_left/outer_back_curtain/1.父级轮廓补全/node1-result.json",
+    "candidate": "refinement/groups/head/rear_hair_left/outer_back_curtain/2.直属拆分与色块/2.2.直属轮廓色块/candidate-groups.svg",
+    "candidate_sha256": "4da747b49621ec49eec03cbdeeac09a0563c0c4527afc57e24a3b4442a781679",
+    "context": "Node1 and2.2 actor reached40 images at frozen pending review; do not resume. Fresh continuation required.",
+    "manual_review": "validation/manual-n30-review.json"
+  },
+  "group_split:head/rear_hair_left/outer_back_curtain": {
+    "worker_id": "/root/jianma_runner_recovery/split_n30",
+    "model": "gpt-6-astra",
+    "reasoning": "xhigh",
+    "model_override": "User authorized unavailable gpt-6-sol-xhigh -> gpt-6-astra xhigh",
+    "selected_node": "group_split",
+    "status": "complete",
+    "context": "Fresh independent actor; only2.1 children proposal. Coordinator owns native expand/checkpoint."
+  },
+  "group_child_layers:head/rear_hair_left/outer_back_curtain:review": {
+    "worker_id": "/root/review_n30",
+    "model": "gpt-6-astra",
+    "reasoning": "xhigh",
+    "selected_node": "group_child_layers",
+    "status": "policy_error_pending_manual_review",
+    "actual_viewed_image_count": 16,
+    "recorded_components": 5,
+    "candidate_sha256": "4da747b49621ec49eec03cbdeeac09a0563c0c4527afc57e24a3b4442a781679",
+    "partial_report": "reviews/group_child_layers/head/rear_hair_left/outer_back_curtain/审查.md",
+    "runtime_failure": "reviews/group_child_layers/head/rear_hair_left/outer_back_curtain/runtime-policy-failure-20261007.json",
+    "manual_review": "validation/manual-n30-review.json",
+    "context": "Real independent actor ended with content policy error. Partial original report preserved. No overall PASS, no retry, no replacement actor for rejected batch; user review remains pending."
   }
 }
