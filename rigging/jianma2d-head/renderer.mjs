@@ -1,4 +1,4 @@
-import { clamp, boundaryPoint, rollWeight, rollBend, weights, isHanging, evaluateRoot, inertiaWeights } from './deformer.mjs';
+import { clamp, boundaryPoint, rollWeight, rollBend, weights, isHanging, evaluateRoot, inertiaWeights, motionKind, validateRig } from './deformer.mjs';
 import { HeadPhysics } from './physics.mjs';
 const VERT=`#version 300 es
 precision highp float;
@@ -28,7 +28,7 @@ void main(){vec4 t=texture(uTexture,vUV);if(uMask&&t.a<.15)discard;color=t;}`;
 function shader(gl,kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
 const hairKinds=new Set(['rearL','rearR','sideL','sideR','ribbonL','ribbonR','fringe','bun','crown','halo','ornamentL','ornamentR','forehead','earringL','earringR']);
 export class Renderer {
- constructor(canvas,rig,layers){this.canvas=canvas;this.rig=rig;this.layers=layers;this.meshes=[];this.view=rig.preview.viewBox.slice();this.hiddenHair=false;this.physics=new HeadPhysics(rig);}
+ constructor(canvas,rig,layers){validateRig(rig);this.canvas=canvas;this.rig=rig;this.layers=layers;this.meshes=[];this.view=rig.preview.viewBox.slice();this.hiddenHair=false;this.physics=new HeadPhysics(rig);}
  async init(){
   const gl=this.canvas.getContext('webgl2',{alpha:false,antialias:true,stencil:true,preserveDrawingBuffer:false});
   if(!gl)throw new Error('此例需要 WebGL 2。请开启浏览器硬件加速后重试。');this.gl=gl;
@@ -41,12 +41,12 @@ export class Renderer {
   gl.enable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.uniform1i(this.uniforms.uTexture,0);gl.uniform2fv(this.uniforms.uPivot,this.rig.head.neckPivot);
  }
  createMesh(layer,image){
-  const gl=this.gl,step=this.rig.preview.meshStep,[x,y,w,h]=layer.box;
+  const gl=this.gl,step=this.rig.preview.meshStep,[x,y,w,h]=layer.box,kind=motionKind(layer.kind,this.rig);
   const nx=Math.ceil(w/step),ny=Math.ceil(h/step),stride=24,data=new Float32Array((nx+1)*(ny+1)*stride);
   for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){
    const px=x+w*i/nx,py=y+h*j/ny,k=(j*(nx+1)+i)*stride;
-   data[k]=i/nx;data[k+1]=j/ny;data[k+2]=rollWeight(px,py,layer.kind,this.rig);data[k+21]=rollBend(px,py,layer.kind,this.rig);data.set(inertiaWeights(py,layer.kind,this.rig),k+22);
-   this.rig.keyCoordinates.forEach(([kx,ky],n)=>data.set(boundaryPoint(px,py,layer.kind,kx,ky,this.rig),k+3+n*2));
+   data[k]=i/nx;data[k+1]=j/ny;data[k+2]=rollWeight(px,py,kind,this.rig);data[k+21]=rollBend(px,py,kind,this.rig);data.set(inertiaWeights(py,kind,this.rig),k+22);
+   this.rig.keyCoordinates.forEach(([kx,ky],n)=>data.set(boundaryPoint(px,py,kind,kx,ky,this.rig),k+3+n*2));
   }
   if((nx+1)*(ny+1)>65535)throw Error('Head mesh exceeds index budget: '+layer.file);
   const indices=new Uint16Array(nx*ny*6);let k=0;
@@ -67,9 +67,9 @@ export class Renderer {
   this.view=[x,y,w,h];
  }
  drawMesh(m,p,{mask=false}={}) {
-  const gl=this.gl,u=this.uniforms,hanging=isHanging(m.layer.kind,this.rig);
-  gl.uniform1i(u.uSkin,m.layer.kind==='skin'||m.layer.kind==='skinShadow'?1:0);gl.uniform1f(u.uSkinRadius,this.rig.neck.rollRadius);gl.uniform1i(u.uHanging,hanging?1:0);if(hanging)gl.uniform2fv(u.uRoot,evaluateRoot(m.layer.kind,p,this.rig));
-  gl.uniform4fv(u.uInertia,this.physics.outputs[m.layer.kind]||[0,0,0,0]);
+  const gl=this.gl,u=this.uniforms,kind=motionKind(m.layer.kind,this.rig),hanging=isHanging(kind,this.rig);
+  gl.uniform1i(u.uSkin,kind==='skin'?1:0);gl.uniform1f(u.uSkinRadius,this.rig.neck.rollRadius);gl.uniform1i(u.uHanging,hanging?1:0);if(hanging)gl.uniform2fv(u.uRoot,evaluateRoot(kind,p,this.rig));
+  gl.uniform4fv(u.uInertia,this.physics.outputs[kind]||[0,0,0,0]);
   gl.uniform1i(u.uMask,mask?1:0);
   gl.blendFunc(m.layer.blend==='multiply'?gl.DST_COLOR:gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   gl.bindVertexArray(m.vao);gl.bindTexture(gl.TEXTURE_2D,m.texture);gl.drawElements(gl.TRIANGLES,m.count,gl.UNSIGNED_SHORT,0);
@@ -78,18 +78,22 @@ export class Renderer {
   const gl=this.gl;if(!gl||gl.isContextLost())return;
   gl.viewport(0,0,this.canvas.width,this.canvas.height);gl.stencilMask(255);gl.disable(gl.STENCIL_TEST);gl.clearColor(.918,.902,.875,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);gl.useProgram(this.program);
   gl.uniform1fv(this.uniforms.uKeys,weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)));gl.uniform1f(this.uniforms.uRoll,clamp(p.z,-20,20)*Math.PI/180);gl.uniform4fv(this.uniforms.uView,this.view);
-  const face=this.meshes.find(m=>m.layer.kind==='face');
-  let faceMask=false;
-  const outsideFace=()=>{
-   if(!face)return;
-   if(!faceMask){gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.ALWAYS,1,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.REPLACE);gl.colorMask(false,false,false,false);this.drawMesh(face,p,{mask:true});gl.colorMask(true,true,true,true);gl.stencilMask(0);faceMask=true;}
-   gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.EQUAL,0,255);gl.stencilOp(gl.KEEP,gl.KEEP,gl.KEEP);
-  };
+  // Four independent live receiver masks. No projected shadow carries a baked
+  // face/ear/neck silhouette; it follows the caster, then intersects this mask.
+  const bits={face:1,earR:2,earL:4,skin:8};
+  gl.enable(gl.STENCIL_TEST);gl.colorMask(false,false,false,false);
+  for(const [kind,bit] of Object.entries(bits)){
+   gl.stencilMask(bit);gl.stencilFunc(gl.ALWAYS,bit,bit);gl.stencilOp(gl.KEEP,gl.KEEP,gl.REPLACE);
+   for(const m of this.meshes)if(m.layer.kind===kind)this.drawMesh(m,p,{mask:true});
+  }
+  gl.colorMask(true,true,true,true);gl.stencilMask(0);gl.stencilOp(gl.KEEP,gl.KEEP,gl.KEEP);
   for(const m of this.meshes){
-   if(this.hiddenHair&&hairKinds.has(m.layer.kind))continue;
-   if(m.layer.kind==='faceBare'&&!this.hiddenHair||m.layer.kind==='face'&&this.hiddenHair)continue;
-   // Earrings are hanging objects, clipped by the real moving face silhouette.
-   if(m.layer.kind.startsWith('earring'))outsideFace();else gl.disable(gl.STENCIL_TEST);
+   const kind=m.layer.kind,projection=this.rig.projections[kind];
+   if(this.hiddenHair&&(hairKinds.has(kind)||projection&&projection.caster!=='face'))continue;
+   let bit=projection?bits[projection.receiver]:0,inside=true;
+   if(kind.startsWith('earring')){bit=bits.face;inside=false;}
+   if(kind==='faceDetail'||this.rig.features[kind])bit=bits.face;
+   if(bit){gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.EQUAL,inside?bit:0,bit);}else gl.disable(gl.STENCIL_TEST);
    this.drawMesh(m,p);
   }
   gl.disable(gl.STENCIL_TEST);gl.bindVertexArray(null);

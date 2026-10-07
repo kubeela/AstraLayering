@@ -23,9 +23,6 @@ try{
  for(const id of Object.keys(rig.bindings))if(!groups.includes(id))throw Error('Binding has no source group: '+id);
  const batches=[];
  for(const id of groups){const kind=classify(id,rig),prior=batches.at(-1);if(prior?.kind===kind)prior.groups.push(id);else batches.push({kind,groups:[id]});}
- const face=batches.find(b=>b.kind==='face');
- const bare={kind:'faceBare',groups:face.groups.filter(id=>!id.startsWith('fx_hair_')&&!id.startsWith('fx_forehead_'))};
- batches.splice(batches.indexOf(face)+1,0,bare);
  await fs.mkdir(path.join(dir,'textures'),{recursive:true});const layers=[];
  for(const batch of batches){
   await page.evaluate(({groups,clip,scale})=>{const s=document.querySelector('svg');s.setAttribute('viewBox',clip.join(' '));s.setAttribute('width',clip[2]*scale);s.setAttribute('height',clip[3]*scale);for(const g of s.children)if(g.localName==='g')g.style.display=groups.includes(g.id)?'inline':'none';},{groups:batch.groups,clip:[x,y,w,h],scale});
@@ -36,6 +33,6 @@ try{
   layers.push({...batch,file,blend:'normal',box:[x+box[0]/scale,y+box[1]/scale,(box[2]-box[0])/scale,(box[3]-box[1])/scale],scale});
   console.log(layers.length,batch.kind,batch.groups.join(','));
  }
- await fs.writeFile(path.join(dir,'layers.json'),JSON.stringify({schema:'astra.svg-preview-textures.v3',inputSha256,sourcePreserved:true,preparation,clip:rig.preview.atlasClip,layers},null,2)+'\n');
+ await fs.writeFile(path.join(dir,'layers.json'),JSON.stringify({schema:'astra.svg-preview-textures.v4',inputSha256,sourcePreserved:true,preparation,clip:rig.preview.atlasClip,layers},null,2)+'\n');
  const retained=new Set(layers.map(l=>path.basename(l.file)));for(const file of await fs.readdir(path.join(dir,'textures')))if(/^\d{2}-[A-Za-z]+\.png$/.test(file)&&!retained.has(file))await fs.unlink(path.join(dir,'textures',file));
 }finally{await browser.close();}

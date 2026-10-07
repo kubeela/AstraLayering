@@ -1,8 +1,58 @@
 {
-  "schema": "astra.svg-preview-textures.v3",
+  "schema": "astra.svg-preview-textures.v4",
   "inputSha256": "5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9",
   "sourcePreserved": true,
   "preparation": [
+    {
+      "target": "fx_body5_face_on_neck",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#body3_neck_surface_clip)"
+    },
+    {
+      "target": "fx_hair_side_right_on_ear",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_ear_right_complete_shape)"
+    },
+    {
+      "target": "fx_hair5_right_long_on_ear",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_ear_right_complete_shape)"
+    },
+    {
+      "target": "fx_hair_side_left_on_ear",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_ear_left_complete_shape)"
+    },
+    {
+      "target": "fx_hair5_left_long_on_ear",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_ear_left_complete_shape)"
+    },
+    {
+      "target": "fx_hair_front_right_on_face",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_face_base_shape)"
+    },
+    {
+      "target": "fx_hair_front_left_on_face",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_face_base_shape)"
+    },
+    {
+      "target": "fx_hair_side_right_on_face",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_face_base_shape)"
+    },
+    {
+      "target": "fx_hair_side_left_on_face",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#hair5_surface_face_base_shape)"
+    },
+    {
+      "target": "fx_forehead_jewel_on_face",
+      "operation": "defer-receiver-clip-to-posed-mesh",
+      "originalClip": "url(#face6_surface_face_base)"
+    },
     {
       "target": "fx_body5_face_on_neck",
       "operation": "defer-collar-occlusion-to-draw-order",
@@ -194,6 +244,21 @@
       "scale": 3
     },
     {
+      "kind": "shadowNeck",
+      "groups": [
+        "fx_body5_face_on_neck"
+      ],
+      "file": "textures/11-shadowNeck.png",
+      "blend": "normal",
+      "box": [
+        380,
+        120.33333333333334,
+        121.33333333333333,
+        174.66666666666666
+      ],
+      "scale": 3
+    },
+    {
       "kind": "body",
       "groups": [
         "torso",
@@ -201,7 +266,7 @@
         "fx_hair5_left_long_on_torso",
         "inner_bodice"
       ],
-      "file": "textures/11-body.png",
+      "file": "textures/12-body.png",
       "blend": "normal",
       "box": [
         340,
@@ -217,7 +282,7 @@
         "collar_front_right",
         "collar_front_left"
       ],
-      "file": "textures/12-collar.png",
+      "file": "textures/13-collar.png",
       "blend": "normal",
       "box": [
         383,
@@ -275,7 +340,7 @@
         "pendant_beads",
         "pendant_tassel"
       ],
-      "file": "textures/13-body.png",
+      "file": "textures/14-body.png",
       "blend": "normal",
       "box": [
         136,
@@ -290,7 +355,7 @@
       "groups": [
         "hair_crown_complete_cap"
       ],
-      "file": "textures/14-fringe.png",
+      "file": "textures/15-fringe.png",
       "blend": "normal",
       "box": [
         365,
@@ -305,7 +370,7 @@
       "groups": [
         "earring_right_back"
       ],
-      "file": "textures/15-earringR.png",
+      "file": "textures/16-earringR.png",
       "blend": "normal",
       "box": [
         388.3333333333333,
@@ -318,11 +383,9 @@
     {
       "kind": "earR",
       "groups": [
-        "ear_right",
-        "fx_hair_side_right_on_ear",
-        "fx_hair5_right_long_on_ear"
+        "ear_right"
       ],
-      "file": "textures/16-earR.png",
+      "file": "textures/17-earR.png",
       "blend": "normal",
       "box": [
         385,
@@ -333,11 +396,27 @@
       "scale": 3
     },
     {
+      "kind": "shadowEarR",
+      "groups": [
+        "fx_hair_side_right_on_ear",
+        "fx_hair5_right_long_on_ear"
+      ],
+      "file": "textures/18-shadowEarR.png",
+      "blend": "normal",
+      "box": [
+        376.6666666666667,
+        202,
+        30,
+        28
+      ],
+      "scale": 3
+    },
+    {
       "kind": "earringL",
       "groups": [
         "earring_left_back"
       ],
-      "file": "textures/17-earringL.png",
+      "file": "textures/19-earringL.png",
       "blend": "normal",
       "box": [
         486.3333333333333,
@@ -350,11 +429,9 @@
     {
       "kind": "earL",
       "groups": [
-        "ear_left",
-        "fx_hair_side_left_on_ear",
-        "fx_hair5_left_long_on_ear"
+        "ear_left"
       ],
-      "file": "textures/18-earL.png",
+      "file": "textures/20-earL.png",
       "blend": "normal",
       "box": [
         482,
@@ -365,19 +442,27 @@
       "scale": 3
     },
     {
+      "kind": "shadowEarL",
+      "groups": [
+        "fx_hair_side_left_on_ear",
+        "fx_hair5_left_long_on_ear"
+      ],
+      "file": "textures/21-shadowEarL.png",
+      "blend": "normal",
+      "box": [
+        481.3333333333333,
+        202,
+        29.666666666666668,
+        28
+      ],
+      "scale": 3
+    },
+    {
       "kind": "face",
       "groups": [
-        "face_base",
-        "fx_hair_front_right_on_face",
-        "fx_hair_front_left_on_face",
-        "fx_hair_side_right_on_face",
-        "fx_hair_side_left_on_face",
-        "fx_forehead_jewel_on_face",
-        "fx_face_edge_reflection",
-        "blush_right",
-        "blush_left"
+        "face_base"
       ],
-      "file": "textures/19-face.png",
+      "file": "textures/22-face.png",
       "blend": "normal",
       "box": [
         386,
@@ -388,20 +473,94 @@
       "scale": 3
     },
     {
-      "kind": "faceBare",
+      "kind": "shadowFaceR",
       "groups": [
-        "face_base",
+        "fx_hair_front_right_on_face"
+      ],
+      "file": "textures/23-shadowFaceR.png",
+      "blend": "normal",
+      "box": [
+        380.6666666666667,
+        133,
+        67.33333333333333,
+        121
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "shadowFaceL",
+      "groups": [
+        "fx_hair_front_left_on_face"
+      ],
+      "file": "textures/24-shadowFaceL.png",
+      "blend": "normal",
+      "box": [
+        439.6666666666667,
+        134,
+        67.66666666666667,
+        120
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "shadowFaceR",
+      "groups": [
+        "fx_hair_side_right_on_face"
+      ],
+      "file": "textures/25-shadowFaceR.png",
+      "blend": "normal",
+      "box": [
+        364.6666666666667,
+        147.66666666666666,
+        67.66666666666667,
+        106
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "shadowFaceL",
+      "groups": [
+        "fx_hair_side_left_on_face"
+      ],
+      "file": "textures/26-shadowFaceL.png",
+      "blend": "normal",
+      "box": [
+        456.3333333333333,
+        148.33333333333334,
+        66,
+        105.33333333333333
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "shadowJewel",
+      "groups": [
+        "fx_forehead_jewel_on_face"
+      ],
+      "file": "textures/27-shadowJewel.png",
+      "blend": "normal",
+      "box": [
+        439.6666666666667,
+        166,
+        9.333333333333334,
+        14
+      ],
+      "scale": 3
+    },
+    {
+      "kind": "faceDetail",
+      "groups": [
         "fx_face_edge_reflection",
         "blush_right",
         "blush_left"
       ],
-      "file": "textures/20-faceBare.png",
+      "file": "textures/28-faceDetail.png",
       "blend": "normal",
       "box": [
-        386,
-        101.33333333333333,
-        116.66666666666667,
-        170
+        392,
+        195,
+        104.66666666666667,
+        75.66666666666667
       ],
       "scale": 3
     },
@@ -410,7 +569,7 @@
       "groups": [
         "eye_right"
       ],
-      "file": "textures/21-eyeR.png",
+      "file": "textures/29-eyeR.png",
       "blend": "normal",
       "box": [
         397,
@@ -425,7 +584,7 @@
       "groups": [
         "eye_left"
       ],
-      "file": "textures/22-eyeL.png",
+      "file": "textures/30-eyeL.png",
       "blend": "normal",
       "box": [
         445.6666666666667,
@@ -440,7 +599,7 @@
       "groups": [
         "brow_right"
       ],
-      "file": "textures/23-browR.png",
+      "file": "textures/31-browR.png",
       "blend": "normal",
       "box": [
         401,
@@ -455,7 +614,7 @@
       "groups": [
         "brow_left"
       ],
-      "file": "textures/24-browL.png",
+      "file": "textures/32-browL.png",
       "blend": "normal",
       "box": [
         452.3333333333333,
@@ -471,7 +630,7 @@
         "nose",
         "fx_nose_tip_highlight"
       ],
-      "file": "textures/25-nose.png",
+      "file": "textures/33-nose.png",
       "blend": "normal",
       "box": [
         434,
@@ -486,7 +645,7 @@
       "groups": [
         "mouth"
       ],
-      "file": "textures/26-mouth.png",
+      "file": "textures/34-mouth.png",
       "blend": "normal",
       "box": [
         428.6666666666667,
@@ -501,7 +660,7 @@
       "groups": [
         "forehead_jewel_back"
       ],
-      "file": "textures/27-forehead.png",
+      "file": "textures/35-forehead.png",
       "blend": "normal",
       "box": [
         437.3333333333333,
@@ -516,7 +675,7 @@
       "groups": [
         "hair_crown"
       ],
-      "file": "textures/28-fringe.png",
+      "file": "textures/36-fringe.png",
       "blend": "normal",
       "box": [
         364.6666666666667,
@@ -531,7 +690,7 @@
       "groups": [
         "hair_side_right"
       ],
-      "file": "textures/29-sideR.png",
+      "file": "textures/37-sideR.png",
       "blend": "normal",
       "box": [
         356,
@@ -546,7 +705,7 @@
       "groups": [
         "hair_side_left"
       ],
-      "file": "textures/30-sideL.png",
+      "file": "textures/38-sideL.png",
       "blend": "normal",
       "box": [
         457,
@@ -561,7 +720,7 @@
       "groups": [
         "hair_front_right"
       ],
-      "file": "textures/31-sideR.png",
+      "file": "textures/39-sideR.png",
       "blend": "normal",
       "box": [
         357,
@@ -576,7 +735,7 @@
       "groups": [
         "hair_front_left"
       ],
-      "file": "textures/32-sideL.png",
+      "file": "textures/40-sideL.png",
       "blend": "normal",
       "box": [
         441,
@@ -594,7 +753,7 @@
         "hand_left",
         "opaque_lower_left_cuff_front"
       ],
-      "file": "textures/33-body.png",
+      "file": "textures/41-body.png",
       "blend": "normal",
       "box": [
         205.33333333333331,
@@ -609,7 +768,7 @@
       "groups": [
         "headdress_branch_right_2"
       ],
-      "file": "textures/34-ornamentR.png",
+      "file": "textures/42-ornamentR.png",
       "blend": "normal",
       "box": [
         308.33333333333337,
@@ -624,7 +783,7 @@
       "groups": [
         "headdress_branch_left_2"
       ],
-      "file": "textures/35-ornamentL.png",
+      "file": "textures/43-ornamentL.png",
       "blend": "normal",
       "box": [
         504,
@@ -639,7 +798,7 @@
       "groups": [
         "headdress_center"
       ],
-      "file": "textures/36-crown.png",
+      "file": "textures/44-crown.png",
       "blend": "normal",
       "box": [
         396.6666666666667,
@@ -654,7 +813,7 @@
       "groups": [
         "forehead_jewel"
       ],
-      "file": "textures/37-forehead.png",
+      "file": "textures/45-forehead.png",
       "blend": "normal",
       "box": [
         429.3333333333333,
@@ -670,7 +829,7 @@
         "earring_right",
         "fx_hair5_right_long_on_earring"
       ],
-      "file": "textures/38-earringR.png",
+      "file": "textures/46-earringR.png",
       "blend": "normal",
       "box": [
         389.3333333333333,
@@ -686,7 +845,7 @@
         "earring_left",
         "fx_hair5_left_long_on_earring"
       ],
-      "file": "textures/39-earringL.png",
+      "file": "textures/47-earringL.png",
       "blend": "normal",
       "box": [
         488,

@@ -1,5 +1,5 @@
 {
-  "schema": "astra.head-nine-key.v4",
+  "schema": "astra.head-nine-key.v5",
   "character": "jianma-clothing",
   "parameters": {
     "x": {
@@ -105,10 +105,10 @@
     "meshStep": 5
   },
   "notes": [
-    "Exact immutable dressed expression SVG.",
-    "Face silhouette keyforms and local feature keyforms are separate. No radial/cosine image warp.",
-    "Scalp and hair attachment keys share a frame; hanging tails have bounded-substep damped inertia.",
-    "Jewels/hairpins/halo have anchored perspective planes; collar follows the cervical twist and has a fixed sewn edge."
+    "Immutable original dressed SVG; source paths and colours remain unchanged.",
+    "Head shell parents both the facial surface and the hair surface. Features inherit the facial surface before local correction.",
+    "Pitch bends latitude curves; yaw redistributes near/far width. Corners act on the same surface.",
+    "Display projections follow their casting parts and are clipped against the live receiving mesh."
   ],
   "neck": {
     "followY": 264,
@@ -483,21 +483,21 @@
     "hair_crown_complete_cap": "fringe",
     "earring_right_back": "earringR",
     "ear_right": "earR",
-    "fx_hair_side_right_on_ear": "earR",
-    "fx_hair5_right_long_on_ear": "earR",
+    "fx_hair_side_right_on_ear": "shadowEarR",
+    "fx_hair5_right_long_on_ear": "shadowEarR",
     "earring_left_back": "earringL",
     "ear_left": "earL",
-    "fx_hair_side_left_on_ear": "earL",
-    "fx_hair5_left_long_on_ear": "earL",
+    "fx_hair_side_left_on_ear": "shadowEarL",
+    "fx_hair5_left_long_on_ear": "shadowEarL",
     "face_base": "face",
-    "fx_hair_front_right_on_face": "face",
-    "fx_hair_front_left_on_face": "face",
-    "fx_hair_side_right_on_face": "face",
-    "fx_hair_side_left_on_face": "face",
-    "fx_forehead_jewel_on_face": "face",
-    "fx_face_edge_reflection": "face",
-    "blush_right": "face",
-    "blush_left": "face",
+    "fx_hair_front_right_on_face": "shadowFaceR",
+    "fx_hair_front_left_on_face": "shadowFaceL",
+    "fx_hair_side_right_on_face": "shadowFaceR",
+    "fx_hair_side_left_on_face": "shadowFaceL",
+    "fx_forehead_jewel_on_face": "shadowJewel",
+    "fx_face_edge_reflection": "faceDetail",
+    "blush_right": "faceDetail",
+    "blush_left": "faceDetail",
     "eye_right": "eyeR",
     "eye_left": "eyeL",
     "brow_right": "browR",
@@ -522,334 +522,141 @@
     "earring_right": "earringR",
     "fx_hair5_right_long_on_earring": "earringR",
     "earring_left": "earringL",
-    "fx_hair5_left_long_on_earring": "earringL"
-  },
-  "faceCage": {
-    "columns": [
-      380,
-      412,
-      444,
-      476,
-      508
-    ],
-    "rows": [
-      103,
-      155,
-      195,
-      230,
-      270
-    ],
-    "rightDx": [
-      [
-        8,
-        10,
-        10,
-        6,
-        0
-      ],
-      [
-        9,
-        15,
-        16,
-        10,
-        0
-      ],
-      [
-        10,
-        18,
-        19,
-        11,
-        -1
-      ],
-      [
-        11,
-        21,
-        21,
-        12,
-        -1
-      ],
-      [
-        12,
-        22,
-        22,
-        10,
-        -2
-      ]
-    ],
-    "upDy": [
-      5,
-      -5,
-      -11,
-      -14,
-      -8
-    ],
-    "downDy": [
-      -1,
-      5,
-      9,
-      8,
-      0
-    ],
-    "cornerSlope": 0.055
-  },
-  "scalpCage": {
-    "columns": [
-      365,
-      405,
-      444,
-      484,
-      523
-    ],
-    "rows": [
-      40,
-      92,
-      140,
-      190,
-      230,
-      280
-    ],
-    "rightDx": [
-      [
-        12,
-        14,
-        12,
-        6,
-        -1
-      ],
-      [
-        14,
-        17,
-        16,
-        9,
-        0
-      ],
-      [
-        14,
-        17,
-        21,
-        13,
-        1
-      ],
-      [
-        13,
-        17,
-        23,
-        15,
-        1
-      ],
-      [
-        12,
-        18,
-        24,
-        14,
-        0
-      ],
-      [
-        12,
-        18,
-        22,
-        12,
-        -1
-      ]
-    ],
-    "upDy": [
-      6,
-      3,
-      -4,
-      -10,
-      -13,
-      -8
-    ],
-    "downDy": [
-      -2,
-      1,
-      5,
-      8,
-      7,
-      0
-    ],
-    "cornerSlope": 0.05
+    "fx_hair5_left_long_on_earring": "earringL",
+    "fx_body5_face_on_neck": "shadowNeck"
   },
   "features": {
     "eyeR": {
+      "parent": "faceSurface",
       "anchor": [
         419.5,
         198.5
       ],
-      "right": [
-        18,
-        0,
-        0.96,
-        1
+      "size": [
+        41,
+        29
       ],
-      "left": [
-        -12,
-        1,
-        0.83,
-        1
+      "yawShift": 0.4,
+      "nearWidth": 1,
+      "farWidth": 0.98,
+      "pitchShift": [
+        -0.3,
+        0.3
       ],
-      "up": [
-        0,
-        -10,
-        1,
-        0.95
-      ],
-      "down": [
-        0,
-        9,
-        1,
-        0.95
-      ]
+      "pitchStretch": 0.015,
+      "tipDepth": 0,
+      "cornerLag": 0,
+      "localArch": 0.18
     },
     "eyeL": {
+      "parent": "faceSurface",
       "anchor": [
         468.5,
         198.5
       ],
-      "right": [
-        12,
-        1,
-        0.83,
-        1
+      "size": [
+        41,
+        29
       ],
-      "left": [
-        -18,
-        0,
-        0.96,
-        1
+      "yawShift": 0.4,
+      "nearWidth": 1,
+      "farWidth": 0.98,
+      "pitchShift": [
+        -0.3,
+        0.3
       ],
-      "up": [
-        0,
-        -10,
-        1,
-        0.95
-      ],
-      "down": [
-        0,
-        9,
-        1,
-        0.95
-      ]
+      "pitchStretch": 0.015,
+      "tipDepth": 0,
+      "cornerLag": 0,
+      "localArch": 0.18
     },
     "browR": {
+      "parent": "faceSurface",
       "anchor": [
         419,
         185
       ],
-      "right": [
-        17,
-        0,
-        0.97,
-        1
+      "size": [
+        32,
+        7
       ],
-      "left": [
-        -12,
-        1,
-        0.84,
-        1
+      "yawShift": 0.4,
+      "nearWidth": 1,
+      "farWidth": 0.98,
+      "pitchShift": [
+        -0.3,
+        0.3
       ],
-      "up": [
-        0,
-        -9,
-        1,
-        0.98
-      ],
-      "down": [
-        0,
-        8,
-        1,
-        0.98
-      ]
+      "pitchStretch": 0.025,
+      "tipDepth": 0,
+      "cornerLag": 0,
+      "localArch": 0.1
     },
     "browL": {
+      "parent": "faceSurface",
       "anchor": [
         469,
         185
       ],
-      "right": [
-        12,
-        1,
-        0.84,
-        1
+      "size": [
+        32,
+        7
       ],
-      "left": [
-        -17,
-        0,
-        0.97,
-        1
+      "yawShift": 0.4,
+      "nearWidth": 1,
+      "farWidth": 0.98,
+      "pitchShift": [
+        -0.3,
+        0.3
       ],
-      "up": [
-        0,
-        -9,
-        1,
-        0.98
-      ],
-      "down": [
-        0,
-        8,
-        1,
-        0.98
-      ]
+      "pitchStretch": 0.025,
+      "tipDepth": 0,
+      "cornerLag": 0,
+      "localArch": 0.1
     },
     "nose": {
+      "parent": "faceSurface",
       "anchor": [
         444,
         228
       ],
-      "right": [
-        24,
-        0,
-        0.86,
-        1
+      "size": [
+        15,
+        17
       ],
-      "left": [
-        -24,
-        0,
-        0.86,
-        1
+      "yawShift": 3.6,
+      "nearWidth": 1,
+      "farWidth": 0.95,
+      "pitchShift": [
+        -1.5,
+        1.5
       ],
-      "up": [
-        0,
-        -13,
-        1,
-        0.94
-      ],
-      "down": [
-        0,
-        8,
-        1,
-        0.94
-      ]
+      "pitchStretch": -0.02,
+      "tipDepth": 1.5,
+      "cornerLag": 0,
+      "localArch": 0
     },
     "mouth": {
+      "parent": "faceSurface",
       "anchor": [
         444,
         244
       ],
-      "right": [
-        22,
-        0,
-        0.91,
+      "size": [
+        34,
+        28
+      ],
+      "yawShift": 1.6,
+      "nearWidth": 1,
+      "farWidth": 0.95,
+      "pitchShift": [
+        -1,
         1
       ],
-      "left": [
-        -22,
-        0,
-        0.91,
-        1
-      ],
-      "up": [
-        0,
-        -12,
-        1,
-        0.96
-      ],
-      "down": [
-        0,
-        6,
-        1,
-        0.94
-      ]
+      "pitchStretch": -0.02,
+      "tipDepth": 0,
+      "cornerLag": 0.5,
+      "localArch": 0.25
     }
   },
   "collar": {
@@ -934,6 +741,227 @@
         "maxOffset": 4,
         "rollLever": 23
       }
+    }
+  },
+  "shell": {
+    "center": [
+      444,
+      200
+    ],
+    "yawShift": 5,
+    "pitchShift": -3,
+    "yawNarrow": 0.012
+  },
+  "faceSurface": {
+    "parent": "shell",
+    "centerX": 444,
+    "radiusX": 59,
+    "rows": [
+      102,
+      155,
+      185,
+      198.5,
+      228,
+      244,
+      271
+    ],
+    "yawColumns": [
+      -1,
+      -0.7,
+      0,
+      0.65,
+      1
+    ],
+    "yawProfile": [
+      0.12,
+      1,
+      1,
+      0.48,
+      -0.1
+    ],
+    "yawByRow": [
+      3,
+      7,
+      9,
+      10,
+      12,
+      12,
+      9
+    ],
+    "upCenter": [
+      0,
+      -4,
+      -7,
+      -9,
+      -7,
+      -4,
+      1
+    ],
+    "upEdge": [
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      1,
+      2
+    ],
+    "downCenter": [
+      0,
+      5,
+      9,
+      10,
+      7,
+      3,
+      -3
+    ],
+    "downEdge": [
+      0,
+      1,
+      1,
+      1,
+      0,
+      -1,
+      -2
+    ],
+    "pitchWidth": [
+      0,
+      0,
+      0,
+      0.003,
+      0.014,
+      0.022,
+      0.025
+    ],
+    "cornerRadians": -0.04,
+    "cornerDx": [
+      0,
+      0,
+      0.4,
+      0.6,
+      1,
+      1.2,
+      0.8
+    ],
+    "centerY": 200
+  },
+  "scalpSurface": {
+    "parent": "shell",
+    "centerX": 444,
+    "radiusX": 80,
+    "rows": [
+      40,
+      92,
+      140,
+      190,
+      230,
+      280
+    ],
+    "yawColumns": [
+      -1,
+      -0.6,
+      0,
+      0.65,
+      1
+    ],
+    "yawProfile": [
+      0.12,
+      1,
+      1,
+      0.48,
+      -0.08
+    ],
+    "yawByRow": [
+      1,
+      2,
+      6,
+      7,
+      7,
+      5
+    ],
+    "upCenter": [
+      2,
+      1,
+      -2,
+      -6,
+      -4,
+      0
+    ],
+    "upEdge": [
+      0,
+      0,
+      -1,
+      -3,
+      -1,
+      0
+    ],
+    "downCenter": [
+      -1,
+      1,
+      5,
+      7,
+      5,
+      0
+    ],
+    "downEdge": [
+      0,
+      0,
+      1,
+      3,
+      1,
+      0
+    ],
+    "pitchWidth": [
+      0,
+      0,
+      0.002,
+      0.004,
+      0.004,
+      0
+    ],
+    "cornerRadians": -0.028,
+    "cornerDx": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "centerY": 200
+  },
+  "contour": {
+    "socketY": 199,
+    "socketRadiusY": 22,
+    "farSocketInset": 1.0,
+    "jawStartY": 219,
+    "jawEndY": 271,
+    "jawNarrow": 0.025
+  },
+  "projections": {
+    "shadowFaceR": {
+      "caster": "sideR",
+      "receiver": "face"
+    },
+    "shadowFaceL": {
+      "caster": "sideL",
+      "receiver": "face"
+    },
+    "shadowJewel": {
+      "caster": "forehead",
+      "receiver": "face"
+    },
+    "shadowEarR": {
+      "caster": "sideR",
+      "receiver": "earR"
+    },
+    "shadowEarL": {
+      "caster": "sideL",
+      "receiver": "earL"
+    },
+    "shadowNeck": {
+      "caster": "face",
+      "receiver": "skin"
     }
   }
 }

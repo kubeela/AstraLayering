@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify} from './deformer.mjs';
+import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind} from './deformer.mjs';
 const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
 const close=(a,b,epsilon=1e-8)=>assert.ok(Math.abs(a-b)<epsilon,`${a} != ${b}`);
 const pointClose=(a,b,e)=>a.forEach((v,i)=>close(v,b[i],e));
@@ -31,7 +31,7 @@ test('front/rear hair roots share the scalp parent at every corner',()=>{
  const near=boundaryPoint(410,200,'face',1,0,rig),far=boundaryPoint(478,200,'face',1,0,rig);
  assert(near[0]-410>far[0]-478,'far side must compress relative to near side');
  assert.equal(classify('hair_crown',rig),'fringe');assert.equal(classify('forehead_jewel',rig),'forehead');
- assert.equal(classify('fx_hair_front_right_on_face',rig),'face');
+ assert.equal(classify('fx_hair_front_right_on_face',rig),'shadowFaceR');
  assert.throws(()=>classify('new_unbound_art',rig),/Unbound SVG group/);
 });
 test('rigid head ornaments preserve straight lines instead of bending with the scalp',()=>{
@@ -67,8 +67,14 @@ test('exact dressed expression source and explicit layer ownership are recorded'
  assert.equal(source.sourceSha256,manifest.inputSha256);assert.equal(manifest.sourcePreserved,true);
  assert.equal(source.path,'outputs/jianma_clothing/final/character.svg');
  assert(manifest.preparation.some(p=>p.operation==='defer-collar-occlusion-to-draw-order'));
- const bare=manifest.layers.find(l=>l.kind==='faceBare');assert(bare);
- assert(!bare.groups.some(id=>id.startsWith('fx_hair_')||id.startsWith('fx_forehead_')));
+ const face=manifest.layers.find(l=>l.kind==='face');assert(face);
+ assert.deepEqual(face.groups,['face_base']);
+ for(const [kind,projection] of Object.entries(rig.projections)){
+  assert(manifest.layers.some(l=>l.kind===kind),kind+' missing from display cache');
+  assert(manifest.layers.some(l=>l.kind===projection.receiver),kind+' has no live receiver');
+  assert.equal(motionKind(kind,rig),projection.caster);
+ }
+ assert(manifest.preparation.some(p=>p.target==='fx_body5_face_on_neck'&&p.operation==='defer-receiver-clip-to-posed-mesh'));
  for(const kind of ['rearL','rearR'])assert(manifest.layers.find(l=>l.kind===kind).box[3]>400);
  for(const l of manifest.layers){
   assert.ok(fs.statSync(new URL(l.file,import.meta.url)).size>0);
@@ -76,15 +82,47 @@ test('exact dressed expression source and explicit layer ownership are recorded'
  }
 });
 
-test('individual eyes and lips keep affine drawing proportions inside each keyform',()=>{
- for(const kind of Object.keys(rig.features))for(const [kx,ky] of rig.keyCoordinates){
-  const [x,y]=rig.features[kind].anchor;
-  const a=boundaryPoint(x-9,y-4,kind,kx,ky,rig),b=boundaryPoint(x+9,y+4,kind,kx,ky,rig),m=boundaryPoint(x,y,kind,kx,ky,rig);
-  pointClose(m,a.map((v,i)=>(v+b[i])/2));
+test('pitch curves the eye latitude and redistributes vertical bands without reversing their order',()=>{
+ for(const y of [-30,-15,15,30]){
+  const p={x:0,y,z:0};
+  const a=evaluatePoint(400,198.5,'face',p,rig),m=evaluatePoint(444,198.5,'face',p,rig),b=evaluatePoint(488,198.5,'face',p,rig);
+  const bow=m[1]-(a[1]+b[1])/2;
+  assert(bow*y<0&&Math.abs(bow)>1.5,'up/down must bend the latitude in opposite directions');
+  const bands=[185,198.5,228,244,270].map(row=>evaluatePoint(444,row,'face',p,rig)[1]);
+  for(let i=1;i<bands.length;i++)assert(bands[i]-bands[i-1]>8);
  }
+ const distance=y=>evaluatePoint(444,270,'face',{x:0,y,z:0},rig)[1]-evaluatePoint(444,198.5,'face',{x:0,y,z:0},rig)[1];
+ assert(distance(-30)<distance(0)&&distance(30)>distance(0));
+});
+test('changing a parent curve reaches eyes, brows and lips while the hair sibling stays independent',()=>{
+ const altered=structuredClone(rig);altered.faceSurface.upCenter=altered.faceSurface.upCenter.map(v=>v-2);
+ const p={x:0,y:30,z:0};
+ for(const kind of ['face','eyeR','eyeL','browR','browL','nose','mouth']){
+  const [x,y]=rig.features[kind]?.anchor||[444,210];
+  assert(evaluatePoint(x,y,kind,p,altered)[1]<evaluatePoint(x,y,kind,p,rig)[1]-.5,kind+' detached from parent');
+ }
+ pointClose(evaluatePoint(444,151,'fringe',p,altered),evaluatePoint(444,151,'fringe',p,rig));
+ const shifted=structuredClone(rig);shifted.shell.yawShift+=3;
+ for(const kind of ['face','eyeR','mouth','fringe','crown']){
+  const p={x:30,y:30,z:0},a=evaluatePoint(444,210,kind,p,rig),b=evaluatePoint(444,210,kind,p,shifted);
+  close(b[0]-a[0],3);close(b[1],a[1]);
+ }
+});
+test('eyes retain useful near/far widths and carry the shared pitch slope',()=>{
  const near=boundaryPoint(429.5,198.5,'eyeR',1,0,rig)[0]-boundaryPoint(409.5,198.5,'eyeR',1,0,rig)[0];
  const far=boundaryPoint(478.5,198.5,'eyeL',1,0,rig)[0]-boundaryPoint(458.5,198.5,'eyeL',1,0,rig)[0];
- assert(near>far && near/20>.9 && far/20>.75);
+ assert(near>far&&near/20>.85&&near/20<1.15&&far/20>.65);
+ for(const y of [-1,1]){
+  const left=[409.5,429.5].map(x=>boundaryPoint(x,198.5,'eyeR',0,y,rig));
+  const right=[458.5,478.5].map(x=>boundaryPoint(x,198.5,'eyeL',0,y,rig));
+  assert((left[1][1]-left[0][1])*y<-.5);
+  assert((right[1][1]-right[0][1])*y>.5);
+ }
+});
+test('projected artwork follows the casting part at intermediate poses and roll',()=>{
+ for(const [kind,projection] of Object.entries(rig.projections))for(const p of [{x:12,y:-17,z:9},{x:-25,y:22,z:-13}]){
+  pointClose(evaluatePoint(421,223,kind,p,rig),evaluatePoint(421,223,projection.caster,p,rig));
+ }
 });
 test('collar opening follows the neck partially while its sewn edge stays fixed',()=>{
  for(const [kx,ky] of rig.keyCoordinates)for(const z of [-20,0,20]){
