@@ -1,0 +1,11 @@
+{
+  "status": "awaiting_human_visual_review",
+  "scope": "n29 4.7 root color continuity only; no final composite acceptance",
+  "candidate": "refinement/groups/head/rear_hair_left/inner_back_curtain/4.rendering stack/4.7.线色融合与材质细化/candidate.svg",
+  "candidate_sha256": "aa0500f9170c3ffaa3f219076902765b4f4c253268e85c209e220b9e99163494",
+  "before": "refinement/groups/head/rear_hair_left/inner_back_curtain/4.rendering stack/4.7.线色融合与材质细化/revision-001-before-root-match/neighbor-surfaces.png",
+  "before_sha256": "7d4869afca3a6cb2a2877706a6b22524e6f1a35315944cc78ed772601f01cfd5",
+  "after": "refinement/groups/head/rear_hair_left/inner_back_curtain/4.rendering stack/4.7.线色融合与材质细化/neighbor-surfaces.png",
+  "after_sha256": "32e0629259cf6f44871219b5ef49531f663b28538c5857a3d43ad92d9bb0d28a",
+  "note": "No image tool retry. Native state remains part_highlights until actual review."
+}
