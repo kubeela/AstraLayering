@@ -66,7 +66,7 @@ test('small live turns visibly excite the fringe then settle without autonomous 
  const p=new HeadPhysics(rig);let pose={...neutral},peak=0,stoppedPeak=0;
  const alpha=1-Math.exp(-13/60);
  for(let i=0;i<50;i++){
-  const target=i<20?15:i<40?-15:15;
+  const limit=rig.parameters.x.max,target=i<20?limit:i<40?-limit:limit;
   pose.x+=(target-pose.x)*alpha;p.advance(pose,1/60);
   peak=Math.max(peak,Math.abs(p.outputs.fringeR[2]),Math.abs(p.outputs.fringeL[2]));
  }

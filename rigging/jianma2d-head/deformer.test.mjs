@@ -246,14 +246,14 @@ test('actual facial and scalp display triangles remain oriented through 25 inter
  }
 });
 
-test('live +/-15 range preserves the existing half-turn shapes and clamps every rendered axis',()=>{
+test('live subtle-turn range clamps axes without rescaling the authored domain',()=>{
  assert.deepEqual(rig.keyformExtent,{x:30,y:30});
- for(const axis of ['x','y'])assert.deepEqual([rig.parameters[axis].min,rig.parameters[axis].max],[-15,15]);
- assert.deepEqual(clampPose({x:99,y:-99,z:99},rig),{x:15,y:-15,z:20});
+ for(const axis of ['x','y'])assert.deepEqual([rig.parameters[axis].min,rig.parameters[axis].max],[-10,10]);
+ assert.deepEqual(clampPose({x:99,y:-99,z:99},rig),{x:10,y:-10,z:20});
  assert.throws(()=>clampPose({x:NaN,y:0,z:0},rig),/Invalid head pose/);
  const weightsAtLimit=poseWeights(clampPose({x:30,y:30,z:0},rig),rig);
- assert.deepEqual(weightsAtLimit,weights(.5,.5));
- // These are the existing v9 interior poses, not rescaled endpoint drawings.
+ assert.deepEqual(weightsAtLimit,weights(1/3,1/3));
+ // Low-level author sampling still interpolates the full endpoint domain.
  for(const kind of ['face','fringe','skin','eyeR','eyeL','mouth','sideL','sideR']){
   const neutral=boundaryPoint(444,230,kind,0,0,rig),endpoint=boundaryPoint(444,230,kind,1,0,rig);
   pointClose(evaluatePoint(444,230,kind,{x:15,y:0,z:0},rig),neutral.map((v,i)=>(v+endpoint[i])/2));
