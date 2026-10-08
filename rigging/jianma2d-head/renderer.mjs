@@ -1,4 +1,4 @@
-import { clamp, boundaryPoint, rollWeight, rollBend, weights, isHanging, evaluateRoot, inertiaWeights, motionKind, validateRig, layerOpacity } from './deformer.mjs';
+import { clamp, boundaryPoint, rollWeight, rollBend, poseWeights, clampPose, isHanging, evaluateRoot, inertiaWeights, motionKind, validateRig, layerOpacity } from './deformer.mjs';
 import { HeadPhysics } from './physics.mjs';
 const VERT=`#version 300 es
 precision highp float;
@@ -93,8 +93,9 @@ export class Renderer {
  }
  draw(p){
   const gl=this.gl;if(!gl||gl.isContextLost())return;
+  p=clampPose(p,this.rig);
   gl.viewport(0,0,this.canvas.width,this.canvas.height);gl.stencilMask(255);gl.disable(gl.STENCIL_TEST);gl.clearColor(.918,.902,.875,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);gl.useProgram(this.program);
-  gl.uniform1fv(this.uniforms.uKeys,weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)));gl.uniform1f(this.uniforms.uRoll,clamp(p.z,-20,20)*Math.PI/180);gl.uniform4fv(this.uniforms.uView,this.view);
+  gl.uniform1fv(this.uniforms.uKeys,poseWeights(p,this.rig));gl.uniform1f(this.uniforms.uRoll,clamp(p.z,-20,20)*Math.PI/180);gl.uniform4fv(this.uniforms.uView,this.view);
   // Four independent live receiver masks. No projected shadow carries a baked
   // face/ear/neck silhouette; it follows the caster, then intersects this mask.
   const bits={face:1,earR:2,earL:4,skin:8};
@@ -119,8 +120,8 @@ export class Renderer {
   }
   gl.disable(gl.STENCIL_TEST);gl.bindVertexArray(null);
  }
- advance(p,dt){return this.physics.advance(p,dt);}
- resetPhysics(p){this.physics.reset(p);}
+ advance(p,dt){return this.physics.advance(clampPose(p,this.rig),dt);}
+ resetPhysics(p){this.physics.reset(clampPose(p,this.rig));}
  setPhysics(value,p){this.physics.enabled=value;this.resetPhysics(p);}
  destroy(){const gl=this.gl;if(!gl)return;for(const m of this.meshes){gl.deleteTexture(m.texture);gl.deleteBuffer(m.buffer);gl.deleteBuffer(m.indexBuffer);gl.deleteVertexArray(m.vao);}gl.deleteProgram(this.program);this.meshes=[];}
 }

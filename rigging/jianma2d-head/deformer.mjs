@@ -13,6 +13,10 @@ function curve(knots,values,x){
 }
 export function validateRig(rig){
  if(rig.schema!=='astra.head-nine-key.v9')throw Error('Unsupported head rig: '+rig.schema);
+ for(const axis of ['x','y']){
+  const p=rig.parameters?.[axis],extent=rig.keyformExtent?.[axis];
+  if(!p||!Number.isFinite(extent)||extent<=0||p.min!==-p.max||p.max<=0||p.max>extent||p.default!==0)throw Error('Invalid head parameter range: '+axis);
+ }
  for(const surface of ['face','scalp','bun','earL','earR']){
   const f=rig.keyforms?.[surface];if(!f)throw Error(surface+': missing authored endpoint forms');
   const names=Object.keys(f.landmarks);if(names.length<3)throw Error(surface+': too few landmarks');
@@ -194,8 +198,12 @@ export function boundaryPoint(x,y,kind,kx,ky,rig){
 // Independently authored endpoint drawings must not extrapolate through a
 // negative key weight. C1 quadrant interpolation preserves the key envelope.
 export function weights(x,y){const b=t=>{const u=clamp(Math.abs(t)),s=u*u*(3-2*u);return t<0?[s,1-s,0]:[0,1-s,s];},a=b(x),c=b(y);return c.flatMap(v=>a.map(u=>u*v));}
-function mixPoint(x,y,kind,p,rig){const w=weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)),q=[0,0];rig.keyCoordinates.forEach(([kx,ky],i)=>{const a=boundaryPoint(x,y,kind,kx,ky,rig);q[0]+=a[0]*w[i];q[1]+=a[1]*w[i];});return q;}
-export function evaluateRoot(kind,p,rig){const w=weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)),q=[0,0];rig.keyCoordinates.forEach(([kx,ky],i)=>{const a=rootPoint(kind,kx,ky,rig);q[0]+=a[0]*w[i];q[1]+=a[1]*w[i];});return q;}
+// The authoring envelope stays fixed when the live range is narrowed. A live
+// value of 15 keeps its existing shape; it does not become the old 30 endpoint.
+export function poseWeights(p,rig){return weights(p.x/rig.keyformExtent.x,p.y/rig.keyformExtent.y);}
+export function clampPose(p,rig){return Object.fromEntries(['x','y','z'].map(k=>{if(!Number.isFinite(p[k]))throw Error('Invalid head pose: '+k);return [k,clamp(p[k],rig.parameters[k].min,rig.parameters[k].max)];}));}
+function mixPoint(x,y,kind,p,rig){const w=poseWeights(p,rig),q=[0,0];rig.keyCoordinates.forEach(([kx,ky],i)=>{const a=boundaryPoint(x,y,kind,kx,ky,rig);q[0]+=a[0]*w[i];q[1]+=a[1]*w[i];});return q;}
+export function evaluateRoot(kind,p,rig){const w=poseWeights(p,rig),q=[0,0];rig.keyCoordinates.forEach(([kx,ky],i)=>{const a=rootPoint(kind,kx,ky,rig);q[0]+=a[0]*w[i];q[1]+=a[1]*w[i];});return q;}
 export function evaluatePoint(x,y,kind,p,rig){
  const sourceKind=kind;kind=motionKind(kind,rig);
  const q=mixPoint(x,y,sourceKind,p,rig),a=clamp(p.z,-20,20)*Math.PI/180,[cx,cy]=rig.head.neckPivot,w=rollWeight(x,y,kind,rig);

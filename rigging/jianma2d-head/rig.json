@@ -4,14 +4,14 @@
   "parameters": {
     "x": {
       "label": "左右转头",
-      "min": -30,
-      "max": 30,
+      "min": -15,
+      "max": 15,
       "default": 0
     },
     "y": {
       "label": "抬头 / 低头",
-      "min": -30,
-      "max": 30,
+      "min": -15,
+      "max": 15,
       "default": 0
     },
     "z": {
@@ -3278,5 +3278,9 @@
       "hair_front_right",
       "hair_front_left"
     ]
+  },
+  "keyformExtent": {
+    "x": 30,
+    "y": 30
   }
 }

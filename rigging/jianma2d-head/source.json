@@ -3,7 +3,7 @@
   "path": "rigging/jianma2d-head/artwork/character.svg",
   "sourceSha256": "a2ddb18831d1f3655b2871717f0aad25dfa616e13ee0a3a4d9e397c0c54a2c34",
   "sourceBytes": 4955106,
-  "preview": "Authorized revised SVG shared with the expression workbench; v9 uses authored cheek/chin curves, face-attached feature planes and complete-layer occlusion.",
+  "preview": "Authorized revised SVG shared with the expression workbench; v9 uses authored cheek/chin curves, face-attached feature planes and complete-layer occlusion. Live XY is limited to the existing +/-15 shapes; the authored +/-30 interpolation domain is preserved.",
   "layerManifest": "layers.json",
   "base": {
     "repository": "https://github.com/wu-tian807/AstraLayering",

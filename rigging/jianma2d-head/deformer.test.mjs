@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
-import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind,validateRig,layerOpacity} from './deformer.mjs';
+import {boundaryPoint,evaluatePoint,evaluateRoot,weights,poseWeights,clampPose,classify,motionKind,validateRig,layerOpacity} from './deformer.mjs';
 import {meshGeometry,orderedLayers} from './renderer.mjs';
 const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
 const close=(a,b,epsilon=1e-8)=>assert.ok(Math.abs(a-b)<epsilon,`${a} != ${b}`);
@@ -244,4 +244,20 @@ test('actual facial and scalp display triangles remain oriented through 25 inter
    }
   }
  }
+});
+
+test('live +/-15 range preserves the existing half-turn shapes and clamps every rendered axis',()=>{
+ assert.deepEqual(rig.keyformExtent,{x:30,y:30});
+ for(const axis of ['x','y'])assert.deepEqual([rig.parameters[axis].min,rig.parameters[axis].max],[-15,15]);
+ assert.deepEqual(clampPose({x:99,y:-99,z:99},rig),{x:15,y:-15,z:20});
+ assert.throws(()=>clampPose({x:NaN,y:0,z:0},rig),/Invalid head pose/);
+ const weightsAtLimit=poseWeights(clampPose({x:30,y:30,z:0},rig),rig);
+ assert.deepEqual(weightsAtLimit,weights(.5,.5));
+ // These are the existing v9 interior poses, not rescaled endpoint drawings.
+ for(const kind of ['face','fringe','skin','eyeR','eyeL','mouth','sideL','sideR']){
+  const neutral=boundaryPoint(444,230,kind,0,0,rig),endpoint=boundaryPoint(444,230,kind,1,0,rig);
+  pointClose(evaluatePoint(444,230,kind,{x:15,y:0,z:0},rig),neutral.map((v,i)=>(v+endpoint[i])/2));
+ }
+ const bad=structuredClone(rig);bad.parameters.x.max=45;bad.parameters.x.min=-45;
+ assert.throws(()=>validateRig(bad),/Invalid head parameter range/);
 });
