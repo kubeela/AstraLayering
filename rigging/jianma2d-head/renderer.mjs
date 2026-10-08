@@ -1,4 +1,4 @@
-import { clamp, boundaryPoint, rollWeight, rollBend, weights, isHanging, evaluateRoot, inertiaWeights, motionKind, validateRig } from './deformer.mjs';
+import { clamp, boundaryPoint, rollWeight, rollBend, weights, isHanging, evaluateRoot, inertiaWeights, motionKind, validateRig, layerOpacity } from './deformer.mjs';
 import { HeadPhysics } from './physics.mjs';
 const VERT=`#version 300 es
 precision highp float;
@@ -23,10 +23,28 @@ void main(){
 const FRAG=`#version 300 es
 precision highp float;
 in vec2 vUV;uniform sampler2D uTexture;
-uniform bool uMask;out vec4 color;
-void main(){vec4 t=texture(uTexture,vUV);if(uMask&&t.a<.15)discard;color=t;}`;
+uniform bool uMask;uniform float uOpacity;out vec4 color;
+void main(){vec4 t=texture(uTexture,vUV);if(uMask&&t.a*uOpacity<.15)discard;color=t*uOpacity;}`;
 function shader(gl,kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
 const hairKinds=new Set(['rearL','rearR','sideL','sideR','ribbonL','ribbonR','fringe','bun','crown','halo','ornamentL','ornamentR','forehead','earringL','earringR']);
+/** Every layer samples the same source-space lattice and diagonal. Shared
+ * continuous fields must also share tessellation, or their raster edges split. */
+export function meshGeometry(layer,rig){
+ const step=rig.preview.meshStep,[x,y,w,h]=layer.box,kind=motionKind(layer.kind,rig);
+ const [ox,oy]=rig.projections[layer.kind]?.sourceOffset||[0,0];
+ const left=Math.floor((x-ox)/step)*step+ox,top=Math.floor((y-oy)/step)*step+oy;
+ const nx=Math.ceil((x+w-left)/step),ny=Math.ceil((y+h-top)/step),stride=24;
+ const data=new Float32Array((nx+1)*(ny+1)*stride);
+ for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){
+  const px=left+i*step,py=top+j*step,k=(j*(nx+1)+i)*stride;
+  data[k]=(px-x)/w;data[k+1]=(py-y)/h;data[k+2]=rollWeight(px,py,kind,rig);data[k+21]=rollBend(px,py,kind,rig);data.set(inertiaWeights(py,kind,rig),k+22);
+  rig.keyCoordinates.forEach(([kx,ky],n)=>data.set(boundaryPoint(px,py,layer.kind,kx,ky,rig),k+3+n*2));
+ }
+ if((nx+1)*(ny+1)>65535)throw Error('Head mesh exceeds index budget: '+layer.file);
+ const indices=new Uint16Array(nx*ny*6);let k=0;
+ for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const a=j*(nx+1)+i,b=a+1,c=a+nx+1,d=c+1;indices.set([a,b,c,b,d,c],k);k+=6;}
+ return {data,indices,stride,nx,ny,left,top,step};
+}
 export class Renderer {
  constructor(canvas,rig,layers){validateRig(rig);this.canvas=canvas;this.rig=rig;this.layers=layers;this.meshes=[];this.view=rig.preview.viewBox.slice();this.hiddenHair=false;this.physics=new HeadPhysics(rig);}
  async init(){
@@ -35,22 +53,13 @@ export class Renderer {
   const vs=shader(gl,gl.VERTEX_SHADER,VERT),fs=shader(gl,gl.FRAGMENT_SHADER,FRAG),program=gl.createProgram();
   gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
-  this.program=program;gl.useProgram(program);this.uniforms=Object.fromEntries(['uInertia','uSkin','uSkinRadius','uKeys','uView','uPivot','uRoll','uTexture','uHanging','uRoot','uMask'].map(n=>[n,gl.getUniformLocation(program,n)]));
+  this.program=program;gl.useProgram(program);this.uniforms=Object.fromEntries(['uInertia','uSkin','uSkinRadius','uKeys','uView','uPivot','uRoll','uTexture','uHanging','uRoot','uMask','uOpacity'].map(n=>[n,gl.getUniformLocation(program,n)]));
   const images=await Promise.all(this.layers.map(l=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('无法加载 '+l.file));im.src=new URL(l.file,import.meta.url).href;})));
   this.meshes=this.layers.map((layer,i)=>this.createMesh(layer,images[i]));
   gl.enable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.uniform1i(this.uniforms.uTexture,0);gl.uniform2fv(this.uniforms.uPivot,this.rig.head.neckPivot);
  }
  createMesh(layer,image){
-  const gl=this.gl,step=this.rig.preview.meshStep,[x,y,w,h]=layer.box,kind=motionKind(layer.kind,this.rig);
-  const nx=Math.ceil(w/step),ny=Math.ceil(h/step),stride=24,data=new Float32Array((nx+1)*(ny+1)*stride);
-  for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){
-   const px=x+w*i/nx,py=y+h*j/ny,k=(j*(nx+1)+i)*stride;
-   data[k]=i/nx;data[k+1]=j/ny;data[k+2]=rollWeight(px,py,kind,this.rig);data[k+21]=rollBend(px,py,kind,this.rig);data.set(inertiaWeights(py,kind,this.rig),k+22);
-   this.rig.keyCoordinates.forEach(([kx,ky],n)=>data.set(boundaryPoint(px,py,kind,kx,ky,this.rig),k+3+n*2));
-  }
-  if((nx+1)*(ny+1)>65535)throw Error('Head mesh exceeds index budget: '+layer.file);
-  const indices=new Uint16Array(nx*ny*6);let k=0;
-  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const a=j*(nx+1)+i,b=a+1,c=a+nx+1,d=c+1;indices.set([a,b,c,b,d,c],k);k+=6;}
+  const gl=this.gl,{data,indices,stride}=meshGeometry(layer,this.rig);
   const vao=gl.createVertexArray();gl.bindVertexArray(vao);
   const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
   for(let n=0;n<13;n++){const size=n===1||n===11?1:2,off=n===0?0:n===1?2:n===11?21:n===12?22:3+(n-2)*2;gl.enableVertexAttribArray(n);gl.vertexAttribPointer(n,size,gl.FLOAT,false,stride*4,off*4);}
@@ -70,7 +79,7 @@ export class Renderer {
   const gl=this.gl,u=this.uniforms,kind=motionKind(m.layer.kind,this.rig),hanging=isHanging(kind,this.rig);
   gl.uniform1i(u.uSkin,kind==='skin'?1:0);gl.uniform1f(u.uSkinRadius,this.rig.neck.rollRadius);gl.uniform1i(u.uHanging,hanging?1:0);if(hanging)gl.uniform2fv(u.uRoot,evaluateRoot(kind,p,this.rig));
   gl.uniform4fv(u.uInertia,this.physics.outputs[kind]||[0,0,0,0]);
-  gl.uniform1i(u.uMask,mask?1:0);
+  gl.uniform1i(u.uMask,mask?1:0);gl.uniform1f(u.uOpacity,layerOpacity(m.layer.kind,p,this.rig));
   gl.blendFunc(m.layer.blend==='multiply'?gl.DST_COLOR:gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   gl.bindVertexArray(m.vao);gl.bindTexture(gl.TEXTURE_2D,m.texture);gl.drawElements(gl.TRIANGLES,m.count,gl.UNSIGNED_SHORT,0);
  }

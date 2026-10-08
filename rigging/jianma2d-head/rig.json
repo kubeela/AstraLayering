@@ -1,5 +1,5 @@
 {
-  "schema": "astra.head-nine-key.v6",
+  "schema": "astra.head-nine-key.v7",
   "character": "jianma-clothing",
   "parameters": {
     "x": {
@@ -80,6 +80,10 @@
       125,
       114,
       145
+    ],
+    "farEarOcclusion": [
+      0.3,
+      0.9
     ]
   },
   "preview": {
@@ -105,15 +109,24 @@
     "meshStep": 5
   },
   "notes": [
-    "Original dressed SVG is unchanged. Shared anatomical yaw/pitch projection precedes roll and hanging physics.",
-    "Facial feature patches inherit the head volume and use authored tangent planes to preserve the designed eyelashes.",
-    "All rigid ornaments share the head rotation pivot; depth determines their near/far travel.",
-    "Depth profiles are authored from the nine-view visual study; this is a 2D deformation rig, not a replacement raster set."
+    "Original dressed SVG is unchanged. Head depth is constrained relative to the original facial width.",
+    "Skin, eyes, brows, nose, mouth and ear roots share one continuous field and the same source-space tessellation.",
+    "Neck follows a cranial-base socket, not the chin tip. Original hidden neck geometry overlaps under the posed jaw.",
+    "Jaw projection maps its actual caster coordinates before adding the original light offset.",
+    "The single frontal drawing has no profile nose or hidden side painting; this study is not an exact reconstruction of the generated reference."
   ],
   "neck": {
     "followY": 264,
     "fixedY": 329,
-    "rollRadius": 34
+    "rollRadius": 34,
+    "socket": [
+      444,
+      246,
+      12
+    ],
+    "yawWidth": 0.96,
+    "hiddenYawLift": 16,
+    "hiddenPitchLift": 10
   },
   "surfaces": {
     "rearR": {
@@ -407,7 +420,7 @@
         444,
         151
       ],
-      "depth": 89
+      "depth": 64
     }
   },
   "bindings": {
@@ -536,8 +549,17 @@
       ],
       "parent": "face",
       "depthOffset": 0,
-      "tangentX": 0.3,
-      "tangentY": 0
+      "tangentX": 0.2,
+      "tangentY": 0,
+      "core": [
+        18,
+        8
+      ],
+      "support": [
+        56,
+        34
+      ],
+      "strength": 2
     },
     "eyeL": {
       "anchor": [
@@ -550,8 +572,17 @@
       ],
       "parent": "face",
       "depthOffset": 0,
-      "tangentX": 0.3,
-      "tangentY": 0
+      "tangentX": 0.2,
+      "tangentY": 0,
+      "core": [
+        18,
+        8
+      ],
+      "support": [
+        56,
+        34
+      ],
+      "strength": 2
     },
     "browR": {
       "anchor": [
@@ -564,7 +595,7 @@
       ],
       "parent": "face",
       "depthOffset": 0,
-      "tangentX": 0.3,
+      "tangentX": 0.2,
       "tangentY": 0
     },
     "browL": {
@@ -578,7 +609,7 @@
       ],
       "parent": "face",
       "depthOffset": 0,
-      "tangentX": 0.3,
+      "tangentX": 0.2,
       "tangentY": 0
     },
     "nose": {
@@ -591,9 +622,18 @@
         17
       ],
       "parent": "face",
-      "depthOffset": 12,
+      "depthOffset": 7,
       "tangentX": 0,
-      "tangentY": 0.35
+      "tangentY": 0.35,
+      "core": [
+        6,
+        7
+      ],
+      "support": [
+        22,
+        26
+      ],
+      "strength": 0.7
     },
     "mouth": {
       "anchor": [
@@ -607,7 +647,16 @@
       "parent": "face",
       "depthOffset": 2,
       "tangentX": 0,
-      "tangentY": 0
+      "tangentY": 0,
+      "core": [
+        12,
+        5
+      ],
+      "support": [
+        30,
+        22
+      ],
+      "strength": 0.65
     }
   },
   "collar": {
@@ -711,7 +760,11 @@
     },
     "shadowNeck": {
       "caster": "face",
-      "receiver": "skin"
+      "receiver": "skin",
+      "sourceOffset": [
+        -3.5,
+        21.5
+      ]
     }
   },
   "volume": {
@@ -741,30 +794,30 @@
         300
       ],
       "depth": [
-        45,
-        66,
-        84,
-        92,
-        92,
-        88,
-        84,
-        76,
-        65,
-        45
+        25,
+        38,
+        50,
+        58,
+        58,
+        58,
+        57,
+        49,
+        40,
+        22
       ],
       "sideDepth": [
+        10,
+        15,
+        25,
         30,
-        39,
-        45,
-        48,
-        48,
-        49,
-        50,
-        54,
-        60,
-        40
+        30,
+        26,
+        25,
+        26,
+        35,
+        20
       ],
-      "upChinLift": 5
+      "upChinLift": 2
     },
     "scalp": {
       "centerX": 444,
@@ -782,25 +835,25 @@
         350
       ],
       "depth": [
-        -35,
+        -32,
         -5,
         10,
-        55,
-        85,
-        91,
-        86,
-        60,
-        25
+        44,
+        61,
+        66,
+        57,
+        34,
+        14
       ],
       "sideDepth": [
         -25,
         -5,
         0,
-        25,
-        48,
-        50,
-        48,
-        15,
+        10,
+        16,
+        18,
+        18,
+        8,
         -10
       ],
       "silhouetteShift": 7

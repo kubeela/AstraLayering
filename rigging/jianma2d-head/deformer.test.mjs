@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind,validateRig} from './deformer.mjs';
+import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind,validateRig,layerOpacity} from './deformer.mjs';
+import {meshGeometry} from './renderer.mjs';
 const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
 const close=(a,b,epsilon=1e-8)=>assert.ok(Math.abs(a-b)<epsilon,`${a} != ${b}`);
 const pointClose=(a,b,e)=>a.forEach((v,i)=>close(v,b[i],e));
@@ -117,11 +118,11 @@ test('connected ornament frame uses one projection and bun stays attached to the
   pointClose(a,b);assert(Math.hypot(a[0]-c[0],a[1]-c[1])<1.3,'crown/bun attachment gap');
  }
 });
-test('yaw creates an ordered face silhouette and substantial nose/chin displacement',()=>{
+test('yaw retains facial volume without dragging the head front beyond the cranium',()=>{
  for(const sign of [-1,1]){
   const nose=boundaryPoint(444,228,'nose',sign,0,rig),chin=boundaryPoint(444,270,'face',sign,0,rig);
-  assert((nose[0]-444)*sign>40);assert((chin[0]-444)*sign>25);
-  assert((nose[0]-chin[0])*sign>10,'nose must project in front of the chin');
+  assert((nose[0]-444)*sign>25&&(nose[0]-444)*sign<40);assert((chin[0]-444)*sign>15&&(chin[0]-444)*sign<25);
+  assert((nose[0]-chin[0])*sign>8,'nose must project in front of the chin');
   const xs=[390,405,420,444,468,483,498].map(x=>boundaryPoint(x,210,'face',sign,0,rig)[0]);
   for(let i=1;i<xs.length;i++)assert(xs[i]>xs[i-1]+3,'collapsed facial contour');
  }
@@ -144,10 +145,47 @@ test('eyes retain useful near/far widths and carry the shared pitch slope',()=>{
   assert((right[1][1]-right[0][1])*y>.5);
  }
 });
-test('projected artwork follows the casting part at intermediate poses and roll',()=>{
+test('projected artwork follows its actual source coordinate, then the authored cast offset',()=>{
  for(const [kind,projection] of Object.entries(rig.projections))for(const p of [{x:12,y:-17,z:9},{x:-25,y:22,z:-13}]){
-  pointClose(evaluatePoint(421,223,kind,p,rig),evaluatePoint(421,223,projection.caster,p,rig));
+  const [dx,dy]=projection.sourceOffset||[0,0],a=p.z*Math.PI/180;
+  const q=evaluatePoint(421-dx,223-dy,projection.caster,p,rig);
+  pointClose(evaluatePoint(421,223,kind,p,rig),[q[0]+dx*Math.cos(a)-dy*Math.sin(a),q[1]+dx*Math.sin(a)+dy*Math.cos(a)]);
  }
+});
+test('neck column follows the cranial base, not the projecting chin; its width stays stable',()=>{
+ for(const x of [-30,30]){
+  const p={x,y:0,z:0},a=evaluatePoint(418,281,'skin',p,rig),b=evaluatePoint(474,281,'skin',p,rig),n=evaluatePoint(444,264,'skin',p,rig),c=evaluatePoint(444,270,'face',p,rig);
+  assert(b[0]-a[0]>52&&b[0]-a[0]<58,'neck flattened');
+  assert(Math.abs(n[0]-444)<8,'neck follows the chin tip instead of cranial base');
+  assert(Math.abs(c[0]-444)>Math.abs(n[0]-444)*2.5);
+ }
+});
+test('skin, eyes, brows, nose, mouth and ear attachments share one continuous map',()=>{
+ for(const p of [{x:30,y:30,z:20},{x:-30,y:-30,z:-20},{x:11,y:-17,z:7}])
+  for(const kind of [...Object.keys(rig.features),'faceDetail','earL','earR'])
+   for(const [x,y] of [[400,214],[419.5,198.5],[478,199],[444,228],[452,245]])
+    pointClose(evaluatePoint(x,y,kind,p,rig),evaluatePoint(x,y,'face',p,rig));
+});
+test('actual raster meshes use the same source lattice and interpolate skin and feature edges identically',()=>{
+ const manifest=JSON.parse(fs.readFileSync(new URL('./layers.json',import.meta.url)));
+ const face=meshGeometry(manifest.layers.find(l=>l.kind==='face'),rig);
+ const sample=(m,x,y,k)=>{
+  const i=Math.floor((x-m.left)/m.step),j=Math.floor((y-m.top)/m.step),u=(x-m.left)/m.step-i,v=(y-m.top)/m.step-j;
+  assert(i>=0&&i<m.nx&&j>=0&&j<m.ny);
+  const a=j*(m.nx+1)+i,b=a+1,c=a+m.nx+1,d=c+1;
+  const ids=u+v<=1?[a,b,c]:[d,c,b],ws=u+v<=1?[1-u-v,u,v]:[u+v-1,1-u,1-v];
+  return [0,1].map(axis=>ids.reduce((sum,id,n)=>sum+ws[n]*m.data[id*m.stride+3+k*2+axis],0));
+ };
+ for(const kind of Object.keys(rig.features)){
+  const layer=manifest.layers.find(l=>l.kind===kind),m=meshGeometry(layer,rig),[x,y,w,h]=layer.box;
+  for(const [u,v] of [[.23,.37],[.69,.58],[.81,.74]])for(let k=0;k<9;k++)pointClose(sample(m,x+w*u,y+h*v,k),sample(face,x+w*u,y+h*v,k),1e-4);
+ }
+});
+test('far ear occlusion is continuous, and the near ear remains attached and visible',()=>{
+ close(layerOpacity('earL',{x:0},rig),1);close(layerOpacity('earR',{x:0},rig),1);
+ close(layerOpacity('earL',{x:30},rig),0);close(layerOpacity('earR',{x:30},rig),1);
+ close(layerOpacity('earR',{x:-30},rig),0);close(layerOpacity('earL',{x:-30},rig),1);
+ for(let x=-30;x<30;x+=.05)for(const kind of ['earL','earR'])assert(Math.abs(layerOpacity(kind,{x},rig)-layerOpacity(kind,{x:x+.05},rig))<.005);
 });
 test('collar opening follows the neck partially while its sewn edge stays fixed',()=>{
  for(const [kx,ky] of rig.keyCoordinates)for(const z of [-20,0,20]){
