@@ -733,7 +733,64 @@
         "endY": 266,
         "maxOffset": 4,
         "rollLever": 23
+      },
+      "fringeR": {
+        "frequency": 3.4,
+        "damping": 0.66,
+        "startY": 132,
+        "endY": 218,
+        "maxOffset": 2.8,
+        "rollLever": 35,
+        "outputScale": [
+          1,
+          0.4
+        ],
+        "driver": {
+          "kind": "fringe",
+          "anchor": [
+            426,
+            125
+          ]
+        }
+      },
+      "fringeL": {
+        "frequency": 3.7,
+        "damping": 0.66,
+        "startY": 132,
+        "endY": 218,
+        "maxOffset": 2.8,
+        "rollLever": 35,
+        "outputScale": [
+          1,
+          0.4
+        ],
+        "driver": {
+          "kind": "fringe",
+          "anchor": [
+            462,
+            125
+          ]
+        }
       }
+    },
+    "fringe": {
+      "channels": [
+        "fringeR",
+        "fringeL"
+      ],
+      "partX": 444,
+      "partPinWidth": 12,
+      "sideFullWidth": 42,
+      "fadeStartY": 232,
+      "fadeEndY": 310,
+      "groups": [
+        "hair_crown_complete_cap",
+        "hair_crown",
+        "hair_front_right",
+        "hair_front_left",
+        "fx_hair_front_right_on_face",
+        "fx_hair_front_left_on_face"
+      ]
     }
   },
   "projections": {

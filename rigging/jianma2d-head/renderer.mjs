@@ -1,4 +1,4 @@
-import { clamp, boundaryPoint, rollWeight, rollBend, poseWeights, clampPose, isHanging, evaluateRoot, inertiaWeights, motionKind, validateRig, layerOpacity } from './deformer.mjs';
+import { clamp, boundaryPoint, rollWeight, rollBend, poseWeights, clampPose, isHanging, evaluateRoot, inertiaWeights, fringeWeights, motionKind, validateRig, layerOpacity } from './deformer.mjs';
 import { HeadPhysics } from './physics.mjs';
 const VERT=`#version 300 es
 precision highp float;
@@ -7,7 +7,9 @@ layout(location=1) in float aWeight;
 ${Array.from({length:9},(_,i)=>`layout(location=${i+2}) in vec2 aK${i};`).join('\n')}
 layout(location=11) in float aBend;
 layout(location=12) in vec2 aInertia;
-uniform vec4 uInertia;
+layout(location=13) in vec2 aFringeR;
+layout(location=14) in vec2 aFringeL;
+uniform vec4 uInertia;uniform vec4 uFringeR;uniform vec4 uFringeL;
 uniform float uKeys[9];uniform vec4 uView;uniform vec2 uPivot;uniform float uRoll;
 uniform bool uSkin;uniform float uSkinRadius;uniform bool uHanging;uniform vec2 uRoot;
 out vec2 vUV;
@@ -17,6 +19,7 @@ void main(){
  if(uHanging){vec2 d=uRoot-uPivot;p+=(rotate(d,uRoll)-d)*aWeight;vec2 local=${Array.from({length:9},(_,i)=>`aK${i}*uKeys[${i}]`).join('+')}-uRoot;p+=rotate(local,uRoll*aBend)-local;}
  else{vec2 d=p-uPivot;if(uSkin)d.x=clamp(d.x,-uSkinRadius,uSkinRadius);p+= (rotate(d,uRoll)-d)*aWeight;}
  p+=aInertia.x*uInertia.xy+aInertia.y*uInertia.zw;
+ p+=aFringeR.x*uFringeR.xy+aFringeR.y*uFringeR.zw+aFringeL.x*uFringeL.xy+aFringeL.y*uFringeL.zw;
  vec2 q=(p-uView.xy)/uView.zw;
  gl_Position=vec4(q.x*2.-1.,1.-q.y*2.,0.,1.);vUV=aUV;
 }`;
@@ -41,11 +44,11 @@ export function meshGeometry(layer,rig){
  const step=facial?(rig.preview.faceMeshStep||rig.preview.meshStep):rig.preview.meshStep;
  const [ox,oy]=rig.projections[layer.kind]?.sourceOffset||[0,0];
  const left=Math.floor((x-ox)/step)*step+ox,top=Math.floor((y-oy)/step)*step+oy;
- const nx=Math.ceil((x+w-left)/step),ny=Math.ceil((y+h-top)/step),stride=24;
+ const nx=Math.ceil((x+w-left)/step),ny=Math.ceil((y+h-top)/step),stride=28;
  const data=new Float32Array((nx+1)*(ny+1)*stride);
  for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){
   const px=left+i*step,py=top+j*step,k=(j*(nx+1)+i)*stride;
-  data[k]=(px-x)/w;data[k+1]=(py-y)/h;data[k+2]=rollWeight(px,py,kind,rig);data[k+21]=rollBend(px,py,kind,rig);data.set(inertiaWeights(py,kind,rig),k+22);
+  data[k]=(px-x)/w;data[k+1]=(py-y)/h;data[k+2]=rollWeight(px,py,kind,rig);data[k+21]=rollBend(px,py,kind,rig);data.set(inertiaWeights(py,kind,rig),k+22);data.set(fringeWeights(px,py,layer.groups,rig),k+24);
   rig.keyCoordinates.forEach(([kx,ky],n)=>data.set(boundaryPoint(px,py,layer.kind,kx,ky,rig),k+3+n*2));
  }
  if((nx+1)*(ny+1)>65535)throw Error('Head mesh exceeds index budget: '+layer.file);
@@ -61,7 +64,7 @@ export class Renderer {
   const vs=shader(gl,gl.VERTEX_SHADER,VERT),fs=shader(gl,gl.FRAGMENT_SHADER,FRAG),program=gl.createProgram();
   gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
-  this.program=program;gl.useProgram(program);this.uniforms=Object.fromEntries(['uInertia','uSkin','uSkinRadius','uKeys','uView','uPivot','uRoll','uTexture','uHanging','uRoot','uMask','uOpacity'].map(n=>[n,gl.getUniformLocation(program,n)]));
+  this.program=program;gl.useProgram(program);this.uniforms=Object.fromEntries(['uInertia','uFringeR','uFringeL','uSkin','uSkinRadius','uKeys','uView','uPivot','uRoll','uTexture','uHanging','uRoot','uMask','uOpacity'].map(n=>[n,gl.getUniformLocation(program,n)]));
   const images=await Promise.all(this.layers.map(l=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('无法加载 '+l.file));im.src=new URL(l.file,import.meta.url).href;})));
   this.meshes=this.layers.map((layer,i)=>this.createMesh(layer,images[i]));
   gl.enable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.uniform1i(this.uniforms.uTexture,0);gl.uniform2fv(this.uniforms.uPivot,this.rig.head.neckPivot);
@@ -70,7 +73,7 @@ export class Renderer {
   const gl=this.gl,{data,indices,stride}=meshGeometry(layer,this.rig);
   const vao=gl.createVertexArray();gl.bindVertexArray(vao);
   const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);
-  for(let n=0;n<13;n++){const size=n===1||n===11?1:2,off=n===0?0:n===1?2:n===11?21:n===12?22:3+(n-2)*2;gl.enableVertexAttribArray(n);gl.vertexAttribPointer(n,size,gl.FLOAT,false,stride*4,off*4);}
+  for(let n=0;n<15;n++){const size=n===1||n===11?1:2,off=n===0?0:n===1?2:n===11?21:n>=12?22+(n-12)*2:3+(n-2)*2;gl.enableVertexAttribArray(n);gl.vertexAttribPointer(n,size,gl.FLOAT,false,stride*4,off*4);}
   const indexBuffer=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,indices,gl.STATIC_DRAW);
   const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL,gl.NONE);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
@@ -96,6 +99,7 @@ export class Renderer {
   p=clampPose(p,this.rig);
   gl.viewport(0,0,this.canvas.width,this.canvas.height);gl.stencilMask(255);gl.disable(gl.STENCIL_TEST);gl.clearColor(.918,.902,.875,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);gl.useProgram(this.program);
   gl.uniform1fv(this.uniforms.uKeys,poseWeights(p,this.rig));gl.uniform1f(this.uniforms.uRoll,clamp(p.z,-20,20)*Math.PI/180);gl.uniform4fv(this.uniforms.uView,this.view);
+  gl.uniform4fv(this.uniforms.uFringeR,this.physics.outputs[this.rig.physics.fringe.channels[0]]);gl.uniform4fv(this.uniforms.uFringeL,this.physics.outputs[this.rig.physics.fringe.channels[1]]);
   // Four independent live receiver masks. No projected shadow carries a baked
   // face/ear/neck silhouette; it follows the caster, then intersects this mask.
   const bits={face:1,earR:2,earL:4,skin:8};

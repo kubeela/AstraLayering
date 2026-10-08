@@ -37,6 +37,14 @@ export function validateRig(rig){
    for(const [p,q] of [[curve[0],pose['outerEye'+side]],[curve[3],pose.chin]])if(Math.hypot(p[0]-q[0],p[1]-q[1])>1e-6)throw Error('Disconnected authored cheek contour');
   }
  }
+ const fringe=rig.physics.fringe;
+ if(!fringe||fringe.channels.length!==2||fringe.channels.some(c=>!rig.physics.strands[c]?.driver)||fringe.fadeEndY<=fringe.fadeStartY||fringe.sideFullWidth<=fringe.partPinWidth)throw Error('Invalid fringe physics binding');
+ for(const group of fringe.groups)if(!rig.bindings[group])throw Error('Unbound fringe art: '+group);
+ for(const [kind,s] of Object.entries(rig.physics.strands)){
+  if(!(s.frequency>0&&s.damping>0&&s.damping<1&&s.endY>s.startY&&s.maxOffset>0))throw Error('Invalid strand physics: '+kind);
+  if(s.driver&&(!rig.bindings.hair_crown||s.driver.kind!=='fringe'||s.driver.anchor?.length!==2||!s.driver.anchor.every(Number.isFinite)||s.driver.anchor[1]>s.startY))throw Error('Invalid fringe root: '+kind);
+  if(s.outputScale&&s.outputScale.some(v=>!Number.isFinite(v)||v<=0||v>1))throw Error('Invalid strand output scale: '+kind);
+ }
  const v=rig.volume;
  if(!(v.focalLength>400)||v.pivot.length!==2)throw Error('Invalid common head camera');
  for(const name of ['face','scalp','bun']){
@@ -220,3 +228,14 @@ export function layerOpacity(kind,p,rig){
  // Visibility comes from the posed foreground silhouette, not an ear fade.
  return 1;
 }
+
+// A continuous two-sided field keeps the crown, parting and jewellery fixed.
+// Only the declared fringe art and its cast shadows receive this extra motion.
+export function fringeWeights(x,y,groups,rig){
+ const f=rig.physics.fringe;
+ if(!groups.some(g=>f.groups.includes(g)))return [0,0,0,0];
+ const side=smooth(f.partPinWidth,f.sideFullWidth,Math.abs(x-f.partX)),tail=1-smooth(f.fadeStartY,f.fadeEndY,y);
+ const weights=[0,0,0,0],index=x<f.partX?0:1,b=inertiaWeights(y,f.channels[index],rig);
+ weights[index*2]=b[0]*side*tail;weights[index*2+1]=b[1]*side*tail;return weights;
+}
+export function physicsAnchor(kind,rig){const s=rig.physics.strands[kind];return s.driver?.anchor||rig.surfaces[kind].anchor;}

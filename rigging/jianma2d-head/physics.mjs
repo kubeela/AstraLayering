@@ -1,4 +1,4 @@
-import {evaluatePoint,clamp} from './deformer.mjs';
+import {evaluatePoint,clamp,physicsAnchor} from './deformer.mjs';
 /** Two damped masses drive authored strand bend modes. Roots never receive inertia.
  * Same input/output separation as Cubism physics; this is our solver, not Cubism's. */
 // Exact damped spring over a linearly moving target. Small substeps only
@@ -13,7 +13,7 @@ function spring(x,velocity,start,end,h,omega,damping){
 }
 export class HeadPhysics {
  constructor(rig){this.rig=rig;this.enabled=true;this.states={};this.outputs={};this.reset({x:0,y:0,z:0});}
- driver(kind,p){const s=this.rig.physics.strands[kind],a=this.rig.surfaces[kind].anchor,q=evaluatePoint(...a,kind,p,this.rig),z=p.z*Math.PI/180;return [q[0]+Math.sin(z)*s.rollLever,q[1]+(1-Math.cos(z))*s.rollLever];}
+ driver(kind,p){const s=this.rig.physics.strands[kind],a=physicsAnchor(kind,this.rig),q=evaluatePoint(...a,s.driver?.kind||kind,p,this.rig),z=p.z*Math.PI/180;return [q[0]+Math.sin(z)*s.rollLever,q[1]+(1-Math.cos(z))*s.rollLever];}
  reset(p){for(const kind of Object.keys(this.rig.physics.strands)){const q=this.driver(kind,p);this.states[kind]={a:q.slice(),b:q.slice(),va:[0,0],vb:[0,0],driver:q};this.outputs[kind]=[0,0,0,0];}this.energy=0;}
  advance(p,seconds){
   if(!this.enabled||seconds>.25){this.reset(p);return false;}
@@ -28,8 +28,9 @@ export class HeadPhysics {
    }
    st.driver=target;const out=this.outputs[kind];
    for(let k=0;k<2;k++){
-    out[k]=clamp(st.a[k]-target[k],-s.maxOffset,s.maxOffset);
-    out[k+2]=clamp(st.b[k]-target[k],-s.maxOffset,s.maxOffset);
+    const scale=s.outputScale?.[k]??1;
+    out[k]=clamp(st.a[k]-target[k],-s.maxOffset,s.maxOffset)*scale;
+    out[k+2]=clamp(st.b[k]-target[k],-s.maxOffset,s.maxOffset)*scale;
     energy=Math.max(energy,Math.abs(st.va[k])*.03,Math.abs(st.vb[k])*.03,Math.abs(out[k]),Math.abs(out[k+2]));
    }
   }
