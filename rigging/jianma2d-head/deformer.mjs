@@ -1,3 +1,4 @@
+import { authoredPoint } from './keyforms.mjs';
 // Composed head shell, facial/scalp surfaces, local corrections and attachments.
 export const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const smooth=(a,b,v)=>{const t=clamp((v-a)/(b-a));return t*t*(3-2*t);};
@@ -11,7 +12,16 @@ function curve(knots,values,x){
  return (2*t3-3*t2+1)*values[i]+(t3-2*t2+t)*h*slope(i)+(-2*t3+3*t2)*values[i+1]+(t3-t2)*h*slope(i+1);
 }
 export function validateRig(rig){
- if(rig.schema!=='astra.head-nine-key.v7')throw Error('Unsupported head rig: '+rig.schema);
+ if(rig.schema!=='astra.head-nine-key.v8')throw Error('Unsupported head rig: '+rig.schema);
+ for(const surface of ['face','scalp','bun','earL','earR']){
+  const f=rig.keyforms?.[surface];if(!f)throw Error(surface+': missing authored endpoint forms');
+  const names=Object.keys(f.landmarks);if(names.length<3)throw Error(surface+': too few landmarks');
+  for(const p of Object.values(f.landmarks))if(p.length!==2||!p.every(Number.isFinite))throw Error(surface+': invalid source landmark');
+  for(const [x,y] of rig.keyCoordinates){if(!x&&!y)continue;const pose=f.poses[`${x},${y}`];
+   if(!pose||Object.keys(pose).length!==names.length||names.some(n=>!pose[n]||pose[n].length!==2||!pose[n].every(Number.isFinite)))throw Error(surface+': incomplete endpoint '+x+','+y);
+  }
+  if(f.interpolation==='barycentric-cage'&&(!f.triangles?.length||f.triangles.some(t=>t.length!==3||t.some(i=>!Number.isInteger(i)||i<0||i>=names.length))))throw Error(surface+': invalid cage topology');
+ }
  const v=rig.volume;
  if(!(v.focalLength>400)||v.pivot.length!==2)throw Error('Invalid common head camera');
  for(const name of ['face','scalp','bun']){
@@ -61,6 +71,8 @@ export function faceDepth(x,y,rig){
 }
 export function faceSurfacePoint(x,y,kx,ky,rig){return projectHead(x,y,faceDepth(x,y,rig),kx,ky,rig);}
 export function scalpPoint(x,y,kx,ky,rig){
+ const box=rig.keyforms?.scalp?.support,px=box?clamp(x,box[0],box[2]):x,py=box?clamp(y,box[1],box[3]):y;
+ const authored=authoredPoint(px,py,"scalp",kx,ky,rig);if(authored)return [authored[0]+x-px,authored[1]+y-py];
  const s=rig.volume.scalp,q=projectHead(x,y,depthAt(x,y,s),kx,ky,rig);
  if(kx){
   // A turned cranium reveals its near-side silhouette. Retarget that contour
@@ -74,18 +86,20 @@ export function scalpPoint(x,y,kx,ky,rig){
  return q;
 }
 function bunPoint(x,y,kx,ky,rig){
+ const authored=authoredPoint(x,y,"bun",kx,ky,rig);if(authored)return authored;
  const s=rig.volume.bun,base=rig.surfaces.bun.anchor[1];
  const height=1+Math.abs(ky)*((ky>0?s.upHeight:s.downHeight)-1);
  return projectHead(x,base+(y-base)*height,depthAt(x,y,s),kx,ky,rig);
 }
 export function headPoint(x,y,kx,ky,rig){
+ const authored=authoredPoint(x,y,"face",kx,ky,rig);if(authored)return authored;
  const q=faceSurfacePoint(x,y,kx,ky,rig);
  q[1]-=Math.max(0,ky)*rig.volume.face.upChinLift*smooth(235,270,y)*Math.exp(-(((x-rig.head.center[0])/35)**2));
  return q;
 }
 export function featureLocalPoint(x,y,kind,kx,ky,rig){return [x,y,faceDepth(x,y,rig)];}
 function featurePoint(x,y,kind,kx,ky,rig){return headPoint(x,y,kx,ky,rig);}
-function earPoint(x,y,kind,kx,ky,rig){return headPoint(x,y,kx,ky,rig);}
+function earPoint(x,y,kind,kx,ky,rig){return authoredPoint(x,y,kind,kx,ky,rig)||headPoint(x,y,kx,ky,rig);}
 export function motionKind(kind,rig){return rig.projections?.[kind]?.caster||kind;}
 export function attachment(kind,rig){return rig.surfaces[kind]?.anchor;}
 export function isHanging(kind,rig){return Boolean(rig.surfaces[kind]?.guides)||kind.startsWith('earring');}
@@ -100,11 +114,18 @@ function planeDepth(x,y,s,rig){
  const intercept=za-tx*Xa-ty*Ya,t=tx*(x-cx)+ty*(y-cy);
  return (intercept+t)/(1+t/F);
 }
+function ornamentPoint(x,y,kind,kx,ky,rig){
+ const q=projectHead(x,y,planeDepth(x,y,rig.surfaces[kind],rig),kx,ky,rig);
+ const rootKind=kind==='forehead'?'forehead':'crown',root=rig.surfaces[rootKind], [ax,ay]=root.anchor;
+ const target=authoredPoint(ax,ay,'scalp',kx,ky,rig);
+ if(target){const base=projectHead(ax,ay,planeDepth(ax,ay,root,rig),kx,ky,rig);q[0]+=target[0]-base[0];q[1]+=target[1]-base[1];}
+ return q;
+}
 export function rootPoint(kind,kx,ky,rig){
  const s=rig.surfaces[kind],[x,y]=s.anchor;
  if(s.parent)return boundaryPoint(x,y,s.parent,kx,ky,rig);
  if(kind==='bun')return bunPoint(x,y,kx,ky,rig);
- if(Number.isFinite(s.depth)||s.anchorSurface)return projectHead(x,y,planeDepth(x,y,s,rig),kx,ky,rig);
+ if(Number.isFinite(s.depth)||s.anchorSurface)return ornamentPoint(x,y,kind,kx,ky,rig);
  return kind.startsWith('earring')?earPoint(x,y,kind==='earringR'?'earR':'earL',kx,ky,rig):scalpPoint(x,y,kx,ky,rig);
 }
 function planePoint(x,y,kind,kx,ky,rig){
@@ -114,7 +135,7 @@ function planePoint(x,y,kind,kx,ky,rig){
   const width=Math.cos(kx*rig.volume.yawRadians);
   return [q[0]+(x-ax)*width,q[1]+y-ay];
  }
- return projectHead(x,y,planeDepth(x,y,rig.surfaces[kind],rig),kx,ky,rig);
+ return ornamentPoint(x,y,kind,kx,ky,rig);
 }
 // Neck attaches to the cranial base, behind the projecting chin. Its shoulder
 // boundary remains fixed; yaw changes the column width only slightly.
@@ -142,13 +163,15 @@ export function boundaryPoint(x,y,kind,kx,ky,rig){
  const [ax,ay]=s.anchor,q=rootPoint(kind,kx,ky,rig);
  if(isHanging(kind,rig)){
   if(kind.startsWith('earring'))return planePoint(x,y,kind,kx,ky,rig);
-  const [spine,follow,width]=guideAt(y,s),hanging=[x+(q[0]-ax)*follow+(x-spine)*(-.07*Math.abs(kx))*width,y+(q[1]-ay)*follow];
+  const [spine,follow,width]=guideAt(y,s),hanging=[x+(q[0]-ax)*follow+(x-spine)*(-.07*Math.abs(kx))*width*smooth(ay,ay+50,y),y+(q[1]-ay)*follow];
   if(s.rootBlend){const top=scalpPoint(x,y,kx,ky,rig),t=smooth(...s.rootBlend,y);return top.map((v,i)=>v+(hanging[i]-v)*t);}
   return hanging;
  }
  return planePoint(x,y,kind,kx,ky,rig);
 }
-export function weights(x,y){const b=t=>[.5*t*(t-1),1-t*t,.5*t*(t+1)],a=b(x),c=b(y);return c.flatMap(v=>a.map(u=>u*v));}
+// Independently authored endpoint drawings must not extrapolate through a
+// negative key weight. C1 quadrant interpolation preserves the key envelope.
+export function weights(x,y){const b=t=>{const u=clamp(Math.abs(t)),s=u*u*(3-2*u);return t<0?[s,1-s,0]:[0,1-s,s];},a=b(x),c=b(y);return c.flatMap(v=>a.map(u=>u*v));}
 function mixPoint(x,y,kind,p,rig){const w=weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)),q=[0,0];rig.keyCoordinates.forEach(([kx,ky],i)=>{const a=boundaryPoint(x,y,kind,kx,ky,rig);q[0]+=a[0]*w[i];q[1]+=a[1]*w[i];});return q;}
 export function evaluateRoot(kind,p,rig){const w=weights(clamp(p.x/30,-1,1),clamp(p.y/30,-1,1)),q=[0,0];rig.keyCoordinates.forEach(([kx,ky],i)=>{const a=rootPoint(kind,kx,ky,rig);q[0]+=a[0]*w[i];q[1]+=a[1]*w[i];});return q;}
 export function evaluatePoint(x,y,kind,p,rig){

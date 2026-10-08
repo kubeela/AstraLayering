@@ -30,7 +30,9 @@ const hairKinds=new Set(['rearL','rearR','sideL','sideR','ribbonL','ribbonR','fr
 /** Every layer samples the same source-space lattice and diagonal. Shared
  * continuous fields must also share tessellation, or their raster edges split. */
 export function meshGeometry(layer,rig){
- const step=rig.preview.meshStep,[x,y,w,h]=layer.box,kind=motionKind(layer.kind,rig);
+ const [x,y,w,h]=layer.box,kind=motionKind(layer.kind,rig);
+ const facial=rig.features[kind]||['face','faceBare','faceDetail','faceShadow','earL','earR'].includes(kind);
+ const step=facial?(rig.preview.faceMeshStep||rig.preview.meshStep):rig.preview.meshStep;
  const [ox,oy]=rig.projections[layer.kind]?.sourceOffset||[0,0];
  const left=Math.floor((x-ox)/step)*step+ox,top=Math.floor((y-oy)/step)*step+oy;
  const nx=Math.ceil((x+w-left)/step),ny=Math.ceil((y+h-top)/step),stride=24;

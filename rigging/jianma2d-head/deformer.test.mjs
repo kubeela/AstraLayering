@@ -97,15 +97,13 @@ test('pitch curves the eye latitude and redistributes vertical bands without rev
  const distance=y=>evaluatePoint(444,270,'face',{x:0,y,z:0},rig)[1]-evaluatePoint(444,198.5,'face',{x:0,y,z:0},rig)[1];
  assert(distance(-30)<distance(0)&&distance(30)>distance(0));
 });
-test('facial depth changes propagate to feature attachments without moving the scalp sibling',()=>{
+test('editing authored facial endpoints carries skin and features without moving the scalp',()=>{
  const altered=structuredClone(rig);
- altered.volume.face.depth=altered.volume.face.depth.map(v=>v+8);
- altered.volume.face.sideDepth=altered.volume.face.sideDepth.map(v=>v+8);
+ for(const pose of Object.values(altered.keyforms.face.poses))for(const q of Object.values(pose)){q[0]+=8;q[1]-=3;}
  const p={x:30,y:30,z:0};
  for(const kind of ['face','eyeR','eyeL','browR','browL','nose','mouth']){
-  const [x,y]=rig.features[kind]?.anchor||[444,210];
-  const a=evaluatePoint(x,y,kind,p,rig),b=evaluatePoint(x,y,kind,p,altered);
-  assert(b[0]>a[0]+3&&b[1]<a[1]-1,kind+' detached from facial depth');
+  const [x,y]=rig.features[kind]?.anchor||[444,210],a=evaluatePoint(x,y,kind,p,rig),b=evaluatePoint(x,y,kind,p,altered);
+  pointClose(b,[a[0]+8,a[1]-3],1e-6);
  }
  pointClose(evaluatePoint(444,151,'fringe',p,altered),evaluatePoint(444,151,'fringe',p,rig));
 });
@@ -139,7 +137,7 @@ test('volume contract rejects invalid depth rows and unparented features',()=>{
 test('eyes retain useful near/far widths and carry the shared pitch slope',()=>{
  const near=boundaryPoint(429.5,198.5,'eyeR',1,0,rig)[0]-boundaryPoint(409.5,198.5,'eyeR',1,0,rig)[0];
  const far=boundaryPoint(478.5,198.5,'eyeL',1,0,rig)[0]-boundaryPoint(458.5,198.5,'eyeL',1,0,rig)[0];
- assert(near>far&&near/20>.85&&near/20<1.15&&far/20>.65);
+ assert(near>far&&near/20>.78&&near/20<1.15&&far/20>.50&&far/20<.75);
  for(const y of [-1,1]){
   const left=[409.5,429.5].map(x=>boundaryPoint(x,198.5,'eyeR',0,y,rig));
   const right=[458.5,478.5].map(x=>boundaryPoint(x,198.5,'eyeL',0,y,rig));
@@ -162,9 +160,9 @@ test('neck column follows the cranial base, not the projecting chin; its width s
   assert(Math.abs(c[0]-444)>Math.abs(n[0]-444)*2.5);
  }
 });
-test('skin, eyes, brows, nose, mouth and ear attachments share one continuous map',()=>{
+test('skin, eyes, brows, nose and mouth share one continuous authored map',()=>{
  for(const p of [{x:30,y:30,z:20},{x:-30,y:-30,z:-20},{x:11,y:-17,z:7}])
-  for(const kind of [...Object.keys(rig.features),'faceDetail','earL','earR'])
+  for(const kind of [...Object.keys(rig.features),'faceDetail'])
    for(const [x,y] of [[400,214],[419.5,198.5],[478,199],[444,228],[452,245]])
     pointClose(evaluatePoint(x,y,kind,p,rig),evaluatePoint(x,y,'face',p,rig));
 });
@@ -196,4 +194,44 @@ test('collar opening follows the neck partially while its sewn edge stays fixed'
  }
  const a=evaluatePoint(444,270,'collar',{x:30,y:0,z:0},rig);
  assert(a[0]>444 && a[0]<evaluatePoint(444,270,'skin',{x:30,y:0,z:0},rig)[0]);
+});
+
+test('all eight endpoint drawings are explicit; missing landmarks fail before rendering',()=>{
+ validateRig(rig);
+ const bad=structuredClone(rig);delete bad.keyforms.scalp.poses['-1,-1'].middleR;
+ assert.throws(()=>validateRig(bad),/incomplete endpoint/);
+ const face=rig.keyforms.face,names=Object.keys(face.landmarks),src=Object.values(face.landmarks);
+ const area=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+ for(const [key,pose] of Object.entries(face.poses))for(const ids of face.triangles){
+  const original=area(...ids.map(i=>src[i])),current=area(...ids.map(i=>pose[names[i]]));
+  assert(current/original>.20,key+' facial cage turned inside out');
+ }
+ for(const kind of ['earL','earR'])for(const [kx,ky] of rig.keyCoordinates){
+  const anchor=rig.surfaces[kind==='earL'?'earringL':'earringR'].anchor;
+  pointClose(evaluateRoot(kind==='earL'?'earringL':'earringR',{x:kx*30,y:ky*30,z:0},rig),boundaryPoint(...anchor,kind,kx,ky,rig));
+ }
+});
+test('scalp turn separates the parting from the rounded near-side envelope',()=>{
+ for(const kx of [-1,1])for(const ky of [-1,0,1]){
+  const side=kx<0?'middleR':'middleL',src=rig.keyforms.scalp.landmarks;
+  const edge=boundaryPoint(...src[side],'fringe',kx,ky,rig),part=boundaryPoint(...src.partMid,'fringe',kx,ky,rig);
+  assert((edge[0]-part[0])*(-kx)>95,'near-side hair collapsed into a narrow sheet');
+ }
+});
+test('actual facial and scalp display triangles remain oriented through 25 intermediate poses',()=>{
+ const manifest=JSON.parse(fs.readFileSync(new URL('./layers.json',import.meta.url)));
+ for(const layer of manifest.layers.filter(l=>['face','fringe','eyeR','eyeL','mouth'].includes(l.kind))){
+  const m=meshGeometry(layer,rig),points=new Float64Array(m.data.length/m.stride*2);
+  for(const x of [-1,-.5,0,.5,1])for(const y of [-1,-.5,0,.5,1]){
+   const w=weights(x,y);
+   for(let i=0;i<points.length/2;i++)for(let axis=0;axis<2;axis++){
+    let v=0;for(let k=0;k<9;k++)v+=m.data[i*m.stride+3+k*2+axis]*w[k];points[i*2+axis]=v;
+   }
+   for(let i=0;i<m.indices.length;i+=3){
+    const [a,b,c]=m.indices.subarray(i,i+3),ax=points[a*2],ay=points[a*2+1],bx=points[b*2],by=points[b*2+1],cx=points[c*2],cy=points[c*2+1];
+    const ratio=((bx-ax)*(cy-ay)-(by-ay)*(cx-ax))/(m.step*m.step);
+    assert(ratio>.03,`${layer.kind} display fold at ${x},${y}, triangle ${i/3}: ${ratio}`);
+   }
+  }
+ }
 });
