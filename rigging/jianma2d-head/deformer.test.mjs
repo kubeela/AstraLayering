@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind} from './deformer.mjs';
+import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind,validateRig} from './deformer.mjs';
 const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
 const close=(a,b,epsilon=1e-8)=>assert.ok(Math.abs(a-b)<epsilon,`${a} != ${b}`);
 const pointClose=(a,b,e)=>a.forEach((v,i)=>close(v,b[i],e));
@@ -35,7 +35,7 @@ test('front/rear hair roots share the scalp parent at every corner',()=>{
  assert.throws(()=>classify('new_unbound_art',rig),/Unbound SVG group/);
 });
 test('rigid head ornaments preserve straight lines instead of bending with the scalp',()=>{
- for(const kind of ['crown','bun','halo','ornamentL','ornamentR','forehead'])for(const [kx,ky] of rig.keyCoordinates){
+ for(const kind of ['crown','halo','ornamentL','ornamentR','forehead'])for(const [kx,ky] of rig.keyCoordinates){
   const [x,y]=rig.surfaces[kind].anchor,p={x:kx*30,y:ky*30,z:17};
   const a=evaluatePoint(x-15,y-10,kind,p,rig),b=evaluatePoint(x+15,y+10,kind,p,rig),m=evaluatePoint(x,y,kind,p,rig);
   close((b[0]-a[0])*(m[1]-a[1])-(b[1]-a[1])*(m[0]-a[0]),0,1e-7);
@@ -94,19 +94,44 @@ test('pitch curves the eye latitude and redistributes vertical bands without rev
  const distance=y=>evaluatePoint(444,270,'face',{x:0,y,z:0},rig)[1]-evaluatePoint(444,198.5,'face',{x:0,y,z:0},rig)[1];
  assert(distance(-30)<distance(0)&&distance(30)>distance(0));
 });
-test('changing a parent curve reaches eyes, brows and lips while the hair sibling stays independent',()=>{
- const altered=structuredClone(rig);altered.faceSurface.upCenter=altered.faceSurface.upCenter.map(v=>v-2);
- const p={x:0,y:30,z:0};
+test('facial depth changes propagate to feature attachments without moving the scalp sibling',()=>{
+ const altered=structuredClone(rig);
+ altered.volume.face.depth=altered.volume.face.depth.map(v=>v+8);
+ altered.volume.face.sideDepth=altered.volume.face.sideDepth.map(v=>v+8);
+ const p={x:30,y:30,z:0};
  for(const kind of ['face','eyeR','eyeL','browR','browL','nose','mouth']){
   const [x,y]=rig.features[kind]?.anchor||[444,210];
-  assert(evaluatePoint(x,y,kind,p,altered)[1]<evaluatePoint(x,y,kind,p,rig)[1]-.5,kind+' detached from parent');
+  const a=evaluatePoint(x,y,kind,p,rig),b=evaluatePoint(x,y,kind,p,altered);
+  assert(b[0]>a[0]+3&&b[1]<a[1]-1,kind+' detached from facial depth');
  }
  pointClose(evaluatePoint(444,151,'fringe',p,altered),evaluatePoint(444,151,'fringe',p,rig));
- const shifted=structuredClone(rig);shifted.shell.yawShift+=3;
- for(const kind of ['face','eyeR','mouth','fringe','crown']){
-  const p={x:30,y:30,z:0},a=evaluatePoint(444,210,kind,p,rig),b=evaluatePoint(444,210,kind,p,shifted);
-  close(b[0]-a[0],3);close(b[1],a[1]);
+});
+test('connected ornament frame uses one projection and bun stays attached to the scalp',()=>{
+ for(const [kx,ky] of rig.keyCoordinates){
+  for(const [x,y] of [[370,105],[444,60],[512,123]]){
+   const p=boundaryPoint(x,y,'halo',kx,ky,rig);
+   pointClose(p,boundaryPoint(x,y,'ornamentL',kx,ky,rig));
+   pointClose(p,boundaryPoint(x,y,'ornamentR',kx,ky,rig));
+  }
+  const [x,y]=rig.surfaces.bun.anchor,a=boundaryPoint(x,y,'bun',kx,ky,rig),b=boundaryPoint(x,y,'fringe',kx,ky,rig),c=boundaryPoint(x,y,'crown',kx,ky,rig);
+  pointClose(a,b);assert(Math.hypot(a[0]-c[0],a[1]-c[1])<1.3,'crown/bun attachment gap');
  }
+});
+test('yaw creates an ordered face silhouette and substantial nose/chin displacement',()=>{
+ for(const sign of [-1,1]){
+  const nose=boundaryPoint(444,228,'nose',sign,0,rig),chin=boundaryPoint(444,270,'face',sign,0,rig);
+  assert((nose[0]-444)*sign>40);assert((chin[0]-444)*sign>25);
+  assert((nose[0]-chin[0])*sign>10,'nose must project in front of the chin');
+  const xs=[390,405,420,444,468,483,498].map(x=>boundaryPoint(x,210,'face',sign,0,rig)[0]);
+  for(let i=1;i<xs.length;i++)assert(xs[i]>xs[i-1]+3,'collapsed facial contour');
+ }
+});
+test('volume contract rejects invalid depth rows and unparented features',()=>{
+ validateRig(rig);
+ for(const name of ['face','scalp','bun']){
+  const r=structuredClone(rig);r.volume[name].depth.pop();assert.throws(()=>validateRig(r),/one depth per anatomical row/);
+ }
+ const r=structuredClone(rig);r.features.eyeR.parent='scalp';assert.throws(()=>validateRig(r),/missing facial attachment/);
 });
 test('eyes retain useful near/far widths and carry the shared pitch slope',()=>{
  const near=boundaryPoint(429.5,198.5,'eyeR',1,0,rig)[0]-boundaryPoint(409.5,198.5,'eyeR',1,0,rig)[0];

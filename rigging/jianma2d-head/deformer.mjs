@@ -11,50 +11,67 @@ function curve(knots,values,x){
  return (2*t3-3*t2+1)*values[i]+(t3-2*t2+t)*h*slope(i)+(-2*t3+3*t2)*values[i+1]+(t3-t2)*h*slope(i+1);
 }
 export function validateRig(rig){
- if(rig.schema!=='astra.head-nine-key.v5')throw Error('Unsupported head rig: '+rig.schema);
- for(const name of ['faceSurface','scalpSurface']){
-  const s=rig[name];if(s.parent!=='shell')throw Error(name+': parent must be shell');
-  if(s.rows.some((v,i)=>!Number.isFinite(v)||i&&v<=s.rows[i-1])||!(s.radiusX>0))throw Error(name+': invalid coordinates');
-  for(const key of ['yawByRow','upCenter','upEdge','downCenter','downEdge','pitchWidth','cornerDx'])if(s[key].length!==s.rows.length||s[key].some(v=>!Number.isFinite(v)))throw Error(name+'.'+key+': one value per latitude required');
+ if(rig.schema!=='astra.head-nine-key.v6')throw Error('Unsupported head rig: '+rig.schema);
+ const v=rig.volume;
+ if(!(v.focalLength>400)||v.pivot.length!==2)throw Error('Invalid common head camera');
+ for(const name of ['face','scalp','bun']){
+  const s=v[name];if(!(s.radiusX>0)||!(s.roundness>0))throw Error(name+': invalid volume');
+  for(const key of ['depth','sideDepth'])if(s[key].length!==s.rows.length||s[key].some(n=>!Number.isFinite(n)))throw Error(name+'.'+key+': one depth per anatomical row required');
+  if(s.rows.some((n,i)=>!Number.isFinite(n)||i&&n<=s.rows[i-1]))throw Error(name+': unordered rows');
  }
- for(const [name,f] of Object.entries(rig.features))if(f.parent!=='faceSurface')throw Error(name+': parent must be faceSurface');
+ for(const [name,f] of Object.entries(rig.features))if(f.parent!=='face')throw Error(name+': missing facial attachment');
  for(const [name,p] of Object.entries(rig.projections))if(!['face','earL','earR','skin'].includes(p.receiver)||rig.projections[p.caster])throw Error(name+': invalid projection ownership');
 }
-// Child corrections are evaluated in the undeformed parent coordinates. Only the
-// shared parent converts them into the posed head frame; it is never added twice.
-export function shellPoint(x,y,kx,ky,rig){
- const s=rig.shell,[cx]=s.center;
- return [cx+(x-cx)*(1-s.yawNarrow*Math.abs(kx))+kx*s.yawShift,y+ky*s.pitchShift];
+/** Smooth lateral sections with bounded slope. The source is an orthogonal
+ * drawing: lift its points onto the authored volume, then reproject around ONE
+ * head pivot. Neutral back-projection preserves every original SVG point. */
+export function depthAt(x,y,s){
+ const u=Math.min(1,Math.abs((x-s.centerX)/s.radiusX)),r=s.roundness;
+ const lateral=(Math.sqrt(u*u+r*r)-r)/(Math.sqrt(1+r*r)-r);
+ const middle=curve(s.rows,s.depth,y),side=curve(s.rows,s.sideDepth,y);
+ return middle+(side-middle)*lateral;
 }
-function surfaceLocal(x,y,kx,ky,s){
- const u=(x-s.centerX)/s.radiusX,arc=Math.max(0,1-u*u);
- const yaw=curve(s.rows,s.yawByRow,y)*curve(s.yawColumns,s.yawProfile,u*(kx<0?-1:1))*kx;
- const edge=curve(s.rows,ky>0?s.upEdge:s.downEdge,y),middle=curve(s.rows,ky>0?s.upCenter:s.downCenter,y);
- const pitch=(edge+(middle-edge)*arc)*Math.abs(ky),width=1+ky*curve(s.rows,s.pitchWidth,y);
- let px=s.centerX+(x-s.centerX)*width+yaw+kx*ky*curve(s.rows,s.cornerDx,y)*arc,py=y+pitch;
- const a=kx*ky*s.cornerRadians,dx=px-s.centerX,dy=py-s.centerY;
- return [s.centerX+dx*Math.cos(a)-dy*Math.sin(a),s.centerY+dx*Math.sin(a)+dy*Math.cos(a)];
+export function projectHead(x,y,z,kx,ky,rig){
+ if(!kx&&!ky)return [x,y];
+ const v=rig.volume,[cx,cy]=v.pivot,F=v.focalLength;
+ const X=(x-cx)*(F-z)/F,Y=(y-cy)*(F-z)/F;
+ const a=kx*v.yawRadians,b=ky*(ky>0?v.upRadians:v.downRadians),ca=Math.cos(a),sa=Math.sin(a),cb=Math.cos(b),sb=Math.sin(b);
+ // Local pitch first, followed by yaw. No part has its own rotation centre.
+ const yy=Y*cb-z*sb,zz=Y*sb+z*cb,xx=X*ca+zz*sa,depth=-X*sa+zz*ca;
+ const f=F/(F-depth);
+ return [cx+xx*f,cy+yy*f-Math.max(0,-ky)*v.downLift];
 }
-export function faceSurfacePoint(x,y,kx,ky,rig){return shellPoint(...surfaceLocal(x,y,kx,ky,rig.faceSurface),kx,ky,rig);}
-export function scalpPoint(x,y,kx,ky,rig){return shellPoint(...surfaceLocal(x,y,kx,ky,rig.scalpSurface),kx,ky,rig);}
+export function faceSurfacePoint(x,y,kx,ky,rig){return projectHead(x,y,depthAt(x,y,rig.volume.face),kx,ky,rig);}
+export function scalpPoint(x,y,kx,ky,rig){
+ const s=rig.volume.scalp,q=projectHead(x,y,depthAt(x,y,s),kx,ky,rig);
+ if(kx){
+  // A turned cranium reveals its near-side silhouette. Retarget that contour
+  // from the complete hidden hair cap instead of squeezing the entire front
+  // patch into a thin strip. Interior parting/strands still follow the volume.
+  const sign=Math.sign(kx),u=(x-s.centerX)/s.radiusX,edgeX=s.centerX-sign*s.radiusX;
+  const edge=projectHead(edgeX,y,depthAt(edgeX,y,s),kx,ky,rig);
+  const wanted=edgeX+kx*s.silhouetteShift;
+  q[0]+=(wanted-edge[0])*smooth(0,1,-u*sign)*Math.abs(kx);
+ }
+ return q;
+}
+function bunPoint(x,y,kx,ky,rig){
+ const s=rig.volume.bun,base=rig.surfaces.bun.anchor[1];
+ const height=1+Math.abs(ky)*((ky>0?s.upHeight:s.downHeight)-1);
+ return projectHead(x,base+(y-base)*height,depthAt(x,y,s),kx,ky,rig);
+}
 export function headPoint(x,y,kx,ky,rig){
- const c=rig.contour,cx=rig.head.center[0],side=(x-cx)/rig.faceSurface.radiusX;
- const socket=(1-smooth(0,c.socketRadiusY,Math.abs(y-c.socketY)))*smooth(.5,1,side*kx);
- const jaw=smooth(c.jawStartY,c.jawEndY,y);
- const xx=x-kx*c.farSocketInset*socket-(x-cx)*Math.abs(kx)*jaw*c.jawNarrow;
- return faceSurfacePoint(xx,y,kx,ky,rig);
+ const q=faceSurfacePoint(x,y,kx,ky,rig);
+ q[1]-=Math.max(0,ky)*rig.volume.face.upChinLift*smooth(235,270,y)*Math.exp(-(((x-rig.head.center[0])/35)**2));
+ return q;
 }
 export function featureLocalPoint(x,y,kind,kx,ky,rig){
- const f=rig.features[kind],[cx,cy]=f.anchor,[w,h]=f.size,u=clamp((x-cx)/(w*.5),-1,1),v=clamp((y-cy)/h,-.5,.5);
- const far=(cx-rig.head.center[0])*kx>0,scale=kx?(far?f.farWidth:f.nearWidth):1;
- const arc=1-u*u,lag=f.cornerLag*Math.abs(u)*(1+u*kx)*.5;
- return [cx+(x-cx)*scale+kx*(f.yawShift+v*f.tipDepth-lag),cy+(y-cy)*(1+ky*f.pitchStretch)+Math.abs(ky)*(ky>0?f.pitchShift[0]:f.pitchShift[1])-ky*f.localArch*arc];
+ const f=rig.features[kind],[cx,cy]=f.anchor,side=Math.sign(rig.head.center[0]-cx);
+ const z=depthAt(cx,cy,rig.volume.face)+f.depthOffset+side*(x-cx)*f.tangentX+(y-cy)*f.tangentY;
+ return [x,y,z];
 }
-function featurePoint(x,y,kind,kx,ky,rig){return faceSurfacePoint(...featureLocalPoint(x,y,kind,kx,ky,rig),kx,ky,rig);}
-function earPoint(x,y,kind,kx,ky,rig){
- const cx=kind==='earR'?394:494,far=(cx-rig.head.center[0])*kx>0;
- return faceSurfacePoint(cx+(x-cx)*(far?.87:1)-kx*2,y,kx,ky,rig);
-}
+function featurePoint(x,y,kind,kx,ky,rig){return projectHead(...featureLocalPoint(x,y,kind,kx,ky,rig),kx,ky,rig);}
+function earPoint(x,y,kind,kx,ky,rig){return projectHead(x,y,25,kx,ky,rig);}
 export function motionKind(kind,rig){return rig.projections?.[kind]?.caster||kind;}
 export function attachment(kind,rig){return rig.surfaces[kind]?.anchor;}
 export function isHanging(kind,rig){return Boolean(rig.surfaces[kind]?.guides)||kind.startsWith('earring');}
@@ -62,17 +79,28 @@ const skinWeight=(y,rig)=>1-smooth(rig.neck.followY,rig.neck.fixedY,y);
 function guideAt(y,s){const rows=s.guides,knots=rows.map(r=>r[0]);return [1,2,3].map(i=>curve(knots,rows.map(r=>r[i]),y));}
 export function rollWeight(x,y,kind,rig){if(kind==='body')return 0;if(kind==='skin')return skinWeight(y,rig);if(kind==='collar')return (1-smooth(rig.collar.followY,rig.collar.fixedY,y))*rig.collar.rollFollow;const s=rig.surfaces[kind];return s?.guides?guideAt(y,s)[1]:1;}
 export function rollBend(x,y,kind,rig){const s=rig.surfaces[kind];return kind.startsWith('earring')?0:s?.guides?1-smooth(s.anchor[1]+12,s.bendEndY,y):1;}
+function planeDepth(x,y,s,rig){
+ const v=rig.volume,[cx,cy]=v.pivot,F=v.focalLength,[ax,ay]=s.anchor;
+ const za=s.anchorSurface?depthAt(ax,ay,v[s.anchorSurface])+(s.depthOffset||0):s.depth;
+ const [tx,ty]=s.depthSlope||[0,0],Xa=(ax-cx)*(F-za)/F,Ya=(ay-cy)*(F-za)/F;
+ const intercept=za-tx*Xa-ty*Ya,t=tx*(x-cx)+ty*(y-cy);
+ return (intercept+t)/(1+t/F);
+}
 export function rootPoint(kind,kx,ky,rig){
  const s=rig.surfaces[kind],[x,y]=s.anchor;
  if(s.parent)return boundaryPoint(x,y,s.parent,kx,ky,rig);
+ if(kind==='bun')return bunPoint(x,y,kx,ky,rig);
+ if(Number.isFinite(s.depth)||s.anchorSurface)return projectHead(x,y,planeDepth(x,y,s,rig),kx,ky,rig);
  return kind.startsWith('earring')?earPoint(x,y,kind==='earringR'?'earR':'earL',kx,ky,rig):scalpPoint(x,y,kx,ky,rig);
 }
 function planePoint(x,y,kind,kx,ky,rig){
- const s=rig.surfaces[kind],[ax,ay]=s.anchor,q=rootPoint(kind,kx,ky,rig),v=rig.perspective;
- const a=kx*v.yawRadians,b=ky*(ky>0?v.upRadians:v.downRadians),u=x-ax,w=y-ay;
- const xx=u*Math.cos(a),zz=-u*Math.sin(a),yy=w*Math.cos(b)-zz*Math.sin(b);
- const depth=w*Math.sin(b)+zz*Math.cos(b),f=(v.focalLength-(s.depth||0))/(v.focalLength-(s.depth||0)-depth);
- return [q[0]+xx*f,q[1]+yy*f];
+ if(kind.startsWith('earring')){
+  const s=rig.surfaces[kind],q=rootPoint(kind,kx,ky,rig),[ax,ay]=s.anchor;
+  // Gravity keeps the drop hanging; only the earlobe socket inherits head pitch.
+  const width=Math.cos(kx*rig.volume.yawRadians);
+  return [q[0]+(x-ax)*width,q[1]+y-ay];
+ }
+ return projectHead(x,y,planeDepth(x,y,rig.surfaces[kind],rig),kx,ky,rig);
 }
 export function boundaryPoint(x,y,kind,kx,ky,rig){
  kind=motionKind(kind,rig);
@@ -81,6 +109,7 @@ export function boundaryPoint(x,y,kind,kx,ky,rig){
  if(['face','faceBare','faceDetail','faceShadow'].includes(kind))return headPoint(x,y,kx,ky,rig);
  if(kind==='earL'||kind==='earR')return earPoint(x,y,kind,kx,ky,rig);
  if(kind==='fringe')return scalpPoint(x,y,kx,ky,rig);
+ if(kind==='bun')return bunPoint(x,y,kx,ky,rig);
  if(kind==='skin'||kind==='collar'){
   const yy=Math.min(y,270),q=headPoint(x,yy,kx,ky,rig);
   const w=kind==='skin'?skinWeight(y,rig):(1-smooth(rig.collar.followY,rig.collar.fixedY,y))*rig.collar.headFollow;
