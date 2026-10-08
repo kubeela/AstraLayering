@@ -58,14 +58,14 @@ export function meshGeometry(layer,rig){
 }
 export class Renderer {
  constructor(canvas,rig,layers){validateRig(rig);this.canvas=canvas;this.rig=rig;this.layers=layers;this.meshes=[];this.view=rig.preview.viewBox.slice();this.hiddenHair=false;this.physics=new HeadPhysics(rig);}
- async init(){
+ async init(overrides={}){
   const gl=this.canvas.getContext('webgl2',{alpha:false,antialias:true,stencil:true,preserveDrawingBuffer:false});
   if(!gl)throw new Error('此例需要 WebGL 2。请开启浏览器硬件加速后重试。');this.gl=gl;
   const vs=shader(gl,gl.VERTEX_SHADER,VERT),fs=shader(gl,gl.FRAGMENT_SHADER,FRAG),program=gl.createProgram();
   gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
   this.program=program;gl.useProgram(program);this.uniforms=Object.fromEntries(['uInertia','uFringeR','uFringeL','uSkin','uSkinRadius','uKeys','uView','uPivot','uRoll','uTexture','uHanging','uRoot','uMask','uOpacity'].map(n=>[n,gl.getUniformLocation(program,n)]));
-  const images=await Promise.all(this.layers.map(l=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('无法加载 '+l.file));im.src=new URL(l.file,import.meta.url).href;})));
+  const images=await Promise.all(this.layers.map(l=>overrides[l.file]||new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('无法加载 '+l.file));im.src=new URL(l.file,import.meta.url).href;})));
   this.meshes=this.layers.map((layer,i)=>this.createMesh(layer,images[i]));
   gl.enable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.uniform1i(this.uniforms.uTexture,0);gl.uniform2fv(this.uniforms.uPivot,this.rig.head.neckPivot);
  }
@@ -77,7 +77,20 @@ export class Renderer {
   const indexBuffer=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indexBuffer);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,indices,gl.STATIC_DRAW);
   const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL,gl.NONE);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-  return {vao,buffer,indexBuffer,texture,count:indices.length,layer};
+  return {vao,buffer,indexBuffer,texture,count:indices.length,layer,width:image.width,height:image.height};
+ }
+ /** The expression evaluator paints only changed facial layers in source space.
+  * Their boxes/meshes stay fixed across all keyforms; head motion stays on GPU. */
+ updateTextures(sources){
+  const gl=this.gl;if(!gl||gl.isContextLost())return;
+  const updates=Object.entries(sources).map(([file,image])=>{
+   const mesh=this.meshes.find(m=>m.layer.file===file);
+   if(!mesh||mesh.width!==image.width||mesh.height!==image.height)throw Error('Expression texture bounds changed: '+file);
+   return {mesh,image};
+  });
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);
+  gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL,gl.NONE);
+  for(const {mesh,image} of updates){gl.bindTexture(gl.TEXTURE_2D,mesh.texture);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,gl.RGBA,gl.UNSIGNED_BYTE,image);}
  }
  resize(faceOnly=false){
   const c=this.canvas,dpr=Math.min(devicePixelRatio||1,2),r=c.getBoundingClientRect();
