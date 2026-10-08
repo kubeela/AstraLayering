@@ -11,7 +11,7 @@ const input=process.argv[2];if(!input)throw Error('Usage: node tools/build-atlas
 const driver=await import(process.env.ASTRA_PLAYWRIGHT||'playwright'),{chromium}=driver.default??driver;
 const rig=JSON.parse(await fs.readFile(path.join(dir,'rig.json'))),source=JSON.parse(await fs.readFile(path.join(dir,'source.json')));
 const svg=await fs.readFile(input,'utf8'),inputSha256=createHash('sha256').update(svg).digest('hex');
-if(inputSha256!==source.sourceSha256)throw Error('Wrong SVG: head and expression must use the same immutable source');
+if(inputSha256!==source.sourceSha256)throw Error('Wrong SVG: head and expression must use the same declared source');
 const browser=await chromium.launch({headless:true,...(process.env.ASTRA_CHROMIUM?{executablePath:process.env.ASTRA_CHROMIUM}:{}),args:['--no-sandbox']});
 try{
  const [x,y,w,h]=rig.preview.atlasClip,scale=rig.preview.textureScale;

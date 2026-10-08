@@ -1,9 +1,15 @@
 {
   "repository": "https://github.com/wu-tian807/AstraLayering",
-  "commit": "0049060aa29c684dda998d883a06947d4736cae1",
-  "path": "outputs/jianma_clothing/final/character.svg",
-  "sourceSha256": "5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9",
-  "sourceBytes": 4928237,
-  "preview": "Immutable dressed expression SVG; one continuous skin/feature field with shared tessellation, cranial-base neck attachment and source-coordinate jaw projection.",
-  "layerManifest": "layers.json"
+  "path": "rigging/jianma2d-head/artwork/character.svg",
+  "sourceSha256": "a2ddb18831d1f3655b2871717f0aad25dfa616e13ee0a3a4d9e397c0c54a2c34",
+  "sourceBytes": 4955106,
+  "preview": "Authorized SVG portrait revision: compact upper skull and temple hair, revised jaw, coherent eyes/brows/lips and understated nose. Same v7 continuous surface rig.",
+  "layerManifest": "layers.json",
+  "base": {
+    "repository": "https://github.com/wu-tian807/AstraLayering",
+    "commit": "0049060aa29c684dda998d883a06947d4736cae1",
+    "path": "outputs/jianma_clothing/final/character.svg",
+    "sourceSha256": "5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9"
+  },
+  "artRevision": "2026-10-08-head-face-reference"
 }

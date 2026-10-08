@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind,validateRig,layerOpacity} from './deformer.mjs';
 import {meshGeometry} from './renderer.mjs';
 const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
@@ -64,9 +65,10 @@ test('sampled visible and full hanging surfaces do not fold at combined paramete
 });
 test('exact dressed expression source and explicit layer ownership are recorded',()=>{
  const source=JSON.parse(fs.readFileSync(new URL('./source.json',import.meta.url))),manifest=JSON.parse(fs.readFileSync(new URL('./layers.json',import.meta.url)));
- assert.equal(source.sourceSha256,'5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9');
+ assert.equal(source.base.sourceSha256,'5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9');
+ assert.equal(source.sourceSha256,createHash('sha256').update(fs.readFileSync(new URL('./artwork/character.svg',import.meta.url))).digest('hex'));
  assert.equal(source.sourceSha256,manifest.inputSha256);assert.equal(manifest.sourcePreserved,true);
- assert.equal(source.path,'outputs/jianma_clothing/final/character.svg');
+ assert.equal(source.path,'rigging/jianma2d-head/artwork/character.svg');
  assert(manifest.preparation.some(p=>p.operation==='defer-collar-occlusion-to-draw-order'));
  const face=manifest.layers.find(l=>l.kind==='face');assert(face);
  assert.deepEqual(face.groups,['face_base']);

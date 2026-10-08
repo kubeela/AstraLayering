@@ -1,17 +1,21 @@
-# 剑妈穿戴稿：头部九宫格与连续跟随（v7）
+# 剑妈：头脸修型与头部九宫格
 
-本例使用基础表情工作台同一份 `jianma_clothing/final/character.svg`。SVG 原文件不改写；不替换人脸、发型、颜色或路径。原图 SHA-256 为 `5bce80aa35a0331f34f1905d03886d0a4c2318ab623b8420a5e52561a5a5cae9`，来源记录见 `source.json`。
+2026-10-08 用户明确授权修改原 SVG 头型与五官，依据此前生成九轴参考进行美术修订。当前原稿为 `artwork/character.svg`，与游戏工作台的基础表情使用相同字节；历史原稿、提交和 SHA-256 记录在 `source.json.base`。
 
-v6 没有达到参考的侧转效果：颈柱错误继承下巴尖横移，五官平面与皮肤映射不同，各图层独立细分又带来实际插值误差。v7 针对这些连接问题重做；不把单张正面稿的深度投影称为与生成参考完全一致。
+- 收紧上部发团，在耳旁恢复原发束宽度，保持前后发的连续轮廓。缩短隐藏上颅轮廓，使其不再上宽下窄地突变。
+- 重画头脸填充、可见下颌轮廓及其所有接收面/投影副本，给下巴适量宽度并缩短约 5px。
+- 眼睛略微打开，眉形减薄，嘴唇略微收窄；用轻鼻翼线代替两个深色圆点，减轻鼻尖高光和腮红。
+- 眼口眉的局部路径与关键形不改，作者调整位于各区域父组，因此睫毛/眼皮/虹膜/遮罩和整套极值一起跟随。嘴巴开合的纵向范围保留。
+- 仍用 v7 连续脸面与颅底颈柱挂接，只校正发根/配饰挂点及物理起始点；按新源图重建显示缓存。
 
-![当前九个关键形](nine-poses.jpg)
+![实际九个关键形](nine-poses.jpg)
 
 ## 变形关系
 
-- 头部仍使用共同转动中心与镜头，但深度按原脸宽收敛，避免鼻口大幅滑出颅部。正面严格回到原坐标。
+- 头部仍使用共同转动中心与镜头，但深度按原脸宽收敛，避免鼻口大幅滑出颅部。正面严格回到修型稿坐标。
 - 脸、五官、皮肤自身色与耳根使用同一个连续深度场。眼、鼻、嘴的切平面约束平滑融入该场，不能再各自成为独立移动的平面。
 - 所有图层共享源坐标采样格和三角形方向。`meshGeometry` 输出真实渲染数据；即使理想映射一致，也不能让各层不同的插值误差重新撕开边缘。
-- 脖子跟随位于下巴后方的颅底挂点，肩端固定，保留颈柱宽度。原有隐藏颈顶在转动时向头内延伸，保持下颌覆盖；没有改写原 SVG 或增宽可见脖子。
+- 脖子跟随位于下巴后方的颅底挂点，肩端固定，保留颈柱宽度。原有隐藏颈顶在转动时向头内延伸，保持下颌覆盖；颈柱的原始宽度保持。
 - 耳根继承同一脸面；远侧耳朵按转角连续遮挡。前后发、发髻、头饰、长带及其惯性保留。
 
 `deformer.mjs` 将这些关系编译为九个完整关键形，运行时 GPU 做张量二次插值，Z 绕颈部挂点转动。它是原 SVG 坐标上的变形研究与预览缓存实现，不是 Cubism 运行时，也不声称导出了精确的 SVG 曲线或 `.cmo3`。
@@ -20,7 +24,7 @@ v6 没有达到参考的侧转效果：颈柱错误继承下巴尖横移，五�
 
 - 头发与额饰的原始投影路径从脸部缓存中分离，跟随投影来源的同一变形与惯性；接收面的裁剪交给实时变形后的脸/耳朵网格。
 - 原下巴投影先还原来源坐标，再变形并加回原画的光照偏移，最后裁剪在实时脖子网格内。不能把阴影像素的纵坐标误当成脸上对应点。衣领只小幅跟随颅底，缝合边固定。
-- `tools/prepare-artwork.mjs` 只操作显示克隆。保留原始投影几何、颜色、模糊和局部分区；撤掉烘焙的接收面裁剪，并记录到 `layers.json`。正式 SVG 保持原字节。
+- `tools/prepare-artwork.mjs` 只操作显示克隆。保留原始投影几何、颜色、模糊和局部分区；撤掉烘焙的接收面裁剪，并记录到 `layers.json`。显示准备不再二次修改修型稿。
 - 嘴部重复肤色填充仍用原路径作为口腔遮罩；唇线、开口、局部颜色和阴影保留，肤色底面由脸层提供。
 - 48 张可重建 PNG 只作预览缓存；透明纹理采样前预乘 Alpha。鼠标移动不重新栅格化 SVG。
 
@@ -35,20 +39,15 @@ v6 没有达到参考的侧转效果：颈柱错误继承下巴尖横移，五�
 ## 重建与检查
 
 ```sh
-node --test rigging/jianma2d-head/deformer.test.mjs rigging/jianma2d-head/physics.test.mjs
 git show 0049060aa29c684dda998d883a06947d4736cae1:outputs/jianma_clothing/final/character.svg > /tmp/jianma-source.svg
-node rigging/jianma2d-head/tools/build-atlas.mjs /tmp/jianma-source.svg
-python3 -m http.server 8796
-# http://localhost:8796/rigging/jianma2d-head/
-node rigging/jianma2d-head/tools/verify-browser.mjs http://localhost:8796/rigging/jianma2d-head/
+python3 rigging/jianma2d-head/tools/refine-portrait.py /tmp/jianma-source.svg /tmp/jianma-refined.svg
+# /tmp/jianma-refined.svg must match artwork/character.svg byte for byte.
+node rigging/jianma2d-head/tools/build-atlas.mjs rigging/jianma2d-head/artwork/character.svg
+node --test rigging/jianma2d-head/deformer.test.mjs rigging/jianma2d-head/physics.test.mjs
 ```
 
-缓存重建需要 Playwright/Chromium 与 Python Pillow；可通过 `ASTRA_PLAYWRIGHT`、`ASTRA_CHROMIUM` 指定工具路径。改曲面参数不需要重建纹理；改显示分层或遮挡准备时才重建。源 SVG 哈希不符时拒绝执行。
+缓存重建需要 Playwright/Chromium 与 Python Pillow，可通过 `ASTRA_PLAYWRIGHT`、`ASTRA_CHROMIUM` 指定工具路径。源哈希不符时拒绝执行。
 
-v7 的 19 项几何/来源检查与 5 项惯性检查通过，包括实际渲染网格的重合、颅底/下巴独立位移、颈宽、来源坐标投影、远耳遮挡、原图身份、固定边、发根及物理收敛。采样最小面积比 0.2744。另逐张看纯 X/Y 的九个位置、四角、裸脸和快速反向移动。检查通过不代表用户认可美术效果。
+24 项几何、来源与惯性检查通过。实际检查了静止正脸、裸脸、左右中间位置、九宫格和原 12 项表情的极值与中性恢复。工作台同时提供生成参考、当前九宫格和同构图修型前后对照。美术参考仍有侧鼻、配饰和衣领差异；不宣称完全复刻。没有重新测量 Mac/Safari 帧率。
 
-本轮使用 GPT-Image-2 基于原穿戴稿生成九宫格，检查转向、头发体积和俯仰关系。参考及前版对照可在[剑妈工作台](https://gameclaw.woa.com/ai-weapon-spirit/workbench/#/spirit-expressions/jianlai-jianma?view=head)查看；参考有细节漂移，仅作为视觉指导，不是替换帧或精确多视图。`nine-poses.jpg` 是本例真实渲染截图。
-
-48 张显示纹理不变，网格改为共同采样格，并增加远耳遮挡系数；没有逐帧重栅格化 SVG。本轮未重新测量 Mac/Safari 帧率，不能沿用旧版的 60 fps 记录。仅有正面原画，原鼻子仅有两个简化鼻点，侧鼻轮廓和隐藏侧面缺失仍是当前研究例的美术限制；没有用生成图覆盖原稿。
-
-这是头部九轴研究例；基础表情与头部仍为独立预览。状态不写入存档、不导出、不同步。
+基础表情与头部仍为独立预览。状态不写入存档、不导出、不同步。
