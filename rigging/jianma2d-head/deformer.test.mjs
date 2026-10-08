@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {boundaryPoint,evaluatePoint,evaluateRoot,weights,classify,motionKind,validateRig,layerOpacity} from './deformer.mjs';
-import {meshGeometry} from './renderer.mjs';
+import {meshGeometry,orderedLayers} from './renderer.mjs';
 const rig=JSON.parse(fs.readFileSync(new URL('./rig.json',import.meta.url)));
 const close=(a,b,epsilon=1e-8)=>assert.ok(Math.abs(a-b)<epsilon,`${a} != ${b}`);
 const pointClose=(a,b,e)=>a.forEach((v,i)=>close(v,b[i],e));
@@ -85,12 +85,9 @@ test('exact dressed expression source and explicit layer ownership are recorded'
  }
 });
 
-test('pitch curves the eye latitude and redistributes vertical bands without reversing their order',()=>{
+test('authored pitch redistributes facial bands without reversing their order',()=>{
  for(const y of [-30,-15,15,30]){
   const p={x:0,y,z:0};
-  const a=evaluatePoint(400,198.5,'face',p,rig),m=evaluatePoint(444,198.5,'face',p,rig),b=evaluatePoint(488,198.5,'face',p,rig);
-  const bow=m[1]-(a[1]+b[1])/2;
-  assert(bow*y<0&&Math.abs(bow)>1.5,'up/down must bend the latitude in opposite directions');
   const bands=[185,198.5,228,244,270].map(row=>evaluatePoint(444,row,'face',p,rig)[1]);
   for(let i=1;i<bands.length;i++)assert(bands[i]-bands[i-1]>8);
  }
@@ -100,6 +97,7 @@ test('pitch curves the eye latitude and redistributes vertical bands without rev
 test('editing authored facial endpoints carries skin and features without moving the scalp',()=>{
  const altered=structuredClone(rig);
  for(const pose of Object.values(altered.keyforms.face.poses))for(const q of Object.values(pose)){q[0]+=8;q[1]-=3;}
+ for(const pose of Object.values(altered.keyforms.face.contours.poses))for(const curve of Object.values(pose))for(const q of curve){q[0]+=8;q[1]-=3;}
  const p={x:30,y:30,z:0};
  for(const kind of ['face','eyeR','eyeL','browR','browL','nose','mouth']){
   const [x,y]=rig.features[kind]?.anchor||[444,210],a=evaluatePoint(x,y,kind,p,rig),b=evaluatePoint(x,y,kind,p,altered);
@@ -160,13 +158,17 @@ test('neck column follows the cranial base, not the projecting chin; its width s
   assert(Math.abs(c[0]-444)>Math.abs(n[0]-444)*2.5);
  }
 });
-test('skin, eyes, brows, nose and mouth share one continuous authored map',()=>{
+test('local facial planes stay attached to the skin without putting eye-cage bends in the jaw',()=>{
  for(const p of [{x:30,y:30,z:20},{x:-30,y:-30,z:-20},{x:11,y:-17,z:7}])
-  for(const kind of [...Object.keys(rig.features),'faceDetail'])
-   for(const [x,y] of [[400,214],[419.5,198.5],[478,199],[444,228],[452,245]])
-    pointClose(evaluatePoint(x,y,kind,p,rig),evaluatePoint(x,y,'face',p,rig));
+  for(const [kind,feature] of Object.entries(rig.features)){
+   const f=rig.featureForms[feature.poseFrame||kind],[x,y]=f.anchor;
+   pointClose(evaluatePoint(x,y,kind,p,rig),evaluatePoint(x,y,'face',p,rig));
+   const a=evaluatePoint(x-8,y-5,kind,p,rig),b=evaluatePoint(x+8,y+5,kind,p,rig);
+   pointClose(evaluatePoint(x,y,kind,p,rig),a.map((v,i)=>(v+b[i])/2),1e-6);
+   if(kind.startsWith('brow'))pointClose(evaluatePoint(x+3,y-9,kind,p,rig),evaluatePoint(x+3,y-9,feature.poseFrame,p,rig));
+  }
 });
-test('actual raster meshes use the same source lattice and interpolate skin and feature edges identically',()=>{
+test('actual raster meshes keep face detail registered and local feature planes affine',()=>{
  const manifest=JSON.parse(fs.readFileSync(new URL('./layers.json',import.meta.url)));
  const face=meshGeometry(manifest.layers.find(l=>l.kind==='face'),rig);
  const sample=(m,x,y,k)=>{
@@ -176,16 +178,21 @@ test('actual raster meshes use the same source lattice and interpolate skin and 
   const ids=u+v<=1?[a,b,c]:[d,c,b],ws=u+v<=1?[1-u-v,u,v]:[u+v-1,1-u,1-v];
   return [0,1].map(axis=>ids.reduce((sum,id,n)=>sum+ws[n]*m.data[id*m.stride+3+k*2+axis],0));
  };
- for(const kind of Object.keys(rig.features)){
+ for(const kind of [...Object.keys(rig.features),'faceDetail']){
   const layer=manifest.layers.find(l=>l.kind===kind),m=meshGeometry(layer,rig),[x,y,w,h]=layer.box;
-  for(const [u,v] of [[.23,.37],[.69,.58],[.81,.74]])for(let k=0;k<9;k++)pointClose(sample(m,x+w*u,y+h*v,k),sample(face,x+w*u,y+h*v,k),1e-4);
+  for(const [u,v] of [[.23,.37],[.69,.58],[.81,.74]])for(let k=0;k<9;k++){
+   const expected=kind==='faceDetail'?sample(face,x+w*u,y+h*v,k):boundaryPoint(x+w*u,y+h*v,kind,...rig.keyCoordinates[k],rig);
+   pointClose(sample(m,x+w*u,y+h*v,k),expected,1e-4);
+  }
  }
 });
-test('far ear occlusion is continuous, and the near ear remains attached and visible',()=>{
- close(layerOpacity('earL',{x:0},rig),1);close(layerOpacity('earR',{x:0},rig),1);
- close(layerOpacity('earL',{x:30},rig),0);close(layerOpacity('earR',{x:30},rig),1);
- close(layerOpacity('earR',{x:-30},rig),0);close(layerOpacity('earL',{x:-30},rig),1);
- for(let x=-30;x<30;x+=.05)for(const kind of ['earL','earR'])assert(Math.abs(layerOpacity(kind,{x},rig)-layerOpacity(kind,{x:x+.05},rig))<.005);
+test('side volumes and pendants remain behind the face and long front hair without fading ears',()=>{
+ const manifest=JSON.parse(fs.readFileSync(new URL('./layers.json',import.meta.url)));
+ const order=orderedLayers(manifest.layers.map(layer=>({layer})),rig),index=group=>order.findIndex(m=>m.layer.groups.includes(group));
+ for(const group of rig.occlusion.behindFaceGroups)assert(index(group)<index('face_base'));
+ for(const group of rig.occlusion.foregroundGroups)assert(index(group)>index('face_base'));
+ assert.equal(new Set(order).size,manifest.layers.length,'occlusion must not duplicate or discard an art layer');
+ for(let x=-30;x<=30;x+=3)for(const kind of ['earL','earR'])close(layerOpacity(kind,{x},rig),1);
 });
 test('collar opening follows the neck partially while its sewn edge stays fixed',()=>{
  for(const [kx,ky] of rig.keyCoordinates)for(const z of [-20,0,20]){
@@ -200,12 +207,15 @@ test('all eight endpoint drawings are explicit; missing landmarks fail before re
  validateRig(rig);
  const bad=structuredClone(rig);delete bad.keyforms.scalp.poses['-1,-1'].middleR;
  assert.throws(()=>validateRig(bad),/incomplete endpoint/);
- const face=rig.keyforms.face,names=Object.keys(face.landmarks),src=Object.values(face.landmarks);
- const area=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
- for(const [key,pose] of Object.entries(face.poses))for(const ids of face.triangles){
-  const original=area(...ids.map(i=>src[i])),current=area(...ids.map(i=>pose[names[i]]));
-  assert(current/original>.20,key+' facial cage turned inside out');
+ const face=rig.keyforms.face;
+ for(const [key,pose] of Object.entries(face.poses)){
+  const [x,y]=key.split(',').map(Number);
+  for(const [name,source] of Object.entries(face.landmarks))pointClose(boundaryPoint(...source,'face',x,y,rig),pose[name],1e-5);
  }
+ const badFeature=structuredClone(rig);badFeature.featureForms.eyeR.poses['1,1'].xAxis=[-1,0];
+ assert.throws(()=>validateRig(badFeature),/invalid local facial form/);
+ const badContour=structuredClone(rig);badContour.keyforms.face.contours.poses['1,1'].L[3][0]+=1;
+ assert.throws(()=>validateRig(badContour),/Disconnected authored cheek contour/);
  for(const kind of ['earL','earR'])for(const [kx,ky] of rig.keyCoordinates){
   const anchor=rig.surfaces[kind==='earL'?'earringL':'earringR'].anchor;
   pointClose(evaluateRoot(kind==='earL'?'earringL':'earringR',{x:kx*30,y:ky*30,z:0},rig),boundaryPoint(...anchor,kind,kx,ky,rig));

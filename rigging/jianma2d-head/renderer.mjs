@@ -27,6 +27,12 @@ uniform bool uMask;uniform float uOpacity;out vec4 color;
 void main(){vec4 t=texture(uTexture,vUV);if(uMask&&t.a*uOpacity<.15)discard;color=t*uOpacity;}`;
 function shader(gl,kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
 const hairKinds=new Set(['rearL','rearR','sideL','sideR','ribbonL','ribbonR','fringe','bun','crown','halo','ornamentL','ornamentR','forehead','earringL','earringR']);
+export function orderedLayers(meshes,rig){
+ const o=rig.occlusion,behind=meshes.filter(m=>m.layer.groups.some(g=>o.behindFaceGroups.includes(g)));
+ const ordered=meshes.filter(m=>!behind.includes(m)),index=ordered.findIndex(m=>m.layer.kind===o.faceKind);
+ if(behind.length){if(index<0)throw Error('Head occlusion owner is absent');ordered.splice(index,0,...behind);}
+ return ordered;
+}
 /** Every layer samples the same source-space lattice and diagonal. Shared
  * continuous fields must also share tessellation, or their raster edges split. */
 export function meshGeometry(layer,rig){
@@ -98,11 +104,15 @@ export class Renderer {
    for(const m of this.meshes)if(m.layer.kind===kind)this.drawMesh(m,p,{mask:true});
   }
   gl.colorMask(true,true,true,true);gl.stencilMask(0);gl.stencilOp(gl.KEEP,gl.KEEP,gl.KEEP);
-  for(const m of this.meshes){
+  // Side hair volume and ear pendants lie behind the facial plane. The long
+  // front locks remain in front of both. Moving silhouettes determine coverage;
+  // no draw-order flip at X=0, horizontal strand cut or face-shaped pendant hole.
+  if(this.orderSource!==this.meshes){this.order=orderedLayers(this.meshes,this.rig);this.orderSource=this.meshes;}
+  const ordered=this.order;
+  for(const m of ordered){
    const kind=m.layer.kind,projection=this.rig.projections[kind];
    if(this.hiddenHair&&(hairKinds.has(kind)||projection&&projection.caster!=='face'))continue;
    let bit=projection?bits[projection.receiver]:0,inside=true;
-   if(kind.startsWith('earring')){bit=bits.face;inside=false;}
    if(kind==='faceDetail'||this.rig.features[kind])bit=bits.face;
    if(bit){gl.enable(gl.STENCIL_TEST);gl.stencilFunc(gl.EQUAL,inside?bit:0,bit);}else gl.disable(gl.STENCIL_TEST);
    this.drawMesh(m,p);

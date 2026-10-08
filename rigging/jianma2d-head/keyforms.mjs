@@ -29,9 +29,20 @@ function compile(field,key){
   };
  }
 
- const entries=Object.entries(field.landmarks),n=entries.length;
+ const entries=Object.entries(field.landmarks),destinations={...field.poses[key]};
+ if(field.contours){
+  const cubic=(p,t)=>[0,1].map(d=>(1-t)**3*p[0][d]+3*t*(1-t)**2*p[1][d]+3*t*t*(1-t)*p[2][d]+t**3*p[3][d]);
+  for(const [side,segments] of Object.entries(field.contours.source)){
+   const samples=segments.flatMap(segment=>Array.from({length:200},(_,i)=>cubic(segment,i/200)));
+   samples.push(segments.at(-1).at(-1));const arc=[0];
+   for(let i=1;i<samples.length;i++)arc.push(arc[i-1]+Math.hypot(samples[i][0]-samples[i-1][0],samples[i][1]-samples[i-1][1]));
+   const target=field.contours.poses[key][side];
+   for(let i=25;i<samples.length-1;i+=25){const name=`contour-${side}-${i}`;entries.push([name,samples[i]]);destinations[name]=cubic(target,arc[i]/arc.at(-1));}
+  }
+ }
+ const n=entries.length;
  const points=entries.map(([,p])=>p.map(v=>v/100));
- const targets=entries.map(([name],i)=>{const q=field.poses[key][name];if(!q||q.some(v=>!Number.isFinite(v)))throw Error(`Missing authored ${key}/${name}`);return q.map((v,k)=>v/100-points[i][k]);});
+ const targets=entries.map(([name],i)=>{const q=destinations[name];if(!q||q.some(v=>!Number.isFinite(v)))throw Error(`Missing authored ${key}/${name}`);return q.map((v,k)=>v/100-points[i][k]);});
  const a=Array.from({length:n+3},()=>Array(n+3).fill(0));
  for(let i=0;i<n;i++){
   const [x,y]=points[i];for(let j=0;j<n;j++)a[i][j]=kernel((x-points[j][0])**2+(y-points[j][1])**2);

@@ -12,7 +12,7 @@ function curve(knots,values,x){
  return (2*t3-3*t2+1)*values[i]+(t3-2*t2+t)*h*slope(i)+(-2*t3+3*t2)*values[i+1]+(t3-t2)*h*slope(i+1);
 }
 export function validateRig(rig){
- if(rig.schema!=='astra.head-nine-key.v8')throw Error('Unsupported head rig: '+rig.schema);
+ if(rig.schema!=='astra.head-nine-key.v9')throw Error('Unsupported head rig: '+rig.schema);
  for(const surface of ['face','scalp','bun','earL','earR']){
   const f=rig.keyforms?.[surface];if(!f)throw Error(surface+': missing authored endpoint forms');
   const names=Object.keys(f.landmarks);if(names.length<3)throw Error(surface+': too few landmarks');
@@ -22,6 +22,17 @@ export function validateRig(rig){
   }
   if(f.interpolation==='barycentric-cage'&&(!f.triangles?.length||f.triangles.some(t=>t.length!==3||t.some(i=>!Number.isInteger(i)||i<0||i>=names.length))))throw Error(surface+': invalid cage topology');
  }
+ const face=rig.keyforms.face,contours=face.contours;
+ const point=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);
+ if(!contours)throw Error('Missing authored cheek contours');
+ for(const side of ['L','R']){
+  if(!contours.source?.[side]?.length||contours.source[side].some(c=>c.length!==4||!c.every(point)))throw Error('Invalid source cheek contour');
+  for(const [key,pose] of Object.entries(face.poses)){
+   const curve=contours.poses?.[key]?.[side];
+   if(curve?.length!==4||!curve.every(point))throw Error('Incomplete authored cheek contour');
+   for(const [p,q] of [[curve[0],pose['outerEye'+side]],[curve[3],pose.chin]])if(Math.hypot(p[0]-q[0],p[1]-q[1])>1e-6)throw Error('Disconnected authored cheek contour');
+  }
+ }
  const v=rig.volume;
  if(!(v.focalLength>400)||v.pivot.length!==2)throw Error('Invalid common head camera');
  for(const name of ['face','scalp','bun']){
@@ -30,6 +41,14 @@ export function validateRig(rig){
   if(s.rows.some((n,i)=>!Number.isFinite(n)||i&&n<=s.rows[i-1]))throw Error(name+': unordered rows');
  }
  for(const [name,f] of Object.entries(rig.features))if(f.parent!=='face')throw Error(name+': missing facial attachment');
+ for(const [name,feature] of Object.entries(rig.features)){
+  const form=rig.featureForms?.[feature.poseFrame||name];
+  if(!form||form.anchor?.length!==2)throw Error(name+': missing local facial form');
+  for(const [x,y] of rig.keyCoordinates){if(!x&&!y)continue;const p=form.poses?.[`${x},${y}`];
+   if(!p||p.xAxis?.length!==2||p.yAxis?.length!==2||![...p.xAxis,...p.yAxis].every(Number.isFinite)||p.xAxis[0]*p.yAxis[1]-p.xAxis[1]*p.yAxis[0]<=0)throw Error(name+': invalid local facial form');
+  }
+ }
+ if(!rig.occlusion?.behindFaceGroups?.length||!rig.occlusion.foregroundGroups?.length)throw Error('Missing head occlusion ownership');
  for(const name of ['eyeR','eyeL','nose','mouth']){
   const f=rig.features[name];if(![f.strength,...f.core,...f.support].every(Number.isFinite)||f.strength<0||f.core.some((v,i)=>v<0||f.support[i]<=v))throw Error(name+': invalid continuous facial constraint');
  }
@@ -98,7 +117,10 @@ export function headPoint(x,y,kx,ky,rig){
  return q;
 }
 export function featureLocalPoint(x,y,kind,kx,ky,rig){return [x,y,faceDepth(x,y,rig)];}
-function featurePoint(x,y,kind,kx,ky,rig){return headPoint(x,y,kx,ky,rig);}
+function featurePoint(x,y,kind,kx,ky,rig){
+ const f=rig.featureForms?.[rig.features[kind]?.poseFrame||kind],p=f?.poses[`${kx},${ky}`];if(!p)return headPoint(x,y,kx,ky,rig);
+ const u=x-f.anchor[0],v=y-f.anchor[1],center=headPoint(...f.anchor,kx,ky,rig);return center.map((c,i)=>c+u*p.xAxis[i]+v*p.yAxis[i]);
+}
 function earPoint(x,y,kind,kx,ky,rig){return authoredPoint(x,y,kind,kx,ky,rig)||headPoint(x,y,kx,ky,rig);}
 export function motionKind(kind,rig){return rig.projections?.[kind]?.caster||kind;}
 export function attachment(kind,rig){return rig.surfaces[kind]?.anchor;}
@@ -187,9 +209,6 @@ export function evaluatePoint(x,y,kind,p,rig){
 export function inertiaWeights(y,kind,rig){const s=rig.physics.strands[kind];if(!s)return [0,0];const t=clamp((y-s.startY)/(s.endY-s.startY));return [3*t*t*(1-t),t*t*t];}
 
 export function layerOpacity(kind,p,rig){
- const role=rig.projections[kind]?.receiver||kind;
- if(role==='earL'||role==='earR'){
-  const turn=clamp(p.x/30,-1,1)*(role==='earL'?1:-1);return 1-smooth(...rig.head.farEarOcclusion,turn);
- }
+ // Visibility comes from the posed foreground silhouette, not an ear fade.
  return 1;
 }
