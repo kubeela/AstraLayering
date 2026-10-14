@@ -1,0 +1,10 @@
+已完成本组全部可见区域的分块放大核对：先查看整图 blend，再以左右各四个重叠选框覆盖肩臂衔接（y300–455）、上臂至肘部（y425–585）、前臂至手腕（y550–710）、完整双手（y680–820），每框均检查 blend 和 edge；另以 8 倍复核双手指间孔洞、指尖及右侧前臂外缘。本组无父组，无父范围检查项。
+
+返修项：
+1. 画面右侧前臂外缘（arms-right），肘部下方约 x676–691、y545–585 的皮肤与身后头发交界处，候选边缘局部向臂内缩入。8 倍 blend 图可见色块外仍留有连续的肤色窄带，edge 红线在该段位于原图可见外缘的内侧，约有半像素至一像素的偏移，并非臂内明暗分界。请按原图这一段真实的皮肤外缘向外修正，消除漏覆窄带，保持与上方肘部转向及下方前臂轮廓的连续衔接。
+图像依据：crop=[660,515,45,90]、scale=8 的 blend 和 edge：
+/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-23.png
+/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-22.png
+该偏移亦在右侧上臂—肘部及前臂—腕部的重叠选框中可见。
+
+本项为可见外缘位置偏差，不涉及噪音、孤点、碎片堆砌或形体归属混乱。双手孔洞、开口和尖端及其余已覆盖区域未发现另有明确图像依据的返修问题。

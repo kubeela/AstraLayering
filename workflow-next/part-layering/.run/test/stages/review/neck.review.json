@@ -1,0 +1,63 @@
+{
+  "groupId": "neck",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "仅审查 neck（下颌至躯干之间的颈部，锁骨归 body），无父组，父范围检查不适用。先查看整图 blend 定位，随后以 8 倍 blend 和 edge 完成四个重叠选框：[478,240,68,38] 下颌接缝；[458,247,57,82] 左颈侧及左颈根；[505,247,61,82] 右颈侧及右颈根；[458,291,108,39] 颈根及躯干接缝，完整覆盖本组可见区域。下颌两端至下巴的上缘与参考接缝贴合；左右颈侧从下颌向颈根的宽度、弧度和转向与皮肤/头发可见边界吻合，肩带附近连接连续，无有依据的越出、缩入或漏画。颈根为与 body 的连续分组接缝，未将内部阴影作为外轮廓判据。候选为单一连续形体，无孔洞、刻意挖缝、孤立像素点、碎发丝或碎片堆砌，未发现噪音或形体归属混乱。全部分块核对后未发现需返修的明确图像证据，通过。",
+      "candidateHash": "231f97958df63de6a9e295da17fa1dae69f023eefe81e5846750e6ffa55a1b2e",
+      "observations": [
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-1.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-2.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-3.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-4.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-5.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-6.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-7.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-8.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-9.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/neck.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/neck/2026-10-14T11-41-04-023Z-10.png"
+        }
+      ],
+      "updatedAt": "2026-10-14T11:51:47.852Z"
+    }
+  ]
+}
