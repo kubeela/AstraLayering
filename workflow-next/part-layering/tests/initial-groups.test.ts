@@ -1,0 +1,181 @@
+import assert from 'node:assert/strict';
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { test, type TestContext } from 'node:test';
+import type { AgentTask } from '../agents.ts';
+import { GroupStore } from '../groups.ts';
+import { createLayeringSteps } from '../layering-steps.ts';
+import { runLayering } from '../layering.ts';
+import type { InitialContext } from '../layering-types.ts';
+
+function initialSteps(agents: Parameters<typeof createLayeringSteps>[0]) {
+  return { ...createLayeringSteps(agents), async drawOutline() {
+    return { status: 'pending' as const, message: '本测试只验证首次分组' };
+  } };
+}
+
+async function fixture(t: TestContext): Promise<InitialContext> {
+  const directory = await mkdtemp(join(tmpdir(), 'part-layering-initial-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  return { directory, references: {
+    directory: join(directory, 'references'), judgment: join(directory, 'references/judgment.json'),
+    simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png'),
+  } };
+}
+
+const wingGroups = {
+  subject: 'other', groups: [
+    { name: 'left_wing', groups: [], note: '主体左翼' },
+    { name: 'right_wing', groups: [], note: null },
+  ],
+};
+
+async function saveGrouping(task: AgentTask, value: unknown = wingGroups) {
+  const tool = task.tools!.find(tool => tool.name === 'write_groups')!;
+  return tool.execute(value, new AbortController().signal);
+}
+
+test('首次识别一次调用，绑定 view_bitmap 和 write_groups；直接保存正式分组，忽略最终回复', async t => {
+  const context = await fixture(t);
+  context.references.baseSubject = 'references/base.png';
+  const calls: AgentTask[] = [];
+  const steps = initialSteps({ async run(task) {
+    calls.push(task);
+    await saveGrouping(task);
+    return { text: '保存完成。这不是 JSON。', images: [] };
+  } });
+  const result = await steps.initialGroups(context);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].name, '首次分组识别');
+  assert.equal(calls[0].cwd, context.directory);
+  assert.equal(calls[0].imageGeneration, undefined);
+  assert.ok(calls[0].prompt.startsWith(await readFile(new URL('../prompts/4-初始分组.md', import.meta.url), 'utf8')));
+  assert.match(calls[0].prompt, /本次运行目录/);
+  assert.ok(calls[0].prompt.includes(`素体参考图：${join(context.directory, 'references', 'base.png')}`));
+  assert.doesNotMatch(calls[0].prompt, /自行寻找|优先根据/);
+  assert.equal(calls[0].images, undefined);
+  assert.equal(calls[0].outputSchema, undefined);
+  assert.deepEqual(calls[0].tools!.map(tool => tool.name), ['view_bitmap', 'write_groups']);
+  assert.match(calls[0].prompt, /view_image/);
+  assert.match(calls[0].prompt, /view_bitmap.*crop.*scale.*按需裁剪放大/);
+  assert.doesNotMatch(calls[0].prompt, /分组输出文件/);
+  assert.deepEqual(result, { status: 'completed', output: {
+    subject: 'other', groups: [
+      { id: 'left_wing', name: 'left_wing', note: '主体左翼' },
+      { id: 'right_wing', name: 'right_wing' },
+    ],
+  } });
+  const saved = JSON.parse(await readFile(join(context.directory, 'groups.json'), 'utf8'));
+  assert.deepEqual(saved, { subject: 'other', groups: [
+    { id: 'left_wing', name: 'left_wing', note: '主体左翼', groups: [] },
+    { id: 'right_wing', name: 'right_wing', groups: [] },
+  ] });
+  assert.ok(!(await readdir(context.directory)).includes('initial-groups'));
+});
+
+test('null 且组为空接入真实识别适配器，结果原子保存，旧文件续跑不再识别', async t => {
+  const context = await fixture(t);
+  let calls = 0;
+  const steps = initialSteps({ async run(task) {
+    calls++;
+    await saveGrouping(task);
+    return { text: 'ok', images: [] };
+  } });
+  const result = await runLayering({ ...context, groups: null, steps });
+  assert.equal(calls, 1);
+  assert.equal(result.status, 'pending');
+  const state = (await GroupStore.open(context.directory)).snapshot();
+  assert.ok(!('initial' in state));
+  assert.deepEqual(state.groups.map(group => group.id), ['left_wing', 'right_wing']);
+  assert.equal(state.subject, 'other');
+  assert.ok(!('mirror_pairs' in state));
+  assert.ok(state.groups.every(group => group.groups.length === 0 && group.steps.outline.status === 'pending'));
+  const legacy = JSON.parse(await readFile(result.groupsPath, 'utf8'));
+  legacy.mirror_pairs = [{ name: 'old_pair', members: ['left_wing', 'removed_group'] }];
+  await writeFile(result.groupsPath, JSON.stringify(legacy));
+  await runLayering({ ...context, groups: null, steps });
+  assert.equal(calls, 1);
+  const resumed = (await GroupStore.open(context.directory)).snapshot();
+  assert.deepEqual(resumed.groups, state.groups);
+  assert.ok(!('mirror_pairs' in JSON.parse(await readFile(result.groupsPath, 'utf8'))));
+});
+
+test('写入工具拒绝空组、深入拆分、part、进度、无效名称和重复 ID，不污染文件', async t => {
+  const invalid = [
+    { ...wingGroups, groups: [] },
+    { ...wingGroups, groups: [{ name: 'head', groups: [{ name: 'face', groups: [] }], note: null }] },
+    { ...wingGroups, groups: [{ name: 'head', groups: [], parts: [], note: null }] },
+    { ...wingGroups, groups: [{ name: 'head', groups: [], kind: 'part', note: null }] },
+    { ...wingGroups, groups: [{ name: 'Head', groups: [], note: null }] },
+    { ...wingGroups, groups: [wingGroups.groups[0], wingGroups.groups[0]] },
+    { ...wingGroups, subject: 'invalid' },
+    { ...wingGroups, initial: { status: 'completed' } },
+    { ...wingGroups, groups: [{ name: 'head', groups: [], steps: {}, note: null }] },
+  ];
+  for (const value of invalid) {
+    const context = await fixture(t);
+    let calls = 0;
+    const steps = initialSteps({ async run(task) {
+      calls++;
+      await saveGrouping(task, value);
+      return { text: 'ok', images: [] };
+    } });
+    await assert.rejects(steps.initialGroups(context));
+    assert.equal(calls, 1);
+    assert.deepEqual(await readdir(context.directory), []);
+  }
+});
+
+test('首次分组失败不留下组，续跑仍可重新识别', async t => {
+  const context = await fixture(t);
+  const steps = initialSteps({ async run(task) {
+    await saveGrouping(task, { subject: 'character', groups: [] });
+    return { text: 'ok', images: [] };
+  } });
+  await assert.rejects(runLayering({ ...context, groups: null, steps }), /非空/);
+  const state = (await GroupStore.open(context.directory)).snapshot();
+  assert.ok(!('initial' in state));
+  assert.deepEqual(state.groups, []);
+  const resumed = await runLayering({ ...context, groups: null, steps: initialSteps({ async run(task) {
+    await saveGrouping(task);
+    return { text: 'ok', images: [] };
+  } }) });
+  assert.equal(resumed.groups.length, 2);
+});
+
+test('只在最终回复给 JSON 仍失败，未调用写入工具不能记成功', async t => {
+  const context = await fixture(t);
+  const steps = initialSteps({ async run() {
+    return { text: JSON.stringify(wingGroups), images: [] };
+  } });
+  await assert.rejects(steps.initialGroups(context), /未通过 write_groups/);
+  assert.deepEqual(await readdir(context.directory), []);
+});
+
+test('工具报错可修正参数后提交；重复提交不能覆盖已有组', async t => {
+  const context = await fixture(t);
+  const steps = initialSteps({ async run(task) {
+    await assert.rejects(saveGrouping(task, { ...wingGroups, groups: [] }), /非空/);
+    await saveGrouping(task);
+    const before = await readFile(join(context.directory, 'groups.json'), 'utf8');
+    await assert.rejects(saveGrouping(task, { subject: 'character', groups: [{ name: 'head', groups: [], note: null }] }), /不能覆盖/);
+    assert.equal(await readFile(join(context.directory, 'groups.json'), 'utf8'), before);
+    return { text: 'ok', images: [] };
+  } });
+  const result = await runLayering({ ...context, groups: null, steps });
+  assert.deepEqual(result.groups.map(group => group.id), ['left_wing', 'right_wing']);
+});
+
+test('工具已保存分组后回合失败，续跑仍跳过已完成识别', async t => {
+  const context = await fixture(t);
+  const steps = initialSteps({ async run(task) {
+    await saveGrouping(task);
+    throw new Error('回合中断');
+  } });
+  await assert.rejects(runLayering({ ...context, groups: null, steps }), /回合中断/);
+  const saved = (await GroupStore.open(context.directory)).snapshot();
+  assert.ok(!('initial' in saved));
+  assert.equal(saved.groups.length, 2);
+  await runLayering({ ...context, groups: null, steps: initialSteps({ async run() { assert.fail('不应重做首次识别'); } }) });
+});
