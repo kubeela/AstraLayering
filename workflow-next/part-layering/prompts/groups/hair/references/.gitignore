@@ -1,0 +1,4 @@
+# Third-party reference pixels stay local beside the prompt.
+*
+!.gitignore
+!README.md

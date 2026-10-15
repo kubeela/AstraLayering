@@ -1,23 +1,17 @@
-import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, realpath, rm } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import type { CodexAgents } from './agents.ts';
+import { createBitmapTool } from './bitmap-tool.ts';
 import { textResult, type FunctionTool } from './function-tools.ts';
 import { readGroupPrompt } from './group-prompts.ts';
 import { writeAtomic } from './groups.ts';
 import type { DrawingContext, GroupContext, ReviewContext, ReviewedSvgArtifact, StepResult, SvgArtifact } from './layering-types.ts';
-import { createSvgPreviewTool, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
+import { draftPath, matchesHash, publishSvg, readReviewReport, svgHash as hash, type Review } from './artifact-facts.ts';
 
-type Review = {
-  verdict: 'pass' | 'revise' | 'blocked'; feedback: string; candidateHash: string;
-  observations: SvgObservation[]; updatedAt: string;
-  repairedCandidateHash?: string;
-};
-type ReviewReport = { groupId: string; reviews: Review[] };
 const maxOutlineReviews = 2;
-const hash = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
 const repairPromptPath = fileURLToPath(new URL('prompts/7-轮廓返修.md', import.meta.url));
 
 async function recordRepair(output: string, feedback: string, prompt: string) {
@@ -53,7 +47,7 @@ async function inputs(context: GroupContext) {
 
 function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: { outputSvg?: string; candidate?: string }) {
   return JSON.stringify({
-    group: { id: context.group.id, name: context.group.name, note: context.group.note, metadata: context.group.metadata },
+    group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
     reference: input.reference, groups: join(context.directory, 'groups.json'),
     parentGroup: context.parent?.id ?? null, parentSvg: input.parent ?? null,
     canvas: input.canvas, ...paths,
@@ -67,8 +61,8 @@ export async function drawGroupOutline(
   const input = await inputs(context);
   const prompt = await readGroupPrompt(context.group.id, 'outline');
   const output = resolve(context.outputPath);
-  const draft = output.replace(/\.svg$/, '.draft.svg');
-  if (draft === output) throw new Error('轮廓输出路径须以 .svg 结尾');
+  if (!output.endsWith('.svg')) throw new Error('轮廓输出路径须以 .svg 结尾');
+  const draft = output.endsWith('.draft.svg') ? output : draftPath(output);
   await mkdir(dirname(draft), { recursive: true });
   await rm(draft, { force: true });
   if (repair) await writeAtomic(draft, await readFile(repair.candidate));
@@ -76,6 +70,19 @@ export async function drawGroupOutline(
   const preview = createSvgPreviewTool({ ...input, directory: context.directory,
     observationDirectory: join(context.directory, 'observations', 'outline', context.group.id),
     observed: entry => observations.push(entry) });
+  const write: FunctionTool = {
+    name: 'write_outline_svg',
+    description: '将完整 SVG 文本写入本轮绑定的 .draft.svg 并检查格式、画布、组归属及父范围。只写草稿，不发布正式文件；写入后仍须 preview_svg 自检。参数不接受文件路径。',
+    inputSchema: { type: 'object', additionalProperties: false, required: ['svg'], properties: { svg: { type: 'string', minLength: 1 } } },
+    async execute(value, signal) {
+      signal.throwIfAborted();
+      if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => key !== 'svg') ||
+          typeof (value as { svg?: unknown }).svg !== 'string' || !(value as { svg: string }).svg.trim()) throw new Error('仅提交非空 svg 文本，草稿路径由程序绑定');
+      await writeAtomic(draft, (value as { svg: string }).svg);
+      const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, input.parent);
+      return textResult({ path: draft, bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
+    },
+  };
   const taskPrompt = `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${runtime(context, input, { outputSvg: draft })}\n` +
     `\n仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须用 preview_svg 先看整图 blend，再裁剪放大，用 blend 和 edge 逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。\n` +
     (repair ? `\n【独立 review 的返修意见】\n${repair.feedback}\n\n【返修要求】\n` +
@@ -85,7 +92,8 @@ export async function drawGroupOutline(
   }
   await agents.run({
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory,
-    sandboxMode: 'workspace-write', tools: [preview], imageGeneration: true,
+    sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory, [input.parent, repair?.candidate, draft]),
+      createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id))], imageGeneration: true,
     images: [{ path: input.reference, description: '本组的素体参考图，沿用其画布与可见形状。' }],
     prompt: taskPrompt,
   });
@@ -94,25 +102,8 @@ export async function drawGroupOutline(
     throw new Error('轮廓绘制未通过 preview_svg 完成混合叠加自检');
   }
   const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, input.parent);
-  await writeAtomic(output, bytes);
-  await rm(draft, { force: true });
+  if (draft !== output) await publishSvg(draft, output, input.parent ? hash(await readFile(input.parent)) : undefined);
   return { path: output };
-}
-
-async function readReport(path: string, id: string): Promise<ReviewReport> {
-  let value: ReviewReport;
-  try { value = JSON.parse(await readFile(path, 'utf8')); }
-  catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return { groupId: id, reviews: [] };
-    throw error;
-  }
-  if (value.groupId !== id || !Array.isArray(value.reviews) || value.reviews.some(review =>
-    !review || !['pass', 'revise', 'blocked'].includes(review.verdict) ||
-    typeof review.feedback !== 'string' || typeof review.candidateHash !== 'string' ||
-    (review.repairedCandidateHash !== undefined && typeof review.repairedCandidateHash !== 'string'))) {
-    throw new Error(`审查记录损坏：${path}`);
-  }
-  return value;
 }
 
 async function reviewOnce(
@@ -145,7 +136,7 @@ async function reviewOnce(
       if (hash(await readFile(candidate)) !== candidateHash) throw new Error('审查期间候选 SVG 被修改，不能提交');
       const review: Review = { verdict: raw.verdict as Review['verdict'], feedback: raw.feedback,
         candidateHash, observations: [...observations], updatedAt: new Date().toISOString() };
-      const report = await readReport(reportPath, context.group.id);
+      const report = await readReviewReport(reportPath, context.group.id);
       report.reviews.push(review);
       signal.throwIfAborted();
       await writeAtomic(reportPath, JSON.stringify(report, null, 2) + '\n');
@@ -155,7 +146,8 @@ async function reviewOnce(
   };
   await agents.run({
     name: `组轮廓review-${context.group.id}`, cwd: context.directory,
-    sandboxMode: 'read-only', tools: [preview, submit], imageGeneration: false,
+    sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory, [input.parent, candidate]),
+      createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: '用于独立核对本组可见外轮廓的素体参考图。' }],
     prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${runtime(context, input, { candidate })}\n` +
       `\n审查报告：${reportPath}\n候选只读；通过 submit_review 提交，本轮只提交一次。\n`,
@@ -171,11 +163,11 @@ export async function reviewGroupOutline(
 ): Promise<StepResult<ReviewedSvgArtifact>> {
   const candidate = await realpath(resolve(context.directory, context.outline.path));
   const reportPath = context.reportPath;
-  const report = await readReport(reportPath, context.group.id);
+  const report = await readReviewReport(reportPath, context.group.id);
   let previous = report.reviews.at(-1);
   async function repair(review: Review) {
     // 记录实际完成返修的文件；续跑不能仅凭 SVG 变过就认定意见已落实。
-    if (review.repairedCandidateHash === hash(await readFile(candidate))) return;
+    if (matchesHash(await readFile(candidate), review.repairedCandidateHash)) return;
     await drawGroupOutline({ ...context, outputPath: candidate }, drawing, { candidate, feedback: review.feedback });
     review.repairedCandidateHash = hash(await readFile(candidate));
     await writeAtomic(reportPath, JSON.stringify(report, null, 2) + '\n');
@@ -184,7 +176,7 @@ export async function reviewGroupOutline(
     status: 'completed', output: { ...context.outline, reviewOutcome: 'pass' },
   });
   // 已提交结论但进度尚未保存时，从报告恢复，不重复消费审查轮次。
-  if (previous?.verdict === 'pass' && previous.candidateHash === hash(await readFile(candidate))) return passed();
+  if (previous?.verdict === 'pass' && matchesHash(await readFile(candidate), previous.candidateHash)) return passed();
   if (previous?.verdict === 'revise') await repair(previous);
   while (report.reviews.length < maxOutlineReviews) {
     previous = await reviewOnce(context, candidate, reportPath, agents);

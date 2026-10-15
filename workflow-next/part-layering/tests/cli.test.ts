@@ -10,6 +10,9 @@ import { test } from 'node:test';
 import { getPreparationDirectory } from '../preparation.ts';
 import { formatLayeringSummary, parseRunArguments, readGroupInput } from '../run.ts';
 import { GroupStore, normalizeGroups } from '../groups.ts';
+import sharp from 'sharp';
+import { artifactPath, draftPath, publishSvg, reportPath, svgHash } from '../artifact-facts.ts';
+import { shape } from './layering-fixture.ts';
 
 test('命令行默认并发 5，支持 --jobs 和 -j', () => {
   assert.equal(parseRunArguments(['--name', 'test']).concurrency, 5);
@@ -30,7 +33,7 @@ test('agent 并发默认 3，通过 --agents / -a 独立于组调度设置', () 
   }
 });
 
-test('实际入口接入分组占位，null 续跑复用首次分组，不调用 preparation 模型', async t => {
+test('实际入口复用已有轮廓、补全与终止分析事实，停在合并占位，不调用模型', async t => {
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
@@ -38,9 +41,24 @@ test('实际入口接入分组占位，null 续跑复用首次分组，不调用
   await mkdir(references, { recursive: true });
   await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
   await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
-  await writeFile(join(references, 'base-subject.png'), 'cached base');
-  const svgPath = join(directory, 'cached.svg');
-  await writeFile(svgPath, '<svg xmlns="http://www.w3.org/2000/svg"/>');
+  await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toFile(join(references, 'base-subject.png'));
+  const svgPath = artifactPath(directory, 'head', 'outline');
+  await mkdir(dirname(svgPath), { recursive: true });
+  await writeFile(svgPath, shape('head'));
+  const reviewPath = reportPath(directory, 'head', 'review');
+  await mkdir(dirname(reviewPath), { recursive: true });
+  await writeFile(reviewPath, JSON.stringify({ groupId: 'head', reviews: [{ verdict: 'pass', feedback: 'checked', candidateHash: svgHash(shape('head')) }] }));
+  const part = artifactPath(directory, 'head', 'completion');
+  await mkdir(dirname(part), { recursive: true });
+  await writeFile(draftPath(part), shape('head'));
+  await publishSvg(draftPath(part), part, svgHash(shape('head')));
+  const check = reportPath(directory, 'head', 'completion-check');
+  await mkdir(dirname(check), { recursive: true });
+  await writeFile(check, JSON.stringify({ groupId: 'head', passed: true,
+    beforeHash: svgHash(shape('head')), afterHash: svgHash(await readFile(part)) }));
+  const children = reportPath(directory, 'head', 'children');
+  await mkdir(dirname(children), { recursive: true });
+  await writeFile(children, JSON.stringify({ groupId: 'head', sourceHash: svgHash(await readFile(part)), groups: [] }));
   const store = await GroupStore.open(directory);
   await store.update(document => { document.groups = normalizeGroups([{ id: 'head', note: '已有识别的组', steps: {
     outline: { status: 'completed', output: { path: svgPath } }, review: { status: 'completed', output: { path: svgPath } },
@@ -51,19 +69,15 @@ test('实际入口接入分组占位，null 续跑复用首次分组，不调用
   const run = promisify(execFile);
   const first = await run(process.execPath, [entry, '--name', runName, '--groups', groupsPath, '-j', '2']);
   assert.match(first.stdout, /待接入/);
-  assert.match(first.stdout, /\[head\] 轮廓 review 已通过；直接遮挡补形：待接入/);
+  assert.match(first.stdout, /\[head\] 本组流程已完成（part）/);
   assert.match(first.stdout, /Layering 未完成/);
-  const firstState = JSON.parse(await readFile(join(directory, 'progress.json'), 'utf8'));
-  assert.ok(!('initial' in firstState));
-  assert.equal(firstState.groups.head.outline.status, 'completed');
-  assert.equal(firstState.groups.head.completion.status, 'pending');
+  await assert.rejects(readFile(join(directory, 'progress.json')), { code: 'ENOENT' });
   const second = await run(process.execPath, [entry, '--name', runName]);
   assert.match(second.stdout, /首次分组：沿用已有结果/);
-  const secondState = JSON.parse(await readFile(join(directory, 'progress.json'), 'utf8'));
-  assert.ok(!('initial' in secondState));
-  assert.equal(Object.keys(secondState.groups).length, 1);
-  assert.equal(secondState.groups.head.review.status, 'completed');
-  assert.equal(secondState.groups.head.completion.status, 'pending');
+  const secondState = (await GroupStore.open(directory)).snapshot();
+  assert.equal(secondState.groups.length, 1);
+  assert.equal(secondState.groups[0].steps.review.status, 'completed');
+  assert.equal(secondState.groups[0].steps.completion.status, 'completed');
   const tree = JSON.parse(await readFile(join(directory, 'groups.json'), 'utf8'));
   assert.ok(!('initial' in tree) && !('merge' in tree) && !('steps' in tree.groups[0]));
   assert.equal(tree.groups[0].note, '已有识别的组');
@@ -92,6 +106,7 @@ test('两轮意见修正完成的结果不会显示成独立 review 已通过', 
     outline: { status: 'completed', output: { path: 'repaired.svg' } },
     review: { status: 'completed', output: { path: 'repaired.svg', reviewOutcome: 'repaired',
       note: '已按第 2 轮意见返修并自检，不再复审' } },
+    reduction: { status: 'completed', output: { path: 'reduced.svg' } },
     completion: { status: 'pending', message: '直接遮挡补形：待接入' },
   } }]);
   const line = formatLayeringSummary(groups)[0];
@@ -119,7 +134,7 @@ test('实际入口遇到组产物问题时报告组名、步骤和停止派发�
     assert.match(failure.stderr, /\[head_accessories\] 组轮廓与自检失败/);
     assert.match(failure.stderr, /Layering 未完成：停止派发新待办/);
     assert.match(failure.stderr, /其余未启动的待办未执行/);
-    assert.match(failure.stderr, /进度：/);
+    assert.match(failure.stderr, /事实产物目录：/);
     assert.doesNotMatch(failure.stderr, /Layering 已完成/);
     return true;
   });

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { CodexAgents } from '../agents.ts';
@@ -10,8 +10,10 @@ import { textResult, type FunctionTool } from '../function-tools.ts';
 import { createLayeringSteps } from '../layering-steps.ts';
 import { runLayering } from '../layering.ts';
 import { fakeAppServer } from './fake-app-server.ts';
+import { nodeExecutables } from './node-executables.ts';
 
 async function fixture(t: TestContext) {
+  nodeExecutables(t);
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-native-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   return { directory, logDirectory: join(directory, 'logs') };
@@ -59,7 +61,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   } };
   const result = await runLayering({ directory: f.directory, references, groups: null, steps });
   assert.equal(result.groups[0].id, 'head');
-  assert.ok(!('initial' in JSON.parse(await readFile(result.statePath, 'utf8'))));
+  await assert.rejects(readFile(join(f.directory, 'progress.json')), { code: 'ENOENT' });
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   const initialize = protocol.find(item => item.method === 'initialize');
   assert.equal(initialize.params.capabilities.experimentalApi, true);
@@ -87,7 +89,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'observations', 'initial-groups') + '/'), true);
+  assert.equal(preview.savedPath.startsWith(join(f.directory, 'observations', 'initial-groups') + sep), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
   assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();

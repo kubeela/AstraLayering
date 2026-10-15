@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { CodexAgents, type AgentOptions, type GeneratedImage } from './agents.ts';
 import { defaultAgentConcurrency } from './agent-runtime.ts';
-import { normalizeGroups, walkGroups } from './groups.ts';
+import { nodeKind, normalizeGroups, walkGroups } from './groups.ts';
 import { GroupExecutionError, runLayering } from './layering.ts';
 import { createLayeringSteps } from './layering-steps.ts';
 import { groupStages, type GroupInput, type GroupNode, type LayeringResult, type LayeringSteps, type SvgMerger } from './layering-types.ts';
@@ -113,6 +113,7 @@ export function parseRunArguments(args: string[] = process.argv.slice(2)) {
     groups: { type: 'string' },
     jobs: { type: 'string', short: 'j' },
     agents: { type: 'string', short: 'a' },
+    'max-depth': { type: 'string' },
   } });
   const concurrency = values.jobs === undefined ? defaultConcurrency : Number(values.jobs);
   if (values.jobs !== undefined && (!/^[1-9]\d*$/.test(values.jobs) || !Number.isSafeInteger(concurrency))) {
@@ -122,18 +123,22 @@ export function parseRunArguments(args: string[] = process.argv.slice(2)) {
   if (values.agents !== undefined && (!/^[1-9]\d*$/.test(values.agents) || !Number.isSafeInteger(agentConcurrency))) {
     throw new Error('--agents / -a 必须是正整数');
   }
-  return { ...values, concurrency, agentConcurrency };
+  const maxDepth = values['max-depth'] === undefined ? undefined : Number(values['max-depth']);
+  if (values['max-depth'] !== undefined && (!/^[1-9]\d*$/.test(values['max-depth']) || !Number.isSafeInteger(maxDepth))) {
+    throw new Error('--max-depth 必须是正整数');
+  }
+  return { ...values, concurrency, agentConcurrency, maxDepth };
 }
 
 export function formatLayeringSummary(groups: GroupNode[]): string[] {
-  const labels = { outline: '轮廓绘制', review: '轮廓 review', completion: '直接遮挡补形',
+  const labels = { outline: '轮廓绘制', review: '轮廓 review', reduction: '同层轮廓去重', completion: '直接遮挡补形',
     completionCheck: '补形自检', children: '子组分析' };
   return walkGroups(groups).map(({ group }) => {
     const review = group.steps.review;
     const stage = groupStages.find(stage => group.steps[stage].status === 'failed')
       ?? groupStages.find(stage => group.steps[stage].status !== 'completed');
     const repaired = review.output?.reviewOutcome === 'repaired';
-    if (!stage) return `[${group.id}] 本组流程已完成${repaired ? `；轮廓：${review.output!.note ?? '两轮返修及自检完成，不再复审'}` : ''}`;
+    if (!stage) return `[${group.id}] 本组流程已完成（${nodeKind(group)}）${repaired ? `；轮廓：${review.output!.note ?? '两轮返修及自检完成，不再复审'}` : ''}`;
     const step = group.steps[stage];
     const reviewLabel = review.status === 'completed'
       ? repaired ? `轮廓：${review.output!.note ?? '两轮返修及自检完成，不再复审'}` : '轮廓 review 已通过'
@@ -153,27 +158,28 @@ if (import.meta.main) {
     if (values.help) {
       console.log('pnpm start --name <运行名> [--image <角色图片路径>] [--groups <分组JSON路径>] [--jobs <并发组数>] [--agents <agent并发数>]');
       console.log('--image 首次启动需要；续跑使用运行目录中的原图，并自动补齐缺失的参考输出。');
-      console.log('--groups 选择本次运行已有的组及其子组；前置参考和祖先组结果须已完成，缺失即报错。省略时自动准备或续跑。');
-      console.log(`--jobs / -j 设置组调度并发上限，默认 ${defaultConcurrency}。首次分组、轮廓绘制和 review 已接入；补形等步骤保存进度后等待接入。`);
+      console.log('--groups 选择本次运行已有的组及其子组；祖先和整层去重须已完成，缺失时提示依赖，不自动启动未选分支。省略时按层自动准备或续跑。');
+      console.log(`--jobs / -j 设置层内组调度并发上限，默认 ${defaultConcurrency}。绘制、review、整层去重、补形及子组分析已接入。`);
+      console.log('--max-depth 限制本次制作层数：1 完成第一层并登记第二层，2 制作到第二层并登记第三层，以此类推。省略时继续到终止部件。');
       console.log(`--agents / -a 设置所有步骤共享的 agent 调用并发上限，默认 ${defaultAgentConcurrency}。临时服务错误等待后沿用会话恢复，次数不设上限，过程写入 agent 日志。`);
     } else {
       if (!values.name) throw new Error('需要 --name <运行名>');
       const { references, layering } = await runPartLayering({
         reference: { image: values.image, runName: values.name },
-        groups: values.groups ? await readGroupInput(values.groups) : null, concurrency: values.concurrency,
+        groups: values.groups ? await readGroupInput(values.groups) : null, concurrency: values.concurrency, maxDepth: values.maxDepth,
       }, {}, { progress: console.log, agentConcurrency: values.agentConcurrency });
       console.log(`参考输出：${references.directory}`);
       console.log(`分组：${layering.groupsPath}`);
-      console.log(`进度：${layering.statePath}`);
+      console.log(`事实产物目录：${layering.statePath}`);
       for (const line of formatLayeringSummary(layering.groups)) console.log(line);
-      console.log(layering.status === 'completed' ? `Layering 已完成：${layering.output}` : 'Layering 未完成，已保存进度；各组状态见上方。');
+      console.log(layering.status === 'completed' ? `Layering 已完成：${layering.output}` : 'Layering 未完成，正式产物与检查记录已保存；各组状态见上方。');
     }
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     if (error instanceof GroupExecutionError) {
       console.error('Layering 未完成：停止派发新待办，已启动的组已结束；其余未启动的待办未执行。');
       for (const line of formatLayeringSummary(error.groups)) console.error(line);
-      console.error(`进度：${error.statePath}`);
+      console.error(`事实产物目录：${error.statePath}`);
     }
     process.exitCode = 1;
   }
