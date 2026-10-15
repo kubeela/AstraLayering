@@ -1,0 +1,2 @@
+# Frozen result hashes must survive checkout on any platform.
+* -text

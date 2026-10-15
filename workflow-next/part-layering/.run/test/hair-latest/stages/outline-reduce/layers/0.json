@@ -1,0 +1,16 @@
+{
+  "depth": 0,
+  "groups": [
+    {
+      "id": "hair",
+      "inputHash": "a4698ca4a2582a66dff199971fd2917f404d1e305126ef6ddb8ef0288e8741b6",
+      "outputHash": "a4698ca4a2582a66dff199971fd2917f404d1e305126ef6ddb8ef0288e8741b6"
+    }
+  ],
+  "note": "沿用原完整根层去重中已经验证的 hair 结果；原其他组未加入本次制作范围。",
+  "transferredFrom": {
+    "path": "provenance/original-layer-0.json",
+    "sha256": "0751433213893ca3aad59fa5a9fcd6330bd88a83069be9df25c079fd7d01d4af",
+    "originalNote": "按参考图结构走向与连续性去重：双手后方往下延伸的两侧外侧长束及底部卷尾，与 hair 组长发主体自然连成完整形体；head_accessories 中对应的 left/right-lower-ribbon、left/right-outer-ribbon-tail、left/right-bottom-ribbon-tail 是分离的重复片段，已删除这 6 条路径。完整版本保留在既有 hair 归属，不拆分连续发束。head_accessories 保留其余 15 条路径，包括冠环、冠翼、莲花、额饰、耳饰、两侧连接链和上方长飘带；其他 7 组保持原样，身体接缝及合理遮挡重叠不作相减。已用 mergedPreview 的 blend、各组 blend、疑似区域放大、修改后 draft blend/edge 和合成局部 edge 自检，主体可见覆盖、可靠卷尾边缘、孔洞与独立区域保持完整。画布 1024×1536、viewBox 和 data-group-path 均保持。"
+  }
+}
