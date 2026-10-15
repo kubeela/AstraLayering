@@ -25,7 +25,7 @@ for await (const event of events) {
 
 正式流程见 [layering-workflow.md](docs/layering-workflow.md)。一层取整棵树中同深度的组：先层内并行绘制、review 和返修；全部结束后统一去重；再层内并行执行补形、自检和子组分析。当前层全部结束后才启动下一层。
 
-已收录的真实案例见 [test](.run/test/README.md)。最新确认的头发子树保存在 [test/hair-latest](.run/test/hair-latest/README.md)，其 [交互预览](.run/test/hair-latest/previews/index.html) 可在克隆后直接离线打开，包含全部 8 个末端 part，不依赖原机器或本地实验目录。
+已收录的当前结果见 [test](.run/test/README.md)，直接采用标准运行格式。最新确认的 hair 位于同一份组树、`parts/hair/` 和对应的 `stages/` 中；其 [交互预览](.run/test/previews/index.html) 可在克隆后直接离线打开，包含全部 8 个末端 part，不依赖独立快照目录或原机器。
 
 `agents.ts` 统一使用 `gpt-6.1-sol / xhigh`。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `layering-steps.ts`，首次分组位于 `initial-groups.ts`，绘制和 review 位于 `outline-agent.ts`。
 

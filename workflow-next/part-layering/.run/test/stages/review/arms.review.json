@@ -7,159 +7,159 @@
       "candidateHash": "bc3fc118b94d953c254f82c509b5fc4a627c9f82fd1fe15a3d24c1bd4e48e1bf",
       "observations": [
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-1.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-1.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-2.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-2.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-3.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-3.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-4.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-4.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-5.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-5.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-6.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-6.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-7.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-7.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-8.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-8.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-9.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-9.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-10.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-10.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-11.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-11.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-12.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-12.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-13.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-13.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-14.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-14.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-15.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-15.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-16.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-16.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-17.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-17.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-18.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-18.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-19.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-19.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-20.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-20.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-21.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-21.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-22.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-22.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-23.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-23.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-24.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-24.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-25.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-25.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-26.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-26.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-27.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-27.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-28.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-28.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-29.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-29.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-30.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-30.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-05-18-460Z-31.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-05-18-460Z-31.png"
         }
       ],
       "updatedAt": "2026-10-14T12:18:39.499Z",
@@ -167,143 +167,143 @@
     },
     {
       "verdict": "revise",
-      "feedback": "已完成本组全部可见区域的分块放大核对：先查看整图 blend，再以左右各四个重叠选框覆盖肩臂衔接（y300–455）、上臂至肘部（y425–585）、前臂至手腕（y550–710）、完整双手（y680–820），每框均检查 blend 和 edge；另以 8 倍复核双手指间孔洞、指尖及右侧前臂外缘。本组无父组，无父范围检查项。\n\n返修项：\n1. 画面右侧前臂外缘（arms-right），肘部下方约 x676–691、y545–585 的皮肤与身后头发交界处，候选边缘局部向臂内缩入。8 倍 blend 图可见色块外仍留有连续的肤色窄带，edge 红线在该段位于原图可见外缘的内侧，约有半像素至一像素的偏移，并非臂内明暗分界。请按原图这一段真实的皮肤外缘向外修正，消除漏覆窄带，保持与上方肘部转向及下方前臂轮廓的连续衔接。\n图像依据：crop=[660,515,45,90]、scale=8 的 blend 和 edge：\n/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-23.png\n/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-22.png\n该偏移亦在右侧上臂—肘部及前臂—腕部的重叠选框中可见。\n\n本项为可见外缘位置偏差，不涉及噪音、孤点、碎片堆砌或形体归属混乱。双手孔洞、开口和尖端及其余已覆盖区域未发现另有明确图像依据的返修问题。",
+      "feedback": "已完成本组全部可见区域的分块放大核对：先查看整图 blend，再以左右各四个重叠选框覆盖肩臂衔接（y300–455）、上臂至肘部（y425–585）、前臂至手腕（y550–710）、完整双手（y680–820），每框均检查 blend 和 edge；另以 8 倍复核双手指间孔洞、指尖及右侧前臂外缘。本组无父组，无父范围检查项。\n\n返修项：\n1. 画面右侧前臂外缘（arms-right），肘部下方约 x676–691、y545–585 的皮肤与身后头发交界处，候选边缘局部向臂内缩入。8 倍 blend 图可见色块外仍留有连续的肤色窄带，edge 红线在该段位于原图可见外缘的内侧，约有半像素至一像素的偏移，并非臂内明暗分界。请按原图这一段真实的皮肤外缘向外修正，消除漏覆窄带，保持与上方肘部转向及下方前臂轮廓的连续衔接。\n图像依据：crop=[660,515,45,90]、scale=8 的 blend 和 edge：\n./observations/review/arms/2026-10-14T12-33-47-089Z-23.png\n./observations/review/arms/2026-10-14T12-33-47-089Z-22.png\n该偏移亦在右侧上臂—肘部及前臂—腕部的重叠选框中可见。\n\n本项为可见外缘位置偏差，不涉及噪音、孤点、碎片堆砌或形体归属混乱。双手孔洞、开口和尖端及其余已覆盖区域未发现另有明确图像依据的返修问题。",
       "candidateHash": "a48c4b35372c8296bf9bf6fc0601b5940888a1e736bf20679ce9ad54e55cbaa5",
       "observations": [
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-1.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-1.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-2.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-2.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-3.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-3.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-4.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-4.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-5.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-5.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-6.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-6.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-7.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-7.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-8.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-8.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-9.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-9.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-10.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-10.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-11.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-11.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-12.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-12.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-13.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-13.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-14.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-14.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-15.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-15.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-16.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-16.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-17.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-17.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-18.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-18.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-19.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-19.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-20.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-20.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-21.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-21.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-22.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-22.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-23.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-23.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-24.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-24.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "edge",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-25.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-25.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-26.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-26.png"
         },
         {
-          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms.svg",
+          "source": "./stages/outline/arms.svg",
           "mode": "blend",
-          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/2026-10-14T12-33-47-089Z-27.png"
+          "savedPath": "./observations/review/arms/2026-10-14T12-33-47-089Z-27.png"
         }
       ],
       "updatedAt": "2026-10-14T12:49:25.372Z",

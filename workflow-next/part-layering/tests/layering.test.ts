@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { artifactPath, draftPath, readJson, reductionReportPath, reportPath, svgHash } from '../artifact-facts.ts';
-import { GroupStore, normalizeGroups, writeAtomic } from '../groups.ts';
+import { GroupStore, normalizeGroups, walkGroups, writeAtomic } from '../groups.ts';
 import { GroupExecutionError, runLayering } from '../layering.ts';
 import { createLayeringSteps } from '../layering-steps.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
@@ -250,13 +250,19 @@ test('异常停止新派发，已启动任务收尾；事实源保留已成功�
   assert.ok(await readFile(artifactPath(f.directory, 'b', 'outline')));
 });
 
-test('当前真实 test 案例不依赖旧机器路径，8 组轮廓和 review 均可由事实恢复', async () => {
+test('当前真实 test 采用标准目录，8 根组及最新 hair 完成事实可跨机器恢复', async () => {
   const directory = new URL('../.run/test/', import.meta.url);
   const store = await GroupStore.open(fileURLToPath(directory));
   const groups = store.snapshot().groups;
   assert.equal(groups.length, 8);
   assert.ok(groups.every(group => group.steps.outline.status === 'completed' && group.steps.review.status === 'completed'));
   assert.equal(groups.find(group => group.id === 'arms')!.steps.review.output!.reviewOutcome, 'repaired');
+  const hair = walkGroups([groups.find(group => group.id === 'hair')!]);
+  assert.equal(hair.length, 10);
+  assert.equal(hair.filter(({ group }) => group.kind === 'part').length, 8);
+  assert.ok(hair.every(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')));
+  assert.equal(await readJson(join(fileURLToPath(directory), 'progress.json')), undefined);
+  await assert.rejects(readFile(new URL('hair-latest/groups.json', directory)), { code: 'ENOENT' });
 });
 
 test('显式选第二层也不能绕过第一层未完成的其他分支', async t => {
