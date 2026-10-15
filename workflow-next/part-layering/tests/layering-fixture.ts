@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { TestContext } from 'node:test';
@@ -11,7 +11,7 @@ export function shape(id: string, left = 10, right = 90, empty = false) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="${id}">${empty ? '' : `<path fill="#55b9ad" d="M${left} 10H${right}V90H${left}Z"/>`}</g></svg>`;
 }
 export async function fixture(t: TestContext) {
-  const directory = await mkdtemp(join(tmpdir(), 'part-layering-bfs-'));
+  const directory = await realpath(await mkdtemp(join(tmpdir(), 'part-layering-bfs-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const references = { directory: join(directory, 'references'), judgment: join(directory, 'references/judgment.json'),
     simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png') };

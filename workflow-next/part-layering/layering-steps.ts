@@ -4,11 +4,7 @@ import { drawGroupOutline, reviewGroupOutline } from './outline-agent.ts';
 import { reduceGroupOutlines } from './outline-reduce.ts';
 import { completeGroupOcclusion, checkGroupCompletion } from './completion-agent.ts';
 import { analyzeChildren } from './children-agent.ts';
-import type { LayeringSteps, StepResult, SvgMerger } from './layering-types.ts';
-
-function pending<T>(name: string): Promise<StepResult<T>> {
-  return Promise.resolve({ status: 'pending', message: `${name}：待接入` });
-}
+import type { LayeringSteps } from './layering-types.ts';
 
 // 补形与子组分析使用只读 agent，经工具提交后由程序验证并发布事实。
 export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<Pick<CodexAgents, 'createSession'>>): LayeringSteps {
@@ -46,5 +42,3 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     splitChildren: async context => ({ status: 'completed', output: await analyzeChildren(context, agents) }),
   };
 }
-
-export const mergeSvgPlaceholder: SvgMerger = async () => pending('程序 SVG 合并');

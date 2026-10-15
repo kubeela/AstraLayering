@@ -14,26 +14,27 @@ import sharp from 'sharp';
 import { artifactPath, draftPath, publishSvg, reportPath, svgHash } from '../artifact-facts.ts';
 import { shape } from './layering-fixture.ts';
 
-test('命令行默认并发 5，支持 --jobs 和 -j', () => {
-  assert.equal(parseRunArguments(['--name', 'test']).concurrency, 5);
-  assert.equal(parseRunArguments(['--name', 'test', '--jobs', '2']).concurrency, 2);
-  assert.equal(parseRunArguments(['--name', 'test', '-j', '7']).concurrency, 7);
-  assert.equal(parseRunArguments(['--jobs=3']).concurrency, 3);
+test('--jobs / -j 只设置 agent 并发上限，默认 3，不产生组调度上限', () => {
+  assert.equal(parseRunArguments(['--name', 'test']).agentConcurrency, 3);
+  assert.equal(parseRunArguments(['--name', 'test', '--jobs', '2']).agentConcurrency, 2);
+  assert.equal(parseRunArguments(['--name', 'test', '-j', '7']).agentConcurrency, 7);
+  assert.equal(parseRunArguments(['--jobs=3']).agentConcurrency, 3);
+  assert.ok(!('concurrency' in parseRunArguments(['--jobs=3'])));
   assert.equal(parseRunArguments(['--groups', 'groups.json']).groups, 'groups.json');
 });
 
-test('agent 并发默认 3，通过 --agents / -a 独立于组调度设置', () => {
+test('--agents / -a 兼容别名设置同一个 agent 上限', () => {
   assert.equal(parseRunArguments(['--name','test']).agentConcurrency, 3);
-  const values = parseRunArguments(['--jobs','5','--agents','2']);
-  assert.equal(values.concurrency, 5);
+  const values = parseRunArguments(['--jobs','2','--agents','2']);
   assert.equal(values.agentConcurrency, 2);
   assert.equal(parseRunArguments(['-a','4']).agentConcurrency, 4);
+  assert.throws(() => parseRunArguments(['--jobs','5','--agents','2']), /同一 agent 并发上限/);
   for (const value of ['0','-1','1.5','','abc','Infinity','9007199254740992']) {
     assert.throws(() => parseRunArguments([`--agents=${value}`]), /必须是正整数/);
   }
 });
 
-test('实际入口复用已有轮廓、补全与终止分析事实，停在合并占位，不调用模型', async t => {
+test('实际入口复用已有部件并生成 preview.svg，续跑不调用模型', async t => {
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
@@ -67,12 +68,14 @@ test('实际入口复用已有轮廓、补全与终止分析事实，停在合�
   const entry = fileURLToPath(new URL('../run.ts', import.meta.url));
   const run = promisify(execFile);
   const first = await run(process.execPath, [entry, '--name', runName, '--groups', groupsPath, '-j', '2']);
-  assert.match(first.stdout, /待接入/);
+  assert.match(first.stdout, /最终预览合并：完成/);
   assert.match(first.stdout, /\[head\] 本组流程已完成（part）/);
-  assert.match(first.stdout, /Layering 未完成/);
+  assert.match(first.stdout, /Layering 已完成：.*preview\.svg/);
+  assert.match(await readFile(join(directory, 'preview.svg'), 'utf8'), /data-part-preview="1"/);
   await assert.rejects(readFile(join(directory, 'progress.json')), { code: 'ENOENT' });
   const second = await run(process.execPath, [entry, '--name', runName]);
   assert.match(second.stdout, /首次分组：沿用已有结果/);
+  assert.doesNotMatch(second.stdout, /最终预览合并：开始/);
   const secondState = (await GroupStore.open(directory)).snapshot();
   assert.equal(secondState.groups.length, 1);
   assert.equal(secondState.groups[0].steps.review.status, 'completed');
@@ -182,7 +185,7 @@ test('实际命令行帮助包含并发参数，无效值退出且不调用模�
   const entry = fileURLToPath(new URL('../run.ts', import.meta.url));
   const help = await run(process.execPath, [entry, '--help']);
   assert.match(help.stdout, /--jobs/);
-  assert.match(help.stdout, /默认 5/);
+  assert.doesNotMatch(help.stdout, /默认 5|层内组调度并发上限/);
   assert.match(help.stdout, /--agents/);
   assert.match(help.stdout, /默认 3/);
   await assert.rejects(run(process.execPath, [entry, '--name', 'test', '-j', '0']), error => {

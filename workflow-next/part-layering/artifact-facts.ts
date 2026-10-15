@@ -154,9 +154,9 @@ export async function restoreFacts(directory: string, document: GroupsDocument):
   if (discovered) return restoreFacts(directory, document);
   document.merge = { status: 'pending' };
   if (document.groups.length && walkGroups(document.groups).every(entry => groupCompleted(entry.group))) {
-    const final = await readSvg(join(directory, 'character.svg'));
+    const final = await readSvg(join(directory, 'preview.svg'));
     if (final && sourceMatches(final, await mergeSourceHash(directory, document))) {
-      document.merge = { status: 'completed', output: { path: join(directory, 'character.svg') } };
+      document.merge = { status: 'completed', output: { path: join(directory, 'preview.svg') } };
     }
   }
 }

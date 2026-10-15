@@ -85,7 +85,7 @@ export type SvgMergeContext = {
   groups: GroupNode[];
   parts: { groupId: string; svg: SvgArtifact }[];
 };
-// 合并由程序适配器负责，不调用 agent。具体 SVG 组合规则随后单独实现。
+// 合并只绘制终止叶节点，保留逻辑树，生成 preview.svg；不调用 agent。
 export type SvgMerger = (context: SvgMergeContext) => Promise<StepResult<SvgArtifact>>;
 
 export type LayeringResult = {

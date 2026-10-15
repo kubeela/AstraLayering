@@ -3,7 +3,7 @@ import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { checkSubject, findGroup, groupCompleted, GroupStore, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
 import { artifactPath, draftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reductionReportPath, reportPath, restoreFacts, reviewedArtifact, svgHash } from './artifact-facts.ts';
-import { mergeSvgPlaceholder } from './layering-steps.ts';
+import { mergePartSvgs } from './merge-svg.ts';
 import type { GroupContext, GroupInput, GroupNode, GroupsDocument, GroupSeed, GroupStage, GroupStageOutputs, LayeringResult, LayeringSteps, StepResult, SvgArtifact, SvgMerger } from './layering-types.ts';
 import type { PreparationReferences } from './preparation.ts';
 import { runWorkflow, validateWorkflowOptions } from './workflow.ts';
@@ -39,7 +39,7 @@ function proposal(output: { groups: GroupSeed[] }, document: GroupsDocument, all
 
 export async function runLayering(input: {
   directory: string; references: PreparationReferences; groups: GroupInput | GroupInput[] | null;
-  steps: LayeringSteps; mergeSvg?: SvgMerger; concurrency?: number; maxDepth?: number;
+  steps: LayeringSteps; mergeSvg?: SvgMerger; maxDepth?: number;
   progress?: (message: string) => void;
 }): Promise<LayeringResult> {
   validateWorkflowOptions(input);
@@ -222,7 +222,7 @@ export async function runLayering(input: {
     await runWorkflow(null, {
       async initialize() {}, async ready() { return entries.map(entry => ({ ...entry, id: entry.group.id })); },
       runRound: group => action(group.id),
-    }, { concurrency: input.concurrency, maxDepth: input.maxDepth });
+    }, { maxDepth: input.maxDepth });
   }
 
   try {
@@ -285,15 +285,17 @@ export async function runLayering(input: {
     }
     const document = store.snapshot();
     if (document.groups.length && walkGroups(document.groups).every(entry => groupCompleted(entry.group)) && document.merge.status !== 'completed') {
-      const output = join(directory, 'character.svg'), draft = draftPath(output);
+      const output = join(directory, 'preview.svg'), draft = draftPath(output);
       await mkdir(dirname(draft), { recursive: true });
       await rm(draft, { force: true });
-      const result = await (input.mergeSvg ?? mergeSvgPlaceholder)({ directory, outputPath: draft, groups: document.groups,
+      report('最终预览合并：开始');
+      const result = await (input.mergeSvg ?? mergePartSvgs)({ directory, outputPath: draft, groups: document.groups,
         parts: walkGroups(document.groups).filter(({ group }) => !group.groups.length).map(({ group }) => ({ groupId: group.id, svg: artifact(group.id, 'completion') })) });
       if (result.status === 'completed') {
-        if (resolve(result.output.path) !== draft) throw new Error('合并只能交付 character.draft.svg');
+        if (resolve(result.output.path) !== draft) throw new Error('合并只能交付 preview.draft.svg');
         await publishSvg(draft, output, await mergeSourceHash(directory, document));
         await store.update(draft => { draft.merge = { status: 'completed', output: { path: output } }; });
+        report(`最终预览合并：完成 ${output}`);
       } else report(result.message);
     }
   } catch (error) {

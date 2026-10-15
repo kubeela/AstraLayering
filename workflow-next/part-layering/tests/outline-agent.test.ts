@@ -175,7 +175,7 @@ test('并发组各自保留绘制会话和独立审查记录，返修不会串�
   const f = await fixture(t);
   await f.store.update(document => { document.groups = normalizeGroups([{ id: 'face' }, { id: 'hair' }]); });
   const mock = agents(['revise', 'revise', 'pass']);
-  await runLayering({ ...f, groups: null, concurrency: 2, steps: { ...createLayeringSteps(mock),
+  await runLayering({ ...f, groups: null, steps: { ...createLayeringSteps(mock),
     async reduceOutlines() { return { status: 'completed', output: { changed: [] } }; },
   } });
   const drawingIds: number[] = [];

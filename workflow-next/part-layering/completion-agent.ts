@@ -13,9 +13,21 @@ import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type SvgObse
 
 const rulesPath = fileURLToPath(new URL('prompts/9-补全操作约定.md', import.meta.url));
 
-// 显式参考清单位于特化提示词旁；相对路径以清单所在目录为准，不自动继承父组参考。
-export async function readCompletionReferences(groupDirectory: string) {
-  return readGroupReferences(groupDirectory, 'completion');
+// 同级参考只取本层已审查、去重的只读底形，避免依赖并发补全的完成顺序。
+export async function readCompletionReferences(groupDirectory: string, context?: GroupContext) {
+  return readGroupReferences(groupDirectory, 'completion', context ? async (name, description) => {
+    const sibling = context.parent?.groups.find(group => group.id === `${context.parent!.id}/${name}`);
+    if (!sibling || sibling.id === context.group.id) throw new Error(`补全参考不是当前节点的其他直属同级：${name}`);
+    const reduced = sibling.steps.reduction;
+    if (reduced.status !== 'completed' || !reduced.output) throw new Error(`补全同级参考尚未完成整层去重：${sibling.id}`);
+    const root = await realpath(context.directory), sourceSvg = await realpath(reduced.output.path);
+    const rel = relative(root, sourceSvg);
+    if (rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)) throw new Error('补全同级参考必须位于本次运行目录内');
+    const bytes = await readFile(sourceSvg);
+    const path = join(root, 'observations', 'completion', context.group.id, 'references', `${name}.png`);
+    await writeAtomic(path, await sharp(bytes, { limitInputPixels: 100_000_000 }).png().toBuffer());
+    return { path, description, groupId: sibling.id, sourceSvg, sourceHash: svgHash(bytes), sourceStage: 'reduction' };
+  } : undefined);
 }
 
 export async function completeGroupOcclusion(context: DrawingContext & { reviewed: SvgArtifact }, agents: Pick<CodexAgents, 'run'>): Promise<SvgArtifact> {
@@ -32,7 +44,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const prompt = await readGroupPrompt(context.group.id, 'completion');
   const rules = await readFile(rulesPath, 'utf8');
   if (!rules.trim()) throw new Error(`补全操作约定提示词为空：${rulesPath}`);
-  const references = await readCompletionReferences(prompt.groupDirectory);
+  const references = await readCompletionReferences(prompt.groupDirectory, context);
   const observations: SvgObservation[] = [];
   let submitted: SvgArtifact | undefined, submittedHash: string | undefined;
   await writeAtomic(draft, source);
@@ -80,8 +92,9 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
     },
   };
   await agents.run({ name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
-    images: [{ path: reference, description: '正面素体参考；只补当前正面被遮住的轮廓。' }, ...references],
-    tools: [preview, set, submit, createSvgReadTool(context.directory, [sourcePath, parent, draft])], prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${JSON.stringify({
+    images: [{ path: reference, description: '正面素体参考；只补当前正面被遮住的轮廓。' }, ...references.map(({ path, description }) => ({ path, description }))],
+    tools: [preview, set, submit, createSvgReadTool(context.directory,
+      [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)])], prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${JSON.stringify({
       group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
       reference, additionalReferences: references, canvas, sourceSvg: sourcePath, outputDraft: draft, parentSvg: parent ?? null,
     }, null, 2)}\n\n【固定范围与操作约定】\n${rules}\n固定约定提示词来源：${rulesPath}\n` });

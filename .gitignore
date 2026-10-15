@@ -14,7 +14,7 @@ node_modules/
 /demos/deep-sea-method-comparison/structure-redraw/work/
 
 # These generated HTML files embed another full copy of the SVG and reference.
-# Recreate them with the preview scripts, or use loading/svg-preview.html.
+# Recreate them with the preview scripts, or use loading/part-preview.html.
 /demos/deep-sea-method-comparison/*/绘制过程.html
 
 # Regenerable display variants from the archived analysis script.

@@ -10,7 +10,7 @@ import { GroupExecutionError, runLayering } from './layering.ts';
 import { createLayeringSteps } from './layering-steps.ts';
 import { groupStages, type GroupInput, type GroupNode, type LayeringResult, type LayeringSteps, type SvgMerger } from './layering-types.ts';
 import { getPreparationDirectory, loadPreparedReferences, prepareReferences, type PreparationInput, type PreparationReferences, type PreparationSteps } from './preparation.ts';
-import { defaultConcurrency, validateWorkflowOptions } from './workflow.ts';
+import { validateWorkflowOptions } from './workflow.ts';
 
 function imageTaskPrompt(drawingPrompt: string): string {
   return `【绘制提示词】\n${drawingPrompt.trim()}\n\n【执行规则】\n将绘制提示词原样传给 image_generation，不增补绘制要求。传入两张参考图，启用透明背景，输出 PNG。只调用一次；完成后直接返回路径，不检查、不返修、不重试。成功时 savedPath 为真实路径、error 为 null；失败时 savedPath 为 null、error 填原因。`;
@@ -77,11 +77,11 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
 }
 
 export async function runPartLayering(
-  input: { reference: PreparationInput; groups: GroupInput | GroupInput[] | null; concurrency?: number; maxDepth?: number },
+  input: { reference: PreparationInput; groups: GroupInput | GroupInput[] | null; maxDepth?: number },
   adapters: { steps?: LayeringSteps; mergeSvg?: SvgMerger } = {},
   agentOptions: AgentOptions = {},
 ): Promise<{ references: PreparationReferences; layering: LayeringResult }> {
-  validateWorkflowOptions({ concurrency: input.concurrency, maxDepth: input.maxDepth });
+  validateWorkflowOptions({ maxDepth: input.maxDepth });
   const directory = getPreparationDirectory(input.reference.runName);
   const agents = new CodexAgents({
     ...agentOptions, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
@@ -92,7 +92,7 @@ export async function runPartLayering(
   const layering = await runLayering({
     directory: dirname(directory), references, groups: input.groups,
     steps: adapters.steps ?? createLayeringSteps(agents), mergeSvg: adapters.mergeSvg,
-    concurrency: input.concurrency, maxDepth: input.maxDepth, progress: agentOptions.progress,
+    maxDepth: input.maxDepth, progress: agentOptions.progress,
   });
   return { references, layering };
 }
@@ -115,19 +115,20 @@ export function parseRunArguments(args: string[] = process.argv.slice(2)) {
     agents: { type: 'string', short: 'a' },
     'max-depth': { type: 'string' },
   } });
-  const concurrency = values.jobs === undefined ? defaultConcurrency : Number(values.jobs);
-  if (values.jobs !== undefined && (!/^[1-9]\d*$/.test(values.jobs) || !Number.isSafeInteger(concurrency))) {
-    throw new Error('--jobs / -j 必须是正整数');
+  for (const [name, value] of [['--jobs / -j', values.jobs], ['--agents / -a', values.agents]] as const) {
+    if (value !== undefined && (!/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value)))) {
+      throw new Error(`${name} 必须是正整数`);
+    }
   }
-  const agentConcurrency = values.agents === undefined ? defaultAgentConcurrency : Number(values.agents);
-  if (values.agents !== undefined && (!/^[1-9]\d*$/.test(values.agents) || !Number.isSafeInteger(agentConcurrency))) {
-    throw new Error('--agents / -a 必须是正整数');
+  if (values.jobs !== undefined && values.agents !== undefined && Number(values.jobs) !== Number(values.agents)) {
+    throw new Error('--jobs 和 --agents 是同一 agent 并发上限的别名，不能指定不同值');
   }
+  const agentConcurrency = Number(values.jobs ?? values.agents ?? defaultAgentConcurrency);
   const maxDepth = values['max-depth'] === undefined ? undefined : Number(values['max-depth']);
   if (values['max-depth'] !== undefined && (!/^[1-9]\d*$/.test(values['max-depth']) || !Number.isSafeInteger(maxDepth))) {
     throw new Error('--max-depth 必须是正整数');
   }
-  return { ...values, concurrency, agentConcurrency, maxDepth };
+  return { ...values, agentConcurrency, maxDepth };
 }
 
 export function formatLayeringSummary(groups: GroupNode[]): string[] {
@@ -156,17 +157,17 @@ if (import.meta.main) {
   try {
     const values = parseRunArguments();
     if (values.help) {
-      console.log('pnpm start --name <运行名> [--image <角色图片路径>] [--groups <分组JSON路径>] [--jobs <并发组数>] [--agents <agent并发数>]');
+      console.log('pnpm start --name <运行名> [--image <角色图片路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]');
       console.log('--image 首次启动需要；续跑使用运行目录中的原图，并自动补齐缺失的参考输出。');
       console.log('--groups 选择本次运行已有的组及其子组；祖先和整层去重须已完成，缺失时提示依赖，不自动启动未选分支。省略时按层自动准备或续跑。');
-      console.log(`--jobs / -j 设置层内组调度并发上限，默认 ${defaultConcurrency}。绘制、review、整层去重、补形及子组分析已接入。`);
+      console.log(`--jobs / -j 设置所有步骤共享的 agent 调用并发上限，默认 ${defaultAgentConcurrency}；组任务不另设数量限制，按树的层级依赖进入队列。`);
       console.log('--max-depth 限制本次制作层数：1 完成第一层并登记第二层，2 制作到第二层并登记第三层，以此类推。省略时继续到终止部件。');
-      console.log(`--agents / -a 设置所有步骤共享的 agent 调用并发上限，默认 ${defaultAgentConcurrency}。临时服务错误等待后沿用会话恢复，次数不设上限，过程写入 agent 日志。`);
+      console.log('--agents / -a 为 --jobs / -j 的兼容别名，控制同一上限。临时服务错误等待后沿用会话恢复，次数不设上限，过程写入 agent 日志。');
     } else {
       if (!values.name) throw new Error('需要 --name <运行名>');
       const { references, layering } = await runPartLayering({
         reference: { image: values.image, runName: values.name },
-        groups: values.groups ? await readGroupInput(values.groups) : null, concurrency: values.concurrency, maxDepth: values.maxDepth,
+        groups: values.groups ? await readGroupInput(values.groups) : null, maxDepth: values.maxDepth,
       }, {}, { progress: console.log, agentConcurrency: values.agentConcurrency });
       console.log(`参考输出：${references.directory}`);
       console.log(`分组：${layering.groupsPath}`);

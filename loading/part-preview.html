@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>part-preview · Astra</title>
+<style>
+:root{font:13px "Segoe UI","Microsoft YaHei",sans-serif;color:#e3eaf0;background:#171c22;--line:#323d47;--muted:#96a8b7;--accent:#a4e7df}
+*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}[hidden]{display:none!important}
+button,input,select{font:inherit}button{padding:8px 12px;border:1px solid var(--line);border-radius:7px;color:inherit;background:#222c35;cursor:pointer;white-space:nowrap}button:hover{background:#303d47}button[aria-pressed=true]{color:var(--accent);border-color:#719c9b;background:#25413f}button:disabled{opacity:.35;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) 31px}header{padding:14px 19px;display:flex;gap:20px;align-items:center;border-bottom:1px solid var(--line);background:#1c232b;position:relative;z-index:10}.brand{font-weight:650;letter-spacing:.6px;white-space:nowrap}.brand small{display:block;font-size:10px;font-weight:400;color:var(--muted);margin-top:3px}.file-actions{display:flex;align-items:center;gap:9px;min-width:0;flex:1}.file-slot{position:relative;min-width:0;flex:1;max-width:240px}.file-card{position:relative;display:flex;align-items:center;gap:7px;width:100%;min-width:0;height:39px;padding:8px 18px 8px 11px;text-align:left}.file-card b{font-size:11px;color:var(--accent);flex:none}.file-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.file-card:after{content:attr(data-hint);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);padding:4px 8px;background:#101c25;color:#d3e8ec;border:1px solid #52717c;border-radius:5px;font-size:10px;opacity:0;visibility:hidden;pointer-events:none;white-space:nowrap;z-index:15}.file-card:hover:after,.file-card:focus-visible:after{opacity:1;visibility:visible}.file-remove{position:absolute;right:-5px;top:-6px;display:grid;place-items:center;width:17px;height:17px;padding:0;border-radius:50%;background:#394751;border:1px solid #71828d;color:#e2edf0;font-size:13px;line-height:1;z-index:2}.file-remove:hover{background:#77515b;border-color:#d89aaa}.groups-slot{flex:0 0 auto;width:112px}.groups-slot .file-card{padding-right:14px}.header-icon{display:grid;place-items:center;flex:none;padding:8px;width:35px;height:35px;background:transparent}.header-icon svg,.download-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.swap-button{border-color:transparent;color:var(--accent);border-radius:50%}.swap-button:hover{border-color:#638f91;background:#2a4247}.swap-button svg{width:22px;height:22px}.download-wrap{position:relative;flex:none;margin-left:auto}.download-button{display:flex;align-items:center;gap:6px;height:37px;padding:7px 10px}.download-menu{position:absolute;right:0;top:calc(100% + 10px);width:218px;border:1px solid #536775;border-radius:9px;padding:5px;background:#202c36;box-shadow:0 12px 35px #0006;z-index:20}.download-menu button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:10px;border-radius:5px;font-size:12px}.download-menu small{display:block;color:var(--muted);font-size:10px;margin-top:5px}.group-status{min-width:0;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr);min-height:0}.workspace.has-groups{grid-template-columns:minmax(0,1fr) 300px}.workbench{min-width:0;min-height:0;display:flex;flex-direction:column}.toolbar{display:flex;align-items:center;gap:18px;padding:10px 18px;flex-wrap:wrap;border-bottom:1px solid var(--line)}.modes{display:flex;gap:3px;background:#12181e;padding:3px;border-radius:9px}.modes button{border-color:transparent;font-size:12px}.adjust{display:flex;align-items:center;gap:8px;font-size:11px;color:#bac9d4}.adjust input[type=range]{width:104px;accent-color:var(--accent)}.adjust output{width:34px;font-variant-numeric:tabular-nums}.adjust input[type=color]{width:26px;height:25px;padding:0;border:0;background:transparent}
+.stage{position:relative;min-height:0;flex:1;overflow:hidden;background:#e9edf0;isolation:isolate}.stage[data-background=checker]{background-color:#eef1f4;background-image:conic-gradient(#dce2e8 25%,transparent 0 50%,#dce2e8 0 75%,transparent 0);background-size:24px 24px}.stage[data-background=white]{background:#fff}.stage[data-background=dark]{background:#252d36}.panes{position:absolute;inset:0;display:grid;grid-template-columns:1fr;overflow:hidden;pointer-events:none}.panes[data-mode=side]{grid-template-columns:1fr 1fr}.pane{position:relative;min-width:0;overflow:hidden}.pane+.pane{border-left:1px solid #66778577}.panes[data-mode=swipe]{display:block}.panes[data-mode=swipe] .pane{position:absolute;inset:0;border:0}.panes[data-mode=swipe] .pane:first-child{clip-path:inset(0 calc(100% - var(--wipe,50%)) 0 0)}.panes[data-mode=swipe] .pane:nth-child(2){clip-path:inset(0 0 0 var(--wipe,50%))}
+.surface{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;background:transparent;color-scheme:light}.badge{position:absolute;top:14px;left:15px;z-index:1;background:#182731dd;color:#e0ecf2;border:1px solid #a3bbc244;border-radius:5px;padding:5px 8px;font-size:10px}.interaction{position:absolute;inset:0;touch-action:none;outline:none;cursor:grab}.interaction.dragging{cursor:grabbing}.interaction.box{cursor:crosshair}.selection{position:absolute;border:1px solid #287c8a;background:#45a6b329;pointer-events:none}.dock{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;background:#1b2733f2;padding:6px;border:1px solid #536472;border-radius:10px;z-index:3}.dock button{padding:7px 9px;background:transparent;border-color:transparent;font-size:12px}.dock input{width:73px;background:transparent;color:inherit;border:1px solid #536472;border-radius:4px;padding:5px;text-align:right}.dock span{font-size:10px;padding-right:4px;color:var(--muted)}.backgrounds{position:absolute;right:16px;bottom:22px;display:flex;gap:7px;padding:9px;background:#1b2733e8;border-radius:9px;z-index:3}.backgrounds button{width:18px;height:18px;border-radius:50%;padding:0;border:1px solid #ffffff66}.backgrounds button[aria-pressed=true]{outline:1px solid var(--accent);outline-offset:3px}.backgrounds [data-bg=gray]{background:#e9edf0}.backgrounds [data-bg=white]{background:white}.backgrounds [data-bg=dark]{background:#252d36}.backgrounds [data-bg=checker]{background:conic-gradient(#a7b1ba 25%,#eef1f4 0 50%,#a7b1ba 0 75%,#eef1f4 0);background-size:8px 8px}
+.wipe{position:absolute;top:0;bottom:0;left:50%;width:28px;transform:translateX(-50%);z-index:2;touch-action:none;cursor:ew-resize}.wipe:before{content:"";position:absolute;top:0;bottom:0;left:13px;width:2px;background:#d1fffb;box-shadow:0 0 0 1px #2e536977}.wipe:after{content:"↔";position:absolute;top:50%;left:0;transform:translateY(-50%);display:grid;place-items:center;width:28px;height:42px;background:#24434e;border:1px solid #b6eee7;border-radius:8px;color:#dcfff9}
+.empty{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:#466372;padding:30px;pointer-events:none}.empty h1{font-size:23px;font-weight:500;margin:0 0 14px}.empty p{line-height:1.9;color:#708793;font-size:12px;margin:0}.stage[data-background=dark] .empty{color:#d0e6ef}.stage[data-background=dark] .empty p{color:#9db0bd}.toast{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:5;max-width:90%;padding:10px 15px;line-height:1.6;background:#243d47;color:#e3f6f4;border:1px solid #8fb9bd;border-radius:7px;pointer-events:none}
+.panel{min-height:0;display:flex;flex-direction:column;background:#1b232b;border-left:1px solid var(--line)}.panel-head{padding:15px 13px;border-bottom:1px solid var(--line)}.panel-title{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px}.panel-title h2{font-size:13px;margin:0}.panel-title select,.search{color:inherit;background:#141c23;border:1px solid var(--line);border-radius:5px;padding:6px;min-width:0}.panel-meta{font-size:10px;color:var(--muted);line-height:1.7}.search{width:100%;margin-top:11px;padding:8px}.tree-tools{display:flex;gap:5px;margin-top:8px}.tree-tools button{font-size:10px;padding:5px 7px}.tree{list-style:none;overflow:auto;flex:1;min-height:0;padding:6px 0;margin:0;scrollbar-width:thin}.tree ul{list-style:none;margin:0;padding:0}.row{display:flex;gap:6px;align-items:center;min-height:37px;padding:5px 11px 5px var(--indent);border-bottom:1px solid #ffffff04;cursor:pointer}.row:hover{background:#ffffff08}.row.selected{background:#9ee0e21d;box-shadow:inset 3px 0 var(--accent)}.row .disclosure{flex:none;width:18px;padding:0;background:transparent;border:0;color:#b6c9d5}.row .spacer{width:18px;flex:none}.row input{width:14px;height:14px;margin:0;accent-color:var(--accent);flex:none}.node-name{font-size:11px;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.node-kind{font-size:9px;color:#8ba5b7;flex:none}.row.off .node-name{opacity:.45}.inspector{padding:12px 13px;max-height:25vh;overflow:auto;border-top:1px solid var(--line);font-size:11px;line-height:1.7}.inspector .path{color:var(--accent);word-break:break-all}.inspector p{margin:5px 0 0;color:var(--muted);white-space:pre-wrap}.panel-foot{padding:10px 13px;border-top:1px solid var(--line);font-size:10px;color:#839ba9;line-height:1.7}
+footer{display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:10px;color:var(--muted);border-top:1px solid var(--line)}.drop-mask{position:fixed;inset:12px;z-index:20;border:2px dashed var(--accent);background:#153443ee;border-radius:12px;display:grid;place-content:center;text-align:center;pointer-events:none}.drop-mask strong{font-size:24px;font-weight:500}.drop-mask p{font-size:12px;color:#a6c6d0}.help{max-width:480px;width:90%;background:#202c36;color:#dceaf1;border:1px solid #617686;border-radius:12px;padding:23px;line-height:1.9}.help::backdrop{background:#08101ab2}.help h2{font-size:17px;margin:0}.help p{font-size:12px;color:#b6c9d5}.help button{float:right}
+@media(max-width:1000px){header{gap:13px;padding:12px}.file-actions{gap:7px}.file-card{padding-left:9px;gap:5px}.workspace.has-groups{grid-template-columns:minmax(0,1fr) 260px}.backgrounds{top:13px;bottom:auto}.toolbar{gap:10px;padding:8px 11px}.modes button{padding:7px 9px}}
+@media(max-width:700px){header{flex-wrap:wrap;gap:11px}.brand small{display:none}.brand{width:100%}.file-actions{flex-basis:100%;gap:6px}.file-card{padding:6px 13px 6px 7px;height:35px}.file-name{font-size:10px}.groups-slot{width:95px}.header-icon{width:26px;padding:4px}.download-button{width:33px;padding:6px}.download-button span{display:none}.workspace.has-groups{grid-template-columns:minmax(0,1fr) 220px}.panel-head{padding:10px}.row{padding-right:6px;gap:4px}.toolbar{gap:8px}.modes{width:100%}.modes button{flex:1;font-size:11px;padding:7px 4px}.dock{gap:0;bottom:12px}.dock button{padding:6px}.dock input{width:62px}footer{padding:0 10px}.group-status{max-width:55%}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand">part-preview<small>ASTRA · 部件预览</small></div>
+ <div class="file-actions">
+  <div class="file-slot"><button id="openA" class="file-card" data-hint="单击选择" aria-label="选择图像 A"><b>A</b><span id="nameA" class="file-name">选择图像</span></button></div>
+  <button id="swap" class="header-icon swap-button" disabled aria-label="交换 A/B" title="交换 A/B"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h15m-4-4 4 4-4 4M20 17H5m4-4-4 4 4 4"/></svg></button>
+  <div class="file-slot"><button id="openB" class="file-card" data-hint="单击选择" aria-label="选择图像 B"><b>B</b><span id="nameB" class="file-name">选择图像</span></button><button id="removeB" class="file-remove" hidden aria-label="移除图像 B" title="移除图像 B">×</button></div>
+  <div class="file-slot groups-slot"><button id="openGroups" class="file-card" data-hint="单击选择" aria-label="选择 groups.json"><span class="file-name">groups.json</span></button><button id="removeGroups" class="file-remove" hidden aria-label="移除 groups.json" title="移除 groups.json">×</button></div>
+  <div class="download-wrap"><button id="download" class="download-button" disabled aria-label="下载 PNG" aria-haspopup="menu" aria-controls="downloadMenu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 16v4h16v-4"/></svg><span id="downloadLabel">下载</span></button><div id="downloadMenu" class="download-menu" role="menu" aria-label="PNG 下载范围" hidden><button id="downloadFull" role="menuitem">整图 PNG<small id="fullExportSize">完整画布</small></button><button id="downloadView" role="menuitem">当前放大区域 PNG<small id="viewExportSize">保留当前缩放和平移</small></button></div></div>
+  <button id="help" class="header-icon" aria-label="操作说明">?</button>
+ </div>
+ <input id="fileA" type="file" accept=".svg,image/*" hidden><input id="fileB" type="file" accept=".svg,image/*" hidden>
+ <input id="fileGroups" type="file" accept=".json,application/json" hidden>
+</header>
+<div id="workspace" class="workspace">
+ <section class="workbench" aria-label="图像对比">
+  <div class="toolbar">
+   <div class="modes" role="group" aria-label="对比方式"><button data-mode="mix" aria-pressed="true">混合</button><button data-mode="side" aria-pressed="false">两侧对比</button><button data-mode="swipe" aria-pressed="false">滑动对比</button><button data-mode="outline" aria-pressed="false">描边</button></div>
+   <label id="mixControl" class="adjust" hidden>A 叠加<input id="mix" type="range" min="0" max="100" value="50" aria-label="图像 A 叠加比例"><output id="mixValue">50%</output></label>
+   <label id="wipeControl" class="adjust" hidden>分割<input id="wipeInput" type="range" min="0" max="100" value="50" aria-label="分割位置"><output id="wipeValue">50%</output></label>
+   <div id="outlineControl" class="adjust" hidden><label>线色 <input id="outlineColor" type="color" value="#e83f64" aria-label="描边颜色"></label><label>线宽 <input id="outlineWidth" type="range" min="0.5" max="4" step="0.25" value="1.5" aria-label="描边宽度"></label><output id="outlineValue">1.5 px</output></div>
+  </div>
+  <main id="stage" class="stage" data-background="gray" aria-label="可缩放的 A/B 对比画布">
+   <div id="panes" class="panes" data-mode="mix"></div>
+   <div id="interaction" class="interaction" tabindex="0" role="application" aria-label="滚轮缩放，拖动平移，单击部件定位右侧条目"></div>
+   <div id="selection" class="selection" hidden></div>
+   <div id="wipeDivider" class="wipe" tabindex="0" role="slider" aria-label="A/B 分割轴" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" hidden></div>
+   <div class="dock"><button id="zoomOut" disabled aria-label="缩小">−</button><input id="zoom" disabled value="100" aria-label="缩放百分比"><span>%</span><button id="zoomIn" disabled aria-label="放大">＋</button><button id="fit" disabled>适应</button><button id="actual" disabled>1:1</button><button id="box" disabled aria-pressed="false">框选</button></div>
+   <div class="backgrounds" role="group" aria-label="画布背景"><button data-bg="gray" aria-label="灰色背景" aria-pressed="true"></button><button data-bg="white" aria-label="白色背景" aria-pressed="false"></button><button data-bg="checker" aria-label="棋盘格背景" aria-pressed="false"></button><button data-bg="dark" aria-label="深色背景" aria-pressed="false"></button></div>
+   <div id="empty" class="empty"><h1>把部件放大看</h1><p>拖入 SVG 与参考图，放入 A / B<br>再带上对应的 groups.json，控制和定位部件</p></div>
+   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </main>
+ </section>
+ <aside id="panel" class="panel" aria-label="匹配的分组与部件" hidden>
+  <div class="panel-head"><div class="panel-title"><h2>分组与部件</h2><select id="controlSource" aria-label="控制哪张 SVG" hidden></select></div><div id="panelMeta" class="panel-meta"></div><input id="search" class="search" type="search" placeholder="搜索名称、路径或备注" aria-label="搜索部件"><div class="tree-tools"><button id="expand">展开</button><button id="collapse">收起</button><button id="restore">恢复显隐</button></div></div>
+  <ul id="tree" class="tree" role="tree" aria-label="分组层级"></ul>
+  <div id="inspector" class="inspector" hidden><div id="nodePath" class="path"></div><p id="nodeNote"></p></div>
+  <div class="panel-foot">单击画布定位条目；单击条目放大查看。<br>仅显示与 SVG 对应的节点，隐藏父组会隐藏后代。</div>
+ </aside>
+</div>
+<footer><span id="hint">滚轮缩放 · 拖动平移 · 单击定位 · F 适应 · B 框选</span><span id="groupStatus" class="group-status" role="status">载入匹配的 groups.json 后显示部件控制</span></footer>
+</div>
+<div id="dropMask" class="drop-mask" hidden><strong>松开，导入文件</strong><p>最多两张图像 A / B，以及对应的 groups.json</p></div>
+<dialog id="helpDialog" class="help"><button id="closeHelp">关闭</button><h2>part-preview</h2><p>混合：B 为底图，A 半透明叠加。两侧对比与滑动对比共享缩放和平移。描边：把 SVG 轮廓叠到另一张图上；两张都是 SVG 时描 A。A/B 之间的双向箭头用于交换图片；悬浮文件卡片后单击可更换，右上角 × 可移除 B 或分组文件。</p><p>载入匹配的 groups.json 后才显示右侧控制。单击画布中的图形会展开祖先并滚动到对应条目；单击树条目可放大该组。拖动只平移，不改变选择。</p><p>下载可选择完整画布或当前放大区域，导出保留对比方式、混合比例、描边、背景和显隐，不包含工具栏与侧栏。整图按原图尺寸导出；当前区域按屏幕像素密度导出。</p><p>滚轮 / ＋ / − 缩放 · F / 0 适应 · 1 实际大小 · B 框选 · Esc 取消。两图按最长边等权缩放并居中对齐。显隐与描边只作用于预览，源文件保持不变。</p></dialog>
+<script>
+'use strict';
+(() => {
+ const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
+ const stage=$('stage'),hit=$('interaction'),assets={A:null,B:null},tickets={A:0,B:0};
+ const camera={cx:0,cy:0,upp:1,fit:true};
+ let model=null,size={w:1,h:1},mode='mix',surfaces=[],renderTicket=0,raf=0,toastTimer=0,renderReady=Promise.resolve(),exporting=false;
+ let groupData=null,entries=[],byId=new Map(),matched=[],controlSource='',selected='',expanded=new Set();
+ let tool='pan',drag=null,selection=null,pinch=null,space=false,wipeDrag=null,dropDepth=0;
+ const pointers=new Map(),clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+ const geometry='path,rect,circle,ellipse,line,polyline,polygon,text,use,image';
+ const resource='defs,clipPath,mask,pattern,marker,symbol';
+ const binding=element=>element.getAttribute('data-part-path')||element.getAttribute('data-group-path');
+ const frameHTML='<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'none\'; connect-src \'none\'; img-src data: blob:; style-src \'unsafe-inline\'; font-src data:; base-uri \'none\'"><style>html,body{width:100%;height:100%;margin:0;background:transparent;overflow:hidden}body>svg{position:absolute;inset:0;display:block;width:100%;height:100%}</style></head><body></body></html>';
+ function toast(text){$('toast').textContent=text;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4300);}
+ function lengthPx(raw){const match=String(raw||'').trim().match(/^([+]?\d*\.?\d+(?:e[+-]?\d+)?)\s*(px|pt|pc|mm|cm|in|q)?$/i);if(!match)return null;return Number(match[1])*({px:1,pt:96/72,pc:16,mm:96/25.4,cm:96/2.54,in:96,q:96/101.6}[(match[2]||'px').toLowerCase()]);}
+ function parseSvg(text){
+  const doc=new DOMParser().parseFromString(text,'image/svg+xml'),svg=doc.documentElement;
+  if(doc.querySelector('parsererror')||svg.localName!=='svg'||svg.namespaceURI!==NS)throw Error('SVG 文件不完整或格式无效。');
+  svg.querySelectorAll('script,foreignObject').forEach(el=>el.remove());
+  for(const el of [svg,...svg.querySelectorAll('*')])for(const attr of [...el.attributes])if(/^on/i.test(attr.name))el.removeAttribute(attr.name);
+  const vb=(svg.getAttribute('viewBox')||'').trim().split(/[\s,]+/).map(Number);
+  const validVB=vb.length===4&&vb.every(Number.isFinite)&&vb[2]>0&&vb[3]>0;
+  let w=lengthPx(svg.getAttribute('width'))||lengthPx(svg.style.width),h=lengthPx(svg.getAttribute('height'))||lengthPx(svg.style.height);
+  if(!w&&!h){w=validVB?vb[2]:300;h=validVB?vb[3]:150;}else if(!w)w=validVB?h*vb[2]/vb[3]:300;else if(!h)h=validVB?w*vb[3]/vb[2]:150;
+  if(![w,h].every(n=>Number.isFinite(n)&&n>0))throw Error('SVG 尺寸无效。');
+  if(!validVB){if(svg.hasAttribute('viewBox'))throw Error('SVG viewBox 无效。');svg.setAttribute('viewBox','0 0 '+w+' '+h);}
+  const bound=new Set();
+  for(const el of svg.querySelectorAll(geometry)){if(el.closest(resource))continue;const owner=el.closest('[data-group-path],[data-part-path]');if(owner&&binding(owner))bound.add(binding(owner));}
+  const metadata=svg.querySelector('metadata#part-preview-groups');
+  let expected=null;if(metadata){try{expected=JSON.parse(metadata.textContent).nodes;if(!Array.isArray(expected))throw Error();}catch{throw Error('SVG 的分组记录无效。');}}
+  return {svg,w,h,bound,expected};
+ }
+ function supported(file){return !!file&&(/\.svg$/i.test(file.name)||file.type.startsWith('image/')||/\.(png|jpe?g|webp|gif|avif|bmp)$/i.test(file.name));}
+ async function readAsset(file){
+  if(!supported(file))throw Error('请选择 SVG 或浏览器可读取的图片。');
+  if(/\.svg$/i.test(file.name)||file.type==='image/svg+xml')return {...parseSvg(await file.text()),kind:'svg',name:file.name,hidden:new Set()};
+  const url=URL.createObjectURL(file),image=new Image();image.src=url;
+  try{await image.decode();return {kind:'bitmap',name:file.name,w:image.naturalWidth,h:image.naturalHeight,url,image,hidden:new Set()};}catch(error){URL.revokeObjectURL(url);throw Error('无法解码图片。');}
+ }
+ function dispose(asset){if(asset?.url)URL.revokeObjectURL(asset.url);}
+ function normalizeGroups(data){
+  if(!data||!Array.isArray(data.groups)||!data.groups.length)throw Error('缺少有效的 groups 数组。');
+  const result=[],seen=new Set(),safe=/^[\p{L}\p{N}_-]+(?:\/[\p{L}\p{N}_-]+)*$/u;
+  function visit(nodes,parent='',legacyKind='group'){
+   if(!Array.isArray(nodes))throw Error('子节点必须是数组。');
+   for(const node of nodes){
+    if(!node||typeof node!=='object')throw Error('分组节点无效。');
+    const id=node.id||(typeof node.name==='string'?(parent?parent+'/':'')+node.name:'');
+    if(!safe.test(id)||seen.has(id)||(parent?id.slice(0,id.lastIndexOf('/'))!==parent:id.includes('/')))throw Error('重复或不匹配的完整 ID：'+id);
+    if(node.groups!==undefined&&!Array.isArray(node.groups)||node.parts!==undefined&&!Array.isArray(node.parts))throw Error(id+' 的子节点无效。');
+    const children=[...(node.groups||[]),...(node.parts||[])];
+    let kind=node.kind||(node.id?(children.length?'group':'part'):legacyKind);
+    if(!['group','part'].includes(kind)||kind==='part'&&children.length)throw Error(id+' 的 kind 与子节点不一致。');
+    if(kind==='group'&&!children.length&&node.childrenAnalysis)kind='part';
+    seen.add(id);result.push({id,parent:parent||null,kind,name:node.name||id.split('/').at(-1),note:node.note||''});
+    visit(node.groups||[],id,'group');visit(node.parts||[],id,'part');
+   }
+  }
+  visit(data.groups);return result;
+ }
+ function signature(nodes){return JSON.stringify(nodes.map(({id,parent,kind})=>({id,parent,kind})));}
+ function syncGroups(){
+  matched=[];
+  if(groupData)for(const slot of ['A','B']){
+   const asset=assets[slot];if(asset?.kind!=='svg'||!asset.bound.size)continue;
+   if([...asset.bound].some(id=>!byId.has(id)))continue;
+   if(asset.expected&&signature(asset.expected)!==signature(entries))continue;
+   const available=new Set();for(const path of asset.bound){let node=byId.get(path);while(node){available.add(node.id);node=byId.get(node.parent);}}
+   matched.push({slot,asset,available});
+  }
+  if(!matched.some(item=>item.slot===controlSource))controlSource=matched[0]?.slot||'';
+  const has=matched.length>0;$('panel').hidden=!has;$('workspace').classList.toggle('has-groups',has);
+  $('controlSource').replaceChildren(...matched.map(item=>{const option=document.createElement('option');option.value=item.slot;option.textContent='SVG '+item.slot;return option;}));
+  $('controlSource').value=controlSource;$('controlSource').hidden=matched.length<2;
+  $('groupStatus').textContent=!groupData?'载入匹配的 groups.json 后显示部件控制':has?'已匹配 SVG '+matched.map(item=>item.slot).join(' / ')+(matched.length?' · 单击画布定位部件':''):'groups.json 与当前 SVG 不匹配，部件控制已隐藏';
+  $('openGroups').dataset.hint=groupData?'单击更换':'单击选择';$('openGroups').setAttribute('aria-label',groupData?'更换 groups.json':'选择 groups.json');$('removeGroups').hidden=!groupData;
+  if(!has){selected='';$('tree').replaceChildren();$('inspector').hidden=true;}else renderTree();
+ }
+ function active(){return matched.find(item=>item.slot===controlSource);}
+ function shown(asset,id){for(let node=byId.get(id);node;node=byId.get(node.parent))if(asset.hidden.has(node.id))return false;return true;}
+ function renderTree(){
+  const current=active();if(!current)return;
+  const tree=$('tree'),scroll=tree.scrollTop,query=$('search').value.trim().toLocaleLowerCase(),children=new Map(),matches=new Map();
+  for(const node of entries)if(current.available.has(node.id)){const key=node.parent||'';if(!children.has(key))children.set(key,[]);children.get(key).push(node);}
+  function search(node){const own=[node.id,node.name,node.note].join(' ').toLocaleLowerCase().includes(query),child=(children.get(node.id)||[]).map(search).some(Boolean);matches.set(node.id,own||child);return own||child;}
+  if(query)(children.get('')||[]).forEach(search);
+  function row(node,depth){
+   const li=document.createElement('li');li.dataset.path=node.id;li.setAttribute('role','treeitem');li.setAttribute('aria-level',depth+1);
+   const kids=(children.get(node.id)||[]).filter(child=>!query||matches.get(child.id)),open=!!kids.length&&(!!query||expanded.has(node.id));
+   if(kids.length)li.setAttribute('aria-expanded',String(open));
+   const line=document.createElement('div');line.className='row';line.style.setProperty('--indent',(8+depth*12)+'px');line.classList.toggle('selected',node.id===selected);line.classList.toggle('off',!shown(current.asset,node.id));
+   const toggle=document.createElement(kids.length?'button':'span');toggle.className=kids.length?'disclosure':'spacer';if(kids.length){toggle.textContent=open?'▾':'▸';toggle.dataset.action='expand';toggle.setAttribute('aria-label',(open?'收起 ':'展开 ')+node.id);}line.append(toggle);
+   const check=document.createElement('input');check.type='checkbox';check.dataset.action='visible';check.setAttribute('aria-label','显示 '+node.id);
+   const descendants=[...current.asset.bound].filter(id=>id===node.id||id.startsWith(node.id+'/')),visible=descendants.filter(id=>shown(current.asset,id));
+   check.checked=visible.length===descendants.length;check.indeterminate=visible.length>0&&visible.length<descendants.length;line.append(check);
+   const name=document.createElement('span');name.className='node-name';name.textContent=node.name;name.title=node.id;const kind=document.createElement('span');kind.className='node-kind';kind.textContent=node.kind;line.append(name,kind);li.append(line);
+   if(open){const ul=document.createElement('ul');ul.setAttribute('role','group');kids.forEach(child=>ul.append(row(child,depth+1)));li.append(ul);}return li;
+  }
+  const roots=(children.get('')||[]).filter(node=>!query||matches.get(node.id));tree.replaceChildren(...roots.map(node=>row(node,0)));tree.scrollTop=scroll;
+  $('panelMeta').textContent='SVG '+controlSource+' · '+current.available.size+' 个对应节点';
+  const node=byId.get(selected);$('inspector').hidden=!node;$('nodePath').textContent=node?.id||'';$('nodeNote').textContent=node?.note||'';
+ }
+ function selectNode(slot,id,fromCanvas=false){
+  const current=matched.find(item=>item.slot===slot);if(!current?.available.has(id))return;
+  controlSource=slot;$('controlSource').value=slot;selected=id;
+  for(let node=byId.get(id);node;node=byId.get(node.parent))expanded.add(node.id);
+  if(fromCanvas)$('search').value='';
+  renderTree();
+  if(fromCanvas){const row=[...$('tree').querySelectorAll('li[data-path]')].find(el=>el.dataset.path===id)?.firstElementChild;row?.scrollIntoView({block:'nearest'});row?.setAttribute('tabindex','-1');row?.focus({preventScroll:true});}
+ }
+ function applyVisibility(){
+  for(const surface of surfaces)if(surface.content&&surface.asset.kind==='svg'){
+   for(const [el,style]of surface.originalStyles){if(style===null)el.removeAttribute('style');else el.setAttribute('style',style);}
+   for(const el of [surface.content,...surface.content.querySelectorAll('[data-group-path],[data-part-path]')])if(binding(el)&&!shown(surface.asset,binding(el)))el.style.setProperty('display','none','important');
+  }
+  applyOutline();renderTree();
+ }
+ function applyOutline(){
+  for(const surface of surfaces)if(surface.outline&&surface.content){
+   for(const el of surface.content.querySelectorAll(geometry)){
+    if(el.closest(resource))continue;
+    if(el.localName==='image'){el.style.setProperty('opacity','0','important');continue;}
+    el.style.setProperty('fill','none','important');el.style.setProperty('stroke',$('outlineColor').value,'important');el.style.setProperty('stroke-width',$('outlineWidth').value+'px','important');el.style.setProperty('vector-effect','non-scaling-stroke','important');el.style.setProperty('stroke-linejoin','round','important');el.style.setProperty('stroke-linecap','round','important');el.style.setProperty('pointer-events','all','important');
+   }
+  }
+ }
+ function layout(){
+  const loaded=Object.values(assets).filter(Boolean);if(!loaded.length){model=null;return;}
+  const normalized=loaded.length>1,sizes=loaded.map(asset=>{const scale=normalized?1000/Math.max(asset.w,asset.h):1;return {asset,w:asset.w*scale,h:asset.h*scale};});
+  model={w:Math.max(...sizes.map(item=>item.w)),h:Math.max(...sizes.map(item=>item.h))};
+  for(const item of sizes)item.asset.layout={x:(model.w-item.w)/2,y:(model.h-item.h)/2,w:item.w,h:item.h};
+ }
+ function measure(){size={w:Math.max(1,stage.clientWidth/(mode==='side'&&assets.A&&assets.B?2:1)),h:Math.max(1,stage.clientHeight)};}
+ function commit(cx,cy,upp,fit=false){
+  if(![cx,cy,upp,size.w*upp,size.h*upp].every(Number.isFinite)||upp<=0||!Math.fround(size.w*upp)||!Math.fround(size.h*upp))return;
+  Object.assign(camera,{cx,cy,upp,fit});schedule();
+ }
+ function fit(){if(!model)return;const padding=Math.min(36,size.w*.08,size.h*.08),bottom=85,upp=Math.max(model.w/Math.max(1,size.w-padding*2),model.h/Math.max(1,size.h-padding-bottom));commit(model.w/2,model.h/2+(bottom-padding)*upp/2,upp,true);}
+ function world(point){return {x:camera.cx+(point.x-size.w/2)*camera.upp,y:camera.cy+(point.y-size.h/2)*camera.upp};}
+ function point(event){const r=stage.getBoundingClientRect(),x=event.clientX-r.left,offset=mode==='side'&&assets.A&&assets.B?(pointers.get(event.pointerId)?.offset??pointers.values().next().value?.offset??Math.floor(x/size.w)*size.w):0;return {x:x-offset,y:event.clientY-r.top,offset};}
+ function zoomAt(factor,from={x:size.w/2,y:size.h/2},to=from){if(!model)return;const anchor=world(from),upp=camera.upp/factor;commit(anchor.x-(to.x-size.w/2)*upp,anchor.y-(to.y-size.h/2)*upp,upp);}
+ function schedule(){if(!raf)raf=requestAnimationFrame(paint);}
+ function paint(){
+  raf=0;if(!model)return;const box=[camera.cx-size.w*camera.upp/2,camera.cy-size.h*camera.upp/2,size.w*camera.upp,size.h*camera.upp].join(' ');
+  for(const surface of surfaces)surface.outer?.setAttribute('viewBox',box);
+  if(document.activeElement!==$('zoom'))$('zoom').value=Number((100/camera.upp).toPrecision(5)).toString();
+ }
+ function strokeSlot(){return assets.A?.kind==='svg'?'A':assets.B?.kind==='svg'?'B':null;}
+ function sceneDefinitions(){
+  const both=!!assets.A&&!!assets.B,only=assets.A?'A':'B';
+  return both?(mode==='side'||mode==='swipe'?[[{slot:'A'}],[{slot:'B'}]]:mode==='outline'?[[{slot:strokeSlot()==='A'?'B':'A'},{slot:strokeSlot(),outline:true}]]:[[{slot:'B'},{slot:'A',mix:true}]]):[[{slot:only,outline:mode==='outline'}]];
+ }
+ async function render(){
+  const ticket=++renderTicket;surfaces=[];const host=$('panes');host.replaceChildren();host.dataset.mode=mode;
+  const definitions=sceneDefinitions();
+  for(const definition of definitions){
+   const pane=document.createElement('div');pane.className='pane';host.append(pane);
+   for(const info of definition){
+    const asset=assets[info.slot];if(!asset)continue;
+    const iframe=document.createElement('iframe');iframe.className='surface';iframe.title='图像 '+info.slot+(info.outline?' 描边':'');iframe.setAttribute('sandbox','allow-same-origin');iframe.setAttribute('tabindex','-1');
+    const surface={asset,slot:info.slot,iframe,outline:info.outline,mix:info.mix,originalStyles:new Map()};surfaces.push(surface);
+    const loaded=new Promise(resolve=>iframe.addEventListener('load',resolve,{once:true}));iframe.srcdoc=frameHTML;pane.append(iframe);
+    await loaded;if(ticket!==renderTicket)return;
+    const doc=iframe.contentDocument,outer=doc.createElementNS(NS,'svg');outer.setAttribute('preserveAspectRatio','none');outer.setAttribute('width','100%');outer.setAttribute('height','100%');surface.outer=outer;
+    const content=asset.kind==='svg'?doc.importNode(asset.svg,true):doc.createElementNS(NS,'image');surface.content=content;
+    if(asset.kind==='bitmap'){content.setAttribute('href',asset.url);content.setAttribute('preserveAspectRatio','none');}
+    for(const [key,value]of Object.entries({x:asset.layout.x,y:asset.layout.y,width:asset.layout.w,height:asset.layout.h}))content.setAttribute(key,String(value));
+    if(asset.kind==='svg'){content.style.setProperty('width',asset.layout.w+'px','important');content.style.setProperty('height',asset.layout.h+'px','important');content.style.setProperty('overflow','hidden','important');for(const el of [content,...content.querySelectorAll('*')])surface.originalStyles.set(el,el.getAttribute('style'));}
+    outer.append(content);doc.body.replaceChildren(outer);
+   }
+   const badge=document.createElement('span');badge.className='badge';badge.textContent=definition.filter(info=>assets[info.slot]).map(info=>info.slot+(info.outline?' 描边':'')).join(' + ');pane.append(badge);
+  }
+  if(ticket!==renderTicket)return;applyVisibility();paintMix();schedule();
+ }
+ function paintMix(){for(const surface of surfaces)surface.iframe.style.opacity=surface.mix?Number($('mix').value)/100:1;}
+ function syncControls(refit=true){
+  if(mode==='outline'&&!strokeSlot())mode='mix';
+  const has=!!assets.A||!!assets.B,both=!!assets.A&&!!assets.B;
+  for(const slot of ['A','B']){$('name'+slot).textContent=assets[slot]?.name||'选择图像';$('open'+slot).dataset.hint=assets[slot]?'单击更换':'单击选择';$('open'+slot).setAttribute('aria-label',(assets[slot]?'更换':'选择')+'图像 '+slot);$('open'+slot).title=assets[slot]?.name||'选择图像 '+slot;}
+  $('swap').disabled=!both;$('removeB').hidden=!assets.B;$('download').disabled=!has||exporting;
+  $('empty').hidden=has;document.querySelectorAll('.dock button,.dock input').forEach(el=>el.disabled=!has);
+  for(const button of document.querySelectorAll('[data-mode]')){button.disabled=button.dataset.mode==='outline'?!strokeSlot():button.dataset.mode!=='mix'&&!both;button.setAttribute('aria-pressed',String(button.dataset.mode===mode));}
+  $('mixControl').hidden=mode!=='mix'||!both;$('wipeControl').hidden=mode!=='swipe'||!both;$('wipeDivider').hidden=mode!=='swipe'||!both;$('outlineControl').hidden=mode!=='outline';
+  syncGroups();layout();measure();renderReady=render();if(refit)fit();else schedule();setDownloadMenu(false);
+  document.title=(assets.A?.name||assets.B?.name||'Astra')+' · part-preview';
+ }
+ function exportGeometry(range){
+  if(!model)throw Error('请先载入图片。');
+  const columns=mode==='side'&&assets.A&&assets.B?2:1;
+  const scale=range==='full'?Math.max(...Object.values(assets).filter(Boolean).map(asset=>Math.max(asset.w/asset.layout.w,asset.h/asset.layout.h))):Math.max(1,window.devicePixelRatio||1);
+  const view=range==='full'?{x:0,y:0,w:model.w,h:model.h}:{x:camera.cx-size.w*camera.upp/2,y:camera.cy-size.h*camera.upp/2,w:size.w*camera.upp,h:size.h*camera.upp};
+  const paneWidth=Math.max(1,Math.round((range==='full'?model.w:size.w)*scale)),height=Math.max(1,Math.round((range==='full'?model.h:size.h)*scale));
+  return {view,columns,paneWidth,height,width:paneWidth*columns,screenScale:range==='full'?1:scale};
+ }
+ function setDownloadMenu(open){
+  open=!!open&&!!model&&!exporting;$('downloadMenu').hidden=!open;$('download').setAttribute('aria-expanded',String(open));
+  if(open)for(const [range,id,label]of [['full','fullExportSize','完整画布'],['view','viewExportSize','保留当前缩放和平移']]){const output=exportGeometry(range);$(id).textContent=output.width+' × '+output.height+' · '+label;}
+ }
+ function paintExportBackground(context,width,height,background,scale){
+  context.fillStyle=({gray:'#e9edf0',white:'#ffffff',dark:'#252d36',checker:'#eef1f4'})[background]||'#e9edf0';context.fillRect(0,0,width,height);
+  if(background==='checker'){
+   const step=Math.max(1,Math.round(12*scale)),tile=document.createElement('canvas');tile.width=tile.height=step*2;
+   const pattern=tile.getContext('2d');pattern.fillStyle='#eef1f4';pattern.fillRect(0,0,step*2,step*2);pattern.fillStyle='#dce2e8';pattern.fillRect(0,0,step,step);pattern.fillRect(step,step,step,step);
+   context.fillStyle=context.createPattern(tile,'repeat');context.fillRect(0,0,width,height);
+  }
+ }
+ function exportSvg(surface,output){
+  const svg=document.createElementNS(NS,'svg'),content=surface.content.cloneNode(true);
+  for(const [name,value]of Object.entries({xmlns:NS,width:output.paneWidth,height:output.height,viewBox:[output.view.x,output.view.y,output.view.w,output.view.h].join(' '),preserveAspectRatio:'none'}))svg.setAttribute(name,String(value));
+  if(surface.outline)for(const el of content.querySelectorAll(geometry))if(!el.closest(resource))el.style.setProperty('stroke-width',(Number($('outlineWidth').value)*output.screenScale)+'px','important');
+  svg.append(content);return new XMLSerializer().serializeToString(svg);
+ }
+ async function downloadPng(range){
+  if(!model||exporting)return;exporting=true;setDownloadMenu(false);$('download').disabled=true;$('downloadLabel').textContent='导出中';
+  let canvas=null;
+  try{
+   let ready;do{ready=renderReady;await ready;}while(ready!==renderReady);
+   if(!model)throw Error('请先载入图片。');
+   const output=exportGeometry(range),snapshotMode=mode,wipe=Number($('wipeInput').value)/100,mix=Number($('mix').value)/100,background=stage.dataset.background;
+   const sourceName=(assets.A||assets.B).name.replace(/\.[^.]+$/,'').replace(/[<>:"/\\|?*\u0000-\u001f]/g,'_')||'part-preview';
+   const panes=sceneDefinitions().map(definition=>definition.map(info=>{
+    const surface=surfaces.find(item=>item.slot===info.slot),asset=assets[info.slot];if(!asset||!surface?.content)return null;
+    return {slot:info.slot,opacity:info.mix?mix:1,kind:asset.kind,image:asset.image,layout:{...asset.layout},svg:asset.kind==='svg'?exportSvg(surface,output):null};
+   }).filter(Boolean));
+   canvas=document.createElement('canvas');canvas.width=output.width;canvas.height=output.height;
+   const context=canvas.getContext('2d');if(!context||canvas.width!==output.width||canvas.height!==output.height)throw Error('浏览器无法创建这个尺寸的 PNG。');
+   paintExportBackground(context,output.width,output.height,background,output.screenScale);
+   for(let pane=0;pane<panes.length;pane++)for(const layer of panes[pane]){
+    context.save();
+    const offset=snapshotMode==='side'&&output.columns===2?pane*output.paneWidth:0;
+    context.beginPath();context.rect(offset,0,output.paneWidth,output.height);context.clip();context.translate(offset,0);
+    if(snapshotMode==='swipe'&&panes.length===2){context.beginPath();context.rect(layer.slot==='A'?0:output.paneWidth*wipe,0,layer.slot==='A'?output.paneWidth*wipe:output.paneWidth*(1-wipe),output.height);context.clip();}
+    context.globalAlpha=layer.opacity;
+    if(layer.kind==='bitmap'){
+     const rect=layer.layout,view=output.view;context.drawImage(layer.image,(rect.x-view.x)/view.w*output.paneWidth,(rect.y-view.y)/view.h*output.height,rect.w/view.w*output.paneWidth,rect.h/view.h*output.height);
+    }else{
+     const url=URL.createObjectURL(new Blob([layer.svg],{type:'image/svg+xml'}));
+     try{const image=new Image();image.src=url;await image.decode();context.drawImage(image,0,0,output.paneWidth,output.height);}finally{URL.revokeObjectURL(url);}
+    }
+    context.restore();
+   }
+   if(output.columns===2||snapshotMode==='swipe'&&panes.length===2){context.strokeStyle=snapshotMode==='swipe'?'#d1fffb':'#667785';context.lineWidth=output.screenScale;const x=output.columns===2?output.paneWidth:output.paneWidth*wipe;context.beginPath();context.moveTo(x,0);context.lineTo(x,output.height);context.stroke();}
+   const blob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(Error('PNG 编码失败。')),'image/png'));
+   const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=sourceName+'-'+snapshotMode+'-'+(range==='full'?'full':'view')+'.png';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+   toast('PNG 已生成：'+output.width+' × '+output.height+'，保留当前对比与显隐设置。');
+  }catch(error){toast('无法导出 PNG：'+error.message);}
+  finally{if(canvas)canvas.width=canvas.height=1;exporting=false;$('download').disabled=!model;$('downloadLabel').textContent='下载';}
+ }
+ async function loadImage(file,slot){if(!file)return;const ticket=++tickets[slot];let asset;try{asset=await readAsset(file);if(ticket!==tickets[slot]){dispose(asset);return;}dispose(assets[slot]);assets[slot]=asset;selected='';syncControls();}catch(error){toast(error.message);}}
+ async function loadGroups(file){if(!file)return;try{const data=JSON.parse(await file.text()),next=normalizeGroups(data);groupData=data;entries=next;byId=new Map(next.map(node=>[node.id,node]));expanded=new Set(next.filter(node=>!node.parent).map(node=>node.id));selected='';$('search').value='';for(const asset of Object.values(assets))asset?.hidden.clear();syncGroups();applyVisibility();measure();if(camera.fit)fit();}catch(error){groupData=null;entries=[];byId=new Map();for(const asset of Object.values(assets))asset?.hidden.clear();syncGroups();applyVisibility();toast('无法载入 groups.json：'+error.message);}}
+ function pick(event){
+  const stageRect=stage.getBoundingClientRect(),relativeX=event.clientX-stageRect.left,side=mode==='side'&&assets.A&&assets.B?Math.floor(relativeX/size.w):null;
+  const visible=surfaces.filter(surface=>matched.some(item=>item.slot===surface.slot)&&Number(surface.iframe.style.opacity||1)>0);
+  for(const surface of visible.reverse()){
+   if(side!==null&&surface.iframe.parentElement!==$('panes').children[side])continue;
+   if(mode==='swipe'&&((surface.slot==='A')!==(relativeX/stageRect.width<=Number($('wipeInput').value)/100)))continue;
+   const rect=surface.iframe.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top,doc=surface.iframe.contentDocument;
+   for(const el of doc.elementsFromPoint(x,y)){
+    if(!el.matches?.(geometry)||el.closest(resource))continue;
+    const owner=el.closest('[data-group-path],[data-part-path]'),id=owner&&binding(owner);
+    if(id&&byId.has(id)){selectNode(surface.slot,id,true);return;}
+   }
+  }
+ }
+ function focusNode(id){
+  const target=surfaces.find(surface=>surface.slot===controlSource&&surface.content);if(!target)return;
+  const inverse=target.outer.getScreenCTM()?.inverse();if(!inverse)return;let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
+  for(const el of [target.content,...target.content.querySelectorAll('[data-group-path],[data-part-path]')]){
+   if(binding(el)!==id)continue;
+   try{const box=el.getBBox(),matrix=inverse.multiply(el.getScreenCTM());if(!box.width&&!box.height)continue;for(const [x,y]of [[box.x,box.y],[box.x+box.width,box.y],[box.x,box.y+box.height],[box.x+box.width,box.y+box.height]]){const point=new DOMPoint(x,y).matrixTransform(matrix);left=Math.min(left,point.x);top=Math.min(top,point.y);right=Math.max(right,point.x);bottom=Math.max(bottom,point.y);}}catch{}
+  }
+  if([left,top,right,bottom].every(Number.isFinite)){const w=Math.max(right-left,model.w*.006),h=Math.max(bottom-top,model.h*.006);commit((left+right)/2,(top+bottom)/2,Math.max(w/Math.max(1,size.w-80),h/Math.max(1,size.h-100)));}
+ }
+ function setWipe(value){value=clamp(value,0,100);$('wipeInput').value=value;$('wipeValue').value=Math.round(value)+'%';$('panes').style.setProperty('--wipe',value+'%');$('wipeDivider').style.left=value+'%';$('wipeDivider').setAttribute('aria-valuenow',Math.round(value));}
+ function cancelGesture(){const ids=[...pointers.keys()];pointers.clear();drag=null;pinch=null;selection=null;$('selection').hidden=true;hit.classList.remove('dragging');for(const id of ids)if(hit.hasPointerCapture(id))hit.releasePointerCapture(id);}
+ function setTool(next){tool=next;hit.classList.toggle('box',next==='box');$('box').setAttribute('aria-pressed',String(next==='box'));}
+ function pinchState(){const [a,b]=[...pointers.values()];return a&&b?{mid:{x:(a.x+b.x)/2,y:(a.y+b.y)/2},distance:Math.hypot(a.x-b.x,a.y-b.y)}:null;}
+ hit.addEventListener('wheel',event=>{event.preventDefault();const unit=event.deltaMode===1?16:event.deltaMode===2?size.h:1;zoomAt(Math.exp(-clamp(event.deltaY*unit,-800,800)*.0018),point(event));},{passive:false});
+ hit.addEventListener('pointerdown',event=>{if(!model||![0,1].includes(event.button))return;event.preventDefault();hit.focus({preventScroll:true});const pt=point(event);pointers.set(event.pointerId,pt);hit.setPointerCapture(event.pointerId);if(pointers.size>1){drag=null;selection=null;$('selection').hidden=true;pinch=pinchState();return;}drag={start:pt,last:pt,moved:false};if(tool==='box'&&!space&&event.button!==1){selection={start:pt,end:pt};$('selection').hidden=false;}else hit.classList.add('dragging');});
+ hit.addEventListener('pointermove',event=>{if(!pointers.has(event.pointerId))return;const pt=point(event);pointers.set(event.pointerId,pt);if(pointers.size>1){const next=pinchState();if(pinch?.distance>1&&next?.distance>1)zoomAt(next.distance/pinch.distance,pinch.mid,next.mid);pinch=next;return;}if(!drag)return;if(Math.hypot(pt.x-drag.start.x,pt.y-drag.start.y)>3)drag.moved=true;if(selection){selection.end={...pt,x:clamp(pt.x,0,size.w),y:clamp(pt.y,0,size.h)};Object.assign($('selection').style,{left:(pt.offset+Math.min(pt.x,selection.start.x))+'px',top:Math.min(pt.y,selection.start.y)+'px',width:Math.abs(pt.x-selection.start.x)+'px',height:Math.abs(pt.y-selection.start.y)+'px'});}else commit(camera.cx-(pt.x-drag.last.x)*camera.upp,camera.cy-(pt.y-drag.last.y)*camera.upp,camera.upp);drag.last=pt;});
+ function endPointer(event){if(!pointers.has(event.pointerId))return;pointers.delete(event.pointerId);if(pointers.size){const point=[...pointers.values()][0];drag={start:point,last:point,moved:true};pinch=null;return;}if(event.type==='pointerup'&&selection){const a=world(selection.start),b=world(selection.end);if(Math.abs(a.x-b.x)>camera.upp*5&&Math.abs(a.y-b.y)>camera.upp*5)commit((a.x+b.x)/2,(a.y+b.y)/2,Math.max(Math.abs(a.x-b.x)/Math.max(1,size.w-40),Math.abs(a.y-b.y)/Math.max(1,size.h-40)));setTool('pan');}else if(event.type==='pointerup'&&drag&&!drag.moved&&!space)pick(event);cancelGesture();}
+ for(const name of ['pointerup','pointercancel','lostpointercapture'])hit.addEventListener(name,endPointer);
+ hit.addEventListener('dblclick',event=>{if(tool==='pan')zoomAt(event.shiftKey?.5:2,point(event));});
+ for(const slot of ['A','B']){$('open'+slot).onclick=()=>$('file'+slot).click();$('file'+slot).onchange=async event=>{await loadImage(event.target.files[0],slot);event.target.value='';};}
+ $('openGroups').onclick=()=>$('fileGroups').click();$('fileGroups').onchange=async event=>{await loadGroups(event.target.files[0]);event.target.value='';};
+ $('removeGroups').onclick=()=>{groupData=null;entries=[];byId=new Map();for(const asset of Object.values(assets))asset?.hidden.clear();syncGroups();applyVisibility();measure();if(camera.fit)fit();};
+ $('removeB').onclick=()=>{++tickets.B;dispose(assets.B);assets.B=null;mode='mix';syncControls();};
+ $('swap').onclick=()=>{++tickets.A;++tickets.B;[assets.A,assets.B]=[assets.B,assets.A];controlSource=controlSource==='A'?'B':'A';syncControls();};
+ $('download').onclick=()=>setDownloadMenu($('downloadMenu').hidden);
+ $('downloadFull').onclick=()=>downloadPng('full');$('downloadView').onclick=()=>downloadPng('view');
+ $('download').onkeydown=event=>{if(event.key==='ArrowDown'){event.preventDefault();setDownloadMenu(true);$('downloadFull').focus();}};
+ $('downloadMenu').onkeydown=event=>{if(!['ArrowDown','ArrowUp','Home','End'].includes(event.key))return;event.preventDefault();const buttons=[$('downloadFull'),$('downloadView')],index=buttons.indexOf(document.activeElement);buttons[event.key==='Home'?0:event.key==='End'?1:(index+(event.key==='ArrowDown'?1:-1)+2)%2].focus();};
+ document.addEventListener('pointerdown',event=>{if(!event.target.closest('.download-wrap'))setDownloadMenu(false);});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('downloadMenu').hidden){setDownloadMenu(false);$('download').focus();}});
+ document.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{cancelGesture();const oldColumns=mode==='side';mode=button.dataset.mode;syncControls(oldColumns!==(mode==='side'));});
+ $('mix').oninput=()=>{$('mixValue').value=$('mix').value+'%';paintMix();};$('wipeInput').oninput=()=>setWipe(Number($('wipeInput').value));
+ for(const id of ['outlineColor','outlineWidth'])$(id).oninput=()=>{$('outlineValue').value=$('outlineWidth').value+' px';applyOutline();};
+ $('wipeDivider').onpointerdown=event=>{if(event.button!==0)return;event.preventDefault();wipeDrag=event.pointerId;event.currentTarget.setPointerCapture(event.pointerId);};
+ $('wipeDivider').onpointermove=event=>{if(event.pointerId===wipeDrag){const rect=stage.getBoundingClientRect();setWipe((event.clientX-rect.left)/rect.width*100);}};
+ for(const name of ['pointerup','pointercancel','lostpointercapture'])$('wipeDivider').addEventListener(name,()=>wipeDrag=null);
+ $('wipeDivider').onkeydown=event=>{let value=Number($('wipeInput').value);if(['ArrowLeft','ArrowDown'].includes(event.key))value-=event.shiftKey?10:1;else if(['ArrowRight','ArrowUp'].includes(event.key))value+=event.shiftKey?10:1;else if(event.key==='Home')value=0;else if(event.key==='End')value=100;else return;event.preventDefault();event.stopPropagation();setWipe(value);};
+ $('controlSource').onchange=()=>{controlSource=$('controlSource').value;selected='';renderTree();};
+ $('search').oninput=renderTree;$('expand').onclick=()=>{expanded=new Set(entries.map(node=>node.id));renderTree();};$('collapse').onclick=()=>{expanded.clear();renderTree();};
+ $('restore').onclick=()=>{active()?.asset.hidden.clear();applyVisibility();};
+ $('tree').onclick=event=>{const item=event.target.closest('li[data-path]');if(!item||event.target.closest('input'))return;const id=item.dataset.path;if(event.target.closest('[data-action=expand]')){if(expanded.has(id))expanded.delete(id);else expanded.add(id);renderTree();}else{selectNode(controlSource,id);focusNode(id);}};
+ $('tree').onchange=event=>{if(event.target.dataset.action!=='visible')return;const id=event.target.closest('li[data-path]').dataset.path,current=active();if(event.target.checked){for(let node=byId.get(id);node;node=byId.get(node.parent))current.asset.hidden.delete(node.id);}else current.asset.hidden.add(id);applyVisibility();};
+ $('zoomIn').onclick=()=>zoomAt(1.5);$('zoomOut').onclick=()=>zoomAt(1/1.5);$('fit').onclick=fit;$('actual').onclick=()=>commit(camera.cx,camera.cy,1);$('box').onclick=()=>{cancelGesture();setTool(tool==='box'?'pan':'box');};
+ function applyZoom(){const value=Number($('zoom').value.replace(/[,%\s]/g,''));if(value>0&&Number.isFinite(value))commit(camera.cx,camera.cy,100/value);else toast('请输入有效的缩放百分比。');schedule();}
+ $('zoom').onchange=applyZoom;$('zoom').onkeydown=event=>{if(event.key==='Enter')event.target.blur();};
+ document.querySelectorAll('[data-bg]').forEach(button=>button.onclick=()=>{stage.dataset.background=button.dataset.bg;document.querySelectorAll('[data-bg]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));});
+ $('help').onclick=()=>$('helpDialog').showModal();$('closeHelp').onclick=()=>$('helpDialog').close();
+ document.addEventListener('keydown',event=>{
+  if($('helpDialog').open||event.target.closest('input,select,textarea,button'))return;const key=event.key.toLowerCase();
+  if((event.metaKey||event.ctrlKey)&&key==='o'){event.preventDefault();$('fileA').click();return;}
+  if(event.metaKey||event.ctrlKey||event.altKey)return;
+  if(key===' '){event.preventDefault();space=true;}else if(key==='+'||key==='=')zoomAt(1.5);else if(key==='-'||key==='_')zoomAt(1/1.5);else if(key==='f'||key==='0'){event.preventDefault();fit();}else if(key==='1')commit(camera.cx,camera.cy,1);else if(key==='b'){cancelGesture();setTool(tool==='box'?'pan':'box');}else if(key==='escape'){cancelGesture();setTool('pan');}else if(key==='?')$('helpDialog').showModal();
+ });
+ document.addEventListener('keyup',event=>{if(event.key===' ')space=false;});window.addEventListener('blur',()=>{space=false;cancelGesture();wipeDrag=null;});
+ document.addEventListener('dragenter',event=>{if(event.dataTransfer?.types.includes('Files')){event.preventDefault();dropDepth++;$('dropMask').hidden=false;}});
+ document.addEventListener('dragover',event=>{if(event.dataTransfer?.types.includes('Files'))event.preventDefault();});
+ document.addEventListener('dragleave',()=>{dropDepth=Math.max(0,dropDepth-1);if(!dropDepth)$('dropMask').hidden=true;});
+ document.addEventListener('drop',async event=>{
+  event.preventDefault();dropDepth=0;$('dropMask').hidden=true;const files=[...event.dataTransfer.files],images=files.filter(supported),json=files.filter(file=>/\.json$/i.test(file.name));
+  if(images.length>=2){await loadImage(images[0],'A');await loadImage(images[1],'B');}else if(images.length===1)await loadImage(images[0],!assets.A?'A':'B');
+  for(const file of json)await loadGroups(file);
+  if(images.length>2)toast('仅载入前两张图像 A / B。');
+ });
+ new ResizeObserver(()=>{measure();if(camera.fit)fit();else schedule();}).observe(stage);
+ window.addEventListener('beforeunload',()=>{dispose(assets.A);dispose(assets.B);});
+ setWipe(50);syncControls();
+ // Optional same-origin URLs allow opening a prepared run directly from a local server.
+ async function loadFromURL(){
+  const params=new URLSearchParams(location.search);
+  for(const key of ['a','b','groups']){
+   const value=params.get(key);if(!value)continue;
+   try{const url=new URL(value,location.href);if(url.origin!==location.origin)throw Error('预览文件须与页面同源。');const response=await fetch(url);if(!response.ok)throw Error('文件读取失败：'+response.status);const blob=await response.blob(),file=new File([blob],decodeURIComponent(url.pathname.split('/').at(-1)),{type:blob.type});if(key==='groups')await loadGroups(file);else await loadImage(file,key.toUpperCase());}catch(error){toast(error.message);}
+  }
+ }
+ loadFromURL();
+})();
+</script>
+</body>
+</html>

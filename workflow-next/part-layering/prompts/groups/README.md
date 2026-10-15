@@ -1,4 +1,4 @@
-每个 group 可按完整 ID 放置特化提示词：
+每个 group/part 可按完整 ID 放置特化提示词；目录沿用 `groups/`，匹配不受节点 kind 限制：
 
 - `face/outline.md`：替换 face 的通用轮廓绘制提示词。
 - `face/review.md`：替换 face 的通用审查提示词。
@@ -25,3 +25,22 @@
 ```
 
 路径相对清单所在目录，图片须真实存在且可读取；无需替换通用正文也能单独配置参考。没有清单则仅传入运行中的素体参考，不自动寻找外部图片，不继承父组清单。图片及用途写入本次请求。新增参考或修改提示词不自动重做已完成补全。
+
+补全参考清单还可显式引用本次运行中一个直属同级节点：
+
+```json
+[
+  { "sibling": "palm", "description": "同手实际掌片；核对手指隐藏根端的真实搭接位置" }
+]
+```
+
+`path` 与 `sibling` 二选一。`sibling` 只允许单段名称，须是当前父节点下已经登记的其他直属子节点；缺失或尚未完成整层去重时报错，不隐式查找其他组。运行器取该节点经审查和同层去重的只读 SVG，生成保持完整画布坐标的参考 PNG，并显式开放该 SVG 的 `read_svg`。图片、用途、组 ID、源 SVG、源版本和 `sourceStage: "reduction"` 写入当前请求。它不读取同级正在生成的补全稿，因此不依赖并发任务的完成顺序；后续补全会保留这份底形。此引用只在 completion 步骤支持，children 等步骤仍只支持图片路径。
+
+手指连接先验配置在以下完整 ID 的 `completion.md`，每项旁边的清单都声明同手 `palm`：
+
+| 父路径 | 应用先验的直属 part |
+| --- | --- |
+| `arms/arm_left/hand` | `thumb`、`index_finger`、`middle_finger`、`ring_finger`、`little_finger` |
+| `arms/arm_right/hand` | `thumb`、`index_finger`、`middle_finger`、`ring_finger`、`little_finger` |
+
+十根手指都可能因遮挡而缺少实际掌指连接，因此逐项配置，不仅针对小指。拇指按自身根部与鱼际附近处理，其他四指沿各自走向判断；已有合理搭接时不强行新增。`hand` group 与 `palm` part 不套用这份伸入侧先验，掌片保留覆盖侧职责。仍按完整 ID 精确匹配，不按末段名称或祖先自动继承；新分组使用其他 ID 时须显式配置相应目录。

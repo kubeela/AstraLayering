@@ -6,7 +6,7 @@
 
 人物分层技能的初始分组已改为 `group` 树，第 3 步按最底层 group 绘制和检查色稿；第 4 步及后续接口仍待迁移。
 
-[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 与分组预览器](./loading/svg-preview.html)
+[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 与分组预览器](./loading/part-preview.html)
 
 ## 效果展示
 
@@ -135,19 +135,21 @@ SVG按实体部件组织，保留当前姿态所需的隐藏底形：例如发�
 
 ## 查看与对比结果
 
-用浏览器打开[loading/svg-preview.html](./loading/svg-preview.html)，选择或拖入 `structure/groups.json`，右侧图层列表会按 group 树展示；载入匹配的 SVG 后，实际绘制段出现在所属 group 下，可逐级展开、搜索和控制显隐。拖入生成的 SVG 与对应彩图，还可检查整体与局部贴合。页面可离线使用，无需构建或启动服务。
+用浏览器打开 [part-preview](./loading/part-preview.html)，拖入 SVG 与参考图作为 A / B，使用混合、两侧对比、滑动对比或 SVG 描边。再带上对应的 `groups.json`，只有与 SVG 明确匹配的节点才会出现在右侧，可搜索、展开和控制显隐；单击画布部件会展开祖先并定位到条目，单击条目可放大该组。不匹配或未载入分组时隐藏右侧控制，图像对比仍可用。页面可离线使用，无需构建或启动服务。
+
+`workflow-next/part-layering` 全部部件完成后自动生成 `.run/<运行名>/preview.svg`，与同目录的 `groups.json` 一起用于预览。合并只绘制最终叶子 part，保留完整 group/part 树；按树顺序叠放，后项在前。源部件不会被改写。
 
 <details>
 <summary>SVG预览器功能与常用操作</summary>
 
-- SVG和位图都可放入A／B槽位，支持左右、透明叠加与滑动对比，共用缩放和平移。
-- 图层树读取A中SVG的原生嵌套分组，支持搜索、逐项显隐、全部显示／隐藏和恢复；交换A／B可检查另一份SVG。
+- SVG和位图都可放入A／B槽位，支持混合、两侧、滑动和描边，共用缩放和平移。悬浮文件卡片显示“单击更换”，A／B之间的双向箭头交换图片；B与groups.json卡片右上角的×移除对应文件。
+- 图层树由匹配的groups.json和SVG完整路径共同确定，支持搜索、展开、逐项显隐和恢复；单击画布定位条目，单击条目放大查看。两张SVG都匹配时可选择控制哪一张。
 - 两图按各自最长边等权归一化并居中，不拉伸。不同构图不会因此自动配准；精确对照应使用同版、同画布参考。
-- 滚轮缩放、拖动平移；`B`框选放大，`F`或`0`适应窗口，`1`恢复实际大小。触屏支持双指捏合，右下导航可快速定位。
-- 可切换棋盘格、浅灰、深色及白色背景，支持全屏和直接输入缩放比例。
-- “识别独立图块”按空间关系估计分块；重叠部件和复合路径仍需结合语义判断。
+- 滚轮缩放、拖动平移；`B`框选放大，`F`或`0`适应窗口，`1`恢复实际大小。触屏支持双指捏合，也可直接输入缩放比例。
+- 可切换棋盘格、浅灰、深色及白色背景。
+- “下载”提供整图PNG与当前放大区域PNG。整图按原图尺寸导出完整画布，两侧模式包含两张图；当前区域保留缩放和平移，按屏幕像素密度导出。两种方式都保留对比方式、比例、描边、背景和显隐，不包含工具栏与侧栏。
 
-文件在本地处理，SVG原生层级无需额外图层清单。矢量内容随视图重绘，内嵌位图仍受原始分辨率限制；外部资源及脚本不会加载或执行。
+文件在本地处理；分组控制需要对应的groups.json，单纯对比图片无需分组文件。矢量内容随视图重绘，内嵌位图仍受原始分辨率限制；SVG脚本不执行。
 
 </details>
 
@@ -174,7 +176,7 @@ SVG按实体部件组织，保留当前姿态所需的隐藏底形：例如发�
 <details>
 <summary>历史资料</summary>
 
-[旧 svg-layering 资料包](./archive/svg-layering/workflows/readme.md)与 [prompt.txt](./prompt.txt)保留作回溯；[图层契约](./loading/layer-contract.md)和[契约示例](./loading/examples.md)用于阅读早期示例。现行执行入口为两个新技能，预览器读取 SVG 原生分组。
+[旧 svg-layering 资料包](./archive/svg-layering/workflows/readme.md)与 [prompt.txt](./prompt.txt)保留作回溯；[图层契约](./loading/layer-contract.md)和[契约示例](./loading/examples.md)用于阅读早期示例。现行执行入口为两个新技能，预览器以对应的 groups.json 和 SVG 完整路径提供分组控制。
 
 </details>
 

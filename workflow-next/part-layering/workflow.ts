@@ -1,7 +1,5 @@
 export type ReadyGroup<G> = { id: string; group: G; depth: number };
 
-export const defaultConcurrency = 5;
-
 export type WorkflowHooks<G> = {
   preparation?(): Promise<void>;
   initialize(input: G | G[] | null): Promise<void>;
@@ -10,10 +8,7 @@ export type WorkflowHooks<G> = {
   runRound(group: G): Promise<void>;
 };
 
-export function validateWorkflowOptions({ concurrency = defaultConcurrency, maxDepth = Infinity } = {}): void {
-  if (!Number.isSafeInteger(concurrency) || concurrency < 1) {
-    throw new Error('concurrency must be a positive integer');
-  }
+export function validateWorkflowOptions({ maxDepth = Infinity } = {}): void {
   if (maxDepth !== Infinity && (!Number.isInteger(maxDepth) || maxDepth < 1)) {
     throw new Error('maxDepth must be a positive integer or Infinity');
   }
@@ -22,9 +17,9 @@ export function validateWorkflowOptions({ concurrency = defaultConcurrency, maxD
 export async function runWorkflow<G>(
   input: G | G[] | null,
   hooks: WorkflowHooks<G>,
-  { concurrency = defaultConcurrency, maxDepth = Infinity } = {},
+  { maxDepth = Infinity } = {},
 ): Promise<void> {
-  validateWorkflowOptions({ concurrency, maxDepth });
+  validateWorkflowOptions({ maxDepth });
 
   await hooks.preparation?.();
   await hooks.initialize(input);
@@ -51,7 +46,6 @@ export async function runWorkflow<G>(
 
       // 优先浅层，但其他分支仍在运行时，也允许派发依赖已满足的子组。
       for (const item of [...ready].sort((a, b) => a.depth - b.depth)) {
-        if (active.size >= concurrency) break;
         if (started.has(item.id) || item.depth >= maxDepth) continue;
 
         started.add(item.id);

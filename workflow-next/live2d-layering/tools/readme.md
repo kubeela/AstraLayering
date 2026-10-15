@@ -14,7 +14,7 @@
 
 预览示例：`python3 tools/svg_preview.py drawing.svg preview.png`。查看某个元素的边缘，可加 `--reference reference.png --crop X Y W H --scale 2 --only 元素id --edge-overlay`；多个元素可重复 `--only`。描边从透明底渲染结果提取，因此包括裁剪、遮罩和孔洞的可见边界，不追踪内部色彩变化。
 
-轮廓色块的当前稿统一保存在 `block-layers/groups.svg`，白底预览为 `block-layers/preview.png`。group 的绘制 `<g>` 使用完整 `data-group-path`，part 的轮廓 `<g>` 使用完整 `data-part-path`。同画布的 `character.svg` 保存 part 的真实形状（完整 `data-part-path`）和独立渲染层（同名 `<g id>`）。独立渲染层的归属与依赖另存于 `structure/rendering.json`。色块边缘叠图是预览诊断，不写入正式 SVG 描线。`loading/svg-preview.html` 按文件区分“组轮廓／部件轮廓”和“部件绘制”。
+轮廓色块的当前稿统一保存在 `block-layers/groups.svg`，白底预览为 `block-layers/preview.png`。group 的绘制 `<g>` 使用完整 `data-group-path`，part 的轮廓 `<g>` 使用完整 `data-part-path`。同画布的 `character.svg` 保存 part 的真实形状（完整 `data-part-path`）和独立渲染层（同名 `<g id>`）。独立渲染层的归属与依赖另存于 `structure/rendering.json`。色块边缘叠图是预览诊断，不写入正式 SVG 描线。`loading/part-preview.html` 按 SVG 的完整分组标识关联 groups.json，并提供 A/B 对比和描边。
 
 范围检查：`python3 tools/svg_containment.py --parent-svg block-layers/groups.svg --candidate 临时稿.svg --groups groups.json --group-path body --out 轮廓检查.json`。通过后再将临时稿写回当前稿。按树自动检查全部直属孩子，用输入父色块的实际填色范围作边界，保留孔洞、分离区域、变换和裁剪效果。逐个独显孩子，其他色块不会遮住越界。默认每像素边长采样 4 次、透明度阈值 128，采样网格中任一越界即失败；这是渲染形状的包含检查。缺少绑定或空色块也失败。通过返回 0，检查失败返回 1，输入或环境错误返回 2。蓝色为父边缘，绿色为孩子，红色为越界；坐标使用原画布像素。
 
@@ -53,4 +53,4 @@ python3 -m venv "$preview_runtime/python"
 
 独立层可按实际绘制顺序放置，逻辑 owner 不要求 SVG 嵌套。工具支持常规 SVG 变换；位于嵌套 SVG viewport 中或祖先使用 CSS transform 的独立层，需先移入普通 SVG 分组。检查验证结构，投影是否符合原图、叠放和色彩是否合理由制作 worker 查看实际组合图。`follow` 为动画关系记录，本工具不生成动画变形器。
 
-载入 `loading/svg-preview.html` 时，可同时提供 `groups.json` 与 `rendering.json`，独立渲染层按同名 id 显示在 owner 节点下，鼠标悬停可看跟随和裁切关系；无关联时仍按 SVG 原生图层查看。
+载入 `loading/part-preview.html` 时，使用 SVG 与参考图作为 A/B，并提供对应 groups.json。页面只显示按完整 data-group-path／data-part-path 匹配的分组控制，点击画布可定位树条目；不匹配时隐藏右侧控制。rendering.json 的跟随、裁切关系仍由本目录程序工具处理，预览器不再提供独立渲染层配置或原生图层回退面板。
