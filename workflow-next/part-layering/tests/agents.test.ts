@@ -5,12 +5,14 @@ import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import { CodexAgents } from '../agents.ts';
 import { AgentRuntime, interruptedTaskPrompt } from '../agent-runtime.ts';
+import { nodeExecutables } from './node-executables.ts';
 
 const started = { type: 'thread.started', thread_id: 'test-thread' };
 const reasoning = { type: 'item.completed', item: { id: 'reason', type: 'reasoning', text: '测试公开摘要' } };
 const completed = { type: 'turn.completed', usage: { input_tokens: 12, cached_input_tokens: 4, output_tokens: 3, reasoning_output_tokens: 1 } };
 
 async function fixture(t: TestContext, events: unknown[], extraCode = '') {
+  nodeExecutables(t);
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-agents-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const executable = join(directory, 'fake-codex.mjs');

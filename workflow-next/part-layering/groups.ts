@@ -40,7 +40,7 @@ function readProgress<T>(value: unknown, name: string): StepProgress<T> {
 function checkOutput(stage: GroupStage | 'merge', progress: StepProgress<unknown>): void {
   if (progress.status !== 'completed') return;
   const output = record(progress.output, `${stage}.output`);
-  if (['outline', 'review', 'completion', 'merge'].includes(stage)) {
+  if (['outline', 'review', 'reduction', 'completion', 'merge'].includes(stage)) {
     if (typeof output.path !== 'string' || !output.path) throw new Error(`${stage}.output requires an SVG path`);
   } else if (stage === 'completionCheck') {
     if (output.passed !== true) throw new Error('completionCheck must pass before being completed');
@@ -63,6 +63,8 @@ export function normalizeGroups(values: unknown, seen = new Set<string>()): Grou
       if (input[field] !== undefined && typeof input[field] !== 'string') throw new Error(`group.${field} must be a string`);
     }
     if (input.metadata !== undefined) record(input.metadata, 'group.metadata');
+    if (input.kind !== undefined && input.kind !== 'group' && input.kind !== 'part') throw new Error('节点 kind 必须为 group 或 part');
+    if (input.kind === 'part' && Array.isArray(input.groups) && input.groups.length) throw new Error('part 不能包含子节点');
     const rawSteps = input.steps === undefined ? {} : record(input.steps, 'group.steps');
     const steps = Object.fromEntries(groupStages.map(stage => {
       const progress = readProgress(rawSteps[stage], `${input.id}.${stage}`);
@@ -71,6 +73,7 @@ export function normalizeGroups(values: unknown, seen = new Set<string>()): Grou
     })) as GroupProgress;
     const group: GroupNode = {
       id: input.id,
+      ...(input.kind !== undefined ? { kind: input.kind as 'group' | 'part' } : {}),
       ...(input.name !== undefined ? { name: input.name as string } : {}),
       ...(input.note !== undefined ? { note: input.note as string } : {}),
       ...(input.metadata !== undefined ? { metadata: structuredClone(input.metadata) as Record<string, unknown> } : {}),
@@ -114,6 +117,16 @@ export function groupCompleted(group: GroupNode): boolean {
   return groupStages.every(stage => group.steps[stage].status === 'completed');
 }
 
+// 空的分析结果是终止事实；空的初始 groups 数组本身不是。
+export function nodeKind(group: GroupNode): 'group' | 'part' {
+  return group.kind === 'part' || (group.steps.children.status === 'completed' && !group.groups.length) ? 'part' : 'group';
+}
+
+export function nodeSeed(group: GroupNode) {
+  const { groups, steps, ...seed } = group;
+  return { ...seed, kind: seed.kind ?? 'group' };
+}
+
 export function setGroupProgress<S extends GroupStage>(
   group: GroupNode, stage: S, progress: StepProgress<GroupStageOutputs[S]>,
 ): void {
@@ -122,60 +135,50 @@ export function setGroupProgress<S extends GroupStage>(
 
 export class GroupStore {
   readonly path: string;
-  readonly progressPath: string;
   private document: GroupsDocument;
   private writes = Promise.resolve();
   private savedGroups?: string;
 
-  private constructor(path: string, progressPath: string, document: GroupsDocument, savedGroups?: string) {
+  private constructor(path: string, document: GroupsDocument, savedGroups?: string) {
     this.path = path;
-    this.progressPath = progressPath;
     this.document = document;
     this.savedGroups = savedGroups;
   }
 
   static async open(directory: string): Promise<GroupStore> {
     const path = join(directory, 'groups.json');
-    const progressPath = join(directory, 'progress.json');
     const input = await readDocument(path) ?? { groups: [] };
     if (input.version !== undefined && input.version !== 1) throw new Error('Unsupported groups document version');
-    // 兼容原来混合存储的文件；只保留实际组与步骤，不再读取首次完成标记。
-    const legacy = 'initial' in input || 'merge' in input;
-    const progress = legacy ? input : await readDocument(progressPath) ?? {};
-    if (progress.version !== undefined && progress.version !== 1) throw new Error('Unsupported progress document version');
-    const groups = legacy ? normalizeGroups(input.groups) : restoreProgress(input.groups, progress.groups);
+    // 旧 progress.json 和混在树里的 steps 都不作为续跑依据。
+    function structure(values: unknown): unknown {
+      if (!Array.isArray(values)) throw new Error('groups must be an array');
+      return values.map(value => {
+        const { steps, groups, ...seed } = record(value, 'group');
+        return { ...seed, groups: structure(groups ?? []) };
+      });
+    }
+    const groups = normalizeGroups(structure(input.groups));
     const document: GroupsDocument = {
       version: 1,
       ...(input.subject !== undefined ? { subject: input.subject as Subject } : {}),
       groups,
-      merge: readProgress(progress.merge, 'merge'),
+      merge: { status: 'pending' },
     };
-    checkOutput('merge', document.merge);
     checkSubject(document.subject);
-    if (document.merge.status === 'completed' &&
-        (!groups.length || !walkGroups(groups).every(entry => groupCompleted(entry.group)))) {
-      if (legacy) throw new Error('Completed merge requires groups and completed group steps');
-      document.merge = { status: 'pending' };
-    }
+    await (await import('./artifact-facts.ts')).restoreFacts(directory, document);
     const savedGroups = JSON.stringify(input) === JSON.stringify(groupStructure(document)) ? serialize(input) : undefined;
-    const store = new GroupStore(path, progressPath, document, savedGroups);
-    if (legacy || Object.hasOwn(progress, 'initial')) await store.update(() => {});
+    const store = new GroupStore(path, document, savedGroups);
     return store;
   }
 
   snapshot(): GroupsDocument { return structuredClone(this.document); }
 
-  // 工具与调度器共用队列；各文件以临时文件 + rename 保存。
+  // 工具与调度器共用队列；只保存分组事实，steps 仅供运行中展示。
   update(change: (document: GroupsDocument) => void): Promise<void> {
     const write = this.writes.then(async () => {
       const draft = this.snapshot();
       change(draft);
       const groups = serialize(groupStructure(draft));
-      await writeAtomic(this.progressPath, serialize({
-        version: 1,
-        groups: Object.fromEntries(walkGroups(draft.groups).map(({ group }) => [group.id, group.steps])),
-        merge: draft.merge,
-      }));
       if (groups !== this.savedGroups) await writeAtomic(this.path, groups);
       this.savedGroups = groups;
       this.document = draft;
@@ -200,24 +203,4 @@ function groupStructure(document: GroupsDocument) {
     return groups.map(({ steps, groups: children, ...group }) => ({ ...group, groups: tree(children) }));
   }
   return { ...(document.subject !== undefined ? { subject: document.subject } : {}), groups: tree(document.groups) };
-}
-
-function restoreProgress(values: unknown, value: unknown): GroupNode[] {
-  const groups = normalizeGroups(values);
-  const progress = value === undefined ? {} : record(value, 'progress.groups');
-  function restore(nodes: GroupNode[]): GroupInput[] {
-    return nodes.map(group => {
-      const saved = Object.hasOwn(progress, group.id) ? progress[group.id] : undefined;
-      if (saved === undefined) return { ...group, groups: restore(group.groups) };
-      const steps = { ...record(saved, `${group.id}.steps`) };
-      const children = steps.children === undefined ? undefined : record(steps.children, `${group.id}.children`);
-      if (children?.status === 'completed' && JSON.stringify(record(children.output, 'children.output').ids) !==
-          JSON.stringify(group.groups.map(child => child.id))) {
-        // 进度比树先落盘时，不把未登记的子组当成已登记。
-        delete steps.children;
-      }
-      return { ...group, groups: restore(group.groups), steps: steps as Partial<GroupProgress> };
-    });
-  }
-  return normalizeGroups(restore(groups));
 }

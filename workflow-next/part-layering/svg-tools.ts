@@ -1,12 +1,47 @@
-import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, realpath, stat, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import sharp from 'sharp';
-import type { FunctionTool } from './function-tools.ts';
+import { textResult, type FunctionTool } from './function-tools.ts';
 
 export type Canvas = { width: number; height: number };
 export type SvgObservation = { source: string; mode: 'svg' | 'blend' | 'edge'; savedPath: string };
 const boundsScale = 4;
 const alphaThreshold = 128;
+
+export function createSvgReadTool(directory: string, paths: (string | undefined)[]): FunctionTool {
+  const normalize = (path: string) => process.platform === 'win32' ? path.toLowerCase() : path;
+  const allowed = new Set(paths.filter((path): path is string => !!path).map(path => normalize(resolve(directory, path))));
+  return {
+    name: 'read_svg',
+    description: '只读本次明确提供的 SVG 或指定草稿源码，可复用父图共享曲线。offset 是字符偏移，默认 0；limit 默认 16000，最多 65536。返回 totalCharacters、sha256、nextOffset，nextOffset 非空时按它继续读取同版本后续页。源码分页不等于完整 SVG；读取不修改文件，也不代替 preview_svg 自检。',
+    inputSchema: { type: 'object', additionalProperties: false, required: ['path'], properties: {
+      path: { type: 'string' }, offset: { type: 'integer', minimum: 0 }, limit: { type: 'integer', minimum: 1, maximum: 65536 },
+    } },
+    async execute(value, signal) {
+      signal.throwIfAborted();
+      if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => !['path', 'offset', 'limit'].includes(key)) ||
+          typeof (value as { path?: unknown }).path !== 'string') throw new Error('仅提交本次指定 SVG 的 path、offset 和 limit');
+      const args = value as { path: string; offset?: number; limit?: number };
+      const offset = args.offset ?? 0, limit = args.limit ?? 16000;
+      if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(limit) || limit < 1 || limit > 65536) throw new Error('无效源码分页 offset 或 limit');
+      const requested = resolve(directory, args.path);
+      if (!/\.svg$/i.test(requested) || !allowed.has(normalize(requested))) throw new Error('只能读取本次明确提供的 SVG 或指定草稿');
+      const root = await realpath(directory), source = await realpath(requested), rel = relative(root, source);
+      if (rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)) throw new Error('SVG 必须位于本次运行目录内');
+      if ((await stat(source)).size > 8 * 1024 * 1024) throw new Error('SVG 源码超过 8 MiB，未读取');
+      const bytes = await readFile(source);
+      if (bytes.length > 8 * 1024 * 1024) throw new Error('SVG 源码超过 8 MiB，未读取');
+      const text = bytes.toString('utf8');
+      if (offset > text.length) throw new Error('offset 超出 SVG 源码长度');
+      const end = Math.min(offset + limit, text.length);
+      signal.throwIfAborted();
+      return textResult({ source, bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex'),
+        offset, totalCharacters: text.length, nextOffset: end < text.length ? end : null,
+        complete: offset === 0 && end === text.length, svg: text.slice(offset, end) });
+    },
+  };
+}
 
 async function svgDocument(path: string, canvas: Canvas) {
   const bytes = await readFile(path);
@@ -54,7 +89,7 @@ export async function checkParentBounds(path: string, parent: string, canvas: Ca
       (right - left + 1) / boundsScale, (bottom - top + 1) / boundsScale] : null };
 }
 
-export async function validateGroupSvg(path: string, id: string, canvas: Canvas, parent?: string): Promise<Buffer> {
+export async function validateGroupSvg(path: string, id: string, canvas: Canvas, parent?: string, allowEmpty = false): Promise<Buffer> {
   const document = await svgDocument(path, canvas);
   if (/<(?:image|script|foreignObject)\b/.test(document.text)) throw new Error('组 SVG 必须是可编辑矢量，不嵌入位图或脚本');
   const bindings = [...document.text.matchAll(/\bdata-group-path\s*=\s*(['"])(.*?)\1/g)].map(match => match[2]);
@@ -64,7 +99,7 @@ export async function validateGroupSvg(path: string, id: string, canvas: Canvas,
     throw new Error(`SVG 必须仅绑定当前组 data-group-path="${id}"，容器须有 id`);
   }
   const mask = await alpha(path, canvas);
-  if (!mask.some(value => value >= 128)) throw new Error('组 SVG 没有可见填色区域');
+  if (!allowEmpty && !mask.some(value => value >= 128)) throw new Error('组 SVG 没有可见填色区域');
   if (parent) {
     const bounds = await checkParentBounds(path, parent, canvas);
     if (bounds.status !== 'pass') throw new Error(`子组超出父轮廓：${JSON.stringify(bounds)}`);

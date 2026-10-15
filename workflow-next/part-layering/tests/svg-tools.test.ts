@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
-import { checkParentBounds, createSvgPreviewTool, validateGroupSvg } from '../svg-tools.ts';
+import { checkParentBounds, createSvgPreviewTool, createSvgReadTool, validateGroupSvg } from '../svg-tools.ts';
 import type { ToolResult } from '../function-tools.ts';
 
 const signal = new AbortController().signal;
@@ -27,6 +27,46 @@ async function fixture(t: TestContext) {
   const observationDirectory = join(directory, 'observations');
   return { directory, reference, path, observationDirectory, tool: createSvgPreviewTool({ directory, reference, canvas, observationDirectory }) };
 }
+
+test('SVG 源码读取仅限本轮绑定文件，保持原文，拒绝额外路径、目录逃逸及超大文件', async t => {
+  const f = await fixture(t), before = await readFile(f.path);
+  const tool = createSvgReadTool(f.directory, [f.path, undefined]);
+  const result = info(await tool.execute({ path: 'candidate.svg' }, signal));
+  assert.equal(result.svg, before.toString('utf8'));
+  assert.equal(result.bytes, before.length);
+  assert.equal(result.complete, true);
+  assert.equal(result.nextOffset, null);
+  assert.deepEqual(await readFile(f.path), before);
+  assert.ok(!(await readdir(f.directory)).includes('observations'));
+  const other = join(f.directory, 'other.svg');
+  await writeFile(other, before);
+  await assert.rejects(tool.execute({ path: other }, signal), /明确提供/);
+  await assert.rejects(tool.execute({ path: f.path, output: other }, signal), /仅提交/);
+  const outside = await mkdtemp(join(tmpdir(), 'part-layering-read-outside-'));
+  t.after(() => rm(outside, { recursive: true, force: true }));
+  await writeFile(join(outside, 'outside.svg'), before);
+  await symlink(outside, join(f.directory, 'escape'), process.platform === 'win32' ? 'junction' : 'dir');
+  const escaped = join(f.directory, 'escape', 'outside.svg');
+  await assert.rejects(createSvgReadTool(f.directory, [escaped]).execute({ path: escaped }, signal), /运行目录内/);
+  const large = before.toString() + ' '.repeat(300000);
+  await writeFile(f.path, large);
+  let offset: number | null = 0, reconstructed = '', version: string | undefined;
+  do {
+    const page = info(await tool.execute({ path: f.path, offset, limit: 65536 }, signal));
+    assert.equal(page.offset, offset);
+    assert.equal(page.totalCharacters, large.length);
+    assert.equal(page.complete, false);
+    version ??= page.sha256; assert.equal(page.sha256, version);
+    reconstructed += page.svg; offset = page.nextOffset;
+  } while (offset !== null);
+  assert.equal(reconstructed, large);
+  assert.equal(await readFile(f.path, 'utf8'), large);
+  for (const args of [{ offset: -1 }, { limit: 65537 }, { offset: large.length + 1 }]) {
+    await assert.rejects(tool.execute({ path: f.path, ...args }, signal));
+  }
+  await writeFile(f.path, ' '.repeat(8 * 1024 * 1024 + 1));
+  await assert.rejects(tool.execute({ path: f.path }, signal), /超过 8 MiB/);
+});
 
 test('SVG 裁剪直接放大矢量，混合和边缘叠加与参考共用坐标；预览落盘且输入不变', async t => {
   const f = await fixture(t);
@@ -157,8 +197,8 @@ test('预览拒绝越界选框、无效倍率、外部路径和逃逸 symlink，
   t.after(() => rm(outside, { recursive: true, force: true }));
   const path = join(outside, 'outside.svg');
   await writeFile(path, await readFile(f.path));
-  await symlink(path, join(f.directory, 'escape.svg'));
-  for (const args of [{ path: f.path, crop: [99, 0, 2, 2] }, { path: f.path, scale: 9 }, { path }, { path: 'escape.svg' }]) {
+  await symlink(outside, join(f.directory, 'escape'), process.platform === 'win32' ? 'junction' : 'dir');
+  for (const args of [{ path: f.path, crop: [99, 0, 2, 2] }, { path: f.path, scale: 9 }, { path }, { path: 'escape/outside.svg' }]) {
     await assert.rejects(f.tool.execute(args, signal));
   }
   assert.ok(!(await readdir(f.directory)).includes('observations'));

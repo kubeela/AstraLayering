@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, readdir, rm, symlink } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, realpath, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
@@ -66,11 +66,30 @@ test('无效选框、倍率、外部路径及 symlink 不读图、不落预览',
   t.after(() => rm(outside, { recursive: true, force: true }));
   const path = join(outside, 'outside.png');
   await sharp(f.reference).toFile(path);
-  await symlink(path, join(f.directory, 'references', 'escape.png'));
+  await symlink(outside, join(f.directory, 'references', 'escape'), process.platform === 'win32' ? 'junction' : 'dir');
   for (const args of [
     { path: f.reference, crop: [3, 0, 2, 2] }, { path: f.reference, crop: [-1, 0, 2, 2] },
     { path: f.reference, crop: [0, 0, 0, 2] }, { path: f.reference, scale: 0 }, { path: f.reference, scale: 9 },
-    { path }, { path: 'references/escape.png' },
+    { path }, { path: 'references/escape/outside.png' },
   ]) await assert.rejects(f.view.execute(args, signal));
   assert.ok(!(await readdir(f.directory)).includes('observations'));
+});
+
+test('仅明确绑定的外部参考可按需放大读取，不开放相邻文件或目录链接', async t => {
+  const f = await fixture(t), external = await fixture(t);
+  const path = await realpath(external.reference), before = await readFile(path);
+  const allowed = createBitmapTool(f.directory, f.observations, [path]);
+  const viewed = await allowed.execute({ path, crop: [2, 0, 2, 2], scale: 2 }, signal);
+  assert.equal(text(viewed).path, path);
+  assert.deepEqual(text(viewed).crop, [2, 0, 2, 2]);
+  assert.equal((await sharp(bitmap(viewed)).metadata()).width, 4);
+  assert.deepEqual(await readFile(path), before);
+
+  const other = join(external.directory, 'other.png');
+  await sharp(external.reference).toFile(other);
+  await symlink(external.directory, join(f.directory, 'outside'), process.platform === 'win32' ? 'junction' : 'dir');
+  const previews = await readdir(f.observations);
+  await assert.rejects(allowed.execute({ path: other }, signal), /明确配置/);
+  await assert.rejects(allowed.execute({ path: 'outside/other.png' }, signal), /明确配置/);
+  assert.deepEqual(await readdir(f.observations), previews);
 });

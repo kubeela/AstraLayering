@@ -6,11 +6,17 @@ import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import type { AgentSession, AgentTask } from '../agents.ts';
 import { GroupStore, normalizeGroups } from '../groups.ts';
-import { createLayeringSteps } from '../layering-steps.ts';
+import { createLayeringSteps as createDefaultLayeringSteps } from '../layering-steps.ts';
 import { runLayering } from '../layering.ts';
 import { readGroupPrompt } from '../group-prompts.ts';
+import { drawGroupOutline } from '../outline-agent.ts';
 
 const signal = new AbortController().signal;
+// 本文件仅测试轮廓/review；后续补全由 completion-agent.test.ts 验证。
+function createLayeringSteps(agents: Parameters<typeof createDefaultLayeringSteps>[0]) {
+  return { ...createDefaultLayeringSteps(agents), completeOcclusion: async () =>
+    ({ status: 'pending' as const, message: '轮廓测试结束，补全另行测试' }) };
+}
 type Runtime = { group: { id: string }; outputSvg?: string; candidate?: string; parentSvg: string | null };
 function runtime(task: AgentTask): Runtime {
   const match = task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/);
@@ -93,6 +99,25 @@ test('提示词按完整 group ID 和步骤独立替换；子组不继承父组�
   await assert.rejects(readGroupPrompt('../face', 'outline', directory), /Invalid/);
 });
 
+test('轮廓写入工具在终端不可用时完成草稿，拒绝路径注入及错误归属且仍须预览', async t => {
+  const f = await fixture(t), outputPath = join(f.directory, 'face.draft.svg');
+  const group = f.store.snapshot().groups[0];
+  const result = await drawGroupOutline({ ...f, group, outputPath }, { async run(task) {
+    const write = task.tools!.find(tool => tool.name === 'write_outline_svg')!;
+    await assert.rejects(write.execute({ svg: svg('face'), path: join(f.directory, 'foreign.svg') }, signal), /路径由程序绑定/);
+    await assert.rejects(readFile(join(f.directory, 'foreign.svg')), { code: 'ENOENT' });
+    await assert.rejects(write.execute({ svg: svg('other') }, signal));
+    await assert.rejects(readFile(join(f.directory, 'face.svg')), { code: 'ENOENT' });
+    await write.execute({ svg: svg('face') }, signal);
+    assert.equal(await readFile(outputPath, 'utf8'), svg('face'));
+    await task.tools!.find(tool => tool.name === 'view_bitmap')!.execute({ path: f.references.baseSubject, crop: [10,10,20,20], scale: 2 }, signal);
+    await task.tools!.find(tool => tool.name === 'preview_svg')!.execute({ path: outputPath, mode: 'blend' }, signal);
+    return { text: 'done', images: [] };
+  } });
+  assert.equal(result.path, outputPath);
+  await assert.rejects(readFile(join(f.directory, 'face.svg')), { code: 'ENOENT' });
+});
+
 test('真实默认适配器接入绘制、自检和独立 review，之后停在补形；续跑全部跳过', async t => {
   const f = await fixture(t);
   const mock = agents(['pass']);
@@ -136,7 +161,7 @@ test('revise 由原绘制会话返修，每次 review 新会话，报告保留�
     '对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。\n');
   assert.equal(await readFile(join(f.directory, 'stages/outline/face.repairs/1/prompt.txt'), 'utf8'), mock.calls[2].task.prompt);
   assert.doesNotMatch(mock.calls[2].task.prompt, /会话|窗口|thread|最多.*返修/);
-  assert.equal(mock.calls[2].task.tools!.length, 1);
+  assert.deepEqual(mock.calls[2].task.tools!.map(tool => tool.name), ['preview_svg', 'write_outline_svg', 'read_svg', 'view_bitmap']);
   const report = JSON.parse(await readFile(join(f.directory, 'stages/review/face.review.json'), 'utf8'));
   assert.deepEqual(report.reviews.map((review: { verdict: string }) => review.verdict), ['revise', 'pass']);
   assert.notEqual(report.reviews[0].candidateHash, report.reviews[1].candidateHash);
@@ -150,7 +175,9 @@ test('并发组各自保留绘制会话和独立审查记录，返修不会串�
   const f = await fixture(t);
   await f.store.update(document => { document.groups = normalizeGroups([{ id: 'face' }, { id: 'hair' }]); });
   const mock = agents(['revise', 'revise', 'pass']);
-  await runLayering({ ...f, groups: null, concurrency: 2, steps: createLayeringSteps(mock) });
+  await runLayering({ ...f, groups: null, concurrency: 2, steps: { ...createLayeringSteps(mock),
+    async reduceOutlines() { return { status: 'completed', output: { changed: [] } }; },
+  } });
   const drawingIds: number[] = [];
   for (const id of ['face', 'hair']) {
     const calls = mock.calls.filter(call => runtime(call.task).group.id === id);
@@ -255,7 +282,7 @@ test('blocked 不返修也不放行；只有最终回复没有提交工具时不
     else await run;
     assert.equal(mock.calls.length, 2);
     const state = (await GroupStore.open(f.directory)).snapshot();
-    assert.equal(state.groups[0].steps.review.status, missingSubmission ? 'failed' : 'pending');
+    assert.equal(state.groups[0].steps.review.status, 'pending');
     assert.equal(state.groups[0].steps.completion.status, 'pending');
   }
 });
@@ -292,8 +319,34 @@ test('子组绘制收到父组完成 SVG；越界不能进入 review，父组文
     } }]);
   });
   const mock = agents(['pass']);
-  await assert.rejects(runLayering({ ...f, groups: { id: 'face/eye' }, steps: createLayeringSteps(mock) }), /超出父轮廓/);
+  const group = normalizeGroups([{ id: 'face/eye' }])[0];
+  const parentGroup = normalizeGroups([{ id: 'face', steps: { completion: { status: 'completed', output: { path: parent } } } }])[0];
+  await assert.rejects(drawGroupOutline({ ...f, group, parent: parentGroup, outputPath: join(f.directory, 'child.draft.svg') }, mock), /超出父轮廓/);
   assert.equal(mock.calls.length, 1);
   assert.equal(runtime(mock.calls[0].task).parentSvg!.endsWith('parent.svg'), true);
+  assert.equal(await readFile(parent, 'utf8'), before);
+});
+
+test('终端不可用时可读取父 SVG 复用共享曲线，源码读取不能代替预览自检', async t => {
+  const f = await fixture(t), parent = join(f.directory, 'parent.svg');
+  const before = svg('face', 20.125, 80.375);
+  await writeFile(parent, before);
+  const group = normalizeGroups([{ id: 'face/eye' }])[0];
+  const parentGroup = normalizeGroups([{ id: 'face', steps: { completion: { status: 'completed', output: { path: parent } } } }])[0];
+  let preview = false;
+  const mock = { async run(task: AgentTask) {
+    const input = runtime(task);
+    const result = await task.tools!.find(tool => tool.name === 'read_svg')!.execute({ path: input.parentSvg }, signal);
+    const item = result.contentItems[0]; assert.equal(item.type, 'inputText');
+    const source = JSON.parse(item.text).svg as string;
+    assert.equal(source, before);
+    await task.tools!.find(tool => tool.name === 'write_outline_svg')!.execute({ svg: source.replace('data-group-path="face"', 'data-group-path="face/eye"') }, signal);
+    if (preview) await task.tools!.find(tool => tool.name === 'preview_svg')!.execute({ path: input.outputSvg, mode: 'blend' }, signal);
+    return { text: '完成', images: [], threadId: 'bound-source-reader' };
+  } };
+  const context = { ...f, group, parent: parentGroup, outputPath: join(f.directory, 'child.draft.svg') };
+  await assert.rejects(drawGroupOutline(context, mock), /混合叠加自检/);
+  preview = true;
+  await drawGroupOutline(context, mock);
   assert.equal(await readFile(parent, 'utf8'), before);
 });
