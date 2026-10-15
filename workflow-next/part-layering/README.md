@@ -25,7 +25,7 @@ for await (const event of events) {
 
 正式流程见 [layering-workflow.md](docs/layering-workflow.md)。一层取整棵树中同深度的组：先层内并行绘制、review 和返修；全部结束后统一去重；再层内并行执行补形、自检和子组分析。当前层全部结束后才启动下一层。
 
-已收录的当前结果见 [test](.run/test/README.md)，直接采用标准运行格式。最新确认的 hair 位于同一份组树、`parts/hair/` 和对应的 `stages/` 中；其 [交互预览](.run/test/previews/index.html) 可在克隆后直接离线打开，包含全部 8 个末端 part，不依赖独立快照目录或原机器。
+已收录的完整执行结构见 [test](.run/test/README.md)，直接采用标准运行格式：所有部位前三层的 86 个已完成节点、第四层 29 个已登记待办，以及替换后的最新 hair 均在同一棵树中。[交互预览](.run/test/previews/index.html) 可离线选择任意部位、层级和阶段；全部已执行补全均位于 `parts/`。
 
 `agents.ts` 统一使用 `gpt-6.1-sol / xhigh`。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `layering-steps.ts`，首次分组位于 `initial-groups.ts`，绘制和 review 位于 `outline-agent.ts`。
 
@@ -41,7 +41,7 @@ for await (const event of events) {
 - `checkCompletion`：程序检查原形保留、矢量结构和父范围；视觉合理性在补全回合中自检。
 - `splitChildren`：基于完成轮廓识别直属子组；程序将子组登记到树并加入后续调度。
 
-首次分组仍只识别直属 group；子组分析返回混合 group/part 节点描述，不替程序标记进度。分析结果保存为 `stages/children/<组ID>.json`，含父 SVG 哈希、子节点定义及依据；空列表明确表示当前节点已经是终止单元。初始树的空数组不是终止证据。明确的 part 完成绘制、review、去重、补全与检查后不再调用分析，也不额外写空分析报告，其类型来自父分析事实。
+首次分组仍只识别直属 group；子组分析返回混合 group/part 节点描述，不替程序标记进度。子节点与当前节点的 `childrenAnalysis: { sourceHash, note? }` 一起原子写入唯一的 `groups.json`，不再生成 `stages/children/`。元数据只保存分析所依据的完成 SVG 哈希及依据，不重复存子节点、ID 列表或步骤状态。有效分析搭配空子节点表示终止；初始树的空数组本身不是终止证据。明确的 part 完成制作与检查后直接终止。
 
 `--max-depth 1` 只完成第一层并登记第二层，`--max-depth 2` 制作到第二层并登记第三层，以此类推；省略则按层继续。这个参数控制本次执行边界，不作为把 group 判成 part 的依据。
 
@@ -65,7 +65,7 @@ for await (const event of events) {
 
 `preview_svg` 支持 `svg` 白底独显、`blend` 半透明混合和 `edge` 红色边缘叠加，支持原图坐标裁剪 `crop` 和矢量放大 `scale`，直接返回图片并保存到 `observations/<步骤>/<组ID>/`。子组同时返回父范围检查；父子 SVG 在同一画布上宽、高各四倍渲染，先计算 `max(子 alpha - 父 alpha, 0)`，再用阈值 128 判断未覆盖采样，避免独立二值化把共用曲线的抗锯齿差异误判为越界。允许正常贴边和共边，不扩张父轮廓，不按越界数量放行；任一未覆盖采样达到阈值即失败。孔洞、分离区域、变换与裁剪沿用实际 SVG 渲染。报告的 `scale` 固定为 4，不受预览选框或倍率影响；`outsideSamples` 为越界采样数，`outsidePixels` 为除以 16 后的原图像素面积估算，`outsideBox` 为原图坐标，可有四分之一像素的小数。范围渲染沿用 1 亿像素的资源上限，有限采样不是数学上绝对包含的证明。输入 SVG 不修改。独立审查记录及每轮实际观察图路径保存在 `stages/review/<组ID>.review.json`。通过后进度直接引用已绘制的轮廓 SVG，review 不生成或复制 SVG；后续补形沿用该路径。
 
-`groups.json` 只保存主体类型和分组树。新运行不创建或读取 `progress.json`；旧案例中的该文件保留为历史资料，旧机器的绝对路径不再参与续跑。轮廓完成看正式 SVG；review 轮次、结论和返修落实情况读取现有 `.review.json`，并核对候选或 repairedCandidateHash。哈希兼容 LF/CRLF 签出。自检实际结论保存到 `stages/completion-check/<组ID>.json`，绑定去重后的基准与补形后的 SVG；子组分析报告绑定完成 SVG。无需复制一套步骤状态、输出路径和时间戳。
+`groups.json` 保存主体、唯一分组树，以及各组必要的分析输入版本和依据。新运行不创建或读取 `progress.json`；旧机器的绝对路径不再参与续跑。轮廓完成看正式 SVG；review 轮次、结论和返修落实情况读取 `.review.json`，并核对候选或 repairedCandidateHash。哈希兼容 LF/CRLF 签出。自检结论保存在 `stages/completion-check/<组ID>.json`，绑定去重与补全版本；分析版本来自组树自身。旧 `stages/children` 仅作兼容迁入，保存树后即不再依赖它，新运行不会写它。没有另一份子组定义或步骤状态矩阵。
 
 所有 SVG 制作接口统一收到 `.draft.svg` 路径，正式文件只在任务成功并验证后发布。草稿、失败回合和仅有 `.repairs` 目录不代表完成。轮廓为 `stages/outline/<组ID>.svg`；去重结果为 `stages/outline-reduce/<组ID>.svg`；补形为 `parts/<组ID>.svg`；最终合并为 `character.svg`。补形和补形自检的 before 均读取去重版本，子组仍以父组完成 SVG 为范围。完成文件携带必要的输入版本信息，旧输入下的自检或分析结论不能用于新版本。
 

@@ -29,7 +29,7 @@ export class GroupExecutionError extends Error {
 function proposal(output: { groups: GroupSeed[] }, document: GroupsDocument, allowParts = false): GroupNode[] {
   if (!output || !Array.isArray(output.groups) || 'parts' in output) throw new Error('分组提案必须只包含直属 groups');
   for (const group of output.groups) {
-    if (!group || typeof group !== 'object' || 'groups' in group || 'steps' in group || 'parts' in group ||
+    if (!group || typeof group !== 'object' || 'groups' in group || 'steps' in group || 'parts' in group || 'childrenAnalysis' in group ||
       (!allowParts && group.kind === 'part') || 'type' in group) {
       throw new Error('Agent proposals must contain direct group seeds without children or progress');
     }
@@ -210,9 +210,11 @@ export async function runLayering(input: {
         throw new Error('子组 ID 必须是父组 ID 下的直属路径');
       }
       if (context(id).group.groups.length) throw new Error(`${id}: children are already registered without a matching analysis`);
-      await writeAtomic(reportPath(directory, id, 'children'), JSON.stringify({ groupId: id,
-        sourceHash: svgHash(source), groups: result.output.groups, ...(result.output.note ? { note: result.output.note } : {}) }, null, 2) + '\n');
-      await store.update(draft => { findGroup(draft, id).groups = children; });
+      await store.update(draft => {
+        const group = findGroup(draft, id);
+        group.groups = children;
+        group.childrenAnalysis = { sourceHash: svgHash(source), ...(result.output.note ? { note: result.output.note } : {}) };
+      });
       return { status: 'completed', output: { ids: children.map(child => child.id) } };
     });
   }

@@ -2,6 +2,51 @@
   "depth": 1,
   "groups": [
     {
+      "id": "face/face_base",
+      "inputHash": "34704a555c539b6e31dcba9c4a8ab6d1d6ca6379d0470802cdf002a62cb2fca1",
+      "outputHash": "34704a555c539b6e31dcba9c4a8ab6d1d6ca6379d0470802cdf002a62cb2fca1"
+    },
+    {
+      "id": "face/eye_left",
+      "inputHash": "775bcdaf8b2c16e1fa162e873cd55618b7ce48434d803ec7fa51c6708a96aa66",
+      "outputHash": "775bcdaf8b2c16e1fa162e873cd55618b7ce48434d803ec7fa51c6708a96aa66"
+    },
+    {
+      "id": "face/eye_right",
+      "inputHash": "d7c2cd9b0b451ba63a549a00976cd9c0fc2ce3a084776677c36ae6021de36596",
+      "outputHash": "d7c2cd9b0b451ba63a549a00976cd9c0fc2ce3a084776677c36ae6021de36596"
+    },
+    {
+      "id": "face/eyebrow_left",
+      "inputHash": "3b88859ce4d13c2bec242ab2e5cdbfebc136534a1210b1452c8fa22e87058efd",
+      "outputHash": "3b88859ce4d13c2bec242ab2e5cdbfebc136534a1210b1452c8fa22e87058efd"
+    },
+    {
+      "id": "face/eyebrow_right",
+      "inputHash": "3d49402c2144650f61a03bf1bd79782b29bfd93294d8074dd148c69433d45875",
+      "outputHash": "3d49402c2144650f61a03bf1bd79782b29bfd93294d8074dd148c69433d45875"
+    },
+    {
+      "id": "face/ear_left",
+      "inputHash": "4f2397295072a9d74abd4942d706a192ed118d950e422cece8a6b24924eee926",
+      "outputHash": "4f2397295072a9d74abd4942d706a192ed118d950e422cece8a6b24924eee926"
+    },
+    {
+      "id": "face/ear_right",
+      "inputHash": "f4659b26139010ce8374a9606c65f1b5ee939cf1ed135027368878f09521a9cc",
+      "outputHash": "f4659b26139010ce8374a9606c65f1b5ee939cf1ed135027368878f09521a9cc"
+    },
+    {
+      "id": "face/nose",
+      "inputHash": "e5e5267f3a66b5446dc4b52a2971a8a41420b2ed9a98a54ceec53e38f21b8bb5",
+      "outputHash": "e5e5267f3a66b5446dc4b52a2971a8a41420b2ed9a98a54ceec53e38f21b8bb5"
+    },
+    {
+      "id": "face/mouth",
+      "inputHash": "2fbec48dbf72eca9d2d5536924bc55ae153ec11f333617712076d839bee1442a",
+      "outputHash": "2fbec48dbf72eca9d2d5536924bc55ae153ec11f333617712076d839bee1442a"
+    },
+    {
       "id": "hair/hair_cap",
       "inputHash": "d31b844364db1108c22f2027e9d5120d8b65de68bd3d3d3e7810e821854501d2",
       "outputHash": "d31b844364db1108c22f2027e9d5120d8b65de68bd3d3d3e7810e821854501d2"
@@ -25,7 +70,86 @@
       "id": "hair/bun",
       "inputHash": "ddb5056908f7bfe71b6ed26f6cf4732d170ace046f31677cfca69bf399a0fb8f",
       "outputHash": "ddb5056908f7bfe71b6ed26f6cf4732d170ace046f31677cfca69bf399a0fb8f"
+    },
+    {
+      "id": "head_accessories/crown_frame",
+      "inputHash": "dc2468281be5415c8d888c8858a6083238cd9d73c39a8bee19ea82b91e883800",
+      "outputHash": "dc2468281be5415c8d888c8858a6083238cd9d73c39a8bee19ea82b91e883800"
+    },
+    {
+      "id": "head_accessories/lotus_ornament",
+      "inputHash": "bae93ecb0f8d8030927db3c4d7d462b28011fabd07c247734ed2a2ba39332139",
+      "outputHash": "bae93ecb0f8d8030927db3c4d7d462b28011fabd07c247734ed2a2ba39332139"
+    },
+    {
+      "id": "head_accessories/forehead_ornament",
+      "inputHash": "78fb5e0d540e5d41e29fed53bef1df77905f113bfd7eec4c51e888a0072aff49",
+      "outputHash": "78fb5e0d540e5d41e29fed53bef1df77905f113bfd7eec4c51e888a0072aff49"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon",
+      "inputHash": "fd617a7e65a7a00ff56ed480a03ece5d7937a68d3105902a32b2d63e39e0a84a",
+      "outputHash": "fd617a7e65a7a00ff56ed480a03ece5d7937a68d3105902a32b2d63e39e0a84a"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon",
+      "inputHash": "fb615f01fee17cd72cdbc9c571de0b3241199e293d310f11bc3315a407dc5593",
+      "outputHash": "fb615f01fee17cd72cdbc9c571de0b3241199e293d310f11bc3315a407dc5593"
+    },
+    {
+      "id": "head_accessories/left_earring",
+      "inputHash": "2a8d3f1f427c4b13d87e5ed7f5fcdc5a3d428ec8d2c16a7536a7e75ea816e6c9",
+      "outputHash": "2a8d3f1f427c4b13d87e5ed7f5fcdc5a3d428ec8d2c16a7536a7e75ea816e6c9"
+    },
+    {
+      "id": "head_accessories/right_earring",
+      "inputHash": "99b23b2258158dc6332a4e497d0c00f84b1ec7cfcefb4cad0d32af79c2f2737e",
+      "outputHash": "99b23b2258158dc6332a4e497d0c00f84b1ec7cfcefb4cad0d32af79c2f2737e"
+    },
+    {
+      "id": "body/torso",
+      "inputHash": "d80fa047ab7b000443d619eed33895601a87be3b7cd6943e09ba63b382ce3346",
+      "outputHash": "d80fa047ab7b000443d619eed33895601a87be3b7cd6943e09ba63b382ce3346"
+    },
+    {
+      "id": "body/breast",
+      "inputHash": "a5fe4364115731921989a3f1411067baf2d60d10105aa1ec555a21ffc74a795a",
+      "outputHash": "a5fe4364115731921989a3f1411067baf2d60d10105aa1ec555a21ffc74a795a"
+    },
+    {
+      "id": "arms/arm_left",
+      "inputHash": "e26d12d2cb080fe97bb3d5bec54434e3f1a48c84878e7126b19a92bc2742e133",
+      "outputHash": "e26d12d2cb080fe97bb3d5bec54434e3f1a48c84878e7126b19a92bc2742e133"
+    },
+    {
+      "id": "arms/arm_right",
+      "inputHash": "a4a799dfcc686a8dad5044340b3dcebc2890c047c7e84eca7ebe054f6725b02f",
+      "outputHash": "a4a799dfcc686a8dad5044340b3dcebc2890c047c7e84eca7ebe054f6725b02f"
+    },
+    {
+      "id": "legs/leg_left",
+      "inputHash": "425f1bfa9ddd542b5479ea78abe8b866dc536d40e089b35b25fba4f0bf272a83",
+      "outputHash": "425f1bfa9ddd542b5479ea78abe8b866dc536d40e089b35b25fba4f0bf272a83"
+    },
+    {
+      "id": "legs/leg_right",
+      "inputHash": "c79bf5e1b854c28980a570c4771ce93ae88d6058bf9faebbcdfdd72d9365719d",
+      "outputHash": "c79bf5e1b854c28980a570c4771ce93ae88d6058bf9faebbcdfdd72d9365719d"
     }
   ],
-  "note": "已先用 preview_svg blend 检查 mergedPreview，再读取本层五件 sourceSvg，逐项对照 note 与共同父组 hair，分别 blend 放大头部，并用 merged edge、耳侧交界 4 倍局部和 back_hair 全幅独显核对。未发现可确认的跨组同一实体、同一控制职责重复，故 changed 为空，五组均原样保留。hair_cap 是贴头梳拢底形，其在两侧前侧发、脸和耳后方的完整后枕覆盖属于隐藏补形；不将前侧发投影从头盖相减。side_hair_left（画面右）与 side_hair_right（画面左）各自从中分冠饰下方的隐藏根部连续经过宽额角幕帘至约 y270 的细卷尾，拥有相对头盖、后发独立摆动职责；两束完整保留，左侧细卷尾的孔洞及两侧可靠可见边缘保持原样。back_hair 的约 y200 起耳后根部及颈肩宽面属于前侧发后方的长后发系统，与前侧卷尾投影相接、局部相交不能认定为卷尾副本；其下接中长游离束、宽长主发面和最下方回卷末端，未在其它本层组重复领取。bun 是约 y27–84 的完整圆髻与接至约 y90 的短连接颈，和 hair_cap 顶缘的交叠为根部衔接，没有第二个圆髻实体。本轮没有清空、合并、重设控制层或修改几何；主体覆盖、隐藏承接、孔洞和发束间隙均保留。"
+  "note": "汇入已实际执行并校验的产物：非 hair 分支沿用完整运行，hair 分支使用单独重跑结果。本组合未另行重跑跨分支去重；原始批次及说明保存在 inputs，输入输出哈希逐项匹配。",
+  "inputs": [
+    {
+      "path": "stages/outline-reduce/layers/1.inputs/previous.json",
+      "sha256": "638d62efd52ca170f6478c60a4d9b8a9ed27a8c137a7a7b1ab8bc5dd728ada3c",
+      "sourceRun": "test-children-20261015",
+      "scope": "non-hair branches"
+    },
+    {
+      "path": "stages/outline-reduce/layers/1.inputs/hair.json",
+      "sha256": "3678bfc4b6e6b3bc3d3d206cd384bc3c5b211b3f9c390c8242e8b2fda74ccaea",
+      "sourceRun": "test-hair-references-2026-10-15T04-47-08-442Z",
+      "scope": "hair subtree"
+    }
+  ]
 }

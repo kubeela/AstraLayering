@@ -35,8 +35,9 @@ export type GroupSeed = {
   note?: string;
   metadata?: Record<string, unknown>;
 };
-export type GroupInput = GroupSeed & { groups?: GroupInput[]; steps?: Partial<GroupProgress> };
-export type GroupNode = GroupSeed & { groups: GroupNode[]; steps: GroupProgress };
+export type ChildrenAnalysisFact = { sourceHash: string; note?: string };
+export type GroupInput = GroupSeed & { groups?: GroupInput[]; childrenAnalysis?: ChildrenAnalysisFact; steps?: Partial<GroupProgress> };
+export type GroupNode = GroupSeed & { groups: GroupNode[]; childrenAnalysis?: ChildrenAnalysisFact; steps: GroupProgress };
 export type Subject = 'character' | 'other';
 export type InitialGrouping = { groups: GroupSeed[]; subject?: Subject };
 export type ChildrenAnalysis = { groups: GroupSeed[]; note?: string };

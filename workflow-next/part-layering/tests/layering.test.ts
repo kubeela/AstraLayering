@@ -143,21 +143,28 @@ test('自检失败不分析子组；有效 SVG 不等于自检完成，续跑只
 test('分析返回空子组有明确事实记录，重启不会重复分析', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events);
   await runLayering({ ...f, groups: null, steps });
-  const children = await readJson(reportPath(f.directory, 'head', 'children'));
-  assert.deepEqual(children.groups, []);
-  assert.equal(typeof children.sourceHash, 'string');
+  const tree = await readJson(join(f.directory, 'groups.json'));
+  assert.deepEqual(tree.groups[0].groups, []);
+  assert.equal(typeof tree.groups[0].childrenAnalysis.sourceHash, 'string');
+  assert.equal(await readJson(reportPath(f.directory, 'head', 'children')), undefined);
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, []);
-  await rm(reportPath(f.directory, 'head', 'children'));
+  delete tree.groups[0].childrenAnalysis;
+  await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(tree));
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, ['head:children']);
 });
 
-test('子组分析记录已保存但分组树未落盘时，从分析结果恢复树和下一层', async t => {
+test('旧分析报告可迁入唯一组树，此后只依赖 groups.json 继续下一层', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'head' }], { head: [{ id: 'head/eye' }] });
   await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
   const tree = await readJson(join(f.directory, 'groups.json'));
+  await writeAtomic(reportPath(f.directory, 'head', 'children'), JSON.stringify({
+    groupId: 'head', sourceHash: tree.groups[0].childrenAnalysis.sourceHash,
+    groups: tree.groups[0].groups.map(({ groups, ...seed }: { groups: unknown }) => seed),
+  }));
+  delete tree.groups[0].childrenAnalysis;
   tree.groups[0].groups = [];
   await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(tree));
   events.length = 0;
@@ -165,6 +172,31 @@ test('子组分析记录已保存但分组树未落盘时，从分析结果恢�
   assert.deepEqual(result.groups[0].groups.map(group => group.id), ['head/eye']);
   assert.ok(!events.includes('head:children'));
   assert.ok(events.includes('head/eye:outline'));
+  const saved = await readJson(join(f.directory, 'groups.json'));
+  assert.equal(typeof saved.groups[0].childrenAnalysis.sourceHash, 'string');
+  await rm(reportPath(f.directory, 'head', 'children'));
+  events.length = 0;
+  await runLayering({ ...f, groups: null, steps });
+  assert.deepEqual(events, []);
+});
+
+test('分析提交后中断，组树与输入版本同时存在，不依赖额外 children 文件', async t => {
+  const f = await fixture(t), events: string[] = [];
+  const steps = workingSteps(events, [{ id: 'head' }], { head: [{ id: 'head/eye', kind: 'part' }] });
+  await assert.rejects(runLayering({ ...f, groups: null, steps, maxDepth: 1, progress(message) {
+    if (message === '[head] 子组分析：完成') throw new Error('interrupt after atomic commit');
+  } }), /interrupt after atomic commit/);
+  const saved = await readJson(join(f.directory, 'groups.json'));
+  assert.equal(saved.groups[0].groups[0].id, 'head/eye');
+  assert.equal(saved.groups[0].childrenAnalysis.sourceHash, svgHash(await readFile(artifactPath(f.directory, 'head', 'completion'))));
+  assert.equal(await readJson(reportPath(f.directory, 'head', 'children')), undefined);
+  events.length = 0;
+  await runLayering({ ...f, groups: null, steps });
+  assert.ok(!events.includes('head:children'));
+  assert.ok(events.includes('head/eye:outline'));
+  saved.groups[0].childrenAnalysis.sourceHash = '0'.repeat(64);
+  await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(saved));
+  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.children.status, 'pending');
 });
 
 test('blocked 或 pending 阻止整层去重及下一层，其他已启动轮廓可收尾', async t => {
@@ -250,17 +282,24 @@ test('异常停止新派发，已启动任务收尾；事实源保留已成功�
   assert.ok(await readFile(artifactPath(f.directory, 'b', 'outline')));
 });
 
-test('当前真实 test 采用标准目录，8 根组及最新 hair 完成事实可跨机器恢复', async () => {
+test('完整真实 test 的全部已执行部位可恢复，唯一组树含真实待办而非只有 hair', async () => {
   const directory = new URL('../.run/test/', import.meta.url);
   const store = await GroupStore.open(fileURLToPath(directory));
   const groups = store.snapshot().groups;
   assert.equal(groups.length, 8);
   assert.ok(groups.every(group => group.steps.outline.status === 'completed' && group.steps.review.status === 'completed'));
+  assert.ok(groups.every(group => Object.values(group.steps).every(step => step.status === 'completed')));
   assert.equal(groups.find(group => group.id === 'arms')!.steps.review.output!.reviewOutcome, 'repaired');
   const hair = walkGroups([groups.find(group => group.id === 'hair')!]);
   assert.equal(hair.length, 10);
   assert.equal(hair.filter(({ group }) => group.kind === 'part').length, 8);
   assert.ok(hair.every(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')));
+  const all = walkGroups(groups);
+  assert.equal(all.length, 115);
+  assert.equal(all.filter(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')).length, 86);
+  assert.equal(all.filter(({ depth }) => depth === 3).length, 29);
+  assert.ok(all.filter(({ depth }) => depth === 3).every(({ group }) => group.steps.outline.status === 'pending'));
+  await assert.rejects(readFile(new URL('stages/children/hair.json', directory)), { code: 'ENOENT' });
   assert.equal(await readJson(join(fileURLToPath(directory), 'progress.json')), undefined);
   await assert.rejects(readFile(new URL('hair-latest/groups.json', directory)), { code: 'ENOENT' });
 });

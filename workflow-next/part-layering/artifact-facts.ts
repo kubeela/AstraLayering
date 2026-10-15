@@ -128,21 +128,26 @@ export async function restoreFacts(directory: string, document: GroupsDocument):
         group.steps.children = { status: 'completed', output: { ids: [] } };
         continue;
       }
-      const children = await readJson(reportPath(directory, group.id, 'children'));
-      if (children?.groupId !== group.id || !matchesHash(after, children.sourceHash)) continue;
-      const proposed = normalizeGroups(children.groups);
-      if (proposed.some(child => !child.id.startsWith(`${group.id}/`) || child.id.slice(group.id.length + 1).includes('/') || child.groups.length)) {
-        throw new Error(`${group.id}: 子组事实必须只包含直属节点`);
+      if (!group.childrenAnalysis) {
+        // Read old reports only to migrate an existing run. New runs commit the tree and analysis together.
+        const legacy = await readJson(reportPath(directory, group.id, 'children'));
+        if (legacy?.groupId !== group.id || !matchesHash(after, legacy.sourceHash)) continue;
+        const proposed = normalizeGroups(legacy.groups);
+        if (proposed.some(child => !child.id.startsWith(`${group.id}/`) || child.id.slice(group.id.length + 1).includes('/') || child.groups.length)) {
+          throw new Error(`${group.id}: 子组事实必须只包含直属节点`);
+        }
+        if (!group.groups.length && proposed.length) {
+          const seen = new Set(walkGroups(document.groups).map(entry => entry.group.id));
+          group.groups = normalizeGroups(legacy.groups, seen);
+          discovered = true;
+        } else if (JSON.stringify(proposed.map(nodeSeed)) !== JSON.stringify(group.groups.map(nodeSeed))) {
+          throw new Error(`${group.id}: 旧子组事实与 groups.json 不一致`);
+        }
+        group.childrenAnalysis = { sourceHash: svgHash(after), ...(legacy.note ? { note: legacy.note } : {}) };
       }
-      const ids = proposed.map(group => group.id);
-      if (!group.groups.length && proposed.length) {
-        const seen = new Set(walkGroups(document.groups).map(entry => entry.group.id));
-        group.groups = normalizeGroups(children.groups, seen);
-        discovered = true;
-      } else if (JSON.stringify(proposed.map(nodeSeed)) !== JSON.stringify(group.groups.map(nodeSeed))) {
-        throw new Error(`${group.id}: 子组事实与 groups.json 不一致`);
+      if (matchesHash(after, group.childrenAnalysis.sourceHash)) {
+        group.steps.children = { status: 'completed', output: { ids: group.groups.map(child => child.id) } };
       }
-      group.steps.children = { status: 'completed', output: { ids } };
     }
   }
   // 分析结果已提交但树尚未保存时，恢复发现的后代并读取它们的事实。

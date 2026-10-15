@@ -56,11 +56,10 @@ test('实际入口复用已有轮廓、补全与终止分析事实，停在合�
   await mkdir(dirname(check), { recursive: true });
   await writeFile(check, JSON.stringify({ groupId: 'head', passed: true,
     beforeHash: svgHash(shape('head')), afterHash: svgHash(await readFile(part)) }));
-  const children = reportPath(directory, 'head', 'children');
-  await mkdir(dirname(children), { recursive: true });
-  await writeFile(children, JSON.stringify({ groupId: 'head', sourceHash: svgHash(await readFile(part)), groups: [] }));
   const store = await GroupStore.open(directory);
-  await store.update(document => { document.groups = normalizeGroups([{ id: 'head', note: '已有识别的组', steps: {
+  const analysisSourceHash = svgHash(await readFile(part));
+  await store.update(document => { document.groups = normalizeGroups([{ id: 'head', note: '已有识别的组',
+    childrenAnalysis: { sourceHash: analysisSourceHash }, steps: {
     outline: { status: 'completed', output: { path: svgPath } }, review: { status: 'completed', output: { path: svgPath } },
   } }]); });
   const groupsPath = join(directory, 'input.json');

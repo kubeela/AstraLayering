@@ -49,11 +49,11 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
   const steps = { ...workingSteps(events, [{ id: 'face' }]), splitChildren: adapter.splitChildren };
   await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
   assert.equal(calls, 1);
-  const receipt = await readJson(reportPath(f.directory, 'face', 'children'));
-  assert.equal(receipt.groups[0].kind, 'part');
+  assert.equal(await readJson(reportPath(f.directory, 'face', 'children')), undefined);
   const tree = await readJson(join(f.directory, 'groups.json'));
-  tree.groups[0].groups = [];
-  await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(tree));
+  assert.equal(tree.groups[0].groups[0].kind, 'part');
+  assert.equal(typeof tree.groups[0].childrenAnalysis.sourceHash, 'string');
+  assert.equal(tree.groups[0].childrenAnalysis.note, '脸底与独立眼睛');
   const restored = (await GroupStore.open(f.directory)).snapshot();
   assert.deepEqual(restored.groups[0].groups.map(node => node.kind), ['part', 'group']);
   await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
@@ -61,7 +61,7 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
   const changed = await readJson(join(f.directory, 'groups.json'));
   changed.groups[0].groups[0].kind = 'group';
   await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(changed));
-  await assert.rejects(GroupStore.open(f.directory), /事实与 groups.json 不一致/);
+  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].groups[0].kind, 'group');
 });
 
 test('拆分收到可选图片用途，按需调用能看到 prompts 外部参考且原图保持只读', async t => {

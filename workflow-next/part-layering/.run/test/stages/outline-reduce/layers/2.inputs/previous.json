@@ -1,0 +1,266 @@
+{
+  "depth": 2,
+  "groups": [
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "inputHash": "e5a422ccce6deb243dd537d7bbe5b12f67abb4bbde6cf582b7cbd2450847569f",
+      "outputHash": "e5a422ccce6deb243dd537d7bbe5b12f67abb4bbde6cf582b7cbd2450847569f"
+    },
+    {
+      "id": "face/eye_left/lower_eyelid",
+      "inputHash": "a578c21c996cdf057e2786141de34ee115b3cce24a0a49069b26b50d0ea34bd4",
+      "outputHash": "a578c21c996cdf057e2786141de34ee115b3cce24a0a49069b26b50d0ea34bd4"
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "inputHash": "26cd5c43a029513c9698497b3927445edafb6b4ae47e8b20ebb492d3bb0a505f",
+      "outputHash": "26cd5c43a029513c9698497b3927445edafb6b4ae47e8b20ebb492d3bb0a505f"
+    },
+    {
+      "id": "face/eye_left/iris",
+      "inputHash": "60a635730fea0ff406358385de1bcff37bdf5abac9c085037a73a0df2d979b46",
+      "outputHash": "60a635730fea0ff406358385de1bcff37bdf5abac9c085037a73a0df2d979b46"
+    },
+    {
+      "id": "face/eye_left/highlight",
+      "inputHash": "e99dac3a57ccd394a9c0c8c45898f5e7775632161319535ba3f4f465c48c6231",
+      "outputHash": "e99dac3a57ccd394a9c0c8c45898f5e7775632161319535ba3f4f465c48c6231"
+    },
+    {
+      "id": "face/eye_left/lower_eyelashes",
+      "inputHash": "3c6bb43a2ff329353e0cc74728f82e7331ed87b399cce78f2a8e960eb802de94",
+      "outputHash": "3c6bb43a2ff329353e0cc74728f82e7331ed87b399cce78f2a8e960eb802de94"
+    },
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "inputHash": "ce0dcbfa1a32dc86c873ab1025086d55e28dc2f0f9637e3fb421b92c6f7e8f86",
+      "outputHash": "ce0dcbfa1a32dc86c873ab1025086d55e28dc2f0f9637e3fb421b92c6f7e8f86"
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "inputHash": "04d4ae24c3ee4776940a847826429e01a0bfa643b70ac7ae39202106b0b69b1f",
+      "outputHash": "04d4ae24c3ee4776940a847826429e01a0bfa643b70ac7ae39202106b0b69b1f"
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "inputHash": "47aa5cd0011ea9e66e222650d34d8dbf97fc1450cb44443df2ba08e3b524c371",
+      "outputHash": "47aa5cd0011ea9e66e222650d34d8dbf97fc1450cb44443df2ba08e3b524c371"
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "inputHash": "6d959af75e132cd6fb322e0e374f54baa6c2a32055beb8c4d5656085e6f837db",
+      "outputHash": "6d959af75e132cd6fb322e0e374f54baa6c2a32055beb8c4d5656085e6f837db"
+    },
+    {
+      "id": "face/eye_right/iris",
+      "inputHash": "67f586bffb41a286abb4a62c5426d1bb6a4bd6595cabbbd9f2f79cfc11dbefbe",
+      "outputHash": "67f586bffb41a286abb4a62c5426d1bb6a4bd6595cabbbd9f2f79cfc11dbefbe"
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "inputHash": "44c65ca645d0cdef9ceef6a77817456c1e3051d836af0bc62a356f70d209f98b",
+      "outputHash": "44c65ca645d0cdef9ceef6a77817456c1e3051d836af0bc62a356f70d209f98b"
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "inputHash": "0db5ea2ce238d1f3bab93ee6ae5b3f23b9fd6870b0d9eb9c499bd3e745e80dff",
+      "outputHash": "0db5ea2ce238d1f3bab93ee6ae5b3f23b9fd6870b0d9eb9c499bd3e745e80dff"
+    },
+    {
+      "id": "face/mouth/upper_lip",
+      "inputHash": "9ebcff17c0164981e044905ea37ac5adb817a721b69a683548178d5bd9dfbe59",
+      "outputHash": "9ebcff17c0164981e044905ea37ac5adb817a721b69a683548178d5bd9dfbe59"
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "inputHash": "bca10e44374b57592a729237461a2d49eea92346c85ab277fd9a12563fda0cac",
+      "outputHash": "bca10e44374b57592a729237461a2d49eea92346c85ab277fd9a12563fda0cac"
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "inputHash": "5779fa70b7d84f260926629a0c579b246ce694000aeb66e3ad6d42ad5afad6dd",
+      "outputHash": "5779fa70b7d84f260926629a0c579b246ce694000aeb66e3ad6d42ad5afad6dd"
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "inputHash": "1da39bbdaba69670f523c21ce878a29f271a570e5c657675602f2096e5930509",
+      "outputHash": "1da39bbdaba69670f523c21ce878a29f271a570e5c657675602f2096e5930509"
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "inputHash": "e207e11e8f55f8ebb311985311226f70006d3917ad20a1fd39992a59dd28bed9",
+      "outputHash": "e207e11e8f55f8ebb311985311226f70006d3917ad20a1fd39992a59dd28bed9"
+    },
+    {
+      "id": "face/mouth/tongue",
+      "inputHash": "965acc87050710ccb0f68bd1949e7a0352b835bfcf4042f4b6bc82b2b47e26b6",
+      "outputHash": "965acc87050710ccb0f68bd1949e7a0352b835bfcf4042f4b6bc82b2b47e26b6"
+    },
+    {
+      "id": "hair/bangs/lock_left",
+      "inputHash": "aa492d65a6c6c3301ec90a5dfba7409e057e1bcfb95496192cd01762956d043b",
+      "outputHash": "aa492d65a6c6c3301ec90a5dfba7409e057e1bcfb95496192cd01762956d043b"
+    },
+    {
+      "id": "hair/bangs/lock_right",
+      "inputHash": "542853d8bf4001dbc919ac83c56ddc75a7b382ce7d48ebe9b29648e2f353bd7a",
+      "outputHash": "542853d8bf4001dbc919ac83c56ddc75a7b382ce7d48ebe9b29648e2f353bd7a"
+    },
+    {
+      "id": "hair/back_hair/base",
+      "inputHash": "28aef632155a3a9ca61b50549baa77641735463ccbc0cca901c5ad99478f1564",
+      "outputHash": "28aef632155a3a9ca61b50549baa77641735463ccbc0cca901c5ad99478f1564"
+    },
+    {
+      "id": "hair/back_hair/lock_left",
+      "inputHash": "4cce46e94e39fcf184e12094063c81726c92006100765ff4443d4618cfd91c66",
+      "outputHash": "4cce46e94e39fcf184e12094063c81726c92006100765ff4443d4618cfd91c66"
+    },
+    {
+      "id": "hair/back_hair/lock_right",
+      "inputHash": "4f5e8960cb95b575bb25095b1452168063167c8176b9d157803275394bc64def",
+      "outputHash": "969c772340328f0cf693452a162a21984365c69b1194946f99e9dc265f34bac3"
+    },
+    {
+      "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
+      "inputHash": "6e14fb1247c8b423cb29dcb2e6bf0514706fe5d6b8e77047890267b917e67526",
+      "outputHash": "6e14fb1247c8b423cb29dcb2e6bf0514706fe5d6b8e77047890267b917e67526"
+    },
+    {
+      "id": "head_accessories/forehead_ornament/teardrop_pendant",
+      "inputHash": "167b92175eaa49865dad8b9b4fb44ee46133158af1039d2a80d5e433432d0ed1",
+      "outputHash": "167b92175eaa49865dad8b9b4fb44ee46133158af1039d2a80d5e433432d0ed1"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension",
+      "inputHash": "2d91e2e1d8bba55b6fc4455ad197aea8c345929b2ddc5f62c96628a9a45f3d99",
+      "outputHash": "2d91e2e1d8bba55b6fc4455ad197aea8c345929b2ddc5f62c96628a9a45f3d99"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_head",
+      "inputHash": "8b66d7ed2533c0de6a4a6f3feb498da3a56aa3f75b3d99af79c6e973d804a7d0",
+      "outputHash": "8b66d7ed2533c0de6a4a6f3feb498da3a56aa3f75b3d99af79c6e973d804a7d0"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_tail",
+      "inputHash": "158574f6fb7547c86a614a24468940be9c6ceb90bc6bb7e1798e538efaba5926",
+      "outputHash": "158574f6fb7547c86a614a24468940be9c6ceb90bc6bb7e1798e538efaba5926"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension",
+      "inputHash": "abe4c4b8a15f8e17e3c9553366a12eb221c9ed27e2027f8430527e549c10b5d8",
+      "outputHash": "abe4c4b8a15f8e17e3c9553366a12eb221c9ed27e2027f8430527e549c10b5d8"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_head",
+      "inputHash": "acd552bf6009a06cb6822d02335ebb6495d14aa750a62a60b7864ff3c40a5b02",
+      "outputHash": "acd552bf6009a06cb6822d02335ebb6495d14aa750a62a60b7864ff3c40a5b02"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_body",
+      "inputHash": "30e00ecca51cf8521d7bb05a46f57198ba3769ebeb3e256fa8ee5a57818b6959",
+      "outputHash": "30e00ecca51cf8521d7bb05a46f57198ba3769ebeb3e256fa8ee5a57818b6959"
+    },
+    {
+      "id": "head_accessories/left_earring/ear_stud",
+      "inputHash": "b4a7de138e7a71f87fbf5d5f0d88360df5935c8ee07f585de5a8162675467773",
+      "outputHash": "b4a7de138e7a71f87fbf5d5f0d88360df5935c8ee07f585de5a8162675467773"
+    },
+    {
+      "id": "head_accessories/left_earring/suspension_chain",
+      "inputHash": "0d5ac1d8267feb484f6be09ad5dfd334144337c59175641ec36c634a05c24062",
+      "outputHash": "0d5ac1d8267feb484f6be09ad5dfd334144337c59175641ec36c634a05c24062"
+    },
+    {
+      "id": "head_accessories/left_earring/sapphire_pendant",
+      "inputHash": "e2375f16413c4af691fcfc7cf9c7894a06275b41880d7ebb9df64849523aa3f4",
+      "outputHash": "e2375f16413c4af691fcfc7cf9c7894a06275b41880d7ebb9df64849523aa3f4"
+    },
+    {
+      "id": "head_accessories/right_earring/ear_stud",
+      "inputHash": "ad9cea1e2044bbe2fb9a801818987341a847a1d8baf93f5be198776d23696c1a",
+      "outputHash": "ad9cea1e2044bbe2fb9a801818987341a847a1d8baf93f5be198776d23696c1a"
+    },
+    {
+      "id": "head_accessories/right_earring/suspension_chain",
+      "inputHash": "3d71143f98615dbce67dbfdd69e2eb5da1e2389d7d20b8e072ba0148e9630121",
+      "outputHash": "3d71143f98615dbce67dbfdd69e2eb5da1e2389d7d20b8e072ba0148e9630121"
+    },
+    {
+      "id": "head_accessories/right_earring/sapphire_pendant",
+      "inputHash": "543d7d164fefcd04a28a4852b6f97dae73dba0a7adbe61f2d18671c614d42225",
+      "outputHash": "543d7d164fefcd04a28a4852b6f97dae73dba0a7adbe61f2d18671c614d42225"
+    },
+    {
+      "id": "arms/arm_left/upper_arm",
+      "inputHash": "7277364f0b0b9bca1bf06fca283d480a8111277592a0e06cf608aa8e3d37b9f3",
+      "outputHash": "7277364f0b0b9bca1bf06fca283d480a8111277592a0e06cf608aa8e3d37b9f3"
+    },
+    {
+      "id": "arms/arm_left/forearm",
+      "inputHash": "97bdec539a377f2598c9fa4413ea66ae936f0ce2b930fd7bee1eeb05a59168ef",
+      "outputHash": "97bdec539a377f2598c9fa4413ea66ae936f0ce2b930fd7bee1eeb05a59168ef"
+    },
+    {
+      "id": "arms/arm_left/hand",
+      "inputHash": "51aac5cfbd0c95225fe3abb697a9dd89bee1d3ce753dafc2ca5c9e7ea3f04e6c",
+      "outputHash": "51aac5cfbd0c95225fe3abb697a9dd89bee1d3ce753dafc2ca5c9e7ea3f04e6c"
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "inputHash": "1ba5a06ea3320aa060f3dc1bc1affd0a509978bcb25ed59c55079b69c211efc2",
+      "outputHash": "1ba5a06ea3320aa060f3dc1bc1affd0a509978bcb25ed59c55079b69c211efc2"
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "inputHash": "ed8ffaf1cc84c6816514c1fd6073e00d9736b946bde8ca6db0d8c1c5ee56fe94",
+      "outputHash": "ed8ffaf1cc84c6816514c1fd6073e00d9736b946bde8ca6db0d8c1c5ee56fe94"
+    },
+    {
+      "id": "arms/arm_right/hand",
+      "inputHash": "3d32c1c385df9396eebfe8580242e4a24c716ec3f4fcf943701144038486fbb4",
+      "outputHash": "3d32c1c385df9396eebfe8580242e4a24c716ec3f4fcf943701144038486fbb4"
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "inputHash": "b502143ba8ece8d320912521b5921cad91fc0224af054281abe45f788710908b",
+      "outputHash": "b502143ba8ece8d320912521b5921cad91fc0224af054281abe45f788710908b"
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "inputHash": "2492ad3f478981a2a51e616874d683b0bc82cceed1409688da1ebf7d17a01b0b",
+      "outputHash": "2492ad3f478981a2a51e616874d683b0bc82cceed1409688da1ebf7d17a01b0b"
+    },
+    {
+      "id": "legs/leg_left/ankle_gem",
+      "inputHash": "34fba894f145a98dfac9933d3a8523a474e938098f1295adf13b15ae56e5ad80",
+      "outputHash": "34fba894f145a98dfac9933d3a8523a474e938098f1295adf13b15ae56e5ad80"
+    },
+    {
+      "id": "legs/leg_left/anklet",
+      "inputHash": "2716e8cbe67e4218fe6942fe297c4a418cb04968a9d96171452a7039ac3dad50",
+      "outputHash": "2716e8cbe67e4218fe6942fe297c4a418cb04968a9d96171452a7039ac3dad50"
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "inputHash": "a47e6927831c0d485ef9e6d969f334d22d25669581b8bec85557853f9e7ba769",
+      "outputHash": "a47e6927831c0d485ef9e6d969f334d22d25669581b8bec85557853f9e7ba769"
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "inputHash": "0812a96873f77b7d53c52ab7562b7474326d8444db6f6af9b54821ada528f703",
+      "outputHash": "0812a96873f77b7d53c52ab7562b7474326d8444db6f6af9b54821ada528f703"
+    },
+    {
+      "id": "legs/leg_right/ankle_gem",
+      "inputHash": "ed74e289fc6f0cfcd585878419dbbf06b0a5d47cb9f7bcdefc181414d3afcbb8",
+      "outputHash": "ed74e289fc6f0cfcd585878419dbbf06b0a5d47cb9f7bcdefc181414d3afcbb8"
+    },
+    {
+      "id": "legs/leg_right/anklet",
+      "inputHash": "b7c3d975b31c33bc4a2cbfc2c7dffbc3af6ad3b946d2ac46c9e9e0c6961040ef",
+      "outputHash": "b7c3d975b31c33bc4a2cbfc2c7dffbc3af6ad3b946d2ac46c9e9e0c6961040ef"
+    }
+  ],
+  "note": "已先查看本层 mergedPreview 的 blend，逐项核对节点 note、父组及源 SVG，并对后发分叉、飘带邻接、眼口和踝足区域作局部放大。确认画面左侧约 x310–365、y910–1005 的斜向短内卷发分叉同时被 hair/back_hair/base 和 hair/back_hair/lock_right 领取。依据参考走向，该分叉自然连续接入 base 的较短内卷披发，保留 base 现有完整版本；仅收回 lock_right 主轮廓向该分叉突出的重复片段，以连续曲线衔接原长束内缘，保留局部接合余量。其他独立发丝、发梢、孔洞及隐藏根部不作删减；头盖与前发、眼白与虹膜高光、口内与牙舌及肢体接缝均按合法覆盖保留。修改后的唯一草稿已完成 blend、edge、局部四倍放大及整幅自检；画布、viewBox、data-group-path 和可编辑矢量均保留，其余 51 组由程序原样复制。"
+}

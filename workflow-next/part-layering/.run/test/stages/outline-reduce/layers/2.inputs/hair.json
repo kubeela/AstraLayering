@@ -1,0 +1,26 @@
+{
+  "depth": 2,
+  "groups": [
+    {
+      "id": "hair/back_hair/main_left",
+      "inputHash": "3dadf8bf7e597112217cebee1e622ce3dfaa67aaecfc79ff08b67a7a8b3bd343",
+      "outputHash": "3dadf8bf7e597112217cebee1e622ce3dfaa67aaecfc79ff08b67a7a8b3bd343"
+    },
+    {
+      "id": "hair/back_hair/main_right",
+      "inputHash": "7a6d192b22fbd23c64c10077bbcce6807b2c1227ae5f9611a694395b46f00dcc",
+      "outputHash": "7a6d192b22fbd23c64c10077bbcce6807b2c1227ae5f9611a694395b46f00dcc"
+    },
+    {
+      "id": "hair/back_hair/lock_left",
+      "inputHash": "3616b18abd530a28773445779b972ceff594ba158636c18239e2f82711915571",
+      "outputHash": "3616b18abd530a28773445779b972ceff594ba158636c18239e2f82711915571"
+    },
+    {
+      "id": "hair/back_hair/lock_right",
+      "inputHash": "41138ca24afda0c982c5d3bf62ebccef1dbc5065cca8f24b5b922788e74b0904",
+      "outputHash": "41138ca24afda0c982c5d3bf62ebccef1dbc5065cca8f24b5b922788e74b0904"
+    }
+  ],
+  "note": "已先以 blend 检查 mergedPreview，再逐一核对四组完整源码、各自 blend，并以 2 倍裁剪检查后枕发根、肩臂连接、前臂至手旁游离束与主面之间的间隙，最后检查合成 edge。未确认同一实体、同一控制职责被跨组重复领取，四组均原样保留。main_left 与 main_right 分别承担画面右、左两侧延至 y1331 左右的宽长主发面，包含身体后方连续补形、腿旁叶状分岔、孔隙和卷尾；两者位于不同侧，未互相领取同一实体。lock_left 与 lock_right 分别承担画面右侧 x743/y717、左侧 x281/y717 收尖的中长游离束，保有独立外缘、回弯、细分叉、局部孔隙及从后枕经过肩臂后方的完整发根，与对应主面具有不同末端和独立摆动职责。局部放大可见游离束在前臂外侧，主面沿手后继续下垂，二者间隙仍在，不能以肩部相接或根部投影交叠合并。main_left 肩后补形与 lock_left 隐藏连接段存在相近曲线，其他同侧根部也有投影覆盖；这些仅构成隐藏承接关系，未提供同一实体副本的充分证据，保留现有独立控制结构，后续归属复核可关注肩后连接段。父组 hair/back_hair.svg 只用于理解承接范围，未作为本层候选。无组被清空，无轮廓相减、改层或新增结构。"
+}
