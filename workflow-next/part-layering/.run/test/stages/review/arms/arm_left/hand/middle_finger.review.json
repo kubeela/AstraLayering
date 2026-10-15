@@ -1,0 +1,78 @@
+{
+  "groupId": "arms/arm_left/hand/middle_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取本组说明、候选 SVG 和父组 hand 完成 SVG，并先以整图 blend 定位；随后核对手部参考放大及父组 blend/edge，用三个相互重叠的选框逐块完成候选 blend、edge 对照：① [734,752,16,27] 指根与下行上段；② [726,769,24,23] 指身弯折及与食指、无名指的接缝；③ [716,782,23,21] 弯回末段、左侧可见外缘和圆钝指尖。三个选框覆盖候选全部区域，并在 y769–779、y782–792 交叠核对连续性。根端为伸入掌下的局部圆弧，指身至指尖为连续实体；可见弯折、细窄叠压边界与约 x720–723、y795–798 的指尖均有参考依据，未发现明确的父内漏画、无依据留空或可见轮廓偏移。轮廓干净，无孤立点、碎片堆砌或形体归属混乱。父范围检查 pass（4 倍采样，outsideSamples=0，outsidePixels=0）。未确认需单独报告的上游父范围限制。本轮通过。",
+      "candidateHash": "d0ad7622f3c16168e7c1b5d991d5a38d9ac06eccbfac655ed3cb71fb9569d1e1",
+      "observations": [
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-1.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-2.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-3.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-4.png"
+        },
+        {
+          "source": "parts/arms/arm_left/hand.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-5.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-6.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-7.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-8.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-9.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-10.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-11.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/middle_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-12.png"
+        },
+        {
+          "source": "parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/middle_finger/2026-10-15T09-13-27-488Z-13.png"
+        }
+      ],
+      "updatedAt": "2026-10-15T09:32:20.318Z"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "groupId": "arms/arm_left/hand/little_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取本组及 hand 父组说明、参考图、候选与父组完成 SVG。先完成整图 blend 定位，再以 8 倍逐块核对：指根框 [731,762,32,26]、指身框 [728,777,33,24]、指尖框 [728,792,24,20]，各框均检查 blend、edge，并查看对应参考放大；重叠区覆盖掌下连接、无名指交界、外侧转折、整段斜缘及指尖。另用共同局部 [728,762,35,50] 对照父稿与候选的 edge，并检查候选独显。\n本轮允许范围内通过：小指是连续完整实体，掌下圆弧根端与无名指遮挡下的局部余量合理；可见指身至最低指尖连续，无真正孔洞被填平、所属可见区域遗漏、孤点、碎片或形体归属混乱。邻指遮挡处的重叠不作为轮廓错误。父范围检查 pass，4 倍采样 outsideSamples=0、outsidePixels=0。\n单列上游范围限制：参考中小指画面右侧斜外缘（约 x739–756、y776–802）及最低指尖（约 x734–739、y803–807）在当前父边界外仍有窄条可见轮廓；在指身、指尖的 edge 放大中，红线位于参考外轮廓内侧，指尖下方尤为可见。相同局部父稿与候选的这段外缘完全重合，SVG 对应外轮廓段亦一致，候选已覆盖至父边界，没有留下尚可在父内补齐的窄带。恢复该处需扩大 hand 父范围，不能要求本子组越界；本轮未声称已补齐，也未放宽父检查。除此项已确认的父范围限制，未发现有明确图像依据的当前组返修项。",
+      "candidateHash": "c16d25f7a694ba0962f0636c77f376d19c2d4dc20e1192fbf7599f4803adfec6",
+      "observations": [
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-1.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-2.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-3.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-4.png"
+        },
+        {
+          "source": "parts/arms/arm_left/hand.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-5.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-6.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-7.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-8.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-9.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-10.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-11.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "svg",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-12.png"
+        },
+        {
+          "source": "parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_left/hand/little_finger/2026-10-15T09-12-23-075Z-13.png"
+        }
+      ],
+      "updatedAt": "2026-10-15T09:32:40.717Z"
+    }
+  ]
+}

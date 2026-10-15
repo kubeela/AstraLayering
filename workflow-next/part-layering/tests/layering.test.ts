@@ -283,7 +283,7 @@ test('异常后当前批次已派发任务收尾，保留成功事实且不进�
   assert.ok(await readFile(artifactPath(f.directory, 'c', 'outline')));
 });
 
-test('完整真实 test 的全部已执行部位可恢复，唯一组树含真实待办而非只有 hair', async () => {
+test('完整真实 test 恢复全部 115 个完成节点与最终预览，组树保持唯一', async () => {
   const directory = new URL('../.run/test/', import.meta.url);
   const store = await GroupStore.open(fileURLToPath(directory));
   const groups = store.snapshot().groups;
@@ -297,9 +297,11 @@ test('完整真实 test 的全部已执行部位可恢复，唯一组树含真�
   assert.ok(hair.every(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')));
   const all = walkGroups(groups);
   assert.equal(all.length, 115);
-  assert.ok(all.filter(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')).length >= 86);
+  assert.equal(all.filter(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')).length, 115);
   assert.equal(all.filter(({ depth }) => depth === 3).length, 29);
   assert.ok(all.filter(({ depth }) => depth === 3).every(({ group }) => group.kind === 'part' && group.groups.length === 0));
+  assert.equal(store.snapshot().merge.status, 'completed');
+  assert.equal(store.snapshot().merge.output!.path, join(fileURLToPath(directory), 'preview.svg'));
   await assert.rejects(readFile(new URL('stages/children/hair.json', directory)), { code: 'ENOENT' });
   assert.equal(await readJson(join(fileURLToPath(directory), 'progress.json')), undefined);
   await assert.rejects(readFile(new URL('hair-latest/groups.json', directory)), { code: 'ENOENT' });

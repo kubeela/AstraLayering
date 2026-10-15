@@ -1,0 +1,98 @@
+[
+  {
+    "name": "left-crown",
+    "parent": "head_accessories/left_crown_ribbon/jeweled_suspension",
+    "scale": 8,
+    "allChildrenComplete": true,
+    "parentAreaMissingFromLatestChildren": 0.03125
+  },
+  {
+    "name": "right-crown",
+    "parent": "head_accessories/right_crown_ribbon/gem_suspension",
+    "scale": 8,
+    "allChildrenComplete": true,
+    "parentAreaMissingFromLatestChildren": 4.953125
+  },
+  {
+    "name": "left-hand",
+    "parent": "arms/arm_left/hand",
+    "scale": 4,
+    "allChildrenComplete": true,
+    "parentAreaMissingFromLatestChildren": 79.25,
+    "fingerPalmOverlap": [
+      {
+        "id": "arms/arm_left/hand/thumb",
+        "complete": true,
+        "area": 219.625
+      },
+      {
+        "id": "arms/arm_left/hand/index_finger",
+        "complete": true,
+        "area": 78.8125
+      },
+      {
+        "id": "arms/arm_left/hand/middle_finger",
+        "complete": true,
+        "area": 15.5625
+      },
+      {
+        "id": "arms/arm_left/hand/ring_finger",
+        "complete": true,
+        "area": 37.875
+      },
+      {
+        "id": "arms/arm_left/hand/little_finger",
+        "complete": true,
+        "area": 0
+      }
+    ]
+  },
+  {
+    "name": "right-hand",
+    "parent": "arms/arm_right/hand",
+    "scale": 4,
+    "allChildrenComplete": true,
+    "parentAreaMissingFromLatestChildren": 6.5625,
+    "fingerPalmOverlap": [
+      {
+        "id": "arms/arm_right/hand/thumb",
+        "complete": true,
+        "area": 200.6875
+      },
+      {
+        "id": "arms/arm_right/hand/index_finger",
+        "complete": true,
+        "area": 122.6875
+      },
+      {
+        "id": "arms/arm_right/hand/middle_finger",
+        "complete": true,
+        "area": 171.1875
+      },
+      {
+        "id": "arms/arm_right/hand/ring_finger",
+        "complete": true,
+        "area": 130.5
+      },
+      {
+        "id": "arms/arm_right/hand/little_finger",
+        "complete": true,
+        "area": 152.75
+      }
+    ]
+  },
+  {
+    "name": "left-anklet",
+    "parent": "legs/leg_left/anklet",
+    "scale": 6,
+    "allChildrenComplete": true,
+    "parentAreaMissingFromLatestChildren": 0.08333333333333333
+  },
+  {
+    "name": "right-anklet",
+    "parent": "legs/leg_right/anklet",
+    "scale": 6,
+    "allChildrenComplete": true,
+    "parentAreaMissingFromLatestChildren": 0
+  }
+]

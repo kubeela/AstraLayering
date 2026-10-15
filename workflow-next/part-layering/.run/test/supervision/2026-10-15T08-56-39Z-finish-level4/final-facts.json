@@ -1,0 +1,364 @@
+{
+  "checkedAt": "2026-10-15T10:18:53.234Z",
+  "totalNodes": 115,
+  "completedNodes": 115,
+  "levelCounts": [
+    8,
+    27,
+    51,
+    29
+  ],
+  "fifthLayerNodes": 0,
+  "targets": [
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "d23a62eef01cb93adf533c195f582412b7920b1422b32b337304c8ce576c4656"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "0854f1146b1427018cabfa87b06d5f25d31a4d19ad2cb7d79acf226fe4d58c8d"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 2,
+      "completionHash": "e4cf66abf75e4670f5e61ddfbb02c1c65df83f976bf5d9083a1615d0782e20ed"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "62d4eefc6c4957713d4c0641cca4c277a9409e2297669f4a675b3cd3f0c366c9"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "5af8776388114533ae38890a88c2e3339358e7cb7c0bd11a533b1e1aaf8fa622"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "revise",
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "759c84e0af86776b13860167db9a68f474f86cb65beb37d9ab7676763d072ff9"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "40d01d84b24a9d198aed8d5261c48a7d013f6883f01e3eb805065b8027d0af72"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 2,
+      "completionHash": "0ceaecce433e202afc95ae8a588ab7826740c2c16cf5c654d7fb5be712e77d83"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "repaired",
+      "reviews": [
+        "revise",
+        "revise"
+      ],
+      "additions": 0,
+      "completionHash": "6e42f8c5121e6a0c7e4caedd2a592752bbeaacd8f9eb579d48224319a3725b7b"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "8edc668c6ae63a530341ecd98fa714f336a76eceb9bea1b4918a06656557af6f"
+    },
+    {
+      "id": "arms/arm_left/hand/palm",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "fb5b2f5622b8faf81bb7ac3be7782b6cdee5228d4c5577253dd5ae90689ef8ca"
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "b2fb4f51c069b17ba2a11aa3445dbd4ef2069001be74aaae1d82d99de666dae4"
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "b1e1550659a274032b9758b13bffae9fc0efef5efeb6553bbc919415a15fcaa4"
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "4c32afb02b413e817683dcfb7e510e73957918e1143f90e628c06761ff7c0ab8"
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "3a1cc6eb184189f7fe905a1bf3e09cef49a708230bfb7811ab901b82166840e9"
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 2,
+      "completionHash": "5d094a107705c00b3ab725d63966a33dd1202b8d504abfae591e50b2449e2e90"
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "199ad8ed8e9fa3e1f70dd2bb5c58f4ae745763556dcdedc852068f6da77409f6"
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "7b73e254fb596f79f3be76a9e3ebc1473edce32efa92399b1fd29df3cde36ae5"
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 2,
+      "completionHash": "4e0c697e17f2fb5c7c3da9deb483750c1b731d76d57bad4e5394f2b42a8a0c81"
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "f1f988e5e4809fa833662cf10adcf959b6cae6cf9cfec0d39e7ef3122f8d5b21"
+    },
+    {
+      "id": "arms/arm_right/hand/ring_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "fda646798310d8978fd9e1f9b781984cd5f4f988434e9389dc64b75c04d52f9c"
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "83b8e124512aacdeced9889768130bd41fbc49ce52514bfc9446abef3dfe1cf8"
+    },
+    {
+      "id": "legs/leg_left/anklet/ankle_chain",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 2,
+      "completionHash": "4cfab70238226713e462520ef0e9e245bdc9f419099c57ae73fd7f1c5cc0d3d3"
+    },
+    {
+      "id": "legs/leg_left/anklet/center_link",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "7a51e3cc50befb09cdee73ea4f913af4a3b9c07f1d7441f097be4510add4cfef"
+    },
+    {
+      "id": "legs/leg_left/anklet/teardrop_pendant",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "bc1564e6adecdb8906d514bbc7c3d83cd4fa4d535a45b89fd53d9b21a662366b"
+    },
+    {
+      "id": "legs/leg_right/anklet/outer_chain",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "1266bba004064cfcbeaad5e97fc90f2a2451c2c02d93e1d3657b0a03747bd9ec"
+    },
+    {
+      "id": "legs/leg_right/anklet/inner_chain",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "8437895bd8c94af2272433483e29be0b9e88efad0bdc5e3cbe5dac08142fcf79"
+    },
+    {
+      "id": "legs/leg_right/anklet/central_connector",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 0,
+      "completionHash": "143d0283fe599ea3d4f837ca11b1aebdb9850268a2c69823f61f8eac34ae80ea"
+    },
+    {
+      "id": "legs/leg_right/anklet/gem_pendant",
+      "kind": "part",
+      "children": 0,
+      "completed": true,
+      "reviewOutcome": "pass",
+      "reviews": [
+        "pass"
+      ],
+      "additions": 1,
+      "completionHash": "1210b86dff79d0e7d6e0d0bf32cc8c85590a23c736cc96554775afafe6eb76ba"
+    }
+  ]
+}

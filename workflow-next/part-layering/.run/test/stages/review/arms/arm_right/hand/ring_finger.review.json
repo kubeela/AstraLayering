@@ -1,0 +1,83 @@
+{
+  "groupId": "arms/arm_right/hand/ring_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已先以整图 blend 定位本组，再以三个重叠选框 [271,740,20,36]、[272,765,25,30]、[286,782,23,25] 的 8 倍 blend/edge 对照参考，覆盖指根衔接、屈曲指身、邻指接缝及完整指尖；另在 [277,772,31,33] 连续复核接缝，并查看父组相同局部叠加及候选独显。无名指与中指的可见接界、与小指相接的下缘转折（约 291,796）及右下圆钝指尖（约 301–303,799–802）均贴合参考；根部至尖端为连续实体，邻指间真实空隙保留。未发现本组组件缺失、可见边缘漏画、孤点碎片或形体归属混乱。父范围检查通过：outsideSamples=0、outsidePixels=0。未发现需要单列的上游父范围冲突。",
+      "candidateHash": "2fb9fd24d41306fd91725875d8eb3cdb6313b91cf362d759c4732e53f378825d",
+      "observations": [
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-1.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-2.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-3.png"
+        },
+        {
+          "source": "parts/arms/arm_right/hand.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-4.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-5.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-6.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-7.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-8.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-9.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-10.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-11.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "svg",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-12.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/ring_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-13.png"
+        },
+        {
+          "source": "parts/arms/arm_right/hand.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/ring_finger/2026-10-15T09-18-12-875Z-14.png"
+        }
+      ],
+      "updatedAt": "2026-10-15T09:38:03.568Z"
+    }
+  ]
+}

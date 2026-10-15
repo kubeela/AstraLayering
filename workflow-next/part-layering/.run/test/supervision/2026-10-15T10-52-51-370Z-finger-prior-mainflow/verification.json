@@ -1,0 +1,412 @@
+{
+  "finishedAt": "2026-10-15T11:01:28.126Z",
+  "entrypoint": "run.ts; default adapters; no prompt interception",
+  "command": "pnpm start --name test --groups .run/test/supervision/2026-10-15T10-52-51-370Z-finger-prior-mainflow/selection.json --jobs 3",
+  "tests": {
+    "typecheck": "passed",
+    "passed": 123
+  },
+  "completedNodes": 115,
+  "terminalParts": 10,
+  "unchangedFiles": 560,
+  "actualCallPeak": 3,
+  "calls": [
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "request": "agents/2026-10-15T10-56-21-485Z-正面遮挡补全-arms_arm_left_hand_index_finger-rzBxkZ/request.json",
+      "prompt": "prompts/groups/arms/arm_left/hand/index_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_left/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "sourceHash": "5581a5f968553acfc67e54ebad312a2ce1826bf146e1f8f97a23133ec6ad5519",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:56:21.488Z",
+      "finishedAt": "2026-10-15T10:57:52.179Z",
+      "additions": 0,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "stages/outline-reduce/arms/arm_left/hand/index_finger.svg",
+        "parts/arms/arm_left/hand.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "request": "agents/2026-10-15T10-57-52-182Z-正面遮挡补全-arms_arm_left_hand_little_finger-AbOvrf/request.json",
+      "prompt": "prompts/groups/arms/arm_left/hand/little_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_left/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "sourceHash": "5581a5f968553acfc67e54ebad312a2ce1826bf146e1f8f97a23133ec6ad5519",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:57:52.184Z",
+      "finishedAt": "2026-10-15T11:01:10.918Z",
+      "additions": 1,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_left/hand/little_finger.svg",
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "parts/arms/arm_left/hand.svg",
+        "parts/arms/arm_left/hand/little_finger.draft.svg",
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "request": "agents/2026-10-15T10-52-55-211Z-正面遮挡补全-arms_arm_left_hand_middle_finger-nhxKaW/request.json",
+      "prompt": "prompts/groups/arms/arm_left/hand/middle_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_left/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "sourceHash": "5581a5f968553acfc67e54ebad312a2ce1826bf146e1f8f97a23133ec6ad5519",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:52:55.212Z",
+      "finishedAt": "2026-10-15T10:56:21.481Z",
+      "additions": 1,
+      "svgReads": [
+        "parts/arms/arm_left/hand.svg",
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "stages/outline-reduce/arms/arm_left/hand/middle_finger.svg",
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "stages/outline-reduce/arms/arm_left/hand/middle_finger.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "request": "agents/2026-10-15T10-54-18-710Z-正面遮挡补全-arms_arm_left_hand_ring_finger-vSU3oK/request.json",
+      "prompt": "prompts/groups/arms/arm_left/hand/ring_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_left/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "sourceHash": "5581a5f968553acfc67e54ebad312a2ce1826bf146e1f8f97a23133ec6ad5519",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:54:18.711Z",
+      "finishedAt": "2026-10-15T10:57:06.624Z",
+      "additions": 1,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_left/hand/ring_finger.svg",
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "parts/arms/arm_left/hand.svg",
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "stages/outline-reduce/arms/arm_left/hand/ring_finger.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "request": "agents/2026-10-15T10-52-55-211Z-正面遮挡补全-arms_arm_left_hand_thumb-K7ypCq/request.json",
+      "prompt": "prompts/groups/arms/arm_left/hand/thumb/completion.md",
+      "reference": {
+        "groupId": "arms/arm_left/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "sourceHash": "5581a5f968553acfc67e54ebad312a2ce1826bf146e1f8f97a23133ec6ad5519",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:52:55.212Z",
+      "finishedAt": "2026-10-15T10:54:18.708Z",
+      "additions": 0,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_left/hand/thumb.svg",
+        "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+        "parts/arms/arm_left/hand.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "request": "agents/2026-10-15T10-57-06-627Z-正面遮挡补全-arms_arm_right_hand_index_finger-PycAsM/request.json",
+      "prompt": "prompts/groups/arms/arm_right/hand/index_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_right/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "sourceHash": "54b94d6fcc79a025312a77234e04f80c257a11d94c8aa8494594ef7c061cbab5",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:57:06.630Z",
+      "finishedAt": "2026-10-15T10:58:37.463Z",
+      "additions": 0,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "stages/outline-reduce/arms/arm_right/hand/index_finger.svg",
+        "parts/arms/arm_right/hand.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "request": "agents/2026-10-15T10-58-37-465Z-正面遮挡补全-arms_arm_right_hand_little_finger-o9I2Cb/request.json",
+      "prompt": "prompts/groups/arms/arm_right/hand/little_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_right/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "sourceHash": "54b94d6fcc79a025312a77234e04f80c257a11d94c8aa8494594ef7c061cbab5",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:58:37.468Z",
+      "finishedAt": "2026-10-15T11:00:19.058Z",
+      "additions": 0,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_right/hand/little_finger.svg",
+        "parts/arms/arm_right/hand.svg",
+        "stages/outline-reduce/arms/arm_right/hand/palm.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "request": "agents/2026-10-15T10-52-55-211Z-正面遮挡补全-arms_arm_right_hand_middle_finger-1NlYbD/request.json",
+      "prompt": "prompts/groups/arms/arm_right/hand/middle_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_right/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "sourceHash": "54b94d6fcc79a025312a77234e04f80c257a11d94c8aa8494594ef7c061cbab5",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:52:55.212Z",
+      "finishedAt": "2026-10-15T10:55:03.785Z",
+      "additions": 0,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_right/hand/middle_finger.svg",
+        "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "parts/arms/arm_right/hand.svg",
+        "stages/outline-reduce/arms/arm_right/hand/middle_finger.svg",
+        "stages/outline-reduce/arms/arm_right/hand/palm.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_right/hand/ring_finger",
+      "request": "agents/2026-10-15T10-57-19-025Z-正面遮挡补全-arms_arm_right_hand_ring_finger-GjC9K2/request.json",
+      "prompt": "prompts/groups/arms/arm_right/hand/ring_finger/completion.md",
+      "reference": {
+        "groupId": "arms/arm_right/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "sourceHash": "54b94d6fcc79a025312a77234e04f80c257a11d94c8aa8494594ef7c061cbab5",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:57:19.030Z",
+      "finishedAt": "2026-10-15T10:58:53.496Z",
+      "additions": 0,
+      "svgReads": [
+        "parts/arms/arm_right/hand.svg",
+        "stages/outline-reduce/arms/arm_right/hand/ring_finger.svg",
+        "stages/outline-reduce/arms/arm_right/hand/palm.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "request": "agents/2026-10-15T10-55-03-787Z-正面遮挡补全-arms_arm_right_hand_thumb-KmXruc/request.json",
+      "prompt": "prompts/groups/arms/arm_right/hand/thumb/completion.md",
+      "reference": {
+        "groupId": "arms/arm_right/hand/palm",
+        "sourceSvg": "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "sourceHash": "54b94d6fcc79a025312a77234e04f80c257a11d94c8aa8494594ef7c061cbab5",
+        "sourceStage": "reduction"
+      },
+      "resultStatus": "completed",
+      "startedAt": "2026-10-15T10:55:03.789Z",
+      "finishedAt": "2026-10-15T10:57:19.024Z",
+      "additions": 0,
+      "svgReads": [
+        "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+        "stages/outline-reduce/arms/arm_right/hand/thumb.svg",
+        "parts/arms/arm_right/hand.svg",
+        "stages/outline-reduce/arms/arm_right/hand/thumb.svg",
+        "stages/outline-reduce/arms/arm_right/hand/palm.svg"
+      ],
+      "tools": [
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "read_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "set_completion_paths",
+        "preview_svg",
+        "preview_svg",
+        "preview_svg",
+        "read_svg",
+        "read_svg",
+        "submit_completion"
+      ],
+      "errors": []
+    }
+  ]
+}

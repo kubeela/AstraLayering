@@ -1,0 +1,93 @@
+{
+  "groupId": "arms/arm_right/hand/little_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已先查看整图 blend，再以 8 倍放大的三个重叠选框 [260,736,40,32]、[260,756,43,34]、[268,780,36,33]，逐块完成 blend、edge 与参考核对，另复核 [279,792,18,18] 指尖，并在相同局部查看父组完成 SVG。覆盖了掌下指根连接、两侧指身、屈曲转折、邻无名指接缝及最下方指尖。可见外缘、长度和弯度与参考相符，指身连续，指尖收尾及邻指接界未见有明确图像依据的缺漏或错位；掌下局部圆弧连接余量合理。未见孤立点、碎片、无依据挖缝或形体归属混乱，无独立组件漏画。父范围检查通过：4 倍采样 outsideSamples=0、outsidePixels=0。指尖与父边界的同区核对未确认需单列的上游范围冲突。本轮通过。",
+      "candidateHash": "1f2df2255a6f1eacddaf6fd12835a5604bece184ab869fc0b1fd1212e69a6c9b",
+      "observations": [
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-1.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-2.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-3.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-4.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-5.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-6.png"
+        },
+        {
+          "source": "parts/arms/arm_right/hand.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-7.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-8.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-9.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-10.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-11.png"
+        },
+        {
+          "source": "parts/arms/arm_right/hand.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-12.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "svg",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-13.png"
+        },
+        {
+          "source": "parts/arms/arm_right/hand.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-14.png"
+        },
+        {
+          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-15.png"
+        },
+        {
+          "source": "parts/arms/arm_right/hand.svg",
+          "mode": "edge",
+          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-16.png"
+        }
+      ],
+      "updatedAt": "2026-10-15T09:43:30.381Z"
+    }
+  ]
+}
