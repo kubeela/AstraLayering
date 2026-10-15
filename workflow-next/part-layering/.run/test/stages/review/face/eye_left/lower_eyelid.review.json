@@ -1,0 +1,108 @@
+{
+  "groupId": "face/eye_left/lower_eyelid",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已先查看整图 blend 定位，再以三个重叠选框 [526,194,15,17]、[536,200,15,12]、[546,193,18,18] 在 8 倍下逐一查看参考、blend 与 edge，覆盖鼻侧端、中央下弧、外侧端及全部接缝；另用 [524,188,18,22] 和 [524,188,41,25] 复核鼻侧收尖与全长连续性，并查看父组相同眼部局部的 blend/edge。当前细下眼缘沿眼白下方连续延至外眼角，宽度、弧度、转向与参考可辨边缘吻合，未见有明确图像依据的缩入、外扩、断缝或组件漏画；未携带下方脸颊色块，外侧两根短下睫毛依职责留给 lower_eyelashes，无须在本件重复覆盖。轮廓为干净的连续形体，无孤立点、碎片或形体归属混乱。父范围固定 4 倍采样检查通过，outsideSamples=0、outsidePixels=0；未发现需单列的上游范围冲突。",
+      "candidateHash": "a578c21c996cdf057e2786141de34ee115b3cce24a0a49069b26b50d0ea34bd4",
+      "observations": [
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-1.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-2.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-3.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-4.png"
+        },
+        {
+          "source": ".\\parts\\face\\eye_left.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-5.png"
+        },
+        {
+          "source": ".\\parts\\face\\eye_left.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-6.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-7.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-8.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-9.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-10.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-11.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-12.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-13.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-14.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-15.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "blend",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-16.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-17.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "svg",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-18.png"
+        },
+        {
+          "source": ".\\stages\\outline\\face\\eye_left\\lower_eyelid.svg",
+          "mode": "edge",
+          "savedPath": ".\\observations\\review\\face\\eye_left\\lower_eyelid\\2026-10-14T22-13-46-387Z-19.png"
+        }
+      ],
+      "updatedAt": "2026-10-14T22:17:18.781Z"
+    }
+  ]
+}

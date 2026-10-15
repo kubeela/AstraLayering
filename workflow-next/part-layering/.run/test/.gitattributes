@@ -1,2 +1,2 @@
-# Preserve generated SVG and image bytes across checkouts.
+# Preserve generated result bytes across checkouts.
 * -text

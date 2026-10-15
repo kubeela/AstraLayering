@@ -65,7 +65,7 @@ review 通过 submit_review 保存候选哈希、结论、反馈和实际观察�
 
 自检通过后才分析组内轮廓，返回直属 group/part 并登记到树。part 同样经过绘制、review、整层去重、补形和检查，随后终止，无独立子组分析文件；kind 来自父分析结果。没有 kind 的历史节点按待分析 group 兼容。group 分析产生空列表时，事实明确其本身是最终单元，保留既有 ID 和 SVG，不造唯一同范围 part；初始层仍只识别 group。nodeKind 从明确类型或有效终止分析推导当前角色，不从尚待分析的空树猜测。
 
-拆分使用 children-agent.ts 的只读会话，实际观察父完成稿的 svg/blend 后调用 submit_children。name 使用 snake_case，程序构造父路径下的直属 ID；拒绝重复、嵌套树、进度字段、非法类型及单 part 包装。报告保存父 SVG 哈希、完整子节点定义及依据；提交前后检查父 SVG 未被改写。恢复时比较子节点的名称、类型、说明及 metadata，不仅比较 ID；报告先落盘、树未保存的中断会恢复并保存树。
+拆分使用 children-agent.ts 的只读会话，实际观察父完成稿的 svg/blend 后调用 submit_children。name 使用 snake_case，程序构造父路径下的直属 ID；拒绝重复、嵌套树、进度字段、非法类型及单 part 包装。提交前后检查父 SVG 未被改写，然后将子节点和当前节点的 childrenAnalysis（sourceHash、可选 note）一次原子写入 groups.json。不生成第二份结构报告；中断前后读取的都是完整的单一组树。输入完成 SVG 改变时，旧分析哈希不能放行下一层。
 
 正文来自 prompts/10-直属结构拆分.md，prompts/groups/<完整ID>/children.md 完整替换，10-拆分操作约定.md 始终附加。特化和通用均按独立变形、硬软、摆动、透视、绘制顺序、显隐及剪贴判断，固定纹理不机械拆；同名节点可依实际需求为 group 或 part。breast 左右一件；手臂先分左右，再分 upper_arm/forearm/hand，手分手掌和五根完整手指；腿先分左右，每侧分 leg/foot，不拆膝和脚趾。头发按完整发面、合理发根和独立控制需要规划；前发、侧发、后发是常见组织方式，不固定节点数量或树深。侧发不等同于鬓角细丝，完整统一控制的发面直接为 part；头盖可独立，也可由合理的后发单元承担，不强制巨大 base。教程作为开发先验落实在提示词，运行时不追加整套教程。
 
@@ -85,10 +85,10 @@ hair/completion.md 补充正面被脸和身体遮住的完整后发联合范围�
 | 去重版及整批提交 | stages/outline-reduce/<id>.svg、layers/<深度>.json |
 | 补形完成 SVG | parts/<id>.svg |
 | 对应版本的自检结论 | stages/completion-check/<id>.json |
-| 对应版本的子组分析结果，含空列表 | stages/children/<id>.json |
+| 唯一子组树及分析输入版本、依据，含空列表 | groups.json 中的 groups 与 childrenAnalysis |
 | 整树合并结果 | character.svg |
 
-SVG 哈希兼容 LF/CRLF 差异。补形和子组轮廓在 SVG 中携带输入版本，检查／分析报告绑定实际 SVG 哈希；输入改变时，过期结果不会被当作当前事实。子组分析报告已成功提交、树尚未保存就中断时，重启从报告恢复树。保存分组的并发写入队列和原子写入继续使用。
+SVG 哈希兼容 LF/CRLF 差异。补形和子组轮廓在 SVG 中携带输入版本，自检报告与组树内的分析元数据绑定实际 SVG 哈希；输入改变时，过期结果不会被当作当前事实。保存分组的并发写入队列和原子写入继续使用，结构与分析版本同一次提交。历史 children 报告仅用于已有运行的兼容迁入；新运行不再写入，已经保存新元数据后不再读取旧报告。
 
 新运行不创建或读取 progress.json，历史文件保留但不用于续跑。steps/status 仅在内存中供调度和终端展示；运行错误记录在 agent 日志。不能从一个 SVG 判断的信息由实际自检或分析结果文件表达，不复制完整步骤状态矩阵。
 
