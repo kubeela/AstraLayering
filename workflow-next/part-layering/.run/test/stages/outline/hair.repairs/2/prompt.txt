@@ -12,7 +12,7 @@
 
 将最终草稿写入指定路径。分组和进度由程序维护，不编辑 groups.json 或 progress.json；最终回复只简述完成情况。
 
-提示词来源：/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/prompts/5-组轮廓.md
+提示词来源：[repository]/workflow-next/part-layering/prompts/5-组轮廓.md
 
 【本次输入】
 {
@@ -21,15 +21,15 @@
     "name": "hair",
     "note": "全部银白色头发，包含头顶发髻、额前与脸侧发束，以及身后向下延伸的长发。"
   },
-  "reference": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/references/base-subject.png",
-  "groups": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/groups.json",
+  "reference": "./references/base-subject.png",
+  "groups": "./groups.json",
   "parentGroup": null,
   "parentSvg": null,
   "canvas": {
     "width": 1024,
     "height": 1536
   },
-  "outputSvg": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/hair.draft.svg"
+  "outputSvg": "./stages/outline/hair.draft.svg"
 }
 
 仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须用 preview_svg 先看整图 blend，再裁剪放大，用 blend 和 edge 逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。
@@ -37,13 +37,13 @@
 【独立 review 的返修意见】
 本轮仅审 hair。已先看整图 blend，并用九个相互重叠的选框逐框查看 3 倍 blend/edge：头部 [400,20,225,310]；左/右肩后至腰侧 [240,285,250,330]、[535,285,250,330]；左/右腰至手旁 [245,560,210,300]、[570,560,210,300]；左/右长发中段 [175,800,260,300]、[589,800,260,300]；左/右底部 [65,1030,305,320]、[654,1030,305,320]。另以 6–8 倍复核脸侧细发、肩侧外缘、腿侧接缝、手指旁开口及双侧各粗卷尖，并直接读取原图局部辨认真实空隙。全部可见区域已覆盖；无父组，父范围检查不适用。长飘带按 groups.json 归 head_accessories，不计入 hair。
 
-1. 双侧肩上方后发外缘缩入：左侧约 x420–432、y270–310，右侧约 x592–604、y270–310。放大 blend 可见候选色块外仍露出参考图连续的银发/灰色实线边缘，尤其左 (423,299)、右 (601,299) 附近，候选边界落在发面内侧，约少覆盖 1 个原图像素，并在肩端提前收住。这是可见头发外缘，不是内部阴影。请沿参考的真实外边缘补足窄条并接到肩端，保留连续下垂走向，不把外缘灰线漏在色块外。证据：6 倍 blend/edge [412,264,29,52]、[583,264,29,52]；/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/hair/2026-10-14T12-45-39-516Z-40.png、41.png、42.png、43.png。
+1. 双侧肩上方后发外缘缩入：左侧约 x420–432、y270–310，右侧约 x592–604、y270–310。放大 blend 可见候选色块外仍露出参考图连续的银发/灰色实线边缘，尤其左 (423,299)、右 (601,299) 附近，候选边界落在发面内侧，约少覆盖 1 个原图像素，并在肩端提前收住。这是可见头发外缘，不是内部阴影。请沿参考的真实外边缘补足窄条并接到肩端，保留连续下垂走向，不把外缘灰线漏在色块外。证据：6 倍 blend/edge [412,264,29,52]、[583,264,29,52]；./observations/review/hair/2026-10-14T12-45-39-516Z-40.png、41.png、42.png、43.png。
 
-2. 腿侧接缝有轮廓噪音及漏盖：左侧约 x379–386、y643–723，红边形成连续小凹口和凸包，局部缩入发面约 1–3 像素；参考对应皮肤与头发之间是连续、平滑的弧线，blend 中因此露出一条未覆盖的灰色发面。右侧约 x638–644、y650–716 也有无参考依据的反复短折返。请去掉这类来自色彩/阴影分界的波浪缺口，按真实皮肤—头发接缝重建干净、连续的局部曲线；允许与腿组合理搭接，返修依据是左侧漏盖和边界噪音，并非跨组重叠本身。证据：6 倍 blend/edge [372,640,35,90]、[628,640,35,90]；/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/hair/2026-10-14T12-45-39-516Z-28.png、29.png、30.png、31.png；原图同框可见平滑接缝。
+2. 腿侧接缝有轮廓噪音及漏盖：左侧约 x379–386、y643–723，红边形成连续小凹口和凸包，局部缩入发面约 1–3 像素；参考对应皮肤与头发之间是连续、平滑的弧线，blend 中因此露出一条未覆盖的灰色发面。右侧约 x638–644、y650–716 也有无参考依据的反复短折返。请去掉这类来自色彩/阴影分界的波浪缺口，按真实皮肤—头发接缝重建干净、连续的局部曲线；允许与腿组合理搭接，返修依据是左侧漏盖和边界噪音，并非跨组重叠本身。证据：6 倍 blend/edge [372,640,35,90]、[628,640,35,90]；./observations/review/hair/2026-10-14T12-45-39-516Z-28.png、29.png、30.png、31.png；原图同框可见平滑接缝。
 
-3. 双手拇指与弯曲手指之间的背景开口被错误填窄：左约 x296–302、y773–783，右约 x722–729、y773–783。原图这里是由手指与后方头发围出的三角形空隙，发束边界在空隙靠头发的一侧继续向下；候选却伸入空隙，只留下一个钝圆小缺口，出现不属于头发本体的小凸舌。请沿实际银发边缘恢复开口的宽度、三角转向和连续边界，清除伸入真实背景的凸舌；不要用零碎小缺口代替局部结构。此项涉及空隙/形体归属混乱。证据：6 倍 blend/edge [289,748,38,68]、[698,748,38,68]；/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/hair/2026-10-14T12-45-39-516Z-32.png、33.png、34.png、35.png；原图同框在灰底下可清楚辨认背景开口。
+3. 双手拇指与弯曲手指之间的背景开口被错误填窄：左约 x296–302、y773–783，右约 x722–729、y773–783。原图这里是由手指与后方头发围出的三角形空隙，发束边界在空隙靠头发的一侧继续向下；候选却伸入空隙，只留下一个钝圆小缺口，出现不属于头发本体的小凸舌。请沿实际银发边缘恢复开口的宽度、三角转向和连续边界，清除伸入真实背景的凸舌；不要用零碎小缺口代替局部结构。此项涉及空隙/形体归属混乱。证据：6 倍 blend/edge [289,748,38,68]、[698,748,38,68]；./observations/review/hair/2026-10-14T12-45-39-516Z-32.png、33.png、34.png、35.png；原图同框在灰底下可清楚辨认背景开口。
 
-4. 右脸侧细发约 x586–596、y211–232，被画成较粗、提前以圆头封口的短支条，末端约 (595,228)。原图外侧发丝更细，并沿斜下方向渐弱收尖；候选在同一走向上出现突兀的圆头和狭长反折开口，使细发与下方外圈发束的关系混乱。请依可靠细发边缘收窄、收尖，修正末端及其与下方发束的局部连接关系，避免把透明边缘痕迹加粗成圆头短杆；有依据的细发保留，不新增细节。证据：6 倍 [568,195,40,87] 及 8 倍 blend/edge [580,204,24,48]；/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/hair/2026-10-14T12-45-39-516Z-24.png、25.png、26.png、27.png，并已直接对照原图局部。
+4. 右脸侧细发约 x586–596、y211–232，被画成较粗、提前以圆头封口的短支条，末端约 (595,228)。原图外侧发丝更细，并沿斜下方向渐弱收尖；候选在同一走向上出现突兀的圆头和狭长反折开口，使细发与下方外圈发束的关系混乱。请依可靠细发边缘收窄、收尖，修正末端及其与下方发束的局部连接关系，避免把透明边缘痕迹加粗成圆头短杆；有依据的细发保留，不新增细节。证据：6 倍 [568,195,40,87] 及 8 倍 blend/edge [580,204,24,48]；./observations/review/hair/2026-10-14T12-45-39-516Z-24.png、25.png、26.png、27.png，并已直接对照原图局部。
 
 未见需要另外清除的孤立像素点或碎片堆砌。以上需修的问题包含接缝轮廓噪音、可见外缘漏盖及局部形体/空隙归属混乱；不涉及大片遮挡补形、组内明暗细节、最终着色或显影顺序。
 
@@ -58,4 +58,4 @@
 
 逐项核对反馈是否已修正，用 preview_svg 的 crop、scale 放大改动处及相邻区域，以 blend 和 edge 确认边缘、接缝和形体连续性；再看整图确认未引入位置、比例或其他区域的变形。发现问题在本次返修内修正并复查，不把已发现的问题留到下次审查。
 
-提示词来源：/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/prompts/7-轮廓返修.md
+提示词来源：[repository]/workflow-next/part-layering/prompts/7-轮廓返修.md

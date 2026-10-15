@@ -1,0 +1,31 @@
+{
+  "depth": 1,
+  "groups": [
+    {
+      "id": "hair/hair_cap",
+      "inputHash": "d31b844364db1108c22f2027e9d5120d8b65de68bd3d3d3e7810e821854501d2",
+      "outputHash": "d31b844364db1108c22f2027e9d5120d8b65de68bd3d3d3e7810e821854501d2"
+    },
+    {
+      "id": "hair/side_hair_left",
+      "inputHash": "f54d5b06c5a42bca6246d66959c6b68169ec73a37d74e57c0d3cff1d464c8171",
+      "outputHash": "f54d5b06c5a42bca6246d66959c6b68169ec73a37d74e57c0d3cff1d464c8171"
+    },
+    {
+      "id": "hair/side_hair_right",
+      "inputHash": "d26107bd83171957878b0567f202bd25ecf50d43895168fadb3e34f8773c2091",
+      "outputHash": "d26107bd83171957878b0567f202bd25ecf50d43895168fadb3e34f8773c2091"
+    },
+    {
+      "id": "hair/back_hair",
+      "inputHash": "13b1de1141c7ddcf211be398d7e3669a676820004debd0f9aeb71fe679076cd3",
+      "outputHash": "13b1de1141c7ddcf211be398d7e3669a676820004debd0f9aeb71fe679076cd3"
+    },
+    {
+      "id": "hair/bun",
+      "inputHash": "ddb5056908f7bfe71b6ed26f6cf4732d170ace046f31677cfca69bf399a0fb8f",
+      "outputHash": "ddb5056908f7bfe71b6ed26f6cf4732d170ace046f31677cfca69bf399a0fb8f"
+    }
+  ],
+  "note": "已先用 preview_svg blend 检查 mergedPreview，再读取本层五件 sourceSvg，逐项对照 note 与共同父组 hair，分别 blend 放大头部，并用 merged edge、耳侧交界 4 倍局部和 back_hair 全幅独显核对。未发现可确认的跨组同一实体、同一控制职责重复，故 changed 为空，五组均原样保留。hair_cap 是贴头梳拢底形，其在两侧前侧发、脸和耳后方的完整后枕覆盖属于隐藏补形；不将前侧发投影从头盖相减。side_hair_left（画面右）与 side_hair_right（画面左）各自从中分冠饰下方的隐藏根部连续经过宽额角幕帘至约 y270 的细卷尾，拥有相对头盖、后发独立摆动职责；两束完整保留，左侧细卷尾的孔洞及两侧可靠可见边缘保持原样。back_hair 的约 y200 起耳后根部及颈肩宽面属于前侧发后方的长后发系统，与前侧卷尾投影相接、局部相交不能认定为卷尾副本；其下接中长游离束、宽长主发面和最下方回卷末端，未在其它本层组重复领取。bun 是约 y27–84 的完整圆髻与接至约 y90 的短连接颈，和 hair_cap 顶缘的交叠为根部衔接，没有第二个圆髻实体。本轮没有清空、合并、重设控制层或修改几何；主体覆盖、隐藏承接、孔洞和发束间隙均保留。"
+}

@@ -25,6 +25,8 @@ for await (const event of events) {
 
 正式流程见 [layering-workflow.md](docs/layering-workflow.md)。一层取整棵树中同深度的组：先层内并行绘制、review 和返修；全部结束后统一去重；再层内并行执行补形、自检和子组分析。当前层全部结束后才启动下一层。
 
+已收录的当前结果见 [test](.run/test/README.md)，直接采用标准运行格式。最新确认的 hair 位于同一份组树、`parts/hair/` 和对应的 `stages/` 中；其 [交互预览](.run/test/previews/index.html) 可在克隆后直接离线打开，包含全部 8 个末端 part，不依赖独立快照目录或原机器。
+
 `agents.ts` 统一使用 `gpt-6.1-sol / xhigh`。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `layering-steps.ts`，首次分组位于 `initial-groups.ts`，绘制和 review 位于 `outline-agent.ts`。
 
 `agent-runtime.ts` 独立管理 agent 并发、临时错误分类和退避恢复，不依赖分组树或步骤。SDK、一次性原生任务和保留绘制会话均通过 `agents.ts` 接入同一运行实例的限制；空闲会话和退避等待不占执行位置。CLI 的内置重试先照常运行，SDK 的重连 `error` 与 App Server 的 `willRetry` 通知不会提前截断它；仅回合最终因容量、断流或临时服务错误失败时，在 5、10、20、40、60 秒后恢复，之后保持 60 秒，不设次数上限。恢复沿用 thread 与已成功的产物，不重新派发组或清空草稿；认证、额度、上下文、参数、文件校验和主动取消不自动重试。内置重试的源码核对、模拟服务验证及恢复边界见 [agent-runtime.md](docs/agent-runtime.md)。
