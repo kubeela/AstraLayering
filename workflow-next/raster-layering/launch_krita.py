@@ -14,6 +14,8 @@ ap.add_argument('--krita',type=Path,required=True)
 ap.add_argument('--output',type=Path,required=True)
 ap.add_argument('--profile',type=Path,default=HERE/'.work/krita-profile')
 ap.add_argument('--display',default=':118')
+ap.add_argument('--script',type=Path,default=HERE/'krita_import.py',
+                help='One-shot script to run inside Krita (import or targeted retouch).')
 args=ap.parse_args()
 profile=args.profile.resolve()
 plugin=profile/'data/krita/pykrita/astra_import'
@@ -47,7 +49,7 @@ Height=1200
 ''')
 env=dict(os.environ,DISPLAY=args.display,XDG_CONFIG_HOME=str(profile/'config'),
          XDG_DATA_HOME=str(profile/'data'),ASTRA_DELIVERY_DIR=str(args.output.resolve()),
-         ASTRA_IMPORT_SCRIPT=str(HERE/'krita_import.py'),FONTCONFIG_FILE='/etc/fonts/fonts.conf')
+         ASTRA_IMPORT_SCRIPT=str(args.script.resolve()),FONTCONFIG_FILE='/etc/fonts/fonts.conf')
 appdir=args.krita.resolve().parent
 if (appdir/'usr/lib/krita-python-libs').is_dir():
     env['PYTHONHOME']=str(appdir/'usr')

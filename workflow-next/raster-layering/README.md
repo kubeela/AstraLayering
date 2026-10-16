@@ -36,10 +36,37 @@ Krita 需有 Python 插件能力和可用的 X11 display（可用 Xvfb）。启�
 - 模型图像先检测 alpha／背景，再按包围盒和必要的逐行形状配准回原始坐标；最终 alpha
   来自部件标准。没有假棋盘格或另行生成的角色覆盖在最终图上。
 - 绝大多数可见像素直接从原图回填。脸底五官与发饰边缘的抗锯齿残影做局部柔化，避免
-  独显脸底时仍有五官轮廓。验证要求这种可见修整严格限于脸底，并量化整图误差。
+  独显脸底时仍有五官轮廓。逐部件修整还允许脚部饰品边缘的显式像素选区；验证把可见变化
+  限定在这些区域内，并继续检查原有整图误差预算。
 - 每个部件的完整绘画层保留遮挡补全。Krita 的独立透明蒙版控制原姿势遮挡；关闭该蒙版
   即可看到完整部件，不破坏底层像素。
 - 已准备的 `visible.png` 可以独立重组；验证还会比较真正重开 KRA 导出的画面，防止只在
   Python 中合成正确或用整图覆盖来冒充分层。
 
 当前为原姿势的可编辑拆分资产。没有自动生成 Live2D 网格、参数绑定或动画。
+
+## 逐部件复查与局部修整
+
+先关闭原姿势遮挡蒙版，按相同裁切坐标比较原图、完整部件和修前版本，再决定每个局部的
+处理方式。整图相似度不能判断隐藏区域是否干净。需要检查覆盖物残影、肤色／材质污染、
+拼接硬边、透明边缘、断线和同一细节重复归层；保留本来就属于原画的阴影和细线。
+
+本例的 `retouch_case.py` 保存了逐图审查后选定的坐标与材质处理。它是这个角色的修整配方，
+不是通用瑕疵检测器。Python 计算局部克隆、边界平滑及像素归层；`krita_retouch.py` 打开
+原有 KRA，用 Krita 原生 `setPixelData` 和透明蒙版选区接口写回对应矩形，保持图层树不变。
+这条路径采用脚本像素修补，不声称使用了鼠标手绘笔刷。
+
+从未修整的 `91a8a080` 交付目录开始，在独立目录执行：
+
+```sh
+.venv/bin/python retouch_case.py --input /path/to/baseline --output .work/refined
+python3 launch_krita.py --krita /path/to/krita --output .work/refined --profile .work/retouch-profile --script krita_retouch.py
+.venv/bin/python validate.py .work/refined
+.venv/bin/python review_parts.py .work/refined
+python3 make_preview.py .work/refined
+```
+
+`retouch-plan.json` 记录选区、理由和前后哈希；受影响部件的 `before-retouch.png` 与
+`retouch-mask.png` 保存原始像素和改动范围。Krita 写回前检查原图层与审查基线一致，保存后
+重开验证全部 90 个图层。`part-review/index.html` 提供 90 项独立对照；没有改动的部件也列出，
+小部件使用最近邻放大，避免平滑插值掩盖像素边缘。

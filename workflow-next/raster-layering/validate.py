@@ -28,7 +28,16 @@ expected_projection=np.array(Image.open(out/'reassembled.png').convert('RGBA'))
 assert np.abs(actual.astype(int)-expected_projection.astype(int)).max()<=1,'Independent PNGs fail reconstruction'
 delta=abs(actual.astype(int)-ref.astype(int))
 face=np.array(Image.open(out/'parts/face/face_base/visible.png'))[:,:,3]>0
-assert not delta[:,:,:3][~face].any(),'Visible retouch escaped the face skin base'
+allowed=face.copy()
+retouch=out/'retouch-plan.json'
+if retouch.exists():
+    # Reviewed jewelry-fringe corrections may touch the foot skin immediately
+    # beside the removed accessory. Bound that permission to the recorded
+    # pixel masks; do not give all parts blanket permission to drift.
+    for pid in ('legs/leg_left/foot','legs/leg_right/foot'):
+        mask=out/'parts'/pid/'retouch-mask.png'
+        if mask.exists():allowed |= np.array(Image.open(mask))>0
+assert not delta[:,:,:3][~allowed].any(),'Visible retouch escaped the reviewed skin masks'
 assert delta[:,:,3].max()==0,'Source matte changed'
 rgb_mse=float(np.mean(delta[:,:,:3].astype(float)**2))
 psnr=float(20*np.log10(255/np.sqrt(rgb_mse))) if rgb_mse else None
@@ -43,11 +52,13 @@ native_delta=abs(reopened.astype(int)-expected_projection.astype(int))
 assert native_delta.max()<=1,f'Krita reopened RGBA mismatch: {native_delta.max()}'
 report=json.loads((out/'validation.json').read_text())
 report.update(kritaVersion=k['version'],nativePaintLayers=90,nativeTransparencyMasks=90,nativeGroups=25,
+              rgbaMeanAbsoluteError=float(delta.mean()),rgbaMaxAbsoluteError=int(delta.max()),
               reopenedRgbaMeanAbsoluteError=float(native_delta.mean()),reopenedRgbaMaxAbsoluteError=int(native_delta.max()),
               referenceRgbPsnrDb=psnr,referenceRgbMse=rgb_mse,
               sourceRgbUnchangedFraction=float(np.mean(np.all(delta[:,:,:3]==0,axis=2))),
               retouchedPixels=int(np.count_nonzero(np.any(delta[:,:,:3]>0,axis=2))),
-              retouchScope='Only the antialiased feature fringes of face/face_base; source features remain on their own layers.',
+              retouchScope=('Face feature/hair fringes and explicitly reviewed foot jewelry-edge repair masks.'
+                            if retouch.exists() else 'Only the antialiased feature fringes of face/face_base; source features remain on their own layers.'),
               transparentParts=90,independentPngReassemblyMatches=True,passed=True)
 dump(out/'validation.json',report)
 print(json.dumps(report,ensure_ascii=False,indent=2))

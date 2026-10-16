@@ -1,0 +1,468 @@
+{
+  "sourceCommit": "91a8a080",
+  "parts": [
+    {
+      "id": "face/face_base",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 0,
+      "bounds": null,
+      "beforeSha256": "0f9c971429dd4a5c8f5ee690aad4cdc2f34e65fc7eb649c7dfed60aadbd4db31",
+      "afterSha256": "0f9c971429dd4a5c8f5ee690aad4cdc2f34e65fc7eb649c7dfed60aadbd4db31"
+    },
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 18,
+      "bounds": [
+        544,
+        192,
+        559,
+        207
+      ],
+      "beforeSha256": "c7843ab034bfbc61427191810b92564a3e8243cc10a73b2011277e16ef363961",
+      "afterSha256": "d22d520266951ed37a9c0d54f4616f9e711d11cea871e5c3d9938bbd641ebd1e"
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "reasons": [
+        "Remove iris, eyeliner and skin contamination; heal continuous sclera."
+      ],
+      "changedPixels": 370,
+      "bounds": [
+        525,
+        191,
+        560,
+        209
+      ],
+      "beforeSha256": "247204eecef68c7157b6a8910a34e9a4f25b0916558ced41c899cd17b26f1caa",
+      "afterSha256": "c1c8902ce482ab5f53f24111df7bf2b4d6cd5bc4034b1853019571ac6982daab"
+    },
+    {
+      "id": "face/eye_left/iris",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels.",
+        "Remove foreign skin specks and restore source pixels along iris rim."
+      ],
+      "changedPixels": 19,
+      "bounds": [
+        531,
+        187,
+        551,
+        206
+      ],
+      "beforeSha256": "8d57e705941a98231cc5987d225dada0867c7aa48ea79dcf58c7d984c76357fb",
+      "afterSha256": "d97e31477731271946b783ffe09f8c19a429016259bc1d0a77010bfee3fa8209"
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 17,
+      "bounds": [
+        465,
+        193,
+        496,
+        201
+      ],
+      "beforeSha256": "3a5bc2da47588a0f4db18347a05edf4bfe20093cf53a7b6fd4bf2d996a9c6a1c",
+      "afterSha256": "0f3ae8a9bec4dd83b76125f0c428baa362d296ea37807251697bcaadb3a6bc9c"
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "reasons": [
+        "Remove iris, eyeliner and skin contamination; heal continuous sclera."
+      ],
+      "changedPixels": 444,
+      "bounds": [
+        462,
+        190,
+        500,
+        208
+      ],
+      "beforeSha256": "f1674712e27025b07439c674a846ffc4881c8de2b0a82ff47a3546143e3af17f",
+      "afterSha256": "db5ded229f0d0acc9134f43d7d44ebf999968cadd2820498b0e62d9bd3cd899e"
+    },
+    {
+      "id": "face/eye_right/iris",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels.",
+        "Remove foreign skin specks and restore source pixels along iris rim."
+      ],
+      "changedPixels": 11,
+      "bounds": [
+        472,
+        195,
+        493,
+        204
+      ],
+      "beforeSha256": "b66f452d552a1dda8e0356f1814c7ec3d9ac78a35989eaec5512ad09aba4cec0",
+      "afterSha256": "d03cd1d34fcbbf26c5392dc01f1f39e4141e5fec637b5b9a012fca521ecc4c56"
+    },
+    {
+      "id": "face/ear_left",
+      "reasons": [
+        "Clean hidden ear skin of duplicated earrings and hair; retain observed ear folds."
+      ],
+      "changedPixels": 333,
+      "bounds": [
+        546,
+        193,
+        573,
+        225
+      ],
+      "beforeSha256": "ada15b6f5c4f0a00a609afd078e1b77495466ceeb6e16f1f8519e99b1a8abd0c",
+      "afterSha256": "60bd64de25f620c3f31bc3e05467cd517d9b679332df921c162f351ac0fb8f82"
+    },
+    {
+      "id": "face/ear_right",
+      "reasons": [
+        "Receive edge pixels outside face silhouette.",
+        "Clean hidden ear skin of duplicated earrings and hair; retain observed ear folds."
+      ],
+      "changedPixels": 315,
+      "bounds": [
+        450,
+        193,
+        475,
+        225
+      ],
+      "beforeSha256": "94db7c638f90e9301895c56dea369634bdd07bc50e88ad12709b7c1dd0badb22",
+      "afterSha256": "c0f6a25aad9910407154a23d957623bed77d363aac2eb32161452a69eb184422"
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "reasons": [
+        "Remove disconnected pale skin islands from mouth interior."
+      ],
+      "changedPixels": 178,
+      "bounds": [
+        500,
+        229,
+        522,
+        245
+      ],
+      "beforeSha256": "234a68b87142780c544d78f30cfab4cf530c374f2f84d638fef0664afdb643b9",
+      "afterSha256": "014a0a886d9a8a8d7bd44e0b4944711bcbc0b57af89431606126135a2356630f"
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "reasons": [
+        "Correct dull/beige hidden tooth row to a coherent warm ivory enamel gradient."
+      ],
+      "changedPixels": 58,
+      "bounds": [
+        504,
+        231,
+        521,
+        237
+      ],
+      "beforeSha256": "6602a265d565858518174fafeade3e0a546c0b795c6d2bafb7e4e2eeddff5f31",
+      "afterSha256": "6ba96cd1d4a7c2e8fe87aeed091ae410daef414ed729962d9ba7fe8700dabf63"
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "reasons": [
+        "Correct dull/beige hidden tooth row to a coherent warm ivory enamel gradient."
+      ],
+      "changedPixels": 24,
+      "bounds": [
+        505,
+        242,
+        519,
+        245
+      ],
+      "beforeSha256": "195988feb67fb34742cb508cfc7f835a37400205e9134c83e2de289c6bd441cd",
+      "afterSha256": "53babb64e064b7448b4bedeca7c93bef6a0dca1c240ea5bddf66105f1d20c58c"
+    },
+    {
+      "id": "hair/hair_cap",
+      "reasons": [
+        "Remove forehead/skin slivers from isolated hair; retain strand direction nearby."
+      ],
+      "changedPixels": 547,
+      "bounds": [
+        454,
+        141,
+        536,
+        205
+      ],
+      "beforeSha256": "882f9b58cc4e926a156260ad82f5bc38064dd49e314605d3c91baa11e673be4b",
+      "afterSha256": "153baf2bca41d37132424a36bae411c71c96f7b24a90066dea918780ae87e060"
+    },
+    {
+      "id": "hair/side_hair_left",
+      "reasons": [
+        "Remove forehead/skin slivers from isolated hair; retain strand direction nearby."
+      ],
+      "changedPixels": 186,
+      "bounds": [
+        532,
+        144,
+        561,
+        191
+      ],
+      "beforeSha256": "07212f7f5c58bd548268740ebd4fd61e49938282b1e96ec0d5a788a221bc02c1",
+      "afterSha256": "381c3c7f0c92993e2c55729d5a4c8eccf2cfb901e4c3b14b44a919b0640d7fc6"
+    },
+    {
+      "id": "hair/side_hair_right",
+      "reasons": [
+        "Remove forehead/skin slivers from isolated hair; retain strand direction nearby."
+      ],
+      "changedPixels": 10,
+      "bounds": [
+        462,
+        159,
+        481,
+        194
+      ],
+      "beforeSha256": "d843fe2fc9fcd542a06297d1635c3b64d8465839c9affedb7e4d79620d111192",
+      "afterSha256": "9818461f74c5acd549d9faa9d8a3f9aa507eb70d0f3e51589b5a92da263f8378"
+    },
+    {
+      "id": "hair/bun",
+      "reasons": [
+        "Remove duplicated lotus ornament from hidden bun and clone clean hair structure."
+      ],
+      "changedPixels": 2146,
+      "bounds": [
+        464,
+        42,
+        560,
+        103
+      ],
+      "beforeSha256": "d50ef18c4d8bb94018e021943b0132b020e5cb2d8ad33b90513091c3b5718774",
+      "afterSha256": "f820a1d264683de3c8c6276ce0c6dfba9ca3e97152c8acb1d615b40a4623433c"
+    },
+    {
+      "id": "head_accessories/lotus_ornament",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 209,
+      "bounds": [
+        464,
+        42,
+        560,
+        88
+      ],
+      "beforeSha256": "ffd910ad390b81a9cc40d5e1b02e78eed76f34c1074cb1893d6b737989ee06df",
+      "afterSha256": "89feaedf158a104e928c0a2843d21d6f6e8fae766b2ba86d3910ae41d5002ad4"
+    },
+    {
+      "id": "neck",
+      "reasons": [
+        "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+      ],
+      "changedPixels": 3371,
+      "bounds": [
+        467,
+        225,
+        557,
+        342
+      ],
+      "beforeSha256": "e32a53cf6d751e4701fd8cbe0cf244ff6b31d7a551f04c67d6d9be05af6727ec",
+      "afterSha256": "01d735c7e65dc0bbf902671ebad1b469ac90247a99ddbaa16febda70418a02f6"
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "reasons": [
+        "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+      ],
+      "changedPixels": 3618,
+      "bounds": [
+        354,
+        336,
+        439,
+        557
+      ],
+      "beforeSha256": "224b254352b882165daa1490b40a82d2f0349da7d5892c990551f753de3c8234",
+      "afterSha256": "1713fe5a1024fa70389529cc28876d292f4b34f778db50d024e361dae11faf51"
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "reasons": [
+        "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+      ],
+      "changedPixels": 8104,
+      "bounds": [
+        509,
+        544,
+        644,
+        1411
+      ],
+      "beforeSha256": "1459065ac3160b5ee07a19a5d1ebc137de0397caf6c3fd8ec1e324762a347e5a",
+      "afterSha256": "e7ec9e290d539c943865a2615ecee06c441198e81062be13132781a8161e733d"
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "reasons": [
+        "Heal chain/pendant ghosts and mixed edge pixels with nearby skin; retain toe and nail detail."
+      ],
+      "changedPixels": 769,
+      "bounds": [
+        513,
+        1385,
+        572,
+        1488
+      ],
+      "beforeSha256": "7f7b9bd313676260cb9ed6a19930ae7e2a2da688bcd3f44978a5cfac23d5d78c",
+      "afterSha256": "75984ee3e36d49a261afc50136babe0b2b81171c159ac7c47eff481e887d1321"
+    },
+    {
+      "id": "legs/leg_left/anklet/ankle_chain",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 139,
+      "bounds": [
+        517,
+        1387,
+        572,
+        1419
+      ],
+      "beforeSha256": "44317913a7a96ada0bced8aaff2f6f66cff9541e44807eda05f9b9fe736b357e",
+      "afterSha256": "1d11e819a15364977420e036a92d44f54fedca78457610210eabdfbf1ca9380f"
+    },
+    {
+      "id": "legs/leg_left/anklet/center_link",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 19,
+      "bounds": [
+        537,
+        1413,
+        547,
+        1424
+      ],
+      "beforeSha256": "36787f4585b140b8f7bcfeae988fd471630d821b95777ff5feaf80f09b35123a",
+      "afterSha256": "285febc280287310aad4f1c82b398a9721e603dd1c488688e42a9756e80a8f90"
+    },
+    {
+      "id": "legs/leg_left/anklet/teardrop_pendant",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 50,
+      "bounds": [
+        536,
+        1424,
+        550,
+        1447
+      ],
+      "beforeSha256": "4c8f5f1ad756cc6e98fada34f8bddb14fc103c733bd39f29a5856181001d0db1",
+      "afterSha256": "f5b3e80543549391b238ee4db6380f74591a51aef17cff2b87c1e7cff7509284"
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "reasons": [
+        "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+      ],
+      "changedPixels": 8547,
+      "bounds": [
+        381,
+        543,
+        514,
+        1393
+      ],
+      "beforeSha256": "8f5233c3fb2f29bfe12827c124fef9704e2b660775efd36bebc1cf7e345d0073",
+      "afterSha256": "3f270449b33f54fb8dd65e4c9de7a7aebec70e4590a5b7a6199e79b428174fcf"
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "reasons": [
+        "Heal chain/pendant ghosts and mixed edge pixels with nearby skin; retain toe and nail detail."
+      ],
+      "changedPixels": 1081,
+      "bounds": [
+        459,
+        1352,
+        516,
+        1445
+      ],
+      "beforeSha256": "00386e39f54eff1c4549d2881d36ffea93ec60395e54fbce3f5a11fd56c42bf0",
+      "afterSha256": "3567841ad52204dcc5595fb917daf84d56538284b9650ce4278e9e09d73394fc"
+    },
+    {
+      "id": "legs/leg_right/ankle_gem",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 59,
+      "bounds": [
+        482,
+        1353,
+        496,
+        1380
+      ],
+      "beforeSha256": "b8a1b9735a4931f6f7fbbb8741b12d746307b7342d899a80553b56548207075c",
+      "afterSha256": "47ba6d1264922188d8b21b547ecde79e160742c0b59885ead3d716b97ca564d4"
+    },
+    {
+      "id": "legs/leg_right/anklet/outer_chain",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 99,
+      "bounds": [
+        459,
+        1374,
+        481,
+        1416
+      ],
+      "beforeSha256": "96447f51028127f15a6b259de6b3b76bd059f7d22942b3a603b60bfd17cdfa6f",
+      "afterSha256": "cdb93c43c59336ed02e89746c93f1187bd2df66adc7b1bb8efaf118fa41e2596"
+    },
+    {
+      "id": "legs/leg_right/anklet/inner_chain",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 108,
+      "bounds": [
+        487,
+        1377,
+        516,
+        1415
+      ],
+      "beforeSha256": "aabfcc49dfdd67e5ecc07cd41e205a36849290c47393dfbd57b8b002ac5ae2a1",
+      "afterSha256": "199427505c78c2e33bbab856f0e9ff56914f5f81378e359f89464fddf1b04a89"
+    },
+    {
+      "id": "legs/leg_right/anklet/central_connector",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 27,
+      "bounds": [
+        478,
+        1411,
+        489,
+        1422
+      ],
+      "beforeSha256": "59d6f775431b746ab869431f2e91278c16f0caa72dfdad748c729c1ba2dc2615",
+      "afterSha256": "00b8b6b257e3fe9f02efc641a22d2c465c2c03e0e9b7157179526fcf5612279f"
+    },
+    {
+      "id": "legs/leg_right/anklet/gem_pendant",
+      "reasons": [
+        "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+      ],
+      "changedPixels": 42,
+      "bounds": [
+        477,
+        1421,
+        491,
+        1444
+      ],
+      "beforeSha256": "a0b04513ebfc4b6166f20210b2a795d8c46fc8e4eab97d5fced31ebc2c102ed9",
+      "afterSha256": "d64da1a2453405186b0cb605281f03c87cf604103c9246b5afcef017d6f067d6"
+    }
+  ]
+}

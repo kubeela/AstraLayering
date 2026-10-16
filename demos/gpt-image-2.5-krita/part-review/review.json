@@ -1,0 +1,1087 @@
+{
+  "parts": [
+    {
+      "id": "face/face_base",
+      "state": "局部修整／归层调整",
+      "comparison": "01.png",
+      "crop": [
+        457,
+        125,
+        565,
+        266
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "state": "局部修整／归层调整",
+      "comparison": "02.png",
+      "crop": [
+        521,
+        180,
+        565,
+        210
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "face/eye_left/lower_eyelid",
+      "state": "本轮保留",
+      "comparison": "03.png",
+      "crop": [
+        523,
+        192,
+        565,
+        214
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "state": "局部修整／归层调整",
+      "comparison": "04.png",
+      "crop": [
+        522,
+        188,
+        563,
+        212
+      ],
+      "notes": "Remove iris, eyeliner and skin contamination; heal continuous sclera."
+    },
+    {
+      "id": "face/eye_left/iris",
+      "state": "局部修整／归层调整",
+      "comparison": "05.png",
+      "crop": [
+        528,
+        184,
+        554,
+        211
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels.；Remove foreign skin specks and restore source pixels along iris rim."
+    },
+    {
+      "id": "face/eye_left/highlight",
+      "state": "本轮保留",
+      "comparison": "06.png",
+      "crop": [
+        534,
+        189,
+        544,
+        200
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eye_left/lower_eyelashes",
+      "state": "本轮保留",
+      "comparison": "07.png",
+      "crop": [
+        546,
+        200,
+        560,
+        213
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "state": "本轮保留",
+      "comparison": "08.png",
+      "crop": [
+        522,
+        178,
+        550,
+        194
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "state": "局部修整／归层调整",
+      "comparison": "09.png",
+      "crop": [
+        458,
+        182,
+        504,
+        204
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "state": "本轮保留",
+      "comparison": "10.png",
+      "crop": [
+        459,
+        191,
+        501,
+        214
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "state": "局部修整／归层调整",
+      "comparison": "11.png",
+      "crop": [
+        459,
+        187,
+        503,
+        211
+      ],
+      "notes": "Remove iris, eyeliner and skin contamination; heal continuous sclera."
+    },
+    {
+      "id": "face/eye_right/iris",
+      "state": "局部修整／归层调整",
+      "comparison": "12.png",
+      "crop": [
+        469,
+        184,
+        496,
+        211
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels.；Remove foreign skin specks and restore source pixels along iris rim."
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "state": "本轮保留",
+      "comparison": "13.png",
+      "crop": [
+        481,
+        190,
+        490,
+        200
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "state": "本轮保留",
+      "comparison": "14.png",
+      "crop": [
+        464,
+        177,
+        503,
+        195
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eyebrow_left",
+      "state": "本轮保留",
+      "comparison": "15.png",
+      "crop": [
+        517,
+        167,
+        561,
+        186
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/eyebrow_right",
+      "state": "本轮保留",
+      "comparison": "16.png",
+      "crop": [
+        460,
+        167,
+        505,
+        186
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/ear_left",
+      "state": "局部修整／归层调整",
+      "comparison": "17.png",
+      "crop": [
+        543,
+        190,
+        577,
+        229
+      ],
+      "notes": "Clean hidden ear skin of duplicated earrings and hair; retain observed ear folds."
+    },
+    {
+      "id": "face/ear_right",
+      "state": "局部修整／归层调整",
+      "comparison": "18.png",
+      "crop": [
+        447,
+        190,
+        478,
+        228
+      ],
+      "notes": "Receive edge pixels outside face silhouette.；Clean hidden ear skin of duplicated earrings and hair; retain observed ear folds."
+    },
+    {
+      "id": "face/nose",
+      "state": "本轮保留",
+      "comparison": "19.png",
+      "crop": [
+        502,
+        205,
+        523,
+        230
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/mouth/upper_lip",
+      "state": "本轮保留",
+      "comparison": "20.png",
+      "crop": [
+        499,
+        225,
+        528,
+        244
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "state": "本轮保留",
+      "comparison": "21.png",
+      "crop": [
+        496,
+        232,
+        528,
+        252
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "state": "局部修整／归层调整",
+      "comparison": "22.png",
+      "crop": [
+        497,
+        226,
+        525,
+        248
+      ],
+      "notes": "Remove disconnected pale skin islands from mouth interior."
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "state": "局部修整／归层调整",
+      "comparison": "23.png",
+      "crop": [
+        501,
+        228,
+        524,
+        240
+      ],
+      "notes": "Correct dull/beige hidden tooth row to a coherent warm ivory enamel gradient."
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "state": "局部修整／归层调整",
+      "comparison": "24.png",
+      "crop": [
+        502,
+        239,
+        522,
+        248
+      ],
+      "notes": "Correct dull/beige hidden tooth row to a coherent warm ivory enamel gradient."
+    },
+    {
+      "id": "face/mouth/tongue",
+      "state": "本轮保留",
+      "comparison": "25.png",
+      "crop": [
+        501,
+        233,
+        523,
+        247
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "hair/hair_cap",
+      "state": "局部修整／归层调整",
+      "comparison": "26.png",
+      "crop": [
+        416,
+        81,
+        608,
+        284
+      ],
+      "notes": "Remove forehead/skin slivers from isolated hair; retain strand direction nearby."
+    },
+    {
+      "id": "hair/side_hair_left",
+      "state": "局部修整／归层调整",
+      "comparison": "27.png",
+      "crop": [
+        507,
+        74,
+        611,
+        279
+      ],
+      "notes": "Remove forehead/skin slivers from isolated hair; retain strand direction nearby."
+    },
+    {
+      "id": "hair/side_hair_right",
+      "state": "局部修整／归层调整",
+      "comparison": "28.png",
+      "crop": [
+        412,
+        75,
+        515,
+        277
+      ],
+      "notes": "Remove forehead/skin slivers from isolated hair; retain strand direction nearby."
+    },
+    {
+      "id": "hair/back_hair/main_left",
+      "state": "本轮保留",
+      "comparison": "29.png",
+      "crop": [
+        530,
+        172,
+        1013,
+        1536
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "hair/back_hair/main_right",
+      "state": "本轮保留",
+      "comparison": "30.png",
+      "crop": [
+        14,
+        172,
+        494,
+        1410
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "hair/back_hair/lock_left",
+      "state": "本轮保留",
+      "comparison": "31.png",
+      "crop": [
+        548,
+        188,
+        780,
+        721
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "hair/back_hair/lock_right",
+      "state": "本轮保留",
+      "comparison": "32.png",
+      "crop": [
+        248,
+        183,
+        484,
+        721
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "hair/bun",
+      "state": "局部修整／归层调整",
+      "comparison": "33.png",
+      "crop": [
+        461,
+        19,
+        563,
+        106
+      ],
+      "notes": "Remove duplicated lotus ornament from hidden bun and clone clean hair structure."
+    },
+    {
+      "id": "head_accessories/crown_frame",
+      "state": "本轮保留",
+      "comparison": "34.png",
+      "crop": [
+        318,
+        0,
+        643,
+        124
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/lotus_ornament",
+      "state": "局部修整／归层调整",
+      "comparison": "35.png",
+      "crop": [
+        453,
+        39,
+        570,
+        91
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
+      "state": "本轮保留",
+      "comparison": "36.png",
+      "crop": [
+        500,
+        126,
+        524,
+        154
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/forehead_ornament/teardrop_pendant",
+      "state": "本轮保留",
+      "comparison": "37.png",
+      "crop": [
+        504,
+        143,
+        521,
+        170
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+      "state": "本轮保留",
+      "comparison": "38.png",
+      "crop": [
+        609,
+        93,
+        628,
+        112
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+      "state": "本轮保留",
+      "comparison": "39.png",
+      "crop": [
+        597,
+        102,
+        637,
+        124
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+      "state": "本轮保留",
+      "comparison": "40.png",
+      "crop": [
+        614,
+        115,
+        626,
+        127
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
+      "state": "本轮保留",
+      "comparison": "41.png",
+      "crop": [
+        597,
+        118,
+        633,
+        137
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
+      "state": "本轮保留",
+      "comparison": "42.png",
+      "crop": [
+        612,
+        127,
+        629,
+        144
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_head",
+      "state": "本轮保留",
+      "comparison": "43.png",
+      "crop": [
+        598,
+        130,
+        647,
+        173
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_tail",
+      "state": "本轮保留",
+      "comparison": "44.png",
+      "crop": [
+        599,
+        161,
+        981,
+        915
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+      "state": "本轮保留",
+      "comparison": "45.png",
+      "crop": [
+        392,
+        93,
+        415,
+        111
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+      "state": "本轮保留",
+      "comparison": "46.png",
+      "crop": [
+        380,
+        101,
+        427,
+        124
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+      "state": "本轮保留",
+      "comparison": "47.png",
+      "crop": [
+        400,
+        115,
+        410,
+        127
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem",
+      "state": "本轮保留",
+      "comparison": "48.png",
+      "crop": [
+        382,
+        117,
+        426,
+        138
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
+      "state": "本轮保留",
+      "comparison": "49.png",
+      "crop": [
+        396,
+        128,
+        413,
+        142
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_head",
+      "state": "本轮保留",
+      "comparison": "50.png",
+      "crop": [
+        380,
+        129,
+        425,
+        167
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_body",
+      "state": "本轮保留",
+      "comparison": "51.png",
+      "crop": [
+        86,
+        148,
+        425,
+        907
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_earring/ear_stud",
+      "state": "本轮保留",
+      "comparison": "52.png",
+      "crop": [
+        555,
+        216,
+        568,
+        230
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_earring/suspension_chain",
+      "state": "本轮保留",
+      "comparison": "53.png",
+      "crop": [
+        557,
+        221,
+        567,
+        246
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/left_earring/sapphire_pendant",
+      "state": "本轮保留",
+      "comparison": "54.png",
+      "crop": [
+        553,
+        236,
+        570,
+        260
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_earring/ear_stud",
+      "state": "本轮保留",
+      "comparison": "55.png",
+      "crop": [
+        456,
+        216,
+        470,
+        230
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_earring/suspension_chain",
+      "state": "本轮保留",
+      "comparison": "56.png",
+      "crop": [
+        458,
+        221,
+        468,
+        246
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "head_accessories/right_earring/sapphire_pendant",
+      "state": "本轮保留",
+      "comparison": "57.png",
+      "crop": [
+        454,
+        236,
+        471,
+        260
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "neck",
+      "state": "局部修整／归层调整",
+      "comparison": "58.png",
+      "crop": [
+        464,
+        222,
+        560,
+        345
+      ],
+      "notes": "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+    },
+    {
+      "id": "body/torso",
+      "state": "本轮保留",
+      "comparison": "59.png",
+      "crop": [
+        383,
+        296,
+        642,
+        625
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "body/breast",
+      "state": "本轮保留",
+      "comparison": "60.png",
+      "crop": [
+        418,
+        331,
+        606,
+        462
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/upper_arm",
+      "state": "本轮保留",
+      "comparison": "61.png",
+      "crop": [
+        581,
+        333,
+        670,
+        545
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/forearm",
+      "state": "本轮保留",
+      "comparison": "62.png",
+      "crop": [
+        618,
+        513,
+        738,
+        716
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/hand/palm",
+      "state": "本轮保留",
+      "comparison": "63.png",
+      "crop": [
+        702,
+        694,
+        771,
+        765
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "state": "本轮保留",
+      "comparison": "64.png",
+      "crop": [
+        709,
+        730,
+        738,
+        781
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "state": "本轮保留",
+      "comparison": "65.png",
+      "crop": [
+        716,
+        734,
+        745,
+        795
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "state": "本轮保留",
+      "comparison": "66.png",
+      "crop": [
+        716,
+        739,
+        749,
+        801
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "state": "本轮保留",
+      "comparison": "67.png",
+      "crop": [
+        717,
+        740,
+        755,
+        805
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "state": "本轮保留",
+      "comparison": "68.png",
+      "crop": [
+        728,
+        743,
+        773,
+        821
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "state": "局部修整／归层调整",
+      "comparison": "69.png",
+      "crop": [
+        351,
+        333,
+        442,
+        560
+      ],
+      "notes": "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "state": "本轮保留",
+      "comparison": "70.png",
+      "crop": [
+        286,
+        484,
+        409,
+        701
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "state": "本轮保留",
+      "comparison": "71.png",
+      "crop": [
+        258,
+        680,
+        322,
+        761
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "state": "本轮保留",
+      "comparison": "72.png",
+      "crop": [
+        287,
+        727,
+        318,
+        781
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "state": "本轮保留",
+      "comparison": "73.png",
+      "crop": [
+        278,
+        738,
+        308,
+        795
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "state": "本轮保留",
+      "comparison": "74.png",
+      "crop": [
+        275,
+        742,
+        308,
+        800
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_right/hand/ring_finger",
+      "state": "本轮保留",
+      "comparison": "75.png",
+      "crop": [
+        272,
+        742,
+        307,
+        806
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "state": "本轮保留",
+      "comparison": "76.png",
+      "crop": [
+        256,
+        740,
+        295,
+        819
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "pelvis",
+      "state": "本轮保留",
+      "comparison": "77.png",
+      "crop": [
+        377,
+        507,
+        648,
+        718
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "state": "局部修整／归层调整",
+      "comparison": "78.png",
+      "crop": [
+        506,
+        541,
+        687,
+        1414
+      ],
+      "notes": "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "state": "局部修整／归层调整",
+      "comparison": "79.png",
+      "crop": [
+        507,
+        1382,
+        585,
+        1523
+      ],
+      "notes": "Heal chain/pendant ghosts and mixed edge pixels with nearby skin; retain toe and nail detail."
+    },
+    {
+      "id": "legs/leg_left/ankle_gem",
+      "state": "本轮保留",
+      "comparison": "80.png",
+      "crop": [
+        531,
+        1355,
+        549,
+        1387
+      ],
+      "notes": "保留原图细节与已有补全。"
+    },
+    {
+      "id": "legs/leg_left/anklet/ankle_chain",
+      "state": "局部修整／归层调整",
+      "comparison": "81.png",
+      "crop": [
+        512,
+        1375,
+        579,
+        1422
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "legs/leg_left/anklet/center_link",
+      "state": "局部修整／归层调整",
+      "comparison": "82.png",
+      "crop": [
+        534,
+        1410,
+        550,
+        1429
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "legs/leg_left/anklet/teardrop_pendant",
+      "state": "局部修整／归层调整",
+      "comparison": "83.png",
+      "crop": [
+        533,
+        1420,
+        553,
+        1450
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "state": "局部修整／归层调整",
+      "comparison": "84.png",
+      "crop": [
+        364,
+        540,
+        519,
+        1396
+      ],
+      "notes": "Blend hidden joint/neck extension from interior skin; remove dark contour-derived cap."
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "state": "局部修整／归层调整",
+      "comparison": "85.png",
+      "crop": [
+        422,
+        1349,
+        519,
+        1517
+      ],
+      "notes": "Heal chain/pendant ghosts and mixed edge pixels with nearby skin; retain toe and nail detail."
+    },
+    {
+      "id": "legs/leg_right/ankle_gem",
+      "state": "局部修整／归层调整",
+      "comparison": "86.png",
+      "crop": [
+        479,
+        1350,
+        499,
+        1383
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "legs/leg_right/anklet/outer_chain",
+      "state": "局部修整／归层调整",
+      "comparison": "87.png",
+      "crop": [
+        446,
+        1371,
+        486,
+        1419
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "legs/leg_right/anklet/inner_chain",
+      "state": "局部修整／归层调整",
+      "comparison": "88.png",
+      "crop": [
+        482,
+        1372,
+        519,
+        1419
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "legs/leg_right/anklet/central_connector",
+      "state": "局部修整／归层调整",
+      "comparison": "89.png",
+      "crop": [
+        475,
+        1408,
+        492,
+        1425
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    },
+    {
+      "id": "legs/leg_right/anklet/gem_pendant",
+      "state": "局部修整／归层调整",
+      "comparison": "90.png",
+      "crop": [
+        474,
+        1415,
+        494,
+        1447
+      ],
+      "notes": "Receive source edge pixels belonging to this part; preserve original-pose pixels."
+    }
+  ],
+  "reviewedCount": 90,
+  "adjustedLayerCount": 31,
+  "basis": "Reference crop, isolated complete part and original-pose composition"
+}

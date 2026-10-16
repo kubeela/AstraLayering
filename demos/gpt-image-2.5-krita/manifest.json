@@ -18,7 +18,7 @@
         1024,
         1024
       ],
-      "visiblePixels": 4988,
+      "visiblePixels": 5560,
       "fullPixels": 11081,
       "model": "gpt-image-2.5-flare",
       "registration": {
@@ -57,8 +57,8 @@
         1536,
         1024
       ],
-      "visiblePixels": 231,
-      "fullPixels": 245,
+      "visiblePixels": 249,
+      "fullPixels": 263,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -81,7 +81,7 @@
         "rowWarp": false
       },
       "generatedSha256": "b25bacd62264872edc7cd70428b07fd29ce7d21f972b46509a3a4da85039a920",
-      "fullSha256": "c7843ab034bfbc61427191810b92564a3e8243cc10a73b2011277e16ef363961"
+      "fullSha256": "d22d520266951ed37a9c0d54f4616f9e711d11cea871e5c3d9938bbd641ebd1e"
     },
     {
       "id": "face/eye_left/lower_eyelid",
@@ -135,8 +135,8 @@
         1536,
         1024
       ],
-      "visiblePixels": 132,
-      "fullPixels": 411,
+      "visiblePixels": 41,
+      "fullPixels": 389,
       "model": "gpt-image-2.5-sunburst",
       "promptFile": "retry-prompt.txt",
       "note": "Targeted correction removes neighboring anatomy from the isolated base.",
@@ -161,7 +161,7 @@
         "rowWarp": true
       },
       "generatedSha256": "f0b2e1e6d163115b9f6e339d2033a0e8dee232b601bbcad82d489e32a5ba9993",
-      "fullSha256": "247204eecef68c7157b6a8910a34e9a4f25b0916558ced41c899cd17b26f1caa"
+      "fullSha256": "c1c8902ce482ab5f53f24111df7bf2b4d6cd5bc4034b1853019571ac6982daab"
     },
     {
       "id": "face/eye_left/iris",
@@ -176,8 +176,8 @@
         1024,
         1024
       ],
-      "visiblePixels": 248,
-      "fullPixels": 338,
+      "visiblePixels": 263,
+      "fullPixels": 343,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -200,7 +200,7 @@
         "rowWarp": true
       },
       "generatedSha256": "4d4686a2ceb4be9d1bd1040e45bdbca036284e466ebf1f8b58770bda05ff638d",
-      "fullSha256": "8d57e705941a98231cc5987d225dada0867c7aa48ea79dcf58c7d984c76357fb"
+      "fullSha256": "d97e31477731271946b783ffe09f8c19a429016259bc1d0a77010bfee3fa8209"
     },
     {
       "id": "face/eye_left/highlight",
@@ -332,8 +332,8 @@
         1536,
         1024
       ],
-      "visiblePixels": 236,
-      "fullPixels": 266,
+      "visiblePixels": 253,
+      "fullPixels": 276,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -356,7 +356,7 @@
         "rowWarp": false
       },
       "generatedSha256": "fa9ca709ab49dcb2f8d4d298a00fa09c59d789fb120fff118795b96ea4d490fa",
-      "fullSha256": "3a5bc2da47588a0f4db18347a05edf4bfe20093cf53a7b6fd4bf2d996a9c6a1c"
+      "fullSha256": "0f3ae8a9bec4dd83b76125f0c428baa362d296ea37807251697bcaadb3a6bc9c"
     },
     {
       "id": "face/eye_right/lower_eyelid",
@@ -410,8 +410,8 @@
         1536,
         1024
       ],
-      "visiblePixels": 144,
-      "fullPixels": 489,
+      "visiblePixels": 45,
+      "fullPixels": 464,
       "model": "gpt-image-2.5-sunburst",
       "promptFile": "retry-prompt.txt",
       "note": "Targeted correction removes neighboring anatomy from the isolated base.",
@@ -436,7 +436,7 @@
         "rowWarp": true
       },
       "generatedSha256": "43a5fdf10f74e5496e7b0a317005dbb7b733134e710a371af1c6485c7c40d665",
-      "fullSha256": "f1674712e27025b07439c674a846ffc4881c8de2b0a82ff47a3546143e3af17f"
+      "fullSha256": "db5ded229f0d0acc9134f43d7d44ebf999968cadd2820498b0e62d9bd3cd899e"
     },
     {
       "id": "face/eye_right/iris",
@@ -451,8 +451,8 @@
         1024,
         1024
       ],
-      "visiblePixels": 224,
-      "fullPixels": 336,
+      "visiblePixels": 235,
+      "fullPixels": 339,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -475,7 +475,7 @@
         "rowWarp": true
       },
       "generatedSha256": "38e505c517de7fe9afdd4c8d05ccb792e4572525907f469f5868b729b3a51463",
-      "fullSha256": "b66f452d552a1dda8e0356f1814c7ec3d9ac78a35989eaec5512ad09aba4cec0"
+      "fullSha256": "d03cd1d34fcbbf26c5392dc01f1f39e4141e5fec637b5b9a012fca521ecc4c56"
     },
     {
       "id": "face/eye_right/highlight",
@@ -672,7 +672,7 @@
         "rowWarp": false
       },
       "generatedSha256": "adb3b824adb33390f6896143ce5c4f72ec58e0c2cf9614eac00c4dd455fffa16",
-      "fullSha256": "ada15b6f5c4f0a00a609afd078e1b77495466ceeb6e16f1f8519e99b1a8abd0c"
+      "fullSha256": "60bd64de25f620c3f31bc3e05467cd517d9b679332df921c162f351ac0fb8f82"
     },
     {
       "id": "face/ear_right",
@@ -687,7 +687,7 @@
         1024,
         1024
       ],
-      "visiblePixels": 276,
+      "visiblePixels": 279,
       "fullPixels": 591,
       "model": "gpt-image-2.5-sunburst",
       "promptFile": "retry-prompt.txt",
@@ -713,7 +713,7 @@
         "rowWarp": false
       },
       "generatedSha256": "a202c11eaa3ba88b5558743f254f8cfd60f9ade2c8f360223eef47319c963907",
-      "fullSha256": "94db7c638f90e9301895c56dea369634bdd07bc50e88ad12709b7c1dd0badb22"
+      "fullSha256": "c0f6a25aad9910407154a23d957623bed77d363aac2eb32161452a69eb184422"
     },
     {
       "id": "face/nose",
@@ -845,8 +845,8 @@
         1024,
         1024
       ],
-      "visiblePixels": 55,
-      "fullPixels": 216,
+      "visiblePixels": 38,
+      "fullPixels": 202,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -869,7 +869,7 @@
         "rowWarp": false
       },
       "generatedSha256": "9056ffe6f37257ceeff829ae6adde9e1bdc98f99b902a3d01e486cee01b7a3d2",
-      "fullSha256": "234a68b87142780c544d78f30cfab4cf530c374f2f84d638fef0664afdb643b9"
+      "fullSha256": "014a0a886d9a8a8d7bd44e0b4944711bcbc0b57af89431606126135a2356630f"
     },
     {
       "id": "face/mouth/upper_teeth",
@@ -910,7 +910,7 @@
         "rowWarp": false
       },
       "generatedSha256": "ec5c3d7a4f74c00e58e1f327bec5cb2463f15f53cd2a34d10a412abc5cd39bcf",
-      "fullSha256": "6602a265d565858518174fafeade3e0a546c0b795c6d2bafb7e4e2eeddff5f31"
+      "fullSha256": "6ba96cd1d4a7c2e8fe87aeed091ae410daef414ed729962d9ba7fe8700dabf63"
     },
     {
       "id": "face/mouth/lower_teeth",
@@ -951,7 +951,7 @@
         "rowWarp": false
       },
       "generatedSha256": "746c1ae1514b10c11a36bdb9d8523b15d60c29b6e42169cc939299f800b4f7d4",
-      "fullSha256": "195988feb67fb34742cb508cfc7f835a37400205e9134c83e2de289c6bd441cd"
+      "fullSha256": "53babb64e064b7448b4bedeca7c93bef6a0dca1c240ea5bddf66105f1d20c58c"
     },
     {
       "id": "face/mouth/tongue",
@@ -1005,7 +1005,7 @@
         1024,
         1024
       ],
-      "visiblePixels": 11341,
+      "visiblePixels": 11082,
       "fullPixels": 28144,
       "model": "gpt-image-2.5-sunburst",
       "promptFile": "retry-prompt.txt",
@@ -1031,7 +1031,7 @@
         "rowWarp": false
       },
       "generatedSha256": "b0dfc48d931f7bb7b09cd3829741d560fda263131ff6152d71d1e4d108a511e0",
-      "fullSha256": "882f9b58cc4e926a156260ad82f5bc38064dd49e314605d3c91baa11e673be4b"
+      "fullSha256": "153baf2bca41d37132424a36bae411c71c96f7b24a90066dea918780ae87e060"
     },
     {
       "id": "hair/side_hair_left",
@@ -1046,7 +1046,7 @@
         1024,
         1536
       ],
-      "visiblePixels": 4161,
+      "visiblePixels": 3994,
       "fullPixels": 4934,
       "model": "gpt-image-2.5-flare",
       "registration": {
@@ -1070,7 +1070,7 @@
         "rowWarp": false
       },
       "generatedSha256": "caff8eb1a592c29e51a4e18d4ddc9b20577f8d0610ad04a02dae2855035e286e",
-      "fullSha256": "07212f7f5c58bd548268740ebd4fd61e49938282b1e96ec0d5a788a221bc02c1"
+      "fullSha256": "381c3c7f0c92993e2c55729d5a4c8eccf2cfb901e4c3b14b44a919b0640d7fc6"
     },
     {
       "id": "hair/side_hair_right",
@@ -1085,7 +1085,7 @@
         1024,
         1536
       ],
-      "visiblePixels": 4168,
+      "visiblePixels": 4165,
       "fullPixels": 4549,
       "model": "gpt-image-2.5-flare",
       "registration": {
@@ -1109,7 +1109,7 @@
         "rowWarp": false
       },
       "generatedSha256": "07b1fb43f2125678314cd6cd1efcc01a476543be805fbb2cfc0ce10e4e46c264",
-      "fullSha256": "d843fe2fc9fcd542a06297d1635c3b64d8465839c9affedb7e4d79620d111192"
+      "fullSha256": "9818461f74c5acd549d9faa9d8a3f9aa507eb70d0f3e51589b5a92da263f8378"
     },
     {
       "id": "hair/back_hair/main_left",
@@ -1280,7 +1280,7 @@
         1024,
         1024
       ],
-      "visiblePixels": 2819,
+      "visiblePixels": 2610,
       "fullPixels": 4756,
       "model": "gpt-image-2.5-flare",
       "registration": {
@@ -1304,7 +1304,7 @@
         "rowWarp": false
       },
       "generatedSha256": "0650564cce3dc63ac73dd14566eebf71ee048a8946606d83dfb3df8a10cb5bba",
-      "fullSha256": "d50ef18c4d8bb94018e021943b0132b020e5cb2d8ad33b90513091c3b5718774"
+      "fullSha256": "f820a1d264683de3c8c6276ce0c6dfba9ca3e97152c8acb1d615b40a4623433c"
     },
     {
       "id": "head_accessories/crown_frame",
@@ -1358,8 +1358,8 @@
         1536,
         1024
       ],
-      "visiblePixels": 2847,
-      "fullPixels": 2866,
+      "visiblePixels": 3056,
+      "fullPixels": 3056,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -1382,7 +1382,7 @@
         "rowWarp": false
       },
       "generatedSha256": "e4abb864de81935932ab1a9aab99e25056a726e754c83ffd7f57402ee453ba4a",
-      "fullSha256": "ffd910ad390b81a9cc40d5e1b02e78eed76f34c1074cb1893d6b737989ee06df"
+      "fullSha256": "89feaedf158a104e928c0a2843d21d6f6e8fae766b2ba86d3910ae41d5002ad4"
     },
     {
       "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
@@ -2281,7 +2281,7 @@
         "rowWarp": false
       },
       "generatedSha256": "07d1a68a0246c46be4fbff6d5024da0725c1df224841bf6f43b3e9752e544d08",
-      "fullSha256": "e32a53cf6d751e4701fd8cbe0cf244ff6b31d7a551f04c67d6d9be05af6727ec"
+      "fullSha256": "01d735c7e65dc0bbf902671ebad1b469ac90247a99ddbaa16febda70418a02f6"
     },
     {
       "id": "body/torso",
@@ -2714,7 +2714,7 @@
         "rowWarp": true
       },
       "generatedSha256": "c502763d731a51a8edf5dd27e83f4e444c2893eee9c97c2f4735640e9950afe7",
-      "fullSha256": "224b254352b882165daa1490b40a82d2f0349da7d5892c990551f753de3c8234"
+      "fullSha256": "1713fe5a1024fa70389529cc28876d292f4b34f778db50d024e361dae11faf51"
     },
     {
       "id": "arms/arm_right/forearm",
@@ -3071,7 +3071,7 @@
         "rowWarp": true
       },
       "generatedSha256": "a56d643d2a4d15d9cf03c4460df0a28cd11a4865ca34cc9c02380119d914b37a",
-      "fullSha256": "1459065ac3160b5ee07a19a5d1ebc137de0397caf6c3fd8ec1e324762a347e5a"
+      "fullSha256": "e7ec9e290d539c943865a2615ecee06c441198e81062be13132781a8161e733d"
     },
     {
       "id": "legs/leg_left/foot",
@@ -3086,7 +3086,7 @@
         1024,
         1536
       ],
-      "visiblePixels": 7451,
+      "visiblePixels": 7243,
       "fullPixels": 7857,
       "model": "gpt-image-2.5-flare",
       "registration": {
@@ -3110,7 +3110,7 @@
         "rowWarp": true
       },
       "generatedSha256": "b4b1792ae0d64ba7a45a0b5ee1b4e40c482bec5bfdc0be6a138716d19df5f573",
-      "fullSha256": "7f7b9bd313676260cb9ed6a19930ae7e2a2da688bcd3f44978a5cfac23d5d78c"
+      "fullSha256": "75984ee3e36d49a261afc50136babe0b2b81171c159ac7c47eff481e887d1321"
     },
     {
       "id": "legs/leg_left/ankle_gem",
@@ -3164,8 +3164,8 @@
         1024,
         1024
       ],
-      "visiblePixels": 408,
-      "fullPixels": 522,
+      "visiblePixels": 547,
+      "fullPixels": 598,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3188,7 +3188,7 @@
         "rowWarp": false
       },
       "generatedSha256": "6f4d24794e4e2e4b8a9388e7b4412f857222f5dff342d3064462dc9630b8c74d",
-      "fullSha256": "44317913a7a96ada0bced8aaff2f6f66cff9541e44807eda05f9b9fe736b357e"
+      "fullSha256": "1d11e819a15364977420e036a92d44f54fedca78457610210eabdfbf1ca9380f"
     },
     {
       "id": "legs/leg_left/anklet/center_link",
@@ -3203,8 +3203,8 @@
         1024,
         1024
       ],
-      "visiblePixels": 56,
-      "fullPixels": 69,
+      "visiblePixels": 75,
+      "fullPixels": 82,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3227,7 +3227,7 @@
         "rowWarp": false
       },
       "generatedSha256": "27250d5f8eee8b65f501d1a89c660417ca9f4bd8a94175cfa9058c3d68501ce3",
-      "fullSha256": "36787f4585b140b8f7bcfeae988fd471630d821b95777ff5feaf80f09b35123a"
+      "fullSha256": "285febc280287310aad4f1c82b398a9721e603dd1c488688e42a9756e80a8f90"
     },
     {
       "id": "legs/leg_left/anklet/teardrop_pendant",
@@ -3242,8 +3242,8 @@
         1024,
         1536
       ],
-      "visiblePixels": 135,
-      "fullPixels": 162,
+      "visiblePixels": 185,
+      "fullPixels": 197,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3266,7 +3266,7 @@
         "rowWarp": false
       },
       "generatedSha256": "897f741799d9e735ebdc8031d4377d6ef2a4b5a8355463a3016669e70b7fead9",
-      "fullSha256": "4c8f5f1ad756cc6e98fada34f8bddb14fc103c733bd39f29a5856181001d0db1"
+      "fullSha256": "f5b3e80543549391b238ee4db6380f74591a51aef17cff2b87c1e7cff7509284"
     },
     {
       "id": "legs/leg_right/leg",
@@ -3305,7 +3305,7 @@
         "rowWarp": true
       },
       "generatedSha256": "8a8b302ab089db956d30f734de8fadedf97737effed37f9d7fb920e9ba1f8d53",
-      "fullSha256": "8f5233c3fb2f29bfe12827c124fef9704e2b660775efd36bebc1cf7e345d0073"
+      "fullSha256": "3f270449b33f54fb8dd65e4c9de7a7aebec70e4590a5b7a6199e79b428174fcf"
     },
     {
       "id": "legs/leg_right/foot",
@@ -3320,7 +3320,7 @@
         1024,
         1536
       ],
-      "visiblePixels": 8506,
+      "visiblePixels": 8171,
       "fullPixels": 9042,
       "model": "gpt-image-2.5-flare",
       "registration": {
@@ -3344,7 +3344,7 @@
         "rowWarp": true
       },
       "generatedSha256": "c78bfcee94458bdbc406c7a939061d8cb78d2e1feba8a1859e019b132d893271",
-      "fullSha256": "00386e39f54eff1c4549d2881d36ffea93ec60395e54fbce3f5a11fd56c42bf0"
+      "fullSha256": "3567841ad52204dcc5595fb917daf84d56538284b9650ce4278e9e09d73394fc"
     },
     {
       "id": "legs/leg_right/ankle_gem",
@@ -3359,8 +3359,8 @@
         1024,
         1536
       ],
-      "visiblePixels": 132,
-      "fullPixels": 165,
+      "visiblePixels": 191,
+      "fullPixels": 204,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3383,7 +3383,7 @@
         "rowWarp": false
       },
       "generatedSha256": "c6a5343bd95a4ffc6820c9f4cb271615584f12d351413efcf22c1af7c9f02b01",
-      "fullSha256": "b8a1b9735a4931f6f7fbbb8741b12d746307b7342d899a80553b56548207075c"
+      "fullSha256": "47ba6d1264922188d8b21b547ecde79e160742c0b59885ead3d716b97ca564d4"
     },
     {
       "id": "legs/leg_right/anklet/outer_chain",
@@ -3398,8 +3398,8 @@
         1024,
         1536
       ],
-      "visiblePixels": 321,
-      "fullPixels": 374,
+      "visiblePixels": 420,
+      "fullPixels": 437,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3422,7 +3422,7 @@
         "rowWarp": false
       },
       "generatedSha256": "f8d9e4dbd4a2a89f1f3b4c76dc42275679b2f19ae9603d8a06d321ae3323ed56",
-      "fullSha256": "96447f51028127f15a6b259de6b3b76bd059f7d22942b3a603b60bfd17cdfa6f"
+      "fullSha256": "cdb93c43c59336ed02e89746c93f1187bd2df66adc7b1bb8efaf118fa41e2596"
     },
     {
       "id": "legs/leg_right/anklet/inner_chain",
@@ -3437,8 +3437,8 @@
         1024,
         1024
       ],
-      "visiblePixels": 120,
-      "fullPixels": 195,
+      "visiblePixels": 228,
+      "fullPixels": 250,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3461,7 +3461,7 @@
         "rowWarp": false
       },
       "generatedSha256": "8915192cf0da68e6b814bb23a1db61156504f8e217c9cbcd4cc957379f07c3a3",
-      "fullSha256": "aabfcc49dfdd67e5ecc07cd41e205a36849290c47393dfbd57b8b002ac5ae2a1"
+      "fullSha256": "199427505c78c2e33bbab856f0e9ff56914f5f81378e359f89464fddf1b04a89"
     },
     {
       "id": "legs/leg_right/anklet/central_connector",
@@ -3476,8 +3476,8 @@
         1024,
         1024
       ],
-      "visiblePixels": 48,
-      "fullPixels": 60,
+      "visiblePixels": 75,
+      "fullPixels": 79,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3500,7 +3500,7 @@
         "rowWarp": false
       },
       "generatedSha256": "5ac1ce95bbb9161301ffca3dd964e251324029be874074f745ac074f8ec63bf0",
-      "fullSha256": "59d6f775431b746ab869431f2e91278c16f0caa72dfdad748c729c1ba2dc2615"
+      "fullSha256": "00b8b6b257e3fe9f02efc641a22d2c465c2c03e0e9b7157179526fcf5612279f"
     },
     {
       "id": "legs/leg_right/anklet/gem_pendant",
@@ -3515,8 +3515,8 @@
         1024,
         1536
       ],
-      "visiblePixels": 143,
-      "fullPixels": 177,
+      "visiblePixels": 185,
+      "fullPixels": 200,
       "model": "gpt-image-2.5-flare",
       "registration": {
         "background": "opaque-neutral-background",
@@ -3539,7 +3539,7 @@
         "rowWarp": false
       },
       "generatedSha256": "438efda88a36743f2d65dfa5d9139690531d7920a68d616d3219f7e7fab78a90",
-      "fullSha256": "a0b04513ebfc4b6166f20210b2a795d8c46fc8e4eab97d5fced31ebc2c102ed9"
+      "fullSha256": "d64da1a2453405186b0cb605281f03c87cf604103c9246b5afcef017d6f067d6"
     }
   ],
   "sourceSha256": "d5ca0b2fcf5c8cd42a88b819ee13d7b342b87cf5ce0b7b0e1dc0347f9555f194",

@@ -57,5 +57,7 @@ for(const id of ['assemble','solo','control'])document.querySelector('#'+id).onc
 document.querySelector('#mix').oninput=e=>document.querySelector('#reference').style.opacity=e.target.value/100;
 rows();draw().catch(e=>document.querySelector('#status').textContent='图片加载失败：'+e);
 </script></html>'''
+if (out/'part-review/index.html').exists():
+    html=html.replace('<span id="status">','<a href="part-review/index.html">逐部件修整对照</a><span id="status">')
 (out/'index.html').write_text(html.replace('__MANIFEST__',json.dumps(manifest,ensure_ascii=False)))
 print(out/'index.html')
