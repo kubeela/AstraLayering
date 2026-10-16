@@ -4,6 +4,7 @@
 
 | 案例 | 内容 |
 | --- | --- |
+| [gpt-image-2.5 → Krita：90 部件拆分](./gpt-image-2.5-krita/README.md) | 采用 part-layering 完整色块标准，保留透明部件、遮挡补全、可逆蒙版及原图对照 |
 | [Jianma：新版素体与衣装](./jianma-current-case/readme.md) | 两个新技能的实际成稿快照、独立衣装、参考对照与绑定前限制 |
 | [首次完整生成：基础连体服角色](./first-complete-case/readme.md) | 已走通阶段1—5；参考与终稿左右对比、完整部件树滚动动图、遮挡补全独显示例。交互沿用现有SVG预览器 |
 | [深海少女：像素临摹与结构重绘](./deep-sea-method-comparison/readme.md) | 同一角色参考下，两种 SVG 构建倾向的外观、结构和放大细节对比 |
