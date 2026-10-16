@@ -1,50 +1,61 @@
-# GPT Image 2.5 角色拆分与 Krita 重组
+# 角色拆分、Krita 精修与露肩换装底图
+
+当前交付为**露肩换装底图**：肩带区域已补成肤色，胸前、躯干和裆部保留不透明白色遮挡。
+下方完整图、默认下载和预览入口均对应这次修整后的版本，原版拆分资料保留在后文。
+
+- [下载最新可编辑 Krita 文件](covered-shoulders/character.kra)
+- [最新透明 PNG](covered-shoulders/reassembled.png) · [最新 Krita 重开导出 PNG](covered-shoulders/krita-reopened.png)
+- [最新交互图层预览](covered-shoulders/index.html)
+- [肩部修改前后对照](covered-shoulders/shoulder-comparison.png)（左为原版，右为最新版本）
+- [本轮修整说明与验证](covered-shoulders/README.md)
+
+![最新露肩换装底图：肩带已补为肤色，白色连体遮挡保留](covered-shoulders/reassembled.png)
+
+## 原版拆分资料
 
 按 [`part-layering/.run/test`](../../workflow-next/part-layering/.run/test/) 的完整色块标准，
 将参考角色拆成 **90 个透明部件、25 个分组**，保持原有 115 节点层级和 1024 × 1536 坐标。
 所有部件均调用本地已配置的 `forgeax-imagegen`，使用 `gpt-image-2.5-flare` 或
 `gpt-image-2.5-sunburst` 提取、补全，再通过 Python 配准、清理并导入 Krita。
 
-- [下载可编辑 Krita 文件](character.kra)
-- [露肩换装底图：肩带补为肤色，保留白色遮挡](covered-shoulders/README.md)
-- [Krita 实际打开画面](krita-workspace.jpg)
-- [查看原图与重组对照](comparison.jpg)
-- [90 个部件逐项修前／修后对照](part-review/index.html)
-- [透明重组 PNG](reassembled.png) · [Krita 重开导出 PNG](krita-reopened.png)
-- [交互检查页](index.html)：部件搜索、图层显隐、完整部件独显、RGB 控制图、原图对比滑杆
-- [完整部件总览 1](contact-full-1.jpg) · [2](contact-full-2.jpg) · [3](contact-full-3.jpg) · [4](contact-full-4.jpg)
-
-![左侧原图，右侧 90 部件重组](comparison.jpg)
+- [原版可编辑 Krita 文件](character.kra) · [原版 Krita 打开画面](krita-workspace.jpg)
+- [原图与原版重组对照](comparison.jpg)
+- [原版 90 个部件逐项精修对照](part-review/index.html)
+- [原版透明重组 PNG](reassembled.png) · [原版 Krita 重开导出 PNG](krita-reopened.png)
+- [原版交互检查页](index.html)：部件搜索、图层显隐、完整部件独显、RGB 控制图、原图对比滑杆
+- [原版完整部件总览 1](contact-full-1.jpg) · [2](contact-full-2.jpg) · [3](contact-full-3.jpg) · [4](contact-full-4.jpg)
 
 ## 在 Krita 中编辑
 
-打开 `character.kra` 即可看到拼回原姿势的角色。每个部件是独立绘画层，像素中包含遮挡补全。
+打开 `covered-shoulders/character.kra` 即可编辑最新露肩版本；根目录的 `character.kra` 保留原版。
+每个部件是独立绘画层，像素中包含遮挡补全。
 该层下的原生透明蒙版名为 **「原姿势遮挡 · 关闭以显示完整补全」**：关闭蒙版、独显该部件，
 即可检查被头发、饰品或邻接部件覆盖的区域。移动部件时，可按需要关闭或编辑蒙版。
 
 90 个绘画层共同形成画面；文档没有额外的整张原图覆盖层。细小部件在原图中只有少量像素，
 总览和独显页会将它们放大显示；最终 PNG 保持原始画布坐标。
 
-## 本轮逐部件修整
+## 原版逐部件精修记录
 
 逐项检查 90 个完整部件后，对 **31 个图层**进行了局部像素修整或归层／蒙版调整。
 主要处理发髻里重复的莲花饰件、眼白里的虹膜和眼线残影、耳部的邻接细节、头发里的肤色条、
 脚部的脚链和坠饰残影，以及部分隐藏关节补全的深色硬边。饰品和五官仍保留在各自图层。
 
 Python 计算选定区域的局部克隆、平滑和像素归属；Krita 打开既有文档，使用原生图层像素与
-透明蒙版接口写回这些局部修改，再保存、重开验证。本轮没有重新生图，也没有用整图覆盖修整结果。
+透明蒙版接口写回这些局部修改，再保存、重开验证。该轮没有重新生图，也没有用整图覆盖修整结果。
 具体范围与理由见 [retouch-plan.json](retouch-plan.json)，原生写回记录见
 [krita-retouch.json](krita-retouch.json)。
 
 ![发髻：原图、修前、修后](part-review/33.png)
 ![脚部：原图、修前、修后](part-review/79.png)
 
-逐部件对照同时列出本轮保留的部件，方便继续做美术审查。小部件按原始像素放大显示；
+逐部件对照同时列出该轮保留的部件，方便继续做美术审查。小部件按原始像素放大显示；
 这些对照与修整记录不等于“所有部件已达到无瑕成稿”的自动认证。
 
 ## 部件文件与生成控制
 
-每个 `parts/<原部件 ID>/` 目录保留：
+原版位于 `parts/<原部件 ID>/`，最新版位于 `covered-shoulders/parts/<原部件 ID>/`。
+两个版本各自保留以下文件，修整蒙版与修前图对应各自的修改批次：
 
 | 文件 | 内容 |
 | --- | --- |
@@ -63,9 +74,10 @@ Python 计算选定区域的局部克隆、平滑和像素归属；Krita 打开�
 [raster-layering 操作说明](../../workflow-next/raster-layering/README.md)。
 `control.png` 与 `prompt.txt` 保留原始生图输入；后续精修范围单独记录，不反改生图过程记录。
 
-## 验证结果
+## 原版验证结果
 
-[validation.json](validation.json) 记录本次通过的检查：
+[validation.json](validation.json) 记录原版拆分与逐部件精修的检查；最新露肩版本的检查见
+[covered-shoulders/validation.json](covered-shoulders/validation.json)。以下相似度数字仅适用于原版：
 
 - 90 个透明 PNG、90 个 Krita 绘画层、90 个原生透明蒙版、25 个分组。
 - 通过 Krita 5.3.4.1 保存并重开，逐一读取 90 个完整图层，像素缓冲全部与交付 PNG 一致。
