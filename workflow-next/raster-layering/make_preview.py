@@ -59,5 +59,15 @@ rows();draw().catch(e=>document.querySelector('#status').textContent='图片加�
 </script></html>'''
 if (out/'part-review/index.html').exists():
     html=html.replace('<span id="status">','<a href="part-review/index.html">逐部件修整对照</a><span id="status">')
+if manifest.get('variant', {}).get('id') == 'covered-shoulders-v1':
+    html=html.replace('Astra · 角色分层与补全', 'Astra · 露肩换装底图')
+    html=html.replace('<h1>角色分层与遮挡补全</h1>', '<h1>露肩换装底图</h1>')
+    html=html.replace('90 个部件 · 原图 1024 × 1536 · gpt-image-2.5 + Krita',
+                      '90 个部件 · 肩带补为肤色 · 保留白色连体遮挡')
+    html=html.replace('<span id="status">', '<a href="shoulder-comparison.png">肩部前后对照</a><a href="../index.html">原版分层</a><span id="status">')
+    html=html.replace("load('reference.png')", "load('before.png')")
+    html=html.replace('：红色保留，黄色补全，绿色透明。', '：原始拆分控制图（早于本轮肩部修整）；红色保留，黄色补全，绿色透明。')
+if (out/'covered-shoulders/index.html').exists():
+    html=html.replace('<span id="status">', '<a href="covered-shoulders/index.html">露肩换装底图（保留白色遮挡）</a><span id="status">')
 (out/'index.html').write_text(html.replace('__MANIFEST__',json.dumps(manifest,ensure_ascii=False)))
 print(out/'index.html')

@@ -70,3 +70,22 @@ python3 make_preview.py .work/refined
 `retouch-mask.png` 保存原始像素和改动范围。Krita 写回前检查原图层与审查基线一致，保存后
 重开验证全部 90 个图层。`part-review/index.html` 提供 90 项独立对照；没有改动的部件也列出，
 小部件使用最近邻放大，避免平滑插值掩盖像素边缘。
+
+## 保留遮挡的肩部修整
+
+`covered_shoulders.py` 是同一角色的局部修整配方：两侧肩带补成邻近肤色，白色衣料改为连续的
+无肩带上缘，保留胸前、躯干及裆部遮挡。只修改躯干和胸前两个原生图层，不改变部件坐标或蒙版。
+交付见[露肩底图](../../demos/gpt-image-2.5-krita/covered-shoulders/README.md)。
+
+从未带本变体的 `0028d4a2` 源目录开始，或指定一个新的输出目录：
+
+```sh
+python3 covered_shoulders.py --input ../../demos/gpt-image-2.5-krita --output ../../demos/gpt-image-2.5-krita/covered-shoulders
+python3 launch_krita.py --krita /path/to/krita --output ../../demos/gpt-image-2.5-krita/covered-shoulders --profile /path/to/isolated-profile --script krita_retouch.py
+python3 verify_covered_shoulders.py ../../demos/gpt-image-2.5-krita/covered-shoulders
+python3 make_preview.py ../../demos/gpt-image-2.5-krita/covered-shoulders
+python3 make_preview.py ../../demos/gpt-image-2.5-krita
+```
+
+若已有 Krita 实例运行，给新启动器设置独立且权限为 `700` 的 `TMPDIR`，隔离 Qt 单实例 socket，
+并使用独立 X11 display 和 profile。不要关闭用户原来的 Krita 文档。

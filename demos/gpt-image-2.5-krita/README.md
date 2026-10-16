@@ -6,6 +6,7 @@
 `gpt-image-2.5-sunburst` 提取、补全，再通过 Python 配准、清理并导入 Krita。
 
 - [下载可编辑 Krita 文件](character.kra)
+- [露肩换装底图：肩带补为肤色，保留白色遮挡](covered-shoulders/README.md)
 - [Krita 实际打开画面](krita-workspace.jpg)
 - [查看原图与重组对照](comparison.jpg)
 - [90 个部件逐项修前／修后对照](part-review/index.html)
