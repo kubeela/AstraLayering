@@ -1,0 +1,17 @@
+{
+  "krita-reopened-pose.png vs reference.png": {
+    "psnr": 138.13,
+    "alphaMax": 0,
+    "rgbMaxOnSubject": 0
+  },
+  "krita-reopened-depth-stack.png vs reassembled-depth-stack.png": {
+    "psnr": 86.13,
+    "alphaMax": 0,
+    "rgbMaxOnSubject": 1
+  },
+  "krita-reopened-depth-stack.png vs reference.png": {
+    "psnr": 44.48,
+    "alphaMax": 255,
+    "rgbMaxOnSubject": 84
+  }
+}

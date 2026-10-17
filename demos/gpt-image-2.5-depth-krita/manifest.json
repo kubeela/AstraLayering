@@ -1,0 +1,5305 @@
+{
+  "version": 1,
+  "canvas": [
+    1024,
+    1536
+  ],
+  "order": "occlusion.json back-to-front",
+  "parts": [
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_tail",
+      "level": 0,
+      "index": 1,
+      "parent": "head_accessories/left_crown_ribbon",
+      "crop": [
+        432,
+        46,
+        1037,
+        954
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 22460,
+      "fullPixels": 12305,
+      "occludedBy": [
+        "arms/arm_left/upper_arm",
+        "body/torso",
+        "head_accessories/left_crown_ribbon/ribbon_head"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0665,
+        "iou": 0.8838,
+        "visibleError": 9.54,
+        "candidates": {
+          "crop": 1.286,
+          "bbox": 0.0772,
+          "crop+shape": 0.1037,
+          "bbox+shape": 0.0665
+        },
+        "matrix": [
+          [
+            0.83221,
+            0.00173,
+            99.86211
+          ],
+          [
+            0.03044,
+            0.82598,
+            66.36425
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 341,
+      "meanCorrection": [
+        11.739999771118164,
+        7.440000057220459,
+        10.010000228881836
+      ],
+      "generatedSha256": "5a55a007601104f2bb3515eda0e371bf900de9ae12e076dcc95c063d5a7b15af"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_body",
+      "level": 1,
+      "index": 2,
+      "parent": "head_accessories/right_crown_ribbon",
+      "crop": [
+        -18,
+        31,
+        598,
+        956
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 23452,
+      "fullPixels": 12674,
+      "occludedBy": [
+        "arms/arm_right/upper_arm",
+        "body/torso",
+        "head_accessories/right_crown_ribbon/ribbon_head"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0983,
+        "iou": 0.7709,
+        "visibleError": 10.23,
+        "candidates": {
+          "crop": 0.3524,
+          "bbox": 0.2106,
+          "crop+shape": 0.1009,
+          "bbox+shape": 0.0983
+        },
+        "matrix": [
+          [
+            0.95134,
+            -0.01392,
+            16.11411
+          ],
+          [
+            -0.09121,
+            0.82983,
+            112.99483
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 336,
+      "meanCorrection": [
+        5.190000057220459,
+        0.9800000190734863,
+        12.010000228881836
+      ],
+      "generatedSha256": "55011900cffb2745b94726a24855c7fb8ef4a0b2e538e25c60036be76d0faee0"
+    },
+    {
+      "id": "hair/back_hair/main_right",
+      "level": 2,
+      "index": 3,
+      "parent": "hair/back_hair",
+      "crop": [
+        -236,
+        -27,
+        805,
+        1533
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 90654,
+      "fullPixels": 107914,
+      "occludedBy": [
+        "hair/back_hair/lock_right",
+        "hair/hair_cap",
+        "legs/leg_right/leg",
+        "pelvis",
+        "neck",
+        "arms/arm_right/hand/index_finger",
+        "arms/arm_right/hand/ring_finger",
+        "arms/arm_right/hand/thumb",
+        "arms/arm_right/hand/palm",
+        "arms/arm_right/forearm",
+        "arms/arm_right/upper_arm",
+        "body/torso",
+        "body/breast",
+        "head_accessories/right_earring/suspension_chain",
+        "head_accessories/right_earring/sapphire_pendant",
+        "head_accessories/right_earring/ear_stud",
+        "face/ear_right",
+        "face/face_base",
+        "face/eye_right/sclera",
+        "face/eye_right/iris",
+        "face/eye_right/highlight",
+        "face/eye_right/lower_eyelid",
+        "face/eye_right/upper_eyelid",
+        "face/eye_right/eyelid_crease",
+        "hair/side_hair_right"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+ecc",
+        "score": 0.1141,
+        "iou": 0.8073,
+        "visibleError": 15.94,
+        "candidates": {
+          "crop": 0.572,
+          "bbox": 0.2385,
+          "bbox+ecc": 0.1141,
+          "crop+shape": 0.1307,
+          "bbox+shape": 0.116
+        },
+        "matrix": [
+          [
+            0.81168,
+            -0.02815,
+            73.29079
+          ],
+          [
+            0.02356,
+            0.89147,
+            39.807
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 42427,
+      "meanCorrection": [
+        11.770000457763672,
+        10.0,
+        8.600000381469727
+      ],
+      "generatedSha256": "a75e86f3e38d8c69d4cb65f3a64ef2cd2868cb9e3aa0f097ef997942c3fe3cc5"
+    },
+    {
+      "id": "hair/back_hair/main_left",
+      "level": 3,
+      "index": 4,
+      "parent": "hair/back_hair",
+      "crop": [
+        220,
+        -27,
+        1260,
+        1533
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 96701,
+      "fullPixels": 109400,
+      "occludedBy": [
+        "hair/back_hair/lock_left",
+        "hair/hair_cap",
+        "legs/leg_left/leg",
+        "pelvis",
+        "neck",
+        "arms/arm_left/upper_arm",
+        "arms/arm_left/forearm",
+        "arms/arm_left/hand/index_finger",
+        "arms/arm_left/hand/thumb",
+        "arms/arm_left/hand/palm",
+        "body/torso",
+        "body/breast",
+        "head_accessories/left_earring/suspension_chain",
+        "head_accessories/left_earring/sapphire_pendant",
+        "head_accessories/left_earring/ear_stud",
+        "face/ear_left",
+        "face/face_base",
+        "face/eye_left/sclera",
+        "face/eye_left/iris",
+        "face/eye_left/highlight",
+        "face/eye_left/lower_eyelashes",
+        "face/eye_left/lower_eyelid",
+        "face/eye_left/upper_eyelid",
+        "face/eye_left/eyelid_crease",
+        "hair/side_hair_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0972,
+        "iou": 0.8444,
+        "visibleError": 13.59,
+        "candidates": {
+          "crop": 0.2176,
+          "bbox": 0.158,
+          "bbox+ecc": 0.1071,
+          "crop+shape": 0.0984,
+          "crop+shape+ecc": 0.1016,
+          "bbox+shape": 0.0972,
+          "bbox+shape+ecc": 0.0992
+        },
+        "matrix": [
+          [
+            0.90396,
+            -0.01187,
+            54.34421
+          ],
+          [
+            0.03464,
+            0.95001,
+            -8.74923
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 44396,
+      "meanCorrection": [
+        7.809999942779541,
+        7.590000152587891,
+        6.320000171661377
+      ],
+      "generatedSha256": "b4e7e7602ffd8274cb988a8d4bec1119abe39e46d6990f956b86b1e12c2b0642"
+    },
+    {
+      "id": "hair/back_hair/lock_right",
+      "level": 4,
+      "index": 5,
+      "parent": "hair/back_hair",
+      "crop": [
+        128,
+        93,
+        606,
+        810
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 12444,
+      "fullPixels": 13577,
+      "occludedBy": [
+        "hair/hair_cap",
+        "arms/arm_right/forearm",
+        "arms/arm_right/upper_arm",
+        "body/torso",
+        "head_accessories/right_earring/suspension_chain",
+        "head_accessories/right_earring/sapphire_pendant",
+        "head_accessories/right_earring/ear_stud",
+        "face/ear_right",
+        "face/face_base",
+        "face/eye_right/sclera",
+        "face/eye_right/iris",
+        "face/eye_right/lower_eyelid",
+        "face/eye_right/upper_eyelid",
+        "hair/side_hair_right"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.1051,
+        "iou": 0.7894,
+        "visibleError": 13.37,
+        "candidates": {
+          "crop": 0.3038,
+          "bbox": 0.143,
+          "crop+shape": 0.1155,
+          "bbox+shape": 0.1051
+        },
+        "matrix": [
+          [
+            0.91516,
+            -0.02368,
+            39.25906
+          ],
+          [
+            -0.01179,
+            0.91173,
+            35.13037
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 5909,
+      "meanCorrection": [
+        16.25,
+        14.640000343322754,
+        10.6899995803833
+      ],
+      "generatedSha256": "c4536788d99faaa12c4425f7673df71f2032b115e06298b742e7151aee70d448"
+    },
+    {
+      "id": "hair/back_hair/lock_left",
+      "level": 5,
+      "index": 6,
+      "parent": "hair/back_hair",
+      "crop": [
+        425,
+        100,
+        898,
+        809
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 11932,
+      "fullPixels": 11136,
+      "occludedBy": [
+        "hair/hair_cap",
+        "arms/arm_left/upper_arm",
+        "arms/arm_left/forearm",
+        "body/torso",
+        "head_accessories/left_earring/suspension_chain",
+        "head_accessories/left_earring/sapphire_pendant",
+        "head_accessories/left_earring/ear_stud",
+        "face/ear_left",
+        "face/face_base",
+        "face/eye_left/sclera",
+        "face/eye_left/lower_eyelashes",
+        "face/eye_left/lower_eyelid",
+        "face/eye_left/upper_eyelid",
+        "hair/side_hair_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0726,
+        "iou": 0.8794,
+        "visibleError": 10.82,
+        "candidates": {
+          "crop": 0.0855,
+          "bbox": 0.159,
+          "crop+shape": 0.0726,
+          "bbox+shape": 0.0729
+        },
+        "matrix": [
+          [
+            1.00479,
+            -0.00529,
+            -2.43764
+          ],
+          [
+            0.04616,
+            0.96035,
+            -15.50081
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 4096,
+      "meanCorrection": [
+        7.289999961853027,
+        6.449999809265137,
+        7.210000038146973
+      ],
+      "generatedSha256": "dbbe03bec22600df5b418a0f11bf77a1bda8736fca895029f312083e5a10ef28"
+    },
+    {
+      "id": "hair/bun",
+      "level": 6,
+      "index": 7,
+      "parent": "hair",
+      "crop": [
+        461,
+        14,
+        563,
+        116
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 2742,
+      "fullPixels": 3749,
+      "occludedBy": [
+        "hair/hair_cap",
+        "hair/side_hair_right",
+        "hair/side_hair_left",
+        "head_accessories/lotus_ornament"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.0398,
+        "iou": 0.9186,
+        "visibleError": 4.95,
+        "candidates": {
+          "crop": 0.0534,
+          "bbox": 0.0398,
+          "crop+shape": 0.0438,
+          "bbox+shape": 0.0448
+        },
+        "matrix": [
+          [
+            1.0137,
+            0.0,
+            -7.52055
+          ],
+          [
+            0.0,
+            0.93827,
+            1.66667
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 2021,
+      "meanCorrection": [
+        3.869999885559082,
+        2.1600000858306885,
+        0.5799999833106995
+      ],
+      "generatedSha256": "e521df7b5bb3387cfa17972a3aa9006b7591043a9d1878803a458084273cb35a"
+    },
+    {
+      "id": "hair/hair_cap",
+      "level": 7,
+      "index": 8,
+      "parent": "hair",
+      "crop": [
+        380,
+        51,
+        645,
+        315
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 10196,
+      "fullPixels": 26166,
+      "occludedBy": [
+        "neck",
+        "head_accessories/left_earring/suspension_chain",
+        "head_accessories/right_earring/suspension_chain",
+        "head_accessories/left_earring/sapphire_pendant",
+        "head_accessories/right_earring/sapphire_pendant",
+        "head_accessories/left_earring/ear_stud",
+        "head_accessories/right_earring/ear_stud",
+        "face/ear_right",
+        "face/ear_left",
+        "face/face_base",
+        "face/eye_left/sclera",
+        "face/eye_right/sclera",
+        "face/eye_left/iris",
+        "face/eye_right/iris",
+        "face/eye_left/highlight",
+        "face/eye_right/highlight",
+        "face/eye_left/lower_eyelashes",
+        "face/eye_left/lower_eyelid",
+        "face/eye_right/lower_eyelid",
+        "face/eye_left/upper_eyelid",
+        "face/eye_right/upper_eyelid",
+        "face/eye_left/eyelid_crease",
+        "face/eye_right/eyelid_crease",
+        "face/eyebrow_left",
+        "face/eyebrow_right",
+        "face/nose",
+        "face/mouth/mouth_interior",
+        "face/mouth/tongue",
+        "face/mouth/upper_teeth",
+        "face/mouth/lower_lip",
+        "face/mouth/upper_lip",
+        "head_accessories/forehead_ornament/teardrop_pendant",
+        "head_accessories/forehead_ornament/upper_sapphire_mount",
+        "head_accessories/crown_frame",
+        "hair/side_hair_right",
+        "hair/side_hair_left",
+        "head_accessories/lotus_ornament"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "sift+ecc",
+        "score": 0.0472,
+        "iou": 0.9646,
+        "visibleError": 9.76,
+        "candidates": {
+          "crop": 0.0602,
+          "crop+ecc": 0.0813,
+          "bbox": 0.0559,
+          "bbox+ecc": 0.1026,
+          "sift": 0.049,
+          "sift+ecc": 0.0472,
+          "crop+shape": 0.0607,
+          "crop+shape+ecc": 0.1368,
+          "bbox+shape": 0.061,
+          "sift+shape": 0.0607,
+          "sift+shape+ecc": 0.1376
+        },
+        "matrix": [
+          [
+            0.99708,
+            -0.01165,
+            2.6775
+          ],
+          [
+            0.00129,
+            0.98964,
+            -0.5538
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 17969,
+      "meanCorrection": [
+        5.110000133514404,
+        3.9700000286102295,
+        4.139999866485596
+      ],
+      "generatedSha256": "89683890afbcc9b41a53ab7f4c119d0dfa440c076347a15edfe8d19b4ea6b305"
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "level": 8,
+      "index": 9,
+      "parent": "legs/leg_right",
+      "crop": [
+        65,
+        394,
+        830,
+        1542
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 52782,
+      "fullPixels": 64228,
+      "occludedBy": [
+        "legs/leg_left/leg",
+        "legs/leg_right/foot",
+        "pelvis",
+        "body/torso",
+        "legs/leg_right/ankle_gem",
+        "legs/leg_right/anklet/outer_chain",
+        "legs/leg_right/anklet/inner_chain"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0325,
+        "iou": 0.9775,
+        "visibleError": 6.86,
+        "candidates": {
+          "crop": 0.039,
+          "bbox": 0.0371,
+          "crop+shape": 0.0325,
+          "bbox+shape": 0.0329
+        },
+        "matrix": [
+          [
+            0.98794,
+            8e-05,
+            3.61663
+          ],
+          [
+            -0.04097,
+            0.97944,
+            30.22655
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 18461,
+      "meanCorrection": [
+        1.8799999952316284,
+        6.28000020980835,
+        8.050000190734863
+      ],
+      "skinHealed": true,
+      "generatedSha256": "38cd4d3028c8eeb1a2fa517b25687e9c0ff96a133e1c22abec21aaaa84b2ca57"
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "level": 9,
+      "index": 10,
+      "parent": "legs/leg_left",
+      "crop": [
+        186,
+        393,
+        966,
+        1563
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 54110,
+      "fullPixels": 65837,
+      "occludedBy": [
+        "legs/leg_left/foot",
+        "pelvis",
+        "body/torso",
+        "legs/leg_left/ankle_gem",
+        "legs/leg_left/anklet/ankle_chain"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0335,
+        "iou": 0.9791,
+        "visibleError": 7.21,
+        "candidates": {
+          "crop": 0.0443,
+          "bbox": 0.0393,
+          "crop+shape": 0.0335,
+          "bbox+shape": 0.0336
+        },
+        "matrix": [
+          [
+            0.98795,
+            -0.00418,
+            8.36695
+          ],
+          [
+            -0.00047,
+            0.99053,
+            5.58999
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 17752,
+      "meanCorrection": [
+        3.0299999713897705,
+        6.699999809265137,
+        7.21999979019165
+      ],
+      "skinHealed": true,
+      "generatedSha256": "f62a1a489770813f9745f68f9d6288982784f99779a57c2371660b640c5ac4db"
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "level": 10,
+      "index": 11,
+      "parent": "legs/leg_right",
+      "crop": [
+        413,
+        1326,
+        553,
+        1535
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 8582,
+      "fullPixels": 7929,
+      "occludedBy": [
+        "legs/leg_right/ankle_gem",
+        "legs/leg_right/anklet/outer_chain",
+        "legs/leg_right/anklet/inner_chain",
+        "legs/leg_right/anklet/gem_pendant",
+        "legs/leg_right/anklet/central_connector"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0592,
+        "iou": 0.9567,
+        "visibleError": 12.35,
+        "candidates": {
+          "crop": 0.0902,
+          "bbox": 0.0634,
+          "crop+shape": 0.0593,
+          "bbox+shape": 0.0592
+        },
+        "matrix": [
+          [
+            1.01506,
+            -0.01572,
+            12.95366
+          ],
+          [
+            -0.03321,
+            0.94799,
+            85.94168
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 521,
+      "meanCorrection": [
+        3.9000000953674316,
+        11.279999732971191,
+        14.039999961853027
+      ],
+      "skinHealed": true,
+      "generatedSha256": "9b81f18089e99abc1739beafda78a4ed71bd72e94240f42cf6bc967f0622e06b"
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "level": 11,
+      "index": 12,
+      "parent": "legs/leg_left",
+      "crop": [
+        488,
+        1363,
+        603,
+        1535
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 7402,
+      "fullPixels": 6787,
+      "occludedBy": [
+        "legs/leg_left/anklet/ankle_chain",
+        "legs/leg_left/anklet/center_link",
+        "legs/leg_left/anklet/teardrop_pendant"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0447,
+        "iou": 0.9502,
+        "visibleError": 8.22,
+        "candidates": {
+          "crop": 0.1119,
+          "bbox": 0.0601,
+          "bbox+ecc": 0.0556,
+          "sift": 0.1715,
+          "sift+ecc": 0.0775,
+          "crop+shape": 0.0447,
+          "bbox+shape": 0.0447,
+          "sift+shape": 0.045
+        },
+        "matrix": [
+          [
+            0.99031,
+            -0.02118,
+            33.69035
+          ],
+          [
+            -0.0169,
+            0.8172,
+            272.96402
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 403,
+      "meanCorrection": [
+        2.2100000381469727,
+        8.229999542236328,
+        9.65999984741211
+      ],
+      "skinHealed": true,
+      "generatedSha256": "7289e9850e432cc5a5bb417ac2ed46cfc76110d74fce1198305d411836ab478c"
+    },
+    {
+      "id": "pelvis",
+      "level": 12,
+      "index": 13,
+      "parent": null,
+      "crop": [
+        335,
+        434,
+        690,
+        790
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 25149,
+      "fullPixels": 40942,
+      "occludedBy": [
+        "body/torso"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.0793,
+        "iou": 0.8958,
+        "visibleError": 10.9,
+        "candidates": {
+          "crop": 0.0987,
+          "crop+ecc": 0.0882,
+          "bbox": 0.0793,
+          "bbox+ecc": 0.1167,
+          "sift": 0.0828,
+          "sift+ecc": 0.0962,
+          "crop+shape": 0.1118,
+          "bbox+shape": 0.1077,
+          "sift+shape": 0.1084
+        },
+        "matrix": [
+          [
+            0.93262,
+            0.0,
+            34.06383
+          ],
+          [
+            0.0,
+            0.82258,
+            91.30645
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 16508,
+      "meanCorrection": [
+        1.2899999618530273,
+        5.079999923706055,
+        8.239999771118164
+      ],
+      "generatedSha256": "848f19247e124b91772dd689b5e1fb1203b2aba50b0e1aa6f9177ae27c9001d6"
+    },
+    {
+      "id": "neck",
+      "level": 13,
+      "index": 14,
+      "parent": null,
+      "crop": [
+        434,
+        206,
+        590,
+        361
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 2576,
+      "fullPixels": 6721,
+      "occludedBy": [
+        "body/torso",
+        "face/face_base",
+        "face/mouth/mouth_interior",
+        "face/mouth/tongue",
+        "face/mouth/upper_teeth",
+        "face/mouth/lower_lip",
+        "face/mouth/upper_lip"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0711,
+        "iou": 0.8884,
+        "visibleError": 10.03,
+        "candidates": {
+          "crop": 0.0847,
+          "bbox": 0.0718,
+          "crop+shape": 0.0711,
+          "bbox+shape": 0.073
+        },
+        "matrix": [
+          [
+            0.88566,
+            -0.00221,
+            58.88281
+          ],
+          [
+            -0.00346,
+            1.1574,
+            -54.58227
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 4344,
+      "meanCorrection": [
+        3.359999895095825,
+        5.380000114440918,
+        5.369999885559082
+      ],
+      "skinHealed": true,
+      "generatedSha256": "060306f98affd524afa7f512a296f127ecb1023da9bf7f38ccca7b79d3fbe3f2"
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "level": 14,
+      "index": 15,
+      "parent": "arms/arm_right/hand",
+      "crop": [
+        266,
+        722,
+        319,
+        801
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 211,
+      "fullPixels": 490,
+      "occludedBy": [
+        "arms/arm_right/hand/middle_finger",
+        "arms/arm_right/hand/ring_finger",
+        "arms/arm_right/hand/little_finger",
+        "arms/arm_right/hand/thumb",
+        "arms/arm_right/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.1171,
+        "iou": 0.9087,
+        "visibleError": 14.66,
+        "candidates": {
+          "crop": 0.1314,
+          "bbox": 0.1847,
+          "crop+shape": 0.1358,
+          "bbox+shape": 0.1171
+        },
+        "matrix": [
+          [
+            1.03335,
+            -0.02302,
+            6.89685
+          ],
+          [
+            -0.00582,
+            1.01022,
+            -7.54408
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 356,
+      "skinHealed": true,
+      "generatedSha256": "b6578f0ee0464e2fc5e7edcd11777ce2eada5889882e3d5f6423c7306747ab1e"
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "level": 15,
+      "index": 16,
+      "parent": "arms/arm_right/hand",
+      "crop": [
+        264,
+        730,
+        315,
+        806
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 184,
+      "fullPixels": 531,
+      "occludedBy": [
+        "arms/arm_right/hand/ring_finger",
+        "arms/arm_right/hand/little_finger",
+        "arms/arm_right/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "override",
+      "registration": {
+        "method": "crop",
+        "score": 0.7454,
+        "iou": 0.3313,
+        "visibleError": 101.37,
+        "candidates": {
+          "crop": 0.7454
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 421,
+      "skinHealed": true,
+      "generatedSha256": "66a6daa697a02f25ff1a845803099089bcd71089369557473a878c8676cf8d03"
+    },
+    {
+      "id": "arms/arm_right/hand/ring_finger",
+      "level": 16,
+      "index": 17,
+      "parent": "arms/arm_right/hand",
+      "crop": [
+        262,
+        730,
+        317,
+        813
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 223,
+      "fullPixels": 508,
+      "occludedBy": [
+        "arms/arm_right/hand/little_finger",
+        "arms/arm_right/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "override",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.1761,
+        "iou": 0.6699,
+        "visibleError": 21.25,
+        "candidates": {
+          "crop": 0.3416,
+          "bbox": 0.5027,
+          "crop+shape": 0.2079,
+          "bbox+shape": 0.1761
+        },
+        "matrix": [
+          [
+            1.07457,
+            0.00031,
+            -26.05315
+          ],
+          [
+            -0.2657,
+            1.01768,
+            64.70012
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 374,
+      "meanCorrection": [
+        3.869999885559082,
+        0.8399999737739563,
+        1.6699999570846558
+      ],
+      "skinHealed": true,
+      "generatedSha256": "73626c3255b4c7513b25bfaa7034311a27752c03a13a6a23b2d9ef36c3cbe644"
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "level": 17,
+      "index": 18,
+      "parent": "arms/arm_right/hand",
+      "crop": [
+        252,
+        733,
+        308,
+        817
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 1034,
+      "fullPixels": 633,
+      "occludedBy": [
+        "arms/arm_right/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0598,
+        "iou": 0.9579,
+        "visibleError": 12.56,
+        "candidates": {
+          "crop": 0.0905,
+          "bbox": 0.0818,
+          "crop+shape": 0.0598,
+          "bbox+shape": 0.0601
+        },
+        "matrix": [
+          [
+            1.00318,
+            7e-05,
+            -1.93927
+          ],
+          [
+            -0.00908,
+            1.00089,
+            1.3199
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 151,
+      "meanCorrection": [
+        5.510000228881836,
+        14.6899995803833,
+        14.40999984741211
+      ],
+      "skinHealed": true,
+      "generatedSha256": "ebbbf4b79723835bc52da5f1446f53eada8d30aa2ea7f5b62a93ec9df8f6336b"
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "level": 18,
+      "index": 19,
+      "parent": "arms/arm_right/hand",
+      "crop": [
+        283,
+        723,
+        325,
+        786
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 450,
+      "fullPixels": 562,
+      "occludedBy": [
+        "arms/arm_right/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.1239,
+        "iou": 0.9224,
+        "visibleError": 21.27,
+        "candidates": {
+          "crop": 0.2004,
+          "bbox": 0.1861,
+          "crop+shape": 0.1239,
+          "bbox+shape": 0.1259
+        },
+        "matrix": [
+          [
+            1.00373,
+            0.01509,
+            -13.33335
+          ],
+          [
+            -0.02993,
+            0.98155,
+            22.6536
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 194,
+      "skinHealed": true,
+      "generatedSha256": "4455f676175861e616f0bcbc0b5dfd6263a3c0ffc0f5b40519b9888477ea44c2"
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "level": 19,
+      "index": 20,
+      "parent": "arms/arm_right/hand",
+      "crop": [
+        242,
+        670,
+        344,
+        771
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 2050,
+      "fullPixels": 2114,
+      "occludedBy": [
+        "arms/arm_right/forearm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0348,
+        "iou": 0.9378,
+        "visibleError": 4.74,
+        "candidates": {
+          "crop": 0.141,
+          "bbox": 0.0618,
+          "crop+shape": 0.0348,
+          "bbox+shape": 0.0364
+        },
+        "matrix": [
+          [
+            1.02846,
+            0.0558,
+            -51.06796
+          ],
+          [
+            -0.0535,
+            0.85537,
+            117.06763
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 348,
+      "meanCorrection": [
+        2.990000009536743,
+        5.449999809265137,
+        4.090000152587891
+      ],
+      "skinHealed": true,
+      "generatedSha256": "738a0dc2510f537fdf0675e0a06bd015c76890e96a3b978179e245d032543c57"
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "level": 20,
+      "index": 21,
+      "parent": "arms/arm_right",
+      "crop": [
+        255,
+        451,
+        443,
+        734
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 5933,
+      "fullPixels": 7937,
+      "occludedBy": [
+        "arms/arm_right/upper_arm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0309,
+        "iou": 0.9769,
+        "visibleError": 6.41,
+        "candidates": {
+          "crop": 0.1171,
+          "bbox": 0.0415,
+          "crop+shape": 0.0309,
+          "bbox+shape": 0.0318
+        },
+        "matrix": [
+          [
+            1.01467,
+            0.0258,
+            -23.15844
+          ],
+          [
+            -0.06181,
+            0.94278,
+            50.54637
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 2733,
+      "meanCorrection": [
+        2.700000047683716,
+        6.090000152587891,
+        6.980000019073486
+      ],
+      "skinHealed": true,
+      "generatedSha256": "7b36a8655182ccccd751e8879971b9b7432daa18b8e8559acd884fa0c58c2a1c"
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "level": 21,
+      "index": 22,
+      "parent": "arms/arm_right",
+      "crop": [
+        298,
+        298,
+        496,
+        594
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 7343,
+      "fullPixels": 9408,
+      "occludedBy": [
+        "body/torso",
+        "body/breast"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "override",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0236,
+        "iou": 0.9836,
+        "visibleError": 4.98,
+        "candidates": {
+          "crop": 0.0766,
+          "bbox": 0.0317,
+          "crop+shape": 0.0236,
+          "bbox+shape": 0.0237
+        },
+        "matrix": [
+          [
+            0.99858,
+            -0.00665,
+            1.84908
+          ],
+          [
+            0.02946,
+            0.99479,
+            -11.40896
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 2517,
+      "meanCorrection": [
+        2.059999942779541,
+        4.019999980926514,
+        4.710000038146973
+      ],
+      "skinHealed": true,
+      "generatedSha256": "f007be1f43c8a7df8cd9a13805d31cce5a6d4e855ee1ca9bab50d87e1bc373f4"
+    },
+    {
+      "id": "arms/arm_left/upper_arm",
+      "level": 22,
+      "index": 23,
+      "parent": "arms/arm_left",
+      "crop": [
+        532,
+        300,
+        718,
+        578
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 5818,
+      "fullPixels": 9029,
+      "occludedBy": [
+        "arms/arm_left/forearm",
+        "body/torso",
+        "body/breast"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0487,
+        "iou": 0.9382,
+        "visibleError": 7.7,
+        "candidates": {
+          "crop": 0.0619,
+          "bbox": 0.1432,
+          "crop+shape": 0.0487,
+          "bbox+shape": 0.0573
+        },
+        "matrix": [
+          [
+            0.99499,
+            -0.04959,
+            21.38856
+          ],
+          [
+            0.03107,
+            0.90333,
+            12.30343
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 3587,
+      "meanCorrection": [
+        3.6600000858306885,
+        6.610000133514404,
+        6.849999904632568
+      ],
+      "skinHealed": true,
+      "generatedSha256": "bca4435fa948ff7b8dd644720276dc6b2a7b267b36dc4b6c8df9eea5329b7a9c"
+    },
+    {
+      "id": "arms/arm_left/forearm",
+      "level": 23,
+      "index": 24,
+      "parent": "arms/arm_left",
+      "crop": [
+        591,
+        483,
+        766,
+        746
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 7464,
+      "fullPixels": 7403,
+      "occludedBy": [
+        "arms/arm_left/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0319,
+        "iou": 0.98,
+        "visibleError": 6.85,
+        "candidates": {
+          "crop": 0.045,
+          "bbox": 0.0495,
+          "crop+shape": 0.0319,
+          "bbox+shape": 0.0333
+        },
+        "matrix": [
+          [
+            0.99496,
+            0.00093,
+            1.75987
+          ],
+          [
+            -0.04229,
+            1.00756,
+            22.86514
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 531,
+      "meanCorrection": [
+        5.260000228881836,
+        8.859999656677246,
+        8.460000038146973
+      ],
+      "skinHealed": true,
+      "generatedSha256": "431af67083b9a99e2f7f238d7342fbf523d90477a91fd8c390d761eec6173406"
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "level": 24,
+      "index": 25,
+      "parent": "arms/arm_left/hand",
+      "crop": [
+        718,
+        736,
+        772,
+        816
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 1174,
+      "fullPixels": 731,
+      "occludedBy": [
+        "arms/arm_left/hand/ring_finger",
+        "arms/arm_left/hand/middle_finger",
+        "arms/arm_left/hand/index_finger",
+        "arms/arm_left/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0348,
+        "iou": 0.9478,
+        "visibleError": 5.54,
+        "candidates": {
+          "crop": 0.0846,
+          "bbox": 0.0367,
+          "crop+shape": 0.0348,
+          "bbox+shape": 0.0348
+        },
+        "matrix": [
+          [
+            1.01569,
+            0.00278,
+            -14.66764
+          ],
+          [
+            -0.05108,
+            0.94308,
+            80.76092
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 216,
+      "meanCorrection": [
+        3.759999990463257,
+        5.78000020980835,
+        6.090000152587891
+      ],
+      "skinHealed": true,
+      "generatedSha256": "f18604cf0bb7e7184383fcbe232a747019f974767895f55e6fad824eb24ae48c"
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "level": 25,
+      "index": 26,
+      "parent": "arms/arm_left/hand",
+      "crop": [
+        706,
+        733,
+        759,
+        812
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 163,
+      "fullPixels": 604,
+      "occludedBy": [
+        "arms/arm_left/hand/middle_finger",
+        "arms/arm_left/hand/index_finger",
+        "arms/arm_left/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.1775,
+        "iou": 0.7589,
+        "visibleError": 27.48,
+        "candidates": {
+          "crop": 0.3601,
+          "bbox": 1.0816,
+          "crop+shape": 0.2178,
+          "bbox+shape": 0.1775
+        },
+        "matrix": [
+          [
+            1.06383,
+            -0.12579,
+            47.53103
+          ],
+          [
+            0.4799,
+            1.03911,
+            -381.50857
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 536,
+      "skinHealed": true,
+      "generatedSha256": "a9871cfd35d20ca2c606b229cda61674518df22bde8ae41f8365a555c0aa7eb1"
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "level": 26,
+      "index": 27,
+      "parent": "arms/arm_left/hand",
+      "crop": [
+        707,
+        731,
+        757,
+        807
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 138,
+      "fullPixels": 385,
+      "occludedBy": [
+        "arms/arm_left/hand/index_finger",
+        "arms/arm_left/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "override",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.4964,
+        "iou": 0.5133,
+        "visibleError": 65.37,
+        "candidates": {
+          "crop": 1.1696,
+          "crop+shape": 0.4964
+        },
+        "matrix": [
+          [
+            1.19366,
+            -0.19129,
+            -0.14234
+          ],
+          [
+            -0.21521,
+            0.8581,
+            265.52955
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 333,
+      "skinHealed": true,
+      "generatedSha256": "ffe45388114e879b4773c3d849630857fb94f1b3a948b226452e08417e9deadb"
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "level": 27,
+      "index": 28,
+      "parent": "arms/arm_left/hand",
+      "crop": [
+        708,
+        729,
+        755,
+        800
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 352,
+      "fullPixels": 393,
+      "occludedBy": [
+        "arms/arm_left/hand/thumb",
+        "arms/arm_left/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0704,
+        "iou": 0.8977,
+        "visibleError": 11.42,
+        "candidates": {
+          "crop": 0.3946,
+          "bbox": 0.1445,
+          "crop+shape": 0.0704,
+          "bbox+shape": 0.0721
+        },
+        "matrix": [
+          [
+            0.97167,
+            -0.06068,
+            65.29814
+          ],
+          [
+            0.05682,
+            0.98548,
+            -32.41043
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 129,
+      "skinHealed": true,
+      "generatedSha256": "b257c2e1c9befc796283595a3d9e0a045e5c513545e8f54b7327b3aae06f9830"
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "level": 28,
+      "index": 29,
+      "parent": "arms/arm_left/hand",
+      "crop": [
+        702,
+        723,
+        743,
+        785
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 270,
+      "fullPixels": 526,
+      "occludedBy": [
+        "arms/arm_left/hand/palm"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0896,
+        "iou": 0.9159,
+        "visibleError": 12.3,
+        "candidates": {
+          "crop": 0.2321,
+          "bbox": 0.195,
+          "crop+shape": 0.0896,
+          "bbox+shape": 0.121
+        },
+        "matrix": [
+          [
+            0.99655,
+            -0.04538,
+            35.27064
+          ],
+          [
+            0.02152,
+            0.97074,
+            6.46821
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 323,
+      "skinHealed": true,
+      "generatedSha256": "77f947d23e2babb0d38c0e57b1367541e71980e48029d977867ca83861eef531"
+    },
+    {
+      "id": "arms/arm_left/hand/palm",
+      "level": 29,
+      "index": 30,
+      "parent": "arms/arm_left/hand",
+      "crop": [
+        694,
+        687,
+        771,
+        764
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 2161,
+      "fullPixels": 1915,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.066,
+        "iou": 0.921,
+        "visibleError": 10.16,
+        "candidates": {
+          "crop": 0.0906,
+          "bbox": 0.1209,
+          "crop+shape": 0.066,
+          "bbox+shape": 0.0714
+        },
+        "matrix": [
+          [
+            0.95432,
+            -0.03928,
+            60.18634
+          ],
+          [
+            -0.10664,
+            1.01029,
+            68.29495
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 67,
+      "meanCorrection": [
+        5.139999866485596,
+        8.520000457763672,
+        8.260000228881836
+      ],
+      "skinHealed": true,
+      "generatedSha256": "342fcbb729f39300cbf80796fdbd30089c236ffe5dbb6b687ea4008e8bf00d8f"
+    },
+    {
+      "id": "body/torso",
+      "level": 30,
+      "index": 31,
+      "parent": "body",
+      "crop": [
+        295,
+        244,
+        729,
+        678
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 36063,
+      "fullPixels": 53345,
+      "occludedBy": [
+        "body/breast"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.0385,
+        "iou": 0.9674,
+        "visibleError": 7.57,
+        "candidates": {
+          "crop": 0.0613,
+          "crop+ecc": 0.046,
+          "bbox": 0.0385,
+          "bbox+ecc": 0.0413,
+          "crop+shape": 0.044,
+          "crop+shape+ecc": 0.0394,
+          "bbox+shape": 0.0439,
+          "bbox+shape+ecc": 0.0389
+        },
+        "matrix": [
+          [
+            1.01613,
+            0.0,
+            -8.25806
+          ],
+          [
+            0.0,
+            0.97576,
+            4.34545
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 18074,
+      "meanCorrection": [
+        5.0,
+        6.610000133514404,
+        6.940000057220459
+      ],
+      "generatedSha256": "0342db2cb42cf238187276cec917bc35259146c3077ad9b95be09a6290010b19"
+    },
+    {
+      "id": "body/breast",
+      "level": 31,
+      "index": 32,
+      "parent": "body",
+      "crop": [
+        386,
+        312,
+        638,
+        480
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 18172,
+      "fullPixels": 18172,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-sunburst",
+      "promptVariant": "override",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.2746,
+        "iou": 0.7841,
+        "visibleError": 39.07,
+        "candidates": {
+          "crop": 0.3846,
+          "bbox": 0.412,
+          "crop+shape": 0.2746,
+          "bbox+shape": 0.2764
+        },
+        "matrix": [
+          [
+            0.89989,
+            -0.00014,
+            50.93424
+          ],
+          [
+            0.00038,
+            1.23175,
+            -107.18727
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 312,
+      "meanCorrection": [
+        7.150000095367432,
+        5.760000228881836,
+        6.360000133514404
+      ],
+      "generatedSha256": "eab25b5d047aaac62b6312e7b5187d387fbd7df1c7ac47e98a75c7f21de2a2b3"
+    },
+    {
+      "id": "legs/leg_right/ankle_gem",
+      "level": 32,
+      "index": 33,
+      "parent": "legs/leg_right",
+      "crop": [
+        476,
+        1346,
+        502,
+        1386
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 129,
+      "fullPixels": 129,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.063,
+        "iou": 1.0,
+        "visibleError": 16.06,
+        "candidates": {
+          "crop": 0.1481,
+          "bbox": 0.0658,
+          "crop+shape": 0.0675,
+          "bbox+shape": 0.063
+        },
+        "matrix": [
+          [
+            0.90824,
+            0.00487,
+            37.74299
+          ],
+          [
+            -0.00685,
+            0.96876,
+            45.45129
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 36,
+      "meanCorrection": [
+        16.700000762939453,
+        9.039999961853027,
+        5.400000095367432
+      ],
+      "generatedSha256": "ac6291a65de616243771acb3851ae8d6030f5cfc584b0e8275f44819712ef4e4"
+    },
+    {
+      "id": "legs/leg_left/ankle_gem",
+      "level": 33,
+      "index": 34,
+      "parent": "legs/leg_left",
+      "crop": [
+        527,
+        1350,
+        554,
+        1390
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 136,
+      "fullPixels": 136,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0639,
+        "iou": 0.9855,
+        "visibleError": 15.38,
+        "candidates": {
+          "crop": 0.1732,
+          "bbox": 0.07,
+          "crop+shape": 0.088,
+          "bbox+shape": 0.0639
+        },
+        "matrix": [
+          [
+            1.08915,
+            0.0072,
+            -58.56851
+          ],
+          [
+            -0.02138,
+            0.99335,
+            19.88701
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 37,
+      "meanCorrection": [
+        16.8799991607666,
+        5.440000057220459,
+        2.7899999618530273
+      ],
+      "generatedSha256": "2ff442493e114b90b21d8cc26a1045fec361801bfa7b2f473a9665df606e60ea"
+    },
+    {
+      "id": "legs/leg_right/anklet/outer_chain",
+      "level": 34,
+      "index": 35,
+      "parent": "legs/leg_right/anklet",
+      "crop": [
+        456,
+        1369,
+        491,
+        1421
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 319,
+      "fullPixels": 96,
+      "occludedBy": [
+        "legs/leg_right/anklet/central_connector"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.4311,
+        "iou": 0.575,
+        "visibleError": 47.57,
+        "candidates": {
+          "crop": 0.5606,
+          "bbox": 0.4592,
+          "crop+shape": 0.4368,
+          "bbox+shape": 0.4311
+        },
+        "matrix": [
+          [
+            0.96756,
+            -0.05185,
+            86.25753
+          ],
+          [
+            0.21306,
+            0.94204,
+            -21.5173
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 57,
+      "generatedSha256": "740bc5c8a1e491ced662f1cf0cea1c4d767b26ca33d57e23a4662c96b0c69e82"
+    },
+    {
+      "id": "legs/leg_right/anklet/inner_chain",
+      "level": 35,
+      "index": 36,
+      "parent": "legs/leg_right/anklet",
+      "crop": [
+        474,
+        1369,
+        526,
+        1422
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 116,
+      "fullPixels": 117,
+      "occludedBy": [
+        "legs/leg_right/anklet/central_connector"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.3234,
+        "iou": 0.6,
+        "visibleError": 37.0,
+        "candidates": {
+          "crop": 0.8541,
+          "bbox": 0.3234,
+          "crop+shape": 0.3828,
+          "bbox+shape": 0.3921
+        },
+        "matrix": [
+          [
+            1.07143,
+            0.0,
+            -37.85714
+          ],
+          [
+            0.0,
+            0.95122,
+            67.12195
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 78,
+      "generatedSha256": "895a7768b99e6cd449a905ff22b6b49f23b6a1e28655e8dcc2a737dae07b8269"
+    },
+    {
+      "id": "legs/leg_right/anklet/gem_pendant",
+      "level": 36,
+      "index": 37,
+      "parent": "legs/leg_right/anklet",
+      "crop": [
+        470,
+        1410,
+        497,
+        1450
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 138,
+      "fullPixels": 140,
+      "occludedBy": [
+        "legs/leg_right/anklet/central_connector"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.0506,
+        "iou": 1.0,
+        "visibleError": 12.92,
+        "candidates": {
+          "crop": 0.1243,
+          "bbox": 0.0506,
+          "crop+shape": 0.0631,
+          "bbox+shape": 0.0506
+        },
+        "matrix": [
+          [
+            0.91667,
+            0.0,
+            39.83333
+          ],
+          [
+            0.0,
+            0.96154,
+            54.53846
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 39,
+      "meanCorrection": [
+        13.229999542236328,
+        7.619999885559082,
+        3.4600000381469727
+      ],
+      "generatedSha256": "255c1a12b9627e055fec51b61b0bab64963aeef86f1110485f5b7d0f2f980231"
+    },
+    {
+      "id": "legs/leg_right/anklet/central_connector",
+      "level": 37,
+      "index": 38,
+      "parent": "legs/leg_right/anklet",
+      "crop": [
+        464,
+        1396,
+        504,
+        1436
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 46,
+      "fullPixels": 46,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.2202,
+        "iou": 0.8333,
+        "visibleError": 28.89,
+        "candidates": {
+          "crop": 0.4564,
+          "bbox": 0.2202,
+          "crop+shape": 0.4564,
+          "bbox+shape": 0.2202
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            -1.0
+          ],
+          [
+            0.0,
+            1.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 14,
+      "generatedSha256": "8ab3d3ad851271e92bc4fe9f6a5671d36ae1624718ace3540de0ddb4c281c5e2"
+    },
+    {
+      "id": "legs/leg_left/anklet/ankle_chain",
+      "level": 38,
+      "index": 39,
+      "parent": "legs/leg_left/anklet",
+      "crop": [
+        506,
+        1365,
+        573,
+        1432
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 436,
+      "fullPixels": 262,
+      "occludedBy": [
+        "legs/leg_left/anklet/center_link"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.2084,
+        "iou": 0.7698,
+        "visibleError": 36.51,
+        "candidates": {
+          "crop": 0.2833,
+          "bbox": 0.3498,
+          "crop+shape": 0.2303,
+          "bbox+shape": 0.2084
+        },
+        "matrix": [
+          [
+            0.99914,
+            -0.01258,
+            17.4663
+          ],
+          [
+            0.01373,
+            0.95846,
+            49.94113
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 104,
+      "generatedSha256": "618716f83af88d95755fc68e2b8b6e40db9e286f34c09b202e10cac04c8b572c"
+    },
+    {
+      "id": "legs/leg_left/anklet/center_link",
+      "level": 39,
+      "index": 40,
+      "parent": "legs/leg_left/anklet",
+      "crop": [
+        522,
+        1400,
+        562,
+        1440
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 51,
+      "fullPixels": 52,
+      "occludedBy": [
+        "legs/leg_left/anklet/teardrop_pendant"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.1345,
+        "iou": 0.8596,
+        "visibleError": 17.84,
+        "candidates": {
+          "crop": 0.4157,
+          "bbox": 0.1615,
+          "crop+shape": 0.2199,
+          "bbox+shape": 0.1345
+        },
+        "matrix": [
+          [
+            0.981,
+            0.03941,
+            -46.29466
+          ],
+          [
+            -0.03428,
+            1.09152,
+            -112.54294
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 18,
+      "generatedSha256": "5c6860b9d410614e7dd29871d648fdc41eb460c29548793df642991f4c643886"
+    },
+    {
+      "id": "legs/leg_left/anklet/teardrop_pendant",
+      "level": 40,
+      "index": 41,
+      "parent": "legs/leg_left/anklet",
+      "crop": [
+        529,
+        1414,
+        556,
+        1454
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 133,
+      "fullPixels": 133,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0914,
+        "iou": 0.9489,
+        "visibleError": 20.05,
+        "candidates": {
+          "crop": 0.1905,
+          "bbox": 0.0975,
+          "crop+shape": 0.0948,
+          "bbox+shape": 0.0914
+        },
+        "matrix": [
+          [
+            1.08868,
+            0.03573,
+            -99.94762
+          ],
+          [
+            -0.04134,
+            0.98053,
+            49.57566
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 29,
+      "meanCorrection": [
+        26.09000015258789,
+        10.850000381469727,
+        5.079999923706055
+      ],
+      "generatedSha256": "d1747fdc1a9a8f38bb1f77741d60e26f4e6cc11db22b0ca4116f81f7485a2be2"
+    },
+    {
+      "id": "head_accessories/left_earring/suspension_chain",
+      "level": 41,
+      "index": 42,
+      "parent": "head_accessories/left_earring",
+      "crop": [
+        548,
+        214,
+        575,
+        254
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 29,
+      "fullPixels": 42,
+      "occludedBy": [
+        "head_accessories/left_earring/sapphire_pendant",
+        "head_accessories/left_earring/ear_stud"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.3095,
+        "iou": 0.6905,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.6111,
+          "bbox": 0.4444,
+          "crop+shape": 0.3095,
+          "bbox+shape": 0.4048
+        },
+        "matrix": [
+          [
+            0.99899,
+            -0.01799,
+            4.29111
+          ],
+          [
+            0.02421,
+            0.75453,
+            41.52609
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 31,
+      "generatedSha256": "068f7aeac1815cbf0ffe0190f12a4d380e19b38674fce552fa39f65c9d9cd66a"
+    },
+    {
+      "id": "head_accessories/right_earring/suspension_chain",
+      "level": 42,
+      "index": 43,
+      "parent": "head_accessories/right_earring",
+      "crop": [
+        450,
+        213,
+        476,
+        253
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 22,
+      "fullPixels": 29,
+      "occludedBy": [
+        "head_accessories/right_earring/sapphire_pendant",
+        "head_accessories/right_earring/ear_stud"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.5789,
+        "iou": 0.4211,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.8222,
+          "bbox": 0.5789,
+          "crop+shape": 0.6471,
+          "bbox+shape": 0.7143
+        },
+        "matrix": [
+          [
+            1.33333,
+            0.0,
+            -155.0
+          ],
+          [
+            0.0,
+            0.78261,
+            48.69565
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 32,
+      "generatedSha256": "6b3c4d0fe87169779a5e9060ab2022f8ea20f1089b5bc0c26f99c77c2a155924"
+    },
+    {
+      "id": "head_accessories/left_earring/sapphire_pendant",
+      "level": 43,
+      "index": 44,
+      "parent": "head_accessories/left_earring",
+      "crop": [
+        548,
+        227,
+        574,
+        267
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 90,
+      "fullPixels": 90,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.3713,
+        "iou": 0.7423,
+        "visibleError": 60.36,
+        "candidates": {
+          "crop": 0.4837,
+          "bbox": 0.3713
+        },
+        "matrix": [
+          [
+            1.11111,
+            0.0,
+            -62.88889
+          ],
+          [
+            0.0,
+            0.72727,
+            66.63636
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 30,
+      "meanCorrection": [
+        10.369999885559082,
+        13.850000381469727,
+        8.5600004196167
+      ],
+      "generatedSha256": "313db1bb5275932c7ed1f9bed6504f77c4f204739ddd4342f9cc7589ff1e49aa"
+    },
+    {
+      "id": "head_accessories/right_earring/sapphire_pendant",
+      "level": 44,
+      "index": 45,
+      "parent": "head_accessories/right_earring",
+      "crop": [
+        450,
+        228,
+        476,
+        268
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 97,
+      "fullPixels": 97,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.2498,
+        "iou": 0.7647,
+        "visibleError": 46.72,
+        "candidates": {
+          "crop": 0.4646,
+          "bbox": 0.3252,
+          "crop+shape": 0.2498
+        },
+        "matrix": [
+          [
+            1.0288,
+            0.05063,
+            -26.66279
+          ],
+          [
+            -0.10525,
+            0.95195,
+            58.17143
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 27,
+      "meanCorrection": [
+        36.439998626708984,
+        24.170000076293945,
+        10.300000190734863
+      ],
+      "generatedSha256": "48989d0be91c28e03ed52c2c126ed84c30bf0b8ae7d30611e2cfed0eb5a316c7"
+    },
+    {
+      "id": "head_accessories/left_earring/ear_stud",
+      "level": 45,
+      "index": 46,
+      "parent": "head_accessories/left_earring",
+      "crop": [
+        548,
+        203,
+        574,
+        243
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 5,
+      "fullPixels": 20,
+      "occludedBy": [
+        "face/ear_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.05,
+        "iou": 0.95,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.561,
+          "bbox": 0.05,
+          "crop+shape": 0.561,
+          "bbox+shape": 0.05
+        },
+        "matrix": [
+          [
+            0.66667,
+            0.0,
+            186.33333
+          ],
+          [
+            0.0,
+            0.75,
+            55.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 28,
+      "generatedSha256": "4acef3074a06cf3d8c7206de769f6a9eebf0df247d48e320d91ca8796f016437"
+    },
+    {
+      "id": "head_accessories/right_earring/ear_stud",
+      "level": 46,
+      "index": 47,
+      "parent": "head_accessories/right_earring",
+      "crop": [
+        450,
+        203,
+        476,
+        243
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 9,
+      "fullPixels": 19,
+      "occludedBy": [
+        "face/ear_right"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.381,
+        "iou": 0.619,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.56,
+          "bbox": 0.381,
+          "crop+shape": 0.56,
+          "bbox+shape": 0.381
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.85714,
+            29.71429
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 21,
+      "generatedSha256": "b09d9ce14a27fae0ebc7dfaa861f42dcaf9308eb2c141c734ee61e8eff1739d0"
+    },
+    {
+      "id": "face/ear_right",
+      "level": 47,
+      "index": 48,
+      "parent": "face",
+      "crop": [
+        440,
+        187,
+        484,
+        231
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 220,
+      "fullPixels": 517,
+      "occludedBy": [
+        "face/face_base",
+        "face/eye_right/sclera",
+        "face/eye_right/lower_eyelid",
+        "face/eye_right/upper_eyelid",
+        "hair/side_hair_right"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "sift",
+        "score": 0.0444,
+        "iou": 0.9624,
+        "visibleError": 8.92,
+        "candidates": {
+          "crop": 0.0905,
+          "bbox": 0.0626,
+          "sift": 0.0444,
+          "crop+shape": 0.0709,
+          "bbox+shape": 0.0748,
+          "sift+shape": 0.0492
+        },
+        "matrix": [
+          [
+            1.02522,
+            -0.03066,
+            -5.75946
+          ],
+          [
+            0.03066,
+            1.02522,
+            -19.89876
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 358,
+      "meanCorrection": [
+        5.699999809265137,
+        5.050000190734863,
+        4.289999961853027
+      ],
+      "generatedSha256": "f3f05858bcd7cd2dcba342b3036abe4643e65ef4b9803edcafb7b0edd1ad8276"
+    },
+    {
+      "id": "face/ear_left",
+      "level": 48,
+      "index": 49,
+      "parent": "face",
+      "crop": [
+        538,
+        187,
+        581,
+        231
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 248,
+      "fullPixels": 596,
+      "occludedBy": [
+        "face/face_base",
+        "face/eye_left/sclera",
+        "face/eye_left/lower_eyelashes",
+        "face/eye_left/lower_eyelid",
+        "hair/side_hair_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0519,
+        "iou": 0.9819,
+        "visibleError": 12.08,
+        "candidates": {
+          "crop": 0.1168,
+          "bbox": 0.055,
+          "sift": 0.0907,
+          "crop+shape": 0.0519,
+          "bbox+shape": 0.0519,
+          "sift+shape": 0.0531
+        },
+        "matrix": [
+          [
+            1.03164,
+            -0.03252,
+            -11.59237
+          ],
+          [
+            0.01664,
+            1.00509,
+            -11.14589
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 393,
+      "meanCorrection": [
+        1.3899999856948853,
+        2.5299999713897705,
+        2.569999933242798
+      ],
+      "generatedSha256": "af67bdb10dcf756b831898f7690d59e91353d469ef3bda7821a8d97c3e45215f"
+    },
+    {
+      "id": "face/face_base",
+      "level": 49,
+      "index": 50,
+      "parent": "face",
+      "crop": [
+        420,
+        104,
+        603,
+        287
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 7293,
+      "fullPixels": 10880,
+      "occludedBy": [
+        "face/eye_left/sclera",
+        "face/eye_right/sclera",
+        "face/eye_left/iris",
+        "face/eye_right/iris",
+        "face/eye_left/highlight",
+        "face/eye_right/highlight",
+        "face/eye_left/lower_eyelashes",
+        "face/eye_left/lower_eyelid",
+        "face/eye_right/lower_eyelid",
+        "face/eye_left/upper_eyelid",
+        "face/eye_right/upper_eyelid",
+        "face/eye_left/eyelid_crease",
+        "face/eye_right/eyelid_crease",
+        "face/eyebrow_left",
+        "face/eyebrow_right",
+        "face/nose",
+        "face/mouth/mouth_interior",
+        "face/mouth/tongue",
+        "face/mouth/upper_teeth",
+        "face/mouth/lower_lip",
+        "face/mouth/upper_lip",
+        "head_accessories/forehead_ornament/teardrop_pendant",
+        "head_accessories/forehead_ornament/upper_sapphire_mount",
+        "hair/side_hair_right",
+        "hair/side_hair_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0414,
+        "iou": 0.9793,
+        "visibleError": 9.23,
+        "candidates": {
+          "crop": 0.0907,
+          "bbox": 0.0522,
+          "crop+shape": 0.0415,
+          "bbox+shape": 0.0414
+        },
+        "matrix": [
+          [
+            1.05688,
+            0.00732,
+            -30.90877
+          ],
+          [
+            -0.01111,
+            1.0812,
+            -13.94682
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 3784,
+      "meanCorrection": [
+        7.53000020980835,
+        10.039999961853027,
+        8.930000305175781
+      ],
+      "generatedSha256": "eb8f30dc9147a06cdf76bc893ee3ddd1fb62d5255aea224491d277c1638a057c"
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "level": 50,
+      "index": 51,
+      "parent": "face/eye_left",
+      "crop": [
+        514,
+        179,
+        574,
+        219
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 104,
+      "fullPixels": 346,
+      "occludedBy": [
+        "face/eye_left/iris",
+        "face/eye_left/highlight",
+        "face/eye_left/lower_eyelid"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0762,
+        "iou": 0.9827,
+        "visibleError": 18.33,
+        "candidates": {
+          "crop": 0.1627,
+          "bbox": 0.0911,
+          "crop+shape": 0.0768,
+          "bbox+shape": 0.0762
+        },
+        "matrix": [
+          [
+            0.94761,
+            -0.02775,
+            32.58925
+          ],
+          [
+            0.0089,
+            1.00613,
+            -6.77051
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 285,
+      "meanCorrection": [
+        3.430000066757202,
+        6.820000171661377,
+        9.0600004196167
+      ],
+      "generatedSha256": "71bdf9a4d06c1bd5c3dc0fcdd38f3fb992c8ae36d072be915e8c1b29c7f1ebbc"
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "level": 51,
+      "index": 52,
+      "parent": "face/eye_right",
+      "crop": [
+        449,
+        179,
+        509,
+        219
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 120,
+      "fullPixels": 411,
+      "occludedBy": [
+        "face/eye_right/iris",
+        "face/eye_right/highlight",
+        "face/eye_right/lower_eyelid",
+        "face/eye_right/upper_eyelid"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0837,
+        "iou": 0.9612,
+        "visibleError": 18.86,
+        "candidates": {
+          "crop": 0.1287,
+          "bbox": 0.0862,
+          "crop+shape": 0.0837,
+          "bbox+shape": 0.0948
+        },
+        "matrix": [
+          [
+            1.03977,
+            -0.06856,
+            -6.51312
+          ],
+          [
+            0.03333,
+            1.00646,
+            -17.98944
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 344,
+      "meanCorrection": [
+        4.679999828338623,
+        12.09000015258789,
+        13.869999885559082
+      ],
+      "generatedSha256": "efee9f36ffdabde0ff4154ce1ae39d7374acea8142cdcbb7dfc3afaa6ac47ca9"
+    },
+    {
+      "id": "face/eye_left/iris",
+      "level": 52,
+      "index": 53,
+      "parent": "face/eye_left",
+      "crop": [
+        520,
+        177,
+        560,
+        217
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 241,
+      "fullPixels": 302,
+      "occludedBy": [
+        "face/eye_left/highlight",
+        "face/eye_left/upper_eyelid"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0662,
+        "iou": 0.9803,
+        "visibleError": 15.63,
+        "candidates": {
+          "crop": 0.1238,
+          "bbox": 0.0952,
+          "crop+shape": 0.0662,
+          "bbox+shape": 0.1213
+        },
+        "matrix": [
+          [
+            1.00631,
+            0.02096,
+            -8.07716
+          ],
+          [
+            -0.047,
+            1.00864,
+            22.88219
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 95,
+      "meanCorrection": [
+        19.809999465942383,
+        15.329999923706055,
+        7.710000038146973
+      ],
+      "generatedSha256": "49a97e0e86021f30e6965ace1479035d576ecb34aeeb25229210ea0114216429"
+    },
+    {
+      "id": "face/eye_right/iris",
+      "level": 53,
+      "index": 54,
+      "parent": "face/eye_right",
+      "crop": [
+        464,
+        178,
+        504,
+        218
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 221,
+      "fullPixels": 298,
+      "occludedBy": [
+        "face/eye_right/highlight",
+        "face/eye_right/lower_eyelid",
+        "face/eye_right/upper_eyelid"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.1479,
+        "iou": 0.9013,
+        "visibleError": 31.42,
+        "candidates": {
+          "crop": 0.248,
+          "bbox": 0.1479
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            -1.0
+          ],
+          [
+            0.0,
+            1.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 115,
+      "meanCorrection": [
+        39.060001373291016,
+        32.290000915527344,
+        25.709999084472656
+      ],
+      "generatedSha256": "56f8711517e0306a0a950b940b1238ba8015997f8ccd3b2253f0b226c044f8fc"
+    },
+    {
+      "id": "face/eye_left/highlight",
+      "level": 54,
+      "index": 55,
+      "parent": "face/eye_left",
+      "crop": [
+        526,
+        174,
+        552,
+        214
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 6,
+      "fullPixels": 6,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.2857,
+        "iou": 0.7143,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.2857
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 7,
+      "generatedSha256": "2ba8357607c5dd432edc26dfee93c26a13487c9f9f941b077e27b612fc43037b"
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "level": 55,
+      "index": 56,
+      "parent": "face/eye_right",
+      "crop": [
+        472,
+        174,
+        498,
+        214
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 6,
+      "fullPixels": 6,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.5,
+        "iou": 0.5,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.5
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 4,
+      "generatedSha256": "eb570757fbff8d90de3e54068bd3758a36f7b3fa71c7d110b4a40292b88d66c2"
+    },
+    {
+      "id": "face/eye_left/lower_eyelashes",
+      "level": 56,
+      "index": 57,
+      "parent": "face/eye_left",
+      "crop": [
+        532,
+        184,
+        572,
+        224
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 2,
+      "fullPixels": 3,
+      "occludedBy": [
+        "face/eye_left/lower_eyelid"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.6667,
+        "iou": 0.3333,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.6667
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 10,
+      "generatedSha256": "956c4938ef137a444db19fccc1d155f7de50fe0f4757d26e7d98967d9a1a4035"
+    },
+    {
+      "id": "face/eye_left/lower_eyelid",
+      "level": 57,
+      "index": 58,
+      "parent": "face/eye_left",
+      "crop": [
+        518,
+        182,
+        578,
+        222
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 23,
+      "fullPixels": 23,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.5714,
+        "iou": 0.4286,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.7222,
+          "bbox": 0.6346,
+          "crop+shape": 0.5714,
+          "bbox+shape": 0.5854
+        },
+        "matrix": [
+          [
+            1.02602,
+            -0.09575,
+            5.43573
+          ],
+          [
+            -0.10126,
+            1.07972,
+            38.02497
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 60,
+      "generatedSha256": "8ea6fd0a203d06295e5fc8866ee745018e7c5b82365310663df552c60372b6e7"
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "level": 58,
+      "index": 59,
+      "parent": "face/eye_right",
+      "crop": [
+        448,
+        181,
+        508,
+        221
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 23,
+      "fullPixels": 25,
+      "occludedBy": [
+        "face/eye_right/upper_eyelid"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.7677,
+        "iou": 0.2323,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.7732,
+          "bbox": 0.7931,
+          "crop+shape": 0.7677,
+          "bbox+shape": 0.8
+        },
+        "matrix": [
+          [
+            0.9157,
+            0.5046,
+            -60.26851
+          ],
+          [
+            -0.16195,
+            1.02652,
+            71.84548
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 59,
+      "generatedSha256": "03956151875ff9def4a58da516d5ea36f5633799c3ded96171d624db5b9af80e"
+    },
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "level": 59,
+      "index": 60,
+      "parent": "face/eye_left",
+      "crop": [
+        514,
+        172,
+        574,
+        212
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 117,
+      "fullPixels": 117,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0563,
+        "iou": 0.8843,
+        "visibleError": 6.99,
+        "candidates": {
+          "crop": 0.1541,
+          "bbox": 0.1335,
+          "crop+shape": 0.0563,
+          "bbox+shape": 0.0762
+        },
+        "matrix": [
+          [
+            0.97659,
+            0.00567,
+            10.89246
+          ],
+          [
+            -0.02099,
+            1.01208,
+            8.33984
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 49,
+      "generatedSha256": "21979e28511f7b3d34bce0ee0a7e7953b014599884edbba9e63668e49b746c99"
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "level": 60,
+      "index": 61,
+      "parent": "face/eye_right",
+      "crop": [
+        450,
+        172,
+        510,
+        212
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 158,
+      "fullPixels": 159,
+      "occludedBy": [
+        "hair/side_hair_right"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0589,
+        "iou": 0.9018,
+        "visibleError": 8.76,
+        "candidates": {
+          "crop": 0.1262,
+          "bbox": 0.1079,
+          "crop+shape": 0.0589,
+          "bbox+shape": 0.0637
+        },
+        "matrix": [
+          [
+            1.00937,
+            0.12243,
+            -29.46983
+          ],
+          [
+            -0.02845,
+            1.00323,
+            12.42076
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 54,
+      "meanCorrection": [
+        5.690000057220459,
+        2.109999895095825,
+        2.640000104904175
+      ],
+      "generatedSha256": "bd6853ce1524507eec51326d84c031ed89f448741de9df9816cd6f7ba9f46fa1"
+    },
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "level": 61,
+      "index": 62,
+      "parent": "face/eye_left",
+      "crop": [
+        507,
+        166,
+        567,
+        206
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 9,
+      "fullPixels": 9,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.875,
+        "iou": 0.125,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.875
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 27,
+      "generatedSha256": "e29d79e0b48b9ba38a8b017a6ba59c5a5b332a425147fc2e828d3bc81c700194"
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "level": 62,
+      "index": 63,
+      "parent": "face/eye_right",
+      "crop": [
+        451,
+        166,
+        511,
+        206
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 20,
+      "fullPixels": 20,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.4783,
+        "iou": 0.5217,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.4783,
+          "crop+shape": 0.4783
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 40,
+      "generatedSha256": "c75fc1d79098c9bc7d50bae925bfcd4d2d484c8b43b39bad68046bac49f737d8"
+    },
+    {
+      "id": "face/eyebrow_left",
+      "level": 63,
+      "index": 64,
+      "parent": "face",
+      "crop": [
+        509,
+        157,
+        569,
+        197
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 66,
+      "fullPixels": 75,
+      "occludedBy": [
+        "hair/side_hair_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0838,
+        "iou": 0.9737,
+        "visibleError": 19.68,
+        "candidates": {
+          "crop": 0.3107,
+          "bbox": 0.2196,
+          "crop+shape": 0.1102,
+          "bbox+shape": 0.0838
+        },
+        "matrix": [
+          [
+            1.03355,
+            0.01483,
+            -21.45087
+          ],
+          [
+            0.00901,
+            0.99049,
+            -3.47394
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 48,
+      "generatedSha256": "b3f704b17f5788709333513d4d79c833825b806c2a61ed9d76a7c2f24f768d5f"
+    },
+    {
+      "id": "face/eyebrow_right",
+      "level": 64,
+      "index": 65,
+      "parent": "face",
+      "crop": [
+        452,
+        156,
+        512,
+        196
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 71,
+      "fullPixels": 83,
+      "occludedBy": [
+        "hair/side_hair_right"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.2186,
+        "iou": 0.703,
+        "visibleError": 27.82,
+        "candidates": {
+          "crop": 0.2592,
+          "bbox": 0.3105,
+          "crop+shape": 0.2186,
+          "bbox+shape": 0.225
+        },
+        "matrix": [
+          [
+            1.11709,
+            -0.35513,
+            5.96339
+          ],
+          [
+            0.09852,
+            0.95246,
+            -39.51509
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 55,
+      "generatedSha256": "f5e215a565e70309e2aa319de3597f61b89cbdda39cca77d97af9679592996f5"
+    },
+    {
+      "id": "face/nose",
+      "level": 65,
+      "index": 66,
+      "parent": "face",
+      "crop": [
+        492,
+        198,
+        532,
+        238
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 76,
+      "fullPixels": 76,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0721,
+        "iou": 1.0,
+        "visibleError": 18.38,
+        "candidates": {
+          "crop": 0.1325,
+          "bbox": 0.0868,
+          "crop+shape": 0.0721,
+          "bbox+shape": 0.0999
+        },
+        "matrix": [
+          [
+            1.0183,
+            -0.02942,
+            -3.37277
+          ],
+          [
+            0.01369,
+            0.9855,
+            -4.60393
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 23,
+      "meanCorrection": [
+        8.4399995803833,
+        17.329999923706055,
+        19.25
+      ],
+      "generatedSha256": "d68688e2cc8ed804fca9085802fa993320cc5b5f5f2fae11f492bbdf854c22f0"
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "level": 66,
+      "index": 67,
+      "parent": "face/mouth",
+      "crop": [
+        482,
+        218,
+        542,
+        258
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 38,
+      "fullPixels": 168,
+      "occludedBy": [
+        "face/mouth/tongue",
+        "face/mouth/upper_teeth",
+        "face/mouth/lower_lip",
+        "face/mouth/upper_lip"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.2237,
+        "iou": 0.9538,
+        "visibleError": 54.09,
+        "candidates": {
+          "crop": 0.2687,
+          "bbox": 0.2312,
+          "crop+shape": 0.2251,
+          "bbox+shape": 0.2237
+        },
+        "matrix": [
+          [
+            1.02739,
+            -0.14208,
+            19.30095
+          ],
+          [
+            0.12075,
+            0.98139,
+            -58.24844
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 164,
+      "generatedSha256": "a238cbc924202c71b5c01729425ce62e99fe1b3a06902b2e54c068a7f1dd9ad4"
+    },
+    {
+      "id": "face/mouth/tongue",
+      "level": 67,
+      "index": 68,
+      "parent": "face/mouth",
+      "crop": [
+        482,
+        220,
+        542,
+        260
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 60,
+      "fullPixels": 86,
+      "occludedBy": [
+        "face/mouth/lower_lip"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.19,
+        "iou": 0.8485,
+        "visibleError": 38.79,
+        "candidates": {
+          "crop": 0.2318,
+          "bbox": 0.19,
+          "crop+shape": 0.1927,
+          "bbox+shape": 0.1911
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.14286,
+            -34.85714
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 48,
+      "generatedSha256": "aebf84c4e33ddeab517e2dfc818e8f1780c18848ffa75f7e9dd4f93d441e973c"
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "level": 68,
+      "index": 69,
+      "parent": "face/mouth",
+      "crop": [
+        482,
+        224,
+        542,
+        264
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 0,
+      "fullPixels": 2,
+      "occludedBy": [
+        "face/mouth/lower_lip"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.9394,
+        "iou": 0.0606,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.9565,
+          "crop+shape": 0.9394
+        },
+        "matrix": [
+          [
+            0.68123,
+            -0.32246,
+            241.47621
+          ],
+          [
+            0.23883,
+            0.90544,
+            -99.44824
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 24,
+      "generatedSha256": "61d95838c2bb031287a4de168d0c60b126fa45ed3f1277bc7d8e5e10823ea2d9"
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "level": 69,
+      "index": 70,
+      "parent": "face/mouth",
+      "crop": [
+        482,
+        214,
+        542,
+        254
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 7,
+      "fullPixels": 35,
+      "occludedBy": [
+        "face/mouth/upper_lip"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.4262,
+        "iou": 0.5738,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.6771,
+          "crop+shape": 0.4262
+        },
+        "matrix": [
+          [
+            0.66934,
+            0.052,
+            156.41984
+          ],
+          [
+            -0.01552,
+            0.94775,
+            18.48865
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 51,
+      "generatedSha256": "4c1ddfe499f9e9c9ceda037c239daddfa0edac53f94b176b992507e7252e6f5d"
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "level": 70,
+      "index": 71,
+      "parent": "face/mouth",
+      "crop": [
+        482,
+        220,
+        542,
+        260
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 42,
+      "fullPixels": 49,
+      "occludedBy": [
+        "face/mouth/upper_lip"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.2144,
+        "iou": 0.7344,
+        "visibleError": 34.7,
+        "candidates": {
+          "crop": 0.3805,
+          "bbox": 0.2313,
+          "crop+shape": 0.2144,
+          "bbox+shape": 0.2727
+        },
+        "matrix": [
+          [
+            1.07591,
+            -0.03889,
+            -30.0244
+          ],
+          [
+            -0.01894,
+            1.02229,
+            3.76395
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 35,
+      "generatedSha256": "0e85d81629a7d9b97861519680b162724f00b004bb0b4e2608fadd2abbc2b840"
+    },
+    {
+      "id": "face/mouth/upper_lip",
+      "level": 71,
+      "index": 72,
+      "parent": "face/mouth",
+      "crop": [
+        482,
+        216,
+        542,
+        256
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 40,
+      "fullPixels": 40,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.1364,
+        "iou": 0.9286,
+        "visibleError": 27.04,
+        "candidates": {
+          "crop": 0.6006,
+          "bbox": 0.2017,
+          "crop+shape": 0.195,
+          "bbox+shape": 0.1364
+        },
+        "matrix": [
+          [
+            0.97171,
+            0.03393,
+            6.03837
+          ],
+          [
+            -0.02541,
+            1.14568,
+            -21.87821
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 37,
+      "generatedSha256": "f06a59958359ac8d887a022ab2163a5f539386ce1b572bb605e3a00d247c7df6"
+    },
+    {
+      "id": "head_accessories/forehead_ornament/teardrop_pendant",
+      "level": 72,
+      "index": 73,
+      "parent": "head_accessories/forehead_ornament",
+      "crop": [
+        499,
+        136,
+        525,
+        176
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 96,
+      "fullPixels": 99,
+      "occludedBy": [
+        "head_accessories/forehead_ornament/upper_sapphire_mount"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0909,
+        "iou": 0.9495,
+        "visibleError": 19.95,
+        "candidates": {
+          "crop": 0.1952,
+          "bbox": 0.1047,
+          "crop+shape": 0.1001,
+          "bbox+shape": 0.0909
+        },
+        "matrix": [
+          [
+            1.10891,
+            0.01528,
+            -58.58255
+          ],
+          [
+            -0.01811,
+            0.95666,
+            15.10414
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 28,
+      "meanCorrection": [
+        27.3799991607666,
+        19.149999618530273,
+        8.710000038146973
+      ],
+      "generatedSha256": "1611605220f6dc48019eea11fac9c5fa5934c58c67103190441c7dc2b9875a95"
+    },
+    {
+      "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
+      "level": 73,
+      "index": 74,
+      "parent": "head_accessories/forehead_ornament",
+      "crop": [
+        492,
+        120,
+        532,
+        160
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 94,
+      "fullPixels": 166,
+      "occludedBy": [
+        "hair/side_hair_right",
+        "hair/side_hair_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.1283,
+        "iou": 0.9647,
+        "visibleError": 30.47,
+        "candidates": {
+          "crop": 0.257,
+          "bbox": 0.1283,
+          "crop+shape": 0.1472,
+          "bbox+shape": 0.1322
+        },
+        "matrix": [
+          [
+            1.06667,
+            0.0,
+            -34.66667
+          ],
+          [
+            0.0,
+            0.94737,
+            5.94737
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 108,
+      "meanCorrection": [
+        26.889999389648438,
+        9.510000228881836,
+        19.020000457763672
+      ],
+      "generatedSha256": "3b13984e5d2489ec0fb72642c3a5dec04fddaad1b918cb6bbc621eaa49e0b647"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+      "level": 74,
+      "index": 75,
+      "parent": "head_accessories/left_crown_ribbon/jeweled_suspension",
+      "crop": [
+        605,
+        82,
+        632,
+        122
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 62,
+      "fullPixels": 25,
+      "occludedBy": [
+        "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+        "head_accessories/crown_frame"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.5,
+        "iou": 0.5,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.5,
+          "crop+shape": 0.5
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 14,
+      "generatedSha256": "9818512474a1d7681bd47e7b30ddc5788c44f873080095709ec814a908da5a81"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+      "level": 75,
+      "index": 76,
+      "parent": "head_accessories/right_crown_ribbon/gem_suspension",
+      "crop": [
+        393,
+        82,
+        419,
+        122
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 81,
+      "fullPixels": 27,
+      "occludedBy": [
+        "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+        "head_accessories/crown_frame"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.1875,
+        "iou": 0.8125,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.5676,
+          "bbox": 0.1875,
+          "crop+shape": 0.5676,
+          "bbox+shape": 0.1875
+        },
+        "matrix": [
+          [
+            1.33333,
+            0.0,
+            -136.0
+          ],
+          [
+            0.0,
+            0.73333,
+            25.86667
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 13,
+      "generatedSha256": "91509cd9a37368dc5cfd54c463e4bf7a71866ad5439838ce4af05da72eb40f63"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+      "level": 76,
+      "index": 77,
+      "parent": "head_accessories/left_crown_ribbon/jeweled_suspension",
+      "crop": [
+        600,
+        100,
+        640,
+        140
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 12,
+      "fullPixels": 14,
+      "occludedBy": [
+        "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+        "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.5909,
+        "iou": 0.4091,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.5909,
+          "bbox": 0.6111,
+          "crop+shape": 0.5909,
+          "bbox+shape": 0.6111
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 13,
+      "generatedSha256": "cbdea49aee8379b4cb56153facacac1c9197e2575429de63646e17a459748ca5"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+      "level": 77,
+      "index": 78,
+      "parent": "head_accessories/right_crown_ribbon/gem_suspension",
+      "crop": [
+        392,
+        100,
+        419,
+        140
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 10,
+      "fullPixels": 9,
+      "occludedBy": [
+        "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+        "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.6429,
+        "iou": 0.3571,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.6429,
+          "crop+shape": 0.6429
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 12,
+      "generatedSha256": "adb8f6f5d32fe19a6f8f0673494f38c5a6c691522233b0deafff605688366384"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
+      "level": 78,
+      "index": 79,
+      "parent": "head_accessories/left_crown_ribbon/jeweled_suspension",
+      "crop": [
+        607,
+        116,
+        633,
+        156
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 47,
+      "fullPixels": 30,
+      "occludedBy": [
+        "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
+        "head_accessories/left_crown_ribbon/ribbon_head"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.303,
+        "iou": 0.697,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.5714,
+          "bbox": 0.303,
+          "crop+shape": 0.5714,
+          "bbox+shape": 0.303
+        },
+        "matrix": [
+          [
+            1.33333,
+            0.0,
+            -207.33333
+          ],
+          [
+            0.0,
+            0.9,
+            13.1
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 20,
+      "generatedSha256": "2b91975f3a484bd34f0c0c0c04ae2633151b16ce168ee5c7885465e808618fdf"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
+      "level": 79,
+      "index": 80,
+      "parent": "head_accessories/right_crown_ribbon/gem_suspension",
+      "crop": [
+        392,
+        114,
+        418,
+        154
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 42,
+      "fullPixels": 16,
+      "occludedBy": [
+        "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 0.4545,
+        "iou": 0.5455,
+        "visibleError": null,
+        "candidates": {
+          "crop": 0.4545,
+          "bbox": 0.4545,
+          "crop+shape": 0.4545,
+          "bbox+shape": 0.4545
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 8,
+      "generatedSha256": "a375bf1b2899d5d53e66bd38ec688c2af8cd685c8794733da14d680c5db98e2d"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+      "level": 80,
+      "index": 81,
+      "parent": "head_accessories/left_crown_ribbon/jeweled_suspension",
+      "crop": [
+        600,
+        93,
+        640,
+        133
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 373,
+      "fullPixels": 104,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.1583,
+        "iou": 0.9,
+        "visibleError": 27.86,
+        "candidates": {
+          "crop": 0.3143,
+          "bbox": 0.2562,
+          "crop+shape": 0.1583,
+          "bbox+shape": 0.2633
+        },
+        "matrix": [
+          [
+            1.00377,
+            -0.00565,
+            -2.70258
+          ],
+          [
+            0.00941,
+            0.94112,
+            -0.38854
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 3,
+      "generatedSha256": "ad1cde91d0eb44e7b56aacf079f4d605f94d83c2aca2c0171f6602e4aa8c88ff"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+      "level": 81,
+      "index": 82,
+      "parent": "head_accessories/right_crown_ribbon/gem_suspension",
+      "crop": [
+        385,
+        94,
+        425,
+        134
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 476,
+      "fullPixels": 93,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.2676,
+        "iou": 0.8333,
+        "visibleError": 39.39,
+        "candidates": {
+          "crop": 0.3951,
+          "bbox": 0.2676,
+          "crop+shape": 0.3951,
+          "bbox+shape": 0.2676
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            -1.0
+          ],
+          [
+            0.0,
+            0.92857,
+            6.71429
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 4,
+      "generatedSha256": "193bbce80415c2a28288ad0264bd2e4f7ff0ebd7dc2e308ea91371c5a0353f48"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
+      "level": 82,
+      "index": 83,
+      "parent": "head_accessories/left_crown_ribbon/jeweled_suspension",
+      "crop": [
+        600,
+        106,
+        640,
+        146
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 331,
+      "fullPixels": 85,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.4194,
+        "iou": 0.7471,
+        "visibleError": 60.82,
+        "candidates": {
+          "crop": 0.544,
+          "bbox": 0.4194,
+          "crop+shape": 0.544,
+          "bbox+shape": 0.4194
+        },
+        "matrix": [
+          [
+            1.22222,
+            0.0,
+            -138.88889
+          ],
+          [
+            0.0,
+            0.91667,
+            10.08333
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 3,
+      "generatedSha256": "01866da3d095fd856388e9fa84b63ae38e41096780ec168ada6a996e93282948"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem",
+      "level": 83,
+      "index": 84,
+      "parent": "head_accessories/right_crown_ribbon/gem_suspension",
+      "crop": [
+        385,
+        106,
+        425,
+        146
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "visiblePixels": 473,
+      "fullPixels": 83,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox",
+        "score": 0.4839,
+        "iou": 0.7011,
+        "visibleError": 73.68,
+        "candidates": {
+          "crop": 0.5402,
+          "bbox": 0.4839,
+          "crop+shape": 0.5402,
+          "bbox+shape": 0.4839
+        },
+        "matrix": [
+          [
+            1.11111,
+            0.0,
+            -45.55556
+          ],
+          [
+            0.0,
+            0.92308,
+            9.23077
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 4,
+      "generatedSha256": "6541024631a47d953159ff993f2327d55f7a10b7e6fd3b15749822ed57d077b2"
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_head",
+      "level": 84,
+      "index": 85,
+      "parent": "head_accessories/left_crown_ribbon",
+      "crop": [
+        606,
+        131,
+        636,
+        176
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 1308,
+      "fullPixels": 545,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0681,
+        "iou": 0.9835,
+        "visibleError": 14.2,
+        "candidates": {
+          "crop": 0.1998,
+          "bbox": 0.0893,
+          "sift": 0.0815,
+          "crop+shape": 0.0681,
+          "bbox+shape": 0.0733,
+          "sift+shape": 0.0685
+        },
+        "matrix": [
+          [
+            1.03725,
+            0.00724,
+            -24.80874
+          ],
+          [
+            -0.01121,
+            0.99703,
+            6.45167
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 5,
+      "generatedSha256": "fe2482df651726016736883d9861da10b817fce9589304e73f29e2d862f01fd8"
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_head",
+      "level": 85,
+      "index": 86,
+      "parent": "head_accessories/right_crown_ribbon",
+      "crop": [
+        391,
+        130,
+        417,
+        170
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 746,
+      "fullPixels": 305,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "sift+shape",
+        "score": 0.1098,
+        "iou": 0.9137,
+        "visibleError": 22.51,
+        "candidates": {
+          "crop": 0.207,
+          "bbox": 0.1516,
+          "sift": 0.1102,
+          "crop+shape": 0.1211,
+          "bbox+shape": 0.1373,
+          "sift+shape": 0.1098
+        },
+        "matrix": [
+          [
+            0.99157,
+            -0.04796,
+            10.20279
+          ],
+          [
+            0.06032,
+            0.99696,
+            -24.62068
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 18,
+      "meanCorrection": [
+        4.119999885559082,
+        4.440000057220459,
+        1.8899999856948853
+      ],
+      "generatedSha256": "9de8e3af2cc1dd36385dc79c641c97a937616924a1fa5f3aec99e8f739c758d6"
+    },
+    {
+      "id": "head_accessories/crown_frame",
+      "level": 86,
+      "index": 87,
+      "parent": "head_accessories",
+      "crop": [
+        346,
+        -47,
+        679,
+        176
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 10198,
+      "fullPixels": 4740,
+      "occludedBy": [
+        "hair/side_hair_left"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop",
+        "score": 1.0536,
+        "iou": 0.4242,
+        "visibleError": 140.67,
+        "candidates": {
+          "crop": 1.0536,
+          "bbox": 1.2584,
+          "sift": 1.2176,
+          "crop+shape": 1.2057,
+          "bbox+shape": 1.205,
+          "sift+shape": 1.2105
+        },
+        "matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 100,
+      "meanCorrection": [
+        40.0,
+        40.0,
+        40.0
+      ],
+      "generatedSha256": "94ef4ba1968b1781c4376a830ed693ced282d2aa55765b5102bb5165f76f19bf"
+    },
+    {
+      "id": "hair/side_hair_right",
+      "level": 87,
+      "index": 88,
+      "parent": "hair",
+      "crop": [
+        380,
+        45,
+        554,
+        306
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 4280,
+      "fullPixels": 3515,
+      "occludedBy": [
+        "head_accessories/lotus_ornament"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "sift+shape",
+        "score": 0.0695,
+        "iou": 0.9108,
+        "visibleError": 11.95,
+        "candidates": {
+          "crop": 0.1158,
+          "crop+ecc": 0.0943,
+          "bbox": 0.073,
+          "sift": 0.0874,
+          "sift+ecc": 0.1236,
+          "crop+shape": 0.0697,
+          "bbox+shape": 0.0709,
+          "sift+shape": 0.0695
+        },
+        "matrix": [
+          [
+            0.92697,
+            -0.03621,
+            40.03962
+          ],
+          [
+            0.05043,
+            0.9735,
+            -22.64196
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 286,
+      "meanCorrection": [
+        11.890000343322754,
+        9.260000228881836,
+        4.920000076293945
+      ],
+      "generatedSha256": "ad341d2d181d2d5f9b313d24e2bd7e9c5db02d063ac67239369c677ef0413f86"
+    },
+    {
+      "id": "hair/side_hair_left",
+      "level": 88,
+      "index": 89,
+      "parent": "hair",
+      "crop": [
+        467,
+        44,
+        643,
+        308
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "visiblePixels": 4494,
+      "fullPixels": 3822,
+      "occludedBy": [
+        "head_accessories/lotus_ornament"
+      ],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "bbox+shape",
+        "score": 0.0983,
+        "iou": 0.8652,
+        "visibleError": 15.74,
+        "candidates": {
+          "crop": 0.1408,
+          "crop+ecc": 0.1433,
+          "bbox": 0.1583,
+          "bbox+ecc": 0.1504,
+          "crop+shape": 0.1008,
+          "bbox+shape": 0.0983
+        },
+        "matrix": [
+          [
+            0.86814,
+            0.04981,
+            61.21802
+          ],
+          [
+            -0.03468,
+            0.95887,
+            23.71688
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 323,
+      "meanCorrection": [
+        13.15999984741211,
+        11.25,
+        7.769999980926514
+      ],
+      "generatedSha256": "d9dbae8ea6d0d2ed579929c7036240cb964501cab7149ea789e04e47655fe34f"
+    },
+    {
+      "id": "head_accessories/lotus_ornament",
+      "level": 89,
+      "index": 90,
+      "parent": "head_accessories",
+      "crop": [
+        450,
+        25,
+        573,
+        106
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "visiblePixels": 2792,
+      "fullPixels": 2222,
+      "occludedBy": [],
+      "model": "gpt-image-2.5-flare",
+      "promptVariant": "template",
+      "registration": {
+        "method": "crop+shape",
+        "score": 0.0783,
+        "iou": 0.9673,
+        "visibleError": 17.89,
+        "candidates": {
+          "crop": 0.1249,
+          "crop+ecc": 0.0862,
+          "bbox": 0.1111,
+          "bbox+ecc": 0.0871,
+          "sift": 0.0858,
+          "sift+ecc": 0.0921,
+          "crop+shape": 0.0783,
+          "crop+shape+ecc": 0.0785,
+          "bbox+shape": 0.0796,
+          "bbox+shape+ecc": 0.0826,
+          "sift+shape": 0.0787,
+          "sift+shape+ecc": 0.0787
+        },
+        "matrix": [
+          [
+            1.00029,
+            -0.00259,
+            -0.07268
+          ],
+          [
+            0.00024,
+            1.00017,
+            -1.00663
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "hiddenPixels": 70,
+      "meanCorrection": [
+        3.359999895095825,
+        3.5,
+        1.6799999475479126
+      ],
+      "generatedSha256": "2be5e5a3efb283950223809ca1f12d66e80a878ac2e49f3f043fb7fb846d3374"
+    }
+  ],
+  "occlusionSourceHash": "2012a49efc5e0555c8835d9174102daaab20f1bece1b59303408d50a79501012",
+  "sourceSha256": "d5ca0b2fcf5c8cd42a88b819ee13d7b342b87cf5ce0b7b0e1dc0347f9555f194"
+}
