@@ -1,8 +1,13 @@
 """Register gpt-image-2.5 completions back to the standard part shapes.
 
 Each delivered part has canvas coordinates, alpha equal to its completed SVG
-shape (the color-block standard), exact source pixels where it is visible, and
-the model's completion (low-frequency color matched to the source) where hidden.
+shape (the color-block standard) and the model's own pixels everywhere inside
+it, with low-frequency tone matched to the source. The part's visible source
+pixels are then overlaid on the completion. Every part uses its model output
+(a failed generation is regenerated, never replaced by source pixels); the
+latest regeneration (generated-v2.png) wins. Seams and occluder outlines left
+by the overlay are repaired afterwards with Krita brushes (see plan_retouch.py),
+which use the model completion saved as model.png.
 """
 from __future__ import annotations
 
@@ -20,9 +25,14 @@ from scipy import ndimage as ndi
 from prepare_depth import OUT, STANDARD, W, H, dump
 
 
+def generation(folder):
+    v2 = folder / 'generated-v2.png'
+    return v2 if v2.exists() else folder / 'generated.png'
+
+
 def generated_on_canvas(folder, rec, matrix=None):
     """Warp a crop-space generation into canvas space (default: crop placement)."""
-    g = np.array(Image.open(folder / 'generated.png').convert('RGBA')).astype(np.float32)
+    g = np.array(Image.open(generation(folder)).convert('RGBA')).astype(np.float32)
     rgb = g[:, :, :3] * (g[:, :, 3:] / 255)  # premultiplied for clean warping
     x0, y0, x1, y1 = rec['crop']
     sx, sy = (x1 - x0) / g.shape[1], (y1 - y0) / g.shape[0]
@@ -202,32 +212,38 @@ def push_pull(values, known):
     return np.where(known[..., None], values, fill)
 
 
-def finish(rgb, a, full, src, visible, pid, iou=1.0):
+def finish(rgb, a, full, src, visible, pid, paste_source=True):
     shape = full > 0
     gen = rgb.astype(np.float32)
     have = a > 127
     if not have.any():
         raise ValueError(pid + ': model output empty after registration')
-    hidden_share = (shape & ~visible).sum() / max(1, shape.sum())
-    if iou < .6 and hidden_share > .3 and (visible & (src[:, :, 3] > 250)).sum() >= 20:
-        # The model drew another pose (e.g. a straight finger for a bent one):
-        # its pixels are not trusted; heal hidden area from the visible source.
-        have = np.zeros_like(have)
+    stats = {}
+    paint = shape
     # Pixels of the standard shape without model content: smooth fill seeded from
-    # model pixels and the part's own visible source pixels.
-    hole = shape & ~have & ~visible
+    # model pixels (and the part's own visible source pixels when pasting).
+    hole = paint & ~have
     if hole.any():
         y0, y1, x0, x1 = window(full, 8)
-        known = (have | (visible & (src[:, :, 3] > 200)))[y0:y1, x0:x1]
-        vals = np.where(visible[..., None], src[:, :, :3].astype(np.float32), gen)[y0:y1, x0:x1]
-        filled = push_pull(vals, known)
-        sub = hole[y0:y1, x0:x1]
-        gen[y0:y1, x0:x1][sub] = filled[sub]
+        if paste_source:
+            known = (have | (visible & (src[:, :, 3] > 200)))[y0:y1, x0:x1]
+            vals = np.where(visible[..., None], src[:, :, :3].astype(np.float32), gen)[y0:y1, x0:x1]
+        else:
+            known, vals = have[y0:y1, x0:x1], gen[y0:y1, x0:x1]
+        if known.any():
+            filled = push_pull(vals, known)
+            sub = hole[y0:y1, x0:x1]
+            gen[y0:y1, x0:x1][sub] = filled[sub]
+            stats['holeFilledPixels'] = int(hole.sum())
         have = have | hole
     hidden = shape & ~visible
     seed = ndi.binary_erosion(visible & (src[:, :, 3] > 250), iterations=2) & have
-    stats = dict(hiddenPixels=int(hidden.sum()))
-    if seed.sum() >= 20 and hidden.any():
+    if not paste_source:
+        # outlines of other parts lie on the visible side of the color-block
+        # boundary; they would pull the tone field dark, so drop strong outliers
+        seed &= np.abs(src[:, :, :3].astype(np.float32) - gen).max(-1) < 48
+    stats['hiddenPixels'] = int(hidden.sum())
+    if seed.sum() >= 20 and paint.any():
         # Smooth color correction field from (source - model) on owned pixels;
         # model texture is kept, only low-frequency tone shifts toward the source.
         diff = src[:, :, :3].astype(np.float32) - gen
@@ -239,25 +255,12 @@ def finish(rgb, a, full, src, visible, pid, iou=1.0):
         delta = np.clip(near * t + far * (1 - t), -40, 40)
         if not np.isfinite(delta).all():
             delta = np.broadcast_to(glob, delta.shape)
-        gen[hidden] = np.clip(gen[hidden] + delta[hidden], 0, 255)
-        stats['meanCorrection'] = np.round(np.abs(delta[hidden]).mean(0), 2).tolist()
-    if is_skin(pid) and hidden.any():
-        # Plain skin: the model tends to paint the occluder (anklet, swimsuit edge)
-        # into the hidden area. Heal it from the part's own visible skin and keep
-        # only faint model shading detail.
-        r, g, b = [src[:, :, i].astype(np.int16) for i in range(3)]
-        skin = visible & (src[:, :, 3] > 240) & (r > 170) & (r > g + 3) & (r > b + 6)
-        skin = ndi.binary_erosion(skin, iterations=1) if ndi.binary_erosion(skin, iterations=1).sum() >= 20 else skin
-        if skin.sum() >= 20:
-            y0, y1, x0, x1 = window(full, 8)
-            field = push_pull(src[y0:y1, x0:x1, :3].astype(np.float32), skin[y0:y1, x0:x1])
-            g0 = gen[y0:y1, x0:x1]
-            detail = np.clip(g0 - cv2.GaussianBlur(g0, (0, 0), 4), -3, 3)
-            sub = hidden[y0:y1, x0:x1]
-            gen[y0:y1, x0:x1][sub] = np.clip(field + detail, 0, 255)[sub]
-            stats['skinHealed'] = True
-    gen[visible] = src[:, :, :3][visible]
-    return np.rint(gen).astype(np.uint8), stats
+        gen[paint] = np.clip(gen[paint] + delta[paint], 0, 255)
+        stats['meanCorrection'] = np.round(np.abs(delta[paint]).mean(0), 2).tolist()
+    model = np.rint(gen).astype(np.uint8)
+    if paste_source:
+        gen[visible] = src[:, :, :3][visible]
+    return np.rint(gen).astype(np.uint8), model, stats
 
 
 def is_skin(pid):
@@ -291,8 +294,8 @@ def psnr(a, b, m):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--work', type=Path, default=OUT / '.work')
-    ap.add_argument('--output', type=Path, default=OUT)
+    ap.add_argument('--work', type=Path, default=OUT / 'work')
+    ap.add_argument('--output', type=Path, default=OUT / 'delivery')
     ap.add_argument('--only', nargs='*')
     args = ap.parse_args()
     work, out = args.work.resolve(), args.output.resolve()
@@ -315,20 +318,35 @@ def main():
         if args.only is not None and pid not in args.only and pid in old and (target / 'full.png').exists():
             entries.append(old[pid]); continue
         rgb, a, reg = register(folder, rec, full, src, visible)
-        color, stats = finish(rgb, a, full, src, visible, pid, reg['iou'])
+        color, model_rgb, stats = finish(rgb, a, full, src, visible, pid)
+        # report how far the model's own pixels are from the source where the part is visible
+        sel = ndi.binary_erosion(visible & (src[:, :, 3] > 250), iterations=1)
+        if sel.sum() >= 10:
+            d = np.abs(model_rgb[sel].astype(int) - src[:, :, :3][sel]).max(-1)
+            stats['visibleDeviation'] = dict(meanAbs=round(float(d.mean()), 2), over32=round(float((d > 32).mean()), 4),
+                                             pixels=int(sel.sum()))
         rgba = np.dstack([color, full]); rgba[full == 0] = 0
         Image.fromarray(rgba).save(target / 'full.png')
+        mrgba = np.dstack([model_rgb, full]); mrgba[full == 0] = 0
+        Image.fromarray(mrgba).save(target / 'model.png')  # completion before the overlay (retouch color source)
         # Pose mask: on visible pixels alpha becomes the source alpha; elsewhere 0.
         pose = np.zeros((H, W), np.uint8)
         pose[visible] = np.clip(np.rint(src[:, :, 3][visible] * 255.0 / np.maximum(full[visible], 1)), 0, 255)
         Image.fromarray(pose).save(target / 'pose-mask.png')
         shutil.copy2(folder / 'control.png', target / 'control.png')
-        used = folder / 'used-prompt.txt'
-        shutil.copy2(used if used.exists() else folder / 'prompt.txt', target / 'prompt.txt')
-        model = (folder / 'used-model.txt').read_text().strip() if (folder / 'used-model.txt').exists() else 'flare'
-        entries.append(dict(rec, model='gpt-image-2.5-' + model, promptVariant=used.exists() and 'override' or 'template',
+        gfile = generation(folder)
+        if gfile.name == 'generated-v2.png':
+            info = json.loads((folder / 'generated-v2.json').read_text())
+            prompt, model, variant = folder / 'prompt-v2.txt', info['model'], 'v2 (' + info['image1'] + ')'
+        else:
+            used = folder / 'used-prompt.txt'
+            prompt = used if used.exists() else folder / 'prompt.txt'
+            model = 'gpt-image-2.5-' + ((folder / 'used-model.txt').read_text().strip() if (folder / 'used-model.txt').exists() else 'flare')
+            variant = used.exists() and 'override' or 'template'
+        shutil.copy2(prompt, target / 'prompt.txt')
+        entries.append(dict(rec, model=model, promptVariant=variant, generation=gfile.name,
                             registration=reg, **stats,
-                            generatedSha256=hashlib.sha256((folder / 'generated.png').read_bytes()).hexdigest()))
+                            generatedSha256=hashlib.sha256(gfile.read_bytes()).hexdigest()))
     # Composite twice: with pose masks (original pose) and plain depth stacking of complete parts.
     posed = np.zeros((H, W, 4), np.float32); plain = np.zeros((H, W, 4), np.float32)
     for e in sorted(entries, key=lambda e: e['level']):
@@ -352,6 +370,9 @@ def main():
                   poseAlphaMaxAbs=int(np.abs(posed[:, :, 3].astype(int) - src[:, :, 3]).max()),
                   poseUnchangedPixelRatio=float((np.abs(posed[:, :, :3].astype(int) - src[:, :, :3]).max(2) <= 2)[subj].mean()),
                   depthStackUnchangedPixelRatio=float((np.abs(plain[:, :, :3].astype(int) - src[:, :, :3]).max(2) <= 2)[subj].mean()),
+                  regenerated=[e['id'] for e in entries if e.get('generation') == 'generated-v2.png'],
+                  largestVisibleDeviation=sorted(([e['id'], e['visibleDeviation']['meanAbs'], e['visibleDeviation']['over32']]
+                                                  for e in entries if e.get('visibleDeviation')), key=lambda r: -r[1])[:15],
                   lowIoU=[(e['id'], e['registration']['iou']) for e in entries if e['registration']['iou'] < .8])
     dump(out / 'manifest.json', dict(man, parts=entries))
     dump(out / 'validation.json', report)

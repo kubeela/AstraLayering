@@ -6,13 +6,13 @@ from PIL import Image, ImageDraw
 from scipy import ndimage as ndi
 
 ROOT = Path(__file__).resolve().parent.parent
-PARTS = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'parts'
+PARTS = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'delivery/parts'
 OUT = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / 'retouch/review'
 CELL = 300
 OUT.mkdir(parents=True, exist_ok=True)
-man = json.loads((ROOT / 'manifest.json').read_text())
-src = np.array(Image.open(ROOT / '.work/source.png').convert('RGBA'))
-owner = np.array(Image.open(ROOT / '.work/owner.png')).astype(int)
+man = json.loads((ROOT / 'delivery/manifest.json').read_text())
+src = np.array(Image.open(ROOT / 'work/source.png').convert('RGBA'))
+owner = np.array(Image.open(ROOT / 'work/owner.png')).astype(int)
 
 def checker(h, w, s=8):
     yy, xx = np.indices((h, w))

@@ -30,6 +30,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0665,
@@ -59,13 +60,37 @@
           ]
         ]
       },
+      "holeFilledPixels": 10033,
       "hiddenPixels": 341,
       "meanCorrection": [
-        11.739999771118164,
-        7.440000057220459,
-        10.010000228881836
+        9.630000114440918,
+        5.019999980926514,
+        11.359999656677246
       ],
-      "generatedSha256": "5a55a007601104f2bb3515eda0e371bf900de9ae12e076dcc95c063d5a7b15af"
+      "visibleDeviation": {
+        "meanAbs": 4.6,
+        "over32": 0.0148,
+        "pixels": 4199
+      },
+      "generatedSha256": "5a55a007601104f2bb3515eda0e371bf900de9ae12e076dcc95c063d5a7b15af",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 88 visible px near the completion repainted with model colors",
+        "strokes": 88,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 88,
+        "selectionPixels": 88,
+        "meanChange": 46.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_left/upper_arm": 12,
+          "body/torso": 59,
+          "head_accessories/left_crown_ribbon/ribbon_head": 17
+        }
+      }
     },
     {
       "id": "head_accessories/right_crown_ribbon/ribbon_body",
@@ -91,6 +116,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0983,
@@ -120,13 +146,37 @@
           ]
         ]
       },
+      "holeFilledPixels": 10194,
       "hiddenPixels": 336,
       "meanCorrection": [
-        5.190000057220459,
-        0.9800000190734863,
-        12.010000228881836
+        7.610000133514404,
+        1.5399999618530273,
+        16.290000915527344
       ],
-      "generatedSha256": "55011900cffb2745b94726a24855c7fb8ef4a0b2e538e25c60036be76d0faee0"
+      "visibleDeviation": {
+        "meanAbs": 4.29,
+        "over32": 0.015,
+        "pixels": 3945
+      },
+      "generatedSha256": "55011900cffb2745b94726a24855c7fb8ef4a0b2e538e25c60036be76d0faee0",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 70 visible px near the completion repainted with model colors",
+        "strokes": 70,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 70,
+        "selectionPixels": 70,
+        "meanChange": 25.4
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_right/upper_arm": 3,
+          "body/torso": 18,
+          "head_accessories/right_crown_ribbon/ribbon_head": 49
+        }
+      }
     },
     {
       "id": "hair/back_hair/main_right",
@@ -174,6 +224,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+ecc",
         "score": 0.1141,
@@ -204,13 +255,49 @@
           ]
         ]
       },
+      "holeFilledPixels": 26525,
       "hiddenPixels": 42427,
       "meanCorrection": [
-        11.770000457763672,
-        10.0,
-        8.600000381469727
+        9.300000190734863,
+        7.909999847412109,
+        7.21999979019165
       ],
-      "generatedSha256": "a75e86f3e38d8c69d4cb65f3a64ef2cd2868cb9e3aa0f097ef997942c3fe3cc5"
+      "visibleDeviation": {
+        "meanAbs": 13.56,
+        "over32": 0.1024,
+        "pixels": 47801
+      },
+      "generatedSha256": "a75e86f3e38d8c69d4cb65f3a64ef2cd2868cb9e3aa0f097ef997942c3fe3cc5",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 1688 visible px near the completion repainted with model colors",
+        "strokes": 1688,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 1688,
+        "selectionPixels": 1688,
+        "meanChange": 54.4
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/back_hair/lock_right": 228,
+          "hair/hair_cap": 27,
+          "legs/leg_right/leg": 336,
+          "pelvis": 254,
+          "neck": 7,
+          "arms/arm_right/hand/index_finger": 28,
+          "arms/arm_right/hand/ring_finger": 16,
+          "arms/arm_right/hand/little_finger": 1,
+          "arms/arm_right/hand/thumb": 113,
+          "arms/arm_right/hand/palm": 76,
+          "arms/arm_right/forearm": 322,
+          "arms/arm_right/upper_arm": 132,
+          "body/torso": 103,
+          "body/breast": 11,
+          "hair/side_hair_right": 34
+        }
+      }
     },
     {
       "id": "hair/back_hair/main_left",
@@ -258,6 +345,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0972,
@@ -290,13 +378,48 @@
           ]
         ]
       },
+      "holeFilledPixels": 32906,
       "hiddenPixels": 44396,
       "meanCorrection": [
-        7.809999942779541,
-        7.590000152587891,
-        6.320000171661377
+        8.930000305175781,
+        8.5600004196167,
+        6.079999923706055
       ],
-      "generatedSha256": "b4e7e7602ffd8274cb988a8d4bec1119abe39e46d6990f956b86b1e12c2b0642"
+      "visibleDeviation": {
+        "meanAbs": 12.23,
+        "over32": 0.0863,
+        "pixels": 47034
+      },
+      "generatedSha256": "b4e7e7602ffd8274cb988a8d4bec1119abe39e46d6990f956b86b1e12c2b0642",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 1732 visible px near the completion repainted with model colors",
+        "strokes": 1732,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 1732,
+        "selectionPixels": 1732,
+        "meanChange": 48.8
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/back_hair/lock_left": 150,
+          "hair/hair_cap": 71,
+          "legs/leg_left/leg": 106,
+          "pelvis": 166,
+          "neck": 20,
+          "arms/arm_left/upper_arm": 307,
+          "arms/arm_left/forearm": 510,
+          "arms/arm_left/hand/ring_finger": 6,
+          "arms/arm_left/hand/index_finger": 11,
+          "arms/arm_left/hand/thumb": 49,
+          "arms/arm_left/hand/palm": 128,
+          "body/torso": 171,
+          "body/breast": 2,
+          "hair/side_hair_left": 35
+        }
+      }
     },
     {
       "id": "hair/back_hair/lock_right",
@@ -332,28 +455,29 @@
         "hair/side_hair_right"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "bbox+shape",
-        "score": 0.1051,
-        "iou": 0.7894,
-        "visibleError": 13.37,
+        "method": "crop+shape",
+        "score": 0.1293,
+        "iou": 0.7413,
+        "visibleError": 13.49,
         "candidates": {
-          "crop": 0.3038,
-          "bbox": 0.143,
-          "crop+shape": 0.1155,
-          "bbox+shape": 0.1051
+          "crop": 0.3506,
+          "bbox": 0.1442,
+          "crop+shape": 0.1293,
+          "bbox+shape": 0.1298
         },
         "matrix": [
           [
-            0.91516,
-            -0.02368,
-            39.25906
+            0.99901,
+            -0.00319,
+            -1.0332
           ],
           [
-            -0.01179,
-            0.91173,
-            35.13037
+            -0.06506,
+            0.91126,
+            48.21981
           ],
           [
             0.0,
@@ -362,23 +486,41 @@
           ]
         ]
       },
+      "holeFilledPixels": 4861,
       "hiddenPixels": 5909,
       "meanCorrection": [
-        16.25,
-        14.640000343322754,
-        10.6899995803833
+        5.320000171661377,
+        5.21999979019165,
+        2.9200000762939453
       ],
-      "generatedSha256": "c4536788d99faaa12c4425f7673df71f2032b115e06298b742e7151aee70d448",
+      "visibleDeviation": {
+        "meanAbs": 14.01,
+        "over32": 0.117,
+        "pixels": 4351
+      },
+      "generatedSha256": "0598c2340a1a5c495997f632add4f963b1dc239427fe9ecc140a3ffd1422e09b",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "hidden mid strip painted as a yellow-cream glow; repaint lavender-white hair along strands",
-        "strokes": 489,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 114 visible px near the completion repainted with model colors",
+        "strokes": 114,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 2973,
-        "selectionPixels": 2973,
-        "meanChange": 34.7
+        "changedPixels": 114,
+        "selectionPixels": 114,
+        "meanChange": 29.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/hair_cap": 43,
+          "arms/arm_right/upper_arm": 40,
+          "body/torso": 16,
+          "hair/side_hair_right": 15
+        }
+      },
+      "outlineReceived": {
+        "pixels": 228,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -415,28 +557,29 @@
         "hair/side_hair_left"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "crop+shape",
-        "score": 0.0726,
-        "iou": 0.8794,
-        "visibleError": 10.82,
+        "method": "bbox+shape",
+        "score": 0.0724,
+        "iou": 0.8542,
+        "visibleError": 9.16,
         "candidates": {
-          "crop": 0.0855,
-          "bbox": 0.159,
-          "crop+shape": 0.0726,
-          "bbox+shape": 0.0729
+          "crop": 0.2869,
+          "bbox": 0.0953,
+          "crop+shape": 0.0827,
+          "bbox+shape": 0.0724
         },
         "matrix": [
           [
-            1.00479,
-            -0.00529,
-            -2.43764
+            0.966,
+            0.00604,
+            12.29027
           ],
           [
-            0.04616,
-            0.96035,
-            -15.50081
+            0.0771,
+            0.91805,
+            -15.77814
           ],
           [
             0.0,
@@ -445,23 +588,42 @@
           ]
         ]
       },
+      "holeFilledPixels": 4269,
       "hiddenPixels": 4096,
       "meanCorrection": [
-        7.289999961853027,
-        6.449999809265137,
-        7.210000038146973
+        7.71999979019165,
+        6.260000228881836,
+        4.400000095367432
       ],
-      "generatedSha256": "dbbe03bec22600df5b418a0f11bf77a1bda8736fca895029f312083e5a10ef28",
+      "visibleDeviation": {
+        "meanAbs": 7.36,
+        "over32": 0.0241,
+        "pixels": 3771
+      },
+      "generatedSha256": "6a6472bdf4c9e5b5a52e4544cf3d45c02493a9d349604b8cf984eef06abebc24",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "hidden mid tinted pink/skin; repaint with hair colors along strands",
-        "strokes": 513,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 127 visible px near the completion repainted with model colors",
+        "strokes": 127,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 3045,
-        "selectionPixels": 3049,
-        "meanChange": 33.0
+        "changedPixels": 127,
+        "selectionPixels": 127,
+        "meanChange": 31.8
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/hair_cap": 12,
+          "arms/arm_left/upper_arm": 78,
+          "arms/arm_left/forearm": 18,
+          "arms/arm_left/hand/palm": 3,
+          "body/torso": 16
+        }
+      },
+      "outlineReceived": {
+        "pixels": 150,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -489,6 +651,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.0398,
@@ -518,13 +681,35 @@
           ]
         ]
       },
+      "holeFilledPixels": 1119,
       "hiddenPixels": 2021,
       "meanCorrection": [
-        3.869999885559082,
-        2.1600000858306885,
-        0.5799999833106995
+        4.150000095367432,
+        2.4100000858306885,
+        0.5400000214576721
       ],
-      "generatedSha256": "e521df7b5bb3387cfa17972a3aa9006b7591043a9d1878803a458084273cb35a"
+      "visibleDeviation": {
+        "meanAbs": 5.03,
+        "over32": 0.0083,
+        "pixels": 1211
+      },
+      "generatedSha256": "e521df7b5bb3387cfa17972a3aa9006b7591043a9d1878803a458084273cb35a",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 92 visible px near the completion repainted with model colors",
+        "strokes": 92,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 92,
+        "selectionPixels": 92,
+        "meanChange": 23.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "head_accessories/lotus_ornament": 92
+        }
+      }
     },
     {
       "id": "hair/hair_cap",
@@ -584,6 +769,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "sift+ecc",
         "score": 0.0472,
@@ -620,14 +806,51 @@
           ]
         ]
       },
+      "holeFilledPixels": 2121,
       "hiddenPixels": 17969,
       "meanCorrection": [
-        5.110000133514404,
-        3.9700000286102295,
-        4.139999866485596
+        5.460000038146973,
+        4.110000133514404,
+        3.7899999618530273
       ],
+      "visibleDeviation": {
+        "meanAbs": 9.03,
+        "over32": 0.0437,
+        "pixels": 6591
+      },
       "generatedSha256": "89683890afbcc9b41a53ab7f4c119d0dfa440c076347a15edfe8d19b4ea6b305",
-      "retouchReview": "kept: faint earring-diamond ghosts in the hidden lower sides are low contrast and behind the face; acceptable"
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 545 visible px near the completion repainted with model colors",
+        "strokes": 545,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 545,
+        "selectionPixels": 545,
+        "meanChange": 32.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "neck": 12,
+          "head_accessories/left_earring/suspension_chain": 42,
+          "head_accessories/right_earring/suspension_chain": 14,
+          "head_accessories/left_earring/sapphire_pendant": 45,
+          "head_accessories/right_earring/sapphire_pendant": 40,
+          "head_accessories/left_earring/ear_stud": 2,
+          "head_accessories/right_earring/ear_stud": 6,
+          "face/ear_right": 17,
+          "face/ear_left": 14,
+          "face/face_base": 55,
+          "head_accessories/crown_frame": 79,
+          "hair/side_hair_right": 110,
+          "hair/side_hair_left": 109
+        }
+      },
+      "outlineReceived": {
+        "pixels": 153,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_right/leg",
@@ -657,6 +880,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0325,
@@ -686,14 +910,41 @@
           ]
         ]
       },
+      "holeFilledPixels": 6534,
       "hiddenPixels": 18461,
       "meanCorrection": [
-        1.8799999952316284,
-        6.28000020980835,
-        8.050000190734863
+        2.4100000858306885,
+        7.329999923706055,
+        9.359999656677246
       ],
-      "skinHealed": true,
-      "generatedSha256": "38cd4d3028c8eeb1a2fa517b25687e9c0ff96a133e1c22abec21aaaa84b2ca57"
+      "visibleDeviation": {
+        "meanAbs": 2.42,
+        "over32": 0.0023,
+        "pixels": 41227
+      },
+      "generatedSha256": "38cd4d3028c8eeb1a2fa517b25687e9c0ff96a133e1c22abec21aaaa84b2ca57",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 38 visible px near the completion repainted with model colors",
+        "strokes": 38,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 38,
+        "selectionPixels": 38,
+        "meanChange": 40.4
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "legs/leg_left/leg": 10,
+          "legs/leg_right/foot": 26,
+          "pelvis": 2
+        }
+      },
+      "outlineReceived": {
+        "pixels": 336,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_left/leg",
@@ -721,6 +972,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0335,
@@ -750,14 +1002,42 @@
           ]
         ]
       },
+      "holeFilledPixels": 5260,
       "hiddenPixels": 17752,
       "meanCorrection": [
-        3.0299999713897705,
-        6.699999809265137,
-        7.21999979019165
+        3.509999990463257,
+        7.840000152587891,
+        8.920000076293945
       ],
-      "skinHealed": true,
-      "generatedSha256": "f62a1a489770813f9745f68f9d6288982784f99779a57c2371660b640c5ac4db"
+      "visibleDeviation": {
+        "meanAbs": 2.45,
+        "over32": 0.0013,
+        "pixels": 43420
+      },
+      "generatedSha256": "f62a1a489770813f9745f68f9d6288982784f99779a57c2371660b640c5ac4db",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 98 visible px near the completion repainted with model colors",
+        "strokes": 98,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 98,
+        "selectionPixels": 98,
+        "meanChange": 40.9
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "legs/leg_right/foot": 2,
+          "pelvis": 2,
+          "legs/leg_left/ankle_gem": 85,
+          "legs/leg_left/anklet/ankle_chain": 9
+        }
+      },
+      "outlineReceived": {
+        "pixels": 116,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_right/foot",
@@ -785,6 +1065,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0592,
@@ -814,24 +1095,43 @@
           ]
         ]
       },
+      "holeFilledPixels": 1318,
       "hiddenPixels": 521,
       "meanCorrection": [
-        3.9000000953674316,
-        11.279999732971191,
-        14.039999961853027
+        4.360000133514404,
+        11.84000015258789,
+        14.479999542236328
       ],
-      "skinHealed": true,
+      "visibleDeviation": {
+        "meanAbs": 6.8,
+        "over32": 0.0433,
+        "pixels": 5960
+      },
       "generatedSha256": "9b81f18089e99abc1739beafda78a4ed71bd72e94240f42cf6bc967f0622e06b",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "ghost anklet line and over-bright healed skin under the anklet; repaint with surrounding skin (the faint outline left is the anklet shadow in visible source pixels, kept)",
-        "strokes": 134,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 274 visible px near the completion repainted with model colors; anklet chain line remnants on the instep smoothed into skin",
+        "strokes": 666,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 521,
-        "selectionPixels": 521,
-        "meanChange": 4.1
+        "changedPixels": 661,
+        "selectionPixels": 666,
+        "meanChange": 25.9
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "legs/leg_left/foot": 11,
+          "legs/leg_right/ankle_gem": 93,
+          "legs/leg_right/anklet/outer_chain": 174,
+          "legs/leg_right/anklet/inner_chain": 156,
+          "legs/leg_right/anklet/gem_pendant": 52,
+          "legs/leg_right/anklet/central_connector": 15
+        }
+      },
+      "outlineReceived": {
+        "pixels": 28,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -857,32 +1157,31 @@
         "legs/leg_left/anklet/teardrop_pendant"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "bbox+shape",
-        "score": 0.0447,
-        "iou": 0.9502,
-        "visibleError": 8.22,
+        "method": "crop+shape",
+        "score": 0.0342,
+        "iou": 0.9448,
+        "visibleError": 5.21,
         "candidates": {
-          "crop": 0.1119,
-          "bbox": 0.0601,
-          "bbox+ecc": 0.0556,
-          "sift": 0.1715,
-          "sift+ecc": 0.0775,
-          "crop+shape": 0.0447,
-          "bbox+shape": 0.0447,
-          "sift+shape": 0.045
+          "crop": 0.1054,
+          "bbox": 0.0459,
+          "sift": 0.0656,
+          "crop+shape": 0.0342,
+          "bbox+shape": 0.0345,
+          "sift+shape": 0.0344
         },
         "matrix": [
           [
-            0.99031,
-            -0.02118,
-            33.69035
+            0.98863,
+            -0.0016,
+            5.76714
           ],
           [
-            -0.0169,
-            0.8172,
-            272.96402
+            -0.05012,
+            0.76791,
+            364.85251
           ],
           [
             0.0,
@@ -891,24 +1190,40 @@
           ]
         ]
       },
+      "holeFilledPixels": 1158,
       "hiddenPixels": 403,
       "meanCorrection": [
-        2.2100000381469727,
-        8.229999542236328,
-        9.65999984741211
+        2.1500000953674316,
+        2.9000000953674316,
+        2.2799999713897705
       ],
-      "skinHealed": true,
-      "generatedSha256": "7289e9850e432cc5a5bb417ac2ed46cfc76110d74fce1198305d411836ab478c",
+      "visibleDeviation": {
+        "meanAbs": 5.26,
+        "over32": 0.0271,
+        "pixels": 4987
+      },
+      "generatedSha256": "97dc993189a013edcb53b9aaedfea03c5cb434386115e393a6a2185763530e2b",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "ghost anklet line and over-bright healed skin under the anklet; repaint with surrounding skin (the faint outline left is the anklet shadow in visible source pixels, kept)",
-        "strokes": 119,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 134 visible px near the completion repainted with model colors; anklet chain line remnants on the instep smoothed into skin",
+        "strokes": 465,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 403,
-        "selectionPixels": 403,
-        "meanChange": 3.8
+        "changedPixels": 461,
+        "selectionPixels": 465,
+        "meanChange": 22.6
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "legs/leg_left/anklet/ankle_chain": 200,
+          "legs/leg_left/anklet/center_link": 34,
+          "legs/leg_left/anklet/teardrop_pendant": 61
+        }
+      },
+      "outlineReceived": {
+        "pixels": 11,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -933,6 +1248,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.0793,
@@ -967,13 +1283,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 1027,
       "hiddenPixels": 16508,
       "meanCorrection": [
-        1.2899999618530273,
-        5.079999923706055,
-        8.239999771118164
+        2.5799999237060547,
+        5.329999923706055,
+        7.550000190734863
       ],
-      "generatedSha256": "848f19247e124b91772dd689b5e1fb1203b2aba50b0e1aa6f9177ae27c9001d6"
+      "visibleDeviation": {
+        "meanAbs": 9.92,
+        "over32": 0.066,
+        "pixels": 23680
+      },
+      "generatedSha256": "848f19247e124b91772dd689b5e1fb1203b2aba50b0e1aa6f9177ae27c9001d6",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 138 visible px near the completion repainted with model colors",
+        "strokes": 138,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 138,
+        "selectionPixels": 138,
+        "meanChange": 43.3
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "body/torso": 138
+        }
+      },
+      "outlineReceived": {
+        "pixels": 424,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "neck",
@@ -1002,28 +1344,29 @@
         "face/mouth/upper_lip"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "crop+shape",
-        "score": 0.0711,
-        "iou": 0.8884,
-        "visibleError": 10.03,
+        "score": 0.0665,
+        "iou": 0.8733,
+        "visibleError": 8.56,
         "candidates": {
-          "crop": 0.0847,
-          "bbox": 0.0718,
-          "crop+shape": 0.0711,
-          "bbox+shape": 0.073
+          "crop": 0.0787,
+          "bbox": 0.068,
+          "crop+shape": 0.0665,
+          "bbox+shape": 0.0672
         },
         "matrix": [
           [
-            0.88566,
-            -0.00221,
-            58.88281
+            0.91775,
+            -0.00084,
+            41.77203
           ],
           [
-            -0.00346,
-            1.1574,
-            -54.58227
+            -0.00172,
+            1.30182,
+            -101.07375
           ],
           [
             0.0,
@@ -1032,24 +1375,38 @@
           ]
         ]
       },
+      "holeFilledPixels": 505,
       "hiddenPixels": 4344,
       "meanCorrection": [
-        3.359999895095825,
-        5.380000114440918,
-        5.369999885559082
+        2.700000047683716,
+        6.369999885559082,
+        7.360000133514404
       ],
-      "skinHealed": true,
-      "generatedSha256": "060306f98affd524afa7f512a296f127ecb1023da9bf7f38ccca7b79d3fbe3f2",
+      "visibleDeviation": {
+        "meanAbs": 8.91,
+        "over32": 0.0447,
+        "pixels": 2349
+      },
+      "generatedSha256": "4712ad8e9649d883f13c0115007ae9db75e2fe9ebc46a3fb8523d27c94fd1cb9",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "ghost chin shadow (heart/V) under the face and duplicated collarbone V under the torso; smooth skin",
-        "strokes": 292,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 48 visible px near the completion repainted with model colors; chin outline (hard V line) at the top of the neck smoothed into skin; the soft chin shadow is kept",
+        "strokes": 875,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 4318,
-        "selectionPixels": 4344,
-        "meanChange": 6.8
+        "changedPixels": 873,
+        "selectionPixels": 875,
+        "meanChange": 18.7
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/face_base": 418
+        }
+      },
+      "outlineReceived": {
+        "pixels": 39,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -1077,28 +1434,29 @@
         "arms/arm_right/hand/palm"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "bbox+shape",
-        "score": 0.1171,
-        "iou": 0.9087,
-        "visibleError": 14.66,
+        "method": "crop+shape",
+        "score": 0.1324,
+        "iou": 0.9149,
+        "visibleError": 25.2,
         "candidates": {
-          "crop": 0.1314,
-          "bbox": 0.1847,
-          "crop+shape": 0.1358,
-          "bbox+shape": 0.1171
+          "crop": 0.1697,
+          "bbox": 0.1529,
+          "crop+shape": 0.1324,
+          "bbox+shape": 0.1336
         },
         "matrix": [
           [
-            1.03335,
-            -0.02302,
-            6.89685
+            0.99791,
+            0.00573,
+            -4.47125
           ],
           [
-            -0.00582,
-            1.01022,
-            -7.54408
+            -0.06539,
+            0.97293,
+            38.76886
           ],
           [
             0.0,
@@ -1107,9 +1465,35 @@
           ]
         ]
       },
+      "holeFilledPixels": 90,
       "hiddenPixels": 356,
-      "skinHealed": true,
-      "generatedSha256": "b6578f0ee0464e2fc5e7edcd11777ce2eada5889882e3d5f6423c7306747ab1e"
+      "visibleDeviation": {
+        "meanAbs": 21.46,
+        "over32": 0.0769,
+        "pixels": 13
+      },
+      "generatedSha256": "576856be4ae203babf0de946246b6a52012cc5713b733d7a1a108f2116bb1a8b",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 109 visible px near the completion repainted with model colors",
+        "strokes": 109,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 109,
+        "selectionPixels": 109,
+        "meanChange": 33.4
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_right/hand/middle_finger": 90,
+          "arms/arm_right/hand/thumb": 19
+        }
+      },
+      "outlineReceived": {
+        "pixels": 28,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_right/hand/middle_finger",
@@ -1134,25 +1518,29 @@
         "arms/arm_right/hand/palm"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "override",
+      "promptVariant": "v2 (sketch-bent.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "crop",
-        "score": 0.7454,
-        "iou": 0.3313,
-        "visibleError": 101.37,
+        "method": "bbox+shape",
+        "score": 0.0831,
+        "iou": 0.9383,
+        "visibleError": 17.27,
         "candidates": {
-          "crop": 0.7454
+          "crop": 0.1311,
+          "bbox": 0.0908,
+          "crop+shape": 0.0873,
+          "bbox+shape": 0.0831
         },
         "matrix": [
           [
-            1.0,
-            0.0,
-            0.0
+            0.96984,
+            0.00867,
+            1.35513
           ],
           [
-            0.0,
-            1.0,
-            0.0
+            -0.00513,
+            1.0003,
+            0.16068
           ],
           [
             0.0,
@@ -1161,9 +1549,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 71,
       "hiddenPixels": 421,
-      "skinHealed": true,
-      "generatedSha256": "66a6daa697a02f25ff1a845803099089bcd71089369557473a878c8676cf8d03"
+      "meanCorrection": [
+        15.600000381469727,
+        17.030000686645508,
+        7.769999980926514
+      ],
+      "visibleDeviation": {
+        "meanAbs": 17.86,
+        "over32": 0.1446,
+        "pixels": 83
+      },
+      "generatedSha256": "de03afedd0b659bf54a2923ad9a80bced552275b5124744ca4d4750227cc7684",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 26 visible px near the completion repainted with model colors",
+        "strokes": 26,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 26,
+        "selectionPixels": 26,
+        "meanChange": 22.5
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_right/hand/ring_finger": 26
+        }
+      },
+      "outlineReceived": {
+        "pixels": 90,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_right/hand/ring_finger",
@@ -1188,6 +1606,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "override",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.1761,
@@ -1217,14 +1636,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 59,
       "hiddenPixels": 374,
       "meanCorrection": [
-        3.869999885559082,
-        0.8399999737739563,
-        1.6699999570846558
+        4.079999923706055,
+        1.2300000190734863,
+        1.5399999618530273
       ],
-      "skinHealed": true,
-      "generatedSha256": "73626c3255b4c7513b25bfaa7034311a27752c03a13a6a23b2d9ef36c3cbe644"
+      "visibleDeviation": {
+        "meanAbs": 23.44,
+        "over32": 0.2143,
+        "pixels": 98
+      },
+      "generatedSha256": "73626c3255b4c7513b25bfaa7034311a27752c03a13a6a23b2d9ef36c3cbe644",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 35 visible px near the completion repainted with model colors",
+        "strokes": 35,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 35,
+        "selectionPixels": 35,
+        "meanChange": 54.3
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_right/hand/little_finger": 35
+        }
+      },
+      "outlineReceived": {
+        "pixels": 42,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_right/hand/little_finger",
@@ -1248,6 +1692,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0598,
@@ -1277,14 +1722,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 561,
       "hiddenPixels": 151,
       "meanCorrection": [
-        5.510000228881836,
-        14.6899995803833,
-        14.40999984741211
+        5.570000171661377,
+        14.739999771118164,
+        14.239999771118164
       ],
-      "skinHealed": true,
-      "generatedSha256": "ebbbf4b79723835bc52da5f1446f53eada8d30aa2ea7f5b62a93ec9df8f6336b"
+      "visibleDeviation": {
+        "meanAbs": 5.27,
+        "over32": 0.0,
+        "pixels": 271
+      },
+      "generatedSha256": "ebbbf4b79723835bc52da5f1446f53eada8d30aa2ea7f5b62a93ec9df8f6336b",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 2 visible px near the completion repainted with model colors",
+        "strokes": 2,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 2,
+        "selectionPixels": 2,
+        "meanChange": 22.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_right/hand/palm": 2
+        }
+      },
+      "outlineReceived": {
+        "pixels": 36,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_right/hand/thumb",
@@ -1308,6 +1778,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.1239,
@@ -1337,9 +1808,34 @@
           ]
         ]
       },
+      "holeFilledPixels": 96,
       "hiddenPixels": 194,
-      "skinHealed": true,
-      "generatedSha256": "4455f676175861e616f0bcbc0b5dfd6263a3c0ffc0f5b40519b9888477ea44c2"
+      "visibleDeviation": {
+        "meanAbs": 13.79,
+        "over32": 0.0,
+        "pixels": 14
+      },
+      "generatedSha256": "4455f676175861e616f0bcbc0b5dfd6263a3c0ffc0f5b40519b9888477ea44c2",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 6 visible px near the completion repainted with model colors",
+        "strokes": 6,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 6,
+        "selectionPixels": 6,
+        "meanChange": 41.3
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_right/hand/palm": 6
+        }
+      },
+      "outlineReceived": {
+        "pixels": 132,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_right/hand/palm",
@@ -1363,6 +1859,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0348,
@@ -1392,14 +1889,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 327,
       "hiddenPixels": 348,
       "meanCorrection": [
-        2.990000009536743,
-        5.449999809265137,
-        4.090000152587891
+        2.5799999237060547,
+        4.639999866485596,
+        2.6700000762939453
       ],
-      "skinHealed": true,
-      "generatedSha256": "738a0dc2510f537fdf0675e0a06bd015c76890e96a3b978179e245d032543c57"
+      "visibleDeviation": {
+        "meanAbs": 4.34,
+        "over32": 0.0211,
+        "pixels": 1425
+      },
+      "generatedSha256": "738a0dc2510f537fdf0675e0a06bd015c76890e96a3b978179e245d032543c57",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 12 visible px near the completion repainted with model colors",
+        "strokes": 12,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 12,
+        "selectionPixels": 12,
+        "meanChange": 24.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_right/forearm": 12
+        }
+      },
+      "outlineReceived": {
+        "pixels": 84,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_right/forearm",
@@ -1423,6 +1945,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0309,
@@ -1452,14 +1975,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 714,
       "hiddenPixels": 2733,
       "meanCorrection": [
         2.700000047683716,
-        6.090000152587891,
-        6.980000019073486
+        6.300000190734863,
+        7.199999809265137
       ],
-      "skinHealed": true,
-      "generatedSha256": "7b36a8655182ccccd751e8879971b9b7432daa18b8e8559acd884fa0c58c2a1c"
+      "visibleDeviation": {
+        "meanAbs": 3.36,
+        "over32": 0.0062,
+        "pixels": 4658
+      },
+      "generatedSha256": "7b36a8655182ccccd751e8879971b9b7432daa18b8e8559acd884fa0c58c2a1c",
+      "outlineReceived": {
+        "pixels": 334,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_right/upper_arm",
@@ -1484,6 +2016,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "override",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0236,
@@ -1513,15 +2046,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 482,
       "hiddenPixels": 2517,
       "meanCorrection": [
-        2.059999942779541,
-        4.019999980926514,
-        4.710000038146973
+        2.3499999046325684,
+        4.75,
+        5.480000019073486
       ],
-      "skinHealed": true,
+      "visibleDeviation": {
+        "meanAbs": 2.28,
+        "over32": 0.0027,
+        "pixels": 6577
+      },
       "generatedSha256": "f007be1f43c8a7df8cd9a13805d31cce5a6d4e855ee1ca9bab50d87e1bc373f4",
-      "retouchReview": "kept: hidden top under the torso is continuous skin; no defect"
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 8 visible px near the completion repainted with model colors",
+        "strokes": 8,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 8,
+        "selectionPixels": 8,
+        "meanChange": 45.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "body/breast": 8
+        }
+      },
+      "outlineReceived": {
+        "pixels": 175,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_left/upper_arm",
@@ -1547,6 +2104,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0487,
@@ -1576,15 +2134,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 580,
       "hiddenPixels": 3587,
       "meanCorrection": [
-        3.6600000858306885,
-        6.610000133514404,
-        6.849999904632568
+        3.9800000190734863,
+        7.260000228881836,
+        7.519999980926514
       ],
-      "skinHealed": true,
+      "visibleDeviation": {
+        "meanAbs": 4.04,
+        "over32": 0.0095,
+        "pixels": 5148
+      },
       "generatedSha256": "bca4435fa948ff7b8dd644720276dc6b2a7b267b36dc4b6c8df9eea5329b7a9c",
-      "retouchReview": "kept: hidden top under the torso is continuous skin; no defect"
+      "outlineReceived": {
+        "pixels": 397,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_left/forearm",
@@ -1608,6 +2174,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0319,
@@ -1637,14 +2204,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 650,
       "hiddenPixels": 531,
       "meanCorrection": [
-        5.260000228881836,
-        8.859999656677246,
-        8.460000038146973
+        4.800000190734863,
+        7.309999942779541,
+        6.420000076293945
       ],
-      "skinHealed": true,
-      "generatedSha256": "431af67083b9a99e2f7f238d7342fbf523d90477a91fd8c390d761eec6173406"
+      "visibleDeviation": {
+        "meanAbs": 3.17,
+        "over32": 0.0065,
+        "pixels": 6336
+      },
+      "generatedSha256": "431af67083b9a99e2f7f238d7342fbf523d90477a91fd8c390d761eec6173406",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 3 visible px near the completion repainted with model colors",
+        "strokes": 3,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 3,
+        "selectionPixels": 3,
+        "meanChange": 16.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_left/hand/palm": 3
+        }
+      },
+      "outlineReceived": {
+        "pixels": 528,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_left/hand/little_finger",
@@ -1671,6 +2263,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0348,
@@ -1700,14 +2293,36 @@
           ]
         ]
       },
+      "holeFilledPixels": 666,
       "hiddenPixels": 216,
       "meanCorrection": [
-        3.759999990463257,
-        5.78000020980835,
-        6.090000152587891
+        3.7699999809265137,
+        5.679999828338623,
+        5.880000114440918
       ],
-      "skinHealed": true,
-      "generatedSha256": "f18604cf0bb7e7184383fcbe232a747019f974767895f55e6fad824eb24ae48c"
+      "visibleDeviation": {
+        "meanAbs": 2.95,
+        "over32": 0.0074,
+        "pixels": 272
+      },
+      "generatedSha256": "f18604cf0bb7e7184383fcbe232a747019f974767895f55e6fad824eb24ae48c",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 49 visible px near the completion repainted with model colors",
+        "strokes": 49,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 49,
+        "selectionPixels": 49,
+        "meanChange": 38.1
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_left/hand/ring_finger": 43,
+          "arms/arm_left/hand/palm": 6
+        }
+      }
     },
     {
       "id": "arms/arm_left/hand/ring_finger",
@@ -1733,6 +2348,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.1775,
@@ -1762,9 +2378,34 @@
           ]
         ]
       },
+      "holeFilledPixels": 149,
       "hiddenPixels": 536,
-      "skinHealed": true,
-      "generatedSha256": "a9871cfd35d20ca2c606b229cda61674518df22bde8ae41f8365a555c0aa7eb1"
+      "visibleDeviation": {
+        "meanAbs": 32.36,
+        "over32": 0.434,
+        "pixels": 53
+      },
+      "generatedSha256": "a9871cfd35d20ca2c606b229cda61674518df22bde8ae41f8365a555c0aa7eb1",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 29 visible px near the completion repainted with model colors",
+        "strokes": 29,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 29,
+        "selectionPixels": 29,
+        "meanChange": 39.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_left/hand/middle_finger": 29
+        }
+      },
+      "outlineReceived": {
+        "pixels": 49,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_left/hand/middle_finger",
@@ -1788,26 +2429,29 @@
         "arms/arm_left/hand/palm"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "override",
+      "promptVariant": "v2 (sketch-bent.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "crop+shape",
-        "score": 0.4964,
-        "iou": 0.5133,
-        "visibleError": 65.37,
+        "score": 0.0703,
+        "iou": 0.9133,
+        "visibleError": 12.4,
         "candidates": {
-          "crop": 1.1696,
-          "crop+shape": 0.4964
+          "crop": 0.1036,
+          "bbox": 0.079,
+          "crop+shape": 0.0703,
+          "bbox+shape": 0.0703
         },
         "matrix": [
           [
-            1.19366,
-            -0.19129,
-            -0.14234
+            1.00796,
+            -0.02382,
+            11.87285
           ],
           [
-            -0.21521,
-            0.8581,
-            265.52955
+            0.0455,
+            1.02245,
+            -50.95495
           ],
           [
             0.0,
@@ -1816,9 +2460,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 107,
       "hiddenPixels": 333,
-      "skinHealed": true,
-      "generatedSha256": "ffe45388114e879b4773c3d849630857fb94f1b3a948b226452e08417e9deadb"
+      "meanCorrection": [
+        9.130000114440918,
+        13.569999694824219,
+        9.069999694824219
+      ],
+      "visibleDeviation": {
+        "meanAbs": 6.5,
+        "over32": 0.0132,
+        "pixels": 76
+      },
+      "generatedSha256": "069511429cb86d0e95ce5bd0e6b417da8a680504dbf528196e0b2080416657aa",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 5 visible px near the completion repainted with model colors",
+        "strokes": 5,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 5,
+        "selectionPixels": 5,
+        "meanChange": 10.8
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_left/hand/index_finger": 5
+        }
+      },
+      "outlineReceived": {
+        "pixels": 29,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_left/hand/index_finger",
@@ -1843,6 +2517,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0704,
@@ -1872,9 +2547,35 @@
           ]
         ]
       },
+      "holeFilledPixels": 66,
       "hiddenPixels": 129,
-      "skinHealed": true,
-      "generatedSha256": "b257c2e1c9befc796283595a3d9e0a045e5c513545e8f54b7327b3aae06f9830"
+      "visibleDeviation": {
+        "meanAbs": 13.78,
+        "over32": 0.061,
+        "pixels": 82
+      },
+      "generatedSha256": "b257c2e1c9befc796283595a3d9e0a045e5c513545e8f54b7327b3aae06f9830",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 23 visible px near the completion repainted with model colors",
+        "strokes": 23,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 23,
+        "selectionPixels": 23,
+        "meanChange": 28.3
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "arms/arm_left/hand/thumb": 20,
+          "arms/arm_left/hand/palm": 3
+        }
+      },
+      "outlineReceived": {
+        "pixels": 16,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_left/hand/thumb",
@@ -1898,6 +2599,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0896,
@@ -1927,9 +2629,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 74,
       "hiddenPixels": 323,
-      "skinHealed": true,
-      "generatedSha256": "77f947d23e2babb0d38c0e57b1367541e71980e48029d977867ca83861eef531"
+      "generatedSha256": "77f947d23e2babb0d38c0e57b1367541e71980e48029d977867ca83861eef531",
+      "outlineReceived": {
+        "pixels": 69,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "arms/arm_left/hand/palm",
@@ -1951,6 +2657,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.066,
@@ -1980,14 +2687,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 377,
       "hiddenPixels": 67,
       "meanCorrection": [
-        5.139999866485596,
-        8.520000457763672,
-        8.260000228881836
+        5.03000020980835,
+        8.260000228881836,
+        7.96999979019165
       ],
-      "skinHealed": true,
-      "generatedSha256": "342fcbb729f39300cbf80796fdbd30089c236ffe5dbb6b687ea4008e8bf00d8f"
+      "visibleDeviation": {
+        "meanAbs": 4.75,
+        "over32": 0.0276,
+        "pixels": 1484
+      },
+      "generatedSha256": "342fcbb729f39300cbf80796fdbd30089c236ffe5dbb6b687ea4008e8bf00d8f",
+      "outlineReceived": {
+        "pixels": 143,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "body/torso",
@@ -2011,6 +2727,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.0385,
@@ -2044,13 +2761,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 703,
       "hiddenPixels": 18074,
       "meanCorrection": [
-        5.0,
-        6.610000133514404,
-        6.940000057220459
+        4.889999866485596,
+        5.789999961853027,
+        5.789999961853027
       ],
-      "generatedSha256": "0342db2cb42cf238187276cec917bc35259146c3077ad9b95be09a6290010b19"
+      "visibleDeviation": {
+        "meanAbs": 5.89,
+        "over32": 0.0485,
+        "pixels": 34534
+      },
+      "generatedSha256": "0342db2cb42cf238187276cec917bc35259146c3077ad9b95be09a6290010b19",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 414 visible px near the completion repainted with model colors",
+        "strokes": 414,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 414,
+        "selectionPixels": 414,
+        "meanChange": 35.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "body/breast": 414
+        }
+      },
+      "outlineReceived": {
+        "pixels": 521,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "body/breast",
@@ -2072,6 +2815,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-sunburst",
       "promptVariant": "override",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.2746,
@@ -2101,13 +2845,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 2946,
       "hiddenPixels": 312,
       "meanCorrection": [
-        7.150000095367432,
-        5.760000228881836,
-        6.360000133514404
+        5.409999847412109,
+        5.690000057220459,
+        5.400000095367432
       ],
-      "generatedSha256": "eab25b5d047aaac62b6312e7b5187d387fbd7df1c7ac47e98a75c7f21de2a2b3"
+      "visibleDeviation": {
+        "meanAbs": 9.34,
+        "over32": 0.0478,
+        "pixels": 17686
+      },
+      "generatedSha256": "eab25b5d047aaac62b6312e7b5187d387fbd7df1c7ac47e98a75c7f21de2a2b3",
+      "outlineReceived": {
+        "pixels": 435,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_right/ankle_gem",
@@ -2129,6 +2883,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.063,
@@ -2158,13 +2913,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 36,
       "hiddenPixels": 36,
       "meanCorrection": [
-        16.700000762939453,
-        9.039999961853027,
-        5.400000095367432
+        16.719999313354492,
+        9.050000190734863,
+        5.409999847412109
       ],
-      "generatedSha256": "ac6291a65de616243771acb3851ae8d6030f5cfc584b0e8275f44819712ef4e4"
+      "visibleDeviation": {
+        "meanAbs": 21.16,
+        "over32": 0.2346,
+        "pixels": 81
+      },
+      "generatedSha256": "ac6291a65de616243771acb3851ae8d6030f5cfc584b0e8275f44819712ef4e4",
+      "outlineReceived": {
+        "pixels": 93,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_left/ankle_gem",
@@ -2186,6 +2951,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0639,
@@ -2215,13 +2981,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 35,
       "hiddenPixels": 37,
       "meanCorrection": [
-        16.8799991607666,
-        5.440000057220459,
-        2.7899999618530273
+        16.90999984741211,
+        5.460000038146973,
+        2.799999952316284
       ],
-      "generatedSha256": "2ff442493e114b90b21d8cc26a1045fec361801bfa7b2f473a9665df606e60ea"
+      "visibleDeviation": {
+        "meanAbs": 20.22,
+        "over32": 0.1591,
+        "pixels": 88
+      },
+      "generatedSha256": "2ff442493e114b90b21d8cc26a1045fec361801bfa7b2f473a9665df606e60ea",
+      "outlineReceived": {
+        "pixels": 85,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_right/anklet/outer_chain",
@@ -2245,6 +3021,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.4311,
@@ -2274,8 +3051,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 284,
       "hiddenPixels": 57,
-      "generatedSha256": "740bc5c8a1e491ced662f1cf0cea1c4d767b26ca33d57e23a4662c96b0c69e82"
+      "generatedSha256": "740bc5c8a1e491ced662f1cf0cea1c4d767b26ca33d57e23a4662c96b0c69e82",
+      "outlineReceived": {
+        "pixels": 174,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_right/anklet/inner_chain",
@@ -2299,6 +3081,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.3234,
@@ -2328,8 +3111,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 60,
       "hiddenPixels": 78,
-      "generatedSha256": "895a7768b99e6cd449a905ff22b6b49f23b6a1e28655e8dcc2a737dae07b8269"
+      "generatedSha256": "895a7768b99e6cd449a905ff22b6b49f23b6a1e28655e8dcc2a737dae07b8269",
+      "outlineReceived": {
+        "pixels": 156,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_right/anklet/gem_pendant",
@@ -2353,6 +3141,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.0506,
@@ -2382,13 +3171,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 37,
       "hiddenPixels": 39,
       "meanCorrection": [
-        13.229999542236328,
+        13.220000267028809,
         7.619999885559082,
-        3.4600000381469727
+        3.4700000286102295
       ],
-      "generatedSha256": "255c1a12b9627e055fec51b61b0bab64963aeef86f1110485f5b7d0f2f980231"
+      "visibleDeviation": {
+        "meanAbs": 13.75,
+        "over32": 0.0526,
+        "pixels": 95
+      },
+      "generatedSha256": "255c1a12b9627e055fec51b61b0bab64963aeef86f1110485f5b7d0f2f980231",
+      "outlineReceived": {
+        "pixels": 52,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_right/anklet/central_connector",
@@ -2410,6 +3209,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.2202,
@@ -2439,8 +3239,18 @@
           ]
         ]
       },
+      "holeFilledPixels": 18,
       "hiddenPixels": 14,
-      "generatedSha256": "8ab3d3ad851271e92bc4fe9f6a5671d36ae1624718ace3540de0ddb4c281c5e2"
+      "visibleDeviation": {
+        "meanAbs": 21.81,
+        "over32": 0.2308,
+        "pixels": 26
+      },
+      "generatedSha256": "8ab3d3ad851271e92bc4fe9f6a5671d36ae1624718ace3540de0ddb4c281c5e2",
+      "outlineReceived": {
+        "pixels": 15,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_left/anklet/ankle_chain",
@@ -2464,6 +3274,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.2084,
@@ -2493,8 +3304,34 @@
           ]
         ]
       },
+      "holeFilledPixels": 296,
       "hiddenPixels": 104,
-      "generatedSha256": "618716f83af88d95755fc68e2b8b6e40db9e286f34c09b202e10cac04c8b572c"
+      "visibleDeviation": {
+        "meanAbs": 41.45,
+        "over32": 0.5385,
+        "pixels": 65
+      },
+      "generatedSha256": "618716f83af88d95755fc68e2b8b6e40db9e286f34c09b202e10cac04c8b572c",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 3 visible px near the completion repainted with model colors",
+        "strokes": 3,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 3,
+        "selectionPixels": 3,
+        "meanChange": 40.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "legs/leg_left/anklet/center_link": 3
+        }
+      },
+      "outlineReceived": {
+        "pixels": 209,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_left/anklet/center_link",
@@ -2518,6 +3355,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.1345,
@@ -2547,8 +3385,18 @@
           ]
         ]
       },
+      "holeFilledPixels": 15,
       "hiddenPixels": 18,
-      "generatedSha256": "5c6860b9d410614e7dd29871d648fdc41eb460c29548793df642991f4c643886"
+      "visibleDeviation": {
+        "meanAbs": 13.39,
+        "over32": 0.0714,
+        "pixels": 28
+      },
+      "generatedSha256": "5c6860b9d410614e7dd29871d648fdc41eb460c29548793df642991f4c643886",
+      "outlineReceived": {
+        "pixels": 37,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "legs/leg_left/anklet/teardrop_pendant",
@@ -2570,6 +3418,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0914,
@@ -2599,13 +3448,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 28,
       "hiddenPixels": 29,
       "meanCorrection": [
-        26.09000015258789,
-        10.850000381469727,
+        26.100000381469727,
+        10.859999656677246,
         5.079999923706055
       ],
-      "generatedSha256": "d1747fdc1a9a8f38bb1f77741d60e26f4e6cc11db22b0ca4116f81f7485a2be2"
+      "visibleDeviation": {
+        "meanAbs": 23.19,
+        "over32": 0.2796,
+        "pixels": 93
+      },
+      "generatedSha256": "d1747fdc1a9a8f38bb1f77741d60e26f4e6cc11db22b0ca4116f81f7485a2be2",
+      "outlineReceived": {
+        "pixels": 61,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/left_earring/suspension_chain",
@@ -2630,6 +3489,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.3095,
@@ -2659,8 +3519,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 31,
       "hiddenPixels": 31,
-      "generatedSha256": "068f7aeac1815cbf0ffe0190f12a4d380e19b38674fce552fa39f65c9d9cd66a"
+      "generatedSha256": "068f7aeac1815cbf0ffe0190f12a4d380e19b38674fce552fa39f65c9d9cd66a",
+      "outlineReceived": {
+        "pixels": 42,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/right_earring/suspension_chain",
@@ -2685,6 +3550,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.5789,
@@ -2714,8 +3580,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 34,
       "hiddenPixels": 32,
-      "generatedSha256": "6b3c4d0fe87169779a5e9060ab2022f8ea20f1089b5bc0c26f99c77c2a155924"
+      "generatedSha256": "6b3c4d0fe87169779a5e9060ab2022f8ea20f1089b5bc0c26f99c77c2a155924",
+      "outlineReceived": {
+        "pixels": 14,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/left_earring/sapphire_pendant",
@@ -2737,6 +3608,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.3713,
@@ -2764,13 +3636,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 41,
       "hiddenPixels": 30,
       "meanCorrection": [
-        10.369999885559082,
-        13.850000381469727,
-        8.5600004196167
+        10.010000228881836,
+        13.4399995803833,
+        8.199999809265137
       ],
-      "generatedSha256": "313db1bb5275932c7ed1f9bed6504f77c4f204739ddd4342f9cc7589ff1e49aa"
+      "visibleDeviation": {
+        "meanAbs": 52.23,
+        "over32": 0.7018,
+        "pixels": 57
+      },
+      "generatedSha256": "313db1bb5275932c7ed1f9bed6504f77c4f204739ddd4342f9cc7589ff1e49aa",
+      "outlineReceived": {
+        "pixels": 45,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/right_earring/sapphire_pendant",
@@ -2792,6 +3674,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.2498,
@@ -2820,13 +3703,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 44,
       "hiddenPixels": 27,
       "meanCorrection": [
-        36.439998626708984,
-        24.170000076293945,
+        36.38999938964844,
+        24.139999389648438,
         10.300000190734863
       ],
-      "generatedSha256": "48989d0be91c28e03ed52c2c126ed84c30bf0b8ae7d30611e2cfed0eb5a316c7"
+      "visibleDeviation": {
+        "meanAbs": 55.23,
+        "over32": 0.7969,
+        "pixels": 64
+      },
+      "generatedSha256": "48989d0be91c28e03ed52c2c126ed84c30bf0b8ae7d30611e2cfed0eb5a316c7",
+      "outlineReceived": {
+        "pixels": 40,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/left_earring/ear_stud",
@@ -2849,28 +3742,26 @@
         "face/ear_left"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "bbox",
-        "score": 0.05,
-        "iou": 0.95,
+        "method": "crop",
+        "score": 0.85,
+        "iou": 0.15,
         "visibleError": null,
         "candidates": {
-          "crop": 0.561,
-          "bbox": 0.05,
-          "crop+shape": 0.561,
-          "bbox+shape": 0.05
+          "crop": 0.85
         },
         "matrix": [
           [
-            0.66667,
+            1.0,
             0.0,
-            186.33333
+            0.0
           ],
           [
             0.0,
-            0.75,
-            55.0
+            1.0,
+            0.0
           ],
           [
             0.0,
@@ -2879,18 +3770,28 @@
           ]
         ]
       },
+      "holeFilledPixels": 30,
       "hiddenPixels": 28,
-      "generatedSha256": "4acef3074a06cf3d8c7206de769f6a9eebf0df247d48e320d91ca8796f016437",
+      "generatedSha256": "aea8c585fe73b358cbf784b07bd4def498c486e7ce6f49636933abc4dc8bc605",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "hidden stud pixels are skin/grey; repaint as the silver-pearl stud",
-        "strokes": 28,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 1 visible px near the completion repainted with model colors",
+        "strokes": 1,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 28,
-        "selectionPixels": 28,
-        "meanChange": 31.1
+        "changedPixels": 1,
+        "selectionPixels": 1,
+        "meanChange": 26.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/ear_left": 1
+        }
+      },
+      "outlineReceived": {
+        "pixels": 2,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -2915,6 +3816,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.381,
@@ -2944,18 +3846,12 @@
           ]
         ]
       },
+      "holeFilledPixels": 15,
       "hiddenPixels": 21,
       "generatedSha256": "b09d9ce14a27fae0ebc7dfaa861f42dcaf9308eb2c141c734ee61e8eff1739d0",
-      "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "hidden stud pixels are skin/grey; repaint as the silver-pearl stud",
-        "strokes": 21,
-        "alphaUnchanged": true,
-        "visibleEqualsSource": true,
-        "changesInsideSelection": true,
-        "changedPixels": 21,
-        "selectionPixels": 21,
-        "meanChange": 23.4
+      "outlineReceived": {
+        "pixels": 6,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -2983,30 +3879,29 @@
         "hair/side_hair_right"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "sift",
-        "score": 0.0444,
-        "iou": 0.9624,
-        "visibleError": 8.92,
+        "method": "bbox+shape",
+        "score": 0.0996,
+        "iou": 0.9326,
+        "visibleError": 21.09,
         "candidates": {
-          "crop": 0.0905,
-          "bbox": 0.0626,
-          "sift": 0.0444,
-          "crop+shape": 0.0709,
-          "bbox+shape": 0.0748,
-          "sift+shape": 0.0492
+          "crop": 0.2354,
+          "bbox": 0.1152,
+          "crop+shape": 0.1088,
+          "bbox+shape": 0.0996
         },
         "matrix": [
           [
-            1.02522,
-            -0.03066,
-            -5.75946
+            1.03774,
+            -0.00811,
+            -17.24826
           ],
           [
-            0.03066,
-            1.02522,
-            -19.89876
+            -0.05805,
+            1.04897,
+            16.03144
           ],
           [
             0.0,
@@ -3015,23 +3910,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 63,
       "hiddenPixels": 358,
       "meanCorrection": [
-        5.699999809265137,
-        5.050000190734863,
-        4.289999961853027
+        8.15999984741211,
+        17.100000381469727,
+        17.270000457763672
       ],
-      "generatedSha256": "f3f05858bcd7cd2dcba342b3036abe4643e65ef4b9803edcafb7b0edd1ad8276",
+      "visibleDeviation": {
+        "meanAbs": 22.85,
+        "over32": 0.2453,
+        "pixels": 159
+      },
+      "generatedSha256": "5a7b9194f2e0e64d65bd13c634f0250fcd0d262dba21511663ce3520adc46b17",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "a hair strand (white/lavender) painted into the hidden ear; repaint as ear rim skin",
-        "strokes": 126,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 54 visible px near the completion repainted with model colors; pale hair-edge strand across the ear repainted as ear skin",
+        "strokes": 113,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 126,
-        "selectionPixels": 126,
-        "meanChange": 50.6
+        "changedPixels": 113,
+        "selectionPixels": 113,
+        "meanChange": 35.8
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/face_base": 54,
+          "hair/side_hair_right": 33
+        }
+      },
+      "outlineReceived": {
+        "pixels": 17,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -3059,30 +3970,29 @@
         "hair/side_hair_left"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "crop+shape",
-        "score": 0.0519,
-        "iou": 0.9819,
-        "visibleError": 12.08,
+        "method": "bbox+shape",
+        "score": 0.1018,
+        "iou": 0.9326,
+        "visibleError": 21.67,
         "candidates": {
-          "crop": 0.1168,
-          "bbox": 0.055,
-          "sift": 0.0907,
-          "crop+shape": 0.0519,
-          "bbox+shape": 0.0519,
-          "sift+shape": 0.0531
+          "crop": 0.1189,
+          "bbox": 0.1323,
+          "crop+shape": 0.1051,
+          "bbox+shape": 0.1018
         },
         "matrix": [
           [
-            1.03164,
-            -0.03252,
-            -11.59237
+            1.06333,
+            -0.06216,
+            -23.21148
           ],
           [
-            0.01664,
-            1.00509,
-            -11.14589
+            0.14432,
+            1.07359,
+            -97.529
           ],
           [
             0.0,
@@ -3091,23 +4001,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 67,
       "hiddenPixels": 393,
       "meanCorrection": [
-        1.3899999856948853,
-        2.5299999713897705,
-        2.569999933242798
+        10.59000015258789,
+        15.329999923706055,
+        16.329999923706055
       ],
-      "generatedSha256": "af67bdb10dcf756b831898f7690d59e91353d469ef3bda7821a8d97c3e45215f",
+      "visibleDeviation": {
+        "meanAbs": 22.96,
+        "over32": 0.2391,
+        "pixels": 184
+      },
+      "generatedSha256": "a489461f3112710359fdd943b6e142afd39c97cafa02afe060b582c8d5e7e9bd",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "a hair strand (white/lavender) painted into the hidden ear; repaint as ear rim skin",
-        "strokes": 164,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 58 visible px near the completion repainted with model colors; pale hair-edge strand across the ear repainted as ear skin",
+        "strokes": 92,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 164,
-        "selectionPixels": 164,
-        "meanChange": 63.9
+        "changedPixels": 92,
+        "selectionPixels": 92,
+        "meanChange": 38.7
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/face_base": 70,
+          "hair/side_hair_left": 12
+        }
+      },
+      "outlineReceived": {
+        "pixels": 15,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -3156,6 +4082,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0414,
@@ -3185,14 +4112,60 @@
           ]
         ]
       },
+      "holeFilledPixels": 265,
       "hiddenPixels": 3784,
       "meanCorrection": [
-        7.53000020980835,
-        10.039999961853027,
-        8.930000305175781
+        5.199999809265137,
+        7.260000228881836,
+        6.800000190734863
       ],
+      "visibleDeviation": {
+        "meanAbs": 8.89,
+        "over32": 0.0681,
+        "pixels": 6532
+      },
       "generatedSha256": "eb8f30dc9147a06cdf76bc893ee3ddd1fb62d5255aea224491d277c1638a057c",
-      "retouchReview": "kept: eye-oval / eyelash outline and the hair-parting wedge are source pixels owned by face_base (ownership residue of the color-block standard); its hidden completion is clean"
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 702 visible px near the completion repainted with model colors; eye-oval outlines, eyelash residue and the hair-parting wedge (occluder pixels owned by face_base) repainted as continuous face skin with the blush kept",
+        "strokes": 3617,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 3604,
+        "selectionPixels": 3617,
+        "meanChange": 23.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/eye_left/sclera": 49,
+          "face/eye_right/sclera": 23,
+          "face/eye_left/iris": 2,
+          "face/eye_left/lower_eyelashes": 19,
+          "face/eye_left/lower_eyelid": 36,
+          "face/eye_right/lower_eyelid": 98,
+          "face/eye_left/upper_eyelid": 101,
+          "face/eye_right/upper_eyelid": 76,
+          "face/eye_left/eyelid_crease": 90,
+          "face/eye_right/eyelid_crease": 141,
+          "face/eyebrow_left": 182,
+          "face/eyebrow_right": 201,
+          "face/nose": 48,
+          "face/mouth/mouth_interior": 6,
+          "face/mouth/tongue": 15,
+          "face/mouth/upper_teeth": 28,
+          "face/mouth/lower_lip": 169,
+          "face/mouth/upper_lip": 91,
+          "head_accessories/forehead_ornament/teardrop_pendant": 229,
+          "head_accessories/forehead_ornament/upper_sapphire_mount": 147,
+          "hair/side_hair_right": 265,
+          "hair/side_hair_left": 317
+        }
+      },
+      "outlineReceived": {
+        "pixels": 597,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_left/sclera",
@@ -3218,6 +4191,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0762,
@@ -3247,23 +4221,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 47,
       "hiddenPixels": 285,
       "meanCorrection": [
-        3.430000066757202,
-        6.820000171661377,
-        9.0600004196167
+        3.4100000858306885,
+        6.849999904632568,
+        9.079999923706055
       ],
+      "visibleDeviation": {
+        "meanAbs": 22.48,
+        "over32": 0.125,
+        "pixels": 48
+      },
       "generatedSha256": "71bdf9a4d06c1bd5c3dc0fcdd38f3fb992c8ae36d072be915e8c1b29c7f1ebbc",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "dark iris rim stroke left in the hidden center; fill sclera white-grey",
-        "strokes": 285,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 18 visible px near the completion repainted with model colors",
+        "strokes": 18,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 285,
-        "selectionPixels": 285,
-        "meanChange": 45.4
+        "changedPixels": 18,
+        "selectionPixels": 18,
+        "meanChange": 77.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/eye_left/iris": 14,
+          "face/eye_left/lower_eyelid": 4
+        }
+      },
+      "outlineReceived": {
+        "pixels": 49,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -3290,28 +4280,29 @@
         "face/eye_right/upper_eyelid"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "crop+shape",
-        "score": 0.0837,
-        "iou": 0.9612,
-        "visibleError": 18.86,
+        "method": "crop",
+        "score": 0.1082,
+        "iou": 0.8544,
+        "visibleError": 18.32,
         "candidates": {
-          "crop": 0.1287,
-          "bbox": 0.0862,
-          "crop+shape": 0.0837,
-          "bbox+shape": 0.0948
+          "crop": 0.1082,
+          "bbox": 0.1376,
+          "crop+shape": 0.1111,
+          "bbox+shape": 0.1111
         },
         "matrix": [
           [
-            1.03977,
-            -0.06856,
-            -6.51312
+            1.0,
+            0.0,
+            0.0
           ],
           [
-            0.03333,
-            1.00646,
-            -17.98944
+            0.0,
+            1.0,
+            0.0
           ],
           [
             0.0,
@@ -3320,23 +4311,40 @@
           ]
         ]
       },
+      "holeFilledPixels": 98,
       "hiddenPixels": 344,
       "meanCorrection": [
-        4.679999828338623,
-        12.09000015258789,
-        13.869999885559082
+        3.440000057220459,
+        10.970000267028809,
+        12.010000228881836
       ],
-      "generatedSha256": "efee9f36ffdabde0ff4154ce1ae39d7374acea8142cdcbb7dfc3afaa6ac47ca9",
+      "visibleDeviation": {
+        "meanAbs": 24.31,
+        "over32": 0.2131,
+        "pixels": 61
+      },
+      "generatedSha256": "e9cc392c53cd5e751a32ae04d7f86d136ed2fc6170a47160c2c48529a049d182",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "light iris rim line and white highlight dot in the hidden part; fill sclera white-grey",
-        "strokes": 344,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 35 visible px near the completion repainted with model colors",
+        "strokes": 35,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 344,
-        "selectionPixels": 344,
-        "meanChange": 71.3
+        "changedPixels": 35,
+        "selectionPixels": 35,
+        "meanChange": 52.8
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/eye_right/iris": 13,
+          "face/eye_right/lower_eyelid": 7,
+          "face/eye_right/upper_eyelid": 15
+        }
+      },
+      "outlineReceived": {
+        "pixels": 23,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -3361,28 +4369,28 @@
         "face/eye_left/upper_eyelid"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "crop+shape",
-        "score": 0.0662,
-        "iou": 0.9803,
-        "visibleError": 15.63,
+        "method": "bbox+shape",
+        "score": 0.0616,
+        "iou": 0.9579,
+        "visibleError": 13.03,
         "candidates": {
-          "crop": 0.1238,
-          "bbox": 0.0952,
-          "crop+shape": 0.0662,
-          "bbox+shape": 0.1213
+          "crop": 0.097,
+          "bbox": 0.0626,
+          "bbox+shape": 0.0616
         },
         "matrix": [
           [
-            1.00631,
-            0.02096,
-            -8.07716
+            1.01128,
+            0.05635,
+            -17.2705
           ],
           [
-            -0.047,
-            1.00864,
-            22.88219
+            -0.09748,
+            1.08515,
+            34.84564
           ],
           [
             0.0,
@@ -3391,23 +4399,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 33,
       "hiddenPixels": 95,
       "meanCorrection": [
-        19.809999465942383,
-        15.329999923706055,
-        7.710000038146973
+        8.40999984741211,
+        4.329999923706055,
+        2.109999895095825
       ],
-      "generatedSha256": "49a97e0e86021f30e6965ace1479035d576ecb34aeeb25229210ea0114216429",
+      "visibleDeviation": {
+        "meanAbs": 14.74,
+        "over32": 0.1056,
+        "pixels": 180
+      },
+      "generatedSha256": "3b635d22e831c3cc691dba7891ffa96c92d1afc200de32dd84fa0210791a0319",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "hidden top band painted as eyelid brown; repaint with the iris top navy",
-        "strokes": 83,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 34 visible px near the completion repainted with model colors",
+        "strokes": 34,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 83,
-        "selectionPixels": 83,
-        "meanChange": 90.2
+        "changedPixels": 34,
+        "selectionPixels": 34,
+        "meanChange": 44.4
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/eye_left/highlight": 7,
+          "face/eye_left/upper_eyelid": 27
+        }
+      },
+      "outlineReceived": {
+        "pixels": 16,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -3433,15 +4457,16 @@
         "face/eye_right/upper_eyelid"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "bbox",
-        "score": 0.1479,
-        "iou": 0.9013,
-        "visibleError": 31.42,
+        "score": 0.0987,
+        "iou": 0.8929,
+        "visibleError": 18.34,
         "candidates": {
-          "crop": 0.248,
-          "bbox": 0.1479
+          "crop": 0.1798,
+          "bbox": 0.0987
         },
         "matrix": [
           [
@@ -3451,8 +4476,8 @@
           ],
           [
             0.0,
-            1.0,
-            -1.0
+            0.90476,
+            17.90476
           ],
           [
             0.0,
@@ -3461,23 +4486,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 53,
       "hiddenPixels": 115,
       "meanCorrection": [
-        39.060001373291016,
-        32.290000915527344,
-        25.709999084472656
+        24.329999923706055,
+        18.100000381469727,
+        10.069999694824219
       ],
-      "generatedSha256": "56f8711517e0306a0a950b940b1238ba8015997f8ccd3b2253f0b226c044f8fc",
+      "visibleDeviation": {
+        "meanAbs": 15.56,
+        "over32": 0.0736,
+        "pixels": 163
+      },
+      "generatedSha256": "1f412086a03f4cefc8f355f89ac921c4ba2e694dbe44aa7f5b8e08e755e177ca",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "hidden top band painted as eyelid brown; repaint with the iris top navy",
-        "strokes": 106,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 18 visible px near the completion repainted with model colors",
+        "strokes": 18,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 106,
-        "selectionPixels": 106,
-        "meanChange": 56.1
+        "changedPixels": 18,
+        "selectionPixels": 18,
+        "meanChange": 40.1
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/eye_right/highlight": 5,
+          "face/eye_right/upper_eyelid": 13
+        }
+      },
+      "outlineReceived": {
+        "pixels": 13,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -3500,6 +4541,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop",
         "score": 0.2857,
@@ -3526,8 +4568,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 7,
       "hiddenPixels": 7,
-      "generatedSha256": "2ba8357607c5dd432edc26dfee93c26a13487c9f9f941b077e27b612fc43037b"
+      "generatedSha256": "2ba8357607c5dd432edc26dfee93c26a13487c9f9f941b077e27b612fc43037b",
+      "outlineReceived": {
+        "pixels": 7,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_right/highlight",
@@ -3549,6 +4596,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop",
         "score": 0.5,
@@ -3575,8 +4623,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 7,
       "hiddenPixels": 4,
-      "generatedSha256": "eb570757fbff8d90de3e54068bd3758a36f7b3fa71c7d110b4a40292b88d66c2"
+      "generatedSha256": "eb570757fbff8d90de3e54068bd3758a36f7b3fa71c7d110b4a40292b88d66c2",
+      "outlineReceived": {
+        "pixels": 5,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_left/lower_eyelashes",
@@ -3600,6 +4653,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop",
         "score": 0.6667,
@@ -3626,8 +4680,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 8,
       "hiddenPixels": 10,
-      "generatedSha256": "956c4938ef137a444db19fccc1d155f7de50fe0f4757d26e7d98967d9a1a4035"
+      "generatedSha256": "956c4938ef137a444db19fccc1d155f7de50fe0f4757d26e7d98967d9a1a4035",
+      "outlineReceived": {
+        "pixels": 19,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_left/lower_eyelid",
@@ -3649,6 +4708,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.5714,
@@ -3678,8 +4738,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 58,
       "hiddenPixels": 60,
-      "generatedSha256": "8ea6fd0a203d06295e5fc8866ee745018e7c5b82365310663df552c60372b6e7"
+      "generatedSha256": "8ea6fd0a203d06295e5fc8866ee745018e7c5b82365310663df552c60372b6e7",
+      "outlineReceived": {
+        "pixels": 40,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_right/lower_eyelid",
@@ -3703,6 +4768,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.7677,
@@ -3732,8 +4798,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 21,
       "hiddenPixels": 59,
-      "generatedSha256": "03956151875ff9def4a58da516d5ea36f5633799c3ded96171d624db5b9af80e"
+      "generatedSha256": "03956151875ff9def4a58da516d5ea36f5633799c3ded96171d624db5b9af80e",
+      "outlineReceived": {
+        "pixels": 105,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_left/upper_eyelid",
@@ -3755,6 +4826,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0563,
@@ -3784,8 +4856,18 @@
           ]
         ]
       },
+      "holeFilledPixels": 56,
       "hiddenPixels": 49,
-      "generatedSha256": "21979e28511f7b3d34bce0ee0a7e7953b014599884edbba9e63668e49b746c99"
+      "visibleDeviation": {
+        "meanAbs": 12.25,
+        "over32": 0.0392,
+        "pixels": 51
+      },
+      "generatedSha256": "21979e28511f7b3d34bce0ee0a7e7953b014599884edbba9e63668e49b746c99",
+      "outlineReceived": {
+        "pixels": 128,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_right/upper_eyelid",
@@ -3809,6 +4891,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0589,
@@ -3838,13 +4921,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 61,
       "hiddenPixels": 54,
       "meanCorrection": [
-        5.690000057220459,
+        5.679999828338623,
         2.109999895095825,
-        2.640000104904175
+        2.630000114440918
       ],
-      "generatedSha256": "bd6853ce1524507eec51326d84c031ed89f448741de9df9816cd6f7ba9f46fa1"
+      "visibleDeviation": {
+        "meanAbs": 7.86,
+        "over32": 0.0238,
+        "pixels": 84
+      },
+      "generatedSha256": "bd6853ce1524507eec51326d84c031ed89f448741de9df9816cd6f7ba9f46fa1",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 2 visible px near the completion repainted with model colors",
+        "strokes": 2,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 2,
+        "selectionPixels": 2,
+        "meanChange": 105.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/side_hair_right": 2
+        }
+      },
+      "outlineReceived": {
+        "pixels": 104,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_left/eyelid_crease",
@@ -3866,6 +4975,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop",
         "score": 0.875,
@@ -3892,8 +5002,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 30,
       "hiddenPixels": 27,
-      "generatedSha256": "e29d79e0b48b9ba38a8b017a6ba59c5a5b332a425147fc2e828d3bc81c700194"
+      "generatedSha256": "e29d79e0b48b9ba38a8b017a6ba59c5a5b332a425147fc2e828d3bc81c700194",
+      "outlineReceived": {
+        "pixels": 90,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eye_right/eyelid_crease",
@@ -3915,6 +5030,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop",
         "score": 0.4783,
@@ -3942,8 +5058,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 45,
       "hiddenPixels": 40,
-      "generatedSha256": "c75fc1d79098c9bc7d50bae925bfcd4d2d484c8b43b39bad68046bac49f737d8"
+      "generatedSha256": "c75fc1d79098c9bc7d50bae925bfcd4d2d484c8b43b39bad68046bac49f737d8",
+      "outlineReceived": {
+        "pixels": 141,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eyebrow_left",
@@ -3967,6 +5088,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0838,
@@ -3996,8 +5118,18 @@
           ]
         ]
       },
+      "holeFilledPixels": 39,
       "hiddenPixels": 48,
-      "generatedSha256": "b3f704b17f5788709333513d4d79c833825b806c2a61ed9d76a7c2f24f768d5f"
+      "visibleDeviation": {
+        "meanAbs": 15.4,
+        "over32": 0.0,
+        "pixels": 15
+      },
+      "generatedSha256": "b3f704b17f5788709333513d4d79c833825b806c2a61ed9d76a7c2f24f768d5f",
+      "outlineReceived": {
+        "pixels": 182,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/eyebrow_right",
@@ -4021,6 +5153,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.2186,
@@ -4050,8 +5183,18 @@
           ]
         ]
       },
+      "holeFilledPixels": 39,
       "hiddenPixels": 55,
-      "generatedSha256": "f5e215a565e70309e2aa319de3597f61b89cbdda39cca77d97af9679592996f5"
+      "visibleDeviation": {
+        "meanAbs": 29.36,
+        "over32": 0.3182,
+        "pixels": 22
+      },
+      "generatedSha256": "f5e215a565e70309e2aa319de3597f61b89cbdda39cca77d97af9679592996f5",
+      "outlineReceived": {
+        "pixels": 201,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/nose",
@@ -4073,6 +5216,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0721,
@@ -4102,13 +5246,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 23,
       "hiddenPixels": 23,
       "meanCorrection": [
-        8.4399995803833,
-        17.329999923706055,
-        19.25
+        8.449999809265137,
+        17.34000015258789,
+        19.260000228881836
       ],
-      "generatedSha256": "d68688e2cc8ed804fca9085802fa993320cc5b5f5f2fae11f492bbdf854c22f0"
+      "visibleDeviation": {
+        "meanAbs": 8.67,
+        "over32": 0.0217,
+        "pixels": 46
+      },
+      "generatedSha256": "d68688e2cc8ed804fca9085802fa993320cc5b5f5f2fae11f492bbdf854c22f0",
+      "outlineReceived": {
+        "pixels": 48,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/mouth/mouth_interior",
@@ -4134,28 +5288,29 @@
         "face/mouth/upper_lip"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
-        "method": "bbox+shape",
-        "score": 0.2237,
-        "iou": 0.9538,
-        "visibleError": 54.09,
+        "method": "crop+shape",
+        "score": 0.0911,
+        "iou": 0.9121,
+        "visibleError": 17.62,
         "candidates": {
-          "crop": 0.2687,
-          "bbox": 0.2312,
-          "crop+shape": 0.2251,
-          "bbox+shape": 0.2237
+          "crop": 0.1609,
+          "bbox": 0.1077,
+          "crop+shape": 0.0911,
+          "bbox+shape": 0.0912
         },
         "matrix": [
           [
-            1.02739,
-            -0.14208,
-            19.30095
+            0.96875,
+            -0.13976,
+            48.84018
           ],
           [
-            0.12075,
-            0.98139,
-            -58.24844
+            0.12402,
+            0.93251,
+            -48.53088
           ],
           [
             0.0,
@@ -4164,8 +5319,30 @@
           ]
         ]
       },
+      "holeFilledPixels": 22,
       "hiddenPixels": 164,
-      "generatedSha256": "a238cbc924202c71b5c01729425ce62e99fe1b3a06902b2e54c068a7f1dd9ad4"
+      "generatedSha256": "4eba2497ac163173a3069db2a3b63d1b2d366694dcca77287ed8a473df2c8613",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 5 visible px near the completion repainted with model colors",
+        "strokes": 5,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 5,
+        "selectionPixels": 5,
+        "meanChange": 38.8
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/mouth/tongue": 4,
+          "face/mouth/upper_lip": 1
+        }
+      },
+      "outlineReceived": {
+        "pixels": 6,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/mouth/tongue",
@@ -4189,6 +5366,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.19,
@@ -4218,8 +5396,34 @@
           ]
         ]
       },
+      "holeFilledPixels": 12,
       "hiddenPixels": 48,
-      "generatedSha256": "aebf84c4e33ddeab517e2dfc818e8f1780c18848ffa75f7e9dd4f93d441e973c"
+      "visibleDeviation": {
+        "meanAbs": 43.44,
+        "over32": 0.7812,
+        "pixels": 32
+      },
+      "generatedSha256": "aebf84c4e33ddeab517e2dfc818e8f1780c18848ffa75f7e9dd4f93d441e973c",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 25 visible px near the completion repainted with model colors",
+        "strokes": 25,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 25,
+        "selectionPixels": 25,
+        "meanChange": 39.0
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "face/mouth/lower_lip": 25
+        }
+      },
+      "outlineReceived": {
+        "pixels": 19,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/mouth/lower_teeth",
@@ -4243,6 +5447,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.9394,
@@ -4270,19 +5475,9 @@
           ]
         ]
       },
+      "holeFilledPixels": 12,
       "hiddenPixels": 24,
-      "generatedSha256": "61d95838c2bb031287a4de168d0c60b126fa45ed3f1277bc7d8e5e10823ea2d9",
-      "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "dull pink/brown; should read as an off-white teeth band (color from the lightest visible upper teeth)",
-        "strokes": 24,
-        "alphaUnchanged": true,
-        "visibleEqualsSource": true,
-        "changesInsideSelection": true,
-        "changedPixels": 24,
-        "selectionPixels": 24,
-        "meanChange": 74.8
-      }
+      "generatedSha256": "61d95838c2bb031287a4de168d0c60b126fa45ed3f1277bc7d8e5e10823ea2d9"
     },
     {
       "id": "face/mouth/upper_teeth",
@@ -4305,26 +5500,29 @@
         "face/mouth/upper_lip"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "crop+shape",
-        "score": 0.4262,
-        "iou": 0.5738,
+        "score": 0.1944,
+        "iou": 0.8056,
         "visibleError": null,
         "candidates": {
-          "crop": 0.6771,
-          "crop+shape": 0.4262
+          "crop": 0.3953,
+          "bbox": 0.4565,
+          "crop+shape": 0.1944,
+          "bbox+shape": 0.1944
         },
         "matrix": [
           [
-            0.66934,
-            0.052,
-            156.41984
+            1.01435,
+            0.04941,
+            -19.55691
           ],
           [
-            -0.01552,
-            0.94775,
-            18.48865
+            -0.02051,
+            0.99465,
+            11.21975
           ],
           [
             0.0,
@@ -4333,18 +5531,12 @@
           ]
         ]
       },
+      "holeFilledPixels": 28,
       "hiddenPixels": 51,
-      "generatedSha256": "4c1ddfe499f9e9c9ceda037c239daddfa0edac53f94b176b992507e7252e6f5d",
-      "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "dark lip red at the hidden ends; recolor as teeth",
-        "strokes": 49,
-        "alphaUnchanged": true,
-        "visibleEqualsSource": true,
-        "changesInsideSelection": true,
-        "changedPixels": 49,
-        "selectionPixels": 49,
-        "meanChange": 96.7
+      "generatedSha256": "6a63709efd198b581f43b3c3f1bc52cbdec8d0aa0e7d1430aae8236941888236",
+      "outlineReceived": {
+        "pixels": 28,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -4369,6 +5561,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.2144,
@@ -4398,8 +5591,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 19,
       "hiddenPixels": 35,
-      "generatedSha256": "0e85d81629a7d9b97861519680b162724f00b004bb0b4e2608fadd2abbc2b840"
+      "generatedSha256": "0e85d81629a7d9b97861519680b162724f00b004bb0b4e2608fadd2abbc2b840",
+      "outlineReceived": {
+        "pixels": 194,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "face/mouth/upper_lip",
@@ -4421,6 +5619,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.1364,
@@ -4450,8 +5649,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 36,
       "hiddenPixels": 37,
-      "generatedSha256": "f06a59958359ac8d887a022ab2163a5f539386ce1b572bb605e3a00d247c7df6"
+      "generatedSha256": "f06a59958359ac8d887a022ab2163a5f539386ce1b572bb605e3a00d247c7df6",
+      "outlineReceived": {
+        "pixels": 92,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/forehead_ornament/teardrop_pendant",
@@ -4475,6 +5679,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0909,
@@ -4504,13 +5709,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 30,
       "hiddenPixels": 28,
       "meanCorrection": [
         27.3799991607666,
         19.149999618530273,
-        8.710000038146973
+        8.720000267028809
       ],
-      "generatedSha256": "1611605220f6dc48019eea11fac9c5fa5934c58c67103190441c7dc2b9875a95"
+      "visibleDeviation": {
+        "meanAbs": 21.92,
+        "over32": 0.1746,
+        "pixels": 63
+      },
+      "generatedSha256": "1611605220f6dc48019eea11fac9c5fa5934c58c67103190441c7dc2b9875a95",
+      "outlineReceived": {
+        "pixels": 229,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
@@ -4534,17 +5749,18 @@
         "hair/side_hair_left"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "bbox",
-        "score": 0.1283,
-        "iou": 0.9647,
-        "visibleError": 30.47,
+        "score": 0.1166,
+        "iou": 0.9524,
+        "visibleError": 26.7,
         "candidates": {
-          "crop": 0.257,
-          "bbox": 0.1283,
-          "crop+shape": 0.1472,
-          "bbox+shape": 0.1322
+          "crop": 0.2126,
+          "bbox": 0.1166,
+          "crop+shape": 0.1455,
+          "bbox+shape": 0.1184
         },
         "matrix": [
           [
@@ -4554,8 +5770,8 @@
           ],
           [
             0.0,
-            0.94737,
-            5.94737
+            1.0,
+            -1.0
           ],
           [
             0.0,
@@ -4564,23 +5780,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 40,
       "hiddenPixels": 108,
       "meanCorrection": [
-        26.889999389648438,
-        9.510000228881836,
-        19.020000457763672
+        25.729999542236328,
+        22.760000228881836,
+        21.690000534057617
       ],
-      "generatedSha256": "3b13984e5d2489ec0fb72642c3a5dec04fddaad1b918cb6bbc621eaa49e0b647",
+      "visibleDeviation": {
+        "meanAbs": 19.62,
+        "over32": 0.1552,
+        "pixels": 58
+      },
+      "generatedSha256": "a21dd552000db1f8c73c126394c3d16e7a2801aed066b4ede6845e1807c8276a",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "cream/yellow pixels on the hidden left frame; silver frame",
-        "strokes": 83,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 16 visible px near the completion repainted with model colors",
+        "strokes": 16,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 83,
-        "selectionPixels": 83,
-        "meanChange": 52.5
+        "changedPixels": 16,
+        "selectionPixels": 16,
+        "meanChange": 29.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/side_hair_right": 14,
+          "hair/side_hair_left": 2
+        }
+      },
+      "outlineReceived": {
+        "pixels": 147,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -4606,6 +5838,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop",
         "score": 0.5,
@@ -4633,8 +5866,26 @@
           ]
         ]
       },
+      "holeFilledPixels": 62,
       "hiddenPixels": 14,
-      "generatedSha256": "9818512474a1d7681bd47e7b30ddc5788c44f873080095709ec814a908da5a81"
+      "generatedSha256": "9818512474a1d7681bd47e7b30ddc5788c44f873080095709ec814a908da5a81",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 16 visible px near the completion repainted with model colors",
+        "strokes": 16,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 16,
+        "selectionPixels": 16,
+        "meanChange": 40.9
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem": 10,
+          "head_accessories/crown_frame": 6
+        }
+      }
     },
     {
       "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
@@ -4658,28 +5909,29 @@
         "head_accessories/crown_frame"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "bbox",
-        "score": 0.1875,
-        "iou": 0.8125,
+        "score": 0.1429,
+        "iou": 0.8571,
         "visibleError": null,
         "candidates": {
-          "crop": 0.5676,
-          "bbox": 0.1875,
-          "crop+shape": 0.5676,
-          "bbox+shape": 0.1875
+          "crop": 0.5556,
+          "bbox": 0.1429,
+          "crop+shape": 0.5556,
+          "bbox+shape": 0.1429
         },
         "matrix": [
           [
-            1.33333,
+            1.0,
             0.0,
-            -136.0
+            -1.0
           ],
           [
             0.0,
-            0.73333,
-            25.86667
+            1.0,
+            -1.0
           ],
           [
             0.0,
@@ -4688,18 +5940,25 @@
           ]
         ]
       },
+      "holeFilledPixels": 70,
       "hiddenPixels": 13,
-      "generatedSha256": "91509cd9a37368dc5cfd54c463e4bf7a71866ad5439838ce4af05da72eb40f63",
+      "generatedSha256": "ca33625fb3c9a90ad536ecd6840ca446365c022b52757bb5fb54f1598a15d0fd",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "brown/orange hidden top; silver link",
-        "strokes": 13,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 14 visible px near the completion repainted with model colors",
+        "strokes": 14,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 13,
-        "selectionPixels": 13,
-        "meanChange": 79.2
+        "changedPixels": 14,
+        "selectionPixels": 14,
+        "meanChange": 47.6
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem": 6,
+          "head_accessories/crown_frame": 8
+        }
       }
     },
     {
@@ -4724,17 +5983,15 @@
         "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "crop",
-        "score": 0.5909,
-        "iou": 0.4091,
+        "score": 0.7143,
+        "iou": 0.2857,
         "visibleError": null,
         "candidates": {
-          "crop": 0.5909,
-          "bbox": 0.6111,
-          "crop+shape": 0.5909,
-          "bbox+shape": 0.6111
+          "crop": 0.7143
         },
         "matrix": [
           [
@@ -4754,19 +6011,9 @@
           ]
         ]
       },
+      "holeFilledPixels": 21,
       "hiddenPixels": 13,
-      "generatedSha256": "cbdea49aee8379b4cb56153facacac1c9197e2575429de63646e17a459748ca5",
-      "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "yellow/gold pixels; silver-grey connector",
-        "strokes": 13,
-        "alphaUnchanged": true,
-        "visibleEqualsSource": true,
-        "changesInsideSelection": true,
-        "changedPixels": 13,
-        "selectionPixels": 13,
-        "meanChange": 94.8
-      }
+      "generatedSha256": "fab2cff5d89e63feb6944bf56d4cd34c10b1335ecd6e97735186ba525096b8b0"
     },
     {
       "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
@@ -4790,15 +6037,15 @@
         "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "crop",
-        "score": 0.6429,
-        "iou": 0.3571,
+        "score": 0.8462,
+        "iou": 0.1538,
         "visibleError": null,
         "candidates": {
-          "crop": 0.6429,
-          "crop+shape": 0.6429
+          "crop": 0.8462
         },
         "matrix": [
           [
@@ -4818,19 +6065,9 @@
           ]
         ]
       },
+      "holeFilledPixels": 17,
       "hiddenPixels": 12,
-      "generatedSha256": "adb8f6f5d32fe19a6f8f0673494f38c5a6c691522233b0deafff605688366384",
-      "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "yellow pixel; silver-grey link",
-        "strokes": 11,
-        "alphaUnchanged": true,
-        "visibleEqualsSource": true,
-        "changesInsideSelection": true,
-        "changedPixels": 11,
-        "selectionPixels": 11,
-        "meanChange": 46.4
-      }
+      "generatedSha256": "1e43ab40b5af6fcda9eee491ae9da8f41655d6fef3eecad3ec30dc83e42298b7"
     },
     {
       "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
@@ -4855,6 +6092,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.303,
@@ -4884,18 +6122,25 @@
           ]
         ]
       },
+      "holeFilledPixels": 41,
       "hiddenPixels": 20,
       "generatedSha256": "2b91975f3a484bd34f0c0c0c04ae2633151b16ce168ee5c7885465e808618fdf",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "white + blue gem residue in the hidden bottom; silver connector",
-        "strokes": 20,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 12 visible px near the completion repainted with model colors",
+        "strokes": 12,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 20,
-        "selectionPixels": 20,
-        "meanChange": 47.9
+        "changedPixels": 12,
+        "selectionPixels": 12,
+        "meanChange": 42.8
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem": 5,
+          "head_accessories/left_crown_ribbon/ribbon_head": 7
+        }
       }
     },
     {
@@ -4919,17 +6164,16 @@
         "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem"
       ],
       "model": "gpt-image-2.5-flare",
-      "promptVariant": "template",
+      "promptVariant": "v2 (source-crop.png)",
+      "generation": "generated-v2.png",
       "registration": {
         "method": "crop",
-        "score": 0.4545,
-        "iou": 0.5455,
+        "score": 0.4,
+        "iou": 0.6,
         "visibleError": null,
         "candidates": {
-          "crop": 0.4545,
-          "bbox": 0.4545,
-          "crop+shape": 0.4545,
-          "bbox+shape": 0.4545
+          "crop": 0.4,
+          "crop+shape": 0.4
         },
         "matrix": [
           [
@@ -4949,8 +6193,26 @@
           ]
         ]
       },
+      "holeFilledPixels": 35,
       "hiddenPixels": 8,
-      "generatedSha256": "a375bf1b2899d5d53e66bd38ec688c2af8cd685c8794733da14d680c5db98e2d"
+      "generatedSha256": "39138c2d34253129cb681d513955edf31babc4bf84f592c46289d1e7c20ef073",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 4 visible px near the completion repainted with model colors",
+        "strokes": 4,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 4,
+        "selectionPixels": 4,
+        "meanChange": 43.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem": 3,
+          "head_accessories/right_crown_ribbon/ribbon_head": 1
+        }
+      }
     },
     {
       "id": "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
@@ -4972,6 +6234,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.1583,
@@ -5001,8 +6264,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 275,
       "hiddenPixels": 3,
-      "generatedSha256": "ad1cde91d0eb44e7b56aacf079f4d605f94d83c2aca2c0171f6602e4aa8c88ff"
+      "generatedSha256": "ad1cde91d0eb44e7b56aacf079f4d605f94d83c2aca2c0171f6602e4aa8c88ff",
+      "outlineReceived": {
+        "pixels": 10,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
@@ -5024,6 +6292,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.2676,
@@ -5053,8 +6322,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 397,
       "hiddenPixels": 4,
-      "generatedSha256": "193bbce80415c2a28288ad0264bd2e4f7ff0ebd7dc2e308ea91371c5a0353f48"
+      "generatedSha256": "193bbce80415c2a28288ad0264bd2e4f7ff0ebd7dc2e308ea91371c5a0353f48",
+      "outlineReceived": {
+        "pixels": 6,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
@@ -5076,6 +6350,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.4194,
@@ -5105,8 +6380,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 267,
       "hiddenPixels": 3,
-      "generatedSha256": "01866da3d095fd856388e9fa84b63ae38e41096780ec168ada6a996e93282948"
+      "generatedSha256": "01866da3d095fd856388e9fa84b63ae38e41096780ec168ada6a996e93282948",
+      "outlineReceived": {
+        "pixels": 5,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem",
@@ -5128,6 +6408,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox",
         "score": 0.4839,
@@ -5157,8 +6438,13 @@
           ]
         ]
       },
+      "holeFilledPixels": 412,
       "hiddenPixels": 4,
-      "generatedSha256": "6541024631a47d953159ff993f2327d55f7a10b7e6fd3b15749822ed57d077b2"
+      "generatedSha256": "6541024631a47d953159ff993f2327d55f7a10b7e6fd3b15749822ed57d077b2",
+      "outlineReceived": {
+        "pixels": 3,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/left_crown_ribbon/ribbon_head",
@@ -5180,6 +6466,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0681,
@@ -5211,8 +6498,18 @@
           ]
         ]
       },
+      "holeFilledPixels": 777,
       "hiddenPixels": 5,
-      "generatedSha256": "fe2482df651726016736883d9861da10b817fce9589304e73f29e2d862f01fd8"
+      "visibleDeviation": {
+        "meanAbs": 29.86,
+        "over32": 0.3571,
+        "pixels": 14
+      },
+      "generatedSha256": "fe2482df651726016736883d9861da10b817fce9589304e73f29e2d862f01fd8",
+      "outlineReceived": {
+        "pixels": 24,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/right_crown_ribbon/ribbon_head",
@@ -5234,6 +6531,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "sift+shape",
         "score": 0.1098,
@@ -5265,13 +6563,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 474,
       "hiddenPixels": 18,
       "meanCorrection": [
-        4.119999885559082,
-        4.440000057220459,
-        1.8899999856948853
+        4.179999828338623,
+        4.389999866485596,
+        2.109999895095825
       ],
-      "generatedSha256": "9de8e3af2cc1dd36385dc79c641c97a937616924a1fa5f3aec99e8f739c758d6"
+      "visibleDeviation": {
+        "meanAbs": 28.68,
+        "over32": 0.3214,
+        "pixels": 84
+      },
+      "generatedSha256": "9de8e3af2cc1dd36385dc79c641c97a937616924a1fa5f3aec99e8f739c758d6",
+      "outlineReceived": {
+        "pixels": 50,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/crown_frame",
@@ -5295,6 +6603,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop",
         "score": 1.0536,
@@ -5326,14 +6635,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 5846,
       "hiddenPixels": 100,
       "meanCorrection": [
-        40.0,
-        40.0,
-        40.0
+        31.950000762939453,
+        28.290000915527344,
+        23.3799991607666
       ],
+      "visibleDeviation": {
+        "meanAbs": 36.78,
+        "over32": 0.224,
+        "pixels": 250
+      },
       "generatedSha256": "94ef4ba1968b1781c4376a830ed693ced282d2aa55765b5102bb5165f76f19bf",
-      "retouchReview": "kept: grey-white rounded ends in the hidden area follow the frame silver; acceptable"
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 2 visible px near the completion repainted with model colors",
+        "strokes": 2,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 2,
+        "selectionPixels": 2,
+        "meanChange": 23.5
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/side_hair_left": 2
+        }
+      },
+      "outlineReceived": {
+        "pixels": 93,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "hair/side_hair_right",
@@ -5357,6 +6691,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "sift+shape",
         "score": 0.0695,
@@ -5390,23 +6725,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 1097,
       "hiddenPixels": 286,
       "meanCorrection": [
-        11.890000343322754,
-        9.260000228881836,
-        4.920000076293945
+        11.710000038146973,
+        8.84000015258789,
+        4.309999942779541
       ],
+      "visibleDeviation": {
+        "meanAbs": 10.63,
+        "over32": 0.0695,
+        "pixels": 2822
+      },
       "generatedSha256": "ad341d2d181d2d5f9b313d24e2bd7e9c5db02d063ac67239369c677ef0413f86",
       "retouch": {
-        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
-        "note": "dark/blue gem blob at the hidden top tip; repaint as hair",
-        "strokes": 44,
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 33 visible px near the completion repainted with model colors",
+        "strokes": 33,
         "alphaUnchanged": true,
-        "visibleEqualsSource": true,
         "changesInsideSelection": true,
-        "changedPixels": 110,
-        "selectionPixels": 129,
-        "meanChange": 56.1
+        "changedPixels": 33,
+        "selectionPixels": 33,
+        "meanChange": 29.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "hair/side_hair_left": 28,
+          "head_accessories/lotus_ornament": 5
+        }
+      },
+      "outlineReceived": {
+        "pixels": 473,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
       }
     },
     {
@@ -5431,6 +6782,7 @@
       ],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "bbox+shape",
         "score": 0.0983,
@@ -5462,13 +6814,39 @@
           ]
         ]
       },
+      "holeFilledPixels": 976,
       "hiddenPixels": 323,
       "meanCorrection": [
-        13.15999984741211,
-        11.25,
-        7.769999980926514
+        12.510000228881836,
+        10.460000038146973,
+        7.050000190734863
       ],
-      "generatedSha256": "d9dbae8ea6d0d2ed579929c7036240cb964501cab7149ea789e04e47655fe34f"
+      "visibleDeviation": {
+        "meanAbs": 14.37,
+        "over32": 0.1162,
+        "pixels": 3141
+      },
+      "generatedSha256": "d9dbae8ea6d0d2ed579929c7036240cb964501cab7149ea789e04e47655fe34f",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = repair mask)",
+        "note": "outline ghost band: 17 visible px near the completion repainted with model colors",
+        "strokes": 17,
+        "alphaUnchanged": true,
+        "changesInsideSelection": true,
+        "changedPixels": 17,
+        "selectionPixels": 17,
+        "meanChange": 51.2
+      },
+      "outlineTransfer": {
+        "note": "repainted visible outline pixels handed to the front part with source colors",
+        "to": {
+          "head_accessories/lotus_ornament": 17
+        }
+      },
+      "outlineReceived": {
+        "pixels": 505,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     },
     {
       "id": "head_accessories/lotus_ornament",
@@ -5490,6 +6868,7 @@
       "occludedBy": [],
       "model": "gpt-image-2.5-flare",
       "promptVariant": "template",
+      "generation": "generated.png",
       "registration": {
         "method": "crop+shape",
         "score": 0.0783,
@@ -5527,13 +6906,23 @@
           ]
         ]
       },
+      "holeFilledPixels": 643,
       "hiddenPixels": 70,
       "meanCorrection": [
-        3.359999895095825,
-        3.5,
-        1.6799999475479126
+        2.059999942779541,
+        2.2300000190734863,
+        1.2400000095367432
       ],
-      "generatedSha256": "2be5e5a3efb283950223809ca1f12d66e80a878ac2e49f3f043fb7fb846d3374"
+      "visibleDeviation": {
+        "meanAbs": 23.46,
+        "over32": 0.2321,
+        "pixels": 1749
+      },
+      "generatedSha256": "2be5e5a3efb283950223809ca1f12d66e80a878ac2e49f3f043fb7fb846d3374",
+      "outlineReceived": {
+        "pixels": 114,
+        "note": "outline / antialias band taken over from the part behind (shape grows by up to a few px beyond the color-block region)"
+      }
     }
   ],
   "occlusionSourceHash": "2012a49efc5e0555c8835d9174102daaab20f1bece1b59303408d50a79501012",

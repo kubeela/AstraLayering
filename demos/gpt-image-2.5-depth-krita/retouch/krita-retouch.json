@@ -1,112 +1,250 @@
 {
   "ok": true,
   "version": "5.3.4.1 (git bd6e8d0)",
-  "kra": "character-depth.kra",
+  "kra": "delivery-v2/character-depth.kra",
   "layers": 90,
-  "editedLayers": 21,
-  "unchangedLayersVerified": 69,
+  "editedLayers": 47,
+  "unchangedLayersVerified": 43,
   "reopenedVerified": true,
   "parts": [
     {
-      "id": "hair/back_hair/lock_right",
-      "layer": "04 hair/back_hair/lock_right",
-      "strokes": 489,
+      "id": "head_accessories/left_crown_ribbon/ribbon_tail",
+      "layer": "00 head_accessories/left_crown_ribbon/ribbon_tail",
+      "strokes": 88,
       "presets": [
-        "b) Basic-1",
-        "b) Basic-5 Size"
+        "b) Basic-1"
       ],
       "sizes": [
-        2,
-        9
+        3
       ],
       "opacities": [
-        0.35,
         1.0
       ],
-      "defectPixels": 2973,
+      "defectPixels": 88,
       "changed": true,
-      "sha256": "8201f82feff8ee0822da11f478b45646b07db452dc6089b3e4e6bc3ffc51184b",
-      "seconds": 2.72
+      "sha256": "e8ed0ca3fd607125c9eda43f47f43e92168942867cbb8c5efe7cb64c4b62f026",
+      "seconds": 0.84
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_body",
+      "layer": "01 head_accessories/right_crown_ribbon/ribbon_body",
+      "strokes": 70,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 70,
+      "changed": true,
+      "sha256": "e0f995333b01501ac5a4ea165ed0fafef3ecde54f5c229dcb31b21310404fe16",
+      "seconds": 0.19
+    },
+    {
+      "id": "hair/back_hair/main_right",
+      "layer": "02 hair/back_hair/main_right",
+      "strokes": 1688,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 1688,
+      "changed": true,
+      "sha256": "4684c39cf97a4fc29d0b79bfa3a1770454fb8b19c807519a478b1ec25753db99",
+      "seconds": 2.51
+    },
+    {
+      "id": "hair/back_hair/main_left",
+      "layer": "03 hair/back_hair/main_left",
+      "strokes": 1732,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 1732,
+      "changed": true,
+      "sha256": "60a075e9e2986204d5723bace04949b799e557e8f65f7f01e35e1aba798c1c62",
+      "seconds": 2.25
+    },
+    {
+      "id": "hair/back_hair/lock_right",
+      "layer": "04 hair/back_hair/lock_right",
+      "strokes": 114,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 114,
+      "changed": true,
+      "sha256": "875ceb157c2eb55d099bd66027ad86e93c3ec10701fcd9672f9497079e5d5072",
+      "seconds": 0.17
     },
     {
       "id": "hair/back_hair/lock_left",
       "layer": "05 hair/back_hair/lock_left",
-      "strokes": 513,
+      "strokes": 127,
       "presets": [
-        "b) Basic-1",
-        "b) Basic-5 Size"
+        "b) Basic-1"
       ],
       "sizes": [
-        2,
-        9
+        3
       ],
       "opacities": [
-        0.35,
         1.0
       ],
-      "defectPixels": 3049,
+      "defectPixels": 127,
       "changed": true,
-      "sha256": "affbd784e8ce289fa898703fd45a00b4b60a6b733d19565ed1d72bc047ef5b17",
-      "seconds": 2.06
+      "sha256": "c1c61596bee1d3e074d1be8f3cf08ebb9304e557e97ed0327eed1089f4d9857b",
+      "seconds": 0.22
+    },
+    {
+      "id": "hair/bun",
+      "layer": "06 hair/bun",
+      "strokes": 92,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 92,
+      "changed": true,
+      "sha256": "a00a5adf302340e65d2a8b8e7744f7e9cae914dc324033b4cfd4ebcc25674265",
+      "seconds": 0.15
+    },
+    {
+      "id": "hair/hair_cap",
+      "layer": "07 hair/hair_cap",
+      "strokes": 545,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 545,
+      "changed": true,
+      "sha256": "dc250df809dce9e05660c02320ca7bcfe08f6038a6d1636ef5a9d118580f16e8",
+      "seconds": 0.74
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "layer": "08 legs/leg_right/leg",
+      "strokes": 38,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 38,
+      "changed": true,
+      "sha256": "371add11900c44394cfa6faeb1823f42e4250bd994c2226f7ff7c5c0fb7d87b8",
+      "seconds": 0.12
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "layer": "09 legs/leg_left/leg",
+      "strokes": 98,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 98,
+      "changed": true,
+      "sha256": "d86f3500ecf0fb9c8943fd859ad9ef737882c5343849f219f4005af78e9181c5",
+      "seconds": 0.15
     },
     {
       "id": "legs/leg_right/foot",
       "layer": "10 legs/leg_right/foot",
-      "strokes": 134,
+      "strokes": 666,
       "presets": [
         "b) Basic-1"
       ],
       "sizes": [
-        6
+        3
       ],
       "opacities": [
         1.0
       ],
-      "defectPixels": 521,
+      "defectPixels": 666,
       "changed": true,
-      "sha256": "0edb20d40c164e9ab6ce7f10d15950690ae523b2181fdea053bc822a211da4ad",
-      "seconds": 0.17
+      "sha256": "f3cffc1d4460dfa1503d1b1dcad0d4d90f9ce1cb235adbf7f4054cecc069bbdd",
+      "seconds": 0.83
     },
     {
       "id": "legs/leg_left/foot",
       "layer": "11 legs/leg_left/foot",
-      "strokes": 119,
+      "strokes": 465,
       "presets": [
         "b) Basic-1"
       ],
       "sizes": [
-        6
+        3
       ],
       "opacities": [
         1.0
       ],
-      "defectPixels": 403,
+      "defectPixels": 465,
       "changed": true,
-      "sha256": "f4bcc3dbc616f7cc0b332633e1c74dd7edb1679406289b198339a5e43107f2f8",
-      "seconds": 0.19
+      "sha256": "6631b6bf9a8c0a6d4f6f2cfa0ee62150cb8c86a41975c74201f6d910eb41d0d4",
+      "seconds": 0.59
+    },
+    {
+      "id": "pelvis",
+      "layer": "12 pelvis",
+      "strokes": 138,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 138,
+      "changed": true,
+      "sha256": "ebe75793f46bd099f01a72a0c36271d70280e174b4e078c9b501ba3d191a6788",
+      "seconds": 0.2
     },
     {
       "id": "neck",
       "layer": "13 neck",
-      "strokes": 292,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        14
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 4344,
-      "changed": true,
-      "sha256": "ab2e1b84d40b2c2d1b857c6a0af5241cb834d8868095fdbdd74c2a56142d5665",
-      "seconds": 0.38
-    },
-    {
-      "id": "head_accessories/left_earring/ear_stud",
-      "layer": "45 head_accessories/left_earring/ear_stud",
-      "strokes": 28,
+      "strokes": 875,
       "presets": [
         "b) Basic-1"
       ],
@@ -116,15 +254,51 @@
       "opacities": [
         1.0
       ],
-      "defectPixels": 28,
+      "defectPixels": 875,
       "changed": true,
-      "sha256": "83db7f5e495343c2fc4ef956506758366117d49b7f814e1e817485fcf640f2d0",
+      "sha256": "aad76c820535a30d8ad117e2b1f52a03e017a50fea23822f6c451354999a9616",
+      "seconds": 1.11
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "layer": "14 arms/arm_right/hand/index_finger",
+      "strokes": 109,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 109,
+      "changed": true,
+      "sha256": "bd15c15ba8f4cda861175a7abc0b33977d9c1c15722100cac507e9adc86d693e",
+      "seconds": 0.16
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "layer": "15 arms/arm_right/hand/middle_finger",
+      "strokes": 26,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 26,
+      "changed": true,
+      "sha256": "b99d1ed94f1d910113fbc6e3ccc19367e5b9d30e4511f7e3fad83f954140e15f",
       "seconds": 0.09
     },
     {
-      "id": "head_accessories/right_earring/ear_stud",
-      "layer": "46 head_accessories/right_earring/ear_stud",
-      "strokes": 21,
+      "id": "arms/arm_right/hand/ring_finger",
+      "layer": "16 arms/arm_right/hand/ring_finger",
+      "strokes": 35,
       "presets": [
         "b) Basic-1"
       ],
@@ -134,123 +308,87 @@
       "opacities": [
         1.0
       ],
-      "defectPixels": 21,
+      "defectPixels": 35,
       "changed": true,
-      "sha256": "6e60a9fdaa8445dfec29eda5db113a7c9b5fd87f9ebf5953de15c21da03b6716",
+      "sha256": "f6a3d8fc6d7660be3cf9fcd5ac1ebbbf60c8174bd72cc2396f969278dafca382",
+      "seconds": 0.1
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "layer": "17 arms/arm_right/hand/little_finger",
+      "strokes": 2,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 2,
+      "changed": true,
+      "sha256": "3c3b37e107fe642b2526d0e742d0a3b1e1b480c3406991174778dcbc149b0da3",
+      "seconds": 0.08
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "layer": "18 arms/arm_right/hand/thumb",
+      "strokes": 6,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 6,
+      "changed": true,
+      "sha256": "c21f55b307f904cb2fd8c8fcf13387201c43834e4c0fc99b747f50a279ab5f1f",
+      "seconds": 0.08
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "layer": "19 arms/arm_right/hand/palm",
+      "strokes": 12,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 12,
+      "changed": true,
+      "sha256": "bd067420e36bb486d3f1e452f04cc8b75af8a3d14b07ab833b7cb3551d97392c",
+      "seconds": 0.09
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "layer": "21 arms/arm_right/upper_arm",
+      "strokes": 8,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 8,
+      "changed": true,
+      "sha256": "669a2c8c056fb018aa949de2412b83977e3b6a2f6ee604d13bc4274dbbd1fd39",
       "seconds": 0.14
     },
     {
-      "id": "face/ear_right",
-      "layer": "47 face/ear_right",
-      "strokes": 126,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        5
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 126,
-      "changed": true,
-      "sha256": "206237e33bb56bad9df090109391b18fa2c2b35295092c70e62f918abf10d79c",
-      "seconds": 0.23
-    },
-    {
-      "id": "face/ear_left",
-      "layer": "48 face/ear_left",
-      "strokes": 164,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        5
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 164,
-      "changed": true,
-      "sha256": "b993bdf54d8acc2bf94c2399275aefcf8f1bb287a2eab73387ad399aa834111b",
-      "seconds": 0.28
-    },
-    {
-      "id": "face/eye_left/sclera",
-      "layer": "50 face/eye_left/sclera",
-      "strokes": 285,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        5
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 285,
-      "changed": true,
-      "sha256": "e7fcc42d60d449e9c2a42fca8544e00ffc2511e44ec495d60f0e0afdb7053bac",
-      "seconds": 0.41
-    },
-    {
-      "id": "face/eye_right/sclera",
-      "layer": "51 face/eye_right/sclera",
-      "strokes": 344,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        5
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 344,
-      "changed": true,
-      "sha256": "8ecc8227abeea4b5b21e90ba082b6d7115d81667f8f0103832f1ec71acd99364",
-      "seconds": 0.48
-    },
-    {
-      "id": "face/eye_left/iris",
-      "layer": "52 face/eye_left/iris",
-      "strokes": 83,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        4
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 83,
-      "changed": true,
-      "sha256": "c4e078a214978bedc751fd17ff4eb5187e2b3318dd98c49e1462fb98f388c3e4",
-      "seconds": 0.15
-    },
-    {
-      "id": "face/eye_right/iris",
-      "layer": "53 face/eye_right/iris",
-      "strokes": 106,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        4
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 106,
-      "changed": true,
-      "sha256": "03027f03264ab7890e33e7516ee0de7543f4a86c70a20f0270578fd1058d074d",
-      "seconds": 0.18
-    },
-    {
-      "id": "face/mouth/lower_teeth",
-      "layer": "68 face/mouth/lower_teeth",
-      "strokes": 24,
+      "id": "arms/arm_left/forearm",
+      "layer": "23 arms/arm_left/forearm",
+      "strokes": 3,
       "presets": [
         "b) Basic-1"
       ],
@@ -260,14 +398,14 @@
       "opacities": [
         1.0
       ],
-      "defectPixels": 24,
+      "defectPixels": 3,
       "changed": true,
-      "sha256": "491117b76e2a492184b75cc0ae468b588a7da69b82e45f864178713b230f33af",
-      "seconds": 0.07
+      "sha256": "8536c2b4e0709ffb33d05f14bc54e4124ac9ad031ca55ebbe40e247e90535d4f",
+      "seconds": 0.08
     },
     {
-      "id": "face/mouth/upper_teeth",
-      "layer": "69 face/mouth/upper_teeth",
+      "id": "arms/arm_left/hand/little_finger",
+      "layer": "24 arms/arm_left/hand/little_finger",
       "strokes": 49,
       "presets": [
         "b) Basic-1"
@@ -280,13 +418,301 @@
       ],
       "defectPixels": 49,
       "changed": true,
-      "sha256": "309f2d56f3a1af66df4be86f46a0a9f48b2a8f57b02250beceebcdf387caabe0",
+      "sha256": "cb553b531a95eb73bf1401e265b388bd746f47f1c87fcc373ff06f90b4d36f44",
+      "seconds": 0.13
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "layer": "25 arms/arm_left/hand/ring_finger",
+      "strokes": 29,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 29,
+      "changed": true,
+      "sha256": "7ee2b563b684eeaf1188d9545ce37f4f7fdacf69e9d9325d5c122e24261a482a",
+      "seconds": 0.09
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "layer": "26 arms/arm_left/hand/middle_finger",
+      "strokes": 5,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 5,
+      "changed": true,
+      "sha256": "9c70684c13d38314377b1efb02d314255c475e9614fc38ca54ffc6d8dd87e558",
+      "seconds": 0.1
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "layer": "27 arms/arm_left/hand/index_finger",
+      "strokes": 23,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 23,
+      "changed": true,
+      "sha256": "684b570210c3066799d8d732f18d38745dfbaec316fc806014c8f2a78ca6f10b",
+      "seconds": 0.09
+    },
+    {
+      "id": "body/torso",
+      "layer": "30 body/torso",
+      "strokes": 414,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 414,
+      "changed": true,
+      "sha256": "adbcf11056429c957317103552abf44ca06d969ea3123bd81561ae5de4a94fe4",
+      "seconds": 0.55
+    },
+    {
+      "id": "legs/leg_left/anklet/ankle_chain",
+      "layer": "38 legs/leg_left/anklet/ankle_chain",
+      "strokes": 3,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 3,
+      "changed": true,
+      "sha256": "60238aecacfd255d0186b9bcf64f223347571748b8344dccd3e6555f1526f4aa",
+      "seconds": 0.08
+    },
+    {
+      "id": "head_accessories/left_earring/ear_stud",
+      "layer": "45 head_accessories/left_earring/ear_stud",
+      "strokes": 1,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 1,
+      "changed": true,
+      "sha256": "da4074c73ba5e191e4c02ee0a27a0c13fc9242121a55da8aab0904678f2b9eab",
+      "seconds": 0.06
+    },
+    {
+      "id": "face/ear_right",
+      "layer": "47 face/ear_right",
+      "strokes": 113,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        2
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 113,
+      "changed": true,
+      "sha256": "706535dd2ddbd0162e241268e25ddd9fc63f7a795ade02520b71fdf6fa79506c",
+      "seconds": 0.21
+    },
+    {
+      "id": "face/ear_left",
+      "layer": "48 face/ear_left",
+      "strokes": 92,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        2
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 92,
+      "changed": true,
+      "sha256": "05e55c7691689b433032b990dd39b20a3d9a91a9e70a219f888ee0fa9356eddb",
+      "seconds": 0.14
+    },
+    {
+      "id": "face/face_base",
+      "layer": "49 face/face_base",
+      "strokes": 3617,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 3617,
+      "changed": true,
+      "sha256": "903de75fd72cb4015f5578a78488a8e53e18da87e286be3e044476b094b2cdb1",
+      "seconds": 4.43
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "layer": "50 face/eye_left/sclera",
+      "strokes": 18,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 18,
+      "changed": true,
+      "sha256": "1dfe50453e90ee79ae0ca4d6bb501db6c4f442206ab71680e81b24e66f068863",
+      "seconds": 0.08
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "layer": "51 face/eye_right/sclera",
+      "strokes": 35,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 35,
+      "changed": true,
+      "sha256": "130c27ed2806c00f024e6a16d64087e05221943daea3db9059027ca17dbaafee",
       "seconds": 0.11
+    },
+    {
+      "id": "face/eye_left/iris",
+      "layer": "52 face/eye_left/iris",
+      "strokes": 34,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 34,
+      "changed": true,
+      "sha256": "bd55a272a2b17b64bb2ef5bcb9ca9d85c8f482e4c24bd23e9f039a85a775a8cf",
+      "seconds": 0.09
+    },
+    {
+      "id": "face/eye_right/iris",
+      "layer": "53 face/eye_right/iris",
+      "strokes": 18,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 18,
+      "changed": true,
+      "sha256": "f0b2d7f75ac0f08ca1477c1f67dc14339fedf821bae851b8851fa558abb3c933",
+      "seconds": 0.09
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "layer": "60 face/eye_right/upper_eyelid",
+      "strokes": 2,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 2,
+      "changed": true,
+      "sha256": "4a831647cac29bd7938a28deb8330d956c9aa152475abf06a951374b6e850f79",
+      "seconds": 0.08
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "layer": "66 face/mouth/mouth_interior",
+      "strokes": 5,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 5,
+      "changed": true,
+      "sha256": "5fd7e5809f91633ec463467309e4daddc670248c125ec4978e67607b9b625a28",
+      "seconds": 0.09
+    },
+    {
+      "id": "face/mouth/tongue",
+      "layer": "67 face/mouth/tongue",
+      "strokes": 25,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 25,
+      "changed": true,
+      "sha256": "143c5eb350ae7e351b5d531cffe0b2ef1bcfaee7257e2a8400493c8e08e25eb8",
+      "seconds": 0.12
     },
     {
       "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
       "layer": "73 head_accessories/forehead_ornament/upper_sapphire_mount",
-      "strokes": 83,
+      "strokes": 16,
       "presets": [
         "b) Basic-1"
       ],
@@ -296,15 +722,33 @@
       "opacities": [
         1.0
       ],
-      "defectPixels": 83,
+      "defectPixels": 16,
       "changed": true,
-      "sha256": "fec6643a73b099c4c91be5a5c7e6f23f21bb558c2bdce857aefaf341be0f12e2",
-      "seconds": 0.15
+      "sha256": "c25282263f4e8e35c8776ac96217a7a9a00bdd17932283871b7a0e5ded222926",
+      "seconds": 0.09
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+      "layer": "74 head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+      "strokes": 16,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 16,
+      "changed": true,
+      "sha256": "a8b79acd22209ebce2b6fc207b38992733d6587d80c8e284e467a8195d89180c",
+      "seconds": 0.09
     },
     {
       "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
       "layer": "75 head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
-      "strokes": 13,
+      "strokes": 14,
       "presets": [
         "b) Basic-1"
       ],
@@ -314,51 +758,15 @@
       "opacities": [
         1.0
       ],
-      "defectPixels": 13,
+      "defectPixels": 14,
       "changed": true,
-      "sha256": "96368a5340763423160058da604a304576932b1a3f665ca6da891ed545956d63",
-      "seconds": 0.08
-    },
-    {
-      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
-      "layer": "76 head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
-      "strokes": 13,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        3
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 13,
-      "changed": true,
-      "sha256": "f62884ac82dd102eb1ef946d19d05e51aa44f722cfac0dc5cbdb0120893c96a0",
-      "seconds": 0.08
-    },
-    {
-      "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
-      "layer": "77 head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
-      "strokes": 11,
-      "presets": [
-        "b) Basic-1"
-      ],
-      "sizes": [
-        3
-      ],
-      "opacities": [
-        1.0
-      ],
-      "defectPixels": 11,
-      "changed": true,
-      "sha256": "34eec1aa8b853f94e5bd440fa5ab56496221a04f57cd4e3c3cdbbb2f33813d70",
-      "seconds": 0.08
+      "sha256": "2eeb821f73b23eeae78b60940413b6cfc6e43ea6a0ccf563710d296d1c7f4b46",
+      "seconds": 0.13
     },
     {
       "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
       "layer": "78 head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
-      "strokes": 20,
+      "strokes": 12,
       "presets": [
         "b) Basic-1"
       ],
@@ -368,31 +776,82 @@
       "opacities": [
         1.0
       ],
-      "defectPixels": 20,
+      "defectPixels": 12,
       "changed": true,
-      "sha256": "e30333432d0d2feddecbd45c6bfa752424fe151362b6b26ca9fa49d6fc3c4e0d",
-      "seconds": 0.13
+      "sha256": "c51f8c79e4e4db63a93fee1ec53dfd79b332d461cffa581f19f6b5c366711979",
+      "seconds": 0.08
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
+      "layer": "79 head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
+      "strokes": 4,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 4,
+      "changed": true,
+      "sha256": "8cdb2c8d28b2ca0057d159fe6e769fffaf11ae0024e96354f65dae6b5833b232",
+      "seconds": 0.08
+    },
+    {
+      "id": "head_accessories/crown_frame",
+      "layer": "86 head_accessories/crown_frame",
+      "strokes": 2,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 2,
+      "changed": true,
+      "sha256": "fb56ff2a7cb9eaebbf98bd1e6bf9b0cb74da2f79d1a4e95a0fa018b038475ac9",
+      "seconds": 0.08
     },
     {
       "id": "hair/side_hair_right",
       "layer": "87 hair/side_hair_right",
-      "strokes": 44,
+      "strokes": 33,
       "presets": [
-        "b) Basic-1",
-        "b) Basic-5 Size"
+        "b) Basic-1"
       ],
       "sizes": [
-        2,
-        4
+        3
       ],
       "opacities": [
-        0.35,
         1.0
       ],
-      "defectPixels": 129,
+      "defectPixels": 33,
       "changed": true,
-      "sha256": "bbf87a3fc51c710f6b795679f7e12704b9190e79b8a69cdbe03c673d24bb371b",
-      "seconds": 0.16
+      "sha256": "6de6b4ab7e337eb28f5bd2513c05d5d50830616d23c99e1e65534166462a0aac",
+      "seconds": 0.1
+    },
+    {
+      "id": "hair/side_hair_left",
+      "layer": "88 hair/side_hair_left",
+      "strokes": 17,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 17,
+      "changed": true,
+      "sha256": "28a350d30fbcfd12e51af337a7f12ba14c6e09e979e9d35af03c4a0f5bfc5303",
+      "seconds": 0.13
     }
   ]
 }
