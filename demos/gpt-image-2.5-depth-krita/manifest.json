@@ -368,7 +368,18 @@
         14.640000343322754,
         10.6899995803833
       ],
-      "generatedSha256": "c4536788d99faaa12c4425f7673df71f2032b115e06298b742e7151aee70d448"
+      "generatedSha256": "c4536788d99faaa12c4425f7673df71f2032b115e06298b742e7151aee70d448",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "hidden mid strip painted as a yellow-cream glow; repaint lavender-white hair along strands",
+        "strokes": 489,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 2973,
+        "selectionPixels": 2973,
+        "meanChange": 34.7
+      }
     },
     {
       "id": "hair/back_hair/lock_left",
@@ -440,7 +451,18 @@
         6.449999809265137,
         7.210000038146973
       ],
-      "generatedSha256": "dbbe03bec22600df5b418a0f11bf77a1bda8736fca895029f312083e5a10ef28"
+      "generatedSha256": "dbbe03bec22600df5b418a0f11bf77a1bda8736fca895029f312083e5a10ef28",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "hidden mid tinted pink/skin; repaint with hair colors along strands",
+        "strokes": 513,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 3045,
+        "selectionPixels": 3049,
+        "meanChange": 33.0
+      }
     },
     {
       "id": "hair/bun",
@@ -604,7 +626,8 @@
         3.9700000286102295,
         4.139999866485596
       ],
-      "generatedSha256": "89683890afbcc9b41a53ab7f4c119d0dfa440c076347a15edfe8d19b4ea6b305"
+      "generatedSha256": "89683890afbcc9b41a53ab7f4c119d0dfa440c076347a15edfe8d19b4ea6b305",
+      "retouchReview": "kept: faint earring-diamond ghosts in the hidden lower sides are low contrast and behind the face; acceptable"
     },
     {
       "id": "legs/leg_right/leg",
@@ -798,7 +821,18 @@
         14.039999961853027
       ],
       "skinHealed": true,
-      "generatedSha256": "9b81f18089e99abc1739beafda78a4ed71bd72e94240f42cf6bc967f0622e06b"
+      "generatedSha256": "9b81f18089e99abc1739beafda78a4ed71bd72e94240f42cf6bc967f0622e06b",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "ghost anklet line and over-bright healed skin under the anklet; repaint with surrounding skin (the faint outline left is the anklet shadow in visible source pixels, kept)",
+        "strokes": 134,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 521,
+        "selectionPixels": 521,
+        "meanChange": 4.1
+      }
     },
     {
       "id": "legs/leg_left/foot",
@@ -864,7 +898,18 @@
         9.65999984741211
       ],
       "skinHealed": true,
-      "generatedSha256": "7289e9850e432cc5a5bb417ac2ed46cfc76110d74fce1198305d411836ab478c"
+      "generatedSha256": "7289e9850e432cc5a5bb417ac2ed46cfc76110d74fce1198305d411836ab478c",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "ghost anklet line and over-bright healed skin under the anklet; repaint with surrounding skin (the faint outline left is the anklet shadow in visible source pixels, kept)",
+        "strokes": 119,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 403,
+        "selectionPixels": 403,
+        "meanChange": 3.8
+      }
     },
     {
       "id": "pelvis",
@@ -994,7 +1039,18 @@
         5.369999885559082
       ],
       "skinHealed": true,
-      "generatedSha256": "060306f98affd524afa7f512a296f127ecb1023da9bf7f38ccca7b79d3fbe3f2"
+      "generatedSha256": "060306f98affd524afa7f512a296f127ecb1023da9bf7f38ccca7b79d3fbe3f2",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "ghost chin shadow (heart/V) under the face and duplicated collarbone V under the torso; smooth skin",
+        "strokes": 292,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 4318,
+        "selectionPixels": 4344,
+        "meanChange": 6.8
+      }
     },
     {
       "id": "arms/arm_right/hand/index_finger",
@@ -1464,7 +1520,8 @@
         4.710000038146973
       ],
       "skinHealed": true,
-      "generatedSha256": "f007be1f43c8a7df8cd9a13805d31cce5a6d4e855ee1ca9bab50d87e1bc373f4"
+      "generatedSha256": "f007be1f43c8a7df8cd9a13805d31cce5a6d4e855ee1ca9bab50d87e1bc373f4",
+      "retouchReview": "kept: hidden top under the torso is continuous skin; no defect"
     },
     {
       "id": "arms/arm_left/upper_arm",
@@ -1526,7 +1583,8 @@
         6.849999904632568
       ],
       "skinHealed": true,
-      "generatedSha256": "bca4435fa948ff7b8dd644720276dc6b2a7b267b36dc4b6c8df9eea5329b7a9c"
+      "generatedSha256": "bca4435fa948ff7b8dd644720276dc6b2a7b267b36dc4b6c8df9eea5329b7a9c",
+      "retouchReview": "kept: hidden top under the torso is continuous skin; no defect"
     },
     {
       "id": "arms/arm_left/forearm",
@@ -2822,7 +2880,18 @@
         ]
       },
       "hiddenPixels": 28,
-      "generatedSha256": "4acef3074a06cf3d8c7206de769f6a9eebf0df247d48e320d91ca8796f016437"
+      "generatedSha256": "4acef3074a06cf3d8c7206de769f6a9eebf0df247d48e320d91ca8796f016437",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "hidden stud pixels are skin/grey; repaint as the silver-pearl stud",
+        "strokes": 28,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 28,
+        "selectionPixels": 28,
+        "meanChange": 31.1
+      }
     },
     {
       "id": "head_accessories/right_earring/ear_stud",
@@ -2876,7 +2945,18 @@
         ]
       },
       "hiddenPixels": 21,
-      "generatedSha256": "b09d9ce14a27fae0ebc7dfaa861f42dcaf9308eb2c141c734ee61e8eff1739d0"
+      "generatedSha256": "b09d9ce14a27fae0ebc7dfaa861f42dcaf9308eb2c141c734ee61e8eff1739d0",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "hidden stud pixels are skin/grey; repaint as the silver-pearl stud",
+        "strokes": 21,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 21,
+        "selectionPixels": 21,
+        "meanChange": 23.4
+      }
     },
     {
       "id": "face/ear_right",
@@ -2941,7 +3021,18 @@
         5.050000190734863,
         4.289999961853027
       ],
-      "generatedSha256": "f3f05858bcd7cd2dcba342b3036abe4643e65ef4b9803edcafb7b0edd1ad8276"
+      "generatedSha256": "f3f05858bcd7cd2dcba342b3036abe4643e65ef4b9803edcafb7b0edd1ad8276",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "a hair strand (white/lavender) painted into the hidden ear; repaint as ear rim skin",
+        "strokes": 126,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 126,
+        "selectionPixels": 126,
+        "meanChange": 50.6
+      }
     },
     {
       "id": "face/ear_left",
@@ -3006,7 +3097,18 @@
         2.5299999713897705,
         2.569999933242798
       ],
-      "generatedSha256": "af67bdb10dcf756b831898f7690d59e91353d469ef3bda7821a8d97c3e45215f"
+      "generatedSha256": "af67bdb10dcf756b831898f7690d59e91353d469ef3bda7821a8d97c3e45215f",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "a hair strand (white/lavender) painted into the hidden ear; repaint as ear rim skin",
+        "strokes": 164,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 164,
+        "selectionPixels": 164,
+        "meanChange": 63.9
+      }
     },
     {
       "id": "face/face_base",
@@ -3089,7 +3191,8 @@
         10.039999961853027,
         8.930000305175781
       ],
-      "generatedSha256": "eb8f30dc9147a06cdf76bc893ee3ddd1fb62d5255aea224491d277c1638a057c"
+      "generatedSha256": "eb8f30dc9147a06cdf76bc893ee3ddd1fb62d5255aea224491d277c1638a057c",
+      "retouchReview": "kept: eye-oval / eyelash outline and the hair-parting wedge are source pixels owned by face_base (ownership residue of the color-block standard); its hidden completion is clean"
     },
     {
       "id": "face/eye_left/sclera",
@@ -3150,7 +3253,18 @@
         6.820000171661377,
         9.0600004196167
       ],
-      "generatedSha256": "71bdf9a4d06c1bd5c3dc0fcdd38f3fb992c8ae36d072be915e8c1b29c7f1ebbc"
+      "generatedSha256": "71bdf9a4d06c1bd5c3dc0fcdd38f3fb992c8ae36d072be915e8c1b29c7f1ebbc",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "dark iris rim stroke left in the hidden center; fill sclera white-grey",
+        "strokes": 285,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 285,
+        "selectionPixels": 285,
+        "meanChange": 45.4
+      }
     },
     {
       "id": "face/eye_right/sclera",
@@ -3212,7 +3326,18 @@
         12.09000015258789,
         13.869999885559082
       ],
-      "generatedSha256": "efee9f36ffdabde0ff4154ce1ae39d7374acea8142cdcbb7dfc3afaa6ac47ca9"
+      "generatedSha256": "efee9f36ffdabde0ff4154ce1ae39d7374acea8142cdcbb7dfc3afaa6ac47ca9",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "light iris rim line and white highlight dot in the hidden part; fill sclera white-grey",
+        "strokes": 344,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 344,
+        "selectionPixels": 344,
+        "meanChange": 71.3
+      }
     },
     {
       "id": "face/eye_left/iris",
@@ -3272,7 +3397,18 @@
         15.329999923706055,
         7.710000038146973
       ],
-      "generatedSha256": "49a97e0e86021f30e6965ace1479035d576ecb34aeeb25229210ea0114216429"
+      "generatedSha256": "49a97e0e86021f30e6965ace1479035d576ecb34aeeb25229210ea0114216429",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "hidden top band painted as eyelid brown; repaint with the iris top navy",
+        "strokes": 83,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 83,
+        "selectionPixels": 83,
+        "meanChange": 90.2
+      }
     },
     {
       "id": "face/eye_right/iris",
@@ -3331,7 +3467,18 @@
         32.290000915527344,
         25.709999084472656
       ],
-      "generatedSha256": "56f8711517e0306a0a950b940b1238ba8015997f8ccd3b2253f0b226c044f8fc"
+      "generatedSha256": "56f8711517e0306a0a950b940b1238ba8015997f8ccd3b2253f0b226c044f8fc",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "hidden top band painted as eyelid brown; repaint with the iris top navy",
+        "strokes": 106,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 106,
+        "selectionPixels": 106,
+        "meanChange": 56.1
+      }
     },
     {
       "id": "face/eye_left/highlight",
@@ -4124,7 +4271,18 @@
         ]
       },
       "hiddenPixels": 24,
-      "generatedSha256": "61d95838c2bb031287a4de168d0c60b126fa45ed3f1277bc7d8e5e10823ea2d9"
+      "generatedSha256": "61d95838c2bb031287a4de168d0c60b126fa45ed3f1277bc7d8e5e10823ea2d9",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "dull pink/brown; should read as an off-white teeth band (color from the lightest visible upper teeth)",
+        "strokes": 24,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 24,
+        "selectionPixels": 24,
+        "meanChange": 74.8
+      }
     },
     {
       "id": "face/mouth/upper_teeth",
@@ -4176,7 +4334,18 @@
         ]
       },
       "hiddenPixels": 51,
-      "generatedSha256": "4c1ddfe499f9e9c9ceda037c239daddfa0edac53f94b176b992507e7252e6f5d"
+      "generatedSha256": "4c1ddfe499f9e9c9ceda037c239daddfa0edac53f94b176b992507e7252e6f5d",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "dark lip red at the hidden ends; recolor as teeth",
+        "strokes": 49,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 49,
+        "selectionPixels": 49,
+        "meanChange": 96.7
+      }
     },
     {
       "id": "face/mouth/lower_lip",
@@ -4401,7 +4570,18 @@
         9.510000228881836,
         19.020000457763672
       ],
-      "generatedSha256": "3b13984e5d2489ec0fb72642c3a5dec04fddaad1b918cb6bbc621eaa49e0b647"
+      "generatedSha256": "3b13984e5d2489ec0fb72642c3a5dec04fddaad1b918cb6bbc621eaa49e0b647",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "cream/yellow pixels on the hidden left frame; silver frame",
+        "strokes": 83,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 83,
+        "selectionPixels": 83,
+        "meanChange": 52.5
+      }
     },
     {
       "id": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
@@ -4509,7 +4689,18 @@
         ]
       },
       "hiddenPixels": 13,
-      "generatedSha256": "91509cd9a37368dc5cfd54c463e4bf7a71866ad5439838ce4af05da72eb40f63"
+      "generatedSha256": "91509cd9a37368dc5cfd54c463e4bf7a71866ad5439838ce4af05da72eb40f63",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "brown/orange hidden top; silver link",
+        "strokes": 13,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 13,
+        "selectionPixels": 13,
+        "meanChange": 79.2
+      }
     },
     {
       "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
@@ -4564,7 +4755,18 @@
         ]
       },
       "hiddenPixels": 13,
-      "generatedSha256": "cbdea49aee8379b4cb56153facacac1c9197e2575429de63646e17a459748ca5"
+      "generatedSha256": "cbdea49aee8379b4cb56153facacac1c9197e2575429de63646e17a459748ca5",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "yellow/gold pixels; silver-grey connector",
+        "strokes": 13,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 13,
+        "selectionPixels": 13,
+        "meanChange": 94.8
+      }
     },
     {
       "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
@@ -4617,7 +4819,18 @@
         ]
       },
       "hiddenPixels": 12,
-      "generatedSha256": "adb8f6f5d32fe19a6f8f0673494f38c5a6c691522233b0deafff605688366384"
+      "generatedSha256": "adb8f6f5d32fe19a6f8f0673494f38c5a6c691522233b0deafff605688366384",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "yellow pixel; silver-grey link",
+        "strokes": 11,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 11,
+        "selectionPixels": 11,
+        "meanChange": 46.4
+      }
     },
     {
       "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
@@ -4672,7 +4885,18 @@
         ]
       },
       "hiddenPixels": 20,
-      "generatedSha256": "2b91975f3a484bd34f0c0c0c04ae2633151b16ce168ee5c7885465e808618fdf"
+      "generatedSha256": "2b91975f3a484bd34f0c0c0c04ae2633151b16ce168ee5c7885465e808618fdf",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "white + blue gem residue in the hidden bottom; silver connector",
+        "strokes": 20,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 20,
+        "selectionPixels": 20,
+        "meanChange": 47.9
+      }
     },
     {
       "id": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
@@ -5108,7 +5332,8 @@
         40.0,
         40.0
       ],
-      "generatedSha256": "94ef4ba1968b1781c4376a830ed693ced282d2aa55765b5102bb5165f76f19bf"
+      "generatedSha256": "94ef4ba1968b1781c4376a830ed693ced282d2aa55765b5102bb5165f76f19bf",
+      "retouchReview": "kept: grey-white rounded ends in the hidden area follow the frame silver; acceptable"
     },
     {
       "id": "hair/side_hair_right",
@@ -5171,7 +5396,18 @@
         9.260000228881836,
         4.920000076293945
       ],
-      "generatedSha256": "ad341d2d181d2d5f9b313d24e2bd7e9c5db02d063ac67239369c677ef0413f86"
+      "generatedSha256": "ad341d2d181d2d5f9b313d24e2bd7e9c5db02d063ac67239369c677ef0413f86",
+      "retouch": {
+        "tool": "Krita 5.3.4.1 (git bd6e8d0) brush (paintLine, alpha-locked, selection = defect mask)",
+        "note": "dark/blue gem blob at the hidden top tip; repaint as hair",
+        "strokes": 44,
+        "alphaUnchanged": true,
+        "visibleEqualsSource": true,
+        "changesInsideSelection": true,
+        "changedPixels": 110,
+        "selectionPixels": 129,
+        "meanChange": 56.1
+      }
     },
     {
       "id": "hair/side_hair_left",
