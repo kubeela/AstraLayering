@@ -8,7 +8,7 @@
 
 [新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 与分组预览器](./loading/part-preview.html)
 
-[raster-layering：TypeScript / Codex SDK 顺序流程](./workflow-next/raster-layering/README.md)：显式指定 Krita 后执行分层、补全与修画，第一步完整提示词可独立查看和修改。
+[raster-layering：TypeScript / Codex SDK 顺序流程](./workflow-next/raster-layering/README.md)：显式指定 Krita 后执行分层、补全与修画；按 `--name` 保存输入并续跑，用 `.running` / `.completed` 区分中断恢复和重跑。
 
 ## 效果展示
 

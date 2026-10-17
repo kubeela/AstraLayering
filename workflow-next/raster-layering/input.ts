@@ -1,7 +1,23 @@
-import { realpath, stat } from 'node:fs/promises';
+import { cp, mkdir, realpath, stat } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 
 export type PartLayeringInput = { directory: string; parts: string };
+
+export const snapshotEntries = ['parts', 'references', 'groups.json', 'occlusion.json', 'preview.svg'] as const;
+
+export async function snapshotInput(input: PartLayeringInput, destination: string): Promise<void> {
+  await mkdir(destination);
+  for (const entry of snapshotEntries) {
+    const source = join(input.directory, entry);
+    try { await stat(source); }
+    catch (error) {
+      if (entry !== 'parts' && (error as NodeJS.ErrnoException).code === 'ENOENT') continue;
+      throw error;
+    }
+    // Dereference links so the saved input survives removal of the source directory.
+    await cp(source, join(destination, entry), { recursive: true, dereference: true, force: false, errorOnExist: true });
+  }
+}
 
 export async function resolvePartInput(value: string): Promise<PartLayeringInput> {
   const supplied = resolve(value);
