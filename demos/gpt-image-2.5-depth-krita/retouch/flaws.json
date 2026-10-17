@@ -1,169 +1,52 @@
 {
-  "retouched": {
-    "hair/back_hair/lock_right": {
-      "note": "hidden mid strip painted as a yellow-cream glow; repaint lavender-white hair along strands",
-      "defect": "r - b > 4",
-      "good": "b >= r - 1",
-      "mode": "hair",
-      "size": 9
-    },
-    "hair/back_hair/lock_left": {
-      "note": "hidden mid tinted pink/skin; repaint with hair colors along strands",
-      "defect": "(r - b > 4) | (r - g > 8)",
-      "good": "(b >= r - 1) & (r - g <= 6)",
-      "mode": "hair",
-      "size": 9
-    },
-    "legs/leg_right/foot": {
-      "note": "ghost anklet line and over-bright healed skin under the anklet; repaint with surrounding skin (the faint outline left is the anklet shadow in visible source pixels, kept)",
-      "defect": "hidden",
-      "good": "vis & (r > g + 3) & (luma > 175)",
-      "avoidEdge": 3,
-      "mode": "dab",
-      "size": 6
-    },
-    "legs/leg_left/foot": {
-      "note": "ghost anklet line and over-bright healed skin under the anklet; repaint with surrounding skin (the faint outline left is the anklet shadow in visible source pixels, kept)",
-      "defect": "hidden",
-      "good": "vis & (r > g + 3) & (luma > 175)",
-      "avoidEdge": 3,
-      "mode": "dab",
-      "size": 6
-    },
-    "neck": {
-      "note": "ghost chin shadow (heart/V) under the face and duplicated collarbone V under the torso; smooth skin",
-      "defect": "hidden",
-      "good": "vis & (r > 170) & (r > g + 3)",
-      "avoidEdge": 6,
-      "mode": "dab",
-      "size": 14
-    },
-    "head_accessories/left_earring/ear_stud": {
-      "note": "hidden stud pixels are skin/grey; repaint as the silver-pearl stud",
-      "defect": "hidden",
-      "good": "vis",
-      "mode": "dab",
-      "size": 3
-    },
-    "head_accessories/right_earring/ear_stud": {
-      "note": "hidden stud pixels are skin/grey; repaint as the silver-pearl stud",
-      "defect": "hidden",
-      "good": "vis",
-      "mode": "dab",
-      "size": 3
-    },
-    "face/ear_right": {
-      "note": "a hair strand (white/lavender) painted into the hidden ear; repaint as ear rim skin",
-      "defect": "b >= r - 12",
-      "good": "vis & (r > g + 8)",
-      "mode": "dab",
-      "size": 5
-    },
-    "face/ear_left": {
-      "note": "a hair strand (white/lavender) painted into the hidden ear; repaint as ear rim skin",
-      "defect": "b >= r - 12",
-      "good": "vis & (r > g + 8)",
-      "mode": "dab",
-      "size": 5
-    },
-    "face/eye_left/sclera": {
-      "note": "dark iris rim stroke left in the hidden center; fill sclera white-grey",
-      "defect": "hidden",
-      "good": "vis & (luma > 170)",
-      "mode": "dab",
-      "size": 5
-    },
-    "face/eye_right/sclera": {
-      "note": "light iris rim line and white highlight dot in the hidden part; fill sclera white-grey",
-      "defect": "hidden",
-      "good": "vis & (luma > 170)",
-      "mode": "dab",
-      "size": 5
-    },
-    "face/eye_left/iris": {
-      "note": "hidden top band painted as eyelid brown; repaint with the iris top navy",
-      "defect": "r > b - 6",
-      "good": "vis & (b > r + 6)",
-      "mode": "dab",
-      "size": 4
-    },
-    "face/eye_right/iris": {
-      "note": "hidden top band painted as eyelid brown; repaint with the iris top navy",
-      "defect": "r > b - 6",
-      "good": "vis & (b > r + 6)",
-      "mode": "dab",
-      "size": 4
-    },
-    "face/mouth/lower_teeth": {
-      "note": "dull pink/brown; should read as an off-white teeth band (color from the lightest visible upper teeth)",
-      "defect": "hidden",
-      "fixed": [
-        234,
-        218,
-        210
-      ],
-      "mode": "dab",
-      "size": 3
-    },
-    "face/mouth/upper_teeth": {
-      "note": "dark lip red at the hidden ends; recolor as teeth",
-      "defect": "r - g > 30",
-      "fixed": [
-        230,
-        212,
-        203
-      ],
-      "mode": "dab",
-      "size": 3
-    },
-    "head_accessories/forehead_ornament/upper_sapphire_mount": {
-      "note": "cream/yellow pixels on the hidden left frame; silver frame",
-      "defect": "r - b > 4",
-      "good": "b >= r",
-      "mode": "dab",
-      "size": 3
-    },
-    "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link": {
-      "note": "brown/orange hidden top; silver link",
-      "defect": "r - b > 4",
-      "good": "b >= r",
-      "mode": "dab",
-      "size": 3
-    },
-    "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector": {
-      "note": "yellow/gold pixels; silver-grey connector",
-      "defect": "r - b > 4",
-      "good": "b >= r",
-      "mode": "dab",
-      "size": 3
-    },
-    "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link": {
-      "note": "yellow pixel; silver-grey link",
-      "defect": "r - b > 4",
-      "good": "b >= r",
-      "mode": "dab",
-      "size": 3
-    },
-    "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector": {
-      "note": "white + blue gem residue in the hidden bottom; silver connector",
-      "defect": "hidden",
-      "good": "vis",
-      "mode": "dab",
-      "size": 3
-    },
-    "hair/side_hair_right": {
-      "note": "dark/blue gem blob at the hidden top tip; repaint as hair",
-      "defect": "(luma < 175) | (b - r > 22)",
-      "good": "(luma >= 175) & (b - r <= 18)",
-      "mode": "hair",
-      "size": 4
-    }
-  },
-  "kept": {
-    "face/face_base": "eye-oval / eyelash outline and the hair-parting wedge are source pixels owned by face_base (ownership residue of the color-block standard); its hidden completion is clean",
-    "hair/hair_cap": "faint earring-diamond ghosts in the hidden lower sides are low contrast and behind the face; acceptable",
-    "arms/arm_left/upper_arm": "hidden top under the torso is continuous skin; no defect",
-    "arms/arm_right/upper_arm": "hidden top under the torso is continuous skin; no defect",
-    "head_accessories/crown_frame": "grey-white rounded ends in the hidden area follow the frame silver; acceptable"
-  }
+ "face/face_base": {
+  "note": "eye-oval outlines, eyelash residue and the hair-parting wedge (occluder pixels owned by face_base) repainted as continuous face skin with the blush kept",
+  "defect": "interior & ((b > r - 24) | (ridge > 7) | (luma < 175))",
+  "good": "interior",
+  "color": "field",
+  "grow": 2,
+  "size": 3
+ },
+ "neck": {
+  "note": "chin outline (hard V line) at the top of the neck smoothed into skin; the soft chin shadow is kept",
+  "defect": "interior & (yn < 0.45) & (ridge > 2.5)",
+  "good": "interior & (yn < 0.5)",
+  "color": "field",
+  "grow": 2,
+  "size": 3
+ },
+ "legs/leg_left/foot": {
+  "note": "anklet chain line remnants on the instep smoothed into skin",
+  "defect": "interior & (yn < 0.4) & ((ridge > 4) | (b > r - 18))",
+  "good": "interior & (yn < 0.55)",
+  "color": "field",
+  "grow": 1,
+  "size": 3
+ },
+ "legs/leg_right/foot": {
+  "note": "anklet chain line remnants on the instep smoothed into skin",
+  "defect": "interior & (yn < 0.4) & ((ridge > 4) | (b > r - 18))",
+  "good": "interior & (yn < 0.55)",
+  "color": "field",
+  "grow": 1,
+  "size": 3
+ },
+ "face/ear_right": {
+  "note": "pale hair-edge strand across the ear repainted as ear skin",
+  "defect": "interior & (b > r - 30) & (luma > 175)",
+  "good": "interior & (b <= r - 30)",
+  "color": "field",
+  "grow": 1,
+  "size": 2,
+  "inset": 1
+ },
+ "face/ear_left": {
+  "note": "pale hair-edge strand across the ear repainted as ear skin",
+  "defect": "interior & (b > r - 30) & (luma > 175)",
+  "good": "interior & (b <= r - 30)",
+  "color": "field",
+  "grow": 1,
+  "size": 2,
+  "inset": 1
+ }
 }

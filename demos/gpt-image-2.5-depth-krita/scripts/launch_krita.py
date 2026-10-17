@@ -12,7 +12,7 @@ HERE=Path(__file__).resolve().parent
 ap=argparse.ArgumentParser()
 ap.add_argument('--krita',type=Path,required=True)
 ap.add_argument('--output',type=Path,required=True)
-ap.add_argument('--profile',type=Path,default=HERE.parent/'.work/krita-profile')
+ap.add_argument('--profile',type=Path,default=HERE.parent/'work/krita-profile')
 ap.add_argument('--display',default=':119')
 ap.add_argument('--script',type=Path,default=HERE/'krita_depth_import.py',
                 help='One-shot script to run inside Krita (import or targeted retouch).')

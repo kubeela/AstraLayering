@@ -1,6 +1,6 @@
 """Run inside Krita (see launch_krita.py): brush-retouch flawed part layers.
 
-Opens character-depth.kra and, for every part in retouch/plan.json:
+Opens delivery/character-depth.kra and, for every part in retouch/plan.json:
 selects the defect mask (always inside the part's hidden, completed area),
 alpha-locks the layer and paints the planned brush strokes with Krita's brush
 engine. Visible source pixels and the part shape (alpha) cannot change. The KRA
@@ -24,7 +24,8 @@ def sha(node, w, h):
 
 def main():
     out = Path(os.environ['ASTRA_DELIVERY_DIR'])  # project root
-    ret = out / 'retouch'
+    ret = out / os.environ.get('ASTRA_RETOUCH_NAME', 'retouch')
+    dname = os.environ.get('ASTRA_DELIVERY_NAME', 'delivery')
     dump = ret / 'krita-out'
     dump.mkdir(parents=True, exist_ok=True)
     report = ret / 'krita-retouch.json'
@@ -32,7 +33,7 @@ def main():
     try:
         app = Krita.instance()
         plan = json.loads((ret / 'plan.json').read_text())['parts']
-        kra = out / 'character-depth.kra'
+        kra = out / dname / 'character-depth.kra'
         doc = app.openDocument(str(kra))
         view = app.activeWindow().addView(doc)
         w, h = doc.width(), doc.height()
@@ -91,7 +92,7 @@ def main():
                 raise RuntimeError('Unexpected child nodes or alpha lock: ' + name)
         info = InfoObject(); info.setProperty('alpha', True)
         loaded.refreshProjection(); loaded.waitForDone()
-        if not loaded.exportImage(str(out / 'krita-reopened.png'), info):
+        if not loaded.exportImage(str(out / dname / 'krita-reopened.png'), info):
             raise RuntimeError('PNG export failed')
         loaded.waitForDone()
         log = dict(ok=True, version=app.version(), kra=str(kra.relative_to(out)), layers=len(nodes),

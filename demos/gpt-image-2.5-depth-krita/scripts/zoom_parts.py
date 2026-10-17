@@ -7,10 +7,10 @@ from PIL import Image
 from scipy import ndimage as ndi
 
 ROOT = Path(__file__).resolve().parent.parent
-PARTS = ROOT / 'parts'
-man = {p['id']: p for p in json.loads((ROOT / 'manifest.json').read_text())['parts']}
-src = np.array(Image.open(ROOT / '.work/source.png').convert('RGBA')).astype(float)
-owner = np.array(Image.open(ROOT / '.work/owner.png')).astype(int)
+PARTS = ROOT / 'delivery/parts'
+man = {p['id']: p for p in json.loads((ROOT / 'delivery/manifest.json').read_text())['parts']}
+src = np.array(Image.open(ROOT / 'work/source.png').convert('RGBA')).astype(float)
+owner = np.array(Image.open(ROOT / 'work/owner.png')).astype(int)
 
 def render(pid, parts_dir=PARTS, size=640):
     p = man[pid]
@@ -18,7 +18,7 @@ def render(pid, parts_dir=PARTS, size=640):
     a = full[..., 3]
     ys, xs = np.where(a > 0)
     pad = max(4, int(.08 * max(np.ptp(ys), np.ptp(xs))))
-    y0, y1, x0, x1 = max(0, ys.min() - pad), ys.max() + pad + 1, max(0, xs.min() - pad), xs.max() + pad + 1
+    y0, y1, x0, x1 = max(0, ys.min() - pad), min(a.shape[0], ys.max() + pad + 1), max(0, xs.min() - pad), min(a.shape[1], xs.max() + pad + 1)
     hid = ((a > 0) & (owner != p['index']))[y0:y1, x0:x1]
     edge = hid & ~ndi.binary_erosion(hid)
     bg = np.full((y1 - y0, x1 - x0, 3), 128.0)
