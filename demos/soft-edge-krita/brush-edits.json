@@ -1,0 +1,1745 @@
+[
+  {
+    "id": "face/face_base",
+    "issue": "脸底横向补全接缝",
+    "note": "以局部 Blender Blur 沿已目视定位的交界轻扫，不处理整层。",
+    "strokes": [
+      {
+        "points": [
+          [
+            462,
+            211
+          ],
+          [
+            477,
+            212
+          ],
+          [
+            492,
+            211
+          ],
+          [
+            513,
+            211
+          ],
+          [
+            533,
+            211
+          ],
+          [
+            548,
+            211
+          ],
+          [
+            560,
+            211
+          ]
+        ],
+        "size": 7,
+        "opacity": 0.5,
+        "alphaLock": true
+      }
+    ],
+    "before": "a80f4af8bd5ace6a4e43f41dc65e87702eb6494b4e593594065bef01950f4ad2",
+    "after": "9b5b9b95c083e6b331c3d07dd4552c99993f0101c0a6e007867b6770f125d2fe",
+    "changed": true
+  },
+  {
+    "id": "face/face_base",
+    "issue": "下颌左侧台阶",
+    "note": "沿原有下颌边缘局部柔化，不改下巴轮廓。",
+    "strokes": [
+      {
+        "points": [
+          [
+            462,
+            215
+          ],
+          [
+            466,
+            224
+          ],
+          [
+            473,
+            237
+          ],
+          [
+            482,
+            248
+          ],
+          [
+            496,
+            258
+          ],
+          [
+            511,
+            266
+          ]
+        ],
+        "size": 3,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "9b5b9b95c083e6b331c3d07dd4552c99993f0101c0a6e007867b6770f125d2fe",
+    "after": "347c2c4b944fedb93cfca4b15433dc0317a2253ef5138b08ad8d8059d2ca77f2",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/left_earring/suspension_chain",
+    "issue": "耳链连接处的硬点",
+    "note": "保留细链分节，只柔化连接端。",
+    "strokes": [
+      {
+        "points": [
+          [
+            562,
+            224
+          ],
+          [
+            562,
+            229
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            562,
+            234
+          ],
+          [
+            562,
+            240
+          ]
+        ],
+        "size": 1.3,
+        "opacity": 0.35,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "15a0f6987c7b804336b97dfc7ebf77333c9b343f15b03d025eca70560c08848e",
+    "after": "76ded0e4392cf7b435599ca15bed2ff4722dbc402f65865bf2782360a2575b6d",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/right_earring/suspension_chain",
+    "issue": "耳链连接处的硬点",
+    "note": "按另一侧原画的细链宽度收敛端点硬度。",
+    "strokes": [
+      {
+        "points": [
+          [
+            463,
+            225
+          ],
+          [
+            463,
+            230
+          ]
+        ],
+        "size": 1.4,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            463,
+            234
+          ],
+          [
+            463,
+            240
+          ]
+        ],
+        "size": 1.3,
+        "opacity": 0.35,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "3bbfe55ea9e103ef911fbf3867e090d7ebed9b83c307cee1d71999b0c568935e",
+    "after": "a99e43de61d8881afbc1df75122db5a34886e79faedbaab345cec35cb193c2a9",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/left_earring/sapphire_pendant",
+    "issue": "蓝坠外侧阶梯",
+    "note": "仅沿银蓝外边缘处理，保留内部已有切面。",
+    "strokes": [
+      {
+        "points": [
+          [
+            561,
+            240
+          ],
+          [
+            566,
+            245
+          ],
+          [
+            562,
+            255
+          ]
+        ],
+        "size": 2,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            561,
+            240
+          ],
+          [
+            557,
+            245
+          ],
+          [
+            562,
+            255
+          ]
+        ],
+        "size": 1.7,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "9eaf4f3610aed8c569756bd875aa6444a67936f7d3d3a6f4e78948bcc418fc20",
+    "after": "eabd17392c3aede5054731ca3aaa0c9e243110c3d8deadc9de2c01ee53deb90c",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/right_earring/sapphire_pendant",
+    "issue": "蓝坠外侧阶梯",
+    "note": "按原图吊坠外缘的短过渡柔化。",
+    "strokes": [
+      {
+        "points": [
+          [
+            462,
+            240
+          ],
+          [
+            467,
+            245
+          ],
+          [
+            462,
+            255
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            462,
+            240
+          ],
+          [
+            458,
+            245
+          ],
+          [
+            462,
+            255
+          ]
+        ],
+        "size": 1.7,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "aae83daa6c731e119c2b6c9fe983e9ee8f78842c20d556e18834dadbdb7e7b92",
+    "after": "ea876d521bc8658946ee41964091d6432d246636047797e84363276168006ce4",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/left_earring/ear_stud",
+    "issue": "耳钉外缘深色端点",
+    "note": "保留银色中心，仅柔化周界。",
+    "strokes": [
+      {
+        "points": [
+          [
+            560,
+            220
+          ],
+          [
+            563,
+            223
+          ],
+          [
+            561,
+            226
+          ],
+          [
+            559,
+            224
+          ],
+          [
+            560,
+            220
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "9dd2979d7fcad798d6ac04a92a4576420c9807a62a915a24ba2b60c2eb0edb3d",
+    "after": "c1c3c8fc27f973ab7363431692ba1c80fe10770cbbe8100917704da62e31adbf",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/right_earring/ear_stud",
+    "issue": "耳钉外缘硬点",
+    "note": "细小金属部件使用较窄过渡。",
+    "strokes": [
+      {
+        "points": [
+          [
+            463,
+            221
+          ],
+          [
+            465,
+            223
+          ],
+          [
+            463,
+            226
+          ],
+          [
+            461,
+            224
+          ],
+          [
+            463,
+            221
+          ]
+        ],
+        "size": 1.4,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "c197e1d12237f1965649fc0bd19ccac5ef0135947365b27399becd505bc3038d",
+    "after": "1cd9da5e31502a9cd9ab3d8770a165284b2bb4a8e932d568cb1ba4d254c7f548",
+    "changed": true
+  },
+  {
+    "id": "face/ear_right",
+    "issue": "耳轮碎线与耳垂的偏色点",
+    "note": "耳垂杂点改为相邻耳皮肤颜色；耳轮原有线条局部柔化。",
+    "strokes": [
+      {
+        "points": [
+          [
+            461,
+            220
+          ],
+          [
+            465,
+            222
+          ],
+          [
+            468,
+            222
+          ]
+        ],
+        "size": 3,
+        "color": [
+          234,
+          191,
+          175
+        ],
+        "opacity": 0.6,
+        "preset": "b) Airbrush Soft",
+        "alphaLock": true
+      },
+      {
+        "points": [
+          [
+            454,
+            195
+          ],
+          [
+            451,
+            201
+          ],
+          [
+            451,
+            208
+          ],
+          [
+            455,
+            215
+          ],
+          [
+            463,
+            222
+          ],
+          [
+            467,
+            224
+          ]
+        ],
+        "size": 2.3,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            455,
+            199
+          ],
+          [
+            458,
+            205
+          ],
+          [
+            462,
+            210
+          ],
+          [
+            465,
+            211
+          ]
+        ],
+        "size": 2.4,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            465,
+            195
+          ],
+          [
+            471,
+            199
+          ],
+          [
+            474,
+            207
+          ],
+          [
+            473,
+            215
+          ],
+          [
+            468,
+            223
+          ]
+        ],
+        "size": 2.1,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "24d46435f5f0c168f756151e0f3561633e1c8e6a3312cafc30d19515fb171b87",
+    "after": "3218a999b9b34dddd663f7d30bb2359648da84b2e6adde110531475a222c974e",
+    "changed": true
+  },
+  {
+    "id": "face/ear_left",
+    "issue": "耳轮硬边与耳垂杂色",
+    "note": "保留内耳原有明暗，不新增阴影；清理贴近耳钉的异色碎点。",
+    "strokes": [
+      {
+        "points": [
+          [
+            558,
+            221
+          ],
+          [
+            562,
+            222
+          ],
+          [
+            565,
+            221
+          ]
+        ],
+        "size": 3,
+        "color": [
+          234,
+          190,
+          173
+        ],
+        "opacity": 0.6,
+        "preset": "b) Airbrush Soft",
+        "alphaLock": true
+      },
+      {
+        "points": [
+          [
+            565,
+            194
+          ],
+          [
+            570,
+            198
+          ],
+          [
+            572,
+            205
+          ],
+          [
+            570,
+            214
+          ],
+          [
+            565,
+            220
+          ],
+          [
+            559,
+            224
+          ]
+        ],
+        "size": 2.3,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            562,
+            198
+          ],
+          [
+            559,
+            204
+          ],
+          [
+            557,
+            211
+          ],
+          [
+            556,
+            215
+          ]
+        ],
+        "size": 2.4,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            553,
+            195
+          ],
+          [
+            547,
+            202
+          ],
+          [
+            548,
+            210
+          ],
+          [
+            551,
+            217
+          ],
+          [
+            557,
+            223
+          ]
+        ],
+        "size": 2.1,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "bae3fa8817de210a57e7b5bff42425ed4135aa8eae27d335f17861743c3c300a",
+    "after": "842950beb177edab160554dbe2c1650826c8e8632d8233cda0f315c75ea45f2f",
+    "changed": true
+  },
+  {
+    "id": "face/face_base",
+    "issue": "脸底外缘阶梯、可见区与补全区交界",
+    "note": "按额头、颊侧和下颌分别设定窄笔宽；只在横向接缝局部混色，保留腮红层次。",
+    "strokes": [
+      {
+        "points": [
+          [
+            470,
+            145
+          ],
+          [
+            479,
+            135
+          ],
+          [
+            494,
+            130
+          ],
+          [
+            510,
+            129
+          ],
+          [
+            525,
+            130
+          ],
+          [
+            541,
+            136
+          ],
+          [
+            552,
+            147
+          ]
+        ],
+        "size": 2.7,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            470,
+            145
+          ],
+          [
+            464,
+            159
+          ],
+          [
+            461,
+            178
+          ],
+          [
+            461,
+            196
+          ],
+          [
+            461,
+            210
+          ]
+        ],
+        "size": 2.2,
+        "opacity": 0.48,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            552,
+            147
+          ],
+          [
+            559,
+            163
+          ],
+          [
+            561,
+            182
+          ],
+          [
+            561,
+            199
+          ],
+          [
+            560,
+            212
+          ]
+        ],
+        "size": 2.2,
+        "opacity": 0.48,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            461,
+            211
+          ],
+          [
+            466,
+            225
+          ],
+          [
+            474,
+            237
+          ],
+          [
+            485,
+            248
+          ],
+          [
+            498,
+            257
+          ],
+          [
+            511,
+            262
+          ]
+        ],
+        "size": 2.5,
+        "opacity": 0.65,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            560,
+            212
+          ],
+          [
+            555,
+            226
+          ],
+          [
+            547,
+            237
+          ],
+          [
+            537,
+            248
+          ],
+          [
+            523,
+            257
+          ],
+          [
+            511,
+            262
+          ]
+        ],
+        "size": 2.5,
+        "opacity": 0.65,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            462,
+            211
+          ],
+          [
+            479,
+            212
+          ],
+          [
+            495,
+            212
+          ],
+          [
+            513,
+            212
+          ],
+          [
+            532,
+            212
+          ],
+          [
+            549,
+            212
+          ],
+          [
+            560,
+            212
+          ]
+        ],
+        "size": 8,
+        "opacity": 0.6,
+        "preset": "k) Blender Blur",
+        "alphaLock": true
+      }
+    ],
+    "before": "347c2c4b944fedb93cfca4b15433dc0317a2253ef5138b08ad8d8059d2ca77f2",
+    "after": "de5031f5fd4badb27592e16dc200e6c3557347d5a2a8d739026038a22523d6fd",
+    "changed": true
+  },
+  {
+    "id": "face/eye_left/sclera",
+    "issue": "眼白杏仁外缘硬线",
+    "note": "下眼白使用略宽过渡，保留杏仁形。",
+    "strokes": [
+      {
+        "points": [
+          [
+            529,
+            197
+          ],
+          [
+            536,
+            192
+          ],
+          [
+            545,
+            192
+          ],
+          [
+            553,
+            194
+          ],
+          [
+            559,
+            197
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            529,
+            197
+          ],
+          [
+            536,
+            204
+          ],
+          [
+            544,
+            207
+          ],
+          [
+            552,
+            204
+          ],
+          [
+            559,
+            198
+          ]
+        ],
+        "size": 2,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "58c30a119b1e876b0ee9e1822752b410649d0e92bedb232dd6c255c745e4c17d",
+    "after": "d4c7267d1b58094e367037a1aa8d96b83a6c75aff8efb3ef51541137e88ae77a",
+    "changed": true
+  },
+  {
+    "id": "face/eye_right/sclera",
+    "issue": "眼白下沿阶梯",
+    "note": "局部柔化上下边缘，不改变眼白色。",
+    "strokes": [
+      {
+        "points": [
+          [
+            463,
+            197
+          ],
+          [
+            470,
+            192
+          ],
+          [
+            480,
+            191
+          ],
+          [
+            489,
+            193
+          ],
+          [
+            496,
+            198
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            463,
+            198
+          ],
+          [
+            471,
+            204
+          ],
+          [
+            480,
+            207
+          ],
+          [
+            489,
+            204
+          ],
+          [
+            496,
+            198
+          ]
+        ],
+        "size": 2,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "eb4f9127b15e55faac824edc83db65cfa1fee3547bb72e0670cf956c5b47a6c3",
+    "after": "4bdfd76971373dfeecad8c3c7ec8d123bebb67197830b0ba2fb75a7835d6ec33",
+    "changed": true
+  },
+  {
+    "id": "face/eye_left/iris",
+    "issue": "虹膜圆周过锐",
+    "note": "只处理圆周，保留瞳孔及虹膜内部原有细节。",
+    "strokes": [
+      {
+        "points": [
+          [
+            540,
+            187
+          ],
+          [
+            546,
+            190
+          ],
+          [
+            549,
+            196
+          ],
+          [
+            547,
+            203
+          ],
+          [
+            540,
+            207
+          ],
+          [
+            534,
+            203
+          ],
+          [
+            532,
+            196
+          ],
+          [
+            534,
+            190
+          ],
+          [
+            540,
+            187
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "42e29d591754eb99d5cc50a3b8424db976fdaab9046e6728e23ffb42e840ac7f",
+    "after": "280e8b4b923ec8e1b19ffb685705fa6dd9fbd2165771bcfef1ea1336ced0a132",
+    "changed": true
+  },
+  {
+    "id": "face/eye_right/iris",
+    "issue": "虹膜圆周过锐",
+    "note": "沿同侧原画的圆周柔度处理。",
+    "strokes": [
+      {
+        "points": [
+          [
+            483,
+            187
+          ],
+          [
+            489,
+            190
+          ],
+          [
+            492,
+            197
+          ],
+          [
+            489,
+            204
+          ],
+          [
+            482,
+            207
+          ],
+          [
+            476,
+            203
+          ],
+          [
+            474,
+            196
+          ],
+          [
+            477,
+            190
+          ],
+          [
+            483,
+            187
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "ca086aac42e8f4efbc7fbf5f2872e27a082818081ff8ba7e9e8c5b9026ad8798",
+    "after": "32840b178ab7eb73e3a4af85ec950c92c1f59ab6428de3a992790ca5cbb6cdb8",
+    "changed": true
+  },
+  {
+    "id": "face/eye_left/lower_eyelashes",
+    "issue": "下睫毛孤立深色像素",
+    "note": "保持睫毛存在感，只轻扫短端点。",
+    "strokes": [
+      {
+        "points": [
+          [
+            550,
+            205
+          ],
+          [
+            553,
+            204
+          ]
+        ],
+        "size": 1.3,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "66b5b4b1977f5793499e1e4f337932bf4ab0c29a91c498027f1e1a96d47e915e",
+    "after": "d930d5b2f3eaf222811fb67d7cc4c5d0c104bd85a98c60c84b851835080539b3",
+    "changed": true
+  },
+  {
+    "id": "face/eye_left/lower_eyelid",
+    "issue": "下眼睑细线台阶",
+    "note": "浅色眼睑线比上睑用更窄更轻的笔。",
+    "strokes": [
+      {
+        "points": [
+          [
+            529,
+            197
+          ],
+          [
+            536,
+            205
+          ],
+          [
+            543,
+            208
+          ],
+          [
+            551,
+            205
+          ],
+          [
+            560,
+            198
+          ]
+        ],
+        "size": 1.6,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "4261d2fd34ae0e2fabfaa5fa0ee26d46506a21c6ab701903b4a1b676791c02e1",
+    "after": "dc6d16e5bae93062249315d14016bd3e101ed23534d4855b17eabf489c2f138f",
+    "changed": true
+  },
+  {
+    "id": "face/eye_right/lower_eyelid",
+    "issue": "下眼睑细线台阶",
+    "note": "保留细线原有浓淡，柔化斜段。",
+    "strokes": [
+      {
+        "points": [
+          [
+            463,
+            196
+          ],
+          [
+            470,
+            204
+          ],
+          [
+            480,
+            207
+          ],
+          [
+            489,
+            205
+          ],
+          [
+            496,
+            198
+          ]
+        ],
+        "size": 1.6,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "8246bae08a494731b4d179ff9044790cb21149649aedf4e7e08c9db2d1d37310",
+    "after": "0f7420dcedb986de585375290b09977524ed5377b81e8c5931a0e6f787808029",
+    "changed": true
+  },
+  {
+    "id": "face/eye_left/upper_eyelid",
+    "issue": "上眼线外缘与眼尾过硬",
+    "note": "保留深色线芯，外缘和两端分开轻扫。",
+    "strokes": [
+      {
+        "points": [
+          [
+            528,
+            196
+          ],
+          [
+            533,
+            190
+          ],
+          [
+            541,
+            186
+          ],
+          [
+            550,
+            187
+          ],
+          [
+            556,
+            191
+          ],
+          [
+            561,
+            197
+          ]
+        ],
+        "size": 2.1,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            528,
+            196
+          ],
+          [
+            532,
+            194
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            557,
+            192
+          ],
+          [
+            561,
+            196
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "62b694bdeab35425536e8c52e658e70acc5a7a42a1f84c8d729d0e06f18ddb3f",
+    "after": "2d0c142ab5c6c56df76c9183cacce52070f1cc9194c33cdde3775faa415f3646",
+    "changed": true
+  },
+  {
+    "id": "face/eye_right/upper_eyelid",
+    "issue": "上眼线硬轮廓",
+    "note": "保留原有粗细，不扩大眼线或增加眼影。",
+    "strokes": [
+      {
+        "points": [
+          [
+            462,
+            197
+          ],
+          [
+            468,
+            189
+          ],
+          [
+            478,
+            186
+          ],
+          [
+            487,
+            187
+          ],
+          [
+            493,
+            191
+          ],
+          [
+            497,
+            198
+          ]
+        ],
+        "size": 2.1,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            462,
+            197
+          ],
+          [
+            465,
+            194
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            494,
+            194
+          ],
+          [
+            497,
+            198
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "057d963aea70c041a9bf451756e7311aad2230b63633ff2d5a78de3baea05ba2",
+    "after": "98c64f5c0b2e2cee36e0b98c470cb334bc5ee358d44eb2ed3c582773090dae6b",
+    "changed": true
+  },
+  {
+    "id": "face/eye_left/eyelid_crease",
+    "issue": "双眼皮弧线碎点",
+    "note": "浅色短弧以窄笔柔化。",
+    "strokes": [
+      {
+        "points": [
+          [
+            527,
+            189
+          ],
+          [
+            533,
+            185
+          ],
+          [
+            540,
+            185
+          ],
+          [
+            546,
+            188
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "fa7dbc3616610c97a7e55b2905b0edbebcef0fd52a92032560a3c1ea60235dac",
+    "after": "b0a72eb7a1dbf1d27e278f0c47129bf93a1ab50b715729bcd316cdb49dec1a2c",
+    "changed": true
+  },
+  {
+    "id": "face/eye_right/eyelid_crease",
+    "issue": "双眼皮短线台阶",
+    "note": "柔化现有线条，不加新褶皱。",
+    "strokes": [
+      {
+        "points": [
+          [
+            468,
+            188
+          ],
+          [
+            476,
+            184
+          ],
+          [
+            486,
+            185
+          ],
+          [
+            496,
+            189
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "caf0edc9324910f3e5a28599fbf470a04cc542b1a45df7c567cfe4f44136a2ed",
+    "after": "8e8406517e1ce4719078a39f904ffe50d6b33222f9677e8427712b44849f0d86",
+    "changed": true
+  },
+  {
+    "id": "face/eyebrow_left",
+    "issue": "眉弓和眉梢过硬",
+    "note": "依原画灰紫眉毛的柔边收敛硬碎线。",
+    "strokes": [
+      {
+        "points": [
+          [
+            524,
+            178
+          ],
+          [
+            533,
+            175
+          ],
+          [
+            543,
+            174
+          ],
+          [
+            552,
+            175
+          ],
+          [
+            557,
+            176
+          ]
+        ],
+        "size": 2.3,
+        "opacity": 0.65,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "231db5083bfb807dd91fc4ec9d7385cbf413fd9ac4d31477794f4bae96aaa3e6",
+    "after": "2ab294ff36630b12b85cc78c11ff2dcc4cfa7bbfd0bcf8aaaab016896ea6b79f",
+    "changed": true
+  },
+  {
+    "id": "face/eyebrow_right",
+    "issue": "眉梢台阶",
+    "note": "眉梢较轻，保留原眉形和颜色。",
+    "strokes": [
+      {
+        "points": [
+          [
+            464,
+            175
+          ],
+          [
+            474,
+            174
+          ],
+          [
+            484,
+            175
+          ],
+          [
+            493,
+            177
+          ],
+          [
+            498,
+            179
+          ]
+        ],
+        "size": 2.3,
+        "opacity": 0.65,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "487aab5d5f9832177375e53375e174544e964717ef40f3dd36df543e72a97f23",
+    "after": "f6a1c3c9200ea2d27e3f6eb2d45237831267ba0584ecedd7062494b9608df895",
+    "changed": true
+  },
+  {
+    "id": "face/nose",
+    "issue": "鼻部高光和小线边缘",
+    "note": "仅柔化已存在的高光及鼻部短线。",
+    "strokes": [
+      {
+        "points": [
+          [
+            511,
+            212
+          ],
+          [
+            513,
+            216
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.35,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            508,
+            222
+          ],
+          [
+            511,
+            224
+          ],
+          [
+            514,
+            222
+          ]
+        ],
+        "size": 1.3,
+        "opacity": 0.35,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "734866723b012f6868ad310b7ec360d69de8744bc634cfb100a8da9ace346492",
+    "after": "f1599c0a9658d59ed1e3e156076650720f352cd5a39e78b65ba723c1e097638c",
+    "changed": true
+  },
+  {
+    "id": "face/mouth/mouth_interior",
+    "issue": "口腔外缘台阶",
+    "note": "保留内部粉色层次和形状，只沿外缘处理。",
+    "strokes": [
+      {
+        "points": [
+          [
+            504,
+            237
+          ],
+          [
+            509,
+            232
+          ],
+          [
+            516,
+            232
+          ],
+          [
+            521,
+            237
+          ],
+          [
+            519,
+            242
+          ],
+          [
+            512,
+            244
+          ],
+          [
+            506,
+            242
+          ],
+          [
+            504,
+            237
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "55d13ec30a3d38dba7d47e01e1a4617d82446c67c43c6e03e4b68f1f27fa0fc9",
+    "after": "1789ac9ac47f1afc051c4f35b2f8e9c0700075605107a1a0ea5c7b43f8379047",
+    "changed": true
+  },
+  {
+    "id": "face/mouth/tongue",
+    "issue": "舌部与口腔衔接硬边",
+    "note": "局部混合现有舌色与其边缘透明度，不画新的明暗。",
+    "strokes": [
+      {
+        "points": [
+          [
+            505,
+            240
+          ],
+          [
+            510,
+            237
+          ],
+          [
+            516,
+            238
+          ],
+          [
+            519,
+            241
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      },
+      {
+        "points": [
+          [
+            506,
+            242
+          ],
+          [
+            512,
+            244
+          ],
+          [
+            518,
+            242
+          ]
+        ],
+        "size": 1.5,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "e38580d6ee6f0b2717658297e2ef9b7ddcc24a6423f3a0dc105594774bf56a6a",
+    "after": "5be0cec4a4a6499542296b5ae9998e193f5cb8178d4ff75747272c9f5f81dc25",
+    "changed": true
+  },
+  {
+    "id": "face/mouth/lower_teeth",
+    "issue": "下牙带短边过直",
+    "note": "隐藏牙带用窄笔处理，不改变位置。",
+    "strokes": [
+      {
+        "points": [
+          [
+            506,
+            243
+          ],
+          [
+            512,
+            244
+          ],
+          [
+            518,
+            243
+          ]
+        ],
+        "size": 1.3,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "8e5578836c6ef9770004d8a25674427101354a4d22a35f3195fc4511bc959221",
+    "after": "ee45a27fb0435d0fd8e7288fdd7eac2db303165aa93785af2eafc2eace0e39ae",
+    "changed": true
+  },
+  {
+    "id": "face/mouth/upper_teeth",
+    "issue": "上牙带尖端硬点",
+    "note": "保留牙带和透明区域，只柔化端点。",
+    "strokes": [
+      {
+        "points": [
+          [
+            505,
+            234
+          ],
+          [
+            510,
+            232
+          ],
+          [
+            515,
+            232
+          ],
+          [
+            520,
+            235
+          ]
+        ],
+        "size": 1.3,
+        "opacity": 0.4,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "79002bfbea540598113c190acf51eb2c68c245c88ccc0aed8e8d985c6610b960",
+    "after": "32d1683d1d2400e63aca51aaa78d65647999a88654c05f6b93d64987e365d414",
+    "changed": true
+  },
+  {
+    "id": "face/mouth/lower_lip",
+    "issue": "下唇弧线过硬",
+    "note": "让粉色唇缘向透明度轻柔过渡。",
+    "strokes": [
+      {
+        "points": [
+          [
+            503,
+            238
+          ],
+          [
+            506,
+            243
+          ],
+          [
+            512,
+            245
+          ],
+          [
+            518,
+            243
+          ],
+          [
+            521,
+            239
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.6,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "fe40714fcc670227c497ce759ad563300f2d3fc95d49f487c341dfc2d2edee97",
+    "after": "c1baaca4faa31a09084310ddcd28e38bdfca357e46e134288439f64701f76818",
+    "changed": true
+  },
+  {
+    "id": "face/mouth/upper_lip",
+    "issue": "上唇唇峰碎线",
+    "note": "只柔化原线，不改变表情或开口。",
+    "strokes": [
+      {
+        "points": [
+          [
+            504,
+            237
+          ],
+          [
+            508,
+            233
+          ],
+          [
+            512,
+            232
+          ],
+          [
+            516,
+            233
+          ],
+          [
+            521,
+            237
+          ]
+        ],
+        "size": 1.7,
+        "opacity": 0.55,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "6cda68bf310813193c7f581cd8f44dcc53d6e3cddfda4174a80e6f40406a3d73",
+    "after": "8b8e81ac25027defdb5f2854e5f332b37c0133da261ec2902af66ccdd616c9ba",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/forehead_ornament/teardrop_pendant",
+    "issue": "额前泪滴外缘硬点",
+    "note": "保留细吊坠尖端，过渡比皮肤边缘窄。",
+    "strokes": [
+      {
+        "points": [
+          [
+            512,
+            147
+          ],
+          [
+            508,
+            157
+          ],
+          [
+            509,
+            161
+          ],
+          [
+            512,
+            165
+          ],
+          [
+            516,
+            160
+          ],
+          [
+            516,
+            156
+          ],
+          [
+            512,
+            147
+          ]
+        ],
+        "size": 1.8,
+        "opacity": 0.45,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "3f9951b43ebc5fa6e2031b4270e82aa804c1a97c5226b79b51d7ec752a22056f",
+    "after": "a4cca1f3fd9a96d8fd9a58a87aea3b48b1238050e59390729d0069f73aa83ee0",
+    "changed": true
+  },
+  {
+    "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
+    "issue": "额前宝石边框台阶",
+    "note": "只处理银蓝边框，内部明暗不重画。",
+    "strokes": [
+      {
+        "points": [
+          [
+            512,
+            131
+          ],
+          [
+            520,
+            138
+          ],
+          [
+            512,
+            149
+          ],
+          [
+            504,
+            139
+          ],
+          [
+            512,
+            131
+          ]
+        ],
+        "size": 1.7,
+        "opacity": 0.5,
+        "preset": "x) Filter Blur"
+      }
+    ],
+    "before": "a622b85c035ba54cf128f8fadaa25d1ad57b6b73bb47b431759a362931a4684e",
+    "after": "ef6db8d1a19c40363f3619ed1d5250424174d1ee030848e62e7b89d2d7e4187d",
+    "changed": true
+  }
+]
