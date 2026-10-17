@@ -1,17 +1,20 @@
 {
-  "krita-reopened-pose.png vs reference.png": {
-    "psnr": 138.13,
-    "alphaMax": 0,
-    "rgbMaxOnSubject": 0
-  },
-  "krita-reopened-depth-stack.png vs reassembled-depth-stack.png": {
+  "krita-reopened.png vs reassembled-depth-stack.png (Python)": {
     "psnr": 86.13,
-    "alphaMax": 0,
-    "rgbMaxOnSubject": 1
+    "alphaMaxAbs": 0,
+    "rgbMaxOnSubject": 1,
+    "unchangedOnSubject": 1.0
   },
-  "krita-reopened-depth-stack.png vs reference.png": {
+  "krita-reopened.png vs reference.png": {
     "psnr": 44.48,
-    "alphaMax": 255,
-    "rgbMaxOnSubject": 84
+    "alphaMaxAbs": 255,
+    "rgbMaxOnSubject": 84,
+    "unchangedOnSubject": 0.9931
+  },
+  "reassembled-pose.png (Python, pose masks) vs reference.png": {
+    "psnr": 138.13,
+    "alphaMaxAbs": 0,
+    "rgbMaxOnSubject": 0,
+    "unchangedOnSubject": 1.0
   }
 }

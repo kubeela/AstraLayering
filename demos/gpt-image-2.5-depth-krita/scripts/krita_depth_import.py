@@ -1,9 +1,9 @@
 """Run inside Krita (see launch_krita.py): build the depth-ordered layer stack.
 
 One paint layer per leaf part, stacked by occlusion.json level (bottom = 0).
-Each layer holds the complete part; a transparency mask restores the original
-pose (disable it to see the full completion). The KRA is saved, reopened, and
-its projection exported both with masks (original) and without (depth stack).
+Each layer holds the complete part, so hiding a layer reveals the completed
+parts behind it. No masks: the original-pose restoration stays as data
+(parts/*/pose-mask.png). The KRA is saved, reopened, verified and exported.
 """
 import hashlib
 import json
@@ -11,7 +11,7 @@ import os
 import traceback
 from pathlib import Path
 
-from krita import InfoObject, Krita, Selection
+from krita import InfoObject, Krita
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage
 
@@ -57,11 +57,6 @@ def main():
             if not node.setPixelData(data, 0, 0, w, h):
                 raise RuntimeError('Cannot set pixels ' + name)
             node.setColorLabel(COLORS.get(p['id'].split('/')[0], 0))
-            mask_image = QImage(str(folder / 'pose-mask.png')).convertToFormat(QImage.Format_Grayscale8)
-            sel = Selection(); sel.setPixelData(raw(mask_image), 0, 0, w, h)
-            mask = doc.createTransparencyMask('原姿势遮挡 · 关闭以显示完整补全')
-            node.addChildNode(mask, None); mask.setSelection(sel)
-            node.setCollapsed(True)
             below = node
         order = [n.name() for n in root.childNodes()]
         if order != [f"{p['level']:02d} {p['id']}" for p in parts]:
@@ -72,21 +67,18 @@ def main():
         doc.waitForDone(); doc.close()
         loaded = app.openDocument(str(kra)); loaded.setBatchmode(True)
         app.activeWindow().addView(loaded)
-        export(loaded, out / 'krita-reopened-pose.png')
+        export(loaded, out / 'krita-reopened.png')
         layers = [n for n in loaded.rootNode().childNodes() if n.type() == 'paintlayer']
         verified = []
         for n in layers:
             if hashlib.sha256(bytes(n.pixelData(0, 0, w, h))).hexdigest() != expected[n.name()]:
                 raise RuntimeError('Reopened layer pixels changed: ' + n.name())
             verified.append(n.name())
-        masks = [c for n in layers for c in n.childNodes() if c.type() == 'transparencymask']
-        for m in masks:
-            m.setVisible(False)
-        export(loaded, out / 'krita-reopened-depth-stack.png')
-        for m in masks:
-            m.setVisible(True)
+        masks = [c for n in layers for c in n.childNodes()]
+        if masks:
+            raise RuntimeError('Unexpected child nodes under part layers')
         report.write_text(json.dumps(dict(ok=True, version=app.version(), kra=str(kra), layers=len(layers),
-                                          transparencyMasks=len(masks), order=[n.name() for n in layers],
+                                          childNodes=0, order=[n.name() for n in layers],
                                           pixelVerified=len(verified), canvas=[loaded.width(), loaded.height()]),
                                      ensure_ascii=False, indent=2) + '\n')
     except Exception:
