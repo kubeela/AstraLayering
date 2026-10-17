@@ -8,7 +8,7 @@
 
 [新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 与分组预览器](./loading/part-preview.html)
 
-[raster-layering：TypeScript / Codex SDK 顺序流程](./workflow-next/raster-layering/README.md)：显式指定 Krita 后执行分层补全，再继续边缘柔化与去锯齿；按 `--name` 保存输入并续跑，用 `.running` / `.completed` 区分中断恢复和重跑。
+[raster-layering：TypeScript / Codex SDK 顺序流程](./workflow-next/raster-layering/README.md)：显式指定 Krita 后执行分层补全、边缘柔化及独立 review，反馈由原会话全部修复；按 `--name` 保存输入并续跑，用标记与 Markdown 记录进度。
 
 ## 效果展示
 
