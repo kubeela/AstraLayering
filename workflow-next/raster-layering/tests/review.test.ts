@@ -29,8 +29,8 @@ async function fixture(t: TestContext) {
   await mkdir(join(input, 'parts'), { recursive: true });
   await writeFile(join(input, 'parts/part.svg'), 'fixture');
   const options = { name: 'test', input, krita: process.execPath };
-  const deps = { preflight, runsDirectory };
-  const drawingSteps = steps.map((step: StepDefinition) => {
+  const deps = { preflight, runsDirectory, steps: steps.slice(0, 2) };
+  const drawingSteps = deps.steps.map((step: StepDefinition) => {
     const { review: _review, ...drawing } = step;
     return drawing;
   });

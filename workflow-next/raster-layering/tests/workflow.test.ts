@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
 import type { ThreadEvent, ThreadOptions } from '@openai/codex-sdk';
 import { runAgent, type AgentRequest, type StepResult } from '../agent.ts';
 import { checkKrita } from '../krita.ts';
 import { resolvePartInput } from '../input.ts';
 import { parseRunArguments } from '../run.ts';
-import { inspectRun, runDirectory, stepId, type RunConfig } from '../run-store.ts';
+import { inspectRun, runDirectory, type RunConfig } from '../run-store.ts';
 import { steps, stepModels, type StepDefinition } from '../steps.ts';
 import { runWorkflow } from '../workflow.ts';
 
@@ -29,15 +29,10 @@ async function fixture(t: TestContext) {
   await writeFile(join(input, 'groups.json'), '{"subject":"fixture"}');
   await writeFile(join(input, 'occlusion.json'), '{"layers":[]}');
   await writeFile(join(input, 'preview.svg'), 'preview');
-  const prompt = join(directory, 'later.md');
-  await writeFile(prompt, 'Test-only later step prompt.');
-  const drawingSteps = steps.map((step: StepDefinition) => {
+  const definitions = steps.map((step: StepDefinition) => {
     const { review: _review, ...drawing } = step;
     return drawing;
   });
-  const definitions: StepDefinition[] = [...drawingSteps, {
-    id: stepId(3), title: 'Test 3', ...stepModels[3], prompt: pathToFileURL(prompt), requiredFiles: ['report.md'],
-  }];
   return { directory, input, output: join(runsDirectory, name), definitions,
     options: { name, input, krita: process.execPath }, resume: { name }, deps: { runsDirectory, preflight, steps: [steps[0]] } };
 }
@@ -104,7 +99,7 @@ test('缺少 parts 时在前置检查和模型调用前报错', async t => {
   await absent(join(f.output, 'run.json'));
 });
 
-test('默认流程顺序执行前两步；第二步必须交付合成 PNG，失败后沿用 thread 和已修工程', async t => {
+test('默认三步顺序执行；第二步交付和 review 完成后，第三步沿用绘制 thread 并切换模型', async t => {
   const f = await fixture(t);
   const { steps: _singleStep, ...deps } = f.deps;
   let calls = 0;
@@ -132,21 +127,39 @@ test('默认流程顺序执行前两步；第二步必须交付合成 PNG，失�
   await runWorkflow(f.resume, { ...deps, agent: async request => {
     if (request.prompt.startsWith('你负责对第二步交付')) {
       assert.equal(request.threadId, undefined);
+      await absent(join(f.output, 'step02/.completed'));
+      await assert.rejects(readdir(join(f.output, 'step03')), { code: 'ENOENT' });
+      await request.onEvent({ type: 'thread.started', thread_id: 'fresh-reviewer' });
       await writeFile(join(f.output, 'step02/review-01.md.tmp'), '结论：通过\n\n检查完成。');
       return complete;
     }
     calls++;
     assert.equal(request.threadId, 'thread-1');
     assert.equal(await readFile(join(f.output, 'step02/character-soft-edges.kra'), 'utf8'), 'partially softened artwork');
+    if (request.model === 'gpt-6.1-sol') {
+      assert.equal(request.effort, 'xhigh');
+      await readFile(join(f.output, 'step02/.completed'));
+      await readFile(join(f.output, 'step02/review-01.md'));
+      assert.ok(request.prompt.startsWith(await readFile(steps[2].prompt, 'utf8')));
+      for (const file of steps[2].inputFiles) {
+        assert.ok(request.prompt.includes(JSON.stringify(join(f.output, file))));
+        await readFile(join(f.output, file));
+      }
+      for (const file of steps[2].requiredFiles) assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step03', file))));
+      return deliver(request, steps[2]);
+    }
     await writeFile(join(f.output, 'step02/character-soft-edges.png'), 'composite from final KRA');
     await writeFile(join(f.output, 'step02/report.md.tmp'), 'all layers reviewed');
     return complete;
   } });
-  assert.equal(calls, 3);
+  assert.equal(calls, 4);
   assert.deepEqual(await readFile(join(f.output, 'step01/character-depth.kra')), original);
   await readFile(join(f.output, 'step02/.completed'));
   await absent(join(f.output, 'step02/.running'));
-  await assert.rejects(readdir(join(f.output, 'step03')), { code: 'ENOENT' });
+  await readFile(join(f.output, 'step03/.completed'));
+  await absent(join(f.output, 'step03/.running'));
+  await absent(join(f.output, 'step03/review-01.md'));
+  assert.equal((await readConfig(f.output)).threadId, 'thread-1');
   await runWorkflow(f.resume, { ...deps, agent: forbidden });
 });
 
@@ -204,7 +217,7 @@ test('输入保存完整副本；中断保留 .running、产物和 thread；源�
   await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
 });
 
-test('普通跨步骤共用 thread，第三步切换模型；未来新增提示词仍继续原会话', async t => {
+test('已完成第一步的任务接续后两步，共用 thread 并在第三步切换模型', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
   let index = 1;
