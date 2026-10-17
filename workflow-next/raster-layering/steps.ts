@@ -20,7 +20,6 @@ export type StepDefinition = {
   review?: { prompt: URL; repairPrompt: URL; model: string; effort: 'xhigh' };
 };
 
-// Only add later steps when their prompts have been defined.
 export const steps = [{
   id: 'step01',
   title: '分层、补全与 Krita 交付',
@@ -39,6 +38,13 @@ export const steps = [{
     repairPrompt: new URL('./prompts/02-repair.md', import.meta.url),
     model: 'gpt-6-astra', effort: 'xhigh',
   },
+}, {
+  id: 'step03',
+  title: '去除连体服与补全身体底层',
+  ...stepModels[3],
+  prompt: new URL('./prompts/03-去除连体服.md', import.meta.url),
+  inputFiles: ['step02/character-soft-edges.kra', 'step02/report.md'],
+  requiredFiles: ['character-dressup-base.kra', 'character-dressup-base.png', 'report.md'],
 }] as const satisfies readonly StepDefinition[];
 
 export async function buildPrompt(step: StepDefinition, input: PartLayeringInput, output: string, krita: KritaInstallation, previous: readonly string[] = []): Promise<string> {
@@ -48,7 +54,7 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
   const body = (await readFile(step.prompt, 'utf8')).replaceAll(`${step.id}/report.md`, `${step.id}/${report}`);
   const requiredFiles = step.requiredFiles.map(file => file === 'report.md' ? report : file);
   return `${body}\n---\n本次运行信息（上方为完整步骤提示词）：
-- 本任务根目录：${JSON.stringify(dirname(output))}。正文中的 step01/、step02/ 和 input/ 均相对此目录。
+- 本任务根目录：${JSON.stringify(dirname(output))}。正文中的 step01/、step02/、step03/ 和 input/ 均相对此目录。
 - 本步输入文件（绝对路径，只读）：${JSON.stringify((step.inputFiles ?? []).map(file => join(dirname(output), file)))}。
 - 输入副本目录：${JSON.stringify(input.directory)}。只读使用，后续续跑均以这份已保存的输入为准。
 - 主要产物路径：${JSON.stringify(input.parts)}。以这里已完成的分层 part 作为部件形状与补全标准；保留输入文件。
