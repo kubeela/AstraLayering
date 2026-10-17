@@ -2,11 +2,11 @@
   "parts": 90,
   "order": "occlusion.json levels, back to front",
   "posePSNR": 138.13080360867912,
-  "depthStackPSNR": 44.48080461538457,
+  "depthStackPSNR": 44.477469968059054,
   "depthStackAlphaMeanAbs": 1.4516843159993489,
   "poseAlphaMaxAbs": 0,
   "poseUnchangedPixelRatio": 1.0,
-  "depthStackUnchangedPixelRatio": 0.9930852198037805,
+  "depthStackUnchangedPixelRatio": 0.9931297405844407,
   "lowIoU": [
     [
       "head_accessories/right_crown_ribbon/ribbon_body",
@@ -144,5 +144,19 @@
       "head_accessories/crown_frame",
       0.4242
     ]
-  ]
+  ],
+  "kritaReopenedVsDepthStackMaxAbs": 1,
+  "retouch": {
+    "parts": 21,
+    "strokes": 2961,
+    "allChecksPassed": true,
+    "kept": [
+      "arms/arm_left/upper_arm",
+      "arms/arm_right/upper_arm",
+      "face/face_base",
+      "hair/hair_cap",
+      "head_accessories/crown_frame"
+    ],
+    "kraReopenVerified": true
+  }
 }

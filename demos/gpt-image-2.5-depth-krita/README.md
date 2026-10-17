@@ -46,6 +46,37 @@ gpt-image-2.5 不保持构图比例，因此每个部件以 1.35 倍外框裁切
 需要逐像素还原原姿势时，使用各部件目录中的 `pose-mask.png`（可见像素为原图 alpha / 完整 alpha，其余为 0），
 `reassembled-pose.png` 即按此合成的结果。
 
+## 逐部件修瑕（Krita 画笔，[retouch/](retouch/)）
+
+补全完成后不看整图，而是逐个检查 90 个部件（`scripts/review_parts.py` 总览、`scripts/zoom_parts.py` 放大，
+可见/隐藏区分开着色），找出三类瑕疵：别的部件残留、崩坏的颜色、与色块图不符的形状。21 个部件在 Krita 里用画笔修补：
+
+- **选区 = 瑕疵蒙版**，且总是落在该部件的**隐藏（补全）区**内（[retouch/plan/](retouch/plan/)`*/selection.png`），
+  图层同时锁定 alpha：原图可见像素与部件形状都不会被改动。
+- 颜色取自该部件自己的干净像素（push-pull 平滑场）；遮挡物边缘带阴影的可见像素不参与取色，
+  避免把遮挡物轮廓重新描回补全区。头发沿局部发丝方向（结构张量）运笔并叠细发丝纹理，其余用硬笔点涂；
+  牙齿取最亮的可见牙色。全部 2961 笔用 Krita 5.3 的 `paintLine` 在 KRA 上直接绘制（`scripts/krita_retouch.py`）。
+- 每个部件的瑕疵说明见 [retouch/flaws.json](retouch/flaws.json) 与 manifest 中的 `retouch` 字段；
+  修前/修后放大对比见 [retouch/before-after/](retouch/before-after/)。
+
+| 部件 | 问题 → 修补 |
+| --- | --- |
+| 后发两缕 `lock_right/lock_left` | 中段黄/粉色带 → 顺发丝补成淡紫白发色 |
+| 颈部 `neck` | 脸下的下巴阴影（心形/V）与躯干下重复的锁骨 V → 平滑肤色 |
+| 双脚 `foot` | 脚链下的鬼影线和过亮皮肤 → 周围肤色 |
+| 双耳 `ear_left/right` | 画进耳朵的发丝 → 耳廓肤色 |
+| 眼白、虹膜 | 眼白中心的虹膜边线/高光点 → 眼白；虹膜顶部的眼睑棕 → 虹膜顶端深蓝 |
+| 上/下牙 | 唇红、暗粉 → 米白牙色 |
+| 耳钉、额饰托、冠饰链接件（6 个） | 金黄/肤色/宝石残留 → 银色金属 |
+| 右侧发 `side_hair_right` | 尖端的深蓝宝石斑 → 发色 |
+
+检查后保留未改（`retouchReview` 字段）：`face_base` 上的眼眶/睫毛线与发缝楔形、双脚上残留的淡脚链阴影都是
+色块标准归给该部件的**原图可见像素**（归属残留），修瑕只动补全区，不改原图像素；`hair_cap`、`crown_frame`、
+两上臂的补全区经放大确认无需处理。
+
+修瑕验证（`scripts/apply_retouch.py`，[retouch/krita-retouch.json](retouch/krita-retouch.json)）：21 个图层 alpha 与修前完全一致、
+可见像素等于原图、所有改动都在选区内；其余 69 层哈希不变；KRA 保存后重开，层序、像素哈希一致，无子节点、无 alpha 锁。
+
 ## 验证（[validation.json](validation.json)、[krita-import.json](krita-import.json)、[krita-comparison.json](krita-comparison.json)）
 
 | 检查 | 结果 |
@@ -57,9 +88,9 @@ gpt-image-2.5 不保持构图比例，因此每个部件以 1.35 倍外框裁切
 
 ## 已知局限
 
-- 双脚图层上的脚链线条是标准蒙版归给脚的原图可见像素，并非模型画入。
+- 双脚图层上的淡脚链阴影是标准蒙版归给脚的原图可见像素，并非模型画入；修瑕已去除补全区内的鬼影线。
 - 眼睑、高光、牙齿、耳坠链等极小部件只有个位数到几十像素，补全较粗；它们几乎全部可见，对画面影响很小。
-- 隐藏区质量依赖模型；本目录不对所有补全做"无瑕"认证。
+- 隐藏区质量依赖模型，修瑕只处理逐部件检查中发现的问题；本目录不对所有补全做"无瑕"认证。
 
 ## 复现
 
@@ -70,6 +101,11 @@ xargs -0 -P 4 -I{} sh -c '{}' < .work/commands.nul    # forgeax-imagegen，每�
 python scripts/assemble_depth.py                      # 写入本目录 parts/ 与验证文件
 TMPDIR=<私有临时目录> ASTRA_QUIT=1 python scripts/launch_krita.py \
   --krita <Krita AppRun> --output . --display :119    # 需独立 Xvfb 显示
+# 修瑕（plan_retouch.py 需读取修瑕前的部件：retouch/before/parts，或 assemble_depth.py 的原始输出）
+python scripts/plan_retouch.py                        # 瑕疵选区与笔触计划
+TMPDIR=<私有临时目录> ASTRA_QUIT=1 python scripts/launch_krita.py \
+  --krita <Krita AppRun> --output . --display :119 --script scripts/krita_retouch.py
+python scripts/apply_retouch.py                       # 校验并写回 parts/、合成图与验证文件（只运行一次）
 ```
 
 模型原始返回图未入库（位于工作目录 `.work/parts/*/generated.png`），各部件的生成哈希记录在 [manifest.json](manifest.json)。

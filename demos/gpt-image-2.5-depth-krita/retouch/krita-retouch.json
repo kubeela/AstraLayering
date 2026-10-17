@@ -1,0 +1,398 @@
+{
+  "ok": true,
+  "version": "5.3.4.1 (git bd6e8d0)",
+  "kra": "character-depth.kra",
+  "layers": 90,
+  "editedLayers": 21,
+  "unchangedLayersVerified": 69,
+  "reopenedVerified": true,
+  "parts": [
+    {
+      "id": "hair/back_hair/lock_right",
+      "layer": "04 hair/back_hair/lock_right",
+      "strokes": 489,
+      "presets": [
+        "b) Basic-1",
+        "b) Basic-5 Size"
+      ],
+      "sizes": [
+        2,
+        9
+      ],
+      "opacities": [
+        0.35,
+        1.0
+      ],
+      "defectPixels": 2973,
+      "changed": true,
+      "sha256": "8201f82feff8ee0822da11f478b45646b07db452dc6089b3e4e6bc3ffc51184b",
+      "seconds": 2.72
+    },
+    {
+      "id": "hair/back_hair/lock_left",
+      "layer": "05 hair/back_hair/lock_left",
+      "strokes": 513,
+      "presets": [
+        "b) Basic-1",
+        "b) Basic-5 Size"
+      ],
+      "sizes": [
+        2,
+        9
+      ],
+      "opacities": [
+        0.35,
+        1.0
+      ],
+      "defectPixels": 3049,
+      "changed": true,
+      "sha256": "affbd784e8ce289fa898703fd45a00b4b60a6b733d19565ed1d72bc047ef5b17",
+      "seconds": 2.06
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "layer": "10 legs/leg_right/foot",
+      "strokes": 134,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        6
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 521,
+      "changed": true,
+      "sha256": "0edb20d40c164e9ab6ce7f10d15950690ae523b2181fdea053bc822a211da4ad",
+      "seconds": 0.17
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "layer": "11 legs/leg_left/foot",
+      "strokes": 119,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        6
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 403,
+      "changed": true,
+      "sha256": "f4bcc3dbc616f7cc0b332633e1c74dd7edb1679406289b198339a5e43107f2f8",
+      "seconds": 0.19
+    },
+    {
+      "id": "neck",
+      "layer": "13 neck",
+      "strokes": 292,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        14
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 4344,
+      "changed": true,
+      "sha256": "ab2e1b84d40b2c2d1b857c6a0af5241cb834d8868095fdbdd74c2a56142d5665",
+      "seconds": 0.38
+    },
+    {
+      "id": "head_accessories/left_earring/ear_stud",
+      "layer": "45 head_accessories/left_earring/ear_stud",
+      "strokes": 28,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 28,
+      "changed": true,
+      "sha256": "83db7f5e495343c2fc4ef956506758366117d49b7f814e1e817485fcf640f2d0",
+      "seconds": 0.09
+    },
+    {
+      "id": "head_accessories/right_earring/ear_stud",
+      "layer": "46 head_accessories/right_earring/ear_stud",
+      "strokes": 21,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 21,
+      "changed": true,
+      "sha256": "6e60a9fdaa8445dfec29eda5db113a7c9b5fd87f9ebf5953de15c21da03b6716",
+      "seconds": 0.14
+    },
+    {
+      "id": "face/ear_right",
+      "layer": "47 face/ear_right",
+      "strokes": 126,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        5
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 126,
+      "changed": true,
+      "sha256": "206237e33bb56bad9df090109391b18fa2c2b35295092c70e62f918abf10d79c",
+      "seconds": 0.23
+    },
+    {
+      "id": "face/ear_left",
+      "layer": "48 face/ear_left",
+      "strokes": 164,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        5
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 164,
+      "changed": true,
+      "sha256": "b993bdf54d8acc2bf94c2399275aefcf8f1bb287a2eab73387ad399aa834111b",
+      "seconds": 0.28
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "layer": "50 face/eye_left/sclera",
+      "strokes": 285,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        5
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 285,
+      "changed": true,
+      "sha256": "e7fcc42d60d449e9c2a42fca8544e00ffc2511e44ec495d60f0e0afdb7053bac",
+      "seconds": 0.41
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "layer": "51 face/eye_right/sclera",
+      "strokes": 344,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        5
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 344,
+      "changed": true,
+      "sha256": "8ecc8227abeea4b5b21e90ba082b6d7115d81667f8f0103832f1ec71acd99364",
+      "seconds": 0.48
+    },
+    {
+      "id": "face/eye_left/iris",
+      "layer": "52 face/eye_left/iris",
+      "strokes": 83,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        4
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 83,
+      "changed": true,
+      "sha256": "c4e078a214978bedc751fd17ff4eb5187e2b3318dd98c49e1462fb98f388c3e4",
+      "seconds": 0.15
+    },
+    {
+      "id": "face/eye_right/iris",
+      "layer": "53 face/eye_right/iris",
+      "strokes": 106,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        4
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 106,
+      "changed": true,
+      "sha256": "03027f03264ab7890e33e7516ee0de7543f4a86c70a20f0270578fd1058d074d",
+      "seconds": 0.18
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "layer": "68 face/mouth/lower_teeth",
+      "strokes": 24,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 24,
+      "changed": true,
+      "sha256": "491117b76e2a492184b75cc0ae468b588a7da69b82e45f864178713b230f33af",
+      "seconds": 0.07
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "layer": "69 face/mouth/upper_teeth",
+      "strokes": 49,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 49,
+      "changed": true,
+      "sha256": "309f2d56f3a1af66df4be86f46a0a9f48b2a8f57b02250beceebcdf387caabe0",
+      "seconds": 0.11
+    },
+    {
+      "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
+      "layer": "73 head_accessories/forehead_ornament/upper_sapphire_mount",
+      "strokes": 83,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 83,
+      "changed": true,
+      "sha256": "fec6643a73b099c4c91be5a5c7e6f23f21bb558c2bdce857aefaf341be0f12e2",
+      "seconds": 0.15
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+      "layer": "75 head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+      "strokes": 13,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 13,
+      "changed": true,
+      "sha256": "96368a5340763423160058da604a304576932b1a3f665ca6da891ed545956d63",
+      "seconds": 0.08
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+      "layer": "76 head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+      "strokes": 13,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 13,
+      "changed": true,
+      "sha256": "f62884ac82dd102eb1ef946d19d05e51aa44f722cfac0dc5cbdb0120893c96a0",
+      "seconds": 0.08
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+      "layer": "77 head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+      "strokes": 11,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 11,
+      "changed": true,
+      "sha256": "34eec1aa8b853f94e5bd440fa5ab56496221a04f57cd4e3c3cdbbb2f33813d70",
+      "seconds": 0.08
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
+      "layer": "78 head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
+      "strokes": 20,
+      "presets": [
+        "b) Basic-1"
+      ],
+      "sizes": [
+        3
+      ],
+      "opacities": [
+        1.0
+      ],
+      "defectPixels": 20,
+      "changed": true,
+      "sha256": "e30333432d0d2feddecbd45c6bfa752424fe151362b6b26ca9fa49d6fc3c4e0d",
+      "seconds": 0.13
+    },
+    {
+      "id": "hair/side_hair_right",
+      "layer": "87 hair/side_hair_right",
+      "strokes": 44,
+      "presets": [
+        "b) Basic-1",
+        "b) Basic-5 Size"
+      ],
+      "sizes": [
+        2,
+        4
+      ],
+      "opacities": [
+        0.35,
+        1.0
+      ],
+      "defectPixels": 129,
+      "changed": true,
+      "sha256": "bbf87a3fc51c710f6b795679f7e12704b9190e79b8a69cdbe03c673d24bb371b",
+      "seconds": 0.16
+    }
+  ]
+}
