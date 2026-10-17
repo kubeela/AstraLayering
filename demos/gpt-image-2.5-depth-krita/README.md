@@ -5,12 +5,12 @@
 调用本地 `forgeax-imagegen`（`gpt-image-2.5-flare`，少数为 `-sunburst`）做部件提取与遮挡补全，
 再由 Python 配准回原画布并导入 Krita 5.3.4.1。
 
-- [可编辑 Krita 文件](character-depth.kra)：90 个绘画层按 level 由下到上排列，图层名 `"<level> <部件 ID>"`
-- [原图 / 原姿势 / 完整补全叠放 对照](compare-reference-pose-depth.jpg)
-- [Krita 重开导出：原姿势](krita-reopened-pose.png) · [Krita 重开导出：关闭蒙版的深度叠放](krita-reopened-depth-stack.png)
+- [可编辑 Krita 文件](character-depth.kra)：90 个完整部件绘画层按 level 由下到上排列，图层名 `"<level> <部件 ID>"`，无蒙版
+- [原图与 Krita 叠放对照](compare-reference-krita.jpg) · [Krita 重开导出 PNG](krita-reopened.png)
+- [原姿势逐像素还原 PNG](reassembled-pose.png)（Python 按 `pose-mask.png` 合成，用于校验）
 - 完整部件总览 [1](contact-full-1.jpg) · [2](contact-full-2.jpg) · [3](contact-full-3.jpg) · [4](contact-full-4.jpg)
 
-![原图、原姿势重组、关闭蒙版后的完整部件深度叠放](compare-reference-pose-depth.jpg)
+![左：原图；右：Krita 中 90 个完整部件按深度叠放](compare-reference-krita.jpg)
 
 ## 控制图与提示词
 
@@ -39,16 +39,21 @@ gpt-image-2.5 不保持构图比例，因此每个部件以 1.35 倍外框裁切
 - 皮肤部件（颈、手臂、手指、腿、脚）隐藏区由本部件可见皮肤平滑延展，仅保留微弱模型明暗，
   防止模型把脚链、泳衣边等遮挡物画进皮肤层；与标准形状严重不符的返回（如右手中指画成直指）不予采用。
 
-每层带透明蒙版 **「原姿势遮挡 · 关闭以显示完整补全」**：开启时与原图逐像素一致，关闭即可检查补全。
+## Krita 文件
+
+每层就是一个完整部件（含遮挡补全），不带透明蒙版：隐藏任一前层即可直接看到其后部件的补全内容，
+可直接用于后续绑定、动作和换装。按深度叠放已与原图高度一致（99.3% 像素不变）；
+需要逐像素还原原姿势时，使用各部件目录中的 `pose-mask.png`（可见像素为原图 alpha / 完整 alpha，其余为 0），
+`reassembled-pose.png` 即按此合成的结果。
 
 ## 验证（[validation.json](validation.json)、[krita-import.json](krita-import.json)、[krita-comparison.json](krita-comparison.json)）
 
 | 检查 | 结果 |
 | --- | --- |
-| Krita 重开导出（原姿势）vs 原图 | RGB 与 alpha 最大差 0，PSNR 138 dB |
-| Krita 重开 90 层像素哈希、层序 | 全部一致，层序等于 occlusion level |
-| 关闭蒙版深度叠放 vs 原图 | PSNR 44.5 dB，99.3% 像素不变；差异来自补全部件超出原轮廓的边缘 |
-| 关闭蒙版深度叠放：Krita vs Python | PSNR 86 dB，RGB 最大差 1 |
+| Krita 重开 90 层像素哈希、层序 | 全部一致，层序等于 occlusion level，层下无子节点 |
+| Krita 重开导出 vs 原图 | PSNR 44.5 dB，99.3% 像素不变；差异来自补全部件超出原轮廓的边缘 |
+| Krita 重开导出 vs Python 深度叠放 | PSNR 86 dB，RGB 最大差 1，alpha 一致 |
+| 原姿势合成（pose-mask）vs 原图 | RGB 与 alpha 最大差 0 |
 
 ## 已知局限
 

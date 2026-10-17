@@ -3,7 +3,7 @@
   "version": "5.3.4.1 (git bd6e8d0)",
   "kra": "character-depth.kra",
   "layers": 90,
-  "transparencyMasks": 90,
+  "childNodes": 0,
   "order": [
     "00 head_accessories/left_crown_ribbon/ribbon_tail",
     "01 head_accessories/right_crown_ribbon/ribbon_body",
