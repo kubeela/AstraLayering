@@ -1,0 +1,817 @@
+{
+  "version": 2,
+  "direction": "back-to-front",
+  "sourceHash": "2012a49efc5e0555c8835d9174102daaab20f1bece1b59303408d50a79501012",
+  "layers": [
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_tail",
+      "note": "蓝色完整长带在肩臂及邻接白紫后发之后，带根藏于带头下；先于身体和后发绘制。",
+      "level": 0,
+      "check": {
+        "passed": true,
+        "note": "已看完整长带 blend 与候选：画面右蓝带沿肩臂外缘连续下垂、外弯内卷，位于肩臂和邻接后发后方，根部由带头盖住，整件固定在最后台阶即可。"
+      }
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_body",
+      "note": "画面左蓝带在肩臂、邻接后发之后，完整带根由带头覆盖；与对侧无交叉。",
+      "level": 1,
+      "check": {
+        "passed": true,
+        "note": "已看整幅蓝带 blend 及候选全身：带身沿画面左肩臂外侧至 y838 内卷尖，后于身体和贴邻白紫发束，根端后于带头；大段彼此不相交的物体以稳定顺序展开。"
+      }
+    },
+    {
+      "id": "hair/back_hair/main_right",
+      "note": "画面左宽长后发整体位于脸颈、肩身、双臂及腿后；上根藏于头盖。",
+      "level": 2,
+      "check": {
+        "passed": true,
+        "note": "已逐件看完整 SVG blend 与候选全身：从右后枕至画面左下回卷是一片连续主面，补全投影经过肩、臂、髋、腿后，全部由身体覆盖；主体在游离束后，两侧后发无可见交叉，左右先后是稳定线性扩展。"
+      }
+    },
+    {
+      "id": "hair/back_hair/main_left",
+      "note": "画面右宽长后发整体位于脸颈、肩身、双臂及腿后；与对侧无须交替穿插。",
+      "level": 3,
+      "check": {
+        "passed": true,
+        "note": "已逐件对照完整 blend 和候选：画面右后发从耳后经躯干、手臂及大腿隐藏区至 y1331，整体在身体后；与独立中长束之间保留原图空隙，无需整件深度反转。"
+      }
+    },
+    {
+      "id": "hair/back_hair/lock_right",
+      "note": "画面左中长游离束在长发主体前缘、肩臂之后；根部仍由头盖遮住。",
+      "level": 4,
+      "check": {
+        "passed": true,
+        "note": "已对照完整游离束 blend 和候选：发根补到右耳后并被脸耳头盖遮挡，可见细束沿画面左上臂外缘回至手旁；放主发面前、整臂后能保留空隙。待修：上根完整 SVG 有局部异色色块，归原件内容。"
+      }
+    },
+    {
+      "id": "hair/back_hair/lock_left",
+      "note": "画面右中长游离束在长发主体前缘、肩臂之后；保留与主面的间隙。",
+      "level": 5,
+      "check": {
+        "passed": true,
+        "note": "已看完整 blend 与候选：画面右游离束根端经肩臂后连续到手旁，整体处于主发面前、皮肤后；与蓝带相邻无相互夹绕。待修：后枕发根自带异色小补片，保持 SVG。"
+      }
+    },
+    {
+      "id": "hair/bun",
+      "note": "完整圆髻在冠环及莲花后，下部连接颈藏于贴头发面上缘。",
+      "level": 6,
+      "check": {
+        "passed": true,
+        "note": "已核对完整髻体 blend 和候选：莲花遮住髻下半部，短连接颈在头盖及前发根后；整髻保持后于冠饰与头盖，顶端露出。"
+      }
+    },
+    {
+      "id": "hair/hair_cap",
+      "note": "贴头发面覆盖后发上根及髻根，完整后枕在脸、耳和颈后；前侧宽发面在其前。",
+      "level": 7,
+      "check": {
+        "passed": true,
+        "note": "已对照当前候选头部及完整 SVG 的 blend：后枕补全延到下颌后，必须整件放在脸底、耳和颈之后；上方压住后发根，前侧幕帘在其前。候选已消除原树序的头盖盖脸。"
+      }
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "note": "画面左整腿在后发前、骨盆和本侧完整脚后；中央邻腿按其边界顺接。",
+      "level": 8,
+      "check": {
+        "passed": true,
+        "note": "已看从完整髋圆端到踝端的 blend 及候选全身：右腿在后发前、pelvis 和右 foot 后，膝小腿连续；两腿相近轮廓主要接触，取右腿在左腿后为统一线性次序。"
+      }
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "note": "画面右整腿在后发前、骨盆及本侧脚后；双腿接近处采用左腿在前的统一次序。",
+      "level": 9,
+      "check": {
+        "passed": true,
+        "note": "已看完整左腿 blend 及候选：隐藏髋端由 pelvis 覆盖，踝端由 foot 覆盖，整段遮住长发；与右腿不形成前后交替跨绕，左腿整体置前成立。"
+      }
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "note": "完整右脚覆盖本侧 leg 的踝端，位于本侧踝链及宝石之后。",
+      "level": 10,
+      "check": {
+        "passed": true,
+        "note": "已补看包含上方圆弧根部的完整 foot blend 及候选脚部：整足覆盖 leg 踝端，踝宝石与链饰全部在足前。待修：本件上根实际上延至约 y1353，较说明中 y1385–1395 的踝缝早，属局部根端范围偏大，保持完整固定前层。"
+      }
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "note": "完整左脚覆盖本侧 leg 的踝端；两足近邻处左脚在前，饰物均在足面前。",
+      "level": 11,
+      "check": {
+        "passed": true,
+        "note": "已看完整左脚 blend 和候选足部：足面覆盖 leg 伸入踝端，趾部完整；与右足相邻保持各自轮廓，整足在本侧链、宝石后。待修：上缘近 y1384 为平直色块边界，属于接缝形状。"
+      }
+    },
+    {
+      "id": "pelvis",
+      "note": "完整骨盆覆盖双腿隐藏髋端，腹上接续藏在 torso 下；叶节点无 kind 同样独立赋深度。",
+      "level": 12,
+      "check": {
+        "passed": true,
+        "note": "已看含全部上下缘的完整 pelvis blend 及候选：骨盆盖住两腿隐藏髋端，上腹端被 torso 覆盖。待修：下缘在大腿正面约 y695–715 出现较大弧形搭接／色块分界，属于连接余量与形状问题，整件深度仍在双腿前、torso 后。"
+      }
+    },
+    {
+      "id": "neck",
+      "note": "完整颈部在脸下颌之后，颈根藏于 torso 上缘，覆盖后枕发；叶节点无 kind 仍纳入。",
+      "level": 13,
+      "check": {
+        "passed": true,
+        "note": "已看完整颈部 blend 及候选全身／头部：上端圆顶伸到嘴下方是隐藏连接面，必须在脸底之后；下端由 torso 领肩覆盖，后发在颈后。候选下颌与颈关系正确，neck 无 kind 仍完整赋层。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "note": "右食指完整指体在掌部及拇指后；近掌叠压随尺侧邻指覆盖方向统一放在中指后。",
+      "level": 14,
+      "check": {
+        "passed": true,
+        "note": "已看完整食指 blend 与候选：指体从掌下连续沿虎口转为最上屈指尖，掌／拇指分别遮住根端与近拇指侧；与中指重叠主要在近掌隐藏区，统一放中指后。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "note": "右中指在食指前，近掌部分由无名指遮住，指根藏在掌下；末端局部边界另逐件核对。",
+      "level": 15,
+      "check": {
+        "passed": true,
+        "note": "已看完整中指 blend 与候选右手：粉色末段位于食指下、无名指上，各末段轮廓邻接而非反向跨叠；根部及近掌段受无名指覆盖，因此整件取 ring 后、index 前可成立。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/ring_finger",
+      "note": "右无名指覆盖中指近掌被遮部分，其外侧由小指覆盖；根端藏于掌部。",
+      "level": 16,
+      "check": {
+        "passed": true,
+        "note": "已对照完整无名指 blend 与候选：近掌／外侧在小指后并覆盖中指的近掌隐藏部分，远端与中指分界连续；各完整末段不构成需反序的互跨。指根由 palm 覆盖。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "note": "右小指构成画面左外侧轮廓并覆盖无名指外侧指身，根端在掌后。",
+      "level": 17,
+      "check": {
+        "passed": true,
+        "note": "已看完整小指 blend 与候选：小指沿画面左外缘覆盖无名指外侧的一段，指根藏在掌后；构成较舒展外轮廓而非改认长指，整体前于 ring。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "note": "右拇指尖在食指屈曲段前，保留虎口负形，指根由掌覆盖。",
+      "level": 18,
+      "check": {
+        "passed": true,
+        "note": "已逐件核对完整拇指 blend 与候选：远段指尖在食指屈曲上段前，近端在掌后，负形仍可见；取 thumb 在 index 前、palm 后。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "note": "右掌覆盖五指完整根端，腕根整体藏在本侧前臂腕端下。",
+      "level": 19,
+      "check": {
+        "passed": true,
+        "note": "已看完整掌 SVG blend 及候选右手放大：掌部盖五指的圆弧根端，腕根在前臂下，虎口负形保持贯通；整掌没有需要前后互换的穿插。"
+      }
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "note": "右前臂覆盖手掌腕根，同时近肘伸入端由本侧上臂覆盖。",
+      "level": 20,
+      "check": {
+        "passed": true,
+        "note": "已对照完整前臂 blend 和候选右腕：近肘端在上臂后，腕端在手掌腕根前，连续斜行臂面都在后发前；固定排序满足两端同向覆盖。"
+      }
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "note": "右上臂覆盖前臂近肘伸入端，肩端在 torso 下；整臂在后发及蓝带前。",
+      "level": 21,
+      "check": {
+        "passed": true,
+        "note": "已看完整上臂 blend 与候选全身：肩根圆顶藏在 torso 下，肘端覆盖右前臂近端，整段在后发蓝带前；保持从肩到肘一个固定层。"
+      }
+    },
+    {
+      "id": "arms/arm_left/upper_arm",
+      "note": "左上臂肩端在 torso 下，肘端在左前臂下；整段在后发及蓝带前。",
+      "level": 22,
+      "check": {
+        "passed": true,
+        "note": "已看完整上臂 blend 与候选：左肩端在躯干后、肘端在左前臂后；整件虽两端都被盖，仍可统一放其后，后发蓝带更后。"
+      }
+    },
+    {
+      "id": "arms/arm_left/forearm",
+      "note": "左前臂覆盖上臂肘端，腕端藏在左掌根后；不改动局部搭接形体。",
+      "level": 23,
+      "check": {
+        "passed": true,
+        "note": "已核对完整前臂 blend 及候选左腕：前臂近端盖上臂肘端，远端藏于 palm 掌根下，沿途臂缘在长发／飘带前。局部接缝弧面保留原件，不改深度。"
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "note": "左小指是本侧四指叠压最外后的完整指体，受无名指及掌根覆盖。",
+      "level": 24,
+      "check": {
+        "passed": true,
+        "note": "已看完整小指 blend 和候选：画面右最外缘至最下指尖是一根连续小指，内侧受无名指覆盖，根部受掌覆盖；完整置于其后不改变原轮廓。"
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "note": "左无名指在小指前、中指后；完整根端藏在掌部下。",
+      "level": 25,
+      "check": {
+        "passed": true,
+        "note": "已看完整无名指 blend 与候选：末段由中指压住、又压在小指内侧一段上；指根在掌下，因此取 little 后方基底之上、middle 之后。"
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "note": "左中指覆盖无名指且受食指弯回段覆盖，根端在掌下。",
+      "level": 26,
+      "check": {
+        "passed": true,
+        "note": "已对照完整中指 blend 与候选：根端在掌后，弯回末段在食指下、无名指上，同一完整指体始终保持该前后关系。"
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "note": "左食指弯回末段在中指前，虎口内缘保留负形；完整根端在掌下。",
+      "level": 27,
+      "check": {
+        "passed": true,
+        "note": "已看完整食指 blend 及候选：从掌下沿虎口外缘转为最高屈指尖，末段覆盖中指，根端被掌盖；index 整体在 middle 前，间隙连续。"
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "note": "左拇指与食指相邻、保留细长空隙，根部在掌下；非接触段次序作稳定线性扩展。",
+      "level": 28,
+      "check": {
+        "passed": true,
+        "note": "已看完整拇指 blend 与候选：掌下根端沿内侧连到圆钝指尖，和食指之间主要为真实狭缝、未形成反向跨叠；固定在食指前、palm 后。"
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/palm",
+      "note": "左掌覆盖五根手指的完整根端，并覆盖前臂腕端局部余量。",
+      "level": 29,
+      "check": {
+        "passed": true,
+        "note": "已看完整掌部 blend 及候选左手：掌面连续覆盖各指根圆端，同时掌根覆盖前臂腕端，完整虎口不填平，取掌部在五指和前臂前。"
+      }
+    },
+    {
+      "id": "body/torso",
+      "note": "连续躯干覆盖双上臂肩端、颈根与骨盆上端，位于独立 breast 后。",
+      "level": 30,
+      "check": {
+        "passed": true,
+        "note": "已看完整躯干 blend 与候选：肩部盖住两上臂圆顶，颈根与骨盆上端在其后，连续胸廓承接 breast。所有相关搭接都采用躯干整体在前，不用父组树序。"
+      }
+    },
+    {
+      "id": "body/breast",
+      "note": "完整双侧胸部作为单层覆盖连续 torso，轮廓内外形出入只记录待修。",
+      "level": 31,
+      "check": {
+        "passed": true,
+        "note": "已逐件看完整 blend 与候选胸部：双侧合成的连续胸形整体覆盖 torso，躯干在其后铺满；胸外缘接近臂但不要求越到臂后，固定前置关系可成立。"
+      }
+    },
+    {
+      "id": "legs/leg_right/ankle_gem",
+      "note": "右踝独立菱形宝石及小珠在 leg 皮肤前，与下方链饰无直接交接。",
+      "level": 32,
+      "check": {
+        "passed": true,
+        "note": "已看完整右踝小珠／菱形宝石 blend 与候选：独立硬件贴覆腿踝前，完整在皮肤之前，与 V 链上缘留皮肤空隙；无链条连接或跨层需求。"
+      }
+    },
+    {
+      "id": "legs/leg_left/ankle_gem",
+      "note": "左踝独立菱形宝石及小珠在 leg 皮肤前，与 V 链保持原图皮肤间隔。",
+      "level": 33,
+      "check": {
+        "passed": true,
+        "note": "已看完整左踝饰 blend 及候选：小珠、短连接、菱形宝石作为整体在 leg 之前，和下方 V 链隔开，固定深度无需随足面变化。"
+      }
+    },
+    {
+      "id": "legs/leg_right/anklet/outer_chain",
+      "note": "右踝外支正面软链在 leg 与 foot 前，下端短接头由中央圆件覆盖。",
+      "level": 34,
+      "check": {
+        "passed": true,
+        "note": "已看完整外支链 blend 和候选足部：正面链节覆腿足，下端接头在中央圆件后，与内支链在中心汇合而不互穿。待修：上端转入踝后的短接续在单层正绘下露出小端，属局部连接形状。"
+      }
+    },
+    {
+      "id": "legs/leg_right/anklet/inner_chain",
+      "note": "右踝内支软链在 leg 与 foot 前、中央圆件后；与对侧饰物各自独立。",
+      "level": 35,
+      "check": {
+        "passed": true,
+        "note": "已看完整内支链 blend 与候选：整支处于腿足前、中央圆件后；本侧内支与另一侧踝链近邻但不要求交替。待修：上端背转补全的短圆头可见，保留局部待修。"
+      }
+    },
+    {
+      "id": "legs/leg_right/anklet/gem_pendant",
+      "note": "右踝完整宝石及短颈在足面前，短颈上端藏于中央圆件下。",
+      "level": 36,
+      "check": {
+        "passed": true,
+        "note": "已看完整长菱形硬坠及短颈 blend 与候选：宝石在足面前，短颈顶端藏于中央圆件后；不是按从上到下排列，整坠深度后于 central_connector。"
+      }
+    },
+    {
+      "id": "legs/leg_right/anklet/central_connector",
+      "note": "右踝中央硬圆件覆盖两支链端及吊坠的上接短颈。",
+      "level": 37,
+      "check": {
+        "passed": true,
+        "note": "已看完整中央圆件 blend 及候选：圆形硬件覆盖两支链端，也覆盖宝石短挂颈上端，整件在足面前，故比链与 gem_pendant 更靠前。"
+      }
+    },
+    {
+      "id": "legs/leg_left/anklet/ankle_chain",
+      "note": "左踝完整 V 链在腿足前，中央两侧接头藏于 center_link 下。",
+      "level": 38,
+      "check": {
+        "passed": true,
+        "note": "已对照完整 V 链 blend 与候选：两臂在腿足前，链底接头在 center_link 后。待修：两侧踝后短补端在候选中有小圆端外露，属单件接续余量的局部形状，维持整链固定前景。"
+      }
+    },
+    {
+      "id": "legs/leg_left/anklet/center_link",
+      "note": "左踝中央连接头覆盖 V 链两端；下接短颈藏在完整水滴坠顶后。",
+      "level": 39,
+      "check": {
+        "passed": true,
+        "note": "已看完整连接头连短颈 blend 与候选：上部覆盖 V 链两端，下颈由水滴坠顶覆盖；一件取 chain 前、pendant 后同时满足两端关系。"
+      }
+    },
+    {
+      "id": "legs/leg_left/anklet/teardrop_pendant",
+      "note": "左踝完整水滴坠覆盖 center_link 下端短颈，并整体位于脚背前。",
+      "level": 40,
+      "check": {
+        "passed": true,
+        "note": "已看完整水滴坠 blend 及候选：完整银蓝坠体在脚背前，坠顶盖住 center_link 的末端短颈，取本侧连接组件最前。"
+      }
+    },
+    {
+      "id": "head_accessories/left_earring/suspension_chain",
+      "note": "左耳饰整链在后发前，两端分别藏于耳钉及硬坠下。",
+      "level": 41,
+      "check": {
+        "passed": true,
+        "note": "已看完整左悬链 blend 与候选：完整链上下端在钉／坠后，链身在后发前；前发卷尾位于其外侧、无互跨。"
+      }
+    },
+    {
+      "id": "head_accessories/right_earring/suspension_chain",
+      "note": "右耳饰整链在后发前，两端由耳钉及蓝宝石坠覆盖。",
+      "level": 42,
+      "check": {
+        "passed": true,
+        "note": "已看完整右悬链 blend 与候选：从耳钉下方至坠顶连续，两端由钉面和硬坠遮住，链身在后发前，整件后于两端硬件。"
+      }
+    },
+    {
+      "id": "head_accessories/left_earring/sapphire_pendant",
+      "note": "左耳硬坠覆盖悬链下端，位于耳后长发前，保持完整外轮廓。",
+      "level": 43,
+      "check": {
+        "passed": true,
+        "note": "已看完整左蓝宝石坠 blend 和候选：硬坠整体在后发前并覆盖链下端，耳、脸及侧发与坠体无要求反序的交叉。"
+      }
+    },
+    {
+      "id": "head_accessories/right_earring/sapphire_pendant",
+      "note": "右耳完整硬坠覆盖悬链末端，位于后发前。",
+      "level": 44,
+      "check": {
+        "passed": true,
+        "note": "已看完整右坠 blend 与候选：坠体盖住链下圆端，位于耳后紫发前；邻接前侧细发不跨过本坠，不需前后变层。"
+      }
+    },
+    {
+      "id": "head_accessories/left_earring/ear_stud",
+      "note": "左耳钉覆盖链上端，安装端受耳垂遮挡；可见圆钉面在后发前。",
+      "level": 45,
+      "check": {
+        "passed": true,
+        "note": "已看完整耳钉 blend 及候选：圆钉面覆盖链顶，安装上端由左耳垂遮住；固定在链前、耳后，剩余下圆面正常外露。"
+      }
+    },
+    {
+      "id": "head_accessories/right_earring/ear_stud",
+      "note": "右耳钉覆盖链上端，局部安装端位于耳垂后。",
+      "level": 46,
+      "check": {
+        "passed": true,
+        "note": "已看完整耳钉 blend 和候选：耳钉下半圆露在耳垂下、链上端在其后；安装顶端受完整右耳遮挡。整钉放链前、耳后保持可见小圆面。"
+      }
+    },
+    {
+      "id": "face/ear_right",
+      "note": "完整右耳在头盖后发前、脸底及前侧发后，耳垂覆盖耳钉安装余量。",
+      "level": 47,
+      "check": {
+        "passed": true,
+        "note": "已看完整右耳 blend 与候选耳侧放大：耳根在脸底后，耳上部在前侧发后，完整耳壳在头盖／后发前；耳垂覆盖耳钉安装端，其余圆钉面向下露出。"
+      }
+    },
+    {
+      "id": "face/ear_left",
+      "note": "完整左耳在头盖后发前、脸底及侧发后，覆盖耳钉上安装端。",
+      "level": 48,
+      "check": {
+        "passed": true,
+        "note": "已看完整左耳 blend 及候选：耳根由脸侧盖住，上部由前发压住，耳垂盖耳钉上端；整耳在头盖前、脸与侧发后固定成立。"
+      }
+    },
+    {
+      "id": "face/face_base",
+      "note": "完整额头至下巴覆盖头盖后枕、双耳根及颈上端，全部五官与额前侧发在其前。",
+      "level": 49,
+      "check": {
+        "passed": true,
+        "note": "已在提案后重看完整脸底 blend 与候选：脸底从额上圆顶到下巴连续、不挖五官洞，覆盖头盖补全后枕、耳根和颈上圆端，所有眼鼻嘴及前侧发仍在其前；候选脸颈关系正确。"
+      }
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "note": "左眼连续眼白在脸底前，完整虹膜及高光后，上下眼睑共同位于前侧。",
+      "level": 50,
+      "check": {
+        "passed": true,
+        "note": "已看完整眼白 blend 及候选左眼放大：杏仁底形在虹膜后连续铺满，眼内圆体不挖孔，取脸底前、iris 及所有睑缘后；外角由前发覆盖。"
+      }
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "note": "右眼完整眼白铺在脸底前、虹膜后；外眼角隐藏端由前发覆盖。",
+      "level": 51,
+      "check": {
+        "passed": true,
+        "note": "已看完整右眼白 blend 与候选放大：完整杏仁形连续底面在 iris 后，隐藏上缘色带由粗上睑覆盖；整件在脸前、眼内细节及两睑后。"
+      }
+    },
+    {
+      "id": "face/eye_left/iris",
+      "note": "左眼完整虹膜瞳孔在 sclera 前、highlight 及上下睑后。",
+      "level": 52,
+      "check": {
+        "passed": true,
+        "note": "已看完整圆润虹膜瞳孔 blend 与候选：完整上圆周补在粗上睑后，覆盖 sclera，下缘贴眼开口，高光位于其前；固定在眼白前、两睑后。"
+      }
+    },
+    {
+      "id": "face/eye_right/iris",
+      "note": "右眼完整虹膜瞳孔覆盖眼白，处于亮点及上下眼睑后。",
+      "level": 53,
+      "check": {
+        "passed": true,
+        "note": "已看完整右虹膜瞳孔 blend 及候选：上部完整圆周伸到上睑背面，整体覆盖眼白，高光在前；上下边缘由睑缘收束，不沿树顺序把虹膜置于眼睑前。"
+      }
+    },
+    {
+      "id": "face/eye_left/highlight",
+      "note": "左眼白色亮点在 iris 前、眼睑及前发后。",
+      "level": 54,
+      "check": {
+        "passed": true,
+        "note": "已看完整白色亮点 blend 和候选：亮点覆盖虹膜上部，全部位于睑缘开口内；固定后于两睑／前发、前于 iris。"
+      }
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "note": "右眼独立亮点在虹膜前、上下睑及前发后。",
+      "level": 55,
+      "check": {
+        "passed": true,
+        "note": "已看完整右眼白亮点 blend 和候选：小白点覆于虹膜内侧上部，取虹膜前、两睑及前发后，没有露出眼缘。"
+      }
+    },
+    {
+      "id": "face/eye_left/lower_eyelashes",
+      "note": "左眼短下睫毛在眼内结构前，根部伸入下眼睑覆盖侧后。",
+      "level": 56,
+      "check": {
+        "passed": true,
+        "note": "已看两根完整短下睫毛 blend 和候选：睫根伸入下眼缘后，尖端向外下伸出，整件在 lower_eyelid 后、眼内结构前。"
+      }
+    },
+    {
+      "id": "face/eye_left/lower_eyelid",
+      "note": "左眼细下睑覆盖眼内结构及短下睫毛根部，两角由粗上睑收拢。",
+      "level": 57,
+      "check": {
+        "passed": true,
+        "note": "已看完整细下睑 blend 和候选：下缘覆盖眼白虹膜边缘并盖短睫根，两个角端由上睑收口，整体后于上睑、前于睫根及眼内结构。"
+      }
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "note": "右眼细下睑覆盖完整眼白虹膜亮点，角端与上眼睑衔接。",
+      "level": 58,
+      "check": {
+        "passed": true,
+        "note": "已看完整右下眼缘 blend 与候选：细粉褐线盖眼白与虹膜下边，两角在粗上睑接续下；整个下睑放上睑后、眼内结构前。"
+      }
+    },
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "note": "左眼粗上睑及融合上睫毛覆盖眼内结构，外端由侧前发遮挡。",
+      "level": 59,
+      "check": {
+        "passed": true,
+        "note": "已看含融合上睫毛的完整上睑 blend 及候选：粗缘盖住虹膜完整上圆周和亮点潜在上端，外端由前发压住；整件统一在眼内与下眼角接续前。"
+      }
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "note": "右眼粗上睑覆盖眼内结构及眼角接缝，外端隐藏在前侧发后。",
+      "level": 60,
+      "check": {
+        "passed": true,
+        "note": "已看完整右上睑／融合睫毛 blend 和候选：粗线覆盖完整虹膜上圆周并收住角端，外角藏于前发；整件统一在所有眼内细节前。"
+      }
+    },
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "note": "左眼独立睑褶覆在脸底上、前发下，与上眼睑间隔而无相互穿插。",
+      "level": 61,
+      "check": {
+        "passed": true,
+        "note": "已看完整上睑褶 blend 和候选：褶线位于粗上缘上方、与其留间隔，后端在前发后；与眼内结构不相交，统一覆于脸底即可。"
+      }
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "note": "右眼睑褶覆在脸底上并在前发后，沿参考与粗上睑保持窄间隔。",
+      "level": 62,
+      "check": {
+        "passed": true,
+        "note": "已看完整右睑褶 blend 与候选：浅褐弧线保持上睑上方间隔，外末端在前发后，不承担眼内遮挡；统一置于脸底前、前发后成立。"
+      }
+    },
+    {
+      "id": "face/eyebrow_left",
+      "note": "完整左眉覆于脸底，外眉尾由前侧宽发面遮挡。",
+      "level": 63,
+      "check": {
+        "passed": true,
+        "note": "已看完整左眉 blend 及候选：内眉端露于额面、连续外眉尾由画面右前发覆盖；整眉统一在脸底前、前发后。"
+      }
+    },
+    {
+      "id": "face/eyebrow_right",
+      "note": "完整右眉覆于脸底，连续眉尾藏于右前侧发下。",
+      "level": 64,
+      "check": {
+        "passed": true,
+        "note": "已看完整右眉 blend 与候选：完整眉尾伸入画面左前发遮挡区，整眉在连续脸底前、前发后，未与眼部跨叠。"
+      }
+    },
+    {
+      "id": "face/nose",
+      "note": "鼻尖亮暗及鼻孔作为整体在连续脸底前，与眼嘴无交叉。",
+      "level": 65,
+      "check": {
+        "passed": true,
+        "note": "已看完整鼻部亮暗 blend 和候选：鼻尖／短鼻孔在脸底前，与眼嘴均为不相交细节；完整实体统一前于脸底即可。"
+      }
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "note": "完整连续口腔底形在脸底前、舌齿和双唇后。",
+      "level": 66,
+      "check": {
+        "passed": true,
+        "note": "已看完整连续口腔 SVG blend 与当前候选嘴部放大：整块暗红底形铺满开口，舌、上下牙和唇都在其前；保持脸底前、所有口内及口缘后的一件固定层。"
+      }
+    },
+    {
+      "id": "face/mouth/tongue",
+      "note": "完整舌体在口腔前、上下齿及唇缘后。",
+      "level": 67,
+      "check": {
+        "passed": true,
+        "note": "已看完整舌体 blend 与候选：低对比暖粉舌体在口腔前，根部与侧缘由齿列／唇缘覆盖；整件后于上下牙及双唇，当前暖粉显露范围属本体形状及配色。"
+      }
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "note": "完整下齿带在口腔舌体前、下唇覆盖边后，默认隐藏量由原形保持。",
+      "level": 68,
+      "check": {
+        "passed": true,
+        "note": "已看完整下齿带 blend 和候选：下齿在口腔、舌前，下唇覆盖边后；该固定关系明确。待修：候选下口缘偏右仍有极细亮白边外露，默认姿态应更多隐藏，归牙带与唇覆盖边的局部形状问题。"
+      }
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "note": "完整上齿带在口腔舌体前、上唇覆盖边后。",
+      "level": 69,
+      "check": {
+        "passed": true,
+        "note": "已看完整上齿带 blend 与候选：牙带整体在口腔舌体前、上唇覆盖边后，取固定中间层。待修：候选上口缘两侧可见浅色小楔片，参考当前小圆口没有清晰独立齿列，应修局部隐藏量，保持层序。"
+      }
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "note": "完整下唇覆盖下齿舌体及口腔，嘴角搭接藏于上唇后。",
+      "level": 70,
+      "check": {
+        "passed": true,
+        "note": "已看完整下唇及肤色窄覆盖边 blend 和候选：下唇整体遮口腔、舌与下牙，上弯两端伸到上唇嘴角后；取口内前、upper_lip 后。候选右下细亮边作为齿唇局部衔接待修。"
+      }
+    },
+    {
+      "id": "face/mouth/upper_lip",
+      "note": "完整上唇覆盖上齿口腔和下唇嘴角伸入端，整嘴在脸底前。",
+      "level": 71,
+      "check": {
+        "passed": true,
+        "note": "已看完整上唇连窄覆盖边 blend 与候选：上唇覆盖上牙、口腔，并在嘴角压住下唇伸入端；整件前于所有嘴内与下唇，鼻脸在后。上牙两侧隐量不足已记录，毋需改变整件前后。"
+      }
+    },
+    {
+      "id": "head_accessories/forehead_ornament/teardrop_pendant",
+      "note": "额中央水滴及短颈在脸底前，上接颈藏于固定菱形座后。",
+      "level": 72,
+      "check": {
+        "passed": true,
+        "note": "已看完整水滴连短颈 blend 与候选：水滴整体在脸底前，顶短颈伸入上菱形座后，侧边和下尖露额；固定深度取 face 前、upper_sapphire_mount 后。"
+      }
+    },
+    {
+      "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
+      "note": "额中央上宝石座覆盖水滴短颈，顶部安装端由中分前发覆盖。",
+      "level": 73,
+      "check": {
+        "passed": true,
+        "note": "已看完整上额菱形座 blend 和候选头部：座体露在额面前，顶安装端受中分前发遮挡；下尖覆盖水滴短颈，因此整座在水滴前、前发后。"
+      }
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+      "note": "左冠上连接杆两端分别藏于冠翼与上宝石后，整件单一深度。",
+      "level": 74,
+      "check": {
+        "passed": true,
+        "note": "已看完整短杆 blend 和当前候选悬挂放大：顶圆端藏入冠翼，下端藏入上菱形石，整杆统一在 crown_frame、upper_gem 后；余量不拆层。"
+      }
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+      "note": "右冠上连接件两端在冠翼及大菱形宝石后。",
+      "level": 75,
+      "check": {
+        "passed": true,
+        "note": "已看完整冠石连接 blend 和候选放大：顶部伸入冠翼、下端伸入上菱石，取整杆在 crown_frame 与 upper_diamond_gem 后。形体略偏左的余量保持局部待修。"
+      }
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+      "note": "左冠两宝石之间短杆在上下完整宝石后。",
+      "level": 76,
+      "check": {
+        "passed": true,
+        "note": "已看完整石间短杆 blend 及候选：上下圆端分别进入两石尖端后，整段置于 upper_gem、lower_gem 后即可。"
+      }
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+      "note": "右冠两宝石短连接的上下端均由宝石尖端覆盖。",
+      "level": 77,
+      "check": {
+        "passed": true,
+        "note": "已看完整短杆 blend 及候选：上下各自圆端由上下两石遮住，整件统一在两石后，中间可见窄段保留。"
+      }
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
+      "note": "左冠下连接上端在小宝石后，下端在带头后。",
+      "level": 78,
+      "check": {
+        "passed": true,
+        "note": "已看完整连接短杆及圆弧下端 blend 和候选：上端在下石后、下端在带头后，候选保留中间可见短颈；整件只有一个后台阶。"
+      }
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
+      "note": "右冠下连接两端分别被小宝石、带头覆盖。",
+      "level": 79,
+      "check": {
+        "passed": true,
+        "note": "已看完整接杆 blend 及候选：上接端在小宝石后，下圆端在带头尖顶后；不以垂直位置当层级，整段后于两个硬件。"
+      }
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+      "note": "左冠完整上菱形硬宝石覆盖上下两根连接的伸入端。",
+      "level": 80,
+      "check": {
+        "passed": true,
+        "note": "已看完整上石 blend 及候选接点：硬质完整菱形覆盖冠杆下端及石间杆上端，取两个连接件前；与下石保持各自完整外形。"
+      }
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+      "note": "右冠完整大菱形宝石覆盖冠接杆和石间短杆端部。",
+      "level": 81,
+      "check": {
+        "passed": true,
+        "note": "已看完整大菱形石 blend 与候选：上下两尖分别盖冠接杆、石间杆端部，整石前于相邻连接件，后于前发的关系无冲突。"
+      }
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
+      "note": "左冠小菱形硬宝石覆盖石间连接与带头连接的端部。",
+      "level": 82,
+      "check": {
+        "passed": true,
+        "note": "已看完整下石 blend 及候选：上尖覆盖石间杆下端，下尖覆盖带头连接杆上端，一枚完整硬宝石统一在两杆前。"
+      }
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem",
+      "note": "右冠小菱形宝石覆盖两段相邻连接端头。",
+      "level": 83,
+      "check": {
+        "passed": true,
+        "note": "已看完整小菱石 blend 与候选：完整上下尖盖住石间连接与带头连接的端头，深度统一在两接杆前。"
+      }
+    },
+    {
+      "id": "head_accessories/left_crown_ribbon/ribbon_head",
+      "note": "左带头覆盖下连接杆和完整软带根端。",
+      "level": 84,
+      "check": {
+        "passed": true,
+        "note": "已看完整带头 blend 及候选：顶部覆盖连接杆圆端，底部覆盖整带根端，V 纹和小点随带头；整片在悬杆、软带前。待修：下边约 y170 为色块平直分界，属局部接续。"
+      }
+    },
+    {
+      "id": "head_accessories/right_crown_ribbon/ribbon_head",
+      "note": "右带头完整盾形饰片覆盖接杆下端和带身根端。",
+      "level": 85,
+      "check": {
+        "passed": true,
+        "note": "已看完整盾形带头和点饰 blend 与候选：带头盖下接杆和带身根，完整饰片统一前置。待修：带身的上端圆弧宽于带头下半部，约 y151–165 两侧出现根端色块外露，属局部搭接余量。"
+      }
+    },
+    {
+      "id": "head_accessories/crown_frame",
+      "note": "完整冠环冠翼位于髻、头盖与冠连接杆前，内侧安装根仍受前侧发覆盖。",
+      "level": 86,
+      "check": {
+        "passed": true,
+        "note": "已对照完整冠体 blend 和候选：冠环、冠翼都在髻及头盖前，覆盖冠下连接顶端，内侧安装端应被前发盖住。待修：两内侧圆弧余量约 x443–477、x548–580、y95–114 在候选头盖上露出，属局部安装余量偏大；保留整冠固定深度。"
+      }
+    },
+    {
+      "id": "hair/side_hair_right",
+      "note": "右前侧发片整体在头盖、脸、眉眼外端与冠内安装根前；卷尾保持同一深度。；中分顶部的隐藏发根位于莲花饰下方。",
+      "level": 87,
+      "check": {
+        "passed": true,
+        "note": "已看完整前发 blend 与候选头部：额侧宽面连续至耳外细卷尾，整件压住脸侧、眉眼外端、耳上缘及头盖，根部盖住中分安装端；无整件深度反转。 总控追加核对约x503–523、y78–87的根部：此处由莲花下缘覆盖，当前修正为lotus_ornament在本件前方。"
+      }
+    },
+    {
+      "id": "hair/side_hair_left",
+      "note": "左前侧发片整体覆盖头盖、脸侧耳上缘及饰物安装根，与另一侧在中分相邻。；中分顶部的隐藏发根位于莲花饰下方。",
+      "level": 88,
+      "check": {
+        "passed": true,
+        "note": "已对照完整 blend 与候选：画面右幕帘从中分到卷尾同属前景，覆盖脸耳及上额安装端。待修：完整 SVG 发根约 x530–550、y90–115 自带异色补片，属于形体／色块内容，深度保持整件。 总控追加核对约x503–523、y78–87的根部：此处由莲花下缘覆盖，当前修正为lotus_ornament在本件前方。"
+      }
+    },
+    {
+      "id": "head_accessories/lotus_ornament",
+      "note": "完整莲花饰位于发髻、冠环及两片前侧发的隐藏发根之前；下缘花瓣覆盖中分根部，维持整件固定深度。",
+      "level": 89,
+      "check": {
+        "passed": true,
+        "note": "总控追加对照原图及当前完整SVG：约x503–523、y78–87处为蓝色莲花下缘，前侧发完整补形在该范围是花饰下的隐藏根部。原表将花饰置于两片side_hair后，导致控制图误为红区。将完整莲花放到两片侧发前；花饰其余范围与其余件的前后关系保持。"
+      }
+    }
+  ]
+}
