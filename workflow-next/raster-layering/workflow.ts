@@ -5,7 +5,8 @@ import { runAgent, type Agent } from './agent.ts';
 import { resolvePartInput } from './input.ts';
 import { checkKrita, type KritaInstallation } from './krita.ts';
 import { buildPrompt, steps, type StepDefinition } from './steps.ts';
-import { canonicalPath, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, runDirectory, saveConfig, within } from './run-store.ts';
+import { canonicalPath, fileInfo, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, runDirectory, saveConfig, within } from './run-store.ts';
+import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 
 export type WorkflowOptions = {
   name: string;
@@ -36,7 +37,7 @@ export async function runWorkflow(options: WorkflowOptions, dependencies: Depend
   const requested = runDirectory(options.name, dependencies.runsDirectory);
   const saved = await loadConfig(requested, options.name);
   const directory = await canonicalPath(requested);
-  const definitions = dependencies.steps ?? steps;
+  const definitions: readonly StepDefinition[] = dependencies.steps ?? steps;
   const plan = await inspectRun(directory, definitions);
   let source = saved?.sourceInput;
   if (!saved) {
@@ -81,44 +82,88 @@ export async function runWorkflow(options: WorkflowOptions, dependencies: Depend
     options.signal?.throwIfAborted();
     const output = join(directory, step.id);
     const status = plan.resetFrom !== undefined && index + 1 >= plan.resetFrom ? 'absent' : plan.statuses.get(step.id);
-    if (status === 'completed') {
+    const drawingReady = !!step.review && status !== 'absent' && !!await fileInfo(join(output, 'report.md'));
+    const reviewTask = step.review && drawingReady ? await nextReviewTask(output) : undefined;
+    if (status === 'completed' && (!step.review || !reviewTask)) {
       options.progress?.(`${step.id}：.completed 已存在，跳过`);
       previous.push(output);
       continue;
     }
-    const prompt = await buildPrompt(step, reference, output, krita, previous);
     const model = config.models[step.id];
     if (options.dryRun) {
-      options.progress?.(`${step.id}：${status === 'running' ? '恢复未完成步骤' : '开始步骤'} (${model.model} / ${model.effort})`);
-      previews.push(prompt);
+      if (!drawingReady) previews.push(await buildPrompt(step, reference, output, krita, previous));
+      if (step.review) {
+        const task = drawingReady ? reviewTask : { kind: 'review' as const, filename: 'review-01.md' as const, index: 0 };
+        if (task) previews.push(await buildReviewPrompt(step, task, krita));
+      }
+      options.progress?.(`${step.id}：${drawingReady ? '接续 review / 修复' : status === 'running' ? '恢复未完成步骤' : '开始步骤'} (${model.model} / ${model.effort})`);
       previous.push(output);
       continue;
     }
     await mkdir(output, { recursive: true });
-    if (status !== 'running') await writeFile(join(output, '.running'), '', { flag: 'wx' });
-    const attempt = randomUUID();
-    await writeFile(join(output, 'prompt.md'), prompt);
-    await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, startedAt: new Date().toISOString(), ...model, krita, threadId: config.threadId }) + '\n');
-    await rm(join(output, 'result.json'), { force: true });
-    await rm(join(output, 'error.txt'), { force: true });
-    options.progress?.(`${step.id} ${step.title}：${config.threadId ? '继续原 thread' : '新建 thread'} (${model.model} / ${model.effort})`);
-    try {
+    if (status === 'completed') await rename(join(output, '.completed'), join(output, '.running'));
+    else if (status !== 'running') await writeFile(join(output, '.running'), '', { flag: 'wx' });
+    if (step.review) {
+      // Reopened review can change this step's artifacts. Invalidate descendants,
+      // including after an interruption between reopening and deleting them.
+      for (const [id, laterStatus] of [...plan.statuses].reverse()) {
+        if (Number(id.slice(4)) > index + 1 && laterStatus !== 'absent') {
+          await rm(join(directory, id), { recursive: true, force: true });
+          plan.statuses.set(id, 'absent');
+        }
+      }
+    }
+    const invoke = async (prompt: string, phase: string, fresh = false) => {
+      const attempt = randomUUID();
+      const selected = fresh ? step.review! : model;
+      if (!fresh && phase !== 'draw' && !config.threadId) throw new Error('缺少原绘制 threadId，无法继续修复。');
+      await writeFile(join(output, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
+      await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
+        model: selected.model, effort: selected.effort, krita, ...(fresh ? {} : { threadId: config.threadId }) }) + '\n');
+      const resultFile = join(output, phase === 'draw' ? 'result.json' : `${phase}.result.json`);
+      await rm(resultFile, { force: true });
+      await rm(join(output, 'error.txt'), { force: true });
+      options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
-        prompt, directory, ...model, threadId: config.threadId ?? undefined, signal: options.signal,
+        prompt, directory, model: selected.model, effort: selected.effort,
+        threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
         onEvent: async event => {
           if (event.type === 'thread.started') {
+            if (fresh) return; // Reviewer sessions are never saved or resumed.
             if (!event.thread_id.trim() || (config.threadId && config.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
             config.threadId = event.thread_id;
             await saveConfig(directory, config);
           }
-          await appendFile(join(output, 'events.jsonl'), JSON.stringify({ attempt, event }) + '\n');
+          await appendFile(join(output, 'events.jsonl'), JSON.stringify({ attempt, phase, event }) + '\n');
           if (event.type === 'item.completed' && event.item.type === 'agent_message') options.progress?.(event.item.text);
           if (event.type === 'error') options.progress?.(`SDK：${event.message}`);
         },
       });
-      await writeFile(join(output, 'result.json'), JSON.stringify(result, null, 2) + '\n');
-      if (result.status !== 'completed') throw new Error(`步骤未完成：${result.summary}`);
-      if (!config.threadId) throw new Error('SDK 未返回 threadId，不能完成步骤。');
+      await writeFile(resultFile, JSON.stringify(result, null, 2) + '\n');
+      return result;
+    };
+    try {
+      if (!drawingReady) {
+        if (step.review) {
+          await discardReviewReports(output);
+          await rm(join(output, 'report.md.tmp'), { force: true });
+        }
+        const result = await invoke(await buildPrompt(step, reference, output, krita, previous), 'draw');
+        if (result.status !== 'completed') throw new Error(`步骤未完成：${result.summary}`);
+        if (!config.threadId) throw new Error('SDK 未返回 threadId，不能完成步骤。');
+        const required = step.requiredFiles.map(file => step.review && file === 'report.md' ? 'report.md.tmp' : file);
+        await checkFiles(output, required);
+        options.signal?.throwIfAborted();
+        if (step.review) await rename(join(output, 'report.md.tmp'), join(output, 'report.md'));
+      }
+      if (step.review) {
+        // An interrupted repair may still need to regenerate a deliverable.
+        if (!drawingReady || reviewTask?.kind !== 'repair') await checkFiles(output, step.requiredFiles);
+        await runReviews({ step, directory: output, krita, signal: options.signal, progress: options.progress,
+          invoke: (prompt, task) => invoke(prompt, task.filename.slice(0, -3), task.kind === 'review'),
+          validate: () => checkFiles(output, step.requiredFiles),
+        });
+      }
       await checkFiles(output, step.requiredFiles);
       options.signal?.throwIfAborted();
       await rename(join(output, '.running'), join(output, '.completed'));

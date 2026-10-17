@@ -7,6 +7,7 @@
 | 前置 | 检查参数指定的 Krita 可执行文件及版本 | 无模型调用 | — | 已接入 |
 | 第一步 | [完整提示词：分层与补全](prompts/01-分层与补全.md) | `gpt-6-astra` | `xhigh` | 已接入 |
 | 第二步 | [完整提示词：边缘柔化与去锯齿](prompts/02-边缘柔化与去锯齿.md) | `gpt-6-astra` | `xhigh` | 已接入 |
+| 第二步 review | [独立视觉检查](prompts/02-review.md)，反馈交给[原 agent 修复](prompts/02-repair.md) | `gpt-6-astra` | `xhigh` | 已接入 |
 | 第三步 | 待提供提示词 | `gpt-6.1-sol` | `xhigh` | 仅保存模型配置 |
 
 第一步正文保留用户提供的完整要求，只整理 Markdown 排版和断行。运行时在正文后附加输入、输出、Krita 路径、前序交付与本步文件名。部件数、形状、画风和深度都从输入读取。
@@ -79,6 +80,10 @@ workflow-next/raster-layering/.run/test/
     character-soft-edges.kra
     character-soft-edges.png
     report.md
+    review-01.md
+    repair-01.md              # 有反馈时才修复
+    review-02.md              # 第一份 review 有问题且已全部修完后才检查
+    repair-02.md              # 第二份 review 有问题时才修复
     ...日志、局部检查图和修画记录
   step03/                     # 待提供提示词，尚不创建或执行
 ```
@@ -89,15 +94,34 @@ workflow-next/raster-layering/.run/test/
 
 `run.json` 保存配置与会话记录：任务名、原输入位置、显式 Krita 路径及版本、各步模型配置、当前共用的 `threadId`。**它不记录步骤完成状态**，不保存另一套 `steps[].status`。步骤进度只由标记文件决定；`result.json` 和日志也不是状态依据。
 
-`prompt.md` 保存本步最近使用的完整提示词，`attempts.jsonl` 追加每次调用的时间、模型和起始 thread ID，`events.jsonl` 追加带调用标识的 SDK 事件。中断续跑保留已有产物和历史日志；`result.json`、`error.txt` 表示最近一次尝试的结果。
+`prompt.md` 保存本步初次绘制最近使用的完整提示词，`attempts.jsonl` 追加每次调用的阶段、时间、模型及绘制会话 ID，`events.jsonl` 追加带调用标识的 SDK 事件。中断续跑保留已有产物和历史日志；`result.json` 保存初次绘制的最近结果，`error.txt` 保存最近一次失败说明。review / 修复调用使用各自的提示词和结果日志。
 
-每步必须明确返回 `completed` 或 `blocked`。只有模型返回 `completed`、已保存 thread ID，并且必要交付文件非空且位于本步目录内时，程序才将 `.running` **原子重命名**为 `.completed`。回合正常结束或仅生成部分文件都不等于完成；视觉质量、逐层显隐和重开核对仍须 agent 按正文执行并写入报告，文件检查不替代美术验收。
+每步必须明确返回 `completed` 或 `blocked`。只有模型返回 `completed`、已保存 thread ID，并且必要交付文件非空且位于本步目录内时，才能完成步骤。第二步还须完成下面的 review / 修复流程，之后才将 `.running` **原子重命名**为 `.completed`。回合正常结束或仅生成部分文件都不等于完成；视觉质量、逐层显隐和重开核对仍须 agent 实际执行并写入报告，文件检查不替代美术验收。
+
+## 第二步 review 与修复
+
+reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存或恢复 reviewer 的 thread ID；修复继续使用 `run.json.threadId` 中的原绘制会话。reviewer 依据当前 KRA、原图和已有 Markdown 记录独立检查。它的提示词使用固定目录，只将 `{review_report_filename}` 替换成本次报告文件名，不包含轮次或次数上限说明。
+
+调度顺序固定为：
+
+1. 生成 `review-01.md`。没有问题就直接结束；有问题则交给原 agent，把全部反馈修复并自检完成，才生成 `repair-01.md`。
+2. 第一份反馈全部解决后生成 `review-02.md`。没有问题就结束；有问题则继续原 agent，把全部反馈修复并自检完成，生成 `repair-02.md` 后直接结束，不再调用第三次 reviewer。
+
+**两次限制针对 review，不限制解决同一份反馈所需的修复调用。** 修复报告仍写“结论：仍有问题”时继续原 thread 修复，不发布正式 `repair-XX.md`，不进入下一次 review，也不将第二步标为完成。工具受阻、断流或人为中断时保留 `.running`；下次使用同一 `--name`，仍继续当前未完成的环节。
+
+进度只看正式 Markdown 文件，不在 `run.json` 中增加 review 状态或计数。review 报告第一行为 `结论：通过` 或 `结论：需要修复`；正式 repair 报告第一行为 `结论：已修复`。报告内容决定是结束还是修复，文件是否存在决定对应环节是否执行完成。
+
+报告先写同名 `.tmp` 暂存文件，模型回合成功、结论与正文有效、必要交付文件检查通过后，由程序原子发布为正式 Markdown。第二步首次绘制的 `report.md` 也按此方式发布，用来区分“继续初次绘制”和“开始 review / 修复”。暂停在 review 阶段时不会重新执行初次绘制；暂停在修复阶段时不会重跑已经完成的 review。reviewer 调用失败后的重试仍使用新会话。
+
+在停止当前进程后，删除某份正式 review / repair Markdown，下次启动就从该环节继续，清理后续 review / repair 报告，保留第二步工程与原绘制 thread；已有后续步骤目录同时失效。删除整个 `step02/.completed` 仍沿用原有规则：重置第二步及后续步骤，并开启新绘制 thread。
+
+旧版本已完成第二步但还没有 review 报告的任务，会保留已有 KRA 和原 thread，自动补做 review。每次调用的提示词与结果保存为 `review-01.prompt.txt`、`review-01.result.json` 等日志；这些日志和 `.tmp` 文件都不作为进度依据。
 
 ## 续跑与重跑
 
 | 磁盘情况 | 下次启动行为 |
 | --- | --- |
-| 存在 `.completed` | 跳过该步，保留交付 |
+| 存在 `.completed` | 跳过该步，保留交付；第二步还会确认 review / 修复记录已完成 |
 | 存在 `.running`，没有 `.completed` | 保留目录与产物，从当前 thread 继续 |
 | 步骤目录存在，两个标记都没有 | 清空该步及所有后续步骤目录，清除旧 thread ID，重新开始 |
 | 步骤目录不存在 | 正常开始新步骤；如果后续目录仍在，则先使后续目录失效并重置 thread |
@@ -106,7 +130,7 @@ workflow-next/raster-layering/.run/test/
 
 正常从第一步进入第二、三步也使用同一个 thread，仅切换该步的模型。SDK 发出 `thread.started` 时立即保存 ID。续跑需要同一 Codex 用户配置下保留的本地会话历史；复制 `.run/` 不会同时复制 SDK 会话。
 
-更新到本版本后，已完成第一步的任务直接执行 `pnpm start --name test`，会跳过第一步并在原 thread 中开始第二步；新任务则顺序执行前两步。第三步仍等待提示词。
+已完成第一步的任务直接执行 `pnpm start --name test`，会跳过第一步并在原 thread 中开始第二步，再执行 review / 修复；新任务顺序执行前两步及 review。第三步仍等待提示词。
 
 **重跑只需删除完成标记，然后照常用名字启动：**
 
@@ -137,6 +161,7 @@ pnpm start --name test
 - [agent.ts](agent.ts)：官方 SDK 的 `startThread`、`resumeThread`、`runStreamed` 和回合结果处理。
 - [run-store.ts](run-store.ts)：任务配置、标记读取、输入初始化和级联重置。
 - [workflow.ts](workflow.ts)：前置检查、顺序执行、共享会话与交付检查。
+- [review.ts](review.ts)：读取 Markdown 进度，调度独立 reviewer 与原会话修复，原子发布报告。
 
 收到第三步提示词后，将正文放入 `prompts/`，再以 `step03` 加入 `steps`。当前不编写或执行第三步占位提示词。
 
