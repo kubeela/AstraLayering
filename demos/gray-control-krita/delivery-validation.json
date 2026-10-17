@@ -6,8 +6,9 @@
     1536
   ],
   "standardCommit": "0f11ad1b",
-  "geometryDeviationCount": 0,
-  "checks": "File integrity and exact authoring geometry only; no PSNR or appearance score.",
+  "geometryDeviationCount": 2,
+  "geometryRevisions": "shape-revisions.json",
+  "checks": "File integrity, frozen standard and explicitly reviewed contour revisions only; no PSNR or appearance score.",
   "rows": [
     {
       "id": "head_accessories/left_crown_ribbon/ribbon_tail",
@@ -75,7 +76,7 @@
     {
       "id": "hair/hair_cap",
       "level": 7,
-      "shapeDeviation": false,
+      "shapeDeviation": true,
       "greenTransparent": true,
       "greyInputs": true,
       "modelOutputPresent": true,
@@ -804,7 +805,7 @@
     {
       "id": "hair/side_hair_left",
       "level": 88,
-      "shapeDeviation": false,
+      "shapeDeviation": true,
       "greenTransparent": true,
       "greyInputs": true,
       "modelOutputPresent": true,

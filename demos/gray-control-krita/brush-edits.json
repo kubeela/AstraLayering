@@ -4729,5 +4729,395 @@
     "before": "6c0f9355d45ef23ea6ff76bd107cf0de41ca19e04a17c53b86db57bc2c7d9fb2",
     "after": "5daebf94cacfb766da8e462202066a1e1f7bd48b11fd91f2d2787b1032bfe367",
     "mode": "Krita brush underpainting, original generated paint composited above"
+  },
+  {
+    "id": "hair/side_hair_left",
+    "note": "用户指出的画面右侧发根暗面：依原画手定边界，以 Krita 基础笔和柔笔补画；避开独立额饰。",
+    "strokes": [
+      {
+        "points": [
+          [
+            520,
+            135
+          ],
+          [
+            533,
+            141
+          ]
+        ],
+        "size": 22,
+        "color": [
+          151,
+          147,
+          173
+        ],
+        "preset": "b) Basic-1"
+      },
+      {
+        "points": [
+          [
+            522,
+            131
+          ],
+          [
+            528,
+            138
+          ]
+        ],
+        "size": 9,
+        "color": [
+          168,
+          163,
+          187
+        ],
+        "opacity": 0.58,
+        "preset": "b) Airbrush Soft"
+      },
+      {
+        "points": [
+          [
+            520,
+            140
+          ],
+          [
+            530,
+            141
+          ],
+          [
+            535,
+            143
+          ]
+        ],
+        "size": 4,
+        "color": [
+          127,
+          126,
+          151
+        ],
+        "opacity": 0.52,
+        "preset": "b) Airbrush Soft"
+      }
+    ],
+    "before": "215d32c63a93440bd0fc21852f99cddf99509751444b95cc124517f1011ce737",
+    "after": "b6e5fefaac0ec656db92d6ea3e58215886cc9e3c9e9e096bea7fb5d844c5e36c",
+    "mode": "Krita brush underpainting, original generated paint composited above"
+  },
+  {
+    "id": "hair/hair_cap",
+    "mode": "Krita pixel-layer contour edit with hand-authored Bezier selection",
+    "note": "按用户截图收小耳后圆弧发底：冠部和鬓角保留，下缘从 y281 收至 y263，藏回耳朵与下颌后方；长后发不缩放。",
+    "before": "72340e8f3e5bee71d7be0f6a15033dc01d86923b035155a20900b70ae4593806",
+    "after": "ff85cfe519edc6866d583b9cce8e20712942438b218f6c3ed3c6be8e6722e17a"
+  },
+  {
+    "id": "hair/side_hair_left",
+    "note": "用户指出的画面右侧发根暗面：依原画手定边界，以 Krita 基础笔和柔笔补画；避开独立额饰。",
+    "strokes": [
+      {
+        "points": [
+          [
+            520,
+            135
+          ],
+          [
+            533,
+            141
+          ]
+        ],
+        "size": 22,
+        "color": [
+          151,
+          147,
+          173
+        ],
+        "preset": "b) Basic-1"
+      },
+      {
+        "points": [
+          [
+            522,
+            131
+          ],
+          [
+            528,
+            138
+          ]
+        ],
+        "size": 9,
+        "color": [
+          168,
+          163,
+          187
+        ],
+        "opacity": 0.58,
+        "preset": "b) Airbrush Soft"
+      },
+      {
+        "points": [
+          [
+            520,
+            140
+          ],
+          [
+            530,
+            141
+          ],
+          [
+            535,
+            143
+          ]
+        ],
+        "size": 4,
+        "color": [
+          127,
+          126,
+          151
+        ],
+        "opacity": 0.52,
+        "preset": "b) Airbrush Soft"
+      }
+    ],
+    "before": "215d32c63a93440bd0fc21852f99cddf99509751444b95cc124517f1011ce737",
+    "after": "6f92a86eaeafb9d20839b77f008975c8844c8697da0a2368f3130c60fe582541",
+    "mode": "Krita brush underpainting, original generated paint composited above"
+  },
+  {
+    "id": "hair/side_hair_left",
+    "note": "细修暗面稀疏的弧向明暗，与另一侧发根保持相同柔和度。",
+    "strokes": [
+      {
+        "points": [
+          [
+            521,
+            131
+          ],
+          [
+            521,
+            133
+          ],
+          [
+            522,
+            135
+          ]
+        ],
+        "size": 4,
+        "color": [
+          174,
+          169,
+          191
+        ],
+        "opacity": 0.28,
+        "preset": "b) Airbrush Soft"
+      },
+      {
+        "points": [
+          [
+            523,
+            136
+          ],
+          [
+            526,
+            136
+          ],
+          [
+            529,
+            139
+          ]
+        ],
+        "size": 3,
+        "color": [
+          135,
+          133,
+          159
+        ],
+        "opacity": 0.3,
+        "preset": "b) Airbrush Soft"
+      },
+      {
+        "points": [
+          [
+            528,
+            141
+          ],
+          [
+            530,
+            140
+          ],
+          [
+            532,
+            142
+          ]
+        ],
+        "size": 3,
+        "color": [
+          167,
+          162,
+          186
+        ],
+        "opacity": 0.35,
+        "preset": "b) Airbrush Soft"
+      }
+    ],
+    "before": "6f92a86eaeafb9d20839b77f008975c8844c8697da0a2368f3130c60fe582541",
+    "after": "c1eb8d28db16a069b7ae7153a6bba02a7ff41f48ff37da188736d56e960a5dc8"
+  },
+  {
+    "id": "hair/side_hair_left",
+    "note": "复看后加强发根暗面的一条柔和弧向转折，保持原画的简单上色。",
+    "strokes": [
+      {
+        "points": [
+          [
+            523,
+            139
+          ],
+          [
+            526,
+            137
+          ],
+          [
+            528,
+            136
+          ]
+        ],
+        "size": 2,
+        "color": [
+          131,
+          128,
+          155
+        ],
+        "opacity": 0.55,
+        "preset": "b) Airbrush Soft"
+      }
+    ],
+    "before": "c1eb8d28db16a069b7ae7153a6bba02a7ff41f48ff37da188736d56e960a5dc8",
+    "after": "07b996f33708feea4d3cf70ce354dcec76e619165fa2cd01a2a27adf08b541c9"
+  },
+  {
+    "id": "hair/back_hair/main_left",
+    "note": "发底缩小后新露出的后发内缘：逐段手画，去掉旧配准留下的浅色断条，保留纵向发丝。",
+    "strokes": [
+      {
+        "points": [
+          [
+            538,
+            194
+          ],
+          [
+            537,
+            204
+          ],
+          [
+            536,
+            220
+          ],
+          [
+            538,
+            235
+          ],
+          [
+            537,
+            248
+          ],
+          [
+            538,
+            264
+          ],
+          [
+            539,
+            280
+          ],
+          [
+            543,
+            295
+          ]
+        ],
+        "size": 9,
+        "color": [
+          142,
+          142,
+          178
+        ],
+        "preset": "b) Basic-5 Size Opacity"
+      },
+      {
+        "points": [
+          [
+            542,
+            195
+          ],
+          [
+            541,
+            213
+          ],
+          [
+            542,
+            232
+          ],
+          [
+            541,
+            249
+          ],
+          [
+            542,
+            267
+          ],
+          [
+            544,
+            282
+          ],
+          [
+            547,
+            297
+          ]
+        ],
+        "size": 11,
+        "color": [
+          151,
+          152,
+          189
+        ],
+        "opacity": 0.5,
+        "preset": "b) Airbrush Soft"
+      },
+      {
+        "points": [
+          [
+            538,
+            201
+          ],
+          [
+            537,
+            220
+          ],
+          [
+            539,
+            240
+          ],
+          [
+            538,
+            258
+          ],
+          [
+            540,
+            278
+          ],
+          [
+            544,
+            297
+          ]
+        ],
+        "size": 2,
+        "color": [
+          126,
+          128,
+          163
+        ],
+        "opacity": 0.42,
+        "preset": "b) Airbrush Soft"
+      }
+    ],
+    "before": "12a5a49a4d4211061e04e8bd529c5b84db66c1e8f09c1cddab08bae101c493fd",
+    "after": "a09a598f0a78b5f5e16ef148d4b54c8193aef67ed6e42306ffe0c9921f0432b0"
   }
 ]

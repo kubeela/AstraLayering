@@ -1,17 +1,17 @@
 # 原尺寸逐层复看记录
 
-检查对象为最终 `full.png` / KRA 图层；以下结论来自逐层看图，文件校验单独记录。全部部件沿用标准轮廓与深度。
+检查对象为最终 `full.png` / KRA 图层；以下结论来自逐层看图，文件校验单独记录。深度沿用标准；2026-10-17 根据用户反馈修订了两个头部轮廓，详见 [shape-revisions.json](shape-revisions.json)。此前对侧发和发底的结论漏掉了发根暗面与耳后体积问题，已在本轮纠正。
 
 | 深度 | 部件 | 独立检查 |
 | --- | --- | --- |
 | 00 | [head_accessories/left_crown_ribbon/ribbon_tail](parts/head_accessories/left_crown_ribbon/ribbon_tail/full.png) | 完整长带，根端补齐，浅蓝渐变连续。 |
 | 01 | [head_accessories/right_crown_ribbon/ribbon_body](parts/head_accessories/right_crown_ribbon/ribbon_body/full.png) | 完整长带，弯曲及回卷遵循标准。 |
 | 02 | [hair/back_hair/main_right](parts/hair/back_hair/main_right/full.png) | 后发根与大遮挡面均为头发；修复横向断纹与轮廓缺口。 |
-| 03 | [hair/back_hair/main_left](parts/hair/back_hair/main_left/full.png) | 后发根、肩臂后的发面连续；保留标准分叉与末梢。 |
+| 03 | [hair/back_hair/main_left](parts/hair/back_hair/main_left/full.png) | 发底收小后新露出的内缘浅色断条已用 Krita 画笔接顺；复看根部与颈侧衔接。长发尺寸、标准分叉与末梢保留。 |
 | 04 | [hair/back_hair/lock_right](parts/hair/back_hair/lock_right/full.png) | 游离束根端与细末梢完整。 |
 | 05 | [hair/back_hair/lock_left](parts/hair/back_hair/lock_left/full.png) | 游离束沿原流向延续，无相邻皮肤。 |
 | 06 | [hair/bun](parts/hair/bun/full.png) | 髻体及连接部补齐，无冠饰。 |
-| 07 | [hair/hair_cap](parts/hair/hair_cap/full.png) | 底发面连续，无脸洞、五官或耳坠残段。 |
+| 07 | [hair/hair_cap](parts/hair/hair_cap/full.png) | 用户指出的耳后圆弧来源层；下半部收回耳朵与下颌后，顶发和鬓角保持。独立层连续；组合中不再出现原来的颈侧大圆弧。此轮廓有明确修订。 |
 | 08 | [legs/leg_right/leg](parts/legs/leg_right/leg/full.png) | 完整腿部皮肤，髋端和踝端补齐。 |
 | 09 | [legs/leg_left/leg](parts/legs/leg_left/leg/full.png) | 完整腿部皮肤，清除末端吊坠残影。 |
 | 10 | [legs/leg_right/foot](parts/legs/leg_right/foot/full.png) | 脚趾、趾甲及脚背完整，没有脚链。 |
@@ -92,5 +92,5 @@
 | 85 | [head_accessories/right_crown_ribbon/ribbon_head](parts/head_accessories/right_crown_ribbon/ribbon_head/full.png) | 独立饰物及连接端完整，仅保留自身银白／浅蓝绘画。 |
 | 86 | [head_accessories/crown_frame](parts/head_accessories/crown_frame/full.png) | 冠环与侧纹完整，保留设计空隙。 |
 | 87 | [hair/side_hair_right](parts/hair/side_hair_right/full.png) | 前侧发束完整，无皮肤和饰品残片。 |
-| 88 | [hair/side_hair_left](parts/hair/side_hair_left/full.png) | 前侧发束完整，末梢收边。 |
+| 88 | [hair/side_hair_left](parts/hair/side_hair_left/full.png) | 对照原画补回画面右侧发根暗面；经两次复看修顺额饰旁的间隙，以柔笔补上简单弧向明暗。新增区域已记录为轮廓修订。 |
 | 89 | [head_accessories/lotus_ornament](parts/head_accessories/lotus_ornament/full.png) | 莲花饰物完整，低对比蓝银色。 |
