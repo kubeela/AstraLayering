@@ -25,6 +25,8 @@ pnpm start \
   --krita /path/to/krita
 ```
 
+`--input` 指向已经跑完的 `part-layering` 运行目录，例如 `../part-layering/.run/test`。程序自动拼接并检查 `test/parts/`，把它作为主要部件产物路径；同时把运行根目录交给 agent，以便读取 `references/`、`groups.json` 和 `occlusion.json`。也支持直接传入 `test/parts`，不会重复追加 `parts`；两种写法在续跑时视为同一份输入。
+
 `--krita` 必须显式指定可执行文件路径，可以是 `krita` 的完整路径、AppImage 的 `AppRun`、macOS 应用内可执行文件或 Windows 可执行文件。脚本不从 PATH、环境变量或默认安装目录猜测 Krita，不自动下载、安装或启动显示服务器。
 
 前置检查会调用该文件的 `--version`。Linux 无桌面环境需要调用方先准备显示环境；若已安装 Xvfb，也可以显式执行：
@@ -65,6 +67,7 @@ pnpm start --output .run/test --krita /path/to/krita --resume
 
 - [run.ts](run.ts)：参数解析、安装检查入口和中断信号。
 - [krita.ts](krita.ts)：只校验用户明确传入的 Krita。
+- [input.ts](input.ts)：将运行根目录或直接传入的 `parts/` 统一成参考根目录与部件产物路径。
 - [steps.ts](steps.ts)：顺序步骤、三步模型配置，以及正文后的运行信息。
 - [agent.ts](agent.ts)：官方 SDK 的 `startThread`、`resumeThread`、`runStreamed`，以及回合结果处理。
 - [workflow.ts](workflow.ts)：逐步执行、记录和续跑。

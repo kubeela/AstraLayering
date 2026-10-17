@@ -1,6 +1,7 @@
 import { appendFile, mkdir, readFile, realpath, rename, stat, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { runAgent, type Agent } from './agent.ts';
+import { resolvePartInput } from './input.ts';
 import { checkKrita, type KritaInstallation } from './krita.ts';
 import { buildPrompt, steps } from './steps.ts';
 
@@ -51,16 +52,17 @@ export async function runWorkflow(options: WorkflowOptions, dependencies: Depend
   if (saved && !options.resume && !options.dryRun) throw new Error('输出目录已有运行记录；请用 --resume 继续，或选择新的 --output。');
   if (options.resume && !saved) throw new Error('该输出目录没有可续跑的记录。');
   const source = options.input ?? saved?.input;
-  if (!source) throw new Error('首次运行必须提供 --input 参考目录。');
-  const input = await realpath(resolve(source));
-  if (!(await stat(input)).isDirectory()) throw new Error('--input 必须是包含分层与补全标准的目录。');
-  if (saved && input !== saved.input) throw new Error('续跑的输入目录与原记录不同；请为另一份输入选择新的 --output。');
+  if (!source) throw new Error('首次运行必须提供 --input part-layering 运行目录。');
+  const reference = await resolvePartInput(source);
+  const input = reference.directory;
+  if (saved && input !== (await resolvePartInput(saved.input)).directory) throw new Error('续跑的输入目录与原记录不同；请为另一份输入选择新的 --output。');
   if (within(input, output) || within(output, input)) throw new Error('输入与输出目录必须分开，不能相同或相互包含。');
 
   const krita = await (dependencies.preflight ?? checkKrita)(options.krita);
   options.progress?.(`前置检查通过：Krita ${krita.version} (${krita.executable})`);
+  options.progress?.(`输入标准：${input}；部件产物：${reference.parts}`);
   if (options.dryRun) {
-    return (await Promise.all(steps.map(step => buildPrompt(step, input, output, krita)))).join('\n\n');
+    return (await Promise.all(steps.map(step => buildPrompt(step, reference, output, krita)))).join('\n\n');
   }
 
   await mkdir(output, { recursive: true });
@@ -69,6 +71,7 @@ export async function runWorkflow(options: WorkflowOptions, dependencies: Depend
   const metadata = join(output, '.workflow');
   await mkdir(metadata, { recursive: true });
   const state: RunState = saved ?? { version: 1, input, steps: {} };
+  state.input = input;
   const save = async () => {
     const file = join(metadata, 'run.json');
     await writeFile(`${file}.tmp`, JSON.stringify(state, null, 2) + '\n');
@@ -94,7 +97,7 @@ export async function runWorkflow(options: WorkflowOptions, dependencies: Depend
     state.steps[step.id] = current;
     const attempt = join(metadata, step.id, `attempt-${current.attempt}`);
     await mkdir(attempt, { recursive: true });
-    const prompt = await buildPrompt(step, input, output, krita);
+    const prompt = await buildPrompt(step, reference, output, krita);
     await writeFile(join(attempt, 'prompt.md'), prompt);
     await writeFile(join(attempt, 'config.json'), JSON.stringify({ model: step.model, effort: step.effort, krita, threadId: current.threadId ?? null }, null, 2) + '\n');
     await save();
