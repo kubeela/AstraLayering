@@ -16,7 +16,7 @@ export const help = `raster-layering — 按顺序执行 Krita 栅格分层流�
 --input 通常传 .run/test，自动使用其 parts/；直接传 .run/test/parts 也可以。
 首次保存输入副本；run.json 保存配置和共用 threadId，步骤状态由 .running / .completed 决定。
 中断保留 .running 并继续原 thread；删除某步 .completed 后，下次启动清空该步及后续目录，开启新 thread。
-第一步：gpt-6-astra / xhigh。第二、三步尚待提示词定义。
+第一步分层与补全、第二步边缘柔化均使用 gpt-6-astra / xhigh；第三步尚待提示词定义。
 `;
 
 export function parseRunArguments(args: string[]) {

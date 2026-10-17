@@ -1,15 +1,17 @@
 # raster-layering
 
-用 TypeScript 和 `@openai/codex-sdk` 顺序执行栅格分层流程。当前只执行第一步：读取已完成的 `part-layering` 产物，使用原生 `image_generation` 工具生图，在 Krita 中配准、修画和交付。
+用 TypeScript 和 `@openai/codex-sdk` 顺序执行栅格分层流程。第一步读取已完成的 `part-layering` 产物，使用原生 `image_generation` 工具生图，在 Krita 中配准、修画和交付；第二步继续处理第一步 KRA，逐处柔化边缘与接缝并去锯齿。
 
 | 顺序 | 内容 | 模型 | 推理强度 | 状态 |
 | --- | --- | --- | --- | --- |
 | 前置 | 检查参数指定的 Krita 可执行文件及版本 | 无模型调用 | — | 已接入 |
 | 第一步 | [完整提示词：分层与补全](prompts/01-分层与补全.md) | `gpt-6-astra` | `xhigh` | 已接入 |
-| 第二步 | 待提供提示词 | `gpt-6-astra` | `xhigh` | 仅保存模型配置 |
+| 第二步 | [完整提示词：边缘柔化与去锯齿](prompts/02-边缘柔化与去锯齿.md) | `gpt-6-astra` | `xhigh` | 已接入 |
 | 第三步 | 待提供提示词 | `gpt-6.1-sol` | `xhigh` | 仅保存模型配置 |
 
 第一步正文保留用户提供的完整要求，只整理 Markdown 排版和断行。运行时在正文后附加输入、输出、Krita 路径、前序交付与本步文件名。部件数、形状、画风和深度都从输入读取。
+
+第二步保留逐层修画范围、禁止事项和验收要求，主要明确输入、输出和中断接续方式。输入固定为本任务 `step01/character-depth.kra`、`step01/report.md`，参考图沿用 `input/references/` 中第一步实际使用的对应图；不再依赖示例的 `demos/soft-edge-krita` 路径。运行时将这些输入与三份输出展开为绝对路径交给 agent。
 
 ## 启动与输入
 
@@ -72,11 +74,18 @@ workflow-next/raster-layering/.run/test/
     character-depth.kra
     report.md
     ...控制图、部件和修画文件
-  step02/                     # 接入提示词并开始执行时才创建
-  step03/
+  step02/
+    .running 或 .completed
+    character-soft-edges.kra
+    character-soft-edges.png
+    report.md
+    ...日志、局部检查图和修画记录
+  step03/                     # 待提供提示词，尚不创建或执行
 ```
 
 第一步最终产物为 `step01/character-depth.kra` 和 `step01/report.md`。中间生图、控制图、部件、修画和复查证据也放在本步目录。后续每步使用自己的目录，读取前序交付，不覆盖前序成果。
+
+第二步首次将第一步 KRA 另存为 `step02/character-soft-edges.kra`，保持画布尺寸、部件位置、图层结构、顺序、名称和归属，只做外缘、残色、接缝及线条的局部修画，不新增阴影、AO 或投影。重新打开并核对后导出 `step02/character-soft-edges.png`，逐层检查和修改说明写入 `step02/report.md`。这三份文件都是完成标记的必要交付；中断后继续第二步已有工程。
 
 `run.json` 保存配置与会话记录：任务名、原输入位置、显式 Krita 路径及版本、各步模型配置、当前共用的 `threadId`。**它不记录步骤完成状态**，不保存另一套 `steps[].status`。步骤进度只由标记文件决定；`result.json` 和日志也不是状态依据。
 
@@ -97,6 +106,8 @@ workflow-next/raster-layering/.run/test/
 
 正常从第一步进入第二、三步也使用同一个 thread，仅切换该步的模型。SDK 发出 `thread.started` 时立即保存 ID。续跑需要同一 Codex 用户配置下保留的本地会话历史；复制 `.run/` 不会同时复制 SDK 会话。
 
+更新到本版本后，已完成第一步的任务直接执行 `pnpm start --name test`，会跳过第一步并在原 thread 中开始第二步；新任务则顺序执行前两步。第三步仍等待提示词。
+
 **重跑只需删除完成标记，然后照常用名字启动：**
 
 ```bash
@@ -104,7 +115,7 @@ workflow-next/raster-layering/.run/test/
 rm .run/test/step01/.completed
 pnpm start --name test
 
-# 后续接入第二步后，从第二步重跑：保留 step01 与 input
+# 从第二步重跑：保留 step01 与 input
 rm .run/test/step02/.completed
 pnpm start --name test
 ```
@@ -127,6 +138,6 @@ pnpm start --name test
 - [run-store.ts](run-store.ts)：任务配置、标记读取、输入初始化和级联重置。
 - [workflow.ts](workflow.ts)：前置检查、顺序执行、共享会话与交付检查。
 
-收到第二、三步提示词后，将正文放入 `prompts/`，再按 `step02`、`step03` 顺序加入 `steps`。当前不编写或执行后续占位提示词。
+收到第三步提示词后，将正文放入 `prompts/`，再以 `step03` 加入 `steps`。当前不编写或执行第三步占位提示词。
 
-验证命令为 `pnpm check` 和 `pnpm test`。定向测试模拟 SDK 事件并注入后续步骤，覆盖输入副本、名字与路径、中断续跑、标记重跑、跨步骤会话与模型，以及清理中断恢复，不调用付费模型。使用 SDK 0.161.0；参考 [Codex SDK 文档](https://developers.openai.com/codex/sdk/)及依赖随包提供的 README 和类型声明。
+验证命令为 `pnpm check` 和 `pnpm test`。定向测试模拟 SDK 事件，仅为第三步注入测试提示词，覆盖输入副本、名字与路径、中断续跑、标记重跑、跨步骤会话与模型、第二步实际输入输出和合成 PNG 必需交付，以及清理中断恢复，不调用付费模型。使用 SDK 0.161.0；参考 [Codex SDK 文档](https://developers.openai.com/codex/sdk/)及依赖随包提供的 README 和类型声明。

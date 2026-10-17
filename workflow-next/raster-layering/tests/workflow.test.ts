@@ -31,11 +31,11 @@ async function fixture(t: TestContext) {
   await writeFile(join(input, 'preview.svg'), 'preview');
   const prompt = join(directory, 'later.md');
   await writeFile(prompt, 'Test-only later step prompt.');
-  const definitions: StepDefinition[] = [steps[0], ...([2, 3] as const).map(number => ({
-    id: stepId(number), title: `Test ${number}`, ...stepModels[number], prompt: pathToFileURL(prompt), requiredFiles: ['report.md'],
-  }))];
+  const definitions: StepDefinition[] = [...steps, {
+    id: stepId(3), title: 'Test 3', ...stepModels[3], prompt: pathToFileURL(prompt), requiredFiles: ['report.md'],
+  }];
   return { directory, input, output: join(runsDirectory, name), definitions,
-    options: { name, input, krita: process.execPath }, resume: { name }, deps: { runsDirectory, preflight } };
+    options: { name, input, krita: process.execPath }, resume: { name }, deps: { runsDirectory, preflight, steps: [steps[0]] } };
 }
 async function deliver(request: AgentRequest, step: StepDefinition = steps[0], thread = request.threadId ?? 'thread-1') {
   await readFile(join(request.directory, step.id, '.running'));
@@ -98,6 +98,62 @@ test('缺少 parts 时在前置检查和模型调用前报错', async t => {
   await rm(join(f.input, 'parts'), { recursive: true });
   await assert.rejects(runWorkflow(f.options, { ...f.deps, preflight: forbidden, agent: forbidden }), /输入缺少 parts/);
   await absent(join(f.output, 'run.json'));
+});
+
+test('默认流程顺序执行前两步；第二步必须交付合成 PNG，失败后沿用 thread 和已修工程', async t => {
+  const f = await fixture(t);
+  const { steps: _singleStep, ...deps } = f.deps;
+  let calls = 0;
+  await assert.rejects(runWorkflow(f.options, { ...deps, agent: async request => {
+    const step = steps[calls++];
+    if (step.id === 'step01') return deliver(request, step);
+    assert.equal(request.threadId, 'thread-1');
+    assert.equal(request.model, 'gpt-6-astra');
+    assert.equal(request.effort, 'xhigh');
+    for (const file of steps[1].inputFiles) {
+      assert.ok(request.prompt.includes(JSON.stringify(join(f.output, file))));
+      await readFile(join(f.output, file));
+    }
+    for (const file of step.requiredFiles) assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step02', file))));
+    await writeFile(join(f.output, 'step02/character-soft-edges.kra'), 'partially softened artwork');
+    await writeFile(join(f.output, 'step02/report.md'), 'PNG still missing');
+    return complete;
+  } }), /缺少有效交付：character-soft-edges.png/);
+  assert.equal(calls, 2);
+  const original = await readFile(join(f.output, 'step01/character-depth.kra'));
+  await readFile(join(f.output, 'step01/.completed'));
+  await readFile(join(f.output, 'step02/.running'));
+  await absent(join(f.output, 'step02/.completed'));
+  await runWorkflow(f.resume, { ...deps, agent: async request => {
+    calls++;
+    assert.equal(request.threadId, 'thread-1');
+    assert.equal(await readFile(join(f.output, 'step02/character-soft-edges.kra'), 'utf8'), 'partially softened artwork');
+    await writeFile(join(f.output, 'step02/character-soft-edges.png'), 'composite from final KRA');
+    await writeFile(join(f.output, 'step02/report.md'), 'all layers reviewed');
+    return complete;
+  } });
+  assert.equal(calls, 3);
+  assert.deepEqual(await readFile(join(f.output, 'step01/character-depth.kra')), original);
+  await readFile(join(f.output, 'step02/.completed'));
+  await absent(join(f.output, 'step02/.running'));
+  await assert.rejects(readdir(join(f.output, 'step03')), { code: 'ENOENT' });
+  await runWorkflow(f.resume, { ...deps, agent: forbidden });
+});
+
+test('已完成第一步的任务可按 name 预览第二步，显示实际输入输出路径且保留完整正文', async t => {
+  const f = await fixture(t);
+  await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
+  const { steps: _singleStep, ...deps } = f.deps;
+  const before = await readFile(join(f.output, 'run.json'));
+  const prompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...deps, agent: forbidden });
+  assert.ok(prompt.startsWith(await readFile(steps[1].prompt, 'utf8')));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'input/references'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01/character-depth.kra'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.kra'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.png'))));
+  assert.ok(!prompt.includes('/Users/wutian/') && !prompt.includes('demos/soft-edge-krita'));
+  assert.deepEqual(await readFile(join(f.output, 'run.json')), before);
+  await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
 });
 
 test('输入保存完整副本；中断保留 .running、产物和 thread；源目录删除后只用 name 续跑', async t => {
