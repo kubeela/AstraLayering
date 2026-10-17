@@ -19,8 +19,8 @@ from PIL import Image, ImageDraw, ImageFont
 from scipy import ndimage as ndi
 
 HERE = Path(__file__).resolve().parent
-REPO = HERE.parent.parent
-STANDARD = HERE.parent / 'part-layering/.run/test'
+REPO = HERE.parents[2]
+STANDARD = REPO / 'workflow-next/part-layering/.run/test'
 W, H = 1024, 1536
 
 

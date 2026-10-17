@@ -7,12 +7,20 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { test } from 'node:test';
-import { getPreparationDirectory } from '../preparation.ts';
+import { getPreparationDirectory, loadPreparedReferences } from '../preparation.ts';
 import { formatLayeringSummary, parseRunArguments, readGroupInput } from '../run.ts';
 import { GroupStore, normalizeGroups } from '../groups.ts';
 import sharp from 'sharp';
 import { artifactPath, draftPath, publishSvg, reportPath, svgHash } from '../artifact-facts.ts';
-import { shape } from './layering-fixture.ts';
+import { shape, workingSteps } from './layering-fixture.ts';
+import { runLayering } from '../layering.ts';
+
+function runCli(args: string[]) {
+  return promisify(execFile)(process.execPath, [
+    '--import', new URL('./forbid-model-processes.ts', import.meta.url).href,
+    fileURLToPath(new URL('../run.ts', import.meta.url)), ...args,
+  ], { timeout: 10000 });
+}
 
 test('--jobs / -j 只设置 agent 并发上限，默认 3，不产生组调度上限', () => {
   assert.equal(parseRunArguments(['--name', 'test']).agentConcurrency, 3);
@@ -34,7 +42,7 @@ test('--agents / -a 兼容别名设置同一个 agent 上限', () => {
   }
 });
 
-test('实际入口复用已有部件并生成 preview.svg，续跑不调用模型', async t => {
+test('预览缺失时用模拟步骤重建；实际入口复用完整事实且强制禁止模型进程', async t => {
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
@@ -63,17 +71,24 @@ test('实际入口复用已有部件并生成 preview.svg，续跑不调用模�
     childrenAnalysis: { sourceHash: analysisSourceHash }, steps: {
     outline: { status: 'completed', output: { path: svgPath } }, review: { status: 'completed', output: { path: svgPath } },
   } }]); });
+  // 缺预览会连带撤销层级表，这一分支必须用模拟步骤完成，不能靠旧缓存避免真实调用。
+  await runLayering({ directory, references: await loadPreparedReferences(runName), groups: null, steps: workingSteps([]) });
+  await rm(join(directory, 'preview.svg'));
+  const progress: string[] = [];
+  await runLayering({ directory, references: await loadPreparedReferences(runName), groups: null,
+    steps: workingSteps([]), progress: message => progress.push(message) });
+  assert.ok(progress.some(message => message.includes('最终预览合并：完成')));
+  assert.ok(progress.includes('遮挡层级规划：开始'));
   const groupsPath = join(directory, 'input.json');
   await writeFile(groupsPath, JSON.stringify([{ id: 'head', note: '不能覆盖已有的说明' }]));
-  const entry = fileURLToPath(new URL('../run.ts', import.meta.url));
-  const run = promisify(execFile);
-  const first = await run(process.execPath, [entry, '--name', runName, '--groups', groupsPath, '-j', '2']);
-  assert.match(first.stdout, /最终预览合并：完成/);
+  const first = await runCli(['--name', runName, '--groups', groupsPath, '-j', '2']);
+  assert.doesNotMatch(first.stdout, /最终预览合并：开始/);
+  assert.match(first.stdout, /遮挡层级规划：沿用/);
   assert.match(first.stdout, /\[head\] 本组流程已完成（part）/);
   assert.match(first.stdout, /Layering 已完成：.*preview\.svg/);
   assert.match(await readFile(join(directory, 'preview.svg'), 'utf8'), /data-part-preview="1"/);
   await assert.rejects(readFile(join(directory, 'progress.json')), { code: 'ENOENT' });
-  const second = await run(process.execPath, [entry, '--name', runName]);
+  const second = await runCli(['--name', runName]);
   assert.match(second.stdout, /首次分组：沿用已有结果/);
   assert.doesNotMatch(second.stdout, /最终预览合并：开始/);
   const secondState = (await GroupStore.open(directory)).snapshot();
@@ -84,6 +99,9 @@ test('实际入口复用已有部件并生成 preview.svg，续跑不调用模�
   assert.ok(!('initial' in tree) && !('merge' in tree) && !('steps' in tree.groups[0]));
   assert.equal(tree.groups[0].note, '已有识别的组');
   assert.deepEqual((await readGroupInput(join(directory, 'groups.json')) as { id: string }[]).map(group => group.id), ['head']);
+  // 故意让缓存失效，证明隔离保护会立即报错，不能启动真实 SDK / app-server。
+  await rm(join(directory, 'occlusion.json'));
+  await assert.rejects(runCli(['--name', runName]), /CLI 测试禁止启动模型或其他外部进程/);
 });
 
 test('结果明确区分通过、返修、无法核对和执行失败', () => {
@@ -129,8 +147,7 @@ test('实际入口遇到组产物问题时报告组名、步骤和停止派发�
   await store.update(document => { document.groups = normalizeGroups([{ id: 'head_accessories', steps: {
     outline: { status: 'completed', output: { path: join(directory, 'missing.svg') } },
   } }]); });
-  const entry = fileURLToPath(new URL('../run.ts', import.meta.url));
-  await assert.rejects(promisify(execFile)(process.execPath, [entry, '--name', runName]), error => {
+  await assert.rejects(runCli(['--name', runName]), error => {
     const failure = error as Error & { code: number; stderr: string };
     assert.equal(failure.code, 1);
     assert.match(failure.stderr, /\[head_accessories\] 组轮廓与自检失败/);
@@ -150,8 +167,7 @@ test('显式 groups 缺少前置参考时直接退出，不启动准备 agent �
   await mkdir(directory, { recursive: true });
   const groupsPath = join(directory, 'input.json');
   await writeFile(groupsPath, JSON.stringify([{ id: 'face' }]));
-  const entry = fileURLToPath(new URL('../run.ts', import.meta.url));
-  await assert.rejects(promisify(execFile)(process.execPath, [entry, '--name', runName, '--groups', groupsPath]), error => {
+  await assert.rejects(runCli(['--name', runName, '--groups', groupsPath]), error => {
     const failure = error as Error & { stderr: string };
     assert.match(failure.stderr, /前置参考未完成/);
     return true;
@@ -181,14 +197,12 @@ test('命令行并发参数拒绝零、负数、小数、空值及非数字', ()
 });
 
 test('实际命令行帮助包含并发参数，无效值退出且不调用模型', async () => {
-  const run = promisify(execFile);
-  const entry = fileURLToPath(new URL('../run.ts', import.meta.url));
-  const help = await run(process.execPath, [entry, '--help']);
+  const help = await runCli(['--help']);
   assert.match(help.stdout, /--jobs/);
   assert.doesNotMatch(help.stdout, /默认 5|层内组调度并发上限/);
   assert.match(help.stdout, /--agents/);
   assert.match(help.stdout, /默认 3/);
-  await assert.rejects(run(process.execPath, [entry, '--name', 'test', '-j', '0']), error => {
+  await assert.rejects(runCli(['--name', 'test', '-j', '0']), error => {
     const failure = error as Error & { code: number; stderr: string };
     assert.equal(failure.code, 1);
     assert.match(failure.stderr, /必须是正整数/);

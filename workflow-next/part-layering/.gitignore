@@ -3,3 +3,4 @@ dist/
 .protocol-local/
 .runs/
 .run/
+.work/

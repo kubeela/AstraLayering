@@ -159,7 +159,7 @@ if (import.meta.main) {
     if (values.help) {
       console.log('pnpm start --name <运行名> [--image <角色图片路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]');
       console.log('--image 首次启动需要；续跑使用运行目录中的原图，并自动补齐缺失的参考输出。');
-      console.log('--groups 选择本次运行已有的组及其子组；祖先和整层去重须已完成，缺失时提示依赖，不自动启动未选分支。省略时按层自动准备或续跑。');
+      console.log('--groups 选择已有组及其子组；祖先须完成，可查看同层有效底稿复核去重，仅实际变化的部件及真实引用者扩入后续制作。省略时按层自动准备或续跑。');
       console.log(`--jobs / -j 设置所有步骤共享的 agent 调用并发上限，默认 ${defaultAgentConcurrency}；组任务不另设数量限制，按树的层级依赖进入队列。`);
       console.log('--max-depth 限制本次制作层数：1 完成第一层并登记第二层，2 制作到第二层并登记第三层，以此类推。省略时继续到终止部件。');
       console.log('--agents / -a 为 --jobs / -j 的兼容别名，控制同一上限。临时服务错误等待后沿用会话恢复，次数不设上限，过程写入 agent 日志。');
@@ -172,6 +172,7 @@ if (import.meta.main) {
       console.log(`参考输出：${references.directory}`);
       console.log(`分组：${layering.groupsPath}`);
       console.log(`事实产物目录：${layering.statePath}`);
+      if (layering.occlusionPath) console.log(`遮挡层级表：${layering.occlusionPath}`);
       for (const line of formatLayeringSummary(layering.groups)) console.log(line);
       console.log(layering.status === 'completed' ? `Layering 已完成：${layering.output}` : 'Layering 未完成，正式产物与检查记录已保存；各组状态见上方。');
     }

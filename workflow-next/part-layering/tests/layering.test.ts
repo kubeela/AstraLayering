@@ -101,7 +101,8 @@ test('去重输出没有整批提交记录或只有部分输出时，不消费�
   assert.ok(events.includes('a:completion'));
   await rm(artifactPath(f.directory, 'b', 'reduction'));
   const state = (await GroupStore.open(f.directory)).snapshot();
-  assert.ok(state.groups.every(group => group.steps.reduction.status === 'pending'));
+  assert.equal(state.groups[0].steps.reduction.status, 'completed');
+  assert.equal(state.groups[1].steps.reduction.status, 'pending');
 });
 
 test('源轮廓或去重输出变化会使批次失效；后续补形不能沿用旧输入版本', async t => {
@@ -109,7 +110,10 @@ test('源轮廓或去重输出变化会使批次失效；后续补形不能沿�
   await runLayering({ ...f, groups: null, steps });
   await writeAtomic(artifactPath(f.directory, 'a', 'reduction'), shape('a', 20, 80));
   const state = (await GroupStore.open(f.directory)).snapshot();
-  assert.ok(state.groups.every(group => group.steps.reduction.status === 'pending' && group.steps.completion.status === 'pending'));
+  assert.equal(state.groups[0].steps.reduction.status, 'pending');
+  assert.equal(state.groups[0].steps.completion.status, 'pending');
+  assert.equal(state.groups[1].steps.reduction.status, 'completed');
+  assert.equal(state.groups[1].steps.completion.status, 'completed');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.equal(events[0], 'layer-0:reduce');
@@ -221,7 +225,7 @@ test('去重清空整个组时保留空 SVG，跳过该组补形和分析模型�
   assert.equal(state.groups[1].steps.children.status, 'completed');
 });
 
-test('显式分支复用已有整层去重，不启动其他分支；未齐备批次不能悄悄重做别的组', async t => {
+test('显式分支可复核同层去重，只补全选中或实际改变的部件', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
   await runLayering({ ...f, groups: null, steps: { ...steps, async completeOcclusion() { return { status: 'pending', message: 'not implemented' }; } } });
   events.length = 0;
@@ -229,8 +233,9 @@ test('显式分支复用已有整层去重，不启动其他分支；未齐备�
   assert.deepEqual(events, ['a:completion', 'a:check', 'a:children']);
   await rm(reductionReportPath(f.directory, 0));
   events.length = 0;
-  await assert.rejects(runLayering({ ...f, groups: { id: 'a' }, steps }), /整层去重/);
-  assert.deepEqual(events, []);
+  await runLayering({ ...f, groups: { id: 'a' }, steps });
+  assert.ok(events.includes('layer-0:reduce') && events.includes('a:completion'));
+  assert.ok(!events.some(event => event.startsWith('b:')));
 });
 
 test('指定子组仍需完整祖先；禁止未知组、空选择、错误父子关系及导入外部进度', async t => {
@@ -283,7 +288,7 @@ test('异常后当前批次已派发任务收尾，保留成功事实且不进�
   assert.ok(await readFile(artifactPath(f.directory, 'c', 'outline')));
 });
 
-test('完整真实 test 恢复全部 115 个完成节点与最终预览，组树保持唯一', async () => {
+test('真实 test 恢复现有 115 节点；制作中的缺失稿不能放行最终预览', async () => {
   const directory = new URL('../.run/test/', import.meta.url);
   const store = await GroupStore.open(fileURLToPath(directory));
   const groups = store.snapshot().groups;
@@ -297,11 +302,13 @@ test('完整真实 test 恢复全部 115 个完成节点与最终预览，组树
   assert.ok(hair.every(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')));
   const all = walkGroups(groups);
   assert.equal(all.length, 115);
-  assert.equal(all.filter(({ group }) => Object.values(group.steps).every(step => step.status === 'completed')).length, 115);
+  const complete = all.every(({ group }) => Object.values(group.steps).every(step => step.status === 'completed'));
   assert.equal(all.filter(({ depth }) => depth === 3).length, 29);
   assert.ok(all.filter(({ depth }) => depth === 3).every(({ group }) => group.kind === 'part' && group.groups.length === 0));
-  assert.equal(store.snapshot().merge.status, 'completed');
-  assert.equal(store.snapshot().merge.output!.path, join(fileURLToPath(directory), 'preview.svg'));
+  if (complete) {
+    assert.equal(store.snapshot().merge.status, 'completed');
+    assert.equal(store.snapshot().merge.output!.path, join(fileURLToPath(directory), 'preview.svg'));
+  } else assert.equal(store.snapshot().merge.status, 'pending');
   await assert.rejects(readFile(new URL('stages/children/hair.json', directory)), { code: 'ENOENT' });
   assert.equal(await readJson(join(fileURLToPath(directory), 'progress.json')), undefined);
   await assert.rejects(readFile(new URL('hair-latest/groups.json', directory)), { code: 'ENOENT' });

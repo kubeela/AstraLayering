@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { svgHash } from '../artifact-facts.ts';
 import { writeAtomic } from '../groups.ts';
 import type { GroupSeed, LayeringSteps, SvgMerger } from '../layering-types.ts';
+import { occlusionSourceHash, terminalParts } from '../occlusion-plan.ts';
 
 export function shape(id: string, left = 10, right = 90, empty = false) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="${id}">${empty ? '' : `<path fill="#55b9ad" d="M${left} 10H${right}V90H${left}Z"/>`}</g></svg>`;
@@ -36,6 +37,10 @@ export function workingSteps(events: string[], roots: GroupSeed[] = [{ id: 'head
       return { status: 'completed', output: { path: context.outputPath } }; },
     async checkCompletion(context) { events.push(`${context.group.id}:check`); return { status: 'completed', output: { passed: true } }; },
     async splitChildren(context) { events.push(`${context.group.id}:children`); return { status: 'completed', output: { groups: children[context.group.id] ?? [] } }; },
+    async planOcclusion(context) { return { status: 'completed', output: { version: 2, direction: 'back-to-front',
+      sourceHash: await occlusionSourceHash(context), layers: terminalParts(context).map(({ group }, level) => ({
+        id: group.id, level, note: 'fixture depth', check: { passed: true, note: 'fixture checked' },
+      })) } }; },
   };
 }
 export function workingMerger(events: string[]): SvgMerger {

@@ -8,6 +8,7 @@ import { assertCompletionPreserves, composeCompletion, completionPaths } from '.
 import { textResult, type FunctionTool } from './function-tools.ts';
 import { readGroupPrompt, readGroupReferences } from './group-prompts.ts';
 import { writeAtomic } from './groups.ts';
+import { dependenciesMatch, fileDependency } from './completion-inputs.ts';
 import type { DrawingContext, GroupContext, SvgArtifact, CompletionCheck } from './layering-types.ts';
 import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 
@@ -45,6 +46,9 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const rules = await readFile(rulesPath, 'utf8');
   if (!rules.trim()) throw new Error(`补全操作约定提示词为空：${rulesPath}`);
   const references = await readCompletionReferences(prompt.groupDirectory, context);
+  const dependencies = await Promise.all([fileDependency(context.directory, reference),
+    ...references.map(ref => 'sourceSvg' in ref ? fileDependency(context.directory, ref.sourceSvg,
+      { groupId: ref.groupId, stage: 'reduction' }) : fileDependency(context.directory, ref.path))]);
   const observations: SvgObservation[] = [];
   let submitted: SvgArtifact | undefined, submittedHash: string | undefined;
   await writeAtomic(draft, source);
@@ -101,7 +105,8 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   if (!submitted) throw new Error('补全未通过 submit_completion 提交');
   await verifySource();
   if (svgHash(await readFile(draft)) !== submittedHash) throw new Error('补全提交后草稿被修改');
-  return submitted;
+  if (!await dependenciesMatch(context.directory, dependencies)) throw new Error('补全过程参考输入发生变化');
+  return { ...submitted, dependencies };
 }
 
 export async function checkGroupCompletion(context: GroupContext & { before: SvgArtifact; after: SvgArtifact }): Promise<CompletionCheck> {

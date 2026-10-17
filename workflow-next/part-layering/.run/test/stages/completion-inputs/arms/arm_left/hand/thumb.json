@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "groupId": "arms/arm_left/hand/thumb",
+  "beforeHash": "b591ade8e92d3619885b7a9582008e190c38bed43d486b4570c67cb710327305",
+  "afterHash": "88160ce9740f4aff1ea738c4e214e0e05bb414884788765fb7c046ccf330270a",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "d5ca0b2fcf5c8cd42a88b819ee13d7b342b87cf5ce0b7b0e1dc0347f9555f194"
+    },
+    {
+      "path": "stages/outline-reduce/arms/arm_left/hand/palm.svg",
+      "hash": "5581a5f968553acfc67e54ebad312a2ce1826bf146e1f8f97a23133ec6ad5519",
+      "groupId": "arms/arm_left/hand/palm",
+      "stage": "reduction"
+    },
+    {
+      "path": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/prompts/groups/arms/references/fingers/complete-fingers.png",
+      "hash": "528db2606985dbb217ddd71106f19a2daac795bf323bf00b74c51b69ba046762"
+    }
+  ]
+}

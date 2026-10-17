@@ -3,91 +3,101 @@
   "reviews": [
     {
       "verdict": "pass",
-      "feedback": "已先查看整图 blend，再以 8 倍放大的三个重叠选框 [260,736,40,32]、[260,756,43,34]、[268,780,36,33]，逐块完成 blend、edge 与参考核对，另复核 [279,792,18,18] 指尖，并在相同局部查看父组完成 SVG。覆盖了掌下指根连接、两侧指身、屈曲转折、邻无名指接缝及最下方指尖。可见外缘、长度和弯度与参考相符，指身连续，指尖收尾及邻指接界未见有明确图像依据的缺漏或错位；掌下局部圆弧连接余量合理。未见孤立点、碎片、无依据挖缝或形体归属混乱，无独立组件漏画。父范围检查通过：4 倍采样 outsideSamples=0、outsidePixels=0。指尖与父边界的同区核对未确认需单列的上游范围冲突。本轮通过。",
-      "candidateHash": "1f2df2255a6f1eacddaf6fd12835a5604bece184ab869fc0b1fd1212e69a6c9b",
+      "feedback": "已完成本组全段核对：先看整图 blend 定位，再以 8 倍的 [264,746,30,33]（指根与掌交接）、[263,765,35,31]（指身及弯折）、[276,785,29,26]（末段及指尖）三个相互重叠的选框逐一检查 blend、edge，并用参考原图及父 hand.svg 的同坐标局部复核。掌下圆弧指根连续，指身向下再向右下转折，与无名指的接界及末段覆盖连贯；父范围内未发现可明确要求返修的漏画、挖缝、无依据扩张或组件缺失。候选为干净的连续实体，未见孤点、碎片、噪音或形体归属混乱。父范围检查通过：outsideSamples=0、outsidePixels=0。\n上游范围限制（不计为当前子组返修）：小指最下端约 x=286–288、y=804–806，参考仍有圆钝指尖的实质边缘延至 y≈805–806；候选与父组同处止于 y≈804.95，局部 blend/edge 均可见尖端下方露出参考边缘。父组与候选的尖端边界重合，候选已覆盖该处父范围内的尾端，恢复这段参考边缘需要扩大父 hand.svg，当前子组无法在保持范围检查通过的条件下补齐。本轮未修改父稿或候选，也不声称这处上游缺口已补齐。其余当前允许范围内检查通过。",
+      "candidateHash": "ff10988ad0eed320babce79400ec4eefa947147bd0d62ac7dbe20ff9fe8a8323",
       "observations": [
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-1.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-1.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-2.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-2.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-3.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-3.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-4.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-4.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "edge",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-5.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-5.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/parts/arms/arm_right/hand.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-6.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-6.png"
         },
         {
-          "source": "parts/arms/arm_right/hand.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-7.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-7.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/parts/arms/arm_right/hand.svg",
           "mode": "edge",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-8.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-8.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-9.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-9.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-10.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "blend",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-10.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-11.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "edge",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-11.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-12.png"
         },
         {
-          "source": "parts/arms/arm_right/hand.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-13.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "edge",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-12.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-14.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
-          "mode": "svg",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-13.png"
-        },
-        {
-          "source": "parts/arms/arm_right/hand.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/parts/arms/arm_right/hand.svg",
           "mode": "edge",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-14.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-15.png"
         },
         {
-          "source": "stages/outline/arms/arm_right/hand/little_finger.svg",
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
           "mode": "edge",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-15.png"
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-16.png"
         },
         {
-          "source": "parts/arms/arm_right/hand.svg",
-          "mode": "edge",
-          "savedPath": "observations/review/arms/arm_right/hand/little_finger/2026-10-15T09-24-42-277Z-16.png"
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/stages/outline/arms/arm_right/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-17.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/parts/arms/arm_right/hand.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/workflow-next/part-layering/.run/test/observations/review/arms/arm_right/hand/little_finger/2026-10-16T18-21-00-250Z-18.png"
         }
       ],
-      "updatedAt": "2026-10-15T09:43:30.381Z"
+      "updatedAt": "2026-10-16T18:30:10.508Z"
     }
   ]
 }

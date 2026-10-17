@@ -58,28 +58,28 @@
     },
     {
       "id": "arms/arm_left/hand/thumb",
-      "inputHash": "02bf827c17f8502dbbe21a6b88f083dc1cbc8a443463cd1c0cb1dfdc2ff7d63f",
-      "outputHash": "02bf827c17f8502dbbe21a6b88f083dc1cbc8a443463cd1c0cb1dfdc2ff7d63f"
+      "inputHash": "b591ade8e92d3619885b7a9582008e190c38bed43d486b4570c67cb710327305",
+      "outputHash": "b591ade8e92d3619885b7a9582008e190c38bed43d486b4570c67cb710327305"
     },
     {
       "id": "arms/arm_left/hand/index_finger",
-      "inputHash": "b09306a27e58d29caa65b76c75ee25291bc7f6b1451453259a67d3a347effb01",
-      "outputHash": "b09306a27e58d29caa65b76c75ee25291bc7f6b1451453259a67d3a347effb01"
+      "inputHash": "0cec9ad09376c03cd4025ba6fd874645134cb2b29e8d92af581ce909fe6f046f",
+      "outputHash": "0cec9ad09376c03cd4025ba6fd874645134cb2b29e8d92af581ce909fe6f046f"
     },
     {
       "id": "arms/arm_left/hand/middle_finger",
-      "inputHash": "d0ad7622f3c16168e7c1b5d991d5a38d9ac06eccbfac655ed3cb71fb9569d1e1",
-      "outputHash": "d0ad7622f3c16168e7c1b5d991d5a38d9ac06eccbfac655ed3cb71fb9569d1e1"
+      "inputHash": "102411a1504bf7f7049e963cbe853192e996dde79746d96db88de591b8c4445b",
+      "outputHash": "102411a1504bf7f7049e963cbe853192e996dde79746d96db88de591b8c4445b"
     },
     {
       "id": "arms/arm_left/hand/ring_finger",
-      "inputHash": "50b16c6323486160d70d9a738037a7ddf9a310c9e7dd509f0b308a4987560034",
-      "outputHash": "50b16c6323486160d70d9a738037a7ddf9a310c9e7dd509f0b308a4987560034"
+      "inputHash": "9a8de378302dfc359a453a3be43c414f5eb64427a1ba40c5a6bcb6f23a8564da",
+      "outputHash": "9a8de378302dfc359a453a3be43c414f5eb64427a1ba40c5a6bcb6f23a8564da"
     },
     {
       "id": "arms/arm_left/hand/little_finger",
-      "inputHash": "c16d25f7a694ba0962f0636c77f376d19c2d4dc20e1192fbf7599f4803adfec6",
-      "outputHash": "c16d25f7a694ba0962f0636c77f376d19c2d4dc20e1192fbf7599f4803adfec6"
+      "inputHash": "234caea130ae5d3144347726e0b193d81d4ee9ecfe8df89619ce6059f47c939f",
+      "outputHash": "234caea130ae5d3144347726e0b193d81d4ee9ecfe8df89619ce6059f47c939f"
     },
     {
       "id": "arms/arm_right/hand/palm",
@@ -88,28 +88,28 @@
     },
     {
       "id": "arms/arm_right/hand/thumb",
-      "inputHash": "c4402cfd1e62f186cc0258155dc5b8eee454ff39fccce15c379294bb840f1347",
-      "outputHash": "c4402cfd1e62f186cc0258155dc5b8eee454ff39fccce15c379294bb840f1347"
+      "inputHash": "6ec7c3936fe0ccf0ef6c7be165e13bca063270054a788b242024f06a6ec16c67",
+      "outputHash": "6ec7c3936fe0ccf0ef6c7be165e13bca063270054a788b242024f06a6ec16c67"
     },
     {
       "id": "arms/arm_right/hand/index_finger",
-      "inputHash": "966607aeb6baede11897c0eafb413e1fb801c18c5f7904356808e9f4308c985a",
-      "outputHash": "966607aeb6baede11897c0eafb413e1fb801c18c5f7904356808e9f4308c985a"
+      "inputHash": "e9282a297ae88caec90c650d0fd9e15a2ddd8f1ed2d983022fe2b6efcee560a6",
+      "outputHash": "e9282a297ae88caec90c650d0fd9e15a2ddd8f1ed2d983022fe2b6efcee560a6"
     },
     {
       "id": "arms/arm_right/hand/middle_finger",
-      "inputHash": "d5ef28c3e7e3d8f0ee808938a03960f9fddeab1ad560176502b8746c703d2637",
-      "outputHash": "d5ef28c3e7e3d8f0ee808938a03960f9fddeab1ad560176502b8746c703d2637"
+      "inputHash": "6f9817a3a025afa14df201e37d02ef183846fa8baae8671c4dc0d8c3a79954ad",
+      "outputHash": "6f9817a3a025afa14df201e37d02ef183846fa8baae8671c4dc0d8c3a79954ad"
     },
     {
       "id": "arms/arm_right/hand/ring_finger",
-      "inputHash": "2fb9fd24d41306fd91725875d8eb3cdb6313b91cf362d759c4732e53f378825d",
-      "outputHash": "2fb9fd24d41306fd91725875d8eb3cdb6313b91cf362d759c4732e53f378825d"
+      "inputHash": "282061da46071ac80460a55076fab70f1a74761ad291d69641650508530a0482",
+      "outputHash": "282061da46071ac80460a55076fab70f1a74761ad291d69641650508530a0482"
     },
     {
       "id": "arms/arm_right/hand/little_finger",
-      "inputHash": "1f2df2255a6f1eacddaf6fd12835a5604bece184ab869fc0b1fd1212e69a6c9b",
-      "outputHash": "1f2df2255a6f1eacddaf6fd12835a5604bece184ab869fc0b1fd1212e69a6c9b"
+      "inputHash": "ff10988ad0eed320babce79400ec4eefa947147bd0d62ac7dbe20ff9fe8a8323",
+      "outputHash": "ff10988ad0eed320babce79400ec4eefa947147bd0d62ac7dbe20ff9fe8a8323"
     },
     {
       "id": "legs/leg_left/anklet/ankle_chain",
@@ -147,5 +147,5 @@
       "outputHash": "498addba65dc023de5e7320c7720b85efadbd60e44aea2f8de7dd2990bdef30a"
     }
   ],
-  "note": "已先用 mergedPreview 的 blend 核对整图，再对两侧冠饰、双手、双踝作局部放大；读取并逐一对照本层 29 个节点的完整 SVG、note 与父组归属，并逐组进行 blend 查看，最后用 mergedPreview 的局部 edge 检查边缘与负形。本轮未确认存在同一真实实体、同一控制职责的跨组副本，changed 为空，29 组均保留原样。具体依据：两侧冠饰各为 3 段连接件和 2 枚独立硬宝石，接杆在宝石尖端及冠/带头覆盖处的少量搭接是枢接补全，并未在宝石组重复领取整段杆或在杆组领取宝石；双手各为掌部与五根不同手指，相邻指身的大面积投影交叠、掌下根端和屈指末段交叠均对应 note 声明的独立手指及前后遮挡，不能按重合轮廓去除；左踝 ankle_chain 的两臂未重复领取中央硬连接头或水滴坠，center_link 的连接头和短颈为其完整独立实体；右踝 outer_chain 与 inner_chain 分别为两支不同软链，central_connector 保留完整硬圆件，gem_pendant 仅领取自身短颈与长菱形坠，接头局部搭接合法，现有链孔均保留。没有整组清空、几何相减或层级合并。疑点记录：角色左手（画面右侧）的 middle_finger、little_finger 根端与 palm 在当前轮廓中未显示清楚的直接搭接，和相邻手指存在较大投影交叠；这属于既有根部接续/隐藏补全待检查事项，不能据此认定为邻指副本。本轮按明确的独立手指职责完整保留，供后续连接检查。父组引导图未作为本层候选参与去重。"
+  "note": "已先对 mergedPreview 做 blend 全图检查，并核对全部 29 个节点的 note、父组与当前 sourceSvg；随后查看双侧冠饰、双手、踝链局部放大及各掌/指、链支和中央连接件独立预览，最后以 edge 放大核对边缘。未确认同一真实实体、同一控制职责被多个组重复领取，故 changed=[]，全部 sourceSvg 原样保留，包括 19 件 reusedReduction=true 的有效去重底稿及本轮重画的 10 件手指。两侧冠饰各由冠下连接、上宝石、两宝石间连接、下宝石和带头连接组成，相邻尖端及杆端局部搭接承担不同枢接职责，不删。双手的掌部与五指各为独立控制实体，拇指旁负形、屈指的上下叠压与指根补全均须保留；尤其左手中指和无名指虽有较大投影重合，指根、末端与叠压职责独立，不能认作同一指体副本。左踝 ankle_chain 当前已仅含两条链臂与短隐藏链根，中央硬连接头及连接颈由 center_link 完整承担，teardrop_pendant 独立；右踝 outer_chain 与 inner_chain 是两条独立链支，末端仅在 central_connector 后局部搭接，短挂接颈与菱形坠属于 gem_pendant，环孔与轮廓均保留。无整组清空或层级合并。另记录原底稿疑点：画面右侧的角色左手，palm 最远掌端约 y753，而 little_finger 近掌根端从约 y764 起，二者间可见一段连接覆盖缺口，与 note 所述掌下指根承接不完全一致；这是连接补全问题，未发现同实体同控制层的完整副本可替代该小指，故本步不删除、合并或补画，保留相关组，供后续核对父底形与连接补全。"
 }

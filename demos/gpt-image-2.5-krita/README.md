@@ -3,6 +3,8 @@
 当前交付为**露肩换装底图**：肩带区域已补成肤色，胸前、躯干和裆部保留不透明白色遮挡。
 下方完整图、默认下载和预览入口均对应这次修整后的版本，原版拆分资料保留在后文。
 
+本目录保留历史处理结果，存在已知的隐藏补全瑕疵：例如耳朵在后处理中被整片颜色延展和平滑，上缘轮廓与折线因此受损。`before-retouch.png` 是已配准的修前部件，并非模型原始返回图；本目录没有保留耳朵的原始生图，不能据最终 PNG 反推模型原始效果。重组相似度和原生文件检查也不代表完整部件的隐藏结构合格。
+
 - [下载最新可编辑 Krita 文件](covered-shoulders/character.kra)
 - [最新透明 PNG](covered-shoulders/reassembled.png) · [最新 Krita 重开导出 PNG](covered-shoulders/krita-reopened.png)
 - [最新交互图层预览](covered-shoulders/index.html)
@@ -70,8 +72,8 @@ Python 计算选定区域的局部克隆、平滑和像素归属；Krita 打开�
 生成时将参考图和控制图以相同窗口裁切、局部放大，便于模型处理小部件。生成结果按标准轮廓
 校正比例、位置及形状，可见区域优先保留原图像素。皮肤和纯色布料的隐藏区域经过源图引导的
 清理，修正误生的邻接细节；脸底去除五官和发饰边缘残影，使皮肤连续。具体模型、裁切、配准
-和输出哈希见 [manifest.json](manifest.json)。流程与复用方法见
-[raster-layering 操作说明](../../workflow-next/raster-layering/README.md)。
+和输出哈希见 [manifest.json](manifest.json)。历史案例脚本及复现说明见
+[scripts/README.md](scripts/README.md)。
 `control.png` 与 `prompt.txt` 保留原始生图输入；后续精修范围单独记录，不反改生图过程记录。
 
 ## 原版验证结果

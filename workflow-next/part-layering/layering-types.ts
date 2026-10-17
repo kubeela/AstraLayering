@@ -1,10 +1,12 @@
 import type { PreparationReferences } from './preparation.ts';
 import type { GroupStore } from './groups.ts';
+import type { OcclusionPlan } from './occlusion-plan.ts';
+import type { InputDependency } from './completion-inputs.ts';
 
 export const groupStages = ['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'] as const;
 export type GroupStage = typeof groupStages[number];
 
-export type SvgArtifact = { path: string; note?: string };
+export type SvgArtifact = { path: string; note?: string; dependencies?: InputDependency[] };
 export type ReviewedSvgArtifact = SvgArtifact & { reviewOutcome?: 'pass' | 'repaired' };
 export type CompletionCheck = { passed: true; note?: string };
 export type StepProgress<T> = {
@@ -68,11 +70,14 @@ export type LayeringSteps = {
     before: SvgArtifact; after: SvgArtifact;
   }): Promise<StepResult<CompletionCheck>>;
   splitChildren(context: GroupContext & { completed: SvgArtifact }): Promise<StepResult<ChildrenAnalysis>>;
+  planOcclusion?(context: OcclusionContext): Promise<StepResult<OcclusionPlan>>;
 };
+
+export type OcclusionContext = InitialContext & { groups: GroupNode[]; preview: SvgArtifact };
 
 export type OutlineReductionContext = InitialContext & {
   depth: number;
-  entries: { group: GroupNode; parent?: GroupNode; outline: SvgArtifact; outputPath: string }[];
+  entries: { group: GroupNode; parent?: GroupNode; outline: SvgArtifact; current?: SvgArtifact; outputPath: string }[];
 };
 export type OutlineReduction = {
   changed: { groupId: string; path: string }[];
@@ -94,4 +99,5 @@ export type LayeringResult = {
   groupsPath: string;
   groups: GroupNode[];
   output?: string;
+  occlusionPath?: string;
 };

@@ -2,7 +2,7 @@
 export type CompletionPath = { d: string; fillRule?: 'nonzero' | 'evenodd' };
 const open = '<g data-completion-additions="v1" fill="#58b8a9" stroke="none">';
 const clean = (text: string) => text.replace(/\r\n/g, '\n').replace(/<svg\b[^>]*>/, root =>
-  root.replace(/\sdata-source-sha256=(['"]).*?\1/g, ''));
+  root.replace(/\s(?:data-source-sha256|data-completion-inputs)=(['"]).*?\1/g, ''));
 
 export function completionPaths(value: unknown): CompletionPath[] {
   if (!Array.isArray(value) || value.length > 256) throw new Error('补全 paths 须为数组，最多 256 条');

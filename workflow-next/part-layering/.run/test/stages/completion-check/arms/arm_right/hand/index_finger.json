@@ -1,7 +1,7 @@
 {
   "groupId": "arms/arm_right/hand/index_finger",
   "passed": true,
-  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "966607aeb6baede11897c0eafb413e1fb801c18c5f7904356808e9f4308c985a",
-  "afterHash": "5b6cd6e928e0feb2c31571df34dc062fb5f52fee67684899b632c8cf313c1bee"
+  "note": "程序核对：原 SVG 正文保留，2 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "e9282a297ae88caec90c650d0fd9e15a2ddd8f1ed2d983022fe2b6efcee560a6",
+  "afterHash": "cc4fec26ddcb02259337277067856c1bceb179ef6ec9bd8a3111c50b2528a055"
 }

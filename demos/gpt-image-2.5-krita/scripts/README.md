@@ -1,9 +1,12 @@
 # RGB 控制图 → 角色部件 → Krita
 
-本流程把已验收的 `../part-layering/.run/test` 结构接到本地 imagegen 和 Krita，
+此处保留已有角色的历史脚本与复现记录。
+旧露肩变体仍有肩部补绘和原线条受损等已知问题，不作为新版修瑕标准。
+
+本案例把已验收的 `../../../workflow-next/part-layering/.run/test` 结构接到 imagegen 和 Krita，
 不修改原有 SVG、115 节点组树或分层检查结果。
 
-实例交付见 [角色分层](../../demos/gpt-image-2.5-krita/README.md)。使用本机已有
+实例交付见 [角色分层](../README.md)。使用已配置的
 `forgeax-imagegen` CLI（调用已安装 imagegen 技能），凭据由 CLI 私有配置加载，
 不进入脚本、命令参数或仓库。模型为 `gpt-image-2.5-flare`；若单部件需要返修，
 该实例也使用了 `gpt-image-2.5-sunburst`。
@@ -16,9 +19,9 @@ python3 -m venv --system-site-packages .venv
 .venv/bin/python prepare.py
 xargs -0 -P 4 -I TASK bash -c TASK < .work/commands.nul
 .venv/bin/python assemble.py
-python3 launch_krita.py --krita /path/to/krita --output ../../demos/gpt-image-2.5-krita
-.venv/bin/python validate.py ../../demos/gpt-image-2.5-krita
-python3 make_preview.py ../../demos/gpt-image-2.5-krita
+python3 launch_krita.py --krita /path/to/krita --output ..
+.venv/bin/python validate.py ..
+python3 make_preview.py ..
 ```
 
 Krita 需有 Python 插件能力和可用的 X11 display（可用 Xvfb）。启动器给本次导入单独的
@@ -75,16 +78,16 @@ python3 make_preview.py .work/refined
 
 `covered_shoulders.py` 是同一角色的局部修整配方：两侧肩带补成邻近肤色，白色衣料改为连续的
 无肩带上缘，保留胸前、躯干及裆部遮挡。只修改躯干和胸前两个原生图层，不改变部件坐标或蒙版。
-交付见[露肩底图](../../demos/gpt-image-2.5-krita/covered-shoulders/README.md)。
+交付见[露肩底图](../covered-shoulders/README.md)。
 
 从未带本变体的 `0028d4a2` 源目录开始，或指定一个新的输出目录：
 
 ```sh
-python3 covered_shoulders.py --input ../../demos/gpt-image-2.5-krita --output ../../demos/gpt-image-2.5-krita/covered-shoulders
-python3 launch_krita.py --krita /path/to/krita --output ../../demos/gpt-image-2.5-krita/covered-shoulders --profile /path/to/isolated-profile --script krita_retouch.py
-python3 verify_covered_shoulders.py ../../demos/gpt-image-2.5-krita/covered-shoulders
-python3 make_preview.py ../../demos/gpt-image-2.5-krita/covered-shoulders
-python3 make_preview.py ../../demos/gpt-image-2.5-krita
+python3 covered_shoulders.py --input .. --output ../covered-shoulders
+python3 launch_krita.py --krita /path/to/krita --output ../covered-shoulders --profile /path/to/isolated-profile --script krita_retouch.py
+python3 verify_covered_shoulders.py ../covered-shoulders
+python3 make_preview.py ../covered-shoulders
+python3 make_preview.py ..
 ```
 
 若已有 Krita 实例运行，给新启动器设置独立且权限为 `700` 的 `TMPDIR`，隔离 Qt 单实例 socket，

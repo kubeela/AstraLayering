@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { groupCompleted, nodeSeed, normalizeGroups, walkGroups, writeAtomic } from './groups.ts';
 import { groupStages, type GroupsDocument, type ReviewedSvgArtifact } from './layering-types.ts';
 import { assertCompletionPreserves } from './completion-svg.ts';
+import { completionInputsMatch } from './completion-inputs.ts';
 
 export const svgHash = (bytes: Buffer | string): string => createHash('sha256')
   .update(bytes.toString().replace(/\r\n/g, '\n')).digest('hex');
@@ -35,6 +36,10 @@ export async function readSvg(path: string): Promise<Buffer | undefined> {
   }
   return bytes;
 }
+export function stampedSvg(bytes: Buffer, sourceHash?: string): Buffer {
+  return sourceHash ? Buffer.from(bytes.toString().replace(/<svg\b[^>]*>/, root => root
+    .replace(/\sdata-source-sha256=(['"]).*?\1/g, '').replace(/>$/, ` data-source-sha256="${sourceHash}">`))) : bytes;
+}
 export async function publishSvg(draft: string, output: string, sourceHash?: string): Promise<void> {
   if (!draft.endsWith('.draft.svg') || output.endsWith('.draft.svg') || !output.endsWith('.svg')) {
     throw new Error('正式 SVG 必须从 .draft.svg 发布');
@@ -42,9 +47,7 @@ export async function publishSvg(draft: string, output: string, sourceHash?: str
   const bytes = await readSvg(draft);
   if (!bytes) throw new Error(`SVG 草稿未生成：${draft}`);
   if (sourceHash) {
-    const text = bytes.toString().replace(/<svg\b[^>]*>/, root => root
-      .replace(/\sdata-source-sha256=(['"]).*?\1/g, '').replace(/>$/, ` data-source-sha256="${sourceHash}">`));
-    await writeAtomic(draft, text);
+    await writeAtomic(draft, stampedSvg(bytes, sourceHash));
   }
   await rename(draft, output);
 }
@@ -78,47 +81,53 @@ export function reviewedArtifact(bytes: Buffer, path: string, report: ReviewRepo
 
 export async function restoreFacts(directory: string, document: GroupsDocument): Promise<void> {
   let discovered = false;
-  for (const { group, parent } of walkGroups(document.groups)) {
+  for (const { group } of walkGroups(document.groups)) {
     group.steps = Object.fromEntries(groupStages.map(stage => [stage, { status: 'pending' }])) as typeof group.steps;
-    const path = artifactPath(directory, group.id, 'outline');
-    const bytes = await readSvg(path);
-    if (!bytes) continue;
-    if (parent) {
-      const before = await readSvg(artifactPath(directory, parent.id, 'completion'));
-      if (!before || !sourceMatches(bytes, svgHash(before))) continue;
-    }
-    group.steps.outline = { status: 'completed', output: { path } };
-    const report = await readReviewReport(reportPath(directory, group.id, 'review'), group.id);
-    const reviewed = reviewedArtifact(bytes, path, report);
-    if (reviewed) group.steps.review = { status: 'completed', output: reviewed };
-    else if (report.reviews.at(-1)?.verdict === 'blocked') {
-      group.steps.review.message = `轮廓 review blocked：${report.reviews.at(-1)!.feedback}`;
-    }
   }
   const depths = [...new Set(walkGroups(document.groups).map(entry => entry.depth))];
+  const nodes = new Map(walkGroups(document.groups).map(({ group }) => [group.id, group]));
   for (const depth of depths) {
     const entries = walkGroups(document.groups).filter(entry => entry.depth === depth);
+    for (const { group, parent } of entries) {
+      // 先恢复父层的完整事实；磁盘上残留的旧父 SVG 不能单独放行子层。
+      if (parent && !groupCompleted(parent)) continue;
+      const path = artifactPath(directory, group.id, 'outline');
+      const bytes = await readSvg(path);
+      if (!bytes) continue;
+      if (parent) {
+        const before = await readSvg(artifactPath(directory, parent.id, 'completion'));
+        if (!before || !sourceMatches(bytes, svgHash(before))) continue;
+      }
+      group.steps.outline = { status: 'completed', output: { path } };
+      const report = await readReviewReport(reportPath(directory, group.id, 'review'), group.id);
+      const reviewed = reviewedArtifact(bytes, path, report);
+      if (reviewed) group.steps.review = { status: 'completed', output: reviewed };
+      else if (report.reviews.at(-1)?.verdict === 'blocked') {
+        group.steps.review.message = `轮廓 review blocked：${report.reviews.at(-1)!.feedback}`;
+      }
+    }
     const receipt = await readJson(reductionReportPath(directory, depth));
     if (!receipt) continue;
-    if (receipt.depth !== depth || !Array.isArray(receipt.groups) || receipt.groups.length !== entries.length) continue;
-    let valid = true;
+    if (receipt.depth !== depth || !Array.isArray(receipt.groups) || new Set(receipt.groups.map((g: any) => g.id)).size !== receipt.groups.length) continue;
     for (const { group } of entries) {
       const saved = receipt.groups.find((item: any) => item.id === group.id);
       const before = await readSvg(artifactPath(directory, group.id, 'outline'));
       const after = await readSvg(artifactPath(directory, group.id, 'reduction'));
       if (group.steps.review.status !== 'completed' || !before || !after ||
-        !matchesHash(before, saved?.inputHash) || !matchesHash(after, saved?.outputHash)) { valid = false; break; }
+        !matchesHash(before, saved?.inputHash) || !matchesHash(after, saved?.outputHash)) continue;
+      group.steps.reduction = { status: 'completed', output: { path: artifactPath(directory, group.id, 'reduction') } };
     }
-    if (!valid) continue;
     for (const { group } of entries) {
+      if (group.steps.reduction.status !== 'completed') continue;
       const path = artifactPath(directory, group.id, 'reduction');
       const before = (await readSvg(path))!;
-      group.steps.reduction = { status: 'completed', output: { path } };
       const partPath = artifactPath(directory, group.id, 'completion');
       const after = await readSvg(partPath);
       if (!after || !sourceMatches(after, svgHash(before))) continue;
       try { assertCompletionPreserves(before.toString(), after.toString()); }
       catch { continue; }
+      if (!await completionInputsMatch(directory, group.id, svgHash(before), svgHash(after), nodes,
+        /\bdata-completion-inputs=['"]v1['"]/.test(after.toString()))) continue;
       group.steps.completion = { status: 'completed', output: { path: partPath } };
       const check = await readJson(reportPath(directory, group.id, 'completion-check'));
       if (check?.groupId !== group.id || check.passed !== true ||

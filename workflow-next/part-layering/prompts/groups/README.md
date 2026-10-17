@@ -44,3 +44,5 @@
 | `arms/arm_right/hand` | `thumb`、`index_finger`、`middle_finger`、`ring_finger`、`little_finger` |
 
 十根手指都可能因遮挡而缺少实际掌指连接，因此逐项配置，不仅针对小指。拇指按自身根部与鱼际附近处理，其他四指沿各自走向判断；已有合理搭接时不强行新增。`hand` group 与 `palm` part 不套用这份伸入侧先验，掌片保留覆盖侧职责。仍按完整 ID 精确匹配，不按末段名称或祖先自动继承；新分组使用其他 ID 时须显式配置相应目录。
+
+上述十份清单同时引用 `arms/references/fingers/complete-fingers.png`，补全模型实际收到三张图片：本角色、同手掌片、Milly／樱桃完整指体参考板。只借鉴被遮指身、近端厚度和局部搭接，不照搬第三方姿态、宽度、肤色或图集朝向，不把图例按指名硬套到当前角色。程序仍只允许新增补全路径；若错误来自可见轮廓或父范围，须报告回退位置。参考来源和本地文件约定见 `arms/references/fingers/README.md`，此清单不会影响 outline 或 review。当前配置变更不自动重跑已有结果。

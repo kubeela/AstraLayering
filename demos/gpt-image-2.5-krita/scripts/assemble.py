@@ -194,7 +194,7 @@ def contact_sheet(entries, output, kind='full'):
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--work',type=Path,default=HERE/'.work')
-    ap.add_argument('--output',type=Path,default=HERE.parent.parent/'demos/gpt-image-2.5-krita')
+    ap.add_argument('--output',type=Path,default=HERE.parent)
     ap.add_argument('--partial',action='store_true')
     args=ap.parse_args();work=args.work.resolve();out=args.output.resolve()
     out.mkdir(parents=True,exist_ok=True)

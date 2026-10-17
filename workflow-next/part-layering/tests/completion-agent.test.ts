@@ -97,7 +97,7 @@ test('face 特化与可选参考按完整 ID 独立读取；只配置参考也�
   await assert.rejects(readCompletionReferences(groupPrompt.groupDirectory), { code: 'ENOENT' });
 });
 
-test('正式调度中左右十指自动读取各自提示词及同手实际掌片，part 不再分析子组', async t => {
+test('正式调度中左右十指附加实际掌片与完整指体图片，part 不再分析子组', async t => {
   const f = await fixture(t), events: string[] = [], fingers = ['thumb', 'index_finger', 'middle_finger', 'ring_finger', 'little_finger'];
   const children = Object.fromEntries([
     ['arms', ['arm_left', 'arm_right'].map(name => ({ id: `arms/${name}` }))],
@@ -115,13 +115,18 @@ test('正式调度中左右十指自动读取各自提示词及同手实际掌�
     assert.match(task.prompt, /仅延伸到邻指下面不等于接到了手掌/);
     assert.match(task.prompt, /拇指按其自身根部与鱼际附近/);
     const palm = `${id.slice(0, id.lastIndexOf('/'))}/palm`;
-    assert.equal(input.additionalReferences.length, 1);
+    assert.match(task.prompt, /Milly 与樱桃的完整指体图例/);
+    assert.match(task.prompt, /整指连通或指根碰到掌片，不代表中间指身已经补足/);
+    assert.equal(input.additionalReferences.length, 2);
     const ref = input.additionalReferences[0];
     assert.equal(ref.groupId, palm);
     assert.equal(ref.sourceStage, 'reduction');
     assert.equal(ref.sourceSvg, artifactPath(f.directory, palm, 'reduction'));
     assert.equal(ref.sourceHash, svgHash(await readFile(ref.sourceSvg)));
-    assert.deepEqual(task.images!.map(image => image.path), [f.references.baseSubject, ref.path]);
+    const prior = input.additionalReferences[1];
+    assert.ok(prior.path.endsWith('/prompts/groups/arms/references/fingers/complete-fingers.png'));
+    assert.match(prior.description, /不照搬姿势、宽度、肤色/);
+    assert.deepEqual(task.images!.map(image => image.path), [f.references.baseSubject, ref.path, prior.path]);
     const result = await tool(task, 'read_svg').execute({ path: ref.sourceSvg }, signal);
     assert.ok(JSON.stringify(result).includes(palm));
     const otherPalm = ref.sourceSvg.replace(id.includes('/arm_left/') ? '/arm_left/' : '/arm_right/', id.includes('/arm_left/') ? '/arm_right/' : '/arm_left/');

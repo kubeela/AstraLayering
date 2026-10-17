@@ -4,6 +4,7 @@ import { drawGroupOutline, reviewGroupOutline } from './outline-agent.ts';
 import { reduceGroupOutlines } from './outline-reduce.ts';
 import { completeGroupOcclusion, checkGroupCompletion } from './completion-agent.ts';
 import { analyzeChildren } from './children-agent.ts';
+import { planPartOcclusion } from './occlusion-agent.ts';
 import type { LayeringSteps } from './layering-types.ts';
 
 // 补形与子组分析使用只读 agent，经工具提交后由程序验证并发布事实。
@@ -40,5 +41,6 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     completeOcclusion: async context => ({ status: 'completed', output: await completeGroupOcclusion(context, agents) }),
     checkCompletion: async context => ({ status: 'completed', output: await checkGroupCompletion(context) }),
     splitChildren: async context => ({ status: 'completed', output: await analyzeChildren(context, agents) }),
+    planOcclusion: context => planPartOcclusion(context, agents),
   };
 }
