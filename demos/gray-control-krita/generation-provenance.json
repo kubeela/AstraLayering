@@ -1,0 +1,1312 @@
+[
+  {
+    "id": "head_accessories/left_crown_ribbon/ribbon_tail",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "fa534a0508142807368ce2993147111b1a2108dd9344b3289dbd712b50a3c2ce",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_crown_ribbon/ribbon_body",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "5c7981c56e2d83bbfbd19a63b91640e356cc5d72c737a161a3098885aea63cda",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/back_hair/main_right",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "2579725794fb2ecbcbaf4ed2930e69fbb4361b411a8e0cc3defbaca85ef91b27",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/back_hair/main_left",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "d75d632a264ee4bbe8ecb2379947e3569fb89a7e7704371fa832befb25ea5325",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/back_hair/lock_right",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "dc8912d8803418e98e5ce8d698183f0df9756b5f76a8520bbfe15fe56cd351c6",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/back_hair/lock_left",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "e764065033534e77b4fe93a3e2f2bf579e4914ccdd8147e40478f4bb5f000b88",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/bun",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "b938f04092aaecc239475fc754cbcd8a9b7f390e315d30c73135f9d90846bce7",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/hair_cap",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-retry.png",
+    "sha256": "c1796b103e2bcead69bfbc1718cf380add966684403c06d58f060ed39d3a48a5",
+    "history": [
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_right/leg",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "3255ed13b88a002ef0927ca5cc3b0972edc13acd67e8d44ba3f16c214704c8eb",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_left/leg",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "8fa9072d2bcb8324e9223ddbc780a57911edc3be8f5a640bee064541b6ae7999",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_right/foot",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "8ac867e32e76b36de0f3080b25286288f697d2501d08be2174197c39de3d015c",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_left/foot",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "3b448e3aaecbf28afc12539997cc10f633deee7f4e3e6b9ff290b792fbaa45d1",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "pelvis",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "dd12736a93f4482c80a614b728cf7ab9fea5d91cbd3d5aa7e128e496a6405898",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-retry.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "neck",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "e6d424c477fcd53b36f5e78268c4a6aedcb76f1887d58d01542251ccea2476de",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/index_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "21d1e3fba3fc1c82d02e6e4ffe250d4c4c3adb5f6ce2c042ce3000d04e60941f",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-retry.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/middle_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-v5.png",
+    "sha256": "66f01bbe04a4b366ba78702486b716fa94bd86e19e2aebc839af3995bfd2019c",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-retry.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-review.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-v5.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/ring_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-retry.png",
+    "sha256": "88537eb3687cae71d57638a55d26deaa1045f60ac0660f279628406d4747396a",
+    "history": [
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/little_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "d7c2c20ce70506d2309aa1f8f813b4c2d2345b8f001de5e11174cfd4560704cf",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/thumb",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "43d1ae4ea75e03ca7d1d754cda7cfc523f933c89371ad994ef889f867f7ddff7",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/palm",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "0ef36c22667634ece367d935e858b1c4cfb6a4609464bf4e2fd82b57cc2688ed",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/forearm",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "aa03f19661a45ecac0978870576b5d386a3e71bb0cdeea06e1dd143d9f9aeac1",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_right/upper_arm",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-retry.png",
+    "sha256": "7006381ce157b7f0c79b57affc8afbbb478388746063506674f523a09a671a5d",
+    "history": [
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/upper_arm",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "f577261aab6963d8571b7a5c9ee5bf70f57fb90da31bf1b03d64309d3cad5e73",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-retry.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/forearm",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "12cf5bb46acb11f3a3883d765be5d6d17051f510b1b9b20a60d5141bc5361921",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/little_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "01e3ed7adcc47467dbcc227873213cba6ca7f01c53a219de128b4e2d0d6543c1",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/ring_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "0abf4fab0721bb5c28a9d304d97643e32d0c23bd17b4a763b7d42204e3fac464",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/middle_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-retry.png",
+    "sha256": "5f780e78728f36eef7f2ea4efa284c33b0106685be106293d252d1a50d41a268",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/index_finger",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "ce4c9c96d864cb54e03ef439938de70c106737baccdfccc5788ded38a6c17a38",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/thumb",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "a79c69c7bb6f039c33ab242b20c54bd73638349e0c3552a7c979891860a65c1a",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/palm",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-retry.png",
+    "sha256": "b52a3cd5705d694ad9505c8b979862bbb9f3f9a1d44c09e9ea2945e42bb09a0a",
+    "history": [
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "body/torso",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "ab1f1288e8ed2c10e308bc19fb54cc4ace45315a6ac35bd332ca3595272bfbc1",
+    "history": [
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "body/breast",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "5ae806585b3c495c6979c848b055c72c6b2b5bc4911fdfe039ca191c17b04b83",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-review.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-v5.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_right/ankle_gem",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "952e10b09e78e9c87f547cafde61909bdbfc3f10f86bc4c3dc96b7144f3f4838",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_left/ankle_gem",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "1b438a0f8825418dfe18af001531b509e9509c2a4da7b9e5f80c648715db6de2",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_right/anklet/outer_chain",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "d72eeab5bfc22e6d5998dd6f25cfe5452a0f9519361658bfd60705079a7a0ff7",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_right/anklet/inner_chain",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "0231f48c48330dc0eb50582805c6105b5d9c305588b6241c1086872522a06178",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_right/anklet/gem_pendant",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "877f696e756c68b55d63423ba692770159bfc5ea897a4d49ca703a74de06394c",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_right/anklet/central_connector",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "22facae167d3006e8d425a54634c28e1c2e053f45715860e18a66a700e0251e8",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_left/anklet/ankle_chain",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "eea141a457415a2f1d54ec41376b25cb8531e83a01f64e1af16ff272f1749024",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_left/anklet/center_link",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "04a26d6bc46efa1222beb355c3ecd556beeda03482c122c85771cdb344abfc84",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "legs/leg_left/anklet/teardrop_pendant",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "8d19754d4e9adfe0e8c3c11191b42fe1bf144488c27c3f67397d77f1dda5c92d",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_earring/suspension_chain",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "cba892a181602b623ef48a714bbf13c639376e2eff0657f583215a86d6a9d955",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_earring/suspension_chain",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "29ca4ed4b49364a5affafa025fbfc8406a81e5a7d0375ebe352732abe29109c8",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_earring/sapphire_pendant",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "f0846a13955b31861e864fc8519bd4e20bae2b0206ef333bc30ee34b6977b289",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_earring/sapphire_pendant",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "b3a274ee66d41be14a6e72d935fc94ffaf9a61a3b5a8084ada2393748a93176d",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_earring/ear_stud",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "06ea532f7e02cbf8415eb62d9dc40566d59e05abf69057e5bd35e10b8b2a5db7",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_earring/ear_stud",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "48550b8f9a4141f576b2aa6d1d877a6da0121dc7c396464ea0c6ccc6d62ae117",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/ear_right",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-retry.png",
+    "sha256": "95a5ec9984ea4f177deb577de2b94b13b5de4cf4a2196418a3717869c3d5f27f",
+    "history": [
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/ear_left",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "1f6378f7b4db02bba44f33580bca7e0c2f7c0eadae32553d821caa935783160d",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation-retry.log",
+        "status": "rejected",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/face_base",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-retry.png",
+    "sha256": "f83535f3fbbcac7878937efa1cff74c8be6ac538d6a38ff2e4ee8728c54f6e35",
+    "history": [
+      {
+        "log": "generation-retry.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_left/sclera",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "e4c8098376822f8a650fadd9803b8858903c6697a79321f8169b1c98969a41ea",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_right/sclera",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "44c19a3c2a1a9915e8746bbf3d49fbc80fd27bbe907fe18b2f8f5727666e73b0",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_left/iris",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "d2dfcf36b8ed52e8dfe3a0e6f3dd254c3b734cf4e161731323692ca87711b39e",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_right/iris",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "4cd038d104f3273d3dbcf89ef33500c54b2a57efd6a29949fa0a1dea454e6619",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_left/highlight",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "353d4d005fc938e1487dba8891b964a40abc042c3151e2caa972617213f472da",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_right/highlight",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "f9a7a6c95942eeea83e102ef79c38b0bfb2dfee73b1eda8b4e7a80c0044303ec",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_left/lower_eyelashes",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "419e2f02451b20ef0585b6a760d23f2142b7da7d57e628ca799e52f18c64562a",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_left/lower_eyelid",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "ac6fe03d7273ec68a03a910872b7d06840edcefaf853230c54790900b4815d45",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_right/lower_eyelid",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "29a0505fa496f2b311c8f1bd63ae97a03cf45d30adf8178cb18afdb93bae0522",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_left/upper_eyelid",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "d79f9eecc6fadbbfef158ba63d99aa2469e511a2e356695e819786a395006d7d",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_right/upper_eyelid",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "88cc0b4d084630ce33d0ac6bb45266277f947c5f9dc026f25698deff362bb42f",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_left/eyelid_crease",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "0cf14a2235b2a45f9550a3b0ff68682cbfc8066fafce713a0ebd03d97f715173",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eye_right/eyelid_crease",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "c45a24ee6108e996d6a099c1f1e82a6f2e5098b6ee22fed757ccba0cecc083b2",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eyebrow_left",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "559824e9f6a1e5ffeb6cd947629aa777cb7bf24f9ec12d4c2ec23118ceca8f15",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/eyebrow_right",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "c274c2918e78435f52496542e6f5f4d9ab6ab26e43dca682e4a81c84320d7838",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/nose",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "3b35d60e7f2c9bd5021231c49ecc301bef30d5751ca2ebbc1519d69c548b2eb8",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/mouth/mouth_interior",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "672b7c103542c4c9f8ac516c10dc3026ed03f249bc168c7dfe21d980e43c04d7",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/mouth/tongue",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "77c30e8ffb8734610e93eea25c496a52418ad1d2dae827a5affbe27775517acf",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/mouth/lower_teeth",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated-final.png",
+    "sha256": "3ac22a715fe2c6678a07309681408aa5eb64354401f5da146dba3a62233f7024",
+    "history": [
+      {
+        "log": "generation-final.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      },
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/mouth/upper_teeth",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "a9e661f41798c676e69ddc43e606a8e8e72cddfceaae7cac90293b2ed40023c3",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/mouth/lower_lip",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "0340171e6ca9720bdc76ae45de7f6c523bbfbb3bffe52712c5c45fc117f676f3",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "face/mouth/upper_lip",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "2b7944c0d454ce51f0f8244c77aec2cff84ed1d2bee5059d11edc3795b32788c",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/forehead_ornament/teardrop_pendant",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "5fba0dac35bc8eec7d3957693fdfe3fc44e0d45e2ee76b9e7c992fc013d0f790",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/forehead_ornament/upper_sapphire_mount",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "0f705af10a87005cf1e8dbff4807e225bed7e50f470cd8c6fd57eb90594958fa",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "c4de2b6f5008eb26e11561ee75ab41da9a20fd4cedab7d32b5838a893f13c6da",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "5bc00a84eecbc9d385ec9064549a741a499629e97da7518ba72e5e8316c7819e",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "de102804bccd86e5f24a73297dc4a9b2741a4059ecb2edbde88883d0e7fe0fa8",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "7ae3b75b5e75fbdcbcdc7ce2b9164364853e9d19ab87a69319a585f2075e3822",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "7e05b35cb249a99c3da1d71556e92805ac58d132d59997dd78491a7a8c90b9b3",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "a3fc97da7ea27b646487f52117e13e02b8085c5bf6c25edca089320fcb9e4df2",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "e9d5931a9864a676a3b0965174e4ed0a0f747259307c401b8f4b8edb7693081c",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "961d449a2fd87c9f2ff7edd32d64805a8d702f8b780faf0c824f58e7657c16d4",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "93b8f87021b5a6a7d09baf0c0291b413558e2652049d250c67f8cc8a3a37a4d6",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "7a75cbffb3669f240296965f6bc72752820e6446212acdcf6a9d3131462d610c",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/left_crown_ribbon/ribbon_head",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "621fea4a6ae4d9a5c38ead5bcb3e5120b3b631c072f1f89bd88aa243f1c32d70",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/right_crown_ribbon/ribbon_head",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "4edd41a06c6f36b59f7f9895147387d363d00517859366bee645cf9eba3b97cf",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/crown_frame",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "efe058e690dd26913e651ab0fc0f9463b66885be27f48175015f66265b424f2a",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/side_hair_right",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "ba875be8390ab9c2602615762ec5cb686b9edffc337ec551013255f93b61eddf",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "hair/side_hair_left",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "9917e151c680c2fc3f1cdeb252b9a435d30c93ed656959963056f3861fc91bd1",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  },
+  {
+    "id": "head_accessories/lotus_ornament",
+    "model": "gpt-image-2.5-sunburst",
+    "selectedGeneration": "generated.png",
+    "sha256": "ffc49a35eba6585e038766ee9448614fe49e525a5c6a625d8d812dc97745fbfe",
+    "history": [
+      {
+        "log": "generation.log",
+        "status": "success",
+        "model": "gpt-image-2.5-sunburst"
+      }
+    ]
+  }
+]

@@ -4,6 +4,7 @@
 
 | 案例 | 内容 |
 | --- | --- |
+| [灰底清空 → GPT Image 2.5 → Krita：90 个完整部件](./gray-control-krita/README.md) | 灰底抹除遮挡物后逐件生成，在 Krita 配准修画；90 层无蒙版，附原尺寸独显和重开验证 |
 | [gpt-image-2.5 → Krita：按深度表拆分补全](./gpt-image-2.5-depth-krita/README.md) | 依 part-layering 新版 occlusion.json 深度生成红黄绿控制图逐部件补全，Krita 按 level 叠放 90 个完整部件（无蒙版） |
 | [gpt-image-2.5 → Krita：90 部件拆分](./gpt-image-2.5-krita/README.md) | 采用 part-layering 完整色块标准，保留透明部件、遮挡补全、可逆蒙版及原图对照 |
 | [Jianma：新版素体与衣装](./jianma-current-case/readme.md) | 两个新技能的实际成稿快照、独立衣装、参考对照与绑定前限制 |

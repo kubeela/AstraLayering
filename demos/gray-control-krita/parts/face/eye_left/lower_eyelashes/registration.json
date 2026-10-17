@@ -1,0 +1,31 @@
+{
+  "method": "crop",
+  "score": 1.0,
+  "iou": 0.0,
+  "visibleError": null,
+  "candidates": {
+    "crop": 1.0
+  },
+  "matrix": [
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "generation": "generated.png",
+  "generationSha256": "419e2f02451b20ef0585b6a760d23f2142b7da7d57e628ca799e52f18c64562a",
+  "shapeFit": null,
+  "revision": 3,
+  "uncoveredHiddenPixels": 1
+}
