@@ -1,0 +1,34 @@
+{
+  "method": "bbox",
+  "score": 0.3255,
+  "iou": 0.8065,
+  "visibleError": 52.78,
+  "candidates": {
+    "crop": 0.6998,
+    "bbox": 0.3255,
+    "crop+shape": 0.6998,
+    "bbox+shape": 0.3255
+  },
+  "matrix": [
+    [
+      1.28571,
+      0.0,
+      -115.57143
+    ],
+    [
+      0.0,
+      1.0,
+      -1.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "generation": "generated.png",
+  "generationSha256": "7a75cbffb3669f240296965f6bc72752820e6446212acdcf6a9d3131462d610c",
+  "shapeFit": null,
+  "revision": 3,
+  "uncoveredHiddenPixels": 3
+}

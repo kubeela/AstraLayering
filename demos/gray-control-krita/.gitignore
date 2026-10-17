@@ -1,0 +1,7 @@
+work/
+runtime/
+*.kra~
+review/
+krita-layers/
+current-composite.png
+working-checkpoint.kra

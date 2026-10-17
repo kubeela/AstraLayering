@@ -10,6 +10,14 @@
 
 ## 效果展示
 
+### 90 个完整绘画部件：灰底控制图与 Krita 修画
+
+[打开逐层查看页面](./demos/gray-control-krita/index.html) · [下载 Krita 工程](./demos/gray-control-krita/character-depth.kra) · [原图对照与验收记录](./demos/gray-control-krita/README.md)
+
+按完整色块标准生成遮挡补全，保留 90 个按深度排列的普通绘画图层；保存重开后逐层像素一致。
+
+第二步的边缘柔化进度另存于 [soft-edge-krita](./demos/soft-edge-krita/README.md)：目前有 33 条局部笔刷操作，涉及 31 个图层，逐层视觉验收尚未完成。[继续编辑的 KRA](./demos/soft-edge-krita/character-soft-edges.kra) · [当前合成图](./demos/soft-edge-krita/preview.png) · [90 层进度与待办](./demos/soft-edge-krita/PROGRESS.md)。
+
 ### Jianma：新版人物分层与衣装还原
 
 左侧为穿衣参考，中间为人物分层流程交付的素体，右侧为衣装流程交付的完整 SVG 渲染；以下图片和 SVG 保存自实际运行结果。

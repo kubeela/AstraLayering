@@ -1,0 +1,23 @@
+OPENAI_API_KEY is set.
+Calling Image API (edit) with 3 image(s).
+Traceback (most recent call last):
+  File "<imagegen-skill>/scripts/image_gen.py", line 1030, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "<imagegen-skill>/scripts/image_gen.py", line 1025, in main
+    args.func(args)
+  File "<imagegen-skill>/scripts/image_gen.py", line 859, in _edit
+    result = client.images.edit(**request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<imagegen-environment>/lib64/python3.11/site-packages/openai/_utils/_utils.py", line 298, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "<imagegen-environment>/lib64/python3.11/site-packages/openai/resources/images.py", line 576, in edit
+    return self._post(
+           ^^^^^^^^^^^
+  File "<imagegen-environment>/lib64/python3.11/site-packages/openai/_base_client.py", line 1439, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<imagegen-environment>/lib64/python3.11/site-packages/openai/_base_client.py", line 1212, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.BadRequestError: Error code: 400 - {'error': {'message': 'litellm.BadRequestError: OpenAIException - {\n  "error": {\n    "message": "Your request was rejected by the safety system. If you believe this is an error, contact us at Azure support ticket and include the request ID 4803f3c9-d6dc-4267-b648-806905427cb4.",\n    "type": "image_generation_user_error",\n    "param": null,\n    "code": "moderation_blocked",\n    "moderation_details": {\n      "moderation_stage": "input",\n      "categories": [\n        "other"\n      ]\n    }\n  }\n}. Received Model Group=gpt-image-2.5-sunburst\nAvailable Model Group Fallbacks=None', 'type': None, 'param': None, 'code': '400'}}

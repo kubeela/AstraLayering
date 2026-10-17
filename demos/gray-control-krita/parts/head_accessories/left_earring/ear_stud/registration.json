@@ -1,0 +1,21 @@
+{
+  "method": "alpha-bbox",
+  "iou": 0.7,
+  "matrix": [
+    [
+      0.029411764815449715,
+      0.0,
+      544.5882568359375
+    ],
+    [
+      0.0,
+      0.033898305147886276,
+      195.76271057128906
+    ]
+  ],
+  "generation": "generated.png",
+  "generationSha256": "06ea532f7e02cbf8415eb62d9dc40566d59e05abf69057e5bd35e10b8b2a5db7",
+  "shapeFit": null,
+  "revision": 3,
+  "uncoveredHiddenPixels": 6
+}
