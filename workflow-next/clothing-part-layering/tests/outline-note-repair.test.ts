@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { chmod, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
-import type { AgentTask } from '../agents.ts';
+import { CodexAgents, type AgentTask } from '../agents.ts';
 import { findGroup, GroupStore, normalizeGroups, writeAtomic } from '../groups.ts';
 import { drawGroupOutline, reviewGroupOutline } from '../outline-agent.ts';
 import { fixture, shape } from './layering-fixture.ts';
+import { nodeExecutables } from './node-executables.ts';
 
 const signal = new AbortController().signal;
 const inputs = (task: AgentTask) => JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
@@ -76,13 +77,54 @@ test('note repair is bound to one group, requires a unique match and preserves c
     [['band', 'group'], ['tail', 'part']]);
 });
 
-test('initial outline drawing does not receive the group-note repair tool', async t => {
+test('initial outline drawing cannot use the registered group-note repair tool', async t => {
   const f = await noteFixture(t, '原说明');
   await drawGroupOutline(f, { async run(task) {
-    assert.ok(!task.tools!.some(item => item.name === 'update_group_note'));
+    await assert.rejects(tool(task, 'update_group_note').execute({ oldText: '原说明', newText: '越权更新' }, signal), /仅在返修回合/);
     await tool(task, 'write_outline_svg').execute({ svg: shape('band') }, signal);
     await tool(task, 'preview_svg').execute({ path: inputs(task).outputSvg, mode: 'blend' }, signal);
     return { text: 'drawn', images: [] };
   } });
   assert.equal(findGroup(f.store.snapshot(), 'band').note, '原说明');
+});
+
+test('initial drawing and repair reuse one actual app-server session with stable tool definitions', async t => {
+  nodeExecutables(t);
+  const f = await noteFixture(t, '原说明');
+  const executable = join(f.directory, 'fake-app-server.mjs');
+  const requests = join(f.directory, 'requests.jsonl');
+  await writeFile(executable, `#!/usr/bin/env node
+import { createInterface } from 'node:readline';
+import { appendFileSync } from 'node:fs';
+const send = value => process.stdout.write(JSON.stringify(value) + '\\n');
+for await (const line of createInterface({ input: process.stdin })) {
+  const message = JSON.parse(line);
+  appendFileSync(${JSON.stringify(requests)}, JSON.stringify(message) + '\\n');
+  if (message.method === 'initialize') send({ id: message.id, result: {} });
+  if (message.method === 'thread/start') send({ id: message.id, result: { thread: { id: 'drawing-thread' } } });
+  if (message.method === 'turn/start') {
+    send({ id: message.id, result: {} });
+    send({ method: 'turn/completed', params: { turn: { status: 'completed' } } });
+  }
+}
+`, 'utf8');
+  await chmod(executable, 0o755);
+  const session = new CodexAgents({ codexPathOverride: executable, cwd: f.directory }).createSession();
+  t.after(() => session.close());
+  const threads: (string | null | undefined)[] = [];
+  const drawing = { async run(task: AgentTask) {
+    const result = await session.run(task);
+    threads.push(result.threadId);
+    if (threads.length === 1) await tool(task, 'write_outline_svg').execute({ svg: shape('band') }, signal);
+    else await tool(task, 'update_group_note').execute({ oldText: '原说明', newText: '修正说明' }, signal);
+    await tool(task, 'preview_svg').execute({ path: inputs(task).outputSvg, mode: 'blend' }, signal);
+    return result;
+  } };
+  await drawGroupOutline(f, drawing);
+  await drawGroupOutline(f, drawing, { candidate: f.outline.path, feedback: '只修正说明，保留轮廓' });
+  assert.deepEqual(threads, ['drawing-thread', 'drawing-thread']);
+  assert.equal(findGroup((await GroupStore.open(f.directory)).snapshot(), 'band').note, '修正说明');
+  const messages = (await readFile(requests, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(messages.filter(message => message.method === 'thread/start').length, 1);
+  assert.equal(messages.filter(message => message.method === 'turn/start').length, 2);
 });

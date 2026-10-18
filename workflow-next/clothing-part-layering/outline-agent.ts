@@ -54,17 +54,18 @@ function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>
   }, null, 2);
 }
 
-function groupNoteRepairTool(context: GroupContext): FunctionTool | undefined {
+function groupNoteRepairTool(context: GroupContext, repair: boolean): FunctionTool | undefined {
   const store = context.store;
   if (!store) return;
   return {
     name: 'update_group_note',
-    description: '按返修意见精确替换当前组 note 中的一段文字。oldText 必须唯一匹配；只更新本组说明，不接受路径或组 ID，不改父组、其他组、名称、种类和分组树。返回持久化后的完整 note。',
+    description: '仅返修回合可调用：按返修意见精确替换当前组 note 中的一段文字。oldText 必须唯一匹配；只更新本组说明，不接受路径或组 ID，不改父组、其他组、名称、种类和分组树。返回持久化后的完整 note。',
     inputSchema: { type: 'object', additionalProperties: false, required: ['oldText', 'newText'], properties: {
       oldText: { type: 'string', minLength: 1 }, newText: { type: 'string', minLength: 1 },
     } },
     async execute(value, signal) {
       signal.throwIfAborted();
+      if (!repair) throw new Error('update_group_note 仅在返修回合可用');
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('仅提交 oldText 和 newText');
       const args = value as Record<string, unknown>;
       if (Object.keys(args).some(key => !['oldText', 'newText'].includes(key)) ||
@@ -100,7 +101,8 @@ export async function drawGroupOutline(
   await rm(draft, { force: true });
   if (repair) await writeAtomic(draft, await readFile(repair.candidate));
   const observations: SvgObservation[] = [];
-  const noteRepair = repair ? groupNoteRepairTool(context) : undefined;
+  // 同一绘制会话的工具定义必须固定；回合权限在工具执行时检查。
+  const noteRepair = groupNoteRepairTool(context, !!repair);
   const preview = createSvgPreviewTool({ ...input, directory: context.directory,
     observationDirectory: join(context.directory, 'observations', 'outline', context.group.id),
     observed: entry => observations.push(entry) });
@@ -121,7 +123,7 @@ export async function drawGroupOutline(
     `\n仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须用 preview_svg 先看整图 blend，再裁剪放大，用 blend 和 edge 逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。\n` +
     (repair ? `\n【独立 review 的返修意见】\n${repair.feedback}\n\n【返修要求】\n` +
       `${await readFile(repairPromptPath, 'utf8')}\n提示词来源：${repairPromptPath}\n` : '') +
-    (noteRepair ? '\n本轮另提供 update_group_note：反馈要求更正本组说明时，用它精确修正既有 note；分组文件由程序保存。仅有说明问题时保留正确 SVG，不能用改动轮廓代替修正说明。\n' : '');
+    (repair && noteRepair ? '\n本轮可用 update_group_note：反馈要求更正本组说明时，用它精确修正既有 note；分组文件由程序保存。仅有说明问题时保留正确 SVG，不能用改动轮廓代替修正说明。\n' : '');
   if (repair) {
     await recordRepair(output, repair.feedback, taskPrompt);
   }
