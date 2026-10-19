@@ -121,7 +121,7 @@ export function createSvgPreviewTool(options: {
       const rel = relative(root, source);
       if (rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)) throw new Error('SVG 必须位于本次运行目录内');
       const mode = args.mode ?? 'svg', scale = args.scale ?? 1;
-      if (!['svg', 'blend', 'edge'].includes(String(mode)) || typeof scale !== 'number' || !Number.isFinite(scale) || scale < 1 || scale > 8) {
+      if (typeof mode !== 'string' || !['svg', 'blend', 'edge'].includes(mode) || typeof scale !== 'number' || !Number.isFinite(scale) || scale < 1 || scale > 8) {
         throw new Error('无效 mode 或 scale');
       }
       const crop = args.crop ?? [0, 0, options.canvas.width, options.canvas.height];

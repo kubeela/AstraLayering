@@ -25,7 +25,7 @@ function record(value: unknown, name: string): Record<string, unknown> {
 function readProgress<T>(value: unknown, name: string): StepProgress<T> {
   if (value === undefined) return { status: 'pending' };
   const item = record(value, name);
-  if (!['pending', 'running', 'completed', 'failed'].includes(String(item.status))) {
+  if (typeof item.status !== 'string' || !['pending', 'running', 'completed', 'failed'].includes(item.status)) {
     throw new Error(`${name} has an invalid status`);
   }
   if (item.status === 'completed' && item.output === undefined) throw new Error(`${name} is missing its output`);

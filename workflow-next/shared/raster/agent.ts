@@ -68,7 +68,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     }
     const result: unknown = JSON.parse(text);
     if (!result || typeof result !== 'object' || !('status' in result) || !('summary' in result)
-      || !['completed', 'blocked'].includes(String(result.status)) || typeof result.summary !== 'string' || !result.summary.trim()) {
+      || typeof result.status !== 'string' || !['completed', 'blocked'].includes(result.status) || typeof result.summary !== 'string' || !result.summary.trim()) {
       throw new Error('步骤未返回有效的完成或受阻说明');
     }
     return result as StepResult;

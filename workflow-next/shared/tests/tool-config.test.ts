@@ -5,6 +5,10 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { ToolCatalog, toolsDirectory } from '../codex/tool-config.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
+import { CodexAgents } from '../codex/agents.ts';
+import { textResult } from '../codex/function-tools.ts';
+import { fakeAppServer } from '../../part-layering/tests/fake-app-server.ts';
+import { nodeExecutables } from '../../part-layering/tests/node-executables.ts';
 
 test('工具配置逐文件覆盖；衣服的 subject 限制不会污染共享定义', () => {
   const shared = new ToolCatalog(), specialized = new ToolCatalog(toolsDirectory, clothing.toolsDirectory);
@@ -31,4 +35,34 @@ test('修改本地配置在新 catalog 生效；已加载定义不被文件或�
   assert.deepEqual(before.get('update_group_note').inputSchema.required, ['oldText', 'newText']);
   await writeFile(join(dir, 'schema.json'), '{ broken');
   assert.throws(() => new ToolCatalog(root), /update_group_note.*schema.json/);
+});
+
+test('本地工具定义实际注册到 App Server，续轮保留定义并使用本轮回调', async t => {
+  nodeExecutables(t);
+  const root = await mkdtemp(join(tmpdir(), 'tool-registration-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const overrides = join(root, 'tools'), dir = join(overrides, 'update_group_note');
+  await mkdir(dir, { recursive: true });
+  const schema = { type: 'object', properties: { oldText: { type: 'string', const: 'before' }, newText: { type: 'string' } },
+    required: ['oldText', 'newText'], additionalProperties: false };
+  await writeFile(join(dir, 'description.md'), '本地编辑的说明');
+  await writeFile(join(dir, 'schema.json'), JSON.stringify(schema));
+  const server = await fakeAppServer(root, [{ tool: 'update_group_note', arguments: { oldText: 'before', newText: 'after' } }]);
+  const agents = new CodexAgents({ cwd: root, toolsDirectory: overrides, codexPathOverride: server.executable, logDirectory: join(root, 'logs') });
+  const session = agents.createSession(), calls: string[] = [];
+  try {
+    for (const phase of ['draw', 'repair']) {
+      await session.run({ name: phase, prompt: phase, tools: [{ name: 'update_group_note', description: '旧说明', inputSchema: { type: 'object' },
+        async execute(value) { assert.deepEqual(value, { oldText: 'before', newText: 'after' }); calls.push(phase); return textResult(phase); },
+      }] });
+      await writeFile(join(dir, 'description.md'), '下一次进程启动后才生效');
+    }
+  } finally { await session.close(); }
+  const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  const starts = protocol.filter(message => message.method === 'thread/start');
+  assert.equal(starts.length, 1);
+  assert.equal(starts[0].params.cwd, root);
+  assert.deepEqual(starts[0].params.dynamicTools, [{ type: 'function', name: 'update_group_note', description: '本地编辑的说明', inputSchema: schema }]);
+  assert.equal(protocol.filter(message => message.method === 'turn/start').length, 2);
+  assert.deepEqual(calls, ['draw', 'repair']);
 });

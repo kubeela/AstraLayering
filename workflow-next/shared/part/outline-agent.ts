@@ -159,7 +159,7 @@ async function reviewOnce(
       if (submitted) throw new Error('本轮审查已提交');
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('审查结论须为对象');
       const raw = value as Record<string, unknown>;
-      if (!['pass', 'revise', 'blocked'].includes(String(raw.verdict)) || typeof raw.feedback !== 'string' || !raw.feedback.trim() ||
+      if (typeof raw.verdict !== 'string' || !['pass', 'revise', 'blocked'].includes(raw.verdict) || typeof raw.feedback !== 'string' || !raw.feedback.trim() ||
           Object.keys(raw).some(key => !['verdict', 'feedback'].includes(key))) throw new Error('无效审查结论或意见');
       if (raw.verdict !== 'blocked' && !observations.some(entry => entry.source === candidate && entry.mode !== 'svg')) {
         throw new Error('必须先用 preview_svg 实际对照候选与参考图');

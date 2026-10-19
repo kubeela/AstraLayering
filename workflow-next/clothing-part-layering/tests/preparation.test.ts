@@ -7,11 +7,12 @@ import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { createPreparationSteps, getPreparationDirectory, loadPreparedReferences, prepareReferences } from '../preparation.ts';
+import { taskDirectory } from '../../shared/paths.ts';
 
 async function fixture(t: TestContext) {
   const temporary = await mkdtemp(join(tmpdir(), 'clothing-preparation-'));
   const runName = `fixture-${randomUUID()}`, directory = getPreparationDirectory(runName);
-  t.after(async () => { await rm(temporary, { recursive: true, force: true }); await rm(dirname(directory), { recursive: true, force: true }); });
+  t.after(async () => { await rm(temporary, { recursive: true, force: true }); await rm(taskDirectory(runName), { recursive: true, force: true }); });
   const input = join(temporary, 'simplified-character.png'), generated = join(temporary, 'generated.png');
   await sharp({ create: { width: 96, height: 128, channels: 4, background: '#c0c0c0' } }).png().toFile(input);
   await sharp({ create: { width: 96, height: 128, channels: 4, background: '#80a0c080' } }).png().toFile(generated);

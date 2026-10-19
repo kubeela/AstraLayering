@@ -15,6 +15,7 @@ import sharp from 'sharp';
 import { artifactPath, draftPath, publishSvg, reportPath, svgHash } from '../../shared/part/artifact-facts.ts';
 import { shape, workingSteps } from './layering-fixture.ts';
 import { runLayering } from '../../shared/part/layering.ts';
+import { taskDirectory } from '../../shared/paths.ts';
 
 function runCli(args: string[]) {
   return promisify(execFile)(process.execPath, [
@@ -47,7 +48,7 @@ test('预览缺失时用模拟步骤重建；实际入口复用完整事实且�
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
   await mkdir(references, { recursive: true });
   await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
   await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
@@ -139,7 +140,7 @@ test('实际入口遇到组产物问题时报告组名、步骤和停止派发�
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
   await mkdir(references, { recursive: true });
   await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
   await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
@@ -164,7 +165,7 @@ test('显式 groups 缺少前置参考时直接退出，不启动准备 agent �
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
   await mkdir(directory, { recursive: true });
   const groupsPath = join(directory, 'input.json');
   await writeFile(groupsPath, JSON.stringify([{ id: 'face' }]));

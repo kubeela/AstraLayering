@@ -6,7 +6,7 @@
 
 连接先验已写入 `prompts/groups/arms/arm_left/hand/<手指>/completion.md` 与 `arm_right` 对应目录。适用于左右手的 thumb、index_finger、middle_finger、ring_finger、little_finger，共十个完整 ID，全部为终止 part。手指都可能在遮挡下缺少真实掌指连接，先验不限于小指；拇指按自身根部和鱼际附近处理。hand group 与 palm part 不套用手指伸入侧规则。已有合理搭接时无需新增。
 
-每个手指旁的 `completion.references.json` 显式声明 `{ "sibling": "palm", "description": "…" }`。正常补全适配器读取该配置，以同手已审查、去重的掌片 SVG 生成完整画布参考 PNG，并开放该源 SVG 的只读读取；请求保留组 ID、源路径、版本和用途。参考不依赖同级补全先后顺序，不隐式继承父组提示词。适用清单和格式见 [提示词规范](../../prompts/groups/README.md)。
+每个手指旁的 `completion.references.json` 显式声明 `{ "sibling": "palm", "description": "…" }`。正常补全适配器读取该配置，以同手已审查、去重的掌片 SVG 生成完整画布参考 PNG，并开放该源 SVG 的只读读取；请求保留组 ID、源路径、版本和用途。参考不依赖同级补全先后顺序，不隐式继承父组提示词。适用清单和格式见 [提示词规范](../../../part-layering/prompts/groups/README.md)。
 
 教程依据：[手臂细节拆分](../../../../tutorial/live2d-tutorial-text/12.手臂细节拆分.txt) 中手掌与五指的分工，以及关节处局部近似圆形交错的连接方式。运行时不追加教程全文或旧验收返修提示词。
 
@@ -18,6 +18,12 @@
 pnpm start --name test --groups .run/test/supervision/2026-10-15T10-52-51-370Z-finger-prior-mainflow/selection.json --jobs 3
 ```
 
+上方保留当时旧布局下实际执行的命令。迁入统一任务目录后，从仓库根目录使用以下等价入口；相对输入从 `.run/test/` 解析：
+
+```bash
+pnpm --dir workflow-next part-layering --name test --groups part-layering/supervision/2026-10-15T10-52-51-370Z-finger-prior-mainflow/selection.json --jobs 3
+```
+
 入口是 `run.ts` 与默认适配器，没有拦截模型调用，没有继承旧补全稿作为参考。程序成功退出，共产生十次真实模型调用；每次均来自该完整 ID 的正式 completion.md，都实际读取了同手掌片 SVG。调用并发峰值为 3，未设置组任务数量上限。模型配置：`gpt-6.1-sol / xhigh`。
 
 ## 结果
@@ -26,16 +32,16 @@ pnpm start --name test --groups .run/test/supervision/2026-10-15T10-52-51-370Z-f
 
 | part | 正式提示词 | 本次补全 | 与实际掌片重叠面积 |
 | --- | --- | --- | ---: |
-| 左 / index_finger | [completion.md](../../prompts/groups/arms/arm_left/hand/index_finger/completion.md) | 无需新增 | 74.44 |
-| 左 / little_finger | [completion.md](../../prompts/groups/arms/arm_left/hand/little_finger/completion.md) | 1 条新增 | 68.00 |
-| 左 / middle_finger | [completion.md](../../prompts/groups/arms/arm_left/hand/middle_finger/completion.md) | 1 条新增 | 25.50 |
-| 左 / ring_finger | [completion.md](../../prompts/groups/arms/arm_left/hand/ring_finger/completion.md) | 1 条新增 | 34.19 |
-| 左 / thumb | [completion.md](../../prompts/groups/arms/arm_left/hand/thumb/completion.md) | 无需新增 | 219.63 |
-| 右 / index_finger | [completion.md](../../prompts/groups/arms/arm_right/hand/index_finger/completion.md) | 无需新增 | 51.25 |
-| 右 / little_finger | [completion.md](../../prompts/groups/arms/arm_right/hand/little_finger/completion.md) | 无需新增 | 152.75 |
-| 右 / middle_finger | [completion.md](../../prompts/groups/arms/arm_right/hand/middle_finger/completion.md) | 无需新增 | 39.25 |
-| 右 / ring_finger | [completion.md](../../prompts/groups/arms/arm_right/hand/ring_finger/completion.md) | 无需新增 | 44.81 |
-| 右 / thumb | [completion.md](../../prompts/groups/arms/arm_right/hand/thumb/completion.md) | 无需新增 | 84.44 |
+| 左 / index_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_left/hand/index_finger/completion.md) | 无需新增 | 74.44 |
+| 左 / little_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_left/hand/little_finger/completion.md) | 1 条新增 | 68.00 |
+| 左 / middle_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_left/hand/middle_finger/completion.md) | 1 条新增 | 25.50 |
+| 左 / ring_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_left/hand/ring_finger/completion.md) | 1 条新增 | 34.19 |
+| 左 / thumb | [completion.md](../../../part-layering/prompts/groups/arms/arm_left/hand/thumb/completion.md) | 无需新增 | 219.63 |
+| 右 / index_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_right/hand/index_finger/completion.md) | 无需新增 | 51.25 |
+| 右 / little_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_right/hand/little_finger/completion.md) | 无需新增 | 152.75 |
+| 右 / middle_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_right/hand/middle_finger/completion.md) | 无需新增 | 39.25 |
+| 右 / ring_finger | [completion.md](../../../part-layering/prompts/groups/arms/arm_right/hand/ring_finger/completion.md) | 无需新增 | 44.81 |
+| 右 / thumb | [completion.md](../../../part-layering/prompts/groups/arms/arm_right/hand/thumb/completion.md) | 无需新增 | 84.44 |
 
 面积按四倍采样折算为原图像素面积，仅作为诊断数据，不是新增阈值。所有指根均与实际掌片相交；左小指本次独立重建后重叠为 68.00，首次默认失败稿为 0。左手父范围未被子片覆盖的面积为 1.75，与此前已修好案例一致；右手为 20.19，包含边缘与内部指缝差异，未将父范围整体填满作为验收规则。
 
