@@ -46,3 +46,10 @@ node_modules/
 /demos/jianma-svg-ver/opus55/tmp/
 /demos/jianma-svg-ver/opus55/.runtime/
 /demos/jianma-svg-ver/opus55/structure/*.lock
+
+# Default live2d-maker task directories live beside installed skills, not inside them.
+/.agents/skills/*/
+!/.agents/skills/live2d-maker/
+!/.agents/skills/live2d-expressions/
+# Explicit legacy run roots remain local.
+.run/

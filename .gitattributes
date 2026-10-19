@@ -29,4 +29,4 @@ demos/jianma/**/*.jpg -text
 demos/jianma/**/*.svg -text
 
 # A blank unified-diff context line is one required space.
-workflow-next/tools/codex/*.patch text eol=lf whitespace=-blank-at-eol
+.agents/skills/live2d-maker/tools/codex/*.patch text eol=lf whitespace=-blank-at-eol
