@@ -1,0 +1,504 @@
+{
+  "purpose": "头发拆分图片先验；由已有三个人物模型贴图提取，只用于本地参考",
+  "coordinates": "crop1600 是原图等比缩到 1600×1600 时的选区，sourceCrop 是原始像素坐标；不旋转发片",
+  "priority": "当前角色原图与实际控制需求优先。示例不规定发区数量、树深、group/part 或绘制顺序。",
+  "sourcePolicy": "模型原件与派生像素留在已忽略的 local-assets 内；不改变生产 SVG 或提示词。",
+  "templates": [
+    {
+      "id": "milly",
+      "title": "发区组织与前侧发拆分",
+      "name": "Milly",
+      "filename": "01-发区组织与前侧发拆分-Milly.png",
+      "use": [
+        "观察完整后发底形、后侧发、侧发与前侧发的大束区别。",
+        "理解前侧发不等于耳前一小段细发；额前刘海另有完整发片。",
+        "名称由同一角色的 PSD 独显辅助核对，不照搬其节点数量。"
+      ],
+      "limit": "发区名称参考 Milly 自身 PSD；当前角色是否分开，仍取决于结构与独立控制需求。",
+      "description": "发区组织与前侧发拆分：Milly 同时保留完整后发底形、后侧发、侧发大束、前侧发主束和刘海发片；用于理解完整发区与大束的区别，不照搬命名数量或树深。",
+      "sources": {
+        "atlas": {
+          "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\milly\\MillyRuntime\\Milly.4096\\texture_00.png",
+          "sha256": "4c8266b59bfc6828127392d588f07ad3bfa561059457b985057885cfcd317c31"
+        },
+        "portrait": {
+          "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\milly\\Milly原画.png",
+          "sha256": "c8fe7692f0df44689acf51fb3987049b04f643cba8e9c11659d55a55037d57a8"
+        }
+      },
+      "pieces": [
+        {
+          "title": "完整后发底形",
+          "path": "pieces/milly-01.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            628,
+            15,
+            838,
+            293
+          ],
+          "sourceCrop": [
+            1628,
+            75,
+            2117,
+            729
+          ],
+          "size": [
+            489,
+            654
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "e2775916cc92865f36b668e5641bd7e035587fda6a5835d1c5dcfff10b1e6c9c"
+        },
+        {
+          "title": "后侧发整体片",
+          "path": "pieces/milly-02.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            17,
+            428,
+            281,
+            705
+          ],
+          "sourceCrop": [
+            75,
+            1138,
+            681,
+            1758
+          ],
+          "size": [
+            606,
+            620
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "80ccf7798fe64ebbf0d90666c0c2b6f2321723de1c66cd14b4ceaa0f3f67ca9a"
+        },
+        {
+          "title": "侧发大束",
+          "path": "pieces/milly-03.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            1033,
+            15,
+            1183,
+            278
+          ],
+          "sourceCrop": [
+            2668,
+            76,
+            2989,
+            669
+          ],
+          "size": [
+            321,
+            593
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "18a6d5521bfb180a57fe729beadc9c38e7eb5885df71e5c77b69dbde710cc88f"
+        },
+        {
+          "title": "前侧发主束",
+          "path": "pieces/milly-04.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            756,
+            832,
+            899,
+            1095
+          ],
+          "sourceCrop": [
+            1970,
+            2160,
+            2244,
+            2782
+          ],
+          "size": [
+            274,
+            622
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "08011051df5906c959e306275af8aa965ca1ab5504c805bcdb5b67c46728c229"
+        },
+        {
+          "title": "额前刘海 · 中束",
+          "path": "pieces/milly-05.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            1375,
+            210,
+            1477,
+            373
+          ],
+          "sourceCrop": [
+            3534,
+            568,
+            3738,
+            923
+          ],
+          "size": [
+            204,
+            355
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "32d74ee591eff710705b9f89dff884f10fbae56a530086c01c702d7afd5bcc23"
+        },
+        {
+          "title": "额前刘海 · 侧束",
+          "path": "pieces/milly-06.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            1117,
+            730,
+            1240,
+            894
+          ],
+          "sourceCrop": [
+            2893,
+            1891,
+            3170,
+            2258
+          ],
+          "size": [
+            277,
+            367
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "8db195dcfa274165f6b9c6f7b88bd1682e35204808cd0f0b545478036a8be943"
+        }
+      ],
+      "sameScaleWithinBoard": 0.6574923547400612
+    },
+    {
+      "id": "lier",
+      "title": "长发主束与细束的粒度对照",
+      "name": "莉尔",
+      "filename": "02-长发主束与细束的粒度对照-莉尔.png",
+      "use": [
+        "观察完整长发片、较细长束和细小发丝之间的粒度差别。",
+        "分离的是完整图集发片，不能只截取角色当前露出的一小段。",
+        "细束可以存在，但不因此用它替代整个侧发或强制独立控制。"
+      ],
+      "limit": "只有 PNG 图集可核对形体；这里不据此确定前后发归属、原 PSD 分组或真实运动关系。",
+      "description": "长发主束与细束的粒度对照：莉尔的 PNG 图集中同时存在完整长发片与较细发片；用于比较主束和细节颗粒度，避免用小碎发代表整个侧发。图集不能证明原 PSD 层级或运动职责。",
+      "sources": {
+        "atlas": {
+          "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\lier\\修女莉尔免费版.8192\\texture_00.png",
+          "sha256": "41134fc02b7f1a34f48bc88a24518ff609d1ab0f998b49adffbf839fc8509988"
+        },
+        "portrait": {
+          "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\lier\\icon.png",
+          "sha256": "3fd5d0945b1645db0d0b0a69b4098db2a1921374d766dbdf4ce4664f6bc85ad1"
+        }
+      },
+      "pieces": [
+        {
+          "title": "完整长发片 A",
+          "path": "pieces/lier-01.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            976,
+            8,
+            1100,
+            430
+          ],
+          "sourceCrop": [
+            5051,
+            68,
+            5579,
+            2141
+          ],
+          "size": [
+            528,
+            2073
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "6f6a8eaaaaf548b91a32b2ea26c72eabfe3d151365a4013efa44bd657c3d551a"
+        },
+        {
+          "title": "完整长发片 B",
+          "path": "pieces/lier-02.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            1340,
+            8,
+            1415,
+            430
+          ],
+          "sourceCrop": [
+            6884,
+            68,
+            7186,
+            2153
+          ],
+          "size": [
+            302,
+            2085
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "0e8ca7593b3534f3e18d541302f0b725b29a4246fed72e15dd49dbf3bd005344"
+        },
+        {
+          "title": "较细长发片",
+          "path": "pieces/lier-03.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            1408,
+            8,
+            1488,
+            365
+          ],
+          "sourceCrop": [
+            7297,
+            73,
+            7583,
+            1788
+          ],
+          "size": [
+            286,
+            1715
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "8300a24c9f780ac0d6bc0a1e2c0ae835921eb04c2d34bd64a193fee9095b4bfc"
+        },
+        {
+          "title": "横置完整长片",
+          "path": "pieces/lier-04.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            0,
+            906,
+            425,
+            1030
+          ],
+          "sourceCrop": [
+            60,
+            4694,
+            2142,
+            5222
+          ],
+          "size": [
+            2082,
+            528
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "7bcc1d4a50b2245ac30ee63856ae445199210acb443dffc835a0dcf8a5c80a45"
+        },
+        {
+          "title": "细小弧形发片",
+          "path": "pieces/lier-05.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            1230,
+            210,
+            1336,
+            380
+          ],
+          "sourceCrop": [
+            6497,
+            1172,
+            6777,
+            1874
+          ],
+          "size": [
+            280,
+            702
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "78992110f49e6f7a7185117bca11dfdb951207862baf936edccd773e0f59c6a7"
+        },
+        {
+          "title": "细长弯曲发片",
+          "path": "pieces/lier-06.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            0,
+            1020,
+            418,
+            1190
+          ],
+          "sourceCrop": [
+            59,
+            5382,
+            2107,
+            6015
+          ],
+          "size": [
+            2048,
+            633
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "271522a666361b24f06e00527950b8943a5cd319aa5975fe996c865d24e6e6fa"
+        }
+      ],
+      "sameScaleWithinBoard": 0.20623501199040767
+    },
+    {
+      "id": "cherry-cake-angel",
+      "title": "长卷发整束与多尖发面",
+      "name": "樱桃蛋糕天使",
+      "filename": "03-长卷发整束与多尖发面-樱桃蛋糕天使.png",
+      "use": [
+        "观察长卷发片由端部到端部的连续形体，不按弯曲次数截成小节。",
+        "多条内部纹理、多个卷尖或分叉可以保留在同一个完整发面中。",
+        "是否继续拆为 group，仍看内部独立控制需求，不按尖端数量决定。"
+      ],
+      "limit": "仅确认图集内的连续发片；独立的纹理岛不自动等于独立运动实体，也不代表原树深。",
+      "description": "长卷发整束与多尖发面：樱桃蛋糕天使的 PNG 展示连续长卷发、带多条纹理及多个尖端的完整发面。用于避免按长度、弯折或发梢数量机械细分；不能由图集推断真实绑定和层序。",
+      "sources": {
+        "atlas": {
+          "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\cherry-cake-angel\\A樱桃蛋糕天使免费版.8192\\texture_00.png",
+          "sha256": "c70c9218344b5820171ddb8a182de11faae1287e3b3850bb987cb0719a55e167"
+        },
+        "atlas1": {
+          "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\cherry-cake-angel\\A樱桃蛋糕天使免费版.8192\\texture_01.png",
+          "sha256": "5fba28df18a2deab67b3bad3fdf37fa9b9f70525915629facadb7dca65b54298"
+        },
+        "portrait": {
+          "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\cherry-cake-angel\\icon.png",
+          "sha256": "f6cde0d9596b677746ddbe8951be7a736bd86ba60e3b61a44d67ec9455f476f1"
+        }
+      },
+      "pieces": [
+        {
+          "title": "连续长卷发 A",
+          "path": "pieces/cherry-cake-angel-01.png",
+          "sourceKey": "atlas1",
+          "crop1600": [
+            8,
+            4,
+            142,
+            520
+          ],
+          "sourceCrop": [
+            64,
+            65,
+            670,
+            2618
+          ],
+          "size": [
+            606,
+            2553
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "ad1e91c2649067f3472ae254c81e39b37c0d90c81211e6f63dc1379fbc1c86d8"
+        },
+        {
+          "title": "连续长卷发 B",
+          "path": "pieces/cherry-cake-angel-02.png",
+          "sourceKey": "atlas1",
+          "crop1600": [
+            142,
+            3,
+            260,
+            590
+          ],
+          "sourceCrop": [
+            763,
+            75,
+            1300,
+            2957
+          ],
+          "size": [
+            537,
+            2882
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "97b8093dbf4a17df0715234289a4d38dff5063a41c9a0b8bb3a8f51c0c61a7bc"
+        },
+        {
+          "title": "连续长卷发 C",
+          "path": "pieces/cherry-cake-angel-03.png",
+          "sourceKey": "atlas1",
+          "crop1600": [
+            262,
+            4,
+            371,
+            620
+          ],
+          "sourceCrop": [
+            1395,
+            71,
+            1867,
+            3121
+          ],
+          "size": [
+            472,
+            3050
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "2897e6e55d4d9f1d97c26ac71c64bbbbdd9b81d88aa8016eb99b015faee5b607"
+        },
+        {
+          "title": "宽发面与多尖末端",
+          "path": "pieces/cherry-cake-angel-04.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            905,
+            6,
+            1130,
+            644
+          ],
+          "sourceCrop": [
+            4651,
+            128,
+            5719,
+            3229
+          ],
+          "size": [
+            1068,
+            3101
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "afb0eb000b8a05031650511c660768f64d378b852697aa071d462b1ade1cfdae"
+        },
+        {
+          "title": "横置多尖发面",
+          "path": "pieces/cherry-cake-angel-05.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            3,
+            941,
+            635,
+            1117
+          ],
+          "sourceCrop": [
+            72,
+            4843,
+            3212,
+            5685
+          ],
+          "size": [
+            3140,
+            842
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "466bfad1d1313786d5b26ce612f779078d0aa4f0c43418a3a6e5574233b4ab2e"
+        },
+        {
+          "title": "纹理丰富的完整长束",
+          "path": "pieces/cherry-cake-angel-06.png",
+          "sourceKey": "atlas",
+          "crop1600": [
+            1149,
+            399,
+            1308,
+            1035
+          ],
+          "sourceCrop": [
+            5958,
+            2090,
+            6621,
+            5239
+          ],
+          "size": [
+            663,
+            3149
+          ],
+          "sourceBoundaryCheck": "no crossing at alpha >= 64",
+          "sha256": "e9239f5b533ed6b8fb0005b6035cebc7f5da9ecb0c1fee9d0427addd5b644c83"
+        }
+      ],
+      "sameScaleWithinBoard": 0.1365512861225786
+    }
+  ]
+}

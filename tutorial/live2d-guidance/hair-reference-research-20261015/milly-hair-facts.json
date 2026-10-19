@@ -1,0 +1,528 @@
+{
+  "source": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\milly\\Milly原画.psd",
+  "sourceSha256": "bb52e84765b55e9f3d992ccdcafca65e06755083cafefd3c313dc4f381698bd0",
+  "canvas": [
+    3200,
+    4800
+  ],
+  "sourceRecordsReparsed": true,
+  "hairNodes": [
+    {
+      "path": "/头发后/头发后",
+      "recordIndex": 1,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 432,
+        "left": 1323,
+        "bottom": 1176,
+        "right": 1877
+      },
+      "alphaBounds": [
+        1323,
+        432,
+        1877,
+        1176
+      ],
+      "children": []
+    },
+    {
+      "path": "/头发后/头发后侧",
+      "recordIndex": 2,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 426,
+        "left": 1254,
+        "bottom": 1129,
+        "right": 1943
+      },
+      "alphaBounds": [
+        1254,
+        426,
+        1943,
+        1129
+      ],
+      "children": []
+    },
+    {
+      "path": "/头发后",
+      "recordIndex": 3,
+      "kind": "group",
+      "directChildren": 2,
+      "storedBounds": {
+        "top": 0,
+        "left": 0,
+        "bottom": 0,
+        "right": 0
+      },
+      "alphaBounds": [
+        1254,
+        426,
+        1943,
+        1176
+      ],
+      "children": [
+        "/头发后/头发后侧",
+        "/头发后/头发后"
+      ]
+    },
+    {
+      "path": "/头部/头发前/前发/前发L",
+      "recordIndex": 143,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 402,
+        "left": 1597,
+        "bottom": 864,
+        "right": 1861
+      },
+      "alphaBounds": [
+        1597,
+        402,
+        1861,
+        864
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前发/前发R",
+      "recordIndex": 144,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 402,
+        "left": 1339,
+        "bottom": 857,
+        "right": 1653
+      },
+      "alphaBounds": [
+        1339,
+        402,
+        1653,
+        857
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前发/前发M",
+      "recordIndex": 145,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 442,
+        "left": 1490,
+        "bottom": 846,
+        "right": 1721
+      },
+      "alphaBounds": [
+        1490,
+        442,
+        1721,
+        846
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前发/前呆毛",
+      "recordIndex": 146,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 468,
+        "left": 1559,
+        "bottom": 762,
+        "right": 1744
+      },
+      "alphaBounds": [
+        1559,
+        468,
+        1744,
+        762
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前发",
+      "recordIndex": 147,
+      "kind": "group",
+      "directChildren": 4,
+      "storedBounds": {
+        "top": 0,
+        "left": 0,
+        "bottom": 0,
+        "right": 0
+      },
+      "alphaBounds": [
+        1339,
+        402,
+        1861,
+        864
+      ],
+      "children": [
+        "/头部/头发前/前发/前呆毛",
+        "/头部/头发前/前发/前发M",
+        "/头部/头发前/前发/前发R",
+        "/头部/头发前/前发/前发L"
+      ]
+    },
+    {
+      "path": "/头部/头发前/侧发/侧发L",
+      "recordIndex": 149,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 420,
+        "left": 1644,
+        "bottom": 1095,
+        "right": 2030
+      },
+      "alphaBounds": [
+        1644,
+        420,
+        2030,
+        1095
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/侧发/侧发L1",
+      "recordIndex": 150,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 686,
+        "left": 1932,
+        "bottom": 1038,
+        "right": 2042
+      },
+      "alphaBounds": [
+        1932,
+        686,
+        2042,
+        1038
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/侧发/侧发R",
+      "recordIndex": 151,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 417,
+        "left": 1173,
+        "bottom": 1092,
+        "right": 1538
+      },
+      "alphaBounds": [
+        1173,
+        417,
+        1538,
+        1092
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/侧发/侧发R1",
+      "recordIndex": 152,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 718,
+        "left": 1146,
+        "bottom": 1035,
+        "right": 1277
+      },
+      "alphaBounds": [
+        1146,
+        718,
+        1277,
+        1035
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/侧发",
+      "recordIndex": 153,
+      "kind": "group",
+      "directChildren": 4,
+      "storedBounds": {
+        "top": 0,
+        "left": 0,
+        "bottom": 0,
+        "right": 0
+      },
+      "alphaBounds": [
+        1146,
+        417,
+        2042,
+        1095
+      ],
+      "children": [
+        "/头部/头发前/侧发/侧发R1",
+        "/头部/头发前/侧发/侧发R",
+        "/头部/头发前/侧发/侧发L1",
+        "/头部/头发前/侧发/侧发L"
+      ]
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发L3",
+      "recordIndex": 155,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 696,
+        "left": 1771,
+        "bottom": 1172,
+        "right": 1906
+      },
+      "alphaBounds": [
+        1771,
+        696,
+        1906,
+        1172
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发L2",
+      "recordIndex": 156,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 535,
+        "left": 1802,
+        "bottom": 1102,
+        "right": 1959
+      },
+      "alphaBounds": [
+        1802,
+        535,
+        1959,
+        1102
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发L1",
+      "recordIndex": 157,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 411,
+        "left": 1592,
+        "bottom": 1117,
+        "right": 1910
+      },
+      "alphaBounds": [
+        1592,
+        411,
+        1910,
+        1117
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发L2上",
+      "recordIndex": 158,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 915,
+        "left": 1802,
+        "bottom": 1102,
+        "right": 1959
+      },
+      "alphaBounds": [
+        1802,
+        915,
+        1959,
+        1102
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发R3",
+      "recordIndex": 159,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 588,
+        "left": 1294,
+        "bottom": 1163,
+        "right": 1481
+      },
+      "alphaBounds": [
+        1294,
+        588,
+        1481,
+        1163
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发R2",
+      "recordIndex": 160,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 562,
+        "left": 1246,
+        "bottom": 1102,
+        "right": 1398
+      },
+      "alphaBounds": [
+        1246,
+        562,
+        1398,
+        1102
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发R1",
+      "recordIndex": 161,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 411,
+        "left": 1281,
+        "bottom": 1121,
+        "right": 1608
+      },
+      "alphaBounds": [
+        1281,
+        411,
+        1608,
+        1121
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发/前侧发R2上",
+      "recordIndex": 162,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 886,
+        "left": 1246,
+        "bottom": 1102,
+        "right": 1398
+      },
+      "alphaBounds": [
+        1246,
+        886,
+        1398,
+        1102
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/前侧发",
+      "recordIndex": 163,
+      "kind": "group",
+      "directChildren": 8,
+      "storedBounds": {
+        "top": 0,
+        "left": 0,
+        "bottom": 0,
+        "right": 0
+      },
+      "alphaBounds": [
+        1246,
+        411,
+        1959,
+        1172
+      ],
+      "children": [
+        "/头部/头发前/前侧发/前侧发R2上",
+        "/头部/头发前/前侧发/前侧发R1",
+        "/头部/头发前/前侧发/前侧发R2",
+        "/头部/头发前/前侧发/前侧发R3",
+        "/头部/头发前/前侧发/前侧发L2上",
+        "/头部/头发前/前侧发/前侧发L1",
+        "/头部/头发前/前侧发/前侧发L2",
+        "/头部/头发前/前侧发/前侧发L3"
+      ]
+    },
+    {
+      "path": "/头部/头发前/呆毛",
+      "recordIndex": 164,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 391,
+        "left": 1217,
+        "bottom": 683,
+        "right": 1603
+      },
+      "alphaBounds": [
+        1217,
+        391,
+        1603,
+        683
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前/发卡",
+      "recordIndex": 165,
+      "kind": "layer",
+      "directChildren": 0,
+      "storedBounds": {
+        "top": 704,
+        "left": 1795,
+        "bottom": 753,
+        "right": 1864
+      },
+      "alphaBounds": [
+        1795,
+        704,
+        1864,
+        753
+      ],
+      "children": []
+    },
+    {
+      "path": "/头部/头发前",
+      "recordIndex": 166,
+      "kind": "group",
+      "directChildren": 5,
+      "storedBounds": {
+        "top": 0,
+        "left": 0,
+        "bottom": 0,
+        "right": 0
+      },
+      "alphaBounds": [
+        1146,
+        391,
+        2042,
+        1172
+      ],
+      "children": [
+        "/头部/头发前/发卡",
+        "/头部/头发前/呆毛",
+        "/头部/头发前/前侧发",
+        "/头部/头发前/侧发",
+        "/头部/头发前/前发"
+      ]
+    }
+  ],
+  "comparisonCrop": [
+    1066,
+    322,
+    2122,
+    1256
+  ],
+  "pixelDecoding": {
+    "channels": "actual RGB and transparency channels",
+    "compression": "PSD raw / PackBits RLE",
+    "checks": "each decoded row length, channel byte count, normal blend, no masks/clipping",
+    "scope": "only actual hair layers; no Cubism deformation or physics validation"
+  },
+  "independentLocalPsds": 1,
+  "sourceUnchanged": true
+}

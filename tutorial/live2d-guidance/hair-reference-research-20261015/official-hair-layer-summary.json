@@ -1,0 +1,1814 @@
+[
+  {
+    "file": "haru_受付スーツ_インポート_t07.psd",
+    "sourceEvidence": "archived PSD layer inventory; original PSD not present locally",
+    "pixelLayers": 81,
+    "groups": 0,
+    "hairRows": [
+      {
+        "path": "/テール",
+        "name": "テール",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          817,
+          453,
+          1141,
+          914
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪",
+        "name": "後ろ髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          933,
+          204,
+          1467,
+          820
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際R",
+        "name": "生え際R",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          971,
+          327,
+          1124,
+          627
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際L",
+        "name": "生え際L",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1276,
+          327,
+          1429,
+          627
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪R",
+        "name": "横髪R",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          981,
+          605,
+          1020,
+          779
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪L",
+        "name": "横髪L",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1380,
+          605,
+          1419,
+          779
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/前髪",
+        "name": "前髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          994,
+          263,
+          1407,
+          641
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      }
+    ]
+  },
+  {
+    "file": "haru_受付スーツ_素材分け_t07.psd",
+    "sourceEvidence": "archived PSD layer inventory; original PSD not present locally",
+    "pixelLayers": 276,
+    "groups": 67,
+    "hairRows": [
+      {
+        "path": "/テール",
+        "name": "テール",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          817,
+          453,
+          1141,
+          914
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/テール/髪",
+        "name": "髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          818,
+          455,
+          1140,
+          913
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/テール/k",
+        "name": "k",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          818,
+          422,
+          1186,
+          950
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/テール/hi",
+        "name": "hi",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          813,
+          450,
+          1036,
+          928
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/テール/照り返し",
+        "name": "照り返し",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          897,
+          429,
+          1209,
+          1002
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/テール/線",
+        "name": "線",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          817,
+          453,
+          1141,
+          914
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪",
+        "name": "後ろ髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          933,
+          204,
+          1467,
+          820
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/後ろ髪/髪",
+        "name": "髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          934,
+          206,
+          1466,
+          820
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪/髪　影",
+        "name": "髪　影",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          929,
+          382,
+          1471,
+          820
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪/てっぺん　影",
+        "name": "てっぺん　影",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1162,
+          219,
+          1234,
+          239
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪/照り返し",
+        "name": "照り返し",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          937,
+          500,
+          1463,
+          820
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.SCREEN"
+      },
+      {
+        "path": "/後ろ髪/髪 hi",
+        "name": "髪 hi",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          907,
+          190,
+          1493,
+          425
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪/線",
+        "name": "線",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          933,
+          204,
+          1467,
+          820
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪/てっぺん",
+        "name": "てっぺん",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1116,
+          219,
+          1279,
+          248
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪/後ろ髪テール線",
+        "name": "後ろ髪テール線",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          938,
+          367,
+          1462,
+          483
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際R",
+        "name": "生え際R",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          971,
+          327,
+          1429,
+          627
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/生え際R/レイヤー 16",
+        "name": "レイヤー 16",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          971,
+          327,
+          1429,
+          627
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際R/レイヤー 35",
+        "name": "レイヤー 35",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          951,
+          534,
+          1449,
+          583
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際R/レイヤー 26",
+        "name": "レイヤー 26",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          985,
+          415,
+          1415,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際L",
+        "name": "生え際L",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          971,
+          327,
+          1429,
+          627
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/生え際L/レイヤー 16",
+        "name": "レイヤー 16",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          971,
+          327,
+          1429,
+          627
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際L/レイヤー 35",
+        "name": "レイヤー 35",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          951,
+          534,
+          1449,
+          583
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/生え際L/レイヤー 26",
+        "name": "レイヤー 26",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          985,
+          415,
+          1415,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪R",
+        "name": "横髪R",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          981,
+          605,
+          1419,
+          779
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/横髪R/レイヤー 33",
+        "name": "レイヤー 33",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          982,
+          612,
+          1418,
+          776
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪R/レイヤー 34",
+        "name": "レイヤー 34",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          957,
+          701,
+          1443,
+          813
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪R/レイヤー 32",
+        "name": "レイヤー 32",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          981,
+          605,
+          1419,
+          779
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪L",
+        "name": "横髪L",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          981,
+          605,
+          1419,
+          779
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/横髪L/レイヤー 33",
+        "name": "レイヤー 33",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          982,
+          612,
+          1418,
+          776
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪L/レイヤー 34",
+        "name": "レイヤー 34",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          957,
+          701,
+          1443,
+          813
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/横髪L/レイヤー 32",
+        "name": "レイヤー 32",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          981,
+          605,
+          1419,
+          779
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/前髪",
+        "name": "前髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          994,
+          263,
+          1407,
+          641
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/前髪/レイヤー 5",
+        "name": "レイヤー 5",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          994,
+          263,
+          1407,
+          638
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/前髪/レイヤー 31",
+        "name": "レイヤー 31",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          827,
+          436,
+          1556,
+          933
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.SCREEN"
+      },
+      {
+        "path": "/前髪/レイヤー 28",
+        "name": "レイヤー 28",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1026,
+          432,
+          1402,
+          661
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/前髪/レイヤー 27",
+        "name": "レイヤー 27",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          992,
+          291,
+          1419,
+          588
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/前髪/レイヤー 30",
+        "name": "レイヤー 30",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1001,
+          268,
+          1396,
+          641
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      }
+    ]
+  },
+  {
+    "file": "こはる_素材分け.psd",
+    "sourceEvidence": "archived PSD layer inventory; original PSD not present locally",
+    "pixelLayers": 162,
+    "groups": 45,
+    "hairRows": [
+      {
+        "path": "/_後ろ髪2",
+        "name": "_後ろ髪2",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          322,
+          163,
+          1278,
+          1317
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_後ろ髪2/レイヤー 82",
+        "name": "レイヤー 82",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          322,
+          163,
+          1273,
+          1317
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_後ろ髪2/レイヤー 85",
+        "name": "レイヤー 85",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          262,
+          8,
+          1301,
+          1462
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_後ろ髪2/レイヤー 17",
+        "name": "レイヤー 17",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          808,
+          558,
+          1278,
+          1275
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_後ろ髪",
+        "name": "_後ろ髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          317,
+          163,
+          1273,
+          1335
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_後ろ髪/レイヤー 82",
+        "name": "レイヤー 82",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          322,
+          163,
+          1273,
+          1317
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_後ろ髪/レイヤー 85",
+        "name": "レイヤー 85",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          262,
+          8,
+          1301,
+          1462
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_後ろ髪/レイヤー 17",
+        "name": "レイヤー 17",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          317,
+          579,
+          1225,
+          1335
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左",
+        "name": "後ろ髪はね_左",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          1020,
+          257,
+          1320,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 79",
+        "name": "レイヤー 79",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1020,
+          257,
+          1307,
+          618
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 81",
+        "name": "レイヤー 81",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1027,
+          321,
+          1404,
+          691
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 84",
+        "name": "レイヤー 84",
+        "kind": "pixel",
+        "visible": false,
+        "bbox": [
+          969,
+          246,
+          1151,
+          509
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 121",
+        "name": "レイヤー 121",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1039,
+          320,
+          1182,
+          593
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 18",
+        "name": "レイヤー 18",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1044,
+          262,
+          1320,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右",
+        "name": "後ろ髪はね_右",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          268,
+          242,
+          565,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 78",
+        "name": "レイヤー 78",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          281,
+          242,
+          565,
+          618
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 80",
+        "name": "レイヤー 80",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          196,
+          243,
+          598,
+          694
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 83",
+        "name": "レイヤー 83",
+        "kind": "pixel",
+        "visible": false,
+        "bbox": [
+          408,
+          245,
+          1129,
+          582
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 120",
+        "name": "レイヤー 120",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          424,
+          241,
+          563,
+          559
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 18",
+        "name": "レイヤー 18",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          268,
+          242,
+          530,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_髪影",
+        "name": "_髪影",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          481,
+          264,
+          1113,
+          666
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪",
+        "name": "_前髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          441,
+          186,
+          1155,
+          684
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_前髪/レイヤー 41",
+        "name": "レイヤー 41",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          441,
+          186,
+          1155,
+          667
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪/レイヤー 45",
+        "name": "レイヤー 45",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          365,
+          131,
+          1233,
+          746
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪/レイヤー 4",
+        "name": "レイヤー 4",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          493,
+          367,
+          1113,
+          684
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_左横髪",
+        "name": "_左横髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          998,
+          411,
+          1168,
+          697
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_左横髪/レイヤー 46",
+        "name": "レイヤー 46",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          998,
+          411,
+          1164,
+          685
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_左横髪/レイヤー 5",
+        "name": "レイヤー 5",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1002,
+          412,
+          1168,
+          697
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪",
+        "name": "_右横髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          413,
+          377,
+          580,
+          711
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_右横髪/レイヤー 47",
+        "name": "レイヤー 47",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          417,
+          431,
+          575,
+          700
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪/レイヤー 119",
+        "name": "レイヤー 119",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          429,
+          377,
+          580,
+          540
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪/レイヤー 5",
+        "name": "レイヤー 5",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          413,
+          435,
+          573,
+          711
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛",
+        "name": "_前髪毛",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          710,
+          196,
+          888,
+          334
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 58",
+        "name": "レイヤー 58",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          749,
+          214,
+          881,
+          307
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 48",
+        "name": "レイヤー 48",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          711,
+          196,
+          884,
+          330
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 57",
+        "name": "レイヤー 57",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          673,
+          181,
+          904,
+          377
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 21",
+        "name": "レイヤー 21",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          710,
+          198,
+          888,
+          334
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      }
+    ]
+  },
+  {
+    "file": "こはる_インポート.psd",
+    "sourceEvidence": "archived PSD layer inventory; original PSD not present locally",
+    "pixelLayers": 74,
+    "groups": 0,
+    "hairRows": [
+      {
+        "path": "/_後ろ髪2",
+        "name": "_後ろ髪2",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          691,
+          481,
+          1278,
+          1275
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_後ろ髪",
+        "name": "_後ろ髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          317,
+          505,
+          926,
+          1335
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左",
+        "name": "後ろ髪はね_左",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1020,
+          257,
+          1320,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右",
+        "name": "後ろ髪はね_右",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          268,
+          242,
+          565,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_髪影",
+        "name": "_髪影",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          481,
+          264,
+          1113,
+          666
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪",
+        "name": "_前髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          444,
+          189,
+          1153,
+          684
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_左横髪",
+        "name": "_左横髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          998,
+          411,
+          1168,
+          697
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪",
+        "name": "_右横髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          413,
+          380,
+          580,
+          711
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛",
+        "name": "_前髪毛",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          710,
+          196,
+          888,
+          334
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      }
+    ]
+  },
+  {
+    "file": "はると_素材分け.psd",
+    "sourceEvidence": "archived PSD layer inventory; original PSD not present locally",
+    "pixelLayers": 147,
+    "groups": 41,
+    "hairRows": [
+      {
+        "path": "/後ろ髪はね_左",
+        "name": "後ろ髪はね_左",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          1020,
+          257,
+          1320,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 79",
+        "name": "レイヤー 79",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1020,
+          257,
+          1307,
+          618
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 81",
+        "name": "レイヤー 81",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1027,
+          321,
+          1404,
+          691
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 84",
+        "name": "レイヤー 84",
+        "kind": "pixel",
+        "visible": false,
+        "bbox": [
+          969,
+          246,
+          1151,
+          509
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 121",
+        "name": "レイヤー 121",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1039,
+          320,
+          1182,
+          593
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_左/レイヤー 18",
+        "name": "レイヤー 18",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1044,
+          262,
+          1320,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右",
+        "name": "後ろ髪はね_右",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          268,
+          242,
+          565,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 78",
+        "name": "レイヤー 78",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          281,
+          242,
+          565,
+          618
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 80",
+        "name": "レイヤー 80",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          196,
+          243,
+          598,
+          694
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 83",
+        "name": "レイヤー 83",
+        "kind": "pixel",
+        "visible": false,
+        "bbox": [
+          408,
+          245,
+          1129,
+          582
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 120",
+        "name": "レイヤー 120",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          424,
+          241,
+          563,
+          559
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右/レイヤー 18",
+        "name": "レイヤー 18",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          268,
+          242,
+          530,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_髪影",
+        "name": "_髪影",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          481,
+          264,
+          1113,
+          666
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪",
+        "name": "_前髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          441,
+          186,
+          1155,
+          684
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_前髪/レイヤー 41",
+        "name": "レイヤー 41",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          441,
+          186,
+          1155,
+          667
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪/レイヤー 45",
+        "name": "レイヤー 45",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          365,
+          131,
+          1233,
+          746
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪/レイヤー 4",
+        "name": "レイヤー 4",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          493,
+          367,
+          1113,
+          684
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_左横髪",
+        "name": "_左横髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          998,
+          411,
+          1168,
+          697
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_左横髪/レイヤー 46",
+        "name": "レイヤー 46",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          998,
+          411,
+          1164,
+          685
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_左横髪/レイヤー 5",
+        "name": "レイヤー 5",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1002,
+          412,
+          1168,
+          697
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪",
+        "name": "_右横髪",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          413,
+          377,
+          580,
+          711
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_右横髪/レイヤー 47",
+        "name": "レイヤー 47",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          417,
+          431,
+          575,
+          700
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪/レイヤー 119",
+        "name": "レイヤー 119",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          429,
+          377,
+          580,
+          540
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪/レイヤー 5",
+        "name": "レイヤー 5",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          413,
+          435,
+          573,
+          711
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛",
+        "name": "_前髪毛",
+        "kind": "group",
+        "visible": true,
+        "bbox": [
+          710,
+          196,
+          888,
+          334
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.PASS_THROUGH"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 58",
+        "name": "レイヤー 58",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          749,
+          214,
+          881,
+          307
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 48",
+        "name": "レイヤー 48",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          711,
+          196,
+          884,
+          330
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 57",
+        "name": "レイヤー 57",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          673,
+          181,
+          904,
+          377
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛/レイヤー 21",
+        "name": "レイヤー 21",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          710,
+          198,
+          888,
+          334
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      }
+    ]
+  },
+  {
+    "file": "はると_インポート.psd",
+    "sourceEvidence": "archived PSD layer inventory; original PSD not present locally",
+    "pixelLayers": 70,
+    "groups": 0,
+    "hairRows": [
+      {
+        "path": "/後ろ髪はね_左",
+        "name": "後ろ髪はね_左",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          1020,
+          257,
+          1320,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/後ろ髪はね_右",
+        "name": "後ろ髪はね_右",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          268,
+          242,
+          565,
+          624
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_髪影",
+        "name": "_髪影",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          481,
+          264,
+          1113,
+          666
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪",
+        "name": "_前髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          444,
+          189,
+          1153,
+          684
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_左横髪",
+        "name": "_左横髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          998,
+          411,
+          1168,
+          697
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_右横髪",
+        "name": "_右横髪",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          413,
+          380,
+          580,
+          711
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      },
+      {
+        "path": "/_前髪毛",
+        "name": "_前髪毛",
+        "kind": "pixel",
+        "visible": true,
+        "bbox": [
+          710,
+          196,
+          888,
+          334
+        ],
+        "opacity": 255,
+        "blend_mode": "BlendMode.NORMAL"
+      }
+    ]
+  }
+]

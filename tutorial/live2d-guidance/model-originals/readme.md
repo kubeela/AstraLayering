@@ -2,7 +2,7 @@
 
 Windows 实际目录：`D:\Resources\workspace\AstraLayering\tutorial\live2d-guidance\model-originals\`。
 
-这里集中保存研究所用原件。原 ZIP 保持原字节；解压模型从既有 `../local-assets/` 复制，保留用户源文件。`local-assets` 是旧副本，本目录是当前统一入口。原件、作者许可原文、来包和审计文件全部由仓库根 `.gitignore` 排除；本目录仅本说明与原创元数据 [manifest.json](manifest.json) 允许跟踪。不要强制暂存或公开上传素材。
+这里集中保存研究所用原件。原 ZIP 保持原字节；解压模型从既有 `../local-assets/` 复制，保留用户源文件。`local-assets` 是旧副本，本目录是当前统一入口。2026-10-20 按用户要求，将三套解压模型的 35 个原文件、作者说明和两份原 ZIP 纳入 Git，供相关参考资料保存与复现。临时审计和来包目录继续忽略。旧 [manifest.json](manifest.json) 保留 2026-10-08 的原始核对记录，其中 git_policy 是当时状态；当前逐文件哈希与存储状态见 [layering-reference-inventory.json](../layering-reference-inventory.json)。
 
 ## 本机已完成 · 2026-10-08
 
@@ -12,7 +12,7 @@ Windows 实际目录：`D:\Resources\workspace\AstraLayering\tutorial\live2d-gui
 | Lier／修女莉尔 | `lier/` | 11 文件；moc3 与完整运行资源；无 PSD/cmo3/can3 | 作者及原链接未知；包内未找到独立许可，不因免费版名称推定可再分发 |
 | 樱桃蛋糕天使 | `cherry-cake-angel/` | 11 文件；moc3、两张纹理、运行配置和附带 motion；无 PSD/cmo3/can3 | 来源及作者未知；既有实际纹理研究记录未经许可不得上传、禁止转卖、仅限购买者等限制，免费版文件名不是许可 |
 
-运行包不等于可编辑 Cubism 工程。Milly 的 PSD 是分层原画，不代表已取得 cmo3。作者完整说明保存在忽略目录内，不复制进公开说明。
+运行包不等于可编辑 Cubism 工程。Milly 的 PSD 是分层原画，不代表已取得 cmo3。作者完整说明原文保存在受 Git 跟踪的 milly/米粒模型说明.txt，来源和限制描述保留。
 
 | 原 ZIP | 本机源路径 | 体积（字节） | SHA-256 |
 | --- | --- | --- | --- |
@@ -39,6 +39,6 @@ Windows 实际目录：`D:\Resources\workspace\AstraLayering\tutorial\live2d-gui
 
 2026-10-08 按当前 Library 技能对五个明确 ID 执行物化准备，得到授权引用与文件元数据。研究包首次下载报 `download failed`；对指定本机目录经相同助手做一次有界重试，明确报 `download failed with HTTP status 403`。没有生成可读的本机包，尚未执行身份扩展属性写入，因此当前阻点不是已证实的 `os.setxattr` 错误。已停止传输；其余四包没有另开绕过路线，也未从云端 `workspace_path` 假定本机存在。
 
-后续需恢复这些 Library 文件的受支持下载访问，再由消费端按当前技能物化并确认可读，校验包内 SHA-256、CRC、许可与安全路径。研究按哈希与已有文件合并；不同字节同名文件保留两版供核对，不覆盖。官方 ZIP 保留原字节并归入本目录；所有素材继续忽略。此任务只整理 Windows 本地路径，不上传素材、不提交或推送。
+后续需恢复这些 Library 文件的受支持下载访问，再由消费端按当前技能物化并确认可读，校验包内 SHA-256、CRC、许可与安全路径。研究按哈希与已有文件合并；不同字节同名文件保留两版供核对，不覆盖。官方 ZIP 保留原字节并归入本目录；这段为 2026-10-08 的原整理记录；2026-10-20 已取得的三套本机模型和两份原 ZIP 按本文首段纳入版本控制。
 
 指定 `C:\Users\22129\Downloads\natori_arm_research_2026-10-02_publication.zip` 未找到；没有搜索无关 Downloads 子目录。现有研究入口见 [本机研究总索引](../../live2d-research/local-index.md)。

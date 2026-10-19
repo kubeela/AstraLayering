@@ -1,0 +1,32 @@
+{
+  "recovered_on": "2026-10-20",
+  "origin": "tutorial/live2d-guidance/local-assets/hair-reference-templates",
+  "workflow_copy": "workflow-next/part-layering/prompts/groups/hair/references",
+  "images": [
+    {
+      "file": "01-发区组织与前侧发拆分-Milly.png",
+      "sha256": "7c4c2cd0b72c8434550e0fe7289f011067a5166013cc109a5a93fc13a4a35b56",
+      "bytes": 406773,
+      "status": "recovered-original; copied byte-for-byte; not reconstructed"
+    },
+    {
+      "file": "02-长发主束与细束的粒度对照-莉尔.png",
+      "sha256": "6dd6c9c226fce596d8347f9b992166a56a03e0980426133945e3d96a7c12de55",
+      "bytes": 279697,
+      "status": "recovered-original; copied byte-for-byte; not reconstructed"
+    },
+    {
+      "file": "03-长卷发整束与多尖发面-樱桃蛋糕天使.png",
+      "sha256": "7667b9c5ed2b5012d2199cf13862fee0f83d51501842a45dcd0109e3411de732",
+      "bytes": 331716,
+      "status": "recovered-original; copied byte-for-byte; not reconstructed"
+    }
+  ],
+  "original_builder_sha256": "2afda07eb37ea33544febdc0c503605cf749a464c251b6dac1b0afe3184fc534",
+  "rendering": {
+    "python": "3.12.14",
+    "Pillow": "12.3.0",
+    "font": "C:/Windows/Fonts/msyh.ttc",
+    "font_sha256": "d79c55e68b1131eea0cc1c47be4f572d964f28c682e143db2ad09c1e4cb07a3f"
+  }
+}

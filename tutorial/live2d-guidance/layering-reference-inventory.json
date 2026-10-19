@@ -1,0 +1,1042 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-20",
+  "path_base": "repository-root",
+  "policy": "Related reference materials are versioned under tutorial. Existing workflow images and reference configuration are unchanged. Originals retained.",
+  "files": [
+    {
+      "path": "tutorial/live2d-guidance/finger-reference-materials/complete-fingers.png",
+      "bytes": 298292,
+      "sha256": "528db2606985dbb217ddd71106f19a2daac795bf323bf00b74c51b69ba046762",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1850,
+          900
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/finger-reference-materials/extraction-availability.json",
+      "bytes": 359,
+      "sha256": "cc2f2e8899a96196895cdea5fd7a7a4dfdc058aa73a669258f00ebde6833cc30"
+    },
+    {
+      "path": "tutorial/live2d-guidance/finger-reference-materials/README.md",
+      "bytes": 949,
+      "sha256": "5413715c2feebf201b1fa738caafadacc8259ae9c9b5fd6684e4ea1d77961d06"
+    },
+    {
+      "path": "tutorial/live2d-guidance/finger-reference-materials/sources.json",
+      "bytes": 7828,
+      "sha256": "366d119a48633b3ef5f047f80caa4e36531cafc1fb6d605bbb70906911200881"
+    },
+    {
+      "path": "tutorial/live2d-guidance/finger-reference-materials/workflow-reference.original.md",
+      "bytes": 1095,
+      "sha256": "d823bf8f9fae9722161933475195a4700712beb5691719d0e015e2f0d8bb8f4c"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/archive-evidence/braid_root_study.json",
+      "bytes": 7631,
+      "sha256": "6399a23e287c82bade01ff015ab056c7f97de59eed747414aa6e0cc17734bfb4"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/archive-evidence/layer_inventory.json",
+      "bytes": 284729,
+      "sha256": "64864a5b6cb865b72307774f5471fa3f5e7943cc0e2dfab3d510373356b40f9a"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/archive-evidence/Live2D_PSD_观察笔记_文字版.txt",
+      "bytes": 4945,
+      "sha256": "0de61cbf2ca07cc26147a57478edc95441eecdaa33b781318220f19923ef416d"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/archive-evidence/model-originals-manifest.json",
+      "bytes": 51438,
+      "sha256": "e471dc4d93cdfd5b5405b78341cb01e5b7c5c1d997a9fd6ecb3c1fe582714dc4"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/assessment.json",
+      "bytes": 4001,
+      "sha256": "10966398e5f1c25eac951b7072584002ae11784b39ed45f389c07469853fc1f6"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/index.html",
+      "bytes": 6945,
+      "sha256": "438e5ff4940e660d5086db3969ab97edd35f770b55897dc7e5b70933b268019b"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/lier-crop-context.png",
+      "bytes": 274369,
+      "sha256": "32ceb4bb69e4e2dea87de98569480e66f82cba0ee191a849fa5e165a6dd10e5f",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1500,
+          810
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/lier-png-evidence/icon.png",
+      "bytes": 109343,
+      "sha256": "aac59e68a133431470717855e0408f7b98c5e14fb081d6ff6a11938548bb585c",
+      "image": {
+        "format": "PNG",
+        "size": [
+          300,
+          300
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/lier-png-evidence/manifest.json",
+      "bytes": 1896,
+      "sha256": "3e6755b349f5f605c1f6e6bfa61bab02e72a3e5024b3aa61dcddc12acb1c2889"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/lier-png-evidence/texture_00.png",
+      "bytes": 1319702,
+      "sha256": "56eb2101e05d93d391cadbc9c84636b43dcb72f3cdd39d9f008c97be4d37a8b6",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2200,
+          2200
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/lier-png-evidence/texture_01.png",
+      "bytes": 1495930,
+      "sha256": "009193529633328ab3719c855db29db633b63c5de0ba899189aa4c1f9a20e27a",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2200,
+          2200
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/lier-png-evidence/texture_02.png",
+      "bytes": 21383,
+      "sha256": "9a67679f8469bd8adcf2a0e90107674dbf5893297efb892c4793526eefef000d",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2200,
+          2200
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-hair-facts.json",
+      "bytes": 11378,
+      "sha256": "9c9a8eeb4bc8ddba299fc0154c077f03f836b9abc2bf4aee964f23f5a7107d47"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-hair-regions.png",
+      "bytes": 143819,
+      "sha256": "e815eb03f60c887e50d1191e0211d546d2f515271f8e2a164fa17855dcd2d093",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          530
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-reference.png",
+      "bytes": 250691,
+      "sha256": "b658abd9ff1bc6fcbd094a3cefc3e31a3e3c593686bc3aa5953e41aab9193e04",
+      "image": {
+        "format": "PNG",
+        "size": [
+          800,
+          1200
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-0-children.png",
+      "bytes": 48957,
+      "sha256": "bb685b8a69a34b2b7d4adda442ba3ca4178bff3ba7d65536c8a69d3f5a6c89b3",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          530
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-0-overlay.png",
+      "bytes": 366606,
+      "sha256": "c05495232fcafb673296534dbd82274d95fa32a711ce70d4a8c1366a7e5314dc",
+      "image": {
+        "format": "PNG",
+        "size": [
+          780,
+          690
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-0.png",
+      "bytes": 185885,
+      "sha256": "1b561d7e2ef682226f2618f4fcdc6dd91b99b1cfcd511707dcd495ef4ca6a554",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1056,
+          934
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-1-children.png",
+      "bytes": 83281,
+      "sha256": "06d12f0ee3ce906acacf7939aae3dc0ecfd94aa5362ce5baf3c903c9344def48",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          1060
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-1-overlay.png",
+      "bytes": 367505,
+      "sha256": "7bd470586141e1e893b6846d59f22087e1d56cd37b47ac4d20aae5ac6e8581bb",
+      "image": {
+        "format": "PNG",
+        "size": [
+          780,
+          690
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-1.png",
+      "bytes": 242142,
+      "sha256": "e985d1df00468daa0feafa4f520dabbc034a39522b831e71b2e1d710b8540e07",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1056,
+          934
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-2-children.png",
+      "bytes": 42472,
+      "sha256": "7051b32c5061b00003c46dd5c366087b8cd14fcdb8f0270fca75389472eaeb91",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          530
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-2-overlay.png",
+      "bytes": 374700,
+      "sha256": "d479fde145c02e963fda7e1ba054c4fa2d07c2b850f55b77a9ea7eb0e3fd3e4b",
+      "image": {
+        "format": "PNG",
+        "size": [
+          780,
+          690
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-2.png",
+      "bytes": 150495,
+      "sha256": "063062d69df4c2a0dfd64a7995a0a1b96c9b95c54916180c9ed48e3fee8a8916",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1056,
+          934
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-3-children.png",
+      "bytes": 61478,
+      "sha256": "46392a4504933da33e3d5b155a035a0f89f0440699a0b00c55697489b38485ea",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          530
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-3-overlay.png",
+      "bytes": 347699,
+      "sha256": "ed1842f3e07087a92d73fd8868a273534a0e26d69b863d88354fd972c5250b2d",
+      "image": {
+        "format": "PNG",
+        "size": [
+          780,
+          690
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/milly-region-3.png",
+      "bytes": 235257,
+      "sha256": "c68672749da1b34b6fc4a38cb3316a1606a3f8baa81a23aca4c67926197dc072",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1056,
+          934
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/official-hair-layer-summary.json",
+      "bytes": 40447,
+      "sha256": "b4ec67f3f25eedacc978dfb4d303720a1862b24ac7d8fe3796a9dd2ef7e7bd9a"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/README.md",
+      "bytes": 559,
+      "sha256": "9483077b0bacd5619d5df39bb9711a876a8aa141b014058eb2ec0ec64eac7e5d"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/template-source-previews/angel-icon.png",
+      "bytes": 102624,
+      "sha256": "fe02e08411b16822805f24287ef74f76074af5014c69a0de529fdfc3bc75eb66",
+      "image": {
+        "format": "PNG",
+        "size": [
+          300,
+          300
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/template-source-previews/angel-texture_00.png",
+      "bytes": 1281095,
+      "sha256": "ac1e5be73f749bc78c8e79fcd61a267c00ae219a2982a3abc3d8ece59ae300e3",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2000,
+          2000
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/template-source-previews/angel-texture_01.png",
+      "bytes": 1655087,
+      "sha256": "44a5738bd738fc4a9b6777e9a432e58b9572d97bb2cf7eaf5f751ee7b236512b",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2000,
+          2000
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-research-20261015/template-source-previews/milly-texture_00.png",
+      "bytes": 1025223,
+      "sha256": "c212037e3b24401469011b2b77cad61fc19d9e0f791c6aea68fd31c1c0e49a21",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2000,
+          2000
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/01-发区组织与前侧发拆分-Milly.png",
+      "bytes": 406773,
+      "sha256": "7c4c2cd0b72c8434550e0fe7289f011067a5166013cc109a5a93fc13a4a35b56",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          1505
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/02-长发主束与细束的粒度对照-莉尔.png",
+      "bytes": 279697,
+      "sha256": "6dd6c9c226fce596d8347f9b992166a56a03e0980426133945e3d96a7c12de55",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          1505
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/03-长卷发整束与多尖发面-樱桃蛋糕天使.png",
+      "bytes": 331716,
+      "sha256": "7667b9c5ed2b5012d2199cf13862fee0f83d51501842a45dcd0109e3411de732",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1560,
+          1505
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/build-hair-reference-templates.original.py",
+      "bytes": 11993,
+      "sha256": "2afda07eb37ea33544febdc0c503605cf749a464c251b6dac1b0afe3184fc534"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/build.py",
+      "bytes": 13551,
+      "sha256": "4fb9d3beade44acdb67fb634e8b0099015631ab6e885c042e6acbdc3629d82d1"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/index.html",
+      "bytes": 6965,
+      "sha256": "86a703b40ef6c41c36156e435e14fde4dc0f81313f1e82310dbcf91c79fb61d8"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/manifest.json",
+      "bytes": 15760,
+      "sha256": "f5c9a11786bdb773d0bfdaa8146e2bd9d4f63cbe1bb28cfca1ae1517df11852d"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/cherry-cake-angel-01.png",
+      "bytes": 287558,
+      "sha256": "ad1e91c2649067f3472ae254c81e39b37c0d90c81211e6f63dc1379fbc1c86d8",
+      "image": {
+        "format": "PNG",
+        "size": [
+          606,
+          2553
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/cherry-cake-angel-02.png",
+      "bytes": 329934,
+      "sha256": "97b8093dbf4a17df0715234289a4d38dff5063a41c9a0b8bb3a8f51c0c61a7bc",
+      "image": {
+        "format": "PNG",
+        "size": [
+          537,
+          2882
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/cherry-cake-angel-03.png",
+      "bytes": 353702,
+      "sha256": "2897e6e55d4d9f1d97c26ac71c64bbbbdd9b81d88aa8016eb99b015faee5b607",
+      "image": {
+        "format": "PNG",
+        "size": [
+          472,
+          3050
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/cherry-cake-angel-04.png",
+      "bytes": 475348,
+      "sha256": "afb0eb000b8a05031650511c660768f64d378b852697aa071d462b1ade1cfdae",
+      "image": {
+        "format": "PNG",
+        "size": [
+          1068,
+          3101
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/cherry-cake-angel-05.png",
+      "bytes": 759347,
+      "sha256": "466bfad1d1313786d5b26ce612f779078d0aa4f0c43418a3a6e5574233b4ab2e",
+      "image": {
+        "format": "PNG",
+        "size": [
+          3140,
+          842
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/cherry-cake-angel-06.png",
+      "bytes": 554569,
+      "sha256": "e9239f5b533ed6b8fb0005b6035cebc7f5da9ecb0c1fee9d0427addd5b644c83",
+      "image": {
+        "format": "PNG",
+        "size": [
+          663,
+          3149
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/lier-01.png",
+      "bytes": 172020,
+      "sha256": "6f6a8eaaaaf548b91a32b2ea26c72eabfe3d151365a4013efa44bd657c3d551a",
+      "image": {
+        "format": "PNG",
+        "size": [
+          528,
+          2073
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/lier-02.png",
+      "bytes": 78391,
+      "sha256": "0e8ca7593b3534f3e18d541302f0b725b29a4246fed72e15dd49dbf3bd005344",
+      "image": {
+        "format": "PNG",
+        "size": [
+          302,
+          2085
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/lier-03.png",
+      "bytes": 96864,
+      "sha256": "8300a24c9f780ac0d6bc0a1e2c0ae835921eb04c2d34bd64a193fee9095b4bfc",
+      "image": {
+        "format": "PNG",
+        "size": [
+          286,
+          1715
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/lier-04.png",
+      "bytes": 148990,
+      "sha256": "7bcc1d4a50b2245ac30ee63856ae445199210acb443dffc835a0dcf8a5c80a45",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2082,
+          528
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/lier-05.png",
+      "bytes": 39267,
+      "sha256": "78992110f49e6f7a7185117bca11dfdb951207862baf936edccd773e0f59c6a7",
+      "image": {
+        "format": "PNG",
+        "size": [
+          280,
+          702
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/lier-06.png",
+      "bytes": 113191,
+      "sha256": "271522a666361b24f06e00527950b8943a5cd319aa5975fe996c865d24e6e6fa",
+      "image": {
+        "format": "PNG",
+        "size": [
+          2048,
+          633
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/milly-01.png",
+      "bytes": 102198,
+      "sha256": "e2775916cc92865f36b668e5641bd7e035587fda6a5835d1c5dcfff10b1e6c9c",
+      "image": {
+        "format": "PNG",
+        "size": [
+          489,
+          654
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/milly-02.png",
+      "bytes": 198149,
+      "sha256": "80ccf7798fe64ebbf0d90666c0c2b6f2321723de1c66cd14b4ceaa0f3f67ca9a",
+      "image": {
+        "format": "PNG",
+        "size": [
+          606,
+          620
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/milly-03.png",
+      "bytes": 72366,
+      "sha256": "18a6d5521bfb180a57fe729beadc9c38e7eb5885df71e5c77b69dbde710cc88f",
+      "image": {
+        "format": "PNG",
+        "size": [
+          321,
+          593
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/milly-04.png",
+      "bytes": 82710,
+      "sha256": "08011051df5906c959e306275af8aa965ca1ab5504c805bcdb5b67c46728c229",
+      "image": {
+        "format": "PNG",
+        "size": [
+          274,
+          622
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/milly-05.png",
+      "bytes": 72833,
+      "sha256": "32d74ee591eff710705b9f89dff884f10fbae56a530086c01c702d7afd5bcc23",
+      "image": {
+        "format": "PNG",
+        "size": [
+          204,
+          355
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/pieces/milly-06.png",
+      "bytes": 57912,
+      "sha256": "8db195dcfa274165f6b9c6f7b88bd1682e35204808cd0f0b545478036a8be943",
+      "image": {
+        "format": "PNG",
+        "size": [
+          277,
+          367
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/creation-records.json",
+      "bytes": 40214,
+      "sha256": "2b8e6340dab2dfbf2c810d6e4a6a5c435f230e9475b504e8ea921d8e911de08d"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/local-copy-manifest.original.json",
+      "bytes": 4333,
+      "sha256": "e6dbcce1d7570e643dc858e5f97b75a5cd083ffbc7830f4a956fcf411ef2a38f"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/manifest.original.json",
+      "bytes": 16031,
+      "sha256": "9ac3645b5c620b01a87517a6cc4903e84cb8ec76e1dc7e1fbda8bddfe693619f"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/README.md",
+      "bytes": 1887,
+      "sha256": "a7177db4fecadf8bae6cc6b7c0c6f2c81c0f08ad2dea8f163b910e272e60401f"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/scripts/build-hair-reference-templates.py",
+      "bytes": 11993,
+      "sha256": "2afda07eb37ea33544febdc0c503605cf749a464c251b6dac1b0afe3184fc534"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/scripts/research-milly-hair.py",
+      "bytes": 9459,
+      "sha256": "f8cb081609dfbcf895470a85cd3e7c9604c0718f51858ca8a7e0e880e1780109"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/scripts/summarize-hair-research.mjs",
+      "bytes": 6955,
+      "sha256": "dd86b08cde9789c6b099b17336a8558c890002a13626200d6a68a0051789e36f"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/provenance/scripts/verify-hair-reference-assets.mjs",
+      "bytes": 2055,
+      "sha256": "02de4912f083e31cc8f89d28ccdddbb2e7025ad9ea80b52bc0dab6569fddfad3"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/README.md",
+      "bytes": 2881,
+      "sha256": "dd9b6cfec1bdccb38eae192ac57d734d5a5b1731c646803bcb1ee849f84787db"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/recovery.json",
+      "bytes": 1334,
+      "sha256": "2047b7f2be4d0927c80d416b9038f14ddd5d9965cdd990766358aaade6564bba"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/reference-images.json",
+      "bytes": 986,
+      "sha256": "08c314cd05d79ec44dc8d60bae997346939fd0aebb961a6c107271fffc596ca1"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/requirements.txt",
+      "bytes": 16,
+      "sha256": "31864229d2dd8a2c4feddb7cc04e989ea6643d88158090384a80f69f951052a8"
+    },
+    {
+      "path": "tutorial/live2d-guidance/hair-reference-templates/research-milly-hair.original.py",
+      "bytes": 9459,
+      "sha256": "f8cb081609dfbcf895470a85cd3e7c9604c0718f51858ca8a7e0e880e1780109"
+    },
+    {
+      "path": "tutorial/live2d-guidance/layering-references.md",
+      "bytes": 1629,
+      "sha256": "f518e9e7e94df91a4ecdfbfcf4aacbfdb7cb794294465718f603680bb02e76b2"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/archives/A樱桃蛋糕天使免费版.zip",
+      "bytes": 68357883,
+      "sha256": "411f1a554c66c35b4aa43a2e860b2e7e492be876be0522cdd02d64b6d1eb7da1"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/archives/归档.zip",
+      "bytes": 68562527,
+      "sha256": "dbdba19c2e25eaa163cb6812f6bfe1c5365b986c9d889a1867ab9efc37521a21"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.8192/texture_00.png",
+      "bytes": 31387887,
+      "sha256": "c70c9218344b5820171ddb8a182de11faae1287e3b3850bb987cb0719a55e167",
+      "image": {
+        "format": "PNG",
+        "size": [
+          8192,
+          8192
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.8192/texture_01.png",
+      "bytes": 39462035,
+      "sha256": "5fba28df18a2deab67b3bad3fdf37fa9b9f70525915629facadb7dca65b54298",
+      "image": {
+        "format": "PNG",
+        "size": [
+          8192,
+          8192
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.cdi3.json",
+      "bytes": 22886,
+      "sha256": "55434a102c25a17584d62e732daaf25be6c8e5e69abaa02c9dd548d9010599ae"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.moc3",
+      "bytes": 11236160,
+      "sha256": "8950424a756a49b2fc71c63907bdf417a5ef5e9b9c2e68414aee45908efbcab4"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.model3.json",
+      "bytes": 537,
+      "sha256": "3420918e32f2bc947c5840c68161b491c6eb39b4f5fe19609bb47f0bef1240b9"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.physics3.json",
+      "bytes": 111998,
+      "sha256": "54d8c2887ef18df03772775789c77e17a690b6065dd9b08223a42aa26ba56e97"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.vtube.json",
+      "bytes": 16966,
+      "sha256": "a24af200f9111b61773517a5d6d5198099672b3407b8d252b07e7d317d79fa69"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/A樱桃蛋糕天使免费版.xyplugin.json",
+      "bytes": 91,
+      "sha256": "d9e56d0bd21215df54a964dbdc43f4c08d81d5374edcfd4d45a49bd93ff47679"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/icon.png",
+      "bytes": 102368,
+      "sha256": "f6cde0d9596b677746ddbe8951be7a736bd86ba60e3b61a44d67ec9455f476f1",
+      "image": {
+        "format": "PNG",
+        "size": [
+          300,
+          300
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/items_pinned_to_model.json",
+      "bytes": 449,
+      "sha256": "34efd49aaa3140fd4d29164b78ff65610f2028010d1e8eee47f423d9e7736d95"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/cherry-cake-angel/循环动画.motion3.json",
+      "bytes": 1352,
+      "sha256": "4f779f8d3c4d6ec2554ad13f14eeb911d70964085917e54c84dc5ae673b748ee"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/icon.png",
+      "bytes": 109305,
+      "sha256": "3fd5d0945b1645db0d0b0a69b4098db2a1921374d766dbdf4ce4664f6bc85ad1",
+      "image": {
+        "format": "PNG",
+        "size": [
+          300,
+          300
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/items_pinned_to_model.json",
+      "bytes": 447,
+      "sha256": "ebc20b626f2723fb31c74f8dfcda310eefa43a731c96f0167c0cf06193f1652d"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.8192/texture_00.png",
+      "bytes": 33575516,
+      "sha256": "41134fc02b7f1a34f48bc88a24518ff609d1ab0f998b49adffbf839fc8509988",
+      "image": {
+        "format": "PNG",
+        "size": [
+          8192,
+          8192
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.8192/texture_01.png",
+      "bytes": 21925563,
+      "sha256": "2ac987e4146b4f886c3c115cf54185f8011158560d98567fc13783f74c25a3b4",
+      "image": {
+        "format": "PNG",
+        "size": [
+          8192,
+          8192
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.8192/texture_02.png",
+      "bytes": 113579,
+      "sha256": "dc89fdc82ead71fc4c1f61b284eeeb8f4f9c59126d9e0403d16ff8054c5c5579",
+      "image": {
+        "format": "PNG",
+        "size": [
+          4096,
+          4096
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.cdi3.json",
+      "bytes": 19742,
+      "sha256": "ca43ba9d39dce01c3a0534c49e8cdb7610508b4196eaf1c18d2475eaa9675e77"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.moc3",
+      "bytes": 11525696,
+      "sha256": "7b96dd9f5dfe21d1b447709d7f4bc51a4e527e31762361929666afcffc3bcc14"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.model3.json",
+      "bytes": 550,
+      "sha256": "9fcaea1599e6ad31e608ea8d876bee3426a793a9b68d59277257d3ed291d9abc"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.physics3.json",
+      "bytes": 117064,
+      "sha256": "f38282b897253050b1f50b12a8e12bb5a9e1098f56cd2eb2ed260a0d2268ba8f"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.vtube.json",
+      "bytes": 17483,
+      "sha256": "740372d1706edc1bc7d722dc6a2b49c035f9ff71bcd993f17c09f6463af127b5"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/lier/修女莉尔免费版.xyplugin.json",
+      "bytes": 91,
+      "sha256": "d9e56d0bd21215df54a964dbdc43f4c08d81d5374edcfd4d45a49bd93ff47679"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/manifest.json",
+      "bytes": 60015,
+      "sha256": "d5fc89eb07b9129df1ee35fd697c748993ccc04615c449cef12225cbb1d6ced0"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/expressions/E01Angry.exp3.json",
+      "bytes": 339,
+      "sha256": "accb4b290d05331e53c1b727cf2418f730aaa7ee1dde35ebb7bddec1de2bdb04"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/expressions/E02Smile.exp3.json",
+      "bytes": 333,
+      "sha256": "001e4d30bb10a89f8712e8cc6bcc45196657be36edffe600128e66446cfaacb1"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/expressions/E03Sad.exp3.json",
+      "bytes": 338,
+      "sha256": "ea4671ba759090bab1ae5266e11cf0584ae5b1d05b2d93a6ba15e93a53231818"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/Milly.4096/texture_00.png",
+      "bytes": 4917169,
+      "sha256": "4c8266b59bfc6828127392d588f07ad3bfa561059457b985057885cfcd317c31",
+      "image": {
+        "format": "PNG",
+        "size": [
+          4096,
+          4096
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/Milly.cdi3.json",
+      "bytes": 25257,
+      "sha256": "3fbf599e5ec0be1a9b31d34171f9ce36cbc29a47a327ee6001f64b0c4ab142ef"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/Milly.moc3",
+      "bytes": 1106432,
+      "sha256": "060317412fe9743d2a025eddd790ff92ac52537756e36e4385411548fd2e70f7"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/milly.model3.json",
+      "bytes": 695,
+      "sha256": "6276724a587404ab58cb1395cd15b09631d48c312eb2b35a3af55d1034ddc0bf"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/Milly.physics3.json",
+      "bytes": 77581,
+      "sha256": "93b6650b9d685001b0c7a7963d1999d46043086692707fa8a23b0e4fc75d8b10"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/Milly.png",
+      "bytes": 402756,
+      "sha256": "03cd10098415c463e1118e05efbbf96a9be5a727e050109a8548525f6b8a08c0",
+      "image": {
+        "format": "PNG",
+        "size": [
+          800,
+          800
+        ],
+        "mode": "RGB"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/MillyRuntime/P01AntiPose.exp3.json",
+      "bytes": 127,
+      "sha256": "9b093c1b44e0678eefcf365063e1324955f0c55ca44f5e903440ff0ec3df7da1"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/Milly原画.png",
+      "bytes": 2876246,
+      "sha256": "c8fe7692f0df44689acf51fb3987049b04f643cba8e9c11659d55a55037d57a8",
+      "image": {
+        "format": "PNG",
+        "size": [
+          3200,
+          4800
+        ],
+        "mode": "RGBA"
+      }
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/Milly原画.psd",
+      "bytes": 14090078,
+      "sha256": "bb52e84765b55e9f3d992ccdcafca65e06755083cafefd3c313dc4f381698bd0"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/milly/米粒模型说明.txt",
+      "bytes": 1575,
+      "sha256": "2bf5f12042c11c2a080ef11b42e6be67dda82f513ec4863091b2ba88d2d94ae0"
+    },
+    {
+      "path": "tutorial/live2d-guidance/model-originals/readme.md",
+      "bytes": 5422,
+      "sha256": "27a150e95a69affa7b66ad71b241b880f40fe68de742ffa323444ff8ba8f922f"
+    },
+    {
+      "path": "tutorial/live2d-guidance/tools/verify_layering_references.py",
+      "bytes": 2127,
+      "sha256": "b2fdc4266034bc1def6ae65521c620b332268454629fccc8dbe96f1c408bc7c6"
+    }
+  ],
+  "totals": {
+    "files": 117,
+    "bytes": 326313936,
+    "decodable_pngs": 55
+  },
+  "gaps": [
+    "Finger board: ten separate extracted crops and the original layout/extraction script were not found; board and source metadata are preserved.",
+    "Previously named cloud Library packages not obtained locally remain unavailable; not counted as saved."
+  ]
+}

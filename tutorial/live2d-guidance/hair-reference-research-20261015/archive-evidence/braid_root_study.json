@@ -1,0 +1,193 @@
+{
+  "study_id": "astralayering_20261005_braid_root_mask",
+  "focus_zh": "麻花辫根部接合的补纹理与反向蒙版轮廓同步",
+  "observations": [
+    {
+      "id": "O1",
+      "kind": "observed",
+      "frames": [
+        "frames_02_17_1",
+        "frames_02_17_2",
+        "frames_02_17_3"
+      ],
+      "finding_zh": "开头展示完整角色在不同头部姿态下的外观，双辫上端与后发共同形成发型。",
+      "limits_zh": "是多个姿态画面，未取得参数端点数值，不能据此认证完整九轴覆盖或所有中间态无瑕疵。"
+    },
+    {
+      "id": "O2",
+      "kind": "observed_caption_and_visual",
+      "frames": [
+        "frames24_36_1",
+        "frame25_full",
+        "frames24_36_2"
+      ],
+      "finding_zh": "字幕要求将后脑勺线与色分离；把转头将显露的辫根纹理补出来；在后脑勺周围绘制较大片的反向蒙版。单独移开辫子时，上端保留延伸的着色与内部线条。",
+      "limits_zh": "只见成品部件及移位展示，没有绘制笔刷过程；不能恢复真实PSD图层数、上色步骤或精确补画像素量。"
+    },
+    {
+      "id": "O3",
+      "kind": "observed",
+      "frames": [
+        "frames24_36_3",
+        "frames24_36_4",
+        "frame40"
+      ],
+      "finding_zh": "画面分别选择头部着色区与其外侧包围形网格；外侧网格的内边沿贴近头部上缘。",
+      "limits_zh": "360p无法可靠读出全部ArtMesh名称、Clipping ID及属性；仅确认外观和选择范围，不声称解析了绑定对象、层序或蒙版依赖图。"
+    },
+    {
+      "id": "O4",
+      "kind": "observed_caption",
+      "frames": [
+        "frames24_36_4",
+        "frame40"
+      ],
+      "finding_zh": "作者明确把反向蒙版、后脑勺线、后脑勺色的轮廓布点一致视为理想做法；本例轮廓简单，所以其略简化的做法视觉上仍可接受。",
+      "limits_zh": "这是作者本例判断，不是实际误差测量，也不是所有网格内部顶点都必须一致的证明。"
+    },
+    {
+      "id": "O5",
+      "kind": "observed_caption",
+      "frames": [
+        "frames46_69_1",
+        "frames46_69_2"
+      ],
+      "finding_zh": "作者提醒该思路可能不适合特别复杂的麻花辫，只提供一种简单拆分思路。简介同样没有宣称比其他做法更优。",
+      "limits_zh": "没有给出复杂度阈值或横向对照实验，不能推出层数、性能或制作时间优势。"
+    },
+    {
+      "id": "O6",
+      "kind": "observed_caption_and_visual",
+      "frames": [
+        "frames46_69_3",
+        "frames46_69_4",
+        "frames46_69_5"
+      ],
+      "finding_zh": "末段显示辫子/后发在多种变形状态下的外观；字幕建议在九轴制作时调整辫子网格点，以加强体积感。",
+      "limits_zh": "未取得工程和参数曲线；不能把这些画面当作逐辫节独立摇摆、物理测试或可编辑模型验证。"
+    }
+  ],
+  "inferences": [
+    {
+      "id": "I1",
+      "kind": "inferred",
+      "basis": [
+        "O2",
+        "O3",
+        "O4"
+      ],
+      "finding_zh": "该案例最可迁移的问题是辫根与后脑勺的接合。分开线、色与遮挡控制面，可能使外轮廓、内部纹理和可见区域分别调整；具体层序仍须在工程中确认。",
+      "limits_zh": "功能分工解释，并非恢复作者的真实图层树。"
+    },
+    {
+      "id": "I2",
+      "kind": "inferred",
+      "basis": [
+        "O2",
+        "O4"
+      ],
+      "finding_zh": "只补底色不一定够。若转头会露出新的辫面，纹理走向和线条接续也属于补全内容，应按预期显露范围决定，而不是把整条辫子逐节拆得更细。",
+      "limits_zh": "不要求所有麻花辫都保持整体；独立摆动或前后穿插改变时仍可能需更细部件。"
+    },
+    {
+      "id": "I3",
+      "kind": "inferred",
+      "basis": [
+        "O3",
+        "O4"
+      ],
+      "finding_zh": "三条相关边界在默认姿态重合还不充分。若形变时独立漂移，裁切可能吃掉应有发面，或放出轮廓外纹理；应检查共有边上的点对应及中间姿态。",
+      "limits_zh": "因果方向由原创几何试验辅助验证；并未在作者工程或AstraLayering目标立绘上复现。"
+    },
+    {
+      "id": "I4",
+      "kind": "inferred",
+      "basis": [
+        "O5",
+        "O6"
+      ],
+      "finding_zh": "选择这种方案的代价是增加蒙版与边界同步维护。轮廓越复杂、可见辫面变化越大，简化的整束处理越需要回到具体画面验证。",
+      "limits_zh": "未测量性能、制作时长或形变上限，不能承诺节省成本。"
+    }
+  ],
+  "proposed_target_tests": [
+    {
+      "id": "T1",
+      "title_zh": "辫根补画独显",
+      "basis": [
+        "O2"
+      ],
+      "procedure_zh": "暂时移开后脑勺遮挡，检查辫根是否有连续底色、线条和发纹方向。",
+      "acceptance_zh": "不能出现原可见边硬截止或另一部件残边。",
+      "status": "proposed_not_executed_on_target_art"
+    },
+    {
+      "id": "T2",
+      "title_zh": "三轮廓的共同边界",
+      "basis": [
+        "O3",
+        "O4"
+      ],
+      "procedure_zh": "分别显示后脑勺线、色与蒙版；标记共有边上的对应位置，并逐个比较。",
+      "acceptance_zh": "先看轮廓位置与对应关系，不盲目复制全部内部布点。",
+      "status": "proposed_not_executed_on_target_art"
+    },
+    {
+      "id": "T3",
+      "title_zh": "组合姿态和中间态",
+      "basis": [
+        "O1",
+        "O4",
+        "O6"
+      ],
+      "procedure_zh": "检查正面、左右转、抬低头，以及左右转与抬低头组合；每条路径加中间样本。",
+      "acceptance_zh": "辫根不突断，头顶无窜出的纹理，轮廓线不与色块分离。",
+      "status": "proposed_not_executed_on_target_art"
+    },
+    {
+      "id": "T4",
+      "title_zh": "反向蒙版的作用方向",
+      "basis": [
+        "O3"
+      ],
+      "procedure_zh": "先确认被裁切对象与蒙版ID，再做小范围移动观察保留区和删除区。",
+      "acceptance_zh": "必须能解释哪一片被隐藏；不因名称含反向就猜测对象关系。",
+      "status": "proposed_not_executed_on_target_art"
+    },
+    {
+      "id": "T5",
+      "title_zh": "复杂发型反例",
+      "basis": [
+        "O5"
+      ],
+      "procedure_zh": "用本角色最大可见辫面和最强交叠变化检查整束方案。",
+      "acceptance_zh": "若内部前后关系要改变或独立摆动要求冲突，再细分；不按统一层数下结论。",
+      "status": "proposed_not_executed_on_target_art"
+    },
+    {
+      "id": "T6",
+      "title_zh": "运行目标一致性",
+      "basis": [
+        "O3"
+      ],
+      "procedure_zh": "若后续进入绑定阶段，核对编辑器目标与导出版本，并在实际运行端检查蒙版。",
+      "acceptance_zh": "反向蒙版需SDK4.0/Cubism4.0或更新目标；本批不实现绑定。",
+      "status": "proposed_not_executed_on_target_art"
+    }
+  ],
+  "unknowns": [
+    "实际ArtMesh与Clipping ID映射",
+    "准确PSD层级与层数",
+    "三片真实draw order",
+    "蒙版不透明度与隐藏开关设置",
+    "真实拓扑与变形器父子关系",
+    "所有运动端点及插值质量",
+    "复杂麻花辫泛化能力"
+  ],
+  "scope": {
+    "generic_modified": false,
+    "target_art_modified": false,
+    "repository_committed_or_pushed": false,
+    "user_computer_used": false
+  }
+}
