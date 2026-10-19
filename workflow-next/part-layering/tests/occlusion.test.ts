@@ -2,12 +2,12 @@ import assert from 'node:assert/strict';
 import { readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { artifactPath, readJson } from '../artifact-facts.ts';
-import { GroupStore, writeAtomic } from '../groups.ts';
-import { runLayering } from '../layering.ts';
-import type { OcclusionContext } from '../layering-types.ts';
-import { planPartOcclusion } from '../occlusion-agent.ts';
-import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from '../occlusion-plan.ts';
+import { artifactPath, readJson } from '../../shared/part/artifact-facts.ts';
+import { GroupStore, writeAtomic } from '../../shared/part/groups.ts';
+import { runLayering } from '../../shared/part/layering.ts';
+import type { OcclusionContext } from '../../shared/part/layering-types.ts';
+import { planPartOcclusion } from '../../shared/part/occlusion-agent.ts';
+import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from '../../shared/part/occlusion-plan.ts';
 import { fixture, workingMerger, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;

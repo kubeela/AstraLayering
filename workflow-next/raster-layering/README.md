@@ -22,18 +22,18 @@
 
 ```bash
 cd workflow-next/raster-layering
-pnpm install
+pnpm --dir .. install --frozen-lockfile
 
 # 首次启动
-pnpm start --name test --input ../part-layering/.run/test --krita /path/to/krita
+pnpm start --name test --input part-layering --krita /path/to/krita
 
 # 以后启动同一任务，只需要名字
 pnpm start --name test
 ```
 
-任务固定保存到 **本模块的 `.run/<name>/`**，不随 shell 的工作目录改变。`--name` 为单个目录名，支持中文、字母、数字、点、下划线和短横线，以字母或数字开头。输入和 Krita 的相对路径仍相对调用方工作目录解析。
+任务固定保存到 **`workflow-next/.run/<name>/raster-layering/`**，不随 shell 的工作目录改变。`--name` 为单个目录名，支持中文、字母、数字、点、下划线和短横线，以字母或数字开头。输入和 Krita 的相对路径统一从 `workflow-next/.run/<name>/` 解析。
 
-`--input` 通常传入 `part-layering/.run/test`，程序自动使用 `test/parts/`；直接传入 `test/parts` 也可以，不会重复追加 `parts`。首次启动将 `parts/`、已有的 `references/`、`groups.json`、`occlusion.json` 和 `preview.svg` 复制到任务内的 `input/`，同时记录原输入位置。符号链接会复制实际内容。输入副本和配置全部就绪后才发布任务目录，复制中断不会留下可被误用的半份输入。
+`--input` 通常传入 `part-layering`，程序自动使用同任务的 `part-layering/parts/`；直接传入 `part-layering/parts` 或绝对路径也可以，不会重复追加 `parts`。首次启动将 `parts/`、已有的 `references/`、`groups.json`、`occlusion.json` 和 `preview.svg` 复制到任务内的 `input/`，同时记录原输入位置。符号链接会复制实际内容。输入副本和配置全部就绪后才发布任务目录，复制中断不会留下可被误用的半份输入。
 
 续跑使用已保存的输入，不依赖原目录继续存在，也不覆盖副本。再次显式传入 `--input` 时，只校验是否为原先绑定的位置；要改用另一份输入或重新导入源文件，请使用新的 `--name`。
 
@@ -46,7 +46,7 @@ pnpm start --name test
 pnpm start --krita /path/to/krita --check-krita
 
 # 查看首次执行的完整提示词和计划
-pnpm start --name test --input ../part-layering/.run/test --krita /path/to/krita --dry-run
+pnpm start --name test --input part-layering --krita /path/to/krita --dry-run
 
 # 查看已有任务下一次启动的计划
 pnpm start --name test --dry-run
@@ -59,7 +59,7 @@ pnpm start --name test --dry-run
 ## 文件与交付
 
 ```text
-workflow-next/raster-layering/.run/test/
+workflow-next/.run/test/raster-layering/
   run.json
   input/
     parts/
@@ -120,7 +120,7 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 
 进度只看正式 Markdown 文件，不在 `run.json` 中增加 review 状态或计数。review 报告第一行为 `结论：通过` 或 `结论：需要修复`；正式 repair 报告第一行为 `结论：已修复`。报告内容决定是结束还是修复，文件是否存在决定对应环节是否执行完成。
 
-报告先写同名 `.tmp` 暂存文件，模型回合成功、结论与正文有效、必要交付文件检查通过后，由程序原子发布为正式 Markdown。第二步首次绘制的 `report.md` 也按此方式发布，用来区分“继续初次绘制”和“开始 review / 修复”。暂停在 review 阶段时不会重新执行初次绘制；暂停在修复阶段时不会重跑已经完成的 review。reviewer 调用失败后的重试仍使用新会话。
+报告先写同名 `.tmp` 暂存文件，模型回合成功、结论与正文有效、必要交付文件检查通过后，由程序原子发布为正式 Markdown。第二步首次绘制的 `report.md` 也按此方式发布，用来区分“继续初次绘制”和“开始 review / 修复”。暂停在 review 阶段时不会重新执行初次绘制；暂停在修复阶段时不会重跑已经完成的 review。reviewer 的临时服务错误在本次检查的同一会话内自动重试；进程退出后重新开始尚未完成的检查，使用新会话。
 
 在停止当前进程后，删除某份正式 review / repair Markdown，下次启动就从该环节继续，清理后续 review / repair 报告，保留第二步工程与原绘制 thread；已有后续步骤目录同时失效。删除整个 `step02/.completed` 仍沿用原有规则：重置第二步及后续步骤，并开启新绘制 thread。
 
@@ -145,11 +145,11 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 
 ```bash
 # 从第一步重跑：清空 step01 及所有后续步骤目录
-rm .run/test/step01/.completed
+rm ../.run/test/raster-layering/step01/.completed
 pnpm start --name test
 
 # 从第二步重跑：保留 step01 与 input
-rm .run/test/step02/.completed
+rm ../.run/test/raster-layering/step02/.completed
 pnpm start --name test
 ```
 
@@ -163,13 +163,15 @@ pnpm start --name test
 
 ## 代码入口与验证
 
-- [run.ts](run.ts)：参数解析、安装检查入口和中断信号。
-- [krita.ts](krita.ts)：只检查明确提供的 Krita。
-- [input.ts](input.ts)：解析 `parts/`，保存输入副本。
-- [steps.ts](steps.ts)：顺序步骤、三步模型配置，以及正文后的运行信息。
-- [agent.ts](agent.ts)：官方 SDK 的 `startThread`、`resumeThread`、`runStreamed` 和回合结果处理。
-- [run-store.ts](run-store.ts)：任务配置、标记读取、输入初始化和级联重置。
-- [workflow.ts](workflow.ts)：前置检查、顺序执行、共享会话与交付检查。
-- [review.ts](review.ts)：读取 Markdown 进度，调度独立 reviewer 与原会话修复，原子发布报告。
+- [run.ts](run.ts)：本管线入口；参数解析、安装检查入口和中断信号由 [共享 CLI](../shared/raster/cli.ts) 处理。
+- [krita.ts](../shared/raster/krita.ts)：只检查明确提供的 Krita。
+- [input.ts](../shared/raster/input.ts)：解析 `parts/`，保存输入副本。
+- [steps.ts](steps.ts)：三步模型配置与交付要求；[共享步骤模块](../shared/raster/steps.ts) 附加正文后的运行信息。
+- [agent.ts](../shared/raster/agent.ts)：官方 SDK 的 `startThread`、`resumeThread`、`runStreamed` 和回合结果处理。
+- [run-store.ts](../shared/raster/run-store.ts)：任务配置、标记读取、输入初始化和级联重置。
+- [workflow.ts](../shared/raster/workflow.ts)：前置检查、顺序执行、共享会话与交付检查。
+- [review.ts](../shared/raster/review.ts)：读取 Markdown 进度，调度独立 reviewer 与原会话修复，原子发布报告。
 
 验证命令为 `pnpm check` 和 `pnpm test`。定向测试模拟 SDK 事件，使用实际步骤提示词，覆盖输入副本、名字与路径、中断续跑、标记重跑、跨步骤会话与模型、第二步实际输入输出和合成 PNG 必需交付、review / 修复完成后进入第三步，以及清理中断恢复，不调用付费模型。使用 SDK 0.161.0；参考 [Codex SDK 文档](https://developers.openai.com/codex/sdk/)及依赖随包提供的 README 和类型声明。
+
+共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。

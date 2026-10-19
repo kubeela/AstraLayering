@@ -2,21 +2,21 @@
 
 读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，再进行边缘修画与最多两轮 review。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
 
-本目录独立持有从 `raster-layering` 复制的 TypeScript 调度、输入快照、会话及标记恢复代码，不导入原流程实现。仅有两步，绘制与 reviewer 均使用 `gpt-6-astra / xhigh`。
+顺序调度、输入快照、会话及标记恢复使用 `../shared/raster/` 的公共实现；本目录保留衣服步骤定义和提示词。仅有两步，绘制与 reviewer 均使用 `gpt-6-astra / xhigh`。
 
 ## 启动
 
 需要 Node 24.12+、pnpm、已安装的 Krita，以及能提供绘制所需工具的外部 Codex 环境。在仓库根目录执行：
 
 ```bash
-pnpm --dir workflow-next/clothing-raster-layering install --frozen-lockfile
-pnpm --dir workflow-next/clothing-raster-layering start --name test --input ../clothing-part-layering/.run/test --krita /path/to/krita
+pnpm --dir workflow-next install --frozen-lockfile
+pnpm --dir workflow-next/clothing-raster-layering start --name test --input clothing-part-layering --krita /path/to/krita
 
 # 续跑使用已保存的输入、Krita 路径和绘制会话
 pnpm --dir workflow-next/clothing-raster-layering start --name test
 ```
 
-`--input` 传分件运行根目录即可，自动使用其中的 `parts/`；也接受直接传 `parts/`。上述 `pnpm --dir` 会切换工作目录，所以输入相对本模块，也可直接使用绝对路径。首次将 `parts/`、参考图、分组、深度表和预览保存到任务的 `input/`。开始前应完成上游全部分件及深度规划；不要把 `--max-depth` 暂停后的部分结果作为成品输入。
+`--input` 传分件运行根目录即可，自动使用其中的 `parts/`；也接受直接传 `parts/`。相对输入统一从 `workflow-next/.run/<name>/` 解析，也可直接使用绝对路径。首次将 `parts/`、参考图、分组、深度表和预览保存到任务的 `input/`。开始前应完成上游全部分件及深度规划；不要把 `--max-depth` 暂停后的部分结果作为成品输入。
 
 `--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。已保存任务可显式更新 `--krita`；换输入应使用新名字。
 
@@ -36,7 +36,7 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 ## 文件与续跑
 
 ```text
-workflow-next/clothing-raster-layering/.run/test/
+workflow-next/.run/test/clothing-raster-layering/
   run.json
   input/
     parts/
@@ -72,7 +72,7 @@ workflow-next/clothing-raster-layering/.run/test/
 先停止当前进程，再删除标记触发重跑。例如从第二步重新制作：
 
 ```bash
-rm workflow-next/clothing-raster-layering/.run/test/step02/.completed
+rm workflow-next/.run/test/clothing-raster-layering/step02/.completed
 pnpm --dir workflow-next/clothing-raster-layering start --name test
 ```
 
@@ -85,8 +85,10 @@ pnpm --dir workflow-next/clothing-raster-layering check
 pnpm --dir workflow-next/clothing-raster-layering test
 ```
 
-[steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](workflow.ts) 顺序执行，[run-store.ts](run-store.ts) 管理配置和标记，[review.ts](review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
+[steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
 
 自动测试模拟 SDK 响应，覆盖输入快照、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
 
 现已完成 [2026-10-19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。通用 step01／深度协议与可选压缩功能尚未改造，不能将本案例的外部恢复视为当前工作流自动能力。
+
+共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。

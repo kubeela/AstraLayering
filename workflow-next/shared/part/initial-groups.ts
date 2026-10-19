@@ -1,0 +1,65 @@
+import { toolDefinition } from '../codex/tool-config.ts';
+import { partProfile } from './profile.ts';
+import { readFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+import type { CodexAgents } from '../codex/agents.ts';
+import { createBitmapTool } from './bitmap-tool.ts';
+import { GroupStore, normalizeGroups } from './groups.ts';
+import { textResult, type FunctionTool } from '../codex/function-tools.ts';
+import type { InitialContext, InitialGrouping } from './layering-types.ts';
+
+function decodeInitialGrouping(value: unknown, subjects: readonly string[]): InitialGrouping {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('首次分组 JSON 须为对象');
+  const raw = value as Record<string, unknown>;
+  if (!Array.isArray(raw.groups) || !raw.groups.length || Object.keys(raw).some(key => !['subject', 'groups'].includes(key))) {
+    throw new Error('首次分组必须包含非空的 groups 数组，且只包含组');
+  }
+  const groups = raw.groups.map((group: unknown) => {
+    if (!group || typeof group !== 'object' || Array.isArray(group)) throw new Error('初始组必须是对象');
+    const item = group as Record<string, unknown>;
+    if (typeof item.name !== 'string' || !/^[a-z][a-z0-9_]*$/.test(item.name) ||
+        !Array.isArray(item.groups) || item.groups.length || Object.keys(item).some(key => !['name', 'groups', 'note'].includes(key)) ||
+        (item.note !== undefined && item.note !== null && typeof item.note !== 'string')) {
+      throw new Error('初始组必须使用 snake_case 名称，只拆一层，不包含 part 或制作进度');
+    }
+    return { id: item.name, name: item.name, ...(typeof item.note === 'string' ? { note: item.note } : {}) };
+  });
+  if (!subjects.includes(String(raw.subject))) throw new Error(`首次分组的 subject 必须为 ${subjects.join(' 或 ')}`);
+  normalizeGroups(groups);
+  return { groups, subject: raw.subject as InitialGrouping['subject'] };
+}
+
+export async function recognizeInitialGroups(
+  context: InitialContext, agents: Pick<CodexAgents, 'run'>,
+): Promise<InitialGrouping> {
+  const profile = partProfile(context);
+  const prompt = await readFile(join(profile.promptsDirectory, '4-初始分组.md'), 'utf8');
+  const store = context.store ?? await GroupStore.open(context.directory, profile.promptsDirectory);
+  const reference = resolve(context.directory, context.references.baseSubject);
+  let submitted = false;
+  const writeGroups: FunctionTool = {
+    ...toolDefinition('write_groups', profile.toolsDirectory),
+    async execute(value, signal) {
+      signal.throwIfAborted();
+      const result = decodeInitialGrouping(value, profile.subjects);
+      await store.update(document => {
+        signal.throwIfAborted();
+        if (document.groups.length) throw new Error('已有分组，不能覆盖；请继续现有进度');
+        document.groups = normalizeGroups(result.groups);
+        document.subject = result.subject;
+        document.merge = { status: 'pending' };
+      });
+      submitted = true;
+      return textResult({ path: store.path, ids: result.groups.map(group => group.id) });
+    },
+  };
+  await agents.run({
+    name: '首次分组识别', cwd: context.directory,
+    images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...(profile.originalReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalReference }] : [])] : undefined,
+    prompt: `${prompt}\n本次运行目录：${context.directory}\n${profile.referenceLabel}：${reference}\n分组文件：${store.path}\n`,
+    tools: [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups],
+  });
+  if (!submitted) throw new Error('首次分组未通过 write_groups 保存');
+  const saved = store.snapshot();
+  return { subject: saved.subject, groups: saved.groups.map(({ groups, steps, ...seed }) => seed) };
+}

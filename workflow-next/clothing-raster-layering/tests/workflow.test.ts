@@ -1,15 +1,17 @@
+import { pipelineDirectory } from '../../shared/paths.ts';
+const runDirectory = (name: string) => pipelineDirectory(name, 'clothing-raster-layering');
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
-import type { AgentRequest, StepResult } from '../agent.ts';
-import { resolvePartInput } from '../input.ts';
+import type { AgentRequest, StepResult } from '../../shared/raster/agent.ts';
+import { resolvePartInput } from '../../shared/raster/input.ts';
 import { parseRunArguments } from '../run.ts';
-import { runDirectory } from '../run-store.ts';
+
 import { steps } from '../steps.ts';
-import { runWorkflow } from '../workflow.ts';
+import { runWorkflow } from '../run.ts';
 
 const completed: StepResult = { status: 'completed', summary: 'fixture' };
 const preflight = async (executable: string) => ({ executable, version: 'fixture' });
@@ -23,7 +25,7 @@ async function fixture(t: TestContext) {
   await writeFile(join(source, 'parts/back.svg'), 'back');
   await writeFile(join(source, 'references/clothing.png'), 'clothing fixture');
   await writeFile(join(source, 'groups.json'), '{"groups":[]}');
-  return { source, output: join(runsDirectory, 'test'), options: { name: 'test', input: source, krita: process.execPath }, deps: { runsDirectory, preflight } };
+  return { source, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options: { name: 'test', input: source, krita: process.execPath }, deps: { runsDirectory, preflight } };
 }
 async function deliver(request: AgentRequest, thread = request.threadId ?? 'drawing-1'): Promise<StepResult> {
   if (request.prompt.startsWith('你负责对第二步交付')) {
@@ -41,7 +43,7 @@ async function deliver(request: AgentRequest, thread = request.threadId ?? 'draw
 
 test('independent run directory, parts path normalization, and external-only provider configuration', async t => {
   const f = await fixture(t);
-  assert.equal(runDirectory('test'), fileURLToPath(new URL('../.run/test', import.meta.url)));
+  assert.equal(runDirectory('test'), fileURLToPath(new URL('../../.run/test/clothing-raster-layering', import.meta.url)));
   assert.deepEqual(await resolvePartInput(f.source), await resolvePartInput(join(f.source, 'parts')));
   assert.equal(parseRunArguments(['--name', 'test']).name, 'test');
   assert.throws(() => parseRunArguments(['--name', 'test', '--provider-config', 'secret.json']), /Unknown option/);

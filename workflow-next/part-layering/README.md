@@ -1,6 +1,6 @@
 # part-layering
 
-包含参考准备、严格按层推进的分组流程和 Codex agent 调度。需要 Node 24.12+，先运行 `pnpm install` 并完成 Codex 登录。参考准备使用官方 SDK，自定义函数工具使用同版本 App Server。参考准备、首次分组、轮廓绘制、review、整层去重、正面遮挡补全及直属 group/part 分析已接入；所有节点完成后由程序合并为 preview.svg，最后由 agent 规划并逐件检查遮挡层级，独立保存 occlusion.json。
+包含参考准备、严格按层推进的分组流程和 Codex agent 调度。需要 Node 24.12+，先在 `workflow-next` 运行 `pnpm install` 并完成 Codex 登录。参考准备使用官方 SDK，自定义函数工具使用同版本 App Server。参考准备、首次分组、轮廓绘制、review、整层去重、正面遮挡补全及直属 group/part 分析已接入；所有节点完成后由程序合并为 preview.svg，最后由 agent 规划并逐件检查遮挡层级，独立保存 occlusion.json。
 
 统一入口是 `pnpm start --name <运行名> [--image <角色图片路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`，程序使用当前 Codex 登录配置。组任务不设数量限制，按树的层级依赖进入队列；所有步骤共享的 agent 调用默认最多 3 个，用 `--jobs 2` 或 `-j 2` 调整。`--agents` / `-a` 是同一上限的兼容别名，不另设限制。
 
@@ -17,19 +17,19 @@ for await (const event of events) {
 }
 ```
 
-默认流程首次启动传入 `--image`，原图会复制到 `.run/<运行名>/references/original.<原扩展名>`。续跑只需 `--name`，不依赖原图之前的外部路径。省略 `--groups` 时检查参考输出，缺少哪一步就执行哪一步；全部存在时不调用 preparation agent。显式 `--groups` 只读取已有参考，缺失直接报错。
+默认流程首次启动传入 `--image`，原图会复制到 `workflow-next/.run/<运行名>/part-layering/references/original.<原扩展名>`。续跑只需 `--name`，不依赖原图之前的外部路径。省略 `--groups` 时检查参考输出，缺少哪一步就执行哪一步；全部存在时不调用 preparation agent。显式 `--groups` 只读取已有参考，缺失直接报错。
 
-参考准备完成后，同一入口进入 layering。省略 `--groups` 对应 `null` 输入，先读取 `.run/<运行名>/groups.json`：实际已有组时直接复用并继续进度；实际组为空时才调用首次分组接口，不另存首次完成标记。
+参考准备完成后，同一入口进入 layering。省略 `--groups` 对应 `null` 输入，先读取 `workflow-next/.run/<运行名>/part-layering/groups.json`：实际已有组时直接复用并继续进度；实际组为空时才调用首次分组接口，不另存首次完成标记。
 
 显式 `--groups` 只选择本次运行已有树中的组及其子组，不创建新组，也不导入外部说明或完成状态。空选择、未知组、错误父子关系和缺少前置参考均报错。所选组的祖先及前面各层必须完整结束；同层去重已存在时可以单独继续所选分支。若整层去重尚未完成，须完整运行这一层，程序不会暗中启动或修改未选分支。
 
 正式流程见 [layering-workflow.md](docs/layering-workflow.md)。一层取整棵树中同深度的组：先层内并行绘制、review 和返修；全部结束后统一去重；再层内并行执行补形、自检和子组分析。当前层全部结束后才启动下一层。
 
-已收录的完整执行结构见 [test](.run/test/README.md)，直接采用标准运行格式：所有部位前三层的 86 个已完成节点、第四层 29 个已登记待办，以及替换后的最新 hair 均在同一棵树中。[交互预览](.run/test/previews/index.html) 可离线选择任意部位、层级和阶段；全部已执行补全均位于 `parts/`。
+已收录的完整执行结构见 [test](../.run/test/part-layering/README.md)，直接采用标准运行格式：所有部位前三层的 86 个已完成节点、第四层 29 个已完成终止 part，以及替换后的最新 hair 均在同一棵树中。[交互预览](../.run/test/part-layering/previews/index.html) 可离线选择任意部位、层级和阶段；全部已执行补全均位于 `parts/`。
 
-`agents.ts` 统一使用 `gpt-6.1-sol / xhigh`。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `layering-steps.ts`，首次分组位于 `initial-groups.ts`，绘制和 review 位于 `outline-agent.ts`。
+`shared/codex/agents.ts` 统一使用 `gpt-6.1-sol / xhigh`。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `shared/part/layering-steps.ts`，首次分组位于 `shared/part/initial-groups.ts`，绘制和 review 位于 `shared/part/outline-agent.ts`。
 
-`agent-runtime.ts` 独立管理 agent 并发、临时错误分类和退避恢复，不依赖分组树或步骤。SDK、一次性原生任务和保留绘制会话均通过 `agents.ts` 接入同一运行实例的限制；空闲会话和退避等待不占执行位置。CLI 的内置重试先照常运行，SDK 的重连 `error` 与 App Server 的 `willRetry` 通知不会提前截断它；仅回合最终因容量、断流或临时服务错误失败时，在 5、10、20、40、60 秒后恢复，之后保持 60 秒，不设次数上限。恢复沿用 thread 与已成功的产物，不重新派发组或清空草稿；认证、额度、上下文、参数、文件校验和主动取消不自动重试。内置重试的源码核对、模拟服务验证及恢复边界见 [agent-runtime.md](docs/agent-runtime.md)。
+`shared/codex/agent-runtime.ts` 独立管理 agent 并发、临时错误分类和退避恢复，不依赖分组树或步骤。SDK、一次性原生任务和保留绘制会话均通过 `shared/codex/agents.ts` 接入同一运行实例的限制；空闲会话和退避等待不占执行位置。CLI 的内置重试先照常运行，SDK 的重连 `error` 与 App Server 的 `willRetry` 通知不会提前截断它；仅回合最终因容量、断流或临时服务错误失败时，在 5、10、20、40、60 秒后恢复，之后保持 60 秒，不设次数上限。恢复沿用 thread 与已成功的产物，不重新派发组或清空草稿；认证、额度、上下文、参数、文件校验和主动取消不自动重试。内置重试的源码核对、模拟服务验证及恢复边界见 [agent-runtime.md](docs/agent-runtime.md)。
 
 `layering.ts` 负责按层编排，复用 `workflow.ts` 的并发队列；`groups.ts` 只持久化分组树，`artifact-facts.ts` 读取正式产物和报告，构建仅供运行中展示的步骤状态。每层执行以下阶段：
 
@@ -51,7 +51,7 @@ for await (const event of events) {
 
 拆分通用正文是 `prompts/10-直属结构拆分.md`，完整 ID 下的 `children.md` 优先替换；`prompts/10-拆分操作约定.md` 始终追加。只读 agent 查看完成稿的独显和 blend，按需裁剪原参考，通过 `submit_children` 一次提交直属 name/kind/note。程序生成路径 ID，拒绝重复名、嵌套子树、无效类型与只有一个 part 的包装组。已配置 face、hair、body、neck、pelvis、arms、legs 及标准眼、嘴、鼻、手臂、手、腿、前后发的拆分先验；其余对象用通用判断。左右按角色自身，breast 一件，手指不拆指节，每侧下肢分 leg 与 foot，膝部与脚趾不再细拆。
 
-首次分组读取本模块 `prompts/4-初始分组.md`，agent 的工作目录设为 `.run/<运行名>`，程序明确传入参考准备完成的素体图绝对路径，不预先附图，也不让 agent 自行寻找目标图。它用内置 `view_image` 观察整体，按需裁剪放大细节。人体头部在第一层拆为 `face`（脸部、五官、耳朵）、`hair`（全部头发、发髻）、`head_accessories`（头部装饰物，含其长飘带）；脸部说明明确只补脸型与耳朵，不补头顶与后脑。`neck`、`body`、`arms`、`pelvis`、`legs` 的范围及临时连体服不分组要求沿用原版，无跨目录运行依赖。
+首次分组读取本模块 `prompts/4-初始分组.md`，agent 的工作目录设为 `workflow-next/.run/<运行名>/part-layering`，程序明确传入参考准备完成的素体图绝对路径，不预先附图，也不让 agent 自行寻找目标图。它用内置 `view_image` 观察整体，按需裁剪放大细节。人体头部在第一层拆为 `face`（脸部、五官、耳朵）、`hair`（全部头发、发髻）、`head_accessories`（头部装饰物，含其长飘带）；脸部说明明确只补脸型与耳朵，不补头顶与后脑。`neck`、`body`、`arms`、`pelvis`、`legs` 的范围及临时连体服不分组要求沿用原版，无跨目录运行依赖。
 
 首次分组注册 `view_bitmap({ path, crop?, scale? })` 和 `write_groups({ subject, groups })`。整体可用内置 `view_image` 查看，细节按需用 `view_bitmap` 裁剪放大，观察图保存在 `observations/initial-groups/`。分组工具绑定本次运行的正式 `groups.json`，校验组名、重复名称和一层 group 结构，再以 `name` 生成稳定 `id`，保留 `note`。无效输入不写入；已有组时拒绝覆盖。工具与调度器共用 `GroupStore` 写入队列，agent 不能通过工具修改制作进度。分组保存必须调用 `write_groups`，不再通过 terminal 写临时 JSON。最终回复不参与解析；没有成功调用写入工具时失败。调度器只发起一次识别任务，临时服务中断由 agent 调用层沿用会话恢复；实际已有组时继续现有进度。
 
@@ -107,13 +107,13 @@ group 的组件覆盖按联合色块判断。踝饰等完全落在本组底形�
 
 参考准备先判断角色是否需要转换为目标参考图的现代日式二次元 Live2D 立绘画风：清晰动漫线稿、干净平涂、硬边二分光影。判断时同时传入原图和目标画风图，输出 `needsSimplification` 及一句依据 `reason`。姿态、构图、表情和背景不作为简化条件。需要简化时转换画风，否则复制原图；简化保留角色设计、衣装、配色与姿态，允许五官画法和头身比动漫化，不锁定原图的半写实脸型与渲染。随后统一进入素体换装，将角色图与连体服款式图一起传入，沿用上游画风、姿态、表情和比例。暂不做标准姿态调整。
 
-简化和素体 agent 通过 SDK 配置显式启用 Codex 内置 `image_generation`。两个生图提示词文件只保留简短的绘制要求；`run.ts` 统一附加执行规则，要求 agent 将绘制提示词原样传给生图工具，不自行扩写，只调用一次、生成一张图，生成后直接交付，不检查、返修或重试。这是提示词约束，当前 SDK 没有直接的工具调用次数上限。成功返回 `{ "savedPath": "实际图片路径", "error": null }`，失败返回 `{ "savedPath": null, "error": "失败原因" }`。程序读取真实文件，验证 PNG 签名，再保存到本次运行的 references 目录；这是文件有效性检查，不涉及视觉评价或模型返修。
+简化和素体 agent 通过 SDK 配置显式启用 Codex 内置 `image_generation`。两个生图提示词文件只保留简短的绘制要求；`preparation-agents.ts` 统一附加执行规则，要求 agent 将绘制提示词原样传给生图工具，不自行扩写，只调用一次、生成一张图，生成后直接交付，不检查、返修或重试。这是提示词约束，当前 SDK 没有直接的工具调用次数上限。成功返回 `{ "savedPath": "实际图片路径", "error": null }`，失败返回 `{ "savedPath": null, "error": "失败原因" }`。程序读取真实文件，验证 PNG 签名，再保存到本次运行的 references 目录；这是文件有效性检查，不涉及视觉评价或模型返修。
 
 自定义 function 工具通过 `AgentTask.tools` 注册，类型位于 `function-tools.ts`，包含名称、说明、参数 JSON Schema 和 `execute(argumentsValue, signal)` 回调，无需 MCP 服务或修改全局配置。`tool-agent.ts` 启动 SDK 自带的同版本 Codex，使用 `initialize` → `thread/start(dynamicTools)` → `turn/start` → `item/tool/call` 链路。原生 dynamic tools 属于[官方实验性接口](https://developers.openai.com/codex/app-server#dynamic-tool-calls-experimental)，升级 Codex 版本时需要核对协议。首次分组和绘制开放自带 terminal，使用 `workspace-write`；独立 review 使用 `read-only`，报告和预览由程序工具保存。绘制会话延续时工具定义保持一致，回调绑定当前回合；各组会话独立。超时、失败或提前退出保留日志，调度器统一清理会话。
 
 目标画风参考位于 `resources/简化参考图片.png`，供判断和简化两个步骤使用。连体服款式参考位于 `resources/连体服参考.jpg`，复制自迁移流程的 `可复用结果.jpg`，在素体换装时作为第二张图片输入；仅参考款式，按目标人物的姿势和体型贴合。所有固定提示词和参考资源都来自本模块。
 
-每次 agent 调用都在 `.run/<运行名>/agents/<时间-步骤名-唯一后缀>/` 下实时保存：
+每次 agent 调用都在 `workflow-next/.run/<运行名>/part-layering/agents/<时间-步骤名-唯一后缀>/` 下实时保存：
 
 - `request.json`：任务提示词、图片路径及说明、实际拼接的用户提示词、输出 schema 或函数定义、模型、推理强度、超时和工作目录。不保存认证密钥或环境变量。
 - `events.jsonl`：带时间戳的 SDK 事件或 App Server 协议消息，逐条追加，包括中间更新、工具参数和图片结果；发送的用户运行配置省略以避免记录凭据。
@@ -133,7 +133,7 @@ group 的组件覆盖按联合色块判断。踝饰等完全落在本组底形�
 
 同层依赖满足的组全部进入队列，实际 agent 总并发默认 3，由 `--jobs` / `-j` 调整；组调度不另设并发上限。`layering.ts` 将同层任务固定成批次，前半段、整层去重、后半段依次完成，再发现下一层。`workflow.ts` 仍是通用并发执行器，相同 ID 在一次批次中只派发一次。`maxDepth: 1` 只处理深度 0。异常停止新派发，等待已启动任务收尾；后续依照已发布事实继续。
 
-默认入口内部调用 `prepareReferences({ image, runName }, steps)`；显式组入口调用只读的 `loadPreparedReferences(runName)`。`image` 为可选原图路径，输出位于本目录的 `.run/<runName>/references/`：
+默认入口内部调用 `prepareReferences({ image, runName }, steps)`；显式组入口调用只读的 `loadPreparedReferences(runName)`。`image` 为可选原图路径，输出位于`workflow-next/.run/<runName>/part-layering/references/`：
 
 - `original.<原扩展名>`：首次传入的原图副本，用于续跑和补齐缺失参考。
 - `judgment.json`：参考判断结果，包含 `needsSimplification` 与 `reason`；存在则读取，不再调用判断。兼容不含 `reason` 的旧记录。
@@ -155,3 +155,5 @@ agent 回合默认不设超时；正常入口不传时间上限。只有调用�
 `pnpm check` 执行类型检查，`pnpm test` 验证参考准备、SDK 日志、原生工具、绘制会话复用与独立只读 review、SVG 预览和父范围、特化提示词、审查提交、两轮返修后继续及中断恢复、真实命令行入口和结果展示，以及组循环的 null 续跑、显式组范围与祖先前置拒绝、旧存储迁移、失败续跑、深度限制、分支并发补位、并发子组登记和合并接口。测试使用本地模拟执行程序和临时文件，不调用模型或生图工具。
 
 后续按照上述流程约定逐项接入具体 agent 和程序合并规则。
+
+共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。

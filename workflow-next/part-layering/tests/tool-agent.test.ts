@@ -1,14 +1,15 @@
+import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, sep } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
-import { CodexAgents } from '../agents.ts';
-import { AgentRuntime, interruptedTaskPrompt } from '../agent-runtime.ts';
-import { textResult, type FunctionTool } from '../function-tools.ts';
-import { createLayeringSteps } from '../layering-steps.ts';
-import { runLayering } from '../layering.ts';
+import { CodexAgents } from '../../shared/codex/agents.ts';
+import { AgentRuntime, interruptedTaskPrompt } from '../../shared/codex/agent-runtime.ts';
+import { textResult, type FunctionTool } from '../../shared/codex/function-tools.ts';
+import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
+import { runLayering } from '../../shared/part/layering.ts';
 import { fakeAppServer } from './fake-app-server.ts';
 import { nodeExecutables } from './node-executables.ts';
 
@@ -59,7 +60,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const steps = { ...createLayeringSteps(agents), async drawOutline() {
     return { status: 'pending' as const, message: '本测试仅验证首次分组' };
   } };
-  const result = await runLayering({ directory: f.directory, references, groups: null, steps });
+  const result = await runLayering({ profile, directory: f.directory, references, groups: null, steps });
   assert.equal(result.groups[0].id, 'head');
   await assert.rejects(readFile(join(f.directory, 'progress.json')), { code: 'ENOENT' });
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
@@ -113,7 +114,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   for (const value of [logged.events, logged.transcript, JSON.stringify(logged.request)]) {
     assert.doesNotMatch(value, /test-secret-must-not-log/);
   }
-  await runLayering({ directory: f.directory, references, groups: null, steps });
+  await runLayering({ profile, directory: f.directory, references, groups: null, steps });
   assert.equal((await readdir(f.logDirectory)).length, 1);
 });
 

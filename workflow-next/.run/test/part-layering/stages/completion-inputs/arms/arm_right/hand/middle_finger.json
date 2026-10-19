@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "groupId": "arms/arm_right/hand/middle_finger",
+  "beforeHash": "6f9817a3a025afa14df201e37d02ef183846fa8baae8671c4dc0d8c3a79954ad",
+  "afterHash": "f4e8a00f24b93299f1b075e51e1dedf447c6cf669e73ff090960dc406ee3508f",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "d5ca0b2fcf5c8cd42a88b819ee13d7b342b87cf5ce0b7b0e1dc0347f9555f194"
+    },
+    {
+      "path": "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+      "hash": "54b94d6fcc79a025312a77234e04f80c257a11d94c8aa8494594ef7c061cbab5",
+      "groupId": "arms/arm_right/hand/palm",
+      "stage": "reduction"
+    },
+    {
+      "path": "../../../part-layering/prompts/groups/arms/references/fingers/complete-fingers.png",
+      "hash": "528db2606985dbb217ddd71106f19a2daac795bf323bf00b74c51b69ba046762"
+    }
+  ]
+}

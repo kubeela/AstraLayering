@@ -1,12 +1,13 @@
+import { profile } from '../profile.ts';
 import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { TestContext } from 'node:test';
 import sharp from 'sharp';
-import { svgHash } from '../artifact-facts.ts';
-import { writeAtomic } from '../groups.ts';
-import type { GroupSeed, LayeringSteps, SvgMerger } from '../layering-types.ts';
-import { occlusionSourceHash, terminalParts } from '../occlusion-plan.ts';
+import { svgHash } from '../../shared/part/artifact-facts.ts';
+import { writeAtomic } from '../../shared/part/groups.ts';
+import type { GroupSeed, LayeringSteps, SvgMerger } from '../../shared/part/layering-types.ts';
+import { occlusionSourceHash, terminalParts } from '../../shared/part/occlusion-plan.ts';
 
 export function shape(id: string, left = 10, right = 90, empty = false) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="${id}">${empty ? '' : `<path fill="#55b9ad" d="M${left} 10H${right}V90H${left}Z"/>`}</g></svg>`;
@@ -21,7 +22,7 @@ export async function fixture(t: TestContext) {
   const png = await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toBuffer();
   await writeAtomic(references.baseSubject, png);
   await writeAtomic(references.simplifiedSubject, png);
-  return { directory, references };
+  return { profile, directory, references };
 }
 export function workingSteps(events: string[], roots: GroupSeed[] = [{ id: 'head' }], children: Record<string, GroupSeed[]> = {}): LayeringSteps {
   return {

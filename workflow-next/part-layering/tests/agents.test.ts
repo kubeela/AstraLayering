@@ -3,8 +3,8 @@ import { chmod, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
-import { CodexAgents } from '../agents.ts';
-import { AgentRuntime, interruptedTaskPrompt } from '../agent-runtime.ts';
+import { CodexAgents } from '../../shared/codex/agents.ts';
+import { AgentRuntime, interruptedTaskPrompt } from '../../shared/codex/agent-runtime.ts';
 import { nodeExecutables } from './node-executables.ts';
 
 const started = { type: 'thread.started', thread_id: 'test-thread' };

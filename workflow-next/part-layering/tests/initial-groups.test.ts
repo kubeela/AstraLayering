@@ -1,13 +1,14 @@
+import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
-import type { AgentTask } from '../agents.ts';
-import { GroupStore } from '../groups.ts';
-import { createLayeringSteps } from '../layering-steps.ts';
-import { runLayering } from '../layering.ts';
-import type { InitialContext } from '../layering-types.ts';
+import type { AgentTask } from '../../shared/codex/agents.ts';
+import { GroupStore } from '../../shared/part/groups.ts';
+import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
+import { runLayering } from '../../shared/part/layering.ts';
+import type { InitialContext } from '../../shared/part/layering-types.ts';
 
 function initialSteps(agents: Parameters<typeof createLayeringSteps>[0]) {
   return { ...createLayeringSteps(agents), async drawOutline() {
@@ -18,7 +19,7 @@ function initialSteps(agents: Parameters<typeof createLayeringSteps>[0]) {
 async function fixture(t: TestContext): Promise<InitialContext> {
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-initial-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  return { directory, references: {
+  return { profile, directory, references: {
     directory: join(directory, 'references'), judgment: join(directory, 'references/judgment.json'),
     simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png'),
   } };
@@ -57,8 +58,9 @@ test('首次识别一次调用，绑定 view_bitmap 和 write_groups；直接保
   assert.equal(calls[0].images, undefined);
   assert.equal(calls[0].outputSchema, undefined);
   assert.deepEqual(calls[0].tools!.map(tool => tool.name), ['view_bitmap', 'write_groups']);
-  assert.match(calls[0].prompt, /view_image/);
-  assert.match(calls[0].prompt, /view_bitmap.*crop.*scale.*按需裁剪放大/);
+  assert.match(calls[0].prompt, /按需裁剪放大/);
+  assert.match(calls[0].tools!.find(tool => tool.name === 'view_bitmap')!.description, /crop=.*scale/);
+  assert.doesNotMatch(calls[0].prompt, /view_bitmap.*crop/);
   assert.doesNotMatch(calls[0].prompt, /分组输出文件/);
   assert.deepEqual(result, { status: 'completed', output: {
     subject: 'other', groups: [

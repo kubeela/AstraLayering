@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
-import { createBitmapTool } from '../bitmap-tool.ts';
-import type { ToolResult } from '../function-tools.ts';
+import { createBitmapTool } from '../../shared/part/bitmap-tool.ts';
+import type { ToolResult } from '../../shared/codex/function-tools.ts';
 
 const signal = new AbortController().signal;
 function text(result: ToolResult) {

@@ -2,12 +2,12 @@ import assert from 'node:assert/strict';
 import { mkdir, readFile, realpath, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import type { AgentTask } from '../agents.ts';
-import { artifactPath, readJson, reportPath } from '../artifact-facts.ts';
-import { analyzeChildren, decodeChildren } from '../children-agent.ts';
-import { GroupStore, nodeKind, normalizeGroups, walkGroups, writeAtomic } from '../groups.ts';
-import { createLayeringSteps } from '../layering-steps.ts';
-import { runLayering } from '../layering.ts';
+import type { AgentTask } from '../../shared/codex/agents.ts';
+import { artifactPath, readJson, reportPath } from '../../shared/part/artifact-facts.ts';
+import { analyzeChildren, decodeChildren } from '../../shared/part/children-agent.ts';
+import { GroupStore, nodeKind, normalizeGroups, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
+import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
+import { runLayering } from '../../shared/part/layering.ts';
 import { parseRunArguments } from '../run.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
 

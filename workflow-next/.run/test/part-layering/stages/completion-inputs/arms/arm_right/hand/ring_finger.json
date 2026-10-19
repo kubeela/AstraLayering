@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "groupId": "arms/arm_right/hand/ring_finger",
+  "beforeHash": "282061da46071ac80460a55076fab70f1a74761ad291d69641650508530a0482",
+  "afterHash": "11b1fea20f06380074291ed2b295129f0fdca5ae80a0292d472c7544da8f09f2",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "d5ca0b2fcf5c8cd42a88b819ee13d7b342b87cf5ce0b7b0e1dc0347f9555f194"
+    },
+    {
+      "path": "stages/outline-reduce/arms/arm_right/hand/palm.svg",
+      "hash": "54b94d6fcc79a025312a77234e04f80c257a11d94c8aa8494594ef7c061cbab5",
+      "groupId": "arms/arm_right/hand/palm",
+      "stage": "reduction"
+    },
+    {
+      "path": "../../../part-layering/prompts/groups/arms/references/fingers/complete-fingers.png",
+      "hash": "528db2606985dbb217ddd71106f19a2daac795bf323bf00b74c51b69ba046762"
+    }
+  ]
+}

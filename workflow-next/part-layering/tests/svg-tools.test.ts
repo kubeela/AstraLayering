@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
-import { checkParentBounds, createSvgPreviewTool, createSvgReadTool, validateGroupSvg } from '../svg-tools.ts';
-import type { ToolResult } from '../function-tools.ts';
+import { checkParentBounds, createSvgPreviewTool, createSvgReadTool, validateGroupSvg } from '../../shared/part/svg-tools.ts';
+import type { ToolResult } from '../../shared/codex/function-tools.ts';
 
 const signal = new AbortController().signal;
 const canvas = { width: 100, height: 100 };

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import { artifactPath } from '../artifact-facts.ts';
-import { runLayering } from '../layering.ts';
-import { reduceGroupOutlines } from '../outline-reduce.ts';
+import { artifactPath } from '../../shared/part/artifact-facts.ts';
+import { runLayering } from '../../shared/part/layering.ts';
+import { reduceGroupOutlines } from '../../shared/part/outline-reduce.ts';
 import { fixture, shape, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;

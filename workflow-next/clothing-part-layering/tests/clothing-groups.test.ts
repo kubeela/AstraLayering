@@ -1,16 +1,17 @@
+import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { createLayeringSteps } from '../layering-steps.ts';
-import { runLayering } from '../layering.ts';
-import { readGroupPrompt } from '../group-prompts.ts';
-import { walkGroups, writeAtomic } from '../groups.ts';
+import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
+import { runLayering } from '../../shared/part/layering.ts';
+import { readGroupPrompt } from '../../shared/part/group-prompts.ts';
+import { walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { fixture, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;
 test('clothing prompt lookup is local and has no inherited body-specific prior', async () => {
-  const prompt = await readGroupPrompt('body', 'children');
+  const prompt = await readGroupPrompt('body', 'children', profile.promptsDirectory);
   assert.ok(prompt.path.endsWith('clothing-part-layering/prompts/10-直属结构拆分.md'));
   assert.ok(prompt.text.includes('即使同动也不能终止成单一 part'));
   await assert.rejects(readdir(new URL('../prompts/groups', import.meta.url)), { code: 'ENOENT' });

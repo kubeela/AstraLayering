@@ -1,0 +1,8 @@
+packages:
+  - part-layering
+  - raster-layering
+  - clothing-part-layering
+  - clothing-raster-layering
+
+onlyBuiltDependencies:
+  - sharp

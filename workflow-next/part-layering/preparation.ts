@@ -1,3 +1,4 @@
+import { pipelineDirectory, resolveInput } from '../shared/paths.ts';
 import { copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -63,10 +64,7 @@ function checkJudgment(value: unknown): asserts value is ReferenceJudgment {
 }
 
 export function getPreparationDirectory(runName: string): string {
-  if (!runName || runName === '.' || runName === '..' || /[\\/:]/.test(runName)) {
-    throw new Error('runName must be a single directory name');
-  }
-  return join(fileURLToPath(new URL('.run/', import.meta.url)), runName, 'references');
+  return join(pipelineDirectory(runName, 'part-layering'), 'references');
 }
 
 // 显式指定组时只读取已完成参考；缺失就报错，不调用 agent 或复制补齐。
@@ -94,7 +92,7 @@ export async function prepareReferences(
   const judgment = join(directory, 'judgment.json');
   let image = await findImage(directory, 'original');
   if (!image && input.image) {
-    const source = resolve(input.image);
+    const source = resolveInput(input.runName, input.image);
     if (!await exists(source)) throw new Error(`Input image is missing: ${source}`);
     await mkdir(directory, { recursive: true });
     image = join(directory, `original${extname(source) || '.png'}`);

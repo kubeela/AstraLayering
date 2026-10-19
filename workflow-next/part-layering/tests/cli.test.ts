@@ -1,3 +1,4 @@
+import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
@@ -9,11 +10,11 @@ import { promisify } from 'node:util';
 import { test } from 'node:test';
 import { getPreparationDirectory, loadPreparedReferences } from '../preparation.ts';
 import { formatLayeringSummary, parseRunArguments, readGroupInput } from '../run.ts';
-import { GroupStore, normalizeGroups } from '../groups.ts';
+import { GroupStore, normalizeGroups } from '../../shared/part/groups.ts';
 import sharp from 'sharp';
-import { artifactPath, draftPath, publishSvg, reportPath, svgHash } from '../artifact-facts.ts';
+import { artifactPath, draftPath, publishSvg, reportPath, svgHash } from '../../shared/part/artifact-facts.ts';
 import { shape, workingSteps } from './layering-fixture.ts';
-import { runLayering } from '../layering.ts';
+import { runLayering } from '../../shared/part/layering.ts';
 
 function runCli(args: string[]) {
   return promisify(execFile)(process.execPath, [
@@ -72,10 +73,10 @@ test('预览缺失时用模拟步骤重建；实际入口复用完整事实且�
     outline: { status: 'completed', output: { path: svgPath } }, review: { status: 'completed', output: { path: svgPath } },
   } }]); });
   // 缺预览会连带撤销层级表，这一分支必须用模拟步骤完成，不能靠旧缓存避免真实调用。
-  await runLayering({ directory, references: await loadPreparedReferences(runName), groups: null, steps: workingSteps([]) });
+  await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null, steps: workingSteps([]) });
   await rm(join(directory, 'preview.svg'));
   const progress: string[] = [];
-  await runLayering({ directory, references: await loadPreparedReferences(runName), groups: null,
+  await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null,
     steps: workingSteps([]), progress: message => progress.push(message) });
   assert.ok(progress.some(message => message.includes('最终预览合并：完成')));
   assert.ok(progress.includes('遮挡层级规划：开始'));

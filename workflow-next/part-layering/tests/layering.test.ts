@@ -3,11 +3,12 @@ import { mkdir, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
-import { artifactPath, draftPath, readJson, reductionReportPath, reportPath, svgHash } from '../artifact-facts.ts';
-import { GroupStore, normalizeGroups, walkGroups, writeAtomic } from '../groups.ts';
-import { GroupExecutionError, runLayering } from '../layering.ts';
-import { createLayeringSteps } from '../layering-steps.ts';
+import { artifactPath, draftPath, readJson, reductionReportPath, reportPath, svgHash } from '../../shared/part/artifact-facts.ts';
+import { GroupStore, normalizeGroups, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
+import { GroupExecutionError, runLayering } from '../../shared/part/layering.ts';
+import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
+import { profile } from '../profile.ts';
 
 test('按层严格等待：所有 review 结束才去重，所有父组结束才开始下一层；层内保持并发', { timeout: 5000 }, async t => {
   const f = await fixture(t), events: string[] = [];
@@ -289,8 +290,8 @@ test('异常后当前批次已派发任务收尾，保留成功事实且不进�
 });
 
 test('真实 test 恢复现有 115 节点；制作中的缺失稿不能放行最终预览', async () => {
-  const directory = new URL('../.run/test/', import.meta.url);
-  const store = await GroupStore.open(fileURLToPath(directory));
+  const directory = new URL('../../.run/test/part-layering/', import.meta.url);
+  const store = await GroupStore.open(fileURLToPath(directory), profile.promptsDirectory);
   const groups = store.snapshot().groups;
   assert.equal(groups.length, 8);
   assert.ok(groups.every(group => group.steps.outline.status === 'completed' && group.steps.review.status === 'completed'));

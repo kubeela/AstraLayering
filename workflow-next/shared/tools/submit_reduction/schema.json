@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "changed",
+    "note"
+  ],
+  "properties": {
+    "changed": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "groupId",
+          "path"
+        ],
+        "properties": {
+          "groupId": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "note": {
+      "type": "string"
+    }
+  }
+}

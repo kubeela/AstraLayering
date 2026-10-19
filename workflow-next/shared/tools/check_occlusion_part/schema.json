@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "note"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
