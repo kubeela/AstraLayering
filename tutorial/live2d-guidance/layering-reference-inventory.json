@@ -331,8 +331,8 @@
     },
     {
       "path": "tutorial/live2d-guidance/hair-reference-research-20261015/README.md",
-      "bytes": 559,
-      "sha256": "9483077b0bacd5619d5df39bb9711a876a8aa141b014058eb2ec0ec64eac7e5d"
+      "bytes": 800,
+      "sha256": "dae6041c5c076baea6bab2cb58eeffb5c262ae1c16afef92da186a745fd123ef"
     },
     {
       "path": "tutorial/live2d-guidance/hair-reference-research-20261015/template-source-previews/angel-icon.png",
@@ -1032,7 +1032,7 @@
   ],
   "totals": {
     "files": 117,
-    "bytes": 326313936,
+    "bytes": 326314177,
     "decodable_pngs": 55
   },
   "gaps": [
