@@ -10,6 +10,8 @@
 
 [raster-layering：TypeScript / Codex SDK 顺序流程](./workflow-next/raster-layering/README.md)：显式指定 Krita 后执行分层补全、边缘柔化及独立 review，反馈由原会话全部修复后，继续去除连体服并补全身体底层；按 `--name` 保存输入并续跑，用标记与 Markdown 记录进度。
 
+[clothing-part-layering](./workflow-next/clothing-part-layering/README.md) → [clothing-raster-layering](./workflow-next/clothing-raster-layering/README.md)：两套独立的衣服流程，从简化穿衣角色提取纯衣服、拆分 part，再绘制分层 KRA 并完成两轮内的 review／修复。[实跑案例](./demos/clothing-workflows-20261019/README.md)包含关键 KRA、最终 69 层透明预览、过程图片与后续优化约定。
+
 ## 效果展示
 
 ### 90 个完整绘画部件：灰底控制图与 Krita 修画

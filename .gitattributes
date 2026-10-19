@@ -11,3 +11,5 @@ outputs/jianma_expression2/** -text
 analysis/mouth-model-prompt-case-20260928/** -text
 analysis/*20260927/** -text
 rigging/milly/v3/video-work/** -text
+demos/clothing-workflows-20261019/*.kra -text
+demos/clothing-workflows-20261019/images/** -text

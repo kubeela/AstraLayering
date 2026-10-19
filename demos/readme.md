@@ -4,6 +4,7 @@
 
 | 案例 | 内容 |
 | --- | --- |
+| [衣服分件与栅格完整实跑](./clothing-workflows-20261019/README.md) | 原生 ImageGen 提取纯衣服，68 个逻辑 part → 69 层 KRA；保留关键工程与分件、生图、拆层及修画过程图 |
 | [Krita 第二步：边缘柔化进度](./soft-edge-krita/README.md) | 保存 33 条局部笔刷操作、31 层修画和完整 90 层 KRA；附当前合成图与继续工作清单，尚未完成视觉验收 |
 | [灰底清空 → GPT Image 2.5 → Krita：90 个完整部件](./gray-control-krita/README.md) | 灰底抹除遮挡物后逐件生成，在 Krita 配准修画；90 层无蒙版，附原尺寸独显和重开验证 |
 | [gpt-image-2.5 → Krita：按深度表拆分补全](./gpt-image-2.5-depth-krita/README.md) | 依 part-layering 新版 occlusion.json 深度生成红黄绿控制图逐部件补全，Krita 按 level 叠放 90 个完整部件（无蒙版） |
