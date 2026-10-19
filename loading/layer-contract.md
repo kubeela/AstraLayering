@@ -1,6 +1,6 @@
 # 图层分层契约（草案 v0.1）
 
-> 历史格式，已停止用于主工作流；仅供理解早期示例。现行流程使用 SVG 原生分组与绘制顺序，见 [workflows](../.agents/skills/live2d-layering/readme.md)。
+> 历史格式，已停止用于主工作流；仅供理解早期示例。现行流程使用 part 分组与 Krita 栅格绘制，见 [workflows](../.agents/skills/live2d-maker/SKILL.md)。
 
 ---
 

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Live2D Maker"
+  short_description: "从角色参考图拆分人物与衣服，经遮挡补全和 Krita 修画交付分层素材"
