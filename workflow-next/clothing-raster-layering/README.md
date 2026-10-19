@@ -87,4 +87,6 @@ pnpm --dir workflow-next/clothing-raster-layering test
 
 [steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](workflow.ts) 顺序执行，[run-store.ts](run-store.ts) 管理配置和标记，[review.ts](review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
 
-自动测试模拟 SDK 响应，覆盖输入快照、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。尚未用这套新流程实际跑完生图、Krita 绘制和视觉验收。
+自动测试模拟 SDK 响应，覆盖输入快照、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
+
+现已完成 [2026-10-19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。通用 step01／深度协议与可选压缩功能尚未改造，不能将本案例的外部恢复视为当前工作流自动能力。

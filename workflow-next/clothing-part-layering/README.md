@@ -70,4 +70,6 @@ pnpm --dir workflow-next/clothing-part-layering test
 
 [run.ts](run.ts) 串联 [preparation.ts](preparation.ts) 与本地 [layering.ts](layering.ts)；[agents.ts](agents.ts) 和 [tool-agent.ts](tool-agent.ts) 使用同版本 Codex SDK / App Server。首次分组和递归拆分分别在 [initial-groups.ts](initial-groups.ts)、[children-agent.ts](children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
 
-自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。preparation 提示词沿用已人工认可的衣服提取试验；这套独立工作流仍需在配置好内置工具的环境中完成真实运行验收。
+自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。
+
+现已完成 [2026-10-18—19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；允许同一逻辑 part 多深度的通用优化仍在 [后续约定](../../demos/clothing-workflows-20261019/NEXT.md) 中。
