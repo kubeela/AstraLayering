@@ -1,3 +1,4 @@
+import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { pipelineDirectory } from '../shared/paths.ts';
 import { simplifiedCharacter } from '../shared/upstream.ts';
 import { createHash, randomUUID } from 'node:crypto';
@@ -41,10 +42,12 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
       outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
         properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
     });
+    await validateAgentOutcome(result, async () => {
     const imageResult = result.images.at(-1);
     if (!imageResult) throw new Error('内置 image_generation 未返回生成图片。');
     await checkImage(imageResult.savedPath, image);
     await copyFile(imageResult.savedPath, output);
+    });
   } };
 }
 

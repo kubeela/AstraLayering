@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/lower_silver_strand/teardrop_pendant",
+  "beforeHash": "fe00c8d4a358936af88c9b4fe2c94cb5c3c5e109681685d3c5003018dc08521d",
+  "afterHash": "a250ecc2c941d83948ca42d2c1f5dbceec644716ed440eac3010682fd5c6c986",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

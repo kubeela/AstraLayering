@@ -25,10 +25,10 @@ cd workflow-next/raster-layering
 pnpm --dir .. install --frozen-lockfile
 
 # 首次启动
-pnpm start --name test --krita /path/to/krita
+pnpm start --name jianma --krita /path/to/krita
 
 # 以后启动同一任务，只需要名字
-pnpm start --name test
+pnpm start --name jianma
 ```
 
 任务固定保存到 **`workflow-next/.run/<name>/raster-layering/`**，不随 shell 的工作目录改变。`--name` 为单个目录名，支持中文、字母、数字、点、下划线和短横线，以字母或数字开头。输入和 Krita 的相对路径统一从 `workflow-next/.run/<name>/` 解析。
@@ -46,10 +46,10 @@ pnpm start --name test
 pnpm start --krita /path/to/krita --check-krita
 
 # 查看首次执行的完整提示词和计划
-pnpm start --name test --krita /path/to/krita --dry-run
+pnpm start --name jianma --krita /path/to/krita --dry-run
 
 # 查看已有任务下一次启动的计划
-pnpm start --name test --dry-run
+pnpm start --name jianma --dry-run
 ```
 
 `--dry-run` 校验上游产物和 Krita，显示待执行提示词与重置计划，不写文件、不改标记、不调用模型。已完成步骤跳过。
@@ -59,7 +59,7 @@ pnpm start --name test --dry-run
 ## 文件与交付
 
 ```text
-workflow-next/.run/test/raster-layering/
+workflow-next/.run/jianma/raster-layering/
   run.json
   step01/
     .running 或 .completed
@@ -133,18 +133,18 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 
 正常从第一步进入第二、三步也使用同一个 thread，仅切换该步的模型。SDK 发出 `thread.started` 时立即保存 ID。续跑需要同一 Codex 用户配置下保留的本地会话历史；复制 `.run/` 不会同时复制 SDK 会话。
 
-已完成第一步的任务直接执行 `pnpm start --name test`，会跳过第一步，在原 thread 中开始第二步，完成 review / 修复后进入第三步；已完成第二步及 review 的任务直接接续第三步。新任务顺序执行全部三步。
+已完成第一步的任务直接执行 `pnpm start --name jianma`，会跳过第一步，在原 thread 中开始第二步，完成 review / 修复后进入第三步；已完成第二步及 review 的任务直接接续第三步。新任务顺序执行全部三步。
 
 **重跑只需删除完成标记，然后照常用名字启动：**
 
 ```bash
 # 从第一步重跑：清空 step01 及所有后续步骤目录
-rm ../.run/test/raster-layering/step01/.completed
-pnpm start --name test
+rm ../.run/jianma/raster-layering/step01/.completed
+pnpm start --name jianma
 
 # 从第二步重跑：保留 step01 与上游产物
-rm ../.run/test/raster-layering/step02/.completed
-pnpm start --name test
+rm ../.run/jianma/raster-layering/step02/.completed
+pnpm start --name jianma
 ```
 
 重置会删除被重跑步骤及后续步骤的全部产物和日志，包括磁盘上已有但当前尚未接入提示词的后续步骤。上游产物及深度修正和任务配置保留，`threadId` 清空；开始执行时创建新 thread，后续步骤继续使用它。新会话会收到上游产物和前序已完成步骤的产物、报告路径。
@@ -153,7 +153,6 @@ pnpm start --name test
 
 同一名字一次只启动一个进程，手工改标记前先停止当前运行。若 `.completed` 仍在但必要交付已丢失，程序会明确报错：恢复交付，或删除标记重跑，不会自行改变完成状态。
 
-旧的 raster/input 副本用共享迁移命令处理：`pnpm --dir workflow-next migrate-inputs --name <name>`。先加 `--dry-run` 查看计划；迁移保留绘制 thread、完成标记及工程，冲突时不覆盖。
 
 ## 代码入口与验证
 

@@ -1,3 +1,5 @@
+import { loadWorkflowEnvironment, workflowCodexOptions } from './environment.ts';
+import { formatAgentError } from './diagnostics.ts';
 import { workflowsDirectory } from '../paths.ts';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -6,7 +8,7 @@ import { dirname, join, resolve } from 'node:path';
 import { createInterface } from 'node:readline';
 import { AgentLog } from './agent-log.ts';
 import { AgentCallError } from './agent-runtime.ts';
-import { agentDefaults, type AgentOptions, type AgentSession, type AgentTask, type GeneratedImage } from './agents.ts';
+import { type AgentOptions, type AgentSession, type AgentTask, type GeneratedImage } from './agents.ts';
 import type { ToolResult } from './function-tools.ts';
 
 // Only the protocol subset used here is maintained. The CLI is pinned by codex-sdk.
@@ -40,6 +42,9 @@ async function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise
 }
 
 export function createFunctionToolSession(options: AgentOptions, resumeThreadId?: string): AgentSession {
+  const environment = options.environment ?? loadWorkflowEnvironment(options.env);
+  options = { ...options, ...workflowCodexOptions(environment, options) };
+  const selectedModel = environment.models.medium;
   let child: ReturnType<typeof spawn> | undefined;
   let lines: ReturnType<typeof createInterface> | undefined;
   let reader: Promise<void> | undefined;
@@ -190,8 +195,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       const signal = AbortSignal.any([closing.signal, ...(externalSignal ? [externalSignal]
         : timeoutMs === undefined ? [] : [AbortSignal.timeout(timeoutMs)])]);
       const threadOptions = {
-        model: agentDefaults.model, cwd, sandbox, approvalPolicy: 'never',
-        config: flattenConfig({ ...options.config, model_reasoning_effort: agentDefaults.effort, web_search: 'disabled',
+        model: selectedModel.model, cwd, sandbox, approvalPolicy: 'never',
+        config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
           features: { image_generation: imageGeneration, shell_tool: true, unified_exec: true, multi_agent: false, memories: false } }),
         dynamicTools: definitions,
@@ -205,7 +210,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         transport: 'app-server', task: { ...task, tools: definitions, timeoutMs: timeoutMs ?? null }, input,
         prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),
         sessionThreadId: threadId ?? null,
-        threadOptions: { ...threadOptions, config: undefined, modelReasoningEffort: agentDefaults.effort },
+        threadOptions: { ...threadOptions, config: undefined, modelReasoningEffort: selectedModel.effort },
       });
       const completion = Promise.withResolvers<void>();
       void completion.promise.catch(() => {});
@@ -221,7 +226,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         signal.throwIfAborted();
         if (!threadId) await start(threadOptions);
         checkFailure();
-        await request('turn/start', { threadId, input, effort: agentDefaults.effort,
+        await request('turn/start', { threadId, input, effort: selectedModel.effort,
           ...(task.outputSchema ? { outputSchema: task.outputSchema } : {}) });
         await completion.promise;
         await log.finish({ status: 'completed', threadId, usage: state.usage, finalResponse: state.finalResponse, images: state.images });
@@ -236,8 +241,10 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         const reported = error instanceof AgentCallError ? error : new AgentCallError(message, undefined, { cause: error });
         reported.logDirectory = log.directory;
         reported.threadId = threadId;
+        reported.finalResponse = state.finalResponse;
         reported.sessionBroken = !!failure || !threadId;
         reported.savedImagePaths = state.images.map(image => image.savedPath);
+        options.progress?.(formatAgentError(reported));
         throw reported;
       } finally {
         signal.removeEventListener('abort', abort);

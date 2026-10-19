@@ -1,4 +1,0 @@
-Use case: precise-object-edit. Edit a single component of a pastel illustration.
-Image 1: target visible colors, with every non-target area and every occlusion erased to neutral grey. Image 2: exact shape and operation guide, in the same coordinates. Red keeps the corresponding illustration from image 1. Yellow continues the same illustrated component over the erased grey area. Green becomes fully transparent. The colors in image 2 are instructions and must never appear in the output.
-A single index finger from the relaxed hand in image 3. Keep the illustrated fingernail, joint bends and peach color. Image 3 shows the hand context; output only the finger specified by image 2.
-Match the original soft low-contrast anime painting, fine soft lines and sparse detail. Keep the entire red/yellow silhouette, scale, position and pose. Do not center or redesign it. Grey is empty input, not output color. Output one transparent PNG, no background, no checkerboard, no text.

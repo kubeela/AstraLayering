@@ -1,0 +1,36 @@
+{
+  "depth": 0,
+  "groups": [
+    {
+      "id": "outer_robe",
+      "inputHash": "78f452d16aca48ff7376fc995ef34be239eeff7db5808ed08c44967cb7a41214",
+      "outputHash": "78f452d16aca48ff7376fc995ef34be239eeff7db5808ed08c44967cb7a41214"
+    },
+    {
+      "id": "inner_dress",
+      "inputHash": "aa749163d77b4be6dae0b3ab692549b365ee65b398159660125a1819c50ba6ac",
+      "outputHash": "aa749163d77b4be6dae0b3ab692549b365ee65b398159660125a1819c50ba6ac"
+    },
+    {
+      "id": "waist_sash",
+      "inputHash": "0ecc677055643365f45239af6744d4b090f2d0d6c70bad208ef1220c9aec28ac",
+      "outputHash": "0ecc677055643365f45239af6744d4b090f2d0d6c70bad208ef1220c9aec28ac"
+    },
+    {
+      "id": "collar_fastener",
+      "inputHash": "b886aaebb7418d93d5d17eb51236508df41776c710bc874eeff907f383595c7f",
+      "outputHash": "b886aaebb7418d93d5d17eb51236508df41776c710bc874eeff907f383595c7f"
+    },
+    {
+      "id": "chest_ornament",
+      "inputHash": "6b76bdc820b7483d699cb8b8a26493fba48adbcc3d4980542c24eb3ddc2b20a0",
+      "outputHash": "6b76bdc820b7483d699cb8b8a26493fba48adbcc3d4980542c24eb3ddc2b20a0"
+    },
+    {
+      "id": "waist_pendant",
+      "inputHash": "ce3e2c9b80965b3b256dede89f530344d008b4e2ab2264324dd2e4ddc7d7d75a",
+      "outputHash": "ce3e2c9b80965b3b256dede89f530344d008b4e2ab2264324dd2e4ddc7d7d75a"
+    }
+  ],
+  "note": "已用 preview_svg 查看整层合成 blend，并结合此前整体与局部预览，对照 clothing.png、六组本层 SVG 及 note 完成重复归属核对。未发现同一实体且同一控制与深度职责被重复领取。外袍前襟／返边与内裙是独立衣层，投影重叠承担遮挡及隐藏搭接；领扣珠链与胸饰交叠为挂点连接，附件与后方衣料是不同实体；束带及蓝色长幅与腰挂串饰及长白流苏的实体范围、控制职责不同。环绕身体的领口、袖口及其他前后衣片职责按原 note 保留，不按像素交集裁减。六组均无需修改，changed 为空。"
+}

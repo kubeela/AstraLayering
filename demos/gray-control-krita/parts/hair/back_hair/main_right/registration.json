@@ -1,8 +1,0 @@
-{
-  "method": "smooth silhouette coordinate deformation",
-  "generation": "generated.png",
-  "generationSha256": "2579725794fb2ecbcbaf4ed2930e69fbb4361b411a8e0cc3defbaca85ef91b27",
-  "shapeFit": "smooth",
-  "revision": 3,
-  "uncoveredHiddenPixels": 1532
-}

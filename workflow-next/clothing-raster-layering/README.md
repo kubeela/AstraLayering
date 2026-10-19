@@ -10,10 +10,10 @@
 
 ```bash
 pnpm --dir workflow-next install --frozen-lockfile
-pnpm --dir workflow-next/clothing-raster-layering start --name test --krita /path/to/krita
+pnpm --dir workflow-next/clothing-raster-layering start --name jianma --krita /path/to/krita
 
 # 续跑使用已保存的输入、Krita 路径和绘制会话
-pnpm --dir workflow-next/clothing-raster-layering start --name test
+pnpm --dir workflow-next/clothing-raster-layering start --name jianma
 ```
 
 按 `--name` 直接读取 `.run/<name>/clothing-part-layering/` 的 parts、参考、groups.json 与 occlusion.json，不接受额外输入路径、不复制上游产物。缺失时列出具体路径，提示先执行对应上游管线或手动放置产物。
@@ -36,7 +36,7 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 ## 文件与续跑
 
 ```text
-workflow-next/.run/test/clothing-raster-layering/
+workflow-next/.run/jianma/clothing-raster-layering/
   run.json
   step01/
     .completed
@@ -66,8 +66,8 @@ workflow-next/.run/test/clothing-raster-layering/
 先停止当前进程，再删除标记触发重跑。例如从第二步重新制作：
 
 ```bash
-rm workflow-next/.run/test/clothing-raster-layering/step02/.completed
-pnpm --dir workflow-next/clothing-raster-layering start --name test
+rm workflow-next/.run/jianma/clothing-raster-layering/step02/.completed
+pnpm --dir workflow-next/clothing-raster-layering start --name jianma
 ```
 
 这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。要从第一步重跑就删除 `step01/.completed`；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
@@ -83,7 +83,7 @@ pnpm --dir workflow-next/clothing-raster-layering test
 
 自动测试模拟 SDK 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
 
-现已完成 [2026-10-19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能仍未接入。
+现已完成 [2026-10-19 真实实跑](../../demos/jianma/clothing-raster-layering/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能仍未接入。
 
 共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
 

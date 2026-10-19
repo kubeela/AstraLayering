@@ -7,6 +7,7 @@ export class AgentCallError extends Error {
   readonly info?: unknown;
   logDirectory?: string;
   threadId?: string;
+  finalResponse?: string;
   savedImagePaths: string[] = [];
   sessionBroken = false;
   constructor(message: string, info?: unknown, options?: ErrorOptions) {

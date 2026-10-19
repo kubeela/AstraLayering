@@ -1,3 +1,4 @@
+import type { ModelSelection, ModelTier } from '../codex/environment.ts';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import type { PartLayeringInput } from './input.ts';
@@ -7,11 +8,12 @@ export type StepDefinition = {
   id: string;
   title: string;
   model: string;
-  effort: 'xhigh';
+  effort: ModelSelection['effort'];
+  modelTier?: ModelTier;
   prompt: URL;
   inputFiles?: readonly string[]; // Relative to the named run root; previous deliveries are read-only.
   requiredFiles: readonly string[];
-  review?: { prompt: URL; repairPrompt: URL; model: string; effort: 'xhigh' };
+  review?: { prompt: URL; repairPrompt: URL; model: string; effort: ModelSelection['effort']; modelTier?: ModelTier };
 };
 
 export async function buildPrompt(step: StepDefinition, input: PartLayeringInput, output: string, krita: KritaInstallation, previous: readonly string[] = []): Promise<string> {

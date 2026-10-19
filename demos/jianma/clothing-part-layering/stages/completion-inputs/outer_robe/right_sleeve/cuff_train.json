@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/right_sleeve/cuff_train",
+  "beforeHash": "3e439dd735339a6cdec5fa14f6c18dc1dad40c0e80e4ae1ecf602ae50e56d0f4",
+  "afterHash": "b164f8c2536192957d0553d7ff71c72983eeab2681a5ef93d1411a4d2d43b591",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

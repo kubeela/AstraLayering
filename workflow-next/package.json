@@ -11,7 +11,7 @@
     "clothing-raster-layering": "node clothing-raster-layering/run.ts",
     "check": "tsc",
     "test": "node --test shared/tests/*.test.ts part-layering/tests/*.test.ts raster-layering/tests/*.test.ts clothing-part-layering/tests/*.test.ts clothing-raster-layering/tests/*.test.ts",
-    "migrate-inputs": "node tools/migrate-upstream-inputs.ts"
+    "build:codex": "node tools/codex/build.ts"
   },
   "dependencies": { "@openai/codex-sdk": "0.161.0", "sharp": "0.35.5" },
   "devDependencies": { "@types/node": "24.19.1", "typescript": "7.0.2" }

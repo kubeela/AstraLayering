@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/upper_suspension/left_suspension_cord",
+  "beforeHash": "168666b55adb995fcdf5ed34c836eb83425fd0c43e2262214be38c95b9b063d2",
+  "afterHash": "4afe0d8c7021264255f422b4ae605912fec65e48ccb94212bb6ed0058bd9337d",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

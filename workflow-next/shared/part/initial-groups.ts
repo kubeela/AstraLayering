@@ -1,3 +1,4 @@
+import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
 import { readFile } from 'node:fs/promises';
@@ -53,13 +54,13 @@ export async function recognizeInitialGroups(
       return textResult({ path: store.path, ids: result.groups.map(group => group.id) });
     },
   };
-  await agents.run({
+  const response = await agents.run({
     name: '首次分组识别', cwd: context.directory,
     images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...(profile.originalReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalReference }] : [])] : undefined,
     prompt: `${prompt}\n本次运行目录：${context.directory}\n${profile.referenceLabel}：${reference}\n分组文件：${store.path}\n`,
     tools: [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups],
   });
-  if (!submitted) throw new Error('首次分组未通过 write_groups 保存');
+  if (!submitted) throw agentOutcomeError('首次分组未通过 write_groups 保存', response);
   const saved = store.snapshot();
   return { subject: saved.subject, groups: saved.groups.map(({ groups, steps, ...seed }) => seed) };
 }

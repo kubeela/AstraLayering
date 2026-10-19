@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_sash/left_long_tail",
+  "beforeHash": "a7804fa587d92dccbdac674c0293825ce6da9717d6c8cb1b1ac5e96fdf21964f",
+  "afterHash": "d25ffbc88a92ebaabf9919c74bcc98eaf043cc504bed1cc1e60578bfa9eed7cf",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

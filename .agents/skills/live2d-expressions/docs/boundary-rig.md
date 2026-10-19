@@ -126,4 +126,4 @@ compiled region仅保留id、space、bounds和axes。每个binding包含：
 
 ## Reproducible Jianma trial
 
-[Jianma 局部试验配方](../4.author-boundaries/examples/jianma-boundary.recipe.json) targets the unchanged `demos/jianma-current-case/clothing-run/final/character.svg`. Compile it with `node 5.build-rig/tools/build-rig.cjs`, then scan with `node 6.scan-boundaries/tools/scan-boundaries.cjs check`. This is a four-axis eye/mouth trial, without expression presets. The browser interpolates the authored endpoints; it does not call a model.
+[Jianma 局部试验配方](../4.author-boundaries/examples/jianma-boundary.recipe.json) targets the unchanged `demos/jianma-svg-ver/clothing-run/final/character.svg`. Compile it with `node 5.build-rig/tools/build-rig.cjs`, then scan with `node 6.scan-boundaries/tools/scan-boundaries.cjs check`. This is a four-axis eye/mouth trial, without expression presets. The browser interpolates the authored endpoints; it does not call a model.

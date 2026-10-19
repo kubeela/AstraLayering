@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/double_ring_chain/lower_ring_body",
+  "beforeHash": "f9f7324ef4df67b007368031377607e22ea908c20d1991b12d39bedb766ee6ec",
+  "afterHash": "86396cef26a72425463dd8a9014ae632b754a1bd441237e45f43671965d2863a",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

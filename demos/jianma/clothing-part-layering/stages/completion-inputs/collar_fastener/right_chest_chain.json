@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "collar_fastener/right_chest_chain",
+  "beforeHash": "e4df700d9776daff97335cf19c8ff1cae2f3cfb6627769751938e9f11c6be0ca",
+  "afterHash": "425035aa45d32557113063f37592cf46c759b68c6046e594010a5ae45ea9e9de",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

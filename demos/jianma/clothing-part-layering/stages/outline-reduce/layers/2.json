@@ -1,0 +1,206 @@
+{
+  "depth": 2,
+  "groups": [
+    {
+      "id": "outer_robe/collar_shoulders/standing_collar",
+      "inputHash": "48334a5db0b70ca431a65f969780c36e1bf9d071a75a010e4eeb2afd245ee46f",
+      "outputHash": "48334a5db0b70ca431a65f969780c36e1bf9d071a75a010e4eeb2afd245ee46f"
+    },
+    {
+      "id": "outer_robe/collar_shoulders/right_shoulder_cover",
+      "inputHash": "224e7581af3911009b3eface25f6b00194f09f973054272d4553c24e0d65d79b",
+      "outputHash": "224e7581af3911009b3eface25f6b00194f09f973054272d4553c24e0d65d79b"
+    },
+    {
+      "id": "outer_robe/collar_shoulders/left_shoulder_cover",
+      "inputHash": "6d751c29a80588fdfcd80bddf18925399dcc84a255480b093c1a4699fef49fbe",
+      "outputHash": "6d751c29a80588fdfcd80bddf18925399dcc84a255480b093c1a4699fef49fbe"
+    },
+    {
+      "id": "outer_robe/left_sleeve/front_sleeve_wall",
+      "inputHash": "ad28f3087fd050debfd59fe07198668e94bc20ab172d3a2cd4d3cf754a9b8dbb",
+      "outputHash": "ad28f3087fd050debfd59fe07198668e94bc20ab172d3a2cd4d3cf754a9b8dbb"
+    },
+    {
+      "id": "outer_robe/left_sleeve/rear_sleeve_wall",
+      "inputHash": "69b42315cca4c63eeaa8b3f14da0f3747f7785f5027a11a51f7ed74749d07f1f",
+      "outputHash": "69b42315cca4c63eeaa8b3f14da0f3747f7785f5027a11a51f7ed74749d07f1f"
+    },
+    {
+      "id": "outer_robe/left_sleeve/rear_cuff_drape",
+      "inputHash": "c057b283f660196548977c86159c39404cc5f40fbdba23ed0b25c9a6970f02a6",
+      "outputHash": "c057b283f660196548977c86159c39404cc5f40fbdba23ed0b25c9a6970f02a6"
+    },
+    {
+      "id": "outer_robe/left_sleeve/outer_flared_gauze",
+      "inputHash": "988c46bd523553b3bd527d87cc45ad2a9c15e751e2903a26599b8108516e7bfb",
+      "outputHash": "988c46bd523553b3bd527d87cc45ad2a9c15e751e2903a26599b8108516e7bfb"
+    },
+    {
+      "id": "outer_robe/left_sleeve/side_pointed_gauze",
+      "inputHash": "208221a9cf0132d3ef2aed77fb5b6316581edfc534d07c89865d576e26f0d585",
+      "outputHash": "208221a9cf0132d3ef2aed77fb5b6316581edfc534d07c89865d576e26f0d585"
+    },
+    {
+      "id": "outer_robe/right_sleeve/sleeve_tube",
+      "inputHash": "b564c4d1f49cf006352593f797702a4812de227a8c28d4a4a0cc955147267407",
+      "outputHash": "b564c4d1f49cf006352593f797702a4812de227a8c28d4a4a0cc955147267407"
+    },
+    {
+      "id": "outer_robe/right_sleeve/outer_side_gauze",
+      "inputHash": "068deaac21e44a8d9c01ce3dcb8f316d02f3297dc05a4ebed6a70a0c711a7bda",
+      "outputHash": "068deaac21e44a8d9c01ce3dcb8f316d02f3297dc05a4ebed6a70a0c711a7bda"
+    },
+    {
+      "id": "outer_robe/right_sleeve/cuff_train",
+      "inputHash": "3e439dd735339a6cdec5fa14f6c18dc1dad40c0e80e4ae1ecf602ae50e56d0f4",
+      "outputHash": "3e439dd735339a6cdec5fa14f6c18dc1dad40c0e80e4ae1ecf602ae50e56d0f4"
+    },
+    {
+      "id": "waist_sash/circumferential_band/front_band",
+      "inputHash": "07949307672b2146dfde399fd32b208e2c549f936075269de6478f6f45428dd0",
+      "outputHash": "07949307672b2146dfde399fd32b208e2c549f936075269de6478f6f45428dd0"
+    },
+    {
+      "id": "waist_sash/circumferential_band/side_back_band",
+      "inputHash": "6b6fb9ea9c1d3cc86b1257a5ec91f236fa61d64cc0e31b67a205fbe26f77fd25",
+      "outputHash": "6b6fb9ea9c1d3cc86b1257a5ec91f236fa61d64cc0e31b67a205fbe26f77fd25"
+    },
+    {
+      "id": "waist_sash/front_tie/knot_core",
+      "inputHash": "7b81c49900eaafe8272260b10f1e07906b2c7cff0481b21b1e0ffa9effc345f3",
+      "outputHash": "7b81c49900eaafe8272260b10f1e07906b2c7cff0481b21b1e0ffa9effc345f3"
+    },
+    {
+      "id": "waist_sash/front_tie/right_short_loop",
+      "inputHash": "d825b91f5a569ce83f6cdf4896cf52fe29c5fa3cb44b3acd822eefe190510f6f",
+      "outputHash": "d825b91f5a569ce83f6cdf4896cf52fe29c5fa3cb44b3acd822eefe190510f6f"
+    },
+    {
+      "id": "waist_sash/front_tie/left_short_loop",
+      "inputHash": "b97514055de9e1cba2c865c635623c59a3ac1f72125441f0788e044c7a85489e",
+      "outputHash": "b97514055de9e1cba2c865c635623c59a3ac1f72125441f0788e044c7a85489e"
+    },
+    {
+      "id": "waist_sash/front_tie/bound_tassel",
+      "inputHash": "333a31aba2c9021a8558c5873c7a0bc03983d0da0a4e82358d9df10dbc45d1f0",
+      "outputHash": "333a31aba2c9021a8558c5873c7a0bc03983d0da0a4e82358d9df10dbc45d1f0"
+    },
+    {
+      "id": "collar_fastener/central_clasp/clasp_body",
+      "inputHash": "a705f51517b6c1b5f31cf17604805a0e40276970e6f361b2e5334d332822fa3e",
+      "outputHash": "a705f51517b6c1b5f31cf17604805a0e40276970e6f361b2e5334d332822fa3e"
+    },
+    {
+      "id": "collar_fastener/central_clasp/hanging_junction",
+      "inputHash": "7fda4ac3e80eb13dbc2d21662a259a45c8b39c4ca63fefed90a1881551545345",
+      "outputHash": "7fda4ac3e80eb13dbc2d21662a259a45c8b39c4ca63fefed90a1881551545345"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/right_suspension_cord",
+      "inputHash": "37a919a2628a3d511b1d8342e43a354ac313fce266c0e2adb1984285da5b8be8",
+      "outputHash": "37a919a2628a3d511b1d8342e43a354ac313fce266c0e2adb1984285da5b8be8"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/left_suspension_cord",
+      "inputHash": "168666b55adb995fcdf5ed34c836eb83425fd0c43e2262214be38c95b9b063d2",
+      "outputHash": "168666b55adb995fcdf5ed34c836eb83425fd0c43e2262214be38c95b9b063d2"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage",
+      "inputHash": "e883f0ab55406de68007998c92ff2bf0b223c72de9608a55ef7656b9fd6fdcc4",
+      "outputHash": "e883f0ab55406de68007998c92ff2bf0b223c72de9608a55ef7656b9fd6fdcc4"
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/upper_chain",
+      "inputHash": "2723e68a2ea56ebe9652c981a15cb4f1c03ba0958c18790b1aec92b169d19a66",
+      "outputHash": "2723e68a2ea56ebe9652c981a15cb4f1c03ba0958c18790b1aec92b169d19a66"
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/upper_bead_link",
+      "inputHash": "e61d20420a5565092f650959b20021419d4e92655938e9ef8587eb870c45890a",
+      "outputHash": "e61d20420a5565092f650959b20021419d4e92655938e9ef8587eb870c45890a"
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/elongated_silver_link",
+      "inputHash": "2740b9231a3e3a3d61ea9c21971c98f1529ff67d0a3726350a60322a1c246303",
+      "outputHash": "2740b9231a3e3a3d61ea9c21971c98f1529ff67d0a3726350a60322a1c246303"
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/lower_bead_link",
+      "inputHash": "fb3c1585913989a364b0371c617e951c6ac8fe509e675a19a68423daa5ecfee8",
+      "outputHash": "fb3c1585913989a364b0371c617e951c6ac8fe509e675a19a68423daa5ecfee8"
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/teardrop_pendant",
+      "inputHash": "fe00c8d4a358936af88c9b4fe2c94cb5c3c5e109681685d3c5003018dc08521d",
+      "outputHash": "fe00c8d4a358936af88c9b4fe2c94cb5c3c5e109681685d3c5003018dc08521d"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/silver_hanger",
+      "inputHash": "a6fd601c8ada84b5ecc0f0c8ef7d14ff8c51d0796a57a54a03d9da346754c417",
+      "outputHash": "a6fd601c8ada84b5ecc0f0c8ef7d14ff8c51d0796a57a54a03d9da346754c417"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/right_side_link",
+      "inputHash": "a06f9d6efd6d8b17a2bf5c4446e6befc8adbc2b2ccc7942212897cf239dfc6bb",
+      "outputHash": "a06f9d6efd6d8b17a2bf5c4446e6befc8adbc2b2ccc7942212897cf239dfc6bb"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/left_side_link",
+      "inputHash": "45184c2c110a6f8336c53b67f0ae1ff911ee96ef102ac5fd39c926dc9c432851",
+      "outputHash": "45184c2c110a6f8336c53b67f0ae1ff911ee96ef102ac5fd39c926dc9c432851"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/central_diamond_pendant",
+      "inputHash": "a9ecf3aaccfa8e5475cb209ff8255a99eb95aac11c15f7b889867eb0c11cc82d",
+      "outputHash": "a9ecf3aaccfa8e5475cb209ff8255a99eb95aac11c15f7b889867eb0c11cc82d"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/lotus_body",
+      "inputHash": "05fe64c4a61225f43f518cd26af4ec24eec8775ff4b32369018a5c8675884df2",
+      "outputHash": "05fe64c4a61225f43f518cd26af4ec24eec8775ff4b32369018a5c8675884df2"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/lower_ring_connector",
+      "inputHash": "1cbc4713cd57e18d43661dc4b81bacb3713172f0aebffe4c3a67b0e87a3101a6",
+      "outputHash": "1cbc4713cd57e18d43661dc4b81bacb3713172f0aebffe4c3a67b0e87a3101a6"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/upper_ring_body",
+      "inputHash": "58a6f582dd694c4675122d3ecbb08f0550e95b4c3507182b594590c61a8c8b4a",
+      "outputHash": "58a6f582dd694c4675122d3ecbb08f0550e95b4c3507182b594590c61a8c8b4a"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/lower_ring_body",
+      "inputHash": "f9f7324ef4df67b007368031377607e22ea908c20d1991b12d39bedb766ee6ec",
+      "outputHash": "f9f7324ef4df67b007368031377607e22ea908c20d1991b12d39bedb766ee6ec"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/upper_inner_drop",
+      "inputHash": "e7fdf38efc38349c273d9eb3978d3b040ed6b092fea1a3c8e0606bb47b557e0b",
+      "outputHash": "e7fdf38efc38349c273d9eb3978d3b040ed6b092fea1a3c8e0606bb47b557e0b"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/lower_inner_drop",
+      "inputHash": "80abee149cac4272d34d101e0b828cd05f4259afc41ba3883e5160bd27a8d518",
+      "outputHash": "80abee149cac4272d34d101e0b828cd05f4259afc41ba3883e5160bd27a8d518"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/inter_ring_link",
+      "inputHash": "eb1e6f19be3ca84f0382358c468e17b13e8245debc09dc22a36fe9d871263f0c",
+      "outputHash": "eb1e6f19be3ca84f0382358c468e17b13e8245debc09dc22a36fe9d871263f0c"
+    },
+    {
+      "id": "waist_pendant/tassel_buckle/ring_return_back",
+      "inputHash": "ba5ed1e89f53d198359eb1ac5f77c2ee4498979f7926628a90708f3f0bf5067e",
+      "outputHash": "ba5ed1e89f53d198359eb1ac5f77c2ee4498979f7926628a90708f3f0bf5067e"
+    },
+    {
+      "id": "waist_pendant/tassel_buckle/buckle_front",
+      "inputHash": "60855d6b19fc5f3f1cbc4975e5c66b2d856874b97d22c3b9b290f57dcde7917a",
+      "outputHash": "60855d6b19fc5f3f1cbc4975e5c66b2d856874b97d22c3b9b290f57dcde7917a"
+    }
+  ],
+  "note": "已对照 clothing.png、本层 40 个 SVG 与各自 note、11 个父 SVG 及 mergedPreview，并用 preview_svg 完成整体与领肩、双袖／袖口、腰带／腰结、吊饰接点的局部核对。未发现同一实体、同一控制与同一深度职责被重复领取，故 changed 为空。袖筒前后壁、前腰带与侧后腰带保留夹入身体／内裙所需的不同深度；主袖、外侧纱与后口长垂料分别承担独立衣片和自由段控制，投影重叠不构成重复。领肩接缝、结芯与短环／小穗挂根、双吊绳与汇接结、珠链各接根及水滴底茎与吊架顶茎的短重叠为真实隐藏搭接。扣件前片与后回片虽含重合窄茎，分别位于下环圈缘前、后，必须保留；环圈、孔内悬珠及跨圈连接件也各有独立实体和层序职责。本次所有 reusedReduction 均为 false，沿用各 sourceSvg，不写修改稿，不改源 SVG、正式文件或树。"
+}

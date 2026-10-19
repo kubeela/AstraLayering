@@ -107,7 +107,7 @@
 ### 三张参考原本是否存在
 
 - [原始提交 a98186c4](https://github.com/wu-tian807/AstraLayering/commit/a98186c4ca8586ed2715b18f1b622cf86caebb3b)（2026-10-15）已经包含 hair、hair/back_hair 和 hair/bangs 的参考清单、用途说明，以及本地复制说明和忽略图片的规则。并非共享重构新增。
-- [旧 test 运行的 groups.json](../.run/test/part-layering/groups.json) 中，hair 的 `childrenAnalysis.note` 明确记录参考 Milly 和莉尔两张板，back_hair 的对应记录写明参考樱桃蛋糕天使图集。这是历史使用记录；PNG 原件本身没有随 Git 保存。
+- [原 test、现 jianma 的 groups.json](../../demos/jianma/part-layering/groups.json) 中，hair 的 `childrenAnalysis.note` 明确记录参考 Milly 和莉尔两张板，back_hair 的对应记录写明参考樱桃蛋糕天使图集。这是历史使用记录；PNG 原件本身没有随 Git 保存。
 - [原有参考说明](../part-layering/prompts/groups/hair/references/README.md) 指定从 `tutorial/live2d-guidance/local-assets/hair-reference-templates/` 复制三张同名文件。已检查本机 7 个 AstraLayering 工作目录，未找到原件；更广的文件名搜索也未找到，但没有完成整机扫描，不据此推断其他机器没有原件。
 - 保留原有提示词、三份清单和缺图报错规则。恢复本机使用仍需原图片副本；本轮未替换、生成、下载参考图，也未绕过缺图检查。
 

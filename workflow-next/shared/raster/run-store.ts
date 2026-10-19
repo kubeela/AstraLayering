@@ -1,10 +1,11 @@
+import type { ModelSelection } from '../codex/environment.ts';
 import { lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import type { PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 
-export type ModelConfig = { model: string; effort: 'xhigh' };
+export type ModelConfig = ModelSelection;
 export type RunConfig = {
   version: 2;
   name: string;
@@ -50,7 +51,7 @@ export async function loadConfig(directory: string, name: string): Promise<RunCo
     || typeof config.sourceInput?.directory !== 'string' || typeof config.sourceInput?.parts !== 'string'
     || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim() || typeof config.krita.version !== 'string'
     || !config.models || typeof config.models !== 'object' || Array.isArray(config.models)
-    || Object.values(config.models).some(model => !model || typeof model.model !== 'string' || !model.model.trim() || model.effort !== 'xhigh')
+    || Object.values(config.models).some(model => !model || typeof model.model !== 'string' || !model.model.trim() || !['none', 'minimal', 'low', 'medium', 'high', 'xhigh'].includes(model.effort))
     || !(config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))) {
     throw new Error(`无效的任务配置：${file}`);
   }

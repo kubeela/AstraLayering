@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/right_sleeve/outer_side_gauze",
+  "beforeHash": "068deaac21e44a8d9c01ce3dcb8f316d02f3297dc05a4ebed6a70a0c711a7bda",
+  "afterHash": "244410616987fa2a9d55589237512a093d73fb0a49b1f89b144c6cb51a8d07f9",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

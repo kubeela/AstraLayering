@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "collar_fastener",
+  "beforeHash": "b886aaebb7418d93d5d17eb51236508df41776c710bc874eeff907f383595c7f",
+  "afterHash": "379ac96128bbd544a65e6c6dd1b5b66829c849abe6e47ec3cce0dbd8d85362d8",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

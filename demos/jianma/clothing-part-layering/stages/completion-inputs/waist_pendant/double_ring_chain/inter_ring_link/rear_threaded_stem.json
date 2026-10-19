@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem",
+  "beforeHash": "4cd6b3eeb573bd3fa96b8248a2ba5e918f6c4f40840da0f8169fd0c4bd221351",
+  "afterHash": "c7932b1d00609c174880540123f9eb5de9a6971c174da8c15495430e6a2dd0e4",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

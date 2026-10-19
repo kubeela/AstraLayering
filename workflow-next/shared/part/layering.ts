@@ -1,3 +1,4 @@
+import { formatAgentError } from '../codex/diagnostics.ts';
 import type { PartProfile } from './profile.ts';
 import { mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
@@ -105,8 +106,8 @@ export async function runLayering(input: {
       report(`[${id}] ${labels[stage]}：${result.status === 'completed' ? '完成' : result.message}`);
       return result.status === 'completed';
     } catch (error) {
-      await store.update(document => setGroupProgress(findGroup(document, id), stage, { status: 'failed', message: String(error) }));
-      report(`[${id}] ${labels[stage]}：失败，等待已启动任务收尾：${error instanceof Error ? error.message : String(error)}`);
+      await store.update(document => setGroupProgress(findGroup(document, id), stage, { status: 'failed', message: formatAgentError(error) }));
+      report(`[${id}] ${labels[stage]}：失败，等待已启动任务收尾：${formatAgentError(error)}`);
       throw new GroupExecutionError(id, stage, error);
     }
   }

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/left_sleeve/rear_cuff_drape/free_curled_drape",
+  "beforeHash": "82da7dfacf62670ec8da87aaa2190013c826eef3ca41f0802f8595a437a57ed5",
+  "afterHash": "18741de01095a0c08feb51ac5535b7b93689545631a2239a5c5c3829269dc1e1",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

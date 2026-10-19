@@ -1,3 +1,4 @@
+import { formatAgentError } from '../codex/diagnostics.ts';
 import { readFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
@@ -126,7 +127,7 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
       console.log(layering.status === 'completed' ? `Layering 已完成：${layering.output}` : 'Layering 未完成，正式产物与检查记录已保存；各组状态见上方。');
     }
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error));
+    console.error(formatAgentError(error));
     if (error instanceof GroupExecutionError) {
       console.error('Layering 未完成：停止派发新待办，已启动的组已结束；其余未启动的待办未执行。');
       for (const line of formatLayeringSummary(error.groups)) console.error(line);

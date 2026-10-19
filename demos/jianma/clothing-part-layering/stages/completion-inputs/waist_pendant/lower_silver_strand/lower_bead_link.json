@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/lower_silver_strand/lower_bead_link",
+  "beforeHash": "fb3c1585913989a364b0371c617e951c6ac8fe509e675a19a68423daa5ecfee8",
+  "afterHash": "f5a756e600b43accdead2ca9c1a7240e33931deecc2531caa1cfa3b43d3ffd67",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

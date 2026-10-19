@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_sash/front_tie/right_short_loop",
+  "beforeHash": "d825b91f5a569ce83f6cdf4896cf52fe29c5fa3cb44b3acd822eefe190510f6f",
+  "afterHash": "08f758f6ee194ecbe3c74710cc6c789e7c3d63707dd1d2ef5ab0b7ce91815c40",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

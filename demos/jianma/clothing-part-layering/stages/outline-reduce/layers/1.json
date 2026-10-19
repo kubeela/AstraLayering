@@ -1,0 +1,126 @@
+{
+  "depth": 1,
+  "groups": [
+    {
+      "id": "outer_robe/collar_shoulders",
+      "inputHash": "7bcbeae56bbeb78030bdfbd76fdc30ec73d0b1d32696a4b0b0f3be9fc877e08c",
+      "outputHash": "7bcbeae56bbeb78030bdfbd76fdc30ec73d0b1d32696a4b0b0f3be9fc877e08c"
+    },
+    {
+      "id": "outer_robe/left_sleeve",
+      "inputHash": "8584cb48ff62e9560f2ec8b28901308ef268b287fb34e9aa983d21be42083f36",
+      "outputHash": "8584cb48ff62e9560f2ec8b28901308ef268b287fb34e9aa983d21be42083f36"
+    },
+    {
+      "id": "outer_robe/right_sleeve",
+      "inputHash": "595d3aaf04aed83e814a7b60fcd4970f8b8a772b6d9baddb5460ed4cf4124265",
+      "outputHash": "595d3aaf04aed83e814a7b60fcd4970f8b8a772b6d9baddb5460ed4cf4124265"
+    },
+    {
+      "id": "outer_robe/left_front_panel",
+      "inputHash": "47242d0c80572c02c935b28b015d2e6727424602da5d156adeeaf84cacfb942f",
+      "outputHash": "47242d0c80572c02c935b28b015d2e6727424602da5d156adeeaf84cacfb942f"
+    },
+    {
+      "id": "outer_robe/right_front_panel",
+      "inputHash": "7799eb296b4d28553e600d95db59853d16d3c17af6e913219450e080164031c6",
+      "outputHash": "7799eb296b4d28553e600d95db59853d16d3c17af6e913219450e080164031c6"
+    },
+    {
+      "id": "inner_dress/bodice_front",
+      "inputHash": "e5da307860dc6e3ba4fb944d280f9634cbc45505e3905ccdaf5fa11995e9be12",
+      "outputHash": "e5da307860dc6e3ba4fb944d280f9634cbc45505e3905ccdaf5fa11995e9be12"
+    },
+    {
+      "id": "inner_dress/skirt_front",
+      "inputHash": "71482f4eac9834db7b6f47fa8e1d1c48ebd53284af153261b820543abcbe5d2a",
+      "outputHash": "71482f4eac9834db7b6f47fa8e1d1c48ebd53284af153261b820543abcbe5d2a"
+    },
+    {
+      "id": "inner_dress/skirt_side_back",
+      "inputHash": "817b090241fddfeed6ff4a3bf8cc5fea637fa03457e509b47237608195444528",
+      "outputHash": "817b090241fddfeed6ff4a3bf8cc5fea637fa03457e509b47237608195444528"
+    },
+    {
+      "id": "waist_sash/circumferential_band",
+      "inputHash": "010334801230f22a284bc8614a0d3016cd3629354f5201bfeeff53aed2967de6",
+      "outputHash": "010334801230f22a284bc8614a0d3016cd3629354f5201bfeeff53aed2967de6"
+    },
+    {
+      "id": "waist_sash/front_tie",
+      "inputHash": "1634f5644f43ef8e64beec9ee2bddf6c42eda02d36c546dbe4c576d9663938a7",
+      "outputHash": "1634f5644f43ef8e64beec9ee2bddf6c42eda02d36c546dbe4c576d9663938a7"
+    },
+    {
+      "id": "waist_sash/right_long_tail",
+      "inputHash": "bde16de6ab102a1771550cace6e553f4b66611dde731cc7b7fdf11daa92be70c",
+      "outputHash": "bde16de6ab102a1771550cace6e553f4b66611dde731cc7b7fdf11daa92be70c"
+    },
+    {
+      "id": "waist_sash/left_long_tail",
+      "inputHash": "a7804fa587d92dccbdac674c0293825ce6da9717d6c8cb1b1ac5e96fdf21964f",
+      "outputHash": "a7804fa587d92dccbdac674c0293825ce6da9717d6c8cb1b1ac5e96fdf21964f"
+    },
+    {
+      "id": "collar_fastener/central_clasp",
+      "inputHash": "fa3e40def82cbae1313bfbe9f7d509e043127f2f1646550f5d35d40d772623fe",
+      "outputHash": "fa3e40def82cbae1313bfbe9f7d509e043127f2f1646550f5d35d40d772623fe"
+    },
+    {
+      "id": "collar_fastener/right_collar_chain",
+      "inputHash": "8265c54a93d2c989cce5c871b70c2f971f379640865ea26a1de496ebf8262aa1",
+      "outputHash": "8265c54a93d2c989cce5c871b70c2f971f379640865ea26a1de496ebf8262aa1"
+    },
+    {
+      "id": "collar_fastener/left_collar_chain",
+      "inputHash": "ee1f4dabc7403c707e252738c067e1aa4e0c93ffa452035a17ac47066d3bc6f9",
+      "outputHash": "ee1f4dabc7403c707e252738c067e1aa4e0c93ffa452035a17ac47066d3bc6f9"
+    },
+    {
+      "id": "collar_fastener/right_chest_chain",
+      "inputHash": "e4df700d9776daff97335cf19c8ff1cae2f3cfb6627769751938e9f11c6be0ca",
+      "outputHash": "e4df700d9776daff97335cf19c8ff1cae2f3cfb6627769751938e9f11c6be0ca"
+    },
+    {
+      "id": "collar_fastener/left_chest_chain",
+      "inputHash": "37bfff2815e914fc8a50c1fab5592b8b9c1586801ae974d1c46114f7b09a257e",
+      "outputHash": "37bfff2815e914fc8a50c1fab5592b8b9c1586801ae974d1c46114f7b09a257e"
+    },
+    {
+      "id": "waist_pendant/upper_suspension",
+      "inputHash": "cdc57b3ea499007f04b7566588b7be3caab04f14a817966b83cb0522fff4b47a",
+      "outputHash": "cdc57b3ea499007f04b7566588b7be3caab04f14a817966b83cb0522fff4b47a"
+    },
+    {
+      "id": "waist_pendant/snowflake_pendant",
+      "inputHash": "93ebf5e3421ffd67ce84cd1224a268c721acf67104bc315c05b8a915b25d76f1",
+      "outputHash": "93ebf5e3421ffd67ce84cd1224a268c721acf67104bc315c05b8a915b25d76f1"
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand",
+      "inputHash": "711a6c9e23a12d32cb4d123c40f702c03d533829ca55ed5b3e47ed9290c9fa94",
+      "outputHash": "711a6c9e23a12d32cb4d123c40f702c03d533829ca55ed5b3e47ed9290c9fa94"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler",
+      "inputHash": "379305418884e34190c269fba8916cd84fa219bc099f30ccc9727ef201abd2f2",
+      "outputHash": "379305418884e34190c269fba8916cd84fa219bc099f30ccc9727ef201abd2f2"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain",
+      "inputHash": "b4be8b6da726b8a858a0a1fafc80b4c7304fd41ba42b9b0f272936d9658a1866",
+      "outputHash": "b4be8b6da726b8a858a0a1fafc80b4c7304fd41ba42b9b0f272936d9658a1866"
+    },
+    {
+      "id": "waist_pendant/tassel_buckle",
+      "inputHash": "f1c3090eb30537b1999710569696c57956bad1f92e60605ea3e32f4aeee037ff",
+      "outputHash": "f1c3090eb30537b1999710569696c57956bad1f92e60605ea3e32f4aeee037ff"
+    },
+    {
+      "id": "waist_pendant/long_white_tassel",
+      "inputHash": "32391317d4cfd5286ab2b966839608071419bea0e6a813aadaa902c21dd7e162",
+      "outputHash": "32391317d4cfd5286ab2b966839608071419bea0e6a813aadaa902c21dd7e162"
+    }
+  ],
+  "note": "已对照纯衣服参考、24 个本层 SVG 与各组 note，并用 preview_svg 核对 mergedPreview 整体和领肩/袖根、袖口、前襟、裙口、腰结及腰挂穿接局部；未发现同一实体同时承担相同控制和深度职责的重复领取。领肩与袖根、前襟上端的交叠为必要隐藏接头；袖侧薄纱及长垂料与长前襟为独立衣片。inner_dress/skirt_front 的腿前裙面及抬高前唇，与 skirt_side_back 的腿后侧壁、回折内面及后下弧需分别排深度，保留共同随动接口的窄搭接。两条蓝色长幅分别控制，中央及折尾接触处的隐藏搭接保留。腰结短环绳约 y557 收止、小布穗约 y564 收止，腰挂双支长悬绳继续至约 y590 汇接，实体与控制职责不同。领扣、链饰、腰挂各件及流苏束头均有独立实体归属；短接头与穿环前后段的重叠符合 note 的连接和深度职责。所有组沿用本次有效源底稿；无须去重修改，changed 为空。"
+}

@@ -1,3 +1,5 @@
+import { checkCodexCapabilities, defaultModels, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment } from './environment.ts';
+import { formatAgentError } from './diagnostics.ts';
 import { toolDefinition } from './tool-config.ts';
 import { workflowsDirectory } from '../paths.ts';
 import { Codex, type CodexOptions, type Usage, type UserInput } from '@openai/codex-sdk';
@@ -7,7 +9,7 @@ import { AgentCallError, AgentRuntime, continuationPrompt, retryableAgentError }
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
 
-export const agentDefaults = { model: 'gpt-6.1-sol', effort: 'xhigh' } as const;
+export const agentDefaults = defaultModels.medium;
 
 export type AgentTask = {
   name: string;
@@ -30,6 +32,7 @@ export type AgentSession = {
   close(): Promise<void>;
 };
 export type AgentOptions = CodexOptions & {
+  environment?: WorkflowEnvironment;
   cwd?: string;
   progress?: (message: string) => void;
   logDirectory?: string;
@@ -43,7 +46,8 @@ export class CodexAgents {
   private runtime: AgentRuntime;
 
   constructor(options: AgentOptions = {}) {
-    this.options = options;
+    const environment = options.environment ?? loadWorkflowEnvironment(options.env);
+    this.options = { ...options, ...workflowCodexOptions(environment, options), environment };
     this.runtime = options.runtime ?? new AgentRuntime(options.agentConcurrency);
   }
 
@@ -64,6 +68,7 @@ export class CodexAgents {
     return {
       run: async (task, externalSignal) => {
         if (this.options.toolsDirectory && task.tools) task = { ...task, tools: task.tools.map(tool => ({ ...tool, ...toolDefinition(tool.name, this.options.toolsDirectory) })) };
+        await checkCodexCapabilities(this.options.environment!, this.options);
         if (closed) throw new Error('会话已关闭');
         if (busy) throw new Error('同一会话不能并发运行');
         busy = true;
@@ -101,12 +106,13 @@ export class CodexAgents {
   }
 
   async run(task: AgentTask): Promise<AgentResult> {
+    await checkCodexCapabilities(this.options.environment!, this.options);
     if (task.tools?.length) {
       const session = this.createSession();
       try { return await session.run(task); }
       finally { await session.close(); }
     }
-    const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, ...options } = this.options;
+    const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, environment, ...options } = this.options;
     const workingDirectory = resolve(task.cwd ?? cwd ?? workflowsDirectory);
     const codex = new Codex({
       ...options,
@@ -119,7 +125,7 @@ export class CodexAgents {
       },
     });
     const threadOptions = {
-      model: agentDefaults.model, modelReasoningEffort: agentDefaults.effort,
+      model: environment!.models.medium.model, modelReasoningEffort: environment!.models.medium.effort,
       workingDirectory,
       sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
     } as const;
@@ -206,7 +212,9 @@ export class CodexAgents {
           completed || signal.aborted ? 'localError' : undefined, { cause: error });
         reported.logDirectory = log.directory;
         reported.threadId = thread.id ?? undefined;
+        reported.finalResponse = finalResponse;
         reported.savedImagePaths = [...savedImages];
+        progress?.(formatAgentError(reported));
         throw reported;
       }
     }

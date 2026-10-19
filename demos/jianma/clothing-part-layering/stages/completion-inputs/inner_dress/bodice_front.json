@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "inner_dress/bodice_front",
+  "beforeHash": "e5da307860dc6e3ba4fb944d280f9634cbc45505e3905ccdaf5fa11995e9be12",
+  "afterHash": "dad053f53c5122f1f49fd0b50c360d9cb13843f84dcec50bc8a668f0576d2a75",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

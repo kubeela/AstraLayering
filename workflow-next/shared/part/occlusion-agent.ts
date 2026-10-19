@@ -1,3 +1,4 @@
+import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
 import { readFile, realpath } from 'node:fs/promises';
@@ -100,7 +101,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
       return textResult({ completed: false, message });
     },
   };
-  await agents.run({ name: '最终遮挡层级规划', cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ name: '最终遮挡层级规划', cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
     images: [{ path: reference, description: profile.references.occlusion }],
     tools: [createSvgPreviewTool({ directory: context.directory, reference,
       canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, observationDirectory: directory,
@@ -111,6 +112,6 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     }, null, 2)}\n`,
   });
   await verify();
-  if (!result) throw new Error('层级规划未提交完整表或具体阻断');
+  if (!result) throw agentOutcomeError('层级规划未提交完整表或具体阻断', response);
   return result;
 }

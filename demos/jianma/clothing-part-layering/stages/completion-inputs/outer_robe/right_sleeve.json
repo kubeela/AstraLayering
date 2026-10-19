@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/right_sleeve",
+  "beforeHash": "595d3aaf04aed83e814a7b60fcd4970f8b8a772b6d9baddb5460ed4cf4124265",
+  "afterHash": "fc262912846064de85fa8422edc7e9d6b6584d4f57ab585cd705653092e337bc",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

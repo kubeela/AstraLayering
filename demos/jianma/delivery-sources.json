@@ -1,0 +1,55 @@
+{
+  "sourceCommit": "a5fcb81a7471a72f4af20f5be4c65a0f2e2f95e7",
+  "files": [
+    {
+      "path": "raster-layering/step01/character-depth.kra",
+      "source": "gray-control-krita/character-depth.kra",
+      "sha256": "08f531a1ca1a86b0295ca148d5966e8e6022538d2d4d3aa486a626afba895093"
+    },
+    {
+      "path": "raster-layering/step01/composite.png",
+      "source": "gray-control-krita/preview.png",
+      "sha256": "f335f050650832269371b596ee605857fb53c6be0be4995eeb7194f2355e51b0"
+    },
+    {
+      "path": "raster-layering/step02/character-soft-edges.kra",
+      "source": "soft-edge-krita/character-soft-edges-final.kra",
+      "sha256": "05b5b6e4278171d3deefbae262748c0f7dcf6c619fb0e3a2157debe5d3a5da45"
+    },
+    {
+      "path": "raster-layering/step02/character-soft-edges.png",
+      "source": "soft-edge-krita/preview-final.png",
+      "sha256": "dc2b7de42c0987e8a4da92c0cddca6af8b100624672ff2023176a62eaf5c341c"
+    },
+    {
+      "path": "raster-layering/step03/character-dressup-base.kra",
+      "source": "skin-base-krita/character-skin-base.kra",
+      "sha256": "224bea74f3e8d58693613d0bd3ec91d74b3b0181a23e59b9e9120d4a58ec4d5a"
+    },
+    {
+      "path": "raster-layering/step03/character-dressup-base.png",
+      "source": "skin-base-krita/preview-final.png",
+      "sha256": "f166b284a72e75124b48de124511213d5bed8fa896a6f768303a9811e86c4b70"
+    },
+    {
+      "path": "clothing-raster-layering/step01/clothing-depth.kra",
+      "source": "clothing-workflows-20261019/clothing-depth.kra",
+      "sha256": "acd7ba7fcf63aced9e18bd9e1b37a35844aa473c926d3c5a50dc0d2be34df2f3"
+    },
+    {
+      "path": "clothing-raster-layering/step01/composite.png",
+      "source": "clothing-workflows-20261019/images/step01-composite.png",
+      "sha256": "cb613b63bb988d6739a888f674c676d1f47c13f6401e247280fa852c53635d27"
+    },
+    {
+      "path": "clothing-raster-layering/step02/clothing-soft-edges.kra",
+      "source": "clothing-workflows-20261019/clothing-soft-edges.kra",
+      "sha256": "05ed07bc81c07c428c9326152ad02dc2f5de1ccfedb97fec4f9951a55c110fb0"
+    },
+    {
+      "path": "clothing-raster-layering/step02/composite.png",
+      "source": "clothing-workflows-20261019/images/final-composite.png",
+      "sha256": "7dc65e18ecee99e90847cea518aaac8bb0a336c2a1818cd6fd2af3ba8386fd01"
+    }
+  ]
+}

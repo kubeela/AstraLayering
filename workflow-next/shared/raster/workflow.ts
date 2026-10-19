@@ -1,3 +1,5 @@
+import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
+import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { pipelineDirectory, resolveInput, type PipelineId } from '../paths.ts';
 import { appendFile, mkdir, realpath, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -19,6 +21,7 @@ export type WorkflowOptions = {
 };
 export type Dependencies = {
   agent?: Agent;
+  environment?: WorkflowEnvironment;
   preflight?: (path: string) => Promise<KritaInstallation>;
   steps?: readonly StepDefinition[];
   runsDirectory?: string; // Test isolation only; the CLI uses workflow-next/.run/.
@@ -44,7 +47,11 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
   const requested = pipelineDirectory(options.name, pipeline.id, dependencies.runsDirectory);
   const saved = await loadConfig(requested, options.name);
   const directory = await canonicalPath(requested);
-  const definitions: readonly StepDefinition[] = dependencies.steps ?? pipeline.steps;
+  const environment = dependencies.environment ?? loadWorkflowEnvironment();
+  const definitions: readonly StepDefinition[] = (dependencies.steps ?? pipeline.steps).map(step => ({ ...step,
+    ...(step.modelTier ? environment.models[step.modelTier] : {}),
+    ...(step.review ? { review: { ...step.review, ...(step.review.modelTier ? environment.models[step.review.modelTier] : {}) } } : {}),
+  }));
   const plan = await inspectRun(directory, definitions);
   const reference = await resolvePartInput(options.name, pipeline.inputPipeline, dependencies.runsDirectory);
   if (within(reference.directory, directory) || within(directory, reference.directory)) throw new Error('上游与本管线目录必须分开');
@@ -55,7 +62,9 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
   const config = saved ?? newConfig(options.name, reference, krita, [...pipeline.steps, ...definitions]);
   config.sourceInput = reference;
   config.krita = krita;
-  for (const step of definitions) config.models[step.id] ??= { model: step.model, effort: step.effort };
+  for (const step of definitions) {
+    if (step.modelTier || !config.models[step.id]) config.models[step.id] = { model: step.model, effort: step.effort };
+  }
   options.progress?.(`前置检查通过：Krita ${krita.version} (${krita.executable})`);
   options.progress?.(`任务目录：${directory}；直接读取上游：${reference.directory}`);
   if (plan.resetFrom !== undefined) options.progress?.(`${options.dryRun ? '预览：将' : '将'}重置 step${String(plan.resetFrom).padStart(2, '0')} 及后续步骤，并清除旧 threadId。`);
@@ -111,7 +120,11 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
         }
       }
     }
+    let lastAgentMessage = '';
+    let lastThreadId: string | undefined;
     const invoke = async (prompt: string, phase: string, fresh = false) => {
+      lastAgentMessage = '';
+      lastThreadId = fresh ? undefined : config.threadId ?? undefined;
       const attempt = randomUUID();
       const selected = fresh ? step.review! : model;
       if (!fresh && phase !== 'draw' && !config.threadId) throw new Error('缺少原绘制 threadId，无法继续修复。');
@@ -123,16 +136,18 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
       await rm(join(output, 'error.txt'), { force: true });
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
-        prompt, directory, model: selected.model, effort: selected.effort,
+        prompt, directory, model: selected.model, effort: selected.effort, environment,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
-        occlusion: fresh ? undefined : { upstream: reference.directory, editable: step.id === 'step01' && phase === 'draw' },
+        occlusion: !fresh && step.id === 'step01' && phase === 'draw' ? { upstream: reference.directory, editable: true } : undefined,
         tools: fresh ? undefined : createOcclusionTools(reference.directory, step.id === 'step01' && phase === 'draw'),
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
           await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
         },
         onEvent: async event => {
+          if (event.type === 'item.completed' && event.item.type === 'agent_message') lastAgentMessage = event.item.text;
           if (event.type === 'thread.started') {
+            lastThreadId = event.thread_id;
             if (fresh) return; // Reviewer sessions are never saved or resumed.
             if (!event.thread_id.trim() || (config.threadId && config.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
             config.threadId = event.thread_id;
@@ -143,6 +158,7 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
           if (event.type === 'error') options.progress?.(`SDK：${event.message}`);
         },
       });
+      if (!lastAgentMessage) lastAgentMessage = result.summary;
       await writeFile(resultFile, JSON.stringify(result, null, 2) + '\n');
       return result;
     };
@@ -174,8 +190,12 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
       options.progress?.(`${step.id}：交付检查通过，已写入 .completed`);
       previous.push(output);
     } catch (error) {
-      await writeFile(join(output, 'error.txt'), (error instanceof Error ? error.message : String(error)) + '\n');
-      throw error;
+      const failure = agentOutcomeError(error instanceof Error ? error.message : String(error),
+        { text: lastAgentMessage, threadId: lastThreadId }, error);
+      const message = formatAgentError(failure);
+      await writeFile(join(output, 'error.txt'), message + '\n');
+      options.progress?.(message);
+      throw failure;
     }
   }
   if (options.dryRun) return previews.join('\n\n') || '当前已定义步骤均已完成；无需调用模型。';

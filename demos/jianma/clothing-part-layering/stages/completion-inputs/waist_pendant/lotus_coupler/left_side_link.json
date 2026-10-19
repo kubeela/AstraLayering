@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/lotus_coupler/left_side_link",
+  "beforeHash": "45184c2c110a6f8336c53b67f0ae1ff911ee96ef102ac5fd39c926dc9c432851",
+  "afterHash": "ad12cdccc2278b460677a7b0010574f1a9440752cb387d89e70e7d902dd3dc1c",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

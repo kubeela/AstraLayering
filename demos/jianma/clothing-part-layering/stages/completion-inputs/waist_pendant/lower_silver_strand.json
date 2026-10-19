@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/lower_silver_strand",
+  "beforeHash": "711a6c9e23a12d32cb4d123c40f702c03d533829ca55ed5b3e47ed9290c9fa94",
+  "afterHash": "bbeabff7be181222a18fd6dec6e32c1a77cba3c5772328adf878439cff639711",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

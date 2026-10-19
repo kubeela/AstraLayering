@@ -1,3 +1,5 @@
+import { checkCodexCapabilities, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment, type ModelSelection } from '../codex/environment.ts';
+import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { Codex, type Thread, type ThreadEvent, type ThreadOptions } from '@openai/codex-sdk';
 import type { FunctionTool } from '../codex/function-tools.ts';
 import { fileURLToPath } from 'node:url';
@@ -8,7 +10,8 @@ export type AgentRequest = {
   prompt: string;
   directory: string;
   model: string;
-  effort: 'xhigh';
+  effort: ModelSelection['effort'];
+  environment?: WorkflowEnvironment;
   threadId?: string;
   occlusion?: { upstream: string; editable: boolean };
   tools?: FunctionTool[]; // Local callbacks for workflow adapters; SDK uses the matching stdio server.
@@ -24,7 +27,9 @@ type Client = {
 
 export async function runAgent(request: AgentRequest, client?: Client, runtime = new AgentRuntime(1)): Promise<StepResult> {
   // Keep the configured login and tool providers; enable the native image tool.
-  const codex = client ?? new Codex({ config: rasterCodexConfig(request) });
+  const environment = request.environment ?? loadWorkflowEnvironment();
+  if (!client) await checkCodexCapabilities(environment);
+  const codex = client ?? new Codex(workflowCodexOptions(environment, { config: rasterCodexConfig(request) }));
   const options: ThreadOptions = {
     model: request.model,
     modelReasoningEffort: request.effort,
@@ -67,13 +72,17 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       }
       if (!completed) throw new AgentCallError(lastError || 'response stream disconnected：未收到 turn.completed');
     } catch (error) {
-      if (error instanceof AgentCallError) throw error;
-      throw new AgentCallError(error instanceof Error ? error.message : String(error), undefined, { cause: error });
+      const reported = error instanceof AgentCallError ? error : new AgentCallError(error instanceof Error ? error.message : String(error), undefined, { cause: error });
+      reported.threadId = threadId;
+      reported.finalResponse = text;
+      throw reported;
     }
-    const result: unknown = JSON.parse(text);
+    let result: unknown;
+    try { result = JSON.parse(text); }
+    catch (error) { throw agentOutcomeError('模型回合已结束，但没有返回有效的步骤结果 JSON。', { text, threadId }, error); }
     if (!result || typeof result !== 'object' || !('status' in result) || !('summary' in result)
       || typeof result.status !== 'string' || !['completed', 'blocked'].includes(result.status) || typeof result.summary !== 'string' || !result.summary.trim()) {
-      throw new Error('步骤未返回有效的完成或受阻说明');
+      throw agentOutcomeError('步骤未返回有效的完成或受阻说明', { text, threadId });
     }
     return result as StepResult;
   }, { signal: request.signal, onRetry: request.onRetry });
@@ -82,7 +91,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
 // Per-invocation MCP configuration works for both new and preexisting SDK threads.
 // The provider, credentials and native image tool remain owned by the external Codex environment.
 export function rasterCodexConfig(request: Pick<AgentRequest, 'occlusion'>) {
-  return { features: { image_generation: true }, ...(request.occlusion ? {
+  return { features: { image_generation: true }, ...(request.occlusion?.editable ? {
     mcp_servers: { layering_occlusion: {
       command: process.execPath,
       args: [fileURLToPath(new URL('./occlusion-mcp.ts', import.meta.url)), '--upstream', request.occlusion.upstream,

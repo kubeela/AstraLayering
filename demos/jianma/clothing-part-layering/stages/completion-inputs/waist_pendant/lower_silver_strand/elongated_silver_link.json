@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/lower_silver_strand/elongated_silver_link",
+  "beforeHash": "2740b9231a3e3a3d61ea9c21971c98f1529ff67d0a3726350a60322a1c246303",
+  "afterHash": "27bc029d7a20fb40f4a501a6324422397e9f147c901305d4e9ff3c43e9506251",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

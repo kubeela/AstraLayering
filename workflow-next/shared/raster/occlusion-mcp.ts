@@ -7,7 +7,7 @@ import { createOcclusionTools } from './occlusion-tools.ts';
 // Upstream scope comes from the workflow, never from the model's tool arguments.
 export async function serveOcclusion(upstream: string, editable: boolean) {
   if (!isAbsolute(upstream)) throw new Error('MCP upstream must be an absolute path');
-  const tools = createOcclusionTools(upstream, editable).filter(tool => editable || tool.name === 'read_occlusion');
+  const tools = createOcclusionTools(upstream, editable);
   const signal = new AbortController().signal;
   const send = (message: unknown) => process.stdout.write(JSON.stringify(message) + '\n');
   for await (const line of createInterface({ input: process.stdin, crlfDelay: Infinity })) {

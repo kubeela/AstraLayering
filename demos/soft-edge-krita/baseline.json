@@ -1,6 +1,0 @@
-{
-  "source": "../gray-control-krita/character-depth.kra",
-  "commit": "15dc698b60dd7753aa37cdefd85f3c1acfe59ccc",
-  "sha256": "08f531a1ca1a86b0295ca148d5966e8e6022538d2d4d3aa486a626afba895093",
-  "scope": "Local Krita brush work on edges, visible/completed seams and existing line quality. No shadows, source overlays, layer-wide filters or contour redesign."
-}

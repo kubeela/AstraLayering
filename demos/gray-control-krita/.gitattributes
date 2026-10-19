@@ -1,2 +1,0 @@
-# Preserve the exact reference snapshot, including original CRLF lines.
-standard/** -text whitespace=cr-at-eol
