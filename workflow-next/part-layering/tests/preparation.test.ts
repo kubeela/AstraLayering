@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
-import type { AgentTask } from '../agents.ts';
+import type { AgentTask } from '../../shared/codex/agents.ts';
 import { getPreparationDirectory, loadPreparedReferences, prepareReferences } from '../preparation.ts';
 import { createPreparationSteps } from '../run.ts';
+import { taskDirectory } from '../../shared/paths.ts';
 
 const styleReference = fileURLToPath(new URL('../resources/简化参考图片.png', import.meta.url));
 const outfitReference = fileURLToPath(new URL('../resources/连体服参考.jpg', import.meta.url));
@@ -17,7 +18,7 @@ async function fixture(t: TestContext, needsSimplification: boolean) {
   const runName = `test-${randomUUID()}`;
   t.after(async () => {
     await rm(temporary, { recursive: true, force: true });
-    await rm(dirname(getPreparationDirectory(runName)), { recursive: true, force: true });
+    await rm(taskDirectory(runName), { recursive: true, force: true });
   });
   const bytes = await readFile(styleReference);
   const original = join(temporary, 'original.png');

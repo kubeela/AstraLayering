@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "oldText",
+    "newText"
+  ],
+  "properties": {
+    "oldText": {
+      "type": "string",
+      "minLength": 1
+    },
+    "newText": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

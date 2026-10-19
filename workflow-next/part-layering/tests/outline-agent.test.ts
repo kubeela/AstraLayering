@@ -1,15 +1,16 @@
+import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
-import type { AgentSession, AgentTask } from '../agents.ts';
-import { GroupStore, normalizeGroups } from '../groups.ts';
-import { createLayeringSteps as createDefaultLayeringSteps } from '../layering-steps.ts';
-import { runLayering } from '../layering.ts';
-import { readGroupPrompt } from '../group-prompts.ts';
-import { drawGroupOutline } from '../outline-agent.ts';
+import type { AgentSession, AgentTask } from '../../shared/codex/agents.ts';
+import { GroupStore, normalizeGroups } from '../../shared/part/groups.ts';
+import { createLayeringSteps as createDefaultLayeringSteps } from '../../shared/part/layering-steps.ts';
+import { runLayering } from '../../shared/part/layering.ts';
+import { readGroupPrompt } from '../../shared/part/group-prompts.ts';
+import { drawGroupOutline } from '../../shared/part/outline-agent.ts';
 
 const signal = new AbortController().signal;
 // 本文件仅测试轮廓/review；后续补全由 completion-agent.test.ts 验证。
@@ -38,7 +39,7 @@ async function fixture(t: TestContext) {
   await writeFile(references.baseSubject, bytes);
   const store = await GroupStore.open(directory);
   await store.update(document => { document.groups = normalizeGroups([{ id: 'face', note: '脸部与耳朵，不画头顶或后脑' }]); });
-  return { directory, references, store };
+  return { profile, directory, references, store };
 }
 
 function agents(verdicts: string[], options: {
@@ -161,7 +162,7 @@ test('revise 由原绘制会话返修，每次 review 新会话，报告保留�
     '对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。\n');
   assert.equal(await readFile(join(f.directory, 'stages/outline/face.repairs/1/prompt.txt'), 'utf8'), mock.calls[2].task.prompt);
   assert.doesNotMatch(mock.calls[2].task.prompt, /会话|窗口|thread|最多.*返修/);
-  assert.deepEqual(mock.calls[2].task.tools!.map(tool => tool.name), ['preview_svg', 'write_outline_svg', 'read_svg', 'view_bitmap']);
+  assert.deepEqual(mock.calls[2].task.tools!.map(tool => tool.name), ['preview_svg', 'write_outline_svg', 'read_svg', 'view_bitmap', 'update_group_note']);
   const report = JSON.parse(await readFile(join(f.directory, 'stages/review/face.review.json'), 'utf8'));
   assert.deepEqual(report.reviews.map((review: { verdict: string }) => review.verdict), ['revise', 'pass']);
   assert.notEqual(report.reviews[0].candidateHash, report.reviews[1].candidateHash);

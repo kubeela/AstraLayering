@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "groupId",
+    "svg"
+  ],
+  "properties": {
+    "groupId": {
+      "type": "string"
+    },
+    "svg": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

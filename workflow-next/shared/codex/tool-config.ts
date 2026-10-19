@@ -1,0 +1,54 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { FunctionTool } from './function-tools.ts';
+
+type Definition = Pick<FunctionTool, 'name' | 'description' | 'inputSchema'>;
+export const toolsDirectory = fileURLToPath(new URL('../tools/', import.meta.url));
+
+function optional(path: string): string | undefined {
+  try { return readFileSync(path, 'utf8'); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
+}
+
+// A catalog is a snapshot. Running sessions keep their registered definitions;
+// editing the files takes effect on the next workflow launch.
+export class ToolCatalog {
+  private definitions = new Map<string, Definition>();
+
+  constructor(directory = toolsDirectory, overrides?: string) {
+    const names = readdirSync(directory, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => entry.name);
+    for (const name of names) {
+      if (!/^[a-z][a-z0-9_]*$/.test(name)) throw new Error(`无效工具目录：${name}`);
+      const read = (file: string) => (overrides ? optional(join(overrides, name, file)) : undefined)
+        ?? readFileSync(join(directory, name, file), 'utf8');
+      const description = read('description.md').trim();
+      let inputSchema: unknown;
+      try { inputSchema = JSON.parse(read('schema.json')); }
+      catch (error) { throw new Error(`工具 ${name} 的 schema.json 无效`, { cause: error }); }
+      if (!description || !inputSchema || typeof inputSchema !== 'object' || Array.isArray(inputSchema)
+        || (inputSchema as Record<string, unknown>).type !== 'object') {
+        throw new Error(`工具 ${name} 需要非空 description.md 和 object 类型的 schema.json`);
+      }
+      this.definitions.set(name, { name, description, inputSchema: inputSchema as Record<string, unknown> });
+    }
+  }
+
+  get(name: string): Definition {
+    const definition = this.definitions.get(name);
+    if (!definition) throw new Error(`未配置的工具：${name}`);
+    return structuredClone(definition);
+  }
+}
+
+const catalogs = new Map<string, ToolCatalog>();
+export function toolCatalog(overrides?: string): ToolCatalog {
+  const key = overrides ?? '';
+  let catalog = catalogs.get(key);
+  if (!catalog) { catalog = new ToolCatalog(toolsDirectory, overrides); catalogs.set(key, catalog); }
+  return catalog;
+}
+
+export function toolDefinition(name: string, overrides?: string): Definition {
+  return toolCatalog(overrides).get(name);
+}

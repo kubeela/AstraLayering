@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "paths"
+  ],
+  "properties": {
+    "paths": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "d"
+        ],
+        "properties": {
+          "d": {
+            "type": "string"
+          },
+          "fillRule": {
+            "type": "string",
+            "enum": [
+              "nonzero",
+              "evenodd"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

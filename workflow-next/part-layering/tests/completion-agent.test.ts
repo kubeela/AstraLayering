@@ -1,15 +1,16 @@
+import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import type { AgentTask } from '../agents.ts';
-import { artifactPath, publishSvg, svgHash } from '../artifact-facts.ts';
-import { completeGroupOcclusion, checkGroupCompletion, readCompletionReferences } from '../completion-agent.ts';
-import { assertCompletionPreserves, composeCompletion } from '../completion-svg.ts';
-import { normalizeGroups, GroupStore, walkGroups, writeAtomic } from '../groups.ts';
-import { readGroupPrompt, readGroupReferences } from '../group-prompts.ts';
-import { createLayeringSteps } from '../layering-steps.ts';
-import { runLayering } from '../layering.ts';
+import type { AgentTask } from '../../shared/codex/agents.ts';
+import { artifactPath, publishSvg, svgHash } from '../../shared/part/artifact-facts.ts';
+import { completeGroupOcclusion, checkGroupCompletion, readCompletionReferences } from '../../shared/part/completion-agent.ts';
+import { assertCompletionPreserves, composeCompletion } from '../../shared/part/completion-svg.ts';
+import { normalizeGroups, GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
+import { readGroupPrompt, readGroupReferences } from '../../shared/part/group-prompts.ts';
+import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
+import { runLayering } from '../../shared/part/layering.ts';
 import { fixture, shape, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;
@@ -80,10 +81,10 @@ test('自定义补全实现也受调度器保留原形约束，不发布重画�
 
 test('face 特化与可选参考按完整 ID 独立读取；只配置参考也不要求替换通用正文', async t => {
   const f = await fixture(t);
-  const face = await readGroupPrompt('face', 'completion');
+  const face = await readGroupPrompt('face', 'completion', profile.promptsDirectory);
   assert.match(face.text, /不要扩成整个头型/);
   assert.match(face.text, /不设计侧脸、背面/);
-  assert.ok((await readGroupPrompt('face/eye', 'completion')).path.endsWith('9-正面遮挡补全.md'));
+  assert.ok((await readGroupPrompt('face/eye', 'completion', profile.promptsDirectory)).path.endsWith('9-正面遮挡补全.md'));
   const prompts = join(f.directory, 'prompts');
   await mkdir(join(prompts, 'groups', 'head'), { recursive: true });
   await writeFile(join(prompts, '9-正面遮挡补全.md'), 'generic');
@@ -145,7 +146,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     assert.ok(!events.includes(`${group.id}:children`));
   }
   for (const id of ['arms/arm_left/hand', 'arms/arm_left/hand/palm', 'arms/arm_right/hand', 'arms/arm_right/hand/palm']) {
-    assert.ok((await readGroupPrompt(id, 'completion')).path.endsWith('9-正面遮挡补全.md'));
+    assert.ok((await readGroupPrompt(id, 'completion', profile.promptsDirectory)).path.endsWith('9-正面遮挡补全.md'));
   }
 });
 

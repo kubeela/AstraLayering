@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import { readFile, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { artifactPath, readJson, reductionReportPath, reportPath } from '../artifact-facts.ts';
-import { GroupStore, walkGroups, writeAtomic } from '../groups.ts';
-import { runLayering } from '../layering.ts';
+import { artifactPath, readJson, reductionReportPath, reportPath } from '../../shared/part/artifact-facts.ts';
+import { GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
+import { runLayering } from '../../shared/part/layering.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
-import { completionInputsPath, fileDependency } from '../completion-inputs.ts';
+import { completionInputsPath, fileDependency } from '../../shared/part/completion-inputs.ts';
 
 async function missing(paths: string[]) {
   for (const path of paths) await assert.rejects(readFile(path), { code: 'ENOENT' }, path);

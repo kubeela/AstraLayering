@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { mkdir, realpath } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { readGroupReferences } from '../group-prompts.ts';
-import { writeAtomic } from '../groups.ts';
+import { readGroupReferences } from '../../shared/part/group-prompts.ts';
+import { writeAtomic } from '../../shared/part/groups.ts';
 import { fixture } from './layering-fixture.ts';
 
 test('参考图片按当前组与步骤显式读取，相对清单定位且不继承', async t => {

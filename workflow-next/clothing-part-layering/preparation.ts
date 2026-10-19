@@ -1,9 +1,10 @@
+import { pipelineDirectory, resolveInput } from '../shared/paths.ts';
 import { createHash, randomUUID } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import type { CodexAgents } from './agents.ts';
+import type { CodexAgents } from '../shared/codex/agents.ts';
 
 export type PreparationInput = { image?: string; runName: string };
 export type PreparationReferences = {
@@ -13,8 +14,7 @@ export type PreparationSteps = { extract(image: string, output: string, prompt: 
 const hash = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
 
 export function getPreparationDirectory(runName: string): string {
-  if (!runName || runName === '.' || runName === '..' || /[\\/:]/.test(runName)) throw new Error('runName must be a single directory name');
-  return join(fileURLToPath(new URL('.run/', import.meta.url)), runName, 'references');
+  return join(pipelineDirectory(runName, 'clothing-part-layering'), 'references');
 }
 async function exists(path: string): Promise<boolean> {
   try { return (await stat(path)).isFile(); }
@@ -76,7 +76,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   let image = await savedInput(directory);
   if (!image) {
     if (!input.image) throw new Error('首次运行需要 --image <简化穿衣角色图片路径>。');
-    const source = resolve(input.image), extension = extname(source).toLowerCase();
+    const source = resolveInput(input.runName, input.image), extension = extname(source).toLowerCase();
     if (!/\.(png|jpe?g|webp)$/.test(extension) || !await exists(source)) throw new Error('输入须为简化穿衣角色的 PNG、JPEG 或 WebP 图片。');
     await sharp(source).metadata();
     await mkdir(directory, { recursive: true });

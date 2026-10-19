@@ -1,3 +1,5 @@
+import { pipelineDirectory } from '../../shared/paths.ts';
+const runDirectory = (name: string) => pipelineDirectory(name, 'raster-layering');
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -5,13 +7,13 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
 import type { ThreadEvent, ThreadOptions } from '@openai/codex-sdk';
-import { runAgent, type AgentRequest, type StepResult } from '../agent.ts';
-import { checkKrita } from '../krita.ts';
-import { resolvePartInput } from '../input.ts';
+import { runAgent, type AgentRequest, type StepResult } from '../../shared/raster/agent.ts';
+import { checkKrita } from '../../shared/raster/krita.ts';
+import { resolvePartInput } from '../../shared/raster/input.ts';
 import { parseRunArguments } from '../run.ts';
-import { inspectRun, runDirectory, type RunConfig } from '../run-store.ts';
+import { inspectRun, type RunConfig } from '../../shared/raster/run-store.ts';
 import { steps, stepModels, type StepDefinition } from '../steps.ts';
-import { runWorkflow } from '../workflow.ts';
+import { runWorkflow } from '../run.ts';
 
 const preflight = async (executable: string) => ({ executable, version: '5.3.4' });
 const complete: StepResult = { status: 'completed', summary: 'Fixture delivery' };
@@ -33,7 +35,7 @@ async function fixture(t: TestContext) {
     const { review: _review, ...drawing } = step;
     return drawing;
   });
-  return { directory, input, output: join(runsDirectory, name), definitions,
+  return { directory, input, output: join(runsDirectory, name, 'raster-layering'), definitions,
     options: { name, input, krita: process.execPath }, resume: { name }, deps: { runsDirectory, preflight, steps: [steps[0]] } };
 }
 async function deliver(request: AgentRequest, step: StepDefinition = steps[0], thread = request.threadId ?? 'thread-1') {
@@ -45,11 +47,11 @@ async function deliver(request: AgentRequest, step: StepDefinition = steps[0], t
 }
 
 test('任务名限制为单个目录；固定 .run 与 cwd 无关，CLI 可只传 --name', () => {
-  assert.equal(runDirectory('测试-01'), fileURLToPath(new URL('../.run/测试-01', import.meta.url)));
+  assert.equal(runDirectory('测试-01'), fileURLToPath(new URL('../../.run/测试-01/raster-layering', import.meta.url)));
   const cwd = process.cwd();
   try {
     process.chdir(tmpdir());
-    assert.equal(runDirectory('test'), fileURLToPath(new URL('../.run/test', import.meta.url)));
+    assert.equal(runDirectory('test'), fileURLToPath(new URL('../../.run/test/raster-layering', import.meta.url)));
   } finally { process.chdir(cwd); }
   for (const name of ['', '.', '..', '../other', '/tmp/other', 'a/b', 'a\\b']) assert.throws(() => runDirectory(name), /--name/);
   assert.equal(parseRunArguments(['--name', 'test']).name, 'test');

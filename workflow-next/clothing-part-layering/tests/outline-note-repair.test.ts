@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import { chmod, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
-import { CodexAgents, type AgentTask } from '../agents.ts';
-import { findGroup, GroupStore, normalizeGroups, writeAtomic } from '../groups.ts';
-import { drawGroupOutline, reviewGroupOutline } from '../outline-agent.ts';
+import { CodexAgents, type AgentTask } from '../../shared/codex/agents.ts';
+import { findGroup, GroupStore, normalizeGroups, writeAtomic } from '../../shared/part/groups.ts';
+import { drawGroupOutline, reviewGroupOutline } from '../../shared/part/outline-agent.ts';
 import { fixture, shape } from './layering-fixture.ts';
 import { nodeExecutables } from './node-executables.ts';
 
@@ -77,15 +77,15 @@ test('note repair is bound to one group, requires a unique match and preserves c
     [['band', 'group'], ['tail', 'part']]);
 });
 
-test('initial outline drawing cannot use the registered group-note repair tool', async t => {
+test('initial outline drawing can correct its own note without changing the group tree', async t => {
   const f = await noteFixture(t, '原说明');
   await drawGroupOutline(f, { async run(task) {
-    await assert.rejects(tool(task, 'update_group_note').execute({ oldText: '原说明', newText: '越权更新' }, signal), /仅在返修回合/);
+    await tool(task, 'update_group_note').execute({ oldText: '原说明', newText: '已核对的新说明' }, signal);
     await tool(task, 'write_outline_svg').execute({ svg: shape('band') }, signal);
     await tool(task, 'preview_svg').execute({ path: inputs(task).outputSvg, mode: 'blend' }, signal);
     return { text: 'drawn', images: [] };
   } });
-  assert.equal(findGroup(f.store.snapshot(), 'band').note, '原说明');
+  assert.equal(findGroup(f.store.snapshot(), 'band').note, '已核对的新说明');
 });
 
 test('initial drawing and repair reuse one actual app-server session with stable tool definitions', async t => {

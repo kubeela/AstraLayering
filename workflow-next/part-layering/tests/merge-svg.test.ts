@@ -3,9 +3,9 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import sharp from 'sharp';
-import { GroupStore, writeAtomic } from '../groups.ts';
-import { runLayering } from '../layering.ts';
-import { namespaceSvg } from '../merge-svg.ts';
+import { GroupStore, writeAtomic } from '../../shared/part/groups.ts';
+import { runLayering } from '../../shared/part/layering.ts';
+import { namespaceSvg } from '../../shared/part/merge-svg.ts';
 import { fixture, workingSteps } from './layering-fixture.ts';
 
 const sample = async (svg: string, x: number, y: number) => {

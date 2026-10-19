@@ -2,14 +2,14 @@
 
 从**简化后的穿衣角色图**提取纯衣服，再生成可独立控制的衣服 part 色块及深度表，交给 [clothing-raster-layering](../clothing-raster-layering/README.md) 绘制分层 KRA。输入暂时固定为穿衣角色图，以保留衣服与角色身形、姿态和坐标的对应关系。
 
-本目录独立持有从 `part-layering` 复制的 TypeScript 调度、Codex SDK / App Server 适配及文件恢复代码，不导入原流程实现，也不包含原流程的人体先验。所有文字 agent 使用 `gpt-6.1-sol / xhigh`。
+调度、Codex SDK / App Server 适配及文件恢复使用 `../shared/` 的公共实现。本目录保留衣服 preparation、提示词和专项配置，不加载人物先验。所有文字 agent 使用 `gpt-6.1-sol / xhigh`。
 
 ## 启动
 
 需要 Node 24.12+、pnpm，以及外部已配置好的 Codex。以下命令在仓库根目录执行：
 
 ```bash
-pnpm --dir workflow-next/clothing-part-layering install --frozen-lockfile
+pnpm --dir workflow-next install --frozen-lockfile
 pnpm --dir workflow-next/clothing-part-layering start --name test --image /path/to/simplified-character.png
 
 # 续跑只需任务名，使用已经保存的输入
@@ -27,7 +27,7 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
 3. 逐层执行轮廓绘制、review / 返修、同层去重、遮挡补全、自检及直属 group / part 分析。完成当前层后继续下一层，实际结构决定拆分深度。
 4. 合成 `preview.svg`，为所有终止 part 规划并逐件检查固定深度，保存 `occlusion.json`。
 
-轮廓 review 发现当前组 `note` 的职责或层序说明有误时，返修者可用 `update_group_note` 精确替换唯一匹配的原句。工具只修改本组说明，通过调度器共用的写入队列保存；下一次 review 和后续拆分读取更新后的说明。仅有说明问题时保持正确 SVG，不修改父组或分组树。
+绘制者在首次绘制或返修中发现当前组 `note` 的职责或层序说明有误时，可用 `update_group_note` 精确替换唯一匹配的原句。工具只修改本组说明，通过调度器共用的写入队列保存；下一次 review 和后续拆分读取更新后的说明。仅有说明问题时保持正确 SVG，不修改父组或分组树。
 
 此流程的 SVG 是纯色轮廓控制图，review 检查形状、开口、覆盖和归属；配色、纹样、明暗、笔触和透明度表现由后续栅格流程绘制。若反馈混入成品绘画要求，返修者须逐项解释其不适用原因并保留正确色块，不把控制图改成绘画成品。
 
@@ -37,10 +37,10 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
 
 ## 输出与恢复
 
-运行目录固定在本模块内，与启动时的工作目录无关：
+运行目录固定为共享任务下的本管线目录，与启动时的工作目录无关：
 
 ```text
-workflow-next/clothing-part-layering/.run/test/
+workflow-next/.run/test/clothing-part-layering/
   references/
     simplified-character.png   # 扩展名随实际输入保留
     clothing.png
@@ -59,7 +59,7 @@ workflow-next/clothing-part-layering/.run/test/
 
 在停止当前进程后，删除 `references/clothing.png` 可重新生成衣服参考；下次启动会先清除依赖旧参考的分组、parts、阶段记录、观察图、预览和深度表。重新制作全部衣服时也可使用新的 `--name`。不要用同一个名字并发启动。
 
-分件恢复沿用复制的文件事实机制：有效正式 SVG、报告及输入指纹决定哪些工作可复用；删除或修改上游轮廓会使其下游失效，只删除某件补全则只重新制作该件及实际引用它的依赖。深度表失效只重做最终深度规划。这里不使用栅格流程的 `step01/.completed` 标记。
+分件恢复使用共享的文件事实机制：有效正式 SVG、报告及输入指纹决定哪些工作可复用；删除或修改上游轮廓会使其下游失效，只删除某件补全则只重新制作该件及实际引用它的依赖。深度表失效只重做最终深度规划。这里不使用栅格流程的 `step01/.completed` 标记。
 
 ## 验证与代码入口
 
@@ -68,8 +68,10 @@ pnpm --dir workflow-next/clothing-part-layering check
 pnpm --dir workflow-next/clothing-part-layering test
 ```
 
-[run.ts](run.ts) 串联 [preparation.ts](preparation.ts) 与本地 [layering.ts](layering.ts)；[agents.ts](agents.ts) 和 [tool-agent.ts](tool-agent.ts) 使用同版本 Codex SDK / App Server。首次分组和递归拆分分别在 [initial-groups.ts](initial-groups.ts)、[children-agent.ts](children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
+[run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 使用同版本 Codex SDK / App Server。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
 
 自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。
 
 现已完成 [2026-10-18—19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；允许同一逻辑 part 多深度的通用优化仍在 [后续约定](../../demos/clothing-workflows-20261019/NEXT.md) 中。
+
+共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。

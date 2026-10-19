@@ -3,9 +3,9 @@ import { mkdtemp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:f
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
-import type { AgentRequest, StepResult } from '../agent.ts';
+import type { AgentRequest, StepResult } from '../../shared/raster/agent.ts';
 import { steps, type StepDefinition } from '../steps.ts';
-import { runWorkflow } from '../workflow.ts';
+import { runWorkflow } from '../run.ts';
 
 const completed: StepResult = { status: 'completed', summary: 'fixture completed' };
 const forbidden = async (): Promise<never> => assert.fail('unexpected model call');
@@ -41,7 +41,7 @@ async function fixture(t: TestContext) {
     index++;
     return completed;
   } });
-  return { directory, output: join(runsDirectory, 'test'), options, resume: { name: 'test' }, deps };
+  return { directory, output: join(runsDirectory, 'test', 'raster-layering'), options, resume: { name: 'test' }, deps };
 }
 
 test('旧第二步交付直接补 review；无问题时一次结束，reviewer ID 不覆盖或保存为主上下文', async t => {
