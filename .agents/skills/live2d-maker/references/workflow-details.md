@@ -11,7 +11,7 @@
 | `layering_custom_provider` | `false`；沿用当前 `CODEX_HOME` 或 `~/.codex` 的订阅／自定义 provider |
 | `layering_provider_base_url` / `layering_provider_api_key` | 自定义主 provider 为 `true` 时填写，使用 Responses API |
 | `layering_medium_model` | `gpt-6.1-sol-xhigh`；两套 part 的 agent、人物 raster step03 |
-| `layering_high_model` | `gpt-6-astra-xhigh`；两套 raster step01、step02 及 reviewer |
+| `layering_high_model` | `gpt-6-astra-xhigh`；两套 raster step01、step02 及 reviewer，穿戴组装 agent |
 | `layering_image_base_url` / `layering_image_api_key` | 可选独立 Images API；两项一起填写才启用 |
 | `layering_image_model` | `gpt-image-2.5-sunburst`；单独填写不会启用自定义生图 |
 | `layering_image_compact_threshold` | 留空关闭；如网关上限为 50 张，可设 `49` |
@@ -40,10 +40,11 @@ pnpm build:codex
 ├── part-layering/           # references、groups、parts、stages、occlusion
 ├── raster-layering/         # run.json、step01～step03
 ├── clothing-part-layering/  # 纯衣服 preparation 及衣片分组产物
-└── clothing-raster-layering/# run.json、step01～step02
+├── clothing-raster-layering/# run.json、step01～step02
+└── character-assembly/      # run.json、step01 穿戴组装
 ```
 
-默认运行根目录是 skill 上一级；四个入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。目录结构不额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物。后续入口不再接受 `--input` 或另行提供图片。
+默认运行根目录是 skill 上一级；四个入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。目录结构不额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物；组装入口读取人物 step03 KRA、衣服 step02 KRA 和人物 part 的简化穿衣参考。后续入口不再接受 `--input` 或另行提供图片。
 
 任务名保留各自原有启动规则：part 接受单个目录名，raster 要求以字母或数字开头、只含字母、数字、点、下划线和短横线且不超过 128 字符。共享目录不额外收紧 part 的名称范围。
 
@@ -85,13 +86,15 @@ clothing-part-layering/tools/write_groups/schema.json
 
 ## 临时错误恢复
 
-四套流程使用同一临时错误分类和退避策略。先等待 Codex 自身重连的最终结果，再对服务过载、断流和临时限流按 5、10、20、40、60 秒等待重试，之后每次 60 秒，直到成功或取消。保持原 thread、已有图片和文件，提示 agent 从未完成处继续；不增加视觉 review 轮次。
+五条管线使用同一临时错误分类和退避策略。先等待 Codex 自身重连的最终结果，再对服务过载、断流和临时限流按 5、10、20、40、60 秒等待重试，之后每次 60 秒，直到成功或取消。保持原 thread、已有图片和文件，提示 agent 从未完成处继续；不增加视觉 review 轮次。
 
 认证、额度、上下文超限、图片数量上限、输入或工件校验错误不会进入此重试。可选图片保护在请求发出前处理阈值；未启用时保持原行为。
 
 模型正常结束但没有交付文件、没有保存分组、缺少有效结构化结果，也会明确报错并展示模型最后消息及 threadId；raster 同时写入该步骤的 `error.txt`，保留 `.running`，不误标 `.completed`。例如模型告知没有可用的生图工具，终端会保留这段说明，方便修正环境后沿用原 thread 续跑。
 
 ## 多深度与上游修正
+
+本节仅适用于人物／衣服 part 和 raster；后续 `character-assembly` 使用已完成的两份 KRA，不注册深度修改工具，也不继承 raster step01 的拆层提示词。
 
 `occlusion.json` v3 中每个逻辑 part 仍只有一条记录：单深度使用 `level`，多深度使用 `levels: [{ level, region }]`，二者互斥。深度在整份表中按数值从后到前排序，不再等于数组位置；数值唯一，可用小数插入现有层之间。每个多深度区域都必须有文本说明和检查依据。v2 单深度表仍可读取。
 

@@ -2,7 +2,7 @@
 
 用 AI 将角色参考图制作成可编辑、带遮挡补全的人物与衣服分层素材，交付 Krita KRA 和透明 PNG。
 
-当前工作流统一为 **[live2d-maker](.agents/skills/live2d-maker/SKILL.md)**：人物 part / raster 与衣服 part / raster 四个入口，共享安装、调度和续跑能力，各自保留绘制提示词。
+当前工作流统一为 **[live2d-maker](.agents/skills/live2d-maker/SKILL.md)**：人物 part / raster、衣服 part / raster 与后续穿戴组装五个入口，共享安装、调度和续跑能力，各自保留绘制提示词。
 
 ## 使用
 
@@ -25,7 +25,7 @@ Krita：/绝对路径/krita
 
 [![参考与 Krita 穿戴合成](demos/jianma/assembled/comparison.png)](demos/jianma/assembled/README.md)
 
-[穿戴合成 KRA](demos/jianma/assembled/jianma-assembled.kra) · [衣装 KRA](demos/jianma/clothing-raster-layering/step02/clothing-soft-edges.kra) · [全部案例](demos/readme.md)
+[穿戴合成 KRA](demos/jianma/assembled/jianma-assembled.kra) · [衣装 KRA](demos/jianma/clothing-raster-layering/step02/clothing-soft-edges.kra) · [单 agent 组装实跑对照](demos/jianma/character-assembly/README.md) · [全部案例](demos/readme.md)
 
 当前验证范围是静态素材与默认穿戴，局部结构和笔触仍可能存在差异；完整案例包含人工检查与返修。转向、变形、物理摆动和动态遮挡需要后续绑定验证。
 
