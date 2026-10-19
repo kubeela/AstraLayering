@@ -50,6 +50,5 @@ node_modules/
 # Default live2d-maker task directories live beside installed skills, not inside them.
 /.agents/skills/*/
 !/.agents/skills/live2d-maker/
-!/.agents/skills/live2d-expressions/
 # Explicit legacy run roots remain local.
 .run/
