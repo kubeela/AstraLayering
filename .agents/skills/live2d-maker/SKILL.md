@@ -9,7 +9,7 @@ description: 从角色参考图制作适合 Live2D 后续绑定的分层素材�
 
 ## 安装与前置
 
-安装 GitHub 仓库 `wu-tian807/AstraLayering` 中的 `.agents/skills/live2d-maker` **整个目录**；依赖、脚本、提示词和参考图片均已包含，不要只下载本文件。可让 Codex 的 skill 安装器按该仓库路径安装，或自行复制目录到用户的 skills 位置，无需下载 demos 和 archive。
+安装 GitHub 仓库 `wu-tian807/AstraLayering` 中的 `.agents/skills/live2d-maker` **整个目录**；依赖、脚本、提示词和参考图片均已包含，不要只下载本文件。可让 Codex 的 skill 安装器按该仓库路径安装，或自行复制目录到用户的 skills 位置，无需下载 demos 和 archive。使用 skill 安装器时选择 `--method git` 稀疏检出，避免默认 ZIP 下载拉取整个大体积仓库。
 
 定位本 `SKILL.md` 所在目录，以下命令均从这个目录执行：
 

@@ -6,7 +6,7 @@
 
 ## 使用
 
-让 Codex 从 `wu-tian807/AstraLayering` 安装 `.agents/skills/live2d-maker` 整个 skill 目录，然后提供任务：
+让 Codex 通过 Git 稀疏检出从 `wu-tian807/AstraLayering` 安装 `.agents/skills/live2d-maker` 整个 skill 目录，然后提供任务：
 
 ```text
 使用 $live2d-maker 制作人物和衣服的分层素材。
