@@ -20,7 +20,7 @@ export const help = `raster-layering — 按顺序执行 Krita 栅格分层流�
 第二步完成 review / 修复后，第三步沿用绘制 thread，交付 character-dressup-base.kra、同名 PNG 和 report.md，不设 reviewer。
 `;
 
-export const pipeline = { id: 'raster-layering', steps } as const;
+export const pipeline = { id: 'raster-layering', inputPipeline: 'part-layering', steps } as const;
 
 export function runWorkflow(options: WorkflowOptions, dependencies: Dependencies = {}) {
   return runSharedWorkflow(pipeline, options, dependencies);

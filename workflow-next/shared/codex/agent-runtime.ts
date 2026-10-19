@@ -20,7 +20,11 @@ export function retryableAgentError(error: unknown): boolean {
   // 只处理调用通道报告的错误，不能把绘图/工具/文件校验异常当成服务过载。
   if (!(error instanceof AgentCallError)) return false;
   // Even a structured 429 can describe exhausted credit or an input image cap.
-  if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)|too many images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|image.{0,20}(?:limit|maximum)/i.test(error.message)) return false;
+  if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i.test(error.message)) return false;
+  const imageCountLimit = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i.test(error.message);
+  const throughputLimit = /\brate[\s_-]*limit\b|\bper\s+(?:second|minute|hour|day)\b/i.test(error.message);
+  // A service's image rate limit is temporary; a per-request input cap is not.
+  if (imageCountLimit && (!throughputLimit || /\bper\s+request\b/i.test(error.message))) return false;
   const info = error.info;
   const code = typeof info === 'string' ? info : info && typeof info === 'object' ? Object.keys(info)[0] : undefined;
   if (code) {

@@ -32,6 +32,8 @@ workflow-next/.run/<name>/
 
 用户输入的绝对路径直接使用；相对路径统一相对于 `workflow-next/.run/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。raster 的 `--input` 可以给 part 管线目录或其 `parts/`；前者自动补上 `parts`。
 
+任务名保留各自原有启动规则：part 接受单个目录名，raster 要求以字母或数字开头、只含字母、数字、点、下划线和短横线且不超过 128 字符。共享目录不额外收紧 part 的名称范围。
+
 首次输入保存在各管线内部。raster 仍复制 part 的交接文件到自己的 `input/`，续跑使用保存的输入，保留来源记录。共享目录不自动串联执行其他管线，也不自动更新已经保存的输入副本。各管线自己的工件记录和步骤提示词中的相对路径，以该管线目录为基准。
 
 part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 review 完成后先同层去重，再补全和分析子组。raster 以 `.running`、`.completed` 以及 review/repair Markdown 决定进度，`run.json` 保存配置和绘制 threadId。删除完成标记会重置该步及其后续步骤、重新建立绘制 thread；清理仅发生在本管线目录内。`.running` 表示尚未完成，不代表进程仍在运行。
@@ -81,3 +83,5 @@ pnpm --dir workflow-next test
 ```
 
 测试使用模拟 agent、SDK / App Server 和临时文件，并只读检查仓库已有示例的恢复，覆盖各自 preparation、提示词与参考选择、同层去重、恢复、两轮 review、工具配置及重试。不会运行付费生图或重画已有 KRA。新产生的 `.run/` 请求、会话及中间处理记录保留本地，不提交推送；仓库原已收录的人物示例随目录迁移，保留原有文件。
+
+共享重构的逐模块差异、发现的偏差及新旧调度对照结果见 [差异审计](docs/shared-refactor-audit.md)。

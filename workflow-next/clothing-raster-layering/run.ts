@@ -20,7 +20,7 @@ export const help = `clothing-raster-layering — 按顺序执行 Krita 栅格�
 第二步完成 review / 修复后结束，交付 step02/clothing-soft-edges.kra 和验收记录，不制作身体装配或身体插层说明。
 `;
 
-export const pipeline = { id: 'clothing-raster-layering', steps } as const;
+export const pipeline = { id: 'clothing-raster-layering', inputPipeline: 'clothing-part-layering', steps } as const;
 
 export function runWorkflow(options: WorkflowOptions, dependencies: Dependencies = {}) {
   return runSharedWorkflow(pipeline, options, dependencies);

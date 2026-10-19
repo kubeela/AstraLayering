@@ -34,7 +34,11 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
   }
 }
 
-export type RasterPipeline = { id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering'>; steps: readonly StepDefinition[] };
+export type RasterPipeline = {
+  id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering'>;
+  inputPipeline: Extract<PipelineId, 'part-layering' | 'clothing-part-layering'>;
+  steps: readonly StepDefinition[];
+};
 
 export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
   const requested = pipelineDirectory(options.name, pipeline.id, dependencies.runsDirectory);
@@ -44,19 +48,20 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
   const plan = await inspectRun(directory, definitions);
   let source = saved?.sourceInput;
   if (!saved) {
-    if (!options.input?.trim()) throw new Error('首次运行必须提供 --input <part-layering运行目录>。');
-    source = await resolvePartInput(resolveInput(options.name, options.input, dependencies.runsDirectory));
+    if (!options.input?.trim()) throw new Error(`首次运行必须提供 --input <${pipeline.inputPipeline}运行目录>。`);
+    source = await resolvePartInput(resolveInput(options.name, options.input, dependencies.runsDirectory), pipeline.inputPipeline);
     if (within(source.directory, directory) || within(directory, source.directory)
       || within(source.parts, directory) || within(directory, source.parts)) throw new Error('输入与任务目录必须分开，不能相同或相互包含。');
   } else if (options.input) {
-    const supplied = await resolvePartInput(resolveInput(options.name, options.input, dependencies.runsDirectory));
+    const supplied = await resolvePartInput(resolveInput(options.name, options.input, dependencies.runsDirectory), pipeline.inputPipeline);
     if (supplied.directory !== saved.sourceInput.directory || supplied.parts !== saved.sourceInput.parts) {
       throw new Error('该 --name 已绑定另一份输入；请为新输入使用新的 --name。');
     }
   }
-  const reference = saved ? await resolvePartInput(join(directory, 'input')) : { directory: join(directory, 'input'), parts: join(directory, 'input/parts') };
-  const kritaPath = options.krita ? resolveInput(options.name, options.krita, dependencies.runsDirectory) : saved?.krita.executable;
-  if (!kritaPath?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
+  const reference = saved ? await resolvePartInput(join(directory, 'input'), pipeline.inputPipeline) : { directory: join(directory, 'input'), parts: join(directory, 'input/parts') };
+  const configuredKrita = options.krita ?? saved?.krita.executable;
+  if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
+  const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, dependencies.runsDirectory);
   const krita = await (dependencies.preflight ?? checkKrita)(kritaPath);
   const config = saved ?? newConfig(options.name, source!, krita, [...pipeline.steps, ...definitions]);
   config.krita = krita;

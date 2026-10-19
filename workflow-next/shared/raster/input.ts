@@ -19,9 +19,9 @@ export async function snapshotInput(input: PartLayeringInput, destination: strin
   }
 }
 
-export async function resolvePartInput(value: string): Promise<PartLayeringInput> {
+export async function resolvePartInput(value: string, pipeline = 'part-layering'): Promise<PartLayeringInput> {
   const supplied = resolve(value);
-  if (!(await stat(supplied)).isDirectory()) throw new Error('--input 必须是 part-layering 运行目录或其中的 parts/ 目录。');
+  if (!(await stat(supplied)).isDirectory()) throw new Error(`--input 必须是 ${pipeline} 运行目录或其中的 parts/ 目录。`);
   // Prefer a run root containing parts/; also accept a direct path to parts/.
   let directory = supplied;
   let hasParts = false;
@@ -32,7 +32,7 @@ export async function resolvePartInput(value: string): Promise<PartLayeringInput
   try {
     if (!(await stat(parts)).isDirectory()) throw new Error('不是目录');
   } catch (error) {
-    throw new Error(`输入缺少 parts/ 产物目录：${parts}。请传入已完成的 part-layering 运行目录（例如 .run/test）。`, { cause: error });
+    throw new Error(`输入缺少 parts/ 产物目录：${parts}。请传入已完成的 ${pipeline} 运行目录（例如 --input ${pipeline}）。`, { cause: error });
   }
   return { directory: await realpath(directory), parts: await realpath(parts) };
 }

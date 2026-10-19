@@ -24,7 +24,7 @@ function decodeInitialGrouping(value: unknown, subjects: readonly string[]): Ini
     }
     return { id: item.name, name: item.name, ...(typeof item.note === 'string' ? { note: item.note } : {}) };
   });
-  if (!subjects.includes(String(raw.subject))) throw new Error(`首次分组的 subject 必须为 ${subjects.join(' 或 ')}`);
+  if (typeof raw.subject !== 'string' || !subjects.includes(raw.subject)) throw new Error(`首次分组的 subject 必须为 ${subjects.join(' 或 ')}`);
   normalizeGroups(groups);
   return { groups, subject: raw.subject as InitialGrouping['subject'] };
 }

@@ -7,13 +7,17 @@ export const pipelineIds = ['part-layering', 'raster-layering', 'clothing-part-l
 export type PipelineId = typeof pipelineIds[number];
 
 export function taskDirectory(name: string, root = runsDirectory): string {
-  if (!/^[\p{L}\p{N}][\p{L}\p{N}._-]{0,127}$/u.test(name)) {
-    throw new Error('--name 必须是单个任务名，以字母或数字开头，只含字母、数字、点、下划线或短横线（最多 128 字符）。');
-  }
+  if (!name || name === '.' || name === '..' || /[\\/:]/.test(name)) throw new Error('--name 必须是单个目录名。');
   return resolve(root, name);
 }
 
 export function pipelineDirectory(name: string, pipeline: PipelineId, root = runsDirectory): string {
+  // The part entrypoints historically accept any single directory name. Keep
+  // raster's stricter startup rule local to those pipelines when sharing paths.
+  if ((pipeline === 'raster-layering' || pipeline === 'clothing-raster-layering')
+    && !/^[\p{L}\p{N}][\p{L}\p{N}._-]{0,127}$/u.test(name)) {
+    throw new Error('--name 必须是单个任务名，以字母或数字开头，只含字母、数字、点、下划线或短横线（最多 128 字符）。');
+  }
   return join(taskDirectory(name, root), pipeline);
 }
 
