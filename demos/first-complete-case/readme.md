@@ -8,7 +8,7 @@
 
 [![参考彩图与阶段5终稿左右对比](./reference-vs-svg.png)](./reference-vs-svg.png)
 
-[原参考彩图](../../outputs/case1_miku/references/base-character.png) · [终稿SVG](./miku.svg) · [SVG预览器](../../loading/svg-preview.html)
+[原参考彩图](source/references/base-character.png) · [终稿SVG](./miku.svg) · [SVG预览器](../../loading/part-preview.html)
 
 ## 完整部件树与遮挡补全
 
@@ -18,7 +18,7 @@
 
 ![完整部件树滚动展示及部件独显](./parts-tree.png)
 
-[查看完整静态长图](./parts-tree-full.png) · [GIF备用版本](./parts-tree.gif) · [使用现有SVG预览器查看真实层级](../../loading/svg-preview.html)
+[查看完整静态长图](./parts-tree-full.png) · [GIF备用版本](./parts-tree.gif) · [SVG 对比预览器](../../loading/part-preview.html)
 
 主展示动图使用APNG保留完整色彩，另附GIF备用版本。动图中的树由实际SVG名称、层级与绘制顺序生成；左侧是完整组合，中间是实际提取后的独显示例。所有36个主要绘制分组均已单独提取渲染。独显时在展示副本中关闭已移开遮挡物的外来投影，例如刘海在脸上的投影、右手在衣料上的投影；保留本体明暗与局部色彩，并适应窗口缩放。完整组合与正式SVG保持原样。
 
@@ -28,11 +28,11 @@
 
 ## 交互查看
 
-交互功能统一使用已有的[SVG预览器](../../loading/svg-preview.html)，导入上面的终稿与参考彩图，即可查看真实图层、滚动部件树、控制显隐，并进行同步缩放、左右对比、透明叠加和滑动分割对比。本目录只提供README展示素材，不另建独立查看页面。
+使用 [part-preview](../../loading/part-preview.html) 导入终稿与参考彩图，可进行同步缩放、左右对比、透明叠加和滑动对比。当前预览器的图层控制需要匹配的 `groups.json`，本历史案例未附该格式；实际部件树与独显结果见上方动图、长图和 SVG 本身。
 
 ## 素材来源与再生成
 
-展示使用本目录的[miku.svg](./miku.svg)，与`outputs/case1_miku/step05-base-character/05-2_局部色彩与材质.svg`相同，SHA-256为`88b7b01fe5d24957c1997fbcca6e7d2a80661476a2273cbfb0894e5e3c2c59e9`。对比图直接渲染完整源文件；独显图只提取所属部件并关闭外来投影，没有重新绘画、修色或覆盖正式作品。节点与核对数据见[evidence.json](./evidence.json)。
+展示使用本目录的[miku.svg](./miku.svg)，与[原阶段终稿](source/step05-base-character/05-2_局部色彩与材质.svg)相同，SHA-256为`88b7b01fe5d24957c1997fbcca6e7d2a80661476a2273cbfb0894e5e3c2c59e9`。完整参考和阶段文件已从 `outputs/case1_miku` 迁入 `source/`。对比图直接渲染完整源文件；独显图只提取所属部件并关闭外来投影，没有重新绘画、修色或覆盖正式作品。节点与核对数据见[evidence.json](./evidence.json)。
 
 在仓库根目录运行`python3 demos/first-complete-case/build.py`可重新生成本页素材。依赖Pillow、Node.js和sharp；中文字体默认使用macOS黑体，可用`ASTRA_DISPLAY_FONT`指定本机字体文件。动图为部件树的滚动展示，不代表角色已完成动画绑定。
 

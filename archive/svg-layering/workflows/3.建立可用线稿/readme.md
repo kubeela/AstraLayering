@@ -42,7 +42,7 @@ step3—5若再次改动已审头脸／发型的造型、神态或遮挡，由�
 
 ## 实测记录
 
-- [miku_v3](../../../../outputs/miku_v3/readme.md)完成五步绘制，脸型与头型改善，局部眼睑睫毛和手足线质仍有差异，见[本轮复核](../../../../analysis/miku-v3-review/readme.md)。
+- [miku_v3](../../../../demos/miku-v3/readme.md)完成五步绘制，脸型与头型改善，局部眼睑睫毛和手足线质仍有差异，见[本轮复核](../../../../analysis/miku-v3-review/readme.md)。
 - 五步划分的依据是case3中脸缘外扩、头发覆盖和眼白比例偏差，见[历史复核](../../../../analysis/case3-miku-v2-review/readme.md)。case1和case3来自三步流程，对应提示词见提交 `20a893c`。
 - 2026-09-17配置step2后的独立review入口；该组织方式尚待完整生成验证。
 

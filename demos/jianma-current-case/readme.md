@@ -1,6 +1,6 @@
 # Jianma：人物分层与衣装还原
 
-2026-09-27 保存的实际交付快照：人物专项完成素体后，独立衣装流程在其上完成原衣还原；这里保存最终稿和参考；完整阶段稿、旧轮次、原运行脚本与审查证据分别保存在 [Jianma v4 实跑](../../outputs/jianma_v4/readme.md)和[衣装实跑](../../outputs/jianma_clothing/readme.md)。
+2026-09-27 保存的实际交付快照：人物专项完成素体后，独立衣装流程在其上完成原衣还原；这里保存最终稿和参考；完整阶段稿、旧轮次、原运行脚本与审查证据分别保存在 [Jianma v4 实跑](body-run/readme.md)和[衣装实跑](clothing-run/readme.md)。
 
 ![穿衣参考、分层素体与最终穿戴](overview.png)
 
@@ -16,7 +16,7 @@
 | [comparison.png](comparison.png) | 原运行导出的原图、成稿、叠合及代表性局部对照 |
 | [snapshot.json](snapshot.json) | 本次快照各文件的原始相对位置及内容摘要 |
 
-SVG 和原预览均原样复制；首页三栏图只排列已有图片，未改造型或重画。打开[预览器](../../loading/svg-preview.html)并拖入上述 SVG，即可查看分组和独显。
+SVG 和原预览均原样复制；首页三栏图只排列已有图片，未改造型或重画。打开[预览器](../../loading/part-preview.html)并拖入上述 SVG，即可查看分组和独显。
 
 ## 已有结构与后续限制
 
@@ -28,4 +28,4 @@ SVG 和原预览均原样复制；首页三栏图只排列已有图片，未改�
 
 ## 使用当前技能
 
-制作同类素体使用 [`$live2d-layering`](../../.agents/skills/live2d-layering/readme.md)，衣装制作使用 [`$live2d-clothing`](../../.agents/skills/live2d-clothing/readme.md)；调用方法见[首页](../../readme.md#使用技能)。
+制作同类素体使用 [`$live2d-layering`](../../.agents/skills/live2d-layering/readme.md)，衣装制作使用 [`$live2d-clothing`](../../.agents/skills/live2d-clothing/readme.md)；调用方法见[首页](../../readme.md#使用-svg-技能)。

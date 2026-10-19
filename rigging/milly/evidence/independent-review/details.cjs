@@ -13,7 +13,7 @@ await page.evaluate(()=>{MillyRig.reset();MillyRig.set({wind:0,physics:1})});awa
 // Directly retain transformed artwork with the original coordinate canvas for same-scale comparison.
 const comparison=await browser.newPage({viewport:{width:732,height:700},deviceScaleFactor:1});
 async function captureSVG(svg,name,viewBox='325 10 366 350') {await comparison.setContent('<html><style>body{margin:0;background:#fffaf3}svg{display:block;width:732px;height:700px}.skirt-part{display:none}.show-skirt .skirt-part{display:inline}</style><body>'+svg+'</body></html>');await comparison.locator('svg').evaluate((s,v)=>{s.setAttribute('viewBox',v);s.setAttribute('preserveAspectRatio','xMidYMid meet')},viewBox);await comparison.screenshot({path:path.join(out,name+'.png')});}
-await captureSVG(fs.readFileSync(path.join(root,'../outputs/milly_v1/step05-base-character/05-2_局部色彩与材质.svg'),'utf8'),'baseline-face');
+await captureSVG(fs.readFileSync(path.join(root,'../../demos/milly-complete-case/step05-base-character/05-2_局部色彩与材质.svg'),'utf8'),'baseline-face');
 await page.evaluate(()=>{MillyRig.reset();MillyRig.set({physics:0})});const neutral=await page.locator('#milly-svg').evaluate(e=>e.outerHTML);await captureSVG(neutral,'candidate-neutral-face');
 for(const x of [-10,0,10]){await page.evaluate(x=>{MillyRig.reset();MillyRig.set({physics:0,bodyX:x});MillyRig.showView('portrait')},x);await captureSVG(await page.locator('#milly-svg').evaluate(e=>e.outerHTML),'garment-'+x,'380 320 250 465');}
 // Fix the neutral gradient values and measure whether the geometry and paint servers co-move.

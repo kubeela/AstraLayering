@@ -2,15 +2,15 @@
 
 调度入口：[svg-layering skill](../SKILL.md)。先按[流程表](../references/流程.md)准备前置0—5，再依次运行主阶段；每个stage／step／review的模型直接标在同目录 `.model` 文件名中。
 
-本目录随skill保存各节点提示词、输入说明、参考素材和工具。当前技能调用见[项目首页](../../../readme.md#使用技能)，本目录只保留历史实现。
+本目录随skill保存各节点提示词、输入说明、参考素材和工具。当前技能调用见[项目首页](../../../readme.md#使用-svg-技能)，本目录只保留历史实现。
 
-**2026-09-20：自动调度已完成Milly完整流程。** [milly_v1](../../../outputs/milly_v1/readme.md)保存前置参考、阶段1—5、四个review节点的报告及返修证据。完整运行的耗时与额度见[首页说明](../../../readme.md#运行时间与额度)。
+**2026-09-20：自动调度已完成Milly完整流程。** [milly_v1](../../../demos/milly-complete-case/readme.md)保存前置参考、阶段1—5、四个review节点的报告及返修证据。完整运行的耗时与额度见[案例记录](../../../demos/milly-complete-case/readme.md#历史投入记录)。
 
 **首个完整生成结果已完成。** 基础连体服角色已走通阶段1—5，得到可编辑、具备遮挡补全的完整分层彩图SVG。人物整体形体保持较好；局部线稿、配件构造、虹膜分层和头发颜色仍需改进，按具体误差定位对应阶段。
 
-[开发进度与未来展望](./开发进度.md) · [首例完整展示](../../../demos/first-complete-case/readme.md) · [终稿SVG](../../../outputs/case1_miku/step05-base-character/05-2_局部色彩与材质.svg) · [SVG预览器](../../../loading/svg-preview.html)
+[开发进度与未来展望](./开发进度.md) · [首例完整展示](../../../demos/first-complete-case/readme.md) · [终稿SVG](../../../demos/first-complete-case/source/step05-base-character/05-2_局部色彩与材质.svg) · [SVG预览器](../../../loading/part-preview.html)
 
-此前复测：[miku_v3](../../../outputs/miku_v3/readme.md)已完成阶段1—5产物，阶段3新五步已实际运行。脸型、头型及包脸关系明显改善；眼睑睫毛、手足线条和头发材质仍有局部差异，见[本轮复核](../../../analysis/miku-v3-review/readme.md)。阶段2、阶段3 step2后、阶段4及阶段5 step1现有独立review入口，由总控调度，Milly已实际执行；阶段5 step2保持自查。见[总控入口](../SKILL.md)与[审查节点](../references/流程.md#再运行主流程)。上一轮[case3_miku_v2](../../../outputs/case3_miku_v2/readme.md)保留在阶段4。
+此前复测：[miku_v3](../../../demos/miku-v3/readme.md)已完成阶段1—5产物，阶段3新五步已实际运行。脸型、头型及包脸关系明显改善；眼睑睫毛、手足线条和头发材质仍有局部差异，见[本轮复核](../../../analysis/miku-v3-review/readme.md)。阶段2、阶段3 step2后、阶段4及阶段5 step1现有独立review入口，由总控调度，Milly已实际执行；阶段5 step2保持自查。见[总控入口](../SKILL.md)与[审查节点](../references/流程.md#再运行主流程)。上一轮[case3_miku_v2](../../../outputs/case3_miku_v2/readme.md)保留在阶段4。
 
 2026-09-15：阶段2保留原单步绘制，加入线稿参考与叠加校准后，用户反馈头发、发卡改善；局部脸颊仍偏外。[提示词](./2.建立完整部件与遮挡/生成提示词.txt)进一步收紧面部曲线检查与局部返修，新增要求待重跑；已撤回的两步[试验复核](../../../analysis/stage2-visible-shape-review/2026-09-15_两步复测.md)作为历史记录保留。
 
@@ -26,7 +26,7 @@
 
 [完整部件树静态长图](../../../demos/first-complete-case/parts-tree-full.png) · [独显示例大图](../../../demos/first-complete-case/isolated-parts.png)
 
-31个实体归属因前后穿插组织成36个绘制分组，另有29个内部子部件；动图展示全部65个语义节点。底形、墨线、明暗和材质资源保留在所属部件内，不重复计为实体。跨层发束保留同一归属，提取完整部件时需一并保留相关分段。交互查看统一使用现有[svg-preview](../../../loading/svg-preview.html)。
+31个实体归属因前后穿插组织成36个绘制分组，另有29个内部子部件；动图展示全部65个语义节点。底形、墨线、明暗和材质资源保留在所属部件内，不重复计为实体。跨层发束保留同一归属，提取完整部件时需一并保留相关分段。交互查看统一使用现有[svg-preview](../../../loading/part-preview.html)。
 
 ## 流程总览
 
@@ -64,7 +64,7 @@
 
 2026-09-14：前置3已由用户简化为单轮生图，色块归属仍由SVG绘制者结合原彩图判断。前置4线稿已用于旧版阶段3，用户反馈有一定改善；新版阶段3的头部前两轮加入原彩图共同核对。前置5色盘已用于阶段4，用户反馈配色帮助明显。三个辅助前置均直接使用前置2彩图，不串联转换，也不补全隐藏部分。实测范围与遗留问题见[case3记录](../../../analysis/case3-miku-v2-review/readme.md)。
 
-本次验证的角色参考链路：[原始输入](../../../outputs/case1_miku/references/original-input.jpg) → [前置0：平涂输出](../../../outputs/case1_miku/references/flat-color-output.jpg) → [前置2：基础连体服角色](../../../outputs/case1_miku/references/base-character.png) → [前置3：部件色块图](../../../outputs/case1_miku/references/part-colors.jpg)。前置1另行提供服装款式；主流程阶段1、阶段2以换装后的基础角色彩图为形状依据。
+本次验证的角色参考链路：[原始输入](../../../demos/first-complete-case/source/references/original-input.jpg) → [前置0：平涂输出](../../../demos/first-complete-case/source/references/flat-color-output.jpg) → [前置2：基础连体服角色](../../../demos/first-complete-case/source/references/base-character.png) → [前置3：部件色块图](../../../demos/first-complete-case/source/references/part-colors.jpg)。前置1另行提供服装款式；主流程阶段1、阶段2以换装后的基础角色彩图为形状依据。
 
 ## 主流程入口与开发状态
 
@@ -77,7 +77,7 @@
 | 5. 大明暗与材质 | 同一彩图＋阶段4平涂 → 两轮彩图SVG与检查图 | case1完成过独立审查；v3两轮产物已生成，终稿注明独立审查不可用；[阶段说明](./5.大明暗与材质/readme.md)、[大明暗与体积](./5.大明暗与材质/step1/生成提示词.txt)、[局部色彩与材质](./5.大明暗与材质/step2/生成提示词.txt) |
 | 6. 最终边缘与细节 | 完成彩图 → 线色、边缘与必要焦点整理 | 已评估单轮收尾价值，尚未制定、执行；具体错误按所属阶段处理 |
 
-当前阶段产物和文件位置见[outputs](../../../outputs/readme.md)，里程碑、已知不足和后续工作统一记录在[开发进度](./开发进度.md)。首次成功不等于已经验证跨角色稳定复现。
+当前阶段产物和文件位置见[outputs](../../../demos/readme.md)，里程碑、已知不足和后续工作统一记录在[开发进度](./开发进度.md)。首次成功不等于已经验证跨角色稳定复现。
 
 ## 当前不足如何引用和追溯
 

@@ -5,7 +5,7 @@ const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 async function main(){
   const versions={checkedAt:new Date().toISOString(),files:{}};
   for(const f of ['index.html','milly-animation.svg','rig.js','build.py','motion-tracks.json','rig-manifest.json']){const b=fs.readFileSync(path.join(root,f));versions.files[f]=sha(b);fs.writeFileSync(path.join(out,'reviewed-'+f),b)}
-  for(const f of ['step05-base-character/05-2_局部色彩与材质.svg','references/base-character.png','references/line-art.png','step03-base-character/03-1_头型与发型.svg'])versions.files[f]=sha(fs.readFileSync(path.join(root,'../outputs/milly_v1',f)));
+  for(const f of ['step05-base-character/05-2_局部色彩与材质.svg','references/base-character.png','references/line-art.png','step03-base-character/03-1_头型与发型.svg'])versions.files[f]=sha(fs.readFileSync(path.join(root,'../../demos/milly-complete-case',f)));
   fs.writeFileSync(path.join(out,'versions.json'),JSON.stringify(versions,null,2));
   const browser=await chromium.launch({headless:true,executablePath:'/Users/wutian/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing'});
   const page=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});const errors=[];page.on('pageerror',e=>errors.push(e.message));

@@ -1,8 +1,8 @@
 # Jianma v4 实际运行记录
 
-本目录保存角色分层流程的实际输入、选项、阶段产物与当前审查记录；当前完整素体位于 [clothing/character.svg](refinement/groups/clothing/character.svg)，后续衣装制作见 [jianma_clothing](../jianma_clothing/readme.md)。
+本目录保存角色分层流程的实际输入、选项、阶段产物与当前审查记录；当前完整素体位于 [clothing/character.svg](refinement/groups/clothing/character.svg)，后续衣装制作见 [jianma_clothing](../clothing-run/readme.md)。
 
-[完整运行记录](运行记录.md) · [本轮选项](options.json) · [部件清单](structure/parts.yaml) · [成果展示](../../demos/jianma-current-case/readme.md)
+[完整运行记录](运行记录.md) · [本轮选项](options.json) · [部件清单](structure/parts.yaml) · [成果展示](../readme.md)
 
 ## 已完成部件
 
@@ -31,6 +31,6 @@
 
 这些记录按原运行原样保存，旧路径和旧字段可能仍出现；例如 `hair_reference_needed` 是历史选项，当前头发模板已不使用它决定是否生成参考。
 
-原 `workflows/` 现在位于 [`.agents/skills/live2d-layering/`](../../.agents/skills/live2d-layering/readme.md)，原 `workflow_clothing/` 现在位于 [`.agents/skills/live2d-clothing/`](../../.agents/skills/live2d-clothing/readme.md)；续跑使用新技能并核对实际输入与阶段内容，历史脚本中的本机绝对路径需按环境调整。
+原 `workflows/` 现在位于 [`.agents/skills/live2d-layering/`](../../../.agents/skills/live2d-layering/readme.md)，原 `workflow_clothing/` 现在位于 [`.agents/skills/live2d-clothing/`](../../../.agents/skills/live2d-clothing/readme.md)；续跑使用新技能并核对实际输入与阶段内容，历史脚本中的本机绝对路径需按环境调整。
 
 本目录记录静态素材制作；动画绑定、动作范围与投影动态跟随仍需后续验证。

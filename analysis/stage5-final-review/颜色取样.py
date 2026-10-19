@@ -10,8 +10,8 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-SOURCE = ROOT / 'outputs/case1_miku/step05-base-character/05-2_局部色彩与材质.svg'
-REFERENCE = ROOT / 'outputs/case1_miku/references/base-character.png'
+SOURCE = ROOT / 'demos/first-complete-case/source/step05-base-character/05-2_局部色彩与材质.svg'
+REFERENCE = ROOT / 'demos/first-complete-case/source/references/base-character.png'
 POINTS = [('A', '头顶亮面', 540, 90), ('B', '左长发暗面', 270, 600),
           ('C', '左长发浅色区', 200, 850), ('D', '左下回卷', 185, 1060)]
 FONT_PATH = '/System/Library/Fonts/STHeiti Light.ttc'

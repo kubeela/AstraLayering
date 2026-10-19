@@ -1,76 +1,77 @@
 # AstraLayering
 
-利用 AI 将角色参考重绘成**可编辑、可分层、具备遮挡补全的 SVG**，为人物还原、服装替换和后续 2D 动画提供部件基础。
+用 AI 将角色参考图制作成**可编辑、带遮挡补全的分层素材**。目前已有 Krita 人物分层、独立衣装与穿戴合成，也保留完整 SVG 重绘案例和面部参数实验。
 
-当前有三个技能：**`live2d-layering` 制作人物素体，`live2d-clothing` 制作可替换衣装，`live2d-expressions` 绑定标准基础面部参数**；它们各自按节点配置调度绘制，通用执行规则放在 SKILL.md，具体步骤和制作要求放在对应节点。
+[全部成果](./demos/readme.md) · [人物分件](./workflow-next/part-layering/README.md) · [Krita 绘制](./workflow-next/raster-layering/README.md) · [衣服工作流](./workflow-next/clothing-part-layering/README.md) · [SVG 对比预览器](./loading/part-preview.html)
 
-人物分层技能的初始分组已改为 `group` 树，第 3 步按最底层 group 绘制和检查色稿；第 4 步及后续接口仍待迁移。
+## 现在能做到什么
 
-[新旧成果](#效果展示) · [使用技能](#使用技能) · [人物分层流程](./.agents/skills/live2d-layering/readme.md) · [衣装流程](./.agents/skills/live2d-clothing/readme.md) · [SVG 与分组预览器](./loading/part-preview.html)
+### 人物与衣装：159 层 Krita 穿戴合成
 
-[raster-layering：TypeScript / Codex SDK 顺序流程](./workflow-next/raster-layering/README.md)：显式指定 Krita 后执行分层补全、边缘柔化及独立 review，反馈由原会话全部修复后，继续去除连体服并补全身体底层；按 `--name` 保存输入并续跑，用标记与 Markdown 记录进度。
+左侧是简化后的穿衣参考，右侧是 **90 层人物素体 + 69 层衣装**的实际装配结果。头发、身体、袖片与衣襟按前后关系穿插，另有 12 个可关闭的穿戴遮罩；159 个源绘画层的像素保留，已核对保存重开。
 
-[clothing-part-layering](./workflow-next/clothing-part-layering/README.md) → [clothing-raster-layering](./workflow-next/clothing-raster-layering/README.md)：两套独立的衣服流程，从简化穿衣角色提取纯衣服、拆分 part，再绘制分层 KRA 并完成两轮内的 review／修复。[实跑案例](./demos/clothing-workflows-20261019/README.md)包含关键 KRA、最终 69 层透明预览、过程图片与后续优化约定。
+[![穿衣参考与 159 层 Krita 穿戴合成对照](./demos/jianma-assembled/comparison.png)](./demos/jianma-assembled/README.md)
 
-## 效果展示
+[案例与交互预览](./demos/jianma-assembled/README.md) · [下载 KRA](./demos/jianma-assembled/jianma-assembled.kra) · [人物分层与补全](./demos/gray-control-krita/README.md) · [边缘修画终稿](./demos/soft-edge-krita/README.md) · [换装素体](./demos/skin-base-krita/README.md)
 
-### Jianma：人物与衣装的栅格穿戴合成
+### 独立衣服：从参考提取到分层修画
 
-[打开交互对照](./demos/jianma-assembled/index.html) · [下载 Krita 工程](./demos/jianma-assembled/jianma-assembled.kra) · [装配说明](./demos/jianma-assembled/README.md)
+依次为简化穿衣角色、提取后的纯衣服参考和最终衣服。该次实跑拆出 **68 个逻辑 part、69 个普通绘画层**，保留薄纱、开口和跨深度衣片，交付可继续编辑的 KRA。
 
-将最新人物素体 90 层与衣装 69 层按前后关系穿插，加入可关闭的穿戴遮罩，处理衣下漏肤、外伸发尾和裙摆透纱。159 个原始绘画层像素保留；页面可与 simplified-character 并排或滑动对照，逐层显隐。
+[![穿衣角色、纯衣服参考与最终 69 层衣装](./demos/clothing-workflows-20261019/images/comparison.png)](./demos/clothing-workflows-20261019/README.md)
 
-[![Jianma 参考与穿戴合成](./demos/jianma-assembled/comparison.png)](./demos/jianma-assembled/index.html)
+[过程与限制](./demos/clothing-workflows-20261019/README.md) · [下载衣装 KRA](./demos/clothing-workflows-20261019/clothing-soft-edges.kra) · [透明 PNG](./demos/clothing-workflows-20261019/images/final-composite.png)
 
-### 90 个完整绘画部件：灰底控制图与 Krita 修画
+### SVG：Milly 与 Miku 分层重绘
 
-[打开逐层查看页面](./demos/gray-control-krita/index.html) · [下载 Krita 工程](./demos/gray-control-krita/character-depth.kra) · [原图对照与验收记录](./demos/gray-control-krita/README.md)
+以下两例均完成旧流程阶段 1–5，输出可编辑的分层 SVG；每张对照图左侧为该轮基础角色彩图，右侧为实际 SVG 终稿。
 
-按完整色块标准生成遮挡补全，保留 90 个按深度排列的普通绘画图层；保存重开后逐层像素一致。
+**Milly v1**：保留完整阶段产物与四个指定节点的独立审查；头发材质、手足局部仍有差异。
 
-第二步的边缘柔化进度另存于 [soft-edge-krita](./demos/soft-edge-krita/README.md)：目前有 33 条局部笔刷操作，涉及 31 个图层，逐层视觉验收尚未完成。[继续编辑的 KRA](./demos/soft-edge-krita/character-soft-edges.kra) · [当前合成图](./demos/soft-edge-krita/preview.png) · [90 层进度与待办](./demos/soft-edge-krita/PROGRESS.md)。
+[![Milly v1 基础角色彩图与分层 SVG 终稿](./demos/milly-complete-case/reference-vs-svg.png)](./demos/milly-complete-case/readme.md)
 
-### Jianma：新版人物分层与衣装还原
+[Milly 成稿 SVG](./demos/milly-complete-case/step05-base-character/05-2_局部色彩与材质.svg) · [阶段与审查记录](./demos/milly-complete-case/readme.md)
 
-左侧为穿衣参考，中间为人物分层流程交付的素体，右侧为衣装流程交付的完整 SVG 渲染；以下图片和 SVG 保存自实际运行结果。
+**Miku v3**：重点改进脸型、头型和发束包脸关系；局部线条与头发光泽仍有差异，终稿独立审查不可用。
 
-[![Jianma 穿衣参考、分层素体与衣装还原](./demos/jianma-current-case/overview.png)](./demos/jianma-current-case/overview.png)
+[![Miku v3 基础角色彩图与分层 SVG 终稿](./analysis/miku-v3-review/01_整图对照.png)](./demos/miku-v3/readme.md)
 
-[查看完整穿戴 SVG](./demos/jianma-current-case/character.svg) · [查看素体 SVG](./demos/jianma-current-case/base.svg) · [独立衣装 SVG](./demos/jianma-current-case/clothing.svg) · [案例说明与原图对照](./demos/jianma-current-case/readme.md)
+[Miku 成稿 SVG](./demos/miku-v3/step05-base-character/05-2_局部色彩与材质.svg) · [案例说明](./demos/miku-v3/readme.md) · [同坐标复核](./analysis/miku-v3-review/readme.md)
 
-人物部分已完成眼口内部件、分区头发、身体与手足及配饰的实际细化；衣装包含内外多层、背面补全、袖口前后片和独立附件。当前是默认姿态的静态素材，后续仍须绑定和动态验证；例如纱袖长尾的底形与纹样需统一运动控制，不能只移动底形组。
+**当前验证范围是静态素材与默认穿戴。** 隐藏区域由模型和绘制过程推断；局部笔触、结构和还原度仍有差异。完整运行包含人工检查与返修，衣服案例还用到外部恢复和结构修正。转向、关节变形、物理摆动及动态遮挡仍须绑定验证，实验见 [rigging](./rigging/readme.md)。
 
-### 历史流程成果
+## 运行工作流
 
-以下 Milly 与 Miku 案例保留其原始结果和阶段记录，图中左侧为该轮基础角色彩图，右侧为旧流程阶段 5 的 SVG 渲染；当前调用入口统一使用当前对应技能。
+当前 TypeScript 工作流使用 Codex SDK / App Server 调度，按任务名保存输入与进度并支持续跑：
 
-### Milly v1
+| 路线 | 分件与深度规划 | 绘制与交付 |
+| --- | --- | --- |
+| 人物 | [part-layering](./workflow-next/part-layering/README.md)：参考准备、分组、轮廓与遮挡补全 | [raster-layering](./workflow-next/raster-layering/README.md)：逐件生图 → Krita 拼装 → 边缘修画与 review → 换装素体 |
+| 衣服 | [clothing-part-layering](./workflow-next/clothing-part-layering/README.md)：穿衣角色 → 纯衣服参考 → 分件 | [clothing-raster-layering](./workflow-next/clothing-raster-layering/README.md)：分层 KRA → 边缘修画与最多两轮 review／修复 |
 
-自动调度完成参考准备、阶段1—5及四个节点的独立review。整体姿态和主要轮廓保持较好，眼部层次与肤色细节已补上；头发线质、光泽及手足局部仍有差异。
+分件步骤输出的 `preview.svg` 是**纯色轮廓控制图**；最终绘画由后续栅格步骤完成。部件数和深度由实际角色决定，90／69 层是上面案例的结果。
 
-[![Milly v1基础角色彩图与最终分层SVG](./demos/milly-complete-case/reference-vs-svg.png)](./demos/milly-complete-case/reference-vs-svg.png)
+需要 **Node.js 24.12+、pnpm、可用的 Codex 环境及内置 `image_generation` 工具**；栅格步骤还需安装 Krita 并显式传入可执行文件。以人物路线为例，在仓库根目录执行：
 
-[查看终稿SVG](./outputs/milly_v1/step05-base-character/05-2_局部色彩与材质.svg) · [查看目标彩图](./outputs/milly_v1/references/base-character.png) · [阶段产物与审查记录](./outputs/milly_v1/readme.md)
+```bash
+pnpm --dir workflow-next/part-layering install --frozen-lockfile
+pnpm --dir workflow-next/part-layering start --name my-character --image /绝对路径/角色.png
 
-### Miku v3
+pnpm --dir workflow-next/raster-layering install --frozen-lockfile
+pnpm --dir workflow-next/raster-layering start --name my-character --input ../part-layering/.run/my-character --krita /绝对路径/krita
+```
 
-已完成阶段1—5，重点改进脸型、头型和发束包脸关系，阶段3实际采用了头型、面部、其余轮廓、内部线、全局精修五步流程。
+续跑使用相同模块的 `start --name my-character`，输入与工程保存在各模块 `.run/<任务名>/`。分件及深度规划全部完成后再启动栅格步骤；衣服路线的命令和要求见上表。
 
-[![Miku v3基础角色彩图与最终分层SVG](./analysis/miku-v3-review/01_整图对照.png)](./analysis/miku-v3-review/01_整图对照.png)
+## 使用 SVG 技能
 
-[查看终稿SVG](./outputs/miku_v3/step05-base-character/05-2_局部色彩与材质.svg) · [查看目标彩图](./outputs/miku_v3/references/base-character.png) · [全部参考与阶段产物](./outputs/miku_v3/readme.md)
+在 Codex 中打开仓库，按需调用 `.agents/skills/` 中的技能；具体节点、依赖及限制见各自说明。
 
-同坐标复核确认：上一轮左脸颊的外鼓明显收回，头顶、刘海和鬓发与脸的关系更贴近参考；校准后的脸型在后续上色中保持。下图依次为原彩图、阶段3线稿、阶段4平涂和阶段5终稿。
-
-[![Miku v3头部从线稿到最终着色的对照](./analysis/miku-v3-review/02_头部阶段对照.png)](./analysis/miku-v3-review/02_头部阶段对照.png)
-
-眼睑与睫毛、手足线条以及头发色带和光泽仍有差异。具体证据见[本轮复核](./analysis/miku-v3-review/readme.md)；v3与v2采用不同基础彩图，跨轮评价分别以各自原图为准。
-
-## 使用技能
-
-在 Codex 中打开本仓库，技能位于 `.agents/skills/`；将示例里的路径替换为自己的绝对路径。
-
-### 1. 从角色图制作分层素体
+| 技能 | 提供的输入 | 产物 |
+| --- | --- | --- |
+| [live2d-layering](./.agents/skills/live2d-layering/SKILL.md) | 角色参考图、输出目录 | 人物分层 SVG 素体 |
+| [live2d-clothing](./.agents/skills/live2d-clothing/SKILL.md) | 素体 SVG、穿衣参考图、输出目录 | 默认穿戴 SVG、独立衣装与穿插索引 |
+| [live2d-expressions](./.agents/skills/live2d-expressions/SKILL.md) | 原 SVG、输出目录 | 12 轴基础面部参数、边界关键形与连续调节预览 |
 
 ```text
 使用 $live2d-layering，完成角色分层与素体制作。
@@ -78,135 +79,18 @@
 输出目录：/绝对路径/人物输出
 ```
 
-必需输入是**一张角色图与输出目录**；已有适配参考图时可额外提供。流程按实际部件识别并调度专项，眼口、头发、身体、手足与附属件各有自己的制作方法；临时衣物仅用于中间参考，最终整理为可复用素体。
+## 查看与仓库导航
 
-### 2. 在素体上制作衣装
+KRA 可直接在 Krita 中编辑；案例的 HTML 图层页需在本地打开，部分页面需要静态服务。可在仓库根目录运行 `python3 -m http.server 8000`，访问 [穿戴合成交互页](http://localhost:8000/demos/jianma-assembled/index.html)。GitHub 文件页只显示 HTML 源码。
 
-```text
-使用 $live2d-clothing，按参考完成衣装还原。
-素体 SVG：/绝对路径/人物素体.svg
-穿衣参考图：/绝对路径/衣装参考.png
-输出目录：/绝对路径/衣装输出
-```
+[part-preview](./loading/part-preview.html) 可离线拖入 SVG／位图，进行并排、叠加及滑动对比；同时载入匹配的 `groups.json` 才显示分组控制。
 
-只需**素体 SVG、穿衣参考图、输出目录**，无需提供旧任务、归档或额外交接文件。参考可以是原衣装，也可以是用户指定的新款式；技能负责实际衣层、依附附件、必要补形及穿插，不改变输入素体文件。
-
-衣装最终交付 `final/character.svg`、`clothing.svg`、`clothing-index.json`、预览和对照图；独立衣装需按索引穿插到素体各层之间，不能直接当作一张置顶图片。
-
-### 3. 给已有 SVG 绑定基础面部参数
-
-```text
-使用 $live2d-expressions，保持原 SVG 不变，完成标准基础表情参数绑定。
-原 SVG：/绝对路径/完整角色.svg
-输出目录：/绝对路径/表情输出
-```
-
-模型设计参数边界关键形，程序编译连续插值。`basic-face-v1` 包含双眼开合与曲率、双眉高度/角度/曲率、嘴部开合与嘴型，共 12 轴；闭眼时曲率仍能调整。不生成情绪预设，不重画原 SVG，不需要用户手调最大张口或眼睑控制点。
-
-[技能与安装依赖](./.agents/skills/live2d-expressions/SKILL.md) · [边界 JSON 契约](./.agents/skills/live2d-expressions/docs/boundary-rig.md) · [独立参数预览](./.agents/skills/live2d-expressions/tools/preview/boundary-preview.html)。数值通过后仍须逐图和连续调参审查；不承诺任意角色自动获得相同美术质量。
-
-### 续跑、环境与维护
-
-续跑时使用对应技能，提供原输出目录并说明继续位置，例如：
-
-```text
-使用 $live2d-layering，继续 /绝对路径/人物输出 中尚未完成的部件。
-```
-
-总控根据本轮实际产物、运行记录和当前节点配置接续；模型及推理强度读取各节点 `.model`，独立审查只按配置触发。技能使用语言子 agent 和生图工具，图像生成能力需在运行环境中可用。
-
-各技能自行携带所需 `tools/`；单步骤工具位于该编号步骤的 `tools/`。复制技能时携带对应技能目录即可。运行工具使用 Python、Pillow、Node.js 与 sharp；流程配置校验需要 PyYAML。
-
-`SKILL.md` 仅放通用规则；节点的 `流程.yaml`、提示词、模型标记维护具体制作方法。根目录原 `workflows/` 和 `workflow_clothing/` 已分别迁入两个技能，不保留另一份执行副本；旧 `svg-layering` 已移至 [archive/svg-layering](./archive/svg-layering/SKILL.md)，不再注册为技能。
-
-## 当前工作流
-
-| 技能 | 处理过程 | 最终用途 |
-| --- | --- | --- |
-| [live2d-layering](./.agents/skills/live2d-layering/SKILL.md) | 参考准备 → 结构识别 → 大层分层 → 按组细化与素体整理 | 具备完整底形、连接面及独立效果的人物素体 |
-| [live2d-clothing](./.agents/skills/live2d-clothing/SKILL.md) | 结构与穿戴分析 → 按需补全参考 → 分批线稿及集中结构审查 → 色盘 → 分批着色与导出 | 可替换衣装与完整穿戴稿 |
-| [live2d-expressions](./.agents/skills/live2d-expressions/SKILL.md) | 盘点 → 标准参数规划 → 原稿准备 → 边界创作 → 编译与扫描 → 独立审查 | 原 SVG、作者配方、连续可调 controls 与便携预览 |
-
-当前生效的人物分层技能恢复为工具归位后的旧流程。[新流程建设稿](./workflow-next/live2d-layering/readme.md)放在仓库根目录，1—3 步和树游标已建立，第 4 步专项模板仍待迁移。独立衣装由衣装技能制作。
-
-运行时只向 worker 交接对应节点提示词、本轮素材、上游产物和工具；拆分、补全、材质和投影知识已落实在对应提示词，教程原文仅作维护者的设计参考。
-
-## 运行时间与额度
-
-以下为**旧流程 Milly 案例**的一次用户实测估算，不代表当前技能的耗时：
-
-| 项目 | 历史估算 |
+| 目录 | 内容 |
 | --- | --- |
-| 完整运行至旧阶段 5 | 约 2 小时 50 分钟 |
-| 额度消耗 | Pro 5x 约 10% |
-| Token 消耗 | 约 5kw token |
+| [demos](./demos/readme.md) | 统一成果入口：KRA、SVG、必要参考、过程记录与方法对比；原 `outputs/` 的 7 个有效案例已迁入 |
+| [workflow-next](./workflow-next/) | 人物／衣服的分件与栅格工作流及维护工具 |
+| [.agents/skills](./.agents/skills/) | SVG 人物分层、衣装与基础面部参数技能 |
+| [analysis](./analysis/readme.md) / [rigging](./rigging/readme.md) | 差异复核、画法研究与绑定实验 |
+| [tutorial](./tutorial/readme.md) / [archive](./archive/svg-layering/workflows/readme.md) | 学习资料与历史流程 |
 
-额度周期与 token 统计口径未细分；实际投入随角色复杂度、模型、制作范围和返修次数变化。
-
-## 完整部件与遮挡补全
-
-SVG按实体部件组织，保留当前姿态所需的隐藏底形：例如发下额头、衣下躯干、被前景遮挡的发根与发束中段。部件可独立显隐、提取图层，底形、墨线、明暗与材质随所属部件保存；同一部件的跨层分段保持关联。
-
-以下动图来自**首次完整案例 case1_miku**，展示其部件树和真实独显效果。它用于说明分层方式；Miku v3的实际结构请加载对应SVG查看。
-
-![首例部件树滚动展示与遮挡补全独显，非Miku v3](./demos/first-complete-case/parts-tree.png)
-
-[首例完整展示](./demos/first-complete-case/readme.md) · [部件树长图](./demos/first-complete-case/parts-tree-full.png) · [独显示例大图](./demos/first-complete-case/isolated-parts.png)
-
-## 查看与对比结果
-
-用浏览器打开 [part-preview](./loading/part-preview.html)，拖入 SVG 与参考图作为 A / B，使用混合、两侧对比、滑动对比或 SVG 描边。再带上对应的 `groups.json`，只有与 SVG 明确匹配的节点才会出现在右侧，可搜索、展开和控制显隐；单击画布部件会展开祖先并定位到条目，单击条目可放大该组。不匹配或未载入分组时隐藏右侧控制，图像对比仍可用。页面可离线使用，无需构建或启动服务。
-
-`workflow-next/part-layering` 全部部件完成后自动生成 `.run/<运行名>/preview.svg`，与同目录的 `groups.json` 一起用于预览。合并只绘制最终叶子 part，保留完整 group/part 树；按树顺序叠放，后项在前。源部件不会被改写。
-
-<details>
-<summary>SVG预览器功能与常用操作</summary>
-
-- SVG和位图都可放入A／B槽位，支持混合、两侧、滑动和描边，共用缩放和平移。悬浮文件卡片显示“单击更换”，A／B之间的双向箭头交换图片；B与groups.json卡片右上角的×移除对应文件。
-- 图层树由匹配的groups.json和SVG完整路径共同确定，支持搜索、展开、逐项显隐和恢复；单击画布定位条目，单击条目放大查看。两张SVG都匹配时可选择控制哪一张。
-- 两图按各自最长边等权归一化并居中，不拉伸。不同构图不会因此自动配准；精确对照应使用同版、同画布参考。
-- 滚轮缩放、拖动平移；`B`框选放大，`F`或`0`适应窗口，`1`恢复实际大小。触屏支持双指捏合，也可直接输入缩放比例。
-- 可切换棋盘格、浅灰、深色及白色背景。
-- “下载”提供整图PNG与当前放大区域PNG。整图按原图尺寸导出完整画布，两侧模式包含两张图；当前区域保留缩放和平移，按屏幕像素密度导出。两种方式都保留对比方式、比例、描边、背景和显隐，不包含工具栏与侧栏。
-
-文件在本地处理；分组控制需要对应的groups.json，单纯对比图片无需分组文件。矢量内容随视图重绘，内嵌位图仍受原始分辨率限制；SVG脚本不执行。
-
-</details>
-
-## 当前状态与后续方向
-
-目前验证的是静态分层素材与默认穿戴画面；隐藏补形和独立图层为动画提供基础，X/Y 转向、网格变形、物理摆动、动态遮挡与投影跟随仍需在绑定阶段实际验证，相关实验见 [rigging](./rigging/readme.md)。
-
-衣装细节和复杂材质的还原仍有差异，跨角色的稳定性也需要更多案例；历史案例的审查状态按各自记录保留，Miku v3 终稿注明该轮独立审查不可用。
-
-## 案例与仓库导航
-
-| 入口 | 内容 |
-| --- | --- |
-| [Jianma 新版成果](./demos/jianma-current-case/readme.md) | 分层素体、独立衣装、默认穿戴及实际使用限制 |
-| [Milly v1](./outputs/milly_v1/readme.md) | 旧流程完整运行、指定 review 及历史投入 |
-| [Miku v3](./outputs/miku_v3/readme.md) | 旧阶段 1—5、头脸校准与最终彩图 |
-| [人物分层技能](./.agents/skills/live2d-layering/readme.md) | 人物分组模板、节点配置、提示词与公共工具 |
-| [衣装技能](./.agents/skills/live2d-clothing/readme.md) | 多层衣装、附件、补形与穿插的制作节点 |
-| [工作流配置格式](./.agents/skills/live2d-layering/docs/workflow-dsl.md) | 输入输出、条件、循环、会话复用与审查规则 |
-| [outputs](./outputs/readme.md) | 7 个完整成稿案例、必要参考与制作记录 |
-| [analysis](./analysis/readme.md) | 复核、问题原因与画法研究 |
-| [demos](./demos/readme.md) | 新旧成果、完整部件展示与画法对比 |
-
-<details>
-<summary>历史资料</summary>
-
-[旧 svg-layering 资料包](./archive/svg-layering/workflows/readme.md)与 [prompt.txt](./prompt.txt)保留作回溯；[图层契约](./loading/layer-contract.md)和[契约示例](./loading/examples.md)用于阅读早期示例。现行执行入口为两个新技能，预览器以对应的 groups.json 和 SVG 完整路径提供分组控制。
-
-</details>
-
-## 参与实验
-
-欢迎通过 [Issues](https://github.com/wu-tian807/AstraLayering/issues) 讨论问题，或通过 [Pull Requests](https://github.com/wu-tian807/AstraLayering/pulls) 提交工作流改进、SVG 示例、失败案例和动画绑定实验。
-
-分享结果时请注明参考图、所用模型与提示词、阶段目标和实际问题。展示结果放入 `demos/`，完整成稿案例及必要记录放入 `outputs/`；局部试验、未完成运行与临时文件不再作为成果目录保留。
-
-
-## 教程与学习资料
-
-参见 [tutorial](./tutorial/readme.md)：原文字教程、绘画资料与真实 Live2D 资料学习索引，供流程设计者按需查阅。
+欢迎通过 [Issues](https://github.com/wu-tian807/AstraLayering/issues) 或 [Pull Requests](https://github.com/wu-tian807/AstraLayering/pulls) 提交改进与案例。成果统一放入 `demos/`，附参考、工程入口和实际限制；未完成运行留在相应工作流的任务目录。

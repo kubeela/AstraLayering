@@ -12,8 +12,8 @@ import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-SOURCE = ROOT / 'outputs/step05-base-character/05-2_局部色彩与材质.svg'
-REFERENCE = ROOT / 'outputs/case1_miku/references/base-character.png'
+SOURCE = HERE / 'source/step05-base-character/05-2_局部色彩与材质.svg'
+REFERENCE = ROOT / 'demos/first-complete-case/source/references/base-character.png'
 NS = 'http://www.w3.org/2000/svg'
 ET.register_namespace('', NS)
 TAG = lambda name: '{' + NS + '}' + name

@@ -27,4 +27,4 @@ SVG 显示实验只是对既有图形的显隐或描边调整，不能据此还�
 
 检查页需要同源访问 iframe。可在仓库根目录运行 `python3 -m http.server 8000`，然后打开 `http://localhost:8000/analysis/svg-preview-tests/checks.html`，点击“运行交互检查”。
 
-返回 [人物分层技能](../.agents/skills/live2d-layering/readme.md) 或 [当前验证区](../outputs/readme.md)。
+返回 [人物分层技能](../.agents/skills/live2d-layering/readme.md) 或 [当前验证区](../demos/readme.md)。

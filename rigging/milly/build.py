@@ -2,7 +2,7 @@ from pathlib import Path
 from lxml import etree as E
 import copy,json,re,hashlib,shutil
 ROOT=Path(__file__).resolve().parent
-SOURCE=ROOT.parent.parent/'outputs/milly_v1/step05-base-character/05-2_局部色彩与材质.svg'
+SOURCE=ROOT.parent.parent/'demos/milly-complete-case/step05-base-character/05-2_局部色彩与材质.svg'
 NS='http://www.w3.org/2000/svg'; T=lambda n:'{'+NS+'}'+n
 r=E.parse(str(SOURCE)).getroot()
 def find(id):return r.xpath('//*[@id=$i]',i=id)[0]
