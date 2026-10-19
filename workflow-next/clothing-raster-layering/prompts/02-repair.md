@@ -1,6 +1,6 @@
 请继续修复第二步工程，逐项解决 step02/{review_report_filename} 提出的全部问题。
 
-在当前 step02/clothing-soft-edges.kra 上继续修画，保留已有合格修改，不从第一步重新覆盖。原图仍使用 input/references/clothing.png；部件形状、归属和深度依据 input/parts/、input/groups.json 与 input/occlusion.json。必要时读取 step01/report.md、step02/report.md 和已有修复记录。
+在当前 step02/clothing-soft-edges.kra 上继续修画，保留已有合格修改，不从第一步重新覆盖。原图仍使用 ../clothing-part-layering/references/clothing.png；部件形状、归属和深度依据 ../clothing-part-layering/parts/、../clothing-part-layering/groups.json 与 ../clothing-part-layering/occlusion.json。必要时读取 step01/report.md、step02/report.md 和已有修复记录。
 
 逐项阅读反馈及其检查证据，在 Krita 中对照原图定位原因并修复。保留本阶段原有要求：部件内容完整、组合准确，边缘和线条柔和、补全区衔接自然；不新增阴影、AO、投影，不粘贴原图像素，不用全层模糊或阈值批处理代替逐处绘制，不覆盖第一步工程。
 
@@ -13,4 +13,6 @@
 将逐项处理结果、检查证据和重开核对结果写入 step02/{repair_report_filename}。报告第一行写“结论：已修复”或“结论：仍有问题”。只有全部反馈已解决并完成自检后，才能写“结论：已修复”；仍有问题时继续在当前工程上处理，不自行开始其他任务。
 
 
-衣服专属检查：以 input/references/clothing.png 为绘画参考，检查全部衣片内容是否完整、薄纱透明度与正常开口是否保留。对照 input/groups.json 中的职责，核对需要分开的前后衣片确为独立绘画层，不能因同动而合并，不把人体或相邻衣片画进本层。这里只交付衣服分层 KRA，不做身体装配，不编写身体插层说明。
+衣服专属检查：以 ../clothing-part-layering/references/clothing.png 为绘画参考，检查全部衣片内容是否完整、薄纱透明度与正常开口是否保留。对照 ../clothing-part-layering/groups.json 中的职责，核对需要分开的前后衣片确为独立绘画层，不能因同动而合并，不把人体或相邻衣片画进本层。这里只交付衣服分层 KRA，不做身体装配，不编写身体插层说明。
+
+沿用 step01/report.md 与上游 occlusion.json 中已落实的深度分片：一个逻辑 part 可以对应多个普通绘画层。按各片独显及同 part 合看检查连续性，保留共同归属和层序，不因同一 part 多层就判重复、要求合层或退回拆组。

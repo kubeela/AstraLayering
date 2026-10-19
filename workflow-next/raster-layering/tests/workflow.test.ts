@@ -1,3 +1,4 @@
+import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import { pipelineDirectory } from '../../shared/paths.ts';
 const runDirectory = (name: string) => pipelineDirectory(name, 'raster-layering');
 import assert from 'node:assert/strict';
@@ -23,9 +24,10 @@ async function readConfig(directory: string): Promise<RunConfig> { return JSON.p
 async function fixture(t: TestContext) {
   const directory = await mkdtemp(join(tmpdir(), 'raster-workflow-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  const input = join(directory, 'reference'), runsDirectory = join(directory, 'runs'), name = 'test';
+  const runsDirectory = join(directory, 'runs'), name = 'test';
+  const input = await seedUpstream(name, 'part-layering', runsDirectory);
   await mkdir(join(input, 'parts'), { recursive: true });
-  await mkdir(join(input, 'references'));
+  await mkdir(join(input, 'references'), { recursive: true });
   await writeFile(join(input, 'parts/face.svg'), 'source part');
   await writeFile(join(input, 'references/source.png'), 'source image');
   await writeFile(join(input, 'groups.json'), '{"subject":"fixture"}');
@@ -36,7 +38,7 @@ async function fixture(t: TestContext) {
     return drawing;
   });
   return { directory, input, output: join(runsDirectory, name, 'raster-layering'), definitions,
-    options: { name, input, krita: process.execPath }, resume: { name }, deps: { runsDirectory, preflight, steps: [steps[0]] } };
+    options: { name, krita: process.execPath }, resume: { name }, deps: { runsDirectory, preflight, steps: [steps[0]] } };
 }
 async function deliver(request: AgentRequest, step: StepDefinition = steps[0], thread = request.threadId ?? 'thread-1') {
   await readFile(join(request.directory, step.id, '.running'));
@@ -75,29 +77,24 @@ test('Krita 只检查显式路径，失败不探索安装或创建任务', async
   assert.equal(calls, 1);
   await assert.rejects(runWorkflow(f.options, { ...f.deps, preflight: async () => { throw new Error('Krita unavailable'); }, agent: forbidden }), /Krita unavailable/);
   await absent(join(f.output, 'run.json'));
-  await assert.rejects(runWorkflow({ name: 'test' }, f.deps), /首次运行必须提供 --input/);
-  await assert.rejects(runWorkflow({ name: 'test', input: f.input }, f.deps), /首次运行必须提供 --krita/);
+  await assert.rejects(runWorkflow({ name: 'test' }, f.deps), /首次运行必须提供 --krita/);
 });
 
-test('dry-run 保留完整提示词；根目录与 parts 等价；不写文件、不调用模型', async t => {
+test('dry-run 按 name 定位上游，保留完整提示词，不写文件、不调用模型', async t => {
   const f = await fixture(t);
   const expected = { directory: f.input, parts: join(f.input, 'parts') };
-  assert.deepEqual(await resolvePartInput(f.input), expected);
-  assert.deepEqual(await resolvePartInput(join(f.input, 'parts')), expected);
+  assert.deepEqual(await resolvePartInput('test', 'part-layering', f.deps.runsDirectory), expected);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: forbidden });
   assert.ok(prompt.startsWith(await readFile(steps[0].prompt, 'utf8')));
-  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'input/parts'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.input, 'parts'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01'))));
-  const partsPrompt = await runWorkflow({ ...f.options, input: join(f.input, 'parts'), dryRun: true }, f.deps);
-  assert.equal(partsPrompt, prompt);
-  await assert.rejects(readdir(f.deps.runsDirectory), { code: 'ENOENT' });
-  await assert.rejects(runWorkflow(f.options, { ...f.deps, runsDirectory: f.input }), /目录必须分开/);
+  await assert.rejects(readdir(f.output), { code: 'ENOENT' });
 });
 
 test('缺少 parts 时在前置检查和模型调用前报错', async t => {
   const f = await fixture(t);
   await rm(join(f.input, 'parts'), { recursive: true });
-  await assert.rejects(runWorkflow(f.options, { ...f.deps, preflight: forbidden, agent: forbidden }), /输入缺少 parts/);
+  await assert.rejects(runWorkflow(f.options, { ...f.deps, preflight: forbidden, agent: forbidden }), /缺少上游产物/);
   await absent(join(f.output, 'run.json'));
 });
 
@@ -172,7 +169,7 @@ test('已完成第一步的任务可按 name 预览第二步，显示实际输�
   const before = await readFile(join(f.output, 'run.json'));
   const prompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...deps, agent: forbidden });
   assert.ok(prompt.startsWith((await readFile(steps[1].prompt, 'utf8')).replaceAll('step02/report.md', 'step02/report.md.tmp')));
-  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'input/references'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.input, 'references'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01/character-depth.kra'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.kra'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.png'))));
@@ -181,7 +178,7 @@ test('已完成第一步的任务可按 name 预览第二步，显示实际输�
   await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
 });
 
-test('输入保存完整副本；中断保留 .running、产物和 thread；源目录删除后只用 name 续跑', async t => {
+test('直接读取上游；中断保留 .running、产物和 thread；只用 name 续跑', async t => {
   const f = await fixture(t);
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
     assert.equal(request.model, 'gpt-6-astra');
@@ -196,19 +193,14 @@ test('输入保存完整副本；中断保留 .running、产物和 thread；源�
   assert.equal(config.threadId, 'thread-1');
   assert.ok(!('steps' in config) && !('status' in config));
   assert.deepEqual(config.models, { step01: stepModels[1], step02: stepModels[2], step03: stepModels[3] });
-  for (const file of ['parts/face.svg', 'references/source.png', 'groups.json', 'occlusion.json', 'preview.svg']) {
-    assert.deepEqual(await readFile(join(f.output, 'input', file)), await readFile(join(f.input, file)));
-  }
-  // A changed source is not recopied, including when --input is repeated as parts/.
-  await writeFile(join(f.input, 'parts/face.svg'), 'new source must not overwrite snapshot');
-  await runWorkflow({ ...f.options, input: join(f.input, 'parts'), dryRun: true }, f.deps);
-  await rm(f.input, { recursive: true });
+  await assert.rejects(readdir(join(f.output, 'input')), { code: 'ENOENT' });
+  await writeFile(join(f.input, 'parts/face.svg'), 'corrected upstream part');
   await runWorkflow(f.resume, { ...f.deps, preflight: async path => {
     assert.equal(path, process.execPath);
     return preflight(path);
   }, agent: async request => {
     assert.equal(request.threadId, 'thread-1');
-    assert.equal(await readFile(join(f.output, 'input/parts/face.svg'), 'utf8'), 'source part');
+    assert.equal(await readFile(join(f.input, 'parts/face.svg'), 'utf8'), 'corrected upstream part');
     assert.equal(await readFile(join(f.output, 'step01/accepted-part.png'), 'utf8'), 'keep this work');
     return deliver(request);
   } });
@@ -238,12 +230,12 @@ test('已完成第一步的任务接续后两步，共用 thread 并在第三步
   }
 });
 
-test('删 step02 完成标记后保留 step01/input，清理后续目录，换新 thread 后共用', async t => {
+test('删 step02 完成标记后保留 step01/上游产物，清理后续目录，换新 thread 后共用', async t => {
   const f = await fixture(t);
   let index = 0;
   await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
   const first = await readFile(join(f.output, 'step01/events.jsonl'));
-  const snapshot = await readFile(join(f.output, 'input/parts/face.svg'));
+  const snapshot = await readFile(join(f.input, 'parts/face.svg'));
   await writeFile(join(f.output, 'step02/old.png'), 'old artwork');
   await mkdir(join(f.output, 'step04'));
   await writeFile(join(f.output, 'step04/.completed'), '');
@@ -270,7 +262,7 @@ test('删 step02 完成标记后保留 step01/input，清理后续目录，换�
   } });
   assert.equal(index, 3);
   assert.deepEqual(await readFile(join(f.output, 'step01/events.jsonl')), first);
-  assert.deepEqual(await readFile(join(f.output, 'input/parts/face.svg')), snapshot);
+  assert.deepEqual(await readFile(join(f.input, 'parts/face.svg')), snapshot);
   assert.equal((await readConfig(f.output)).threadId, 'thread-new');
 });
 
@@ -370,12 +362,12 @@ test('续跑失败或 SDK 返回不同 thread ID 时保留原会话，不静默�
   await readFile(join(f.output, 'step01/.running'));
 });
 
-test('已有任务不接收不同输入；符号链接步骤不被递归清理', async t => {
+test('入口不接受额外输入；符号链接步骤不被递归清理', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
   const other = join(f.directory, 'other');
   await mkdir(join(other, 'parts'), { recursive: true });
-  await assert.rejects(runWorkflow({ ...f.resume, input: other }, { ...f.deps, agent: forbidden }), /另一份输入/);
+  assert.throws(() => parseRunArguments(['--name', 'test', '--input', other]), /Unknown option/);
   await rm(join(f.output, 'step01/.completed'));
   await symlink(other, join(f.output, 'step02'), 'dir');
   await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: forbidden }), /步骤路径必须是普通目录/);

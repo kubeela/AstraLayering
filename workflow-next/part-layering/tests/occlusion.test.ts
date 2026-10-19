@@ -100,7 +100,7 @@ test('真实适配器强制候选后逐件独显/叠加检查，修订清空检�
     assert.equal(task.sandboxMode, 'read-only');
     const tool = (name: string) => task.tools!.find(tool => tool.name === name)!;
     const preview = tool('preview_svg'), propose = tool('propose_occlusion'), check = tool('check_occlusion_part'), submit = tool('submit_occlusion');
-    const layers = ids.map(id => ({ id, note: '依原图确认整件固定深度' }));
+    const layers = ids.map((id, level) => ({ id, level, note: '依原图确认整件固定深度' }));
     await assert.rejects(propose.execute({ layers }, signal), /须查看/);
     await preview.execute({ path: f.context.preview.path, mode: 'blend' }, signal);
     await propose.execute({ layers }, signal);
@@ -137,4 +137,38 @@ test('真实适配器无法确认整件深度时交接依据并保留待办', as
     return { text: 'pending', images: [] };
   } });
   assert.equal(result.status, 'pending');
+});
+
+test('多深度保留逻辑 part；必须检查全部区域，完成后可恢复而不重画 SVG', async t => {
+  const f = await prepared(t), ids = ['head/face', 'head/eye', 'neck'];
+  const before = await readFile(join(f.directory, 'groups.json'));
+  const result = await planPartOcclusion(f.context, { async run(task) {
+    const tool = (name: string) => task.tools!.find(tool => tool.name === name)!;
+    const preview = tool('preview_svg'), propose = tool('propose_occlusion'), check = tool('check_occlusion_part');
+    await preview.execute({ path: f.context.preview.path, mode: 'blend' }, signal);
+    const proposal = await propose.execute({ layers: [
+      { id: ids[0], note: '同一运动部件，局部穿插', levels: [{ level: 0, region: '后方区域' }, { level: 2, region: '前方区域，与后方连续' }] },
+      { id: ids[1], note: '中间部件', level: 1 }, { id: ids[2], note: '最前方部件', level: 3 },
+    ] }, signal);
+    assert.match(JSON.stringify(proposal), /未按文本切片/);
+    await preview.execute({ path: join(f.directory, 'stages/occlusion/candidate.svg'), mode: 'blend' }, signal);
+    for (const id of ids) await preview.execute({ path: artifactPath(f.directory, id, 'completion'), mode: 'blend' }, signal);
+    await assert.rejects(check.execute({ id: ids[0], note: '只看整件' }, signal), /全部深度区域/);
+    await assert.rejects(check.execute({ id: ids[0], note: '漏检', regions: [{ level: 0, note: '已看后方' }] }, signal), /全部深度区域/);
+    await check.execute({ id: ids[0], note: '各区域连续，穿插有依据', regions: [
+      { level: 0, note: '该区域在中间部件后' }, { level: 2, note: '该区域在中间部件前' },
+    ] }, signal);
+    for (const id of ids.slice(1)) await check.execute({ id, note: '已对照原图确认深度' }, signal);
+    await tool('submit_occlusion').execute({}, signal);
+    return { text: 'done', images: [] };
+  } });
+  assert.equal(result.status, 'completed');
+  if (result.status !== 'completed') assert.fail('must complete');
+  assert.equal(result.output.version, 3);
+  assert.equal(result.output.layers.length, 3);
+  assert.equal(result.output.layers[0].level, undefined);
+  assert.equal(result.output.layers[0].levels!.length, 2);
+  await writeAtomic(occlusionPath(f.directory), JSON.stringify(result.output));
+  assert.deepEqual(await restoreOcclusionPlan(f.context), result.output);
+  assert.deepEqual(await readFile(join(f.directory, 'groups.json')), before);
 });

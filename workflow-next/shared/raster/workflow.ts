@@ -8,10 +8,10 @@ import { checkKrita, type KritaInstallation } from './krita.ts';
 import { buildPrompt, type StepDefinition } from './steps.ts';
 import { canonicalPath, fileInfo, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, saveConfig, within } from './run-store.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
+import { createOcclusionTools } from './occlusion-tools.ts';
 
 export type WorkflowOptions = {
   name: string;
-  input?: string;
   krita?: string;
   dryRun?: boolean;
   signal?: AbortSignal;
@@ -46,28 +46,18 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
   const directory = await canonicalPath(requested);
   const definitions: readonly StepDefinition[] = dependencies.steps ?? pipeline.steps;
   const plan = await inspectRun(directory, definitions);
-  let source = saved?.sourceInput;
-  if (!saved) {
-    if (!options.input?.trim()) throw new Error(`首次运行必须提供 --input <${pipeline.inputPipeline}运行目录>。`);
-    source = await resolvePartInput(resolveInput(options.name, options.input, dependencies.runsDirectory), pipeline.inputPipeline);
-    if (within(source.directory, directory) || within(directory, source.directory)
-      || within(source.parts, directory) || within(directory, source.parts)) throw new Error('输入与任务目录必须分开，不能相同或相互包含。');
-  } else if (options.input) {
-    const supplied = await resolvePartInput(resolveInput(options.name, options.input, dependencies.runsDirectory), pipeline.inputPipeline);
-    if (supplied.directory !== saved.sourceInput.directory || supplied.parts !== saved.sourceInput.parts) {
-      throw new Error('该 --name 已绑定另一份输入；请为新输入使用新的 --name。');
-    }
-  }
-  const reference = saved ? await resolvePartInput(join(directory, 'input'), pipeline.inputPipeline) : { directory: join(directory, 'input'), parts: join(directory, 'input/parts') };
+  const reference = await resolvePartInput(options.name, pipeline.inputPipeline, dependencies.runsDirectory);
+  if (within(reference.directory, directory) || within(directory, reference.directory)) throw new Error('上游与本管线目录必须分开');
   const configuredKrita = options.krita ?? saved?.krita.executable;
   if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
   const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, dependencies.runsDirectory);
   const krita = await (dependencies.preflight ?? checkKrita)(kritaPath);
-  const config = saved ?? newConfig(options.name, source!, krita, [...pipeline.steps, ...definitions]);
+  const config = saved ?? newConfig(options.name, reference, krita, [...pipeline.steps, ...definitions]);
+  config.sourceInput = reference;
   config.krita = krita;
   for (const step of definitions) config.models[step.id] ??= { model: step.model, effort: step.effort };
   options.progress?.(`前置检查通过：Krita ${krita.version} (${krita.executable})`);
-  options.progress?.(`任务目录：${directory}；输入${saved ? '副本' : '将保存到'}：${reference.directory}`);
+  options.progress?.(`任务目录：${directory}；直接读取上游：${reference.directory}`);
   if (plan.resetFrom !== undefined) options.progress?.(`${options.dryRun ? '预览：将' : '将'}重置 step${String(plan.resetFrom).padStart(2, '0')} 及后续步骤，并清除旧 threadId。`);
 
   const previous: string[] = [];
@@ -135,6 +125,8 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
+        occlusion: fresh ? undefined : { upstream: reference.directory, editable: step.id === 'step01' && phase === 'draw' },
+        tools: fresh ? undefined : createOcclusionTools(reference.directory, step.id === 'step01' && phase === 'draw'),
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
           await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');

@@ -2,7 +2,7 @@
 
 读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，再进行边缘修画与最多两轮 review。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
 
-顺序调度、输入快照、会话及标记恢复使用 `../shared/raster/` 的公共实现；本目录保留衣服步骤定义和提示词。仅有两步，绘制与 reviewer 均使用 `gpt-6-astra / xhigh`。
+顺序调度、上游产物读取、会话及标记恢复使用 `../shared/raster/` 的公共实现；本目录保留衣服步骤定义和提示词。仅有两步，绘制与 reviewer 均使用 `gpt-6-astra / xhigh`。
 
 ## 启动
 
@@ -10,13 +10,13 @@
 
 ```bash
 pnpm --dir workflow-next install --frozen-lockfile
-pnpm --dir workflow-next/clothing-raster-layering start --name test --input clothing-part-layering --krita /path/to/krita
+pnpm --dir workflow-next/clothing-raster-layering start --name test --krita /path/to/krita
 
 # 续跑使用已保存的输入、Krita 路径和绘制会话
 pnpm --dir workflow-next/clothing-raster-layering start --name test
 ```
 
-`--input` 传分件运行根目录即可，自动使用其中的 `parts/`；也接受直接传 `parts/`。相对输入统一从 `workflow-next/.run/<name>/` 解析，也可直接使用绝对路径。首次将 `parts/`、参考图、分组、深度表和预览保存到任务的 `input/`。开始前应完成上游全部分件及深度规划；不要把 `--max-depth` 暂停后的部分结果作为成品输入。
+按 `--name` 直接读取 `.run/<name>/clothing-part-layering/` 的 parts、参考、groups.json 与 occlusion.json，不接受额外输入路径、不复制上游产物。缺失时列出具体路径，提示先执行对应上游管线或手动放置产物。
 
 `--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。已保存任务可显式更新 `--krita`；换输入应使用新名字。
 
@@ -24,10 +24,10 @@ pnpm --dir workflow-next/clothing-raster-layering start --name test
 
 ## 两步制作
 
-- **step01：分件生图、补全与拼装。** 根据 `input/parts/` 和深度表逐件制作 RGB 控制图，清掉生成输入中的遮挡物和其他部件，使用内置生图生成当前衣片。逐张检查、必要时重生，在 Krita 中配准、收边和修画，保存 `clothing-depth.kra` 与 `report.md`。
+- **step01：分件生图、补全与拼装。** 根据 `../clothing-part-layering/parts/` 和深度表逐件制作 RGB 控制图，清掉生成输入中的遮挡物和其他部件，使用内置生图生成当前衣片。逐张检查、必要时重生，在 Krita 中配准、收边和修画，保存 `clothing-depth.kra` 与 `report.md`。
 - **step02：边缘修画及 review / 修复。** 将第一步工程另存为 `clothing-soft-edges.kra`，逐层处理锯齿、残色、过硬线条和补全接缝；保持画布、结构、名称、深度、薄纱透明度与开口。初次绘制后由独立 reviewer 检查，再由原绘制会话解决反馈。
 
-纯衣服参考 `input/references/clothing.png` 是绘画标准，原穿衣角色用于理解穿插关系。每个终止衣片对应一个完整绘画层，按深度排列，无蒙版、无子节点。已经拆开的前后衣片保留独立图层，即使共同运动也不合并。交付衣服分层，不制作身体装配或身体插层说明。
+纯衣服参考 `../clothing-part-layering/references/clothing.png` 是绘画标准，原穿衣角色用于理解穿插关系。单深度衣片对应一个完整绘画层，多深度 part 对应多个保持共同归属与连续性的绘画分片层，按深度排列，无蒙版、无子节点。已经拆开的前后衣片保留独立图层，即使共同运动也不合并。交付衣服分层，不制作身体装配或身体插层说明。
 
 reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdown；不保存或恢复其 threadId。`review-01.md` 有问题时，原绘制 agent 必须全部解决并完成自检，才发布 `repair-01.md`，然后开始第二次 review。第一次无问题直接结束；第二次有问题也须全部修完，发布 `repair-02.md` 后结束，不再做第三次 review。
 
@@ -38,12 +38,6 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 ```text
 workflow-next/.run/test/clothing-raster-layering/
   run.json
-  input/
-    parts/
-    references/
-    groups.json
-    occlusion.json
-    preview.svg
   step01/
     .completed
     clothing-depth.kra
@@ -76,7 +70,7 @@ rm workflow-next/.run/test/clothing-raster-layering/step02/.completed
 pnpm --dir workflow-next/clothing-raster-layering start --name test
 ```
 
-这会保留第一步及输入副本，清空第二步目录并创建新绘制 thread。要从第一步重跑就删除 `step01/.completed`；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
+这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。要从第一步重跑就删除 `step01/.completed`；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
 
 ## 验证与代码入口
 
@@ -87,8 +81,10 @@ pnpm --dir workflow-next/clothing-raster-layering test
 
 [steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
 
-自动测试模拟 SDK 响应，覆盖输入快照、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
+自动测试模拟 SDK 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
 
-现已完成 [2026-10-19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。通用 step01／深度协议与可选压缩功能尚未改造，不能将本案例的外部恢复视为当前工作流自动能力。
+现已完成 [2026-10-19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能仍未接入。
 
-共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。
+共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
+
+多深度与工具协议见 [共享说明](../README.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。

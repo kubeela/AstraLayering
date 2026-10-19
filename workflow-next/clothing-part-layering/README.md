@@ -10,9 +10,9 @@
 
 ```bash
 pnpm --dir workflow-next install --frozen-lockfile
-pnpm --dir workflow-next/clothing-part-layering start --name test --image /path/to/simplified-character.png
+pnpm --dir workflow-next/clothing-part-layering start --name test
 
-# 续跑只需任务名，使用已经保存的输入
+# 首次及续跑都通过任务名定位上游
 pnpm --dir workflow-next/clothing-part-layering start --name test
 ```
 
@@ -22,18 +22,18 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
 
 ## 参考与拆分
 
-1. 将输入原样保存为 `references/simplified-character.<原扩展名>`，支持 PNG、JPEG、WebP。使用 [preparation 提示词](prompts/preparation.md) 去除人物和衣服之外的饰品，生成同画布的透明 `references/clothing.png`。保留衣料、衣服自带附件、薄纱及正常开口，补全被移除对象遮住的衣料；不移动、居中或重新设计衣服。
+1. 按 `--name` 直接读取同名人物 part 的 `references/simplified-subject.*`，支持 PNG、JPEG、WebP，不再保存输入副本。缺少时明确提示上游命令与手动放置的路径。使用 [preparation 提示词](prompts/preparation.md) 去除人物和衣服之外的饰品，生成同画布的透明 `references/clothing.png`。保留衣料、衣服自带附件、薄纱及正常开口，补全被移除对象遮住的衣料；不移动、居中或重新设计衣服。
 2. 查看纯衣服图与原穿衣角色，按外到内检查结构、建立初始 group。纯衣服图是衣片轮廓与绘画标准，原角色用于判断穿插与随动关系。group 表示结构归属，包含关系和数组顺序不代表绘制深度。
 3. 逐层执行轮廓绘制、review / 返修、同层去重、遮挡补全、自检及直属 group / part 分析。完成当前层后继续下一层，实际结构决定拆分深度。
-4. 合成 `preview.svg`，为所有终止 part 规划并逐件检查固定深度，保存 `occlusion.json`。
+4. 合成 `preview.svg`，为所有终止 part 规划并逐件、逐区域检查深度，保存 `occlusion.json`。
 
 绘制者在首次绘制或返修中发现当前组 `note` 的职责或层序说明有误时，可用 `update_group_note` 精确替换唯一匹配的原句。工具只修改本组说明，通过调度器共用的写入队列保存；下一次 review 和后续拆分读取更新后的说明。仅有说明问题时保持正确 SVG，不修改父组或分组树。
 
 此流程的 SVG 是纯色轮廓控制图，review 检查形状、开口、覆盖和归属；配色、纹样、明暗、笔触和透明度表现由后续栅格流程绘制。若反馈混入成品绘画要求，返修者须逐项解释其不适用原因并保留正确色块，不把控制图改成绘画成品。
 
-**独立运动、变形、显隐与控制是拆分的核心标准。** 还要判断一个实体是否需要分处其他部件的前后：此时即使共同运动，也必须拆成可以分别排序的衣片。开放袖口与衣领只是例子；依据当前衣服的真实结构判断，不机械地给每个开口分两半，不套固定衣服分类。相应职责从 group 的 `note` 传递到具体 part，不能只写在父组里而最后仍输出一个整体图层。
+**独立运动、变形、显隐与控制是拆分的核心标准。** 还要判断一个实体是否需要分处其他部件的前后：若仍是同一运动整体，可保留一个逻辑 part，用多深度区域表达，由 raster step01 拆实际绘画层。开放袖口与衣领只是例子；依据当前衣服的真实结构判断，不机械地给每个开口分两半，不套固定衣服分类。相应职责从 group 的 `note` 传递到具体 part，不能只写在父组里而遗漏具体 part 的区域说明。
 
-终止 part 必须能用一个固定深度表示。若发现上游漏拆，明确报告结构冲突；不能靠局部蒙版伪装成正确分层。这里输出衣服，不制作身体装配或单独的身体插层文档。
+单深度 part 使用 level；同动整体跨深度时使用 levels 与文本区域说明，不退回上游拆组，不要求像素分界线。实际绘画分片由 raster step01 实现，不用蒙版伪装。这里输出衣服，不制作身体装配或单独的身体插层文档。
 
 ## 输出与恢复
 
@@ -42,7 +42,6 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
 ```text
 workflow-next/.run/test/clothing-part-layering/
   references/
-    simplified-character.png   # 扩展名随实际输入保留
     clothing.png
     preparation-prompt.md
     preparation.json           # 来源、生成图和提示词指纹；不保存鉴权
@@ -55,7 +54,7 @@ workflow-next/.run/test/clothing-part-layering/
   occlusion.json               # 全部终止衣片从后到前的深度表
 ```
 
-同名续跑复用输入与正式文件，不依赖最初的外部图片路径。preparation 校验保存的输入与衣服图指纹，检测到被改写时拒绝静默沿用；生成图也须为原画布尺寸且含实际透明区域的 PNG。尺寸与文件检查不代替模型的视觉判断。
+同名续跑复用输入与正式文件，不依赖最初的外部图片路径。preparation 校验上游简化角色与衣服图指纹，检测到被改写时拒绝静默沿用；生成图也须为原画布尺寸且含实际透明区域的 PNG。尺寸与文件检查不代替模型的视觉判断。
 
 在停止当前进程后，删除 `references/clothing.png` 可重新生成衣服参考；下次启动会先清除依赖旧参考的分组、parts、阶段记录、观察图、预览和深度表。重新制作全部衣服时也可使用新的 `--name`。不要用同一个名字并发启动。
 
@@ -72,6 +71,6 @@ pnpm --dir workflow-next/clothing-part-layering test
 
 自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。
 
-现已完成 [2026-10-18—19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；允许同一逻辑 part 多深度的通用优化仍在 [后续约定](../../demos/clothing-workflows-20261019/NEXT.md) 中。
+现已完成 [2026-10-18—19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；该历史案例推动的多深度与 step01 拆层协议现已接入，说明见 [共享流程](../README.md#多深度与上游修正)。
 
 共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。

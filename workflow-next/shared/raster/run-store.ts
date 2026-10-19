@@ -1,6 +1,6 @@
 import { lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { snapshotInput, type PartLayeringInput } from './input.ts';
+import type { PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 
@@ -73,9 +73,8 @@ export async function initializeRun(directory: string, config: RunConfig): Promi
   await mkdir(dirname(directory), { recursive: true });
   const staging = await mkdtemp(join(dirname(directory), '.init-'));
   try {
-    await snapshotInput(config.sourceInput, join(staging, 'input'));
     await saveConfig(staging, config);
-    // Publish input + configuration together; interrupted copies never look resumable.
+    // Upstream artifacts remain in their owning pipeline; initialize configuration only.
     await rename(staging, directory);
   } finally { await rm(staging, { recursive: true, force: true }); }
 }

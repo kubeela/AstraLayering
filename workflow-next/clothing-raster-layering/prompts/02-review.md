@@ -9,8 +9,8 @@
 输入（均相对本次任务根目录）：
 
 - 当前工程：step02/clothing-soft-edges.kra。
-- 原图：input/references/clothing.png，依据 step01/report.md 和 step02/report.md 确认，保持同一参考标准。
-- 结构标准：input/parts/、input/groups.json、input/occlusion.json。
+- 原图：../clothing-part-layering/references/clothing.png，依据 step01/report.md 和 step02/report.md 确认，保持同一参考标准。
+- 结构标准：../clothing-part-layering/parts/、../clothing-part-layering/groups.json、../clothing-part-layering/occlusion.json。
 - 第一步基线：step01/clothing-depth.kra，用于帮助定位问题来源。
 - 阅读 step02/ 中已有的正式 review 和 repair 报告，了解已知问题与处理情况；暂存文件不代表完成。
 
@@ -46,4 +46,6 @@
 - 只有完成全部检查，且没有待修复或待确认的问题时，才能写“结论：通过”。
 
 
-衣服专属检查：以 input/references/clothing.png 为绘画参考，检查全部衣片内容是否完整、薄纱透明度与正常开口是否保留。对照 input/groups.json 中的职责，核对需要分开的前后衣片确为独立绘画层，不能因同动而合并，不把人体或相邻衣片画进本层。这里只交付衣服分层 KRA，不做身体装配，不编写身体插层说明。
+衣服专属检查：以 ../clothing-part-layering/references/clothing.png 为绘画参考，检查全部衣片内容是否完整、薄纱透明度与正常开口是否保留。对照 ../clothing-part-layering/groups.json 中的职责，核对需要分开的前后衣片确为独立绘画层，不能因同动而合并，不把人体或相邻衣片画进本层。这里只交付衣服分层 KRA，不做身体装配，不编写身体插层说明。
+
+沿用 step01/report.md 与上游 occlusion.json 中已落实的深度分片：一个逻辑 part 可以对应多个普通绘画层。按各片独显及同 part 合看检查连续性，保留共同归属和层序，不因同一 part 多层就判重复、要求合层或退回拆组。

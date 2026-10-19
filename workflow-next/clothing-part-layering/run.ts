@@ -7,7 +7,7 @@ export { parseRunArguments, readGroupInput, formatLayeringSummary } from '../sha
 export const pipeline: PartPipeline = {
   profile,
   imageHelp: '简化穿衣角色图片路径',
-  preparationHelp: '--image 首次启动需要；生成纯衣服参考；续跑沿用已保存的输入和参考。',
+  preparationHelp: '按 --name 读取同名 part-layering/references/simplified-subject.*，生成纯衣服参考；不接受额外 --image。',
   getPreparationDirectory, loadPreparedReferences,
   prepare: (input, agents, progress) => prepareReferences(input, createPreparationSteps(agents), progress),
 };
