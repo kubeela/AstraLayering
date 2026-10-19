@@ -12,3 +12,12 @@ analysis/*20260927/** -text
 rigging/milly/v3/video-work/** -text
 demos/clothing-workflows-20261019/*.kra -text
 demos/clothing-workflows-20261019/images/** -text
+
+# Preserve reference sources, historical records and their recorded SHA-256 bytes.
+tutorial/live2d-guidance/model-originals/** -text
+tutorial/live2d-guidance/hair-reference-templates/** -text
+tutorial/live2d-guidance/hair-reference-research-20261015/** -text
+tutorial/live2d-guidance/finger-reference-materials/** -text
+tutorial/live2d-guidance/layering-references.md -text
+tutorial/live2d-guidance/layering-reference-inventory.json -text
+tutorial/live2d-guidance/tools/verify_layering_references.py -text

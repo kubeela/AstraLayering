@@ -1,6 +1,6 @@
 # Live2D 真实资料索引
 
-本页索引原创分析与真实可解析数据；源资产只保留在本地忽略目录，不包含在公开 git 内容中。教程供流程设计者按专题学习，再落实到具体节点；执行者无需通读。此次不修改 generic，不引入动画实现；补全部分作为独立 part 的决定保持不变。
+本页索引原创分析与真实可解析数据。2026-10-20 起，已取得的三套来源模型及原包、头发和指体参考资料均纳入 Git，入口见 [Layering 参考资料维护](layering-references.md)。教程供流程设计者按专题学习，再落实到具体节点；执行者无需通读。此次不修改 generic，不引入动画实现；补全部分作为独立 part 的决定保持不变。
 
 当前入口：[原创研究总索引](../live2d-research/local-index.md)、[模型原件统一目录](model-originals/readme.md)及[逐文件清单](model-originals/manifest.json)。2026-10-08 已将 Milly/Lier/樱桃的 35 文件及两份原 ZIP 复制到 `model-originals/`，与旧副本和 ZIP 成员逐项核对哈希；旧 `local-assets/` 保留。以下旧整理记录中的 `local-assets` 路径是历史位置。五份云端包已收到 Library 引用，但下载有界重试报 HTTP 403，官方原件及全量 Oct1–8 报告尚未本机导入。
 
@@ -38,7 +38,7 @@
 - [标准库解析脚本](tools/parse_learning_assets.py)：只读源文件，无新增软件安装。
 - 本地完整资产在本目录 `local-assets/milly/`、`local-assets/lier/`，共复制 24 个文件并逐文件核对 SHA-256；原 ZIP 与先前解压副本均保留。复制清单仅本地 `local-assets/local-copy-manifest.json`。另新增天使运行包 11 文件，复制后逐文件 hash 一致，原包与工作目录副本保留；本地目录 `local-assets/cherry-cake-angel/`。
 - ZIP 原始文件名 `归档.zip`，68,562,527 字节，共 66 条目；有效文件 24 个，跳过目录与 macOS 元数据。ZIP SHA-256：`DBDBA19C2E25EAA163CB6812F6BFE1C5365B986C9D889A1867AB9EFC37521A21`。
-- 仓库经 GitHub 页面核实为 public；米粒禁止再传播包内文件，莉尔许可未知。本地 PSD/图片/moc3/配置不暂存或推送；学习目的不等于可公开源资产。`.gitattributes` 未配置 LFS，LFS 也不能替代许可。
+- 仓库经 GitHub 页面核实为 public；米粒禁止再传播包内文件，莉尔许可未知。原整理时 PSD/图片/moc3/配置只在本地保存；2026-10-20 按用户要求改为随仓库维护，作者原说明和来源限制记录保留。`.gitattributes` 未配置 LFS，LFS 也不能替代许可。
 
 ## 整理记录
 
@@ -46,4 +46,8 @@
 
 两个既有目录统一移至 tutorial 下。四份有效技能说明/规划文档只修复实际教程路径，并补齐原有下半身链接遗漏的 `.txt`；分析历史中的快照、旧报告与复现脚本保留原文，不全局替换。旧记录中的根目录路径属于当时状态，当前资料以 tutorial 下路径为准。
 
-完整源资产现复制到 guidance 的本地忽略目录，原副本保留；新增局部忽略保护 guidance/local-assets 和 drawing-tutorial 的新增 MP4。此前已跟踪的三个视频仅移动，不删除、不重新下载；精确例外允许保留它们的迁移，新增 MP4 默认忽略。移动清单、SHA-256 与验证记录保存在本次工作目录。
+原整理时完整源资产复制到 guidance 的本地忽略目录，原副本保留；新增局部忽略保护 guidance/local-assets 和 drawing-tutorial 的新增 MP4。此前已跟踪的三个视频仅移动，不删除、不重新下载；精确例外允许保留它们的迁移，新增 MP4 默认忽略。移动清单、SHA-256 与验证记录保存在本次工作目录。
+
+## 2026-10-20 参考资料保存
+
+当前入口见 [layering-references.md](layering-references.md)。本机已取得的三套模型、两份原 ZIP、头发参考板与裁片、原研究资料、制作记录和脚本、完整指体参考板及来源清单均随仓库保存。现有工作流的图片位置和引用配置保持原样。云端尚未取得的包继续列为未取得。

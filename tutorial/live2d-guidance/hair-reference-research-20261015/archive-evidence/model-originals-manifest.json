@@ -1,0 +1,1294 @@
+{
+  "created_utc": "2026-10-08",
+  "scope": "All physically present official original model packages used in Oct1–8 cloud research",
+  "archives": [
+    {
+      "model": "haru",
+      "study_dates": "2026-10-01/08",
+      "archive": "model-originals/haru/haru_greeter_ja.zip",
+      "bytes": 40966036,
+      "sha256": "3db5c9180fc8446f7d92eee13ea33f584e5d1308e101d7afa4fe3b037a0ed94e",
+      "zip_crc": "passed",
+      "source_page": "https://www.live2d.com/en/learn/sample/haru-receptionist/",
+      "license": "Live2D Free Material License Agreement and applicable character-specific Sample Data Terms; private user research copy only; not permission to redistribute",
+      "license_urls": [
+        "https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html",
+        "https://www.live2d.com/en/learn/sample/model-terms/"
+      ],
+      "entries": [
+        {
+          "path": "ReadMe.txt",
+          "bytes": 2917,
+          "sha256": "1371442da46ba8d8af99bd7d316cd189ddf14fb4320e59fc0a844b6162019676",
+          "crc32": "b63c49a6"
+        },
+        {
+          "path": "runtime/haru_greeter_t05.2048/texture_00.png",
+          "bytes": 1526786,
+          "sha256": "30fce81e6b2d69fb99e8d1b5f391a6e0240f671095e491e9bbe24ddd7c7f434d",
+          "crc32": "4daaf749"
+        },
+        {
+          "path": "runtime/haru_greeter_t05.2048/texture_01.png",
+          "bytes": 1188664,
+          "sha256": "e1e977447ee7e6e347f1b96b9103ae269e6f4e4a8cf38068d161537415cc51c8",
+          "crc32": "320ac1b2"
+        },
+        {
+          "path": "runtime/haru_greeter_t05.cdi3.json",
+          "bytes": 5707,
+          "sha256": "af2c75bb89e39098c97783c887c108db7dc25f229f421fe0f06ca6931ce3c224",
+          "crc32": "79c599b9"
+        },
+        {
+          "path": "runtime/haru_greeter_t05.moc3",
+          "bytes": 387392,
+          "sha256": "597571191064a12ffe592bcb5fade586ef5876bbbcf78905c348a78a0991432a",
+          "crc32": "c49a2a2b"
+        },
+        {
+          "path": "runtime/haru_greeter_t05.model3.json",
+          "bytes": 2276,
+          "sha256": "fc9c2532e0a8142b542ae3e3a11417aae1d1ee998c73be0d792f8f078eff1a3e",
+          "crc32": "0194bba4"
+        },
+        {
+          "path": "runtime/haru_greeter_t05.physics3.json",
+          "bytes": 5914,
+          "sha256": "b09a654759a0a0a49998a263757b10f310377adab4b8a281ae5c70902a8a7d1f",
+          "crc32": "0ff5dba1"
+        },
+        {
+          "path": "runtime/haru_greeter_t05.pose3.json",
+          "bytes": 274,
+          "sha256": "0014f220336de55bebb506892c0541853e05771e3f16dfd98389f709aabd127c",
+          "crc32": "c7a8c611"
+        },
+        {
+          "path": "runtime/motion/haru_g_idle.motion3.json",
+          "bytes": 21183,
+          "sha256": "8a4fac459abf35dfb049188e4330d485a9fce54ae6111625f4ffae4d9b03abfb",
+          "crc32": "0504f3fa"
+        },
+        {
+          "path": "runtime/motion/haru_g_m01.motion3.json",
+          "bytes": 11944,
+          "sha256": "ed85c07795fba2e57d7701b706ba04516b83a0b7e4463752320c2c0a8bdca033",
+          "crc32": "a1155f0e"
+        },
+        {
+          "path": "runtime/motion/haru_g_m02.motion3.json",
+          "bytes": 12055,
+          "sha256": "8a187a9a830ddb62f5471dc974782af68f61dfeb12b31eb3858d3513cf2c035d",
+          "crc32": "a08a82a9"
+        },
+        {
+          "path": "runtime/motion/haru_g_m03.motion3.json",
+          "bytes": 16981,
+          "sha256": "8edba3952e0c45ce0bc3d20755ba212528b6450641e82dec162d7a327d48b82b",
+          "crc32": "5c05984c"
+        },
+        {
+          "path": "runtime/motion/haru_g_m04.motion3.json",
+          "bytes": 23449,
+          "sha256": "9532599ea7c54452e1b2a689652a76e50fa1d261f0a5cd0adaaa01b1c567fbdf",
+          "crc32": "4a7e23fe"
+        },
+        {
+          "path": "runtime/motion/haru_g_m05.motion3.json",
+          "bytes": 14198,
+          "sha256": "5015d14ffad99a9eb43f48dfaa6e400072b610467611ad72221b04a21e3252c6",
+          "crc32": "65f65c08"
+        },
+        {
+          "path": "runtime/motion/haru_g_m06.motion3.json",
+          "bytes": 15118,
+          "sha256": "311c544c67282cbc40ac1e0287751b20a7f49a46f4eea989b7071efc3188053c",
+          "crc32": "47715fc2"
+        },
+        {
+          "path": "runtime/motion/haru_g_m07.motion3.json",
+          "bytes": 14821,
+          "sha256": "faa3aa7ca9c05cc395003a4a072ea8d3397c9a3480c9220e486dd70beb32bda9",
+          "crc32": "811b7e63"
+        },
+        {
+          "path": "runtime/motion/haru_g_m08.motion3.json",
+          "bytes": 15439,
+          "sha256": "8933e2e0db8818037db817d5e6aa4fd795c6f3e302fceae26f2b5a4b88889446",
+          "crc32": "42923fa2"
+        },
+        {
+          "path": "runtime/motion/haru_g_m09.motion3.json",
+          "bytes": 25066,
+          "sha256": "d6c8abb01dcfee8246cccbe7a437f025cb31884f8408f3207e1a6e4139888e45",
+          "crc32": "0fdecad6"
+        },
+        {
+          "path": "runtime/motion/haru_g_m10.motion3.json",
+          "bytes": 34954,
+          "sha256": "27933b0363abda5c13a55cfea5f2968293abcbc8995140773ff2bf7186c631c1",
+          "crc32": "4a91ebc1"
+        },
+        {
+          "path": "runtime/motion/haru_g_m11.motion3.json",
+          "bytes": 14475,
+          "sha256": "cd4afa96422f649cdf32782f6d79594a52fbc106717a4b4056caaddbec7538d3",
+          "crc32": "8d2a63a2"
+        },
+        {
+          "path": "runtime/motion/haru_g_m12.motion3.json",
+          "bytes": 22441,
+          "sha256": "a512cf99c416ead14cd8bc89f2e3b021fce2bcf46f670f1d151d374d95476ab8",
+          "crc32": "439eadf3"
+        },
+        {
+          "path": "runtime/motion/haru_g_m13.motion3.json",
+          "bytes": 11601,
+          "sha256": "cb59cafad6567b4dfe71f69d6fc19d17902f9a397badc4e4003491229fe744be",
+          "crc32": "8a6a8386"
+        },
+        {
+          "path": "runtime/motion/haru_g_m14.motion3.json",
+          "bytes": 20625,
+          "sha256": "a61765c485d61169b2dbd3a4b760d409964edd6f272f3ae26ef3069e8ebc7559",
+          "crc32": "578646ff"
+        },
+        {
+          "path": "runtime/motion/haru_g_m15.motion3.json",
+          "bytes": 13540,
+          "sha256": "4383147bd61a7bd2d990591512bfe29eea743f93868e8679ffed16e588628088",
+          "crc32": "a837f892"
+        },
+        {
+          "path": "runtime/motion/haru_g_m16.motion3.json",
+          "bytes": 18639,
+          "sha256": "7ab44f3e3e3258c4666fb3ed3643e947faf04a2c17b77bc0b12121ea983c9e23",
+          "crc32": "54bc5bca"
+        },
+        {
+          "path": "runtime/motion/haru_g_m17.motion3.json",
+          "bytes": 16109,
+          "sha256": "9be971760fb922e3dc3d588b7eca15c48655db721c3578d73e54daf55fc8677d",
+          "crc32": "655e98b0"
+        },
+        {
+          "path": "runtime/motion/haru_g_m18.motion3.json",
+          "bytes": 13424,
+          "sha256": "4dbecfa60f081dc5ff63a08fbbf27889663f766b4c449df534a904528d2b7f36",
+          "crc32": "dea60b94"
+        },
+        {
+          "path": "runtime/motion/haru_g_m19.motion3.json",
+          "bytes": 11302,
+          "sha256": "598c52b4068482ece9c1d6ddf1f0f0dd8b18eb625fa3e758a0acb677bb2eac9d",
+          "crc32": "51eef616"
+        },
+        {
+          "path": "runtime/motion/haru_g_m20.motion3.json",
+          "bytes": 23651,
+          "sha256": "536e467d6533c0883b2ad6c8915bc632b4d4188fc3d3abb19cc6b4f5fd12ddb9",
+          "crc32": "7a2e61c0"
+        },
+        {
+          "path": "runtime/motion/haru_g_m21.motion3.json",
+          "bytes": 23906,
+          "sha256": "02efb8fc2296da6531d364dec7929c1685763046b744ba470326b7961c7123b3",
+          "crc32": "1e376e95"
+        },
+        {
+          "path": "runtime/motion/haru_g_m22.motion3.json",
+          "bytes": 27408,
+          "sha256": "02f2bca00f22281966a86d6885dbdee67d725c7dc163e5b2bbbeb1ccf9fb5ec3",
+          "crc32": "317c7759"
+        },
+        {
+          "path": "runtime/motion/haru_g_m23.motion3.json",
+          "bytes": 16695,
+          "sha256": "24cef039138ce14c902807cf1a4d24ce48cfb4802c788a9a9fb8b5a6c4556444",
+          "crc32": "1d938ba8"
+        },
+        {
+          "path": "runtime/motion/haru_g_m24.motion3.json",
+          "bytes": 18090,
+          "sha256": "70c9f34193f3d9fd30f9ec204a333b0169bb290540e751cfa203de6611a9c8d7",
+          "crc32": "cfc3daa1"
+        },
+        {
+          "path": "runtime/motion/haru_g_m25.motion3.json",
+          "bytes": 17528,
+          "sha256": "bef0fdcd9bc40d61eebb723234e00a5f87ba00d97f31f65dd215b862c3074245",
+          "crc32": "d4105413"
+        },
+        {
+          "path": "runtime/motion/haru_g_m26.motion3.json",
+          "bytes": 23275,
+          "sha256": "2b20fbbf31439a5792c808085ecd4c9dc5addeb6195c6d113a25e77f7acc0f4f",
+          "crc32": "0cd38809"
+        },
+        {
+          "path": "haru_greeter_t03.can3",
+          "bytes": 411252,
+          "sha256": "b0aea5d6f27694178124ab9aff0cb152711308ef420d7268f9708834d7fbcbcf",
+          "crc32": "b547af76"
+        },
+        {
+          "path": "haru_greeter_t05.cmo3",
+          "bytes": 11820163,
+          "sha256": "20a8cc5a1bb417da77c079714013f0e7468dcd889e68a1f7ae28df0fd4dfeecd",
+          "crc32": "8a971d52"
+        },
+        {
+          "path": "haru_受付スーツ_インポート_t07.psd",
+          "bytes": 11617922,
+          "sha256": "cce6cb57d1281a6164415954fc37f58fe69d2a04e37e1fca4a186801bbc62cf3",
+          "crc32": "e05425eb"
+        },
+        {
+          "path": "haru_受付スーツ_素材分け_t07.psd",
+          "bytes": 43947184,
+          "sha256": "ed0a498d5b09ee2164ad06382c45901bd13661f9b8ae047721854c2c4c50bc04",
+          "crc32": "4258b251"
+        }
+      ],
+      "download_url": "https://cubism.live2d.com/sample-data/bin/haru_greeter/haru_greeter_ja.zip",
+      "specific_license_summary": "Applicable Live2D agreement and individual terms; not an open-source asset license."
+    },
+    {
+      "model": "koharu-haruto",
+      "study_dates": "2026-10-01/08",
+      "archive": "model-originals/koharu-haruto/koharu_haruto_ja.zip",
+      "bytes": 23398279,
+      "sha256": "a0f677361ea94d8266e3c195ecdc6251e9e49529174315af0640e8eb5d170594",
+      "zip_crc": "passed",
+      "source_page": "https://www.live2d.com/en/learn/sample/koharu-haruto/",
+      "license": "Live2D Free Material License Agreement and applicable character-specific Sample Data Terms; private user research copy only; not permission to redistribute",
+      "license_urls": [
+        "https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html",
+        "https://www.live2d.com/en/learn/sample/model-terms/"
+      ],
+      "entries": [
+        {
+          "path": "haruto/haruto_t01.cmo3",
+          "bytes": 3805016,
+          "sha256": "1cfeb30ba4b99c30d2d0244d5ae90d0c57985b7417e7d7236b8a5727a0ac0e5f",
+          "crc32": "13853276"
+        },
+        {
+          "path": "haruto/PSD/はると_インポート.psd",
+          "bytes": 3783592,
+          "sha256": "00b4b791856a966034769c11956c469c1223a83141778662074eeb33fce89576",
+          "crc32": "6358efec"
+        },
+        {
+          "path": "haruto/PSD/はると_素材分け.psd",
+          "bytes": 7102150,
+          "sha256": "dd4542c35e754a681a66cdcd6547ef20ef9477eb7e599abb444e19861c68c0fe",
+          "crc32": "58897828"
+        },
+        {
+          "path": "haruto/runtime/haruto.2048/texture_00.png",
+          "bytes": 1173288,
+          "sha256": "71ca06a6c1caeaa12684ea00cf748c91fa3e637620035d10b9a9f9584a74c63f",
+          "crc32": "7b9e4d77"
+        },
+        {
+          "path": "haruto/runtime/haruto.cdi3.json",
+          "bytes": 5299,
+          "sha256": "084d85ee689e6eca45ee7f104b4062cf501509bdd7745815925e809f3723eb04",
+          "crc32": "decd5807"
+        },
+        {
+          "path": "haruto/runtime/haruto.moc3",
+          "bytes": 281664,
+          "sha256": "43f320a45f27777a2ab1aad9a53f06287ed18a274dc2d36951176dc8cc66abe5",
+          "crc32": "54e28d7a"
+        },
+        {
+          "path": "haruto/runtime/haruto.model3.json",
+          "bytes": 922,
+          "sha256": "99e538e166c3e32cf7adf7c2192a71640662067cf1956a25acd79d246a528b7b",
+          "crc32": "0c074c0b"
+        },
+        {
+          "path": "haruto/runtime/haruto.physics3.json",
+          "bytes": 5942,
+          "sha256": "b4ca958d440df3bc5947f1dc64f5d0bb91528e920e4413e3ca90e037add54e65",
+          "crc32": "e7c0b6bf"
+        },
+        {
+          "path": "haruto/runtime/motion/01.motion3.json",
+          "bytes": 12086,
+          "sha256": "54d9e92fcf228b012fc8219eb5d4f6f646a7837af0e18e1544fe9f2c2f70d7bb",
+          "crc32": "00dfcbb2"
+        },
+        {
+          "path": "haruto/runtime/motion/02.motion3.json",
+          "bytes": 10265,
+          "sha256": "8a832fe5519d8c033d4b82c92f08c673c787f191fe4cf0a3c93e4d14ecffeeff",
+          "crc32": "739345c0"
+        },
+        {
+          "path": "haruto/runtime/motion/03.motion3.json",
+          "bytes": 10051,
+          "sha256": "be9cb289cbdc7a6d86fd6336f2dfab1009ee3a0a85b144ad2074bb39d9de7826",
+          "crc32": "148232ca"
+        },
+        {
+          "path": "haruto/runtime/motion/04.motion3.json",
+          "bytes": 9800,
+          "sha256": "3ff69822734aaab2f98cba52d803dae33bc3d94531461f1df6ccf5c848ed7727",
+          "crc32": "2a6e599e"
+        },
+        {
+          "path": "haruto/runtime/motion/05.motion3.json",
+          "bytes": 10065,
+          "sha256": "7d5ebdcdf3487f170f5c34d7d9cf03fb3e16995bc0cef5c7c13d341edc086935",
+          "crc32": "f49def3b"
+        },
+        {
+          "path": "haruto/runtime/motion/06.motion3.json",
+          "bytes": 15482,
+          "sha256": "6b714a0fcbef44aa29a7a6519cca6697c2c473a6e79cd5f0e87152a6af016484",
+          "crc32": "3247a891"
+        },
+        {
+          "path": "haruto/runtime/motion/07.motion3.json",
+          "bytes": 11370,
+          "sha256": "d45f147937190a7facd1137f845b25a170b6d01759bf98b56e15edd41997c194",
+          "crc32": "7d775c57"
+        },
+        {
+          "path": "haruto/runtime/motion/08.motion3.json",
+          "bytes": 9357,
+          "sha256": "b67483cd68427e4e37c6ec97650042e33c0f6aa410437915b11b8466049017d3",
+          "crc32": "95483406"
+        },
+        {
+          "path": "haruto/runtime/motion/09.motion3.json",
+          "bytes": 12313,
+          "sha256": "3a269034c7f47adc187ee418907a2648f20fe6ba6183bdd080a900d70a186ad5",
+          "crc32": "4911b60f"
+        },
+        {
+          "path": "haruto/runtime/motion/idle.motion3.json",
+          "bytes": 11728,
+          "sha256": "8f0493c9b775e56a2f9f1640e0bbb28cfb45262c47966fa857267d84275df8d9",
+          "crc32": "c8ba3687"
+        },
+        {
+          "path": "haruto/runtime/motion/idle_02.motion3.json",
+          "bytes": 11728,
+          "sha256": "de246f8e896c493d2965c0edd8dee12b9be62e6022e9f7d675709fccc380dc84",
+          "crc32": "87eb0ef9"
+        },
+        {
+          "path": "haruto/SD_mtn_t01.can3",
+          "bytes": 144399,
+          "sha256": "71362d2e5ac065c97b371ad7b99b735ea6de5cde59652b29e3e718091c67835b",
+          "crc32": "e91a8460"
+        },
+        {
+          "path": "ReadMe.txt",
+          "bytes": 2508,
+          "sha256": "93fbc1527a5c830baa7b5b4f0b07e47a91341e95ec79573d45cc9b180959a257",
+          "crc32": "08dfd46c"
+        },
+        {
+          "path": "koharu/koharu_t01.cmo3",
+          "bytes": 4437982,
+          "sha256": "e9df39ddeb293dc4330b859c9839b1d449f93ed67a537173832a74571bde8503",
+          "crc32": "80388c73"
+        },
+        {
+          "path": "koharu/PSD/こはる_インポート.psd",
+          "bytes": 4210980,
+          "sha256": "dd9e3caee7f1c49005ed5bcedc2b50bbc1bbe9b5bce999c92583365ffba9d65c",
+          "crc32": "9ddf4289"
+        },
+        {
+          "path": "koharu/PSD/こはる_素材分け.psd",
+          "bytes": 8977681,
+          "sha256": "9a7475842419dc97a03893e8202befe442a2d0bd64509838b6ce09d09b9c376e",
+          "crc32": "701591be"
+        },
+        {
+          "path": "koharu/runtime/koharu.2048/texture_00.png",
+          "bytes": 1429360,
+          "sha256": "c6980d107bc9bab9a933b87c109f95aafbf16d8e364e49731b58beaedc42f2fc",
+          "crc32": "e7385ac5"
+        },
+        {
+          "path": "koharu/runtime/koharu.cdi3.json",
+          "bytes": 5382,
+          "sha256": "941f09c8ebe346dacfcf58f146b03ca5ce13900f7b5d52cccd34264c8454a33f",
+          "crc32": "a8d42084"
+        },
+        {
+          "path": "koharu/runtime/koharu.moc3",
+          "bytes": 281472,
+          "sha256": "cb5d270b6aeea5cb2a70d8728f52db49cee833f2a66a53db7f80a9e34ed5e005",
+          "crc32": "1bcddf3b"
+        },
+        {
+          "path": "koharu/runtime/koharu.model3.json",
+          "bytes": 922,
+          "sha256": "317bef2e6c0b826283dd776fa4511532e8181b5eff5b48e9e8c0d03ca586a7cd",
+          "crc32": "3b262089"
+        },
+        {
+          "path": "koharu/runtime/koharu.physics3.json",
+          "bytes": 7129,
+          "sha256": "cbd3c3b01b658bc6d18d55edfe3c33f800b4f112bcba147fd8e6c25fea09e6c1",
+          "crc32": "cb2f93b4"
+        },
+        {
+          "path": "koharu/runtime/motion/01.motion3.json",
+          "bytes": 12205,
+          "sha256": "8e79dfbf14e4db42cfde20f4a16fd335b91fcf20a1fd9ee296c96f48f8a63f84",
+          "crc32": "5644ce92"
+        },
+        {
+          "path": "koharu/runtime/motion/02.motion3.json",
+          "bytes": 10380,
+          "sha256": "09e46ee2c6ffe3ead40f9aa061af52a138cc9374815c8d49bc7b8636dbd08db6",
+          "crc32": "7628193a"
+        },
+        {
+          "path": "koharu/runtime/motion/03.motion3.json",
+          "bytes": 10170,
+          "sha256": "559dd0a0d6fa2ce18b6667ec4c2abdc494df09bc14ef72d9fdb48176239c5e70",
+          "crc32": "06b4d009"
+        },
+        {
+          "path": "koharu/runtime/motion/04.motion3.json",
+          "bytes": 9919,
+          "sha256": "a58191d7150eb18139d51eb577df25558b8d73925ac8dbf8c74189ae170e4ed0",
+          "crc32": "e7737ac3"
+        },
+        {
+          "path": "koharu/runtime/motion/05.motion3.json",
+          "bytes": 10184,
+          "sha256": "2b1c90ef1056d9694653d58d3a26a33d8d8036cf4a3194d15f75ac29a6b45a3f",
+          "crc32": "d6442970"
+        },
+        {
+          "path": "koharu/runtime/motion/06.motion3.json",
+          "bytes": 15601,
+          "sha256": "2b8883f8a6ab16a850520edad0538c3a0c41c4b22914bc2d11fcc8be4fc5b189",
+          "crc32": "874bb801"
+        },
+        {
+          "path": "koharu/runtime/motion/07.motion3.json",
+          "bytes": 11489,
+          "sha256": "1371fd8ce82233d022c0f4e25f150477ddf62dd2b6f72639d3641c1a8e275744",
+          "crc32": "e06ce843"
+        },
+        {
+          "path": "koharu/runtime/motion/08.motion3.json",
+          "bytes": 9476,
+          "sha256": "bfdc601c72e2ec470c77536839d0a9b4cf870232273ecabdd01a6af0e31a1b9e",
+          "crc32": "25a3eee3"
+        },
+        {
+          "path": "koharu/runtime/motion/09.motion3.json",
+          "bytes": 12432,
+          "sha256": "5ffb6d03dec3e397fca07cfa2dd7e6f9bf541dc972b63ec96a53b41172f313ca",
+          "crc32": "28d20e68"
+        },
+        {
+          "path": "koharu/runtime/motion/idle.motion3.json",
+          "bytes": 11908,
+          "sha256": "088560fe3517e9397da10c835699eb4b55fb0df56afe4befd9b75c676e6e6e00",
+          "crc32": "dfb6376e"
+        },
+        {
+          "path": "koharu/runtime/motion/idle_02.motion3.json",
+          "bytes": 11908,
+          "sha256": "d13903c1171fa8cfedd100080db51d17b379ed87c3036f71b9f03b096c397386",
+          "crc32": "88e450c4"
+        },
+        {
+          "path": "koharu/SD_mtn_t01.can3",
+          "bytes": 143399,
+          "sha256": "94b8add7a4bf84ab7e0a3e44d2c36c2249ebda6eaa3d40dad830fbfcf57bf4b1",
+          "crc32": "494a2d68"
+        }
+      ],
+      "download_url": "https://cubism.live2d.com/sample-data/bin/koharu_haruto/koharu_haruto_ja.zip",
+      "specific_license_summary": "Applicable Live2D agreement and individual terms; not an open-source asset license."
+    },
+    {
+      "model": "natori",
+      "study_dates": "2026-10-02",
+      "archive": "model-originals/natori/natori_en.zip",
+      "bytes": 26068930,
+      "sha256": "e16660ca073498884363613a881b04d69616a2bc09523667dc5d07b6e3db2d9f",
+      "zip_crc": "passed",
+      "source_page": "https://www.live2d.com/en/learn/sample/natori-jin/",
+      "license": "Live2D Free Material License Agreement and applicable character-specific Sample Data Terms; private user research copy only; not permission to redistribute",
+      "license_urls": [
+        "https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html",
+        "https://www.live2d.com/en/learn/sample/model-terms/"
+      ],
+      "entries": [
+        {
+          "path": "runtime/exp/Angry.exp3.json",
+          "bytes": 1860,
+          "sha256": "ff21ddb9b1dbf40f6114e59c8d31f0592e54d0110be25ba4cefaac62b808cbb8",
+          "crc32": "2163c0e4"
+        },
+        {
+          "path": "runtime/exp/Blushing.exp3.json",
+          "bytes": 1848,
+          "sha256": "d77e289b18e7ce9914dec187f0f1cbf83669ccaa9416fc1034d21aeded91ad93",
+          "crc32": "85adfbeb"
+        },
+        {
+          "path": "runtime/exp/exp_01.exp3.json",
+          "bytes": 1851,
+          "sha256": "f9175f600bdbd1a0206264c0915d1a7bab595ac749c6da0db01365f99b8efda4",
+          "crc32": "1b3be639"
+        },
+        {
+          "path": "runtime/exp/exp_02.exp3.json",
+          "bytes": 1853,
+          "sha256": "c9c098b9721aef0f5c63d99960381e8a21bb366a4da14f902b2ffe734bcc95e1",
+          "crc32": "e97fe1d8"
+        },
+        {
+          "path": "runtime/exp/exp_03.exp3.json",
+          "bytes": 1848,
+          "sha256": "8f416a2fff0a3bbaf719414de46458e6675e109e8c93cf70019b4bba9af956cd",
+          "crc32": "07589501"
+        },
+        {
+          "path": "runtime/exp/exp_04.exp3.json",
+          "bytes": 1864,
+          "sha256": "28e6ad30a14f485eda54e8bc6ea89a0183df15b0a120729a704d265fa265b5ad",
+          "crc32": "26a65523"
+        },
+        {
+          "path": "runtime/exp/exp_05.exp3.json",
+          "bytes": 1848,
+          "sha256": "ace45afdd9b5bab06b45a69c4cf23ca5d8a494448c32cb7fcee3f1db5f5a1fb3",
+          "crc32": "6ce52f3a"
+        },
+        {
+          "path": "runtime/exp/Normal.exp3.json",
+          "bytes": 1845,
+          "sha256": "bc3e5f4f3bb3fb0c783915c0bae2fbb65fb6b4ca5779433972dc0b0aea1fca39",
+          "crc32": "56b9b6b6"
+        },
+        {
+          "path": "runtime/exp/Sad.exp3.json",
+          "bytes": 1850,
+          "sha256": "cd051c97f0c1981e7207cefcc87d1769601234ea14294d153b89ec0d45bc7034",
+          "crc32": "7cb1b830"
+        },
+        {
+          "path": "runtime/exp/Smile.exp3.json",
+          "bytes": 1847,
+          "sha256": "06e5a7eedb082e20252a87bd996fa163c53d934b06e43a268494ba25f1e94ba6",
+          "crc32": "ab1d6e31"
+        },
+        {
+          "path": "runtime/exp/Surprised.exp3.json",
+          "bytes": 1865,
+          "sha256": "e7dc9ac4dbea6b9a98f5296b6df3e29727a1e2955bd198c4f5e9f47c0bf2d3e9",
+          "crc32": "bed602b9"
+        },
+        {
+          "path": "runtime/motions/mtn_00.motion3.json",
+          "bytes": 15644,
+          "sha256": "a72450ad79739192fca350c327ec45b699d9fafb25304180a5283c9746ee5a44",
+          "crc32": "621cffba"
+        },
+        {
+          "path": "runtime/motions/mtn_01.motion3.json",
+          "bytes": 19926,
+          "sha256": "d2cd0c9315b9058cceb898b71b8e660c14c6e41f59b7b1ba2cf8d9d25b6699b7",
+          "crc32": "bc94c29a"
+        },
+        {
+          "path": "runtime/motions/mtn_02.motion3.json",
+          "bytes": 22165,
+          "sha256": "68147f88c8dd9d64b138ec36bfc2cc6cea0ec4d288778290684106ed97540ffe",
+          "crc32": "238f7cf4"
+        },
+        {
+          "path": "runtime/motions/mtn_03.motion3.json",
+          "bytes": 25815,
+          "sha256": "79b39209297178e24386b6aebc24e20777fe58ee06b4329c92b878760674283d",
+          "crc32": "dab882d9"
+        },
+        {
+          "path": "runtime/motions/mtn_04.motion3.json",
+          "bytes": 23692,
+          "sha256": "656b06ca7e748c89d90146427b0cace936ef3af99fae39b15e27f646548cad8b",
+          "crc32": "b909ee17"
+        },
+        {
+          "path": "runtime/motions/mtn_05.motion3.json",
+          "bytes": 23687,
+          "sha256": "f5b2c88f50c8e1e502579dfccbe84452c80fe9c9026706076a582343374937b0",
+          "crc32": "4242cd15"
+        },
+        {
+          "path": "runtime/motions/mtn_06.motion3.json",
+          "bytes": 21628,
+          "sha256": "6dce3d2fec68f0e85811c8862652766ac6157403e407552410c68fb1088dd449",
+          "crc32": "62d0f391"
+        },
+        {
+          "path": "runtime/motions/mtn_07.motion3.json",
+          "bytes": 19460,
+          "sha256": "8b12022b7bdf01e7a9e6f124f043452c6c49432368da0aecc82a550b79e72182",
+          "crc32": "7cdd4ad2"
+        },
+        {
+          "path": "runtime/natori.pose3.json",
+          "bytes": 480,
+          "sha256": "e3feed602d86d4dc37365622db1c2950dd6707e13cd9a29afa7f9dc9fcebe398",
+          "crc32": "3ef28685"
+        },
+        {
+          "path": "runtime/natori_pro_t06.4096/texture_00.png",
+          "bytes": 6958390,
+          "sha256": "0921cece25f7e702a07cec4b8aa8235ba8904f013cc4d921cffd445c07cb04a4",
+          "crc32": "e822a8d3"
+        },
+        {
+          "path": "runtime/natori_pro_t06.cdi3.json",
+          "bytes": 12573,
+          "sha256": "7e036d3f49626424d30c145c7da097bba4fe16684c5a67a76031890d4bee67fc",
+          "crc32": "0f42ee78"
+        },
+        {
+          "path": "runtime/natori_pro_t06.moc3",
+          "bytes": 771072,
+          "sha256": "8f3122e2d3b5a30f79d95078ac756e45ea5df740f3e72f461cdec793303bf94f",
+          "crc32": "c7156c16"
+        },
+        {
+          "path": "runtime/natori_pro_t06.model3.json",
+          "bytes": 1969,
+          "sha256": "8021d0762ec8f68f0ccab9d8c9b31f4fce57488da6a77c669768cd1ca9b4af1f",
+          "crc32": "8d0adbf0"
+        },
+        {
+          "path": "runtime/natori_pro_t06.physics3.json",
+          "bytes": 15575,
+          "sha256": "d280a0088b17df4ddaf8fb417b5ee11601bd40686a91540eaaf0e5eeb69eb874",
+          "crc32": "d16d02a0"
+        },
+        {
+          "path": "natori_pro_exp_t03.can3",
+          "bytes": 152470,
+          "sha256": "329136577a1a0e2fed9f4bb1e30107dab740b4ac88cddbbeeca5f4a3c94abcfb",
+          "crc32": "d4a7157b"
+        },
+        {
+          "path": "natori_pro_motions_t03.can3",
+          "bytes": 166138,
+          "sha256": "6ee8154e61ac8e6049362b3db4d98e584d5c76c053d145fe8ce7f074aa1f07b6",
+          "crc32": "771a03ab"
+        },
+        {
+          "path": "natori_pro_t06.cmo3",
+          "bytes": 18975323,
+          "sha256": "3a6371058dd19c597cd41425ea2d5522264864973689840c8612eac1bed9e44b",
+          "crc32": "2acc7e2e"
+        },
+        {
+          "path": "ReadMe.txt",
+          "bytes": 2496,
+          "sha256": "2f75abade89cc7c498098632aac66504723406feb58ba968761c483cb0647f8f",
+          "crc32": "430470cc"
+        }
+      ],
+      "download_url": "https://cubism.live2d.com/sample-data/bin/natori/natori_en.zip",
+      "specific_license_summary": "Collaboration character: no commercial use, alteration or redistribution under checked character terms; retain butler identity. Old ReadMe generic text must not override special terms."
+    },
+    {
+      "model": "miara",
+      "study_dates": "2026-10-03",
+      "archive": "model-originals/miara/miara_en.zip",
+      "bytes": 40241602,
+      "sha256": "021f44d062d7cc1cbe6ac13e25ef7e1b981db187b8b5c4af521f2cba3613d9a4",
+      "zip_crc": "passed",
+      "source_page": "https://www.live2d.com/en/learn/sample/miara/",
+      "license": "Live2D Free Material License Agreement and applicable character-specific Sample Data Terms; private user research copy only; not permission to redistribute",
+      "license_urls": [
+        "https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html",
+        "https://www.live2d.com/en/learn/sample/model-terms/"
+      ],
+      "entries": [
+        {
+          "path": "runtime/miara_pro_t03.4096/texture_00.png",
+          "bytes": 13457985,
+          "sha256": "6c206f27d61e123df3ab7ac5eafe702dc91c3c125884a2886184f5dd8d3f9e68",
+          "crc32": "c70165ed"
+        },
+        {
+          "path": "runtime/miara_pro_t03.cdi3.json",
+          "bytes": 19685,
+          "sha256": "9f951dd9612b1b826211e0cc553c4d81435d4a97a6209697771a96b0ab5a95ad",
+          "crc32": "932ce4e0"
+        },
+        {
+          "path": "runtime/miara_pro_t03.moc3",
+          "bytes": 544256,
+          "sha256": "e7c9614904068550f6083bbb8d7d3d559a1b33b2c6ed6ba9e4acd92b85f5647a",
+          "crc32": "b7257789"
+        },
+        {
+          "path": "runtime/miara_pro_t03.model3.json",
+          "bytes": 631,
+          "sha256": "b98f63e7b0978c9cf0e6f065698594e6fdd56cf358301df98e2902d03fcfd1a2",
+          "crc32": "7550f32d"
+        },
+        {
+          "path": "runtime/miara_pro_t03.physics3.json",
+          "bytes": 47722,
+          "sha256": "49ca2b9340ea681459d8ce50fec2ac58895e26f9c1bec12b9b8b195e7b9480b3",
+          "crc32": "735f3bce"
+        },
+        {
+          "path": "runtime/motion/Scene1.motion3.json",
+          "bytes": 28434,
+          "sha256": "ce20fa5ba3a7d5fabca2150408f16fcc4a0b91dc156a4c65f62a494f53b044fd",
+          "crc32": "84999db6"
+        },
+        {
+          "path": "runtime/motion/Scene2.motion3.json",
+          "bytes": 23837,
+          "sha256": "df771aeb85903f55e7386a879ad677bd6cc7476d4d6bf02b4d97f04777f488e0",
+          "crc32": "13b309ed"
+        },
+        {
+          "path": "runtime/motion/Scene3.motion3.json",
+          "bytes": 29420,
+          "sha256": "6b49d8a6f15eb3a0b7ab6d0b7e4dc0c12cb3c1c99a4b24741bc42c08fd1a04e4",
+          "crc32": "70e38e66"
+        },
+        {
+          "path": "miara_pro_t01.can3",
+          "bytes": 104286,
+          "sha256": "cf40c4d2a1c7bf2f90948a5588d6e6ad13bcdf1fccf5b82b8152a10173cfc941",
+          "crc32": "ce634a01"
+        },
+        {
+          "path": "miara_pro_t04.cmo3",
+          "bytes": 26830998,
+          "sha256": "3649c222bb0b7555f0fa6e49a762f26446af0f2744beef138f803ccb0b2b4a42",
+          "crc32": "d3f0c8b4"
+        },
+        {
+          "path": "ReadMe.txt",
+          "bytes": 2272,
+          "sha256": "c7eeb53e29975fcb7e849659c14c5eec06ae9a15253aa2c2b8e4ce20bd64a04c",
+          "crc32": "0c1d4cd9"
+        }
+      ],
+      "download_url": "https://cubism.live2d.com/sample-data/bin/miara/miara_en.zip",
+      "specific_license_summary": "Live2D original character: character design changes prohibited."
+    },
+    {
+      "model": "hiyori",
+      "study_dates": "2026-10-06",
+      "archive": "model-originals/hiyori/hiyori_en.zip",
+      "bytes": 46195926,
+      "sha256": "1e4254d561f2a151562aa67036d78e17e4ffee08869b8ce10ab6052a05e2b3a4",
+      "zip_crc": "passed",
+      "source_page": "https://www.live2d.com/en/learn/sample/momose-hiyori/",
+      "license": "Live2D Free Material License Agreement and applicable character-specific Sample Data Terms; private user research copy only; not permission to redistribute",
+      "license_urls": [
+        "https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html",
+        "https://www.live2d.com/en/learn/sample/model-terms/"
+      ],
+      "entries": [
+        {
+          "path": "hiyori_pro/hiyori_pro_t04.can3",
+          "bytes": 218291,
+          "sha256": "ed12c7a2b6ebeb24d6e0b83d00eb6592bc1b2a8957fe0f794b9790fc2e633b97",
+          "crc32": "e05c5540"
+        },
+        {
+          "path": "hiyori_pro/hiyori_pro_t11.cmo3",
+          "bytes": 28873070,
+          "sha256": "cd435579a8f12363493049233b97db47a7ac91e6aeb5993c7c5f93dc6374070f",
+          "crc32": "1d0173fa"
+        },
+        {
+          "path": "hiyori_pro/ReadMe.txt",
+          "bytes": 2755,
+          "sha256": "c8b8a9d56b925249539a457720439778d89820c543ba8b0dca213fdbd7bc09f3",
+          "crc32": "149f0738"
+        },
+        {
+          "path": "hiyori_pro/runtime/hiyori_pro_t11.2048/texture_00.png",
+          "bytes": 1814313,
+          "sha256": "a7d930d42814d8fb69e787b0aef5b60e5afd52b4d4557551c8a58e5bea3a4bb1",
+          "crc32": "d4442a10"
+        },
+        {
+          "path": "hiyori_pro/runtime/hiyori_pro_t11.2048/texture_01.png",
+          "bytes": 2504416,
+          "sha256": "87fe9ab7db81ab3025e0407229e449233581e00fa92c8e911923bc6c7d98ce84",
+          "crc32": "fd1a3c7e"
+        },
+        {
+          "path": "hiyori_pro/runtime/hiyori_pro_t11.cdi3.json",
+          "bytes": 9543,
+          "sha256": "769e6378200efbd01d2909cd857b175aa0b52ffdca58b9230a1d73326ec7c44e",
+          "crc32": "06576726"
+        },
+        {
+          "path": "hiyori_pro/runtime/hiyori_pro_t11.moc3",
+          "bytes": 444480,
+          "sha256": "608d62c9a65cf537ac25ca9e710e687dbef98ee0a0575e0ee8e27bfdc446cd5e",
+          "crc32": "d1dd5792"
+        },
+        {
+          "path": "hiyori_pro/runtime/hiyori_pro_t11.model3.json",
+          "bytes": 1350,
+          "sha256": "9e40e4dd71beab5bef5c1df9e8223b111549bf1f836d276d1b471003cd754824",
+          "crc32": "b55e4f58"
+        },
+        {
+          "path": "hiyori_pro/runtime/hiyori_pro_t11.physics3.json",
+          "bytes": 26105,
+          "sha256": "79dafe32fe5b4c286c8ca015161ced2a5a9cb0b28d8570ae4574cde769b60398",
+          "crc32": "1509f098"
+        },
+        {
+          "path": "hiyori_pro/runtime/hiyori_pro_t11.pose3.json",
+          "bytes": 146,
+          "sha256": "c4986e9fe16fee6d4d18fdac826bfa09917a8179d1bdfd6c44d1c33174b03893",
+          "crc32": "b119997e"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m01.motion3.json",
+          "bytes": 10622,
+          "sha256": "c4f0d982c685b81c1af0ced96c8f6bd5118b8a3fa972c3a12a46652b8d78461d",
+          "crc32": "76e26834"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m02.motion3.json",
+          "bytes": 14248,
+          "sha256": "858c582874a0c4badfec38d4caf19e232fea5ba714f5a2ac6a282c617910c154",
+          "crc32": "5af866a0"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m03.motion3.json",
+          "bytes": 12719,
+          "sha256": "fe7251179eefd36d9eeec24928e0a8fe924349bb34295d50e8712eab187ea560",
+          "crc32": "540a0198"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m04.motion3.json",
+          "bytes": 8772,
+          "sha256": "54ddb94d0494772e10355429c547bb7e29601f38d663087804b0c793b29cc51f",
+          "crc32": "0c18ab9b"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m05.motion3.json",
+          "bytes": 16045,
+          "sha256": "1d93372b94e43883933b6eee72a2602f08425ec3be7d2b9a8b30121d6dfef3c1",
+          "crc32": "dbc31fb7"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m06.motion3.json",
+          "bytes": 19480,
+          "sha256": "3506c2f0049e31f9bfdf582f34f87e09d19bc19c8f2396191b273ae95953ab61",
+          "crc32": "62324551"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m07.motion3.json",
+          "bytes": 9639,
+          "sha256": "0140c5da76e7c5a214815d5b485b902e2b23df932831458af73eef762199ecb0",
+          "crc32": "d8e61c90"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m08.motion3.json",
+          "bytes": 10560,
+          "sha256": "847fdc148cac91b75b7c2632027abada8dbf8315a91648a03f746b47b861bd42",
+          "crc32": "076f96b2"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m09.motion3.json",
+          "bytes": 11479,
+          "sha256": "0f6e3ea9cde0cfe16dbd35bc006a8ca4b8c223645f744dadce84d58c0aa4ae52",
+          "crc32": "630902bd"
+        },
+        {
+          "path": "hiyori_pro/runtime/motion/hiyori_m10.motion3.json",
+          "bytes": 9607,
+          "sha256": "6c19086df4e8e1caa1cb3958d641f4ee40d3639e2c63b4f043bbab824742124e",
+          "crc32": "608f1d94"
+        },
+        {
+          "path": "hiyori_free/hiyori_free_t03.can3",
+          "bytes": 139956,
+          "sha256": "3dc6b5d1fcccb653976c650a89d2a83c966e15a45ab40e9002f32955677e6c19",
+          "crc32": "6c7534dd"
+        },
+        {
+          "path": "hiyori_free/hiyori_free_t08.cmo3",
+          "bytes": 10127083,
+          "sha256": "99cf572c8dcb144f657ee0669c5f05e0aed239066f3673b15889eafae67256e9",
+          "crc32": "8e959f1c"
+        },
+        {
+          "path": "hiyori_free/ReadMe.txt",
+          "bytes": 1796,
+          "sha256": "c054975ae050603f040059f452e60ba745aaee697248c13af6f7c6cd8f81ba56",
+          "crc32": "1dc1fa6c"
+        },
+        {
+          "path": "hiyori_free/runtime/hiyori_free_t08.2048/texture_00.png",
+          "bytes": 2846473,
+          "sha256": "5d4183d2f1eb1c4a08e45f91ea968b29694fb916945e75f9bc1099aaeabc1a4f",
+          "crc32": "8fedc76c"
+        },
+        {
+          "path": "hiyori_free/runtime/hiyori_free_t08.cdi3.json",
+          "bytes": 4358,
+          "sha256": "dcdad6a9b6cb91fda95f0418317495cdb47e4d704206a86a85d4d89957903a46",
+          "crc32": "528aca2b"
+        },
+        {
+          "path": "hiyori_free/runtime/hiyori_free_t08.moc3",
+          "bytes": 236480,
+          "sha256": "86d4417140ef036b5ce155d99f938c49e1ed66ee398e52f6d87fd122770345f1",
+          "crc32": "f98a49d8"
+        },
+        {
+          "path": "hiyori_free/runtime/hiyori_free_t08.model3.json",
+          "bytes": 1136,
+          "sha256": "936ada713af7ac6842cd38f614a77ed0ae288e8ba1f31d1ffae4d745cdda6e38",
+          "crc32": "c755e7b6"
+        },
+        {
+          "path": "hiyori_free/runtime/hiyori_free_t08.physics3.json",
+          "bytes": 10080,
+          "sha256": "b94886e2a3b6868a11ee38b2c2ceabcce6864f14ea444b353a5a007f5d337bb6",
+          "crc32": "376a62be"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m01.motion3.json",
+          "bytes": 9223,
+          "sha256": "c2a280a0fe30f82f0c4fcc8140bd674ba7d6627f479e3326dac7f1464fdc3b39",
+          "crc32": "e46fa4db"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m02.motion3.json",
+          "bytes": 11859,
+          "sha256": "a8638ad57ff255b7a6f5baa81e937ea5c072fd0cf12b048df521dabb0353f0f1",
+          "crc32": "6b0aa2fd"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m03.motion3.json",
+          "bytes": 9896,
+          "sha256": "0b418a08fd58ba6922563f7068eaf68dca1c3f16eda9a9c98c5b2cd8d21f3ee1",
+          "crc32": "51638606"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m04.motion3.json",
+          "bytes": 7692,
+          "sha256": "2f2a3c9a4a0b1bf7aba42f3dd0548c644db41f583c9f99f92e452953d9af67a0",
+          "crc32": "48ff4e48"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m05.motion3.json",
+          "bytes": 13999,
+          "sha256": "8806e09de13a01b66d421dfdf9cbddb59360f6a28d64aa5c4d07b11bae2a4ef0",
+          "crc32": "c3beed38"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m06.motion3.json",
+          "bytes": 7063,
+          "sha256": "ddae4c8d820decb9abb41de85a3b7fb24ed57a57275222e4be8a940d4d4e72fb",
+          "crc32": "5191d818"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m07.motion3.json",
+          "bytes": 8370,
+          "sha256": "1006ab62ef4ad8470a1d0fbd3d97fede62dd1bc2c426889a711b448be922acb2",
+          "crc32": "a45e7886"
+        },
+        {
+          "path": "hiyori_free/runtime/motion/hiyori_m08.motion3.json",
+          "bytes": 7395,
+          "sha256": "a8618287946ba791300b6d6e002a7f81ed7b0734d725826abe2506472ea6fc00",
+          "crc32": "5c2120a0"
+        }
+      ],
+      "download_url": "https://cubism.live2d.com/sample-data/bin/hiyori/hiyori_en.zip",
+      "specific_license_summary": "Live2D original character: character design changes prohibited."
+    },
+    {
+      "model": "hiyori-tutorial",
+      "study_dates": "2026-10-06/07",
+      "archive": "model-originals/hiyori-tutorial/momose_tutorial01.zip",
+      "bytes": 5827648,
+      "sha256": "882f957d139aae5c46d125c278c9d1ab24a3b97dd61099c7e970fb0ba64d30c5",
+      "zip_crc": "passed",
+      "source_page": "https://docs.live2d.com/en/cubism-editor-tutorials/psd/",
+      "license": "Live2D Free Material License Agreement and applicable character-specific Sample Data Terms; private user research copy only; not permission to redistribute",
+      "license_urls": [
+        "https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html",
+        "https://www.live2d.com/en/learn/sample/model-terms/"
+      ],
+      "entries": [
+        {
+          "path": "ôìÉúé╨éµéΦ_âCâôâ|ü[âg_â`âàü[âgâèâAâï1.psd",
+          "bytes": 10007672,
+          "sha256": "86edec9e4f69311211ad7b9a9018e7749c6cda475ddb598949afcf43b3db7867",
+          "crc32": "48bbee30"
+        }
+      ],
+      "download_url": "https://cubism.live2d.com/editor-tutorial/momose1/momose_tutorial01.zip",
+      "specific_license_summary": "Hiyori-specific conditions apply; tutorial PSD is not matched completed-model source."
+    },
+    {
+      "model": "mao-tutorial",
+      "study_dates": "2026-10-07",
+      "archive": "model-originals/mao-tutorial/mao_casualtutorial02.zip",
+      "bytes": 72136139,
+      "sha256": "50d34c9831cd61041c742eb1dd380ba1b856f96ed69405ba430d7ca20008042d",
+      "zip_crc": "passed",
+      "source_page": "https://docs.live2d.com/en/cubism-editor-tutorials/mouth-aiueo/",
+      "license": "Live2D Free Material License Agreement and applicable character-specific Sample Data Terms; private user research copy only; not permission to redistribute",
+      "license_urls": [
+        "https://www.live2d.com/eula/live2d-free-material-license-agreement_en.html",
+        "https://www.live2d.com/en/learn/sample/model-terms/"
+      ],
+      "entries": [
+        {
+          "path": "mao_casualtutorial02/mao_î√èJò┬é╠ì∞éΦò√_âCâôâ|ü[âg.psd",
+          "bytes": 57254280,
+          "sha256": "c469a5816778fbe98e150a99f7e24248a4066661b3d864e6f890d34479d3fde8",
+          "crc32": "bf3a1578"
+        },
+        {
+          "path": "mao_casualtutorial02/mao_î√èJò┬é╠ì∞éΦò√_è«É¼âéâfâï.cmo3",
+          "bytes": 37445394,
+          "sha256": "525ce4cf33978451ff319e725715f690d5fdade73c2e9efd65311d809312835d",
+          "crc32": "fec90e3d"
+        },
+        {
+          "path": "mao_casualtutorial02/î√é╠èJò┬_ë╣É║âTâôâvâï.wav",
+          "bytes": 431150,
+          "sha256": "dd525fe8e1f6031d0695d39ed2083b29e0328dd99d70ad3dfad95e985dcda850",
+          "crc32": "6c116b36"
+        }
+      ],
+      "download_url": "https://cubism.live2d.com/editor-tutorial/mao_casualtutorial02/mao_casualtutorial02.zip",
+      "specific_license_summary": "Applicable Live2D agreement and individual terms; not an open-source asset license."
+    }
+  ],
+  "local_editor_model_coverage": [
+    {
+      "source_relative_path": "haru_greeter_ja/haru_greeter_t03.can3",
+      "bytes": 411252,
+      "sha256": "b0aea5d6f27694178124ab9aff0cb152711308ef420d7268f9708834d7fbcbcf",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "haru_greeter_ja/haru_greeter_t05.cmo3",
+      "bytes": 11820163,
+      "sha256": "20a8cc5a1bb417da77c079714013f0e7468dcd889e68a1f7ae28df0fd4dfeecd",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "haru_greeter_ja/haru_受付スーツ_インポート_t07.psd",
+      "bytes": 11617922,
+      "sha256": "cce6cb57d1281a6164415954fc37f58fe69d2a04e37e1fca4a186801bbc62cf3",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "haru_greeter_ja/haru_受付スーツ_素材分け_t07.psd",
+      "bytes": 43947184,
+      "sha256": "ed0a498d5b09ee2164ad06382c45901bd13661f9b8ae047721854c2c4c50bc04",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-03_legs_feet/private/miara_pro_t04.cmo3",
+      "bytes": 26830998,
+      "sha256": "3649c222bb0b7555f0fa6e49a762f26446af0f2744beef138f803ccb0b2b4a42",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-03_legs_feet/private/miara_pro_t01.can3",
+      "bytes": 104286,
+      "sha256": "cf40c4d2a1c7bf2f90948a5588d6e6ad13bcdf1fccf5b82b8152a10173cfc941",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-03_legs_feet/private/runtime/miara_pro_t03.moc3",
+      "bytes": 544256,
+      "sha256": "e7c9614904068550f6083bbb8d7d3d559a1b33b2c6ed6ba9e4acd92b85f5647a",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "haru_greeter_ja/runtime/haru_greeter_t05.moc3",
+      "bytes": 387392,
+      "sha256": "597571191064a12ffe592bcb5fade586ef5876bbbcf78905c348a78a0991432a",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-02_natori_arm/private_sources/natori_en/natori_pro_motions_t03.can3",
+      "bytes": 166138,
+      "sha256": "6ee8154e61ac8e6049362b3db4d98e584d5c76c053d145fe8ce7f074aa1f07b6",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-02_natori_arm/private_sources/natori_en/natori_pro_exp_t03.can3",
+      "bytes": 152470,
+      "sha256": "329136577a1a0e2fed9f4bb1e30107dab740b4ac88cddbbeeca5f4a3c94abcfb",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-02_natori_arm/private_sources/natori_en/natori_pro_t06.cmo3",
+      "bytes": 18975323,
+      "sha256": "3a6371058dd19c597cd41425ea2d5522264864973689840c8612eac1bed9e44b",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-02_natori_arm/private_sources/natori_en/runtime/natori_pro_t06.moc3",
+      "bytes": 771072,
+      "sha256": "8f3122e2d3b5a30f79d95078ac756e45ea5df740f3e72f461cdec793303bf94f",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-06_torso_clothing/private/tutorial_psd/桃瀬ひより_インポート_チュートリアル1.psd",
+      "bytes": 10007672,
+      "sha256": "86edec9e4f69311211ad7b9a9018e7749c6cda475ddb598949afcf43b3db7867",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-06_torso_clothing/private/hiyori/hiyori_pro/hiyori_pro_t11.cmo3",
+      "bytes": 28873070,
+      "sha256": "cd435579a8f12363493049233b97db47a7ac91e6aeb5993c7c5f93dc6374070f",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-06_torso_clothing/private/hiyori/hiyori_pro/hiyori_pro_t04.can3",
+      "bytes": 218291,
+      "sha256": "ed12c7a2b6ebeb24d6e0b83d00eb6592bc1b2a8957fe0f794b9790fc2e633b97",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-06_torso_clothing/private/hiyori/hiyori_free/hiyori_free_t03.can3",
+      "bytes": 139956,
+      "sha256": "3dc6b5d1fcccb653976c650a89d2a83c966e15a45ab40e9002f32955677e6c19",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-06_torso_clothing/private/hiyori/hiyori_free/hiyori_free_t08.cmo3",
+      "bytes": 10127083,
+      "sha256": "99cf572c8dcb144f657ee0669c5f05e0aed239066f3673b15889eafae67256e9",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-06_torso_clothing/private/hiyori/hiyori_pro/runtime/hiyori_pro_t11.moc3",
+      "bytes": 444480,
+      "sha256": "608d62c9a65cf537ac25ca9e710e687dbef98ee0a0575e0ee8e27bfdc446cd5e",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-06_torso_clothing/private/hiyori/hiyori_free/runtime/hiyori_free_t08.moc3",
+      "bytes": 236480,
+      "sha256": "86d4417140ef036b5ce155d99f938c49e1ed66ee398e52f6d87fd122770345f1",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/koharu/koharu_t01.cmo3",
+      "bytes": 4437982,
+      "sha256": "e9df39ddeb293dc4330b859c9839b1d449f93ed67a537173832a74571bde8503",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/koharu/SD_mtn_t01.can3",
+      "bytes": 143399,
+      "sha256": "94b8add7a4bf84ab7e0a3e44d2c36c2249ebda6eaa3d40dad830fbfcf57bf4b1",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/haruto/SD_mtn_t01.can3",
+      "bytes": 144399,
+      "sha256": "71362d2e5ac065c97b371ad7b99b735ea6de5cde59652b29e3e718091c67835b",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/haruto/haruto_t01.cmo3",
+      "bytes": 3805016,
+      "sha256": "1cfeb30ba4b99c30d2d0244d5ae90d0c57985b7417e7d7236b8a5727a0ac0e5f",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/koharu/runtime/koharu.moc3",
+      "bytes": 281472,
+      "sha256": "cb5d270b6aeea5cb2a70d8728f52db49cee833f2a66a53db7f80a9e34ed5e005",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/koharu/PSD/こはる_インポート.psd",
+      "bytes": 4210980,
+      "sha256": "dd9e3caee7f1c49005ed5bcedc2b50bbc1bbe9b5bce999c92583365ffba9d65c",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/koharu/PSD/こはる_素材分け.psd",
+      "bytes": 8977681,
+      "sha256": "9a7475842419dc97a03893e8202befe442a2d0bd64509838b6ce09d09b9c376e",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/haruto/runtime/haruto.moc3",
+      "bytes": 281664,
+      "sha256": "43f320a45f27777a2ab1aad9a53f06287ed18a274dc2d36951176dc8cc66abe5",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/haruto/PSD/はると_インポート.psd",
+      "bytes": 3783592,
+      "sha256": "00b4b791856a966034769c11956c469c1223a83141778662074eeb33fce89576",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "koharu_haruto_ja/haruto/PSD/はると_素材分け.psd",
+      "bytes": 7102150,
+      "sha256": "dd4542c35e754a681a66cdcd6547ef20ef9477eb7e599abb444e19861c68c0fe",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-07_mouth_occlusion/private/mao/mao_casualtutorial02/mao_口開閉の作り方_完成モデル.cmo3",
+      "bytes": 37445394,
+      "sha256": "525ce4cf33978451ff319e725715f690d5fdade73c2e9efd65311d809312835d",
+      "contained_in_original_archive": true
+    },
+    {
+      "source_relative_path": "2026-10-07_mouth_occlusion/private/mao/mao_casualtutorial02/mao_口開閉の作り方_インポート.psd",
+      "bytes": 57254280,
+      "sha256": "c469a5816778fbe98e150a99f7e24248a4066661b3d864e6f890d34479d3fde8",
+      "contained_in_original_archive": true
+    }
+  ],
+  "missing_or_separate": [
+    {
+      "item": "Milly / Lier / 樱桃 user-local packages",
+      "status": "Not present or verified in cloud; separate Windows inventory required"
+    },
+    {
+      "item": "Natori / Miara source PSD",
+      "status": "No PSD supplied in the retained official completed-model archives; not acquired"
+    },
+    {
+      "item": "Hiyori completed PRO/FREE corresponding source PSD",
+      "status": "Not supplied in completed-model archive; tutorial1 PSD is a distinct version and must not be claimed identical"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "archiveMember": "修女莉尔免费版/icon.png",
+    "sourceBytes": 109305,
+    "sourceSha256": "3fd5d0945b1645db0d0b0a69b4098db2a1921374d766dbdf4ce4664f6bc85ad1",
+    "size": [
+      300,
+      300
+    ],
+    "previewSize": [
+      300,
+      300
+    ],
+    "preview": "D:\\Resources\\workspace\\AstraLayering\\workflow-next\\part-layering\\.run\\hair-splitting-research-20261015\\lier-png-evidence\\icon.png"
+  },
+  {
+    "archiveMember": "修女莉尔免费版/修女莉尔免费版.8192/texture_02.png",
+    "sourceBytes": 113579,
+    "sourceSha256": "dc89fdc82ead71fc4c1f61b284eeeb8f4f9c59126d9e0403d16ff8054c5c5579",
+    "size": [
+      4096,
+      4096
+    ],
+    "previewSize": [
+      2200,
+      2200
+    ],
+    "preview": "D:\\Resources\\workspace\\AstraLayering\\workflow-next\\part-layering\\.run\\hair-splitting-research-20261015\\lier-png-evidence\\texture_02.png"
+  },
+  {
+    "archiveMember": "修女莉尔免费版/修女莉尔免费版.8192/texture_00.png",
+    "sourceBytes": 33575516,
+    "sourceSha256": "41134fc02b7f1a34f48bc88a24518ff609d1ab0f998b49adffbf839fc8509988",
+    "size": [
+      8192,
+      8192
+    ],
+    "previewSize": [
+      2200,
+      2200
+    ],
+    "preview": "D:\\Resources\\workspace\\AstraLayering\\workflow-next\\part-layering\\.run\\hair-splitting-research-20261015\\lier-png-evidence\\texture_00.png"
+  },
+  {
+    "archiveMember": "修女莉尔免费版/修女莉尔免费版.8192/texture_01.png",
+    "sourceBytes": 21925563,
+    "sourceSha256": "2ac987e4146b4f886c3c115cf54185f8011158560d98567fc13783f74c25a3b4",
+    "size": [
+      8192,
+      8192
+    ],
+    "previewSize": [
+      2200,
+      2200
+    ],
+    "preview": "D:\\Resources\\workspace\\AstraLayering\\workflow-next\\part-layering\\.run\\hair-splitting-research-20261015\\lier-png-evidence\\texture_01.png"
+  }
+]

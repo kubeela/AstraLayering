@@ -1,0 +1,16 @@
+{
+  "recovered_crops": {},
+  "missing_crops": [
+    "指4L.png",
+    "指3L.png",
+    "指2L.png",
+    "手掌L.png",
+    "指1L.png",
+    "ArtMesh378.png",
+    "ArtMesh379.png",
+    "ArtMesh380.png",
+    "ArtMesh382.png",
+    "ArtMesh383.png"
+  ],
+  "note": "参考板和来源 JSON 已原样保存；未找到的单独裁片没有补造。"
+}

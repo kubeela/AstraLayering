@@ -1,0 +1,77 @@
+{
+  "createdAt": "2026-10-15T03:42:37.721Z",
+  "evidence": {
+    "currentLocalPsd": {
+      "path": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-guidance\\model-originals\\milly\\Milly原画.psd",
+      "sha256": "bb52e84765b55e9f3d992ccdcafca65e06755083cafefd3c313dc4f381698bd0",
+      "pixelsDecoded": true,
+      "sourceUnchanged": true
+    },
+    "historicalOfficialInventory": {
+      "archive": "C:/Users/22129/Downloads/Live2D_research_repository-import_2026-10-01_to_08.zip",
+      "member": "tutorial/live2d-research/2026-10-01_psd_models/layer_inventory.json",
+      "sha256": "64864a5b6cb865b72307774f5471fa3f5e7943cc0e2dfab3d510373356b40f9a",
+      "scope": "6 stored PSD layer inventories for Haru/Koharu/Haruto; no current local official PSD pixel reinspection"
+    },
+    "tutorial": "D:\\Resources\\workspace\\AstraLayering\\tutorial\\live2d-tutorial-text\\6.头发的拆分与制作.txt",
+    "prompts": [
+      {
+        "path": "prompts/groups/hair/children.md",
+        "sha256": "eae5ffb7a019d8b60633f3f86d06332d6c80f855207c48f628a343f3f052e170"
+      },
+      {
+        "path": "prompts/groups/hair/bangs/children.md",
+        "sha256": "64af114eb93ee64db25a52de209c9ea2f6ede9d985a1bfc227dd5266785f686b"
+      },
+      {
+        "path": "prompts/groups/hair/back_hair/children.md",
+        "sha256": "8ca1bbaeb179eb9960af5060fcb8fe3ef89d8f24844baf8351c706497f8eb057"
+      },
+      {
+        "path": "prompts/groups/hair/completion.md",
+        "sha256": "1c3ddc54499d7aaec434158df08827fd8fc096cd841f4696c590d7533904cdd4"
+      },
+      {
+        "path": "prompts/8-同层轮廓去重.md",
+        "sha256": "b1ad838f471fa5d0553de51c65394bb89c29b744d83f9ab6784008939024ab8e"
+      }
+    ]
+  },
+  "conclusions": [
+    {
+      "id": "hair-regions",
+      "finding": "侧发是发区及遮挡/控制职责，不等同细鬓束。前发、侧发与后发的分界应从发根走向、发面连续性和相对脸/耳的遮挡确定，不能只看末端大小或左右位置。",
+      "status": "supported by local tutorial and Milly pixels"
+    },
+    {
+      "id": "style-variation",
+      "finding": "Milly 有大片前侧发与侧发；Haru 历史清单的横髪则窄。侧发小本身不足以证明分类错误，也不能把所有肩旁长发改成侧发。",
+      "status": "supported; official evidence is historical inventory only"
+    },
+    {
+      "id": "part-vs-group",
+      "finding": "发区名称不能预定 group/part。完整统一控制的发束或发面为 part，存在多个需要独立控制的子件才为 group。PSD 的绘画文件夹也不能直接等同动画实体 group。",
+      "status": "supported by production/import PSD inventory comparison; project mapping is design inference"
+    },
+    {
+      "id": "completion",
+      "finding": "侧发也可能需要补到头顶；后发必须补齐被头脸/身体遮挡的形体，并有头顶轮廓承担者。头盖可以独立或并入后发，不应先强制一个巨大的 cap+body base。",
+      "status": "supported by local tutorial; target-specific division requires replanning"
+    },
+    {
+      "id": "continuity",
+      "finding": "不机械按长度分节；因层序穿插等需要可将一束分为同动片，独立层的合法投影重叠不能靠几何相减去重。Milly 另有 R2 与 R2上，但仅 PSD 不能确定它们的绑定用途。",
+      "status": "tutorial-supported; explicit limit on Milly rig inference"
+    },
+    {
+      "id": "target",
+      "finding": "当前把中分两片宽发面全部归 bangs、将梳拢发面与后方长发合在 back_hair/base、只用两条细弯束代表侧发的结果需要重新评估。现有事实足以修正先验，但不能直接把 Milly 发区边界或节点数量照搬给当前角色。",
+      "status": "target-specific assessment, not a newly approved split"
+    }
+  ],
+  "productionVerification": {
+    "unchangedCompletedHairSvgs": 11,
+    "promptsEdited": false,
+    "productionRerun": false
+  }
+}

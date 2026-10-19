@@ -1,0 +1,122 @@
+[
+  {
+    "path": "local-assets/milly/Milly原画.png",
+    "bytes": 2876246,
+    "sha256": "c8fe7692f0df44689acf51fb3987049b04f643cba8e9c11659d55a55037d57a8"
+  },
+  {
+    "path": "local-assets/milly/Milly原画.psd",
+    "bytes": 14090078,
+    "sha256": "bb52e84765b55e9f3d992ccdcafca65e06755083cafefd3c313dc4f381698bd0"
+  },
+  {
+    "path": "local-assets/milly/米粒模型说明.txt",
+    "bytes": 1575,
+    "sha256": "2bf5f12042c11c2a080ef11b42e6be67dda82f513ec4863091b2ba88d2d94ae0"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/Milly.cdi3.json",
+    "bytes": 25257,
+    "sha256": "3fbf599e5ec0be1a9b31d34171f9ce36cbc29a47a327ee6001f64b0c4ab142ef"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/Milly.moc3",
+    "bytes": 1106432,
+    "sha256": "060317412fe9743d2a025eddd790ff92ac52537756e36e4385411548fd2e70f7"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/milly.model3.json",
+    "bytes": 695,
+    "sha256": "6276724a587404ab58cb1395cd15b09631d48c312eb2b35a3af55d1034ddc0bf"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/Milly.physics3.json",
+    "bytes": 77581,
+    "sha256": "93b6650b9d685001b0c7a7963d1999d46043086692707fa8a23b0e4fc75d8b10"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/Milly.png",
+    "bytes": 402756,
+    "sha256": "03cd10098415c463e1118e05efbbf96a9be5a727e050109a8548525f6b8a08c0"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/P01AntiPose.exp3.json",
+    "bytes": 127,
+    "sha256": "9b093c1b44e0678eefcf365063e1324955f0c55ca44f5e903440ff0ec3df7da1"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/expressions/E01Angry.exp3.json",
+    "bytes": 339,
+    "sha256": "accb4b290d05331e53c1b727cf2418f730aaa7ee1dde35ebb7bddec1de2bdb04"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/expressions/E02Smile.exp3.json",
+    "bytes": 333,
+    "sha256": "001e4d30bb10a89f8712e8cc6bcc45196657be36edffe600128e66446cfaacb1"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/expressions/E03Sad.exp3.json",
+    "bytes": 338,
+    "sha256": "ea4671ba759090bab1ae5266e11cf0584ae5b1d05b2d93a6ba15e93a53231818"
+  },
+  {
+    "path": "local-assets/milly/MillyRuntime/Milly.4096/texture_00.png",
+    "bytes": 4917169,
+    "sha256": "4c8266b59bfc6828127392d588f07ad3bfa561059457b985057885cfcd317c31"
+  },
+  {
+    "path": "local-assets/lier/icon.png",
+    "bytes": 109305,
+    "sha256": "3fd5d0945b1645db0d0b0a69b4098db2a1921374d766dbdf4ce4664f6bc85ad1"
+  },
+  {
+    "path": "local-assets/lier/items_pinned_to_model.json",
+    "bytes": 447,
+    "sha256": "ebc20b626f2723fb31c74f8dfcda310eefa43a731c96f0167c0cf06193f1652d"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.cdi3.json",
+    "bytes": 19742,
+    "sha256": "ca43ba9d39dce01c3a0534c49e8cdb7610508b4196eaf1c18d2475eaa9675e77"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.moc3",
+    "bytes": 11525696,
+    "sha256": "7b96dd9f5dfe21d1b447709d7f4bc51a4e527e31762361929666afcffc3bcc14"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.model3.json",
+    "bytes": 550,
+    "sha256": "9fcaea1599e6ad31e608ea8d876bee3426a793a9b68d59277257d3ed291d9abc"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.physics3.json",
+    "bytes": 117064,
+    "sha256": "f38282b897253050b1f50b12a8e12bb5a9e1098f56cd2eb2ed260a0d2268ba8f"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.vtube.json",
+    "bytes": 17483,
+    "sha256": "740372d1706edc1bc7d722dc6a2b49c035f9ff71bcd993f17c09f6463af127b5"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.xyplugin.json",
+    "bytes": 91,
+    "sha256": "d9e56d0bd21215df54a964dbdc43f4c08d81d5374edcfd4d45a49bd93ff47679"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.8192/texture_00.png",
+    "bytes": 33575516,
+    "sha256": "41134fc02b7f1a34f48bc88a24518ff609d1ab0f998b49adffbf839fc8509988"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.8192/texture_01.png",
+    "bytes": 21925563,
+    "sha256": "2ac987e4146b4f886c3c115cf54185f8011158560d98567fc13783f74c25a3b4"
+  },
+  {
+    "path": "local-assets/lier/修女莉尔免费版.8192/texture_02.png",
+    "bytes": 113579,
+    "sha256": "dc89fdc82ead71fc4c1f61b284eeeb8f4f9c59126d9e0403d16ff8054c5c5579"
+  }
+]

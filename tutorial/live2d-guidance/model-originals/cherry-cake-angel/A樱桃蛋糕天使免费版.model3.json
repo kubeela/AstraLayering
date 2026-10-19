@@ -1,0 +1,27 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "A樱桃蛋糕天使免费版.moc3",
+		"Textures": [
+			"A樱桃蛋糕天使免费版.8192/texture_00.png",
+			"A樱桃蛋糕天使免费版.8192/texture_01.png"
+		],
+		"Physics": "A樱桃蛋糕天使免费版.physics3.json",
+		"DisplayInfo": "A樱桃蛋糕天使免费版.cdi3.json"
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"ParamEyeROpen",
+				"ParamEyeLOpen"
+			]
+		}
+	]
+}
