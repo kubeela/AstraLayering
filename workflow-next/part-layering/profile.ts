@@ -5,6 +5,7 @@ export const profile: PartProfile = {
   attachChildrenReferences: false,
   referenceLabel: '素体参考图',
   promptsDirectory: fileURLToPath(new URL('prompts/', import.meta.url)),
+  toolsDirectory: fileURLToPath(new URL('tools/', import.meta.url)),
   id: 'part-layering',
   subjects: ['character', 'other'],
   attachInitialReference: false,

@@ -21,7 +21,7 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
   const body = (await readFile(step.prompt, 'utf8')).replaceAll(`${step.id}/report.md`, `${step.id}/${report}`);
   const requiredFiles = step.requiredFiles.map(file => file === 'report.md' ? report : file);
   return `${body}\n---\n本次运行信息（上方为完整步骤提示词）：
-- 本管线目录：${JSON.stringify(dirname(output))}。正文中的 step01/、step02/、step03/ 和 input/ 均相对此目录。
+- 本管线目录：${JSON.stringify(dirname(output))}。正文中的步骤目录和 input/ 均相对此目录。
 - 本步输入文件（绝对路径，只读）：${JSON.stringify((step.inputFiles ?? []).map(file => join(dirname(output), file)))}。
 - 输入副本目录：${JSON.stringify(input.directory)}。只读使用，后续续跑均以这份已保存的输入为准。
 - 主要产物路径：${JSON.stringify(input.parts)}。以这里已完成的分层 part 作为部件形状与补全标准；保留输入文件。

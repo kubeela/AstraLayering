@@ -55,10 +55,11 @@ part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 r
 ```text
 shared/tools/<工具名>/description.md
 shared/tools/<工具名>/schema.json
+part-layering/tools/write_groups/description.md
 clothing-part-layering/tools/write_groups/schema.json
 ```
 
-直接修改仓库固定目录中的文件。description 为工具说明，schema 为发送给 Codex 的 JSON Schema。各管线配置的工具目录可按完整文件覆盖公共版本；未提供的文件沿用公共版本。例如衣服首次分组只允许 `subject="other"`，不会更改人物的允许值。没有外部工具目录启动参数。
+直接修改仓库固定目录中的文件。description 为工具说明，schema 为发送给 Codex 的 JSON Schema。各管线配置的工具目录可按完整文件覆盖公共版本；未提供的文件沿用公共版本。人物原有分组 JSON 示例放在人物专属工具说明中；衣服首次分组只允许 `subject="other"`，不会读取人物示例或更改人物的允许值。没有外部工具目录启动参数。
 
 工具配置在启动时加载并固定，修改文件在下一次启动生效；运行中同一绘制 thread 的工具定义保持一致。实际执行与文件写入校验仍在 TS 中，新增参数或修改执行行为需要同步实现。配置无效会报错。
 
