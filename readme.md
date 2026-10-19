@@ -14,6 +14,14 @@
 
 ## 效果展示
 
+### Jianma：人物与衣装的栅格穿戴合成
+
+[打开交互对照](./demos/jianma-assembled/index.html) · [下载 Krita 工程](./demos/jianma-assembled/jianma-assembled.kra) · [装配说明](./demos/jianma-assembled/README.md)
+
+将最新人物素体 90 层与衣装 69 层按前后关系穿插，加入可关闭的穿戴遮罩，处理衣下漏肤、外伸发尾和裙摆透纱。159 个原始绘画层像素保留；页面可与 simplified-character 并排或滑动对照，逐层显隐。
+
+[![Jianma 参考与穿戴合成](./demos/jianma-assembled/comparison.png)](./demos/jianma-assembled/index.html)
+
 ### 90 个完整绘画部件：灰底控制图与 Krita 修画
 
 [打开逐层查看页面](./demos/gray-control-krita/index.html) · [下载 Krita 工程](./demos/gray-control-krita/character-depth.kra) · [原图对照与验收记录](./demos/gray-control-krita/README.md)
