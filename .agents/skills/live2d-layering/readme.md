@@ -41,7 +41,7 @@
 
 普通用户以提供一张角色图为起点，流程采用可解释的基础动作规格；具体幅度和细分颗粒度逐步验证。大幅改变手势或姿势所需的新素材，作为后续扩展。
 
-主流程的目标确定为可复用人物素体：简化连体服只作中间参考，clothing使用独立Sol-xhigh会话一次移出临时衣物、清理相关效果并修补新露出局部；原服装还原或新衣装叠加另建工作流，详见[素体与衣装流程规划](docs/素体与衣装流程规划.md)。原始衣装参考与可复用附件随交付保留，身体自身明暗及仍成立的投影关系继续保留；素体整理与独立衣装制作均已有 Jianma 静态案例，见[案例快照](../../../demos/jianma-current-case/readme.md)。衣装另由 [live2d-clothing](../live2d-clothing/SKILL.md) 启动。
+主流程的目标确定为可复用人物素体：简化连体服只作中间参考，clothing使用独立Sol-xhigh会话一次移出临时衣物、清理相关效果并修补新露出局部；原服装还原或新衣装叠加另建工作流，详见[素体与衣装流程规划](docs/素体与衣装流程规划.md)。原始衣装参考与可复用附件随交付保留，身体自身明暗及仍成立的投影关系继续保留；素体整理与独立衣装制作均已有 Jianma 静态案例，见[案例快照](../../../demos/jianma-svg-ver/readme.md)。衣装另由 [live2d-clothing](../live2d-clothing/SKILL.md) 启动。
 
 ## 主流程的职责与终点
 
@@ -149,7 +149,7 @@ plan.json保留locked=true、参考版本、队列、镜像关系及eye_hair_ord
 
 产物均在 refinement/groups/{group.id}/：3.眼部色盘/；4.逐眼着色/{eye.id}/各子步骤/；5.逐眼投影与高光/{eye.id}/；6.镜像组装与成稿审查/。每次绘制交完整 SVG、预览、对照与简短说明。第2步和线稿审查路径保持原样，最终审查仍为 reviews/refinement/{group.id}/审查.md。旧第3–5步的产物不能直接标记为本版阶段完成。
 
-`jianma_v4` 已完成从 face、eyes、mouth 到 hair、body、lower_body、arms、physics_details 及素体整理的实际制作，独立衣装也已交付；已发布[成稿快照与对照](../../../demos/jianma-current-case/readme.md)。早期眼睛、嘴部和头发轮次连同审查证据已保存到 [Jianma v4 实跑档案](../../../demos/jianma-current-case/body-run/readme.md)，供问题回溯，不作为当前输入或完成依据。special_parts 与 generic 的模板已建立，仍需在有对应部件的素材上继续验证。
+`jianma_v4` 已完成从 face、eyes、mouth 到 hair、body、lower_body、arms、physics_details 及素体整理的实际制作，独立衣装也已交付；已发布[成稿快照与对照](../../../demos/jianma-svg-ver/readme.md)。早期眼睛、嘴部和头发轮次连同审查证据已保存到 [Jianma v4 实跑档案](../../../demos/jianma-svg-ver/body-run/readme.md)，供问题回溯，不作为当前输入或完成依据。special_parts 与 generic 的模板已建立，仍需在有对应部件的素材上继续验证。
 
 后续直接读取各任务保存的文件，最新整图路径由总控记入 `运行记录.md`，阶段目录不再另做导出。
 
@@ -302,4 +302,4 @@ clothing_cleanup使用独立Sol-xhigh会话接续最新SVG，在一次任务内�
 
 4.2已绑定原始角色图和换连体服前的适配参考供本节点使用；输出在refinement/groups/{group.id}/下，包括character.svg、preview.png、交接.md，以及用于后续复用的衣装来源.svg和衣装参考目录。上游文件只读，来源稿保留完整资源，无需重绘或审查；无清理项则原样保存输入SVG并说明。
 
-本节点的character.svg直接更新carry，后续generic从此素体继续，不依据历史parts或临时连体服图补回衣物/衣影；素体整理已有实际交付；衣装还原使用 [live2d-clothing](../live2d-clothing/SKILL.md)，两者静态结果见[案例快照](../../../demos/jianma-current-case/readme.md)。
+本节点的character.svg直接更新carry，后续generic从此素体继续，不依据历史parts或临时连体服图补回衣物/衣影；素体整理已有实际交付；衣装还原使用 [live2d-clothing](../live2d-clothing/SKILL.md)，两者静态结果见[案例快照](../../../demos/jianma-svg-ver/readme.md)。

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe",
+  "beforeHash": "78f452d16aca48ff7376fc995ef34be239eeff7db5808ed08c44967cb7a41214",
+  "afterHash": "2ae0fc68371552bce477205a1a7e5cff1415d27e6b324f61e1a4a2d23c9c5287",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

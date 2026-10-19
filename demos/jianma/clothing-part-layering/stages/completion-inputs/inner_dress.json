@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "inner_dress",
+  "beforeHash": "aa749163d77b4be6dae0b3ab692549b365ee65b398159660125a1819c50ba6ac",
+  "afterHash": "79f44974c2ce2dd0fbc877d79dfe2b681381d17f6a6632f8a6362c9cdde25528",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/lotus_coupler/silver_hanger",
+  "beforeHash": "a6fd601c8ada84b5ecc0f0c8ef7d14ff8c51d0796a57a54a03d9da346754c417",
+  "afterHash": "32686228ca9a9d754384b994a7574c7251eb6509ab7d965686b4fcf1eef17210",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

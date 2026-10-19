@@ -1,3 +1,4 @@
+import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
 import { readFile, realpath } from 'node:fs/promises';
@@ -91,17 +92,17 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       return textResult(submitted);
     },
   };
-  await agents.run({ name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: [preview, set, submit, createSvgReadTool(context.directory,
       [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)])], prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${JSON.stringify({
       group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
       reference, additionalReferences: references, canvas, sourceSvg: sourcePath, outputDraft: draft, parentSvg: parent ?? null,
     }, null, 2)}\n\n【固定范围与操作约定】\n${rules}\n固定约定提示词来源：${rulesPath}\n` });
-  if (!submitted) throw new Error('补全未通过 submit_completion 提交');
+  if (!submitted) throw agentOutcomeError('补全未通过 submit_completion 提交', response);
   await verifySource();
-  if (svgHash(await readFile(draft)) !== submittedHash) throw new Error('补全提交后草稿被修改');
-  if (!await dependenciesMatch(context.directory, dependencies)) throw new Error('补全过程参考输入发生变化');
+  if (svgHash(await readFile(draft)) !== submittedHash) throw agentOutcomeError('补全提交后草稿被修改', response);
+  if (!await dependenciesMatch(context.directory, dependencies)) throw agentOutcomeError('补全过程参考输入发生变化', response);
   return { ...submitted, dependencies };
 }
 

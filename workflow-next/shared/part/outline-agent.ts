@@ -1,3 +1,4 @@
+import { agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
 import { mkdir, readFile, readdir, realpath, rm } from 'node:fs/promises';
@@ -122,7 +123,7 @@ export async function drawGroupOutline(
   if (repair) {
     await recordRepair(output, repair.feedback, taskPrompt);
   }
-  await agents.run({
+  const response = await agents.run({
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory,
     sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory, [input.parent, repair?.candidate, draft]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
@@ -130,11 +131,14 @@ export async function drawGroupOutline(
     images: [{ path: input.reference, description: profile.references.outline }],
     prompt: taskPrompt,
   });
-  const actualDraft = await realpath(draft);
+  const actualDraft = await validateAgentOutcome(response, async () => {
+    try { return await realpath(draft); }
+    catch (error) { throw new Error(`模型回合已结束，但没有生成轮廓文件：${draft}`, { cause: error }); }
+  });
   if (!observations.some(entry => entry.source === actualDraft && entry.mode === 'blend')) {
-    throw new Error('轮廓绘制未通过 preview_svg 完成混合叠加自检');
+    throw agentOutcomeError('轮廓绘制未通过 preview_svg 完成混合叠加自检', response);
   }
-  const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, input.parent);
+  const bytes = await validateAgentOutcome(response, () => validateGroupSvg(draft, context.group.id, input.canvas, input.parent));
   if (draft !== output) await publishSvg(draft, output, input.parent ? hash(await readFile(input.parent)) : undefined);
   return { path: output };
 }
@@ -175,7 +179,7 @@ async function reviewOnce(
       return textResult({ path: reportPath, verdict: review.verdict });
     },
   };
-  await agents.run({
+  const response = await agents.run({
     name: `组轮廓review-${context.group.id}`, cwd: context.directory,
     sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory, [input.parent, candidate]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
@@ -183,8 +187,8 @@ async function reviewOnce(
     prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${runtime(context, input, { candidate })}\n` +
       `\n审查报告：${reportPath}\n候选只读；完成全部检查后一次提交反馈。\n`,
   });
-  if (!submitted) throw new Error('独立 review 未通过 submit_review 保存结论');
-  if (hash(await readFile(candidate)) !== candidateHash) throw new Error('独立 review 修改了候选 SVG');
+  if (!submitted) throw agentOutcomeError('独立 review 未通过 submit_review 保存结论', response);
+  if (hash(await readFile(candidate)) !== candidateHash) throw agentOutcomeError('独立 review 修改了候选 SVG', response);
   return submitted;
 }
 

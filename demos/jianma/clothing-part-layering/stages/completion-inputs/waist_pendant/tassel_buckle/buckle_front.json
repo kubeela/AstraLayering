@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/tassel_buckle/buckle_front",
+  "beforeHash": "60855d6b19fc5f3f1cbc4975e5c66b2d856874b97d22c3b9b290f57dcde7917a",
+  "afterHash": "f8eebd11e46e226e3b59422c0d00e24b6ee7db4d3eaca778e136513e1eed5fee",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

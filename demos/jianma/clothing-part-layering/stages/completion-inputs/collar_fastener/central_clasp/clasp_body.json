@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "collar_fastener/central_clasp/clasp_body",
+  "beforeHash": "a705f51517b6c1b5f31cf17604805a0e40276970e6f361b2e5334d332822fa3e",
+  "afterHash": "f30a4466a965216527c1706a268d631395e73e4d3fc854dd86bd3f24156e1b89",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

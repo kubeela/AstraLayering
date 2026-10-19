@@ -1,0 +1,101 @@
+{
+  "depth": 3,
+  "groups": [
+    {
+      "id": "outer_robe/collar_shoulders/standing_collar/right_front_collar",
+      "inputHash": "81cd29fca884e69c2bba12868eacfdb79275ee3255ea7abc952bd9e5cce86445",
+      "outputHash": "81cd29fca884e69c2bba12868eacfdb79275ee3255ea7abc952bd9e5cce86445"
+    },
+    {
+      "id": "outer_robe/collar_shoulders/standing_collar/left_front_collar",
+      "inputHash": "82d1e36933b9c832c363cdfcc52d929ddde0774142b28cdc5e1f292b710661eb",
+      "outputHash": "82d1e36933b9c832c363cdfcc52d929ddde0774142b28cdc5e1f292b710661eb"
+    },
+    {
+      "id": "outer_robe/collar_shoulders/standing_collar/side_back_collar",
+      "inputHash": "b1bc4c37ee0539b0ebb0178d1235c7068d897f39508fd2c09f443f734226582a",
+      "outputHash": "b1bc4c37ee0539b0ebb0178d1235c7068d897f39508fd2c09f443f734226582a"
+    },
+    {
+      "id": "outer_robe/left_sleeve/rear_cuff_drape/cuff_attachment_wall",
+      "inputHash": "537a04efc9837f5204e4b33218430ca40f5bd5c74373444c9b99a3da0062ff7a",
+      "outputHash": "537a04efc9837f5204e4b33218430ca40f5bd5c74373444c9b99a3da0062ff7a"
+    },
+    {
+      "id": "outer_robe/left_sleeve/rear_cuff_drape/free_curled_drape",
+      "inputHash": "82da7dfacf62670ec8da87aaa2190013c826eef3ca41f0802f8595a437a57ed5",
+      "outputHash": "82da7dfacf62670ec8da87aaa2190013c826eef3ca41f0802f8595a437a57ed5"
+    },
+    {
+      "id": "outer_robe/right_sleeve/sleeve_tube/front_sleeve_wall",
+      "inputHash": "d03b1d734adb083413a5202319d366ef271deadbd488ec1f190c6a86e149f7eb",
+      "outputHash": "d03b1d734adb083413a5202319d366ef271deadbd488ec1f190c6a86e149f7eb"
+    },
+    {
+      "id": "outer_robe/right_sleeve/sleeve_tube/rear_sleeve_wall",
+      "inputHash": "b37edadfa4215441051a995c25f70a0015f006c54758c4d2210d57a730613073",
+      "outputHash": "b37edadfa4215441051a995c25f70a0015f006c54758c4d2210d57a730613073"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/right_suspension_cord/rear_insertion_end",
+      "inputHash": "a25379afcc05ac9b9a0c8865deafb127f1a09d5bd470c44916d8f134dcb411ca",
+      "outputHash": "a25379afcc05ac9b9a0c8865deafb127f1a09d5bd470c44916d8f134dcb411ca"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/right_suspension_cord/front_arc_cord",
+      "inputHash": "716c178096d3ef94289dde6e6d0b64ebdc8a1eb543abf1ac1806abbf99c85c0d",
+      "outputHash": "716c178096d3ef94289dde6e6d0b64ebdc8a1eb543abf1ac1806abbf99c85c0d"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/left_suspension_cord/hidden_entry",
+      "inputHash": "255501de275c510a9067c1f507dade18aafa7f9f40505b817076fd9f531b6668",
+      "outputHash": "255501de275c510a9067c1f507dade18aafa7f9f40505b817076fd9f531b6668"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/left_suspension_cord/front_arc",
+      "inputHash": "b7c5e843cb280abde568e61056c2d149294174bf6055269c7a7cfb87d531d782",
+      "outputHash": "b7c5e843cb280abde568e61056c2d149294174bf6055269c7a7cfb87d531d782"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/junction_knot",
+      "inputHash": "9f4693f90788048aff108a8eff1b51c2f8aa22e4f92ada7aac6a61cb74379341",
+      "outputHash": "9f4693f90788048aff108a8eff1b51c2f8aa22e4f92ada7aac6a61cb74379341"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/diamond_bead",
+      "inputHash": "29ee14ccbc84b260a5882676147a9dd275a54d34850ba5ab8e39db2b8f2602f3",
+      "outputHash": "29ee14ccbc84b260a5882676147a9dd275a54d34850ba5ab8e39db2b8f2602f3"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage",
+      "inputHash": "d981395f92741d0ec4b052e9eb832286e6c1a1f813a0723225dd7ff8df0960cf",
+      "outputHash": "d981395f92741d0ec4b052e9eb832286e6c1a1f813a0723225dd7ff8df0960cf"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/lower_ring_connector/front_connector_tip",
+      "inputHash": "9e0be747e95605c6437fbde7d183769818c126b1db7742f5993d980dbc1badb1",
+      "outputHash": "9e0be747e95605c6437fbde7d183769818c126b1db7742f5993d980dbc1badb1"
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/lower_ring_connector/rear_insertion_return",
+      "inputHash": "1cef51db7def957e6f297c62111f2a984103288a20396717036b839ac655eeab",
+      "outputHash": "1cef51db7def957e6f297c62111f2a984103288a20396717036b839ac655eeab"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem",
+      "inputHash": "4cd6b3eeb573bd3fa96b8248a2ba5e918f6c4f40840da0f8169fd0c4bd221351",
+      "outputHash": "4cd6b3eeb573bd3fa96b8248a2ba5e918f6c4f40840da0f8169fd0c4bd221351"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/inter_ring_link/upper_front_head",
+      "inputHash": "53ba40c040990176291a6641bc169ad053eefcb5edf9ca8137c75397b911253a",
+      "outputHash": "53ba40c040990176291a6641bc169ad053eefcb5edf9ca8137c75397b911253a"
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/inter_ring_link/lower_front_head",
+      "inputHash": "5375a240ffaeb0e45bab873ea1411f3099b16bc279349b9b1e9cdff627a67923",
+      "outputHash": "5375a240ffaeb0e45bab873ea1411f3099b16bc279349b9b1e9cdff627a67923"
+    }
+  ],
+  "note": "已对照纯衣服参考、本层19个SVG、各组note及mergedPreview，并用preview_svg完成整体及领口、两侧袖口、右袖全段、左侧自由卷曲垂料、双悬绳入结/出结与珠接、莲体下接件及环间吊接的局部核对。未发现同一实体且同一控制与深度职责被领取两次，因此changed为空，沿用17个reusedReduction有效底稿，并原样保留本次新增的左悬绳hidden_entry与front_arc。具体依据：①两前领瓣分别承担各侧脖前衣料，side_back_collar承担脖后领筒侧后缘，领口转折及窄隐藏搭接不能按投影交集删减；②右袖front_sleeve_wall与rear_sleeve_wall构成夹入右臂/腕的前后袖壁，后壁由袖根至内后口的保守隐藏延续是实体后壁；③左袖cuff_attachment_wall承担腕后固定口壁和短根，free_curled_drape承担可迟滞弯曲的完整自由长料，y775–804附近是控制交接与隐藏搭接；④左右长悬绳的藏后根端在front_band后，外露弧在front_band前，入结连接藏在knot_core后：右支沿(498.63,514.64)至(499.68,515.36)分界，左支x520.3–522.1/y510.4–512.5保留父SVG既有短接，两片须分别排深度并共用连续绳驱动；⑤junction_knot、diamond_bead、short_bead_linkage是结体、完整上珠及下方短珠接三个相邻实体，上下接口的短隐藏搭接不构成重复；⑥lotus下接件front_connector_tip与rear_insertion_return分别在上环圈缘前/后，y850.8–852.94的接区维持连续连接；⑦inter_ring_link后主茎在两圈后，上露头在上圈前，下露头在下圈前且上圈后，y877.1–878.5和y881.6–883.2的窄搭接用于真实穿接，保留y886圆端。固定描边/饰件随对应实体，不按颜色纹样拆除；组树不作为深度排序，mergedPreview的绘制次序不作为重复依据。未修改源SVG、正式文件或树，未新增人体、填充开口或进行像素相减，canvas/viewBox/data-group-path及父内范围均原样保持。"
+}

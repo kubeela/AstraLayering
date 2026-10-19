@@ -1,7 +1,0 @@
-{
-  "groupId": "arms/arm_left/hand/index_finger",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "b09306a27e58d29caa65b76c75ee25291bc7f6b1451453259a67d3a347effb01",
-  "afterHash": "b1e1550659a274032b9758b13bffae9fc0efef5efeb6553bbc919415a15fcaa4"
-}

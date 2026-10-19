@@ -289,8 +289,8 @@ test('异常后当前批次已派发任务收尾，保留成功事实且不进�
   assert.ok(await readFile(artifactPath(f.directory, 'c', 'outline')));
 });
 
-test('真实 test 恢复现有 115 节点；制作中的缺失稿不能放行最终预览', async () => {
-  const directory = new URL('../../.run/test/part-layering/', import.meta.url);
+test('jianma 成果归档恢复现有 115 节点；制作中的缺失稿不能放行最终预览', async () => {
+  const directory = new URL('../../../demos/jianma/part-layering/', import.meta.url);
   const store = await GroupStore.open(fileURLToPath(directory), profile.promptsDirectory);
   const groups = store.snapshot().groups;
   assert.equal(groups.length, 8);

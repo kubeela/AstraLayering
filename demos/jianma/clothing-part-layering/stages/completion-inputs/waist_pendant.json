@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant",
+  "beforeHash": "ce3e2c9b80965b3b256dede89f530344d008b4e2ab2264324dd2e4ddc7d7d75a",
+  "afterHash": "d270a86e8580437a5b276f65db5c1597329ac8a3459e6ee21db7e3c0102211a6",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

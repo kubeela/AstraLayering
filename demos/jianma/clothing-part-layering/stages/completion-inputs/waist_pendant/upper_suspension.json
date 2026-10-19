@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/upper_suspension",
+  "beforeHash": "cdc57b3ea499007f04b7566588b7be3caab04f14a817966b83cb0522fff4b47a",
+  "afterHash": "5cd6ab6bae4916447e110954fe965d11b9240b88510047dcef995cefbcdb1305",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

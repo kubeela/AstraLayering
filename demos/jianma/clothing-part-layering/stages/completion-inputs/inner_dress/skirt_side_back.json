@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "inner_dress/skirt_side_back",
+  "beforeHash": "817b090241fddfeed6ff4a3bf8cc5fea637fa03457e509b47237608195444528",
+  "afterHash": "87b0affdd2e1aac64dd6719508efc0e6ca53f2efb06878c7b8d731597da11d46",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

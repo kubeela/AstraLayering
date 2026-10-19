@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/left_sleeve/side_pointed_gauze",
+  "beforeHash": "208221a9cf0132d3ef2aed77fb5b6316581edfc534d07c89865d576e26f0d585",
+  "afterHash": "5a9b54b8458a513e6c39becbc1f71e9b2abf5a61b61f96be7a1692626a9f7e47",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

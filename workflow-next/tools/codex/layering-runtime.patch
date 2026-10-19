@@ -1,0 +1,360 @@
+diff --git a/codex-rs/cli/src/main.rs b/codex-rs/cli/src/main.rs
+index ac06a66..ddb5da7 100644
+--- a/codex-rs/cli/src/main.rs
++++ b/codex-rs/cli/src/main.rs
+@@ -257,6 +257,8 @@ struct DebugCommand {
+ 
+ #[derive(Debug, clap::Subcommand)]
+ enum DebugSubcommand {
++    /// Report optional Layering runtime patch capabilities without starting a thread.
++    LayeringCapabilities,
+     /// Render the raw model catalog as JSON.
+     Models(DebugModelsCommand),
+ 
+@@ -1709,6 +1711,9 @@ async fn cli_main(
+             }
+         }
+         Some(Subcommand::Debug(DebugCommand { subcommand })) => match subcommand {
++            DebugSubcommand::LayeringCapabilities => {
++                println!("{}", serde_json::json!({"version": 1, "image_provider": true, "image_compaction": true}));
++            }
+             DebugSubcommand::Models(cmd) => {
+                 reject_remote_mode_for_subcommand(
+                     root_remote.as_deref(),
+diff --git a/codex-rs/codex-api/src/endpoint/images.rs b/codex-rs/codex-api/src/endpoint/images.rs
+index 2217ce8..79e321e 100644
+--- a/codex-rs/codex-api/src/endpoint/images.rs
++++ b/codex-rs/codex-api/src/endpoint/images.rs
+@@ -93,11 +93,28 @@ impl<T: HttpTransport> ImagesClient<T> {
+             error: ApiError::Stream(format!("failed to encode {operation} request: {e}")),
+             imagegen_request_id: None,
+         })?;
+-        let resp = self
+-            .session
+-            .execute(Method::POST, path, extra_headers, Some(body))
+-            .await
+-            .map_err(ImageRequestError::from_api_error)?;
++        let external_edit = path == "images/edits"
++            && std::env::var("LAYERING_IMAGE_BASE_URL").is_ok_and(|url| !url.trim().is_empty());
++        let resp = if external_edit {
++            let (bytes, content_type) =
++                external_edit_body(&body).map_err(|message| ImageRequestError {
++                    error: ApiError::Stream(message),
++                    imagegen_request_id: None,
++                })?;
++            self.session
++                .execute_with(Method::POST, path, extra_headers, None, |request| {
++                    request
++                        .headers
++                        .insert(http::header::CONTENT_TYPE, content_type.clone());
++                    request.body = Some(codex_client::RequestBody::Raw(bytes.clone().into()));
++                })
++                .await
++        } else {
++            self.session
++                .execute(Method::POST, path, extra_headers, Some(body))
++                .await
++        }
++        .map_err(ImageRequestError::from_api_error)?;
+         let imagegen_request_id = imagegen_request_id_from_headers(&resp.headers);
+         let response = serde_json::from_slice(&resp.body).map_err(|e| ImageRequestError {
+             error: ApiError::Stream(format!("failed to decode {operation} response: {e}")),
+@@ -107,6 +124,63 @@ impl<T: HttpTransport> ImagesClient<T> {
+     }
+ }
+ 
++fn external_edit_body(body: &serde_json::Value) -> Result<(Vec<u8>, http::HeaderValue), String> {
++    use base64::Engine;
++    let fields = body
++        .as_object()
++        .ok_or("Image edit body must be an object")?;
++    let images = fields
++        .get("images")
++        .and_then(serde_json::Value::as_array)
++        .filter(|images| !images.is_empty())
++        .ok_or("Image edit requires reference images")?;
++    let boundary = format!("layering-{}", uuid::Uuid::new_v4());
++    let mut output = Vec::new();
++    for (name, value) in fields {
++        if name == "images" || value.is_null() {
++            continue;
++        }
++        let text = value
++            .as_str()
++            .map(str::to_owned)
++            .unwrap_or_else(|| value.to_string());
++        output.extend_from_slice(
++            format!(
++                "--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"\r\n\r\n{text}\r\n"
++            )
++            .as_bytes(),
++        );
++    }
++    for (index, image) in images.iter().enumerate() {
++        let url = image
++            .get("image_url")
++            .and_then(serde_json::Value::as_str)
++            .ok_or("Missing image_url")?;
++        let (header, encoded) = url
++            .split_once(",")
++            .ok_or("Reference must be an embedded image")?;
++        let (mime, extension) = match header {
++            "data:image/png;base64" => ("image/png", "png"),
++            "data:image/jpeg;base64" => ("image/jpeg", "jpg"),
++            "data:image/webp;base64" => ("image/webp", "webp"),
++            _ => return Err("Unsupported embedded image format".to_string()),
++        };
++        let bytes = base64::engine::general_purpose::STANDARD
++            .decode(encoded)
++            .map_err(|_| "Invalid image base64")?;
++        if bytes.is_empty() {
++            return Err("Empty reference image".to_string());
++        }
++        output.extend_from_slice(format!("--{boundary}\r\nContent-Disposition: form-data; name=\"image[]\"; filename=\"reference-{index}.{extension}\"\r\nContent-Type: {mime}\r\n\r\n").as_bytes());
++        output.extend_from_slice(&bytes);
++        output.extend_from_slice(b"\r\n");
++    }
++    output.extend_from_slice(format!("--{boundary}--\r\n").as_bytes());
++    let header = http::HeaderValue::from_str(&format!("multipart/form-data; boundary={boundary}"))
++        .map_err(|_| "Invalid multipart boundary")?;
++    Ok((output, header))
++}
++
+ fn imagegen_request_id_from_headers(headers: &HeaderMap) -> Option<String> {
+     headers
+         .get(X_CODEX_IMAGEGEN_REQUEST_ID_HEADER)
+diff --git a/codex-rs/core/src/astra_image_guard.rs b/codex-rs/core/src/astra_image_guard.rs
+new file mode 100644
+index 0000000..48a6186
+--- /dev/null
++++ b/codex-rs/core/src/astra_image_guard.rs
+@@ -0,0 +1,38 @@
++//! Optional request-boundary image compaction for the Layering workflows.
++
++use codex_protocol::models::ContentItem;
++use codex_protocol::models::FunctionCallOutputContentItem;
++use codex_protocol::models::ResponseItem;
++
++pub(crate) fn threshold() -> Option<usize> {
++    std::env::var("LAYERING_IMAGE_COMPACT_THRESHOLD")
++        .ok()?
++        .parse::<usize>()
++        .ok()
++        .filter(|value| *value > 0)
++}
++
++pub(crate) fn image_count(items: &[ResponseItem]) -> usize {
++    items
++        .iter()
++        .map(|item| match item {
++            ResponseItem::Message { content, .. } => content
++                .iter()
++                .filter(|item| matches!(item, ContentItem::InputImage { .. }))
++                .count(),
++            ResponseItem::FunctionCallOutput { output, .. }
++            | ResponseItem::CustomToolCallOutput { output, .. } => output
++                .content_items()
++                .unwrap_or_default()
++                .iter()
++                .filter(|item| matches!(item, FunctionCallOutputContentItem::InputImage { .. }))
++                .count(),
++            ResponseItem::ImageGenerationCall { result, .. } => usize::from(!result.is_empty()),
++            _ => 0,
++        })
++        .sum()
++}
++
++pub(crate) fn needs_compaction(items: &[ResponseItem]) -> bool {
++    threshold().is_some_and(|limit| image_count(items) >= limit)
++}
+diff --git a/codex-rs/core/src/compact.rs b/codex-rs/core/src/compact.rs
+index 39919cf..22a2c03 100644
+--- a/codex-rs/core/src/compact.rs
++++ b/codex-rs/core/src/compact.rs
+@@ -276,6 +276,21 @@ async fn run_compact_task_inner_impl(
+         let mut turn_input = history
+             .clone()
+             .for_prompt(&turn_context.model_info().input_modalities);
++        if crate::astra_image_guard::needs_compaction(&turn_input) {
++            // Change only this request's projection, never the live history or the
++            // model's normal vision capability. Also rescues manual /compact after
++            // an oversized tool batch has already accumulated more than 50 images.
++            let text_modalities = turn_context
++                .model_info()
++                .input_modalities
++                .iter()
++                .filter(|modality| {
++                    **modality != codex_protocol::openai_models::InputModality::Image
++                })
++                .cloned()
++                .collect::<Vec<_>>();
++            turn_input = history.clone().for_prompt(&text_modalities);
++        }
+         sess.services
+             .executed_tool_calls
+             .attach_to_compaction_prompt(&mut turn_input);
+diff --git a/codex-rs/core/src/lib.rs b/codex-rs/core/src/lib.rs
+index e7753db..c8a76aa 100644
+--- a/codex-rs/core/src/lib.rs
++++ b/codex-rs/core/src/lib.rs
+@@ -33,6 +33,7 @@ pub use turn_metadata::detached_memory_responses_metadata;
+ mod codex_thread;
+ mod turn_extension_data;
+ pub use turn_extension_data::WithTurnExtensionData;
++mod astra_image_guard;
+ mod compact_model_fallback;
+ mod compact_remote_history;
+ mod compact_remote_v2;
+diff --git a/codex-rs/core/src/session/turn.rs b/codex-rs/core/src/session/turn.rs
+index f13e98c..4732d85 100644
+--- a/codex-rs/core/src/session/turn.rs
++++ b/codex-rs/core/src/session/turn.rs
+@@ -513,7 +513,7 @@ pub(crate) async fn run_turn(
+                 .await;
+ 
+             // Construct the input that we will send to the model.
+-            let sampling_request_input: Vec<ResponseItem> = async {
++            let mut sampling_request_input: Vec<ResponseItem> = async {
+                 sess.clone_history()
+                     .await
+                     .for_prompt(&step_context.settings.model_info.input_modalities)
+@@ -521,6 +521,44 @@ pub(crate) async fn run_turn(
+             .instrument(trace_span!("run_turn.prepare_sampling_request_input"))
+             .await;
+ 
++            // Inspect the complete request at a safe boundary, including tool batches
++            // that jump past the upstream image limit. Keep the same thread and files.
++            if crate::astra_image_guard::needs_compaction(&sampling_request_input) {
++                let image_count = crate::astra_image_guard::image_count(&sampling_request_input);
++                sess.send_event(
++                    &turn_context,
++                    EventMsg::Warning(WarningEvent {
++                        message: format!(
++                            "Layering image guard: {image_count} images; compacting this thread before the next request."
++                        ),
++                    }),
++                )
++                .await;
++                run_inline_auto_compact_task(
++                    Arc::clone(&sess),
++                    Arc::clone(&turn_context),
++                    InitialContextInjection::BeforeLastUserMessage {
++                        world_state: Arc::clone(&world_state),
++                        step_context: Arc::clone(&step_context),
++                    },
++                    CompactionReason::ContextLimit,
++                    CompactionPhase::MidTurn,
++                )
++                .await?;
++                if run_pending_session_start_hooks(&sess, &turn_context).await {
++                    return Err(CodexErr::TurnAborted);
++                }
++                sampling_request_input = sess
++                    .clone_history()
++                    .await
++                    .for_prompt(&step_context.settings.model_info.input_modalities);
++                if crate::astra_image_guard::needs_compaction(&sampling_request_input) {
++                    return Err(CodexErr::InvalidRequest(
++                        "Layering image guard: compaction did not reduce image count; history was retained for recovery.".to_string(),
++                    ));
++                }
++            }
++
+             run_sampling_request(
+                 Arc::clone(&sess),
+                 Arc::clone(&step_context),
+diff --git a/codex-rs/core/src/tools/spec_plan.rs b/codex-rs/core/src/tools/spec_plan.rs
+index 379face..2bd13bd 100644
+--- a/codex-rs/core/src/tools/spec_plan.rs
++++ b/codex-rs/core/src/tools/spec_plan.rs
+@@ -754,7 +754,8 @@ fn image_generation_available(turn_context: &TurnContext, model_info: &ModelInfo
+     }
+ 
+     let provider = turn_context.provider.info();
+-    provider.uses_openai_actor_authorization()
++    codex_model_provider_info::ModelProviderInfo::layering_image_provider().is_some()
++        || provider.uses_openai_actor_authorization()
+         || (provider.requires_openai_auth
+             && turn_context
+                 .auth_manager
+diff --git a/codex-rs/ext/image-generation/src/extension.rs b/codex-rs/ext/image-generation/src/extension.rs
+index d36a14c..460c666 100644
+--- a/codex-rs/ext/image-generation/src/extension.rs
++++ b/codex-rs/ext/image-generation/src/extension.rs
+@@ -40,11 +40,13 @@ impl ImageGenerationExtensionConfig {
+     /// Resolves the image provider and save root for a thread.
+     fn from_config(config: &Config, resolve_save_root: &SaveRootResolver) -> Self {
+         Self {
+-            available: config.model_provider.is_openai()
++            available: ModelProviderInfo::layering_image_provider().is_some()
++                || config.model_provider.is_openai()
+                 || config.model_provider.requires_openai_auth
+                 || config.model_provider.uses_openai_actor_authorization(),
+             http_client_factory: config.http_client_factory(),
+-            provider: config.model_provider.clone(),
++            provider: ModelProviderInfo::layering_image_provider()
++                .unwrap_or_else(|| config.model_provider.clone()),
+             save_root: resolve_save_root(config),
+         }
+     }
+diff --git a/codex-rs/ext/image-generation/src/tool.rs b/codex-rs/ext/image-generation/src/tool.rs
+index d2777fb..a74ed49 100644
+--- a/codex-rs/ext/image-generation/src/tool.rs
++++ b/codex-rs/ext/image-generation/src/tool.rs
+@@ -56,6 +56,13 @@ use crate::artifact::image_generation_output_hint;
+ use crate::backend::CodexImagesBackend;
+ 
+ const IMAGE_MODEL: &str = "gpt-image-2";
++
++fn image_model() -> String {
++    std::env::var("LAYERING_IMAGE_MODEL")
++        .ok()
++        .filter(|value| !value.trim().is_empty())
++        .unwrap_or_else(|| IMAGE_MODEL.to_string())
++}
+ const MAX_EDIT_IMAGES: usize = 5;
+ const MAX_EXECUTOR_GENERATED_IMAGE_BYTES: usize = 32 * 1024 * 1024;
+ const MAX_EXECUTOR_GENERATED_IMAGE_BASE64_BYTES: usize =
+@@ -432,7 +439,7 @@ async fn request_for_call_args(
+             return Ok(ImageRequest::Generate(ImageGenerationRequest {
+                 prompt: args.prompt.clone(),
+                 background: Some(background),
+-                model: IMAGE_MODEL.to_string(),
++                model: image_model(),
+                 n: None,
+                 quality: Some(ImageQuality::Auto),
+                 size: Some("auto".to_string()),
+@@ -476,7 +483,7 @@ async fn request_for_call_args(
+         images,
+         prompt: args.prompt.clone(),
+         background: Some(background),
+-        model: IMAGE_MODEL.to_string(),
++        model: image_model(),
+         n: None,
+         quality: Some(ImageQuality::Auto),
+         size: Some("auto".to_string()),
+diff --git a/codex-rs/model-provider-info/src/lib.rs b/codex-rs/model-provider-info/src/lib.rs
+index 5d5b1f9..9c7286f 100644
+--- a/codex-rs/model-provider-info/src/lib.rs
++++ b/codex-rs/model-provider-info/src/lib.rs
+@@ -605,6 +605,20 @@ other non-default provider fields are not supported"
+         provider
+     }
+ 
++    /// A separate Images API provider, without replacing the chat provider or login.
++    pub fn layering_image_provider() -> Option<Self> {
++        let base_url = std::env::var("LAYERING_IMAGE_BASE_URL").ok()?;
++        if base_url.trim().is_empty() {
++            return None;
++        }
++        Some(Self {
++            name: "Layering Images".to_string(),
++            base_url: Some(base_url),
++            env_key: Some("LAYERING_IMAGE_API_KEY".to_string()),
++            ..Self::default()
++        })
++    }
++
+     pub fn is_openai(&self) -> bool {
+         self.name == OPENAI_PROVIDER_NAME
+     }

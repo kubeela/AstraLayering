@@ -1,0 +1,619 @@
+{
+  "version": 2,
+  "direction": "back-to-front",
+  "sourceHash": "4b922ddafb7f61ce34ada562586ee25084917b62b65216dda7e999fb35feca4a",
+  "layers": [
+    {
+      "id": "outer_robe/collar_shoulders/standing_collar/side_back_collar",
+      "note": "两端侧后领缘作为一件独立后领，位于肩覆片与两前领瓣之后。",
+      "level": 0,
+      "check": {
+        "passed": true,
+        "note": "已查看候选领肩 blend 与完整侧后领 blend；左右两端窄后缘与短侧后带均由前领、肩领座覆盖，仅领尖后缘显露，颈口保持空白，整件可固定后层且保留独立。"
+      }
+    },
+    {
+      "id": "waist_sash/circumferential_band/side_back_band",
+      "note": "环腰侧后延续独立保留，位于内衣、前腰带及外袍前襟之后。",
+      "level": 1,
+      "check": {
+        "passed": true,
+        "note": "已看完整侧后腰带 blend：实体仅为左右腰侧转折后的两条保守延续，候选中均藏在内裙、前腰带和外袍前襟后；不含前带中央布面或附件挂点。两侧相同后置职责可统一固定 level 1，保持为独立终止 part。"
+      }
+    },
+    {
+      "id": "outer_robe/right_sleeve/outer_side_gauze",
+      "note": "画面左侧连续外袖薄纱整件后置，位于同袖袖筒、袖口长垂料与前襟／内裙之后。",
+      "level": 2,
+      "check": {
+        "passed": true,
+        "note": "已查看候选及完整外侧薄纱 blend；扇面、小尖与尖长瓣全部从袖筒／长垂料后方显露，隐藏接根由袖面与肩片遮住，未见片内反向覆盖。依既有终止职责整件后置，不合并其他衣片。"
+      }
+    },
+    {
+      "id": "outer_robe/left_sleeve/outer_flared_gauze",
+      "note": "画面右侧扇展薄纱整件位于主袖覆边、后袖口垂料与肩覆片之后。",
+      "level": 3,
+      "check": {
+        "passed": true,
+        "note": "已查看候选及完整外扇纱 blend；S 形内覆边统一在主袖与后口垂料后，外弧及回卷小尖端仍独立可见。没有需要另越至袖前的实体，完整后层成立。"
+      }
+    },
+    {
+      "id": "outer_robe/left_sleeve/side_pointed_gauze",
+      "note": "画面右侧尖长薄纱独立后置，卷曲长垂料覆盖其内边，保留两纱之间真实缺口。",
+      "level": 4,
+      "check": {
+        "passed": true,
+        "note": "已查看候选及完整尖长纱 blend；内边沿蓝色卷曲垂料后方连续延下，外尖纱与扇纱缺口保留；父稿截限不当作真实空口，也不在此修改。现有完整实体可固定在垂料后。"
+      }
+    },
+    {
+      "id": "outer_robe/right_sleeve/cuff_train",
+      "note": "画面左侧袖口自由长垂料在外侧薄纱之前、后袖口接根及内裙／前襟之后。",
+      "level": 5,
+      "check": {
+        "passed": true,
+        "note": "已查看候选及完整右袖口长垂料 blend；上根藏在后口下缘，内侧窄延续在前襟和内裙后，外侧连续盖住尖纱，末端卷边未夹住其他 part。完整自由垂料可固定一层。"
+      }
+    },
+    {
+      "id": "outer_robe/left_sleeve/rear_cuff_drape/free_curled_drape",
+      "note": "画面右侧整幅自由卷曲长垂料在两件外纱之前、袖口连接壁和内裙／前襟之后。",
+      "level": 6,
+      "check": {
+        "passed": true,
+        "note": "已查看候选与完整自由垂料全图及局部 blend；上根在后口连接壁下，内侧窄延续在前襟／内裙下，外侧所有相交均盖住尖纱与扇纱，末端连续卷边没有再次回穿，整幅固定一层。"
+      }
+    },
+    {
+      "id": "outer_robe/left_sleeve/rear_cuff_drape/cuff_attachment_wall",
+      "note": "画面右侧后口连接壁盖住自由垂料根部，仍位于主袖前壁及前襟之后。",
+      "level": 7,
+      "check": {
+        "passed": true,
+        "note": "已查看候选左袖口及完整后口连接壁 blend；后口衣面和短折返根盖住自由垂料上根，并藏在前口弧与前襟后；后口不包含前唇，整件可固定一层。"
+      }
+    },
+    {
+      "id": "outer_robe/right_sleeve/sleeve_tube/rear_sleeve_wall",
+      "note": "画面左侧连续后袖壁与可见后口作为独立后层，盖住长垂料根部，位于前壁／肩片／前襟之后。",
+      "level": 8,
+      "check": {
+        "passed": true,
+        "note": "已查看候选及完整右后袖壁 blend；窄后壁自袖根通至可见口内后面，统一在前壁后，口底盖住长垂料根部，内边藏于前襟，未取得腕前唇，固定后层成立。"
+      }
+    },
+    {
+      "id": "outer_robe/left_sleeve/rear_sleeve_wall",
+      "note": "画面右侧袖根及窄后壁独立保留，位于同袖前壁、肩覆面及前襟之后。",
+      "level": 9,
+      "check": {
+        "passed": true,
+        "note": "已查看候选及完整后袖壁 blend；袖根后侧连内缘窄壁的实体均在前壁、肩片和前襟之后，下端只接后口，无腕前口弧或长自由段，整件保持固定后层。"
+      }
+    },
+    {
+      "id": "inner_dress/skirt_side_back",
+      "note": "内裙侧后连接与后裙缘整件位于前裙之后，并在两侧袖口长垂料之前。",
+      "level": 10,
+      "check": {
+        "passed": true,
+        "note": "已看完整侧后裙 blend 及候选下口：左右后侧连接和低位后弧统一藏在前裙侧折与抬高前唇后，外袍及中央长幅亦在其前。前向裙面均已交给 skirt_front，未见某一后弧反压前裙造成换序，可整体保持 level 10。"
+      }
+    },
+    {
+      "id": "inner_dress/skirt_front",
+      "note": "完整内裙前壁覆盖侧后裙接缝及后向下口，位于束腰、蓝色长幅和外袍前襟之后。",
+      "level": 11,
+      "check": {
+        "passed": true,
+        "note": "已看完整前裙 blend 及候选裙尾：前壁、两侧前向裙面、抬高前唇及中央波浪前缘为连续同片，前唇盖住侧后片回折内面和后弧。束腰、蓝色长幅、腰挂和外袍在前；后裙缘未混入本片，整片固定 level 11。"
+      }
+    },
+    {
+      "id": "inner_dress/bodice_front",
+      "note": "贴身胸腹面在内裙裙腰连接的前侧，整件位于束腰、外袍上端和胸饰之后。",
+      "level": 12,
+      "check": {
+        "passed": true,
+        "note": "已看完整胸腹前片 blend 和候选胸腰区：真实胸口凹口保留为空，两侧隐藏衣料在外袍前襟及胸饰后，腰端与裙片的搭接藏在前腰带下。所有实体均为前向贴身衣面，不含侧后壁，整件保持在裙腰前接、前腰带与外袍之后的 level 12。"
+      }
+    },
+    {
+      "id": "waist_sash/right_long_tail",
+      "note": "画面左侧蓝色长幅完整保留，在内裙之前、另一蓝幅与外袍前襟及腰挂之后。",
+      "level": 13,
+      "check": {
+        "passed": true,
+        "note": "已看完整右蓝长幅 blend 及候选中央卷边、尾端：结下根、长幅及较短中央折尖连续，根被前带与结芯遮住，侧边在白前襟卷边后，主体在前裙前且在佩饰后。下端交叠被左长幅盖住，未见反向回穿，整幅固定 level 13。"
+      }
+    },
+    {
+      "id": "waist_sash/left_long_tail",
+      "note": "画面右侧蓝色长幅在中央下端覆盖另一蓝幅，整件在内裙之前、外袍前襟和腰挂之后。",
+      "level": 14,
+      "check": {
+        "passed": true,
+        "note": "已看完整左蓝长幅 blend 及候选中央与下摆：从结下根到长尖折为完整连续衣面，根在前腰带和结芯后，白前襟卷边压住实叠外侧，佩饰在其前。中央下端覆盖右长幅，卷折不夹住其他件，整幅固定 level 14。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/right_suspension_cord/rear_insertion_end",
+      "note": "右悬绳短入结端独立藏在前腰带与结芯后，位于蓝色长幅及内衣前；与露前弧绳分层。",
+      "level": 15,
+      "check": {
+        "passed": true,
+        "note": "已看完整右悬绳藏后入结段 blend 及候选腰部放大：顶端处在前带实面内、结芯外，现层级由前带实际遮住；短下接段仍在结芯遮挡内与前弧搭接。全片均为入结后层，固定 level 15，与露前弧分开保留。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/left_suspension_cord/hidden_entry",
+      "note": "左悬绳短入结端独立藏在前腰带与结芯后，位于蓝色长幅及内衣前；与露前弧绳分层。",
+      "level": 16,
+      "check": {
+        "passed": true,
+        "note": "已看完整左悬绳藏后短端 blend 及候选：y504 附近真实顶端被前腰带覆盖，下面连接与露前弧在结芯下短搭接。短端全体保持前带后，不合并露前弧，固定 level 16。"
+      }
+    },
+    {
+      "id": "waist_sash/circumferential_band/front_band",
+      "note": "前腰带盖住两支悬绳的藏后入结端与蓝幅挂根，在内衣前、前襟及结芯后。",
+      "level": 17,
+      "check": {
+        "passed": true,
+        "note": "已看完整前腰带 blend 与候选腰结放大：中央连续宽带、窄蓝带及固定纹面同层，上下缘搭在内裙前；两端藏于外袍前襟，后绕部分由独立 side_back_band 承担。长幅及悬绳入结端藏在本带后，结芯和露前悬绳在前，完整前带固定 level 17。"
+      }
+    },
+    {
+      "id": "waist_sash/front_tie/right_short_loop",
+      "note": "完整右短环绳位于蓝幅／前带之前，中央小布穗、右长悬绳露前弧与结芯之后。",
+      "level": 18,
+      "check": {
+        "passed": true,
+        "note": "已看完整右短环绳 blend 及候选放大：两条绳边、圆弧回折和固定小布舌保持一整环，真实开孔仍为空；挂根在结芯下、内侧在小穗下，与长悬绳交叠处处于其后。未夹住独立物件需前后换序，整环固定 level 18。"
+      }
+    },
+    {
+      "id": "waist_sash/front_tie/left_short_loop",
+      "note": "完整左短环绳位于蓝幅／前带之前，中央小布穗、长悬绳与结芯之后。",
+      "level": 19,
+      "check": {
+        "passed": true,
+        "note": "已看完整左短环绳 blend 及候选放大：内外绳身与下端回折完整，狭长孔保留；上根被结芯遮住、靠中央部分被束口小穗遮住，长悬绳在其前。各实叠关系一致，整环可统一固定 level 19。"
+      }
+    },
+    {
+      "id": "waist_sash/front_tie/bound_tassel",
+      "note": "中央束口连小布穗整件覆盖两短环绳，位于蓝幅之前、结芯与腰挂吊绳之后。",
+      "level": 20,
+      "check": {
+        "passed": true,
+        "note": "已看完整束口小穗 blend 与候选腰结：白色束口、收束颈和蓝色短穗为一件，真实下端止于短穗布边；挂根在结芯后，主体覆盖短环而处于长悬绳之后。无绕穿其他衣片的两面，保持完整固定 level 20。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/right_suspension_cord/front_arc_cord",
+      "note": "右长悬绳露前弧独立位于前腰带、右短环及小布穗之前；上接舌藏于结芯后，下端藏于汇接结后。",
+      "level": 21,
+      "check": {
+        "passed": true,
+        "note": "已看完整右露前弧绳 blend 及候选：上接舌藏于结芯，出结弧绳在前腰带及右短环前，约 y535–550 的短环相交由本弧覆盖；末端藏入汇接小结。没有仍须位于前带后的根端混入，可整片固定 level 21。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/left_suspension_cord/front_arc",
+      "note": "左长悬绳露前弧独立位于前腰带及短布绳之前，上接端藏于结芯，下端藏于汇接结。",
+      "level": 22,
+      "check": {
+        "passed": true,
+        "note": "已看完整左露前弧 blend 及候选：上接端在结芯遮挡下，腰结右侧至 y535 的绳段连续露在前带前，下末端在汇接小结后；藏后顶端由独立 hidden_entry 承担。完整弧绳可固定 level 22。"
+      }
+    },
+    {
+      "id": "waist_sash/front_tie/knot_core",
+      "note": "紧凑结芯盖住前带、长幅挂根及短绳／小穗／长悬绳上接舌，位于外袍前襟之后。",
+      "level": 23,
+      "check": {
+        "passed": true,
+        "note": "已看完整结芯 blend 与候选腰结放大：紧凑结体及固定短折边覆盖前带和两长幅、短环绳、小穗挂根；悬绳的隐藏入结端另片处在前带下，露前弧段从结边下出。当前实叠不要求结芯任何区域改到被覆盖挂根后，整件固定 level 23。"
+      }
+    },
+    {
+      "id": "outer_robe/right_sleeve/sleeve_tube/front_sleeve_wall",
+      "note": "画面左侧袖筒前壁连前上口弧整件位于后壁之前，内接边在右长前襟后，袖根在肩覆片后。",
+      "level": 24,
+      "check": {
+        "passed": true,
+        "note": "已查看候选右袖覆边与口缘、完整前袖壁 blend；袖根到前上口弧连续覆盖后壁及外纱，肩片与前襟盖住接头，后口已独立分出。外接根当前藏接未形成另一处反向覆盖，整件固定一层成立。"
+      }
+    },
+    {
+      "id": "outer_robe/left_sleeve/front_sleeve_wall",
+      "note": "画面右侧主袖前壁连袖口前弧覆盖后袖壁、后口与外纱，位于前襟及肩覆片接头后。",
+      "level": 25,
+      "check": {
+        "passed": true,
+        "note": "已查看候选整图及左袖口放大 blend、完整前袖壁 blend；连续主前面及前口弧覆盖后壁、后口和外扇纱，袖根被肩片覆盖，内接边在前襟后。未纳入后口衣面，整件可固定前层。"
+      }
+    },
+    {
+      "id": "outer_robe/right_front_panel",
+      "note": "画面左侧完整外袍长前襟覆盖内裙、蓝幅邻接边、腰带侧端与袖内藏接，胸饰和肩覆片覆盖上接头。",
+      "level": 26,
+      "check": {
+        "passed": true,
+        "note": "已看完整右长前襟 blend 及候选中央交叠、下摆：胸饰下窄接段、胸腹白襟、卷边返面和左侧落地尾连续；藏接端在肩覆片及胸饰下，主体位于内裙、腰带侧端、袖侧垂料和中央蓝幅之前。卷边是自身折返，无与蓝幅互换前后的实际覆盖，整件固定 level 26。"
+      }
+    },
+    {
+      "id": "outer_robe/left_front_panel",
+      "note": "画面右侧完整外袍长前襟覆盖内裙、蓝幅邻接边、腰带侧端与袖内藏接，胸饰和肩覆片覆盖上接头。",
+      "level": 27,
+      "check": {
+        "passed": true,
+        "note": "已看完整左长前襟 blend 及候选胸腰至裙尾叠放：胸饰下连接、长白襟面、内侧连续卷边和落地尾均属同一前襟；上接头在肩覆片和胸饰下，实叠区压住内裙、腰带侧端及袖侧垂料。中央蓝幅沿白色卷边后侧延续，采用实际衣边及长幅职责确定前襟在其前。未见本襟绕到其他衣片之后再回穿，整件可固定 level 27。"
+      }
+    },
+    {
+      "id": "collar_fastener/right_collar_chain",
+      "note": "右短领链整条置于前领瓣及莲扣之后；只在领瓣外的真实链段露出，保留两端短藏接。",
+      "level": 28,
+      "check": {
+        "passed": true,
+        "note": "已看完整右短领链 blend 与候选：领下短补端和莲扣下内端均被对应前领及扣体遮住，中间自由链连续可见。无反向覆压或后绕链段，整支保持 level 28。"
+      }
+    },
+    {
+      "id": "collar_fastener/left_collar_chain",
+      "note": "左短领链整条置于前领瓣及莲扣之后，领端与扣端藏接均不另合并。",
+      "level": 29,
+      "check": {
+        "passed": true,
+        "note": "已看完整左短领链 blend 与候选：领端藏接在左前领下、内端在莲扣下，两端之间为一条前方短链。候选保持自由段及真实露空，全支固定 level 29。"
+      }
+    },
+    {
+      "id": "collar_fastener/right_chest_chain",
+      "note": "右胸前斜链整条在衣料前、汇链接点与胸饰后，两端隐藏搭接沿实际挂点。",
+      "level": 30,
+      "check": {
+        "passed": true,
+        "note": "已看完整右胸前斜链 blend 与候选：中央根由下悬接点覆盖、胸饰端短补由翼板上缘遮住，整支弯链处于露空前且没有反穿。两端同时藏接可由单一 level 30 表达。"
+      }
+    },
+    {
+      "id": "collar_fastener/left_chest_chain",
+      "note": "左胸前斜链整条在衣料前、汇链接点与胸饰后，两端隐藏搭接沿实际挂点。",
+      "level": 31,
+      "check": {
+        "passed": true,
+        "note": "已看完整左胸前斜链 blend 与候选：内端短搭接位于汇链接点后、外端位于胸饰左翼挂点后；自由斜链连续，链间镂空未填实。完整支链固定 level 31。"
+      }
+    },
+    {
+      "id": "outer_robe/collar_shoulders/right_shoulder_cover",
+      "note": "右肩覆片盖住右袖根与长前襟上接头，内端位于右前领瓣之后。",
+      "level": 32,
+      "check": {
+        "passed": true,
+        "note": "已查看候选领肩 blend 与完整右肩覆片 blend；领座内端藏于前领，斜向肩下覆边统一盖住袖根与前襟上接料，胸饰覆盖开窗侧缘接区；未见同片回穿另一层。"
+      }
+    },
+    {
+      "id": "outer_robe/collar_shoulders/left_shoulder_cover",
+      "note": "左肩覆片盖住左袖根与长前襟上接头，内端位于左前领瓣之后。",
+      "level": 33,
+      "check": {
+        "passed": true,
+        "note": "已查看候选领肩 blend 与完整左肩覆片 blend；领座内端藏于前领，整幅贴肩面及开窗边盖住袖根／前襟上端，胸饰在接区前，全部实体可统一固定一层。"
+      }
+    },
+    {
+      "id": "outer_robe/collar_shoulders/standing_collar/right_front_collar",
+      "note": "右前领瓣作为独立前领，覆盖后领侧端及右肩片领座，不吞入后领与短领链。",
+      "level": 34,
+      "check": {
+        "passed": true,
+        "note": "已查看候选领肩 blend 与完整右前领 blend；可见前瓣、内折及领根均在后领与右肩领座前，领扣与短领链接口由前层遮住。未见需返至后领深度的实体，整瓣可固定一层。"
+      }
+    },
+    {
+      "id": "outer_robe/collar_shoulders/standing_collar/left_front_collar",
+      "note": "左前领瓣作为独立前领，覆盖后领侧端及左肩片领座，中央根部衔接处位于领扣后。",
+      "level": 35,
+      "check": {
+        "passed": true,
+        "note": "已查看候选领肩 blend 与完整左前领 blend；前瓣、内折及中央短领根统一覆盖后领与左肩领座，领扣盖住中央接根。后领范围已独立移出，整件固定前层成立。"
+      }
+    },
+    {
+      "id": "collar_fastener/central_clasp/hanging_junction",
+      "note": "扣下汇链接点覆盖两斜链内端，上接根藏于扣体短颈之后，整件独立排序。",
+      "level": 36,
+      "check": {
+        "passed": true,
+        "note": "已看完整下悬接点 blend 与候选：自身短柄及菱珠完整，上根短搭接被扣底颈遮住，下缘盖住左右胸链内端。上下实叠均由 level 36 在扣体后、胸链前表达，不需再拆。"
+      }
+    },
+    {
+      "id": "collar_fastener/central_clasp/clasp_body",
+      "note": "完整莲形领扣及固定连接饰覆盖短领链内端、前领连接座及下悬接点上根。",
+      "level": 37,
+      "check": {
+        "passed": true,
+        "note": "已看完整扣体 blend 与候选领胸放大：扣顶、固定莲瓣及扣底短颈为同一上部扣件，覆盖短领链内端及下悬接点上根；两前领在其后，现有连接座范围未形成环绕。全件无需换序，可固定 level 37。"
+      }
+    },
+    {
+      "id": "chest_ornament",
+      "note": "完整胸饰盖住两斜链胸端、贴身胸腹与外袍上接料，饰件空口保留。",
+      "level": 38,
+      "check": {
+        "passed": true,
+        "note": "已看包含下伸卷脚的完整胸饰 blend 与候选领胸叠放：两翼、相连托座、中心石及卷脚是一整套固定前饰，覆盖胸链末端、肩前接区和两前襟上端；中央上缘保持露空。未见绕穿另件的后段，整体可固定 level 38。"
+      }
+    },
+    {
+      "id": "waist_pendant/long_white_tassel",
+      "note": "完整长白流苏在蓝幅和内裙前，隐藏束头与自由段统一位于下环、吊耳与角形扣体后。",
+      "level": 39,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整长白流苏 blend：自隐藏束头至不齐斜收末端均完整，束头统一被下环及吊耳扣体覆盖，自由穗体统一盖在中央蓝幅前；根部不绕圈回穿，整束可固定在所有遮挡扣件后、蓝幅前。"
+      }
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/lower_ring_connector/rear_insertion_return",
+      "note": "莲体下接的窄后入接／回接段独立位于莲体、上环与露前尖头之后。",
+      "level": 40,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整后入接片 blend：范围仅为莲体后的窄接根、短颈及上环后的回接段，宽银肩和下尖均已另片；短颈未被圈缘覆盖处连续外露，不要求改变深度，全片可统一在莲体、上环和前银尖后。"
+      }
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/upper_inner_drop",
+      "note": "上环孔内悬珠连短茎整件位于完整上环之后，仅由透明孔显露。",
+      "level": 41,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整上孔悬珠 blend：短悬茎顶根藏于上环内缘，整珠通过透明孔显露，珠底与环间短接留有空隙；该支路未回到圈缘前，悬茎和珠体可整体固定在上环后。"
+      }
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/lower_inner_drop",
+      "note": "下环孔内悬珠连短茎整件位于完整下环之后，保持珠底与孔缘的真实空隙。",
+      "level": 42,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整下孔悬珠 blend：短茎与整珠均在下圈后，通过真实透明孔显露，珠底与下内缘保留空隙；不包含环间下露头或扣用吊茎，无返回圈缘前的部分，可统一固定在下环后。"
+      }
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem",
+      "note": "环间藏后主茎独立位于上下两圈身之后，两露头另层覆盖接口。",
+      "level": 43,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整环间后茎 blend：上下藏后根与中间细茎为连续窄实体，统一置于两圈身及两露头后仍能保留孔内和两圈间的可见短段；实际前露覆盖已分给独立露头，后茎无需内部换深度。"
+      }
+    },
+    {
+      "id": "waist_pendant/tassel_buckle/ring_return_back",
+      "note": "下环吊扣的后入接细茎与后回段独立位于下环及扣体前片之后。",
+      "level": 44,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整吊扣后回片 blend：仅含下圈后的细吊茎和接续后段，末端藏入前片吊耳，未包含实际露前扣头；全段可以固定在下环与扣体前片后，短接连续且未填环孔。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/upper_flexible_neck",
+      "note": "上柔性窄颈整件位于菱形上珠与中间珠体接口之后，保留各端短搭接。",
+      "level": 45,
+      "check": {
+        "passed": true,
+        "note": "已看完整上可弯窄颈 blend 及候选：实体为菱珠底至中珠的窄连接，两端在珠体后保守短搭接，外露中段连续。层级位于两珠之后、蓝幅之前即可表达全件，固定 level 45。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/lower_flexible_neck",
+      "note": "下柔性窄颈整件位于中间珠和末端小珠接口之后，连续过渡不另碎拆。",
+      "level": 46,
+      "check": {
+        "passed": true,
+        "note": "已看完整下可弯窄颈 blend 及候选：上起端被中间珠覆盖、下起肩接区被末端小珠覆盖，外露连接为单条连续窄茎。全片可排在两珠后、中央蓝幅前，固定 level 46。"
+      }
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/upper_chain",
+      "note": "雪花下完整细链及端珠位于雪花底尖与上珠接之后；保留原父内根段。",
+      "level": 47,
+      "check": {
+        "passed": true,
+        "note": "已看完整上细链 blend 及候选银串：雪花底尖下的藏接根、两端小珠和中间细链完整，上根被雪花覆盖、下接颈被上珠接覆盖。当前所有实叠均在两挂件后、中央蓝幅前，整段固定 level 47；父外缺失珠缘不在本步修补。"
+      }
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/lower_bead_link",
+      "note": "银件下双珠接连短茎整件位于细长银件与水滴坠的接点之后。",
+      "level": 48,
+      "check": {
+        "passed": true,
+        "note": "已看完整下珠接 blend 及候选：双珠、细颈和珠下短茎连续，上根在细长银件下端后，下茎末端在水滴上尖后。全段同置两相邻银件后、蓝幅前即可，固定 level 48；不恢复父外珠侧缘或暗影鼓包。"
+      }
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/right_side_link",
+      "note": "右独立短支位于吊架臂端与莲体肩瓣之后，保留两端藏接。",
+      "level": 49,
+      "check": {
+        "passed": true,
+        "note": "已看完整右短支 blend 及候选：从图左吊架臂端至莲体肩瓣的连续短支，两端藏在吊架与莲瓣后；中间不穿环，无反向覆盖。固定 level 49，保持独立于另一短支。"
+      }
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/left_side_link",
+      "note": "左独立短支位于吊架臂端与莲体肩瓣之后，保留两端藏接。",
+      "level": 50,
+      "check": {
+        "passed": true,
+        "note": "已看完整左短支 blend 及候选：图右短支上根在吊架下、末端在莲体肩瓣下，中段连续；两端同一藏后关系，无前后回穿。独立固定 level 50。"
+      }
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/central_diamond_pendant",
+      "note": "完整中央菱形悬饰及下梗在莲体中央前缘之后，不合并到莲体或两短支。",
+      "level": 51,
+      "check": {
+        "passed": true,
+        "note": "已看完整中央菱形悬饰 blend 及候选：顶梗、主菱形、父内左右下缘及隐藏下梗为一件，中央下端被莲体前缘盖住；不跨上环。整饰可位于莲体后固定 level 51，保持父外侧缘限制，不补空隙连接桥。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/terminal_bead",
+      "note": "末端小珠盖住下窄颈接端，其最下端藏于雪花顶接舌之后。",
+      "level": 52,
+      "check": {
+        "passed": true,
+        "note": "已看完整末端小珠 blend 及候选：圆收珠身覆盖下窄颈末端，最下短搭接藏在雪花顶舌之后；没有环套顶舌的第二壁，整珠固定 level 52。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/middle_bead",
+      "note": "完整中间珠体盖住上下窄颈接口，刚性珠头及收尖均随同一层。",
+      "level": 53,
+      "check": {
+        "passed": true,
+        "note": "已看完整中间珠 blend 与候选：珠头中央、扩宽珠身及收尖保持一颗完整珠，覆盖上下窄颈接口，无反向绕接。父域缺少的侧肩不改变当前实体的统一前层职责，不在本步补形；完整珠体固定 level 53。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/diamond_bead",
+      "note": "完整菱形上珠盖住上窄颈起端，顶部藏于双绳汇接小结之后。",
+      "level": 54,
+      "check": {
+        "passed": true,
+        "note": "已看完整菱形上珠 blend 及候选：顶部藏入小结下，完整珠身与尖底覆盖上窄颈起端；珠体未包绕窄颈两侧产生前后两壁，可固定 level 54。"
+      }
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/junction_knot",
+      "note": "完整汇接小结及固定结翼盖住两长悬绳末端与菱形上珠顶部。",
+      "level": 55,
+      "check": {
+        "passed": true,
+        "note": "已看完整汇接小结 blend 及候选珠串：固定左右结翼和结体盖住两弧绳末端，结下缘覆盖菱珠上接根；所有覆盖都朝前，无须跨深度，整件固定 level 55。"
+      }
+    },
+    {
+      "id": "waist_pendant/snowflake_pendant",
+      "note": "完整镂空雪花覆盖末端小珠下接与细链顶根，孔只露出后方衣物。",
+      "level": 56,
+      "check": {
+        "passed": true,
+        "note": "已看完整雪花坠 blend 及候选：固定镂空主体、顶接舌和底尖统一位于蓝幅前；顶舌覆盖末端小珠下端，底尖覆盖下方银链起端。孔内保持真实露空，无穿回后层的独立面，整枚固定 level 56。"
+      }
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/elongated_silver_link",
+      "note": "完整细长银件盖住下双珠接上根，其顶端藏在上珠接尖底之后。",
+      "level": 57,
+      "check": {
+        "passed": true,
+        "note": "已看完整细长银件 blend 与候选：长椭圆主体、上尖和下接根保持一件，上端在梨形接珠后，下端遮住下珠接起根。无环套或反向包壁，完整固定 level 57；父外顶肩限制不改变层序。"
+      }
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/upper_bead_link",
+      "note": "上短珠接整段覆盖细链尾与细长银件顶根，自身两珠和细颈统一排序。",
+      "level": 58,
+      "check": {
+        "passed": true,
+        "note": "已看完整上珠接 blend 及候选：两颗相邻珠与中间細颈为统一连接段，上端盖住细链尾、下珠尖盖住细长银件顶根；不包含下方双小珠。整段无需换深度，固定 level 58；沿父内实体保留现有肩部范围。"
+      }
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/silver_hanger",
+      "note": "完整人字吊架盖住两短支上根，顶茎位于水滴底部之后。",
+      "level": 59,
+      "check": {
+        "passed": true,
+        "note": "已看完整人字吊架 blend 及候选：顶茎在水滴底后，左右臂端覆盖两短支上根，中央下方已有空气隙保留。全件统一处于水滴后、两短支前，固定 level 59。"
+      }
+    },
+    {
+      "id": "waist_pendant/lower_silver_strand/teardrop_pendant",
+      "note": "完整水滴坠连底部细茎覆盖下珠接末茎和人字吊架顶根。",
+      "level": 60,
+      "check": {
+        "passed": true,
+        "note": "已看完整水滴坠连底部短茎 blend 与候选：上尖覆盖下珠接短茎，坠底与附属短茎压住人字吊架顶根。完整坠体无跨到吊架后方的回接，可固定 level 60；父外斜缘限制保持。"
+      }
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/lower_ring_body",
+      "note": "完整下环盖住孔内下悬珠、环间后茎、吊扣后回段及白流苏束头，位于环间下露头之后。",
+      "level": 61,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整下环 blend：完整圈身覆盖孔内珠根、环间后茎、吊扣后回段及流苏隐藏束头；上方下露头与下方扣头均另层覆盖圈缘，整圈没有跨到这些连接件前后的复合区域，可固定一层。"
+      }
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/inter_ring_link/lower_front_head",
+      "note": "环间下露头独立夹在下圈身之前、上圈身之后，保留父内圆底完整范围。",
+      "level": 62,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整下露头 blend：下张接头及圆底补全保持完整，上端可被上环下外缘遮住，下部同时覆盖下环顶缘；将整件固定夹在两圈之间即可满足全部实际遮挡，无需再拆。"
+      }
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/upper_ring_body",
+      "note": "完整上环位于莲接后入段、孔内上珠、环间后茎与下露头之前；露前连接另层。",
+      "level": 63,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整上环 blend：完整圈身及透明孔保持独立，孔内珠根、莲接回段与环间后茎由圈缘遮住，前银尖和上露头另层覆盖；圈身本身无需拆半或换深度，可固定在下露头前、两露前接件后。"
+      }
+    },
+    {
+      "id": "waist_pendant/double_ring_chain/inter_ring_link/upper_front_head",
+      "note": "环间上露头独立覆盖上环下内缘，后续藏后主茎不并入本片。",
+      "level": 64,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整上露头 blend：仅含上环下孔缘处的小银头及压过内缘的短前段，后续长茎已另片；全片固定覆盖上环下内缘，不延伸至下圈接区，可独立保持一个露前深度。"
+      }
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/lower_ring_connector/front_connector_tip",
+      "note": "莲接露前银尖独立覆盖上环顶缘及后回段，上接舌位于莲体下根后。",
+      "level": 65,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整露前银尖 blend：宽肩及下尖全部压在上环顶缘前，窄上接舌可统一藏在莲体下根后；与后入接片保留短搭接，不含孔内悬珠或圈身，整件可固定在上环前、莲体后。"
+      }
+    },
+    {
+      "id": "waist_pendant/lotus_coupler/lotus_body",
+      "note": "完整莲体前盖覆盖两短支下端、中央菱形下梗和下接银件上根。",
+      "level": 66,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整莲体 blend：两侧肩瓣和中央前缘为完整前盖，统一覆盖两短支入结端、中央菱形下梗及下接银件上根；圈缘穿接由独立连接片承担，莲体自身没有需转到其他件后方的区域，可固定为一层。"
+      }
+    },
+    {
+      "id": "waist_pendant/tassel_buckle/buckle_front",
+      "note": "完整吊扣前片覆盖下环低圈缘、后回接和长白流苏根部，两翼及中央尖叶统一排序。",
+      "level": 67,
+      "check": {
+        "passed": true,
+        "note": "已核对候选叠放与完整吊扣前片 blend：上部真实露头覆盖下圈低缘，前回折吊耳、两翼与尖叶全部位于长白流苏束头前；后穿入段已独立拆出，整件无再次回到圈后的区域，可固定为完整前层。"
+      }
+    }
+  ]
+}

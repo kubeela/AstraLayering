@@ -10,10 +10,10 @@
 
 ```bash
 pnpm --dir workflow-next install --frozen-lockfile
-pnpm --dir workflow-next/clothing-part-layering start --name test
+pnpm --dir workflow-next/clothing-part-layering start --name jianma
 
 # 首次及续跑都通过任务名定位上游
-pnpm --dir workflow-next/clothing-part-layering start --name test
+pnpm --dir workflow-next/clothing-part-layering start --name jianma
 ```
 
 preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服务、鉴权以及该工具的实际可用性统一由外部 Codex 环境提供；工作流只启用和调用工具，不管理 provider、不直连生图 API、不注册替代生图工具。内置工具不可用或生成结果无效时明确失败，保留输入供重试，不以原图或脚本结果冒充生图。
@@ -40,7 +40,7 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
 运行目录固定为共享任务下的本管线目录，与启动时的工作目录无关：
 
 ```text
-workflow-next/.run/test/clothing-part-layering/
+workflow-next/.run/jianma/clothing-part-layering/
   references/
     clothing.png
     preparation-prompt.md
@@ -71,6 +71,6 @@ pnpm --dir workflow-next/clothing-part-layering test
 
 自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。
 
-现已完成 [2026-10-18—19 真实实跑](../../demos/clothing-workflows-20261019/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；该历史案例推动的多深度与 step01 拆层协议现已接入，说明见 [共享流程](../README.md#多深度与上游修正)。
+现已完成 [2026-10-18—19 真实实跑](../../demos/jianma/clothing-raster-layering/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；该历史案例推动的多深度与 step01 拆层协议现已接入，说明见 [共享流程](../README.md#多深度与上游修正)。
 
 共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。

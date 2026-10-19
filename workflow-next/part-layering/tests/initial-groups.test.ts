@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
+import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { GroupStore } from '../../shared/part/groups.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
@@ -152,6 +153,21 @@ test('只在最终回复给 JSON 仍失败，未调用写入工具不能记成�
     return { text: JSON.stringify(wingGroups), images: [] };
   } });
   await assert.rejects(steps.initialGroups(context), /未通过 write_groups/);
+  assert.deepEqual(await readdir(context.directory), []);
+});
+
+test('part 缺少正式提交时展示模型的最后说明和 threadId', async t => {
+  const context = await fixture(t);
+  const steps = initialSteps({ async run() {
+    return { text: '没有可用的图片工具，无法继续处理参考图。', images: [], threadId: 'part-diagnostic-thread' };
+  } });
+  await assert.rejects(steps.initialGroups(context), error => {
+    const message = formatAgentError(error);
+    assert.match(message, /未通过 write_groups/);
+    assert.match(message, /没有可用的图片工具/);
+    assert.match(message, /part-diagnostic-thread/);
+    return true;
+  });
   assert.deepEqual(await readdir(context.directory), []);
 });
 

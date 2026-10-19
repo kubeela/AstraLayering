@@ -1,3 +1,4 @@
+import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
 import { readFile, realpath } from 'node:fs/promises';
@@ -64,7 +65,7 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
       return textResult({ ids: result.groups.map(group => group.id), terminal: result.groups.length === 0, note: result.note });
     },
   };
-  await agents.run({ name: `直属结构拆分-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ name: `直属结构拆分-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
     images: [{ path: reference, description: profile.references.children }, ...(profile.attachChildrenReferences ? references : [])],
     tools: [createBitmapTool(context.directory, directory, references.map(image => image.path)), createSvgPreviewTool({ directory: context.directory, reference, canvas,
       observationDirectory: directory, observed: entry => observations.push(entry) }), submit],
@@ -74,6 +75,6 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
     }, null, 2)}\n\n【固定范围与操作约定】\n${rules}\n固定约定提示词来源：${rulesPath}\n`,
   });
   await verifySource();
-  if (!submitted) throw new Error('子组分析未通过 submit_children 提交');
+  if (!submitted) throw agentOutcomeError('子组分析未通过 submit_children 提交', response);
   return submitted;
 }

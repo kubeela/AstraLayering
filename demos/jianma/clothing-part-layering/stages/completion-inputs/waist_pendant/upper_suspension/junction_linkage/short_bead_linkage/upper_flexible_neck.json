@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/upper_flexible_neck",
+  "beforeHash": "971914086c802bfae38e982ac036ae2c1c1d5bcfb6f09dbc6ddd00b33e03a29e",
+  "afterHash": "3e535016ba2c6e8cd8cc3c61246aaa8852b0fbfc9e632e6c7f29025f49ce72cc",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

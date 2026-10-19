@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/double_ring_chain/inter_ring_link/upper_front_head",
+  "beforeHash": "53ba40c040990176291a6641bc169ad053eefcb5edf9ca8137c75397b911253a",
+  "afterHash": "dc23f423394bf8de164cd06dfd7923530eb59b0d0e530dce69ca0ec1c1ae930f",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

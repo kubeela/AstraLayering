@@ -25,7 +25,7 @@ for await (const event of events) {
 
 正式流程见 [layering-workflow.md](docs/layering-workflow.md)。一层取整棵树中同深度的组：先层内并行绘制、review 和返修；全部结束后统一去重；再层内并行执行补形、自检和子组分析。当前层全部结束后才启动下一层。
 
-已收录的完整执行结构见 [test](../.run/test/part-layering/README.md)，直接采用标准运行格式：所有部位前三层的 86 个已完成节点、第四层 29 个已完成终止 part，以及替换后的最新 hair 均在同一棵树中。[交互预览](../.run/test/part-layering/previews/index.html) 可离线选择任意部位、层级和阶段；全部已执行补全均位于 `parts/`。
+已收录的完整执行结构见 [jianma](../../demos/jianma/part-layering/README.md)，直接采用标准运行格式：所有部位前三层的 86 个已完成节点、第四层 29 个已完成终止 part，以及替换后的最新 hair 均在同一棵树中。[交互预览](../../demos/jianma/part-layering/previews/index.html) 可离线选择任意部位、层级和阶段；全部已执行补全均位于 `parts/`。
 
 `shared/codex/agents.ts` 统一使用 `gpt-6.1-sol / xhigh`。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `shared/part/layering-steps.ts`，首次分组位于 `shared/part/initial-groups.ts`，绘制和 review 位于 `shared/part/outline-agent.ts`。
 

@@ -1,3 +1,4 @@
+import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
 import { readFile } from 'node:fs/promises';
@@ -72,7 +73,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       return textResult(submitted);
     },
   };
-  await agents.run({ name: `同层轮廓去重-${context.depth}`, cwd: context.directory, sandboxMode: 'workspace-write',
+  const response = await agents.run({ name: `同层轮廓去重-${context.depth}`, cwd: context.directory, sandboxMode: 'workspace-write',
     imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory,
       [merged, ...context.entries.flatMap(entry => [entry.outline.path, entry.current?.path, entry.outputPath, entry.parent?.steps.completion.output?.path])])],
     prompt: `${await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8')}\n【本次输入】\n${JSON.stringify({
@@ -82,6 +83,6 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
         reusedReduction: !!entry.current, outputDraft: entry.outputPath, parentSvg: entry.parent?.steps.completion.output?.path ?? null })),
     }, null, 2)}\n`,
   });
-  if (!submitted) throw new Error('同层去重未通过 submit_reduction 提交');
+  if (!submitted) throw agentOutcomeError('同层去重未通过 submit_reduction 提交', response);
   return submitted;
 }

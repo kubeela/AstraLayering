@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_sash",
+  "beforeHash": "0ecc677055643365f45239af6744d4b090f2d0d6c70bad208ef1220c9aec28ac",
+  "afterHash": "834a072765891c080bb50502e055689d207af8584e99b8ff8f3f32e8e9c5f0f8",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

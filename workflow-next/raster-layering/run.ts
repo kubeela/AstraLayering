@@ -1,3 +1,4 @@
+import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { runCli } from '../shared/raster/cli.ts';
 import { runWorkflow as runSharedWorkflow, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { steps } from './steps.ts';
@@ -28,7 +29,7 @@ export function runWorkflow(options: WorkflowOptions, dependencies: Dependencies
 
 if (import.meta.main) {
   runCli(pipeline, help).catch(error => {
-    console.error(error instanceof Error ? error.message : String(error));
+    console.error(formatAgentError(error));
     process.exitCode = 1;
   });
 }

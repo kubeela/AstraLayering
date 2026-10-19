@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/double_ring_chain/upper_inner_drop",
+  "beforeHash": "e7fdf38efc38349c273d9eb3978d3b040ed6b092fea1a3c8e0606bb47b557e0b",
+  "afterHash": "a2790774e1cf93789eb527157d7d8ac17bd1e3219fb790652ad59382d6028007",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/left_sleeve/rear_cuff_drape",
+  "beforeHash": "c057b283f660196548977c86159c39404cc5f40fbdba23ed0b25c9a6970f02a6",
+  "afterHash": "7cae412caa26d74ce4279eabe7ac36dee6192a3d49d6e012c2a9b103ec9ae659",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

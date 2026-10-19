@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/upper_suspension/junction_linkage/diamond_bead",
+  "beforeHash": "29ee14ccbc84b260a5882676147a9dd275a54d34850ba5ab8e39db2b8f2602f3",
+  "afterHash": "8421982f997e251ae208fcb23a3ab124f02737d3107ca49597d6a8f075142c84",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

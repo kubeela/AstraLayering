@@ -43,6 +43,6 @@ node_modules/
 !/tutorial/drawing-tutorial/头发画法.mp4
 
 # Scratch files and preview runtime from the Jianma Opus 5.5 workflow-next run.
-/demos/jianma-opus55/tmp/
-/demos/jianma-opus55/.runtime/
-/demos/jianma-opus55/structure/*.lock
+/demos/jianma-svg-ver/opus55/tmp/
+/demos/jianma-svg-ver/opus55/.runtime/
+/demos/jianma-svg-ver/opus55/structure/*.lock

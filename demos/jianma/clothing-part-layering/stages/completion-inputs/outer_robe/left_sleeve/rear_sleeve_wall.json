@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/left_sleeve/rear_sleeve_wall",
+  "beforeHash": "69b42315cca4c63eeaa8b3f14da0f3747f7785f5027a11a51f7ed74749d07f1f",
+  "afterHash": "67dffe6ac8dcadc38379f357a4c0aea8655617004c1a07573bce15b8ea0f7ccb",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

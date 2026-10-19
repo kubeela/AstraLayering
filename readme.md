@@ -10,17 +10,17 @@
 
 左侧是简化后的穿衣参考，右侧是 **90 层人物素体 + 69 层衣装**的实际装配结果。头发、身体、袖片与衣襟按前后关系穿插，另有 12 个可关闭的穿戴遮罩；159 个源绘画层的像素保留，已核对保存重开。
 
-[![穿衣参考与 159 层 Krita 穿戴合成对照](./demos/jianma-assembled/comparison.png)](./demos/jianma-assembled/README.md)
+[![穿衣参考与 159 层 Krita 穿戴合成对照](demos/jianma/assembled/comparison.png)](demos/jianma/assembled/README.md)
 
-[案例与交互预览](./demos/jianma-assembled/README.md) · [下载 KRA](./demos/jianma-assembled/jianma-assembled.kra) · [人物分层与补全](./demos/gray-control-krita/README.md) · [边缘修画终稿](./demos/soft-edge-krita/README.md) · [换装素体](./demos/skin-base-krita/README.md)
+[案例与交互预览](demos/jianma/assembled/README.md) · [下载 KRA](demos/jianma/assembled/jianma-assembled.kra) · [人物分层与补全](demos/jianma/raster-layering/step01/README.md) · [边缘修画终稿](demos/jianma/raster-layering/step02/README.md) · [换装素体](demos/jianma/raster-layering/step03/README.md)
 
 ### 独立衣服：从参考提取到分层修画
 
 依次为简化穿衣角色、提取后的纯衣服参考和最终衣服。该次实跑拆出 **68 个逻辑 part、69 个普通绘画层**，保留薄纱、开口和跨深度衣片，交付可继续编辑的 KRA。
 
-[![穿衣角色、纯衣服参考与最终 69 层衣装](./demos/clothing-workflows-20261019/images/comparison.png)](./demos/clothing-workflows-20261019/README.md)
+[![穿衣角色、纯衣服参考与最终 69 层衣装](demos/jianma/clothing-raster-layering/images/comparison.png)](demos/jianma/clothing-raster-layering/README.md)
 
-[过程与限制](./demos/clothing-workflows-20261019/README.md) · [下载衣装 KRA](./demos/clothing-workflows-20261019/clothing-soft-edges.kra) · [透明 PNG](./demos/clothing-workflows-20261019/images/final-composite.png)
+[过程与限制](demos/jianma/clothing-raster-layering/README.md) · [下载衣装 KRA](demos/jianma/clothing-raster-layering/step02/clothing-soft-edges.kra) · [透明 PNG](demos/jianma/clothing-raster-layering/images/final-composite.png)
 
 ### SVG：Milly 与 Miku 分层重绘
 
@@ -54,14 +54,14 @@
 需要 **Node.js 24.12+、pnpm、可用的 Codex 环境及内置 `image_generation` 工具**；栅格步骤还需安装 Krita 并显式传入可执行文件。以人物路线为例，在仓库根目录执行：
 
 ```bash
-pnpm --dir workflow-next/part-layering install --frozen-lockfile
-pnpm --dir workflow-next/part-layering start --name my-character --image /绝对路径/角色.png
+cd workflow-next
+pnpm install --frozen-lockfile
+pnpm part-layering --name my-character --image /绝对路径/角色.png
 
-pnpm --dir workflow-next/raster-layering install --frozen-lockfile
-pnpm --dir workflow-next/raster-layering start --name my-character --input ../part-layering/.run/my-character --krita /绝对路径/krita
+pnpm raster-layering --name my-character --krita /绝对路径/krita
 ```
 
-续跑使用相同模块的 `start --name my-character`，输入与工程保存在各模块 `.run/<任务名>/`。分件及深度规划全部完成后再启动栅格步骤；衣服路线的命令和要求见上表。
+续跑只需对应入口加 `--name my-character`，输入与工程统一保存在 `workflow-next/.run/<任务名>/`，整个运行目录不提交。模型、provider 和可选生图／图片压缩配置见 [workflow-next](./workflow-next/README.md#codex-环境配置) 的 `.env` 说明。分件及深度规划全部完成后再启动栅格步骤；衣服路线的命令和要求见上表。
 
 ## 使用 SVG 技能
 
@@ -81,7 +81,7 @@ pnpm --dir workflow-next/raster-layering start --name my-character --input ../pa
 
 ## 查看与仓库导航
 
-KRA 可直接在 Krita 中编辑；案例的 HTML 图层页需在本地打开，部分页面需要静态服务。可在仓库根目录运行 `python3 -m http.server 8000`，访问 [穿戴合成交互页](http://localhost:8000/demos/jianma-assembled/index.html)。GitHub 文件页只显示 HTML 源码。
+KRA 可直接在 Krita 中编辑；案例的 HTML 图层页需在本地打开，部分页面需要静态服务。可在仓库根目录运行 `python3 -m http.server 8000`，访问 [穿戴合成交互页](http://localhost:8000/demos/jianma/assembled/index.html)。GitHub 文件页只显示 HTML 源码。
 
 [part-preview](./loading/part-preview.html) 可离线拖入 SVG／位图，进行并排、叠加及滑动对比；同时载入匹配的 `groups.json` 才显示分组控制。
 

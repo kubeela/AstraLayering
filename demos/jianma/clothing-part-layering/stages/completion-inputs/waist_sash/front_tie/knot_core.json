@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_sash/front_tie/knot_core",
+  "beforeHash": "7b81c49900eaafe8272260b10f1e07906b2c7cff0481b21b1e0ffa9effc345f3",
+  "afterHash": "85fa07e175a98896d7e800bbdfac19eb6c80727e8a66878a2c2156496c2118c8",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

@@ -31,7 +31,7 @@ lower_body之后做arms合适：身体侧肩根已有接口，可以接续双臂
 
 [拆分总原则](../../../../tutorial/live2d-tutorial-text/2.部件拆分总原则.txt)要求从大到小、先拆后补；[手臂教程](../../../../tutorial/live2d-tutorial-text/12.手臂细节拆分.txt)明确大臂、小臂、手，手可再分手掌与五指，通常每指独立已足够，更精确需求才逐指节拆分；[精细度原则](../../../../tutorial/live2d-tutorial-text/13.判断拆分与否.txt)还把独立变形、层序、显隐与剪贴关系都视为拆分依据。
 
-当前[jianma_v4清单](../../../../demos/jianma-current-case/body-run/structure/parts.yaml)已经有upper_arm_left/right、forearm_left/right、hand_left/right，且说明手指内部拆分留给专项；这次不改变外层kind，也不把袖子、手环、头发等邻件并入arms。
+当前[jianma_v4清单](../../../../demos/jianma-svg-ver/body-run/structure/parts.yaml)已经有upper_arm_left/right、forearm_left/right、hand_left/right，且说明手指内部拆分留给专项；这次不改变外层kind，也不把袖子、手环、头发等邻件并入arms。
 
 ![原图双手局部](../../../../analysis/arms-planning-20260927/jianma-hands-reference.png)
 

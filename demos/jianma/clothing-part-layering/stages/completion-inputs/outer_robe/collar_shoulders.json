@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/collar_shoulders",
+  "beforeHash": "7bcbeae56bbeb78030bdfbd76fdc30ec73d0b1d32696a4b0b0f3be9fc877e08c",
+  "afterHash": "50d1724a836be01bec0bc762a024a26e7fcd1dbcb6e28c97c318d3c52207290e",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

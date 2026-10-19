@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/collar_shoulders/standing_collar",
+  "beforeHash": "48334a5db0b70ca431a65f969780c36e1bf9d071a75a010e4eeb2afd245ee46f",
+  "afterHash": "c0302e93431fa47e709e00caf835eefe87c7bcab8fc4295071f6676f563e1282",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

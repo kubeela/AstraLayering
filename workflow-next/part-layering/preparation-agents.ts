@@ -1,3 +1,4 @@
+import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { randomUUID } from 'node:crypto';
 import { readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -41,7 +42,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
           required: ['needsSimplification', 'reason'], additionalProperties: false,
         },
       });
-      return JSON.parse(result.text);
+      return validateAgentOutcome(result, () => JSON.parse(result.text));
     },
     simplify: async (image, output, prompt) => {
       const result = await agents.run({
@@ -52,7 +53,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
             description: '图 2：目标画风参考。' },
         ],
       });
-      await saveImage(result.images.at(-1), output);
+      await validateAgentOutcome(result, () => saveImage(result.images.at(-1), output));
     },
     baseSubject: async (image, output, prompt) => {
       const result = await agents.run({
@@ -63,7 +64,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
             description: '图 2：连体服款式参考。' },
         ],
       });
-      await saveImage(result.images.at(-1), output);
+      await validateAgentOutcome(result, () => saveImage(result.images.at(-1), output));
     },
   };
 }

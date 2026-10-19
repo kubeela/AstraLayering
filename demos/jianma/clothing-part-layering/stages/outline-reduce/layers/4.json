@@ -1,0 +1,26 @@
+{
+  "depth": 4,
+  "groups": [
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/upper_flexible_neck",
+      "inputHash": "7eaeab2a2edaf5d83782713e1fab4d5646aab67794260bd5dc7b882a1b244fdf",
+      "outputHash": "971914086c802bfae38e982ac036ae2c1c1d5bcfb6f09dbc6ddd00b33e03a29e"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/middle_bead",
+      "inputHash": "273a0c55e1b518f9638e46cb71ff32b02b6bd9fec19484bc69e129ee58bc477c",
+      "outputHash": "273a0c55e1b518f9638e46cb71ff32b02b6bd9fec19484bc69e129ee58bc477c"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/lower_flexible_neck",
+      "inputHash": "1619ef00ddd0efffed283f39c696f050c761beaa9521933cfa7a41f5f36079dc",
+      "outputHash": "1619ef00ddd0efffed283f39c696f050c761beaa9521933cfa7a41f5f36079dc"
+    },
+    {
+      "id": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/terminal_bead",
+      "inputHash": "93e6efe8ca5e63d2d6ac63f79d406139416f94aec0726429aa674ffb405bc483",
+      "outputHash": "93e6efe8ca5e63d2d6ac63f79d406139416f94aec0726429aa674ffb405bc483"
+    }
+  ],
+  "note": "已用 preview_svg 核对 mergedPreview 的整体 svg/blend 及 x498～525、y595～628 的局部 blend/edge，并逐片核对本层 SVG、纯衣服参考及 note。仅 upper_flexible_neck 有确证重复：旧稿下界 y608.7 把 middle_bead 自 y605.0 起的珠头中央及向珠身扩宽的过渡继续领取为可弯窄颈；参考的珠头起点与 middle_bead note 明确该范围应随珠体保持自身形状，除连接短搭外不存在另一条独立颈、环绕前后壁或独立深度职责。将 upper_flexible_neck 下界收至 y605.7，y605.7～608.7 的原重复范围交由已有 middle_bead 单独覆盖；保留约 y605.0～605.7 的藏于 middle_bead 后短搭和 y603.4 起端藏于 diamond_bead 后的既有接口。修改片的范围、相邻分界、深度、随动及隐藏接口已记入 draft 的 desc；以此同步旧 upper note 中 y608.3/608.7 下界，其他职责沿用。middle_bead、lower_flexible_neck、terminal_bead 分别为刚性珠体、可弯连接、末端刚性小珠，控制职责不同；y613.3～614.4 及 y620.0～620.7 的重叠是连接端藏于珠后的必要短搭，均保留，末端小珠既有接雪花坠顶接舌的藏后范围也保留。未按像素交集相减，未合并或删空任何独立实体。父 SVG 在 y606～608 缺少参考两侧珠肩是已有父域缺漏，与重复无关，本次保持父内约束，不扩大或补画。四组 reusedReduction 均为 false；仅修改绑定的 upper outputDraft，其余组按 source 原样复制。修改后已用 preview_svg 整体及局部 svg/blend/edge 自检，窄颈完整、接口连续，保留 1024×1536 canvas、原 viewBox、data-group-path 和父内轮廓；源 SVG、正式文件及树均未修改。"
+}

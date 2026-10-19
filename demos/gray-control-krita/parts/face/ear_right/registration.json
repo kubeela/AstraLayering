@@ -1,8 +1,0 @@
-{
-  "method": "reviewed contour coordinate deformation",
-  "generation": "generated-retry.png",
-  "generationSha256": "95a5ec9984ea4f177deb577de2b94b13b5de4cf4a2196418a3717869c3d5f27f",
-  "shapeFit": "\u751f\u6210\u8033\u6735\u504f\u7ec6\uff0c\u6309\u6807\u51c6\u6a2a\u622a\u9762\u5c06\u5b8c\u6574\u8033\u5ed3\u653e\u5165\u76ee\u6807\u8303\u56f4\u3002",
-  "revision": 3,
-  "uncoveredHiddenPixels": 0
-}

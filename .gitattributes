@@ -1,17 +1,17 @@
 # Keep the delivered options bytes consistent with its SHA-256 manifest.
-demos/jianma-current-case/body-run/options.json text eol=lf
+demos/jianma-svg-ver/body-run/options.json text eol=lf
 
 # Preserve recorded run artifacts byte-for-byte across platforms.
-demos/jianma-current-case/body-run/refinement/** -text
-demos/jianma-current-case/body-run/reviews/** -text
-demos/jianma-current-case/body-run/tmp/** -text
-demos/jianma-current-case/body-run/*.md -text
-demos/jianma-current-case/clothing-run/** -text
+demos/jianma-svg-ver/body-run/refinement/** -text
+demos/jianma-svg-ver/body-run/reviews/** -text
+demos/jianma-svg-ver/body-run/tmp/** -text
+demos/jianma-svg-ver/body-run/*.md -text
+demos/jianma-svg-ver/clothing-run/** -text
 analysis/mouth-model-prompt-case-20260928/** -text
 analysis/*20260927/** -text
 rigging/milly/v3/video-work/** -text
-demos/clothing-workflows-20261019/*.kra -text
-demos/clothing-workflows-20261019/images/** -text
+demos/jianma/clothing-raster-layering/*.kra -text
+demos/jianma/clothing-raster-layering/images/** -text
 
 # Preserve reference sources, historical records and their recorded SHA-256 bytes.
 tutorial/live2d-guidance/model-originals/** -text
@@ -21,3 +21,12 @@ tutorial/live2d-guidance/finger-reference-materials/** -text
 tutorial/live2d-guidance/layering-references.md -text
 tutorial/live2d-guidance/layering-reference-inventory.json -text
 tutorial/live2d-guidance/tools/verify_layering_references.py -text
+
+# Jianma delivery images and SVGs preserve source bytes.
+demos/jianma/**/*.kra -text
+demos/jianma/**/*.png -text
+demos/jianma/**/*.jpg -text
+demos/jianma/**/*.svg -text
+
+# A blank unified-diff context line is one required space.
+workflow-next/tools/codex/*.patch text eol=lf whitespace=-blank-at-eol

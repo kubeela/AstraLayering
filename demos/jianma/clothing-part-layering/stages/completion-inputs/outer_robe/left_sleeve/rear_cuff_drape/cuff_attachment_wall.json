@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "outer_robe/left_sleeve/rear_cuff_drape/cuff_attachment_wall",
+  "beforeHash": "537a04efc9837f5204e4b33218430ca40f5bd5c74373444c9b99a3da0062ff7a",
+  "afterHash": "cf6892ab65e922e4e90fc90860b4e746efa3fe5759cabefe4c6a13051cf0b9ee",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

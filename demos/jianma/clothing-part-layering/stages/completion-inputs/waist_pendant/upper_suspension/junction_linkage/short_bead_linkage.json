@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage",
+  "beforeHash": "d981395f92741d0ec4b052e9eb832286e6c1a1f813a0723225dd7ff8df0960cf",
+  "afterHash": "16661879c68e064e502f37458e464600c83f0487e848dc031a1c2f24d947f53b",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "9bd631504aecb79ee0e40fa67e81683d7f484c45542cb3688236dab721932b05"
+    }
+  ]
+}

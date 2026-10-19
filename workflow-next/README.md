@@ -1,6 +1,6 @@
 # Layering workflows
 
-四个独立入口共用安装、运行根目录和调度模块。需要 Node 24.12+；Codex 的模型服务、登录及原生 `image_generation` 由外部环境配置。Krita 由调用方显式提供路径，工作流只检查，不下载安装或搜索。
+四个独立入口共用安装、运行根目录和调度模块。需要 Node 24.12+；默认继承当前 Codex 的 provider 与登录，也可在本目录 `.env` 配置主模型和原生生图。Krita 由调用方显式提供路径，工作流只检查，不下载安装或搜索。
 
 在仓库根目录安装一次：
 
@@ -20,6 +20,38 @@ pnpm --dir workflow-next raster-layering --name sample
 
 四个目录内的 `pnpm start` 仍是对应入口。人物简化参考如果沿用原图，会保留原扩展名，衣服入口会自动定位实际文件。
 
+`pnpm --dir workflow-next` 中的 `--dir` 是 pnpm 的工作目录参数，与图片输入无关。也可以先 `cd workflow-next`，再执行 `pnpm part-layering --name jianma --image /absolute/character.png`。新任务只需首次输入原图，没有迁移命令。
+
+## Codex 环境配置
+
+复制 `example.env` 为 `.env`，按需填写；不填写时无需创建此文件。shell 的同名环境变量优先，文件不执行 shell 或展开变量。`.env` 不写入 Git。
+
+| 配置 | 默认与用途 |
+| --- | --- |
+| `layering_custom_provider` | `false`；沿用当前 `CODEX_HOME` 或 `~/.codex` 的订阅／自定义 provider |
+| `layering_provider_base_url` / `layering_provider_api_key` | 自定义主 provider 为 `true` 时填写，使用 Responses API |
+| `layering_medium_model` | `gpt-6.1-sol-xhigh`；两套 part 的 agent、人物 raster step03 |
+| `layering_high_model` | `gpt-6-astra-xhigh`；两套 raster step01、step02 及 reviewer |
+| `layering_image_base_url` / `layering_image_api_key` | 可选独立 Images API；两项一起填写才启用 |
+| `layering_image_model` | `gpt-image-2.5-sunburst`；单独填写不会启用自定义生图 |
+| `layering_image_compact_threshold` | 留空关闭；如网关上限为 50 张，可设 `49` |
+| `layering_codex_path` | 可选 Codex 可执行文件；上述生图／图片压缩功能需要补丁版 |
+| `layering_codex_home` | 通常不填；仅在明确需要独立 Codex 环境时设置 |
+
+模型最后一个后缀表示思考力度，发送的模型 ID 不含此后缀。支持 `none/minimal/low/medium/high/xhigh`，具体须符合所选模型能力。配置路径相对于 `workflow-next`，与任务输入路径规则不同。
+
+自定义生图仍使用 Codex 原生 `image_gen.imagegen`，提供商可为兼容的 LiteLLM 网关，不注册替代生图工具。此功能及图片数量压缩需要仓库提供的 Codex 源码补丁：
+
+```bash
+cd workflow-next
+pnpm build:codex
+# .env: layering_codex_path=.codex-build/bin/codex
+```
+
+构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改用户的系统 Codex 或全局配置。[构建与本地验证说明](tools/codex/README.md)。
+
+图片保护在下一次模型请求前计算当前上下文中图片的出现次数，包括同批工具返回的图片。达到阈值时在同一 thread 内 compact；该次压缩请求只发送文字，以免压缩请求本身再次触发图片上限。压缩完成后恢复正常看图，文件与任务标记不受影响。它不是永久图片记忆：需要重看细节时 agent 仍会读取原图。
+
 ## 输入、产物与续跑
 
 ```text
@@ -37,7 +69,6 @@ workflow-next/.run/<name>/
 
 首次原图保存为 `.run/<name>/input/original.<扩展名>`。后续直接读取上游文件，不建立输入副本。入口各自独立，不自动启动上游；缺少产物时列出具体缺失路径，并提示先运行对应上游管线，或手动将产物放到这些位置。各管线的步骤路径以自身目录为基准。
 
-旧任务先运行 `pnpm --dir workflow-next migrate-inputs --name <name> --dry-run` 查看迁移，再去掉 `--dry-run` 执行。脚本将初始图片和旧输入副本移回统一位置，保留 KRA、标记与 threadId；遇到内容不同的目标先报错，整次迁移不覆盖文件。
 
 part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 review 完成后先同层去重，再补全和分析子组。raster 以 `.running`、`.completed` 以及 review/repair Markdown 决定进度，`run.json` 保存配置和绘制 threadId。删除完成标记会重置该步及其后续步骤、重新建立绘制 thread；重跑清理仅发生在本管线步骤目录内；step01 写回上游 occlusion.json 的深度修正保留。`.running` 表示尚未完成，不代表进程仍在运行。
 
@@ -76,7 +107,9 @@ clothing-part-layering/tools/write_groups/schema.json
 
 四套流程使用同一临时错误分类和退避策略。先等待 Codex 自身重连的最终结果，再对服务过载、断流和临时限流按 5、10、20、40、60 秒等待重试，之后每次 60 秒，直到成功或取消。保持原 thread、已有图片和文件，提示 agent 从未完成处继续；不增加视觉 review 轮次。
 
-认证、额度、上下文超限、图片数量上限、输入或工件校验错误不会进入此重试。50 图上限的可选压缩保护仍是后续功能，本次没有接入。
+认证、额度、上下文超限、图片数量上限、输入或工件校验错误不会进入此重试。可选图片保护在请求发出前处理阈值；未启用时保持原行为。
+
+模型正常结束但没有交付文件、没有保存分组、缺少有效结构化结果，也会明确报错并展示模型最后消息及 threadId；raster 同时写入该步骤的 `error.txt`，保留 `.running`，不误标 `.completed`。例如模型告知没有可用的生图工具，终端会保留这段说明，方便修正环境后沿用原 thread 续跑。
 
 ## 多深度与上游修正
 
@@ -84,9 +117,9 @@ clothing-part-layering/tools/write_groups/schema.json
 
 一个共同运动部件需要多个绘画深度时，不再阻断或要求上游重拆。深度规划保持 part 树和 SVG；整件候选预览仅供参考，不能精确展示文本区域的切分。step01 依据标注或组装中新发现的问题，自行拆实际 KRA 绘画层，保持连续性，必要时局部补画。拆层脚本由绘制 agent 编写，调度器不自动切像素。
 
-`read_occlusion` 返回对应上游深度表及 revision；`update_occlusion` 按 ID 精准修改，校验 revision、完整结构和逐区域检查后原子写回。它不改逻辑 ID、groups.json、SVG 或未指定的部件。工具说明和 schema 仍在固定的 `shared/tools/` 中。step01 报告记录 part、实际图层名、区域和最终深度的对应；后续步骤与 reviewer 保留这些合法分片。中断和主动重跑均保留上游修正，不恢复旧副本。
+agent 直接使用内置读文件工具查看上游 `occlusion.json`；`update_occlusion` 按 ID 精准修改，自动替换互斥字段，校验完整结构和逐区域检查后原子写回。它不改逻辑 ID、groups.json、SVG 或未指定的部件。工具说明和 schema 仍在固定的 `shared/tools/` 中。step01 报告记录 part、实际图层名、区域和最终深度的对应；后续步骤与 reviewer 保留这些合法分片。中断和主动重跑均保留上游修正，不恢复旧副本。
 
-raster 保持原有 SDK 的 startThread/resumeThread 与 threadId 记录，通过每次启动的 MCP 配置提供深度工具，不修改全局 Codex 配置。当前 Codex 的 thread/resume 不支持追加 dynamicTools；使用本次调用的 MCP 配置让已有 SDK thread 也能获得工具，无需重建上下文。step01 提供读取和修改工具，后续绘制阶段只提供读取，reviewer 仍只反馈。原生 image_generation 和外部 provider、鉴权保持原样。
+raster 保持原有 SDK 的 startThread/resumeThread 与 threadId 记录，通过每次启动的 MCP 配置提供深度工具，不修改全局 Codex 配置。当前 Codex 的 thread/resume 不支持追加 dynamicTools；使用本次调用的 MCP 配置让已有 SDK thread 也能获得工具，无需重建上下文。只有 step01 提供修改工具，其他阶段通过内置工具读文件，reviewer 仍只反馈。原生 image_generation 和外部 provider、鉴权保持原样。
 
 ## 检查
 
@@ -95,6 +128,6 @@ pnpm --dir workflow-next check
 pnpm --dir workflow-next test
 ```
 
-测试使用模拟 agent、SDK / App Server 和临时文件，并只读检查仓库已有示例的恢复，覆盖各自 preparation、提示词与参考选择、同层去重、恢复、两轮 review、工具配置及重试。不会运行付费生图或重画已有 KRA。新产生的 `.run/` 请求、会话及中间处理记录保留本地，不提交推送；仓库原已收录的人物示例随目录迁移，保留原有文件。
+测试使用模拟 agent、SDK / App Server 和临时文件，并只读检查仓库已有示例的恢复，覆盖各自 preparation、提示词与参考选择、同层去重、恢复、两轮 review、工具配置及重试。不会运行付费生图或重画已有 KRA。整个 `.run/` 完全忽略并取消 Git 跟踪；原 `test` 已改名为 `jianma`，正式成果整理到 [demos/jianma](../demos/jianma/README.md)，逐次 agent 操作保留本地。
 
 共享重构的逐模块差异、发现的偏差及新旧调度对照结果见 [差异审计](docs/shared-refactor-audit.md)。
