@@ -1,3 +1,4 @@
+import { seedUpstream } from './upstream-fixture.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -72,8 +73,13 @@ test('两套 raster 的缺失输入提示各自指向对应的 part 管线', asy
   await mkdir(empty);
   for (const [run, inputId] of [[runRaster, 'part-layering'], [runClothingRaster, 'clothing-part-layering']] as const) {
     const dependencies = { runsDirectory: join(root, 'runs'), preflight: async () => { throw new Error('preflight must not run'); } };
-    await assert.rejects(run({ name: 'case' }, dependencies), new RegExp(`<${inputId}运行目录>`));
-    await assert.rejects(run({ name: 'case', input: empty }, dependencies), new RegExp(`已完成的 ${inputId} 运行目录`));
+    await assert.rejects(run({ name: 'case' }, dependencies), error => {
+      assert.ok(error instanceof Error);
+      assert.ok(error.message.includes(`pnpm --dir workflow-next ${inputId} --name`));
+      assert.ok(error.message.includes(join(dependencies.runsDirectory, 'case', inputId, 'occlusion.json')));
+      assert.ok(error.message.includes('手动放置'));
+      return true;
+    });
   }
 });
 
@@ -85,6 +91,7 @@ test('续跑时显式传空 Krita 路径仍报错，不静默沿用旧配置', a
   const runsDirectory = join(root, 'runs');
   for (const [run, id, steps] of [[runRaster, 'raster-layering', rasterSteps],
     [runClothingRaster, 'clothing-raster-layering', clothingRasterSteps]] as const) {
+    await seedUpstream('saved', id === 'raster-layering' ? 'part-layering' : 'clothing-part-layering', runsDirectory);
     const directory = pipelineDirectory('saved', id, runsDirectory);
     await initializeRun(directory, newConfig('saved', input, { executable: process.execPath, version: 'fixture' }, steps));
     for (const krita of ['', '   ']) {

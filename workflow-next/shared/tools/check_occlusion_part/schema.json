@@ -12,6 +12,28 @@
     "note": {
       "type": "string",
       "minLength": 1
+    },
+    "regions": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "level",
+          "note"
+        ],
+        "properties": {
+          "level": {
+            "type": "number",
+            "minimum": 0
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
     }
   }
 }

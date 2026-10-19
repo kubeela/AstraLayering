@@ -7,7 +7,7 @@ import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { createPreparationSteps, getPreparationDirectory, loadPreparedReferences, prepareReferences } from '../preparation.ts';
-import { taskDirectory } from '../../shared/paths.ts';
+import { taskDirectory, pipelineDirectory } from '../../shared/paths.ts';
 
 async function fixture(t: TestContext) {
   const temporary = await mkdtemp(join(tmpdir(), 'clothing-preparation-'));
@@ -16,17 +16,20 @@ async function fixture(t: TestContext) {
   const input = join(temporary, 'simplified-character.png'), generated = join(temporary, 'generated.png');
   await sharp({ create: { width: 96, height: 128, channels: 4, background: '#c0c0c0' } }).png().toFile(input);
   await sharp({ create: { width: 96, height: 128, channels: 4, background: '#80a0c080' } }).png().toFile(generated);
+  const upstream = join(pipelineDirectory(runName, 'part-layering'), 'references/simplified-subject.png');
+  await mkdir(dirname(upstream), { recursive: true });
+  await copyFile(input, upstream);
   const calls: AgentTask[] = [];
   const steps = createPreparationSteps({ async run(task) {
     calls.push(task);
     return { text: JSON.stringify({ savedPath: generated, error: null }), images: [{ savedPath: generated }] };
   } });
-  return { temporary, directory, runName, input, generated, calls, steps };
+  return { temporary, directory, runName, input, upstream, generated, calls, steps };
 }
 
-test('preparation uses one native image task, copies the clothed input, and resumes without external input', async t => {
+test('preparation uses one native image task, reads the upstream clothed image, and resumes without external input', async t => {
   const f = await fixture(t);
-  const refs = await prepareReferences({ runName: f.runName, image: f.input }, f.steps);
+  const refs = await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 1);
   assert.equal(f.calls[0].imageGeneration, true);
   assert.equal(f.calls[0].images!.length, 1);
@@ -46,7 +49,7 @@ test('preparation uses one native image task, copies the clothed input, and resu
 
 test('deleting clothing reference regenerates from saved character and invalidates old decomposition', async t => {
   const f = await fixture(t);
-  const refs = await prepareReferences({ runName: f.runName, image: f.input }, f.steps);
+  const refs = await prepareReferences({ runName: f.runName }, f.steps);
   await mkdir(join(dirname(f.directory), 'parts'), { recursive: true });
   await writeFile(join(dirname(f.directory), 'parts/old.svg'), 'old garment');
   await writeFile(join(dirname(f.directory), 'groups.json'), '{"groups":[]}');
@@ -61,8 +64,9 @@ test('deleting clothing reference regenerates from saved character and invalidat
 test('missing native image tool leaves a retryable preparation without fake output', async t => {
   const f = await fixture(t);
   const failed = createPreparationSteps({ async run() { throw new Error('image_generation unavailable'); } });
-  await assert.rejects(prepareReferences({ runName: f.runName, image: f.input }, failed), /unavailable/);
-  await readFile(join(f.directory, 'simplified-character.png'));
+  await assert.rejects(prepareReferences({ runName: f.runName }, failed), /unavailable/);
+  await readFile(f.upstream);
+  await assert.rejects(readFile(join(f.directory, 'simplified-character.png')), { code: 'ENOENT' });
   await assert.rejects(readFile(join(f.directory, 'clothing.png')), { code: 'ENOENT' });
   await assert.rejects(readFile(join(f.directory, 'preparation.json')), { code: 'ENOENT' });
   await prepareReferences({ runName: f.runName }, f.steps);
@@ -76,7 +80,7 @@ test('reject invalid, opaque, or differently sized images instead of publishing 
       if (mode === 'invalid') await writeFile(f.generated, 'not an image');
       else if (mode === 'opaque') await copyFile(f.input, f.generated);
       else await sharp({ create: { width: 32, height: 32, channels: 4, background: '#aabbcc80' } }).png().toFile(f.generated);
-      await assert.rejects(prepareReferences({ runName: f.runName, image: f.input }, f.steps));
+      await assert.rejects(prepareReferences({ runName: f.runName }, f.steps));
       await assert.rejects(readFile(join(f.directory, 'preparation.json')), { code: 'ENOENT' });
     });
   }
@@ -86,7 +90,7 @@ test('changed cached references are not silently reused; loading missing referen
   const f = await fixture(t);
   await assert.rejects(loadPreparedReferences(f.runName));
   await assert.rejects(readdir(f.directory), { code: 'ENOENT' });
-  const refs = await prepareReferences({ runName: f.runName, image: f.input }, f.steps);
+  const refs = await prepareReferences({ runName: f.runName }, f.steps);
   await writeFile(refs.originalImage!, 'changed source');
   await assert.rejects(loadPreparedReferences(f.runName), /参考已变化/);
   assert.equal(f.calls.length, 1);

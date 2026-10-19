@@ -10,9 +10,9 @@
 | 第二步 review | [独立视觉检查](prompts/02-review.md)，反馈交给[原 agent 修复](prompts/02-repair.md) | `gpt-6-astra` | `xhigh` | 已接入 |
 | 第三步 | [完整提示词：去除连体服](prompts/03-去除连体服.md) | `gpt-6.1-sol` | `xhigh` | 已接入，无 reviewer |
 
-第一步正文保留用户提供的完整要求，只整理 Markdown 排版和断行。运行时在正文后附加输入、输出、Krita 路径、前序交付与本步文件名。部件数、形状、画风和深度都从输入读取。
+第一步保留原生图、补全、修画和验收要求，补充多深度拆绘画层及写回上游协议。运行时在正文后附加输入、输出、Krita 路径、前序交付与本步文件名。部件数、形状、画风和深度都从输入读取。
 
-第二步保留逐层修画范围、禁止事项和验收要求，主要明确输入、输出和中断接续方式。输入固定为本任务 `step01/character-depth.kra`、`step01/report.md`，参考图沿用 `input/references/` 中第一步实际使用的对应图；不再依赖示例的 `demos/soft-edge-krita` 路径。运行时将这些输入与三份输出展开为绝对路径交给 agent。
+第二步保留逐层修画范围、禁止事项和验收要求，主要明确输入、输出和中断接续方式。输入固定为本任务 `step01/character-depth.kra`、`step01/report.md`，参考图沿用 `../part-layering/references/` 中第一步实际使用的对应图；不再依赖示例的 `demos/soft-edge-krita` 路径。运行时将这些输入与三份输出展开为绝对路径交给 agent。
 
 第三步保留用户的绘制要求，只整理正文并明确输入、输出和续跑方式。输入固定为本任务 `step02/character-soft-edges.kra`，由同一个绘制 thread 切换到 `gpt-6.1-sol / xhigh`：先检查并标记所有涉及连体服的 part，再参考已有皮肤补出构型与肤色，不补人体细节；body/torso 可以简化胸部特征，只补身体轮廓。
 
@@ -25,7 +25,7 @@ cd workflow-next/raster-layering
 pnpm --dir .. install --frozen-lockfile
 
 # 首次启动
-pnpm start --name test --input part-layering --krita /path/to/krita
+pnpm start --name test --krita /path/to/krita
 
 # 以后启动同一任务，只需要名字
 pnpm start --name test
@@ -33,9 +33,9 @@ pnpm start --name test
 
 任务固定保存到 **`workflow-next/.run/<name>/raster-layering/`**，不随 shell 的工作目录改变。`--name` 为单个目录名，支持中文、字母、数字、点、下划线和短横线，以字母或数字开头。输入和 Krita 的相对路径统一从 `workflow-next/.run/<name>/` 解析。
 
-`--input` 通常传入 `part-layering`，程序自动使用同任务的 `part-layering/parts/`；直接传入 `part-layering/parts` 或绝对路径也可以，不会重复追加 `parts`。首次启动将 `parts/`、已有的 `references/`、`groups.json`、`occlusion.json` 和 `preview.svg` 复制到任务内的 `input/`，同时记录原输入位置。符号链接会复制实际内容。输入副本和配置全部就绪后才发布任务目录，复制中断不会留下可被误用的半份输入。
+按 `--name` 直接读取 `.run/<name>/part-layering/` 的 parts、参考、groups.json 与 occlusion.json，不接受额外输入路径、不复制上游产物。缺失时列出具体路径，提示先执行对应上游管线或手动放置产物。
 
-续跑使用已保存的输入，不依赖原目录继续存在，也不覆盖副本。再次显式传入 `--input` 时，只校验是否为原先绑定的位置；要改用另一份输入或重新导入源文件，请使用新的 `--name`。
+续跑继续读取同名上游，step01 的深度修正写回上游并持久保留。首次图像只存于任务根 input，后续管线直接使用前序产物。
 
 `--krita` 首次必须显式指定可执行文件，可以是完整路径、AppImage 的 `AppRun`、macOS 应用内可执行文件或 Windows 可执行文件。后续从 `run.json` 读取，也可显式传入新路径并保存。脚本不从 PATH、环境变量或默认安装目录寻找 Krita，不自动下载、安装或启动显示服务器。
 
@@ -46,13 +46,13 @@ pnpm start --name test
 pnpm start --krita /path/to/krita --check-krita
 
 # 查看首次执行的完整提示词和计划
-pnpm start --name test --input part-layering --krita /path/to/krita --dry-run
+pnpm start --name test --krita /path/to/krita --dry-run
 
 # 查看已有任务下一次启动的计划
 pnpm start --name test --dry-run
 ```
 
-`--dry-run` 校验输入和 Krita，显示待执行步骤的提示词与重置计划，不复制输入、不改配置、不清理目录、不改标记，也不调用模型。首次预览中的输入副本路径是正式启动时将创建的位置。已完成步骤直接显示跳过。
+`--dry-run` 校验上游产物和 Krita，显示待执行提示词与重置计划，不写文件、不改标记、不调用模型。已完成步骤跳过。
 
 默认 `pnpm start` 会实际调用模型及生图工具，使用当前账号配置。SDK 通过本地 CLI 执行，保留 shell 工具并启用 `image_generation`，使用 `danger-full-access` / `never` 执行配置。
 
@@ -61,12 +61,6 @@ pnpm start --name test --dry-run
 ```text
 workflow-next/.run/test/raster-layering/
   run.json
-  input/
-    parts/
-    references/
-    groups.json
-    occlusion.json
-    preview.svg
   step01/
     .running 或 .completed
     prompt.md
@@ -148,30 +142,32 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 rm ../.run/test/raster-layering/step01/.completed
 pnpm start --name test
 
-# 从第二步重跑：保留 step01 与 input
+# 从第二步重跑：保留 step01 与上游产物
 rm ../.run/test/raster-layering/step02/.completed
 pnpm start --name test
 ```
 
-重置会删除被重跑步骤及后续步骤的全部产物和日志，包括磁盘上已有但当前尚未接入提示词的后续步骤。`input/` 和任务配置保留，`threadId` 清空；开始执行时创建新 thread，后续步骤继续使用它。新会话会收到输入副本和前序已完成步骤的产物、报告路径。
+重置会删除被重跑步骤及后续步骤的全部产物和日志，包括磁盘上已有但当前尚未接入提示词的后续步骤。上游产物及深度修正和任务配置保留，`threadId` 清空；开始执行时创建新 thread，后续步骤继续使用它。新会话会收到上游产物和前序已完成步骤的产物、报告路径。
 
 清理先持久化清空的 thread ID，再从后往前删目录，触发重跑的目录最后删除，因此清理中断后仍能继续重置。要让一个未完成的步骤也从头重跑，先停止进程，再删除该步的 `.running`，同样按“目录存在但无标记”处理。
 
 同一名字一次只启动一个进程，手工改标记前先停止当前运行。若 `.completed` 仍在但必要交付已丢失，程序会明确报错：恢复交付，或删除标记重跑，不会自行改变完成状态。
 
-旧版 `--output` / `--resume` 和 `.workflow/run.json` 布局不再使用。旧输出不会自动迁移或清理；需要保留时继续保留原目录，并为新流程选择新名字。
+旧的 raster/input 副本用共享迁移命令处理：`pnpm --dir workflow-next migrate-inputs --name <name>`。先加 `--dry-run` 查看计划；迁移保留绘制 thread、完成标记及工程，冲突时不覆盖。
 
 ## 代码入口与验证
 
 - [run.ts](run.ts)：本管线入口；参数解析、安装检查入口和中断信号由 [共享 CLI](../shared/raster/cli.ts) 处理。
 - [krita.ts](../shared/raster/krita.ts)：只检查明确提供的 Krita。
-- [input.ts](../shared/raster/input.ts)：解析 `parts/`，保存输入副本。
+- [input.ts](../shared/raster/input.ts)：按 name 定位并检查上游 parts 与必要文件。
 - [steps.ts](steps.ts)：三步模型配置与交付要求；[共享步骤模块](../shared/raster/steps.ts) 附加正文后的运行信息。
 - [agent.ts](../shared/raster/agent.ts)：官方 SDK 的 `startThread`、`resumeThread`、`runStreamed` 和回合结果处理。
 - [run-store.ts](../shared/raster/run-store.ts)：任务配置、标记读取、输入初始化和级联重置。
 - [workflow.ts](../shared/raster/workflow.ts)：前置检查、顺序执行、共享会话与交付检查。
 - [review.ts](../shared/raster/review.ts)：读取 Markdown 进度，调度独立 reviewer 与原会话修复，原子发布报告。
 
-验证命令为 `pnpm check` 和 `pnpm test`。定向测试模拟 SDK 事件，使用实际步骤提示词，覆盖输入副本、名字与路径、中断续跑、标记重跑、跨步骤会话与模型、第二步实际输入输出和合成 PNG 必需交付、review / 修复完成后进入第三步，以及清理中断恢复，不调用付费模型。使用 SDK 0.161.0；参考 [Codex SDK 文档](https://developers.openai.com/codex/sdk/)及依赖随包提供的 README 和类型声明。
+验证命令为 `pnpm check` 和 `pnpm test`。定向测试模拟 SDK 事件，使用实际步骤提示词，覆盖上游产物、名字与路径、中断续跑、标记重跑、跨步骤会话与模型、第二步实际输入输出和合成 PNG 必需交付、review / 修复完成后进入第三步，以及清理中断恢复，不调用付费模型。使用 SDK 0.161.0；参考 [Codex SDK 文档](https://developers.openai.com/codex/sdk/)及依赖随包提供的 README 和类型声明。
 
-共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线只管理自身目录。
+共享安装、路径规则、工具配置和临时错误恢复见 [workflow-next 使用说明](../README.md)。所有相对输入路径从 `.run/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
+
+多深度与工具协议见 [共享说明](../README.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。

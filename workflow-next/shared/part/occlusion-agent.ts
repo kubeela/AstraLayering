@@ -9,7 +9,7 @@ import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { walkGroups } from './groups.ts';
 import type { OcclusionContext, StepResult } from './layering-types.ts';
 import { mergePartSvgs } from './merge-svg.ts';
-import { occlusionSourceHash, terminalParts, validateOcclusionPlan, type OcclusionPlan } from './occlusion-plan.ts';
+import { depthRegions, occlusionSourceHash, terminalParts, validateOcclusionPlan, type DepthCheck, type OcclusionPlan } from './occlusion-plan.ts';
 import { createSvgPreviewTool, type SvgObservation } from './svg-tools.ts';
 
 export async function planPartOcclusion(context: OcclusionContext, agents: Pick<CodexAgents, 'run'>): Promise<StepResult<OcclusionPlan>> {
@@ -43,31 +43,40 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
       signal.throwIfAborted(); active(); await verify();
       if (!value || typeof value !== 'object' || !Array.isArray((value as { layers?: unknown }).layers)) throw new Error('需要 layers 数组');
       const rows = (value as { layers: OcclusionPlan['layers'] }).layers;
-      const proposal = validateOcclusionPlan({ version: 2, direction: 'back-to-front', sourceHash,
-        layers: rows.map((row, level) => ({ ...row, level, check: { passed: true, note: '待逐件检查' } })) }, context, sourceHash);
+      const proposal = validateOcclusionPlan({ version: 3, direction: 'back-to-front', sourceHash,
+        layers: rows.map(row => ({ ...row, check: { passed: true, note: '待逐件检查',
+          ...(row.levels ? { regions: row.levels.map(region => ({ level: region.level, note: '待逐区域检查' })) } : {}) } })) }, context, sourceHash);
       if (!saw(previewPath, 'blend')) throw new Error('提案前须查看已有 preview.svg 与原图叠加');
       const leaves = terminalParts(context);
       await mergePartSvgs({ directory: context.directory, outputPath: candidatePath,
-        groups: proposal.layers.map(row => leaves.find(entry => entry.group.id === row.id)!.group),
+        // Text regions cannot be cut into SVG geometry here. Show each whole part once,
+        // at its rearmost depth, and explicitly label this preview as approximate.
+        groups: [...proposal.layers].sort((a, b) => Math.min(...depthRegions(a).map(r => r.level)) - Math.min(...depthRegions(b).map(r => r.level)))
+          .map(row => leaves.find(entry => entry.group.id === row.id)!.group),
         parts: parts.map(part => ({ groupId: part.id, svg: { path: part.full } })) });
       candidate = proposal;
       checked.clear();
       // 输入 SVG 未变，可复用其观察；新候选须重新查看，所有层级结论须重新检查。
       observations.splice(0, observations.length, ...observations.filter(entry => entry.source !== candidatePath));
-      return textResult({ candidate: candidatePath, ids: proposal.layers.map(row => row.id), remainingChecks: parts.length });
+      return textResult({ candidate: candidatePath, ids: proposal.layers.map(row => row.id), remainingChecks: parts.length,
+        multiDepthParts: proposal.layers.filter(row => row.levels).map(row => row.id),
+        previewNote: '整件 SVG 仅按各件最靠后的深度叠放；多深度部件未按文本切片，此预览不能证明其实际穿插效果。逐区域对照原图核对，实际拆层在 raster step01 完成。' });
     },
   };
   const check: FunctionTool = {
     ...toolDefinition('check_occlusion_part'),
     async execute(value, signal) {
       signal.throwIfAborted(); active(); await verify();
-      const args = value as { id?: string; note?: string } | null;
+      const args = value as { id?: string; note?: string; regions?: DepthCheck['regions'] } | null;
       const part = parts.find(part => part.id === args?.id);
       if (!part || typeof args?.note !== 'string' || !args.note.trim()) throw new Error('需要本次终止 part ID 与具体检查依据');
       if (!candidate || !saw(candidatePath, 'blend') || !saw(part.full, 'blend')) {
         throw new Error('须先查看当前候选叠加与该完整部件的原图叠加');
       }
-      candidate.layers.find(row => row.id === part.id)!.check = { passed: true, note: args.note };
+      const next = structuredClone(candidate);
+      next.layers.find(row => row.id === part.id)!.check = { passed: true, note: args.note,
+        ...(args.regions !== undefined ? { regions: args.regions } : {}) };
+      candidate = validateOcclusionPlan(next, context, sourceHash);
       checked.add(part.id);
       return textResult({ checked: part.id, remaining: parts.filter(part => !checked.has(part.id)).map(part => part.id) });
     },

@@ -1,4 +1,6 @@
 import { Codex, type Thread, type ThreadEvent, type ThreadOptions } from '@openai/codex-sdk';
+import type { FunctionTool } from '../codex/function-tools.ts';
+import { fileURLToPath } from 'node:url';
 import { AgentCallError, AgentRuntime, continuationPrompt, type AgentRetry } from '../codex/agent-runtime.ts';
 
 export type StepResult = { status: 'completed' | 'blocked'; summary: string };
@@ -8,6 +10,8 @@ export type AgentRequest = {
   model: string;
   effort: 'xhigh';
   threadId?: string;
+  occlusion?: { upstream: string; editable: boolean };
+  tools?: FunctionTool[]; // Local callbacks for workflow adapters; SDK uses the matching stdio server.
   signal?: AbortSignal;
   onEvent: (event: ThreadEvent) => Promise<void>;
   onRetry?: (retry: AgentRetry) => Promise<void> | void;
@@ -20,7 +24,7 @@ type Client = {
 
 export async function runAgent(request: AgentRequest, client?: Client, runtime = new AgentRuntime(1)): Promise<StepResult> {
   // Keep the configured login and tool providers; enable the native image tool.
-  const codex = client ?? new Codex({ config: { features: { image_generation: true } } });
+  const codex = client ?? new Codex({ config: rasterCodexConfig(request) });
   const options: ThreadOptions = {
     model: request.model,
     modelReasoningEffort: request.effort,
@@ -73,4 +77,16 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     }
     return result as StepResult;
   }, { signal: request.signal, onRetry: request.onRetry });
+}
+
+// Per-invocation MCP configuration works for both new and preexisting SDK threads.
+// The provider, credentials and native image tool remain owned by the external Codex environment.
+export function rasterCodexConfig(request: Pick<AgentRequest, 'occlusion'>) {
+  return { features: { image_generation: true }, ...(request.occlusion ? {
+    mcp_servers: { layering_occlusion: {
+      command: process.execPath,
+      args: [fileURLToPath(new URL('./occlusion-mcp.ts', import.meta.url)), '--upstream', request.occlusion.upstream,
+        ...(request.occlusion.editable ? ['--editable'] : [])],
+    } },
+  } : {}) };
 }

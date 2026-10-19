@@ -1,8 +1,8 @@
-import { pipelineDirectory, resolveInput } from '../shared/paths.ts';
+import { pipelineDirectory } from '../shared/paths.ts';
+import { simplifiedCharacter } from '../shared/upstream.ts';
 import { createHash, randomUUID } from 'node:crypto';
-import { copyFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
-import { dirname, extname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { copyFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../shared/codex/agents.ts';
 
@@ -19,14 +19,6 @@ export function getPreparationDirectory(runName: string): string {
 async function exists(path: string): Promise<boolean> {
   try { return (await stat(path)).isFile(); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error; }
-}
-async function savedInput(directory: string): Promise<string | undefined> {
-  let names: string[];
-  try { names = await readdir(directory); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
-  const matches = names.filter(name => /^simplified-character\.(png|jpe?g|webp)$/i.test(name));
-  if (matches.length > 1) throw new Error('存在多份简化穿衣角色输入，请保留唯一输入。');
-  return matches[0] ? join(directory, matches[0]) : undefined;
 }
 function references(directory: string, originalImage: string): PreparationReferences {
   return { directory, originalImage, judgment: join(directory, 'preparation.json'),
@@ -58,8 +50,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
 
 // Explicit groups only read an already prepared input; never invoke a model or mutate it.
 export async function loadPreparedReferences(runName: string): Promise<PreparationReferences> {
-  const directory = getPreparationDirectory(runName), image = await savedInput(directory);
-  if (!image) throw new Error('简化穿衣角色输入副本缺失，请先完成 preparation。');
+  const directory = getPreparationDirectory(runName), image = await simplifiedCharacter(runName);
   const refs = references(directory, image);
   if (!await exists(refs.judgment) || !await exists(refs.baseSubject)) throw new Error('纯衣服参考尚未完成，请先不带 --groups 运行 preparation。');
   const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
@@ -73,18 +64,9 @@ export async function loadPreparedReferences(runName: string): Promise<Preparati
 export async function prepareReferences(input: PreparationInput, steps: PreparationSteps,
   progress?: (message: string) => void): Promise<PreparationReferences> {
   const directory = getPreparationDirectory(input.runName);
-  let image = await savedInput(directory);
-  if (!image) {
-    if (!input.image) throw new Error('首次运行需要 --image <简化穿衣角色图片路径>。');
-    const source = resolveInput(input.runName, input.image), extension = extname(source).toLowerCase();
-    if (!/\.(png|jpe?g|webp)$/.test(extension) || !await exists(source)) throw new Error('输入须为简化穿衣角色的 PNG、JPEG 或 WebP 图片。');
-    await sharp(source).metadata();
-    await mkdir(directory, { recursive: true });
-    image = join(directory, `simplified-character${extension}`);
-    const temporary = `${image}.${randomUUID()}.tmp`;
-    try { await copyFile(source, temporary); await rename(temporary, image); }
-    finally { await rm(temporary, { force: true }); }
-  }
+  if (input.image !== undefined) throw new Error('clothing-part-layering 按 --name 读取上游简化角色，不接受 --image；请将图片放到同名 part-layering/references/simplified-subject.png。');
+  const image = await simplifiedCharacter(input.runName);
+  await mkdir(directory, { recursive: true });
   const refs = references(directory, image);
   if (await exists(refs.baseSubject) && await exists(refs.judgment)) {
     const ready = await loadPreparedReferences(input.runName);

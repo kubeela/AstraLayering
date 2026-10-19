@@ -1,3 +1,1 @@
-全部终止 part 已逐件检查后提交完整层级表，由调度器独立保存 occlusion.json。
-
-所有部件通过 check_occlusion_part 核对后调用，无参数。只提交当前候选的完整层级表。
+提交当前完整深度表。必须先提案、查看当前候选，并完成全部终止 part 及多深度区域的检查；缺项不能结束。输出 occlusion.json v3；保留逻辑 part ID，不拆分组树或 SVG。

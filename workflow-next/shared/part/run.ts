@@ -9,7 +9,7 @@ import { createLayeringSteps } from './layering-steps.ts';
 import { groupStages, type GroupInput, type GroupNode, type LayeringResult, type LayeringSteps, type SvgMerger } from './layering-types.ts';
 import type { PreparationInput, PreparationReferences } from './preparation-types.ts';
 import type { PartProfile } from './profile.ts';
-import { resolveInput } from '../paths.ts';
+import { pipelineDirectory, resolveInput } from '../paths.ts';
 import { toolCatalog } from '../codex/tool-config.ts';
 import { validateWorkflowOptions } from './workflow.ts';
 export type PartPipeline = {
@@ -26,6 +26,9 @@ export async function runPartPipeline(
   agentOptions: AgentOptions = {},
 ): Promise<{ references: PreparationReferences; layering: LayeringResult }> {
   validateWorkflowOptions({ maxDepth: input.maxDepth });
+  if (pipeline.profile.id === 'clothing-part-layering' && input.reference.image !== undefined) {
+    throw new Error(`衣服 part 按 --name 读取上游，不接受 --image。请将简化穿衣角色图放到 ${join(pipelineDirectory(input.reference.runName, 'part-layering'), 'references/simplified-subject.png')}，或先执行同名 part-layering。`);
+  }
   const directory = pipeline.getPreparationDirectory(input.reference.runName);
   toolCatalog(pipeline.profile.toolsDirectory);
   const agents = new CodexAgents({
@@ -102,7 +105,7 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
   try {
     const values = parseRunArguments(args);
     if (values.help) {
-      console.log(`pnpm ${pipeline.profile.id} --name <运行名> [--image <${pipeline.imageHelp}>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
+      console.log(`pnpm ${pipeline.profile.id} --name <运行名> ${pipeline.profile.id === 'part-layering' ? `[--image <${pipeline.imageHelp}>] ` : ''} [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
       console.log(pipeline.preparationHelp);
       console.log('provider、鉴权和内置 image_generation 工具由外部 Codex 配置。输入相对路径以 workflow-next/.run/<name>/ 为基准。');
       console.log('--groups 选择已有组及其子组；祖先须完成，可查看同层有效底稿复核去重，仅实际变化的部件及真实引用者扩入后续制作。省略时按层自动准备或续跑。');

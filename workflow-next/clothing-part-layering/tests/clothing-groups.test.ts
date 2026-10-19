@@ -13,7 +13,7 @@ const signal = new AbortController().signal;
 test('clothing prompt lookup is local and has no inherited body-specific prior', async () => {
   const prompt = await readGroupPrompt('body', 'children', profile.promptsDirectory);
   assert.ok(prompt.path.endsWith('clothing-part-layering/prompts/10-直属结构拆分.md'));
-  assert.ok(prompt.text.includes('即使同动也不能终止成单一 part'));
+  assert.ok(prompt.text.includes('同动整体仍可终止为一个 part'));
   await assert.rejects(readdir(new URL('../prompts/groups', import.meta.url)), { code: 'ENOENT' });
 });
 

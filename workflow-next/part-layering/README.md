@@ -17,7 +17,7 @@ for await (const event of events) {
 }
 ```
 
-默认流程首次启动传入 `--image`，原图会复制到 `workflow-next/.run/<运行名>/part-layering/references/original.<原扩展名>`。续跑只需 `--name`，不依赖原图之前的外部路径。省略 `--groups` 时检查参考输出，缺少哪一步就执行哪一步；全部存在时不调用 preparation agent。显式 `--groups` 只读取已有参考，缺失直接报错。
+默认流程首次启动传入 `--image`，原图会复制到 `workflow-next/.run/<运行名>/input/original.<原扩展名>`。续跑只需 `--name`，不依赖原图之前的外部路径。省略 `--groups` 时检查参考输出，缺少哪一步就执行哪一步；全部存在时不调用 preparation agent。显式 `--groups` 只读取已有参考，缺失直接报错。
 
 参考准备完成后，同一入口进入 layering。省略 `--groups` 对应 `null` 输入，先读取 `workflow-next/.run/<运行名>/part-layering/groups.json`：实际已有组时直接复用并继续进度；实际组为空时才调用首次分组接口，不另存首次完成标记。
 
@@ -41,9 +41,11 @@ for await (const event of events) {
 - `checkCompletion`：程序检查原形保留、矢量结构和父范围；视觉合理性在补全回合中自检。
 - `splitChildren`：基于完成轮廓识别直属子组；程序将子组登记到树并加入后续调度。
 
-整树制作结束后先程序合并 `preview.svg`，再执行最后一步 `planOcclusion`，工作正文为 `prompts/11-遮挡层级规划.md`。每个完整 part 只设置一个固定深度，从后到前统一排序；`groups.json` 的包含关系和数组顺序不作为深度依据。只读 agent 结合原图、完整部件与必要的去重轮廓逐件核对；程序检查完整覆盖、重复 ID、深度顺序与漏检。候选修改后重新查看叠放预览并检查整件深度，输入 SVG 的已有观察可以复用。
+整树制作结束后先程序合并 `preview.svg`，再执行最后一步 `planOcclusion`，工作正文为 `prompts/11-遮挡层级规划.md`。大部分人体 part 使用一个 level；同动整体需要跨深度时使用 levels 的文本区域说明，不退回拆组。从后到前统一排序；`groups.json` 的包含关系和数组顺序不作为深度依据。只读 agent 结合原图、完整部件与必要的去重轮廓逐件核对；程序检查完整覆盖、重复 ID、深度顺序与漏检。候选修改后重新查看叠放预览并检查整件深度，输入 SVG 的已有观察可以复用。
 
-正式深度表为运行根目录的 `occlusion.json`，独立于 `groups.json`；包含 `version: 2`、`direction: "back-to-front"`、输入指纹 `sourceHash` 及 `layers`。每行只保存 `id`、从 0 开始的整件 `level`（越大越靠前）、依据 `note` 和逐件 `check`。`stages/occlusion/candidate.svg` 按该固定顺序直接叠放完整部件，不添加局部蒙版。深度表绑定当前树及说明、完整/去重 SVG、参考图、preview 和本步骤提示词；旧版本、缺失、损坏、不完整或输入变化只重跑最后一步，上游有效事实继续复用。没有有效深度表时整体结果为 pending，即使 preview 已存在。RGB 控制图由 raster 第一步根据完整形状和这份深度表即时生成。
+正式深度表为本管线的 `occlusion.json`，独立于 `groups.json`。新写入版本为 v3，单深度保留 `level`，多深度用 `levels: [{ level, region }]`；每个逻辑 part 一条记录，保留 `id`、`note` 和逐件 `check`，多深度还须逐区域检查。全部数值属于同一从后到前的顺序，越大越靠前，不与数组位置绑定。v2 单深度仍能读取。
+
+`stages/occlusion/candidate.svg` 每个完整 part 只叠放一次，多深度暂按最靠后数值排列；它不是精确分片预览，不能据此声称穿插已实现。实际 KRA 拆层由 raster step01 自行处理，并可通过精准工具写回此处深度表。输入指纹不因深度修正本身改变，因此不会触发上游重画；缺失、损坏或真实输入变化仍只重做最终规划。RGB 控制图仍由 raster 第一步即时生成。
 
 首次分组仍只识别直属 group；子组分析返回混合 group/part 节点描述，不替程序标记进度。子节点与当前节点的 `childrenAnalysis: { sourceHash, note? }` 一起原子写入唯一的 `groups.json`，不再生成 `stages/children/`。元数据只保存分析所依据的完成 SVG 哈希及依据，不重复存子节点、ID 列表或步骤状态。有效分析搭配空子节点表示终止；初始树的空数组本身不是终止证据。明确的 part 完成制作与检查后直接终止。
 
@@ -135,7 +137,7 @@ group 的组件覆盖按联合色块判断。踝饰等完全落在本组底形�
 
 默认入口内部调用 `prepareReferences({ image, runName }, steps)`；显式组入口调用只读的 `loadPreparedReferences(runName)`。`image` 为可选原图路径，输出位于`workflow-next/.run/<runName>/part-layering/references/`：
 
-- `original.<原扩展名>`：首次传入的原图副本，用于续跑和补齐缺失参考。
+- `../input/original.<原扩展名>`（相对本管线目录）：首次原图只保存在任务根的 input，用于续跑和补齐缺失参考。
 - `judgment.json`：参考判断结果，包含 `needsSimplification` 与 `reason`；存在则读取，不再调用判断。兼容不含 `reason` 的旧记录。
 - `simplified-subject.png`：需要简化时生成；不需要简化时直接复制原图，并保留原图扩展名。目标文件存在则跳过。
 - `base-subject.png`：以角色参考和连体服款式图为输入生成素体换装参考；存在则跳过。

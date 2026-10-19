@@ -1,3 +1,4 @@
+import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import { pipelineDirectory } from '../../shared/paths.ts';
 const runDirectory = (name: string) => pipelineDirectory(name, 'clothing-raster-layering');
 import assert from 'node:assert/strict';
@@ -18,14 +19,15 @@ const preflight = async (executable: string) => ({ executable, version: 'fixture
 async function fixture(t: TestContext) {
   const directory = await mkdtemp(join(tmpdir(), 'clothing-raster-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  const source = join(directory, 'source'), runsDirectory = join(directory, 'runs');
+  const runsDirectory = join(directory, 'runs');
+  const source = await seedUpstream('test', 'clothing-part-layering', runsDirectory);
   await mkdir(join(source, 'parts'), { recursive: true });
-  await mkdir(join(source, 'references'));
+  await mkdir(join(source, 'references'), { recursive: true });
   await writeFile(join(source, 'parts/front.svg'), 'front');
   await writeFile(join(source, 'parts/back.svg'), 'back');
   await writeFile(join(source, 'references/clothing.png'), 'clothing fixture');
   await writeFile(join(source, 'groups.json'), '{"groups":[]}');
-  return { source, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options: { name: 'test', input: source, krita: process.execPath }, deps: { runsDirectory, preflight } };
+  return { source, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options: { name: 'test', krita: process.execPath }, deps: { runsDirectory, preflight } };
 }
 async function deliver(request: AgentRequest, thread = request.threadId ?? 'drawing-1'): Promise<StepResult> {
   if (request.prompt.startsWith('你负责对第二步交付')) {
@@ -44,7 +46,7 @@ async function deliver(request: AgentRequest, thread = request.threadId ?? 'draw
 test('independent run directory, parts path normalization, and external-only provider configuration', async t => {
   const f = await fixture(t);
   assert.equal(runDirectory('test'), fileURLToPath(new URL('../../.run/test/clothing-raster-layering', import.meta.url)));
-  assert.deepEqual(await resolvePartInput(f.source), await resolvePartInput(join(f.source, 'parts')));
+  assert.equal((await resolvePartInput('test', 'clothing-part-layering', f.deps.runsDirectory)).directory, f.source);
   assert.equal(parseRunArguments(['--name', 'test']).name, 'test');
   assert.throws(() => parseRunArguments(['--name', 'test', '--provider-config', 'secret.json']), /Unknown option/);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: async () => assert.fail('dry run must not invoke Codex') });
@@ -73,7 +75,7 @@ test('two drawing stages share context; review completes before step02 marker; o
   await runWorkflow({ name: 'test' }, { ...f.deps, agent: async () => assert.fail('completed run must not invoke Codex') });
 });
 
-test('interrupted drawing resumes saved thread and input after source deletion', async t => {
+test('interrupted drawing resumes saved thread and directly reads upstream', async t => {
   const f = await fixture(t);
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
     await request.onEvent({ type: 'thread.started', thread_id: 'drawing-resume' });
@@ -81,13 +83,13 @@ test('interrupted drawing resumes saved thread and input after source deletion',
     throw new Error('interrupted');
   } }), /interrupted/);
   await readFile(join(f.output, 'step01/.running'));
-  await rm(f.source, { recursive: true });
+  await assert.rejects(readdir(join(f.output, 'input')), { code: 'ENOENT' });
   let first = true;
   await runWorkflow({ name: 'test' }, { ...f.deps, agent: async request => {
     if (first) {
       first = false;
       assert.equal(request.threadId, 'drawing-resume');
-      assert.equal(await readFile(join(f.output, 'input/references/clothing.png'), 'utf8'), 'clothing fixture');
+      assert.equal(await readFile(join(f.source, 'references/clothing.png'), 'utf8'), 'clothing fixture');
       assert.equal(await readFile(join(f.output, 'step01/partial.png'), 'utf8'), 'keep partial work');
     }
     return deliver(request);
@@ -95,7 +97,7 @@ test('interrupted drawing resumes saved thread and input after source deletion',
   assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-resume');
 });
 
-test('deleting step02 completion resets its directory and context, preserving step01 and saved input', async t => {
+test('deleting step02 completion resets its directory and context, preserving step01 and upstream artifacts', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
   const first = await readFile(join(f.output, 'step01/events.jsonl'));
@@ -114,5 +116,5 @@ test('deleting step02 completion resets its directory and context, preserving st
   assert.equal(calls, 2);
   assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-new');
   assert.deepEqual(await readFile(join(f.output, 'step01/events.jsonl')), first);
-  await readFile(join(f.output, 'input/parts/front.svg'));
+  await readFile(join(f.source, 'parts/front.svg'));
 });

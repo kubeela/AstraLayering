@@ -1,7 +1,6 @@
-import { pipelineDirectory, resolveInput } from '../shared/paths.ts';
+import { pipelineDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
 import { copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
-import { extname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { extname, join } from 'node:path';
 
 export type ReferenceJudgment = { needsSimplification: boolean; reason?: string };
 
@@ -79,7 +78,7 @@ export async function loadPreparedReferences(runName: string): Promise<Preparati
   if (!await exists(baseSubject)) missing.push(baseSubject);
   if (missing.length) throw new Error(`显式 groups 的前置参考未完成：\n${missing.join('\n')}\n请先使用默认流程完成参考准备。`);
   checkJudgment(JSON.parse(await readFile(judgment, 'utf8')));
-  return { directory, originalImage: await findImage(directory, 'original'), judgment,
+  return { directory, originalImage: await findImage(join(taskDirectory(runName), 'input'), 'original'), judgment,
     simplifiedSubject: simplifiedSubject!, baseSubject };
 }
 
@@ -90,15 +89,18 @@ export async function prepareReferences(
 ): Promise<PreparationReferences> {
   const directory = getPreparationDirectory(input.runName);
   const judgment = join(directory, 'judgment.json');
-  let image = await findImage(directory, 'original');
+  const inputDirectory = join(taskDirectory(input.runName), 'input');
+  let image = await findImage(inputDirectory, 'original');
   if (!image && input.image) {
     const source = resolveInput(input.runName, input.image);
     if (!await exists(source)) throw new Error(`Input image is missing: ${source}`);
     await mkdir(directory, { recursive: true });
-    image = join(directory, `original${extname(source) || '.png'}`);
+    await mkdir(inputDirectory, { recursive: true });
+    image = join(inputDirectory, `original${extname(source) || '.png'}`);
     await copyFile(source, image);
   }
 
+  if (image) await mkdir(directory, { recursive: true });
   let decision: unknown;
   if (await exists(judgment)) {
     decision = JSON.parse(await readFile(judgment, 'utf8'));

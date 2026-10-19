@@ -4,7 +4,7 @@ import { parseArgs } from 'node:util';
 
 export function parseRunArguments(args: string[]) {
   const { values } = parseArgs({ args, options: {
-    name: { type: 'string' }, input: { type: 'string' }, krita: { type: 'string' },
+    name: { type: 'string' }, krita: { type: 'string' },
     'dry-run': { type: 'boolean' }, 'check-krita': { type: 'boolean' },
     help: { type: 'boolean', short: 'h' },
   } });
@@ -28,7 +28,7 @@ export async function runCli(pipeline: RasterPipeline, help: string): Promise<vo
   process.once('SIGTERM', stop);
   try {
     console.log(await runWorkflow(pipeline, {
-      name: args.name!, input: args.input, krita: args.krita,
+      name: args.name!, krita: args.krita,
       dryRun: args['dry-run'], signal: controller.signal, progress: message => console.log(message),
     }));
   } finally {
