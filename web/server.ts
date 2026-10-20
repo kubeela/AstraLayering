@@ -64,6 +64,7 @@ async function api(path: string, params: URLSearchParams) {
 const files: Record<string, [string, string]> = {
   '/': ['web/index.html', 'text/html; charset=utf-8'],
   '/app.js': ['web/app.js', 'text/javascript; charset=utf-8'],
+  '/progress.js': ['web/progress.js', 'text/javascript; charset=utf-8'],
   '/styles.css': ['web/styles.css', 'text/css; charset=utf-8'],
   '/images/reference.png': ['demos/jianma/part-layering/references/simplified-subject.png', 'image/png'],
   '/images/original.jpg': ['demos/jianma/input/original.jpg', 'image/jpeg'],
