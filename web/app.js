@@ -1,4 +1,4 @@
-import { pipelineSteps, groupLayers } from './progress.js';
+import { pipelineSteps, groupLayers, groupPhases, stepArtifacts, generationExample, layerSplitExample, repairExamples } from './progress.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -28,10 +28,9 @@ async function get(path) { const response = await fetch(path); const value = awa
 const data = await get('./api/demo');
 const state = {
  page:new URLSearchParams(location.search).get('page')||'project',
- stage:3, group:'outer_robe/left_sleeve/front_sleeve_wall', expanded:new Set(['outer_robe','outer_robe/left_sleeve']),
- selectedStep:'step02', depth:-1, inspect:false, compare:false, treeSearch:'', treeOpen:false,
- openSteps:new Set(),
- preview:'composition', directory:localStorage.getItem('astra-demo-directory')||data.directory,
+ stage:3,
+ selectedStep:'step02', inspect:false, compare:false, asset:null, zoom:null, canvasLeft:0, canvasTop:0,
+ directory:localStorage.getItem('astra-demo-directory')||data.directory,
  ref:'worktree', file:'shared/tools/update_occlusion/description.md', diff:false, configFilter:'', uploaded:null,
 };
 const stages = [
@@ -47,11 +46,7 @@ if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < 
  state.selectedStep = requestedStage === 0 || requestedStage === 2 ? 'layers' : requestedStage === 4 ? 'step01' : 'step02';
 }
 const artifact = path => './artifact/'+path.split('/').map(encodeURIComponent).join('/');
-const sourceTree = () => state.stage<2?data.character.groups:data.clothing.groups;
 function flat(nodes) { return nodes.flatMap(node=>[node,...flat(node.groups||[])]); }
-function chosenGroup() { return flat(sourceTree()).find(node=>node.id===state.group)||sourceTree()[0]; }
-function treePipeline() { return state.stage<2?'part-layering':'clothing-part-layering'; }
-function groupFile() { return `${treePipeline()}/parts/${chosenGroup().id}.svg`; }
 function toast(message) { const el=document.querySelector('#toast'); el.textContent=message; el.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('visible'),4000); }
 
 function header() {
@@ -62,107 +57,152 @@ function header() {
 function pageHeading() {
  return `<div class="page-heading"><div class="task-heading"><h1>jianma</h1><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button><span class="task-status"><i class="live-dot"></i>衣服绘制中 <small>示例</small></span></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button><button class="primary" data-action="run">${icon('play')}运行流程</button></div></div>`;
 }
-function treeRows(nodes, depth=0, flatView=false) {
- return nodes.map(node=> {
-  const group=(node.groups||[]).length>0, expanded=state.expanded.has(node.id)&&!flatView;
-  const label=node.id.split('/').at(-1);
-  return `<div class="tree-row ${state.group===node.id?'selected':''}" style="--depth:${depth}" title="${esc(node.id)}">${group&&!flatView?`<button class="tree-toggle" data-expand="${esc(node.id)}" aria-label="${expanded?'收起':'展开'} ${esc(label)}" aria-expanded="${expanded}">${icon(expanded?'down':'chevron')}</button>`:'<span class="tree-toggle leaf"></span>'}<button class="tree-label" data-group="${esc(node.id)}">${icon(group?'folder':'layers')}<span>${esc(label)}</span><small>${group?node.groups.length:node.kind==='part'?'part':'group'}</small></button></div>${group&&expanded?treeRows(node.groups,depth+1):''}`;
+const archivedFiles = new Set(data.files);
+const assetLookup = new Map();
+const groupViews = Object.fromEntries([0,2].map(index=>{
+ const roots=index===0?data.character.groups:data.clothing.groups;
+ return [index,{selected:roots[0].id,depth:-1,search:'',expanded:new Set([roots[0].id])}];
+}));
+const pipelineTree = index => index===0?data.character.groups:data.clothing.groups;
+const available = items => (items||[]).filter(item=>archivedFiles.has(item.path));
+function artifacts(items, index, stepId, className='') {
+ const list=available(items);
+ if(!list.length)return '';
+ return `<div class="step-artifacts ${className}">${list.map(item=>{
+  assetLookup.set(item.path,item);
+  if(item.path.endsWith('.kra'))return `<a class="artifact-file" href="${artifact(item.path)}" target="_blank" rel="noopener">${icon('layers')}${esc(item.label)} ${icon('arrow')}</a>`;
+  return `<button class="${item.kind==='image'?'artifact-image':'artifact-file'}" data-asset="${esc(item.path)}" data-asset-stage="${index}" data-asset-step="${stepId}" title="${esc(item.path)}">${item.kind==='image'?`<img src="${artifact(item.path)}" alt="${esc(item.label)}">`:icon('file')}<span>${esc(item.label)}</span>${item.kind==='file'?icon('chevron'):''}</button>`;
+ }).join('')}</div>`;
+}
+function inlineTreeRows(nodes,index,depth=0,flatView=false) {
+ const view=groupViews[index];
+ return nodes.map(node=>{
+  const branch=!!node.groups?.length,open=branch&&view.expanded.has(node.id)&&!flatView;
+  return `<div class="tree-row ${view.selected===node.id?'selected':''}" style="--depth:${depth}" title="${esc(node.id)}">${branch&&!flatView?`<button class="tree-toggle" data-tree-expand="${esc(node.id)}" data-tree-stage="${index}" aria-label="${open?'收起':'展开'} ${esc(node.id)}" aria-expanded="${open}">${icon(open?'down':'chevron')}</button>`:'<span class="tree-toggle"></span>'}<button class="tree-label" data-tree-group="${esc(node.id)}" data-tree-stage="${index}">${icon(branch?'folder':'layers')}<span>${esc(node.id.split('/').at(-1))}</span><small>${branch?node.groups.length:node.kind}</small></button></div>${open?inlineTreeRows(node.groups,index,depth+1):''}`;
  }).join('');
 }
-function artifactTree() {
- const layers=groupLayers(sourceTree());
- const term=state.treeSearch.toLowerCase();
- const nodes=state.depth>=0?layers[state.depth]||[]:term?flat(sourceTree()):sourceTree();
- const filtered=term?nodes.filter(node=>node.id.toLowerCase().includes(term)):nodes;
- const rows=state.depth>=0||term?treeRows(filtered,0,true):treeRows(filtered);
- return `<details class="artifact-tree" ${state.treeOpen?'open':''}><summary>${icon('branch')}部件结构 <small>${flat(sourceTree()).filter(g=>g.kind==='part').length} parts</small>${icon('down')}</summary>
- <div class="tree-controls"><select id="tree-depth" aria-label="按拆分树深度查看"><option value="-1">完整层级</option>${layers.map((nodes,i)=>`<option value="${i}" ${state.depth===i?'selected':''}>第 ${i+1} 层 · ${nodes.length} 个节点</option>`).join('')}</select><button class="icon-button" data-action="expand-tree" title="展开全部层级">${icon('expand')}</button></div>
- <div class="tree-search">${icon('search')}<input id="tree-search" value="${esc(state.treeSearch)}" placeholder="查找 group / part" aria-label="搜索部件"></div><div class="tree-scroll" id="tree-rows">${rows||'<p class="empty-tree">没有匹配的部件</p>'}</div>
- <p class="tree-note">树深度表示拆分层次，与遮挡高度不同。<a href="${artifact(treePipeline()+'/groups.json')}" target="_blank" rel="noopener">groups.json ${icon('arrow')}</a></p></details>`;
+function groupCycle(index) {
+ const roots=pipelineTree(index), view=groupViews[index], layers=groupLayers(roots), all=flat(roots);
+ const group=all.find(node=>node.id===view.selected)||roots[0];
+ const prefix=stages[index].id;
+ const phaseFiles={
+  outline:[{path:`${prefix}/stages/outline/${group.id}.svg`,label:'轮廓 SVG',kind:'image'}],
+  review:[{path:`${prefix}/stages/review/${group.id}.review.json`,label:'复核记录',kind:'file'}],
+  reduction:[{path:`${prefix}/stages/outline-reduce/${group.id}.svg`,label:'去重后 SVG',kind:'image'}],
+  completion:[{path:`${prefix}/parts/${group.id}.svg`,label:'补全后 SVG',kind:'image'},
+    {path:`${prefix}/stages/completion-inputs/${group.id}.json`,label:'补全输入记录',kind:'file'}],
+  completionCheck:[{path:`${prefix}/stages/completion-check/${group.id}.json`,label:'检查记录',kind:'file'}],
+ };
+ const candidates=view.depth>=0?layers[view.depth]||[]:view.search?all:roots;
+ const nodes=view.search?candidates.filter(node=>node.id.toLowerCase().includes(view.search.toLowerCase())):candidates;
+ return `<div class="group-cycle" data-cycle="${index}"><p class="cycle-rule">每层轮廓与复核齐备 → 同层去重 → 补全、检查、直属拆分 → 下一层</p>
+ <div class="cycle-context"><span>当前查看</span><b title="${esc(group.id)}">${esc(group.id.split('/').at(-1))}</b><small>真实归档</small></div>
+ <div class="cycle-phases">${groupPhases.map(([id,label],i)=>`<div class="cycle-phase" data-phase="${index}:${id}"><button data-step="${index}:${id}"><span class="cycle-number">${i+1}</span>${esc(label)}${id==='children'&&!group.groups?.length?'':statusMark('done')}</button>${artifacts(phaseFiles[id],index,id,'phase-artifacts')}${id==='children'?`<span class="phase-explanation">${group.groups?.length?group.groups.length+' 个直属节点':'终止 part，不再拆分'}</span>`:!available(phaseFiles[id]).length?'<span class="phase-explanation">本步骤产物未收录</span>':''}</div>`).join('')}</div>
+ <div class="inline-tree"><div class="inline-tree-heading">${icon('branch')}实际 group / part 树<small>${all.length} 个节点</small></div>
+ <div class="tree-controls"><select data-tree-depth="${index}" aria-label="${stages[index].name}拆分树深度"><option value="-1">完整层级</option>${layers.map((nodes,i)=>`<option value="${i}" ${view.depth===i?'selected':''}>第 ${i+1} 层 · ${nodes.length} 个节点</option>`).join('')}</select><button class="icon-button" data-expand-all="${index}" title="展开全部层级">${icon('expand')}</button></div>
+ <div class="tree-search">${icon('search')}<input data-tree-search="${index}" aria-label="搜索${stages[index].name}部件" placeholder="搜索部件" value="${esc(view.search)}"></div>
+ <div class="inline-tree-rows" data-tree-scroll="${index}">${inlineTreeRows(nodes,index,0,view.depth>=0||!!view.search)||'<p class="empty-tree">没有匹配的部件</p>'}</div>
+ <p class="tree-note">选择部件，上方六个环节切换到它的实际产物。树深度与遮挡高度分别记录。</p>
+ ${artifacts([{path:`${prefix}/groups.json`,label:'完整 groups.json',kind:'file'}],index,'layers')}
+ </div></div>`;
 }
 const statusNames = { done:'已完成', running:'进行中', pending:'待执行' };
 function statusMark(status) {
  return `<span class="phase-mark ${status}" title="${statusNames[status]}" aria-label="${statusNames[status]}">${status==='done'?icon('check'):status==='running'?'<i></i>':icon('clock')}</span>`;
 }
-function stepRows(stageIndex, nodes=pipelineSteps[stageIndex], nested=false) {
- return nodes.map(step=> {
-  const key=stageIndex+':'+step.id, open=state.openSteps.has(key);
-  return `<div class="phase-item ${nested?'nested':''}"><div class="phase-row ${step.status} ${state.inspect&&state.stage===stageIndex&&state.selectedStep===step.id?'selected':''}">
-   <button class="phase-select" data-step="${stageIndex}:${step.id}">${statusMark(step.status)}<span>${esc(step.title)}</span>${step.id.startsWith('step')?`<small>${esc(step.id)}</small>`:''}</button>
-   ${step.children.length?`<button class="phase-toggle" data-step-toggle="${key}" aria-label="${open?'收起':'展开'}${esc(step.title)}" aria-expanded="${open}">${icon(open?'down':'chevron')}</button>`:''}</div>
-   ${open&&step.children.length?`<div class="phase-children">${stepRows(stageIndex,step.children,true)}</div>`:''}</div>`;
- }).join('');
-}
 function selectedStep() {
  const all=nodes=>nodes.flatMap(node=>[node,...all(node.children)]);
  return all(pipelineSteps[state.stage]).find(step=>step.id===state.selectedStep)||pipelineSteps[state.stage][0];
 }
+function stepNode(index,step,nested=false) {
+ const selected=state.inspect&&state.stage===index&&state.selectedStep===step.id;
+ const context=step.id==='layers'?groupCycle(index):step.children.length?`<div class="step-children">${step.children.map(child=>stepNode(index,child,true)).join('')}</div>`:'';
+ return `<section class="step-node ${nested?'nested':''} ${step.children.length?'step-container':''} ${step.status} ${selected?'selected':''}" data-node="${index}:${step.id}">
+ <button class="step-node-heading" data-step="${index}:${step.id}">${statusMark(step.status)}<h3>${esc(step.title)}</h3>${step.id.startsWith('step')?`<small>${step.id}</small>`:''}</button>
+ ${step.note&&step.id!=='layers'?`<p class="step-summary">${esc(step.note)}</p>`:''}
+ ${step.id==='standard'?'<p class="archive-gap">按需调整；此历史归档未收录 standard.png。</p>':''}
+ ${context}
+ ${index===3&&step.id==='step01'?`<div class="process-example"><h4>前襟生图示例</h4>${artifacts(generationExample,index,step.id,'image-sequence')}<p>灰底输入 + RGB 控制 → 生成候选 → 配准、拼装</p>${artifacts(layerSplitExample,index,step.id,'image-sequence')}</div>`:''}
+ ${artifacts(stepArtifacts[index][step.id],index,step.id)}
+ ${index===3&&step.id==='step02'?`<div class="process-example"><h4>局部修画对照</h4>${artifacts(repairExamples,index,step.id,'image-sequence')}</div>`:''}
+ </section>`;
+}
 function flowCard(index) {
  const stage=stages[index];
- return `<article class="flow-card ${stage.status} ${state.inspect&&state.stage===index?'selected':''}" data-pipeline="${index}">
- <button class="node-heading" data-stage="${index}" aria-label="查看${stage.name}产物" aria-pressed="${state.inspect&&state.stage===index}"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(stage.status)}</button>
- <div class="node-body"><div class="node-steps">${stepRows(index)}</div>
- <button class="node-output" data-stage="${index}" aria-label="查看${stage.name}归档产物"><img src="${stage.image}" alt="${stage.name}归档缩略图"><span><b>${index===0?'88 个部件':index===2?'67 个部件':index===4?'穿戴合成':'分层 KRA'}</b><small>${index===0||index===2?'SVG · groups · 深度':'KRA · PNG'}</small></span>${icon('chevron')}</button></div></article>`;
+ return `<section class="pipeline-lane ${stage.status}" data-pipeline="${index}"><button class="pipeline-heading" data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(stage.status)}</button><div class="pipeline-steps">${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}</div></section>`;
 }
 function inspector() {
- const stage=stages[state.stage], step=selectedStep(), isPart=state.preview==='part';
- const group=chosenGroup();
- const imagePath=isPart?artifact(groupFile()):stage.image;
- const parent=pipelineSteps[state.stage].find(node=>node.children.some(child=>child.id===step.id));
- const note=step.note||parent?.note||'';
- return `<aside class="output-inspector" aria-label="所选节点产物"><header class="output-heading"><div><small>${esc(stage.name)}</small><h2>${esc(isPart?group.id.split('/').at(-1):step.title)}</h2></div><button class="icon-button" data-action="close-inspector" aria-label="关闭产物面板">${icon('close')}</button></header>
- <div class="output-scroll">${note&&!isPart?`<p class="step-note">${esc(note)}</p>`:''}
- <div class="output-caption"><span>${isPart?'分块 SVG':'管线归档产物'}</span>${isPart?'<button data-action="stage-output">返回管线产物</button>':`<label><input type="checkbox" id="compare-reference" ${state.compare?'checked':''}>对照参考</label>`}</div>
- <div class="output-image ${state.compare&&!isPart?'compare':''}">${state.compare&&!isPart?'<figure><img src="./images/reference.png" alt="简化角色参考"><figcaption>简化角色参考</figcaption></figure>':''}<figure><a href="${imagePath}" target="_blank" rel="noopener" title="打开原尺寸"><img src="${imagePath}" alt="${esc(isPart?group.id+' 分块 SVG':stage.name+'归档产物')}"></a><figcaption>${isPart?'原始画布 · SVG':'jianma 归档 · 点击看原图'}</figcaption></figure></div>
- ${isPart?`<code class="group-path">${esc(group.id)}</code><details class="group-description"><summary>部件说明</summary><p class="group-note">${esc(group.note||'')}</p></details>`:`<div class="output-files"><a href="${artifact(stage.file)}" target="_blank" rel="noopener">${icon(stage.file.endsWith('.kra')?'layers':'code')}<span>${esc(stage.file.split('/').at(-1))}</span>${icon('arrow')}</a></div><p class="archive-note">产物来自完整归档；图中的运行状态仅为演示。</p>`}
- ${state.stage!==4?artifactTree():''}</div>
+ const stage=stages[state.stage],step=selectedStep(),item=state.asset;
+ const image=item?.kind==='image';
+ return `<aside class="output-inspector" aria-label="产物放大查看"><header class="output-heading"><div><small>${esc(stage.name)} · ${esc(step.title)}</small><h2>${esc(item?.label||step.title)}</h2></div><button class="icon-button" data-action="close-inspector" aria-label="关闭产物面板">${icon('close')}</button></header><div class="output-scroll">
+ ${image?`<div class="output-caption"><span>真实归档产物</span><label><input type="checkbox" id="compare-reference" ${state.compare?'checked':''}>对照参考</label></div><div class="output-image ${state.compare?'compare':''}">${state.compare?'<figure><img src="./images/reference.png" alt="简化角色参考"><figcaption>简化角色参考</figcaption></figure>':''}<figure><a href="${artifact(item.path)}" target="_blank" rel="noopener"><img src="${artifact(item.path)}" alt="${esc(item.label)}"></a><figcaption>点击打开原尺寸</figcaption></figure></div>`:item?`<pre class="artifact-text">${esc(item.text??'正在读取…')}</pre>`:`<p class="step-note">${esc(step.note||'此步骤的过程和已归档产物直接展示在画布中。')}</p>`}
+ ${item?`<a class="artifact-source" href="${artifact(item.path)}" target="_blank" rel="noopener">${esc(item.path)} ${icon('arrow')}</a>`:''}</div>
  <footer class="output-footer"><button class="button" data-action="single">${icon('play')}运行 / 恢复${esc(stage.name)}</button></footer></aside>`;
 }
 function graph() {
- return `${pageHeading()}<section class="workflow-shell ${state.inspect?'has-inspector':''}"><div class="flow-area"><div class="flow-toolbar"><span>从参考图到完整分层</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span></div></div>
- <div class="flow-scroll"><div class="flow-world"><svg class="flow-connectors" aria-hidden="true"></svg>
- <div class="flow-input"><a href="./images/original.jpg" target="_blank" rel="noopener"><img src="./images/original.jpg" alt="原始输入图"></a><span><b>输入角色图</b><small>original → standard</small></span></div>
- <div class="flow-grid">${stages.map((_,i)=>flowCard(i)).join('')}</div></div></div>
- <footer class="flow-footnote">按 01 → 05 顺序执行 · 连线表示产物依赖 · 点节点看产物，展开看子步骤</footer></div>${state.inspect?inspector():''}</section>`;
+ return `${pageHeading()}<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><span>完整流程 · 中间步骤与产物</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span></div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合宽度</button></div></div>
+ <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，可滚动和平移"><div class="flow-size"><div class="flow-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input"><a href="./images/original.jpg" target="_blank" rel="noopener"><img src="./images/original.jpg" alt="原始输入图"></a><span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,i)=>flowCard(i)).join('')}</div></div></div></div>
+ <footer class="flow-footnote">按 01 → 05 顺序执行 · 连线表示依赖 · 拖动空白处或滚动查看，缩放保留全部细节 · 产物真实，执行状态为示例</footer></div>${state.inspect?inspector():''}</section>`;
 }
-
-// Connections follow the actual card bounds, including expanded substeps.
 let flowObserver;
 function connectFlow() {
  const world=document.querySelector('.flow-world');
  if(!world)return;
- const svg=world.querySelector('.flow-connectors');
+ const viewport=document.querySelector('.flow-scroll');
+ state.zoom??=Math.min(1,Math.max(.65,(viewport.clientWidth-8)/world.offsetWidth));
+ world.style.transform=`scale(${state.zoom})`;
+ const size=document.querySelector('.flow-size');
+ size.style.width=`${world.offsetWidth*state.zoom}px`;size.style.height=`${world.offsetHeight*state.zoom}px`;
+ document.querySelector('#zoom-label').textContent=Math.round(state.zoom*100)+'%';
  const bounds=world.getBoundingClientRect();
- const box=selector=>{
-  const r=world.querySelector(selector).getBoundingClientRect();
-  return {x:r.left-bounds.left,y:r.top-bounds.top,w:r.width,h:r.height};
- };
- const input=box('.flow-input'), cards=stages.map((_,i)=>box(`[data-pipeline="${i}"]`));
- const paths=[];
+ const box=selector=>{const r=world.querySelector(selector).getBoundingClientRect();return {x:(r.left-bounds.left)/state.zoom,y:(r.top-bounds.top)/state.zoom,w:r.width/state.zoom,h:r.height/state.zoom};};
+ const input=box('.flow-input'),cards=stages.map((_,i)=>box(`[data-pipeline="${i}"] .pipeline-heading`));
+ const svg=world.querySelector('.flow-connectors'),paths=[];
  const path=(d,label,x,y,status='done')=>paths.push(`<path class="${status}" d="${d}" marker-end="url(#flow-arrow-${status})"/>${label?`<text x="${x}" y="${y}">${label}</text>`:''}`);
- const [human,body,clothes,raster,assembly]=cards;
- path(`M${input.x+input.w/2} ${input.y+input.h} V${human.y-6}`,'',0,0);
- for(const [a,b] of [[human,body],[clothes,raster]]) {
-  const y=a.y+29;
-  path(`M${a.x+a.w} ${y} H${b.x-6}`,'parts',(a.x+a.w+b.x)/2,y-9);
+ path(`M${input.x+input.w/2} ${input.y+input.h} V${cards[0].y-6}`,'',0,0);
+ for(const [a,b,label,status] of [[cards[0],cards[1],'parts','done'],[cards[2],cards[3],'parts','done'],[cards[3],cards[4],'衣服 KRA','pending']]){
+  const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,label,(a.x+a.w+b.x)/2,y-10,status);
  }
- const x=human.x+human.w/2, y=(human.y+human.h+clothes.y)/2;
- path(`M${x} ${human.y+human.h} V${clothes.y-6}`,'简化角色图',x+44,y+4);
- for(const [a,offset,label,status] of [[body,-24,'人物 KRA','pending'],[raster,24,'衣服 KRA','pending']]) {
-  const ax=a.x+a.w, ay=a.y+a.h/2, endY=assembly.y+assembly.h/2+offset, mid=(ax+assembly.x)/2;
-  path(`M${ax} ${ay} H${mid} V${endY} H${assembly.x-6}`,label,mid,ay-10,status);
+ for(const [a,b,y,label,status] of [[cards[0],cards[2],106,'简化角色参考','done'],[cards[1],cards[4],54,'人物素体 KRA','pending']]){
+  const x1=a.x+a.w*.72,x2=b.x+b.w*.45;
+  path(`M${x1} ${a.y} V${y} H${x2} V${b.y-6}`,label,(x1+x2)/2,y-10,status);
  }
- svg.setAttribute('viewBox',`0 0 ${world.clientWidth} ${world.clientHeight}`);
+ svg.setAttribute('viewBox',`0 0 ${world.offsetWidth} ${world.offsetHeight}`);
  svg.innerHTML=`<defs>${['done','pending'].map(status=>`<marker id="flow-arrow-${status}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 6 3 0 6" fill="${status==='done'?'#86b7a8':'#a7b3c0'}"/></marker>`).join('')}</defs>${paths.join('')}`;
 }
-let versions, configFiles=[], configText='', schemaText='', diffText='';
+function zoomCanvas(value,fit=false) {
+ const viewport=document.querySelector('.flow-scroll'),previous=state.zoom;
+ const centerX=viewport.scrollLeft+viewport.clientWidth/2,centerY=viewport.scrollTop+viewport.clientHeight/2;
+ state.zoom=Math.min(1.5,Math.max(.4,value));connectFlow();
+ viewport.scrollLeft=fit?0:centerX*state.zoom/previous-viewport.clientWidth/2;
+ viewport.scrollTop=fit?0:centerY*state.zoom/previous-viewport.clientHeight/2;
+}
+async function openAsset(item,index,stepId) {
+ state.stage=index;state.selectedStep=stepId;state.inspect=true;state.asset={...item};
+ const selected=state.asset;render();
+ if(item.kind==='file') {
+  try{const response=await fetch(artifact(item.path));if(!response.ok)throw new Error('无法读取归档产物');selected.text=await response.text();}
+  catch(error){selected.text=error.message;}
+  if(state.asset===selected&&state.inspect)render();
+ }
+}
+let versions, configFiles=[], configText='', schemaText='', diffText='', configBusy=false;
+function setConfigBusy(busy) {
+ configBusy=busy;
+ document.querySelectorAll('.version-bar input,.version-bar select,.config-workspace button,.config-workspace input,[data-action=history]').forEach(node=>{node.disabled=busy;});
+}
+async function refreshConfigFile() {
+ setConfigBusy(true);
+ try {await loadConfigFile();render();} catch(error) {toast(error.message);} finally {setConfigBusy(false);}
+}
 async function loadConfig() {
+ setConfigBusy(true);
  try {
   versions=await get('./api/config/versions?ref='+encodeURIComponent(state.ref));
   const snapshot=await get('./api/config/files?ref='+encodeURIComponent(state.ref)); configFiles=snapshot.paths;
   if(!configFiles.includes(state.file)) state.file=configFiles[0]||'';
   await loadConfigFile();
- } catch(error) { toast(error.message); }
+ } catch(error) { toast(error.message); } finally {setConfigBusy(false);}
 }
 async function loadConfigFile() {
  if(!state.file) {configText='这个版本没有可浏览的管线配置。';schemaText='';return;}
@@ -214,13 +254,17 @@ function configPage() {
  <div class="config-content-footer">${icon('info')}description 与 schema 来自同一版本；预览不会影响正在运行的 agent。</div></section></div>`;
 }
 function render() {
+ const previous=document.querySelector('.flow-scroll');
+ if(previous){state.canvasLeft=previous.scrollLeft;state.canvasTop=previous.scrollTop;}
+ const treeScroll=Object.fromEntries([...document.querySelectorAll('[data-tree-scroll]')].map(node=>[node.dataset.treeScroll,node.scrollTop]));
  flowObserver?.disconnect();
  document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':''}">${state.page==='config'?configPage():graph()}</main>`;
- bind();
+ bind();setConfigBusy(configBusy);
  if(state.page==='project') {
   connectFlow();
-  flowObserver=new ResizeObserver(connectFlow);
-  document.querySelectorAll('.flow-world,.flow-card').forEach(node=>flowObserver.observe(node));
+  const viewport=document.querySelector('.flow-scroll');viewport.scrollLeft=state.canvasLeft;viewport.scrollTop=state.canvasTop;
+  document.querySelectorAll('[data-tree-scroll]').forEach(node=>{node.scrollTop=treeScroll[node.dataset.treeScroll]||0;});
+  flowObserver=new ResizeObserver(connectFlow);flowObserver.observe(document.querySelector('.flow-world'));
  }
 }
 function showNew(single=false) {
@@ -241,21 +285,21 @@ function showHistory() {
  const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>提交历史</h2><p>选择一次提交，浏览当时的管线配置。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><div class="commit-list">${(versions?.commits||[]).map((c,i)=>`<button data-commit="${c.sha}"><span class="commit-node">${icon('branch')}</span><div><b>${esc(c.title)}</b><small>${c.short}${i===0?' · 当前分支最新提交':''}</small></div>${icon('chevron')}</button>`).join('')}</div>`;dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelectorAll('[data-commit]').forEach(b=>b.onclick=async()=>{state.ref=b.dataset.commit;dialog.close();await loadConfig();render();});
 }
 function selectStage(index) {
- if(state.stage!==index) {
-  state.stage=index; state.depth=-1; state.treeSearch='';
-  state.selectedStep=index===0||index===2?'layers':index===4?'step01':'step02';
-  state.group=sourceTree()[0].id;state.expanded=new Set([state.group]);
- }
- state.inspect=true; state.preview='composition';
- state.treeOpen=index===0||index===2;
+ const stepId=index===0||index===2?'merge':index===1?'step03':index===3?'step02':'step01';
+ const item=available(stepArtifacts[index][stepId])[0];
+ if(item)openAsset(item,index,stepId);
+ else{state.stage=index;state.selectedStep=stepId;state.asset=null;state.inspect=true;render();}
 }
 function bind() {
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;if(state.page==='config')await loadConfig();render();});
- document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>{selectStage(Number(b.dataset.stage));render();});
- document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const [stage,step]=b.dataset.step.split(':');selectStage(Number(stage));state.selectedStep=step;render();});
- document.querySelectorAll('[data-step-toggle]').forEach(b=>b.onclick=()=>{const key=b.dataset.stepToggle;state.openSteps.has(key)?state.openSteps.delete(key):state.openSteps.add(key);render();});
- document.querySelectorAll('[data-expand]').forEach(b=>b.onclick=()=>{const id=b.dataset.expand;state.expanded.has(id)?state.expanded.delete(id):state.expanded.add(id);render();});
- document.querySelectorAll('[data-group]').forEach(b=>b.onclick=()=>{state.group=b.dataset.group;state.preview='part';render();});
+ document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>selectStage(Number(b.dataset.stage)));
+ document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const [index,step]=b.dataset.step.split(':'),i=Number(index);const item=available(stepArtifacts[i][step])[0];if(item)openAsset(item,i,step);else{state.stage=i;state.selectedStep=step;state.asset=null;state.inspect=true;render();}});
+ document.querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>openAsset(assetLookup.get(b.dataset.asset),Number(b.dataset.assetStage),b.dataset.assetStep));
+ document.querySelectorAll('[data-tree-group]').forEach(b=>b.onclick=()=>{groupViews[b.dataset.treeStage].selected=b.dataset.treeGroup;render();});
+ document.querySelectorAll('[data-tree-expand]').forEach(b=>b.onclick=()=>{const view=groupViews[b.dataset.treeStage],id=b.dataset.treeExpand;view.expanded.has(id)?view.expanded.delete(id):view.expanded.add(id);render();});
+ document.querySelectorAll('[data-expand-all]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.expandAll),view=groupViews[i];view.depth=-1;view.search='';view.expanded=new Set(flat(pipelineTree(i)).filter(node=>node.groups?.length).map(node=>node.id));render();});
+ document.querySelectorAll('[data-tree-depth]').forEach(select=>select.onchange=()=>{groupViews[select.dataset.treeDepth].depth=Number(select.value);render();});
+ document.querySelectorAll('[data-tree-search]').forEach(input=>input.oninput=()=>{const i=input.dataset.treeSearch,position=input.selectionStart;groupViews[i].search=input.value;render();const next=document.querySelector(`[data-tree-search="${i}"]`);next.focus({preventScroll:true});next.setSelectionRange(position,position);});
  document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=> {
   const action=b.dataset.action;
   if(action==='new'||action==='run')showNew();
@@ -263,21 +307,23 @@ function bind() {
   else if(action==='directory')showDirectory();
   else if(action==='history')showHistory();
   else if(action==='close-inspector'){state.inspect=false;render();}
-  else if(action==='stage-output'){state.preview='composition';render();}
-  else if(action==='expand-tree'){state.depth=-1;state.treeSearch='';state.expanded=new Set(flat(sourceTree()).filter(g=>g.groups?.length).map(g=>g.id));render();}
+  else if(action==='zoom-in')zoomCanvas(state.zoom+.1);
+  else if(action==='zoom-out')zoomCanvas(state.zoom-.1);
+  else if(action==='zoom-reset')zoomCanvas(1);
+  else if(action==='zoom-fit')zoomCanvas(Math.min(1,(document.querySelector('.flow-scroll').clientWidth-8)/document.querySelector('.flow-world').offsetWidth),true);
  });
- const tree=document.querySelector('.artifact-tree');if(tree)tree.ontoggle=()=>{state.treeOpen=tree.open;};
- const depth=document.querySelector('#tree-depth');if(depth)depth.onchange=()=>{state.depth=Number(depth.value);render();};
  const compare=document.querySelector('#compare-reference');if(compare)compare.onchange=()=>{state.compare=compare.checked;render();};
- const search=document.querySelector('#tree-search');if(search)search.oninput=()=>{
-  state.treeSearch=search.value;const cursor=search.selectionStart;render();
-  const next=document.querySelector('#tree-search');next.focus();next.setSelectionRange(cursor,cursor);
- };
- document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await loadConfigFile();render();});
+ const viewport=document.querySelector('.flow-scroll');if(viewport){
+  let drag;
+  viewport.onpointerdown=e=>{if(e.button!==0||e.pointerType==='touch'||e.target.closest('button,a,input,select,.inline-tree-rows'))return;drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(e.pointerId);viewport.classList.add('panning');};
+  viewport.onpointermove=e=>{if(drag){viewport.scrollLeft=drag.left+drag.x-e.clientX;viewport.scrollTop=drag.top+drag.y-e.clientY;}};
+  const end=()=>{drag=null;viewport.classList.remove('panning');};viewport.onpointerup=end;viewport.onpointercancel=end;
+ }
+ document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await refreshConfigFile();});
  const source=document.querySelector('#config-ref');if(source)source.onchange=async()=>{state.ref=source.value;state.base=undefined;await loadConfig();render();};
- const diff=document.querySelector('#config-diff');if(diff)diff.onchange=async()=>{state.diff=diff.checked;state.base=document.querySelector('#config-base').value;await loadConfigFile();render();};
- const base=document.querySelector('#config-base');if(base)base.onchange=async()=>{state.base=base.value;if(state.diff){await loadConfigFile();render();}};
- const filter=document.querySelector('#config-search');if(filter)filter.oninput=()=>{state.configFilter=filter.value;document.querySelector('.config-tree-scroll').innerHTML=configTree();document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await loadConfigFile();render();});};
+ const diff=document.querySelector('#config-diff');if(diff)diff.onchange=async()=>{state.diff=diff.checked;state.base=document.querySelector('#config-base').value;await refreshConfigFile();};
+ const base=document.querySelector('#config-base');if(base)base.onchange=async()=>{state.base=base.value;if(state.diff){await refreshConfigFile();}};
+ const filter=document.querySelector('#config-search');if(filter)filter.oninput=()=>{state.configFilter=filter.value;document.querySelector('.config-tree-scroll').innerHTML=configTree();document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await refreshConfigFile();});};
 }
 if(state.page==='config')await loadConfig();
 render();

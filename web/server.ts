@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -15,6 +15,9 @@ const git = async (...args: string[]) => (await promisify(execFile)('git', args,
 const configRoots = ['.agents/skills/live2d-maker', 'workflow-next'];
 const isConfig = (path: string) => /(^|\/)(prompts|templates)\/.*\.md$/.test(path)
   || /(^|\/)tools\/.*\/(description\.md|schema\.json)$/.test(path) || path === 'SKILL.md';
+// Inventory the archive, so intermediate previews never link to invented artifacts.
+const archiveFiles = readdir(resolve(root, 'demos/jianma'), { recursive: true })
+  .then(paths => paths.filter(path => /\.(png|jpg|svg|json|md|kra)$/.test(path)).sort());
 async function revision(ref: string): Promise<string> {
   if (!ref || ref.startsWith('-') || ref.includes('\0')) throw new Error('无效的版本');
   return (await git('rev-parse', '--verify', ref + '^{commit}')).trim();
@@ -33,7 +36,7 @@ async function api(path: string, params: URLSearchParams) {
   if (path === '/api/demo') {
     const groups = await Promise.all(['part-layering', 'clothing-part-layering'].map(async id =>
       JSON.parse(await readFile(resolve(root, 'demos/jianma', id, 'groups.json'), 'utf8'))));
-    return { directory: resolve(root, '.run'), character: groups[0], clothing: groups[1] };
+    return { directory: resolve(root, '.run'), character: groups[0], clothing: groups[1], files: await archiveFiles };
   }
   if (path === '/api/config/versions') {
     const branches = (await git('for-each-ref', '--format=%(refname:short)', 'refs/heads', 'refs/remotes')).trim().split('\n')
