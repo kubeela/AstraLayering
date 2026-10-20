@@ -9,7 +9,8 @@ const step = (id, title, status, children = [], note = '') => ({ id, title, stat
 const partSteps = clothing => [
   step('preparation', '准备参考', 'done', clothing
     ? [step('clothing', '提取纯衣服参考', 'done')]
-    : [step('standard', '标准参考 · 按需调整姿态', 'done'),
+    : [step('standard', '标准参考 · 按需调整姿态', 'done', [],
+        '未启用 --standard 时将原图保存为 standard.png；启用后先判断姿态，符合则复制，否则调整。之后进入参考判断与简化。'),
       step('simplified', '判断并简化角色', 'done'), step('base', '生成素体参考', 'done')]),
   step('initial', '首次分组', 'done'),
   step('layers', '逐层拆分', 'done', groupPhases.map(([id, title]) => step(id, title, 'done')),
@@ -60,6 +61,7 @@ const rasterDelivery = (pipeline, stepId, png, kra) => [
 export const stepArtifacts = [
   {
     preparation: [file('part-layering/references/judgment.json', '参考判断记录')],
+    standard: [image('part-layering/references/standard.png', '标准参考 · standard.png')],
     simplified: [image('part-layering/references/simplified-subject.png', '简化角色')],
     base: [image('part-layering/references/base-subject.png', '素体参考')],
     merge: [image('part-layering/preview.svg', '分块合成 SVG')],

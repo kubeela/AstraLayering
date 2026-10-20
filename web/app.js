@@ -120,7 +120,7 @@ function stepNode(index,step,nested=false) {
  return `<section class="step-node ${nested?'nested':''} ${step.children.length?'step-container':''} ${step.status} ${selected?'selected':''}" data-node="${index}:${step.id}">
  <button class="step-node-heading" data-step="${index}:${step.id}">${statusMark(step.status)}<h3>${esc(step.title)}</h3>${step.id.startsWith('step')?`<small>${step.id}</small>`:''}</button>
  ${step.note&&step.id!=='layers'?`<p class="step-summary">${esc(step.note)}</p>`:''}
- ${step.id==='standard'?'<p class="archive-gap">按需调整；此历史归档未收录 standard.png。</p>':''}
+ ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap">旧示例暂无 standard.png；保留此步骤，有产物时展示。</p>':''}
  ${context}
  ${index===3&&step.id==='step01'?`<div class="process-example"><h4>前襟生图示例</h4>${artifacts(generationExample,index,step.id,'image-sequence')}<p>灰底输入 + RGB 控制 → 生成候选 → 配准、拼装</p>${artifacts(layerSplitExample,index,step.id,'image-sequence')}</div>`:''}
  ${artifacts(stepArtifacts[index][step.id],index,step.id)}
