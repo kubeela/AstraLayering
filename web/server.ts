@@ -2,7 +2,7 @@ import { createServer, type IncomingMessage } from 'node:http';
 import { readFile, readdir, mkdir, lstat, rm, writeFile, realpath } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { extname, resolve, join, isAbsolute } from 'node:path';
+import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
@@ -11,6 +11,9 @@ import { configAPI } from './config.ts';
 import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
 import { launch } from './worker.ts';
+import { LayerCompositor } from './layer-compositor.ts';
+import { studioProject } from './studio-project.ts';
+import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const maxBytes = 32 * 1024 * 1024;
@@ -65,7 +68,8 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
     await safePath(dir, name);
     return path;
   }
-  return createServer(async (request, response) => {
+  const compositor = new LayerCompositor(root);
+  const server = createServer(async (request, response) => {
     const url = new URL(request.url ?? '/', 'http://localhost'), path = url.pathname;
     const requestDir = settings.directory;
     response.setHeader('Cache-Control', 'no-store');
@@ -79,12 +83,29 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if ((origin && new URL(origin).host !== request.headers.host) || request.headers['sec-fetch-site'] === 'cross-site') {
           json({ error: '不接受跨站运行操作' }, 403); return;
         }
+        if (path.startsWith('/api/studio/layers/')) {
+          if (path === '/api/studio/layers/open') {
+            const document = await compositor.create(request, url.searchParams.get('format') ?? '');
+            if (response.destroyed) { await compositor.closeDocument(document.session); return; }
+            response.once('close', () => {
+              if (!response.writableFinished) void compositor.closeDocument(document.session).catch(() => {});
+            });
+            json(document, 201); return;
+          }
+          const value = await body(request);
+          if (path.endsWith('/edit')) json(await compositor.edit(value));
+          else if (path.endsWith('/export')) json(await compositor.export(value));
+          else if (path.endsWith('/close')) json(await compositor.closeDocument(value.session));
+          else json({ error: 'Not found' }, 404);
+          return;
+        }
         const value = await body(request);
         if (value.dir !== requestDir) { json({ error: '追踪目录已改变，请刷新页面后重试' }, 409); return; }
         if (path === '/api/settings') {
           const next = { directory: await validateDir(value.directory) };
           await atomicJSON(settingsPath, next); settings = next; json(settings); return;
         }
+        if (path === '/api/studio/review') { json(await saveStudioReview(root, dirname(settingsPath), value), 201); return; }
         const opts = options(value, requestDir), directory = directoryFor(opts);
         if (path === '/api/tasks') {
           // Exclusive creation prevents changing the original of an existing named task.
@@ -154,13 +175,50 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (!artifactExtensions.test(selected) || selected.split('/').some(part => part.startsWith('.'))) throw new Error('不支持该产物类型');
         const file = await safePath(directory, selected);
         if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
-        const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream' };
+        const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream', '.psd': 'application/octet-stream' };
         // SVG may be authored by an agent. Keep it inert even when opened in a new tab.
         response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
         response.writeHead(200, { 'Content-Type': types[extname(file).toLowerCase()] });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/styles.css': 'styles.css' };
+      if (path === '/api/studio/layers') { json({ available: compositor.available, engine: 'Krita' }); return; }
+      if (path === '/studio-layer-asset') {
+        const kind = url.searchParams.get('kind') ?? 'png';
+        if (!['png', 'kra'].includes(kind)) throw Error('无效的图层产物');
+        const file = await compositor.asset(url.searchParams.get('session') ?? '', Number(url.searchParams.get('revision')), kind);
+        await lstat(file);
+        if (kind === 'kra') response.setHeader('Content-Disposition', 'attachment; filename="character-edited.kra"');
+        response.writeHead(200, { 'Content-Type': kind === 'png' ? 'image/png' : 'application/octet-stream' });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      if (path === '/api/studio/project') {
+        if (url.searchParams.get('dir') !== requestDir) { json({ error: '项目目录已改变，请刷新后重新打开' }, 409); return; }
+        const name = url.searchParams.get('name') ?? '';
+        json(await studioProject(await task(name, requestDir), name, requestDir)); return;
+      }
+      if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
+      if (path === '/studio-document') {
+        if (url.searchParams.get('id') !== 'jianma') throw new Error('未登记的角色文件');
+        const file = await safePath(root, 'demos/jianma/assembled/jianma-assembled.kra');
+        response.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      if (path === '/api/studio/reviews') { json(await studioReviews(root, dirname(settingsPath), url.searchParams.get('sample') ?? '')); return; }
+      if (path === '/studio-asset') {
+        const file = await studioAsset(root, url.searchParams.get('sample') ?? '', url.searchParams.get('kind') ?? '');
+        response.writeHead(200, { 'Content-Type': 'image/png' });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      const vendor: Record<string,string> = {
+        '/vendor/three.module.js': 'node_modules/three/build/three.module.js',
+        '/vendor/three.core.js': 'node_modules/three/build/three.core.js',
+        '/vendor/mtoon.js': 'node_modules/@pixiv/three-vrm-materials-mtoon/lib/three-vrm-materials-mtoon.module.js',
+        '/vendor/ag-psd.js': 'node_modules/ag-psd/dist/bundle.js',
+        '/vendor/fflate.js': 'node_modules/fflate/umd/index.js',
+      };
+      if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });
@@ -170,10 +228,19 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       json({ error: (error as NodeJS.ErrnoException).code === 'EEXIST' ? '任务名已存在，请选择该任务续跑或使用新名称' : (error as Error).message }, 400);
     }
   });
+  server.once('close', () => { void compositor.dispose(); });
+  return Object.assign(server, { disposeLayers: () => compositor.dispose() });
 }
 if (import.meta.main) {
   const { values } = parseArgs({ options: { port: { type: 'string', default: '4387' } } });
   const port = Number(values.port);
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('--port must be between 1 and 65535');
-  (await createWorkbench()).listen(port, '127.0.0.1', () => console.log(`AstraLayering workbench: http://127.0.0.1:${port}`));
+  const server = await createWorkbench();
+  server.listen(port, '127.0.0.1', () => console.log(`AstraLayering workbench: http://127.0.0.1:${port}`));
+  const shutdown = async () => {
+    server.close(); server.closeAllConnections();
+    await server.disposeLayers();
+    process.exit(0);
+  };
+  process.once('SIGTERM', shutdown); process.once('SIGINT', shutdown);
 }

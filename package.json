@@ -12,7 +12,11 @@
   },
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
-    "sharp": "0.35.5"
+    "@pixiv/three-vrm-materials-mtoon": "3.5.5",
+    "ag-psd": "30.1.0",
+    "fflate": "0.8.2",
+    "sharp": "0.35.5",
+    "three": "0.180.0"
   },
   "devDependencies": {
     "@types/node": "24.19.1",

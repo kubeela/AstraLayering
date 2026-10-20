@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AstraLayering · 角色工作台</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./studio/styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.js",
+          "@pixiv/three-vrm-materials-mtoon": "./vendor/mtoon.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="./">Astra<span>Layering</span></a>
+      <nav>
+        <a href="./">制作流程</a><a href="./?page=config">管线配置</a
+        ><a class="active" href="./studio">角色工作台</a>
+      </nav>
+      <span class="workspace-name">CHARACTER STUDIO</span>
+    </header>
+    <main>
+      <aside class="sources">
+        <section class="panel">
+          <h1>角色文件</h1>
+          <label class="button primary open-file"
+            >打开 KRA / PSD<input
+              id="file-document"
+              type="file"
+              accept=".kra,.psd,.png"
+              hidden
+          /></label>
+          <div class="file-actions">
+            <button id="open-jianma">Jianma</button
+            ><button id="open-task">从项目加载</button>
+          </div>
+          <div id="document-info" hidden>
+            <div class="document-heading">
+              <strong id="document-name"></strong
+              ><button
+                id="close-document"
+                title="关闭文件"
+                aria-label="关闭文件"
+              >
+                ×
+              </button>
+            </div>
+            <p id="document-meta" class="muted"></p>
+            <button id="download-document" class="text-button">
+              下载源文件 ↗
+            </button>
+            <button
+              id="refresh-project"
+              class="text-button"
+              title="重新读取管线结果，并重置本次图层改动"
+              hidden
+            >
+              更新项目
+            </button>
+          </div>
+        </section>
+        <section class="panel" id="maps-panel">
+          <h2>贴图</h2>
+          <div class="map-row">
+            <span class="map-icon">N</span>
+            <div><b>法线</b><small id="normal-status">未绑定</small></div>
+            <label class="button small map-bind" title="绑定原尺寸法线 PNG"
+              >绑定<input
+                id="file-normal"
+                type="file"
+                accept="image/png"
+                hidden /></label
+            ><button
+              id="remove-normal"
+              class="remove"
+              aria-label="移除法线"
+              hidden
+            >
+              ×
+            </button>
+          </div>
+          <div class="map-row">
+            <span class="map-icon">D</span>
+            <div><b>深度</b><small id="depth-status">未绑定</small></div>
+            <label
+              class="button small map-bind"
+              title="绑定白近黑远的原尺寸深度 PNG"
+              >绑定<input
+                id="file-depth"
+                type="file"
+                accept="image/png"
+                hidden /></label
+            ><button
+              id="remove-depth"
+              class="remove"
+              aria-label="移除深度"
+              hidden
+            >
+              ×
+            </button>
+          </div>
+          <p class="muted" id="map-validity" hidden>
+            图层已更改，请为当前合成图更新贴图
+          </p>
+          <details class="compact">
+            <summary>贴图设置</summary>
+            <label class="field"
+              >法线方向<select id="normal-y">
+                <option value="1">OpenGL · Y 向上</option>
+                <option value="-1">DirectX · Y 向下</option>
+              </select></label
+            >
+            <div id="map-controls"></div>
+          </details>
+        </section>
+        <section class="panel layer-panel">
+          <div class="section-heading">
+            <h2>图层</h2>
+            <span id="layer-count" class="muted">0</span>
+          </div>
+          <input
+            id="layer-filter"
+            type="search"
+            placeholder="查找图层"
+            aria-label="查找图层"
+          />
+          <div class="layer-actions">
+            <button
+              id="layer-undo"
+              title="撤销图层改动"
+              aria-label="撤销图层改动"
+            >
+              ↶
+            </button>
+            <button
+              id="layer-redo"
+              title="重做图层改动"
+              aria-label="重做图层改动"
+            >
+              ↷
+            </button>
+            <button id="layer-restore">还原</button
+            ><button id="layer-save">保存 KRA</button>
+          </div>
+          <div id="layers" role="list" aria-label="图层与蒙版"></div>
+          <div id="layer-properties" hidden>
+            <div class="layer-property-heading">
+              <strong id="layer-selected"></strong><span id="layer-kind"></span>
+            </div>
+            <p id="layer-mask-hint" class="muted" hidden></p>
+            <div id="layer-paint-properties">
+              <label class="field"
+                >混合<select id="layer-blend"></select
+              ></label>
+              <div class="slider">
+                <div class="slider-head">
+                  <label for="layer-opacity">不透明度</label
+                  ><label class="slider-number"
+                    ><input
+                      id="layer-opacity-number"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      aria-label="图层不透明度数值"
+                    /><span>%</span></label
+                  >
+                </div>
+                <input
+                  id="layer-opacity"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  aria-label="图层不透明度"
+                />
+              </div>
+              <label
+                class="toggle"
+                title="限制在同组下方非继承图层的合并不透明区域内"
+                ><input id="layer-inherit" type="checkbox" />透明度继承 α</label
+              >
+              <label
+                id="layer-passthrough-row"
+                class="toggle"
+                title="组内图层直接与组外下方图层混合；开启时组不透明度与混合不生效"
+                ><input id="layer-passthrough" type="checkbox" />组穿透</label
+              >
+            </div>
+          </div>
+          <button id="layer-retry" class="text-button" hidden>
+            重新读取图层
+          </button>
+          <p class="muted layer-note" id="layer-note">
+            打开 KRA / PSD 以编辑图层
+          </p>
+        </section>
+      </aside>
+      <section class="preview">
+        <div class="toolbar">
+          <div class="segmented" id="interaction">
+            <button data-tool="move" class="active" title="拖动平移，滚轮缩放">
+              ↔ 移动</button
+            ><button data-tool="light" title="拖动灯位，Alt + 滚轮调整前后">
+              ☼ 移动光源
+            </button>
+          </div>
+          <span class="divider"></span><button id="fit">适应</button
+          ><button id="actual">100%</button><span id="zoom">100%</span>
+          <button
+            id="export-image"
+            class="right"
+            title="透明背景，按原图完整分辨率导出"
+          >
+            导出 PNG ↗
+          </button>
+        </div>
+        <div class="viewport" id="drop-zone">
+          <canvas id="stage" aria-label="角色光照预览"></canvas>
+          <div id="empty-state">
+            <div class="file-symbol">＋</div>
+            <b>打开角色文件</b>
+            <p>KRA / PSD · 拖放到此处</p>
+            <label class="button" for="file-document">选择文件</label>
+          </div>
+          <div id="project-empty" hidden>
+            <b id="project-empty-name"></b>
+            <p>角色组装结果尚未生成</p>
+            <button id="retry-project">更新项目</button>
+          </div>
+          <div id="loading" role="status" hidden>正在打开…</div>
+          <div id="split-line" hidden><span>原画</span><span>光照</span></div>
+          <div id="light-overlay" hidden>
+            <svg id="light-line" width="100%" height="100%" aria-hidden="true">
+              <line />
+              <circle r="3" />
+            </svg>
+            <button
+              id="light-handle"
+              aria-label="光源位置，可拖动或用方向键调整"
+              title="拖动移动光源，方向键微调，PageUp / PageDown 调整前后"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path
+                  d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"
+                /></svg
+              ><span id="light-label"></span>
+            </button>
+            <div class="light-guide">拖动灯位 · Alt + 滚轮调整前后</div>
+          </div>
+          <div id="drop-hint" hidden>松开以打开角色文件</div>
+        </div>
+        <div class="viewbar" id="views">
+          <button data-view="lit" class="active">光照</button
+          ><button data-view="split">对照</button
+          ><button data-view="color">原画</button
+          ><button data-view="normal">法线</button
+          ><button data-view="depth">深度</button
+          ><button data-view="shading">明暗</button>
+        </div>
+        <footer>
+          <span id="quality">未打开文件</span
+          ><span id="engine" title="MToon 3.5.5 / Three.js 0.180.0"
+            >MToon · 原尺寸</span
+          >
+        </footer>
+      </section>
+      <aside class="controls">
+        <div class="panel-heading">
+          <h2>光照</h2>
+          <button id="reset" class="text-button">重置</button>
+        </div>
+        <p id="lighting-status" class="muted" hidden>绑定法线后启用光照</p>
+        <fieldset id="lighting-controls" disabled>
+          <section class="panel">
+            <label class="field inline"
+              >风格<select id="preset"></select
+            ></label>
+            <h3>光源位置</h3>
+            <div class="light-presets">
+              <button data-position="left">左</button
+              ><button data-position="front">正面</button
+              ><button data-position="right">右</button
+              ><button data-position="top">上</button>
+            </div>
+            <div id="position-controls"></div>
+          </section>
+          <section class="panel">
+            <h3>明暗</h3>
+            <div id="main-controls"></div>
+            <label class="field inline"
+              >暗部颜色<input type="color" id="shade" title="阴影色相与明度"
+            /></label>
+          </section>
+          <section class="panel">
+            <label class="toggle"
+              ><input id="shadow" type="checkbox" checked />部件投影</label
+            >
+            <p id="depth-status-hint" class="muted" hidden>
+              绑定深度后启用投影
+            </p>
+            <fieldset id="shadow-controls"></fieldset>
+          </section>
+        </fieldset>
+        <section class="panel">
+          <label class="field inline"
+            >背景<input
+              type="color"
+              id="background"
+              value="#c9c9ce"
+              title="仅改变预览背景，不写入 PNG"
+          /></label>
+          <div class="recipe-actions">
+            <button id="export-recipe">保存参数</button
+            ><label class="button"
+              >载入参数<input
+                type="file"
+                id="import-recipe"
+                accept="application/json"
+                hidden
+            /></label>
+          </div>
+        </section>
+      </aside>
+    </main>
+    <dialog id="task-dialog">
+      <form method="dialog">
+        <h2>从项目加载</h2>
+        <button class="dialog-close" aria-label="关闭">×</button>
+      </form>
+      <div id="project-list" aria-label="项目列表"></div>
+      <p id="project-status" class="muted" role="status"></p>
+    </dialog>
+    <div id="toast" role="status"></div>
+    <script type="module" src="./studio/app.js"></script>
+  </body>
+</html>
