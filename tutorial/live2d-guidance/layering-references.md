@@ -8,6 +8,7 @@
 | 头发拆分研究 | [hair-reference-research-20261015](hair-reference-research-20261015/README.md) | 32 个原研究文件、PSD 发区证据和图集预览 |
 | 完整指体参考 | [finger-reference-materials](finger-reference-materials/README.md) | 完整参考板、来源与 UV/PSD 清单、明确的独立裁片及脚本缺口 |
 | 模型原件 | [model-originals](model-originals/readme.md) | Milly、莉尔、樱桃蛋糕天使 35 个原始模型文件、作者原说明、两份原 ZIP |
+| QQ 邮箱官方模型附件 | [25 封邮件原附件](model-originals/archives/qq-mail-20261009/README.md) | 24 个分卷 ZIP、1 个完整教程 ZIP、逐文件哈希、分卷齐全与六个原包哈希核验 |
 | 逐文件核对 | [layering-reference-inventory.json](layering-reference-inventory.json) | 仓库相对路径、尺寸、字节数、SHA-256 |
 
 本次只保存资料；现有工作流原图位置、引用清单、提示词和执行逻辑保持原样。

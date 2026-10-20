@@ -4,6 +4,12 @@ Windows 实际目录：`D:\Resources\workspace\AstraLayering\tutorial\live2d-gui
 
 这里集中保存研究所用原件。原 ZIP 保持原字节；解压模型从既有 `../local-assets/` 复制，保留用户源文件。`local-assets` 是旧副本，本目录是当前统一入口。2026-10-20 按用户要求，将三套解压模型的 35 个原文件、作者说明和两份原 ZIP 纳入 Git，供相关参考资料保存与复现。临时审计和来包目录继续忽略。旧 [manifest.json](manifest.json) 保留 2026-10-08 的原始核对记录，其中 git_policy 是当时状态；当前逐文件哈希与存储状态见 [layering-reference-inventory.json](../layering-reference-inventory.json)。
 
+## QQ 邮箱补齐的官方模型附件 · 2026-10-20
+
+[25 封邮件附件](archives/qq-mail-20261009/README.md)已保存并纳入 Git：Haru、Hiyori、Koharu/Haruto、Mao、Miara、Natori 六套模型的 24 个分卷 ZIP，以及 Momose 完整教程 ZIP。共 254,857,598 字节；25 包 CRC 均通过，六组按序拼接的数据 SHA-256 均与包内原恢复说明相符，分卷齐全。
+
+这是通过 QQ 邮箱取得的原附件，未改写原件。之前记录的 Library 云端容器包本身仍未下载；其官方模型 ZIP 数据现已通过这批邮件补齐，单独的云端研究报告包仍未取得。现有工作流保持原样。
+
 ## 本机已完成 · 2026-10-08
 
 | 模型 | 当前位置 | 实际内容 | 来源与许可 |
