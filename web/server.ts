@@ -77,6 +77,11 @@ const files: Record<string, [string, string]> = {
 const server = createServer(async (request, response) => {
   const url = new URL(request.url ?? '/', 'http://localhost'), path = url.pathname;
   if (request.method !== 'GET') { response.writeHead(405); response.end('Read-only demo'); return; }
+  if (path === '/healthz') {
+    response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    response.end(JSON.stringify({ status: 'ok', application: 'astra-layering', mode: 'prototype' }));
+    return;
+  }
   if (path.startsWith('/api/')) {
     try { const data = await api(path, url.searchParams); response.writeHead(200, { 'Content-Type': 'application/json' }); response.end(JSON.stringify(data)); }
     catch (error) { response.writeHead(400, { 'Content-Type': 'application/json' }); response.end(JSON.stringify({ error: error instanceof Error ? error.message.split('\n')[0] : '读取失败' })); }

@@ -25,7 +25,7 @@ const icons = {
 const icon = (name, cls='') => `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]||icons.file}</svg>`;
 const esc = value => String(value??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 async function get(path) { const response = await fetch(path); const value = await response.json(); if(!response.ok) throw new Error(value.error); return value; }
-const data = await get('/api/demo');
+const data = await get('./api/demo');
 const state = {
  layout:new URLSearchParams(location.search).get('layout')||'workbench', page:new URLSearchParams(location.search).get('page')||'project',
  stage:3, group:'outer_robe/left_sleeve/front_sleeve_wall', expanded:new Set(['outer_robe','outer_robe/left_sleeve']),
@@ -35,18 +35,18 @@ const state = {
  ref:'worktree', file:'shared/tools/update_occlusion/description.md', diff:false, configFilter:'', uploaded:null,
 };
 const stages = [
- {name:'人物分块',id:'part-layering',short:'CHARACTER PART',result:'88 个部件',status:'done',image:'/images/character-parts.svg', file:'part-layering/preview.svg'},
- {name:'人物绘制',id:'raster-layering',short:'CHARACTER RASTER',result:'素体 KRA 已交付',status:'done',image:'/images/body.png',file:'raster-layering/step03/character-dressup-base.kra'},
- {name:'衣服分块',id:'clothing-part-layering',short:'CLOTHING PART',result:'67 个部件',status:'done',image:'/images/clothing-parts.svg',file:'clothing-part-layering/preview.svg'},
- {name:'衣服绘制',id:'clothing-raster-layering',short:'CLOTHING RASTER',result:'边缘柔化 · 反馈修复',status:'running',image:'/images/clothing.png',file:'clothing-raster-layering/step02/clothing-soft-edges.kra'},
- {name:'穿戴组装',id:'character-assembly',short:'ASSEMBLY',result:'等待衣服绘制',status:'pending',image:'/images/assembled.png',file:'character-assembly/step01/character-assembled.kra'},
+ {name:'人物分块',id:'part-layering',short:'CHARACTER PART',result:'88 个部件',status:'done',image:'./images/character-parts.svg', file:'part-layering/preview.svg'},
+ {name:'人物绘制',id:'raster-layering',short:'CHARACTER RASTER',result:'素体 KRA 已交付',status:'done',image:'./images/body.png',file:'raster-layering/step03/character-dressup-base.kra'},
+ {name:'衣服分块',id:'clothing-part-layering',short:'CLOTHING PART',result:'67 个部件',status:'done',image:'./images/clothing-parts.svg',file:'clothing-part-layering/preview.svg'},
+ {name:'衣服绘制',id:'clothing-raster-layering',short:'CLOTHING RASTER',result:'边缘柔化 · 反馈修复',status:'running',image:'./images/clothing.png',file:'clothing-raster-layering/step02/clothing-soft-edges.kra'},
+ {name:'穿戴组装',id:'character-assembly',short:'ASSEMBLY',result:'等待衣服绘制',status:'pending',image:'./images/assembled.png',file:'character-assembly/step01/character-assembled.kra'},
 ];
 const requestedStage = Number(new URLSearchParams(location.search).get('stage') ?? 3);
 if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < stages.length) {
  state.stage = requestedStage;
  state.selectedStep = requestedStage === 0 || requestedStage === 2 ? 'layers' : requestedStage === 4 ? 'step01' : 'step02';
 }
-const artifact = path => '/artifact/'+path.split('/').map(encodeURIComponent).join('/');
+const artifact = path => './artifact/'+path.split('/').map(encodeURIComponent).join('/');
 const sourceTree = () => state.stage<2?data.character.groups:data.clothing.groups;
 function flat(nodes) { return nodes.flatMap(node=>[node,...flat(node.groups||[])]); }
 function chosenGroup() { return flat(sourceTree()).find(node=>node.id===state.group)||sourceTree()[0]; }
@@ -55,14 +55,14 @@ function groupFile() { return `${treePipeline()}/parts/${chosenGroup().id}.svg`;
 function toast(message) { const el=document.querySelector('#toast'); el.textContent=message; el.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('visible'),4000); }
 function pill(status) { return `<span class="pill ${status}">${status==='done'?icon('check'):status==='running'?'<span class="live-dot"></span>':icon('clock')}${{done:'已完成',running:'制作中',pending:'待执行'}[status]}</span>`; }
 function header() {
- return `<header class="app-header"><a class="brand" href="/"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span><small>CHARACTER CREATION STUDIO</small></span></a>
+ return `<header class="app-header"><a class="brand" href="./"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span><small>CHARACTER CREATION STUDIO</small></span></a>
  <nav class="global-tabs"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('grid')}制作工作台</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
  <span class="demo-badge">交互原型 <i></i> 真实产物 / 示例进度</span><div class="layout-switch"><button data-layout="workbench" class="${state.layout==='workbench'?'active':''}">A 工作台</button><button data-layout="graph" class="${state.layout==='graph'?'active':''}">B 流程画布</button></div></header>`;
 }
 function sidebar() {
  return `<aside class="sidebar"><div class="sidebar-caption">工作空间 <span>LOCAL</span></div><button class="directory-card" data-action="directory">${icon('folder')}<span><b>.run</b><small>持久追踪的任务目录</small></span>${icon('down')}</button>
  <button class="primary new-button" data-action="new">${icon('plus')}新建任务</button><div class="sidebar-section">任务 <span>3 个示例</span></div>
- <button class="task-item active" data-task="jianma"><img src="/images/reference.png" alt="jianma"><span><b>jianma</b><small><i class="live-dot"></i>衣服绘制中</small></span><span class="task-dot"></span></button>
+ <button class="task-item active" data-task="jianma"><img src="./images/reference.png" alt="jianma"><span><b>jianma</b><small><i class="live-dot"></i>衣服绘制中</small></span><span class="task-dot"></span></button>
  <button class="task-item" data-task="new"><span class="empty-thumb">${icon('image')}</span><span><b>character-02</b><small>等待导入参考图</small></span></button>
  <button class="task-item" data-task="new"><span class="empty-thumb">${icon('image')}</span><span><b>pose-study</b><small>尚未开始</small></span></button>
  <div class="sidebar-help"><span class="tiny-mark">${icon('layers')}</span><b>文件就是进度</b><p>按任务与管线组织产物，<br>随时查看、继续制作。</p><span class="text-link" data-action="files">了解目录结构 ${icon('arrow')}</span></div>
@@ -89,7 +89,7 @@ function previewPane() {
  const part=state.preview==='part';
  return `<section class="preview-pane"><div class="preview-toolbar"><div class="tabs"><button data-preview="composition" class="${!part?'active':''}">阶段合成</button><button data-preview="part" class="${part?'active':''}">选中部件</button></div><div class="preview-tools"><span>${icon('eye')}归档产物</span><button class="icon-button" data-action="zoom" title="打开原尺寸">${icon('expand')}</button></div></div>
  <div class="canvas-heading"><span>${part?esc(chosenGroup().id):'输入参考 / '+stage.name+'结果'}</span><span>1024 × 1536</span></div>
- <div class="comparison-canvas ${part?'part-view':''}">${part?`<div class="single-art"><img src="${artifact(groupFile())}" alt="${esc(chosenGroup().id)} 的实际 SVG"></div><span class="canvas-chip">SVG 原始画布 · 未裁切</span>`:`<div class="image-column"><span class="canvas-label">${icon('image')}简化角色参考</span><img src="/images/reference.png" alt="简化角色参考"><span class="image-caption">simplified-subject.png</span></div><div class="image-column current-image"><span class="canvas-label result">${icon('layers')}当前阶段产物</span><img src="${stage.image}" alt="${stage.name}实际产物"><span class="image-caption">${(state.stage===3?'composite.png':stage.file.split('/').at(-1).replace('.kra','.png'))}</span></div>`}</div>
+ <div class="comparison-canvas ${part?'part-view':''}">${part?`<div class="single-art"><img src="${artifact(groupFile())}" alt="${esc(chosenGroup().id)} 的实际 SVG"></div><span class="canvas-chip">SVG 原始画布 · 未裁切</span>`:`<div class="image-column"><span class="canvas-label">${icon('image')}简化角色参考</span><img src="./images/reference.png" alt="简化角色参考"><span class="image-caption">simplified-subject.png</span></div><div class="image-column current-image"><span class="canvas-label result">${icon('layers')}当前阶段产物</span><img src="${stage.image}" alt="${stage.name}实际产物"><span class="image-caption">${(state.stage===3?'composite.png':stage.file.split('/').at(-1).replace('.kra','.png'))}</span></div>`}</div>
  <div class="canvas-footer"><span><span class="checker-swatch"></span>透明背景</span><span>适合画布 <b>−</b><span>100%</span><b>＋</b></span></div>
  <div class="artifact-tray"><div class="tray-heading"><b>阶段文件</b><small>来自 jianma 归档</small></div><div class="file-cards"><a href="${artifact(stage.file)}" target="_blank"><span class="file-icon">${icon(stage.file.endsWith('.kra')?'layers':'code')}</span><span><b>${stage.file.split('/').at(-1)}</b><small>${stage.file.endsWith('.kra')?'Krita 分层工程':'分块合成预览'}</small></span>${icon('arrow')}</a><a href="${artifact(treePipeline()+'/groups.json')}" target="_blank"><span class="file-icon json">{ }</span><span><b>groups.json</b><small>完整 group / part 层级</small></span>${icon('arrow')}</a></div></div></section>`;
 }
@@ -146,7 +146,7 @@ function expandedGraph() {
  <path class="active" marker-end="url(#detail-arrow)" d="M1058 330 H1076"/>
  <path class="waiting" marker-end="url(#detail-arrow)" d="M408 674 V709 H1200 V676"/>
  <text x="371" y="118">简化穿衣角色参考</text><text x="736" y="701">人物素体 KRA → 穿戴组装</text>
- </svg><div class="expanded-input">${icon('image')}<div><b>输入角色图</b><small>original → standard</small></div><img src="/images/original.jpg" alt="原始角色参考"></div>
+ </svg><div class="expanded-input">${icon('image')}<div><b>输入角色图</b><small>original → standard</small></div><img src="./images/original.jpg" alt="原始角色参考"></div>
  <div class="expanded-graph-hint">${icon('info')}展开节点看子步骤；点击步骤查看下方明细。</div>
  ${stages.map((_,i)=>graphCard(i,['character-part','character-raster','clothing-part','clothing-raster','assembly'][i])).join('')}</div></div>${pipelineDetail()}`;
 }
@@ -156,7 +156,7 @@ function graph() {
  <button class="button graph-disclosure compact-disclosure" data-action="toggle-steps" aria-expanded="false">${icon('layers')}展开子步骤</button><div class="graph-canvas"><div class="graph-world"><svg class="connectors" viewBox="0 0 1360 704" preserveAspectRatio="none"><defs><marker id="arrow-green" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="m0 0 7 3.5L0 7" fill="#59b6a7"/></marker></defs>
  <path class="done" d="M187 220 V306"/><path class="done" d="M309 430 H346 V185 Q346 174 357 174 H411"/><path class="done" d="M309 430 H411"/><path class="done" d="M655 430 H717"/><path class="waiting" d="M655 174 H976 Q999 174 999 197 V287 H1048"/><path class="active" d="M961 430 H1016 Q1029 430 1029 417 V356 H1048"/>
  <text x="349" y="278">素体参考</text><text x="329" y="452">衣装参考</text><text x="686" y="413">parts</text><text x="823" y="162">人物 KRA</text><text x="991" y="478">衣服 KRA</text></svg>
- <div class="reference-node"><div><span class="input-tag">INPUT</span><h3>角色参考</h3><p>一张图，开始制作。</p><span>${icon('image')}original.jpg</span></div><img src="/images/original.jpg" alt="角色原始参考"></div>
+ <div class="reference-node"><div><span class="input-tag">INPUT</span><h3>角色参考</h3><p>一张图，开始制作。</p><span>${icon('image')}original.jpg</span></div><img src="./images/original.jpg" alt="角色原始参考"></div>
  ${graphCard(0,'character-part')}${graphCard(1,'character-raster')}${graphCard(2,'clothing-part')}${graphCard(3,'clothing-raster')}${graphCard(4,'assembly')}
  <div class="lane-label human">CHARACTER <span>人物</span></div><div class="lane-label garment">CLOTHING <span>衣服</span></div><div class="graph-note">${icon('info')}连线展示输入依赖；任务仍按五条管线顺序推进。</div><div class="graph-zoom"><button data-action="zoom">−</button><span>100%</span><button data-action="zoom">＋</button>${icon('expand')}</div></div></div>
  <div class="graph-bottom"><div class="mini-tree-title">${icon('branch')}衣服结构<span>67 parts · 26 groups</span></div><div class="mini-tree-path"><span>${icon('folder')}outer_robe</span>${icon('chevron')}<span>${icon('folder')}left_sleeve</span>${icon('chevron')}<span class="active">${icon('layers')}front_sleeve_wall</span></div><button class="button" data-action="show-tree">浏览完整部件树 ${icon('arrow')}</button></div>`;
@@ -164,8 +164,8 @@ function graph() {
 let versions, configFiles=[], configText='', schemaText='', diffText='';
 async function loadConfig() {
  try {
-  versions=await get('/api/config/versions?ref='+encodeURIComponent(state.ref));
-  const snapshot=await get('/api/config/files?ref='+encodeURIComponent(state.ref)); configFiles=snapshot.paths;
+  versions=await get('./api/config/versions?ref='+encodeURIComponent(state.ref));
+  const snapshot=await get('./api/config/files?ref='+encodeURIComponent(state.ref)); configFiles=snapshot.paths;
   if(!configFiles.includes(state.file)) state.file=configFiles[0]||'';
   await loadConfigFile();
  } catch(error) { toast(error.message); }
@@ -173,10 +173,10 @@ async function loadConfig() {
 async function loadConfigFile() {
  if(!state.file) {configText='这个版本没有可浏览的管线配置。';schemaText='';return;}
  const q=`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(state.file)}`;
- configText=(await get('/api/config/content'+q)).text; schemaText=''; diffText='';
+ configText=(await get('./api/config/content'+q)).text; schemaText=''; diffText='';
  const sibling=state.file.replace(/description\.md$/,'schema.json');
- if(sibling!==state.file&&configFiles.includes(sibling)) schemaText=(await get('/api/config/content'+`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(sibling)}`)).text;
- if(state.diff) diffText=(await get('/api/config/diff'+q+'&base='+encodeURIComponent(state.base||'HEAD~2'))).text;
+ if(sibling!==state.file&&configFiles.includes(sibling)) schemaText=(await get('./api/config/content'+`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(sibling)}`)).text;
+ if(state.diff) diffText=(await get('./api/config/diff'+q+'&base='+encodeURIComponent(state.base||'HEAD~2'))).text;
 }
 function markdown(text) {
  // The prototype renders text, headings and code; it never inserts source HTML.
