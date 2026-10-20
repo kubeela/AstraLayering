@@ -4,6 +4,7 @@
 
 | 目录 | 内容与状态 |
 | --- | --- |
+| [Live2D 正式制作参考](live2d-guidance/formal/README.md) | 从 Jianma 光影、摆动、眼胸果冻与嘴部实战提炼的方法；含完整嘴部目录、布线示意、视频解析和已知失败边界 |
 | [live2d-tutorial-text](live2d-tutorial-text) | 已有 14 讲文字与来源文件，原内容保留；作者夏卜卜，许可未知 |
 | [drawing-tutorial](drawing-tutorial/readme.md) | 已有三个视频与一个 SRT，保留原文件；来源关系待验证 |
 | [原创研究总索引](live2d-research/local-index.md) | 已有本机研究按主题导航和哈希清单；Oct1–8 云端 93 文件包已提供引用，下载 HTTP 403，尚未落地 |

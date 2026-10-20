@@ -1,0 +1,135 @@
+{
+  "schema": "live2d-formal-sources/1",
+  "recordedAt": "2026-10-20",
+  "workbenchRevision": "b24aeeecb60cd63cb036b81ab26595ed6222abd6",
+  "sources": [
+    {
+      "id": "L01",
+      "filename": "AI生成法线贴图→ae制作二分阴影打光_哔哩哔哩_bilibili_BV1oaYU6nE4f_字.srt",
+      "bytes": 75421,
+      "sha256": "e55f862391efc88e5095f0637174016049f72c0456de23e96e4448489a33e53c",
+      "source": "用户提供",
+      "originalIncludedInGit": false,
+      "analysis": "lighting-video.md",
+      "originalUrl": "https://www.bilibili.com/video/BV1oaYU6nE4f",
+      "author": "未记录",
+      "evidence": "带时间码字幕的关键内容复核；没有完整视频逐帧证据"
+    },
+    {
+      "id": "E01",
+      "filename": "1318604148-1-192.mp4",
+      "bytes": 180226996,
+      "sha256": "774e73432bd52582af7adec57dac9d1252fef9fc67f9ca3ae02fa865e4fd6a47",
+      "source": "用户提供",
+      "originalIncludedInGit": false,
+      "media": {
+        "size": [
+          1278,
+          720
+        ],
+        "fps": 25.0,
+        "duration": 908.02
+      },
+      "analysis": "eye-video.md",
+      "originalUrl": null,
+      "author": "未记录",
+      "evidence": "章节抽样与指定连续片段的逐帧分析，非全片逐帧",
+      "frameIndexBase": 0,
+      "reviewedInclusiveFrameRanges": [
+        [
+          0,
+          349
+        ],
+        [
+          11850,
+          12249
+        ]
+      ],
+      "reviewedContinuousFrameCount": 750
+    },
+    {
+      "id": "C01",
+      "filename": "1581502286-1-192.mp4",
+      "bytes": 10321274,
+      "sha256": "33e203243e0ed09d9041b244a4adef1182bb99a0c3a15043a364955e40983e2c",
+      "source": "用户提供",
+      "originalIncludedInGit": false,
+      "media": {
+        "size": [
+          1280,
+          720
+        ],
+        "fps": 30.0,
+        "duration": 236.98
+      },
+      "analysis": "chest-video.md",
+      "originalUrl": null,
+      "author": "未记录",
+      "evidence": "章节抽样与指定连续片段的逐帧分析，非全片逐帧",
+      "frameIndexBase": 0,
+      "reviewedInclusiveFrameRanges": [
+        [
+          5070,
+          5159
+        ],
+        [
+          6480,
+          6569
+        ]
+      ],
+      "reviewedContinuousFrameCount": 180
+    },
+    {
+      "id": "M01",
+      "filename": "1126744718-1-208.mp4",
+      "bytes": 64978498,
+      "sha256": "d4b0aa80809356cb6bd560ad9f216a5bb9cc64e076ce0604b32a030a54e6261f",
+      "source": "用户提供",
+      "originalIncludedInGit": false,
+      "media": {
+        "size": [
+          1920,
+          1080
+        ],
+        "fps": 29.97,
+        "duration": 562.24
+      },
+      "analysis": "mouth-video.md",
+      "originalUrl": null,
+      "author": "未记录",
+      "evidence": "章节抽样与指定连续片段的逐帧分析，非全片逐帧",
+      "frameIndexBase": 0,
+      "reviewedInclusiveFrameRanges": [
+        [
+          5660,
+          5749
+        ],
+        [
+          6200,
+          6289
+        ],
+        [
+          8580,
+          8669
+        ],
+        [
+          9450,
+          9539
+        ],
+        [
+          11020,
+          11109
+        ],
+        [
+          12000,
+          12089
+        ],
+        [
+          13940,
+          14029
+        ]
+      ],
+      "reviewedContinuousFrameCount": 630
+    }
+  ]
+}
