@@ -2,6 +2,31 @@
 
 以下命令均从安装后的 `live2d-maker` 根目录执行。
 
+## 总入口
+
+用户只给部分产物时，核对可从哪条管线继续，帮助把文件放到同名任务的标准上游位置；缺失项按入口报错的具体路径补齐。输入和路径规则见下方“输入、产物与续跑”。
+
+从 skill 根目录执行。先检查该任务是否已有活跃总调度；有则接管监听，避免重复启动。
+
+```bash
+# 新任务；使用默认运行根目录，需自定义时追加 --dir /绝对路径/运行根目录
+pnpm start --name jianma --image /绝对路径/参考图.png --krita /绝对路径/krita --background
+
+# 续跑；读取 <运行根目录>/jianma/run.json 中保存的配置
+pnpm start --name jianma --background
+
+# 查询，不启动模型
+pnpm start --name jianma --status --json
+```
+
+后台启动会等到配置保存、任务锁和 Krita 检查成功才确认；确认后检查状态和日志，向用户通报当前阶段。省略 `--background` 为前台运行。这里的后台服务是持续执行的调度进程，当前没有 HTTP 页面。
+
+总入口顺序执行：人物 part → 人物 raster → 衣服 part → 衣服 raster → 穿戴组装。一条结束后立即进入下一条；两小时检查不参与正常阶段推进。总控 `run.json` 保存路线、配置、PID、各管线进度、最近消息及错误；实际跳过和恢复仍由各管线自己的产物及标记判断。
+
+按用户需要可用 `--from <管线>` / `--to <管线>` 限定连续范围，默认完整五条管线。比如已有两份 KRA 与简化参考，只执行 `--from character-assembly`；只做人物到 `--to raster-layering`。范围会保存，之后只用任务名即可恢复。总入口不会把手动提供的上游文件标为已经执行过的阶段。`--jobs` 控制 part 的 agent 并发，默认 3。
+
+只操作特定组、设置拆分限深或调试单阶段时，使用[单管线操作与验收](individual-pipelines.md)中的独立入口；不要与同一任务的总调度同时运行。
+
 ## Codex 环境配置
 
 复制 `example.env` 为 `.env`，按需填写；不填写时无需创建此文件。shell 的同名环境变量优先，文件不执行 shell 或展开变量。`.env` 不写入 Git。
@@ -36,6 +61,10 @@ pnpm build:codex
 
 ```text
 <运行根目录>/<name>/
+├── run.json                # 总入口保存配置与进度；各管线仍按自己的文件恢复
+├── workflow.log            # 调度和管线输出
+├── service.log             # 后台进程输出
+├── monitor.md              # 定时任务信息、环境配置与巡检记录，由 agent 维护
 ├── input/                  # 用户首次提供的原图，后续管线不复制上游
 ├── part-layering/           # references、groups、parts、stages、occlusion
 ├── raster-layering/         # run.json、step01～step03
@@ -44,21 +73,30 @@ pnpm build:codex
 └── character-assembly/      # run.json、step01 穿戴组装
 ```
 
-默认运行根目录是 skill 上一级；四个入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。目录结构不额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物；组装入口读取人物 step03 KRA、衣服 step02 KRA 和人物 part 的简化穿衣参考。后续入口不再接受 `--input` 或另行提供图片。
+默认运行根目录是 skill 上一级；五个独立入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。目录结构不额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物；组装入口读取人物 step03 KRA、衣服 step02 KRA 和人物 part 的简化穿衣参考。后续入口不再接受 `--input` 或另行提供图片。
 
 任务名保留各自原有启动规则：part 接受单个目录名，raster 要求以字母或数字开头、只含字母、数字、点、下划线和短横线且不超过 128 字符。共享目录不额外收紧 part 的名称范围。
 
-首次原图保存为 `<运行根目录>/<name>/input/original.<扩展名>`。后续直接读取上游文件，不建立输入副本。入口各自独立，不自动启动上游；缺少产物时列出具体缺失路径，并提示先运行对应上游管线，或手动将产物放到这些位置。各管线的步骤路径以自身目录为基准。
+首次原图保存为 `<运行根目录>/<name>/input/original.<扩展名>`。后续直接读取上游文件，不建立输入副本。五个独立入口不自动启动上游；总入口 `pnpm start` 按所选范围顺序调用它们。缺少产物时列出具体缺失路径，并提示先运行对应上游管线，或手动将产物放到这些位置。各管线的步骤路径以自身目录为基准。
 
 
 part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 review 完成后先同层去重，再补全和分析子组。raster 以 `.running`、`.completed` 以及 review/repair Markdown 决定进度，`run.json` 保存配置和绘制 threadId。删除完成标记会重置该步及其后续步骤、重新建立绘制 thread；重跑清理仅发生在本管线步骤目录内；step01 写回上游 occlusion.json 的深度修正保留。`.running` 表示尚未完成，不代表进程仍在运行。
 
 人物 raster 保留三步，衣服 raster 保留两步，各自交付文件要求不变。第二步完成全部 review/修复后才写 `.completed`。每次 reviewer 使用新上下文，反馈交回原绘制 thread；最多两次 review，第二次反馈修完后结束，不增加第三次 review。续跑仍需要原 Codex 环境保留对应的会话历史。
 
+## 交付
+
+总控显示所选路线完成后，核对最终 KRA、PNG 和报告实际存在，查看合成图并报告遗留问题；不要只凭进程退出宣称完成。完整路线最终交付位于 `character-assembly/step01/`：`character-assembled.kra`、`character-assembled.png`、`report.md`。限定路线则交付该路线最后阶段的成果。
+
+给出用户可访问的实际文件路径和预览，说明完成范围。结束并注销本任务的定时检查；用户取消时同样停止继续制作和定时恢复。静态分层素材尚未进行 Cubism 绑定与动画制作。
+
+后续计划增加用户交互前端；本次不启动或虚构前端页面。
+
 ## 共享实现与独立配置
 
 | 位置 | 职责 |
 | --- | --- |
+| `workflow/` | 总调度、后台启动、进度查询和保留产物的会话交接 |
 | `shared/part/` | 分组树、SVG、整层调度、去重、依赖恢复及 part agent |
 | `shared/raster/` | 上游定位、Krita 检查、顺序步骤、review 和标记恢复 |
 | `shared/codex/` | SDK / App Server 适配、日志、工具配置、并发和临时重试 |

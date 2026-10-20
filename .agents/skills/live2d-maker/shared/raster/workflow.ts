@@ -1,7 +1,7 @@
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { pipelineDirectory, resolveInput, resolveRunsDirectory, type PipelineId } from '../paths.ts';
-import { appendFile, mkdir, realpath, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, realpath, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { runAgent, type Agent } from './agent.ts';
@@ -136,7 +136,19 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       lastThreadId = fresh ? undefined : config.threadId ?? undefined;
       const attempt = randomUUID();
       const selected = fresh ? step.review! : model;
-      if (!fresh && phase !== 'draw' && !config.threadId) throw new Error('缺少原绘制 threadId，无法继续修复。');
+      const handoff = !fresh && !config.threadId ? config.threadHandoff : undefined;
+      if (!fresh && phase !== 'draw' && !config.threadId && !handoff) throw new Error('缺少原绘制 threadId，无法继续修复。');
+      if (handoff) {
+        const notes = await readFile(handoff.notes, 'utf8');
+        if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
+        // A new repair thread also needs the original drawing task and inputs.
+        if (phase !== 'draw') prompt = (await pipeline.buildPrompt(step, reference, output, krita, previous))
+          + '\n\n上方原绘制任务用于恢复背景；本次只接续下方修复任务，不重新提交首次绘制报告。\n' + prompt;
+        prompt += '\n\n---\n会话恢复交接（继续已有工作）：\n'
+          + '旧 threadId：' + handoff.previousThreadId + '\n原因：' + handoff.reason
+          + '\n已有产物与正式报告均保留。先核对文件，从未完成处继续；不要因更换会话重画已合格的部分或重置流程记录。'
+          + '\n当前阶段：' + step.id + ' / ' + phase + '\n交接记录：\n' + notes;
+      }
       await writeFile(join(output, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
       await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
         model: selected.model, effort: selected.effort, krita, ...(fresh ? {} : { threadId: config.threadId }) }) + '\n');
@@ -160,6 +172,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
             if (fresh) return; // Reviewer sessions are never saved or resumed.
             if (!event.thread_id.trim() || (config.threadId && config.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
             config.threadId = event.thread_id;
+            if (handoff) handoff.replacementThreadId = event.thread_id;
             await saveConfig(directory, config);
           }
           await appendFile(join(output, 'events.jsonl'), JSON.stringify({ attempt, phase, event }) + '\n');

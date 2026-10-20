@@ -6,6 +6,14 @@ import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 
 export type ModelConfig = ModelSelection;
+export type ThreadHandoff = {
+  id: string;
+  previousThreadId: string;
+  notes: string;
+  reason: string;
+  createdAt: string;
+  replacementThreadId?: string;
+};
 export type RunConfig<Input = PartLayeringInput> = {
   version: 2;
   name: string;
@@ -13,6 +21,7 @@ export type RunConfig<Input = PartLayeringInput> = {
   krita: KritaInstallation;
   models: Record<string, ModelConfig>;
   threadId: string | null;
+  threadHandoff?: ThreadHandoff;
 };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
 export type RunPlan = { statuses: Map<string, StepStatus>; resetFrom?: number };
@@ -53,10 +62,17 @@ export async function loadConfig<Input = PartLayeringInput>(directory: string, n
     || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim() || typeof config.krita.version !== 'string'
     || !config.models || typeof config.models !== 'object' || Array.isArray(config.models)
     || Object.values(config.models).some(model => !model || typeof model.model !== 'string' || !model.model.trim() || !['none', 'minimal', 'low', 'medium', 'high', 'xhigh'].includes(model.effort))
-    || !(config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))) {
+    || !(config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))
+    || (config.threadHandoff !== undefined && !validHandoff(config.threadHandoff))) {
     throw new Error(`无效的任务配置：${file}`);
   }
   return config;
+}
+
+function validHandoff(value: ThreadHandoff): boolean {
+  return !!value && ['id', 'previousThreadId', 'notes', 'reason', 'createdAt'].every(key =>
+    typeof value[key as keyof ThreadHandoff] === 'string' && !!value[key as keyof ThreadHandoff]?.trim())
+    && (value.replacementThreadId === undefined || (typeof value.replacementThreadId === 'string' && !!value.replacementThreadId.trim()));
 }
 
 export function newConfig<Input>(name: string, input: Input, krita: KritaInstallation, steps: readonly StepDefinition[]): RunConfig<Input> {
@@ -116,6 +132,7 @@ export async function inspectRun(directory: string, steps: readonly StepDefiniti
 export async function resetSteps(directory: string, config: RunConfig<unknown>, plan: RunPlan): Promise<void> {
   if (plan.resetFrom === undefined) return;
   config.threadId = null;
+  delete config.threadHandoff;
   await saveConfig(directory, config);
   // Remove descendants first. The unmarked triggering directory survives until last,
   // so a crash during deletion still signals the reset on the next launch.
