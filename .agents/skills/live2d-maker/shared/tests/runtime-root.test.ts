@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import { copyFile, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -6,7 +7,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { test } from 'node:test';
 import sharp from 'sharp';
-import { pipelineDirectory, resolveInput, runsDirectory, taskDirectory, workflowsDirectory } from '../paths.ts';
+import { defaultRunsDirectory, pipelineDirectory, resolveInput, runsDirectory, taskDirectory, workflowsDirectory } from '../paths.ts';
 import { prepareReferences as preparePerson, loadPreparedReferences as loadPerson } from '../../part-layering/preparation.ts';
 import { prepareReferences as prepareClothing, loadPreparedReferences as loadClothing } from '../../clothing-part-layering/preparation.ts';
 import { parseRunArguments as parsePart } from '../part/run.ts';
@@ -17,14 +18,17 @@ import { steps as personSteps } from '../../raster-layering/steps.ts';
 import { steps as clothingSteps } from '../../clothing-raster-layering/steps.ts';
 import { seedUpstream } from './upstream-fixture.ts';
 
-test('默认 root 是 skill 上一级；--dir 必须绝对，任务不能写进 skill', () => {
-  assert.equal(runsDirectory, resolve(workflowsDirectory, '..'));
+test('默认 root 是仓库 .run，独立 skill 使用上一级 .run；--dir 必须绝对，任务不能写进 skill', () => {
+  const repository = resolve(workflowsDirectory, '../../..');
+  assert.equal(runsDirectory, existsSync(join(repository, 'web/server.ts')) && existsSync(join(repository, 'pnpm-workspace.yaml'))
+    ? join(repository, '.run') : resolve(workflowsDirectory, '../.run'));
+  assert.equal(defaultRunsDirectory('/tmp/installed/live2d-maker'), '/tmp/installed/.run');
   assert.equal(taskDirectory('sample'), join(runsDirectory, 'sample'));
   for (const parse of [parsePart, parseRaster]) {
     assert.equal(parse(['--name', 'sample', '--dir', '/tmp/custom']).dir, '/tmp/custom');
     assert.throws(() => parse(['--name', 'sample', '--dir', 'relative']), /绝对路径/);
   }
-  assert.throws(() => taskDirectory('live2d-maker'), /skill 之外/);
+  assert.throws(() => taskDirectory('live2d-maker', resolve(workflowsDirectory, '..')), /skill 之外/);
   assert.throws(() => taskDirectory('sample', workflowsDirectory), /skill 之外/);
   assert.equal(resolveInput('sample', 'source.png', '/tmp/custom'), '/tmp/custom/sample/source.png');
 });

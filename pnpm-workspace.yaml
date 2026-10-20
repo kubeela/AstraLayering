@@ -1,0 +1,4 @@
+packages:
+  - '.agents/skills/live2d-maker'
+onlyBuiltDependencies:
+  - sharp

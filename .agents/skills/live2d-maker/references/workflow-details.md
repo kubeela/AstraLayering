@@ -78,7 +78,7 @@ pnpm build:codex
 └── character-assembly/      # run.json、step01 穿戴组装
 ```
 
-默认运行根目录是 skill 上一级；五个独立入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。目录结构不额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物；组装入口读取人物 step03 KRA、衣服 step02 KRA 和人物 part 的简化穿衣参考。后续入口不再接受 `--input` 或另行提供图片。
+完整仓库的默认运行根目录是 `<仓库>/.run`，独立安装的 skill 默认使用 `<skill上一级>/.run`；五个独立入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。显式传入的 `--dir` 不再额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物；组装入口读取人物 step03 KRA、衣服 step02 KRA 和人物 part 的简化穿衣参考。后续入口不再接受 `--input` 或另行提供图片。
 
 任务名保留各自原有启动规则：part 接受单个目录名，raster 要求以字母或数字开头、只含字母、数字、点、下划线和短横线且不超过 128 字符。共享目录不额外收紧 part 的名称范围。
 
@@ -160,6 +160,6 @@ pnpm check
 pnpm test
 ```
 
-测试使用模拟 agent、SDK / App Server 和临时文件，并只读检查仓库已有示例的恢复，覆盖各自 preparation、提示词与参考选择、同层去重、恢复、两轮 review、工具配置及重试。不会运行付费生图或重画已有 KRA。运行数据位于 skill 外，不随 skill 发布；仓库内默认的同级任务目录被 Git 忽略。原 `test` 已改名为 `jianma`，正式成果见仓库的 `demos/jianma/`，逐次 agent 操作保留本地。独立安装不包含 demos，只有对应的归档验收用例会明确跳过。
+测试使用模拟 agent、SDK / App Server 和临时文件，并只读检查仓库已有示例的恢复，覆盖各自 preparation、提示词与参考选择、同层去重、恢复、两轮 review、工具配置及重试。不会运行付费生图或重画已有 KRA。运行数据位于 skill 外，不随 skill 发布；仓库内默认的 `.run` 目录被 Git 忽略。原 `test` 已改名为 `jianma`，正式成果见仓库的 `demos/jianma/`，逐次 agent 操作保留本地。独立安装不包含 demos，只有对应的归档验收用例会明确跳过。
 
 共享重构的逐模块差异、发现的偏差及新旧调度对照结果见 [差异审计](../docs/shared-refactor-audit.md)。

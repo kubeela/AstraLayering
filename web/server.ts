@@ -1,0 +1,179 @@
+import { createServer, type IncomingMessage } from 'node:http';
+import { readFile, readdir, mkdir, lstat, rm, writeFile, realpath } from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { extname, resolve, join, isAbsolute } from 'node:path';
+import { parseArgs } from 'node:util';
+import sharp from 'sharp';
+import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
+import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
+import { configAPI } from './config.ts';
+import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
+import { snapshot, summary } from './snapshot.ts';
+import { launch } from './worker.ts';
+
+const root = fileURLToPath(new URL('../', import.meta.url));
+const maxBytes = 32 * 1024 * 1024;
+async function body(request: IncomingMessage) {
+  if (!request.headers['content-type']?.startsWith('application/json')) throw new Error('请求必须使用 application/json');
+  let size = 0; const chunks = [];
+  for await (const chunk of request) {
+    size += chunk.length;
+    if (size > maxBytes) throw new Error('上传图片最大 20 MB');
+    chunks.push(chunk);
+  }
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+}
+function options(value: any, dir: string): TaskOptions {
+  const result: TaskOptions = { name: value.name, dir };
+  directoryFor(result);
+  for (const key of ['krita', 'image'] as const) {
+    if (value[key] !== undefined) {
+      if (typeof value[key] !== 'string') throw new Error(key + ' 必须是路径');
+      if (value[key].trim()) result[key] = value[key].trim();
+    }
+  }
+  if (value.from) result.from = pipelineId(value.from);
+  if (value.to) result.to = pipelineId(value.to);
+  if (result.from || result.to) selectedPipelines(result.from ?? pipelineIds[0], result.to ?? pipelineIds.at(-1)!);
+  if (value.standard !== undefined) {
+    if (typeof value.standard !== 'boolean') throw new Error('standard 必须是布尔值');
+    result.standard = value.standard;
+  }
+  if (value.jobs !== undefined) {
+    if (!Number.isSafeInteger(value.jobs) || value.jobs < 1) throw new Error('jobs 必须是正整数');
+    result.jobs = value.jobs;
+  }
+  return result;
+}
+export async function createWorkbench({ settingsPath = join(root, '.web/settings.json'), defaultDir = runsDirectory,
+  start = launch }: { settingsPath?: string; defaultDir?: string; start?: typeof launch } = {}) {
+  async function validateDir(path: string) {
+    if (typeof path !== 'string' || !isAbsolute(path)) throw new Error('运行目录必须是绝对路径');
+    await mkdir(path, { recursive: true });
+    const directory = await realpath(path), skill = await realpath(workflowsDirectory);
+    if (inside(skill, directory)) throw new Error('运行目录不能位于 skill 内');
+    return directory;
+  }
+  let settings = { directory: await validateDir(defaultDir) };
+  try { settings = { directory: await validateDir(JSON.parse(await readFile(settingsPath, 'utf8')).directory) }; }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+  const starts = new Set<string>();
+  async function task(name: string, dir = settings.directory) {
+    const path = directoryFor({ name, dir });
+    if (!(await lstat(path)).isDirectory() || (await lstat(path)).isSymbolicLink()) throw new Error('任务必须是运行目录下的普通文件夹');
+    await safePath(dir, name);
+    return path;
+  }
+  return createServer(async (request, response) => {
+    const url = new URL(request.url ?? '/', 'http://localhost'), path = url.pathname;
+    const requestDir = settings.directory;
+    response.setHeader('Cache-Control', 'no-store');
+    response.setHeader('X-Content-Type-Options', 'nosniff');
+    const json = (value: unknown, status = 200) => { response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); response.end(JSON.stringify(value)); };
+    try {
+      if (request.method !== 'GET' && request.method !== 'POST') { json({ error: 'Method not allowed' }, 405); return; }
+      if (request.method === 'POST') {
+        // Same-origin browser operations; deployment access scope is owned by the host.
+        const origin = request.headers.origin;
+        if ((origin && new URL(origin).host !== request.headers.host) || request.headers['sec-fetch-site'] === 'cross-site') {
+          json({ error: '不接受跨站运行操作' }, 403); return;
+        }
+        const value = await body(request);
+        if (value.dir !== requestDir) { json({ error: '追踪目录已改变，请刷新页面后重试' }, 409); return; }
+        if (path === '/api/settings') {
+          const next = { directory: await validateDir(value.directory) };
+          await atomicJSON(settingsPath, next); settings = next; json(settings); return;
+        }
+        const opts = options(value, requestDir), directory = directoryFor(opts);
+        if (path === '/api/tasks') {
+          // Exclusive creation prevents changing the original of an existing named task.
+          await mkdir(directory);
+          let committed = false;
+          try {
+            if (value.upload) {
+              if (typeof value.upload !== 'string' || !/^[A-Za-z0-9+/]*={0,2}$/.test(value.upload)) throw new Error('无效的图片数据');
+              const bytes = Buffer.from(value.upload, 'base64');
+              if (!bytes.length || bytes.length > 20 * 1024 * 1024) throw new Error('上传图片最大 20 MB');
+              const image = sharp(bytes, { limitInputPixels: 40_000_000 });
+              const meta = await image.metadata();
+              if (!['png', 'jpeg', 'webp'].includes(meta.format) || (meta.pages ?? 1) > 1) throw new Error('请选择单张 PNG、JPG 或 WebP 图片');
+              await image.resize(1, 1).raw().toBuffer();
+              await mkdir(join(directory, 'input'));
+              const retained = join(directory, 'input/original.' + (meta.format === 'jpeg' ? 'jpg' : meta.format));
+              await writeFile(retained, bytes, { flag: 'wx', mode: 0o600 });
+              delete opts.image;
+            } else {
+              if (!opts.image) throw new Error('新任务需要一张输入参考图');
+              const image = sharp(resolve(directory, opts.image), { limitInputPixels: 40_000_000 });
+              const meta = await image.metadata();
+              if (!['png', 'jpeg', 'webp'].includes(meta.format) || (meta.pages ?? 1) > 1) throw new Error('请选择单张 PNG、JPG 或 WebP 图片');
+              await image.resize(1, 1).raw().toBuffer();
+            }
+            const release = await acquireTaskLock(directory);
+            try { await saveRun(directory, await configureRun(opts, directory)); committed = true; }
+            finally { await release(); }
+            json({ name: opts.name, directory }, 201);
+          } finally { if (!committed) await rm(directory, { recursive: true, force: true }); }
+          return;
+        }
+        await task(opts.name, requestDir);
+        if (path === '/api/start') {
+          if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
+          starts.add(directory);
+          try { json({ pid: await start(opts), name: opts.name }, 202); }
+          finally { starts.delete(directory); }
+          return;
+        }
+        if (path === '/api/stop') {
+          const run = await readRun(directory, opts.name), worker = await jsonFile(directory, '.web-worker.json');
+          const live = await taskStatus(opts);
+          if (!live.runnerAlive || !live.lockHeld || !worker || worker.runnerId !== run?.runner?.id) throw new Error('当前没有可由网页停止的运行任务');
+          await atomicJSON(join(directory, '.web-cancel.json'), { token: worker.token });
+          json({ message: '已请求停止，将保留产物和续跑记录' }); return;
+        }
+        json({ error: 'Not found' }, 404); return;
+      }
+      if (path === '/healthz') { json({ status: 'ok', application: 'astra-layering', mode: 'workbench' }); return; }
+      if (path === '/api/settings') { json(settings); return; }
+      if (path.startsWith('/api/config/')) { json(await configAPI(path, url.searchParams)); return; }
+      if (path === '/api/tasks') {
+        const entries = (await readdir(requestDir, { withFileTypes: true })).filter(entry => entry.isDirectory() && !entry.name.startsWith('.'));
+        const tasks = [];
+        for (const entry of entries) {
+          try { const directory = await task(entry.name, requestDir); tasks.push(await summary(directory, entry.name, requestDir)); }
+          catch (error) { tasks.push({ name: entry.name, status: 'failed', error: String(error) }); }
+        }
+        json({ directory: requestDir, tasks }); return;
+      }
+      if (path === '/api/task' || path === '/artifact') {
+        if (url.searchParams.get('dir') !== requestDir) { json({ error: '追踪目录已改变，请刷新页面' }, 409); return; }
+        const name = url.searchParams.get('name') ?? '', directory = await task(name, requestDir);
+        if (path === '/api/task') { json(await snapshot(directory, name, requestDir)); return; }
+        const selected = url.searchParams.get('path') ?? '';
+        if (!artifactExtensions.test(selected) || selected.split('/').some(part => part.startsWith('.'))) throw new Error('不支持该产物类型');
+        const file = await safePath(directory, selected);
+        if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
+        const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream' };
+        // SVG may be authored by an agent. Keep it inert even when opened in a new tab.
+        response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
+        response.writeHead(200, { 'Content-Type': types[extname(file).toLowerCase()] });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/styles.css': 'styles.css' };
+      if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
+      const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
+      response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });
+      response.end(await readFile(join(root, 'web', staticFiles[path])));
+    } catch (error) {
+      if (response.headersSent) { response.destroy(); return; }
+      json({ error: (error as NodeJS.ErrnoException).code === 'EEXIST' ? '任务名已存在，请选择该任务续跑或使用新名称' : (error as Error).message }, 400);
+    }
+  });
+}
+if (import.meta.main) {
+  const { values } = parseArgs({ options: { port: { type: 'string', default: '4387' } } });
+  const port = Number(values.port);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('--port must be between 1 and 65535');
+  (await createWorkbench()).listen(port, '127.0.0.1', () => console.log(`AstraLayering workbench: http://127.0.0.1:${port}`));
+}

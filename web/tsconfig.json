@@ -1,0 +1,9 @@
+{
+  "extends": "../.agents/skills/live2d-maker/tsconfig.json",
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "../node_modules"
+  ]
+}
