@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="610" viewBox="0 0 1000 610"><title>胸部：支撑边固定，两侧与中线分工</title><style>text{font-family:"Noto Sans CJK SC","Noto Sans CJK",sans-serif;fill:#263747} .title{font-size:28px;font-weight:700} .label{font-size:20px} .note{font-size:17px} .mesh{fill:none;stroke:#91a7b7;stroke-width:1.4}</style><rect width="1000" height="100%" fill="#f7fafc"/>
+<text class="title" x="30" y="43">胸部：支撑边固定，两侧与中线分工</text>
+<text class="note" x="30" y="80">局部二维控制场示意，不表示真实软体或解剖体积。</text>
+<defs><clipPath id="region"><ellipse cx="304" cy="311" rx="231" ry="174"/></clipPath></defs>
+<ellipse cx="304" cy="311" rx="231" ry="174" fill="#e7f0f5" stroke="#6b8ca5" stroke-width="2"/>
+<g clip-path="url(#region)">
+<path d="M84.00,137.00 L84.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M115.00,137.00 L115.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M146.00,137.00 L146.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M177.00,137.00 L177.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M208.00,137.00 L208.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M239.00,137.00 L239.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M270.00,137.00 L270.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M301.00,137.00 L301.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M332.00,137.00 L332.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M363.00,137.00 L363.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M394.00,137.00 L394.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M425.00,137.00 L425.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M456.00,137.00 L456.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M487.00,137.00 L487.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M518.00,137.00 L518.00,485.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,143.00 L535.00,143.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,171.00 L535.00,171.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,199.00 L535.00,199.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,227.00 L535.00,227.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,255.00 L535.00,255.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,283.00 L535.00,283.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,311.00 L535.00,311.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,339.00 L535.00,339.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,367.00 L535.00,367.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,395.00 L535.00,395.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,423.00 L535.00,423.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,451.00 L535.00,451.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<path d="M73.00,479.00 L535.00,479.00" fill="none" stroke="#9db5c6" stroke-width="1"/>
+<rect x="50" y="130" width="510" height="45" fill="#b8d8dd" fill-opacity=".8"/>
+<path d="M73.00,175.00 L535.00,175.00" fill="none" stroke="#217e83" stroke-width="4"/>
+<path d="M304.00,175.00 L304.00,485.00" fill="none" stroke="#5f7590" stroke-width="2" stroke-dasharray="6 5"/>
+</g>
+<circle cx="173.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="206.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="239.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="272.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="305.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="338.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="371.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="404.00" cy="175.00" r="4" fill="#217e83"/>
+<circle cx="437.00" cy="175.00" r="4" fill="#217e83"/>
+<path d="M170.00,317.00 L116.00,317.00" fill="none" stroke="#ae5c80" stroke-width="4"/>
+<path d="M116.00,317.00 L127.00,310.00" fill="none" stroke="#ae5c80" stroke-width="3"/>
+<path d="M116.00,317.00 L127.00,324.00" fill="none" stroke="#ae5c80" stroke-width="3"/>
+<path d="M438.00,317.00 L492.00,317.00" fill="none" stroke="#ae5c80" stroke-width="4"/>
+<path d="M492.00,317.00 L481.00,310.00" fill="none" stroke="#ae5c80" stroke-width="3"/>
+<path d="M492.00,317.00 L481.00,324.00" fill="none" stroke="#ae5c80" stroke-width="3"/>
+<path d="M304.00,302.00 L319.00,302.00" fill="none" stroke="#ae5c80" stroke-width="4"/>
+<text class="note" x="175" y="122">上缘固定 / 精确网格行</text>
+<text class="note" x="239" y="388">中线少移动</text>
+<text class="note" x="119" y="512">周边位移与一阶变化平滑归零</text>
+<text class="label" x="590" y="151">胸 X：两侧挤压，中央少动</text>
+<text class="label" x="590" y="201">胸 Y：上缘固定，下方伸缩</text>
+<text class="label" x="590" y="251">胸夹：聚拢并保留饱满感</text>
+<text class="label" x="590" y="324">主级 → 位移</text>
+<text class="label" x="590" y="366">滞后级 → 宽高 / 聚拢</text>
+<text class="note" x="590" y="429">皮肤与贴身衣料共享连续映射</text>
+<text class="label" x="30" y="560">局部加密，区域外放疏；形变分工与相位差共同决定 Q 弹。</text>
+</svg>

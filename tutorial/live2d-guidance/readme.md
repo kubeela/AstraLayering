@@ -1,5 +1,7 @@
 # Live2D 真实资料索引
 
+正式教程入口：[formal：从光影到嘴部的实战教程](formal/README.md)。汇总 Jianma 工作台中验证过的光照／深度、根部固定摆动、胸部与眼部果冻、嘴部必做与可选枚举及布线方法，附视频时间索引、来源指纹、角色选择与已知反例。正式方法、条件目录和样片尚未通过的美术分别标注；原研究资料继续保留。
+
 本页索引原创分析与真实可解析数据。2026-10-20 起，已取得的三套来源模型及原包、头发和指体参考资料均纳入 Git，入口见 [Layering 参考资料维护](layering-references.md)。教程供流程设计者按专题学习，再落实到具体节点；执行者无需通读。此次不修改 generic，不引入动画实现；补全部分作为独立 part 的决定保持不变。
 
 当前入口：[原创研究总索引](../live2d-research/local-index.md)、[模型原件统一目录](model-originals/readme.md)及[逐文件清单](model-originals/manifest.json)。2026-10-08 已将 Milly/Lier/樱桃的 35 文件及两份原 ZIP 复制到 `model-originals/`，与旧副本和 ZIP 成员逐项核对哈希；旧 `local-assets/` 保留。以下旧整理记录中的 `local-assets` 路径是历史位置。五份云端包已收到 Library 引用，但下载有界重试报 HTTP 403，官方原件及全量 Oct1–8 报告尚未本机导入。
