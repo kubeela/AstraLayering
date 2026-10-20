@@ -1,8 +1,15 @@
+import { existsSync } from 'node:fs';
 import { isAbsolute, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const workflowsDirectory = fileURLToPath(new URL('../', import.meta.url));
-export const runsDirectory = resolve(workflowsDirectory, '..');
+// The repository marker is specific to this application, not an arbitrary enclosing Git repo.
+export function defaultRunsDirectory(skill: string): string {
+  const repository = resolve(skill, '../../..');
+  return existsSync(join(repository, 'web/server.ts')) && existsSync(join(repository, 'pnpm-workspace.yaml'))
+    ? join(repository, '.run') : resolve(skill, '../.run');
+}
+export const runsDirectory = defaultRunsDirectory(workflowsDirectory);
 
 export function resolveRunsDirectory(dir = runsDirectory): string {
   if (!isAbsolute(dir)) throw new Error('--dir 必须是运行根目录的绝对路径。');

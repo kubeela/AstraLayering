@@ -15,9 +15,9 @@
 Krita：/绝对路径/krita
 ```
 
-需要 Node.js 24.12+、pnpm 10.33.0、可用的 Codex 原生生图环境及 Krita。Agent 的安装、`.env` 配置与操作方法见 [SKILL.md](.agents/skills/live2d-maker/SKILL.md)。当前使用命令行，后续计划提供可视化前端。
+需要 Node.js 24.12+、pnpm 10.33.0、可用的 Codex 原生生图环境及 Krita。Agent 的安装、`.env` 配置与操作方法见 [SKILL.md](.agents/skills/live2d-maker/SKILL.md)。也可以在仓库根目录运行 `pnpm install`、`pnpm web`，打开终端显示的网址，上传角色图并运行或续跑任务；详细说明见 [工作台](web/README.md)。
 
-运行数据默认放在 skill 同级的 `<name>/`，不放在 skill 内；管线参数 `--dir /绝对路径/运行根目录` 可更改位置，相对输入从该目录下的 `<name>/` 解析。
+完整仓库的运行数据默认放在 `<仓库>/.run/<name>/`，独立安装时放在 `<skill上一级>/.run/<name>/`，不放在 skill 内；管线参数 `--dir /绝对路径/运行根目录` 可更改位置，相对输入从该目录下的 `<name>/` 解析。
 
 ## 成果
 

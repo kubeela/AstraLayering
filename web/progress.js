@@ -1,5 +1,5 @@
 // Display-only definitions, matched to the existing preparation, part and raster runners.
-// These sample statuses do not read or modify a live run, or schedule individual steps.
+// Execution states are supplied by the read-only task snapshot; these are labels only.
 export const groupPhases = [
   ['outline', '轮廓绘制'], ['review', '轮廓复核'], ['reduction', '同层去重'],
   ['completion', '遮挡补全'], ['completionCheck', '补全检查'], ['children', '直属结构拆分'],
@@ -7,29 +7,29 @@ export const groupPhases = [
 
 const step = (id, title, status, children = [], note = '') => ({ id, title, status, children, note });
 const partSteps = clothing => [
-  step('preparation', '准备参考', 'done', clothing
-    ? [step('clothing', '提取纯衣服参考', 'done')]
-    : [step('standard', '标准参考 · 按需调整姿态', 'done', [],
+  step('preparation', '准备参考', 'pending', clothing
+    ? [step('clothing', '提取纯衣服参考', 'pending')]
+    : [step('standard', '标准参考 · 按需调整姿态', 'pending', [],
         '未启用 --standard 时将原图保存为 standard.png；启用后先判断姿态，符合则复制，否则调整。之后进入参考判断与简化。'),
-      step('simplified', '判断并简化角色', 'done'), step('base', '生成素体参考', 'done')]),
-  step('initial', '首次分组', 'done'),
-  step('layers', '逐层拆分', 'done', groupPhases.map(([id, title]) => step(id, title, 'done')),
+      step('simplified', '判断并简化角色', 'pending'), step('base', '生成素体参考', 'pending')]),
+  step('initial', '首次分组', 'pending'),
+  step('layers', '逐层拆分', 'pending', groupPhases.map(([id, title]) => step(id, title, 'pending')),
     '每层先完成轮廓和复核，再同层去重；补全、检查和直属结构拆分完成后进入下一层。终止 part 不再拆子组。'),
-  step('merge', '合成分块预览', 'done'),
-  step('occlusion', '遮挡深度规划', 'done'),
+  step('merge', '合成分块预览', 'pending'),
+  step('occlusion', '遮挡深度规划', 'pending'),
 ];
 
 const rasterSteps = clothing => [
-  step('step01', clothing ? '衣服分件、补全与拼装' : '分层、补全与 Krita 交付', 'done', [],
+  step('step01', clothing ? '衣服分件、补全与拼装' : '分层、补全与 Krita 交付', 'pending', [],
     '按部件生成控制图、提取与补全，再对齐、拼装和逐层验收。绘制过程由同一 agent 完成。'),
-  step('step02', clothing ? '衣服边缘与衔接修画' : '边缘柔化与去锯齿', clothing ? 'running' : 'done', [
-    step('draw', '边缘修画', 'done'),
-    step('review-01', '第 1 轮 review', 'done'),
-    step('repair-01', '第 1 轮修复', clothing ? 'running' : 'done'),
-    step('review-02', '第 2 轮 review', clothing ? 'pending' : 'done'),
-    step('repair-02', '第 2 轮修复', clothing ? 'pending' : 'done'),
+  step('step02', clothing ? '衣服边缘与衔接修画' : '边缘柔化与去锯齿', 'pending', [
+    step('draw', '边缘修画', 'pending'),
+    step('review-01', '第 1 轮 review', 'pending'),
+    step('repair-01', '第 1 轮修复', 'pending'),
+    step('review-02', '第 2 轮 review', clothing ? 'pending' : 'pending'),
+    step('repair-02', '第 2 轮修复', clothing ? 'pending' : 'pending'),
   ], 'review 通过可提前结束；需要修复时交回绘制者。最多两轮，第二轮修复后不再 review。全部结束后 step02 才完成。'),
-  ...(clothing ? [] : [step('step03', '去除连体服、补全身体底层', 'done')]),
+  ...(clothing ? [] : [step('step03', '去除连体服、补全身体底层', 'pending')]),
 ];
 
 export const pipelineSteps = [
@@ -50,7 +50,7 @@ export function groupLayers(groups) {
   return layers;
 }
 
-// Concrete archived outputs, kept separate from the display-only execution statuses.
+// Known artifact contracts; the UI only displays files present in the selected task.
 const image = (path, label) => ({ path, label, kind: 'image' });
 const file = (path, label) => ({ path, label, kind: 'file' });
 const rasterDelivery = (pipeline, stepId, png, kra) => [
@@ -90,17 +90,9 @@ export const stepArtifacts = [
       image('character-assembly/step01/final-overall-comparison.jpg', '最终参考对照')],
   },
 ];
-export const generationExample = [
-  image('clothing-raster-layering/images/part-neutral-input.png', '灰底输入'),
-  image('clothing-raster-layering/images/part-control.png', 'RGB 控制图'),
-  image('clothing-raster-layering/images/part-generated.png', '生成候选'),
-];
-export const layerSplitExample = [
-  image('clothing-raster-layering/images/depth-split-comparison.png', '跨深度拆层对照'),
-  image('clothing-raster-layering/images/depth-split-cutline.png', '拆层分界'),
-];
-export const repairExamples = [
-  image('clothing-raster-layering/images/repair-left-cuff.png', '左袖口修画'),
-  image('clothing-raster-layering/images/repair-right-cuff.png', '右袖口修画'),
-  image('clothing-raster-layering/images/repair-gauze.png', '尖纱修画'),
-];
+
+for (const index of [1, 3]) {
+  const pipeline = index === 1 ? "raster-layering" : "clothing-raster-layering";
+  for (const phase of ["review-01", "repair-01", "review-02", "repair-02"])
+    stepArtifacts[index][phase] = [file(`${pipeline}/step02/${phase}.md`, phase + " 报告")];
+}
