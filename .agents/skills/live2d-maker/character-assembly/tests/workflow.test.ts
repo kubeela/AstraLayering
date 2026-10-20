@@ -76,12 +76,12 @@ test('dry-run 展开组装专用提示词与绝对路径，不混入拆层和深
   await assert.rejects(stat(f.output), { code: 'ENOENT' });
 });
 
-test('只调一次 high 绘制 agent，无 reviewer 和深度工具；完整交付才完成', async t => {
+test('只调一次 medium 绘制 agent，无 reviewer 和深度工具；完整交付才完成', async t => {
   const f = await fixture(t); let calls = 0;
   const agent = async (request: AgentRequest) => {
     calls++;
     assert.equal(request.directory, f.output);
-    assert.equal(request.model, 'gpt-6-astra'); assert.equal(request.effort, 'xhigh');
+    assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'xhigh');
     assert.equal(request.threadId, undefined);
     assert.equal(request.occlusion, undefined); assert.equal(request.tools, undefined);
     assert.equal(rasterCodexConfig(request).mcp_servers, undefined);
@@ -122,11 +122,13 @@ test('中断恢复同一组装 thread；删 completed 重建 thread，只清理�
   for (const [kind, file] of Object.entries(f.inputs)) assert.equal(await readFile(file, 'utf8'), kind);
 });
 
-test('high 从环境配置读取，不使用固定值或上游绘制 thread', async t => {
+test('medium 从环境配置读取，不使用 high 配置或上游绘制 thread', async t => {
   const f = await fixture(t);
-  const environment = loadWorkflowEnvironment({ layering_high_model: 'custom-astra-high' }, f.root);
+  const environment = loadWorkflowEnvironment({
+    layering_medium_model: 'custom-sol-high', layering_high_model: 'custom-astra-xhigh',
+  }, f.root);
   await runWorkflow(f.options, { ...f.deps, environment, agent: async request => {
-    assert.equal(request.model, 'custom-astra'); assert.equal(request.effort, 'high');
+    assert.equal(request.model, 'custom-sol'); assert.equal(request.effort, 'high');
     assert.equal(request.threadId, undefined);
     return deliver(request);
   } });
