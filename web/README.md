@@ -15,8 +15,10 @@ pnpm web
 
 已连接真实内容：
 
-- `demos/jianma` 的人物和衣服 `groups.json`，按实际 group / part 层级展开。选择节点可查看对应 SVG，阶段卡提供归档图片与 KRA 文件。
-- 流程画布可展开每条管线的内部步骤。人物和衣服 part 展示参考准备、首次分组、逐层拆分、合成预览和深度规划；逐层拆分继续展示轮廓、复核、同层去重、补全、检查和直属结构拆分。下方可按真实树深度查看每个 group / part 并打开其 SVG。
+- 制作页面只保留一张流程图：输入角色图、人物和衣服的分块与绘制、最终穿戴组装。连线表示产物依赖，编号表示五条管线的执行顺序；不再切换 A/B 布局，也没有独立的步骤明细页。
+- 每个节点直接展示主要步骤与真实产物缩略图。点节点后，在同一个侧栏查看归档图、对照参考、打开 KRA 或 SVG；关闭侧栏即可回到完整流程图。窄窗口中侧栏置于图下。
+- `demos/jianma` 的人物和衣服 `groups.json`，在该侧栏按实际 group / part 层级展开。支持搜索全部部件、按树深度筛选和查看所选部件 SVG。部件说明可按需展开。
+- 流程节点内可展开子步骤。人物和衣服 part 展示参考准备、首次分组、逐层拆分、合成预览和深度规划；逐层拆分继续展示轮廓、复核、同层去重、补全、检查和直属结构拆分。展开后，依赖连线随节点尺寸调整。
 - raster 展示 step01、step02，以及 step02 内的绘制、两轮 review / 修复；人物另有 step03，组装只有一个 step01。review 通过可以提前结束；第二轮修复后不再 review。这里只增加进度预览，启动／恢复仍以整条管线为单位。
 - 所选 Git 版本的提示词 Markdown、工具 description 与 schema；支持本地工作区、已有分支／远端引用和提交历史，并可比较版本差异。读取历史版本时兼容 skill 目录与旧 `workflow-next` 目录。只读，不执行 checkout、fetch 或修改配置。
 
@@ -26,12 +28,9 @@ pnpm web
 
 截图：
 
-- [A：流程进度、部件树与产物工作台](demo-screenshots/01-workbench.png)
-- [B：管线与产物依赖画布](demo-screenshots/02-flow.png)
+- [完整流程图](demo-screenshots/01-flow.png)
+- [节点子步骤、产物与部件树](demo-screenshots/02-node-output.png)
 - [独立配置浏览页](demo-screenshots/03-config.png)
 - [新建任务](demo-screenshots/04-new-task.png)
-- [展开五条管线的子步骤](demo-screenshots/05-expanded-flow.png)
-- [part 的拆分层与 group 明细](demo-screenshots/06-part-progress.png)
-- [raster 的 review / 修复进度](demo-screenshots/07-raster-progress.png)
 
 验证了实际页面截图、图片加载、SVG 选择、目录选择持久化、Git 分支／提交切换、真实文件差异与只读边界；没有调用模型。
