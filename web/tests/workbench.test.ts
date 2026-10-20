@@ -65,14 +65,15 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
 test('snapshots distinguish artifacts, real group states, missing outputs, review pass, two repairs and dead runners', async t => {
   const f = await fixture(t), task = join(f.dir, 'test');
   await mkdir(task);
-  await put(task, 'part-layering/groups.json', JSON.stringify({ groups: [{ id: 'body', groups: [], steps: { outline: { status: 'completed' }, review: { status: 'running' } } }] }));
+  await put(task, 'part-layering/groups.json', JSON.stringify({ groups: [{ id: 'body', groups: [] }] }));
+  await put(task, 'part-layering/stages/outline/body.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
   await put(task, 'part-layering/preview.svg');
   let value = await snapshot(task, 'test', f.dir);
   assert.equal(value.status, 'untracked');
   assert.equal(value.pipelines[0].states.standard, 'pending');
   assert.equal(value.pipelines[0].states.merge, 'available');
   assert.equal(value.pipelines[0].groups[0].webPhases.outline, 'done');
-  assert.equal(value.pipelines[0].groups[0].webPhases.review, 'unconfirmed');
+  assert.equal(value.pipelines[0].groups[0].webPhases.review, 'pending');
   const prefix = 'clothing-raster-layering/step02/';
   for (const path of ['.completed', 'clothing-soft-edges.kra', 'report.md']) await put(task, prefix + path);
   await put(task, prefix + 'review-01.md', '结论：通过\n逐层核对完毕。');
