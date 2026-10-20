@@ -16,7 +16,7 @@ import { validateWorkflowOptions } from './workflow.ts';
 export type PartPipeline = {
   profile: PartProfile; imageHelp: string; preparationHelp: string;
   getPreparationDirectory(name: string, root?: string): string;
-  loadPreparedReferences(name: string, root?: string): Promise<PreparationReferences>;
+  loadPreparedReferences(name: string, root?: string, standard?: boolean): Promise<PreparationReferences>;
   prepare(input: PreparationInput, agents: Pick<CodexAgents, 'run'>, progress?: (message: string) => void): Promise<PreparationReferences>;
 };
 export type PartInput = { reference: PreparationInput; groups: GroupInput | GroupInput[] | null; maxDepth?: number };
@@ -30,6 +30,9 @@ export async function runPartPipeline(
   if (pipeline.profile.id === 'clothing-part-layering' && input.reference.image !== undefined) {
     throw new Error(`衣服 part 按 --name 读取上游，不接受 --image。请将简化穿衣角色图放到 ${join(pipelineDirectory(input.reference.runName, 'part-layering', input.reference.dir), 'references/simplified-subject.png')}，或先执行同名 part-layering。`);
   }
+  if (pipeline.profile.id === 'clothing-part-layering' && input.reference.standard !== undefined) {
+    throw new Error('--standard / --no-standard 只适用于人物 part 的 preparation；衣服按 --name 读取上游简化角色。');
+  }
   const directory = pipeline.getPreparationDirectory(input.reference.runName, input.reference.dir);
   toolCatalog(pipeline.profile.toolsDirectory);
   const agents = new CodexAgents({
@@ -37,7 +40,7 @@ export async function runPartPipeline(
   });
   const references = input.groups === null
     ? await pipeline.prepare(input.reference, agents, agentOptions.progress)
-    : await pipeline.loadPreparedReferences(input.reference.runName, input.reference.dir);
+    : await pipeline.loadPreparedReferences(input.reference.runName, input.reference.dir, input.reference.standard);
   const layering = await runLayering({
     profile: pipeline.profile, directory: dirname(directory), references, groups: input.groups,
     steps: adapters.steps ?? createLayeringSteps(agents), mergeSvg: adapters.mergeSvg,
@@ -60,6 +63,7 @@ export function parseRunArguments(args: string[] = process.argv.slice(2)) {
   const { values } = parseArgs({ args, options: {
     image: { type: 'string' }, name: { type: 'string' }, dir: { type: 'string' }, help: { type: 'boolean' },
     groups: { type: 'string' },
+    standard: { type: 'boolean' }, 'no-standard': { type: 'boolean' },
     jobs: { type: 'string', short: 'j' },
     agents: { type: 'string', short: 'a' },
     'max-depth': { type: 'string' },
@@ -78,7 +82,8 @@ export function parseRunArguments(args: string[] = process.argv.slice(2)) {
     throw new Error('--max-depth 必须是正整数');
   }
   if (values.dir !== undefined) resolveRunsDirectory(values.dir);
-  return { ...values, agentConcurrency, maxDepth };
+  if (values.standard && values['no-standard']) throw new Error('--standard 与 --no-standard 不能同时使用。');
+  return { ...values, standard: values['no-standard'] ? false : values.standard, agentConcurrency, maxDepth };
 }
 
 export function formatLayeringSummary(groups: GroupNode[]): string[] {
@@ -107,7 +112,7 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
   try {
     const values = parseRunArguments(args);
     if (values.help) {
-      console.log(`pnpm ${pipeline.profile.id} --name <运行名> ${pipeline.profile.id === 'part-layering' ? `[--image <${pipeline.imageHelp}>] ` : ''} [--dir <运行根目录绝对路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
+      console.log(`pnpm ${pipeline.profile.id} --name <运行名> ${pipeline.profile.id === 'part-layering' ? `[--image <${pipeline.imageHelp}>] [--standard | --no-standard] ` : ''} [--dir <运行根目录绝对路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
       console.log(pipeline.preparationHelp);
       console.log('provider、鉴权和内置 image_generation 工具由外部 Codex 配置。默认任务目录为 <skill上一级>/<name>/；--dir 指定运行根目录。输入相对路径以该根目录下的 <name>/ 为基准。');
       console.log('--groups 选择已有组及其子组；祖先须完成，可查看同层有效底稿复核去重，仅实际变化的部件及真实引用者扩入后续制作。省略时按层自动准备或续跑。');
@@ -117,7 +122,7 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
     } else {
       if (!values.name) throw new Error('需要 --name <运行名>');
       const { references, layering } = await runPartPipeline(pipeline, {
-        reference: { image: values.image, runName: values.name, dir: values.dir },
+        reference: { image: values.image, runName: values.name, dir: values.dir, standard: values.standard },
         groups: values.groups ? await readGroupInput(resolveInput(values.name, values.groups, values.dir)) : null, maxDepth: values.maxDepth,
       }, {}, { progress: console.log, agentConcurrency: values.agentConcurrency });
       console.log(`参考输出：${references.directory}`);

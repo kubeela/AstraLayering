@@ -1,18 +1,16 @@
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { pipelineDirectory } from '../shared/paths.ts';
 import { simplifiedCharacter } from '../shared/upstream.ts';
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { copyFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../shared/codex/agents.ts';
+import { clearPreparedParts, preparationHash as hash } from '../shared/part/preparation-cache.ts';
+import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
 
-export type PreparationInput = { image?: string; runName: string; dir?: string };
-export type PreparationReferences = {
-  directory: string; originalImage?: string; judgment: string; simplifiedSubject: string; baseSubject: string;
-};
+export type { PreparationInput, PreparationReferences };
 export type PreparationSteps = { extract(image: string, output: string, prompt: string): Promise<void> };
-const hash = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
 
 export function getPreparationDirectory(runName: string, root?: string): string {
   return join(pipelineDirectory(runName, 'clothing-part-layering', root), 'references');
@@ -68,6 +66,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   progress?: (message: string) => void): Promise<PreparationReferences> {
   const directory = getPreparationDirectory(input.runName, input.dir);
   if (input.image !== undefined) throw new Error('clothing-part-layering 按 --name 读取上游简化角色，不接受 --image；请将图片放到同名 part-layering/references/simplified-subject.png。');
+  if (input.standard !== undefined) throw new Error('--standard / --no-standard 只适用于人物 part 的 preparation；衣服按 --name 读取上游简化角色。');
   const image = await simplifiedCharacter(input.runName, input.dir);
   await mkdir(directory, { recursive: true });
   const refs = references(directory, image);
@@ -77,9 +76,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     return ready;
   }
   // A regenerated clothing reference cannot reuse decomposition of the previous image.
-  for (const entry of ['groups.json', 'parts', 'stages', 'observations', 'preview.svg', 'occlusion.json']) {
-    await rm(join(dirname(directory), entry), { recursive: true, force: true });
-  }
+  await clearPreparedParts(dirname(directory));
   const meta = await sharp(image).metadata();
   const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
     .replaceAll('{width}', String(meta.autoOrient.width)).replaceAll('{height}', String(meta.autoOrient.height));

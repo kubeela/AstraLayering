@@ -44,6 +44,13 @@ test('--agents / -a 兼容别名设置同一个 agent 上限', () => {
   }
 });
 
+test('人物 CLI 的标准化选项不把省略当成关闭', () => {
+  assert.equal(parseRunArguments([]).standard, undefined);
+  assert.equal(parseRunArguments(['--standard']).standard, true);
+  assert.equal(parseRunArguments(['--no-standard']).standard, false);
+  assert.throws(() => parseRunArguments(['--standard', '--no-standard']), /不能同时使用/);
+});
+
 test('预览缺失时用模拟步骤重建；实际入口复用完整事实且强制禁止模型进程', async t => {
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);

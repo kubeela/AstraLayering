@@ -95,3 +95,11 @@ test('changed cached references are not silently reused; loading missing referen
   await assert.rejects(loadPreparedReferences(f.runName), /参考已变化/);
   assert.equal(f.calls.length, 1);
 });
+
+test('衣服 preparation 不接受人物标准化选项', async t => {
+  const f = await fixture(t);
+  for (const standard of [true, false]) {
+    await assert.rejects(prepareReferences({ runName: f.runName, standard }, f.steps), /只适用于人物 part/);
+  }
+  assert.equal(f.calls.length, 0);
+});

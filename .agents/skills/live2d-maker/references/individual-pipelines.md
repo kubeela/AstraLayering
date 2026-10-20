@@ -20,9 +20,12 @@
 
 ```bash
 pnpm part-layering --name jianma --image /绝对路径/角色.png
+# 需要姿态标准化时追加 --standard；续跑省略则沿用保存值
 # part 完成后
 pnpm raster-layering --name jianma --krita /绝对路径/krita
 ```
+
+人物 preparation 始终提供 `references/standard.png`，后续简化和素体从它继续。`--no-standard` 可显式关闭已保存的标准化选项，但已有参考的输入和选项须通过[指纹校验](workflow-details.md#输入产物与续跑)。独立衣服入口不接受标准化选项。
 
 衣服路线使用同名人物 part 的简化穿衣角色图，不依赖人物 raster 完成：
 

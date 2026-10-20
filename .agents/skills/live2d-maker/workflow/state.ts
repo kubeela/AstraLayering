@@ -4,10 +4,11 @@ import { extname, join, relative } from 'node:path';
 import lockfile from 'proper-lockfile';
 import { pipelineIds, resolveInput, resolveRunsDirectory, taskDirectory, type PipelineId } from '../shared/paths.ts';
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
+import { readPreparationState } from '../part-layering/preparation-state.ts';
 
 export type TaskOptions = {
   name: string; dir?: string; image?: string; krita?: string;
-  from?: PipelineId; to?: PipelineId; jobs?: number;
+  from?: PipelineId; to?: PipelineId; jobs?: number; standard?: boolean;
 };
 export type PipelineProgress = {
   status: 'pending' | 'running' | 'completed' | 'failed';
@@ -15,7 +16,7 @@ export type PipelineProgress = {
 };
 export type TaskRun = {
   version: 1; name: string; dir: string; from: PipelineId; to: PipelineId;
-  image?: string; krita?: string; jobs: number;
+  image?: string; krita?: string; jobs: number; standard?: boolean;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   activePipeline?: PipelineId;
@@ -45,7 +46,7 @@ export async function readRun(directory: string, name: string): Promise<TaskRun 
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
   const run = JSON.parse(contents) as TaskRun;
   if (run.version !== 1 || run.name !== name || !run.pipelines || typeof run.pipelines !== 'object'
-    || !Number.isSafeInteger(run.jobs) || run.jobs < 1
+    || !Number.isSafeInteger(run.jobs) || run.jobs < 1 || (run.standard !== undefined && typeof run.standard !== 'boolean')
     || !['ready', 'running', 'completed', 'failed', 'interrupted'].includes(run.status)) {
     throw new Error('无效的总控记录：' + join(directory, 'run.json'));
   }
@@ -105,6 +106,11 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   const from = options.from ?? saved?.from ?? 'part-layering';
   const to = options.to ?? saved?.to ?? 'character-assembly';
   const selected = selectedPipelines(from, to);
+  if (options.standard !== undefined && !selected.includes('part-layering')) {
+    throw new Error('--standard / --no-standard 需要本次路线包含 part-layering；请用 --from part-layering 运行人物 preparation。');
+  }
+  const standard = options.standard ?? saved?.standard
+    ?? (await readPreparationState(join(directory, 'part-layering/references')))?.standard ?? false;
   const jobs = options.jobs ?? saved?.jobs ?? defaultAgentConcurrency;
   if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error('--jobs 必须为正整数。');
   const image = await originalImage(directory, options.image && resolveInput(options.name, options.image, options.dir));
@@ -112,7 +118,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
     version: 1, name: options.name, dir: resolveRunsDirectory(options.dir), from, to, jobs,
     status: 'ready', createdAt: now(), updatedAt: now(), pipelines: {},
   };
-  Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs });
+  Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs, standard });
   run.image = image ?? saved?.image;
   if (options.krita) run.krita = resolveInput(options.name, options.krita, options.dir);
   if (!run.krita && selected.some(id => id.includes('raster') || id === 'character-assembly')) {
