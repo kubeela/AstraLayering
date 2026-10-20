@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { chmod, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -52,6 +52,24 @@ test('主模型与生图分别鉴权；只填生图模型不启用，未补丁�
   assert.throws(() => loadWorkflowEnvironment({ layering_image_api_key: 'secret' }, root), /同时填写/);
   for (const invalid of ['0', '-1', '49.2', 'NaN']) assert.throws(() => loadWorkflowEnvironment({ layering_image_compact_threshold: invalid }, root), /正整数/);
   assert.throws(() => loadWorkflowEnvironment({ layering_medium_model: 'model-invalid-effort' }, root), /思考力度/);
+});
+
+test('图片压缩拒绝旧去图补丁，生图能力缓存不能绕过 v2 检查', { skip: process.platform === 'win32' }, async t => {
+  const root = await fixture(t);
+  const executable = join(root, 'codex-fixture');
+  const capabilities = { version: 1, image_provider: true, image_compaction: true };
+  const install = async (value: object) => {
+    await writeFile(executable, `#!${process.execPath}\nconsole.log(${JSON.stringify(JSON.stringify(value))});\n`);
+    await chmod(executable, 0o755);
+  };
+  await install(capabilities);
+  const provider = loadWorkflowEnvironment({ layering_codex_path: executable,
+    layering_image_base_url: 'https://images.example/v1', layering_image_api_key: 'fixture' }, root);
+  await checkCodexCapabilities(provider);
+  const compact = loadWorkflowEnvironment({ layering_codex_path: executable, layering_image_compact_threshold: '49' }, root);
+  await assert.rejects(checkCodexCapabilities(compact), /补丁能力检查/);
+  await install({ ...capabilities, image_compaction_version: 2 });
+  await checkCodexCapabilities(compact);
 });
 
 test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺产物诊断带最后消息', async t => {

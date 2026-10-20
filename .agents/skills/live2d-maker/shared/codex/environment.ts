@@ -84,7 +84,9 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
   const executable = options.codexPathOverride;
   const instruction = '请先执行 pnpm build:codex，并在 live2d-maker/.env 设置 layering_codex_path 指向生成的补丁版 Codex。';
   if (!executable) throw new Error(`自定义生图或按图片数 compact 需要补丁版 Codex。${instruction}`);
-  let check = checkedCapabilities.get(executable);
+  const needsVisualCompaction = settings.imageCompactThreshold !== undefined;
+  const cacheKey = `${executable}\0${needsVisualCompaction ? 'visual-compaction-v2' : 'image-provider'}`;
+  let check = checkedCapabilities.get(cacheKey);
   if (!check) {
     check = (async () => {
       try {
@@ -92,10 +94,13 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
           { env: options.env, timeout: 10_000, maxBuffer: 64 * 1024 });
         const value = JSON.parse(stdout);
         if (value.version !== 1 || value.image_provider !== true || value.image_compaction !== true) throw new Error('unsupported');
+        if (needsVisualCompaction && value.image_compaction_version !== 2) {
+          throw new Error('visual compaction v2 required');
+        }
       } catch { throw new Error(`配置的 Codex 未通过 Layering 补丁能力检查。${instruction}`); }
     })();
-    checkedCapabilities.set(executable, check);
-    void check.catch(() => checkedCapabilities.delete(executable));
+    checkedCapabilities.set(cacheKey, check);
+    void check.catch(() => checkedCapabilities.delete(cacheKey));
   }
   await check;
 }
