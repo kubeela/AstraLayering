@@ -1,6 +1,6 @@
 # clothing-raster-layering
 
-运行根目录默认是 skill 上一级；`--dir <绝对路径>` 可更换根目录。下文 `<运行根目录>/<name>/` 为任务目录，不额外套 `.run`。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
+运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
 读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，再进行边缘修画与最多两轮 review。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
 
@@ -79,7 +79,7 @@ pnpm clothing-raster-layering --name jianma
 
 ```bash
 pnpm check
-pnpm --dir clothing-raster-layering test
+node --test clothing-raster-layering/tests/*.test.ts
 ```
 
 [steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。

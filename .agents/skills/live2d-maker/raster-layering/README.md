@@ -1,6 +1,6 @@
 # raster-layering
 
-运行根目录默认是 skill 上一级；`--dir <绝对路径>` 可更换根目录。下文 `<运行根目录>/<name>/` 为任务目录，不额外套 `.run`。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
+运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
 用 TypeScript 和 `@openai/codex-sdk` 顺序执行栅格分层流程。第一步读取已完成的 `part-layering` 产物，使用原生 `image_generation` 工具生图，在 Krita 中配准、修画和交付；第二步继续处理第一步 KRA，逐处柔化边缘与接缝并去锯齿；第三步在第二步完成 review 与修复后去除连体服，补出用于后续叠加衣服的身体底层。
 
@@ -23,14 +23,14 @@
 需要 Node 24.12+、pnpm、已安装的 Krita，以及可用的 Codex 登录配置和 `image_generation` 工具。
 
 ```bash
-cd /安装位置/live2d-maker/raster-layering
-pnpm --dir .. install --frozen-lockfile
+cd /安装位置/live2d-maker
+pnpm install --frozen-lockfile
 
 # 首次启动
-pnpm start --name jianma --krita /path/to/krita
+pnpm raster-layering --name jianma --krita /path/to/krita
 
 # 以后启动同一任务，只需要名字
-pnpm start --name jianma
+pnpm raster-layering --name jianma
 ```
 
 任务保存到 **`<运行根目录>/<name>/raster-layering/`**，不随 shell 的工作目录改变。`--name` 为单个目录名，支持中文、字母、数字、点、下划线和短横线，以字母或数字开头。输入和 Krita 的相对路径统一从 `<运行根目录>/<name>/` 解析。
@@ -41,22 +41,22 @@ pnpm start --name jianma
 
 `--krita` 首次必须显式指定可执行文件，可以是完整路径、AppImage 的 `AppRun`、macOS 应用内可执行文件或 Windows 可执行文件。后续从 `run.json` 读取，也可显式传入新路径并保存。脚本不从 PATH、环境变量或默认安装目录寻找 Krita，不自动下载、安装或启动显示服务器。
 
-前置检查调用该文件的 `--version`。Linux 无桌面环境时，由调用方准备显示环境；若已安装 Xvfb，可显式使用 `xvfb-run -a pnpm start ...`。
+前置检查调用该文件的 `--version`。Linux 无桌面环境时，由调用方准备显示环境；若已安装 Xvfb，可显式使用 `xvfb-run -a pnpm raster-layering ...`。
 
 ```bash
 # 仅检查指定 Krita
-pnpm start --krita /path/to/krita --check-krita
+pnpm raster-layering --krita /path/to/krita --check-krita
 
 # 查看首次执行的完整提示词和计划
-pnpm start --name jianma --krita /path/to/krita --dry-run
+pnpm raster-layering --name jianma --krita /path/to/krita --dry-run
 
 # 查看已有任务下一次启动的计划
-pnpm start --name jianma --dry-run
+pnpm raster-layering --name jianma --dry-run
 ```
 
 `--dry-run` 校验上游产物和 Krita，显示待执行提示词与重置计划，不写文件、不改标记、不调用模型。已完成步骤跳过。
 
-默认 `pnpm start` 会实际调用模型及生图工具，使用当前账号配置。SDK 通过本地 CLI 执行，保留 shell 工具并启用 `image_generation`，使用 `danger-full-access` / `never` 执行配置。
+默认 `pnpm raster-layering` 会实际调用模型及生图工具，使用当前账号配置。SDK 通过本地 CLI 执行，保留 shell 工具并启用 `image_generation`，使用 `danger-full-access` / `never` 执行配置。
 
 ## 文件与交付
 
@@ -135,18 +135,18 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 
 正常从第一步进入第二、三步也使用同一个 thread，仅切换该步的模型。SDK 发出 `thread.started` 时立即保存 ID。续跑需要同一 Codex 用户配置下保留的本地会话历史；复制任务目录 不会同时复制 SDK 会话。
 
-已完成第一步的任务直接执行 `pnpm start --name jianma`，会跳过第一步，在原 thread 中开始第二步，完成 review / 修复后进入第三步；已完成第二步及 review 的任务直接接续第三步。新任务顺序执行全部三步。
+已完成第一步的任务直接执行 `pnpm raster-layering --name jianma`，会跳过第一步，在原 thread 中开始第二步，完成 review / 修复后进入第三步；已完成第二步及 review 的任务直接接续第三步。新任务顺序执行全部三步。
 
 **重跑只需删除完成标记，然后照常用名字启动：**
 
 ```bash
 # 从第一步重跑：清空 step01 及所有后续步骤目录
 rm /运行根目录/jianma/raster-layering/step01/.completed
-pnpm start --name jianma
+pnpm raster-layering --name jianma
 
 # 从第二步重跑：保留 step01 与上游产物
 rm /运行根目录/jianma/raster-layering/step02/.completed
-pnpm start --name jianma
+pnpm raster-layering --name jianma
 ```
 
 重置会删除被重跑步骤及后续步骤的全部产物和日志，包括磁盘上已有但当前尚未接入提示词的后续步骤。上游产物及深度修正和任务配置保留，`threadId` 清空；开始执行时创建新 thread，后续步骤继续使用它。新会话会收到上游产物和前序已完成步骤的产物、报告路径。
@@ -171,4 +171,4 @@ pnpm start --name jianma
 
 共享安装、路径规则、工具配置和临时错误恢复见 [live2d-maker 使用说明](../SKILL.md)。所有相对输入路径从 `<运行根目录>/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
 
-多深度与工具协议见 [共享说明](../README.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。
+多深度与工具协议见 [共享说明](../references/workflow-details.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。

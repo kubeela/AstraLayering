@@ -1,6 +1,6 @@
 # clothing-part-layering
 
-运行根目录默认是 skill 上一级；`--dir <绝对路径>` 可更换根目录。下文 `<运行根目录>/<name>/` 为任务目录，不额外套 `.run`。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
+运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
 从**简化后的穿衣角色图**提取纯衣服，再生成可独立控制的衣服 part 色块及深度表，交给 [clothing-raster-layering](../clothing-raster-layering/README.md) 绘制分层 KRA。输入暂时固定为穿衣角色图，以保留衣服与角色身形、姿态和坐标的对应关系。
 
@@ -67,7 +67,7 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
 
 ```bash
 pnpm check
-pnpm --dir clothing-part-layering test
+node --test clothing-part-layering/tests/*.test.ts
 ```
 
 [run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 使用同版本 Codex SDK / App Server。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
