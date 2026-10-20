@@ -112,7 +112,7 @@ function inlineTreeRows(nodes,index,depth=0,flatView=false) {
  const view=groupViews[index];
  return nodes.map(node=>{
   const branch=!!node.groups?.length,open=branch&&view.expanded.has(node.id)&&!flatView;
-  return `<div class="tree-row ${view.selected===node.id?'selected':''}" style="--depth:${depth}" title="${esc(node.id)}">${branch&&!flatView?`<button class="tree-toggle" data-tree-expand="${esc(node.id)}" data-tree-stage="${index}" aria-label="${open?'收起':'展开'} ${esc(node.id)}" aria-expanded="${open}">${icon(open?'down':'chevron')}</button>`:'<span class="tree-toggle"></span>'}<button class="tree-label" data-tree-group="${esc(node.id)}" data-tree-stage="${index}">${icon(branch?'folder':'layers')}<span>${esc(node.id.split('/').at(-1))}</span><small>${branch?node.groups.length:node.kind}</small></button></div>${open?inlineTreeRows(node.groups,index,depth+1):''}`;
+  return `<div class="tree-row ${view.selected===node.id?'selected':''}" style="--depth:${depth}" title="${esc(node.id)}">${branch&&!flatView?`<button class="tree-toggle" data-tree-expand="${esc(node.id)}" data-tree-stage="${index}" aria-label="${open?'收起':'展开'} ${esc(node.id)}" aria-expanded="${open}">${icon(open?'down':'chevron')}</button>`:'<span class="tree-toggle"></span>'}<button class="tree-label" data-tree-group="${esc(node.id)}" data-tree-stage="${index}">${icon(branch?'folder':'layers')}<span>${esc(node.id.split('/').at(-1))}</span><small>${esc(branch?node.groups.length:node.kind||'group')}</small></button></div>${open?inlineTreeRows(node.groups,index,depth+1):''}`;
  }).join('');
 }
 function groupCycle(index) {
