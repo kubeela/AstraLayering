@@ -5,15 +5,24 @@
   "packageManager": "pnpm@10.33.0",
   "engines": { "node": ">=24.12.0" },
   "scripts": {
+    "start": "node workflow/run.ts",
     "part-layering": "node part-layering/run.ts",
     "raster-layering": "node raster-layering/run.ts",
     "clothing-part-layering": "node clothing-part-layering/run.ts",
     "clothing-raster-layering": "node clothing-raster-layering/run.ts",
     "character-assembly": "node character-assembly/run.ts",
     "check": "tsc",
-    "test": "node --test shared/tests/*.test.ts part-layering/tests/*.test.ts raster-layering/tests/*.test.ts clothing-part-layering/tests/*.test.ts clothing-raster-layering/tests/*.test.ts character-assembly/tests/*.test.ts",
+    "test": "node --test shared/tests/*.test.ts part-layering/tests/*.test.ts raster-layering/tests/*.test.ts clothing-part-layering/tests/*.test.ts clothing-raster-layering/tests/*.test.ts character-assembly/tests/*.test.ts workflow/tests/*.test.ts",
     "build:codex": "node tools/codex/build.ts"
   },
-  "dependencies": { "@openai/codex-sdk": "0.161.0", "sharp": "0.35.5" },
-  "devDependencies": { "@types/node": "24.19.1", "typescript": "7.0.2" }
+  "dependencies": {
+    "@openai/codex-sdk": "0.161.0",
+    "proper-lockfile": "4.1.2",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "@types/proper-lockfile": "4.1.4",
+    "typescript": "7.0.2"
+  }
 }

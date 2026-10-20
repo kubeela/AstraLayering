@@ -1,0 +1,145 @@
+import assert from 'node:assert/strict';
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { test, type TestContext } from 'node:test';
+import { runWorkflow as assemble } from '../../character-assembly/run.ts';
+import { isAssemblyInput } from '../../character-assembly/input.ts';
+import { steps as assemblySteps } from '../../character-assembly/steps.ts';
+import { runWorkflow as raster } from '../../raster-layering/run.ts';
+import { steps as rasterSteps } from '../../raster-layering/steps.ts';
+import { runWorkflow as clothing } from '../../clothing-raster-layering/run.ts';
+import { steps as clothingSteps } from '../../clothing-raster-layering/steps.ts';
+import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
+import { loadConfig } from '../../shared/raster/run-store.ts';
+import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
+import type { AgentRequest } from '../../shared/raster/agent.ts';
+import type { StepDefinition } from '../../shared/raster/steps.ts';
+import { acquireTaskLock } from '../state.ts';
+import { replaceThread } from '../recovery.ts';
+
+async function fixture(t: TestContext) {
+  const dir = await mkdtemp(join(tmpdir(), 'live2d-recovery-')), name = 'case', task = join(dir, name);
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  for (const file of ['raster-layering/step03/character-dressup-base.kra',
+    'clothing-raster-layering/step02/clothing-soft-edges.kra', 'part-layering/references/simplified-subject.png']) {
+    await mkdir(dirname(join(task, file)), { recursive: true }); await writeFile(join(task, file), 'upstream');
+  }
+  await writeFile(join(task, 'handoff.md'), '保留 draft.kra 中完成的衣领，继续导出 PNG 并核对图层。');
+  return { dir, task, options: { name, dir, krita: process.execPath },
+    deps: { environment: loadWorkflowEnvironment({}, dir), preflight: async (executable: string) => ({ executable, version: 'test' }) },
+    recovery: { name, dir, pipeline: 'character-assembly' as const, handoff: 'handoff.md', reason: '会话历史损坏' } };
+}
+async function deliver(request: AgentRequest, step: StepDefinition, thread = request.threadId ?? 'replacement') {
+  await request.onEvent({ type: 'thread.started', thread_id: thread });
+  for (const file of step.requiredFiles) {
+    await writeFile(join(request.directory, step.id, step.review && file === 'report.md' ? 'report.md.tmp' : file), 'fixture');
+  }
+  return { status: 'completed' as const, summary: 'done' };
+}
+
+test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之后中断续新 thread', async t => {
+  const f = await fixture(t), output = join(f.task, 'character-assembly');
+  await assert.rejects(assemble(f.options, { ...f.deps, agent: async request => {
+    await request.onEvent({ type: 'thread.started', thread_id: 'old-thread' });
+    await writeFile(join(output, 'step01/draft.kra'), 'painted pixels'); throw new Error('history damaged');
+  } }), /history damaged/);
+  const before = await readdir(join(output, 'step01'));
+  const archive = await replaceThread(f.recovery);
+  assert.equal(JSON.parse(await readFile(join(archive, 'run-before.json'), 'utf8')).threadId, 'old-thread');
+  assert.equal(await readFile(join(archive, 'step01/prompt.md'), 'utf8'), await readFile(join(output, 'step01/prompt.md'), 'utf8'));
+  assert.match(await readFile(join(archive, 'step01/error.txt'), 'utf8'), /history damaged/);
+  assert.deepEqual(await readdir(join(output, 'step01')), before);
+  assert.equal((await loadConfig(output, 'case', isAssemblyInput))!.threadId, null);
+  await assert.rejects(assemble(f.options, { ...f.deps, agent: async request => {
+    assert.equal(request.threadId, undefined);
+    assert.match(request.prompt, /旧 threadId：old-thread/);
+    assert.match(request.prompt, /保留 draft.kra 中完成的衣领/);
+    assert.ok(request.prompt.startsWith(await readFile(assemblySteps[0].prompt, 'utf8')));
+    await request.onEvent({ type: 'thread.started', thread_id: 'new-thread' });
+    throw new Error('interrupted again');
+  } }), /interrupted again/);
+  const config = (await loadConfig(output, 'case', isAssemblyInput))!;
+  assert.equal(config.threadId, 'new-thread'); assert.equal(config.threadHandoff!.replacementThreadId, 'new-thread');
+  await assemble(f.options, { ...f.deps, agent: async request => {
+    assert.equal(request.threadId, 'new-thread');
+    assert.ok(!request.prompt.includes('会话恢复交接'));
+    return deliver(request, assemblySteps[0]);
+  } });
+  assert.equal(await readFile(join(output, 'step01/draft.kra'), 'utf8'), 'painted pixels');
+  await assert.rejects(replaceThread(f.recovery), /没有 .running/);
+  // Deliberately deleting completion is still a full reset, not a handoff.
+  await rm(join(output, 'step01/.completed'));
+  await assert.rejects(replaceThread(f.recovery), /已请求重跑/);
+  await assemble(f.options, { ...f.deps, agent: async request => {
+    assert.equal(request.threadId, undefined); assert.ok(!request.prompt.includes('会话恢复交接'));
+    await assert.rejects(readFile(join(output, 'step01/draft.kra')), { code: 'ENOENT' });
+    return deliver(request, assemblySteps[0], 'reset-thread');
+  } });
+  assert.equal((await loadConfig(output, 'case', isAssemblyInput))!.threadHandoff, undefined);
+  await readFile(join(archive, 'run-before.json'));
+});
+
+test('锁定时不允许换 thread，空交接和 part 也被拒绝', async t => {
+  const f = await fixture(t), unlock = await acquireTaskLock(f.task);
+  await assert.rejects(replaceThread(f.recovery), /不能重复启动/);
+  await unlock();
+  await assert.rejects(replaceThread({ ...f.recovery, pipeline: 'part-layering' }), /仅适用于/);
+  await assert.rejects(replaceThread({ ...f.recovery, reason: ' ' }), /非空/);
+  await assert.rejects(assemble(f.options, { ...f.deps, agent: async request => {
+    await request.onEvent({ type: 'thread.started', thread_id: 'old-thread' }); throw new Error('stop');
+  } }));
+  await writeFile(join(f.task, 'handoff.md'), '  ');
+  await assert.rejects(replaceThread(f.recovery), /不能为空/);
+});
+
+for (const [pipeline, execute, definitions, upstream] of [
+  ['raster-layering', raster, rasterSteps, 'part-layering'],
+  ['clothing-raster-layering', clothing, clothingSteps, 'clothing-part-layering'],
+] as const) {
+  test(pipeline + ' 换 thread 接续修复包含原任务，reviewer 仍全新且第二轮修完结束', async t => {
+    const dir = await mkdtemp(join(tmpdir(), 'review-recovery-')), name = 'case', task = join(dir, name);
+    t.after(() => rm(dir, { recursive: true, force: true }));
+    await seedUpstream(name, upstream, dir);
+    const options = { name, dir, krita: process.execPath }, output = join(task, pipeline);
+    const deps = { environment: loadWorkflowEnvironment({}, dir), steps: definitions.slice(0, 2),
+      preflight: async (executable: string) => ({ executable, version: 'test' }) };
+    let call = 0;
+    await assert.rejects(execute(options, { ...deps, agent: async request => {
+      call++;
+      if (call <= 2) return deliver(request, definitions[call - 1], 'original');
+      if (call === 3) {
+        assert.equal(request.threadId, undefined);
+        await writeFile(join(output, 'step02/review-01.md.tmp'), '结论：需要修复\n袖口残色。');
+        return { status: 'completed', summary: 'reviewed' };
+      }
+      assert.equal(call, 4); assert.equal(request.threadId, 'original'); throw new Error('broken context');
+    } }), /broken context/);
+    await writeFile(join(task, 'handoff.md'), '当前在修复 review-01 的袖口残色；保留绘制。');
+    const report = await readFile(join(output, 'step02/review-01.md'));
+    await replaceThread({ name, dir, pipeline, handoff: 'handoff.md', reason: 'broken context' });
+    let resumed = 0;
+    await execute(options, { ...deps, agent: async request => {
+      resumed++;
+      if (resumed === 1) {
+        assert.equal(request.threadId, undefined);
+        const original = (await readFile(definitions[1].prompt, 'utf8')).replaceAll('step02/report.md', 'step02/report.md.tmp');
+        assert.ok(request.prompt.startsWith(original));
+        assert.match(request.prompt, /repair-01.md.tmp/); assert.match(request.prompt, /保留绘制/);
+        await request.onEvent({ type: 'thread.started', thread_id: 'replacement-draw' });
+        await writeFile(join(output, 'step02/repair-01.md.tmp'), '结论：已修复\n袖口已修画。');
+      } else if (resumed === 2) {
+        assert.equal(request.threadId, undefined); assert.ok(!request.prompt.includes('会话恢复交接'));
+        await request.onEvent({ type: 'thread.started', thread_id: 'fresh-review' });
+        await writeFile(join(output, 'step02/review-02.md.tmp'), '结论：需要修复\n领口需修画。');
+      } else {
+        assert.equal(resumed, 3); assert.equal(request.threadId, 'replacement-draw');
+        await writeFile(join(output, 'step02/repair-02.md.tmp'), '结论：已修复\n领口已修画。');
+      }
+      return { status: 'completed', summary: 'done' };
+    } });
+    assert.equal(resumed, 3); assert.deepEqual(await readFile(join(output, 'step02/review-01.md')), report);
+    await readFile(join(output, 'step02/.completed'));
+    assert.equal((await loadConfig(output, name))!.threadId, 'replacement-draw');
+  });
+}

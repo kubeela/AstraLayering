@@ -36,6 +36,7 @@ pnpm build:codex
 
 ```text
 <运行根目录>/<name>/
+├── run.json                # 总入口保存配置与进度；各管线仍按自己的文件恢复
 ├── input/                  # 用户首次提供的原图，后续管线不复制上游
 ├── part-layering/           # references、groups、parts、stages、occlusion
 ├── raster-layering/         # run.json、step01～step03
@@ -44,11 +45,11 @@ pnpm build:codex
 └── character-assembly/      # run.json、step01 穿戴组装
 ```
 
-默认运行根目录是 skill 上一级；四个入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。目录结构不额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物；组装入口读取人物 step03 KRA、衣服 step02 KRA 和人物 part 的简化穿衣参考。后续入口不再接受 `--input` 或另行提供图片。
+默认运行根目录是 skill 上一级；五个独立入口均可用 `--dir <绝对路径>` 指定其他运行根目录，启动后续管线和续跑时使用同一目录。目录结构不额外插入 `.run`。用户输入的绝对路径直接使用；相对路径统一相对于 `<运行根目录>/<name>/`，与 shell 当前目录无关。规则也适用于 `--groups` 和正常运行时的 `--krita`。单独 `--check-krita` 无任务名，请提供绝对路径。只有人物 part 接收 `--image`；衣服 part 读取同名人物 part 的 `references/simplified-subject.*`，两套 raster 分别读取同名对应 part 的产物；组装入口读取人物 step03 KRA、衣服 step02 KRA 和人物 part 的简化穿衣参考。后续入口不再接受 `--input` 或另行提供图片。
 
 任务名保留各自原有启动规则：part 接受单个目录名，raster 要求以字母或数字开头、只含字母、数字、点、下划线和短横线且不超过 128 字符。共享目录不额外收紧 part 的名称范围。
 
-首次原图保存为 `<运行根目录>/<name>/input/original.<扩展名>`。后续直接读取上游文件，不建立输入副本。入口各自独立，不自动启动上游；缺少产物时列出具体缺失路径，并提示先运行对应上游管线，或手动将产物放到这些位置。各管线的步骤路径以自身目录为基准。
+首次原图保存为 `<运行根目录>/<name>/input/original.<扩展名>`。后续直接读取上游文件，不建立输入副本。五个独立入口不自动启动上游；总入口 `pnpm start` 按所选范围顺序调用它们。缺少产物时列出具体缺失路径，并提示先运行对应上游管线，或手动将产物放到这些位置。各管线的步骤路径以自身目录为基准。
 
 
 part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 review 完成后先同层去重，再补全和分析子组。raster 以 `.running`、`.completed` 以及 review/repair Markdown 决定进度，`run.json` 保存配置和绘制 threadId。删除完成标记会重置该步及其后续步骤、重新建立绘制 thread；重跑清理仅发生在本管线步骤目录内；step01 写回上游 occlusion.json 的深度修正保留。`.running` 表示尚未完成，不代表进程仍在运行。
@@ -59,6 +60,7 @@ part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 r
 
 | 位置 | 职责 |
 | --- | --- |
+| `workflow/` | 总调度、后台启动、进度查询和保留产物的会话交接 |
 | `shared/part/` | 分组树、SVG、整层调度、去重、依赖恢复及 part agent |
 | `shared/raster/` | 上游定位、Krita 检查、顺序步骤、review 和标记恢复 |
 | `shared/codex/` | SDK / App Server 适配、日志、工具配置、并发和临时重试 |
