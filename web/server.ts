@@ -12,6 +12,7 @@ import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './fi
 import { snapshot, summary } from './snapshot.ts';
 import { launch } from './worker.ts';
 import { LayerCompositor } from './layer-compositor.ts';
+import { studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -189,6 +190,11 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (kind === 'kra') response.setHeader('Content-Disposition', 'attachment; filename="character-edited.kra"');
         response.writeHead(200, { 'Content-Type': kind === 'png' ? 'image/png' : 'application/octet-stream' });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      if (path === '/api/studio/project') {
+        if (url.searchParams.get('dir') !== requestDir) { json({ error: '项目目录已改变，请刷新后重新打开' }, 409); return; }
+        const name = url.searchParams.get('name') ?? '';
+        json(await studioProject(await task(name, requestDir), name, requestDir)); return;
       }
       if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
       if (path === '/studio-document') {

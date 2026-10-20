@@ -37,7 +37,7 @@
           /></label>
           <div class="file-actions">
             <button id="open-jianma">Jianma</button
-            ><button id="open-task">从任务打开</button>
+            ><button id="open-task">从项目加载</button>
           </div>
           <div id="document-info" hidden>
             <div class="document-heading">
@@ -54,6 +54,14 @@
             <button id="download-document" class="text-button">
               下载源文件 ↗
             </button>
+            <button
+              id="refresh-project"
+              class="text-button"
+              title="重新读取管线结果，并重置本次图层改动"
+              hidden
+            >
+              更新项目
+            </button>
           </div>
         </section>
         <section class="panel" id="maps-panel">
@@ -61,7 +69,7 @@
           <div class="map-row">
             <span class="map-icon">N</span>
             <div><b>法线</b><small id="normal-status">未绑定</small></div>
-            <label class="button small" title="绑定原尺寸法线 PNG"
+            <label class="button small map-bind" title="绑定原尺寸法线 PNG"
               >绑定<input
                 id="file-normal"
                 type="file"
@@ -79,7 +87,9 @@
           <div class="map-row">
             <span class="map-icon">D</span>
             <div><b>深度</b><small id="depth-status">未绑定</small></div>
-            <label class="button small" title="绑定白近黑远的原尺寸深度 PNG"
+            <label
+              class="button small map-bind"
+              title="绑定白近黑远的原尺寸深度 PNG"
               >绑定<input
                 id="file-depth"
                 type="file"
@@ -218,6 +228,11 @@
             <p>KRA / PSD · 拖放到此处</p>
             <label class="button" for="file-document">选择文件</label>
           </div>
+          <div id="project-empty" hidden>
+            <b id="project-empty-name"></b>
+            <p>角色组装结果尚未生成</p>
+            <button id="retry-project">更新项目</button>
+          </div>
           <div id="loading" role="status" hidden>正在打开…</div>
           <div id="split-line" hidden><span>原画</span><span>光照</span></div>
           <div id="light-overlay" hidden>
@@ -321,12 +336,11 @@
     </main>
     <dialog id="task-dialog">
       <form method="dialog">
-        <h2>从制作任务打开</h2>
+        <h2>从项目加载</h2>
         <button class="dialog-close" aria-label="关闭">×</button>
       </form>
-      <label class="field">任务<select id="task"></select></label>
-      <div id="task-files"></div>
-      <button id="import-task" class="primary">打开</button>
+      <div id="project-list" aria-label="项目列表"></div>
+      <p id="project-status" class="muted" role="status"></p>
     </dialog>
     <div id="toast" role="status"></div>
     <script type="module" src="./studio/app.js"></script>

@@ -541,6 +541,7 @@ input[type="range"]::-moz-range-thumb {
 }
 #loading,
 #empty-state,
+#project-empty,
 #drop-hint {
   position: absolute;
   inset: 0;
@@ -554,11 +555,13 @@ input[type="range"]::-moz-range-thumb {
   background: #20232a;
   z-index: 3;
 }
-#empty-state b {
+#empty-state b,
+#project-empty b {
   font-size: 16px;
   font-weight: 500;
 }
-#empty-state p {
+#empty-state p,
+#project-empty p {
   font-size: 12px;
   color: #9099aa;
   margin: 9px 0 22px;
@@ -968,4 +971,17 @@ dialog select {
   #layers {
     max-height: 240px;
   }
+}
+#refresh-project {
+  margin-left: 12px;
+}
+#project-list {
+  display: grid;
+  gap: 8px;
+  max-height: 55dvh;
+  overflow: auto;
+}
+.project-item {
+  text-align: left;
+  padding: 12px;
 }

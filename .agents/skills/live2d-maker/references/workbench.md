@@ -41,6 +41,7 @@ pnpm web --port 4388
 | `POST api/settings` | 设置追踪目录，JSON 见下方 |
 | `GET api/tasks` | 核对返回的 `directory` 和任务列表 |
 | `GET api/task?name=<编码后的name>&dir=<编码后的运行根目录>` | 核对该任务的路径、阶段、错误和实际产物 |
+| `GET api/studio/project?name=<编码后的name>&dir=<编码后的运行根目录>` | 读取该项目固定的组装工程和光照贴图是否已生成 |
 
 ```json
 {
@@ -54,6 +55,12 @@ POST 使用 `Content-Type: application/json`；`dir` 必须取自刚读取的设
 打开 `<工作台根URL>?name=<编码后的name>`。页面的 `?dir=` 不会修改追踪目录，不能靠拼这个参数完成连接。确认页上选中的任务名、运行根目录与真实阶段一致；任务不存在时页面可能显示另一条任务，不能据此声称连接成功。已有文件时打开一项实际产物，未生成文件时展示真实等待／运行状态。
 
 有浏览器工具时打开并检查页面，再给用户链接；没有打开浏览器的能力时提供链接并说明。若前端或远程访问不可用，报告具体原因并修复可恢复的问题，不能声称已打开；已在正常制作的管线继续运行。
+
+## 角色项目预览
+
+角色工作台用 `<工作台根URL>studio?project=<编码后的name>` 直接加载项目，无需用户再选文件。产物相对 `<dir>/<name>` 的路径由 [shared/studio-artifacts.ts](../shared/studio-artifacts.ts) 统一约定：组装工程为 `character-assembly/step01/character-assembled.kra`，原画为同目录 `character-assembled.png`；后续光照管线向 `lighting/normal.png`、`lighting/depth.png` 原子发布与该原画对应、同尺寸的贴图。
+
+法线 / 深度生成尚未接入时维持“待管线生成”，不从研究归档或过程文件中猜选。产物出现后，用户点“更新项目”即可重新读取并自动绑定。工作台仅消费这些输出，打开页面不启动生图。Jianma 归档快捷入口与当前项目入口分别保留，不能混用它们的原画和贴图。
 
 ## 运行、预览与巡检边界
 

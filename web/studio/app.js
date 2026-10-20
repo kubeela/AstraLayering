@@ -25,6 +25,8 @@ const state = {
   inputs: null,
   busy: false,
   layerBusy: false,
+  projectOpening: false,
+  waitingProject: null,
   generation: 0,
 };
 function toast(message) {
@@ -266,6 +268,17 @@ function sync() {
     hasDepth = !!state.source?.depth;
   $("#lighting-controls").disabled = !hasNormal || state.busy;
   $("#lighting-status").hidden = hasNormal;
+  const project = state.source?.project || state.waitingProject;
+  $("#lighting-status").textContent = project
+    ? project.files?.normal.available
+      ? "图层已更改，光照已暂停"
+      : "法线待管线生成"
+    : "绑定法线后启用光照";
+  $("#depth-status-hint").textContent = project
+    ? project.files?.depth.available
+      ? "图层已更改，投影已暂停"
+      : "深度待管线生成"
+    : "绑定深度后启用投影";
   $("#shadow").disabled = !hasDepth;
   $("#shadow-controls").disabled = !hasDepth || !state.settings.shadow;
   $("#depthScale").disabled = $("#number-depthScale").disabled =
@@ -286,6 +299,10 @@ function sync() {
   }
   for (const id of ["export-image", "export-recipe", "actual"])
     $("#" + id).disabled = !state.source || state.busy || state.layerBusy;
+  $("#refresh-project").disabled = $("#retry-project").disabled =
+    state.busy || state.layerBusy;
+  $("#open-task").disabled = state.busy || state.layerBusy;
+  $(".layer-panel").inert = state.projectOpening;
   for (const k of ["normal", "depth"]) {
     $("#file-" + k).disabled = $("#remove-" + k).disabled =
       state.busy || state.layerBusy;
@@ -338,7 +355,11 @@ $("#preset").onchange = (e) => {
   apply();
 };
 $("#reset").onclick = () => {
-  const key = state.source?.sample === "jianma" ? "jianma" : "anime";
+  const key =
+    state.source?.sample === "jianma" ||
+    state.source?.project?.name === "jianma"
+      ? "jianma"
+      : "anime";
   $("#preset").value = key;
   state.settings = { ...presets[key].values };
   apply();
@@ -521,9 +542,11 @@ const layers = new LayerPanel({
 function showSource() {
   const source = state.source;
   $("#document-info").hidden = !source;
-  $("#empty-state").hidden = !!source;
+  $("#empty-state").hidden = !!source || !!state.waitingProject;
+  $("#project-empty").hidden = !!source || !state.waitingProject;
+  $("#project-empty-name").textContent = state.waitingProject?.name || "";
   if (source) {
-    $("#document-name").textContent = source.name;
+    $("#document-name").textContent = source.project?.name || source.name;
     $("#document-meta").textContent =
       `${stage.source.w} × ${stage.source.h}${source.layers?.length ? " · " + source.layers.filter((l) => !l.mask).length + " 层" : ""}`;
   }
@@ -531,18 +554,37 @@ function showSource() {
     ? `${stage.source.w} × ${stage.source.h} px`
     : "未打开文件";
   $("#download-document").hidden = !source?.file;
+  $("#refresh-project").hidden = !source?.project;
+  $("#refresh-project").disabled = state.busy || state.layerBusy;
+  for (const el of document.querySelectorAll(".map-bind"))
+    el.hidden = !!source?.project || !!state.waitingProject;
   for (const k of ["normal", "depth"]) {
     $("#" + k + "-status").textContent = source?.[k]
-      ? source[k].name || "已绑定"
-      : "未绑定";
-    $("#remove-" + k).hidden = !source?.[k];
+      ? source.project
+        ? "管线产物 · 已绑定"
+        : source[k].name || "已绑定"
+      : source?.project
+        ? source.project.files[k].available
+          ? "图层已更改 · 已暂停"
+          : "待管线生成"
+        : state.waitingProject
+          ? "待管线生成"
+          : "未绑定";
+    $("#remove-" + k).hidden = !!source?.project || !source?.[k];
   }
   $("#map-validity").hidden =
     !source || source.layerKey === "baseline" || !!source.normal;
+  $("#map-validity").textContent = source?.project
+    ? source.project.files?.normal.available ||
+      source.project.files?.depth.available
+      ? "图层已更改；还原后恢复管线贴图"
+      : "图层已更改；贴图待管线生成"
+    : "图层已更改，请为当前合成图更新贴图";
   sync();
 }
-function begin(message) {
+function begin(message, projectOpening = false) {
   state.busy = true;
+  state.projectOpening = projectOpening;
   const id = ++state.generation;
   $("#loading").hidden = false;
   $("#loading").textContent = message;
@@ -552,6 +594,7 @@ function begin(message) {
 function finish(id) {
   if (id !== state.generation) return;
   state.busy = false;
+  state.projectOpening = false;
   $("#loading").hidden = true;
   sync();
 }
@@ -582,6 +625,7 @@ async function install(source, id, reset = true) {
       stage.pan = priorPan;
     }
     if (reset) {
+      state.waitingProject = null;
       source.layerDocument = Symbol("document");
       source.layerKey = "baseline";
       source.originalColor = source.color;
@@ -593,7 +637,10 @@ async function install(source, id, reset = true) {
     state.source = source;
     state.inputs = Object.fromEntries(hashes);
     if (reset) {
-      const key = source.sample === "jianma" ? "jianma" : "anime";
+      const key =
+        source.sample === "jianma" || source.project?.name === "jianma"
+          ? "jianma"
+          : "anime";
       state.settings = { ...presets[key].values };
       $("#preset").value = key;
       selectTool("move");
@@ -612,6 +659,8 @@ async function install(source, id, reset = true) {
     const u = new URL(location.href);
     u.searchParams.delete("sample");
     u.searchParams.delete("name");
+    u.searchParams.delete("project");
+    if (source.project) u.searchParams.set("project", source.project.name);
     if (source.sample) u.searchParams.set("name", source.sample);
     history.replaceState(null, "", u);
     if (reset) void layers.open(source);
@@ -685,7 +734,9 @@ $("#close-document").onclick = () => {
   layers.clear();
   state.generation++;
   state.busy = false;
+  state.projectOpening = false;
   state.source = null;
+  state.waitingProject = null;
   state.inputs = null;
   $("#loading").hidden = true;
   stage.clear();
@@ -695,6 +746,7 @@ $("#close-document").onclick = () => {
   const u = new URL(location.href);
   u.searchParams.delete("name");
   u.searchParams.delete("sample");
+  u.searchParams.delete("project");
   history.replaceState(null, "", u);
 };
 let dragDepth = 0;
@@ -784,97 +836,107 @@ async function openJianma() {
   }
 }
 $("#open-jianma").onclick = openJianma;
-let directory = "",
-  taskGeneration = 0;
-async function taskFiles() {
-  const id = ++taskGeneration,
-    name = $("#task").value;
-  $("#task-files").innerHTML = "";
-  $("#import-task").disabled = true;
-  if (!name) return;
-  const data = await get(
-    "./api/task?" + new URLSearchParams({ name, dir: directory }),
-  );
-  if (id !== taskGeneration) return;
-  const docs = data.files.filter((p) => /\.(kra|psd|png)$/i.test(p)),
-    maps = data.files.filter((p) => /\.png$/i.test(p));
-  $("#task-files").innerHTML = ["document", "normal", "depth"]
-    .map(
-      (k, i) =>
-        `<label class="field">${["角色文件", "法线（可选）", "深度（可选）"][i]}<select id="task-${k}"><option value="">${i ? "不绑定" : "选择 KRA / PSD / PNG"}</option>${(i ? maps : docs).map((p) => `<option value="${esc(p)}">${esc(p)}</option>`).join("")}</select></label>`,
-    )
-    .join("");
-  const file =
-    docs.find((p) => /assembled[^/]*\.kra$/i.test(p)) ||
-    docs.find((p) => /\.(kra|psd)$/i.test(p));
-  if (file) $("#task-document").value = file;
-  for (const k of ["normal", "depth"]) {
-    const p = maps.find((p) =>
-      new RegExp("(^|/)" + k + "[^/]*\\.png$", "i").test(p),
+let projectListGeneration = 0;
+async function openProject(name, dir) {
+  const id = begin("正在打开项目 " + name + "…", true);
+  try {
+    dir ??= (await get("./api/settings")).directory;
+    const project = await get(
+      "./api/studio/project?" + new URLSearchParams({ name, dir }),
     );
-    if (p) $("#task-" + k).value = p;
-  }
-  $("#import-task").disabled = false;
-}
-$("#task").onchange = () => taskFiles().catch((e) => toast(e.message));
-async function openTask(requestedName) {
-  $("#task-dialog").showModal();
-  try {
-    const data = await get("./api/tasks");
-    directory = data.directory;
-    $("#task").innerHTML =
-      '<option value="">选择任务</option>' +
-      data.tasks
-        .map((t) => `<option value="${esc(t.name)}">${esc(t.name)}</option>`)
-        .join("");
-    $("#task-files").innerHTML = "";
-    $("#import-task").disabled = true;
-    if (data.tasks.some((t) => t.name === requestedName)) {
-      $("#task").value = requestedName;
-      await taskFiles();
+    if (id !== state.generation) return;
+    if (!project.files.document.available) {
+      if (!state.source) {
+        state.waitingProject = { name, dir };
+        showSource();
+        const u = new URL(location.href);
+        u.searchParams.delete("name");
+        u.searchParams.delete("sample");
+        u.searchParams.set("project", name);
+        history.replaceState(null, "", u);
+        $("#task-dialog").close();
+      }
+      throw Error(name + "：角色组装结果尚未生成");
     }
-  } catch (e) {
-    toast(e.message);
-  }
-}
-$("#open-task").onclick = () => openTask();
-$("#import-task").onclick = async () => {
-  const path = $("#task-document")?.value;
-  if (!path) return toast("请选择角色文件");
-  const selected = {};
-  for (const k of ["normal", "depth"]) selected[k] = $("#task-" + k).value;
-  layers.clear();
-  const name = $("#task").value,
-    id = begin("正在打开任务产物…");
-  $("#task-dialog").close();
-  try {
-    const fetchFile = (p) =>
-      blob(
-        "./artifact?" + new URLSearchParams({ name, dir: directory, path: p }),
-      );
-    const [doc, normal, depth] = await Promise.all([
-      fetchFile(path),
-      selected.normal ? fetchFile(selected.normal) : null,
-      selected.depth ? fetchFile(selected.depth) : null,
+    const read = (kind) => {
+      const file = project.files[kind];
+      return file.available
+        ? blob(
+            "./artifact?" +
+              new URLSearchParams({
+                name,
+                dir,
+                path: file.path,
+                version: file.version,
+              }),
+          )
+        : null;
+    };
+    const [document, normal, depth] = await Promise.all([
+      read("document"),
+      read("normal"),
+      read("depth"),
     ]);
     if (id !== state.generation) return;
-    const file = new File([doc], path.split("/").at(-1));
-    const source = /\.png$/i.test(path)
-      ? { name: file.name, file, color: file, layers: [] }
-      : await openDocument(file);
-    await install({ ...source, normal, depth }, id);
+    const source = await openDocument(
+      new File([document], project.files.document.path.split("/").at(-1)),
+    );
+    if (id !== state.generation) return;
+    await install({ ...source, normal, depth, project }, id);
+    if (id === state.generation) $("#task-dialog").close();
   } catch (e) {
-    if (id === state.generation) toast(e.message);
+    if (id === state.generation) {
+      $("#project-status").textContent = e.message;
+      toast(e.message);
+    }
   } finally {
     finish(id);
+  }
+}
+async function chooseProject() {
+  const generation = ++projectListGeneration;
+  $("#task-dialog").showModal();
+  $("#project-list").replaceChildren();
+  $("#project-status").textContent = "正在读取项目…";
+  try {
+    const data = await get("./api/tasks");
+    if (generation !== projectListGeneration) return;
+    $("#project-status").textContent = data.tasks.length
+      ? "选择项目，自动读取组装结果和贴图"
+      : "暂无项目";
+    for (const project of data.tasks) {
+      const button = document.createElement("button");
+      button.className = "project-item";
+      button.textContent = project.name;
+      button.onclick = () => void openProject(project.name, data.directory);
+      $("#project-list").append(button);
+    }
+  } catch (e) {
+    if (generation === projectListGeneration)
+      $("#project-status").textContent = e.message;
+  }
+}
+$("#open-task").onclick = chooseProject;
+$("#retry-project").onclick = () => {
+  if (state.waitingProject && !state.busy)
+    void openProject(state.waitingProject.name, state.waitingProject.dir);
+};
+$("#refresh-project").onclick = () => {
+  if (state.source?.project && !state.busy && !state.layerBusy) {
+    const { name, dir } = state.source.project;
+    void openProject(name, dir);
   }
 };
 sync();
 // No test gallery, no test-image downloads. Jianma is a real layered document.
 const requested = new URLSearchParams(location.search);
-if (requested.get("name") === "jianma" || requested.get("sample") === "jianma")
+if (requested.get("project")) void openProject(requested.get("project"));
+else if (
+  requested.get("name") === "jianma" ||
+  requested.get("sample") === "jianma"
+)
   void openJianma();
-else if (requested.get("name")) void openTask(requested.get("name"));
+else if (requested.get("name")) void openProject(requested.get("name"));
 window.addEventListener("pagehide", () => {
   layers.clear(true);
   cancelAnimationFrame(frame);
@@ -884,6 +946,7 @@ window.studioDiagnostics = () => ({
   renderer: rendererVersion,
   document: state.source?.name,
   sample: state.source?.sample,
+  project: state.source?.project?.name,
   layers: state.source?.layers?.length || 0,
   layerSession: layers.session,
   layerRevision: layers.revision,
