@@ -7,8 +7,9 @@ import { steps as clothingSteps } from '../.agents/skills/live2d-maker/clothing-
 import { steps as assemblySteps } from '../.agents/skills/live2d-maker/character-assembly/steps.ts';
 import { nextReviewTask } from '../.agents/skills/live2d-maker/shared/raster/review.ts';
 import { inventory, jsonFile, safePath, tail } from './files.ts';
+import { partProgress, phases } from './part-progress.ts';
 
-export const phases = ['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'];
+export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
 export type Status = 'done' | 'running' | 'pending' | 'failed' | 'interrupted' | 'available' | 'skipped' | 'unconfirmed';
 export const statusOf = (value?: string): Status => value === 'completed' ? 'done' : value === 'ready' ? 'pending' : ['running', 'failed', 'interrupted'].includes(value ?? '') ? value as Status : 'pending';
@@ -16,7 +17,8 @@ const flatten = (nodes: any[]): any[] => nodes.flatMap(node => [node, ...flatten
 function validateGroups(nodes: any[], depth = 0) {
   if (depth > 40 || !Array.isArray(nodes)) throw new Error('groups 层级无效');
   for (const node of nodes) {
-    if (!node || typeof node.id !== 'string') throw new Error('group 缺少 id');
+    if (!node || typeof node.id !== 'string' || !node.id || node.id.startsWith('/') || /[\\\0]/.test(node.id)
+      || node.id.split('/').some((segment: string) => !segment || segment === '.' || segment === '..')) throw new Error('group id 无效');
     if (node.groups !== undefined) validateGroups(node.groups, depth + 1);
   }
 }
@@ -52,9 +54,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
       try { validateGroups(document?.groups ?? []); groups = document?.groups ?? []; }
       catch (error) { errors.push(id + ': ' + String(error)); }
       const all = flatten(groups);
-      for (const node of all) {
-        node.webPhases = Object.fromEntries(phases.map(phase => [phase, node.steps?.[phase]?.status ? observed(node.steps[phase].status) : 'pending']));
-      }
+      await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined);
       states.initial = all.length ? 'available' : 'pending';
       const prep = await optional(id + '/references/preparation.json');
       states.preparation = prep ? 'available' : 'pending';
@@ -65,7 +65,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
       for (const phase of phases) {
         const values = all.map(node => node.webPhases[phase]);
         states[phase] = values.includes('failed') ? 'failed' : values.includes('running') ? 'running'
-          : values.includes('unconfirmed') ? 'unconfirmed' : values.length && values.every(v => v === 'done') ? 'done' : 'pending';
+          : values.includes('unconfirmed') ? 'unconfirmed' : values.length && values.every(v => v === 'done') ? 'done'
+            : values.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
       }
       const values = phases.map(phase => states[phase]);
       states.layers = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.includes('unconfirmed') ? 'unconfirmed'
@@ -121,7 +122,16 @@ export async function snapshot(directory: string, name: string, dir: string) {
   }
   const logs = await tail(directory, 'workflow.log');
   const worker = await optional('.web-worker.json');
-  return { ...record, files, pipelines, errors, logs,
+  // The URL version changes when an existing draft is rewritten, even if no log or filename changes.
+  const fileVersions: Record<string, string> = {};
+  const previewFiles = files.filter(path => /\.(svg|png|jpe?g|webp|md|json)$/i.test(path) && !path.includes('/agents/'));
+  for (let index = 0; index < previewFiles.length; index += 16) {
+    await Promise.all(previewFiles.slice(index, index + 16).map(async path => {
+      try { const info = await lstat(await safePath(directory, path)); fileVersions[path] = `${info.mtimeMs}:${info.size}`; }
+      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(path + ': ' + String(error)); }
+    }));
+  }
+  return { ...record, files, fileVersions, pipelines, errors, logs,
     canStop: !!(record.runnerAlive && record.lockHeld && worker?.runnerId === record.run?.runner?.id),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),
     reference: files.find(path => /^part-layering\/references\/simplified-subject\.(png|jpe?g|webp)$/i.test(path)),

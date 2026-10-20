@@ -96,3 +96,18 @@ for (const index of [1, 3]) {
   for (const phase of ["review-01", "repair-01", "review-02", "repair-02"])
     stepArtifacts[index][phase] = [file(`${pipeline}/step02/${phase}.md`, phase + " 报告")];
 }
+
+export function groupArtifacts(pipeline, group, depth) {
+ const svg = (folder, label) => [
+  image(`${pipeline}/${folder}/${group.id}.draft.svg`, `${label}草稿 · 未落稿`),
+  image(`${pipeline}/${folder}/${group.id}.svg`, `${label}正式稿 · 已落稿`),
+ ];
+ return {
+  outline: svg('stages/outline', '轮廓'),
+  review: [file(`${pipeline}/stages/review/${group.id}.review.json`, '复核 / 返修记录')],
+  reduction: [...svg('stages/outline-reduce', '去重'), file(`${pipeline}/stages/outline-reduce/layers/${depth}.json`, '同层去重记录')],
+  completion: [...svg('parts', '补全'), file(`${pipeline}/stages/completion-inputs/${group.id}.json`, '补全输入记录')],
+  completionCheck: [file(`${pipeline}/stages/completion-check/${group.id}.json`, '补全检查记录')],
+  children: [file(`${pipeline}/groups.json`, '分组树与分析记录')],
+ };
+}
