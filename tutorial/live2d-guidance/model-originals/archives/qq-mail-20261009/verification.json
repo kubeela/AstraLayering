@@ -1,0 +1,312 @@
+{
+  "verified_on": "2026-10-20",
+  "expected_emails": 25,
+  "downloaded_attachments": 25,
+  "attachment_bytes": 254857598,
+  "missing_emails": [],
+  "all_attachment_sizes_match": true,
+  "all_attachment_sha256_match": true,
+  "all_zip_crc_passed": true,
+  "volumes_complete": true,
+  "original_archive_hashes_match": true,
+  "first_subject_numbering": "1/19 is the valid first mail; the later total is 25",
+  "files": [
+    {
+      "email": 1,
+      "name": "momose_tutorial01.zip",
+      "bytes": 5827648,
+      "sha256": "882f957d139aae5c46d125c278c9d1ab24a3b97dd61099c7e970fb0ba64d30c5",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 2,
+      "name": "haru_greeter_ja_part01_of_04.zip",
+      "bytes": 11800951,
+      "sha256": "b6b6cb942b4eef4bb82aeb0f747e1e67b24540e947f51312107ee1fb91762804",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 3,
+      "name": "haru_greeter_ja_part02_of_04.zip",
+      "bytes": 11800951,
+      "sha256": "e409632153ce9f1b0ea1b843f34c6bd95ac75b752fa866af5789857170018cb2",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 4,
+      "name": "haru_greeter_ja_part03_of_04.zip",
+      "bytes": 11800951,
+      "sha256": "d50a3da73b103de6aa8389345fa6ddb15b728653f30719ed4c5866c4b5ce52bd",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 5,
+      "name": "haru_greeter_ja_part04_of_04.zip",
+      "bytes": 5566987,
+      "sha256": "753be1ebe9e24f8fa2e14c9ffeece0782973cc52c79ad8264642dd76a4e4965a",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 6,
+      "name": "hiyori_en_part01_of_04.zip",
+      "bytes": 11800897,
+      "sha256": "84252e13e06565aacccd1a93c46afdf2da7d89ec50af33d4a50c194af44edb59",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 7,
+      "name": "hiyori_en_part02_of_04.zip",
+      "bytes": 11800897,
+      "sha256": "afb2edc80e256437fd922ff3eba4e2ed5bd158ad811e5ecaacf4a3f5074b6e69",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 8,
+      "name": "hiyori_en_part03_of_04.zip",
+      "bytes": 11800897,
+      "sha256": "d4dcb482f4aa0382fe46d2ec5365acb0e80f039d2b645bda294f6b4bd20de2a0",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 9,
+      "name": "hiyori_en_part04_of_04.zip",
+      "bytes": 10796823,
+      "sha256": "0fde363f9128a337aa94c62fac16d20e727e0723ff1ac4371d478df80f8ea6b2",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 10,
+      "name": "koharu_haruto_ja_part01_of_02.zip",
+      "bytes": 11800902,
+      "sha256": "aff18903df250fdbc1f71c398257c70d2f7af21ba94cf3257d5286c617229adc",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 11,
+      "name": "koharu_haruto_ja_part02_of_02.zip",
+      "bytes": 11599181,
+      "sha256": "47c7125750337b514dfb3f32062a98c57891bb0df12b684c218e1e1fedc1996d",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 12,
+      "name": "mao_casualtutorial02_part01_of_07.zip",
+      "bytes": 11801095,
+      "sha256": "52041db30790d300e6275a2d1fd77202ef64f286dbee6769c2012b5995cb69ae",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 13,
+      "name": "mao_casualtutorial02_part02_of_07.zip",
+      "bytes": 11801095,
+      "sha256": "f11fc962b9a412175d6efd982e2b3a33cbc47c10acf84cea74f65cfa75d1c32d",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 14,
+      "name": "mao_casualtutorial02_part03_of_07.zip",
+      "bytes": 11801095,
+      "sha256": "94c91d8da7bde0ff6d87b1d16dc43e174b637eac665699b808f85c13c8d051c4",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 15,
+      "name": "mao_casualtutorial02_part04_of_07.zip",
+      "bytes": 11801095,
+      "sha256": "cfae31a01c2b8560af8a388db3a23919a5ad7b37bd7f43206c2befae8eede570",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 16,
+      "name": "mao_casualtutorial02_part05_of_07.zip",
+      "bytes": 11801095,
+      "sha256": "7f6e67d9d2719ba735c5114a38db91b913bcc38e8d742151c65db447ab8d6909",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 17,
+      "name": "mao_casualtutorial02_part06_of_07.zip",
+      "bytes": 11801095,
+      "sha256": "e5dfa35bd93b3c4d39d9d632b6620d300625b019153476df7a448366c055229c",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 18,
+      "name": "mao_casualtutorial02_part07_of_07.zip",
+      "bytes": 1337234,
+      "sha256": "09cf193bb7d334b4966abf884326d3a5d4da37e6bc4e740365ba9f87d86356f8",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 19,
+      "name": "miara_en_part01_of_04.zip",
+      "bytes": 11800888,
+      "sha256": "5e67cafc5a208bafd3e4a452d90db158fc2a0aa645e0d114978d78d70585e226",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 20,
+      "name": "miara_en_part02_of_04.zip",
+      "bytes": 11800888,
+      "sha256": "191f08640e7379a997ec5ff844ef1c5c4d4193e9081c2da7cfede6c40bd22d1b",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 21,
+      "name": "miara_en_part03_of_04.zip",
+      "bytes": 11800888,
+      "sha256": "fa1f0584248413d9cfb2232d269c598406673828f509bd26564ed2e29e233fc9",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 22,
+      "name": "miara_en_part04_of_04.zip",
+      "bytes": 4842490,
+      "sha256": "f8e38a06d1790619ace30cb36cf594c543b23f25c0bc300328042caff406601e",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 23,
+      "name": "natori_en_part01_of_03.zip",
+      "bytes": 11800875,
+      "sha256": "f63476c821352b1ea9bc90b82036eeaca4bb583734fb71944285e4509baf3bdf",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 24,
+      "name": "natori_en_part02_of_03.zip",
+      "bytes": 11800875,
+      "sha256": "fc94c40c878feb3f0980a879b51e96ef8e5987c442ad374ef52d6de19974b1b6",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    },
+    {
+      "email": 25,
+      "name": "natori_en_part03_of_03.zip",
+      "bytes": 2469805,
+      "sha256": "ee780b35c7a8cdef49394bf6adf95e082b91ecb75fdd142b4d1e3e05fc19c09b",
+      "mail_size_matches": true,
+      "zip_crc": "passed"
+    }
+  ],
+  "multipart_models": [
+    {
+      "name": "haru_greeter_ja.zip",
+      "volumes": 4,
+      "missing_volumes": [],
+      "ordered_content_bytes": 40966036,
+      "sha256": "3db5c9180fc8446f7d92eee13ea33f584e5d1308e101d7afa4fe3b037a0ed94e",
+      "original_hash_matches": true,
+      "attachments": [
+        "haru_greeter_ja_part01_of_04.zip",
+        "haru_greeter_ja_part02_of_04.zip",
+        "haru_greeter_ja_part03_of_04.zip",
+        "haru_greeter_ja_part04_of_04.zip"
+      ]
+    },
+    {
+      "name": "hiyori_en.zip",
+      "volumes": 4,
+      "missing_volumes": [],
+      "ordered_content_bytes": 46195926,
+      "sha256": "1e4254d561f2a151562aa67036d78e17e4ffee08869b8ce10ab6052a05e2b3a4",
+      "original_hash_matches": true,
+      "attachments": [
+        "hiyori_en_part01_of_04.zip",
+        "hiyori_en_part02_of_04.zip",
+        "hiyori_en_part03_of_04.zip",
+        "hiyori_en_part04_of_04.zip"
+      ]
+    },
+    {
+      "name": "koharu_haruto_ja.zip",
+      "volumes": 2,
+      "missing_volumes": [],
+      "ordered_content_bytes": 23398279,
+      "sha256": "a0f677361ea94d8266e3c195ecdc6251e9e49529174315af0640e8eb5d170594",
+      "original_hash_matches": true,
+      "attachments": [
+        "koharu_haruto_ja_part01_of_02.zip",
+        "koharu_haruto_ja_part02_of_02.zip"
+      ]
+    },
+    {
+      "name": "mao_casualtutorial02.zip",
+      "volumes": 7,
+      "missing_volumes": [],
+      "ordered_content_bytes": 72136139,
+      "sha256": "50d34c9831cd61041c742eb1dd380ba1b856f96ed69405ba430d7ca20008042d",
+      "original_hash_matches": true,
+      "attachments": [
+        "mao_casualtutorial02_part01_of_07.zip",
+        "mao_casualtutorial02_part02_of_07.zip",
+        "mao_casualtutorial02_part03_of_07.zip",
+        "mao_casualtutorial02_part04_of_07.zip",
+        "mao_casualtutorial02_part05_of_07.zip",
+        "mao_casualtutorial02_part06_of_07.zip",
+        "mao_casualtutorial02_part07_of_07.zip"
+      ]
+    },
+    {
+      "name": "miara_en.zip",
+      "volumes": 4,
+      "missing_volumes": [],
+      "ordered_content_bytes": 40241602,
+      "sha256": "021f44d062d7cc1cbe6ac13e25ef7e1b981db187b8b5c4af521f2cba3613d9a4",
+      "original_hash_matches": true,
+      "attachments": [
+        "miara_en_part01_of_04.zip",
+        "miara_en_part02_of_04.zip",
+        "miara_en_part03_of_04.zip",
+        "miara_en_part04_of_04.zip"
+      ]
+    },
+    {
+      "name": "natori_en.zip",
+      "volumes": 3,
+      "missing_volumes": [],
+      "ordered_content_bytes": 26068930,
+      "sha256": "e16660ca073498884363613a881b04d69616a2bc09523667dc5d07b6e3db2d9f",
+      "original_hash_matches": true,
+      "attachments": [
+        "natori_en_part01_of_03.zip",
+        "natori_en_part02_of_03.zip",
+        "natori_en_part03_of_03.zip"
+      ]
+    }
+  ],
+  "complete_archives": [
+    {
+      "name": "momose_tutorial01.zip",
+      "bytes": 5827648,
+      "sha256": "882f957d139aae5c46d125c278c9d1ab24a3b97dd61099c7e970fb0ba64d30c5",
+      "zip_crc": "passed",
+      "entries": 1
+    }
+  ],
+  "method": "MIME attachments decoded from the QQ webmail original-message page; no browser credentials or full mail headers saved",
+  "workflow_changes": false
+}

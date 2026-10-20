@@ -1,0 +1,127 @@
+[
+  {
+    "email": 1,
+    "name": "momose_tutorial01.zip",
+    "expectedBytes": 5827648
+  },
+  {
+    "email": 2,
+    "name": "haru_greeter_ja_part01_of_04.zip",
+    "expectedBytes": 11800951
+  },
+  {
+    "email": 3,
+    "name": "haru_greeter_ja_part02_of_04.zip",
+    "expectedBytes": 11800951
+  },
+  {
+    "email": 4,
+    "name": "haru_greeter_ja_part03_of_04.zip",
+    "expectedBytes": 11800951
+  },
+  {
+    "email": 5,
+    "name": "haru_greeter_ja_part04_of_04.zip",
+    "expectedBytes": 5566987
+  },
+  {
+    "email": 6,
+    "name": "hiyori_en_part01_of_04.zip",
+    "expectedBytes": 11800897
+  },
+  {
+    "email": 7,
+    "name": "hiyori_en_part02_of_04.zip",
+    "expectedBytes": 11800897
+  },
+  {
+    "email": 8,
+    "name": "hiyori_en_part03_of_04.zip",
+    "expectedBytes": 11800897
+  },
+  {
+    "email": 9,
+    "name": "hiyori_en_part04_of_04.zip",
+    "expectedBytes": 10796823
+  },
+  {
+    "email": 10,
+    "name": "koharu_haruto_ja_part01_of_02.zip",
+    "expectedBytes": 11800902
+  },
+  {
+    "email": 11,
+    "name": "koharu_haruto_ja_part02_of_02.zip",
+    "expectedBytes": 11599181
+  },
+  {
+    "email": 12,
+    "name": "mao_casualtutorial02_part01_of_07.zip",
+    "expectedBytes": 11801095
+  },
+  {
+    "email": 13,
+    "name": "mao_casualtutorial02_part02_of_07.zip",
+    "expectedBytes": 11801095
+  },
+  {
+    "email": 14,
+    "name": "mao_casualtutorial02_part03_of_07.zip",
+    "expectedBytes": 11801095
+  },
+  {
+    "email": 15,
+    "name": "mao_casualtutorial02_part04_of_07.zip",
+    "expectedBytes": 11801095
+  },
+  {
+    "email": 16,
+    "name": "mao_casualtutorial02_part05_of_07.zip",
+    "expectedBytes": 11801095
+  },
+  {
+    "email": 17,
+    "name": "mao_casualtutorial02_part06_of_07.zip",
+    "expectedBytes": 11801095
+  },
+  {
+    "email": 18,
+    "name": "mao_casualtutorial02_part07_of_07.zip",
+    "expectedBytes": 1337234
+  },
+  {
+    "email": 19,
+    "name": "miara_en_part01_of_04.zip",
+    "expectedBytes": 11800888
+  },
+  {
+    "email": 20,
+    "name": "miara_en_part02_of_04.zip",
+    "expectedBytes": 11800888
+  },
+  {
+    "email": 21,
+    "name": "miara_en_part03_of_04.zip",
+    "expectedBytes": 11800888
+  },
+  {
+    "email": 22,
+    "name": "miara_en_part04_of_04.zip",
+    "expectedBytes": 4842490
+  },
+  {
+    "email": 23,
+    "name": "natori_en_part01_of_03.zip",
+    "expectedBytes": 11800875
+  },
+  {
+    "email": 24,
+    "name": "natori_en_part02_of_03.zip",
+    "expectedBytes": 11800875
+  },
+  {
+    "email": 25,
+    "name": "natori_en_part03_of_03.zip",
+    "expectedBytes": 2469805
+  }
+]
