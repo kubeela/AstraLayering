@@ -67,6 +67,14 @@ test('后台前置错误不假报启动；子管线错误完整进入总控', { 
   assert.match(status.error!, /手动放置/);
 });
 
+test('后台启动转发标准化的显式开启和关闭，不悄悄忽略选项', { skip: process.platform === 'win32' }, async t => {
+  const f = await fixture(t);
+  // The actual worker must reject these options for an assembly-only route before it signals ready.
+  for (const standard of [true, false]) {
+    await assert.rejects(startBackground({ ...f.options, standard }), /需要本次路线包含 part-layering/);
+  }
+});
+
 test('取消总调度会终止实际管线子进程及其工具进程，保留已有工程', { skip: process.platform === 'win32' }, async t => {
   const f = await fixture(t, true), controller = new AbortController();
   const running = runTask(f.options, { signal: controller.signal,

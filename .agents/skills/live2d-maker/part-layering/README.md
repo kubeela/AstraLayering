@@ -109,7 +109,9 @@ group 的组件覆盖按联合色块判断。踝饰等完全落在本组底形�
 
 顶部文件卡片悬浮提示“单击更换”，双向箭头交换 A/B，B 和 groups.json 右上角的 × 移除对应文件。“下载”可导出整图或当前放大区域的 PNG，保留对比方式、比例、描边、背景和显隐；整图按原图尺寸，当前区域按屏幕像素密度输出，均不包含工具栏和侧栏。
 
-参考准备先判断角色是否需要转换为目标参考图的现代日式二次元 Live2D 立绘画风：清晰动漫线稿、干净平涂、硬边二分光影。判断时同时传入原图和目标画风图，输出 `needsSimplification` 及一句依据 `reason`。姿态、构图、表情和背景不作为简化条件。需要简化时转换画风，否则复制原图；简化保留角色设计、衣装、配色与姿态，允许五官画法和头身比动漫化，不锁定原图的半写实脸型与渲染。随后统一进入素体换装，将角色图与连体服款式图一起传入，沿用上游画风、姿态、表情和比例。暂不做标准姿态调整。
+先准备 `standard.png`：默认直接复制原图（非 PNG 转换为 PNG）；`--standard` 时用 medium agent 判断嘴部张大、眼睛张开、正视站立、双手位于身体两侧，已符合则复制，否则使用 Codex 原生 image_generation 调整。不额外增加视觉 review，原有画风及换装提示词不变。
+
+随后判断角色是否需要转换为目标参考图的现代日式二次元 Live2D 立绘画风：清晰动漫线稿、干净平涂、硬边二分光影。判断时同时传入标准参考 `standard.png` 和目标画风图，输出 `needsSimplification` 及一句依据 `reason`。姿态、构图、表情和背景不作为简化条件。需要简化时转换画风，否则复制标准参考；简化保留角色设计、衣装、配色与姿态，允许五官画法和头身比动漫化，不锁定原图的半写实脸型与渲染。随后统一进入素体换装，将角色图与连体服款式图一起传入，沿用上游画风、姿态、表情和比例。
 
 简化和素体 agent 通过 SDK 配置显式启用 Codex 内置 `image_generation`。两个生图提示词文件只保留简短的绘制要求；`preparation-agents.ts` 统一附加执行规则，要求 agent 将绘制提示词原样传给生图工具，不自行扩写，只调用一次、生成一张图，生成后直接交付，不检查、返修或重试。这是提示词约束，当前 SDK 没有直接的工具调用次数上限。成功返回 `{ "savedPath": "实际图片路径", "error": null }`，失败返回 `{ "savedPath": null, "error": "失败原因" }`。程序读取真实文件，验证 PNG 签名，再保存到本次运行的 references 目录；这是文件有效性检查，不涉及视觉评价或模型返修。
 
@@ -137,15 +139,21 @@ group 的组件覆盖按联合色块判断。踝饰等完全落在本组底形�
 
 同层依赖满足的组全部进入队列，实际 agent 总并发默认 3，由 `--jobs` / `-j` 调整；组调度不另设并发上限。`layering.ts` 将同层任务固定成批次，前半段、整层去重、后半段依次完成，再发现下一层。`workflow.ts` 仍是通用并发执行器，相同 ID 在一次批次中只派发一次。`maxDepth: 1` 只处理深度 0。异常停止新派发，等待已启动任务收尾；后续依照已发布事实继续。
 
-默认入口内部调用 `prepareReferences({ image, runName }, steps)`；显式组入口调用只读的 `loadPreparedReferences(runName)`。`image` 为可选原图路径，输出位于`<运行根目录>/<runName>/part-layering/references/`：
+默认入口内部调用 `prepareReferences({ image, runName, dir, standard }, steps)`；显式组入口调用只读的 `loadPreparedReferences(runName, dir, standard)`。`image` 为可选原图路径，输出位于`<运行根目录>/<runName>/part-layering/references/`：
 
 - `../input/original.<原扩展名>`（相对本管线目录）：首次原图只保存在任务根的 input，用于续跑和补齐缺失参考。
-- `judgment.json`：参考判断结果，包含 `needsSimplification` 与 `reason`；存在则读取，不再调用判断。兼容不含 `reason` 的旧记录。
-- `simplified-subject.png`：需要简化时生成；不需要简化时直接复制原图，并保留原图扩展名。目标文件存在则跳过。
-- `base-subject.png`：以角色参考和连体服款式图为输入生成素体换装参考；存在则跳过。
+- `standard.png`：标准参考；默认不调姿态，开启 `--standard` 后先判断再按需调整。
+- `preparation.json`：标准化选项、可续用的姿态判断、各参考输入／输出指纹和当前拆分参考指纹。
+- `judgment.json`：原有画风判断，包含 `needsSimplification` 与 `reason`；兼容不含 `reason` 的旧记录。
+- `simplified-subject.png`：需要简化时生成，否则复制 standard.png；旧任务仍可沿用原扩展名。
+- `base-subject.png`：以简化参考和连体服款式图为输入生成素体换装参考。
 
-`steps` 提供 `judge(image, prompt)`、`simplify(inputImage, outputImage, prompt)` 和 `baseSubject(inputImage, outputImage, prompt)` 三个执行接口。每个需要执行的步骤会读取本目录内对应的提示词，并将完整内容作为 `prompt` 传入；跳过的步骤不读取提示词。
+续跑省略标准化选项会沿用保存值，`--no-standard` 显式关闭。已有输出须通过内容指纹校验；不匹配时保留文件并指出不能复用的路径。删除该参考后可重做，后续依赖仍逐项检查；重生内容不变则保留拆分，简化或素体内容改变后仅重置本人物 part 的拆分缓存。详见[续跑及旧任务兼容](../references/workflow-details.md#输入产物与续跑)。
 
+`steps` 提供 `judgeStandard(image, prompt)`、`standardize(inputImage, outputImage, prompt)`、`judge(image, prompt)`、`simplify(inputImage, outputImage, prompt)` 和 `baseSubject(inputImage, outputImage, prompt)` 五个执行接口。每个需要执行的步骤会读取本目录内对应的提示词，并将完整内容作为 `prompt` 传入；跳过的步骤不读取提示词。
+
+- `prompts/0-姿态判断.md`
+- `prompts/0-标准姿态.md`
 - `prompts/1-参考判断.md`
 - `prompts/2-简化图片.md`
 - `prompts/3-素体参考.md`

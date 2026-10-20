@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { pipelineIds, type PipelineId } from '../../shared/paths.ts';
 import { runTask } from '../runner.ts';
-import { acquireTaskLock, directoryFor, readRun, taskStatus } from '../state.ts';
+import { acquireTaskLock, configureRun, directoryFor, readRun, taskStatus } from '../state.ts';
 import { parseArguments } from '../run.ts';
 
 async function fixture(t: TestContext) {
@@ -21,13 +21,14 @@ const preflight = async (executable: string) => ({ executable, version: 'test' }
 
 test('总控保留输入与配置，严格按序推进；后续仅用 name 和 dir 恢复', async t => {
   const f = await fixture(t), first: PipelineId[] = [], second: PipelineId[] = [];
-  await runTask({ ...f.options, image: 'reference.png', jobs: 2 }, { preflight, execute: async (id, run) => {
+  await runTask({ ...f.options, image: 'reference.png', jobs: 2, standard: true }, { preflight, execute: async (id, run) => {
     first.push(id);
     const disk = (await readRun(f.directory, 'case'))!;
     assert.equal(disk.activePipeline, id);
     assert.equal(disk.status, 'running');
     assert.equal(run.jobs, 2);
     assert.equal(run.image, 'input/original.png');
+    assert.equal(run.standard, true); assert.equal(disk.standard, true);
     return { summary: id, output: join(f.directory, id, 'output') };
   } });
   assert.deepEqual(first, pipelineIds);
@@ -35,6 +36,7 @@ test('总控保留输入与配置，严格按序推进；后续仅用 name 和 d
   await rm(join(f.directory, 'reference.png'));
   await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async (id, run) => {
     second.push(id); assert.equal(run.jobs, 2); assert.equal(run.krita, process.execPath);
+    assert.equal(run.standard, true);
     return { summary: '管线自身检查并跳过', output: 'retained' };
   } });
   // Re-enter the pipeline's own authoritative checks, never trust a stale top-level completion alone.
@@ -106,7 +108,26 @@ test('CLI 区分只读查询、后台启动和恢复，拒绝冲突参数', () =
   assert.equal(parseArguments(['--name', 'case', '--background']).mode, 'background');
   for (const args of [ ['--name', 'case', '--dir', 'relative'], ['--name', 'case', '--json'],
     ['--name', 'case', '--status', '--background'], ['--name', 'case', '--status', '--image', 'x'],
-    ['--name', 'case', '--replace-thread', 'raster-layering'], ['--name', 'case', '--jobs', '0'] ]) {
+    ['--name', 'case', '--replace-thread', 'raster-layering'], ['--name', 'case', '--jobs', '0'],
+    ['--name', 'case', '--standard', '--no-standard'], ['--name', 'case', '--status', '--standard'],
+    ['--name', 'case', '--status', '--no-standard'] ]) {
     assert.throws(() => parseArguments(args));
   }
+});
+
+test('标准化选项保持未指定、开启和关闭的区别，并继承独立 part 的已存选项', async t => {
+  for (const [flags, expected] of [[[], undefined], [['--standard'], true], [['--no-standard'], false]] as const) {
+    const parsed = parseArguments(['--name', 'case', ...flags]);
+    assert.notEqual(parsed.mode, 'help');
+    if (parsed.mode !== 'help') assert.equal(parsed.options.standard, expected);
+  }
+  const f = await fixture(t);
+  assert.equal((await configureRun(f.options, f.directory)).standard, false);
+  const refs = join(f.directory, 'part-layering/references');
+  await mkdir(refs, { recursive: true });
+  await writeFile(join(refs, 'preparation.json'), JSON.stringify({ version: 1, standard: true, files: {} }));
+  assert.equal((await configureRun(f.options, f.directory)).standard, true);
+  assert.equal((await configureRun({ ...f.options, standard: false }, f.directory)).standard, false);
+  await assert.rejects(configureRun({ ...f.options, from: 'character-assembly', standard: true }, f.directory), /需要本次路线包含 part-layering/);
+  await assert.rejects(configureRun({ ...f.options, from: 'character-assembly', standard: false }, f.directory), /需要本次路线包含 part-layering/);
 });

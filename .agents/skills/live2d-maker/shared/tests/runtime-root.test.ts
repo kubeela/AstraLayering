@@ -39,6 +39,7 @@ test('同名任务可在不同 root 独立准备、读取上游、按 name 续�
     await sharp({ create: { width: 16, height: 16, channels: 4, background: '#c090a080' } }).png().toFile(join(task, 'ref.png'));
     let personCalls = 0, clothingCalls = 0;
     const person = { async judge() { personCalls++; return { needsSimplification: false }; },
+      async judgeStandard() { assert.fail('standard is disabled'); }, async standardize() { assert.fail('standard is disabled'); },
       async simplify() { assert.fail('not needed'); }, async baseSubject(input: string, output: string) { personCalls++; await copyFile(input, output); } };
     const refs = await preparePerson({ runName: name, dir, image: 'ref.png' }, person);
     assert.equal(refs.directory, join(task, 'part-layering/references'));

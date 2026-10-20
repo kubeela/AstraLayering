@@ -4,6 +4,7 @@ import { readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { CodexAgents, GeneratedImage } from '../shared/codex/agents.ts';
 import type { PreparationSteps } from './preparation.ts';
+import { checkStandardJudgment } from './preparation-state.ts';
 
 function imageTaskPrompt(drawingPrompt: string): string {
   return `【绘制提示词】\n${drawingPrompt.trim()}\n\n【执行规则】\n将绘制提示词原样传给 image_generation，不增补绘制要求。传入两张参考图，启用透明背景，输出 PNG。只调用一次；完成后直接返回路径，不检查、不返修、不重试。成功时 savedPath 为真实路径、error 为 null；失败时 savedPath 为 null、error 填原因。`;
@@ -31,6 +32,28 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
   };
   const styleReference = fileURLToPath(new URL('resources/简化参考图片.png', import.meta.url));
   return {
+    judgeStandard: async (image, prompt) => {
+      const result = await agents.run({
+        name: '姿态判断', prompt, images: [{ path: image, description: '角色原始参考图。' }],
+        outputSchema: {
+          type: 'object', properties: { needsAdjustment: { type: 'boolean' }, reason: { type: 'string' } },
+          required: ['needsAdjustment', 'reason'], additionalProperties: false,
+        },
+      });
+      return validateAgentOutcome(result, () => {
+        const decision: unknown = JSON.parse(result.text);
+        checkStandardJudgment(decision);
+        return decision;
+      });
+    },
+    standardize: async (image, output, prompt) => {
+      const result = await agents.run({
+        name: '标准姿态', imageGeneration: true, outputSchema: imageOutputSchema,
+        images: [{ path: image, description: '角色原始参考图。' }],
+        prompt: `【绘制提示词】\n${prompt.trim()}\n\n【执行规则】\n将绘制提示词原样传给 Codex 内置 image_generation，不增补绘制要求。传入这张参考图，输出 PNG。只调用一次；完成后直接返回路径，不检查、不返修。工具不可用或生成失败时返回 error，不用原图替代生成结果。成功时 savedPath 为真实路径、error 为 null；失败时 savedPath 为 null、error 填原因。`,
+      });
+      await validateAgentOutcome(result, () => saveImage(result.images.at(-1), output));
+    },
     judge: async (image, prompt) => {
       const result = await agents.run({
         name: '参考判断', prompt, images: [

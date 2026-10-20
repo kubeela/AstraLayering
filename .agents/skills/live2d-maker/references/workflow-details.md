@@ -10,6 +10,7 @@
 
 ```bash
 # 新任务；使用默认运行根目录，需自定义时追加 --dir /绝对路径/运行根目录
+# 需要标准化姿态时在此命令追加 --standard
 pnpm start --name jianma --image /绝对路径/参考图.png --krita /绝对路径/krita --background
 
 # 续跑；读取 <运行根目录>/jianma/run.json 中保存的配置
@@ -24,6 +25,10 @@ pnpm start --name jianma --status --json
 总入口顺序执行：人物 part → 人物 raster → 衣服 part → 衣服 raster → 穿戴组装。一条结束后立即进入下一条；两小时检查不参与正常阶段推进。总控 `run.json` 保存路线、配置、PID、各管线进度、最近消息及错误；实际跳过和恢复仍由各管线自己的产物及标记判断。
 
 按用户需要可用 `--from <管线>` / `--to <管线>` 限定连续范围，默认完整五条管线。比如已有两份 KRA 与简化参考，只执行 `--from character-assembly`；只做人物到 `--to raster-layering`。范围会保存，之后只用任务名即可恢复。总入口不会把手动提供的上游文件标为已经执行过的阶段。`--jobs` 控制 part 的 agent 并发，默认 3。
+
+`--standard` 是人物 part 的 preparation 选项，不增加独立管线。启动新任务前确认用户是否需要标准化；省略时默认关闭。启用后由 medium agent 判断嘴部是否张大、眼睛是否张开、是否正视站立且双手在身体两侧；已符合就复制原图，否则通过 Codex 原生 `image_generation` 调整。未启用时不调用姿态判断或生图，直接复制原图。两种模式都输出 `part-layering/references/standard.png`，非 PNG 原图会转换格式，`input/original.<扩展名>` 保留原始文件。
+
+后续沿用现有画风判断、简化和素体流程，只把输入改为 `standard.png`。新步骤不额外增加视觉 review。总控 `run.json` 和人物 `references/preparation.json` 记录选项；前台、后台和仅用 `--name` 续跑都沿用保存值。独立 part 已保存的选项也可被首次总控继承。`--no-standard` 显式关闭；切换时仍须通过下方指纹检查。显式指定这两个选项时，所选路线必须包含人物 part。
 
 只操作特定组、设置拆分限深或调试单阶段时，使用[单管线操作与验收](individual-pipelines.md)中的独立入口；不要与同一任务的总调度同时运行。
 
@@ -79,6 +84,12 @@ pnpm build:codex
 
 首次原图保存为 `<运行根目录>/<name>/input/original.<扩展名>`。后续直接读取上游文件，不建立输入副本。五个独立入口不自动启动上游；总入口 `pnpm start` 按所选范围顺序调用它们。缺少产物时列出具体缺失路径，并提示先运行对应上游管线，或手动将产物放到这些位置。各管线的步骤路径以自身目录为基准。
 
+
+人物和衣服 preparation 均按内容指纹验证缓存：一致才复用，已有参考或输入不匹配时明确报错并保留文件。人物记录还覆盖标准化选项，以及 `standard.png`、`judgment.json`、简化参考、素体参考的输入和输出指纹；判断与生图中断后可继续已完成的小步骤，生成失败不会回退原图。提示词编辑本身不触发重画。
+
+制作不同参考图优先使用新的 `--name`。若有意重做当前人物 preparation，删除报错指向的参考文件再运行人物 part；切换标准化模式时先删除 `part-layering/references/standard.png`。后续参考会逐项检查，不匹配时也须删除对应文件后重做。缺失输出重新生成后，内容相同就保留已有拆分；简化／素体参考内容改变且 preparation 完整后，仅重置当前人物 part 的 `groups.json`、`parts/`、`stages/`、`observations/`、`preview.svg`、`occlusion.json`。此机制不自动重置 raster、衣服或组装的成果、完成标记及 thread；需重做它们时仍用各自原有重跑方式。
+
+旧人物任务没有 preparation 指纹时，默认续跑会明确提示并以当前文件建立一次基线，不重画已有参考；有原图则补一份不调姿态的 `standard.png`。旧任务缺原图但参考齐全时仍可续跑，暂不补 standard；不能在无法确认旧参考来源的情况下直接开启标准化，应使用新任务或移除旧参考后重做。`--groups` 始终只读校验，不迁移文件、不生图、不清理缓存。
 
 part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 review 完成后先同层去重，再补全和分析子组。raster 以 `.running`、`.completed` 以及 review/repair Markdown 决定进度，`run.json` 保存配置和绘制 threadId。删除完成标记会重置该步及其后续步骤、重新建立绘制 thread；重跑清理仅发生在本管线步骤目录内；step01 写回上游 occlusion.json 的深度修正保留。`.running` 表示尚未完成，不代表进程仍在运行。
 
