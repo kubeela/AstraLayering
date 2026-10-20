@@ -7,19 +7,18 @@ import { createHash } from "node:crypto";
 import {
   defaults,
   validateSettings,
-  lightDirection,
   reliefGrid,
   projectionDepth,
   rendererVersion,
 } from "../studio/lighting-model.js";
 import { saveStudioReview, studioAsset, studioReviews } from "../studio.ts";
 
-test("camera-space light axes, bounded recipes and uncompressed orthographic UVs", () => {
-  assert.deepEqual(lightDirection(0, 0), [0, 0, 1]);
-  const right = lightDirection(90, 0);
-  assert.ok(right[0] > 0.999 && Math.abs(right[2]) < 1e-10);
+test("bounded point light positions, recipes and uncompressed orthographic UVs", () => {
+  assert.ok(defaults.lightZ > 0);
+  assert.throws(() => validateSettings({ lightX: 7 }), /lightX/);
+  assert.throws(() => validateSettings({ azimuth: 90 }), /未知/);
   assert.throws(() => validateSettings({ normalY: 0 }), /Y/);
-  assert.throws(() => validateSettings({ azimuth: NaN }), /azimuth/);
+  assert.throws(() => validateSettings({ lightZ: NaN }), /lightZ/);
   assert.throws(() => validateSettings({ shadow: "false" }), /布尔/);
   assert.throws(() => validateSettings({ shade: "url(secret)" }), /颜色/);
   const w = 5,
@@ -94,7 +93,7 @@ test("inspection records bind input hashes and renderer, reject missing assets a
   const records = await studioReviews(root, root, "a");
   assert.equal(records.length, 2);
   assert.notEqual(records[0].id, records[1].id);
-  assert.equal(records[0].settings.azimuth, defaults.azimuth);
+  assert.equal(records[0].settings.lightZ, defaults.lightZ);
   await writeFile(join(folder, "a/color.png"), "changed after loading");
   await assert.rejects(saveStudioReview(root, root, value), /贴图文件已改变/);
 });

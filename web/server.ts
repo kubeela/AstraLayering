@@ -156,13 +156,19 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (!artifactExtensions.test(selected) || selected.split('/').some(part => part.startsWith('.'))) throw new Error('不支持该产物类型');
         const file = await safePath(directory, selected);
         if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
-        const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream' };
+        const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream', '.psd': 'application/octet-stream' };
         // SVG may be authored by an agent. Keep it inert even when opened in a new tab.
         response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
         response.writeHead(200, { 'Content-Type': types[extname(file).toLowerCase()] });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
       if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
+      if (path === '/studio-document') {
+        if (url.searchParams.get('id') !== 'jianma') throw new Error('未登记的角色文件');
+        const file = await safePath(root, 'demos/jianma/assembled/jianma-assembled.kra');
+        response.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
       if (path === '/api/studio/reviews') { json(await studioReviews(root, dirname(settingsPath), url.searchParams.get('sample') ?? '')); return; }
       if (path === '/studio-asset') {
         const file = await studioAsset(root, url.searchParams.get('sample') ?? '', url.searchParams.get('kind') ?? '');
@@ -173,9 +179,12 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         '/vendor/three.module.js': 'node_modules/three/build/three.module.js',
         '/vendor/three.core.js': 'node_modules/three/build/three.core.js',
         '/vendor/mtoon.js': 'node_modules/@pixiv/three-vrm-materials-mtoon/lib/three-vrm-materials-mtoon.module.js',
+        '/vendor/ag-psd.js': 'node_modules/ag-psd/dist/bundle.js',
+        '/vendor/fflate.js': 'node_modules/fflate/umd/index.js',
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
       const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      for (const name of ['document-loader.js', 'document-worker.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });

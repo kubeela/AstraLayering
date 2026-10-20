@@ -56,7 +56,7 @@ function toast(message) { const el=document.querySelector('#toast'); el.textCont
 function header() {
  return `<header class="app-header"><a class="brand" href="./"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span></span></a>
  <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}制作流程</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
- <a class="button" href="./studio?${new URLSearchParams({name:state.name})}">${icon('eye')}人物预览</a><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
+ <a class="button" href="./studio?${new URLSearchParams({name:state.name})}">${icon('eye')}角色工作台</a><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
 function pageHeading() {

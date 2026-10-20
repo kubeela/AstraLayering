@@ -1,8 +1,9 @@
 // Shared, renderer-independent contracts for recipes and geometry.
-export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v1";
+export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v2";
 export const defaults = Object.freeze({
-  azimuth: 65,
-  elevation: 15,
+  lightX: 2.4,
+  lightY: 0.4,
+  lightZ: 1.1,
   ambient: 0.16,
   shade: "#aaa0ba",
   toony: 0.93,
@@ -15,11 +16,12 @@ export const defaults = Object.freeze({
   shadowSoftness: 3,
   bias: -0.0015,
   rim: 0,
-  background: "#e9e6e2",
+  background: "#c9c9ce",
 });
 export const ranges = Object.freeze({
-  azimuth: [-180, 180],
-  elevation: [-75, 75],
+  lightX: [-6, 6],
+  lightY: [-6, 6],
+  lightZ: [-4, 8],
   ambient: [0, 0.7],
   toony: [0, 0.99],
   shift: [-0.9, 0.9],
@@ -32,9 +34,9 @@ export const ranges = Object.freeze({
   rim: [0, 0.2],
 });
 export const presets = Object.freeze({
-  anime: { label: "动画 · 清晰柔边", values: { ...defaults } },
+  anime: { label: "动画", values: { ...defaults } },
   soft: {
-    label: "插画 · 柔和过渡",
+    label: "柔和",
     values: {
       ...defaults,
       toony: 0.55,
@@ -44,11 +46,12 @@ export const presets = Object.freeze({
     },
   },
   dramatic: {
-    label: "侧光 · 明暗造型",
+    label: "戏剧侧光",
     values: {
       ...defaults,
-      azimuth: 85,
-      elevation: 25,
+      lightX: 2.8,
+      lightY: 1,
+      lightZ: 0.4,
       shade: "#827eac",
       toony: 0.94,
       ambient: 0.1,
@@ -56,11 +59,12 @@ export const presets = Object.freeze({
     },
   },
   jianma: {
-    label: "Jianma · 保留原画",
+    label: "Jianma",
     values: {
       ...defaults,
-      azimuth: 70,
-      elevation: 0,
+      lightX: 2.8,
+      lightY: 0.5,
+      lightZ: 1,
       shade: "#b7aec9",
       toony: 0.82,
       shift: -0.2,
@@ -73,6 +77,8 @@ export const presets = Object.freeze({
 export function validateSettings(value) {
   if (!value || typeof value !== "object" || Array.isArray(value))
     throw new Error("光照参数必须是对象");
+  for (const key of Object.keys(value))
+    if (!Object.hasOwn(defaults, key)) throw new Error(`未知的光照参数 ${key}`);
   const result = { ...defaults };
   for (const [key, range] of Object.entries(ranges))
     if (value[key] !== undefined) {
@@ -99,11 +105,6 @@ export function validateSettings(value) {
     result.shadow = value.shadow;
   }
   return result;
-}
-export function lightDirection(azimuth, elevation) {
-  const a = (azimuth * Math.PI) / 180,
-    e = (elevation * Math.PI) / 180;
-  return [Math.sin(a) * Math.cos(e), Math.sin(e), Math.cos(a) * Math.cos(e)];
 }
 // Filter only the derived depth surface, not the artwork. Floating point keeps
 // the filtered heights continuous instead of reintroducing 8-bit stair steps.

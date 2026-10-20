@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AstraLayering · 人物预览台</title>
+    <title>AstraLayering · 角色工作台</title>
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./studio/styles.css" />
     <script type="importmap">
@@ -20,156 +20,245 @@
       <a class="brand" href="./">Astra<span>Layering</span></a>
       <nav>
         <a href="./">制作流程</a><a href="./?page=config">管线配置</a
-        ><a class="active" href="./studio">人物预览</a>
+        ><a class="active" href="./studio">角色工作台</a>
       </nav>
-      <span class="tag">Lighting / 01</span>
+      <span class="workspace-name">CHARACTER STUDIO</span>
     </header>
     <main>
       <aside class="sources">
-        <h1>人物预览台</h1>
-        <p class="intro">从平涂到光影，逐步验证每一张贴图。</p>
-        <label class="field"
-          >测试人物<select id="samples" aria-label="测试人物"></select
-        ></label>
-        <p id="description" class="hint"></p>
-        <div class="steps" aria-label="光照工作流">
-          <div>
-            <b>01</b><span>平涂原画<small>核对颜色与已有阴影</small></span
-            ><i id="step-color">待载入</i>
-          </div>
-          <div>
-            <b>02</b><span>法线 / 深度<small>检查尺寸、方向与对齐</small></span
-            ><i id="step-maps">待载入</i>
-          </div>
-          <div>
-            <b>03</b><span>光照验证<small>多灯位 · 原画对照</small></span
-            ><i id="step-light">待检查</i>
-          </div>
-          <div>
-            <b>04</b><span>记录与复用<small>保存参数及贴图版本</small></span
-            ><i id="step-review">待记录</i>
-          </div>
-        </div>
-        <details>
-          <summary>导入自己的贴图</summary>
-          <p class="hint">
-            选择尺寸相同的 PNG。原画保留透明背景；法线为 +Y 向上，深度白近黑远。
-          </p>
-          <label class="field"
-            >原画<input id="file-color" type="file" accept="image/png" /></label
-          ><label class="field"
-            >法线<input
-              id="file-normal"
+        <section class="panel">
+          <h1>角色文件</h1>
+          <label class="button primary open-file"
+            >打开 KRA / PSD<input
+              id="file-document"
               type="file"
-              accept="image/png" /></label
-          ><label class="field"
-            >深度<input id="file-depth" type="file" accept="image/png" /></label
-          ><button id="import-images">载入三张贴图</button>
-        </details>
-        <details id="task-import">
-          <summary>使用制作任务产物</summary>
-          <label class="field">任务<select id="task"></select></label>
-          <div id="task-files"></div>
-          <button id="import-task">载入所选产物</button>
-          <p class="hint">只读取真实产物；缺失贴图需先制作，不会自动伪造。</p>
-        </details>
-        <details>
-          <summary>保存与检查记录</summary>
-          <label class="field"
-            >本灯位的结论<select id="verdict">
-              <option value="accepted">当前灯位可用</option>
-              <option value="needs-work">需要修正</option>
-            </select></label
-          ><textarea
-            id="note"
-            placeholder="例如：脸部过渡自然，刘海投影需要缩短"
-            maxlength="2000"
-          ></textarea
-          ><button id="save-review">记录当前灯位</button>
-          <div id="reviews"></div>
-        </details>
-        <p class="hint footnote">
-          后续动作、表情与物理共用此预览台。本期先完成静态光照。
-        </p>
+              accept=".kra,.psd,.png"
+              hidden
+          /></label>
+          <div class="file-actions">
+            <button id="open-jianma">Jianma</button
+            ><button id="open-task">从任务打开</button>
+          </div>
+          <div id="document-info" hidden>
+            <div class="document-heading">
+              <strong id="document-name"></strong
+              ><button
+                id="close-document"
+                title="关闭文件"
+                aria-label="关闭文件"
+              >
+                ×
+              </button>
+            </div>
+            <p id="document-meta" class="muted"></p>
+            <button id="download-document" class="text-button">
+              下载源文件 ↗
+            </button>
+          </div>
+        </section>
+        <section class="panel" id="maps-panel">
+          <h2>贴图</h2>
+          <div class="map-row">
+            <span class="map-icon">N</span>
+            <div><b>法线</b><small id="normal-status">未绑定</small></div>
+            <label class="button small" title="绑定原尺寸法线 PNG"
+              >绑定<input
+                id="file-normal"
+                type="file"
+                accept="image/png"
+                hidden /></label
+            ><button
+              id="remove-normal"
+              class="remove"
+              aria-label="移除法线"
+              hidden
+            >
+              ×
+            </button>
+          </div>
+          <div class="map-row">
+            <span class="map-icon">D</span>
+            <div><b>深度</b><small id="depth-status">未绑定</small></div>
+            <label class="button small" title="绑定白近黑远的原尺寸深度 PNG"
+              >绑定<input
+                id="file-depth"
+                type="file"
+                accept="image/png"
+                hidden /></label
+            ><button
+              id="remove-depth"
+              class="remove"
+              aria-label="移除深度"
+              hidden
+            >
+              ×
+            </button>
+          </div>
+          <details class="compact">
+            <summary>贴图设置</summary>
+            <label class="field"
+              >法线方向<select id="normal-y">
+                <option value="1">OpenGL · Y 向上</option>
+                <option value="-1">DirectX · Y 向下</option>
+              </select></label
+            >
+            <div id="map-controls"></div>
+          </details>
+        </section>
+        <section class="panel layer-panel">
+          <div class="section-heading">
+            <h2>图层目录</h2>
+            <span id="layer-count" class="muted">0</span>
+          </div>
+          <input
+            id="layer-filter"
+            type="search"
+            placeholder="查找图层"
+            aria-label="查找图层"
+          />
+          <div id="layers" aria-label="源文件图层目录"></div>
+          <p class="muted layer-note" id="layer-note">
+            预览文件中已保存的合成图
+          </p>
+        </section>
       </aside>
       <section class="preview">
         <div class="toolbar">
           <div class="segmented" id="interaction">
-            <button data-tool="move" class="active">移动</button
-            ><button data-tool="light">移动光源</button>
+            <button data-tool="move" class="active" title="拖动平移，滚轮缩放">
+              ↔ 移动</button
+            ><button data-tool="light" title="拖动灯位，Alt + 滚轮调整前后">
+              ☼ 移动光源
+            </button>
           </div>
-          <button id="fit">适应</button><button id="actual">100%</button
-          ><span id="zoom">100%</span
-          ><button id="export-image" class="right">导出原尺寸 PNG</button>
+          <span class="divider"></span><button id="fit">适应</button
+          ><button id="actual">100%</button><span id="zoom">100%</span>
+          <button
+            id="export-image"
+            class="right"
+            title="透明背景，按原图完整分辨率导出"
+          >
+            导出 PNG ↗
+          </button>
         </div>
-        <div class="viewport">
-          <canvas id="stage" aria-label="人物光照预览"></canvas>
-          <div id="loading" role="status">正在载入预览台…</div>
-          <div id="split-line" hidden><span>原画</span><span>MToon</span></div>
-          <div class="light-guide" id="light-guide" hidden>
-            拖动调整灯位 · 滚轮缩放
+        <div class="viewport" id="drop-zone">
+          <canvas id="stage" aria-label="角色光照预览"></canvas>
+          <div id="empty-state">
+            <div class="file-symbol">＋</div>
+            <b>打开角色文件</b>
+            <p>KRA / PSD · 拖放到此处</p>
+            <label class="button" for="file-document">选择文件</label>
           </div>
+          <div id="loading" role="status" hidden>正在打开…</div>
+          <div id="split-line" hidden><span>原画</span><span>光照</span></div>
+          <div id="light-overlay" hidden>
+            <svg id="light-line" width="100%" height="100%" aria-hidden="true">
+              <line />
+              <circle r="3" />
+            </svg>
+            <button
+              id="light-handle"
+              aria-label="光源位置，可拖动或用方向键调整"
+              title="拖动移动光源，方向键微调，PageUp / PageDown 调整前后"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path
+                  d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"
+                /></svg
+              ><span id="light-label"></span>
+            </button>
+            <div class="light-guide">拖动灯位 · Alt + 滚轮调整前后</div>
+          </div>
+          <div id="drop-hint" hidden>松开以打开角色文件</div>
         </div>
         <div class="viewbar" id="views">
-          <button data-view="lit" class="active">光照结果</button
-          ><button data-view="split">原画对照</button
-          ><button data-view="color">平涂 / 原画</button
+          <button data-view="lit" class="active">光照</button
+          ><button data-view="split">对照</button
+          ><button data-view="color">原画</button
           ><button data-view="normal">法线</button
           ><button data-view="depth">深度</button
-          ><button data-view="shading">明暗分区</button>
+          ><button data-view="shading">明暗</button>
         </div>
         <footer>
-          <span id="quality">保持原始贴图分辨率</span
-          ><span id="engine">MToon 3.5.5 · Three.js</span>
+          <span id="quality">未打开文件</span
+          ><span id="engine" title="MToon 3.5.5 / Three.js 0.180.0"
+            >MToon · 原尺寸</span
+          >
         </footer>
       </section>
       <aside class="controls">
-        <h2>光照</h2>
-        <label class="field">风格起点<select id="preset"></select></label>
-        <div class="light-presets">
-          <button data-az="-65" data-el="15">左侧</button
-          ><button data-az="0" data-el="15">正面</button
-          ><button data-az="65" data-el="15">右侧</button
-          ><button data-az="65" data-el="60">上方</button>
+        <div class="panel-heading">
+          <h2>光照</h2>
+          <button id="reset" class="text-button">重置</button>
         </div>
-        <div id="main-controls"></div>
-        <details open>
-          <summary>深度投影</summary>
-          <label class="toggle"
-            ><input id="shadow" type="checkbox" checked />启用部件投影</label
-          >
-          <div id="shadow-controls"></div>
-          <p class="hint">
-            使用深度表面与真实阴影贴图。单张深度无法还原被遮住的背面；极侧光需检查边界。
-          </p>
-        </details>
-        <details>
-          <summary>贴图与细节</summary>
-          <div id="detail-controls"></div>
-          <label class="field"
-            >法线 Y 方向<select id="normal-y">
-              <option value="1">向上（OpenGL）</option>
-              <option value="-1">翻转 Y（DirectX）</option>
-            </select></label
-          ><label class="field"
-            >预览背景<input type="color" id="background" value="#e9e6e2"
+        <p id="lighting-status" class="muted" hidden>绑定法线后启用光照</p>
+        <fieldset id="lighting-controls" disabled>
+          <section class="panel">
+            <label class="field inline"
+              >风格<select id="preset"></select
+            ></label>
+            <h3>光源位置</h3>
+            <div class="light-presets">
+              <button data-position="left">左</button
+              ><button data-position="front">正面</button
+              ><button data-position="right">右</button
+              ><button data-position="top">上</button>
+            </div>
+            <div id="position-controls"></div>
+          </section>
+          <section class="panel">
+            <h3>明暗</h3>
+            <div id="main-controls"></div>
+            <label class="field inline"
+              >暗部颜色<input type="color" id="shade" title="阴影色相与明度"
+            /></label>
+          </section>
+          <section class="panel">
+            <label class="toggle"
+              ><input id="shadow" type="checkbox" checked />部件投影</label
+            >
+            <p id="depth-status-hint" class="muted" hidden>
+              绑定深度后启用投影
+            </p>
+            <fieldset id="shadow-controls"></fieldset>
+          </section>
+        </fieldset>
+        <section class="panel">
+          <label class="field inline"
+            >背景<input
+              type="color"
+              id="background"
+              value="#c9c9ce"
+              title="仅改变预览背景，不写入 PNG"
           /></label>
-        </details>
-        <div class="recipe-actions">
-          <button id="export-recipe">导出光照配方</button
-          ><label class="button"
-            >导入配方<input
-              type="file"
-              id="import-recipe"
-              accept="application/json"
-              hidden
-          /></label>
-        </div>
-        <p class="hint">
-          阴影颜色决定暗部色调；明暗位置决定分界。调节环境补光时，亮面总亮度保持不变。
-        </p>
+          <div class="recipe-actions">
+            <button id="export-recipe">保存参数</button
+            ><label class="button"
+              >载入参数<input
+                type="file"
+                id="import-recipe"
+                accept="application/json"
+                hidden
+            /></label>
+          </div>
+        </section>
       </aside>
     </main>
+    <dialog id="task-dialog">
+      <form method="dialog">
+        <h2>从制作任务打开</h2>
+        <button class="dialog-close" aria-label="关闭">×</button>
+      </form>
+      <label class="field">任务<select id="task"></select></label>
+      <div id="task-files"></div>
+      <button id="import-task" class="primary">打开</button>
+    </dialog>
     <div id="toast" role="status"></div>
     <script type="module" src="./studio/app.js"></script>
   </body>

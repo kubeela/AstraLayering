@@ -1,11 +1,6 @@
 import * as THREE from "three";
 import { MToonMaterial } from "@pixiv/three-vrm-materials-mtoon";
-import {
-  defaults,
-  lightDirection,
-  reliefGrid,
-  projectionDepth,
-} from "./lighting-model.js";
+import { defaults, reliefGrid, projectionDepth } from "./lighting-model.js";
 
 function pixels(image) {
   const c = document.createElement("canvas");
@@ -57,20 +52,15 @@ export class LightingStage {
     this.camera.position.z = 6;
     this.ambient = new THREE.AmbientLight(0xffffff, Math.PI * 0.16);
     this.scene.add(this.ambient);
-    this.light = new THREE.DirectionalLight(0xffffff, Math.PI * 0.84);
+    // Finite position with illustration-style exposure: depth changes incident
+    // direction and occlusion, while decay=0 keeps lit albedo from blowing out.
+    this.light = new THREE.PointLight(0xffffff, Math.PI * 0.84, 0, 0);
     this.light.castShadow = true;
     this.light.shadow.mapSize.set(2048, 2048);
     this.light.shadow.radius = 3;
-    Object.assign(this.light.shadow.camera, {
-      left: -1.45,
-      right: 1.45,
-      top: 1.45,
-      bottom: -1.45,
-      near: 1,
-      far: 7,
-    });
+    Object.assign(this.light.shadow.camera, { near: 0.01, far: 24 });
     this.light.shadow.camera.updateProjectionMatrix();
-    this.scene.add(this.light, this.light.target);
+    this.scene.add(this.light);
     this.material = new MToonMaterial({
       map: null,
       normalMapType: THREE.ObjectSpaceNormalMap,
@@ -84,7 +74,7 @@ export class LightingStage {
     });
     this.material.toneMapped = false;
     this.material.outlineWidthMode = "none";
-    // Only adapt shadow RECEIVER coordinates to the image's per-pixel depth.
+    // Reconstruct per-pixel surface position for BOTH point light and shadows.
     // MToon's BRDF and Three's PCF shadow comparison remain upstream code.
     // Interpolating depth across a hand/face edge creates false striped shadows.
     this.depthUniforms = {
@@ -92,11 +82,17 @@ export class LightingStage {
       studioDepthScale: { value: defaults.depthScale },
       studioSize: { value: new THREE.Vector2(1, 2) },
       studioShadowMatrix: { value: new THREE.Matrix4() },
+      studioModelView: { value: new THREE.Matrix4() },
     };
     const upstreamCompile = this.material.onBeforeCompile.bind(this.material);
     this.material.onBeforeCompile = (shader, renderer) => {
       upstreamCompile(shader, renderer);
-      if (!shader.fragmentShader.includes("vDirectionalShadowCoord[ i ]"))
+      if (
+        !shader.fragmentShader.includes("vPointShadowCoord[ i ]") ||
+        !shader.fragmentShader.includes(
+          "vec3 geometryPosition = - vViewPosition;",
+        )
+      )
         throw new Error(
           "MToon shadow adapter needs review for this library version",
         );
@@ -105,25 +101,31 @@ export class LightingStage {
         .replace(
           "#include <shadowmap_pars_fragment>",
           `#include <shadowmap_pars_fragment>
-#ifdef USE_SHADOWMAP
 uniform sampler2D studioDepth;
 uniform float studioDepthScale;
 uniform vec2 studioSize;
 uniform mat4 studioShadowMatrix;
-vec4 studioShadowCoord() {
+uniform mat4 studioModelView;
+vec3 studioPosition() {
  vec2 xy=(vUv-0.5)*studioSize;
  float z=(textureLod(studioDepth,vUv,0.0).r-0.5)*studioDepthScale;
- vec3 p=vec3(xy,z);
+ return vec3(xy,z);
+}
+vec4 studioShadowCoord() {
+ vec3 p=studioPosition();
  vec3 n=normalize(cross(dFdx(p),dFdy(p)));
  if(n.z<0.0)n=-n;
  // Native-style geometric normal bias, evaluated at the actual receiver.
  return studioShadowMatrix*vec4(p+n*0.012,1.0);
-}
-#endif`,
+}`,
         )
-        .replaceAll("vDirectionalShadowCoord[ i ]", "studioShadowCoord()");
+        .replaceAll("vPointShadowCoord[ i ]", "studioShadowCoord()")
+        .replace(
+          "vec3 geometryPosition = - vViewPosition;",
+          "vec3 geometryPosition = (studioModelView * vec4(studioPosition(),1.0)).xyz;",
+        );
     };
-    this.material.customProgramCacheKey = () => "astra-mtoon-depth-receiver-v1";
+    this.material.customProgramCacheKey = () => "astra-mtoon-point-receiver-v2";
     this.basic = new THREE.MeshBasicMaterial({
       transparent: true,
       alphaTest: 0.01,
@@ -162,19 +164,29 @@ vec4 studioShadowCoord() {
       w = color.width,
       h = color.height;
     if (
-      normal.width !== w ||
-      normal.height !== h ||
-      depth.width !== w ||
-      depth.height !== h
+      (normal && (normal.width !== w || normal.height !== h)) ||
+      (depth && (depth.width !== w || depth.height !== h))
     )
       throw new Error("原画、法线和深度的尺寸必须完全一致；不会自动拉伸贴图。");
     if (Math.max(w, h) > this.renderer.capabilities.maxTextureSize)
       throw new Error("贴图超出当前 GPU 原生上限，未降低画质。");
+    const a = pixels(color);
+    const flat = (r, g, b) => {
+      const bytes = new Uint8Array(a.length);
+      for (let i = 0; i < bytes.length; i += 4) {
+        bytes[i] = r;
+        bytes[i + 1] = g;
+        bytes[i + 2] = b;
+        bytes[i + 3] = a[i + 3];
+      }
+      return bytes;
+    };
+    const n = normal ? pixels(normal) : flat(128, 128, 255),
+      d = depth ? pixels(depth) : flat(128, 128, 128);
     this.textures.forEach((t) => t.dispose());
     this.textures = [];
-    const a = pixels(color),
-      n = pixels(normal),
-      d = pixels(depth);
+    this.hasNormal = !!normal;
+    this.hasDepth = !!depth;
     this.source = { a, n, d, w, h };
     const dn = new Uint8Array(d);
     for (let i = 0; i < a.length; i += 4) dn[i + 3] = a[i + 3];
@@ -232,6 +244,7 @@ vec4 studioShadowCoord() {
     cg.setAttribute("uv", g.getAttribute("uv"));
     cg.setIndex(new THREE.BufferAttribute(this.grid.caster, 1));
     this.caster.geometry = cg;
+    this.mesh.visible = this.caster.visible = true;
     this.updateRelief();
     this.zoom = 1;
     this.pan = [0, 0];
@@ -284,13 +297,12 @@ vec4 studioShadowCoord() {
     )
       this.updateNormal();
     if (prior.depthScale !== s.depthScale) this.updateRelief();
-    this.light.position
-      .fromArray(lightDirection(s.azimuth, s.elevation))
-      .multiplyScalar(4);
+    this.light.position.set(s.lightX, s.lightY, s.lightZ);
     this.light.intensity = Math.PI * (1 - s.ambient);
     this.ambient.intensity = Math.PI * s.ambient;
     this.depthUniforms.studioDepthScale.value = s.depthScale;
-    this.light.shadow.intensity = s.shadow ? s.shadowStrength : 0;
+    this.light.shadow.intensity =
+      s.shadow && this.hasDepth ? s.shadowStrength : 0;
     this.light.shadow.radius = s.shadowSoftness;
     this.light.shadow.bias = s.bias;
     this.light.shadow.normalBias = 0.012;
@@ -300,7 +312,12 @@ vec4 studioShadowCoord() {
     this.material.parametricRimColorFactor.setScalar(s.rim);
     this.material.parametricRimFresnelPowerFactor = 4;
     this.material.rimLightingMixFactor = 1;
-    this.renderer.shadowMap.needsUpdate = true;
+    if (
+      ["lightX", "lightY", "lightZ", "depthScale", "shadow"].some(
+        (k) => prior[k] !== s[k],
+      )
+    )
+      this.renderer.shadowMap.needsUpdate = true;
     this.render();
   }
   setMode(mode) {
@@ -338,6 +355,11 @@ vec4 studioShadowCoord() {
     this.camera.position.y = exporting ? 0 : this.pan[1];
     this.camera.updateProjectionMatrix();
     this.scene.updateMatrixWorld(true);
+    this.camera.updateMatrixWorld(true);
+    this.depthUniforms.studioModelView.value.multiplyMatrices(
+      this.camera.matrixWorldInverse,
+      this.mesh.matrixWorld,
+    );
     this.light.shadow.updateMatrices(this.light);
     this.depthUniforms.studioShadowMatrix.value.multiplyMatrices(
       this.light.shadow.matrix,
@@ -370,6 +392,44 @@ vec4 studioShadowCoord() {
       this.renderer.setSize(w, h, false);
     this.frame(w, h);
     this.canvas.style.backgroundColor = this.settings.background;
+    this.onRender?.();
+  }
+  screenToWorld(x, y) {
+    const b = this.canvas.getBoundingClientRect();
+    return [
+      this.camera.position.x +
+        this.camera.left +
+        (x / b.width) * (this.camera.right - this.camera.left),
+      this.camera.position.y +
+        this.camera.top -
+        (y / b.height) * (this.camera.top - this.camera.bottom),
+    ];
+  }
+  worldToScreen(x, y) {
+    const b = this.canvas.getBoundingClientRect();
+    return [
+      ((x - this.camera.position.x - this.camera.left) /
+        (this.camera.right - this.camera.left)) *
+        b.width,
+      ((this.camera.position.y + this.camera.top - y) /
+        (this.camera.top - this.camera.bottom)) *
+        b.height,
+    ];
+  }
+  actualSize() {
+    const box = this.canvas.getBoundingClientRect(),
+      aspect = box.width / box.height;
+    const fit = Math.max(1.1, (1.1 * this.source.w) / this.source.h / aspect);
+    this.zoom = (this.source.h * fit) / box.height;
+    this.pan = [0, 0];
+    this.render();
+  }
+  viewScale() {
+    if (!this.source) return 1;
+    return (
+      (2 * this.canvas.getBoundingClientRect().height) /
+      ((this.camera.top - this.camera.bottom) * this.source.h)
+    );
   }
   async exportPNG() {
     if (!this.source) throw new Error("请先载入素材");
@@ -382,6 +442,25 @@ vec4 studioShadowCoord() {
     this.render();
     if (!blob) throw new Error("PNG 导出失败");
     return blob;
+  }
+  clear() {
+    this.textures.forEach((t) => t.dispose());
+    this.textures = [];
+    this.source = this.grid = this.color = this.normal = this.depth = null;
+    this.material.map =
+      this.material.shadeMultiplyTexture =
+      this.material.normalMap =
+        null;
+    this.basic.map =
+      this.casterMaterial.map =
+      this.depthUniforms.studioDepth.value =
+        null;
+    this.mesh.geometry.dispose();
+    if (this.caster.geometry !== this.mesh.geometry)
+      this.caster.geometry.dispose();
+    this.mesh.geometry = this.caster.geometry = new THREE.PlaneGeometry(1, 2);
+    this.mesh.visible = this.caster.visible = false;
+    this.renderer.clear();
   }
   dispose() {
     this.disposed = true;

@@ -1,6 +1,7 @@
 export type LightingSettings = {
-  azimuth: number;
-  elevation: number;
+  lightX: number;
+  lightY: number;
+  lightZ: number;
   ambient: number;
   shade: string;
   toony: number;
@@ -22,7 +23,6 @@ export const presets: Readonly<
   Record<string, { label: string; values: LightingSettings }>
 >;
 export function validateSettings(value: unknown): LightingSettings;
-export function lightDirection(azimuth: number, elevation: number): number[];
 export function projectionDepth(
   depth: Uint8Array | Uint8ClampedArray,
   alpha: Uint8Array | Uint8ClampedArray,
