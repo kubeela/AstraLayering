@@ -15,11 +15,11 @@ from email.policy import default
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
-def fixture_png():
+def fixture_png(color=b'\x60\x80\xa0'):
     def chunk(kind, data):
         return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data))
     return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', 32, 32, 8, 2, 0, 0, 0))
-            + chunk(b'IDAT', zlib.compress((b'\0' + b'\x60\x80\xa0' * 32) * 32)) + chunk(b'IEND', b''))
+            + chunk(b'IDAT', zlib.compress((b'\0' + color * 32) * 32)) + chunk(b'IEND', b''))
 
 
 PNG = fixture_png()
@@ -133,13 +133,13 @@ def main():
                 start += ['--', 'Inspect references for the local transport fixture, then finish.']
                 result = subprocess.run(start, cwd=root, env=env, capture_output=True, text=True, timeout=90)
                 assert result.returncode == 0, result.stderr[-4000:] + result.stdout[-4000:]
-                expected = [{'images': 0, 'compact': True}, {'images': 0, 'compact': False}]
+                expected = [{'images': 49, 'compact': True}, {'images': 0, 'compact': False}]
                 if case == 48 or case == 'disabled':
                     expected = [{'images': 48 if case == 48 else 49, 'compact': False}]
                 elif case == 53:
-                    expected += [{'images': 1, 'compact': False}]
+                    expected = [{'images': 49, 'compact': True}, {'images': 4, 'compact': False}, {'images': 5, 'compact': False}]
                 elif case == 'tool_batch':
-                    expected = [{'images': 0, 'compact': False}] + expected
+                    expected = [{'images': 0, 'compact': False}, {'images': 49, 'compact': True}, {'images': 4, 'compact': False}]
                 if case in ('image_routes', 'code_mode'):
                     assert server.image_calls == ['/images/v1/images/generations', '/images/v1/images/edits'], (server.image_calls, result.stdout[-4000:])
                     generated = [file for file in home.rglob('*.png') if file.read_bytes() == PNG]

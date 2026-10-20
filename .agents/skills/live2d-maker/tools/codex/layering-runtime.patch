@@ -16,7 +16,7 @@ index ac06a66..ddb5da7 100644
          }
          Some(Subcommand::Debug(DebugCommand { subcommand })) => match subcommand {
 +            DebugSubcommand::LayeringCapabilities => {
-+                println!("{}", serde_json::json!({"version": 1, "image_provider": true, "image_compaction": true}));
++                println!("{}", serde_json::json!({"version": 1, "image_provider": true, "image_compaction": true, "image_compaction_version": 2}));
 +            }
              DebugSubcommand::Models(cmd) => {
                  reject_remote_mode_for_subcommand(
@@ -125,15 +125,20 @@ index 2217ce8..79e321e 100644
          .get(X_CODEX_IMAGEGEN_REQUEST_ID_HEADER)
 diff --git a/codex-rs/core/src/astra_image_guard.rs b/codex-rs/core/src/astra_image_guard.rs
 new file mode 100644
-index 0000000..48a6186
 --- /dev/null
 +++ b/codex-rs/core/src/astra_image_guard.rs
-@@ -0,0 +1,38 @@
-+//! Optional request-boundary image compaction for the Layering workflows.
+@@ -0,0 +1,189 @@
++//! Every image is either summarized with vision or retained unchanged in the
++//! replacement history. No unsupported-media projection is used for compaction.
 +
++use codex_history::ResponseItemEnvelope;
++use codex_protocol::error::CodexErr;
++use codex_protocol::error::Result as CodexResult;
 +use codex_protocol::models::ContentItem;
++use codex_protocol::models::FunctionCallOutputBody;
 +use codex_protocol::models::FunctionCallOutputContentItem;
 +use codex_protocol::models::ResponseItem;
++use std::collections::HashMap;
 +
 +pub(crate) fn threshold() -> Option<usize> {
 +    std::env::var("LAYERING_IMAGE_COMPACT_THRESHOLD")
@@ -143,56 +148,289 @@ index 0000000..48a6186
 +        .filter(|value| *value > 0)
 +}
 +
++fn item_image_count(item: &ResponseItem) -> usize {
++    match item {
++        ResponseItem::Message { content, .. } => content
++            .iter()
++            .filter(|part| matches!(part, ContentItem::InputImage { .. }))
++            .count(),
++        ResponseItem::FunctionCallOutput { output, .. }
++        | ResponseItem::CustomToolCallOutput { output, .. } => output
++            .content_items()
++            .unwrap_or_default()
++            .iter()
++            .filter(|part| matches!(part, FunctionCallOutputContentItem::InputImage { .. }))
++            .count(),
++        ResponseItem::ImageGenerationCall { result, .. } => usize::from(!result.is_empty()),
++        _ => 0,
++    }
++}
++
 +pub(crate) fn image_count(items: &[ResponseItem]) -> usize {
-+    items
-+        .iter()
-+        .map(|item| match item {
-+            ResponseItem::Message { content, .. } => content
-+                .iter()
-+                .filter(|item| matches!(item, ContentItem::InputImage { .. }))
-+                .count(),
-+            ResponseItem::FunctionCallOutput { output, .. }
-+            | ResponseItem::CustomToolCallOutput { output, .. } => output
-+                .content_items()
-+                .unwrap_or_default()
-+                .iter()
-+                .filter(|item| matches!(item, FunctionCallOutputContentItem::InputImage { .. }))
-+                .count(),
-+            ResponseItem::ImageGenerationCall { result, .. } => usize::from(!result.is_empty()),
-+            _ => 0,
-+        })
-+        .sum()
++    items.iter().map(item_image_count).sum()
 +}
 +
 +pub(crate) fn needs_compaction(items: &[ResponseItem]) -> bool {
 +    threshold().is_some_and(|limit| image_count(items) >= limit)
 +}
++
++fn deferred_image(index: usize) -> String {
++    format!(
++        "[Historical image {index} is retained unchanged after this summary for continued visual inspection; it is not included in this compaction request.]"
++    )
++}
++
++fn summarized_image(index: usize) -> String {
++    format!(
++        "[Historical image {index} was included in the preceding visual compaction. Its original remains in the saved thread history.]"
++    )
++}
++
++/// Split image payloads, preserving text, order, image detail, source envelopes,
++/// and original tool call/result pairs. A single oversized Code Mode result is
++/// supported; none of its completed operations needs to be executed again.
++pub(crate) fn partition_compaction(
++    items: Vec<ResponseItemEnvelope>,
++    limit: usize,
++) -> CodexResult<(Vec<ResponseItemEnvelope>, Vec<ResponseItemEnvelope>)> {
++    if limit == 0 {
++        return Err(CodexErr::InvalidRequest(
++            "Image compaction budget must be positive".into(),
++        ));
++    }
++    if items
++        .iter()
++        .map(|e| item_image_count(&e.item))
++        .sum::<usize>()
++        <= limit
++    {
++        return Ok((items, Vec::new()));
++    }
++    let mut calls = HashMap::new();
++    let mut projected = Vec::with_capacity(items.len());
++    let mut retained = Vec::new();
++    let mut seen = 0;
++    for mut envelope in items {
++        match &envelope.item {
++            ResponseItem::FunctionCall { call_id, .. }
++            | ResponseItem::CustomToolCall { call_id, .. } => {
++                calls.insert(call_id.clone(), envelope.clone());
++            }
++            ResponseItem::LocalShellCall {
++                call_id: Some(call_id),
++                ..
++            } => {
++                calls.insert(call_id.clone(), envelope.clone());
++            }
++            _ => {}
++        }
++        let count = item_image_count(&envelope.item);
++        if count == 0 || seen + count <= limit {
++            seen += count;
++            projected.push(envelope);
++            continue;
++        }
++        let mut carry = envelope.clone();
++        match (&mut envelope.item, &mut carry.item) {
++            (
++                ResponseItem::Message { content, internal_chat_message_metadata_passthrough: metadata, .. },
++                ResponseItem::Message { content: kept, internal_chat_message_metadata_passthrough: kept_metadata, .. },
++            ) => {
++                for (index, (part, pending)) in content.iter_mut().zip(kept.iter_mut()).enumerate() {
++                    if matches!(part, ContentItem::InputImage { .. }) {
++                        seen += 1;
++                        let changed_metadata = if seen <= limit {
++                            *pending = ContentItem::InputText {
++                                text: summarized_image(seen),
++                            };
++                            &mut *kept_metadata
++                        } else {
++                            *part = ContentItem::InputText {
++                                text: deferred_image(seen),
++                            };
++                            &mut *metadata
++                        };
++                        if let Some(kind) = changed_metadata.as_mut()
++                            .and_then(|metadata| metadata.content_item_kinds.as_mut())
++                            .and_then(|kinds| kinds.get_mut(index)) {
++                            kind.0 = "user.text".into();
++                        }
++                    }
++                }
++            }
++            (
++                ResponseItem::FunctionCallOutput { output, .. },
++                ResponseItem::FunctionCallOutput { output: kept, .. },
++            )
++            | (
++                ResponseItem::CustomToolCallOutput { output, .. },
++                ResponseItem::CustomToolCallOutput { output: kept, .. },
++            ) => {
++                if let (
++                    FunctionCallOutputBody::ContentItems(content),
++                    FunctionCallOutputBody::ContentItems(kept),
++                ) = (&mut output.body, &mut kept.body)
++                {
++                    for (part, pending) in content.iter_mut().zip(kept.iter_mut()) {
++                        if matches!(part, FunctionCallOutputContentItem::InputImage { .. }) {
++                            seen += 1;
++                            if seen <= limit {
++                                *pending = FunctionCallOutputContentItem::InputText {
++                                    text: summarized_image(seen),
++                                };
++                            } else {
++                                *part = FunctionCallOutputContentItem::InputText {
++                                    text: deferred_image(seen),
++                                };
++                            }
++                        }
++                    }
++                }
++            }
++            (
++                ResponseItem::ImageGenerationCall { result, .. },
++                ResponseItem::ImageGenerationCall { .. },
++            ) => {
++                seen += 1;
++                result.clear();
++            }
++            _ => unreachable!("image-bearing response item changed type"),
++        }
++        let call_id = match &carry.item {
++            ResponseItem::FunctionCallOutput { call_id, .. } => call_id.as_ref(),
++            ResponseItem::CustomToolCallOutput { call_id, .. } => Some(call_id),
++            _ => None,
++        };
++        if let Some(call_id) = call_id {
++            let call = calls.remove(call_id).ok_or_else(|| CodexErr::InvalidRequest(
++                format!("Cannot preserve image result without its original tool call {call_id}; history was not replaced")
++            ))?;
++            retained.push(call);
++        }
++        retained.push(carry);
++        projected.push(envelope);
++    }
++    projected.push(ResponseItemEnvelope::new(ResponseItem::Message {
++        id: None, role: "developer".into(), phase: None,
++        content: vec![ContentItem::InputText { text: "This visual compaction request contains a bounded prefix of the historical images. Images marked retained will be attached unchanged after your summary, with their original completed tool calls and output context; those tools must not be rerun just to retrieve them. Summarize the images provided here and preserve prior observations, completed checks, uncertainty, and remaining work accurately. Deferred images are pending visual inputs, not evidence that vision or tools are unavailable. Do not invalidate earlier observations merely because an image is deferred.".into() }],
++        internal_chat_message_metadata_passthrough: None,
++    }));
++    Ok((projected, retained))
++}
 diff --git a/codex-rs/core/src/compact.rs b/codex-rs/core/src/compact.rs
-index 39919cf..22a2c03 100644
+index 39919cf..70df26c 100644
 --- a/codex-rs/core/src/compact.rs
 +++ b/codex-rs/core/src/compact.rs
-@@ -276,6 +276,21 @@ async fn run_compact_task_inner_impl(
-         let mut turn_input = history
+@@ -268,14 +268,27 @@ async fn run_compact_task_inner_impl(
+ 
+     let max_retries = turn_context.provider.info().stream_max_retries();
+     let mut retries = 0;
++    let image_budget = crate::astra_image_guard::threshold();
++    // With the image guard enabled, failed/partial summaries must never enter
++    // live history. Commit the summary and retained images together on success.
++    let buffer_output =
++        image_budget.is_some() || matches!(compaction_metadata.phase(), CompactionPhase::PostTurn);
+     // Reuse one client session so turn-scoped state (sticky routing and websocket incremental
+     // request tracking) survives retries within this compact turn.
+     let mut client_session = sess.services.model_client.new_session();
+-    let compaction_response = loop {
++    let (compaction_response, retained_images) = loop {
+         // Clone is required because of the loop
+-        let mut turn_input = history
++        let turn_input = history
              .clone()
-             .for_prompt(&turn_context.model_info().input_modalities);
-+        if crate::astra_image_guard::needs_compaction(&turn_input) {
-+            // Change only this request's projection, never the live history or the
-+            // model's normal vision capability. Also rescues manual /compact after
-+            // an oversized tool batch has already accumulated more than 50 images.
-+            let text_modalities = turn_context
-+                .model_info()
-+                .input_modalities
-+                .iter()
-+                .filter(|modality| {
-+                    **modality != codex_protocol::openai_models::InputModality::Image
-+                })
-+                .cloned()
-+                .collect::<Vec<_>>();
-+            turn_input = history.clone().for_prompt(&text_modalities);
-+        }
+-            .for_prompt(&turn_context.model_info().input_modalities);
++            .for_prompt_annotated(&turn_context.model_info().input_modalities);
++        let (turn_input, retained_images) = match image_budget {
++            Some(limit) => crate::astra_image_guard::partition_compaction(turn_input, limit)?,
++            None => (turn_input, Vec::new()),
++        };
++        let mut turn_input: Vec<ResponseItem> = turn_input
++            .into_iter()
++            .map(ResponseItemEnvelope::into_item)
++            .collect();
          sess.services
              .executed_tool_calls
              .attach_to_compaction_prompt(&mut turn_input);
+@@ -295,13 +308,13 @@ async fn run_compact_task_inner_impl(
+             &mut client_session,
+             &responses_metadata,
+             &prompt,
+-            compaction_metadata.phase(),
++            buffer_output,
+         )
+         .await;
+ 
+         match attempt_result {
+             Ok(response) => {
+-                break response;
++                break (response, retained_images);
+             }
+             Err(err)
+                 if matches!(
+@@ -315,6 +328,11 @@ async fn run_compact_task_inner_impl(
+                 return Err(e);
+             }
+             Err(e) if matches!(e.details(), CodexErrorDetails::ContextWindowExceeded) => {
++                if image_budget.is_some() {
++                    // Do not silently discard unsummarized images or their source
++                    // context to rescue an oversized compaction request.
++                    return Err(e);
++                }
+                 if turn_input_len > 1 {
+                     // Trim from the beginning to preserve cache (prefix-based) and keep recent messages intact.
+                     error!(
+@@ -348,12 +366,13 @@ async fn run_compact_task_inner_impl(
+ 
+     let history_snapshot = sess.clone_history().await;
+     let history_items = history_snapshot.annotated_items();
+-    let summary_suffix = if matches!(compaction_metadata.phase(), CompactionPhase::PostTurn) {
++    let summary_suffix = if buffer_output {
+         get_last_assistant_message_from_turn(compaction_response.output.iter())
+             .filter(|summary| !summary.trim().is_empty())
+             .ok_or_else(|| {
+                 CodexErr::Stream(
+-                    "Post-turn compaction completed without an assistant summary".to_string(),
++                    "Compaction completed without an assistant summary; original history retained"
++                        .to_string(),
+                 )
+             })?
+     } else {
+@@ -376,6 +395,16 @@ async fn run_compact_task_inner_impl(
+         new_history =
+             insert_initial_context_before_last_real_user_or_summary(new_history, initial_context);
+     }
++    // Images beyond the budget were not summarized. Restore them byte-for-byte
++    // with their source text and completed call/result pairs, including metadata.
++    // The native text-only retention of a user message can share its ID with a
++    // carried multimodal message. Keep the latter (which also has all its text).
++    let retained_ids: HashSet<_> = retained_images
++        .iter()
++        .filter_map(|envelope| envelope.item.id())
++        .collect();
++    new_history.retain(|envelope| envelope.item.id().is_none_or(|id| !retained_ids.contains(id)));
++    new_history.extend(retained_images);
+     let reference_context_item = match initial_context_injection {
+         InitialContextInjection::DoNotInject => None,
+         InitialContextInjection::BeforeLastUserMessage { step_context, .. } => {
+@@ -757,7 +786,7 @@ async fn drain_to_completed(
+     client_session: &mut ModelClientSession,
+     responses_metadata: &CodexResponsesMetadata,
+     prompt: &Prompt,
+-    phase: CompactionPhase,
++    buffer_output: bool,
+ ) -> CodexResult<CompactionResponse> {
+     let mut stream = client_session
+         .stream(
+@@ -787,7 +816,7 @@ async fn drain_to_completed(
+         };
+         match event {
+             Ok(ResponseEvent::OutputItemDone(item)) => {
+-                if matches!(phase, CompactionPhase::PostTurn) {
++                if buffer_output {
+                     // Commit post-turn summaries only after success; failures must leave both
+                     // the live history and persisted rollout intact.
+                     output.push(item);
 diff --git a/codex-rs/core/src/lib.rs b/codex-rs/core/src/lib.rs
 index e7753db..c8a76aa 100644
 --- a/codex-rs/core/src/lib.rs
@@ -206,7 +444,7 @@ index e7753db..c8a76aa 100644
  mod compact_remote_history;
  mod compact_remote_v2;
 diff --git a/codex-rs/core/src/session/turn.rs b/codex-rs/core/src/session/turn.rs
-index f13e98c..4732d85 100644
+index f13e98c..1f2a5ae 100644
 --- a/codex-rs/core/src/session/turn.rs
 +++ b/codex-rs/core/src/session/turn.rs
 @@ -513,7 +513,7 @@ pub(crate) async fn run_turn(
@@ -224,13 +462,13 @@ index f13e98c..4732d85 100644
  
 +            // Inspect the complete request at a safe boundary, including tool batches
 +            // that jump past the upstream image limit. Keep the same thread and files.
-+            if crate::astra_image_guard::needs_compaction(&sampling_request_input) {
++            while crate::astra_image_guard::needs_compaction(&sampling_request_input) {
 +                let image_count = crate::astra_image_guard::image_count(&sampling_request_input);
 +                sess.send_event(
 +                    &turn_context,
 +                    EventMsg::Warning(WarningEvent {
 +                        message: format!(
-+                            "Layering image guard: {image_count} images; compacting this thread before the next request."
++                            "Layering image guard: {image_count} images; compacting with vision and retaining overflow images before the next request."
 +                        ),
 +                    }),
 +                )
@@ -253,7 +491,7 @@ index f13e98c..4732d85 100644
 +                    .clone_history()
 +                    .await
 +                    .for_prompt(&step_context.settings.model_info.input_modalities);
-+                if crate::astra_image_guard::needs_compaction(&sampling_request_input) {
++                if crate::astra_image_guard::image_count(&sampling_request_input) >= image_count {
 +                    return Err(CodexErr::InvalidRequest(
 +                        "Layering image guard: compaction did not reduce image count; history was retained for recovery.".to_string(),
 +                    ));
