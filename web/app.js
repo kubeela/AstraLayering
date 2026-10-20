@@ -102,7 +102,9 @@ async function refreshTask(force=false) {
  const next=state.name?await get('./api/task?'+taskParams()):{files:[],pipelines:[]};
  if(version!==refreshVersion)return;
  const fingerprint=JSON.stringify({next,tasks});
- if(!force&&(document.querySelector('dialog[open]')||document.activeElement?.matches('input,select')||document.querySelector('.panning')))return;
+ // Interaction may defer artifact redraws, but must never hide a stopped runner.
+ const executionChanged=next.status!==data.status||next.runnerAlive!==data.runnerAlive||next.lockHeld!==data.lockHeld;
+ if(!force&&!executionChanged&&(document.querySelector('dialog[open]')||document.activeElement?.matches('input,select')||document.querySelector('.panning')))return;
  if(fingerprint!==lastSnapshot||force){
   const selected=state.asset;
   if(selected?.kind==='file'&&next.fileVersions?.[selected.path]!==data.fileVersions?.[selected.path]) {
@@ -213,7 +215,8 @@ function graph() {
 }
 function runNotice() {
  const message=data.run?.error||data.lastLogMessage||data.run?.lastMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
- return `<details data-details="run-notice" class="run-notice ${data.status==='failed'?'error':''}" ${data.status==='failed'?'open':''}><summary>${icon(data.status==='failed'?'info':'clock')}<span>${esc(message.split('\n')[0])}</span><small>运行记录与日志</small></summary><div>${data.errors.length?`<pre class="status-error">${esc(data.errors.join('\n'))}</pre>`:''}<pre>${esc(message)}</pre><pre class="live-log">${esc(data.logs||'暂无日志')}</pre><small>日志：${esc(data.logPath||data.directory)}${data.logUpdatedAt?' · 日志更新：'+esc(new Date(data.logUpdatedAt).toLocaleString()):''}${data.run?.updatedAt?' · 状态保存：'+esc(new Date(data.run.updatedAt).toLocaleString()):''}</small></div></details>`;
+ const stopped=data.status==='failed'||data.status==='interrupted';
+ return `<details data-details="run-notice" class="run-notice ${data.status==='failed'?'error':''}" ${stopped?'open':''}><summary>${icon(data.status==='failed'?'info':'clock')}<span>${stopped?esc(taskStatusNames[data.status])+' · ':''}${esc(message.split('\n')[0])}</span><small>运行记录与日志</small></summary><div>${data.errors.length?`<pre class="status-error">${esc(data.errors.join('\n'))}</pre>`:''}<pre>${esc(message)}</pre><pre class="live-log">${esc(data.logs||'暂无日志')}</pre><small>日志：${esc(data.logPath||data.directory)}${data.logUpdatedAt?' · 日志更新：'+esc(new Date(data.logUpdatedAt).toLocaleString()):''}${data.run?.updatedAt?' · 状态保存：'+esc(new Date(data.run.updatedAt).toLocaleString()):''}</small></div></details>`;
 }
 let flowObserver;
 function connectFlow() {
@@ -325,6 +328,9 @@ function configPage() {
  <div class="config-content-footer">${icon('info')}description 与 schema 来自同一版本；预览不会影响正在运行的 agent。</div></section></div>`;
 }
 function render() {
+ const focused=document.activeElement;
+ const focusId=focused?.id;
+ const selection=focused?.tagName==='INPUT'&&focused.type==='text'?[focused.selectionStart,focused.selectionEnd]:null;
  const previous=document.querySelector('.flow-scroll');
  if(previous){state.canvasLeft=previous.scrollLeft;state.canvasTop=previous.scrollTop;}
  const treeScroll=Object.fromEntries([...document.querySelectorAll('[data-tree-scroll]')].map(node=>[node.dataset.treeScroll,node.scrollTop]));
@@ -334,6 +340,8 @@ function render() {
  document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':''}">${state.page==='config'?configPage():graph()}</main>`;
  bind();setConfigBusy(configBusy);
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
+ if(data.status==='failed'||data.status==='interrupted')document.querySelector('[data-details="run-notice"]')?.setAttribute('open','');
+ if(focusId&&focused&&!focused.isConnected){const replacement=document.getElementById(focusId);replacement?.focus({preventScroll:true});if(selection&&replacement?.tagName==='INPUT')replacement.setSelectionRange(...selection);}
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
  if(state.page==='project'&&state.name) {
   connectFlow();
