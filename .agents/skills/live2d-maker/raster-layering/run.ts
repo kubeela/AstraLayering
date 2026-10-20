@@ -2,6 +2,7 @@ import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { runCli } from '../shared/raster/cli.ts';
 import { runWorkflow as runSharedWorkflow, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { steps } from './steps.ts';
+import { partRasterPipeline } from '../shared/raster/part-pipeline.ts';
 export { parseRunArguments } from '../shared/raster/cli.ts';
 
 export const help = `raster-layering — 按顺序执行 Krita 栅格分层流程
@@ -22,7 +23,7 @@ export const help = `raster-layering — 按顺序执行 Krita 栅格分层流�
 第二步完成 review / 修复后，第三步沿用绘制 thread，交付 character-dressup-base.kra、同名 PNG 和 report.md，不设 reviewer。
 `;
 
-export const pipeline = { id: 'raster-layering', inputPipeline: 'part-layering', steps } as const;
+export const pipeline = partRasterPipeline({ id: 'raster-layering', inputPipeline: 'part-layering', steps });
 
 export function runWorkflow(options: WorkflowOptions, dependencies: Dependencies = {}) {
   return runSharedWorkflow(pipeline, options, dependencies);

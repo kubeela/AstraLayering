@@ -1,15 +1,15 @@
 import type { ModelSelection } from '../codex/environment.ts';
 import { lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import type { PartLayeringInput } from './input.ts';
+import { isPartLayeringInput, type PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 
 export type ModelConfig = ModelSelection;
-export type RunConfig = {
+export type RunConfig<Input = PartLayeringInput> = {
   version: 2;
   name: string;
-  sourceInput: PartLayeringInput;
+  sourceInput: Input;
   krita: KritaInstallation;
   models: Record<string, ModelConfig>;
   threadId: string | null;
@@ -40,15 +40,16 @@ export async function canonicalPath(path: string): Promise<string> {
   }
 }
 
-export async function loadConfig(directory: string, name: string): Promise<RunConfig | undefined> {
+export async function loadConfig<Input = PartLayeringInput>(directory: string, name: string,
+  validateInput: (value: unknown) => boolean = isPartLayeringInput): Promise<RunConfig<Input> | undefined> {
   const info = await fileInfo(directory);
   if (!info) return;
   if (!info.isDirectory() || info.isSymbolicLink()) throw new Error(`任务目录必须是普通目录：${directory}`);
   const file = join(directory, 'run.json');
   if (!await fileInfo(file)) throw new Error(`任务目录已存在但缺少 run.json：${directory}。请使用新的 --name，保留原文件。`);
-  const config = JSON.parse(await readFile(file, 'utf8')) as RunConfig;
+  const config = JSON.parse(await readFile(file, 'utf8')) as RunConfig<Input>;
   if (config?.version !== 2 || config.name !== name
-    || typeof config.sourceInput?.directory !== 'string' || typeof config.sourceInput?.parts !== 'string'
+    || !validateInput(config.sourceInput)
     || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim() || typeof config.krita.version !== 'string'
     || !config.models || typeof config.models !== 'object' || Array.isArray(config.models)
     || Object.values(config.models).some(model => !model || typeof model.model !== 'string' || !model.model.trim() || !['none', 'minimal', 'low', 'medium', 'high', 'xhigh'].includes(model.effort))
@@ -58,19 +59,19 @@ export async function loadConfig(directory: string, name: string): Promise<RunCo
   return config;
 }
 
-export function newConfig(name: string, input: PartLayeringInput, krita: KritaInstallation, steps: readonly StepDefinition[]): RunConfig {
+export function newConfig<Input>(name: string, input: Input, krita: KritaInstallation, steps: readonly StepDefinition[]): RunConfig<Input> {
   const models: Record<string, ModelConfig> = {};
   for (const step of steps) models[step.id] = { model: step.model, effort: step.effort };
   return { version: 2, name, sourceInput: input, krita, models, threadId: null };
 }
 
-export async function saveConfig(directory: string, config: RunConfig): Promise<void> {
+export async function saveConfig(directory: string, config: RunConfig<unknown>): Promise<void> {
   const file = join(directory, 'run.json');
   await writeFile(`${file}.tmp`, JSON.stringify(config, null, 2) + '\n');
   await rename(`${file}.tmp`, file);
 }
 
-export async function initializeRun(directory: string, config: RunConfig): Promise<void> {
+export async function initializeRun(directory: string, config: RunConfig<unknown>): Promise<void> {
   await mkdir(dirname(directory), { recursive: true });
   const staging = await mkdtemp(join(dirname(directory), '.init-'));
   try {
@@ -112,7 +113,7 @@ export async function inspectRun(directory: string, steps: readonly StepDefiniti
   return { statuses, resetFrom };
 }
 
-export async function resetSteps(directory: string, config: RunConfig, plan: RunPlan): Promise<void> {
+export async function resetSteps(directory: string, config: RunConfig<unknown>, plan: RunPlan): Promise<void> {
   if (plan.resetFrom === undefined) return;
   config.threadId = null;
   await saveConfig(directory, config);

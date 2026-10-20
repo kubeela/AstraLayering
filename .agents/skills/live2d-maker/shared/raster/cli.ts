@@ -1,6 +1,6 @@
 import { resolveRunsDirectory } from '../paths.ts';
 import { checkKrita } from './krita.ts';
-import { runWorkflow, type RasterPipeline } from './workflow.ts';
+import { runWorkflow, type KritaPipeline } from './workflow.ts';
 import { parseArgs } from 'node:util';
 
 export function parseRunArguments(args: string[]) {
@@ -17,7 +17,7 @@ export function parseRunArguments(args: string[]) {
   return values;
 }
 
-export async function runCli(pipeline: RasterPipeline, help: string): Promise<void> {
+export async function runCli<Input>(pipeline: KritaPipeline<Input>, help: string): Promise<void> {
   const args = parseRunArguments(process.argv.slice(2));
   if (args.help) { console.log(help); return; }
   if (args['check-krita']) {

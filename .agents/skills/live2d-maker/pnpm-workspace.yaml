@@ -3,6 +3,7 @@ packages:
   - raster-layering
   - clothing-part-layering
   - clothing-raster-layering
+  - character-assembly
 
 onlyBuiltDependencies:
   - sharp

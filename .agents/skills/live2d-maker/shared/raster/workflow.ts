@@ -5,9 +5,8 @@ import { appendFile, mkdir, realpath, rename, rm, stat, writeFile } from 'node:f
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { runAgent, type Agent } from './agent.ts';
-import { resolvePartInput } from './input.ts';
 import { checkKrita, type KritaInstallation } from './krita.ts';
-import { buildPrompt, type StepDefinition } from './steps.ts';
+import type { StepDefinition } from './steps.ts';
 import { canonicalPath, fileInfo, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, saveConfig, within } from './run-store.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { createOcclusionTools } from './occlusion-tools.ts';
@@ -38,16 +37,20 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
   }
 }
 
-export type RasterPipeline = {
-  id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering'>;
-  inputPipeline: Extract<PipelineId, 'part-layering' | 'clothing-part-layering'>;
+export type KritaPipeline<Input> = {
+  id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly'>;
   steps: readonly StepDefinition[];
+  resolveInput(name: string, root: string): Promise<Input>;
+  validateInput(value: unknown): value is Input;
+  inputDirectories(input: Input): readonly string[];
+  buildPrompt(step: StepDefinition, input: Input, output: string, krita: KritaInstallation, previous: readonly string[]): Promise<string>;
+  occlusionDirectory?: (input: Input) => string;
 };
 
-export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
+export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
   const root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
   const requested = pipelineDirectory(options.name, pipeline.id, root);
-  const saved = await loadConfig(requested, options.name);
+  const saved = await loadConfig<Input>(requested, options.name, pipeline.validateInput);
   const directory = await canonicalPath(requested);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
   const definitions: readonly StepDefinition[] = (dependencies.steps ?? pipeline.steps).map(step => ({ ...step,
@@ -55,8 +58,12 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
     ...(step.review ? { review: { ...step.review, ...(step.review.modelTier ? environment.models[step.review.modelTier] : {}) } } : {}),
   }));
   const plan = await inspectRun(directory, definitions);
-  const reference = await resolvePartInput(options.name, pipeline.inputPipeline, root);
-  if (within(reference.directory, directory) || within(directory, reference.directory)) throw new Error('上游与本管线目录必须分开');
+  const reference = await pipeline.resolveInput(options.name, root);
+  const inputDirectories = pipeline.inputDirectories(reference);
+  for (const source of inputDirectories) {
+    if (within(source, directory) || within(directory, source)) throw new Error('上游与本管线目录必须分开');
+  }
+  const occlusionDirectory = pipeline.occlusionDirectory?.(reference);
   const configuredKrita = options.krita ?? saved?.krita.executable;
   if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
   const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
@@ -68,7 +75,7 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
     if (step.modelTier || !config.models[step.id]) config.models[step.id] = { model: step.model, effort: step.effort };
   }
   options.progress?.(`前置检查通过：Krita ${krita.version} (${krita.executable})`);
-  options.progress?.(`任务目录：${directory}；直接读取上游：${reference.directory}`);
+  options.progress?.(`任务目录：${directory}；直接读取上游：${inputDirectories.join('、')}`);
   if (plan.resetFrom !== undefined) options.progress?.(`${options.dryRun ? '预览：将' : '将'}重置 step${String(plan.resetFrom).padStart(2, '0')} 及后续步骤，并清除旧 threadId。`);
 
   const previous: string[] = [];
@@ -100,7 +107,7 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
     }
     const model = config.models[step.id];
     if (options.dryRun) {
-      if (!drawingReady) previews.push(await buildPrompt(step, reference, output, krita, previous));
+      if (!drawingReady) previews.push(await pipeline.buildPrompt(step, reference, output, krita, previous));
       if (step.review) {
         const task = drawingReady ? reviewTask : { kind: 'review' as const, filename: 'review-01.md' as const, index: 0 };
         if (task) previews.push(await buildReviewPrompt(step, task, krita));
@@ -140,8 +147,8 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort, environment,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
-        occlusion: !fresh && step.id === 'step01' && phase === 'draw' ? { upstream: reference.directory, editable: true } : undefined,
-        tools: fresh ? undefined : createOcclusionTools(reference.directory, step.id === 'step01' && phase === 'draw'),
+        occlusion: occlusionDirectory && !fresh && step.id === 'step01' && phase === 'draw' ? { upstream: occlusionDirectory, editable: true } : undefined,
+        tools: fresh || !occlusionDirectory ? undefined : createOcclusionTools(occlusionDirectory, step.id === 'step01' && phase === 'draw'),
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
           await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
@@ -170,7 +177,7 @@ export async function runWorkflow(pipeline: RasterPipeline, options: WorkflowOpt
           await discardReviewReports(output);
           await rm(join(output, 'report.md.tmp'), { force: true });
         }
-        const result = await invoke(await buildPrompt(step, reference, output, krita, previous), 'draw');
+        const result = await invoke(await pipeline.buildPrompt(step, reference, output, krita, previous), 'draw');
         if (result.status !== 'completed') throw new Error(`步骤未完成：${result.summary}`);
         if (!config.threadId) throw new Error('SDK 未返回 threadId，不能完成步骤。');
         const required = step.requiredFiles.map(file => step.review && file === 'report.md' ? 'report.md.tmp' : file);
