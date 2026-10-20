@@ -10,8 +10,8 @@
 | --- | --- |
 | `layering_custom_provider` | `false`；沿用当前 `CODEX_HOME` 或 `~/.codex` 的订阅／自定义 provider |
 | `layering_provider_base_url` / `layering_provider_api_key` | 自定义主 provider 为 `true` 时填写，使用 Responses API |
-| `layering_medium_model` | `gpt-6.1-sol-xhigh`；两套 part 的 agent、人物 raster step03 |
-| `layering_high_model` | `gpt-6-astra-xhigh`；两套 raster step01、step02 及 reviewer，穿戴组装 agent |
+| `layering_medium_model` | `gpt-6.1-sol-xhigh`；两套 part 的 agent、人物 raster step03、穿戴组装 agent |
+| `layering_high_model` | `gpt-6-astra-xhigh`；两套 raster step01、step02 及 reviewer |
 | `layering_image_base_url` / `layering_image_api_key` | 可选独立 Images API；两项一起填写才启用 |
 | `layering_image_model` | `gpt-image-2.5-sunburst`；单独填写不会启用自定义生图 |
 | `layering_image_compact_threshold` | 留空关闭；如网关上限为 50 张，可设 `49` |
