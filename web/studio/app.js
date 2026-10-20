@@ -1,4 +1,6 @@
 import { LightingStage, loadImage } from "./renderer.js";
+import { LayerPanel } from "./layer-panel.js";
+import { stateKey } from "./layer-model.js";
 import { openDocument } from "./document-loader.js";
 import {
   defaults,
@@ -22,6 +24,7 @@ const state = {
   source: null,
   inputs: null,
   busy: false,
+  layerBusy: false,
   generation: 0,
 };
 function toast(message) {
@@ -282,7 +285,11 @@ function sync() {
     el.classList.toggle("active", view === state.view);
   }
   for (const id of ["export-image", "export-recipe", "actual"])
-    $("#" + id).disabled = !state.source || state.busy;
+    $("#" + id).disabled = !state.source || state.busy || state.layerBusy;
+  for (const k of ["normal", "depth"]) {
+    $("#file-" + k).disabled = $("#remove-" + k).disabled =
+      state.busy || state.layerBusy;
+  }
   overlay();
 }
 function apply(custom = false) {
@@ -474,24 +481,43 @@ $("#export-image").onclick = async () => {
     toast(e.message);
   }
 };
-function showLayers() {
-  const layers = state.source?.layers || [],
-    q = $("#layer-filter").value.toLowerCase();
-  $("#layer-count").textContent = layers.length;
-  $("#layers").innerHTML = layers
-    .filter((l) => l.name.toLowerCase().includes(q))
-    .map(
-      (l) =>
-        `<div class="layer-row ${l.visible ? "" : "hidden-layer"}" style="padding-left:${Math.min(l.depth, 8) * 10}px" title="${esc(l.name)} · ${l.visible ? "可见" : "隐藏"} · ${Math.round(l.opacity * 100)}%"><span class="layer-symbol">${l.group ? "▱" : "▧"}</span><span class="layer-name">${esc(l.name)}</span></div>`,
-    )
-    .join("");
-  $("#layer-note").textContent = layers.length
-    ? "已保存的合成图 · 图层目录只读"
-    : state.source
-      ? "合成图，无图层目录"
-      : "预览文件中已保存的合成图";
-}
-$("#layer-filter").oninput = showLayers;
+const layers = new LayerPanel({
+  download,
+  error: toast,
+  busy(value) {
+    state.layerBusy = value;
+    sync();
+  },
+  changed(owner, rows) {
+    if (state.source?.layerDocument !== owner.layerDocument) return;
+    state.source.layers = rows;
+    showSource();
+  },
+  async composite(owner, data, color) {
+    if (state.source?.layerDocument !== owner.layerDocument) return;
+    const source = state.source;
+    const key = data.baseline ? "baseline" : stateKey(data.layers);
+    const maps = source.mapBindings.get(key) || {};
+    const id = begin("正在更新预览…");
+    try {
+      await install(
+        {
+          ...source,
+          layers: data.layers,
+          layerKey: key,
+          color: data.baseline ? source.originalColor : color,
+          normal: maps.normal || null,
+          depth: maps.depth || null,
+        },
+        id,
+        false,
+      );
+      if (!maps.normal) selectTool("move");
+    } finally {
+      finish(id);
+    }
+  },
+});
 function showSource() {
   const source = state.source;
   $("#document-info").hidden = !source;
@@ -499,7 +525,7 @@ function showSource() {
   if (source) {
     $("#document-name").textContent = source.name;
     $("#document-meta").textContent =
-      `${stage.source.w} × ${stage.source.h}${source.layers?.length ? " · " + source.layers.length + " 层" : ""}`;
+      `${stage.source.w} × ${stage.source.h}${source.layers?.length ? " · " + source.layers.filter((l) => !l.mask).length + " 层" : ""}`;
   }
   $("#quality").textContent = source
     ? `${stage.source.w} × ${stage.source.h} px`
@@ -511,7 +537,8 @@ function showSource() {
       : "未绑定";
     $("#remove-" + k).hidden = !source?.[k];
   }
-  showLayers();
+  $("#map-validity").hidden =
+    !source || source.layerKey === "baseline" || !!source.normal;
   sync();
 }
 function begin(message) {
@@ -554,6 +581,15 @@ async function install(source, id, reset = true) {
       stage.zoom = priorZoom;
       stage.pan = priorPan;
     }
+    if (reset) {
+      source.layerDocument = Symbol("document");
+      source.layerKey = "baseline";
+      source.originalColor = source.color;
+      source.savedLayers = source.layers;
+      source.mapBindings = new Map([
+        ["baseline", { normal: source.normal, depth: source.depth }],
+      ]);
+    }
     state.source = source;
     state.inputs = Object.fromEntries(hashes);
     if (reset) {
@@ -563,18 +599,28 @@ async function install(source, id, reset = true) {
       selectTool("move");
     }
     apply();
-    selectView(source.normal ? "lit" : "color");
+    selectView(
+      source.normal
+        ? reset || state.view === "color"
+          ? "lit"
+          : state.view === "depth" && !source.depth
+            ? "lit"
+            : state.view
+        : "color",
+    );
     showSource();
     const u = new URL(location.href);
     u.searchParams.delete("sample");
     u.searchParams.delete("name");
     if (source.sample) u.searchParams.set("name", source.sample);
     history.replaceState(null, "", u);
+    if (reset) void layers.open(source);
   } finally {
     Object.values(urls).forEach(URL.revokeObjectURL);
   }
 }
 async function open(file, options = {}) {
+  layers.clear();
   const id = begin("正在打开 " + file.name + "…");
   try {
     const source = /\.png$/i.test(file.name)
@@ -602,6 +648,12 @@ for (const k of ["normal", "depth"]) {
     const id = begin("正在绑定贴图…");
     try {
       await install({ ...state.source, [k]: file }, id, false);
+      if (id === state.generation) {
+        state.source.mapBindings.set(state.source.layerKey, {
+          normal: state.source.normal,
+          depth: state.source.depth,
+        });
+      }
     } catch (e) {
       toast(e.message);
     } finally {
@@ -613,6 +665,11 @@ for (const k of ["normal", "depth"]) {
     const id = begin("正在更新贴图…");
     try {
       await install({ ...state.source, [k]: null }, id, false);
+      if (id === state.generation)
+        state.source.mapBindings.set(state.source.layerKey, {
+          normal: state.source.normal,
+          depth: state.source.depth,
+        });
       if (k === "normal") selectTool("move");
     } catch (e) {
       toast(e.message);
@@ -625,6 +682,7 @@ $("#download-document").onclick = () => {
   if (state.source?.file) download(state.source.file, state.source.name);
 };
 $("#close-document").onclick = () => {
+  layers.clear();
   state.generation++;
   state.busy = false;
   state.source = null;
@@ -708,6 +766,7 @@ $("#import-recipe").onchange = async (e) => {
   }
 };
 async function openJianma() {
+  layers.clear();
   const id = begin("正在打开 Jianma…");
   try {
     const [kra, normal, depth] = await Promise.all([
@@ -784,6 +843,7 @@ $("#import-task").onclick = async () => {
   if (!path) return toast("请选择角色文件");
   const selected = {};
   for (const k of ["normal", "depth"]) selected[k] = $("#task-" + k).value;
+  layers.clear();
   const name = $("#task").value,
     id = begin("正在打开任务产物…");
   $("#task-dialog").close();
@@ -816,6 +876,7 @@ if (requested.get("name") === "jianma" || requested.get("sample") === "jianma")
   void openJianma();
 else if (requested.get("name")) void openTask(requested.get("name"));
 window.addEventListener("pagehide", () => {
+  layers.clear(true);
   cancelAnimationFrame(frame);
   stage.dispose();
 });
@@ -824,6 +885,31 @@ window.studioDiagnostics = () => ({
   document: state.source?.name,
   sample: state.source?.sample,
   layers: state.source?.layers?.length || 0,
+  layerSession: layers.session,
+  layerRevision: layers.revision,
+  layerBusy: state.layerBusy || layers.pending,
+  layerKey: state.source?.layerKey === "baseline" ? "baseline" : "edited",
+  layerStates: layers.layers.map(
+    ({
+      id,
+      name,
+      type,
+      parentId,
+      visible,
+      opacity,
+      inheritAlpha,
+      passThrough,
+    }) => ({
+      id,
+      name,
+      type,
+      parentId,
+      visible,
+      opacity,
+      inheritAlpha,
+      passThrough,
+    }),
+  ),
   maps: { normal: !!state.source?.normal, depth: !!state.source?.depth },
   settings: { ...state.settings },
   view: state.view,

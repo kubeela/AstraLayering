@@ -111,7 +111,7 @@ nav .active {
 main {
   height: calc(100dvh - 48px);
   display: grid;
-  grid-template-columns: 238px minmax(320px, 1fr) 280px;
+  grid-template-columns: 290px minmax(320px, 1fr) 280px;
   overflow: hidden;
 }
 aside {
@@ -329,30 +329,6 @@ details[open] > summary:before {
   border-radius: 4px;
   padding: 7px;
   color: inherit;
-}
-#layers {
-  max-height: 38dvh;
-  overflow: auto;
-  scrollbar-width: thin;
-}
-.layer-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 2px;
-  font-size: 11px;
-  white-space: nowrap;
-  min-width: 0;
-}
-.layer-row .layer-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.layer-row .layer-symbol {
-  color: #9da6ba;
-}
-.layer-row.hidden-layer {
-  opacity: 0.4;
 }
 .layer-note {
   margin-bottom: 0;
@@ -752,7 +728,7 @@ dialog select {
 }
 @media (max-width: 1150px) {
   main {
-    grid-template-columns: 210px minmax(280px, 1fr) 250px;
+    grid-template-columns: 260px minmax(280px, 1fr) 240px;
   }
   .panel {
     padding: 15px 12px;
@@ -808,7 +784,7 @@ dialog select {
     overflow: visible;
   }
   #layers {
-    max-height: 180px;
+    max-height: 240px;
   }
   .toolbar button {
     padding: 7px;
@@ -825,4 +801,171 @@ dialog select {
 #light-handle.edge-left #light-label {
   left: -18px;
   transform: none;
+}
+/* Layers keep their own visibility; a hidden ancestor is a separate cue. */
+.layer-panel {
+  padding: 14px 10px;
+}
+.layer-panel .section-heading,
+.layer-panel > input {
+  margin-left: 4px;
+}
+.layer-actions {
+  display: flex;
+  gap: 4px;
+  margin: 9px 0;
+}
+.layer-actions button {
+  padding: 5px 7px;
+  font-size: 11px;
+}
+#layer-save {
+  margin-left: auto;
+}
+#layers {
+  max-height: min(40dvh, 480px);
+  min-height: 100px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.layer-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  min-height: 34px;
+  min-width: 0;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+.layer-row.selected {
+  background: #35425b;
+  border-color: #5b739e;
+}
+.layer-row button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  flex-shrink: 0;
+}
+.layer-eye {
+  width: 25px;
+  height: 30px;
+  position: relative;
+  color: #cbd4e4;
+}
+.layer-eye svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+}
+.layer-eye i {
+  position: absolute;
+  width: 19px;
+  height: 1px;
+  background: #cad2e1;
+  left: 3px;
+  top: 14px;
+  transform: rotate(-40deg);
+}
+.layer-fold {
+  width: 16px;
+  height: 28px;
+  margin-left: calc(var(--depth) * 11px);
+}
+.layer-row .layer-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+  padding-right: 4px;
+  height: 32px;
+}
+.layer-select img,
+.layer-thumb {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border: 1px solid #616875;
+  border-radius: 2px;
+  background: repeating-conic-gradient(#454953 0% 25%, #343840 0% 50%) 0 / 8px
+    8px;
+}
+.layer-thumb {
+  display: grid;
+  place-items: center;
+}
+.layer-name {
+  font-size: 11px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.layer-badge {
+  font-size: 9px;
+  color: #c7b8ed;
+}
+.layer-row.hidden-layer {
+  opacity: 1;
+}
+.layer-row.hidden-layer .layer-select,
+.layer-row.inherited-hidden .layer-select {
+  opacity: 0.43;
+}
+.layer-row.inherited-hidden .layer-eye {
+  color: #747f91;
+}
+.mask-layer img {
+  border-color: #a6a1bc;
+}
+#layer-properties {
+  border-top: 1px solid var(--line);
+  margin-top: 10px;
+  padding: 10px 4px 0;
+}
+.layer-property-heading {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  font-size: 10px;
+}
+#layer-selected {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#layer-kind {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+#layer-properties .toggle {
+  font-size: 11px;
+  margin: 10px 0;
+}
+#layer-properties .field {
+  margin: 10px 0;
+  grid-template-columns: 38px 1fr;
+  align-items: center;
+}
+#layer-properties select {
+  min-width: 0;
+  width: 100%;
+}
+#layer-opacity {
+  width: 100%;
+}
+#map-validity {
+  color: #d8bc8d;
+}
+@media (max-width: 760px) {
+  #layers {
+    max-height: 240px;
+  }
 }

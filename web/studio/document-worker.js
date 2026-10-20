@@ -127,15 +127,16 @@ self.onmessage = ({ data: { bytes: buffer, name } }) => {
       const layers = [];
       function walk(items, depth = 0, parentVisible = true) {
         for (const item of [...(items || [])].reverse()) {
-          const visible = parentVisible && !item.hidden;
+          const visible = !item.hidden;
           layers.push({
             name: item.name || "未命名",
             depth,
             visible,
+            effectiveVisible: parentVisible && visible,
             group: !!item.children,
             opacity: item.opacity ?? 1,
           });
-          walk(item.children, depth + 1, visible);
+          walk(item.children, depth + 1, parentVisible && visible);
         }
       }
       walk(doc.children);

@@ -94,6 +94,9 @@
               ×
             </button>
           </div>
+          <p class="muted" id="map-validity" hidden>
+            图层已更改，请为当前合成图更新贴图
+          </p>
           <details class="compact">
             <summary>贴图设置</summary>
             <label class="field"
@@ -107,7 +110,7 @@
         </section>
         <section class="panel layer-panel">
           <div class="section-heading">
-            <h2>图层目录</h2>
+            <h2>图层</h2>
             <span id="layer-count" class="muted">0</span>
           </div>
           <input
@@ -116,9 +119,75 @@
             placeholder="查找图层"
             aria-label="查找图层"
           />
-          <div id="layers" aria-label="源文件图层目录"></div>
+          <div class="layer-actions">
+            <button
+              id="layer-undo"
+              title="撤销图层改动"
+              aria-label="撤销图层改动"
+            >
+              ↶
+            </button>
+            <button
+              id="layer-redo"
+              title="重做图层改动"
+              aria-label="重做图层改动"
+            >
+              ↷
+            </button>
+            <button id="layer-restore">还原</button
+            ><button id="layer-save">保存 KRA</button>
+          </div>
+          <div id="layers" role="list" aria-label="图层与蒙版"></div>
+          <div id="layer-properties" hidden>
+            <div class="layer-property-heading">
+              <strong id="layer-selected"></strong><span id="layer-kind"></span>
+            </div>
+            <p id="layer-mask-hint" class="muted" hidden></p>
+            <div id="layer-paint-properties">
+              <label class="field"
+                >混合<select id="layer-blend"></select
+              ></label>
+              <div class="slider">
+                <div class="slider-head">
+                  <label for="layer-opacity">不透明度</label
+                  ><label class="slider-number"
+                    ><input
+                      id="layer-opacity-number"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      aria-label="图层不透明度数值"
+                    /><span>%</span></label
+                  >
+                </div>
+                <input
+                  id="layer-opacity"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  aria-label="图层不透明度"
+                />
+              </div>
+              <label
+                class="toggle"
+                title="限制在同组下方非继承图层的合并不透明区域内"
+                ><input id="layer-inherit" type="checkbox" />透明度继承 α</label
+              >
+              <label
+                id="layer-passthrough-row"
+                class="toggle"
+                title="组内图层直接与组外下方图层混合；开启时组不透明度与混合不生效"
+                ><input id="layer-passthrough" type="checkbox" />组穿透</label
+              >
+            </div>
+          </div>
+          <button id="layer-retry" class="text-button" hidden>
+            重新读取图层
+          </button>
           <p class="muted layer-note" id="layer-note">
-            预览文件中已保存的合成图
+            打开 KRA / PSD 以编辑图层
           </p>
         </section>
       </aside>

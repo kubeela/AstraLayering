@@ -12,18 +12,21 @@ export function parseKraLayers(xml, width, height) {
   function walk(parent, depth = 0, parentVisible = true) {
     for (const layer of parent?.children || []) {
       if (layer.localName !== "layer") continue;
-      const visible = parentVisible && layer.getAttribute("visible") !== "0";
+      const visible = layer.getAttribute("visible") !== "0";
       result.push({
         name: layer.getAttribute("name") || "未命名",
         depth,
         visible,
+        effectiveVisible: parentVisible && visible,
+        type: layer.getAttribute("nodetype"),
+        mask: (layer.getAttribute("nodetype") || "").endsWith("mask"),
         group: layer.getAttribute("nodetype") === "grouplayer",
         opacity: Number(layer.getAttribute("opacity") ?? 255) / 255,
       });
       walk(
         [...layer.children].find((n) => n.localName === "layers"),
         depth + 1,
-        visible,
+        parentVisible && visible,
       );
     }
   }

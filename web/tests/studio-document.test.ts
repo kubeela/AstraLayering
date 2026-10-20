@@ -89,15 +89,30 @@ test("PSD preserves saved composite RGBA and nested, inherited layer visibility"
   assert.equal(info.height, height);
   assert.deepEqual([...pixels], [...data]);
   assert.deepEqual(JSON.parse(JSON.stringify(result.layers)), [
-    { name: "hair", depth: 0, visible: false, group: true, opacity: 1 },
+    {
+      name: "hair",
+      depth: 0,
+      visible: false,
+      effectiveVisible: false,
+      group: true,
+      opacity: 1,
+    },
     {
       name: "fringe",
       depth: 1,
-      visible: false,
+      visible: true,
+      effectiveVisible: false,
       group: false,
       opacity: Math.round(0.7 * 255) / 255,
     },
-    { name: "face", depth: 0, visible: true, group: false, opacity: 1 },
+    {
+      name: "face",
+      depth: 0,
+      visible: true,
+      effectiveVisible: true,
+      group: false,
+      opacity: 1,
+    },
   ]);
   const unsupported = bytes.slice();
   new DataView(unsupported.buffer).setUint16(22, 16);

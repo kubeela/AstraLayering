@@ -42,7 +42,7 @@ try {
   );
   const original = await page.evaluate(() => window.studioDiagnostics());
   assert.equal(original.tool, "move");
-  assert.equal(original.layers, 159);
+  assert.equal(original.layers, original.layerSession ? 171 : 159);
   assert.equal(original.document, "jianma-assembled.kra");
   assert.equal(await page.locator("#light-overlay").isVisible(), false);
   const box = await page.locator("#stage").boundingBox();
