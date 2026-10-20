@@ -2,7 +2,7 @@ import { createServer, type IncomingMessage } from 'node:http';
 import { readFile, readdir, mkdir, lstat, rm, writeFile, realpath } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { extname, resolve, join, isAbsolute } from 'node:path';
+import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
@@ -11,6 +11,7 @@ import { configAPI } from './config.ts';
 import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
 import { launch } from './worker.ts';
+import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const maxBytes = 32 * 1024 * 1024;
@@ -85,6 +86,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           const next = { directory: await validateDir(value.directory) };
           await atomicJSON(settingsPath, next); settings = next; json(settings); return;
         }
+        if (path === '/api/studio/review') { json(await saveStudioReview(root, dirname(settingsPath), value), 201); return; }
         const opts = options(value, requestDir), directory = directoryFor(opts);
         if (path === '/api/tasks') {
           // Exclusive creation prevents changing the original of an existing named task.
@@ -160,7 +162,20 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         response.writeHead(200, { 'Content-Type': types[extname(file).toLowerCase()] });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/styles.css': 'styles.css' };
+      if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
+      if (path === '/api/studio/reviews') { json(await studioReviews(root, dirname(settingsPath), url.searchParams.get('sample') ?? '')); return; }
+      if (path === '/studio-asset') {
+        const file = await studioAsset(root, url.searchParams.get('sample') ?? '', url.searchParams.get('kind') ?? '');
+        response.writeHead(200, { 'Content-Type': 'image/png' });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      const vendor: Record<string,string> = {
+        '/vendor/three.module.js': 'node_modules/three/build/three.module.js',
+        '/vendor/three.core.js': 'node_modules/three/build/three.core.js',
+        '/vendor/mtoon.js': 'node_modules/@pixiv/three-vrm-materials-mtoon/lib/three-vrm-materials-mtoon.module.js',
+      };
+      if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });

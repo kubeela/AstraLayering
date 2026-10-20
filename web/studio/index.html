@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AstraLayering · 人物预览台</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./studio/styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.js",
+          "@pixiv/three-vrm-materials-mtoon": "./vendor/mtoon.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="./">Astra<span>Layering</span></a>
+      <nav>
+        <a href="./">制作流程</a><a href="./?page=config">管线配置</a
+        ><a class="active" href="./studio">人物预览</a>
+      </nav>
+      <span class="tag">Lighting / 01</span>
+    </header>
+    <main>
+      <aside class="sources">
+        <h1>人物预览台</h1>
+        <p class="intro">从平涂到光影，逐步验证每一张贴图。</p>
+        <label class="field"
+          >测试人物<select id="samples" aria-label="测试人物"></select
+        ></label>
+        <p id="description" class="hint"></p>
+        <div class="steps" aria-label="光照工作流">
+          <div>
+            <b>01</b><span>平涂原画<small>核对颜色与已有阴影</small></span
+            ><i id="step-color">待载入</i>
+          </div>
+          <div>
+            <b>02</b><span>法线 / 深度<small>检查尺寸、方向与对齐</small></span
+            ><i id="step-maps">待载入</i>
+          </div>
+          <div>
+            <b>03</b><span>光照验证<small>多灯位 · 原画对照</small></span
+            ><i id="step-light">待检查</i>
+          </div>
+          <div>
+            <b>04</b><span>记录与复用<small>保存参数及贴图版本</small></span
+            ><i id="step-review">待记录</i>
+          </div>
+        </div>
+        <details>
+          <summary>导入自己的贴图</summary>
+          <p class="hint">
+            选择尺寸相同的 PNG。原画保留透明背景；法线为 +Y 向上，深度白近黑远。
+          </p>
+          <label class="field"
+            >原画<input id="file-color" type="file" accept="image/png" /></label
+          ><label class="field"
+            >法线<input
+              id="file-normal"
+              type="file"
+              accept="image/png" /></label
+          ><label class="field"
+            >深度<input id="file-depth" type="file" accept="image/png" /></label
+          ><button id="import-images">载入三张贴图</button>
+        </details>
+        <details id="task-import">
+          <summary>使用制作任务产物</summary>
+          <label class="field">任务<select id="task"></select></label>
+          <div id="task-files"></div>
+          <button id="import-task">载入所选产物</button>
+          <p class="hint">只读取真实产物；缺失贴图需先制作，不会自动伪造。</p>
+        </details>
+        <details>
+          <summary>保存与检查记录</summary>
+          <label class="field"
+            >本灯位的结论<select id="verdict">
+              <option value="accepted">当前灯位可用</option>
+              <option value="needs-work">需要修正</option>
+            </select></label
+          ><textarea
+            id="note"
+            placeholder="例如：脸部过渡自然，刘海投影需要缩短"
+            maxlength="2000"
+          ></textarea
+          ><button id="save-review">记录当前灯位</button>
+          <div id="reviews"></div>
+        </details>
+        <p class="hint footnote">
+          后续动作、表情与物理共用此预览台。本期先完成静态光照。
+        </p>
+      </aside>
+      <section class="preview">
+        <div class="toolbar">
+          <div class="segmented" id="interaction">
+            <button data-tool="move" class="active">移动</button
+            ><button data-tool="light">移动光源</button>
+          </div>
+          <button id="fit">适应</button><button id="actual">100%</button
+          ><span id="zoom">100%</span
+          ><button id="export-image" class="right">导出原尺寸 PNG</button>
+        </div>
+        <div class="viewport">
+          <canvas id="stage" aria-label="人物光照预览"></canvas>
+          <div id="loading" role="status">正在载入预览台…</div>
+          <div id="split-line" hidden><span>原画</span><span>MToon</span></div>
+          <div class="light-guide" id="light-guide" hidden>
+            拖动调整灯位 · 滚轮缩放
+          </div>
+        </div>
+        <div class="viewbar" id="views">
+          <button data-view="lit" class="active">光照结果</button
+          ><button data-view="split">原画对照</button
+          ><button data-view="color">平涂 / 原画</button
+          ><button data-view="normal">法线</button
+          ><button data-view="depth">深度</button
+          ><button data-view="shading">明暗分区</button>
+        </div>
+        <footer>
+          <span id="quality">保持原始贴图分辨率</span
+          ><span id="engine">MToon 3.5.5 · Three.js</span>
+        </footer>
+      </section>
+      <aside class="controls">
+        <h2>光照</h2>
+        <label class="field">风格起点<select id="preset"></select></label>
+        <div class="light-presets">
+          <button data-az="-65" data-el="15">左侧</button
+          ><button data-az="0" data-el="15">正面</button
+          ><button data-az="65" data-el="15">右侧</button
+          ><button data-az="65" data-el="60">上方</button>
+        </div>
+        <div id="main-controls"></div>
+        <details open>
+          <summary>深度投影</summary>
+          <label class="toggle"
+            ><input id="shadow" type="checkbox" checked />启用部件投影</label
+          >
+          <div id="shadow-controls"></div>
+          <p class="hint">
+            使用深度表面与真实阴影贴图。单张深度无法还原被遮住的背面；极侧光需检查边界。
+          </p>
+        </details>
+        <details>
+          <summary>贴图与细节</summary>
+          <div id="detail-controls"></div>
+          <label class="field"
+            >法线 Y 方向<select id="normal-y">
+              <option value="1">向上（OpenGL）</option>
+              <option value="-1">翻转 Y（DirectX）</option>
+            </select></label
+          ><label class="field"
+            >预览背景<input type="color" id="background" value="#e9e6e2"
+          /></label>
+        </details>
+        <div class="recipe-actions">
+          <button id="export-recipe">导出光照配方</button
+          ><label class="button"
+            >导入配方<input
+              type="file"
+              id="import-recipe"
+              accept="application/json"
+              hidden
+          /></label>
+        </div>
+        <p class="hint">
+          阴影颜色决定暗部色调；明暗位置决定分界。调节环境补光时，亮面总亮度保持不变。
+        </p>
+      </aside>
+    </main>
+    <div id="toast" role="status"></div>
+    <script type="module" src="./studio/app.js"></script>
+  </body>
+</html>

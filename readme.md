@@ -30,3 +30,5 @@ Krita：/绝对路径/krita
 当前验证范围是静态素材与默认穿戴，局部结构和笔触仍可能存在差异；完整案例包含人工检查与返修。转向、变形、物理摆动和动态遮挡需要后续绑定验证。
 
 [SVG 对比预览器](loading/part-preview.html) · [面部参数实验（归档）](archive/skills/live2d-expressions/SKILL.md) · [历史技能归档](archive/skills/README.md) · [绑定实验](rigging/readme.md)
+
+人物光照验证：工作台顶部 **人物预览**，包含原创平涂测试姿态、法线 / 深度、MToon 光照、参数配方与检查记录。见 [静态光照工作流](tutorial/live2d-guidance/workflows/lighting-preview.md)。

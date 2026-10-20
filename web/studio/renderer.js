@@ -1,0 +1,399 @@
+import * as THREE from "three";
+import { MToonMaterial } from "@pixiv/three-vrm-materials-mtoon";
+import {
+  defaults,
+  lightDirection,
+  reliefGrid,
+  projectionDepth,
+} from "./lighting-model.js";
+
+function pixels(image) {
+  const c = document.createElement("canvas");
+  c.width = image.width;
+  c.height = image.height;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(image, 0, 0);
+  return ctx.getImageData(0, 0, c.width, c.height).data;
+}
+function texture(bytes, w, h, color = false) {
+  const t = new THREE.DataTexture(bytes, w, h, THREE.RGBAFormat);
+  t.flipY = true;
+  t.colorSpace = color ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+  t.magFilter = THREE.LinearFilter;
+  t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.generateMipmaps = true;
+  t.needsUpdate = true;
+  return t;
+}
+export async function loadImage(url) {
+  const i = new Image();
+  i.decoding = "async";
+  i.src = url;
+  await i.decode();
+  return i;
+}
+export class LightingStage {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.settings = { ...defaults };
+    this.mode = "lit";
+    this.zoom = 1;
+    this.pan = [0, 0];
+    this.disposed = false;
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      preserveDrawingBuffer: true,
+      powerPreference: "high-performance",
+    });
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.NoToneMapping;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+    this.renderer.shadowMap.autoUpdate = false;
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 20);
+    this.camera.position.z = 6;
+    this.ambient = new THREE.AmbientLight(0xffffff, Math.PI * 0.16);
+    this.scene.add(this.ambient);
+    this.light = new THREE.DirectionalLight(0xffffff, Math.PI * 0.84);
+    this.light.castShadow = true;
+    this.light.shadow.mapSize.set(2048, 2048);
+    this.light.shadow.radius = 3;
+    Object.assign(this.light.shadow.camera, {
+      left: -1.45,
+      right: 1.45,
+      top: 1.45,
+      bottom: -1.45,
+      near: 1,
+      far: 7,
+    });
+    this.light.shadow.camera.updateProjectionMatrix();
+    this.scene.add(this.light, this.light.target);
+    this.material = new MToonMaterial({
+      map: null,
+      normalMapType: THREE.ObjectSpaceNormalMap,
+      shadeColorFactor: new THREE.Color(defaults.shade),
+      shadingToonyFactor: defaults.toony,
+      shadingShiftFactor: defaults.shift,
+      giEqualizationFactor: 1,
+      alphaTest: 0.01,
+      transparent: true,
+      side: THREE.FrontSide,
+    });
+    this.material.toneMapped = false;
+    this.material.outlineWidthMode = "none";
+    // Only adapt shadow RECEIVER coordinates to the image's per-pixel depth.
+    // MToon's BRDF and Three's PCF shadow comparison remain upstream code.
+    // Interpolating depth across a hand/face edge creates false striped shadows.
+    this.depthUniforms = {
+      studioDepth: { value: null },
+      studioDepthScale: { value: defaults.depthScale },
+      studioSize: { value: new THREE.Vector2(1, 2) },
+      studioShadowMatrix: { value: new THREE.Matrix4() },
+    };
+    const upstreamCompile = this.material.onBeforeCompile.bind(this.material);
+    this.material.onBeforeCompile = (shader, renderer) => {
+      upstreamCompile(shader, renderer);
+      if (!shader.fragmentShader.includes("vDirectionalShadowCoord[ i ]"))
+        throw new Error(
+          "MToon shadow adapter needs review for this library version",
+        );
+      Object.assign(shader.uniforms, this.depthUniforms);
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          "#include <shadowmap_pars_fragment>",
+          `#include <shadowmap_pars_fragment>
+#ifdef USE_SHADOWMAP
+uniform sampler2D studioDepth;
+uniform float studioDepthScale;
+uniform vec2 studioSize;
+uniform mat4 studioShadowMatrix;
+vec4 studioShadowCoord() {
+ vec2 xy=(vUv-0.5)*studioSize;
+ float z=(textureLod(studioDepth,vUv,0.0).r-0.5)*studioDepthScale;
+ vec3 p=vec3(xy,z);
+ vec3 n=normalize(cross(dFdx(p),dFdy(p)));
+ if(n.z<0.0)n=-n;
+ // Native-style geometric normal bias, evaluated at the actual receiver.
+ return studioShadowMatrix*vec4(p+n*0.012,1.0);
+}
+#endif`,
+        )
+        .replaceAll("vDirectionalShadowCoord[ i ]", "studioShadowCoord()");
+    };
+    this.material.customProgramCacheKey = () => "astra-mtoon-depth-receiver-v1";
+    this.basic = new THREE.MeshBasicMaterial({
+      transparent: true,
+      alphaTest: 0.01,
+      toneMapped: false,
+    });
+    // A dedicated cut caster uses Three's standard depth material. colorWrite=false
+    // keeps it absent from the beauty pass without disabling shadow participation.
+    this.casterMaterial = new THREE.MeshBasicMaterial({
+      colorWrite: false,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      alphaTest: 0.5,
+    });
+    this.mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 2), this.material);
+    this.mesh.receiveShadow = true;
+    this.scene.add(this.mesh);
+    this.caster = new THREE.Mesh(this.mesh.geometry, this.casterMaterial);
+    this.caster.castShadow = true;
+    this.caster.renderOrder = -1;
+    this.scene.add(this.caster);
+    this.textures = [];
+    this.observer = new ResizeObserver(() => this.render());
+    this.observer.observe(canvas.parentElement);
+    this.onLost = (e) => {
+      e.preventDefault();
+      canvas.dispatchEvent(
+        new CustomEvent("studio-error", {
+          detail: "GPU 上下文丢失，请刷新重新载入素材。",
+        }),
+      );
+    };
+    canvas.addEventListener("webglcontextlost", this.onLost);
+  }
+  async load(images) {
+    const { color, normal, depth } = images,
+      w = color.width,
+      h = color.height;
+    if (
+      normal.width !== w ||
+      normal.height !== h ||
+      depth.width !== w ||
+      depth.height !== h
+    )
+      throw new Error("原画、法线和深度的尺寸必须完全一致；不会自动拉伸贴图。");
+    if (Math.max(w, h) > this.renderer.capabilities.maxTextureSize)
+      throw new Error("贴图超出当前 GPU 原生上限，未降低画质。");
+    this.textures.forEach((t) => t.dispose());
+    this.textures = [];
+    const a = pixels(color),
+      n = pixels(normal),
+      d = pixels(depth);
+    this.source = { a, n, d, w, h };
+    const dn = new Uint8Array(d);
+    for (let i = 0; i < a.length; i += 4) dn[i + 3] = a[i + 3];
+    this.color = texture(new Uint8Array(a), w, h, true);
+    this.depth = texture(dn, w, h);
+    this.depth.generateMipmaps = false;
+    this.depth.minFilter = THREE.LinearFilter;
+    this.textures.push(this.color, this.depth);
+    const heights = projectionDepth(d, a, w, h),
+      half = new Uint16Array(heights.length);
+    for (let i = 0; i < heights.length; i++)
+      half[i] = THREE.DataUtils.toHalfFloat(heights[i]);
+    const surface = new THREE.DataTexture(
+      half,
+      w,
+      h,
+      THREE.RedFormat,
+      THREE.HalfFloatType,
+    );
+    surface.flipY = true;
+    surface.magFilter = surface.minFilter = THREE.LinearFilter;
+    surface.needsUpdate = true;
+    this.textures.push(surface);
+    this.depthUniforms.studioDepth.value = surface;
+    this.depthUniforms.studioSize.value.set((2 * w) / h, 2);
+    this.normal = texture(new Uint8Array(n.length), w, h);
+    this.textures.push(this.normal);
+    this.updateNormal();
+    this.material.map = this.color;
+    this.material.shadeMultiplyTexture = this.color;
+    this.material.normalMap = this.normal;
+    this.material.needsUpdate = true;
+    this.casterMaterial.map = this.color;
+    this.casterMaterial.needsUpdate = true;
+    this.grid = reliefGrid(heights, a, w, h);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute(
+      "position",
+      new THREE.BufferAttribute(this.grid.positions.slice(), 3),
+    );
+    g.setAttribute("uv", new THREE.BufferAttribute(this.grid.uv, 2));
+    // Object-space normal map is the lighting authority. Geometry normals only
+    // provide the initial fallback; relief updates compute geometric normals.
+    const normals = new Float32Array(this.grid.vertices * 3);
+    for (let i = 2; i < normals.length; i += 3) normals[i] = 1;
+    g.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
+    g.setIndex(new THREE.BufferAttribute(this.grid.display, 1));
+    this.mesh.geometry.dispose();
+    if (this.caster.geometry !== this.mesh.geometry)
+      this.caster.geometry.dispose();
+    this.mesh.geometry = g;
+    const cg = new THREE.BufferGeometry();
+    cg.setAttribute("position", g.getAttribute("position"));
+    cg.setAttribute("normal", g.getAttribute("normal"));
+    cg.setAttribute("uv", g.getAttribute("uv"));
+    cg.setIndex(new THREE.BufferAttribute(this.grid.caster, 1));
+    this.caster.geometry = cg;
+    this.updateRelief();
+    this.zoom = 1;
+    this.pan = [0, 0];
+    this.setMode(this.mode);
+    this.apply(this.settings);
+    return {
+      width: w,
+      height: h,
+      vertices: this.grid.vertices,
+      triangles: this.grid.caster.length / 3,
+      maxTextureSize: this.renderer.capabilities.maxTextureSize,
+    };
+  }
+  updateNormal() {
+    if (!this.source) return;
+    const { n, a } = this.source,
+      b = this.normal.image.data,
+      { normalStrength: s, normalY: y } = this.settings;
+    for (let i = 0; i < n.length; i += 4) {
+      let x = (n[i] / 127.5 - 1) * s,
+        ny = (n[i + 1] / 127.5 - 1) * s * y,
+        z = Math.max(0.005, n[i + 2] / 127.5 - 1),
+        l = Math.hypot(x, ny, z);
+      b[i] = (x / l + 1) * 127.5;
+      b[i + 1] = (ny / l + 1) * 127.5;
+      b[i + 2] = (z / l + 1) * 127.5;
+      b[i + 3] = a[i + 3];
+    }
+    this.normal.needsUpdate = true;
+  }
+  updateRelief() {
+    if (!this.grid) return;
+    const p = this.mesh.geometry.getAttribute("position");
+    for (let i = 0; i < p.count; i++)
+      p.array[i * 3 + 2] =
+        this.grid.positions[i * 3 + 2] * this.settings.depthScale;
+    p.needsUpdate = true;
+    this.mesh.geometry.computeVertexNormals();
+    this.mesh.geometry.computeBoundingSphere();
+    this.caster.geometry.computeBoundingSphere();
+    this.renderer.shadowMap.needsUpdate = true;
+  }
+  apply(next) {
+    const prior = this.settings;
+    this.settings = { ...next };
+    const s = this.settings;
+    if (
+      prior.normalStrength !== s.normalStrength ||
+      prior.normalY !== s.normalY
+    )
+      this.updateNormal();
+    if (prior.depthScale !== s.depthScale) this.updateRelief();
+    this.light.position
+      .fromArray(lightDirection(s.azimuth, s.elevation))
+      .multiplyScalar(4);
+    this.light.intensity = Math.PI * (1 - s.ambient);
+    this.ambient.intensity = Math.PI * s.ambient;
+    this.depthUniforms.studioDepthScale.value = s.depthScale;
+    this.light.shadow.intensity = s.shadow ? s.shadowStrength : 0;
+    this.light.shadow.radius = s.shadowSoftness;
+    this.light.shadow.bias = s.bias;
+    this.light.shadow.normalBias = 0.012;
+    this.material.shadeColorFactor.set(s.shade);
+    this.material.shadingToonyFactor = s.toony;
+    this.material.shadingShiftFactor = s.shift;
+    this.material.parametricRimColorFactor.setScalar(s.rim);
+    this.material.parametricRimFresnelPowerFactor = 4;
+    this.material.rimLightingMixFactor = 1;
+    this.renderer.shadowMap.needsUpdate = true;
+    this.render();
+  }
+  setMode(mode) {
+    this.mode = mode;
+    if (!this.color) return;
+    if (mode === "lit" || mode === "split" || mode === "shading") {
+      this.mesh.material = this.material;
+      this.material.debugMode = mode === "shading" ? "litShadeRate" : "none";
+    } else {
+      this.basic.map =
+        mode === "normal"
+          ? this.normal
+          : mode === "depth"
+            ? this.depth
+            : this.color;
+      this.basic.needsUpdate = true;
+      this.mesh.material = this.basic;
+    }
+    this.render();
+  }
+  frame(width, height, exporting = false) {
+    const aspect = width / height,
+      fit = exporting
+        ? 1
+        : Math.max(
+            1.1,
+            (1.1 * (this.source?.w / this.source?.h || 0.75)) / aspect,
+          ),
+      scale = fit / (exporting ? 1 : this.zoom);
+    this.camera.left = -aspect * scale;
+    this.camera.right = aspect * scale;
+    this.camera.top = scale;
+    this.camera.bottom = -scale;
+    this.camera.position.x = exporting ? 0 : this.pan[0];
+    this.camera.position.y = exporting ? 0 : this.pan[1];
+    this.camera.updateProjectionMatrix();
+    this.scene.updateMatrixWorld(true);
+    this.light.shadow.updateMatrices(this.light);
+    this.depthUniforms.studioShadowMatrix.value.multiplyMatrices(
+      this.light.shadow.matrix,
+      this.mesh.matrixWorld,
+    );
+    this.material.update(0);
+    this.renderer.setScissorTest(false);
+    this.renderer.setClearColor(0, 0);
+    if (this.mode === "split") {
+      const previous = this.mesh.material;
+      this.basic.map = this.color;
+      this.basic.needsUpdate = true;
+      this.mesh.material = this.basic;
+      this.renderer.render(this.scene, this.camera);
+      this.mesh.material = this.material;
+      this.renderer.setScissorTest(true);
+      this.renderer.setScissor(width / 2, 0, width / 2, height);
+      this.renderer.render(this.scene, this.camera);
+      this.renderer.setScissorTest(false);
+      this.mesh.material = previous;
+    } else this.renderer.render(this.scene, this.camera);
+  }
+  render() {
+    if (this.disposed || !this.source) return;
+    const box = this.canvas.parentElement.getBoundingClientRect(),
+      ratio = Math.min(window.devicePixelRatio || 1, 2),
+      w = Math.max(1, Math.round(box.width * ratio)),
+      h = Math.max(1, Math.round(box.height * ratio));
+    if (this.canvas.width !== w || this.canvas.height !== h)
+      this.renderer.setSize(w, h, false);
+    this.frame(w, h);
+    this.canvas.style.backgroundColor = this.settings.background;
+  }
+  async exportPNG() {
+    if (!this.source) throw new Error("请先载入素材");
+    const { w, h } = this.source;
+    this.renderer.setSize(w, h, false);
+    this.frame(w, h, true);
+    const blob = await new Promise((resolve) =>
+      this.canvas.toBlob(resolve, "image/png"),
+    );
+    this.render();
+    if (!blob) throw new Error("PNG 导出失败");
+    return blob;
+  }
+  dispose() {
+    this.disposed = true;
+    this.observer.disconnect();
+    this.canvas.removeEventListener("webglcontextlost", this.onLost);
+    this.textures.forEach((t) => t.dispose());
+    this.mesh.geometry.dispose();
+    this.caster.geometry.dispose();
+    this.material.dispose();
+    this.basic.dispose();
+    this.casterMaterial.dispose();
+    this.light.shadow.dispose();
+    this.renderer.dispose();
+  }
+}
