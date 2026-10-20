@@ -17,7 +17,7 @@ pnpm web --port 4387
 2. 新建任务，填写名称并上传一张 PNG、JPG 或 WebP（最大 20 MB），也可填写服务器上已有图片的路径。相对路径以 `<dir>/<name>` 为基准。原图保存到 `input/original.*`；已有任务不覆盖原图。
 3. 选择整条流程或人物 part / raster、衣服 part / raster、穿戴组装中的一条。需要人物姿态标准化时勾选对应选项。
 4. 绘制和组装必须填写已安装的 Krita 可执行文件；已有配置会复用。缺少 Krita 时先让 agent 协助确认桌面或 headless 安装方案。Codex 配置沿用 skill 的 [环境说明](../.agents/skills/live2d-maker/references/workflow-details.md#codex-环境配置)。网页不另接生图服务。
-5. 任务在后台执行。网页每 4 秒读取状态，关闭浏览器不影响运行。“停止”保留产物和 thread；之后选择同一任务运行 / 续跑。
+5. 任务在后台执行。网页每 4 秒读取状态，关闭浏览器不影响运行。网页启动的任务可用“停止”保留产物和 thread，之后选择同一任务运行 / 续跑。CLI 启动的任务也能在此展示，但需由原 CLI 进程的管理者停止。
 
 同名任务由现有总调度器的锁保护。网页不创建第二套管线状态机；`run.json`、group 的 `steps`、`.running`、`.completed` 和正式 review / repair 报告仍由原管线管理。子步骤只能查看，启动单位是整条路线或一条管线。异常和最后消息显示在运行记录内。未交付结果不会被当作成功。自动重试仍遵守已有工作流策略；网页本身不会组织 agent 的定时人工巡检。
 
@@ -39,7 +39,7 @@ pnpm web --port 4387
 
 常驻服务须继承可用的 Node、Codex 与 Krita 显示环境。用 systemd 启动时设置 `KillMode=process`，避免重启网页服务时清理同一 cgroup 内已脱离的后台工作流；停止制作使用网页的“停止”，或现有总入口的进程管理。服务器重启会中断制作，产物和 thread 保留后可续跑。
 
-`.run/` 和 `.web/` 都被 Git 忽略。这个网页不包含在独立 skill 安装包里。
+`.run/` 和 `.web/` 都被 Git 忽略。这个网页不包含在独立 skill 安装包里。Agent 如何复用或补齐工作台、连接任务和记录巡检环境，见[工作台启动与连接](../.agents/skills/live2d-maker/references/workbench.md)。
 
 ## 验证
 

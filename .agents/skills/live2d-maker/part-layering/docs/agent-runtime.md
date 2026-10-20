@@ -9,7 +9,8 @@
 默认同时执行 3 个 agent 调用，使用 `--jobs` / `-j` 调整；`--agents` / `-a` 是同一上限的兼容别名。组任务不另设数量限制，只由树的层级依赖决定是否就绪。排队先到先执行，结束、异常、退避等待均释放执行位置。保留但空闲的绘制会话不占位置，因此不会因保留绘制窗口而阻塞 review。此限制共享于一次程序运行内，不协调多个独立启动的 CLI。
 
 ```sh
-pnpm start --name test --agents 3
+# 从 live2d-maker 根目录执行
+pnpm part-layering --name test --agents 3
 ```
 
 内部调用也可以通过 `AgentOptions.agentConcurrency` 指定；`runtime` 注入用于共享运行层或本地模拟验证。

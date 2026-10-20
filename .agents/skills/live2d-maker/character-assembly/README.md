@@ -12,7 +12,7 @@ pnpm character-assembly --name jianma
 pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krita /绝对路径/krita
 ```
 
-默认任务目录是 `<skill上一级>/<name>/`。本入口只读取同名任务的这三个输入，不复制文件，不自动运行上游：
+默认任务目录是 `<仓库>/.run/<name>/`，独立安装时为 `<skill上一级>/.run/<name>/`；显式 `--dir` 则使用 `<dir>/<name>/`。本入口只读取同名任务的这三个输入，不复制文件，不自动运行上游：
 
 | 输入 | 任务目录内的位置 |
 | --- | --- |

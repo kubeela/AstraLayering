@@ -13,7 +13,7 @@
 | [part-layering](../part-layering/README.md) | 首次原图 | 参考准备、按层分组、轮廓 review、同层去重、补全、子组分析；最后交付 parts、preview.svg、occlusion.json |
 | [raster-layering](../raster-layering/README.md) | 同名人物 part | step01 分层补全、step02 边缘修画及 review、step03 去连体服；最终 `step03/character-dressup-base.kra`、同名 PNG、report.md |
 | [clothing-part-layering](../clothing-part-layering/README.md) | 人物 part 的 `references/simplified-subject.*` | 生成匹配角色身形的纯衣服图，再拆分；独立运动是核心标准，考虑袖口、衣领等前后穿插 |
-| [clothing-raster-layering](../clothing-raster-layering/README.md) | 同名衣服 part | step01 分层补全、step02 边缘修画及 review；最终 `step02/clothing-soft-edges.kra`、同名 PNG、report.md |
+| [clothing-raster-layering](../clothing-raster-layering/README.md) | 同名衣服 part | step01 分层补全、step02 边缘修画及 review；最终 `step02/clothing-soft-edges.kra`、report.md；合成 PNG 按实际导出文件提供，不约定同名文件 |
 | [character-assembly](../character-assembly/README.md) | 同名人物 raster step03、衣服 raster step02 与简化穿衣参考 | 单个 medium agent 组装两份 KRA，无 reviewer；交付 `step01/character-assembled.kra`、同名 PNG、report.md |
 
 人物路线：
@@ -25,7 +25,7 @@ pnpm part-layering --name jianma --image /绝对路径/角色.png
 pnpm raster-layering --name jianma --krita /绝对路径/krita
 ```
 
-人物 preparation 始终提供 `references/standard.png`，后续简化和素体从它继续。`--no-standard` 可显式关闭已保存的标准化选项，但已有参考的输入和选项须通过[指纹校验](workflow-details.md#输入产物与续跑)。独立衣服入口不接受标准化选项。
+新任务的人物 preparation 提供 `references/standard.png`，后续简化和素体从它继续；旧任务缺原图但参考齐全时可先沿用已有参考，兼容规则见[输入、产物与续跑](workflow-details.md#输入产物与续跑)。`--no-standard` 可显式关闭已保存的标准化选项，但已有参考的输入和选项须通过[指纹校验](workflow-details.md#输入产物与续跑)。独立衣服入口不接受标准化选项。
 
 衣服路线使用同名人物 part 的简化穿衣角色图，不依赖人物 raster 完成：
 
@@ -48,6 +48,8 @@ pnpm character-assembly --name jianma --krita /绝对路径/krita
 part 的 `--jobs`（别名 `--agents`）控制全局 agent 调用并发，默认 3；没有另一个组任务并发上限。`--max-depth` 可限制本次制作层数，默认不限制。需要选择已有组续做时使用 `--groups`，具体前置条件见对应 part 文档。raster 和组装入口的 `--dry-run` 检查输入与 Krita 并展示提示词，不运行模型、不写任务文件。
 
 ## 监听、续跑与验收
+
+单管线产物也能在[工作台](workbench.md)中展示。沿用同一 `--dir`，核对任务页中的具体子步骤与文件；没有总控记录时不把“已有产物”误报为整条流程已完成。独立 CLI 的进度主要从阶段文件和日志判断。
 
 启动后持续查看该进程的输出。终端工具返回 session ID 或暂时没有输出不代表失败，不重复启动同一个任务。查看阶段文件和日志通报当前进度，等进程的明确退出结果再判断是否完成。
 
