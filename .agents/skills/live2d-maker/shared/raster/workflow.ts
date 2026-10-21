@@ -9,7 +9,6 @@ import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import { canonicalPath, fileInfo, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, saveConfig, within } from './run-store.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
-import { createOcclusionTools } from './occlusion-tools.ts';
 
 export type WorkflowOptions = {
   name: string;
@@ -44,7 +43,6 @@ export type KritaPipeline<Input> = {
   validateInput(value: unknown): value is Input;
   inputDirectories(input: Input): readonly string[];
   buildPrompt(step: StepDefinition, input: Input, output: string, krita: KritaInstallation, previous: readonly string[]): Promise<string>;
-  occlusionDirectory?: (input: Input) => string;
 };
 
 export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
@@ -63,7 +61,6 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   for (const source of inputDirectories) {
     if (within(source, directory) || within(directory, source)) throw new Error('上游与本管线目录必须分开');
   }
-  const occlusionDirectory = pipeline.occlusionDirectory?.(reference);
   const configuredKrita = options.krita ?? saved?.krita.executable;
   if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
   const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
@@ -156,13 +153,9 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await rm(resultFile, { force: true });
       await rm(join(output, 'error.txt'), { force: true });
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
-      // Repair resumes the step01 owner; reviewers never receive mutation tools.
-      const editOcclusion = !fresh && ((step.id === 'step01' && phase === 'draw') || phase.startsWith('repair-'));
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort, environment,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
-        occlusion: occlusionDirectory && editOcclusion ? { upstream: occlusionDirectory, editable: true } : undefined,
-        tools: fresh || !occlusionDirectory ? undefined : createOcclusionTools(occlusionDirectory, editOcclusion),
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
           await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');

@@ -83,8 +83,8 @@ test('只调一次 medium 绘制 agent，无 reviewer 和深度工具；完整�
     assert.equal(request.directory, f.output);
     assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'xhigh');
     assert.equal(request.threadId, undefined);
-    assert.equal(request.occlusion, undefined); assert.equal(request.tools, undefined);
-    assert.equal(rasterCodexConfig(request).mcp_servers, undefined);
+
+    assert.equal('mcp_servers' in rasterCodexConfig(), false);
     await stat(join(f.output, 'step01/.running'));
     return deliver(request);
   };

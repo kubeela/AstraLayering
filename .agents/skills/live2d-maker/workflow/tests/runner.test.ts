@@ -90,7 +90,7 @@ test('总控保留输入与配置，严格按序推进；后续仅用 name 和 d
     return { summary: '管线自身检查并跳过', output: 'retained' };
   } });
   // Re-enter the pipeline's own authoritative checks, never trust a stale top-level completion alone.
-  assert.deepEqual(second, pipelineIds);
+  assert.deepEqual(second, pipelineIds.filter(id => !['part-layering', 'clothing-part-layering'].includes(id)));
   const status = await taskStatus(f.options);
   assert.equal(status.status, 'completed'); assert.equal(status.runnerAlive, false); assert.equal(status.lockHeld, false);
   assert.equal(status.output, 'retained');
@@ -180,4 +180,25 @@ test('标准化选项保持未指定、开启和关闭的区别，并继承独�
   assert.equal((await configureRun({ ...f.options, standard: false }, f.directory)).standard, false);
   await assert.rejects(configureRun({ ...f.options, from: 'character-assembly', standard: true }, f.directory), /需要本次路线包含 part-layering/);
   await assert.rejects(configureRun({ ...f.options, from: 'character-assembly', standard: false }, f.directory), /需要本次路线包含 part-layering/);
+});
+
+
+test('绘画中断后总控不重进已完成 part 管线，沿用新增结构', async t => {
+  for (const [part, raster] of [['part-layering', 'raster-layering'], ['clothing-part-layering', 'clothing-raster-layering']] as const) {
+    const f = await fixture(t);
+    const options = { ...f.options, from: part, to: raster };
+    const file = join(f.directory, part, 'groups.json');
+    await assert.rejects(runTask(options, { preflight, execute: async id => {
+      if (id === part) { await mkdir(join(f.directory, part)); await writeFile(file, 'original'); return { summary: 'complete' }; }
+      await writeFile(file, 'drawing corrected structure');
+      throw new Error('drawing interrupted');
+    } }), /drawing interrupted/);
+    const calls: string[] = [];
+    await runTask(options, { preflight, execute: async id => {
+      calls.push(id);
+      assert.equal(await readFile(file, 'utf8'), 'drawing corrected structure');
+      return { summary: 'complete' };
+    } });
+    assert.deepEqual(calls, [raster]);
+  }
 });

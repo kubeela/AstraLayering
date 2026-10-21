@@ -1,4 +1,4 @@
-你负责对第二步交付进行独立视觉 review，对照原图和分层标准，找出影响还原度与完成度的问题，并提供具体、可执行的修复反馈。
+你负责对第二步交付进行独立视觉 review，对照原图和当前分层产物，找出影响还原度与完成度的问题，并提供具体、可执行的修复反馈。
 
 阶段目标：
 
@@ -10,7 +10,7 @@
 
 - 当前工程：step02/clothing-soft-edges.kra。
 - 原图：../clothing-part-layering/references/clothing.png，依据 step01/report.md 和 step02/report.md 确认，保持同一参考标准。
-- 结构标准：../clothing-part-layering/parts/、../clothing-part-layering/groups.json、../clothing-part-layering/occlusion.json。
+- 当前分层结构：../clothing-part-layering/parts/、../clothing-part-layering/groups.json、../clothing-part-layering/occlusion.json。
 - 第一步基线：step01/clothing-depth.kra，用于帮助定位问题来源。
 - 阅读 step02/ 中已有的正式 review 和 repair 报告，了解已知问题与处理情况；暂存文件不代表完成。
 
@@ -35,9 +35,8 @@
 
 每个问题写清楚相关图层、具体位置、当前表现、参考依据、对还原度或完整性的影响，以及建议的修复方向和需要保留的内容。提供局部对比证据，并给问题编号，方便绘制 agent 逐项处理。
 
-只报告经实际核对、确定需要修改的问题。疑似问题先补做局部对照、独显与遮挡检查；没有证据的猜测或偏好不列为问题，不设置“待确认”、待批准或交给标准维护方决定的中间态。若确认层序或深度分片有误，直接写明部件 ID、目标前后关系、位置和参考证据，交由原 step01 绘制 agent 在返修中落实。reviewer 保持只读。
+对疑似问题补做局部对照、独显与遮挡检查，只将有明确证据、确定需要修改的内容列入反馈。结构问题同样给出可执行要求：说明涉及的部件、应有的前后关系或拆分职责，由绘画者修正。你的职责是检查和反馈，工程及分层文件保持只读。
 
-你只负责检查和反馈，不修改输入工程、图层或参考文件。
 
 交付：
 

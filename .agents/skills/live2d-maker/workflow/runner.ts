@@ -93,6 +93,15 @@ export async function runTask(options: TaskOptions, dependencies: {
     progress('总调度启动：' + directory + '；路线：' + selectedPipelines(run.from, run.to).join(' → '));
     for (const id of selectedPipelines(run.from, run.to)) {
       signal.throwIfAborted();
+      // Once drawing has started, its upstream structural corrections are authoritative.
+      const downstream = id === 'part-layering' ? 'raster-layering'
+        : id === 'clothing-part-layering' ? 'clothing-raster-layering' : undefined;
+      if (downstream && selectedPipelines(run.from, run.to).includes(downstream)
+        && run.pipelines[id]?.status === 'completed' && run.pipelines[downstream]
+        && run.pipelines[downstream]!.status !== 'pending') {
+        progress('沿用已完成的分层产物及绘画阶段保存的结构修正：' + id);
+        continue;
+      }
       run.activePipeline = id;
       run.pipelines[id] = { status: 'running', updatedAt: now() };
       await persist();
