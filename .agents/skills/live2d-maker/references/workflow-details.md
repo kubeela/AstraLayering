@@ -26,7 +26,7 @@ pnpm start --name jianma --status --json
 
 按用户需要可用 `--from <管线>` / `--to <管线>` 限定连续范围，默认完整五条管线。比如已有两份 KRA 与简化参考，只执行 `--from character-assembly`；只做人物到 `--to raster-layering`。范围会保存，之后只用任务名即可恢复。总入口不会把手动提供的上游文件标为已经执行过的阶段。`--jobs` 控制 part 的 agent 并发，默认 3。
 
-`--standard` 是人物 part 的 preparation 选项，不增加独立管线。启动新任务前确认用户是否需要标准化；省略时默认关闭。启用后由 medium agent 判断嘴部是否张大、眼睛是否张开、是否正视站立且双手在身体两侧；已符合就复制原图，否则通过 Codex 原生 `image_generation` 调整。未启用时不调用姿态判断或生图，直接复制原图。两种模式都输出 `part-layering/references/standard.png`，非 PNG 原图会转换格式，`input/original.<扩展名>` 保留原始文件。
+`--standard` 是人物 part 的 preparation 选项，不增加独立管线。启动新任务前确认用户是否需要标准化；省略时默认关闭。启用后由 preparation agent 判断嘴部是否张大、眼睛是否张开、是否正视站立且双手在身体两侧；已符合就复制原图，否则通过本步骤配置的 `image_generation` 调整。未启用时不调用姿态判断或生图，直接复制原图。两种模式都输出 `part-layering/references/standard.png`，非 PNG 原图会转换格式，`input/original.<扩展名>` 保留原始文件。
 
 后续沿用现有画风判断、简化和素体流程，只把输入改为 `standard.png`。新步骤不额外增加视觉 review。总控 `run.json` 和人物 `references/preparation.json` 记录选项；前台、后台和仅用 `--name` 续跑都沿用保存值。独立 part 已保存的选项也可被首次总控继承。`--no-standard` 显式关闭；切换时仍须通过下方指纹检查。显式指定这两个选项时，所选路线必须包含人物 part。
 
@@ -34,7 +34,7 @@ pnpm start --name jianma --status --json
 
 ## Codex 环境配置
 
-复制 [example.env](../example.env) 为 `.env`，按需填写；不填写时沿用各小步骤的原模型与外部 Codex 生图配置。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。各小步骤的模型、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
+首次创建 skill 根目录 `.env` 前，按[推荐模型方案](model-presets.md)让用户确认选择，再以 [example.env](../example.env) 为基础填写；已有配置不覆盖。直接调用脚本而没有 `.env` 时，使用默认方案：preparation 为 Codex low，其余默认模型保持，生图使用外部 Codex 内置服务。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
 
 `layering_image_compact_threshold` 留空关闭，只作用于 Codex；例如网关最多 50 张时可设 `49`。这项能力需要仓库提供的可选 Codex 补丁：
 
@@ -95,7 +95,7 @@ part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 r
 | `shared/part/` | 分组树、SVG、整层调度、去重、依赖恢复及 part agent |
 | `shared/raster/` | 上游定位、Krita 检查、顺序步骤、review 和标记恢复 |
 | `shared/codex/` | SDK / App Server 适配、日志、工具配置、并发和临时重试 |
-| `shared/agents/` | 逐步骤模型选择、Claude／Antigravity 适配、MCP 与自定义生图接口 |
+| `shared/agents/` | 按职责统一 LLM 模型、按 agent 选择生图，Claude／Antigravity 适配、MCP 与自定义生图接口 |
 | `shared/paths.ts` | 统一任务目录和外部输入路径解析 |
 | 各管线目录 | 启动入口、preparation 或步骤定义、提示词和专项配置 |
 

@@ -13,26 +13,42 @@ export type ReasoningEffort = typeof reasoningEfforts[number];
 export type AgentModel = { model: ModelId; effort: ReasoningEffort; harness: Harness };
 
 const medium = 'gpt-6.1-sol-xhigh', high = 'gpt-6-astra-xhigh';
-// Stable keys correspond to task kinds, never to dynamically generated group names.
-export const stepDefaults = {
-  part_pose_judgment: medium, part_standardize: medium,
-  part_reference_judgment: medium, part_simplify: medium, part_base_subject: medium,
-  part_initial_groups: medium, part_outline: medium, part_outline_review: medium,
-  part_outline_repair: medium, part_reduce: medium, part_completion: medium,
-  part_children: medium, part_occlusion: medium,
-  clothing_preparation: medium, clothing_initial_groups: medium,
-  clothing_outline: medium, clothing_outline_review: medium, clothing_outline_repair: medium,
-  clothing_reduce: medium, clothing_completion: medium, clothing_children: medium, clothing_occlusion: medium,
-  raster_step01: high, raster_step02: high, raster_step02_review: high, raster_step02_repair: high,
+// User-facing model settings describe roles shared by character and clothing pipelines.
+export const modelSlotDefaults = {
+  preparation: 'gpt-6.1-sol-low',
+  part_draw: medium, part_review: medium, part_reduce: medium, part_completion: medium,
+  part_groups: medium, part_depth: medium,
+  raster_step01: high, raster_step02: high, raster_step02_review: high,
   raster_step03: medium,
-  clothing_raster_step01: high, clothing_raster_step02: high,
-  clothing_raster_step02_review: high, clothing_raster_step02_repair: high,
   assembly: medium,
 } as const;
-export type AgentStep = keyof typeof stepDefaults;
+export type ModelSlot = keyof typeof modelSlotDefaults;
+
+// Keep task identities for prompts, preflight, logs and session recovery.
+export const stepModelSlots = {
+  part_pose_judgment: 'preparation', part_standardize: 'preparation',
+  part_reference_judgment: 'preparation', part_simplify: 'preparation', part_base_subject: 'preparation',
+  part_initial_groups: 'part_groups', part_outline: 'part_draw', part_outline_review: 'part_review',
+  part_outline_repair: 'part_draw', part_reduce: 'part_reduce', part_completion: 'part_completion',
+  part_children: 'part_groups', part_occlusion: 'part_depth',
+  clothing_preparation: 'preparation', clothing_initial_groups: 'part_groups',
+  clothing_outline: 'part_draw', clothing_outline_review: 'part_review', clothing_outline_repair: 'part_draw',
+  clothing_reduce: 'part_reduce', clothing_completion: 'part_completion', clothing_children: 'part_groups', clothing_occlusion: 'part_depth',
+  raster_step01: 'raster_step01', raster_step02: 'raster_step02', raster_step02_review: 'raster_step02_review', raster_step02_repair: 'raster_step02',
+  raster_step03: 'raster_step03',
+  clothing_raster_step01: 'raster_step01', clothing_raster_step02: 'raster_step02',
+  clothing_raster_step02_review: 'raster_step02_review', clothing_raster_step02_repair: 'raster_step02',
+  assembly: 'assembly',
+} as const satisfies Record<string, ModelSlot>;
+export type AgentStep = keyof typeof stepModelSlots;
+export const stepDefaults = Object.fromEntries(Object.entries(stepModelSlots)
+  .map(([step, slot]) => [step, modelSlotDefaults[slot]])) as Record<AgentStep, string>;
 export const imageSteps: readonly AgentStep[] = [
   'part_standardize', 'part_simplify', 'part_base_subject', 'clothing_preparation',
-  'raster_step01', 'clothing_raster_step01',
+  'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair',
+  'raster_step01', 'raster_step02', 'raster_step02_review', 'raster_step02_repair', 'raster_step03',
+  'clothing_raster_step01', 'clothing_raster_step02', 'clothing_raster_step02_review', 'clothing_raster_step02_repair',
+  'assembly',
 ];
 export function parseAgentModel(value: string, key: string): AgentModel {
   const match = value.trim().match(/^(.+)-(low|medium|high|xhigh)$/);

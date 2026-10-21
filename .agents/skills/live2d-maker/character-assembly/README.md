@@ -1,6 +1,6 @@
 # character-assembly
 
-在人物和衣服 raster 都完成后，用一个 medium 绘制 agent 将两份 KRA 组装成穿戴工程，尽可能贴近简化穿衣角色参考。默认模型为 `gpt-6.1-sol / xhigh`，读取 skill 根目录 `.env` 的 `layering_medium_model`；不设 reviewer。
+在人物和衣服 raster 都完成后，用一个绘制 agent 将两份 KRA 组装成穿戴工程，尽可能贴近简化穿衣角色参考。默认模型为 `gpt-6.1-sol / xhigh`，读取 skill 根目录 `.env` 的 `layering_agent_assembly_model`；不设 reviewer。
 
 在 skill 根目录执行：
 
