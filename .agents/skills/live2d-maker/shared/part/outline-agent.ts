@@ -11,7 +11,7 @@ import { readGroupPrompt } from './group-prompts.ts';
 import { findGroup, writeAtomic } from './groups.ts';
 import type { DrawingContext, GroupContext, ReviewContext, ReviewedSvgArtifact, StepResult, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
-import { draftPath, matchesHash, publishSvg, readReviewReport, svgHash as hash, type Review } from './artifact-facts.ts';
+import { completedReviewCount, draftPath, matchesHash, publishSvg, readReviewReport, svgHash as hash, type Review } from './artifact-facts.ts';
 
 const maxOutlineReviews = 2;
 
@@ -213,7 +213,7 @@ export async function reviewGroupOutline(
   // 已提交结论但进度尚未保存时，从报告恢复，不重复消费审查轮次。
   if (previous?.verdict === 'pass' && matchesHash(await readFile(candidate), previous.candidateHash)) return passed();
   if (previous?.verdict === 'revise') await repair(previous);
-  while (report.reviews.length < maxOutlineReviews) {
+  while (completedReviewCount(report) < maxOutlineReviews) {
     previous = await reviewOnce(context, candidate, reportPath, agents);
     report.reviews.push(previous);
     if (previous.verdict === 'pass') return passed();
@@ -225,7 +225,7 @@ export async function reviewGroupOutline(
   }
   if (previous?.verdict === 'revise') {
     return { status: 'completed', output: { ...context.outline, reviewOutcome: 'repaired',
-      note: `已按第 ${report.reviews.length} 轮意见返修并自检，不再复审` } };
+      note: `已按第 ${completedReviewCount(report)} 轮意见返修并自检，不再复审` } };
   }
   return { status: 'pending', message: `轮廓 review blocked：${previous?.verdict === 'blocked'
     ? previous.feedback : '当前 SVG 与已通过的审查候选不一致'}；已用完 ${maxOutlineReviews} 轮审查；报告：${reportPath}` };

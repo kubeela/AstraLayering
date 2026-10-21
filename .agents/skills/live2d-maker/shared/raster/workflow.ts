@@ -156,11 +156,13 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await rm(resultFile, { force: true });
       await rm(join(output, 'error.txt'), { force: true });
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
+      // Repair resumes the step01 owner; reviewers never receive mutation tools.
+      const editOcclusion = !fresh && ((step.id === 'step01' && phase === 'draw') || phase.startsWith('repair-'));
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort, environment,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
-        occlusion: occlusionDirectory && !fresh && step.id === 'step01' && phase === 'draw' ? { upstream: occlusionDirectory, editable: true } : undefined,
-        tools: fresh || !occlusionDirectory ? undefined : createOcclusionTools(occlusionDirectory, step.id === 'step01' && phase === 'draw'),
+        occlusion: occlusionDirectory && editOcclusion ? { upstream: occlusionDirectory, editable: true } : undefined,
+        tools: fresh || !occlusionDirectory ? undefined : createOcclusionTools(occlusionDirectory, editOcclusion),
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
           await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');

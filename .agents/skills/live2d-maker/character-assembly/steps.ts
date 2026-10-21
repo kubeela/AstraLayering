@@ -20,5 +20,5 @@ export async function buildPrompt(step: StepDefinition, input: AssemblyInput, ou
 - Krita：${JSON.stringify(krita.executable)}，版本 ${krita.version}；沿用当前显示环境。
 - 本次输出目录：${JSON.stringify(output)}；中间文件也放在这里。必须交付：${JSON.stringify(step.requiredFiles.map(file => join(output, file)))}。
 - 若已有进度，继续已有工程和本 thread 的工作。输入工程保持只读；run.json、.running、.completed 与调度日志由程序维护，不要改写。
-- 本流程由你独立完成，无后续 reviewer。完成交付后按输出 schema 返回 status=completed 和 summary；不能继续时返回 blocked 并说明原因和已保存进度。\n`;
+- 本流程由你独立完成，无后续 reviewer。完成交付后按输出 schema 返回 status=completed 和 summary；普通组装与局部修正继续处理；仅必要输入缺失、损坏或工具故障导致无法执行时返回 blocked，说明具体路径或错误、恢复尝试和已保存进度。\n`;
 }

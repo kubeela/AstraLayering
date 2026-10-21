@@ -65,7 +65,7 @@ for await (const event of events) {
 
 绘制及返修通过 App Server 配置开启内置 `image_generation`，review 和首次分组关闭。噪音或结构难辨时可基于原参考局部生成放大辅助图，要求结构清晰优先、不添加原图不存在的细节、不改变已有形状及可靠边缘；生成图仅辅助辨认，继续对照原参考绘制 SVG。同一处问题只生成一次是提示词约束，不是程序调用上限。返修附加要求单独放在 `prompts/7-轮廓返修.md`。本轮仍按实际 SVG 文件交付，不要求生图任务的最终 JSON。
 
-同一个组的一次绘制任务保留一个绘制会话，首次绘制与返修沿用其 thread；每次严格 review 均创建新的只读会话，审查后关闭。review 通过 `submit_review` 保存 `pass`、`revise` 或 `blocked` 及具体意见，最终回复不参与解析。每组最多提交两次正式 review：绘制并自检 → review 1 → 按意见返修并自检 → review 2 → 再返修并自检，然后直接进入下一步，不启动第三次 review。任何一轮 pass 则提前进入下一步。轮数按本组审查报告累计，重启不清零，临时服务重试不另计一轮。blocked（无法核对）与执行异常仍保留原有处理，不视为返修成功。续跑先落实尚未完成的返修意见；报告以 repairedCandidateHash 记录已完成返修的 SVG，避免中断恢复后重复返修。审查原结论保持不变；两轮意见修正完成后，review 步骤登记 completed，output.reviewOutcome 为 repaired，表示流程完成而非 reviewer 给过 pass。终端显示已按第 2 轮意见返修并自检、不再复审。会话复用和审查循环由程序控制，工作提示词不解释会话管理规则。任务结束、暂停或异常时关闭绘制会话；跨启动不保留活动会话。
+同一个组的一次绘制任务保留一个绘制会话，首次绘制与返修沿用其 thread；每次严格 review 均创建新的只读会话，审查后关闭。review 通过 `submit_review` 保存 `pass`、`revise` 或 `blocked` 及具体意见，最终回复不参与解析。每组最多提交两次正式 review：绘制并自检 → review 1 → 按意见返修并自检 → review 2 → 再返修并自检，然后直接进入下一步，不启动第三次 review。任何一轮 pass 则提前进入下一步。轮数按本组 pass / revise 审查报告累计；blocked 保留记录但不占正式审查名额，重启不清零，临时服务重试不另计一轮。blocked（无法核对）与执行异常仍保留原有处理，不视为返修成功。续跑先落实尚未完成的返修意见；报告以 repairedCandidateHash 记录已完成返修的 SVG，避免中断恢复后重复返修。审查原结论保持不变；两轮意见修正完成后，review 步骤登记 completed，output.reviewOutcome 为 repaired，表示流程完成而非 reviewer 给过 pass。终端显示已按第 2 轮意见返修并自检、不再复审。会话复用和审查循环由程序控制，工作提示词不解释会话管理规则。任务结束、暂停或异常时关闭绘制会话；跨启动不保留活动会话。
 
 每次返修分别保存到 `stages/outline/<组ID>.repairs/<序号>/`，其中 `feedback.txt` 是返修意见，`prompt.txt` 是实际发给绘制 agent 的完整提示词。序号从 1 递增，续跑接着已有序号，失败回合也保留记录，不覆盖前几轮。每轮完整输入仍分别保留在 `agents/<时间-步骤名-唯一后缀>/request.json`。独立审查报告保留各轮反馈、候选和观察记录。原生生图事件及修订提示词记录到 `events.jsonl`；工具返回的已保存图片路径登记到 `result.json`，可读日志省略图片二进制数据。
 

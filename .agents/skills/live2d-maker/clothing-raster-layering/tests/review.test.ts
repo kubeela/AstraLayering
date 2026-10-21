@@ -266,3 +266,33 @@ test('缺失、不完整、无法检查的报告以及取消均不发布正式 r
     });
   }
 });
+
+
+test('返修沿用 step01 绘制会话修正深度，reviewer 无写工具', async t => {
+  const f = await fixture(t);
+  let reviews = 0;
+  let source = '';
+  await runWorkflow(f.resume, { ...f.deps, agent: async request => {
+    if (isReview(request)) {
+      assert.equal(request.occlusion, undefined);
+      assert.equal(request.tools, undefined);
+      return report(request, ++reviews === 1 ? '需要修复' : '通过');
+    }
+    assert.equal(request.threadId, 'drawing-thread');
+    assert.equal(request.occlusion?.editable, true);
+    source = request.occlusion!.upstream;
+    const file = join(source, 'occlusion.json');
+    const before = JSON.parse(await readFile(file, 'utf8'));
+    const row = before.layers[0];
+    const tool = request.tools!.find(tool => tool.name === 'update_occlusion')!;
+    assert.ok(tool);
+    await tool.execute({ changes: [{ id: row.id, level: 17, note: '按原图确认的遮挡关系修正' }] }, new AbortController().signal);
+    const after = JSON.parse(await readFile(file, 'utf8'));
+    assert.equal(after.layers[0].level, 17);
+    assert.equal(after.sourceHash, before.sourceHash);
+    return report(request, '已修复');
+  } });
+  assert.equal(reviews, 2);
+  assert.equal(JSON.parse(await readFile(join(source, 'occlusion.json'), 'utf8')).layers[0].level, 17);
+  await runWorkflow(f.resume, { ...f.deps, agent: forbidden });
+});
