@@ -1,5 +1,7 @@
 # part-layering
 
+启动条件见 [安装与前置](../references/setup.md)。新参考生成前检查已有 FFmpeg；命令不可用时可追加 `--krita <可执行文件>` 复用该安装中的版本。总入口自动传入已记录的 Krita 路径，已有参考续跑不重新处理。
+
 运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
 包含参考准备、严格按层推进的分组流程和 Codex agent 调度。需要 Node 24.12+，先在 `live2d-maker` 运行 `pnpm install` 并完成 Codex 登录。参考准备使用官方 SDK，自定义函数工具使用同版本 App Server。参考准备、首次分组、轮廓绘制、review、整层去重、正面遮挡补全及直属 group/part 分析已接入；所有节点完成后由程序合并为 preview.svg，最后由 agent 规划并逐件检查遮挡层级，独立保存 occlusion.json。

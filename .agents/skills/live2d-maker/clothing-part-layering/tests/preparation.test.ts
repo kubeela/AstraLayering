@@ -28,14 +28,14 @@ async function fixture(t: TestContext) {
   return { temporary, directory, runName, input, upstream, generated, calls, steps };
 }
 
-test('preparation uses one native image task, reads the upstream clothed image, and resumes without external input', async t => {
+test('preparation uses one configured image task, reads the upstream clothed image, and resumes without external input', async t => {
   const f = await fixture(t);
   const refs = await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 1);
   assert.equal(f.calls[0].imageGeneration, true);
   assert.equal(f.calls[0].images!.length, 1);
   assert.equal(f.calls[0].images![0].path, refs.originalImage);
-  assert.ok(f.calls[0].prompt.includes('Codex 内置 image_generation'));
+  assert.equal(f.calls[0].step, 'clothing_preparation');
   assert.ok(f.calls[0].prompt.includes('96×128'));
   assert.ok(!f.calls[0].prompt.includes('{width}'));
   assert.deepEqual(await readFile(refs.originalImage!), await readFile(f.input));

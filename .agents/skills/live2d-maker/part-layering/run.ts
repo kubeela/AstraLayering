@@ -11,7 +11,7 @@ export const pipeline: PartPipeline = {
   imageHelp: '角色图片路径',
   preparationHelp: '--image 首次启动需要；--standard 先判断并按需调整姿态，未开启则复制原图为 standard.png。续跑沿用已存选项，--no-standard 显式关闭；已有参考须通过指纹检查。',
   getPreparationDirectory, loadPreparedReferences,
-  prepare: (input, agents, progress) => prepareReferences(input, createPreparationSteps(agents), progress),
+  prepare: (input, agents, progress, normalization) => prepareReferences(input, createPreparationSteps(agents), progress, normalization),
 };
 
 export function runPartLayering(input: PartInput, adapters: PartAdapters = {}, options: AgentOptions = {}) {

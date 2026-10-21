@@ -5,33 +5,47 @@ import { workflowsDirectory } from '../paths.ts';
 import { Codex, type CodexOptions, type Usage, type UserInput } from '@openai/codex-sdk';
 import { join, resolve } from 'node:path';
 import { AgentLog } from './agent-log.ts';
-import { AgentCallError, AgentRuntime, continuationPrompt, retryableAgentError } from './agent-runtime.ts';
+import { AgentCallError, AgentRuntime, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
+import { parseAgentModel, type AgentStep, type AgentModel } from '../agents/models.ts';
+import { runCliTask, unavailableSession } from '../agents/cli.ts';
+import { imageGenerationTool, validateImageSelection } from '../agents/images.ts';
+import { randomUUID } from 'node:crypto';
+import type { ThreadEvent } from '@openai/codex-sdk';
 
 export const agentDefaults = defaultModels.medium;
 
 export type AgentTask = {
+  step?: AgentStep;
   name: string;
   prompt: string;
+  recoveryPrompt?: string;
   images?: { path: string; description: string }[];
+  imageRoots?: readonly string[];
   imageGeneration?: boolean;
   outputSchema?: Record<string, unknown>;
   timeoutMs?: number;
   cwd?: string;
   tools?: FunctionTool[];
-  sandboxMode?: 'read-only' | 'workspace-write';
+  sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
 };
 
 export type GeneratedImage = { savedPath: string };
 export type AgentResult = {
-  text: string; images: GeneratedImage[]; threadId?: string | null; logDirectory?: string;
+  text: string; images: GeneratedImage[]; threadId?: string | null; logDirectory?: string; harness?: AgentModel['harness'];
 };
 export type AgentSession = {
   run(task: AgentTask, signal?: AbortSignal): Promise<AgentResult>;
   close(): Promise<void>;
 };
 export type AgentOptions = CodexOptions & {
+  resumeHarness?: AgentModel['harness'];
+  onSessionStarted?: (id: string, harness: AgentModel['harness']) => Promise<void>;
+  selectedModel?: AgentModel;
+  onEvent?: (event: ThreadEvent) => Promise<void>;
+  onRetry?: (retry: AgentRetry) => Promise<void> | void;
+  onThreadReplacement?: (oldId: string, reason: string) => Promise<void>;
   environment?: WorkflowEnvironment;
   cwd?: string;
   progress?: (message: string) => void;
@@ -57,12 +71,17 @@ export class CodexAgents {
       this.options.progress?.(`[${task.name}] 临时服务错误；${delayMs / 1000} 秒后第 ${nextAttempt} 次尝试，沿用会话与已有产物：${failure.message}`);
       if (failure.logDirectory) await AgentLog.retry(failure.logDirectory,
         { attempt, nextAttempt, delayMs, error: failure.message });
+      await this.options.onRetry?.({ attempt, nextAttempt, delayMs, error });
     } });
   }
 
   // 延续原生 function tools 会话；每次 run 是同一 thread 的一个新 turn。
-  createSession(): AgentSession {
-    let session = createFunctionToolSession(this.options);
+  private createCodexSession(selectedModel?: AgentModel, resumeThreadId?: string): AgentSession {
+    const sessionOptions = { ...this.options, ...(selectedModel ? { selectedModel } : {}), onEvent: async (event: ThreadEvent) => {
+      if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, 'codex');
+      await this.options.onEvent?.(event);
+    } };
+    let session = createFunctionToolSession(sessionOptions, resumeThreadId);
     const closing = new AbortController();
     let closed = false, busy = false;
     return {
@@ -89,7 +108,7 @@ export class CodexAgents {
                 interrupted = !!failure.threadId;
                 if (failure.sessionBroken) {
                   await session.close();
-                  session = createFunctionToolSession(this.options, failure.threadId);
+                  session = createFunctionToolSession(sessionOptions, failure.threadId);
                 }
               }
               throw error;
@@ -105,13 +124,95 @@ export class CodexAgents {
     };
   }
 
+  createSession(resumeThreadId?: string, callbacks?: Pick<AgentOptions, 'resumeHarness' | 'onEvent' | 'onSessionStarted' | 'onThreadReplacement'>): AgentSession {
+    if (callbacks) return new CodexAgents({ ...this.options, ...callbacks, runtime: this.runtime }).createSession(resumeThreadId);
+    let inner: AgentSession | undefined, selection: AgentModel | undefined, id = resumeThreadId, closed = false;
+    let busy = false;
+    const closing = new AbortController();
+    return {
+      run: async (original, externalSignal) => {
+        if (closed) throw new Error('会话已关闭');
+        if (busy) throw new Error('同一会话不能并发运行');
+        busy = true;
+        try {
+          const settings = this.options.environment!;
+          const selected = this.options.selectedModel || (original.step ? settings.stepModels[original.step]
+            : parseAgentModel(`${settings.models.medium.model}-${settings.models.medium.effort}`, '默认模型'));
+          if (original.step) validateImageSelection(settings, original.step);
+          if ((selection?.harness || this.options.resumeHarness) && (selection?.harness || this.options.resumeHarness) !== selected.harness) {
+            if (id) await this.options.onThreadReplacement?.(id, '模型配置切换到其他 CLI');
+            id = undefined;
+          }
+          if (selection && JSON.stringify(selection) !== JSON.stringify(selected)) { await inner?.close(); inner = undefined; }
+          selection = selected;
+          const generated: GeneratedImage[] = [];
+          const image = original.step ? imageGenerationTool(settings, original.step,
+            join(this.options.logDirectory || join(original.cwd || this.options.cwd!, 'agents'), 'generated', randomUUID()),
+            [original.cwd || this.options.cwd!, ...(original.imageRoots || []), ...(original.images || []).map(i => i.path)]) : undefined;
+          if (image) {
+            const execute = image.execute;
+            image.execute = async (args, signal) => {
+              const result = await execute(args, signal);
+              for (const item of result.contentItems) if (item.type === 'inputText') {
+                const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: value.savedPath });
+              }
+              return result;
+            };
+          }
+          let task = image ? { ...original, imageGeneration: false, tools: [...original.tools || [], image] } : original;
+          if (!id && original.recoveryPrompt) task = { ...task, prompt: original.recoveryPrompt };
+          const signal = taskSignal(task, [closing.signal, ...(externalSignal ? [externalSignal] : [])]);
+          let replaced = false;
+          for (;;) {
+            try {
+              let result: AgentResult;
+              if (selected.harness === 'codex') {
+                inner ||= this.createCodexSession(selected, id);
+                result = await inner.run(task, signal);
+              } else {
+                let interrupted = false;
+                result = await this.invoke(task, signal, async () => {
+                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath)), images: undefined } : task,
+                    selected, settings, { ...this.options, onEvent: async event => {
+                      if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
+                      await this.options.onEvent?.(event);
+                    } }, signal, id); }
+                  catch (error) {
+                    if (error instanceof AgentCallError && error.threadId) { id = error.threadId; interrupted = true; }
+                    throw error;
+                  }
+                });
+              }
+              id = result.threadId || id;
+              return { ...result, harness: selected.harness, images: [...result.images, ...generated] };
+            } catch (error) {
+              if (!replaced && id && unavailableSession(error)) {
+                await this.options.onThreadReplacement?.(id, '原 thread/session 不可用');
+                this.options.progress?.(`[${task.name}] 原会话不可用，保留旧记录与产物并新建会话。`);
+                id = undefined; await inner?.close(); inner = undefined; replaced = true;
+                if (original.recoveryPrompt) task = { ...task, prompt: original.recoveryPrompt };
+                continue;
+              }
+              if (error instanceof AgentCallError && error.threadId) id = error.threadId;
+              throw error;
+            }
+          }
+        } finally { busy = false; }
+      },
+      close: async () => { closed = true; closing.abort(new Error('会话已结束')); await inner?.close(); },
+    };
+  }
+
   async run(task: AgentTask): Promise<AgentResult> {
-    await checkCodexCapabilities(this.options.environment!, this.options);
-    if (task.tools?.length) {
+    const selected = this.options.selectedModel || (task.step ? this.options.environment!.stepModels[task.step] : undefined);
+    if (task.step) validateImageSelection(this.options.environment!, task.step);
+    if (task.tools?.length || selected?.harness !== undefined && selected.harness !== 'codex'
+      || task.step && this.options.environment!.stepImages[task.step] && this.options.environment!.stepImages[task.step] !== 'codex-native') {
       const session = this.createSession();
       try { return await session.run(task); }
       finally { await session.close(); }
     }
+    await checkCodexCapabilities(this.options.environment!, this.options);
     const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, environment, ...options } = this.options;
     const workingDirectory = resolve(task.cwd ?? cwd ?? workflowsDirectory);
     const codex = new Codex({
@@ -126,7 +227,7 @@ export class CodexAgents {
     });
     const threadOptions = {
       skipGitRepoCheck: true,
-      model: environment!.models.medium.model, modelReasoningEffort: environment!.models.medium.effort,
+      model: selected?.model || environment!.models.medium.model, modelReasoningEffort: selected?.effort || environment!.models.medium.effort,
       workingDirectory,
       sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
     } as const;

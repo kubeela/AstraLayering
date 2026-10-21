@@ -9,7 +9,7 @@ export const pipeline: PartPipeline = {
   imageHelp: '简化穿衣角色图片路径',
   preparationHelp: '按 --name 读取同名 part-layering/references/simplified-subject.*，生成纯衣服参考；不接受额外 --image。',
   getPreparationDirectory, loadPreparedReferences,
-  prepare: (input, agents, progress) => prepareReferences(input, createPreparationSteps(agents), progress),
+  prepare: (input, agents, progress, normalization) => prepareReferences(input, createPreparationSteps(agents), progress, normalization),
 };
 
 export function runClothingPartLayering(input: PartInput, adapters: PartAdapters = {}, options: AgentOptions = {}) {

@@ -3,17 +3,36 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { tmpdir } from 'node:os';
 const execute = promisify(execFile);
-import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { checkFfmpeg, type FfmpegOptions } from '../ffmpeg.ts';
+import { pipelineDirectory, type PipelineId } from '../paths.ts';
+
+// This only decides whether preparation may generate a new reference. Its own
+// fingerprint checks remain authoritative; no cache or artifact is changed here.
+export async function referenceNeedsGeneration(pipeline: PipelineId, name: string, root?: string): Promise<boolean> {
+  if (pipeline !== 'part-layering' && pipeline !== 'clothing-part-layering') return false;
+  const directory = join(pipelineDirectory(name, pipeline, root), 'references');
+  let names: string[];
+  try { names = await readdir(directory); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return true; throw error; }
+  const files = new Set(await Promise.all(names.map(async name => {
+    try { return (await stat(join(directory, name))).isFile() ? name : ''; }
+    catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return ''; throw error; }
+  })));
+  return pipeline === 'part-layering'
+    ? !files.has('base-subject.png') || ![...files].some(name => name.startsWith('simplified-subject.') && !name.endsWith('.tmp'))
+    : !files.has('clothing.png') || !files.has('preparation.json');
+}
 
 // Archives are write-only history, never preparation inputs or recovery checkpoints.
-export async function normalizeGeneratedReference(input: string, standard: string, references: string, name: string): Promise<void> {
+export async function normalizeGeneratedReference(input: string, standard: string, references: string, name: string, options: FfmpegOptions = {}): Promise<void> {
   const archive = join(references, 'archive', `${name}-${Date.now()}-${randomUUID()}`);
   await mkdir(archive, { recursive: true });
   await copyFile(input, join(archive, 'original.png'));
-  const report = await normalizeReference(input, standard, input);
+  const report = await normalizeReference(input, standard, input, options);
   await writeFile(join(archive, 'normalization.json'), JSON.stringify(report, null, 2) + '\n');
 }
 
@@ -22,11 +41,12 @@ export type NormalizationReport = {
   offset: [number, number]; key: number[] | null; borderSupport: number;
   transparentBorder: number; keySkipped: boolean; resized: boolean;
   filter: string | null; removed: number; decontaminated: number;
+  ffmpeg: string | null;
 };
 
 // Detect the perimeter's modal colour in small bins, then refine it from nearby samples.
 // Fully transparent pixels carry arbitrary RGB and must not vote for a key colour.
-export async function normalizeReference(input: string, standard: string, output: string): Promise<NormalizationReport> {
+export async function normalizeReference(input: string, standard: string, output: string, options: FfmpegOptions = {}): Promise<NormalizationReport> {
   const bytes = await readFile(input);
   const target = (await sharp(standard).metadata()).autoOrient;
   const { data, info } = await sharp(bytes).rotate().toColourspace('srgb').ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -52,7 +72,9 @@ export async function normalizeReference(input: string, standard: string, output
   const key = transparentBorder < 0.8 && support >= 0.6 ? mean(cluster) : null;
   let removed = 0, decontaminated = 0;
   let filter: string | null = null;
+  let ffmpeg: string | null = null;
   if (key) {
+    ffmpeg = (await checkFfmpeg(options)).executable;
     const color = '0x' + key.map(c => Math.round(c).toString(16).padStart(2, '0')).join('');
     const green = key[1] - Math.max(key[0], key[2]) > 40;
     const blue = key[2] - Math.max(key[0], key[1]) > 40;
@@ -66,10 +88,10 @@ export async function normalizeReference(input: string, standard: string, output
       const source = join(directory, 'source.png'), keyed = join(directory, 'keyed.png');
       await sharp(data, { raw: { width: w, height: h, channels: 4 } }).png().toFile(source);
       try {
-        await execute(process.env.FFMPEG_PATH || 'ffmpeg', ['-v', 'error', '-nostdin', '-y', '-i', source,
-          '-vf', filter, '-frames:v', '1', keyed], { windowsHide: true, timeout: 120000, maxBuffer: 1024 * 1024 });
+        await execute(ffmpeg, ['-v', 'error', '-nostdin', '-y', '-i', source,
+          '-vf', filter, '-frames:v', '1', keyed], { env: options.env ?? process.env, windowsHide: true, timeout: 120000, maxBuffer: 1024 * 1024 });
       } catch (error) {
-        throw new Error('参考图抠图失败：请检查 FFmpeg（PATH 或 FFMPEG_PATH）及 chromakey/colorkey/despill 滤镜。', { cause: error });
+        throw new Error(`参考图抠图失败：${ffmpeg}。请检查该 FFmpeg 的运行环境、PNG 编解码及 chromakey/colorkey/despill 滤镜。`, { cause: error });
       }
       const result = await sharp(keyed).ensureAlpha().raw().toBuffer();
       if (result.length !== data.length) throw new Error('FFmpeg 输出尺寸不匹配');
@@ -98,5 +120,5 @@ export async function normalizeReference(input: string, standard: string, output
     await writeFile(output, result);
   }
   return { version: 1, source: [w, h], target: [target.width, target.height], scale, offset: [left, top],
-    key, borderSupport: support, transparentBorder, keySkipped: !key, resized: w !== target.width || h !== target.height, filter, removed, decontaminated };
+    key, borderSupport: support, transparentBorder, keySkipped: !key, resized: w !== target.width || h !== target.height, filter, ffmpeg, removed, decontaminated };
 }

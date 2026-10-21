@@ -45,12 +45,12 @@ async function deliver(request: AgentRequest, thread = request.threadId ?? 'draw
 
 test('independent run directory, parts path normalization, and external-only provider configuration', async t => {
   const f = await fixture(t);
-  assert.equal(runDirectory('test'), fileURLToPath(new URL('../../../test/clothing-raster-layering', import.meta.url)));
+  assert.equal(runDirectory('test'), fileURLToPath(new URL('../../../../../.run/test/clothing-raster-layering', import.meta.url)));
   assert.equal((await resolvePartInput('test', 'clothing-part-layering', f.deps.runsDirectory)).directory, f.source);
   assert.equal(parseRunArguments(['--name', 'test']).name, 'test');
   assert.throws(() => parseRunArguments(['--name', 'test', '--provider-config', 'secret.json']), /Unknown option/);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: async () => assert.fail('dry run must not invoke Codex') });
-  assert.ok(prompt.includes('Codex 内置的 image_generation'));
+  assert.ok(prompt.includes('本步骤配置的 image_generation'));
   assert.ok(prompt.includes('step02/clothing-soft-edges.kra'));
   assert.ok(!prompt.includes('wearing-order.md') && !prompt.includes('character-dressup-base'));
   await assert.rejects(readdir(f.output), { code: 'ENOENT' });

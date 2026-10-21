@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["prompt", "input_images"],
+  "properties": {
+    "prompt": { "type": "string", "minLength": 1 },
+    "input_images": { "type": "array", "items": { "type": "string" } },
+    "background": { "type": "string", "enum": ["transparent", "auto"] },
+    "size": { "type": "string" }
+  }
+}

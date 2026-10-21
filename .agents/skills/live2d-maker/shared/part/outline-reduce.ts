@@ -1,3 +1,4 @@
+import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
@@ -73,7 +74,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       return textResult(submitted);
     },
   };
-  const response = await agents.run({ name: `同层轮廓去重-${context.depth}`, cwd: context.directory, sandboxMode: 'workspace-write',
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, sandboxMode: 'workspace-write',
     imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory,
       [merged, ...context.entries.flatMap(entry => [entry.outline.path, entry.current?.path, entry.outputPath, entry.parent?.steps.completion.output?.path])])],
     prompt: `${await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8')}\n【本次输入】\n${JSON.stringify({

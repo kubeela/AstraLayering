@@ -18,7 +18,7 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 
 ## 行为
 
-- 生图继续走原生 image generation extension 的工具、鉴权、重试、文件落盘及事件。独立配置不替换主模型 provider；`/images/generations` 使用 JSON，外部 `/images/edits` 使用标准 `image[]` multipart 文件上传。默认模型来自 `.env` 的 `gpt-image-2.5-sunburst`。
+- 生图继续走原生 image generation extension 的工具、鉴权、重试、文件落盘及事件。独立配置不替换主模型 provider；`/images/generations` 使用 JSON，外部 `/images/edits` 使用标准 `image[]` multipart 文件上传。原生补丁接口的默认模型来自旧配置 `layering_image_model` 的 `gpt-image-2.5-sunburst`。新逐步骤自定义生图由共享函数工具提供，无需此补丁，配置见 [模型与 harness](../../references/agent-models.md)。
 - 在每次普通模型请求前检查图片数，涵盖用户图片、工具图片与生图结果。阈值设为 49 时，恰好 49 张会全部参与原生带图 compact；不移除视觉能力，也不使用“不支持图片输入”的占位语。
 - 批量工具使图片数跳到 52 时，先带图压缩前 49 张，将剩余 3 张原样放入新上下文。保留对应文字、图序、图片精度、调用参数和已完成的工具调用/结果配对；无需再次执行工具。同一条消息或一次 Code Mode 输出含多图也适用。120 张会按 49、49、22 分段，最后 22 张直接供正常请求查看。每张图必须实际进入一次成功的视觉压缩，或仍以原图保留。
 - 仅在请求成功且有非空摘要后，将摘要与保留图片一起写回历史。失败、空摘要或 token 超限时保留可恢复历史，不靠删除尚未总结的图片救场；一个大批次已成功的分段保留其摘要与剩余原图。图片文件和旧 rollout 不变。摘要仍有正常压缩的信息损失，精细复查时可再次读取原图。

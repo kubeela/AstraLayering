@@ -44,7 +44,7 @@ async function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise
 export function createFunctionToolSession(options: AgentOptions, resumeThreadId?: string): AgentSession {
   const environment = options.environment ?? loadWorkflowEnvironment(options.env);
   options = { ...options, ...workflowCodexOptions(environment, options) };
-  const selectedModel = environment.models.medium;
+  const selectedModel = options.selectedModel ?? environment.models.medium;
   let child: ReturnType<typeof spawn> | undefined;
   let lines: ReturnType<typeof createInterface> | undefined;
   let reader: Promise<void> | undefined;
@@ -141,7 +141,10 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
           }
         } else if (message.method === 'item/completed' && current) {
           const item = message.params?.item;
-          if (item?.type === 'agentMessage') current.finalResponse = item.text;
+          if (item?.type === 'agentMessage') {
+            current.finalResponse = item.text;
+            await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: item.id || 'message', text: item.text } });
+          }
           else if (item?.type === 'imageGeneration' && current.task.imageGeneration && item.status === 'completed' &&
               typeof item.savedPath === 'string' && item.savedPath.trim()) {
             const savedPath = resolve(cwd!, item.savedPath);
@@ -168,6 +171,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       resumeThreadId ? { ...threadOptions, threadId: resumeThreadId } : threadOptions);
     threadId = started.thread?.id;
     if (typeof threadId !== 'string') throw new Error('App Server 未返回会话 ID');
+    await options.onEvent?.({ type: 'thread.started', thread_id: threadId });
   }
 
   return {

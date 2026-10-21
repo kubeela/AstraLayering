@@ -1,6 +1,7 @@
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
+import { checkFfmpeg, reportFfmpeg, type FfmpegOptions } from '../shared/ffmpeg.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
-import { pipelineDirectory } from '../shared/paths.ts';
+import { pipelineDirectory, resolveInput } from '../shared/paths.ts';
 import { simplifiedCharacter } from '../shared/upstream.ts';
 import { randomUUID } from 'node:crypto';
 import { copyFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
@@ -35,9 +36,9 @@ async function checkImage(image: string, input: string): Promise<void> {
 export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): PreparationSteps {
   return { async extract(image, output, prompt) {
     const result = await agents.run({
-      name: '纯衣服参考准备', imageGeneration: true,
+      step: 'clothing_preparation', name: '纯衣服参考准备', imageGeneration: true,
       images: [{ path: image, description: '图 1：简化后的穿衣角色原稿。保留衣服与穿着形态，去除人物和非衣装饰品。' }],
-      prompt: `【绘制提示词】\n${prompt.trim()}\n\n【执行规则】\n将以上绘制提示词原样传给 Codex 内置 image_generation，传入图 1，要求透明背景 PNG。只调用一次，返回实际生成文件的 savedPath。工具不可用或调用失败时返回 error；不配置 provider、不调用其他生图工具或直接 API、不用脚本或原图替代生图。成功时 error 为 null；失败时 savedPath 为 null。`,
+      prompt: `【绘制提示词】\n${prompt.trim()}\n\n【执行规则】\n将以上绘制提示词原样传给本步骤配置的 image_generation，传入图 1，要求透明背景 PNG。只调用一次，返回实际生成文件的 savedPath。工具不可用或调用失败时返回 error；不配置 provider、不调用未配置的生图工具或直接 API、不用脚本或原图替代生图。成功时 error 为 null；失败时 savedPath 为 null。`,
       outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
         properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
     });
@@ -66,7 +67,8 @@ export async function loadPreparedReferences(runName: string, root?: string): Pr
 }
 
 export async function prepareReferences(input: PreparationInput, steps: PreparationSteps,
-  progress?: (message: string) => void): Promise<PreparationReferences> {
+  progress?: (message: string) => void, options: FfmpegOptions = {}): Promise<PreparationReferences> {
+  const normalization = { ...options, krita: options.krita ?? (input.krita && resolveInput(input.runName, input.krita, input.dir)) };
   const directory = getPreparationDirectory(input.runName, input.dir);
   if (input.image !== undefined) throw new Error('clothing-part-layering 按 --name 读取上游简化角色，不接受 --image；请将图片放到同名 part-layering/references/simplified-subject.png。');
   if (input.standard !== undefined) throw new Error('--standard / --no-standard 只适用于人物 part 的 preparation；衣服按 --name 读取上游简化角色。');
@@ -80,17 +82,19 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   }
   // A regenerated clothing reference cannot reuse decomposition of the previous image.
   const standard = join(pipelineDirectory(input.runName, 'part-layering', input.dir), 'references/standard.png');
-  if (!await exists(standard)) throw new Error('纯衣服参考后处理缺少上游 standard.png');
+  if (!await exists(standard)) throw new Error(`纯衣服参考后处理缺少上游：${standard}。请先执行同名 part-layering，或手动放置上游 standard.png 到该路径。`);
+  const ffmpeg = await checkFfmpeg(normalization);
+  progress?.(reportFfmpeg(ffmpeg));
   const standardHash = hash(await readFile(standard));
   const meta = await sharp(standard).metadata();
   const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
     .replaceAll('{width}', String(meta.autoOrient.width)).replaceAll('{height}', String(meta.autoOrient.height));
   await writeFile(join(directory, 'preparation-prompt.md'), prompt);
-  progress?.('preparation：使用 Codex 内置 image_generation 生成纯衣服参考。');
+  progress?.('preparation：使用本步骤配置的 image_generation 生成纯衣服参考。');
   const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
   try {
     await steps.extract(image, temporary, prompt);
-    await normalizeGeneratedReference(temporary, standard, directory, 'clothing');
+    await normalizeGeneratedReference(temporary, standard, directory, 'clothing', normalization);
     await checkImage(temporary, standard);
     const record = { version: 1, inputHash: hash(await readFile(image)), clothingHash: hash(await readFile(temporary)),
       standardHash, tool: 'image_generation', promptHash: hash(Buffer.from(prompt)) };

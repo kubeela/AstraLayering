@@ -13,7 +13,7 @@ export async function executePipeline(id: PipelineId, run: TaskRun, progress: (m
   if (id === 'part-layering' || id === 'clothing-part-layering') {
     const execute = id === 'part-layering' ? runPartLayering : runClothingPartLayering;
     const result = await execute({
-      reference: { runName: run.name, dir: run.dir, ...(id === 'part-layering' ? { image: run.image, standard: run.standard } : {}) },
+      reference: { runName: run.name, dir: run.dir, krita: run.krita, ...(id === 'part-layering' ? { image: run.image, standard: run.standard } : {}) },
       groups: null,
     }, {}, { agentConcurrency: run.jobs, progress });
     if (result.layering.status !== 'completed') {

@@ -1,4 +1,5 @@
-import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
+import { normalizeGeneratedReference, referenceNeedsGeneration } from '../shared/part/reference-normalization.ts';
+import { checkFfmpeg, reportFfmpeg, type FfmpegOptions } from '../shared/ffmpeg.ts';
 import { pipelineDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
 import { copyFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
@@ -118,7 +119,8 @@ async function copyAsPng(source: string, output: string): Promise<void> {
 }
 
 export async function prepareReferences(input: PreparationInput, steps: PreparationSteps,
-  progress?: (message: string) => void): Promise<PreparationReferences> {
+  progress?: (message: string) => void, options: FfmpegOptions = {}): Promise<PreparationReferences> {
+  const normalization = { ...options, krita: options.krita ?? (input.krita && resolveInput(input.runName, input.krita, input.dir)) };
   const refs = await references(input.runName, input.dir), paths = stagePaths(refs);
   let state = await readPreparationState(refs.directory);
   const standard = input.standard ?? state?.standard ?? false;
@@ -145,6 +147,10 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   }
   if (!refs.originalImage && !refs.standardImage && (standard || !current.judgment || !current.simplified || !current.base || state?.files.standard)) {
     throw new Error('首次启动或原图缺失时，需要 --image <角色图片路径>');
+  }
+  if (await referenceNeedsGeneration('part-layering', input.runName, input.dir)) {
+    const ffmpeg = await checkFfmpeg(normalization);
+    progress?.(reportFfmpeg(ffmpeg));
   }
   await mkdir(refs.directory, { recursive: true });
   const recordPath = join(refs.directory, 'preparation.json');
@@ -177,7 +183,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
       if (stage === 'base' || stage === 'simplified') {
         if (!refs.standardImage) throw new Error('参考后处理缺少 standard.png');
         // Raw generation is retained outside the final reference filenames for diagnosis.
-        await normalizeGeneratedReference(temporary, refs.standardImage, refs.directory, stage);
+        await normalizeGeneratedReference(temporary, refs.standardImage, refs.directory, stage, normalization);
       }
       const fingerprint: ReferenceFingerprint = { inputHash, outputHash: await fileHash(temporary) };
       state!.files[stage] = fingerprint;

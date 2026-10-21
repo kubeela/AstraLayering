@@ -48,12 +48,12 @@ async function deliver(request: AgentRequest, step: StepDefinition = steps[0], t
   return complete;
 }
 
-test('任务名限制为单个目录；默认 skill 同级任务目录与 cwd 无关，CLI 可只传 --name', () => {
-  assert.equal(runDirectory('测试-01'), fileURLToPath(new URL('../../../测试-01/raster-layering', import.meta.url)));
+test('任务名限制为单个目录；默认仓库 .run 任务目录与 cwd 无关，CLI 可只传 --name', () => {
+  assert.equal(runDirectory('测试-01'), fileURLToPath(new URL('../../../../../.run/测试-01/raster-layering', import.meta.url)));
   const cwd = process.cwd();
   try {
     process.chdir(tmpdir());
-    assert.equal(runDirectory('test'), fileURLToPath(new URL('../../../test/raster-layering', import.meta.url)));
+    assert.equal(runDirectory('test'), fileURLToPath(new URL('../../../../../.run/test/raster-layering', import.meta.url)));
   } finally { process.chdir(cwd); }
   for (const name of ['', '.', '..', '../other', '/tmp/other', 'a/b', 'a\\b']) assert.throws(() => runDirectory(name), /--name/);
   assert.equal(parseRunArguments(['--name', 'test']).name, 'test');
