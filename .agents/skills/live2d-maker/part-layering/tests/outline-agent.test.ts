@@ -82,6 +82,31 @@ function agents(verdicts: string[], options: {
   };
 }
 
+test('绘制 ID 在中断前落盘；重启调度后恢复同一会话，reviewer 仍独立', async t => {
+  const f = await fixture(t), resumed: (string | undefined)[] = [];
+  function persisted(mock: ReturnType<typeof agents>) {
+    return { run: mock.run, createSession(id?: string, callbacks?: {
+      onSessionStarted?: (id: string, harness: 'agv') => Promise<void>;
+    }): AgentSession {
+      resumed.push(id);
+      const inner = mock.createSession(), threadId = id || 'persistent-drawing-thread';
+      return { close: inner.close, async run(task, signal) {
+        await callbacks?.onSessionStarted?.(threadId, 'agv');
+        const result = await inner.run(task, signal);
+        return { ...result, threadId, harness: 'agv' };
+      } };
+    } };
+  }
+  await assert.rejects(runLayering({ ...f, groups: null, steps: createLayeringSteps(persisted(agents(['pass'], { failDrawingTurn: 1 }))) }), /执行失败/);
+  const path = join(f.directory, 'stages/sessions/face.json');
+  assert.deepEqual(JSON.parse(await readFile(path, 'utf8')), { threadId: 'persistent-drawing-thread', harness: 'agv' });
+  const second = agents(['pass']);
+  await runLayering({ ...f, groups: null, steps: createLayeringSteps(persisted(second)) });
+  assert.deepEqual(resumed, [undefined, 'persistent-drawing-thread']);
+  assert.notEqual(second.calls[0].session, second.calls[1].session);
+  assert.equal(JSON.parse(await readFile(path, 'utf8')).threadId, 'persistent-drawing-thread');
+});
+
 test('提示词按完整 group ID 和步骤独立替换；子组不继承父组特化', async t => {
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-prompts-'));
   t.after(() => rm(directory, { recursive: true, force: true }));

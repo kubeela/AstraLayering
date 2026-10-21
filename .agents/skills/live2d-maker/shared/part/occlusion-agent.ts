@@ -1,3 +1,4 @@
+import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
@@ -101,7 +102,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
       return textResult({ completed: false, message });
     },
   };
-  const response = await agents.run({ name: '最终遮挡层级规划', cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'occlusion'), name: '最终遮挡层级规划', cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
     images: [{ path: reference, description: profile.references.occlusion }],
     tools: [createSvgPreviewTool({ directory: context.directory, reference,
       canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, observationDirectory: directory,

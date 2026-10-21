@@ -7,7 +7,8 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const git = async (...args: string[]) => (await promisify(execFile)('git', args, { cwd: root, maxBuffer: 8 * 1024 * 1024 })).stdout;
 const configRoots = ['.agents/skills/live2d-maker', 'workflow-next'];
 const isConfig = (path: string) => /(^|\/)(prompts|templates)\/.*\.md$/.test(path)
-  || /(^|\/)tools\/.*\/(description\.md|schema\.json)$/.test(path) || path === 'SKILL.md';
+  || /(^|\/)tools\/.*\/(description\.md|schema\.json)$/.test(path)
+  || ['SKILL.md', 'example.env', 'references/agent-models.md'].includes(path);
 async function revision(ref: string): Promise<string> {
   if (!ref || ref.startsWith('-') || ref.includes('\0')) throw new Error('无效的版本');
   return (await git('rev-parse', '--verify', ref + '^{commit}')).trim();

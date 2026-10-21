@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
+import { stepDefaults, imageSteps, imageModelProviders, parseAgentModel, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
 
 export type ModelTier = 'medium' | 'high';
 export type ModelSelection = { model: string; effort: NonNullable<ThreadOptions['modelReasoningEffort']> };
@@ -15,6 +16,10 @@ export const defaultModels = {
 
 export type WorkflowEnvironment = {
   models: Record<ModelTier, ModelSelection>;
+  stepModels: Record<AgentStep, AgentModel>;
+  stepImages: Partial<Record<AgentStep, ImageModel>>;
+  imageApis: Partial<Record<'openai' | 'google', ImageApi>>;
+  cliPaths: Partial<Record<Harness, string>>;
   codex: CodexOptions;
   imageProvider?: { model: string };
   imageCompactThreshold?: number;
@@ -67,7 +72,41 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
     throw new Error('layering_image_compact_threshold 必须是正整数；留空表示不启用。');
   }
   if (threshold !== undefined) effective.LAYERING_IMAGE_COMPACT_THRESHOLD = String(threshold);
+  const stepModels = {} as WorkflowEnvironment['stepModels'];
+  for (const [step, fallback] of Object.entries(stepDefaults)) {
+    const key = `layering_${step}_model`;
+    // The old two variables remain readable for existing installations, but no task
+    // chooses a tier at invocation time. A step-specific value always wins.
+    const legacy = get(fallback.startsWith('gpt-6-astra') ? 'layering_high_model' : 'layering_medium_model');
+    stepModels[step as AgentStep] = parseAgentModel(get(key) || legacy || fallback, key);
+  }
+  const imageApis: WorkflowEnvironment['imageApis'] = {};
+  for (const provider of ['openai', 'google'] as const) {
+    const baseUrl = get(`layering_${provider}_image_base_url`) || (provider === 'openai' ? imageUrl : undefined);
+    const apiKey = get(`layering_${provider}_image_api_key`) || (provider === 'openai' ? imageKey : undefined);
+    const protocol = get(`layering_${provider}_image_protocol`) || (provider === 'google' ? 'gemini' : 'openai');
+    if (!['openai', 'gemini'].includes(protocol) || (provider === 'openai' && protocol !== 'openai')) throw new Error(`layering_${provider}_image_protocol 无效。`);
+    if (baseUrl || apiKey) {
+      if (!baseUrl || !apiKey) throw new Error(`${provider} 生图需要同时填写 layering_${provider}_image_base_url 和 layering_${provider}_image_api_key。`);
+      validateApiUrl(baseUrl, `layering_${provider}_image_base_url`);
+      imageApis[provider] = { baseUrl, apiKey, protocol: protocol as ImageApi['protocol'] };
+    }
+  }
+  const stepImages: WorkflowEnvironment['stepImages'] = {};
+  const fallbackImage = get('layering_default_image_model') || (imageUrl ? imageModel : 'codex-native');
+  for (const step of imageSteps) {
+    const key = `layering_${step}_image_model`, value = get(key) || fallbackImage;
+    if (!Object.hasOwn(imageModelProviders, value)) throw new Error(`${key} 必须为 ${Object.keys(imageModelProviders).join(', ')}。`);
+    stepImages[step] = value as ImageModel;
+  }
+  const cliPaths: WorkflowEnvironment['cliPaths'] = {};
+  for (const harness of ['claude', 'agv'] as const) {
+    const value = get(`layering_${harness}_path`);
+    if (value) cliPaths[harness] = path(value);
+  }
+  if (executable) cliPaths.codex = path(executable);
   return {
+    stepModels, stepImages, imageApis, cliPaths,
     models: {
       medium: parseModel(get('layering_medium_model'), defaultModels.medium, 'layering_medium_model'),
       high: parseModel(get('layering_high_model'), defaultModels.high, 'layering_high_model'),
@@ -80,10 +119,10 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
 
 const checkedCapabilities = new Map<string, Promise<void>>();
 export async function checkCodexCapabilities(settings: WorkflowEnvironment, options = settings.codex): Promise<void> {
-  if (!settings.imageProvider && settings.imageCompactThreshold === undefined) return;
+  if (settings.imageCompactThreshold === undefined) return;
   const executable = options.codexPathOverride;
   const instruction = '请先执行 pnpm build:codex，并在 live2d-maker/.env 设置 layering_codex_path 指向生成的补丁版 Codex。';
-  if (!executable) throw new Error(`自定义生图或按图片数 compact 需要补丁版 Codex。${instruction}`);
+  if (!executable) throw new Error(`按图片数 compact 需要补丁版 Codex。${instruction}`);
   const needsVisualCompaction = settings.imageCompactThreshold !== undefined;
   const cacheKey = `${executable}\0${needsVisualCompaction ? 'visual-compaction-v2' : 'image-provider'}`;
   let check = checkedCapabilities.get(cacheKey);
@@ -93,7 +132,7 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
         const { stdout } = await promisify(execFile)(executable, ['debug', 'layering-capabilities'],
           { env: options.env, timeout: 10_000, maxBuffer: 64 * 1024 });
         const value = JSON.parse(stdout);
-        if (value.version !== 1 || value.image_provider !== true || value.image_compaction !== true) throw new Error('unsupported');
+        if (value.version !== 1 || value.image_compaction !== true) throw new Error('unsupported');
         if (needsVisualCompaction && value.image_compaction_version !== 2) {
           throw new Error('visual compaction v2 required');
         }

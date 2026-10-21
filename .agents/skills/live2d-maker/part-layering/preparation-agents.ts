@@ -34,7 +34,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
   return {
     judgeStandard: async (image, prompt) => {
       const result = await agents.run({
-        name: '姿态判断', prompt, images: [{ path: image, description: '角色原始参考图。' }],
+        step: 'part_pose_judgment', name: '姿态判断', prompt, images: [{ path: image, description: '角色原始参考图。' }],
         outputSchema: {
           type: 'object', properties: { needsAdjustment: { type: 'boolean' }, reason: { type: 'string' } },
           required: ['needsAdjustment', 'reason'], additionalProperties: false,
@@ -48,15 +48,15 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     },
     standardize: async (image, output, prompt) => {
       const result = await agents.run({
-        name: '标准姿态', imageGeneration: true, outputSchema: imageOutputSchema,
+        step: 'part_standardize', name: '标准姿态', imageGeneration: true, outputSchema: imageOutputSchema,
         images: [{ path: image, description: '角色原始参考图。' }],
-        prompt: `【绘制提示词】\n${prompt.trim()}\n\n【执行规则】\n将绘制提示词原样传给 Codex 内置 image_generation，不增补绘制要求。传入这张参考图，输出 PNG。只调用一次；完成后直接返回路径，不检查、不返修。工具不可用或生成失败时返回 error，不用原图替代生成结果。成功时 savedPath 为真实路径、error 为 null；失败时 savedPath 为 null、error 填原因。`,
+        prompt: `【绘制提示词】\n${prompt.trim()}\n\n【执行规则】\n将绘制提示词原样传给本步骤配置的 image_generation，不增补绘制要求。传入这张参考图，输出 PNG。只调用一次；完成后直接返回路径，不检查、不返修。工具不可用或生成失败时返回 error，不用原图替代生成结果。成功时 savedPath 为真实路径、error 为 null；失败时 savedPath 为 null、error 填原因。`,
       });
       await validateAgentOutcome(result, () => saveImage(result.images.at(-1), output));
     },
     judge: async (image, prompt) => {
       const result = await agents.run({
-        name: '参考判断', prompt, images: [
+        step: 'part_reference_judgment', name: '参考判断', prompt, images: [
           { path: image, description: '图 1：角色原始参考图。' },
           { path: styleReference, description: '图 2：目标 Live2D 立绘画风参考，只比较画法。' },
         ],
@@ -69,7 +69,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     },
     simplify: async (image, output, prompt) => {
       const result = await agents.run({
-        name: '简化图片', prompt: imageTaskPrompt(prompt), imageGeneration: true, outputSchema: imageOutputSchema,
+        step: 'part_simplify', name: '简化图片', prompt: imageTaskPrompt(prompt), imageGeneration: true, outputSchema: imageOutputSchema,
         images: [
           { path: image, description: '图 1：角色设计参考。' },
           { path: styleReference,
@@ -80,7 +80,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     },
     baseSubject: async (image, output, prompt) => {
       const result = await agents.run({
-        name: '素体换装', prompt: imageTaskPrompt(prompt), imageGeneration: true, outputSchema: imageOutputSchema,
+        step: 'part_base_subject', name: '素体换装', prompt: imageTaskPrompt(prompt), imageGeneration: true, outputSchema: imageOutputSchema,
         images: [
           { path: image, description: '图 1：已准备的角色参考图。' },
           { path: fileURLToPath(new URL('resources/连体服参考.jpg', import.meta.url)),

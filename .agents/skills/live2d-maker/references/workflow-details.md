@@ -34,33 +34,16 @@ pnpm start --name jianma --status --json
 
 ## Codex 环境配置
 
-复制 `example.env` 为 `.env`，按需填写；不填写时无需创建此文件。shell 的同名环境变量优先，文件不执行 shell 或展开变量。`.env` 不写入 Git。
+复制 [example.env](../example.env) 为 `.env`，按需填写；不填写时沿用各小步骤的原模型与外部 Codex 生图配置。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。各小步骤的模型、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
 
-| 配置 | 默认与用途 |
-| --- | --- |
-| `layering_custom_provider` | `false`；沿用当前 `CODEX_HOME` 或 `~/.codex` 的订阅／自定义 provider |
-| `layering_provider_base_url` / `layering_provider_api_key` | 自定义主 provider 为 `true` 时填写，使用 Responses API |
-| `layering_medium_model` | `gpt-6.1-sol-xhigh`；两套 part 的 agent、人物 raster step03、穿戴组装 agent |
-| `layering_high_model` | `gpt-6-astra-xhigh`；两套 raster step01、step02 及 reviewer |
-| `layering_image_base_url` / `layering_image_api_key` | 可选独立 Images API；两项一起填写才启用 |
-| `layering_image_model` | `gpt-image-2.5-sunburst`；单独填写不会启用自定义生图 |
-| `layering_image_compact_threshold` | 留空关闭；如网关上限为 50 张，可设 `49` |
-| `layering_codex_path` | 可选 Codex 可执行文件；上述生图／图片压缩功能需要补丁版 |
-| `layering_codex_home` | 通常不填；仅在明确需要独立 Codex 环境时设置 |
-
-模型最后一个后缀表示思考力度，发送的模型 ID 不含此后缀。支持 `none/minimal/low/medium/high/xhigh`，具体须符合所选模型能力。配置路径相对于 skill 根目录（`SKILL.md` 所在目录），与任务输入路径规则不同。
-
-自定义生图仍使用 Codex 原生 `image_gen.imagegen`，提供商可为兼容的 LiteLLM 网关，不注册替代生图工具。此功能及图片数量压缩需要仓库提供的 Codex 源码补丁：
+`layering_image_compact_threshold` 留空关闭，只作用于 Codex；例如网关最多 50 张时可设 `49`。这项能力需要仓库提供的可选 Codex 补丁：
 
 ```bash
-cd /安装位置/live2d-maker
 pnpm build:codex
 # .env: layering_codex_path=.codex-build/bin/codex
 ```
 
-构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改用户的系统 Codex 或全局配置。[构建与本地验证说明](../tools/codex/README.md)。
-
-图片保护在下一次模型请求前计算当前上下文中图片的出现次数，包括同批工具返回的图片。设为 `49` 时，恰好 49 张完整参与带图 compact；若一批结果使计数跳到 52，则压缩前 49 张，剩余 3 张连同对应文字及已完成工具调用原样保留到压缩后的上下文。更大批次分段处理，不丢弃尚未总结的图片。成功且有有效摘要才保存新的历史；失败时仍可沿原 thread 恢复。此修复要求补丁能力 `image_compaction_version: 2`，旧二进制需要按构建说明重新构建。文件与任务标记不受影响；摘要仍有正常压缩损失，精细复查时 agent 可再次读取原图。
+构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改系统 Codex 或全局配置。已有图片压缩策略保持不变：恰好阈值时图片参加视觉 compact；超过阈值时按容量分段，保留尚未压缩的原图、对应文字与工具配对。见[构建与本地验证说明](../tools/codex/README.md)。自定义生图函数工具不需要此补丁。
 
 ## 输入、产物与续跑
 
@@ -94,7 +77,7 @@ pnpm build:codex
 
 part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 review 完成后先同层去重，再补全和分析子组。raster 以 `.running`、`.completed` 以及 review/repair Markdown 决定进度，`run.json` 保存配置和绘制 threadId。删除完成标记会重置该步及其后续步骤、重新建立绘制 thread；重跑清理仅发生在本管线步骤目录内；step01 写回上游 occlusion.json 的深度修正保留。`.running` 表示尚未完成，不代表进程仍在运行。
 
-人物 raster 保留三步，衣服 raster 保留两步，各自交付文件要求不变。第二步完成全部 review/修复后才写 `.completed`。每次 reviewer 使用新上下文，反馈交回原绘制 thread；最多两次 review，第二次反馈修完后结束，不增加第三次 review。续跑仍需要原 Codex 环境保留对应的会话历史。
+人物 raster 保留三步，衣服 raster 保留两步，各自交付文件要求不变。第二步完成全部 review/修复后才写 `.completed`。每次 reviewer 使用新上下文，反馈交回绘制会话；配置仍属于同一 CLI 时恢复原 thread／session，切换 CLI 时按新会话接续；最多两次 review，第二次反馈修完后结束，不增加第三次 review。Codex 续跑沿用原环境中的会话历史；Claude／Antigravity 的会话历史保存在任务目录的请求记录中。更换 CLI、删除 ID 或原会话不可用时新建会话，保留已有产物与旧记录。
 
 ## 交付
 
@@ -112,6 +95,7 @@ part 按 SVG、检查报告、输入指纹及分组树恢复，整层绘制与 r
 | `shared/part/` | 分组树、SVG、整层调度、去重、依赖恢复及 part agent |
 | `shared/raster/` | 上游定位、Krita 检查、顺序步骤、review 和标记恢复 |
 | `shared/codex/` | SDK / App Server 适配、日志、工具配置、并发和临时重试 |
+| `shared/agents/` | 逐步骤模型选择、Claude／Antigravity 适配、MCP 与自定义生图接口 |
 | `shared/paths.ts` | 统一任务目录和外部输入路径解析 |
 | 各管线目录 | 启动入口、preparation 或步骤定义、提示词和专项配置 |
 
@@ -126,21 +110,21 @@ part-layering/tools/write_groups/description.md
 clothing-part-layering/tools/write_groups/schema.json
 ```
 
-直接修改仓库固定目录中的文件。description 为工具说明，schema 为发送给 Codex 的 JSON Schema。各管线配置的工具目录可按完整文件覆盖公共版本；未提供的文件沿用公共版本。人物原有分组 JSON 示例放在人物专属工具说明中；衣服首次分组只允许 `subject="other"`，不会读取人物示例或更改人物的允许值。没有外部工具目录启动参数。
+直接修改仓库固定目录中的文件。description 为工具说明，schema 为发送给所选 agent 的 JSON Schema。各管线配置的工具目录可按完整文件覆盖公共版本；未提供的文件沿用公共版本。人物原有分组 JSON 示例放在人物专属工具说明中；衣服首次分组只允许 `subject="other"`，不会读取人物示例或更改人物的允许值。没有外部工具目录启动参数。
 
 工具配置在启动时加载并固定，修改文件在下一次启动生效；同一次 agent 调用期间定义保持一致。raster 各阶段按下文约定提供深度工具，切换阶段仍沿用绘制 thread。实际执行与文件写入校验仍在 TS 中，新增参数或修改执行行为需要同步实现。配置无效会报错。
 
-步骤提示词保留任务目标、方法和验收要求，可以在特殊场景点明工具；参数与调用教程放在工具定义中。此配置只管理工作流注册的函数工具，原生 `image_generation` 仍由外部 Codex 提供。
+步骤提示词保留任务目标、方法和验收要求，可以在特殊场景点明工具；参数与调用教程放在工具定义中。此配置只管理工作流注册的函数工具，`codex-native` 生图由外部 Codex 提供；自定义生图函数工具的说明和 schema 也位于 `shared/tools/image_generation/`。
 
 `update_group_note` 在首次绘制和返修时都可使用：只允许精确修改当前组 note，不改父组、其他组、名称、种类或分组树。reviewer 只提交反馈；修改后的说明交给后续检查和子组分析。
 
 ## 临时错误恢复
 
-五条管线使用同一临时错误分类和退避策略。先等待 Codex 自身重连的最终结果，再对服务过载、断流和临时限流按 5、10、20、40、60 秒等待重试，之后每次 60 秒，直到成功或取消。保持原 thread、已有图片和文件，提示 agent 从未完成处继续；不增加视觉 review 轮次。
+五条管线使用同一临时错误分类和退避策略。先等待所选 CLI 自身重连的最终结果，再对服务过载、断流和临时限流按 5、10、20、40、60 秒等待重试，之后每次 60 秒，直到成功或取消。保持原 thread、已有图片和文件，提示 agent 从未完成处继续；不增加视觉 review 轮次。
 
 认证、额度、上下文超限、图片数量上限、输入或工件校验错误不会进入此重试。可选图片保护在请求发出前处理阈值；未启用时保持原行为。
 
-模型正常结束但没有交付文件、没有保存分组、缺少有效结构化结果，也会明确报错并展示模型最后消息及 threadId；raster 同时写入该步骤的 `error.txt`，保留 `.running`，不误标 `.completed`。例如模型告知没有可用的生图工具，终端会保留这段说明，方便修正环境后沿用原 thread 续跑。
+模型正常结束但没有交付文件、没有保存分组、缺少有效结构化结果，也会明确报错并展示模型最后消息及 threadId；raster 同时写入该步骤的 `error.txt`，保留 `.running`，不误标 `.completed`。例如模型告知没有可用的生图工具，终端会保留这段说明，方便修正环境后恢复 thread／session 续跑。
 
 ## 多深度与上游修正
 

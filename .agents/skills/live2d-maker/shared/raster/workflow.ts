@@ -9,6 +9,9 @@ import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import { canonicalPath, fileInfo, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, saveConfig, within } from './run-store.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
+import { modelHarnesses } from '../agents/models.ts';
+import { cliExecutable } from '../agents/cli.ts';
+import { validateImageSelection } from '../agents/images.ts';
 
 export type WorkflowOptions = {
   name: string;
@@ -52,9 +55,15 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const directory = await canonicalPath(requested);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
   const definitions: readonly StepDefinition[] = (dependencies.steps ?? pipeline.steps).map(step => ({ ...step,
-    ...(step.modelTier ? environment.models[step.modelTier] : {}),
-    ...(step.review ? { review: { ...step.review, ...(step.review.modelTier ? environment.models[step.review.modelTier] : {}) } } : {}),
+    ...(step.modelStep ? environment.stepModels[step.modelStep] : step.modelTier ? environment.models[step.modelTier] : {}),
+    ...(step.review ? { review: { ...step.review, ...(step.review.modelStep ? environment.stepModels[step.review.modelStep] : step.review.modelTier ? environment.models[step.review.modelTier] : {}) } } : {}),
   }));
+  if (!dependencies.agent) for (const step of definitions) {
+    for (const key of [step.modelStep, step.review?.modelStep, step.review?.repairModelStep]) if (key) {
+      validateImageSelection(environment, key);
+      if (environment.stepModels[key].harness !== 'codex') await cliExecutable(environment, environment.stepModels[key].harness);
+    }
+  }
   const plan = await inspectRun(directory, definitions);
   const reference = await pipeline.resolveInput(options.name, root);
   const inputDirectories = pipeline.inputDirectories(reference);
@@ -69,7 +78,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   config.sourceInput = reference;
   config.krita = krita;
   for (const step of definitions) {
-    if (step.modelTier || !config.models[step.id]) config.models[step.id] = { model: step.model, effort: step.effort };
+    if (step.modelStep || step.modelTier || !config.models[step.id]) config.models[step.id] = { model: step.model, effort: step.effort };
   }
   options.progress?.(`前置检查通过：Krita ${krita.version} (${krita.executable})`);
   options.progress?.(`任务目录：${directory}；直接读取上游：${inputDirectories.join('、')}`);
@@ -132,9 +141,17 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       lastAgentMessage = '';
       lastThreadId = fresh ? undefined : config.threadId ?? undefined;
       const attempt = randomUUID();
-      const selected = fresh ? step.review! : model;
+      const key = fresh ? step.review?.modelStep : phase.startsWith('repair') ? step.review?.repairModelStep : step.modelStep;
+      const selected = key ? environment.stepModels[key] : fresh ? step.review! : model;
+      const harness = 'harness' in selected ? selected.harness : modelHarnesses[selected.model as keyof typeof modelHarnesses] || 'codex';
+      if (!fresh && config.threadId && (config.threadHarness || 'codex') !== harness) {
+        await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
+          previousHarness: config.threadHarness || 'codex', harness, reason: '模型配置切换 CLI', at: new Date().toISOString() }) + '\n');
+        config.threadId = null; await saveConfig(directory, config);
+      }
       const handoff = !fresh && !config.threadId ? config.threadHandoff : undefined;
-      if (!fresh && phase !== 'draw' && !config.threadId && !handoff) throw new Error('缺少原绘制 threadId，无法继续修复。');
+      if (!fresh && phase !== 'draw' && !config.threadId && !handoff) prompt = (await pipeline.buildPrompt(step, reference, output, krita, previous))
+        + '\n\n已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。\n' + prompt;
       if (handoff) {
         const notes = await readFile(handoff.notes, 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
@@ -154,8 +171,14 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await rm(join(output, 'error.txt'), { force: true });
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
-        prompt, directory, model: selected.model, effort: selected.effort, environment,
+        prompt, directory, model: selected.model, effort: selected.effort, environment, step: key,
+        recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? (await pipeline.buildPrompt(step, reference, output, krita, previous))
+          + '\n\n已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。\n' + prompt : undefined,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
+        onThreadReplacement: async (oldId, reason) => {
+          await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');
+          if (!fresh) { config.threadId = null; await saveConfig(directory, config); }
+        },
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
           await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
@@ -167,6 +190,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
             if (fresh) return; // Reviewer sessions are never saved or resumed.
             if (!event.thread_id.trim() || (config.threadId && config.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
             config.threadId = event.thread_id;
+            config.threadHarness = harness;
             if (handoff) handoff.replacementThreadId = event.thread_id;
             await saveConfig(directory, config);
           }

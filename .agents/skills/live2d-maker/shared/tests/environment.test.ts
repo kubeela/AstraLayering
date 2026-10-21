@@ -24,10 +24,10 @@ test('默认继承 Codex 配置，.env 模型后缀是力度，shell 优先且�
   assert.equal(baseline.codex.env!.CODEX_HOME, '/existing/codex');
   assert.deepEqual(baseline.models.medium, { model: 'gpt-6.1-sol', effort: 'xhigh' });
   assert.equal(baseline.imageCompactThreshold, undefined);
-  await writeFile(join(root, '.env'), 'layering_medium_model=custom-sol-low\nlayering_high_model=custom-astra-high\nlayering_codex_path=bin/codex\n');
-  const settings = loadWorkflowEnvironment({ layering_medium_model: 'override-medium' }, root);
-  assert.deepEqual(settings.models.medium, { model: 'override', effort: 'medium' });
-  assert.deepEqual(settings.models.high, { model: 'custom-astra', effort: 'high' });
+  await writeFile(join(root, '.env'), 'layering_medium_model=gpt-6.1-sol-low\nlayering_high_model=gpt-6-astra-high\nlayering_codex_path=bin/codex\n');
+  const settings = loadWorkflowEnvironment({ layering_medium_model: 'gpt-6.1-sol-medium' }, root);
+  assert.deepEqual(settings.models.medium, { model: 'gpt-6.1-sol', effort: 'medium' });
+  assert.deepEqual(settings.models.high, { model: 'gpt-6-astra', effort: 'high' });
   assert.equal(settings.codex.codexPathOverride, join(root, 'bin/codex'));
   assert.equal(process.env.layering_high_model, undefined);
 });
@@ -75,14 +75,14 @@ test('图片压缩拒绝旧去图补丁，生图能力缓存不能绕过 v2 检�
 test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺产物诊断带最后消息', async t => {
   for (const pipeline of [character, clothing]) await t.test(pipeline.id, async t => {
     const root = await fixture(t); await seedUpstream('case', pipeline.inputPipeline, root);
-    const environment = loadWorkflowEnvironment({ layering_high_model: 'configured-model-high' }, root);
+    const environment = loadWorkflowEnvironment({ layering_high_model: 'gpt-6-astra-high' }, root);
     const directory = join(root, 'case', pipeline.id);
     const deps = { runsDirectory: root, steps: [pipeline.steps[0]], environment,
       preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
     let failure: unknown;
     try {
       await runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
-        assert.equal(request.model, 'configured-model'); assert.equal(request.effort, 'high');
+        assert.equal(request.model, 'gpt-6-astra'); assert.equal(request.effort, 'high');
         await request.onEvent({ type: 'thread.started', thread_id: 'persistent-thread' });
         await request.onEvent({ type: 'item.completed', item: { type: 'agent_message', id: 'message', text: '当前没有 image_generation 工具，无法绘制。' } });
         return { status: 'completed', summary: '回合已结束' };
@@ -94,17 +94,17 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     assert.match(formatAgentError(failure), /persistent-thread/);
     assert.match(await readFile(join(directory, 'step01/error.txt'), 'utf8'), /模型最后消息/);
     await assert.rejects(readFile(join(directory, 'step01/.completed')), { code: 'ENOENT' });
-    const changed = loadWorkflowEnvironment({ layering_high_model: 'new-model-low' }, root);
+    const changed = loadWorkflowEnvironment({ layering_high_model: 'gpt-6.1-sol-low' }, root);
     await runWorkflow(pipeline, { name: 'case' }, { ...deps, environment: changed, agent: async request => {
       assert.equal(request.threadId, 'persistent-thread');
-      assert.equal(request.model, 'new-model'); assert.equal(request.effort, 'low');
+      assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'low');
       await request.onEvent({ type: 'thread.started', thread_id: 'persistent-thread' });
       for (const file of pipeline.steps[0].requiredFiles) await writeFile(join(directory, 'step01', file), 'fixture');
       return { status: 'completed', summary: '完成' };
     } });
     const config = JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
     assert.equal(config.threadId, 'persistent-thread');
-    assert.deepEqual(config.models.step01, { model: 'new-model', effort: 'low' });
+    assert.deepEqual(config.models.step01, { model: 'gpt-6.1-sol', effort: 'low' });
   });
 });
 

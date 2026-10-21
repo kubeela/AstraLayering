@@ -1,3 +1,4 @@
+import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
@@ -92,7 +93,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       return textResult(submitted);
     },
   };
-  const response = await agents.run({ name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: [preview, set, submit, createSvgReadTool(context.directory,
       [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)])], prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${JSON.stringify({

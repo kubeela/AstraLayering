@@ -17,14 +17,15 @@ pnpm install --frozen-lockfile
 
 | 本次执行范围 | 前置依赖 |
 | --- | --- |
-| 所有管线 | 上述 Node.js / pnpm 依赖与可用 Codex 环境；Python 默认复用宿主 Codex 已有环境，无需另行安装 |
-| 人物／衣服 part | 所需上游输入；准备阶段需要原生生图能力 |
-| 人物／衣服 raster | 对应 part 产物、Krita 和可操作的显示环境；涉及生图的步骤还需原生生图能力 |
+| 所有管线 | 上述 Node.js / pnpm 依赖与所选模型对应的可用 CLI 环境；Python 默认复用宿主 Codex 已有环境，无需另行安装 |
+| 人物／衣服 part | 所需上游输入；准备阶段需要所选生图能力 |
+| 人物／衣服 raster | 对应 part 产物、Krita 和可操作的显示环境；涉及生图的步骤还需所选生图能力 |
 | 穿戴组装 | 两份 KRA、简化穿衣参考、Krita 和可操作的显示环境；不以生图为前置 |
 
 具体配置：
 
-- Codex 环境已登录或配置 provider。涉及生图的准备与 raster 步骤还需 agent 可用原生 `image_generation`；纯 KRA 组装不以生图为前置。默认继承当前 `CODEX_HOME` 或 `~/.codex`；没有该工具时配置外部 Codex 环境，不用直接 Images API 或替代工具改写流程。
+- 按小步骤配置检查对应 CLI 与登录／provider：Codex 默认继承当前 `CODEX_HOME` 或 `~/.codex`；Claude Code、Antigravity 使用显式配置的入口或全局 CLI，并复用已有登录。pnpm 不安装后两者。缺少 CLI 或登录凭据时，展示具体报错并询问用户是安装／登录还是改用已有模型，不自行安装。
+- 生图步骤选择 `codex-native` 时，绘制模型必须属于 Codex，并具备外部提供的原生 `image_generation`。选择自定义 OpenAI 或 Google 生图时，检查对应 API URL、key 和协议；通过本步骤的 `image_generation` 函数工具调用。纯 KRA 组装不以生图为前置。
 - Python 默认已有，不要求用户再次安装或另建环境；实际调用发现缺失或缺包时再按具体错误处理。
 - 按需将 [example.env](../example.env) 复制为 `.env`，填写模型、provider 或可选生图配置；未配置时沿用默认。shell 同名变量优先。`.env` 位于 skill 根目录，密钥不写入报告或提交。
 
@@ -39,6 +40,5 @@ pnpm install --frozen-lockfile
 
 安装由调用 skill 的 agent 在确认后处理；工作流脚本仍只检查明确传入或已保存的可执行路径，不自动下载或探索安装位置。路径检查可用 `pnpm raster-layering --check-krita --krita /绝对路径/krita`。
 
-模型默认：medium 为 `gpt-6.1-sol-xhigh`，high 为 `gpt-6-astra-xhigh`；末尾是思考力度。自定义原生生图服务默认模型为 `gpt-image-2.5-sunburst`。自定义生图及按图片数 compact 需要显式构建可选的 Codex 补丁，见 [构建说明](../tools/codex/README.md)；正常启动不会自动下载或构建。
-
+默认各小步骤沿用原模型：人物／衣服 part、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。每步可独立覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。只有 Codex 的按图片数 compact 需要显式构建可选补丁；自定义生图函数工具不需要补丁，正常启动不会下载或构建。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。

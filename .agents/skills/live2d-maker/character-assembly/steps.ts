@@ -6,7 +6,7 @@ import type { StepDefinition } from '../shared/raster/steps.ts';
 import type { AssemblyInput } from './input.ts';
 
 export const steps = [{
-  id: 'step01', title: '人物与衣服 KRA 组装', ...defaultModels.medium, modelTier: 'medium',
+  id: 'step01', title: '人物与衣服 KRA 组装', ...defaultModels.medium, modelStep: 'assembly',
   prompt: new URL('./prompts/01-人物与衣服组装.md', import.meta.url),
   requiredFiles: ['character-assembled.kra', 'character-assembled.png', 'report.md'],
 }] as const satisfies readonly StepDefinition[];

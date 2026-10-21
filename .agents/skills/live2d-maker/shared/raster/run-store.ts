@@ -1,11 +1,12 @@
 import type { ModelSelection } from '../codex/environment.ts';
+import type { Harness } from '../agents/models.ts';
 import { lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { isPartLayeringInput, type PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 
-export type ModelConfig = ModelSelection;
+export type ModelConfig = ModelSelection & { harness?: Harness };
 export type ThreadHandoff = {
   id: string;
   previousThreadId: string;
@@ -21,6 +22,7 @@ export type RunConfig<Input = PartLayeringInput> = {
   krita: KritaInstallation;
   models: Record<string, ModelConfig>;
   threadId: string | null;
+  threadHarness?: Harness;
   threadHandoff?: ThreadHandoff;
 };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
@@ -62,10 +64,11 @@ export async function loadConfig<Input = PartLayeringInput>(directory: string, n
     || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim() || typeof config.krita.version !== 'string'
     || !config.models || typeof config.models !== 'object' || Array.isArray(config.models)
     || Object.values(config.models).some(model => !model || typeof model.model !== 'string' || !model.model.trim() || !['none', 'minimal', 'low', 'medium', 'high', 'xhigh'].includes(model.effort))
-    || !(config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))
+    || !(config.threadId === undefined || config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))
     || (config.threadHandoff !== undefined && !validHandoff(config.threadHandoff))) {
     throw new Error(`无效的任务配置：${file}`);
   }
+  config.threadId ??= null;
   return config;
 }
 

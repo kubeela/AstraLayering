@@ -1,3 +1,4 @@
+import { partStep } from '../agents/models.ts';
 import { agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
@@ -124,6 +125,7 @@ export async function drawGroupOutline(
     await recordRepair(output, repair.feedback, taskPrompt);
   }
   const response = await agents.run({
+    step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory,
     sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory, [input.parent, repair?.candidate, draft]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
@@ -180,7 +182,7 @@ async function reviewOnce(
     },
   };
   const response = await agents.run({
-    name: `组轮廓review-${context.group.id}`, cwd: context.directory,
+    step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory,
     sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory, [input.parent, candidate]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],

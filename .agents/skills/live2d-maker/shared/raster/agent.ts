@@ -1,18 +1,28 @@
 import { checkCodexCapabilities, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment, type ModelSelection } from '../codex/environment.ts';
-import { agentOutcomeError } from '../codex/diagnostics.ts';
+import { agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
 import { Codex, type Thread, type ThreadEvent, type ThreadOptions } from '@openai/codex-sdk';
 import type { FunctionTool } from '../codex/function-tools.ts';
-import { fileURLToPath } from 'node:url';
+import { CodexAgents } from '../codex/agents.ts';
+import { parseAgentModel, type AgentStep } from '../agents/models.ts';
+import { unavailableSession } from '../agents/cli.ts';
+import { dirname, join } from 'node:path';
 import { AgentCallError, AgentRuntime, continuationPrompt, type AgentRetry } from '../codex/agent-runtime.ts';
+import { AgentLog } from '../codex/agent-log.ts';
+import { imageGenerationTool } from '../agents/images.ts';
+import { createMcpBridge } from '../agents/mcp.ts';
 
 export type StepResult = { status: 'completed' | 'blocked'; summary: string };
 export type AgentRequest = {
+  step?: AgentStep;
+  onThreadReplacement?: (oldId: string, reason: string) => Promise<void>;
   prompt: string;
+  recoveryPrompt?: string;
   directory: string;
   model: string;
   effort: ModelSelection['effort'];
   environment?: WorkflowEnvironment;
   threadId?: string;
+  tools?: FunctionTool[];
   signal?: AbortSignal;
   onEvent: (event: ThreadEvent) => Promise<void>;
   onRetry?: (retry: AgentRetry) => Promise<void> | void;
@@ -26,6 +36,50 @@ type Client = {
 export async function runAgent(request: AgentRequest, client?: Client, runtime = new AgentRuntime(1)): Promise<StepResult> {
   // Keep the configured login and tool providers; enable the native image tool.
   const environment = request.environment ?? loadWorkflowEnvironment();
+  if (!client) {
+    const selected = parseAgentModel(`${request.model}-${request.effort}`, request.step || 'raster agent');
+    const image = request.step && environment.stepImages[request.step];
+    if (selected.harness === 'codex' && image && image !== 'codex-native') {
+      await checkCodexCapabilities(environment);
+      const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
+        prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
+      const tool = imageGenerationTool(environment, request.step!, log.directory, [dirname(request.directory)])!;
+      const bridge = await createMcpBridge([tool], request.signal || new AbortController().signal, event => log.recordProtocol(event));
+      const codex = new Codex(workflowCodexOptions(environment, { config: { features: { image_generation: false },
+        mcp_servers: { layering_image: bridge.config } } }));
+      let lastMessage = '', threadId = request.threadId;
+      try {
+        const result = await runAgent({ ...request, onEvent: async event => {
+          await log.record(event);
+          if (event.type === 'thread.started') threadId = event.thread_id;
+          if (event.type === 'item.completed' && event.item.type === 'agent_message') lastMessage = event.item.text;
+          await request.onEvent(event);
+        } }, codex, runtime);
+        await log.finish({ status: 'completed', threadId: threadId || null, finalResponse: lastMessage }); return result;
+      } catch (error) {
+        await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: lastMessage, error: String(error) }); throw error;
+      } finally { await bridge.close(); }
+    }
+    if (selected.harness !== 'codex') {
+      const agents = new CodexAgents({ environment, selectedModel: selected, cwd: request.directory,
+        logDirectory: join(request.directory, 'agents'), runtime, onRetry: request.onRetry,
+        onEvent: request.onEvent, onThreadReplacement: request.onThreadReplacement });
+      const session = agents.createSession(request.threadId);
+      try {
+        const result = await session.run({ step: request.step, name: request.step || 'raster', prompt: request.prompt, recoveryPrompt: request.recoveryPrompt,
+          cwd: request.directory, sandboxMode: 'danger-full-access', tools: request.tools, imageRoots: [dirname(request.directory)],
+          outputSchema: { type: 'object', additionalProperties: false, properties: {
+            status: { type: 'string', enum: ['completed', 'blocked'] }, summary: { type: 'string' } }, required: ['status', 'summary'] } }, request.signal);
+        return validateAgentOutcome(result, () => {
+          const value = JSON.parse(result.text);
+          if (!value || !['completed', 'blocked'].includes(value.status) || typeof value.summary !== 'string' || !value.summary.trim()) {
+            throw new Error('步骤未返回有效的完成或受阻说明');
+          }
+          return value as StepResult;
+        });
+      } finally { await session.close(); }
+    }
+  }
   if (!client) await checkCodexCapabilities(environment);
   const codex = client ?? new Codex(workflowCodexOptions(environment, { config: rasterCodexConfig() }));
   const options: ThreadOptions = {
@@ -36,7 +90,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     sandboxMode: 'danger-full-access',
     approvalPolicy: 'never',
   };
-  const thread = request.threadId ? codex.resumeThread(request.threadId, options) : codex.startThread(options);
+  let thread = request.threadId ? codex.resumeThread(request.threadId, options) : codex.startThread(options);
   let threadId = request.threadId;
   const savedImages = new Set<string>();
   return runtime.run(async attempt => {
@@ -70,6 +124,10 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       }
       if (!completed) throw new AgentCallError(lastError || 'response stream disconnected：未收到 turn.completed');
     } catch (error) {
+      if (request.threadId && threadId && unavailableSession(error)) {
+        await request.onThreadReplacement?.(threadId, '原 thread 不可用');
+        return runAgent({ ...request, threadId: undefined, prompt: request.recoveryPrompt || request.prompt }, codex);
+      }
       const reported = error instanceof AgentCallError ? error : new AgentCallError(error instanceof Error ? error.message : String(error), undefined, { cause: error });
       reported.threadId = threadId;
       reported.finalResponse = text;
