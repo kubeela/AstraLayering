@@ -6,6 +6,7 @@ import type { CodexOptions } from '@openai/codex-sdk';
 import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
 import { generateImage, validateImageSelection, type ImageArguments, type ImageInput } from './images.ts';
 import { imageModelProviders, type AgentStep } from './models.ts';
+import { checkFfmpeg, type FfmpegOptions } from '../ffmpeg.ts';
 
 export function usesPatchedImageTool(settings: WorkflowEnvironment, step?: AgentStep): boolean {
   return !!step && settings.stepModels[step].harness === 'codex'
@@ -15,13 +16,15 @@ export function usesPatchedImageTool(settings: WorkflowEnvironment, step?: Agent
 // One route per Codex process. Its model and credentials never enter prompts or global config.
 // The original extension still owns tool execution, image events and saving the final PNG.
 export async function createCodexImageRoute(settings: WorkflowEnvironment, step: AgentStep,
-  outputDirectory: string, options: CodexOptions = settings.codex, signal?: AbortSignal) {
+  outputDirectory: string, options: CodexOptions = settings.codex, signal?: AbortSignal, normalization: FfmpegOptions = {}) {
   signal?.throwIfAborted();
   validateImageSelection(settings, step);
   if (!usesPatchedImageTool(settings, step)) throw new Error(`${step} 不使用自定义 Codex 生图补丁。`);
   await checkCodexCapabilities(settings, options, { image: true });
   const model = settings.stepImages[step]!;
   const api = settings.imageApis[imageModelProviders[model] as 'openai' | 'google']!;
+  const processing = { ...normalization, env: normalization.env ?? options.env, directory: outputDirectory };
+  if (imageModelProviders[model] === 'google') await checkFfmpeg(processing);
   const token = randomBytes(32).toString('hex');
   const closing = new AbortController();
   const server = createServer(async (request, response) => {
@@ -57,7 +60,7 @@ export async function createCodexImageRoute(settings: WorkflowEnvironment, step:
         || args.background !== undefined && !['transparent', 'auto', 'opaque'].includes(String(args.background))
         || args.size !== undefined && typeof args.size !== 'string'
         || args.n !== undefined && Number(args.n) !== 1) throw new Error('原生生图请求的模型或参数不符合本步骤配置。');
-      const png = await generateImage(api, model, args as ImageArguments, inputs, signal);
+      const png = await generateImage(api, model, args as ImageArguments, inputs, signal, processing);
       response.setHeader('content-type', 'application/json');
       response.end(JSON.stringify({ created: Math.floor(Date.now() / 1000), data: [{ b64_json: png.toString('base64') }] }));
     } catch (error) {

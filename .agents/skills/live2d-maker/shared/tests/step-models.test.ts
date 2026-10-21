@@ -133,19 +133,24 @@ test('custom image edit transports original prompts and images over both protoco
   const root = await fixture(t), source = join(root, 'input.png');
   const png = await sharp({ create: { width: 4, height: 4, channels: 4, background: '#ff000080' } }).png().toBuffer();
   await writeFile(source, png);
-  let protocol = 'openai', called = 0;
+  let protocol = 'openai', expectedBackground = 'transparent', called = 0;
   const server = createServer(async (req, res) => {
     const chunks = []; for await (const chunk of req) chunks.push(chunk); const bytes = Buffer.concat(chunks); called++;
     if (protocol === 'gemini') {
       assert.equal(req.url, '/v1beta/models/gemini-nano-banana-2.1:generateContent');
       assert.equal(req.headers['x-goog-api-key'], 'image-test-secret');
       const body = JSON.parse(bytes.toString());
-      assert.equal(body.contents[0].parts[0].text, '原样的绘制提示词');
+      assert.ok(body.contents[0].parts[0].text.startsWith('原样的绘制提示词\n\n'));
+      assert.match(body.contents[0].parts[0].text, /背景使用高纯度纯色 #[0-9A-F]{6}/);
       assert.deepEqual(Buffer.from(body.contents[0].parts[1].inlineData.data, 'base64'), png);
       res.end(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: png.toString('base64') } }] } }] }));
     } else {
       assert.equal(req.url, '/v1/images/edits'); assert.equal(req.headers.authorization, 'Bearer image-test-secret');
       assert.ok(bytes.includes(Buffer.from('原样的绘制提示词'))); assert.ok(bytes.includes(png));
+      const form = await new Request('http://localhost', { method: 'POST', headers: { 'content-type': req.headers['content-type']! }, body: new Uint8Array(bytes) }).formData();
+      assert.equal(form.get('background'), expectedBackground);
+      if (expectedBackground === 'transparent') assert.equal(form.get('prompt'), '原样的绘制提示词');
+      else assert.match(String(form.get('prompt')), /背景使用高纯度纯色 #[0-9A-F]{6}/);
       res.end(JSON.stringify({ data: [{ b64_json: png.toString('base64') }] }));
     }
   });
@@ -159,7 +164,8 @@ test('custom image edit transports original prompts and images over both protoco
     ['openai', 'gpt-image-2.5-flare', 'openai'],
   ]) {
     protocol = mode;
-    const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: model,
+    expectedBackground = provider === 'google' ? 'opaque' : 'transparent';
+    const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: model, PATH: process.env.PATH,
       [`layering_${provider}_image_base_url`]: base + (mode === 'gemini' ? '/v1beta' : '/v1'),
       [`layering_${provider}_image_api_key`]: 'image-test-secret', [`layering_${provider}_image_protocol`]: mode }, root);
     const outputDirectory = `${provider}-${mode}`;

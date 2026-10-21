@@ -24,6 +24,8 @@ pnpm install --frozen-lockfile
 | 人物／衣服 raster | 对应 part 产物、Krita 和可操作的显示环境；涉及生图的步骤还需所选生图能力 |
 | 穿戴组装 | 两份 KRA、简化穿衣参考、Krita 和可操作的显示环境；不以生图为前置 |
 
+上述任一范围若配置 Nano 生图工具，还需可调用的 FFmpeg，用于工具内部的纯色背景透明化；启动前复用已有入口，PATH 不可用时沿用 `--krita` 指定安装内的固定位置。GPT 原生透明输出不增加这项工具内部依赖。
+
 具体配置：
 
 - 按 LLM 职责配置检查对应 CLI 与登录／provider，人物和衣服共用模型选择：Codex 默认继承当前 `CODEX_HOME` 或 `~/.codex`；Claude Code、Antigravity 使用显式配置的入口或全局 CLI，并复用已有登录。pnpm 不安装后两者。缺少 CLI 或登录凭据时，展示具体报错并询问用户是安装／登录还是改用已有模型，不自行安装。

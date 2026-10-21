@@ -39,19 +39,20 @@ export async function runPartPipeline(
   const directory = pipeline.getPreparationDirectory(input.reference.runName, input.reference.dir);
   toolCatalog(pipeline.profile.toolsDirectory);
   const environment = agentOptions.environment ?? loadWorkflowEnvironment(agentOptions.env);
+  const normalization = { ...agentOptions.imageNormalization, env: agentOptions.imageNormalization?.env ?? environment.codex.env,
+    krita: input.reference.krita ? resolveInput(input.reference.runName, input.reference.krita, input.reference.dir) : agentOptions.imageNormalization?.krita };
   if (!adapters.steps) {
     let standard = input.reference.standard;
     if (standard === undefined && pipeline.profile.id === 'part-layering') try {
       standard = JSON.parse(await readFile(join(directory, 'preparation.json'), 'utf8')).standard;
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-    await preflightAgentSteps(environment, pipelineAgentSteps(pipeline.profile.id, standard));
+    await preflightAgentSteps(environment, pipelineAgentSteps(pipeline.profile.id, standard), normalization);
   }
   const agents = new CodexAgents({
-    ...agentOptions, environment, cwd: dirname(directory), toolsDirectory: pipeline.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
+    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), toolsDirectory: pipeline.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
   });
   const references = input.groups === null
-    ? await pipeline.prepare(input.reference, agents, agentOptions.progress, { env: environment.codex.env,
-      krita: input.reference.krita && resolveInput(input.reference.runName, input.reference.krita, input.reference.dir) })
+    ? await pipeline.prepare(input.reference, agents, agentOptions.progress, normalization)
     : await pipeline.loadPreparedReferences(input.reference.runName, input.reference.dir, input.reference.standard);
   const layering = await runLayering({
     profile: pipeline.profile, directory: dirname(directory), references, groups: input.groups,

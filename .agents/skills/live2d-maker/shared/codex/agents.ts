@@ -14,6 +14,7 @@ import { imageGenerationTool, validateImageSelection } from '../agents/images.ts
 import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-images.ts';
 import { randomUUID } from 'node:crypto';
 import type { ThreadEvent } from '@openai/codex-sdk';
+import type { FfmpegOptions } from '../ffmpeg.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -41,6 +42,7 @@ export type AgentSession = {
   close(): Promise<void>;
 };
 export type AgentOptions = CodexOptions & {
+  imageNormalization?: FfmpegOptions;
   resumeHarness?: AgentModel['harness'];
   onSessionStarted?: (id: string, harness: AgentModel['harness']) => Promise<void>;
   selectedModel?: AgentModel;
@@ -107,7 +109,7 @@ export class CodexAgents {
             await session?.close(); session = undefined;
             await route?.close(); route = undefined;
             if (nextImage) route = await createCodexImageRoute(this.options.environment!, task.step!,
-              join(this.options.logDirectory || join(task.cwd || this.options.cwd!, 'agents'), 'generated'), this.options, closing.signal);
+              join(this.options.logDirectory || join(task.cwd || this.options.cwd!, 'agents'), 'generated'), this.options, closing.signal, this.options.imageNormalization);
             imageModel = nextImage;
           }
           session ||= createFunctionToolSession(functionOptions(), id);
@@ -166,7 +168,7 @@ export class CodexAgents {
           const generated: GeneratedImage[] = [];
           const image = original.step && selected.harness !== 'codex' ? imageGenerationTool(settings, original.step,
             join(this.options.logDirectory || join(original.cwd || this.options.cwd!, 'agents'), 'generated', randomUUID()),
-            [original.cwd || this.options.cwd!, ...(original.imageRoots || []), ...(original.images || []).map(i => i.path)]) : undefined;
+            [original.cwd || this.options.cwd!, ...(original.imageRoots || []), ...(original.images || []).map(i => i.path)], this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
             image.execute = async (args, signal) => {

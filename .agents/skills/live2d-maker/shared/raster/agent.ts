@@ -9,9 +9,11 @@ import { dirname, join } from 'node:path';
 import { AgentCallError, AgentRuntime, continuationPrompt, type AgentRetry } from '../codex/agent-runtime.ts';
 import { AgentLog } from '../codex/agent-log.ts';
 import { createCodexImageRoute } from '../agents/codex-images.ts';
+import type { FfmpegOptions } from '../ffmpeg.ts';
 
 export type StepResult = { status: 'completed' | 'blocked'; summary: string };
 export type AgentRequest = {
+  imageNormalization?: FfmpegOptions;
   step?: AgentStep;
   onThreadReplacement?: (oldId: string, reason: string) => Promise<void>;
   prompt: string;
@@ -42,7 +44,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     if (selected.harness === 'codex' && image && image !== 'codex-native') {
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
         prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
-      const route = await createCodexImageRoute(environment, request.step!, join(request.directory, 'agents/generated'), environment.codex, request.signal);
+      const route = await createCodexImageRoute(environment, request.step!, join(request.directory, 'agents/generated'), environment.codex, request.signal, request.imageNormalization);
       const codex = new Codex(workflowCodexOptions(environment, { env: route.env, config: rasterCodexConfig() }));
       let lastMessage = '', threadId = request.threadId;
       try {
@@ -58,7 +60,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       } finally { await route.close(); }
     }
     if (selected.harness !== 'codex') {
-      const agents = new CodexAgents({ environment, selectedModel: selected, cwd: request.directory,
+      const agents = new CodexAgents({ environment, selectedModel: selected, cwd: request.directory, imageNormalization: request.imageNormalization,
         logDirectory: join(request.directory, 'agents'), runtime, onRetry: request.onRetry,
         onEvent: request.onEvent, onThreadReplacement: request.onThreadReplacement });
       const session = agents.createSession(request.threadId);

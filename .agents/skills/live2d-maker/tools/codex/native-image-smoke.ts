@@ -13,6 +13,8 @@ import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 const { values } = parseArgs({ options: { codex: { type: 'string', default: '.codex-build/bin/codex' } } });
 const root = await mkdtemp(join(tmpdir(), 'layering-native-image-smoke-'));
 const png = await sharp({ create: { width: 32, height: 48, channels: 4, background: '#d1479580' } }).png().toBuffer();
+const nanoPng = await sharp({ create: { width: 32, height: 48, channels: 3, background: '#09f20a' } })
+  .composite([{ input: Buffer.from('<svg width="32" height="48"><rect x="8" y="8" width="16" height="32" fill="#414141"/></svg>') }]).png().toBuffer();
 const picture = join(root, 'input.png'); await writeFile(picture, png);
 let turn = 0, generation = 0, protocol = 'openai';
 const imageCalls: string[] = [];
@@ -39,10 +41,11 @@ const server = createServer(async (req, res) => {
       assert.equal(req.url, '/images/v1beta/models/gemini-nano-banana-2.1:generateContent');
       assert.equal(req.headers['x-goog-api-key'], 'image-fixture');
       const parts = JSON.parse(bytes.toString()).contents[0].parts;
-      assert.equal(parts[0].text, 'Original image prompt');
+      assert.ok(parts[0].text.startsWith('Original image prompt\n\n'));
+      assert.match(parts[0].text, /背景使用高纯度纯色 #00FF00/);
       assert.equal(parts.length, generation ? 2 : 1);
       if (generation) assert.deepEqual(Buffer.from(parts[1].inlineData.data, 'base64'), png);
-      res.end(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: png.toString('base64') } }] } }] }));
+      res.end(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: nanoPng.toString('base64') } }] } }] }));
     } else {
       assert.equal(req.headers.authorization, 'Bearer image-fixture');
       if (generation) {
@@ -81,7 +84,12 @@ try {
       for (const image of result.images) {
         assert.ok(image.savedPath.startsWith(join(directory, 'agents/generated')));
         assert.equal((await sharp(image.savedPath).metadata()).hasAlpha, true);
-        assert.deepEqual(await sharp(image.savedPath).raw().toBuffer(), await sharp(png).raw().toBuffer());
+        if (protocol === 'openai') assert.deepEqual(await sharp(image.savedPath).raw().toBuffer(), await sharp(png).raw().toBuffer());
+        else {
+          const { data, info } = await sharp(image.savedPath).raw().toBuffer({ resolveWithObject: true });
+          assert.equal(info.width, 32); assert.equal(info.height, 48); assert.equal(data[3], 0);
+          assert.deepEqual([...data.subarray((24 * 32 + 16) * 4, (24 * 32 + 16) * 4 + 4)], [65, 65, 65, 255]);
+        }
       }
       const resumed = await session.run({ step: 'part_simplify', name: 'resume fixture', prompt: 'Finish.' });
       assert.equal(resumed.threadId, result.threadId);

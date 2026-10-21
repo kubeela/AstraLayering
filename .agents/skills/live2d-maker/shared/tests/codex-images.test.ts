@@ -63,14 +63,17 @@ test('native routes share OpenAI/Gemini transports, preserve image bytes/alpha a
     calls.push({ url: req.url!, prompt: args.prompt, model: args.model, refs: inputs.length });
   });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
-  t.after(() => new Promise<void>(done => server.close(() => done())));
+  t.after(() => { server.closeAllConnections(); return new Promise<void>(done => server.close(() => done())); });
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
   const settings = loadWorkflowEnvironment({ layering_codex_path: executable,
+    PATH: process.env.PATH,
     layering_part_simplify_image_model: 'gpt-image-2.5-flare', layering_part_base_subject_image_model: 'gemini-nano-banana-2.1',
     layering_openai_image_base_url: base + '/v1', layering_openai_image_api_key: 'openai-secret',
     layering_google_image_base_url: base + '/v1beta', layering_google_image_api_key: 'google-secret' }, root);
   const openai = await createCodexImageRoute(settings, 'part_simplify', join(root, 'openai'));
+  t.after(() => openai.close());
   const google = await createCodexImageRoute(settings, 'part_base_subject', join(root, 'google'));
+  t.after(() => google.close());
   try {
     assert.notEqual(openai.env.LAYERING_IMAGE_API_KEY, google.env.LAYERING_IMAGE_API_KEY);
     const invoke = async (route: typeof openai, count: number) => {
@@ -87,7 +90,11 @@ test('native routes share OpenAI/Gemini transports, preserve image bytes/alpha a
     await Promise.all([invoke(openai, 0), invoke(google, 0)]);
     await Promise.all([invoke(openai, 2), invoke(google, 2)]);
     assert.equal(calls.length, 4);
-    assert.ok(calls.every(c => c.prompt === '不改写的原始提示词'));
+    assert.ok(calls.filter(c => c.model === 'gpt-image-2.5-flare').every(c => c.prompt === '不改写的原始提示词'));
+    for (const call of calls.filter(c => c.model === 'gemini-nano-banana-2.1')) {
+      assert.ok(call.prompt.startsWith('不改写的原始提示词\n\n'));
+      assert.match(call.prompt.replaceAll('\r\n', '\n'), /背景使用高纯度纯色 #00FF00/);
+    }
     assert.equal((await fetch(openai.env.LAYERING_IMAGE_BASE_URL + '/images/generations', { method: 'POST' })).status, 401);
   } finally { await openai.close(); await google.close(); }
   await assert.rejects(fetch(openai.env.LAYERING_IMAGE_BASE_URL + '/images/generations'));

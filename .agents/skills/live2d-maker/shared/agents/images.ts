@@ -6,6 +6,9 @@ import type { WorkflowEnvironment } from '../codex/environment.ts';
 import type { FunctionTool } from '../codex/function-tools.ts';
 import { imageModelProviders, type AgentStep, type ImageApi, type ImageModel } from './models.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
+import { needsSolidBackground, providerImageArguments, transparentGeneratedImage, type ImageProcessingOptions } from './image-background.ts';
+import { checkFfmpeg, type FfmpegOptions } from '../ffmpeg.ts';
+import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
 
 export function validateImageSelection(settings: WorkflowEnvironment, step: AgentStep): void {
   const image = settings.stepImages[step];
@@ -20,7 +23,7 @@ export function validateImageSelection(settings: WorkflowEnvironment, step: Agen
 }
 
 export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentStep, output: string,
-  roots: readonly string[]): FunctionTool | undefined {
+  roots: readonly string[], normalization: FfmpegOptions = {}): FunctionTool | undefined {
   const model = settings.stepImages[step];
   if (!model || model === 'codex-native') return;
   validateImageSelection(settings, step);
@@ -46,7 +49,8 @@ export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentSt
         const bytes = await readFile(actual), meta = await sharp(bytes).metadata();
         inputs.push({ bytes, mime: meta.format === 'jpeg' ? 'image/jpeg' : meta.format === 'webp' ? 'image/webp' : 'image/png' });
       }
-      const png = await generateImage(api, model, args as ImageArguments, inputs, signal);
+      const png = await generateImage(api, model, args as ImageArguments, inputs, signal,
+        { ...normalization, env: normalization.env ?? settings.codex.env, directory: output });
       const meta = await sharp(png).metadata();
       await mkdir(join(output, 'images'), { recursive: true });
       const savedPath = join(output, 'images', `${randomUUID()}.png`);
@@ -62,7 +66,22 @@ export type ImageArguments = { prompt: string; background?: 'transparent' | 'aut
 
 // The native Codex route and registered tools share the same provider transport.
 export async function generateImage(api: ImageApi, model: ImageModel, args: ImageArguments,
-  inputs: ImageInput[], signal: AbortSignal): Promise<Buffer> {
+  inputs: ImageInput[], signal: AbortSignal, processing?: ImageProcessingOptions): Promise<Buffer> {
+  const original = args;
+  const solidBackground = needsSolidBackground(model, original);
+  let selection: BackgroundRecommendation | undefined;
+  if (solidBackground) {
+    if (!processing) throw new Error('Nano 透明背景处理缺少本次任务的产物目录。');
+    await checkFfmpeg(processing);
+    selection = await recommendBackground(inputs);
+    processing = { ...processing, directory: join(processing.directory, 'image-processing', randomUUID()) };
+  }
+  args = await providerImageArguments(model, original, selection);
+  if (solidBackground) {
+    await mkdir(processing!.directory, { recursive: true });
+    await writeFile(join(processing!.directory, 'background-selection.json'), JSON.stringify({ selection,
+      originalPrompt: original.prompt, providerPrompt: args.prompt }, null, 2) + '\n', { mode: 0o600 });
+  }
   const base = api.baseUrl.replace(/\/+$/, '');
   let url: string, body: BodyInit, headers: Record<string, string>;
   if (api.protocol === 'gemini') {
@@ -103,5 +122,6 @@ export async function generateImage(api: ImageApi, model: ImageModel, args: Imag
       bytes = Buffer.from(await download.arrayBuffer());
     } else throw new Error(`生图 ${model} 没有返回图片。`);
   }
-  return sharp(bytes).png().toBuffer();
+  const png = await sharp(bytes).png().toBuffer();
+  return solidBackground ? transparentGeneratedImage(png, model, original, args, processing!, signal, selection!) : png;
 }
