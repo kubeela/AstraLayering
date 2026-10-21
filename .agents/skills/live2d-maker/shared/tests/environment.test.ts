@@ -35,16 +35,19 @@ test('默认继承 Codex 配置，.env 模型后缀是力度，shell 优先且�
 test('主模型与生图分别鉴权；只填生图模型不启用，未补丁时明确失败', async t => {
   const root = await fixture(t);
   const onlyModel = loadWorkflowEnvironment({ layering_image_model: 'another-image-model' }, root);
-  assert.equal(onlyModel.imageProvider, undefined);
+  assert.equal(onlyModel.stepImages.part_simplify, 'codex-native');
+  assert.deepEqual(onlyModel.imageApis, {});
   const settings = loadWorkflowEnvironment({ layering_custom_provider: 'true', layering_provider_base_url: 'https://chat.example/v1',
     layering_provider_api_key: 'chat-secret', layering_image_base_url: 'https://images.example/v1', layering_image_api_key: 'image-secret',
     layering_image_compact_threshold: '49' }, root);
   const provider = (settings.codex.config!.model_providers as any).layering_custom;
   assert.equal(provider.base_url, 'https://chat.example/v1');
   assert.equal(provider.env_key, 'layering_provider_api_key');
-  assert.equal(settings.codex.env!.LAYERING_IMAGE_BASE_URL, 'https://images.example/v1');
-  assert.equal(settings.codex.env!.LAYERING_IMAGE_API_KEY, 'image-secret');
-  assert.equal(settings.codex.env!.LAYERING_IMAGE_MODEL, 'gpt-image-2.5-sunburst');
+  assert.equal(settings.codex.env!.LAYERING_IMAGE_BASE_URL, undefined);
+  assert.equal(settings.codex.env!.LAYERING_IMAGE_API_KEY, undefined);
+  assert.equal(settings.stepImages.part_simplify, 'gpt-image-2.5-sunburst');
+  assert.equal(settings.imageApis.openai!.baseUrl, 'https://images.example/v1');
+  assert.equal(settings.imageApis.openai!.apiKey, 'image-secret');
   assert.equal(settings.codex.env!.LAYERING_IMAGE_COMPACT_THRESHOLD, '49');
   assert.ok(!JSON.stringify(settings.codex.config).includes('secret'));
   await assert.rejects(checkCodexCapabilities(settings), /需要补丁版 Codex/);
@@ -57,7 +60,7 @@ test('主模型与生图分别鉴权；只填生图模型不启用，未补丁�
 test('图片压缩拒绝旧去图补丁，生图能力缓存不能绕过 v2 检查', { skip: process.platform === 'win32' }, async t => {
   const root = await fixture(t);
   const executable = join(root, 'codex-fixture');
-  const capabilities = { version: 1, image_provider: true, image_compaction: true };
+  const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true };
   const install = async (value: object) => {
     await writeFile(executable, `#!${process.execPath}\nconsole.log(${JSON.stringify(JSON.stringify(value))});\n`);
     await chmod(executable, 0o755);
@@ -65,7 +68,7 @@ test('图片压缩拒绝旧去图补丁，生图能力缓存不能绕过 v2 检�
   await install(capabilities);
   const provider = loadWorkflowEnvironment({ layering_codex_path: executable,
     layering_image_base_url: 'https://images.example/v1', layering_image_api_key: 'fixture' }, root);
-  await checkCodexCapabilities(provider);
+  await checkCodexCapabilities(provider, provider.codex, { image: true });
   const compact = loadWorkflowEnvironment({ layering_codex_path: executable, layering_image_compact_threshold: '49' }, root);
   await assert.rejects(checkCodexCapabilities(compact), /补丁能力检查/);
   await install({ ...capabilities, image_compaction_version: 2 });

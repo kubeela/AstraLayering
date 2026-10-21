@@ -14,7 +14,10 @@ export async function prepareGenaiTools(body: any, tools: readonly FunctionTool[
   body.tools ||= [];
   const registered = new Set(body.tools.flatMap((t: any) => (t.functionDeclarations || t.function_declarations || []).map((f: any) => f.name)));
   const added = tools.filter(t => !registered.has(t.name));
-  if (added.length) body.tools.push({ functionDeclarations: added.map(({ name, description, inputSchema }) => ({ name, description, parameters: inputSchema })) });
+  // parameters is Gemini's restricted OpenAPI Schema, whose type is a scalar.
+  // Our file-backed JSON Schemas include unions such as ["string", "null"].
+  // The JSON Schema field preserves those definitions without weakening them.
+  if (added.length) body.tools.push({ functionDeclarations: added.map(({ name, description, inputSchema }) => ({ name, description, parametersJsonSchema: inputSchema })) });
   const root = await realpath(logsRoot);
   for (const content of body.contents || []) {
     const parts = [];

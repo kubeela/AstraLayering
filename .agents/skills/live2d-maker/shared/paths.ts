@@ -20,6 +20,7 @@ export type PipelineId = typeof pipelineIds[number];
 
 export function taskDirectory(name: string, root = runsDirectory): string {
   if (!name || name === '.' || name === '..' || /[\\/:]/.test(name)) throw new Error('--name 必须是单个目录名。');
+  if (name === '.runtime') throw new Error('--name 不能使用共享运行环境保留目录 .runtime。');
   const directory = resolve(resolveRunsDirectory(root), name);
   const skill = resolve(workflowsDirectory);
   if (directory === skill || directory.startsWith(skill + sep)) throw new Error('任务目录必须位于 live2d-maker skill 之外；请更换 --name 或 --dir。');

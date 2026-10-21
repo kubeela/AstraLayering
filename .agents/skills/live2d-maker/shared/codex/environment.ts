@@ -21,7 +21,6 @@ export type WorkflowEnvironment = {
   imageApis: Partial<Record<'openai' | 'google', ImageApi>>;
   cliPaths: Partial<Record<Harness, string>>;
   codex: CodexOptions;
-  imageProvider?: { model: string };
   imageCompactThreshold?: number;
 };
 
@@ -62,10 +61,10 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   if (imageUrl || imageKey) {
     if (!imageUrl || !imageKey) throw new Error('自定义生图需要同时填写 layering_image_base_url 和 layering_image_api_key。');
     validateApiUrl(imageUrl, 'layering_image_base_url');
-    effective.LAYERING_IMAGE_BASE_URL = imageUrl;
-    effective.LAYERING_IMAGE_API_KEY = imageKey;
-    effective.LAYERING_IMAGE_MODEL = imageModel;
   }
+  // The old image keys feed the same per-step API settings below. Only the
+  // request's native route may set extension variables in a Codex child.
+  for (const key of ['LAYERING_IMAGE_BASE_URL', 'LAYERING_IMAGE_API_KEY', 'LAYERING_IMAGE_MODEL', 'LAYERING_IMAGE_OUTPUT_DIR']) delete effective[key];
   const limit = get('layering_image_compact_threshold');
   const threshold = limit ? Number(limit) : undefined;
   if (threshold !== undefined && (!/^\d+$/.test(limit!) || !Number.isSafeInteger(threshold) || threshold < 1)) {
@@ -125,19 +124,19 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
       high: parseModel(get('layering_high_model'), defaultModels.high, 'layering_high_model'),
     },
     codex: { env: effective, config, ...(executable ? { codexPathOverride: path(executable) } : {}) },
-    ...(imageUrl ? { imageProvider: { model: imageModel } } : {}),
     ...(threshold === undefined ? {} : { imageCompactThreshold: threshold }),
   };
 }
 
 const checkedCapabilities = new Map<string, Promise<void>>();
-export async function checkCodexCapabilities(settings: WorkflowEnvironment, options = settings.codex): Promise<void> {
-  if (settings.imageCompactThreshold === undefined) return;
+export async function checkCodexCapabilities(settings: WorkflowEnvironment, options = settings.codex,
+  needs: { image?: boolean } = {}): Promise<void> {
+  if (settings.imageCompactThreshold === undefined && !needs.image) return;
   const executable = options.codexPathOverride;
   const instruction = '请先执行 pnpm build:codex，并在 live2d-maker/.env 设置 layering_codex_path 指向生成的补丁版 Codex。';
-  if (!executable) throw new Error(`按图片数 compact 需要补丁版 Codex。${instruction}`);
+  if (!executable) throw new Error(`${needs.image ? '自定义 Codex 原生生图' : '按图片数 compact'}需要补丁版 Codex。${instruction}`);
   const needsVisualCompaction = settings.imageCompactThreshold !== undefined;
-  const cacheKey = `${executable}\0${needsVisualCompaction ? 'visual-compaction-v2' : 'image-provider'}`;
+  const cacheKey = `${executable}\0${needs.image ? 'image-provider-v2' : ''}\0${needsVisualCompaction ? 'visual-compaction-v2' : ''}`;
   let check = checkedCapabilities.get(cacheKey);
   if (!check) {
     check = (async () => {
@@ -145,8 +144,9 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
         const { stdout } = await promisify(execFile)(executable, ['debug', 'layering-capabilities'],
           { env: options.env, timeout: 10_000, maxBuffer: 64 * 1024 });
         const value = JSON.parse(stdout);
-        if (value.version !== 1 || value.image_compaction !== true) throw new Error('unsupported');
-        if (needsVisualCompaction && value.image_compaction_version !== 2) {
+        if (value.version !== 1) throw new Error('unsupported');
+        if (needs.image && (value.image_provider !== true || value.image_provider_version !== 2)) throw new Error('native image provider v2 required');
+        if (needsVisualCompaction && (value.image_compaction !== true || value.image_compaction_version !== 2)) {
           throw new Error('visual compaction v2 required');
         }
       } catch { throw new Error(`配置的 Codex 未通过 Layering 补丁能力检查。${instruction}`); }

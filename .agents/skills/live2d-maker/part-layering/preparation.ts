@@ -1,5 +1,5 @@
-import { normalizeGeneratedReference, referenceNeedsGeneration } from '../shared/part/reference-normalization.ts';
-import { checkFfmpeg, reportFfmpeg, type FfmpegOptions } from '../shared/ffmpeg.ts';
+import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
+import type { ImageProcessingOptions } from '../shared/image-processing.ts';
 import { pipelineDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
 import { copyFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
@@ -119,8 +119,8 @@ async function copyAsPng(source: string, output: string): Promise<void> {
 }
 
 export async function prepareReferences(input: PreparationInput, steps: PreparationSteps,
-  progress?: (message: string) => void, options: FfmpegOptions = {}): Promise<PreparationReferences> {
-  const normalization = { ...options, krita: options.krita ?? (input.krita && resolveInput(input.runName, input.krita, input.dir)) };
+  progress?: (message: string) => void, options: ImageProcessingOptions = {}): Promise<PreparationReferences> {
+  const normalization = { ...options, runsRoot: input.dir ?? options.runsRoot, progress: progress ?? options.progress, krita: options.krita ?? (input.krita && resolveInput(input.runName, input.krita, input.dir)) };
   const refs = await references(input.runName, input.dir), paths = stagePaths(refs);
   let state = await readPreparationState(refs.directory);
   const standard = input.standard ?? state?.standard ?? false;
@@ -147,10 +147,6 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   }
   if (!refs.originalImage && !refs.standardImage && (standard || !current.judgment || !current.simplified || !current.base || state?.files.standard)) {
     throw new Error('首次启动或原图缺失时，需要 --image <角色图片路径>');
-  }
-  if (await referenceNeedsGeneration('part-layering', input.runName, input.dir)) {
-    const ffmpeg = await checkFfmpeg(normalization);
-    progress?.(reportFfmpeg(ffmpeg));
   }
   await mkdir(refs.directory, { recursive: true });
   const recordPath = join(refs.directory, 'preparation.json');

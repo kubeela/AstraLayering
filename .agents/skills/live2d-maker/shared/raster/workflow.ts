@@ -172,6 +172,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort, environment, step: key,
+        imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         imageRoots: [dirname(directory), ...inputDirectories],
         recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? (await pipeline.buildPrompt(step, reference, output, krita, previous))
           + '\n\n已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。\n' + prompt : undefined,

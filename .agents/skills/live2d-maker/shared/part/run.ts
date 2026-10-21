@@ -15,12 +15,12 @@ import { toolCatalog } from '../codex/tool-config.ts';
 import { pipelineAgentSteps, preflightAgentSteps } from '../agents/preflight.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { validateWorkflowOptions } from './workflow.ts';
-import type { FfmpegOptions } from '../ffmpeg.ts';
+import type { ImageProcessingOptions } from '../image-processing.ts';
 export type PartPipeline = {
   profile: PartProfile; imageHelp: string; preparationHelp: string;
   getPreparationDirectory(name: string, root?: string): string;
   loadPreparedReferences(name: string, root?: string, standard?: boolean): Promise<PreparationReferences>;
-  prepare(input: PreparationInput, agents: Pick<CodexAgents, 'run'>, progress?: (message: string) => void, normalization?: FfmpegOptions): Promise<PreparationReferences>;
+  prepare(input: PreparationInput, agents: Pick<CodexAgents, 'run'>, progress?: (message: string) => void, normalization?: ImageProcessingOptions): Promise<PreparationReferences>;
 };
 export type PartInput = { reference: PreparationInput; groups: GroupInput | GroupInput[] | null; maxDepth?: number };
 export type PartAdapters = { steps?: LayeringSteps; mergeSvg?: SvgMerger };
@@ -39,19 +39,20 @@ export async function runPartPipeline(
   const directory = pipeline.getPreparationDirectory(input.reference.runName, input.reference.dir);
   toolCatalog(pipeline.profile.toolsDirectory);
   const environment = agentOptions.environment ?? loadWorkflowEnvironment(agentOptions.env);
+  const normalization = { ...agentOptions.imageNormalization, runsRoot: input.reference.dir ?? agentOptions.imageNormalization?.runsRoot, progress: agentOptions.progress, env: agentOptions.imageNormalization?.env ?? environment.codex.env,
+    krita: input.reference.krita ? resolveInput(input.reference.runName, input.reference.krita, input.reference.dir) : agentOptions.imageNormalization?.krita };
   if (!adapters.steps) {
     let standard = input.reference.standard;
     if (standard === undefined && pipeline.profile.id === 'part-layering') try {
       standard = JSON.parse(await readFile(join(directory, 'preparation.json'), 'utf8')).standard;
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-    await preflightAgentSteps(environment, pipelineAgentSteps(pipeline.profile.id, standard));
+    await preflightAgentSteps(environment, pipelineAgentSteps(pipeline.profile.id, standard), normalization);
   }
   const agents = new CodexAgents({
-    ...agentOptions, environment, cwd: dirname(directory), toolsDirectory: pipeline.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
+    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), toolsDirectory: pipeline.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
   });
   const references = input.groups === null
-    ? await pipeline.prepare(input.reference, agents, agentOptions.progress, { env: environment.codex.env,
-      krita: input.reference.krita && resolveInput(input.reference.runName, input.reference.krita, input.reference.dir) })
+    ? await pipeline.prepare(input.reference, agents, agentOptions.progress, normalization)
     : await pipeline.loadPreparedReferences(input.reference.runName, input.reference.dir, input.reference.standard);
   const layering = await runLayering({
     profile: pipeline.profile, directory: dirname(directory), references, groups: input.groups,
@@ -126,7 +127,7 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
     if (values.help) {
       console.log(`pnpm ${pipeline.profile.id} --name <运行名> ${pipeline.profile.id === 'part-layering' ? `[--image <${pipeline.imageHelp}>] [--standard | --no-standard] ` : ''} [--dir <运行根目录绝对路径>] [--krita <可执行文件>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
       console.log(pipeline.preparationHelp);
-      console.log('新参考生成前检查已有 FFmpeg；PATH 不可用时可复用 --krita 指定安装中的版本，不自动下载或搜索系统目录。');
+      console.log('Nano 透明后处理需要 --krita；Python 模块首次实际使用时自动安装到运行根目录 .runtime 并复用。');
       console.log('各小步骤的模型、CLI 与生图配置见 skill 根目录 example.env。默认任务目录在外部 .run/<name>/；--dir 指定运行根目录，输入相对路径以该根目录下的 <name>/ 为基准。');
       console.log('--groups 选择已有组及其子组；祖先须完成，可查看同层有效底稿复核去重，仅实际变化的部件及真实引用者扩入后续制作。省略时按层自动准备或续跑。');
       console.log(`--jobs / -j 设置所有步骤共享的 agent 调用并发上限，默认 ${defaultAgentConcurrency}；组任务不另设数量限制，按树的层级依赖进入队列。`);

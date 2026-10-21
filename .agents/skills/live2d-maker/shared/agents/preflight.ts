@@ -1,8 +1,12 @@
-import type { WorkflowEnvironment } from '../codex/environment.ts';
+import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
 import type { PipelineId } from '../paths.ts';
-import { stepDefaults, type AgentStep } from './models.ts';
+import { imageModelProviders, stepDefaults, type AgentStep } from './models.ts';
+import { requireMattingKrita } from '../matting/runtime.ts';
+import { checkKrita } from '../raster/krita.ts';
 import { cliExecutable } from './cli.ts';
 import { validateImageSelection } from './images.ts';
+import { usesPatchedImageTool } from './codex-images.ts';
+import type { ImageProcessingOptions } from '../image-processing.ts';
 
 export function pipelineAgentSteps(pipeline: PipelineId, standard = false): AgentStep[] {
   return (Object.keys(stepDefaults) as AgentStep[]).filter(step => {
@@ -13,10 +17,14 @@ export function pipelineAgentSteps(pipeline: PipelineId, standard = false): Agen
     return step === 'assembly';
   });
 }
-export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: readonly AgentStep[]): Promise<void> {
+export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: readonly AgentStep[], normalization: ImageProcessingOptions = {}): Promise<void> {
   for (const step of steps) {
     validateImageSelection(settings, step);
     const harness = settings.stepModels[step].harness;
     if (harness !== 'codex') await cliExecutable(settings, harness);
+    else await checkCodexCapabilities(settings, settings.codex, { image: usesPatchedImageTool(settings, step) });
+  }
+  if (steps.some(step => settings.stepImages[step] && imageModelProviders[settings.stepImages[step]!] === 'google')) {
+    await checkKrita(requireMattingKrita(normalization), undefined, normalization.env ?? settings.codex.env);
   }
 }

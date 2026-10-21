@@ -19,7 +19,7 @@ async function run(command: string, args: string[], cwd = root, capture = false)
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { cwd, stdio: capture ? ['ignore', 'pipe', 'inherit'] : 'inherit' });
     let text = ''; child.stdout?.on('data', bytes => { text += bytes; });
-    child.on('error', reject);
+    child.on('error', error => reject(new Error(`${command} 无法启动；请确认构建依赖已安装并在当前 PATH 中可用。`, { cause: error })));
     child.on('exit', code => code === 0 ? resolve(text.trim()) : reject(new Error(`${command} 退出码 ${code}`)));
   });
 }

@@ -59,7 +59,7 @@ test('多色不透明边缘没有可靠抠图色时不猜测背景', async t => 
   assert.equal(result.key, null); assert.deepEqual(await readFile(f.output), await readFile(f.input));
 });
 
-test('FFmpeg 去溢色保留细边且抑制绿色污染', async t => {
+test('Node 去溢色保留细边且抑制绿色污染', async t => {
   const f = await fixture(t), w = 64, data = Buffer.alloc(w * w * 4);
   const bg = [10, 250, 5], fg = [110, 75, 60];
   for (let y = 0; y < w; y++) for (let x = 0; x < w; x++) {
@@ -73,6 +73,6 @@ test('FFmpeg 去溢色保留细边且抑制绿色污染', async t => {
   const result = await sharp(f.output).raw().toBuffer(), i = (32 * w + 19) * 4;
   assert.ok(report.decontaminated > 0);
   assert.ok(result[i + 3] > 0);
-  assert.match(report.filter!, /chromakey=.*despill=type=green:mix=0.2:alpha=0/);
+  assert.equal(report.method, 'node-chroma-despill');
   assert.ok(result[i + 1] - Math.max(result[i], result[i + 2]) < 10);
 });

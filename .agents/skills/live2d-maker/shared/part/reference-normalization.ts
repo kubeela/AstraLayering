@@ -1,13 +1,10 @@
 import sharp from 'sharp';
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
-import { tmpdir } from 'node:os';
-const execute = promisify(execFile);
-import { copyFile, mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { checkFfmpeg, type FfmpegOptions } from '../ffmpeg.ts';
+import type { ImageProcessingOptions } from '../image-processing.ts';
+import { keyReferencePixels } from './reference-key.ts';
 import { pipelineDirectory, type PipelineId } from '../paths.ts';
 
 // This only decides whether preparation may generate a new reference. Its own
@@ -28,7 +25,7 @@ export async function referenceNeedsGeneration(pipeline: PipelineId, name: strin
 }
 
 // Archives are write-only history, never preparation inputs or recovery checkpoints.
-export async function normalizeGeneratedReference(input: string, standard: string, references: string, name: string, options: FfmpegOptions = {}): Promise<void> {
+export async function normalizeGeneratedReference(input: string, standard: string, references: string, name: string, options: ImageProcessingOptions = {}): Promise<void> {
   const archive = join(references, 'archive', `${name}-${Date.now()}-${randomUUID()}`);
   await mkdir(archive, { recursive: true });
   await copyFile(input, join(archive, 'original.png'));
@@ -37,20 +34,19 @@ export async function normalizeGeneratedReference(input: string, standard: strin
 }
 
 export type NormalizationReport = {
-  version: 1; source: [number, number]; target: [number, number]; scale: number;
+  version: 2; source: [number, number]; target: [number, number]; scale: number;
   offset: [number, number]; key: number[] | null; borderSupport: number;
   transparentBorder: number; keySkipped: boolean; resized: boolean;
-  filter: string | null; removed: number; decontaminated: number;
-  ffmpeg: string | null;
+  method: 'node-chroma-despill' | 'node-rgb-key' | null; removed: number; decontaminated: number;
 };
 
 // Detect the perimeter's modal colour in small bins, then refine it from nearby samples.
 // Fully transparent pixels carry arbitrary RGB and must not vote for a key colour.
-export async function normalizeReference(input: string, standard: string, output: string, options: FfmpegOptions = {}): Promise<NormalizationReport> {
+export async function normalizeReference(input: string, standard: string, output: string, options: ImageProcessingOptions = {}): Promise<NormalizationReport> {
   const bytes = await readFile(input);
   const target = (await sharp(standard).metadata()).autoOrient;
   const { data, info } = await sharp(bytes).rotate().toColourspace('srgb').ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  const { width: w, height: h } = info, n = w * h;
+  const { width: w, height: h } = info;
   const samples: number[] = [], bins = new Map<number, number[]>();
   const border = (x: number, y: number) => {
     const i = (y * w + x) * 4;
@@ -69,43 +65,8 @@ export async function normalizeReference(input: string, standard: string, output
   const support = cluster.length / samples.length;
   // A photograph or multicoloured border has no reliable single key. Preserve it.
   const transparentBorder = samples.filter(i => data[i + 3] <= 8).length / samples.length;
-  const key = transparentBorder < 0.8 && support >= 0.6 ? mean(cluster) : null;
-  let removed = 0, decontaminated = 0;
-  let filter: string | null = null;
-  let ffmpeg: string | null = null;
-  if (key) {
-    ffmpeg = (await checkFfmpeg(options)).executable;
-    const color = '0x' + key.map(c => Math.round(c).toString(16).padStart(2, '0')).join('');
-    const green = key[1] - Math.max(key[0], key[2]) > 40;
-    const blue = key[2] - Math.max(key[0], key[1]) > 40;
-    // Chroma key plus conservative despill is the validated green/blue-screen path.
-    // RGB keying also distinguishes neutral backgrounds, where chroma alone cannot.
-    filter = green || blue
-      ? 'format=yuva444p,chromakey=' + color + ':0.08:0.12,format=rgba,despill=type=' + (green ? 'green' : 'blue') + ':mix=0.2:alpha=0'
-      : 'format=rgba,colorkey=' + color + ':0.12:0.15';
-    const directory = await mkdtemp(join(tmpdir(), 'reference-key-'));
-    try {
-      const source = join(directory, 'source.png'), keyed = join(directory, 'keyed.png');
-      await sharp(data, { raw: { width: w, height: h, channels: 4 } }).png().toFile(source);
-      try {
-        await execute(ffmpeg, ['-v', 'error', '-nostdin', '-y', '-i', source,
-          '-vf', filter, '-frames:v', '1', keyed], { env: options.env ?? process.env, windowsHide: true, timeout: 120000, maxBuffer: 1024 * 1024 });
-      } catch (error) {
-        throw new Error(`参考图抠图失败：${ffmpeg}。请检查该 FFmpeg 的运行环境、PNG 编解码及 chromakey/colorkey/despill 滤镜。`, { cause: error });
-      }
-      const result = await sharp(keyed).ensureAlpha().raw().toBuffer();
-      if (result.length !== data.length) throw new Error('FFmpeg 输出尺寸不匹配');
-      for (let p = 0; p < n; p++) {
-        const i = p * 4, originalAlpha = data[i + 3];
-        if (originalAlpha && !result[i + 3]) removed++;
-        if (result[i + 3] && [0, 1, 2].some(c => result[i + c] !== data[i + c])) decontaminated++;
-        result[i + 3] = Math.round(result[i + 3] * originalAlpha / 255);
-      }
-      result.copy(data);
-    } finally {
-      await rm(directory, { recursive: true, force: true });
-    }
-  }
+  const key = (await sharp(bytes).stats()).isOpaque && transparentBorder < 0.8 && support >= 0.6 ? mean(cluster) : null;
+  const keyed = key ? keyReferencePixels(data, w, h, key) : { method: null, removed: 0, decontaminated: 0 };
   if (!data.some((value, i) => i % 4 === 3 && value > 0)) throw new Error('背景抠图后没有可见前景；请检查生成图片。');
   const scale = Math.min(target.width / w, target.height / h);
   const rw = Math.max(1, Math.round(w * scale)), rh = Math.max(1, Math.round(h * scale));
@@ -119,6 +80,6 @@ export async function normalizeReference(input: string, standard: string, output
         background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
     await writeFile(output, result);
   }
-  return { version: 1, source: [w, h], target: [target.width, target.height], scale, offset: [left, top],
-    key, borderSupport: support, transparentBorder, keySkipped: !key, resized: w !== target.width || h !== target.height, filter, ffmpeg, removed, decontaminated };
+  return { version: 2, source: [w, h], target: [target.width, target.height], scale, offset: [left, top],
+    key, borderSupport: support, transparentBorder, keySkipped: !key, resized: w !== target.width || h !== target.height, ...keyed };
 }

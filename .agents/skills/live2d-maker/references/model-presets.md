@@ -22,7 +22,7 @@
 
 简化图、素体图和两套 part 的轮廓绘制／返修使用 `gemini-nano-banana-2.1`。后四项原有生图工具也需要自定义服务，才能与 Argon 配对；不修改这些步骤的 SVG 交付要求。标准化、纯衣服 preparation、raster 与组装的生图继续使用 Codex 内置服务。
 
-启动前检查已有 Antigravity CLI 及 Argon 登录／授权，Codex 的登录与内置生图，以及 Google 生图服务。确认实际服务的 API URL、key 和协议后填写 `layering_google_image_base_url`、`layering_google_image_api_key`、`layering_google_image_protocol`；协议支持原生 `gemini` 或网关的 `openai`。复用已有凭据；缺失时请用户本地补充，或询问是否改用默认方案，不自行安装 CLI。两套方案都不自动启用图片数 compact。
+启动前检查已有 Antigravity CLI 及 Argon 登录／授权，Codex 的登录与内置生图，以及 Google 生图服务。确认实际服务的 API URL、key 和协议后填写 `layering_google_image_base_url`、`layering_google_image_api_key`、`layering_google_image_protocol`；协议支持原生 `gemini` 或网关的 `openai`。Codex low 的简化／素体生图使用补丁版原生 imagegen，需要构建补丁并配置 `layering_codex_path`；Argon 的生图仍使用共享函数工具。复用已有凭据；缺失时请用户本地补充，或询问是否改用默认方案，不自行安装 CLI。两套方案都不自动启用图片数 compact。
 
 ## 自定义
 

@@ -11,8 +11,10 @@ import type { FunctionTool } from './function-tools.ts';
 import { parseAgentModel, type AgentStep, type AgentModel } from '../agents/models.ts';
 import { runCliTask, unavailableSession } from '../agents/cli.ts';
 import { imageGenerationTool, validateImageSelection } from '../agents/images.ts';
+import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-images.ts';
 import { randomUUID } from 'node:crypto';
 import type { ThreadEvent } from '@openai/codex-sdk';
+import type { ImageProcessingOptions } from '../image-processing.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -40,6 +42,7 @@ export type AgentSession = {
   close(): Promise<void>;
 };
 export type AgentOptions = CodexOptions & {
+  imageNormalization?: ImageProcessingOptions;
   resumeHarness?: AgentModel['harness'];
   onSessionStarted?: (id: string, harness: AgentModel['harness']) => Promise<void>;
   selectedModel?: AgentModel;
@@ -81,7 +84,12 @@ export class CodexAgents {
       if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, 'codex');
       await this.options.onEvent?.(event);
     } };
-    let session = createFunctionToolSession(sessionOptions, resumeThreadId);
+    let session: AgentSession | undefined;
+    let route: Awaited<ReturnType<typeof createCodexImageRoute>> | undefined;
+    let imageModel: string | undefined;
+    let id = resumeThreadId;
+    const functionOptions = () => ({ ...sessionOptions,
+      env: { ...sessionOptions.env, ...route?.env } });
     const closing = new AbortController();
     let closed = false, busy = false;
     return {
@@ -95,20 +103,32 @@ export class CodexAgents {
         let interrupted = false;
         const savedImages = new Set<string>();
         try {
+          const nextImage = usesPatchedImageTool(this.options.environment!, task.step)
+            ? this.options.environment!.stepImages[task.step!] : undefined;
+          if (nextImage !== imageModel) {
+            await session?.close(); session = undefined;
+            await route?.close(); route = undefined;
+            if (nextImage) route = await createCodexImageRoute(this.options.environment!, task.step!,
+              join(this.options.logDirectory || join(task.cwd || this.options.cwd!, 'agents'), 'generated'), this.options, closing.signal, this.options.imageNormalization);
+            imageModel = nextImage;
+          }
+          session ||= createFunctionToolSession(functionOptions(), id);
           return await this.invoke(task, signal, async () => {
             try {
-              const result = await session.run(interrupted ? { ...task,
+              const result = await session!.run(interrupted ? { ...task,
                 prompt: continuationPrompt([...savedImages]), images: undefined } : task, signal);
+              id = result.threadId || id;
               for (const image of result.images) savedImages.add(image.savedPath);
               return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
             } catch (error) {
               if (retryableAgentError(error) && !signal.aborted) {
                 const failure = error as AgentCallError;
+                id = failure.threadId || id;
                 for (const path of failure.savedImagePaths) savedImages.add(path);
                 interrupted = !!failure.threadId;
                 if (failure.sessionBroken) {
-                  await session.close();
-                  session = createFunctionToolSession(sessionOptions, failure.threadId);
+                  await session!.close();
+                  session = createFunctionToolSession(functionOptions(), failure.threadId);
                 }
               }
               throw error;
@@ -119,7 +139,7 @@ export class CodexAgents {
       close: async () => {
         closed = true;
         closing.abort(new Error('会话已结束'));
-        await session.close();
+        try { await session?.close(); } finally { await route?.close(); }
       },
     };
   }
@@ -146,9 +166,9 @@ export class CodexAgents {
           if (selection && JSON.stringify(selection) !== JSON.stringify(selected)) { await inner?.close(); inner = undefined; }
           selection = selected;
           const generated: GeneratedImage[] = [];
-          const image = original.step ? imageGenerationTool(settings, original.step,
+          const image = original.step && selected.harness !== 'codex' ? imageGenerationTool(settings, original.step,
             join(this.options.logDirectory || join(original.cwd || this.options.cwd!, 'agents'), 'generated', randomUUID()),
-            [original.cwd || this.options.cwd!, ...(original.imageRoots || []), ...(original.images || []).map(i => i.path)]) : undefined;
+            [original.cwd || this.options.cwd!, ...(original.imageRoots || []), ...(original.images || []).map(i => i.path)], this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
             image.execute = async (args, signal) => {
@@ -159,7 +179,8 @@ export class CodexAgents {
               return result;
             };
           }
-          let task = image ? { ...original, imageGeneration: false, tools: [...original.tools || [], image] } : original;
+          let task = image ? { ...original, imageGeneration: false, tools: [...original.tools || [], image] }
+            : usesPatchedImageTool(settings, original.step) ? { ...original, imageGeneration: true } : original;
           if (!id && original.recoveryPrompt) task = { ...task, prompt: original.recoveryPrompt };
           const signal = taskSignal(task, [closing.signal, ...(externalSignal ? [externalSignal] : [])]);
           let replaced = false;

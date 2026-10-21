@@ -15,25 +15,33 @@ pnpm install --frozen-lockfile
 
 每次启动总入口或独立管线前，按本次执行范围检查依赖；启动总入口时提前检查整条所选路线的软件和工具依赖，不要等人物 part 跑完才发现后续缺少 Krita。已满足的依赖直接复用。上游产物在对应管线开始前校验，本次路线中将要生成的 KRA、part 等不要求在首次启动时已存在。
 
+首次使用某个 CLI／provider／模型方案，或修改了工具 schema、协议适配、CLI 版本时，按[启动验证条件](validation.md)完成对应检查。只返回一次 `OK` 的连通请求不能证明真实工具可用；必须携带实际工具定义，并验证工具调用与会话恢复。复用仍适用的验证记录，未测项明确写出。
+
 | 本次执行范围 | 前置依赖 |
 | --- | --- |
 | 所有管线 | 上述 Node.js / pnpm 依赖与所选模型对应的可用 CLI、登录／provider 环境 |
-| 人物／衣服 part | 所需上游输入；新参考准备需要所选生图能力和可调用的 FFmpeg。已有参考续跑不重处理；只做分组、SVG 绘制与 review 不需要额外图像程序 |
+| 人物／衣服 part | 所需上游输入；新参考准备需要所选生图能力。已有参考续跑不重处理；只做分组、SVG 绘制与 review 不需要额外图像程序 |
 | 人物／衣服 raster | 对应 part 产物、Krita 和可操作的显示环境；涉及生图的步骤还需所选生图能力 |
 | 穿戴组装 | 两份 KRA、简化穿衣参考、Krita 和可操作的显示环境；不以生图为前置 |
+
+上述任一范围若配置 Nano 生图工具，需要 `--krita` 指定带 Python 插件的可执行入口和可用的显示环境。Python 模块在首次实际需要透明后处理时由工作流自动安装；仅选择模型或启动通道不会安装。GPT 返回的原生透明 PNG 不启用此环境。
 
 具体配置：
 
 - 按 LLM 职责配置检查对应 CLI 与登录／provider，人物和衣服共用模型选择：Codex 默认继承当前 `CODEX_HOME` 或 `~/.codex`；Claude Code、Antigravity 使用显式配置的入口或全局 CLI，并复用已有登录。pnpm 不安装后两者。缺少 CLI 或登录凭据时，展示具体报错并询问用户是安装／登录还是改用已有模型，不自行安装。
-- 生图步骤选择 `codex-native` 时，绘制模型必须属于 Codex，并具备外部提供的原生 `image_generation`。选择自定义 OpenAI 或 Google 生图时，检查对应 API URL、key 和协议；通过本步骤的 `image_generation` 函数工具调用。纯 KRA 组装不以生图为前置。
+- 生图步骤选择 `codex-native` 时，绘制模型必须属于 Codex，并具备外部提供的原生 `image_generation`。选择自定义 OpenAI 或 Google 生图时，检查对应 API URL、key 和协议；Codex 需要通过补丁能力检查并使用原生 imagegen，Claude／AGV 注册本步骤的共享 `image_generation` 工具。纯 KRA 组装不以生图为前置。
 - Python 优先复用宿主已有解释器；没有独立解释器时，验证 Krita 内置 Python 插件／脚本环境，保证至少一种实际可用。CLI 本身不保证提供 Python；Krita 内置 Python 也不保证有独立 `python3` 或 `pip` 命令。固定调度、SVG、PNG 读写和缩放已由 Node／Sharp 承担，不统一安装 Pillow、NumPy、PyQt5 等包。辅助脚本确实需要某个包时，只检查该脚本使用的解释器与模块。
 - skill 根目录 `.env` 不存在时，先按[推荐模型方案](model-presets.md)让用户确认，再以 [example.env](../example.env) 为基础填写；已有 `.env` 直接复用，不因启动或升级覆盖。按最终配置检查依赖。shell 同名变量优先，密钥不写入报告或提交。
 
 **在实际任务环境里验证。** 后台 CLI 和网页发起的任务应复用同一环境，不能只检查交互终端。Claude Code／Antigravity 的每次请求有受控的配置与临时目录，使用隔离 HOME；宿主 `pip --user` 装的包可能不可见。已有虚拟环境或解释器可直接复用，不把凭据隔离改成共享用户 HOME。Krita 的 Python 插件在 Krita 进程内检查，不能用系统 Python 的 `import krita` 作为验收；Krita 自带的 PyQt5 也无需再为系统 Python 安装一份。
 
-**FFmpeg 只要求能用。** 新参考生成前，脚本在本次工作流加载的环境中执行 `ffmpeg -hide_banner -filters`，确认程序能启动且含 `format`、`chromakey`、`colorkey`、`despill`。已有入口通过就直接复用；失败时只检查 `--krita` 指定安装内的固定相对位置（原生程序旁，macOS 应用包内的 bin 位置），不扫描系统目录，不下载或解包。两者都不可用时，在模型制作前明确报错。独立 part 入口也接受 `--krita`，总入口会传递已记录的路径；FFmpeg 不增加独立 `.env` 配置项。包装脚本或未解包 AppImage 的附带程序由启动 agent 准备为可调用的已有入口，或使用安装内实际 Krita 程序路径。
+**Nano 透明后处理自动准备。** Nano 使用程序根据参考图推荐的红、绿或蓝纯色背景，再由 ViTMatte 提取透明度、恢复前景颜色。模型权重随 skill 提供，缩放与对齐仍由 Node／Sharp 完成。GPT 的原生 alpha 直接保留。制作管线不依赖 FFmpeg。
 
-Krita 5.2 起官方安装包附带部分 FFmpeg 能力，但仍以程序与必要滤镜检查结果为准。已合格透明 PNG 的后处理不会调用 FFmpeg，已有正式参考也不因续跑重新抠图。前置检查确认新参考可能需要后处理；归档报告记录实际使用的 FFmpeg 和滤镜。
+第一次收到需要透明化的不透明 Nano 结果时，工作流启动独立、隔离的 Krita Python 插件，自动安装固定版本的 CPU PyTorch、Transformers、PyMatting 等包，并完成一次实际推理检查。它使用 Krita 内嵌 Python，不要求系统 Python、pip 或系统 PyTorch。当前预编译依赖支持 Python 3.10～3.13；实际平台缺少匹配 wheel 时明确报错，不切换到系统解释器。首次安装需要联网访问 PyPI 和 PyTorch CPU wheel 仓库；成功后可离线复用。
+
+包、缓存、安装日志与成功记录位于 **`<--dir>/.runtime/matting/`**，和 `<name>` 同级；所有同根目录任务共用。不传 `--dir` 时使用工作流默认运行根目录：仓库安装为 `<仓库>/.run/.runtime/`，独立安装为 `<skill上一级>/.run/.runtime/`。按 Krita／Python 环境和依赖版本分开保存；并发任务等待同一次安装，检查通过才发布成功记录。失败或取消保留日志、清理未完成包，后续调用可重新尝试。原始生图和 alpha／trimap／处理报告仍留在各任务自己的产物目录。
+
+运行时使用私有 HOME、XDG、临时目录和 Krita 插件，不修改用户 HOME、Krita 安装目录或用户插件配置。显式 Krita 包装入口必须保留工作流传入的隔离环境；缺少插件、无法启动或覆盖隔离配置会给出错误及日志路径。只保留下面的 Krita 安装确认，不提供初始化／安装脚本，也不要求 agent 手工安装这些包。
 
 需要 Krita 时，先检查已记录的路径、用户给出的路径或当前系统的已有安装。若已安装且操作环境可用，直接复用；不要重复安装。缺少 Krita 或必要操作组件时，由你准备安装方案并执行，不能只报缺失后让用户自行处理。
 
@@ -52,9 +60,9 @@ Krita 的路径检查和实际启动使用工作流加载的同一环境，包�
 
 - 工作台浏览进度、图片和分组树不要求额外 Python 包。启用网页原生图层合成器时，当前实现需要带 Python 插件的 Krita 和 Xvfb（即使宿主有桌面，也会启动独立显示）；部署说明见[工作台启动与连接](workbench.md)，详细环境项见工作台 checkout 的 `web/README.md`。
 - Linux headless 绘图需要所选显示方案，例如 Xvfb；桌面 computer use 使用宿主已有能力，不统一要求 xdotool 或 Playwright。
-- Git 用于仓库安装、工作台配置历史浏览与补丁构建。自行构建 Codex 图片压缩补丁才需要 Rust 1.95.0 和平台编译工具；复用现成二进制不需要构建链。
+- Git 用于仓库安装、工作台配置历史浏览与补丁构建。自行构建 Codex 自定义生图／图片压缩补丁才需要 Rust 1.95.0 和平台编译工具；复用现成二进制不需要构建链。
 - 普通网页使用现代浏览器。Playwright／Chromium 仅用于浏览器自动验证，不是运行制作管线的必装项。
 - `archive/`、`analysis/`、`demos/`、`rigging/` 和资料重建脚本的 Pillow、NumPy、SciPy、OpenCV、lxml、PyYAML 等依赖只在实际执行相应脚本时成立，不纳入 skill 默认安装。读取已生成的头发参考图不需要重建图片的 Python 包。
 
-默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。只有 Codex 的按图片数 compact 需要显式构建可选补丁；自定义生图函数工具不需要补丁，正常启动不会下载或构建。
+默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用显式构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。正常启动不会下载或构建 Codex；Nano Python 包仅在首次实际透明后处理时自动准备。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。
