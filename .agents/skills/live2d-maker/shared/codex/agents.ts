@@ -14,7 +14,7 @@ import { imageGenerationTool, validateImageSelection } from '../agents/images.ts
 import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-images.ts';
 import { randomUUID } from 'node:crypto';
 import type { ThreadEvent } from '@openai/codex-sdk';
-import type { FfmpegOptions } from '../ffmpeg.ts';
+import type { ImageProcessingOptions } from '../image-processing.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -42,7 +42,7 @@ export type AgentSession = {
   close(): Promise<void>;
 };
 export type AgentOptions = CodexOptions & {
-  imageNormalization?: FfmpegOptions;
+  imageNormalization?: ImageProcessingOptions;
   resumeHarness?: AgentModel['harness'];
   onSessionStarted?: (id: string, harness: AgentModel['harness']) => Promise<void>;
   selectedModel?: AgentModel;

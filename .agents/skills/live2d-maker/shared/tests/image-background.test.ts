@@ -8,7 +8,8 @@ import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 import { imageGenerationTool } from '../agents/images.ts';
 import { createCodexImageRoute } from '../agents/codex-images.ts';
-import { providerImageArguments } from '../agents/image-background.ts';
+import { transparentGeneratedImage, providerImageArguments } from '../agents/image-background.ts';
+import { normalizeReference } from '../part/reference-normalization.ts';
 import { recommendBackground } from '../agents/background-selection.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 
@@ -83,6 +84,7 @@ test('both tool routes key model-selected RGB backgrounds over Gemini and OpenAI
   });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => { server.closeAllConnections(); return new Promise<void>(done => server.close(() => done())); });
+  const processing = { krita: executable, matte: async (input: string, output: string) => { const r = await normalizeReference(input, input, output); return { ...r }; } };
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
   for (protocol of ['gemini', 'openai']) for (const color of [[11, 246, 12], [4, 9, 254], [249, 5, 9]]) {
     png = await solidImage(color);
@@ -95,7 +97,7 @@ test('both tool routes key model-selected RGB backgrounds over Gemini and OpenAI
       let output: Buffer;
       const prompt = '保留主体和正常开口，输出透明 PNG。';
       if (native) {
-        const route = await createCodexImageRoute(settings, 'part_simplify', directory);
+        const route = await createCodexImageRoute(settings, 'part_simplify', directory, settings.codex, undefined, processing);
         try {
           const form = new FormData(); form.set('model', 'gemini-nano-banana-2.1'); form.set('prompt', prompt); form.set('background', 'transparent');
           form.append('image', new Blob([new Uint8Array(input)], { type: 'image/png' }), 'reference.png');
@@ -107,7 +109,7 @@ test('both tool routes key model-selected RGB backgrounds over Gemini and OpenAI
           output = Buffer.from(value.data[0].b64_json, 'base64');
         } finally { await route.close(); }
       } else {
-        const tool = imageGenerationTool(settings, 'part_simplify', directory, [root])!;
+        const tool = imageGenerationTool(settings, 'part_simplify', directory, [root], processing)!;
         const result = await tool.execute({ prompt, input_images: edit ? [reference] : [], background: 'transparent' }, new AbortController().signal);
         const value = JSON.parse((result.contentItems[0] as { text: string }).text);
         assert.equal(value.hasAlpha, true); output = await readFile(value.savedPath);
@@ -168,14 +170,14 @@ test('Nano fails explicitly with retained raw generation when no reliable solid 
   const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: 'gemini-nano-banana-2.1', PATH: process.env.PATH,
     layering_google_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}`,
     layering_google_image_api_key: 'fixture', layering_google_image_protocol: 'openai' }, root);
-  const tool = imageGenerationTool(settings, 'part_simplify', root, [root])!;
+  const tool = imageGenerationTool(settings, 'part_simplify', root, [root], { krita: join(root,'krita'), matte: async () => { throw new Error('生成图片没有可靠纯色背景'); } })!;
   await assert.rejects(tool.execute({ prompt: '主体透明 PNG', input_images: [] }, new AbortController().signal), /Nano 透明背景处理失败.*原始生图保留在/);
   const [id] = await readdir(join(root, 'image-processing'));
   assert.deepEqual(await sharp(join(root, 'image-processing', id, 'original.png')).raw().toBuffer(), await sharp(png).raw().toBuffer());
   assert.ok((await readFile(join(root, 'image-processing', id, 'error.json'), 'utf8')).includes('主体透明 PNG'));
 });
 
-test('missing FFmpeg is reported before image API calls or native route startup', async t => {
+test('missing explicit Krita is reported before image API calls or native route startup', async t => {
   const { root, executable } = await fixture(t);
   let calls = 0;
   const server = createServer((_req, res) => { calls++; res.writeHead(500).end(); });
@@ -185,7 +187,21 @@ test('missing FFmpeg is reported before image API calls or native route startup'
     layering_part_simplify_image_model: 'gemini-nano-banana-2.1', layering_google_image_protocol: 'openai',
     layering_google_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}`, layering_google_image_api_key: 'fixture' }, root);
   const tool = imageGenerationTool(settings, 'part_simplify', root, [root])!;
-  await assert.rejects(tool.execute({ prompt: '透明 PNG', input_images: [] }, new AbortController().signal), /FFmpeg 检查失败/);
-  await assert.rejects(createCodexImageRoute(settings, 'part_simplify', root), /FFmpeg 检查失败/);
+  await assert.rejects(tool.execute({ prompt: '透明 PNG', input_images: [] }, new AbortController().signal), /Nano 透明后处理需要 Krita/);
+  await assert.rejects(createCodexImageRoute(settings, 'part_simplify', root), /Nano 透明后处理需要 Krita/);
   assert.equal(calls, 0);
+});
+
+test('原生半透明 alpha 原字节保留，不触发 Krita、安装或缩放', async t => {
+  const { root } = await fixture(t);
+  const png = await sharp({ create: { width: 32, height: 24, channels: 4, background: '#ee88aa80' } }).png().toBuffer();
+  const args = { prompt: '透明部件 PNG', background: 'transparent' as const };
+  let called = false;
+  const output = await transparentGeneratedImage(png, 'gemini-nano-banana-2.1', args, args,
+    { directory: root, runsRoot: root, matte: async () => { called = true; throw new Error('不应该初始化'); } },
+    new AbortController().signal, await recommendBackground([]));
+  assert.equal(called, false); assert.deepEqual(output, png);
+  assert.ok(!(await readdir(root)).includes('.runtime'));
+  const record = JSON.parse(await readFile(join(root, 'normalization.json'), 'utf8'));
+  assert.equal(record.nativeAlphaPreserved, true);
 });

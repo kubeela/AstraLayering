@@ -72,7 +72,7 @@ test('native routes share OpenAI/Gemini transports, preserve image bytes/alpha a
     layering_google_image_base_url: base + '/v1beta', layering_google_image_api_key: 'google-secret' }, root);
   const openai = await createCodexImageRoute(settings, 'part_simplify', join(root, 'openai'));
   t.after(() => openai.close());
-  const google = await createCodexImageRoute(settings, 'part_base_subject', join(root, 'google'));
+  const google = await createCodexImageRoute(settings, 'part_base_subject', join(root, 'google'), settings.codex, undefined, { krita: executable, runsRoot: root, matte: async () => { assert.fail('原生 alpha 不应初始化 matting'); } });
   t.after(() => google.close());
   try {
     assert.notEqual(openai.env.LAYERING_IMAGE_API_KEY, google.env.LAYERING_IMAGE_API_KEY);

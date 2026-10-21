@@ -4,7 +4,7 @@
 
 独立启动前也按 [安装与前置](setup.md) 检查当前管线依赖。两套 raster 和组装均需要 Krita 及可操作的显示环境；缺少时由 agent 先确认桌面或 headless 方案再安装，并把实际可执行路径传给 CLI。
 
-两套 part 在生成新参考前检查 FFmpeg；已有命令可用就复用，否则可追加 `--krita /绝对路径/krita` 使用该安装附带的版本。总入口会自动把已记录的 Krita 路径传给 part。已有参考或显式 `--groups` 续做不需要重新准备 FFmpeg。
+两套 part 使用 Nano 生图时追加 `--krita /绝对路径/krita`；透明后处理的 Python 模块首次实际使用时自动安装并在运行根目录 `.runtime/` 复用。总入口传递已记录的 Krita 路径。已有参考或显式 `--groups` 续做不重新处理参考。
 
 ## 选择入口
 

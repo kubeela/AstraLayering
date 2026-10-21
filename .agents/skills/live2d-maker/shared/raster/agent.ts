@@ -9,11 +9,11 @@ import { dirname, join } from 'node:path';
 import { AgentCallError, AgentRuntime, continuationPrompt, type AgentRetry } from '../codex/agent-runtime.ts';
 import { AgentLog } from '../codex/agent-log.ts';
 import { createCodexImageRoute } from '../agents/codex-images.ts';
-import type { FfmpegOptions } from '../ffmpeg.ts';
+import type { ImageProcessingOptions } from '../image-processing.ts';
 
 export type StepResult = { status: 'completed' | 'blocked'; summary: string };
 export type AgentRequest = {
-  imageNormalization?: FfmpegOptions;
+  imageNormalization?: ImageProcessingOptions;
   step?: AgentStep;
   onThreadReplacement?: (oldId: string, reason: string) => Promise<void>;
   prompt: string;

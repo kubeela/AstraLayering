@@ -60,11 +60,11 @@ Claude／AGV 继续注册共享 `image_generation` 函数工具，不使用 Code
 
 OpenAI 兼容协议在 base URL 后追加 `/images/generations` 或 `/images/edits`；Gemini 原生协议追加 `/models/<模型>:generateContent`。参考图按顺序传入，输入文件不修改，生成结果保存在任务请求目录。接口是否能输出透明通道由模型能力决定；共享函数工具返回 `hasAlpha`，原生工具路径也应检查实际 PNG。棋盘格图不等于透明通道，仍须按原要求看图和验收。
 
-调用者统一提出透明 PNG 要求。GPT 图像模型保留返回的原生 alpha，不走纯色抠图。Nano 请求透明背景时，共享适配器在生图前分析第一张目标参考的主体颜色，从纯绿、纯蓝、纯红中推荐一个背景色，并通过[纯色背景要求](../shared/prompts/nano-solid-background.md)明确传给生图模型。原绘制任务完整保留，实际生图请求使用不透明背景。返回后仍采样四周的实际背景颜色，复用既有柔边抠图与去溢色处理，最终交回透明 PNG。明确选择 `auto`／`opaque` 的请求不追加要求、不抠图。返回真实 alpha 时直接保留。
+调用者统一提出透明 PNG 要求。GPT 图像模型保留返回的原生 alpha，不走纯色抠图。Nano 请求透明背景时，共享适配器在生图前分析第一张目标参考的主体颜色，从纯绿、纯蓝、纯红中推荐一个背景色，并通过[纯色背景要求](../shared/prompts/nano-solid-background.md)明确传给生图模型。原绘制任务完整保留，实际生图请求使用不透明背景。返回后仍采样四周的实际背景颜色，在 Krita 内嵌 Python 中用 ViTMatte 估计透明度、恢复前景颜色，最终交回透明 PNG。明确选择 `auto`／`opaque` 的请求不追加要求、不抠图。返回真实 alpha 时直接保留。
 
 选色忽略透明像素的 RGB 和可识别的原背景，不让后续控制图／画风参考的颜色参与主体色盘。优先避开即使面积很小的同色细节，再比较与主体色相的分离程度；有彩色原背景时使用近不透明颜色锚点降低透色干扰。候选评分、原背景、选色理由写入 `background-selection.json`。没有图像参考时使用纯绿并记录原因；三色都有近色冲突时选综合风险最低者并记录冲突，不声称能无误判。选色是推荐，无法凭单张 RGB 图唯一恢复材料透明度。
 
-Nano 后处理不改变生成图尺寸和比例；工作流仍负责后续等比缩放与配准。原始 RGB 生图和后处理记录保存在本次请求的 `generated/` 下的 `image-processing/<id>/`，没有可靠纯色背景时明确报错并指出原图路径。半透明材料仍须逐图检查，不能仅凭存在 alpha 声称恢复准确；研究中的内部透明度估计尚未默认启用。
+Nano 后处理不改变生成图尺寸和比例；工作流仍负责后续等比缩放与配准。原始 RGB 生图和后处理记录保存在本次请求的 `generated/` 下的 `image-processing/<id>/`，没有可靠纯色背景时明确报错并指出原图路径。半透明材料仍须逐图检查，不能仅凭存在 alpha 声称恢复准确；ViTMatte 和前景颜色恢复已用于 Nano 透明后处理；包在首次实际使用时自动装到运行根目录 `.runtime/`，后续复用。
 
 主模型网关与生图接口各自鉴权。Codex 默认继承当前用户配置；自定义 Codex provider 沿用 `layering_custom_provider` 和 provider URL／key。Claude／agv 可复用其已有登录，也可在 `.env` 填写 CLI 原生环境变量，例如 `ANTHROPIC_API_KEY`／`ANTHROPIC_BASE_URL`，或 `AGY_LLM_GATEWAY_API_KEY`／`AGY_LLM_GATEWAY_URL`／`AGY_LLM_GATEWAY_MODELS`／`AGY_LLM_GATEWAY_WIRE_PROTOCOL`。密钥不写入提示词、报告或 Git。
 

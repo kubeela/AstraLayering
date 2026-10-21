@@ -5,8 +5,9 @@ import { resolve } from 'node:path';
 import type { CodexOptions } from '@openai/codex-sdk';
 import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
 import { generateImage, validateImageSelection, type ImageArguments, type ImageInput } from './images.ts';
+import { requireMattingKrita } from '../matting/runtime.ts';
 import { imageModelProviders, type AgentStep } from './models.ts';
-import { checkFfmpeg, type FfmpegOptions } from '../ffmpeg.ts';
+import type { ImageProcessingOptions } from '../image-processing.ts';
 
 export function usesPatchedImageTool(settings: WorkflowEnvironment, step?: AgentStep): boolean {
   return !!step && settings.stepModels[step].harness === 'codex'
@@ -16,7 +17,7 @@ export function usesPatchedImageTool(settings: WorkflowEnvironment, step?: Agent
 // One route per Codex process. Its model and credentials never enter prompts or global config.
 // The original extension still owns tool execution, image events and saving the final PNG.
 export async function createCodexImageRoute(settings: WorkflowEnvironment, step: AgentStep,
-  outputDirectory: string, options: CodexOptions = settings.codex, signal?: AbortSignal, normalization: FfmpegOptions = {}) {
+  outputDirectory: string, options: CodexOptions = settings.codex, signal?: AbortSignal, normalization: ImageProcessingOptions = {}) {
   signal?.throwIfAborted();
   validateImageSelection(settings, step);
   if (!usesPatchedImageTool(settings, step)) throw new Error(`${step} 不使用自定义 Codex 生图补丁。`);
@@ -24,7 +25,7 @@ export async function createCodexImageRoute(settings: WorkflowEnvironment, step:
   const model = settings.stepImages[step]!;
   const api = settings.imageApis[imageModelProviders[model] as 'openai' | 'google']!;
   const processing = { ...normalization, env: normalization.env ?? options.env, directory: outputDirectory };
-  if (imageModelProviders[model] === 'google') await checkFfmpeg(processing);
+  if (imageModelProviders[model] === 'google') requireMattingKrita(processing);
   const token = randomBytes(32).toString('hex');
   const closing = new AbortController();
   const server = createServer(async (request, response) => {

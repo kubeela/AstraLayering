@@ -6,8 +6,9 @@ import type { WorkflowEnvironment } from '../codex/environment.ts';
 import type { FunctionTool } from '../codex/function-tools.ts';
 import { imageModelProviders, type AgentStep, type ImageApi, type ImageModel } from './models.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
-import { needsSolidBackground, providerImageArguments, transparentGeneratedImage, type ImageProcessingOptions } from './image-background.ts';
-import { checkFfmpeg, type FfmpegOptions } from '../ffmpeg.ts';
+import { needsSolidBackground, providerImageArguments, transparentGeneratedImage } from './image-background.ts';
+import type { ImageProcessingOptions } from '../image-processing.ts';
+import { requireMattingKrita } from '../matting/runtime.ts';
 import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
 
 export function validateImageSelection(settings: WorkflowEnvironment, step: AgentStep): void {
@@ -23,7 +24,7 @@ export function validateImageSelection(settings: WorkflowEnvironment, step: Agen
 }
 
 export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentStep, output: string,
-  roots: readonly string[], normalization: FfmpegOptions = {}): FunctionTool | undefined {
+  roots: readonly string[], normalization: ImageProcessingOptions = {}): FunctionTool | undefined {
   const model = settings.stepImages[step];
   if (!model || model === 'codex-native') return;
   validateImageSelection(settings, step);
@@ -66,13 +67,13 @@ export type ImageArguments = { prompt: string; background?: 'transparent' | 'aut
 
 // The native Codex route and registered tools share the same provider transport.
 export async function generateImage(api: ImageApi, model: ImageModel, args: ImageArguments,
-  inputs: ImageInput[], signal: AbortSignal, processing?: ImageProcessingOptions): Promise<Buffer> {
+  inputs: ImageInput[], signal: AbortSignal, processing?: ImageProcessingOptions & { directory: string }): Promise<Buffer> {
   const original = args;
   const solidBackground = needsSolidBackground(model, original);
   let selection: BackgroundRecommendation | undefined;
   if (solidBackground) {
     if (!processing) throw new Error('Nano 透明背景处理缺少本次任务的产物目录。');
-    await checkFfmpeg(processing);
+    requireMattingKrita(processing);
     selection = await recommendBackground(inputs);
     processing = { ...processing, directory: join(processing.directory, 'image-processing', randomUUID()) };
   }
