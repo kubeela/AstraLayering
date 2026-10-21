@@ -1,0 +1,98 @@
+{
+  "groupId": "arms/arm_right/hand",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "仅审查 arms/arm_right/hand。已读取本次组说明、候选 hand.svg 和父组完成稿 arm_right.svg，并查看参考图、候选整图 blend 和父稿整图 blend。完整放大覆盖：A=[185,760,80,64]、B=[185,800,80,61]、C=[185,840,80,60]，三框均以 8 倍 blend/edge 对照，重叠核对腕至掌根、掌部左右缘、拇指与邻指衔接、所有可见指端及指间开口；另检查 [188,788,33,101] 左侧连续外缘、[220,817,30,79] 右侧各指端，并看纯色色块。父范围检查 pass，四倍采样 outsideSamples=0、outsidePixels=0。\n\n当前父范围内检查通过：腕部伸入端为合理局部圆弧；腕至掌部外缘连续，各可见手指实体、相互遮挡后的合并轮廓与指端均已由联合色块覆盖。未发现需在本轮另拆 path 才能成立的组件缺失；五指后续独立拆分不属于本轮要求。未发现孤点、来源不明碎片或刻意拆碎的局部形体。除下述已确认的父范围限制外，未发现有明确图像依据的父内可修问题。\n\n已确认的上游限制（尚未补齐，须单独保留记录）：掌内靠拇指左侧 x≈223–227、y≈822–837 的狭长叶形孔洞。原图该处是连续手部实体上的肤色亮部与邻近阴影分界，并非透明背景贯通的真实孔洞；不应把这段明暗分界作为外轮廓挖空。原图局部证据为 observations/review/arms/arm_right/hand/8d14dac4-df3f-42f1-a10c-9847e7e61dcd.png。已用完全相同选框 [218,815,20,29]、8 倍叠加对照候选与父稿：2026-10-20T17-51-53-122Z-15.png（候选）和 -16.png（父稿）；二者在此有完全相同的孔洞，源码也同为 M227 822.4 起始的 evenodd 内环。候选已经贴合父孔边界，孔内没有可由当前候选补入而仍保持父范围检查通过的区域。恢复该处实体必须先由上游填补父稿的误孔，再向本组传递；本轮不要求候选越过父范围填孔，不修改父稿，也不声称该问题已修复。这是继承父范围造成的实体缺口，不是最终着色未画，也不是孤立噪点或额外饰件。\n\n因此按已确认上游限制规则，本轮 pass；结论不等于父组误孔正确或已经补齐。",
+      "candidateHash": "4013dfb954f5e420fd4395d1732cba536c74a89d196c3d629d1d9868f5bde50b",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\arms\\arm_right.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\arms\\arm_right.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\arms\\arm_right.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\arms\\arm_right.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-14.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-15.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\arms\\arm_right.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-16.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\2026-10-20T17-51-53-122Z-17.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T18:15:39.002Z"
+    }
+  ]
+}

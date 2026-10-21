@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "head_accessories/right_earring",
+  "beforeHash": "46c34c303dcf857664dae78bc91556ebf085283612ab22035de5989162d86c0d",
+  "afterHash": "de3f424d10dd0833f20decb235ea5f9b5b0b76d0079c4084fc0c027e5d14e8c3",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

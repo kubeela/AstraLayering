@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "legs/leg_left/boot_gem_chain/flexible_connector",
+  "beforeHash": "28f4fc5c2cea330586e93690fba01fb0bb4add8b10ada0d80799b7ce8ddfa250",
+  "afterHash": "45387afbe5d1eacdcd2a43f13767e76eb2894a52ddf55e1a2a57ae4cbae9d7bd",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

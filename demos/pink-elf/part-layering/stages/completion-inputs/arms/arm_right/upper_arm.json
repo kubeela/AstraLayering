@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "arms/arm_right/upper_arm",
+  "beforeHash": "5727e332ff82c71742358a2f8783505d83dbcef2252425e2e1c06836d50995f6",
+  "afterHash": "235a354816c3a6d16ad07ea9c0ffff421ed2f55f637d18ecea4b0e5d1e7ae0bf",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

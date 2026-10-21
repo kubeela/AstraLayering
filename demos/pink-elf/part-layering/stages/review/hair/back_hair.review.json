@@ -1,0 +1,178 @@
+{
+  "groupId": "hair/back_hair",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成当前 hair/back_hair 全组独立审查，输入及候选只读。\n\n覆盖与依据：先核对整图 blend 及父 hair.svg、候选独显，再按重叠选框逐块核对 blend/edge：头盖[325,50,255,175]；耳后、脸颈与肩根[315,190,290,190]；左/右肩外至回钩交叠区[205,335,190,225]、[525,335,190,225]；左/右中下段厚发及外弧卷尾[150,515,245,205]、[530,515,220,205]；两侧内尖梢[240,680,125,115]、[585,680,100,115]；中央露梢[430,760,65,60]。另以5–8倍复核左内弧开口、左右贴头辫纹外缘，并在相同局部对照父稿。\n\n当前允许范围内通过：头盖、两侧耳后和脸颈后发、肩臂及躯干两侧厚发、两侧外弧卷尾、内侧多尖发梢及中央露梢均有联合色块覆盖；身体遮挡下的连续发面保留。与侧发回钩的交叠及其旁开口、左卷尾内孔、右下发梢孔洞均已核对，未发现父内可修的缺口、错误填孔或漏掉的独立组件。各尖端与转折未被磨圆，未见孤立像素、碎片堆砌或形体归属混乱。原图左卷尾内侧低透明、边界不稳定的细丝痕迹不作为另造孤立碎块的依据。未以普通明暗、发纹或填色差异作为轮廓问题。\n\n上游范围限制（不视为本轮已补齐）：画面左侧贴头辫纹带约x338–345、y170–199，参考有与主体相连的浅粉辫纹外沿，局部在候选红边左侧仍可见；候选约y175–185的内收段未能覆盖该段完整可见外沿。已用[330,140,70,80]的6倍父/候选 edge，以及[330,155,40,50]的8倍父/候选 blend与候选edge对照，确认此处候选与父hair.svg外边界重合，缺失带位于父外，只有扩大父范围才能恢复。应由上游核对并调整父稿此段外缘，当前子组不要求越界，亦未修改父稿。证据预览尾号24、25及31、32、33。\n\n父范围检查通过：4倍采样，outsideSamples=0、outsidePixels=0。除上述已确认的上游限制外，当前允许范围内全部检查通过，故本轮pass。",
+      "candidateHash": "3aa21610288f8c1b1e735f5dddbb75b84471927916422c9e5567c367d41f4133",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\hair.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-14.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-15.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-16.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-17.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-18.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-19.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-20.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-21.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-22.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-23.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-24.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-25.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-26.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-27.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-28.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-29.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-30.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-31.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-32.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\hair\\back_hair.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\hair\\back_hair\\2026-10-20T16-33-28-056Z-33.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T16:55:14.563Z"
+    }
+  ]
+}

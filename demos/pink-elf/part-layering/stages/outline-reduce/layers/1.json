@@ -1,0 +1,126 @@
+{
+  "depth": 1,
+  "groups": [
+    {
+      "id": "face/face_base",
+      "inputHash": "2b473f14f70e3fa417e7a1c112a093d7fb91f71c779b4d2fb0cfa806643d6f00",
+      "outputHash": "2b473f14f70e3fa417e7a1c112a093d7fb91f71c779b4d2fb0cfa806643d6f00"
+    },
+    {
+      "id": "face/eye_left",
+      "inputHash": "d9a1b9a1ec3857c14d94e68238b49e15c2cc9c986d72fc522d359dd31b1eeabe",
+      "outputHash": "d9a1b9a1ec3857c14d94e68238b49e15c2cc9c986d72fc522d359dd31b1eeabe"
+    },
+    {
+      "id": "face/eye_right",
+      "inputHash": "fce64446b1867376de8143fee34b916bad2f56fdec4af79b80186034c95169be",
+      "outputHash": "fce64446b1867376de8143fee34b916bad2f56fdec4af79b80186034c95169be"
+    },
+    {
+      "id": "face/eyebrow_left",
+      "inputHash": "204a7807ae24cbf55765280f1e9f0a27dfe00a5ee7616fbd731f35567fd6ae46",
+      "outputHash": "204a7807ae24cbf55765280f1e9f0a27dfe00a5ee7616fbd731f35567fd6ae46"
+    },
+    {
+      "id": "face/eyebrow_right",
+      "inputHash": "f30b977f29850bcda50dbeb2d53451280adc9336a4ec1d8531d96f8a181640d9",
+      "outputHash": "f30b977f29850bcda50dbeb2d53451280adc9336a4ec1d8531d96f8a181640d9"
+    },
+    {
+      "id": "face/ear_left",
+      "inputHash": "0b38b799676db1ff34dc7ee70d9174a8859c09bc158ca6d97920188ae38ad23d",
+      "outputHash": "0b38b799676db1ff34dc7ee70d9174a8859c09bc158ca6d97920188ae38ad23d"
+    },
+    {
+      "id": "face/ear_right",
+      "inputHash": "b536fe0859d93673cecbadc65d53e0f3d13c18fe4766b5803774548446026f62",
+      "outputHash": "b536fe0859d93673cecbadc65d53e0f3d13c18fe4766b5803774548446026f62"
+    },
+    {
+      "id": "face/nose",
+      "inputHash": "ffc2bcb84cc532f210093c696301ca864541c4144e3f7d0bc8313c203a74255e",
+      "outputHash": "ffc2bcb84cc532f210093c696301ca864541c4144e3f7d0bc8313c203a74255e"
+    },
+    {
+      "id": "face/mouth",
+      "inputHash": "99a3cbbb60bc743de09e3f3ecca692464d8cee26544139e5fcf74efb70cf9037",
+      "outputHash": "99a3cbbb60bc743de09e3f3ecca692464d8cee26544139e5fcf74efb70cf9037"
+    },
+    {
+      "id": "hair/bangs",
+      "inputHash": "2b868a34ef394259737625153d4dff8fc6eb023598be20adf5a936fa0cc33c6d",
+      "outputHash": "2b868a34ef394259737625153d4dff8fc6eb023598be20adf5a936fa0cc33c6d"
+    },
+    {
+      "id": "hair/front_side_hair_left",
+      "inputHash": "a74719a1e65e5180e6323af15f136aa2d72be5807ac8bc1df4f4becd377f9782",
+      "outputHash": "a74719a1e65e5180e6323af15f136aa2d72be5807ac8bc1df4f4becd377f9782"
+    },
+    {
+      "id": "hair/front_side_hair_right",
+      "inputHash": "489f2f5b8eb96949dbd577d0b6736ab4aa806bf1b6b4732c6701778ece39d24a",
+      "outputHash": "489f2f5b8eb96949dbd577d0b6736ab4aa806bf1b6b4732c6701778ece39d24a"
+    },
+    {
+      "id": "hair/side_hair_left",
+      "inputHash": "a12335ff0f76e4c19d8614bd5de9db79c72b43ac7a11bb2cb55bb00ce349c411",
+      "outputHash": "a12335ff0f76e4c19d8614bd5de9db79c72b43ac7a11bb2cb55bb00ce349c411"
+    },
+    {
+      "id": "hair/side_hair_right",
+      "inputHash": "0fdb4fdeefbfae5dcd5875086002f2c1e1960a0ae482f3ea86dfb83df75537fe",
+      "outputHash": "0fdb4fdeefbfae5dcd5875086002f2c1e1960a0ae482f3ea86dfb83df75537fe"
+    },
+    {
+      "id": "hair/back_hair",
+      "inputHash": "3aa21610288f8c1b1e735f5dddbb75b84471927916422c9e5567c367d41f4133",
+      "outputHash": "3aa21610288f8c1b1e735f5dddbb75b84471927916422c9e5567c367d41f4133"
+    },
+    {
+      "id": "hair/ahoge",
+      "inputHash": "be13faba51d9d466866b63bd8cdfb8cdc7273331bcd47704f28693568950a50f",
+      "outputHash": "be13faba51d9d466866b63bd8cdfb8cdc7273331bcd47704f28693568950a50f"
+    },
+    {
+      "id": "head_accessories/left_earring",
+      "inputHash": "206b7db1a69b8e080742bd9e079ba3f83838d012d819bbeee52f5ca0af898453",
+      "outputHash": "206b7db1a69b8e080742bd9e079ba3f83838d012d819bbeee52f5ca0af898453"
+    },
+    {
+      "id": "head_accessories/right_earring",
+      "inputHash": "46c34c303dcf857664dae78bc91556ebf085283612ab22035de5989162d86c0d",
+      "outputHash": "46c34c303dcf857664dae78bc91556ebf085283612ab22035de5989162d86c0d"
+    },
+    {
+      "id": "body/torso",
+      "inputHash": "d6998bf19cc838043d890cbbf8970b0cc5ddabd5dc999b90a21ff04f7fe5eb1c",
+      "outputHash": "d6998bf19cc838043d890cbbf8970b0cc5ddabd5dc999b90a21ff04f7fe5eb1c"
+    },
+    {
+      "id": "body/breast",
+      "inputHash": "79e66ca3be8cd784701ad6febd8fd3e9d452743176234844808b11ac4958cdd3",
+      "outputHash": "79e66ca3be8cd784701ad6febd8fd3e9d452743176234844808b11ac4958cdd3"
+    },
+    {
+      "id": "arms/arm_left",
+      "inputHash": "5111fe961d5430acd5f70022ba883ba9ec6b8c1a9b553be3a74083c76105c441",
+      "outputHash": "5111fe961d5430acd5f70022ba883ba9ec6b8c1a9b553be3a74083c76105c441"
+    },
+    {
+      "id": "arms/arm_right",
+      "inputHash": "87acd10f98e7f1ac971019d349ca584cc1943cd0c7f039a0466182f5ddfb08ed",
+      "outputHash": "87acd10f98e7f1ac971019d349ca584cc1943cd0c7f039a0466182f5ddfb08ed"
+    },
+    {
+      "id": "legs/leg_left",
+      "inputHash": "d56ca769818e9365f618779788854ff664dfdbc3694c8a1a49727de409517c89",
+      "outputHash": "d56ca769818e9365f618779788854ff664dfdbc3694c8a1a49727de409517c89"
+    },
+    {
+      "id": "legs/leg_right",
+      "inputHash": "9eebc3bd5b0b05bf2d6cfeef4fcc4dbd1ff71b04f5da98946d6deb0ac64a78f1",
+      "outputHash": "9eebc3bd5b0b05bf2d6cfeef4fcc4dbd1ff71b04f5da98946d6deb0ac64a78f1"
+    }
+  ],
+  "note": "已先查看整层 merged.draft.svg 与原图的 blend 叠加，再读取本层全部24个候选节点的 sourceSvg，并对额前发、两侧前侧发、长侧发与后发、眉眼、脸缘、胸廓与 breast、双肩及髋根作局部 blend/edge 放大核对。未确认可安全清理的同一实体、同一控制职责副本，本轮 changed 为空，所有 sourceSvg 原样保留。刘海、左右前侧发、左右长侧发、后发头盖与长发、呆毛分别承担明确的前后遮挡和独立摆动职责；根部及肩后投影覆盖不作为重复。脸底完整承接五官、耳根局部连接、torso 在 breast 后方的连续底形、双臂肩根及双腿髋根补形均保留；父组 face.svg 仅用于范围与结构核对，未作为去重候选。记录待后续核查的疑点：face/eye_left 第二条 path（约 x474–498、y185–193）与 face/eyebrow_left 的内侧弧段投影高度一致，贴近参考的上眼皮细弧；原图更高处约 y167–175 仍有另一条眉弧。eyebrow_left 的当前轮廓与其“独立完整眉毛”note 存在图像身份冲突，无法据此判定应由眼组承担眉毛控制职责，故本步不删除其组、不把两种控制结构合并，也不擅自重画或按像素相减。其余五官、双耳耳饰、四肢与靴体未见跨候选重复领取。未清空任何组，未写入无需修改的草稿。"
+}

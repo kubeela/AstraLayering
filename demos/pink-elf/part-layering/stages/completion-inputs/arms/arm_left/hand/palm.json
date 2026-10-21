@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "arms/arm_left/hand/palm",
+  "beforeHash": "479e143dc13b8f7166485520d8d04732cbeba22c117f9c00d5d609ea60ff0dba",
+  "afterHash": "e4c36e85262c1116ca0ca0e90c2e965b60982f63a4b15d3bad41d45d2afbb2cb",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

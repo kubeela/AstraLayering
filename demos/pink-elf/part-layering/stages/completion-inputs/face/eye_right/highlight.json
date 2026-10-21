@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/eye_right/highlight",
+  "beforeHash": "ce59ec02cb1b7e7864f6d5bf0849e14acffb80b2f021852b79cd1cb8320b6213",
+  "afterHash": "dfc50877aed9c8cb482cab617cfd0ee061b5a4a7ffdd0c8e6dff8c9626b608a7",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/nose",
+  "beforeHash": "ffc2bcb84cc532f210093c696301ca864541c4144e3f7d0bc8313c203a74255e",
+  "afterHash": "d8abef7a6c797d47f648adfb24decb0f08c845955377a9e2ee5214becb38efde",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

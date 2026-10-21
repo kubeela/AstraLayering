@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "groupId": "arms/arm_right/hand/little_finger",
+  "beforeHash": "3325607aa571e05f149cde1871c6931a1e71d6975b9402c5a97f8f6b742d2daf",
+  "afterHash": "3bea8ea9d45f7479d4bff41ab40bca4f66e6044fb3e4a5c3fa3ceca4ea47fe09",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    },
+    {
+      "path": "stages\\outline-reduce\\arms\\arm_right\\hand\\palm.svg",
+      "hash": "9cf29471d06d29d5f9f5e46239c390917f4ec5fe53d12a48be4629d01800e35b",
+      "groupId": "arms/arm_right/hand/palm",
+      "stage": "reduction"
+    },
+    {
+      "path": "D:\\Resources\\workspace\\AstraLayering\\.agents\\skills\\live2d-maker\\part-layering\\prompts\\groups\\arms\\references\\fingers\\complete-fingers.png",
+      "hash": "528db2606985dbb217ddd71106f19a2daac795bf323bf00b74c51b69ba046762"
+    }
+  ]
+}

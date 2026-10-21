@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "legs/leg_right/leg",
+  "beforeHash": "8ecd26c164e1de0aefe38203653f1bf1753cbb5cd424c4d94b505c17bd09ccbd",
+  "afterHash": "6067ea769fc24c12565ee483e2a2c6e218f5c6a3151dbd75be3574de12ebcdc6",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

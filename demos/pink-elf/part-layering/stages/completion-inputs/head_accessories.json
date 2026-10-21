@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "head_accessories",
+  "beforeHash": "0b7a8d57f3cbc630638ce7d80aef7e44cc0e303309235105779fb05f921367c1",
+  "afterHash": "8bb94981cae13ca6e03502c95e584314b84e17aee95b99ba670efcb26e614718",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

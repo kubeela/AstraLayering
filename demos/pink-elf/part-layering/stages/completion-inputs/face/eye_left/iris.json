@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/eye_left/iris",
+  "beforeHash": "cfcd5a1f88337c579318bb2589ae0f772e7540cc6acca59efaf4218da967b410",
+  "afterHash": "e32090ddcdf0c59ebcdee8f5cf8641097a843032e630d355b72e0ac39c9fac2c",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

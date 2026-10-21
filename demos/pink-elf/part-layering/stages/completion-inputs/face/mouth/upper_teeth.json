@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/mouth/upper_teeth",
+  "beforeHash": "7f559ec3621daa046f4a3159c1f0905eed494125b1fa0fc9bfd0c093d59dcb78",
+  "afterHash": "bc2cfb1e99715d9b41f3b5e64a5dabfb8e43a3e905792b2a6183731dfc3f0f6e",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

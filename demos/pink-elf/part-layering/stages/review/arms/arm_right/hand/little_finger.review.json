@@ -1,0 +1,73 @@
+{
+  "groupId": "arms/arm_right/hand/little_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取当前 little_finger 组说明、候选 SVG 与父组 hand 完成 SVG；先检查候选整图 blend 定位，再检查手部参考与父组 blend。全组放大覆盖采用三个相互重叠的选框，均以 8 倍参考图、blend 和 edge 逐块对照：①[186,808,36,38] 指根：约 x=194–209、y=818–846 的近端为连续实体，圆弧伸入既有掌体，尺侧可见外缘与参考连续衔接；内侧与邻指根部的连接无无依据挖缝。②[186,835,36,36] 指身：外缘经 y≈848 的转向向右下延伸，内侧弯折、收束及宽度与小指可见形体对应，未将内部明暗线误作额外轮廓。③[188,860,35,32] 指缝及指尖：y≈866 以下与无名指间张开的狭长空隙保留，内缘至约 x=201–203、y=883 的圆尖连续，未填平真实指缝。另以同一区域父组 edge 核对了父边界，并以[188,812,28,78]候选独显确认整根手指完整连通、轮廓干净，无孤立像素、碎片堆砌或形体归属混乱。所属指甲范围已在手指联合色块内覆盖，无组件缺失；无需本轮独立拆分。父范围四倍采样检查 pass，outsideSamples=0、outsidePixels=0。未发现有明确图像依据的当前组可修问题或需单列的上游范围限制。",
+      "candidateHash": "3325607aa571e05f149cde1871c6931a1e71d6975b9402c5a97f8f6b742d2daf",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\arms\\arm_right\\hand.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\arms\\arm_right\\hand\\little_finger.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\arms\\arm_right\\hand.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\arms\\arm_right\\hand\\little_finger\\2026-10-20T19-01-17-685Z-12.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T19:13:09.878Z"
+    }
+  ]
+}
