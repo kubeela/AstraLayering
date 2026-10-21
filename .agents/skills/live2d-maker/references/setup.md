@@ -17,8 +17,8 @@ pnpm install --frozen-lockfile
 
 | 本次执行范围 | 前置依赖 |
 | --- | --- |
-| 所有管线 | 上述 Node.js / pnpm 依赖与所选模型对应的可用 CLI 环境；Python 默认复用宿主 Codex 已有环境，无需另行安装 |
-| 人物／衣服 part | 所需上游输入；准备阶段需要所选生图能力 |
+| 所有管线 | 上述 Node.js / pnpm 依赖与所选模型对应的可用 CLI、登录／provider 环境 |
+| 人物／衣服 part | 所需上游输入；新参考准备需要所选生图能力和可调用的 FFmpeg。已有参考续跑不重处理；只做分组、SVG 绘制与 review 不需要额外图像程序 |
 | 人物／衣服 raster | 对应 part 产物、Krita 和可操作的显示环境；涉及生图的步骤还需所选生图能力 |
 | 穿戴组装 | 两份 KRA、简化穿衣参考、Krita 和可操作的显示环境；不以生图为前置 |
 
@@ -26,8 +26,14 @@ pnpm install --frozen-lockfile
 
 - 按小步骤配置检查对应 CLI 与登录／provider：Codex 默认继承当前 `CODEX_HOME` 或 `~/.codex`；Claude Code、Antigravity 使用显式配置的入口或全局 CLI，并复用已有登录。pnpm 不安装后两者。缺少 CLI 或登录凭据时，展示具体报错并询问用户是安装／登录还是改用已有模型，不自行安装。
 - 生图步骤选择 `codex-native` 时，绘制模型必须属于 Codex，并具备外部提供的原生 `image_generation`。选择自定义 OpenAI 或 Google 生图时，检查对应 API URL、key 和协议；通过本步骤的 `image_generation` 函数工具调用。纯 KRA 组装不以生图为前置。
-- Python 默认已有，不要求用户再次安装或另建环境；实际调用发现缺失或缺包时再按具体错误处理。
+- Python 优先复用宿主已有解释器；没有独立解释器时，验证 Krita 内置 Python 插件／脚本环境，保证至少一种实际可用。CLI 本身不保证提供 Python；Krita 内置 Python 也不保证有独立 `python3` 或 `pip` 命令。固定调度、SVG、PNG 读写和缩放已由 Node／Sharp 承担，不统一安装 Pillow、NumPy、PyQt5 等包。辅助脚本确实需要某个包时，只检查该脚本使用的解释器与模块。
 - 按需将 [example.env](../example.env) 复制为 `.env`，填写模型、provider 或可选生图配置；未配置时沿用默认。shell 同名变量优先。`.env` 位于 skill 根目录，密钥不写入报告或提交。
+
+**在实际任务环境里验证。** 后台 CLI 和网页发起的任务应复用同一环境，不能只检查交互终端。Claude Code／Antigravity 的每次请求有受控的配置与临时目录，使用隔离 HOME；宿主 `pip --user` 装的包可能不可见。已有虚拟环境或解释器可直接复用，不把凭据隔离改成共享用户 HOME。Krita 的 Python 插件在 Krita 进程内检查，不能用系统 Python 的 `import krita` 作为验收；Krita 自带的 PyQt5 也无需再为系统 Python 安装一份。
+
+**FFmpeg 只要求能用。** 新参考生成前，脚本在本次工作流加载的环境中执行 `ffmpeg -hide_banner -filters`，确认程序能启动且含 `format`、`chromakey`、`colorkey`、`despill`。已有入口通过就直接复用；失败时只检查 `--krita` 指定安装内的固定相对位置（原生程序旁，macOS 应用包内的 bin 位置），不扫描系统目录，不下载或解包。两者都不可用时，在模型制作前明确报错。独立 part 入口也接受 `--krita`，总入口会传递已记录的路径；FFmpeg 不增加独立 `.env` 配置项。包装脚本或未解包 AppImage 的附带程序由启动 agent 准备为可调用的已有入口，或使用安装内实际 Krita 程序路径。
+
+Krita 5.2 起官方安装包附带部分 FFmpeg 能力，但仍以程序与必要滤镜检查结果为准。已合格透明 PNG 的后处理不会调用 FFmpeg，已有正式参考也不因续跑重新抠图。前置检查确认新参考可能需要后处理；归档报告记录实际使用的 FFmpeg 和滤镜。
 
 需要 Krita 时，先检查已记录的路径、用户给出的路径或当前系统的已有安装。若已安装且操作环境可用，直接复用；不要重复安装。缺少 Krita 或必要操作组件时，由你准备安装方案并执行，不能只报缺失后让用户自行处理。
 
@@ -39,6 +45,16 @@ pnpm install --frozen-lockfile
 安装或复用后，确认 Krita 能启动，并用所选方式验证能操作文档、读取图像和保存文件。桌面方案验证实际 computer use 操作，headless 方案验证脚本及图像查看路径；只有 `--version` 成功还不足以证明绘图环境可用。把得到的 Krita 绝对路径通过 `--krita` 传入管线，显示环境配置应传给后台进程和后续恢复进程，并记录在任务的 `monitor.md` 供巡检复用。
 
 安装由调用 skill 的 agent 在确认后处理；工作流脚本仍只检查明确传入或已保存的可执行路径，不自动下载或探索安装位置。路径检查可用 `pnpm raster-layering --check-krita --krita /绝对路径/krita`。
+
+Krita 的路径检查和实际启动使用工作流加载的同一环境，包括 `.env` 中已有的显示、动态库与 Python 配置。agent 仍须确认可操作文档、查看图像并保存；程序版本检查不替代这些操作验证。
+
+## 可选功能与历史脚本
+
+- 工作台浏览进度、图片和分组树不要求额外 Python 包。启用网页原生图层合成器时，当前实现需要带 Python 插件的 Krita 和 Xvfb（即使宿主有桌面，也会启动独立显示）；部署说明见[工作台启动与连接](workbench.md)，详细环境项见工作台 checkout 的 `web/README.md`。
+- Linux headless 绘图需要所选显示方案，例如 Xvfb；桌面 computer use 使用宿主已有能力，不统一要求 xdotool 或 Playwright。
+- Git 用于仓库安装、工作台配置历史浏览与补丁构建。自行构建 Codex 图片压缩补丁才需要 Rust 1.95.0 和平台编译工具；复用现成二进制不需要构建链。
+- 普通网页使用现代浏览器。Playwright／Chromium 仅用于浏览器自动验证，不是运行制作管线的必装项。
+- `archive/`、`analysis/`、`demos/`、`rigging/` 和资料重建脚本的 Pillow、NumPy、SciPy、OpenCV、lxml、PyYAML 等依赖只在实际执行相应脚本时成立，不纳入 skill 默认安装。读取已生成的头发参考图不需要重建图片的 Python 包。
 
 默认各小步骤沿用原模型：人物／衣服 part、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。每步可独立覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。只有 Codex 的按图片数 compact 需要显式构建可选补丁；自定义生图函数工具不需要补丁，正常启动不会下载或构建。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。

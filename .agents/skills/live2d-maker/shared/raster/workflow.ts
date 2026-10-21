@@ -73,7 +73,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const configuredKrita = options.krita ?? saved?.krita.executable;
   if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
   const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
-  const krita = await (dependencies.preflight ?? checkKrita)(kritaPath);
+  const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, undefined, environment.codex.env));
   const config = saved ?? newConfig(options.name, reference, krita, [...pipeline.steps, ...definitions]);
   config.sourceInput = reference;
   config.krita = krita;

@@ -8,8 +8,10 @@ import type { PipelineId } from '../shared/paths.ts';
 import { checkKrita, type KritaInstallation } from '../shared/raster/krita.ts';
 import type { PipelineResult } from './pipelines.ts';
 import { acquireTaskLock, configureRun, directoryFor, now, saveRun, selectedPipelines, type TaskOptions, type TaskRun } from './state.ts';
-import { loadWorkflowEnvironment } from '../shared/codex/environment.ts';
+import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/codex/environment.ts';
 import { pipelineAgentSteps, preflightAgentSteps } from '../shared/agents/preflight.ts';
+import { checkFfmpeg, reportFfmpeg } from '../shared/ffmpeg.ts';
+import { referenceNeedsGeneration } from '../shared/part/reference-normalization.ts';
 
 export type PipelineExecution = (id: PipelineId, run: TaskRun, context: {
   signal: AbortSignal; progress(message: string): void; started(pid: number): Promise<void>;
@@ -60,6 +62,7 @@ export const executeChild: PipelineExecution = async (id, run, context) => {
 export async function runTask(options: TaskOptions, dependencies: {
   execute?: PipelineExecution; signal?: AbortSignal; progress?: (message: string) => void;
   ready?: (run: TaskRun) => void;
+  environment?: WorkflowEnvironment;
   preflight?: (path: string) => Promise<KritaInstallation>;
   save?: typeof saveRun;
 } = {}): Promise<TaskRun> {
@@ -86,14 +89,18 @@ export async function runTask(options: TaskOptions, dependencies: {
     run.status = 'running'; delete run.error; delete run.output; delete run.activePipeline;
     run.runner = { id: randomUUID(), pid: process.pid, startedAt: now() };
     await persist();
-    if (!dependencies.execute) {
-      const environment = loadWorkflowEnvironment();
+    const environment = !dependencies.execute || dependencies.environment ? dependencies.environment ?? loadWorkflowEnvironment() : undefined;
+    const selected = selectedPipelines(run.from, run.to);
+    if (environment) {
       const standard = run.standard;
-      await preflightAgentSteps(environment, selectedPipelines(run.from, run.to).flatMap(id => pipelineAgentSteps(id, standard)));
+      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard)));
     }
     if (selectedPipelines(run.from, run.to).some(id => id.includes('raster') || id === 'character-assembly')) {
       if (!run.krita) throw new Error('本次路线包含 Krita 步骤，请用 --krita 指定已安装的可执行文件；不会自动下载或搜索。');
-      await (dependencies.preflight ?? checkKrita)(run.krita);
+      await (dependencies.preflight ? dependencies.preflight(run.krita) : checkKrita(run.krita, undefined, environment?.codex.env));
+    }
+    if (environment && (await Promise.all(selected.map(id => referenceNeedsGeneration(id, run!.name, run!.dir)))).some(Boolean)) {
+      progress(reportFfmpeg(await checkFfmpeg({ env: environment.codex.env, krita: run.krita })));
     }
     signal.throwIfAborted();
     dependencies.ready?.(run);

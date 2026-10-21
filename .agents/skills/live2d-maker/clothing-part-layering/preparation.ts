@@ -1,6 +1,7 @@
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
+import { checkFfmpeg, reportFfmpeg, type FfmpegOptions } from '../shared/ffmpeg.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
-import { pipelineDirectory } from '../shared/paths.ts';
+import { pipelineDirectory, resolveInput } from '../shared/paths.ts';
 import { simplifiedCharacter } from '../shared/upstream.ts';
 import { randomUUID } from 'node:crypto';
 import { copyFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
@@ -66,7 +67,8 @@ export async function loadPreparedReferences(runName: string, root?: string): Pr
 }
 
 export async function prepareReferences(input: PreparationInput, steps: PreparationSteps,
-  progress?: (message: string) => void): Promise<PreparationReferences> {
+  progress?: (message: string) => void, options: FfmpegOptions = {}): Promise<PreparationReferences> {
+  const normalization = { ...options, krita: options.krita ?? (input.krita && resolveInput(input.runName, input.krita, input.dir)) };
   const directory = getPreparationDirectory(input.runName, input.dir);
   if (input.image !== undefined) throw new Error('clothing-part-layering 按 --name 读取上游简化角色，不接受 --image；请将图片放到同名 part-layering/references/simplified-subject.png。');
   if (input.standard !== undefined) throw new Error('--standard / --no-standard 只适用于人物 part 的 preparation；衣服按 --name 读取上游简化角色。');
@@ -80,7 +82,9 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   }
   // A regenerated clothing reference cannot reuse decomposition of the previous image.
   const standard = join(pipelineDirectory(input.runName, 'part-layering', input.dir), 'references/standard.png');
-  if (!await exists(standard)) throw new Error('纯衣服参考后处理缺少上游 standard.png');
+  if (!await exists(standard)) throw new Error(`纯衣服参考后处理缺少上游：${standard}。请先执行同名 part-layering，或手动放置上游 standard.png 到该路径。`);
+  const ffmpeg = await checkFfmpeg(normalization);
+  progress?.(reportFfmpeg(ffmpeg));
   const standardHash = hash(await readFile(standard));
   const meta = await sharp(standard).metadata();
   const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
@@ -90,7 +94,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
   try {
     await steps.extract(image, temporary, prompt);
-    await normalizeGeneratedReference(temporary, standard, directory, 'clothing');
+    await normalizeGeneratedReference(temporary, standard, directory, 'clothing', normalization);
     await checkImage(temporary, standard);
     const record = { version: 1, inputHash: hash(await readFile(image)), clothingHash: hash(await readFile(temporary)),
       standardHash, tool: 'image_generation', promptHash: hash(Buffer.from(prompt)) };

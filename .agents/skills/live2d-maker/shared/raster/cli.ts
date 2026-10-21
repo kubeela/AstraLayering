@@ -1,5 +1,6 @@
 import { resolveRunsDirectory } from '../paths.ts';
 import { checkKrita } from './krita.ts';
+import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { runWorkflow, type KritaPipeline } from './workflow.ts';
 import { parseArgs } from 'node:util';
 
@@ -21,7 +22,7 @@ export async function runCli<Input>(pipeline: KritaPipeline<Input>, help: string
   const args = parseRunArguments(process.argv.slice(2));
   if (args.help) { console.log(help); return; }
   if (args['check-krita']) {
-    console.log(JSON.stringify(await checkKrita(args.krita!), null, 2));
+    console.log(JSON.stringify(await checkKrita(args.krita!, undefined, loadWorkflowEnvironment().codex.env), null, 2));
     return;
   }
   const controller = new AbortController();
