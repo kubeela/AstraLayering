@@ -6,7 +6,7 @@ tags:
 
 # ViTMatte model
 
-ViTMatte model trained on Composition-1k. It was introduced in the paper [ViTMatte: Boosting Image Matting with Pretrained Plain Vision Transformers](https://arxiv.org/abs/2305.15272) by Yao et al. and first released in [this repository](https://github.com/hustvl/ViTMatte). 
+ViTMatte model trained on Composition-1k. It was introduced in the paper [ViTMatte: Boosting Image Matting with Pretrained Plain Vision Transformers](https://arxiv.org/abs/2305.15272) by Yao et al. and first released in [this repository](https://github.com/hustvl/ViTMatte).
 
 Disclaimer: The team releasing ViTMatte did not write a model card for this model so this model card has been written by the Hugging Face team.
 
@@ -32,7 +32,7 @@ We refer to the [docs](https://huggingface.co/docs/transformers/main/en/model_do
 
 ```bibtex
 @misc{yao2023vitmatte,
-      title={ViTMatte: Boosting Image Matting with Pretrained Plain Vision Transformers}, 
+      title={ViTMatte: Boosting Image Matting with Pretrained Plain Vision Transformers},
       author={Jingfeng Yao and Xinggang Wang and Shusheng Yang and Baoyuan Wang},
       year={2023},
       eprint={2305.15272},
