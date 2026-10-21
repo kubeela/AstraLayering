@@ -29,7 +29,7 @@ try{
  const dxMap=await sharp(flipped.data,{raw:{width:flipped.info.width,height:flipped.info.height,channels:4}}).png().toBuffer();
  await page.locator('#file-normal').setInputFiles({name:'normal-directx.png',mimeType:'image/png',buffer:dxMap});
  await page.waitForFunction(()=>!window.studioDiagnostics().busy);assert.equal((await diagnostics()).surface.active,false,'map replacement kept a stale trial');
- await page.locator('#normal-y').selectOption('-1');await page.locator('#surface-prepare').click();await page.waitForFunction(()=>!document.querySelector('#surface-prepare').disabled,null,{timeout:90000});assert((await diagnostics()).surface.active);
+ await page.locator('#maps-panel details summary').click();await page.locator('#normal-y').selectOption('-1');await page.locator('#surface-prepare').click();await page.waitForFunction(()=>!document.querySelector('#surface-prepare').disabled,null,{timeout:90000});assert((await diagnostics()).surface.active);
  await page.locator('#surface-part').selectOption(group.id);await page.locator('#surface-x').fill('210');await page.locator('#surface-y').fill('-505');await page.locator('#surface-angle').fill('18');await page.locator('#surface-front').check();await settle();
  const dxRotated=await capture('rotated-directx-lit'),glPixels=await sharp(rotated).raw().toBuffer(),dxPixels=await sharp(dxRotated).raw().toBuffer();let directionError=0;for(let p=0;p<glPixels.length;p++)directionError+=Math.abs(glPixels[p]-dxPixels[p]);directionError/=glPixels.length;assert(directionError<.5,'OpenGL/DirectX rotation diverged: '+directionError);
  await page.locator('#surface-replace').selectOption('arms/arm_left/hand');await settle();await capture('replacement-lit');
