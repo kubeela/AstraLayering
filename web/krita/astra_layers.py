@@ -4,11 +4,13 @@ Krita owns compositing, masks, clipping imports, blend modes and color managemen
 The HTTP service owns document tokens, upload boundaries, revisions and lifetime.
 """
 from krita import Krita, Extension, InfoObject
-from PyQt5.QtCore import QTimer, QBuffer, QIODevice
+from PyQt5.QtCore import QTimer, QBuffer, QIODevice, QRect
+from PyQt5.QtGui import QImage
 from pathlib import Path
 import os
 import json
 import traceback
+import re
 
 ROOT = Path(os.environ['ASTRA_LAYER_BRIDGE']).resolve()
 BLENDS = {'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten'}
@@ -172,6 +174,51 @@ class Layers(Extension):
         if not session['doc'].exportImage(str(path), config):
             raise ValueError('Krita 未能导出合成图')
 
+    def surfaces(self, session, directory):
+        """Read-only source-UV snapshot. Never mutate node visibility or masks.
+        Backdrop-dependent compositing stays on the native document route.
+        """
+        doc = session['doc']
+        if doc.colorModel() != 'RGBA' or doc.colorDepth() != 'U8' or 'srgb' not in doc.colorProfile().lower():
+            raise ValueError('部件试验需要 8 位 sRGB 图层；请在 Krita 中另存副本')
+        for key, node in session['nodes'].items():
+            if node.type() == 'grouplayer':
+                if node.opacity() != 255 or node.blendingMode() != 'normal' or any(n.type().endswith('mask') for n in node.childNodes()):
+                    raise ValueError('带组蒙版或组混合的工程请先整理为独立部件；原生图层编辑仍可使用')
+            elif not node.type().endswith('mask') and (node.type() != 'paintlayer' or node.blendingMode() != 'normal' or node.inheritAlpha()):
+                raise ValueError('部件试验需要普通绘画层；剪贴和高级混合仍由原生图层编辑保留')
+            if node.type() == 'transformmask' or node.type() == 'filtermask':
+                raise ValueError('请先将变形或滤镜蒙版整理到部件副本，再进行部件试验')
+        records = []
+        directory.mkdir(exist_ok=True)
+        for row in reversed(session['rows']):
+            node = session['nodes'][row['id']]
+            if node.type() != 'paintlayer':
+                continue
+            b = node.bounds().intersected(QRect(0, 0, doc.width(), doc.height()))
+            if b.isEmpty():
+                continue
+            files = {}
+            for kind, read in [('original', node.pixelData), ('masked', node.projectionPixelData)]:
+                raw = bytes(read(b.x(), b.y(), b.width(), b.height()))
+                if len(raw) != b.width() * b.height() * 4:
+                    raise ValueError('部件像素格式不匹配')
+                image = QImage(raw, b.width(), b.height(), b.width() * 4, QImage.Format_ARGB32).copy()
+                name = 'part-%d-%s.png' % (len(records), kind)
+                if not image.save(str(directory / name), 'PNG'):
+                    raise ValueError('无法读取部件像素')
+                files[kind] = name
+            visible = node.visible()
+            parent = row['parentId']
+            while parent:
+                visible = visible and session['nodes'][parent].visible()
+                parent = next(r['parentId'] for r in session['rows'] if r['id'] == parent)
+            name = re.sub(r'^\d+\s+', '', re.sub(r'^(人物|衣服)\s*\|\s*', '', row['name']))
+            group = name.rsplit('/', 1)[0] if '/' in name else row['parentId'] or row['id']
+            records.append({'id':row['id'], 'partId':group, 'name':name, 'visible':visible, 'opacity':node.opacity(),
+                            'bounds':{'x':b.x(), 'y':b.y(), 'width':b.width(), 'height':b.height()}, **files})
+        return {'layers':records, 'width':doc.width(), 'height':doc.height()}
+
     def run(self, job):
         key = job['session']
         if job['op'] == 'open':
@@ -197,6 +244,8 @@ class Layers(Extension):
         if key not in self.docs:
             raise ValueError('图层会话已结束，请重新打开文件')
         session = self.docs[key]
+        if job['op'] == 'surfaces':
+            return self.surfaces(session, Path(job['output']))
         if job['op'] == 'close':
             session['doc'].setModified(False)
             session['doc'].close()

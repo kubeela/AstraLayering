@@ -1,5 +1,6 @@
 import { LightingStage, loadImage } from "./renderer.js";
 import { LayerPanel } from "./layer-panel.js";
+import { SurfacePreview } from "./surface-preview.js";
 import { stateKey } from "./layer-model.js";
 import { openDocument } from "./document-loader.js";
 import {
@@ -25,6 +26,7 @@ const state = {
   inputs: null,
   busy: false,
   layerBusy: false,
+  surfaceActive: false,
   projectOpening: false,
   waitingProject: null,
   generation: 0,
@@ -298,11 +300,11 @@ function sync() {
     el.classList.toggle("active", view === state.view);
   }
   for (const id of ["export-image", "export-recipe", "actual"])
-    $("#" + id).disabled = !state.source || state.busy || state.layerBusy;
+    $("#" + id).disabled = !state.source || state.busy || state.layerBusy || (id === 'export-recipe' && state.surfaceActive);
   $("#refresh-project").disabled = $("#retry-project").disabled =
     state.busy || state.layerBusy;
   $("#open-task").disabled = state.busy || state.layerBusy;
-  $(".layer-panel").inert = state.projectOpening;
+  $(".layer-panel").inert = state.projectOpening || state.surfaceActive;
   for (const k of ["normal", "depth"]) {
     $("#file-" + k).disabled = $("#remove-" + k).disabled =
       state.busy || state.layerBusy;
@@ -345,6 +347,7 @@ for (const k of ["shade", "background"])
 $("#normal-y").onchange = (e) => {
   state.settings.normalY = Number(e.target.value);
   apply(true);
+  if (surfaces.active) surfaces.schedule();
 };
 $("#shadow").onchange = (e) => {
   state.settings.shadow = e.target.checked;
@@ -516,6 +519,7 @@ const layers = new LayerPanel({
   },
   async composite(owner, data, color) {
     if (state.source?.layerDocument !== owner.layerDocument) return;
+    surfaces.clear();
     const source = state.source;
     const key = data.baseline ? "baseline" : stateKey(data.layers);
     const maps = source.mapBindings.get(key) || {};
@@ -539,6 +543,8 @@ const layers = new LayerPanel({
     }
   },
 });
+const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=>layers.session?{session:layers.session,revision:layers.revision}:null, error:toast,
+  changed(active){state.surfaceActive=active;sync();}});
 function showSource() {
   const source = state.source;
   $("#document-info").hidden = !source;
@@ -599,6 +605,8 @@ function finish(id) {
   sync();
 }
 async function install(source, id, reset = true) {
+  // Rebinding invalidates preparations that have not reached active preview yet.
+  surfaces.clear();
   const urls = {};
   try {
     for (const k of ["color", "normal", "depth"])
@@ -625,6 +633,7 @@ async function install(source, id, reset = true) {
       stage.pan = priorPan;
     }
     if (reset) {
+      surfaces.clear();
       state.waitingProject = null;
       source.layerDocument = Symbol("document");
       source.layerKey = "baseline";
@@ -731,6 +740,7 @@ $("#download-document").onclick = () => {
   if (state.source?.file) download(state.source.file, state.source.name);
 };
 $("#close-document").onclick = () => {
+  surfaces.clear();
   layers.clear();
   state.generation++;
   state.busy = false;
@@ -938,11 +948,13 @@ else if (
   void openJianma();
 else if (requested.get("name")) void openProject(requested.get("name"));
 window.addEventListener("pagehide", () => {
+  surfaces.clear();
   layers.clear(true);
   cancelAnimationFrame(frame);
   stage.dispose();
 });
 window.studioDiagnostics = () => ({
+  surface: surfaces.diagnostics(),
   renderer: rendererVersion,
   document: state.source?.name,
   sample: state.source?.sample,
