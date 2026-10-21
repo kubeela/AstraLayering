@@ -6,6 +6,8 @@
 
 Agent 会在启动前检查所选路线的依赖。缺少 Krita 时先与你确认安装方案，再帮助安装：有桌面优先推荐官方原生安装包配合 computer use，也可选择 Krita 配合无桌面显示环境的 headless 方案。
 
+首次没有 `.env` 时，agent 会先让你确认[默认、优化或自定义模型方案](references/model-presets.md)，再填写配置。人物与衣服按职责共用 LLM 模型；每个拥有生图工具的 agent 可独立选择生图模型。已有 `.env` 继续复用。
+
 数据默认保存在 `<仓库>/.run/<name>/`，独立安装时为 `<skill上一级>/.run/<name>/`；可用管线参数 `--dir <运行根目录绝对路径>` 指定。仓库根目录执行 `pnpm web` 启动可视化工作台；独立 skill 不包含网页代码，安装与连接见[工作台说明](references/workbench.md)。交付为静态分层素材，尚不包含 Cubism 绑定与动画。
 
 从 skill 根目录执行总入口：`pnpm start --name <任务名> --image <参考图> --krita <可执行文件> --background`。续跑用 `pnpm start --name <任务名> --background`，查询加 `--status`；自定义运行根目录时始终附带相同 `--dir <绝对路径>`。总控进度保存在 `<运行根目录>/<任务名>/run.json`。

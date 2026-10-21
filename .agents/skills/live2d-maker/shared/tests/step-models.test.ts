@@ -5,9 +5,10 @@ import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
+import { parseEnv } from 'node:util';
 import sharp from 'sharp';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
-import { modelHarnesses, stepDefaults, imageSteps, parseAgentModel } from '../agents/models.ts';
+import { modelHarnesses, modelSlotDefaults, stepModelSlots, stepDefaults, imageSteps, parseAgentModel } from '../agents/models.ts';
 import { imageGenerationTool, validateImageSelection } from '../agents/images.ts';
 import { cliExecutable, runCliTask } from '../agents/cli.ts';
 import { CodexAgents } from '../codex/agents.ts';
@@ -20,7 +21,7 @@ async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
   t.after(() => rm(root, { recursive: true, force: true })); return root;
 }
 
-test('all enumerated models and efforts resolve to their harness; step overrides remain independent', async t => {
+test('model roles are shared by character/clothing, repairs use drawing roles, groups and depth stay independent', async t => {
   for (const [id, harness] of Object.entries(modelHarnesses)) for (const effort of ['low', 'medium', 'high', 'xhigh']) {
     assert.deepEqual(parseAgentModel(`${id}-${effort}`, 'fixture'), { model: id, harness, effort });
   }
@@ -28,11 +29,27 @@ test('all enumerated models and efforts resolve to their harness; step overrides
   assert.throws(() => parseAgentModel('unlisted-high', 'fixture'));
   assert.throws(() => parseAgentModel('constructor-high', 'fixture'));
   const root = await fixture(t);
-  await writeFile(join(root, '.env'), 'layering_part_outline_review_model=gemini-4-argon-high\nlayering_clothing_outline_review_model=claude-sonnet-5.5-low\n');
-  const settings = loadWorkflowEnvironment({ layering_part_outline_review_model: 'claude-haiku-5.5-medium' }, root);
+  await writeFile(join(root, '.env'), 'layering_agent_part_review_model=gemini-4-argon-high\nlayering_agent_part_draw_model=claude-sonnet-5.5-low\nlayering_agent_part_groups_model=gemini-4-argon-high\n');
+  const settings = loadWorkflowEnvironment({ layering_agent_part_review_model: 'claude-haiku-5.5-medium',
+    layering_agent_raster_step02_model: 'claude-opus-5.5-medium', layering_agent_raster_step02_review_model: 'gemini-4-argon-high' }, root);
   assert.equal(settings.stepModels.part_outline_review.model, 'claude-haiku-5.5');
-  assert.equal(settings.stepModels.clothing_outline_review.model, 'claude-sonnet-5.5');
-  assert.equal(settings.stepModels.part_outline.model, 'gpt-6.1-sol');
+  assert.deepEqual(settings.stepModels.clothing_outline_review, settings.stepModels.part_outline_review);
+  for (const step of ['part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair'] as const) {
+    assert.deepEqual(settings.stepModels[step], parseAgentModel('claude-sonnet-5.5-low', 'fixture'));
+  }
+  for (const step of ['part_initial_groups', 'part_children', 'clothing_initial_groups', 'clothing_children'] as const) {
+    assert.equal(settings.stepModels[step].model, 'gemini-4-argon');
+  }
+  assert.equal(settings.stepModels.part_occlusion.model, 'gpt-6.1-sol');
+  assert.deepEqual(settings.stepModels.clothing_occlusion, settings.stepModels.part_occlusion);
+  for (const step of ['raster_step02', 'raster_step02_repair', 'clothing_raster_step02', 'clothing_raster_step02_repair'] as const) {
+    assert.deepEqual(settings.stepModels[step], parseAgentModel('claude-opus-5.5-medium', 'fixture'));
+  }
+  assert.deepEqual(settings.stepModels.raster_step02_review, parseAgentModel('gemini-4-argon-high', 'fixture'));
+  assert.deepEqual(settings.stepModels.clothing_raster_step02_review, settings.stepModels.raster_step02_review);
+  for (const [step, role] of Object.entries(stepModelSlots)) if (role === 'preparation') {
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel('gpt-6.1-sol-low', 'fixture'));
+  }
   assert.equal(settings.stepModels.raster_step01.model, 'gpt-6-astra');
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
   assert.ok(!pipelineAgentSteps('clothing-part-layering').some(step => step.startsWith('clothing_raster_')));
@@ -40,26 +57,76 @@ test('all enumerated models and efforts resolve to their harness; step overrides
   assert.ok(pipelineAgentSteps('part-layering', true).includes('part_standardize'));
 });
 
-test('native imagegen forbids non-Codex image steps; text-only review can select agv', async t => {
+test('every image-capable agent rejects native imagegen with a different harness; part review stays text-only', async t => {
   const root = await fixture(t);
-  const settings = loadWorkflowEnvironment({ layering_part_simplify_model: 'gemini-4-argon-high',
-    layering_part_outline_review_model: 'gemini-4-argon-high' }, root);
-  assert.throws(() => validateImageSelection(settings, 'part_simplify'), /Codex 内置 imagegen.*harness.*agv/);
+  for (const step of imageSteps) {
+    const settings = loadWorkflowEnvironment({ [`layering_agent_${stepModelSlots[step]}_model`]: 'gemini-4-argon-high' }, root);
+    assert.throws(() => validateImageSelection(settings, step), /Codex 内置 imagegen.*harness.*agv/, step);
+  }
+  const settings = loadWorkflowEnvironment({ layering_agent_part_review_model: 'gemini-4-argon-high' }, root);
   validateImageSelection(settings, 'part_outline_review');
   await assert.rejects(cliExecutable(loadWorkflowEnvironment({ PATH: '' }, root), 'claude'), /全局入口.*不会自动安装/);
   const custom = loadWorkflowEnvironment({ layering_part_simplify_image_model: 'gemini-nano-banana-2.1' }, root);
   assert.throws(() => validateImageSelection(custom, 'part_simplify'), /缺少 google/);
 });
 
-test('example.env loads and enumerates every step and image choice', async t => {
+test('default template covers model roles and individual image choices without changing other defaults', async t => {
   const contents = await readFile(new URL('../../example.env', import.meta.url), 'utf8');
-  for (const step of Object.keys(stepDefaults)) assert.match(contents, new RegExp(`^layering_${step}_model=`, 'm'));
-  for (const step of imageSteps) assert.match(contents, new RegExp(`^layering_${step}_image_model=`, 'm'));
+  const variables = parseEnv(contents);
+  assert.equal(Object.keys(modelSlotDefaults).length, 12);
+  for (const role of Object.keys(modelSlotDefaults)) assert.ok(Object.hasOwn(variables, `layering_agent_${role}_model`));
+  for (const step of imageSteps) assert.ok(Object.hasOwn(variables, `layering_${step}_image_model`));
+  assert.equal(Object.keys(variables).filter(key => key.endsWith('_image_model') && key !== 'layering_default_image_model').length, imageSteps.length);
   const root = await fixture(t);
   await writeFile(join(root, '.env'), contents);
   const settings = loadWorkflowEnvironment({}, root);
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
+  assert.deepEqual(settings.stepModels, loadWorkflowEnvironment({}, await fixture(t)).stepModels);
   assert.ok(imageSteps.every(step => settings.stepImages[step] === 'codex-native'));
+});
+
+test('optimized preset only changes part roles and selected image tools; custom overrides preserve the base', async t => {
+  const base = parseEnv(await readFile(new URL('../../example.env', import.meta.url), 'utf8'));
+  const overrides = parseEnv(await readFile(new URL('../../presets/optimized.env', import.meta.url), 'utf8'));
+  const variables = { ...base, ...overrides, layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture' };
+  const root = await fixture(t);
+  await writeFile(join(root, '.env'), Object.entries(variables).map(([key, value]) => `${key}=${value}\n`).join(''));
+  const settings = loadWorkflowEnvironment({}, root);
+  for (const [step, role] of Object.entries(stepModelSlots)) {
+    const expected = role.startsWith('part_') ? 'gemini-4-argon-high' : modelSlotDefaults[role];
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected, 'fixture'), step);
+  }
+  const nanoSteps = new Set(['part_simplify', 'part_base_subject', 'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair']);
+  for (const step of imageSteps) {
+    assert.equal(settings.stepImages[step], nanoSteps.has(step) ? 'gemini-nano-banana-2.1' : 'codex-native', step);
+    validateImageSelection(settings, step);
+  }
+  assert.equal(settings.imageCompactThreshold, undefined);
+  assert.deepEqual(settings.codex.config, {});
+  const custom = loadWorkflowEnvironment({ layering_agent_part_review_model: 'claude-sonnet-5.5-xhigh', layering_part_simplify_image_model: 'gpt-image-2.5-flare',
+    layering_openai_image_base_url: 'https://images.example/v1', layering_openai_image_api_key: 'fixture' }, root);
+  assert.equal(custom.stepModels.part_outline_review.model, 'claude-sonnet-5.5');
+  assert.deepEqual(custom.stepModels.clothing_outline_review, custom.stepModels.part_outline_review);
+  assert.equal(custom.stepImages.part_simplify, 'gpt-image-2.5-flare');
+  assert.equal(custom.stepImages.part_base_subject, 'gemini-nano-banana-2.1');
+  assert.deepEqual(custom.stepModels.raster_step02, settings.stepModels.raster_step02);
+  for (const step of imageSteps) validateImageSelection(custom, step);
+});
+
+test('consistent legacy settings are shared, conflicts require an explicit role, and new configuration wins', async t => {
+  const root = await fixture(t);
+  const consistent = loadWorkflowEnvironment({ layering_part_outline_model: 'claude-sonnet-5.5-high', layering_clothing_outline_model: 'claude-sonnet-5.5-high' }, root);
+  assert.deepEqual(consistent.stepModels.part_outline_repair, consistent.stepModels.clothing_outline);
+  const conflict = { layering_part_outline_model: 'claude-sonnet-5.5-high', layering_clothing_outline_model: 'gemini-4-argon-high' };
+  assert.throws(() => loadWorkflowEnvironment(conflict, root), /不一致.*layering_agent_part_draw_model/);
+  assert.throws(() => loadWorkflowEnvironment({ layering_raster_step02_model: 'gpt-6-astra-high', layering_raster_step02_repair_model: 'gpt-6-astra-low' }, root), /不一致.*layering_agent_raster_step02_model/);
+  const unified = loadWorkflowEnvironment({ ...conflict, layering_agent_part_draw_model: 'gpt-6.1-sol-xhigh' }, root);
+  assert.deepEqual(unified.stepModels.part_outline, unified.stepModels.clothing_outline);
+  assert.equal(unified.stepModels.part_outline.model, 'gpt-6.1-sol');
+  const oldFile = Object.entries(stepDefaults).map(([step, value]) => `layering_${step}_model=${stepModelSlots[step as keyof typeof stepModelSlots] === 'preparation' ? 'gpt-6.1-sol-xhigh' : value}\n`).join('');
+  await writeFile(join(root, '.env'), oldFile);
+  assert.equal(loadWorkflowEnvironment({}, root).stepModels.part_simplify.effort, 'xhigh');
+  assert.equal(await readFile(join(root, '.env'), 'utf8'), oldFile);
 });
 
 test('custom image edit transports original prompts and images over both protocols and preserves inputs', async t => {
@@ -85,20 +152,30 @@ test('custom image edit transports original prompts and images over both protoco
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => new Promise<void>(done => server.close(() => done())));
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
-  for (const mode of ['openai', 'gemini']) {
+  let definition: unknown;
+  for (const [provider, model, mode] of [
+    ['google', 'gemini-nano-banana-2.1', 'openai'],
+    ['google', 'gemini-nano-banana-2.1', 'gemini'],
+    ['openai', 'gpt-image-2.5-flare', 'openai'],
+  ]) {
     protocol = mode;
-    const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: 'gemini-nano-banana-2.1',
-      layering_google_image_base_url: base + (mode === 'gemini' ? '/v1beta' : '/v1'),
-      layering_google_image_api_key: 'image-test-secret', layering_google_image_protocol: mode }, root);
-    const tool = imageGenerationTool(settings, 'part_simplify', join(root, mode), [root])!;
+    const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: model,
+      [`layering_${provider}_image_base_url`]: base + (mode === 'gemini' ? '/v1beta' : '/v1'),
+      [`layering_${provider}_image_api_key`]: 'image-test-secret', [`layering_${provider}_image_protocol`]: mode }, root);
+    const outputDirectory = `${provider}-${mode}`;
+    const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory), [root])!;
+    const current = { name: tool.name, description: tool.description, inputSchema: tool.inputSchema };
+    if (definition) assert.deepEqual(current, definition);
+    else definition = current;
+    assert.ok(!Object.hasOwn((tool.inputSchema as { properties: Record<string, unknown> }).properties, 'model'));
     const result = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source] }, new AbortController().signal);
     const output = JSON.parse((result.contentItems[0] as { text: string }).text);
-    assert.ok(relative(root, output.savedPath).startsWith(mode));
+    assert.ok(relative(root, output.savedPath).startsWith(outputDirectory));
     assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
     await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /允许范围/);
   }
-  assert.equal(called, 2);
+  assert.equal(called, 3);
 });
 
 const fakeCli = `#!${process.execPath}
@@ -113,8 +190,8 @@ let input='';for await(const chunk of process.stdin)input+=chunk;
 const config=kind==='claude'?args[args.indexOf('--mcp-config')+1]:join(process.env.ANTIGRAVITY_GEMINI_DIR,'config/mcp_config.json');
 const registry=JSON.parse(await readFile(config,'utf8')).mcpServers.layering.env;
 const rpc=async(method,params)=>{const response=await fetch(registry.LAYERING_MCP_URL,{method:'POST',headers:{authorization:'Bearer '+registry.LAYERING_MCP_TOKEN},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});return (await response.json()).result;};
-const list=await rpc('tools/list',{});
-if(list.tools.length)await rpc('tools/call',{name:list.tools[0].name,arguments:{}});
+const list=await rpc('tools/list',{}), echo=list.tools.find(tool=>tool.name==='fixture_echo');
+if(echo)await rpc('tools/call',{name:echo.name,arguments:{}});
 const id=resumed||randomUUID();
 console.log(JSON.stringify(kind==='claude'?{type:'system',subtype:'init',session_id:id}:{event:'init',conversation_id:id}));
 const meta={args,cwd:process.cwd(),data:process.env.CLAUDE_CONFIG_DIR,agvData:process.env.ANTIGRAVITY_APP_DATA_DIR,input:JSON.parse(input),id,resumed};
@@ -149,7 +226,7 @@ test('unavailable CLI sessions are replaced once without deleting existing deliv
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   await writeFile(join(cwd, 'keep.svg'), 'existing');
-  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_part_outline_review_model: 'claude-sonnet-5.5-high' }, root);
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_part_review_model: 'claude-sonnet-5.5-high' }, root);
   await mkdir(join(cwd, 'agents'), { recursive: true });
   await mkdir(join(cwd, 'agents/old-data'), { recursive: true });
   await mkdir(join(cwd, 'agents/old-workspace'), { recursive: true });
@@ -170,16 +247,19 @@ test('model/effort changes resume within a harness, switching harness creates a 
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   await writeFile(join(cwd, 'keep.svg'), 'existing');
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli,
-    layering_part_outline_model: 'claude-sonnet-5.5-high', layering_part_outline_repair_model: 'claude-opus-5.5-xhigh',
-    layering_part_outline_review_model: 'gemini-4-argon-high' }, root);
+    layering_agent_part_draw_model: 'claude-sonnet-5.5-high', layering_agent_part_completion_model: 'claude-opus-5.5-xhigh',
+    layering_agent_part_review_model: 'gemini-4-argon-high', layering_default_image_model: 'gemini-nano-banana-2.1',
+    layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture' }, root);
   const replaced: string[] = [];
   const agent = new CodexAgents({ environment: settings, cwd, logDirectory: join(cwd, 'agents'), onThreadReplacement: async id => { replaced.push(id); } });
   const session = agent.createSession();
   try {
     const first = await session.run({ step: 'part_outline', name: 'drawing', cwd, prompt: 'draw' });
     const repair = await session.run({ step: 'part_outline_repair', name: 'repair', cwd, prompt: 'repair' });
+    const differentModel = await session.run({ step: 'part_completion', name: 'completion', cwd, prompt: 'complete' });
     const switched = await session.run({ step: 'part_outline_review', name: 'handoff', cwd, prompt: 'continue from file' });
     assert.equal(first.threadId, repair.threadId); assert.notEqual(first.threadId, switched.threadId);
+    assert.equal(first.threadId, differentModel.threadId);
     assert.deepEqual(replaced, [first.threadId]);
     const records = JSON.parse(await readFile(join(cwd, 'agents/sessions.json'), 'utf8'));
     assert.equal(records[first.threadId!].harness, 'claude'); assert.equal(records[switched.threadId!].harness, 'agv');
@@ -211,7 +291,8 @@ try { await readFile(flag); } catch {
 }
 const meta=`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"summary\":\"recovered\"}'");
   await writeFile(cli, script, { mode: 0o700 });
-  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_raster_step02_model: 'claude-sonnet-5.5-high' }, root);
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_raster_step02_model: 'claude-sonnet-5.5-high',
+    layering_raster_step02_image_model: 'gemini-nano-banana-2.1', layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture' }, root);
   const ids: string[] = [], retries: number[] = [];
   const result = await runAgent({ directory: cwd, step: 'raster_step02', model: 'claude-sonnet-5.5', effort: 'high',
     environment: settings, prompt: 'continue', async onEvent(event) {
@@ -222,4 +303,37 @@ const meta=`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"su
   assert.equal(ids.length, 1);
   const records = JSON.parse(await readFile(join(cwd, 'agents/sessions.json'), 'utf8'));
   assert.deepEqual(Object.keys(records), ids);
+});
+
+test('raster custom image tools read sibling upstream references inside the task and reject other tasks', async t => {
+  const root = await fixture(t), task = join(root, 'case'), cwd = join(task, 'raster-layering/step01');
+  const upstream = join(task, 'part-layering/references'), source = join(upstream, 'base-subject.png'), other = join(root, 'other.png');
+  await mkdir(cwd, { recursive: true }); await mkdir(upstream, { recursive: true });
+  const png = await sharp({ create: { width: 4, height: 4, channels: 4, background: '#ff000080' } }).png().toBuffer();
+  await writeFile(source, png); await writeFile(other, png);
+  let called = 0;
+  const server = createServer(async (req, res) => {
+    const chunks = []; for await (const chunk of req) chunks.push(chunk);
+    assert.ok(Buffer.concat(chunks).includes(png)); called++;
+    res.end(JSON.stringify({ data: [{ b64_json: png.toString('base64') }] }));
+  });
+  server.listen(0, '127.0.0.1'); await once(server, 'listening');
+  t.after(() => new Promise<void>(done => server.close(() => done())));
+  const cli = join(root, 'image-cli.mjs');
+  const script = fakeCli.replace('const id=resumed||randomUUID();', `
+const imageTool=list.tools.find(tool=>tool.name==='image_generation');
+if(!imageTool)throw new Error('missing image tool');
+const generated=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fixture',input_images:[process.env.LAYERING_TEST_REFERENCE]}});
+if(generated.isError)throw new Error(generated.content[0].text);
+const outside=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fixture',input_images:[process.env.LAYERING_TEST_OTHER_REFERENCE]}});
+if(!outside.isError)throw new Error('outside task was accepted');
+const id=resumed||randomUUID();`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"summary\":\"generated\"}'");
+  await writeFile(cli, script, { mode: 0o700 });
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_raster_step01_model: 'claude-sonnet-5.5-high',
+    layering_raster_step01_image_model: 'gpt-image-2.5-flare', layering_openai_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}/v1`,
+    layering_openai_image_api_key: 'fixture', LAYERING_TEST_REFERENCE: source, LAYERING_TEST_OTHER_REFERENCE: other }, root);
+  const result = await runAgent({ directory: cwd, imageRoots: [task], step: 'raster_step01', model: 'claude-sonnet-5.5', effort: 'high',
+    environment: settings, prompt: 'generate', onEvent: async () => {} }, undefined, new AgentRuntime(1));
+  assert.equal(result.summary, 'generated'); assert.equal(called, 1);
+  assert.deepEqual(await readFile(source), png);
 });

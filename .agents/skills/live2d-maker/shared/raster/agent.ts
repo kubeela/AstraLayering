@@ -23,6 +23,7 @@ export type AgentRequest = {
   environment?: WorkflowEnvironment;
   threadId?: string;
   tools?: FunctionTool[];
+  imageRoots?: readonly string[];
   signal?: AbortSignal;
   onEvent: (event: ThreadEvent) => Promise<void>;
   onRetry?: (retry: AgentRetry) => Promise<void> | void;
@@ -43,7 +44,8 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       await checkCodexCapabilities(environment);
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
         prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
-      const tool = imageGenerationTool(environment, request.step!, log.directory, [dirname(request.directory)])!;
+      const tool = imageGenerationTool(environment, request.step!, log.directory,
+        [request.directory, ...(request.imageRoots ?? [dirname(request.directory)])])!;
       const bridge = await createMcpBridge([tool], request.signal || new AbortController().signal, event => log.recordProtocol(event));
       const codex = new Codex(workflowCodexOptions(environment, { config: { features: { image_generation: false },
         mcp_servers: { layering_image: bridge.config } } }));
@@ -67,7 +69,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       const session = agents.createSession(request.threadId);
       try {
         const result = await session.run({ step: request.step, name: request.step || 'raster', prompt: request.prompt, recoveryPrompt: request.recoveryPrompt,
-          cwd: request.directory, sandboxMode: 'danger-full-access', tools: request.tools, imageRoots: [dirname(request.directory)],
+          cwd: request.directory, sandboxMode: 'danger-full-access', tools: request.tools, imageRoots: request.imageRoots ?? [dirname(request.directory)],
           outputSchema: { type: 'object', additionalProperties: false, properties: {
             status: { type: 'string', enum: ['completed', 'blocked'] }, summary: { type: 'string' } }, required: ['status', 'summary'] } }, request.signal);
         return validateAgentOutcome(result, () => {

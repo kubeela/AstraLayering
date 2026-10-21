@@ -95,6 +95,12 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
   assert.equal(svg.status, 200); assert.match(svg.headers.get('content-security-policy')!, /sandbox/);
   const files = await (await fetch(f.url + '/api/config/files?ref=HEAD')).json() as any;
   assert.ok(files.paths.includes('part-layering/prompts/11-遮挡层级规划.md'));
+  const localFiles = await (await fetch(f.url + '/api/config/files?ref=worktree')).json() as any;
+  assert.ok(localFiles.paths.includes('presets/optimized.env'));
+  assert.ok(localFiles.paths.includes('references/model-presets.md'));
+  const preset = await fetch(f.url + '/api/config/content?ref=worktree&path=presets/optimized.env');
+  assert.equal(preset.status, 200);
+  assert.match((await preset.json() as any).text, /layering_agent_part_draw_model=gemini-4-argon-high/);
   assert.equal((await fetch(f.url + '/api/config/content?ref=HEAD&path=../../.env')).status, 400);
 });
 

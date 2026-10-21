@@ -5,7 +5,7 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
-import { stepDefaults, imageSteps, imageModelProviders, parseAgentModel, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
+import { modelSlotDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
 
 export type ModelTier = 'medium' | 'high';
 export type ModelSelection = { model: string; effort: NonNullable<ThreadOptions['modelReasoningEffort']> };
@@ -72,14 +72,27 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
     throw new Error('layering_image_compact_threshold 必须是正整数；留空表示不启用。');
   }
   if (threshold !== undefined) effective.LAYERING_IMAGE_COMPACT_THRESHOLD = String(threshold);
-  const stepModels = {} as WorkflowEnvironment['stepModels'];
-  for (const [step, fallback] of Object.entries(stepDefaults)) {
-    const key = `layering_${step}_model`;
-    // The old two variables remain readable for existing installations, but no task
-    // chooses a tier at invocation time. A step-specific value always wins.
-    const legacy = get(fallback.startsWith('gpt-6-astra') ? 'layering_high_model' : 'layering_medium_model');
-    stepModels[step as AgentStep] = parseAgentModel(get(key) || legacy || fallback, key);
+  const slotModels = {} as Record<ModelSlot, AgentModel>;
+  for (const [slot, fallback] of Object.entries(modelSlotDefaults) as [ModelSlot, string][]) {
+    const key = `layering_agent_${slot}_model`;
+    let selection: string | undefined = get(key);
+    if (!selection) {
+      // An old per-step file can be reused when its values agree for this role.
+      // Never silently choose between differing character/clothing or draw/repair settings.
+      const previous = Object.entries(stepModelSlots).filter(([, role]) => role === slot)
+        .map(([step]) => `layering_${step}_model`).filter(name => get(name));
+      const values = new Set(previous.map(name => {
+        const parsed = parseAgentModel(get(name)!, name);
+        return `${parsed.model}-${parsed.effort}`;
+      }));
+      if (values.size > 1) throw new Error(`旧模型配置 ${previous.join('、')} 不一致；请设置统一的 ${key}。原 .env 不会自动改写。`);
+      selection = values.values().next().value;
+    }
+    const tier = get(fallback.startsWith('gpt-6-astra') ? 'layering_high_model' : 'layering_medium_model');
+    slotModels[slot] = parseAgentModel(selection || tier || fallback, key);
   }
+  const stepModels = Object.fromEntries(Object.entries(stepModelSlots)
+    .map(([step, slot]) => [step, { ...slotModels[slot] }])) as WorkflowEnvironment['stepModels'];
   const imageApis: WorkflowEnvironment['imageApis'] = {};
   for (const provider of ['openai', 'google'] as const) {
     const baseUrl = get(`layering_${provider}_image_base_url`) || (provider === 'openai' ? imageUrl : undefined);

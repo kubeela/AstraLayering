@@ -16,7 +16,7 @@
 | [raster-layering](../raster-layering/README.md) | 同名人物 part | step01 分层补全、step02 边缘修画及 review、step03 去连体服；最终 `step03/character-dressup-base.kra`、同名 PNG、report.md |
 | [clothing-part-layering](../clothing-part-layering/README.md) | 人物 part 的 `references/simplified-subject.*` | 生成匹配角色身形的纯衣服图，再拆分；独立运动是核心标准，考虑袖口、衣领等前后穿插 |
 | [clothing-raster-layering](../clothing-raster-layering/README.md) | 同名衣服 part | step01 分层补全、step02 边缘修画及 review；最终 `step02/clothing-soft-edges.kra`、report.md；合成 PNG 按实际导出文件提供，不约定同名文件 |
-| [character-assembly](../character-assembly/README.md) | 同名人物 raster step03、衣服 raster step02 与简化穿衣参考 | 单个 medium agent 组装两份 KRA，无 reviewer；交付 `step01/character-assembled.kra`、同名 PNG、report.md |
+| [character-assembly](../character-assembly/README.md) | 同名人物 raster step03、衣服 raster step02 与简化穿衣参考 | 单个组装 agent 组合两份 KRA，无 reviewer；交付 `step01/character-assembled.kra`、同名 PNG、report.md |
 
 人物路线：
 
