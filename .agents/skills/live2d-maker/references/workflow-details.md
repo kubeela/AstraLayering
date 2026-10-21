@@ -150,9 +150,9 @@ clothing-part-layering/tools/write_groups/schema.json
 
 一个共同运动部件需要多个绘画深度时，不再阻断或要求上游重拆。深度规划保持 part 树和 SVG；整件候选预览仅供参考，不能精确展示文本区域的切分。step01 依据标注或组装中新发现的问题，自行拆实际 KRA 绘画层，保持连续性，必要时局部补画。拆层脚本由绘制 agent 编写，调度器不自动切像素。
 
-agent 直接使用内置读文件工具查看上游 `occlusion.json`；`update_occlusion` 按 ID 精准修改，自动替换互斥字段，校验完整结构和逐区域检查后原子写回。它不改逻辑 ID、groups.json、SVG 或未指定的部件。工具说明和 schema 仍在固定的 `shared/tools/` 中。step01 报告记录 part、实际图层名、区域和最终深度的对应；后续步骤与 reviewer 保留这些合法分片。中断和主动重跑均保留上游修正，不恢复旧副本。
+step01 和 step02 绘画者对当前绘画质量与分层结构负责，使用现有文件工具直接修改 groups.json、occlusion.json 和对应 SVG。可以调整层序、归属或拆出需要独立控制的部件，并同步当前 KRA、预览、来源指纹和相关记录。reviewer 只读检查，提出确定、有证据的问题与修改要求。
 
-raster 保持原有 SDK 的 startThread/resumeThread 与 threadId 记录，通过每次启动的 MCP 配置提供深度工具，不修改全局 Codex 配置。当前 Codex 的 thread/resume 不支持追加 dynamicTools；使用本次调用的 MCP 配置让已有 SDK thread 也能获得工具，无需重建上下文。step01 绘制及 step02 返修提供修改工具；返修由原 step01 绘制会话承担，明确的层序或分片错误直接修正并同步 step01 工程、已有导出图和报告，再应用到当前 step02，保留已有修画。其余绘制阶段通过内置工具读文件，reviewer 仍只反馈。原生 image_generation 和外部 provider、鉴权保持原样。
+KRA、导出图及绘画报告只在当前步骤更新，前序工程作为历史成果保留。上游结构修改在中断与主动重跑后继续使用。总控恢复整条路线时，若对应栅格流程已启动，沿用已完成的 part 产物，避免重新运行 part 的旧事实恢复逻辑覆盖绘画阶段修正；明确只运行 part 路线仍可执行该管线。缺失的上游输入由栅格前置检查报告。SDK 会话继续使用 startThread/resumeThread，不注册分层专用 MCP。
 
 ## 检查
 

@@ -13,8 +13,6 @@ export type AgentRequest = {
   effort: ModelSelection['effort'];
   environment?: WorkflowEnvironment;
   threadId?: string;
-  occlusion?: { upstream: string; editable: boolean };
-  tools?: FunctionTool[]; // Local callbacks for workflow adapters; SDK uses the matching stdio server.
   signal?: AbortSignal;
   onEvent: (event: ThreadEvent) => Promise<void>;
   onRetry?: (retry: AgentRetry) => Promise<void> | void;
@@ -29,7 +27,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   // Keep the configured login and tool providers; enable the native image tool.
   const environment = request.environment ?? loadWorkflowEnvironment();
   if (!client) await checkCodexCapabilities(environment);
-  const codex = client ?? new Codex(workflowCodexOptions(environment, { config: rasterCodexConfig(request) }));
+  const codex = client ?? new Codex(workflowCodexOptions(environment, { config: rasterCodexConfig() }));
   const options: ThreadOptions = {
     model: request.model,
     modelReasoningEffort: request.effort,
@@ -88,14 +86,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   }, { signal: request.signal, onRetry: request.onRetry });
 }
 
-// Per-invocation MCP configuration works for both new and preexisting SDK threads.
-// The provider, credentials and native image tool remain owned by the external Codex environment.
-export function rasterCodexConfig(request: Pick<AgentRequest, 'occlusion'>) {
-  return { features: { image_generation: true }, ...(request.occlusion?.editable ? {
-    mcp_servers: { layering_occlusion: {
-      command: process.execPath,
-      args: [fileURLToPath(new URL('./occlusion-mcp.ts', import.meta.url)), '--upstream', request.occlusion.upstream,
-        ...(request.occlusion.editable ? ['--editable'] : [])],
-    } },
-  } : {}) };
+// Drawing agents use the configured filesystem and image tools directly.
+export function rasterCodexConfig() {
+  return { features: { image_generation: true } };
 }

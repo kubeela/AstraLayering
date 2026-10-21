@@ -17,6 +17,5 @@ export function partRasterPipeline<T extends PartRasterDefinition>(definition: T
     validateInput: isPartLayeringInput,
     inputDirectories: input => [input.directory],
     buildPrompt,
-    occlusionDirectory: input => input.directory,
   };
 }
