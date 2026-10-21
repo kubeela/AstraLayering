@@ -50,13 +50,15 @@ layering_agent_part_review_model=gemini-4-argon-high
 
 | 选择 | 配置 |
 | --- | --- |
-| `codex-native` | 外部 Codex 提供原生 imagegen，生图步骤的模型必须属于 Codex |
+| `codex-native` | 直接继承外部 Codex 原生 imagegen，不启用生图补丁；模型必须属于 Codex |
 | `gpt-image-2.5-sunburst`／`gpt-image-2.5-flare` | `layering_openai_image_base_url`、`layering_openai_image_api_key`；协议为 `openai` |
 | `gemini-nano-banana-2.1` | `layering_google_image_base_url`、`layering_google_image_api_key`；`layering_google_image_protocol` 明确选择 `gemini` 或 `openai` |
 
-所有拥有生图工具的步骤，原生生图与非 Codex harness 的组合都会在启动前报错，包括主要交付 SVG 的 part 绘制／返修。自定义生图注册 `image_generation` 函数工具，三个 CLI 均可使用；不需要 Codex 源码补丁。OpenAI 和 Google 共用 [description.md](../shared/tools/image_generation/description.md) 与 [schema.json](../shared/tools/image_generation/schema.json)，调用者只传绘图要求、参考图和输出要求；模型、接口协议与鉴权由工作流按配置处理，不要求 agent 选择模型或填写 API 参数。Codex 内置生图沿用宿主原生工具。绘图任务与验收要求保持各管线自己的版本。
+所有拥有生图工具的步骤，`codex-native` 与非 Codex harness 的组合都会在启动前报错。Codex 选择具体 GPT 或 Nano Banana 模型时，使用同一份[原生补丁](../tools/codex/README.md)：先配置对应 API 和 `layering_codex_path`，启动前检查 `image_provider_version: 2`。工作流为本请求启动本地生图路由，原生 imagegen 负责工具调用、保存图片和事件；路由复用共享 OpenAI／Google 协议适配，模型与凭据不进入提示词。`codex-native` 不启动此路由，也不注入自定义生图配置。
 
-OpenAI 兼容协议在 base URL 后追加 `/images/generations` 或 `/images/edits`；Gemini 原生协议追加 `/models/<模型>:generateContent`。参考图按顺序传入，输入文件不修改，生成结果保存在任务请求目录。接口是否能输出透明通道由模型能力决定；工具返回 `hasAlpha`，仍须按原要求看图和验收。
+Claude／AGV 继续注册共享 `image_generation` 函数工具，不使用 Codex 补丁。其 [description.md](../shared/tools/image_generation/description.md) 与 [schema.json](../shared/tools/image_generation/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用同一底层接口实现，调用者都只关心绘图要求和参考图。绘图任务与验收要求保持各管线自己的版本。
+
+OpenAI 兼容协议在 base URL 后追加 `/images/generations` 或 `/images/edits`；Gemini 原生协议追加 `/models/<模型>:generateContent`。参考图按顺序传入，输入文件不修改，生成结果保存在任务请求目录。接口是否能输出透明通道由模型能力决定；共享函数工具返回 `hasAlpha`，原生工具路径也应检查实际 PNG。棋盘格图不等于透明通道，仍须按原要求看图和验收。
 
 主模型网关与生图接口各自鉴权。Codex 默认继承当前用户配置；自定义 Codex provider 沿用 `layering_custom_provider` 和 provider URL／key。Claude／agv 可复用其已有登录，也可在 `.env` 填写 CLI 原生环境变量，例如 `ANTHROPIC_API_KEY`／`ANTHROPIC_BASE_URL`，或 `AGY_LLM_GATEWAY_API_KEY`／`AGY_LLM_GATEWAY_URL`／`AGY_LLM_GATEWAY_MODELS`／`AGY_LLM_GATEWAY_WIRE_PROTOCOL`。密钥不写入提示词、报告或 Git。
 
@@ -66,6 +68,6 @@ Claude／agv 的每次请求有独立工作区、私有配置和临时文件，�
 
 part 绘制 ID 和 harness 记录在各管线 `stages/sessions/<完整groupID>.json`，绘制与返修共用；独立 reviewer 每次新建。raster 的绘制 ID 仍记录在本管线 `run.json`，`.running`／`.completed`、两轮 review 和产物检查规则不变。
 
-同一 CLI 内改变模型或力度继续恢复原会话。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
+同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
 
 `layering_image_compact_threshold` 仅作用于 Codex，并沿用现有带图压缩补丁；不自动改写其他 CLI 的压缩策略。

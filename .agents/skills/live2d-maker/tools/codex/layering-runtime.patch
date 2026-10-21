@@ -1,5 +1,5 @@
 diff --git a/codex-rs/cli/src/main.rs b/codex-rs/cli/src/main.rs
-index ac06a66..ddb5da7 100644
+index ac06a66..dce14fe 100644
 --- a/codex-rs/cli/src/main.rs
 +++ b/codex-rs/cli/src/main.rs
 @@ -257,6 +257,8 @@ struct DebugCommand {
@@ -16,7 +16,7 @@ index ac06a66..ddb5da7 100644
          }
          Some(Subcommand::Debug(DebugCommand { subcommand })) => match subcommand {
 +            DebugSubcommand::LayeringCapabilities => {
-+                println!("{}", serde_json::json!({"version": 1, "image_provider": true, "image_compaction": true, "image_compaction_version": 2}));
++                println!("{}", serde_json::json!({"version": 1, "image_provider": true, "image_provider_version": 2, "image_compaction": true, "image_compaction_version": 2}));
 +            }
              DebugSubcommand::Models(cmd) => {
                  reject_remote_mode_for_subcommand(
@@ -125,6 +125,7 @@ index 2217ce8..79e321e 100644
          .get(X_CODEX_IMAGEGEN_REQUEST_ID_HEADER)
 diff --git a/codex-rs/core/src/astra_image_guard.rs b/codex-rs/core/src/astra_image_guard.rs
 new file mode 100644
+index 0000000..5f1053f
 --- /dev/null
 +++ b/codex-rs/core/src/astra_image_guard.rs
 @@ -0,0 +1,189 @@
@@ -516,10 +517,10 @@ index 379face..2bd13bd 100644
              && turn_context
                  .auth_manager
 diff --git a/codex-rs/ext/image-generation/src/extension.rs b/codex-rs/ext/image-generation/src/extension.rs
-index d36a14c..460c666 100644
+index d36a14c..49fc525 100644
 --- a/codex-rs/ext/image-generation/src/extension.rs
 +++ b/codex-rs/ext/image-generation/src/extension.rs
-@@ -40,11 +40,13 @@ impl ImageGenerationExtensionConfig {
+@@ -40,12 +40,17 @@ impl ImageGenerationExtensionConfig {
      /// Resolves the image provider and save root for a thread.
      fn from_config(config: &Config, resolve_save_root: &SaveRootResolver) -> Self {
          Self {
@@ -530,11 +531,16 @@ index d36a14c..460c666 100644
                  || config.model_provider.uses_openai_actor_authorization(),
              http_client_factory: config.http_client_factory(),
 -            provider: config.model_provider.clone(),
+-            save_root: resolve_save_root(config),
 +            provider: ModelProviderInfo::layering_image_provider()
 +                .unwrap_or_else(|| config.model_provider.clone()),
-             save_root: resolve_save_root(config),
++            save_root: std::env::var("LAYERING_IMAGE_OUTPUT_DIR")
++                .ok()
++                .and_then(|path| AbsolutePathBuf::from_absolute_path(path).ok())
++                .or_else(|| resolve_save_root(config)),
          }
      }
+ }
 diff --git a/codex-rs/ext/image-generation/src/tool.rs b/codex-rs/ext/image-generation/src/tool.rs
 index d2777fb..a74ed49 100644
 --- a/codex-rs/ext/image-generation/src/tool.rs

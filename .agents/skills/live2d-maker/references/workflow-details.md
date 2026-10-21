@@ -43,7 +43,7 @@ pnpm build:codex
 # .env: layering_codex_path=.codex-build/bin/codex
 ```
 
-构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改系统 Codex 或全局配置。已有图片压缩策略保持不变：恰好阈值时图片参加视觉 compact；超过阈值时按容量分段，保留尚未压缩的原图、对应文字与工具配对。见[构建与本地验证说明](../tools/codex/README.md)。自定义生图函数工具不需要此补丁。
+构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改系统 Codex 或全局配置。已有图片压缩策略保持不变：恰好阈值时图片参加视觉 compact；超过阈值时按容量分段，保留尚未压缩的原图、对应文字与工具配对。见[构建与本地验证说明](../tools/codex/README.md)。Codex 自定义生图也使用这份补丁；`codex-native` 和 Claude／AGV 自定义生图不要求生图补丁。
 
 ## 输入、产物与续跑
 
@@ -114,7 +114,7 @@ clothing-part-layering/tools/write_groups/schema.json
 
 工具配置在启动时加载并固定，修改文件在下一次启动生效；同一次 agent 调用期间定义保持一致。raster 各阶段按下文约定提供深度工具，切换阶段仍沿用绘制 thread。实际执行与文件写入校验仍在 TS 中，新增参数或修改执行行为需要同步实现。配置无效会报错。
 
-步骤提示词保留任务目标、方法和验收要求，可以在特殊场景点明工具；参数与调用教程放在工具定义中。此配置只管理工作流注册的函数工具，`codex-native` 生图由外部 Codex 提供；自定义生图函数工具的说明和 schema 也位于 `shared/tools/image_generation/`。
+步骤提示词保留任务目标、方法和验收要求，可以在特殊场景点明工具；参数与调用教程放在工具定义中。此配置只管理工作流注册的函数工具；Codex 生图使用宿主或补丁版原生工具定义，Claude／AGV 自定义生图函数工具的说明和 schema 位于 `shared/tools/image_generation/`。
 
 `update_group_note` 在首次绘制和返修时都可使用：只允许精确修改当前组 note，不改父组、其他组、名称、种类或分组树。reviewer 只提交反馈；修改后的说明交给后续检查和子组分析。
 

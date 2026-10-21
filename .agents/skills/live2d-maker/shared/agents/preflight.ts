@@ -1,8 +1,9 @@
-import type { WorkflowEnvironment } from '../codex/environment.ts';
+import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
 import type { PipelineId } from '../paths.ts';
 import { stepDefaults, type AgentStep } from './models.ts';
 import { cliExecutable } from './cli.ts';
 import { validateImageSelection } from './images.ts';
+import { usesPatchedImageTool } from './codex-images.ts';
 
 export function pipelineAgentSteps(pipeline: PipelineId, standard = false): AgentStep[] {
   return (Object.keys(stepDefaults) as AgentStep[]).filter(step => {
@@ -18,5 +19,6 @@ export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: 
     validateImageSelection(settings, step);
     const harness = settings.stepModels[step].harness;
     if (harness !== 'codex') await cliExecutable(settings, harness);
+    else await checkCodexCapabilities(settings, settings.codex, { image: usesPatchedImageTool(settings, step) });
   }
 }

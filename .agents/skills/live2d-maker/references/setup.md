@@ -27,7 +27,7 @@ pnpm install --frozen-lockfile
 具体配置：
 
 - 按 LLM 职责配置检查对应 CLI 与登录／provider，人物和衣服共用模型选择：Codex 默认继承当前 `CODEX_HOME` 或 `~/.codex`；Claude Code、Antigravity 使用显式配置的入口或全局 CLI，并复用已有登录。pnpm 不安装后两者。缺少 CLI 或登录凭据时，展示具体报错并询问用户是安装／登录还是改用已有模型，不自行安装。
-- 生图步骤选择 `codex-native` 时，绘制模型必须属于 Codex，并具备外部提供的原生 `image_generation`。选择自定义 OpenAI 或 Google 生图时，检查对应 API URL、key 和协议；通过本步骤的 `image_generation` 函数工具调用。纯 KRA 组装不以生图为前置。
+- 生图步骤选择 `codex-native` 时，绘制模型必须属于 Codex，并具备外部提供的原生 `image_generation`。选择自定义 OpenAI 或 Google 生图时，检查对应 API URL、key 和协议；Codex 需要通过补丁能力检查并使用原生 imagegen，Claude／AGV 注册本步骤的共享 `image_generation` 工具。纯 KRA 组装不以生图为前置。
 - Python 优先复用宿主已有解释器；没有独立解释器时，验证 Krita 内置 Python 插件／脚本环境，保证至少一种实际可用。CLI 本身不保证提供 Python；Krita 内置 Python 也不保证有独立 `python3` 或 `pip` 命令。固定调度、SVG、PNG 读写和缩放已由 Node／Sharp 承担，不统一安装 Pillow、NumPy、PyQt5 等包。辅助脚本确实需要某个包时，只检查该脚本使用的解释器与模块。
 - skill 根目录 `.env` 不存在时，先按[推荐模型方案](model-presets.md)让用户确认，再以 [example.env](../example.env) 为基础填写；已有 `.env` 直接复用，不因启动或升级覆盖。按最终配置检查依赖。shell 同名变量优先，密钥不写入报告或提交。
 
@@ -54,9 +54,9 @@ Krita 的路径检查和实际启动使用工作流加载的同一环境，包�
 
 - 工作台浏览进度、图片和分组树不要求额外 Python 包。启用网页原生图层合成器时，当前实现需要带 Python 插件的 Krita 和 Xvfb（即使宿主有桌面，也会启动独立显示）；部署说明见[工作台启动与连接](workbench.md)，详细环境项见工作台 checkout 的 `web/README.md`。
 - Linux headless 绘图需要所选显示方案，例如 Xvfb；桌面 computer use 使用宿主已有能力，不统一要求 xdotool 或 Playwright。
-- Git 用于仓库安装、工作台配置历史浏览与补丁构建。自行构建 Codex 图片压缩补丁才需要 Rust 1.95.0 和平台编译工具；复用现成二进制不需要构建链。
+- Git 用于仓库安装、工作台配置历史浏览与补丁构建。自行构建 Codex 自定义生图／图片压缩补丁才需要 Rust 1.95.0 和平台编译工具；复用现成二进制不需要构建链。
 - 普通网页使用现代浏览器。Playwright／Chromium 仅用于浏览器自动验证，不是运行制作管线的必装项。
 - `archive/`、`analysis/`、`demos/`、`rigging/` 和资料重建脚本的 Pillow、NumPy、SciPy、OpenCV、lxml、PyYAML 等依赖只在实际执行相应脚本时成立，不纳入 skill 默认安装。读取已生成的头发参考图不需要重建图片的 Python 包。
 
-默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。只有 Codex 的按图片数 compact 需要显式构建可选补丁；自定义生图函数工具不需要补丁，正常启动不会下载或构建。
+默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用显式构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。正常启动不会下载或构建。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。

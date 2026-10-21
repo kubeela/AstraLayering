@@ -8,8 +8,7 @@ import { unavailableSession } from '../agents/cli.ts';
 import { dirname, join } from 'node:path';
 import { AgentCallError, AgentRuntime, continuationPrompt, type AgentRetry } from '../codex/agent-runtime.ts';
 import { AgentLog } from '../codex/agent-log.ts';
-import { imageGenerationTool } from '../agents/images.ts';
-import { createMcpBridge } from '../agents/mcp.ts';
+import { createCodexImageRoute } from '../agents/codex-images.ts';
 
 export type StepResult = { status: 'completed' | 'blocked'; summary: string };
 export type AgentRequest = {
@@ -41,14 +40,10 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     const selected = parseAgentModel(`${request.model}-${request.effort}`, request.step || 'raster agent');
     const image = request.step && environment.stepImages[request.step];
     if (selected.harness === 'codex' && image && image !== 'codex-native') {
-      await checkCodexCapabilities(environment);
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
         prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
-      const tool = imageGenerationTool(environment, request.step!, log.directory,
-        [request.directory, ...(request.imageRoots ?? [dirname(request.directory)])])!;
-      const bridge = await createMcpBridge([tool], request.signal || new AbortController().signal, event => log.recordProtocol(event));
-      const codex = new Codex(workflowCodexOptions(environment, { config: { features: { image_generation: false },
-        mcp_servers: { layering_image: bridge.config } } }));
+      const route = await createCodexImageRoute(environment, request.step!, join(request.directory, 'agents/generated'), environment.codex, request.signal);
+      const codex = new Codex(workflowCodexOptions(environment, { env: route.env, config: rasterCodexConfig() }));
       let lastMessage = '', threadId = request.threadId;
       try {
         const result = await runAgent({ ...request, onEvent: async event => {
@@ -60,7 +55,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
         await log.finish({ status: 'completed', threadId: threadId || null, finalResponse: lastMessage }); return result;
       } catch (error) {
         await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: lastMessage, error: String(error) }); throw error;
-      } finally { await bridge.close(); }
+      } finally { await route.close(); }
     }
     if (selected.harness !== 'codex') {
       const agents = new CodexAgents({ environment, selectedModel: selected, cwd: request.directory,

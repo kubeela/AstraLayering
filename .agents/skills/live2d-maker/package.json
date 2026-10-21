@@ -12,7 +12,7 @@
     "clothing-raster-layering": "node clothing-raster-layering/run.ts",
     "character-assembly": "node character-assembly/run.ts",
     "check": "tsc",
-    "test:agents": "node --test shared/tests/agv-gateway.test.ts shared/tests/tool-config.test.ts shared/tests/step-models.test.ts shared/tests/environment.test.ts shared/tests/raster-retry.test.ts workflow/tests/runner.test.ts",
+    "test:agents": "node --test shared/tests/agv-gateway.test.ts shared/tests/tool-config.test.ts shared/tests/step-models.test.ts shared/tests/codex-images.test.ts shared/tests/environment.test.ts shared/tests/raster-retry.test.ts workflow/tests/runner.test.ts",
     "test": "node --test shared/tests/*.test.ts part-layering/tests/*.test.ts raster-layering/tests/*.test.ts clothing-part-layering/tests/*.test.ts clothing-raster-layering/tests/*.test.ts character-assembly/tests/*.test.ts workflow/tests/*.test.ts",
     "build:codex": "node tools/codex/build.ts"
   },

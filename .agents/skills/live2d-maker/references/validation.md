@@ -17,10 +17,11 @@ pnpm check
 | 条件 | 通过标准 |
 | --- | --- |
 | 两套推荐方案与自定义配置 | 12 个 LLM 职责和 18 个独立生图选择完整；人物／衣服职责共享，但工具和提示词覆盖保留；shell 覆盖、默认回退与旧配置冲突有对应断言 |
-| 模型与生图组合 | 所有生图步骤拒绝非 Codex harness 配原生 imagegen；缺少所选生图 URL／key 或 CLI 时，启动前明确报错 |
+| 模型与生图组合 | 所有生图步骤拒绝非 Codex harness 配原生 imagegen；缺少所选生图 URL／key、CLI 或 Codex 生图补丁能力时，启动前明确报错 |
 | 真实工具目录 | 读取共享、人物、衣服的全部 description.md / schema.json，不以只含简单字符串的测试工具代替；可空类型、嵌套数组、枚举、数值约束、oneOf 和 additionalProperties 等逐字段保留 |
 | Gemini 请求 | 实际 HTTP 适配路径用 parametersJsonSchema 传完整 JSON Schema，不能把 type 数组塞进受限的 parameters；保留 CLI 原生工具；重复准备不重复注册；camelCase／snake_case 原生声明均可处理 |
 | 工具调用与返回 | 原参数、null 值、工具说明、文本、全部返回图片及 thought signature 不丢失；下一回合还能恢复上回合的工具结果 |
+| Codex 原生生图 | `codex-native` 不注入补丁生图配置；GPT／Nano 使用原生工具；不同请求的路由／模型隔离，保存图片事件与原 thread 续跑保留 |
 | 自定义生图协议 | Gemini 原生和 OpenAI 兼容的生图／编辑请求保留提示词与输入图片，输入文件不修改；输出落在请求目录，跨任务路径被拒绝 |
 | 会话恢复 | 同 CLI 修改模型／力度恢复原会话；切换 CLI 或会话失效创建替代会话并记录历史，已有产物保留 |
 | 故障与状态 | 临时通道错误沿用会话重试；正常退出却无产物展示最后消息；取消、失败及进程退出的总控状态明确，不把已退出进程展示为运行中 |
