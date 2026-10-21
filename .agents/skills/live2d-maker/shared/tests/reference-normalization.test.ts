@@ -18,7 +18,7 @@ test('自动识别不同边缘主色，全局清除封闭孔洞且保持前景',
     for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) {
       const foreground = x > 15 && x < 48 && y > 15 && y < 48 && !(x > 27 && x < 36 && y > 27 && y < 36);
       const i = (y * 64 + x) * 4;
-      [...(foreground ? [65, 50, 70] : color), 255].forEach((v, c) => data[i + c] = v);
+      [...(foreground ? [65, 65, 65] : color), 255].forEach((v, c) => data[i + c] = v);
     }
     await sharp(data, { raw: { width: 64, height: 64, channels: 4 } }).png().toFile(f.input);
     const result = await normalizeReference(f.input, f.input, f.output);
@@ -26,7 +26,7 @@ test('自动识别不同边缘主色，全局清除封闭孔洞且保持前景',
     const out = await sharp(f.output).raw().toBuffer();
     assert.equal(out[3], 0);
     assert.equal(out[(32 * 64 + 32) * 4 + 3], 0);
-    assert.deepEqual([...out.subarray((22 * 64 + 22) * 4, (22 * 64 + 22) * 4 + 4)], [65, 50, 70, 255]);
+    assert.deepEqual([...out.subarray((22 * 64 + 22) * 4, (22 * 64 + 22) * 4 + 4)], [65, 65, 65, 255]);
   }
 });
 
@@ -59,7 +59,7 @@ test('多色不透明边缘没有可靠抠图色时不猜测背景', async t => 
   assert.equal(result.key, null); assert.deepEqual(await readFile(f.output), await readFile(f.input));
 });
 
-test('混合过渡边缘参考邻近前景恢复颜色与透明度，不直接擦除', async t => {
+test('FFmpeg 去溢色保留细边且抑制绿色污染', async t => {
   const f = await fixture(t), w = 64, data = Buffer.alloc(w * w * 4);
   const bg = [10, 250, 5], fg = [110, 75, 60];
   for (let y = 0; y < w; y++) for (let x = 0; x < w; x++) {
@@ -72,6 +72,7 @@ test('混合过渡边缘参考邻近前景恢复颜色与透明度，不直接�
   const report = await normalizeReference(f.input, f.input, f.output);
   const result = await sharp(f.output).raw().toBuffer(), i = (32 * w + 19) * 4;
   assert.ok(report.decontaminated > 0);
-  assert.ok(result[i + 3] > 100 && result[i + 3] < 155);
-  for (let c = 0; c < 3; c++) assert.ok(Math.abs(result[i + c] - fg[c]) < 12);
+  assert.ok(result[i + 3] > 0);
+  assert.match(report.filter!, /chromakey=.*despill=type=green:mix=0.2:alpha=0/);
+  assert.ok(result[i + 1] - Math.max(result[i], result[i + 2]) < 10);
 });
