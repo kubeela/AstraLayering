@@ -24,11 +24,19 @@ try{
  await page.locator('[data-view=depth]').click();await capture('hand-depth');
  await page.locator('[data-view=lit]').click();const lit=await capture('hand-lit');await page.screenshot({path:out+'/hand-page.png'});
  await page.locator('#surface-angle').fill('18');await settle();const rotated=await capture('rotated-lit');assert.notEqual(createHash('sha256').update(lit).digest('hex'),createHash('sha256').update(rotated).digest('hex'));
+ const mapResponse=await fetch(new URL('studio-asset?sample=jianma&kind=normal',base));assert(mapResponse.ok);
+ const flipped=await sharp(Buffer.from(await mapResponse.arrayBuffer())).ensureAlpha().raw().toBuffer({resolveWithObject:true});for(let p=1;p<flipped.data.length;p+=4)flipped.data[p]=255-flipped.data[p];
+ const dxMap=await sharp(flipped.data,{raw:{width:flipped.info.width,height:flipped.info.height,channels:4}}).png().toBuffer();
+ await page.locator('#file-normal').setInputFiles({name:'normal-directx.png',mimeType:'image/png',buffer:dxMap});
+ await page.waitForFunction(()=>!window.studioDiagnostics().busy);assert.equal((await diagnostics()).surface.active,false,'map replacement kept a stale trial');
+ await page.locator('#normal-y').selectOption('-1');await page.locator('#surface-prepare').click();await page.waitForFunction(()=>!document.querySelector('#surface-prepare').disabled,null,{timeout:90000});assert((await diagnostics()).surface.active);
+ await page.locator('#surface-part').selectOption(group.id);await page.locator('#surface-x').fill('210');await page.locator('#surface-y').fill('-505');await page.locator('#surface-angle').fill('18');await page.locator('#surface-front').check();await settle();
+ const dxRotated=await capture('rotated-directx-lit'),glPixels=await sharp(rotated).raw().toBuffer(),dxPixels=await sharp(dxRotated).raw().toBuffer();let directionError=0;for(let p=0;p<glPixels.length;p++)directionError+=Math.abs(glPixels[p]-dxPixels[p]);directionError/=glPixels.length;assert(directionError<.5,'OpenGL/DirectX rotation diverged: '+directionError);
  await page.locator('#surface-replace').selectOption('arms/arm_left/hand');await settle();await capture('replacement-lit');
  await page.locator('#surface-reset').click();await settle();await page.locator('[data-view=color]').click();const reset=await capture('reset-color');
  assert.deepEqual(await sharp(rest).raw().toBuffer(),await sharp(reset).raw().toBuffer(),'Restored source changed');
  await page.locator('#surface-close').click();await settle();assert.equal((await diagnostics()).surface.active,false);
  const final=await diagnostics();assert(final.textureSizes.every(([w,h])=>w===1024&&h===1536));assert.deepEqual(errors,[]);
- const result={status:'passed',url:page.url(),size:initial.source,group,checks:['native part snapshot matches Krita composite','existing opposite-hand replacement and translation/rotation share color/normal/depth coordinates','reset returns exact source pixels','full-resolution texture resources retained'],errors};
+ const result={status:'passed',url:page.url(),size:initial.source,group,directionError,checks:['native part snapshot matches Krita composite','existing opposite-hand replacement and translation/rotation share color/normal/depth coordinates','map replacement ends stale trial; OpenGL and DirectX rotations match','reset returns exact source pixels','full-resolution texture resources retained'],errors};
  await writeFile(out+'/verification.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
 }catch(error){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});const result={status:'failed',error:String(error),surfaceStatus:await page.locator('#surface-status').textContent().catch(()=>null),diagnostics:await diagnostics().catch(()=>null),errors};await writeFile(out+'/verification.json',JSON.stringify(result,null,2));throw error;}finally{await browser.close();}

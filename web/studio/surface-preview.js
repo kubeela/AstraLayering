@@ -60,7 +60,7 @@ export class SurfacePreview {
       $('#surface-part').replaceChildren(...options);$('#surface-replace').replaceChildren(new Option('原部件',''),...options.map(o=>o.cloneNode(true)));
       $('#surface-controls').hidden=false;$('#surface-close').hidden=false;$('#surface-status').textContent='已准备 · 仅修改预览';this.active=true;this.sync();this.changed(true);
     } catch(e){if(epoch===this.epoch){$('#surface-status').textContent=e.message;this.error(e.message);}}
-    finally{if(epoch===this.epoch)$('#surface-prepare').disabled=false;}
+    finally{if(epoch===this.epoch){this.worker?.terminate();this.worker=null;this.cancelWorker=null;$('#surface-prepare').disabled=false;}}
   }
   schedule(){clearTimeout(this.timer);this.timer=setTimeout(()=>void this.update().catch(this.error),100);}
   async update(){
@@ -81,7 +81,7 @@ export class SurfacePreview {
       const pieces=donor?donor.layers:[l],g=donor||target,b=target.bounds,center=[b.x+b.width/2,b.y+b.height/2],sourceCenter=[g.bounds.x+g.bounds.width/2,g.bounds.y+g.bounds.height/2];
       const angle=p.angle*Math.PI/180,cos=Math.cos(angle),sin=Math.sin(angle);
       for(const piece of pieces){const n=new Uint8ClampedArray(piece.rgba.length),d=new Uint8ClampedArray(n.length);
-        for(let q=0;q<n.length;q+=4){const m=piece.map.data,nx=m[q]/127.5-1,ny=m[q+1]/127.5-1,alpha=piece.maskedRgba[q+3];n[q]=(cos*nx+sin*ny+1)*127.5;n[q+1]=(-sin*nx+cos*ny+1)*127.5;n[q+2]=m[q+2];n[q+3]=alpha;d[q]=d[q+1]=d[q+2]=Math.max(0,Math.min(255,m[q+3]+p.depth*2.55));d[q+3]=alpha;}
+        for(let q=0;q<n.length;q+=4){const m=piece.map.data,nx=m[q]/127.5-1,ny=(m[q+1]/127.5-1)*this.stage.settings.normalY,alpha=piece.maskedRgba[q+3];n[q]=(cos*nx+sin*ny+1)*127.5;n[q+1]=((-sin*nx+cos*ny)*this.stage.settings.normalY+1)*127.5;n[q+2]=m[q+2];n[q+3]=alpha;d[q]=d[q+1]=d[q+2]=Math.max(0,Math.min(255,m[q+3]+p.depth*2.55));d[q+3]=alpha;}
         const images=[piece.color,raster(n,piece.bounds.width,piece.bounds.height),raster(d,piece.bounds.width,piece.bounds.height)];
         for(let i=0;i<3;i++){const ctx=contexts[i];ctx.save();ctx.translate(center[0]+p.x,center[1]+p.y);ctx.rotate(angle);ctx.drawImage(images[i],piece.bounds.x-sourceCenter[0],piece.bounds.y-sourceCenter[1]);ctx.restore();}
       }
