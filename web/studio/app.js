@@ -605,7 +605,8 @@ function finish(id) {
   sync();
 }
 async function install(source, id, reset = true) {
-  if (surfaces.active) surfaces.clear();
+  // Rebinding invalidates preparations that have not reached active preview yet.
+  surfaces.clear();
   const urls = {};
   try {
     for (const k of ["color", "normal", "depth"])

@@ -25,21 +25,35 @@ export class SurfacePreview {
     const owner=this.source(),session=this.session();
     if(!owner?.normal||!owner?.depth) return this.error('请先绑定当前工程的法线与深度');
     if(!session?.session||owner.layerKey!=='baseline') return this.error('请等待原生图层就绪，并还原图层后准备');
-    const epoch=++this.epoch;$('#surface-prepare').disabled=true;$('#surface-status').textContent='正在读取部件与补全贴图…';
+    const epoch=++this.epoch,controller=new AbortController();this.fetchController=controller;$('#surface-prepare').disabled=true;$('#surface-status').textContent='正在读取部件与补全贴图…';
     try {
-      const response=await fetch('./api/studio/layers/surfaces',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(session)}),packet=await response.json();
+      const response=await fetch('./api/studio/layers/surfaces',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(session),signal:controller.signal}),packet=await response.json();
       if(!response.ok)throw Error(packet.error);
       const w=packet.width,h=packet.height;
       const imageBlob=async file=>{const u=URL.createObjectURL(file);try{return await loadImage(u);}finally{URL.revokeObjectURL(u);}};
       const [baseColor,baseNormal,baseDepth]=await Promise.all([owner.originalColor,owner.normal,owner.depth].map(imageBlob));
-      const read=async (l,kind)=>{const u=new URL('./studio-surface-asset',location.href);for(const[k,v]of Object.entries({...session,file:l[kind]}))u.searchParams.set(k,v);const response=await fetch(u.href);if(!response.ok)throw Error(`${l.name}: ${await response.text()}`);try{return await imageBlob(await response.blob());}catch{throw Error(`部件 PNG 无法解码：${l.name} (${kind})`);}};
-      const layers=await Promise.all(packet.layers.map(async l=>{
-        const [original,masked]=await Promise.all([read(l,'original'),read(l,'masked')]);
-        const rgba=pixels(original),maskedRgba=pixels(masked);
-        for(let p=3;p<rgba.length;p+=4){rgba[p]=Math.round(rgba[p]*l.opacity/255);maskedRgba[p]=l.visible?Math.round(maskedRgba[p]*l.opacity/255):0;}
-        return{...l,rgba,maskedRgba};
+      const read=async (l,kind)=>{
+        const u=new URL('./studio-surface-asset',location.href);for(const[k,v]of Object.entries({...session,file:l[kind]}))u.searchParams.set(k,v);
+        const response=await fetch(u.href,{signal:controller.signal});if(!response.ok)throw Error(`${l.name}: ${await response.text()}`);
+        const blob=await response.blob();let image;
+        try{image=await imageBlob(blob);}catch{throw Error(`部件 PNG 无法解码：${l.name} (${kind}, ${blob.size} B)`);}
+        if(image.width!==l.bounds.width||image.height!==l.bounds.height)throw Error(`部件 PNG 尺寸不匹配：${l.name} (${kind})`);
+        return pixels(image);
+      };
+      // Bound both network and decoder pressure, retaining every source texel
+      // and the native stacking order. Cancelled preparations launch no new work.
+      const layers=new Array(packet.layers.length);let next=0,completed=0;
+      await Promise.all(Array.from({length:Math.min(4,layers.length)},async()=>{
+        while(next<layers.length){
+          controller.signal.throwIfAborted();const index=next++,l=packet.layers[index];
+          const [rgba,maskedRgba]=await Promise.all([read(l,'original'),read(l,'masked')]);
+          for(let p=3;p<rgba.length;p+=4){rgba[p]=Math.round(rgba[p]*l.opacity/255);maskedRgba[p]=l.visible?Math.round(maskedRgba[p]*l.opacity/255):0;}
+          layers[index]={...l,rgba,maskedRgba};completed++;
+          if(epoch===this.epoch)$('#surface-status').textContent=`正在读取部件 ${completed}/${layers.length}…`;
+        }
       }));
       if(epoch!==this.epoch)return;
+      $('#surface-status').textContent='正在补全法线与深度…';
       // Validate the snapshot against Krita's native composite before using it.
       const composite=canvas(w,h),ctx=composite.getContext('2d',{willReadFrequently:true});
       for(const l of layers){const rgba=new Uint8ClampedArray(l.rgba);for(let p=3;p<rgba.length;p+=4)rgba[p]=l.maskedRgba[p];ctx.drawImage(raster(rgba,l.bounds.width,l.bounds.height),l.bounds.x,l.bounds.y);}
@@ -60,7 +74,7 @@ export class SurfacePreview {
       $('#surface-part').replaceChildren(...options);$('#surface-replace').replaceChildren(new Option('原部件',''),...options.map(o=>o.cloneNode(true)));
       $('#surface-controls').hidden=false;$('#surface-close').hidden=false;$('#surface-status').textContent='已准备 · 仅修改预览';this.active=true;this.sync();this.changed(true);
     } catch(e){if(epoch===this.epoch){$('#surface-status').textContent=e.message;this.error(e.message);}}
-    finally{if(epoch===this.epoch){this.worker?.terminate();this.worker=null;this.cancelWorker=null;$('#surface-prepare').disabled=false;}}
+    finally{controller.abort();if(epoch===this.epoch){this.fetchController=null;this.worker?.terminate();this.worker=null;this.cancelWorker=null;$('#surface-prepare').disabled=false;}}
   }
   schedule(){clearTimeout(this.timer);this.timer=setTimeout(()=>void this.update().catch(this.error),100);}
   async update(){
@@ -89,6 +103,6 @@ export class SurfacePreview {
     await this.stage.load({color,normal,depth});this.stage.zoom=zoom;this.stage.pan=pan;this.stage.render();
   }
   async close(){const baseline=this.baseline,owner=this.owner;this.clear();if(baseline&&this.source()===owner){const zoom=this.stage.zoom,pan=[...this.stage.pan];await this.stage.load(baseline);this.stage.zoom=zoom;this.stage.pan=pan;this.stage.render();}}
-  clear(){this.epoch++;clearTimeout(this.timer);this.worker?.terminate();this.cancelWorker?.();this.worker=null;this.cancelWorker=null;this.active=false;this.poses.clear();this.layers=this.groups=this.baseline=this.owner=null;$('#surface-controls').hidden=true;$('#surface-close').hidden=true;$('#surface-prepare').disabled=false;$('#surface-status').textContent='依据原始图层叠加补全贴图';this.changed(false);}
+  clear(){this.epoch++;clearTimeout(this.timer);this.fetchController?.abort();this.fetchController=null;this.worker?.terminate();this.cancelWorker?.();this.worker=null;this.cancelWorker=null;this.active=false;this.poses.clear();this.layers=this.groups=this.baseline=this.owner=null;$('#surface-controls').hidden=true;$('#surface-close').hidden=true;$('#surface-prepare').disabled=false;$('#surface-status').textContent='依据原始图层叠加补全贴图';this.changed(false);}
   diagnostics(){return{active:!!this.active,parts:this.groups?[...this.groups.values()].map(g=>({id:g.id,layers:g.layers.map(l=>l.name),known:g.known,total:g.total})):[],poses:Object.fromEntries(this.poses)};}
 }
