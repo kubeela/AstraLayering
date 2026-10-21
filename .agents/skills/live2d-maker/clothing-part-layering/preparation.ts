@@ -1,3 +1,4 @@
+import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { pipelineDirectory } from '../shared/paths.ts';
 import { simplifiedCharacter } from '../shared/upstream.ts';
@@ -43,7 +44,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     await validateAgentOutcome(result, async () => {
     const imageResult = result.images.at(-1);
     if (!imageResult) throw new Error('内置 image_generation 未返回生成图片。');
-    await checkImage(imageResult.savedPath, image);
+    await sharp(imageResult.savedPath).metadata();
     await copyFile(imageResult.savedPath, output);
     });
   } };
@@ -58,7 +59,9 @@ export async function loadPreparedReferences(runName: string, root?: string): Pr
   if (record.version !== 1 || record.inputHash !== hash(await readFile(image)) || record.clothingHash !== hash(await readFile(refs.baseSubject))) {
     throw new Error('preparation 参考已变化；请使用新的 --name，或删除 references/clothing.png 后重做 preparation 和拆分。');
   }
-  await checkImage(refs.baseSubject, image);
+  const standard = join(pipelineDirectory(runName, 'part-layering', root), 'references/standard.png');
+  if (record.standardHash && record.standardHash !== hash(await readFile(standard))) throw new Error('standard 参考已变化，请重做衣服 preparation。');
+  await checkImage(refs.baseSubject, record.standardHash ? standard : image);
   return refs;
 }
 
@@ -76,8 +79,10 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     return ready;
   }
   // A regenerated clothing reference cannot reuse decomposition of the previous image.
-  await clearPreparedParts(dirname(directory));
-  const meta = await sharp(image).metadata();
+  const standard = join(pipelineDirectory(input.runName, 'part-layering', input.dir), 'references/standard.png');
+  if (!await exists(standard)) throw new Error('纯衣服参考后处理缺少上游 standard.png');
+  const standardHash = hash(await readFile(standard));
+  const meta = await sharp(standard).metadata();
   const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
     .replaceAll('{width}', String(meta.autoOrient.width)).replaceAll('{height}', String(meta.autoOrient.height));
   await writeFile(join(directory, 'preparation-prompt.md'), prompt);
@@ -85,9 +90,11 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
   try {
     await steps.extract(image, temporary, prompt);
-    await checkImage(temporary, image);
+    await normalizeGeneratedReference(temporary, standard, directory, 'clothing');
+    await checkImage(temporary, standard);
     const record = { version: 1, inputHash: hash(await readFile(image)), clothingHash: hash(await readFile(temporary)),
-      tool: 'image_generation', promptHash: hash(Buffer.from(prompt)) };
+      standardHash, tool: 'image_generation', promptHash: hash(Buffer.from(prompt)) };
+    await clearPreparedParts(dirname(directory));
     await rename(temporary, refs.baseSubject);
     await writeFile(`${refs.judgment}.tmp`, JSON.stringify(record, null, 2) + '\n');
     await rename(`${refs.judgment}.tmp`, refs.judgment);

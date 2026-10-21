@@ -19,6 +19,7 @@ async function fixture(t: TestContext) {
   const upstream = join(pipelineDirectory(runName, 'part-layering'), 'references/simplified-subject.png');
   await mkdir(dirname(upstream), { recursive: true });
   await copyFile(input, upstream);
+  await copyFile(input, join(dirname(upstream), 'standard.png'));
   const calls: AgentTask[] = [];
   const steps = createPreparationSteps({ async run(task) {
     calls.push(task);
@@ -73,15 +74,21 @@ test('missing native image tool leaves a retryable preparation without fake outp
   assert.equal(f.calls.length, 1);
 });
 
-test('reject invalid, opaque, or differently sized images instead of publishing completion', async t => {
+test('reject invalid or empty-foreground images, normalize differing dimensions', async t => {
   for (const mode of ['invalid', 'opaque', 'wrong-size'] as const) {
     await t.test(mode, async t => {
       const f = await fixture(t);
       if (mode === 'invalid') await writeFile(f.generated, 'not an image');
       else if (mode === 'opaque') await copyFile(f.input, f.generated);
       else await sharp({ create: { width: 32, height: 32, channels: 4, background: '#aabbcc80' } }).png().toFile(f.generated);
-      await assert.rejects(prepareReferences({ runName: f.runName }, f.steps));
-      await assert.rejects(readFile(join(f.directory, 'preparation.json')), { code: 'ENOENT' });
+      if (mode === 'wrong-size') {
+        const refs = await prepareReferences({ runName: f.runName }, f.steps);
+        const m = await sharp(refs.baseSubject).metadata();
+        assert.equal(m.width, 96); assert.equal(m.height, 128);
+      } else {
+        await assert.rejects(prepareReferences({ runName: f.runName }, f.steps));
+        await assert.rejects(readFile(join(f.directory, 'preparation.json')), { code: 'ENOENT' });
+      }
     });
   }
 });
@@ -102,4 +109,26 @@ test('衣服 preparation 不接受人物标准化选项', async t => {
     await assert.rejects(prepareReferences({ runName: f.runName, standard }, f.steps), /只适用于人物 part/);
   }
   assert.equal(f.calls.length, 0);
+});
+
+test('衣服输出采用 standard 尺寸而非 simplified 尺寸，并记录自动处理', async t => {
+  const f = await fixture(t);
+  await sharp({ create: { width: 200, height: 200, channels: 4, background: '#8888' } }).png().toFile(join(dirname(f.upstream), 'standard.png'));
+  const refs = await prepareReferences({ runName: f.runName }, f.steps);
+  const m = await sharp(refs.baseSubject).metadata();
+  assert.equal(m.width, 200); assert.equal(m.height, 200);
+  const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
+  assert.equal(record.normalization, undefined);
+  const archive = join(f.directory, 'archive');
+  const entries = await readdir(archive);
+  assert.equal(entries.length, 1);
+  assert.deepEqual(await readFile(join(archive, entries[0], 'original.png')), await readFile(f.generated));
+  const report = JSON.parse(await readFile(join(archive, entries[0], 'normalization.json'), 'utf8'));
+  assert.deepEqual(report.target, [200, 200]);
+  await rm(archive, { recursive: true });
+  await prepareReferences({ runName: f.runName }, f.steps);
+  assert.equal(f.calls.length, 1);
+  assert.ok(record.standardHash);
+  await loadPreparedReferences(f.runName);
+  await assert.rejects(readFile(join(f.directory, 'standard.png')), { code: 'ENOENT' });
 });

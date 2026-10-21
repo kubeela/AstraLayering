@@ -1,3 +1,4 @@
+import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import { pipelineDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
 import { copyFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
@@ -173,6 +174,11 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     try {
       await generate(temporary);
       if (!await exists(temporary)) throw new Error(`Preparation output was not produced: ${paths[stage]}`);
+      if (stage === 'base' || stage === 'simplified') {
+        if (!refs.standardImage) throw new Error('参考后处理缺少 standard.png');
+        // Raw generation is retained outside the final reference filenames for diagnosis.
+        await normalizeGeneratedReference(temporary, refs.standardImage, refs.directory, stage);
+      }
       const fingerprint: ReferenceFingerprint = { inputHash, outputHash: await fileHash(temporary) };
       state!.files[stage] = fingerprint;
       // Recording first makes a crash between these writes a missing output, never an untracked one.
