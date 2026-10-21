@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdir, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFile } from 'node:child_process';
@@ -10,7 +10,9 @@ import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { createMcpBridge } from '../agents/mcp.ts';
 import { genaiGateway, prepareGenaiTools, rewriteGenaiTools } from '../agents/agv-gateway.ts';
-import { toolDefinition } from '../codex/tool-config.ts';
+import { ToolCatalog, toolDefinition, toolsDirectory } from '../codex/tool-config.ts';
+import { profile as character } from '../../part-layering/profile.ts';
+import { profile as clothing } from '../../clothing-part-layering/profile.ts';
 
 test('agv gateway retains original function schema, arguments, signatures, text and every returned image across turns', async t => {
   const root = await mkdtemp(join(tmpdir(), 'agv-bridge-'));
@@ -97,4 +99,43 @@ test('agv HTTP gateway sends the real grouping union schema as JSON Schema and r
   const input = JSON.parse(Buffer.from(call.args.CommandLine.split(' ').at(-1), 'base64url').toString());
   assert.equal(input.name, definition.name);
   assert.equal(input.arguments.groups[0].note, null);
+});
+
+test('all real shared, character and clothing tool schemas retain every constraint in Gemini and MCP registration', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'agv-catalog-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const names = (await readdir(toolsDirectory, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name);
+  assert.ok(names.includes('write_groups') && names.includes('propose_occlusion') && names.includes('image_generation'));
+  for (const [label, overrides] of [['shared', undefined], ['character', character.toolsDirectory], ['clothing', clothing.toolsDirectory]] as const) {
+    const catalog = new ToolCatalog(toolsDirectory, overrides);
+    const definitions = names.map(name => catalog.get(name));
+    const snapshot = structuredClone(definitions);
+    const tools = definitions.map(definition => ({ ...definition, async execute() { throw new Error('registration only'); } }));
+    for (const key of ['functionDeclarations', 'function_declarations']) {
+      const native = { name: 'run_command', parameters: { type: 'OBJECT' } };
+      const request: any = { tools: [{ [key]: [native] }], contents: [{ role: 'user', parts: [{ text: label }] }] };
+      await prepareGenaiTools(request, tools, root);
+      // Repeating request preparation must not append another copy of the tools.
+      await prepareGenaiTools(request, tools, root);
+      const wire = JSON.parse(JSON.stringify(request));
+      assert.equal(wire.tools.length, 2, `${label}/${key}`);
+      assert.deepEqual(wire.tools[0][key], [native]);
+      assert.deepEqual(wire.tools[1].functionDeclarations, snapshot.map(({ name, description, inputSchema }) =>
+        ({ name, description, parametersJsonSchema: inputSchema })), `${label}/${key}`);
+      const group = wire.tools[1].functionDeclarations.find((definition: any) => definition.name === 'write_groups');
+      assert.deepEqual(group.parametersJsonSchema.properties.groups.items.properties.note.type, ['string', 'null']);
+      const depth = wire.tools[1].functionDeclarations.find((definition: any) => definition.name === 'propose_occlusion');
+      assert.equal(depth.parametersJsonSchema.properties.layers.items.oneOf.length, 2);
+      assert.equal(wire.contents[0].parts[0].text, label);
+    }
+    const bridge = await createMcpBridge(tools, new AbortController().signal);
+    try {
+      const response = await fetch(bridge.env.LAYERING_MCP_URL, { method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${bridge.env.LAYERING_MCP_TOKEN}` },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) });
+      const wire: any = await response.json();
+      assert.deepEqual(wire.result.tools, snapshot, `${label}/MCP`);
+    } finally { await bridge.close(); }
+    assert.deepEqual(definitions, snapshot, `${label}: source definitions mutated`);
+  }
 });
