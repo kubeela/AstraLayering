@@ -351,6 +351,22 @@ export class LayerCompositor {
       throw Error("此合成预览已过期");
     return join(session.directory, `frame-${revision}.png`);
   }
+  async surfaces(value: any) {
+    return this.exclusive(async () => {
+      const session = this.session(value.session);
+      if (value.revision !== session.revision || !session.metadata?.baseline)
+        throw Error("请还原图层后准备部件贴图，法线与深度必须对应原始叠加状态");
+      const directory = join(session.directory, `surfaces-${session.revision}`);
+      const packet = await this.command({ op: "surfaces", session: value.session, output: directory });
+      return { ...packet, session: value.session, revision: session.revision };
+    });
+  }
+  async surfaceAsset(token: string, revision: number, file: string) {
+    const session = this.session(token);
+    if (revision !== session.revision || !Number.isSafeInteger(revision) || !/^part-\d+-(original|masked)\.png$/.test(file))
+      throw Error("部件快照已过期，请重新准备");
+    return join(session.directory, `surfaces-${revision}`, file);
+  }
   async export(value: any) {
     return this.exclusive(async () => {
       const session = this.session(value.session);

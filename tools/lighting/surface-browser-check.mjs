@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import sharp from 'sharp';
+const module=await import(process.env.PLAYWRIGHT_MODULE||'playwright'),{chromium}=module.default||module;
+const base=new URL(process.argv[2]||'http://127.0.0.1:4390/'),out=process.argv[3]||'.web/surface-review';
+await mkdir(out,{recursive:true});
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:1480,height:1000},ignoreHTTPSErrors:true}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+const diagnostics=()=>page.evaluate(()=>window.studioDiagnostics());
+const settle=()=>page.waitForTimeout(600);
+async function capture(name){const download=page.waitForEvent('download');await page.locator('#export-image').click();const d=await download;await d.saveAs(out+'/'+name+'.png');return readFile(out+'/'+name+'.png');}
+try{
+ await page.goto(new URL('studio?name=jianma',base).href);
+ await page.waitForFunction(()=>window.studioDiagnostics?.().layerSession&&!window.studioDiagnostics().layerBusy&&!window.studioDiagnostics().busy,null,{timeout:90000});
+ await page.locator('#surface-panel summary').click();await page.locator('#surface-prepare').click();
+ await page.waitForFunction(()=>!document.querySelector('#surface-prepare').disabled,null,{timeout:90000});
+ const initial=await diagnostics();assert(initial.surface.active,'Surface preparation failed: '+await page.locator('#surface-status').textContent());
+ assert.deepEqual(initial.source,{width:1024,height:1536});
+ await page.locator('[data-view=color]').click();const rest=await capture('rest-color');
+ const group=initial.surface.parts.find(g=>g.id==='arms/arm_right/hand');assert(group&&group.layers.length===6);assert(group.known>0);
+ await page.locator('#surface-part').selectOption(group.id);await page.locator('#surface-x').fill('210');await page.locator('#surface-y').fill('-505');await page.locator('#surface-front').check();await settle();
+ await page.locator('[data-view=normal]').click();await capture('hand-normal');
+ await page.locator('[data-view=depth]').click();await capture('hand-depth');
+ await page.locator('[data-view=lit]').click();const lit=await capture('hand-lit');await page.screenshot({path:out+'/hand-page.png'});
+ await page.locator('#surface-angle').fill('18');await settle();const rotated=await capture('rotated-lit');assert.notEqual(createHash('sha256').update(lit).digest('hex'),createHash('sha256').update(rotated).digest('hex'));
+ await page.locator('#surface-replace').selectOption('arms/arm_left/hand');await settle();await capture('replacement-lit');
+ await page.locator('#surface-reset').click();await settle();await page.locator('[data-view=color]').click();const reset=await capture('reset-color');
+ assert.deepEqual(await sharp(rest).raw().toBuffer(),await sharp(reset).raw().toBuffer(),'Restored source changed');
+ await page.locator('#surface-close').click();await settle();assert.equal((await diagnostics()).surface.active,false);
+ const final=await diagnostics();assert(final.textureSizes.every(([w,h])=>w===1024&&h===1536));assert.deepEqual(errors,[]);
+ const result={status:'passed',url:page.url(),size:initial.source,group,checks:['native part snapshot matches Krita composite','existing opposite-hand replacement and translation/rotation share color/normal/depth coordinates','reset returns exact source pixels','full-resolution texture resources retained'],errors};
+ await writeFile(out+'/verification.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
+}catch(error){await page.screenshot({path:out+'/failure.png'}).catch(()=>{});const result={status:'failed',error:String(error),surfaceStatus:await page.locator('#surface-status').textContent().catch(()=>null),diagnostics:await diagnostics().catch(()=>null),errors};await writeFile(out+'/verification.json',JSON.stringify(result,null,2));throw error;}finally{await browser.close();}

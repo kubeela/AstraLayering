@@ -985,3 +985,12 @@ dialog select {
   text-align: left;
   padding: 12px;
 }
+#surface-controls input[type="number"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #414650;
+  border-radius: 4px;
+  background: #2c3038;
+  color: #dde1e8;
+  font: inherit;
+}

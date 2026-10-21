@@ -118,6 +118,24 @@
             <div id="map-controls"></div>
           </details>
         </section>
+        <section class="panel" id="surface-panel">
+          <details><summary>部件试验</summary>
+            <div class="file-actions"><button id="surface-prepare">准备部件贴图</button><button id="surface-close" hidden>退出试验</button></div>
+            <p id="surface-status" class="muted">依据原始图层叠加补全贴图</p>
+            <div id="surface-controls" hidden>
+              <label class="field">部件<select id="surface-part"></select></label>
+              <p id="surface-stats" class="muted"></p>
+              <label class="field">左右 · px<input id="surface-x" type="number" min="-2048" max="2048" step="1" value="0"></label>
+              <label class="field">上下 · px<input id="surface-y" type="number" min="-2048" max="2048" step="1" value="0"></label>
+              <label class="field">旋转 · °<input id="surface-angle" type="number" min="-180" max="180" step="1" value="0"></label>
+              <label class="field">前后 · %<input id="surface-depth" type="number" min="-100" max="100" step="1" value="0"></label>
+              <label class="field">替换<select id="surface-replace"></select></label>
+              <label class="check"><input id="surface-visible" type="checkbox" checked>显示部件</label>
+              <label class="check"><input id="surface-front" type="checkbox">移到前层</label>
+              <button id="surface-reset">复位当前部件</button>
+            </div>
+          </details>
+        </section>
         <section class="panel layer-panel">
           <div class="section-heading">
             <h2>图层</h2>

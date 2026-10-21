@@ -94,6 +94,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           }
           const value = await body(request);
           if (path.endsWith('/edit')) json(await compositor.edit(value));
+          else if (path.endsWith('/surfaces')) json(await compositor.surfaces(value));
           else if (path.endsWith('/export')) json(await compositor.export(value));
           else if (path.endsWith('/close')) json(await compositor.closeDocument(value.session));
           else json({ error: 'Not found' }, 404);
@@ -182,6 +183,12 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
       if (path === '/api/studio/layers') { json({ available: compositor.available, engine: 'Krita' }); return; }
+      if (path === '/studio-surface-asset') {
+        const file = await compositor.surfaceAsset(url.searchParams.get('session') ?? '', Number(url.searchParams.get('revision')), url.searchParams.get('file') ?? '');
+        await lstat(file);
+        response.writeHead(200, { 'Content-Type': 'image/png' });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
       if (path === '/studio-layer-asset') {
         const kind = url.searchParams.get('kind') ?? 'png';
         if (!['png', 'kra'].includes(kind)) throw Error('无效的图层产物');
@@ -218,7 +225,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
       const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
-      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js']) staticFiles['/studio/' + name] = 'studio/' + name;
+      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });
