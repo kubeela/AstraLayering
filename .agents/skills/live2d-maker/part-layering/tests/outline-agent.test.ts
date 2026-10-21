@@ -351,3 +351,23 @@ test('终端不可用时可读取父 SVG 复用共享曲线，源码读取不能
   await drawGroupOutline(context, mock);
   assert.equal(await readFile(parent, 'utf8'), before);
 });
+
+
+test('连续 blocked 保留记录但不消耗正式审核轮次，恢复仍需两轮返修', async t => {
+  const f = await fixture(t);
+  for (let i = 0; i < 2; i++) {
+    await runLayering({ ...f, groups: null, steps: createLayeringSteps(agents(['blocked'])) });
+  }
+  const resumed = agents(['revise', 'revise']);
+  await runLayering({ ...f, groups: null, steps: createLayeringSteps(resumed) });
+  assert.equal(resumed.calls.filter(call => call.task.name.startsWith('组轮廓review')).length, 2);
+  assert.equal(resumed.calls.filter(call => call.task.name.startsWith('组轮廓返修')).length, 2);
+  const report = JSON.parse(await readFile(join(f.directory, 'stages/review/face.review.json'), 'utf8'));
+  assert.deepEqual(report.reviews.map((entry: { verdict: string }) => entry.verdict), ['blocked', 'blocked', 'revise', 'revise']);
+  const final = agents(['pass']);
+  await runLayering({ ...f, groups: null, steps: createLayeringSteps(final) });
+  assert.equal(final.calls.length, 0);
+  const state = (await GroupStore.open(f.directory)).snapshot().groups[0];
+  assert.equal(state.steps.review.output!.reviewOutcome, 'repaired');
+  assert.match(state.steps.review.output!.note!, /第 2 轮/);
+});

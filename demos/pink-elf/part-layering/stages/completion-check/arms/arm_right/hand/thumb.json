@@ -1,0 +1,7 @@
+{
+  "groupId": "arms/arm_right/hand/thumb",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "c4d7f82722bbe9d511748436181b76490d502fa24910f7e396a606e581791d3a",
+  "afterHash": "93c022c2a39d94d78a00ee79052ee91eb45342e58469c7ecb759f3e36bc2882a"
+}

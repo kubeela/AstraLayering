@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face",
+  "beforeHash": "97e4f244a2ddea41f0e47bf46474a4a0fce0dfa42b899da623cf135413ecce43",
+  "afterHash": "234c2141fe58a19a594f5bf63ca0b33f1e8dfcb23043bd42b54a93ebe2a3481e",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

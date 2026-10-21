@@ -1,0 +1,1803 @@
+{
+  "canvas": [
+    932,
+    1688
+  ],
+  "logicalParts": 65,
+  "ordinaryPaintLayers": 69,
+  "allOrdinaryNoChildren": true,
+  "ascendingDepth": true,
+  "reopenIdentical": true,
+  "allDepthsMatch": true,
+  "allSVGUnchanged": true,
+  "allGenerated": true,
+  "groupsSha256": "79c242916fa7538f16bb188e5c59ee2c6650f7fa4418a8297058050e89e0e145",
+  "occlusionSha256": "661cb8bd51b4ed837012e49947d52c74c417a883da05daf8896bd48eebe118e3",
+  "kraSha256": "4062dacac65b4d935d76ff2f03f388dce9abe73959f04456d6bafa1ca122ed2f",
+  "records": [
+    {
+      "id": "hair/back_hair/long_right",
+      "layers": [
+        "0010 hair/back_hair/long_right"
+      ],
+      "exports": [
+        "0010 hair__back_hair__long_right.png"
+      ],
+      "depths": [
+        10
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 2,
+      "completionVersion": "2",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 5
+    },
+    {
+      "id": "hair/back_hair/long_left",
+      "layers": [
+        "0020 hair/back_hair/long_left"
+      ],
+      "exports": [
+        "0020 hair__back_hair__long_left.png"
+      ],
+      "depths": [
+        20
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 2,
+      "completionVersion": "2",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 5
+    },
+    {
+      "id": "hair/side_hair_right",
+      "layers": [
+        "0030 hair/side_hair_right"
+      ],
+      "exports": [
+        "0030 hair__side_hair_right.png"
+      ],
+      "depths": [
+        30
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 5
+    },
+    {
+      "id": "hair/side_hair_left",
+      "layers": [
+        "0040 hair/side_hair_left"
+      ],
+      "exports": [
+        "0040 hair__side_hair_left.png"
+      ],
+      "depths": [
+        40
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "hair/ahoge",
+      "layers": [
+        "0045 hair/ahoge"
+      ],
+      "exports": [
+        "0045 hair__ahoge.png"
+      ],
+      "depths": [
+        45
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "layers": [
+        "0060 legs/leg_right/leg"
+      ],
+      "exports": [
+        "0060 legs__leg_right__leg.png"
+      ],
+      "depths": [
+        60
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 13
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "layers": [
+        "0070 legs/leg_left/leg"
+      ],
+      "exports": [
+        "0070 legs__leg_left__leg.png"
+      ],
+      "depths": [
+        70
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 12
+    },
+    {
+      "id": "pelvis",
+      "layers": [
+        "0080 pelvis"
+      ],
+      "exports": [
+        "0080 pelvis.png"
+      ],
+      "depths": [
+        80
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 2,
+      "completionVersion": "2",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 9
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "layers": [
+        "0090 arms/arm_left/hand/little_finger"
+      ],
+      "exports": [
+        "0090 arms__arm_left__hand__little_finger.png"
+      ],
+      "depths": [
+        90
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "layers": [
+        "0100 arms/arm_left/hand/ring_finger"
+      ],
+      "exports": [
+        "0100 arms__arm_left__hand__ring_finger.png"
+      ],
+      "depths": [
+        100
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "layers": [
+        "0110 arms/arm_left/hand/middle_finger"
+      ],
+      "exports": [
+        "0110 arms__arm_left__hand__middle_finger.png"
+      ],
+      "depths": [
+        110
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "layers": [
+        "0120 arms/arm_left/hand/index_finger"
+      ],
+      "exports": [
+        "0120 arms__arm_left__hand__index_finger.png"
+      ],
+      "depths": [
+        120
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "layers": [
+        "0130 arms/arm_left/hand/thumb"
+      ],
+      "exports": [
+        "0130 arms__arm_left__hand__thumb.png"
+      ],
+      "depths": [
+        130
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "arms/arm_left/hand/palm",
+      "layers": [
+        "0140 arms/arm_left/hand/palm"
+      ],
+      "exports": [
+        "0140 arms__arm_left__hand__palm.png"
+      ],
+      "depths": [
+        140
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 2,
+      "completionVersion": "2",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "layers": [
+        "0145 arms/arm_right/hand/little_finger"
+      ],
+      "exports": [
+        "0145 arms__arm_right__hand__little_finger.png"
+      ],
+      "depths": [
+        145
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "layers": [
+        "0150 arms/arm_right/hand/index_finger"
+      ],
+      "exports": [
+        "0150 arms__arm_right__hand__index_finger.png"
+      ],
+      "depths": [
+        150
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "layers": [
+        "0160 arms/arm_right/hand/middle_finger"
+      ],
+      "exports": [
+        "0160 arms__arm_right__hand__middle_finger.png"
+      ],
+      "depths": [
+        160
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_right/hand/ring_finger",
+      "layers": [
+        "0170 arms/arm_right/hand/ring_finger"
+      ],
+      "exports": [
+        "0170 arms__arm_right__hand__ring_finger.png"
+      ],
+      "depths": [
+        170
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "layers": [
+        "0180 arms/arm_right/hand/thumb"
+      ],
+      "exports": [
+        "0180 arms__arm_right__hand__thumb.png"
+      ],
+      "depths": [
+        180
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "layers": [
+        "0190 arms/arm_right/hand/palm"
+      ],
+      "exports": [
+        "0190 arms__arm_right__hand__palm.png"
+      ],
+      "depths": [
+        190
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_left/forearm",
+      "layers": [
+        "0200 arms/arm_left/forearm"
+      ],
+      "exports": [
+        "0200 arms__arm_left__forearm.png"
+      ],
+      "depths": [
+        200
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "layers": [
+        "0210 arms/arm_right/forearm"
+      ],
+      "exports": [
+        "0210 arms__arm_right__forearm.png"
+      ],
+      "depths": [
+        210
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "arms/arm_left/upper_arm",
+      "layers": [
+        "0220 arms/arm_left/upper_arm"
+      ],
+      "exports": [
+        "0220 arms__arm_left__upper_arm.png"
+      ],
+      "depths": [
+        220
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 2,
+      "completionVersion": "2",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 4
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "layers": [
+        "0230 arms/arm_right/upper_arm"
+      ],
+      "exports": [
+        "0230 arms__arm_right__upper_arm.png"
+      ],
+      "depths": [
+        230
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 2
+    },
+    {
+      "id": "neck",
+      "layers": [
+        "0240 neck"
+      ],
+      "exports": [
+        "0240 neck.png"
+      ],
+      "depths": [
+        240
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 3
+    },
+    {
+      "id": "body/torso",
+      "layers": [
+        "0250 body/torso"
+      ],
+      "exports": [
+        "0250 body__torso.png"
+      ],
+      "depths": [
+        250
+      ],
+      "depthMatches": true,
+      "controls": 2,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 9
+    },
+    {
+      "id": "body/breast",
+      "layers": [
+        "0260 body/breast"
+      ],
+      "exports": [
+        "0260 body__breast.png"
+      ],
+      "depths": [
+        260
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/ear_left",
+      "layers": [
+        "0270 face/ear_left"
+      ],
+      "exports": [
+        "0270 face__ear_left.png"
+      ],
+      "depths": [
+        270
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "face/ear_right",
+      "layers": [
+        "0280 face/ear_right"
+      ],
+      "exports": [
+        "0280 face__ear_right.png"
+      ],
+      "depths": [
+        280
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "head_accessories/left_earring",
+      "layers": [
+        "0290 head_accessories/left_earring"
+      ],
+      "exports": [
+        "0290 head_accessories__left_earring.png"
+      ],
+      "depths": [
+        290
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "head_accessories/right_earring",
+      "layers": [
+        "0300 head_accessories/right_earring"
+      ],
+      "exports": [
+        "0300 head_accessories__right_earring.png"
+      ],
+      "depths": [
+        300
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 2,
+      "completionVersion": "2",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/face_base",
+      "layers": [
+        "0310 face/face_base"
+      ],
+      "exports": [
+        "0310 face__face_base.png"
+      ],
+      "depths": [
+        310
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 2
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "layers": [
+        "0320 face/mouth/mouth_interior"
+      ],
+      "exports": [
+        "0320 face__mouth__mouth_interior.png"
+      ],
+      "depths": [
+        320
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "layers": [
+        "0330 face/mouth/lower_teeth"
+      ],
+      "exports": [
+        "0330 face__mouth__lower_teeth.png"
+      ],
+      "depths": [
+        330
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/mouth/tongue",
+      "layers": [
+        "0340 face/mouth/tongue"
+      ],
+      "exports": [
+        "0340 face__mouth__tongue.png"
+      ],
+      "depths": [
+        340
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "layers": [
+        "0350 face/mouth/upper_teeth"
+      ],
+      "exports": [
+        "0350 face__mouth__upper_teeth.png"
+      ],
+      "depths": [
+        350
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "layers": [
+        "0360 face/mouth/lower_lip"
+      ],
+      "exports": [
+        "0360 face__mouth__lower_lip.png"
+      ],
+      "depths": [
+        360
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 2,
+      "completionVersion": "2",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/mouth/upper_lip",
+      "layers": [
+        "0370 face/mouth/upper_lip"
+      ],
+      "exports": [
+        "0370 face__mouth__upper_lip.png"
+      ],
+      "depths": [
+        370
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/nose",
+      "layers": [
+        "0380 face/nose"
+      ],
+      "exports": [
+        "0380 face__nose.png"
+      ],
+      "depths": [
+        380
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "layers": [
+        "0390 face/eye_left/sclera"
+      ],
+      "exports": [
+        "0390 face__eye_left__sclera.png"
+      ],
+      "depths": [
+        390
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "layers": [
+        "0400 face/eye_right/sclera"
+      ],
+      "exports": [
+        "0400 face__eye_right__sclera.png"
+      ],
+      "depths": [
+        400
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_left/iris",
+      "layers": [
+        "0410 face/eye_left/iris"
+      ],
+      "exports": [
+        "0410 face__eye_left__iris.png"
+      ],
+      "depths": [
+        410
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_right/iris",
+      "layers": [
+        "0420 face/eye_right/iris"
+      ],
+      "exports": [
+        "0420 face__eye_right__iris.png"
+      ],
+      "depths": [
+        420
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_left/highlight",
+      "layers": [
+        "0430 face/eye_left/highlight"
+      ],
+      "exports": [
+        "0430 face__eye_left__highlight.png"
+      ],
+      "depths": [
+        430
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "layers": [
+        "0440 face/eye_right/highlight"
+      ],
+      "exports": [
+        "0440 face__eye_right__highlight.png"
+      ],
+      "depths": [
+        440
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_left/lower_eyelid",
+      "layers": [
+        "0450 face/eye_left/lower_eyelid"
+      ],
+      "exports": [
+        "0450 face__eye_left__lower_eyelid.png"
+      ],
+      "depths": [
+        450
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "layers": [
+        "0460 face/eye_right/lower_eyelid"
+      ],
+      "exports": [
+        "0460 face__eye_right__lower_eyelid.png"
+      ],
+      "depths": [
+        460
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "layers": [
+        "0470 face/eye_left/upper_eyelid"
+      ],
+      "exports": [
+        "0470 face__eye_left__upper_eyelid.png"
+      ],
+      "depths": [
+        470
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "layers": [
+        "0480 face/eye_right/upper_eyelid"
+      ],
+      "exports": [
+        "0480 face__eye_right__upper_eyelid.png"
+      ],
+      "depths": [
+        480
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "layers": [
+        "0490 face/eye_left/eyelid_crease"
+      ],
+      "exports": [
+        "0490 face__eye_left__eyelid_crease.png"
+      ],
+      "depths": [
+        490
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "layers": [
+        "0500 face/eye_right/eyelid_crease"
+      ],
+      "exports": [
+        "0500 face__eye_right__eyelid_crease.png"
+      ],
+      "depths": [
+        500
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eyebrow_left",
+      "layers": [
+        "0510 face/eyebrow_left"
+      ],
+      "exports": [
+        "0510 face__eyebrow_left.png"
+      ],
+      "depths": [
+        510
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": {
+        "dy": -19,
+        "reason": "Upstream depthNote explicitly requests correction from y185-193 crease overlap to original y166-176 eyebrow. Original SVG preserved.",
+        "originalBBox": [
+          473,
+          185,
+          514,
+          193
+        ]
+      },
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "face/eyebrow_right",
+      "layers": [
+        "0520 face/eyebrow_right"
+      ],
+      "exports": [
+        "0520 face__eyebrow_right.png"
+      ],
+      "depths": [
+        520
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "hair/front_side_hair_right",
+      "layers": [
+        "0530 hair/front_side_hair_right"
+      ],
+      "exports": [
+        "0530 hair__front_side_hair_right.png"
+      ],
+      "depths": [
+        530
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 2
+    },
+    {
+      "id": "hair/front_side_hair_left",
+      "layers": [
+        "0540 hair/front_side_hair_left"
+      ],
+      "exports": [
+        "0540 hair__front_side_hair_left.png"
+      ],
+      "depths": [
+        540
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 3
+    },
+    {
+      "id": "hair/bangs",
+      "layers": [
+        "0550 hair/bangs"
+      ],
+      "exports": [
+        "0550 hair__bangs.png"
+      ],
+      "depths": [
+        550
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 4
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "layers": [
+        "0630 legs/leg_left/boot_gem_chain/large_diamond_gem"
+      ],
+      "exports": [
+        "0630 legs__leg_left__boot_gem_chain__large_diamond_gem.png"
+      ],
+      "depths": [
+        630
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "layers": [
+        "0640 legs/leg_left/boot_gem_chain/small_diamond_charm"
+      ],
+      "exports": [
+        "0640 legs__leg_left__boot_gem_chain__small_diamond_charm.png"
+      ],
+      "depths": [
+        640
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain/round_bead",
+      "layers": [
+        "0650 legs/leg_left/boot_gem_chain/round_bead"
+      ],
+      "exports": [
+        "0650 legs__leg_left__boot_gem_chain__round_bead.png"
+      ],
+      "depths": [
+        650
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 0
+    },
+    {
+      "id": "legs/leg_right/boot_gem",
+      "layers": [
+        "0660 legs/leg_right/boot_gem"
+      ],
+      "exports": [
+        "0660 legs__leg_right__boot_gem.png"
+      ],
+      "depths": [
+        660
+      ],
+      "depthMatches": true,
+      "controls": 2,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "legs/leg_right/boot_flower_ornament",
+      "layers": [
+        "0670 legs/leg_right/boot_flower_ornament"
+      ],
+      "exports": [
+        "0670 legs__leg_right__boot_flower_ornament.png"
+      ],
+      "depths": [
+        670
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "hair/back_hair/cap",
+      "layers": [
+        "0050 hair/back_hair/cap :: back",
+        "0560 hair/back_hair/cap :: crown"
+      ],
+      "exports": [
+        "0050 hair__back_hair__cap __ back.png",
+        "0560 hair__back_hair__cap __ crown.png"
+      ],
+      "depths": [
+        50,
+        560
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "layers": [
+        "0055 legs/leg_left/foot :: rear",
+        "0600 legs/leg_left/foot :: front"
+      ],
+      "exports": [
+        "0055 legs__leg_left__foot __ rear.png",
+        "0600 legs__leg_left__foot __ front.png"
+      ],
+      "depths": [
+        55,
+        600
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "layers": [
+        "0056 legs/leg_right/foot :: rear",
+        "0610 legs/leg_right/foot :: front"
+      ],
+      "exports": [
+        "0056 legs__leg_right__foot __ rear.png",
+        "0610 legs__leg_right__foot __ front.png"
+      ],
+      "depths": [
+        56,
+        610
+      ],
+      "depthMatches": true,
+      "controls": 2,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Global bounding-box affine with nearest in-row generated pixel at uncovered margins",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 0,
+        "extra": 0,
+        "alphaDifferent": 0,
+        "examples": []
+      },
+      "correction": null,
+      "kritaPaintOperations": 1
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain/flexible_connector",
+      "layers": [
+        "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+        "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible"
+      ],
+      "exports": [
+        "0599 legs__leg_left__boot_gem_chain__flexible_connector __ hidden_tip.png",
+        "0620 legs__leg_left__boot_gem_chain__flexible_connector __ visible.png"
+      ],
+      "depths": [
+        599,
+        620
+      ],
+      "depthMatches": true,
+      "controls": 1,
+      "completions": 1,
+      "completionVersion": "1",
+      "registration": "Smoothed row contour warp",
+      "svgUnchanged": true,
+      "shape": {
+        "missing": 4,
+        "extra": 0,
+        "alphaDifferent": 13,
+        "examples": [
+          [
+            509,
+            1525,
+            73,
+            44
+          ],
+          [
+            510,
+            1525,
+            255,
+            152
+          ],
+          [
+            511,
+            1525,
+            119,
+            0
+          ],
+          [
+            509,
+            1526,
+            133,
+            79
+          ],
+          [
+            510,
+            1526,
+            255,
+            152
+          ],
+          [
+            511,
+            1526,
+            86,
+            0
+          ],
+          [
+            509,
+            1527,
+            197,
+            117
+          ],
+          [
+            510,
+            1527,
+            255,
+            152
+          ],
+          [
+            511,
+            1527,
+            48,
+            0
+          ],
+          [
+            509,
+            1528,
+            181,
+            108
+          ],
+          [
+            510,
+            1528,
+            219,
+            131
+          ],
+          [
+            511,
+            1528,
+            6,
+            0
+          ]
+        ]
+      },
+      "correction": "Krita tail narrowed x509.4..510.6 at y1525..1529",
+      "kritaPaintOperations": 2
+    }
+  ]
+}

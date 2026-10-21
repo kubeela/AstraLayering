@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "hair/side_hair_right",
+  "beforeHash": "0fdb4fdeefbfae5dcd5875086002f2c1e1960a0ae482f3ea86dfb83df75537fe",
+  "afterHash": "8677bdb322e9622d54b5d0fd7fbc7dfd590a18c5b7ea307c067c0d2b0deacd25",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "groupId": "legs/leg_left/boot_gem_chain/flexible_connector",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取本组职责说明、候选 SVG 与父组完成 SVG，并先查看整图 blend 定位。本组核对范围为画面右侧靴面中央三段短连接；以 [502,1499,18,15]、[502,1510,18,14]、[502,1519,18,15] 三个相互重叠的 8 倍选框，逐块查看参考、blend 与 edge，另以父组在 [502,1499,18,35] 的同区 blend/edge 和候选独显核对范围、连续性与形体归属。\n1. 大宝石下尖至小菱形上尖（约 x510–511、y1503–1507）：细连接覆盖完整，两侧走向与可辨识细线相符；两端仅作伸入硬质件遮挡内的圆弧余量，未出现接缝缺口。\n2. 小菱形下尖至圆珠上缘（约 x510–511、y1512–1518）：连接连续，宽度与位置符合参考；上下接缝均已覆盖，未漏掉独立连接段。\n3. 圆珠下缘至花簇顶部（约 x509–512、y1520–1529）：微弯短尾及可见边缘覆盖完整，顶部接圆珠、底部在花簇顶部遮挡内合理收束；没有领取花瓣、叶片或花托，也没有新增扣环或长链。\n候选独显轮廓干净，三段分离符合硬质件之间的实际间隔，未发现孤立点、碎片堆砌或形体混乱。父范围检查为 pass，outsideSamples=0、outsidePixels=0；局部叠加未发现需要当前组修复的父内遗漏，也未确认另须报告的上游范围冲突。本轮通过。",
+      "candidateHash": "28f4fc5c2cea330586e93690fba01fb0bb4add8b10ada0d80799b7ce8ddfa250",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\legs\\leg_left\\boot_gem_chain.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\legs\\leg_left\\boot_gem_chain.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\flexible_connector.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\legs\\leg_left\\boot_gem_chain.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\flexible_connector\\2026-10-20T19-05-14-285Z-13.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T19:18:15.387Z"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "groupId": "body/torso",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "d6998bf19cc838043d890cbbf8970b0cc5ddabd5dc999b90a21ff04f7fe5eb1c",
+  "afterHash": "453cb31d6257b21a9204eaed78a1637359353fd20019706a855af8a6c051c8d7"
+}

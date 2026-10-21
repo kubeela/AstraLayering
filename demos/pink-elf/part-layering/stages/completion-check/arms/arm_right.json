@@ -1,0 +1,7 @@
+{
+  "groupId": "arms/arm_right",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "87acd10f98e7f1ac971019d349ca584cc1943cd0c7f039a0466182f5ddfb08ed",
+  "afterHash": "5b58323f8df6f7e79de50e41b16b457a000a639f986e83dde8973177c48523fa"
+}

@@ -1,0 +1,837 @@
+{
+  "commandId": "1792540005149-93c181a6502ec8",
+  "ok": true,
+  "result": {
+    "saved": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\raster-layering\\step01\\character-depth.kra",
+    "layers": [
+      {
+        "name": "0010 hair/back_hair/long_right",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          154,
+          167,
+          319,
+          636
+        ],
+        "sha256": "d20875c85cc5bc3868a687da17363252fc0d2276740beceee2396b0aae1b3326"
+      },
+      {
+        "name": "0020 hair/back_hair/long_left",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          440,
+          132,
+          307,
+          679
+        ],
+        "sha256": "a455727ed475612557cc7c087be7d2bb19badbc083ac8f87b145ecaf4d2080df"
+      },
+      {
+        "name": "0030 hair/side_hair_right",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          204,
+          73,
+          256,
+          479
+        ],
+        "sha256": "4a2ac3246e02c5156256b64b00fd7e5a006c5c699b6e733f1ab0588e16642aac"
+      },
+      {
+        "name": "0040 hair/side_hair_left",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          471,
+          75,
+          229,
+          475
+        ],
+        "sha256": "77a1bbb8ac5b2ef093558072757d0a545981020a5bc444b9fed56a2017838edc"
+      },
+      {
+        "name": "0045 hair/ahoge",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          425,
+          19,
+          72,
+          94
+        ],
+        "sha256": "eafdbc0eb7fe154d85460b9fcf0451980a3db6ddf907de540b42e409c0da225e"
+      },
+      {
+        "name": "0050 hair/back_hair/cap :: back",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          334,
+          86,
+          241,
+          222
+        ],
+        "sha256": "beccc1c088f79b511647ac0d4f659470fbc29d74bda84dd6605f25e2cf542b18"
+      },
+      {
+        "name": "0055 legs/leg_left/foot :: rear",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          460,
+          1366,
+          115,
+          91
+        ],
+        "sha256": "ef50b38f19f09492f9b52a1ba626a4120cd3751a27532b1c118b93b2ea16f209"
+      },
+      {
+        "name": "0056 legs/leg_right/foot :: rear",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          358,
+          1366,
+          113,
+          91
+        ],
+        "sha256": "80c7d855bf43b310bfd33da081cf2e2cfb799b8a3fee3ffc9650ca7093bf2a77"
+      },
+      {
+        "name": "0060 legs/leg_right/leg",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          309,
+          595,
+          161,
+          881
+        ],
+        "sha256": "8e86bd99ddb85ab10728646799684a97468268e9d5d0c60b6a4e0638769dcb08"
+      },
+      {
+        "name": "0070 legs/leg_left/leg",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          460,
+          596,
+          159,
+          880
+        ],
+        "sha256": "f90e2e0f1e21ac5a4d6c5a314fe7e8922b92e354a637be15f107efdf207b073e"
+      },
+      {
+        "name": "0080 pelvis",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          311,
+          528,
+          306,
+          257
+        ],
+        "sha256": "00c292a89ecb61aaa1abc4f0d7434eb738cac098df3045993c6626e36503d4c1"
+      },
+      {
+        "name": "0090 arms/arm_left/hand/little_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          691,
+          820,
+          40,
+          66
+        ],
+        "sha256": "6725f0e8109b0933211a02afa9678d367018e88c706c58cf830abbf6e67b7940"
+      },
+      {
+        "name": "0100 arms/arm_left/hand/ring_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          684,
+          807,
+          36,
+          84
+        ],
+        "sha256": "a90f517ef6dd515a9f4cfa564c950f0e3626f0cd70c982d060c7e237f2767481"
+      },
+      {
+        "name": "0110 arms/arm_left/hand/middle_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          687,
+          814,
+          41,
+          86
+        ],
+        "sha256": "8d2aeaca57022f9651c135f10fa4a7641e47b2b81d7452fd3469bd1d5a820a6c"
+      },
+      {
+        "name": "0120 arms/arm_left/hand/index_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          689,
+          798,
+          49,
+          96
+        ],
+        "sha256": "8551d1b396645c95dad40013a00e22ab980e2f08c3cffb65e8ffe76548b032b8"
+      },
+      {
+        "name": "0130 arms/arm_left/hand/thumb",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          668,
+          791,
+          39,
+          72
+        ],
+        "sha256": "5c717edbedc9364f23aea3f9d9c906af7cad0bd31d8711cd161253bd3f66ab69"
+      },
+      {
+        "name": "0140 arms/arm_left/hand/palm",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          664,
+          758,
+          74,
+          103
+        ],
+        "sha256": "e90a09c53290667c67fe5a07374a55f2d8f96e6f0db81ac5c6c5ed1ad7cd67a9"
+      },
+      {
+        "name": "0145 arms/arm_right/hand/little_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          184,
+          809,
+          35,
+          83
+        ],
+        "sha256": "7ea3c86a50385acbae3d5e55d9e85dd67680b9576c4879b77689f0a4e12586c1"
+      },
+      {
+        "name": "0150 arms/arm_right/hand/index_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          204,
+          799,
+          48,
+          78
+        ],
+        "sha256": "f68164f2697f97e570048f77d3eaf8b8496f52d472cc9163f788c59a6c88f703"
+      },
+      {
+        "name": "0160 arms/arm_right/hand/middle_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          203,
+          800,
+          43,
+          88
+        ],
+        "sha256": "6d99a311724b25619d2947b553b59fc2a1a8b5e944c4dc68c733ed4989a70b95"
+      },
+      {
+        "name": "0170 arms/arm_right/hand/ring_finger",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          193,
+          810,
+          48,
+          87
+        ],
+        "sha256": "29c27d741fc4cab90c0496557678a10b497aaeb52124032f905c749e5748f012"
+      },
+      {
+        "name": "0180 arms/arm_right/hand/thumb",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          216,
+          797,
+          36,
+          63
+        ],
+        "sha256": "895c4f4233a0fa85c365227cb105e05d074315b2dec9fad0a6083997f95c885a"
+      },
+      {
+        "name": "0190 arms/arm_right/hand/palm",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          185,
+          751,
+          75,
+          91
+        ],
+        "sha256": "01ff52940c5f91be96854fb6ed9e1121df1298a9cce3212e023490c0a0faca29"
+      },
+      {
+        "name": "0200 arms/arm_left/forearm",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          568,
+          538,
+          149,
+          268
+        ],
+        "sha256": "f4b6f0cea0e6d191719d3f4a46bdf37cd2ac1308b05a452d72c2cfdf474136e4"
+      },
+      {
+        "name": "0210 arms/arm_right/forearm",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          207,
+          523,
+          151,
+          273
+        ],
+        "sha256": "7d7f6ccb5cc855c2b352e79ec9ad3c3d16211171aded1bb1f7dbf8eb56f4833e"
+      },
+      {
+        "name": "0220 arms/arm_left/upper_arm",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          492,
+          331,
+          141,
+          275
+        ],
+        "sha256": "e3121c050f94f5389e82089735edaa8e3e8e68b31392a5d9ea2dcb069148187e"
+      },
+      {
+        "name": "0230 arms/arm_right/upper_arm",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          291,
+          332,
+          142,
+          263
+        ],
+        "sha256": "02872eb2b5c230b97b1f321a08a7eb0da94005ef5c931e10689f253ed297e8a0"
+      },
+      {
+        "name": "0240 neck",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          396,
+          247,
+          131,
+          131
+        ],
+        "sha256": "3aba29689f742b31eb0c9129392ee17f1666a2c3fef4c78d8e782c6beb78bad9"
+      },
+      {
+        "name": "0250 body/torso",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          321,
+          331,
+          277,
+          309
+        ],
+        "sha256": "2b458bde47efeb66d84ef96109c50a606956b95531b90c6ce9b0164553ea7d9e"
+      },
+      {
+        "name": "0260 body/breast",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          349,
+          366,
+          225,
+          171
+        ],
+        "sha256": "de4e210c035d4c099d0abd9b0c2ef20997cf35b48a5987750affef532ae35267"
+      },
+      {
+        "name": "0270 face/ear_left",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          504,
+          187,
+          101,
+          58
+        ],
+        "sha256": "f18c65d22079b9233db9df67244b47da5d929306089cdf2d5fda72f6e35e4ecd"
+      },
+      {
+        "name": "0280 face/ear_right",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          305,
+          193,
+          107,
+          56
+        ],
+        "sha256": "71a9254934b1c51fa2ceac21bbef4a1c9ab07d150b04a0a8d47f1c0aa38b5e5d"
+      },
+      {
+        "name": "0290 head_accessories/left_earring",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          506,
+          222,
+          29,
+          49
+        ],
+        "sha256": "edeaac9bf175514c1e6131959a63bc2f1e7c4296d3898cb2f5a595563dfa6636"
+      },
+      {
+        "name": "0300 head_accessories/right_earring",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          383,
+          218,
+          37,
+          55
+        ],
+        "sha256": "6de8dcb10098691219e3cf075fb8067c6b057948ec705422cc17a07e739620c0"
+      },
+      {
+        "name": "0310 face/face_base",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          373,
+          115,
+          169,
+          188
+        ],
+        "sha256": "addacb403e77a5080418818b0a5090fceece3de2ec0ea59cd3fe779b5e60ed7d"
+      },
+      {
+        "name": "0320 face/mouth/mouth_interior",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          434,
+          241,
+          47,
+          42
+        ],
+        "sha256": "36e804343c8480f84bd6ea6de4996a2fcb23c125ed15ac6d64dc5ae5d2514781"
+      },
+      {
+        "name": "0330 face/mouth/lower_teeth",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          439,
+          258,
+          37,
+          24
+        ],
+        "sha256": "d92ae55d47647dddf0bc25b3c9c7b9cfcf65d940c0a12fa51df188f10136c2f6"
+      },
+      {
+        "name": "0340 face/mouth/tongue",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          435,
+          250,
+          45,
+          33
+        ],
+        "sha256": "5464cd0f0de6fe8a7e927c5fb72405f1c2907064132e26a491c8c4719c17d814"
+      },
+      {
+        "name": "0350 face/mouth/upper_teeth",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          439,
+          240,
+          37,
+          21
+        ],
+        "sha256": "7184799e897aac991f1836b3405a420d8df714a69becb32480b818e14eb49f97"
+      },
+      {
+        "name": "0360 face/mouth/lower_lip",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          433,
+          242,
+          49,
+          42
+        ],
+        "sha256": "f39e97fd577f0a50aa9a4b74dd7d50731530b5eef77e67df34c45de328476172"
+      },
+      {
+        "name": "0370 face/mouth/upper_lip",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          433,
+          240,
+          49,
+          28
+        ],
+        "sha256": "76cb081640f94673cf46e84f7f7126bae47207666ea68a1220959c08f76c4b0c"
+      },
+      {
+        "name": "0380 face/nose",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          446,
+          225,
+          20,
+          24
+        ],
+        "sha256": "4bc03cdae782f1a1e82f9c96a742195fb9954101d3d98eecc57e054f87394f42"
+      },
+      {
+        "name": "0390 face/eye_left/sclera",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          467,
+          186,
+          57,
+          44
+        ],
+        "sha256": "2f68b09a6151ac563cea32ed7c3926693df41d3fb7af623b09bae36bb2bb7c42"
+      },
+      {
+        "name": "0400 face/eye_right/sclera",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          388,
+          189,
+          54,
+          44
+        ],
+        "sha256": "1c5daa63062bd636d806b87eea5606cc948a2dcd07ec016cf31a04ea47a7c145"
+      },
+      {
+        "name": "0410 face/eye_left/iris",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          470,
+          184,
+          43,
+          46
+        ],
+        "sha256": "9d35d2148a63f942d1779ae09506aecbe6fe6fce1d7e0d17233532a65f4cf292"
+      },
+      {
+        "name": "0420 face/eye_right/iris",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          398,
+          189,
+          42,
+          44
+        ],
+        "sha256": "89f568be00f25f24bef3f0564c986ed9f119217bd8b85e54d98f128e948d84ba"
+      },
+      {
+        "name": "0430 face/eye_left/highlight",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          476,
+          191,
+          30,
+          38
+        ],
+        "sha256": "1407b953f3e9e594229f8192e270b2e9e5615226839b86e17bab1abaf9e967c0"
+      },
+      {
+        "name": "0440 face/eye_right/highlight",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          404,
+          194,
+          31,
+          39
+        ],
+        "sha256": "af94449e5a06b1574b87b26db722a37129554967eb76236a0003fc6cbba341cb"
+      },
+      {
+        "name": "0450 face/eye_left/lower_eyelid",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          466,
+          197,
+          64,
+          35
+        ],
+        "sha256": "dbf7a102381478f2a2d1c7698d81f18527b6144c43113c740d3020813a7ccf6a"
+      },
+      {
+        "name": "0460 face/eye_right/lower_eyelid",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          381,
+          193,
+          62,
+          41
+        ],
+        "sha256": "2a4bda5f1b4d75b351c1f419ab4ce6801a3d09e220a058c892c4ddf1df0b76f8"
+      },
+      {
+        "name": "0470 face/eye_left/upper_eyelid",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          464,
+          181,
+          69,
+          42
+        ],
+        "sha256": "c38ab605ac729f2e672a9fa9f332e0ab52ddee3bd12d0ab5ce14c0b3b731887b"
+      },
+      {
+        "name": "0480 face/eye_right/upper_eyelid",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          375,
+          183,
+          70,
+          46
+        ],
+        "sha256": "c23353ee5ddff736c7871904c26931fd7dd642825dad91c134b6194d3058145f"
+      },
+      {
+        "name": "0490 face/eye_left/eyelid_crease",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          465,
+          177,
+          42,
+          25
+        ],
+        "sha256": "c263071a0a34e323978dc4ea874c44d3e444cb94590d7f8e69a0126dce740dfb"
+      },
+      {
+        "name": "0500 face/eye_right/eyelid_crease",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          402,
+          181,
+          40,
+          23
+        ],
+        "sha256": "4b44294bbe82095e7e90aedd383e0d2c2622b96dec62d800e4e04143c9112af9"
+      },
+      {
+        "name": "0510 face/eyebrow_left",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          465,
+          158,
+          57,
+          24
+        ],
+        "sha256": "4a6fa3bc176f80fe866df03c68a88fb3d9676cbe6feb7af6d64dd53c44d9ab7d"
+      },
+      {
+        "name": "0520 face/eyebrow_right",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          386,
+          161,
+          61,
+          28
+        ],
+        "sha256": "8440a6065a91e778e63ae0da756b777dc6b5d209751e0af8c8998cddd9ef4473"
+      },
+      {
+        "name": "0530 hair/front_side_hair_right",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          345,
+          84,
+          107,
+          285
+        ],
+        "sha256": "3eb9455f0aaa032e92a5c79fdb27fcf3abf7ce8044048e3cb44f4f98fcf4701f"
+      },
+      {
+        "name": "0540 hair/front_side_hair_left",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          431,
+          71,
+          127,
+          225
+        ],
+        "sha256": "573c4e9b664afb104532eaad35ffd5747f2537dea852aaae8d75b84b226f43e3"
+      },
+      {
+        "name": "0550 hair/bangs",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          353,
+          66,
+          179,
+          154
+        ],
+        "sha256": "9c5643ecf5b8612d3810f515342fd5e2541c60586b52ee4229a399aa1870da3c"
+      },
+      {
+        "name": "0560 hair/back_hair/cap :: crown",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          354,
+          55,
+          211,
+          83
+        ],
+        "sha256": "5b58405d355accc2b0a9d04168f425d0d718f88a794c5549aef824d4e15b66e7"
+      },
+      {
+        "name": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          501,
+          1519,
+          18,
+          19
+        ],
+        "sha256": "972c912d403cc7ce2591fb46857cc3cec92d2feefdc957cfccb7595ae6ab898e"
+      },
+      {
+        "name": "0600 legs/leg_left/foot :: front",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          462,
+          1388,
+          112,
+          252
+        ],
+        "sha256": "f46b07496cd673a7bd535c68bf7b6ebd1253e8c279d1a96d1c313fc66fb84ebc"
+      },
+      {
+        "name": "0610 legs/leg_right/foot :: front",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          359,
+          1390,
+          110,
+          250
+        ],
+        "sha256": "ce09d375520f533c9ed21529b3640ef56e253a4d5e0de798d567f321c7539fd1"
+      },
+      {
+        "name": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          501,
+          1493,
+          19,
+          42
+        ],
+        "sha256": "d1c695f39a6fcdac41cf3eb3008c9a59bf9d72d801af92392386f9ca73f42e8e"
+      },
+      {
+        "name": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          490,
+          1453,
+          41,
+          59
+        ],
+        "sha256": "c487f0f4cdd829fc5e8dbcd74882af65358a1bc5813637126f234d9d709d1a48"
+      },
+      {
+        "name": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          499,
+          1498,
+          23,
+          23
+        ],
+        "sha256": "c6244f367c539d8f4c8c18e76dcabe464bf5c26608481bf6ddebbea7b4d75c75"
+      },
+      {
+        "name": "0650 legs/leg_left/boot_gem_chain/round_bead",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          500,
+          1508,
+          21,
+          21
+        ],
+        "sha256": "f31be901af8ecd3036e7159746758cb61e78d806f48e2328a565cb3437498aeb"
+      },
+      {
+        "name": "0660 legs/leg_right/boot_gem",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          400,
+          1453,
+          42,
+          59
+        ],
+        "sha256": "717f8702118520726c27f2ed93e422283c3d5a6ab3b470f609563d4906bcd4eb"
+      },
+      {
+        "name": "0670 legs/leg_right/boot_flower_ornament",
+        "type": "paintlayer",
+        "children": 0,
+        "bounds": [
+          384,
+          1517,
+          64,
+          62
+        ],
+        "sha256": "27222e44555e3c6ede323218369eaffa6d2037aee8a903ab6ebfe68a9256fb49"
+      }
+    ]
+  }
+}

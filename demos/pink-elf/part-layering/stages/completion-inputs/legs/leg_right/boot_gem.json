@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "legs/leg_right/boot_gem",
+  "beforeHash": "ce4469567699cd1c5f808727b97cd8c4413d6a9ce0295a8b86bbd023cc7b4c4c",
+  "afterHash": "c41812e527545040595123eada14a092f5b07cc7153d76f502052c2064acb8ca",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

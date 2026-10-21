@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "hair/ahoge",
+  "beforeHash": "be13faba51d9d466866b63bd8cdfb8cdc7273331bcd47704f28693568950a50f",
+  "afterHash": "ae279815d00d32911e7c70338393dd0deff6b68961c662152d9558f508a5950a",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

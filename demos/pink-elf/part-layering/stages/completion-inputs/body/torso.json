@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "body/torso",
+  "beforeHash": "d6998bf19cc838043d890cbbf8970b0cc5ddabd5dc999b90a21ff04f7fe5eb1c",
+  "afterHash": "453cb31d6257b21a9204eaed78a1637359353fd20019706a855af8a6c051c8d7",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "groupId": "face/mouth/mouth_interior",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "150ffe5e91430bdf56178a6490ef88e8e741f61b81a28f09d619405a94105a6d",
+  "afterHash": "a4af5ba668ea57c9684097e1eab2175a7c5b5234c6287d4a0b2b364efee3a011"
+}

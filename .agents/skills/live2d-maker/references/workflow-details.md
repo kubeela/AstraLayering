@@ -152,7 +152,7 @@ clothing-part-layering/tools/write_groups/schema.json
 
 agent 直接使用内置读文件工具查看上游 `occlusion.json`；`update_occlusion` 按 ID 精准修改，自动替换互斥字段，校验完整结构和逐区域检查后原子写回。它不改逻辑 ID、groups.json、SVG 或未指定的部件。工具说明和 schema 仍在固定的 `shared/tools/` 中。step01 报告记录 part、实际图层名、区域和最终深度的对应；后续步骤与 reviewer 保留这些合法分片。中断和主动重跑均保留上游修正，不恢复旧副本。
 
-raster 保持原有 SDK 的 startThread/resumeThread 与 threadId 记录，通过每次启动的 MCP 配置提供深度工具，不修改全局 Codex 配置。当前 Codex 的 thread/resume 不支持追加 dynamicTools；使用本次调用的 MCP 配置让已有 SDK thread 也能获得工具，无需重建上下文。只有 step01 提供修改工具，其他阶段通过内置工具读文件，reviewer 仍只反馈。原生 image_generation 和外部 provider、鉴权保持原样。
+raster 保持原有 SDK 的 startThread/resumeThread 与 threadId 记录，通过每次启动的 MCP 配置提供深度工具，不修改全局 Codex 配置。当前 Codex 的 thread/resume 不支持追加 dynamicTools；使用本次调用的 MCP 配置让已有 SDK thread 也能获得工具，无需重建上下文。step01 绘制及 step02 返修提供修改工具；返修由原 step01 绘制会话承担，明确的层序或分片错误直接修正并同步 step01 工程、已有导出图和报告，再应用到当前 step02，保留已有修画。其余绘制阶段通过内置工具读文件，reviewer 仍只反馈。原生 image_generation 和外部 provider、鉴权保持原样。
 
 ## 检查
 
@@ -164,3 +164,9 @@ pnpm test
 测试使用模拟 agent、SDK / App Server 和临时文件，并只读检查仓库已有示例的恢复，覆盖各自 preparation、提示词与参考选择、同层去重、恢复、两轮 review、工具配置及重试。不会运行付费生图或重画已有 KRA。运行数据位于 skill 外，不随 skill 发布；仓库内默认的 `.run` 目录被 Git 忽略。原 `test` 已改名为 `jianma`，正式成果见仓库的 `demos/jianma/`，逐次 agent 操作保留本地。独立安装不包含 demos，只有对应的归档验收用例会明确跳过。
 
 共享重构的逐模块差异、发现的偏差及新旧调度对照结果见 [差异审计](../docs/shared-refactor-audit.md)。
+
+### 审核与执行受阻的边界
+
+人物和衣服的轮廓／栅格 reviewer 只提交经核对的确定问题及可执行要求，不设置待确认或标准维护方审批状态；疑点在审查内补足观察，不能把未检查当成通过。blocked 仅用于必要输入缺失、损坏或工具故障等执行障碍，须记录具体错误及恢复尝试。轮廓 blocked 记录保留，但不消耗两次正式质量审核名额；恢复事实与实时调度使用相同计数。栅格普通返修未完成沿用“仍有问题”暂存报告继续原会话，不发布完成报告。
+
+拆分的直属节点边界、子轮廓父范围、去重的同实体同控制职责和补全的已有路径保护继续有效。父范围限制应明确报告证据，不能让子 agent 越界反复返工；去重证据不足时保留对象，不能误删。层序规划的多深度分片和栅格绘制中的层序修正由对应步骤直接处理，不要求等待外部标准批准。

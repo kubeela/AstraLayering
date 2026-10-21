@@ -1,0 +1,1482 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="932" height="1688" viewBox="0 0 932 1688" data-part-preview="1" data-source-sha256="584e02b8aed1643bbac84f2649a4e867d6ed81206d4d0debf75370a51b2f2015">
+<metadata id="part-preview-groups">{&quot;version&quot;:1,&quot;nodes&quot;:[{&quot;id&quot;:&quot;face&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;face/face_base&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_left&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;face/eye_left/upper_eyelid&quot;,&quot;parent&quot;:&quot;face/eye_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_left/lower_eyelid&quot;,&quot;parent&quot;:&quot;face/eye_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_left/sclera&quot;,&quot;parent&quot;:&quot;face/eye_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_left/iris&quot;,&quot;parent&quot;:&quot;face/eye_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_left/highlight&quot;,&quot;parent&quot;:&quot;face/eye_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_left/eyelid_crease&quot;,&quot;parent&quot;:&quot;face/eye_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_right&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;face/eye_right/upper_eyelid&quot;,&quot;parent&quot;:&quot;face/eye_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_right/lower_eyelid&quot;,&quot;parent&quot;:&quot;face/eye_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_right/sclera&quot;,&quot;parent&quot;:&quot;face/eye_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_right/iris&quot;,&quot;parent&quot;:&quot;face/eye_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_right/highlight&quot;,&quot;parent&quot;:&quot;face/eye_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eye_right/eyelid_crease&quot;,&quot;parent&quot;:&quot;face/eye_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eyebrow_left&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/eyebrow_right&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/ear_left&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/ear_right&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/nose&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/mouth&quot;,&quot;parent&quot;:&quot;face&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;face/mouth/upper_lip&quot;,&quot;parent&quot;:&quot;face/mouth&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/mouth/lower_lip&quot;,&quot;parent&quot;:&quot;face/mouth&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/mouth/mouth_interior&quot;,&quot;parent&quot;:&quot;face/mouth&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/mouth/upper_teeth&quot;,&quot;parent&quot;:&quot;face/mouth&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/mouth/lower_teeth&quot;,&quot;parent&quot;:&quot;face/mouth&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;face/mouth/tongue&quot;,&quot;parent&quot;:&quot;face/mouth&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;hair/bangs&quot;,&quot;parent&quot;:&quot;hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/front_side_hair_left&quot;,&quot;parent&quot;:&quot;hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/front_side_hair_right&quot;,&quot;parent&quot;:&quot;hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/side_hair_left&quot;,&quot;parent&quot;:&quot;hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/side_hair_right&quot;,&quot;parent&quot;:&quot;hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/back_hair&quot;,&quot;parent&quot;:&quot;hair&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;hair/back_hair/cap&quot;,&quot;parent&quot;:&quot;hair/back_hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/back_hair/long_left&quot;,&quot;parent&quot;:&quot;hair/back_hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/back_hair/long_right&quot;,&quot;parent&quot;:&quot;hair/back_hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;hair/ahoge&quot;,&quot;parent&quot;:&quot;hair&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;head_accessories&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;head_accessories/left_earring&quot;,&quot;parent&quot;:&quot;head_accessories&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;head_accessories/right_earring&quot;,&quot;parent&quot;:&quot;head_accessories&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;neck&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;body&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;body/torso&quot;,&quot;parent&quot;:&quot;body&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;body/breast&quot;,&quot;parent&quot;:&quot;body&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;arms/arm_left&quot;,&quot;parent&quot;:&quot;arms&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;arms/arm_left/upper_arm&quot;,&quot;parent&quot;:&quot;arms/arm_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_left/forearm&quot;,&quot;parent&quot;:&quot;arms/arm_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_left/hand&quot;,&quot;parent&quot;:&quot;arms/arm_left&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;arms/arm_left/hand/palm&quot;,&quot;parent&quot;:&quot;arms/arm_left/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_left/hand/thumb&quot;,&quot;parent&quot;:&quot;arms/arm_left/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_left/hand/index_finger&quot;,&quot;parent&quot;:&quot;arms/arm_left/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_left/hand/middle_finger&quot;,&quot;parent&quot;:&quot;arms/arm_left/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_left/hand/ring_finger&quot;,&quot;parent&quot;:&quot;arms/arm_left/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_left/hand/little_finger&quot;,&quot;parent&quot;:&quot;arms/arm_left/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right&quot;,&quot;parent&quot;:&quot;arms&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;arms/arm_right/upper_arm&quot;,&quot;parent&quot;:&quot;arms/arm_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right/forearm&quot;,&quot;parent&quot;:&quot;arms/arm_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right/hand&quot;,&quot;parent&quot;:&quot;arms/arm_right&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;arms/arm_right/hand/palm&quot;,&quot;parent&quot;:&quot;arms/arm_right/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right/hand/thumb&quot;,&quot;parent&quot;:&quot;arms/arm_right/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right/hand/index_finger&quot;,&quot;parent&quot;:&quot;arms/arm_right/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right/hand/middle_finger&quot;,&quot;parent&quot;:&quot;arms/arm_right/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right/hand/ring_finger&quot;,&quot;parent&quot;:&quot;arms/arm_right/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;arms/arm_right/hand/little_finger&quot;,&quot;parent&quot;:&quot;arms/arm_right/hand&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;pelvis&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs&quot;,&quot;parent&quot;:null,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;legs/leg_left&quot;,&quot;parent&quot;:&quot;legs&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;legs/leg_left/leg&quot;,&quot;parent&quot;:&quot;legs/leg_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_left/foot&quot;,&quot;parent&quot;:&quot;legs/leg_left&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_left/boot_gem_chain&quot;,&quot;parent&quot;:&quot;legs/leg_left&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;legs/leg_left/boot_gem_chain/large_diamond_gem&quot;,&quot;parent&quot;:&quot;legs/leg_left/boot_gem_chain&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_left/boot_gem_chain/small_diamond_charm&quot;,&quot;parent&quot;:&quot;legs/leg_left/boot_gem_chain&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_left/boot_gem_chain/round_bead&quot;,&quot;parent&quot;:&quot;legs/leg_left/boot_gem_chain&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_left/boot_gem_chain/flexible_connector&quot;,&quot;parent&quot;:&quot;legs/leg_left/boot_gem_chain&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_right&quot;,&quot;parent&quot;:&quot;legs&quot;,&quot;kind&quot;:&quot;group&quot;},{&quot;id&quot;:&quot;legs/leg_right/leg&quot;,&quot;parent&quot;:&quot;legs/leg_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_right/foot&quot;,&quot;parent&quot;:&quot;legs/leg_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_right/boot_gem&quot;,&quot;parent&quot;:&quot;legs/leg_right&quot;,&quot;kind&quot;:&quot;part&quot;},{&quot;id&quot;:&quot;legs/leg_right/boot_flower_ornament&quot;,&quot;parent&quot;:&quot;legs/leg_right&quot;,&quot;kind&quot;:&quot;part&quot;}]}</metadata>
+<g id="node-0" data-group-path="face" data-node-kind="group" data-name="face">
+<g id="node-1" data-group-path="face/face_base" data-node-kind="part" data-name="face_base">
+<g id="part-source-0"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="2b473f14f70e3fa417e7a1c112a093d7fb91f71c779b4d2fb0cfa806643d6f00" x="0" y="0">
+  <g id="part-source-0-face-face-base-outline" data-group-path="face/face_base" fill="#6AB8C9" stroke="none">
+    <path d="M 394.2,237.223
+      C 388.4,223.1 381.8,210.0 381.4,194.0
+      C 380.9,174.0 387.2,154.9 401.4,141.8
+      C 414.7,129.6 435.0,124.0 456.5,123.8
+      C 478.6,123.6 499.7,128.9 514.0,141.4
+      C 528.0,153.7 534.4,172.8 534.0,193.0
+      C 533.6,211.2 521.3,225.2 515.4,243.6
+      C 510.5,258.9 504.1,267.3 492.7,276.4
+      C 483.1,284.2 470.7,290.7 464.1,294.1
+      C 460.3,295.1 457.6,295.1 453.7,293.8
+      C 443.2,289.5 430.7,282.1 420.6,274.7
+      C 410.2,267.0 404.1,259.2 399.1,248.4
+      L 398.3,247.5
+      C 396.8,244.1 395.4,240.7 394.2,237.223 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-2" data-group-path="face/eye_left" data-node-kind="group" data-name="eye_left">
+<g id="node-3" data-group-path="face/eye_left/upper_eyelid" data-node-kind="part" data-name="upper_eyelid">
+<g id="part-source-1"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="569b56a63a191fdc3eb20ba6bcfc6d2a43ebebe7e35ffa768596dda6b47f6270" x="0" y="0">
+  <g id="part-source-1-face-eye-left-upper-eyelid-outline" data-group-path="face/eye_left/upper_eyelid" fill="#54252D" stroke="none">
+    <path d="M 472.05,203.35
+      C 472.82,200.86 474.03,198.77 476.25,197.25
+      C 480.17,194.32 484.43,192.11 488.48,190.68
+      C 492.25,189.46 496.66,189.28 500.04,190.23
+      Q 501.12,190.23 501.59,189.36
+      Q 502.05,190.55 503.33,191.03
+      C 505.01,191.65 507.46,191.49 509.53,190.82
+      Q 509.18,192.41 507.57,193.51
+      C 509.40,194.95 512.00,196.10 514.21,197.65
+      Q 516.55,199.22 517.47,201.40
+      C 518.38,203.33 519.30,204.58 521.13,205.62
+      Q 523.08,206.38 524.75,207.12
+      Q 522.65,207.38 520.50,207.41
+      C 519.14,209.97 517.07,212.62 514.57,214.99
+      C 515.76,212.37 515.71,209.64 514.39,207.17
+      C 512.51,203.69 509.04,201.25 505.37,199.53
+      C 500.09,197.08 494.76,196.31 489.59,196.60
+      C 484.40,196.81 479.76,198.51 476.69,201.38
+      Q 474.86,203.10 474.25,205.22
+      L 472.55,205.92
+      Q 473.08,204.26 473.91,202.54
+      Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-4" data-group-path="face/eye_left/lower_eyelid" data-node-kind="part" data-name="lower_eyelid">
+<g id="part-source-2"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="5df33d1c081295033fb9046ff5000558dc95800291a4541cb325092fd8604cd2" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 520.08,208.04 C 520.25,207.80 520.38,207.60 520.50,207.37 C 520.71,207.10 521.18,206.99 521.31,206.67 C 521.44,206.37 521.22,206.08 520.92,206.08 C 520.61,206.07 520.49,206.35 520.37,206.66 C 520.18,207.14 519.96,207.58 519.77,207.93 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-2-face-eye-left-lower-eyelid-outline" data-group-path="face/eye_left/lower_eyelid" fill="#C38B7C" stroke="none">
+    <path d="M 474.25,205.22
+      Q 475.39,208.26 476.10,211.30
+      C 476.93,214.74 478.75,218.22 481.85,219.94
+      C 485.12,221.38 489.96,221.62 495.68,221.48
+      C 499.11,221.37 502.52,221.00 505.94,220.51
+      Q 507.86,221.53 509.05,223.30
+      Q 509.04,221.04 507.72,219.76
+      Q 509.79,219.06 512.02,217.35
+      C 515.31,214.54 518.71,210.80 520.50,207.41
+      L 519.92,207.49
+      C 517.97,210.76 514.82,214.19 511.55,216.91
+      Q 509.30,218.61 507.22,219.08
+      C 503.74,220.13 499.32,220.86 495.67,221.05
+      C 489.99,221.22 485.37,220.95 482.16,219.31
+      C 479.29,217.65 477.52,214.44 476.65,211.10
+      Q 475.92,208.07 474.53,205.18
+      Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-5" data-group-path="face/eye_left/sclera" data-node-kind="part" data-name="sclera">
+<g id="part-source-3"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="a7ef49220c30d8cd70916f685ce4976d5f440cdcb566efc2ffae129d6fa6815c" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 475.15,204.35 C 479.05,198.35 484.70,194.55 491.55,194.50 C 500.60,194.30 509.80,199.07 515.15,206.00 Q 516.00,207.10 515.65,208.65 C 514.80,212.85 511.90,216.85 508.00,219.25 L 506.30,219.35 C 510.05,216.50 513.09,211.35 513.05,207.50 C 508.15,201.25 499.55,196.55 491.58,196.75 C 484.80,196.80 479.20,199.95 475.55,205.70 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-3-face-eye-left-sclera-outline" data-group-path="face/eye_left/sclera" fill="#57ABC7" stroke="none">
+    <path d="M 475.15,204.35
+      C 479.15,199.10 484.83,196.02 491.58,196.00
+      C 500.16,195.87 509.33,200.33 514.05,207.25
+      C 514.01,211.17 510.97,216.52 507.25,219.45
+      C 503.56,220.25 499.46,220.94 495.68,221.05
+      C 490.06,221.20 485.42,220.87 482.28,219.43
+      C 479.34,217.92 477.42,214.51 476.60,211.25
+      C 475.95,208.78 475.50,206.27 475.15,204.35
+      Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-6" data-group-path="face/eye_left/iris" data-node-kind="part" data-name="iris">
+<g id="part-source-4"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="cfcd5a1f88337c579318bb2589ae0f772e7540cc6acca59efaf4218da967b410" x="0" y="0">
+  <g id="part-source-4-face-eye-left-iris-outline" data-group-path="face/eye_left/iris" fill="#6258A6" stroke="none">
+    <path d="M 491.55,192.65 C 498.77,192.50 504.27,198.69 504.35,206.60 C 504.43,214.22 499.12,221.05 492.05,221.10 C 484.95,221.15 479.10,215.38 478.95,207.70 C 478.80,199.80 484.25,192.80 491.55,192.65 Z"/>
+  </g>
+</svg>
+</g>
+</g>
+<g id="node-7" data-group-path="face/eye_left/highlight" data-node-kind="part" data-name="highlight">
+<g id="part-source-5"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="76984d02c2d4de5880b3f549e24e4207e6b0b567b5de5610bcc77a8d065af792" x="0" y="0">
+  <g id="part-source-5-face-eye-left-highlight-outline" data-group-path="face/eye_left/highlight" fill="#7CD9D3" stroke="none">
+    <path d="M 493.89,199.63 C 495.14,199.54 496.49,200.40 496.59,201.68 C 496.71,202.99 495.70,204.28 494.35,204.45 C 493.01,204.62 491.68,203.67 491.55,202.35 C 491.40,201.03 492.55,199.75 493.89,199.63 Z"/>
+    <path d="M 484.75,218.81 C 485.70,217.51 487.17,216.53 488.85,215.88 C 490.30,215.30 491.84,215.29 493.18,215.86 C 494.67,216.48 495.84,217.77 497.00,219.09 Q 497.33,219.43 497.35,219.73 C 495.38,219.98 493.40,220.12 491.04,220.07 C 488.79,220.04 486.78,219.85 484.92,219.50 Q 484.47,219.39 484.75,218.81 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-8" data-group-path="face/eye_left/eyelid_crease" data-node-kind="part" data-name="eyelid_crease">
+<g id="part-source-6"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="6cefddc7d320470a2cad844253f49ab838a0d095390bea5cd8d97057c0f4f4dd" x="0" y="0">
+  <g id="part-source-6-face-eye-left-eyelid-crease" data-group-path="face/eye_left/eyelid_crease" fill="#CB9690" stroke="none">
+    <path d="M 473.88,193.35
+      C 476.44,190.34 479.68,188.14 483.43,186.74
+      C 487.53,185.22 492.27,185.15 496.20,186.12
+      Q 497.44,186.43 498.33,187.14
+      C 493.26,186.68 488.49,187.03 484.40,188.30
+      C 480.71,189.46 477.26,191.99 473.88,193.35 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+<g id="node-9" data-group-path="face/eye_right" data-node-kind="group" data-name="eye_right">
+<g id="node-10" data-group-path="face/eye_right/upper_eyelid" data-node-kind="part" data-name="upper_eyelid">
+<g id="part-source-7"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="edddd6d19fd1c4189188a1ac12eead1471a7336dc43fe4b03fdcc76360e17c23" x="0" y="0">
+  <g id="part-source-7-face-eye-right-upper-eyelid" data-group-path="face/eye_right/upper_eyelid" fill="#6A302E" stroke="none">
+    <path d="M 383.7,214.8
+      C 387.2,213.0 390.4,209.5 392.2,205.4
+      L 390.0,204.3
+      C 393.2,200.5 397.7,197.7 402.7,196.5
+      C 403.3,196.3 403.8,195.6 404.0,194.8
+      L 406.1,195.7
+      C 408.7,194.6 411.5,194.0 414.0,193.8
+      C 414.2,193.3 414.2,192.6 414.7,192.0
+      L 415.8,191.8
+      C 415.2,192.6 415.3,193.2 415.9,193.7
+      C 419.0,193.7 422.6,194.2 425.6,195.1
+      C 429.4,196.2 432.9,198.3 435.0,200.7
+      L 432.2,199.6
+      C 434.3,201.5 435.5,203.7 436.1,206.5
+      C 435.0,205.3 434.3,204.8 433.1,204.3
+      C 429.5,201.0 424.6,199.5 419.3,199.5
+      C 414.7,199.3 411.3,199.9 408.0,201.5
+      C 404.3,203.4 401.0,206.0 398.8,209.0
+      C 396.6,212.1 396.5,215.6 398.4,220.1
+      C 396.9,219.1 395.7,218.2 394.6,217.6
+      C 392.8,216.8 390.9,215.9 389.3,214.7
+      L 386.8,214.3
+      C 385.8,214.7 384.6,215.0 383.7,214.8 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-11" data-group-path="face/eye_right/lower_eyelid" data-node-kind="part" data-name="lower_eyelid">
+<g id="part-source-8"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="092aa1d953e603e5af0d3e7de05d9cd19afa0f9ae6696a35643b242b10344119" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 393.45,216.55 C 392.50,215.55 391.72,214.85 390.50,214.35 C 389.45,213.90 388.95,213.25 389.08,212.45 C 389.22,211.54 390.21,211.10 390.96,211.60 C 391.80,212.18 391.85,213.15 392.37,214.03 C 392.97,215.05 394.05,216.05 394.80,216.96 L 394.75,217.50 C 394.30,217.18 393.90,216.90 393.45,216.55 Z" fill-rule="nonzero"/><path d="M 433.15,204.90 C 432.97,204.20 432.45,203.75 432.14,203.05 C 431.88,202.42 432.32,201.82 432.96,201.81 C 433.65,201.80 434.04,202.52 433.75,203.07 C 433.48,203.56 432.90,203.80 433.10,204.30 C 433.184,204.504 433.26296,204.71052 433.33688,204.91943 L 433.15,204.90 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-8-face-eye-right-lower-eyelid" data-group-path="face/eye_right/lower_eyelid" fill="#BD8B86" stroke="none">
+    <path d="M 390.8,214.4
+      C 392.5,214.9 394.2,216.3 395.2,217.4
+      C 397.5,219.8 399.8,221.3 402.9,222.4
+      C 405.6,223.3 408.6,224.2 411.6,223.8
+      C 417.2,223.6 423.3,223.2 428.4,221.9
+      C 430.1,220.8 431.5,218.6 432.3,215.8
+      C 433.6,211.9 433.9,207.9 433.1,204.3
+      C 434.5,207.7 434.5,211.8 433.1,216.0
+      C 432.2,219.3 430.8,221.6 428.9,222.7
+      C 423.6,224.1 417.2,224.6 411.6,224.8
+      C 409.2,225.1 406.5,224.1 404.7,223.6
+      C 405.2,224.2 405.4,225.3 404.8,226.0
+      C 404.3,224.8 403.5,223.8 402.5,223.4
+      C 399.3,222.2 396.8,220.1 394.6,217.6
+      C 393.6,217.15 392.65,216.68 391.8,216.2
+      Q 391.2,215.4 390.8,214.4 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-12" data-group-path="face/eye_right/sclera" data-node-kind="part" data-name="sclera">
+<g id="part-source-9"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="5306bdbd26964928daea5f7be82afa8cbb3e53f9ec8584e86d7e9ce4eab2054e" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 396.4,213.0 C 397.3,209.4 401.9,202.7 408.3,199.8 C 414.6,196.8 422.7,197.2 429.2,200.9 C 432.1,202.8 433.5,205.6 433.9,208.5 C 433.9,209.1 433.7,209.6 433.4,210.1 C 432.4,207.3 430.4,205.2 427.4,203.6 C 421.8,200.5 415.5,201.0 409.9,203.7 C 404.1,206.5 399.7,210.8 398.6,214.0 C 398.2,215.0 398.3,216.0 398.7,216.8 C 397.7,216.8 397.0,216.2 396.6,215.5 C 396.3,214.6 396.2,213.8 396.4,213.0 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-9-face-eye-right-sclera-outline" data-group-path="face/eye_right/sclera" fill="#75BED1" stroke="none">
+    <path d="M 396.4,213.0
+      C 397.3,209.4 402.4,204.6 408.9,201.5
+      C 414.4,198.8 422.1,198.7 428.5,202.2
+      C 431.4,203.9 433.4,206.2 433.9,209.3
+      C 434.2,213.0 432.6,220.8 428.9,222.3
+      C 423.8,223.9 416.3,224.3 411.3,224.4
+      C 404.8,224.4 398.4,219.9 396.6,215.5
+      C 396.3,214.6 396.2,213.8 396.4,213.0 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-13" data-group-path="face/eye_right/iris" data-node-kind="part" data-name="iris">
+<g id="part-source-10"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="1f1ca655d6d306648af02a61d0ecd9ffc0e6ffb6d91c4d48760cda39c4991a60" x="0" y="0">
+  <g id="part-source-10-face-eye-right-iris-outline" data-group-path="face/eye_right/iris" fill="#5976B8" stroke="none">
+    <path d="M 415.282166 224.624766 A 12.4 13.9 0 1 1 425.179554 223.514702 C 421.980402 224.090462 418.569219 224.425098 415.282166 224.624766 Z"/>
+  </g>
+</svg>
+</g>
+</g>
+<g id="node-14" data-group-path="face/eye_right/highlight" data-node-kind="part" data-name="highlight">
+<g id="part-source-11"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="ce59ec02cb1b7e7864f6d5bf0849e14acffb80b2f021852b79cd1cb8320b6213" x="0" y="0">
+  <g id="part-source-11-face-eye-right-highlight" data-group-path="face/eye_right/highlight" fill="#61D8C5" stroke="none">
+    <path d="M 424.92,205.16 C 425.02,206.48 424.04,207.62 422.69,207.72 C 421.31,207.83 420.20,206.88 420.11,205.57 C 420.01,204.20 420.99,203.03 422.33,202.94 C 423.68,202.83 424.82,203.80 424.92,205.16 Z"/>
+    <path d="M 413.08,222.37 C 414.56,220.36 416.89,218.55 419.37,218.21 C 422.11,217.84 425.13,218.64 426.41,220.16 C 427.20,221.06 427.15,222.06 426.17,222.81 C 424.68,223.90 421.82,224.17 419.32,224.22 C 416.70,224.28 413.86,224.17 413.03,223.52 C 412.72,223.27 412.74,222.84 413.08,222.37 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-15" data-group-path="face/eye_right/eyelid_crease" data-node-kind="part" data-name="eyelid_crease">
+<g id="part-source-12"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="87787eb72fdc8f987bbc297f53aa921bf5e05c100fa27803895515c85024c093" x="0" y="0">
+  <g id="part-source-12-face-eye-right-eyelid-crease-outline" data-group-path="face/eye_right/eyelid_crease" fill="#B87F73" stroke="none">
+    <path d="M 410.6,191.4 C 416.7,188.0 426.3,188.8 433.5,194.2 L 433.8,195.2 C 426.1,190.2 417.9,189.6 411.4,192.1 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+<g id="node-16" data-group-path="face/eyebrow_left" data-node-kind="part" data-name="eyebrow_left">
+<g id="part-source-13"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="204a7807ae24cbf55765280f1e9f0a27dfe00a5ee7616fbd731f35567fd6ae46" x="0" y="0">
+  <g id="part-source-13-face-eyebrow-left-outline" data-group-path="face/eyebrow_left" fill="#C99B85" stroke="none">
+    <path d="M 473.6,193.0 C 477.0,189.4 481.8,186.1 487.1,185.5 C 490.9,185.0 494.5,185.4 498.0,185.9 C 504.3,186.8 509.7,188.5 514.1,190.7 C 508.7,189.4 503.2,187.9 497.7,187.2 C 493.9,186.7 490.2,186.7 487.5,187.3 C 483.9,188.1 482.0,190.1 479.2,191.2 C 477.1,192.1 475.3,192.6 473.6,193.0 Z"/>
+  </g>
+</svg>
+</g>
+</g>
+<g id="node-17" data-group-path="face/eyebrow_right" data-node-kind="part" data-name="eyebrow_right">
+<g id="part-source-14"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="f30b977f29850bcda50dbeb2d53451280adc9336a4ec1d8531d96f8a181640d9" x="0" y="0">
+  <g id="part-source-14-face-eyebrow-right-outline" data-group-path="face/eyebrow_right" fill="#AA7868" stroke="none">
+    <path d="M 394.5,181.05 C 401.3,176.85 410.0,172.15 418.35,170.35 C 425.5,168.95 432.0,169.25 437.95,171.35 Q 439.05,171.75 438.65,172.55 Q 438.4,173.05 437.55,172.75 C 431.7,171.05 425.0,170.65 418.55,172.10 C 410.3,173.85 401.85,178.05 394.5,181.05 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-18" data-group-path="face/ear_left" data-node-kind="part" data-name="ear_left">
+<g id="part-source-15"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="0b38b799676db1ff34dc7ee70d9174a8859c09bc158ca6d97920188ae38ad23d" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 535.0,202.5 C 529.2,203.5 522.2,202.0 516.7,207.3 C 510.8,213.0 511.4,222.4 517.5,228.0 C 521.1,230.6 523.8,230.0 526.296315,232.997821 L 531.8,233.5 L 538.2,211.5 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-15-face-ear-left-outline" data-group-path="face/ear_left" fill="#6AB8C9" stroke="none">
+    <path d="M 526.4,204
+      C 533.4,202.1 540.7,201.1 548.6,200.2
+      C 565.1,198.3 581.6,196.7 595.1,195.3
+      C 596.65,195.15 596.65,196.7 595,198.4
+      C 594.35,199.15 593.173,200.229 591.805,201.3833
+      C 579.493,211.772 556.57,224.21 534.7,236
+      C 531.2,237.9 528.236831,235.381605 526.296315,232.997821
+      C 523.6,229.7 521.3,222 523,215
+      C 523.9,211.2 525.3,207.4 526.4,204 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-19" data-group-path="face/ear_right" data-node-kind="part" data-name="ear_right">
+<g id="part-source-16"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="b536fe0859d93673cecbadc65d53e0f3d13c18fe4766b5803774548446026f62" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 368.2,206.2 C 375.2,209.3 382.3,209.6 389.2,210.0 C 397.0,210.4 403.6,216.0 403.8,222.8 C 404.0,228.2 396.19966,227.9315 390.617025,231.336385 C 388.383971,232.698339 385.06,242.34 380.5,240.5 C 380.7,235.5 379.9,231.9 376.7,227.5 C 371.9,220.8 368.2,213.2 368.2,206.2 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-16-ear-right-outline" data-group-path="face/ear_right" fill="#6AB8C9" stroke="none">
+    <path d="M 314.3,201.2
+      C 326.4,201.0 341.9,202.0 353.7,202.6
+      C 359.1,202.9 363.5,204.1 368.2,206.2
+      C 375.2,209.3 382.3,209.6 389.2,210.0
+      C 390.7,217.2 392.6,226.7 390.617025,231.336385
+      C 388.383971,232.698339 385.06,242.34 380.5,240.5
+      C 361.4,232.8 342.4,222.9 325.2,212.3
+      C 319.5,208.7 315.6,205.7 313.9,203.0
+      Q 313.0,201.4 314.3,201.2 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-20" data-group-path="face/nose" data-node-kind="part" data-name="nose">
+<g id="part-source-17"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="ffc2bcb84cc532f210093c696301ca864541c4144e3f7d0bc8313c203a74255e" x="0" y="0">
+  <g id="part-source-17-face-nose-outline" data-group-path="face/nose" fill="#C99780" stroke="none">
+    <path d="M 455.8,233.7 C 456.36,233.5 456.8,233.9 456.65,234.7 C 456.5,235.65 456.15,236.5 455.65,237.4 C 455.5,238.45 456.3,239.85 457.4,240.75 C 456.2,240.1 455.25,238.9 454.99,237.55 C 454.74,236.6 454.8,235.35 455.07,234.55 C 455.22,234.1 455.45,233.8 455.8,233.7 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-21" data-group-path="face/mouth" data-node-kind="group" data-name="mouth">
+<g id="node-22" data-group-path="face/mouth/upper_lip" data-node-kind="part" data-name="upper_lip">
+<g id="part-source-18"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="91ed55562a13f6b4685a243c3771f66c109bd50f8043ebe1d0b13fa7b9abe80e" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 441.5,257.8 C 441.46,258.24 441.441,258.683 441.442,259.127 C 441.445,259.58 441.76,259.94 442.20,259.95 C 442.64,259.96 442.98,259.59 442.99,259.13 C 443.00,258.63 442.94,258.11 443.00,257.65 C 442.52,257.50 441.98,257.53 441.5,257.8 Z" fill-rule="nonzero"/><path d="M 473.0,257.0 C 473.10,257.50 473.168,258.009 473.2054,258.5236 C 473.23,258.94 472.97,259.28 472.61,259.31 C 472.24,259.34 471.92,259.04 471.90,258.66 C 471.87,258.13 471.87,257.65 471.81,257.18 C 472.20,257.00 472.62,256.94 473.0,257.0 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-18-face-mouth-upper-lip-outline" data-group-path="face/mouth/upper_lip" fill="#E8AAA4" stroke="none">
+    <path d="M 441.5,257.8
+      C 441.8,254.2 444.0,250.8 447.5,249.7
+      C 451.7,248.5 461.9,248.2 466.1,249.0
+      C 469.8,249.6 472.3,253.0 473.0,257.0
+      C 473.04,257.31 472.93,257.69 472.66,257.82
+      C 472.30,258.01 471.89,257.75 471.83,257.37
+      C 471.39,254.51 469.41,251.68 466.05,250.54
+      C 465.51,250.33 465.23,250.17 464.62,250.09
+      C 460.02,249.54 452.61,249.86 449.10,250.53
+      C 448.34,250.67 447.98,251.00 447.36,251.33
+      C 444.81,252.72 443.13,255.21 442.95,257.96
+      C 442.92,258.36 442.55,258.54 442.13,258.40
+      C 441.71,258.27 441.48,258.12 441.5,257.8 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-23" data-group-path="face/mouth/lower_lip" data-node-kind="part" data-name="lower_lip">
+<g id="part-source-19"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="586e2ce59d8dc66e07b2f0d74c94d12619351888fda8b8690e42e55758dcf331" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 444.1,252.2 C 444.8,251.35 445.8,250.59 446.6,250.25 C 447.13,250.02 447.68,250.31 447.73,250.85 C 447.78,251.37 447.39,251.72 446.89,251.92 C 446.45,252.1 446.05,251.92 445.7,252.2 Z" fill-rule="nonzero"/><path d="M 471.0,252.15 C 470.4,251.32 469.5,250.6 468.65,250.25 C 468.12,250.02 467.57,250.31 467.52,250.85 C 467.47,251.37 467.86,251.72 468.36,251.92 C 468.8,252.1 469.18,251.92 469.57,252.45 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-19-face-mouth-lower-lip-outline" data-group-path="face/mouth/lower_lip" fill="#F6D2C2" stroke="none">
+    <path d="M 444.7172,251.2543
+      C 442.851,252.858 441.71,255.28 441.5,257.8
+      C 441.1,262.2 442.8,266.9 446.3,270.5
+      C 449.2,273.5 452.9,275.0 457.1,275.1
+      C 461.1,275.1 465.0,273.9 467.8,271.4
+      C 471.8,267.9 474.0,262.0 473.0,257.0
+      C 472.615,254.8 471.6855,252.7815 470.311325,251.310525
+      C 469.98,250.96 469.46,251.02 469.25,251.4
+      C 469.05,251.77 469.28,252.08 469.57,252.45
+      C 470.73,253.95 471.36,255.72 471.5,257.7
+      C 471.95,262.1 470.4,267.2 466.8,270.4
+      C 464.2,272.6 460.9,273.6 457.1,273.6
+      C 453.3,273.5 449.9,272.1 447.2,269.4
+      C 444.1,266.2 442.6,262.0 443.0,257.9
+      C 443.2,255.3 444.2,253.4 445.7,252.2
+      C 446.02,251.95 446.1,251.52 445.84,251.17
+      C 445.56,250.83 445.025,250.99 444.7172,251.2543 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-24" data-group-path="face/mouth/mouth_interior" data-node-kind="part" data-name="mouth_interior">
+<g id="part-source-20"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="150ffe5e91430bdf56178a6490ef88e8e741f61b81a28f09d619405a94105a6d" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 447.7,250.05 C 451.85,248.95 461.65,248.65 465.95,249.5 C 469.45,250.15 471.8,253.2 472.45,257.1 C 473.35,262 471.3,267.55 467.45,271.05 C 464.75,273.45 461,274.6 457.15,274.6 C 453.1,274.5 449.55,273.05 446.75,270.2 C 443.35,266.75 441.75,262.2 442.1,257.9 C 442.4,254.4 444.4,251.3 447.7,250.05 Z M 448.28,250.844 C 452.216,249.884 461.336,249.596 465.464,250.46 C 468.632,251.132 470.744,253.724 471.32,257.372 C 472.088,261.98 470.264,266.972 466.712,270.332 C 464.216,272.54 460.76,273.596 457.208,273.596 C 453.464,273.5 450.2,272.156 447.608,269.564 C 444.44,266.396 443,262.172 443.288,258.14 C 443.576,254.876 445.304,252.188 448.28,250.844 Z" fill-rule="evenodd"/></g>
+  <g id="part-source-20-face-mouth-mouth-interior-outline" data-group-path="face/mouth/mouth_interior" fill="#B94F47" stroke="none">
+    <path d="M 447.9,250.4
+      C 452.0,249.4 461.5,249.1 465.8,250.0
+      C 469.1,250.7 471.3,253.4 471.9,257.2
+      C 472.7,262.0 470.8,267.2 467.1,270.7
+      C 464.5,273.0 460.9,274.1 457.2,274.1
+      C 453.3,274.0 449.9,272.6 447.2,269.9
+      C 443.9,266.6 442.4,262.2 442.7,258.0
+      C 443.0,254.6 444.8,251.8 447.9,250.4 Z"/>
+  </g>
+</svg>
+</g>
+</g>
+<g id="node-25" data-group-path="face/mouth/upper_teeth" data-node-kind="part" data-name="upper_teeth">
+<g id="part-source-21"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="7f559ec3621daa046f4a3159c1f0905eed494125b1fa0fc9bfd0c093d59dcb78" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 447.55,249.78 C 451.75,248.58 461.85,248.28 466.06,249.08 C 466.71,249.19 467.23,249.48 467.24,249.83 C 467.25,250.37 466.25,251.15 465.30,251.50 C 465.10,251.20 464.90,251.12 464.55,251.12 C 459.80,251.25 453.28,251.65 449.16,251.49 C 448.60,251.45 448.16,251.46 448.00,251.10 C 447.84,250.72 447.15,250.86 447.04,250.49 C 446.94,250.16 447.17,249.96 447.55,249.78 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-21-face-mouth-upper-teeth-outline" data-group-path="face/mouth/upper_teeth" fill="#FFF8F2" stroke="none">
+    <path d="M 447.75,249.82
+      C 452.2,248.82 461.7,248.55 465.65,249.2
+      C 466.35,249.32 466.8,249.6 466.85,250.05
+      C 466.45,250.5 466.25,251.15 465.3,251.5
+      C 462.5,252.1 453.3,252.5 449.7,252.25
+      C 448.6,252.15 448.2,251.7 448.0,251.1
+      C 447.85,250.8 447.5,250.25 447.75,249.82 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-26" data-group-path="face/mouth/lower_teeth" data-node-kind="part" data-name="lower_teeth">
+<g id="part-source-22"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="545e60c435f9241f5a16802e4e9eedf0df52bc59c2237d697bab5a63bbd969a0" x="0" y="0">
+  <g id="part-source-22-face-mouth-lower-teeth-outline" data-group-path="face/mouth/lower_teeth" fill="#FFF8F2" stroke="none">
+    <path d="M 447.2,266.4
+      C 450.0,267.1 453.3,267.5 457.0,267.5
+      C 460.8,267.5 464.1,267.0 467.6,266.2
+      C 467.7,268.1 467.0,269.9 465.5,271.2
+      C 463.3,272.7 460.3,273.6 457.0,273.6
+      C 453.8,273.6 450.6,272.6 448.7,271.0
+      C 447.6,269.9 447.0,268.2 447.2,266.4 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-27" data-group-path="face/mouth/tongue" data-node-kind="part" data-name="tongue">
+<g id="part-source-23"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="b795f1d2544956f41e28c2badae9f93272e3317740d319b3665d10aa1c5ad97b" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 444.2,264.7 C 444.35,265.3 445.0,265.6 446.0,265.2 C 451.0,262.0 461.5,260.7 468.0,264.0 C 469.0,264.6 470.0,264.8 470.9,263.7 C 471.0,264.15 471.4,264.85 471.35,265.6 C 471.1,268.4 468.6,271.15 465.05,272.95 C 462.55,274.3 459.65,274.9 457.0,274.9 C 453.05,274.8 449.35,273.25 446.65,270.8 C 444.8,269.05 443.95,267.15 443.95,266.15 C 443.95,265.6 444.2,265.2 444.2,264.7 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-23-face-mouth-tongue-outline" data-group-path="face/mouth/tongue" fill="#F39794" stroke="none">
+    <path d="M 458.0,258.6
+      C 463.4,258.4 470.7,262.8 470.9,263.7
+      C 471.0,267.0 467.9,270.8 464.8,272.6
+      C 462.5,273.9 459.7,274.5 457.0,274.5
+      C 453.2,274.4 449.7,272.9 447.1,270.5
+      C 445.3,268.8 444.2,266.4 444.2,264.7
+      C 444.2,263.0 451.0,258.8 458.0,258.6 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+</g>
+<g id="node-28" data-group-path="hair" data-node-kind="group" data-name="hair">
+<g id="node-29" data-group-path="hair/bangs" data-node-kind="part" data-name="bangs">
+<g id="part-source-24"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="2b868a34ef394259737625153d4dff8fc6eb023598be20adf5a936fa0cc33c6d" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M423.36 96.63 C434.24 88.10 438 74 452 74 C466 74 469.06 83.98 481.45 93.56 L477 111 L427 114 Z" fill-rule="nonzero"/></g>
+<g id="part-source-24-hair-bangs-outline" data-group-path="hair/bangs" fill="#62b8ad" stroke="none">
+<path d="M452 94
+C445.5 89.8 438.5 88.4 431.6 91.5
+C420.6 96.5 409.3 109.5 402 123
+C393.5 138.3 388.1 157 390 173.9
+C382.6 186.4 372.5 196.7 361 200.8
+C364 205.5 371.5 208.3 380 207
+C385.5 206 391 204 396.5 201.5
+C399 199 402.5 196.5 406 194
+C412 192 419.5 188.5 425.5 182
+L421.5 188.5
+C431 185 439 176 445.5 165
+C442 166.5 441 171 442.5 178
+C444.3 189 441.5 201 436 212
+C445.5 207 456 197 463.5 184.5
+C460 191 457 198 451.5 206.5
+C468 190 475.5 166 475 142.5
+C478 149.5 480.5 159 485.2 167.3
+C489.6 175.2 494.8 182.4 499.4 187.6
+C495.6 181.6 490.1 173.7 487.1 166.9
+C495.4 180.5 511.5 197.5 523 197
+C524.3 176.5 519.3 151.1 508.8 130.8
+C499.1 112 486.4 94 474 89.2
+C464.8 85.7 456.9 88.4 452 94 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-30" data-group-path="hair/front_side_hair_left" data-node-kind="part" data-name="front_side_hair_left">
+<g id="part-source-25"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="a74719a1e65e5180e6323af15f136aa2d72be5807ac8bc1df4f4becd377f9782" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M449 87 C444.3 90.2 440.3 92.8 439.6 96.6 C438.9 100.4 441.5 104.4 445.1 104.9 C449.4 105.6 454 99 458 96 L463.5 91.2 L454.8 85.1 Z" fill-rule="nonzero"/></g>
+<g id="part-source-25-hair-front-side-hair-left" data-group-path="hair/front_side_hair_left" fill="#e987ac" stroke="none">
+<path d="M449 87
+C461.5 78.5 477.3 77.9 491 82
+C515.5 89.4 530.1 110.4 537.6 132
+C546.9 152.2 550 176.6 549.5 198.5
+C549.2 212.1 544 226.3 535.1 235.1
+C533.7 251.8 528.1 269.4 517.2 280.1
+C511.9 284.6 506.2 287.4 500.7 287.5
+C510.9 283.4 520 274.9 524.4 264
+C519.7 270.7 514.5 276.8 509 275.6
+C507.1 275.3 505.6 274.2 504.8 273.3
+C511.7 277.6 520.2 265.3 522.6 252.4
+C523.4 247.3 523.6 242.9 522.9 238.8
+C516.8 242.4 509 245.3 502 244.5
+C512 242 518 234 521.5 226.5
+C516.5 230.5 512 231 505.8 229.8
+C519 221 525.5 207 523 197
+C524.1 170.5 516.6 137.6 500.5 114.3
+C486.7 94.2 471.7 85.8 458 96
+C454.6 93.5 451.7 90.6 449 87 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-31" data-group-path="hair/front_side_hair_right" data-node-kind="part" data-name="front_side_hair_right">
+<g id="part-source-26"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="489f2f5b8eb96949dbd577d0b6736ab4aa806bf1b6b4732c6701778ece39d24a" x="0" y="0">
+  <g id="part-source-26-front-side-hair-right-outline" data-group-path="hair/front_side_hair_right" fill="#e987ac" stroke="none">
+    <path d="M435 93
+      C428 90.5 417 93.5 405 101.5
+      C383 116 368 138 358.7 160
+      C356.5 166.2 355.4 171.1 355.3 174.3
+      C355.2 177.1 352.9 179.9 353 182
+      C354.1 185.7 357.6 188.7 357.8 191.8
+      C358.1 196.5 362 200.7 366.7 202.2
+      C368.2 203.5 369 205.2 369.5 206.5
+      C370.3 212.5 372.2 219.7 379 226.4
+      C380.5 245 381.5 264.6 385.7 284
+      C388.5 311 393.8 325.1 398.367 337.13
+      C400.38 342.41 402.6 346.7 405 350
+      C410.5 356.5 415.5 360 420 361
+      C413 357 409 352 406 346.5
+      C401.9 337.1 398.2 325.8 394.8 313.7
+      C399.2 322.8 405.1 327.2 411 327.5
+      C404.9 323.1 400.5 317.4 397 310.5
+      C405.7 321.5 416.3 327 425 328
+      C411.1 321.1 401.2 309.5 395.9 293.5
+      C391.9 277.7 390.9 259.2 392 236.2
+      C398 237.3 404.7 236.8 410 235
+      C398 231 390.5 221.5 387.5 215
+      C383.5 213.5 381.5 210 380 207
+      C380.7 188.5 389.8 170.5 399 151.5
+      C411.3 126.5 427.2 107 443.5 98
+      C441.1 95.9 438.7 94.2 435 93 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-32" data-group-path="hair/side_hair_left" data-node-kind="part" data-name="side_hair_left">
+<g id="part-source-27"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="a12335ff0f76e4c19d8614bd5de9db79c72b43ac7a11bb2cb55bb00ce349c411" x="0" y="0">
+<g id="part-source-27-side-hair-left-outline" data-group-path="hair/side_hair_left" fill="#e987ac" stroke="none">
+<path id="part-source-27-side-hair-left-lock" d="M485 84
+C506 82 530 102 542 126
+C556 154 562 190 552 224
+C555.761 233.2886 562.8343 240.2066 570 242.0154
+C573 242.8 580.4 240.5 585 236.2
+C582.2 242.5 574.2 248.2 564 249
+C571 289 582 324 604 354
+C605.79 356.75 611.79 366.08 614.75 370.5
+C617.72 374.92 619.33 377.17 621.79 380.5
+C624.25 383.83 626.94 387.17 629.51 390.5
+C632.08 393.83 634.53 397.17 637.21 400.5
+C639.89 403.83 642.85 407.17 645.6 410.5
+C648.35 413.83 651.71 418 653.71 420.5
+C655.72 423 656.32 423.83 657.65 425.5
+C658.98 427.17 659.83 428 661.7 430.5
+C663.58 433 666.56 437.17 668.87 440.5
+C671.18 443.83 673.46 447.17 675.55 450.5
+C677.65 453.83 679.66 457.17 681.43 460.5
+C683.21 463.83 684.91 467.17 686.2 470.5
+C687.49 473.83 688.35 477.17 689.18 480.5
+C690.01 483.83 690.72 487.17 691.17 490.5
+C691.62 493.83 691.93 497.17 691.89 500.5
+C691.85 503.83 691.66 507.08 690.93 510.5
+C690.2 513.92 688.07 519.25 687.5 521
+C681.2 531.8 667.8 539.6 654.7 541
+C644.5 542.1 637 539.5 633.2 534.2
+C640.4 539.3 651.4 535.8 660.1 528.7
+C668.8 521.7 674.4 510.9 676.8 499.2
+C677.05 496.9 677.13 492.83 677.1 490.5
+C677.13 488.17 677.22 483.83 676.9 480.5
+C676.59 477.17 675.9 473.83 675.22 470.5
+C674.54 467.17 673.89 463.83 672.8 460.5
+C671.71 457.17 670.35 453.83 668.69 450.5
+C667.03 447.17 665.04 443.83 662.85 440.5
+C660.65 437.17 657.37 433 655.52 430.5
+C653.67 428 653.08 427.17 651.73 425.5
+C650.39 423.83 649.72 423 647.46 420.5
+C645.19 418 641.37 413.83 638.16 410.5
+C634.95 407.17 631.41 403.83 628.19 400.5
+C624.97 397.17 621.93 393.83 618.83 390.5
+C615.73 387.17 612.51 383.83 609.58 380.5
+C606.64 377.17 603.55 373 601.22 370.5
+C598.89 368 596.54 366.33 595.6 365.5
+C581.2 351.4 567.4 334 556.5 315.1
+C544.8 294.7 536.9 270.2 532.8 247.2
+C528.4 224.1 528.8 194.2 522 165
+C516.6 140.5 500.9 112.2 480 100
+C478 94 480 88 485 84 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-33" data-group-path="hair/side_hair_right" data-node-kind="part" data-name="side_hair_right">
+<g id="part-source-28"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="0fdb4fdeefbfae5dcd5875086002f2c1e1960a0ae482f3ea86dfb83df75537fe" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M390.974875 109.89875 C401.403875 102.15075 398 94 409 86 C421 77 441 82 449 96 C458 111 438.447 120.37 425.977 140.17 L408 143 L387 123 Z" fill-rule="nonzero"/><path d="M387.184 220.24 C384.928 230.08 391 238 391 250 C391 276 393 303 398 326 C400 336 402 342 405 350 C411 363 402 374 388 375 C370 377 353 373 343 366 C339 362 337 357 337 351 L350 338 C363 335 376 337 388 337 C384 319 382 301 381 282 C380 260 379 242 376 225 L380 217 Z" fill-rule="nonzero"/></g>
+<g id="part-source-28-side-hair-right-outline" data-group-path="hair/side_hair_right" fill="#df77a2" stroke="none">
+<path d="M430 94
+C399 96 371 120 357 154
+C348 176 347 204 350 223
+C350.5 227 350 233 348 238
+C345 245 336 248 327.5 243
+C332 250 340 255 348.5 252
+C341 297 327 336 292 376
+C291.36 376.75 290.13 378.08 288.15 380.5
+C286.17 382.92 282.89 387.17 280.11 390.5
+C277.32 393.83 274.32 397.17 271.44 400.5
+C268.57 403.83 265.71 407.17 262.86 410.5
+C260.01 413.83 256.44 418 254.34 420.5
+C252.23 423 251.58 423.83 250.25 425.5
+C248.91 427.17 248.3 428 246.32 430.5
+C244.34 433 240.97 437.17 238.4 440.5
+C235.82 443.83 233.13 447.17 230.85 450.5
+C228.57 453.83 226.55 457.17 224.7 460.5
+C222.86 463.83 221.15 467.17 219.78 470.5
+C218.42 473.83 217.42 477.17 216.49 480.5
+C215.56 483.83 214.84 487.17 214.22 490.5
+C213.6 493.83 212.89 497.17 212.76 500.5
+C212.63 503.83 213.14 507.92 213.43 510.5
+C213.72 513.08 213.74 513.42 214.5 516
+C215.26 518.58 217.42 524.33 218 526
+C226.4 540.7 246.4 548.7 266.5 541
+C252.3 544.1 244.2 534.2 237.6 525.1
+C231.5 517.1 229.4 509.3 229.35 500.5
+C229.23 498.17 228.83 493.83 229.18 490.5
+C229.53 487.17 230.7 483.83 231.44 480.5
+C232.18 477.17 232.73 473.83 233.6 470.5
+C234.48 467.17 235.47 463.83 236.68 460.5
+C237.9 457.17 239.23 453.83 240.92 450.5
+C242.6 447.17 244.52 443.83 246.79 440.5
+C249.06 437.17 252.56 433 254.53 430.5
+C256.5 428 257.26 427.17 258.62 425.5
+C259.98 423.83 260.59 423 262.7 420.5
+C264.81 418 268.42 413.83 271.28 410.5
+C274.13 407.17 276.83 403.83 279.86 400.5
+C282.89 397.17 286.21 393.83 289.46 390.5
+C292.71 387.17 296.13 383.83 299.37 380.5
+C302.6 377.17 305.65 373.83 308.87 370.5
+C312.09 367.17 316.23 362.83 318.69 360.5
+C321.14 358.17 322.78 357.17 323.6 356.5
+C332.4 357.4 338.2 350.3 350 344.5
+C362 338.5 379 341.2 392.5 341.2
+L395.2 340.6
+C390.8 324 387.6 304.8 386.4 285
+C385.5 269.7 384.6 254.5 384 240
+C387 207 402 174 422 146
+C436 127 443 103 430 94 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-34" data-group-path="hair/back_hair" data-node-kind="group" data-name="back_hair">
+<g id="node-35" data-group-path="hair/back_hair/cap" data-node-kind="part" data-name="cap">
+<g id="part-source-29"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="7e49511d87ad78e3cbe47c9d9e1ff3cf3f6e729848fb59944f2095de79f996f8" x="0" y="0">
+<g id="part-source-29-back-hair-cap-outline" data-group-path="hair/back_hair/cap" fill="#e987ac" stroke="none">
+<path d="M344.3 201 C344.06 200.25 343.04 198.25 342.86 196.5 C342.69 194.75 343.09 192.33 343.26 190.5 C343.43 188.67 343.57 187.17 343.89 185.5 C344.21 183.83 345.02 182.17 345.19 180.5 C345.36 178.83 345.33 177 344.91 175.5 C344.49 174 342.9 173.33 342.7 171.5 C342.5 169.67 343.43 166.33 343.74 164.5 C344.05 162.67 343.9 162.83 344.56 160.5 C345.22 158.17 346.39 153.83 347.71 150.5 C349.04 147.17 350.79 143.83 352.52 140.5 C354.24 137.17 356.28 133.83 358.08 130.5 C359.88 127.17 361.42 123.83 363.31 120.5 C365.19 117.17 367.11 113.83 369.41 110.5 C371.71 107.17 374.25 103.83 377.1 100.5 C379.95 97.17 383.92 93 386.52 90.5 C389.12 88 390.57 87.17 392.71 85.5 C394.86 83.83 396.88 82.17 399.38 80.5 C401.89 78.83 404.36 77.17 407.73 75.5 C411.1 73.83 416.22 71.67 419.63 70.5 C423.04 69.33 425.94 69.12 428.17 68.5 C430.39 67.88 432.19 67.08 433 66.8 C436.3 65.4 439.6 64.2 443.1 63.7 C445.75 63.67 453.35 63.42 459 63.5 C464.65 63.58 471.67 63.58 477 64.2 C482.33 64.82 487 66.15 491 67.2 C495 68.25 497.79 69.12 501.02 70.5 C504.25 71.88 507.66 73.83 510.39 75.5 C513.12 77.17 515.16 78.83 517.39 80.5 C519.63 82.17 521.83 83.83 523.8 85.5 C525.77 87.17 527.57 88.83 529.21 90.5 C530.85 92.17 532.21 93.83 533.65 95.5 C535.09 97.17 536.5 98.83 537.85 100.5 C539.2 102.17 540.58 103.83 541.76 105.5 C542.93 107.17 543.9 108.83 544.92 110.5 C545.94 112.17 546.98 113.83 547.87 115.5 C548.76 117.17 549.26 118.83 550.26 120.5 C551.26 122.17 552.77 123.83 553.86 125.5 C554.94 127.17 555.94 128.83 556.76 130.5 C557.59 132.17 558.35 133.83 558.79 135.5 C559.22 137.17 558.98 138.83 559.37 140.5 C559.77 142.17 560.75 143.83 561.16 145.5 C561.58 147.17 561.65 148.75 561.87 150.5 C562.09 152.25 562.24 154.33 562.5 156 C562.76 157.67 563.04 158.92 563.46 160.5 C563.87 162.08 564.63 163.67 564.98 165.5 C565.34 167.33 565.5 170.5 565.6 171.5 C566.8 177 566 181.8 565.5 185.5 L566 195.5 C566 205 562 216 558 226 C548 252 527 275 505 288 C488 298 474 300 458 300 C437 299 416 291 396 278 C372 260 356 239 350 223 C348 216 346 208 344.3 201 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-36" data-group-path="hair/back_hair/long_left" data-node-kind="part" data-name="long_left">
+<g id="part-source-30"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="58acfbd8f09ade9631f0a44ac36a63d1d31a6f6a42f6fc6aa7c0cb1ec0bdc1df" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M459 182 C463 158.6667 481 140 503 140 C525 140 542 170.6667 550 188 L551 216 C525 235 479 235 456 218 C457 209 458 195 459 182 Z" fill-rule="nonzero"/></g>
+<g id="part-source-30-long-left-back-hair" data-group-path="hair/back_hair/long_left" fill="#e987ac" stroke="none">
+<path d="M610 766.5 C622 752 636 736 648 727 C655 714 665 700 674.5 693
+C 690 681 701 660 703 635 C 703.28 634.25 704.55 632.92 704.68 630.5 C 704.81 628.08 704.23 623.83 703.76 620.5 C 703.3 617.17 702.47 613.83 701.88 610.5 C 701.29 607.17 700.9 603.83 700.24 600.5 C 699.58 597.17 698.76 593.83 697.92 590.5 C 697.08 587.17 695.89 583 695.19 580.5 C 694.5 578 694.3 577.17 693.75 575.5 C 693.2 573.83 692.48 572.17 691.9 570.5 C 691.33 568.83 690.85 567.17 690.3 565.5 C 689.76 563.83 688.89 561.83 688.64 560.5 C 688.38 559.17 688.77 558 688.8 557.5 C 689.05 558 689.49 559.17 690.29 560.5 C 691.08 561.83 692.5 563.83 693.58 565.5 C 694.67 567.17 695.72 568.83 696.78 570.5 C 697.84 572.17 698.88 573.83 699.94 575.5 C 701.01 577.17 701.78 578 703.15 580.5 C 704.52 583 706.31 587.17 708.16 590.5 C 710 593.83 712.4 597.17 714.22 600.5 C 716.05 603.83 717.91 608 719.11 610.5 C 720.32 613 720.78 613.83 721.46 615.5 C 722.13 617.17 722.3 618 723.17 620.5 C 724.05 623 725.7 627.17 726.69 630.5 C 727.67 633.83 728.65 637.17 729.07 640.5 C 729.49 643.83 729.24 648 729.19 650.5 C 729.14 653 728.98 653.83 728.76 655.5 C 728.54 657.17 728.3 658.83 727.88 660.5 C 727.46 662.17 727 663.83 726.24 665.5 C 725.47 667.17 724.26 668.83 723.28 670.5 C 722.3 672.17 721.53 673.83 720.36 675.5 C 719.18 677.17 717.59 679.17 716.23 680.5 C 714.87 681.83 713.52 682.67 712.22 683.5 C 710.92 684.33 709.84 684.83 708.46 685.5 C 707.07 686.17 705.42 687.07 703.93 687.5 C 702.43 687.93 700.9 688.08 699.5 688.1 C 698.1 688.12 696.68 687.98 695.5 687.6 C 694.32 687.22 693.23 686.48 692.4 685.8 C 691.57 685.12 690.82 683.88 690.5 683.5 C 690.77 683.92 691.5 685.32 692.1 686 C 692.7 686.68 693.27 687.07 694.1 687.6 C 694.93 688.13 695.98 688.75 697.1 689.2 C 698.22 689.65 699.62 690.1 700.8 690.3 C 701.98 690.5 702.69 690.53 704.2 690.4 C 705.71 690.27 708.52 689.82 709.86 689.5 C 711.2 689.18 711.56 688.83 712.26 688.5 C 712.97 688.17 713.31 688 714.1 687.5 C 714.89 687 716.16 686.17 717.01 685.5 C 717.86 684.83 718.41 684.33 719.21 683.5 C 720 682.67 720.66 681.83 721.77 680.5 C 722.88 679.17 724.68 677.17 725.88 675.5 C 727.07 673.83 727.96 672.17 728.92 670.5 C 729.88 668.83 730.81 667.17 731.63 665.5 C 732.45 663.83 733.17 662.17 733.85 660.5 C 734.53 658.83 735.19 657.17 735.7 655.5 C 736.21 653.83 736.45 653 736.91 650.5 C 737.37 648 738.15 643.83 738.46 640.5 C 738.77 637.17 738.87 633.83 738.77 630.5 C 738.67 627.17 738.19 623 737.85 620.5 C 737.52 618 737.13 617.17 736.76 615.5 C 736.38 613.83 736.24 613 735.59 610.5 C 734.93 608 733.96 603.83 732.84 600.5 C 731.72 597.17 730.22 593.83 728.89 590.5 C 727.57 587.17 726.31 583.83 724.87 580.5 C 723.43 577.17 721.96 573.83 720.26 570.5 C 718.56 567.17 716.59 563.83 714.67 560.5 C 712.76 557.17 710.75 553.83 708.76 550.5 C 706.76 547.17 704.98 543.42 702.68 540.5 C 700.39 537.58 697.53 536.25 695 533 C 692.47 529.75 688.75 523 687.5 521
+C684 513 680 506 676.8 499.2
+C 676.35 499.08 674.88 498.95 674.12 498.5 C 673.37 498.05 673.31 497.83 672.26 496.5 C 671.21 495.17 669.88 493.17 667.82 490.5 C 665.76 487.83 662.39 483.83 659.9 480.5 C 657.42 477.17 655.32 473.83 652.9 470.5 C 650.48 467.17 647.71 463.83 645.37 460.5 C 643.03 457.17 641.06 453.83 638.87 450.5 C 636.68 447.17 634.4 443.83 632.24 440.5 C 630.07 437.17 627.34 433 625.88 430.5 C 624.41 428 624.32 427.17 623.45 425.5 C 622.58 423.83 622.1 423 620.65 420.5 C 619.19 418 616.49 413.83 614.7 410.5 C 612.91 407.17 611.4 403.83 609.88 400.5 C 608.36 397.17 607.09 393.83 605.58 390.5 C 604.06 387.17 602.28 383.83 600.79 380.5 C 599.29 377.17 597.48 373 596.61 370.5 C 595.75 368 595.77 366.33 595.6 365.5
+C590 360 586 358 582 352 C566 314 556 272 551 236
+C553 220 556 201 550 188
+C529 176 489 174 459 182
+C453 217 449 263 449 310
+C450 384 448 456 449 529
+C449 620 448 714 455 782
+L471.5 782
+C478 784 487 785 501 785
+C534 785 575 779 610 766.5 Z"/>
+<path fill-rule="evenodd" d="M553 497 C542 518 536 539 534.5 556 C532.5 567 535 575 541 584 C555 604 571 626 582 648 C596 681 607.5 725 610 766.5 C615 763.5 621 759 623 757 C623 760 624.5 762 627 762.5 C630 761.5 635 758 640 753 C643 752 646 755 650 756.5 C654 759 657.5 759.3 659 758.2 C653 756 648 751 647 746 C645.5 739 648 730 651 725 C632 689 613 657 598 625 C584 595 577 566 570 537 C566 520 560 506 553 497 Z M638 736.5 C633.5 744 631 748 627.5 752.5 C631.5 751.5 636 750 640 746.5 C638.5 744 637.5 740 638 736.5 Z"/>
+<path d="M458 777.5 L471.5 777.5 C472.5 780 474 782 476 783 L475.5 795 C473.5 794.3 472 792 470 790.5 C474 796 471 800.5 462 803 C464.5 798.5 466 793.5 466 790 C464.5 788.5 462.8 787.1 461.3 786.6 C459.9 783.6 458.6 780.6 458 777.5 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-37" data-group-path="hair/back_hair/long_right" data-node-kind="part" data-name="long_right">
+<g id="part-source-31"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="e8e9eeb6e5ae6ad76fd4fe59f062b0ff4b6abd660f0a2b56000d1aa2c9c6811e" x="0" y="0">
+<g id="part-source-31-long-right-outline" data-group-path="hair/back_hair/long_right" fill="#e987ac" stroke="none">
+<path fill-rule="evenodd" d="M365 240 C354 279 345 311 337 338 C333 345 328 351 323.6 356.5
+C 323.47 357.17 323.61 358.17 322.79 360.5 C 321.98 362.83 320.18 367.17 318.73 370.5 C 317.28 373.83 315.77 377.17 314.09 380.5 C 312.41 383.83 310.33 387.17 308.67 390.5 C 307.01 393.83 305.85 397.17 304.13 400.5 C 302.42 403.83 300.31 407.17 298.36 410.5 C 296.41 413.83 293.93 418 292.43 420.5 C 290.93 423 290.35 423.83 289.35 425.5 C 288.35 427.17 287.97 428 286.42 430.5 C 284.88 433 282.36 437.17 280.09 440.5 C 277.82 443.83 275.28 447.17 272.81 450.5 C 270.34 453.83 267.83 457.17 265.24 460.5 C 262.66 463.83 259.84 467.17 257.28 470.5 C 254.72 473.83 252.4 477.17 249.88 480.5 C 247.36 483.83 244.58 487.17 242.13 490.5 C 239.69 493.83 236.87 498.17 235.22 500.5 C 233.57 502.83 233.03 503.63 232.26 504.5 C 231.49 505.37 230.88 505.5 230.6 505.7
+C226.5 512 221.5 520 218 526
+C 216.75 528.17 213.14 534.92 210.5 539 C 207.86 543.08 204.73 546.92 202.16 550.5 C 199.59 554.08 197.55 557.17 195.08 560.5 C 192.62 563.83 189.94 567.17 187.38 570.5 C 184.81 573.83 182.01 577.17 179.71 580.5 C 177.41 583.83 175.34 587.17 173.57 590.5 C 171.81 593.83 170.46 597.17 169.13 600.5 C 167.81 603.83 166.53 607.17 165.6 610.5 C 164.68 613.83 164.06 617.17 163.6 620.5 C 163.14 623.83 162.75 627.17 162.85 630.5 C 162.95 633.83 163.38 637.17 164.2 640.5 C 165.02 643.83 166.93 648 167.76 650.5 C 168.58 653 168.58 653.83 169.17 655.5 C 169.76 657.17 170.54 658.83 171.29 660.5 C 172.03 662.17 172.81 663.83 173.65 665.5 C 174.48 667.17 175.19 668.83 176.29 670.5 C 177.38 672.17 178.73 673.83 180.21 675.5 C 181.69 677.17 183.81 679.17 185.15 680.5 C 186.49 681.83 187.31 682.67 188.25 683.5 C 189.19 684.33 189.74 684.83 190.81 685.5 C 191.87 686.17 193.44 687.02 194.63 687.5 C 195.81 687.98 196.8 688.07 197.9 688.4 C 199 688.73 199.93 689.23 201.2 689.5 C 202.47 689.77 204.1 690.03 205.5 690 C 206.9 689.97 208.47 689.63 209.6 689.3 C 210.73 688.97 211.55 688.47 212.3 688 C 213.05 687.53 213.73 687.08 214.1 686.5 C 214.47 685.92 214.43 684.83 214.5 684.5 C 214.08 684.75 212.85 685.55 212 686 C 211.15 686.45 210.52 686.95 209.4 687.2 C 208.28 687.45 206.7 687.62 205.3 687.5 C 203.9 687.38 202.38 686.83 201 686.5 C 199.62 686.17 198.17 686 197.03 685.5 C 195.89 685 195.21 684.33 194.16 683.5 C 193.11 682.67 191.98 681.83 190.75 680.5 C 189.51 679.17 187.83 677.17 186.74 675.5 C 185.65 673.83 184.86 672.17 184.21 670.5 C 183.55 668.83 183.14 667.17 182.81 665.5 C 182.48 663.83 182.42 662.17 182.23 660.5 C 182.05 658.83 181.76 657.17 181.69 655.5 C 181.62 653.83 181.77 652.17 181.8 650.5 C 181.83 648.83 181.74 647.17 181.88 645.5 C 182.03 643.83 182.39 642.17 182.68 640.5 C 182.98 638.83 183.31 637.17 183.64 635.5 C 183.97 633.83 184.2 632.17 184.67 630.5 C 185.13 628.83 185.5 627.17 186.44 625.5 C 187.37 623.83 189.4 622.17 190.3 620.5 C 191.21 618.83 191.38 617.17 191.86 615.5 C 192.35 613.83 192.68 612.17 193.2 610.5 C 193.72 608.83 194.56 606.83 194.99 605.5 C 195.43 604.17 195.67 603 195.8 602.5 C 195.87 603 196.21 604.17 196.22 605.5 C 196.22 606.83 195.94 608.83 195.82 610.5 C 195.7 612.17 195.5 613.83 195.49 615.5 C 195.49 617.17 195.66 618.83 195.8 620.5 C 195.93 622.17 196.06 623.83 196.29 625.5 C 196.52 627.17 196.78 628.83 197.16 630.5 C 197.55 632.17 198.18 634.17 198.59 635.5 C 199 636.83 199.27 637.67 199.62 638.5 C 199.96 639.33 200.27 639.83 200.67 640.5 C 201.06 641.17 201.31 641.67 201.98 642.5 C 202.65 643.33 203.34 644.17 204.67 645.5 C 206 646.83 208.82 649 209.97 650.5 C 211.13 652 210.99 652.83 211.58 654.5 C 212.17 656.17 212.88 658.67 213.52 660.5 C 214.16 662.33 214.77 663.83 215.42 665.5 C 216.07 667.17 216.61 668.83 217.41 670.5 C 218.22 672.17 219.34 673.42 220.27 675.5 C 221.2 677.58 221.05 680.25 223 683 C 224.95 685.75 228.17 689.25 232 692 C 235.83 694.75 243.67 698.25 246 699.5
+C259 707 274 722 287 737.5 C297 749.5 307 758.5 319 764.8
+C351 780 389 785 424 785 C438 785 448 784 455 782  L461.3 782
+C463 735 465 676 465 620
+C465 541 464 465 463 391
+C462 333 463 283 463 242
+C464 218 463 198 457 184
+C433 174 397 173 374 181
+C363 188 359 204 362 219
+C363 227 364 234 365 240 Z
+M216.5 578 C216.21 578.42 215.91 578.42 214.75 580.5 C213.59 582.58 210.79 588 209.54 590.5 C208.28 593 207.91 593.83 207.22 595.5 C206.52 597.17 205.98 598.83 205.37 600.5 C204.76 602.17 204.05 603.83 203.57 605.5 C203.08 607.17 202.75 608.83 202.44 610.5 C202.14 612.17 201.93 613.83 201.72 615.5 C201.51 617.17 201.36 618.83 201.2 620.5 C201.04 622.17 200.09 623.83 200.75 625.5 C201.41 627.17 204.15 629.45 205.19 630.5 C206.23 631.55 206.7 631.58 207 631.8 C207.14 631.58 207.6 631.55 207.85 630.5 C208.1 629.45 208.33 627.17 208.5 625.5 C208.67 623.83 208.69 622.17 208.88 620.5 C209.06 618.83 209.4 617.17 209.61 615.5 C209.83 613.83 209.99 612.17 210.19 610.5 C210.39 608.83 210.56 607.17 210.82 605.5 C211.07 603.83 211.37 602.17 211.72 600.5 C212.07 598.83 212.49 597.17 212.89 595.5 C213.29 593.83 213.58 593 214.13 590.5 C214.68 588 215.8 582.58 216.19 580.5 C216.59 578.42 216.45 578.42 216.5 578 Z"/>
+<path d="M368.5 495 C380 504 387 520 389 540 C391 553 394 564 390 576 C379 596 359 622 347 646 C332 677 321 720 319 764.8 C305.6 760.5 295.6 749.3 285.8 737.9 C284.3 736.5 283.8 735.3 283 735 C283.5 743 286 749 290.5 756.5 C286.8 755.2 283.4 751.4 280.6 747.6 C278.3 752.6 273.6 756.1 268 758 C274.3 754.5 277.4 749.2 277.2 743.9 C276.9 738.3 273.5 730.5 271 725.5 C282 700 302 671 319 643 C334 617 344 594 351 568 C357 543 363 520 368.5 495 Z"/>
+<path d="M455 777.5 L461.3 777.5 L461.3 786.6 C458.5 791 456 793.5 452 794.5 L451 785.5 C453 783.5 454.5 781 455 777.5 Z"/>
+</g>
+</svg></g>
+</g>
+</g>
+<g id="node-38" data-group-path="hair/ahoge" data-node-kind="part" data-name="ahoge">
+<g id="part-source-32"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="be13faba51d9d466866b63bd8cdfb8cdc7273331bcd47704f28693568950a50f" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M446 87.2 C448 89.7 450 92 451.9 93.2 C453.4 95.2 456.8 95.5 459 97.7 C461.6 100.4 459.6 104.8 456 104.5 C453.6 104.3 452 102 451.3 99.7 C450.1 95.8 448.5 92.8 446.7 90.5 C446.1 89.5 445.9 88.5 446 87.2 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-32-hair-ahoge-outline" data-group-path="hair/ahoge" fill="#e987ac" stroke="none">
+    <path id="part-source-32-hair-ahoge-shape" d="M451.2 94
+      C446.8 90 440.9 83 437.6 76.5
+      C434.8 70.9 433.5 67.1 433.24 62.5
+      C433.27 61.12 433 59.83 433.17 58.5
+      C433.34 57.17 433.74 55.83 434.24 54.5
+      C434.73 53.17 435.33 51.83 436.15 50.5
+      C436.96 49.17 438.07 47.83 439.13 46.5
+      C440.19 45.17 441.15 43.83 442.52 42.5
+      C443.89 41.17 445.63 39.83 447.34 38.5
+      C449.06 37.17 451.3 35.5 452.82 34.5
+      C454.34 33.5 455.04 33.17 456.48 32.5
+      C457.92 31.83 459.66 31.17 461.47 30.5
+      C463.28 29.83 464.72 28.95 467.31 28.5
+      C469.9 28.05 474.39 27.72 477 27.8
+      C479.61 27.88 481.42 28.47 483 29
+      C484.58 29.53 485.53 30.25 486.5 31
+      C487.47 31.75 488.42 33.08 488.8 33.5
+      C488.47 33.23 487.77 32.35 486.8 31.9
+      C485.83 31.45 484.8 30.98 483 30.8
+      C481.2 30.62 478.03 30.73 476 30.8
+      C473.97 30.87 472.43 30.92 470.8 31.2
+      C469.17 31.48 467.63 31.95 466.24 32.5
+      C464.86 33.05 463.66 33.83 462.5 34.5
+      C461.34 35.17 460.31 35.83 459.28 36.5
+      C458.26 37.17 457.25 37.83 456.34 38.5
+      C455.43 39.17 454.59 39.83 453.83 40.5
+      C453.08 41.17 452.4 41.83 451.81 42.5
+      C451.23 43.17 450.84 43.83 450.33 44.5
+      C449.82 45.17 449.24 45.83 448.76 46.5
+      C448.29 47.17 447.91 47.83 447.48 48.5
+      C447.06 49.17 446.64 49.83 446.21 50.5
+      C445.78 51.17 445.24 51.83 444.91 52.5
+      C444.58 53.17 444.44 53.83 444.21 54.5
+      C443.99 55.17 443.78 55.83 443.55 56.5
+      C443.32 57.17 442.99 57.83 442.83 58.5
+      C442.67 59.17 442.68 59.83 442.6 60.5
+      C442.52 61.17 442.25 61.97 442.33 62.5
+      C442.6 70.1 444.7 83.8 451.9 93.2
+      Q452.7 94.1 451.2 94 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+<g id="node-39" data-group-path="head_accessories" data-node-kind="group" data-name="head_accessories">
+<g id="node-40" data-group-path="head_accessories/left_earring" data-node-kind="part" data-name="left_earring">
+<g id="part-source-33"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="206b7db1a69b8e080742bd9e079ba3f83838d012d819bbeee52f5ca0af898453" x="0" y="0">
+  <g id="part-source-33-head_accessories_left_earring" data-group-path="head_accessories/left_earring" fill="#C778B8" stroke="none">
+    <path d="M 515.0,246.2 C 515.1,243.1 514.9,239.8 515.5,236.5 C 516.1,233.0 518.6,230.6 521.5,230.8 C 524.8,231.0 526.3,233.8 526.0,237.1 C 525.8,240.7 524.4,245.0 523.4,248.7 L 521.1,251.4 L 516.4,250.8 Z"/>
+    <path d="M 515.5,242.5 C 518.1,241.5 521.0,240.4 523.6,239.9 C 523.9,243.5 523.5,247.3 523.2,250.9 C 522.9,255.3 521.9,259.4 520.7,262.2 C 518.9,262.2 516.5,261.2 515.2,259.9 C 514.4,258.3 514.3,255.5 514.3,252.7 C 514.2,248.8 514.6,245.5 515.5,242.5 Z"/>
+  </g>
+</svg>
+</g>
+</g>
+<g id="node-41" data-group-path="head_accessories/right_earring" data-node-kind="part" data-name="right_earring">
+<g id="part-source-34"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="46c34c303dcf857664dae78bc91556ebf085283612ab22035de5989162d86c0d" x="0" y="0">
+  <g id="part-source-34-head_accessories_right_earring" data-group-path="head_accessories/right_earring" fill="#C778B8" stroke="none">
+    <path d="M 391.4,243.0 C 391.1,239.1 390.8,235.1 391.5,231.6 C 392.0,228.1 394.7,225.8 397.7,226.0 C 401.2,226.2 403.0,229.2 403.0,232.8 C 403.0,237.5 410.5,246.6 411.4,252.9 C 412.3,258.6 411.1,261.7 406.2,263.0 L 402.8,260.6 C 399.8,256.1 397.0,250.4 394.8,244.1 L 391.4,243.0 Z"/>
+    <path d="M 391.6,235.8 C 392.6,236.2 393.5,236.7 394.2,237.2 C 395.4,240.7 396.8,244.1 398.3,247.5 C 400.7,253.2 403.9,258.6 407.1,262.7 C 404.8,263.8 401.2,264.1 398.7,263.8 L 397.1,263.4 C 396.8,264.4 395.9,264.8 394.4,264.9 L 391.9,264.9 C 391.7,259.3 391.5,253.9 391.3,248.4 C 391.1,243.7 390.9,239.8 391.6,235.8 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+<g id="node-42" data-group-path="neck" data-node-kind="part" data-name="neck">
+<g id="part-source-35"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="8a5fb72c0fa36a3cfe5f35b5dc6bc9361b3f27c9f6f7efc835fac644bc9fb312" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 433.1,290.0 C 433.0,287.6 432.9,285.1 432.9,282.8 C 432.76,267.8 444.55,255.4 459.55,255.3 C 474.55,255.2 486.6,267.1 486.2,280.0 C 486.14,282.4 486.07,284.8 486.04,287.2 L 481.0,301.0 L 438.0,301.0 Z" fill-rule="nonzero"/><path d="M 425.4375,343.1 C 437.4375,344.5867 435.0,370.0 460.8,370.0 C 486.6,370.0 485.1375,343.8661 497.1375,342.2 L 497.1375,337.0 L 425.4375,337.0 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-35-neck-outline" data-group-path="neck" fill="#6DB8AE" stroke="none">
+    <path d="M 432.9,282.8 C 440.9,287.6 449.8,292.3 454.9,294.0 C 457.4,294.9 459.2,295.1 462.0,293.9 C 468.1,291.3 478.4,285.0 486.2,280.0 C 485.9,291.2 485.6,303.5 487.7,313.7 C 489.2,320.2 492.2,324.2 498.7,328.5 C 504.4,332.3 511.5,335.7 518.4,337.8 C 504.9,342.2 487.2,342.4 475.6,346.0 C 467.4,348.5 464.5,352.4 460.8,352.9 C 456.5,353.4 452.3,348.7 445.0,346.6 C 433.5,343.2 418.0,344.6 404.0,338.2 C 414.2,334.3 426.2,326.8 430.2,317.8 C 434.4,308.8 433.0,293.7 432.9,282.8 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-43" data-group-path="body" data-node-kind="group" data-name="body">
+<g id="node-44" data-group-path="body/torso" data-node-kind="part" data-name="torso">
+<g id="part-source-36"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="d6998bf19cc838043d890cbbf8970b0cc5ddabd5dc999b90a21ff04f7fe5eb1c" x="0" y="0">
+  <g id="part-source-36-body-torso-outline" data-group-path="body/torso" fill="#62BCD0" stroke="none">
+    <path d="M 358,341
+      C 372,340 384,343 398,340
+      C 420,339 440,344 460,345
+      C 482,344 502,340 522,339
+      C 539,341 557,338 570,342
+      C 580,345 587,352 590,364
+      C 586,383 574,405 556,424
+      C 551,448 549,477 546,504
+      C 543,519 539,539 535,557
+      C 533.5,564 534,567 537,572
+      C 539,575 537.5,576.5 540,580
+      C 551,594 563,609 572,625
+      C 537,630 498,632 463,632
+      C 428,632 392,630 357,625
+      C 367,607 379,591 388,578
+      C 390,575.5 388.5,573 390.5,570
+      C 393,566 392,562 391.5,557
+      C 389.5,539 385,520 381,505
+      C 377,477 373,447 368,421
+      C 349,405 335,387 329,373
+      C 331,360 338,350 347,345
+      C 351,343 355,342 358,341 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-45" data-group-path="body/breast" data-node-kind="part" data-name="breast">
+<g id="part-source-37"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="79e66ca3be8cd784701ad6febd8fd3e9d452743176234844808b11ac4958cdd3" x="0" y="0">
+  <g id="part-source-37-body-breast-outline" data-group-path="body/breast" fill="#5C9DD6" stroke="none">
+    <path d="M 462,382
+      C 476,382 490,373 512,376
+      C 532,379 546,400 556,424
+      C 562,437 566,449 566,462
+      C 566,479 561,492 550,500
+      L 546,504
+      C 538,515 525,526 508,528
+      C 490,530 475,518 462,518
+      C 449,518 435,530 418,528
+      C 402,526 390,515 381,505
+      L 377.5,503
+      C 364,495 359,480 358,464
+      C 357,449 361,435 368,421
+      C 376,407 383,391 393,382
+      C 406,373 425,374 439,377
+      C 450,380 456,382 462,382 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+<g id="node-46" data-group-path="arms" data-node-kind="group" data-name="arms">
+<g id="node-47" data-group-path="arms/arm_left" data-node-kind="group" data-name="arm_left">
+<g id="node-48" data-group-path="arms/arm_left/upper_arm" data-node-kind="part" data-name="upper_arm">
+<g id="part-source-38"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="0c3e4081ac22986545fd2c64542b6f3d58f7bc447fbcca031b97f5a9606afc84" x="0" y="0">
+  <g id="part-source-38-arm-left-upper-arm-outline" data-group-path="arms/arm_left/upper_arm" fill="#64b9c7" stroke="none">
+    <path d="M 533.6 341.3
+      C 545.8 341.0 557.9 337.0 569.8 343.4
+      C 585.0 351.6 591.1 367.8 594.6 388.1
+      C 598.3 412.1 599.4 439.0 602.6 471.2
+      C 605.9 504.5 610.2 536.1 618.4 556.8
+      C 620.185 561.105 622.49675 565.64275 625.0136875 570.27605
+      C 615.0 582.0 598.0 594.0 583.7 597.2
+      C 577.8 579.9 574.2 563.5 568.9 544.6
+      C 564.0 526.8 558.5 509.0 553.4 494.1
+      C 548.3 479.2 548.3 462.4 546.8 444.4
+      C 545.3 430.4 540.0 418.6 529.5 414.9
+      C 512.7 408.8 498.0 391.5 501.4 372.5
+      C 503.9 355.7 518.5 341.9 533.6 341.3 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-49" data-group-path="arms/arm_left/forearm" data-node-kind="part" data-name="forearm">
+<g id="part-source-39"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="43cddd50407c42f913611b89d89798c5d98358f52a965552fb26b95be5c0f085" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 578.17875 579.219975 C 572.5 558.9 579 546 593 546 C 607 546 621.0665 563.243975 627.2138125 574.26765 L 632 590 L 587 601 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-39-arm-left-forearm-outline" data-group-path="arms/arm_left/forearm" fill="#64b9c7" stroke="none">
+    <path d="M 578.17875 579.219975
+      C 575.3 568.9 582.4 562.5 596 562.5
+      C 610.5 562.5 623.1156 566.91855 627.2138125 574.26765
+      C 631.312 581.61675 635.69 589.105 639.1 596.2
+      C 650.2 619 658.9 649.8 668.6 676.5
+      C 679 706.1 692.1 737.2 703.7 769.2
+      C 705.26 773.808 706.99856 778.19136 708.8355008 782.3265792
+      C 705.4 792.4 696.1 798.2 687.7 797.9
+      C 681 797.6 674.1 794.9 672.5 789.1
+      C 672.2 774.5 671.9 767.6 666.7 754.6
+      C 658.1 733.3 640.2 700.5 623.4 674.1
+      C 607.4 648 592.7 623 583.7 597.2
+      C 581.635 591.145 579.85175 585.20025 578.17875 579.219975 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-50" data-group-path="arms/arm_left/hand" data-node-kind="group" data-name="hand">
+<g id="node-51" data-group-path="arms/arm_left/hand/palm" data-node-kind="part" data-name="palm">
+<g id="part-source-40"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="479e143dc13b8f7166485520d8d04732cbeba22c117f9c00d5d609ea60ff0dba" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 729.1443712 849.4376512 C 724.7 852.3 717.8 853.8 711.2 850.3 C 704.9 846.9 700.4 840.1 699.1 833.1 C 698.4 829.6 697.5 825.8 696.6 822.9 L 693.8 812.8 C 702.0 815.0 711.0 829.0 716.0 837.0 C 720.2 843.0 725.2 846.0 728.8 846.2 L 729.1443712 849.4376512 Z" fill-rule="nonzero"/></g>
+<g id="part-source-40-arm-left-hand-palm-outline" data-group-path="arms/arm_left/hand/palm" fill="#64b9c7" stroke="none">
+<path d="M 672.5 789.1
+C 672.35 782.7 672.8 777.3 676.7 772.4
+C 680.2 768.0 685.5 765.7 690.6 767.5
+C 698.5 770.0 708.8287375 782.56879375 711.415575 787.8538625
+C 716.58925 798.424 722.215 807.095 726.7 813.4
+C 729.3 816.5 727.4 822.2 727.6 829.4
+C 727.8 836.8 728.2 842.6 729.0 847.6
+C 729.12 848.116 729.16368 848.73568 729.1443712 849.4376512
+C 724.7 852.3 718.2 844.8 713.8 836.9
+C 708.5 829.5 702.6 820.7 695.6 816.2
+C 695.8 818.3 696.1 820.9 696.6 822.9
+C 693.8 828.7 687.7 833.3 682.7025472 831.3658688
+C 682.2248000000001 829.0416 681.7320000000001 826.712 681.2 824.5
+C 677.1 812.0 673.3 801.8 672.5 789.1 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-52" data-group-path="arms/arm_left/hand/thumb" data-node-kind="part" data-name="thumb">
+<g id="part-source-41"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="0e109f4641066e032ff5605e1feaff87a8633d6244e611804d97e6c1875f3ce0" x="0" y="0">
+  <g id="part-source-41-arm-left-hand-thumb-outline" data-group-path="arms/arm_left/hand/thumb" fill="#64b9c7" stroke="none">
+    <path d="M 677.6651 813.7439
+      C 676.65 810.55 676.25 808.15 678.2 805.5
+      C 682.0 801.7 689.0 799.0 693.0 800.0
+      C 695.5 800.4 697.0 802.3 696.6 805.0
+      C 695.8 808.3 695.1 812.0 695.4 815.9
+      C 695.3 818.2 695.9 821.0 696.6 822.9
+      C 696.8 829.0 698.5 837.9 698.3 844.5
+      C 698.0 849.3 696.3 855.0 693.1 855.0
+      C 690.1 855.0 687.4 851.8 686.5 847.1
+      C 684.5 841.8 683.1 832.4 681.2 824.5
+      C 679.97 820.75 678.767 817.207 677.6651 813.7439 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-53" data-group-path="arms/arm_left/hand/index_finger" data-node-kind="part" data-name="index_finger">
+<g id="part-source-42"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="3d5da70bf474c4f7818a7fd5098f31a11a4e17f90710f7947eb8969bd4a821c4" x="0" y="0">
+  <g id="part-source-42-arm-left-hand-index-finger" data-group-path="arms/arm_left/hand/index_finger" fill="#64b9c7" stroke="none">
+    <path d="M 697.4 814.3
+C 696.4 810.6 697.3 806.8 701.1 806.5
+C 708.2 806.0 719.9 809.3 726.7 813.4
+C 729.3 816.5 727.4 822.2 727.6 829.4
+C 727.8 836.8 728.2 842.6 729.0 847.6
+C 729.25 848.7 728.8 850.7 728.3 852.1
+C 727.4 855.0 726.9 857.4 726.1 860.0
+C 725.2 863.4 724.0 867.5 723.3 870.0
+C 721.9 874.6 720.6 879.0 720.0 882.6
+C 719.85 883.8 719.75 885.1 719.3 885.6
+C 718.95 885.85 718.1 884.8 717.5 884.1
+C 715.769 882.157 713.85 879.56 713.0 877.6
+C 712.3 875.85 711.65 874.1 711.4 872.7
+C 711.1 867.8 713.4 858.4 715.4 850.1
+C 714.1 845.5 713.4 837.7 711.0 832.4
+C 707.6 828.7 704.9 823.0 700.8 819.4
+C 698.9 817.8 698.0 816.2 697.4 814.3 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-54" data-group-path="arms/arm_left/hand/middle_finger" data-node-kind="part" data-name="middle_finger">
+<g id="part-source-43"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="edb4d0186ebaa1f2d127e6ab0ef3c0d88ca22290003ebd52194b6e29c75799ee" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 708.2 837.2 C 708.0 833.7 709.3 830.4 708.8 827.0 C 708.5 824.7 709.8 822.7 711.6 822.8 C 714.7 822.9 716.8 826.8 717.4 830.4 C 718.2 835.3 718.6 840.4 719.3 845.1 C 719.6 847.1 719.8 849.3 719.2 852.0 C 717.8 859.1 713.5 867.0 711.4 872.7 C 710.6 874.0 708.9 874.5 708.2 873.6 C 708.0 869.0 711.4 860.1 712.6 854.8 C 713.5 851.2 713.0 846.1 711.4 842.9 C 710.4 840.9 708.3 839.4 708.2 837.2 Z" fill-rule="nonzero"/></g>
+<g id="part-source-43-arm-left-hand-middle-finger-outline" data-group-path="arms/arm_left/hand/middle_finger" fill="#64b9c7" stroke="none">
+<path d="M 708.7 830.9
+C 710.1 830.0 712.6 831.2 713.5 834.6
+C 714.4 838.6 714.8 843.6 715.8 847.9
+C 716.1 849.0 716.8 850.0 716.5 851.3
+C 715.2 858.5 713.5 867.0 711.4 872.7
+C 707.0 880.1 703.6 887.5 700.7 891.6
+C 700.35 891.98 700.1 892.05 699.85 891.8
+C 698.6 890.4 697.0 886.0 695.5 882.7
+C 696.3 877.2 698.8 870.6 702.3 864.8
+C 705.9 858.8 709.6 852.3 711.0 847.3
+C 711.1 846.2 710.1 845.3 708.9 844.9
+C 707.8 844.5 707.6 843.8 707.6 842.5
+C 707.7 838.7 707.5 834.5 708.7 830.9 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-55" data-group-path="arms/arm_left/hand/ring_finger" data-node-kind="part" data-name="ring_finger">
+<g id="part-source-44"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="9e9682f16d42f6efbf4169d7415ffd5018073e0266fb6e165794f3c099b38d16" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 700.98 839.0 C 701.32 834.3 700.87 828.9 700.12 824.0 C 699.53 820.1 699.96 816.85 702.50 815.50 C 705.50 814.00 709.30 816.40 710.70 819.60 C 712.20 823.60 712.00 830.10 711.64 836.80 L 710.40 843.00 L 702.00 843.00 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-44-arm-left-hand-ring-finger-outline" data-group-path="arms/arm_left/hand/ring_finger" fill="#68b8c7" stroke="none">
+    <path d="M 704.5 829.0
+C 707.0 827.8 710.2 829.8 711.2 832.8
+C 712.0 836.0 711.8 841.5 711.2 846.8
+C 711.0 850.8 708.8 855.0 706.6 858.6
+C 704.1 862.8 701.0 868.1 699.1 872.9
+C 698.1 875.2 697.2 877.7 696.6 879.5
+C 696.2 881.0 696.8 882.5 695.5 882.7
+C 693.5 882.8 692.7 880.2 692.6 877.7
+C 692.1 872.0 694.2 865.6 696.4 860.4
+C 698.7 855.0 700.0 849.7 700.5 845.1
+C 700.9 838.8 701.7 831.1 704.5 829.0 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-56" data-group-path="arms/arm_left/hand/little_finger" data-node-kind="part" data-name="little_finger">
+<g id="part-source-45"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="60dd7f64ed49eed9708a57dd890ad27fe94fafbb873ad15bc86bc5a88f52afb2" x="0" y="0">
+  <g id="part-source-45-arm-left-hand-little-finger-outline" data-group-path="arms/arm_left/hand/little_finger" fill="#64b9c7" stroke="none">
+    <path d="M 715.1 831.0
+      C 715.8 828.8 718.1 828.0 720.0 829.2
+      C 722.1 830.5 722.9 833.3 722.3 836.8
+      C 721.5 842.4 719.9 848.4 717.4 854.0
+      C 715.0 859.6 711.6 864.7 708.3 869.6
+      C 706.7 872.0 705.3 874.4 703.6 876.0
+      C 702.3 877.2 700.9 877.6 700.0 876.6
+      C 698.9 875.4 699.2 873.2 700.1 870.9
+      C 701.7 867.3 704.2 863.6 706.2 859.8
+      C 708.4 855.8 710.1 851.5 711.2 847.0
+      C 712.5 841.9 713.3 835.7 715.1 831.0 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+</g>
+<g id="node-57" data-group-path="arms/arm_right" data-node-kind="group" data-name="arm_right">
+<g id="node-58" data-group-path="arms/arm_right/upper_arm" data-node-kind="part" data-name="upper_arm">
+<g id="part-source-46"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="5727e332ff82c71742358a2f8783505d83dbcef2252425e2e1c06836d50995f6" x="0" y="0">
+  <g id="part-source-46-arm-right-upper-arm" data-group-path="arms/arm_right/upper_arm" fill="#6cbcc9" stroke="none">
+    <path id="part-source-46-upper-arm-solid" d="M 391.5 342.1
+C 378.9 342.2 367.2 338.5 355.3 342.9
+C 339.5 348.2 331.2 362.5 327.9 381.7
+C 324.5 401.7 323.2 432.4 320.6 463.4
+C 318.0 494.2 313.8 524.8 306.7 548.0
+C 305.476 552.788 303.57808 557.61488 301.286176 562.471309
+C 295.0 575.8 304.4 582.8 317.4 585.6
+C 330.4 588.4 343.2 581.7 346.55 567.69375
+C 347.3875 564.175 348.275 560.65 349.3 557.1
+C 355.6 534.9 364.5 510.1 368.9 494.6
+C 373.3 479.1 376.8 463.2 378.3 445.2
+C 379.8 431.2 385.1 419.4 395.6 415.7
+C 412.4 409.6 427.1 392.3 423.7 373.3
+C 421.2 356.5 406.6 342.7 391.5 342.1 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-59" data-group-path="arms/arm_right/forearm" data-node-kind="part" data-name="forearm">
+<g id="part-source-47"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="9d13e78588b72bb9354083d428683626eaeccdaae1ee0de275ba92f4fdbf1495" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 306.7 548.0 C 310.25 536.4 321.1 528.9 332.8 531.5 C 344.5 534.1 352.5 545.8 349.3 557.1 L 345.3 568.0 C 331.5 565.0 320.0 560.0 309.0 558.0 Z" fill-rule="nonzero"/></g>
+<g id="part-source-47-arm-right-forearm-outline" data-group-path="arms/arm_right/forearm" fill="#6cbcc9" stroke="none">
+<path id="part-source-47-arm-right-forearm-body" d="M 306.7 548.0
+C 303.3 561.3 294.7 574.9 286.9 588.6
+C 276.8 606.0 271.3 623.2 264.3 644.7
+C 254.7 675.4 242.1 710.7 229.6 742.6
+C 224.6302 756.0689 220.8017 766.7882 215.7231 777.0000
+C 222.0 785.3 240.1 791.4 251.2881 785.0000
+C 251.9650 774.4698 251.3532 764.5476 254.9000 755.6000
+C 263.9 733.3 282.4 700.9 298.1 675.4
+C 313.1 650.4 329.0 625.0 338.0 599.7
+C 343.3 585.1 345.2 571.3 349.3 557.1
+C 346.4 551.5 339.3 547.4 331.5 545.4
+C 322.9 543.0 312.3 544.2 306.7 548.0 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-60" data-group-path="arms/arm_right/hand" data-node-kind="group" data-name="hand">
+<g id="node-61" data-group-path="arms/arm_right/hand/palm" data-node-kind="part" data-name="palm">
+<g id="part-source-48"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="9cf29471d06d29d5f9f5e46239c390917f4ec5fe53d12a48be4629d01800e35b" x="0" y="0">
+  <g id="part-source-48-arm-right-hand-palm" data-group-path="arms/arm_right/hand/palm" fill="#69bfc9" stroke="none">
+    <path id="part-source-48-arm-right-palm-outline" d="M 214.1863704689604 780
+C 215.9161800253481 776.7220053742219 217.4905782900548 773.4139667164796 218.9905082249721 770
+C 222.1 762.9 229.5 758.4 237 759.2
+C 245.5 760.1 251.4 767.5 251.5360984144921 780
+C 251.37429234207863 784.1343273803772 251.14544724240054 788.3755034759164 250.5 792.7
+C 248.6 803.4 243.0 813.1 240.6 823.1
+C 240.0 825.5 238.1 827.0 235.7 826.7
+C 232.5 826.3 230.4 823.8 229.1 820.8
+C 227.9 818.0 227.2 815.1 224.9 815.6
+C 222.1 816.2 219.6 818.7 217.2 821.0
+C 212.7 825.4 207.1 830.5 201.4 832.7
+C 198.2 834.0 194.5 832.2 194.5 827.2
+C 194.5 822.5 193.0 816.2 194.5 813.5
+C 199.6 805.3 204.9 796.6 209.1 788.8
+C 210.9593101489454 785.8543513370639 212.63531586958783 782.9392534121785 214.1863704689604 780 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-62" data-group-path="arms/arm_right/hand/thumb" data-node-kind="part" data-name="thumb">
+<g id="part-source-49"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="c4d7f82722bbe9d511748436181b76490d502fa24910f7e396a606e581791d3a" x="0" y="0">
+  <g id="part-source-49-arm-right-hand-thumb" data-group-path="arms/arm_right/hand/thumb" fill="#58b8a9" stroke="none">
+    <path d="M 232.5 806.5
+C 236.1 804.4 241.8 806.2 243.2 810.4
+C 244.2 813.7 242.3 818.5 241.0 823.1
+C 239.0 830.6 237.5 839.0 234.7 845.7
+C 233.8 848.2 232.5 851.4 230.7 851.8
+C 229.5 852.1 228.2 850.8 227.2 849.4
+C 225.0 846.8 224.5 843.6 224.6 839.8
+C 224.7 838.8 224.8 837.8 224.6 837
+C 224.5 834.8 225.1 832.6 225.8 830.1
+C 226.4 827.7 227.1 825.3 227 822.4
+C 226.9 820.2 226.9 817.8 227.3 815.7
+C 227.8 811.7 229.7 808.1 232.5 806.5 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-63" data-group-path="arms/arm_right/hand/index_finger" data-node-kind="part" data-name="index_finger">
+<g id="part-source-50"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="75224748609adb7594f6b2723bc5e59cc6b943652b277ea0bc7e784766e0c023" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 223.0 808.2 C 219.8 807.1 217.1 809.6 215.6 813.4 C 213.6 818.7 212.2 825.0 212.2 831.1 C 212.1 837.1 214.0 843.4 216.8 848.5 C 219.0 852.4 221.8 853.3 226.4 858.8 C 224.6 856.4 223.2 853.8 221.7 850.5 C 219.6 845.9 218.4 840.4 218.1 834.8 C 217.9 830.2 219.0 825.7 221.1 821.6 C 223.0 818.6 226.1 819.0 227.3 818.5 C 227.5 814.5 227.6 809.8 223.0 808.2 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-50-arm-right-index-finger-outline" data-group-path="arms/arm_right/hand/index_finger" fill="#6cbcc9" stroke="none">
+    <path id="part-source-50-arm-right-index-finger-shape" d="M 219.1 815.8
+C 221.5 813.5 225.0 812.6 226.2 814.5
+C 227.4 816.3 227.5 819.6 227.0 822.4
+C 225.0 825.1 223.3 828.8 223.0 831.4
+C 222.8 833.6 223.2 835.4 224.6 837.0
+C 228.0 839.8 232.2 842.5 236.7 847.5
+C 239.4 850.5 244.0 856.9 243.5 862.7
+C 243.1 866.1 240.2 866.1 236.7 867.8
+C 235.4 868.5 234.1 868.6 233.0 867.9
+C 230.7 866.2 229.0 861.9 226.4 858.8
+C 221.8 853.3 218.7 845.7 217.2 839.7
+C 215.7 833.8 215.9 826.9 216.9 822.4
+C 217.5 819.7 218.2 817.4 219.1 815.8 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-64" data-group-path="arms/arm_right/hand/middle_finger" data-node-kind="part" data-name="middle_finger">
+<g id="part-source-51"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="5999d434514878920d47e3e337c802adf52ab9db9ecdc4e44a1b99d8f4643bdc" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 213.4 833.3 C 213.2 829.5 212.9 825.8 212.9 822.1 C 212.9 818.8 212.4 815.9 212.9 813.1 C 213.4 809.9 215.2 808.0 217.9 808.0 C 220.5 808.0 222.3 810.0 222.8 812.7 C 223.3 815.4 223.1 817.8 223.5 820.3 C 224.0 823.4 223.4 827.7 223.0 831.4 C 220.2 833.0 216.8 833.8 213.4 833.3 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-51-arm-right-hand-middle-finger" data-group-path="arms/arm_right/hand/middle_finger" fill="#63b8c6" stroke="none">
+    <path d="M 216.7 817.2
+C 219.6 815.8 222.8 817.1 223.5 820.3
+C 224.0 823.4 223.4 827.7 223.0 831.4
+C 222.8 833.6 223.2 835.4 224.6 837.0
+C 226.0 838.6 224.6 843.0 225.7 846.4
+C 226.8 849.8 227.7 853.9 228.8 857.2
+C 229.6 859.3 230.4 861.0 231.6 863.1
+C 232.8 865.3 236.8 865.9 236.7 867.8
+C 236.5 870.1 237.4 872.9 237.1 875.8
+C 237.0 878.2 234.7 880.3 232.7 879.1
+C 230.6 877.1 228.3 873.5 226.4 870.5
+C 223.3 866.7 220.5 862.4 218.2 858.1
+C 216.8 854.5 214.7 851.1 212.9 847.5
+C 211.8 845.2 211.6 842.9 212.0 840.9
+C 212.5 838.0 213.5 836.1 213.4 833.3
+C 213.2 829.5 212.8 825.8 213.3 822.8
+C 213.8 820.0 214.6 818.2 216.7 817.2 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-65" data-group-path="arms/arm_right/hand/ring_finger" data-node-kind="part" data-name="ring_finger">
+<g id="part-source-52"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="0105b24c9c90084f948e82af1d00930a7ea89bb1b3d9e348fc3d85237563c2dc" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 205.4 852.4 C 204.0 847.9 201.6 842.7 201.8 836.7 C 201.9 832.4 202.3 828.7 202.9 824.7 C 203.3 821.0 205.2 818.7 208.1 818.2 C 211.4 817.7 214.5 819.2 215.0 822.2 C 215.4 824.2 214.8 826.5 214.0 828.8 C 212.4 833.8 212.3 838.6 213.4 843.9 C 214.0 846.8 211.0 851.4 208.0 853.1 C 206.7 853.7 205.8 853.3 205.4 852.4 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-52-arm-right-ring-finger-outline" data-group-path="arms/arm_right/hand/ring_finger" fill="#63b9c8" stroke="none">
+    <path id="part-source-52-arm-right-ring-finger-shape" d="M 207.2 826.8
+C 207.0 823.5 208.9 821.5 211.7 821.2
+C 214.2 821.0 215.7 823.0 215.4 825.5
+C 215.3 827.7 213.9 828.5 214.2 831.0
+C 215.2 836.9 217.0 841.9 219.4 846.5
+C 222.9 852.0 226.4 857.1 229.3 863.5
+C 231.8 868.8 232.5 873.5 232.7 879.1
+C 232.3 885.7 228.6 890.4 226.7 888.1
+C 221.7 883.0 214.6 872.4 210.4 866.5
+C 207.9 862.6 206.4 857.1 205.4 852.4
+C 204.9 849.8 204.8 847.8 205.5 845.3
+C 206.4 840.4 206.9 833.1 207.2 826.8 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-66" data-group-path="arms/arm_right/hand/little_finger" data-node-kind="part" data-name="little_finger">
+<g id="part-source-53"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="3325607aa571e05f149cde1871c6931a1e71d6975b9402c5a97f8f6b742d2daf" x="0" y="0">
+  <g id="part-source-53-arm-right-hand-little-finger-outline" data-group-path="arms/arm_right/hand/little_finger" fill="#6cbcc9" stroke="none">
+    <path id="part-source-53-arm-right-little-finger-shape" d="M 193.7 827.2
+C 194.0 833.9 192.6 841.6 192.6 847.7
+C 192.9 853.0 195.8 860.4 197.0 866.3
+C 198.7 873.1 199.9 878.3 200.1 882.6
+C 200.6 886.4 205.1 881.7 207.6 878.0
+C 209.4 875.1 210.1 870.8 210.4 866.5
+C 210.6 863.6 208.3 858.4 207.0 854.4
+C 206.2 852.0 205.3 849.8 205.6 847.3
+C 206.0 843.5 207.8 840.2 208.6 836.4
+C 209.5 833.0 210.2 830.2 209.5 827.3
+C 208.8 823.4 206.4 819.2 202.3 818.1
+C 198.9 817.1 193.4 820.5 193.7 827.2 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+</g>
+</g>
+<g id="node-67" data-group-path="pelvis" data-node-kind="part" data-name="pelvis">
+<g id="part-source-54"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="d959798388cfb1c7dad87229e8c6ba741cb8184e59ec97f8c54369799c464c2b" x="0" y="0"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 365.8,610 C 374.1,597.2 385.5,582.1 394,567 C 405.8,545.8 431,536 463.4,536 C 495.8,536 521.8,545.8 533.1,567 C 541.5,582.1 552.7,597.2 561,610 L 549,628 C 505,622 420,622 378,628 Z" fill-rule="nonzero"/></g>
+  <g id="part-source-54-pelvis-outline" data-group-path="pelvis" fill="#71B8D4" stroke="none">
+    <path d="M 365.8,610 C 409.9,607 516.8,607 561,610 C 570.3,624.2 577.2,639 582,651.4 C 595,681.9 605,711.2 608.9,741 C 582.6,738.5 552.5,741.4 524.2,752.4 C 507.8,758.7 491.5,767.1 477.7,775.8 C 473.9,777 469.7,777 465.1,776.2 C 460.3,777.1 456.6,776.8 452,775.5 C 437.9,766.8 421.3,758.7 404.6,752.4 C 378.1,742.1 347.4,738.3 319.7,741 C 321.5,708.5 332.7,674 346.8,648 C 352,634 358.8,620.8 365.8,610 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-68" data-group-path="legs" data-node-kind="group" data-name="legs">
+<g id="node-69" data-group-path="legs/leg_left" data-node-kind="group" data-name="leg_left">
+<g id="node-70" data-group-path="legs/leg_left/leg" data-node-kind="part" data-name="leg">
+<g id="part-source-55"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="262195ab7e7fa4f861370b7db3998a629b44234872594391ed8af7433f7d26ff" x="0" y="0">
+<g id="part-source-55-leg-left-leg-outline" data-group-path="legs/leg_left/leg" fill="#5babc4" stroke="none">
+<path d="M 580 646
+C 580.5 646.7 581 647.3 581.4 648
+C 581.7 648.7 582 649.3 582.4 650
+C 583.2 651.7 583.9 653.3 584.7 655
+C 585.4 656.7 586.1 658.3 586.8 660
+C 588.2 663.3 589.6 666.7 590.9 670
+C 592.2 673.3 593.5 676.7 594.7 680
+C 595.8 683.3 596.8 686.7 597.9 690
+C 598.9 693.3 599.9 696.7 600.8 700
+C 601.6 703.3 602.3 706.7 603 710
+C 603.8 713.3 604.6 716.7 605.2 720
+C 605.8 723.3 606.3 726.7 606.8 730
+C 607.3 733.3 607.9 736.7 608.3 740
+C 608.6 743.3 608.8 746.7 609.1 750
+C 609.2 751.7 609.4 753.3 609.5 755
+C 609.5 756.7 609.5 758.3 609.6 760
+C 609.6 763.3 609.6 766.7 609.8 770
+C 610.32 780.66 610.12 791.17 608.8 800
+C 608.1 806.7 607.3 813.3 606.3 820
+C 605.3 826.7 604 833.3 602.8 840
+C 601.6 846.7 600.2 853.3 598.8 860
+C 597.4 866.7 595.7 873.3 594.1 880
+C 592.5 886.7 590.7 893.3 589 900
+C 587.3 906.7 585.5 913.3 583.8 920
+C 582.1 926.7 580.5 933.3 578.8 940
+C 577.1 946.7 575.4 953.3 573.7 960
+C 572 966.7 570.1 973.3 568.4 980
+C 566.7 986.7 565 993.3 563.4 1000
+C 561.8 1006.7 560.2 1013.3 558.8 1020
+C 557.4 1026.7 555.9 1033.3 554.7 1040
+C 553.5 1046.7 552.1 1053.3 551.4 1060
+C 550.7 1066.7 549.8 1073.3 549.8 1080
+C 549.8 1086.7 550.3 1093.3 550.8 1100
+C 551.3 1106.7 552.7 1113.3 554 1120
+C 555.3 1126.7 557.2 1133.3 558.7 1140
+C 560.2 1146.7 561.7 1153.3 562.8 1160
+C 563.9 1166.7 565.1 1173.3 565.6 1180
+C 566.1 1186.7 566.7 1193.3 566.7 1200
+C 566.7 1206.7 566.3 1213.3 566 1220
+C 565.7 1226.7 564.8 1233.3 564 1240
+C 563.2 1246.7 562.1 1253.3 560.9 1260
+C 559.7 1266.7 558.3 1273.3 557 1280
+C 555.7 1286.7 554.3 1293.3 552.9 1300
+C 551.5 1306.7 550 1313.3 548.7 1320
+C 547.4 1326.7 546.3 1333.3 545.1 1340
+C 543.9 1346.7 542.8 1353.3 541.7 1360
+C 540.9 1364.7 540.2 1369.3 539.5 1374
+C 537.8 1385 536.5 1396 535.3 1407
+C 534.1 1418 533.2 1430 532 1441
+C 530.4 1457 523.6 1468 513.2 1468
+C 502.6 1468 495.1 1457 494.6 1441
+C 494 1420 495.4 1395 495.2 1374
+C 495.3 1369.3 495.3 1364.7 495.3 1360
+C 495.3 1353.3 495.1 1346.7 494.9 1340
+C 494.7 1333.3 494.2 1326.7 493.8 1320
+C 493.4 1313.3 492.8 1306.7 492.2 1300
+C 491.6 1293.3 491 1286.7 490.3 1280
+C 489.6 1273.3 488.9 1266.7 488.2 1260
+C 487.5 1253.3 486.9 1246.7 486.3 1240
+C 485.7 1233.3 484.8 1226.7 484.5 1220
+C 484.2 1213.3 484 1206.7 484 1200
+C 484 1193.3 484.4 1186.7 484.7 1180
+C 485 1173.3 485.9 1166.7 485.9 1160
+C 485.9 1153.3 485.9 1146.7 485.8 1140
+C 485.7 1133.3 484.2 1126.7 483 1120
+C 481.8 1113.3 479.3 1106.7 478 1100
+C 476.7 1093.3 474.9 1086.7 474.9 1080
+C 474.9 1073.3 474.9 1066.7 475 1060
+C 475.1 1053.3 476.4 1046.7 477.1 1040
+C 477.8 1033.3 478.7 1026.7 479.3 1020
+C 479.9 1013.3 480.6 1006.7 480.8 1000
+C 481 993.3 481.1 986.7 481.1 980
+C 481.1 973.3 481.1 966.7 481 960
+C 480.9 953.3 480.5 946.7 480.2 940
+C 479.9 933.3 479.7 926.7 479.4 920
+C 479.1 913.3 478.7 906.7 478.3 900
+C 477.9 893.3 477.5 886.7 477.1 880
+C 476.7 873.3 476.2 866.7 475.9 860
+C 475.6 853.3 475.3 846.7 475 840
+C 474.7 833.3 474.2 826.7 474.2 820
+C 474.2 813.3 474.2 806.7 474.4 800
+C 474.74 794.13 475.41 788.88 476.35 784
+C 475.2 781.6 472.6 779.2 472.4 775.4
+C 472 758 471 740 469 716
+C 467 688 468 657 480 634
+C 492 612 515 600 539 606
+C 558 610 570 627 580 646 Z"/>
+</g>
+</svg>
+</g>
+</g>
+<g id="node-71" data-group-path="legs/leg_left/foot" data-node-kind="part" data-name="foot">
+<g id="part-source-56"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="2f92e31c65b64c80a4472b7401b993d63314c6e0e8d1a5bd18cb374fb2aecf0e" x="0" y="0">
+<g id="part-source-56-leg-left-foot-outline" data-group-path="legs/leg_left/foot" fill="#68547f" stroke="none">
+<path d="M 495.2 1374
+C 495.0 1386.8 494.2 1401.7 493.8 1414.3
+C 499.7 1416.4 503.5 1421.7 505.4 1427.8
+C 506.5 1433.9 508.5 1443.8 510.7 1448.7
+C 514.1 1442.0 516.1 1430.1 522.7 1423.8
+C 526.3 1420.3 530.1 1418.1 533.8 1417.2
+C 535.4 1404.6 537.3 1391.0 539.2 1378.1
+C 542 1380.7 546.3 1384.1 548.1 1386
+C 549.9 1387.8 551 1389.8 553.6 1390.3
+C 558.9 1390.5 563.6 1391.6 565.6 1394.1
+C 566.4 1394.6 566 1395.5 565.7 1396
+C 565.2 1397.3 564.7 1398.7 564.1 1400
+C 563.4 1401.7 562.5 1403.3 561.7 1405
+C 560.9 1406.7 560.2 1408.3 559.4 1410
+C 557.8 1413.3 556.1 1416.7 554.6 1420
+C 553.1 1423.3 551.5 1426.7 550.1 1430
+C 548.7 1433.3 547.3 1436.7 546 1440
+C 544.7 1443.3 543.4 1446.7 542.5 1450
+C 541.6 1453.3 540.1 1456.7 540.1 1460
+C 540.1 1463.3 540.7 1466.7 541.1 1470
+C 541.5 1473.3 543 1476.7 543 1480
+C 543 1483.3 540.3 1486.7 540.1 1490
+C 539.9 1493.3 539.7 1496.7 539.7 1500
+C 539.7 1503.3 539.9 1506.7 540.1 1510
+C 540.3 1513.3 540.4 1516.7 540.7 1520
+C 541 1523.3 541.5 1526.7 541.8 1530
+C 542.1 1533.3 542.4 1536.7 542.8 1540
+C 543.2 1543.3 543.9 1546.7 544.4 1550
+C 544.9 1553.3 545.6 1556.7 546.1 1560
+C 546.6 1563.3 547.1 1566.7 547.5 1570
+C 547.9 1573.3 548.1 1576.7 548.4 1580
+C 548.7 1583.3 549.2 1586.7 549.2 1590
+C 549.2 1593.3 548.9 1596.7 548.6 1600
+C 548.3 1603.3 546.6 1606.7 544.7 1610
+C 543.7 1611.7 541.8 1613.3 540 1615
+C 538.2 1616.7 536 1618.3 533.9 1620
+C 532.2 1621.3 530.8 1622.7 528.8 1624
+C 526.8 1625.3 523.7 1626.7 521.1 1628
+C 520.4 1628.3 519.9 1628.7 519.1 1629
+C 518.3 1629.3 517.3 1629.7 516.1 1630
+C 513.8 1631 511 1632 507 1632
+C 500 1632 496.3 1631.6 492.4 1630
+C 491.9 1629.7 491.5 1629.3 491.3 1629
+C 491.1 1628.7 491 1628.3 490.8 1628
+C 490 1626.7 489.1 1625.3 488 1624
+C 486.9 1622.7 485.1 1621.3 484 1620
+C 482.6 1618.3 481.6 1616.7 480.3 1615
+C 479 1613.3 477.1 1611.7 476.1 1610
+C 474.1 1606.7 472.3 1603.3 471.8 1600
+C 471.3 1596.7 470.8 1593.3 470.8 1590
+C 470.8 1586.7 471 1583.3 471.3 1580
+C 471.6 1576.7 472.6 1573.3 473.3 1570
+C 474 1566.7 474.8 1563.3 475.5 1560
+C 476.2 1556.7 476.9 1553.3 477.5 1550
+C 478.1 1546.7 478.8 1543.3 479.4 1540
+C 480 1536.7 480.6 1533.3 480.9 1530
+C 481.2 1526.7 481.7 1523.3 481.7 1520
+C 481.7 1516.7 481.7 1513.3 481.7 1510
+C 481.7 1506.7 481.5 1503.3 481.5 1500
+C 481.5 1496.7 481.7 1493.3 481.7 1490
+C 481.7 1486.7 481 1483.3 481 1480
+C 481 1476.7 481.5 1473.3 481.9 1470
+C 482.3 1466.7 483.1 1463.3 483.3 1460
+C 483.5 1456.7 483.8 1453.3 483.8 1450
+C 483.8 1446.7 482.5 1443.3 481.8 1440
+C 481.1 1436.7 480.5 1433.3 479.7 1430
+C 478.9 1426.7 478 1423.3 477.1 1420
+C 476.2 1416.7 475.2 1413.3 474.1 1410
+C 473.5 1408.3 472.9 1406.7 472.3 1405
+C 471.7 1403.3 471.3 1401.7 470.7 1400
+C 470.3 1398.7 469.8 1397.3 469.3 1396
+C 468.8 1394.5 468.2 1393 469.1 1392
+C 472.2 1390.3 476.6 1391.5 480.8 1390
+C 483.8 1387.8 486.4 1384.5 488.3 1382
+C 491.3 1379.2 494.3 1376.8 495.2 1374 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-72" data-group-path="legs/leg_left/boot_gem_chain" data-node-kind="group" data-name="boot_gem_chain">
+<g id="node-73" data-group-path="legs/leg_left/boot_gem_chain/large_diamond_gem" data-node-kind="part" data-name="large_diamond_gem">
+<g id="part-source-57"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="1e01e575a62c3202ebad2b57d7db11b1275ff0c557d2cf78ef6326b01e9a9907" x="0" y="0">
+  <g id="part-source-57-large-diamond-gem-outline" data-group-path="legs/leg_left/boot_gem_chain/large_diamond_gem" fill="#35b7cf" stroke="none">
+    <path d="M 510.28 1461.05 L 522.49 1480.12 L 510.79 1503.66 L 498.12 1480.22 Z"/>
+  </g>
+</svg>
+</g>
+</g>
+<g id="node-74" data-group-path="legs/leg_left/boot_gem_chain/small_diamond_charm" data-node-kind="part" data-name="small_diamond_charm">
+<g id="part-source-58"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="bd221acbb7a5732f479ab5d9fb9af3fd4c01e3b89b3093ac6bf92b01e6cea316" x="0" y="0">
+  <g id="part-source-58-small-diamond-charm-outline" data-group-path="legs/leg_left/boot_gem_chain/small_diamond_charm" fill="#35b7cf" stroke="none">
+    <path d="M 510.36 1506.12 L 513.05 1509.65 L 510.49 1513.03 L 507.69 1510.00 Z"/>
+  </g>
+</svg>
+</g>
+</g>
+<g id="node-75" data-group-path="legs/leg_left/boot_gem_chain/round_bead" data-node-kind="part" data-name="round_bead">
+<g id="part-source-59"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="b7abe96c6b3b610f48932b4f73c19ef78267d45ab3342146c09e59a5cd6904b7" x="0" y="0">
+  <g id="part-source-59-round-bead-outline" data-group-path="legs/leg_left/boot_gem_chain/round_bead" fill="#35b7cf" stroke="none">
+    <path d="M 510.62 1516.72 C 511.63 1516.67 512.39 1517.33 512.45 1518.29 C 512.51 1519.26 511.79 1520.31 510.77 1520.45 C 509.72 1520.58 508.87 1519.78 508.81 1518.76 C 508.74 1517.75 509.57 1516.79 510.62 1516.72 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-76" data-group-path="legs/leg_left/boot_gem_chain/flexible_connector" data-node-kind="part" data-name="flexible_connector">
+<g id="part-source-60"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="28f4fc5c2cea330586e93690fba01fb0bb4add8b10ada0d80799b7ce8ddfa250" x="0" y="0">
+  <g id="part-source-60-leg-left-boot-gem-chain-flexible-connector" data-group-path="legs/leg_left/boot_gem_chain/flexible_connector" fill="#35b7cf" fill-rule="nonzero" stroke="none">
+    <path d="M 510.29 1502.91 L 511.17 1502.91 L 510.99 1506.89 L 510.04 1506.87 Z
+      M 510.40 1503.10 C 510.62 1502.73 510.11 1502.20 510.11 1501.87 C 510.11 1501.51 510.39 1501.22 510.75 1501.22 C 511.11 1501.22 511.40 1501.51 511.40 1501.87 C 511.40 1502.23 511.15 1502.73 511.15 1503.10 Z
+      M 510.90 1506.61 C 510.88 1507.04 511.15 1507.20 511.17 1507.49 C 511.20 1507.87 510.88 1508.18 510.49 1508.15 C 510.11 1508.12 509.85 1507.71 509.96 1507.33 C 510.04 1507.08 510.11 1506.91 510.13 1506.61 Z"/>
+    <path d="M 510.04 1512.39 L 510.93 1512.42 L 511.03 1517.32 L 510.10 1517.34 Z
+      M 510.06 1512.66 C 510.08 1512.29 509.88 1511.93 509.88 1511.61 C 509.88 1511.26 510.16 1510.98 510.51 1510.98 C 510.86 1510.98 511.14 1511.26 511.14 1511.61 C 511.14 1511.96 510.88 1512.30 510.93 1512.66 Z
+      M 511.02 1517.05 C 511.02 1517.30 511.20 1517.51 511.20 1517.76 C 511.20 1518.11 510.92 1518.39 510.57 1518.39 C 510.22 1518.39 509.94 1518.11 509.94 1517.76 C 509.94 1517.51 510.11 1517.30 510.11 1517.05 Z"/>
+    <path d="M 511.15 1520.03 C 511.83 1522.18 511.70 1524.37 511.31 1526.68 L 509.53 1526.39 L 510.05 1523.88 C 510.31 1522.57 510.53 1521.20 510.16 1519.91 Z
+      M 510.24 1520.22 C 510.23 1519.82 510.03 1519.49 510.03 1519.18 C 510.03 1518.83 510.31 1518.55 510.66 1518.55 C 511.01 1518.55 511.29 1518.83 511.29 1519.18 C 511.29 1519.50 511.16 1519.84 511.25 1520.22 Z
+      M 509.69 1525.65 L 511.42 1525.95 C 511.31 1526.72 511.19 1527.52 511.10 1528.08 C 511.01 1528.68 510.53 1529.12 509.97 1529.05 C 509.41 1528.98 509.03 1528.47 509.13 1527.89 C 509.28 1527.12 509.53 1526.36 509.69 1525.65 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+</g>
+<g id="node-77" data-group-path="legs/leg_right" data-node-kind="group" data-name="leg_right">
+<g id="node-78" data-group-path="legs/leg_right/leg" data-node-kind="part" data-name="leg">
+<g id="part-source-61"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="8ecd26c164e1de0aefe38203653f1bf1753cbb5cd424c4d94b505c17bd09ccbd" x="0" y="0">
+<g id="part-source-61-legs-leg-right-leg-outline" data-group-path="legs/leg_right/leg" fill="#79a6c9" stroke="none">
+<path d="M 348 646
+C 338 664 328 693 323 718
+C 316.5 746 316.7 774 320 800
+C 320.7 806.7 321.6 813.3 322.6 820
+C 323.6 826.7 325 833.3 326.4 840
+C 327.8 846.7 329.4 853.3 331.1 860
+C 332.8 866.7 334.7 873.3 336.5 880
+C 338.3 886.7 340.2 893.3 342.1 900
+C 344 906.7 345.9 913.3 347.7 920
+C 349.5 926.7 351.3 933.3 353.1 940
+C 354.9 946.7 356.7 953.3 358.5 960
+C 360.3 966.7 362.1 973.3 363.9 980
+C 365.7 986.7 367.4 993.3 369.1 1000
+C 370.8 1006.7 372.5 1013.3 374 1020
+C 375.5 1026.7 376.9 1033.3 378.2 1040
+C 379.5 1046.7 380.9 1053.3 381.6 1060
+C 382.3 1066.7 383.1 1073.3 383.1 1080
+C 383.1 1086.7 382.5 1093.3 381.8 1100
+C 381.1 1106.7 379.1 1113.3 377.5 1120
+C 375.9 1126.7 373.8 1133.3 372.1 1140
+C 370.4 1146.7 368.8 1153.3 367.5 1160
+C 366.2 1166.7 364.8 1173.3 364.3 1180
+C 363.8 1186.7 363.3 1193.3 363.3 1200
+C 363.3 1206.7 363.9 1213.3 364.4 1220
+C 364.9 1226.7 366.1 1233.3 367.1 1240
+C 368.1 1246.7 369.3 1253.3 370.7 1260
+C 372.1 1266.7 373.8 1273.3 375.4 1280
+C 377 1286.7 378.6 1293.3 380.1 1300
+C 381.6 1306.7 383 1313.3 384.3 1320
+C 385.6 1326.7 386.8 1333.3 387.9 1340
+C 389 1346.7 390.1 1353.3 390.9 1360
+C 391.5 1364.7 392 1369.3 392.4 1374
+C 395.5 1387 394.6 1401 395.9 1414
+C 396.8 1428 399.2 1441 402.4 1451
+C 408 1470 429 1474 437.5 1455
+C 443 1443 442.4 1427 439.8 1411
+C 438 1398 437.1 1385 437 1374
+C 436.9 1369.3 436.9 1364.7 436.9 1360
+C 436.9 1353.3 437 1346.7 437.1 1340
+C 437.2 1333.3 437.7 1326.7 438.1 1320
+C 438.5 1313.3 438.9 1306.7 439.4 1300
+C 439.9 1293.3 440.5 1286.7 441 1280
+C 441.5 1273.3 442.2 1266.7 442.7 1260
+C 443.2 1253.3 443.7 1246.7 444.2 1240
+C 444.7 1233.3 445.4 1226.7 445.8 1220
+C 446.2 1213.3 446.6 1206.7 446.6 1200
+C 446.6 1193.3 446.6 1186.7 446.6 1180
+C 446.6 1173.3 445.9 1166.7 445.9 1160
+C 445.9 1153.3 446.3 1146.7 446.8 1140
+C 447.3 1133.3 448.8 1126.7 450.1 1120
+C 451.4 1113.3 453.8 1106.7 455 1100
+C 456.2 1093.3 457.6 1086.7 457.7 1080
+C 457.8 1073.3 457.9 1066.7 457.9 1060
+C 457.9 1053.3 456.5 1046.7 455.8 1040
+C 455.1 1033.3 454.4 1026.7 453.7 1020
+C 453 1013.3 452.2 1006.7 451.8 1000
+C 451.4 993.3 451 986.7 450.9 980
+C 450.8 973.3 450.8 966.7 450.8 960
+C 450.8 953.3 451 946.7 451.1 940
+C 451.2 933.3 451.6 926.7 451.9 920
+C 452.2 913.3 452.5 906.7 452.8 900
+C 453.1 893.3 453.6 886.7 453.9 880
+C 454.2 873.3 454.5 866.7 454.7 860
+C 454.9 853.3 455.1 846.7 455.2 840
+C 455.3 833.3 455.3 826.7 455.3 820
+C 455.3 813.3 455 806.7 454.7 800
+C 454.45 793.94 453.76 788.57 452.89 784
+C 451.8 783.1 452.2 782.3 453.1 781.1
+C 454.5 779.1 455.4 777.3 455.5 775.4
+C 457 758 459 741 461 716
+C 463 688 462 658 450 634
+C 438 612 415 600 391 605
+C 372 608 358 628 348 646 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-79" data-group-path="legs/leg_right/foot" data-node-kind="part" data-name="foot">
+<g id="part-source-62"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="3c65c8a4123e63f5140a295ee400d6eeb253a6f039e2be50a9c2686f510a9259" x="0" y="0">
+<g id="part-source-62-legs-leg-right-foot-outline" data-group-path="legs/leg_right/foot" fill="#7259a3" stroke="none">
+<path d="M 392.4 1374
+C 393 1376.5 392.8 1377.8 390.5 1379.9
+C 388.5 1382 386.5 1384 385.2 1386
+C 384.1 1387.6 383.5 1388.9 382.3 1390
+C 377.5 1390.4 372.7 1390.3 369.4 1392.8
+C 367.7 1393.5 366.5 1394.9 366.9 1396
+C 367.5 1397.3 368 1398.7 368.6 1400
+C 369.3 1401.7 369.9 1403.3 370.6 1405
+C 371.3 1406.7 372.1 1408.3 372.9 1410
+C 374.4 1413.3 376 1416.7 377.5 1420
+C 379 1423.3 380.5 1426.7 381.8 1430
+C 383.1 1433.3 384.4 1436.7 385.6 1440
+C 386.8 1443.3 387.9 1446.7 389 1450
+C 390.1 1453.3 392.1 1456.7 392.1 1460
+C 392.1 1463.3 390.9 1466.7 390.6 1470
+C 390.3 1473.3 389.8 1476.7 389.8 1480
+C 389.8 1483.3 392 1486.7 392 1490
+C 392 1493.3 391.9 1496.7 391.8 1500
+C 391.7 1503.3 391.7 1506.7 391.6 1510
+C 391.5 1513.3 391.3 1516.7 391.1 1520
+C 390.9 1523.3 390.5 1526.7 390.1 1530
+C 389.7 1533.3 389.2 1536.7 388.8 1540
+C 388.4 1543.3 387.9 1546.7 387.4 1550
+C 386.9 1553.3 386.3 1556.7 385.9 1560
+C 385.5 1563.3 385.1 1566.7 384.7 1570
+C 384.3 1573.3 383.8 1576.7 383.6 1580
+C 383.4 1583.3 383.3 1586.7 383.3 1590
+C 383.3 1593.3 383.5 1596.7 383.8 1600
+C 384.1 1603.3 385.6 1606.7 387.4 1610
+C 388.3 1611.7 390.1 1613.3 391.8 1615
+C 393.5 1616.7 395.4 1618.3 397.6 1620
+C 399.3 1621.3 401.2 1622.7 403.4 1624
+C 405.6 1625.3 407.9 1626.7 411.3 1628
+C 412.1 1628.3 413.4 1628.7 414.4 1629
+C 415.4 1629.3 416.5 1629.7 417.6 1630
+C 421 1631.3 424 1632 427 1632
+C 429.5 1632 432 1631.2 434.4 1630
+C 435.1 1629.7 435.7 1629.3 436.3 1629
+C 436.9 1628.7 437.6 1628.3 438.1 1628
+C 440.3 1626.7 442.3 1625.3 443.9 1624
+C 445.5 1622.7 446.9 1621.3 448.2 1620
+C 449.8 1618.3 451.2 1616.7 452.5 1615
+C 453.8 1613.3 455.4 1611.7 456.3 1610
+C 458.1 1606.7 459.7 1603.3 460.1 1600
+C 460.5 1596.7 460.8 1593.3 460.8 1590
+C 460.8 1586.7 460.3 1583.3 459.9 1580
+C 459.5 1576.7 458.8 1573.3 458.2 1570
+C 457.6 1566.7 457 1563.3 456.5 1560
+C 456 1556.7 455.4 1553.3 454.9 1550
+C 454.4 1546.7 454 1543.3 453.6 1540
+C 453.2 1536.7 452.7 1533.3 452.3 1530
+C 451.9 1526.7 451.3 1523.3 451.1 1520
+C 450.9 1516.7 450.7 1513.3 450.6 1510
+C 450.5 1506.7 450.5 1503.3 450.5 1500
+C 450.5 1496.7 450.4 1493.3 450.4 1490
+C 450.4 1486.7 451.8 1483.3 451.8 1480
+C 451.8 1476.7 451.2 1473.3 450.9 1470
+C 450.6 1466.7 450 1463.3 449.7 1460
+C 449.4 1456.7 449.1 1453.3 449.1 1450
+C 449.1 1446.7 449.7 1443.3 450.2 1440
+C 450.7 1436.7 451.4 1433.3 452 1430
+C 452.6 1426.7 453.3 1423.3 454.1 1420
+C 454.9 1416.7 455.9 1413.3 456.9 1410
+C 457.4 1408.3 457.9 1406.7 458.4 1405
+C 458.9 1403.3 459.5 1401.7 460.1 1400
+C 460.6 1398.7 461.1 1397.3 461.6 1396
+C 462.2 1394.5 463 1392.3 461.8 1391.5
+C 459.6 1389.9 455.3 1390.8 452.2 1389.9
+C 449.2 1388.1 447 1384.6 444.2 1382
+C 441 1379.3 437.7 1376.7 437 1374
+
+C 437.15 1386.2 437.6 1400.2 438.25 1413.85
+C 430.15 1417.2 425.45 1429.25 420.6 1445.3
+C 415.65 1431.7 408.2 1419.3 396.55 1417.55
+C 395.1 1404.2 393.75 1389.2 392.4 1374 Z"/>
+</g>
+</svg></g>
+</g>
+<g id="node-80" data-group-path="legs/leg_right/boot_gem" data-node-kind="part" data-name="boot_gem">
+<g id="part-source-63"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="ce4469567699cd1c5f808727b97cd8c4413d6a9ce0295a8b86bbd023cc7b4c4c" x="0" y="0">
+  <g id="part-source-63-legs-leg-right-boot-gem-outline" data-group-path="legs/leg_right/boot_gem" fill="#c58acb" stroke="none">
+    <path d="M 420.4 1461.7 C 421.2 1462.3 422.2 1464 423.2 1465.5 L 433.6 1479.7 L 433.5 1480.6 L 420.7 1504 L 419.7 1502.5 C 415.6 1496 411.7 1488.9 409.1 1481.7 L 408.6 1480.1 C 412 1474.9 415.8 1468.1 419.6 1462.6 Z"/>
+  </g>
+</svg></g>
+</g>
+<g id="node-81" data-group-path="legs/leg_right/boot_flower_ornament" data-node-kind="part" data-name="boot_flower_ornament">
+<g id="part-source-64"><svg xmlns="http://www.w3.org/2000/svg" width="932" height="1688" viewBox="0 0 932 1688" data-completion-inputs="v1" data-source-sha256="59e865155dfe31f2cab38707d8c7d26901a67168f9687c7ab6aa4a6ecf928caf" x="0" y="0">
+  <g id="part-source-64-legs-leg-right-boot-flower-ornament" data-group-path="legs/leg_right/boot_flower_ornament" fill="#57b8a9" stroke="none">
+    <path d="M 421.1 1525.5
+C 422.2 1526 424.4 1527.6 425.5 1529.3
+C 426.4 1530.6 426.7 1532 426.3 1533
+C 428.3 1533.6 430.1 1534.8 431 1536.5
+C 432 1538.3 432.1 1540.4 431.2 1542.2
+C 430.7 1543.4 429.6 1544.7 428.4 1545.3
+L 427.4 1545.7
+C 428.5 1545.2 429.6 1545.4 430.6 1546.2
+C 432.2 1547.3 433.4 1548.8 433.7 1550.3
+C 435.8 1551.3 437.8 1553.6 439.1 1556.8
+C 437.2 1557.2 435.4 1557 433.7 1556.7
+C 433.7 1558.5 433.4 1560.2 432.3 1561.4
+C 431.3 1562.6 429 1562.8 426.7 1562.4
+L 425.4 1562.2
+C 424.9 1564.9 423.8 1567.6 420.9 1570.3
+C 419.2 1569.2 416.2 1566.5 414.9 1564.7
+C 414.2 1563.9 413.8 1563.1 413.7 1562.3
+C 412 1561.8 410.6 1560.8 409.5 1559.4
+C 409 1560.8 408 1561.9 406.9 1562.5
+C 405.6 1561.8 403.4 1561.8 401.9 1561.1
+C 400.7 1560.5 400.7 1559.6 401.1 1558.2
+C 401.3 1557.1 401.8 1555.9 402.5 1554.6
+C 400.7 1556 399 1556.7 397.4 1556.2
+C 395.2 1555.8 393.5 1554.3 392.9 1552.4
+C 392.6 1551.7 392.7 1551.3 393.5 1550.7
+C 397.3 1547.8 400.9 1544.9 404.2 1542.4
+L 407.4 1540.5
+C 405.3 1540.6 404.1 1540.1 404.7 1538.8
+C 405.5 1537.2 407.6 1534.6 409.2 1532.8
+C 411.2 1530.7 413.7 1529.9 416.1 1531.6
+C 415.5 1529.9 418.7 1527.1 421.1 1525.5 Z"/>
+  </g>
+</svg></g>
+</g>
+</g>
+</g>
+</svg>

@@ -1,0 +1,794 @@
+[
+  {
+    "id": "hair/back_hair/long_right",
+    "layers": [
+      "0010 hair/back_hair/long_right"
+    ],
+    "depths": [
+      10
+    ],
+    "files": [
+      "0010 hair__back_hair__long_right.png"
+    ]
+  },
+  {
+    "id": "hair/back_hair/long_left",
+    "layers": [
+      "0020 hair/back_hair/long_left"
+    ],
+    "depths": [
+      20
+    ],
+    "files": [
+      "0020 hair__back_hair__long_left.png"
+    ]
+  },
+  {
+    "id": "hair/side_hair_right",
+    "layers": [
+      "0030 hair/side_hair_right"
+    ],
+    "depths": [
+      30
+    ],
+    "files": [
+      "0030 hair__side_hair_right.png"
+    ]
+  },
+  {
+    "id": "hair/side_hair_left",
+    "layers": [
+      "0040 hair/side_hair_left"
+    ],
+    "depths": [
+      40
+    ],
+    "files": [
+      "0040 hair__side_hair_left.png"
+    ]
+  },
+  {
+    "id": "hair/ahoge",
+    "layers": [
+      "0045 hair/ahoge"
+    ],
+    "depths": [
+      45
+    ],
+    "files": [
+      "0045 hair__ahoge.png"
+    ]
+  },
+  {
+    "id": "legs/leg_right/leg",
+    "layers": [
+      "0060 legs/leg_right/leg"
+    ],
+    "depths": [
+      60
+    ],
+    "files": [
+      "0060 legs__leg_right__leg.png"
+    ]
+  },
+  {
+    "id": "legs/leg_left/leg",
+    "layers": [
+      "0070 legs/leg_left/leg"
+    ],
+    "depths": [
+      70
+    ],
+    "files": [
+      "0070 legs__leg_left__leg.png"
+    ]
+  },
+  {
+    "id": "pelvis",
+    "layers": [
+      "0080 pelvis"
+    ],
+    "depths": [
+      80
+    ],
+    "files": [
+      "0080 pelvis.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/little_finger",
+    "layers": [
+      "0090 arms/arm_left/hand/little_finger"
+    ],
+    "depths": [
+      90
+    ],
+    "files": [
+      "0090 arms__arm_left__hand__little_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/ring_finger",
+    "layers": [
+      "0100 arms/arm_left/hand/ring_finger"
+    ],
+    "depths": [
+      100
+    ],
+    "files": [
+      "0100 arms__arm_left__hand__ring_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/middle_finger",
+    "layers": [
+      "0110 arms/arm_left/hand/middle_finger"
+    ],
+    "depths": [
+      110
+    ],
+    "files": [
+      "0110 arms__arm_left__hand__middle_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/index_finger",
+    "layers": [
+      "0120 arms/arm_left/hand/index_finger"
+    ],
+    "depths": [
+      120
+    ],
+    "files": [
+      "0120 arms__arm_left__hand__index_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/thumb",
+    "layers": [
+      "0130 arms/arm_left/hand/thumb"
+    ],
+    "depths": [
+      130
+    ],
+    "files": [
+      "0130 arms__arm_left__hand__thumb.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/hand/palm",
+    "layers": [
+      "0140 arms/arm_left/hand/palm"
+    ],
+    "depths": [
+      140
+    ],
+    "files": [
+      "0140 arms__arm_left__hand__palm.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/little_finger",
+    "layers": [
+      "0145 arms/arm_right/hand/little_finger"
+    ],
+    "depths": [
+      145
+    ],
+    "files": [
+      "0145 arms__arm_right__hand__little_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/index_finger",
+    "layers": [
+      "0150 arms/arm_right/hand/index_finger"
+    ],
+    "depths": [
+      150
+    ],
+    "files": [
+      "0150 arms__arm_right__hand__index_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/middle_finger",
+    "layers": [
+      "0160 arms/arm_right/hand/middle_finger"
+    ],
+    "depths": [
+      160
+    ],
+    "files": [
+      "0160 arms__arm_right__hand__middle_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/ring_finger",
+    "layers": [
+      "0170 arms/arm_right/hand/ring_finger"
+    ],
+    "depths": [
+      170
+    ],
+    "files": [
+      "0170 arms__arm_right__hand__ring_finger.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/thumb",
+    "layers": [
+      "0180 arms/arm_right/hand/thumb"
+    ],
+    "depths": [
+      180
+    ],
+    "files": [
+      "0180 arms__arm_right__hand__thumb.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/hand/palm",
+    "layers": [
+      "0190 arms/arm_right/hand/palm"
+    ],
+    "depths": [
+      190
+    ],
+    "files": [
+      "0190 arms__arm_right__hand__palm.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/forearm",
+    "layers": [
+      "0200 arms/arm_left/forearm"
+    ],
+    "depths": [
+      200
+    ],
+    "files": [
+      "0200 arms__arm_left__forearm.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/forearm",
+    "layers": [
+      "0210 arms/arm_right/forearm"
+    ],
+    "depths": [
+      210
+    ],
+    "files": [
+      "0210 arms__arm_right__forearm.png"
+    ]
+  },
+  {
+    "id": "arms/arm_left/upper_arm",
+    "layers": [
+      "0220 arms/arm_left/upper_arm"
+    ],
+    "depths": [
+      220
+    ],
+    "files": [
+      "0220 arms__arm_left__upper_arm.png"
+    ]
+  },
+  {
+    "id": "arms/arm_right/upper_arm",
+    "layers": [
+      "0230 arms/arm_right/upper_arm"
+    ],
+    "depths": [
+      230
+    ],
+    "files": [
+      "0230 arms__arm_right__upper_arm.png"
+    ]
+  },
+  {
+    "id": "neck",
+    "layers": [
+      "0240 neck"
+    ],
+    "depths": [
+      240
+    ],
+    "files": [
+      "0240 neck.png"
+    ]
+  },
+  {
+    "id": "body/torso",
+    "layers": [
+      "0250 body/torso"
+    ],
+    "depths": [
+      250
+    ],
+    "files": [
+      "0250 body__torso.png"
+    ]
+  },
+  {
+    "id": "body/breast",
+    "layers": [
+      "0260 body/breast"
+    ],
+    "depths": [
+      260
+    ],
+    "files": [
+      "0260 body__breast.png"
+    ]
+  },
+  {
+    "id": "face/ear_left",
+    "layers": [
+      "0270 face/ear_left"
+    ],
+    "depths": [
+      270
+    ],
+    "files": [
+      "0270 face__ear_left.png"
+    ]
+  },
+  {
+    "id": "face/ear_right",
+    "layers": [
+      "0280 face/ear_right"
+    ],
+    "depths": [
+      280
+    ],
+    "files": [
+      "0280 face__ear_right.png"
+    ]
+  },
+  {
+    "id": "head_accessories/left_earring",
+    "layers": [
+      "0290 head_accessories/left_earring"
+    ],
+    "depths": [
+      290
+    ],
+    "files": [
+      "0290 head_accessories__left_earring.png"
+    ]
+  },
+  {
+    "id": "head_accessories/right_earring",
+    "layers": [
+      "0300 head_accessories/right_earring"
+    ],
+    "depths": [
+      300
+    ],
+    "files": [
+      "0300 head_accessories__right_earring.png"
+    ]
+  },
+  {
+    "id": "face/face_base",
+    "layers": [
+      "0310 face/face_base"
+    ],
+    "depths": [
+      310
+    ],
+    "files": [
+      "0310 face__face_base.png"
+    ]
+  },
+  {
+    "id": "face/mouth/mouth_interior",
+    "layers": [
+      "0320 face/mouth/mouth_interior"
+    ],
+    "depths": [
+      320
+    ],
+    "files": [
+      "0320 face__mouth__mouth_interior.png"
+    ]
+  },
+  {
+    "id": "face/mouth/lower_teeth",
+    "layers": [
+      "0330 face/mouth/lower_teeth"
+    ],
+    "depths": [
+      330
+    ],
+    "files": [
+      "0330 face__mouth__lower_teeth.png"
+    ]
+  },
+  {
+    "id": "face/mouth/tongue",
+    "layers": [
+      "0340 face/mouth/tongue"
+    ],
+    "depths": [
+      340
+    ],
+    "files": [
+      "0340 face__mouth__tongue.png"
+    ]
+  },
+  {
+    "id": "face/mouth/upper_teeth",
+    "layers": [
+      "0350 face/mouth/upper_teeth"
+    ],
+    "depths": [
+      350
+    ],
+    "files": [
+      "0350 face__mouth__upper_teeth.png"
+    ]
+  },
+  {
+    "id": "face/mouth/lower_lip",
+    "layers": [
+      "0360 face/mouth/lower_lip"
+    ],
+    "depths": [
+      360
+    ],
+    "files": [
+      "0360 face__mouth__lower_lip.png"
+    ]
+  },
+  {
+    "id": "face/mouth/upper_lip",
+    "layers": [
+      "0370 face/mouth/upper_lip"
+    ],
+    "depths": [
+      370
+    ],
+    "files": [
+      "0370 face__mouth__upper_lip.png"
+    ]
+  },
+  {
+    "id": "face/nose",
+    "layers": [
+      "0380 face/nose"
+    ],
+    "depths": [
+      380
+    ],
+    "files": [
+      "0380 face__nose.png"
+    ]
+  },
+  {
+    "id": "face/eye_left/sclera",
+    "layers": [
+      "0390 face/eye_left/sclera"
+    ],
+    "depths": [
+      390
+    ],
+    "files": [
+      "0390 face__eye_left__sclera.png"
+    ]
+  },
+  {
+    "id": "face/eye_right/sclera",
+    "layers": [
+      "0400 face/eye_right/sclera"
+    ],
+    "depths": [
+      400
+    ],
+    "files": [
+      "0400 face__eye_right__sclera.png"
+    ]
+  },
+  {
+    "id": "face/eye_left/iris",
+    "layers": [
+      "0410 face/eye_left/iris"
+    ],
+    "depths": [
+      410
+    ],
+    "files": [
+      "0410 face__eye_left__iris.png"
+    ]
+  },
+  {
+    "id": "face/eye_right/iris",
+    "layers": [
+      "0420 face/eye_right/iris"
+    ],
+    "depths": [
+      420
+    ],
+    "files": [
+      "0420 face__eye_right__iris.png"
+    ]
+  },
+  {
+    "id": "face/eye_left/highlight",
+    "layers": [
+      "0430 face/eye_left/highlight"
+    ],
+    "depths": [
+      430
+    ],
+    "files": [
+      "0430 face__eye_left__highlight.png"
+    ]
+  },
+  {
+    "id": "face/eye_right/highlight",
+    "layers": [
+      "0440 face/eye_right/highlight"
+    ],
+    "depths": [
+      440
+    ],
+    "files": [
+      "0440 face__eye_right__highlight.png"
+    ]
+  },
+  {
+    "id": "face/eye_left/lower_eyelid",
+    "layers": [
+      "0450 face/eye_left/lower_eyelid"
+    ],
+    "depths": [
+      450
+    ],
+    "files": [
+      "0450 face__eye_left__lower_eyelid.png"
+    ]
+  },
+  {
+    "id": "face/eye_right/lower_eyelid",
+    "layers": [
+      "0460 face/eye_right/lower_eyelid"
+    ],
+    "depths": [
+      460
+    ],
+    "files": [
+      "0460 face__eye_right__lower_eyelid.png"
+    ]
+  },
+  {
+    "id": "face/eye_left/upper_eyelid",
+    "layers": [
+      "0470 face/eye_left/upper_eyelid"
+    ],
+    "depths": [
+      470
+    ],
+    "files": [
+      "0470 face__eye_left__upper_eyelid.png"
+    ]
+  },
+  {
+    "id": "face/eye_right/upper_eyelid",
+    "layers": [
+      "0480 face/eye_right/upper_eyelid"
+    ],
+    "depths": [
+      480
+    ],
+    "files": [
+      "0480 face__eye_right__upper_eyelid.png"
+    ]
+  },
+  {
+    "id": "face/eye_left/eyelid_crease",
+    "layers": [
+      "0490 face/eye_left/eyelid_crease"
+    ],
+    "depths": [
+      490
+    ],
+    "files": [
+      "0490 face__eye_left__eyelid_crease.png"
+    ]
+  },
+  {
+    "id": "face/eye_right/eyelid_crease",
+    "layers": [
+      "0500 face/eye_right/eyelid_crease"
+    ],
+    "depths": [
+      500
+    ],
+    "files": [
+      "0500 face__eye_right__eyelid_crease.png"
+    ]
+  },
+  {
+    "id": "face/eyebrow_left",
+    "layers": [
+      "0510 face/eyebrow_left"
+    ],
+    "depths": [
+      510
+    ],
+    "files": [
+      "0510 face__eyebrow_left.png"
+    ]
+  },
+  {
+    "id": "face/eyebrow_right",
+    "layers": [
+      "0520 face/eyebrow_right"
+    ],
+    "depths": [
+      520
+    ],
+    "files": [
+      "0520 face__eyebrow_right.png"
+    ]
+  },
+  {
+    "id": "hair/front_side_hair_right",
+    "layers": [
+      "0530 hair/front_side_hair_right"
+    ],
+    "depths": [
+      530
+    ],
+    "files": [
+      "0530 hair__front_side_hair_right.png"
+    ]
+  },
+  {
+    "id": "hair/front_side_hair_left",
+    "layers": [
+      "0540 hair/front_side_hair_left"
+    ],
+    "depths": [
+      540
+    ],
+    "files": [
+      "0540 hair__front_side_hair_left.png"
+    ]
+  },
+  {
+    "id": "hair/bangs",
+    "layers": [
+      "0550 hair/bangs"
+    ],
+    "depths": [
+      550
+    ],
+    "files": [
+      "0550 hair__bangs.png"
+    ]
+  },
+  {
+    "id": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "layers": [
+      "0630 legs/leg_left/boot_gem_chain/large_diamond_gem"
+    ],
+    "depths": [
+      630
+    ],
+    "files": [
+      "0630 legs__leg_left__boot_gem_chain__large_diamond_gem.png"
+    ]
+  },
+  {
+    "id": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "layers": [
+      "0640 legs/leg_left/boot_gem_chain/small_diamond_charm"
+    ],
+    "depths": [
+      640
+    ],
+    "files": [
+      "0640 legs__leg_left__boot_gem_chain__small_diamond_charm.png"
+    ]
+  },
+  {
+    "id": "legs/leg_left/boot_gem_chain/round_bead",
+    "layers": [
+      "0650 legs/leg_left/boot_gem_chain/round_bead"
+    ],
+    "depths": [
+      650
+    ],
+    "files": [
+      "0650 legs__leg_left__boot_gem_chain__round_bead.png"
+    ]
+  },
+  {
+    "id": "legs/leg_right/boot_gem",
+    "layers": [
+      "0660 legs/leg_right/boot_gem"
+    ],
+    "depths": [
+      660
+    ],
+    "files": [
+      "0660 legs__leg_right__boot_gem.png"
+    ]
+  },
+  {
+    "id": "legs/leg_right/boot_flower_ornament",
+    "layers": [
+      "0670 legs/leg_right/boot_flower_ornament"
+    ],
+    "depths": [
+      670
+    ],
+    "files": [
+      "0670 legs__leg_right__boot_flower_ornament.png"
+    ]
+  },
+  {
+    "id": "hair/back_hair/cap",
+    "layers": [
+      "0050 hair/back_hair/cap :: back",
+      "0560 hair/back_hair/cap :: crown"
+    ],
+    "depths": [
+      50,
+      560
+    ],
+    "files": [
+      "0050 hair__back_hair__cap __ back.png",
+      "0560 hair__back_hair__cap __ crown.png"
+    ]
+  },
+  {
+    "id": "legs/leg_left/foot",
+    "layers": [
+      "0055 legs/leg_left/foot :: rear",
+      "0600 legs/leg_left/foot :: front"
+    ],
+    "depths": [
+      55,
+      600
+    ],
+    "files": [
+      "0055 legs__leg_left__foot __ rear.png",
+      "0600 legs__leg_left__foot __ front.png"
+    ]
+  },
+  {
+    "id": "legs/leg_right/foot",
+    "layers": [
+      "0056 legs/leg_right/foot :: rear",
+      "0610 legs/leg_right/foot :: front"
+    ],
+    "depths": [
+      56,
+      610
+    ],
+    "files": [
+      "0056 legs__leg_right__foot __ rear.png",
+      "0610 legs__leg_right__foot __ front.png"
+    ]
+  },
+  {
+    "id": "legs/leg_left/boot_gem_chain/flexible_connector",
+    "layers": [
+      "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+      "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible"
+    ],
+    "depths": [
+      599,
+      620
+    ],
+    "files": [
+      "0599 legs__leg_left__boot_gem_chain__flexible_connector __ hidden_tip.png",
+      "0620 legs__leg_left__boot_gem_chain__flexible_connector __ visible.png"
+    ]
+  }
+]

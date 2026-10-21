@@ -31,3 +31,6 @@ demos/jianma/**/*.svg -text
 
 # A blank unified-diff context line is one required space.
 .agents/skills/live2d-maker/tools/codex/*.patch text eol=lf whitespace=-blank-at-eol
+
+# Pink Elf snapshot and its SHA-256 manifest preserve original bytes.
+demos/pink-elf/** -text

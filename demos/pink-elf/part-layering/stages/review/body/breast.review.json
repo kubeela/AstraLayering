@@ -1,0 +1,133 @@
+{
+  "groupId": "body/breast",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "结论：pass。已读取 body/breast 的组说明、候选 SVG 与父组完成 body.svg，先看整图 blend，再以四倍放大逐块核对 blend 和 edge：左上 [340,360,140,115]、右上 [445,360,140,115]、左下 [340,445,140,105]、右下 [445,445,140,105]，并用中央 [410,370,110,170] 复核上下过渡及左右连续性；选框相互重叠，覆盖本组全部可见区域。另以八倍原图、候选与父稿同坐标局部复核双侧腋前和外凸段。\n\n父内检查：双侧完整体积及中央连接均有覆盖，并非仅截取领口皮肤或服装胸片。两侧外凸弧面、下外侧转向与接缝连续；上部胸廓过渡和下部向上腹的完整局部余量合理，未据服装领口、拼缝或普通明暗挖缝。未发现父内漏画、真实孔洞被填平或应属本组的分离组件缺失。独显轮廓干净，没有孤点、碎片、来源不明细丝或形体归属混乱。填充色、服装纹样和内部明暗不列为问题。父范围四倍采样检查 pass，outsideSamples=0、outsidePixels=0。\n\n单独记录的上游范围限制：画面右侧胸部外凸中段，约 x=563–568、y=444–478，参考深灰外轮廓的外侧仍有约 1–2 原图像素宽的窄带未被当前色块覆盖。在 [544,412,31,97] 的八倍 edge 和 [555,436,20,51] 的八倍 blend 中，候选与父 body.svg 的边界在此重合；SVG 源码也确认这段共用从 (556,424) 经 (566,462) 到 (550,500) 的同一曲线。窄带位于父范围之外，须扩大父范围才可恢复，不能要求本子组越界补画。本轮未声称该处已补齐，也未修改或放宽父稿。对应图像证据：observations/review/body/breast/2026-10-20T16-35-35-392Z-16.png、-17.png、-20.png、-21.png，以及原图局部 45d4cbaa-959f-449b-8268-3a49e38b61cc.png。除此已确认的上游限制，当前允许范围内检查通过，无本轮返修项。",
+      "candidateHash": "79e66ca3be8cd784701ad6febd8fd3e9d452743176234844808b11ac4958cdd3",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\body.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\body.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-14.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-15.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-16.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\body.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-17.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-18.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-19.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-20.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\body.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-21.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-22.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\body\\breast.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-23.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\body.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\body\\breast\\2026-10-20T16-35-35-392Z-24.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T16:57:41.210Z"
+    }
+  ]
+}

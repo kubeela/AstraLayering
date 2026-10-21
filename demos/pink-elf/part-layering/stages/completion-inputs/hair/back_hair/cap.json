@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "hair/back_hair/cap",
+  "beforeHash": "7e49511d87ad78e3cbe47c9d9e1ff3cf3f6e729848fb59944f2095de79f996f8",
+  "afterHash": "c79e00afdfbf899e603f39661ac4927a43f74b12a41dd2960ec464421f05b8f8",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

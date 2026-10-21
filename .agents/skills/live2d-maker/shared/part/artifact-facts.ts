@@ -71,11 +71,13 @@ export async function readReviewReport(path: string, id: string): Promise<Review
   }
   return value;
 }
+// Failed inspections remain in the audit trail without consuming quality review rounds.
+export const completedReviewCount = (report: ReviewReport): number => report.reviews.filter(review => review.verdict !== 'blocked').length;
 export function reviewedArtifact(bytes: Buffer, path: string, report: ReviewReport): ReviewedSvgArtifact | undefined {
   const last = report.reviews.at(-1);
   if (last?.verdict === 'pass' && matchesHash(bytes, last.candidateHash)) return { path, reviewOutcome: 'pass' };
-  if (report.reviews.length >= 2 && last?.verdict === 'revise' && matchesHash(bytes, last.repairedCandidateHash)) {
-    return { path, reviewOutcome: 'repaired', note: `已按第 ${report.reviews.length} 轮意见返修并自检，不再复审` };
+  if (completedReviewCount(report) >= 2 && last?.verdict === 'revise' && matchesHash(bytes, last.repairedCandidateHash)) {
+    return { path, reviewOutcome: 'repaired', note: `已按第 ${completedReviewCount(report)} 轮意见返修并自检，不再复审` };
   }
 }
 

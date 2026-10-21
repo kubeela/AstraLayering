@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/eye_left",
+  "beforeHash": "d9a1b9a1ec3857c14d94e68238b49e15c2cc9c986d72fc522d359dd31b1eeabe",
+  "afterHash": "c2b9f8eb6cc2e1038d72e0fe87331acaa3c204fdf96651e00ba1e4781fc07a18",
+  "dependencies": [
+    {
+      "path": "references\\base-subject.png",
+      "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    }
+  ]
+}

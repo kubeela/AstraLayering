@@ -8,6 +8,7 @@
 
 | 案例 | 当前交付与状态 | 直接入口 |
 | --- | --- | --- |
+| [Pink Elf 标准模式阶段性归档](pink-elf/README.md) | 人物分件和 step01 完成；step02 返修暂停，未通过最终验收 | [当前工程与审核记录](pink-elf/README.md) |
 | [Jianma 分层与组装成果归档](./jianma/README.md) | 原 test 改名，保存完整分件结构和人物三步、衣服两步关键结果；排除 agent 操作日志 | [目录与结果](./jianma/README.md) · [部件阶段预览](./jianma/part-layering/previews/index.html) |
 | [单 agent 组装工作流实跑](jianma/character-assembly/README.md) | high 模型从两份 KRA 组装；159 个原绘画层、16 个可关闭遮罩，完成保存重开与新旧对照 | [KRA](jianma/character-assembly/step01/character-assembled.kra) · [对照图](jianma/character-assembly/comparison.png) |
 | [Jianma 穿戴合成](jianma/assembled/README.md) | 90 层人物 + 69 层衣装，12 个可关闭的穿戴遮罩；159 个源绘画层像素保留，已核对保存重开 | [KRA](jianma/assembled/jianma-assembled.kra) · [交互页](jianma/assembled/index.html) · [参考对照](jianma/assembled/comparison.png) |
