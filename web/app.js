@@ -84,7 +84,11 @@ function applySnapshot(next) {
  pipelineSteps=structuredClone(stepTemplates);
  for(const [index,stage] of stages.entries()) {
   stage.status=data.pipelines[index]?.status||'pending';
-  const mark=steps=>steps.forEach(step=>{step.status=data.pipelines[index]?.states[step.id]||'pending';mark(step.children);});
+  const mark=steps=>steps.forEach(step=>{
+   step.status=data.pipelines[index]?.states[step.id]||'pending';
+   if(index===0&&step.id==='standard')step.note=data.run?.standard===true?'标准化：已开启':data.run?.standard===false?'标准化：未开启':'标准化：未记录';
+   mark(step.children);
+  });
   mark(pipelineSteps[index]);
  }
  for(const index of [0,2]) {
@@ -187,8 +191,8 @@ function stepNode(index,step,nested=false) {
  ${branch?`<div class="branch-choice ${currentBranch?'current':''}">${currentBranch?'当前方式':'备选方式'}</div>`:''}
  <div class="section-heading"><button class="step-node-heading" data-step="${index}:${step.id}">${statusMark(step.status)}<h3>${esc(step.title)}</h3>${step.id.startsWith('step')?`<small>${step.id}</small>`:''}</button><button class="icon-button" data-section-toggle="${key}" aria-label="${closed?'展开':'收起'}${esc(step.title)}" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>
  ${closed?'':`<div class="step-content">
- ${step.note&&step.id!=='layers'?`<p class="step-summary">${esc(step.note)}</p>`:''}
- ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap">尚无 standard.png；旧任务保留此空位，人物准备阶段执行后展示。</p>':''}
+ ${step.id!=='layers'&&(step.note||['standard','simplified','base','clothing'].includes(step.id))?`<p class="step-summary" ${step.note?`title="${esc(step.note)}"`:'aria-hidden="true"'}>${esc(step.note)}</p>`:''}
+ ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap" title="人物准备阶段执行后展示标准参考图">尚无标准参考图</p>':''}
  ${context}
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...stepArtifacts[index][step.id],...shadowInspectionArtifacts(data.files)]:stepArtifacts[index][step.id],index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="status-error">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
