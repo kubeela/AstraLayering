@@ -17,6 +17,7 @@ import { launch } from './worker.ts';
 import { LayerCompositor } from './layer-compositor.ts';
 import { studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
+import { projectDisplayName, saveProjectDisplayName, validateDisplayName } from './project-metadata.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const maxBytes = 32 * 1024 * 1024;
@@ -114,6 +115,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (path === '/api/studio/review') { json(await saveStudioReview(root, dirname(settingsPath), value), 201); return; }
         const opts = options(value, requestDir), directory = directoryFor(opts);
         if (path === '/api/tasks') {
+          const displayName = validateDisplayName(value.displayName ?? '');
           // Exclusive creation prevents changing the original of an existing named task.
           await mkdir(directory);
           let committed = false;
@@ -138,13 +140,21 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
               await image.resize(1, 1).raw().toBuffer();
             }
             const release = await acquireTaskLock(directory);
-            try { await saveRun(directory, await configureRun(opts, directory)); committed = true; }
+            try {
+              await saveRun(directory, await configureRun(opts, directory));
+              await saveProjectDisplayName(directory, displayName);
+              committed = true;
+            }
             finally { await release(); }
             json({ name: opts.name, directory }, 201);
           } finally { if (!committed) await rm(directory, { recursive: true, force: true }); }
           return;
         }
         await task(opts.name, requestDir);
+        if (path === '/api/project-name') {
+          await saveProjectDisplayName(directory, value.displayName);
+          json({ name: opts.name, displayName: await projectDisplayName(directory, opts.name) }); return;
+        }
         if (path === '/api/start') {
           if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
           starts.add(directory);
@@ -214,7 +224,8 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       if (path === '/api/studio/project') {
         if (url.searchParams.get('dir') !== requestDir) { json({ error: '项目目录已改变，请刷新后重新打开' }, 409); return; }
         const name = url.searchParams.get('name') ?? '';
-        json(await studioProject(await task(name, requestDir), name, requestDir, url.searchParams.get('preview'))); return;
+        const directory = await task(name, requestDir);
+        json({ ...await studioProject(directory, name, requestDir, url.searchParams.get('preview')), displayName: await projectDisplayName(directory, name) }); return;
       }
       if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
       if (path === '/studio-document') {

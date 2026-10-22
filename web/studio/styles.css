@@ -990,6 +990,11 @@ dialog select {
   text-align: left;
   padding: 12px;
 }
+.project-item-row { display: flex; gap: 6px; }
+.project-item-row .project-item { flex: 1; min-width: 0; }
+.project-name-edit { flex: 0 0 36px; }
+#project-name-dialog { width: min(420px, calc(100vw - 40px)); }
+#project-display-name { width: 100%; }
 #surface-controls input[type="number"] {
   width: 100%;
   padding: 6px 8px;
