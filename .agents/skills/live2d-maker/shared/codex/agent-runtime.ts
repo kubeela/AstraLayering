@@ -39,7 +39,7 @@ export function retryableAgentError(error: unknown): boolean {
     if (code !== 'other') return false;
   }
   // SDK 流错误只提供 message；先排除需要用户处理的认证、额度和输入错误。
-  return /selected model is at capacity|server.*overload|currently experiencing high demand|service unavailable|\b50[0234]\b|stream disconnected|websocket.*closed|ECONNRESET|ETIMEDOUT|EAI_AGAIN|fetch failed|too many requests|rate limit exceeded/i.test(error.message);
+  return /selected model is at capacity|server.*overload|currently experiencing high demand|service unavailable|\b50[0234]\b|stream disconnected|websocket.*closed|ECONNRESET|ETIMEDOUT|timeout awaiting response headers|EAI_AGAIN|fetch failed|too many requests|rate limit exceeded/i.test(error.message);
 }
 
 export type AgentRetry = { attempt: number; nextAttempt: number; delayMs: number; error: unknown };

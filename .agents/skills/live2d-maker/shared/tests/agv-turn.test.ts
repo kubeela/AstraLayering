@@ -7,6 +7,8 @@ import { AgvTurn } from '../agents/agv-turn.ts';
 import { runCliTask } from '../agents/cli.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { parseAgentModel } from '../agents/models.ts';
+import { CodexAgents } from '../codex/agents.ts';
+import { AgentRuntime } from '../codex/agent-runtime.ts';
 
 const step = (step_index: number, step_type: string, state = 'DONE', text_delta = '') => ({
   event: 'step_update', step_update: { step_index, step_type, state, text_delta },
@@ -23,24 +25,33 @@ test('AGV current turn accumulates text deltas and ignores steps before its user
   turn.record(step(22, 'tool'));
   turn.record(step(23, 'agent_response', 'ACTIVE', 'current '));
   assert.equal(turn.record(step(23, 'agent_response', 'DONE', 'response')), 'current response');
-  assert.equal(turn.historicalError(oldError, 'same-session'), true);
+  assert.equal(turn.recoveredError(oldError, 'same-session'), true);
   assert.equal(turn.userStepIndex, 20);
 });
 
-test('AGV history normalization requires an explicit completed current response and never hides current errors', () => {
-  for (const scenario of ['fresh', 'no-boundary', 'current-error', 'active-tool', 'last-tool', 'partial', 'mismatch', 'wrong-session', 'protocol-error', 'second-input', 'cancelled', 'is-error']) {
+test('AGV recovered errors require an explicit completed response and never hide terminal errors', () => {
+  for (const scenario of ['missing-id', 'no-boundary', 'terminal-error', 'active-tool', 'last-tool', 'partial', 'mismatch', 'wrong-session', 'protocol-error', 'second-input', 'cancelled', 'is-error']) {
     const turn = new AgvTurn();
     if (scenario !== 'no-boundary') turn.record(step(2, 'user_input'));
-    if (scenario === 'current-error') turn.record(step(3, 'error_message'));
     if (scenario === 'active-tool') turn.record(step(3, 'tool', 'ACTIVE'));
     turn.record(step(4, 'agent_response', scenario === 'partial' ? 'ACTIVE' : 'DONE', 'current response'));
+    if (scenario === 'terminal-error') turn.record(step(5, 'error_message'));
     if (scenario === 'last-tool') turn.record(step(5, 'tool'));
     if (scenario === 'protocol-error') turn.record({ event: 'error', error: 'current protocol failure' });
     if (scenario === 'second-input') turn.record(step(5, 'user_input'));
     const result = { ...oldError, ...(scenario === 'mismatch' ? { response: 'old response' } : {}),
       ...(scenario === 'cancelled' ? { status: 'CANCELLED' } : {}), ...(scenario === 'is-error' ? { is_error: true } : {}) };
-    assert.equal(turn.historicalError(result, scenario === 'fresh' ? undefined : scenario === 'wrong-session' ? 'another-session' : 'same-session'), false, scenario);
+    assert.equal(turn.recoveredError(result, scenario === 'missing-id' ? undefined : scenario === 'wrong-session' ? 'another-session' : 'same-session'), false, scenario);
   }
+});
+
+test('a fresh AGV turn can recover an earlier error before its final response', () => {
+  const turn = new AgvTurn();
+  turn.record(step(0, 'user_input'));
+  turn.record(step(1, 'error_message'));
+  turn.record(step(2, 'agent_response', 'DONE', 'current response'));
+  assert.equal(turn.recoveredError(oldError, 'same-session'), true);
+  assert.deepEqual(turn.recoveredErrorStepIndices, [1]);
 });
 
 const cli = `#!${process.execPath}
@@ -53,8 +64,10 @@ const step=(index,type,state='DONE',text='')=>emit({event:'step_update',step_upd
 emit({event:'init',conversation_id:id});
 if(mode!=='no-boundary')step(2,'user_input');
 if(mode==='initial-error'){step(3,'error_message');emit({event:'result',result:{conversation_id:id,status:'ERROR',error:'previous header timeout',response:''}});process.exit(3);}
+if(mode==='retry-header-timeout'){step(3,'error_message');emit({event:'result',result:{conversation_id:id,status:'ERROR',error:'net/http: timeout awaiting response headers',response:''}});process.exit(3);}
+if(mode==='in-turn-recovery')step(3,'error_message');
 step(4,'agent_response','ACTIVE','current ');step(4,'agent_response','DONE','response');
-if(mode==='current-error')step(5,'error_message');
+if(mode==='current-error'||mode==='terminal-error-zero')step(5,'error_message');
 if(mode==='abort'){await new Promise(()=>{});}
 if(mode!=='missing-result')emit({event:'result',result:{conversation_id:id,status:mode==='cancelled'?'CANCELLED':'ERROR',error:mode==='current-error'?'new timeout':'previous header timeout',response:'current response'}});
 process.exit(mode==='nonzero'||mode==='current-error'?3:0);
@@ -81,7 +94,11 @@ test('CLI adapter resumes after historical failure, preserves records, and still
   assert.equal(await readFile(join(cwd, 'keep.svg'), 'utf8'), 'existing draft');
   const events = await readFile(join(result.logDirectory!, 'events.jsonl'), 'utf8');
   assert.match(events, /"status":"ERROR"/); assert.match(events, /"outcomeSource":"current_turn_steps"/);
-  for (const mode of ['current-error', 'nonzero', 'missing-result', 'no-boundary', 'cancelled']) {
+  const fresh = await runCliTask({ name: 'fresh-recovery', cwd, prompt: 'in-turn-recovery' }, model, settings, options, new AbortController().signal);
+  assert.equal(fresh.text, 'current response');
+  const freshLog = JSON.parse(await readFile(join(fresh.logDirectory!, 'result.json'), 'utf8'));
+  assert.equal(freshLog.processExitCode, 0); assert.equal(freshLog.cliStatus, 'ERROR');
+  for (const mode of ['current-error', 'terminal-error-zero', 'nonzero', 'missing-result', 'no-boundary', 'cancelled']) {
     const failing = runCliTask({ name: mode, cwd, prompt: mode }, model, settings, options, new AbortController().signal, id);
     if (mode === 'current-error') await assert.rejects(failing, /new timeout/);
     else await assert.rejects(failing);
@@ -91,4 +108,25 @@ test('CLI adapter resumes after historical failure, preserves records, and still
     { ...options, onEvent: async () => { controller.abort(new Error('user cancelled')); } }, controller.signal, id);
   // An existing session does not emit thread.started; cancel after its completed message.
   await assert.rejects(aborting, /user cancelled/);
+});
+
+test('an exhausted AGV header timeout automatically resumes the same session and keeps its artifacts', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'agv-retry-header-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const executable = join(root, 'agy.mjs'); await writeFile(executable, cli, { mode: 0o700 });
+  const cwd = join(root, 'case'); await mkdir(cwd);
+  await writeFile(join(cwd, 'keep.svg'), 'existing draft');
+  const settings = loadWorkflowEnvironment({ layering_agv_path: executable }, root);
+  const waits: number[] = [], ids: string[] = [], retries: string[] = [];
+  const agents = new CodexAgents({ environment: settings, selectedModel: parseAgentModel('gemini-4-argon-high', 'test'),
+    cwd, logDirectory: join(cwd, 'agents'), runtime: new AgentRuntime(1, async ms => { waits.push(ms); }),
+    onSessionStarted: async id => { ids.push(id); }, onRetry: retry => { retries.push(String(retry.error)); },
+    onThreadReplacement: async () => assert.fail('a network timeout must not replace the session') });
+  const session = agents.createSession();
+  t.after(() => session.close());
+  const result = await session.run({ name: 'header-timeout', cwd, prompt: 'retry-header-timeout' });
+  assert.equal(result.text, 'current response'); assert.deepEqual(waits, [5000]);
+  assert.equal(ids.length, 1); assert.equal(result.threadId, ids[0]);
+  assert.equal(retries.length, 1); assert.match(retries[0], /timeout awaiting response headers/);
+  assert.equal(await readFile(join(cwd, 'keep.svg'), 'utf8'), 'existing draft');
 });

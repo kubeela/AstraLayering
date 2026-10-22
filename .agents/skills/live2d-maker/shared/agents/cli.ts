@@ -56,6 +56,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   const requestedSession = resumed;
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
   let threadId = resumed, text = '', final: any, stderr = '';
+  let processExitCode: number | null | undefined;
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
@@ -182,22 +183,24 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         }
       }
       const code = await close;
+      processExitCode = code;
       if (spawnError) throw spawnError;
       signal.throwIfAborted();
-      const historicalError = code === 0 && final && agvTurn?.historicalError(final, resumed);
-      const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || historicalError : final?.status !== 'ERROR';
+      const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
+      const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
       if (code !== 0 || !final || final.is_error || !successfulStatus) throw new AgentCallError(final?.error || final?.errors?.join('\n') || stderr || 'CLI 未返回成功终态');
-      if (historicalError) {
+      if (recoveredError) {
         await log.recordProtocol({ type: 'agv.turn.completed', outcomeSource: 'current_turn_steps',
-          conversationStatus: final.status, historicalError: final.error, userStepIndex: agvTurn!.userStepIndex, processExitCode: code });
-        options.progress?.(`[${task.name}] 本轮已完成；CLI 汇总中的历史错误保留在记录中。`);
+          conversationStatus: final.status, earlierError: final.error, userStepIndex: agvTurn!.userStepIndex,
+          recoveredErrorStepIndices: agvTurn!.recoveredErrorStepIndices, processExitCode: code });
+        options.progress?.(`[${task.name}] 本轮最终已完成；此前错误与恢复过程已保留在记录中。`);
       }
       await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: randomUUID(), text } });
-      await log.finish({ status: 'completed', threadId: threadId || null, usage: final.usage || null, finalResponse: text, images: [] });
+      await log.finish({ status: 'completed', threadId: threadId || null, usage: final.usage || null, finalResponse: text, images: [], processExitCode, cliStatus: final.status });
       return { text, images: [], threadId, logDirectory: log.directory };
     } finally { signal.removeEventListener('abort', abort); abort(); await close; if (killTimer) clearTimeout(killTimer); }
   } catch (error) {
-    await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: String(error), stderr });
+    await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: String(error), stderr, processExitCode, cliStatus: final?.status });
     const reported = error instanceof AgentCallError ? error : new AgentCallError(String(error));
     reported.threadId = threadId; reported.finalResponse = text; reported.logDirectory = log.directory; throw reported;
   } finally { await bridge?.close(); await mcpServer?.close(); }
