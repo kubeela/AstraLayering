@@ -92,6 +92,11 @@ test('web forwards shadow mode to the existing coordinator and shows both branch
   await put(root, 'shadow/mask/step01/character-shadowed.png');
   const value = await snapshot(root, 'shadow-case', f.dir), stage = value.pipelines.find(stage => stage.id === 'shadow')!;
   assert.equal(stage.states.mask, 'available'); assert.equal(stage.states['normal-depth'], 'pending');
+  for (const path of ['normal.png', 'depth.png', 'report.md', '.completed']) await put(root, 'shadow/normal-depth/step01/' + path);
+  await put(root, 'shadow/normal-depth/step02/light.json');
+  const finished = (await snapshot(root, 'shadow-case', f.dir)).pipelines.find(stage => stage.id === 'shadow')!;
+  assert.equal(finished.states['normal-depth'], 'done');
+  assert.equal(Object.hasOwn(finished.states, 'normal-depth-lighting'), false);
 });
 
 test('task assets reject traversal and symlinks; SVG is served sandboxed; version browsing remains read only', async t => {
@@ -182,4 +187,16 @@ test('real coordinator owns web execution: locking, failure diagnostics, resume,
   await runWebTask(options, 'resume', { execute: async () => ({ output: join(task, 'parts'), summary: '完成' }) });
   run = await readRun(task, 'test'); assert.equal(run?.status, 'completed');
   assert.equal((await jsonFile(task, 'raster-layering/run.json'))?.threadId, 'keep-me');
+});
+
+test('shadow reference routes serve only bundled guides, and inspection previews use declared files', async t => {
+  const f=await fixture(t);
+  for(const name of ['skirt','hair']) {
+    const response=await fetch(f.url+'/shadow-reference/'+name+'.png');assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'image/png');
+    const meta=await sharp(Buffer.from(await response.arrayBuffer())).metadata();assert.equal(meta.width,2048);assert.equal(meta.height,1280);
+  }
+  assert.equal((await fetch(f.url+'/shadow-reference/native_worker.py')).status,404);
+  const {shadowInspectionArtifacts}=await import(new URL('../progress.js',import.meta.url).href);
+  const path='shadow/mask/step01/inspection/relation-001-review.png';
+  assert.deepEqual(shadowInspectionArtifacts([path,'shadow/mask/step01/inspection/native-123/offset.png','shadow/normal-depth/step01/inspection/relation-000-review.png']).map((a:any)=>a.path),[path]);
 });

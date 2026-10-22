@@ -994,3 +994,10 @@ dialog select {
   color: #dde1e8;
   font: inherit;
 }
+.workspace-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.projection-row { display: flex; gap: 9px; align-items: center; padding: 8px 5px; border-radius: 4px; border: 1px solid transparent; }
+.projection-row.selected { background: #343e55; border-color: #657aa5; }
+.projection-row input { flex: 0 0 auto; accent-color: var(--accent); }
+.projection-select { text-align: left; flex: 1; min-width: 0; border: 0; background: transparent; padding: 5px 3px; }
+.projection-select b, .projection-select small { display: block; overflow-wrap: anywhere; }
+.projection-select small { margin-top: 4px; font-size: 10px; color: var(--muted); }

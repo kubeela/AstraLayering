@@ -98,6 +98,12 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .group-expanded .artifact-image img{max-height:220px}
 .group-expanded [data-node$=":preparation"] .step-summary{max-height:64px;overflow:auto}
 
+.shadow-references{display:flex;gap:16px;padding:4px 0 12px;font-size:12px}.shadow-references a{color:var(--accent,#6b72cd);text-decoration:none}.shadow-references a:hover{text-decoration:underline}
+.step-children.step-alternatives{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:8px;align-items:start}
+.step-alternatives>.step-node:before{display:none}
+.branch-or{align-self:start;margin-top:42px;text-align:center;font-size:11px;font-weight:650;color:var(--muted)}
+.branch-choice{padding:8px 10px 0;font-size:10px;color:var(--muted)}
+.branch-choice.current{color:var(--accent);font-weight:650}
 /* Follow the pipeline horizontally; keep the ordinary view within its height. */
 #app:has(.project-main){height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 #app:has(.project-main)>.app-header{flex-shrink:0}

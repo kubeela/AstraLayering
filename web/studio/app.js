@@ -3,6 +3,8 @@ import { LayerPanel } from "./layer-panel.js";
 import { SurfacePreview } from "./surface-preview.js";
 import { stateKey } from "./layer-model.js";
 import { openDocument } from "./document-loader.js";
+import { ProjectionPanel } from './projection-panel.js';
+import { projectionOnlyEdit } from './projection-model.js';
 import {
   defaults,
   presets,
@@ -19,7 +21,7 @@ const esc = (s) =>
       ],
   );
 const state = {
-  settings: { ...presets.jianma.values },
+  settings: { ...presets.rightSoft.values },
   tool: "move",
   view: "lit",
   source: null,
@@ -30,7 +32,10 @@ const state = {
   projectOpening: false,
   waitingProject: null,
   generation: 0,
+  workspace: 'lighting',
+  lightingMode: 'mixed',
 };
+let projections;
 function toast(message) {
   $("#toast").textContent = message;
   $("#toast").classList.add("visible");
@@ -68,6 +73,7 @@ async function hash(file) {
 }
 // UI units are separate from renderer units. One world unit = half canvas height.
 const sliders = {
+  lightingMix: ['光照混合', 0, 100, 1, '%', '底图', '光照', v => v * 100, v => v / 100, '实时光照与底图的混合比例；0% 完整保留底图'],
   lightX: [
     "左右",
     -300,
@@ -196,7 +202,7 @@ function slider(key) {
 $("#position-controls").innerHTML = ["lightX", "lightY", "lightZ"]
   .map(slider)
   .join("");
-$("#main-controls").innerHTML = ["ambient", "toony", "shift"]
+$("#main-controls").innerHTML = ["lightingMix", "ambient", "toony", "shift"]
   .map(slider)
   .join("");
 $("#shadow-controls").innerHTML = ["shadowStrength", "shadowSoftness"]
@@ -209,7 +215,7 @@ $("#preset").innerHTML =
   Object.entries(presets)
     .map(([k, p]) => `<option value="${k}">${p.label}</option>`)
     .join("") + '<option value="custom" disabled>自定义</option>';
-$("#preset").value = "jianma";
+$("#preset").value = "rightSoft";
 let stage;
 try {
   stage = new LightingStage($("#stage"));
@@ -220,7 +226,7 @@ try {
 $("#stage").addEventListener("studio-error", (e) => toast(e.detail));
 function overlay() {
   const active =
-    state.tool === "light" && !!state.source?.normal && !state.busy;
+    state.workspace === 'lighting' && state.tool === "light" && !!state.source?.normal && !state.busy;
   $("#light-overlay").hidden = !active;
   if (!active) return;
   const b = $("#stage").getBoundingClientRect();
@@ -263,19 +269,24 @@ function sync() {
     );
   }
   $("#shade").value = state.settings.shade;
+  $("#lightColor").value = state.settings.lightColor;
   $("#background").value = state.settings.background;
   $("#normal-y").value = state.settings.normalY;
   $("#shadow").checked = state.settings.shadow;
-  const hasNormal = !!state.source?.normal,
+  const lighting = state.workspace === 'lighting';
+  const hasNormal = lighting && !!state.source?.normal,
     hasDepth = !!state.source?.depth;
   $("#lighting-controls").disabled = !hasNormal || state.busy;
-  $("#lighting-status").hidden = hasNormal;
   const project = state.source?.project || state.waitingProject;
-  $("#lighting-status").textContent = project
-    ? project.shadowStale ? "阴影源已变化，请续跑生成" : project.shadowMode === 'mask' ? "已载入 Live2D 阴影蒙版" : project.files?.normal.available
+  $("#lighting-status").hidden = hasNormal && !project?.previewDraft;
+  $("#lighting-status").textContent = hasNormal && project?.previewDraft
+    ? project.previewReview === 'awaiting-publication' ? '交付待恢复' : "待视觉复核"
+    : project
+    ? project.mapsStale ? "贴图源已变化，请续跑生成" : project.files?.normal.available
       ? "图层已更改，光照已暂停"
       : "法线待管线生成"
     : "绑定法线后启用光照";
+  $("#lighting-status").title = project?.previewDraft ? project.previewReviewReason : '';
   $("#depth-status-hint").textContent = project
     ? project.files?.depth.available
       ? "图层已更改，投影已暂停"
@@ -286,10 +297,26 @@ function sync() {
   $("#depthScale").disabled = $("#number-depthScale").disabled =
     !hasDepth || state.busy;
   $("#depth-status-hint").hidden = hasDepth;
-  if (project?.shadowMode === 'mask') $("#depth-status-hint").hidden = true;
   for (const k of ["normalStrength", "number-normalStrength", "normal-y"])
     $("#" + k).disabled = !hasNormal || state.busy;
   $('[data-tool="light"]').disabled = !hasNormal || state.busy;
+  $('[data-tool="light"]').hidden = !lighting;
+  $('#views').hidden = !lighting;
+  $('#projection-workspace').hidden = lighting;
+  $('#lighting-workspace').hidden = !lighting;
+  $('.recipe-actions').hidden = !lighting;
+  $('#engine').textContent = lighting ? 'MToon · 原尺寸' : 'Krita · 原尺寸';
+  $('#lighting-source').hidden = !project;
+  $('#lighting-base').value = project?.previewMode === 'mixed' ? 'mixed' : 'normal-depth';
+  $('#lighting-base').disabled = state.busy || state.layerBusy;
+  $('#lighting-base option[value="mixed"]').disabled = !project?.previewModes?.mixed;
+  for (const button of document.querySelectorAll('[data-workspace]')) {
+    const selected = button.dataset.workspace === state.workspace;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-selected', selected);
+    button.disabled = state.busy || state.layerBusy;
+  }
+  projections?.render();
   $("#zoom").textContent = Math.round(stage.viewScale() * 100) + "%";
   for (const el of document.querySelectorAll("[data-view]")) {
     const view = el.dataset.view;
@@ -340,7 +367,7 @@ for (const el of document.querySelectorAll("[data-setting],[data-number]")) {
     schedule();
   });
 }
-for (const k of ["shade", "background"])
+for (const k of ["shade", "background", "lightColor"])
   $("#" + k).oninput = (e) => {
     state.settings[k] = e.target.value;
     schedule();
@@ -354,19 +381,19 @@ $("#shadow").onchange = (e) => {
   state.settings.shadow = e.target.checked;
   apply(true);
 };
-$("#preset").onchange = (e) => {
-  state.settings = { ...presets[e.target.value].values };
-  apply();
-};
-$("#reset").onclick = () => {
-  const key =
-    state.source?.sample === "jianma" ||
-    state.source?.project?.name === "jianma"
-      ? "jianma"
-      : "anime";
+function initialPreset(source) {
+  return source?.project?.previewMode === 'mixed' ? 'maskSoft' : 'rightSoft';
+}
+function applyPreset(key) {
   $("#preset").value = key;
   state.settings = { ...presets[key].values };
   apply();
+}
+$("#preset").onchange = (e) => {
+  applyPreset(e.target.value);
+};
+$("#reset").onclick = () => {
+  applyPreset(initialPreset(state.source));
 };
 const positions = {
   left: [-2.8, 0.5, 1],
@@ -381,6 +408,7 @@ for (const el of document.querySelectorAll("[data-position]"))
     apply(true);
   };
 function selectView(view) {
+  if (state.workspace !== 'lighting') view = 'color';
   state.view = view;
   stage.setMode(view);
   $("#split-line").hidden = view !== "split";
@@ -391,6 +419,7 @@ $("#views").onclick = (e) => {
   if (el && !el.disabled) selectView(el.dataset.view);
 };
 function selectTool(tool) {
+  if (state.workspace !== 'lighting') tool = 'move';
   state.tool = tool;
   for (const el of document.querySelectorAll("[data-tool]"))
     el.classList.toggle("active", el.dataset.tool === tool);
@@ -509,6 +538,7 @@ $("#export-image").onclick = async () => {
 const layers = new LayerPanel({
   download,
   error: toast,
+  rendered() { projections?.render(); },
   busy(value) {
     state.layerBusy = value;
     sync();
@@ -516,6 +546,7 @@ const layers = new LayerPanel({
   changed(owner, rows) {
     if (state.source?.layerDocument !== owner.layerDocument) return;
     state.source.layers = rows;
+    state.source.nativeBaseline ??= rows.map(l => ({ ...l }));
     showSource();
   },
   async composite(owner, data, color) {
@@ -523,7 +554,8 @@ const layers = new LayerPanel({
     surfaces.clear();
     const source = state.source;
     const key = data.baseline ? "baseline" : stateKey(data.layers);
-    const maps = source.mapBindings.get(key) || {};
+    const maps = source.mapBindings.get(key) || (projectionOnlyEdit(source.shadowBindings, source.nativeBaseline, data.layers)
+      ? source.mapBindings.get('baseline') : null) || {};
     const id = begin("正在更新预览…");
     try {
       await install(
@@ -544,6 +576,7 @@ const layers = new LayerPanel({
     }
   },
 });
+projections = new ProjectionPanel(layers, () => state.source);
 const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=>layers.session?{session:layers.session,revision:layers.revision}:null, error:toast,
   changed(active){state.surfaceActive=active;sync();}});
 function showSource() {
@@ -646,15 +679,15 @@ async function install(source, id, reset = true) {
     }
     state.source = source;
     state.inputs = Object.fromEntries(hashes);
-    if (reset) {
-      const key =
-        source.sample === "jianma" || source.project?.name === "jianma"
-          ? "jianma"
-          : "anime";
+    // Generated maps are data only. First lighting entry always uses an active
+    // studio preset; later layer/workspace updates preserve the user's settings.
+    if (reset || (source.normal && !source.lightingInitialized)) {
+      const key = initialPreset(source);
       state.settings = { ...presets[key].values };
       $("#preset").value = key;
-      selectTool("move");
+      source.lightingInitialized = !!source.normal;
     }
+    if (reset) selectTool("move");
     apply();
     selectView(
       source.normal
@@ -670,7 +703,11 @@ async function install(source, id, reset = true) {
     u.searchParams.delete("sample");
     u.searchParams.delete("name");
     u.searchParams.delete("project");
-    if (source.project) u.searchParams.set("project", source.project.name);
+    u.searchParams.delete('preview');
+    if (source.project) {
+      u.searchParams.set("project", source.project.name);
+      u.searchParams.set('preview', source.project.previewMode);
+    }
     if (source.sample) u.searchParams.set("name", source.sample);
     history.replaceState(null, "", u);
     if (reset) void layers.open(source);
@@ -848,12 +885,12 @@ async function openJianma() {
 }
 $("#open-jianma").onclick = openJianma;
 let projectListGeneration = 0;
-async function openProject(name, dir) {
+async function openProject(name, dir, preview, workspace, refresh = false) {
   const id = begin("正在打开项目 " + name + "…", true);
   try {
     dir ??= (await get("./api/settings")).directory;
     const project = await get(
-      "./api/studio/project?" + new URLSearchParams({ name, dir }),
+      "./api/studio/project?" + new URLSearchParams({ name, dir, ...(preview ? { preview } : {}) }),
     );
     if (id !== state.generation) return;
     if (!project.files.document.available) {
@@ -883,17 +920,33 @@ async function openProject(name, dir) {
           )
         : null;
     };
-    const [document, normal, depth] = await Promise.all([
+    const sameDocument = !refresh && state.source?.project?.name === name && state.source.project.dir === dir &&
+      state.source.project.files.document.path === project.files.document.path &&
+      state.source.project.files.document.version === project.files.document.version;
+    const [document, normal, depth, bindings] = await Promise.all([
       read("document"),
       read("normal"),
       read("depth"),
+      read('bindings'),
     ]);
     if (id !== state.generation) return;
-    const source = await openDocument(
-      new File([document], project.files.document.path.split("/").at(-1)),
-    );
+    const source = sameDocument && preview ? { ...state.source } : await openDocument(
+      new File([document], project.files.document.path.split("/").at(-1)));
     if (id !== state.generation) return;
-    await install({ ...source, normal, depth, project }, id);
+    const shadowBindings = bindings ? JSON.parse(await bindings.text()) : null;
+    if (shadowBindings && (shadowBindings.version !== 2 || !Array.isArray(shadowBindings.shadows))) throw Error('投影关系产物无效');
+    state.workspace = workspace || (project.previewMode === 'mask' ? 'mask' : 'lighting');
+    if (project.previewMode !== 'mask') state.lightingMode = project.previewMode;
+    const preserve = sameDocument && !!preview;
+    const maps = { normal, depth };
+    if (preserve) {
+      source.mapBindings.set('baseline', { ...maps });
+      if (source.layerKey !== 'baseline' && !projectionOnlyEdit(shadowBindings, source.nativeBaseline, source.layers)) {
+        maps.normal = null; maps.depth = null;
+      }
+    }
+    await install({ ...source, ...maps, shadowBindings, project }, id, !preserve);
+    if (state.workspace === 'mask') { selectTool('move'); selectView('color'); }
     if (id === state.generation) $("#task-dialog").close();
   } catch (e) {
     if (id === state.generation) {
@@ -934,14 +987,32 @@ $("#retry-project").onclick = () => {
 };
 $("#refresh-project").onclick = () => {
   if (state.source?.project && !state.busy && !state.layerBusy) {
-    const { name, dir } = state.source.project;
-    void openProject(name, dir);
+    const { name, dir, previewMode } = state.source.project;
+    void openProject(name, dir, previewMode, state.workspace, true);
   }
+};
+for (const button of document.querySelectorAll('[data-workspace]')) button.onclick = () => {
+  const workspace = button.dataset.workspace;
+  if (workspace === state.workspace || state.busy || state.layerBusy) return;
+  const project = state.source?.project;
+  if (project) {
+    const preview = workspace === 'mask' ? 'mask' : project.previewModes?.mixed ? state.lightingMode : 'normal-depth';
+    void openProject(project.name, project.dir, preview, workspace);
+  } else {
+    state.workspace = workspace;
+    if (workspace === 'mask') { surfaces.clear(); selectTool('move'); selectView('color'); }
+    else selectView(state.source?.normal ? 'lit' : 'color');
+    sync();
+  }
+};
+$('#lighting-base').onchange = e => {
+  const project = state.source?.project;
+  if (project) void openProject(project.name, project.dir, e.target.value, 'lighting');
 };
 sync();
 // No test gallery, no test-image downloads. Jianma is a real layered document.
 const requested = new URLSearchParams(location.search);
-if (requested.get("project")) void openProject(requested.get("project"));
+if (requested.get("project")) void openProject(requested.get("project"), undefined, requested.get('preview'));
 else if (
   requested.get("name") === "jianma" ||
   requested.get("sample") === "jianma"
@@ -960,6 +1031,10 @@ window.studioDiagnostics = () => ({
   document: state.source?.name,
   sample: state.source?.sample,
   project: state.source?.project?.name,
+  workspace: state.workspace,
+  previewMode: state.source?.project?.previewMode,
+  previewDraft: !!state.source?.project?.previewDraft,
+  projections: state.source?.shadowBindings?.shadows?.length || 0,
   layers: state.source?.layers?.length || 0,
   layerSession: layers.session,
   layerRevision: layers.revision,

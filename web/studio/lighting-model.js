@@ -1,10 +1,12 @@
 // Shared, renderer-independent contracts for recipes and geometry.
-export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v2";
+export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v3";
 export const defaults = Object.freeze({
   lightX: 2.4,
   lightY: 0.4,
   lightZ: 1.1,
+  lightColor: '#ffffff',
   ambient: 0.16,
+  lightingMix: 1,
   shade: "#aaa0ba",
   toony: 0.93,
   shift: -0.25,
@@ -23,6 +25,7 @@ export const ranges = Object.freeze({
   lightY: [-6, 6],
   lightZ: [-4, 8],
   ambient: [0, 0.7],
+  lightingMix: [0, 1],
   toony: [0, 0.99],
   shift: [-0.9, 0.9],
   normalStrength: [0, 2],
@@ -58,8 +61,8 @@ export const presets = Object.freeze({
       shift: -0.18,
     },
   },
-  jianma: {
-    label: "Jianma",
+  rightSoft: {
+    label: "右侧柔光",
     values: {
       ...defaults,
       lightX: 2.8,
@@ -71,6 +74,54 @@ export const presets = Object.freeze({
       ambient: 0.24,
       normalStrength: 0.85,
       shadowStrength: 0.55,
+    },
+  },
+  maskSoft: {
+    label: "蒙版柔光",
+    values: {
+      ...defaults,
+      lightX: 2.8, lightY: 0.5, lightZ: 1,
+      shade: "#b7aec9", toony: 0.82, shift: -0.2,
+      ambient: 0.24, normalStrength: 0.85,
+      lightingMix: 0.55, shadow: false, shadowStrength: 0.55,
+    },
+  },
+  leftSoft: {
+    label: "左侧柔光",
+    values: {
+      ...defaults,
+      lightX: -2.8, lightY: 0.5, lightZ: 1.2,
+      shade: "#b2b2c9", toony: 0.7, shift: -0.18,
+      ambient: 0.22, normalStrength: 0.9, shadowStrength: 0.5,
+    },
+  },
+  warm: {
+    label: "暖色夕照",
+    values: {
+      ...defaults,
+      lightX: -2.8, lightY: 1.1, lightZ: 0.7,
+      lightColor: "#ffe2be", shade: "#a99dbb",
+      toony: 0.86, shift: -0.16, ambient: 0.15,
+      lightingMix: 0.8, shadowStrength: 0.6,
+    },
+  },
+  cool: {
+    label: "冷色月光",
+    values: {
+      ...defaults,
+      lightX: 2.3, lightY: 1.6, lightZ: 0.8,
+      lightColor: "#d4e4ff", shade: "#8f91b5",
+      toony: 0.8, shift: -0.2, ambient: 0.14,
+      lightingMix: 0.85, shadowStrength: 0.6,
+    },
+  },
+  topSoft: {
+    label: "顶部柔光",
+    values: {
+      ...defaults,
+      lightX: 0.4, lightY: 2.8, lightZ: 1.4,
+      shade: "#b6afc2", toony: 0.65, shift: -0.12,
+      ambient: 0.2, shadowStrength: 0.5, shadowSoftness: 5,
     },
   },
 });
@@ -93,7 +144,7 @@ export function validateSettings(value) {
     }
   if (![-1, 1].includes(result.normalY))
     throw new Error("法线 Y 方向必须是 +1 或 -1");
-  for (const key of ["shade", "background"])
+  for (const key of ["shade", "background", "lightColor"])
     if (value[key] !== undefined) {
       if (!/^#[0-9a-f]{6}$/i.test(value[key]))
         throw new Error(`无效颜色 ${key}`);

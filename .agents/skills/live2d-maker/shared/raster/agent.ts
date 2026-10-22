@@ -59,7 +59,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
         await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: lastMessage, error: String(error) }); throw error;
       } finally { await route.close(); }
     }
-    if (selected.harness !== 'codex') {
+    if (selected.harness !== 'codex' || request.tools?.length) {
       const agents = new CodexAgents({ environment, selectedModel: selected, cwd: request.directory, imageNormalization: request.imageNormalization,
         logDirectory: join(request.directory, 'agents'), runtime, onRetry: request.onRetry,
         onEvent: request.onEvent, onThreadReplacement: request.onThreadReplacement });
