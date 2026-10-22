@@ -97,3 +97,53 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .group-expanded [data-node$=":preparation"]>.step-children>.step-node{flex:1;min-width:0}
 .group-expanded .artifact-image img{max-height:220px}
 .group-expanded [data-node$=":preparation"] .step-summary{max-height:64px;overflow:auto}
+
+/* Follow the pipeline horizontally; keep the ordinary view within its height. */
+#app:has(.project-main){height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+#app:has(.project-main)>.app-header{flex-shrink:0}
+.project-main{flex:1;min-height:0;width:100%;display:flex;flex-direction:column}
+.project-main>.page-heading{flex-shrink:0;min-height:72px}
+.project-main>.run-notice{flex-shrink:0;margin-bottom:12px;max-height:30vh;overflow:auto}
+.project-main>.workflow-shell{flex:1;height:auto;min-height:0}
+.flow-scroll{min-height:0}
+.flow-world{display:flex;gap:52px;padding:106px 24px 24px;--step-height:clamp(300px,calc(100dvh - 330px),510px)}
+.flow-input{position:relative;left:auto;top:auto;flex:0 0 185px}
+.flow-grid{align-items:flex-start}
+.pipeline-lane,.pipeline-lane.group-expanded,.pipeline-lane.branch-lane:not(.collapsed){width:max-content}
+.pipeline-heading>button:first-child{flex:0 1 auto}
+.pipeline-heading>.icon-button{margin-left:10px}
+.pipeline-steps{display:flex;flex-direction:row;align-items:flex-start;gap:22px;padding-top:18px;position:relative;padding-bottom:52px}
+.pipeline-lane.collapsed{width:224px}
+.pipeline-run{position:absolute;left:0;bottom:0;width:230px;margin:0;justify-content:flex-start}
+.pipeline-steps>.thread-id{position:absolute;left:244px;bottom:8px;max-width:300px}
+.step-node{width:250px;flex:0 0 auto;height:var(--step-height);display:flex;flex-direction:column}
+.step-node.step-container{width:max-content}
+.step-node.node-collapsed{width:224px;height:auto}
+.step-node:before{content:'→';left:-19px;top:16px;transform:none}
+.pipeline-steps>.step-node:first-child:before{display:none}
+.section-heading{flex-shrink:0}
+.step-content{flex:1;min-height:0;overflow:auto;scrollbar-width:thin}
+.step-content>.step-summary{max-width:580px}
+.step-children{flex-direction:row;align-items:flex-start;gap:22px}
+.step-children>.step-node{width:224px;height:calc(var(--step-height) - 118px)}
+.step-children.step-alternatives{grid-template-columns:224px 30px 224px}
+.step-content>.group-cycle{padding:0 12px 12px;width:max-content;min-width:538px;height:100%;display:flex;flex-direction:column}
+.group-cycle>.cycle-rule{flex-shrink:0;margin-bottom:6px;padding:6px 10px}
+.group-cycle>.cycle-context{flex-shrink:0;margin:3px 0 10px}
+.group-workspace,.group-workspace.expanded{display:grid;grid-template-columns:236px max-content;gap:16px;flex:1;min-height:0}
+.group-workspace .inline-tree{display:flex;flex-direction:column;min-height:0;padding-right:12px;border-right:1px solid var(--line)}
+.group-workspace .inline-tree-rows,.group-workspace.expanded .inline-tree-rows{flex:1;min-height:60px;max-height:none}
+.inline-tree-heading,.inline-tree .tree-controls,.inline-tree .tree-search,.inline-tree .tree-note,.inline-tree>.step-artifacts{flex-shrink:0}
+.group-compact{width:250px;margin:0;padding:0;border:0;overflow:auto}
+.group-detail{width:max-content;display:flex;flex-direction:column;min-height:0}
+.group-detail>.group-note{max-width:1190px;max-height:42px;flex-shrink:0;margin-bottom:8px}
+.cycle-phases{flex:1;min-height:0}
+.cycle-phase{flex:0 0 195px;overflow:auto;scrollbar-width:thin}
+.cycle-phase.collapsed{flex-basis:42px}
+.phase-state{font-size:10px;max-height:48px;overflow:auto}
+.phase-artifacts .artifact-image img{height:clamp(100px,calc(100dvh - 600px),180px)}
+.artifact-images{display:flex;gap:6px;width:100%;min-width:0;overflow-x:auto;scrollbar-width:thin}
+.artifact-images>.artifact-image{flex:0 0 180px}
+.artifact-images>.artifact-image:only-child{flex:1 0 0}
+.step-artifacts.image-sequence{display:block}
+.flow-footnote{padding:8px 12px}

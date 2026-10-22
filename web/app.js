@@ -1,4 +1,5 @@
 import { pipelineSteps as stepTemplates, groupLayers, groupPhases, stepArtifacts, groupArtifacts } from './progress.js';
+import { selectedTask, rememberTask } from './task-selection.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -28,8 +29,8 @@ async function get(path) { const response = await fetch(path); const value = awa
 const initial = await get('./api/tasks');
 let tasks = initial.tasks, data = { files:[], pipelines:[] }, pipelineSteps = structuredClone(stepTemplates);
 const state = {
- page:new URLSearchParams(location.search).get('page')||'project', name:new URLSearchParams(location.search).get('name')||tasks[0]?.name||'',
- stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, canvasLeft:0, canvasTop:0,
+ page:new URLSearchParams(location.search).get('page')||'project', name:selectedTask(initial.directory,tasks,new URLSearchParams(location.search).get('name')),
+ stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, autoHeight:true, canvasLeft:0, canvasTop:0,
  directory:initial.directory, ref:'worktree', file:'shared/tools/update_occlusion/description.md', diff:false, configFilter:'', uploaded:null,
  collapsedPipelines:new Set(), collapsedSteps:new Set(), collapsedPhases:new Set(),
  details:new Map(),
@@ -96,9 +97,10 @@ async function refreshTask(force=false) {
  const version=++refreshVersion;
  const listing=await get('./api/tasks');
  if(version!==refreshVersion)return;
- if(listing.directory!==state.directory){state.directory=listing.directory;state.name='';force=true;}
+ if(listing.directory!==state.directory){state.directory=listing.directory;state.name='';state.inspect=false;state.asset=null;force=true;}
  tasks=listing.tasks;
- if(!tasks.some(task=>task.name===state.name))state.name=tasks[0]?.name||'';
+ if(!tasks.some(task=>task.name===state.name))state.name=selectedTask(state.directory,tasks);
+ rememberTask(state.directory,state.name);
  const next=state.name?await get('./api/task?'+taskParams()):{files:[],pipelines:[]};
  if(version!==refreshVersion)return;
  const fingerprint=JSON.stringify({next,tasks});
@@ -119,11 +121,13 @@ async function refreshTask(force=false) {
 function artifacts(items, index, stepId, className='') {
  const list=available(items);
  if(!list.length)return '';
- return `<div class="step-artifacts ${className}">${list.map(item=>{
+ const view=item=>{
   assetLookup.set(item.path,item);
   if(item.path.endsWith('.kra'))return `<a class="artifact-file" href="${artifact(item.path)}" target="_blank" rel="noopener">${icon('layers')}${esc(item.label)} ${icon('arrow')}</a>`;
   return `<button class="${item.kind==='image'?'artifact-image':'artifact-file'} ${item.path.endsWith('.draft.svg')?'draft-artifact':''}" data-asset="${esc(item.path)}" data-asset-stage="${index}" data-asset-step="${stepId}" title="${esc(item.path)}">${item.kind==='image'?`<img loading="lazy" src="${artifact(item.path,true)}" alt="${esc(item.label)}">`:icon('file')}<span>${esc(item.label)}</span>${item.kind==='image'&&data.fileVersions?.[item.path]?`<small>更新于 ${esc(new Date(Number(data.fileVersions[item.path].split(':')[0])).toLocaleTimeString())}</small>`:''}${item.kind==='file'?icon('chevron'):''}</button>`;
- }).join('')}</div>`;
+ };
+ const images=list.filter(item=>item.kind==='image'),files=list.filter(item=>item.kind!=='image');
+ return `<div class="step-artifacts ${className}">${images.length?`<div class="artifact-images">${images.map(view).join('')}</div>`:''}${files.map(view).join('')}</div>`;
 }
 function inlineTreeRows(nodes,index,depth=0,flatView=false) {
  const view=groupViews[index];
@@ -155,7 +159,7 @@ function groupCycle(index) {
  <div class="tree-controls"><select data-tree-depth="${index}" aria-label="${stages[index].name}拆分树深度"><option value="-1">完整层级</option>${layers.map((nodes,i)=>`<option value="${i}" ${view.depth===i?'selected':''}>第 ${i+1} 层 · ${nodes.length} 个节点</option>`).join('')}</select><button class="icon-button" data-expand-all="${index}" title="展开全部层级">${icon('expand')}</button></div>
  <div class="tree-search">${icon('search')}<input data-tree-search="${index}" aria-label="搜索${stages[index].name}部件" placeholder="搜索部件" value="${esc(view.search)}"></div>
  <div class="inline-tree-rows" data-tree-scroll="${index}">${inlineTreeRows(nodes,index,0,view.depth>=0||!!view.search)||'<p class="empty-tree">没有匹配的部件</p>'}</div>
- <p class="tree-note">点击部件，向右展开它的六个环节。</p>
+ <p class="tree-note">点击部件切换预览；详情由“横向展开”控制。</p>
  ${artifacts([{path:`${prefix}/groups.json`,label:'完整 groups.json',kind:'file'}],index,'layers')}
  </div>
  ${view.open?`<div class="group-detail"><p class="group-note">${esc(group.note||'')}</p><div class="cycle-phases">${groupPhases.map(([id,label],i)=>{
@@ -176,15 +180,16 @@ function stepNode(index,step,nested=false) {
  const selected=state.inspect&&state.stage===index&&state.selectedStep===step.id;
  const key=`${index}:${step.id}`, closed=state.collapsedSteps.has(key);
  const context=step.id==='layers'?groupCycle(index):step.children.length?`<div class="step-children">${step.children.map(child=>stepNode(index,child,true)).join('')}</div>`:'';
- return `<section class="step-node ${nested?'nested':''} ${step.children.length?'step-container':''} ${step.status} ${selected?'selected':''}" data-node="${index}:${step.id}">
+ return `<section class="step-node ${nested?'nested':''} ${step.children.length?'step-container':''} ${closed?'node-collapsed':''} ${step.status} ${selected?'selected':''}" data-node="${index}:${step.id}">
  <div class="section-heading"><button class="step-node-heading" data-step="${index}:${step.id}">${statusMark(step.status)}<h3>${esc(step.title)}</h3>${step.id.startsWith('step')?`<small>${step.id}</small>`:''}</button><button class="icon-button" data-section-toggle="${key}" aria-label="${closed?'展开':'收起'}${esc(step.title)}" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>
- ${closed?'':`
+ ${closed?'':`<div class="step-content">
  ${step.note&&step.id!=='layers'?`<p class="step-summary">${esc(step.note)}</p>`:''}
  ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap">尚无 standard.png；旧任务保留此空位，人物准备阶段执行后展示。</p>':''}
  ${context}
  ${artifacts(stepArtifacts[index][step.id],index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="status-error">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${step.id.startsWith('step')?processArtifacts(index,step.id):''}
+ </div>
  `}
  </section>`;
 }
@@ -209,9 +214,9 @@ function inspector() {
 }
 function graph() {
  if(!state.name)return `${pageHeading()}<section class="empty-workspace"><h2>开始一次角色制作</h2><p>新建任务并提供一张角色图，或选择已有任务所在的运行目录。</p><p>${esc(state.directory)}</p><button class="primary" data-action="new">新建任务</button></section>`;
- return `${pageHeading()}${runNotice()}<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><span>完整流程 · 中间步骤与产物</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span><span>${statusMark('available')}已有产物</span><span>${statusMark('failed')}失败</span></div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合宽度</button></div></div>
- <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，可滚动和平移"><div class="flow-size"><div class="flow-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,i)=>flowCard(i)).join('')}</div></div></div></div>
- <footer class="flow-footnote">按 01 → 05 顺序执行 · 点击 group 横向展开，栏目与环节均可收起 · 草稿未落稿；正式稿与复核分别显示 · 按文件和报告展示，续跑资格由管线校验</footer></div>${state.inspect?inspector():''}</section>`;
+ return `${pageHeading()}${runNotice()}<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><span>完整流程 · 中间步骤与产物</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span><span>${statusMark('available')}已有产物</span><span>${statusMark('failed')}失败</span></div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div></div>
+ <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，横向滚动或拖动浏览"><div class="flow-size"><div class="flow-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,i)=>flowCard(i)).join('')}</div></div></div></div>
+ <footer class="flow-footnote">从左向右查看流程 · 滚轮或拖动画布横向浏览 · 部件详情手动展开，栏目与环节均可收起 · 草稿、正式稿与复核分别显示 · 续跑资格由管线校验</footer></div>${state.inspect?inspector():''}</section>`;
 }
 function runNotice() {
  const message=data.run?.error||data.lastLogMessage||data.run?.lastMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
@@ -223,7 +228,7 @@ function connectFlow() {
  const world=document.querySelector('.flow-world');
  if(!world)return;
  const viewport=document.querySelector('.flow-scroll');
- state.zoom??=Math.min(1,Math.max(.65,(viewport.clientWidth-8)/world.offsetWidth));
+ if(state.autoHeight||state.zoom===null)state.zoom=Math.min(1,Math.max(.05,(viewport.clientHeight-8)/world.offsetHeight));
  world.style.transform=`scale(${state.zoom})`;
  const size=document.querySelector('.flow-size');
  size.style.width=`${world.offsetWidth*state.zoom}px`;size.style.height=`${world.offsetHeight*state.zoom}px`;
@@ -233,11 +238,12 @@ function connectFlow() {
  const input=box('.flow-input'),cards=stages.map((_,i)=>box(`[data-pipeline="${i}"] .pipeline-heading`));
  const svg=world.querySelector('.flow-connectors'),paths=[];
  const path=(d,label,x,y,status='done')=>paths.push(`<path class="${status}" d="${d}" marker-end="url(#flow-arrow-${status})"/>${label?`<text x="${x}" y="${y}">${label}</text>`:''}`);
- path(`M${input.x+input.w/2} ${input.y+input.h} V${cards[0].y-6}`,'',0,0);
+ const entryY=cards[0].y+cards[0].h/2;
+ path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'',0,0);
  for(const [a,b,label,status] of [[cards[0],cards[1],'parts',stages[0].status==='done'?'done':'pending'],[cards[2],cards[3],'parts',stages[2].status==='done'?'done':'pending'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'?'done':'pending'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done'?'done':'pending']]){
   const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,label,(a.x+a.w+b.x)/2,y-10,status);
  }
- for(const [a,b,y,label,status] of [[cards[0],cards[2],106,'简化角色参考',data.reference?'done':'pending'],[cards[1],cards[4],54,'人物素体 KRA',stages[1].status==='done'?'done':'pending']]){
+ for(const [a,b,y,label,status] of [[cards[0],cards[2],72,'简化角色参考',data.reference?'done':'pending'],[cards[1],cards[4],30,'人物素体 KRA',stages[1].status==='done'?'done':'pending']]){
   const x1=a.x+a.w*.72,x2=b.x+b.w*.45;
   path(`M${x1} ${a.y} V${y} H${x2} V${b.y-6}`,label,(x1+x2)/2,y-10,status);
  }
@@ -247,7 +253,7 @@ function connectFlow() {
 function zoomCanvas(value,fit=false) {
  const viewport=document.querySelector('.flow-scroll'),previous=state.zoom;
  const centerX=viewport.scrollLeft+viewport.clientWidth/2,centerY=viewport.scrollTop+viewport.clientHeight/2;
- state.zoom=Math.min(1.5,Math.max(.4,value));connectFlow();
+ state.autoHeight=fit;state.zoom=Math.min(1.5,Math.max(.2,value));connectFlow();
  viewport.scrollLeft=fit?0:centerX*state.zoom/previous-viewport.clientWidth/2;
  viewport.scrollTop=fit?0:centerY*state.zoom/previous-viewport.clientHeight/2;
 }
@@ -337,7 +343,7 @@ function render() {
  const outputScroll=document.querySelector('.output-scroll')?.scrollTop||0;
  document.querySelectorAll('[data-details]').forEach(node=>state.details.set(node.dataset.details,node.open));
  flowObserver?.disconnect();
- document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':''}">${state.page==='config'?configPage():graph()}</main>`;
+ document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':'project-main'}">${state.page==='config'?configPage():graph()}</main>`;
  bind();setConfigBusy(configBusy);
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
  if(data.status==='failed'||data.status==='interrupted')document.querySelector('[data-details="run-notice"]')?.setAttribute('open','');
@@ -347,7 +353,7 @@ function render() {
   connectFlow();
   const viewport=document.querySelector('.flow-scroll');viewport.scrollLeft=state.canvasLeft;viewport.scrollTop=state.canvasTop;
   document.querySelectorAll('[data-tree-scroll]').forEach(node=>{node.scrollTop=treeScroll[node.dataset.treeScroll]||0;});
-  flowObserver=new ResizeObserver(connectFlow);flowObserver.observe(document.querySelector('.flow-world'));
+  flowObserver=new ResizeObserver(connectFlow);flowObserver.observe(document.querySelector('.flow-world'));flowObserver.observe(viewport);
  }
 }
 function showNew(single=false, existing=false) {
@@ -408,7 +414,7 @@ function selectStage(index) {
  else{state.stage=index;state.selectedStep=stepId;state.asset=null;state.inspect=true;render();}
 }
 function bind() {
- const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
+ const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-run-stage]').forEach(b=>b.onclick=()=>{state.stage=Number(b.dataset.runStage);showNew(true,true);});
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;if(state.page==='config')await loadConfig();render();});
  document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>selectStage(Number(b.dataset.stage)));
@@ -442,10 +448,19 @@ function bind() {
   else if(action==='zoom-in')zoomCanvas(state.zoom+.1);
   else if(action==='zoom-out')zoomCanvas(state.zoom-.1);
   else if(action==='zoom-reset')zoomCanvas(1);
-  else if(action==='zoom-fit')zoomCanvas(Math.min(1,(document.querySelector('.flow-scroll').clientWidth-8)/document.querySelector('.flow-world').offsetWidth),true);
+  else if(action==='zoom-fit')zoomCanvas(1,true);
  });
  const compare=document.querySelector('#compare-reference');if(compare)compare.onchange=()=>{state.compare=compare.checked;render();};
  const viewport=document.querySelector('.flow-scroll');if(viewport){
+  viewport.addEventListener('wheel',event=>{
+   if(event.ctrlKey||event.metaKey||Math.abs(event.deltaX)>=Math.abs(event.deltaY))return;
+   for(let node=event.target;node&&node!==viewport;node=node.parentElement){
+    if(node.scrollHeight>node.clientHeight+1&&/auto|scroll/.test(getComputedStyle(node).overflowY)&&
+      (event.deltaY<0?node.scrollTop>0:node.scrollTop+node.clientHeight<node.scrollHeight-1))return;
+   }
+   if(viewport.scrollWidth<=viewport.clientWidth)return;
+   event.preventDefault();viewport.scrollLeft+=event.deltaY*(event.deltaMode===1?20:event.deltaMode===2?viewport.clientWidth:1);
+  },{passive:false});
   let drag;
   viewport.onpointerdown=e=>{if(e.button!==0||e.pointerType==='touch'||e.target.closest('button,a,input,select,summary,.inline-tree-rows'))return;drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(e.pointerId);viewport.classList.add('panning');};
   viewport.onpointermove=e=>{if(drag){viewport.scrollLeft=drag.left+drag.x-e.clientX;viewport.scrollTop=drag.top+drag.y-e.clientY;}};
