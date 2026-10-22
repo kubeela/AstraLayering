@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2048" height="1280" viewBox="0 0 2048 1280">
+<defs>
+ <style>text{font-family:DejaVu Sans,sans-serif;fill:#263747}.title{font-size:48px;font-weight:bold}.h{font-size:30px;font-weight:bold}.s{font-size:24px}.hint{font-size:22px;fill:#586a78}.leg{fill:#f4d4c6;stroke:#c68e80;stroke-width:3}.shadow{fill:#c9979a}.skirt{fill:#7294b8;stroke:#355978;stroke-width:4}</style>
+ <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#fff"/><path d="M0 0h12v12H0zM12 12h12v12H12z" fill="#eaf0f5"/></pattern>
+ <path id="legs" d="M120 170 Q160 150 210 170 L218 385 Q201 425 176 415 L154 414 Q128 405 126 384 Z M256 170 Q300 152 341 170 L334 383 Q331 420 301 416 L277 414 Q249 412 247 384 Z"/>
+ <path id="cast" d="M86 30 Q230 0 377 40 L430 275 Q245 334 34 270 Z"/>
+ <path id="cloth" d="M105 18 Q230 0 363 25 L410 247 Q234 294 62 240 Z"/>
+ <clipPath id="receive"><use href="#legs"/></clipPath>
+ <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10" fill="#446c8d"/></marker>
+</defs>
+<rect width="2048" height="1280" fill="#f5f8fb"/>
+<text x="70" y="82" class="title">Cast shadow: full paint, receiver clipping</text>
+<text x="70" y="125" class="s">Structure study based on Milly PSD layer 1220 and moc3 ArtMesh119. Original diagram, not model artwork.</text>
+<g transform="translate(60 166)"><rect width="580" height="492" rx="18" fill="url(#grid)"/><text x="30" y="46" class="h">1  Full shadow painting</text><g transform="translate(65 78)"><use href="#cast" class="shadow"/><use href="#legs" fill="none" stroke="#446c8d" stroke-width="4" stroke-dasharray="10 8"/></g><text x="30" y="455" class="hint">Keep the painted area outside both legs.</text></g>
+<g transform="translate(734 166)"><rect width="580" height="492" rx="18" fill="url(#grid)"/><text x="30" y="46" class="h">2  Union of receiver alpha</text><g transform="translate(65 78)"><use href="#legs" class="leg"/><g clip-path="url(#receive)"><use href="#cast" class="shadow"/></g></g><text x="30" y="455" class="hint">Left leg OR right leg, one shadow layer.</text></g>
+<g transform="translate(1408 166)"><rect width="580" height="492" rx="18" fill="url(#grid)"/><text x="30" y="46" class="h">3  Final drawing order</text><g transform="translate(65 78)"><use href="#legs" class="leg"/><g clip-path="url(#receive)"><use href="#cast" class="shadow"/></g><use href="#cloth" class="skirt"/></g><text x="30" y="455" class="hint">Front skirt hides most of the full paint.</text></g>
+<path d="M655 394H709 M1329 394H1383" stroke="#446c8d" stroke-width="6" marker-end="url(#arrow)"/>
+<text x="70" y="730" class="h">Relative-offset check: move the shadow, leave the receiving legs in place</text>
+<g transform="translate(120 800)"><use href="#legs" class="leg"/><g clip-path="url(#receive)"><use href="#cast" class="shadow" transform="translate(-52 -10)"/></g><use href="#cloth" class="skirt"/><text x="0" y="455" class="s">Left / lifted</text></g>
+<g transform="translate(745 800)"><use href="#legs" class="leg"/><g clip-path="url(#receive)"><use href="#cast" class="shadow" transform="translate(48 38)"/></g><use href="#cloth" class="skirt"/><text x="0" y="455" class="s">Right / lowered</text></g>
+<g transform="translate(1360 824)"><rect width="575" height="310" rx="18" fill="#fff"/><text x="28" y="47" class="h">Verified model structure</text><text x="28" y="99" class="s">ArtMesh119 → legLM + legRM</text><text x="28" y="145" class="s">Blend: multiply</text><text x="28" y="191" class="s">Skirt and shadow parameters act</text><text x="28" y="223" class="s">while receiver vertices stay still.</text><text x="28" y="272" class="hint">Offsets here illustrate coverage only.</text></g>
+</svg>

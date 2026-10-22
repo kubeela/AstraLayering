@@ -1,0 +1,107 @@
+import sharp from 'sharp';
+import { readFile, writeFile, mkdir, realpath } from 'node:fs/promises';
+import { join } from 'node:path';
+import { createHash, randomUUID } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { fileHash } from './input.ts';
+import { kraContents, kraLayers, validateMaskStructure } from './delivery.ts';
+import { inspectNative, type NativeInspect } from './native.ts';
+import { within } from '../shared/raster/run-store.ts';
+import type { InputIndex } from './preparation.ts';
+
+const toolFiles = ['inspection.ts', 'native.ts', 'native_worker.py', 'delivery.ts'];
+async function signature(document: string, bindings: string, index: string) {
+  const hashes = await Promise.all([document, bindings, index, ...toolFiles.map(p => fileURLToPath(new URL(p, import.meta.url)))].map(fileHash));
+  return createHash('sha256').update(JSON.stringify(hashes)).digest('hex');
+}
+async function raster(path: string) { return sharp(path).ensureAlpha().raw().toBuffer({resolveWithObject:true}); }
+export function alphaGain(before: Uint8Array, after: Uint8Array) {
+  if (before.length !== after.length) throw new Error('原生检查画布改变');
+  let n = 0;
+  for (let i = 3; i < before.length; i += 4) if (after[i] > before[i] + 1) n++;
+  return n;
+}
+function label(value: string, width: number) {
+  const escaped = value.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]!));
+  return Buffer.from(`<svg width="${width}" height="52"><rect width="100%" height="100%" fill="#eaf0f5"/><text x="18" y="34" font-family="DejaVu Sans" font-size="20" fill="#263747">${escaped}</text></svg>`);
+}
+async function sheet(panels: {path:string;label:string}[], path: string, columns: number) {
+  const w = 512, h = 564, rows = Math.ceil(panels.length / columns), tiles = [];
+  for (const [i,p] of panels.entries()) {
+    const picture = await sharp(p.path).resize({width:w,height:h-52,fit:'contain',background:'#f7f9fb'}).png().toBuffer();
+    tiles.push({input:picture,left:(i%columns)*w,top:Math.floor(i/columns)*h+52});
+    tiles.push({input:label(p.label,w),left:(i%columns)*w,top:Math.floor(i/columns)*h});
+  }
+  await sharp({create:{width:w*columns,height:h*rows,channels:4,background:'#f7f9fb'}}).composite(tiles).png().toFile(path);
+}
+
+export async function inspectMask(output: string, krita: string, env: NodeJS.ProcessEnv, signal?: AbortSignal,
+  native: NativeInspect = inspectNative) {
+  const document = join(output,'character-shadowed.kra'), bindingsPath = join(output,'shadows.json');
+  const indexPath = join(output,'references/inputs.json');
+  const stamp = await signature(document,bindingsPath,indexPath), receipt = join(output,'inspection.json');
+  try {
+    const previous = JSON.parse(await readFile(receipt,'utf8'));
+    if (previous.signature === stamp && previous.passed === true) {
+      const files = Object.entries(previous.fileHashes ?? {});
+      if (files.length && (await Promise.all(files.map(async ([p,h]) => within(output,await realpath(join(output,p))) && await fileHash(join(output,p)) === h))).every(Boolean)) return previous;
+    }
+  } catch (e) { if (!(e instanceof SyntaxError) && !['ENOENT','ENOTDIR'].includes((e as NodeJS.ErrnoException).code ?? '')) throw e; }
+  const bindings = JSON.parse(await readFile(bindingsPath,'utf8'));
+  if (bindings.version !== 2 || !Array.isArray(bindings.shadows) || !Array.isArray(bindings.excluded)) throw new Error('素材检查需要 shadows.json v2，记录 testOffsets；详见 references/production.md');
+  const layers = kraLayers(kraContents(await readFile(document)).xml);
+  const index = JSON.parse(await readFile(indexPath,'utf8')) as InputIndex;
+  validateMaskStructure(layers, new Map(index.layers.map(l => [l.uuid,{nodetype:l.type,name:l.name}])), new Set(index.parts.map(p => p.id)), bindings);
+  for (const r of bindings.shadows) {
+    if (!r.testOffsets || !r.notes?.trim()) throw new Error('请记录本部件的像素偏移检查与画法依据：' + r.id);
+    for (const [ids, declared] of [[r.casterLayerUuids,[r.casterPartId]], [r.receiverLayerUuids,r.receiverPartIds ?? [r.receiverPartId]]] as [string[],string[]][]) {
+      for (const id of ids) {
+        const matched = index.layers.find(l => l.uuid === id.replace(/[{}]/g,'').toLowerCase())?.nameMatch;
+        if (matched && !declared.some(p => matched === p || matched.startsWith(p + '/'))) throw new Error('图层名称已匹配到其他 part，请核对归属：' + id);
+      }
+    }
+  }
+  const folder = join(output,'inspection','native-' + randomUUID());
+  const result = await native(document,bindings.shadows,folder,krita,env,signal);
+  if (!result.success || result.relations.length !== bindings.shadows.length
+    || result.relations.some((r,i) => r.id !== bindings.shadows[i].id || JSON.stringify(r.frames.map(f => f.offset)) !== JSON.stringify(bindings.shadows[i].testOffsets))) throw new Error('原生检查结果与声明关系不一致');
+  const files: string[] = [], relations = [], warnings: string[] = [];
+  const owned = async (name: string) => {
+    const path = join(folder,name);
+    if (!within(folder, await realpath(path))) throw new Error('原生检查输出超出检查目录');
+    files.push(path); return path;
+  };
+  const base = await raster(await owned('without-shadows.png'));
+  const finalPath = await owned('native-final.png'), final = await raster(finalPath);
+  if (base.info.width !== result.width || base.info.height !== result.height || final.info.width !== result.width || final.info.height !== result.height || alphaGain(base.data, final.data)) throw new Error('阴影在受影裁切范围外新增 alpha，请检查原生裁切');
+  for (const [i,r] of result.relations.entries()) {
+    const rawPath = await owned(r.fullPaint), raw = await raster(rawPath), receiverPath = await owned(r.receiver), receiver = await raster(receiverPath);
+    const clipBase = await raster(await owned(r.clipBase));
+    if (raw.info.width !== receiver.info.width || raw.info.height !== receiver.info.height) throw new Error('阴影与受影采样未配准');
+    let painted = 0, overlap = 0;
+    for (let p = 3; p < raw.data.length; p += 4) if (raw.data[p]) { painted++; if (receiver.data[p]) overlap++; }
+    if (!painted) throw new Error('完整影层为空：' + r.id);
+    if (overlap === painted) warnings.push(r.id + '：完整影层没有裁切外像素，请检查是否预裁死或确实适用');
+    const panels = [{path:rawPath,label:'Full shadow paint'},{path:receiverPath,label:'Receiver coverage'}];
+    for (const frame of r.frames) {
+      const path = await owned(frame.file), pixels = await raster(path);
+      const clipped = await raster(await owned(frame.clipped));
+      if (clipped.info.width !== clipBase.info.width || clipped.info.height !== clipBase.info.height || alphaGain(clipBase.data, clipped.data)) throw new Error('隔离组内阴影越过受影裁切：' + r.id);
+      if (pixels.info.width !== result.width || pixels.info.height !== result.height || alphaGain(base.data,pixels.data)) throw new Error('相对偏移后阴影越过原生裁切：' + r.id);
+      panels.push({path,label:'Native offset ' + frame.offset.join(', ')});
+    }
+    const review = join(output,'inspection',`relation-${String(i).padStart(3,'0')}-review.png`);
+    await sheet(panels,review,3); files.push(review);
+    relations.push({...r,rawAlphaPixels:painted,receiverIntersectionPixels:overlap,outsideReceiverPixels:painted-overlap,
+      review:review.slice(output.length+1),nativeDirectory:folder.slice(output.length+1)});
+  }
+  const overview = join(output,'inspection/overview.png');
+  await mkdir(join(output,'inspection'),{recursive:true});
+  await sheet([{path:join(folder,'without-shadows.png'),label:'Without cast shadows'},{path:finalPath,label:'Native final'}],overview,2); files.push(overview);
+  if (await signature(document,bindingsPath,indexPath) !== stamp) throw new Error('检查期间工程变化，请重跑检查');
+  const fileHashes = Object.fromEntries(await Promise.all(files.map(async p => [p.slice(output.length+1),await fileHash(p)])));
+  const report = {version:1,signature:stamp,passed:true,nativeVersion:result.nativeVersion,width:result.width,height:result.height,
+    relations,warnings,fileHashes,scope:'Native clipping and declared relative offsets; not physics or deformer animation. Raw intersection is before ancestor masks and final occluders.'};
+  await writeFile(receipt,JSON.stringify(report,null,2)+'\n');
+  return report;
+}

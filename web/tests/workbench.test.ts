@@ -183,3 +183,15 @@ test('real coordinator owns web execution: locking, failure diagnostics, resume,
   run = await readRun(task, 'test'); assert.equal(run?.status, 'completed');
   assert.equal((await jsonFile(task, 'raster-layering/run.json'))?.threadId, 'keep-me');
 });
+
+test('shadow reference routes serve only bundled guides, and inspection previews use declared files', async t => {
+  const f=await fixture(t);
+  for(const name of ['skirt','hair']) {
+    const response=await fetch(f.url+'/shadow-reference/'+name+'.png');assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'image/png');
+    const meta=await sharp(Buffer.from(await response.arrayBuffer())).metadata();assert.equal(meta.width,2048);assert.equal(meta.height,1280);
+  }
+  assert.equal((await fetch(f.url+'/shadow-reference/native_worker.py')).status,404);
+  const {shadowInspectionArtifacts}=await import(new URL('../progress.js',import.meta.url).href);
+  const path='shadow/mask/step01/inspection/relation-001-review.png';
+  assert.deepEqual(shadowInspectionArtifacts([path,'shadow/mask/step01/inspection/native-123/offset.png','shadow/normal-depth/step01/inspection/relation-000-review.png']).map((a:any)=>a.path),[path]);
+});

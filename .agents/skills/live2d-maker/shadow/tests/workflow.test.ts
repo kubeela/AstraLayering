@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 import { zipSync, strToU8 } from 'fflate';
 import { runWorkflow, parseRunArguments } from '../run.ts';
-import { maskSteps, mapSteps } from '../steps.ts';
+import type { NativeInspect } from '../native.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import type { AgentRequest } from '../../shared/raster/agent.ts';
 import { rasterCodexConfig } from '../../shared/raster/agent.ts';
@@ -38,17 +38,27 @@ async function fixture(t: TestContext) {
   }
   await writeFile(join(task, 'part-layering/references/simplified-subject.webp'), color);
   const options = { name: 'case', dir: root, krita: process.execPath };
-  const deps = { environment: loadWorkflowEnvironment({}, root), preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+  const inspectNative: NativeInspect = async (_document, relations, output) => {
+    await mkdir(output,{recursive:true});
+    await writeFile(join(output,'native-final.png'),color);
+    await writeFile(join(output,'without-shadows.png'),color);
+    for (const [i,r] of relations.entries()) {
+      await writeFile(join(output,`paint-${i}.png`),color); await writeFile(join(output,`receiver-${i}.png`),color);
+      for (const [j,_p] of r.testOffsets.entries()) await writeFile(join(output,`offset-${i}-${j}.png`),color);
+    }
+    return {success:true,width:2,height:2,nativeVersion:'fixture',relations:relations.map((r,i)=>({id:r.id,bounds:[0,0,2,2],fullPaint:`paint-${i}.png`,receiver:`receiver-${i}.png`,clipBase:`receiver-${i}.png`,frames:r.testOffsets.map((offset:number[],j:number)=>({offset,file:`offset-${i}-${j}.png`,clipped:`offset-${i}-${j}.png`}))}))};
+  };
+  const deps = { inspectNative, environment: loadWorkflowEnvironment({}, root), preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
   const deliver = async (request: AgentRequest) => {
     await request.onEvent({ type: 'thread.started', thread_id: request.threadId ?? (request.step + '-thread') });
     const path = join(request.directory, 'step01');
     if (request.step === 'shadow_mask') {
       await writeFile(join(path, 'character-shadowed.kra'), kra);
       await writeFile(join(path, 'character-shadowed.png'), color);
-      await writeFile(join(path, 'shadows.json'), JSON.stringify({ version: 1, shadows: [{
+      await writeFile(join(path, 'shadows.json'), JSON.stringify({ version: 2, shadows: [{
         id: 'hair-face', casterPartId: 'character:hair', receiverPartId: 'character:face',
         casterLayerUuids: ['caster'], receiverLayerUuids: ['face'], shadowLayerUuid: 'shadow', clipBaseLayerUuid: 'face',
-        follow: 'caster', blendMode: 'normal',
+        follow: 'caster', blendMode: 'normal', testOffsets:[[0,0],[1,0]], notes:'fixture coverage',
       }], excluded: [] }));
     } else {
       await sharp({ create: { width: 2, height: 2, channels: 3, background: { r: 128, g: 128, b: 255 } } }).png().toFile(join(path, 'normal.png'));
@@ -169,4 +179,42 @@ test('一张完整阴影支持多个真实受影 part；未知部件不能登记
     await writeFile(path, JSON.stringify(data)); return result;
   } }), /全部受影部件/);
   await assert.rejects(readFile(join(f.task, 'shadow/mask/step01/.completed')), { code: 'ENOENT' });
+});
+
+test('制作参考准备、原生检查、指纹复用与损坏重新检查', async t => {
+  const f=await fixture(t);let inspections=0;
+  const native:NativeInspect=async (...args)=>{inspections++;return f.deps.inspectNative(...args);};
+  const deps={...f.deps,inspectNative:native,agent:async(request:AgentRequest)=>{
+    const guide=await readFile(join(request.directory,'step01/references/production.md'),'utf8');assert.match(guide,/testOffsets/);
+    assert.match(request.prompt,/inspect.ts/);return f.deliver(request);
+  }};
+  await runWorkflow(f.options,deps);assert.equal(inspections,1);
+  await runWorkflow(f.options,deps);assert.equal(inspections,1);
+  const output=join(f.task,'shadow/mask/step01');
+  const receipt=JSON.parse(await readFile(join(output,'inspection.json'),'utf8'));assert.equal(receipt.passed,true);
+  await writeFile(join(output,'inspection/overview.png'),'broken');
+  await runWorkflow(f.options,deps);assert.equal(inspections,2);
+  const bindings=JSON.parse(await readFile(join(output,'shadows.json'),'utf8'));bindings.shadows[0].notes='new note';
+  await writeFile(join(output,'shadows.json'),JSON.stringify(bindings));
+  await runWorkflow(f.options,deps);assert.equal(inspections,3);
+  await rm(join(output,'inspection/overview.png'));await runWorkflow(f.options,deps);assert.equal(inspections,4);
+  // Missing diagnostics in dry-run never launch Krita or write a new receipt.
+  await rm(join(output,'inspection/overview.png'));await runWorkflow({...f.options,dryRun:true},deps);assert.equal(inspections,4);
+});
+
+test('原生组内越界与空影层不能登记完成',async t=>{
+ const f=await fixture(t);
+ for(const problem of ['spill','empty']){
+  const native:NativeInspect=async(...args)=>{
+   const result=await f.deps.inspectNative(...args),output=args[2];
+   const relation=result.relations[0];
+   const path=join(output,problem==='spill'?relation.frames[0].clipped:relation.fullPaint);
+   const {data,info}=await sharp(path).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+   if(problem==='spill')data[11]=255;else for(let i=3;i<data.length;i+=4)data[i]=0;
+   await sharp(data,{raw:info}).png().toFile(path+'.tmp');
+   const {rename}=await import('node:fs/promises');await rename(path+'.tmp',path);return result;
+  };
+  await assert.rejects(runWorkflow(f.options,{...f.deps,inspectNative:native,agent:f.deliver}),problem==='spill'?/裁切/:/为空/);
+  await assert.rejects(readFile(join(f.task,'shadow/mask/step01/.completed')),{code:'ENOENT'});
+ }
 });

@@ -43,8 +43,9 @@ export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
   directorySuffix?: string;
   fingerprintInput?(input: Input): Promise<string>;
+  prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
-  validateDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
+  validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean): Promise<void>;
   steps: readonly StepDefinition[];
   resolveInput(name: string, root: string): Promise<Input>;
   validateInput(value: unknown): value is Input;
@@ -99,7 +100,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     if ((plan.resetFrom === undefined || index + 1 < plan.resetFrom) && plan.statuses.get(step.id) === 'completed') {
       try { await checkFiles(join(directory, step.id), step.requiredFiles); }
       catch (error) { throw new Error(`${step.id} 已标记完成但交付缺失；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`, { cause: error }); }
-      await pipeline.validateDelivery?.(join(directory, step.id), reference, step);
+      await pipeline.validateDelivery?.(join(directory, step.id), reference, step, krita, options.dryRun);
     }
   }
   if (!options.dryRun) {
@@ -220,6 +221,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       return result;
     };
     try {
+      await pipeline.prepareStep?.(output, reference, step, krita);
       if (!drawingReady) {
         if (step.review) {
           await discardReviewReports(output);
@@ -244,7 +246,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       if (fingerprint !== undefined && await pipeline.fingerprintInput?.(reference) !== fingerprint) throw new Error('制作期间上游输入改变，保留进度；续跑将重新制作本分支。');
       await pipeline.prepareDelivery?.(output, reference, step);
       await checkFiles(output, step.requiredFiles);
-      await pipeline.validateDelivery?.(output, reference, step);
+      await pipeline.validateDelivery?.(output, reference, step, krita);
       options.signal?.throwIfAborted();
       await rename(join(output, '.running'), join(output, '.completed'));
       options.progress?.(`${step.id}：交付检查通过，已写入 .completed`);

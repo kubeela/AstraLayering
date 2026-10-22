@@ -97,3 +97,5 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .group-expanded [data-node$=":preparation"]>.step-children>.step-node{flex:1;min-width:0}
 .group-expanded .artifact-image img{max-height:220px}
 .group-expanded [data-node$=":preparation"] .step-summary{max-height:64px;overflow:auto}
+
+.shadow-references{display:flex;gap:16px;padding:4px 0 12px;font-size:12px}.shadow-references a{color:var(--accent,#6b72cd);text-decoration:none}.shadow-references a:hover{text-decoration:underline}

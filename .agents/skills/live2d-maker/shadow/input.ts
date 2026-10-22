@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import type { ShadowMode } from '../shared/shadow.ts';
 
@@ -34,9 +35,9 @@ export function inputDirectories(input: ShadowInput): string[] {
 export async function fileHash(path: string): Promise<string> {
   return createHash('sha256').update(await readFile(path)).digest('hex');
 }
-export async function inputFingerprint(input: ShadowInput, mode: ShadowMode, prompt: URL): Promise<string> {
+export async function inputFingerprint(input: ShadowInput, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<string> {
   const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter,
     ...input.structureFiles].map(fileHash));
   return createHash('sha256').update(JSON.stringify({ version: 1, mode, hashes,
-    prompt: await readFile(prompt, 'utf8') })).digest('hex');
+    prompt: await readFile(prompt, 'utf8'), ...(rules.length ? { rules: await Promise.all(rules.map(p => fileHash(fileURLToPath(p)))) } : {}) })).digest('hex');
 }

@@ -6,6 +6,7 @@ import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
+import { referenceUrl } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
 import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { configAPI } from './config.ts';
@@ -217,6 +218,10 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         const file = await studioAsset(root, url.searchParams.get('sample') ?? '', url.searchParams.get('kind') ?? '');
         response.writeHead(200, { 'Content-Type': 'image/png' });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      if (path === '/shadow-reference/skirt.png' || path === '/shadow-reference/hair.png') {
+        response.writeHead(200, { 'Content-Type': 'image/png' });
+        response.end(await readFile(referenceUrl(path.split('/').at(-1)!))); return;
       }
       const vendor: Record<string,string> = {
         '/vendor/three.module.js': 'node_modules/three/build/three.module.js',
