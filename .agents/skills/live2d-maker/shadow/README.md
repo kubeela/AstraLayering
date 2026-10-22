@@ -44,4 +44,6 @@ node shadow/inspect.ts --output /path/to/shadow/mask/step01 --krita /path/to/kri
 
 固定检查程序在独立设置与临时目录中打开保存工程，不保存修改；导出去影对照、完整影层、联合接收面和全部相对偏移。Linux 沿用可用显示环境，没有 DISPLAY 时启动并清理自己的 Xvfb；需安装 Krita Python 插件和 Xvfb。不转换工程色深，目前原始像素检查支持 RGBA U8。其他色深明确报错，不压缩素材以绕过检查。
 
+私有运行目录使用短系统临时路径和 `0700` 权限；Krita 退出通过 `file_quit` 动作请求。启动警告、插件执行结果与进程退出是不同检查项；`Krita.instance().quit()` 不属于本次实测 Krita 5.3.4.1 的 Python API。Jianma 从头测试及环境问题见仓库 `tutorial/live2d-guidance/formal/sources/jianma-shadow-fresh-run.md`。
+
 工作台阴影栏目提供参考图、去影对照、逐处余量拼图和检查记录；拼图只供比较，记录中的完整 PNG 保持原分辨率。此检查覆盖素材与原生裁切，尚不验证实际 deformer／物理动画或 Cubism 导出。

@@ -119,7 +119,10 @@ class Inspection(Extension):
         temp = OUT / 'result.tmp'
         temp.write_text(json.dumps(result, ensure_ascii=False), encoding='utf-8')
         temp.replace(OUT / 'result.json')
-        Krita.instance().quit()
+        # Krita 5.3.4.1 has no Krita.quit() Python method. Request its normal
+        # application shutdown after this callback returns, so document and
+        # worker cleanup run through Krita instead of an immediate Qt quit.
+        QTimer.singleShot(150, Krita.instance().action('file_quit').trigger)
 
 
 Krita.instance().addExtension(Inspection(Krita.instance()))
