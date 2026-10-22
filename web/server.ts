@@ -93,8 +93,23 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           json({ error: '不接受跨站运行操作' }, 403); return;
         }
         if (path.startsWith('/api/studio/layers/')) {
-          if (path === '/api/studio/layers/open') {
-            const document = await compositor.create(request, url.searchParams.get('format') ?? '');
+          if (path === '/api/studio/layers/open' || path === '/api/studio/layers/open-project') {
+            let document;
+            if (path.endsWith('/open-project')) {
+              const value = await body(request);
+              if (value.dir !== requestDir) { json({ error: '追踪目录已改变，请刷新页面后重试' }, 409); return; }
+              const directory = await task(value.name, requestDir);
+              const project = await studioProject(directory, value.name, requestDir, value.preview);
+              const source = project.files.document;
+              if (!source.available || value.path !== source.path || value.version !== source.version) {
+                json({ error: '项目工程已变化，请更新项目后重试' }, 409); return;
+              }
+              // The project already owns this file. Reuse it on the server instead
+              // of uploading the browser's downloaded KRA/PSD back to the same host.
+              const file = await safePath(directory, source.path);
+              async function* bytes() { yield* createReadStream(file); }
+              document = await compositor.create(bytes(), extname(source.path).slice(1).toLowerCase());
+            } else document = await compositor.create(request, url.searchParams.get('format') ?? '');
             if (response.destroyed) { await compositor.closeDocument(document.session); return; }
             response.once('close', () => {
               if (!response.writableFinished) void compositor.closeDocument(document.session).catch(() => {});
@@ -257,7 +272,8 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
       const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/task-selection.js': 'task-selection.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
-      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'projection-field.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'component-physics-binding.js', 'component-physics-geometry.js', 'component-physics-model.js', 'component-physics-schema.js', 'component-physics-panel.js', 'physics-test-input.js']) staticFiles['/studio/' + name] = 'studio/' + name;
+      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'projection-field.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'component-physics-binding.js', 'component-physics-geometry.js', 'component-physics-model.js', 'component-physics-schema.js', 'component-physics-panel.js', 'physics-test-input.js', 'physics-airflow.js']) staticFiles['/studio/' + name] = 'studio/' + name;
+      for (const name of ['vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });

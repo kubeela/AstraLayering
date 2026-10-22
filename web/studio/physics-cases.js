@@ -2,7 +2,7 @@ import { componentDefaults } from './component-physics-schema.js';
 import { bindingDefaults } from './physics-model.js';
 
 export const physicsCases = {
-  ribbon: { label: '长飘带', note: '上端固定，长条下段弯曲与回弹', bounds: { x: 438, y: 180, width: 148, height: 650 }, kind: 'ribbon', direction: 'down', color: '#288fb7' },
+  ribbon: { label: '长飘带', note: '上端固定，长条下段连续弯曲摆动', bounds: { x: 438, y: 180, width: 148, height: 650 }, kind: 'ribbon', direction: 'down', color: '#288fb7' },
   skirt: { label: '裙摆布片', note: '腰口固定，宽下摆局部受力', bounds: { x: 262, y: 220, width: 500, height: 590 }, kind: 'cloth', direction: 'down', color: '#ca607d' },
   flag: { label: '横向挂布', note: '左侧固定，自由端上下弯曲', bounds: { x: 220, y: 370, width: 610, height: 245 }, kind: 'cloth', direction: 'right', color: '#339778' },
 };
@@ -66,6 +66,7 @@ export async function createPhysicsCase(id) {
   const fixed=id==='flag'?[[b.x,b.y],[b.x+b.width*.12,b.y],[b.x+b.width*.12,b.y+b.height],[b.x,b.y+b.height]]:[[b.x,b.y],[b.x+b.width,b.y],[b.x+b.width,b.y+b.height*.12],[b.x,b.y+b.height*.12]];
   const freeLength=(id==='flag'?b.width:b.height)*.88;
   const authoring={freeLength,fixedRegions:[fixed],transitionPixels:freeLength*.16,contour:[[b.x,b.y],[b.x+b.width,b.y],[b.x+b.width,b.y+b.height],[b.x,b.y+b.height]],subdivisions:3};
+  if(id!=='ribbon')authoring.controlGrid=[4,8];
   if(id==='ribbon'){authoring.centerline=Array.from({length:13},(_,i)=>[b.x+b.width/2,b.y+b.height*i/12]);authoring.widths=authoring.centerline.map(()=>b.width);}
   const componentPhysics={kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:size[0],height:size[1]}},components:[{id:cloth.id,name:spec.label,kind:id==='ribbon'?'strand':'cloth',priority:'primary',enabled:true,sourcePartIds:[cloth.id],layerRefs:[{uuid:cloth.uuid,contentHash:cloth.contentHash}],supports:[{id:'fixture',at:id==='flag'?[b.x,b.y+b.height/2]:[b.x+b.width/2,b.y]}],authoring,...componentDefaults(id==='ribbon'?'strand':'cloth')}],review:{status:'fixture'}};
   return { name: `物理测试 · ${spec.label}.png`, file: colorBlob, color: colorBlob, normal: normalBlob, depth: depthBlob,

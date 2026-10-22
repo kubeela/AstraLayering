@@ -12,7 +12,6 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { randomBytes, randomUUID } from "node:crypto";
 import { setTimeout as delay } from "node:timers/promises";
-import type { IncomingMessage } from "node:http";
 import { unzipSync } from "fflate";
 import { readPsd, type Layer } from "ag-psd";
 import { atomicJSON } from "./files.ts";
@@ -273,14 +272,14 @@ export class LayerCompositor {
       if (Date.now() - value.touched > 30 * 60_000)
         await this.closeSession(key);
   }
-  async create(request: IncomingMessage, extension: string) {
+  async create(request: AsyncIterable<Uint8Array>, extension: string) {
     // Reserve capacity before buffering an upload; no discarded full-size decode.
     return this.exclusive(async () => {
       await this.start();
       await this.expire();
       if (this.sessions.size >= 4)
         throw Error("打开的文件过多，请先关闭其他文件");
-      const chunks: Buffer[] = [];
+      const chunks: Uint8Array[] = [];
       let size = 0;
       for await (const chunk of request) {
         size += chunk.length;

@@ -1,7 +1,7 @@
 export const componentSchemaVersion = 1;
 export const componentPhysicsVersion = 'astra-component-physics-1';
 export const reviewCriteria = ['attachment', 'shape', 'response', 'limits', 'layers', 'surfaces'];
-export const reviewTests = ['neutral', 'tip-impulse', 'support-release', 'support-reverse', 'sustained', 'extreme', 'combined'];
+export const reviewTests = ['neutral', 'tip-impulse', 'support-release', 'support-reverse', 'sustained', 'extreme', 'combined', 'light-brush', 'airflow'];
 export const componentDefaults = kind => ({
   response: { frequencyHz: kind === 'pendant' ? 1.2 : .9, dampingRatio: .24, inputGain: .65 },
   material: { stretchCompliance: 1e-7, shearCompliance: .002, bendCompliance: .0004, shapeCompliance: .0008 },

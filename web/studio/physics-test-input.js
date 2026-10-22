@@ -1,6 +1,7 @@
 // Integer steps are the replay clock, shared by offline evidence and workbench.
-export const inputVersion = 'astra-physics-tests-2';
-export const testNames = ['neutral','tip-impulse','support-release','support-reverse','sustained','extreme','combined'];
+import { airflowAt } from './physics-airflow.js';
+export const inputVersion = 'astra-physics-tests-3';
+export const testNames = ['neutral','tip-impulse','support-release','support-reverse','sustained','extreme','combined','light-brush','airflow'];
 const ease = t => {t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
 export function applyTestInput(scene, test, step) {
   if(!testNames.includes(test)) throw Error('未知物理测试');
@@ -11,13 +12,14 @@ export function applyTestInput(scene, test, step) {
   // Move the parent artwork and every attachment through the same pose.
   // Translating an abstract port while its parent stays still tests a tear.
   scene.sourcePose={x:parentX,y:0,angle:parentAngle};scene.inputs.clear();
+  scene.airflow=test==='airflow'&&t>=.5&&t<4.5?airflowAt(t,.2):{x:0,y:0};
   for(const body of scene.bodies.values()) {
     const c=body.component,L=body.freeLength,a=c.authoring;
-    const pulse=(test==='tip-impulse'||test==='extreme'||test==='combined')&&step===60;
+    const pulse=(test==='tip-impulse'||test==='extreme'||test==='combined'||test==='light-brush')&&step===60;
     const sustained=test==='sustained'&&step>=60&&step<300&&step%12===0;
     if(pulse||sustained) {
       let best=0;for(let i=1;i<body.weights.length;i++)if(body.weights[i]>body.weights[best]||body.weights[i]===body.weights[best]&&Math.hypot(body.rest[i*2]-c.supports[0].at[0],body.rest[i*2+1]-c.supports[0].at[1])>Math.hypot(body.rest[best*2]-c.supports[0].at[0],body.rest[best*2+1]-c.supports[0].at[1]))best=i;
-      const speed=L*(test==='extreme'?8:sustained?.08:.7);
+      const speed=L*(test==='extreme'?8:test==='light-brush'?.06:sustained?.08:.7);
       const dx=body.rest[best*2]-c.supports[0].at[0],dy=body.rest[best*2+1]-c.supports[0].at[1],length=Math.max(1,Math.hypot(dx,dy));
       body.impulse(body.positions[best*2],body.positions[best*2+1],speed*dy/length,-speed*dx/length,L*.45);
     }

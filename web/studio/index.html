@@ -245,6 +245,7 @@
             <p id="physics-status" class="muted">从角色原始图层建立物理绑定</p>
           </section>
           <div id="component-controls" hidden>
+            <section class="panel"><h3>环境风</h3><label class="toggle"><input id="component-wind" type="checkbox" checked>启用微风</label><div class="slider"><div class="slider-head"><label for="component-wind-strength">风力</label><output id="component-wind-value">20%</output></div><input id="component-wind-strength" type="range" min="0" max="100" step="5" value="20"></div><label class="field">风向<select id="component-wind-direction"><option value="0">向右</option><option value="180">向左</option><option value="-90">向上</option><option value="90">向下</option></select></label></section>
             <section class="panel"><p id="component-info" class="muted"></p><div id="component-response"></div></section>
             <section class="panel physics-limit-panel"><h3>最大约束</h3><div id="component-limits"></div><p id="component-stats" role="status"></p></section>
             <section class="panel"><label class="field">复核动画<select id="component-test"></select></label><button id="component-save">保存到项目</button></section>
@@ -271,7 +272,7 @@
               <div class="file-actions"><button id="physics-pause">暂停</button><button id="physics-step">单帧</button><button id="physics-reset">复位</button></div>
               <button id="physics-pulse" class="physics-pulse">单次扰动</button>
               <label class="field">扰动对象<select id="physics-category"><option value="secondary">飘动物体</option><option value="jelly" disabled>果冻物体 · 未配置</option><option value="all">全部物理</option></select></label>
-              <label class="field">扰动范围<select id="physics-scope"><option value="current">当前组件</option><option value="all">全部组件</option></select></label>
+              <label class="field">扰动范围<select id="physics-scope"><option value="all">范围内所有组件</option><option value="current">仅当前组件</option></select></label>
               <div class="slider"><div class="slider-head"><label for="physics-radius">受力半径</label><output id="physics-radius-value">90 px</output></div><input id="physics-radius" type="range" min="20" max="240" step="5" value="90"></div>
               <div class="slider"><div class="slider-head"><label for="physics-force">扰动力度</label><output id="physics-force-value">70%</output></div><input id="physics-force" type="range" min="10" max="200" step="5" value="70"></div>
               <label class="toggle"><input id="physics-guides" type="checkbox" checked>显示网格与活动边界</label>

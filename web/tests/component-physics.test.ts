@@ -1,3 +1,5 @@
+import { InochiPendulum } from '../studio/vendor/inochi2d/pendulum.js';
+import { motionIssues } from '../studio/physics-motion-review.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, readFile } from 'node:fs/promises';
@@ -64,9 +66,25 @@ test('UUID bindings preserve multiple source layers through reorder and clipping
 });
 test('evidence records exact every-step states and never publishes numerical-only review',async()=>{
   const directory=await mkdtemp(join(tmpdir(),'astra-component-test-'));try{
-    const c=config([component()]);const manifest=await simulate(c,directory);assert.equal(manifest.runs.length,7);assert.equal(manifest.coverage.render,'pending');
+    const c=config([component()]);const manifest=await simulate(c,directory);assert.equal(manifest.runs.length,9);assert.equal(manifest.coverage.render,'pending');
     const rows=await traceWindow(directory,'tip-impulse',[59,60,61,960]);assert.equal(rows[1].time,.5);assert(rows[0].components.strand.stats.travel<1e-10);assert(rows[2].components.strand.stats.travel>0);assert(rows[2].components.strand.positions.length>0);
     assert.deepEqual((await traceWindow(directory,'tip-impulse',[61]))[0],rows[2]);
     await assert.rejects(validateFindings(c,directory,{configHash:manifest.configHash,evidenceVersion:manifest.version,components:[]}),/渲染/);
   }finally{await rm(directory,{recursive:true,force:true});}
+});
+
+
+test('Inochi nonlinear pendulum matches the small-angle period and preserves amplitude without damping',()=>{
+  const body:any={freeLength:100,component:{authoring:{pivot:[0,0]},response:{frequencyHz:1,dampingRatio:0}},scene:{airflow:{x:0}},target:()=>[0,0]};
+  const p=new InochiPendulum(body);p.angle=.02;const h=1/240;let minimum=Infinity,maximum=-Infinity,firstCrossing=0;
+  for(let n=1;n<=240;n++){p.step(h);minimum=Math.min(minimum,p.angle);maximum=Math.max(maximum,p.angle);if(!firstCrossing&&p.angle<0)firstCrossing=n*h;}
+  assert(Math.abs(firstCrossing-.25)<.005);assert(Math.abs(p.angle-.02)<1e-6);assert(minimum<-.01999&&maximum>.01999);
+});
+test('motion review rejects invisible response, repeated retreat, jumps and non-decaying motion',()=>{
+  const c=component(),good={invalid:0,root:0,fallback:0,limited:0,peak:8,final:.01,maxStep:.3};
+  assert.deepEqual(motionIssues('light-brush',c,good),[]);
+  assert(motionIssues('light-brush',c,{...good,peak:0}).includes('weak-response'));
+  assert(motionIssues('support-release',c,{...good,fallback:500}).includes('persistent-retreat'));
+  assert(motionIssues('tip-impulse',c,{...good,maxStep:20}).includes('discontinuous-motion'));
+  assert(motionIssues('tip-impulse',c,{...good,final:7}).includes('unsettled'));
 });

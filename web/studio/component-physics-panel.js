@@ -4,11 +4,16 @@ import { ComponentScene } from './component-physics-model.js';
 import { validatePhysicsConfig } from './component-physics-schema.js';
 import { PhysicsRenderer } from './physics-renderer.js';
 import { applyTestInput, testNames } from './physics-test-input.js';
+import { airflowAt } from './physics-airflow.js';
 const $=s=>document.querySelector(s);
-const specs={frequencyHz:['回弹频率',.15,6,.05,'Hz',1,'response'],dampingRatio:['衰减',.03,1.5,.01,'',1,'response'],inputGain:['受力倍率',0,2,.05,'',1,'response'],maxTravel:['最大位移',1,30,1,'%',100,'limits'],maxAngle:['最大摆角',1,45,1,'°',1,'limits'],maxStretch:['最大拉伸',.5,8,.5,'%',100,'limits'],maxCompression:['最大压缩',0,30,1,'%',100,'limits'],maxShear:['最大剪切',1,30,1,'°',1,'limits'],minAreaRatio:['最小面积',30,95,1,'%',100,'limits']};
+const specs={frequencyHz:['摆动节奏',.15,6,.05,'Hz',1,'response'],dampingRatio:['衰减',.03,1.5,.01,'',1,'response'],inputGain:['受力倍率',0,2,.05,'',1,'response'],maxTravel:['最大位移',1,30,1,'%',100,'limits'],maxAngle:['最大摆角',1,45,1,'°',1,'limits'],maxStretch:['最大拉伸',.5,8,.5,'%',100,'limits'],maxCompression:['最大压缩',0,30,1,'%',100,'limits'],maxShear:['最大剪切',1,30,1,'°',1,'limits'],minAreaRatio:['最小面积',30,95,1,'%',100,'limits']};
 export class ComponentPhysicsPanel extends PhysicsPanel {
   constructor(options){
     super(options);
+    this.breeze=true;this.breezeStrength=.2;this.breezeDirection=0;this.elapsed=0;
+    $('#component-wind').onchange=e=>{this.breeze=e.target.checked;this.lastTime=0;};
+    $('#component-wind-strength').oninput=e=>{this.breezeStrength=e.target.valueAsNumber/100;$('#component-wind-value').textContent=e.target.value+'%';};
+    $('#component-wind-direction').onchange=e=>{this.breezeDirection=Number(e.target.value)*Math.PI/180;};
     for(const [key,[label,min,max,step,unit,,group]]of Object.entries(specs)){
       const box=document.createElement('div');box.className='slider';box.innerHTML=`<div class="slider-head"><label>${label}</label><label class="slider-number"><input id="component-number-${key}" type="number" min="${min}" max="${max}" step="${step}" aria-label="${label}"><span>${unit}</span></label></div><input id="component-${key}" type="range" min="${min}" max="${max}" step="${step}" aria-label="${label}">`;
       $('#component-'+group).append(box);
@@ -17,11 +22,11 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     $('#component-geometry-apply').onclick=()=>{try{const authoring=JSON.parse($('#component-geometry').value);this.changeComponent(null,'authoring',authoring);}catch(e){this.error(e.message);}};
     $('#component-save').onclick=()=>void this.persist();
     $('#component-edit').onclick=()=>{this.editing=!this.editing;this.paused=true;this.scene.reset();this.render();this.sync();};
-    const reset=$('#physics-reset').onclick;$('#physics-reset').onclick=()=>{if(!this.formal)return reset();this.scene.reset();this.replayStep=0;this.playback='';$('#component-test').value='';this.lastTime=0;this.accumulator=0;this.render();this.sync();};
+    const reset=$('#physics-reset').onclick;$('#physics-reset').onclick=()=>{if(!this.formal)return reset();this.scene.reset();this.elapsed=0;this.replayStep=0;this.playback='';$('#component-test').value='';this.lastTime=0;this.accumulator=0;this.render();this.sync();};
     const svg=$('#physics-overlay'),handles=document.createElementNS('http://www.w3.org/2000/svg','g');handles.classList.add('component-handles');svg.append(handles);
     svg.addEventListener('pointermove',e=>{if(!this.dragControl)return;e.stopPropagation();const point=this.sourcePoint(e),{authoring,path}=this.dragControl;let target=authoring;for(const key of path.slice(0,-1))target=target[key];target[path.at(-1)]=point;$('#component-geometry').value=JSON.stringify(authoring,null,2);this.overlay();});
     const end=e=>{if(!this.dragControl)return;e.stopPropagation();const a=this.dragControl.authoring;this.dragControl=null;if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId);this.changeComponent(null,'authoring',a);};svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',()=>{this.dragControl=null;this.overlay();});
-    $('#component-test').replaceChildren(new Option('悬停扰动',''),...testNames.map((name,i)=>new Option(['静止','末端脉冲','支撑移动后释放','支撑往返','持续输入后停止','极端输入','组合运动'][i],name)));
+    $('#component-test').replaceChildren(new Option('自由预览',''),...testNames.map((name,i)=>new Option(['静止','末端脉冲','支撑移动后释放','支撑往返','持续输入后停止','极端输入','组合运动','轻扫后释放','微风吹拂后停止'][i],name)));
     $('#component-test').onchange=e=>{this.playback=e.target.value;this.editing=false;this.paused=false;this.replayStep=0;this.scene?.reset();this.lastTime=0;this.render();this.sync();};
     const toggle=$('#physics-enabled').onchange;$('#physics-enabled').onchange=e=>this.formal?this.changeComponent(null,'enabled',e.target.checked):toggle(e);
     $('#physics-export').onclick=()=>this.download(new Blob([JSON.stringify(this.recipe(),null,2)+'\n'],{type:'application/json'}),this.formal?'physics.draft.json':'character.physics.json');
@@ -56,12 +61,11 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
       this.rebuild();this.select(this.selected);this.sync();this.changed();this.frame=requestAnimationFrame(t=>this.tick(t));
     }catch(e){this.clear();this.error(e.message);}finally{this.preparing=false;this.sync();}
   }
-  clear(){this.formal=false;this.config=null;this.scene=null;this.playback='';this.editing=false;this.dragControl=null;super.clear();}
   rebuild(){
     if(!this.formal)return super.rebuild();
     this.renderer?.dispose();this.scene=new ComponentScene(this.config);this.bodies=this.scene.bodies;this.bindings=new Map(this.config.components.map(c=>[c.id,c]));
-    const layers=new Map(),resolution=resolveComponentBindings(this.config,this.parts);for(const[id,c]of resolution.assignments){const b=this.bodies.get(c);if(b)layers.set(id,b);}
-    this.renderer=new PhysicsRenderer(this.stage,this.parts,layers,this.size,this.scene);this.lastTime=0;this.accumulator=0;this.pointer=null;this.render();
+    const layers=new Map(),resolution=resolveComponentBindings(this.config,this.parts);this.contactLayers=new Map();for(const[id,c]of resolution.assignments){const b=this.bodies.get(c);if(b){layers.set(id,b);if(!this.contactLayers.has(c))this.contactLayers.set(c,[]);this.contactLayers.get(c).push(this.parts.find(l=>l.id===id));}}
+    this.renderer=new PhysicsRenderer(this.stage,this.parts,layers,this.size,this.scene);this.lastTime=0;this.accumulator=0;this.elapsed=0;this.pointer=null;this.render();
   }
   options(){
     if(!this.formal)return super.options();const q=$('#physics-filter').value.toLowerCase();
@@ -85,17 +89,29 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     if(!this.formal)return super.input(e);
     if(!this.ready||!this.enabled||this.editing||this.category==='jelly'||this.tool()!=='disturb'||this.workspace()!=='physics'||this.busy()||this.paused||document.hidden||!document.hasFocus()){this.pointer=null;return;}
     this.playback='';$('#component-test').value='';const rect=this.stage.canvas.getBoundingClientRect(),[wx,wy]=this.stage.screenToWorld(e.clientX-rect.x,e.clientY-rect.y),[w,h]=this.size,x=wx*h/2+w/2,y=h/2-wy*h/2,time=e.timeStamp;
-    if(this.pointer){const dt=(time-this.pointer.time)/1000;if(dt>0&&dt<.12)for(const [id,b]of this.bodies)if((this.scope==='all'||id===this.selected)&&b.hit(x,y,this.parts.filter(l=>b.component.layerRefs.some(r=>r.uuid===l.uuid))))b.impulse(x,y,(x-this.pointer.x)/dt*this.force,(y-this.pointer.y)/dt*this.force,this.radius);}
+    if(this.pointer){
+      const dt=(time-this.pointer.time)/1000,dx=x-this.pointer.x,dy=y-this.pointer.y;
+      if(dt>0&&dt<.12)for(const[id,b]of this.bodies)if(this.scope==='all'||id===this.selected){
+        const steps=Math.min(12,Math.max(1,Math.ceil(Math.hypot(dx,dy)/Math.max(10,this.radius*.5))));let contact=null;
+        for(let n=1;n<=steps&&!contact;n++){
+          const px=this.pointer.x+dx*n/steps,py=this.pointer.y+dy*n/steps,parts=this.contactLayers.get(id)||[];
+          if(b.hit(px,py,parts))contact=[px,py];
+          else for(let k=0;k<8&&!contact;k++){const a=k*Math.PI/4,qx=px+Math.cos(a)*this.radius*.65,qy=py+Math.sin(a)*this.radius*.65;if(b.hit(qx,qy,parts))contact=[qx,qy];}
+        }
+        // Weight by elapsed contact time, not the number of pointer events.
+        if(contact)b.impulse(...contact,dx/dt*this.force,dy/dt*this.force,this.radius,dt*12);
+      }
+    }
     this.pointer={x,y,time};this.overlay();
   }
   setDemo(enabled){if(!this.formal)return super.setDemo(enabled);this.demo=!!enabled;this.playback=enabled?'support-reverse':'';this.replayStep=0;this.scene?.reset();this.lastTime=0;this.sync();}
   pulse(direction=1){if(!this.formal)return super.pulse(direction);if(!this.enabled||this.category==='jelly')return;this.editing=false;for(const[id,b]of this.bodies)if(this.scope==='all'||id===this.selected){let i=0;for(let n=1;n<b.weights.length;n++)if(b.weights[n]>=b.weights[i])i=n;b.impulse(b.positions[i*2],b.positions[i*2+1],direction*b.freeLength*this.force,0,Math.max(this.radius,b.freeLength*.5));}this.lastTime=0;this.sync();}
   sourcePoint(e){const r=this.stage.canvas.getBoundingClientRect(),[x,y]=this.stage.screenToWorld(e.clientX-r.x,e.clientY-r.y),[w,h]=this.size;return [Math.round((x*h/2+w/2)*10)/10,Math.round((h/2-y*h/2)*10)/10];}
-  advance(dt){if(!this.formal)return super.advance(dt);if(!this.enabled)return;for(let t=0;t<dt-1e-9;t+=1/120){if(this.playback)applyTestInput(this.scene,this.playback,++this.replayStep);this.scene.step();if(this.replayStep>=960){if(this.demo){this.scene.reset();this.replayStep=0;}else{this.playback='';$('#component-test').value='';this.paused=true;}}}this.render();}
+  advance(dt){if(!this.formal)return super.advance(dt);if(!this.enabled)return;for(let t=0;t<dt-1e-9;t+=1/120){this.elapsed+=1/120;if(this.playback)applyTestInput(this.scene,this.playback,++this.replayStep);else this.scene.airflow=this.breeze?airflowAt(this.elapsed,this.breezeStrength,this.breezeDirection):{x:0,y:0};this.scene.step();if(this.replayStep>=960){if(this.demo){this.scene.reset();this.replayStep=0;}else{this.playback='';$('#component-test').value='';this.paused=true;}}}this.render();}
   tick(time){
     if(!this.formal)return super.tick(time);if(!this.ready)return;
     const dt=this.lastTime?Math.min(.05,(time-this.lastTime)/1000):0;this.lastTime=time;
-    if(this.enabled&&!this.paused&&!document.hidden&&(this.playback||[...this.bodies.values()].some(b=>b.moving()))){this.accumulator=(this.accumulator||0)+dt;const steps=Math.min(6,Math.floor(this.accumulator*120));if(steps){this.advance(steps/120);this.accumulator-=steps/120;}}else this.accumulator=0;
+    if(this.enabled&&!this.paused&&!document.hidden&&(this.playback||this.breeze&&this.breezeStrength>0||[...this.bodies.values()].some(b=>b.moving()))){this.accumulator=(this.accumulator||0)+dt;const steps=Math.min(6,Math.floor(this.accumulator*120));if(steps){this.advance(steps/120);this.accumulator-=steps/120;}}else this.accumulator=0;
     if(!this.statsTime||time-this.statsTime>180){this.stats();this.statsTime=time;}this.frame=requestAnimationFrame(t=>this.tick(t));
   }
   sync(){
@@ -130,5 +146,5 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     const circle=svg.querySelector('circle');circle.style.display=this.pointer&&this.tool()==='disturb'?'':'none';if(this.pointer){const p=screen(this.pointer.x,this.pointer.y);circle.setAttribute('cx',p[0]);circle.setAttribute('cy',p[1]);circle.setAttribute('r',Math.abs(screen(this.pointer.x+this.radius,this.pointer.y)[0]-p[0]));}
   }
   clear(){this.formal=false;this.scene=null;this.config=null;this.playback='';this.editing=false;this.dragControl=null;super.clear();$('#physics-prepare').hidden=false;if($('#component-controls'))$('#component-controls').hidden=true;for(const id of ['physics-kind','physics-direction'])$('#'+id).closest('label').hidden=false;$('#physics-material').closest('section').hidden=false;$('#physics-limits').closest('section').hidden=false;}
-  diagnostics(){return this.formal?{ready:this.ready,enabled:this.enabled,formal:true,selected:this.selected,solver:this.config.solver,components:this.config.components.map(c=>({id:c.id,name:c.name,enabled:c.enabled,sourcePartIds:c.sourcePartIds,layerRefs:c.layerRefs,stats:this.bodies.get(c.id)?.stats})),issues:this.issues,textureSizes:this.renderer?.targets.map(t=>[t.width,t.height]),playback:this.playback,step:this.replayStep}:super.diagnostics();}
+  diagnostics(){return this.formal?{ready:this.ready,enabled:this.enabled,formal:true,selected:this.selected,scope:this.scope,breeze:this.breeze,breezeStrength:this.breezeStrength,solver:this.config.solver,runtime:'psd2live-inochi-adapter-1',clockStep:this.scene.stepNumber,components:this.config.components.map(c=>({id:c.id,name:c.name,enabled:c.enabled,sourcePartIds:c.sourcePartIds,layerRefs:c.layerRefs,stats:this.bodies.get(c.id)?.stats,impulses:this.bodies.get(c.id)?.impulses})),issues:this.issues,textureSizes:this.renderer?.targets.map(t=>[t.width,t.height]),playback:this.playback,step:this.replayStep}:super.diagnostics();}
 }
