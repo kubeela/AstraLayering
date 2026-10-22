@@ -10,8 +10,6 @@ import { recognizeInitialGroups } from '../part/initial-groups.ts';
 import { runWorkflow as runRaster } from '../../raster-layering/run.ts';
 import { runWorkflow as runClothingRaster } from '../../clothing-raster-layering/run.ts';
 import { initializeRun, newConfig } from '../raster/run-store.ts';
-import { steps as rasterSteps } from '../../raster-layering/steps.ts';
-import { steps as clothingRasterSteps } from '../../clothing-raster-layering/steps.ts';
 import { profile as character } from '../../part-layering/profile.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
 import { fixture } from '../../part-layering/tests/layering-fixture.ts';
@@ -89,11 +87,11 @@ test('续跑时显式传空 Krita 路径仍报错，不静默沿用旧配置', a
   const input = { directory: join(root, 'source'), parts: join(root, 'source/parts') };
   await mkdir(input.parts, { recursive: true });
   const runsDirectory = join(root, 'runs');
-  for (const [run, id, steps] of [[runRaster, 'raster-layering', rasterSteps],
-    [runClothingRaster, 'clothing-raster-layering', clothingRasterSteps]] as const) {
+  for (const [run, id] of [[runRaster, 'raster-layering'],
+    [runClothingRaster, 'clothing-raster-layering']] as const) {
     await seedUpstream('saved', id === 'raster-layering' ? 'part-layering' : 'clothing-part-layering', runsDirectory);
     const directory = pipelineDirectory('saved', id, runsDirectory);
-    await initializeRun(directory, newConfig('saved', input, { executable: process.execPath, version: 'fixture' }, steps));
+    await initializeRun(directory, newConfig('saved', input, { executable: process.execPath, version: 'fixture' }));
     for (const krita of ['', '   ']) {
       await assert.rejects(run({ name: 'saved', krita, dryRun: true }, { runsDirectory,
         preflight: async () => { throw new Error('preflight must not run'); },

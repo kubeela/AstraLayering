@@ -35,6 +35,25 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   files.delete(draft); assert.equal(groupPreviewArtifacts(group, artifacts, files, versions)[0].path, final);
 });
 
+for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: compact preview follows saved progress even while an earlier phase is running`, () => {
+  const group = { id: 'body/bow', webPhases: { outline: 'running' } };
+  const artifacts = groupArtifacts(pipeline, group, 1), files = new Set<string>(), versions: Record<string, string> = {};
+  const preview = () => groupPreviewArtifacts(group, artifacts, files, versions)[0]?.path;
+  const save = (path: string, time: number) => { files.add(path); versions[path] = `${time}:1`; };
+  assert.equal(preview(), undefined);
+  const outline = `${pipeline}/stages/outline/body/bow.svg`, reduced = `${pipeline}/stages/outline-reduce/body/bow.svg`;
+  const draft = `${pipeline}/parts/body/bow.draft.svg`, final = `${pipeline}/parts/body/bow.svg`;
+  save(outline, 10); assert.equal(preview(), outline);
+  save(reduced, 20); assert.equal(preview(), reduced);
+  save(draft, 30); assert.equal(preview(), draft);
+  save(final, 40); assert.equal(preview(), final);
+  save(`${pipeline}/stages/review/body/bow.review.json`, 100);
+  assert.equal(preview(), final, 'a newer report is not an artwork preview');
+  save(outline, 50); assert.equal(preview(), outline, 'a rewritten image is new progress too');
+  save(final, 60); assert.equal(preview(), final);
+  files.delete(final); assert.equal(preview(), outline, 'deleted artwork cannot remain selected');
+});
+
 test('both part pipelines expose their saved depth candidate at the depth step', () => {
   for (const index of [0, 2]) assert.ok(stepArtifacts[index].occlusion.some(item => item.path.endsWith('/stages/occlusion/candidate.svg') && item.kind === 'image'));
 });
