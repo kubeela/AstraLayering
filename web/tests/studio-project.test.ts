@@ -124,6 +124,13 @@ test('Explicit mixed preview requires matching branch provenance and preserves p
   await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   let data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.shadowMode, 'mask'); assert.equal(data.previewMode, 'mixed');
+  const unified = await (await f.get()).json() as any;
+  assert.equal(unified.previewMode, 'mixed');
+  assert.deepEqual(unified.files, data.files);
+  const maskEntry = await (await f.get({ preview: 'mask' })).json() as any;
+  assert.equal(maskEntry.files.document.path, shadowArtifacts.maskDocument);
+  assert.equal(maskEntry.files.normal.available, true);
+  assert.equal(maskEntry.files.depth.available, true);
   assert.equal(data.files.document.path, shadowArtifacts.maskDocument);
   assert.equal(data.files.bindings.available, true); assert.equal(data.files.normal.available, true);
   data = await (await f.get({ preview: 'normal-depth' })).json() as any;
@@ -153,7 +160,7 @@ test('Unified studio discovers pending maps, ignores legacy light files and pref
   await f.put('shadow/normal-depth/run.json', JSON.stringify({ inputFingerprint: await inputFingerprint(input, 'normal-depth', stepsFor('normal-depth')[0].prompt) }));
   await f.put('shadow/normal-depth/step02/light.json', '{"settings":{"lightingMix":0}}');
   let data = await (await f.get()).json() as any;
-  assert.equal(data.previewMode, 'mask'); assert.equal(data.previewDraft, false); assert.equal(data.files.normal.available, false);
+  assert.equal(data.previewMode, 'mixed'); assert.equal(data.previewDraft, true); assert.equal(data.files.normal.available, true);
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, true); assert.equal(data.shadowMode, 'mask');
   assert.equal(data.previewReview, 'draft-awaiting-visual-review'); assert.equal(data.files.normal.path, shadowArtifacts.draftNormal);

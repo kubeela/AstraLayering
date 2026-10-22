@@ -32,6 +32,7 @@ export class LightingStage {
     this.canvas = canvas;
     this.settings = { ...defaults };
     this.mode = "lit";
+    this.lightingEnabled = true;
     this.zoom = 1;
     this.pan = [0, 0];
     this.disposed = false;
@@ -341,7 +342,7 @@ vec4 studioShadowCoord() {
   setMode(mode) {
     this.mode = mode;
     if (!this.color) return;
-    if (mode === "lit" || mode === "split" || mode === "shading") {
+    if (this.lightingEnabled && (mode === "lit" || mode === "split" || mode === "shading")) {
       this.mesh.material = this.material;
       this.material.debugMode = mode === "shading" ? "litShadeRate" : "none";
     } else {
@@ -355,6 +356,10 @@ vec4 studioShadowCoord() {
       this.mesh.material = this.basic;
     }
     this.render();
+  }
+  setLightingEnabled(enabled) {
+    this.lightingEnabled = enabled;
+    this.setMode(this.mode);
   }
   frame(width, height, exporting = false) {
     this.deformation?.compose();
@@ -393,7 +398,7 @@ vec4 studioShadowCoord() {
       this.basic.needsUpdate = true;
       this.mesh.material = this.basic;
       this.renderer.render(this.scene, this.camera);
-      this.mesh.material = this.material;
+      this.mesh.material = this.lightingEnabled ? this.material : this.basic;
       this.renderer.setScissorTest(true);
       this.renderer.setScissor(width / 2, 0, width / 2, height);
       this.renderer.render(this.scene, this.camera);

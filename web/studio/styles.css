@@ -56,6 +56,11 @@ button:disabled {
 fieldset:disabled {
   opacity: 0.45;
 }
+.preview-effects {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+}
 fieldset {
   border: 0;
   margin: 0;
