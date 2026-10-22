@@ -9,7 +9,7 @@ const specs = {
 export class PhysicsPanel {
   constructor({ stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer }) {
     Object.assign(this, { stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer });
-    this.bindings = new Map(); this.bodies = new Map(); this.epoch = 0; this.paused = false;
+    this.bindings = new Map(); this.bodies = new Map(); this.epoch = 0; this.paused = false; this.enabled = false;
     this.radius = 90; this.force = .7; this.showGuides = true; this.scope = 'current';
     for (const [key, [label, min, max, step, unit]] of Object.entries(specs)) {
       const box = document.createElement('div'); box.className = 'slider';
@@ -55,12 +55,12 @@ export class PhysicsPanel {
     if (!this.bindings.has(id)) return;
     this.selected = id; this.pointer = null; this.selectLayer?.(id); this.sync(); this.overlay();
   }
-  async prepare() {
-    if (this.ready || this.preparing || !this.source() || this.busy()) return;
+  async prepare({ draft, enabled = true, selected, paused = false, internal = false } = {}) {
+    if (this.ready || this.preparing || !this.source() || (!internal && this.busy())) return;
     const epoch = ++this.epoch, owner = this.source(); this.preparing = true; this.sync();
     try {
       const ok = await this.surfaces.prepare({ allowFlat: true });
-      if (!ok || epoch !== this.epoch || this.source() !== owner || this.workspace() !== 'physics') return;
+      if (!ok || epoch !== this.epoch || this.source() !== owner) return;
       this.parts = this.surfaces.layers; this.size = this.surfaces.size; this.owner = owner;
       this.sourceHash = this.fingerprint(); this.bindings.clear();
       for (const l of this.parts) {
@@ -69,12 +69,19 @@ export class PhysicsPanel {
         if (skirt) { binding.maxTravel = .08; binding.maxAngle = 12; binding.fixed = .32; }
         this.bindings.set(l.id, binding);
       }
-      try { const saved = localStorage.getItem(this.storageKey()); if (saved) this.restore(JSON.parse(saved)); } catch (error) { this.error('旧物理草稿未加载：' + error.message); }
-      this.selected = [...this.bindings].find(([, p]) => p.enabled)?.[0] || this.parts[0]?.id;
-      this.ready = true; this.rebuild(); this.save(); this.options(); this.selectLayer?.(this.selected); this.sync(); this.changed();
+      try { const saved = draft || JSON.parse(localStorage.getItem(this.storageKey()) || 'null'); if (saved) this.restore(saved); } catch (error) { this.error('旧物理草稿未加载：' + error.message); }
+      this.selected = this.bindings.has(selected) ? selected : [...this.bindings].find(([, p]) => p.enabled)?.[0] || this.parts[0]?.id;
+      this.ready = true; this.enabled = enabled; this.paused = paused; this.rebuild(); this.save(); this.options(); this.selectLayer?.(this.selected); this.sync(); this.changed();
       this.lastTime = 0; this.frame = requestAnimationFrame(t => this.tick(t));
     } catch (error) { this.clear(); this.error(error.message); }
     finally { this.preparing = false; this.sync(); }
+  }
+  async setEnabled(enabled) {
+    if (enabled && !this.ready) return this.prepare();
+    this.enabled = enabled && this.ready;
+    this.pointer = null; this.lastTime = 0; this.accumulator = 0;
+    if (!this.enabled) for (const b of this.bodies.values()) b.reset();
+    this.render(); this.sync(); this.changed();
   }
   edit(key, value) {
     const p = this.bindings.get(this.selected); if (!p) return;
@@ -106,7 +113,7 @@ export class PhysicsPanel {
   }
   save() { try { localStorage.setItem(this.storageKey(), JSON.stringify(this.recipe())); $('#physics-draft').textContent = '草稿 · 已保存到本机'; } catch { $('#physics-draft').textContent = '本机保存不可用，请导出配置'; } }
   input(e) {
-    if (!this.ready || this.tool() !== 'disturb' || this.workspace() !== 'physics' || this.busy() || this.paused || document.hidden || !document.hasFocus()) { this.pointer = null; return; }
+    if (!this.ready || !this.enabled || this.tool() !== 'disturb' || this.workspace() !== 'physics' || this.busy() || this.paused || document.hidden || !document.hasFocus()) { this.pointer = null; return; }
     const rect = this.stage.canvas.getBoundingClientRect(), [wx, wy] = this.stage.screenToWorld(e.clientX - rect.x, e.clientY - rect.y);
     const [w, h] = this.size, x = wx * h / 2 + w / 2, y = h / 2 - wy * h / 2, time = e.timeStamp;
     if (this.pointer) {
@@ -119,7 +126,7 @@ export class PhysicsPanel {
     this.pointer = { x, y, time }; this.overlay();
   }
   pulse() {
-    if (!this.ready) return;
+    if (!this.ready || !this.enabled) return;
     for (const [id, b] of this.bodies) if (this.scope === 'all' || id === this.selected) {
       const l = this.parts.find(l => l.id === id);
       let target = -1, best = 0;
@@ -128,12 +135,12 @@ export class PhysicsPanel {
     }
     this.lastTime = 0;
   }
-  advance(dt) { for (let t = 0; t < dt - 1e-9; t += 1 / 120) for (const b of this.bodies.values()) b.step(); this.render(); }
+  advance(dt) { if (!this.enabled) return; for (let t = 0; t < dt - 1e-9; t += 1 / 120) for (const b of this.bodies.values()) b.step(); this.render(); }
   render() { this.renderer?.update(); this.stage.render(); this.overlay(); }
   tick(time) {
     if (!this.ready) return;
     const dt = this.lastTime ? Math.min(.05, (time - this.lastTime) / 1000) : 0; this.lastTime = time;
-    if (!document.hidden && !this.paused && [...this.bodies.values()].some(b => b.moving())) {
+    if (this.enabled && !document.hidden && !this.paused && [...this.bodies.values()].some(b => b.moving())) {
       this.accumulator = (this.accumulator || 0) + dt;
       let steps = 0; while (this.accumulator >= 1 / 120 && steps < 6) { for (const b of this.bodies.values()) b.step(); this.accumulator -= 1 / 120; steps++; }
       if (steps) this.render();
@@ -147,11 +154,14 @@ export class PhysicsPanel {
     el.classList.toggle('limited', !!b?.stats.limited);
   }
   sync() {
+    $('#effect-physics').checked = this.enabled || this.preparing;
+    $('#effect-physics').disabled = this.preparing || !this.source() || this.busy() || !this.surfaces.session()?.session;
     $('#physics-prepare').disabled = this.preparing || this.ready || !this.source() || this.busy() || !this.surfaces.session()?.session;
     $('#physics-prepare').textContent = this.preparing ? '正在准备…' : '准备物理部件';
     $('#physics-controls').hidden = !this.ready; $('#physics-close').hidden = !this.ready;
-    $('#physics-status').textContent = this.preparing ? '读取原始部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · 原尺寸预览` : this.source()&&!this.surfaces.session()?.session ? '等待原生图层就绪…' : '从角色原始图层建立物理绑定';
+    $('#physics-status').textContent = this.preparing ? '读取当前部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · ${this.enabled ? '已启用' : '已关闭'}` : this.source()&&!this.surfaces.session()?.session ? '等待原生图层就绪…' : '开启摆动物理后自动准备部件';
     $('#physics-pause').textContent = this.paused ? '继续' : '暂停';
+    for (const id of ['physics-pause','physics-step','physics-pulse']) $('#' + id).disabled = !this.enabled || this.busy();
     const p = this.bindings.get(this.selected); if (!p) { this.overlay(); return; }
     this.options(); $('#physics-enabled').checked = p.enabled; $('#physics-kind').value = p.kind; $('#physics-direction').value = p.direction;
     for (const [key, [, min, max, , , factor]] of Object.entries(specs)) for (const id of ['physics-' + key, 'physics-number-' + key]) {
@@ -162,7 +172,7 @@ export class PhysicsPanel {
   }
   overlay() {
     const svg = $('#physics-overlay'); if (!svg) return;
-    const enabled = this.ready && this.workspace() === 'physics'; svg.toggleAttribute('hidden', !enabled);
+    const enabled = this.ready && this.enabled && this.workspace() === 'physics'; svg.toggleAttribute('hidden', !enabled);
     if (!enabled) return;
     const [w, h] = this.size, screen = (x, y) => this.stage.worldToScreen((x - w / 2) * 2 / h, (h / 2 - y) * 2 / h);
     const b = this.bodies.get(this.selected), commands = [], fixed = [], paths = [];
@@ -183,10 +193,10 @@ export class PhysicsPanel {
     if (this.pointer) { const p = screen(this.pointer.x,this.pointer.y), r = Math.abs(screen(this.pointer.x+this.radius,this.pointer.y)[0]-p[0]); circle.setAttribute('cx',p[0]);circle.setAttribute('cy',p[1]);circle.setAttribute('r',r); }
   }
   clear() {
-    this.epoch++; cancelAnimationFrame(this.frame); this.ready = false; this.preparing = false; this.renderer?.dispose(); this.renderer = null;
+    this.epoch++; cancelAnimationFrame(this.frame); this.ready = false; this.preparing = false; this.enabled = false; this.renderer?.dispose(); this.renderer = null;
     this.parts = null; this.bindings.clear(); this.bodies.clear(); this.selected = null; this.pointer = null; this.lastTime = 0; this.paused = false; this.sync(); this.changed();
   }
-  diagnostics() { return { ready: !!this.ready, paused: this.paused, selected: this.selected, solver: physicsVersion, size: this.size,
+  diagnostics() { return { ready: !!this.ready, enabled: this.enabled, paused: this.paused, selected: this.selected, solver: physicsVersion, size: this.size,
     parts: this.parts?.map(l => ({ id:l.id,name:l.name,bounds:l.bounds,binding:this.bindings.get(l.id),stats:this.bodies.get(l.id)?.stats,impulses:this.bodies.get(l.id)?.impulses || 0 })) || [],
     drawItems: this.renderer?.items.length || 0, textureSizes: this.renderer?.targets.map(t=>[t.width,t.height]) || [] }; }
 }

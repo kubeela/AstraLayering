@@ -25,14 +25,14 @@ export class SurfacePreview {
     if(this.active) return true;
     const owner=this.source(),session=this.session();
     if(!allowFlat&&(!owner?.normal||!owner?.depth)) return this.error('请先绑定当前工程的法线与深度');
-    if(!session?.session||owner.layerKey!=='baseline') return this.error('请等待原生图层就绪，并还原图层后准备');
+    if(!owner||!session?.session) return this.error('请等待原生图层就绪后准备');
     const epoch=++this.epoch,controller=new AbortController();this.fetchController=controller;$('#surface-prepare').disabled=true;$('#surface-status').textContent='正在读取部件与补全贴图…';
     try {
       const response=await fetch('./api/studio/layers/surfaces',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(session),signal:controller.signal}),packet=await response.json();
       if(!response.ok)throw Error(packet.error);
       const w=packet.width,h=packet.height;
       const imageBlob=async file=>{const u=URL.createObjectURL(file);try{return await loadImage(u);}finally{URL.revokeObjectURL(u);}};
-      const [baseColor,normalImage,depthImage]=await Promise.all([owner.originalColor,owner.normal,owner.depth].map(b=>b?imageBlob(b):null));
+      const [baseColor,normalImage,depthImage]=await Promise.all([owner.color,owner.normal,owner.depth].map(b=>b?imageBlob(b):null));
       const flat=(r,g,b)=>{const c=canvas(w,h),ctx=c.getContext('2d');ctx.fillStyle=`rgb(${r},${g},${b})`;ctx.fillRect(0,0,w,h);return c;};
       const baseNormal=normalImage||flat(128,128,255),baseDepth=depthImage||flat(128,128,128);
       const read=async (l,kind)=>{

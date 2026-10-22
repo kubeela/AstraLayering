@@ -57,10 +57,13 @@ export async function studioProject(directory: string, name: string, dir: string
   const draftValid = !!draftRecord && !stale(draftRecord);
   const mapsAvailable = publishedMaps || draftValid;
   const availableModes = { mask: maskAvailable, 'normal-depth': mapsAvailable, mixed: maskAvailable && mapsAvailable };
-  const mode = preview || (selection?.mode === 'mask' && maskAvailable ? 'mask' : 'normal-depth');
+  const mode = preview || (selection?.mode === 'mask' && maskAvailable ? mapsAvailable ? 'mixed' : 'mask' : 'normal-depth');
   if ((mode === 'mask' || mode === 'mixed') && !availableModes[mode]) throw Error(mode === 'mixed' ? '混合预览需要同一组装版本的蒙版和法线／深度产物' : '投影蒙版尚未交付或源工程已变化');
-  const useMask = mode !== 'normal-depth', useDraft = mode !== 'mask' && !publishedMaps && draftValid;
-  const useMaps = mode !== 'mask' && (publishedMaps || useDraft);
+  // Preview modes choose the source document, never unload matching data maps.
+  // An explicit mask entry starts with lighting off in the UI; its toggle can
+  // enable lighting without replacing the document or its physics resources.
+  const useMask = mode !== 'normal-depth', useDraft = !publishedMaps && draftValid;
+  const useMaps = publishedMaps || useDraft;
   const normal = useDraft ? all.draftNormal : all.normal, depth = useDraft ? all.draftDepth : all.depth;
   const files = {
     document: useMask ? all.maskDocument : all.document,

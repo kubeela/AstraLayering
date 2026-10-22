@@ -35,6 +35,7 @@ const state = {
   generation: 0,
   workspace: 'lighting',
   lightingMode: 'mixed',
+  lightingEnabled: true,
 };
 let projections, physics;
 function toast(message) {
@@ -227,7 +228,7 @@ try {
 $("#stage").addEventListener("studio-error", (e) => toast(e.detail));
 function overlay() {
   const active =
-    state.workspace === 'lighting' && state.tool === "light" && !!state.source?.normal && !state.busy;
+    state.workspace === 'lighting' && state.lightingEnabled && state.tool === "light" && !!state.source?.normal && !state.busy;
   $("#light-overlay").hidden = !active;
   if (!active) return;
   const b = $("#stage").getBoundingClientRect();
@@ -278,9 +279,11 @@ function sync() {
   $('#show-shading').checked = state.view === 'shading';
   const lighting = state.workspace === 'lighting';
   const physical = state.workspace === 'physics';
-  const hasNormal = lighting && !!state.source?.normal,
+  const hasNormal = !!state.source?.normal,
     hasDepth = !!state.source?.depth;
-  $("#lighting-controls").disabled = !hasNormal || state.busy;
+  $('#effect-lighting').checked = state.lightingEnabled;
+  $('#effect-lighting').disabled = !hasNormal || state.busy || state.layerBusy;
+  $("#lighting-controls").disabled = !hasNormal || !state.lightingEnabled || state.busy;
   const project = state.source?.project || state.waitingProject;
   $("#lighting-status").hidden = hasNormal && !project?.previewDraft;
   $("#lighting-status").textContent = hasNormal && project?.previewDraft
@@ -303,21 +306,21 @@ function sync() {
   $("#depth-status-hint").hidden = hasDepth;
   for (const k of ["normalStrength", "number-normalStrength", "normal-y"])
     $("#" + k).disabled = !hasNormal || state.busy;
-  $('[data-tool="light"]').disabled = !hasNormal || state.busy;
+  $('[data-tool="light"]').disabled = !hasNormal || !state.lightingEnabled || state.busy;
   $('[data-tool="light"]').hidden = !lighting;
-  $('#views').hidden = !lighting;
-  $('#show-shading').disabled = !hasNormal || state.busy;
+  $('#views').hidden = false;
+  $('#show-shading').disabled = !hasNormal || !state.lightingEnabled || state.busy;
   $('#projection-workspace').hidden = state.workspace !== 'mask';
   $('#lighting-workspace').hidden = !lighting;
   $('#physics-workspace').hidden = !physical;
   $('[data-tool="disturb"]').hidden = !physical;
-  $('[data-tool="disturb"]').disabled = !physics?.ready || state.busy;
+  $('[data-tool="disturb"]').disabled = !physics?.enabled || state.busy;
   $('.recipe-actions').hidden = !lighting;
-  $('#engine').textContent = physical ? '物理 · 原尺寸' : lighting ? 'MToon · 原尺寸' : 'Krita · 原尺寸';
+  $('#engine').textContent = [state.lightingEnabled && hasNormal ? '光照' : '', physics?.enabled ? '物理' : '', '原尺寸'].filter(Boolean).join(' · ');
   $('#lighting-source').hidden = !project;
-  $('#lighting-base').value = project?.previewMode === 'mixed' ? 'mixed' : 'normal-depth';
+  $('#lighting-base').value = project?.previewMode === 'normal-depth' ? 'normal-depth' : 'mixed';
   $('#lighting-base').disabled = state.busy || state.layerBusy;
-  $('#lighting-base option[value="mixed"]').disabled = !project?.previewModes?.mixed;
+  $('#lighting-base option[value="mixed"]').disabled = !project?.previewModes?.mask;
   for (const button of document.querySelectorAll('[data-workspace]')) {
     const selected = button.dataset.workspace === state.workspace;
     button.classList.toggle('active', selected);
@@ -341,9 +344,6 @@ function sync() {
     state.busy || state.layerBusy;
   $("#open-task").disabled = state.busy || state.layerBusy;
   $(".layer-panel").inert = state.projectOpening || state.surfaceActive && !physics?.ready;
-  if (physics?.ready) {
-    for (const el of document.querySelectorAll('.layer-eye,.layer-actions button,#layer-properties input,#layer-properties select')) el.disabled = true;
-  }
   for (const k of ["normal", "depth"]) {
     $("#file-" + k).disabled = $("#remove-" + k).disabled =
       state.busy || state.layerBusy;
@@ -420,7 +420,6 @@ for (const el of document.querySelectorAll("[data-position]"))
     apply(true);
   };
 function selectView(view) {
-  if (state.workspace === 'mask') view = 'color';
   state.view = view;
   stage.setMode(view);
   $("#split-line").hidden = view !== "split";
@@ -432,7 +431,7 @@ $("#views").onclick = (e) => {
 };
 $('#show-shading').onchange = e => selectView(e.target.checked ? 'shading' : 'lit');
 function selectTool(tool) {
-  if (tool === 'light' && state.workspace !== 'lighting' || tool === 'disturb' && (state.workspace !== 'physics' || !physics?.ready)) tool = 'move';
+  if (tool === 'light' && (state.workspace !== 'lighting' || !state.lightingEnabled) || tool === 'disturb' && (state.workspace !== 'physics' || !physics?.enabled)) tool = 'move';
   pointer = null;
   if (physics) physics.pointer = null;
   state.tool = tool;
@@ -561,7 +560,6 @@ const layers = new LayerPanel({
     projections?.render();
     if (physics?.ready) {
       if (state.workspace === 'physics' && layers.selected !== physics.selected && physics.bindings.has(layers.selected)) physics.select(layers.selected);
-      for (const el of document.querySelectorAll('.layer-eye,.layer-actions button,#layer-properties input,#layer-properties select')) el.disabled = true;
     }
   },
   busy(value) {
@@ -576,6 +574,7 @@ const layers = new LayerPanel({
   },
   async composite(owner, data, color) {
     if (state.source?.layerDocument !== owner.layerDocument) return;
+    const previousPhysics = physics?.ready ? { draft: physics.recipe(), enabled: physics.enabled, selected: physics.selected, paused: physics.paused, internal: true } : null;
     surfaces.clear();
     const source = state.source;
     const key = data.baseline ? "baseline" : stateKey(data.layers);
@@ -599,6 +598,7 @@ const layers = new LayerPanel({
     } finally {
       finish(id);
     }
+    if (previousPhysics && id === state.generation) await physics.prepare(previousPhysics);
   },
 });
 projections = new ProjectionPanel(layers, () => state.source);
@@ -606,7 +606,13 @@ const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=
   changed(active){state.surfaceActive=active;if(!active)physics?.clear();sync();}});
 physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprint:()=>state.source?.authorHash,
   workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
-  download, changed(){layers.render();if(!physics.ready&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
+  download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
+$('#effect-lighting').onchange = e => {
+  state.lightingEnabled = e.target.checked;
+  if (!state.lightingEnabled) { if (state.tool === 'light') selectTool('move'); if (state.view === 'shading') selectView('lit'); }
+  stage.setLightingEnabled(state.lightingEnabled); sync();
+};
+$('#effect-physics').onchange = e => void physics.setEnabled(e.target.checked);
 function showSource() {
   const source = state.source;
   $("#document-info").hidden = !source;
@@ -705,6 +711,7 @@ async function install(source, id, reset = true) {
       source.mapBindings = new Map([
         ["baseline", { normal: source.normal, depth: source.depth }],
       ]);
+      state.lightingEnabled = source.project?.previewMode !== 'mask';
     }
     state.source = source;
     source.authorHash = authorHash;
@@ -719,6 +726,7 @@ async function install(source, id, reset = true) {
     }
     if (reset) selectTool("move");
     apply();
+    stage.setLightingEnabled(state.lightingEnabled);
     selectView(
       source.normal
         ? reset || state.view === "color"
@@ -976,7 +984,6 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
       }
     }
     await install({ ...source, ...maps, shadowBindings, project }, id, !preserve);
-    if (state.workspace === 'mask') { selectTool('move'); selectView('color'); }
     if (id === state.generation) $("#task-dialog").close();
   } catch (e) {
     if (id === state.generation) {
@@ -1024,27 +1031,15 @@ $("#refresh-project").onclick = () => {
 for (const button of document.querySelectorAll('[data-workspace]')) button.onclick = () => {
   const workspace = button.dataset.workspace;
   if (workspace === state.workspace || state.busy || state.layerBusy) return;
-  const project = state.source?.project;
   selectTool('move');
-  if (workspace === 'physics' && (!project || project.previewMode === 'normal-depth')) {
-    state.workspace = workspace;
-    if (surfaces.active && !physics.ready) void surfaces.close();
-    selectView(state.source?.normal ? 'lit' : 'color'); sync(); return;
-  }
-  if (workspace === 'lighting' && physics.ready) { state.workspace = workspace; selectView(state.source?.normal ? 'lit' : 'color'); sync(); return; }
-  if (project) {
-    const preview = workspace === 'mask' ? 'mask' : workspace === 'physics' ? 'normal-depth' : project.previewModes?.mixed ? state.lightingMode : 'normal-depth';
-    void openProject(project.name, project.dir, preview, workspace);
-  } else {
-    state.workspace = workspace;
-    if (workspace === 'mask') { surfaces.clear(); selectTool('move'); selectView('color'); }
-    else selectView(state.source?.normal ? 'lit' : 'color');
-    sync();
-  }
+  state.workspace = workspace;
+  if (workspace !== 'lighting' && state.view === 'shading') selectView(state.source?.normal ? 'lit' : 'color');
+  const u = new URL(location.href); u.searchParams.set('workspace', workspace); history.replaceState(null, '', u);
+  sync();
 };
 $('#lighting-base').onchange = e => {
   const project = state.source?.project;
-  if (project) void openProject(project.name, project.dir, e.target.value, 'lighting');
+  if (project) void openProject(project.name, project.dir, e.target.value === 'mixed' && !project.previewModes.mixed ? 'mask' : e.target.value, state.workspace);
 };
 sync();
 // No test gallery, no test-image downloads. Jianma is a real layered document.
@@ -1102,6 +1097,7 @@ window.studioDiagnostics = () => ({
   ),
   maps: { normal: !!state.source?.normal, depth: !!state.source?.depth },
   settings: { ...state.settings },
+  lightingEnabled: state.lightingEnabled,
   view: state.view,
   tool: state.tool,
   busy: state.busy,

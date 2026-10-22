@@ -71,6 +71,16 @@
             <button data-workspace="lighting" role="tab" aria-controls="lighting-workspace">光照</button>
             <button data-workspace="physics" role="tab" aria-controls="physics-workspace">物理</button>
           </div>
+          <div class="preview-effects" aria-label="预览效果">
+            <label class="toggle"><input id="effect-lighting" type="checkbox" checked>实时光照</label>
+            <label class="toggle"><input id="effect-physics" type="checkbox">摆动物理</label>
+          </div>
+          <div id="lighting-source" hidden>
+            <label class="field inline">底图<select id="lighting-base">
+              <option value="normal-depth">原组装</option>
+              <option value="mixed">含投影蒙版</option>
+            </select></label>
+          </div>
         </section>
         <section class="panel layer-panel">
           <div class="section-heading">
@@ -222,7 +232,7 @@
           </svg>
         </div>
         <div class="viewbar" id="views">
-          <button data-view="lit" class="active">光照</button
+          <button data-view="lit" class="active">效果</button
           ><button data-view="split">对照</button
           ><button data-view="color">原画</button
           ><button data-view="normal">法线</button
@@ -239,7 +249,7 @@
         <div id="physics-workspace" role="tabpanel" hidden>
           <div class="panel-heading"><h2>摆动物理</h2><span id="physics-draft" class="muted">草稿</span></div>
           <section class="panel">
-            <div class="file-actions"><button id="physics-prepare">准备物理部件</button><button id="physics-close" hidden>退出预览</button></div>
+            <div class="file-actions"><button id="physics-prepare">准备物理部件</button><button id="physics-close" hidden>释放部件</button></div>
             <p id="physics-status" class="muted">从角色原始图层建立物理绑定</p>
           </section>
           <div id="physics-controls" hidden>
@@ -282,13 +292,6 @@
           <h2>光照</h2>
           <button id="reset" class="text-button">重置</button>
         </div>
-          <section class="panel" id="lighting-source" hidden>
-            <label class="field inline">底图<select id="lighting-base">
-              <option value="normal-depth">原组装</option>
-              <option value="mixed">含投影蒙版</option>
-            </select></label>
-          </section>
-
         <p id="lighting-status" class="muted" hidden>绑定法线后启用光照</p>
         <fieldset id="lighting-controls" disabled>
           <section class="panel">
