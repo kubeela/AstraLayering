@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util';
-import { mkdir, rename, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, rename, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
@@ -8,13 +8,12 @@ import { pipelineDirectory, taskDirectory, resolveRunsDirectory } from '../share
 import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
 import { runWorkflow as runSharedWorkflow, type KritaPipeline, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { inputDirectories, isShadowInput, resolveShadowInput, inputFingerprint, fileHash, type ShadowInput } from './input.ts';
-import { buildPrompt, stepsFor } from './lighting-steps.ts';
+import { buildPrompt, stepsFor } from './steps.ts';
 import { prepareMaps, validateDelivery } from './delivery.ts';
 import { loadWorkflowEnvironment } from '../shared/codex/environment.ts';
 import { prepareMaskReferences, referenceNames, referenceUrl } from './preparation.ts';
 import { inspectMask } from './inspection.ts';
 import type { NativeInspect } from './native.ts';
-import { createLightingTool, validateLighting } from './lighting.ts';
 
 export const help = `shadow — Live2D 投影阴影或整图法线＋深度
 pnpm shadow --name <任务名> --krita <可执行文件> [--dir <绝对运行根目录>]
@@ -34,10 +33,8 @@ export function makePipeline(mode: ShadowMode, env: NodeJS.ProcessEnv = process.
     fingerprintInput: input => inputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? [
       ...referenceNames.map(referenceUrl), ...['preparation.ts', 'steps.ts', 'delivery.ts', 'inspection.ts', 'native.ts', 'native_worker.py'].map(p => new URL(p, import.meta.url)),
     ] : []),
-    tools: (output, input, step) => step.modelStep === 'shadow_lighting' ? [createLightingTool(output, input)] : [],
     ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === 'step01') await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
     validateDelivery: async (output, input, step, krita, dryRun) => {
-      if (mode === 'normal-depth' && step.id === 'step02') { await validateLighting(output, input); return; }
       await validateDelivery(output, input, mode);
       if (mode === 'mask' && !dryRun) await inspectMask(output, krita.executable, env, signal, native);
     } };
@@ -50,6 +47,22 @@ async function atomicFile(path: string, bytes: Uint8Array | string) {
 export async function runWorkflow(options: WorkflowOptions & { shadowMode?: ShadowMode }, dependencies: Dependencies & { inspectNative?: NativeInspect } = {}) {
   const mode = shadowMode(options.shadowMode), root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
+  if (mode === 'normal-depth' && !options.dryRun) {
+    // Archive the retired step before the shared runner sees it as a descendant
+    // to reset. Completed maps and their drawing session remain reusable.
+    const legacy = join(pipelineDirectory(options.name, 'shadow', root), mode, 'step02');
+    let info;
+    try { info = await lstat(legacy); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+    if (info) {
+      if (!info.isDirectory() || info.isSymbolicLink()) throw Error('旧光照步骤目录无效：' + legacy);
+      await resolveShadowInput(options.name, root, mode);
+      options.signal?.throwIfAborted();
+      const archive = join(dirname(legacy), 'lighting.previous-' + randomUUID());
+      await rename(legacy, archive);
+      options.progress?.('旧光照调校步骤已保留到 ' + archive + '；后续仅检查法线与深度。');
+    }
+  }
   const result = await runSharedWorkflow(makePipeline(mode, environment.codex.env, options.signal, dependencies.inspectNative), options, { ...dependencies, environment });
   if (options.dryRun) return result;
   const input = await resolveShadowInput(options.name, root, mode), output = join(pipelineDirectory(options.name, 'shadow', root), mode, 'step01');

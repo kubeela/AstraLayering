@@ -92,6 +92,11 @@ test('web forwards shadow mode to the existing coordinator and shows both branch
   await put(root, 'shadow/mask/step01/character-shadowed.png');
   const value = await snapshot(root, 'shadow-case', f.dir), stage = value.pipelines.find(stage => stage.id === 'shadow')!;
   assert.equal(stage.states.mask, 'available'); assert.equal(stage.states['normal-depth'], 'pending');
+  for (const path of ['normal.png', 'depth.png', 'report.md', '.completed']) await put(root, 'shadow/normal-depth/step01/' + path);
+  await put(root, 'shadow/normal-depth/step02/light.json');
+  const finished = (await snapshot(root, 'shadow-case', f.dir)).pipelines.find(stage => stage.id === 'shadow')!;
+  assert.equal(finished.states['normal-depth'], 'done');
+  assert.equal(Object.hasOwn(finished.states, 'normal-depth-lighting'), false);
 });
 
 test('task assets reject traversal and symlinks; SVG is served sandboxed; version browsing remains read only', async t => {

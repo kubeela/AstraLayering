@@ -12,7 +12,7 @@ pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 | 分支 | 输入 | 交付 |
 | --- | --- | --- |
 | `mask`（默认） | 组装 KRA / PNG、simplified、人物与衣服分组和遮挡顺序 | `shadow/mask/step01/character-shadowed.kra`、同名 PNG、`shadows.json`、`report.md`、`inspection.json` 与检查图 |
-| `normal-depth` | 组装 KRA / PNG、simplified | 第一步生成 `shadow/normal-depth/step01/normal.png`、`depth.png`、`report.md`；第二步交付 `step02/light.json`、原尺寸 `preview.png`、`report.md`；两步检查后发布贴图至 `lighting/` |
+| `normal-depth` | 组装 KRA / PNG、simplified | 生成 `shadow/normal-depth/step01/normal.png`、`depth.png`、`report.md`；验收后发布贴图至 `lighting/` |
 
 只制作随部件运动的投影，褶皱等固有明暗保留。用 simplified 判断实际投影范围，以组装图的位置和尺寸制作。优先复用分件绘制已经去掉投影的底色；残留旧影时仅局部补画新工程。蒙版直接在 Krita 绘制，完整面积一般远大于静帧可见投影，并包含充分运动延伸，按投影物运动设计形变、由受影面裁切；后续可独立修正阴影形状与相位，不强制同一 deformer；本工作流不制作动作关键形。
 
@@ -26,9 +26,7 @@ Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最
 
 已生成但未完成验收的贴图也在同一个角色工作台查看。前端自动核对当前组装、保存的输入／提示词指纹、原尺寸、灰度深度和单位法线；选择法线／混合预览时显示“待视觉复核”。此操作只读，不写完成标记、正式交付或改变路线选择，不需要额外预览命令。正式交付优先。
 
-第二步使用已注册的 `render_lighting` 工具，直接调用 `web/studio/renderer.js` 的 `LightingStage` 和原尺寸导出，参数协议与前端共用。每次调校保存 PNG 和完整参数，选定后由工具写入 `light.json`、`preview.png`。`light.json` 包含渲染器版本／指纹、原画与法线／深度哈希、全部光照参数和选定渲染记录；工作台自动载入匹配的初始参数，仍可继续调整或重置。贴图变化时旧参数停用。调校模型沿用 `layering_agent_shadow_model`，此步骤不调用生图模型。
-
-工具使用本机无界面 Chromium（`pnpm exec playwright install chromium` 安装）。它仅作为 agent 的渲染适配器，渲染器和角色预览前端仍共用，不新增用户工作台。
+光照调试在统一角色工作台完成，不属于生图管线。工作台提供动画、柔和、右侧柔光、左侧柔光、顶部柔光、戏剧侧光、暖色夕照、冷色月光和蒙版柔光等内置预设。原组装默认右侧柔光，含投影蒙版默认蒙版柔光；首次进入即启用光照，随后切换工作区保留用户参数。可继续手调、重置或导出／导入光照配置。管线不再执行第二步光照调校，也不读取旧 `step02/light.json`；续跑把旧目录保留到 `lighting.previous-*`，不参与完成判定或初始化。
 
 角色原素材精度保持不变，PNG 无损输出。模型配置使用 `layering_agent_shadow_model`；蒙版不启用生图工具。法线／深度生图设置 `layering_shadow_maps_image_model`，省略复用既有默认生图服务。
 

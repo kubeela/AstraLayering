@@ -1,7 +1,7 @@
 import { lstat, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
-import { stepsFor } from '../.agents/skills/live2d-maker/shadow/lighting-steps.ts';
+import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { readRun, taskStatus, type TaskRun } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { steps as personSteps } from '../.agents/skills/live2d-maker/raster-layering/steps.ts';
@@ -127,7 +127,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
             : await exists(prefix + '/.running') ? variant === mode ? observed('running') : 'unconfirmed'
               : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
           branchStates.push(state);
-          if (variant === 'normal-depth') states[step.id === 'step01' ? 'normal-depth-maps' : 'normal-depth-lighting'] = state;
+          if (variant === 'normal-depth') states['normal-depth-maps'] = state;
         }
         states[variant] = branchStates.includes('failed') ? 'failed' : branchStates.includes('running') ? 'running'
           : branchStates.includes('unconfirmed') ? 'unconfirmed' : branchStates.every(v => v === 'done') ? 'done'

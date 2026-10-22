@@ -36,7 +36,7 @@ export const pipelineSteps = [
   [step('step01', '人物与衣服 KRA 组装', 'pending', [],
     '同一 agent 调整穿戴关系、必要遮罩与局部笔触，重开验收并导出 KRA、合成 PNG 和报告。')],
   [{ ...step('step01', '阴影方式 · 二选一', 'pending', [step('mask', 'Live2D 蒙版', 'pending'), step('normal-depth', '法线＋深度', 'pending', [
-    step('normal-depth-maps', '01 · 法线与深度', 'pending'), step('normal-depth-lighting', '02 · 光照调校', 'pending'),
+    step('normal-depth-maps', '生成与验收贴图', 'pending'),
   ])],
     '本轮执行所选分支；两种方式的已有产物分别保留。'), childrenMode: 'alternative' }],
 ];
@@ -99,7 +99,6 @@ stepArtifacts.push({
   mask: [image('shadow/mask/step01/character-shadowed.png', '投影阴影'), image('shadow/mask/step01/face-review.png', '头脸投影 · 原尺寸对照'), image('shadow/mask/step01/inspection/overview.png', '去影对照'), file('shadow/mask/step01/character-shadowed.kra', '阴影 KRA'), file('shadow/mask/step01/shadows.json', '跟随与裁切关系'), file('shadow/mask/step01/inspection.json', '裁切检查'), file('shadow/mask/step01/report.md', '绘制报告')],
   'normal-depth': [],
   'normal-depth-maps': [image('shadow/normal-depth/step01/normal.png', '法线'), image('shadow/normal-depth/step01/depth.png', '深度'), file('shadow/normal-depth/step01/report.md', '贴图报告')],
-  'normal-depth-lighting': [image('shadow/normal-depth/step02/preview.png', '初始光照'), file('shadow/normal-depth/step02/light.json', '光照参数'), file('shadow/normal-depth/step02/report.md', '调校报告')],
 });
 export function shadowInspectionArtifacts(files) {
   return files.filter(path => /^shadow\/mask\/step01\/inspection\/relation-\d{3,}-review\.png$/.test(path)).sort()

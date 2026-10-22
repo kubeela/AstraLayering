@@ -7,8 +7,6 @@ import sharp from 'sharp';
 import { inspectDraftPreview } from '../preview.ts';
 import { inputFingerprint, resolveShadowInput } from '../input.ts';
 import { stepsFor } from '../steps.ts';
-import { createLightingTool, validateLighting } from '../lighting.ts';
-import { defaults } from '../../../../../web/studio/lighting-model.js';
 
 async function fixture(t: TestContext) {
   const root = await mkdtemp(join(tmpdir(), 'astra-shadow-draft-')), task = join(root, 'case');
@@ -38,7 +36,7 @@ test('Unified studio discovers pending maps read-only, without changing inputs, 
   assert.deepEqual(await readFile(join(f.output, 'normal.png')), normal);
   assert.deepEqual(await readFile(join(f.task, 'shadow/selection.json')), selection);
   await writeFile(join(f.output, '.completed'), '');
-  assert.equal((await inspectDraftPreview('case', f.root))?.status, 'awaiting-lighting');
+  assert.equal((await inspectDraftPreview('case', f.root))?.status, 'awaiting-publication');
 });
 test('Changed input and invalid normals are not exposed as pending maps', async t => {
   const f = await fixture(t);
@@ -47,22 +45,4 @@ test('Changed input and invalid normals are not exposed as pending maps', async 
   await writeFile(join(f.source, 'character-assembled.kra'), 'original KRA');
   await sharp({ create: { width: 64, height: 96, channels: 3, background: 'white' } }).png().toFile(join(f.output, 'normal.png'));
   assert.equal(await inspectDraftPreview('case', f.root), undefined);
-});
-test('Registered lighting tool runs the studio renderer, records full parameters and rejects stale final results', async t => {
-  const f = await fixture(t), output = join(f.output, '../step02'), tool = createLightingTool(output, f.input);
-  const signal = new AbortController().signal, settings = { ...defaults, shadow: false };
-  assert.equal(tool.name, 'render_lighting');
-  const before = await tool.execute({ settings: { ...settings, lightingMix: 0 }, final: false }, signal);
-  await assert.rejects(readFile(join(output, 'light.json')), { code: 'ENOENT' });
-  const after = await tool.execute({ settings: { ...settings, lightColor: '#ff9070', lightX: -2 }, final: true }, signal);
-  assert.equal(after.success, true);
-  const a = JSON.parse((before.contentItems[0] as any).text), b = JSON.parse((after.contentItems[0] as any).text);
-  const source = await sharp(f.input.characterColor).ensureAlpha().raw().toBuffer();
-  const unlit = await sharp(a.savedPath).ensureAlpha().raw().toBuffer();
-  assert.ok(source.every((value, i) => i % 4 === 3 || Math.abs(value - unlit[i]) <= 1), '0% lighting preserves original RGB');
-  assert.notEqual(a.previewHash, b.previewHash); assert.equal(b.width, 64); assert.equal(b.height, 96);
-  assert.equal(b.settings.lightColor, '#ff9070');
-  await validateLighting(output, f.input);
-  await writeFile(join(f.output, 'normal.png'), 'changed map');
-  await assert.rejects(validateLighting(output, f.input), /不匹配/);
 });

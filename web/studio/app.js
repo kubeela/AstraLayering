@@ -21,7 +21,7 @@ const esc = (s) =>
       ],
   );
 const state = {
-  settings: { ...presets.jianma.values },
+  settings: { ...presets.rightSoft.values },
   tool: "move",
   view: "lit",
   source: null,
@@ -34,7 +34,6 @@ const state = {
   generation: 0,
   workspace: 'lighting',
   lightingMode: 'mixed',
-  mixedInitialized: false,
 };
 let projections;
 function toast(message) {
@@ -216,7 +215,7 @@ $("#preset").innerHTML =
   Object.entries(presets)
     .map(([k, p]) => `<option value="${k}">${p.label}</option>`)
     .join("") + '<option value="custom" disabled>自定义</option>';
-$("#preset").value = "jianma";
+$("#preset").value = "rightSoft";
 let stage;
 try {
   stage = new LightingStage($("#stage"));
@@ -279,10 +278,10 @@ function sync() {
     hasDepth = !!state.source?.depth;
   $("#lighting-controls").disabled = !hasNormal || state.busy;
   const project = state.source?.project || state.waitingProject;
-  $("#lighting-status").hidden = hasNormal && !project?.previewDraft && !project?.lightStale;
+  $("#lighting-status").hidden = hasNormal && !project?.previewDraft;
   $("#lighting-status").textContent = hasNormal && project?.previewDraft
-    ? project.previewReview === 'awaiting-lighting' ? '光照待调校' : "待视觉复核"
-    : hasNormal && project?.lightStale ? '光照参数待重新调校' : project
+    ? project.previewReview === 'awaiting-publication' ? '交付待恢复' : "待视觉复核"
+    : project
     ? project.mapsStale ? "贴图源已变化，请续跑生成" : project.files?.normal.available
       ? "图层已更改，光照已暂停"
       : "法线待管线生成"
@@ -382,23 +381,19 @@ $("#shadow").onchange = (e) => {
   state.settings.shadow = e.target.checked;
   apply(true);
 };
-$("#preset").onchange = (e) => {
-  state.settings = { ...presets[e.target.value].values };
-  apply();
-};
-$("#reset").onclick = () => {
-  if (state.source?.project?.lightSettings) {
-    state.settings = validateSettings(state.source.project.lightSettings);
-    apply(true); return;
-  }
-  const key =
-    state.source?.sample === "jianma" ||
-    state.source?.project?.name?.startsWith('jianma')
-      ? "jianma"
-      : "anime";
+function initialPreset(source) {
+  return source?.project?.previewMode === 'mixed' ? 'maskSoft' : 'rightSoft';
+}
+function applyPreset(key) {
   $("#preset").value = key;
   state.settings = { ...presets[key].values };
   apply();
+}
+$("#preset").onchange = (e) => {
+  applyPreset(e.target.value);
+};
+$("#reset").onclick = () => {
+  applyPreset(initialPreset(state.source));
 };
 const positions = {
   left: [-2.8, 0.5, 1],
@@ -684,26 +679,15 @@ async function install(source, id, reset = true) {
     }
     state.source = source;
     state.inputs = Object.fromEntries(hashes);
-    if (reset) {
-      const key =
-        source.sample === "jianma" || source.project?.name?.startsWith('jianma')
-          ? "jianma"
-          : "anime";
+    // Generated maps are data only. First lighting entry always uses an active
+    // studio preset; later layer/workspace updates preserve the user's settings.
+    if (reset || (source.normal && !source.lightingInitialized)) {
+      const key = initialPreset(source);
       state.settings = { ...presets[key].values };
-      state.mixedInitialized = source.project?.previewMode === 'mixed';
-      if (source.project?.previewMode === 'mixed') {
-        state.settings.lightingMix = 0.55;
-        state.settings.shadow = false;
-        state.mixedInitialized = true;
-      }
       $("#preset").value = key;
-      selectTool("move");
+      source.lightingInitialized = !!source.normal;
     }
-    if (source.project?.lightSettings && source.normal && (reset || !source.lightInitialized)) {
-      state.settings = validateSettings(source.project.lightSettings);
-      source.lightInitialized = true;
-      $("#preset").value = 'custom';
-    }
+    if (reset) selectTool("move");
     apply();
     selectView(
       source.normal
@@ -959,11 +943,6 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
       source.mapBindings.set('baseline', { ...maps });
       if (source.layerKey !== 'baseline' && !projectionOnlyEdit(shadowBindings, source.nativeBaseline, source.layers)) {
         maps.normal = null; maps.depth = null;
-      }
-      if (project.previewMode === 'mixed' && !project.lightSettings && !state.mixedInitialized) {
-        state.settings.lightingMix = 0.55;
-        state.settings.shadow = false;
-        state.mixedInitialized = true;
       }
     }
     await install({ ...source, ...maps, shadowBindings, project }, id, !preserve);

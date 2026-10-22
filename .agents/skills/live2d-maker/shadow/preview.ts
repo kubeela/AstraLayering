@@ -34,8 +34,8 @@ export async function inspectDraftPreview(name: string, root: string): Promise<S
   try { await access(join(output, '.completed')); mapsComplete = true; }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   return {
-    version: 1, mode: 'normal-depth', status: mapsComplete ? 'awaiting-lighting' : 'draft-awaiting-visual-review',
-    reason: mapsComplete ? '贴图已完成，光照调校尚未完成' : '贴图尚未完成视觉复核与光照调校',
+    version: 1, mode: 'normal-depth', status: mapsComplete ? 'awaiting-publication' : 'draft-awaiting-visual-review',
+    reason: mapsComplete ? '贴图已完成验收，正式交付记录待恢复' : '贴图尚未完成视觉复核',
     inputFingerprint: run.inputFingerprint,
     sourceKraHash: await fileHash(input.characterKra), sourceColorHash: await fileHash(input.characterColor),
     normalHash: await fileHash(join(output, 'normal.png')), depthHash: await fileHash(join(output, 'depth.png')),
