@@ -13,6 +13,7 @@ import { checkKrita } from '../../shared/raster/krita.ts';
 import { resolvePartInput } from '../../shared/raster/input.ts';
 import { parseRunArguments } from '../run.ts';
 import { inspectRun, type RunConfig } from '../../shared/raster/run-store.ts';
+import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { steps, stepModels, type StepDefinition } from '../steps.ts';
 import { runWorkflow } from '../run.ts';
 
@@ -166,7 +167,7 @@ test('直接读取上游；中断保留 .running、产物和 thread；只用 nam
   const config = await readConfig(f.output);
   assert.equal(config.threadId, 'thread-1');
   assert.ok(!('steps' in config) && !('status' in config));
-  assert.deepEqual(config.models, { step01: stepModels[1], step02: stepModels[2], step03: stepModels[3] });
+  assert.ok(!('models' in config));
   await assert.rejects(readdir(join(f.output, 'input')), { code: 'ENOENT' });
   await writeFile(join(f.input, 'parts/face.svg'), 'corrected upstream part');
   await runWorkflow(f.resume, { ...f.deps, preflight: async path => {
@@ -202,6 +203,34 @@ test('已完成第一步的任务接续后两步，共用 thread 并在第三步
     await readFile(join(f.output, step.id, '.completed'));
     await absent(join(f.output, step.id, '.running'));
   }
+});
+
+test('旧 models 快照不影响续跑；使用当前环境模型，保留会话、产物与请求历史', async t => {
+  const f = await fixture(t);
+  await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
+    await request.onEvent({ type: 'thread.started', thread_id: 'thread-1' });
+    await writeFile(join(f.output, 'step01/accepted-part.png'), 'retained pixels');
+    throw new Error('interrupted');
+  } }), /interrupted/);
+  const file = join(f.output, 'run.json'), old = { ...await readConfig(f.output), models: { step01: { model: 'retired-model', effort: 'obsolete' } } };
+  await writeFile(file, JSON.stringify(old));
+  const before = await readFile(file);
+  const environment = loadWorkflowEnvironment({ layering_agent_raster_step01_model: 'gpt-6.1-sol-low' });
+  await runWorkflow({ ...f.resume, dryRun: true }, { ...f.deps, environment, agent: forbidden });
+  assert.deepEqual(await readFile(file), before, 'preview must not migrate the saved record');
+  await runWorkflow(f.resume, { ...f.deps, environment, agent: async request => {
+    assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'low');
+    assert.equal(request.threadId, 'thread-1');
+    assert.equal(await readFile(join(f.output, 'step01/accepted-part.png'), 'utf8'), 'retained pixels');
+    return deliver(request);
+  } });
+  const current = await readConfig(f.output);
+  assert.ok(!('models' in current));
+  assert.equal(current.threadId, old.threadId); assert.equal(current.threadHarness, old.threadHarness);
+  const attempts = (await readFile(join(f.output, 'step01/attempts.jsonl'), 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(attempts.length, 2);
+  assert.equal(attempts[0].model, 'gpt-6-astra');
+  assert.equal(attempts[1].model, 'gpt-6.1-sol'); assert.equal(attempts[1].effort, 'low');
 });
 
 test('删 step02 完成标记后保留 step01/上游产物，清理后续目录，换新 thread 后共用', async t => {

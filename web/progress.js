@@ -17,11 +17,10 @@ export function groupSummary(group) {
 }
 
 export function groupPreviewArtifacts(group, phaseFiles, files, versions = {}) {
-  const running = groupPhases.find(([id]) => group.webPhases?.[id] === 'running')?.[0];
-  const phase = {review:'outline', completionCheck:'completion', children:'completion'}[running] ?? running;
-  const images = items => (items ?? []).filter(item => item.kind === 'image' && files.has(item.path));
-  const candidates = images(phaseFiles[phase]);
-  const list = candidates.length ? candidates : images([...phaseFiles.completion, ...phaseFiles.reduction, ...phaseFiles.outline]);
+  // A running phase can lag behind the saved artwork. Show the latest actual
+  // drawing across all three stages, including drafts, regardless of status.
+  const list = [...phaseFiles.completion, ...phaseFiles.reduction, ...phaseFiles.outline]
+    .filter(item => item.kind === 'image' && files.has(item.path));
   return list.sort((a, b) => Number(versions[b.path]?.split(':')[0] ?? 0) - Number(versions[a.path]?.split(':')[0] ?? 0)).slice(0, 1);
 }
 
