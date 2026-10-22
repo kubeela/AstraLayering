@@ -3,6 +3,7 @@ export type LightingSettings = {
   lightY: number;
   lightZ: number;
   ambient: number;
+  lightingMix: number;
   shade: string;
   toony: number;
   shift: number;

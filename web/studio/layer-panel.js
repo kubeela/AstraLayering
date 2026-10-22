@@ -27,8 +27,8 @@ async function api(operation, data) {
   return value;
 }
 export class LayerPanel {
-  constructor({ composite, changed, busy, error, download }) {
-    this.callbacks = { composite, changed, busy, error, download };
+  constructor({ composite, changed, busy, error, download, rendered }) {
+    this.callbacks = { composite, changed, busy, error, download, rendered };
     this.epoch = 0;
     this.layers = [];
     this.collapsed = new Set();
@@ -202,6 +202,19 @@ export class LayerPanel {
     l[key] = value;
     this.queue();
   }
+  select(id) {
+    const row = this.layers.find(l => l.id === id);
+    if (!row) return;
+    this.selected = id;
+    $('#layer-filter').value = '';
+    let parent = row.parentId;
+    while (parent) {
+      this.collapsed.delete(parent);
+      parent = this.layers.find(l => l.id === parent)?.parentId;
+    }
+    this.render();
+    [...document.querySelectorAll('[data-layer]')].find(el => el.dataset.layer === id)?.scrollIntoView({ block: 'nearest' });
+  }
   history(from, to) {
     if (!from.length || !this.session || this.saving) return;
     to.push(layerState(this.layers));
@@ -312,6 +325,7 @@ export class LayerPanel {
     );
   }
   render() {
+    this.callbacks.rendered?.();
     const rows = layerTree(
         this.layers,
         this.collapsed,

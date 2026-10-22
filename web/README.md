@@ -122,6 +122,10 @@ node tools/lighting/layer-browser-check.mjs http://127.0.0.1:4387/
 
 整条流程在组装后进入阴影制作，运行面板的“阴影方式”默认 Live2D 蒙版，可改法线＋深度。独立运行阴影时使用当前任务组装结果，不重新上传图片。LLM 职责为 `layering_agent_shadow_model`，蒙版不启用生图，法线／深度生图配置为 `layering_shadow_maps_image_model`，沿用现有配置和服务。
 
-两分支进度及产物同时展示，续跑只检查所选分支。最后完整交付的路线写入 `shadow/selection.json`；从项目加载时，蒙版路线自动打开 `shadow/mask/step01/character-shadowed.kra` 并暂停另一套法线光照，贴图路线打开原组装工程并绑定 `lighting/normal.png`、`lighting/depth.png`。源工程／合成图改变则暂停旧结果，等待阴影分支续跑。
+两分支进度及产物同时展示，续跑只检查所选分支。最后完整交付的路线写入 `shadow/selection.json`；从项目加载默认使用该路线。预览可通过 `preview=mask|normal-depth|mixed` 显式选择，不改制作选择。混合预览要求两分支的 `step01/source.json` 都匹配当前组装 KRA / PNG；源工程改变则暂停旧结果，不能用新分支记录验证旧分支。
+
+角色工作台左侧选择“贴图投影”或“光照”，右侧排列对应工具。投影工作台解析蒙版分支的正式 `shadows.json`，以 `shadowLayerUuid` 关联 Krita `Node.uniqueId()`；逐条开关和定位与左下原生图层面板同步，实际蒙版裁切、混合和透明度继承仍交给 Krita。关系文件缺失或 UUID 未找到时不按名字猜测。
+
+光照工作台的“底图”选择原组装或含投影蒙版。混合默认使用 Jianma 风格、55% 光照混合，并关闭深度投影，避免与已画投影重复叠加；深度投影仍可独立开启。光照混合在线性颜色空间插值 MToon 结果与底图，0% 保留底图，100% 使用完整 MToon；不改变法线、深度、alpha 和原尺寸 PNG 导出。只有光照工作台启用光源移动和法线／深度／明暗对照。单纯开关或调整正式阴影层透明度保持数据贴图绑定，其他图层变化仍暂停旧贴图。
 
 蒙版包含可编辑完整阴影、Krita 原生裁切、part 与图层 UUID 的跟随关系；动作 deformer 的制作不属于此步骤。详见[阴影制作工作流](../tutorial/live2d-guidance/workflows/shadow-production.md)。

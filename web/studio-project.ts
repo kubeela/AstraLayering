@@ -1,55 +1,60 @@
-import { lstat, readFile } from "node:fs/promises";
+import { lstat, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { studioArtifacts } from "../.agents/skills/live2d-maker/shared/studio-artifacts.ts";
+import { studioArtifacts } from '../.agents/skills/live2d-maker/shared/studio-artifacts.ts';
 import { shadowArtifacts, shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
-import { safePath } from "./files.ts";
+import { safePath } from './files.ts';
 
-export async function studioProject(
-  directory: string,
-  name: string,
-  dir: string,
-) {
-  let selection: { version: number; mode: 'mask' | 'normal-depth'; sourceKraHash: string; sourceColorHash: string } | undefined;
-  try {
-    selection = JSON.parse(await readFile(await safePath(directory, shadowArtifacts.selection), 'utf8'));
-    if (selection?.version !== 1 || !/^[a-f0-9]{64}$/.test(selection.sourceKraHash) || !/^[a-f0-9]{64}$/.test(selection.sourceColorHash)) throw Error('无效的阴影交付记录');
-    shadowMode(selection.mode);
-  } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-  let shadowStale = false;
-  if (selection) {
+type Selection = { version: number; mode: 'mask' | 'normal-depth'; sourceKraHash: string; sourceColorHash: string };
+const previewModes = ['mask', 'normal-depth', 'mixed'] as const;
+
+export async function studioProject(directory: string, name: string, dir: string, preview?: string | null) {
+  if (preview && !previewModes.includes(preview as any)) throw Error('预览方式必须为 mask、normal-depth 或 mixed');
+  async function record(path: string, expectedMode?: Selection['mode']): Promise<Selection | undefined> {
     try {
-      const hashes = await Promise.all([studioArtifacts.document, studioArtifacts.color].map(async path =>
-        createHash('sha256').update(await readFile(await safePath(directory, path))).digest('hex')));
-      shadowStale = hashes[0] !== selection.sourceKraHash || hashes[1] !== selection.sourceColorHash;
-    } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; shadowStale = true; }
+      const value = JSON.parse(await readFile(await safePath(directory, path), 'utf8'));
+      if (value?.version !== 1 || !/^[a-f0-9]{64}$/.test(value.sourceKraHash) || !/^[a-f0-9]{64}$/.test(value.sourceColorHash)) throw Error('无效的阴影交付记录');
+      shadowMode(value.mode);
+      if (expectedMode && value.mode !== expectedMode) throw Error('阴影交付记录与分支不一致');
+      return value;
+    } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   }
-  const paths = selection?.mode === 'mask' && !shadowStale ? {
-    ...studioArtifacts, document: shadowArtifacts.maskDocument, color: shadowArtifacts.maskColor,
-  } : studioArtifacts;
-  const files = Object.fromEntries(
-    await Promise.all(
-      Object.entries(paths).map(async ([kind, path]) => {
-        // Both outputs may coexist. The last successful route controls this preview.
-        if ((kind === 'normal' || kind === 'depth') && selection && (selection.mode === 'mask' || shadowStale)) {
-          return [kind, { path, available: false, version: null }];
-        }
-        try {
-          const info = await lstat(await safePath(directory, path));
-          if (!info.isFile()) throw Error("项目产物不是文件：" + path);
-          return [
-            kind,
-            {
-              path,
-              available: info.size > 0,
-              version: `${info.mtimeMs}:${info.size}`,
-            },
-          ];
-        } catch (error) {
-          if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-          return [kind, { path, available: false, version: null }];
-        }
-      }),
-    ),
-  );
-  return { name, dir, files, ...(selection ? { shadowMode: selection.mode, shadowStale } : {}) };
+  async function file(path: string) {
+    try {
+      const info = await lstat(await safePath(directory, path));
+      if (!info.isFile()) throw Error('项目产物不是文件：' + path);
+      return { path, available: info.size > 0, version: `${info.mtimeMs}:${info.size}` };
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+      return { path, available: false, version: null };
+    }
+  }
+  const [selection, maskRecord, mapsRecord] = await Promise.all([
+    record(shadowArtifacts.selection), record('shadow/mask/step01/source.json', 'mask'), record('shadow/normal-depth/step01/source.json', 'normal-depth'),
+  ]);
+  // Each branch keeps its own provenance. A newer route never validates an older one.
+  const sourceHashes = await Promise.all([studioArtifacts.document, studioArtifacts.color].map(async path => {
+    try { return createHash('sha256').update(await readFile(await safePath(directory, path))).digest('hex'); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; return null; }
+  }));
+  const stale = (r: Selection | undefined) => !!r && (sourceHashes[0] !== r.sourceKraHash || sourceHashes[1] !== r.sourceColorHash);
+  const maskSource = maskRecord ?? (selection?.mode === 'mask' ? selection : undefined);
+  const mapsSource = mapsRecord ?? (selection?.mode === 'normal-depth' ? selection : undefined);
+  const maskStale = stale(maskSource), mapsStale = stale(mapsSource);
+  const paths = { ...studioArtifacts, maskDocument: shadowArtifacts.maskDocument, maskColor: shadowArtifacts.maskColor, bindings: shadowArtifacts.bindings };
+  const all = Object.fromEntries(await Promise.all(Object.entries(paths).map(async ([key, path]) => [key, await file(path)])));
+  const maskAvailable = !!maskSource && !maskStale && all.maskDocument.available && all.maskColor.available && all.bindings.available;
+  const mapsAvailable = !mapsStale && (!!mapsSource || !selection) && all.normal.available && all.depth.available;
+  const availableModes = { mask: maskAvailable, 'normal-depth': mapsAvailable, mixed: maskAvailable && mapsAvailable };
+  const mode = preview || (selection?.mode === 'mask' && maskAvailable ? 'mask' : 'normal-depth');
+  if ((mode === 'mask' || mode === 'mixed') && !availableModes[mode]) throw Error(mode === 'mixed' ? '混合预览需要同一组装版本的蒙版和法线／深度产物' : '投影蒙版尚未交付或源工程已变化');
+  const useMask = mode !== 'normal-depth', useMaps = mode !== 'mask' && !mapsStale && (!!mapsSource || !selection);
+  const files = {
+    document: useMask ? all.maskDocument : all.document,
+    color: useMask ? all.maskColor : all.color,
+    normal: { ...all.normal, available: useMaps && all.normal.available },
+    depth: { ...all.depth, available: useMaps && all.depth.available },
+    bindings: { ...all.bindings, available: useMask && maskAvailable },
+  };
+  return { name, dir, files, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
+    ...(selection ? { shadowMode: selection.mode, shadowStale: stale(selection) } : {}) };
 }

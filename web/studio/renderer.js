@@ -80,6 +80,7 @@ export class LightingStage {
     this.depthUniforms = {
       studioDepth: { value: null },
       studioDepthScale: { value: defaults.depthScale },
+      studioLightingMix: { value: defaults.lightingMix },
       studioSize: { value: new THREE.Vector2(1, 2) },
       studioShadowMatrix: { value: new THREE.Matrix4() },
       studioModelView: { value: new THREE.Matrix4() },
@@ -89,6 +90,7 @@ export class LightingStage {
       upstreamCompile(shader, renderer);
       if (
         !shader.fragmentShader.includes("vPointShadowCoord[ i ]") ||
+        !shader.fragmentShader.includes('gl_FragColor = vec4( col, diffuseColor.a );') ||
         !shader.fragmentShader.includes(
           "vec3 geometryPosition = - vViewPosition;",
         )
@@ -103,6 +105,7 @@ export class LightingStage {
           `#include <shadowmap_pars_fragment>
 uniform sampler2D studioDepth;
 uniform float studioDepthScale;
+uniform float studioLightingMix;
 uniform vec2 studioSize;
 uniform mat4 studioShadowMatrix;
 uniform mat4 studioModelView;
@@ -123,9 +126,17 @@ vec4 studioShadowCoord() {
         .replace(
           "vec3 geometryPosition = - vViewPosition;",
           "vec3 geometryPosition = (studioModelView * vec4(studioPosition(),1.0)).xyz;",
+        )
+        .replace(
+          'gl_FragColor = vec4( col, diffuseColor.a );',
+          // Blend before output encoding; alpha and diagnostics stay unchanged.
+          `#ifndef DEBUG_LITSHADERATE
+ col = mix(diffuseColor.rgb, col, studioLightingMix);
+#endif
+ gl_FragColor = vec4( col, diffuseColor.a );`,
         );
     };
-    this.material.customProgramCacheKey = () => "astra-mtoon-point-receiver-v2";
+    this.material.customProgramCacheKey = () => "astra-mtoon-point-receiver-v3";
     this.basic = new THREE.MeshBasicMaterial({
       transparent: true,
       alphaTest: 0.01,
@@ -301,6 +312,7 @@ vec4 studioShadowCoord() {
     this.light.intensity = Math.PI * (1 - s.ambient);
     this.ambient.intensity = Math.PI * s.ambient;
     this.depthUniforms.studioDepthScale.value = s.depthScale;
+    this.depthUniforms.studioLightingMix.value = s.lightingMix;
     this.light.shadow.intensity =
       s.shadow && this.hasDepth ? s.shadowStrength : 0;
     this.light.shadow.radius = s.shadowSoftness;
