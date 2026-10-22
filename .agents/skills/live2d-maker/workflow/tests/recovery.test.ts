@@ -130,39 +130,40 @@ for (const [pipeline, execute, definitions, upstream] of [
     let call = 0;
     await assert.rejects(execute(options, { ...deps, agent: async request => {
       call++;
-      if (call <= 2) return deliver(request, definitions[call - 1], 'original');
-      if (call === 3) {
+      if (call === 1) return deliver(request, definitions[0], 'original');
+      if (call === 2) {
         assert.equal(request.threadId, undefined);
-        await writeFile(join(output, 'step02/review-01.md.tmp'), '结论：需要修复\n袖口残色。');
+        await writeFile(join(output, 'step01/review-01.md.tmp'), '结论：需要修复\n袖口残色。');
         return { status: 'completed', summary: 'reviewed' };
       }
-      assert.equal(call, 4); assert.equal(request.threadId, 'original'); throw new Error('broken context');
+      assert.equal(call, 3); assert.equal(request.threadId, 'original'); throw new Error('broken context');
     } }), /broken context/);
     await writeFile(join(task, 'handoff.md'), '当前在修复 review-01 的袖口残色；保留绘制。');
-    const report = await readFile(join(output, 'step02/review-01.md'));
+    const report = await readFile(join(output, 'step01/review-01.md'));
     await replaceThread({ name, dir, pipeline, handoff: 'handoff.md', reason: 'broken context' });
     let resumed = 0;
     await execute(options, { ...deps, agent: async request => {
       resumed++;
       if (resumed === 1) {
         assert.equal(request.threadId, undefined);
-        const original = (await readFile(definitions[1].prompt, 'utf8')).replaceAll('step02/report.md', 'step02/report.md.tmp');
+        const original = (await readFile(definitions[0].prompt, 'utf8')).replaceAll('step01/report.md', 'step01/report.md.tmp');
         assert.ok(request.prompt.startsWith(original));
         assert.match(request.prompt, /repair-01.md.tmp/); assert.match(request.prompt, /保留绘制/);
         await request.onEvent({ type: 'thread.started', thread_id: 'replacement-draw' });
-        await writeFile(join(output, 'step02/repair-01.md.tmp'), '结论：已修复\n袖口已修画。');
+        await writeFile(join(output, 'step01/repair-01.md.tmp'), '结论：已修复\n袖口已修画。');
       } else if (resumed === 2) {
         assert.equal(request.threadId, undefined); assert.ok(!request.prompt.includes('会话恢复交接'));
         await request.onEvent({ type: 'thread.started', thread_id: 'fresh-review' });
-        await writeFile(join(output, 'step02/review-02.md.tmp'), '结论：需要修复\n领口需修画。');
-      } else {
+        await writeFile(join(output, 'step01/review-02.md.tmp'), '结论：需要修复\n领口需修画。');
+      } else if (resumed === 3) {
         assert.equal(resumed, 3); assert.equal(request.threadId, 'replacement-draw');
-        await writeFile(join(output, 'step02/repair-02.md.tmp'), '结论：已修复\n领口已修画。');
+        await writeFile(join(output, 'step01/repair-02.md.tmp'), '结论：已修复\n领口已修画。');
       }
+      if (resumed === 4) return deliver(request, definitions[1], 'replacement-draw');
       return { status: 'completed', summary: 'done' };
     } });
-    assert.equal(resumed, 3); assert.deepEqual(await readFile(join(output, 'step02/review-01.md')), report);
-    await readFile(join(output, 'step02/.completed'));
+    assert.equal(resumed, 4); assert.deepEqual(await readFile(join(output, 'step01/review-01.md')), report);
+    await readFile(join(output, 'step01/.completed'));
     assert.equal((await loadConfig(output, name))!.threadId, 'replacement-draw');
   });
 }

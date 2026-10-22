@@ -53,6 +53,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const config = await optional(branch + '/run.json');
     const states: Record<string, Status> = {};
     const messages: Record<string, string> = {};
+    const previews: Record<string, { path: string; savedAt: string }> = {};
+    const feedback: Record<string, string> = {};
     const observed = (value?: string): Status => value === 'running' ? (active ? 'running' : record.status === 'failed' ? 'failed' : 'unconfirmed') : statusOf(value);
     let groups: any[] = [];
     if (id === 'part-layering' || id === 'clothing-part-layering') {
@@ -81,6 +83,11 @@ export async function snapshot(directory: string, name: string, dir: string) {
     } else {
       for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
         const prefix = branch + '/' + step.id;
+        const candidates = await Promise.all(files.filter(path => path.startsWith(prefix + '/') && /\.kra$/i.test(path)
+          && !path.split('/').some(segment => segment.startsWith('.') || ['agents', 'recovery', 'archive'].includes(segment)))
+          .map(async path => ({ path, info: await lstat(await safePath(directory, path)) })));
+        candidates.sort((a, b) => b.info.mtimeMs - a.info.mtimeMs || a.path.localeCompare(b.path));
+        if (candidates[0]) previews[step.id] = { path: candidates[0].path, savedAt: candidates[0].info.mtime.toISOString() };
         const completed = await exists(prefix + '/.completed'), running = await exists(prefix + '/.running');
         const missing = [];
         for (const path of step.requiredFiles) {
@@ -100,6 +107,12 @@ export async function snapshot(directory: string, name: string, dir: string) {
             }
           }
           for (const phase of sequence) {
+            const report = prefix + '/' + phase + '.md';
+            const draft = !fileSet.has(report) && fileSet.has(report + '.tmp');
+            if (fileSet.has(report) || draft) {
+              feedback[phase] = (draft ? '草稿（尚未完成）\n' : '')
+                + (await readFile(await safePath(directory, report + (draft ? '.tmp' : '')), 'utf8')).trim().slice(0, 600);
+            }
             states[phase] = fileSet.has(prefix + '/' + phase + '.md') ? 'done'
               : next?.filename === phase + '.md' && states.draw === 'done' && running ? observed('running')
                 : !next && fileSet.has(prefix + '/review-01.md') && states[step.id] !== 'failed' ? 'skipped' : 'pending';
@@ -136,13 +149,13 @@ export async function snapshot(directory: string, name: string, dir: string) {
     if ((id in rasterDefinitions || id === 'shadow') && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
       status = 'interrupted'; // Root coordinator history must not hide a removed step marker.
     }
-    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, groups, threadId: config?.threadId ?? null, summary: saved?.summary });
+    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, groups, threadId: config?.threadId ?? null, summary: saved?.summary });
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');
   // The URL version changes when an existing draft is rewritten, even if no log or filename changes.
   const fileVersions: Record<string, string> = {};
-  const previewFiles = files.filter(path => /\.(svg|png|jpe?g|webp|md|json)$/i.test(path) && !path.includes('/agents/'));
+  const previewFiles = files.filter(path => /\.(kra|svg|png|jpe?g|webp|md|json)$/i.test(path) && !path.includes('/agents/'));
   for (let index = 0; index < previewFiles.length; index += 16) {
     await Promise.all(previewFiles.slice(index, index + 16).map(async path => {
       try { const info = await lstat(await safePath(directory, path)); fileVersions[path] = `${info.mtimeMs}:${info.size}`; }

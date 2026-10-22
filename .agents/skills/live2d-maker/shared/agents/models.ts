@@ -18,7 +18,7 @@ export const modelSlotDefaults = {
   preparation: 'gpt-6.1-sol-low',
   part_draw: medium, part_review: medium, part_reduce: medium, part_completion: medium,
   part_groups: medium, part_depth: medium,
-  raster_step01: high, raster_step02: high, raster_step02_review: high,
+  raster_step01: high, raster_step02: high, raster_step01_review: high,
   raster_step03: medium,
   assembly: medium, shadow: medium,
 } as const;
@@ -34,10 +34,10 @@ export const stepModelSlots = {
   clothing_preparation: 'preparation', clothing_initial_groups: 'part_groups',
   clothing_outline: 'part_draw', clothing_outline_review: 'part_review', clothing_outline_repair: 'part_draw',
   clothing_reduce: 'part_reduce', clothing_completion: 'part_completion', clothing_children: 'part_groups', clothing_occlusion: 'part_depth',
-  raster_step01: 'raster_step01', raster_step02: 'raster_step02', raster_step02_review: 'raster_step02_review', raster_step02_repair: 'raster_step02',
+  raster_step01: 'raster_step01', raster_step02: 'raster_step02', raster_step01_review: 'raster_step01_review', raster_step01_repair: 'raster_step01',
   raster_step03: 'raster_step03',
   clothing_raster_step01: 'raster_step01', clothing_raster_step02: 'raster_step02',
-  clothing_raster_step02_review: 'raster_step02_review', clothing_raster_step02_repair: 'raster_step02',
+  clothing_raster_step01_review: 'raster_step01_review', clothing_raster_step01_repair: 'raster_step01',
   assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow',
 } as const satisfies Record<string, ModelSlot>;
 export type AgentStep = keyof typeof stepModelSlots;
@@ -46,8 +46,8 @@ export const stepDefaults = Object.fromEntries(Object.entries(stepModelSlots)
 export const imageSteps: readonly AgentStep[] = [
   'part_standardize', 'part_simplify', 'part_base_subject', 'clothing_preparation',
   'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair',
-  'raster_step01', 'raster_step02', 'raster_step02_review', 'raster_step02_repair', 'raster_step03',
-  'clothing_raster_step01', 'clothing_raster_step02', 'clothing_raster_step02_review', 'clothing_raster_step02_repair',
+  'raster_step01', 'raster_step02', 'raster_step01_review', 'raster_step01_repair', 'raster_step03',
+  'clothing_raster_step01', 'clothing_raster_step02', 'clothing_raster_step01_review', 'clothing_raster_step01_repair',
   'assembly', 'shadow_maps',
 ];
 export function parseAgentModel(value: string, key: string): AgentModel {

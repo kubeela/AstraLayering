@@ -30,15 +30,15 @@ async function fixture(t: TestContext) {
   return { source, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options: { name: 'test', krita: process.execPath }, deps: { runsDirectory, preflight } };
 }
 async function deliver(request: AgentRequest, thread = request.threadId ?? 'drawing-1'): Promise<StepResult> {
-  if (request.prompt.startsWith('你负责对第二步交付')) {
+  if (request.prompt.startsWith('你负责对第一步交付')) {
     assert.equal(request.threadId, undefined);
     await request.onEvent({ type: 'thread.started', thread_id: 'temporary-reviewer' });
-    await writeFile(join(request.directory, 'step02/review-01.md.tmp'), '结论：通过\n\n已检查全部衣片。');
+    await writeFile(join(request.directory, 'step01/review-01.md.tmp'), '结论：通过\n\n已检查全部衣片。');
   } else {
     await request.onEvent({ type: 'thread.started', thread_id: thread });
     const id = request.prompt.startsWith('在 step01/') ? 'step02' : 'step01';
     const step = steps.find(step => step.id === id)!;
-    for (const file of step.requiredFiles) await writeFile(join(request.directory, id, id === 'step02' && file === 'report.md' ? 'report.md.tmp' : file), `${id} ${file}`);
+    for (const file of step.requiredFiles) await writeFile(join(request.directory, id, 'review' in step && step.review && file === 'report.md' ? 'report.md.tmp' : file), `${id} ${file}`);
   }
   return completed;
 }
@@ -56,14 +56,14 @@ test('independent run directory, parts path normalization, and external-only pro
   await assert.rejects(readdir(f.output), { code: 'ENOENT' });
 });
 
-test('two drawing stages share context; review completes before step02 marker; only clothing KRA required', async t => {
+test('two drawing stages share context; review completes before step01 marker; only clothing KRA required', async t => {
   const f = await fixture(t), requests: AgentRequest[] = [];
   await runWorkflow(f.options, { ...f.deps, agent: async request => {
     requests.push(request);
     assert.equal(request.model, 'gpt-6-astra');
     assert.equal(request.effort, 'xhigh');
-    if (requests.length === 2) assert.equal(request.threadId, 'drawing-1');
-    if (requests.length === 3) await assert.rejects(readFile(join(f.output, 'step02/.completed')), { code: 'ENOENT' });
+    if (requests.length === 2) assert.equal(request.threadId, undefined);
+    if (requests.length === 2) await assert.rejects(readFile(join(f.output, 'step01/.completed')), { code: 'ENOENT' });
     return deliver(request);
   } });
   assert.equal(requests.length, 3);
@@ -113,7 +113,7 @@ test('deleting step02 completion resets its directory and context, preserving st
     }
     return deliver(request, 'drawing-new');
   } });
-  assert.equal(calls, 2);
+  assert.equal(calls, 1);
   assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-new');
   assert.deepEqual(await readFile(join(f.output, 'step01/events.jsonl')), first);
   await readFile(join(f.source, 'parts/front.svg'));

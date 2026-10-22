@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "reference": {"type": "string", "description": "实际采用的参考 PNG"},
+    "current": {"type": "string", "description": "从当前 KRA 导出的同画布 PNG"},
+    "visible_mask": {"type": "string", "description": "可选，独立参考可见范围的同尺寸白色蒙版；黑色或透明不比较"},
+    "crop": {"type": "array", "items": {"type": "integer", "minimum": 0}, "minItems": 4, "maxItems": 4, "description": "原画布 [x,y,width,height]"},
+    "color_threshold": {"type": "integer", "minimum": 1, "maximum": 255, "default": 80},
+    "alpha_threshold": {"type": "integer", "minimum": 1, "maximum": 255, "default": 96},
+    "min_region_pixels": {"type": "integer", "minimum": 1, "default": 64},
+    "max_regions": {"type": "integer", "minimum": 1, "maximum": 200, "default": 40}
+  },
+  "required": ["reference", "current"]
+}

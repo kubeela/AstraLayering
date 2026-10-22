@@ -31,7 +31,7 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
   const root = await fixture(t);
   await writeFile(join(root, '.env'), 'layering_agent_part_review_model=gemini-4-argon-high\nlayering_agent_part_draw_model=claude-sonnet-5.5-low\nlayering_agent_part_groups_model=gemini-4-argon-high\n');
   const settings = loadWorkflowEnvironment({ layering_agent_part_review_model: 'claude-haiku-5.5-medium',
-    layering_agent_raster_step02_model: 'claude-opus-5.5-medium', layering_agent_raster_step02_review_model: 'gemini-4-argon-high' }, root);
+    layering_agent_raster_step01_model: 'claude-opus-5.5-medium', layering_agent_raster_step01_review_model: 'gemini-4-argon-high' }, root);
   assert.equal(settings.stepModels.part_outline_review.model, 'claude-haiku-5.5');
   assert.deepEqual(settings.stepModels.clothing_outline_review, settings.stepModels.part_outline_review);
   for (const step of ['part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair'] as const) {
@@ -42,15 +42,15 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
   }
   assert.equal(settings.stepModels.part_occlusion.model, 'gpt-6.1-sol');
   assert.deepEqual(settings.stepModels.clothing_occlusion, settings.stepModels.part_occlusion);
-  for (const step of ['raster_step02', 'raster_step02_repair', 'clothing_raster_step02', 'clothing_raster_step02_repair'] as const) {
+  for (const step of ['raster_step01', 'raster_step01_repair', 'clothing_raster_step01', 'clothing_raster_step01_repair'] as const) {
     assert.deepEqual(settings.stepModels[step], parseAgentModel('claude-opus-5.5-medium', 'fixture'));
   }
-  assert.deepEqual(settings.stepModels.raster_step02_review, parseAgentModel('gemini-4-argon-high', 'fixture'));
-  assert.deepEqual(settings.stepModels.clothing_raster_step02_review, settings.stepModels.raster_step02_review);
+  assert.deepEqual(settings.stepModels.raster_step01_review, parseAgentModel('gemini-4-argon-high', 'fixture'));
+  assert.deepEqual(settings.stepModels.clothing_raster_step01_review, settings.stepModels.raster_step01_review);
   for (const [step, role] of Object.entries(stepModelSlots)) if (role === 'preparation') {
     assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel('gpt-6.1-sol-low', 'fixture'));
   }
-  assert.equal(settings.stepModels.raster_step01.model, 'gpt-6-astra');
+  assert.equal(settings.stepModels.raster_step02.model, 'gpt-6-astra');
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
   assert.ok(!pipelineAgentSteps('clothing-part-layering').some(step => step.startsWith('clothing_raster_')));
   assert.ok(!pipelineAgentSteps('part-layering').includes('part_standardize'));
@@ -119,7 +119,7 @@ test('consistent legacy settings are shared, conflicts require an explicit role,
   assert.deepEqual(consistent.stepModels.part_outline_repair, consistent.stepModels.clothing_outline);
   const conflict = { layering_part_outline_model: 'claude-sonnet-5.5-high', layering_clothing_outline_model: 'gemini-4-argon-high' };
   assert.throws(() => loadWorkflowEnvironment(conflict, root), /不一致.*layering_agent_part_draw_model/);
-  assert.throws(() => loadWorkflowEnvironment({ layering_raster_step02_model: 'gpt-6-astra-high', layering_raster_step02_repair_model: 'gpt-6-astra-low' }, root), /不一致.*layering_agent_raster_step02_model/);
+  assert.throws(() => loadWorkflowEnvironment({ layering_raster_step01_model: 'gpt-6-astra-high', layering_raster_step01_repair_model: 'gpt-6-astra-low' }, root), /不一致.*layering_agent_raster_step01_model/);
   const unified = loadWorkflowEnvironment({ ...conflict, layering_agent_part_draw_model: 'gpt-6.1-sol-xhigh' }, root);
   assert.deepEqual(unified.stepModels.part_outline, unified.stepModels.clothing_outline);
   assert.equal(unified.stepModels.part_outline.model, 'gpt-6.1-sol');

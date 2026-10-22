@@ -13,9 +13,9 @@
 | 补全 | `part_completion` | 两套 part 的 SVG 遮挡补全 |
 | 分组 | `part_groups` | 两套 part 的首次分组及后续细分组 |
 | 深度分析 | `part_depth` | 两套 part 最后的遮挡层级规划，写入 occlusion.json |
-| raster step01 | `raster_step01` | 人物与衣服的分层、补全和 KRA 交付 |
-| raster step02 | `raster_step02` | 人物与衣服的边缘修画及 review 后返修 |
-| raster step02 review | `raster_step02_review` | 两套 raster 的独立 reviewer |
+| raster step01 | `raster_step01` | 人物与衣服的分层、补全、轮廓/画风对齐和 review 返修 |
+| raster step02 | `raster_step02` | 人物与衣服的边缘精修，无独立 review |
+| raster step01 review | `raster_step01_review` | 两套 raster 的独立 reviewer |
 | raster step03 | `raster_step03` | 仅人物的去除连体服 |
 | 穿戴组装 | `assembly` | 人物与衣服 KRA 组装 |
 
@@ -43,7 +43,7 @@ layering_agent_part_review_model=gemini-4-argon-high
 
 - preparation：人物标准化、简化、素体，衣服的纯衣服参考准备。
 - part：人物／衣服轮廓绘制及返修。它们主要交付 SVG，但原有生图能力仍可配置。
-- raster：人物 step01、step02、step02 review／返修、step03；衣服 step01、step02、step02 review／返修。
+- raster：人物 step01、step01 review／返修、step02、step03；衣服 step01、step01 review／返修、step02。
 - 穿戴组装 agent。
 
 这张配置表描述工具能力；原任务要求继续约束使用范围，reviewer 仍只提交反馈。姿态／画风判断、首次分组、part review、去重、SVG 补全、细分组和深度分析没有开启生图，不增加生图配置。
@@ -81,3 +81,5 @@ part 绘制 ID 和 harness 记录在各管线 `stages/sessions/<完整groupID>.j
 同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
 
 `layering_image_compact_threshold` 仅作用于 Codex，并沿用现有带图压缩补丁；不自动改写其他 CLI 的压缩策略。
+
+独立 raster reviewer 使用 `layering_agent_raster_step01_review_model`；返修与绘制共用 `layering_agent_raster_step01_model`。原 `layering_agent_raster_step02_review_model` 配置需迁移为新的 step01 键；各自独立的生图键同样从 `raster_step02_review/repair` 改为 `raster_step01_review/repair`，衣服带 `clothing_` 前缀。模型、力度和生图选择保持可自定义，见 [example.env](../example.env)。
