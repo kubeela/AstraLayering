@@ -45,6 +45,16 @@ test('artifact-only refreshes still defer during interaction', async () => {
   assert.deepEqual(f.calls, []);
 });
 
+test('group selection keeps focus while progress and intermediate files refresh', async () => {
+  const f = fixture('running', 'focus');
+  let focused = false;
+  f.context.document.activeElement = { dataset: { treeDepth: '0' }, getAttribute: () => '0', matches: () => true };
+  const query = f.context.document.querySelector;
+  f.context.document.querySelector = (selector: string) => selector === '[data-tree-depth="0"]' ? { focus: () => { focused = true; } } : query(selector);
+  await f.run();
+  assert.deepEqual(f.calls, ['apply', 'render']); assert.equal(focused, true);
+});
+
 test('the separate preview tab still redraws new progress and artifacts', async () => {
   const f = fixture('running', 'none');
   f.context.state.page = 'preview';
