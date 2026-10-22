@@ -11,6 +11,7 @@ import { nextReviewTask } from '../.agents/skills/live2d-maker/shared/raster/rev
 import { inventory, jsonFile, safePath } from './files.ts';
 import { partProgress, phases } from './part-progress.ts';
 import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
+import { projectDisplayName } from './project-metadata.ts';
 
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
@@ -26,10 +27,11 @@ function validateGroups(nodes: any[], depth = 0) {
   }
 }
 export async function summary(directory: string, name: string, dir: string) {
+  const displayName = await projectDisplayName(directory, name);
   const run = await readRun(directory, name);
-  if (!run) return { name, status: 'untracked', directory, run: undefined, runnerAlive: false, lockHeld: false };
+  if (!run) return { name, displayName, status: 'untracked', directory, run: undefined, runnerAlive: false, lockHeld: false };
   const live = await taskStatus({ name, dir });
-  return { name, status: live.status, directory, run, runnerAlive: live.runnerAlive, lockHeld: live.lockHeld };
+  return { name, displayName, status: live.status, directory, run, runnerAlive: live.runnerAlive, lockHeld: live.lockHeld };
 }
 export async function snapshot(directory: string, name: string, dir: string) {
   const errors: string[] = [];

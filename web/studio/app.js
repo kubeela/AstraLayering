@@ -1008,7 +1008,14 @@ async function chooseProject() {
     button.dataset.project = name;
     button.textContent = label;
     button.onclick = () => void openProject(name, dir);
-    $('#project-list').append(button);
+    if (dir) {
+      const row = document.createElement('div'); row.className = 'project-item-row';
+      const edit = document.createElement('button'); edit.className = 'project-name-edit'; edit.textContent = '✎';
+      edit.title = '修改显示名称'; edit.setAttribute('aria-label', `修改 ${label} 的显示名称`);
+      edit.dataset.renameProject = name;
+      edit.onclick = () => editProjectName(name, label, dir);
+      row.append(button, edit); $('#project-list').append(row);
+    } else $('#project-list').append(button);
   };
   for (const [name, project] of Object.entries(physicsProjects)) addProject(name, project.label);
   try {
@@ -1016,13 +1023,36 @@ async function chooseProject() {
     if (generation !== projectListGeneration) return;
     $("#project-status").textContent = "选择项目，加载图层和贴图";
     for (const project of data.tasks) {
-      addProject(project.name, project.name, data.directory);
+      addProject(project.name, project.displayName || project.name, data.directory);
     }
   } catch (e) {
     if (generation === projectListGeneration)
       $("#project-status").textContent = e.message;
   }
 }
+let projectNameSelection;
+function editProjectName(name, label, dir) {
+  projectNameSelection = { name, dir };
+  $('#project-display-name').value = label;
+  $('#project-name-error').textContent = '';
+  $('#project-name-dialog').showModal(); $('#project-display-name').focus();
+}
+$('#project-name-close').onclick = () => $('#project-name-dialog').close();
+$('#project-name-form').onsubmit = async e => {
+  e.preventDefault();
+  const selection = projectNameSelection;
+  $('#project-name-save').disabled = true;
+  try {
+    const response = await fetch('./api/project-name', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...selection, displayName: $('#project-display-name').value }) });
+    const result = await response.json(); if (!response.ok) throw Error(result.error || response.statusText);
+    if (state.source?.project?.name === selection.name && state.source.project.dir === selection.dir) {
+      state.source.project.displayName = result.displayName; showSource();
+    }
+    $('#project-name-dialog').close(); void chooseProject();
+  } catch (error) { $('#project-name-error').textContent = error.message; }
+  finally { $('#project-name-save').disabled = false; }
+};
 $("#open-task").onclick = chooseProject;
 $("#retry-project").onclick = () => {
   if (state.waitingProject && !state.busy)

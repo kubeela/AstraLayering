@@ -422,6 +422,15 @@
       <div id="project-list" aria-label="项目列表"></div>
       <p id="project-status" class="muted" role="status"></p>
     </dialog>
+    <dialog id="project-name-dialog">
+      <form id="project-name-form">
+        <div class="section-heading"><h2>项目显示名称</h2><button type="button" id="project-name-close" class="dialog-close" aria-label="关闭">×</button></div>
+        <label class="field">名称<input id="project-display-name" name="displayName" maxlength="80" placeholder="可使用中文"></label>
+        <p class="muted">修改名称会保留已有文件与运行任务。</p>
+        <p id="project-name-error" class="muted" role="alert"></p>
+        <button id="project-name-save" type="submit">保存</button>
+      </form>
+    </dialog>
     <div id="toast" role="status"></div>
     <script type="module" src="./studio/app.js"></script>
   </body>
