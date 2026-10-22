@@ -20,7 +20,12 @@ export function validateBinding(value) {
   return { ...d, enabled: value.enabled, direction: value.direction };
 }
 function divisions(n, boundaries) {
-  return [...new Set([...Array.from({ length: n + 1 }, (_, i) => i / n), ...boundaries])].sort((a, b) => a - b);
+  // Preserve exact authored boundaries without leaving a near-zero row beside
+  // the regular grid. A 0.28 transition next to 5/18 used to create a 1.4 px
+  // edge in a 650 px ribbon; its angle limit clamped the whole mesh's motion.
+  const regular = Array.from({ length: n + 1 }, (_, i) => i / n).filter(t =>
+    t === 0 || t === 1 || boundaries.every(b => Math.abs(t - b) >= .3 / n));
+  return [...new Set([...regular, ...boundaries])].sort((a, b) => a - b);
 }
 export class ClothBody {
   constructor(bounds, binding) {

@@ -21,6 +21,7 @@ try {
   assert.equal((await diag()).tool,'move');
   assert.deepEqual(await page.locator('[data-workspace]').evaluateAll(es=>es.map(e=>e.dataset.workspace)),['mask','lighting','physics']);
   assert.equal(await page.locator('[data-tool="disturb"]').isVisible(),false);
+  const resolvedPreview = (await diag()).previewMode;
   const sourceSession = (await diag()).layerSession;
   await page.locator('[data-view="color"]').click(); const originalColor = await capture();
   await page.locator('[data-view="lit"]').click(); const before = await capture();
@@ -29,7 +30,7 @@ try {
   console.log('GPU physical preview ready');
   assert.equal((await diag()).workspace, 'lighting', 'enabling physics changed the editing workspace');
   assert.equal((await diag()).layerSession, sourceSession, 'enabling physics replaced the document');
-  assert.equal((await diag()).previewMode, preview);
+  assert.equal((await diag()).previewMode, resolvedPreview);
   await page.locator('[data-workspace="physics"]').click();
   const d = await diag(); assert(d.physics.parts.some(p=>p.binding.enabled));
   assert.equal(await page.locator('#physics-overlay').isVisible(),true);
@@ -73,7 +74,7 @@ try {
     await page.locator(`[data-workspace="${workspace}"]`).click();
     const current = await diag();
     assert.equal(current.layerSession, beforeTabs.layerSession);
-    assert.equal(current.previewMode, preview);
+    assert.equal(current.previewMode, resolvedPreview);
     assert.equal(current.lightingEnabled, true); assert.equal(current.physics.enabled, true);
     assert.deepEqual(current.settings, beforeTabs.settings);
     assert.deepEqual(current.physics.parts, beforeTabs.physics.parts);
@@ -121,7 +122,7 @@ try {
   console.log('Shading diagnostic RGB difference',modeDifference/(litPixels.length/4*3));
   assert(modeDifference/(litPixels.length/4*3)>3,'diagnostic reused the beauty shader');
   await page.locator('#show-shading').uncheck();
-  if (preview === 'mixed') {
+  if (resolvedPreview === 'mixed') {
     // Authored projection editing rebuilds only the current snapshot and keeps
     // live effects, map provenance, native session and physics authoring intact.
     await page.locator('[data-workspace="mask"]').click();
