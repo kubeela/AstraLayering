@@ -313,18 +313,19 @@ function jsonLines(text) {
  return text.split('\n').map((line,i)=>`<div class="code-line"><span class="line-number">${i+1}</span><code>${esc(line).replace(/(&quot;.*?&quot;)(\s*:)?/g,(_,str,colon)=>`<span class="${colon?'json-key':'json-string'}">${str}</span>${colon||''}`).replace(/\b(false|true|null)\b/g,'<span class="json-value">$1</span>')}</code></div>`).join('');
 }
 function configTree() {
- const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共工具']];
+ const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共配置']];
  return families.map(([prefix,label])=> {
   const files=configFiles.filter(file=>file.startsWith(prefix+'/')&&(!state.configFilter||file.toLowerCase().includes(state.configFilter.toLowerCase())));
   if(!files.length)return '';
   const active=state.file.startsWith(prefix+'/');
   let content=files;
   if(prefix==='shared'&&!state.configFilter) {
-   const activeTool=state.file.split('/')[2];
-   const tools=[...new Set(files.map(f=>f.split('/')[2]))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
-   content=tools.flatMap(tool=>tool===activeTool?files.filter(f=>f.startsWith(`shared/tools/${tool}/`)):[files.find(f=>f===`shared/tools/${tool}/description.md`)||files.find(f=>f.startsWith(`shared/tools/${tool}/`))]);
+   const toolFiles=files.filter(file=>file.startsWith('shared/tools/'));
+   const activeTool=state.file.startsWith('shared/tools/')?state.file.split('/')[2]:null;
+   const tools=[...new Set(toolFiles.map(f=>f.split('/')[2]))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
+   content=[...files.filter(file=>!file.startsWith('shared/tools/')),...tools.flatMap(tool=>tool===activeTool?toolFiles.filter(f=>f.startsWith(`shared/tools/${tool}/`)):[toolFiles.find(f=>f===`shared/tools/${tool}/description.md`)||toolFiles.find(f=>f.startsWith(`shared/tools/${tool}/`))])];
   }
-  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(prefix==='shared'?(file.split('/')[2]===state.file.split('/')[2]?file.split('/')[2]+' / '+file.split('/').at(-1):file.split('/')[2]):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
+  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(file.startsWith('shared/tools/')?(file.split('/')[2]===state.file.split('/')[2]?file.split('/')[2]+' / '+file.split('/').at(-1):file.split('/')[2]):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
  }).join('');
 }
 function configPage() {
