@@ -89,10 +89,12 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     sandboxMode: 'danger-full-access',
     approvalPolicy: 'never',
   };
+  const log = !client ? await AgentLog.create(join(request.directory, 'agents'), request.step || 'raster', {
+    prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: options }) : undefined;
   let thread = request.threadId ? codex.resumeThread(request.threadId, options) : codex.startThread(options);
   let threadId = request.threadId;
   const savedImages = new Set<string>();
-  return runtime.run(async attempt => {
+  const run = runtime.run(async attempt => {
     let text = '', completed = false, lastError = '';
     try {
       const { events } = await thread.runStreamed(attempt > 1 && threadId ? continuationPrompt([...savedImages]) : request.prompt, {
@@ -110,7 +112,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
           }
           threadId = event.thread_id;
         }
-        try { await request.onEvent(event); }
+        try { await log?.record(event); await request.onEvent(event); }
         catch (error) { throw new AgentCallError(error instanceof Error ? error.message : String(error), 'localError', { cause: error }); }
         if (event.type === 'item.completed') {
           const item = event.item as unknown as Record<string, unknown>;
@@ -141,6 +143,8 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     }
     return result as StepResult;
   }, { signal: request.signal, onRetry: request.onRetry });
+  try { const result = await run; await log?.finish({ status: 'completed', threadId: threadId || null, finalResponse: JSON.stringify(result) }); return result; }
+  catch (error) { await log?.finish({ status: 'failed', threadId: threadId || null, error: String(error) }); throw error; }
 }
 
 // Drawing agents use the configured filesystem and image tools directly.
