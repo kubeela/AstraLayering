@@ -9,8 +9,34 @@ import type { FunctionTool } from '../codex/function-tools.ts';
 const helper = fileURLToPath(new URL('./agv-tool.ts', import.meta.url));
 const quote = (value: string) => "'" + value.replaceAll("'", "'\\''") + "'";
 const resultMarker = /ASTRA_TOOL_RESULT:([^\s"'\\]+)/;
-export type GatewayEvent = { type: 'agv.gateway'; requestId: string; phase: 'started' | 'headers' | 'first_body' | 'completed' | 'failed';
-  path: string; elapsedMs: number; status?: number; upstreamRequestId?: string; aborted?: boolean; errorName?: string };
+export type GatewayEvent = { type: 'agv.gateway'; requestId: string; phase: 'started' | 'prepared' | 'headers' | 'first_body' | 'completed' | 'failed';
+  path: string; elapsedMs: number; status?: number; upstreamRequestId?: string; aborted?: boolean; errorName?: string;
+  upstreamPath?: string; requestBytes?: number; inputImages?: number; requestedThinkingLevel?: string; thinkingLevel?: string };
+
+export function gatewayRequestUrl(base: string, request: string): URL {
+  const target = new URL(base), incoming = new URL(request, 'http://localhost');
+  const prefix = target.pathname.split('/').filter(Boolean), suffix = incoming.pathname.split('/').filter(Boolean);
+  let overlap = Math.min(prefix.length, suffix.length);
+  while (overlap && prefix.slice(-overlap).join('/') !== suffix.slice(0, overlap).join('/')) overlap--;
+  target.pathname = '/' + [...prefix, ...suffix.slice(overlap)].join('/');
+  for (const [key, value] of incoming.searchParams) target.searchParams.append(key, value);
+  return target;
+}
+
+export function prepareGenaiThinking(body: any, replacement?: string): void {
+  // Some gateways route CLI monitors to a model that does not accept MINIMAL.
+  // This opt-in wire compatibility setting never changes LOW/HIGH drawing calls.
+  const thinking = body.generationConfig?.thinkingConfig ?? body.generation_config?.thinking_config;
+  if (replacement && thinking?.thinkingLevel === 'MINIMAL') thinking.thinkingLevel = replacement;
+  if (replacement && thinking?.thinking_level === 'MINIMAL') thinking.thinking_level = replacement;
+}
+
+function imageCount(value: any): number {
+  if (!value || typeof value !== 'object') return 0;
+  if (Array.isArray(value)) return value.reduce((count, part) => count + imageCount(part), 0);
+  if (value.inlineData?.data || value.inline_data?.data) return 1;
+  return Object.values(value).reduce<number>((count, part) => count + imageCount(part), 0);
+}
 export async function prepareGenaiTools(body: any, tools: readonly FunctionTool[], logsRoot: string) {
   // Keep all native tools and append the exact workflow descriptions and schemas.
   body.tools ||= [];
@@ -67,6 +93,10 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
   inputImages: readonly { path: string; description: string }[] = [], workspace = '',
   observe?: (event: GatewayEvent) => Promise<void>) {
   if (!env.AGY_LLM_GATEWAY_URL || env.AGY_LLM_GATEWAY_WIRE_PROTOCOL !== 'genai') return;
+  const minimalThinking = env.layering_agv_minimal_thinking_level?.trim();
+  if (minimalThinking && !['LOW', 'MEDIUM', 'HIGH'].includes(minimalThinking)) {
+    throw new Error('layering_agv_minimal_thinking_level 只能为 LOW、MEDIUM、HIGH；留空保留 CLI 原值。');
+  }
   const images = await Promise.all(inputImages.map(async image => {
     const bytes = await readFile(image.path);
     return { inlineData: { mimeType: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } };
@@ -90,8 +120,14 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
       for (const content of body.contents || []) if (content.role === 'user' && content.parts?.some((p: any) => p.text?.includes(workspace))) {
         content.parts.push(...images); break;
       }
+      const thinking = body.generationConfig?.thinkingConfig ?? body.generation_config?.thinking_config;
+      const requestedThinkingLevel = thinking?.thinkingLevel ?? thinking?.thinking_level;
+      prepareGenaiThinking(body, minimalThinking);
+      const target = gatewayRequestUrl(upstream, req.url || '/'), payload = JSON.stringify(body);
+      await trace('prepared', { upstreamPath: target.pathname, requestBytes: Buffer.byteLength(payload), inputImages: imageCount(body),
+        requestedThinkingLevel, thinkingLevel: thinking?.thinkingLevel ?? thinking?.thinking_level });
       const headers = Object.fromEntries(Object.entries(req.headers).filter(([key, value]) => !['host', 'content-length', 'connection'].includes(key) && typeof value === 'string')) as Record<string, string>;
-      const response = await fetch(upstream + req.url, { method: req.method, headers, body: JSON.stringify(body), signal: AbortSignal.any([signal, controller.signal]) });
+      const response = await fetch(target, { method: req.method, headers, body: payload, signal: AbortSignal.any([signal, controller.signal]) });
       res.writeHead(response.status, { 'content-type': response.headers.get('content-type') || 'application/json', 'cache-control': 'no-store' });
       // writeHead alone buffers headers until the first body write. agy has a
       // separate response-header deadline; upstream SSE may start much later.
