@@ -104,15 +104,15 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
   await assert.rejects(runWorkflow(f.options, { ...deps, agent: async request => {
     if (request.prompt.startsWith('你负责对第一步交付')) {
       calls.push('review'); assert.equal(request.threadId, undefined);
-      assert.equal(request.tools?.[0].name, 'locate_pixel_differences');
+      assert.equal(request.tools?.[0].name, 'annotate_review_regions');
       await absent(join(f.output, 'step01/.completed'));
       await absent(join(f.output, 'step02/.running'));
       await request.onEvent({ type: 'thread.started', thread_id: 'fresh-review' });
       await writeFile(join(f.output, 'step01/review-01.md.tmp'), '结论：通过\n完整检查。');
       return complete;
     }
-    if (calls.length === 0) { calls.push('step01'); return deliver(request, steps[0]); }
-    calls.push('step02'); assert.equal(request.threadId, 'thread-1'); assert.equal(request.tools?.length, 0);
+    if (calls.length === 0) { calls.push('step01'); assert.equal(request.tools?.length, 0); return deliver(request, steps[0]); }
+    calls.push('step02'); assert.equal(request.threadId, 'thread-1'); assert.equal(request.tools?.[0].name, 'locate_pixel_differences');
     await readFile(join(f.output, 'step01/.completed'));
     await writeFile(join(f.output, 'step02/character-soft-edges.kra'), 'partially softened artwork');
     await writeFile(join(f.output, 'step02/report.md'), 'PNG missing'); return complete;

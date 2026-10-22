@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "image": {"type": "string", "description": "从当前 KRA 导出的 PNG"},
+    "reference": {"type": "string", "description": "可选，同画布的实际参考 PNG，用于局部对照"},
+    "regions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{1,24}$", "description": "与报告一致的唯一问题编号，如 R1"},
+          "bounds": {"type": "array", "items": {"type": "integer", "minimum": 0}, "minItems": 4, "maxItems": 4, "description": "原画布 [x,y,width,height]，宽高须大于零"},
+          "layers": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "description": "相关部件/绘画层名称"},
+          "description": {"type": "string", "minLength": 1, "description": "看图确认的问题表现"}
+        },
+        "required": ["id", "bounds", "layers", "description"]
+      }
+    },
+    "padding": {"type": "integer", "minimum": 0, "maximum": 256, "default": 16, "description": "局部证据周围增加的原画布像素，不改变问题坐标"}
+  },
+  "required": ["image", "regions"]
+}

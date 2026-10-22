@@ -16,9 +16,9 @@ import { textResult } from '../codex/function-tools.ts';
 
 const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true, image_compaction_version: 2 };
 
-test('raster step01 同时注册像素定位和补丁版原生生图，继续原 thread', async t => {
+test('raster 自定义框选工具与原生生图兼容，保留配置与会话', async t => {
   const { root } = await fixture(t);
-  const server = await fakeAppServer(root, [{ tool: 'locate_pixel_differences', arguments: {} }]);
+  const server = await fakeAppServer(root, [{ tool: 'annotate_review_regions', arguments: {} }]);
   let source = await readFile(server.executable, 'utf8');
   source = source.replace('#!/usr/bin/env node', `#!${process.execPath}`)
     .replace('const calls =', `if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(capabilities))}); process.exit(0); }\nconst calls =`)
@@ -30,7 +30,7 @@ test('raster step01 同时注册像素定位和补丁版原生生图，继续原
   let called = 0;
   const result = await runAgent({ directory: root, step: 'raster_step01', model: 'gpt-6-astra', effort: 'xhigh',
     prompt: 'inspect', threadId: 'native-thread', environment, onEvent: async () => {},
-    tools: [{ name: 'locate_pixel_differences', description: 'fixture', inputSchema: { type: 'object' },
+    tools: [{ name: 'annotate_review_regions', description: 'fixture', inputSchema: { type: 'object' },
       execute: async () => { called++; return textResult('located'); } }] });
   assert.equal(result.status, 'completed'); assert.equal(called, 1);
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
@@ -38,7 +38,7 @@ test('raster step01 同时注册像素定位和补丁版原生生图，继续原
   assert.equal(protocol.find(event => event.method === 'thread/resume').params.config['features.image_generation'], true);
   const native = await runAgent({ directory: root, step: 'raster_step01', model: 'gpt-6-astra', effort: 'xhigh',
     prompt: 'native inspect', environment: loadWorkflowEnvironment({ layering_codex_path: server.executable }, root), onEvent: async () => {},
-    tools: [{ name: 'locate_pixel_differences', description: 'fixture', inputSchema: { type: 'object' }, execute: async () => textResult('located') }] });
+    tools: [{ name: 'annotate_review_regions', description: 'fixture', inputSchema: { type: 'object' }, execute: async () => textResult('located') }] });
   assert.equal(native.status, 'completed');
   const latest = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(latest.findLast(event => event.method === 'thread/start').params.config['features.image_generation'], true);

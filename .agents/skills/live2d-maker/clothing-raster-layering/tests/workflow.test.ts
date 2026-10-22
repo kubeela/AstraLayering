@@ -32,11 +32,13 @@ async function fixture(t: TestContext) {
 async function deliver(request: AgentRequest, thread = request.threadId ?? 'drawing-1'): Promise<StepResult> {
   if (request.prompt.startsWith('你负责对第一步交付')) {
     assert.equal(request.threadId, undefined);
+    assert.equal(request.tools?.[0].name, 'annotate_review_regions');
     await request.onEvent({ type: 'thread.started', thread_id: 'temporary-reviewer' });
     await writeFile(join(request.directory, 'step01/review-01.md.tmp'), '结论：通过\n\n已检查全部衣片。');
   } else {
     await request.onEvent({ type: 'thread.started', thread_id: thread });
     const id = request.prompt.startsWith('在 step01/') ? 'step02' : 'step01';
+    assert.deepEqual(request.tools?.map(tool => tool.name), id === 'step02' ? ['locate_pixel_differences'] : []);
     const step = steps.find(step => step.id === id)!;
     for (const file of step.requiredFiles) await writeFile(join(request.directory, id, 'review' in step && step.review && file === 'report.md' ? 'report.md.tmp' : file), `${id} ${file}`);
   }

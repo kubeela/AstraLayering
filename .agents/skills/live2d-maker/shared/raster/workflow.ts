@@ -43,7 +43,7 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
 export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
   directorySuffix?: string;
-  tools?(output: string, input: Input, step: StepDefinition): NonNullable<AgentRequest['tools']>;
+  tools?(output: string, input: Input, step: StepDefinition, phase: string): NonNullable<AgentRequest['tools']>;
   fingerprintInput?(input: Input): Promise<string>;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
@@ -180,7 +180,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: pipeline.tools?.(output, reference, step),
+        tools: pipeline.tools?.(output, reference, step, phase),
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         imageRoots: [dirname(directory), ...inputDirectories],
         recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? (await pipeline.buildPrompt(step, reference, output, krita, previous))
