@@ -11,8 +11,38 @@ import { loadWorkflowEnvironment, checkCodexCapabilities } from '../codex/enviro
 import { CodexAgents } from '../codex/agents.ts';
 import { fakeAppServer } from '../../part-layering/tests/fake-app-server.ts';
 import { imageGenerationTool } from '../agents/images.ts';
+import { runAgent } from '../raster/agent.ts';
+import { textResult } from '../codex/function-tools.ts';
 
 const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true, image_compaction_version: 2 };
+
+test('raster step01 同时注册像素定位和补丁版原生生图，继续原 thread', async t => {
+  const { root } = await fixture(t);
+  const server = await fakeAppServer(root, [{ tool: 'locate_pixel_differences', arguments: {} }]);
+  let source = await readFile(server.executable, 'utf8');
+  source = source.replace('#!/usr/bin/env node', `#!${process.execPath}`)
+    .replace('const calls =', `if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(capabilities))}); process.exit(0); }\nconst calls =`)
+    .replace('文件已保存，不返回 JSON。', '{"status":"completed","summary":"inspected"}');
+  await writeFile(server.executable, source);
+  const environment = loadWorkflowEnvironment({ layering_codex_path: server.executable,
+    layering_raster_step01_image_model: 'gpt-image-2.5-flare',
+    layering_openai_image_base_url: 'https://image.example/v1', layering_openai_image_api_key: 'fixture' }, root);
+  let called = 0;
+  const result = await runAgent({ directory: root, step: 'raster_step01', model: 'gpt-6-astra', effort: 'xhigh',
+    prompt: 'inspect', threadId: 'native-thread', environment, onEvent: async () => {},
+    tools: [{ name: 'locate_pixel_differences', description: 'fixture', inputSchema: { type: 'object' },
+      execute: async () => { called++; return textResult('located'); } }] });
+  assert.equal(result.status, 'completed'); assert.equal(called, 1);
+  const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.ok(protocol.some(event => event.method === 'thread/resume'));
+  assert.equal(protocol.find(event => event.method === 'thread/resume').params.config['features.image_generation'], true);
+  const native = await runAgent({ directory: root, step: 'raster_step01', model: 'gpt-6-astra', effort: 'xhigh',
+    prompt: 'native inspect', environment: loadWorkflowEnvironment({ layering_codex_path: server.executable }, root), onEvent: async () => {},
+    tools: [{ name: 'locate_pixel_differences', description: 'fixture', inputSchema: { type: 'object' }, execute: async () => textResult('located') }] });
+  assert.equal(native.status, 'completed');
+  const latest = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(latest.findLast(event => event.method === 'thread/start').params.config['features.image_generation'], true);
+});
 async function fixture(t: { after(fn: () => Promise<unknown>): void }) {
   const root = await mkdtemp(join(tmpdir(), 'codex-native-images-'));
   t.after(() => rm(root, { recursive: true, force: true }));

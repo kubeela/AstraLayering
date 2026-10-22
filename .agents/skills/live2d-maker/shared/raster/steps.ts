@@ -23,7 +23,7 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
   // The final report also checkpoints the initial drawing before review begins.
   // Publish it only after the agent turn and all delivery checks have succeeded.
   const report = step.review ? 'report.md.tmp' : 'report.md';
-  const responsibilities = ['step01', 'step02'].includes(step.id) ? await readFile(new URL('./drawing-responsibilities.md', import.meta.url), 'utf8') : '';
+  const responsibilities = step.id === 'step01' ? await readFile(new URL('./drawing-responsibilities.md', import.meta.url), 'utf8') : '';
   const body = (await readFile(step.prompt, 'utf8')).replaceAll(`${step.id}/report.md`, `${step.id}/${report}`);
   const requiredFiles = step.requiredFiles.map(file => file === 'report.md' ? report : file);
   return `${body}\n${responsibilities}\n---\n本次运行信息（上方为完整步骤提示词）：
@@ -33,6 +33,7 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
 - 主要产物路径：${JSON.stringify(input.parts)}。以现有 part 为绘制起点，对照参考完成部件形状与补全。
 - 参考图目录：${JSON.stringify(join(input.directory, 'references'))}。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。${input.originalCharacter ? `原穿衣角色辅助参考：${JSON.stringify(input.originalCharacter)}。` : ''}
 - 输出目录：${JSON.stringify(output)}。已有合格成果应继续使用；中间文件、每件生成记录和最终交付均放在这里。
+- 建立 KRA 后及每完成一批实际修改，保存当前工程；检查时以 KRA 的最新保存画面为准，不要只在最后一次保存。继续同一工程，不为进度预览另建不同内容的工程。
 - 前序已完成步骤：${JSON.stringify(previous.map(directory => ({ directory, report: join(directory, 'report.md') })))}。需要时读取这些交付和报告，不修改前序成果；即使本次是新会话，也从这些文件接续任务。
 - Krita 已检查：${JSON.stringify(krita.executable)}，版本 ${krita.version}；沿用当前显示环境。
 - 本步必须交付（绝对路径）：${JSON.stringify(requiredFiles.map(file => join(output, file)))}。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 ${JSON.stringify(join(output, report))}。${step.review ? '报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。' : ''}

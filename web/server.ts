@@ -13,6 +13,7 @@ import { configAPI } from './config.ts';
 import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
 import { SVGThumbnails } from './svg-thumbnail.ts';
+import { KRAPreviews } from './kra-preview.ts';
 import { launch } from './worker.ts';
 import { validatePhysicsConfig } from './studio/component-physics-schema.js';
 import { LayerCompositor } from './layer-compositor.ts';
@@ -78,6 +79,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
   }
   const compositor = new LayerCompositor(root);
   const thumbnails = new SVGThumbnails();
+  const kraPreviews = new KRAPreviews();
   const server = createServer(async (request, response) => {
     const url = new URL(request.url ?? '/', 'http://localhost'), path = url.pathname;
     const requestDir = settings.directory;
@@ -196,6 +198,11 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         const file = await safePath(directory, selected);
         const info = await lstat(file);
         if (!info.isFile()) throw new Error('产物不是文件');
+        if (url.searchParams.get('preview') === 'kra' && extname(file).toLowerCase() === '.kra') {
+          const image = await kraPreviews.get(file, `${info.mtimeMs}:${info.ctimeMs}:${info.size}:${info.ino}`);
+          response.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-cache' });
+          response.end(image); return;
+        }
         if (url.searchParams.get('preview') === 'content' && extname(file).toLowerCase() === '.svg') {
           const image = await thumbnails.get(file, `${info.mtimeMs}:${info.ctimeMs}:${info.size}:${info.ino}`);
           if (image) {
