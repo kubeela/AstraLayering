@@ -21,7 +21,8 @@ export class PhysicsPanel {
       });
     }
     $('#physics-prepare').onclick = () => void this.prepare();
-    $('#physics-close').onclick = () => void this.surfaces.close();
+    $('#physics-close').onclick = () => this.source()?.physicsCase ? this.clear() : void this.surfaces.close();
+    $('#physics-demo').onchange = e => this.setDemo(e.target.checked);
     $('#physics-part').onchange = e => this.select(e.target.value);
     $('#physics-filter').oninput = () => this.options();
     $('#physics-enabled').onchange = e => this.edit('enabled', e.target.checked);
@@ -59,14 +60,16 @@ export class PhysicsPanel {
     if (this.ready || this.preparing || !this.source() || (!internal && this.busy())) return;
     const epoch = ++this.epoch, owner = this.source(); this.preparing = true; this.sync();
     try {
-      const ok = await this.surfaces.prepare({ allowFlat: true });
+      const fixture = owner.physicsCase;
+      const ok = fixture || await this.surfaces.prepare({ allowFlat: true });
       if (!ok || epoch !== this.epoch || this.source() !== owner) return;
-      this.parts = this.surfaces.layers; this.size = this.surfaces.size; this.owner = owner;
+      this.parts = fixture?.layers || this.surfaces.layers; this.size = fixture?.size || this.surfaces.size; this.owner = owner;
       this.sourceHash = this.fingerprint(); this.bindings.clear();
       for (const l of this.parts) {
         const ribbon = /(?:left|right)_long_tail|飘带/.test(l.name), skirt = /skirt_(?:front|side_back)|裙摆/.test(l.name);
-        const binding = bindingDefaults(ribbon ? 'ribbon' : 'cloth'); binding.enabled = ribbon || skirt;
-        if (skirt) { binding.maxTravel = .08; binding.maxAngle = 12; binding.fixed = .32; }
+        const binding = fixture?.bindings[l.id] || bindingDefaults(ribbon ? 'ribbon' : 'cloth');
+        if (!fixture) binding.enabled = ribbon || skirt;
+        if (!fixture && skirt) { binding.maxTravel = .08; binding.maxAngle = 12; binding.fixed = .32; }
         this.bindings.set(l.id, binding);
       }
       try { const saved = draft || JSON.parse(localStorage.getItem(this.storageKey()) || 'null'); if (saved) this.restore(saved); } catch (error) { this.error('旧物理草稿未加载：' + error.message); }
@@ -82,6 +85,12 @@ export class PhysicsPanel {
     this.pointer = null; this.lastTime = 0; this.accumulator = 0;
     if (!this.enabled) for (const b of this.bodies.values()) b.reset();
     this.render(); this.sync(); this.changed();
+  }
+  setDemo(enabled) {
+    this.demo = !!enabled && !!this.source()?.physicsCase && this.ready;
+    this.demoElapsed = 0; this.demoDirection = 1;
+    if (this.demo && this.enabled && !this.paused) this.pulse();
+    this.sync();
   }
   edit(key, value) {
     const p = this.bindings.get(this.selected); if (!p) return;
@@ -125,13 +134,21 @@ export class PhysicsPanel {
     }
     this.pointer = { x, y, time }; this.overlay();
   }
-  pulse() {
+  pulse(direction = 1) {
     if (!this.ready || !this.enabled) return;
     for (const [id, b] of this.bodies) if (this.scope === 'all' || id === this.selected) {
       const l = this.parts.find(l => l.id === id);
       let target = -1, best = 0;
-      for (let i = 0; i < b.weights.length; i++) if (b.weights[i] > best && b.hit(b.positions[i * 2], b.positions[i * 2 + 1], [l])) { target = i; best = b.weights[i]; }
-      if (target >= 0) b.impulse(b.positions[target * 2], b.positions[target * 2 + 1], b.freeLength * 1.5 * this.force, 0, Math.max(this.radius, b.freeLength * .8));
+      const vertical = ['down', 'up'].includes(b.binding.direction), reverse = ['up', 'left'].includes(b.binding.direction);
+      for (let i = 0; i < b.weights.length; i++) {
+        const t = vertical ? (b.rest[i * 2 + 1] - l.bounds.y) / l.bounds.height : (b.rest[i * 2] - l.bounds.x) / l.bounds.width;
+        const score = b.weights[i] * (.01 + (reverse ? 1 - t : t));
+        if (score > best && b.hit(b.positions[i * 2], b.positions[i * 2 + 1], [l])) { target = i; best = score; }
+      }
+      if (target >= 0) {
+        const velocity = b.freeLength * 1.5 * this.force * direction;
+        b.impulse(b.positions[target * 2], b.positions[target * 2 + 1], vertical ? velocity : 0, vertical ? 0 : velocity, Math.max(this.radius, b.freeLength * .8));
+      }
     }
     this.lastTime = 0;
   }
@@ -140,6 +157,10 @@ export class PhysicsPanel {
   tick(time) {
     if (!this.ready) return;
     const dt = this.lastTime ? Math.min(.05, (time - this.lastTime) / 1000) : 0; this.lastTime = time;
+    if (this.demo && this.enabled && !this.paused && !document.hidden) {
+      this.demoElapsed += dt;
+      if (this.demoElapsed >= 2.4) { this.demoDirection *= -1; this.pulse(this.demoDirection); this.demoElapsed = 0; }
+    }
     if (this.enabled && !document.hidden && !this.paused && [...this.bodies.values()].some(b => b.moving())) {
       this.accumulator = (this.accumulator || 0) + dt;
       let steps = 0; while (this.accumulator >= 1 / 120 && steps < 6) { for (const b of this.bodies.values()) b.step(); this.accumulator -= 1 / 120; steps++; }
@@ -154,12 +175,15 @@ export class PhysicsPanel {
     el.classList.toggle('limited', !!b?.stats.limited);
   }
   sync() {
+    const canPrepare = this.source()?.physicsCase || this.surfaces.session()?.session;
     $('#effect-physics').checked = this.enabled || this.preparing;
-    $('#effect-physics').disabled = this.preparing || !this.source() || this.busy() || !this.surfaces.session()?.session;
-    $('#physics-prepare').disabled = this.preparing || this.ready || !this.source() || this.busy() || !this.surfaces.session()?.session;
+    $('#effect-physics').disabled = this.preparing || !this.source() || this.busy() || !canPrepare;
+    $('#physics-prepare').disabled = this.preparing || this.ready || !this.source() || this.busy() || !canPrepare;
     $('#physics-prepare').textContent = this.preparing ? '正在准备…' : '准备物理部件';
     $('#physics-controls').hidden = !this.ready; $('#physics-close').hidden = !this.ready;
-    $('#physics-status').textContent = this.preparing ? '读取当前部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · ${this.enabled ? '已启用' : '已关闭'}` : this.source()&&!this.surfaces.session()?.session ? '等待原生图层就绪…' : '开启摆动物理后自动准备部件';
+    $('#physics-status').textContent = this.preparing ? '读取当前部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · ${this.enabled ? '已启用' : '已关闭'}` : this.source()&&!canPrepare ? '等待原生图层就绪…' : '开启摆动物理后自动准备部件';
+    $('#physics-demo').checked = !!this.demo;
+    $('#physics-demo').disabled = !this.ready || this.busy();
     $('#physics-pause').textContent = this.paused ? '继续' : '暂停';
     for (const id of ['physics-pause','physics-step','physics-pulse']) $('#' + id).disabled = !this.enabled || this.busy();
     const p = this.bindings.get(this.selected); if (!p) { this.overlay(); return; }
@@ -194,9 +218,9 @@ export class PhysicsPanel {
   }
   clear() {
     this.epoch++; cancelAnimationFrame(this.frame); this.ready = false; this.preparing = false; this.enabled = false; this.renderer?.dispose(); this.renderer = null;
-    this.parts = null; this.bindings.clear(); this.bodies.clear(); this.selected = null; this.pointer = null; this.lastTime = 0; this.paused = false; this.sync(); this.changed();
+    this.parts = null; this.bindings.clear(); this.bodies.clear(); this.selected = null; this.pointer = null; this.lastTime = 0; this.paused = false; this.demo = false; this.sync(); this.changed();
   }
-  diagnostics() { return { ready: !!this.ready, enabled: this.enabled, paused: this.paused, selected: this.selected, solver: physicsVersion, size: this.size,
+  diagnostics() { return { ready: !!this.ready, enabled: this.enabled, demo: !!this.demo, paused: this.paused, selected: this.selected, solver: physicsVersion, size: this.size,
     parts: this.parts?.map(l => ({ id:l.id,name:l.name,bounds:l.bounds,binding:this.bindings.get(l.id),stats:this.bodies.get(l.id)?.stats,impulses:this.bodies.get(l.id)?.impulses || 0 })) || [],
     drawItems: this.renderer?.items.length || 0, textureSizes: this.renderer?.targets.map(t=>[t.width,t.height]) || [] }; }
 }

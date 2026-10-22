@@ -42,3 +42,9 @@ test('restoring a draft rejects unsupported types, non-finite values and oversiz
   const b=new ClothBody({x:0,y:0,width:100,height:300},{...d,enabled:true});
   assert.throws(()=>b.step(1));b.impulse(0,0,Infinity,0,100);assert.deepEqual(b.positions,b.rest);
 });
+test('authored pin boundaries replace nearby regular rows instead of creating tiny constrained strips',()=>{
+  const b = new ClothBody({x:0,y:0,width:148,height:650},{...bindingDefaults('ribbon'),enabled:true,fixed:.12,transition:.16});
+  const ys=Array.from({length:b.rows},(_,y)=>b.rest[y*b.cols*2+1]);
+  assert(ys.some(y=>Math.abs(y-650*.12)<1e-8));assert(ys.some(y=>Math.abs(y-650*.28)<1e-8));
+  for(let i=1;i<ys.length;i++)assert(ys[i]-ys[i-1]>10,'near-coincident grid rows suppress visible movement');
+});

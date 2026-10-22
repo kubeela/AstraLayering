@@ -39,6 +39,7 @@
             <button id="open-jianma">Jianma</button
             ><button id="open-task">从项目加载</button>
           </div>
+          <button id="open-physics-case" class="text-button">物理测试 ↗</button>
           <div id="document-info" hidden>
             <div class="document-heading">
               <strong id="document-name"></strong
@@ -75,11 +76,10 @@
             <label class="toggle"><input id="effect-lighting" type="checkbox" checked>实时光照</label>
             <label class="toggle"><input id="effect-physics" type="checkbox">摆动物理</label>
           </div>
-          <div id="lighting-source" hidden>
-            <label class="field inline">底图<select id="lighting-base">
-              <option value="normal-depth">原组装</option>
-              <option value="mixed">含投影蒙版</option>
-            </select></label>
+          <div id="physics-cases" hidden>
+            <label class="field inline">测试<select id="physics-case-select"></select></label>
+            <label class="toggle"><input id="physics-demo" type="checkbox">循环演示</label>
+            <p id="physics-case-note" class="muted"></p>
           </div>
         </section>
         <section class="panel layer-panel">

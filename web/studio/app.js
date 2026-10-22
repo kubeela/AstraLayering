@@ -6,6 +6,7 @@ import { openDocument } from "./document-loader.js";
 import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
 import { PhysicsPanel } from './physics-panel.js';
+import { physicsCases, createPhysicsCase } from './physics-cases.js';
 import {
   defaults,
   presets,
@@ -34,7 +35,6 @@ const state = {
   waitingProject: null,
   generation: 0,
   workspace: 'lighting',
-  lightingMode: 'mixed',
   lightingEnabled: true,
 };
 let projections, physics;
@@ -317,10 +317,12 @@ function sync() {
   $('[data-tool="disturb"]').disabled = !physics?.enabled || state.busy;
   $('.recipe-actions').hidden = !lighting;
   $('#engine').textContent = [state.lightingEnabled && hasNormal ? '光照' : '', physics?.enabled ? '物理' : '', '原尺寸'].filter(Boolean).join(' · ');
-  $('#lighting-source').hidden = !project;
-  $('#lighting-base').value = project?.previewMode === 'normal-depth' ? 'normal-depth' : 'mixed';
-  $('#lighting-base').disabled = state.busy || state.layerBusy;
-  $('#lighting-base option[value="mixed"]').disabled = !project?.previewModes?.mask;
+  $('#physics-cases').hidden = !state.source?.physicsCase;
+  $('#physics-case-select').disabled = $('#open-physics-case').disabled = state.busy || state.layerBusy;
+  if (state.source?.physicsCase) {
+    $('#physics-case-select').value = state.source.physicsCase.id;
+    $('#physics-case-note').textContent = state.source.physicsCase.note;
+  }
   for (const button of document.querySelectorAll('[data-workspace]')) {
     const selected = button.dataset.workspace === state.workspace;
     button.classList.toggle('active', selected);
@@ -742,11 +744,13 @@ async function install(source, id, reset = true) {
     u.searchParams.delete("name");
     u.searchParams.delete("project");
     u.searchParams.delete('preview');
+    u.searchParams.delete('physicsCase');
     if (source.project) {
       u.searchParams.set("project", source.project.name);
       u.searchParams.set('preview', source.project.previewMode);
     }
     if (source.sample) u.searchParams.set("name", source.sample);
+    if (source.physicsCase) u.searchParams.set('physicsCase', source.physicsCase.id);
     history.replaceState(null, "", u);
     if (reset) void layers.open(source);
   } finally {
@@ -833,6 +837,7 @@ $("#close-document").onclick = () => {
   u.searchParams.delete("name");
   u.searchParams.delete("sample");
   u.searchParams.delete("project");
+  u.searchParams.delete('physicsCase');
   history.replaceState(null, "", u);
 };
 let dragDepth = 0;
@@ -927,9 +932,14 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
   const id = begin("正在打开项目 " + name + "…", true);
   try {
     dir ??= (await get("./api/settings")).directory;
-    const project = await get(
+    let project = await get(
       "./api/studio/project?" + new URLSearchParams({ name, dir, ...(preview ? { preview } : {}) }),
     );
+    // Load the complete available document once. Shadow visibility is edited
+    // in its native graph, never by reopening another base from a selector.
+    if (project.previewMode === 'normal-depth' && project.previewModes.mask) {
+      project = await get('./api/studio/project?' + new URLSearchParams({ name, dir, preview: project.previewModes.mixed ? 'mixed' : 'mask' }));
+    }
     if (id !== state.generation) return;
     if (!project.files.document.available) {
       if (!state.source) {
@@ -974,7 +984,6 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
     const shadowBindings = bindings ? JSON.parse(await bindings.text()) : null;
     if (shadowBindings && (shadowBindings.version !== 2 || !Array.isArray(shadowBindings.shadows))) throw Error('投影关系产物无效');
     state.workspace = workspace || (project.previewMode === 'mask' ? 'mask' : 'lighting');
-    if (project.previewMode !== 'mask') state.lightingMode = project.previewMode;
     const preserve = sameDocument && !!preview;
     const maps = { normal, depth };
     if (preserve) {
@@ -1037,14 +1046,31 @@ for (const button of document.querySelectorAll('[data-workspace]')) button.oncli
   const u = new URL(location.href); u.searchParams.set('workspace', workspace); history.replaceState(null, '', u);
   sync();
 };
-$('#lighting-base').onchange = e => {
-  const project = state.source?.project;
-  if (project) void openProject(project.name, project.dir, e.target.value === 'mixed' && !project.previewModes.mixed ? 'mask' : e.target.value, state.workspace);
-};
+for (const [id, spec] of Object.entries(physicsCases)) $('#physics-case-select').append(new Option(spec.label, id));
+async function openPhysicsCase(caseId = 'ribbon') {
+  if (state.busy || state.layerBusy) return;
+  const id = begin('正在准备物理测试…', true);
+  try {
+    const source = await createPhysicsCase(caseId);
+    if (id !== state.generation) return;
+    state.workspace = 'physics';
+    await install(source, id);
+    if (id !== state.generation) return;
+    // Show unlit albedo first: deformation must be visible without any shader.
+    state.lightingEnabled = false; stage.setLightingEnabled(false); sync();
+  } catch (error) { if (id === state.generation) toast(error.message); }
+  finally { finish(id); }
+  if (id === state.generation && state.source?.physicsCase) {
+    await physics.prepare(); physics.setDemo(true);
+  }
+}
+$('#open-physics-case').onclick = () => void openPhysicsCase();
+$('#physics-case-select').onchange = e => void openPhysicsCase(e.target.value);
 sync();
-// No test gallery, no test-image downloads. Jianma is a real layered document.
+// URLs open a layered project or an explicitly requested physics fixture.
 const requested = new URLSearchParams(location.search);
-if (requested.get("project")) void openProject(requested.get("project"), undefined, requested.get('preview'), ['mask','lighting','physics'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
+if (requested.get('physicsCase')) void openPhysicsCase(requested.get('physicsCase'));
+else if (requested.get("project")) void openProject(requested.get("project"), undefined, requested.get('preview'), ['mask','lighting','physics'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
 else if (
   requested.get("name") === "jianma" ||
   requested.get("sample") === "jianma"
@@ -1065,6 +1091,8 @@ window.studioDiagnostics = () => ({
   document: state.source?.name,
   sample: state.source?.sample,
   project: state.source?.project?.name,
+  physicsCase: state.source?.physicsCase?.id,
+  caseMarker: state.source?.physicsCase?.marker,
   workspace: state.workspace,
   previewMode: state.source?.project?.previewMode,
   previewDraft: !!state.source?.project?.previewDraft,
