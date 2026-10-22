@@ -279,10 +279,10 @@ function sync() {
     hasDepth = !!state.source?.depth;
   $("#lighting-controls").disabled = !hasNormal || state.busy;
   const project = state.source?.project || state.waitingProject;
-  $("#lighting-status").hidden = hasNormal && !project?.previewDraft;
+  $("#lighting-status").hidden = hasNormal && !project?.previewDraft && !project?.lightStale;
   $("#lighting-status").textContent = hasNormal && project?.previewDraft
     ? project.previewReview === 'awaiting-lighting' ? '光照待调校' : "待视觉复核"
-    : project
+    : hasNormal && project?.lightStale ? '光照参数待重新调校' : project
     ? project.mapsStale ? "贴图源已变化，请续跑生成" : project.files?.normal.available
       ? "图层已更改，光照已暂停"
       : "法线待管线生成"
@@ -690,14 +690,19 @@ async function install(source, id, reset = true) {
           ? "jianma"
           : "anime";
       state.settings = { ...presets[key].values };
+      state.mixedInitialized = source.project?.previewMode === 'mixed';
       if (source.project?.previewMode === 'mixed') {
         state.settings.lightingMix = 0.55;
         state.settings.shadow = false;
         state.mixedInitialized = true;
       }
-      if (source.project?.lightSettings && source.normal) state.settings = validateSettings(source.project.lightSettings);
-      $("#preset").value = source.project?.lightSettings && source.normal ? 'custom' : key;
+      $("#preset").value = key;
       selectTool("move");
+    }
+    if (source.project?.lightSettings && source.normal && (reset || !source.lightInitialized)) {
+      state.settings = validateSettings(source.project.lightSettings);
+      source.lightInitialized = true;
+      $("#preset").value = 'custom';
     }
     apply();
     selectView(
