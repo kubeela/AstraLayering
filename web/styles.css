@@ -188,3 +188,4 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .preview-main .output-image{height:min(68dvh,620px)}
 
 .step-state{white-space:nowrap;flex-shrink:0}.step-activity{padding:0 12px 12px;font-size:11px;color:var(--purple);line-height:1.6}
+.phase-mark.failed{border-radius:50%}.failure-exclamation{font-size:12px;line-height:1;font-weight:800}

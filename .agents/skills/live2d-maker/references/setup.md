@@ -37,6 +37,8 @@ AGV 自定义网关出现重复超时时，分别核对主模型和内部监视�
 
 **在实际任务环境里验证。** 后台 CLI 和网页发起的任务应复用同一环境，不能只检查交互终端。Claude Code／Antigravity 的每次请求有受控的配置与临时目录，使用隔离 HOME；宿主 `pip --user` 装的包可能不可见。已有虚拟环境或解释器可直接复用，不把凭据隔离改成共享用户 HOME。Krita 的 Python 插件在 Krita 进程内检查，不能用系统 Python 的 `import krita` 作为验收；Krita 自带的 PyQt5 也无需再为系统 Python 安装一份。
 
+在这个环境从实际 skill 根目录执行 `pnpm env:check`，检查[生效配置](workflow-details.md#生效配置核对)，再检查所选路线的能力。已确认使用图片数保护时，核对报告中的启用状态和阈值，不能只以补丁二进制存在作为通过条件；切换模型方案或升级时不清空已有阈值、凭据与路径。
+
 **Nano 透明后处理自动准备。** Nano 使用程序根据参考图推荐的红、绿或蓝纯色背景，再由 ViTMatte 提取透明度、恢复前景颜色。模型权重随 skill 提供，缩放与对齐仍由 Node／Sharp 完成。GPT 的原生 alpha 直接保留。制作管线不依赖 FFmpeg。
 
 第一次收到需要透明化的不透明 Nano 结果时，工作流启动独立、隔离的 Krita Python 插件，自动安装固定版本的 CPU PyTorch、Transformers、PyMatting 等包，并完成一次实际推理检查。它使用 Krita 内嵌 Python，不要求系统 Python、pip 或系统 PyTorch。当前预编译依赖支持 Python 3.10～3.13；实际平台缺少匹配 wheel 时明确报错，不切换到系统解释器。首次安装需要联网访问 PyPI 和 PyTorch CPU wheel 仓库；成功后可离线复用。

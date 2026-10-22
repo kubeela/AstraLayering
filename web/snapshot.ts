@@ -60,7 +60,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
       try { validateGroups(document?.groups ?? []); groups = document?.groups ?? []; }
       catch (error) { errors.push(id + ': ' + String(error)); }
       const all = flatten(groups);
-      const progress = await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined);
+      const failedSince = !active && record.status === 'failed' && record.run?.activePipeline === id ? record.run.runner?.startedAt : undefined;
+      const progress = await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined, failedSince);
       Object.assign(states, progress.states); Object.assign(messages, progress.messages);
       for (const phase of phases) {
         const values = all.map(node => node.webPhases[phase]);

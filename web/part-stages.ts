@@ -5,7 +5,7 @@ import { normalizeGroups } from '../.agents/skills/live2d-maker/shared/part/grou
 import { validateOcclusionDocument } from '../.agents/skills/live2d-maker/shared/part/occlusion-plan.ts';
 import type { AgentCall } from './agent-progress.ts';
 
-type Status = 'pending' | 'running' | 'available' | 'done';
+type Status = 'pending' | 'running' | 'available' | 'done' | 'failed';
 const stepPhases: Record<string, string> = {
   part_pose_judgment: 'standard', part_standardize: 'standard', part_reference_judgment: 'simplified',
   part_simplify: 'simplified', part_base_subject: 'base', clothing_preparation: 'clothing',
@@ -19,7 +19,7 @@ const namePhases: Record<string, string> = {
 
 // Observe published files and existing receipts. This function never restores or writes scheduler state.
 export async function partStages(directory: string, pipeline: string, groups: any[], files: Set<string>,
-  json: (path: string) => Promise<any>, read: (path: string) => Promise<Buffer | undefined>, calls: AgentCall[], errors: string[]) {
+  json: (path: string) => Promise<any>, read: (path: string) => Promise<Buffer | undefined>, calls: AgentCall[], errors: string[], active = true) {
   const states: Record<string, Status> = {}, messages: Record<string, string> = {};
   const present = (path: string) => files.has(pipeline + '/' + path);
   const artifact = (...paths: string[]): Status => paths.some(present) ? 'available' : 'pending';
@@ -67,6 +67,12 @@ export async function partStages(directory: string, pipeline: string, groups: an
     if (phase) latest.set(phase, call);
   }
   for (const [phase, call] of latest) {
+    if (call.failed) {
+      states[phase] = 'failed'; messages[phase] = '调用失败，请查看运行记录：' + call.name;
+      if (['standard', 'simplified', 'base', 'clothing'].includes(phase)) states.preparation = 'failed';
+      continue;
+    }
+    if (!active) continue;
     if (call.finished) continue;
     states[phase] = 'running'; messages[phase] = call.name;
     if (['standard', 'simplified', 'base', 'clothing'].includes(phase)) {
