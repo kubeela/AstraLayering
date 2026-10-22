@@ -4,6 +4,26 @@ export const groupPhases = [
   ['outline', '轮廓绘制'], ['review', '轮廓复核'], ['reduction', '同层去重'],
   ['completion', '遮挡补全'], ['completionCheck', '补全检查'], ['children', '直属结构拆分'],
 ];
+export const statusNames = {pending:'待执行', running:'进行中', available:'已有产物', done:'已完成', failed:'执行失败'};
+export const displayStatus = (status, hasArtifacts = false) => status === 'skipped' ? 'done'
+  : Object.hasOwn(statusNames, status) ? status : hasArtifacts ? 'available' : 'pending';
+export const statusLabel = status => statusNames[displayStatus(status)];
+
+export function groupSummary(group) {
+  const values = groupPhases.map(([id]) => group.webPhases?.[id]);
+  const status = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.every(value => value === 'done') ? 'done'
+    : values.some(value => value === 'done' || value === 'available') ? 'available' : 'pending';
+  return { status, text: statusNames[status] };
+}
+
+export function groupPreviewArtifacts(group, phaseFiles, files, versions = {}) {
+  const running = groupPhases.find(([id]) => group.webPhases?.[id] === 'running')?.[0];
+  const phase = {review:'outline', completionCheck:'completion', children:'completion'}[running] ?? running;
+  const images = items => (items ?? []).filter(item => item.kind === 'image' && files.has(item.path));
+  const candidates = images(phaseFiles[phase]);
+  const list = candidates.length ? candidates : images([...phaseFiles.completion, ...phaseFiles.reduction, ...phaseFiles.outline]);
+  return list.sort((a, b) => Number(versions[b.path]?.split(':')[0] ?? 0) - Number(versions[a.path]?.split(':')[0] ?? 0)).slice(0, 1);
+}
 
 const step = (id, title, status, children = [], note = '') => ({ id, title, status, children, note });
 const partSteps = clothing => [
@@ -67,8 +87,9 @@ export const stepArtifacts = [
     standard: [image('part-layering/references/standard.png', '标准参考图')],
     simplified: [image('part-layering/references/simplified-subject.png', '简化角色')],
     base: [image('part-layering/references/base-subject.png', '素体参考')],
-    merge: [image('part-layering/preview.svg', '分块合成 SVG')],
-    occlusion: [file('part-layering/occlusion.json', '遮挡深度表')],
+    initial: [file('part-layering/groups.json', '分组树')],
+    merge: [image('part-layering/preview.draft.svg', '分块合成 · 中间产物'), image('part-layering/preview.svg', '分块合成 SVG')],
+    occlusion: [image('part-layering/stages/occlusion/candidate.svg', '深度规划 · 中间产物'), file('part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('raster-layering', 'step01', 'composite.png', 'character-depth.kra'),
@@ -77,8 +98,9 @@ export const stepArtifacts = [
   },
   {
     clothing: [image('clothing-part-layering/references/clothing.png', '纯衣服参考')],
-    merge: [image('clothing-part-layering/preview.svg', '衣服分块 SVG')],
-    occlusion: [file('clothing-part-layering/occlusion.json', '遮挡深度表'), image('clothing-part-layering/stages/occlusion/candidate.svg', '深度规划候选图')],
+    initial: [file('clothing-part-layering/groups.json', '分组树')],
+    merge: [image('clothing-part-layering/preview.draft.svg', '衣服分块 · 中间产物'), image('clothing-part-layering/preview.svg', '衣服分块 SVG')],
+    occlusion: [image('clothing-part-layering/stages/occlusion/candidate.svg', '深度规划 · 中间产物'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),
@@ -113,8 +135,8 @@ for (const index of [1, 3]) {
 
 export function groupArtifacts(pipeline, group, depth) {
  const svg = (folder, label) => [
-  image(`${pipeline}/${folder}/${group.id}.draft.svg`, `${label}草稿 · 未落稿`),
-  image(`${pipeline}/${folder}/${group.id}.svg`, `${label}正式稿 · 已落稿`),
+  image(`${pipeline}/${folder}/${group.id}.draft.svg`, `${label} · 中间产物`),
+  image(`${pipeline}/${folder}/${group.id}.svg`, `${label}图`),
  ];
  return {
   outline: svg('stages/outline', '轮廓'),
