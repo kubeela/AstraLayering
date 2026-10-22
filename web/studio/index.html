@@ -244,6 +244,12 @@
             <div class="file-actions"><button id="physics-prepare">准备当前图层</button><button id="physics-close" hidden>释放部件</button></div>
             <p id="physics-status" class="muted">从角色原始图层建立物理绑定</p>
           </section>
+          <div id="component-controls" hidden>
+            <section class="panel"><p id="component-info" class="muted"></p><div id="component-response"></div></section>
+            <section class="panel physics-limit-panel"><h3>最大约束</h3><div id="component-limits"></div><p id="component-stats" role="status"></p></section>
+            <section class="panel"><label class="field">复核动画<select id="component-test"></select></label><button id="component-save">保存到项目</button></section>
+            <section class="panel"><button id="component-edit">编辑绑定</button><p id="component-edit-hint" class="muted" hidden>拖动绿色固定区、蓝色中心线或橙色轮廓控制点。</p><details><summary>坐标与网格密度</summary><textarea id="component-geometry" rows="14" aria-label="源像素坐标中的固定区、轮廓与网格" spellcheck="false"></textarea><button id="component-geometry-apply">应用活动范围</button></details></section>
+          </div>
           <div id="physics-controls" hidden>
             <section class="panel">
               <input id="physics-filter" type="search" placeholder="查找部件" aria-label="查找物理部件">
@@ -264,7 +270,8 @@
               <label id="physics-case-playback" class="toggle" hidden><input id="physics-demo" type="checkbox">循环演示</label>
               <div class="file-actions"><button id="physics-pause">暂停</button><button id="physics-step">单帧</button><button id="physics-reset">复位</button></div>
               <button id="physics-pulse" class="physics-pulse">单次扰动</button>
-              <label class="field">扰动范围<select id="physics-scope"><option value="current">当前部件</option><option value="all">全部摆动物体</option></select></label>
+              <label class="field">扰动对象<select id="physics-category"><option value="secondary">飘动物体</option><option value="jelly" disabled>果冻物体 · 未配置</option><option value="all">全部物理</option></select></label>
+              <label class="field">扰动范围<select id="physics-scope"><option value="current">当前组件</option><option value="all">全部组件</option></select></label>
               <div class="slider"><div class="slider-head"><label for="physics-radius">受力半径</label><output id="physics-radius-value">90 px</output></div><input id="physics-radius" type="range" min="20" max="240" step="5" value="90"></div>
               <div class="slider"><div class="slider-head"><label for="physics-force">扰动力度</label><output id="physics-force-value">70%</output></div><input id="physics-force" type="range" min="10" max="200" step="5" value="70"></div>
               <label class="toggle"><input id="physics-guides" type="checkbox" checked>显示网格与活动边界</label>

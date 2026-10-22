@@ -8,6 +8,7 @@ import type { KritaInstallation } from './krita.ts';
 export type StepDefinition = {
   id: string;
   title: string;
+  freshSession?: boolean;
   model: string;
   effort: ModelSelection['effort'];
   modelTier?: ModelTier;

@@ -17,6 +17,9 @@
 | raster step02 | `raster_step02` | 人物与衣服的边缘修画及 review 后返修 |
 | raster step02 review | `raster_step02_review` | 两套 raster 的独立 reviewer |
 | raster step03 | `raster_step03` | 仅人物的去除连体服 |
+| 物理组件分析 | `physics_analysis` | 源层、连接与覆盖范围 |
+| 物理绑定 | `physics_authoring` | 固定区、网格与最大约束 |
+| 物理动画复核 | `physics_review` | 同求解器模拟、逐帧证据与结论，无生图 |
 | 穿戴组装 | `assembly` | 人物与衣服 KRA 组装 |
 
 SVG 合并由程序执行，不配置 LLM。内部步骤名和人物／衣服的提示词、日志、产物、review 轮次及续跑规则仍各自保留。

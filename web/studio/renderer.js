@@ -339,7 +339,7 @@ vec4 studioShadowCoord() {
       this.renderer.shadowMap.needsUpdate = true;
     this.render();
   }
-  setMode(mode) {
+  setMode(mode, render = true) {
     this.mode = mode;
     if (!this.color) return;
     if (this.lightingEnabled && (mode === "lit" || mode === "split" || mode === "shading")) {
@@ -355,7 +355,7 @@ vec4 studioShadowCoord() {
       this.basic.needsUpdate = true;
       this.mesh.material = this.basic;
     }
-    this.render();
+    if(render)this.render();
   }
   setLightingEnabled(enabled) {
     this.lightingEnabled = enabled;

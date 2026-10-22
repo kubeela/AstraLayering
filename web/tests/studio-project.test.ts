@@ -94,6 +94,15 @@ test("Project preview rejects stale directories, escaping names and symlinked ou
   await symlink(outside, join(f.project, studioArtifacts.normal));
   assert.equal((await f.get()).status, 400);
 });
+test('physics drafts persist under their reviewed parent and cannot mask a newer delivery',async t=>{
+  const f=await fixture(t),formal={kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:300,height:400}},components:[],review:{status:'accepted',configHash:'revision-a'}};
+  await f.put('physics/physics.json',JSON.stringify(formal));
+  const initial=await f.get(),base=new URL(initial.url).origin;
+  const response=await fetch(base+'/api/studio/physics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:f.name,dir:f.dir,config:{...formal,review:{status:'draft',baseConfigHash:'revision-a'}}})});assert.equal(response.status,201);
+  let data=await(await f.get()).json() as any;assert.equal(data.files.physics.path,'physics/physics.draft.json');assert.equal(data.physicsDraftStale,false);
+  await f.put('physics/physics.json',JSON.stringify({...formal,review:{status:'accepted',configHash:'revision-b'}}));
+  data=await(await f.get()).json() as any;assert.equal(data.physicsDraftStale,true);assert.equal(data.files.physics.path,'physics/physics.json');
+});
 test('Two shadow routes coexist: last complete selection chooses its document and pauses stale maps', async t => {
   const f = await fixture(t), hash = (value: string) => createHash('sha256').update(value).digest('hex');
   await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');

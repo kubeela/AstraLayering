@@ -73,7 +73,7 @@ test('every image-capable agent rejects native imagegen with a different harness
 test('default template covers model roles and individual image choices without changing other defaults', async t => {
   const contents = await readFile(new URL('../../example.env', import.meta.url), 'utf8');
   const variables = parseEnv(contents);
-  assert.equal(Object.keys(modelSlotDefaults).length, 13);
+  assert.equal(Object.keys(modelSlotDefaults).length, 16);
   for (const role of Object.keys(modelSlotDefaults)) assert.ok(Object.hasOwn(variables, `layering_agent_${role}_model`));
   for (const step of imageSteps) assert.ok(Object.hasOwn(variables, `layering_${step}_image_model`));
   assert.equal(Object.keys(variables).filter(key => key.endsWith('_image_model') && key !== 'layering_default_image_model').length, imageSteps.length);
