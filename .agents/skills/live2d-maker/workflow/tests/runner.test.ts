@@ -81,7 +81,7 @@ test('总控保留输入与配置，严格按序推进；后续仅用 name 和 d
     assert.equal(run.standard, true); assert.equal(disk.standard, true);
     return { summary: id, output: join(f.directory, id, 'output') };
   } });
-  assert.deepEqual(first, pipelineIds);
+  assert.deepEqual(first, pipelineIds.filter(id=>id!=='physics'));
   assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
   await rm(join(f.directory, 'reference.png'));
   await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async (id, run) => {
@@ -90,7 +90,7 @@ test('总控保留输入与配置，严格按序推进；后续仅用 name 和 d
     return { summary: '管线自身检查并跳过', output: 'retained' };
   } });
   // Re-enter the pipeline's own authoritative checks, never trust a stale top-level completion alone.
-  assert.deepEqual(second, pipelineIds.filter(id => !['part-layering', 'clothing-part-layering'].includes(id)));
+  assert.deepEqual(second, pipelineIds.filter(id => !['part-layering', 'clothing-part-layering','physics'].includes(id)));
   const status = await taskStatus(f.options);
   assert.equal(status.status, 'completed'); assert.equal(status.runnerAlive, false); assert.equal(status.lockHeld, false);
   assert.equal(status.output, 'retained');
@@ -201,4 +201,13 @@ test('绘画中断后总控不重进已完成 part 管线，沿用新增结构',
     } });
     assert.deepEqual(calls, [raster]);
   }
+});
+
+
+test('物理是可选末尾阶段，也可独立执行并透传范围',async t=>{
+  const f=await fixture(t),calls:PipelineId[]=[];
+  await runTask({...f.options,image:'reference.png',physicsEnabled:true,physicsProfile:'all'},{preflight,execute:async(id,run)=>{calls.push(id);assert.equal(run.physicsProfile,'all');return {summary:id};}});
+  assert.deepEqual(calls,pipelineIds);
+  const parsed=parseArguments(['--name','case','--from','physics','--to','physics','--physics-profile','primary']);
+  assert.equal(parsed.options?.physicsProfile,'primary');
 });

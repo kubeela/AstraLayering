@@ -14,6 +14,7 @@ import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './fi
 import { snapshot, summary } from './snapshot.ts';
 import { SVGThumbnails } from './svg-thumbnail.ts';
 import { launch } from './worker.ts';
+import { validatePhysicsConfig } from './studio/component-physics-schema.js';
 import { LayerCompositor } from './layer-compositor.ts';
 import { studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
@@ -43,6 +44,8 @@ function options(value: any, dir: string): TaskOptions {
   if (value.from) result.from = pipelineId(value.from);
   if (value.to) result.to = pipelineId(value.to);
   if (result.from || result.to) selectedPipelines(result.from ?? pipelineIds[0], result.to ?? pipelineIds.at(-1)!);
+  if (value.physicsProfile !== undefined) { if(!['primary','all'].includes(value.physicsProfile)) throw Error('物理范围无效'); result.physicsProfile=value.physicsProfile; }
+  if (value.physicsEnabled !== undefined) { if(typeof value.physicsEnabled!=='boolean') throw Error('物理开关无效'); result.physicsEnabled=value.physicsEnabled; }
   if (value.shadowMode !== undefined) result.shadowMode = shadowMode(value.shadowMode);
   if (value.standard !== undefined) {
     if (typeof value.standard !== 'boolean') throw new Error('standard 必须是布尔值');
@@ -112,6 +115,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           const next = { directory: await validateDir(value.directory) };
           await atomicJSON(settingsPath, next); settings = next; json(settings); return;
         }
+        if(path==='/api/studio/physics') { const directory=await task(value.name); const config=validatePhysicsConfig(value.config); config.review={status:'draft',...(config.review?.baseConfigHash?{baseConfigHash:config.review.baseConfigHash}:{})}; await mkdir(join(directory,'physics'),{recursive:true}); await atomicJSON(join(directory,'physics/physics.draft.json'),config); json({saved:true},201); return; }
         if (path === '/api/studio/review') { json(await saveStudioReview(root, dirname(settingsPath), value), 201); return; }
         const opts = options(value, requestDir), directory = directoryFor(opts);
         if (path === '/api/tasks') {
@@ -253,7 +257,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
       const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/task-selection.js': 'task-selection.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
-      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js']) staticFiles['/studio/' + name] = 'studio/' + name;
+      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'projection-field.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'component-physics-binding.js', 'component-physics-geometry.js', 'component-physics-model.js', 'component-physics-schema.js', 'component-physics-panel.js', 'physics-test-input.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });

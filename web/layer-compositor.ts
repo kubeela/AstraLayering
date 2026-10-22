@@ -99,7 +99,8 @@ export function psdStructure(bytes: Uint8Array) {
   return walk(doc.children || []);
 }
 export class LayerCompositor {
-  readonly available = !!process.env.ASTRA_STUDIO_KRITA;
+  readonly available: boolean;
+  private environment: NodeJS.ProcessEnv;
   private sessions = new Map<string, Session>();
   private root = "";
   private processes: ChildProcess[] = [];
@@ -112,7 +113,8 @@ export class LayerCompositor {
     );
   }, 60_000).unref();
   private sourceRoot: string;
-  constructor(sourceRoot: string) {
+  constructor(sourceRoot: string, environment: NodeJS.ProcessEnv = process.env) {
+    this.environment=environment; this.available=!!environment.ASTRA_STUDIO_KRITA;
     this.sourceRoot = sourceRoot;
   }
   private exclusive<T>(operation: () => Promise<T>): Promise<T> {
@@ -162,7 +164,7 @@ export class LayerCompositor {
     const log = await open(join(this.root, "native.log"), "a", 0o600);
     try {
       const x = spawn(
-        process.env.ASTRA_STUDIO_XVFB || "Xvfb",
+        this.environment.ASTRA_STUDIO_XVFB || "Xvfb",
         ["-displayfd", "3", "-screen", "0", "1280x800x24", "-nolisten", "tcp"],
         { stdio: ["ignore", log.fd, log.fd, "pipe"] },
       );
@@ -187,7 +189,7 @@ export class LayerCompositor {
         });
       });
       const env: NodeJS.ProcessEnv = {
-        ...process.env,
+        ...this.environment,
         DISPLAY: ":" + display,
         TMPDIR: join(this.root, "tmp"),
         XDG_CONFIG_HOME: join(this.root, "config"),
@@ -198,12 +200,12 @@ export class LayerCompositor {
         FONTCONFIG_FILE: "/etc/fonts/fonts.conf",
       };
       delete env.QT_QPA_PLATFORM;
-      if (process.env.ASTRA_STUDIO_KRITA_PYTHONHOME)
-        env.PYTHONHOME = process.env.ASTRA_STUDIO_KRITA_PYTHONHOME;
-      if (process.env.ASTRA_STUDIO_KRITA_PYTHONPATH)
-        env.PYTHONPATH = process.env.ASTRA_STUDIO_KRITA_PYTHONPATH;
+      if (this.environment.ASTRA_STUDIO_KRITA_PYTHONHOME)
+        env.PYTHONHOME = this.environment.ASTRA_STUDIO_KRITA_PYTHONHOME;
+      if (this.environment.ASTRA_STUDIO_KRITA_PYTHONPATH)
+        env.PYTHONPATH = this.environment.ASTRA_STUDIO_KRITA_PYTHONPATH;
       const krita = spawn(
-        process.env.ASTRA_STUDIO_KRITA!,
+        this.environment.ASTRA_STUDIO_KRITA!,
         ["--nosplash", "--resource-location", join(this.root, "share/krita")],
         { env, stdio: ["ignore", log.fd, log.fd] },
       );
@@ -360,7 +362,9 @@ export class LayerCompositor {
       if (value.revision !== session.revision)
         throw Error("请等待当前图层更新完成后准备部件贴图");
       const directory = join(session.directory, `surfaces-${session.revision}`);
-      const packet = await this.command({ op: "surfaces", session: value.session, output: directory });
+      const projections = value.projections;
+      if (projections !== undefined && (!Array.isArray(projections) || projections.length > 250)) throw Error("投影关系无效");
+      const packet = await this.command({ op: "surfaces", session: value.session, output: directory, projections });
       return { ...packet, session: value.session, revision: session.revision };
     });
   }

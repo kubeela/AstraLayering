@@ -24,6 +24,7 @@ export type RunConfig<Input = PartLayeringInput> = {
   models: Record<string, ModelConfig>;
   threadId: string | null;
   threadHarness?: Harness;
+  threadStep?: string;
   threadHandoff?: ThreadHandoff;
 };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';

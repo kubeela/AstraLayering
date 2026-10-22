@@ -20,7 +20,7 @@ export const modelSlotDefaults = {
   part_groups: medium, part_depth: medium,
   raster_step01: high, raster_step02: high, raster_step02_review: high,
   raster_step03: medium,
-  assembly: medium, shadow: medium,
+  assembly: medium, shadow: medium, physics_analysis: medium, physics_authoring: high, physics_review: high,
 } as const;
 export type ModelSlot = keyof typeof modelSlotDefaults;
 
@@ -38,7 +38,7 @@ export const stepModelSlots = {
   raster_step03: 'raster_step03',
   clothing_raster_step01: 'raster_step01', clothing_raster_step02: 'raster_step02',
   clothing_raster_step02_review: 'raster_step02_review', clothing_raster_step02_repair: 'raster_step02',
-  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow',
+  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow', physics_analysis: 'physics_analysis', physics_authoring: 'physics_authoring', physics_review: 'physics_review',
 } as const satisfies Record<string, ModelSlot>;
 export type AgentStep = keyof typeof stepModelSlots;
 export const stepDefaults = Object.fromEntries(Object.entries(stepModelSlots)

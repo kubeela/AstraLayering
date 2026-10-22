@@ -5,7 +5,7 @@ import { stateKey } from "./layer-model.js";
 import { openDocument } from "./document-loader.js";
 import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
-import { PhysicsPanel } from './physics-panel.js';
+import { ComponentPhysicsPanel as PhysicsPanel } from './component-physics-panel.js';
 import { physicsProjects, createPhysicsCase } from './physics-cases.js';
 import {
   defaults,
@@ -556,7 +556,13 @@ const layers = new LayerPanel({
   rendered() {
     projections?.render();
     if (physics?.ready) {
-      if (state.workspace === 'physics' && layers.selected !== physics.selected && physics.bindings.has(layers.selected)) physics.select(layers.selected);
+      if (state.workspace === 'physics'){
+        const uuid=layers.layers.find(l=>l.id===layers.selected)?.uuid,c=physics.formal?physics.config.components.find(c=>c.layerRefs.some(r=>r.uuid===uuid)):null;
+        if(c&&c.id!==physics.selected)physics.select(c.id);
+        else if(!physics.formal&&layers.selected!==physics.selected&&physics.bindings.has(layers.selected))physics.select(layers.selected);
+      }
+      const refs=physics.formal&&state.workspace==='physics'?physics.config.components.find(c=>c.id===physics.selected)?.layerRefs||[]:[];
+      for(const row of $('#layers').querySelectorAll('[data-layer]'))row.classList.toggle('physics-related',refs.some(r=>r.uuid===layers.layers.find(l=>l.id===row.dataset.layer)?.uuid));
     }
   },
   busy(value) {
@@ -965,11 +971,12 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
     const sameDocument = !refresh && state.source?.project?.name === name && state.source.project.dir === dir &&
       state.source.project.files.document.path === project.files.document.path &&
       state.source.project.files.document.version === project.files.document.version;
-    const [document, normal, depth, bindings] = await Promise.all([
+    const [document, normal, depth, bindings, physicsConfig] = await Promise.all([
       read("document"),
       read("normal"),
       read("depth"),
       read('bindings'),
+      read('physics'),
     ]);
     if (id !== state.generation) return;
     const source = sameDocument && preview ? { ...state.source } : await openDocument(
@@ -986,7 +993,8 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
         maps.normal = null; maps.depth = null;
       }
     }
-    await install({ ...source, ...maps, shadowBindings, project }, id, !preserve);
+    await install({ ...source, ...maps, shadowBindings, project, componentPhysics: physicsConfig ? JSON.parse(await physicsConfig.text()) : null }, id, !preserve);
+    if(id===state.generation&&physicsConfig)await physics.prepare({enabled:true,internal:true});
     if (id === state.generation) $("#task-dialog").close();
   } catch (e) {
     if (id === state.generation) {
@@ -1071,6 +1079,7 @@ for (const button of document.querySelectorAll('[data-workspace]')) button.oncli
   state.workspace = workspace;
   if (workspace !== 'lighting' && state.view === 'shading') selectView(state.source?.normal ? 'lit' : 'color');
   const u = new URL(location.href); u.searchParams.set('workspace', workspace); history.replaceState(null, '', u);
+  layers.render();
   sync();
 };
 async function openExampleProject(caseId, workspace = 'lighting') {

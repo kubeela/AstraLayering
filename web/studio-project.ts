@@ -42,8 +42,10 @@ export async function studioProject(directory: string, name: string, dir: string
   const mapsSource = mapsRecord ?? (selection?.mode === 'normal-depth' ? selection : undefined);
   const maskStale = stale(maskSource), mapsStale = stale(mapsSource);
   const paths = { ...studioArtifacts, maskDocument: shadowArtifacts.maskDocument, maskColor: shadowArtifacts.maskColor, bindings: shadowArtifacts.bindings,
-    draftNormal: shadowArtifacts.draftNormal, draftDepth: shadowArtifacts.draftDepth };
+    physics: 'physics/physics.json', physicsDraft: 'physics/physics.draft.json', draftNormal: shadowArtifacts.draftNormal, draftDepth: shadowArtifacts.draftDepth };
   const all = Object.fromEntries(await Promise.all(Object.entries(paths).map(async ([key, path]) => [key, await file(path)])));
+  const [formalPhysics,draftPhysics]=await Promise.all(['physics/physics.json','physics/physics.draft.json'].map(async path=>{try{return JSON.parse(await readFile(await safePath(directory,path),'utf8'));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;return null;}}));
+  const physicsDraftStale=!!draftPhysics&&!!formalPhysics&&draftPhysics.review?.baseConfigHash!==formalPhysics.review?.configHash;
   const maskAvailable = !!maskSource && !maskStale && all.maskDocument.available && all.maskColor.available && all.bindings.available;
   const publishedMaps = !mapsStale && (!!mapsSource || !selection) && all.normal.available && all.depth.available;
   let draftRecord;
@@ -70,9 +72,10 @@ export async function studioProject(directory: string, name: string, dir: string
     color: useMask ? all.maskColor : all.color,
     normal: { ...normal, available: useMaps && normal.available },
     depth: { ...depth, available: useMaps && depth.available },
+    physics: all.physicsDraft.available&&!physicsDraftStale ? all.physicsDraft : all.physics,
     bindings: { ...all.bindings, available: useMask && maskAvailable },
   };
-  return { name, dir, files, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
+  return { name, dir, files, physicsDraftStale, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
     previewDraft: useDraft, ...(useDraft ? { previewReview: draftRecord!.status, previewReviewReason: draftRecord!.reason } : {}),
     ...(selection ? { shadowMode: selection.mode, shadowStale: stale(selection) } : {}) };
 }

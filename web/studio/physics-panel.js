@@ -11,7 +11,7 @@ export class PhysicsPanel {
   constructor({ stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer }) {
     Object.assign(this, { stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer });
     this.bindings = new Map(); this.bodies = new Map(); this.pending = new Map(); this.issues = []; this.epoch = 0; this.paused = false; this.enabled = false;
-    this.radius = 90; this.force = .7; this.showGuides = true; this.scope = 'current';
+    this.radius = 90; this.force = .7; this.showGuides = true; this.scope = 'current';this.category='secondary';
     for (const [key, [label, min, max, step, unit]] of Object.entries(specs)) {
       const box = document.createElement('div'); box.className = 'slider';
       box.innerHTML = `<div class="slider-head"><label for="physics-${key}">${label}</label><label class="slider-number"><input id="physics-number-${key}" type="number" min="${min}" max="${max}" step="${step}" aria-label="${label}数值"><span>${unit}</span></label></div><input id="physics-${key}" type="range" min="${min}" max="${max}" step="${step}" aria-label="${label}">`;
@@ -35,6 +35,7 @@ export class PhysicsPanel {
     $('#physics-pulse').onclick = () => this.pulse();
     $('#physics-guides').onchange = e => { this.showGuides = e.target.checked; this.overlay(); };
     $('#physics-scope').onchange = e => { this.scope = e.target.value; this.pointer = null; };
+    $('#physics-category').onchange=e=>{this.category=e.target.value;this.pointer=null;};
     $('#physics-radius').oninput = e => { this.radius = e.target.valueAsNumber; $('#physics-radius-value').textContent = this.radius + ' px'; this.overlay(); };
     $('#physics-force').oninput = e => { this.force = e.target.valueAsNumber / 100; $('#physics-force-value').textContent = e.target.value + '%'; };
     $('#physics-export').onclick = () => this.download(new Blob([JSON.stringify(this.recipe(), null, 2) + '\n'], { type: 'application/json' }), 'character.physics.json');

@@ -1024,3 +1024,6 @@ canvas.disturb { cursor: crosshair; }
 .projection-select { text-align: left; flex: 1; min-width: 0; border: 0; background: transparent; padding: 5px 3px; }
 .projection-select b, .projection-select small { display: block; overflow-wrap: anywhere; }
 .projection-select small { margin-top: 4px; font-size: 10px; color: var(--muted); }
+
+#component-geometry{box-sizing:border-box;width:100%;max-height:340px;resize:vertical;font-family:monospace;font-size:12px}#component-controls[hidden]{display:none}
+.layer-row.physics-related{box-shadow:inset 3px 0 #72a2df;background:#223d5838}.component-handles{pointer-events:all}

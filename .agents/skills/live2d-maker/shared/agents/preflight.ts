@@ -7,6 +7,7 @@ import { cliExecutable } from './cli.ts';
 import { validateImageSelection } from './images.ts';
 import { usesPatchedImageTool } from './codex-images.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
+import { access } from 'node:fs/promises';
 
 export function pipelineAgentSteps(pipeline: PipelineId, standard = false, shadowMode: 'mask' | 'normal-depth' = 'mask'): AgentStep[] {
   return (Object.keys(stepDefaults) as AgentStep[]).filter(step => {
@@ -14,11 +15,13 @@ export function pipelineAgentSteps(pipeline: PipelineId, standard = false, shado
     if (pipeline === 'clothing-part-layering') return step.startsWith('clothing_') && !step.startsWith('clothing_raster_');
     if (pipeline === 'raster-layering') return step.startsWith('raster_');
     if (pipeline === 'clothing-raster-layering') return step.startsWith('clothing_raster_');
+    if (pipeline === 'physics') return step.startsWith('physics_');
     if (pipeline === 'shadow') return step === (shadowMode === 'mask' ? 'shadow_mask' : 'shadow_maps');
     return step === 'assembly';
   });
 }
 export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: readonly AgentStep[], normalization: ImageProcessingOptions = {}): Promise<void> {
+  if(steps.some(step=>step.startsWith('physics_')))try{await access(new URL('../../../../../web/studio/component-physics-model.js',import.meta.url));}catch{throw Error('组件物理需要同版本 AstraLayering 工作台代码；请从完整仓库（含 web/）执行，保留原 --dir。独立 skill 的其他管线不受影响。');}
   for (const step of steps) {
     validateImageSelection(settings, step);
     const harness = settings.stepModels[step].harness;
