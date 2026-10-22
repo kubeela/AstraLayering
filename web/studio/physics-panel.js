@@ -66,10 +66,9 @@ export class PhysicsPanel {
       this.parts = fixture?.layers || this.surfaces.layers; this.size = fixture?.size || this.surfaces.size; this.owner = owner;
       this.sourceHash = this.fingerprint(); this.bindings.clear();
       for (const l of this.parts) {
-        const ribbon = /(?:left|right)_long_tail|飘带/.test(l.name), skirt = /skirt_(?:front|side_back)|裙摆/.test(l.name);
-        const binding = fixture?.bindings[l.id] || bindingDefaults(ribbon ? 'ribbon' : 'cloth');
-        if (!fixture) binding.enabled = ribbon || skirt;
-        if (!fixture && skirt) { binding.maxTravel = .08; binding.maxAngle = 12; binding.fixed = .32; }
+        // A part name is not an authored physical component. Ordinary project
+        // layers start unbound; examples carry their own explicit bindings.
+        const binding = fixture?.bindings[l.id] || bindingDefaults();
         this.bindings.set(l.id, binding);
       }
       try { const saved = draft || JSON.parse(localStorage.getItem(this.storageKey()) || 'null'); if (saved) this.restore(saved); } catch (error) { this.error('旧物理草稿未加载：' + error.message); }
@@ -112,7 +111,12 @@ export class PhysicsPanel {
     this.renderer = new PhysicsRenderer(this.stage, this.parts, this.bodies, this.size);
     this.lastTime = 0; this.accumulator = 0; this.render();
   }
-  storageKey() { return 'astra-physics-1:' + this.sourceHash; }
+  storageKey() {
+    // Reset the previous Jianma preview bindings as requested. Other project
+    // drafts keep their existing namespace; new Jianma authoring is preserved.
+    const jianma = this.owner?.sample === 'jianma' || [this.owner?.project?.name, this.owner?.name].some(n => /^jianma(?:$|[-_.\s])/i.test(n || ''));
+    return (jianma ? 'astra-physics-2:' : 'astra-physics-1:') + this.sourceHash;
+  }
   recipe() { return { schema: 1, solver: physicsVersion, sourceHash: this.sourceHash, size: this.size, bindings: Object.fromEntries(this.bindings) }; }
   restore(recipe) {
     if (recipe?.schema !== 1 || recipe.solver !== physicsVersion || recipe.sourceHash !== this.sourceHash || recipe.size?.[0] !== this.size[0] || recipe.size?.[1] !== this.size[1]) throw Error('物理配置与当前角色素材或版本不匹配');
@@ -176,12 +180,10 @@ export class PhysicsPanel {
   }
   sync() {
     const canPrepare = this.source()?.physicsCase || this.surfaces.session()?.session;
-    const requestedCase = $('#physics-case-select').value;
-    const canLoadCase = requestedCase && (!this.ready || requestedCase !== this.source()?.physicsCase?.id);
     $('#effect-physics').checked = this.enabled || this.preparing;
     $('#effect-physics').disabled = this.preparing || !this.source() || this.busy() || !canPrepare;
-    $('#physics-prepare').disabled = this.preparing || this.busy() || (requestedCase ? !canLoadCase : this.ready || !this.source() || !canPrepare);
-    $('#physics-prepare').textContent = this.preparing ? '正在准备…' : '加载部件';
+    $('#physics-prepare').disabled = this.preparing || this.busy() || this.ready || !this.source() || !canPrepare;
+    $('#physics-prepare').textContent = this.preparing ? '正在准备…' : '准备当前图层';
     $('#physics-controls').hidden = !this.ready; $('#physics-close').hidden = !this.ready;
     $('#physics-status').textContent = this.preparing ? '读取当前部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · ${this.enabled ? '已启用' : '已关闭'}` : this.source()&&!canPrepare ? '等待原生图层就绪…' : '开启摆动物理后自动准备部件';
     $('#physics-demo').checked = !!this.demo;

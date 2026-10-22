@@ -32,7 +32,7 @@ try {
   assert.equal((await diag()).layerSession, sourceSession, 'enabling physics replaced the document');
   assert.equal((await diag()).previewMode, resolvedPreview);
   await page.locator('[data-workspace="physics"]').click();
-  const d = await diag(); assert(d.physics.parts.some(p=>p.binding.enabled));
+  const d = await diag(); assert(d.physics.parts.every(p=>!p.binding.enabled), 'project layers were automatically bound by name');
   assert.equal(await page.locator('#physics-overlay').isVisible(),true);
   assert.deepEqual(d.physics.textureSizes,Array.from({length:3},()=>d.physics.size));
   const after = await capture();
@@ -43,8 +43,13 @@ try {
   for(let q=0;q<a.data.length;q+=4){if(a.data[q+3]<100)continue;for(let c=0;c<3;c++){const delta=Math.abs(a.data[q+c]-b.data[q+c]);total+=delta;count++;if(delta>10)changed++;}}
   const error=total/count;console.log('Neutral mean RGB error',error,'large differences',changed/count);
   assert(error<2,'neutral appearance regressed');
-  const target=d.physics.parts.find(p=>p.name.includes('skirt_front'))||d.physics.parts.find(p=>p.binding.enabled);
+  const target=d.physics.parts.find(p=>p.name.includes('skirt_front'))||d.physics.parts[0];
   await page.locator('#physics-part').selectOption(target.id);
+  await page.locator('#physics-enabled').check();
+  for(const [key,value] of [['fixed','32'],['maxTravel','8'],['maxAngle','12']]) {
+    await page.locator('#physics-number-'+key).fill(value);
+    await page.locator('#physics-number-'+key).dispatchEvent('change');
+  }
   const box=await page.locator('#stage').boundingBox();
   const [w,h]=d.physics.size,fit=Math.max(1.1,1.1*w/h/(box.width/box.height));
   const point=(x,y)=>({x:box.x+box.width/2+(x-w/2)*box.height/(h*fit),y:box.y+box.height/2+(y-h/2)*box.height/(h*fit)});

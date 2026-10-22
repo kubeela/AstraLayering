@@ -36,14 +36,12 @@ try {
     if (id === 'ribbon') {
       await page.goto(new URL('studio', base).href);
       await page.waitForFunction(() => !!window.studioDiagnostics);
-      await page.locator('[data-workspace="physics"]').click();
       assert.equal(await page.locator('#open-physics-case').count(), 0);
-      assert.equal(await page.locator('.sources #physics-case-select').count(), 0);
-      assert.equal(await page.locator('#physics-workspace #physics-case-select').count(), 1);
+      assert.equal(await page.locator('#physics-case-select').count(), 0);
       assert.equal(await page.locator('#load-physics-case').count(), 0);
     }
-    await page.locator('#physics-case-select').selectOption(id);
-    await page.locator('#physics-prepare').click();
+    await page.locator('#open-task').click();
+    await page.locator(`[data-project="example:cloth:${id}"]`).click();
     await page.waitForFunction(id => window.studioDiagnostics?.().physicsCase === id && window.studioDiagnostics().physics.ready, id);
     console.log(`${id}: loaded with lighting and physics`);
     assert.equal((await diag()).lightingEnabled, true);
@@ -52,7 +50,12 @@ try {
     assert.equal((await diag()).physics.enabled, true);
     assert.equal((await diag()).physics.demo, true);
     assert.equal(await page.locator('#lighting-base').count(), 0);
-    assert.equal((await diag()).project, undefined);
+    assert.equal((await diag()).project, `example:cloth:${id}`);
+    assert.equal((await diag()).workspace, 'lighting');
+    assert.equal(await page.locator('#task-dialog').isVisible(), false);
+    assert.equal(new URL(page.url()).searchParams.get('project'), `example:cloth:${id}`);
+    assert.equal(new URL(page.url()).searchParams.has('physicsCase'), false);
+    await page.locator('[data-workspace="physics"]').click();
     // Leave the default looping animation active briefly, then isolate one
     // impulse so frame differences are caused by physics rather than a lamp.
     await page.waitForTimeout(500);
@@ -129,11 +132,10 @@ try {
     results.push({ case: id, markerPixels: +displacement.toFixed(2), changedContourPixels: contourPixels, shadowPixels, normalPixels, peakTravel: +peak.toFixed(2) });
     console.log(JSON.stringify(results.at(-1)));
   }
-  // Loading a regular image must restore "current layers", so the next load
-  // cannot accidentally replace the user's file with the previously used case.
+  // Loading a regular image replaces the project; editor tabs cannot load one.
   await page.locator('#file-document').setInputFiles({ name: 'independent.png', mimeType: 'image/png', buffer: await capture() });
   await page.waitForFunction(() => window.studioDiagnostics().document === 'independent.png' && !window.studioDiagnostics().busy);
-  assert.equal(await page.locator('#physics-case-select').inputValue(), '');
+  assert.equal((await diag()).project, undefined);
   assert.equal((await diag()).physicsCase, undefined);
   assert.deepEqual(nativeRequests, [], 'standalone cases loaded a character/native document');
   assert.deepEqual(errors, []);
