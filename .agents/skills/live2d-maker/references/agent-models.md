@@ -68,6 +68,10 @@ Nano 后处理不改变生成图尺寸和比例；工作流仍负责后续等比
 
 主模型网关与生图接口各自鉴权。Codex 默认继承当前用户配置；自定义 Codex provider 沿用 `layering_custom_provider` 和 provider URL／key。Claude／agv 可复用其已有登录，也可在 `.env` 填写 CLI 原生环境变量，例如 `ANTHROPIC_API_KEY`／`ANTHROPIC_BASE_URL`，或 `AGY_LLM_GATEWAY_API_KEY`／`AGY_LLM_GATEWAY_URL`／`AGY_LLM_GATEWAY_MODELS`／`AGY_LLM_GATEWAY_WIRE_PROTOCOL`。密钥不写入提示词、报告或 Git。
 
+AGV 的 GenAI 网关 base URL 可以包含 `/v1beta`，转发会保留供应商前缀并避免重复追加 API 路径。请求日志记录实际图片数、请求字节数、上游响应头与首条内容时间，不记录正文或鉴权。
+
+部分供应商不接受 CLI 内部请求使用的 `MINIMAL`。`layering_agv_minimal_thinking_level` 默认留空，完整保留原生协议；只有实际接口确认不支持时才显式填写 `LOW`、`MEDIUM` 或 `HIGH`，仅替换 MINIMAL。支持 MINIMAL 的上游无需设置，不统一降低或改写 agent 的力度。若遇到 CLI 自身 60 秒响应头期限，按[可选 AGV 兼容补丁](../tools/agv/README.md)核对构建并验证；不自动安装、修改全局 CLI 或重建会话。
+
 ## 会话与记录
 
 Claude／agv 的每次请求有独立工作区、私有配置和临时文件，均在 `<dir>/<name>/` 的 `agents/<请求>/` 下。仅从用户环境复用鉴权信息，隔离 CLI 的会话、项目设置及工具配置，不修改用户的全局配置。恢复同一 session 时复用原请求的私有会话数据；后续请求仍各有独立工作区。Antigravity 的 GenAI 自定义网关会转发原始工具定义，并保留工具返回的图片。

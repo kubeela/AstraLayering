@@ -13,6 +13,8 @@ import type { WorkflowEnvironment } from '../codex/environment.ts';
 import type { AgentModel, Harness } from './models.ts';
 import type { AgentTask, AgentResult, AgentOptions } from '../codex/agents.ts';
 import { AgentCallError } from '../codex/agent-runtime.ts';
+import { followNativeLog } from '../codex/native-log.ts';
+import { resolvePatchedAgv } from '../../tools/agv/patch-response-header.ts';
 import { AgentLog } from '../codex/agent-log.ts';
 
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness): Promise<string> {
@@ -20,7 +22,14 @@ export async function cliExecutable(settings: WorkflowEnvironment, harness: Harn
   const names = harness === 'claude' ? ['claude'] : harness === 'agv' ? ['agy', 'agv', 'antigravity'] : ['codex'];
   const candidates = explicit ? [explicit] : (settings.codex.env?.PATH ?? process.env.PATH ?? '').split(delimiter)
     .flatMap(directory => names.flatMap(name => process.platform === 'win32' ? [join(directory, `${name}.exe`), join(directory, `${name}.cmd`)] : [join(directory, name)]));
-  for (const path of candidates) try { await access(path, constants.X_OK); if ((await stat(path)).isFile()) return await realpath(path); } catch {}
+  for (const path of candidates) {
+    let executable;
+    try { await access(path, constants.X_OK); if (!(await stat(path)).isFile()) continue; executable = await realpath(path); }
+    catch { continue; }
+    // Compatibility errors must reach the user, rather than be swallowed and
+    // misreported as a missing CLI or silently fall back to an unpatched one.
+    return harness === 'agv' ? resolvePatchedAgv(executable) : executable;
+  }
   throw new Error(`所选步骤需要 ${harness} CLI，但没有可用的全局入口${explicit ? `：${explicit}` : ''}。工作流不会自动安装；请安装并登录，或设置 layering_${harness}_path / 改用已有模型。`);
 }
 export function unavailableSession(error: unknown): boolean {
@@ -87,7 +96,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       XDG_CONFIG_HOME: join(data, 'config'), XDG_DATA_HOME: join(data, 'data'), XDG_STATE_HOME: join(data, 'state'), XDG_CACHE_HOME: join(data, 'cache'),
       CLAUDE_CONFIG_DIR: join(data, 'claude'), CLAUDE_CODE_TMPDIR: join(log.directory, 'tmp'),
       ANTIGRAVITY_APP_DATA_DIR: join(data, 'home/.gemini/antigravity-cli'), JETSKI_APP_DATA_DIR: join(data, 'home/.gemini/antigravity-cli'),
-      ANTIGRAVITY_GEMINI_DIR: join(data, 'home/.gemini'), GEMINI_DIR: join(data, 'home/.gemini'), AGY_CLI_DISABLE_AUTO_UPDATE: '1',
+      ANTIGRAVITY_GEMINI_DIR: join(data, 'home/.gemini'), GEMINI_DIR: join(data, 'home/.gemini'), AGY_CLI_DISABLE_AUTO_UPDATE: 'true',
     };
     for (const path of [env.TMPDIR, env.CLAUDE_CONFIG_DIR, env.ANTIGRAVITY_APP_DATA_DIR, env.ANTIGRAVITY_GEMINI_DIR]) await mkdir(path, { recursive: true, mode: 0o700 });
     if (!previous && model.harness === 'claude') {
@@ -119,7 +128,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       ? ['--print', '--verbose', '--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
         '--strict-mcp-config', '--mcp-config', configPath, '--settings', authSettings, '--setting-sources', '', '--disable-slash-commands', '--dangerously-skip-permissions', '--add-dir', task.cwd || options.cwd!]
       : ['--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
-        '--disable-slash-commands', '--dangerously-skip-permissions', '--log-file', join(log.directory, 'native.log'), '--add-dir', task.cwd || options.cwd!];
+        '--disable-slash-commands', '--dangerously-skip-permissions', '--log-file', join(env.TMPDIR, 'native.log'), '--add-dir', task.cwd || options.cwd!];
     if (resumed) args.push(model.harness === 'claude' ? '--resume' : '--conversation', resumed);
     for (const directory of new Set((task.images || []).map(image => resolve(image.path, '..')))) args.push('--add-dir', directory);
     if (task.outputSchema) args.push('--json-schema', JSON.stringify(task.outputSchema));
@@ -146,6 +155,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         try { if (process.platform === 'win32') child.kill('SIGKILL'); else if (child.pid) process.kill(-child.pid, 'SIGKILL'); } catch {}
       }, 5000); killTimer.unref(); }
     };
+    const nativeLog = model.harness === 'agv' ? followNativeLog(join(env.TMPDIR, 'native.log'), log, message => { spawnError = new Error(message); abort(); }) : undefined;
     signal.addEventListener('abort', abort, { once: true }); if (signal.aborted) abort();
     try {
       child.stderr!.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(-16000); });
@@ -184,6 +194,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       }
       const code = await close;
       processExitCode = code;
+      await nativeLog?.close();
       if (spawnError) throw spawnError;
       signal.throwIfAborted();
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
@@ -198,7 +209,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: randomUUID(), text } });
       await log.finish({ status: 'completed', threadId: threadId || null, usage: final.usage || null, finalResponse: text, images: [], processExitCode, cliStatus: final.status });
       return { text, images: [], threadId, logDirectory: log.directory };
-    } finally { signal.removeEventListener('abort', abort); abort(); await close; if (killTimer) clearTimeout(killTimer); }
+    } finally { signal.removeEventListener('abort', abort); abort(); await close; if (killTimer) clearTimeout(killTimer); await nativeLog?.close(); }
   } catch (error) {
     await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: String(error), stderr, processExitCode, cliStatus: final?.status });
     const reported = error instanceof AgentCallError ? error : new AgentCallError(String(error));

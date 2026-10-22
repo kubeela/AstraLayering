@@ -1,4 +1,5 @@
 import { pipelineSteps as stepTemplates, groupLayers, groupPhases, stepArtifacts, groupArtifacts, shadowInspectionArtifacts } from './progress.js';
+import { selectedTask, rememberTask } from './task-selection.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -28,8 +29,8 @@ async function get(path) { const response = await fetch(path); const value = awa
 const initial = await get('./api/tasks');
 let tasks = initial.tasks, data = { files:[], pipelines:[] }, pipelineSteps = structuredClone(stepTemplates);
 const state = {
- page:new URLSearchParams(location.search).get('page')||'project', name:new URLSearchParams(location.search).get('name')||tasks[0]?.name||'',
- stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, canvasLeft:0, canvasTop:0,
+ page:new URLSearchParams(location.search).get('page')||'project', name:selectedTask(initial.directory,tasks,new URLSearchParams(location.search).get('name')),
+ stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, autoHeight:true, canvasLeft:0, canvasTop:0,
  directory:initial.directory, ref:'worktree', file:'shared/tools/update_occlusion/description.md', diff:false, configFilter:'', uploaded:null,
  collapsedPipelines:new Set(), collapsedSteps:new Set(), collapsedPhases:new Set(),
  details:new Map(),
@@ -43,19 +44,19 @@ async function post(path, value) {
  const response = await fetch('./api/'+path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dir:state.directory,...value})});
  const result = await response.json(); if(!response.ok)throw new Error(result.error); return result;
 }
-const requestedStage = Number(new URLSearchParams(location.search).get('stage') ?? 3);
+const requestedStage = Number(new URLSearchParams(location.search).get('stage') ?? 0);
 if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < stages.length) {
  state.stage = requestedStage;
  state.selectedStep = requestedStage === 0 || requestedStage === 2 ? 'layers' : requestedStage >= 4 ? 'step01' : 'step02';
 }
 const taskParams = () => new URLSearchParams({name:state.name,dir:state.directory});
-const artifact = path => './artifact?'+new URLSearchParams({name:state.name,dir:state.directory,path,v:data.fileVersions?.[path]||''});
+const artifact = (path, thumbnail=false) => './artifact?'+new URLSearchParams({name:state.name,dir:state.directory,path,v:data.fileVersions?.[path]||'',...(thumbnail&&/\.svg$/i.test(path)?{preview:'content'}:{})});
 function flat(nodes) { return nodes.flatMap(node=>[node,...flat(node.groups||[])]); }
 function toast(message) { const el=document.querySelector('#toast'); el.textContent=message; el.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('visible'),4000); }
 
 function header() {
  return `<header class="app-header"><a class="brand" href="./"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span></span></a>
- <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}制作流程</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
+ <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}任务与执行</button><button data-page="preview" class="${state.page==='preview'?'active':''}">${icon('layers')}流程预览</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
  <a class="button" href="./studio?${new URLSearchParams({project:state.name})}">${icon('eye')}角色工作台</a><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
@@ -83,7 +84,11 @@ function applySnapshot(next) {
  pipelineSteps=structuredClone(stepTemplates);
  for(const [index,stage] of stages.entries()) {
   stage.status=data.pipelines[index]?.status||'pending';
-  const mark=steps=>steps.forEach(step=>{step.status=data.pipelines[index]?.states[step.id]||'pending';mark(step.children);});
+  const mark=steps=>steps.forEach(step=>{
+   step.status=data.pipelines[index]?.states[step.id]||'pending';
+   if(index===0&&step.id==='standard')step.note=data.run?.standard===true?'标准化：已开启':data.run?.standard===false?'标准化：未开启':'标准化：未记录';
+   mark(step.children);
+  });
   mark(pipelineSteps[index]);
  }
  for(const index of [0,2]) {
@@ -96,9 +101,10 @@ async function refreshTask(force=false) {
  const version=++refreshVersion;
  const listing=await get('./api/tasks');
  if(version!==refreshVersion)return;
- if(listing.directory!==state.directory){state.directory=listing.directory;state.name='';force=true;}
+ if(listing.directory!==state.directory){state.directory=listing.directory;state.name='';state.inspect=false;state.asset=null;force=true;}
  tasks=listing.tasks;
- if(!tasks.some(task=>task.name===state.name))state.name=tasks[0]?.name||'';
+ if(!tasks.some(task=>task.name===state.name))state.name=selectedTask(state.directory,tasks);
+ rememberTask(state.directory,state.name);
  const next=state.name?await get('./api/task?'+taskParams()):{files:[],pipelines:[]};
  if(version!==refreshVersion)return;
  const fingerprint=JSON.stringify({next,tasks});
@@ -113,17 +119,19 @@ async function refreshTask(force=false) {
    if(version!==refreshVersion)return;
    if(state.asset===selected)selected.text=text;
   }
-  lastSnapshot=fingerprint;applySnapshot(next);if(document.querySelector('.app-header')&&(state.page==='project'||force))render();
+  lastSnapshot=fingerprint;applySnapshot(next);if(document.querySelector('.app-header')&&(state.page!=='config'||force))render();
  }
 }
 function artifacts(items, index, stepId, className='') {
  const list=available(items);
  if(!list.length)return '';
- return `<div class="step-artifacts ${className}">${list.map(item=>{
+ const view=item=>{
   assetLookup.set(item.path,item);
   if(item.path.endsWith('.kra'))return `<a class="artifact-file" href="${artifact(item.path)}" target="_blank" rel="noopener">${icon('layers')}${esc(item.label)} ${icon('arrow')}</a>`;
-  return `<button class="${item.kind==='image'?'artifact-image':'artifact-file'} ${item.path.endsWith('.draft.svg')?'draft-artifact':''}" data-asset="${esc(item.path)}" data-asset-stage="${index}" data-asset-step="${stepId}" title="${esc(item.path)}">${item.kind==='image'?`<img loading="lazy" src="${artifact(item.path)}" alt="${esc(item.label)}">`:icon('file')}<span>${esc(item.label)}</span>${item.kind==='image'&&data.fileVersions?.[item.path]?`<small>更新于 ${esc(new Date(Number(data.fileVersions[item.path].split(':')[0])).toLocaleTimeString())}</small>`:''}${item.kind==='file'?icon('chevron'):''}</button>`;
- }).join('')}</div>`;
+  return `<button class="${item.kind==='image'?'artifact-image':'artifact-file'} ${item.path.endsWith('.draft.svg')?'draft-artifact':''}" data-asset="${esc(item.path)}" data-asset-stage="${index}" data-asset-step="${stepId}" title="${esc(item.path)}">${item.kind==='image'?`<img loading="lazy" src="${artifact(item.path,true)}" alt="${esc(item.label)}">`:icon('file')}<span>${esc(item.label)}</span>${item.kind==='image'&&data.fileVersions?.[item.path]?`<small>更新于 ${esc(new Date(Number(data.fileVersions[item.path].split(':')[0])).toLocaleTimeString())}</small>`:''}${item.kind==='file'?icon('chevron'):''}</button>`;
+ };
+ const images=list.filter(item=>item.kind==='image'),files=list.filter(item=>item.kind!=='image');
+ return `<div class="step-artifacts ${className}">${images.length?`<div class="artifact-images">${images.map(view).join('')}</div>`:''}${files.map(view).join('')}</div>`;
 }
 function inlineTreeRows(nodes,index,depth=0,flatView=false) {
  const view=groupViews[index];
@@ -155,7 +163,7 @@ function groupCycle(index) {
  <div class="tree-controls"><select data-tree-depth="${index}" aria-label="${stages[index].name}拆分树深度"><option value="-1">完整层级</option>${layers.map((nodes,i)=>`<option value="${i}" ${view.depth===i?'selected':''}>第 ${i+1} 层 · ${nodes.length} 个节点</option>`).join('')}</select><button class="icon-button" data-expand-all="${index}" title="展开全部层级">${icon('expand')}</button></div>
  <div class="tree-search">${icon('search')}<input data-tree-search="${index}" aria-label="搜索${stages[index].name}部件" placeholder="搜索部件" value="${esc(view.search)}"></div>
  <div class="inline-tree-rows" data-tree-scroll="${index}">${inlineTreeRows(nodes,index,0,view.depth>=0||!!view.search)||'<p class="empty-tree">没有匹配的部件</p>'}</div>
- <p class="tree-note">点击部件，向右展开它的六个环节。</p>
+ <p class="tree-note">点击部件切换预览；详情由“横向展开”控制。</p>
  ${artifacts([{path:`${prefix}/groups.json`,label:'完整 groups.json',kind:'file'}],index,'layers')}
  </div>
  ${view.open?`<div class="group-detail"><p class="group-note">${esc(group.note||'')}</p><div class="cycle-phases">${groupPhases.map(([id,label],i)=>{
@@ -179,16 +187,17 @@ function stepNode(index,step,nested=false) {
  const branch=stages[index].id==='shadow'&&['mask','normal-depth'].includes(step.id);
  const currentBranch=branch&&step.id===(data.run?.shadowMode||'mask');
  const context=step.id==='layers'?groupCycle(index):step.children.length?`<div class="step-children ${alternative?'step-alternatives':''}" ${alternative?'role="group" aria-label="阴影方式：二选一"':''}>${step.children.map((child,i)=>`${alternative&&i?'<span class="branch-or">OR</span>':''}${stepNode(index,child,true)}`).join('')}</div>`:'';
- return `<section class="step-node ${nested?'nested':''} ${step.children.length?'step-container':''} ${step.status} ${selected?'selected':''}" data-node="${index}:${step.id}">
+ return `<section class="step-node ${nested?'nested':''} ${step.children.length?'step-container':''} ${closed?'node-collapsed':''} ${step.status} ${selected?'selected':''}" data-node="${index}:${step.id}">
  ${branch?`<div class="branch-choice ${currentBranch?'current':''}">${currentBranch?'当前方式':'备选方式'}</div>`:''}
  <div class="section-heading"><button class="step-node-heading" data-step="${index}:${step.id}">${statusMark(step.status)}<h3>${esc(step.title)}</h3>${step.id.startsWith('step')?`<small>${step.id}</small>`:''}</button><button class="icon-button" data-section-toggle="${key}" aria-label="${closed?'展开':'收起'}${esc(step.title)}" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>
- ${closed?'':`
- ${step.note&&step.id!=='layers'?`<p class="step-summary">${esc(step.note)}</p>`:''}
- ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap">尚无 standard.png；旧任务保留此空位，人物准备阶段执行后展示。</p>':''}
+ ${closed?'':`<div class="step-content">
+ ${step.id!=='layers'&&(step.note||['standard','simplified','base','clothing'].includes(step.id))?`<p class="step-summary" ${step.note?`title="${esc(step.note)}"`:'aria-hidden="true"'}>${esc(step.note)}</p>`:''}
+ ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap" title="人物准备阶段执行后展示标准参考图">尚无标准参考图</p>':''}
  ${context}
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...stepArtifacts[index][step.id],...shadowInspectionArtifacts(data.files)]:stepArtifacts[index][step.id],index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="status-error">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${step.id.startsWith('step')?processArtifacts(index,step.id):''}
+ </div>
  `}
  </section>`;
 }
@@ -211,11 +220,17 @@ function inspector() {
  ${item?`<a class="artifact-source" href="${artifact(item.path)}" target="_blank" rel="noopener">${esc(item.path)} ${icon('arrow')}</a>`:''}</div>
  <footer class="output-footer"><button class="button" data-action="single">${icon('play')}运行 / 恢复${esc(stage.name)}</button></footer></aside>`;
 }
-function graph() {
+function projectPage() {
  if(!state.name)return `${pageHeading()}<section class="empty-workspace"><h2>开始一次角色制作</h2><p>新建任务并提供一张角色图，或选择已有任务所在的运行目录。</p><p>${esc(state.directory)}</p><button class="primary" data-action="new">新建任务</button></section>`;
- return `${pageHeading()}${runNotice()}<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><span>完整流程 · 中间步骤与产物</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span><span>${statusMark('available')}已有产物</span><span>${statusMark('failed')}失败</span></div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合宽度</button></div></div>
- <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，可滚动和平移"><div class="flow-size"><div class="flow-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,i)=>flowCard(i)).join('')}</div></div></div></div>
- <footer class="flow-footnote">按 01 → 05 顺序执行 · 点击 group 横向展开，栏目与环节均可收起 · 草稿未落稿；正式稿与复核分别显示 · 按文件和报告展示，续跑资格由管线校验</footer></div>${state.inspect?inspector():''}</section>`;
+ return `${pageHeading()}${runNotice()}<section class="pipeline-overview">
+ <div class="overview-heading"><div><h2>管线执行</h2><p>选择管线，打开完整进展图。</p></div></div>
+ <div class="overview-grid">${stages.map((stage,index)=>`<article class="overview-card ${stage.status} ${state.stage===index?'selected':''}"><button class="overview-stage" data-stage="${index}"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h3>${stage.name}</h3></button><p class="execution-state">${stage.status==='running'?'<span class="live-dot"></span>运行中':'未运行'}</p><div class="overview-actions"><button class="button" data-stage="${index}">${icon('eye')}预览</button><button class="button" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button></div></article>`).join('')}</div></section>`;
+}
+function graph() {
+ if(!state.name)return '<section class="empty-workspace"><h2>尚未选择任务</h2><button class="button" data-page="project">选择任务</button></section>';
+ return `<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><button class="button preview-back" data-page="project">${icon('branch')}执行控制</button><span>${esc(state.name)} · 完整流程</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span><span>${statusMark('available')}已有产物</span><span>${statusMark('failed')}失败</span></div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div></div>
+ <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，横向滚动或拖动浏览"><div class="flow-size"><div class="flow-world preview-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,index)=>flowCard(index)).join('')}</div></div></div></div>
+ <footer class="flow-footnote">横向浏览 · 点击部件切换预览 · 部件详情手动展开 · 点击产物放大查看</footer></div>${state.inspect?inspector():''}</section>`;
 }
 function runNotice() {
  const message=data.run?.error||data.lastLogMessage||data.run?.lastMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
@@ -227,7 +242,7 @@ function connectFlow() {
  const world=document.querySelector('.flow-world');
  if(!world)return;
  const viewport=document.querySelector('.flow-scroll');
- state.zoom??=Math.min(1,Math.max(.65,(viewport.clientWidth-8)/world.offsetWidth));
+ if(state.autoHeight||state.zoom===null)state.zoom=Math.min(1,Math.max(.05,(viewport.clientHeight-8)/world.offsetHeight));
  world.style.transform=`scale(${state.zoom})`;
  const size=document.querySelector('.flow-size');
  size.style.width=`${world.offsetWidth*state.zoom}px`;size.style.height=`${world.offsetHeight*state.zoom}px`;
@@ -237,11 +252,12 @@ function connectFlow() {
  const input=box('.flow-input'),cards=stages.map((_,i)=>box(`[data-pipeline="${i}"] .pipeline-heading`));
  const svg=world.querySelector('.flow-connectors'),paths=[];
  const path=(d,label,x,y,status='done')=>paths.push(`<path class="${status}" d="${d}" marker-end="url(#flow-arrow-${status})"/>${label?`<text x="${x}" y="${y}">${label}</text>`:''}`);
- path(`M${input.x+input.w/2} ${input.y+input.h} V${cards[0].y-6}`,'',0,0);
+ const entryY=cards[0].y+cards[0].h/2;
+ path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'',0,0);
  for(const [a,b,label,status] of [[cards[0],cards[1],'parts',stages[0].status==='done'?'done':'pending'],[cards[2],cards[3],'parts',stages[2].status==='done'?'done':'pending'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'?'done':'pending'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done'?'done':'pending']]){
   const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,label,(a.x+a.w+b.x)/2,y-10,status);
  }
- for(const [a,b,y,label,status] of [[cards[0],cards[2],106,'简化角色参考',data.reference?'done':'pending'],[cards[1],cards[4],54,'人物素体 KRA',stages[1].status==='done'?'done':'pending']]){
+ for(const [a,b,y,label,status] of [[cards[0],cards[2],40,'简化角色参考',data.reference?'done':'pending'],[cards[1],cards[4],24,'人物素体 KRA',stages[1].status==='done'?'done':'pending']]){
   const x1=a.x+a.w*.72,x2=b.x+b.w*.45;
   path(`M${x1} ${a.y} V${y} H${x2} V${b.y-6}`,label,(x1+x2)/2,y-10,status);
  }
@@ -251,7 +267,7 @@ function connectFlow() {
 function zoomCanvas(value,fit=false) {
  const viewport=document.querySelector('.flow-scroll'),previous=state.zoom;
  const centerX=viewport.scrollLeft+viewport.clientWidth/2,centerY=viewport.scrollTop+viewport.clientHeight/2;
- state.zoom=Math.min(1.5,Math.max(.4,value));connectFlow();
+ state.autoHeight=fit;state.zoom=Math.min(1.5,Math.max(.2,value));connectFlow();
  viewport.scrollLeft=fit?0:centerX*state.zoom/previous-viewport.clientWidth/2;
  viewport.scrollTop=fit?0:centerY*state.zoom/previous-viewport.clientHeight/2;
 }
@@ -307,18 +323,19 @@ function jsonLines(text) {
  return text.split('\n').map((line,i)=>`<div class="code-line"><span class="line-number">${i+1}</span><code>${esc(line).replace(/(&quot;.*?&quot;)(\s*:)?/g,(_,str,colon)=>`<span class="${colon?'json-key':'json-string'}">${str}</span>${colon||''}`).replace(/\b(false|true|null)\b/g,'<span class="json-value">$1</span>')}</code></div>`).join('');
 }
 function configTree() {
- const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共工具']];
+ const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共配置']];
  return families.map(([prefix,label])=> {
   const files=configFiles.filter(file=>file.startsWith(prefix+'/')&&(!state.configFilter||file.toLowerCase().includes(state.configFilter.toLowerCase())));
   if(!files.length)return '';
   const active=state.file.startsWith(prefix+'/');
   let content=files;
   if(prefix==='shared'&&!state.configFilter) {
-   const activeTool=state.file.split('/')[2];
-   const tools=[...new Set(files.map(f=>f.split('/')[2]))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
-   content=tools.flatMap(tool=>tool===activeTool?files.filter(f=>f.startsWith(`shared/tools/${tool}/`)):[files.find(f=>f===`shared/tools/${tool}/description.md`)||files.find(f=>f.startsWith(`shared/tools/${tool}/`))]);
+   const toolFiles=files.filter(file=>file.startsWith('shared/tools/'));
+   const activeTool=state.file.startsWith('shared/tools/')?state.file.split('/')[2]:null;
+   const tools=[...new Set(toolFiles.map(f=>f.split('/')[2]))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
+   content=[...files.filter(file=>!file.startsWith('shared/tools/')),...tools.flatMap(tool=>tool===activeTool?toolFiles.filter(f=>f.startsWith(`shared/tools/${tool}/`)):[toolFiles.find(f=>f===`shared/tools/${tool}/description.md`)||toolFiles.find(f=>f.startsWith(`shared/tools/${tool}/`))])];
   }
-  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(prefix==='shared'?(file.split('/')[2]===state.file.split('/')[2]?file.split('/')[2]+' / '+file.split('/').at(-1):file.split('/')[2]):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
+  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(file.startsWith('shared/tools/')?(file.split('/')[2]===state.file.split('/')[2]?file.split('/')[2]+' / '+file.split('/').at(-1):file.split('/')[2]):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
  }).join('');
 }
 function configPage() {
@@ -341,17 +358,17 @@ function render() {
  const outputScroll=document.querySelector('.output-scroll')?.scrollTop||0;
  document.querySelectorAll('[data-details]').forEach(node=>state.details.set(node.dataset.details,node.open));
  flowObserver?.disconnect();
- document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':''}">${state.page==='config'?configPage():graph()}</main>`;
+ document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`;
  bind();setConfigBusy(configBusy);
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
  if(data.status==='failed'||data.status==='interrupted')document.querySelector('[data-details="run-notice"]')?.setAttribute('open','');
  if(focusId&&focused&&!focused.isConnected){const replacement=document.getElementById(focusId);replacement?.focus({preventScroll:true});if(selection&&replacement?.tagName==='INPUT')replacement.setSelectionRange(...selection);}
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
- if(state.page==='project'&&state.name) {
+ if(state.page==='preview'&&state.name) {
   connectFlow();
   const viewport=document.querySelector('.flow-scroll');viewport.scrollLeft=state.canvasLeft;viewport.scrollTop=state.canvasTop;
   document.querySelectorAll('[data-tree-scroll]').forEach(node=>{node.scrollTop=treeScroll[node.dataset.treeScroll]||0;});
-  flowObserver=new ResizeObserver(connectFlow);flowObserver.observe(document.querySelector('.flow-world'));
+  flowObserver=new ResizeObserver(connectFlow);flowObserver.observe(document.querySelector('.flow-world'));flowObserver.observe(viewport);
  }
 }
 function showNew(single=false, existing=false) {
@@ -406,15 +423,27 @@ function showHistory() {
  const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>提交历史</h2><p>选择一次提交，浏览当时的管线配置。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><div class="commit-list">${(versions?.commits||[]).map((c,i)=>`<button data-commit="${c.sha}"><span class="commit-node">${icon('branch')}</span><div><b>${esc(c.title)}</b><small>${c.short}${i===0?' · 当前分支最新提交':''}</small></div>${icon('chevron')}</button>`).join('')}</div>`;dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelectorAll('[data-commit]').forEach(b=>b.onclick=async()=>{state.ref=b.dataset.commit;dialog.close();await loadConfig();render();});
 }
 function selectStage(index) {
- const stepId=index===0||index===2?'merge':index===1?'step03':index===3?'step02':'step01';
- const item=available(stepArtifacts[index][stepId])[0];
- if(item)openAsset(item,index,stepId);
- else{state.stage=index;state.selectedStep=stepId;state.asset=null;state.inspect=true;render();}
+ state.stage=index;state.selectedStep=index===0||index===2?'layers':'step01';
+ state.asset=null;state.inspect=false;state.page='preview';state.autoHeight=true;
+ updateViewURL();render();
+ focusPreviewStep();
+}
+function focusPreviewStep() {
+ const viewport=document.querySelector('.flow-scroll'),node=document.querySelector(`[data-node="${state.stage}:${state.selectedStep}"]`);
+ if(!viewport||!node)return;
+ viewport.scrollLeft+=node.getBoundingClientRect().left-viewport.getBoundingClientRect().left-12;
+ viewport.scrollTop=0;state.canvasLeft=viewport.scrollLeft;state.canvasTop=0;
+}
+function updateViewURL() {
+ const url=new URL(location.href);
+ url.searchParams.set('page',state.page);url.searchParams.set('stage',state.stage);
+ if(state.name)url.searchParams.set('name',state.name);
+ history.replaceState(null,'',url);
 }
 function bind() {
- const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
+ const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-run-stage]').forEach(b=>b.onclick=()=>{state.stage=Number(b.dataset.runStage);showNew(true,true);});
- document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;if(state.page==='config')await loadConfig();render();});
+ document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
  document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>selectStage(Number(b.dataset.stage)));
  document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const [index,step]=b.dataset.step.split(':'),i=Number(index);const item=available(stepArtifacts[i][step])[0];if(item)openAsset(item,i,step);else{state.stage=i;state.selectedStep=step;state.asset=null;state.inspect=true;render();}});
  document.querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>openAsset(assetLookup.get(b.dataset.asset),Number(b.dataset.assetStage),b.dataset.assetStep));
@@ -427,7 +456,7 @@ function bind() {
   const bounds=node.getBoundingClientRect(),view=viewport.getBoundingClientRect();
   viewport.scrollLeft+=bounds.left-view.left-20;viewport.scrollTop+=bounds.top-view.top-20;
  };
- document.querySelectorAll('[data-tree-group]').forEach(b=>b.onclick=()=>{const index=b.dataset.treeStage;groupViews[index].selected=b.dataset.treeGroup;groupViews[index].open=true;state.inspect=false;render();revealGroup(index);});
+ document.querySelectorAll('[data-tree-group]').forEach(b=>b.onclick=()=>{const index=b.dataset.treeStage;groupViews[index].selected=b.dataset.treeGroup;state.inspect=false;render();revealGroup(index);});
  document.querySelectorAll('[data-group-toggle]').forEach(b=>b.onclick=()=>{const index=b.dataset.groupToggle;groupViews[index].open=!groupViews[index].open;render();if(groupViews[index].open)revealGroup(index);});
  document.querySelectorAll('[data-tree-expand]').forEach(b=>b.onclick=()=>{const view=groupViews[b.dataset.treeStage],id=b.dataset.treeExpand;view.expanded.has(id)?view.expanded.delete(id):view.expanded.add(id);render();});
  document.querySelectorAll('[data-expand-all]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.expandAll),view=groupViews[i];view.depth=-1;view.search='';view.expanded=new Set(flat(pipelineTree(i)).filter(node=>node.groups?.length).map(node=>node.id));render();});
@@ -446,10 +475,20 @@ function bind() {
   else if(action==='zoom-in')zoomCanvas(state.zoom+.1);
   else if(action==='zoom-out')zoomCanvas(state.zoom-.1);
   else if(action==='zoom-reset')zoomCanvas(1);
-  else if(action==='zoom-fit')zoomCanvas(Math.min(1,(document.querySelector('.flow-scroll').clientWidth-8)/document.querySelector('.flow-world').offsetWidth),true);
+  else if(action==='zoom-fit')zoomCanvas(1,true);
  });
  const compare=document.querySelector('#compare-reference');if(compare)compare.onchange=()=>{state.compare=compare.checked;render();};
  const viewport=document.querySelector('.flow-scroll');if(viewport){
+  viewport.addEventListener('wheel',event=>{
+   if(event.ctrlKey||event.metaKey||Math.abs(event.deltaX)>=Math.abs(event.deltaY))return;
+   for(let node=event.target;node&&node!==viewport;node=node.parentElement){
+    // Inner lists keep their wheel gestures even at a boundary or with few rows.
+    if(node.matches('.inline-tree-rows')||
+      (node.scrollHeight>node.clientHeight+1&&/auto|scroll/.test(getComputedStyle(node).overflowY)))return;
+   }
+   if(viewport.scrollWidth<=viewport.clientWidth)return;
+   event.preventDefault();viewport.scrollLeft+=event.deltaY*(event.deltaMode===1?20:event.deltaMode===2?viewport.clientWidth:1);
+  },{passive:false});
   let drag;
   viewport.onpointerdown=e=>{if(e.button!==0||e.pointerType==='touch'||e.target.closest('button,a,input,select,summary,.inline-tree-rows'))return;drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(e.pointerId);viewport.classList.add('panning');};
   viewport.onpointermove=e=>{if(drag){viewport.scrollLeft=drag.left+drag.x-e.clientX;viewport.scrollTop=drag.top+drag.y-e.clientY;}};
@@ -464,5 +503,6 @@ function bind() {
 await refreshTask(true);
 if(state.page==='config')await loadConfig();
 render();
+if(state.page==='preview')focusPreviewStep();
 setInterval(()=>refreshTask().catch(error=>toast('同步失败：'+error.message)),4000);
 if(new URLSearchParams(location.search).get('dialog')==='new')showNew();
