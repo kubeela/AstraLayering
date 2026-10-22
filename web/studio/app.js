@@ -923,7 +923,6 @@ async function openJianma() {
     finish(id);
   }
 }
-$("#open-jianma").onclick = openJianma;
 let projectListGeneration = 0;
 async function openProject(name, dir, preview, workspace, refresh = false) {
   const id = begin("正在打开项目 " + name + "…", true);

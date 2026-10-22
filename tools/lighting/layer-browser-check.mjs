@@ -149,7 +149,7 @@ try {
     ).status(),
     400,
   );
-  await page.locator("#open-jianma").click();
+  await page.goto(new URL("studio?sample=jianma", base).href);
   await ready();
   const original = await diagnostics();
   assert.equal(original.layers, 171);

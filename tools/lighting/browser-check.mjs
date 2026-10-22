@@ -35,7 +35,7 @@ try {
     false,
     "empty editor downloads no test characters",
   );
-  await page.locator("#open-jianma").click();
+  await page.goto(new URL("studio?sample=jianma", url).href);
   await page.waitForFunction(
     () =>
       window.studioDiagnostics?.().source && !window.studioDiagnostics().busy,
