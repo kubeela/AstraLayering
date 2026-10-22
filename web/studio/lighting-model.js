@@ -1,9 +1,10 @@
 // Shared, renderer-independent contracts for recipes and geometry.
-export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v2";
+export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v3";
 export const defaults = Object.freeze({
   lightX: 2.4,
   lightY: 0.4,
   lightZ: 1.1,
+  lightColor: '#ffffff',
   ambient: 0.16,
   lightingMix: 1,
   shade: "#aaa0ba",
@@ -95,7 +96,7 @@ export function validateSettings(value) {
     }
   if (![-1, 1].includes(result.normalY))
     throw new Error("法线 Y 方向必须是 +1 或 -1");
-  for (const key of ["shade", "background"])
+  for (const key of ["shade", "background", "lightColor"])
     if (value[key] !== undefined) {
       if (!/^#[0-9a-f]{6}$/i.test(value[key]))
         throw new Error(`无效颜色 ${key}`);

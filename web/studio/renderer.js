@@ -127,7 +127,7 @@ vec4 studioShadowCoord() {
           "vec3 geometryPosition = - vViewPosition;",
           "vec3 geometryPosition = (studioModelView * vec4(studioPosition(),1.0)).xyz;",
         )
-        .replace(
+        .replaceAll(
           'gl_FragColor = vec4( col, diffuseColor.a );',
           // Blend before output encoding; alpha and diagnostics stay unchanged.
           `#ifndef DEBUG_LITSHADERATE
@@ -309,6 +309,7 @@ vec4 studioShadowCoord() {
       this.updateNormal();
     if (prior.depthScale !== s.depthScale) this.updateRelief();
     this.light.position.set(s.lightX, s.lightY, s.lightZ);
+    this.light.color.set(s.lightColor);
     this.light.intensity = Math.PI * (1 - s.ambient);
     this.ambient.intensity = Math.PI * s.ambient;
     this.depthUniforms.studioDepthScale.value = s.depthScale;

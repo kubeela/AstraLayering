@@ -14,7 +14,7 @@ export function pipelineAgentSteps(pipeline: PipelineId, standard = false, shado
     if (pipeline === 'clothing-part-layering') return step.startsWith('clothing_') && !step.startsWith('clothing_raster_');
     if (pipeline === 'raster-layering') return step.startsWith('raster_');
     if (pipeline === 'clothing-raster-layering') return step.startsWith('clothing_raster_');
-    if (pipeline === 'shadow') return step === (shadowMode === 'mask' ? 'shadow_mask' : 'shadow_maps');
+    if (pipeline === 'shadow') return shadowMode === 'mask' ? step === 'shadow_mask' : ['shadow_maps', 'shadow_lighting'].includes(step);
     return step === 'assembly';
   });
 }

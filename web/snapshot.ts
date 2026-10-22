@@ -1,7 +1,7 @@
 import { lstat, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
-import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
+import { stepsFor } from '../.agents/skills/live2d-maker/shadow/lighting-steps.ts';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { readRun, taskStatus, type TaskRun } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { steps as personSteps } from '../.agents/skills/live2d-maker/raster-layering/steps.ts';
@@ -118,13 +118,22 @@ export async function snapshot(directory: string, name: string, dir: string) {
     }
     if (id === 'shadow') {
       for (const variant of shadowModes) {
-        const prefix = id + '/' + variant + '/step01';
-        const complete = await exists(prefix + '/.completed');
-        const delivered = await Promise.all(stepsFor(variant)[0].requiredFiles.map(path => exists(prefix + '/' + path)));
-        states[variant] = complete ? delivered.every(Boolean) ? 'done' : 'failed'
-          : await exists(prefix + '/.running') ? variant === mode ? observed('running') : 'unconfirmed'
-            : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
+        const branchStates: Status[] = [];
+        for (const step of stepsFor(variant)) {
+          const prefix = id + '/' + variant + '/' + step.id;
+          const complete = await exists(prefix + '/.completed');
+          const delivered = await Promise.all(step.requiredFiles.map(path => exists(prefix + '/' + path)));
+          const state: Status = complete ? delivered.every(Boolean) ? 'done' : 'failed'
+            : await exists(prefix + '/.running') ? variant === mode ? observed('running') : 'unconfirmed'
+              : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
+          branchStates.push(state);
+          if (variant === 'normal-depth') states[step.id === 'step01' ? 'normal-depth-maps' : 'normal-depth-lighting'] = state;
+        }
+        states[variant] = branchStates.includes('failed') ? 'failed' : branchStates.includes('running') ? 'running'
+          : branchStates.includes('unconfirmed') ? 'unconfirmed' : branchStates.every(v => v === 'done') ? 'done'
+            : branchStates.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
       }
+      states.step01 = states[mode];
     }
     let status: Status = active ? 'running' : observed(saved?.status);
     if (!saved) status = Object.values(states).includes('failed') ? 'failed' : Object.values(states).includes('unconfirmed') ? 'unconfirmed'

@@ -2,7 +2,10 @@ import { lstat, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { studioArtifacts } from '../.agents/skills/live2d-maker/shared/studio-artifacts.ts';
 import { shadowArtifacts, shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
-import { safePath } from './files.ts';
+import { inspectDraftPreview } from '../.agents/skills/live2d-maker/shadow/preview.ts';
+import { validateLight } from './studio/light-model.js';
+import { rendererFingerprint } from '../.agents/skills/live2d-maker/shadow/lighting.ts';
+import { safePath, jsonFile } from './files.ts';
 
 type Selection = { version: number; mode: 'mask' | 'normal-depth'; sourceKraHash: string; sourceColorHash: string };
 const previewModes = ['mask', 'normal-depth', 'mixed'] as const;
@@ -40,21 +43,48 @@ export async function studioProject(directory: string, name: string, dir: string
   const maskSource = maskRecord ?? (selection?.mode === 'mask' ? selection : undefined);
   const mapsSource = mapsRecord ?? (selection?.mode === 'normal-depth' ? selection : undefined);
   const maskStale = stale(maskSource), mapsStale = stale(mapsSource);
-  const paths = { ...studioArtifacts, maskDocument: shadowArtifacts.maskDocument, maskColor: shadowArtifacts.maskColor, bindings: shadowArtifacts.bindings };
+  const paths = { ...studioArtifacts, maskDocument: shadowArtifacts.maskDocument, maskColor: shadowArtifacts.maskColor, bindings: shadowArtifacts.bindings,
+    draftNormal: shadowArtifacts.draftNormal, draftDepth: shadowArtifacts.draftDepth };
   const all = Object.fromEntries(await Promise.all(Object.entries(paths).map(async ([key, path]) => [key, await file(path)])));
   const maskAvailable = !!maskSource && !maskStale && all.maskDocument.available && all.maskColor.available && all.bindings.available;
-  const mapsAvailable = !mapsStale && (!!mapsSource || !selection) && all.normal.available && all.depth.available;
+  const publishedMaps = !mapsStale && (!!mapsSource || !selection) && all.normal.available && all.depth.available;
+  let draftRecord;
+  if (!mapsSource && !publishedMaps && all.draftNormal.available && all.draftDepth.available) {
+    try {
+      await safePath(directory, 'shadow/normal-depth/run.json');
+      await safePath(directory, 'part-layering/references');
+      draftRecord = await inspectDraftPreview(name, dir);
+    } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+  }
+  const draftValid = !!draftRecord && !stale(draftRecord);
+  const mapsAvailable = publishedMaps || draftValid;
   const availableModes = { mask: maskAvailable, 'normal-depth': mapsAvailable, mixed: maskAvailable && mapsAvailable };
   const mode = preview || (selection?.mode === 'mask' && maskAvailable ? 'mask' : 'normal-depth');
   if ((mode === 'mask' || mode === 'mixed') && !availableModes[mode]) throw Error(mode === 'mixed' ? '混合预览需要同一组装版本的蒙版和法线／深度产物' : '投影蒙版尚未交付或源工程已变化');
-  const useMask = mode !== 'normal-depth', useMaps = mode !== 'mask' && !mapsStale && (!!mapsSource || !selection);
+  const useMask = mode !== 'normal-depth', useDraft = mode !== 'mask' && !publishedMaps && draftValid;
+  const useMaps = mode !== 'mask' && (publishedMaps || useDraft);
+  const normal = useDraft ? all.draftNormal : all.normal, depth = useDraft ? all.draftDepth : all.depth;
   const files = {
     document: useMask ? all.maskDocument : all.document,
     color: useMask ? all.maskColor : all.color,
-    normal: { ...all.normal, available: useMaps && all.normal.available },
-    depth: { ...all.depth, available: useMaps && all.depth.available },
+    normal: { ...normal, available: useMaps && normal.available },
+    depth: { ...depth, available: useMaps && depth.available },
     bindings: { ...all.bindings, available: useMask && maskAvailable },
   };
+  let lightSettings, lightStale = false;
+  const light = useMaps ? await jsonFile(directory, shadowArtifacts.light) : undefined;
+  if (light) {
+    try {
+      const recipe = validateLight(light);
+      const mapHashes = useDraft ? [draftRecord!.normalHash, draftRecord!.depthHash]
+        : await Promise.all([normal.path, depth.path].map(async path => createHash('sha256').update(await readFile(await safePath(directory, path))).digest('hex')));
+      lightStale = recipe.inputs.color !== sourceHashes[1] || recipe.inputs.normal !== mapHashes[0] || recipe.inputs.depth !== mapHashes[1]
+        || recipe.rendererFingerprint !== await rendererFingerprint();
+      if (!lightStale) lightSettings = recipe.settings;
+    } catch { lightStale = true; }
+  }
   return { name, dir, files, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
+    lightSettings, lightStale,
+    previewDraft: useDraft, ...(useDraft ? { previewReview: draftRecord!.status, previewReviewReason: draftRecord!.reason } : {}),
     ...(selection ? { shadowMode: selection.mode, shadowStale: stale(selection) } : {}) };
 }

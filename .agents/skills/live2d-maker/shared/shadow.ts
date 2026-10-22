@@ -9,4 +9,23 @@ export const shadowArtifacts = {
   maskDocument: 'shadow/mask/step01/character-shadowed.kra',
   maskColor: 'shadow/mask/step01/character-shadowed.png',
   bindings: 'shadow/mask/step01/shadows.json',
+  draftNormal: 'shadow/normal-depth/step01/normal.png',
+  draftDepth: 'shadow/normal-depth/step01/depth.png',
+  light: 'shadow/normal-depth/step02/light.json',
 } as const;
+
+export type ShadowDraftPreview = {
+  version: 1; mode: 'normal-depth'; status: 'draft-awaiting-visual-review' | 'awaiting-lighting'; reason: string;
+  inputFingerprint: string; sourceKraHash: string; sourceColorHash: string;
+  normalHash: string; depthHash: string; width: number; height: number;
+  normalLengthMaxError: number; updatedAt: string;
+};
+export function isShadowDraftPreview(value: unknown): value is ShadowDraftPreview {
+  const r = value as ShadowDraftPreview | null;
+  return !!r && r.version === 1 && r.mode === 'normal-depth' && ['draft-awaiting-visual-review', 'awaiting-lighting'].includes(r.status)
+    && typeof r.reason === 'string' && !!r.reason.trim()
+    && [r.inputFingerprint, r.sourceKraHash, r.sourceColorHash, r.normalHash, r.depthHash]
+      .every(hash => typeof hash === 'string' && /^[a-f0-9]{64}$/.test(hash))
+    && [r.width, r.height].every(n => Number.isInteger(n) && n > 0)
+    && Number.isFinite(r.normalLengthMaxError) && r.normalLengthMaxError >= 0 && r.normalLengthMaxError <= 0.02;
+}

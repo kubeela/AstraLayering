@@ -8,12 +8,13 @@ import { pipelineDirectory, taskDirectory, resolveRunsDirectory } from '../share
 import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
 import { runWorkflow as runSharedWorkflow, type KritaPipeline, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { inputDirectories, isShadowInput, resolveShadowInput, inputFingerprint, fileHash, type ShadowInput } from './input.ts';
-import { buildPrompt, stepsFor } from './steps.ts';
+import { buildPrompt, stepsFor } from './lighting-steps.ts';
 import { prepareMaps, validateDelivery } from './delivery.ts';
 import { loadWorkflowEnvironment } from '../shared/codex/environment.ts';
 import { prepareMaskReferences, referenceNames, referenceUrl } from './preparation.ts';
 import { inspectMask } from './inspection.ts';
 import type { NativeInspect } from './native.ts';
+import { createLightingTool, validateLighting } from './lighting.ts';
 
 export const help = `shadow — Live2D 投影阴影或整图法线＋深度
 pnpm shadow --name <任务名> --krita <可执行文件> [--dir <绝对运行根目录>]
@@ -33,8 +34,10 @@ export function makePipeline(mode: ShadowMode, env: NodeJS.ProcessEnv = process.
     fingerprintInput: input => inputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? [
       ...referenceNames.map(referenceUrl), ...['preparation.ts', 'steps.ts', 'delivery.ts', 'inspection.ts', 'native.ts', 'native_worker.py'].map(p => new URL(p, import.meta.url)),
     ] : []),
-    ...(mode === 'normal-depth' ? { prepareDelivery: prepareMaps } : { prepareStep: prepareMaskReferences }),
-    validateDelivery: async (output, input, _step, krita, dryRun) => {
+    tools: (output, input, step) => step.modelStep === 'shadow_lighting' ? [createLightingTool(output, input)] : [],
+    ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === 'step01') await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
+    validateDelivery: async (output, input, step, krita, dryRun) => {
+      if (mode === 'normal-depth' && step.id === 'step02') { await validateLighting(output, input); return; }
       await validateDelivery(output, input, mode);
       if (mode === 'mask' && !dryRun) await inspectMask(output, krita.executable, env, signal, native);
     } };
