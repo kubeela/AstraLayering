@@ -363,12 +363,13 @@ vec4 studioShadowCoord() {
   }
   frame(width, height, exporting = false) {
     this.deformation?.compose();
+    const visibleSize=this.deformation?.outputSize||[this.source?.w||1,this.source?.h||1],sourceHeight=this.source?.h||1;
     const aspect = width / height,
       fit = exporting
-        ? 1
+        ? height/sourceHeight
         : Math.max(
-            1.1,
-            (1.1 * (this.source?.w / this.source?.h || 0.75)) / aspect,
+            1.1*visibleSize[1]/sourceHeight,
+            (1.1 * visibleSize[0]/sourceHeight) / aspect,
           ),
       scale = fit / (exporting ? 1 : this.zoom);
     this.camera.left = -aspect * scale;
@@ -443,7 +444,8 @@ vec4 studioShadowCoord() {
   actualSize() {
     const box = this.canvas.getBoundingClientRect(),
       aspect = box.width / box.height;
-    const fit = Math.max(1.1, (1.1 * this.source.w) / this.source.h / aspect);
+    const size=this.deformation?.outputSize||[this.source.w,this.source.h];
+    const fit = Math.max(1.1*size[1]/this.source.h, (1.1 * size[0]) / this.source.h / aspect);
     this.zoom = (this.source.h * fit) / box.height;
     this.pan = [0, 0];
     this.render();
@@ -457,7 +459,7 @@ vec4 studioShadowCoord() {
   }
   async exportPNG() {
     if (!this.source) throw new Error("请先载入素材");
-    const { w, h } = this.source;
+    const [w,h] = this.deformation?.outputSize||[this.source.w,this.source.h];
     this.renderer.setSize(w, h, false);
     this.frame(w, h, true);
     const blob = await new Promise((resolve) =>

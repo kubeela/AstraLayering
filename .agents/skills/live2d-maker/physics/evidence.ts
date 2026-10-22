@@ -41,7 +41,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
         if(step%4===0){if(!curvePoints.has(id))curvePoints.set(id,[]);curvePoints.get(id)!.push([step/120,residual[tip*2]]);}
         if(step===960&&stats.travel>.1)metrics.notSettled.push(id);
       }
-      yield JSON.stringify({step,time:step/120,components})+'\n';if(step&&step%12===0)frames.push(step);
+      yield JSON.stringify({step,time:step/120,sourcePose:scene.sourcePose,components})+'\n';if(step&&step%12===0)frames.push(step);
     }}
     await pipeline(Readable.from(records()),createGzip({level:1}),createWriteStream(join(directory,'trace.jsonl.gz')),{signal});
     metrics.simulationMs=performance.now()-started;
