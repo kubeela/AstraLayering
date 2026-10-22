@@ -3,9 +3,11 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, writeFile, symlink, rm } from "node:fs/promises";
 import { join, basename } from "node:path";
 import { tmpdir } from "node:os";
+import { createHash } from 'node:crypto';
 import { createWorkbench } from "../server.ts";
 import { studioArtifacts } from "../../.agents/skills/live2d-maker/shared/studio-artifacts.ts";
 import { steps } from "../../.agents/skills/live2d-maker/character-assembly/steps.ts";
+import { shadowArtifacts } from '../../.agents/skills/live2d-maker/shared/shadow.ts';
 
 async function fixture(t: any) {
   const root = await mkdtemp(join(tmpdir(), "astra-project-")),
@@ -88,4 +90,21 @@ test("Project preview rejects stale directories, escaping names and symlinked ou
   await writeFile(outside, "private");
   await symlink(outside, join(f.project, studioArtifacts.normal));
   assert.equal((await f.get()).status, 400);
+});
+test('Two shadow routes coexist: last complete selection chooses its document and pauses stale maps', async t => {
+  const f = await fixture(t), hash = (value: string) => createHash('sha256').update(value).digest('hex');
+  await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
+  await f.put(studioArtifacts.normal); await f.put(studioArtifacts.depth);
+  await f.put(shadowArtifacts.maskDocument); await f.put(shadowArtifacts.maskColor);
+  const selection = { version: 1, mode: 'mask', sourceKraHash: hash('source'), sourceColorHash: hash('color') };
+  await f.put(shadowArtifacts.selection, JSON.stringify(selection));
+  let data = await (await f.get()).json() as any;
+  assert.equal(data.shadowMode, 'mask'); assert.equal(data.files.document.path, shadowArtifacts.maskDocument);
+  assert.equal(data.files.normal.available, false); assert.equal(data.files.depth.available, false);
+  await f.put(shadowArtifacts.selection, JSON.stringify({ ...selection, mode: 'normal-depth' }));
+  data = await (await f.get()).json() as any;
+  assert.equal(data.files.document.path, studioArtifacts.document); assert.equal(data.files.normal.available, true);
+  await f.put(studioArtifacts.document, 'changed');
+  data = await (await f.get()).json() as any;
+  assert.equal(data.shadowStale, true); assert.equal(data.files.normal.available, false);
 });

@@ -2,7 +2,7 @@
 
 用 AI 将角色参考图制作成可编辑、带遮挡补全的人物与衣服分层素材，交付 Krita KRA 和透明 PNG。
 
-当前工作流统一为 **[live2d-maker](.agents/skills/live2d-maker/SKILL.md)**：人物 part / raster、衣服 part / raster 与后续穿戴组装五个入口，共享安装、调度和续跑能力，各自保留绘制提示词。
+当前工作流统一为 **[live2d-maker](.agents/skills/live2d-maker/SKILL.md)**：人物 part / raster、衣服 part / raster 与后续穿戴组装、阴影制作六个入口，共享安装、调度和续跑能力，各自保留绘制提示词。
 
 ## 使用
 

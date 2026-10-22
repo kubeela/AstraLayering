@@ -73,7 +73,7 @@ test('every image-capable agent rejects native imagegen with a different harness
 test('default template covers model roles and individual image choices without changing other defaults', async t => {
   const contents = await readFile(new URL('../../example.env', import.meta.url), 'utf8');
   const variables = parseEnv(contents);
-  assert.equal(Object.keys(modelSlotDefaults).length, 12);
+  assert.equal(Object.keys(modelSlotDefaults).length, 13);
   for (const role of Object.keys(modelSlotDefaults)) assert.ok(Object.hasOwn(variables, `layering_agent_${role}_model`));
   for (const step of imageSteps) assert.ok(Object.hasOwn(variables, `layering_${step}_image_model`));
   assert.equal(Object.keys(variables).filter(key => key.endsWith('_image_model') && key !== 'layering_default_image_model').length, imageSteps.length);
@@ -169,7 +169,7 @@ test('custom image edit transports original prompts and images over both protoco
       [`layering_${provider}_image_base_url`]: base + (mode === 'gemini' ? '/v1beta' : '/v1'),
       [`layering_${provider}_image_api_key`]: 'image-test-secret', [`layering_${provider}_image_protocol`]: mode }, root);
     const outputDirectory = `${provider}-${mode}`;
-    const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory), [root])!;
+    const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory), [root], { krita: process.execPath })!;
     const current = { name: tool.name, description: tool.description, inputSchema: tool.inputSchema };
     if (definition) assert.deepEqual(current, definition);
     else definition = current;

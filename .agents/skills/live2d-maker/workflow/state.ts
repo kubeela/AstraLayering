@@ -1,3 +1,4 @@
+import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
 import { randomUUID, createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -10,7 +11,7 @@ import { readTaskLog } from './log.ts';
 
 export type TaskOptions = {
   name: string; dir?: string; image?: string; krita?: string;
-  from?: PipelineId; to?: PipelineId; jobs?: number; standard?: boolean;
+  from?: PipelineId; to?: PipelineId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode;
 };
 export type PipelineProgress = {
   status: 'pending' | 'running' | 'completed' | 'failed';
@@ -18,7 +19,7 @@ export type PipelineProgress = {
 };
 export type TaskRun = {
   version: 1; name: string; dir: string; from: PipelineId; to: PipelineId;
-  image?: string; krita?: string; jobs: number; standard?: boolean;
+  image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   activePipeline?: PipelineId;
@@ -53,6 +54,7 @@ export async function readRun(directory: string, name: string): Promise<TaskRun 
     throw new Error('无效的总控记录：' + join(directory, 'run.json'));
   }
   selectedPipelines(pipelineId(run.from), pipelineId(run.to));
+  if (run.shadowMode !== undefined) shadowMode(run.shadowMode);
   return run;
 }
 export async function saveRun(directory: string, run: TaskRun, replace = rename): Promise<void> {
@@ -117,7 +119,7 @@ async function originalImage(directory: string, input?: string): Promise<string 
 export async function configureRun(options: TaskOptions, directory: string): Promise<TaskRun> {
   const saved = await readRun(directory, options.name);
   const from = options.from ?? saved?.from ?? 'part-layering';
-  const to = options.to ?? saved?.to ?? 'character-assembly';
+  const to = options.to ?? saved?.to ?? 'shadow';
   const selected = selectedPipelines(from, to);
   if (options.standard !== undefined && !selected.includes('part-layering')) {
     throw new Error('--standard / --no-standard 需要本次路线包含 part-layering；请用 --from part-layering 运行人物 preparation。');
@@ -131,11 +133,12 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
     version: 1, name: options.name, dir: resolveRunsDirectory(options.dir), from, to, jobs,
     status: 'ready', createdAt: now(), updatedAt: now(), pipelines: {},
   };
-  Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs, standard });
+  Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs, standard,
+    shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
   run.image = image ?? saved?.image;
   if (options.krita) run.krita = resolveInput(options.name, options.krita, options.dir);
-  if (!run.krita && selected.some(id => id.includes('raster') || id === 'character-assembly')) {
-    for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly']) {
+  if (!run.krita && selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow')) {
+    for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow/mask', 'shadow/normal-depth']) {
       try {
         const config = JSON.parse(await readFile(join(directory, id, 'run.json'), 'utf8'));
         if (typeof config.krita?.executable === 'string') { run.krita = config.krita.executable; break; }
@@ -152,7 +155,7 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
   const runnerAlive = !run.runner?.finishedAt && processAlive(run.runner?.pid);
   const lockHeld = await lockfile.check(directory, { lockfilePath: join(directory, '.runner.lock'), stale: 30_000 });
   const pipelines = await Promise.all(selectedPipelines(run.from, run.to).map(async id => {
-    const path = join(directory, id);
+    const path = join(directory, id, id === 'shadow' ? shadowMode(run.shadowMode) : '');
     let threadId: string | null | undefined, steps: { name: string; status: string }[] = [];
     try {
       const config = JSON.parse(await readFile(join(path, 'run.json'), 'utf8'));
@@ -163,7 +166,7 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
           stat(join(path, name, '.running')).then(() => 'running', () => 'unmarked')),
       })));
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-    return { id, ...run.pipelines[id], directory: path, ...(threadId === undefined ? {} : { threadId }), steps };
+    return { id, ...(id === 'shadow' ? { mode: shadowMode(run.shadowMode) } : {}), ...run.pipelines[id], directory: path, ...(threadId === undefined ? {} : { threadId }), steps };
   }));
   const log = await readTaskLog(directory);
   return {

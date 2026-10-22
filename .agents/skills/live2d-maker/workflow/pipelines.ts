@@ -1,3 +1,5 @@
+import { runWorkflow as shadow } from '../shadow/run.ts';
+import { shadowMode } from '../shared/shadow.ts';
 import { join } from 'node:path';
 import { runPartLayering } from '../part-layering/run.ts';
 import { runClothingPartLayering } from '../clothing-part-layering/run.ts';
@@ -10,6 +12,11 @@ import type { TaskRun } from './state.ts';
 
 export type PipelineResult = { summary: string; output?: string };
 export async function executePipeline(id: PipelineId, run: TaskRun, progress: (message: string) => void): Promise<PipelineResult> {
+  if (id === 'shadow') {
+    const mode = shadowMode(run.shadowMode);
+    const summary = await shadow({ name: run.name, dir: run.dir, krita: run.krita, shadowMode: mode, progress });
+    return { summary, output: join(run.dir, run.name, 'shadow', mode, 'step01', mode === 'mask' ? 'character-shadowed.kra' : 'normal.png') };
+  }
   if (id === 'part-layering' || id === 'clothing-part-layering') {
     const execute = id === 'part-layering' ? runPartLayering : runClothingPartLayering;
     const result = await execute({

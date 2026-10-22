@@ -10,6 +10,7 @@ import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-ima
 import { loadWorkflowEnvironment, checkCodexCapabilities } from '../codex/environment.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { fakeAppServer } from '../../part-layering/tests/fake-app-server.ts';
+import { imageGenerationTool } from '../agents/images.ts';
 
 const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true, image_compaction_version: 2 };
 async function fixture(t: { after(fn: () => Promise<unknown>): void }) {
@@ -19,6 +20,39 @@ async function fixture(t: { after(fn: () => Promise<unknown>): void }) {
   await writeFile(executable, `#!${process.execPath}\nconsole.log(${JSON.stringify(JSON.stringify(capabilities))});\n`, { mode: 0o700 });
   return { root, executable };
 }
+test('normal/depth use opaque data transport in both tools and native routes without matting', async t => {
+  const { root, executable } = await fixture(t);
+  const png = await sharp({ create: { width: 2, height: 2, channels: 3, background: '#8080ff' } }).png().toBuffer();
+  const input = join(root, 'input.png'); await writeFile(input, png);
+  let calls = 0;
+  const server = createServer(async (req, res) => {
+    const chunks = []; for await (const chunk of req) chunks.push(chunk);
+    const bytes = Buffer.concat(chunks);
+    const args = req.headers['content-type']?.startsWith('multipart')
+      ? Object.fromEntries(await new Request('http://localhost', { method: 'POST', headers: { 'content-type': req.headers['content-type']! }, body: new Uint8Array(bytes) }).formData())
+      : JSON.parse(bytes.toString());
+    assert.equal(args.background, 'opaque'); assert.equal(args.prompt, 'normal data'); calls++;
+    res.end(JSON.stringify({ data: [{ b64_json: png.toString('base64') }] }));
+  });
+  server.listen(0, '127.0.0.1'); await once(server, 'listening');
+  t.after(() => new Promise<void>(done => server.close(() => done())));
+  const settings = loadWorkflowEnvironment({ layering_codex_path: executable,
+    layering_shadow_maps_image_model: 'gemini-nano-banana-2.1',
+    layering_google_image_base_url: `http://127.0.0.1:${(server.address() as any).port}/v1`,
+    layering_google_image_api_key: 'fixture', layering_google_image_protocol: 'openai' }, root);
+  const tool = imageGenerationTool(settings, 'shadow_maps', join(root, 'output'), [root])!;
+  const result = await tool.execute({ prompt: 'normal data', input_images: [input] }, new AbortController().signal);
+  const saved = JSON.parse((result.contentItems[0] as { text: string }).text).savedPath;
+  assert.deepEqual(await readFile(saved), png);
+  const route = await createCodexImageRoute(settings, 'shadow_maps', root);
+  try {
+    const response = await fetch(route.env.LAYERING_IMAGE_BASE_URL + '/images/generations', {
+      method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + route.env.LAYERING_IMAGE_API_KEY },
+      body: JSON.stringify({ model: 'gemini-nano-banana-2.1', prompt: 'normal data' }),
+    });
+    assert.equal(response.status, 200); assert.equal(calls, 2);
+  } finally { await route.close(); }
+});
 
 test('codex-native does not enable image patches; custom Codex models require current image capabilities', async t => {
   const { root, executable } = await fixture(t);

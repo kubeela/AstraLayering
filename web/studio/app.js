@@ -272,7 +272,7 @@ function sync() {
   $("#lighting-status").hidden = hasNormal;
   const project = state.source?.project || state.waitingProject;
   $("#lighting-status").textContent = project
-    ? project.files?.normal.available
+    ? project.shadowStale ? "阴影源已变化，请续跑生成" : project.shadowMode === 'mask' ? "已载入 Live2D 阴影蒙版" : project.files?.normal.available
       ? "图层已更改，光照已暂停"
       : "法线待管线生成"
     : "绑定法线后启用光照";
@@ -286,6 +286,7 @@ function sync() {
   $("#depthScale").disabled = $("#number-depthScale").disabled =
     !hasDepth || state.busy;
   $("#depth-status-hint").hidden = hasDepth;
+  if (project?.shadowMode === 'mask') $("#depth-status-hint").hidden = true;
   for (const k of ["normalStrength", "number-normalStrength", "normal-y"])
     $("#" + k).disabled = !hasNormal || state.busy;
   $('[data-tool="light"]').disabled = !hasNormal || state.busy;

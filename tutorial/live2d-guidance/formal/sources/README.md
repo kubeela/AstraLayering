@@ -28,6 +28,12 @@
 
 psd2live 阅读版本固定为 `ef527ddf9a7e738de642a0f19bdda17da1ef6191`；CubismWebFramework 为上表固定版本。本次教程复核既有阅读与实现记录，没有声称验证了这些项目当前所有功能。
 
+## 蒙版投影模型研究 · 2026-10-22
+
+[模型证据与复现](shadow-mask-models.md)记录 Milly、Haru、Mao 的原始 PSD，以及 Milly、Haru、Hiyori pro 的 moc3 裁切读取；[数值清单](shadow-mask-models.json)保留 SHA-256、layer ID、覆盖统计与独立参数端点测量。用于 [09 蒙版投影](../09-clipped-cast-shadows.md)，不把图层名、PSD 剪贴、运行 mask 与 deformer 层级混为一谈。官方 Cubism 裁切源码与 Krita 手册也在该记录中逐一注明版本与阅读范围。
+
+本次只添加文字、数值证据和只读复现脚本；没有另行复制模型图片、纹理、Core 或工程。
+
 ## 实战代码与原记录
 
 Jianma 工作台快照固定为游戏仓库 `b24aeeecb60cd63cb036b81ab26595ed6222abd6`，作者教程不依赖其后续 `main` 变化。

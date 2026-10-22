@@ -33,7 +33,7 @@ async function fixture(t: TestContext, slow = false) {
   await initializeRun(output, config);
   await mkdir(join(output, 'step01'));
   for (const file of [...steps[0].requiredFiles, '.completed']) await writeFile(join(output, 'step01', file), 'retained');
-  return { dir, name, task, inputs, output, options: { dir, name, krita, from: 'character-assembly' as const } };
+  return { dir, name, task, inputs, output, options: { dir, name, krita, from: 'character-assembly' as const, to: 'character-assembly' as const } };
 }
 async function until(check: () => Promise<boolean>, timeout = 10_000) {
   const end = Date.now() + timeout;
@@ -43,7 +43,7 @@ async function until(check: () => Promise<boolean>, timeout = 10_000) {
 test('真实后台父进程退出后任务继续，已完成组装跳过模型并记录交付', { skip: process.platform === 'win32' }, async t => {
   const f = await fixture(t);
   const { stdout } = await promisify(execFile)(process.execPath, [cli, '--name', f.name, '--dir', f.dir,
-    '--from', 'character-assembly', '--background'], { timeout: 15_000 });
+    '--from', 'character-assembly', '--to', 'character-assembly', '--background'], { timeout: 15_000 });
   assert.match(stdout, /后台总调度已启动/);
   await until(async () => !(await taskStatus(f.options)).lockHeld);
   const status = await taskStatus(f.options);

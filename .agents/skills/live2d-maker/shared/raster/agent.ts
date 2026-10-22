@@ -45,7 +45,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
         prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
       const route = await createCodexImageRoute(environment, request.step!, join(request.directory, 'agents/generated'), environment.codex, request.signal, request.imageNormalization);
-      const codex = new Codex(workflowCodexOptions(environment, { env: route.env, config: rasterCodexConfig() }));
+      const codex = new Codex(workflowCodexOptions(environment, { env: route.env, config: rasterCodexConfig(request.step) }));
       let lastMessage = '', threadId = request.threadId;
       try {
         const result = await runAgent({ ...request, onEvent: async event => {
@@ -80,7 +80,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     }
   }
   if (!client) await checkCodexCapabilities(environment);
-  const codex = client ?? new Codex(workflowCodexOptions(environment, { config: rasterCodexConfig() }));
+  const codex = client ?? new Codex(workflowCodexOptions(environment, { config: rasterCodexConfig(request.step) }));
   const options: ThreadOptions = {
     model: request.model,
     modelReasoningEffort: request.effort,
@@ -144,6 +144,6 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
 }
 
 // Drawing agents use the configured filesystem and image tools directly.
-export function rasterCodexConfig() {
-  return { features: { image_generation: true } };
+export function rasterCodexConfig(step?: AgentStep) {
+  return { features: { image_generation: step !== 'shadow_mask' } };
 }

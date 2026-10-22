@@ -1,0 +1,1058 @@
+{
+  "version": 1,
+  "researchedOn": "2026-10-22",
+  "measurementDefinitions": {
+    "alpha": "Original layer alpha > 0 and coordinate-aligned receiver alpha union; no other occluders or final blending. Ratios are not final visible projection ratios.",
+    "parameters": "Single-parameter min/max, others at author default; max Euclidean vertex displacement in model units. No physics or renderer.",
+    "identification": "PSD layer and runtime drawable IDs are different namespaces. Semantic matching uses pixels, UV regions, Part display info and mask references; no cmo3 deformer tree parsed."
+  },
+  "originalArchives": [
+    {
+      "name": "haru_greeter_ja.zip",
+      "volumes": 4,
+      "missing_volumes": [],
+      "ordered_content_bytes": 40966036,
+      "sha256": "3db5c9180fc8446f7d92eee13ea33f584e5d1308e101d7afa4fe3b037a0ed94e",
+      "original_hash_matches": true,
+      "attachments": [
+        "haru_greeter_ja_part01_of_04.zip",
+        "haru_greeter_ja_part02_of_04.zip",
+        "haru_greeter_ja_part03_of_04.zip",
+        "haru_greeter_ja_part04_of_04.zip"
+      ]
+    },
+    {
+      "name": "hiyori_en.zip",
+      "volumes": 4,
+      "missing_volumes": [],
+      "ordered_content_bytes": 46195926,
+      "sha256": "1e4254d561f2a151562aa67036d78e17e4ffee08869b8ce10ab6052a05e2b3a4",
+      "original_hash_matches": true,
+      "attachments": [
+        "hiyori_en_part01_of_04.zip",
+        "hiyori_en_part02_of_04.zip",
+        "hiyori_en_part03_of_04.zip",
+        "hiyori_en_part04_of_04.zip"
+      ]
+    },
+    {
+      "name": "mao_casualtutorial02.zip",
+      "volumes": 7,
+      "missing_volumes": [],
+      "ordered_content_bytes": 72136139,
+      "sha256": "50d34c9831cd61041c742eb1dd380ba1b856f96ed69405ba430d7ca20008042d",
+      "original_hash_matches": true,
+      "attachments": [
+        "mao_casualtutorial02_part01_of_07.zip",
+        "mao_casualtutorial02_part02_of_07.zip",
+        "mao_casualtutorial02_part03_of_07.zip",
+        "mao_casualtutorial02_part04_of_07.zip",
+        "mao_casualtutorial02_part05_of_07.zip",
+        "mao_casualtutorial02_part06_of_07.zip",
+        "mao_casualtutorial02_part07_of_07.zip"
+      ]
+    }
+  ],
+  "psd": [
+    {
+      "model": "haru_greeter_ja",
+      "member": "haru_受付スーツ_素材分け_t07.psd",
+      "sha256": "ed0a498d5b09ee2164ad06382c45901bd13661f9b8ae047721854c2c4c50bc04",
+      "width": 2400,
+      "height": 4500,
+      "layers": [
+        {
+          "path": "脚R/影",
+          "id": 668,
+          "bounds": [
+            0,
+            1143,
+            2400,
+            4468
+          ],
+          "clipping": true,
+          "blend": "multiply",
+          "opacity": 1,
+          "hidden": false,
+          "group": false,
+          "mask": null
+        },
+        {
+          "path": "脚L/影",
+          "id": 933,
+          "bounds": [
+            0,
+            1143,
+            2400,
+            4468
+          ],
+          "clipping": true,
+          "blend": "multiply",
+          "opacity": 1,
+          "hidden": false,
+          "group": false,
+          "mask": null
+        },
+        {
+          "path": "首　体/肌　影",
+          "id": 254,
+          "bounds": [
+            882,
+            694,
+            1518,
+            1235
+          ],
+          "clipping": true,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false,
+          "mask": null
+        },
+        {
+          "path": "輪郭/肌　影",
+          "id": 311,
+          "bounds": [
+            938,
+            343,
+            1462,
+            883
+          ],
+          "clipping": true,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false,
+          "mask": null
+        }
+      ],
+      "alphaMeasurements": [
+        {
+          "layer": "影",
+          "parent": "脚R",
+          "bbox": [
+            0,
+            1143,
+            2400,
+            4468
+          ],
+          "blend": "BlendMode.MULTIPLY",
+          "clipping": true,
+          "rawAlphaPixels": 3865904,
+          "rawNonzeroBBox": [
+            0,
+            0,
+            2400,
+            3325
+          ],
+          "clipBase": {
+            "name": "タイツ",
+            "bbox": [
+              853,
+              2238,
+              1547,
+              4135
+            ]
+          },
+          "baseAlphaIntersectionPixels": 564509,
+          "rawToIntersectionRatio": 6.848,
+          "layerId": 668
+        },
+        {
+          "layer": "影",
+          "parent": "脚L",
+          "bbox": [
+            0,
+            1143,
+            2400,
+            4468
+          ],
+          "blend": "BlendMode.MULTIPLY",
+          "clipping": true,
+          "rawAlphaPixels": 3865904,
+          "rawNonzeroBBox": [
+            0,
+            0,
+            2400,
+            3325
+          ],
+          "clipBase": {
+            "name": "タイツ",
+            "bbox": [
+              853,
+              2238,
+              1547,
+              4135
+            ]
+          },
+          "baseAlphaIntersectionPixels": 564509,
+          "rawToIntersectionRatio": 6.848,
+          "layerId": 933
+        },
+        {
+          "layer": "肌　影",
+          "parent": "首　体",
+          "bbox": [
+            882,
+            694,
+            1518,
+            1235
+          ],
+          "blend": "BlendMode.NORMAL",
+          "clipping": true,
+          "rawAlphaPixels": 147685,
+          "rawNonzeroBBox": [
+            0,
+            0,
+            636,
+            541
+          ],
+          "clipBase": {
+            "name": "肌",
+            "bbox": [
+              932,
+              720,
+              1468,
+              1235
+            ]
+          },
+          "baseAlphaIntersectionPixels": 92449,
+          "rawToIntersectionRatio": 1.597,
+          "layerId": 254
+        },
+        {
+          "layer": "肌　影",
+          "parent": "輪郭",
+          "bbox": [
+            938,
+            343,
+            1462,
+            883
+          ],
+          "blend": "BlendMode.NORMAL",
+          "clipping": true,
+          "rawAlphaPixels": 108946,
+          "rawNonzeroBBox": [
+            0,
+            0,
+            524,
+            540
+          ],
+          "clipBase": {
+            "name": "肌",
+            "bbox": [
+              953,
+              353,
+              1447,
+              873
+            ]
+          },
+          "baseAlphaIntersectionPixels": 84723,
+          "rawToIntersectionRatio": 1.286,
+          "layerId": 311
+        }
+      ]
+    },
+    {
+      "model": "mao_casualtutorial02",
+      "member": "mao_口開閉の作り方_インポート.psd",
+      "sha256": "c469a5816778fbe98e150a99f7e24248a4066661b3d864e6f890d34479d3fde8",
+      "width": 5800,
+      "height": 8400,
+      "layers": [
+        {
+          "path": "顔/髪影 乗算",
+          "id": 116,
+          "bounds": [
+            2482,
+            1489,
+            3328,
+            1980
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false,
+          "mask": null
+        }
+      ],
+      "alphaMeasurements": [
+        {
+          "layer": "髪影 乗算",
+          "parent": "顔",
+          "bbox": [
+            2482,
+            1489,
+            3328,
+            1980
+          ],
+          "blend": "BlendMode.NORMAL",
+          "clipping": false,
+          "rawAlphaPixels": 288420,
+          "rawNonzeroBBox": [
+            0,
+            0,
+            846,
+            491
+          ],
+          "layerId": 116
+        }
+      ]
+    },
+    {
+      "model": "milly",
+      "member": "Milly原画.psd",
+      "sha256": "bb52e84765b55e9f3d992ccdcafca65e06755083cafefd3c313dc4f381698bd0",
+      "width": 3200,
+      "height": 4800,
+      "layers": [
+        {
+          "path": "下身/右腿/大腿R",
+          "id": 510,
+          "bounds": [
+            1243,
+            2458,
+            1561,
+            3382
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "下身/左腿/大腿L",
+          "id": 505,
+          "bounds": [
+            1639,
+            2458,
+            1957,
+            3382
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "yy裙子",
+          "id": 1220,
+          "bounds": [
+            1129,
+            2136,
+            2070,
+            2819
+          ],
+          "clipping": true,
+          "blend": "multiply",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "头部/脸/发影/yy前发/yy前发L",
+          "id": 834,
+          "bounds": [
+            1568,
+            412,
+            1861,
+            874
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "头部/脸/发影/yy前发/yy前发R",
+          "id": 833,
+          "bounds": [
+            1339,
+            412,
+            1673,
+            867
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "头部/脸/发影/yy前发/yy前发M",
+          "id": 832,
+          "bounds": [
+            1484,
+            452,
+            1725,
+            856
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "头部/头发前/前发/前发L",
+          "id": 978,
+          "bounds": [
+            1597,
+            402,
+            1861,
+            864
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "头部/头发前/前发/前发R",
+          "id": 977,
+          "bounds": [
+            1339,
+            402,
+            1653,
+            857
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        },
+        {
+          "path": "头部/头发前/前发/前发M",
+          "id": 976,
+          "bounds": [
+            1490,
+            442,
+            1721,
+            846
+          ],
+          "clipping": false,
+          "blend": "normal",
+          "opacity": 1,
+          "hidden": false,
+          "group": false
+        }
+      ],
+      "alphaMeasurements": [
+        {
+          "file": "Milly原画.psd",
+          "width": 3200,
+          "height": 4800,
+          "layerId": 1220,
+          "layerName": "yy裙子",
+          "bounds": [
+            1129,
+            2136,
+            2070,
+            2819
+          ],
+          "clipping": true,
+          "blendMode": "mul ",
+          "rawAlphaPixels": 451111,
+          "receiverLayerIds": [
+            505,
+            510
+          ],
+          "receiverAlphaUnionIntersectionPixels": 188597,
+          "rawToIntersectionRatio": 2.392
+        }
+      ]
+    }
+  ],
+  "runtime": [
+    {
+      "model": "haru_greeter_ja",
+      "member": "haru_greeter_t05.moc3",
+      "sha256": "597571191064a12ffe592bcb5fade586ef5876bbbcf78905c348a78a0991432a",
+      "bytes": 387392,
+      "drawableCount": 84,
+      "parameterCount": 42,
+      "maskedDrawableCount": 10,
+      "allMaskRelations": [
+        {
+          "drawable": "D_PSD_74",
+          "part": "Part01HairFront001",
+          "maskIds": [
+            "D_PSD_04"
+          ]
+        },
+        {
+          "drawable": "D_PSD_75",
+          "part": "Part01HairFront001",
+          "maskIds": [
+            "D_PSD_04"
+          ]
+        },
+        {
+          "drawable": "D_PSD_44",
+          "part": "Part01EyeBall001",
+          "maskIds": [
+            "D_PSD_36"
+          ]
+        },
+        {
+          "drawable": "D_PSD_43",
+          "part": "Part01EyeBall001",
+          "maskIds": [
+            "D_PSD_36"
+          ]
+        },
+        {
+          "drawable": "D_PSD_42",
+          "part": "Part01EyeBall001",
+          "maskIds": [
+            "D_PSD_35"
+          ]
+        },
+        {
+          "drawable": "D_PSD_41",
+          "part": "Part01EyeBall001",
+          "maskIds": [
+            "D_PSD_35"
+          ]
+        },
+        {
+          "drawable": "D_PSD_40",
+          "part": "Part01EyeBall001",
+          "maskIds": [
+            "D_PSD_35"
+          ]
+        },
+        {
+          "drawable": "D_PSD_39",
+          "part": "Part01EyeBall001",
+          "maskIds": [
+            "D_PSD_36"
+          ]
+        },
+        {
+          "drawable": "D_PSD_38",
+          "part": "Part01Eye001",
+          "maskIds": [
+            "D_PSD_36"
+          ]
+        },
+        {
+          "drawable": "D_PSD_37",
+          "part": "Part01Eye001",
+          "maskIds": [
+            "D_PSD_35"
+          ]
+        }
+      ],
+      "selectedMeasurements": [
+        {
+          "id": "D_PSD_74",
+          "index": 42,
+          "part": "Part01HairFront001",
+          "maskIds": [
+            "D_PSD_04"
+          ],
+          "vertexCount": 36,
+          "opacity": 1,
+          "multiply": false,
+          "inverted": false,
+          "responses": []
+        },
+        {
+          "id": "D_PSD_75",
+          "index": 43,
+          "part": "Part01HairFront001",
+          "maskIds": [
+            "D_PSD_04"
+          ],
+          "vertexCount": 35,
+          "opacity": 1,
+          "multiply": false,
+          "inverted": false,
+          "responses": []
+        }
+      ]
+    },
+    {
+      "model": "hiyori_en",
+      "member": "hiyori_pro_t11.moc3",
+      "sha256": "608d62c9a65cf537ac25ca9e710e687dbef98ee0a0575e0ee8e27bfdc446cd5e",
+      "bytes": 444480,
+      "drawableCount": 134,
+      "parameterCount": 70,
+      "maskedDrawableCount": 8,
+      "allMaskRelations": [
+        {
+          "drawable": "ArtMesh9",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh37"
+          ]
+        },
+        {
+          "drawable": "ArtMesh10",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh37"
+          ]
+        },
+        {
+          "drawable": "ArtMesh11",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh37"
+          ]
+        },
+        {
+          "drawable": "ArtMesh12",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh37"
+          ]
+        },
+        {
+          "drawable": "ArtMesh13",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh36"
+          ]
+        },
+        {
+          "drawable": "ArtMesh14",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh36"
+          ]
+        },
+        {
+          "drawable": "ArtMesh15",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh36"
+          ]
+        },
+        {
+          "drawable": "ArtMesh16",
+          "part": "PartEyeBall",
+          "maskIds": [
+            "ArtMesh36"
+          ]
+        }
+      ],
+      "selectedMeasurements": []
+    },
+    {
+      "model": "milly",
+      "member": "Milly.moc3",
+      "sha256": "060317412fe9743d2a025eddd790ff92ac52537756e36e4385411548fd2e70f7",
+      "bytes": 1106432,
+      "drawableCount": 119,
+      "parameterCount": 220,
+      "maskedDrawableCount": 18,
+      "allMaskRelations": [
+        {
+          "drawable": "ArtMesh23",
+          "part": "Part8",
+          "maskIds": [
+            "eyeR"
+          ]
+        },
+        {
+          "drawable": "ArtMesh24",
+          "part": "Part8",
+          "maskIds": [
+            "eyeR"
+          ]
+        },
+        {
+          "drawable": "ArtMesh31",
+          "part": "Part11",
+          "maskIds": [
+            "eyeL"
+          ]
+        },
+        {
+          "drawable": "ArtMesh32",
+          "part": "Part11",
+          "maskIds": [
+            "eyeL"
+          ]
+        },
+        {
+          "drawable": "ArtMesh38",
+          "part": "Part14",
+          "maskIds": [
+            "lipM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh40",
+          "part": "Part14",
+          "maskIds": [
+            "mouthM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh41",
+          "part": "Part14",
+          "maskIds": [
+            "mouthM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh48",
+          "part": "Part18",
+          "maskIds": [
+            "faceM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh49",
+          "part": "Part19",
+          "maskIds": [
+            "faceM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh50",
+          "part": "Part19",
+          "maskIds": [
+            "faceM"
+          ]
+        },
+        {
+          "drawable": "faceline",
+          "part": "Part16",
+          "maskIds": [
+            "facelineM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh52",
+          "part": "Part16",
+          "maskIds": [
+            "faceM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh96",
+          "part": "Part9",
+          "maskIds": [
+            "ArtMesh55"
+          ]
+        },
+        {
+          "drawable": "ArtMesh103",
+          "part": "Part12",
+          "maskIds": [
+            "ArtMesh102"
+          ]
+        },
+        {
+          "drawable": "ArtMesh119",
+          "part": "Part21",
+          "maskIds": [
+            "legLM",
+            "legRM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh47",
+          "part": "Part18",
+          "maskIds": [
+            "faceM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh51",
+          "part": "Part19",
+          "maskIds": [
+            "faceM"
+          ]
+        },
+        {
+          "drawable": "ArtMesh128",
+          "part": "Part16",
+          "maskIds": [
+            "faceM",
+            "facelineM"
+          ]
+        }
+      ],
+      "selectedMeasurements": [
+        {
+          "id": "ArtMesh50",
+          "index": 39,
+          "part": "Part19",
+          "maskIds": [
+            "faceM"
+          ],
+          "vertexCount": 106,
+          "opacity": 1,
+          "multiply": false,
+          "inverted": false,
+          "responses": [
+            {
+              "parameter": "ParamXHead1",
+              "value": -1,
+              "maxVertexDisplacement": 0.019624,
+              "maskDisplacements": [
+                {
+                  "id": "faceM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamXHead1",
+              "value": 1,
+              "maxVertexDisplacement": 0.018193,
+              "maskDisplacements": [
+                {
+                  "id": "faceM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamXHead19",
+              "value": -1,
+              "maxVertexDisplacement": 0.020561,
+              "maskDisplacements": [
+                {
+                  "id": "faceM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamXHead19",
+              "value": 1,
+              "maxVertexDisplacement": 0.020596,
+              "maskDisplacements": [
+                {
+                  "id": "faceM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ArtMesh119",
+          "index": 106,
+          "part": "Part21",
+          "maskIds": [
+            "legLM",
+            "legRM"
+          ],
+          "vertexCount": 173,
+          "opacity": 1,
+          "multiply": true,
+          "inverted": false,
+          "responses": [
+            {
+              "parameter": "ParamXBody7",
+              "value": -1,
+              "maxVertexDisplacement": 0.067576,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamXBody7",
+              "value": 1,
+              "maxVertexDisplacement": 0.067755,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamXBody8",
+              "value": -1,
+              "maxVertexDisplacement": 0.047755,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamXBody8",
+              "value": 1,
+              "maxVertexDisplacement": 0.047666,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamYBody2",
+              "value": -1,
+              "maxVertexDisplacement": 0.039338,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamYBody2",
+              "value": 1,
+              "maxVertexDisplacement": 0.022445,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamYBody7",
+              "value": -1,
+              "maxVertexDisplacement": 0.016106,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            },
+            {
+              "parameter": "ParamYBody7",
+              "value": 1,
+              "maxVertexDisplacement": 0.01143,
+              "maskDisplacements": [
+                {
+                  "id": "legLM",
+                  "maxVertexDisplacement": 0
+                },
+                {
+                  "id": "legRM",
+                  "maxVertexDisplacement": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "millyDisplayInfo": {
+    "member": "Milly.cdi3.json",
+    "sha256": "3fbf599e5ec0be1a9b31d34171f9ce36cbc29a47a327ee6001f64b0c4ab142ef",
+    "parts": {
+      "Part21": "裙子",
+      "Part18": "yy前侧发",
+      "Part19": "yy前发"
+    },
+    "parameters": {
+      "ParamXBody7": "36x裙子",
+      "ParamXBody8": "37x裙子s",
+      "ParamYBody2": "43y裙子",
+      "ParamYBody7": "44y裙子s",
+      "ParamXHead1": "14x前发R",
+      "ParamXHead19": "15x前发Rs"
+    }
+  },
+  "core": {
+    "url": "https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js",
+    "version": "5.1.0",
+    "packedVersion": 83951616,
+    "bytes": 207155,
+    "sha256": "25ae938cb4fe282ce189b357bcc97e603d1e1f7ec78bf04150d401c23cdc792f",
+    "redistributed": false
+  },
+  "framework": {
+    "repo": "https://github.com/Live2D/CubismWebFramework",
+    "commit": "198a3769c26ca3d7b600e932590433badd392edd",
+    "files": [
+      {
+        "path": "src/rendering/cubismclippingmanager.ts",
+        "bytes": 38519,
+        "sha256": "b38ca529a5bedac4eaa0d0ff04ae4ccaaaf3173d04250dc01af4e88e72730ec9"
+      },
+      {
+        "path": "src/rendering/cubismrenderer_webgl.ts",
+        "bytes": 62458,
+        "sha256": "f054aa514bf1ee4d162698de62bc3565d8e18ef348dd9234d6dab1e78bc0e678"
+      },
+      {
+        "path": "src/rendering/cubismshader_webgl.ts",
+        "bytes": 70603,
+        "sha256": "daf9bfcbed82f4763e401fbc1ccf740e1da0a99943dbec6afb3cdfb6c3d94a32"
+      },
+      {
+        "path": "Shaders/WebGL/fragshadersrcsetupmask.frag",
+        "bytes": 736,
+        "sha256": "3cccc0b68a56cfbf4bd4841b0a759431dd159812c38dc280981ba633fa0afe7a"
+      },
+      {
+        "path": "Shaders/WebGL/fragshadersrcmaskpremultipliedalpha.frag",
+        "bytes": 1043,
+        "sha256": "f84ff615393d26ea6ab7c28747803db6472524c92567c0ad01e8225fbab36a3b"
+      }
+    ]
+  },
+  "kritaDocumentation": {
+    "url": "https://docs.krita.org/en/tutorials/clipping_masks_and_alpha_inheritance.html",
+    "httpStatus": 200,
+    "manualVersion": "5.3.0",
+    "revision": "4e66218",
+    "sha256": "d2e9034680b5bf64d80bf26a6473a90c8a3d15d3a1a0b09fc293d0f217b65d9d"
+  },
+  "localTutorials": [
+    {
+      "path": "tutorial/live2d-tutorial-text/8.下半身的拆分与制作.txt",
+      "sha256": "3fe321fc55f1dac1e893dcf3fbfc3c49b794f6b7a43d67fa11b6510645d223eb"
+    },
+    {
+      "path": "tutorial/live2d-tutorial-text/14.透明，阴影，高光的拆分方式.txt",
+      "sha256": "1b2eec49677d2ef94f85514e326fe46979ffaae70a8f9183349d244592fcbc57"
+    }
+  ]
+}

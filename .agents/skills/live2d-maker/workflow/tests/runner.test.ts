@@ -118,8 +118,8 @@ test('手动上游可从组装开始，不伪造此前进度；更换原图不�
   await runTask({ ...f.options, from: 'character-assembly' }, { preflight, execute: async id => {
     calls.push(id); return { summary: 'assembled' };
   } });
-  assert.deepEqual(calls, ['character-assembly']);
-  assert.deepEqual(Object.keys((await readRun(f.directory, 'case'))!.pipelines), ['character-assembly']);
+  assert.deepEqual(calls, ['character-assembly', 'shadow']);
+  assert.deepEqual(Object.keys((await readRun(f.directory, 'case'))!.pipelines), ['character-assembly', 'shadow']);
   await runTask({ ...f.options, image: 'reference.png' }, { preflight, execute: async () => ({ summary: 'ok' }) });
   await writeFile(join(f.directory, 'different.png'), 'different image');
   await assert.rejects(runTask({ ...f.options, image: 'different.png' }), /已有不同的原图/);

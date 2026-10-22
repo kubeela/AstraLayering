@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import sharp from 'sharp';
+import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { configAPI } from './config.ts';
@@ -39,6 +40,7 @@ function options(value: any, dir: string): TaskOptions {
   if (value.from) result.from = pipelineId(value.from);
   if (value.to) result.to = pipelineId(value.to);
   if (result.from || result.to) selectedPipelines(result.from ?? pipelineIds[0], result.to ?? pipelineIds.at(-1)!);
+  if (value.shadowMode !== undefined) result.shadowMode = shadowMode(value.shadowMode);
   if (value.standard !== undefined) {
     if (typeof value.standard !== 'boolean') throw new Error('standard 必须是布尔值');
     result.standard = value.standard;
