@@ -186,3 +186,5 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .preview-world .tree-note{display:none}
 .preview-world .phase-artifacts .artifact-image img{height:clamp(160px,calc(100dvh - 560px),360px);max-height:none}
 .preview-main .output-image{height:min(68dvh,620px)}
+
+.step-state{white-space:nowrap;flex-shrink:0}.step-activity{padding:0 12px 12px;font-size:11px;color:var(--purple);line-height:1.6}

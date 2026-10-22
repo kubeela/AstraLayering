@@ -1,6 +1,8 @@
-import { lstat, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { matchesHash, reviewedArtifact, svgHash } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
 import { safePath } from './files.ts';
+import { currentAgentCalls, type AgentCall } from './agent-progress.ts';
+import { partStages } from './part-stages.ts';
 
 export const phases = ['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'] as const;
 type Phase = typeof phases[number];
@@ -29,9 +31,11 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     const path = (stage: string, suffix = '.svg') => `${pipeline}/${stage}/${node.id}${suffix}`;
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
     node.webMessages = {};
+    node.webDetails = {};
     const mark = (phase: Phase, done: boolean, present: boolean, message: string) => {
       node.webPhases[phase] = done ? 'done' : present ? 'available' : 'pending';
-      if (present) node.webMessages[phase] = message;
+      node.webMessages[phase] = done ? '已完成' : present ? '已有产物' : '待执行';
+      if (present) node.webDetails[phase] = message;
     };
     const outline = await read(path('stages/outline'));
     const reduced = await read(path('stages/outline-reduce'));
@@ -65,47 +69,32 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     const childrenDone = !!(completed && node.childrenAnalysis && matchesHash(completed, node.childrenAnalysis.sourceHash));
     mark('children', childrenDone || (node.kind === 'part' && checked), !!node.childrenAnalysis || !!node.groups?.length,
       childrenDone ? `已分析 · ${node.groups?.length ?? 0} 个直属节点` : '已有分组 · 来源待确认');
-    if (node.kind === 'part') node.webMessages.children = '终止 part，不再拆分';
+    if (node.kind === 'part') node.webDetails.children = '终止 part，不再拆分';
   }
 
   // request.json is created only after the agent obtains a concurrency slot.
   // A leftover draft or a queued group is not evidence that an agent is drawing.
-  if (!activeSince) return;
-  const since = Date.parse(activeSince);
-  const latest = new Map<string, { name: string; phase: Phase; targets: any[]; request: string; mtime: number }>();
-  for (const request of files) {
-    if (!request.startsWith(pipeline + '/agents/') || !request.endsWith('/request.json')) continue;
-    try {
-      const path = await safePath(directory, request), info = await lstat(path);
-      if (info.mtimeMs < since) continue;
-      const key = path, version = `${info.mtimeMs}:${info.size}`;
-      let cached = requestNames.get(key);
-      if (cached?.version !== version) {
-        const value = JSON.parse(await readFile(path, 'utf8'));
-        cached = { version, name: value.task?.name ?? value.name ?? '' };
-        if (requestNames.size >= 2048) requestNames.delete(requestNames.keys().next().value!);
-        requestNames.set(key, cached);
-      }
-      const match = /^(组轮廓绘制|组轮廓返修|组轮廓review|正面遮挡补全|直属结构拆分|同层轮廓去重)-(.+)$/.exec(cached.name);
-      if (!match) continue;
-      const phase: Phase = ({ '组轮廓绘制': 'outline', '组轮廓返修': 'review', '组轮廓review': 'review',
-        '正面遮挡补全': 'completion', '直属结构拆分': 'children', '同层轮廓去重': 'reduction' } as const)[match[1]]!;
-      const targets = entries.filter(({ node, depth }) => phase === 'reduction' ? String(depth) === match[2] : node.id === match[2]).map(entry => entry.node);
-      for (const node of targets) {
-        const id = `${node.id}:${phase}`;
-        if ((latest.get(id)?.mtime ?? 0) < info.mtimeMs) latest.set(id, { name: cached.name, phase, targets: [node], request, mtime: info.mtimeMs });
-      }
-    } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(request + ': ' + String(error)); }
-  }
-  for (const call of latest.values()) {
-    if (files.has(call.request.replace(/request.json$/, 'result.json'))) continue;
-    for (const node of call.targets) {
-      if (node.webPhases[call.phase] === 'done') continue;
-      node.webPhases[call.phase] = 'running';
-      node.webMessages[call.phase] = call.name.startsWith('组轮廓返修') ? '正在返修草稿'
-        : ({ outline: '正在绘制 / 自检', review: '正在复核', reduction: '正在同层去重', completion: '正在补全 / 自检', children: '正在分析直属结构' } as any)[call.phase];
+  const calls = await currentAgentCalls(directory, pipeline, files, errors, activeSince);
+  const latest = new Map<string, { call: AgentCall; phase: Phase; targets: any[] }>();
+  for (const call of calls) {
+    const match = /^(组轮廓绘制|组轮廓返修|组轮廓review|正面遮挡补全|直属结构拆分|同层轮廓去重)-(.+)$/.exec(call.name);
+    if (!match) continue;
+    const phase: Phase = ({ '组轮廓绘制': 'outline', '组轮廓返修': 'review', '组轮廓review': 'review',
+      '正面遮挡补全': 'completion', '直属结构拆分': 'children', '同层轮廓去重': 'reduction' } as const)[match[1]]!;
+    const targets = entries.filter(({ node, depth }) => phase === 'reduction' ? String(depth) === match[2] : node.id === match[2]).map(entry => entry.node);
+    for (const node of targets) {
+      const id = `${node.id}:${phase}`;
+      latest.set(id, { call, phase, targets: [node] });
     }
   }
+  for (const { call, phase, targets } of latest.values()) {
+    if (call.finished) continue;
+    for (const node of targets) {
+      node.webPhases[phase] = 'running';
+      node.webMessages[phase] = '进行中';
+      node.webDetails[phase] = call.name.startsWith('组轮廓返修') ? '正在返修草稿'
+        : ({ outline: '正在绘制 / 自检', review: '正在复核', reduction: '正在同层去重', completion: '正在补全 / 自检', children: '正在分析直属结构' } as any)[phase];
+    }
+  }
+  return partStages(directory, pipeline, groups, files, json, read, calls, errors);
 }
-
-const requestNames = new Map<string, { version: string; name: string }>();
