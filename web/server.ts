@@ -11,6 +11,7 @@ import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selected
 import { configAPI } from './config.ts';
 import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
+import { SVGThumbnails } from './svg-thumbnail.ts';
 import { launch } from './worker.ts';
 import { LayerCompositor } from './layer-compositor.ts';
 import { studioProject } from './studio-project.ts';
@@ -71,6 +72,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
     return path;
   }
   const compositor = new LayerCompositor(root);
+  const thumbnails = new SVGThumbnails();
   const server = createServer(async (request, response) => {
     const url = new URL(request.url ?? '/', 'http://localhost'), path = url.pathname;
     const requestDir = settings.directory;
@@ -177,7 +179,15 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         const selected = url.searchParams.get('path') ?? '';
         if (!artifactExtensions.test(selected) || selected.split('/').some(part => part.startsWith('.'))) throw new Error('不支持该产物类型');
         const file = await safePath(directory, selected);
-        if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
+        const info = await lstat(file);
+        if (!info.isFile()) throw new Error('产物不是文件');
+        if (url.searchParams.get('preview') === 'content' && extname(file).toLowerCase() === '.svg') {
+          const image = await thumbnails.get(file, `${info.mtimeMs}:${info.ctimeMs}:${info.size}:${info.ino}`);
+          if (image) {
+            response.writeHead(200, { 'Content-Type': 'image/png' });
+            response.end(image); return;
+          }
+        }
         const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream', '.psd': 'application/octet-stream' };
         // SVG may be authored by an agent. Keep it inert even when opened in a new tab.
         response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
