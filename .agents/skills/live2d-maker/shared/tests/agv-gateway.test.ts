@@ -11,7 +11,7 @@ import { once } from 'node:events';
 import { setTimeout as delay } from 'node:timers/promises';
 import type { ServerResponse } from 'node:http';
 import { createMcpBridge } from '../agents/mcp.ts';
-import { genaiGateway, prepareGenaiTools, rewriteGenaiTools } from '../agents/agv-gateway.ts';
+import { gatewayRequestUrl, genaiGateway, prepareGenaiThinking, prepareGenaiTools, rewriteGenaiTools } from '../agents/agv-gateway.ts';
 import { ToolCatalog, toolDefinition, toolsDirectory } from '../codex/tool-config.ts';
 import { profile as character } from '../../part-layering/profile.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
@@ -39,12 +39,71 @@ test('AGV gateway forwards headers before delayed SSE content and records phases
     body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'private prompt' }] }] }),
   }), delay(2000).then(() => { throw new Error('Response headers were buffered until body'); })]);
   assert.equal(response.status, 200);
-  assert.deepEqual(events.map(e => e.phase), ['started', 'headers']);
+  assert.deepEqual(events.map(e => e.phase), ['started', 'prepared', 'headers']);
   release(); assert.match(await response.text(), /fixture body/);
-  assert.deepEqual(events.map(e => e.phase), ['started', 'headers', 'first_body', 'completed']);
+  assert.deepEqual(events.map(e => e.phase), ['started', 'prepared', 'headers', 'first_body', 'completed']);
   assert.equal(new Set(events.map(e => e.requestId)).size, 1);
-  assert.equal(events[1].upstreamRequestId, 'upstream-fixture-id');
+  assert.equal(events[2].upstreamRequestId, 'upstream-fixture-id');
   assert.doesNotMatch(JSON.stringify(events), /request-secret|credential-secret|private prompt|alt=sse/);
+});
+
+test('AGV request URL preserves gateway prefixes and query parameters without repeating the API path', () => {
+  assert.equal(gatewayRequestUrl('https://fixture.test/v1beta', '/v1beta/models/argon:streamGenerateContent?alt=sse').href,
+    'https://fixture.test/v1beta/models/argon:streamGenerateContent?alt=sse');
+  assert.equal(gatewayRequestUrl('https://fixture.test/tenant/v1beta/', '/v1beta/models/argon:streamGenerateContent?alt=sse').href,
+    'https://fixture.test/tenant/v1beta/models/argon:streamGenerateContent?alt=sse');
+  assert.equal(gatewayRequestUrl('https://fixture.test/tenant', '/v1beta/models/argon:generateContent').href,
+    'https://fixture.test/tenant/v1beta/models/argon:generateContent');
+  assert.equal(gatewayRequestUrl('https://fixture.test', '/models/argon:generateContent?key=fixture').href,
+    'https://fixture.test/models/argon:generateContent?key=fixture');
+});
+
+test('MINIMAL compatibility is opt-in and retains agent effort, thought flags and unrelated request data', () => {
+  for (const level of ['MINIMAL', 'LOW', 'MEDIUM', 'HIGH']) {
+    const body = { contents: [{ role: 'user', parts: [{ text: 'unchanged task' }] }],
+      generationConfig: { maxOutputTokens: 65536, thinkingConfig: { includeThoughts: true, thinkingLevel: level } } };
+    const original = structuredClone(body);
+    prepareGenaiThinking(body);
+    assert.deepEqual(body, original);
+    prepareGenaiThinking(body, 'LOW');
+    assert.deepEqual(body, { ...original, generationConfig: { ...original.generationConfig,
+      thinkingConfig: { ...original.generationConfig.thinkingConfig, thinkingLevel: level === 'MINIMAL' ? 'LOW' : level } } });
+  }
+  const snake = { generation_config: { thinking_config: { thinking_level: 'MINIMAL', include_thoughts: true } } };
+  prepareGenaiThinking(snake, 'LOW');
+  assert.deepEqual(snake.generation_config.thinking_config, { thinking_level: 'LOW', include_thoughts: true });
+});
+
+test('gateway records actual request size/images and configured compatibility without exposing private data', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'agv-prepared-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  let received: any, target: string | undefined;
+  const upstream = createServer(async (req, res) => {
+    const chunks = []; for await (const chunk of req) chunks.push(chunk);
+    received = JSON.parse(Buffer.concat(chunks).toString()); target = req.url;
+    res.writeHead(200, { 'content-type': 'application/json' }); res.end('{"candidates":[]}');
+  });
+  upstream.listen(0, '127.0.0.1'); await once(upstream, 'listening');
+  t.after(() => { upstream.closeAllConnections(); upstream.close(); });
+  const env = { AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}/v1beta`,
+    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai', layering_agv_minimal_thinking_level: 'LOW' };
+  const events: any[] = [];
+  const gateway = await genaiGateway(env, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+  assert.ok(gateway); t.after(() => gateway.close());
+  const body = { contents: [{ role: 'user', parts: [{ text: 'private prompt' },
+    { functionResponse: { name: 'view', response: {}, parts: [{ inlineData: { mimeType: 'image/png', data: 'private-image' } }] } }] }],
+    generationConfig: { thinkingConfig: { thinkingLevel: 'MINIMAL', includeThoughts: true } } };
+  const response = await fetch(gateway.url + '/v1beta/models/argon:generateContent?key=private-key', {
+    method: 'POST', body: JSON.stringify(body), headers: { 'content-type': 'application/json' } });
+  await response.text();
+  assert.equal(target, '/v1beta/models/argon:generateContent?key=private-key');
+  assert.equal(received.generationConfig.thinkingConfig.thinkingLevel, 'LOW');
+  const prepared = events.find(e => e.phase === 'prepared');
+  assert.equal(prepared.inputImages, 1); assert.equal(prepared.requestBytes, Buffer.byteLength(JSON.stringify(received)));
+  assert.equal(prepared.requestedThinkingLevel, 'MINIMAL'); assert.equal(prepared.thinkingLevel, 'LOW');
+  assert.doesNotMatch(JSON.stringify(events), /private-key|private prompt|private-image/);
+  await assert.rejects(genaiGateway({ ...env, layering_agv_minimal_thinking_level: 'UNKNOWN' }, [], root,
+    new AbortController().signal), /layering_agv_minimal_thinking_level/);
 });
 
 test('AGV gateway keeps HTTP failures and broken streams visible after flushing headers', async t => {
