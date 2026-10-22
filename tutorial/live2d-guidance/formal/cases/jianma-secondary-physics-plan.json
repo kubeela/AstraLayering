@@ -1,0 +1,1282 @@
+{
+  "kind": "astra-secondary-physics-design-case",
+  "version": 1,
+  "status": "design-not-runtime-config",
+  "date": "2026-10-22",
+  "project": "jianma-shadow-fresh-20261022",
+  "sourcePathsRelativeTo": "project task directory",
+  "sources": [
+    {
+      "path": "part-layering/groups.json",
+      "sha256": "8a9f059c5bda77eca836973c599971b594deae3a1678ff6be4efb9c0c7f8b252"
+    },
+    {
+      "path": "clothing-part-layering/groups.json",
+      "sha256": "2621048914d95701b5f2761eebc582233aef228d4ebe0c3b12295d3c59ee67b7"
+    },
+    {
+      "path": "character-assembly/step01/character-assembled.kra",
+      "sha256": "67d35251f8c178d87002dff36180b61f790ec92de062875b47c3163bf89cc965"
+    },
+    {
+      "path": "character-assembly/step01/character-assembled.png",
+      "sha256": "99854996b865efb1d6daec39f8ef383dcc7b3636c236604801bbfd432ec6ab95"
+    }
+  ],
+  "canvas": {
+    "width": 1024,
+    "height": 1536
+  },
+  "mappingEvidence": {
+    "method": "Read groups leaf IDs and native KRA maindoc.xml; inspect namespaced layer names, ordinal prefixes and explicit :: split suffixes.",
+    "status": "observed-candidate-correspondence; not an authoritative assembly provenance manifest",
+    "exactNamedPartCount": 157,
+    "splitNamedPartCount": 1,
+    "coveredLeafParts": 158,
+    "mappedPaintLayers": 159,
+    "specialCase": {
+      "partId": "clothing:outer_robe/left_front_panel",
+      "sameMotionField": true,
+      "preserveSeparateLayerOrderAndUV": true
+    },
+    "legacyAssemblyReportRequired": false
+  },
+  "review": {
+    "rigCreated": false,
+    "weightsGenerated": false,
+    "animationVisuallyAccepted": false,
+    "limitations": [
+      "This is an exhaustive plan, not physics.json and not confirmed runtime bindings.",
+      "All candidate components remain disabled until source/support checks, rig creation and same-runtime visual review.",
+      "Source names are evidence for this exact retained project; production binding must persist explicit UUID provenance.",
+      "Physical cloth/body contact, large depth changes, pose generation, jelly, and Cubism baking are outside this workflow."
+    ]
+  },
+  "counts": {
+    "leafParts": 158,
+    "characterLeafParts": 90,
+    "clothingLeafParts": 68,
+    "primaryComponentCandidates": 17,
+    "secondaryComponentCandidates": 18,
+    "partDecisions": {
+      "pose": 69,
+      "simulate": 76,
+      "follow": 13
+    }
+  },
+  "components": [
+    {
+      "planId": "19be1cd1-157b-47a5-aaf8-dfcada8b8e97",
+      "key": "back-hair-main-left",
+      "name": "后发main left",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:hair/back_hair/main_left"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "head:back-root:left"
+      ],
+      "authoringRequirements": [
+        "后枕实际根与贴头固定区",
+        "沿原发流建中心线",
+        "主发保宽与叉隙；游离束单独节奏"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "26493f76-9cf9-4bc4-87f3-b43be74a8b38",
+      "key": "back-hair-lock-left",
+      "name": "后发lock left",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:hair/back_hair/lock_left"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "head:back-root:left"
+      ],
+      "authoringRequirements": [
+        "后枕实际根与贴头固定区",
+        "沿原发流建中心线",
+        "主发保宽与叉隙；游离束单独节奏"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "3d687e2b-dce6-46d0-9825-efedad0f75a7",
+      "key": "back-hair-main-right",
+      "name": "后发main right",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:hair/back_hair/main_right"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "head:back-root:right"
+      ],
+      "authoringRequirements": [
+        "后枕实际根与贴头固定区",
+        "沿原发流建中心线",
+        "主发保宽与叉隙；游离束单独节奏"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "032b3dc2-e73d-4435-88da-1dd72558d669",
+      "key": "back-hair-lock-right",
+      "name": "后发lock right",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:hair/back_hair/lock_right"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "head:back-root:right"
+      ],
+      "authoringRequirements": [
+        "后枕实际根与贴头固定区",
+        "沿原发流建中心线",
+        "主发保宽与叉隙；游离束单独节奏"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "305e468c-92a4-43f9-9b84-198ca33e3860",
+      "key": "crown-ribbon-left",
+      "name": "冠侧长飘带 left",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/left_crown_ribbon/ribbon_tail"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "crown-ribbon:left:head-output"
+      ],
+      "authoringRequirements": [
+        "实际带头连接处固定",
+        "保留原曲率、长度与宽度",
+        "上挂硬件未模拟时使用头部中性支撑"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "de7543b9-c979-47a6-b5a5-77cb209176fa",
+      "key": "crown-ribbon-right",
+      "name": "冠侧长飘带 right",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/right_crown_ribbon/ribbon_body"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "crown-ribbon:right:head-output"
+      ],
+      "authoringRequirements": [
+        "实际带头连接处固定",
+        "保留原曲率、长度与宽度",
+        "上挂硬件未模拟时使用头部中性支撑"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "c622603e-e6f1-44ec-b380-98b93ae4187f",
+      "key": "front-panel-left",
+      "name": "长前襟 left",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/left_front_panel"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "torso:panel-root:left"
+      ],
+      "authoringRequirements": [
+        "胸饰后隐藏连接区",
+        "上段保形、下段开放",
+        "前后插层各自源 UV，同一场；保留隐藏搭接"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "845bbca3-ea3e-41bc-a2c3-37f370d7fb15",
+      "key": "front-panel-right",
+      "name": "长前襟 right",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/right_front_panel"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "torso:panel-root:right"
+      ],
+      "authoringRequirements": [
+        "胸饰后隐藏连接区",
+        "上段保形、下段开放",
+        "前后插层各自源 UV，同一场；保留隐藏搭接"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "b3066b91-3f67-4b47-aca9-19be69d7641c",
+      "key": "sleeve-free-left-curled",
+      "name": "自由袖料 left-curled",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/left_sleeve/rear_cuff_drape/free_curled_drape"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "arm:left:cuff"
+      ],
+      "authoringRequirements": [
+        "按真实袖侧或袖口接线固定",
+        "卷曲平衡形与自由轮廓",
+        "袖筒不被袖尾受力整体拖动"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "16401320-85d1-4206-8f76-5171702d88c3",
+      "key": "sleeve-free-left-flared",
+      "name": "自由袖料 left-flared",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/left_sleeve/outer_flared_gauze"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "arm:left:sleeve-side"
+      ],
+      "authoringRequirements": [
+        "按真实袖侧或袖口接线固定",
+        "卷曲平衡形与自由轮廓",
+        "袖筒不被袖尾受力整体拖动"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "62c81a77-5985-416c-afe3-32ebb4548f0f",
+      "key": "sleeve-free-left-pointed",
+      "name": "自由袖料 left-pointed",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/left_sleeve/side_pointed_gauze"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "arm:left:sleeve-side"
+      ],
+      "authoringRequirements": [
+        "按真实袖侧或袖口接线固定",
+        "卷曲平衡形与自由轮廓",
+        "袖筒不被袖尾受力整体拖动"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "16df1e25-10d8-4e59-ad6f-8a32f21ba606",
+      "key": "sleeve-free-right-side",
+      "name": "自由袖料 right-side",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/right_sleeve/outer_side_gauze"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "arm:right:sleeve-side"
+      ],
+      "authoringRequirements": [
+        "按真实袖侧或袖口接线固定",
+        "卷曲平衡形与自由轮廓",
+        "袖筒不被袖尾受力整体拖动"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "00e27a13-852b-494c-becd-3109532b7519",
+      "key": "sleeve-free-right-train",
+      "name": "自由袖料 right-train",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/right_sleeve/cuff_train"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "arm:right:cuff"
+      ],
+      "authoringRequirements": [
+        "按真实袖侧或袖口接线固定",
+        "卷曲平衡形与自由轮廓",
+        "袖筒不被袖尾受力整体拖动"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "b1cb00ec-432c-4ba2-abe6-b89365ee3190",
+      "key": "inner-skirt",
+      "name": "内裙前／侧后片",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:inner_dress/skirt_front",
+        "clothing:inner_dress/skirt_side_back"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "pelvis:skirt-waist"
+      ],
+      "authoringRequirements": [
+        "共同裙腰",
+        "真实侧接缝耦合",
+        "两腿前后插层和下摆原曲率"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "095f3d40-8674-460e-b67a-4868f01471b0",
+      "key": "waist-tail-left",
+      "name": "腰带长幅 left",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:waist_sash/left_long_tail"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "pelvis:waist-knot:left"
+      ],
+      "authoringRequirements": [
+        "结后隐藏根固定",
+        "宽布幅拉伸、剪切与弯曲分开",
+        "固定描边和褶面共享场"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "cb654694-c2c9-4fbf-a8c9-4bc92f623b1c",
+      "key": "waist-tail-right",
+      "name": "腰带长幅 right",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:waist_sash/right_long_tail"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "pelvis:waist-knot:right"
+      ],
+      "authoringRequirements": [
+        "结后隐藏根固定",
+        "宽布幅拉伸、剪切与弯曲分开",
+        "固定描边和褶面共享场"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "36a8b7b6-ab26-4c54-9e63-33e18e46c42e",
+      "key": "long-tassel",
+      "name": "长白流苏",
+      "priority": "primary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:waist_pendant/long_white_tassel"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "waist-jewelry:tassel-buckle-output"
+      ],
+      "authoringRequirements": [
+        "扣后隐藏束头固定",
+        "整束保长与分段弯曲",
+        "上挂组未模拟时保持中性硬件支撑"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "807c1447-4a7e-4337-ade2-072dc8cb088e",
+      "key": "short-front-hair-left",
+      "name": "前侧短发 left",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:hair/side_hair_left"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "head:center-part:left"
+      ],
+      "authoringRequirements": [
+        "中分根与贴头区域固定",
+        "仅尾尖小幅弯曲",
+        "额头、眼角与耳侧覆盖上限"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "1b73b871-684b-4160-8fc5-c72e3a4ed4e9",
+      "key": "crown-suspension-left",
+      "name": "冠侧悬挂组 left",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector",
+        "character:head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem",
+        "character:head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector",
+        "character:head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem",
+        "character:head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "head:crown-wing:left"
+      ],
+      "authoringRequirements": [
+        "按实际冠连接—宝石—短连接—下宝石装配",
+        "硬宝石保形",
+        "刚柔关节共同求解，输出带头支撑"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "9d42184e-ce00-474b-84b1-35d2cd4f772b",
+      "key": "crown-ribbon-head-left",
+      "name": "冠带饰头 left",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/left_crown_ribbon/ribbon_head"
+      ],
+      "solverPrimitives": [
+        "pendant"
+      ],
+      "supportRequirements": [
+        "crown-suspension:left:lower-output"
+      ],
+      "authoringRequirements": [
+        "饰头整体局部偏转",
+        "银边与 V 纹共享同一场",
+        "向长带提供连续支撑"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "9d4bc62c-72ac-4996-9e0d-d6060f5cd06a",
+      "key": "earring-left",
+      "name": "耳链与宝石 left",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/left_earring/suspension_chain",
+        "character:head_accessories/left_earring/sapphire_pendant"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "head:ear-stud:left"
+      ],
+      "authoringRequirements": [
+        "耳钉固定",
+        "链—坠共同求解",
+        "宝石保形"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "8a353fd9-bbb4-4a04-baac-63037d7b586d",
+      "key": "short-front-hair-right",
+      "name": "前侧短发 right",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:hair/side_hair_right"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "head:center-part:right"
+      ],
+      "authoringRequirements": [
+        "中分根与贴头区域固定",
+        "仅尾尖小幅弯曲",
+        "额头、眼角与耳侧覆盖上限"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "79f83393-20de-401d-8cf0-e5fb0a72b865",
+      "key": "crown-suspension-right",
+      "name": "冠侧悬挂组 right",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link",
+        "character:head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem",
+        "character:head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link",
+        "character:head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem",
+        "character:head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "head:crown-wing:right"
+      ],
+      "authoringRequirements": [
+        "按实际冠连接—宝石—短连接—下宝石装配",
+        "硬宝石保形",
+        "刚柔关节共同求解，输出带头支撑"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "e82299fe-8179-4a28-ad89-0d3eb7299362",
+      "key": "crown-ribbon-head-right",
+      "name": "冠带饰头 right",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/right_crown_ribbon/ribbon_head"
+      ],
+      "solverPrimitives": [
+        "pendant"
+      ],
+      "supportRequirements": [
+        "crown-suspension:right:lower-output"
+      ],
+      "authoringRequirements": [
+        "饰头整体局部偏转",
+        "银边与 V 纹共享同一场",
+        "向长带提供连续支撑"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "3d8b730b-9af8-4436-b054-15c054761f2b",
+      "key": "earring-right",
+      "name": "耳链与宝石 right",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/right_earring/suspension_chain",
+        "character:head_accessories/right_earring/sapphire_pendant"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "head:ear-stud:right"
+      ],
+      "authoringRequirements": [
+        "耳钉固定",
+        "链—坠共同求解",
+        "宝石保形"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "63f7fe31-f83f-4bc1-a91b-7da408cc8a7b",
+      "key": "forehead-drop",
+      "name": "额心水滴",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:head_accessories/forehead_ornament/teardrop_pendant"
+      ],
+      "solverPrimitives": [
+        "pendant"
+      ],
+      "supportRequirements": [
+        "head:forehead-mount"
+      ],
+      "authoringRequirements": [
+        "上安装座不动",
+        "水滴绕真实挂点小幅保形摆"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "c1fbedd7-1818-4fc1-b6d6-e7efe844eb2a",
+      "key": "waist-short-loop-left",
+      "name": "腰前短环 left",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:waist_sash/front_tie/left_short_loop"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "pelvis:waist-knot:left"
+      ],
+      "authoringRequirements": [
+        "固定结芯",
+        "保留绳环孔洞和双端连接",
+        "短自由段小幅弯曲"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "21ddc88d-4915-45a7-8c92-436218ac311f",
+      "key": "waist-short-loop-right",
+      "name": "腰前短环 right",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:waist_sash/front_tie/right_short_loop"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "pelvis:waist-knot:right"
+      ],
+      "authoringRequirements": [
+        "固定结芯",
+        "保留绳环孔洞和双端连接",
+        "短自由段小幅弯曲"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "fe841247-7e18-4d83-a9e7-93f4c9848ee6",
+      "key": "waist-small-tassel",
+      "name": "腰前小布穗",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:waist_sash/front_tie/bound_tassel"
+      ],
+      "solverPrimitives": [
+        "strand"
+      ],
+      "supportRequirements": [
+        "pelvis:waist-knot:lower"
+      ],
+      "authoringRequirements": [
+        "束头固定",
+        "短穗小幅保长"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "9dc91e48-1581-4fb6-aa25-59733a0b6ce7",
+      "key": "collar-chest-linkage",
+      "name": "领扣—胸饰连接",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:collar_fastener/central_clasp/hanging_junction",
+        "clothing:collar_fastener/left_collar_chain",
+        "clothing:collar_fastener/left_chest_chain",
+        "clothing:collar_fastener/right_collar_chain",
+        "clothing:collar_fastener/right_chest_chain"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "neck:collar-clasp",
+        "torso:fixed-chest-ornament"
+      ],
+      "authoringRequirements": [
+        "上下两端连接真实支撑",
+        "下悬汇链接点保形轻摆",
+        "链只在固定端间弯曲，禁止放开胸饰端"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "4d4ba9e2-1493-4143-9454-a6a35939308c",
+      "key": "waist-jewelry-coupled",
+      "name": "腰前刚柔悬挂装配",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:waist_pendant/upper_suspension/right_suspension_cord/rear_insertion_end",
+        "clothing:waist_pendant/upper_suspension/right_suspension_cord/front_arc_cord",
+        "clothing:waist_pendant/upper_suspension/left_suspension_cord/hidden_entry",
+        "clothing:waist_pendant/upper_suspension/left_suspension_cord/front_arc",
+        "clothing:waist_pendant/upper_suspension/junction_linkage/junction_knot",
+        "clothing:waist_pendant/upper_suspension/junction_linkage/diamond_bead",
+        "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/upper_flexible_neck",
+        "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/middle_bead",
+        "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/lower_flexible_neck",
+        "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/terminal_bead",
+        "clothing:waist_pendant/snowflake_pendant",
+        "clothing:waist_pendant/lower_silver_strand/upper_chain",
+        "clothing:waist_pendant/lower_silver_strand/upper_bead_link",
+        "clothing:waist_pendant/lower_silver_strand/elongated_silver_link",
+        "clothing:waist_pendant/lower_silver_strand/lower_bead_link",
+        "clothing:waist_pendant/lower_silver_strand/teardrop_pendant",
+        "clothing:waist_pendant/lotus_coupler/silver_hanger",
+        "clothing:waist_pendant/lotus_coupler/right_side_link",
+        "clothing:waist_pendant/lotus_coupler/left_side_link",
+        "clothing:waist_pendant/lotus_coupler/central_diamond_pendant",
+        "clothing:waist_pendant/lotus_coupler/lotus_body",
+        "clothing:waist_pendant/lotus_coupler/lower_ring_connector/front_connector_tip",
+        "clothing:waist_pendant/lotus_coupler/lower_ring_connector/rear_insertion_return",
+        "clothing:waist_pendant/double_ring_chain/upper_ring_body",
+        "clothing:waist_pendant/double_ring_chain/lower_ring_body",
+        "clothing:waist_pendant/double_ring_chain/upper_inner_drop",
+        "clothing:waist_pendant/double_ring_chain/lower_inner_drop",
+        "clothing:waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem",
+        "clothing:waist_pendant/double_ring_chain/inter_ring_link/upper_front_head",
+        "clothing:waist_pendant/double_ring_chain/inter_ring_link/lower_front_head",
+        "clothing:waist_pendant/tassel_buckle/ring_return_back",
+        "clothing:waist_pendant/tassel_buckle/buckle_front"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "pelvis:waist-knot:two-upper-anchors"
+      ],
+      "authoringRequirements": [
+        "双上端软绳与汇接点",
+        "珠体、银件、莲结与双环保形",
+        "柔颈、双端支链及内悬珠共同约束",
+        "前后穿接片共享同一场",
+        "输出固定身份的扣后流苏支撑"
+      ],
+      "reviewRequirements": [
+        "逐个接头原尺寸证据",
+        "双端链与内部耦合组规范测试",
+        "孔洞与前后穿环动态层序",
+        "旧 note 提到的父轮廓限制需对当前像素核对，不据历史 note 自动重绘"
+      ],
+      "sharedFields": [
+        {
+          "key": "connection-field-1",
+          "sourcePartIds": [
+            "clothing:waist_pendant/upper_suspension/right_suspension_cord/rear_insertion_end",
+            "clothing:waist_pendant/upper_suspension/right_suspension_cord/front_arc_cord"
+          ]
+        },
+        {
+          "key": "connection-field-2",
+          "sourcePartIds": [
+            "clothing:waist_pendant/upper_suspension/left_suspension_cord/hidden_entry",
+            "clothing:waist_pendant/upper_suspension/left_suspension_cord/front_arc"
+          ]
+        },
+        {
+          "key": "connection-field-3",
+          "sourcePartIds": [
+            "clothing:waist_pendant/lotus_coupler/lower_ring_connector/front_connector_tip",
+            "clothing:waist_pendant/lotus_coupler/lower_ring_connector/rear_insertion_return"
+          ]
+        },
+        {
+          "key": "connection-field-4",
+          "sourcePartIds": [
+            "clothing:waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem",
+            "clothing:waist_pendant/double_ring_chain/inter_ring_link/upper_front_head",
+            "clothing:waist_pendant/double_ring_chain/inter_ring_link/lower_front_head"
+          ]
+        },
+        {
+          "key": "connection-field-5",
+          "sourcePartIds": [
+            "clothing:waist_pendant/tassel_buckle/ring_return_back",
+            "clothing:waist_pendant/tassel_buckle/buckle_front"
+          ]
+        }
+      ]
+    },
+    {
+      "planId": "eb5ce06d-ba9e-4f52-94b7-71171674d93d",
+      "key": "anklet-left",
+      "name": "踝链与坠 left",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:legs/leg_left/anklet/ankle_chain",
+        "character:legs/leg_left/anklet/center_link",
+        "character:legs/leg_left/anklet/teardrop_pendant"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "leg:left:ankle-side-anchors",
+        "foot:left:pose"
+      ],
+      "authoringRequirements": [
+        "踝侧上端跟随腿脚",
+        "软链汇接、硬接件保形",
+        "下坠独立挂点；不逐个绘画链环拆"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "41cb4ed1-0daa-469d-9a81-a96d574c728f",
+      "key": "anklet-right",
+      "name": "踝链与坠 right",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "character:legs/leg_right/anklet/outer_chain",
+        "character:legs/leg_right/anklet/inner_chain",
+        "character:legs/leg_right/anklet/central_connector",
+        "character:legs/leg_right/anklet/gem_pendant"
+      ],
+      "solverPrimitives": [
+        "strand",
+        "pendant"
+      ],
+      "supportRequirements": [
+        "leg:right:ankle-side-anchors",
+        "foot:right:pose"
+      ],
+      "authoringRequirements": [
+        "踝侧上端跟随腿脚",
+        "软链汇接、硬接件保形",
+        "下坠独立挂点；不逐个绘画链环拆"
+      ],
+      "reviewRequirements": [
+        "连接与隐藏根部特写",
+        "中性、峰值、反转、回落完整预览",
+        "局部最大约束与原尺寸纹理检查"
+      ]
+    },
+    {
+      "planId": "823c0082-4e4c-4e00-a565-b8599af09fd4",
+      "key": "sleeve-tube-residual-left",
+      "name": "袖筒悬空下侧 left",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/left_sleeve/front_sleeve_wall",
+        "clothing:outer_robe/left_sleeve/rear_sleeve_wall",
+        "clothing:outer_robe/left_sleeve/rear_cuff_drape/cuff_attachment_wall"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "arm:left:upper-arm",
+        "arm:left:wrist"
+      ],
+      "authoringRequirements": [
+        "肩口和腕口多支撑",
+        "前后壁同场、手腕插层保留",
+        "只开放悬空下侧，不能整袖松绑"
+      ],
+      "reviewRequirements": [
+        "先建立并验证实际手臂姿态支撑",
+        "肩口与腕口不脱离",
+        "手腕前后壁动态层序",
+        "没有支撑时保持 pose，不自动启用"
+      ]
+    },
+    {
+      "planId": "29633a5d-cab9-45b1-93fb-0ab1366d4aeb",
+      "key": "sleeve-tube-residual-right",
+      "name": "袖筒悬空下侧 right",
+      "priority": "secondary",
+      "status": "candidate-not-rigged",
+      "enabled": false,
+      "sourcePartIds": [
+        "clothing:outer_robe/right_sleeve/sleeve_tube/front_sleeve_wall",
+        "clothing:outer_robe/right_sleeve/sleeve_tube/rear_sleeve_wall"
+      ],
+      "solverPrimitives": [
+        "cloth"
+      ],
+      "supportRequirements": [
+        "arm:right:upper-arm",
+        "arm:right:wrist"
+      ],
+      "authoringRequirements": [
+        "肩口和腕口多支撑",
+        "前后壁同场、手腕插层保留",
+        "只开放悬空下侧，不能整袖松绑"
+      ],
+      "reviewRequirements": [
+        "先建立并验证实际手臂姿态支撑",
+        "肩口与腕口不脱离",
+        "手腕前后壁动态层序",
+        "没有支撑时保持 pose，不自动启用"
+      ]
+    }
+  ],
+  "parts": [
+    {"partId": "character:face/face_base","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/face_base","noteSha256": "f0dab6c1e65e3fa8c079c2b67d8ab40e8afcf5a400153f71d8e871cafa4a5ced","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "c2b61ac0-36e3-423c-90bf-04c17210899f","name": "人物 | 49 face/face_base","segment": null}]},
+    {"partId": "character:face/eye_left/upper_eyelid","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_left/upper_eyelid","noteSha256": "32f33c3a80b5604aa87a3457feb7fb4186684b4fd2d05e6e930b21fa7ce3b482","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7c705dbe-01ac-4320-bffd-bbb682eabdcf","name": "人物 | 59 face/eye_left/upper_eyelid","segment": null}]},
+    {"partId": "character:face/eye_left/lower_eyelid","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_left/lower_eyelid","noteSha256": "cb23c0086559c9d64840cea5f4b667f5be7be958dbbabbbb4dc8b26fddd81ee8","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1fb6b52e-59ad-4633-9e6a-6a71d9c1bcf4","name": "人物 | 57 face/eye_left/lower_eyelid","segment": null}]},
+    {"partId": "character:face/eye_left/sclera","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_left/sclera","noteSha256": "25368b25997e8051cf843de815d58acc47bff3a0bbdd63d5f70754fb4062f590","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "69ca37dd-3736-4d1d-8339-2e4dd6a0c26b","name": "人物 | 50 face/eye_left/sclera","segment": null}]},
+    {"partId": "character:face/eye_left/iris","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_left/iris","noteSha256": "c6754f2e06a8d553af76830641465c87ea662293a511fd302f92526540e9450c","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "65afc1a1-2f3a-450f-9d84-e516a736e98d","name": "人物 | 52 face/eye_left/iris","segment": null}]},
+    {"partId": "character:face/eye_left/highlight","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_left/highlight","noteSha256": "63aeac5119af9b80cd1440ccd714498b7d5989f493cd75836d9742de6dd76a1a","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f429d239-85d6-499d-a2e6-b235a032a4bb","name": "人物 | 54 face/eye_left/highlight","segment": null}]},
+    {"partId": "character:face/eye_left/lower_eyelashes","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_left/lower_eyelashes","noteSha256": "d9da0b244aee8b73a2f4d54a3f3d5d6feb1a41920323987a92acc0713e34dbd0","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "c129f7a4-2b77-403a-a507-29f8f2b1c6f4","name": "人物 | 56 face/eye_left/lower_eyelashes","segment": null}]},
+    {"partId": "character:face/eye_left/eyelid_crease","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_left/eyelid_crease","noteSha256": "142a6b83dc67e2769fd27a5f10cb915ac1e497f1acb438fd8c2be6c41357bf61","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "5d68fd65-3cf3-4569-b19b-af30b64c125b","name": "人物 | 61 face/eye_left/eyelid_crease","segment": null}]},
+    {"partId": "character:face/eye_right/upper_eyelid","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_right/upper_eyelid","noteSha256": "c145b03733df41f91b2689b8628c745bcca531ba7349e6a3e935dde1df621b36","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "35c432de-30a1-4023-b6e3-8b536d07fc58","name": "人物 | 60 face/eye_right/upper_eyelid","segment": null}]},
+    {"partId": "character:face/eye_right/lower_eyelid","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_right/lower_eyelid","noteSha256": "430a5218c89c537148dcf5f6b4471646974b38c9f14e33ccab2639fef0ebb0ae","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "cc462d43-916a-44a4-9883-6669fb28f9d1","name": "人物 | 58 face/eye_right/lower_eyelid","segment": null}]},
+    {"partId": "character:face/eye_right/sclera","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_right/sclera","noteSha256": "b9654dbd59e47336e2c9e4e54da0f8ec3fd33b95cd15842394c8a15ff53bb517","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "fc0130ac-2634-4a22-a018-83d7c6668957","name": "人物 | 51 face/eye_right/sclera","segment": null}]},
+    {"partId": "character:face/eye_right/iris","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_right/iris","noteSha256": "331d5bd1d6728844d4bd27498e3659a77af29f4e2591e15deb352f4fe5030709","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "fac05b20-aec0-4d3b-95e5-e6db106e8932","name": "人物 | 53 face/eye_right/iris","segment": null}]},
+    {"partId": "character:face/eye_right/highlight","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_right/highlight","noteSha256": "ecd907c2ac425e8114cca962765aa5cb340646daadb77384b651573f0c991891","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "69a82c9d-9e8c-447b-9619-a34045d693cc","name": "人物 | 55 face/eye_right/highlight","segment": null}]},
+    {"partId": "character:face/eye_right/eyelid_crease","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eye_right/eyelid_crease","noteSha256": "32e30982cf14e853edc756320d51ae0578b08f19eb942238340135a29d4158e3","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "beaf39d1-e6cc-4611-9d9c-b8d7faefbd81","name": "人物 | 62 face/eye_right/eyelid_crease","segment": null}]},
+    {"partId": "character:face/eyebrow_left","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eyebrow_left","noteSha256": "5f4a039f40526dac0b401984bcf4f29e7eff571c5eb8c775152501edfa1fcff7","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "a6574e73-8788-46b7-a566-a79096c351ed","name": "人物 | 63 face/eyebrow_left","segment": null}]},
+    {"partId": "character:face/eyebrow_right","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/eyebrow_right","noteSha256": "2469055f6b3f1cc67c5f0bf70b3c76405c9b964ef8408b1e1211ba0ccf312954","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "ef6ae4ba-d7d2-4992-9cbb-59b6bc9b8a90","name": "人物 | 64 face/eyebrow_right","segment": null}]},
+    {"partId": "character:face/ear_left","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/ear_left","noteSha256": "f438fa237bb7e85982aba2ff134f10a0f00f7019cf4d6a587daef255da3a2ecf","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "bcfdd46a-cd46-49af-ac10-2a0d4315604d","name": "人物 | 48 face/ear_left","segment": null}]},
+    {"partId": "character:face/ear_right","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/ear_right","noteSha256": "560227218b32130d362a281bc33864e9c18681ec49f0337c38a5991479ebd002","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "0a4498d4-96d0-4c8a-8075-151c54a8d371","name": "人物 | 47 face/ear_right","segment": null}]},
+    {"partId": "character:face/nose","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/nose","noteSha256": "1d5e5668b47565170d2579cb89bd5d04c9aac1a77c989de20af770f3861b1491","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "02714ecd-276e-41a4-8adc-80f26e56cc52","name": "人物 | 65 face/nose","segment": null}]},
+    {"partId": "character:face/mouth/upper_lip","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/mouth/upper_lip","noteSha256": "07b1e69b6e913b0081eb8c3df29d56b4ec62e1d8d435fb73992728b4dff8b1bb","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "15c17aa7-fe73-479a-b437-67c330618085","name": "人物 | 71 face/mouth/upper_lip","segment": null}]},
+    {"partId": "character:face/mouth/lower_lip","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/mouth/lower_lip","noteSha256": "cc28b23562aec8d64184da1b8167842f0ccc6bd4c31e5a7e082d3c137e5246e8","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "250c55ad-cc2c-42a2-950d-ae6ffc7c3043","name": "人物 | 70 face/mouth/lower_lip","segment": null}]},
+    {"partId": "character:face/mouth/mouth_interior","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/mouth/mouth_interior","noteSha256": "ba995bbe23ba4441da18c3256ed3fd8833114d81ee68950530dcc871247cdd08","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7be4f797-45c1-4d10-8444-328465cbf3b5","name": "人物 | 66 face/mouth/mouth_interior","segment": null}]},
+    {"partId": "character:face/mouth/upper_teeth","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/mouth/upper_teeth","noteSha256": "b401ff90bc161c39848089165daffac636ab4327aeaf1085a5ab7e0c40cf1c86","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "25799c28-1088-424b-bdc5-58bcebfdd4be","name": "人物 | 69 face/mouth/upper_teeth","segment": null}]},
+    {"partId": "character:face/mouth/lower_teeth","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/mouth/lower_teeth","noteSha256": "08944b1da8035149c4c1808b29dd464b00f37307bc17911f1a5701604e4cd651","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "156d6e1a-2812-4c40-be6f-d6e7015c3b45","name": "人物 | 68 face/mouth/lower_teeth","segment": null}]},
+    {"partId": "character:face/mouth/tongue","decision": "pose","priority": null,"component": null,"reason": "五官由表情／眼部／嘴部流程驱动；本摆动物理流程不增加弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "face/mouth/tongue","noteSha256": "698f479f32b8884c97ba5a62a40816967fea98b6d96076ba06d8b85b4d34f292","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "cc041526-43c6-475b-b50c-3b2afe65f4c2","name": "人物 | 67 face/mouth/tongue","segment": null}]},
+    {"partId": "character:hair/hair_cap","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/hair_cap","noteSha256": "3ab4b4f349b9c00c9c39b61733a4a9accae152f4b6d4401f65a78c848c966c78","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4a1d54f7-2be4-4431-aed9-47b6332e1851","name": "人物 | 07 hair/hair_cap","segment": null}]},
+    {"partId": "character:hair/side_hair_left","decision": "simulate","priority": "secondary","component": "807c1447-4a7e-4337-ade2-072dc8cb088e","reason": "实际为到耳旁的宽短幕帘，只在 all 方案中候选小幅尾端弯曲。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/side_hair_left","noteSha256": "a56991821dc7c87621f452c131111dae37ca04963b99c8cb3689dd81853f79ce","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4026373e-5071-49f0-bbab-487abe4b33a7","name": "人物 | 88 hair/side_hair_left","segment": null}]},
+    {"partId": "character:hair/side_hair_right","decision": "simulate","priority": "secondary","component": "8a353fd9-bbb4-4a04-baac-63037d7b586d","reason": "实际为到耳旁的宽短幕帘，只在 all 方案中候选小幅尾端弯曲。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/side_hair_right","noteSha256": "fcbd751e9b726c797cdaa65df1beb36207cc6f57c29759b967a8d5b054af6485","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "30dd241c-2976-4bf6-8433-18d50dc7f479","name": "人物 | 87 hair/side_hair_right","segment": null}]},
+    {"partId": "character:hair/back_hair/main_left","decision": "simulate","priority": "primary","component": "19be1cd1-157b-47a5-aaf8-dfcada8b8e97","reason": "长自由发面或游离发束需要连续弯曲，根部随头部。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/back_hair/main_left","noteSha256": "d7f43de8ca12cfa62990c437736b58a09f1228f63151147708f4a41e06eef856","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "968dd3aa-0604-4d47-8786-0810efce0fce","name": "人物 | 03 hair/back_hair/main_left","segment": null}]},
+    {"partId": "character:hair/back_hair/main_right","decision": "simulate","priority": "primary","component": "3d687e2b-dce6-46d0-9825-efedad0f75a7","reason": "长自由发面或游离发束需要连续弯曲，根部随头部。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/back_hair/main_right","noteSha256": "00124464285fd1358e763b9fffd561f80370c8278c853c44b0b40d368df73ac2","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "b8615608-3b8c-4783-b538-29e5e78ca63c","name": "人物 | 02 hair/back_hair/main_right","segment": null}]},
+    {"partId": "character:hair/back_hair/lock_left","decision": "simulate","priority": "primary","component": "26493f76-9cf9-4bc4-87f3-b43be74a8b38","reason": "长自由发面或游离发束需要连续弯曲，根部随头部。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/back_hair/lock_left","noteSha256": "55e38d25f288298541d40825f4fe271a4fcc6d2a60a1ef8501b883c77441740f","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7b84120e-c39b-40ec-b927-b13210a2340d","name": "人物 | 05 hair/back_hair/lock_left","segment": null}]},
+    {"partId": "character:hair/back_hair/lock_right","decision": "simulate","priority": "primary","component": "032b3dc2-e73d-4435-88da-1dd72558d669","reason": "长自由发面或游离发束需要连续弯曲，根部随头部。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/back_hair/lock_right","noteSha256": "7c495bb05ddd28973bdafd952cf34114f43c72d85f21fb013c97a13be1d46f83","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f583c09a-98fc-49c3-a835-2c5e5ec00320","name": "人物 | 04 hair/back_hair/lock_right","segment": null}]},
+    {"partId": "character:hair/bun","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "hair/bun","noteSha256": "e7c7c87f6519d8d8405aa97b92200c2928a2bc1a23550afbcc2b4720dab8a3d8","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "b39d731b-c585-4e40-8846-b6b54e078a95","name": "人物 | 06 hair/bun","segment": null}]},
+    {"partId": "character:head_accessories/crown_frame","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/crown_frame","noteSha256": "0c44f16b7c009b6295682a32d2de5658854b6ebdc83f1deb47faceb91ca3158e","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1d6c5f18-fd26-48d4-bdbc-8c0ea214d35a","name": "人物 | 86 head_accessories/crown_frame","segment": null}]},
+    {"partId": "character:head_accessories/lotus_ornament","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/lotus_ornament","noteSha256": "0b4ecd21284db763ec79cf54967e8dcccae1b79d566f48653402a769647ffcdf","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "49dd5650-32c0-4cf9-bfca-2c3d91942a26","name": "人物 | 89 head_accessories/lotus_ornament","segment": null}]},
+    {"partId": "character:head_accessories/forehead_ornament/upper_sapphire_mount","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/forehead_ornament/upper_sapphire_mount","noteSha256": "5a3ee5a0741f265a45a7bd9e7c6e3f19bec3e4eced24dd327722fc6fa6965d33","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3c55d0c1-2e7d-47da-8130-42500678d987","name": "人物 | 73 head_accessories/forehead_ornament/upper_sapphire_mount","segment": null}]},
+    {"partId": "character:head_accessories/forehead_ornament/teardrop_pendant","decision": "simulate","priority": "secondary","component": "63f7fe31-f83f-4bc1-a91b-7da408cc8a7b","reason": "安装座下方有独立悬挂的水滴，额心座保持动作随动。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/forehead_ornament/teardrop_pendant","noteSha256": "c641c98681c28583d97ea2f306952f2208732e899a448edf3400c98e52caee3d","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f62bf253-edcb-4326-8f3d-7574c4028b95","name": "人物 | 72 head_accessories/forehead_ornament/teardrop_pendant","segment": null}]},
+    {"partId": "character:head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector","decision": "simulate","priority": "secondary","component": "1b73b871-684b-4160-8fc5-c72e3a4ed4e9","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector","noteSha256": "8e69f20a5402dc70a8fa311d5971414ff958c387ebc20f36c4a49f8850991831","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4bece45b-c7e2-4965-acd3-bcf9117b90c7","name": "人物 | 74 head_accessories/left_crown_ribbon/jeweled_suspension/crown_connector","segment": null}]},
+    {"partId": "character:head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem","decision": "simulate","priority": "secondary","component": "1b73b871-684b-4160-8fc5-c72e3a4ed4e9","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem","noteSha256": "710ee9b4c8fdec7a427673811be4f26e5b797554f98493223f02323de9f05049","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "b55837ab-d4ec-479b-84e8-5e0c1e264f1a","name": "人物 | 80 head_accessories/left_crown_ribbon/jeweled_suspension/upper_gem","segment": null}]},
+    {"partId": "character:head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector","decision": "simulate","priority": "secondary","component": "1b73b871-684b-4160-8fc5-c72e3a4ed4e9","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector","noteSha256": "58fdb80e4ed5094fba2b39a2fdcef8ce32c327575c6e51d096f4df855adaa02f","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "2d8ee53d-f52e-4d4a-aa38-ff456583cd6f","name": "人物 | 76 head_accessories/left_crown_ribbon/jeweled_suspension/inter_gem_connector","segment": null}]},
+    {"partId": "character:head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem","decision": "simulate","priority": "secondary","component": "1b73b871-684b-4160-8fc5-c72e3a4ed4e9","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem","noteSha256": "e59cc985cc3afac1053d3ee7a5bca5431185b2453c72c97b2a2d88d70f216d25","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "c6f7ef15-59e7-4b71-bd0e-c2686ce0688b","name": "人物 | 82 head_accessories/left_crown_ribbon/jeweled_suspension/lower_gem","segment": null}]},
+    {"partId": "character:head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector","decision": "simulate","priority": "secondary","component": "1b73b871-684b-4160-8fc5-c72e3a4ed4e9","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector","noteSha256": "b38facc4e5aec5d8cee9d3c5d2d3044f44d6f8fa50abd608b07eb1beac26bb81","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "361d610c-2368-4344-8d2c-7be8d52368eb","name": "人物 | 78 head_accessories/left_crown_ribbon/jeweled_suspension/ribbon_connector","segment": null}]},
+    {"partId": "character:head_accessories/left_crown_ribbon/ribbon_head","decision": "simulate","priority": "secondary","component": "9d42184e-ce00-474b-84b1-35d2cd4f772b","reason": "饰头可围绕真实挂接处小幅偏转，不碎拆固定纹饰。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_crown_ribbon/ribbon_head","noteSha256": "6e48365a44f7fbc4599bcdd718acef8d82727ae15434d29a906bfecf76b7caeb","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "5facb50a-98df-40f6-b71d-00d0459e4f5b","name": "人物 | 84 head_accessories/left_crown_ribbon/ribbon_head","segment": null}]},
+    {"partId": "character:head_accessories/left_crown_ribbon/ribbon_tail","decision": "simulate","priority": "primary","component": "305e468c-92a4-43f9-9b84-198ca33e3860","reason": "带头下方自由长带独立弯曲，支撑可承接后续硬件运动。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_crown_ribbon/ribbon_tail","noteSha256": "66cfc575802dc2ac420e4dc849359f73b03ebcd9fea5fd2f2223399b6ae1f32f","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "e1797bbe-89f8-4346-bc44-5c84063d45c8","name": "人物 | 00 head_accessories/left_crown_ribbon/ribbon_tail","segment": null}]},
+    {"partId": "character:head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link","decision": "simulate","priority": "secondary","component": "79f83393-20de-401d-8cf0-e5fb0a72b865","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link","noteSha256": "e4c4b2400e5f4f5248682527167ce94c3732de9fbb7e3415d4daeb666b39d257","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3620bc2b-93d6-49d4-a247-ef4b24e9d746","name": "人物 | 75 head_accessories/right_crown_ribbon/gem_suspension/crown_gem_link","segment": null}]},
+    {"partId": "character:head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem","decision": "simulate","priority": "secondary","component": "79f83393-20de-401d-8cf0-e5fb0a72b865","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem","noteSha256": "22b7a4099882db0a6a2f1a0e8912baf4117bba326c08f906132b5face0359d14","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "598e3e29-029a-4b89-b344-d4702a117e80","name": "人物 | 81 head_accessories/right_crown_ribbon/gem_suspension/upper_diamond_gem","segment": null}]},
+    {"partId": "character:head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link","decision": "simulate","priority": "secondary","component": "79f83393-20de-401d-8cf0-e5fb0a72b865","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link","noteSha256": "2824a572df229e390443128893963b8510ed3f0d873d14660c4752399f4adb91","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "ad3ab209-c2e8-4d03-a526-500a84a561bc","name": "人物 | 77 head_accessories/right_crown_ribbon/gem_suspension/inter_gem_link","segment": null}]},
+    {"partId": "character:head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem","decision": "simulate","priority": "secondary","component": "79f83393-20de-401d-8cf0-e5fb0a72b865","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem","noteSha256": "f316594ae92c03839f281999f8abe345910bf8d70f436175872436f87be8e9ff","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "42842175-5509-4a40-bbe8-6ae7c494cc15","name": "人物 | 83 head_accessories/right_crown_ribbon/gem_suspension/lower_diamond_gem","segment": null}]},
+    {"partId": "character:head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link","decision": "simulate","priority": "secondary","component": "79f83393-20de-401d-8cf0-e5fb0a72b865","reason": "真实多段悬挂与枢接；链和硬宝石耦合，内部高光不单独模拟。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link","noteSha256": "6c16fa83bfe60a01e6e79f50e478c6f9e3171761d8555cffe7c2d6fdb3dc411c","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "a9e84439-e344-4fe5-ade2-3c244f5b3dbf","name": "人物 | 79 head_accessories/right_crown_ribbon/gem_suspension/gem_ribbon_link","segment": null}]},
+    {"partId": "character:head_accessories/right_crown_ribbon/ribbon_head","decision": "simulate","priority": "secondary","component": "e82299fe-8179-4a28-ad89-0d3eb7299362","reason": "饰头可围绕真实挂接处小幅偏转，不碎拆固定纹饰。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_crown_ribbon/ribbon_head","noteSha256": "aab57f28f3d29e89de89f06cb01214d59de9770a9f53d61376d2f7d82ce59b10","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3f68b5a8-5d4b-4c13-adb1-21961830efa0","name": "人物 | 85 head_accessories/right_crown_ribbon/ribbon_head","segment": null}]},
+    {"partId": "character:head_accessories/right_crown_ribbon/ribbon_body","decision": "simulate","priority": "primary","component": "de7543b9-c979-47a6-b5a5-77cb209176fa","reason": "带头下方自由长带独立弯曲，支撑可承接后续硬件运动。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_crown_ribbon/ribbon_body","noteSha256": "4b3f24d389208dea0b136d6e414464ed5ff5854bd0b8c69637c7978f48d8fa65","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "600b2cdb-64c6-4351-b161-3d4e4ad5ceed","name": "人物 | 01 head_accessories/right_crown_ribbon/ribbon_body","segment": null}]},
+    {"partId": "character:head_accessories/left_earring/ear_stud","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_earring/ear_stud","noteSha256": "e3e6af1b6cbac97053a8d382e220b81fe4b23fc413522636fcccc51287af8590","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "18b7bb9d-4614-49ed-8e1f-5b83010a91cf","name": "人物 | 45 head_accessories/left_earring/ear_stud","segment": null}]},
+    {"partId": "character:head_accessories/left_earring/suspension_chain","decision": "simulate","priority": "secondary","component": "9d4bc62c-72ac-4996-9e0d-d6060f5cd06a","reason": "耳钉后的自由悬挂组允许链弯曲和坠相对摆动。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_earring/suspension_chain","noteSha256": "566d18e8ccbd5c3ec0aaea152b140a4f9ec4b7f558e8df99810eec18652539c7","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4429d448-42da-4d6f-8471-96e608f6d591","name": "人物 | 41 head_accessories/left_earring/suspension_chain","segment": null}]},
+    {"partId": "character:head_accessories/left_earring/sapphire_pendant","decision": "simulate","priority": "secondary","component": "9d4bc62c-72ac-4996-9e0d-d6060f5cd06a","reason": "耳钉后的自由悬挂组允许链弯曲和坠相对摆动。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/left_earring/sapphire_pendant","noteSha256": "5e01799817f38df15f5e9899be9fced0d2bc21574be63609dc415698c6e54073","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "5105d4fa-d448-4228-85bd-b48d278cc3b0","name": "人物 | 43 head_accessories/left_earring/sapphire_pendant","segment": null}]},
+    {"partId": "character:head_accessories/right_earring/ear_stud","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_earring/ear_stud","noteSha256": "fbd82f35d81243004d067fd6fbde789b945d136d80e7b68c85a40cf15328b019","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "db6d8c44-4ed5-4aa7-9d3d-f2a8a549e68d","name": "人物 | 46 head_accessories/right_earring/ear_stud","segment": null}]},
+    {"partId": "character:head_accessories/right_earring/suspension_chain","decision": "simulate","priority": "secondary","component": "3d8b730b-9af8-4436-b054-15c054761f2b","reason": "耳钉后的自由悬挂组允许链弯曲和坠相对摆动。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_earring/suspension_chain","noteSha256": "847e2efb6561023e1ff6ccc6dee463bb659f4aa4ded4de588f2924807f2bb324","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "649bc20a-6e47-4457-b17d-7508c32283bc","name": "人物 | 42 head_accessories/right_earring/suspension_chain","segment": null}]},
+    {"partId": "character:head_accessories/right_earring/sapphire_pendant","decision": "simulate","priority": "secondary","component": "3d8b730b-9af8-4436-b054-15c054761f2b","reason": "耳钉后的自由悬挂组允许链弯曲和坠相对摆动。","evidence": {"path": "part-layering/groups.json","nodeId": "head_accessories/right_earring/sapphire_pendant","noteSha256": "763f619e6ed01ab9ccfe49d637d90506e98db38a02cc549be9f588017e3646db","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "36de5359-7207-4476-88a1-5b10c7bd069e","name": "人物 | 44 head_accessories/right_earring/sapphire_pendant","segment": null}]},
+    {"partId": "character:neck","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "neck","noteSha256": "904e7c097c32b0e0576e5f6df99e9ddc1cd359f7d3ed62a1b18b5818994a9ef0","childrenAnalysisNoteSha256": "5d6987cffec0c52c0aa072f479fdfb128336a834a537569d3e97725234bf393d","terminalKind": "legacy-empty-children-terminal"},"layers": [{"uuid": "01e4e5c4-80a0-4840-9ae8-aa3fbacfcd24","name": "人物 | 13 neck","segment": null}]},
+    {"partId": "character:body/torso","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "body/torso","noteSha256": "048328dbe2e07d2444f4532738dc2bd7daaa9b606494cce038c3185918c71c19","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "9c7eca91-1fa7-4577-8c9a-1740adc86505","name": "人物 | 30 body/torso","segment": null}]},
+    {"partId": "character:body/breast","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "body/breast","noteSha256": "556a9f3a9cb088912373f08154459addba4d94e978ae2dbb168df5f9ef04b7c6","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "5f913f25-46d8-46a6-8711-7d78d020b6dc","name": "人物 | 31 body/breast","segment": null}]},
+    {"partId": "character:arms/arm_left/upper_arm","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/upper_arm","noteSha256": "4b59027ae7ba7aef0146a418e754cb453cb42b5b08436e6c6ab2df10bd9fdeeb","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7121d509-d2bd-4cfe-a46b-28f9816fe376","name": "人物 | 22 arms/arm_left/upper_arm","segment": null}]},
+    {"partId": "character:arms/arm_left/forearm","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/forearm","noteSha256": "564611ae63f0db3dac1cfca91329d04d9d9a4be557b55692c0ff7a44e2a2b989","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "c0668338-1223-433b-927e-5ccccee4a95e","name": "人物 | 23 arms/arm_left/forearm","segment": null}]},
+    {"partId": "character:arms/arm_left/hand/palm","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/hand/palm","noteSha256": "96cd1f15193ecbd585909ae96c28c11bdd27a4a43d31b16fd34b62f1b1e5ef22","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "a0c7a268-e0b6-43d0-85f0-15bc5bf11964","name": "人物 | 29 arms/arm_left/hand/palm","segment": null}]},
+    {"partId": "character:arms/arm_left/hand/thumb","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/hand/thumb","noteSha256": "91965da677383fefb3f17be39eb626177574da18cb42590b3a777688b22ed715","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "90181987-61e7-4cd6-b369-1bd4b5808124","name": "人物 | 28 arms/arm_left/hand/thumb","segment": null}]},
+    {"partId": "character:arms/arm_left/hand/index_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/hand/index_finger","noteSha256": "5f9976b1f625b63f3930318dca176d20e42b9f21c876b48322a699fee9def950","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "40c05563-4aa7-48dc-ab4f-6ae77e9b2812","name": "人物 | 27 arms/arm_left/hand/index_finger","segment": null}]},
+    {"partId": "character:arms/arm_left/hand/middle_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/hand/middle_finger","noteSha256": "5255bbc459aeae21344c38c1b66ba72513cd00ab048c31f7e243224783b435c5","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "fb2f5c26-b540-4a4a-9925-a3558876d9f5","name": "人物 | 26 arms/arm_left/hand/middle_finger","segment": null}]},
+    {"partId": "character:arms/arm_left/hand/ring_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/hand/ring_finger","noteSha256": "c4eb8e10bb1c30d3ed2e42abbad96733b9d30a20d213cae524ae1a62b869a633","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "397f3fa7-42b5-4c22-9760-8c8dbbda342d","name": "人物 | 25 arms/arm_left/hand/ring_finger","segment": null}]},
+    {"partId": "character:arms/arm_left/hand/little_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_left/hand/little_finger","noteSha256": "a96cd3c967fed6c9b398f545a3b8ea61bbb5daee013d42f5f73af328382107ad","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "375631cf-ee70-4a4a-9dfa-c68dc919d265","name": "人物 | 24 arms/arm_left/hand/little_finger","segment": null}]},
+    {"partId": "character:arms/arm_right/upper_arm","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/upper_arm","noteSha256": "94e66e8dab0602399484177ace20dacd750e89d5f2125eece16c1dbf5c3c0404","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "5a94d313-968d-47e9-8207-94e41b8fe921","name": "人物 | 21 arms/arm_right/upper_arm","segment": null}]},
+    {"partId": "character:arms/arm_right/forearm","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/forearm","noteSha256": "e66c37213c3d6f4337ae879b136512ca4ac9b54636c5b1138253db004ec3ac0d","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "8838bc20-e4af-46ec-8d2b-3636b2dfc4cc","name": "人物 | 20 arms/arm_right/forearm","segment": null}]},
+    {"partId": "character:arms/arm_right/hand/palm","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/hand/palm","noteSha256": "f2cdf617b408290ddca10526a2e1577e7032fbc5ab6e7b5a4382c03b050aa3ba","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4e842eee-9c0d-4b1c-9117-a50579b159f0","name": "人物 | 19 arms/arm_right/hand/palm","segment": null}]},
+    {"partId": "character:arms/arm_right/hand/thumb","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/hand/thumb","noteSha256": "e98e79a7c4bee54166bc1827caf422d4aa8c905681b9e68ac88029ff888d774a","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1cc7dd34-4dc0-419c-98a4-341100908927","name": "人物 | 18 arms/arm_right/hand/thumb","segment": null}]},
+    {"partId": "character:arms/arm_right/hand/index_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/hand/index_finger","noteSha256": "88ebeb95091c4ce7ab34e06607a2b202124139d2ca52ca4cceb52ac85aa87073","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "46b09426-37fc-4e3d-ac59-6d2ccb617cf6","name": "人物 | 14 arms/arm_right/hand/index_finger","segment": null}]},
+    {"partId": "character:arms/arm_right/hand/middle_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/hand/middle_finger","noteSha256": "3cc02bbe1f318bd48a1126103ec37610b9da91c57439e598c0fb81af07a9d038","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "90c50f00-ba97-46e1-8c59-9d3e9ccf9326","name": "人物 | 15 arms/arm_right/hand/middle_finger","segment": null}]},
+    {"partId": "character:arms/arm_right/hand/ring_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/hand/ring_finger","noteSha256": "fcd2211562afe57a283a517b65995fb53e860ff8d8536813ebec4c4987afc51f","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "ce193a6d-7ac4-4bb8-92bc-f2a1db6c1eb7","name": "人物 | 16 arms/arm_right/hand/ring_finger","segment": null}]},
+    {"partId": "character:arms/arm_right/hand/little_finger","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "arms/arm_right/hand/little_finger","noteSha256": "a526d02948c065f5482401655febbead47c52fa9995ef7ac1c72bb5965d27173","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "fc00fe86-dea6-4521-8134-5bc338b4b814","name": "人物 | 17 arms/arm_right/hand/little_finger","segment": null}]},
+    {"partId": "character:pelvis","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "pelvis","noteSha256": "5a59eb03a14fbb5587946807fa07fecafdab718b537e6140c1404be449ecc8db","childrenAnalysisNoteSha256": "eb3557cd2d3f12016fe722f0346b3d469b2592cf1f467fdffb63d66f08fdd1ec","terminalKind": "legacy-empty-children-terminal"},"layers": [{"uuid": "cee7fb3d-51f6-44cf-a436-1e5a3bdca6d7","name": "人物 | 12 pelvis","segment": null}]},
+    {"partId": "character:legs/leg_left/leg","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_left/leg","noteSha256": "1e4fc3f250b9d955b1e4296b1dd676d575d9a27bba873920befe998eef2f8ebf","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "9bfb3914-5f76-4ee0-8740-2936507811c6","name": "人物 | 09 legs/leg_left/leg","segment": null}]},
+    {"partId": "character:legs/leg_left/foot","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_left/foot","noteSha256": "741c689985fac11b7b481c80ff7fe4e8058d28450e528d2f68236de6934e5717","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f5e9c6be-9269-4cac-9b52-7640424d1e0b","name": "人物 | 11 legs/leg_left/foot","segment": null}]},
+    {"partId": "character:legs/leg_left/ankle_gem","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_left/ankle_gem","noteSha256": "b17b94c0a98f548e57e4d61cd713b6a3fb252ea5d4dd9da4c18dc6146635afda","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "310b6558-813b-4ff1-bbdb-ae511da14204","name": "人物 | 33 legs/leg_left/ankle_gem","segment": null}]},
+    {"partId": "character:legs/leg_left/anklet/ankle_chain","decision": "simulate","priority": "secondary","component": "eb5ce06d-ba9e-4f52-94b7-71171674d93d","reason": "踝链适应腿脚姿态与两侧连接，链下硬坠有自由悬摆；贴身踝宝石不增加物理。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_left/anklet/ankle_chain","noteSha256": "52b75a63f733a0ee636277367bc96f7a96b56e51f9b13063f0e65f2e138c4b19","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "6138126f-84fc-4bb9-94b5-3454ce645ac5","name": "人物 | 38 legs/leg_left/anklet/ankle_chain","segment": null}]},
+    {"partId": "character:legs/leg_left/anklet/center_link","decision": "follow","priority": "secondary","component": "eb5ce06d-ba9e-4f52-94b7-71171674d93d","reason": "中央硬接件保持形状，跟随两支软链的共同汇接姿态；不另加平移弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_left/anklet/center_link","noteSha256": "2db744c6264c13f0d1fb9aaeb6f8e98e546d82ca183970d4062fc68f990a4505","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3f415936-f59a-43fb-857c-bc20016579a5","name": "人物 | 39 legs/leg_left/anklet/center_link","segment": null}]},
+    {"partId": "character:legs/leg_left/anklet/teardrop_pendant","decision": "simulate","priority": "secondary","component": "eb5ce06d-ba9e-4f52-94b7-71171674d93d","reason": "踝链适应腿脚姿态与两侧连接，链下硬坠有自由悬摆；贴身踝宝石不增加物理。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_left/anklet/teardrop_pendant","noteSha256": "2d00b7b18f97d878693ca7d2c47ceff3c7e71d9dbb54df0d6495e257a4b026ba","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "916c02a8-4300-41e4-85d3-5034344cb068","name": "人物 | 40 legs/leg_left/anklet/teardrop_pendant","segment": null}]},
+    {"partId": "character:legs/leg_right/leg","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_right/leg","noteSha256": "b03135b3153201262cc30f3a589d99067de7adac20252d36c05450c43fa8654d","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f4571966-19ef-40db-936f-c16800c9bb90","name": "人物 | 08 legs/leg_right/leg","segment": null}]},
+    {"partId": "character:legs/leg_right/foot","decision": "pose","priority": null,"component": null,"reason": "身体与四肢由动作驱动；胸部果冻另有专用工作流。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_right/foot","noteSha256": "3051f5d853483f14ea17b440e7ad285619d78c5ef621a99400ec9a504c393406","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7dcca502-b038-430f-9c8a-6b29fd9b9280","name": "人物 | 10 legs/leg_right/foot","segment": null}]},
+    {"partId": "character:legs/leg_right/ankle_gem","decision": "pose","priority": null,"component": null,"reason": "贴头、安装座、耳钉或贴身固定饰物只随头／腿姿态；内部绘画细节不独立摆。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_right/ankle_gem","noteSha256": "7782ac66984301faa2f4c942c88f4d7034bf5ae8eb87315007041ba7388a0f97","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "e16e804c-53ee-465e-8c41-6ae3a973c718","name": "人物 | 32 legs/leg_right/ankle_gem","segment": null}]},
+    {"partId": "character:legs/leg_right/anklet/outer_chain","decision": "simulate","priority": "secondary","component": "41cb4ed1-0daa-469d-9a81-a96d574c728f","reason": "踝链适应腿脚姿态与两侧连接，链下硬坠有自由悬摆；贴身踝宝石不增加物理。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_right/anklet/outer_chain","noteSha256": "45534c2db1a26c21b7c4951bef533c696c0e41bb6ae583015824979c5fbebc42","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "e3b1c970-956f-493d-8a9d-8a8a0a45ff9a","name": "人物 | 34 legs/leg_right/anklet/outer_chain","segment": null}]},
+    {"partId": "character:legs/leg_right/anklet/inner_chain","decision": "simulate","priority": "secondary","component": "41cb4ed1-0daa-469d-9a81-a96d574c728f","reason": "踝链适应腿脚姿态与两侧连接，链下硬坠有自由悬摆；贴身踝宝石不增加物理。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_right/anklet/inner_chain","noteSha256": "3dca0f7f9f5f36e29d9d5cf71657c772a1559b1730838ab4259a280e8642c5f9","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f0082894-8fae-4a67-b99f-b0ecc6914bd4","name": "人物 | 35 legs/leg_right/anklet/inner_chain","segment": null}]},
+    {"partId": "character:legs/leg_right/anklet/central_connector","decision": "follow","priority": "secondary","component": "41cb4ed1-0daa-469d-9a81-a96d574c728f","reason": "中央硬接件保持形状，跟随两支软链的共同汇接姿态；不另加平移弹簧。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_right/anklet/central_connector","noteSha256": "03b0ab689e2507b0c509f88b48b41d12a7eb00e67b6dddc4aa9a82c28a10cc80","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1bd33568-d52b-47b8-8cad-5cbc7bf56b39","name": "人物 | 37 legs/leg_right/anklet/central_connector","segment": null}]},
+    {"partId": "character:legs/leg_right/anklet/gem_pendant","decision": "simulate","priority": "secondary","component": "41cb4ed1-0daa-469d-9a81-a96d574c728f","reason": "踝链适应腿脚姿态与两侧连接，链下硬坠有自由悬摆；贴身踝宝石不增加物理。","evidence": {"path": "part-layering/groups.json","nodeId": "legs/leg_right/anklet/gem_pendant","noteSha256": "b3272932889f7cfd29f38653c2ab14ae42a5abaff76505fa62467da25fc3da13","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "0a488e19-8892-4466-ae99-32c29528894e","name": "人物 | 36 legs/leg_right/anklet/gem_pendant","segment": null}]},
+    {"partId": "clothing:outer_robe/collar_shoulders/standing_collar/right_front_collar","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/collar_shoulders/standing_collar/right_front_collar","noteSha256": "fcb4e3c5aca010f8fdae5bf5ac2df46de7d6d91b3627a3db4b51601fb538a4c3","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7de28d37-9adc-4198-b7f9-45242061441e","name": "衣装 | outer_robe/collar_shoulders/standing_collar/right_front_collar","segment": null}]},
+    {"partId": "clothing:outer_robe/collar_shoulders/standing_collar/left_front_collar","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/collar_shoulders/standing_collar/left_front_collar","noteSha256": "a7b85f58c2cb1d383503e6ffcc3f79ad08d95ab419add49785b8c393ff8f23f3","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "caa79844-d34f-4ff1-89f4-a25967725e54","name": "衣装 | outer_robe/collar_shoulders/standing_collar/left_front_collar","segment": null}]},
+    {"partId": "clothing:outer_robe/collar_shoulders/standing_collar/side_back_collar","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/collar_shoulders/standing_collar/side_back_collar","noteSha256": "bdc613d7b76d089ff5cadec1cecf6385fe8d64b10cdd46e10f5b0ca5731e70ca","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "9b9da7fa-f24b-4b1a-9d1f-fd5afd95abcf","name": "衣装 | outer_robe/collar_shoulders/standing_collar/side_back_collar","segment": null}]},
+    {"partId": "clothing:outer_robe/collar_shoulders/right_shoulder_cover","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/collar_shoulders/right_shoulder_cover","noteSha256": "0a980656f4f3b6f2d590507457baf43c43db5732be4572c19414fb7f30cadae4","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "ef85fcdf-e5b0-415f-88d1-55fb151dec41","name": "衣装 | outer_robe/collar_shoulders/right_shoulder_cover","segment": null}]},
+    {"partId": "clothing:outer_robe/collar_shoulders/left_shoulder_cover","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/collar_shoulders/left_shoulder_cover","noteSha256": "5965655c4c7200251d9f4a0de2620ac017217563b166840cb72d75cdd65959ea","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3999098e-1e87-43c9-9d70-8ef9044a578e","name": "衣装 | outer_robe/collar_shoulders/left_shoulder_cover","segment": null}]},
+    {"partId": "clothing:outer_robe/left_sleeve/front_sleeve_wall","decision": "simulate","priority": "secondary","component": "823c0082-4e4c-4e00-a565-b8599af09fd4","reason": "动作形变为主；只有正确手臂支撑建立后，才候选袖筒下侧小幅残差。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/left_sleeve/front_sleeve_wall","noteSha256": "dcf629c5a89e14aa59f0fa8537ffca68b7d32a7219be1457c0deef6ddfdc439c","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "34dc66c9-7c23-4603-8ada-bc3bfea32606","name": "衣装 | outer_robe/left_sleeve/front_sleeve_wall","segment": null}]},
+    {"partId": "clothing:outer_robe/left_sleeve/rear_sleeve_wall","decision": "simulate","priority": "secondary","component": "823c0082-4e4c-4e00-a565-b8599af09fd4","reason": "动作形变为主；只有正确手臂支撑建立后，才候选袖筒下侧小幅残差。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/left_sleeve/rear_sleeve_wall","noteSha256": "ed279f0146f3cb820d4a43a649cfe8117d423b5751c9cc10d007e83ee66fe22e","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "bc36f01f-13ab-4e98-a664-99596ae8ebef","name": "衣装 | outer_robe/left_sleeve/rear_sleeve_wall","segment": null}]},
+    {"partId": "clothing:outer_robe/left_sleeve/rear_cuff_drape/cuff_attachment_wall","decision": "simulate","priority": "secondary","component": "823c0082-4e4c-4e00-a565-b8599af09fd4","reason": "动作形变为主；只有正确手臂支撑建立后，才候选袖筒下侧小幅残差。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/left_sleeve/rear_cuff_drape/cuff_attachment_wall","noteSha256": "2ccbcdf3c23574edbe9ce76dfcfe6b5c59cc4b22ae210600e1a1c830291498ba","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "404507ea-0975-48e4-baca-487074be8edc","name": "衣装 | outer_robe/left_sleeve/rear_cuff_drape/cuff_attachment_wall","segment": null}]},
+    {"partId": "clothing:outer_robe/left_sleeve/rear_cuff_drape/free_curled_drape","decision": "simulate","priority": "primary","component": "b3066b91-3f67-4b47-aca9-19be69d7641c","reason": "自由垂料和侧纱有独立布料残差，根部先随袖体姿态。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/left_sleeve/rear_cuff_drape/free_curled_drape","noteSha256": "0814cfde39579524af6f85ff3440941c6151973403164cc72c00c3bd5d681870","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "ca8e66ba-fde3-41d1-bb60-f89005844bbe","name": "衣装 | outer_robe/left_sleeve/rear_cuff_drape/free_curled_drape","segment": null}]},
+    {"partId": "clothing:outer_robe/left_sleeve/outer_flared_gauze","decision": "simulate","priority": "primary","component": "16401320-85d1-4206-8f76-5171702d88c3","reason": "自由垂料和侧纱有独立布料残差，根部先随袖体姿态。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/left_sleeve/outer_flared_gauze","noteSha256": "4c035388cf0b9fb9270a4bb23abdf66f6d4a82b1d951f6a4a25e397f14e3b2dd","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f9135148-0876-4ff3-a9df-9a4dcccce298","name": "衣装 | outer_robe/left_sleeve/outer_flared_gauze","segment": null}]},
+    {"partId": "clothing:outer_robe/left_sleeve/side_pointed_gauze","decision": "simulate","priority": "primary","component": "62c81a77-5985-416c-afe3-32ebb4548f0f","reason": "自由垂料和侧纱有独立布料残差，根部先随袖体姿态。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/left_sleeve/side_pointed_gauze","noteSha256": "bf6dd7cf76e225a8af79810b69b05317848497cb9fea13af4852afd079494a48","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3bf7134c-559c-4379-a25c-6dc6db3e2718","name": "衣装 | outer_robe/left_sleeve/side_pointed_gauze","segment": null}]},
+    {"partId": "clothing:outer_robe/right_sleeve/sleeve_tube/front_sleeve_wall","decision": "simulate","priority": "secondary","component": "29633a5d-cab9-45b1-93fb-0ab1366d4aeb","reason": "动作形变为主；只有正确手臂支撑建立后，才候选袖筒下侧小幅残差。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/right_sleeve/sleeve_tube/front_sleeve_wall","noteSha256": "9e314f36967ee9d9bc403bfc9fd76b91a4830b3da5f56e286d2e96fa36697414","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "6d254424-c3e3-47d1-ae09-e9d7aca56961","name": "衣装 | outer_robe/right_sleeve/sleeve_tube/front_sleeve_wall","segment": null}]},
+    {"partId": "clothing:outer_robe/right_sleeve/sleeve_tube/rear_sleeve_wall","decision": "simulate","priority": "secondary","component": "29633a5d-cab9-45b1-93fb-0ab1366d4aeb","reason": "动作形变为主；只有正确手臂支撑建立后，才候选袖筒下侧小幅残差。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/right_sleeve/sleeve_tube/rear_sleeve_wall","noteSha256": "5c19e0a1bcfd551749beea7bf003338be70d82c2d0d78a36af75ef0c35ccf788","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7b960c64-bf02-4696-9ce9-ceb2307aedf1","name": "衣装 | outer_robe/right_sleeve/sleeve_tube/rear_sleeve_wall","segment": null}]},
+    {"partId": "clothing:outer_robe/right_sleeve/outer_side_gauze","decision": "simulate","priority": "primary","component": "16df1e25-10d8-4e59-ad6f-8a32f21ba606","reason": "自由垂料和侧纱有独立布料残差，根部先随袖体姿态。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/right_sleeve/outer_side_gauze","noteSha256": "9cd0d5fa14871a350feee2ccc81c7b8354663fea00d60e1078ba4577abe6ee3f","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4cefead4-cfc5-40af-bf2e-e088e824b5c0","name": "衣装 | outer_robe/right_sleeve/outer_side_gauze","segment": null}]},
+    {"partId": "clothing:outer_robe/right_sleeve/cuff_train","decision": "simulate","priority": "primary","component": "00e27a13-852b-494c-becd-3109532b7519","reason": "自由垂料和侧纱有独立布料残差，根部先随袖体姿态。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/right_sleeve/cuff_train","noteSha256": "e20c3fdb85e7f151458cea7b84b6f0fcd7bf051ee514f5469c6ae74280985b72","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "25bb6a36-311f-42be-83be-436c6965f336","name": "衣装 | outer_robe/right_sleeve/cuff_train","segment": null}]},
+    {"partId": "clothing:outer_robe/left_front_panel","decision": "simulate","priority": "primary","component": "c622603e-e6f1-44ec-b380-98b93ae4187f","reason": "连续长前襟下段可摆，顶端不能脱离胸饰后的实际接口。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/left_front_panel","noteSha256": "975232052a4f6bf30998a0332bbcb5977eb460ffeacee168435025af56f89235","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1f303111-7ad4-4f5f-8295-cef037b4729d","name": "衣装 | outer_robe/left_front_panel::front_main","segment": "front_main"},{"uuid": "be78f61b-0384-4021-b392-c06c6b38c962","name": "衣装 | outer_robe/left_front_panel::back_under_front_band","segment": "back_under_front_band"}]},
+    {"partId": "clothing:outer_robe/right_front_panel","decision": "simulate","priority": "primary","component": "845bbca3-ea3e-41bc-a2c3-37f370d7fb15","reason": "连续长前襟下段可摆，顶端不能脱离胸饰后的实际接口。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "outer_robe/right_front_panel","noteSha256": "d33f524b1c02ee7c0a326d156e8d24ec2e0a0e6be2c43c52185fa0c6cd4fe52b","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "7fbce1bc-878f-4199-85fe-950e3c1de052","name": "衣装 | outer_robe/right_front_panel","segment": null}]},
+    {"partId": "clothing:inner_dress/bodice_front","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "inner_dress/bodice_front","noteSha256": "345bffb361058c6683d69ff4e00f5760373105dc7083f03c86985b485e841ee5","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "beed9765-e540-4ccf-b076-6f2ba4e4fa0e","name": "衣装 | inner_dress/bodice_front","segment": null}]},
+    {"partId": "clothing:inner_dress/skirt_front","decision": "simulate","priority": "primary","component": "b1cb00ec-432c-4ba2-abe6-b89365ee3190","reason": "前片与侧后片有共同腰口和接缝，需耦合布料形变，不能独立随机摇摆。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "inner_dress/skirt_front","noteSha256": "210484416b69aff07d4156aa5b782465bef2169d5346161948862c0efeeb02ef","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "a33473aa-e558-4865-8265-3a65abe02de4","name": "衣装 | inner_dress/skirt_front","segment": null}]},
+    {"partId": "clothing:inner_dress/skirt_side_back","decision": "simulate","priority": "primary","component": "b1cb00ec-432c-4ba2-abe6-b89365ee3190","reason": "前片与侧后片有共同腰口和接缝，需耦合布料形变，不能独立随机摇摆。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "inner_dress/skirt_side_back","noteSha256": "32d0458acf7d961d2731b1299ae25533f69ebcf6fb34728eb9786025947c45d8","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "aeac0595-0ed4-4ab3-88ee-395b6d776312","name": "衣装 | inner_dress/skirt_side_back","segment": null}]},
+    {"partId": "clothing:waist_sash/circumferential_band/front_band","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/circumferential_band/front_band","noteSha256": "0e4fd26aa0e707ebf824e210aa12c9ae635ed56981d204c634b4005fa8618719","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "dcd7a5f5-f430-422e-a2fb-abd1e85c9aac","name": "衣装 | waist_sash/circumferential_band/front_band","segment": null}]},
+    {"partId": "clothing:waist_sash/circumferential_band/side_back_band","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/circumferential_band/side_back_band","noteSha256": "bb1c605882c2cdf7e6dd00921d14beb74b48d4e29a502a2f87eaefe128bdaa41","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1112e74f-b36f-48a7-a400-8b0f11c02378","name": "衣装 | waist_sash/circumferential_band/side_back_band","segment": null}]},
+    {"partId": "clothing:waist_sash/front_tie/knot_core","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/front_tie/knot_core","noteSha256": "c5fd4183ae40f35d6aa38abb243a3bf94c8dd80dae74d68d9dda93c959729984","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "21f703ed-9bf7-4381-adb5-36629b5aeda4","name": "衣装 | waist_sash/front_tie/knot_core","segment": null}]},
+    {"partId": "clothing:waist_sash/front_tie/right_short_loop","decision": "simulate","priority": "secondary","component": "21ddc88d-4915-45a7-8c92-436218ac311f","reason": "短环有有限自由段，结芯不动；保留两端约束和孔。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/front_tie/right_short_loop","noteSha256": "c101a7134948d538c4e6209869c6000314527d729649b56bf696faf783759c32","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "46deb4ad-cc76-4782-95dd-2dda0d4ba1fd","name": "衣装 | waist_sash/front_tie/right_short_loop","segment": null}]},
+    {"partId": "clothing:waist_sash/front_tie/left_short_loop","decision": "simulate","priority": "secondary","component": "c1fbedd7-1818-4fc1-b6d6-e7efe844eb2a","reason": "短环有有限自由段，结芯不动；保留两端约束和孔。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/front_tie/left_short_loop","noteSha256": "dfadf72fdb04c1ecae6937ea967edc19bce16af0f78218d18693a57a156e73be","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "8a1f8490-65d3-49fc-9660-83bab8436fff","name": "衣装 | waist_sash/front_tie/left_short_loop","segment": null}]},
+    {"partId": "clothing:waist_sash/front_tie/bound_tassel","decision": "simulate","priority": "secondary","component": "fe841247-7e18-4d83-a9e7-93f4c9848ee6","reason": "小穗相对结芯可动，不把结芯当摆体。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/front_tie/bound_tassel","noteSha256": "df106445f53c0e2bfd3dc3f7261692c6a61d8f717cc60606c5a523daefac0596","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "554bbd28-cf6f-4712-89dc-3de866c21589","name": "衣装 | waist_sash/front_tie/bound_tassel","segment": null}]},
+    {"partId": "clothing:waist_sash/right_long_tail","decision": "simulate","priority": "primary","component": "cb654694-c2c9-4fbf-a8c9-4bc92f623b1c","reason": "宽长幅是自由布料；不是只绕一点转动的细线摆。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/right_long_tail","noteSha256": "5ad14d76296eece0cca5f38697c67cf4096494e803541696e782ead20e3a02b8","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4ad5acb4-1dff-4467-bf02-b0a8cd0fd094","name": "衣装 | waist_sash/right_long_tail","segment": null}]},
+    {"partId": "clothing:waist_sash/left_long_tail","decision": "simulate","priority": "primary","component": "095f3d40-8674-460e-b67a-4868f01471b0","reason": "宽长幅是自由布料；不是只绕一点转动的细线摆。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_sash/left_long_tail","noteSha256": "d6dbf6a21d0980bf8863a208c55a6b52918766ea8c31ba381f6de0de85429d63","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "aaab2d41-416c-4772-9755-cb7f7607e16d","name": "衣装 | waist_sash/left_long_tail","segment": null}]},
+    {"partId": "clothing:collar_fastener/central_clasp/clasp_body","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "collar_fastener/central_clasp/clasp_body","noteSha256": "614e3f2b2b574b0baeac644916e098aa452477cc52611de89225e23d25f9b58f","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1b8b8d04-5edb-4f95-b1be-7e29adcd9265","name": "衣装 | collar_fastener/central_clasp/clasp_body","segment": null}]},
+    {"partId": "clothing:collar_fastener/central_clasp/hanging_junction","decision": "simulate","priority": "secondary","component": "9dc91e48-1581-4fb6-aa25-59733a0b6ce7","reason": "领扣与胸饰之间的链是双端连接，局部悬接点能偏转；胸饰本体不做胸部果冻。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "collar_fastener/central_clasp/hanging_junction","noteSha256": "e5f45cfdcbad81ac314b49ad6fee0e3a924191b7568150f06ce2c68fd767a2b2","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "4daa939b-1838-437a-b933-438b1801da47","name": "衣装 | collar_fastener/central_clasp/hanging_junction","segment": null}]},
+    {"partId": "clothing:collar_fastener/right_collar_chain","decision": "simulate","priority": "secondary","component": "9dc91e48-1581-4fb6-aa25-59733a0b6ce7","reason": "领扣与胸饰之间的链是双端连接，局部悬接点能偏转；胸饰本体不做胸部果冻。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "collar_fastener/right_collar_chain","noteSha256": "6288e37799005bcc425991d3a760f0769633b8481d77bcc453facd60c5570f45","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "e638abfc-553e-4df0-80a2-e56038075023","name": "衣装 | collar_fastener/right_collar_chain","segment": null}]},
+    {"partId": "clothing:collar_fastener/left_collar_chain","decision": "simulate","priority": "secondary","component": "9dc91e48-1581-4fb6-aa25-59733a0b6ce7","reason": "领扣与胸饰之间的链是双端连接，局部悬接点能偏转；胸饰本体不做胸部果冻。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "collar_fastener/left_collar_chain","noteSha256": "656e9ea81e9a072f6373a795e69a8bfced7e414aa0043a57251ead41c44c0a33","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "59cdac37-a1d6-41f2-8f2c-813ad09484be","name": "衣装 | collar_fastener/left_collar_chain","segment": null}]},
+    {"partId": "clothing:collar_fastener/right_chest_chain","decision": "simulate","priority": "secondary","component": "9dc91e48-1581-4fb6-aa25-59733a0b6ce7","reason": "领扣与胸饰之间的链是双端连接，局部悬接点能偏转；胸饰本体不做胸部果冻。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "collar_fastener/right_chest_chain","noteSha256": "eead5ea6b196dbaf1866bec075e7e4bd13cda1ea1dc221a2767d8460fd12a61d","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "a819547e-0b3e-4019-9e79-1bc39c7f1a17","name": "衣装 | collar_fastener/right_chest_chain","segment": null}]},
+    {"partId": "clothing:collar_fastener/left_chest_chain","decision": "simulate","priority": "secondary","component": "9dc91e48-1581-4fb6-aa25-59733a0b6ce7","reason": "领扣与胸饰之间的链是双端连接，局部悬接点能偏转；胸饰本体不做胸部果冻。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "collar_fastener/left_chest_chain","noteSha256": "57b3813e5067a3b86e7e326c4ee3c3770d3e78c4adc4f4a6552b263e3a15d40e","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "41c28190-7828-42f7-bde1-bc8346b6adae","name": "衣装 | collar_fastener/left_chest_chain","segment": null}]},
+    {"partId": "clothing:chest_ornament","decision": "pose","priority": null,"component": null,"reason": "领肩、贴身胸腹、横向束腰、结芯或固定领扣随身体姿态；无独立自由悬挂。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "chest_ornament","noteSha256": "cfb153eb4d60b4cc57762140ad153368773989b40affe426c3ae7663a4ca73a3","childrenAnalysisNoteSha256": "4c067590be40b72a4b278538cd20e5c396015d6c3c66f529463a378e0de8d773","terminalKind": "legacy-empty-children-terminal"},"layers": [{"uuid": "3f0c30c5-8f2e-42e7-92d7-670df1fc6d87","name": "衣装 | chest_ornament","segment": null}]},
+    {"partId": "clothing:waist_pendant/upper_suspension/right_suspension_cord/rear_insertion_end","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/right_suspension_cord/rear_insertion_end","noteSha256": "00f54d32474b9de2aee0d3fd456c90d4bf4540ba70ad8414d801d536dd8859b2","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "e5904ea7-9c13-4647-ab28-2f93f8cdd4c2","name": "衣装 | waist_pendant/upper_suspension/right_suspension_cord/rear_insertion_end","segment": null}],"sharedField": "connection-field-1"},
+    {"partId": "clothing:waist_pendant/upper_suspension/right_suspension_cord/front_arc_cord","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/right_suspension_cord/front_arc_cord","noteSha256": "03b5e185c1f95dd26d892d61e2ab99bb5fc9a9d536a4a4fac79bccff797c415c","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "c72e3738-699c-4a24-a05a-70d790c2c25e","name": "衣装 | waist_pendant/upper_suspension/right_suspension_cord/front_arc_cord","segment": null}],"sharedField": "connection-field-1"},
+    {"partId": "clothing:waist_pendant/upper_suspension/left_suspension_cord/hidden_entry","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/left_suspension_cord/hidden_entry","noteSha256": "f5de768cec9f72b50a37e2d51b5df0b09bd1be9b96049e728d09e4182a3de5e3","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "09f170f9-8a9a-4b95-875f-8363349b8921","name": "衣装 | waist_pendant/upper_suspension/left_suspension_cord/hidden_entry","segment": null}],"sharedField": "connection-field-2"},
+    {"partId": "clothing:waist_pendant/upper_suspension/left_suspension_cord/front_arc","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/left_suspension_cord/front_arc","noteSha256": "dcb846faf2549dbb2bae60da5cfb2b2e9690a10634dffc53c66b808b28b30f4c","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "a95fc356-5e44-4927-bbf2-983231723856","name": "衣装 | waist_pendant/upper_suspension/left_suspension_cord/front_arc","segment": null}],"sharedField": "connection-field-2"},
+    {"partId": "clothing:waist_pendant/upper_suspension/junction_linkage/junction_knot","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/junction_linkage/junction_knot","noteSha256": "22a74df470d92a3047f9227670fc9d4df21b845be309526d931dbee52d42138a","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "1c4af5bf-a4d4-4ec0-88f7-d800dd817fdd","name": "衣装 | waist_pendant/upper_suspension/junction_linkage/junction_knot","segment": null}]},
+    {"partId": "clothing:waist_pendant/upper_suspension/junction_linkage/diamond_bead","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/junction_linkage/diamond_bead","noteSha256": "16507bead1a94ce677d2ee687e01250a8835e3f9f43f457648e64a6a6d95e7ed","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3e28440d-4d5f-4914-90cf-a6c299394ec1","name": "衣装 | waist_pendant/upper_suspension/junction_linkage/diamond_bead","segment": null}]},
+    {"partId": "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/upper_flexible_neck","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/upper_flexible_neck","noteSha256": "5868446fea893ca958ff7db0a2e6c5225ff511ea5924a9b173226b79a0b86d30","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "b54e3552-3021-42f1-a413-67d4a6ddf665","name": "衣装 | waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/upper_flexible_neck","segment": null}]},
+    {"partId": "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/middle_bead","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/middle_bead","noteSha256": "4ff465c851ba2578b528799c724d3b97bcd8d341a3cbb2a091629477e3f8a6e0","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "f3213f05-e198-4221-a6e8-25b1766d08f8","name": "衣装 | waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/middle_bead","segment": null}]},
+    {"partId": "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/lower_flexible_neck","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/lower_flexible_neck","noteSha256": "23b9df7b1b67fdea9d03779257981b7dfacd6b02fd3ab2042e57a88da4981594","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "69ca083a-c269-4dc2-b0b5-0248f33f2583","name": "衣装 | waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/lower_flexible_neck","segment": null}]},
+    {"partId": "clothing:waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/terminal_bead","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/terminal_bead","noteSha256": "7a7d4a39027e1b16e8ee12022d0eb426a2844ae92665450df7e0e2f827a3a83b","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "138da6d1-b2a7-470b-bfbd-ed406a6bf617","name": "衣装 | waist_pendant/upper_suspension/junction_linkage/short_bead_linkage/terminal_bead","segment": null}]},
+    {"partId": "clothing:waist_pendant/snowflake_pendant","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/snowflake_pendant","noteSha256": "5f8069665c7773c948e24a9ddd72fba4d99d3a5641fb28a721425dbee5e4f5d8","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "91bf9f3b-062b-44df-8761-ef0af0991638","name": "衣装 | waist_pendant/snowflake_pendant","segment": null}]},
+    {"partId": "clothing:waist_pendant/lower_silver_strand/upper_chain","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lower_silver_strand/upper_chain","noteSha256": "11c268a42e8e2765020bb4868d83057ad62a09caeb53f3f817968c93c16275c7","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "516bca97-2f35-4c19-8ee5-002437459ccb","name": "衣装 | waist_pendant/lower_silver_strand/upper_chain","segment": null}]},
+    {"partId": "clothing:waist_pendant/lower_silver_strand/upper_bead_link","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lower_silver_strand/upper_bead_link","noteSha256": "3e9846140eb80501a072b246165e4da1dfb32486545dc5c59aef8362390bc659","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "3b1e18b5-6a93-4e49-8a38-99af1e52707d","name": "衣装 | waist_pendant/lower_silver_strand/upper_bead_link","segment": null}]},
+    {"partId": "clothing:waist_pendant/lower_silver_strand/elongated_silver_link","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lower_silver_strand/elongated_silver_link","noteSha256": "c8629ff77099042ff818d6a6769ffe3bde8c94ef69d03d526f00734b8f10cc34","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "74478c2f-5dfa-4c5a-bdd3-bdcab82a3039","name": "衣装 | waist_pendant/lower_silver_strand/elongated_silver_link","segment": null}]},
+    {"partId": "clothing:waist_pendant/lower_silver_strand/lower_bead_link","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lower_silver_strand/lower_bead_link","noteSha256": "471bcff5fc77b4f3651badd07be0ef3f9df4f77e04201025a1a11308f77e9075","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "20681998-a128-4365-82cf-74d41c039575","name": "衣装 | waist_pendant/lower_silver_strand/lower_bead_link","segment": null}]},
+    {"partId": "clothing:waist_pendant/lower_silver_strand/teardrop_pendant","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lower_silver_strand/teardrop_pendant","noteSha256": "612dd6691d00283f9b39b45827f5b0fc68c74f5d6f66f65875f4d5b09c8cabdc","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "a69f9580-6321-4ea6-b032-db92c1b51ae0","name": "衣装 | waist_pendant/lower_silver_strand/teardrop_pendant","segment": null}]},
+    {"partId": "clothing:waist_pendant/lotus_coupler/silver_hanger","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lotus_coupler/silver_hanger","noteSha256": "ccb37a4e96ad62a0f74d2c4e2b0b94bf5de77ea1f0b7f30ebd88eae9be78a917","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "e039bda8-f6fa-4037-9ef9-f2a263867ca8","name": "衣装 | waist_pendant/lotus_coupler/silver_hanger","segment": null}]},
+    {"partId": "clothing:waist_pendant/lotus_coupler/right_side_link","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lotus_coupler/right_side_link","noteSha256": "f5e0bdfc4621c4d88c493064660badb6bbbfc255e3fa44f63179a1084c501632","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "69a02b25-1f3e-49b4-af40-123455152737","name": "衣装 | waist_pendant/lotus_coupler/right_side_link","segment": null}]},
+    {"partId": "clothing:waist_pendant/lotus_coupler/left_side_link","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lotus_coupler/left_side_link","noteSha256": "6938fa6b3ebf9ed83c92f1f42fedf7f662b97460178030584dac278c69ddeba9","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "570d93c3-9a5a-47a9-9220-86c3d4acdfaa","name": "衣装 | waist_pendant/lotus_coupler/left_side_link","segment": null}]},
+    {"partId": "clothing:waist_pendant/lotus_coupler/central_diamond_pendant","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lotus_coupler/central_diamond_pendant","noteSha256": "be3dabc8981f8a096d23aa6cbd564e6440550fb1b15abf419479773cdc117926","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "6dc21fc8-a59d-4534-ab21-3545449f3aa9","name": "衣装 | waist_pendant/lotus_coupler/central_diamond_pendant","segment": null}]},
+    {"partId": "clothing:waist_pendant/lotus_coupler/lotus_body","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lotus_coupler/lotus_body","noteSha256": "7e2e5af259e6f031cba166701ce96a083f36a3fd913ad7f82d0ba923e246d8bf","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "5281d50a-cb35-492e-bc74-abfa7a52ab76","name": "衣装 | waist_pendant/lotus_coupler/lotus_body","segment": null}]},
+    {"partId": "clothing:waist_pendant/lotus_coupler/lower_ring_connector/front_connector_tip","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lotus_coupler/lower_ring_connector/front_connector_tip","noteSha256": "d6ffa769729f73d7772df9e662d810dda1ce01776f407c755e4f48a53b50f448","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "08c9ec0b-2a77-4ece-a3fa-6205b1beb932","name": "衣装 | waist_pendant/lotus_coupler/lower_ring_connector/front_connector_tip","segment": null}],"sharedField": "connection-field-3"},
+    {"partId": "clothing:waist_pendant/lotus_coupler/lower_ring_connector/rear_insertion_return","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/lotus_coupler/lower_ring_connector/rear_insertion_return","noteSha256": "2ca52346ed02db32f55f1342747aebeb4089d1f502234286228b7b55e0c20bf6","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "70b05c0b-5900-4dd0-9780-93bcc88ebd8c","name": "衣装 | waist_pendant/lotus_coupler/lower_ring_connector/rear_insertion_return","segment": null}],"sharedField": "connection-field-3"},
+    {"partId": "clothing:waist_pendant/double_ring_chain/upper_ring_body","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/double_ring_chain/upper_ring_body","noteSha256": "59988e9eeafc8bae3a76e494a394d295533fb1785f727a8605a146e29644617b","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "78543f27-7657-4b66-8823-a4bd8d0beee4","name": "衣装 | waist_pendant/double_ring_chain/upper_ring_body","segment": null}]},
+    {"partId": "clothing:waist_pendant/double_ring_chain/lower_ring_body","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/double_ring_chain/lower_ring_body","noteSha256": "5d3b96f63c468169041688aecbc0a289afaeb7f796c234b69ba13daaddc5229b","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "18c77004-4be7-4a1f-88ab-707670b80e2c","name": "衣装 | waist_pendant/double_ring_chain/lower_ring_body","segment": null}]},
+    {"partId": "clothing:waist_pendant/double_ring_chain/upper_inner_drop","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/double_ring_chain/upper_inner_drop","noteSha256": "d0f36eed9e6950ac3511f4fc6e50bc198a609411ae2113e9712da30691047069","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "fd123c2a-fe8e-4a5b-a8c2-479d44abcd7b","name": "衣装 | waist_pendant/double_ring_chain/upper_inner_drop","segment": null}]},
+    {"partId": "clothing:waist_pendant/double_ring_chain/lower_inner_drop","decision": "simulate","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "腰挂根据实际接头作刚柔耦合，不按 2D 图层逐张无关联地晃动。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/double_ring_chain/lower_inner_drop","noteSha256": "99751b2c8d00845fc41014d2f7e097e2ab24cf2c9a8aed656e95d0e6496c7ff2","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "05bfaa85-2b16-4fb8-a56a-ef0073614e38","name": "衣装 | waist_pendant/double_ring_chain/lower_inner_drop","segment": null}]},
+    {"partId": "clothing:waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem","noteSha256": "d1eb7e2c51d1eeb9b2d79c65436be479a19d83cec1d79b6b07ae4eba0d87aec3","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "d20d5de8-2167-4228-b1a8-9e7ae669a844","name": "衣装 | waist_pendant/double_ring_chain/inter_ring_link/rear_threaded_stem","segment": null}],"sharedField": "connection-field-4"},
+    {"partId": "clothing:waist_pendant/double_ring_chain/inter_ring_link/upper_front_head","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/double_ring_chain/inter_ring_link/upper_front_head","noteSha256": "4d9c749f75b7a3cdb00cc18601533a22f725a07e5f96b983250dda141c9115e0","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "d45a36e2-e4b4-414b-bdff-4d524eae23fc","name": "衣装 | waist_pendant/double_ring_chain/inter_ring_link/upper_front_head","segment": null}],"sharedField": "connection-field-4"},
+    {"partId": "clothing:waist_pendant/double_ring_chain/inter_ring_link/lower_front_head","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/double_ring_chain/inter_ring_link/lower_front_head","noteSha256": "aa2bb6f5301afb05da4d37ab0815853255586e6d27cdc51465485f6713ccde6b","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "9d32f6ca-2735-4ce5-9965-4f8d7570b286","name": "衣装 | waist_pendant/double_ring_chain/inter_ring_link/lower_front_head","segment": null}],"sharedField": "connection-field-4"},
+    {"partId": "clothing:waist_pendant/tassel_buckle/ring_return_back","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/tassel_buckle/ring_return_back","noteSha256": "3d048301adbdbc570e5d637caaf77673898fa6bd8a25e2b4870c9be04f11a38b","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "073bc257-451e-4b91-a1cd-adc030aaa7fc","name": "衣装 | waist_pendant/tassel_buckle/ring_return_back","segment": null}],"sharedField": "connection-field-5"},
+    {"partId": "clothing:waist_pendant/tassel_buckle/buckle_front","decision": "follow","priority": "secondary","component": "4d4ba9e2-1493-4143-9454-a6a35939308c","reason": "前后穿接片采样同一绳／接件运动场；保留各自层序和 UV，不各挂独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/tassel_buckle/buckle_front","noteSha256": "2eff315c3dfdfdc72620de58b9257e563b68eec5e4cb136c942349c4b0a28ec4","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "ae1396dc-2e52-4a6a-8bc6-b5dc5b531316","name": "衣装 | waist_pendant/tassel_buckle/buckle_front","segment": null}],"sharedField": "connection-field-5"},
+    {"partId": "clothing:waist_pendant/long_white_tassel","decision": "simulate","priority": "primary","component": "36a8b7b6-ab26-4c54-9e63-33e18e46c42e","reason": "长穗有自由段；整束控制，不逐根细丝创建独立弹簧。","evidence": {"path": "clothing-part-layering/groups.json","nodeId": "waist_pendant/long_white_tassel","noteSha256": "9ad3441bda3e2d975f7ab6fcc558ca7072c2e5f986dcbeb5def30698c36a9d3a","childrenAnalysisNoteSha256": null,"terminalKind": "part"},"layers": [{"uuid": "69ced8b9-4297-4911-9bb9-5560421d2964","name": "衣装 | waist_pendant/long_white_tassel","segment": null}]}
+  ]
+}

@@ -111,15 +111,15 @@ flowchart LR
   G --> H[统一工作台加载与编辑]
 ```
 
-建议产物：
+完整范围和最新产物契约见 [11 摆动物理制作工作流](11-secondary-physics-workflow.md)。以下使用 11 定下的三步路径，替代本篇最初的两步草案：
 
 | 产物 | 内容与职责 |
 | --- | --- |
-| `physics/step01/components.json` | 全部候选组件、层关系、连接依据，以及明确不绑定／待确认的对象 |
-| `physics/step01/weights/` | 固定、过渡、刚度／保形等作者权重；用组件空间关联，记录原尺寸与指纹 |
-| `physics/step02/physics.json` | 检查通过的完整配置：组件、运动类型、稳定层引用、支撑、求解与输出限制 |
-| `physics/step02/review/` | 中性／峰值／反转／回落的图像、短动画与响应曲线 |
-| `physics/step02/report.json` | 实测响应、约束统计、完成状态、输入与配置指纹、遗留问题 |
+| `physics/step01/source.json`、`components.json`、`evidence/` | 稳定来源、全部候选组件、层关系、连接依据，以及明确不绑定／待确认的对象 |
+| `physics/step02/rig.json`、`weights/`、`geometry/`、`guides/` | 作者支撑、固定／过渡／保形权重、控制线和候选网格；记录原尺寸与指纹 |
+| `physics/step03/physics.json` | 检查通过的完整配置：组件、运动类型、稳定层引用、支撑、求解与输出限制 |
+| `physics/step03/review/` | 中性／峰值／反转／回落的图像、短动画与响应曲线 |
+| `physics/step03/report.json` | 实测响应、约束统计、完成状态、输入与配置指纹、遗留问题 |
 
 这些路径和字段是拟定契约，还没有被当前程序消费。正式配置至少要有：
 
