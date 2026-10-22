@@ -95,7 +95,7 @@ export const stepArtifacts = [
 
 stepArtifacts.push({
   step01: [file('shadow/selection.json', '当前预览方式')],
-  mask: [image('shadow/mask/step01/character-shadowed.png', '投影阴影'), image('shadow/mask/step01/inspection/overview.png', '去影对照'), file('shadow/mask/step01/character-shadowed.kra', '阴影 KRA'), file('shadow/mask/step01/shadows.json', '跟随与裁切关系'), file('shadow/mask/step01/inspection.json', '裁切检查'), file('shadow/mask/step01/report.md', '绘制报告')],
+  mask: [image('shadow/mask/step01/character-shadowed.png', '投影阴影'), image('shadow/mask/step01/face-review.png', '头脸投影 · 原尺寸对照'), image('shadow/mask/step01/inspection/overview.png', '去影对照'), file('shadow/mask/step01/character-shadowed.kra', '阴影 KRA'), file('shadow/mask/step01/shadows.json', '跟随与裁切关系'), file('shadow/mask/step01/inspection.json', '裁切检查'), file('shadow/mask/step01/report.md', '绘制报告')],
   'normal-depth': [image('shadow/normal-depth/step01/normal.png', '法线'), image('shadow/normal-depth/step01/depth.png', '深度'), file('shadow/normal-depth/step01/report.md', '贴图报告')],
 });
 export function shadowInspectionArtifacts(files) {

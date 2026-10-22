@@ -9,7 +9,7 @@ import type { ShadowInput } from './input.ts';
 
 export const maskSteps = [{ id: 'step01', title: '投影分析、阴影补全与原生裁切', ...defaultModels.medium,
   modelStep: 'shadow_mask', prompt: new URL('./prompts/mask.md', import.meta.url),
-  requiredFiles: ['character-shadowed.kra', 'character-shadowed.png', 'shadows.json', 'report.md'],
+  requiredFiles: ['character-shadowed.kra', 'character-shadowed.png', 'shadows.json', 'face-review.png', 'report.md'],
 }] as const satisfies readonly StepDefinition[];
 export const mapSteps = [{ id: 'step01', title: '生成配准的整图法线与深度', ...defaultModels.medium,
   modelStep: 'shadow_maps', prompt: new URL('./prompts/normal-depth.md', import.meta.url),

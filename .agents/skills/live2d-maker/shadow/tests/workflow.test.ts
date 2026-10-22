@@ -55,6 +55,7 @@ async function fixture(t: TestContext) {
     if (request.step === 'shadow_mask') {
       await writeFile(join(path, 'character-shadowed.kra'), kra);
       await writeFile(join(path, 'character-shadowed.png'), color);
+      await writeFile(join(path, 'face-review.png'), color);
       await writeFile(join(path, 'shadows.json'), JSON.stringify({ version: 2, shadows: [{
         id: 'hair-face', casterPartId: 'character:hair', receiverPartId: 'character:face',
         casterLayerUuids: ['caster'], receiverLayerUuids: ['face'], shadowLayerUuid: 'shadow', clipBaseLayerUuid: 'face',
