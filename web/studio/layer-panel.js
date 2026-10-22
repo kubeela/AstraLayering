@@ -122,7 +122,7 @@ export class LayerPanel {
     if (owner.physicsCase) {
       this.layers = owner.layers.map(l => ({ ...l, opacity: Math.round(l.opacity * 255) }));
       this.original = layerState(this.layers); this.selected = owner.physicsCase.layers[0]?.id;
-      this.message = '独立物理测试 · 图层只读'; this.callbacks.changed(owner, this.layers); this.render(); return;
+      this.message = '示例项目 · 图层只读'; this.callbacks.changed(owner, this.layers); this.render(); return;
     }
     if (!/\.(kra|psd)$/i.test(owner.name)) return;
     // Read-only metadata is temporary until the native graph (including masks) is ready.

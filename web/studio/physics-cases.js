@@ -5,6 +5,8 @@ export const physicsCases = {
   skirt: { label: '裙摆布片', note: '腰口固定，宽下摆局部受力', bounds: { x: 262, y: 220, width: 500, height: 590 }, kind: 'cloth', direction: 'down', color: '#ca607d' },
   flag: { label: '横向挂布', note: '左侧固定，自由端上下弯曲', bounds: { x: 220, y: 370, width: 610, height: 245 }, kind: 'cloth', direction: 'right', color: '#339778' },
 };
+export const physicsProjects = Object.fromEntries(Object.entries(physicsCases).map(([caseId, spec]) =>
+  [`example:cloth:${caseId}`, { caseId, label: `示例 · ${spec.label}` }]));
 
 const canvas = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const blob = c => new Promise((resolve, reject) => c.toBlob(b => b ? resolve(b) : reject(Error('测试贴图生成失败')), 'image/png'));
@@ -61,6 +63,8 @@ export async function createPhysicsCase(id) {
   const binding = { ...bindingDefaults(spec.kind), enabled: true, direction: spec.direction, fixed: id === 'skirt' ? .16 : .12, transition: .16, maxAngle: 32, maxTravel: .26, stretch: .025, stiffness: 1.8, damping: 1.4 };
   const [colorBlob, normalBlob, depthBlob] = await Promise.all([color, normal, depth].map(blob));
   return { name: `物理测试 · ${spec.label}.png`, file: colorBlob, color: colorBlob, normal: normalBlob, depth: depthBlob,
+    project: { name: `example:cloth:${id}`, displayName: `示例 · ${spec.label}`, kind: 'example', previewMode: 'normal-depth',
+      files: { document: { available: true }, normal: { available: true }, depth: { available: true } } },
     layers: layers.map(l => ({ id: l.id, name: l.name, opacity: 1, visible: true, depth: 0, type: 'paintlayer', blend: 'normal', inheritAlpha: false, passThrough: null })),
     physicsCase: { id, label: spec.label, note: spec.note, layers, size, bindings: { [cloth.id]: binding }, marker: { ...marker, x: marker.x + b.x, y: marker.y + b.y } },
   };

@@ -6,7 +6,7 @@ import { openDocument } from "./document-loader.js";
 import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
 import { PhysicsPanel } from './physics-panel.js';
-import { physicsCases, createPhysicsCase } from './physics-cases.js';
+import { physicsProjects, createPhysicsCase } from './physics-cases.js';
 import {
   defaults,
   presets,
@@ -318,7 +318,6 @@ function sync() {
   $('.recipe-actions').hidden = !lighting;
   $('#engine').textContent = [state.lightingEnabled && hasNormal ? '光照' : '', physics?.enabled ? '物理' : '', '原尺寸'].filter(Boolean).join(' · ');
   $('#physics-case-playback').hidden = !state.source?.physicsCase;
-  $('#physics-case-select').disabled = state.busy || state.layerBusy || !!physics?.preparing;
   for (const button of document.querySelectorAll('[data-workspace]')) {
     const selected = button.dataset.workspace === state.workspace;
     button.classList.toggle('active', selected);
@@ -618,7 +617,7 @@ function showSource() {
   $("#project-empty").hidden = !!source || !state.waitingProject;
   $("#project-empty-name").textContent = state.waitingProject?.name || "";
   if (source) {
-    $("#document-name").textContent = source.project?.name || source.name;
+    $("#document-name").textContent = source.project?.displayName || source.project?.name || source.name;
     $("#document-meta").textContent =
       `${stage.source.w} × ${stage.source.h}${source.layers?.length ? " · " + source.layers.filter((l) => !l.mask).length + " 层" : ""}`;
   }
@@ -633,7 +632,7 @@ function showSource() {
   for (const k of ["normal", "depth"]) {
     $("#" + k + "-status").textContent = source?.[k]
       ? source.project
-        ? "管线产物 · 已绑定"
+        ? source.project.kind === 'example' ? "项目贴图 · 已绑定" : "管线产物 · 已绑定"
         : source[k].name || "已绑定"
       : source?.project
         ? source.project.files[k].available
@@ -712,7 +711,6 @@ async function install(source, id, reset = true) {
       state.lightingEnabled = source.project?.previewMode !== 'mask';
     }
     state.source = source;
-    if (reset) $('#physics-case-select').value = source.physicsCase?.id || '';
     source.authorHash = authorHash;
     state.inputs = Object.fromEntries(hashes);
     // Generated maps are data only. First lighting entry always uses an active
@@ -747,7 +745,6 @@ async function install(source, id, reset = true) {
       u.searchParams.set('preview', source.project.previewMode);
     }
     if (source.sample) u.searchParams.set("name", source.sample);
-    if (source.physicsCase) u.searchParams.set('physicsCase', source.physicsCase.id);
     history.replaceState(null, "", u);
     if (reset) void layers.open(source);
   } finally {
@@ -925,6 +922,7 @@ async function openJianma() {
 }
 let projectListGeneration = 0;
 async function openProject(name, dir, preview, workspace, refresh = false) {
+  if (Object.hasOwn(physicsProjects, name)) return openExampleProject(physicsProjects[name].caseId, workspace);
   const id = begin("正在打开项目 " + name + "…", true);
   try {
     dir ??= (await get("./api/settings")).directory;
@@ -1004,18 +1002,21 @@ async function chooseProject() {
   $("#task-dialog").showModal();
   $("#project-list").replaceChildren();
   $("#project-status").textContent = "正在读取项目…";
+  const addProject = (name, label, dir) => {
+    const button = document.createElement('button');
+    button.className = 'project-item';
+    button.dataset.project = name;
+    button.textContent = label;
+    button.onclick = () => void openProject(name, dir);
+    $('#project-list').append(button);
+  };
+  for (const [name, project] of Object.entries(physicsProjects)) addProject(name, project.label);
   try {
     const data = await get("./api/tasks");
     if (generation !== projectListGeneration) return;
-    $("#project-status").textContent = data.tasks.length
-      ? "选择项目，自动读取组装结果和贴图"
-      : "暂无项目";
+    $("#project-status").textContent = "选择项目，加载图层和贴图";
     for (const project of data.tasks) {
-      const button = document.createElement("button");
-      button.className = "project-item";
-      button.textContent = project.name;
-      button.onclick = () => void openProject(project.name, data.directory);
-      $("#project-list").append(button);
+      addProject(project.name, project.name, data.directory);
     }
   } catch (e) {
     if (generation === projectListGeneration)
@@ -1042,38 +1043,32 @@ for (const button of document.querySelectorAll('[data-workspace]')) button.oncli
   const u = new URL(location.href); u.searchParams.set('workspace', workspace); history.replaceState(null, '', u);
   sync();
 };
-for (const [id, spec] of Object.entries(physicsCases)) $('#physics-case-select').append(new Option(`${spec.label}（案例）`, id));
-async function openPhysicsCase(caseId = 'ribbon') {
+async function openExampleProject(caseId, workspace = 'lighting') {
   if (state.busy || state.layerBusy) return;
-  const id = begin('正在准备物理测试…', true);
+  const id = begin('正在加载示例项目…', true);
   try {
     const source = await createPhysicsCase(caseId);
     if (id !== state.generation) return;
-    state.workspace = 'physics';
+    state.workspace = workspace;
     await install(source, id);
     if (id !== state.generation) return;
     // Cases use the same active lighting preset and depth projection as a
     // character. The independent effect switches provide the albedo comparison.
     state.lightingEnabled = true;
     state.settings.shadow = true;
-    apply(); stage.setLightingEnabled(true); sync();
+    apply(); stage.setLightingEnabled(true);
+    $('#task-dialog').close(); sync();
   } catch (error) { if (id === state.generation) toast(error.message); }
   finally { finish(id); }
   if (id === state.generation && state.source?.physicsCase) {
     await physics.prepare(); physics.setDemo(true);
   }
 }
-$('#physics-prepare').onclick = () => {
-  const caseId = $('#physics-case-select').value;
-  if (caseId) void openPhysicsCase(caseId);
-  else void physics.prepare();
-};
-$('#physics-case-select').onchange = () => physics.sync();
 sync();
-// URLs open a layered project or an explicitly requested physics fixture.
+// Projects load the complete document; workspaces only choose the editor.
 const requested = new URLSearchParams(location.search);
-if (requested.get('physicsCase')) void openPhysicsCase(requested.get('physicsCase'));
-else if (requested.get("project")) void openProject(requested.get("project"), undefined, requested.get('preview'), ['mask','lighting','physics'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
+const requestedProject = requested.get('project') || (requested.get('physicsCase') ? `example:cloth:${requested.get('physicsCase')}` : null);
+if (requestedProject) void openProject(requestedProject, undefined, requested.get('preview'), ['mask','lighting','physics'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
 else if (
   requested.get("name") === "jianma" ||
   requested.get("sample") === "jianma"
