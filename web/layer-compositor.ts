@@ -212,8 +212,11 @@ export class LayerCompositor {
       krita.once("error", (error) => {
         spawnError = error;
       });
-      for (let i = 0; i < 400; i++) {
-        if (spawnError || krita.exitCode !== null)
+      // Cold resource/font initialization may exceed 40 seconds on the service
+      // host. Keep a bounded startup wait, separate from document operations.
+      const deadline = Date.now() + 90_000;
+      while (Date.now() < deadline) {
+        if (spawnError || krita.exitCode !== null || krita.signalCode !== null)
           throw spawnError || Error("Krita 图层合成器未能启动");
         try {
           await readFile(join(this.root, "ready.json"));
