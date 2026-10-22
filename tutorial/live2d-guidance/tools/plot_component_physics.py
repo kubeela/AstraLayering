@@ -27,3 +27,8 @@ for axis, kind in zip(axes, ['ribbon', 'cloth']):
 figure.suptitle('相同末端扰动下的现有求解器响应 · 150×650 · 120 Hz', fontsize=12)
 figure.savefig(sys.argv[2], dpi=160, metadata={'Date': None} if sys.argv[2].endswith('.svg') else None)
 plt.close(figure)
+if sys.argv[2].endswith('.svg'):
+    # Matplotlib emits spaces at line ends inside path attributes. Newlines
+    # remain valid SVG separators after trimming those spaces.
+    output = Path(sys.argv[2])
+    output.write_text('\n'.join(line.rstrip() for line in output.read_text().splitlines()) + '\n')
