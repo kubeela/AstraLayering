@@ -11,6 +11,7 @@ import os
 import json
 import traceback
 import re
+import hashlib
 
 ROOT = Path(os.environ['ASTRA_LAYER_BRIDGE']).resolve()
 BLENDS = {'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten'}
@@ -94,19 +95,22 @@ class Layers(Extension):
 
     def tree(self, doc):
         nodes, rows = {}, []
-        def walk(parent, parent_id=None, depth=0):
+        def walk(parent, parent_id=None, depth=0, legacy_parent=None):
             for index, node in enumerate(reversed(parent.childNodes())):
-                key = (parent_id + '.' if parent_id else 'n') + str(index)
+                legacy = (legacy_parent + '.' if legacy_parent else 'n') + str(index)
+                key = node.uniqueId().toString().strip('{}').lower()
+                if not key or key in nodes:
+                    raise ValueError('图层 UUID 缺失或重复，请重新保存工程')
                 nodes[key] = node
                 if len(rows) >= 10000 or depth > 100:
                     raise ValueError('图层数量或嵌套过多')
                 kind = node.type()
-                rows.append({'id': key, 'uuid': node.uniqueId().toString().strip('{}').lower(), 'parentId': parent_id, 'depth': depth,
+                rows.append({'id': key, 'uuid': key, 'legacyId': legacy, 'parentId': parent_id, 'depth': depth,
                              'name': node.name(), 'type': kind, 'group': kind == 'grouplayer',
                              'mask': kind.endswith('mask'), 'locked': node.locked(),
                              'alphaLocked': node.alphaLocked(), 'thumbnail': thumbnail(node),
                              **state(node)})
-                walk(node, key, depth + 1)
+                walk(node, key, depth + 1, legacy)
         walk(doc.rootNode())
         return nodes, rows
 
@@ -227,10 +231,13 @@ class Layers(Extension):
                 continue
             files = {}
             composited = row['id'] in islands
+            content_hash = None
             for kind, read in [('original', node.projectionPixelData if composited else node.pixelData), ('masked', node.projectionPixelData)]:
                 raw = bytes(read(b.x(), b.y(), b.width(), b.height()))
                 if len(raw) != b.width() * b.height() * 4:
                     raise ValueError('部件像素格式不匹配')
+                if kind == 'original':
+                    content_hash = hashlib.sha256(raw).hexdigest()
                 image = QImage(raw, b.width(), b.height(), b.width() * 4, QImage.Format_ARGB32).copy()
                 name = 'part-%d-%s.png' % (len(records), kind)
                 if not image.save(str(directory / name), 'PNG'):
@@ -241,9 +248,35 @@ class Layers(Extension):
             while parent:
                 visible = visible and session['nodes'][parent].visible()
                 parent = next(r['parentId'] for r in session['rows'] if r['id'] == parent)
-            name = re.sub(r'^\d+\s+', '', re.sub(r'^(人物|衣服)\s*\|\s*', '', row['name']))
-            group = name.rsplit('/', 1)[0] if '/' in name else row['parentId'] or row['id']
-            records.append({'id':row['id'], 'partId':group, 'name':name, 'visible':visible, 'opacity':node.opacity(),
+            prefix = re.match(r'^(人物|衣服|衣装)\s*\|\s*', row['name'])
+            namespace = 'character:' if prefix and prefix.group(1) == '人物' else 'clothing:' if prefix else ''
+            name = re.sub(r'^\d+\s+', '', row['name'][prefix.end():] if prefix else row['name'])
+            part_path = namespace + name if namespace else None
+            group = namespace + name.rsplit('/', 1)[0] if '/' in name else row['parentId'] or row['id']
+            members = []
+            source_digest = hashlib.sha256()
+            if composited:
+                for candidate in sorted(session['rows'], key=lambda r: r['uuid']):
+                    parent = candidate['parentId']
+                    while parent and parent != row['id']:
+                        parent = ancestor(parent)
+                    if parent == row['id']:
+                        members.append(candidate['uuid'])
+                        source = session['nodes'][candidate['id']]
+                        source_digest.update(candidate['uuid'].encode('ascii'))
+                        source_digest.update(source.type().encode('ascii'))
+                        if source.type() == 'paintlayer':
+                            sb = source.bounds().intersected(QRect(0, 0, doc.width(), doc.height()))
+                            source_digest.update(json.dumps([sb.x(), sb.y(), sb.width(), sb.height()]).encode('ascii'))
+                            if not sb.isEmpty():
+                                source_digest.update(bytes(source.pixelData(sb.x(), sb.y(), sb.width(), sb.height())))
+                # A shadow visibility/opacity edit changes the flattened colour,
+                # not its source identity. Fingerprint original member pixels.
+                content_hash = source_digest.hexdigest()
+            records.append({'id':row['id'], 'uuid':row['uuid'], 'legacyId':row['legacyId'],
+                            'partPath':part_path, 'sourceLayerUuids':members if composited else [row['uuid']],
+                            'contentHash':content_hash,
+                            'partId':group, 'name':name, 'visible':visible, 'opacity':node.opacity(),
                             'composited':composited,
                             'bounds':{'x':b.x(), 'y':b.y(), 'width':b.width(), 'height':b.height()}, **files})
         return {'layers':records, 'width':doc.width(), 'height':doc.height()}

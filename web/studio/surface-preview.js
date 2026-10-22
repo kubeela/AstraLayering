@@ -73,7 +73,7 @@ export class SurfacePreview {
         g.layers.push(l);g.known+=l.map.known;g.total+=l.map.known+l.map.inferred;
         const x=Math.min(g.bounds.x,l.bounds.x),y=Math.min(g.bounds.y,l.bounds.y);g.bounds={x,y,width:Math.max(g.bounds.x+g.bounds.width,l.bounds.x+l.bounds.width)-x,height:Math.max(g.bounds.y+g.bounds.height,l.bounds.y+l.bounds.height)-y};
       }
-      const options=[...this.groups.values()].map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.id.startsWith('n')?g.layers[0].name:g.id;return o;});
+      const options=[...this.groups.values()].map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=/^[a-f0-9]{8}-/.test(g.id)?g.layers[0].name:g.id;return o;});
       $('#surface-part').replaceChildren(...options);$('#surface-replace').replaceChildren(new Option('原部件',''),...options.map(o=>o.cloneNode(true)));
       $('#surface-controls').hidden=false;$('#surface-close').hidden=false;$('#surface-status').textContent='已准备 · 仅修改预览';this.active=true;this.sync();this.changed(true);
       return true;
