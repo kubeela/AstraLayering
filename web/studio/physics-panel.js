@@ -176,10 +176,12 @@ export class PhysicsPanel {
   }
   sync() {
     const canPrepare = this.source()?.physicsCase || this.surfaces.session()?.session;
+    const requestedCase = $('#physics-case-select').value;
+    const canLoadCase = requestedCase && (!this.ready || requestedCase !== this.source()?.physicsCase?.id);
     $('#effect-physics').checked = this.enabled || this.preparing;
     $('#effect-physics').disabled = this.preparing || !this.source() || this.busy() || !canPrepare;
-    $('#physics-prepare').disabled = this.preparing || this.ready || !this.source() || this.busy() || !canPrepare;
-    $('#physics-prepare').textContent = this.preparing ? '正在准备…' : '准备物理部件';
+    $('#physics-prepare').disabled = this.preparing || this.busy() || (requestedCase ? !canLoadCase : this.ready || !this.source() || !canPrepare);
+    $('#physics-prepare').textContent = this.preparing ? '正在准备…' : '加载部件';
     $('#physics-controls').hidden = !this.ready; $('#physics-close').hidden = !this.ready;
     $('#physics-status').textContent = this.preparing ? '读取当前部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · ${this.enabled ? '已启用' : '已关闭'}` : this.source()&&!canPrepare ? '等待原生图层就绪…' : '开启摆动物理后自动准备部件';
     $('#physics-demo').checked = !!this.demo;

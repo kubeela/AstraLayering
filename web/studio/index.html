@@ -39,7 +39,6 @@
             <button id="open-jianma">Jianma</button
             ><button id="open-task">从项目加载</button>
           </div>
-          <button id="open-physics-case" class="text-button">物理测试 ↗</button>
           <div id="document-info" hidden>
             <div class="document-heading">
               <strong id="document-name"></strong
@@ -75,11 +74,6 @@
           <div class="preview-effects" aria-label="预览效果">
             <label class="toggle"><input id="effect-lighting" type="checkbox" checked>实时光照</label>
             <label class="toggle"><input id="effect-physics" type="checkbox">摆动物理</label>
-          </div>
-          <div id="physics-cases" hidden>
-            <label class="field inline">测试<select id="physics-case-select"></select></label>
-            <label class="toggle"><input id="physics-demo" type="checkbox">循环演示</label>
-            <p id="physics-case-note" class="muted"></p>
           </div>
         </section>
         <section class="panel layer-panel">
@@ -249,7 +243,8 @@
         <div id="physics-workspace" role="tabpanel" hidden>
           <div class="panel-heading"><h2>摆动物理</h2><span id="physics-draft" class="muted">草稿</span></div>
           <section class="panel">
-            <div class="file-actions"><button id="physics-prepare">准备物理部件</button><button id="physics-close" hidden>释放部件</button></div>
+            <label class="field">部件来源<select id="physics-case-select" aria-label="物理部件来源"><option value="">当前图层</option></select></label>
+            <div class="file-actions"><button id="physics-prepare">加载部件</button><button id="physics-close" hidden>释放部件</button></div>
             <p id="physics-status" class="muted">从角色原始图层建立物理绑定</p>
           </section>
           <div id="physics-controls" hidden>
@@ -269,6 +264,7 @@
             <section class="panel"><h3>固定与回弹</h3><div id="physics-material"></div></section>
             <section class="panel">
               <h3>测试</h3>
+              <label id="physics-case-playback" class="toggle" hidden><input id="physics-demo" type="checkbox">循环演示</label>
               <div class="file-actions"><button id="physics-pause">暂停</button><button id="physics-step">单帧</button><button id="physics-reset">复位</button></div>
               <button id="physics-pulse" class="physics-pulse">单次扰动</button>
               <label class="field">扰动范围<select id="physics-scope"><option value="current">当前部件</option><option value="all">全部摆动物体</option></select></label>

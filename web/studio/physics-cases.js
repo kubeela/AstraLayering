@@ -16,11 +16,11 @@ const image = (bytes, w, h) => { const c = canvas(w, h); c.getContext('2d').putI
 export async function createPhysicsCase(id) {
   const spec = physicsCases[id]; if (!spec) throw Error('未知物理测试');
   const size = [1024, 1024], b = spec.bounds, c = canvas(b.width, b.height), ctx = c.getContext('2d');
-  ctx.beginPath();
-  if (id === 'ribbon') { ctx.moveTo(8, 0); ctx.lineTo(b.width - 8, 0); ctx.lineTo(b.width - 30, b.height - 30); ctx.lineTo(b.width / 2, b.height); ctx.lineTo(30, b.height - 30); }
-  else if (id === 'skirt') { ctx.moveTo(110, 0); ctx.lineTo(b.width - 110, 0); ctx.lineTo(b.width, b.height - 24); for (let x = b.width; x >= 0; x -= 25) ctx.lineTo(x, b.height - 24 + Math.sin(x / b.width * Math.PI * 6) * 16); }
-  else { ctx.moveTo(0, 0); ctx.lineTo(b.width, 18); ctx.lineTo(b.width - 40, b.height / 2); ctx.lineTo(b.width, b.height - 18); ctx.lineTo(0, b.height); }
-  ctx.closePath(); ctx.save(); ctx.clip(); ctx.fillStyle = spec.color; ctx.fillRect(0, 0, b.width, b.height);
+  const outline = new Path2D();
+  if (id === 'ribbon') { outline.moveTo(8, 0); outline.lineTo(b.width - 8, 0); outline.lineTo(b.width - 30, b.height - 30); outline.lineTo(b.width / 2, b.height); outline.lineTo(30, b.height - 30); }
+  else if (id === 'skirt') { outline.moveTo(110, 0); outline.lineTo(b.width - 110, 0); outline.lineTo(b.width, b.height - 24); for (let x = b.width; x >= 0; x -= 25) outline.lineTo(x, b.height - 24 + Math.sin(x / b.width * Math.PI * 6) * 16); }
+  else { outline.moveTo(0, 0); outline.lineTo(b.width, 18); outline.lineTo(b.width - 40, b.height / 2); outline.lineTo(b.width, b.height - 18); outline.lineTo(0, b.height); }
+  outline.closePath(); ctx.save(); ctx.clip(outline); ctx.fillStyle = spec.color; ctx.fillRect(0, 0, b.width, b.height);
   const cell = 38;
   for (let y = 0; y < b.height; y += cell) for (let x = 0; x < b.width; x += cell) if ((x / cell + y / cell) % 2 === 0) { ctx.fillStyle = '#ffffff50'; ctx.fillRect(x, y, cell, cell); }
   ctx.lineWidth = 3; ctx.strokeStyle = '#ffffffb0';
@@ -30,12 +30,12 @@ export async function createPhysicsCase(id) {
   const marker = id === 'flag' ? { x: b.width * .84, y: b.height * .25, width: 16, height: b.height * .5 }
     : { x: b.width * .2, y: b.height * .86, width: b.width * .6, height: 16 };
   ctx.fillStyle = '#ffe15a'; ctx.fillRect(marker.x, marker.y, marker.width, marker.height);
-  ctx.restore(); ctx.lineWidth = 5; ctx.strokeStyle = '#183747'; ctx.stroke();
-  const makeLayer = (key, name, bounds, color, fixed = false) => {
+  ctx.restore(); ctx.lineWidth = 5; ctx.strokeStyle = '#183747'; ctx.stroke(outline);
+  const makeLayer = (key, name, bounds, color, fixedDepth) => {
     const bytes = rgba(color), data = new Uint8Array(bytes.length);
     for (let y = 0; y < bounds.height; y++) for (let x = 0; x < bounds.width; x++) {
-      const q = (y * bounds.width + x) * 4, nx = fixed ? 0 : (x / bounds.width - .5) * .75, ny = fixed ? 0 : .06 * Math.sin(y / bounds.height * Math.PI);
-      data[q] = Math.round((nx + 1) * 127.5); data[q + 1] = Math.round((ny + 1) * 127.5); data[q + 2] = Math.round((Math.sqrt(1 - nx * nx - ny * ny) + 1) * 127.5); data[q + 3] = fixed ? 150 : Math.round(180 + y / bounds.height * 35);
+      const q = (y * bounds.width + x) * 4, nx = fixedDepth !== undefined ? 0 : (x / bounds.width - .5) * .75, ny = fixedDepth !== undefined ? 0 : .06 * Math.sin(y / bounds.height * Math.PI);
+      data[q] = Math.round((nx + 1) * 127.5); data[q + 1] = Math.round((ny + 1) * 127.5); data[q + 2] = Math.round((Math.sqrt(1 - nx * nx - ny * ny) + 1) * 127.5); data[q + 3] = fixedDepth ?? Math.round(180 + y / bounds.height * 35);
     }
     return { id: `${id}:${key}`, partId: `${id}:${key}`, name, bounds, rgba: bytes, maskedRgba: bytes, color, map: { data, known: bytes.length / 4, inferred: 0 }, visible: true, opacity: 255 };
   };
@@ -44,7 +44,14 @@ export async function createPhysicsCase(id) {
     : { x: b.x - 25, y: b.y - 18, width: b.width + 50, height: 38 };
   const anchor = canvas(anchorBounds.width, anchorBounds.height), a = anchor.getContext('2d');
   a.fillStyle = '#273b50'; a.fillRect(0, 0, anchor.width, anchor.height); a.strokeStyle = '#90a6bb'; a.lineWidth = 4; a.strokeRect(3, 3, anchor.width - 6, anchor.height - 6);
-  const layers = [cloth, makeLayer('anchor', '固定夹具', anchorBounds, anchor, true)];
+  // A real receiver behind the cloth makes occlusion visible. Its albedo has
+  // no painted shadow; all projected darkness comes from the shared renderer.
+  const receiverBounds = { x: 60, y: 70, width: 904, height: 884 }, receiver = canvas(receiverBounds.width, receiverBounds.height), r = receiver.getContext('2d');
+  r.fillStyle = '#d9d8d3'; r.fillRect(0, 0, receiver.width, receiver.height);
+  r.strokeStyle = '#c9c8c3'; r.lineWidth = 1;
+  for (let x = 0; x < receiver.width; x += 64) { r.beginPath(); r.moveTo(x, 0); r.lineTo(x, receiver.height); r.stroke(); }
+  for (let y = 0; y < receiver.height; y += 64) { r.beginPath(); r.moveTo(0, y); r.lineTo(receiver.width, y); r.stroke(); }
+  const layers = [makeLayer('receiver', '投影底板', receiverBounds, receiver, 105), cloth, makeLayer('anchor', '固定夹具', anchorBounds, anchor, 230)];
   const color = canvas(...size), normal = canvas(...size), depth = canvas(...size);
   for (const l of layers) {
     const n = new Uint8ClampedArray(l.rgba.length), d = new Uint8ClampedArray(n.length);
