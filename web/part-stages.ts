@@ -1,0 +1,77 @@
+import { createHash } from 'node:crypto';
+import { join } from 'node:path';
+import { mergeSourceHash } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
+import { normalizeGroups } from '../.agents/skills/live2d-maker/shared/part/groups.ts';
+import { validateOcclusionDocument } from '../.agents/skills/live2d-maker/shared/part/occlusion-plan.ts';
+import type { AgentCall } from './agent-progress.ts';
+
+type Status = 'pending' | 'running' | 'available' | 'done';
+const stepPhases: Record<string, string> = {
+  part_pose_judgment: 'standard', part_standardize: 'standard', part_reference_judgment: 'simplified',
+  part_simplify: 'simplified', part_base_subject: 'base', clothing_preparation: 'clothing',
+  part_initial_groups: 'initial', clothing_initial_groups: 'initial',
+  part_occlusion: 'occlusion', clothing_occlusion: 'occlusion',
+};
+const namePhases: Record<string, string> = {
+  '姿态判断': 'standard', '标准姿态': 'standard', '参考判断': 'simplified', '简化图片': 'simplified',
+  '素体换装': 'base', '纯衣服参考准备': 'clothing', '首次分组识别': 'initial', '最终遮挡层级规划': 'occlusion',
+};
+
+// Observe published files and existing receipts. This function never restores or writes scheduler state.
+export async function partStages(directory: string, pipeline: string, groups: any[], files: Set<string>,
+  json: (path: string) => Promise<any>, read: (path: string) => Promise<Buffer | undefined>, calls: AgentCall[], errors: string[]) {
+  const states: Record<string, Status> = {}, messages: Record<string, string> = {};
+  const present = (path: string) => files.has(pipeline + '/' + path);
+  const artifact = (...paths: string[]): Status => paths.some(present) ? 'available' : 'pending';
+  const record = await json(pipeline + '/references/preparation.json');
+  const prep = record?.version === 1 ? record : undefined;
+  const reference = (name: string) => ['png', 'jpg', 'jpeg', 'webp'].map(ext => `references/${name}.${ext}`).find(present);
+  const fingerprint = async (path: string | undefined, hash: unknown) => {
+    if (!path || typeof hash !== 'string') return false;
+    const bytes = await read(pipeline + '/' + path);
+    return !!bytes && createHash('sha256').update(bytes).digest('hex') === hash;
+  };
+  states.initial = groups.length ? 'done' : 'pending';
+  if (pipeline === 'part-layering') {
+    for (const [phase, name] of [['standard', 'standard'], ['simplified', 'simplified-subject'], ['base', 'base-subject']]) {
+      const path = reference(name);
+      states[phase] = await fingerprint(path, prep?.files?.[phase]?.outputHash) ? 'done' : path ? 'available' : 'pending';
+    }
+    const judgment = await fingerprint('references/judgment.json', prep?.files?.judgment?.outputHash);
+    states.preparation = judgment && ['standard', 'simplified', 'base'].every(phase => states[phase] === 'done') ? 'done'
+      : ['standard', 'simplified', 'base'].some(phase => states[phase] !== 'pending') || present('references/judgment.json') ? 'available' : 'pending';
+  } else {
+    states.clothing = await fingerprint('references/clothing.png', prep?.clothingHash) ? 'done' : artifact('references/clothing.png');
+    states.preparation = states.clothing;
+  }
+  states.merge = artifact('preview.svg', 'preview.draft.svg');
+  const all = (nodes: any[]): any[] => nodes.flatMap(node => [node, ...all(node.groups ?? [])]);
+  if (present('preview.svg') && groups.length && all(groups).every(node => Object.values(node.webPhases).every(value => value === 'done'))) {
+    try {
+      const preview = await read(pipeline + '/preview.svg');
+      const expected = await mergeSourceHash(join(directory, pipeline), { groups: normalizeGroups(groups) } as any);
+      if (preview?.toString().match(/\bdata-source-sha256=['"]([^'"]+)['"]/)?.[1] === expected) states.merge = 'done';
+    } catch (error) { errors.push(pipeline + '/preview.svg: ' + String(error)); }
+  }
+  states.occlusion = artifact('occlusion.json', 'stages/occlusion/candidate.svg');
+  if (present('occlusion.json')) {
+    try {
+      const plan = validateOcclusionDocument(await json(pipeline + '/occlusion.json'));
+      const leaves = all(groups).filter(node => !node.groups?.length);
+      if (plan.layers.length === leaves.length && leaves.every(node => plan.layers.some(row => row.id === node.id))) states.occlusion = 'done';
+    } catch (error) { errors.push(pipeline + '/occlusion.json: ' + String(error)); }
+  }
+  const latest = new Map<string, AgentCall>();
+  for (const call of calls) {
+    const phase = stepPhases[call.step] ?? namePhases[call.name];
+    if (phase) latest.set(phase, call);
+  }
+  for (const [phase, call] of latest) {
+    if (call.finished) continue;
+    states[phase] = 'running'; messages[phase] = call.name;
+    if (['standard', 'simplified', 'base', 'clothing'].includes(phase)) {
+      states.preparation = 'running'; messages.preparation = call.name;
+    }
+  }
+  return { states, messages };
+}

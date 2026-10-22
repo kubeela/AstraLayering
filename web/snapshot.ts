@@ -54,21 +54,14 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const states: Record<string, Status> = {};
     const messages: Record<string, string> = {};
     const observed = (value?: string): Status => value === 'running' ? (active ? 'running' : record.status === 'failed' ? 'failed' : 'unconfirmed') : statusOf(value);
-    const artifactStatus = (paths: string[]) => paths.some(path => fileSet.has(id + '/' + path)) ? 'available' as const : 'pending' as const;
     let groups: any[] = [];
     if (id === 'part-layering' || id === 'clothing-part-layering') {
       const document = await optional(id + '/groups.json');
       try { validateGroups(document?.groups ?? []); groups = document?.groups ?? []; }
       catch (error) { errors.push(id + ': ' + String(error)); }
       const all = flatten(groups);
-      await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined);
-      states.initial = all.length ? 'available' : 'pending';
-      const prep = await optional(id + '/references/preparation.json');
-      states.preparation = prep ? 'available' : 'pending';
-      states.standard = artifactStatus(['references/standard.png']);
-      states.simplified = artifactStatus(['references/simplified-subject.png', 'references/simplified-subject.jpg', 'references/simplified-subject.webp']);
-      states.base = artifactStatus(['references/base-subject.png', 'references/base-subject.jpg', 'references/base-subject.webp']);
-      states.clothing = artifactStatus(['references/clothing.png']);
+      const progress = await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined);
+      Object.assign(states, progress.states); Object.assign(messages, progress.messages);
       for (const phase of phases) {
         const values = all.map(node => node.webPhases[phase]);
         states[phase] = values.includes('failed') ? 'failed' : values.includes('running') ? 'running'
@@ -78,11 +71,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
       const values = phases.map(phase => states[phase]);
       states.layers = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.includes('unconfirmed') ? 'unconfirmed'
         : values.every(v => v === 'done') ? 'done' : all.length ? 'available' : 'pending';
-      states.merge = document?.merge?.status ? observed(document.merge.status) : artifactStatus(['preview.svg']);
-      states.occlusion = artifactStatus(['occlusion.json']);
-      // Preparatory substeps have no execution markers; their files prove availability only.
+      // Legacy completed pipelines can lack individual reference fingerprints.
       if (saved?.status === 'completed') {
-        for (const key of ['initial', 'preparation', 'standard', 'simplified', 'base', 'clothing', 'occlusion']) {
+        for (const key of ['initial', 'preparation', 'standard', 'simplified', 'base', 'clothing']) {
           if (states[key] === 'available') states[key] = 'done';
         }
       }
