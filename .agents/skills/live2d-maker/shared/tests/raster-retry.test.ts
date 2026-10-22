@@ -45,6 +45,23 @@ test('额度、输入图数和上下文上限不会被结构化 429 误判为临
   assert.equal(retryableAgentError(new AgentCallError('too many requests', { rateLimitExceeded: { httpStatusCode: 429 } })), true);
 });
 
+test('AGV response-header timeouts retry in the same runtime; a recovered response ends retries', async () => {
+  const timeout = 'API error (attempt 1): request failed: net/http: timeout awaiting response headers';
+  assert.equal(retryableAgentError(new AgentCallError(timeout)), true);
+  assert.equal(retryableAgentError(new Error(timeout)), false);
+  assert.equal(retryableAgentError(new AgentCallError('authentication failed; ' + timeout)), false);
+  const waits: number[] = [], errors: string[] = [];
+  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); });
+  let calls = 0;
+  const result = await runtime.run(async () => {
+    calls++;
+    if (calls === 1) throw new AgentCallError(timeout);
+    return 'completed after retry';
+  }, { onRetry: retry => { errors.push(String(retry.error)); } });
+  assert.equal(result, 'completed after retry'); assert.equal(calls, 2);
+  assert.deepEqual(waits, [5000]); assert.equal(errors.length, 1);
+});
+
 test('取消可以中断 raster 退避；本地事件保存失败不触发网络重试', async () => {
   const controller = new AbortController();
   let turns = 0;
