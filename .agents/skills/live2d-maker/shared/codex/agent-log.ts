@@ -1,5 +1,6 @@
 import { appendFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
+import { pipelineIds } from '../paths.ts';
 import type { ThreadEvent } from '@openai/codex-sdk';
 
 function readable(value: unknown): string {
@@ -50,35 +51,40 @@ export class AgentLog {
   readonly startedAt = new Date().toISOString();
   private startedMs = Date.now();
 
-  private constructor(directory: string) {
+  private readonly workflowLog: string;
+  private readonly name: string;
+  private constructor(directory: string, name: string, root: string) {
     this.directory = directory;
+    this.name = name;
+    this.workflowLog = workflowLogPath(root);
+  }
+
+  private async write(description: string, timestamp = new Date().toISOString()) {
+    if (description) await appendFile(this.workflowLog, '[' + timestamp + '] [' + this.name + '] ' + description + '\n');
   }
 
   static async create(root: string, name: string, request: unknown): Promise<AgentLog> {
     await mkdir(root, { recursive: true });
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const safeName = name.replace(/[^\p{L}\p{N}_-]/gu, '_').slice(0, 48) || 'agent';
-    const log = new AgentLog(await mkdtemp(join(root, `${timestamp}-${safeName}-`)));
+    const log = new AgentLog(await mkdtemp(join(root, `${timestamp}-${safeName}-`)), name, root);
     await writeFile(join(log.directory, 'request.json'), JSON.stringify(request, null, 2) + '\n', 'utf8');
     await writeFile(join(log.directory, 'events.jsonl'), '', 'utf8');
-    await writeFile(join(log.directory, 'transcript.log'), `[${log.startedAt}] ${name}\n`, 'utf8');
+    await log.write('请求记录：' + log.directory, log.startedAt);
     return log;
   }
 
   static async retry(directory: string, event: { attempt: number; nextAttempt: number; delayMs: number; error: string }) {
     const timestamp = new Date().toISOString();
     await appendFile(join(directory, 'events.jsonl'), JSON.stringify({ timestamp, event: { type: 'retry.scheduled', ...event } }) + '\n');
-    await appendFile(join(directory, 'transcript.log'),
-      `[${timestamp}] 临时错误，${event.delayMs / 1000} 秒后第 ${event.nextAttempt} 次尝试：${event.error}\n`);
+    await appendFile(workflowLogPath(directory), `[${timestamp}] [${basename(directory)}] 临时错误，${event.delayMs / 1000} 秒后第 ${event.nextAttempt} 次尝试：${event.error}\n`);
   }
 
   async record(event: ThreadEvent): Promise<string> {
     const timestamp = new Date().toISOString();
     await appendFile(join(this.directory, 'events.jsonl'), JSON.stringify({ timestamp, event }) + '\n', 'utf8');
     const description = describeEvent(event);
-    if (description) {
-      await appendFile(join(this.directory, 'transcript.log'), `[${timestamp}] ${description}\n\n`, 'utf8');
-    }
+    await this.write(description, timestamp);
     return description;
   }
 
@@ -101,7 +107,16 @@ export class AgentLog {
     } else if (message.error) {
       description = `错误：${readable(message.error)}`;
     }
-    if (description) await appendFile(join(this.directory, 'transcript.log'), `[${timestamp}] ${description}\n\n`, 'utf8');
+    if (message.type === 'cli.native') description = String(message.text || '');
+    if (message.type === 'agv.gateway') {
+      const phases: Record<string, string> = { started: '请求开始', prepared: '发送请求', headers: '收到响应头', first_body: '开始返回内容', completed: '请求完成', failed: '请求失败' };
+      description = '网关 ' + String(message.requestId).slice(0, 8) + '：' + phases[message.phase] + '；' + (message.elapsedMs / 1000).toFixed(2) + ' 秒'
+        + (message.status ? '；HTTP ' + message.status : '')
+        + (message.inputImages !== undefined ? '；图片 ' + message.inputImages + ' 张；力度 ' + (message.thinkingLevel || '未设置') : '')
+        + (message.errorName ? '；' + message.errorName : '');
+    }
+    if (!method && message.text && message.type !== 'agv.gateway') description = String(message.text);
+    await this.write(description, timestamp);
     return description;
   }
 
@@ -110,7 +125,15 @@ export class AgentLog {
     await writeFile(join(this.directory, 'result.json'), JSON.stringify({
       startedAt: this.startedAt, finishedAt, elapsedMs: Date.now() - this.startedMs, ...result,
     }, null, 2) + '\n', 'utf8');
-    await appendFile(join(this.directory, 'transcript.log'),
-      `[${finishedAt}] ${result.status}${result.error ? `：${result.error}` : ''}\n`, 'utf8');
+    await this.write(String(result.status) + (result.error ? '：' + result.error : ''), finishedAt);
   }
+}
+
+// All six pipelines, including independent CLI entrypoints, share the task log.
+// Unstructured/test callers keep their log inside their own supplied log root.
+export function workflowLogPath(root: string): string {
+  for (let path = resolve(root); dirname(path) !== path; path = dirname(path)) {
+    if ((pipelineIds as readonly string[]).includes(basename(path))) return join(dirname(path), 'workflow.log');
+  }
+  return join(resolve(root), 'workflow.log');
 }

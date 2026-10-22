@@ -1,6 +1,8 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { link, mkdir, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { inspectAgv } from './inspect.ts';
 import { parseArgs } from 'node:util';
 import { resolveRunsDirectory, workflowsDirectory } from '../../shared/paths.ts';
 
@@ -30,24 +32,63 @@ export async function createPatchedAgv(sourcePath: string, directory?: string): 
   const root = resolveRunsDirectory(directory), skill = resolve(workflowsDirectory);
   const realRoot = await realpath(root);
   if (realRoot === skill || realRoot.startsWith(skill + sep)) throw new Error('--dir 必须位于 skill 外。');
-  const source = await readFile(await realpath(sourcePath));
-  const hash = sha256(source);
-  const bytes = hash === knownBuild.patchedSha256 ? source : patchResponseHeaders(source);
-  const output = join(realRoot, '.runtime', 'agv', knownBuild.sourceSha256, 'antigravity');
-  const verify = async () => {
-    if (sha256(await readFile(output)) !== knownBuild.patchedSha256) throw new Error('已存在的 AGV 副本校验失败，未覆盖。');
+  let source = await readFile(await realpath(sourcePath));
+  if (!source.subarray(0, 4).equals(Buffer.from('7f454c46', 'hex'))) {
+    // Accept this tool's installed launcher as --source without treating a shell
+    // script or another executable as a patchable binary.
+    const manifest = JSON.parse(await readFile(join(dirname(sourcePath), 'patch.json'), 'utf8'));
+    if (manifest.format !== 2) throw new Error('指定的 AGV 入口不是可确认的补丁副本。');
+    source = await readFile(join(dirname(sourcePath), 'antigravity.bin'));
+    if (sha256(source) !== manifest.patchedSha256) throw new Error('指定的 AGV 补丁副本已被替换，请提供原始 CLI。');
+  }
+  const layout = inspectAgv(source);
+  const original = Buffer.from(source);
+  original.writeBigUInt64LE(60_000_000_000n, layout.headerOffset + 2);
+  const sourceHash = sha256(original);
+  const bytes = Buffer.from(original); bytes.fill(0, layout.headerOffset + 2, layout.headerOffset + 10);
+  const patchedHash = sha256(bytes);
+  const folder = join(realRoot, '.runtime', 'agv', sourceHash, 'v2');
+  const output = join(folder, 'antigravity');
+  await mkdir(folder, { recursive: true, mode: 0o700 });
+  const install = async (name: string, value: Buffer | string, mode = 0o600) => {
+    const target = join(folder, name), temporary = target + '.' + randomUUID() + '.tmp';
+    try {
+      await writeFile(temporary, value, { flag: 'wx', mode });
+      try { await link(temporary, target); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error; }
+      if (!(await readFile(target)).equals(Buffer.from(value))) throw new Error('AGV 运行副本内容已变化，未覆盖：' + target);
+    } finally { await rm(temporary, { force: true }); }
   };
-  await mkdir(dirname(output), { recursive: true, mode: 0o700 });
-  const temporary = output + '.' + randomUUID() + '.tmp';
-  try {
-    await writeFile(temporary, bytes, { flag: 'wx', mode: 0o700 });
-    try { await link(temporary, output); }
-    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error; }
-    await verify();
-    await writeFile(join(dirname(output), 'patch.json'), JSON.stringify({ version: knownBuild.version, sourceSha256: knownBuild.sourceSha256,
-      patchedSha256: knownBuild.patchedSha256, defaultResponseHeaderTimeoutSeconds: 0, originalModified: false }, null, 2) + '\n');
-  } finally { await rm(temporary, { force: true }); }
+  await install('antigravity.bin', bytes, 0o700);
+  await install('patch.json', JSON.stringify({ format: 2,
+    version: sourceHash === knownBuild.sourceSha256 ? knownBuild.version : '结构兼容的 linux-x64 AGV',
+    sourceSha256: sourceHash, patchedSha256: patchedHash, headerOffset: layout.headerOffset,
+    defaultResponseHeaderTimeoutSeconds: 0, autoUpdateDisabledByTrue: true, originalModified: false }, null, 2) + '\n');
+  await install('launch.mjs', await readFile(fileURLToPath(new URL('./launch.mjs', import.meta.url))));
+  await install('antigravity', '#!/usr/bin/env node\nimport "./launch.mjs";\n', 0o700);
   return output;
+}
+
+export async function resolvePatchedAgv(executable: string): Promise<string> {
+  let manifest;
+  try { manifest = JSON.parse(await readFile(join(dirname(executable), 'patch.json'), 'utf8')); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return executable; throw error; }
+  if (!manifest.sourceSha256 || manifest.defaultResponseHeaderTimeoutSeconds === undefined) return executable;
+  let root = dirname(executable);
+  while (dirname(root) !== root && dirname(root).split(sep).at(-1) !== '.runtime') root = dirname(root);
+  if (dirname(root).split(sep).at(-1) !== '.runtime') throw new Error('AGV 补丁入口不在受控的 .runtime 目录内。');
+  const runsRoot = dirname(dirname(root));
+  if (manifest.format !== 2) return createPatchedAgv(executable, runsRoot);
+  if (manifest.defaultResponseHeaderTimeoutSeconds !== 0 || manifest.autoUpdateDisabledByTrue !== true) {
+    throw new Error('AGV 补丁没有确认禁用自动更新，未启动。请重新执行 patch:agv。');
+  }
+  const payload = join(dirname(executable), 'antigravity.bin');
+  if (sha256(await readFile(payload)) !== manifest.patchedSha256) {
+    // An updated payload must pass structural compatibility checks again. Never
+    // launch it using an old manifest's assertion that the deadline is disabled.
+    return createPatchedAgv(payload, runsRoot);
+  }
+  return executable;
 }
 
 if (import.meta.main) {

@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import { CodexAgents } from '../../shared/codex/agents.ts';
+import { workflowLogPath } from '../../shared/codex/agent-log.ts';
 import { AgentRuntime, interruptedTaskPrompt } from '../../shared/codex/agent-runtime.ts';
 import { nodeExecutables } from './node-executables.ts';
 
@@ -23,7 +24,7 @@ for (const event of ${JSON.stringify(events)}) process.stdout.write(JSON.stringi
 ${extraCode}
 `, 'utf8');
   await chmod(executable, 0o755);
-  const logDirectory = join(directory, 'logs');
+  const logDirectory = join(directory, 'part-layering/agents');
   const messages: string[] = [];
   const agents = new CodexAgents({
     codexPathOverride: executable, cwd: directory, logDirectory,
@@ -40,7 +41,7 @@ async function readLog(root: string) {
     directory,
     request: JSON.parse(await readFile(join(directory, 'request.json'), 'utf8')),
     events: (await readFile(join(directory, 'events.jsonl'), 'utf8')).trim().split('\n').filter(Boolean).map(line => JSON.parse(line)),
-    transcript: await readFile(join(directory, 'transcript.log'), 'utf8'),
+    transcript: await readFile(workflowLogPath(root), 'utf8'),
     result: JSON.parse(await readFile(join(directory, 'result.json'), 'utf8')),
   };
 }
