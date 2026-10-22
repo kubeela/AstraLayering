@@ -49,10 +49,14 @@ export const inspectNative: NativeInspect = async (document, relations, output, 
   if (inherited.ASTRA_STUDIO_KRITA_PYTHONPATH) env.PYTHONPATH = inherited.ASTRA_STUDIO_KRITA_PYTHONPATH;
   else if (env.PYTHONHOME === bundle) env.PYTHONPATH = [join(bundle,'share/krita/pykrita'),join(bundle,'lib/krita-python-libs')].join(process.platform === 'win32' ? ';' : ':');
   const child = spawn(krita, ['--nosplash','--resource-location',resource], {cwd:root,env,stdio:['ignore','pipe','pipe'],windowsHide:true,detached:process.platform !== 'win32'});
-  let log = '', exited = false, launchError: Error | undefined;
+  let log = '', exited = false, resultReady = false, launchError: Error | undefined;
   child.stdout?.on('data', b => { log = (log + b.toString()).slice(-12000); });
   child.stderr?.on('data', b => { log = (log + b.toString()).slice(-12000); });
-  const closed = new Promise<void>(resolve => { child.once('close', () => { exited = true; resolve(); }); });
+  const closed = new Promise<void>(resolve => { child.once('close', (code, exitSignal) => {
+    exited = true;
+    log += `\n[astra-shadow] Krita exit: code=${code}, signal=${exitSignal}\n`;
+    resolve();
+  }); });
   child.once('error', e => { launchError = e; });
   const stop = (force = false) => {
     if (!child.pid || exited) return;
@@ -70,6 +74,7 @@ export const inspectNative: NativeInspect = async (document, relations, output, 
       try {
         const result = JSON.parse(await readFile(join(output,'result.json'),'utf8')) as NativeResult;
         if (!result.success) throw new Error('原生阴影检查失败：' + result.error);
+        resultReady = true;
         return result;
       } catch (e) { if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e; }
       if (exited) throw new Error('Krita 未执行检查插件：' + log);
@@ -77,7 +82,11 @@ export const inspectNative: NativeInspect = async (document, relations, output, 
     }
     throw new Error('Krita 阴影检查超时；诊断保留于 ' + join(output,'native.log'));
   } finally {
-    signal?.removeEventListener('abort', abort); stop();
+    signal?.removeEventListener('abort', abort);
+    // A successful worker requests Krita's normal shutdown. Give it time to
+    // finish before using the bounded cleanup for failed or hung processes.
+    if (resultReady && !signal?.aborted) await Promise.race([closed, delay(1500)]);
+    stop();
     await Promise.race([closed, delay(1500)]);
     if (!exited) { stop(true); await closed; }
     displayProcess?.kill();
