@@ -51,7 +51,7 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
   if (bindings.version !== 2 || !Array.isArray(bindings.shadows) || !Array.isArray(bindings.excluded)) throw new Error('素材检查需要 shadows.json v2，记录 testOffsets；详见 references/production.md');
   const layers = kraLayers(kraContents(await readFile(document)).xml);
   const index = JSON.parse(await readFile(indexPath,'utf8')) as InputIndex;
-  validateMaskStructure(layers, new Map(index.layers.map(l => [l.uuid,{nodetype:l.type,name:l.name}])), new Set(index.parts.map(p => p.id)), bindings);
+  validateMaskStructure(layers, new Map(index.layers.map(l => [l.uuid,{nodetype:l.type,name:l.name,parent:l.parent,...l.maskState}])), new Set(index.parts.map(p => p.id)), bindings);
   for (const r of bindings.shadows) {
     if (!r.testOffsets || !r.notes?.trim()) throw new Error('请记录本部件的像素偏移检查与画法依据：' + r.id);
     for (const [ids, declared] of [[r.casterLayerUuids,[r.casterPartId]], [r.receiverLayerUuids,r.receiverPartIds ?? [r.receiverPartId]]] as [string[],string[]][]) {

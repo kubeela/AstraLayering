@@ -27,6 +27,18 @@ test('alpha 检查只比较覆盖变化，允许阴影改变已有像素的颜�
  assert.equal(alphaGain(new Uint8Array([255,200,100,0]),new Uint8Array([0,0,0,128])),1);
  assert.throws(()=>alphaGain(new Uint8Array(4),new Uint8Array(8)),/画布/);
 });
+test('接收层重组保留原穿戴蒙版；删除、错误归属和关闭蒙版均拒绝',()=>{
+ const source = '<layers><layer uuid="torso" name="Torso" nodetype="paintlayer"><masks><mask uuid="wear" name="Wear mask" nodetype="transparencymask" visible="1" x="0" y="0"/></masks></layer><layer uuid="leg" name="Leg" nodetype="paintlayer"/></layers>';
+ const original = kraLayers(source), bindings={version:2,shadows:[],excluded:['fixture']};
+ assert.equal(original.get('wear')?.parent,'torso');
+ const valid = '<layers><layer uuid="clip" name="Clip" nodetype="grouplayer"><layers>'+source+'</layers></layer></layers>';
+ assert.doesNotThrow(()=>validateMaskStructure(kraLayers(valid),original,new Set(),bindings));
+ assert.throws(()=>validateMaskStructure(kraLayers(valid.replace(/<mask[^>]+\/>/,'')),original,new Set(),bindings),/蒙版被删除/);
+ assert.throws(()=>validateMaskStructure(kraLayers(valid.replace('visible="1"','visible="0"')),original,new Set(),bindings),/蒙版状态改变/);
+ const wrongParent=valid.replace(/<masks>.*?<\/masks>/,'').replace('<layer uuid="leg" name="Leg" nodetype="paintlayer"/>','<layer uuid="leg" name="Leg" nodetype="paintlayer"><mask uuid="wear" name="Wear mask" nodetype="transparencymask" visible="1" x="0" y="0"/></layer>');
+ assert.throws(()=>validateMaskStructure(kraLayers(wrongParent),original,new Set(),bindings),/脱离原部件/);
+ assert.equal(kraLayers(source.replace('<mask ','<layer ')).get('wear')?.parent,'torso');
+});
 test('部件索引保留多深度，命名空间明确时匹配，模糊名称留空',async t=>{
  const root=await mkdtemp(join(tmpdir(),'shadow-index-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const source=join(root,'source.kra');await writeFile(source,zipSync({'maindoc.xml':strToU8(xml().replace('人物 | 002 legs/right','legs/right')),'mergedimage.png':new Uint8Array([1])}));
@@ -42,4 +54,7 @@ test('部件索引保留多深度，命名空间明确时匹配，模糊名称�
  assert.equal(index.layers.find(l=>l.uuid==='base')?.nameMatch,null);
  assert.equal(index.layers.find(l=>l.uuid==='right')?.nameMatch,null);
  assert.deepEqual(index.parts.find(p=>p.id==='character:legs/left')?.depth,[{level:1,region:'front'},{level:3,region:'back'}]);
+ await writeFile(source,zipSync({'maindoc.xml':strToU8(xml().replace('人物 | 001 legs/left','衣装 | 001 legs/left')),'mergedimage.png':new Uint8Array([1])}));
+ const clothingIndex=await inputIndex({characterKra:source,characterColor:source,simplifiedCharacter:source,structureFiles});
+ assert.equal(clothingIndex.layers.find(l=>l.uuid==='left')?.nameMatch,'clothing:legs/left');
 });
