@@ -18,6 +18,29 @@ import type { StepDefinition } from '../../shared/raster/steps.ts';
 import { acquireTaskLock } from '../state.ts';
 import { replaceThread } from '../recovery.ts';
 
+test('阴影恢复按保存模式替换当前会话，保留另一分支与已生成贴图', async t => {
+  for (const mode of ['normal-depth', 'mask'] as const) {
+    const f = await fixture(t), target = join(f.task, 'shadow', mode), other = join(f.task, 'shadow', mode === 'mask' ? 'normal-depth' : 'mask');
+    await mkdir(join(target, 'step01'), { recursive: true }); await mkdir(join(other, 'step01'), { recursive: true });
+    const rootRun = { version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', pipelines: {}, shadowMode: mode };
+    await writeFile(join(f.task, 'run.json'), JSON.stringify(rootRun));
+    await writeFile(join(target, 'run.json'), JSON.stringify({ version: 2, name: 'case', threadId: 'old-shadow',
+      sourceInput: { characterKra: 'source.kra', characterColor: 'source.png', simplifiedCharacter: 'simplified.png', structureFiles: [] },
+      krita: { executable: process.execPath, version: 'test' }, models: { step01: { model: 'gpt-6.1-sol', effort: 'xhigh' } } }));
+    await writeFile(join(target, 'step01/.running'), 'running');
+    await writeFile(join(target, 'step01/normal.png'), 'existing map');
+    await writeFile(join(other, 'run.json'), 'other branch unchanged');
+    await writeFile(join(other, 'step01/.completed'), 'completed');
+    const archive = await replaceThread({ ...f.recovery, pipeline: 'shadow' });
+    assert.ok(archive.startsWith(join(target, 'recovery')));
+    assert.equal(JSON.parse(await readFile(join(target, 'run.json'), 'utf8')).threadId, null);
+    assert.equal(await readFile(join(target, 'step01/normal.png'), 'utf8'), 'existing map');
+    assert.equal(await readFile(join(other, 'run.json'), 'utf8'), 'other branch unchanged');
+    assert.equal(await readFile(join(other, 'step01/.completed'), 'utf8'), 'completed');
+    assert.equal(await readFile(join(f.task, 'run.json'), 'utf8'), JSON.stringify(rootRun));
+  }
+});
+
 async function fixture(t: TestContext) {
   const dir = await mkdtemp(join(tmpdir(), 'live2d-recovery-')), name = 'case', task = join(dir, name);
   t.after(() => rm(dir, { recursive: true, force: true }));

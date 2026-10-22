@@ -4,20 +4,24 @@ import { join } from 'node:path';
 import { pipeline as character } from '../raster-layering/run.ts';
 import { pipeline as clothing } from '../clothing-raster-layering/run.ts';
 import { pipeline as assembly } from '../character-assembly/run.ts';
+import { makePipeline as shadowPipeline } from '../shadow/run.ts';
 import { inspectRun, loadConfig, saveConfig } from '../shared/raster/run-store.ts';
 import { resolveInput, type PipelineId } from '../shared/paths.ts';
-import { acquireTaskLock, directoryFor, now, type TaskOptions } from './state.ts';
+import { acquireTaskLock, directoryFor, now, readRun, type TaskOptions } from './state.ts';
 
 export async function replaceThread(options: Pick<TaskOptions, 'name' | 'dir'> & {
   pipeline: PipelineId; handoff: string; reason: string;
 }): Promise<string> {
-  const pipeline = [character, clothing, assembly].find(value => value.id === options.pipeline);
-  if (!pipeline) throw new Error('--replace-thread 仅适用于两套 raster 或 character-assembly；part 根据文件恢复。');
+  const regular = [character, clothing, assembly].find(value => value.id === options.pipeline);
+  if (!regular && options.pipeline !== 'shadow') throw new Error('--replace-thread 仅适用于 raster、character-assembly 或 shadow；part 根据文件恢复。');
   if (!options.reason.trim()) throw new Error('更换 thread 必须提供非空 --reason。');
   const directory = directoryFor(options);
   const release = await acquireTaskLock(directory);
   try {
-    const target = join(directory, pipeline.id);
+    const mode = options.pipeline === 'shadow' ? (await readRun(directory, options.name))?.shadowMode : undefined;
+    if (options.pipeline === 'shadow' && !mode) throw new Error('阴影换会话需要总控记录中的 shadowMode；不能猜测目标分支。');
+    const pipeline = mode ? shadowPipeline(mode) : regular!;
+    const target = mode ? join(directory, pipeline.id, mode) : join(directory, pipeline.id);
     const config = await loadConfig<unknown>(target, options.name, pipeline.validateInput);
     if (!config?.threadId) throw new Error('没有可替换的绘制 threadId：' + target);
     const plan = await inspectRun(target, pipeline.steps);
