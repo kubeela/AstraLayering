@@ -22,9 +22,11 @@ pnpm start --name jianma --status --json
 
 后台启动会等到配置保存、任务锁和 Krita 检查成功才确认；确认后检查状态和日志，向用户通报当前阶段。省略 `--background` 为前台运行。后台调度进程负责制作，HTTP 工作台由仓库根目录的 `pnpm web` 单独启动；按[工作台启动与连接](workbench.md)展示同一任务，避免从 CLI 和网页重复启动。
 
-总入口顺序执行：人物 part → 人物 raster → 衣服 part → 衣服 raster → 穿戴组装。一条结束后立即进入下一条；两小时检查不参与正常阶段推进。总控 `run.json` 保存路线、配置、PID、各管线进度、最近消息及错误；实际跳过和恢复仍由各管线自己的产物及标记判断。
+总入口顺序执行：人物 part → 人物 raster → 衣服 part → 衣服 raster → 穿戴组装 → 阴影制作。一条结束后立即进入下一条；两小时检查不参与正常阶段推进。总控 `run.json` 保存路线、配置、PID、各管线进度、最近消息及错误；实际跳过和恢复仍由各管线自己的产物及标记判断。
 
-按用户需要可用 `--from <管线>` / `--to <管线>` 限定连续范围，默认完整五条管线。比如已有两份 KRA 与简化参考，只执行 `--from character-assembly`；只做人物到 `--to raster-layering`。范围会保存，之后只用任务名即可恢复。总入口不会把手动提供的上游文件标为已经执行过的阶段。`--jobs` 控制 part 的 agent 并发，默认 3。
+按用户需要可用 `--from <管线>` / `--to <管线>` 限定连续范围，默认完整六条管线。比如已有两份 KRA 与简化参考，只组装用 `--from character-assembly --to character-assembly`；只做人物到 `--to raster-layering`。范围会保存，之后只用任务名即可恢复。总入口不会把手动提供的上游文件标为已经执行过的阶段。`--jobs` 控制 part 的 agent 并发，默认 3。
+
+`--shadow-mode mask|normal-depth` 透传到阴影制作，首次默认 `mask`，续跑省略沿用保存值。只制作阴影用 `--from shadow --to shadow`；产物与独立恢复见 [阴影制作](../shadow/README.md)。
 
 `--standard` 是人物 part 的 preparation 选项，不增加独立管线。启动新任务前确认用户是否需要标准化；省略时默认关闭。启用后由 preparation agent 判断嘴部是否张大、眼睛是否张开、是否正视站立且双手在身体两侧；已符合就复制原图，否则通过本步骤配置的 `image_generation` 调整。未启用时不调用姿态判断或生图，直接复制原图。两种模式都输出 `part-layering/references/standard.png`，非 PNG 原图会转换格式，`input/original.<扩展名>` 保留原始文件。
 
@@ -120,7 +122,7 @@ clothing-part-layering/tools/write_groups/schema.json
 
 ## 临时错误恢复
 
-五条管线使用同一临时错误分类和退避策略。先等待所选 CLI 自身重连的最终结果，再对服务过载、断流和临时限流按 5、10、20、40、60 秒等待重试，之后每次 60 秒，直到成功或取消。保持原 thread、已有图片和文件，提示 agent 从未完成处继续；不增加视觉 review 轮次。
+各管线使用同一临时错误分类和退避策略。先等待所选 CLI 自身重连的最终结果，再对服务过载、断流和临时限流按 5、10、20、40、60 秒等待重试，之后每次 60 秒，直到成功或取消。保持原 thread、已有图片和文件，提示 agent 从未完成处继续；不增加视觉 review 轮次。
 
 认证、额度、上下文超限、图片数量上限、输入或工件校验错误不会进入此重试。可选图片保护在请求发出前处理阈值；未启用时保持原行为。
 

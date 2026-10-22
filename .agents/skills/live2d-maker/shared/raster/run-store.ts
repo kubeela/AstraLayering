@@ -19,6 +19,7 @@ export type RunConfig<Input = PartLayeringInput> = {
   version: 2;
   name: string;
   sourceInput: Input;
+  inputFingerprint?: string;
   krita: KritaInstallation;
   models: Record<string, ModelConfig>;
   threadId: string | null;

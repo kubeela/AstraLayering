@@ -25,7 +25,7 @@ export async function createCodexImageRoute(settings: WorkflowEnvironment, step:
   const model = settings.stepImages[step]!;
   const api = settings.imageApis[imageModelProviders[model] as 'openai' | 'google']!;
   const processing = { ...normalization, env: normalization.env ?? options.env, directory: outputDirectory };
-  if (imageModelProviders[model] === 'google') requireMattingKrita(processing);
+  if (imageModelProviders[model] === 'google' && step !== 'shadow_maps') requireMattingKrita(processing);
   const token = randomBytes(32).toString('hex');
   const closing = new AbortController();
   const server = createServer(async (request, response) => {
@@ -61,7 +61,7 @@ export async function createCodexImageRoute(settings: WorkflowEnvironment, step:
         || args.background !== undefined && !['transparent', 'auto', 'opaque'].includes(String(args.background))
         || args.size !== undefined && typeof args.size !== 'string'
         || args.n !== undefined && Number(args.n) !== 1) throw new Error('原生生图请求的模型或参数不符合本步骤配置。');
-      const png = await generateImage(api, model, args as ImageArguments, inputs, signal, processing);
+      const png = await generateImage(api, model, step === 'shadow_maps' ? { ...args, background: 'opaque' } as ImageArguments : args as ImageArguments, inputs, signal, processing);
       response.setHeader('content-type', 'application/json');
       response.end(JSON.stringify({ created: Math.floor(Date.now() / 1000), data: [{ b64_json: png.toString('base64') }] }));
     } catch (error) {

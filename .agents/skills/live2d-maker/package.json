@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.33.0",
-  "engines": { "node": ">=24.12.0" },
+  "engines": {
+    "node": ">=24.12.0"
+  },
   "scripts": {
     "start": "node workflow/run.ts",
     "part-layering": "node part-layering/run.ts",
@@ -13,13 +15,15 @@
     "character-assembly": "node character-assembly/run.ts",
     "check": "tsc",
     "test:agents": "node --test shared/tests/agv-gateway.test.ts shared/tests/agv-turn.test.ts shared/tests/tool-config.test.ts shared/tests/step-models.test.ts shared/tests/codex-images.test.ts shared/tests/environment.test.ts shared/tests/raster-retry.test.ts workflow/tests/runner.test.ts",
-    "test": "node --test shared/tests/*.test.ts part-layering/tests/*.test.ts raster-layering/tests/*.test.ts clothing-part-layering/tests/*.test.ts clothing-raster-layering/tests/*.test.ts character-assembly/tests/*.test.ts workflow/tests/*.test.ts",
-    "build:codex": "node tools/codex/build.ts"
+    "test": "node --test shared/tests/*.test.ts part-layering/tests/*.test.ts raster-layering/tests/*.test.ts clothing-part-layering/tests/*.test.ts clothing-raster-layering/tests/*.test.ts character-assembly/tests/*.test.ts shadow/tests/*.test.ts workflow/tests/*.test.ts",
+    "build:codex": "node tools/codex/build.ts",
+    "shadow": "node shadow/run.ts"
   },
   "dependencies": {
     "@openai/codex-sdk": "0.161.0",
     "proper-lockfile": "4.1.2",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "fflate": "0.8.2"
   },
   "devDependencies": {
     "@types/node": "24.19.1",

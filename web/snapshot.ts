@@ -1,5 +1,7 @@
 import { lstat, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
+import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { readRun, taskStatus, type TaskRun } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { steps as personSteps } from '../.agents/skills/live2d-maker/raster-layering/steps.ts';
@@ -44,7 +46,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
   for (const id of pipelineIds) {
     const active = record.runnerAlive && record.lockHeld && record.run?.activePipeline === id;
     const saved = record.run?.pipelines[id];
-    const config = await optional(id + '/run.json');
+    const mode = shadowMode(record.run?.shadowMode);
+    const branch = id === 'shadow' ? id + '/' + mode : id;
+    const config = await optional(branch + '/run.json');
     const states: Record<string, Status> = {};
     const messages: Record<string, string> = {};
     const observed = (value?: string): Status => value === 'running' ? (active ? 'running' : record.status === 'failed' ? 'failed' : 'unconfirmed') : statusOf(value);
@@ -81,8 +85,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
         }
       }
     } else {
-      for (const step of rasterDefinitions[id]) {
-        const prefix = id + '/' + step.id;
+      for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
+        const prefix = branch + '/' + step.id;
         const completed = await exists(prefix + '/.completed'), running = await exists(prefix + '/.running');
         const missing = [];
         for (const path of step.requiredFiles) {
@@ -112,14 +116,24 @@ export async function snapshot(directory: string, name: string, dir: string) {
         }
       }
     }
+    if (id === 'shadow') {
+      for (const variant of shadowModes) {
+        const prefix = id + '/' + variant + '/step01';
+        const complete = await exists(prefix + '/.completed');
+        const delivered = await Promise.all(stepsFor(variant)[0].requiredFiles.map(path => exists(prefix + '/' + path)));
+        states[variant] = complete ? delivered.every(Boolean) ? 'done' : 'failed'
+          : await exists(prefix + '/.running') ? variant === mode ? observed('running') : 'unconfirmed'
+            : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
+      }
+    }
     let status: Status = active ? 'running' : observed(saved?.status);
     if (!saved) status = Object.values(states).includes('failed') ? 'failed' : Object.values(states).includes('unconfirmed') ? 'unconfirmed'
       : files.some(path => path.startsWith(id + '/')) ? 'available' : 'pending';
-    if (Object.values(states).includes('failed') && !active) status = 'failed';
-    if (id in rasterDefinitions && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
+    if ((id === 'shadow' ? states.step01 === 'failed' : Object.values(states).includes('failed')) && !active) status = 'failed';
+    if ((id in rasterDefinitions || id === 'shadow') && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
       status = 'interrupted'; // Root coordinator history must not hide a removed step marker.
     }
-    pipelines.push({ id, status, states, messages, groups, threadId: config?.threadId ?? null, summary: saved?.summary });
+    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, groups, threadId: config?.threadId ?? null, summary: saved?.summary });
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');

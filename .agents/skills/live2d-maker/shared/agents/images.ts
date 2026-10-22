@@ -50,7 +50,7 @@ export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentSt
         const bytes = await readFile(actual), meta = await sharp(bytes).metadata();
         inputs.push({ bytes, mime: meta.format === 'jpeg' ? 'image/jpeg' : meta.format === 'webp' ? 'image/webp' : 'image/png' });
       }
-      const png = await generateImage(api, model, args as ImageArguments, inputs, signal,
+      const png = await generateImage(api, model, step === 'shadow_maps' ? { ...args, background: 'opaque' } as ImageArguments : args as ImageArguments, inputs, signal,
         { ...normalization, env: normalization.env ?? settings.codex.env, directory: output });
       const meta = await sharp(png).metadata();
       await mkdir(join(output, 'images'), { recursive: true });

@@ -40,7 +40,11 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
 }
 
 export type KritaPipeline<Input> = {
-  id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly'>;
+  id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
+  directorySuffix?: string;
+  fingerprintInput?(input: Input): Promise<string>;
+  prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
+  validateDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
   steps: readonly StepDefinition[];
   resolveInput(name: string, root: string): Promise<Input>;
   validateInput(value: unknown): value is Input;
@@ -50,7 +54,8 @@ export type KritaPipeline<Input> = {
 
 export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
   const root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
-  const requested = pipelineDirectory(options.name, pipeline.id, root);
+  if (pipeline.directorySuffix && !/^[a-z][a-z-]*$/.test(pipeline.directorySuffix)) throw new Error('无效的管线分支目录');
+  const requested = join(pipelineDirectory(options.name, pipeline.id, root), pipeline.directorySuffix ?? '');
   const saved = await loadConfig<Input>(requested, options.name, pipeline.validateInput);
   const directory = await canonicalPath(requested);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
@@ -64,8 +69,10 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       if (environment.stepModels[key].harness !== 'codex') await cliExecutable(environment, environment.stepModels[key].harness);
     }
   }
-  const plan = await inspectRun(directory, definitions);
   const reference = await pipeline.resolveInput(options.name, root);
+  const fingerprint = await pipeline.fingerprintInput?.(reference);
+  const inputChanged = !!saved && fingerprint !== undefined && saved.inputFingerprint !== fingerprint;
+  const plan = inputChanged ? { statuses: new Map(), resetFrom: undefined } : await inspectRun(directory, definitions);
   const inputDirectories = pipeline.inputDirectories(reference);
   for (const source of inputDirectories) {
     if (within(source, directory) || within(directory, source)) throw new Error('上游与本管线目录必须分开');
@@ -74,7 +81,8 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
   const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
   const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, undefined, environment.codex.env));
-  const config = saved ?? newConfig(options.name, reference, krita, [...pipeline.steps, ...definitions]);
+  const config = !saved || inputChanged ? newConfig(options.name, reference, krita, [...pipeline.steps, ...definitions]) : saved;
+  if (fingerprint !== undefined) config.inputFingerprint = fingerprint;
   config.sourceInput = reference;
   config.krita = krita;
   for (const step of definitions) {
@@ -91,11 +99,17 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     if ((plan.resetFrom === undefined || index + 1 < plan.resetFrom) && plan.statuses.get(step.id) === 'completed') {
       try { await checkFiles(join(directory, step.id), step.requiredFiles); }
       catch (error) { throw new Error(`${step.id} 已标记完成但交付缺失；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`, { cause: error }); }
+      await pipeline.validateDelivery?.(join(directory, step.id), reference, step);
     }
   }
   if (!options.dryRun) {
     options.signal?.throwIfAborted();
-    if (!saved) await initializeRun(directory, config);
+    if (inputChanged) {
+      const archive = directory + '.previous-' + randomUUID();
+      await rename(directory, archive);
+      options.progress?.(`输入或制作规则已变化；旧分支已保留到 ${archive}，重新制作本分支。`);
+    }
+    if (!saved || inputChanged) await initializeRun(directory, config);
     else await saveConfig(directory, config);
     await resetSteps(directory, config, plan);
   }
@@ -227,7 +241,10 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
           validate: () => checkFiles(output, step.requiredFiles),
         });
       }
+      if (fingerprint !== undefined && await pipeline.fingerprintInput?.(reference) !== fingerprint) throw new Error('制作期间上游输入改变，保留进度；续跑将重新制作本分支。');
+      await pipeline.prepareDelivery?.(output, reference, step);
       await checkFiles(output, step.requiredFiles);
+      await pipeline.validateDelivery?.(output, reference, step);
       options.signal?.throwIfAborted();
       await rename(join(output, '.running'), join(output, '.completed'));
       options.progress?.(`${step.id}：交付检查通过，已写入 .completed`);

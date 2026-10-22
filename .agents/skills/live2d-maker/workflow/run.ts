@@ -1,3 +1,4 @@
+import { shadowMode } from '../shared/shadow.ts';
 import { fork } from 'node:child_process';
 import { mkdir, open } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -16,8 +17,9 @@ export const help = [
   '续跑：pnpm start --name <任务名> --background',
   '进度：pnpm start --name <任务名> --status [--json]',
   '--dir <绝对路径> 指定运行根目录，任务记录在 <dir>/<name>/run.json。',
-  '--from / --to <管线> 选择连续范围，默认从人物 part 到穿戴组装。',
-  '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly',
+  '--from / --to <管线> 选择连续范围，默认从人物 part 到阴影制作。',
+  '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow',
+  '--shadow-mode mask|normal-depth 选择阴影路线，首次默认 mask；续跑省略沿用保存值。',
   '--jobs <正整数> part 的 agent 并发，默认 3。',
   '--standard 在人物 preparation 中先判断姿态，必要时生成 standard.png；默认关闭，仅复制原图。',
   '续跑省略选项则沿用已保存配置；--no-standard 显式关闭。切换选项须通过 preparation 指纹检查。',
@@ -31,7 +33,7 @@ export const help = [
 export function parseArguments(args: string[]) {
   const { values } = parseArgs({ args, options: {
     name: { type: 'string' }, dir: { type: 'string' }, image: { type: 'string' }, krita: { type: 'string' },
-    from: { type: 'string' }, to: { type: 'string' }, jobs: { type: 'string' },
+    'shadow-mode': { type: 'string' }, from: { type: 'string' }, to: { type: 'string' }, jobs: { type: 'string' },
     standard: { type: 'boolean' }, 'no-standard': { type: 'boolean' },
     background: { type: 'boolean' }, 'background-worker': { type: 'boolean' },
     status: { type: 'boolean' }, json: { type: 'boolean' }, help: { type: 'boolean', short: 'h' },
@@ -42,6 +44,7 @@ export function parseArguments(args: string[]) {
   if (values.standard && values['no-standard']) throw new Error('--standard 与 --no-standard 不能同时使用。');
   const options: TaskOptions = { name: values.name, dir: values.dir, image: values.image, krita: values.krita,
     standard: values['no-standard'] ? false : values.standard,
+    shadowMode: values['shadow-mode'] === undefined ? undefined : shadowMode(values['shadow-mode']),
     from: values.from ? pipelineId(values.from) : undefined, to: values.to ? pipelineId(values.to) : undefined,
     jobs: values.jobs === undefined ? undefined : Number(values.jobs) };
   directoryFor(options);
@@ -52,7 +55,7 @@ export function parseArguments(args: string[]) {
   if (values.json && !values.status) throw new Error('--json 只能与 --status 一起使用。');
   if ((values.handoff || values.reason) && !values['replace-thread']) throw new Error('--handoff / --reason 只能与 --replace-thread 一起使用。');
   if (values.status || values['replace-thread']) {
-    if (values.image || values.krita || values.from || values.to || values.jobs || options.standard !== undefined) throw new Error('查询或替换 thread 时不修改启动配置。');
+    if (values.image || values.krita || values.from || values.to || values.jobs || options.standard !== undefined || options.shadowMode !== undefined) throw new Error('查询或替换 thread 时不修改启动配置。');
   }
   if (values['replace-thread']) {
     if (!values.handoff || !values.reason?.trim()) throw new Error('请提供 --handoff <交接.md> 和 --reason <原因>。');
@@ -67,6 +70,7 @@ export async function startBackground(options: TaskOptions): Promise<number> {
   await mkdir(directory, { recursive: true });
   const log = await open(join(directory, taskLogName), 'a', 0o600);
   const args = ['--background-worker', '--name', options.name];
+  if (options.shadowMode !== undefined) args.push('--shadow-mode', options.shadowMode);
   if (options.standard !== undefined) args.push(options.standard ? '--standard' : '--no-standard');
   for (const key of ['dir', 'image', 'krita', 'from', 'to', 'jobs'] as const) {
     if (options[key] !== undefined) args.push('--' + key, String(options[key]));

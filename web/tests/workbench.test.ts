@@ -81,6 +81,18 @@ test('upload retains original/config; same name never overwrites; selection pers
   assert.equal((await (await fetch('http://127.0.0.1:' + (restart.address() as any).port + '/api/settings')).json() as any).directory, next);
   await new Promise<void>(resolve => restart.close(() => resolve()));
 });
+test('web forwards shadow mode to the existing coordinator and shows both branch artifacts', async t => {
+  let received: any;
+  const f = await fixture(t, async options => { received = options; return 123; });
+  assert.equal((await f.post('tasks', { name: 'shadow-case', upload: await upload(), shadowMode: 'mask' })).status, 201);
+  assert.equal((await f.post('start', { name: 'shadow-case', from: 'shadow', to: 'shadow', shadowMode: 'normal-depth' })).status, 202);
+  assert.equal(received.shadowMode, 'normal-depth'); assert.equal(received.from, 'shadow');
+  assert.equal((await f.post('start', { name: 'shadow-case', shadowMode: '../mask' })).status, 400);
+  const root = join(f.dir, 'shadow-case');
+  await put(root, 'shadow/mask/step01/character-shadowed.png');
+  const value = await snapshot(root, 'shadow-case', f.dir), stage = value.pipelines.find(stage => stage.id === 'shadow')!;
+  assert.equal(stage.states.mask, 'available'); assert.equal(stage.states['normal-depth'], 'pending');
+});
 
 test('task assets reject traversal and symlinks; SVG is served sandboxed; version browsing remains read only', async t => {
   const f = await fixture(t);

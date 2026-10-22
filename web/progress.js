@@ -36,6 +36,8 @@ export const pipelineSteps = [
   partSteps(false), rasterSteps(false), partSteps(true), rasterSteps(true),
   [step('step01', '人物与衣服 KRA 组装', 'pending', [],
     '同一 agent 调整穿戴关系、必要遮罩与局部笔触，重开验收并导出 KRA、合成 PNG 和报告。')],
+  [step('step01', '阴影制作 · 按所选分支续跑', 'pending', [step('mask', 'Live2D 蒙版', 'pending'), step('normal-depth', '法线＋深度', 'pending')],
+    '两分支独立保存产物与进度。蒙版完整补出投影、原生裁切；贴图按组装原画配准。')],
 ];
 
 export function groupLayers(groups) {
@@ -90,6 +92,12 @@ export const stepArtifacts = [
       image('character-assembly/step01/final-overall-comparison.jpg', '最终参考对照')],
   },
 ];
+
+stepArtifacts.push({
+  step01: [file('shadow/selection.json', '当前预览方式')],
+  mask: [image('shadow/mask/step01/character-shadowed.png', '投影阴影'), file('shadow/mask/step01/character-shadowed.kra', '阴影 KRA'), file('shadow/mask/step01/shadows.json', '跟随与裁切关系'), file('shadow/mask/step01/report.md', '绘制报告')],
+  'normal-depth': [image('shadow/normal-depth/step01/normal.png', '法线'), image('shadow/normal-depth/step01/depth.png', '深度'), file('shadow/normal-depth/step01/report.md', '贴图报告')],
+});
 
 for (const index of [1, 3]) {
   const pipeline = index === 1 ? "raster-layering" : "clothing-raster-layering";
