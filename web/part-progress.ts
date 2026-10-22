@@ -10,7 +10,7 @@ type Phase = typeof phases[number];
 // These are file observations for display, not a second scheduler or a resume check.
 // In particular, never run recovery/migration or follow dependency paths from reports.
 export async function partProgress(directory: string, pipeline: string, groups: any[], files: Set<string>,
-  json: (path: string) => Promise<any>, errors: string[], activeSince?: string) {
+  json: (path: string) => Promise<any>, errors: string[], activeSince?: string, failedSince?: string) {
   const bytes = new Map<string, Promise<Buffer | undefined>>();
   const read = (path: string) => {
     if (!bytes.has(path)) bytes.set(path, (async () => {
@@ -74,7 +74,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
 
   // request.json is created only after the agent obtains a concurrency slot.
   // A leftover draft or a queued group is not evidence that an agent is drawing.
-  const calls = await currentAgentCalls(directory, pipeline, files, errors, activeSince);
+  const calls = await currentAgentCalls(directory, pipeline, files, errors, activeSince ?? failedSince, !!failedSince);
   const latest = new Map<string, { call: AgentCall; phase: Phase; targets: any[] }>();
   for (const call of calls) {
     const match = /^(组轮廓绘制|组轮廓返修|组轮廓review|正面遮挡补全|直属结构拆分|同层轮廓去重)-(.+)$/.exec(call.name);
@@ -88,6 +88,14 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     }
   }
   for (const { call, phase, targets } of latest.values()) {
+    if (call.failed) {
+      for (const node of targets) {
+        node.webPhases[phase] = 'failed'; node.webMessages[phase] = '执行失败';
+        node.webDetails[phase] = '调用失败，请查看运行记录：' + call.name;
+      }
+      continue;
+    }
+    if (!activeSince) continue;
     if (call.finished) continue;
     for (const node of targets) {
       node.webPhases[phase] = 'running';
@@ -96,5 +104,5 @@ export async function partProgress(directory: string, pipeline: string, groups: 
         : ({ outline: '正在绘制 / 自检', review: '正在复核', reduction: '正在同层去重', completion: '正在补全 / 自检', children: '正在分析直属结构' } as any)[phase];
     }
   }
-  return partStages(directory, pipeline, groups, files, json, read, calls, errors);
+  return partStages(directory, pipeline, groups, files, json, read, calls, errors, !!activeSince);
 }

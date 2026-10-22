@@ -1,4 +1,4 @@
-export type ProgressStatus = 'pending' | 'running' | 'available' | 'done';
+export type ProgressStatus = 'pending' | 'running' | 'available' | 'done' | 'failed';
 export type GroupPhase = 'outline' | 'review' | 'reduction' | 'completion' | 'completionCheck' | 'children';
 export interface ProgressGroup {
   webPhases?: Partial<Record<GroupPhase, string>>;

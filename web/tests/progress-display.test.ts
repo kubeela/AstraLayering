@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { displayStatus, groupArtifacts, groupPhases, groupPreviewArtifacts, groupSummary, statusNames, stepArtifacts } from '../progress.js';
 
 test('normal progress has four labels; a partly finished group remains available', () => {
-  assert.deepEqual(Object.values(statusNames), ['待执行', '进行中', '已有产物', '已完成']);
+  assert.deepEqual(Object.values(statusNames), ['待执行', '进行中', '已有产物', '已完成', '执行失败']);
   const group = { webPhases: Object.fromEntries(groupPhases.map(([id]) => [id, 'pending'])) };
   assert.equal(groupSummary(group).text, '待执行');
   group.webPhases.outline = 'done'; assert.equal(groupSummary(group).text, '已有产物');
@@ -12,8 +12,12 @@ test('normal progress has four labels; a partly finished group remains available
   assert.equal(groupSummary(group).text, '已完成');
 });
 
-test('stopped execution still displays intermediate artifacts without becoming running or done', () => {
-  for (const state of ['failed', 'interrupted', 'unconfirmed']) {
+test('failure is explicit, while interrupted execution keeps its intermediate artifacts', () => {
+  assert.equal(displayStatus('failed', true), 'failed');
+  assert.equal(displayStatus('failed', false), 'failed');
+  assert.equal(statusNames.failed, '执行失败');
+  assert.equal(groupSummary({ webPhases: { outline: 'failed', completion: 'available' } }).status, 'failed');
+  for (const state of ['interrupted', 'unconfirmed']) {
     assert.equal(displayStatus(state, true), 'available');
     assert.equal(displayStatus(state, false), 'pending');
   }

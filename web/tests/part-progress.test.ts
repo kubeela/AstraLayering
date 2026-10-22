@@ -165,6 +165,30 @@ test('running phases require current agent requests; queued groups, old calls an
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending');
 });
 
+test('a failed current group and initial request are marked failed while their drafts remain visible; recovery clears old failures', async t => {
+  const f = await fixture(t);
+  const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
+  run.status = 'failed'; run.activePipeline = 'part-layering';
+  run.runner = { id: 'failed-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString(), finishedAt: new Date().toISOString() };
+  run.pipelines['part-layering']!.status = 'failed'; await saveRun(f.task, run);
+  await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
+  await f.put('stages/outline/body.draft.svg', svg);
+  await f.put('agents/draw/request.json', { task: { name: '组轮廓绘制-body' } });
+  await f.put('agents/draw/result.json', { status: 'failed' });
+  await f.put('agents/initial/request.json', { task: { step: 'part_initial_groups', name: '首次分组识别' } });
+  await f.put('agents/initial/result.json', { status: 'failed' });
+  let value = await f.get();
+  assert.equal(value.part.groups[0].webPhases.outline, 'failed');
+  assert.equal(value.part.states.initial, 'failed');
+  assert.ok(value.files.includes('part-layering/stages/outline/body.draft.svg'));
+  run.status = 'running'; run.pipelines['part-layering']!.status = 'running';
+  run.runner = { id: 'new-runner', pid: process.pid, startedAt: new Date().toISOString() }; await saveRun(f.task, run);
+  const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
+  value = await f.get();
+  assert.equal(value.part.groups[0].webPhases.outline, 'available');
+  assert.equal(value.part.states.initial, 'done');
+});
+
 test('unsafe group paths and symlinked drafts cannot expose outside files', async t => {
   const f = await fixture(t);
   await f.put('groups.json', { groups: [{ id: '../../../private', groups: [] }] });
