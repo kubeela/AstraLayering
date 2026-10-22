@@ -51,11 +51,12 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
       const compatible=this.config.components;
       this.formal=true;this.ready=true;this.enabled=options.enabled!==false;this.paused=!!options.paused;
       $('#physics-controls').firstElementChild.after($('#component-controls'));
-      $('#physics-draft').textContent=this.config.review?.status==='accepted'?'已复核 · 人工未确认':'项目草稿';
+      $('#physics-draft').textContent=this.config.review?.status==='accepted'?'已复核 · 人工未确认':'草稿 · 待视觉复核';
       this.selected=compatible.some(c=>c.id===options.selected)?options.selected:compatible.find(c=>c.enabled)?.id||compatible[0]?.id;
       this.rebuild();this.select(this.selected);this.sync();this.changed();this.frame=requestAnimationFrame(t=>this.tick(t));
     }catch(e){this.clear();this.error(e.message);}finally{this.preparing=false;this.sync();}
   }
+  clear(){this.formal=false;this.config=null;this.scene=null;this.playback='';this.editing=false;this.dragControl=null;super.clear();}
   rebuild(){
     if(!this.formal)return super.rebuild();
     this.renderer?.dispose();this.scene=new ComponentScene(this.config);this.bodies=this.scene.bodies;this.bindings=new Map(this.config.components.map(c=>[c.id,c]));
@@ -98,7 +99,10 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     if(!this.statsTime||time-this.statsTime>180){this.stats();this.statsTime=time;}this.frame=requestAnimationFrame(t=>this.tick(t));
   }
   sync(){
-    if(!this.formal){if($('#component-controls'))$('#component-controls').hidden=true;return super.sync();}
+    if(!this.formal){if($('#component-controls'))$('#component-controls').hidden=true;
+      for(const id of ['physics-kind','physics-direction'])$('#'+id).closest('label').hidden=false;
+      for(const id of ['physics-material','physics-limits'])$('#'+id).closest('section').hidden=false;
+      return super.sync();}
     $('#component-controls').hidden=false;$('#physics-controls').hidden=!this.ready;$('#effect-physics').checked=this.enabled;$('#effect-physics').disabled=this.preparing||this.busy();
     $('#component-edit').textContent=this.editing?'完成绑定编辑':'编辑绑定';$('#component-edit-hint').hidden=!this.editing;
     $('#physics-prepare').hidden=true;$('#physics-close').hidden=!this.ready;
