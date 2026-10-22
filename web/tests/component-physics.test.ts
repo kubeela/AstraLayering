@@ -7,6 +7,8 @@ import { ComponentScene } from '../studio/component-physics-model.js';
 import { componentDefaults } from '../studio/component-physics-schema.js';
 import { resolveComponentBindings } from '../studio/component-physics-binding.js';
 import { refineControlGeometry } from '../studio/component-physics-geometry.js';
+import { applyTestInput } from '../studio/physics-test-input.js';
+import { projectionField } from '../studio/projection-field.js';
 import { simulate, traceWindow, validateFindings } from '../../.agents/skills/live2d-maker/physics/evidence.ts';
 const component=(kind='strand',extra:any={})=>({id:kind,name:kind,kind,priority:'primary',enabled:true,layerRefs:[{uuid:kind,contentHash:'a'.repeat(64)}],sourcePartIds:[kind],supports:[{id:'root',at:[100,40]}],...componentDefaults(kind),authoring:{freeLength:300,transitionPixels:55,fixedRegions:[[[50,20],[150,20],[150,60],[50,60]]],contour:[[50,20],[150,20],[150,340],[50,340]],centerline:[[100,40],[100,80],[100,140],[100,200],[100,260],[100,320]],widths:[55,55,50,45,35,25],pivot:[100,40],subdivisions:2},...extra});
 const config=(components:any[])=>({kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:300,height:400}},components});
@@ -45,6 +47,13 @@ test('moving support is measured against the same-time pose and child stays atta
   const scene=new ComponentScene(config([parent,child]));
   for(let n=0;n<180;n++){scene.inputs.set('root',{x:Math.sin(n/40)*8,angle:.02});scene.step();const b=scene.bodies.get('strand');assert.equal(b.stats.root,0);assert(b.stats.valid);assert(b.pose[0]!==b.rest[0]||n===0);}
   assert.throws(()=>new ComponentScene(config([component('strand',{supports:[{id:'cycle',at:[100,40],componentId:'strand'}]})])),/环/);
+});
+test('parent test pose moves artwork and attachments in the same space without reducing per-part input',()=>{
+  const a=component(),c=component('cloth');c.authoring.controlGrid=[4,8];c.authoring.freeLength=180;
+  const scene=new ComponentScene(config([a,c]));for(let n=1;n<=180;n++){applyTestInput(scene,'support-release',n);scene.step();for(const b of scene.bodies.values())for(let i=0;i<b.weights.length;i++)if(!b.weights[i]){const p=scene.sourcePoint([b.rest[i*2],b.rest[i*2+1]]);assert(Math.hypot(b.positions[i*2]-p[0],b.positions[i*2+1]-p[1])<1e-7);}}
+  assert.equal(scene.sourcePose.x,15);assert(scene.sourcePose.x>=c.authoring.freeLength*.05);
+  const caster={rest:new Float64Array([100,40,100,320]),positions:new Float64Array([...scene.sourcePoint([100,40]),...scene.sourcePoint([100,320])]),freeLength:280};
+  const field=projectionField({x:20,y:200,width:220,height:150},caster,scene);field.update();for(let i=0;i<field.rest.length/2;i++){const p=scene.sourcePoint([field.rest[i*2],field.rest[i*2+1]]);assert(Math.hypot(field.positions[i*2]-p[0],field.positions[i*2+1]-p[1])<1e-8,'parent rotation must not be approximated as caster residual outside the caster');}
 });
 test('UUID bindings preserve multiple source layers through reorder and clipping islands without guessing ambiguity',()=>{
   const a=component(),b=component('cloth'),c=config([a,b]);

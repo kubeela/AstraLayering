@@ -48,7 +48,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     if(!this.formal)return super.rebuild();
     this.renderer?.dispose();this.scene=new ComponentScene(this.config);this.bodies=this.scene.bodies;this.bindings=new Map(this.config.components.map(c=>[c.id,c]));
     const layers=new Map(),resolution=resolveComponentBindings(this.config,this.parts);for(const[id,c]of resolution.assignments){const b=this.bodies.get(c);if(b)layers.set(id,b);}
-    this.renderer=new PhysicsRenderer(this.stage,this.parts,layers,this.size);this.lastTime=0;this.accumulator=0;this.pointer=null;this.render();
+    this.renderer=new PhysicsRenderer(this.stage,this.parts,layers,this.size,this.scene);this.lastTime=0;this.accumulator=0;this.pointer=null;this.render();
   }
   options(){
     if(!this.formal)return super.options();const q=$('#physics-filter').value.toLowerCase();

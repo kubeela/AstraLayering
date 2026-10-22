@@ -239,7 +239,7 @@ export class ComponentBody {
 
 export class ComponentScene {
   constructor(config){
-    this.config=validatePhysicsConfig(config);this.inputs=new Map();this.bodies=new Map();this.layerBodies=new Map();this.stepNumber=0;
+    this.config=validatePhysicsConfig(config);this.inputs=new Map();this.bodies=new Map();this.layerBodies=new Map();this.stepNumber=0;this.sourcePose={x:0,y:0,angle:0};
     const pending=new Map(config.components.filter(c=>c.enabled).map(c=>[c.id,c]));
     while(pending.size){let progress=false;for(const [id,c]of pending)if(c.supports.every(s=>!s.componentId||this.bodies.has(s.componentId)||!pending.has(s.componentId))){
       const b=new ComponentBody(c,this);this.bodies.set(id,b);for(const r of c.layerRefs){if(this.layerBodies.has(r.uuid))throw Error('同一源层不能重复叠加两个组件场；请明确拆分活动区');this.layerBodies.set(r.uuid,b);}pending.delete(id);progress=true;
@@ -247,17 +247,18 @@ export class ComponentScene {
   }
   support(s){
     if(s.componentId){const b=this.bodies.get(s.componentId);if(b){const p=b.sample(s.at),q=b.sample([s.at[0]+1,s.at[1]]);return {x:p[0],y:p[1],angle:Math.atan2(q[1]-p[1],q[0]-p[0])};}}
-    const v=this.inputs.get(s.id);return v?{x:s.at[0]+(v.x||0),y:s.at[1]+(v.y||0),angle:v.angle||0}:{x:s.at[0],y:s.at[1],angle:0};
+    const p=this.sourcePoint(s.at),v=this.inputs.get(s.id)||{};return {x:p[0]+(v.x||0),y:p[1]+(v.y||0),angle:this.sourcePose.angle+(v.angle||0)};
   }
+  sourcePoint(point){const c=this.config.source.canvas,p=this.sourcePose,r=rotate(point[0]-c.width/2,point[1]-c.height/2,p.angle);return [c.width/2+r[0]+p.x,c.height/2+r[1]+p.y];}
   step(dt=1/120){
     if(!Number.isFinite(dt)||dt<=0||dt>1/30)throw Error('物理步长无效');
     for(const b of this.bodies.values()){
-      const driven=b.component.supports.some(s=>s.componentId?this.bodies.get(s.componentId)?.moving():Object.values(this.inputs.get(s.id)||{}).some(v=>Math.abs(v)>1e-9));
+      const driven=Object.values(this.sourcePose).some(v=>Math.abs(v)>1e-9)||b.component.supports.some(s=>s.componentId?this.bodies.get(s.componentId)?.moving():Object.values(this.inputs.get(s.id)||{}).some(v=>Math.abs(v)>1e-9));
       if(!driven&&Math.abs(b.angularVelocity)<1e-9&&!b.velocity.some(v=>Math.abs(v)>1e-9)&&b.positions.every((v,i)=>Math.abs(v-b.rest[i])<1e-9))continue;
       b.prepare(dt);for(let n=0;n<8;n++)b.solve();b.constrain();b.finish();if(!b.stats.valid)throw Error('最终组件约束不满足：'+b.component.name);
     }
     this.stepNumber++;
   }
-  reset(){this.inputs.clear();this.stepNumber=0;for(const b of this.bodies.values())b.reset();}
+  reset(){this.inputs.clear();this.stepNumber=0;this.sourcePose={x:0,y:0,angle:0};for(const b of this.bodies.values())b.reset();}
   inspect(){return Object.fromEntries([...this.bodies].map(([id,b])=>[id,b.inspect()]));}
 }
