@@ -553,8 +553,10 @@ $("#export-image").onclick = async () => {
 const layers = new LayerPanel({
   download,
   error: toast,
+  retry: retryNativeLayers,
   rendered() {
     projections?.render();
+    if (physics && !physics.ready) physics.sync();
     if (physics?.ready) {
       if (state.workspace === 'physics'){
         const uuid=layers.layers.find(l=>l.id===layers.selected)?.uuid,c=physics.formal?physics.config.components.find(c=>c.layerRefs.some(r=>r.uuid===uuid)):null;
@@ -609,7 +611,15 @@ const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=
   changed(active){state.surfaceActive=active;if(!active)physics?.clear();sync();}});
 physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprint:()=>state.source?.authorHash,
   workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
+  layerState:()=>({loading:layers.loading,error:layers.openError}), retryLayers:retryNativeLayers,
   download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
+async function retryNativeLayers() {
+  const owner = state.source;
+  if (!owner || state.busy || layers.pending) return;
+  await layers.open({ ...owner, layerKey: 'reopen' });
+  if (layers.session && state.source?.layerDocument === owner.layerDocument && !physics.ready)
+    await physics.prepare();
+}
 $('#effect-lighting').onchange = e => {
   state.lightingEnabled = e.target.checked;
   if (!state.lightingEnabled) { if (state.tool === 'light') selectTool('move'); if (state.view === 'shading') selectView('lit'); }
@@ -998,7 +1008,7 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
       }
     }
     await install({ ...source, ...maps, shadowBindings, project, componentPhysics: physicsConfig ? JSON.parse(await physicsConfig.text()) : null }, id, !preserve);
-    if(id===state.generation&&physicsConfig)await physics.prepare({enabled:true,internal:true});
+    if(id===state.generation&&physicsConfig&&layers.session)await physics.prepare({enabled:true,internal:true});
     if (id === state.generation) $("#task-dialog").close();
   } catch (e) {
     if (id === state.generation) {

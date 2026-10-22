@@ -1,6 +1,9 @@
 import { validatePhysicsConfig, componentPhysicsVersion } from './component-physics-schema.js';
 import { geometryFor, clothGeometry, refineControlGeometry, gridControlGeometry, mobilityAt, barycentric, clamp, smooth } from './component-physics-geometry.js';
 
+import { PsdClothSolver } from './vendor/psd2live/xpbd.js';
+import { CubismPendulumChain } from './vendor/psd2live/pendulum.js';
+import { InochiPendulum } from './vendor/inochi2d/pendulum.js';
 export { componentPhysicsVersion };
 const TAU = Math.PI * 2, DEG = 180 / Math.PI;
 const distance = (a, b, i, j) => Math.hypot(a[i * 2] - b[j * 2], a[i * 2 + 1] - b[j * 2 + 1]);
@@ -13,7 +16,8 @@ export class ComponentBody {
     this.component = component; this.scene = scene; this.id = component.id; this.kind = component.kind;
     this.binding = { maxAngle: component.limits.maxAngle, direction: 'down' };
     const a=component.authoring,grid=this.kind==='cloth'&&a.controlGrid?gridControlGeometry(a,component.supports):null,control=grid||(this.kind==='cloth'?clothGeometry({...a,subdivisions:a.simulationSubdivisions??0}):null);
-    const mesh = grid?geometryFor(component):control?refineControlGeometry(control,Math.max(0,(a.subdivisions??2)-(a.simulationSubdivisions??0))):geometryFor(component);
+    const cuts=grid?grid.indices.reduce((list,index,k,arr)=>{if(k%3!==2)list.push([grid.rest.slice(index*2,index*2+2),grid.rest.slice(arr[k+1]*2,arr[k+1]*2+2)]);else list.push([grid.rest.slice(index*2,index*2+2),grid.rest.slice(arr[k-2]*2,arr[k-2]*2+2)]);return list;},[]):null;
+    const mesh = grid?clothGeometry({...a,cutLines:cuts,subdivisions:0}):control?refineControlGeometry(control,Math.max(0,(a.subdivisions??2)-(a.simulationSubdivisions??0))):geometryFor(component);
     if(grid)mesh.samples=Array.from({length:mesh.rest.length/2},(_,i)=>grid.sample(mesh.rest.slice(i*2,i*2+2)));
     this.rest = new Float64Array(mesh.rest); this.indices = new Uint32Array(mesh.indices); this.positions = new Float64Array(this.rest);
     this.pose = new Float64Array(this.rest); this.weights = new Float64Array(this.rest.length / 2); this.limits = new Float64Array(this.weights.length);
@@ -21,7 +25,7 @@ export class ComponentBody {
     this.controlIndices=new Uint32Array(control?.indices||mesh.indices);
     const particles = this.kind === 'strand' ? a.centerline.flat() : control?.rest||mesh.rest;
     this.pRest = new Float64Array(particles); this.pPose = new Float64Array(particles); this.p = new Float64Array(particles);
-    this.previousMesh = new Float64Array(this.positions); this.previous = new Float64Array(particles); this.velocity = new Float64Array(particles.length);
+    this.previousMesh = new Float64Array(this.positions); this.previous = new Float64Array(particles); this.previousPose = new Float64Array(particles); this.velocity = new Float64Array(particles.length);
     this.mobility = new Float64Array(particles.length / 2); this.mass = new Float64Array(this.mobility.length).fill(1);
     for (let i = 0; i < this.mobility.length; i++) this.mobility[i] = this.kind === 'pendant' ? 1 : mobilityAt([particles[i * 2], particles[i * 2 + 1]], a);
     if(this.kind==='cloth')this.clothSamples=mesh.samples;
@@ -53,12 +57,16 @@ export class ComponentBody {
     if(this.kind==='strand') {
       this.fieldSamples=[];
       for(let v=0;v<this.weights.length;v++) {
-        let best={i:0,t:0,d:Infinity};
-        for(let i=0;i<this.mobility.length-1;i++){const ax=this.pRest[i*2],ay=this.pRest[i*2+1],dx=this.pRest[i*2+2]-ax,dy=this.pRest[i*2+3]-ay,t=clamp(((this.rest[v*2]-ax)*dx+(this.rest[v*2+1]-ay)*dy)/(dx*dx+dy*dy),0,1),d=Math.hypot(this.rest[v*2]-ax-dx*t,this.rest[v*2+1]-ay-dy*t);if(d<best.d)best={i,t,d};}
-        this.fieldSamples.push(best);
+        let nearest=Infinity;const samples=[];
+        for(let i=0;i<this.mobility.length-1;i++){const ax=this.pRest[i*2],ay=this.pRest[i*2+1],dx=this.pRest[i*2+2]-ax,dy=this.pRest[i*2+3]-ay,t=clamp(((this.rest[v*2]-ax)*dx+(this.rest[v*2+1]-ay)*dy)/(dx*dx+dy*dy),0,1),d=Math.hypot(this.rest[v*2]-ax-dx*t,this.rest[v*2+1]-ay-dy*t);samples.push({i,t,d});nearest=Math.min(nearest,d);}
+        // Blend neighbouring segment fields. A hard nearest-segment switch on
+        // a curled strand can tear an otherwise valid continuous centreline.
+        const sigma=Math.max(8,...samples.filter(s=>s.d<nearest+1).map(s=>(a.widths[s.i]+a.widths[s.i+1])*.25));let sum=0;
+        for(const s of samples){s.w=Math.exp(-(s.d*s.d-nearest*nearest)/(sigma*sigma));sum+=s.w;}
+        this.fieldSamples.push(samples.filter(s=>s.w/sum>1e-4).map(s=>({...s,w:s.w/sum})));
       }
     }
-    this.theta=0; this.angularVelocity=0; this.impulses=0; this.syncMesh(); this.stats=this.inspect();
+    this.theta=0; this.angularVelocity=0; this.impulses=0; this.motion=this.kind==='cloth'?new PsdClothSolver(this):this.kind==='strand'?new CubismPendulumChain(this):new InochiPendulum(this); this.syncMesh(); this.stats=this.inspect();
   }
   invMass(i) { return this.mobility[i] / this.mass[i]; }
   target(source) {
@@ -71,41 +79,49 @@ export class ComponentBody {
     return [x/total,y/total];
   }
   prepare(dt) {
-    this.dt=dt; this.previous.set(this.p); this.previousMesh.set(this.positions);
+    this.dt=dt; this.previous.set(this.p); this.previousPose.set(this.pPose); this.previousMesh.set(this.positions);
     for(let i=0;i<this.mobility.length;i++){const q=this.target([this.pRest[i*2],this.pRest[i*2+1]]);this.pPose[i*2]=q[0];this.pPose[i*2+1]=q[1];}
     if(this.kind==='cloth'&&!this.clothFactors)this.sampleCloth(this.pPose,this.pose);else for(let i=0;i<this.weights.length;i++){const q=this.target([this.rest[i*2],this.rest[i*2+1]]);this.pose[i*2]=q[0];this.pose[i*2+1]=q[1];}
-    const cfg=this.component.response,omega=TAU*cfg.frequencyHz,drag=Math.exp(-2*cfg.dampingRatio*omega*dt);
-    if(this.kind==='pendant'){
-      const pivot=this.target(this.component.authoring.pivot),old=this.pivot||pivot;
-      const dx=(pivot[0]-old[0])/dt,dy=(pivot[1]-old[1])/dt;
-      this.angularVelocity-=dx/this.freeLength*cfg.inputGain*.06;
-      this.angularVelocity=(this.angularVelocity-omega*omega*this.theta*dt)*drag;this.theta+=this.angularVelocity*dt;this.pivot=pivot;
-    }else for(let i=0;i<this.mobility.length;i++)for(let k=0;k<2;k++){
-      const q=i*2+k;if(!this.mobility[i]){this.p[q]=this.pPose[q];this.velocity[q]=(this.p[q]-this.previous[q])/dt;continue;}
-      this.velocity[q]=(this.velocity[q]-omega*omega*(this.p[q]-this.pPose[q])*dt)*drag;this.p[q]+=this.velocity[q]*dt;
-    }
-    for(const e of this.edges)e.lambda=0;this.limited=false;this.correction=0;this.fallback=false;
+    this.limited=false;this.correction=0;this.fallback=false;
   }
-  solve() {
-    const material=this.component.material;
-    for(const e of this.edges){
-      const {i,j}=e,dx=this.p[j*2]-this.p[i*2],dy=this.p[j*2+1]-this.p[i*2+1],len=Math.hypot(dx,dy),rest=distance(this.pPose,this.pPose,i,j);
-      const mass=this.invMass(i)+this.invMass(j);if(!mass||len<1e-9)continue;
-      const compliance=(e.type==='bend'?material.bendCompliance:e.type==='shear'?material.shearCompliance:material.stretchCompliance)/(this.dt*this.dt);
-      const lambda=(-(len-rest)-compliance*e.lambda)/(mass+compliance);e.lambda+=lambda;
-      this.p[i*2]-=this.invMass(i)*lambda*dx/len;this.p[i*2+1]-=this.invMass(i)*lambda*dy/len;
-      this.p[j*2]+=this.invMass(j)*lambda*dx/len;this.p[j*2+1]+=this.invMass(j)*lambda*dy/len;
+  solve(){
+    this.motion.step(this.dt);
+    if(this.kind==='strand'){
+      this.syncMesh();let ratio=0;
+      for(let i=0;i<this.weights.length;i++)if(this.limits[i]>1e-8)ratio=Math.max(ratio,distance(this.positions,this.pose,i,i)/this.limits[i]);
+      for(let i=0;i<this.mobility.length;i++)if(this.mobility[i]>1e-8)ratio=Math.max(ratio,distance(this.p,this.pPose,i,i)/(this.maxDistance*this.mobility[i]));
+      // Cubism parameter output is bounded separately from the physical bobs.
+      // A smooth travel envelope preserves curvature and avoids hard clipping
+      // individual sections of the drawing while a support moves.
+      const scale=ratio>1e-8?Math.tanh(ratio)/ratio:1;
+      for(let q=0;q<this.p.length;q++)this.p[q]=this.pPose[q]+(this.p[q]-this.pPose[q])*scale;
+      // Bound output speed relative to the current support pose. A physical
+      // high mode must not turn into an instantaneous visible contour change.
+      for(let i=0;i<this.mobility.length;i++){
+        const x=this.pPose[i*2]+this.previous[i*2]-this.previousPose[i*2],y=this.pPose[i*2+1]+this.previous[i*2+1]-this.previousPose[i*2+1],dx=this.p[i*2]-x,dy=this.p[i*2+1]-y,len=Math.hypot(dx,dy);
+        const cap=this.maxDistance*this.mobility[i]*TAU*this.component.response.frequencyHz*this.dt*.5;
+        if(len>cap&&len){this.p[i*2]=x+dx*cap/len;this.p[i*2+1]=y+dy*cap/len;}
+      }
+
     }
-    // Weak pose preservation is a configurable XPBD tether; the oscillator
-    // controls timing, while this constraint controls loss of the silhouette.
-    const alpha = material.shapeCompliance / (this.dt * this.dt);
-    for(let i=0;i<this.mobility.length;i++) if(this.mobility[i]) {
-      const gain = this.invMass(i) / (this.invMass(i) + alpha) * .0005;
-      for(let k=0;k<2;k++) this.p[i*2+k] += (this.pPose[i*2+k]-this.p[i*2+k])*gain;
-    }
-    this.pin();
   }
   pin(){for(let i=0;i<this.mobility.length;i++)if(!this.mobility[i]){this.p[i*2]=this.pPose[i*2];this.p[i*2+1]=this.pPose[i*2+1];}}
+  correctDisplayAreas(){
+    if(this.kind!=='cloth'||!this.clothSamples)return;
+    // Project the actual rendered area through the control-to-display Jacobian.
+    // A valid control face can still compress a thin display face at a fixed
+    // transition. Correct its nearby controls, rather than retreating the sheet.
+    for(let k=0;k<this.indices.length;k+=3){
+      const tri=Array.from(this.indices.slice(k,k+3)),r=area(this.pose,...tri),current=area(this.positions,...tri),sign=Math.sign(r);
+      const C=sign*current-Math.abs(r)*(this.component.limits.minAreaRatio+.0001);if(C>=0||Math.abs(r)<1e-8)continue;
+      const[a,b,c]=tri,p=this.positions,grad=[[sign*(p[b*2+1]-p[c*2+1]),sign*(p[c*2]-p[b*2])],[sign*(p[c*2+1]-p[a*2+1]),sign*(p[a*2]-p[c*2])],[sign*(p[a*2+1]-p[b*2+1]),sign*(p[b*2]-p[a*2])]],controls=new Map();
+      for(let n=0;n<3;n++){const vertex=tri[n],sample=this.clothSamples[vertex],factor=this.clothFactors?.[vertex]??1;
+        for(let j=0;j<3;j++){const id=sample[j],g=controls.get(id)||[0,0],w=sample[j+3]*factor;g[0]+=grad[n][0]*w;g[1]+=grad[n][1]*w;controls.set(id,g);}}
+      let mass=0;for(const[id,g]of controls)mass+=this.invMass(id)*(g[0]*g[0]+g[1]*g[1]);if(mass<1e-12)continue;
+      const delta=-C/mass;for(const[id,g]of controls){this.p[id*2]+=this.invMass(id)*delta*g[0];this.p[id*2+1]+=this.invMass(id)*delta*g[1];}
+      this.syncMesh();this.limited=true;
+    }
+  }
   sampleCloth(source,target){for(let i=0;i<this.clothSamples.length;i++){const[a,b,c,u,v,w]=this.clothSamples[i];target[i*2]=source[a*2]*u+source[b*2]*v+source[c*2]*w;target[i*2+1]=source[a*2+1]*u+source[b*2+1]*v+source[c*2+1]*w;}}
   syncMesh(){
     if(this.kind==='cloth'){this.sampleCloth(this.p,this.positions);if(this.clothFactors)for(let i=0;i<this.clothSamples.length;i++){const[a,b,c,u,v,w]=this.clothSamples[i],factor=this.clothFactors[i];for(let k=0;k<2;k++)this.positions[i*2+k]=this.pose[i*2+k]+(this.positions[i*2+k]-(this.pPose[a*2+k]*u+this.pPose[b*2+k]*v+this.pPose[c*2+k]*w))*factor;}return;}
@@ -120,11 +136,14 @@ export class ComponentBody {
     // cannot inherit residual motion through a triangle crossing the root.
     for(let v=0;v<this.weights.length;v++){
       if(!this.weights[v]){this.positions[v*2]=this.pose[v*2];this.positions[v*2+1]=this.pose[v*2+1];continue;}
-      const {i,t}=this.fieldSamples[v],j=i+1;
-      const cx=this.p[i*2]*(1-t)+this.p[j*2]*t,cy=this.p[i*2+1]*(1-t)+this.p[j*2+1]*t,px=this.pPose[i*2]*(1-t)+this.pPose[j*2]*t,py=this.pPose[i*2+1]*(1-t)+this.pPose[j*2+1]*t;
-      const a=angle(this.pPose[j*2]-this.pPose[i*2],this.pPose[j*2+1]-this.pPose[i*2+1],this.p[j*2]-this.p[i*2],this.p[j*2+1]-this.p[i*2+1]);
-      const r=rotate(this.pose[v*2]-px,this.pose[v*2+1]-py,a),mobility=this.mobility[i]*(1-t)+this.mobility[j]*t,factor=Math.min(1,this.weights[v]/Math.max(1e-8,mobility));
-      this.positions[v*2]=this.pose[v*2]+(cx+r[0]-this.pose[v*2])*factor;this.positions[v*2+1]=this.pose[v*2+1]+(cy+r[1]-this.pose[v*2+1])*factor;
+      let dx=0,dy=0;
+      for(const{i,t,w}of this.fieldSamples[v]){const j=i+1;
+        const cx=this.p[i*2]*(1-t)+this.p[j*2]*t,cy=this.p[i*2+1]*(1-t)+this.p[j*2+1]*t,px=this.pPose[i*2]*(1-t)+this.pPose[j*2]*t,py=this.pPose[i*2+1]*(1-t)+this.pPose[j*2+1]*t;
+        const a=angle(this.pPose[j*2]-this.pPose[i*2],this.pPose[j*2+1]-this.pPose[i*2+1],this.p[j*2]-this.p[i*2],this.p[j*2+1]-this.p[i*2+1]);
+        const r=rotate(this.pose[v*2]-px,this.pose[v*2+1]-py,a),mobility=this.mobility[i]*(1-t)+this.mobility[j]*t,factor=Math.min(1,this.weights[v]/Math.max(1e-8,mobility));
+        dx+=(cx+r[0]-this.pose[v*2])*factor*w;dy+=(cy+r[1]-this.pose[v*2+1])*factor*w;
+      }
+      this.positions[v*2]=this.pose[v*2]+dx;this.positions[v*2+1]=this.pose[v*2+1]+dy;
     }
   }
   inspect(controlsOnly=false){
@@ -176,7 +195,7 @@ export class ComponentBody {
         if(Math.hypot(cx,cy)>1e-8){this.limited=true;this.correction=Math.max(this.correction,Math.hypot(cx,cy));
           this.p[i*2]-=cx*this.invMass(i)/mass;this.p[i*2+1]-=cy*this.invMass(i)/mass;this.p[j*2]+=cx*this.invMass(j)/mass;this.p[j*2+1]+=cy*this.invMass(j)/mass;}
       }
-      this.pin();this.syncMesh();if(this.inspect(!this.clothFactors).valid)break;
+      this.pin();this.syncMesh();this.correctDisplayAreas();this.pin();this.syncMesh();if(this.inspect(!this.clothFactors).valid)break;
       // Local triangle retreat fixes a fold without stopping the whole cloth.
       if(this.kind==='cloth')for(let k=0;k<this.controlIndices.length;k+=3){
         const tri=[...this.controlIndices.slice(k,k+3)],ratio=area(this.p,...tri)/area(this.pPose,...tri);
@@ -186,28 +205,37 @@ export class ComponentBody {
     this.syncMesh();
     if(!this.inspect(!this.clothFactors).valid){
       // Last-resort projection is reported, never counted as natural response.
-      const current=new Float64Array(this.p);let lo=0,hi=1;
-      for(let n=0;n<20;n++){const t=(lo+hi)/2;for(let q=0;q<this.p.length;q++)this.p[q]=this.pPose[q]+(current[q]-this.pPose[q])*t;this.syncMesh();if(this.inspect(!this.clothFactors).valid)lo=t;else hi=t;}
-      for(let q=0;q<this.p.length;q++)this.p[q]=this.pPose[q]+(current[q]-this.pPose[q])*lo;
+      const current=new Float64Array(this.p),safe=new Float64Array(this.p.length);let lo=0,hi=1;
+      // Retreat toward the previous valid state in the current support pose.
+      // Returning toward the original drawing can create a large one-frame jump
+      // and turn a position correction into an artificial rebound velocity.
+      const recovery=Math.exp(-TAU*this.component.response.frequencyHz*this.dt);
+      for(let q=0;q<safe.length;q++)this.p[q]=safe[q]=this.pPose[q]+(this.previous[q]-this.previousPose[q])*recovery;
+      this.pin();this.syncMesh();if(!this.inspect(!this.clothFactors).valid)safe.set(this.pPose);
+      for(let n=0;n<20;n++){const t=(lo+hi)/2;for(let q=0;q<this.p.length;q++)this.p[q]=safe[q]+(current[q]-safe[q])*t;this.pin();this.syncMesh();if(this.inspect(!this.clothFactors).valid)lo=t;else hi=t;}
+      for(let q=0;q<this.p.length;q++)this.p[q]=safe[q]+(current[q]-safe[q])*lo;
       this.fallback=true;this.limited=true;this.syncMesh();
     }
   }
   finish(){
+    this.motion.reconcile?.();
     if(this.kind!=='pendant')for(let i=0;i<this.mobility.length;i++)for(let k=0;k<2;k++)this.velocity[i*2+k]=(this.p[i*2+k]-this.previous[i*2+k])/this.dt;
     for(let i=0;i<this.mobility.length;i++){
+      const speed=Math.hypot(this.velocity[i*2],this.velocity[i*2+1]),cap=this.maxDistance*TAU*this.component.response.frequencyHz*2;
+      if(speed>cap){this.velocity[i*2]*=cap/speed;this.velocity[i*2+1]*=cap/speed;}
       const dx=this.p[i*2]-this.pPose[i*2],dy=this.p[i*2+1]-this.pPose[i*2+1],d=Math.hypot(dx,dy);
       if(d>=this.maxDistance*this.mobility[i]*.98&&d){const outward=Math.max(0,(this.velocity[i*2]*dx+this.velocity[i*2+1]*dy)/(d*d));this.velocity[i*2]-=outward*dx;this.velocity[i*2+1]-=outward*dy;}
     }
     this.stats=this.inspect();
   }
-  reset(){this.p.set(this.pRest);this.pPose.set(this.pRest);this.pose.set(this.rest);this.positions.set(this.rest);this.velocity.fill(0);this.theta=0;this.angularVelocity=0;this.pivot=null;this.limited=false;this.fallback=false;this.correction=0;this.stats=this.inspect();}
+  reset(){this.p.set(this.pRest);this.pPose.set(this.pRest);this.pose.set(this.rest);this.positions.set(this.rest);this.velocity.fill(0);this.theta=0;this.angularVelocity=0;this.pivot=null;this.motion.reset?.();if(this.motion.lastRoot)this.motion.lastRoot.set(this.pRest.slice(this.motion.root*2,this.motion.root*2+2));this.limited=false;this.fallback=false;this.correction=0;this.stats=this.inspect();}
   moving(){return Math.abs(this.angularVelocity)>.0001||this.velocity.some(v=>Math.abs(v)>.02)||this.positions.some((v,i)=>Math.abs(v-this.pose[i])>.015)||this.pose.some((v,i)=>Math.abs(v-this.rest[i])>.015);}
-  impulse(x,y,vx,vy,radius){
+  impulse(x,y,vx,vy,radius,weight=1){
     if(![x,y,vx,vy,radius].every(Number.isFinite)||radius<=0)return;
-    const speed=Math.hypot(vx,vy),cap=this.freeLength*2,scale=speed?cap*Math.tanh(speed/cap)/speed*this.component.response.inputGain:0;
-    if(this.kind==='pendant'){const p=this.pivot||this.component.authoring.pivot;this.angularVelocity+=((x-p[0])*vy-(y-p[1])*vx)*scale/Math.max(1,this.freeLength*this.freeLength);this.impulses++;return;}
+    const speed=Math.hypot(vx,vy),cap=this.freeLength*2,scale=speed?cap*Math.tanh(speed/cap)/speed*this.component.response.inputGain*weight:0;
+    if(this.kind==='pendant'){const p=this.pivot||this.component.authoring.pivot;this.angularVelocity+=((x-p[0])*vy-(y-p[1])*vx)*scale/Math.max(1,this.freeLength*this.freeLength);this.motion.speed=this.angularVelocity;this.impulses++;return;}
     let affected=false;
-    const apply=(i,w)=>{w*=this.mobility[i];if(w>0){this.velocity[i*2]+=vx*scale*w;this.velocity[i*2+1]+=vy*scale*w;affected=true;}};
+    const apply=(i,w)=>{w*=this.mobility[i];if(w>0){this.velocity[i*2]+=vx*scale*w;this.velocity[i*2+1]+=vy*scale*w;this.motion.impulse?.(i,vx*scale*w,vy*scale*w);affected=true;}};
     for(let i=0;i<this.mobility.length;i++){
       const d=Math.hypot(this.p[i*2]-x,this.p[i*2+1]-y);if(d<radius)apply(i,smooth(1-d/radius));
     }
@@ -234,12 +262,12 @@ export class ComponentBody {
       return layers.some(l=>{if(!l)return false;const ix=Math.floor(p[0]-l.bounds.x),iy=Math.floor(p[1]-l.bounds.y);return ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height&&l.maskedRgba[(iy*l.bounds.width+ix)*4+3]>32;});
     }return false;
   }
-  step(dt=1/120){this.prepare(dt);for(let n=0;n<8;n++)this.solve();this.constrain();this.finish();}
+  step(dt=1/120){this.prepare(dt);this.solve();this.constrain();this.finish();}
 }
 
 export class ComponentScene {
   constructor(config){
-    this.config=validatePhysicsConfig(config);this.inputs=new Map();this.bodies=new Map();this.layerBodies=new Map();this.stepNumber=0;this.sourcePose={x:0,y:0,angle:0};
+    this.config=validatePhysicsConfig(config);this.inputs=new Map();this.bodies=new Map();this.layerBodies=new Map();this.stepNumber=0;this.sourcePose={x:0,y:0,angle:0};this.airflow={x:0,y:0};
     const pending=new Map(config.components.filter(c=>c.enabled).map(c=>[c.id,c]));
     while(pending.size){let progress=false;for(const [id,c]of pending)if(c.supports.every(s=>!s.componentId||this.bodies.has(s.componentId)||!pending.has(s.componentId))){
       const b=new ComponentBody(c,this);this.bodies.set(id,b);for(const r of c.layerRefs){if(this.layerBodies.has(r.uuid))throw Error('同一源层不能重复叠加两个组件场；请明确拆分活动区');this.layerBodies.set(r.uuid,b);}pending.delete(id);progress=true;
@@ -254,11 +282,11 @@ export class ComponentScene {
     if(!Number.isFinite(dt)||dt<=0||dt>1/30)throw Error('物理步长无效');
     for(const b of this.bodies.values()){
       const driven=Object.values(this.sourcePose).some(v=>Math.abs(v)>1e-9)||b.component.supports.some(s=>s.componentId?this.bodies.get(s.componentId)?.moving():Object.values(this.inputs.get(s.id)||{}).some(v=>Math.abs(v)>1e-9));
-      if(!driven&&Math.abs(b.angularVelocity)<1e-9&&!b.velocity.some(v=>Math.abs(v)>1e-9)&&b.positions.every((v,i)=>Math.abs(v-b.rest[i])<1e-9))continue;
-      b.prepare(dt);for(let n=0;n<8;n++)b.solve();b.constrain();b.finish();if(!b.stats.valid)throw Error('最终组件约束不满足：'+b.component.name);
+      if(!driven&&!this.airflow.x&&!this.airflow.y&&Math.abs(b.angularVelocity)<1e-9&&!b.velocity.some(v=>Math.abs(v)>1e-9)&&b.positions.every((v,i)=>Math.abs(v-b.rest[i])<1e-9))continue;
+      b.prepare(dt);b.solve();b.constrain();b.finish();if(!b.stats.valid)throw Error('最终组件约束不满足：'+b.component.name);
     }
     this.stepNumber++;
   }
-  reset(){this.inputs.clear();this.stepNumber=0;this.sourcePose={x:0,y:0,angle:0};for(const b of this.bodies.values())b.reset();}
+  reset(){this.inputs.clear();this.stepNumber=0;this.sourcePose={x:0,y:0,angle:0};this.airflow={x:0,y:0};for(const b of this.bodies.values())b.reset();}
   inspect(){return Object.fromEntries([...this.bodies].map(([id,b])=>[id,b.inspect()]));}
 }

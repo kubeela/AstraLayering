@@ -27,8 +27,8 @@ async function api(operation, data) {
   return value;
 }
 export class LayerPanel {
-  constructor({ composite, changed, busy, error, download, rendered }) {
-    this.callbacks = { composite, changed, busy, error, download, rendered };
+  constructor({ composite, changed, busy, error, download, rendered, retry }) {
+    this.callbacks = { composite, changed, busy, error, download, rendered, retry };
     this.epoch = 0;
     this.layers = [];
     this.collapsed = new Set();
@@ -82,7 +82,7 @@ export class LayerPanel {
       this.queue();
     };
     $("#layer-retry").onclick = () => {
-      if (this.owner) void this.open({ ...this.owner, layerKey: "reopen" });
+      if (this.owner) void (this.callbacks.retry ? this.callbacks.retry() : this.open({ ...this.owner, layerKey: "reopen" }));
     };
     $("#layer-save").onclick = () => void this.save();
     this.render();
@@ -113,6 +113,7 @@ export class LayerPanel {
     this.collapsed.clear();
     this.loading = this.working = this.saving = this.gesture = false;
     this.message = "";
+    this.openError = "";
     this.callbacks.busy(false);
     this.render();
   }
@@ -150,15 +151,14 @@ export class LayerPanel {
       if (epoch !== this.epoch) return;
       if (!availability.available)
         throw Error("图层只读 · 未配置 Krita 合成服务");
-      const r = await fetch(
-        "./api/studio/layers/open?format=" +
-          owner.name.split(".").at(-1).toLowerCase(),
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/octet-stream" },
-          body: owner.file,
-        },
-      );
+      const project = owner.project;
+      const r = project ? await fetch('./api/studio/layers/open-project', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: project.name, dir: project.dir, preview: project.previewMode,
+          path: project.files.document.path, version: project.files.document.version }),
+      }) : await fetch('./api/studio/layers/open?format=' + owner.name.split('.').at(-1).toLowerCase(), {
+        method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: owner.file,
+      });
       const data = await r.json();
       if (!r.ok) throw Error(data.error || r.statusText);
       if (epoch !== this.epoch) {
@@ -176,7 +176,7 @@ export class LayerPanel {
         await this.callbacks.composite(owner, data, null);
       this.message = "Krita 合成 · 原尺寸";
     } catch (e) {
-      if (epoch === this.epoch) this.message = e.message;
+      if (epoch === this.epoch) this.openError = this.message = e.message;
     } finally {
       if (epoch === this.epoch) {
         this.loading = false;

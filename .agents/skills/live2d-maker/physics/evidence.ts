@@ -10,8 +10,9 @@ import { ComponentScene } from '../../../../web/studio/component-physics-model.j
 import { applyTestInput, testNames, inputVersion } from '../../../../web/studio/physics-test-input.js';
 import { reviewCriteria } from '../../../../web/studio/component-physics-schema.js';
 import { hash, put, json } from './input.ts';
+import { motionIssues, motionReviewVersion } from '../../../../web/studio/physics-motion-review.js';
 export const evidenceVersion='astra-physics-evidence-1';
-export async function simulationHash(){return hash((await Promise.all(['component-physics-model.js','component-physics-geometry.js','component-physics-schema.js','physics-test-input.js'].map(n=>readFile(new URL('../../../../web/studio/'+n,import.meta.url))))).map(hash).join(':'));}
+export async function simulationHash(){return hash((await Promise.all(['component-physics-model.js','component-physics-geometry.js','component-physics-schema.js','physics-test-input.js','physics-airflow.js','physics-motion-review.js','vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js'].map(n=>readFile(new URL('../../../../web/studio/'+n,import.meta.url))))).map(hash).join(':'));}
 export const configHash=(config:any)=>{const {review,...body}=config;return hash(JSON.stringify(body));};
 export async function simulate(config:any, output:string,signal?:AbortSignal) {
   const digest=configHash(config),runtimeHash=await simulationHash(),runs:any[]=[];
@@ -23,6 +24,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
   for(const test of testNames) {
     const scene=new ComponentScene(config),directory=join(output,test);await mkdir(directory,{recursive:true});
     const frames:number[]=[0],events:any[]=[],previousStats=new Map(),curvePoints=new Map<string,number[][]>(),metrics:any={invalidSteps:0,fallbackSteps:0,limitedSteps:0,maxRoot:0,maxTravel:0,minArea:1,notSettled:[],simulationMs:0};
+    const motionMetrics:any={};const priorPositions=new Map();
     const peaks=new Map<string,{step:number;travel:number}>();const signs=new Map<string,number>();
     const started=performance.now();
     async function* records(){for(let step=0;step<=960;step++) {
@@ -30,6 +32,9 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
       if(step) {applyTestInput(scene,test,step);try{scene.step();}catch(e){await put(join(output,'failure.json'),{test,step,time:step/120,reason:(e as Error).message,configHash:digest,simulationHash:runtimeHash,components:Object.fromEntries([...scene.bodies].map(([id,b])=>[id,{stats:b.stats,controls:b.inspect(true),positions:Array.from(b.positions),pose:Array.from(b.pose),velocity:Array.from(b.velocity)}]))});throw e;}}
       const components:any={};
       for(const [id,b]of scene.bodies) {
+        const m=motionMetrics[id]||=( {peak:0,root:0,fallback:0,limited:0,maxStep:0,final:0,invalid:0} );
+        m.peak=Math.max(m.peak,b.stats.travel);m.root=Math.max(m.root,b.stats.root);m.fallback+=+b.stats.fallback;m.limited+=+b.stats.limited;m.invalid+=+!b.stats.valid;m.final=b.stats.travel;
+        const prior=priorPositions.get(id);if(prior){for(let q=0;q<b.positions.length;q+=2)m.maxStep=Math.max(m.maxStep,Math.hypot(b.positions[q]-prior[q],b.positions[q+1]-prior[q+1]));prior.set(b.positions);}else priorPositions.set(id,new Float64Array(b.positions));
         const stats=b.stats,residual=Array.from(b.positions,(v:any,i:number)=>v-b.pose[i]);
         let tip=0;for(let i=1;i<b.weights.length;i++)if(b.weights[i]>b.weights[tip]||b.weights[i]===b.weights[tip]&&Math.hypot(b.rest[i*2]-b.component.supports[0].at[0],b.rest[i*2+1]-b.component.supports[0].at[1])>Math.hypot(b.rest[tip*2]-b.component.supports[0].at[0],b.rest[tip*2+1]-b.component.supports[0].at[1]))tip=i;
         const sign=Math.sign(residual[tip*2]);if(sign&&signs.get(id)&&signs.get(id)!==sign&&stats.travel>.1)events.push({type:'reversal',component:id,step});if(sign)signs.set(id,sign);
@@ -45,6 +50,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
     }}
     await pipeline(Readable.from(records()),createGzip({level:1}),createWriteStream(join(directory,'trace.jsonl.gz')),{signal});
     metrics.simulationMs=performance.now()-started;
+    metrics.motionReview={version:motionReviewVersion,components:Object.fromEntries([...scene.bodies].map(([id,b])=>[id,{...motionMetrics[id],issues:motionIssues(test,b.component,motionMetrics[id])}]))};
     for(const[id,peak]of peaks)if(peak.travel>.1)events.push({type:'peak',component:id,...peak});
     // The first sequence is uniform. Dense windows supplement it; they never
     // replace uninteresting frames or interpolate unrecorded peak positions.
@@ -65,6 +71,8 @@ export async function validateFindings(config:any,evidence:string,findings:any,e
   if(manifest.simulationHash!==await simulationHash())throw Error('求解器实现已改变，需要重新生成证据');
   if(manifest.configHash!==configHash(config)||findings.configHash!==manifest.configHash||findings.evidenceVersion!==evidenceVersion)throw Error('复核引用了另一版配置或证据');
   if(manifest.runs.some((r:any)=>r.metrics.invalidSteps||r.metrics.maxRoot>1e-5))throw Error('数值复核失败');
+  const failed=manifest.runs.flatMap((r:any)=>Object.entries(r.metrics.motionReview?.components||{}).filter(([,v]:any)=>v.issues.length).map(([id,v]:any)=>r.test+'/'+id+': '+v.issues.join(', ')));
+  if(failed.length)throw Error('运动响应复核失败：'+failed.join('; '));
   if(manifest.coverage.render!=='completed')throw Error('渲染复核未完成');
   if(!manifest.renderDirectory||manifest.renderHash!==await(await import('./render.ts')).renderFingerprint(resolve(evidence,manifest.renderDirectory)))throw Error('渲染器、贴图或裁切关系已变化，需要重新复核');
   if(expectedSource&&resolve(evidence,manifest.renderDirectory)!==resolve(expectedSource))throw Error('可用投影输入已变化，需要重新复核');

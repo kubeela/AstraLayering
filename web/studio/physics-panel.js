@@ -8,10 +8,10 @@ const specs = {
   stretch: ['最大拉伸', .5, 8, .5, '%', 100], stiffness: ['回弹速度', 1, 25, .5, '', 1], damping: ['衰减速度', .5, 12, .5, '', 1],
 };
 export class PhysicsPanel {
-  constructor({ stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer }) {
-    Object.assign(this, { stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer });
+  constructor({ stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer, layerState, retryLayers }) {
+    Object.assign(this, { stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer, layerState, retryLayers });
     this.bindings = new Map(); this.bodies = new Map(); this.pending = new Map(); this.issues = []; this.epoch = 0; this.paused = false; this.enabled = false;
-    this.radius = 90; this.force = .7; this.showGuides = true; this.scope = 'current';this.category='secondary';
+    this.radius = 90; this.force = .7; this.showGuides = true; this.scope = 'all';this.category='secondary';
     for (const [key, [label, min, max, step, unit]] of Object.entries(specs)) {
       const box = document.createElement('div'); box.className = 'slider';
       box.innerHTML = `<div class="slider-head"><label for="physics-${key}">${label}</label><label class="slider-number"><input id="physics-number-${key}" type="number" min="${min}" max="${max}" step="${step}" aria-label="${label}数值"><span>${unit}</span></label></div><input id="physics-${key}" type="range" min="${min}" max="${max}" step="${step}" aria-label="${label}">`;
@@ -21,7 +21,7 @@ export class PhysicsPanel {
         this.edit(key, Math.max(min, Math.min(max, e.target.valueAsNumber)) / specs[key][5]);
       });
     }
-    $('#physics-prepare').onclick = () => void this.prepare();
+    $('#physics-prepare').onclick = () => void (this.layerState?.().error && !this.surfaces.session()?.session ? this.retryLayers?.() : this.prepare());
     $('#physics-close').onclick = () => this.source()?.physicsCase ? this.clear() : void this.surfaces.close();
     $('#physics-demo').onchange = e => this.setDemo(e.target.checked);
     $('#physics-part').onchange = e => this.select(e.target.value);
@@ -209,12 +209,13 @@ export class PhysicsPanel {
   }
   sync() {
     const canPrepare = this.source()?.physicsCase || this.surfaces.session()?.session;
+    const native = this.layerState?.() || {}, failed = !canPrepare && !!native.error;
     $('#effect-physics').checked = this.enabled || this.preparing;
     $('#effect-physics').disabled = this.preparing || !this.source() || this.busy() || !canPrepare;
-    $('#physics-prepare').disabled = this.preparing || this.busy() || this.ready || !this.source() || !canPrepare;
-    $('#physics-prepare').textContent = this.preparing ? '正在准备…' : '准备当前图层';
+    $('#physics-prepare').disabled = this.preparing || this.busy() || this.ready || !this.source() || !canPrepare && !(failed && this.retryLayers);
+    $('#physics-prepare').textContent = this.preparing ? '正在准备…' : failed ? '重试图层加载' : '准备当前图层';
     $('#physics-controls').hidden = !this.ready; $('#physics-close').hidden = !this.ready;
-    $('#physics-status').textContent = this.preparing ? '读取当前部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · ${this.enabled ? '已启用' : '已关闭'}` : this.source()&&!canPrepare ? '等待原生图层就绪…' : '开启摆动物理后自动准备部件';
+    $('#physics-status').textContent = this.preparing ? '读取当前部件与贴图…' : this.ready ? `${this.bodies.size} 个绑定 · ${this.enabled ? '已启用' : '已关闭'}` : failed ? '图层加载失败：' + native.error : native.loading ? '正在加载原生图层…' : this.source()&&!canPrepare ? '等待原生图层就绪…' : '开启摆动物理后自动准备部件';
     $('#physics-demo').checked = !!this.demo;
     $('#physics-demo').disabled = !this.ready || this.busy();
     $('#physics-pause').textContent = this.paused ? '继续' : '暂停';

@@ -94,6 +94,29 @@ test("Project preview rejects stale directories, escaping names and symlinked ou
   await symlink(outside, join(f.project, studioArtifacts.normal));
   assert.equal((await f.get()).status, 400);
 });
+test('Native project opening rejects a stale source and never accepts an arbitrary file path', async t => {
+  const f = await fixture(t);
+  await f.put(studioArtifacts.document);
+  const preview = await f.get(), project = await preview.json() as any;
+  const post = (overrides: Record<string, unknown>) => fetch(new URL('/api/studio/layers/open-project', preview.url), {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: f.name, dir: f.dir, preview: project.previewMode,
+      path: project.files.document.path, version: project.files.document.version, ...overrides }),
+  });
+  assert.equal((await post({ dir: f.root })).status, 409);
+  assert.equal((await post({ path: '../private.kra' })).status, 409);
+  assert.equal((await post({ name: '../outside' })).status, 400);
+  assert.equal((await post({ preview: 'mixed' })).status, 400);
+  await f.put(studioArtifacts.document, 'new revision');
+  const stale = await post({});
+  assert.equal(stale.status, 409);
+  assert.match((await stale.json() as any).error, /工程已变化/);
+  const file = join(f.project, studioArtifacts.document);
+  await rm(file);
+  await f.put('../private.kra');
+  await symlink(join(f.dir, 'private.kra'), file);
+  assert.equal((await post({})).status, 400);
+});
 test('physics drafts persist under their reviewed parent and cannot mask a newer delivery',async t=>{
   const f=await fixture(t),formal={kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:300,height:400}},components:[],review:{status:'accepted',configHash:'revision-a'}};
   await f.put('physics/physics.json',JSON.stringify(formal));

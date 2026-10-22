@@ -4,3 +4,5 @@ layerRefs 每项 uuid/contentHash 来自 catalog。共享表面所有层同场�
 配置结构参照 web/studio/component-physics-schema.js；可由 physics_catalog 取得默认参数。调用 physics_save_binding 验证并保存 physics.draft.json，再写 report.md，解释每个固定区/活动段和复用原因。不要声称尚未运行的动画已经自然。
 
 布片优先显式设置 controlGrid:[4,8]（列、行，各 2–16），以规则控制格模拟，再映射完整 contour/holes；复杂剪影不可直接充当稀碎求解网格。固定边界切入显示网格，固定像素权重为 0；调整控制格密度以覆盖细袖口与自由段。保留 subdivisions 用于显示精度，无需增加到控制网格。狭长连续带子优先 strand。
+
+运行时采用 psd2live/Cubism 短摆链、psd2live 布片 XPBD、Inochi2D 刚性摆。原画中心线点数不是物理节数；显示网格与控制格边界对齐。布片保持纵向拉伸约束，允许横向剪切与压缩；不要用独立位置弹簧或无限增益替代材质。

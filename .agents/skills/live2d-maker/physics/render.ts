@@ -28,7 +28,7 @@ export async function renderFrames(config:any, source:string, evidence:string, r
       if(path==='/') {res.setHeader('Content-Type','text/html');res.end('<script type="importmap">{"imports":{"three":"/vendor/three.module.js","@pixiv/three-vrm-materials-mtoon":"/vendor/mtoon.js"}}</script><div style="width:100vw;height:100vh"><canvas></canvas></div>');return;}
       let file:string|undefined;
       if(vendors[path])file=join(root,vendors[path]);
-      else if(/^\/studio\/[a-z-]+\.js$/.test(path))file=join(root,'web',path);
+      else if(/^\/studio\/[a-z-]+\.js$/.test(path)||['/studio/vendor/psd2live/xpbd.js','/studio/vendor/psd2live/pendulum.js','/studio/vendor/inochi2d/pendulum.js'].includes(path))file=join(root,'web',path);
       else if(/^\/source\/(color|normal|depth|part-\d+-(original|masked))\.png$/.test(path))file=join(source,path.split('/').at(-1)!);
       if(!file)throw Error('无效资源');
       res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':'image/png');res.end(await readFile(file));
