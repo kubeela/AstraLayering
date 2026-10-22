@@ -3,9 +3,7 @@ import { createHash } from 'node:crypto';
 import { studioArtifacts } from '../.agents/skills/live2d-maker/shared/studio-artifacts.ts';
 import { shadowArtifacts, shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { inspectDraftPreview } from '../.agents/skills/live2d-maker/shadow/preview.ts';
-import { validateLight } from './studio/light-model.js';
-import { rendererFingerprint } from '../.agents/skills/live2d-maker/shadow/lighting.ts';
-import { safePath, jsonFile } from './files.ts';
+import { safePath } from './files.ts';
 
 type Selection = { version: number; mode: 'mask' | 'normal-depth'; sourceKraHash: string; sourceColorHash: string };
 const previewModes = ['mask', 'normal-depth', 'mixed'] as const;
@@ -71,20 +69,7 @@ export async function studioProject(directory: string, name: string, dir: string
     depth: { ...depth, available: useMaps && depth.available },
     bindings: { ...all.bindings, available: useMask && maskAvailable },
   };
-  let lightSettings, lightStale = false;
-  const light = useMaps ? await jsonFile(directory, shadowArtifacts.light) : undefined;
-  if (light) {
-    try {
-      const recipe = validateLight(light);
-      const mapHashes = useDraft ? [draftRecord!.normalHash, draftRecord!.depthHash]
-        : await Promise.all([normal.path, depth.path].map(async path => createHash('sha256').update(await readFile(await safePath(directory, path))).digest('hex')));
-      lightStale = recipe.inputs.color !== sourceHashes[1] || recipe.inputs.normal !== mapHashes[0] || recipe.inputs.depth !== mapHashes[1]
-        || recipe.rendererFingerprint !== await rendererFingerprint();
-      if (!lightStale) lightSettings = recipe.settings;
-    } catch { lightStale = true; }
-  }
   return { name, dir, files, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
-    lightSettings, lightStale,
     previewDraft: useDraft, ...(useDraft ? { previewReview: draftRecord!.status, previewReviewReason: draftRecord!.reason } : {}),
     ...(selection ? { shadowMode: selection.mode, shadowStale: stale(selection) } : {}) };
 }

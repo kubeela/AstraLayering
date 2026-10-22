@@ -14,9 +14,6 @@ import { pipelineAgentSteps } from '../../shared/agents/preflight.ts';
 import { parseArguments } from '../../workflow/run.ts';
 import { runTask } from '../../workflow/runner.ts';
 import { readRun, taskStatus } from '../../workflow/state.ts';
-import { fileHash } from '../input.ts';
-import { rendererFingerprint } from '../lighting.ts';
-import { defaults, rendererVersion } from '../../../../../web/studio/lighting-model.js';
 
 const xml = `<DOC><IMAGE width="2" height="2"><layers>
 <layer name="Caster" uuid="caster" nodetype="paintlayer" compositeop="normal"/>
@@ -54,7 +51,7 @@ async function fixture(t: TestContext) {
   const deps = { inspectNative, environment: loadWorkflowEnvironment({}, root), preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
   const deliver = async (request: AgentRequest) => {
     await request.onEvent({ type: 'thread.started', thread_id: request.threadId ?? (request.step + '-thread') });
-    const path = join(request.directory, request.step === 'shadow_lighting' ? 'step02' : 'step01');
+    const path = join(request.directory, 'step01');
     if (request.step === 'shadow_mask') {
       await writeFile(join(path, 'character-shadowed.kra'), kra);
       await writeFile(join(path, 'character-shadowed.png'), color);
@@ -64,15 +61,6 @@ async function fixture(t: TestContext) {
         casterLayerUuids: ['caster'], receiverLayerUuids: ['face'], shadowLayerUuid: 'shadow', clipBaseLayerUuid: 'face',
         follow: 'caster', blendMode: 'normal', testOffsets:[[0,0],[1,0]], notes:'fixture coverage',
       }], excluded: [] }));
-    } else if (request.step === 'shadow_lighting') {
-      assert.equal(request.tools?.[0].name, 'render_lighting');
-      const recipe = { version: 1, renderer: rendererVersion, rendererFingerprint: await rendererFingerprint(), settings: { ...defaults },
-        inputs: { color: await fileHash(join(source, 'character-assembled.png')), normal: await fileHash(join(path, '../step01/normal.png')), depth: await fileHash(join(path, '../step01/depth.png')) },
-        previewHash: await fileHash(join(source, 'character-assembled.png')), renderRecord: 'renders/aa-aa.json', width: 2, height: 2 };
-      await mkdir(join(path, 'renders'), { recursive: true });
-      await writeFile(join(path, 'preview.png'), color);
-      await writeFile(join(path, 'light.json'), JSON.stringify(recipe));
-      await writeFile(join(path, recipe.renderRecord), JSON.stringify(recipe));
     } else {
       await sharp({ create: { width: 2, height: 2, channels: 3, background: { r: 128, g: 128, b: 255 } } }).png().toFile(join(path, 'normal.png'));
       await sharp({ create: { width: 2, height: 2, channels: 3, background: { r: 180, g: 180, b: 180 } } }).png().toFile(join(path, 'depth.png'));
@@ -88,7 +76,7 @@ test('默认蒙版；全局保存、透传并仅预检所选分支', async t => 
   const parsed = parseArguments(['--name', 'case', '--shadow-mode', 'normal-depth']);
   assert.ok(parsed.mode !== 'help'); assert.equal(parsed.options.shadowMode, 'normal-depth');
   assert.deepEqual(pipelineAgentSteps('shadow', false, 'mask'), ['shadow_mask']);
-  assert.deepEqual(pipelineAgentSteps('shadow', false, 'normal-depth'), ['shadow_maps', 'shadow_lighting']);
+  assert.deepEqual(pipelineAgentSteps('shadow', false, 'normal-depth'), ['shadow_maps']);
   const f = await fixture(t);
   assert.equal(f.deps.environment.stepImages.shadow_mask, undefined);
   assert.equal(rasterCodexConfig('shadow_mask').features.image_generation, false);
@@ -127,9 +115,9 @@ test('中断保留同分支 thread；两套产物共存，重跑只检查选择�
   } });
   const mask = await readFile(join(f.task, 'shadow/mask/step01/character-shadowed.kra'));
   await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async request => {
-    assert.equal(request.threadId, request.step === 'shadow_maps' ? undefined : 'shadow_maps-thread'); calls++; return f.deliver(request);
+    assert.equal(request.threadId, undefined); assert.equal(request.step, 'shadow_maps'); calls++; return f.deliver(request);
   } });
-  assert.equal(calls, 3);
+  assert.equal(calls, 2);
   assert.deepEqual(await readFile(join(f.task, 'shadow/mask/step01/character-shadowed.kra')), mask);
   const normal = await sharp(join(f.task, 'lighting/normal.png')).raw().toBuffer();
   assert.deepEqual([...normal.filter((_value, i) => i % 4 === 3)], [255, 128, 0, 255]);
@@ -151,18 +139,28 @@ test('输入变化保留旧分支，新建 thread，只更新本次路线', asyn
   assert.equal((await readdir(join(f.task, 'shadow'))).filter(name => name.startsWith('mask.previous-')).length, 1);
   assert.deepEqual(await readFile(join(f.task, 'shadow/normal-depth/run.json')), previousMaps);
 });
-test('光照步骤缺失时只接续调校，保留已完成贴图及原会话', async t => {
+test('法线深度只生成一步；旧调校目录不阻止贴图恢复与发布', async t => {
   const f = await fixture(t);
-  await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: f.deliver });
-  const normal = await readFile(join(f.task, 'shadow/normal-depth/step01/normal.png'));
-  await rm(join(f.task, 'shadow/normal-depth/step02'), { recursive: true });
-  let calls = 0;
-  await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async request => {
-    assert.equal(request.step, 'shadow_lighting'); assert.equal(request.threadId, 'shadow_maps-thread');
-    calls++; return f.deliver(request);
+  const options = { ...f.options, shadowMode: 'normal-depth' as const };
+  await runWorkflow(options, { ...f.deps, agent: async request => {
+    assert.equal(request.step, 'shadow_maps');
+    assert.equal(request.tools?.length ?? 0, 0);
+    return f.deliver(request);
   } });
-  assert.equal(calls, 1);
-  assert.deepEqual(await readFile(join(f.task, 'shadow/normal-depth/step01/normal.png')), normal);
+  const output = join(f.task, 'shadow/normal-depth');
+  const normal = await readFile(join(output, 'step01/normal.png'));
+  await assert.rejects(readFile(join(output, 'step02/light.json')), { code: 'ENOENT' });
+  await mkdir(join(output, 'step02'));
+  await writeFile(join(output, 'step02/light.json'), '{"settings":{"lightingMix":0}}');
+  await rm(join(output, 'step01/source.json'));
+  await rm(join(f.task, 'lighting'), { recursive: true });
+  await runWorkflow(options, { ...f.deps, agent: async () => assert.fail('completed maps must be reused') });
+  assert.deepEqual(await readFile(join(output, 'step01/normal.png')), normal);
+  assert.deepEqual(await readFile(join(f.task, 'lighting/normal.png')), normal);
+  assert.equal(JSON.parse(await readFile(join(output, 'step01/source.json'), 'utf8')).mode, 'normal-depth');
+  const archive = (await readdir(output)).find(path => path.startsWith('lighting.previous-'));
+  assert.ok(archive);
+  assert.equal(await readFile(join(output, archive, 'light.json'), 'utf8'), '{"settings":{"lightingMix":0}}');
 });
 test('错误裁切引用与错误尺寸不能标记完成或切换预览方式', async t => {
   const f = await fixture(t);

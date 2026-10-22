@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { projectionLayers, projectionOnlyEdit } from '../studio/projection-model.js';
-import { validateSettings } from '../studio/lighting-model.js';
+import { presets, validateSettings } from '../studio/lighting-model.js';
 
 test('Production shadow UUIDs resolve native layers and only shadow color edits preserve data maps', () => {
   const bindings = { shadows: [{ shadowLayerUuid: 'abc-123', casterLayerUuids: ['CASTER'], receiverLayerUuids: ['receiver'] }] };
@@ -27,4 +27,17 @@ test('Lighting blend has bounded endpoints and old recipes keep full MToon light
   assert.equal(validateSettings({ lightingMix: 0 }).lightingMix, 0);
   assert.equal(validateSettings({ lightingMix: 1 }).lightingMix, 1);
   assert.throws(() => validateSettings({ lightingMix: 1.1 }), /lightingMix/);
+});
+test('Built-in presets start with active lighting and distinct directional or color effects', () => {
+  for (const preset of Object.values(presets)) {
+    assert.deepEqual(validateSettings(preset.values), preset.values);
+    assert.ok(preset.values.lightingMix > 0);
+    assert.ok(preset.values.normalStrength > 0);
+    assert.doesNotMatch(preset.label, /jianma/i);
+  }
+  assert.ok(presets.leftSoft.values.lightX < 0);
+  assert.ok(presets.rightSoft.values.lightX > 0);
+  assert.notEqual(presets.warm.values.lightColor, presets.cool.values.lightColor);
+  assert.equal(presets.maskSoft.values.lightingMix, 0.55);
+  assert.equal(presets.maskSoft.values.shadow, false);
 });

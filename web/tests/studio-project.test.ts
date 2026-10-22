@@ -11,8 +11,6 @@ import { shadowArtifacts } from '../../.agents/skills/live2d-maker/shared/shadow
 import sharp from 'sharp';
 import { inputFingerprint, resolveShadowInput } from '../../.agents/skills/live2d-maker/shadow/input.ts';
 import { stepsFor } from '../../.agents/skills/live2d-maker/shadow/steps.ts';
-import { defaults, rendererVersion } from '../studio/lighting-model.js';
-import { rendererFingerprint } from '../../.agents/skills/live2d-maker/shadow/lighting.ts';
 
 async function fixture(t: any) {
   const root = await mkdtemp(join(tmpdir(), "astra-project-")),
@@ -140,7 +138,7 @@ test('Explicit mixed preview requires matching branch provenance and preserves p
   assert.equal(data.previewModes.mixed, false); assert.equal(data.files.normal.available, true);
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
 });
-test('Unified studio discovers pending maps and initial light automatically, checks provenance and prefers formal delivery', async t => {
+test('Unified studio discovers pending maps, ignores legacy light files and prefers formal delivery', async t => {
   const f = await fixture(t), hash = (v: string | Uint8Array) => createHash('sha256').update(v).digest('hex');
   const color = await sharp({ create: { width: 2, height: 2, channels: 4, background: '#cbaa99' } }).png().toBuffer();
   const normal = await sharp({ create: { width: 2, height: 2, channels: 3, background: { r: 128, g: 128, b: 255 } } }).png().toBuffer();
@@ -153,21 +151,20 @@ test('Unified studio discovers pending maps and initial light automatically, che
   await f.put(shadowArtifacts.draftNormal, normal); await f.put(shadowArtifacts.draftDepth, depth);
   const input = await resolveShadowInput(f.name, f.dir, 'normal-depth');
   await f.put('shadow/normal-depth/run.json', JSON.stringify({ inputFingerprint: await inputFingerprint(input, 'normal-depth', stepsFor('normal-depth')[0].prompt) }));
-  const settings = { ...defaults, lightX: -2, lightColor: '#ffaabb' };
-  await f.put(shadowArtifacts.light, JSON.stringify({ version: 1, renderer: rendererVersion, rendererFingerprint: await rendererFingerprint(),
-    inputs: { color: hash(color), normal: hash(normal), depth: hash(depth) }, settings, previewHash: hash('preview'), renderRecord: 'renders/aa-aa.json' }));
+  await f.put('shadow/normal-depth/step02/light.json', '{"settings":{"lightingMix":0}}');
   let data = await (await f.get()).json() as any;
   assert.equal(data.previewMode, 'mask'); assert.equal(data.previewDraft, false); assert.equal(data.files.normal.available, false);
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, true); assert.equal(data.shadowMode, 'mask');
   assert.equal(data.previewReview, 'draft-awaiting-visual-review'); assert.equal(data.files.normal.path, shadowArtifacts.draftNormal);
-  assert.deepEqual(data.lightSettings, settings);
+  assert.equal(Object.hasOwn(data, 'lightSettings'), false);
+  assert.equal(Object.hasOwn(data, 'lightStale'), false);
   assert.equal(data.files.document.path, shadowArtifacts.maskDocument);
   await rm(join(f.project, shadowArtifacts.selection));
   data = await (await f.get()).json() as any;
   assert.equal(data.previewDraft, true); assert.equal(data.files.normal.available, true);
   await f.put('shadow/normal-depth/step01/.completed', '');
-  assert.equal((await (await f.get()).json() as any).previewReview, 'awaiting-lighting');
+  assert.equal((await (await f.get()).json() as any).previewReview, 'awaiting-publication');
   await f.put(shadowArtifacts.selection, JSON.stringify(record));
   await f.put(shadowArtifacts.draftNormal, 'changed');
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
