@@ -270,6 +270,7 @@ function sync() {
     );
   }
   $("#shade").value = state.settings.shade;
+  $("#lightColor").value = state.settings.lightColor;
   $("#background").value = state.settings.background;
   $("#normal-y").value = state.settings.normalY;
   $("#shadow").checked = state.settings.shadow;
@@ -277,13 +278,16 @@ function sync() {
   const hasNormal = lighting && !!state.source?.normal,
     hasDepth = !!state.source?.depth;
   $("#lighting-controls").disabled = !hasNormal || state.busy;
-  $("#lighting-status").hidden = hasNormal;
   const project = state.source?.project || state.waitingProject;
-  $("#lighting-status").textContent = project
+  $("#lighting-status").hidden = hasNormal && !project?.previewDraft;
+  $("#lighting-status").textContent = hasNormal && project?.previewDraft
+    ? project.previewReview === 'awaiting-lighting' ? '光照待调校' : "待视觉复核"
+    : project
     ? project.mapsStale ? "贴图源已变化，请续跑生成" : project.files?.normal.available
       ? "图层已更改，光照已暂停"
       : "法线待管线生成"
     : "绑定法线后启用光照";
+  $("#lighting-status").title = project?.previewDraft ? project.previewReviewReason : '';
   $("#depth-status-hint").textContent = project
     ? project.files?.depth.available
       ? "图层已更改，投影已暂停"
@@ -364,7 +368,7 @@ for (const el of document.querySelectorAll("[data-setting],[data-number]")) {
     schedule();
   });
 }
-for (const k of ["shade", "background"])
+for (const k of ["shade", "background", "lightColor"])
   $("#" + k).oninput = (e) => {
     state.settings[k] = e.target.value;
     schedule();
@@ -383,9 +387,13 @@ $("#preset").onchange = (e) => {
   apply();
 };
 $("#reset").onclick = () => {
+  if (state.source?.project?.lightSettings) {
+    state.settings = validateSettings(state.source.project.lightSettings);
+    apply(true); return;
+  }
   const key =
     state.source?.sample === "jianma" ||
-    state.source?.project?.name === "jianma"
+    state.source?.project?.name?.startsWith('jianma')
       ? "jianma"
       : "anime";
   $("#preset").value = key;
@@ -687,7 +695,8 @@ async function install(source, id, reset = true) {
         state.settings.shadow = false;
         state.mixedInitialized = true;
       }
-      $("#preset").value = key;
+      if (source.project?.lightSettings && source.normal) state.settings = validateSettings(source.project.lightSettings);
+      $("#preset").value = source.project?.lightSettings && source.normal ? 'custom' : key;
       selectTool("move");
     }
     apply();
@@ -946,7 +955,7 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
       if (source.layerKey !== 'baseline' && !projectionOnlyEdit(shadowBindings, source.nativeBaseline, source.layers)) {
         maps.normal = null; maps.depth = null;
       }
-      if (project.previewMode === 'mixed' && !state.mixedInitialized) {
+      if (project.previewMode === 'mixed' && !project.lightSettings && !state.mixedInitialized) {
         state.settings.lightingMix = 0.55;
         state.settings.shadow = false;
         state.mixedInitialized = true;
@@ -1040,6 +1049,7 @@ window.studioDiagnostics = () => ({
   project: state.source?.project?.name,
   workspace: state.workspace,
   previewMode: state.source?.project?.previewMode,
+  previewDraft: !!state.source?.project?.previewDraft,
   projections: state.source?.shadowBindings?.shadows?.length || 0,
   layers: state.source?.layers?.length || 0,
   layerSession: layers.session,

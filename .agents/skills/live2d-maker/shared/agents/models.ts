@@ -38,7 +38,7 @@ export const stepModelSlots = {
   raster_step03: 'raster_step03',
   clothing_raster_step01: 'raster_step01', clothing_raster_step02: 'raster_step02',
   clothing_raster_step02_review: 'raster_step02_review', clothing_raster_step02_repair: 'raster_step02',
-  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow',
+  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow', shadow_lighting: 'shadow',
 } as const satisfies Record<string, ModelSlot>;
 export type AgentStep = keyof typeof stepModelSlots;
 export const stepDefaults = Object.fromEntries(Object.entries(stepModelSlots)
