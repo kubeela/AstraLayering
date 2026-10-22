@@ -1,4 +1,4 @@
-import { mkdir, realpath, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
@@ -27,28 +27,35 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
         if (!within(root, path)) throw new Error('输入图片必须位于本次任务目录内');
         return path;
       };
-      const image = async (path: string) => sharp(path, { limitInputPixels: 16_000_000 })
+      const image = async (bytes: Buffer) => sharp(bytes, { limitInputPixels: 16_000_000 })
         .toColourspace('srgb').ensureAlpha().raw().toBuffer({ resolveWithObject: true });
       const reference = await source('reference'), current = await source('current');
       signal.throwIfAborted();
-      const ref = await image(reference), cur = await image(current);
+      const referenceBytes = await readFile(reference), currentBytes = await readFile(current);
+      const ref = await image(referenceBytes), cur = await image(currentBytes);
       const { width, height } = ref.info;
       if (width !== cur.info.width || height !== cur.info.height) throw new Error('画布尺寸不同；请导出同一画布坐标的 PNG，不要缩放或平移参考图');
       const maskPath = args.visible_mask === undefined ? undefined : await source('visible_mask');
-      const mask = maskPath ? await image(maskPath) : undefined;
+      const mask = maskPath ? await image(await readFile(maskPath)) : undefined;
       if (mask && (mask.info.width !== width || mask.info.height !== height)) throw new Error('visible_mask 必须与参考图同尺寸');
       const crop = args.crop ?? [0, 0, width, height];
       if (!Array.isArray(crop) || crop.length !== 4 || crop.some(n => !Number.isSafeInteger(n) || n < 0)
         || !crop[2] || !crop[3] || crop[0] + crop[2] > width || crop[1] + crop[3] > height) throw new Error('crop 须为画布内的 [x,y,width,height]');
       const [left, top, w, h] = crop as Box;
-      const setting = (key: string, fallback: number, max: number) => {
+      const setting = (key: string, fallback: number, max: number, min = 1) => {
         const properties = definition.inputSchema.properties as Record<string, { default?: unknown }> | undefined;
         const n = args[key] ?? properties?.[key]?.default ?? fallback;
-        if (typeof n !== 'number' || !Number.isSafeInteger(n) || n < 1 || n > max) throw new Error(`${key} 须为 1 至 ${max} 的整数`);
+        if (typeof n !== 'number' || !Number.isSafeInteger(n) || n < min || n > max) throw new Error(`${key} 须为 ${min} 至 ${max} 的整数`);
         return n;
       };
       const colorThreshold = setting('color_threshold', 80, 255), alphaThreshold = setting('alpha_threshold', 96, 255);
+      const coarseThreshold = setting('coarse_color_threshold', 32, 255), gap = setting('region_gap_pixels', 1, 8, 0);
       const minPixels = setting('min_region_pixels', 64, 16_000_000), maxRegions = setting('max_regions', 40, 200);
+      // Compare coherent local differences as well as sharp ones. Flattening
+      // removes invisible RGB; this diagnostic smoothing never edits artwork.
+      const coarse = async (bytes: Buffer) => sharp(bytes, { limitInputPixels: 16_000_000 })
+        .toColourspace('srgb').flatten({ background: '#808080' }).removeAlpha().blur(2).raw().toBuffer();
+      const refCoarse = await coarse(referenceBytes), curCoarse = await coarse(currentBytes);
       const labels = new Uint8Array(w * h), heat = Buffer.alloc(w * h * 4), counts = { missing: 0, extra: 0, color: 0 };
       for (let y = 0; y < h; y++) {
         if (y % 128 === 0) signal.throwIfAborted();
@@ -60,9 +67,13 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
           if (ra >= 128 && ra - ca >= alphaThreshold) kind = 1;
           else if (ca >= 128 && ca - ra >= alphaThreshold) kind = 2;
           else if (ra >= 128 && ca >= 128) {
-            let difference = 0;
-            for (let c = 0; c < 3; c++) difference = Math.max(difference, Math.abs(ref.data[i + c] - cur.data[i + c]));
-            if (difference >= colorThreshold) kind = 3;
+            let difference = 0, coherentDifference = 0;
+            const k = ((top + y) * width + left + x) * 3;
+            for (let c = 0; c < 3; c++) {
+              difference = Math.max(difference, Math.abs(ref.data[i + c] - cur.data[i + c]));
+              coherentDifference = Math.max(coherentDifference, Math.abs(refCoarse[k + c] - curCoarse[k + c]));
+            }
+            if (difference >= colorThreshold || coherentDifference >= coarseThreshold) kind = 3;
           }
           if (!kind) continue;
           labels[j] = kind; counts[kinds[kind - 1]]++;
@@ -71,22 +82,35 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
           heat[j * 4 + 3] = 220;
         }
       }
-      const regions: Region[] = [], queue = new Int32Array(labels.length);
-      for (let seed = 0; seed < labels.length; seed++) {
-        const kind = labels[seed]; if (!kind) continue;
-        signal.throwIfAborted();
-        let read = 0, size = 1, x0 = w, y0 = h, x1 = 0, y1 = 0;
-        queue[0] = seed; labels[seed] = 0;
-        while (read < size) {
-          const pos = queue[read++], x = pos % w, y = Math.floor(pos / w);
-          x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
-          for (let yy = Math.max(0, y - 1); yy <= Math.min(h - 1, y + 1); yy++)
-            for (let xx = Math.max(0, x - 1); xx <= Math.min(w - 1, x + 1); xx++) {
-              const next = yy * w + xx;
-              if (labels[next] === kind) { labels[next] = 0; queue[size++] = next; }
-            }
+      const regions: Region[] = [], queue = new Int32Array(labels.length), expanded = new Uint8Array(labels.length);
+      for (let kind = 1; kind <= kinds.length; kind++) {
+        expanded.fill(0);
+        for (let pos = 0; pos < labels.length; pos++) {
+          if (labels[pos] !== kind) continue;
+          const x = pos % w, y = Math.floor(pos / w);
+          for (let yy = Math.max(0, y - gap); yy <= Math.min(h - 1, y + gap); yy++)
+            for (let xx = Math.max(0, x - gap); xx <= Math.min(w - 1, x + gap); xx++) expanded[yy * w + xx] = 1;
         }
-        if (size >= minPixels) regions.push({ kind: kinds[kind - 1], bounds: [left + x0, top + y0, x1 - x0 + 1, y1 - y0 + 1], pixels: size });
+        for (let seed = 0; seed < expanded.length; seed++) {
+          if (!expanded[seed]) continue;
+          signal.throwIfAborted();
+          let read = 0, size = 1, pixels = 0, x0 = w, y0 = h, x1 = 0, y1 = 0;
+          queue[0] = seed; expanded[seed] = 0;
+          while (read < size) {
+            const pos = queue[read++], x = pos % w, y = Math.floor(pos / w);
+            if (labels[pos] === kind) {
+              pixels++;
+              x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+            }
+            for (let yy = Math.max(0, y - 1); yy <= Math.min(h - 1, y + 1); yy++)
+              for (let xx = Math.max(0, x - 1); xx <= Math.min(w - 1, x + 1); xx++) {
+                const next = yy * w + xx;
+                if (expanded[next]) { expanded[next] = 0; queue[size++] = next; }
+              }
+          }
+          // Count and bound real candidates, not pixels introduced by grouping.
+          if (pixels >= minPixels) regions.push({ kind: kinds[kind - 1], bounds: [left + x0, top + y0, x1 - x0 + 1, y1 - y0 + 1], pixels });
+        }
       }
       regions.sort((a, b) => b.pixels - a.pixels);
       const selected = regions.slice(0, maxRegions);
@@ -98,8 +122,8 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       const files = { diagnostics: join(folder, 'differences.json'), heatmap: join(folder, 'heatmap.png'),
         marked: join(folder, 'marked.png'), comparison: join(folder, 'comparison.png') };
       const meta = { reference, current, visibleMask: maskPath, canvas: [width, height], crop,
-        thresholds: { color: colorThreshold, alpha: alphaThreshold, minRegionPixels: minPixels },
-        counts, regions, note: '候选差异须看图确认。补全区不能按不可见原图判错；细微柔边留给 step02。' };
+        thresholds: { color: colorThreshold, coarseColor: coarseThreshold, blurSigma: 2, regionGapPixels: gap, alpha: alphaThreshold, minRegionPixels: minPixels },
+        counts, regions, note: '以候选框为 step02 细节检查入口，对照参考确认后局部修画，并逐层扩展检查。候选不决定通过或内容归属。' };
       await writeFile(files.diagnostics, JSON.stringify(meta, null, 2) + '\n');
       const raw = { width: w, height: h, channels: 4 as const };
       await sharp(heat, { raw }).png().toFile(files.heatmap);
@@ -109,9 +133,9 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       }).join('');
       const overlay = Buffer.from(`<svg width="${w}" height="${h}">${rectangles}</svg>`);
       const extract = { left, top, width: w, height: h };
-      const marked = await sharp(current).extract(extract).composite([{ input: overlay }]).png().toBuffer();
+      const marked = await sharp(currentBytes).extract(extract).composite([{ input: overlay }]).png().toBuffer();
       await writeFile(files.marked, marked);
-      const original = await sharp(reference).extract(extract).png().toBuffer();
+      const original = await sharp(referenceBytes).extract(extract).png().toBuffer();
       await sharp({ create: { width: w * 2, height: h, channels: 4, background: '#888888' } })
         .composite([{ input: original, left: 0, top: 0 }, { input: marked, left: w, top: 0 }]).png().toFile(files.comparison);
       signal.throwIfAborted();

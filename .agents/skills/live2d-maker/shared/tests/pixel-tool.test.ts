@@ -42,6 +42,18 @@ test('单层可见 mask 保留缺口检测，同时排除合理补全；默认�
   assert.equal(result.regions.length, 1); assert.equal(result.regions[0].kind, 'missing');
   assert.deepEqual(result.regions[0].bounds, [4, 4, 2, 8]);
 });
+test('连贯的中等色差成为细节候选，分组只统计真实差异像素，不把扩展背景计入', async t => {
+  const f = await fixture(t), skin = [180, 100, 90, 255];
+  await f.make('reference.png', [[0, 0, 32, 32, skin]]);
+  await f.make('current.png', [[0, 0, 32, 32, skin], [5, 5, 18, 18, [180, 145, 130, 255]]]);
+  const result = await f.call({ reference: 'reference.png', current: 'current.png' });
+  assert.ok(result.regions.some((r: any) => r.kind === 'color' && r.bounds[0] < 14 && r.bounds[0] + r.bounds[2] > 14));
+  await f.make('current.png', [[0, 0, 32, 32, skin], [15, 15, 1, 1, [0, 100, 90, 255]]]);
+  const tiny = await f.call({ reference: 'reference.png', current: 'current.png', min_region_pixels: 2 });
+  assert.equal(tiny.regions.length, 0);
+  const precise = await f.call({ reference: 'reference.png', current: 'current.png', min_region_pixels: 1 });
+  assert.deepEqual(precise.regions[0].bounds, [15, 15, 1, 1]); assert.equal(precise.regions[0].pixels, 1);
+});
 test('不同尺寸、越界输入/输出和 symlink 逃逸均明确拒绝', async t => {
   const f = await fixture(t);
   await f.make('reference.png', []); await f.make('current.png', []);
