@@ -18,7 +18,8 @@ export function kraContents(bytes: Uint8Array) {
 const uuid = (value: string) => value.replace(/[{}]/g, '').toLowerCase();
 export function kraLayers(xml: string) {
   const layers = new Map<string, Record<string, string>>(), parents: string[] = [];
-  for (const token of xml.matchAll(/<\/?layer\b[^>]*>/g)) {
+  // Krita stores mask children as <mask>, rather than <layer>.
+  for (const token of xml.matchAll(/<\/?(?:layer|mask)\b[^>]*>/g)) {
     const tag = token[0];
     if (tag.startsWith('</')) { parents.pop(); continue; }
     const decode = (s: string) => s.replace(/&(quot|apos|amp|lt|gt);/g, (_m, k: string) => ({quot:'"',apos:"'",amp:'&',lt:'<',gt:'>'}[k]!));
@@ -83,7 +84,14 @@ export async function validateDelivery(output: string, input: ShadowInput, mode:
 
 export function validateMaskStructure(layers: ReturnType<typeof kraLayers>, original: Map<string, Record<string,string>>, parts: Set<string>, bindings: any) {
   for (const [id, node] of original) {
-    if (layers.get(id)?.nodetype !== node.nodetype) throw new Error('原有部件图层被删除或合并：' + node.name);
+    const retained = layers.get(id);
+    if (retained?.nodetype !== node.nodetype) throw new Error('原有部件或蒙版被删除或合并：' + node.name);
+    if (node.nodetype.endsWith('mask')) {
+      if (node.parent !== undefined && retained.parent !== node.parent) throw new Error('原有蒙版脱离原部件：' + node.name);
+      for (const key of ['visible', 'x', 'y', 'opacity', 'compositeop', 'channelflags', 'alphainherit']) {
+        if (node[key] !== undefined && retained[key] !== node[key]) throw new Error('原有蒙版状态改变（' + key + '）：' + node.name);
+      }
+    }
   }
   if (![1, 2].includes(bindings.version) || !Array.isArray(bindings.shadows) || !Array.isArray(bindings.excluded)) throw new Error('shadows.json 格式无效');
   if (!bindings.shadows.length && !bindings.excluded.length) throw new Error('需要记录投影关系或明确说明没有适用关系');
