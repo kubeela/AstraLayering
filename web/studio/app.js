@@ -5,6 +5,7 @@ import { stateKey } from "./layer-model.js";
 import { openDocument } from "./document-loader.js";
 import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
+import { PhysicsPanel } from './physics-panel.js';
 import {
   defaults,
   presets,
@@ -35,7 +36,7 @@ const state = {
   workspace: 'lighting',
   lightingMode: 'mixed',
 };
-let projections;
+let projections, physics;
 function toast(message) {
   $("#toast").textContent = message;
   $("#toast").classList.add("visible");
@@ -256,6 +257,7 @@ function overlay() {
 }
 stage.onRender = () => {
   overlay();
+  physics?.overlay();
   $("#zoom").textContent = Math.round(stage.viewScale() * 100) + "%";
 };
 function sync() {
@@ -273,7 +275,9 @@ function sync() {
   $("#background").value = state.settings.background;
   $("#normal-y").value = state.settings.normalY;
   $("#shadow").checked = state.settings.shadow;
+  $('#show-shading').checked = state.view === 'shading';
   const lighting = state.workspace === 'lighting';
+  const physical = state.workspace === 'physics';
   const hasNormal = lighting && !!state.source?.normal,
     hasDepth = !!state.source?.depth;
   $("#lighting-controls").disabled = !hasNormal || state.busy;
@@ -302,10 +306,14 @@ function sync() {
   $('[data-tool="light"]').disabled = !hasNormal || state.busy;
   $('[data-tool="light"]').hidden = !lighting;
   $('#views').hidden = !lighting;
-  $('#projection-workspace').hidden = lighting;
+  $('#show-shading').disabled = !hasNormal || state.busy;
+  $('#projection-workspace').hidden = state.workspace !== 'mask';
   $('#lighting-workspace').hidden = !lighting;
+  $('#physics-workspace').hidden = !physical;
+  $('[data-tool="disturb"]').hidden = !physical;
+  $('[data-tool="disturb"]').disabled = !physics?.ready || state.busy;
   $('.recipe-actions').hidden = !lighting;
-  $('#engine').textContent = lighting ? 'MToon · 原尺寸' : 'Krita · 原尺寸';
+  $('#engine').textContent = physical ? '物理 · 原尺寸' : lighting ? 'MToon · 原尺寸' : 'Krita · 原尺寸';
   $('#lighting-source').hidden = !project;
   $('#lighting-base').value = project?.previewMode === 'mixed' ? 'mixed' : 'normal-depth';
   $('#lighting-base').disabled = state.busy || state.layerBusy;
@@ -332,12 +340,16 @@ function sync() {
   $("#refresh-project").disabled = $("#retry-project").disabled =
     state.busy || state.layerBusy;
   $("#open-task").disabled = state.busy || state.layerBusy;
-  $(".layer-panel").inert = state.projectOpening || state.surfaceActive;
+  $(".layer-panel").inert = state.projectOpening || state.surfaceActive && !physics?.ready;
+  if (physics?.ready) {
+    for (const el of document.querySelectorAll('.layer-eye,.layer-actions button,#layer-properties input,#layer-properties select')) el.disabled = true;
+  }
   for (const k of ["normal", "depth"]) {
     $("#file-" + k).disabled = $("#remove-" + k).disabled =
       state.busy || state.layerBusy;
   }
   overlay();
+  physics?.sync();
 }
 function apply(custom = false) {
   state.settings = validateSettings(state.settings);
@@ -408,7 +420,7 @@ for (const el of document.querySelectorAll("[data-position]"))
     apply(true);
   };
 function selectView(view) {
-  if (state.workspace !== 'lighting') view = 'color';
+  if (state.workspace === 'mask') view = 'color';
   state.view = view;
   stage.setMode(view);
   $("#split-line").hidden = view !== "split";
@@ -418,12 +430,16 @@ $("#views").onclick = (e) => {
   const el = e.target.closest("[data-view]");
   if (el && !el.disabled) selectView(el.dataset.view);
 };
+$('#show-shading').onchange = e => selectView(e.target.checked ? 'shading' : 'lit');
 function selectTool(tool) {
-  if (state.workspace !== 'lighting') tool = 'move';
+  if (tool === 'light' && state.workspace !== 'lighting' || tool === 'disturb' && (state.workspace !== 'physics' || !physics?.ready)) tool = 'move';
+  pointer = null;
+  if (physics) physics.pointer = null;
   state.tool = tool;
   for (const el of document.querySelectorAll("[data-tool]"))
     el.classList.toggle("active", el.dataset.tool === tool);
   $("#stage").classList.toggle("light", tool === "light");
+  $("#stage").classList.toggle("disturb", tool === "disturb");
   overlay();
 }
 $("#interaction").onclick = (e) => {
@@ -441,6 +457,7 @@ function placeLight(e) {
 for (const el of [$("#stage"), $("#light-handle")]) {
   el.onpointerdown = (e) => {
     if (state.busy || !state.source || e.button !== 0) return;
+    if (state.tool === 'disturb') return;
     pointer = {
       id: e.pointerId,
       x: e.clientX,
@@ -453,6 +470,7 @@ for (const el of [$("#stage"), $("#light-handle")]) {
     if (state.tool === "light") placeLight(e);
   };
   el.onpointermove = (e) => {
+    if (state.tool === 'disturb') { physics?.input(e); return; }
     if (!pointer || pointer.id !== e.pointerId) return;
     if (pointer.tool === "light") placeLight(e);
     else {
@@ -472,6 +490,7 @@ for (const el of [$("#stage"), $("#light-handle")]) {
         pointer = null;
       };
 }
+$('#stage').addEventListener('pointerleave', () => { if (physics) { physics.pointer = null; physics.overlay(); } });
 $("#light-handle").onkeydown = (e) => {
   const step = e.shiftKey ? 0.2 : 0.02,
     s = state.settings;
@@ -538,7 +557,13 @@ $("#export-image").onclick = async () => {
 const layers = new LayerPanel({
   download,
   error: toast,
-  rendered() { projections?.render(); },
+  rendered() {
+    projections?.render();
+    if (physics?.ready) {
+      if (state.workspace === 'physics' && layers.selected !== physics.selected && physics.bindings.has(layers.selected)) physics.select(layers.selected);
+      for (const el of document.querySelectorAll('.layer-eye,.layer-actions button,#layer-properties input,#layer-properties select')) el.disabled = true;
+    }
+  },
   busy(value) {
     state.layerBusy = value;
     sync();
@@ -578,7 +603,10 @@ const layers = new LayerPanel({
 });
 projections = new ProjectionPanel(layers, () => state.source);
 const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=>layers.session?{session:layers.session,revision:layers.revision}:null, error:toast,
-  changed(active){state.surfaceActive=active;sync();}});
+  changed(active){state.surfaceActive=active;if(!active)physics?.clear();sync();}});
+physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprint:()=>state.source?.authorHash,
+  workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
+  download, changed(){layers.render();if(!physics.ready&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
 function showSource() {
   const source = state.source;
   $("#document-info").hidden = !source;
@@ -645,7 +673,7 @@ async function install(source, id, reset = true) {
   try {
     for (const k of ["color", "normal", "depth"])
       if (source[k]) urls[k] = URL.createObjectURL(source[k]);
-    const [entries, hashes] = await Promise.all([
+    const [entries, hashes, authorHash] = await Promise.all([
       Promise.all(
         Object.entries(urls).map(async ([k, url]) => [k, await loadImage(url)]),
       ),
@@ -655,6 +683,7 @@ async function install(source, id, reset = true) {
           await hash(source[k]),
         ]),
       ),
+      source.authorHash || hash(source.file || source.originalColor || source.color),
     ]);
     if (id !== state.generation) return;
     const priorZoom = stage.zoom,
@@ -678,6 +707,7 @@ async function install(source, id, reset = true) {
       ]);
     }
     state.source = source;
+    source.authorHash = authorHash;
     state.inputs = Object.fromEntries(hashes);
     // Generated maps are data only. First lighting entry always uses an active
     // studio preset; later layer/workspace updates preserve the user's settings.
@@ -995,8 +1025,15 @@ for (const button of document.querySelectorAll('[data-workspace]')) button.oncli
   const workspace = button.dataset.workspace;
   if (workspace === state.workspace || state.busy || state.layerBusy) return;
   const project = state.source?.project;
+  selectTool('move');
+  if (workspace === 'physics' && (!project || project.previewMode === 'normal-depth')) {
+    state.workspace = workspace;
+    if (surfaces.active && !physics.ready) void surfaces.close();
+    selectView(state.source?.normal ? 'lit' : 'color'); sync(); return;
+  }
+  if (workspace === 'lighting' && physics.ready) { state.workspace = workspace; selectView(state.source?.normal ? 'lit' : 'color'); sync(); return; }
   if (project) {
-    const preview = workspace === 'mask' ? 'mask' : project.previewModes?.mixed ? state.lightingMode : 'normal-depth';
+    const preview = workspace === 'mask' ? 'mask' : workspace === 'physics' ? 'normal-depth' : project.previewModes?.mixed ? state.lightingMode : 'normal-depth';
     void openProject(project.name, project.dir, preview, workspace);
   } else {
     state.workspace = workspace;
@@ -1012,7 +1049,7 @@ $('#lighting-base').onchange = e => {
 sync();
 // No test gallery, no test-image downloads. Jianma is a real layered document.
 const requested = new URLSearchParams(location.search);
-if (requested.get("project")) void openProject(requested.get("project"), undefined, requested.get('preview'));
+if (requested.get("project")) void openProject(requested.get("project"), undefined, requested.get('preview'), ['mask','lighting','physics'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
 else if (
   requested.get("name") === "jianma" ||
   requested.get("sample") === "jianma"
@@ -1026,6 +1063,8 @@ window.addEventListener("pagehide", () => {
   stage.dispose();
 });
 window.studioDiagnostics = () => ({
+  physics: physics.diagnostics(),
+  tool: state.tool,
   surface: surfaces.diagnostics(),
   renderer: rendererVersion,
   document: state.source?.name,

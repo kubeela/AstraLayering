@@ -86,6 +86,7 @@ export class LightingStage {
       studioModelView: { value: new THREE.Matrix4() },
     };
     const upstreamCompile = this.material.onBeforeCompile.bind(this.material);
+    const upstreamProgramKey = this.material.customProgramCacheKey.bind(this.material);
     this.material.onBeforeCompile = (shader, renderer) => {
       upstreamCompile(shader, renderer);
       if (
@@ -136,7 +137,9 @@ vec4 studioShadowCoord() {
  gl_FragColor = vec4( col, diffuseColor.a );`,
         );
     };
-    this.material.customProgramCacheKey = () => "astra-mtoon-point-receiver-v3";
+    // MToon includes the debug mode and generated defines in its program key.
+    // A constant key silently reuses the beauty shader in diagnostic modes.
+    this.material.customProgramCacheKey = () => upstreamProgramKey() + "|astra-mtoon-point-receiver-v3";
     this.basic = new THREE.MeshBasicMaterial({
       transparent: true,
       alphaTest: 0.01,
@@ -270,6 +273,7 @@ vec4 studioShadowCoord() {
     };
   }
   updateNormal() {
+    if (this.deformation) { this.deformation.dirty = true; return; }
     if (!this.source) return;
     const { n, a } = this.source,
       b = this.normal.image.data,
@@ -287,6 +291,7 @@ vec4 studioShadowCoord() {
     this.normal.needsUpdate = true;
   }
   updateRelief() {
+    if (this.deformation) { this.deformation.dirty = true; this.renderer.shadowMap.needsUpdate = true; return; }
     if (!this.grid) return;
     const p = this.mesh.geometry.getAttribute("position");
     for (let i = 0; i < p.count; i++)
@@ -352,6 +357,7 @@ vec4 studioShadowCoord() {
     this.render();
   }
   frame(width, height, exporting = false) {
+    this.deformation?.compose();
     const aspect = width / height,
       fit = exporting
         ? 1
