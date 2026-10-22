@@ -93,7 +93,9 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
       const dt=(time-this.pointer.time)/1000,dx=x-this.pointer.x,dy=y-this.pointer.y;
       if(dt>0&&dt<.12)for(const[id,b]of this.bodies)if(this.scope==='all'||id===this.selected){
         const steps=Math.min(12,Math.max(1,Math.ceil(Math.hypot(dx,dy)/Math.max(10,this.radius*.5))));let contact=null;
-        for(let n=1;n<=steps&&!contact;n++){
+        // Both ends belong to the swept contact. A thin ribbon can be under
+        // the previous point and already outside the next pointer sample.
+        for(let n=0;n<=steps&&!contact;n++){
           const px=this.pointer.x+dx*n/steps,py=this.pointer.y+dy*n/steps,parts=this.contactLayers.get(id)||[];
           if(b.hit(px,py,parts))contact=[px,py];
           else for(let k=0;k<8&&!contact;k++){const a=k*Math.PI/4,qx=px+Math.cos(a)*this.radius*.65,qy=py+Math.sin(a)*this.radius*.65;if(b.hit(qx,qy,parts))contact=[qx,qy];}
