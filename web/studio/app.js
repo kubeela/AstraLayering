@@ -317,12 +317,8 @@ function sync() {
   $('[data-tool="disturb"]').disabled = !physics?.enabled || state.busy;
   $('.recipe-actions').hidden = !lighting;
   $('#engine').textContent = [state.lightingEnabled && hasNormal ? '光照' : '', physics?.enabled ? '物理' : '', '原尺寸'].filter(Boolean).join(' · ');
-  $('#physics-cases').hidden = !state.source?.physicsCase;
-  $('#physics-case-select').disabled = $('#open-physics-case').disabled = state.busy || state.layerBusy;
-  if (state.source?.physicsCase) {
-    $('#physics-case-select').value = state.source.physicsCase.id;
-    $('#physics-case-note').textContent = state.source.physicsCase.note;
-  }
+  $('#physics-case-playback').hidden = !state.source?.physicsCase;
+  $('#physics-case-select').disabled = state.busy || state.layerBusy || !!physics?.preparing;
   for (const button of document.querySelectorAll('[data-workspace]')) {
     const selected = button.dataset.workspace === state.workspace;
     button.classList.toggle('active', selected);
@@ -716,6 +712,7 @@ async function install(source, id, reset = true) {
       state.lightingEnabled = source.project?.previewMode !== 'mask';
     }
     state.source = source;
+    if (reset) $('#physics-case-select').value = source.physicsCase?.id || '';
     source.authorHash = authorHash;
     state.inputs = Object.fromEntries(hashes);
     // Generated maps are data only. First lighting entry always uses an active
@@ -1046,7 +1043,7 @@ for (const button of document.querySelectorAll('[data-workspace]')) button.oncli
   const u = new URL(location.href); u.searchParams.set('workspace', workspace); history.replaceState(null, '', u);
   sync();
 };
-for (const [id, spec] of Object.entries(physicsCases)) $('#physics-case-select').append(new Option(spec.label, id));
+for (const [id, spec] of Object.entries(physicsCases)) $('#physics-case-select').append(new Option(`${spec.label}（案例）`, id));
 async function openPhysicsCase(caseId = 'ribbon') {
   if (state.busy || state.layerBusy) return;
   const id = begin('正在准备物理测试…', true);
@@ -1056,16 +1053,23 @@ async function openPhysicsCase(caseId = 'ribbon') {
     state.workspace = 'physics';
     await install(source, id);
     if (id !== state.generation) return;
-    // Show unlit albedo first: deformation must be visible without any shader.
-    state.lightingEnabled = false; stage.setLightingEnabled(false); sync();
+    // Cases use the same active lighting preset and depth projection as a
+    // character. The independent effect switches provide the albedo comparison.
+    state.lightingEnabled = true;
+    state.settings.shadow = true;
+    apply(); stage.setLightingEnabled(true); sync();
   } catch (error) { if (id === state.generation) toast(error.message); }
   finally { finish(id); }
   if (id === state.generation && state.source?.physicsCase) {
     await physics.prepare(); physics.setDemo(true);
   }
 }
-$('#open-physics-case').onclick = () => void openPhysicsCase();
-$('#physics-case-select').onchange = e => void openPhysicsCase(e.target.value);
+$('#physics-prepare').onclick = () => {
+  const caseId = $('#physics-case-select').value;
+  if (caseId) void openPhysicsCase(caseId);
+  else void physics.prepare();
+};
+$('#physics-case-select').onchange = () => physics.sync();
 sync();
 // URLs open a layered project or an explicitly requested physics fixture.
 const requested = new URLSearchParams(location.search);
