@@ -482,8 +482,9 @@ function bind() {
   viewport.addEventListener('wheel',event=>{
    if(event.ctrlKey||event.metaKey||Math.abs(event.deltaX)>=Math.abs(event.deltaY))return;
    for(let node=event.target;node&&node!==viewport;node=node.parentElement){
-    if(node.scrollHeight>node.clientHeight+1&&/auto|scroll/.test(getComputedStyle(node).overflowY)&&
-      (event.deltaY<0?node.scrollTop>0:node.scrollTop+node.clientHeight<node.scrollHeight-1))return;
+    // Inner lists keep their wheel gestures even at a boundary or with few rows.
+    if(node.matches('.inline-tree-rows')||
+      (node.scrollHeight>node.clientHeight+1&&/auto|scroll/.test(getComputedStyle(node).overflowY)))return;
    }
    if(viewport.scrollWidth<=viewport.clientWidth)return;
    event.preventDefault();viewport.scrollLeft+=event.deltaY*(event.deltaMode===1?20:event.deltaMode===2?viewport.clientWidth:1);
