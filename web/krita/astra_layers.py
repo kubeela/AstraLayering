@@ -175,31 +175,59 @@ class Layers(Extension):
             raise ValueError('Krita 未能导出合成图')
 
     def surfaces(self, session, directory):
-        """Read-only source-UV snapshot. Never mutate node visibility or masks.
-        Backdrop-dependent compositing stays on the native document route.
+        """Read-only source-UV snapshot, with native isolated clipping islands.
+
+        Krita resolves each isolated group's clipping and blend modes once.
+        Ordinary paint layers retain their individual identity and mesh; no
+        source nodes, masks, visibility or document bytes are changed.
         """
         doc = session['doc']
         if doc.colorModel() != 'RGBA' or doc.colorDepth() != 'U8' or 'srgb' not in doc.colorProfile().lower():
             raise ValueError('部件试验需要 8 位 sRGB 图层；请在 Krita 中另存副本')
+        rows = {r['id']: r for r in session['rows']}
+        islands = set()
+        def ancestor(key):
+            return rows[key]['parentId']
+        def isolate(key):
+            while key:
+                n = session['nodes'][key]
+                if n.type() == 'grouplayer' and not n.passThroughMode() and n.blendingMode() == 'normal' and not n.inheritAlpha():
+                    islands.add(key)
+                    return
+                key = ancestor(key)
+            raise ValueError('依赖外部底图的剪贴或混合需要隔离组；原生预览保持不变')
         for key, node in session['nodes'].items():
-            if node.type() == 'grouplayer':
-                if node.opacity() != 255 or node.blendingMode() != 'normal' or any(n.type().endswith('mask') for n in node.childNodes()):
-                    raise ValueError('带组蒙版或组混合的工程请先整理为独立部件；原生图层编辑仍可使用')
-            elif not node.type().endswith('mask') and (node.type() != 'paintlayer' or node.blendingMode() != 'normal' or node.inheritAlpha()):
-                raise ValueError('部件试验需要普通绘画层；剪贴和高级混合仍由原生图层编辑保留')
             if node.type() == 'transformmask' or node.type() == 'filtermask':
                 raise ValueError('请先将变形或滤镜蒙版整理到部件副本，再进行部件试验')
+            if node.type() == 'grouplayer':
+                if node.blendingMode() != 'normal' or node.inheritAlpha():
+                    isolate(ancestor(key))
+                elif node.opacity() != 255 or any(n.type().endswith('mask') for n in node.childNodes()):
+                    isolate(key)
+            elif not node.type().endswith('mask'):
+                if node.type() != 'paintlayer':
+                    raise ValueError('部件试验需要绘画层；请先整理特殊节点到部件副本')
+                if node.blendingMode() != 'normal' or node.inheritAlpha():
+                    isolate(ancestor(key))
         records = []
         directory.mkdir(exist_ok=True)
         for row in reversed(session['rows']):
             node = session['nodes'][row['id']]
-            if node.type() != 'paintlayer':
+            parent = row['parentId']
+            covered = False
+            while parent:
+                if parent in islands:
+                    covered = True
+                    break
+                parent = ancestor(parent)
+            if covered or (node.type() != 'paintlayer' and row['id'] not in islands):
                 continue
             b = node.bounds().intersected(QRect(0, 0, doc.width(), doc.height()))
             if b.isEmpty():
                 continue
             files = {}
-            for kind, read in [('original', node.pixelData), ('masked', node.projectionPixelData)]:
+            composited = row['id'] in islands
+            for kind, read in [('original', node.projectionPixelData if composited else node.pixelData), ('masked', node.projectionPixelData)]:
                 raw = bytes(read(b.x(), b.y(), b.width(), b.height()))
                 if len(raw) != b.width() * b.height() * 4:
                     raise ValueError('部件像素格式不匹配')
@@ -216,6 +244,7 @@ class Layers(Extension):
             name = re.sub(r'^\d+\s+', '', re.sub(r'^(人物|衣服)\s*\|\s*', '', row['name']))
             group = name.rsplit('/', 1)[0] if '/' in name else row['parentId'] or row['id']
             records.append({'id':row['id'], 'partId':group, 'name':name, 'visible':visible, 'opacity':node.opacity(),
+                            'composited':composited,
                             'bounds':{'x':b.x(), 'y':b.y(), 'width':b.width(), 'height':b.height()}, **files})
         return {'layers':records, 'width':doc.width(), 'height':doc.height()}
 

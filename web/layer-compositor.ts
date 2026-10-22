@@ -212,8 +212,11 @@ export class LayerCompositor {
       krita.once("error", (error) => {
         spawnError = error;
       });
-      for (let i = 0; i < 400; i++) {
-        if (spawnError || krita.exitCode !== null)
+      // Cold resource/font initialization may exceed 40 seconds on the service
+      // host. Keep a bounded startup wait, separate from document operations.
+      const deadline = Date.now() + 90_000;
+      while (Date.now() < deadline) {
+        if (spawnError || krita.exitCode !== null || krita.signalCode !== null)
           throw spawnError || Error("Krita 图层合成器未能启动");
         try {
           await readFile(join(this.root, "ready.json"));
@@ -354,8 +357,8 @@ export class LayerCompositor {
   async surfaces(value: any) {
     return this.exclusive(async () => {
       const session = this.session(value.session);
-      if (value.revision !== session.revision || !session.metadata?.baseline)
-        throw Error("请还原图层后准备部件贴图，法线与深度必须对应原始叠加状态");
+      if (value.revision !== session.revision)
+        throw Error("请等待当前图层更新完成后准备部件贴图");
       const directory = join(session.directory, `surfaces-${session.revision}`);
       const packet = await this.command({ op: "surfaces", session: value.session, output: directory });
       return { ...packet, session: value.session, revision: session.revision };

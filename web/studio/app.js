@@ -5,6 +5,8 @@ import { stateKey } from "./layer-model.js";
 import { openDocument } from "./document-loader.js";
 import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
+import { PhysicsPanel } from './physics-panel.js';
+import { physicsProjects, createPhysicsCase } from './physics-cases.js';
 import {
   defaults,
   presets,
@@ -33,9 +35,9 @@ const state = {
   waitingProject: null,
   generation: 0,
   workspace: 'lighting',
-  lightingMode: 'mixed',
+  lightingEnabled: true,
 };
-let projections;
+let projections, physics;
 function toast(message) {
   $("#toast").textContent = message;
   $("#toast").classList.add("visible");
@@ -226,7 +228,7 @@ try {
 $("#stage").addEventListener("studio-error", (e) => toast(e.detail));
 function overlay() {
   const active =
-    state.workspace === 'lighting' && state.tool === "light" && !!state.source?.normal && !state.busy;
+    state.workspace === 'lighting' && state.lightingEnabled && state.tool === "light" && !!state.source?.normal && !state.busy;
   $("#light-overlay").hidden = !active;
   if (!active) return;
   const b = $("#stage").getBoundingClientRect();
@@ -256,6 +258,7 @@ function overlay() {
 }
 stage.onRender = () => {
   overlay();
+  physics?.overlay();
   $("#zoom").textContent = Math.round(stage.viewScale() * 100) + "%";
 };
 function sync() {
@@ -273,10 +276,14 @@ function sync() {
   $("#background").value = state.settings.background;
   $("#normal-y").value = state.settings.normalY;
   $("#shadow").checked = state.settings.shadow;
+  $('#show-shading').checked = state.view === 'shading';
   const lighting = state.workspace === 'lighting';
-  const hasNormal = lighting && !!state.source?.normal,
+  const physical = state.workspace === 'physics';
+  const hasNormal = !!state.source?.normal,
     hasDepth = !!state.source?.depth;
-  $("#lighting-controls").disabled = !hasNormal || state.busy;
+  $('#effect-lighting').checked = state.lightingEnabled;
+  $('#effect-lighting').disabled = !hasNormal || state.busy || state.layerBusy;
+  $("#lighting-controls").disabled = !hasNormal || !state.lightingEnabled || state.busy;
   const project = state.source?.project || state.waitingProject;
   $("#lighting-status").hidden = hasNormal && !project?.previewDraft;
   $("#lighting-status").textContent = hasNormal && project?.previewDraft
@@ -299,17 +306,18 @@ function sync() {
   $("#depth-status-hint").hidden = hasDepth;
   for (const k of ["normalStrength", "number-normalStrength", "normal-y"])
     $("#" + k).disabled = !hasNormal || state.busy;
-  $('[data-tool="light"]').disabled = !hasNormal || state.busy;
+  $('[data-tool="light"]').disabled = !hasNormal || !state.lightingEnabled || state.busy;
   $('[data-tool="light"]').hidden = !lighting;
-  $('#views').hidden = !lighting;
-  $('#projection-workspace').hidden = lighting;
+  $('#views').hidden = false;
+  $('#show-shading').disabled = !hasNormal || !state.lightingEnabled || state.busy;
+  $('#projection-workspace').hidden = state.workspace !== 'mask';
   $('#lighting-workspace').hidden = !lighting;
+  $('#physics-workspace').hidden = !physical;
+  $('[data-tool="disturb"]').hidden = !physical;
+  $('[data-tool="disturb"]').disabled = !physics?.enabled || state.busy;
   $('.recipe-actions').hidden = !lighting;
-  $('#engine').textContent = lighting ? 'MToon · 原尺寸' : 'Krita · 原尺寸';
-  $('#lighting-source').hidden = !project;
-  $('#lighting-base').value = project?.previewMode === 'mixed' ? 'mixed' : 'normal-depth';
-  $('#lighting-base').disabled = state.busy || state.layerBusy;
-  $('#lighting-base option[value="mixed"]').disabled = !project?.previewModes?.mixed;
+  $('#engine').textContent = [state.lightingEnabled && hasNormal ? '光照' : '', physics?.enabled ? '物理' : '', '原尺寸'].filter(Boolean).join(' · ');
+  $('#physics-case-playback').hidden = !state.source?.physicsCase;
   for (const button of document.querySelectorAll('[data-workspace]')) {
     const selected = button.dataset.workspace === state.workspace;
     button.classList.toggle('active', selected);
@@ -332,12 +340,13 @@ function sync() {
   $("#refresh-project").disabled = $("#retry-project").disabled =
     state.busy || state.layerBusy;
   $("#open-task").disabled = state.busy || state.layerBusy;
-  $(".layer-panel").inert = state.projectOpening || state.surfaceActive;
+  $(".layer-panel").inert = state.projectOpening || state.surfaceActive && !physics?.ready;
   for (const k of ["normal", "depth"]) {
     $("#file-" + k).disabled = $("#remove-" + k).disabled =
       state.busy || state.layerBusy;
   }
   overlay();
+  physics?.sync();
 }
 function apply(custom = false) {
   state.settings = validateSettings(state.settings);
@@ -408,7 +417,6 @@ for (const el of document.querySelectorAll("[data-position]"))
     apply(true);
   };
 function selectView(view) {
-  if (state.workspace !== 'lighting') view = 'color';
   state.view = view;
   stage.setMode(view);
   $("#split-line").hidden = view !== "split";
@@ -418,12 +426,16 @@ $("#views").onclick = (e) => {
   const el = e.target.closest("[data-view]");
   if (el && !el.disabled) selectView(el.dataset.view);
 };
+$('#show-shading').onchange = e => selectView(e.target.checked ? 'shading' : 'lit');
 function selectTool(tool) {
-  if (state.workspace !== 'lighting') tool = 'move';
+  if (tool === 'light' && (state.workspace !== 'lighting' || !state.lightingEnabled) || tool === 'disturb' && (state.workspace !== 'physics' || !physics?.enabled)) tool = 'move';
+  pointer = null;
+  if (physics) physics.pointer = null;
   state.tool = tool;
   for (const el of document.querySelectorAll("[data-tool]"))
     el.classList.toggle("active", el.dataset.tool === tool);
   $("#stage").classList.toggle("light", tool === "light");
+  $("#stage").classList.toggle("disturb", tool === "disturb");
   overlay();
 }
 $("#interaction").onclick = (e) => {
@@ -441,6 +453,7 @@ function placeLight(e) {
 for (const el of [$("#stage"), $("#light-handle")]) {
   el.onpointerdown = (e) => {
     if (state.busy || !state.source || e.button !== 0) return;
+    if (state.tool === 'disturb') return;
     pointer = {
       id: e.pointerId,
       x: e.clientX,
@@ -453,6 +466,7 @@ for (const el of [$("#stage"), $("#light-handle")]) {
     if (state.tool === "light") placeLight(e);
   };
   el.onpointermove = (e) => {
+    if (state.tool === 'disturb') { physics?.input(e); return; }
     if (!pointer || pointer.id !== e.pointerId) return;
     if (pointer.tool === "light") placeLight(e);
     else {
@@ -472,6 +486,7 @@ for (const el of [$("#stage"), $("#light-handle")]) {
         pointer = null;
       };
 }
+$('#stage').addEventListener('pointerleave', () => { if (physics) { physics.pointer = null; physics.overlay(); } });
 $("#light-handle").onkeydown = (e) => {
   const step = e.shiftKey ? 0.2 : 0.02,
     s = state.settings;
@@ -538,7 +553,12 @@ $("#export-image").onclick = async () => {
 const layers = new LayerPanel({
   download,
   error: toast,
-  rendered() { projections?.render(); },
+  rendered() {
+    projections?.render();
+    if (physics?.ready) {
+      if (state.workspace === 'physics' && layers.selected !== physics.selected && physics.bindings.has(layers.selected)) physics.select(layers.selected);
+    }
+  },
   busy(value) {
     state.layerBusy = value;
     sync();
@@ -551,6 +571,7 @@ const layers = new LayerPanel({
   },
   async composite(owner, data, color) {
     if (state.source?.layerDocument !== owner.layerDocument) return;
+    const previousPhysics = physics?.ready ? { draft: physics.recipe(), enabled: physics.enabled, selected: physics.selected, paused: physics.paused, internal: true } : null;
     surfaces.clear();
     const source = state.source;
     const key = data.baseline ? "baseline" : stateKey(data.layers);
@@ -574,11 +595,21 @@ const layers = new LayerPanel({
     } finally {
       finish(id);
     }
+    if (previousPhysics && id === state.generation) await physics.prepare(previousPhysics);
   },
 });
 projections = new ProjectionPanel(layers, () => state.source);
 const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=>layers.session?{session:layers.session,revision:layers.revision}:null, error:toast,
-  changed(active){state.surfaceActive=active;sync();}});
+  changed(active){state.surfaceActive=active;if(!active)physics?.clear();sync();}});
+physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprint:()=>state.source?.authorHash,
+  workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
+  download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
+$('#effect-lighting').onchange = e => {
+  state.lightingEnabled = e.target.checked;
+  if (!state.lightingEnabled) { if (state.tool === 'light') selectTool('move'); if (state.view === 'shading') selectView('lit'); }
+  stage.setLightingEnabled(state.lightingEnabled); sync();
+};
+$('#effect-physics').onchange = e => void physics.setEnabled(e.target.checked);
 function showSource() {
   const source = state.source;
   $("#document-info").hidden = !source;
@@ -586,7 +617,7 @@ function showSource() {
   $("#project-empty").hidden = !!source || !state.waitingProject;
   $("#project-empty-name").textContent = state.waitingProject?.name || "";
   if (source) {
-    $("#document-name").textContent = source.project?.name || source.name;
+    $("#document-name").textContent = source.project?.displayName || source.project?.name || source.name;
     $("#document-meta").textContent =
       `${stage.source.w} × ${stage.source.h}${source.layers?.length ? " · " + source.layers.filter((l) => !l.mask).length + " 层" : ""}`;
   }
@@ -601,7 +632,7 @@ function showSource() {
   for (const k of ["normal", "depth"]) {
     $("#" + k + "-status").textContent = source?.[k]
       ? source.project
-        ? "管线产物 · 已绑定"
+        ? source.project.kind === 'example' ? "项目贴图 · 已绑定" : "管线产物 · 已绑定"
         : source[k].name || "已绑定"
       : source?.project
         ? source.project.files[k].available
@@ -645,7 +676,7 @@ async function install(source, id, reset = true) {
   try {
     for (const k of ["color", "normal", "depth"])
       if (source[k]) urls[k] = URL.createObjectURL(source[k]);
-    const [entries, hashes] = await Promise.all([
+    const [entries, hashes, authorHash] = await Promise.all([
       Promise.all(
         Object.entries(urls).map(async ([k, url]) => [k, await loadImage(url)]),
       ),
@@ -655,6 +686,7 @@ async function install(source, id, reset = true) {
           await hash(source[k]),
         ]),
       ),
+      source.authorHash || hash(source.file || source.originalColor || source.color),
     ]);
     if (id !== state.generation) return;
     const priorZoom = stage.zoom,
@@ -676,8 +708,10 @@ async function install(source, id, reset = true) {
       source.mapBindings = new Map([
         ["baseline", { normal: source.normal, depth: source.depth }],
       ]);
+      state.lightingEnabled = source.project?.previewMode !== 'mask';
     }
     state.source = source;
+    source.authorHash = authorHash;
     state.inputs = Object.fromEntries(hashes);
     // Generated maps are data only. First lighting entry always uses an active
     // studio preset; later layer/workspace updates preserve the user's settings.
@@ -689,6 +723,7 @@ async function install(source, id, reset = true) {
     }
     if (reset) selectTool("move");
     apply();
+    stage.setLightingEnabled(state.lightingEnabled);
     selectView(
       source.normal
         ? reset || state.view === "color"
@@ -704,6 +739,7 @@ async function install(source, id, reset = true) {
     u.searchParams.delete("name");
     u.searchParams.delete("project");
     u.searchParams.delete('preview');
+    u.searchParams.delete('physicsCase');
     if (source.project) {
       u.searchParams.set("project", source.project.name);
       u.searchParams.set('preview', source.project.previewMode);
@@ -795,6 +831,7 @@ $("#close-document").onclick = () => {
   u.searchParams.delete("name");
   u.searchParams.delete("sample");
   u.searchParams.delete("project");
+  u.searchParams.delete('physicsCase');
   history.replaceState(null, "", u);
 };
 let dragDepth = 0;
@@ -883,15 +920,20 @@ async function openJianma() {
     finish(id);
   }
 }
-$("#open-jianma").onclick = openJianma;
 let projectListGeneration = 0;
 async function openProject(name, dir, preview, workspace, refresh = false) {
+  if (Object.hasOwn(physicsProjects, name)) return openExampleProject(physicsProjects[name].caseId, workspace);
   const id = begin("正在打开项目 " + name + "…", true);
   try {
     dir ??= (await get("./api/settings")).directory;
-    const project = await get(
+    let project = await get(
       "./api/studio/project?" + new URLSearchParams({ name, dir, ...(preview ? { preview } : {}) }),
     );
+    // Load the complete available document once. Shadow visibility is edited
+    // in its native graph, never by reopening another base from a selector.
+    if (project.previewMode === 'normal-depth' && project.previewModes.mask) {
+      project = await get('./api/studio/project?' + new URLSearchParams({ name, dir, preview: project.previewModes.mixed ? 'mixed' : 'mask' }));
+    }
     if (id !== state.generation) return;
     if (!project.files.document.available) {
       if (!state.source) {
@@ -936,7 +978,6 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
     const shadowBindings = bindings ? JSON.parse(await bindings.text()) : null;
     if (shadowBindings && (shadowBindings.version !== 2 || !Array.isArray(shadowBindings.shadows))) throw Error('投影关系产物无效');
     state.workspace = workspace || (project.previewMode === 'mask' ? 'mask' : 'lighting');
-    if (project.previewMode !== 'mask') state.lightingMode = project.previewMode;
     const preserve = sameDocument && !!preview;
     const maps = { normal, depth };
     if (preserve) {
@@ -946,7 +987,6 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
       }
     }
     await install({ ...source, ...maps, shadowBindings, project }, id, !preserve);
-    if (state.workspace === 'mask') { selectTool('move'); selectView('color'); }
     if (id === state.generation) $("#task-dialog").close();
   } catch (e) {
     if (id === state.generation) {
@@ -962,24 +1002,57 @@ async function chooseProject() {
   $("#task-dialog").showModal();
   $("#project-list").replaceChildren();
   $("#project-status").textContent = "正在读取项目…";
+  const addProject = (name, label, dir) => {
+    const button = document.createElement('button');
+    button.className = 'project-item';
+    button.dataset.project = name;
+    button.textContent = label;
+    button.onclick = () => void openProject(name, dir);
+    if (dir) {
+      const row = document.createElement('div'); row.className = 'project-item-row';
+      const edit = document.createElement('button'); edit.className = 'project-name-edit'; edit.textContent = '✎';
+      edit.title = '修改显示名称'; edit.setAttribute('aria-label', `修改 ${label} 的显示名称`);
+      edit.dataset.renameProject = name;
+      edit.onclick = () => editProjectName(name, label, dir);
+      row.append(button, edit); $('#project-list').append(row);
+    } else $('#project-list').append(button);
+  };
+  for (const [name, project] of Object.entries(physicsProjects)) addProject(name, project.label);
   try {
     const data = await get("./api/tasks");
     if (generation !== projectListGeneration) return;
-    $("#project-status").textContent = data.tasks.length
-      ? "选择项目，自动读取组装结果和贴图"
-      : "暂无项目";
+    $("#project-status").textContent = "选择项目，加载图层和贴图";
     for (const project of data.tasks) {
-      const button = document.createElement("button");
-      button.className = "project-item";
-      button.textContent = project.name;
-      button.onclick = () => void openProject(project.name, data.directory);
-      $("#project-list").append(button);
+      addProject(project.name, project.displayName || project.name, data.directory);
     }
   } catch (e) {
     if (generation === projectListGeneration)
       $("#project-status").textContent = e.message;
   }
 }
+let projectNameSelection;
+function editProjectName(name, label, dir) {
+  projectNameSelection = { name, dir };
+  $('#project-display-name').value = label;
+  $('#project-name-error').textContent = '';
+  $('#project-name-dialog').showModal(); $('#project-display-name').focus();
+}
+$('#project-name-close').onclick = () => $('#project-name-dialog').close();
+$('#project-name-form').onsubmit = async e => {
+  e.preventDefault();
+  const selection = projectNameSelection;
+  $('#project-name-save').disabled = true;
+  try {
+    const response = await fetch('./api/project-name', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...selection, displayName: $('#project-display-name').value }) });
+    const result = await response.json(); if (!response.ok) throw Error(result.error || response.statusText);
+    if (state.source?.project?.name === selection.name && state.source.project.dir === selection.dir) {
+      state.source.project.displayName = result.displayName; showSource();
+    }
+    $('#project-name-dialog').close(); void chooseProject();
+  } catch (error) { $('#project-name-error').textContent = error.message; }
+  finally { $('#project-name-save').disabled = false; }
+};
 $("#open-task").onclick = chooseProject;
 $("#retry-project").onclick = () => {
   if (state.waitingProject && !state.busy)
@@ -994,25 +1067,38 @@ $("#refresh-project").onclick = () => {
 for (const button of document.querySelectorAll('[data-workspace]')) button.onclick = () => {
   const workspace = button.dataset.workspace;
   if (workspace === state.workspace || state.busy || state.layerBusy) return;
-  const project = state.source?.project;
-  if (project) {
-    const preview = workspace === 'mask' ? 'mask' : project.previewModes?.mixed ? state.lightingMode : 'normal-depth';
-    void openProject(project.name, project.dir, preview, workspace);
-  } else {
+  selectTool('move');
+  state.workspace = workspace;
+  if (workspace !== 'lighting' && state.view === 'shading') selectView(state.source?.normal ? 'lit' : 'color');
+  const u = new URL(location.href); u.searchParams.set('workspace', workspace); history.replaceState(null, '', u);
+  sync();
+};
+async function openExampleProject(caseId, workspace = 'lighting') {
+  if (state.busy || state.layerBusy) return;
+  const id = begin('正在加载示例项目…', true);
+  try {
+    const source = await createPhysicsCase(caseId);
+    if (id !== state.generation) return;
     state.workspace = workspace;
-    if (workspace === 'mask') { surfaces.clear(); selectTool('move'); selectView('color'); }
-    else selectView(state.source?.normal ? 'lit' : 'color');
-    sync();
+    await install(source, id);
+    if (id !== state.generation) return;
+    // Cases use the same active lighting preset and depth projection as a
+    // character. The independent effect switches provide the albedo comparison.
+    state.lightingEnabled = true;
+    state.settings.shadow = true;
+    apply(); stage.setLightingEnabled(true);
+    $('#task-dialog').close(); sync();
+  } catch (error) { if (id === state.generation) toast(error.message); }
+  finally { finish(id); }
+  if (id === state.generation && state.source?.physicsCase) {
+    await physics.prepare(); physics.setDemo(true);
   }
-};
-$('#lighting-base').onchange = e => {
-  const project = state.source?.project;
-  if (project) void openProject(project.name, project.dir, e.target.value, 'lighting');
-};
+}
 sync();
-// No test gallery, no test-image downloads. Jianma is a real layered document.
+// Projects load the complete document; workspaces only choose the editor.
 const requested = new URLSearchParams(location.search);
-if (requested.get("project")) void openProject(requested.get("project"), undefined, requested.get('preview'));
+const requestedProject = requested.get('project') || (requested.get('physicsCase') ? `example:cloth:${requested.get('physicsCase')}` : null);
+if (requestedProject) void openProject(requestedProject, undefined, requested.get('preview'), ['mask','lighting','physics'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
 else if (
   requested.get("name") === "jianma" ||
   requested.get("sample") === "jianma"
@@ -1026,11 +1112,15 @@ window.addEventListener("pagehide", () => {
   stage.dispose();
 });
 window.studioDiagnostics = () => ({
+  physics: physics.diagnostics(),
+  tool: state.tool,
   surface: surfaces.diagnostics(),
   renderer: rendererVersion,
   document: state.source?.name,
   sample: state.source?.sample,
   project: state.source?.project?.name,
+  physicsCase: state.source?.physicsCase?.id,
+  caseMarker: state.source?.physicsCase?.marker,
   workspace: state.workspace,
   previewMode: state.source?.project?.previewMode,
   previewDraft: !!state.source?.project?.previewDraft,
@@ -1063,6 +1153,7 @@ window.studioDiagnostics = () => ({
   ),
   maps: { normal: !!state.source?.normal, depth: !!state.source?.depth },
   settings: { ...state.settings },
+  lightingEnabled: state.lightingEnabled,
   view: state.view,
   tool: state.tool,
   busy: state.busy,

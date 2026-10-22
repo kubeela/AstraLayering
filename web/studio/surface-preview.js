@@ -21,17 +21,20 @@ export class SurfacePreview {
     for(const key of ['visible','front'])$('#surface-'+key).checked=p[key];
     const g=this.groups.get(id);$('#surface-stats').textContent=`${g.layers.length} 层 · 实测 ${Math.round(g.known/Math.max(1,g.total)*100)}% · 其余为补全或估计`;
   }
-  async prepare() {
+  async prepare({allowFlat=false}={}) {
+    if(this.active) return true;
     const owner=this.source(),session=this.session();
-    if(!owner?.normal||!owner?.depth) return this.error('请先绑定当前工程的法线与深度');
-    if(!session?.session||owner.layerKey!=='baseline') return this.error('请等待原生图层就绪，并还原图层后准备');
+    if(!allowFlat&&(!owner?.normal||!owner?.depth)) return this.error('请先绑定当前工程的法线与深度');
+    if(!owner||!session?.session) return this.error('请等待原生图层就绪后准备');
     const epoch=++this.epoch,controller=new AbortController();this.fetchController=controller;$('#surface-prepare').disabled=true;$('#surface-status').textContent='正在读取部件与补全贴图…';
     try {
       const response=await fetch('./api/studio/layers/surfaces',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(session),signal:controller.signal}),packet=await response.json();
       if(!response.ok)throw Error(packet.error);
       const w=packet.width,h=packet.height;
       const imageBlob=async file=>{const u=URL.createObjectURL(file);try{return await loadImage(u);}finally{URL.revokeObjectURL(u);}};
-      const [baseColor,baseNormal,baseDepth]=await Promise.all([owner.originalColor,owner.normal,owner.depth].map(imageBlob));
+      const [baseColor,normalImage,depthImage]=await Promise.all([owner.color,owner.normal,owner.depth].map(b=>b?imageBlob(b):null));
+      const flat=(r,g,b)=>{const c=canvas(w,h),ctx=c.getContext('2d');ctx.fillStyle=`rgb(${r},${g},${b})`;ctx.fillRect(0,0,w,h);return c;};
+      const baseNormal=normalImage||flat(128,128,255),baseDepth=depthImage||flat(128,128,128);
       const read=async (l,kind)=>{
         const u=new URL('./studio-surface-asset',location.href);for(const[k,v]of Object.entries({...session,file:l[kind]}))u.searchParams.set(k,v);
         const response=await fetch(u.href,{signal:controller.signal});if(!response.ok)throw Error(`${l.name}: ${await response.text()}`);
@@ -63,7 +66,7 @@ export class SurfacePreview {
       const worker=new Worker(new URL('./surface-worker.js',import.meta.url),{type:'module'});this.worker=worker;
       const maps=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('部件贴图准备超时')),120000);this.cancelWorker=()=>{clearTimeout(timer);reject(Error('部件准备已取消'));};const finish=(fn,value)=>{clearTimeout(timer);fn(value);};worker.onmessage=({data})=>data.error?finish(reject,Error(data.error)):finish(resolve,data.maps);worker.onerror=e=>finish(reject,Error(e.message));worker.postMessage({width:w,height:h,layers,normal:pixels(baseNormal),depth:pixels(baseDepth)});});
       worker.terminate();this.worker=null;this.cancelWorker=null;if(epoch!==this.epoch)return;
-      this.owner=owner;this.baseline={color:baseColor,normal:baseNormal,depth:baseDepth};this.size=[w,h];this.layers=layers;this.groups=new Map();this.poses.clear();
+      this.owner=owner;this.baseline={color:baseColor,normal:normalImage,depth:depthImage};this.size=[w,h];this.layers=layers;this.groups=new Map();this.poses.clear();
       const byId=new Map(maps.map(m=>[m.id,m]));
       for(const l of layers){l.map=byId.get(l.id);const rgba=new Uint8ClampedArray(l.rgba);for(let p=3;p<rgba.length;p+=4)rgba[p]=l.maskedRgba[p];l.color=raster(rgba,l.bounds.width,l.bounds.height);
         let g=this.groups.get(l.partId);if(!g){g={id:l.partId,layers:[],known:0,total:0,bounds:{...l.bounds}};this.groups.set(g.id,g);this.poses.set(g.id,identity());}
@@ -73,11 +76,13 @@ export class SurfacePreview {
       const options=[...this.groups.values()].map(g=>{const o=document.createElement('option');o.value=g.id;o.textContent=g.id.startsWith('n')?g.layers[0].name:g.id;return o;});
       $('#surface-part').replaceChildren(...options);$('#surface-replace').replaceChildren(new Option('原部件',''),...options.map(o=>o.cloneNode(true)));
       $('#surface-controls').hidden=false;$('#surface-close').hidden=false;$('#surface-status').textContent='已准备 · 仅修改预览';this.active=true;this.sync();this.changed(true);
+      return true;
     } catch(e){if(epoch===this.epoch){$('#surface-status').textContent=e.message;this.error(e.message);}}
     finally{controller.abort();if(epoch===this.epoch){this.fetchController=null;this.worker?.terminate();this.worker=null;this.cancelWorker=null;$('#surface-prepare').disabled=false;}}
   }
   schedule(){clearTimeout(this.timer);this.timer=setTimeout(()=>void this.update().catch(this.error),100);}
   async update(){
+    if(this.stage.deformation)return;
     if(!this.active||this.source()!==this.owner)return;
     const rest=[...this.poses.values()].every(p=>!p.x&&!p.y&&!p.angle&&!p.depth&&p.visible&&!p.front&&!p.replace);
     const zoom=this.stage.zoom,pan=[...this.stage.pan];

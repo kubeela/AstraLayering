@@ -56,6 +56,11 @@ button:disabled {
 fieldset:disabled {
   opacity: 0.45;
 }
+.preview-effects {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+}
 fieldset {
   border: 0;
   margin: 0;
@@ -985,6 +990,11 @@ dialog select {
   text-align: left;
   padding: 12px;
 }
+.project-item-row { display: flex; gap: 6px; }
+.project-item-row .project-item { flex: 1; min-width: 0; }
+.project-name-edit { flex: 0 0 36px; }
+#project-name-dialog { width: min(420px, calc(100vw - 40px)); }
+#project-display-name { width: 100%; }
 #surface-controls input[type="number"] {
   width: 100%;
   padding: 6px 8px;
@@ -994,7 +1004,20 @@ dialog select {
   color: #dde1e8;
   font: inherit;
 }
-.workspace-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.workspace-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; }
+.workspace-tabs button { padding: 7px 4px; }
+#physics-overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; fill: none; stroke-width: 1; }
+.physics-mesh { stroke: #5066a899; }
+.physics-fixed { stroke: #39a16c; stroke-width: 2; }
+.physics-boundary { stroke: #a47927; stroke-width: 1.5; stroke-dasharray: 5 4; }
+#physics-overlay circle { stroke: #d29d3f; fill: #ffd4700b; stroke-dasharray: 4 3; }
+canvas.disturb { cursor: crosshair; }
+.physics-limit-panel { background: #2a2c32; border-left: 3px solid #b79755; }
+#physics-stats { font-size: 10px; line-height: 1.8; font-variant-numeric: tabular-nums; color: #a6bfde; }
+#physics-stats.limited { color: #e2b970; }
+#physics-filter { width: 100%; padding: 7px; color: inherit; background: #20232a; border: 1px solid var(--line); border-radius: 4px; }
+.physics-pulse { width: 100%; margin-top: 8px; }
+#physics-controls .toggle { margin-top: 14px; font-size: 11px; }
 .projection-row { display: flex; gap: 9px; align-items: center; padding: 8px 5px; border-radius: 4px; border: 1px solid transparent; }
 .projection-row.selected { background: #343e55; border-color: #657aa5; }
 .projection-row input { flex: 0 0 auto; accent-color: var(--accent); }
