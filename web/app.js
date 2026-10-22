@@ -44,7 +44,7 @@ async function post(path, value) {
  const response = await fetch('./api/'+path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dir:state.directory,...value})});
  const result = await response.json(); if(!response.ok)throw new Error(result.error); return result;
 }
-const requestedStage = Number(new URLSearchParams(location.search).get('stage') ?? 3);
+const requestedStage = Number(new URLSearchParams(location.search).get('stage') ?? 0);
 if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < stages.length) {
  state.stage = requestedStage;
  state.selectedStep = requestedStage === 0 || requestedStage === 2 ? 'layers' : requestedStage >= 4 ? 'step01' : 'step02';
@@ -56,7 +56,7 @@ function toast(message) { const el=document.querySelector('#toast'); el.textCont
 
 function header() {
  return `<header class="app-header"><a class="brand" href="./"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span></span></a>
- <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}制作流程</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
+ <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}任务与执行</button><button data-page="preview" class="${state.page==='preview'?'active':''}">${icon('layers')}流程预览</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
  <a class="button" href="./studio?${new URLSearchParams({project:state.name})}">${icon('eye')}角色工作台</a><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
@@ -119,7 +119,7 @@ async function refreshTask(force=false) {
    if(version!==refreshVersion)return;
    if(state.asset===selected)selected.text=text;
   }
-  lastSnapshot=fingerprint;applySnapshot(next);if(document.querySelector('.app-header')&&(state.page==='project'||force))render();
+  lastSnapshot=fingerprint;applySnapshot(next);if(document.querySelector('.app-header')&&(state.page!=='config'||force))render();
  }
 }
 function artifacts(items, index, stepId, className='') {
@@ -216,11 +216,17 @@ function inspector() {
  ${item?`<a class="artifact-source" href="${artifact(item.path)}" target="_blank" rel="noopener">${esc(item.path)} ${icon('arrow')}</a>`:''}</div>
  <footer class="output-footer"><button class="button" data-action="single">${icon('play')}运行 / 恢复${esc(stage.name)}</button></footer></aside>`;
 }
-function graph() {
+function projectPage() {
  if(!state.name)return `${pageHeading()}<section class="empty-workspace"><h2>开始一次角色制作</h2><p>新建任务并提供一张角色图，或选择已有任务所在的运行目录。</p><p>${esc(state.directory)}</p><button class="primary" data-action="new">新建任务</button></section>`;
- return `${pageHeading()}${runNotice()}<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><span>完整流程 · 中间步骤与产物</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span><span>${statusMark('available')}已有产物</span><span>${statusMark('failed')}失败</span></div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div></div>
- <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，横向滚动或拖动浏览"><div class="flow-size"><div class="flow-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,i)=>flowCard(i)).join('')}</div></div></div></div>
- <footer class="flow-footnote">从左向右查看流程 · 滚轮或拖动画布横向浏览 · 部件详情手动展开，栏目与环节均可收起 · 草稿、正式稿与复核分别显示 · 续跑资格由管线校验</footer></div>${state.inspect?inspector():''}</section>`;
+ return `${pageHeading()}${runNotice()}<section class="pipeline-overview">
+ <div class="overview-heading"><div><h2>管线执行</h2><p>选择管线，打开完整进展图。</p></div></div>
+ <div class="overview-grid">${stages.map((stage,index)=>`<article class="overview-card ${stage.status} ${state.stage===index?'selected':''}"><button class="overview-stage" data-stage="${index}"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h3>${stage.name}</h3></button><p class="execution-state">${stage.status==='running'?'<span class="live-dot"></span>运行中':'未运行'}</p><div class="overview-actions"><button class="button" data-stage="${index}">${icon('eye')}预览</button><button class="button" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button></div></article>`).join('')}</div></section>`;
+}
+function graph() {
+ if(!state.name)return '<section class="empty-workspace"><h2>尚未选择任务</h2><button class="button" data-page="project">选择任务</button></section>';
+ return `<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><button class="button preview-back" data-page="project">${icon('branch')}执行控制</button><span>${esc(state.name)} · 完整流程</span><div class="flow-legend"><span>${statusMark('done')}完成</span><span>${statusMark('running')}进行中</span><span>${statusMark('pending')}等待</span><span>${statusMark('available')}已有产物</span><span>${statusMark('failed')}失败</span></div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div></div>
+ <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，横向滚动或拖动浏览"><div class="flow-size"><div class="flow-world preview-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,index)=>flowCard(index)).join('')}</div></div></div></div>
+ <footer class="flow-footnote">横向浏览 · 点击部件切换预览 · 部件详情手动展开 · 点击产物放大查看</footer></div>${state.inspect?inspector():''}</section>`;
 }
 function runNotice() {
  const message=data.run?.error||data.lastLogMessage||data.run?.lastMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
@@ -247,7 +253,7 @@ function connectFlow() {
  for(const [a,b,label,status] of [[cards[0],cards[1],'parts',stages[0].status==='done'?'done':'pending'],[cards[2],cards[3],'parts',stages[2].status==='done'?'done':'pending'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'?'done':'pending'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done'?'done':'pending']]){
   const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,label,(a.x+a.w+b.x)/2,y-10,status);
  }
- for(const [a,b,y,label,status] of [[cards[0],cards[2],72,'简化角色参考',data.reference?'done':'pending'],[cards[1],cards[4],30,'人物素体 KRA',stages[1].status==='done'?'done':'pending']]){
+ for(const [a,b,y,label,status] of [[cards[0],cards[2],40,'简化角色参考',data.reference?'done':'pending'],[cards[1],cards[4],24,'人物素体 KRA',stages[1].status==='done'?'done':'pending']]){
   const x1=a.x+a.w*.72,x2=b.x+b.w*.45;
   path(`M${x1} ${a.y} V${y} H${x2} V${b.y-6}`,label,(x1+x2)/2,y-10,status);
  }
@@ -348,13 +354,13 @@ function render() {
  const outputScroll=document.querySelector('.output-scroll')?.scrollTop||0;
  document.querySelectorAll('[data-details]').forEach(node=>state.details.set(node.dataset.details,node.open));
  flowObserver?.disconnect();
- document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':'project-main'}">${state.page==='config'?configPage():graph()}</main>`;
+ document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`;
  bind();setConfigBusy(configBusy);
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
  if(data.status==='failed'||data.status==='interrupted')document.querySelector('[data-details="run-notice"]')?.setAttribute('open','');
  if(focusId&&focused&&!focused.isConnected){const replacement=document.getElementById(focusId);replacement?.focus({preventScroll:true});if(selection&&replacement?.tagName==='INPUT')replacement.setSelectionRange(...selection);}
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
- if(state.page==='project'&&state.name) {
+ if(state.page==='preview'&&state.name) {
   connectFlow();
   const viewport=document.querySelector('.flow-scroll');viewport.scrollLeft=state.canvasLeft;viewport.scrollTop=state.canvasTop;
   document.querySelectorAll('[data-tree-scroll]').forEach(node=>{node.scrollTop=treeScroll[node.dataset.treeScroll]||0;});
@@ -413,15 +419,27 @@ function showHistory() {
  const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>提交历史</h2><p>选择一次提交，浏览当时的管线配置。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><div class="commit-list">${(versions?.commits||[]).map((c,i)=>`<button data-commit="${c.sha}"><span class="commit-node">${icon('branch')}</span><div><b>${esc(c.title)}</b><small>${c.short}${i===0?' · 当前分支最新提交':''}</small></div>${icon('chevron')}</button>`).join('')}</div>`;dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelectorAll('[data-commit]').forEach(b=>b.onclick=async()=>{state.ref=b.dataset.commit;dialog.close();await loadConfig();render();});
 }
 function selectStage(index) {
- const stepId=index===0||index===2?'merge':index===1?'step03':index===3?'step02':'step01';
- const item=available(stepArtifacts[index][stepId])[0];
- if(item)openAsset(item,index,stepId);
- else{state.stage=index;state.selectedStep=stepId;state.asset=null;state.inspect=true;render();}
+ state.stage=index;state.selectedStep=index===0||index===2?'layers':'step01';
+ state.asset=null;state.inspect=false;state.page='preview';state.autoHeight=true;
+ updateViewURL();render();
+ focusPreviewStep();
+}
+function focusPreviewStep() {
+ const viewport=document.querySelector('.flow-scroll'),node=document.querySelector(`[data-node="${state.stage}:${state.selectedStep}"]`);
+ if(!viewport||!node)return;
+ viewport.scrollLeft+=node.getBoundingClientRect().left-viewport.getBoundingClientRect().left-12;
+ viewport.scrollTop=0;state.canvasLeft=viewport.scrollLeft;state.canvasTop=0;
+}
+function updateViewURL() {
+ const url=new URL(location.href);
+ url.searchParams.set('page',state.page);url.searchParams.set('stage',state.stage);
+ if(state.name)url.searchParams.set('name',state.name);
+ history.replaceState(null,'',url);
 }
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-run-stage]').forEach(b=>b.onclick=()=>{state.stage=Number(b.dataset.runStage);showNew(true,true);});
- document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;if(state.page==='config')await loadConfig();render();});
+ document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
  document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>selectStage(Number(b.dataset.stage)));
  document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const [index,step]=b.dataset.step.split(':'),i=Number(index);const item=available(stepArtifacts[i][step])[0];if(item)openAsset(item,i,step);else{state.stage=i;state.selectedStep=step;state.asset=null;state.inspect=true;render();}});
  document.querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>openAsset(assetLookup.get(b.dataset.asset),Number(b.dataset.assetStage),b.dataset.assetStep));
@@ -480,5 +498,6 @@ function bind() {
 await refreshTask(true);
 if(state.page==='config')await loadConfig();
 render();
+if(state.page==='preview')focusPreviewStep();
 setInterval(()=>refreshTask().catch(error=>toast('同步失败：'+error.message)),4000);
 if(new URLSearchParams(location.search).get('dialog')==='new')showNew();

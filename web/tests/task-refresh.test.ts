@@ -45,6 +45,13 @@ test('artifact-only refreshes still defer during interaction', async () => {
   assert.deepEqual(f.calls, []);
 });
 
+test('the separate preview tab still redraws new progress and artifacts', async () => {
+  const f = fixture('running', 'none');
+  f.context.state.page = 'preview';
+  await f.run();
+  assert.deepEqual(f.calls, ['apply', 'render']);
+});
+
 test('loss of runner updates even before persisted status leaves running', async () => {
   const f = fixture('running', 'focus');
   f.next.runnerAlive = false;
