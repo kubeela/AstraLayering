@@ -101,7 +101,7 @@ class Layers(Extension):
                 if len(rows) >= 10000 or depth > 100:
                     raise ValueError('图层数量或嵌套过多')
                 kind = node.type()
-                rows.append({'id': key, 'parentId': parent_id, 'depth': depth,
+                rows.append({'id': key, 'uuid': node.uniqueId().toString().strip('{}').lower(), 'parentId': parent_id, 'depth': depth,
                              'name': node.name(), 'type': kind, 'group': kind == 'grouplayer',
                              'mask': kind.endswith('mask'), 'locked': node.locked(),
                              'alphaLocked': node.alphaLocked(), 'thumbnail': thumbnail(node),

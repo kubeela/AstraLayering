@@ -96,6 +96,7 @@ test('Two shadow routes coexist: last complete selection chooses its document an
   await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
   await f.put(studioArtifacts.normal); await f.put(studioArtifacts.depth);
   await f.put(shadowArtifacts.maskDocument); await f.put(shadowArtifacts.maskColor);
+  await f.put(shadowArtifacts.bindings);
   const selection = { version: 1, mode: 'mask', sourceKraHash: hash('source'), sourceColorHash: hash('color') };
   await f.put(shadowArtifacts.selection, JSON.stringify(selection));
   let data = await (await f.get()).json() as any;
@@ -107,4 +108,30 @@ test('Two shadow routes coexist: last complete selection chooses its document an
   await f.put(studioArtifacts.document, 'changed');
   data = await (await f.get()).json() as any;
   assert.equal(data.shadowStale, true); assert.equal(data.files.normal.available, false);
+});
+test('Explicit mixed preview requires matching branch provenance and preserves production selection', async t => {
+  const f = await fixture(t), hash = (value: string) => createHash('sha256').update(value).digest('hex');
+  await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
+  for (const path of [studioArtifacts.normal, studioArtifacts.depth, shadowArtifacts.maskDocument, shadowArtifacts.maskColor, shadowArtifacts.bindings]) await f.put(path);
+  const record = { version: 1, mode: 'mask', sourceKraHash: hash('source'), sourceColorHash: hash('color') };
+  await f.put('shadow/mask/step01/source.json', JSON.stringify(record));
+  await f.put(shadowArtifacts.selection, JSON.stringify(record));
+  // Loose maps from an old run are never silently mixed into the current mask.
+  assert.equal((await f.get({ preview: 'mixed' })).status, 400);
+  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
+  let data = await (await f.get({ preview: 'mixed' })).json() as any;
+  assert.equal(data.shadowMode, 'mask'); assert.equal(data.previewMode, 'mixed');
+  assert.equal(data.files.document.path, shadowArtifacts.maskDocument);
+  assert.equal(data.files.bindings.available, true); assert.equal(data.files.normal.available, true);
+  data = await (await f.get({ preview: 'normal-depth' })).json() as any;
+  assert.equal(data.files.document.path, studioArtifacts.document); assert.equal(data.files.bindings.available, false);
+  assert.equal((await f.get({ preview: '../private' })).status, 400);
+  // Only the new maps branch matches the updated source. The mask remains stale.
+  await f.put(studioArtifacts.color, 'new color');
+  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
+  await f.put(shadowArtifacts.selection, JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
+  data = await (await f.get()).json() as any;
+  assert.equal(data.maskStale, true); assert.equal(data.mapsStale, false);
+  assert.equal(data.previewModes.mixed, false); assert.equal(data.files.normal.available, true);
+  assert.equal((await f.get({ preview: 'mixed' })).status, 400);
 });

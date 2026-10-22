@@ -64,77 +64,12 @@
             </button>
           </div>
         </section>
-        <section class="panel" id="maps-panel">
-          <h2>贴图</h2>
-          <div class="map-row">
-            <span class="map-icon">N</span>
-            <div><b>法线</b><small id="normal-status">未绑定</small></div>
-            <label class="button small map-bind" title="绑定原尺寸法线 PNG"
-              >绑定<input
-                id="file-normal"
-                type="file"
-                accept="image/png"
-                hidden /></label
-            ><button
-              id="remove-normal"
-              class="remove"
-              aria-label="移除法线"
-              hidden
-            >
-              ×
-            </button>
+        <section class="panel" id="workspace-selector">
+          <h2>编辑工作台</h2>
+          <div class="workspace-tabs" role="tablist" aria-label="编辑工作台">
+            <button data-workspace="mask" role="tab" aria-controls="projection-workspace">贴图投影</button>
+            <button data-workspace="lighting" role="tab" aria-controls="lighting-workspace">光照</button>
           </div>
-          <div class="map-row">
-            <span class="map-icon">D</span>
-            <div><b>深度</b><small id="depth-status">未绑定</small></div>
-            <label
-              class="button small map-bind"
-              title="绑定白近黑远的原尺寸深度 PNG"
-              >绑定<input
-                id="file-depth"
-                type="file"
-                accept="image/png"
-                hidden /></label
-            ><button
-              id="remove-depth"
-              class="remove"
-              aria-label="移除深度"
-              hidden
-            >
-              ×
-            </button>
-          </div>
-          <p class="muted" id="map-validity" hidden>
-            图层已更改，请为当前合成图更新贴图
-          </p>
-          <details class="compact">
-            <summary>贴图设置</summary>
-            <label class="field"
-              >法线方向<select id="normal-y">
-                <option value="1">OpenGL · Y 向上</option>
-                <option value="-1">DirectX · Y 向下</option>
-              </select></label
-            >
-            <div id="map-controls"></div>
-          </details>
-        </section>
-        <section class="panel" id="surface-panel">
-          <details><summary>部件试验</summary>
-            <div class="file-actions"><button id="surface-prepare">准备部件贴图</button><button id="surface-close" hidden>退出试验</button></div>
-            <p id="surface-status" class="muted">依据原始图层叠加补全贴图</p>
-            <div id="surface-controls" hidden>
-              <label class="field">部件<select id="surface-part"></select></label>
-              <p id="surface-stats" class="muted"></p>
-              <label class="field">左右 · px<input id="surface-x" type="number" min="-2048" max="2048" step="1" value="0"></label>
-              <label class="field">上下 · px<input id="surface-y" type="number" min="-2048" max="2048" step="1" value="0"></label>
-              <label class="field">旋转 · °<input id="surface-angle" type="number" min="-180" max="180" step="1" value="0"></label>
-              <label class="field">前后 · %<input id="surface-depth" type="number" min="-100" max="100" step="1" value="0"></label>
-              <label class="field">替换<select id="surface-replace"></select></label>
-              <label class="check"><input id="surface-visible" type="checkbox" checked>显示部件</label>
-              <label class="check"><input id="surface-front" type="checkbox">移到前层</label>
-              <button id="surface-reset">复位当前部件</button>
-            </div>
-          </details>
         </section>
         <section class="panel layer-panel">
           <div class="section-heading">
@@ -295,10 +230,25 @@
         </footer>
       </section>
       <aside class="controls">
+        <div id="projection-workspace" role="tabpanel" hidden>
+          <div class="panel-heading"><h2>贴图投影</h2><span id="projection-count" class="muted"></span></div>
+          <section class="panel">
+            <p id="projection-status" class="muted">从项目加载投影蒙版</p>
+            <div id="projection-list" aria-label="投影蒙版"></div>
+          </section>
+        </div>
+        <div id="lighting-workspace" role="tabpanel">
         <div class="panel-heading">
           <h2>光照</h2>
           <button id="reset" class="text-button">重置</button>
         </div>
+          <section class="panel" id="lighting-source" hidden>
+            <label class="field inline">底图<select id="lighting-base">
+              <option value="normal-depth">原组装</option>
+              <option value="mixed">含投影蒙版</option>
+            </select></label>
+          </section>
+
         <p id="lighting-status" class="muted" hidden>绑定法线后启用光照</p>
         <fieldset id="lighting-controls" disabled>
           <section class="panel">
@@ -331,6 +281,79 @@
             <fieldset id="shadow-controls"></fieldset>
           </section>
         </fieldset>
+        <section class="panel" id="maps-panel">
+          <h2>贴图</h2>
+          <div class="map-row">
+            <span class="map-icon">N</span>
+            <div><b>法线</b><small id="normal-status">未绑定</small></div>
+            <label class="button small map-bind" title="绑定原尺寸法线 PNG"
+              >绑定<input
+                id="file-normal"
+                type="file"
+                accept="image/png"
+                hidden /></label
+            ><button
+              id="remove-normal"
+              class="remove"
+              aria-label="移除法线"
+              hidden
+            >
+              ×
+            </button>
+          </div>
+          <div class="map-row">
+            <span class="map-icon">D</span>
+            <div><b>深度</b><small id="depth-status">未绑定</small></div>
+            <label
+              class="button small map-bind"
+              title="绑定白近黑远的原尺寸深度 PNG"
+              >绑定<input
+                id="file-depth"
+                type="file"
+                accept="image/png"
+                hidden /></label
+            ><button
+              id="remove-depth"
+              class="remove"
+              aria-label="移除深度"
+              hidden
+            >
+              ×
+            </button>
+          </div>
+          <p class="muted" id="map-validity" hidden>
+            图层已更改，请为当前合成图更新贴图
+          </p>
+          <details class="compact">
+            <summary>贴图设置</summary>
+            <label class="field"
+              >法线方向<select id="normal-y">
+                <option value="1">OpenGL · Y 向上</option>
+                <option value="-1">DirectX · Y 向下</option>
+              </select></label
+            >
+            <div id="map-controls"></div>
+          </details>
+        </section>
+        <section class="panel" id="surface-panel">
+          <details><summary>部件试验</summary>
+            <div class="file-actions"><button id="surface-prepare">准备部件贴图</button><button id="surface-close" hidden>退出试验</button></div>
+            <p id="surface-status" class="muted">依据原始图层叠加补全贴图</p>
+            <div id="surface-controls" hidden>
+              <label class="field">部件<select id="surface-part"></select></label>
+              <p id="surface-stats" class="muted"></p>
+              <label class="field">左右 · px<input id="surface-x" type="number" min="-2048" max="2048" step="1" value="0"></label>
+              <label class="field">上下 · px<input id="surface-y" type="number" min="-2048" max="2048" step="1" value="0"></label>
+              <label class="field">旋转 · °<input id="surface-angle" type="number" min="-180" max="180" step="1" value="0"></label>
+              <label class="field">前后 · %<input id="surface-depth" type="number" min="-100" max="100" step="1" value="0"></label>
+              <label class="field">替换<select id="surface-replace"></select></label>
+              <label class="check"><input id="surface-visible" type="checkbox" checked>显示部件</label>
+              <label class="check"><input id="surface-front" type="checkbox">移到前层</label>
+              <button id="surface-reset">复位当前部件</button>
+            </div>
+          </details>
+        </section>
+        </div>
         <section class="panel">
           <label class="field inline"
             >背景<input
