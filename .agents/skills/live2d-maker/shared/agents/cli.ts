@@ -7,6 +7,7 @@ import { createInterface } from 'node:readline';
 import { once } from 'node:events';
 import { randomUUID } from 'node:crypto';
 import { genaiGateway } from './agv-gateway.ts';
+import { AgvTurn } from './agv-turn.ts';
 import { createMcpBridge } from './mcp.ts';
 import type { WorkflowEnvironment } from '../codex/environment.ts';
 import type { AgentModel, Harness } from './models.ts';
@@ -55,6 +56,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   const requestedSession = resumed;
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
   let threadId = resumed, text = '', final: any, stderr = '';
+  const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
     let previous = resumed ? records[resumed] : undefined;
@@ -106,7 +108,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     await writeFile(authSettings, JSON.stringify(inherited), { mode: 0o600 });
     mcpServer = await createMcpBridge(task.tools || [], signal, event => log.recordProtocol(event));
     const mcp = { mcpServers: { layering: mcpServer.config } };
-    bridge = model.harness === 'agv' ? await genaiGateway(env, task.tools || [], root, signal, task.images, workspace) : undefined;
+    bridge = model.harness === 'agv' ? await genaiGateway(env, task.tools || [], root, signal, task.images, workspace,
+      event => log.recordProtocol(event).then(() => {})) : undefined;
     Object.assign(env, mcp.mcpServers.layering.env, { LAYERING_BRIDGE_RESULTS: join(log.directory, 'bridge-results') }, bridge ? { AGY_LLM_GATEWAY_URL: bridge.url } : {});
     const configPath = join(log.directory, 'mcp.json'); await writeFile(configPath, JSON.stringify(mcp), { mode: 0o600 });
     await mkdir(join(env.GEMINI_DIR, 'config'), { recursive: true, mode: 0o700 });
@@ -159,6 +162,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         if (!line.trim()) continue;
         let event: any; try { event = JSON.parse(line); } catch { await log.recordProtocol({ text: line }); continue; }
         await log.recordProtocol(event);
+        const completedText = agvTurn?.record(event);
         const id = event.session_id || event.conversation_id || event.step_update?.conversation_id;
         if (id) await reportId(id);
         if (event.type === 'assistant') {
@@ -171,8 +175,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
           await reportId(final.conversation_id || final.session_id || '');
           text = final.structured_output ? JSON.stringify(final.structured_output) : final.response || final.result || text;
         }
-        if (event.step_update?.state === 'DONE' && event.step_update?.text_delta) {
-          text = event.step_update.text_delta;
+        if (completedText !== undefined) {
+          text = completedText;
           options.progress?.(`[${task.name}] ${text}`);
           await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: String(event.step_update.step_index), text } });
         }
@@ -180,7 +184,14 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const code = await close;
       if (spawnError) throw spawnError;
       signal.throwIfAborted();
-      if (code !== 0 || !final || final.is_error || final.status === 'ERROR') throw new AgentCallError(final?.error || final?.errors?.join('\n') || stderr || 'CLI 未返回成功终态');
+      const historicalError = code === 0 && final && agvTurn?.historicalError(final, resumed);
+      const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || historicalError : final?.status !== 'ERROR';
+      if (code !== 0 || !final || final.is_error || !successfulStatus) throw new AgentCallError(final?.error || final?.errors?.join('\n') || stderr || 'CLI 未返回成功终态');
+      if (historicalError) {
+        await log.recordProtocol({ type: 'agv.turn.completed', outcomeSource: 'current_turn_steps',
+          conversationStatus: final.status, historicalError: final.error, userStepIndex: agvTurn!.userStepIndex, processExitCode: code });
+        options.progress?.(`[${task.name}] 本轮已完成；CLI 汇总中的历史错误保留在记录中。`);
+      }
       await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: randomUUID(), text } });
       await log.finish({ status: 'completed', threadId: threadId || null, usage: final.usage || null, finalResponse: text, images: [] });
       return { text, images: [], threadId, logDirectory: log.directory };

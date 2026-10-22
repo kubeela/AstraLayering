@@ -8,11 +8,74 @@ import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
+import { setTimeout as delay } from 'node:timers/promises';
+import type { ServerResponse } from 'node:http';
 import { createMcpBridge } from '../agents/mcp.ts';
 import { genaiGateway, prepareGenaiTools, rewriteGenaiTools } from '../agents/agv-gateway.ts';
 import { ToolCatalog, toolDefinition, toolsDirectory } from '../codex/tool-config.ts';
 import { profile as character } from '../../part-layering/profile.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
+
+test('AGV gateway forwards headers before delayed SSE content and records phases without request secrets', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'agv-headers-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  let release!: () => void;
+  const blocked = new Promise<void>(done => { release = done; });
+  const upstream = createServer(async (req, res) => {
+    for await (const chunk of req) {}
+    res.writeHead(200, { 'content-type': 'text/event-stream', 'x-request-id': 'upstream-fixture-id' });
+    res.flushHeaders();
+    await blocked;
+    res.end('data: {"candidates":[{"content":{"parts":[{"text":"fixture body"}]}}]}\n\n');
+  });
+  upstream.listen(0, '127.0.0.1'); await once(upstream, 'listening');
+  t.after(() => { release(); upstream.closeAllConnections(); upstream.close(); });
+  const events: any[] = [];
+  const gateway = await genaiGateway({ AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}`,
+    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+  assert.ok(gateway); t.after(() => gateway.close());
+  const response = await Promise.race([fetch(gateway.url + '/models/fixture:streamGenerateContent?alt=sse&key=request-secret', {
+    method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer credential-secret' },
+    body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'private prompt' }] }] }),
+  }), delay(2000).then(() => { throw new Error('Response headers were buffered until body'); })]);
+  assert.equal(response.status, 200);
+  assert.deepEqual(events.map(e => e.phase), ['started', 'headers']);
+  release(); assert.match(await response.text(), /fixture body/);
+  assert.deepEqual(events.map(e => e.phase), ['started', 'headers', 'first_body', 'completed']);
+  assert.equal(new Set(events.map(e => e.requestId)).size, 1);
+  assert.equal(events[1].upstreamRequestId, 'upstream-fixture-id');
+  assert.doesNotMatch(JSON.stringify(events), /request-secret|credential-secret|private prompt|alt=sse/);
+});
+
+test('AGV gateway keeps HTTP failures and broken streams visible after flushing headers', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'agv-stream-error-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  let active: ServerResponse | undefined;
+  const upstream = createServer(async (req, res) => {
+    for await (const chunk of req) {}
+    if (req.url === '/error') {
+      res.writeHead(400, { 'content-type': 'application/json' }); res.end('{"error":{"message":"actual failure"}}'); return;
+    }
+    active = res;
+    res.writeHead(200, { 'content-type': 'text/event-stream' });
+    res.write('data: {"candidates":[{"content":{"parts":[{"text":"partial"}]}}]}\n\n');
+  });
+  upstream.listen(0, '127.0.0.1'); await once(upstream, 'listening');
+  t.after(() => { upstream.closeAllConnections(); upstream.close(); });
+  const events: any[] = [];
+  const gateway = await genaiGateway({ AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}`,
+    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+  assert.ok(gateway); t.after(() => gateway.close());
+  const init = { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' };
+  const failed = await fetch(gateway.url + '/error', init);
+  assert.equal(failed.status, 400); assert.match(await failed.text(), /actual failure/);
+  const response = await fetch(gateway.url + '/broken', init);
+  const reader = response.body!.getReader();
+  assert.equal((await reader.read()).done, false);
+  active!.destroy();
+  await assert.rejects(reader.read());
+  assert.ok(events.some(e => e.phase === 'failed'));
+});
 
 test('agv gateway retains original function schema, arguments, signatures, text and every returned image across turns', async t => {
   const root = await mkdtemp(join(tmpdir(), 'agv-bridge-'));
