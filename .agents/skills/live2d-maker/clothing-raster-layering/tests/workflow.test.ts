@@ -71,7 +71,7 @@ test('two drawing stages share context; review completes before step01 marker; o
   assert.equal(requests.length, 3);
   const config = JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8'));
   assert.equal(config.threadId, 'drawing-1');
-  assert.deepEqual(Object.keys(config.models), ['step01', 'step02']);
+  assert.ok(!('models' in config));
   for (const step of steps) { await readFile(join(f.output, step.id, '.completed')); for (const file of step.requiredFiles) await readFile(join(f.output, step.id, file)); }
   await assert.rejects(readdir(join(f.output, 'step03')), { code: 'ENOENT' });
   await runWorkflow({ name: 'test' }, { ...f.deps, agent: async () => assert.fail('completed run must not invoke Codex') });
