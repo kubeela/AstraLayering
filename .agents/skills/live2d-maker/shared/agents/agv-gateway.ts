@@ -9,6 +9,8 @@ import type { FunctionTool } from '../codex/function-tools.ts';
 const helper = fileURLToPath(new URL('./agv-tool.ts', import.meta.url));
 const quote = (value: string) => "'" + value.replaceAll("'", "'\\''") + "'";
 const resultMarker = /ASTRA_TOOL_RESULT:([^\s"'\\]+)/;
+export type GatewayEvent = { type: 'agv.gateway'; requestId: string; phase: 'started' | 'headers' | 'first_body' | 'completed' | 'failed';
+  path: string; elapsedMs: number; status?: number; upstreamRequestId?: string; aborted?: boolean; errorName?: string };
 export async function prepareGenaiTools(body: any, tools: readonly FunctionTool[], logsRoot: string) {
   // Keep all native tools and append the exact workflow descriptions and schemas.
   body.tools ||= [];
@@ -62,7 +64,8 @@ export function rewriteGenaiTools(event: any, tools: readonly FunctionTool[]) {
 }
 
 export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly FunctionTool[], logsRoot: string, signal: AbortSignal,
-  inputImages: readonly { path: string; description: string }[] = [], workspace = '') {
+  inputImages: readonly { path: string; description: string }[] = [], workspace = '',
+  observe?: (event: GatewayEvent) => Promise<void>) {
   if (!env.AGY_LLM_GATEWAY_URL || env.AGY_LLM_GATEWAY_WIRE_PROTOCOL !== 'genai') return;
   const images = await Promise.all(inputImages.map(async image => {
     const bytes = await readFile(image.path);
@@ -72,8 +75,13 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
   const controllers = new Set<AbortController>();
   const server = createServer(async (req, res) => {
     const controller = new AbortController(); controllers.add(controller);
+    const requestId = randomUUID(), started = performance.now();
+    const path = new URL(req.url || '/', 'http://localhost').pathname; // Never log query keys, credentials or bodies.
+    const trace = (phase: GatewayEvent['phase'], fields: Partial<GatewayEvent> = {}) => observe?.({
+      type: 'agv.gateway', requestId, phase, path, elapsedMs: performance.now() - started, ...fields });
     res.once('close', () => controller.abort());
     try {
+      await trace('started');
       const chunks = []; for await (const chunk of req) chunks.push(chunk);
       const body = JSON.parse(Buffer.concat(chunks).toString());
       if (body.contents) await prepareGenaiTools(body, tools, logsRoot);
@@ -85,25 +93,36 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
       const headers = Object.fromEntries(Object.entries(req.headers).filter(([key, value]) => !['host', 'content-length', 'connection'].includes(key) && typeof value === 'string')) as Record<string, string>;
       const response = await fetch(upstream + req.url, { method: req.method, headers, body: JSON.stringify(body), signal: AbortSignal.any([signal, controller.signal]) });
       res.writeHead(response.status, { 'content-type': response.headers.get('content-type') || 'application/json', 'cache-control': 'no-store' });
+      // writeHead alone buffers headers until the first body write. agy has a
+      // separate response-header deadline; upstream SSE may start much later.
+      res.flushHeaders();
+      await trace('headers', { status: response.status,
+        upstreamRequestId: response.headers.get('x-request-id') || response.headers.get('request-id') || undefined });
       if (response.ok && response.headers.get('content-type')?.includes('text/event-stream')) {
         let pending = ''; const decoder = new TextDecoder();
+        let first = true;
         const emit = (line: string) => {
           if (line.startsWith('data:') && line.slice(5).trim() !== '[DONE]') line = 'data: ' + JSON.stringify(rewriteGenaiTools(JSON.parse(line.slice(5)), tools));
           res.write(line + '\n');
         };
         for await (const chunk of response.body!) {
+          if (first) { first = false; await trace('first_body'); }
           pending += decoder.decode(chunk, { stream: true }); let index;
           while ((index = pending.indexOf('\n')) >= 0) { emit(pending.slice(0, index)); pending = pending.slice(index + 1); }
         }
         pending += decoder.decode(); if (pending) emit(pending);
       } else {
         const text = await response.text();
+        await trace('first_body');
         res.write(response.ok ? JSON.stringify(rewriteGenaiTools(JSON.parse(text), tools)) : text);
       }
       res.end();
+      await trace('completed', { status: response.status });
     } catch (error) {
       if (!res.headersSent) { res.writeHead(502, { 'content-type': 'application/json' }); res.end(JSON.stringify({ error: { message: String(error).replaceAll(env.AGY_LLM_GATEWAY_API_KEY || '\0', '[redacted]') } })); }
       else res.destroy();
+      await trace('failed', { aborted: signal.aborted || controller.signal.aborted,
+        errorName: error instanceof Error ? error.name : 'Error' });
     } finally { controllers.delete(controller); }
   });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
