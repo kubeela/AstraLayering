@@ -1,5 +1,6 @@
 import { ClothBody, bindingDefaults, validateBinding, physicsVersion } from './physics-model.js';
 import { PhysicsRenderer } from './physics-renderer.js';
+import { physicsRecipe, restorePhysicsRecipe, physicsRecordKey } from './physics-recipe.js';
 const $ = s => document.querySelector(s);
 const specs = {
   fixed: ['固定范围', 0, 85, 1, '%', 100], transition: ['过渡范围', 5, 40, 1, '%', 100],
@@ -9,7 +10,7 @@ const specs = {
 export class PhysicsPanel {
   constructor({ stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer }) {
     Object.assign(this, { stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer });
-    this.bindings = new Map(); this.bodies = new Map(); this.epoch = 0; this.paused = false; this.enabled = false;
+    this.bindings = new Map(); this.bodies = new Map(); this.pending = new Map(); this.issues = []; this.epoch = 0; this.paused = false; this.enabled = false;
     this.radius = 90; this.force = .7; this.showGuides = true; this.scope = 'current';
     for (const [key, [label, min, max, step, unit]] of Object.entries(specs)) {
       const box = document.createElement('div'); box.className = 'slider';
@@ -27,7 +28,7 @@ export class PhysicsPanel {
     $('#physics-filter').oninput = () => this.options();
     $('#physics-enabled').onchange = e => this.edit('enabled', e.target.checked);
     $('#physics-direction').onchange = e => this.edit('direction', e.target.value);
-    $('#physics-kind').onchange = e => { const old = this.bindings.get(this.selected); this.bindings.set(this.selected, { ...bindingDefaults(e.target.value), enabled: old.enabled, direction: old.direction }); this.rebuild(); this.save(); this.sync(); };
+    $('#physics-kind').onchange = e => { const old = this.bindings.get(this.selected); this.acceptCurrent(); this.bindings.set(this.selected, { ...bindingDefaults(e.target.value), enabled: old.enabled, direction: old.direction }); this.rebuild(); this.save(); this.sync(); };
     $('#physics-pause').onclick = () => { this.paused = !this.paused; this.lastTime = 0; this.sync(); };
     $('#physics-step').onclick = () => { this.paused = true; this.advance(1 / 60); this.sync(); };
     $('#physics-reset').onclick = () => { for (const b of this.bodies.values()) b.reset(); this.render(); this.sync(); };
@@ -64,16 +65,24 @@ export class PhysicsPanel {
       const ok = fixture || await this.surfaces.prepare({ allowFlat: true });
       if (!ok || epoch !== this.epoch || this.source() !== owner) return;
       this.parts = fixture?.layers || this.surfaces.layers; this.size = fixture?.size || this.surfaces.size; this.owner = owner;
-      this.sourceHash = this.fingerprint(); this.bindings.clear();
+      this.sourceHash = this.fingerprint(); this.bindings.clear(); this.pending = new Map(); this.issues = [];
       for (const l of this.parts) {
         // A part name is not an authored physical component. Ordinary project
         // layers start unbound; examples carry their own explicit bindings.
         const binding = fixture?.bindings[l.id] || bindingDefaults();
         this.bindings.set(l.id, binding);
       }
-      try { const saved = draft || JSON.parse(localStorage.getItem(this.storageKey()) || 'null'); if (saved) this.restore(saved); } catch (error) { this.error('旧物理草稿未加载：' + error.message); }
+      let draftInvalid = false;
+      try {
+        let saved = draft || JSON.parse(localStorage.getItem(this.storageKey()) || localStorage.getItem(this.legacyStorageKey()) || 'null');
+        if (!draft && saved?.schema === 2 && this.storageKey() === 'astra-physics-3:imports') {
+          const ids = new Set(this.parts.flatMap(l => [l.uuid, ...(l.sourceLayerUuids || [])]));
+          saved = { ...saved, records: Object.fromEntries(Object.entries(saved.records).filter(([, r]) => ids.has(r.ref?.uuid))) };
+        }
+        if (saved) this.restore(saved);
+      } catch (error) { draftInvalid = true; this.error('旧物理草稿未加载：' + error.message); }
       this.selected = this.bindings.has(selected) ? selected : [...this.bindings].find(([, p]) => p.enabled)?.[0] || this.parts[0]?.id;
-      this.ready = true; this.enabled = enabled; this.paused = paused; this.rebuild(); this.save(); this.options(); this.selectLayer?.(this.selected); this.sync(); this.changed();
+      this.ready = true; this.enabled = enabled; this.paused = paused; this.rebuild(); if (!draftInvalid) this.save(); this.options(); this.selectLayer?.(this.selected); this.sync(); this.changed();
       this.lastTime = 0; this.frame = requestAnimationFrame(t => this.tick(t));
     } catch (error) { this.clear(); this.error(error.message); }
     finally { this.preparing = false; this.sync(); }
@@ -93,6 +102,7 @@ export class PhysicsPanel {
   }
   edit(key, value) {
     const p = this.bindings.get(this.selected); if (!p) return;
+    this.acceptCurrent();
     const next=validateBinding({ ...p, [key]: value }); this.bindings.set(this.selected,next);
     if(['maxAngle','maxTravel','stretch','stiffness','damping'].includes(key)){
       const b=this.bodies.get(this.selected);
@@ -112,19 +122,37 @@ export class PhysicsPanel {
     this.lastTime = 0; this.accumulator = 0; this.render();
   }
   storageKey() {
+    if (!this.parts?.some(l => l.uuid)) return this.legacyStorageKey();
+    const project = this.owner?.project;
+    return project ? 'astra-physics-3:project:' + JSON.stringify([project.dir || '', project.name]) : 'astra-physics-3:imports';
+  }
+  legacyStorageKey() {
     // Reset the previous Jianma preview bindings as requested. Other project
     // drafts keep their existing namespace; new Jianma authoring is preserved.
     const jianma = this.owner?.sample === 'jianma' || [this.owner?.project?.name, this.owner?.name].some(n => /^jianma(?:$|[-_.\s])/i.test(n || ''));
     return (jianma ? 'astra-physics-2:' : 'astra-physics-1:') + this.sourceHash;
   }
-  recipe() { return { schema: 1, solver: physicsVersion, sourceHash: this.sourceHash, size: this.size, bindings: Object.fromEntries(this.bindings) }; }
+  recipe() { return physicsRecipe(this.parts, this.bindings, this, this.pending); }
   restore(recipe) {
-    if (recipe?.schema !== 1 || recipe.solver !== physicsVersion || recipe.sourceHash !== this.sourceHash || recipe.size?.[0] !== this.size[0] || recipe.size?.[1] !== this.size[1]) throw Error('物理配置与当前角色素材或版本不匹配');
-    const entries = Object.entries(recipe.bindings || {});
-    if (entries.length !== this.parts.length || entries.some(([id]) => !this.parts.some(l => l.id === id))) throw Error('物理配置的部件身份不匹配');
-    const bindings = new Map(entries.map(([id, p]) => [id, validateBinding(p)])); this.bindings = bindings;
+    const restored = restorePhysicsRecipe(recipe, this.parts, this, this.bindings);
+    this.bindings = restored.bindings; this.pending = restored.pending; this.issues = restored.issues;
+    if (this.issues.length) this.error(`${this.issues.length} 个物理绑定已保留待确认：${this.issues[0].partPath || '原图层'} · ${this.issues[0].reason}`);
   }
-  save() { try { localStorage.setItem(this.storageKey(), JSON.stringify(this.recipe())); $('#physics-draft').textContent = '草稿 · 已保存到本机'; } catch { $('#physics-draft').textContent = '本机保存不可用，请导出配置'; } }
+  acceptCurrent() {
+    const layer = this.parts.find(l => l.id === this.selected); if (!layer) return;
+    const key = physicsRecordKey(layer, this); this.pending.delete(key); this.issues = this.issues.filter(i => i.key !== key);
+  }
+  save() {
+    try {
+      const key = this.storageKey(), recipe = this.recipe();
+      if (key === 'astra-physics-3:imports') {
+        const previous = JSON.parse(localStorage.getItem(key) || 'null');
+        if (previous?.schema === 2) recipe.records = { ...previous.records, ...recipe.records };
+      }
+      localStorage.setItem(key, JSON.stringify(recipe));
+      $('#physics-draft').textContent = this.issues?.length ? `草稿 · ${this.issues.length} 个绑定待确认，原配置已保留` : '草稿 · 已保存到本机';
+    } catch { $('#physics-draft').textContent = '本机保存不可用，请导出配置'; }
+  }
   input(e) {
     if (!this.ready || !this.enabled || this.tool() !== 'disturb' || this.workspace() !== 'physics' || this.busy() || this.paused || document.hidden || !document.hasFocus()) { this.pointer = null; return; }
     const rect = this.stage.canvas.getBoundingClientRect(), [wx, wy] = this.stage.screenToWorld(e.clientX - rect.x, e.clientY - rect.y);
@@ -222,9 +250,10 @@ export class PhysicsPanel {
   }
   clear() {
     this.epoch++; cancelAnimationFrame(this.frame); this.ready = false; this.preparing = false; this.enabled = false; this.renderer?.dispose(); this.renderer = null;
-    this.parts = null; this.bindings.clear(); this.bodies.clear(); this.selected = null; this.pointer = null; this.lastTime = 0; this.paused = false; this.demo = false; this.sync(); this.changed();
+    this.parts = null; this.bindings.clear(); this.bodies.clear(); this.pending = new Map(); this.issues = []; this.selected = null; this.pointer = null; this.lastTime = 0; this.paused = false; this.demo = false; this.sync(); this.changed();
   }
   diagnostics() { return { ready: !!this.ready, enabled: this.enabled, demo: !!this.demo, paused: this.paused, selected: this.selected, solver: physicsVersion, size: this.size,
-    parts: this.parts?.map(l => ({ id:l.id,name:l.name,bounds:l.bounds,binding:this.bindings.get(l.id),stats:this.bodies.get(l.id)?.stats,impulses:this.bodies.get(l.id)?.impulses || 0 })) || [],
+    issues: this.issues || [],
+    parts: this.parts?.map(l => ({ id:l.id,uuid:l.uuid,partPath:l.partPath,sourceLayerUuids:l.sourceLayerUuids,name:l.name,bounds:l.bounds,binding:this.bindings.get(l.id),stats:this.bodies.get(l.id)?.stats,impulses:this.bodies.get(l.id)?.impulses || 0 })) || [],
     drawItems: this.renderer?.items.length || 0, textureSizes: this.renderer?.targets.map(t=>[t.width,t.height]) || [] }; }
 }
