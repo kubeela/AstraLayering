@@ -25,6 +25,18 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     $('#component-test').onchange=e=>{this.playback=e.target.value;this.editing=false;this.paused=false;this.replayStep=0;this.scene?.reset();this.lastTime=0;this.render();this.sync();};
     const toggle=$('#physics-enabled').onchange;$('#physics-enabled').onchange=e=>this.formal?this.changeComponent(null,'enabled',e.target.checked):toggle(e);
     $('#physics-export').onclick=()=>this.download(new Blob([JSON.stringify(this.recipe(),null,2)+'\n'],{type:'application/json'}),this.formal?'physics.draft.json':'character.physics.json');
+    const importLegacy=$('#physics-import').onchange;
+    $('#physics-import').onchange=async e=>{
+      const file=e.target.files[0];if(!file)return;
+      try{
+        if(file.size>1024*1024)throw Error('物理配置过大');
+        const recipe=JSON.parse(await file.text());
+        if(recipe?.kind!=='astra-component-physics')return await importLegacy(e);
+        if(!this.source()||this.busy())throw Error('请先载入角色工程');
+        validatePhysicsConfig(recipe);this.clear();this.source().componentPhysics=recipe;
+        await this.prepare({draft:recipe,enabled:true,internal:true});if(this.formal&&this.ready)this.save();
+      }catch(error){this.error(error.message);}finally{e.target.value='';}
+    };
   }
   async prepare(options={}) {
     const owner=this.source(),config=options.draft?.kind==='astra-component-physics'?options.draft:owner?.componentPhysics;

@@ -752,7 +752,11 @@ async function install(source, id, reset = true) {
     }
     if (source.sample) u.searchParams.set("name", source.sample);
     history.replaceState(null, "", u);
-    if (reset) void layers.open(source);
+    if (reset) {
+      const opening=layers.open(source);
+      // Component bindings need the native UUID catalogue before preparation.
+      if(source.componentPhysics)await opening;
+    }
   } finally {
     Object.values(urls).forEach(URL.revokeObjectURL);
   }
