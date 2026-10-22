@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "researchedOn": "2026-10-22",
+  "scope": "Targeted source/document reading, not a runtime or project-wide compatibility test. Third-party source bytes stay outside the commit.",
+  "sources": [
+    {
+      "url": "https://docs.live2d.com/en/cubism-editor-manual/physical-operation-setting/",
+      "retrievedOn": "2026-10-22",
+      "sha256": "9193919ee54d9e54ea8dc2f6c97e493f3524f4e7bd5b5b48e8f383655bf36d91"
+    },
+    {
+      "url": "https://docs.live2d.com/en/cubism-editor-manual/physics-operation/",
+      "retrievedOn": "2026-10-22",
+      "sha256": "047244d7ab0c6558ef83e4558eed479254f7b2d71bcb08c810ec1014e4534c91"
+    },
+    {
+      "repository": "DragonBones/DragonBonesJS",
+      "revision": "64b6c69ae35777c2404be68c9192e2c56906079e",
+      "path": "DragonBones/src/dragonBones/armature/Constraint.ts",
+      "url": "https://github.com/DragonBones/DragonBonesJS/blob/64b6c69ae35777c2404be68c9192e2c56906079e/DragonBones/src/dragonBones/armature/Constraint.ts",
+      "sha256": "9255bede104a6ddc5455c0058f54bbbb7a431428c0829efa77ee1ea62ef6a78b"
+    },
+    {
+      "repository": "DragonBones/DragonBonesJS",
+      "revision": "64b6c69ae35777c2404be68c9192e2c56906079e",
+      "path": "DragonBones/src/dragonBones/armature/Surface.ts",
+      "url": "https://github.com/DragonBones/DragonBonesJS/blob/64b6c69ae35777c2404be68c9192e2c56906079e/DragonBones/src/dragonBones/armature/Surface.ts",
+      "sha256": "8fc5006967caeda093657e285ba1c9849a3d71a117a88eef845c719cbd3a95a2"
+    },
+    {
+      "repository": "DragonBones/DragonBonesJS",
+      "revision": "64b6c69ae35777c2404be68c9192e2c56906079e",
+      "path": "DragonBones/src/dragonBones/model/DisplayData.ts",
+      "url": "https://github.com/DragonBones/DragonBonesJS/blob/64b6c69ae35777c2404be68c9192e2c56906079e/DragonBones/src/dragonBones/model/DisplayData.ts",
+      "sha256": "097e497638d61ce272ad57d19d61b5e9b4f00a68c5a5c7ee210920d5d345d94d"
+    },
+    {
+      "repository": "EsotericSoftware/spine-runtimes",
+      "revision": "9f7d44b725df0766b3995093cea8e7342faf9367",
+      "path": "LICENSE",
+      "url": "https://github.com/EsotericSoftware/spine-runtimes/blob/9f7d44b725df0766b3995093cea8e7342faf9367/LICENSE",
+      "sha256": "b9d50158f6c23a704d123fd0200cc00633a693ccf9b0aacb15e5d5b9cf6c0d58"
+    },
+    {
+      "repository": "EsotericSoftware/spine-runtimes",
+      "revision": "9f7d44b725df0766b3995093cea8e7342faf9367",
+      "path": "spine-ts/spine-core/src/PhysicsConstraint.ts",
+      "url": "https://github.com/EsotericSoftware/spine-runtimes/blob/9f7d44b725df0766b3995093cea8e7342faf9367/spine-ts/spine-core/src/PhysicsConstraint.ts",
+      "sha256": "0fd41fcf062b9e0e41e5d9acd0a2242d9a27367a67121faa61cb90487e029c4f"
+    },
+    {
+      "repository": "EsotericSoftware/spine-runtimes",
+      "revision": "9f7d44b725df0766b3995093cea8e7342faf9367",
+      "path": "spine-ts/spine-core/src/PhysicsConstraintData.ts",
+      "url": "https://github.com/EsotericSoftware/spine-runtimes/blob/9f7d44b725df0766b3995093cea8e7342faf9367/spine-ts/spine-core/src/PhysicsConstraintData.ts",
+      "sha256": "03d23c2561b8b07086d5aa8cf8545976329ddaf1ea505f0f3d70a2f3d039379f"
+    },
+    {
+      "repository": "EsotericSoftware/spine-runtimes",
+      "revision": "9f7d44b725df0766b3995093cea8e7342faf9367",
+      "path": "spine-ts/spine-core/src/SkeletonPhysicsMovement.ts",
+      "url": "https://github.com/EsotericSoftware/spine-runtimes/blob/9f7d44b725df0766b3995093cea8e7342faf9367/spine-ts/spine-core/src/SkeletonPhysicsMovement.ts",
+      "sha256": "a3d40fc7185605992122aa2142f7c5e0ad50abd91ee42016f7971414d99fd035"
+    },
+    {
+      "repository": "Inochi2D/inochi2d",
+      "revision": "e2235f6f29688d4013a0eec116a37ec8af8f1fb5",
+      "tag": "v0.8.7",
+      "path": "source/inochi2d/core/nodes/drivers/simplephysics.d",
+      "url": "https://github.com/Inochi2D/inochi2d/blob/e2235f6f29688d4013a0eec116a37ec8af8f1fb5/source/inochi2d/core/nodes/drivers/simplephysics.d",
+      "sha256": "4d0dda6fadb5faa90a1384a51eb3f9aee422f9a20acd0886d86cb971956e1369"
+    },
+    {
+      "repository": "Live2D/CubismWebFramework",
+      "revision": "198a3769c26ca3d7b600e932590433badd392edd",
+      "path": "src/physics/cubismphysics.ts",
+      "url": "https://github.com/Live2D/CubismWebFramework/blob/198a3769c26ca3d7b600e932590433badd392edd/src/physics/cubismphysics.ts",
+      "sha256": "41457e7486d380825f30936e34951c0de5362769e8229b99c28702a5a398d734"
+    },
+    {
+      "repository": "rive-app/rive-runtime",
+      "revision": "b3360ab942e4f187f6b9fb74f5ef0617745e8ce9",
+      "path": "src/bones/skin.cpp",
+      "url": "https://github.com/rive-app/rive-runtime/blob/b3360ab942e4f187f6b9fb74f5ef0617745e8ce9/src/bones/skin.cpp",
+      "sha256": "c5a1ef0b6798acbc4ec640ae0745403f2951a35a1f015490fb28fa1e7d2021cc"
+    },
+    {
+      "repository": "rive-app/rive-runtime",
+      "revision": "b3360ab942e4f187f6b9fb74f5ef0617745e8ce9",
+      "path": "src/bones/weight.cpp",
+      "url": "https://github.com/rive-app/rive-runtime/blob/b3360ab942e4f187f6b9fb74f5ef0617745e8ce9/src/bones/weight.cpp",
+      "sha256": "05f8177177932eaec62adda65fe973464821b1b493fcccbbaccb271eb5bd81c5"
+    },
+    {
+      "repository": "synfig/synfig",
+      "revision": "029b45e4275c6356f1b698b5bb3bc4c323787cc9",
+      "path": "synfig-core/src/synfig/bone.cpp",
+      "url": "https://github.com/synfig/synfig/blob/029b45e4275c6356f1b698b5bb3bc4c323787cc9/synfig-core/src/synfig/bone.cpp",
+      "sha256": "caec1bb73cbc71fc7985addf528184e40a2170954831cbf538c934129c6e83ca"
+    },
+    {
+      "repository": "synfig/synfig",
+      "revision": "029b45e4275c6356f1b698b5bb3bc4c323787cc9",
+      "path": "synfig-core/src/synfig/layers/layer_skeletondeformation.cpp",
+      "url": "https://github.com/synfig/synfig/blob/029b45e4275c6356f1b698b5bb3bc4c323787cc9/synfig-core/src/synfig/layers/layer_skeletondeformation.cpp",
+      "sha256": "86a7a0e43bb8bdd01e84632d9d5816256fbe484053f59b5b2bf724a4ace61c0c"
+    },
+    {
+      "repository": "tsunehimatoi/psd2live",
+      "revision": "ef527ddf9a7e738de642a0f19bdda17da1ef6191",
+      "path": "docs/zh/guide/PHYSICS.md",
+      "url": "https://github.com/tsunehimatoi/psd2live/blob/ef527ddf9a7e738de642a0f19bdda17da1ef6191/docs/zh/guide/PHYSICS.md",
+      "sha256": "f982813d4de298be22374917c1f2cd96c84d1490d4f8aba0d582f75ef087b4fa"
+    },
+    {
+      "repository": "tsunehimatoi/psd2live",
+      "revision": "ef527ddf9a7e738de642a0f19bdda17da1ef6191",
+      "path": "docs/zh/guide/SIMULATION.md",
+      "url": "https://github.com/tsunehimatoi/psd2live/blob/ef527ddf9a7e738de642a0f19bdda17da1ef6191/docs/zh/guide/SIMULATION.md",
+      "sha256": "67d166278cb5e62f082c0e0aa625d191165542d51420f535d90ec039c58f202a"
+    },
+    {
+      "repository": "tsunehimatoi/psd2live",
+      "revision": "ef527ddf9a7e738de642a0f19bdda17da1ef6191",
+      "path": "docs/zh/guide/SWING.md",
+      "url": "https://github.com/tsunehimatoi/psd2live/blob/ef527ddf9a7e738de642a0f19bdda17da1ef6191/docs/zh/guide/SWING.md",
+      "sha256": "dc809835726a56766cc37f75e2d405450251e0d8b63248fe3272ea96a6381fc1"
+    },
+    {
+      "repository": "tsunehimatoi/psd2live",
+      "revision": "ef527ddf9a7e738de642a0f19bdda17da1ef6191",
+      "path": "src/main/kotlin/io/github/psd2live/core/PhysicsGenerator.kt",
+      "url": "https://github.com/tsunehimatoi/psd2live/blob/ef527ddf9a7e738de642a0f19bdda17da1ef6191/src/main/kotlin/io/github/psd2live/core/PhysicsGenerator.kt",
+      "sha256": "ce0a4bdf5d6f372b7cb22cddbed97b81c927eec5d706e96b8780cf896286b382"
+    },
+    {
+      "repository": "tsunehimatoi/psd2live",
+      "revision": "ef527ddf9a7e738de642a0f19bdda17da1ef6191",
+      "path": "src/main/kotlin/io/github/psd2live/core/PhysicsSimulation.kt",
+      "url": "https://github.com/tsunehimatoi/psd2live/blob/ef527ddf9a7e738de642a0f19bdda17da1ef6191/src/main/kotlin/io/github/psd2live/core/PhysicsSimulation.kt",
+      "sha256": "340c7beac951d6a12517565fe78250bb63cd59688713b7f5cc54a19bc4d9afc6"
+    }
+  ]
+}
