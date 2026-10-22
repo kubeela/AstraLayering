@@ -20,6 +20,8 @@ function fixture(status: string, interaction: string) {
     },
     get: async (path: string) => path === './api/tasks' ? { directory: '/runs', tasks: [{ name: 'test' }] } : next,
     taskParams: () => 'name=test',
+    rememberTask: () => {},
+    selectedTask: () => 'test',
     applySnapshot: (value: any) => { context.data = value; calls.push('apply'); },
     render: () => calls.push('render'),
   };
