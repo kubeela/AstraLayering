@@ -41,7 +41,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   if (!client) {
     const selected = parseAgentModel(`${request.model}-${request.effort}`, request.step || 'raster agent');
     const image = request.step && environment.stepImages[request.step];
-    if (selected.harness === 'codex' && image && image !== 'codex-native') {
+    if (selected.harness === 'codex' && image && image !== 'codex-native' && !request.tools?.length) {
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
         prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
       const route = await createCodexImageRoute(environment, request.step!, join(request.directory, 'agents/generated'), environment.codex, request.signal, request.imageNormalization);
@@ -66,6 +66,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       const session = agents.createSession(request.threadId);
       try {
         const result = await session.run({ step: request.step, name: request.step || 'raster', prompt: request.prompt, recoveryPrompt: request.recoveryPrompt,
+          imageGeneration: selected.harness === 'codex' && !!image,
           cwd: request.directory, sandboxMode: 'danger-full-access', tools: request.tools, imageRoots: request.imageRoots ?? [dirname(request.directory)],
           outputSchema: { type: 'object', additionalProperties: false, properties: {
             status: { type: 'string', enum: ['completed', 'blocked'] }, summary: { type: 'string' } }, required: ['status', 'summary'] } }, request.signal);

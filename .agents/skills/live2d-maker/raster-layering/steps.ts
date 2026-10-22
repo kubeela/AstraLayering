@@ -15,6 +15,11 @@ export const steps = [{
   ...stepModels[1], modelStep: 'raster_step01',
   prompt: new URL('./prompts/01-分层与补全.md', import.meta.url),
   requiredFiles: ['character-depth.kra', 'report.md'],
+  review: {
+    prompt: new URL('./prompts/01-review.md', import.meta.url),
+    repairPrompt: new URL('./prompts/01-repair.md', import.meta.url),
+    ...defaultModels.high, modelStep: 'raster_step01_review', repairModelStep: 'raster_step01_repair',
+  },
 }, {
   id: 'step02',
   title: '边缘柔化与去锯齿',
@@ -22,11 +27,6 @@ export const steps = [{
   prompt: new URL('./prompts/02-边缘柔化与去锯齿.md', import.meta.url),
   inputFiles: ['step01/character-depth.kra', 'step01/report.md'],
   requiredFiles: ['character-soft-edges.kra', 'character-soft-edges.png', 'report.md'],
-  review: {
-    prompt: new URL('./prompts/02-review.md', import.meta.url),
-    repairPrompt: new URL('./prompts/02-repair.md', import.meta.url),
-    ...defaultModels.high, modelStep: 'raster_step02_review', repairModelStep: 'raster_step02_repair',
-  },
 }, {
   id: 'step03',
   title: '去除连体服与补全身体底层',

@@ -51,7 +51,7 @@ if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < 
  state.selectedStep = requestedStage === 0 || requestedStage === 2 ? 'layers' : requestedStage >= 4 ? 'step01' : 'step02';
 }
 const taskParams = () => new URLSearchParams({name:state.name,dir:state.directory});
-const artifact = (path, thumbnail=false) => './artifact?'+new URLSearchParams({name:state.name,dir:state.directory,path,v:data.fileVersions?.[path]||'',...(thumbnail&&/\.svg$/i.test(path)?{preview:'content'}:{})});
+const artifact = (path, thumbnail=false) => './artifact?'+new URLSearchParams({name:state.name,dir:state.directory,path,v:data.fileVersions?.[path]||'',...(/\.kra$/i.test(path)?{preview:'kra'}:thumbnail&&/\.svg$/i.test(path)?{preview:'content'}:{})});
 function flat(nodes) { return nodes.flatMap(node=>[node,...flat(node.groups||[])]); }
 function toast(message) { const el=document.querySelector('#toast'); el.textContent=message; el.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('visible'),4000); }
 
@@ -78,6 +78,10 @@ const available = items => (items||[]).flatMap(item=> {
 });
 function applySnapshot(next) {
  data=next; archivedFiles=new Set(data.files); assetLookup.clear();
+ if(state.asset?.kind==='image'&&state.asset.path.endsWith('.kra')) {
+  const source=data.pipelines[state.stage]?.previews?.[state.selectedStep];
+  if(source)state.asset={...state.asset,path:source.path};
+ }
  if(state.asset?.path.endsWith('.draft.svg')&&!archivedFiles.has(state.asset.path)) {
   const published=state.asset.path.replace(/\.draft\.svg$/,'.svg');
   if(archivedFiles.has(published))state.asset={...state.asset,path:published,label:state.asset.label.replace(' · 中间产物','图')};
@@ -133,8 +137,8 @@ function artifacts(items, index, stepId, className='') {
  const list=available(items);
  if(!list.length)return '';
  const view=item=>{
+  if(item.path.endsWith('.kra')&&item.kind!=='image')return `<a class="artifact-file" href="${artifact(item.path).replace('&preview=kra','')}" target="_blank" rel="noopener">${icon('layers')}${esc(item.label)} ${icon('arrow')}</a>`;
   assetLookup.set(item.path,item);
-  if(item.path.endsWith('.kra'))return `<a class="artifact-file" href="${artifact(item.path)}" target="_blank" rel="noopener">${icon('layers')}${esc(item.label)} ${icon('arrow')}</a>`;
   return `<button class="${item.kind==='image'?'artifact-image':'artifact-file'} ${item.path.endsWith('.draft.svg')?'draft-artifact':''}" data-asset="${esc(item.path)}" data-asset-stage="${index}" data-asset-step="${stepId}" title="${esc(item.path)}">${item.kind==='image'?`<img loading="lazy" src="${artifact(item.path,true)}" alt="${esc(item.label)}">`:icon('file')}<span>${esc(item.label)}</span>${item.kind==='image'&&data.fileVersions?.[item.path]?`<small>更新于 ${esc(new Date(Number(data.fileVersions[item.path].split(':')[0])).toLocaleTimeString())}</small>`:''}${item.kind==='file'?icon('chevron'):''}</button>`;
  };
  const images=list.filter(item=>item.kind==='image'),files=list.filter(item=>item.kind!=='image');
@@ -185,6 +189,13 @@ function observedDisplayStatus(index, status, stepId) {
  const hasArtifacts=available(stepArtifacts[index]?.[stepId]).length>0||data.files.some(path=>path.startsWith(prefix)&&!path.includes('/agents/')&&/\.(png|jpe?g|webp|svg|kra)$/i.test(path));
  return displayStatus(status,hasArtifacts);
 }
+function rasterItems(index, stepId) {
+ const stage=stages[index].id, pipeline=data.pipelines[index];
+ if(!['raster-layering','clothing-raster-layering','character-assembly'].includes(stage))return stepArtifacts[index][stepId];
+ const record=pipeline?.previews?.[stepId];
+ const files=(stepArtifacts[index][stepId]||[]).filter(item=>item.kind==='file');
+ return record?[{path:record.path,label:'Krita 最新保存画面',kind:'image'},...files]:files;
+}
 function stepNode(index,step,nested=false) {
  const status=observedDisplayStatus(index,step.status,step.id);
  const selected=state.inspect&&state.stage===index&&state.selectedStep===step.id;
@@ -199,8 +210,10 @@ function stepNode(index,step,nested=false) {
  ${closed?'':`<div class="step-content">
  ${step.id!=='layers'&&(step.note||['standard','simplified','base','clothing'].includes(step.id))?`<p class="step-summary" ${step.note?`title="${esc(step.note)}"`:'aria-hidden="true"'}>${esc(step.note)}</p>`:''}
  ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap" title="人物准备阶段执行后展示标准参考图">尚无标准参考图</p>':''}
+ ${['raster-layering','clothing-raster-layering'].includes(stages[index].id)&&step.id.startsWith('step')&&!data.pipelines[index]?.previews?.[step.id]?'<p class="archive-gap">等待首次保存 KRA</p>':''}
  ${context}
- ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...stepArtifacts[index][step.id],...shadowInspectionArtifacts(data.files)]:stepArtifacts[index][step.id],index,step.id)}
+ ${data.pipelines[index]?.feedback?.[step.id]?`<p class="review-feedback">${esc(data.pipelines[index].feedback[step.id])}</p>`:''}
+ ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...stepArtifacts[index][step.id],...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${step.id.startsWith('step')?processArtifacts(index,step.id):''}
  </div>
