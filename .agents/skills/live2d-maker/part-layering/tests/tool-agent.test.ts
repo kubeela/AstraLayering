@@ -6,6 +6,7 @@ import { join, sep } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { CodexAgents } from '../../shared/codex/agents.ts';
+import { workflowLogPath } from '../../shared/codex/agent-log.ts';
 import { AgentRuntime, interruptedTaskPrompt } from '../../shared/codex/agent-runtime.ts';
 import { textResult, type FunctionTool } from '../../shared/codex/function-tools.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
@@ -17,7 +18,7 @@ async function fixture(t: TestContext) {
   nodeExecutables(t);
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-native-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  return { directory, logDirectory: join(directory, 'logs') };
+  return { directory, logDirectory: join(directory, 'part-layering/agents') };
 }
 async function log(root: string) {
   const names = await readdir(root);
@@ -25,7 +26,7 @@ async function log(root: string) {
   return {
     request: JSON.parse(await readFile(join(directory, 'request.json'), 'utf8')),
     events: await readFile(join(directory, 'events.jsonl'), 'utf8'),
-    transcript: await readFile(join(directory, 'transcript.log'), 'utf8'),
+    transcript: await readFile(workflowLogPath(root), 'utf8'),
     result: JSON.parse(await readFile(join(directory, 'result.json'), 'utf8')),
   };
 }
