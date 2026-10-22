@@ -2,14 +2,14 @@
 
 运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
-用 TypeScript 和 `@openai/codex-sdk` 顺序执行栅格分层流程。第一步读取已完成的 `part-layering` 产物，使用原生 `image_generation` 工具生图，在 Krita 中配准、修画和交付；第二步继续处理第一步 KRA，逐处柔化边缘与接缝并去锯齿；第三步在第二步完成 review 与修复后去除连体服，补出用于后续叠加衣服的身体底层。
+用 TypeScript 和 `@openai/codex-sdk` 顺序执行栅格分层流程。第一步读取已完成的 `part-layering` 产物，使用原生 `image_generation` 工具生图，在 Krita 中配准、修画和交付；第二步继续处理第一步 KRA，逐处柔化边缘与接缝并去锯齿；第三步在第一步完成 review 与修复、第二步精修后去除连体服，补出用于后续叠加衣服的身体底层。
 
 | 顺序 | 内容 | 模型 | 推理强度 | 状态 |
 | --- | --- | --- | --- | --- |
 | 前置 | 检查参数指定的 Krita 可执行文件及版本 | 无模型调用 | — | 已接入 |
 | 第一步 | [完整提示词：分层与补全](prompts/01-分层与补全.md) | `gpt-6-astra` | `xhigh` | 已接入 |
 | 第二步 | [完整提示词：边缘柔化与去锯齿](prompts/02-边缘柔化与去锯齿.md) | `gpt-6-astra` | `xhigh` | 已接入 |
-| 第二步 review | [独立视觉检查](prompts/02-review.md)，反馈交给[原 agent 修复](prompts/02-repair.md) | `gpt-6-astra` | `xhigh` | 已接入 |
+| 第一步 review | [独立视觉检查](prompts/01-review.md)，反馈交给[原 agent 修复](prompts/01-repair.md) | `gpt-6-astra` | `xhigh` | 已接入 |
 | 第三步 | [完整提示词：去除连体服](prompts/03-去除连体服.md) | `gpt-6.1-sol` | `xhigh` | 已接入，无 reviewer |
 
 第一步保留原生图、补全、修画和验收要求，补充多深度拆绘画层及写回上游协议。运行时在正文后附加输入、输出、Krita 路径、前序交付与本步文件名。部件数、形状、画风和深度都从输入读取。
@@ -64,31 +64,23 @@ pnpm raster-layering --name jianma --dry-run
 <运行根目录>/jianma/raster-layering/
   run.json
   step01/
-    .running 或 .completed
-    prompt.md
-    attempts.jsonl
-    events.jsonl
-    result.json
-    error.txt                 # 最近一次失败时存在
+    .completed                # 绘制及轮廓 review／修复完成
     character-depth.kra
     report.md
-    ...控制图、部件和修画文件
+    review-01.md
+    repair-01.md              # 有问题时才产生
+    review-02.md              # 第一份反馈修完后才检查
+    repair-02.md              # 第二份有问题时才修复
   step02/
-    .running 或 .completed
+    .completed                # 边缘精修与自检完成
     character-soft-edges.kra
     character-soft-edges.png
     report.md
-    review-01.md
-    repair-01.md              # 有反馈时才修复
-    review-02.md              # 第一份 review 有问题且已全部修完后才检查
-    repair-02.md              # 第二份 review 有问题时才修复
-    ...日志、局部检查图和修画记录
   step03/
-    .running 或 .completed
+    .completed
     character-dressup-base.kra
     character-dressup-base.png
     report.md
-    ...日志和修画记录
 ```
 
 第一步最终产物为 `step01/character-depth.kra` 和 `step01/report.md`。中间生图、控制图、部件、修画和复查证据也放在本步目录。后续每步使用自己的目录，读取前序交付，不覆盖前序成果。
@@ -101,9 +93,9 @@ pnpm raster-layering --name jianma --dry-run
 
 `prompt.md` 保存本步初次绘制最近使用的完整提示词，`attempts.jsonl` 追加每次调用的阶段、时间、模型及绘制会话 ID，`events.jsonl` 追加带调用标识的 SDK 事件。中断续跑保留已有产物和历史日志；`result.json` 保存初次绘制的最近结果，`error.txt` 保存最近一次失败说明。review / 修复调用使用各自的提示词和结果日志。
 
-每步必须明确返回 `completed` 或 `blocked`。只有模型返回 `completed`、已保存 thread ID，并且必要交付文件非空且位于本步目录内时，才能完成步骤。第二步还须完成下面的 review / 修复流程，之后才将 `.running` **原子重命名**为 `.completed`。回合正常结束或仅生成部分文件都不等于完成；视觉质量、逐层显隐和重开核对仍须 agent 实际执行并写入报告，文件检查不替代美术验收。
+每步必须明确返回 `completed` 或 `blocked`。只有模型返回 `completed`、已保存 thread ID，并且必要交付文件非空且位于本步目录内时，才能完成步骤。第一步还须完成下面的 review / 修复流程，之后才将 `.running` **原子重命名**为 `.completed`。回合正常结束或仅生成部分文件都不等于完成；视觉质量、逐层显隐和重开核对仍须 agent 实际执行并写入报告，文件检查不替代美术验收。
 
-## 第二步 review 与修复
+## 第一步 review 与修复
 
 reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存或恢复 reviewer 的 thread ID；修复继续使用 `run.json.threadId` 中的原绘制会话。reviewer 依据当前 KRA、原图和已有 Markdown 记录独立检查。它的提示词使用固定目录，只将 `{review_report_filename}` 替换成本次报告文件名，不包含轮次或次数上限说明。
 
@@ -112,7 +104,7 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 1. 生成 `review-01.md`。没有问题就直接结束；有问题则交给原 agent，把全部反馈修复并自检完成，才生成 `repair-01.md`。
 2. 第一份反馈全部解决后生成 `review-02.md`。没有问题就结束；有问题则继续原 agent，把全部反馈修复并自检完成，生成 `repair-02.md` 后直接结束，不再调用第三次 reviewer。
 
-**两次限制针对 review，不限制解决同一份反馈所需的修复调用。** 修复报告仍写“结论：仍有问题”时继续原 thread 修复，不发布正式 `repair-XX.md`，不进入下一次 review，也不将第二步标为完成。工具受阻、断流或人为中断时保留 `.running`；下次使用同一 `--name`，仍继续当前未完成的环节。
+**两次限制针对 review，不限制解决同一份反馈所需的修复调用。** 修复报告仍写“结论：仍有问题”时继续原 thread 修复，不发布正式 `repair-XX.md`，不进入下一次 review，也不将第一步标为完成。工具受阻、断流或人为中断时保留 `.running`；下次使用同一 `--name`，仍继续当前未完成的环节。
 
 进度只看正式 Markdown 文件，不在 `run.json` 中增加 review 状态或计数。review 报告第一行为 `结论：通过` 或 `结论：需要修复`；正式 repair 报告第一行为 `结论：已修复`。报告内容决定是结束还是修复，文件是否存在决定对应环节是否执行完成。
 
@@ -126,7 +118,7 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 
 | 磁盘情况 | 下次启动行为 |
 | --- | --- |
-| 存在 `.completed` | 跳过该步，保留交付；第二步还会确认 review / 修复记录已完成 |
+| 存在 `.completed` | 跳过该步，保留交付；第一步还会确认 review / 修复记录已完成 |
 | 存在 `.running`，没有 `.completed` | 保留目录与产物，从当前 thread 继续 |
 | 步骤目录存在，两个标记都没有 | 清空该步及所有后续步骤目录，清除旧 thread ID，重新开始 |
 | 步骤目录不存在 | 正常开始新步骤；如果后续目录仍在，则先使后续目录失效并重置 thread |
@@ -135,7 +127,7 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 
 正常从第一步进入第二、三步也使用同一个 thread，仅切换该步的模型。SDK 发出 `thread.started` 时立即保存 ID。续跑需要同一 Codex 用户配置下保留的本地会话历史；复制任务目录 不会同时复制 SDK 会话。
 
-已完成第一步的任务直接执行 `pnpm raster-layering --name jianma`，会跳过第一步，在原 thread 中开始第二步，完成 review / 修复后进入第三步；已完成第二步及 review 的任务直接接续第三步。新任务顺序执行全部三步。
+已完成第一步但没有轮廓 review 的任务会补跑第一步检查，不重画已有交付；轮廓检查完成后在绘制会话中继续第二步精修、第三步去连体服。旧第二步完成绘制而停在已移除 review 的任务，可保留工程并完成第二步标记。新任务顺序执行全部三步。
 
 **重跑只需删除完成标记，然后照常用名字启动：**
 
@@ -172,3 +164,5 @@ pnpm raster-layering --name jianma
 共享安装、路径规则、工具配置和临时错误恢复见 [live2d-maker 使用说明](../SKILL.md)。所有相对输入路径从 `<运行根目录>/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
 
 多深度与工具协议见 [共享说明](../references/workflow-details.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。
+
+step01 重点修轮廓缺口、错位和明显画风差异，可用本部件原图可见像素覆盖来拟合，不能串入其他部件；补绘和覆盖间接缝用画笔修自然。reviewer 看图确认形体、画风和衔接问题，用框选工具标记位置、相关图层并生成局部对照，绘制者按编号返修；step02 以像素差异候选框为细节检查入口，逐层扩展检查，广泛检查、局部小改，精修边缘、瑕疵、描边和部件细节。模型配置见 [模型与 harness](../references/agent-models.md)，各步骤预览为最新保存 KRA 的合成画面。

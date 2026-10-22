@@ -12,6 +12,7 @@ import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } f
 import { modelHarnesses } from '../agents/models.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { validateImageSelection } from '../agents/images.ts';
+import { beginReview, finishReview, legacyEdgeDrawingReady } from './review-baseline.ts';
 
 export type WorkflowOptions = {
   name: string;
@@ -42,7 +43,7 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
 export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow' | 'physics'>;
   directorySuffix?: string;
-  tools?(output: string, input: Input, step: StepDefinition): NonNullable<AgentRequest['tools']>;
+  tools?(output: string, input: Input, step: StepDefinition, phase: string): NonNullable<AgentRequest['tools']>;
   fingerprintInput?(input: Input): Promise<string>;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
@@ -120,7 +121,8 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     options.signal?.throwIfAborted();
     const output = join(directory, step.id);
     const status = plan.resetFrom !== undefined && index + 1 >= plan.resetFrom ? 'absent' : plan.statuses.get(step.id);
-    const drawingReady = !!step.review && status !== 'absent' && !!await fileInfo(join(output, 'report.md'));
+    const drawingReady = status !== 'absent' && (step.review ? !!await fileInfo(join(output, 'report.md'))
+      : status === 'running' && await legacyEdgeDrawingReady(output, step));
     const reviewTask = step.review && drawingReady ? await nextReviewTask(output) : undefined;
     if (status === 'completed' && (!step.review || !reviewTask)) {
       options.progress?.(`${step.id}：.completed 已存在，跳过`);
@@ -141,16 +143,6 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     await mkdir(output, { recursive: true });
     if (status === 'completed') await rename(join(output, '.completed'), join(output, '.running'));
     else if (status !== 'running') await writeFile(join(output, '.running'), '', { flag: 'wx' });
-    if (step.review) {
-      // Reopened review can change this step's artifacts. Invalidate descendants,
-      // including after an interruption between reopening and deleting them.
-      for (const [id, laterStatus] of [...plan.statuses].reverse()) {
-        if (Number(id.slice(4)) > index + 1 && laterStatus !== 'absent') {
-          await rm(join(directory, id), { recursive: true, force: true });
-          plan.statuses.set(id, 'absent');
-        }
-      }
-    }
     let lastAgentMessage = '';
     let lastThreadId: string | undefined;
     if(step.freshSession&&config.threadStep!==step.id){
@@ -192,7 +184,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: pipeline.tools?.(output, reference, step),
+        tools: pipeline.tools?.(output, reference, step, phase),
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         imageRoots: [dirname(directory), ...inputDirectories],
         recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? (await pipeline.buildPrompt(step, reference, output, krita, previous))
@@ -242,6 +234,9 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         if (step.review) await rename(join(output, 'report.md.tmp'), join(output, 'report.md'));
       }
       if (step.review) {
+        // Keep the original baseline across interrupted repairs. A read-only
+        // review must not discard already completed downstream artwork.
+        if (!await fileInfo(join(output, 'review-baseline.json'))) await beginReview(output, step);
         // An interrupted repair may still need to regenerate a deliverable.
         if (!drawingReady || reviewTask?.kind !== 'repair') await checkFiles(output, step.requiredFiles);
         await runReviews({ step, directory: output, krita, signal: options.signal, progress: options.progress,
@@ -254,6 +249,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await checkFiles(output, step.requiredFiles);
       await pipeline.validateDelivery?.(output, reference, step, krita);
       options.signal?.throwIfAborted();
+      if (step.review) await finishReview(directory, step, plan, options.progress);
       await rename(join(output, '.running'), join(output, '.completed'));
       options.progress?.(`${step.id}：交付检查通过，已写入 .completed`);
       previous.push(output);

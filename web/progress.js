@@ -39,15 +39,15 @@ const partSteps = clothing => [
 ];
 
 const rasterSteps = clothing => [
-  step('step01', clothing ? '衣服分件、补全与拼装' : '分层、补全与 Krita 交付', 'pending', [],
-    '按部件生成控制图、提取与补全，再对齐、拼装和逐层验收。绘制过程由同一 agent 完成。'),
-  step('step02', clothing ? '衣服边缘与衔接修画' : '边缘柔化与去锯齿', 'pending', [
-    step('draw', '边缘修画', 'pending'),
-    step('review-01', '第 1 轮 review', 'pending'),
+  step('step01', clothing ? '衣服分件、补全与拼装' : '分层、补全与 Krita 交付', 'pending', [
+    step('draw', '分件绘制与对齐', 'pending'),
+    step('review-01', '第 1 轮轮廓复核', 'pending'),
     step('repair-01', '第 1 轮修复', 'pending'),
-    step('review-02', '第 2 轮 review', clothing ? 'pending' : 'pending'),
-    step('repair-02', '第 2 轮修复', clothing ? 'pending' : 'pending'),
-  ], 'review 通过可提前结束；需要修复时交回绘制者。最多两轮，第二轮修复后不再 review。全部结束后 step02 才完成。'),
+    step('review-02', '第 2 轮轮廓复核', 'pending'),
+    step('repair-02', '第 2 轮修复', 'pending'),
+  ], '检查轮廓、明显画风差异与补绘衔接；最多两轮反馈，修复结束后 step01 完成。'),
+  step('step02', clothing ? '衣服边缘与衔接精修' : '边缘柔化与去锯齿', 'pending', [],
+    '沿用已确认结构，精修柔边、线条与细微接缝；完成自检后交付。'),
   ...(clothing ? [] : [step('step03', '去除连体服、补全身体底层', 'pending')]),
 ];
 
@@ -106,10 +106,10 @@ export const stepArtifacts = [
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),
     step02: rasterDelivery('clothing-raster-layering', 'step02', 'composite.png', 'clothing-soft-edges.kra'),
-    'review-01': [file('clothing-raster-layering/step02/review-01.md', '第 1 轮反馈')],
-    'repair-01': [file('clothing-raster-layering/step02/repair-01.md', '第 1 轮修复记录')],
-    'review-02': [file('clothing-raster-layering/step02/review-02.md', '第 2 轮反馈')],
-    'repair-02': [file('clothing-raster-layering/step02/repair-02.md', '第 2 轮修复记录')],
+    'review-01': [file('clothing-raster-layering/step01/review-01.md', '第 1 轮反馈')],
+    'repair-01': [file('clothing-raster-layering/step01/repair-01.md', '第 1 轮修复记录')],
+    'review-02': [file('clothing-raster-layering/step01/review-02.md', '第 2 轮反馈')],
+    'repair-02': [file('clothing-raster-layering/step01/repair-02.md', '第 2 轮修复记录')],
   },
   {
     step01: [...rasterDelivery('character-assembly', 'step01', 'character-assembled.png', 'character-assembled.kra'),
@@ -131,7 +131,7 @@ export function shadowInspectionArtifacts(files) {
 for (const index of [1, 3]) {
   const pipeline = index === 1 ? "raster-layering" : "clothing-raster-layering";
   for (const phase of ["review-01", "repair-01", "review-02", "repair-02"])
-    stepArtifacts[index][phase] = [file(`${pipeline}/step02/${phase}.md`, phase + " 报告")];
+    stepArtifacts[index][phase] = [file(`${pipeline}/step01/${phase}.md`, phase + " 报告")];
 }
 
 export function groupArtifacts(pipeline, group, depth) {

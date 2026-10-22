@@ -2,7 +2,7 @@
 
 运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
-读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，再进行边缘修画与最多两轮 review。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
+读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，完成最多两轮轮廓 review／修复，再精修柔边。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
 
 顺序调度、上游产物读取、会话及标记恢复使用 `../shared/raster/` 的公共实现；本目录保留衣服步骤定义和提示词。仅有两步，绘制与 reviewer 均使用 `gpt-6-astra / xhigh`。
 
@@ -27,14 +27,14 @@ pnpm clothing-raster-layering --name jianma
 
 ## 两步制作
 
-- **step01：分件生图、补全与拼装。** 根据 `../clothing-part-layering/parts/` 和深度表逐件制作 RGB 控制图，清掉生成输入中的遮挡物和其他部件，使用内置生图生成当前衣片。逐张检查、必要时重生，在 Krita 中配准、收边和修画，保存 `clothing-depth.kra` 与 `report.md`。
-- **step02：边缘修画及 review / 修复。** 将第一步工程另存为 `clothing-soft-edges.kra`，逐层处理锯齿、残色、过硬线条和补全接缝；保持画布、结构、名称、深度、薄纱透明度与开口。初次绘制后由独立 reviewer 检查，再由原绘制会话解决反馈。
+- **step01：分件生图、补全与拼装。** 根据 `../clothing-part-layering/parts/` 和深度表逐件制作 RGB 控制图，清掉生成输入中的遮挡物和其他部件，使用内置生图生成当前衣片。逐张检查、必要时重生，在 Krita 中配准、收边和修画，保存 `clothing-depth.kra` 与 `report.md`，再由独立 reviewer 检查轮廓、画风与补绘衔接，反馈交回绘制会话。
+- **step02：边缘精修。** 将第一步工程另存为 `clothing-soft-edges.kra`，逐层处理锯齿、残色、过硬线条和补全接缝；保持画布、结构、名称、深度、薄纱透明度与开口。完成自检后交付，不另跑 reviewer。
 
 纯衣服参考 `../clothing-part-layering/references/clothing.png` 是绘画标准，原穿衣角色用于理解穿插关系。单深度衣片对应一个完整绘画层，多深度 part 对应多个保持共同归属与连续性的绘画分片层，按深度排列，无蒙版、无子节点。已经拆开的前后衣片保留独立图层，即使共同运动也不合并。交付衣服分层，不制作身体装配或身体插层说明。
 
 reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdown；不保存或恢复其 threadId。`review-01.md` 有问题时，原绘制 agent 必须全部解决并完成自检，才发布 `repair-01.md`，然后开始第二次 review。第一次无问题直接结束；第二次有问题也须全部修完，发布 `repair-02.md` 后结束，不再做第三次 review。
 
-两次上限只针对 review，不限制解决同一份反馈的修复调用。无法解决或工具受阻时保留未完成状态。只有初次绘制和必要 review / 修复全部结束、KRA 及报告存在，才把第二步标记为 `.completed`。程序的文件检查不代替逐层看图和保存后重开核对。
+两次上限只针对 review，不限制解决同一份反馈的修复调用。无法解决或工具受阻时保留未完成状态。只有初次绘制和必要 review / 修复全部结束、KRA 及报告存在，才把第一步标记为 `.completed`。程序的文件检查不代替逐层看图和保存后重开核对。
 
 ## 文件与续跑
 
@@ -42,24 +42,24 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 <运行根目录>/jianma/clothing-raster-layering/
   run.json
   step01/
-    .completed
+    .completed                # 完成轮廓 review / 修复后写入
     clothing-depth.kra
-    report.md
-  step02/
-    .running                  # 完成全部 review / 修复后改为 .completed
-    clothing-soft-edges.kra
     report.md
     review-01.md
     repair-01.md              # 有问题时才产生
     review-02.md              # 第一轮有问题且修完后才产生
     repair-02.md              # 第二轮有问题时才产生
+  step02/
+    .completed                # 边缘精修与自检完成
+    clothing-soft-edges.kra
+    report.md
 ```
 
 各步还会保存实际提示词、请求事件、结果、错误及绘制中间文件。`run.json` 只保存输入来源、Krita、模型配置和共用绘制 `threadId`，不保存步骤完成状态。两步绘制与所有修复持续使用同一 thread；中断续跑需要同一 Codex 环境保留该会话历史，恢复失败会报错，不静默换会话。
 
 | 文件情况 | 下次同名启动 |
 | --- | --- |
-| `.completed` 存在 | 跳过该步；第二步还会检查正式 review / repair 是否齐备 |
+| `.completed` 存在 | 跳过该步；第一步还会检查正式 review / repair 是否齐备 |
 | `.running` 存在 | 保留现有工程与日志，继续原绘制 thread 和未完成环节 |
 | 步骤目录存在，两个标记都没有 | 清空该步及后续步骤目录，重置绘制 thread 后重跑 |
 | 某份正式 review / repair 被删除 | 从该环节接续，清除后续反馈记录，保留当前 KRA 与绘制 thread |
@@ -91,3 +91,5 @@ node --test clothing-raster-layering/tests/*.test.ts
 共享安装、路径规则、工具配置和临时错误恢复见 [live2d-maker 使用说明](../SKILL.md)。所有相对输入路径从 `<运行根目录>/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
 
 多深度与工具协议见 [共享说明](../references/workflow-details.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。
+
+step01 重点修轮廓缺口、错位和明显画风差异，可用本部件原图可见像素覆盖来拟合，不能串入其他部件；补绘和覆盖间接缝用画笔修自然。reviewer 看图确认形体、画风和衔接问题，用框选工具标记位置、相关图层并生成局部对照，绘制者按编号返修；step02 以像素差异候选框为细节检查入口，逐层扩展检查，广泛检查、局部小改，精修边缘、瑕疵、描边和部件细节。模型配置见 [模型与 harness](../references/agent-models.md)，各步骤预览为最新保存 KRA 的合成画面。
