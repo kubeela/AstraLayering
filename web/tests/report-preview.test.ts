@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -17,7 +17,7 @@ test('报告图片兼容 Markdown、行内代码与纯路径，代码块不被�
 });
 
 test('报告图片只解析实际任务内的文件，拒绝外部路径与符号链接', async t => {
-  const base = await mkdtemp(join(tmpdir(), 'report-paths-')), root = join(base, 'case');
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'report-paths-'))), root = join(base, 'case');
   t.after(() => rm(base, { recursive: true, force: true }));
   const image = 'clothing-raster-layering/step01/evidence/marked.png';
   await mkdir(join(root, 'clothing-raster-layering/step01/evidence'), { recursive: true });
@@ -39,7 +39,7 @@ test('报告图片只解析实际任务内的文件，拒绝外部路径与符�
 });
 
 test('review 草稿展示引用图片，经 HTTP 可读，发布后采用正式报告但不提前标完成', async t => {
-  const base = await mkdtemp(join(tmpdir(), 'report-http-')), root = join(base, 'case'), step = 'clothing-raster-layering/step01';
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'report-http-'))), root = join(base, 'case'), step = 'clothing-raster-layering/step01';
   t.after(() => rm(base, { recursive: true, force: true }));
   await mkdir(join(root, step, 'evidence'), { recursive: true });
   const image = step + '/evidence/marked.png', draft = step + '/review-01.md.tmp';

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { mkdtemp, rm, mkdir, writeFile } from "node:fs/promises";
+import { mkdtemp, realpath, rm, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
@@ -43,7 +43,7 @@ test("bounded point light positions, recipes and uncompressed orthographic UVs",
 });
 
 test("inspection records bind input hashes and renderer, reject missing assets and keep concurrent records", async (t) => {
-  const root = await mkdtemp(join(tmpdir(), "astra-studio-"));
+  const root = await realpath(await mkdtemp(join(tmpdir(), "astra-studio-")));
   t.after(() => rm(root, { recursive: true, force: true }));
   const folder = join(root, "demos/lighting-lab");
   await mkdir(join(folder, "a"), { recursive: true });
