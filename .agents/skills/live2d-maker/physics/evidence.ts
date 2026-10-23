@@ -52,7 +52,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
         if(step%4===0){if(!curvePoints.has(id))curvePoints.set(id,[]);curvePoints.get(id)!.push([step/120,residual[tip*2]]);}
         if(step===960&&stats.travel>.1)metrics.notSettled.push(id);
       }
-      yield JSON.stringify({step,time:step/120,sourcePose:scene.sourcePose,components})+'\n';if(step&&step%12===0)frames.push(step);
+      yield JSON.stringify({step,time:step/120,sourcePose:scene.sourcePose,airflow:scene.airflow,components})+'\n';if(step&&step%12===0)frames.push(step);
     }}
     await pipeline(Readable.from(records()),createGzip({level:1}),createWriteStream(join(directory,'trace.jsonl.gz')),{signal});
     metrics.simulationMs=performance.now()-started;
@@ -106,9 +106,28 @@ export async function validateFindings(config:any,evidence:string,findings:any,e
 }
 
 export async function traceWindow(evidence:string,test:string,steps:number[],maxSteps=60) {
+  return (await readTraceWindow(evidence,test,steps,maxSteps,false)).rows;
+}
+// Replay the recorded command, rather than re-evaluating its transcendental
+// waveform in another JS engine. Outputs remain independently simulated and
+// checked against every recorded mesh vertex at the original tolerance.
+export async function traceReplayWindow(evidence:string,test:string,steps:number[],maxSteps=600) {
+  return readTraceWindow(evidence,test,steps,maxSteps,true);
+}
+async function readTraceWindow(evidence:string,test:string,steps:number[],maxSteps:number,collectInputs:boolean) {
   if(!testNames.includes(test)||!Array.isArray(steps)||steps.some(n=>!Number.isInteger(n)||n<0||n>960)||steps.length>maxSteps)throw Error('无效时间窗');
-  if(!steps.length)return [];const wanted=new Set(steps),result=new Map(),input=createReadStream(join(evidence,test,'trace.jsonl.gz')),gzip=createGunzip();input.pipe(gzip);
+  if(!steps.length)return {rows:[],inputs:[]};const wanted=new Set(steps),result=new Map(),inputs:any[]=[],input=createReadStream(join(evidence,test,'trace.jsonl.gz')),gzip=createGunzip();input.pipe(gzip);
   const rows=createInterface({input:gzip,crlfDelay:Infinity});let step=0;
-  try{for await(const line of rows){if(wanted.has(step))result.set(step,JSON.parse(line));if(++step>Math.max(...steps))break;}if(result.size!==wanted.size)throw Error('轨迹不完整');return steps.map(n=>result.get(n));}
+  try{for await(const line of rows){
+    if(collectInputs){
+      // Commands precede the potentially large mesh payload. Keep the prefix
+      // only; decoding every full mesh would make a 960-step replay expensive.
+      const end=line.indexOf(',"components":');if(end<0)throw Error('轨迹缺少组件数据');
+      const row=JSON.parse(line.slice(0,end)+'}');
+      if(row.step!==step||!row.sourcePose||!row.airflow||!['x','y','angle'].every(k=>Number.isFinite(row.sourcePose[k]))||!['x','y'].every(k=>Number.isFinite(row.airflow[k])))throw Error('轨迹缺少有效的逐步输入，请重新模拟');
+      inputs.push({sourcePose:row.sourcePose,airflow:row.airflow});
+    }
+    if(wanted.has(step))result.set(step,JSON.parse(line));if(++step>Math.max(...steps))break;
+  }if(result.size!==wanted.size)throw Error('轨迹不完整');return {rows:steps.map(n=>result.get(n)),inputs};}
   finally{rows.close();input.destroy();gzip.destroy();}
 }

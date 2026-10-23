@@ -25,10 +25,13 @@ for(const kind of ['cloth','strand','transparent-edge'])test(kind+' workflow ren
     for(const[kind,color]of [['normal',{r:128,g:128,b:255,alpha:1}],['depth',{r:180,g:180,b:180,alpha:1}]] as const)await sharp({create:{width:64,height:96,channels:4,background:color}}).png().toFile(join(source,kind+'.png'));
     await writeFile(join(source,'catalog.json'),JSON.stringify({canvas:{width:64,height:96},layers:[{id:'cloth',uuid:'cloth',contentHash:'a'.repeat(64),visible:true,opacity:255,bounds:{x:6,y:8,width:52,height:80},original:'part-0-original.png',masked:'part-0-masked.png'}]}));
     await simulate(config,evidence);
-    const files=await renderFrames(config,source,evidence,[{test:'tip-impulse',steps:[0,72],modes:['color','lit','normal','depth']}]);
-    assert.equal(files.filter(f=>!f.component).length,8);
+    const requests=[{test:'tip-impulse',steps:[0,72],modes:['color','lit','normal','depth']}];
+    if(kind==='cloth')requests.push({test:'support-reverse',steps:[0,192,240],modes:['color','lit']});
+    const files=await renderFrames(config,source,evidence,requests);
+    assert.equal(files.filter(f=>!f.component).length,kind==='cloth'?14:8);
     const manifest=JSON.parse(await readFile(join(evidence,'manifest.json'),'utf8'));
     assert.equal(manifest.replayVerification,'all-rendered-mesh-vertices');assert.equal(manifest.coverage.render,'partial');
+    assert.equal(manifest.inputReplay,'recorded-sourcePose-and-airflow');
     if(kind==='transparent-edge'){
       const frame=files.find(f=>f.mode==='color'&&f.step===72&&!f.component),data=await sharp(join(evidence,frame.path)).ensureAlpha().raw().toBuffer();let count=0;
       for(let q=0;q<data.length;q+=4)if(data[q+3]>=16&&data[q+3]<=230){count++;assert(Math.min(data[q],data[q+1],data[q+2])>245,'transparent black texels must not darken a moving white edge');}
