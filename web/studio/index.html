@@ -166,6 +166,7 @@
               ☼ 移动光源
             </button>
             <button data-tool="disturb" title="悬停划过施力，无需按住" hidden>◌ 扰动</button>
+            <button data-tool="physics-select" title="点击可见部件选择编辑组件；再次点击切换重叠组件" hidden>⌖ 选组件</button>
           </div>
           <span class="divider"></span><button id="fit">适应</button
           ><button id="actual">100%</button><span id="zoom">100%</span>
@@ -241,8 +242,9 @@
         <div id="physics-workspace" role="tabpanel" hidden>
           <div class="panel-heading"><h2>摆动物理</h2><span id="physics-draft" class="muted">草稿</span></div>
           <section class="panel">
-            <div class="file-actions"><button id="physics-prepare">准备当前图层</button><button id="physics-close" hidden>释放部件</button></div>
+            <div class="file-actions"><button id="physics-prepare">准备当前图层</button></div>
             <p id="physics-status" class="muted">从角色原始图层建立物理绑定</p>
+            <label class="toggle"><input id="physics-guides" type="checkbox">显示网格与边界</label>
           </section>
           <div id="component-controls" hidden>
             <section class="panel"><h3>环境风</h3><label class="toggle"><input id="component-wind" type="checkbox" checked>启用微风</label><div class="slider"><div class="slider-head"><label for="component-wind-strength">风力</label><output id="component-wind-value">20%</output></div><input id="component-wind-strength" type="range" min="0" max="100" step="5" value="20"></div><label class="field">风向<select id="component-wind-direction"><option value="0">向右</option><option value="180">向左</option><option value="-90">向上</option><option value="90">向下</option></select></label></section>
@@ -253,9 +255,12 @@
           </div>
           <div id="physics-controls" hidden>
             <section class="panel">
-              <input id="physics-filter" type="search" placeholder="查找部件" aria-label="查找物理部件">
-              <label class="field">部件<select id="physics-part"></select></label>
-              <label class="toggle"><input id="physics-enabled" type="checkbox">启用摆动</label>
+              <h3>物理组件</h3>
+              <input id="physics-filter" type="search" placeholder="查找名称或类型" aria-label="查找物理组件">
+              <div id="physics-part" class="physics-component-list" role="listbox" aria-label="物理组件"></div>
+              <p id="physics-empty" class="muted" hidden>没有匹配的组件</p>
+              <p class="physics-current">当前编辑：<strong id="physics-selected-name">未选择组件</strong></p>
+              <label class="toggle"><input id="physics-enabled" type="checkbox">开启当前组件</label>
               <label class="field">类型<select id="physics-kind"><option value="cloth">布片 / 裙摆</option><option value="ribbon">飘带</option></select></label>
               <label class="field">固定侧<select id="physics-direction"><option value="down">上方固定 · 向下放开</option><option value="up">下方固定 · 向上放开</option><option value="right">左侧固定 · 向右放开</option><option value="left">右侧固定 · 向左放开</option></select></label>
             </section>
@@ -275,8 +280,7 @@
               <label class="field">扰动范围<select id="physics-scope"><option value="all">范围内所有组件</option><option value="current">仅当前组件</option></select></label>
               <div class="slider"><div class="slider-head"><label for="physics-radius">受力半径</label><output id="physics-radius-value">90 px</output></div><input id="physics-radius" type="range" min="20" max="240" step="5" value="90"></div>
               <div class="slider"><div class="slider-head"><label for="physics-force">扰动力度</label><output id="physics-force-value">70%</output></div><input id="physics-force" type="range" min="10" max="200" step="5" value="70"></div>
-              <label class="toggle"><input id="physics-guides" type="checkbox" checked>显示网格与活动边界</label>
-              <p class="muted">绿色为固定区，虚线为活动边界。选择“扰动”后，鼠标划过即可施力。</p>
+              <p class="muted">选择“扰动”后，鼠标划过施力；当前编辑组件不限制“所有组件”的受力范围。</p>
             </section>
             <section class="panel"><div class="file-actions"><button id="physics-export">导出配置</button><label class="button">导入配置<input id="physics-import" type="file" accept=".json" hidden></label></div></section>
           </div>

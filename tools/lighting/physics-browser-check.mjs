@@ -44,7 +44,7 @@ try {
   const error=total/count;console.log('Neutral mean RGB error',error,'large differences',changed/count);
   assert(error<2,'neutral appearance regressed');
   const target=d.physics.parts.find(p=>p.name.includes('skirt_front'))||d.physics.parts[0];
-  await page.locator('#physics-part').selectOption(target.id);
+  await page.locator('#physics-part [data-physics-component="'+target.id+'"]').click();
   await page.locator('#physics-enabled').check();
   for(const [key,value] of [['fixed','32'],['maxTravel','8'],['maxAngle','12']]) {
     await page.locator('#physics-number-'+key).fill(value);
@@ -153,7 +153,7 @@ try {
   await page.locator('[data-workspace="physics"]').click();await page.locator('#physics-prepare').click();
   await page.waitForFunction(()=>window.studioDiagnostics().physics.ready,null,{timeout:120000});
   assert.equal((await diag()).physics.parts.find(p=>p.id===target.id).binding.maxAngle,12);
-  await page.locator('#physics-close').click();assert.equal((await diag()).physics.ready,false);
+  await page.locator('#effect-physics').uncheck();assert.equal((await diag()).physics.ready,true);assert.equal((await diag()).physics.enabled,false);
   assert.equal(await page.locator('[data-tool="disturb"]').isDisabled(),true);
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({passed:true,dimensions:[w,h],bindings:limits.length,neutralRGBError:error,drawItems:d.physics.drawItems,sharedCanvas:true,preview,errors},null,2));

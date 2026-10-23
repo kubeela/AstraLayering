@@ -256,12 +256,13 @@ export class ComponentBody {
     const nearest=Array.from({length:this.weights.length},(_,i)=>i).reduce((best,i)=>Math.hypot(this.rest[i*2]-point[0],this.rest[i*2+1]-point[1])<Math.hypot(this.rest[best*2]-point[0],this.rest[best*2+1]-point[1])?i:best,0);
     return [point[0]+this.positions[nearest*2]-this.rest[nearest*2],point[1]+this.positions[nearest*2+1]-this.rest[nearest*2+1]];
   }
-  hit(x,y,layers){
+  sampleAlpha(x,y,layers){
     for(let k=0;k<this.indices.length;k+=3){const tri=[...this.indices.slice(k,k+3)],weights=barycentric([x,y],...tri.map(i=>[this.positions[i*2],this.positions[i*2+1]]));if(!weights)continue;
       const p=[0,1].map(axis=>tri.reduce((s,i,n)=>s+this.rest[i*2+axis]*weights[n],0));
-      return layers.some(l=>{if(!l)return false;const ix=Math.floor(p[0]-l.bounds.x),iy=Math.floor(p[1]-l.bounds.y);return ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height&&l.maskedRgba[(iy*l.bounds.width+ix)*4+3]>32;});
-    }return false;
+      let value=0;for(const l of layers){if(!l)continue;const ix=Math.floor(p[0]-l.bounds.x),iy=Math.floor(p[1]-l.bounds.y);if(ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height)value=Math.max(value,l.maskedRgba[(iy*l.bounds.width+ix)*4+3]);}return value;
+    }return 0;
   }
+  hit(x,y,layers){return this.sampleAlpha(x,y,layers)>32;}
   step(dt=1/120){this.prepare(dt);this.solve();this.constrain();this.finish();}
 }
 

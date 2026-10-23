@@ -66,7 +66,7 @@ try {
   await load(directory+'/source.kra');
   const original = await diag(), target = original.physics.parts.find(p=>p.partPath==='character:hair/tail');
   assert(target); assert.equal(target.id,target.uuid); assert.equal(original.physics.parts.length,2);
-  await page.locator('#physics-part').selectOption(target.id);
+  await page.locator('#physics-part [data-physics-component="'+target.id+'"]').click();
   await page.locator('#physics-enabled').check();
   for (const [key,value] of [['fixed','32'],['maxAngle','12'],['maxTravel','8']]) {
     await page.locator('#physics-number-'+key).fill(value);

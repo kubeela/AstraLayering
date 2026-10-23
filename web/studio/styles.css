@@ -1027,3 +1027,12 @@ canvas.disturb { cursor: crosshair; }
 
 #component-geometry{box-sizing:border-box;width:100%;max-height:340px;resize:vertical;font-family:monospace;font-size:12px}#component-controls[hidden]{display:none}
 .layer-row.physics-related{box-shadow:inset 3px 0 #72a2df;background:#223d5838}.component-handles{pointer-events:all}
+.physics-component-list{max-height:190px;overflow-y:auto;margin-top:8px;display:grid;gap:3px;overscroll-behavior:contain}
+.physics-component-row{display:flex;align-items:center;gap:9px;text-align:left;padding:9px 8px;background:transparent;border:1px solid transparent;border-radius:4px;min-width:0}
+.physics-component-row[aria-selected="true"]{background:#343e55;border-color:#657aa5}
+.physics-component-row>span:last-child{min-width:0;flex:1}
+.physics-component-row b,.physics-component-row small{display:block;overflow-wrap:anywhere}
+.physics-component-row b{font-size:11px;font-weight:500}.physics-component-row small{font-size:10px;color:var(--muted);margin-top:3px}
+.component-status{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#666a72}.component-status.enabled{background:#8fbeaa}
+.physics-current{font-size:11px;color:var(--muted);line-height:1.6}.physics-current strong{font-weight:500;color:var(--accent);overflow-wrap:anywhere}
+#stage.pick-component{cursor:crosshair}
