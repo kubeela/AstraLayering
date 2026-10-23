@@ -1,8 +1,10 @@
 // 补全只能增加封闭路径。保留输入正文，新增路径置于其下方；不接受任意 SVG 属性或节点。
+import { svgSource, updateSvgRoot } from '../xml.ts';
 export type CompletionPath = { d: string; fillRule?: 'nonzero' | 'evenodd' };
 const open = '<g data-completion-additions="v1" fill="#58b8a9" stroke="none">';
-const clean = (text: string) => text.replace(/\r\n/g, '\n').replace(/<svg\b[^>]*>/, root =>
-  root.replace(/\s(?:data-source-sha256|data-completion-inputs)=(['"]).*?\1/g, ''));
+const clean = (text: string) => updateSvgRoot(text.replace(/\r\n/g, '\n'), {
+  'data-source-sha256': null, 'data-completion-inputs': null,
+});
 
 export function completionPaths(value: unknown): CompletionPath[] {
   if (!Array.isArray(value) || value.length > 256) throw new Error('补全 paths 须为数组，最多 256 条');
@@ -24,18 +26,17 @@ export function composeCompletion(source: string, value: unknown): string {
   const paths = completionPaths(value);
   if (!paths.length) return source;
   if (source.includes('data-completion-additions')) throw new Error('补全输入已有新增层标记');
-  const root = source.match(/<svg\b[^>]*>/)?.[0];
-  if (!root || !/<\/svg>\s*$/.test(source)) throw new Error('无效补全输入 SVG');
+  const { root } = svgSource(source);
+  if (root.selfClosing) throw new Error('无效补全输入 SVG');
   const additions = open + paths.map(path => `<path d="${path.d}" fill-rule="${path.fillRule ?? 'nonzero'}"/>`).join('') + '</g>';
   // 在原正文之前绘制，已有区域在上层；原路径、属性及其顺序不动。
-  return source.replace(root, root + additions);
+  return source.slice(0, root.openEnd) + additions + source.slice(root.openEnd);
 }
 
 export function assertCompletionPreserves(source: string, candidate: string): number {
   const before = clean(source), after = clean(candidate);
   if (before === after) return 0;
-  const root = after.match(/<svg\b[^>]*>/)?.[0];
-  const start = root ? after.indexOf(root) + root.length : -1;
+  const start = svgSource(after).root.openEnd;
   if (start < 0 || !after.startsWith(open, start)) throw new Error('补全改变了已有 SVG，只允许程序生成的新增层');
   const end = after.indexOf('</g>', start);
   if (end < 0) throw new Error('无效补全新增层');

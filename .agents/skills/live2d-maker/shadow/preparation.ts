@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { kraContents, kraLayers } from './delivery.ts';
 import { fileHash, type ShadowInput } from './input.ts';
+import { matchLayerPart } from '../shared/layer-names.ts';
 
 export const referenceNames = ['production.md', 'skirt.png', 'hair.png'] as const;
 export const referenceUrl = (name: string) => new URL('./references/' + name, import.meta.url);
@@ -23,16 +24,9 @@ export async function inputIndex(input: ShadowInput): Promise<InputIndex> {
     walk(JSON.parse(await readFile(path, 'utf8')).groups ?? []);
   }
   const layers = [...kraLayers(kraContents(await readFile(input.characterKra)).xml)].map(([uuid, n]) => {
-    const prefix = n.name.match(/^(人物|衣服|衣装)\s*\|\s*/)?.[1];
-    const namespace = prefix === '人物' ? 'character:' : prefix ? 'clothing:' : undefined;
-    const name = n.name.replace(/^(人物|衣服|衣装)\s*\|\s*/, '').replace(/^\d+\s+/, '');
-    const candidates = parts.filter(p => { const id = p.id.split(':')[1]; return (!namespace || p.id.startsWith(namespace)) && (name === id || name.startsWith(id + '/')); });
-    const length = (p: InputIndex['parts'][number]) => p.id.slice(p.id.indexOf(':') + 1).length;
-    candidates.sort((a, b) => length(b) - length(a));
-    const ambiguous = candidates[1] && length(candidates[1]) === length(candidates[0]);
     const maskState = n.nodetype.endsWith('mask') ? Object.fromEntries(
       ['visible', 'x', 'y', 'opacity', 'compositeop', 'channelflags', 'alphainherit'].filter(k => n[k] !== undefined).map(k => [k, n[k]])) : undefined;
-    return { uuid, name: n.name, parent: n.parent, type: n.nodetype, nameMatch: candidates[0] && !ambiguous ? candidates[0].id : null,
+    return { uuid, name: n.name, parent: n.parent, type: n.nodetype, nameMatch: matchLayerPart(n.name ?? '', parts.map(p => p.id)),
       ...(maskState ? {maskState} : {}) };
   });
   return { version: 1, sourceHash: await fileHash(input.characterKra), parts, layers };

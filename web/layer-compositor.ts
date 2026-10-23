@@ -16,6 +16,7 @@ import type { IncomingMessage } from "node:http";
 import { unzipSync } from "fflate";
 import { readPsd, type Layer } from "ag-psd";
 import { atomicJSON } from "./files.ts";
+import { parseXml } from "../.agents/skills/live2d-maker/shared/xml.ts";
 
 type Session = {
   directory: string;
@@ -49,7 +50,8 @@ export function validateDocument(bytes: Uint8Array, extension: string) {
     const xml =
       files["maindoc.xml"] && new TextDecoder().decode(files["maindoc.xml"]);
     if (!xml) throw Error("KRA 缺少图层目录");
-    if (/nodetype\s*=\s*["']filelayer["']/i.test(xml))
+    const document = parseXml(xml);
+    if (Array.from(document.getElementsByTagName('*')).some(node => node.getAttribute('nodetype')?.toLowerCase() === 'filelayer'))
       throw Error("文件图层请先在 Krita 中转为绘画层，再打开");
     for (const [name, value] of Object.entries(files))
       if (name.endsWith(".svg")) {
@@ -61,9 +63,9 @@ export function validateDocument(bytes: Uint8Array, extension: string) {
         )
           throw Error("请先嵌入矢量图层的外部资源");
       }
-    const image = xml.match(/<IMAGE\b[^>]*>/)?.[0] ?? "";
-    width = Number(image.match(/\bwidth=["'](\d+)/)?.[1]);
-    height = Number(image.match(/\bheight=["'](\d+)/)?.[1]);
+    const image = document.getElementsByTagName('IMAGE')[0];
+    width = Number(image?.getAttribute('width'));
+    height = Number(image?.getAttribute('height'));
   } else throw Error("请选择 KRA 或 PSD");
   if (!width || !height || width * height > 64_000_000)
     throw Error("画布超过 6400 万像素，未缩小原图");
