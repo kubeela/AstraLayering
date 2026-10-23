@@ -36,7 +36,7 @@ pnpm start --name jianma --status --json
 
 ## Codex 环境配置
 
-首次创建 skill 根目录 `.env` 前，按[推荐模型方案](model-presets.md)让用户确认选择，再以 [example.env](../example.env) 为基础填写；已有配置不覆盖。直接调用脚本而没有 `.env` 时，使用默认方案：preparation 为 Codex low，其余默认模型保持，生图使用外部 Codex 内置服务。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
+首次创建 skill 根目录 `.env` 前，按[推荐模型方案](model-presets.md)确认混合方案或自定义，再以 [example.env](../example.env) 为字段基础填写；已有配置不覆盖。直接调用脚本而没有 `.env` 时，代码兼容默认值保持不变：preparation 为 Codex low，其余默认模型保持，生图使用外部 Codex 内置服务；该回退不作为推荐套餐。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
 
 `layering_image_compact_threshold` 留空关闭，只作用于 Codex；例如网关最多 50 张时可设 `49`。这项能力需要仓库提供的可选 Codex 补丁：
 

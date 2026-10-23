@@ -21,6 +21,7 @@
 | 物理绑定 | `physics_authoring` | 固定区、网格与最大约束 |
 | 物理动画复核 | `physics_review` | 同求解器模拟、逐帧证据与结论，无生图 |
 | 穿戴组装 | `assembly` | 人物与衣服 KRA 组装 |
+| 阴影 | `shadow` | 蒙版投影制作与可选法线／深度制作共用语言模型 |
 
 SVG 合并由程序执行，不配置 LLM。内部步骤名和人物／衣服的提示词、日志、产物、review 轮次及续跑规则仍各自保留。
 
@@ -38,7 +39,7 @@ SVG 合并由程序执行，不配置 LLM。内部步骤名和人物／衣服的
 layering_agent_part_review_model=gemini-4-argon-high
 ```
 
-没有覆盖时，preparation 全部为 `gpt-6.1-sol-low`，其余职责保持原来的默认模型与力度。统一职责配置优先；旧 `layering_<小步骤>_model` 在同一职责的已填写值一致时可以继续读取，冲突时明确指出旧键并要求填写对应统一键，不自动改写 `.env`。旧 `layering_medium_model`／`layering_high_model` 仍作为最后的兼容默认值。
+当前推荐[混合方案](model-presets.md)，通过 `.env` 的职责键配置 GPT、Argon 与 Claude。没有覆盖时的代码兼容默认值保持不变：preparation 全部为 `gpt-6.1-sol-low`，其余职责保持原来的默认模型与力度。统一职责配置优先；旧 `layering_<小步骤>_model` 在同一职责的已填写值一致时可以继续读取，冲突时明确指出旧键并要求填写对应统一键，不自动改写 `.env`。旧 `layering_medium_model`／`layering_high_model` 仍作为最后的兼容默认值。
 
 ## 生图选择
 
