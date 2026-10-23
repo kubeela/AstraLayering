@@ -27,7 +27,7 @@ export const help = [
   '省略 --background 则在前台执行；总入口不会自行创建定时任务。',
   '',
   '恢复损坏的绘制会话（先确认任务已停止，保留产物和标记）：',
-  'pnpm start --name <任务名> --replace-thread <raster管线或character-assembly> --handoff <交接.md> --reason <原因>',
+  'pnpm start --name <任务名> --replace-thread <raster管线、character-assembly、shadow或physics> --handoff <交接.md> --reason <原因>',
   '此命令只准备恢复；之后用正常续跑命令启动。相对输入路径均以 <dir>/<name> 为基准。',
 ].join('\n');
 
