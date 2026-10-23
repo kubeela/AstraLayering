@@ -39,7 +39,10 @@ travel, angle, compression, shear and area limits remain in force.
 `inochi2d/pendulum.js` ports the nonlinear sin(angle) pendulum and RK4 integrator,
 including anchor-relative bob updates. It drives rigid rotation, not stretching.
 The UI frequency specifies gravity/length; optional wind and final angle limits
-are adapter inputs. The separate spring-pendulum model is not ported.
+are adapter inputs. Parent translation transfers only the authored inputGain
+fraction into bob inertia; the drawing always follows the actual pivot. At zero
+gain the bob travels with its attachment. Reset clears the previous pivot as
+well as bob state. The separate spring-pendulum model is not ported.
 
 The source identity schema remains `astra-component-physics-1`; runtime behavior
 is `psd2live-inochi-adapter-1`. Evidence hashes include all ports and the motion

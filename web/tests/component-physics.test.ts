@@ -2,7 +2,7 @@ import { InochiPendulum } from '../studio/vendor/inochi2d/pendulum.js';
 import { motionIssues, MotionStepTracker, motionStepBasis } from '../studio/physics-motion-review.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, readFile, writeFile, readdir } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, readFile, writeFile, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ComponentScene } from '../studio/component-physics-model.js';
@@ -66,7 +66,9 @@ test('UUID bindings preserve multiple source layers through reorder and clipping
 });
 test('evidence records exact every-step states and never publishes numerical-only review',async()=>{
   const root=await mkdtemp(join(tmpdir(),'astra-component-test-')),directory=join(root,'evidence');try{
+    await mkdir(directory);await writeFile(join(directory,'partial-trace'),'interrupted-diagnostic');
     const c=config([component()]);const manifest=await simulate(c,directory);assert.equal(manifest.runs.length,9);assert.equal(manifest.coverage.render,'pending');
+    const partialBackup=(await readdir(join(root,'backups')))[0];assert.equal(await readFile(join(root,'backups',partialBackup,'partial-trace'),'utf8'),'interrupted-diagnostic');
     assert.equal(manifest.runs[0].metrics.motionReview.stepBasis,motionStepBasis);
     const rows=await traceWindow(directory,'tip-impulse',[59,60,61,960]);assert.equal(rows[1].time,.5);assert(rows[0].components.strand.stats.travel<1e-10);assert(rows[2].components.strand.stats.travel>0);assert(rows[2].components.strand.positions.length>0);
     assert.deepEqual((await traceWindow(directory,'tip-impulse',[61]))[0],rows[2]);
@@ -105,6 +107,16 @@ test('Inochi nonlinear pendulum matches the small-angle period and preserves amp
   const p=new InochiPendulum(body);p.angle=.02;const h=1/240;let minimum=Infinity,maximum=-Infinity,firstCrossing=0;
   for(let n=1;n<=240;n++){p.step(h);minimum=Math.min(minimum,p.angle);maximum=Math.max(maximum,p.angle);if(!firstCrossing&&p.angle<0)firstCrossing=n*h;}
   assert(Math.abs(firstCrossing-.25)<.005);assert(Math.abs(p.angle-.02)<1e-6);assert(minimum<-.01999&&maximum>.01999);
+});
+test('pendant parent input gain scales inertia without detaching the artwork or carrying state through reset',()=>{
+  const sample=(gain:number)=>{
+    let pivot=[0,0];const body:any={freeLength:100,component:{authoring:{pivot:[0,0]},response:{frequencyHz:1,dampingRatio:.3,inputGain:gain}},scene:{airflow:{x:0}},target:()=>pivot};
+    const p=new InochiPendulum(body);p.step(1/120);pivot=[10,0];p.step(1/120);
+    assert.deepEqual(body.pivot,pivot);const angle=p.angle;p.reset();assert.equal(p.lastPivot,null);return angle;
+  };
+  assert.equal(sample(0),0);assert(Math.abs(sample(.1))<Math.abs(sample(1))*.11);
+  const c=component('pendant');c.response.inputGain=0;const scene=new ComponentScene(config([c]));
+  for(let step=1;step<=180;step++){scene.sourcePose={x:step/10,y:0,angle:0};scene.step();const b=scene.bodies.get(c.id);assert(b.stats.valid);assert.equal(b.theta,0);assert(b.positions.every((v:number,i:number)=>Math.abs(v-b.pose[i])<1e-8));}
 });
 test('motion review rejects invisible response, repeated retreat, jumps and non-decaying motion',()=>{
   const c=component(),good={invalid:0,root:0,fallback:0,limited:0,peak:8,final:.01,maxStep:.3};
