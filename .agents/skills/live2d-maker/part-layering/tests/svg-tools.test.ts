@@ -28,6 +28,20 @@ async function fixture(t: TestContext) {
   return { directory, reference, path, observationDirectory, tool: createSvgPreviewTool({ directory, reference, canvas, observationDirectory }) };
 }
 
+test('真实 root 和 g 属性中的 > 不影响绑定、范围检查和裁剪，实体和组 ID 按属性值比较', async t => {
+  const f = await fixture(t);
+  const id = 'hair/a.b';
+  const source = svg('hair/a&#46;b', '<path fill="red" d="M20 20H80V80H20Z"/>')
+    .replace('<svg ', '<svg data-note="a > b" ').replace('<g ', '<g data-note="a > b" ');
+  await writeFile(f.path, source);
+  assert.deepEqual(await validateGroupSvg(f.path, id, canvas), Buffer.from(source));
+  assert.equal((await checkParentBounds(f.path, f.path, canvas)).status, 'pass');
+  const preview = info(await f.tool.execute({ path: f.path, crop: [10, 10, 80, 80], scale: 2 }, signal));
+  assert.deepEqual([preview.width, preview.height], [160, 160]);
+  assert.equal(await readFile(f.path, 'utf8'), source);
+  await assert.rejects(validateGroupSvg(f.path, 'hair/axb', canvas), /仅绑定当前组/);
+});
+
 test('SVG 源码读取仅限本轮绑定文件，保持原文，拒绝额外路径、目录逃逸及超大文件', async t => {
   const f = await fixture(t), before = await readFile(f.path);
   const tool = createSvgReadTool(f.directory, [f.path, undefined]);
