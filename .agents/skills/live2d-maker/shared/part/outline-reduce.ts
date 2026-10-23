@@ -10,6 +10,7 @@ import { writeAtomic } from './groups.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { OutlineReduction, OutlineReductionContext } from './layering-types.ts';
 import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
+import { editXmlAttributes, svgBody, svgSource } from '../xml.ts';
 
 export async function reduceGroupOutlines(context: OutlineReductionContext, agents: Pick<CodexAgents, 'run'>): Promise<OutlineReduction> {
   const reference = resolve(context.directory, context.references.baseSubject);
@@ -18,9 +19,12 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
   const palette = ['#ef476f', '#118ab2', '#ffd166', '#06d6a0', '#9b5de5', '#fb8500', '#4361ee', '#f15bb5'];
   const merged = join(context.directory, 'observations', 'outline-reduce', String(context.depth), 'merged.draft.svg');
   const parts = await Promise.all(context.entries.map(async (entry, index) => {
-    const text = (await readFile((entry.current ?? entry.outline).path)).toString();
-    return text.replace(/^[\s\S]*?<svg\b[^>]*>/, '').replace(/<\/svg>\s*$/, '')
-      .replace(/\bfill=(['"])(?!none\1).*?\1/g, `fill="${palette[index % palette.length]}"`);
+    let text = (await readFile((entry.current ?? entry.outline).path)).toString();
+    for (const node of svgSource(text).elements.reverse()) {
+      const fill = node.element.getAttribute('fill');
+      if (fill !== null && fill !== 'none') text = editXmlAttributes(text, node, { fill: palette[index % palette.length] });
+    }
+    return svgBody(text);
   }));
   await writeAtomic(merged, `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${canvas.width} ${canvas.height}">${parts.map(part => `<g opacity="0.65">${part}</g>`).join('')}</svg>`);
   const observations: SvgObservation[] = [];

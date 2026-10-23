@@ -9,6 +9,17 @@ import {alphaGain} from '../inspection.ts';
 import {inputIndex} from '../preparation.ts';
 const xml = (extra='',reverse=false) => `<layers><layer uuid="group" name="Clipping" nodetype="grouplayer" passthrough="0"><layers>${reverse?'<layer uuid="base" name="Base" nodetype="grouplayer"/>':''}<layer uuid="shadow" name="Shadow" nodetype="paintlayer" colorspacename="RGBA" channelflags="1110" compositeop="normal"/>${!reverse?'<layer uuid="base" name="Base" nodetype="grouplayer"><layers><layer uuid="left" name="人物 | 001 legs/left" nodetype="paintlayer"/><layer uuid="right" name="人物 | 002 legs/right" nodetype="paintlayer"/></layers></layer>':''}${extra}</layers></layer></layers>`;
 const relation = {id:'skirt',casterPartId:'clothing:skirt',receiverPartIds:['character:legs/left','character:legs/right'],casterLayerUuids:['right'],receiverLayerUuids:['left','right'],shadowLayerUuid:'shadow',clipBaseLayerUuid:'base',follow:'caster',blendMode:'normal',testOffsets:[[0,0],[10,0]],notes:'test'};
+test('合法阴影名的 > 与 XML 实体不会漏掉 UUID；真实缺失和重复仍报错',()=>{
+ const source = `<layers><!-- <layer uuid="fake"/> --><layer name="shadow | eyelid -> eyeball" uuid="{ABC}" nodetype="grouplayer"><layers><layer name='a &gt; b &amp; &quot;eye&quot; &#x4EBA;&#10;line' uuid='DEF' nodetype='paintlayer'><masks><mask name="wear > base" uuid="ghi" nodetype="transparencymask"/></masks></layer></layers></layer></layers>`;
+ const layers = kraLayers(source);
+ assert.equal(layers.size,3);
+ assert.equal(layers.get('abc')?.name,'shadow | eyelid -> eyeball');
+ assert.equal(layers.get('def')?.name,'a > b & "eye" 人\nline');
+ assert.equal(layers.get('def')?.parent,'abc');
+ assert.equal(layers.get('ghi')?.parent,'def');
+ assert.throws(()=>kraLayers('<layers><layer name="shadow > base"/></layers>'),/UUID/);
+ assert.throws(()=>kraLayers('<layers><layer uuid="{ABC}"/><mask uuid="abc"/></layers>'),/UUID/);
+});
 test('裁切 base 必须在影层下方，接收层在 base 中，下方没有其他 alpha 来源',()=>{
  assert.doesNotThrow(()=>validateClipBase(kraLayers(xml()),relation));
  assert.throws(()=>validateClipBase(kraLayers(xml('',true)),relation),/下方/);

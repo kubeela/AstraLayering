@@ -39,6 +39,9 @@ importers:
       '@openai/codex-sdk':
         specifier: 0.161.0
         version: 0.161.0
+      '@xmldom/xmldom':
+        specifier: 0.9.12
+        version: 0.9.12
       fflate:
         specifier: 0.8.2
         version: 0.8.2
@@ -411,6 +414,10 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@xmldom/xmldom@0.9.12':
+    resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
+    engines: {node: '>=14.6'}
+
   ag-psd@30.1.0:
     resolution: {integrity: sha512-1ce6o84aC+oVyl83A35HHUniGjwA3piHmGem3J2odBOFRq5p7i4htaco94vePLfOcingZu4fsyospJLwPagkhg==}
 
@@ -706,6 +713,8 @@ snapshots:
 
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
+
+  '@xmldom/xmldom@0.9.12': {}
 
   ag-psd@30.1.0:
     dependencies:
