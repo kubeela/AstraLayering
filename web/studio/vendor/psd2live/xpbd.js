@@ -16,8 +16,10 @@ export class PsdClothSolver {
     this.meanLength=this.edges.reduce((s,e)=>s+e.rest,0)/Math.max(1,this.edges.length);
     this.grad=new Float64Array(6);this.turnResult=new Float64Array(2);
     this.bendIds=new Int32Array(6);this.bendGrad=new Float64Array(12);
+    this.inverseMass=new Float64Array(this.n);this.decay=new Float64Array(this.n);
+    for(let i=0;i<this.n;i++)this.inverseMass[i]=body.invMass(i);
   }
-  w(i){return this.body.invMass(i);}
+  w(i){return this.inverseMass[i];}
   measureRest(){
     const g=this.goal;
     for(const e of this.edges)e.length=Math.max(e.rest,Math.hypot(g[e.i*2]-g[e.j*2],g[e.i*2+1]-g[e.j*2+1]));
@@ -68,13 +70,14 @@ export class PsdClothSolver {
     const b=this.body,p=b.p,v=b.velocity,c=b.component,omega=2*Math.PI*c.response.frequencyHz;
     // Four small steps at 120 Hz = upstream's sixteen per 30 Hz frame.
     const substeps=4,h=dt/substeps,flow=b.scene.airflow;
+    if(this.cachedDt!==dt){this.cachedDt=dt;for(let i=0;i<this.n;i++)this.decay[i]=Math.exp(-2*c.response.dampingRatio*omega*h*(1-.35*b.mobility[i]));}
     for(let sub=1;sub<=substeps;sub++){
       const fraction=sub/substeps,reverse=sub%2===0;
       for(let q=0;q<p.length;q++)this.goal[q]=b.previousPose[q]+(b.pPose[q]-b.previousPose[q])*fraction;
-      this.measureRest();this.old.set(p);
+      if(b.poseChanged!==false||!this.measured){this.measureRest();this.measured=true;}this.old.set(p);
       for(let i=0;i<this.n;i++){
         if(!b.mobility[i]){p[i*2]=this.goal[i*2];p[i*2+1]=this.goal[i*2+1];continue;}
-        const decay=Math.exp(-2*c.response.dampingRatio*omega*h*(1-.35*b.mobility[i]));
+        const decay=this.decay[i];
         for(let k=0;k<2;k++){const q=i*2+k,a=(k?flow.y:flow.x)*b.maxDistance*omega*omega*.65*b.mobility[i];v[q]=(v[q]+a*h)*decay;p[q]+=v[q]*h;}
       }
       this.distances(h,reverse);

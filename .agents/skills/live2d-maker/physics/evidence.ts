@@ -12,7 +12,7 @@ import { reviewCriteria } from '../../../../web/studio/component-physics-schema.
 import { hash, put, json } from './input.ts';
 import { motionIssues, motionReviewVersion } from '../../../../web/studio/physics-motion-review.js';
 export const evidenceVersion='astra-physics-evidence-1';
-export async function simulationHash(){return hash((await Promise.all(['component-physics-model.js','component-physics-geometry.js','component-physics-schema.js','physics-test-input.js','physics-airflow.js','physics-motion-review.js','vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js'].map(n=>readFile(new URL('../../../../web/studio/'+n,import.meta.url))))).map(hash).join(':'));}
+export async function simulationHash(){return hash((await Promise.all(['component-physics-model.js','component-physics-geometry.js','component-physics-schema.js','component-physics-worker.js','component-physics-runner.js','physics-test-input.js','physics-airflow.js','physics-motion-review.js','vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js'].map(n=>readFile(new URL('../../../../web/studio/'+n,import.meta.url))))).map(hash).join(':'));}
 export const configHash=(config:any)=>{const {review,...body}=config;return hash(JSON.stringify(body));};
 export async function simulate(config:any, output:string,signal?:AbortSignal) {
   const digest=configHash(config),runtimeHash=await simulationHash(),runs:any[]=[];
