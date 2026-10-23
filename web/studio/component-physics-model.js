@@ -144,6 +144,29 @@ export class ComponentBody {
     return changed;
   }
   sampleCloth(source,target){for(let i=0;i<this.clothSamples.length;i++){const[a,b,c,u,v,w]=this.clothSamples[i];target[i*2]=source[a*2]*u+source[b*2]*v+source[c*2]*w;target[i*2+1]=source[a*2+1]*u+source[b*2+1]*v+source[c*2+1]*w;}}
+  correctDisplayShear(){
+    if(this.kind!=='cloth'||!this.clothSamples)return false;
+    let changed=false;const limit=this.component.limits.maxShear/DEG;
+    // A legal control face can still shear a thin rendered face at a fixed
+    // transition. Project its angle gradient through the same sampling map as
+    // its area, rather than repeatedly retreating the whole sheet.
+    for(let k=0;k<this.indices.length;k+=3)for(let j=0;j<3;j++){
+      const tri=[this.indices[k+j],this.indices[k+(j+1)%3],this.indices[k+(j+2)%3]],[a,b,c]=tri,p=this.positions;
+      const ax=p[b*2]-p[a*2],ay=p[b*2+1]-p[a*2+1],bx=p[c*2]-p[a*2],by=p[c*2+1]-p[a*2+1];
+      let delta=angle(ax,ay,bx,by)-this.displayMeasures.angles[k+j];delta=Math.atan2(Math.sin(delta),Math.cos(delta));
+      const C=delta-clamp(delta,-limit,limit);if(Math.abs(C)<1e-7)continue;
+      const la=ax*ax+ay*ay,lb=bx*bx+by*by;if(la<1e-12||lb<1e-12)continue;
+      const gb=[ay/la,-ax/la],gc=[-by/lb,bx/lb],grad=[[-gb[0]-gc[0],-gb[1]-gc[1]],gb,gc],controls=new Map();
+      for(let n=0;n<3;n++){
+        const vertex=tri[n],sample=this.clothSamples[vertex],factor=this.clothFactors?.[vertex]??1;
+        for(let q=0;q<3;q++){const id=sample[q],g=controls.get(id)||[0,0],w=sample[q+3]*factor;g[0]+=grad[n][0]*w;g[1]+=grad[n][1]*w;controls.set(id,g);}
+      }
+      let mass=0;for(const[id,g]of controls)mass+=this.invMass(id)*(g[0]*g[0]+g[1]*g[1]);if(mass<1e-12)continue;
+      for(const[id,g]of controls){this.p[id*2]-=this.invMass(id)*C/mass*g[0];this.p[id*2+1]-=this.invMass(id)*C/mass*g[1];}
+      this.syncMesh();this.limited=true;changed=true;
+    }
+    return changed;
+  }
   syncMesh(){
     if(this.kind==='cloth'){this.sampleCloth(this.p,this.positions);if(this.clothFactors)for(let i=0;i<this.clothSamples.length;i++){const[a,b,c,u,v,w]=this.clothSamples[i],factor=this.clothFactors[i];for(let k=0;k<2;k++)this.positions[i*2+k]=this.pose[i*2+k]+(this.positions[i*2+k]-(this.pPose[a*2+k]*u+this.pPose[b*2+k]*v+this.pPose[c*2+k]*w))*factor;}return;}
     if(this.kind==='pendant'){
@@ -216,7 +239,9 @@ export class ComponentBody {
         if(Math.hypot(cx,cy)>1e-8){this.limited=true;this.correction=Math.max(this.correction,Math.hypot(cx,cy));
           this.p[i*2]-=cx*this.invMass(i)/mass;this.p[i*2+1]-=cy*this.invMass(i)/mass;this.p[j*2]+=cx*this.invMass(j)/mass;this.p[j*2+1]+=cy*this.invMass(j)/mass;}
       }
-      this.pin();this.syncMesh();if(this.correctDisplayAreas()){this.pin();this.syncMesh();}const metrics=this.inspect(!this.clothFactors);if(metrics.valid){if(this.kind!=='cloth'||this.clothFactors)this.finalStats=metrics;return;}
+      this.pin();this.syncMesh();if(this.correctDisplayAreas()){this.pin();this.syncMesh();}let metrics=this.inspect(!this.clothFactors);
+      if(!metrics.valid&&this.kind==='cloth'&&metrics.shear>lim.maxShear+1e-4&&this.correctDisplayShear()){this.pin();this.syncMesh();metrics=this.inspect(!this.clothFactors);}
+      if(metrics.valid){if(this.kind!=='cloth'||this.clothFactors)this.finalStats=metrics;return;}
       // Local triangle retreat fixes a fold without stopping the whole cloth.
       if(this.kind==='cloth')for(let k=0;k<this.controlIndices.length;k+=3){
         const tri=[...this.controlIndices.slice(k,k+3)],ratio=area(this.p,...tri)/area(this.pPose,...tri);
@@ -241,11 +266,17 @@ export class ComponentBody {
   finish(){
     this.motion.reconcile?.();
     if(this.kind!=='pendant')for(let i=0;i<this.mobility.length;i++)for(let k=0;k<2;k++)this.velocity[i*2+k]=(this.p[i*2+k]-this.previous[i*2+k])/this.dt;
-    for(let i=0;i<this.mobility.length;i++){
-      const speed=Math.hypot(this.velocity[i*2],this.velocity[i*2+1]),cap=this.maxDistance*TAU*this.component.response.frequencyHz*2;
-      if(speed>cap){this.velocity[i*2]*=cap/speed;this.velocity[i*2+1]*=cap/speed;}
+    if(this.kind!=='pendant')for(let i=0;i<this.mobility.length;i++){
+      // The speed budget bounds secondary motion, not the commanded parent
+      // pose. Clipping world velocity makes a short piece lag behind a moving
+      // attachment even when its local deformation is exactly zero.
+      const px=(this.pPose[i*2]-this.previousPose[i*2])/this.dt,py=(this.pPose[i*2+1]-this.previousPose[i*2+1])/this.dt;
+      let vx=this.velocity[i*2]-px,vy=this.velocity[i*2+1]-py;
+      const speed=Math.hypot(vx,vy),cap=this.maxDistance*TAU*this.component.response.frequencyHz*2;
+      if(speed>cap){vx*=cap/speed;vy*=cap/speed;}
       const dx=this.p[i*2]-this.pPose[i*2],dy=this.p[i*2+1]-this.pPose[i*2+1],d=Math.hypot(dx,dy);
-      if(d>=this.maxDistance*this.mobility[i]*.98&&d){const outward=Math.max(0,(this.velocity[i*2]*dx+this.velocity[i*2+1]*dy)/(d*d));this.velocity[i*2]-=outward*dx;this.velocity[i*2+1]-=outward*dy;}
+      if(d>=this.maxDistance*this.mobility[i]*.98&&d){const outward=Math.max(0,(vx*dx+vy*dy)/(d*d));vx-=outward*dx;vy-=outward*dy;}
+      this.velocity[i*2]=px+vx;this.velocity[i*2+1]=py+vy;
     }
     this.stats=this.motion.reconcile?this.inspect():this.finalStats||this.inspect();
   }
