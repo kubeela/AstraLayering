@@ -1,0 +1,46 @@
+{
+  "depth": 0,
+  "groups": [
+    {
+      "id": "face",
+      "inputHash": "5f0ce0c9fd1c35c699a5b1b10acd2171197d922e77ea9802664a31e3879674f7",
+      "outputHash": "5f0ce0c9fd1c35c699a5b1b10acd2171197d922e77ea9802664a31e3879674f7"
+    },
+    {
+      "id": "hair",
+      "inputHash": "250458ebce60a94531cc98122ce5beb517db29b6f9b0eea765c35e84ee4d0bb3",
+      "outputHash": "250458ebce60a94531cc98122ce5beb517db29b6f9b0eea765c35e84ee4d0bb3"
+    },
+    {
+      "id": "head_accessories",
+      "inputHash": "951996e8435e1107953ad8c0854df42b6591b9f02d222beafa4cb089d6f3dbad",
+      "outputHash": "7903b5e1577d0c3522e26d67ae43ba2b2feac3b4f34a81fadf800058342bcdc4"
+    },
+    {
+      "id": "neck",
+      "inputHash": "b164275ab593bfb122cc3a065f1333d1aaf386580669333a08089ea90364fcdc",
+      "outputHash": "b164275ab593bfb122cc3a065f1333d1aaf386580669333a08089ea90364fcdc"
+    },
+    {
+      "id": "body",
+      "inputHash": "fb23dc8104b6282d6f41d6f20829a507e399cff9f3f9c76f401af89455dad419",
+      "outputHash": "fb23dc8104b6282d6f41d6f20829a507e399cff9f3f9c76f401af89455dad419"
+    },
+    {
+      "id": "arms",
+      "inputHash": "163a9c73fdb99e61f29bd9bc27a3be71652317a39d0307bd18b1de3faffcabbd",
+      "outputHash": "163a9c73fdb99e61f29bd9bc27a3be71652317a39d0307bd18b1de3faffcabbd"
+    },
+    {
+      "id": "pelvis",
+      "inputHash": "ba4469560b368ee954968dedceca715b2b156cfa6388a31b0a5c58c568366d8f",
+      "outputHash": "ba4469560b368ee954968dedceca715b2b156cfa6388a31b0a5c58c568366d8f"
+    },
+    {
+      "id": "legs",
+      "inputHash": "ca87c72c9f770084c36974d475cd7975e5f186cae64921e13d18f311f934fcb1",
+      "outputHash": "ca87c72c9f770084c36974d475cd7975e5f186cae64921e13d18f311f934fcb1"
+    }
+  ],
+  "note": "核对本层 8 个顶层组（face、hair、head_accessories、neck、body、arms、pelvis、legs）与参考图及整层合成预览：各组实体身份与分层职责明确，无同一可见对象被重复领取的情况。face 中超出刘海边缘的细眉线与睫毛尖属于五官跨层覆盖；neck 与 body 在锁骨处、body 与 pelvis 在肚脐腰部处的交界重叠属于身体接缝的合理衔接重叠，均不构成重复对象。所有组保持原样，无需修改。"
+}

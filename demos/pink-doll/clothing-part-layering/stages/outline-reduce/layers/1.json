@@ -1,0 +1,31 @@
+{
+  "depth": 1,
+  "groups": [
+    {
+      "id": "shoulder_straps/right_shoulder_strap",
+      "inputHash": "55050c7f35153c7e2d4a9582012efdf2005a12bebe11d65c7dfab6182e2f5c81",
+      "outputHash": "55050c7f35153c7e2d4a9582012efdf2005a12bebe11d65c7dfab6182e2f5c81"
+    },
+    {
+      "id": "shoulder_straps/left_shoulder_strap",
+      "inputHash": "425f2f6c8e51f8e77cfe4a63d7caf83b4ffc4dbb3b079866dba1894bcec7171c",
+      "outputHash": "425f2f6c8e51f8e77cfe4a63d7caf83b4ffc4dbb3b079866dba1894bcec7171c"
+    },
+    {
+      "id": "skirt/upper_tier",
+      "inputHash": "7bf1e8bda3e511a7f4d56b503a608d57a1174420afdb4593258205520e5f13f3",
+      "outputHash": "7bf1e8bda3e511a7f4d56b503a608d57a1174420afdb4593258205520e5f13f3"
+    },
+    {
+      "id": "skirt/middle_tier",
+      "inputHash": "fb7c18fbc23487f059f1ff134532b0068e433defb9f1924e9bb0080c78bd0584",
+      "outputHash": "fb7c18fbc23487f059f1ff134532b0068e433defb9f1924e9bb0080c78bd0584"
+    },
+    {
+      "id": "skirt/lower_tier",
+      "inputHash": "9c26d40a13e3dcdd027bb47f5bdd110da7346ed69cda81884c444a7f0f54a1d8",
+      "outputHash": "9c26d40a13e3dcdd027bb47f5bdd110da7346ed69cda81884c444a7f0f54a1d8"
+    }
+  ],
+  "note": "经整体与局部放大叠加核对本层（depth=1）全部 5 个子组轮廓与 note 职责：\n1. shoulder_straps/right_shoulder_strap（x≈502.46..568.15, y≈345.44..434.79）与 shoulder_straps/left_shoulder_strap（x≈686.92..752.10, y≈345.05..434.25）分别对应角色右肩与左肩的独立荷叶边肩带实体，空间完全分离且与裙摆无交集，无重复归属。\n2. skirt/upper_tier（y≈495.35..627.50）、skirt/middle_tier（y≈617.63..740.50）、skirt/lower_tier（y≈720.00..846.68）分别对应高腰连衣裙的三层独立抽褶荷叶裙摆，相邻层仅在第一、二层波浪底边接缝处（y≈618..627 及 y≈720..740）自然衔接，各自独立承担对应裙层的运动控制与深度职责，不存在同一实体及控制职责被重复领取的情况；skirt/lower_tier 底部环绕双腿的腿前主裙面与腿后回折沿亦按同动逻辑完整保留于同一 part 内。\n综上，本层各组边界清晰、实体归属唯一，无需修改任何组。"
+}

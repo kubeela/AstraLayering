@@ -1,0 +1,48 @@
+{
+  "groupId": "arms/arm_left/hand/ring_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "左手无名指（arms/arm_left/hand/ring_finger）候选轮廓审查通过：\n1. 可见区域与外缘对齐：分块放大核对（crop=[815,670,45,45] 与 [815,700,45,45], scale=8），左侧外轮廓自虎口下方 (831.02, 691.53) 经指体侧缘 (832.2, 720.5) 至圆润指尖 (835.41, 728.15) 及指缝转折点 (837.53, 729.88) 与参考图外沿及父组 hand.svg 边界完全贴合。\n2. 邻接接缝连续性：右侧与 middle_finger 的交界（(837.53, 729.88) 至 (840.6, 700.5)）以及右上与 index_finger/palm 虎口蹼部的遮挡交界（(840.6, 700.5) 至 (831.02, 691.53)）均精准落在原图指间分界线中心，无漏画或越界。\n3. 轮廓质量与父范围检查：单一闭合路径结构干净，无碎点或冗余折角；四倍采样父范围检查通过（outsideSamples=0, outsidePixels=0）。",
+      "candidateHash": "c76aaf074873b7a8c470c706cbad5c0281e4ed668e723ab33941f49e56e2011a",
+      "observations": [
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/ring_finger/2026-10-22T10-07-22-328Z-1.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/ring_finger/2026-10-22T10-07-22-328Z-2.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/ring_finger.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/ring_finger/2026-10-22T10-07-22-328Z-3.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/ring_finger.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/ring_finger/2026-10-22T10-07-22-328Z-4.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/ring_finger.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/ring_finger/2026-10-22T10-07-22-328Z-5.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/ring_finger.svg",
+          "mode": "svg",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/ring_finger/2026-10-22T10-07-22-328Z-6.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/ring_finger/2026-10-22T10-07-22-328Z-7.png"
+        }
+      ],
+      "updatedAt": "2026-10-22T11:05:34.409Z"
+    }
+  ]
+}

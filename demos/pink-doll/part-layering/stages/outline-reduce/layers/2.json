@@ -1,0 +1,151 @@
+{
+  "depth": 2,
+  "groups": [
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "inputHash": "e35cc6a34b37a49930ac1e358dfe5c48b5b28ace9d323dd3b58da7e37c6ffb9f",
+      "outputHash": "e35cc6a34b37a49930ac1e358dfe5c48b5b28ace9d323dd3b58da7e37c6ffb9f"
+    },
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "inputHash": "68c0dcbe11ec016ca0ec16a0cec0405929bd8532b92be49f0704b6f35c7e3266",
+      "outputHash": "68c0dcbe11ec016ca0ec16a0cec0405929bd8532b92be49f0704b6f35c7e3266"
+    },
+    {
+      "id": "face/eye_left/lower_eyelid",
+      "inputHash": "deaa61572faa236373458e98ec78e83a0ab0290a1f0ccaf814c22dc609a9e4e7",
+      "outputHash": "deaa61572faa236373458e98ec78e83a0ab0290a1f0ccaf814c22dc609a9e4e7"
+    },
+    {
+      "id": "face/eye_left/lower_eyelashes",
+      "inputHash": "b815ee83d0fd36a6c0f0b43a2e62ebacb2d9e3432884272af26cb3b521fcdb4f",
+      "outputHash": "b815ee83d0fd36a6c0f0b43a2e62ebacb2d9e3432884272af26cb3b521fcdb4f"
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "inputHash": "8ec5be18b68a12272bd0a503e5508ef450c2ffc12a51ec87907f0a742ece3fbb",
+      "outputHash": "8ec5be18b68a12272bd0a503e5508ef450c2ffc12a51ec87907f0a742ece3fbb"
+    },
+    {
+      "id": "face/eye_left/iris",
+      "inputHash": "f831766d69d3b0f60c0d53895fa55f2eb033939cd55aff09f93b9739dcf58f06",
+      "outputHash": "f831766d69d3b0f60c0d53895fa55f2eb033939cd55aff09f93b9739dcf58f06"
+    },
+    {
+      "id": "face/eye_left/highlight",
+      "inputHash": "f58ae339bb32c8ca223105ea36732840f7a2df42b7f29c4bb994762e567db509",
+      "outputHash": "f404ab2e1d6667886991f6e27af64637774e0c7f95541b8f5eb1d932cdd152b8"
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "inputHash": "64a73dc2e0f68802b6e1e9f390cd2a88924c3bde914af7426d8fff933cbb638f",
+      "outputHash": "64a73dc2e0f68802b6e1e9f390cd2a88924c3bde914af7426d8fff933cbb638f"
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "inputHash": "a8810facaf803e04d9951c09cfcdcc24b127354e6d8903c1c3c9ea2696ee161d",
+      "outputHash": "a8810facaf803e04d9951c09cfcdcc24b127354e6d8903c1c3c9ea2696ee161d"
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "inputHash": "e7f2ce63d2c48b9e9625c18ba8ff55cf549d60483abbdd086b020fd3e4927755",
+      "outputHash": "e7f2ce63d2c48b9e9625c18ba8ff55cf549d60483abbdd086b020fd3e4927755"
+    },
+    {
+      "id": "face/eye_right/lower_eyelashes",
+      "inputHash": "585984db520ec02d39cdee4953f5456ff2b0cb62f9ca6e45b9e48a3169e909e5",
+      "outputHash": "585984db520ec02d39cdee4953f5456ff2b0cb62f9ca6e45b9e48a3169e909e5"
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "inputHash": "fd05daec5518e791c39b9cbeadc6ab0c70bc39992e9b0d62b9f4db2d3ab98c88",
+      "outputHash": "fd05daec5518e791c39b9cbeadc6ab0c70bc39992e9b0d62b9f4db2d3ab98c88"
+    },
+    {
+      "id": "face/eye_right/iris",
+      "inputHash": "8da1928645a44afc5acb69b0bf095ed48123f3c6b10dfdab2d9c95c6b1c96b41",
+      "outputHash": "8da1928645a44afc5acb69b0bf095ed48123f3c6b10dfdab2d9c95c6b1c96b41"
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "inputHash": "a2b23b86c98e9bc2195cf14c0313eef5ade6f433a651a106db085fe6d6f0b11e",
+      "outputHash": "a2b23b86c98e9bc2195cf14c0313eef5ade6f433a651a106db085fe6d6f0b11e"
+    },
+    {
+      "id": "face/mouth/upper_lip",
+      "inputHash": "e16819d7942535b2d7131c5d1211304cbf58b4e62f2806eaddf63cc9ac04bfdd",
+      "outputHash": "e16819d7942535b2d7131c5d1211304cbf58b4e62f2806eaddf63cc9ac04bfdd"
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "inputHash": "997ef2c3a1f8acaaf44ea1b6d48bc912ee80b64f54426f270a0ac65f0ee5416e",
+      "outputHash": "997ef2c3a1f8acaaf44ea1b6d48bc912ee80b64f54426f270a0ac65f0ee5416e"
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "inputHash": "305b402b68276a753da1e7f1b1441ef1888b176e3a5c261f226bfb2802162d98",
+      "outputHash": "305b402b68276a753da1e7f1b1441ef1888b176e3a5c261f226bfb2802162d98"
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "inputHash": "8ee0136aea5be82733b1607d0238d992610c5a58f0b54140605eb75eadff3d9e",
+      "outputHash": "8ee0136aea5be82733b1607d0238d992610c5a58f0b54140605eb75eadff3d9e"
+    },
+    {
+      "id": "face/mouth/tongue",
+      "inputHash": "b6759d76dd2e1ebfe32897d78e35e8947dca0f4ca9e0d352898feefc6d59d174",
+      "outputHash": "b6759d76dd2e1ebfe32897d78e35e8947dca0f4ca9e0d352898feefc6d59d174"
+    },
+    {
+      "id": "arms/arm_left/upper_arm",
+      "inputHash": "525b49f102672af890b80ea68e0b894d3028360557e27ffd9a3db7acf87abd99",
+      "outputHash": "525b49f102672af890b80ea68e0b894d3028360557e27ffd9a3db7acf87abd99"
+    },
+    {
+      "id": "arms/arm_left/forearm",
+      "inputHash": "3a02980492f3b3dd51bbad84d8240cc5b09a50f188055813d920edba2a9a34fb",
+      "outputHash": "3a02980492f3b3dd51bbad84d8240cc5b09a50f188055813d920edba2a9a34fb"
+    },
+    {
+      "id": "arms/arm_left/hand",
+      "inputHash": "4c1824d965194416dde513ffa486cc7bc4da5cd4073e9109a151786f233ece0d",
+      "outputHash": "4c1824d965194416dde513ffa486cc7bc4da5cd4073e9109a151786f233ece0d"
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "inputHash": "7c6857a33622f6c876253f13e48f2717d0ff0401b9ec63a625829591589b57db",
+      "outputHash": "7c6857a33622f6c876253f13e48f2717d0ff0401b9ec63a625829591589b57db"
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "inputHash": "8b02604276bc67a2ab8d7222c8f1e3802706926395ce08da16c5eeeddc7fd82f",
+      "outputHash": "8b02604276bc67a2ab8d7222c8f1e3802706926395ce08da16c5eeeddc7fd82f"
+    },
+    {
+      "id": "arms/arm_right/hand",
+      "inputHash": "1c0f41106c294dcdad582f03b0ca90c309f51ffc75d25eb88e7b6db8ff138719",
+      "outputHash": "1c0f41106c294dcdad582f03b0ca90c309f51ffc75d25eb88e7b6db8ff138719"
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "inputHash": "a6d531a3e3b72e62949d46a109bb46bb7133e3a9c41afa9bbc2d0eed3295e32a",
+      "outputHash": "a6d531a3e3b72e62949d46a109bb46bb7133e3a9c41afa9bbc2d0eed3295e32a"
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "inputHash": "073621d380fe87d5c3a819559bca1ca619591b009c400fd60a88d3dcd3c5b908",
+      "outputHash": "073621d380fe87d5c3a819559bca1ca619591b009c400fd60a88d3dcd3c5b908"
+    },
+    {
+      "id": "legs/leg_right/leg",
+      "inputHash": "5d4403f722b782c730a9b18c2bfe0ede58806d82477f532916ca331304321bba",
+      "outputHash": "5d4403f722b782c730a9b18c2bfe0ede58806d82477f532916ca331304321bba"
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "inputHash": "3290b11e7cbb699fe0819a78e3f93ff4c3157cc96d9e7e3eb7fdecc36a26a974",
+      "outputHash": "3290b11e7cbb699fe0819a78e3f93ff4c3157cc96d9e7e3eb7fdecc36a26a974"
+    }
+  ],
+  "note": "经对照参考图与本层（depth=2）29个子组/部件的轮廓 SVG 及合成预览核查：\n1. 左右眼子部件（face/eye_left/* 与 face/eye_right/*）：eyelid_crease（双眼皮线）、upper_eyelid（上眼睑与一体式上睫毛）、lower_eyelid（下眼睑线）、lower_eyelashes（外下方独立点状下睫毛）、sclera（完整眼白底形）、iris（完整虹膜与同动瞳孔）、highlight（独立高光点）各自对应独立控制职责与明确分层。sclera、iris、highlight 与上下眼睑之间的重叠属于合法的上下层级覆盖与遮挡补全，无重复领取同一可见实体的情况。\n2. 口部子部件（face/mouth/*）：upper_lip（上唇线）、lower_lip（下唇线）、mouth_interior（完整口腔底形）、upper_teeth（上牙）、tongue（舌头）分层职责清晰；上下唇在左右嘴角处的微小搭接以及口内底形在唇、牙、舌后方的延伸均属合法遮挡补形与接缝衔接，无重复对象。\n3. 左右手臂子组/部件（arms/arm_left/* 与 arms/arm_right/*）：upper_arm、forearm、hand 分别承担上臂、前臂与手部控制职责，肘部与腕部的重叠区为单向圆弧关节搭接余量，无重复领取。\n4. 左右腿部子部件（legs/leg_left/* 与 legs/leg_right/*）：leg 与 foot 分别承担腿部本体与足部控制职责，踝部重叠区为 foot 伸入 leg 下方的圆弧关节搭接余量，无重复领取。\n因此本层无需修改任何部件，全部保持原样（changed 为空）。"
+}

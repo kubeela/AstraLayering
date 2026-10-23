@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "shoulder_straps/right_shoulder_strap",
+  "beforeHash": "55050c7f35153c7e2d4a9582012efdf2005a12bebe11d65c7dfab6182e2f5c81",
+  "afterHash": "d323b6bab2013c8440e5a97cc8bd9a6eef69910fa2c96ffa304392171e3c796d",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "242bcceaba148a48fbf0c42de79e6202e5856587855e06c5cea58d9501d35192"
+    }
+  ]
+}
