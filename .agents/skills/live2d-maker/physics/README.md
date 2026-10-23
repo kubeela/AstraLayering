@@ -30,6 +30,8 @@ pnpm start --name <任务名> --physics --physics-profile all --background
 
 恢复复用已有线程、标记和合格产物。来源变化或 profile 扩展保留旧管线，`physics.components-cache.json` 保留已有作者配置；agent 只复用 UUID、像素指纹和支撑均相符的组件，再验证当前装配；当前程序不做逐组件增量执行，参数变化仍重跑九组组合。求解器、输入或配置变化会使旧证据失效，旧证据保存在 step03/backups；仅光照变化可复用数值轨迹，渲染与视觉依据需重新确认。
 
+中断后若旧会话上下文无法正确接续，先停止当前任务，再从 skill 目录执行 `pnpm start --name <任务名> --dir <运行根目录> --replace-thread physics --handoff <交接.md> --reason <原因>`，随后正常续跑。恢复工具归档旧会话及交接，保留绑定、数值轨迹、贴图和步骤标记；不会批准视觉复核。仅渲染未完成或贴图变化，不应删除同指纹的完整数值轨迹。
+
 分析 version:2 逐 part 保存 `motion:{family,region,freedom}`；family 为 hair/fabric/accessory/other，freedom 为 free/fixed/follow/uncertain。coverage.json 由工具生成，按实际部位列出绑定、固定和暂缓，不由报告自称覆盖完成。all 拒绝 profile-secondary；unsupported-topology 必须说明具体无法表达的连接。制作阶段核对选定 part、UUID 和真实绑定完全相符，不能同名换层。提示词与制作工具的指纹变化会归档旧分析并重新执行；旧工作台草稿仍可预览。
 
 `physics_catalog` 默认提供简明索引，`partIds` 按部位读取完整源 note。`physics_source_image` 的 `uuids` 一批 1–16 层，`physics_view` 一批最多 8 帧，返回带编号的原像素拼图，所有原文件和尺寸保持不变；拼图位置只用于观看，绑定使用原 bounds。分析、制作、复核采用独立上下文。存在每请求图片数量上限时，宿主可用 `ASTRA_PHYSICS_CODEX_PATH` 指定已有补丁 CLI，并用 `ASTRA_PHYSICS_IMAGE_COMPACT_THRESHOLD` 设置图片数整理阈值；沿用其他模型和配置，覆盖只限物理管线，CLI 须通过共享 v2 能力检查。整理历史上下文不缩小纹理，也不删除源图片或复核记录；明确的图片上限错误不能当服务过载无限重试。
