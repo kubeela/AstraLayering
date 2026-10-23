@@ -71,7 +71,7 @@ export class ComponentBody {
     const influences=points=>{const result=new Float64Array(points.length/2*(component.supports.length+1));for(let i=0;i<points.length/2;i++){let total=0;for(let j=0;j<component.supports.length;j++){const s=component.supports[j],d=Math.hypot(points[i*2]-s.at[0],points[i*2+1]-s.at[1]),w=1/Math.max(1,d*d);result[i*(component.supports.length+1)+j]=w;total+=w;}result[i*(component.supports.length+1)+component.supports.length]=total;}return result;};
     this.pInfluences=influences(this.pRest);this.meshInfluences=influences(this.rest);
     this.measurePose();
-    this.theta=0; this.angularVelocity=0; this.impulses=0; this.motion=this.kind==='cloth'?new PsdClothSolver(this):this.kind==='strand'?new CubismPendulumChain(this):new InochiPendulum(this); this.syncMesh(); this.stats=this.inspect();
+    this.theta=0; this.displayTheta=0; this.angularVelocity=0; this.impulses=0; this.motion=this.kind==='cloth'?new PsdClothSolver(this):this.kind==='strand'?new CubismPendulumChain(this):new InochiPendulum(this); this.syncMesh(); this.stats=this.inspect();
   }
   invMass(i) { return this.mobility[i] / this.mass[i]; }
   target(source) {
@@ -223,7 +223,12 @@ export class ComponentBody {
     if(this.kind==='pendant'){
       const radius=Math.max(...Array.from({length:this.weights.length},(_,i)=>Math.hypot(this.rest[i*2]-this.component.authoring.pivot[0],this.rest[i*2+1]-this.component.authoring.pivot[1])));
       const max=Math.min(lim.maxAngle/DEG,2*Math.asin(clamp(this.maxDistance/(2*Math.max(radius,1)),0,1)));
-      if(Math.abs(this.theta)>max){this.theta=clamp(this.theta,-max,max);if(this.theta*this.angularVelocity>0)this.angularVelocity=0;this.limited=true;}
+      // As in the Cubism strand output, bound the displayed deformation while
+      // retaining the independent physical state. Hard clipping and returning
+      // that angle to the world bob creates recoil in a serial ornament chain.
+      const previous=this.displayTheta,target=max*Math.tanh(this.theta/max);
+      this.displayTheta+=(target-previous)*(1-Math.exp(-TAU*this.component.response.frequencyHz*this.dt*3));
+      this.theta=this.displayTheta;this.angularVelocity=(this.displayTheta-previous)/this.dt;
       this.syncMesh();return;
     }
     for(let pass=0;pass<5;pass++){
@@ -280,7 +285,7 @@ export class ComponentBody {
     }
     this.stats=this.motion.reconcile?this.inspect():this.finalStats||this.inspect();
   }
-  reset(){this.p.set(this.pRest);this.pPose.set(this.pRest);this.pose.set(this.rest);this.positions.set(this.rest);this.supportPose.fill(NaN);this.measurePose();this.finalStats=null;this.velocity.fill(0);this.theta=0;this.angularVelocity=0;this.pivot=null;this.motion.reset?.();if(this.motion.lastRoot)this.motion.lastRoot.set(this.pRest.slice(this.motion.root*2,this.motion.root*2+2));this.limited=false;this.fallback=false;this.correction=0;this.stats=this.inspect();}
+  reset(){this.p.set(this.pRest);this.pPose.set(this.pRest);this.pose.set(this.rest);this.positions.set(this.rest);this.supportPose.fill(NaN);this.measurePose();this.finalStats=null;this.velocity.fill(0);this.theta=0;this.displayTheta=0;this.angularVelocity=0;this.pivot=null;this.motion.reset?.();if(this.motion.lastRoot)this.motion.lastRoot.set(this.pRest.slice(this.motion.root*2,this.motion.root*2+2));this.limited=false;this.fallback=false;this.correction=0;this.stats=this.inspect();}
   moving(){return Math.abs(this.angularVelocity)>.0001||this.velocity.some(v=>Math.abs(v)>.02)||this.positions.some((v,i)=>Math.abs(v-this.pose[i])>.015)||this.pose.some((v,i)=>Math.abs(v-this.rest[i])>.015);}
   impulse(x,y,vx,vy,radius,weight=1){
     if(![x,y,vx,vy,radius].every(Number.isFinite)||radius<=0)return;
