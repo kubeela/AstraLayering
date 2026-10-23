@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { readFile, mkdir, writeFile, stat } from 'node:fs/promises';
+import { readFile, mkdir, writeFile, rename, copyFile } from 'node:fs/promises';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -7,14 +7,14 @@ import sharp from 'sharp';
 import { put, json } from './input.ts';
 import { ComponentScene } from '../../../../web/studio/component-physics-model.js';
 import { hash } from './input.ts';
-import { configHash, traceReplayWindow,simulationHash } from './evidence.ts';
+import { configHash, traceWindow,simulationHash } from './evidence.ts';
 
 // Private tool session: uses the exact public studio modules. It does not add
 // a separate editor entry or run a second renderer implementation.
 export async function renderFingerprint(source:string,catalog:any=undefined){
   catalog??=await json(join(source,'catalog.json'));
   const sourceFiles=[...new Set(catalog.layers.flatMap((l:any)=>[l.original,l.masked,...(l.projection?[l.projection.base,...l.projection.shadows.map((s:any)=>s.original)]:[])]))] as string[];
-  return hash(JSON.stringify(await Promise.all([new URL('render.ts',import.meta.url),...['renderer.js','physics-renderer.js','surface-shadow.js','surface-lighting.js','projection-field.js','component-physics-binding.js','lighting-model.js','part-maps.js','harmonic-fill.js'].map(n=>new URL('../../../../web/studio/'+n,import.meta.url)),new URL('../../../../pnpm-lock.yaml',import.meta.url),...['catalog.json','color.png','normal.png','depth.png',...sourceFiles].map(n=>join(source,n))].map(async p=>{try{return hash(await readFile(p));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;return null;}}))));
+  return hash(JSON.stringify(await Promise.all([new URL('render.ts',import.meta.url),...['renderer.js','physics-renderer.js','physics-recorded-frame.js','surface-shadow.js','surface-lighting.js','projection-field.js','component-physics-binding.js','lighting-model.js','part-maps.js','harmonic-fill.js'].map(n=>new URL('../../../../web/studio/'+n,import.meta.url)),new URL('../../../../pnpm-lock.yaml',import.meta.url),...['catalog.json','color.png','normal.png','depth.png',...sourceFiles].map(n=>join(source,n))].map(async p=>{try{return hash(await readFile(p));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;return null;}}))));
 }
 export async function renderFrames(config:any, source:string, evidence:string, requests:{test:string;steps:number[];modes:string[];cropSteps?:number[];components?:string[]}[], signal?:AbortSignal) {
   const cdp=process.env.ASTRA_PHYSICS_RENDER_CDP_URL;
@@ -24,6 +24,12 @@ export async function renderFrames(config:any, source:string, evidence:string, r
   if(manifest.configHash!==configHash(config))throw Error('模拟证据已过期');
   if(manifest.simulationHash!==await simulationHash())throw Error('运行时或输入已改变，请重新模拟再取图');
   const root=fileURLToPath(new URL('../../../../',import.meta.url)),renderHash=await renderFingerprint(source,catalog);
+  if(manifest.renderHash&&manifest.renderHash!==renderHash){
+    const archive=join(evidence,'render-backups',manifest.renderHash+'-'+Date.now());await mkdir(archive,{recursive:true});
+    const exists=async(path:string)=>{try{await readFile(path);return true;}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;return false;}};
+    for(const name of ['manifest.json','frames.json','viewed.json'])if(await exists(join(evidence,name)))await copyFile(join(evidence,name),join(archive,name));
+    for(const run of manifest.runs)for(const kind of ['frames','crops']){const from=join(evidence,run.test,kind);await mkdir(join(archive,run.test),{recursive:true});try{await rename(from,join(archive,run.test,kind));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}}
+  }
   const vendors:any={'/vendor/three.module.js':'node_modules/three/build/three.module.js','/vendor/three.core.js':'node_modules/three/build/three.core.js','/vendor/mtoon.js':'node_modules/@pixiv/three-vrm-materials-mtoon/lib/three-vrm-materials-mtoon.module.js'};
   const server=createServer(async(req,res)=>{
     try {
@@ -54,7 +60,7 @@ export async function renderFrames(config:any, source:string, evidence:string, r
     const neutralCheck=await page.evaluate(async({config,catalog}:any)=>{
       const base='/studio/';const {LightingStage,loadImage}=await import(base+'renderer.js');
       const {PhysicsRenderer}=await import(base+'physics-renderer.js');const {ComponentScene}=await import(base+'component-physics-model.js');
-      const {extractPartMaps}=await import(base+'part-maps.js');const {applyTestInput}=await import(base+'physics-test-input.js');
+      const {extractPartMaps}=await import(base+'part-maps.js');const {applyRecordedFrame}=await import(base+'physics-recorded-frame.js');
       const {resolveComponentBindings}=await import(base+'component-physics-binding.js');
       const pixels=(image:any)=>{const c=document.createElement('canvas');c.width=image.width;c.height=image.height;const ctx=c.getContext('2d')!;ctx.drawImage(image,0,0);return ctx.getImageData(0,0,c.width,c.height).data;};
       const [color,normal,depth]=await Promise.all(['color','normal','depth'].map(async kind=>{try{return await loadImage('/source/'+kind+'.png');}catch{return null;}}));
@@ -65,24 +71,22 @@ export async function renderFrames(config:any, source:string, evidence:string, r
       const scene=new ComponentScene(config),bodies=new Map(),bindings=resolveComponentBindings(config,layers);if(bindings.issues.length)throw Error('动态来源映射未完成：'+JSON.stringify(bindings.issues));for(const[id,c]of bindings.assignments){const b=scene.bodies.get(c);if(b)bodies.set(id,b);}
       const renderer=new PhysicsRenderer(stage,layers,bodies,[w,h],scene);
       const neutral=renderer.verifyNeutral(pixels(color));
-      (window as any).evidence={stage,scene,renderer,applyTestInput,w,h,layers};
+      (window as any).evidence={stage,scene,renderer,applyRecordedFrame,w,h,layers};
       return {...neutral,padding:renderer.padding,outputSize:renderer.outputSize};
     },{config,catalog});
     for(const request of requests) {
       const run=manifest.runs.find((r:any)=>r.test===request.test);if(!run)throw Error('未知证据测试');
       const steps=[...new Set(request.steps)].sort((a,b)=>a-b);if(steps.length>600||steps.some(n=>!Number.isInteger(n)||n<0||n>960))throw Error('证据帧超出范围');
-      const replay=await traceReplayWindow(evidence,request.test,steps),expectedRows=new Map(replay.rows.map((r:any)=>[r.step,r]));
+      const expectedRows=new Map((await traceWindow(evidence,request.test,steps,600)).map((r:any)=>[r.step,r]));
       if(request.modes.some(m=>!['color','lit','normal','depth'].includes(m)))throw Error('无效渲染模式');
-      await page.evaluate(inputs=>{const e=(window as any).evidence;e.scene.reset();e.step=0;e.inputs=inputs;},replay.inputs);
+      await page.evaluate(()=>{(window as any).evidence.scene.reset();});
       for(const step of steps) {
         signal?.throwIfAborted();
         for(const mode of request.modes) {
-          const bytes=await page.evaluate(({step,test,mode,expected}:any)=>{
-            const e=(window as any).evidence;while(e.step<step){e.applyTestInput(e.scene,test,++e.step);const input=e.inputs[e.step];if(!input)throw Error('缺少重放输入');e.scene.sourcePose=input.sourcePose;e.scene.airflow=input.airflow;e.scene.step();}
-            if(!expected.sourcePose||Object.keys(e.scene.sourcePose).some(k=>Math.abs(e.scene.sourcePose[k]-expected.sourcePose[k])>1e-9))throw Error('父级姿态与离线轨迹不一致；需要重新生成证据');
-            for(const[id,body]of e.scene.bodies){const row=expected.components[id];if(!row||row.positions.length!==body.positions.length||body.positions.some((v:number,i:number)=>Math.abs(v-row.positions[i])>1e-7))throw Error('离线模拟与工作台重放不一致：'+id+' / '+step+'；需要重新生成证据');}
+          const bytes=await page.evaluate(({mode,expected}:any)=>{
+            const e=(window as any).evidence;e.applyRecordedFrame(e.scene,expected);
             e.renderer.update();e.stage.setMode(mode==='color'?'color':mode,false);const[w,h]=e.renderer.outputSize;e.stage.renderer.setSize(w,h,false);e.stage.frame(w,h,true);return e.stage.canvas.toDataURL('image/png').split(',')[1];
-          },{step,test:request.test,mode,expected:expectedRows.get(step)});
+          },{mode,expected:expectedRows.get(step)});
           const path=request.test+'/frames/'+String(step).padStart(4,'0')+'-'+mode+'.png';await mkdir(join(evidence,request.test,'frames'),{recursive:true});await writeFile(join(evidence,path),Buffer.from(bytes,'base64'));
           files.push({path,test:request.test,step,mode,configHash:manifest.configHash,renderHash});
           // Fixed source-space crops keep original pixels. Crop margins are
@@ -100,6 +104,7 @@ export async function renderFrames(config:any, source:string, evidence:string, r
     const old=await (await import('./input.ts')).optional(join(evidence,'frames.json'))||[];
     const all=[...new Map([...old.filter((f:any)=>f.configHash===manifest.configHash&&f.renderHash===renderHash),...files].map(f=>[f.path,f])).values()];await put(join(evidence,'frames.json'),all);
     const completed=manifest.runs.every((r:any)=>Array.from({length:81},(_,i)=>i*12).every(step=>['color','lit'].every(mode=>all.some((f:any)=>f.test===r.test&&f.step===step&&f.mode===mode&&!f.component))));
-    manifest.replayVerification='all-rendered-mesh-vertices';manifest.inputReplay='recorded-sourcePose-and-airflow';manifest.neutralCheck=neutralCheck;manifest.framePadding=padding;manifest.renderHash=renderHash;manifest.renderDevice={connection:cdp?'cdp':'local',...renderDevice};manifest.renderSource=catalog.previewMode||'assembled';manifest.renderDirectory=relative(evidence,source);manifest.lighting=await page.evaluate(()=>(window as any).evidence.stage.settings);manifest.coverage.render=completed?'completed':'partial';manifest.renderVersion='studio-physics-renderer-1';await put(join(evidence,'manifest.json'),manifest);return files;
+    delete manifest.replayVerification;delete manifest.inputReplay;
+    manifest.surfaceInputs=await (await import('./input.ts')).optional(join(source,'surface-inputs.json'));manifest.stateRendering='recorded-complete-mesh-pose-velocity-stats';manifest.inputState='recorded-sourcePose-and-airflow';manifest.runtimeReplay='separate-validation';manifest.neutralCheck=neutralCheck;manifest.framePadding=padding;manifest.renderHash=renderHash;manifest.renderDevice={connection:cdp?'cdp':'local',...renderDevice};manifest.renderSource=catalog.previewMode||'assembled';manifest.renderDirectory=relative(evidence,source);manifest.lighting=await page.evaluate(()=>(window as any).evidence.stage.settings);manifest.coverage.render=completed?'completed':'partial';manifest.renderVersion='studio-physics-renderer-2';await put(join(evidence,'manifest.json'),manifest);return files;
   }finally {try{await context?.close();}finally{try{await browser?.close();}finally{server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}}}
 }

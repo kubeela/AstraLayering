@@ -29,7 +29,7 @@ export async function prepareSource(input: PhysicsInput, directory: string, krit
   const existing=await optional(join(source,'catalog.json'));
   await mkdir(source,{recursive:true});
   const project=await studioProject(input.task,basename(input.task),dirname(input.task),'normal-depth');
-  for(const kind of ['normal','depth'] as const){const f=project.files[kind];if(f.available)await copyFile(join(input.task,f.path),join(source,kind+'.png'));else await rm(join(source,kind+'.png'),{force:true});}
+  await (await import('./surface-inputs.ts')).prepareSurfaceInputs(input,source,project.files);
   if(existing?.documentHash===digest) return existing;
   const native=await nativeExtractor(krita);
   try {
@@ -69,6 +69,7 @@ export async function prepareProjectionPreview(input:PhysicsInput,directory:stri
   const mask=await studioProject(input.task,basename(input.task),dirname(input.task),'mask'),document=join(input.task,mask.files.document.path),color=join(input.task,mask.files.color.path),bindings=await json(join(input.task,mask.files.bindings.path));
   const digest=hash(await readFile(document)),existing=await optional(join(preview,'catalog.json'));
   const base=await json(join(source,'catalog.json'));
+  await mkdir(preview,{recursive:true});await copyFile(join(source,'surface-inputs.json'),join(preview,'surface-inputs.json'));
   if(existing?.documentHash===digest&&existing?.extractorVersion===2){for(const kind of ['normal','depth']){try{await copyFile(join(source,kind+'.png'),join(preview,kind+'.png'));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;await rm(join(preview,kind+'.png'),{force:true});}}return;}
   const native=await nativeExtractor(krita);
   try {
