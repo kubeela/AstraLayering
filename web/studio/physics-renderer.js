@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { projectionField } from './projection-field.js';
 import { projectionDepth } from './lighting-model.js';
 import { surfaceDistanceMaterial } from './surface-shadow.js';
+import { surfaceLightingMaps } from './surface-lighting.js';
 const raster = (data, w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), w, h), 0, 0); return c; };
 const pixels = c => c.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, c.width, c.height).data;
 function tex(data, w, h, color = false) {
@@ -68,6 +69,7 @@ export class PhysicsRenderer {
   constructor(stage, layers, bodies, size,poseSource) {
     this.stage = stage; this.bodies = bodies; this.size = size; this.poseSource=poseSource;this.items = []; this.groups=[]; this.dirty = true;
     const [w, h] = size;
+    stage.setLightingFields(surfaceLightingMaps(w,h,layers,new Map(layers.map(l=>[l.id,l.map])),stage.source.n,stage.source.d));
     this.padding=poseSource?Math.ceil(Math.max(0,...[...bodies.values()].map(b=>b.maxDistance+b.freeLength*.05))+Math.hypot(w,h)*.04)+2:0;
     const pad=this.padding,ow=w+pad*2,oh=h+pad*2;this.outputSize=[ow,oh];
     if (Math.max(ow, oh) > stage.renderer.capabilities.maxTextureSize) throw Error('含运动余量的贴图超出 GPU 上限，未降低精度');
@@ -88,7 +90,7 @@ export class PhysicsRenderer {
     const flush = () => { if (pending.length) {const l=staticPiece(pending);this.add(l,parentBody(l)); pending = []; } };
     const byUuid=new Map();for(const l of layers){const b=bodies.get(l.id);if(b)for(const uuid of [l.uuid,...(l.sourceLayerUuids||[])])byUuid.set(uuid,b);}
     for (const l of layers) { if(l.projection&&(bodies.has(l.id)||l.projection.shadows.some(s=>s.casterLayerUuids.some(id=>byUuid.has(id))))){flush();this.addProjection(l,bodies.get(l.id)||parentBody(l),byUuid,opts);}else if (bodies.has(l.id)) { flush(); this.add(l, bodies.get(l.id)); } else pending.push(l); } flush();
-    this.saved = { color: stage.color, normal: stage.normal, depth: stage.depth, surface: stage.depthUniforms.studioDepth.value,
+    this.saved = { color: stage.color, normal: stage.normal, lightingNormal:stage.lightingNormal, depth: stage.depth, surface: stage.depthUniforms.studioDepth.value,
       geometry: stage.mesh.geometry, caster: stage.caster.geometry, distance: stage.caster.customDistanceMaterial,size:stage.depthUniforms.studioSize.value.clone() };
     this.displayGeometry = new THREE.PlaneGeometry(2 * ow / h, 2*oh/h);
     this.casterGeometry = new THREE.PlaneGeometry(2 * ow / h, 2*oh/h, Math.round(256 * ow / oh), 256);
@@ -108,7 +110,7 @@ export class PhysicsRenderer {
     stage.mesh.geometry=neutral?saved.geometry:this.displayGeometry;
     stage.caster.geometry=neutral?saved.caster:this.casterGeometry;
     stage.caster.customDistanceMaterial=neutral?saved.distance:this.distance;
-    stage.material.map=stage.material.shadeMultiplyTexture=stage.color;stage.material.normalMap=stage.normal;
+    stage.material.map=stage.material.shadeMultiplyTexture=stage.color;stage.material.normalMap=neutral?(saved.lightingNormal||saved.normal):stage.normal;
     stage.casterMaterial.map=stage.color;
     stage.basic.map=stage.mode==='normal'?stage.normal:stage.mode==='depth'?stage.depth:stage.color;
     stage.basic.needsUpdate=stage.casterMaterial.needsUpdate=stage.material.needsUpdate=true;
@@ -219,7 +221,7 @@ export class PhysicsRenderer {
       stage.mesh.geometry = saved.geometry; stage.caster.geometry = saved.caster; stage.caster.customDistanceMaterial = saved.distance;
       stage.depthUniforms.studioDepth.value = saved.surface;
       stage.depthUniforms.studioSize.value.copy(saved.size);
-      stage.material.map = stage.material.shadeMultiplyTexture = saved.color; stage.material.normalMap = saved.normal;
+      stage.material.map = stage.material.shadeMultiplyTexture = saved.color; stage.material.normalMap = saved.lightingNormal||saved.normal;
       stage.casterMaterial.map = saved.color; stage.casterMaterial.needsUpdate = stage.material.needsUpdate = true;
       stage.updateNormal(); stage.updateRelief(); stage.setMode(stage.mode);
     }
