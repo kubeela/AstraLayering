@@ -80,7 +80,7 @@ for await (const line of createInterface({input:process.stdin})) {
  }
 }
 `, { mode: 0o700 });
-  const agents = new CodexAgents({ codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.root), codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
   const session = agents.createSession();
   try {
     if (mode === 'recovered') {
@@ -117,7 +117,7 @@ for(const event of ${JSON.stringify([
     { type: 'turn.failed', error: payload },
   ])})console.log(JSON.stringify(event));
 `, { mode: 0o700 });
-  const agents = new CodexAgents({ codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.root), codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
   let failure: AgentCallError | undefined;
   await assert.rejects(agents.run({ name: 'sdk-error', prompt: 'same task' }), error => {
     assert.ok(error instanceof AgentCallError); failure = error;
@@ -154,7 +154,7 @@ console.log(JSON.stringify(${JSON.stringify(final)}));
 process.exit(3);
 `, { mode: 0o700 });
   const settings = loadWorkflowEnvironment({ [`layering_${harness}_path`]: executable }, f.root);
-  const model = parseAgentModel(harness === 'agv' ? 'gemini-4-argon-high' : 'claude-haiku-5.5-xhigh', 'test');
+  const model = parseAgentModel(harness === 'agv' ? 'gemini-4-argon-high' : 'claude-haiku-5-5-xhigh', 'test');
   let failure: AgentCallError | undefined;
   await assert.rejects(runCliTask({ name: harness, cwd: f.cwd, prompt: 'same task' }, model, settings,
     { cwd: f.cwd, logDirectory: f.logDirectory }, new AbortController().signal), error => {
