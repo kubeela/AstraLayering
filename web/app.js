@@ -1,6 +1,7 @@
 import { pipelineSteps as stepTemplates, groupLayers, groupPhases, stepArtifacts, groupArtifacts, shadowInspectionArtifacts,
- groupSummary, groupPreviewArtifacts, statusNames, displayStatus, statusLabel } from './progress.js';
+ groupSummary, groupPreviewArtifacts, latestKraPreview, statusNames, displayStatus, statusLabel } from './progress.js';
 import { selectedTask, rememberTask } from './task-selection.js';
+import { renderReport } from './report-markdown.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -51,7 +52,7 @@ if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < 
  state.selectedStep = requestedStage === 0 || requestedStage === 2 ? 'layers' : requestedStage >= 4 ? 'step01' : 'step02';
 }
 const taskParams = () => new URLSearchParams({name:state.name,dir:state.directory});
-const artifact = (path, thumbnail=false) => './artifact?'+new URLSearchParams({name:state.name,dir:state.directory,path,v:data.fileVersions?.[path]||'',...(/\.kra$/i.test(path)?{preview:'kra'}:thumbnail&&/\.svg$/i.test(path)?{preview:'content'}:{})});
+const artifact = (path, thumbnail=false) => './artifact?'+new URLSearchParams({name:state.name,dir:state.directory,path,v:data.fileVersions?.[path]||'',...(/\.kra$/i.test(path)?{preview:'kra',...(thumbnail?{fit:'content'}:{})}:thumbnail&&/\.svg$/i.test(path)?{preview:'content'}:{})});
 function flat(nodes) { return nodes.flatMap(node=>[node,...flat(node.groups||[])]); }
 function toast(message) { const el=document.querySelector('#toast'); el.textContent=message; el.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('visible'),4000); }
 
@@ -79,8 +80,12 @@ const available = items => (items||[]).flatMap(item=> {
 function applySnapshot(next) {
  data=next; archivedFiles=new Set(data.files); assetLookup.clear();
  if(state.asset?.kind==='image'&&state.asset.path.endsWith('.kra')) {
-  const source=data.pipelines[state.stage]?.previews?.[state.selectedStep];
-  if(source)state.asset={...state.asset,path:source.path};
+  const source=state.asset.sharedPreview?latestKraPreview(data.pipelines[state.stage]?.previews):data.pipelines[state.stage]?.previews?.[state.selectedStep];
+  if(source){state.asset={...state.asset,path:source.path};if(state.asset.sharedPreview)state.selectedStep=source.stepId;}
+ }
+ if(state.asset?.kind==='file'&&/\.md(?:\.tmp)?$/.test(state.asset.path)&&!archivedFiles.has(state.asset.path)) {
+  const published=state.asset.path.replace(/\.tmp$/,'');
+  if(archivedFiles.has(published))state.asset={...state.asset,path:published};
  }
  if(state.asset?.path.endsWith('.draft.svg')&&!archivedFiles.has(state.asset.path)) {
   const published=state.asset.path.replace(/\.draft\.svg$/,'.svg');
@@ -122,7 +127,9 @@ async function refreshTask(force=false) {
  if(fingerprint!==lastSnapshot||force){
   const selected=state.asset;
   if(selected?.kind==='file'&&next.fileVersions?.[selected.path]!==data.fileVersions?.[selected.path]) {
-   const response=await fetch(artifact(selected.path));
+   const published=selected.path.replace(/\.md\.tmp$/,'.md');
+   const path=next.files.includes(published)&&!next.files.includes(selected.path)?published:selected.path;
+   const response=await fetch(artifact(path));
    const text=response.ok?await response.text():'此产物暂时不可读取';
    if(version!==refreshVersion)return;
    if(state.asset===selected)selected.text=text;
@@ -194,7 +201,27 @@ function rasterItems(index, stepId) {
  if(!['raster-layering','clothing-raster-layering','character-assembly'].includes(stage))return stepArtifacts[index][stepId];
  const record=pipeline?.previews?.[stepId];
  const files=(stepArtifacts[index][stepId]||[]).filter(item=>item.kind==='file');
+ const report=pipeline?.reports?.[stepId];
+ const reportFile=report?[{path:report.path,label:report.draft?'报告草稿':'完整报告',kind:'file'}]:[];
+ if(index===1||index===3) {
+  // Drawing, review and repair share one live canvas, shown beside the steps.
+  if(stepId==='step01')return files.filter(item=>!item.path.endsWith('/report.md'));
+  return [...files.filter(item=>!item.path.endsWith('.md')),...reportFile];
+ }
  return record?[{path:record.path,label:'Krita 最新保存画面',kind:'image'},...files]:files;
+}
+function kraPreviewPanel(index) {
+ if(index!==1&&index!==3)return '';
+ const record=latestKraPreview(data.pipelines[index]?.previews);
+ const step=record&&pipelineSteps[index].find(step=>step.id===record.stepId);
+ return `<section class="kra-preview-panel" data-kra-preview="${index}" aria-label="${esc(stages[index].name)}最新 KRA 预览"><h3>${icon('layers')}Krita 最新画面</h3>${record?`<p class="preview-source">${esc(step?.title||record.stepId)}</p>${artifacts([{path:record.path,label:'最新保存画面',kind:'image',sharedPreview:true}],index,record.stepId,'live-kra-artifacts')}`:'<p class="archive-gap">等待首次保存 KRA</p>'}</section>`;
+}
+function reportEvidence(index, stepId) {
+ const report=data.pipelines[index]?.reports?.[stepId];
+ if(!report||stepId==='step01'&&pipelineSteps[index]?.find(step=>step.id===stepId)?.children.length)return '';
+ const images=[...new Map(report.images.map(image=>[image.path,image])).values()];
+ images.sort((a,b)=>Number(/\/marked\.png$/.test(b.path))-Number(/\/marked\.png$/.test(a.path)));
+ return `<p class="review-feedback">${report.draft?'<span class="report-draft">草稿 · </span>':''}${esc(report.summary)}</p>${images.length?artifacts(images.map(image=>({path:image.path,label:image.label,kind:'image'})),index,stepId,'report-evidence'):''}`;
 }
 function stepNode(index,step,nested=false) {
  const status=observedDisplayStatus(index,step.status,step.id);
@@ -210,9 +237,8 @@ function stepNode(index,step,nested=false) {
  ${closed?'':`<div class="step-content">
  ${step.id!=='layers'&&(step.note||['standard','simplified','base','clothing'].includes(step.id))?`<p class="step-summary" ${step.note?`title="${esc(step.note)}"`:'aria-hidden="true"'}>${esc(step.note)}</p>`:''}
  ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap" title="人物准备阶段执行后展示标准参考图">尚无标准参考图</p>':''}
- ${['raster-layering','clothing-raster-layering'].includes(stages[index].id)&&step.id.startsWith('step')&&!data.pipelines[index]?.previews?.[step.id]?'<p class="archive-gap">等待首次保存 KRA</p>':''}
  ${context}
- ${data.pipelines[index]?.feedback?.[step.id]?`<p class="review-feedback">${esc(data.pipelines[index].feedback[step.id])}</p>`:''}
+ ${reportEvidence(index,step.id)}
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...stepArtifacts[index][step.id],...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${step.id.startsWith('step')?processArtifacts(index,step.id):''}
@@ -229,13 +255,14 @@ function processArtifacts(index, stepId) {
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
- return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}<button class="button pipeline-run" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 恢复${stage.name}</button>${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
+ return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}<button class="button pipeline-run" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 恢复${stage.name}</button>${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
 }
 function inspector() {
  const stage=stages[state.stage],step=selectedStep(),item=state.asset;
  const image=item?.kind==='image';
+ const report=item&&Object.values(data.pipelines[state.stage]?.reports||{}).find(report=>report.path===item.path);
  return `<aside class="output-inspector" aria-label="产物放大查看"><header class="output-heading"><div><small>${esc(stage.name)} · ${esc(step.title)}</small><h2>${esc(item?.label||step.title)}</h2></div><button class="icon-button" data-action="close-inspector" aria-label="关闭产物面板">${icon('close')}</button></header><div class="output-scroll">
- ${image?`<div class="output-caption"><span>当前任务产物</span><label><input type="checkbox" id="compare-reference" ${state.compare?'checked':''}>对照参考</label></div><div class="output-image ${state.compare?'compare':''}">${state.compare&&data.reference?`<figure><img src="${artifact(data.reference)}" alt="简化角色参考"><figcaption>简化角色参考</figcaption></figure>`:''}<figure><a href="${artifact(item.path)}" target="_blank" rel="noopener"><img loading="lazy" src="${artifact(item.path)}" alt="${esc(item.label)}"></a><figcaption>点击打开原尺寸</figcaption></figure></div>`:item?`<pre class="artifact-text">${esc(item.text??'正在读取…')}</pre>`:`<p class="step-note">${esc(step.note||'此步骤的过程和已有产物直接展示在画布中。')}</p>`}
+ ${image?`<div class="output-caption"><span>当前任务产物</span><label><input type="checkbox" id="compare-reference" ${state.compare?'checked':''}>对照参考</label></div><div class="output-image ${state.compare?'compare':''}">${state.compare&&data.reference?`<figure><img src="${artifact(data.reference)}" alt="简化角色参考"><figcaption>简化角色参考</figcaption></figure>`:''}<figure><a href="${artifact(item.path)}" target="_blank" rel="noopener"><img loading="lazy" src="${artifact(item.path)}" alt="${esc(item.label)}"></a><figcaption>点击打开原尺寸</figcaption></figure></div>`:item?/\.md(?:\.tmp)?$/.test(item.path)?`<article class="report-document">${renderReport(item.text??'正在读取…',report?.images,path=>artifact(path))}</article>`:`<pre class="artifact-text">${esc(item.text??'正在读取…')}</pre>`:`<p class="step-note">${esc(step.note||'此步骤的过程和已有产物直接展示在画布中。')}</p>`}
  ${item?`<a class="artifact-source" href="${artifact(item.path)}" target="_blank" rel="noopener">${esc(item.path)} ${icon('arrow')}</a>`:''}</div>
  <footer class="output-footer"><button class="button" data-action="single">${icon('play')}运行 / 恢复${esc(stage.name)}</button></footer></aside>`;
 }
@@ -449,7 +476,7 @@ function selectStage(index) {
  focusPreviewStep();
 }
 function focusPreviewStep() {
- const viewport=document.querySelector('.flow-scroll'),node=document.querySelector(`[data-node="${state.stage}:${state.selectedStep}"]`);
+ const viewport=document.querySelector('.flow-scroll'),node=document.querySelector(`[data-kra-preview="${state.stage}"]`)||document.querySelector(`[data-node="${state.stage}:${state.selectedStep}"]`);
  if(!viewport||!node)return;
  viewport.scrollLeft+=node.getBoundingClientRect().left-viewport.getBoundingClientRect().left-12;
  viewport.scrollTop=0;state.canvasLeft=viewport.scrollLeft;state.canvasTop=0;

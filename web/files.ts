@@ -26,7 +26,7 @@ export async function atomicJSON(path: string, value: unknown) {
   await writeFile(temp, JSON.stringify(value, null, 2) + '\n', { mode: 0o600 });
   await rename(temp, path);
 }
-export const artifactExtensions = /\.(png|jpe?g|webp|svg|kra|psd|json|md)$/i;
+export const artifactExtensions = /\.(png|jpe?g|webp|svg|kra|psd|json|md(?:\.tmp)?)$/i;
 export async function inventory(root: string) {
   const files: string[] = [];
   const excluded = new Set(['node_modules', 'observations', 'supervision', 'sessions', 'archive', 'backups']);
