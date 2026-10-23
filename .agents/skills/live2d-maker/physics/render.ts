@@ -7,7 +7,7 @@ import sharp from 'sharp';
 import { put, json } from './input.ts';
 import { ComponentScene } from '../../../../web/studio/component-physics-model.js';
 import { hash } from './input.ts';
-import { configHash, traceWindow,simulationHash } from './evidence.ts';
+import { configHash, traceReplayWindow,simulationHash } from './evidence.ts';
 
 // Private tool session: uses the exact public studio modules. It does not add
 // a separate editor entry or run a second renderer implementation.
@@ -64,14 +64,14 @@ export async function renderFrames(config:any, source:string, evidence:string, r
     for(const request of requests) {
       const run=manifest.runs.find((r:any)=>r.test===request.test);if(!run)throw Error('未知证据测试');
       const steps=[...new Set(request.steps)].sort((a,b)=>a-b);if(steps.length>600||steps.some(n=>!Number.isInteger(n)||n<0||n>960))throw Error('证据帧超出范围');
-      const expectedRows=new Map((await traceWindow(evidence,request.test,steps,600)).map((r:any)=>[r.step,r]));
+      const replay=await traceReplayWindow(evidence,request.test,steps),expectedRows=new Map(replay.rows.map((r:any)=>[r.step,r]));
       if(request.modes.some(m=>!['color','lit','normal','depth'].includes(m)))throw Error('无效渲染模式');
-      await page.evaluate(()=>{const e=(window as any).evidence;e.scene.reset();e.step=0;});
+      await page.evaluate(inputs=>{const e=(window as any).evidence;e.scene.reset();e.step=0;e.inputs=inputs;},replay.inputs);
       for(const step of steps) {
         signal?.throwIfAborted();
         for(const mode of request.modes) {
           const bytes=await page.evaluate(({step,test,mode,expected}:any)=>{
-            const e=(window as any).evidence;while(e.step<step){e.applyTestInput(e.scene,test,++e.step);e.scene.step();}
+            const e=(window as any).evidence;while(e.step<step){e.applyTestInput(e.scene,test,++e.step);const input=e.inputs[e.step];if(!input)throw Error('缺少重放输入');e.scene.sourcePose=input.sourcePose;e.scene.airflow=input.airflow;e.scene.step();}
             if(!expected.sourcePose||Object.keys(e.scene.sourcePose).some(k=>Math.abs(e.scene.sourcePose[k]-expected.sourcePose[k])>1e-9))throw Error('父级姿态与离线轨迹不一致；需要重新生成证据');
             for(const[id,body]of e.scene.bodies){const row=expected.components[id];if(!row||row.positions.length!==body.positions.length||body.positions.some((v:number,i:number)=>Math.abs(v-row.positions[i])>1e-7))throw Error('离线模拟与工作台重放不一致：'+id+' / '+step+'；需要重新生成证据');}
             e.renderer.update();e.stage.setMode(mode==='color'?'color':mode,false);const[w,h]=e.renderer.outputSize;e.stage.renderer.setSize(w,h,false);e.stage.frame(w,h,true);return e.stage.canvas.toDataURL('image/png').split(',')[1];
@@ -93,6 +93,6 @@ export async function renderFrames(config:any, source:string, evidence:string, r
     const old=await (await import('./input.ts')).optional(join(evidence,'frames.json'))||[];
     const all=[...new Map([...old.filter((f:any)=>f.configHash===manifest.configHash&&f.renderHash===renderHash),...files].map(f=>[f.path,f])).values()];await put(join(evidence,'frames.json'),all);
     const completed=manifest.runs.every((r:any)=>Array.from({length:81},(_,i)=>i*12).every(step=>['color','lit'].every(mode=>all.some((f:any)=>f.test===r.test&&f.step===step&&f.mode===mode&&!f.component))));
-    manifest.replayVerification='all-rendered-mesh-vertices';manifest.neutralCheck=neutralCheck;manifest.framePadding=padding;manifest.renderHash=renderHash;manifest.renderSource=catalog.previewMode||'assembled';manifest.renderDirectory=relative(evidence,source);manifest.lighting=await page.evaluate(()=>(window as any).evidence.stage.settings);manifest.coverage.render=completed?'completed':'partial';manifest.renderVersion='studio-physics-renderer-1';await put(join(evidence,'manifest.json'),manifest);return files;
+    manifest.replayVerification='all-rendered-mesh-vertices';manifest.inputReplay='recorded-sourcePose-and-airflow';manifest.neutralCheck=neutralCheck;manifest.framePadding=padding;manifest.renderHash=renderHash;manifest.renderSource=catalog.previewMode||'assembled';manifest.renderDirectory=relative(evidence,source);manifest.lighting=await page.evaluate(()=>(window as any).evidence.stage.settings);manifest.coverage.render=completed?'completed':'partial';manifest.renderVersion='studio-physics-renderer-1';await put(join(evidence,'manifest.json'),manifest);return files;
   }finally {await browser.close();server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
 }
