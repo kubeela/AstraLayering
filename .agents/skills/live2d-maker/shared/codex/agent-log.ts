@@ -126,6 +126,7 @@ export class AgentLog {
       startedAt: this.startedAt, finishedAt, elapsedMs: Date.now() - this.startedMs, ...result,
     }, null, 2) + '\n', 'utf8');
     await this.write(String(result.status) + (result.error ? '：' + result.error : ''), finishedAt);
+    if (result.errorDetails !== undefined) await this.write('错误详情：\n' + JSON.stringify(result.errorDetails, null, 2), finishedAt);
   }
 }
 

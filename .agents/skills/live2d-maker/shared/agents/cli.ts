@@ -13,6 +13,8 @@ import type { WorkflowEnvironment } from '../codex/environment.ts';
 import type { AgentModel, Harness } from './models.ts';
 import type { AgentTask, AgentResult, AgentOptions } from '../codex/agents.ts';
 import { AgentCallError } from '../codex/agent-runtime.ts';
+import { agentCallError } from '../codex/diagnostics.ts';
+import { errorDetails, errorMessage } from './errors.ts';
 import { followNativeLog } from '../codex/native-log.ts';
 import { resolvePatchedAgv } from '../../tools/agv/patch-response-header.ts';
 import { AgentLog } from '../codex/agent-log.ts';
@@ -66,6 +68,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
   let threadId = resumed, text = '', final: any, stderr = '';
   let processExitCode: number | null | undefined;
+  const eventErrors: unknown[] = [];
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
@@ -173,6 +176,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         if (!line.trim()) continue;
         let event: any; try { event = JSON.parse(line); } catch { await log.recordProtocol({ text: line }); continue; }
         await log.recordProtocol(event);
+        if (event.type === 'error' || event.event === 'error') eventErrors.push(errorDetails(event));
         const completedText = agvTurn?.record(event);
         const id = event.session_id || event.conversation_id || event.step_update?.conversation_id;
         if (id) await reportId(id);
@@ -199,7 +203,12 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       signal.throwIfAborted();
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
-      if (code !== 0 || !final || final.is_error || !successfulStatus) throw new AgentCallError(final?.error || final?.errors?.join('\n') || stderr || 'CLI 未返回成功终态');
+      if (code !== 0 || !final || final.is_error || !successfulStatus) {
+        const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态');
+        error.details = errorDetails({ error: final?.error, errors: final?.errors, events: eventErrors,
+          stderr, processExitCode, cliStatus: final?.status, subtype: final?.subtype });
+        throw error;
+      }
       if (recoveredError) {
         if (!final.structured_output) text = agvTurn!.completedResponse!;
         await log.recordProtocol({ type: 'agv.turn.completed', outcomeSource: 'current_turn_steps',
@@ -212,8 +221,10 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       return { text, images: [], threadId, logDirectory: log.directory };
     } finally { signal.removeEventListener('abort', abort); abort(); await close; if (killTimer) clearTimeout(killTimer); await nativeLog?.close(); }
   } catch (error) {
-    await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: String(error), stderr, processExitCode, cliStatus: final?.status });
-    const reported = error instanceof AgentCallError ? error : new AgentCallError(String(error));
+    const reported = error instanceof AgentCallError ? error : new AgentCallError(errorMessage(error, String(error)), undefined, { cause: error });
+    reported.details ??= errorDetails(error);
+    await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: reported.message,
+      errorDetails: reported.details, stderr, processExitCode, cliStatus: final?.status });
     reported.threadId = threadId; reported.finalResponse = text; reported.logDirectory = log.directory; throw reported;
   } finally { await bridge?.close(); await mcpServer?.close(); }
 }

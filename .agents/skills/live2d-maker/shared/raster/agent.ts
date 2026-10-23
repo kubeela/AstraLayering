@@ -1,5 +1,5 @@
 import { checkCodexCapabilities, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment, type ModelSelection } from '../codex/environment.ts';
-import { agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
+import { agentCallError, agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
 import { Codex, type Thread, type ThreadEvent, type ThreadOptions } from '@openai/codex-sdk';
 import type { FunctionTool } from '../codex/function-tools.ts';
 import { CodexAgents } from '../codex/agents.ts';
@@ -7,6 +7,7 @@ import { parseAgentModel, type AgentStep } from '../agents/models.ts';
 import { unavailableSession } from '../agents/cli.ts';
 import { dirname, join } from 'node:path';
 import { AgentCallError, AgentRuntime, continuationPrompt, type AgentRetry } from '../codex/agent-runtime.ts';
+import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { AgentLog } from '../codex/agent-log.ts';
 import { createCodexImageRoute } from '../agents/codex-images.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
@@ -56,7 +57,13 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
         } }, codex, runtime);
         await log.finish({ status: 'completed', threadId: threadId || null, finalResponse: lastMessage }); return result;
       } catch (error) {
-        await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: lastMessage, error: String(error) }); throw error;
+        const reported = error instanceof AgentCallError ? error : new AgentCallError(errorMessage(error, String(error)), undefined, { cause: error });
+        reported.details ??= errorDetails(error);
+        reported.logDirectory = log.directory;
+        reported.threadId = threadId;
+        reported.finalResponse ||= lastMessage;
+        await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: lastMessage,
+          error: reported.message, errorDetails: reported.details }); throw reported;
       } finally { await route.close(); }
     }
     if (selected.harness !== 'codex' || request.tools?.length) {
@@ -96,7 +103,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   let threadId = request.threadId;
   const savedImages = new Set<string>();
   const run = runtime.run(async attempt => {
-    let text = '', completed = false, lastError = '';
+    let text = '', completed = false, lastError: unknown;
     try {
       const { events } = await thread.runStreamed(attempt > 1 && threadId ? continuationPrompt([...savedImages]) : request.prompt, {
         signal: request.signal,
@@ -120,17 +127,21 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
           if (['image_generation', 'imageGeneration'].includes(String(item.type)) && typeof item.savedPath === 'string') savedImages.add(item.savedPath);
         }
         if (event.type === 'item.completed' && event.item.type === 'agent_message') text = event.item.text;
-        if (event.type === 'error') lastError = event.message; // The CLI may still reconnect.
-        if (event.type === 'turn.failed') throw new AgentCallError(event.error.message);
+        if (event.type === 'error') lastError = event; // The CLI may still reconnect.
+        if (event.type === 'turn.failed') {
+            throw agentCallError(event.error, 'Codex 回合失败');
+        }
         if (event.type === 'turn.completed') completed = true;
       }
-      if (!completed) throw new AgentCallError(lastError || 'response stream disconnected：未收到 turn.completed');
+      if (!completed) throw agentCallError(lastError, 'response stream disconnected：未收到 turn.completed');
     } catch (error) {
       if (request.threadId && threadId && unavailableSession(error)) {
         await request.onThreadReplacement?.(threadId, '原 thread 不可用');
         return runAgent({ ...request, threadId: undefined, prompt: request.recoveryPrompt || request.prompt }, codex);
       }
-      const reported = error instanceof AgentCallError ? error : new AgentCallError(error instanceof Error ? error.message : String(error), undefined, { cause: error });
+      const reported = error instanceof AgentCallError ? error : new AgentCallError(errorMessage(error, String(error)), undefined, { cause: error });
+      reported.details ??= errorDetails(error);
+      if (lastError) reported.details = { terminal: reported.details, notification: errorDetails(lastError) };
       reported.threadId = threadId;
       reported.finalResponse = text;
       throw reported;
@@ -145,7 +156,9 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     return result as StepResult;
   }, { signal: request.signal, onRetry: request.onRetry });
   try { const result = await run; await log?.finish({ status: 'completed', threadId: threadId || null, finalResponse: JSON.stringify(result) }); return result; }
-  catch (error) { await log?.finish({ status: 'failed', threadId: threadId || null, error: String(error) }); throw error; }
+  catch (error) { await log?.finish({ status: 'failed', threadId: threadId || null, error: String(error),
+    errorDetails: error instanceof AgentCallError ? error.details : errorDetails(error),
+    finalResponse: error instanceof AgentCallError ? error.finalResponse : undefined }); throw error; }
 }
 
 // Drawing agents use the configured filesystem and image tools directly.

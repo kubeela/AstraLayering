@@ -29,6 +29,7 @@
 | 现象 | 检查与恢复 |
 | --- | --- |
 | `Exceeded maximum number of images (50)` | 检查图片阈值是否留空、被 shell 覆盖或在另一份 skill 中配置。已确认此上限的环境使用 49，检查子进程生效值和补丁 `image_compaction_version: 2`。修正后先续原 thread，不删产物或阶段目录。 |
+| `Response API in-stream error`，没有具体原因 | 先查看 `workflow.log` 的“错误详情”和对应请求的 `result.json`；Codex、Claude Code、AGV 共用错误保留能力，按各 CLI 实际返回保留错误码、类型、参数、状态、原因链和最后模型消息。若仍只有通用断流文案，检查原始 API 与代理事件，不能据此认定网络超时或图片上限。外部 LiteLLM 可使用[错误透传回调](../tools/litellm/README.md)兼容“先空 `response.failed`、后详细 `error`”；按真正的错误恢复，可用保存的事件做本地模拟验证。 |
 | 有补丁却没有图片压缩日志 | 区分能力与启用状态。补丁安装不启用阈值；检查 `codex.imageCompaction`。普通请求前达到阈值时应出现 `Layering image guard: N images; compacting with vision...`；此诊断虽通过 CLI error item 传递，不等于整个回合执行失败。 |
 | 已进入压缩但回合失败 | 检查随后实际错误及回合结果：鉴权、额度、服务错误或空摘要。保留原 thread、rollout 和图片，修正已获授权的配置后续跑；补丁只在成功得到非空摘要后替换历史。不要把这些错误都解释成 50 张限制。 |
 | token 上下文超限 | 与图片张数分开检查，查看实际 Codex provider 的 token 窗口与自动压缩设置。图片保护不解除 token 上限，不凭字符数推断 token 数，也不靠丢弃未总结图片救场。 |
