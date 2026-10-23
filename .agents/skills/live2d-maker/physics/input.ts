@@ -21,7 +21,8 @@ export async function resolveInput(name: string, root: string, profile: 'primary
   return {task,document,color,profile,structures};
 }
 export async function fingerprint(input: PhysicsInput) {
-  return hash(JSON.stringify({version:1,profile:input.profile,source:hash(await readFile(input.color)),document:hash(await readFile(input.document)),structures:await Promise.all(input.structures.map(p=>json(p)))}));
+  const rules=await Promise.all(['prompts/analysis.md','prompts/authoring.md','prompts/review.md','coverage.ts','images.ts','tools.ts'].map(p=>readFile(new URL(p,import.meta.url))));
+  return hash(JSON.stringify({version:2,rules:rules.map(hash),profile:input.profile,source:hash(await readFile(input.color)),document:hash(await readFile(input.document)),structures:await Promise.all(input.structures.map(p=>json(p)))}));
 }
 export async function prepareSource(input: PhysicsInput, directory: string, krita: string) {
   const source=join(directory,'source'), digest=hash(await readFile(input.document));

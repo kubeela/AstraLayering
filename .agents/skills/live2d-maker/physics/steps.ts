@@ -4,8 +4,8 @@ import { defaultModels } from '../shared/codex/environment.ts';
 import type { StepDefinition } from '../shared/raster/steps.ts';
 import type { PhysicsInput } from './input.ts';
 export const steps=[
-  {id:'step01',title:'组件、连接与活动区分析',...defaultModels.medium,modelStep:'physics_analysis',prompt:new URL('prompts/analysis.md',import.meta.url),requiredFiles:['analysis.json','report.md']},
-  {id:'step02',title:'网格、固定区与最大约束绑定',...defaultModels.high,modelStep:'physics_authoring',prompt:new URL('prompts/authoring.md',import.meta.url),requiredFiles:['physics.draft.json','report.md']},
+  {id:'step01',title:'组件、连接与活动区分析',...defaultModels.medium,modelStep:'physics_analysis',prompt:new URL('prompts/analysis.md',import.meta.url),requiredFiles:['analysis.json','coverage.json','report.md']},
+  {id:'step02',title:'网格、固定区与最大约束绑定',...defaultModels.high,modelStep:'physics_authoring',freshSession:true,prompt:new URL('prompts/authoring.md',import.meta.url),requiredFiles:['physics.draft.json','coverage.json','report.md']},
   {id:'step03',title:'连续动画模拟与视觉复核',...defaultModels.high,modelStep:'physics_review',freshSession:true,prompt:new URL('prompts/review.md',import.meta.url),requiredFiles:['physics.json','findings.json','evidence/manifest.json','report.md']},
 ] as const satisfies readonly StepDefinition[];
 export async function buildPrompt(step:StepDefinition,input:PhysicsInput,output:string) {
