@@ -86,20 +86,29 @@ test('default template covers model roles and individual image choices without c
   assert.ok(imageSteps.every(step => settings.stepImages[step] === 'codex-native'));
 });
 
-test('optimized preset only changes part roles and selected image tools; custom overrides preserve the base', async t => {
+test('mixed preset assigns shared GPT, Argon and Claude roles with the existing Nano/Sunburst image combination', async t => {
   const base = parseEnv(await readFile(new URL('../../example.env', import.meta.url), 'utf8'));
   const overrides = parseEnv(await readFile(new URL('../../presets/optimized.env', import.meta.url), 'utf8'));
-  const variables = { ...base, ...overrides, layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture' };
+  const variables = { ...base, ...overrides, layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture',
+    layering_openai_image_base_url: 'https://image.example/v1', layering_openai_image_api_key: 'fixture' };
   const root = await fixture(t);
   await writeFile(join(root, '.env'), Object.entries(variables).map(([key, value]) => `${key}=${value}\n`).join(''));
   const settings = loadWorkflowEnvironment({}, root);
+  const expected: Record<keyof typeof modelSlotDefaults, string> = {
+    ...modelSlotDefaults,
+    preparation: 'gpt-6.1-sol-low',
+    part_draw: 'gemini-4-argon-high', part_review: 'gemini-4-argon-high', part_completion: 'gemini-4-argon-high',
+    part_groups: 'gpt-6.1-sol-xhigh', part_depth: 'gpt-6.1-sol-xhigh', part_reduce: 'gpt-6.1-sol-xhigh',
+    raster_step01: 'claude-opus-5-5-xhigh', raster_step01_review: 'claude-sonnet-5-5-xhigh',
+    raster_step02: 'claude-sonnet-5-5-xhigh', raster_step03: 'claude-sonnet-5-5-xhigh',
+    assembly: 'gemini-4-argon-high', shadow: 'claude-sonnet-5-5-xhigh',
+  };
   for (const [step, role] of Object.entries(stepModelSlots)) {
-    const expected = role.startsWith('part_') ? 'gemini-4-argon-high' : modelSlotDefaults[role];
-    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected, 'fixture'), step);
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected[role], 'fixture'), step);
   }
   const nanoSteps = new Set(['part_simplify', 'part_base_subject', 'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair']);
   for (const step of imageSteps) {
-    assert.equal(settings.stepImages[step], nanoSteps.has(step) ? 'gemini-nano-banana-2.1' : 'codex-native', step);
+    assert.equal(settings.stepImages[step], nanoSteps.has(step) ? 'gemini-nano-banana-2.1' : 'gpt-image-2.5-sunburst', step);
     validateImageSelection(settings, step);
   }
   assert.equal(settings.imageCompactThreshold, undefined);
