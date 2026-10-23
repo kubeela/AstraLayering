@@ -229,6 +229,9 @@ export class ComponentBody {
       const previous=this.displayTheta,target=max*Math.tanh(this.theta/max);
       this.displayTheta+=(target-previous)*(1-Math.exp(-TAU*this.component.response.frequencyHz*this.dt*3));
       this.theta=this.displayTheta;this.angularVelocity=(this.displayTheta-previous)/this.dt;
+      // Soft output bounds can plateau too. Retain the saturation signal for
+      // persistent-limit review even though the mesh never crosses the bound.
+      this.limited=Math.abs(this.displayTheta)>=max*.98;
       this.syncMesh();return;
     }
     for(let pass=0;pass<5;pass++){
