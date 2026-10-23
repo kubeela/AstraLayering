@@ -8,6 +8,7 @@ import { steps, buildPrompt } from './steps.ts';
 import { fingerprint, prepareSource, prepareProjectionPreview, resolveInput, put, json, optional, type PhysicsInput } from './input.ts';
 import { toolsFor, validatePlan, validateBindings, validateProfile } from './tools.ts';
 import { validateFindings, configHash } from './evidence.ts';
+import {physicsEnvironment} from './environment.ts';
 export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'all'},dependencies:Dependencies={}) {
   const profile=options.profile??'primary';if(!['primary','all'].includes(profile))throw Error('物理范围必须为 primary 或 all');
   const directory=pipelineDirectory(options.name,'physics',options.dir??dependencies.runsDirectory);
@@ -22,12 +23,14 @@ export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'a
     tools:toolsFor,prepareStep:async(output,input,step,krita)=>{if(step.id==='step01')await prepareSource(input,dirname(output),krita.executable);if(step.id==='step03')await prepareProjectionPreview(input,dirname(output),krita.executable);},
     validateDelivery:async(output,input,step)=>{
       const catalog=await json(join(dirname(output),'source/catalog.json'));
-      if(step.id==='step01')await validatePlan(await json(join(output,'analysis.json')),catalog);
+      if(step.id==='step01')await validatePlan(await json(join(output,'analysis.json')),catalog,profile);
       else if(step.id==='step02'){const config=await json(join(output,'physics.draft.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);}
       else {const config=await json(join(output,'physics.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);await validateFindings(config,join(output,'evidence'),await json(join(output,'findings.json')));if(config.review?.configHash!==configHash(config))throw Error('发布版本与复核不一致');}
     },
   };
-  const result=await shared(pipeline,options,dependencies);if(options.dryRun)return result;
+  const environment=dependencies.environment??physicsEnvironment();
+  options.progress?.('物理看图上下文：'+(environment.imageCompactThreshold?`${environment.imageCompactThreshold} 张后分段整理，保留原尺寸图像`:'未配置图片数整理；使用原尺寸拼图降低请求图片数'));
+  const result=await shared(pipeline,options,{...dependencies,environment});if(options.dryRun)return result;
   const config=await json(join(directory,'step03/physics.json'));
   await validateBindings(config,await json(join(directory,'source/catalog.json')),join(directory,'source'));
   await validateProfile(config,await json(join(directory,'step01/analysis.json')),profile);
