@@ -315,6 +315,8 @@ function sync() {
   $('#physics-workspace').hidden = !physical;
   $('[data-tool="disturb"]').hidden = !physical;
   $('[data-tool="disturb"]').disabled = !physics?.enabled || state.busy;
+  $('[data-tool="physics-select"]').hidden = !physical;
+  $('[data-tool="physics-select"]').disabled = !physics?.ready || state.busy || state.layerBusy;
   $('.recipe-actions').hidden = !lighting;
   $('#engine').textContent = [state.lightingEnabled && hasNormal ? '光照' : '', physics?.enabled ? '物理' : '', '原尺寸'].filter(Boolean).join(' · ');
   $('#physics-case-playback').hidden = !state.source?.physicsCase;
@@ -428,7 +430,7 @@ $("#views").onclick = (e) => {
 };
 $('#show-shading').onchange = e => selectView(e.target.checked ? 'shading' : 'lit');
 function selectTool(tool) {
-  if (tool === 'light' && (state.workspace !== 'lighting' || !state.lightingEnabled) || tool === 'disturb' && (state.workspace !== 'physics' || !physics?.enabled)) tool = 'move';
+  if (tool === 'light' && (state.workspace !== 'lighting' || !state.lightingEnabled) || tool === 'disturb' && (state.workspace !== 'physics' || !physics?.enabled) || tool==='physics-select'&&(state.workspace!=='physics'||!physics?.ready)) tool = 'move';
   pointer = null;
   if (physics) physics.pointer = null;
   state.tool = tool;
@@ -436,6 +438,7 @@ function selectTool(tool) {
     el.classList.toggle("active", el.dataset.tool === tool);
   $("#stage").classList.toggle("light", tool === "light");
   $("#stage").classList.toggle("disturb", tool === "disturb");
+  $('#stage').classList.toggle('pick-component',tool==='physics-select');
   overlay();
 }
 $("#interaction").onclick = (e) => {
@@ -454,6 +457,7 @@ for (const el of [$("#stage"), $("#light-handle")]) {
   el.onpointerdown = (e) => {
     if (state.busy || !state.source || e.button !== 0) return;
     if (state.tool === 'disturb') return;
+    if (state.tool === 'physics-select') {physics.pick(e);return;}
     pointer = {
       id: e.pointerId,
       x: e.clientX,
@@ -466,6 +470,7 @@ for (const el of [$("#stage"), $("#light-handle")]) {
     if (state.tool === "light") placeLight(e);
   };
   el.onpointermove = (e) => {
+    if(state.tool==='physics-select')return;
     if (state.tool === 'disturb') { physics?.input(e); return; }
     if (!pointer || pointer.id !== e.pointerId) return;
     if (pointer.tool === "light") placeLight(e);
@@ -554,15 +559,15 @@ const layers = new LayerPanel({
   download,
   error: toast,
   retry: retryNativeLayers,
+  selected(row){
+    if(!physics?.ready||state.workspace!=='physics')return;
+    const c=physics.formal?physics.config.components.find(c=>c.layerRefs.some(r=>r.uuid===row.uuid)):null;
+    if(c)physics.select(c.id);else if(!physics.formal&&physics.bindings.has(row.id))physics.select(row.id);
+  },
   rendered() {
     projections?.render();
     if (physics && !physics.ready) physics.sync();
     if (physics?.ready) {
-      if (state.workspace === 'physics'){
-        const uuid=layers.layers.find(l=>l.id===layers.selected)?.uuid,c=physics.formal?physics.config.components.find(c=>c.layerRefs.some(r=>r.uuid===uuid)):null;
-        if(c&&c.id!==physics.selected)physics.select(c.id);
-        else if(!physics.formal&&layers.selected!==physics.selected&&physics.bindings.has(layers.selected))physics.select(layers.selected);
-      }
       const refs=physics.formal&&state.workspace==='physics'?physics.config.components.find(c=>c.id===physics.selected)?.layerRefs||[]:[];
       for(const row of $('#layers').querySelectorAll('[data-layer]'))row.classList.toggle('physics-related',refs.some(r=>r.uuid===layers.layers.find(l=>l.id===row.dataset.layer)?.uuid));
     }
@@ -612,7 +617,7 @@ const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=
 physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprint:()=>state.source?.authorHash,
   workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
   layerState:()=>({loading:layers.loading,error:layers.openError}), retryLayers:retryNativeLayers,
-  download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
+  download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb'||!physics.ready&&state.tool==='physics-select')selectTool('move');sync();}, selectLayer(id,uuids=[]){if(uuids.includes(layers.layers.find(l=>l.id===layers.selected)?.uuid))return;if(layers.selected!==id)layers.select(id,{notify:false});}});
 async function retryNativeLayers() {
   const owner = state.source;
   if (!owner || state.busy || layers.pending) return;

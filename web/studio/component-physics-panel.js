@@ -67,11 +67,9 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     const layers=new Map(),resolution=resolveComponentBindings(this.config,this.parts);this.contactLayers=new Map();for(const[id,c]of resolution.assignments){const b=this.bodies.get(c);if(b){layers.set(id,b);if(!this.contactLayers.has(c))this.contactLayers.set(c,[]);this.contactLayers.get(c).push(this.parts.find(l=>l.id===id));}}
     this.renderer=new PhysicsRenderer(this.stage,this.parts,layers,this.size,this.scene);this.lastTime=0;this.accumulator=0;this.elapsed=0;this.pointer=null;this.render();
   }
-  options(){
-    if(!this.formal)return super.options();const q=$('#physics-filter').value.toLowerCase();
-    $('#physics-part').replaceChildren(...this.config.components.filter(c=>c.name.toLowerCase().includes(q)||c.id===this.selected).map(c=>new Option((c.enabled?'● ':'')+c.name,c.id)));$('#physics-part').value=this.selected||'';
-  }
-  select(id){if(!this.formal)return super.select(id);const c=this.config.components.find(c=>c.id===id);if(!c)return;this.selected=id;this.pointer=null;this.selectLayer?.((this.owner.layers||[]).find(l=>l.uuid===c.layerRefs[0]?.uuid)?.id||this.parts.find(l=>l.uuid===c.layerRefs[0]?.uuid)?.id);this.sync();}
+  selectionEntries(){return this.formal?this.config.components.map(c=>({id:c.id,name:c.name,enabled:c.enabled,detail:(c.kind==='strand'?'发束 / 飘带':c.kind==='cloth'?'布片':'挂件')+' · '+c.layerRefs.length+' 层'})):super.selectionEntries();}
+  selectionAssignments(){return this.formal?resolveComponentBindings(this.config,this.parts).assignments:super.selectionAssignments();}
+  select(id){if(!this.formal)return super.select(id);const c=this.config.components.find(c=>c.id===id);if(!c)return;this.selected=id;this.pointer=null;this.dragControl=null;this.selectLayer?.((this.owner.layers||[]).find(l=>l.uuid===c.layerRefs[0]?.uuid)?.id||this.parts.find(l=>l.uuid===c.layerRefs[0]?.uuid)?.id,c.layerRefs.map(r=>r.uuid));this.sync();this.revealSelection();this.changed();}
   changeComponent(group,key,value){
     if(!this.formal)return;const next=structuredClone(this.config),c=next.components.find(c=>c.id===this.selected);if(!c)return;
     if(key==='enabled'&&value&&!resolveComponentBindings(next,this.parts).compatible.has(c.id)){this.error('组件来源或隔离组结构未确认，不能启用');this.sync();return;}
@@ -117,13 +115,14 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     if(!this.statsTime||time-this.statsTime>180){this.stats();this.statsTime=time;}this.frame=requestAnimationFrame(t=>this.tick(t));
   }
   sync(){
+    $('#physics-guides').checked=this.showGuides;$('#physics-guides').disabled=!this.ready;
     if(!this.formal){if($('#component-controls'))$('#component-controls').hidden=true;
       for(const id of ['physics-kind','physics-direction'])$('#'+id).closest('label').hidden=false;
       for(const id of ['physics-material','physics-limits'])$('#'+id).closest('section').hidden=false;
       return super.sync();}
     $('#component-controls').hidden=false;$('#physics-controls').hidden=!this.ready;$('#effect-physics').checked=this.enabled;$('#effect-physics').disabled=this.preparing||this.busy();
     $('#component-edit').textContent=this.editing?'完成绑定编辑':'编辑绑定';$('#component-edit-hint').hidden=!this.editing;
-    $('#physics-prepare').hidden=true;$('#physics-close').hidden=!this.ready;
+    $('#physics-prepare').hidden=true;
     $('#physics-status').textContent=`${this.bodies.size} 个组件 · ${this.enabled?'已启用':'已关闭'}${this.issues.length?' · '+this.issues.length+' 个来源待确认':''}`;
     for(const id of ['physics-kind','physics-direction'])$('#'+id).closest('label').hidden=true;
     $('#physics-material').closest('section').hidden=true;$('#physics-limits').closest('section').hidden=true;
@@ -135,7 +134,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
   }
   stats(){if(!this.formal)return super.stats();const b=this.bodies.get(this.selected);$('#component-stats').textContent=b?`位移 ${b.stats.travel.toFixed(1)} / ${b.maxDistance.toFixed(1)} px · 固定残差 ${b.stats.root.toFixed(3)} px · ${b.stats.fallback?'回退修正':b.stats.limited?'约束限幅':'自由响应'}${this.playback?' · '+(this.replayStep/120).toFixed(2)+' s':''}`:'当前组件已关闭';}
   overlay(){
-    if(!this.formal)return super.overlay();const svg=$('#physics-overlay'),visible=this.ready&&this.enabled&&this.workspace()==='physics';svg.toggleAttribute('hidden',!visible);if(!visible)return;
+    if(!this.formal)return super.overlay();const svg=$('#physics-overlay'),visible=this.ready&&this.workspace()==='physics';svg.toggleAttribute('hidden',!visible);if(!visible)return;
     const[w,h]=this.size,screen=(x,y)=>this.stage.worldToScreen((x-w/2)*2/h,(h/2-y)*2/h),b=this.bodies.get(this.selected),commands=[],fixed=[];
     if(b&&this.showGuides)for(let k=0;k<b.indices.length;k+=3)for(let j=0;j<3;j++){const i=b.indices[k+j],n=b.indices[k+(j+1)%3],a=screen(b.positions[i*2],b.positions[i*2+1]),c=screen(b.positions[n*2],b.positions[n*2+1]);(b.weights[i]===0&&b.weights[n]===0?fixed:commands).push(`M${a[0]},${a[1]}L${c[0]},${c[1]}`);}
     svg.querySelector('.physics-mesh').setAttribute('d',commands.join(''));svg.querySelector('.physics-fixed').setAttribute('d',fixed.join(''));svg.querySelectorAll('.physics-boundary').forEach(p=>p.setAttribute('points',''));
@@ -148,5 +147,5 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     const circle=svg.querySelector('circle');circle.style.display=this.pointer&&this.tool()==='disturb'?'':'none';if(this.pointer){const p=screen(this.pointer.x,this.pointer.y);circle.setAttribute('cx',p[0]);circle.setAttribute('cy',p[1]);circle.setAttribute('r',Math.abs(screen(this.pointer.x+this.radius,this.pointer.y)[0]-p[0]));}
   }
   clear(){this.formal=false;this.scene=null;this.config=null;this.playback='';this.editing=false;this.dragControl=null;super.clear();$('#physics-prepare').hidden=false;if($('#component-controls'))$('#component-controls').hidden=true;for(const id of ['physics-kind','physics-direction'])$('#'+id).closest('label').hidden=false;$('#physics-material').closest('section').hidden=false;$('#physics-limits').closest('section').hidden=false;}
-  diagnostics(){return this.formal?{ready:this.ready,enabled:this.enabled,formal:true,selected:this.selected,scope:this.scope,breeze:this.breeze,breezeStrength:this.breezeStrength,solver:this.config.solver,runtime:'psd2live-inochi-adapter-1',clockStep:this.scene.stepNumber,components:this.config.components.map(c=>({id:c.id,name:c.name,enabled:c.enabled,sourcePartIds:c.sourcePartIds,layerRefs:c.layerRefs,stats:this.bodies.get(c.id)?.stats,impulses:this.bodies.get(c.id)?.impulses})),issues:this.issues,textureSizes:this.renderer?.targets.map(t=>[t.width,t.height]),playback:this.playback,step:this.replayStep}:super.diagnostics();}
+  diagnostics(){return this.formal?{ready:this.ready,enabled:this.enabled,formal:true,selected:this.selected,showGuides:this.showGuides,scope:this.scope,breeze:this.breeze,breezeStrength:this.breezeStrength,solver:this.config.solver,runtime:'psd2live-inochi-adapter-1',clockStep:this.scene.stepNumber,components:this.config.components.map(c=>({id:c.id,name:c.name,enabled:c.enabled,sourcePartIds:c.sourcePartIds,layerRefs:c.layerRefs,stats:this.bodies.get(c.id)?.stats,impulses:this.bodies.get(c.id)?.impulses})),issues:this.issues,textureSizes:this.renderer?.targets.map(t=>[t.width,t.height]),playback:this.playback,step:this.replayStep}:super.diagnostics();}
 }
