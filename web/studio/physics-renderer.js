@@ -10,6 +10,13 @@ function tex(data, w, h, color = false) {
   t.colorSpace = color ? THREE.SRGBColorSpace : THREE.NoColorSpace;
   t.minFilter = t.magFilter = THREE.LinearFilter; t.needsUpdate = true; return t;
 }
+function colorTex(data,w,h){
+  // Premultiply before filtering, retaining fractional channel values rather
+  // than quantizing them back to 8 bits. Source PNGs stay unchanged.
+  const values=new Uint16Array(data.length);
+  for(let q=0;q<data.length;q+=4){const a=data[q+3]/255;for(let k=0;k<3;k++)values[q+k]=THREE.DataUtils.toHalfFloat(data[q+k]/255*a);values[q+3]=THREE.DataUtils.toHalfFloat(a);}
+  const t=new THREE.DataTexture(values,w,h,THREE.RGBAFormat,THREE.HalfFloatType);t.flipY=true;t.minFilter=t.magFilter=THREE.LinearFilter;t.needsUpdate=true;return t;
+}
 function surfaceTexture(layer){
   const {width:w,height:h}=layer.bounds,raw=new Uint8Array(layer.map.data.length);
   for(let q=0;q<raw.length;q+=4)raw[q]=layer.map.data[q+3];
@@ -33,7 +40,7 @@ void main(){
  vec2 sourceUV=(restPixel-sourceBounds.xy)/sourceBounds.zw;sourceUV.y=1.0-sourceUV.y;
  if(any(lessThan(sourceUV,vec2(0.0)))||any(greaterThan(sourceUV,vec2(1.0))))discard;
  vec4 color=texture2D(colorMap,sourceUV);float alpha=color.a;if(alpha<0.001)discard;
- vec4 m=texture2D(dataMap,sourceUV);vec3 rgb=color.rgb;
+ vec4 m=texture2D(dataMap,sourceUV);vec3 rgb=color.rgb/max(alpha,0.000001);
  if(pass==1){
   vec3 n=vec3((m.xy*2.0-1.0)*strength,m.z*2.0-1.0);n.y*=normalY;n.z=max(n.z,0.005);
   vec2 a=dFdx(restPixel),b=dFdy(restPixel),c=dFdx(currentPixel),d=dFdy(currentPixel);
@@ -127,7 +134,7 @@ export class PhysicsRenderer {
     const color = new Uint8ClampedArray(l.rgba); for (let q = 3; q < color.length; q += 4) color[q] = l.maskedRgba[q];
     // Composite in source sRGB, matching Krita/Canvas alpha blending. Decode
     // once in the resolve pass before handing the texture to MToon.
-    const c = tex(color, b.width, b.height), m = tex(l.map.data, b.width, b.height),surface=surfaceTexture(l);
+    const c = colorTex(color, b.width, b.height), m = tex(l.map.data, b.width, b.height),surface=surfaceTexture(l);
     const material = new THREE.ShaderMaterial({ vertexShader: vertex, fragmentShader: fragment,
       transparent: true, premultipliedAlpha: true, side: THREE.DoubleSide, depthTest: false, depthWrite: false,
       stencilWrite:true,stencilRef:1,stencilFunc:THREE.NotEqualStencilFunc,stencilZPass:THREE.ReplaceStencilOp,
@@ -149,7 +156,7 @@ export class PhysicsRenderer {
       this.scene.remove(item.mesh);scene.add(item.mesh);item.mesh.renderOrder=shadows.length+1;
       item.mesh.material.dispose();item.mesh.material=new THREE.ShaderMaterial({vertexShader:vertex,
         fragmentShader:`uniform sampler2D colorMap;uniform sampler2D clipMap;uniform vec2 canvasSize;uniform float padding;uniform int multiply;varying vec2 sourceUV;varying vec2 currentPixel;
-        void main(){vec4 c=texture2D(colorMap,sourceUV);float a=texture2D(clipMap,vec2((currentPixel.x+padding)/canvasSize.x,1.0-(currentPixel.y+padding)/canvasSize.y)).a;if(c.a<.001||a<.001)discard;gl_FragColor=vec4(c.rgb*c.a*(multiply==1?1.0:a),c.a);}`,
+        void main(){vec4 c=texture2D(colorMap,sourceUV);float a=texture2D(clipMap,vec2((currentPixel.x+padding)/canvasSize.x,1.0-(currentPixel.y+padding)/canvasSize.y)).a;if(c.a<.001||a<.001)discard;gl_FragColor=vec4(c.rgb*(multiply==1?1.0:a),c.a);}`,
         uniforms:{colorMap:{value:item.c},clipMap:{value:clip.texture},canvasSize:{value:new THREE.Vector2(w,h)},padding:{value:pad},multiply:{value:s.blendMode==='multiply'?1:0}},
         transparent:true,premultipliedAlpha:true,side:THREE.DoubleSide,depthTest:false,depthWrite:false,blending:THREE.CustomBlending,
         blendSrc:s.blendMode==='multiply'?THREE.DstColorFactor:THREE.OneFactor,blendDst:THREE.OneMinusSrcAlphaFactor,blendEquation:THREE.AddEquation,
