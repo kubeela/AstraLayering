@@ -1,6 +1,6 @@
 type Step = { state: string; type: string; text: string };
 
-// agy 1.3.5's result includes errors from earlier turns and retries in this turn.
+// agy's result includes errors from earlier turns and retries in this turn.
 // The streamed user_input boundary and following steps describe this turn.
 export class AgvTurn {
   private boundary?: number;
@@ -28,11 +28,24 @@ export class AgvTurn {
   recoveredError(result: Record<string, any>, conversationId: string | undefined): boolean {
     if (!conversationId || result.conversation_id !== conversationId || result.status !== 'ERROR'
       || result.is_error || this.boundary === undefined || this.protocolError || !this.steps.size) return false;
-    const steps = [...this.steps.entries()];
-    if (steps.some(([, step]) => step.state !== 'DONE')) return false;
-    const last = steps.reduce((a, b) => a[0] > b[0] ? a : b)[1];
-    return last.type === 'agent_response' && !!last.text.trim()
-      && typeof result.response === 'string' && result.response.trim() === last.text.trim();
+    const response = this.completedResponse;
+    if (!response || typeof result.response !== 'string') return false;
+    // Some CLI versions return only the final response; others concatenate all
+    // visible replies in this turn, including progress messages before a retry.
+    const aggregate = [...this.steps].sort((a, b) => a[0] - b[0])
+      .filter(([, step]) => step.type === 'agent_response').map(([, step]) => step.text).join('');
+    return result.response.trim() === response.trim() || result.response.trim() === aggregate.trim();
+  }
+
+  get completedResponse(): string | undefined {
+    if (this.boundary === undefined || this.protocolError || !this.steps.size) return;
+    const steps = [...this.steps].sort((a, b) => a[0] - b[0]);
+    if (steps.some(([, step]) => step.state !== 'DONE')) return;
+    // A schema response can be followed by the CLI's completed finish event.
+    // Other trailing tools or errors still mean that the reply is not final.
+    while (steps.at(-1)?.[1].type === 'finish') steps.pop();
+    const last = steps.at(-1)?.[1];
+    if (last?.type === 'agent_response' && last.text.trim()) return last.text;
   }
 
   get userStepIndex(): number | undefined { return this.boundary; }
