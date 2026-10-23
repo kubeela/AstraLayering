@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { chmod, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { chmod, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -32,7 +32,7 @@ test('默认继承 Codex 配置，.env 模型后缀是力度，shell 优先且�
   assert.equal(process.env.layering_high_model, undefined);
 });
 
-test('主模型与生图分别鉴权；只填生图模型不启用，未补丁时明确失败', async t => {
+test('主模型与生图分别鉴权；只填生图模型不启用，按需准备补丁失败时保留原因', async t => {
   const root = await fixture(t);
   const onlyModel = loadWorkflowEnvironment({ layering_image_model: 'another-image-model' }, root);
   assert.equal(onlyModel.stepImages.part_simplify, 'codex-native');
@@ -50,7 +50,8 @@ test('主模型与生图分别鉴权；只填生图模型不启用，未补丁�
   assert.equal(settings.imageApis.openai!.apiKey, 'image-secret');
   assert.equal(settings.codex.env!.LAYERING_IMAGE_COMPACT_THRESHOLD, '49');
   assert.ok(!JSON.stringify(settings.codex.config).includes('secret'));
-  await assert.rejects(checkCodexCapabilities(settings), /需要补丁版 Codex/);
+  await assert.rejects(checkCodexCapabilities(settings, settings.codex, {}, async () => { throw new Error('fixture build failure'); }), /fixture build failure/);
+  assert.throws(() => loadWorkflowEnvironment({layering_agv_patch: 'yes'}, root), /layering_agv_patch/);
   assert.throws(() => loadWorkflowEnvironment({ layering_custom_provider: 'true' }, root), /需要填写/);
   assert.throws(() => loadWorkflowEnvironment({ layering_image_api_key: 'secret' }, root), /同时填写/);
   for (const invalid of ['0', '-1', '49.2', 'NaN']) assert.throws(() => loadWorkflowEnvironment({ layering_image_compact_threshold: invalid }, root), /正整数/);
@@ -86,7 +87,7 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     try {
       await runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
         assert.equal(request.model, 'gpt-6-astra'); assert.equal(request.effort, 'high');
-        assert.ok(request.imageRoots?.includes(join(root, 'case')));
+        assert.ok(request.imageRoots?.includes(await realpath(join(root, 'case'))));
         await request.onEvent({ type: 'thread.started', thread_id: 'persistent-thread' });
         await request.onEvent({ type: 'item.completed', item: { type: 'agent_message', id: 'message', text: '当前没有 image_generation 工具，无法绘制。' } });
         return { status: 'completed', summary: '回合已结束' };

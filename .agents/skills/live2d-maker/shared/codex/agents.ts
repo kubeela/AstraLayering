@@ -90,6 +90,8 @@ export class CodexAgents {
     let imageModel: string | undefined;
     let id = resumeThreadId;
     const functionOptions = () => ({ ...sessionOptions,
+      // Startup may select the cached patch after this session was constructed.
+      codexPathOverride: this.options.codexPathOverride ?? this.options.environment?.codex.codexPathOverride,
       env: { ...sessionOptions.env, ...route?.env } });
     const closing = new AbortController();
     let closed = false, busy = false;

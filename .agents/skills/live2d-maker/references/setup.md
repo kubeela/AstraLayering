@@ -17,7 +17,7 @@ pnpm install --frozen-lockfile
 
 首次使用某个 CLI／provider／模型方案，或修改了工具 schema、协议适配、CLI 版本时，按[启动验证条件](validation.md)完成对应检查。只返回一次 `OK` 的连通请求不能证明真实工具可用；必须携带实际工具定义，并验证工具调用与会话恢复。复用仍适用的验证记录，未测项明确写出。
 
-AGV 自定义网关出现重复超时时，分别核对主模型和内部监视调用，查看实际力度、图片数和响应头耗时。不要把供应商拒绝 `MINIMAL` 或 CLI 的 60 秒响应头期限当成模型永久不可用；[AGV 兼容说明](../tools/agv/README.md)提供显式、默认关闭的处理方式。不能提前伪造 HTTP 200 掩盖上游错误。
+AGV 自定义网关出现重复超时时，分别核对主模型和内部监视调用，查看实际力度、图片数和响应头耗时。不要把供应商拒绝 `MINIMAL` 或 CLI 的 60 秒响应头期限当成模型永久不可用；[AGV 兼容说明](../patches/agv/README.md)提供显式、默认关闭的处理方式。不能提前伪造 HTTP 200 掩盖上游错误。
 
 | 本次执行范围 | 前置依赖 |
 | --- | --- |
@@ -68,5 +68,9 @@ Krita 的路径检查和实际启动使用工作流加载的同一环境，包�
 - 普通网页使用现代浏览器。Playwright／Chromium 仅用于浏览器自动验证，不是运行制作管线的必装项。
 - `archive/`、`analysis/`、`demos/`、`rigging/` 和资料重建脚本的 Pillow、NumPy、SciPy、OpenCV、lxml、PyYAML 等依赖只在实际执行相应脚本时成立，不纳入 skill 默认安装。读取已生成的头发参考图不需要重建图片的 Python 包。
 
-默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用显式构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。正常启动不会下载或构建 Codex；Nano Python 包仅在首次实际透明后处理时自动准备。
+默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用按需自动构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。未启用相关功能时不构建 Codex；启用且未指定入口时自动构建，缺 Rust 1.95.0 会提示并安装到临时目录，结束后清理。Git 和平台 C/C++ 编译依赖仍须可用。AGV 用 `layering_agv_patch=true` 开启独立副本的自动准备，见 [patches](../patches/README.md)；Nano Python 包仅在首次实际透明后处理时自动准备。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。
+
+所有操作 Krita 的 agent 自动收到同一份[环境与故障恢复说明](../shared/krita/environment.md)，沿用现有 shell、computer use 或已验证 bridge。私有进程的 macOS 配置、Python 资源和 HOME 必须一致；不能把一次自建启动器失败直接当作不可恢复阻塞。
+
+Krita 共用说明的附加方式：原阶段提示词在前，随后以“【工作流附加：Krita 共用环境说明】”独立段落附加全文，并显示 `shared/krita/environment.md` 的实际绝对路径；结束处有明确标记。完整最终提示词沿用现有 `prompt.md`／review 与返修提示词文件落盘，可直接审查。不修改全局或隐藏系统提示词，不新增执行工具。

@@ -3,10 +3,11 @@ from krita import Krita, Extension, InfoObject
 from PyQt5.QtCore import QTimer, QRect
 from PyQt5.QtGui import QImage
 from pathlib import Path
-import json, os, traceback
+import json, os, traceback, sys
 
 JOB = json.loads(Path(os.environ['ASTRA_SHADOW_JOB']).read_text())
 OUT = Path(JOB['output'])
+(OUT / 'plugin-started.json').write_text(json.dumps({'module': __name__, 'sysPath': sys.path}), encoding='utf-8')
 
 
 def uid(node):

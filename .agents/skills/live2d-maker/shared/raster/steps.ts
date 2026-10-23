@@ -1,3 +1,4 @@
+import {kritaEnvironmentPrompt} from '../krita/environment.ts';
 import type { ModelSelection, ModelTier } from '../codex/environment.ts';
 import type { AgentStep } from '../agents/models.ts';
 import { readFile } from 'node:fs/promises';
@@ -25,7 +26,7 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
   const responsibilities = step.id === 'step01' ? await readFile(new URL('./drawing-responsibilities.md', import.meta.url), 'utf8') : '';
   const body = (await readFile(step.prompt, 'utf8')).replaceAll(`${step.id}/report.md`, `${step.id}/${report}`);
   const requiredFiles = step.requiredFiles.map(file => file === 'report.md' ? report : file);
-  return `${body}\n${responsibilities}\n---\n本次运行信息（上方为完整步骤提示词）：
+  return `${body}\n${responsibilities}\n${await kritaEnvironmentPrompt(krita)}\n---\n本次运行信息（上方为完整步骤提示词）：
 - 本管线目录：${JSON.stringify(dirname(output))}。正文中的步骤目录相对此目录；../part-layering/ 或 ../clothing-part-layering/ 指同名任务的上游管线。
 - 本步输入文件（绝对路径，只读）：${JSON.stringify((step.inputFiles ?? []).map(file => join(dirname(output), file)))}。
 - 上游产物目录：${JSON.stringify(input.directory)}。直接读取，不建立输入副本。

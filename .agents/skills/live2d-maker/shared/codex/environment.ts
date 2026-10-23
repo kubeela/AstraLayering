@@ -41,6 +41,9 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   const get = (name: string) => effective[name]?.trim();
   const flag = get('layering_custom_provider');
   if (flag && !['true', 'false', '1', '0'].includes(flag)) throw new Error('layering_custom_provider 只能为 true 或 false。');
+  const agvPatch = get('layering_agv_patch');
+  if (agvPatch && !['true', 'false'].includes(agvPatch)) throw new Error('layering_agv_patch 只能为 true 或 false。');
+  if (agvPatch) effective.layering_agv_patch = agvPatch;
   const config: NonNullable<CodexOptions['config']> = {};
   if (flag === 'true' || flag === '1') {
     const baseUrl = get('layering_provider_base_url'), key = get('layering_provider_api_key');
@@ -130,11 +133,11 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
 
 const checkedCapabilities = new Map<string, Promise<void>>();
 export async function checkCodexCapabilities(settings: WorkflowEnvironment, options = settings.codex,
-  needs: { image?: boolean } = {}): Promise<void> {
+  needs: { image?: boolean; progress?: (message: string) => void } = {},
+  prepare = async () => (await import('../../patches/codex/build.ts')).ensurePatchedCodex({ env: options.env, progress: needs.progress })): Promise<void> {
   if (settings.imageCompactThreshold === undefined && !needs.image) return;
-  const executable = options.codexPathOverride;
-  const instruction = '请先执行 pnpm build:codex，并在 live2d-maker/.env 设置 layering_codex_path 指向生成的补丁版 Codex。';
-  if (!executable) throw new Error(`${needs.image ? '自定义 Codex 原生生图' : '按图片数 compact'}需要补丁版 Codex。${instruction}`);
+  const executable = options.codexPathOverride ?? settings.codex.codexPathOverride ?? await prepare();
+  const instruction = 'layering_codex_path 显式指定的入口必须具备对应能力；清空此项可在启用补丁功能时自动构建。';
   const needsVisualCompaction = settings.imageCompactThreshold !== undefined;
   const cacheKey = `${executable}\0${needs.image ? 'image-provider-v2' : ''}\0${needsVisualCompaction ? 'visual-compaction-v2' : ''}`;
   let check = checkedCapabilities.get(cacheKey);
@@ -155,6 +158,8 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
     void check.catch(() => checkedCapabilities.delete(cacheKey));
   }
   await check;
+  options.codexPathOverride = executable;
+  settings.codex.codexPathOverride = executable;
 }
 
 export function validateApiUrl(value: string, name: string): void {

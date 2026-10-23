@@ -1,3 +1,4 @@
+import {kritaEnvironmentPrompt} from '../krita/environment.ts';
 import { readFile, rename, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { StepResult } from './agent.ts';
@@ -44,7 +45,7 @@ export async function buildReviewPrompt(step: StepDefinition, task: ReviewTask, 
   const body = (await readFile(source, 'utf8'))
     .replaceAll('{review_report_filename}', reviewFilename)
     .replaceAll('{repair_report_filename}', `${task.filename}.tmp`);
-  return `${body}\n${responsibilities}\n---\n本次运行信息：
+  return `${body}\n${responsibilities}\n${await kritaEnvironmentPrompt(krita)}\n---\n本次运行信息：
 - 工作目录为本任务根目录，使用正文中的固定相对路径。
 - Krita 已检查：${JSON.stringify(krita.executable)}，版本 ${krita.version}；沿用当前显示环境。
 - 本次报告写入指定暂存文件，调度器检查后发布正式 Markdown。不要自行写正式 review / repair 报告，不修改 run.json、.running、.completed 或调度日志。

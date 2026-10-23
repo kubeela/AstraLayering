@@ -1,3 +1,4 @@
+import {kritaEnvironmentPrompt} from '../shared/krita/environment.ts';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { defaultModels } from '../shared/codex/environment.ts';
@@ -12,7 +13,7 @@ export const steps = [{
 }] as const satisfies readonly StepDefinition[];
 
 export async function buildPrompt(step: StepDefinition, input: AssemblyInput, output: string, krita: KritaInstallation): Promise<string> {
-  return `${await readFile(step.prompt, 'utf8')}\n---\n本次运行信息（以下均为绝对路径）：
+  return `${await readFile(step.prompt, 'utf8')}\n${await kritaEnvironmentPrompt(krita)}\n---\n本次运行信息（以下均为绝对路径）：
 - 工作目录：${JSON.stringify(dirname(output))}。
 - 人物素体 KRA：${JSON.stringify(input.characterKra)}。
 - 衣服 KRA：${JSON.stringify(input.clothingKra)}。

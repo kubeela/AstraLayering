@@ -64,32 +64,11 @@ export async function createPatchedAgv(sourcePath: string, directory?: string): 
     version: sourceHash === knownBuild.sourceSha256 ? knownBuild.version : '结构兼容的 linux-x64 AGV',
     sourceSha256: sourceHash, patchedSha256: patchedHash, headerOffset: layout.headerOffset,
     defaultResponseHeaderTimeoutSeconds: 0, autoUpdateDisabledByTrue: true, originalModified: false }, null, 2) + '\n');
-  await install('launch.mjs', await readFile(fileURLToPath(new URL('./launch.mjs', import.meta.url))));
+  await install('launch.mjs', await readFile(fileURLToPath(new URL('../../shared/agents/agv-launch.mjs', import.meta.url))));
   await install('antigravity', '#!/usr/bin/env node\nimport "./launch.mjs";\n', 0o700);
   return output;
 }
 
-export async function resolvePatchedAgv(executable: string): Promise<string> {
-  let manifest;
-  try { manifest = JSON.parse(await readFile(join(dirname(executable), 'patch.json'), 'utf8')); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return executable; throw error; }
-  if (!manifest.sourceSha256 || manifest.defaultResponseHeaderTimeoutSeconds === undefined) return executable;
-  let root = dirname(executable);
-  while (dirname(root) !== root && dirname(root).split(sep).at(-1) !== '.runtime') root = dirname(root);
-  if (dirname(root).split(sep).at(-1) !== '.runtime') throw new Error('AGV 补丁入口不在受控的 .runtime 目录内。');
-  const runsRoot = dirname(dirname(root));
-  if (manifest.format !== 2) return createPatchedAgv(executable, runsRoot);
-  if (manifest.defaultResponseHeaderTimeoutSeconds !== 0 || manifest.autoUpdateDisabledByTrue !== true) {
-    throw new Error('AGV 补丁没有确认禁用自动更新，未启动。请重新执行 patch:agv。');
-  }
-  const payload = join(dirname(executable), 'antigravity.bin');
-  if (sha256(await readFile(payload)) !== manifest.patchedSha256) {
-    // An updated payload must pass structural compatibility checks again. Never
-    // launch it using an old manifest's assertion that the deadline is disabled.
-    return createPatchedAgv(payload, runsRoot);
-  }
-  return executable;
-}
 
 if (import.meta.main) {
   const { values } = parseArgs({ options: { source: { type: 'string' }, dir: { type: 'string' } }, strict: true, allowPositionals: false });

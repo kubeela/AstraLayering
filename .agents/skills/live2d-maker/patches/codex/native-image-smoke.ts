@@ -10,7 +10,8 @@ import sharp from 'sharp';
 import { CodexAgents } from '../../shared/codex/agents.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 
-const { values } = parseArgs({ options: { codex: { type: 'string', default: '.codex-build/bin/codex' } } });
+const { values } = parseArgs({ options: { codex: { type: 'string' } } });
+if (!values.codex) throw new Error('请用 --codex 指定构建返回的实际二进制路径');
 const root = await mkdtemp(join(tmpdir(), 'layering-native-image-smoke-'));
 const png = await sharp({ create: { width: 32, height: 48, channels: 4, background: '#d1479580' } }).png().toBuffer();
 const nanoPng = await sharp({ create: { width: 32, height: 48, channels: 3, background: '#09f20a' } })

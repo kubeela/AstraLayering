@@ -98,7 +98,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--codex', type=Path, default=Path(__file__).resolve().parents[2] / '.codex-build/bin/codex')
+    parser.add_argument('--codex', type=Path, required=True)
     parser.add_argument('--case', choices=['48', '49', '53', 'tool_batch', 'disabled', 'image_routes', 'code_mode'])
     args = parser.parse_args()
     binary = args.codex.resolve()
