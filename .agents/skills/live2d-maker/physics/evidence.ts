@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile, rename } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, rename, readdir } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { createGzip, createGunzip } from 'node:zlib';
 import { createReadStream, createWriteStream } from 'node:fs';
@@ -22,7 +22,8 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
   const digest=configHash(config),runtimeHash=await simulationHash(),runs:any[]=[];
   const prior=await (await import('./input.ts')).optional(join(output,'manifest.json'));
   if(prior?.configHash===digest&&prior.version===evidenceVersion&&prior.simulationHash===runtimeHash)return prior;
-  if(prior){const backups=join(dirname(output),'backups');await mkdir(backups,{recursive:true});await rename(output,join(backups,'evidence-'+randomUUID()));}
+  const partial=await readdir(output).then(files=>files.length>0,(e:NodeJS.ErrnoException)=>{if(e.code==='ENOENT')return false;throw e;});
+  if(prior||partial){const backups=join(dirname(output),'backups');await mkdir(backups,{recursive:true});await rename(output,join(backups,'evidence-'+randomUUID()));}
   await mkdir(output,{recursive:true});
   await (await import('node:fs/promises')).rm(join(output,'failure.json'),{force:true});
   for(const test of testNames) {
