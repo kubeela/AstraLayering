@@ -14,17 +14,18 @@ import { pipelineSteps } from '../progress.js';
 test('阴影蒙版显示最新 KRA，首次保存前等待；法线分支不显示蒙版预览', async () => {
   const { latestKraPreview } = await import(new URL('../progress.js', import.meta.url).href);
   const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+  const helpers = source.slice(source.indexOf('const isRasterPipeline ='), source.indexOf('async function post('));
   const renderer = source.slice(source.indexOf('function kraPreviewPanel('), source.indexOf('function reportEvidence('));
   const pipeline: { mode: string; previews: Record<string, { path: string; savedAt: string }> } = { mode: 'mask', previews: {} };
   const context = {
     stages: [{ id: 'shadow', name: '阴影制作' }], data: { pipelines: [pipeline] }, pipelineSteps: [pipelineSteps[5]],
-    isRasterPipeline: () => false, latestKraPreview, esc: String, icon: () => '',
+    latestKraPreview, esc: String, icon: () => '',
     artifacts: (items: { path: string; kind: string; sharedPreview: boolean }[]) => {
       assert.equal(items[0].kind, 'image'); assert.equal(items[0].sharedPreview, true);
       return items[0].path;
     },
   };
-  const render = () => runInNewContext(renderer + '\nkraPreviewPanel(0);', context) as string;
+  const render = () => runInNewContext(helpers + renderer + '\nkraPreviewPanel(0);', { ...context }) as string;
   assert.match(render(), /等待首次保存 KRA/);
   pipeline.previews.step01 = { path: 'shadow/mask/step01/working.kra', savedAt: '2026-10-24T00:00:00Z' };
   const saved = render();
