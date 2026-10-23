@@ -201,6 +201,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
       if (code !== 0 || !final || final.is_error || !successfulStatus) throw new AgentCallError(final?.error || final?.errors?.join('\n') || stderr || 'CLI 未返回成功终态');
       if (recoveredError) {
+        if (!final.structured_output) text = agvTurn!.completedResponse!;
         await log.recordProtocol({ type: 'agv.turn.completed', outcomeSource: 'current_turn_steps',
           conversationStatus: final.status, earlierError: final.error, userStepIndex: agvTurn!.userStepIndex,
           recoveredErrorStepIndices: agvTurn!.recoveredErrorStepIndices, processExitCode: code });
