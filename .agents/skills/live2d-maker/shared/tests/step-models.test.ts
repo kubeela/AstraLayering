@@ -210,7 +210,8 @@ test('Claude and agv use isolated request workspaces, original MCP schemas and r
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli }, root);
   let called = 0;
-  for (const id of ['claude-sonnet-5.5-high', 'gemini-4-argon-xhigh']) {
+  for (const [id, wireModel] of [['claude-sonnet-5.5-high', 'claude-sonnet-5-5'],
+    ['claude-opus-5.5-xhigh', 'claude-opus-5-5'], ['claude-haiku-5.5-low', 'claude-haiku-5-5'], ['gemini-4-argon-xhigh', 'gemini-4-argon']]) {
     const model = parseAgentModel(id, 'test'), options = { cwd, logDirectory: join(cwd, 'agents') };
     const task = { name: 'fixture', cwd, prompt: '完整任务提示词', tools: [{ name: 'fixture_echo', description: '原始工具说明',
       inputSchema: { type: 'object' }, async execute() { called++; return { success: true, contentItems: [] }; } }] };
@@ -223,9 +224,13 @@ test('Claude and agv use isolated request workspaces, original MCP schemas and r
     for (const path of [a.cwd, a.data, a.agvData, b.cwd]) assert.ok(path.startsWith(join(cwd, 'agents')));
     assert.ok(a.input.message.content[0].text.startsWith(task.prompt));
     assert.equal(a.args[a.args.indexOf('--effort') + 1], model.effort);
+    assert.equal(a.args[a.args.indexOf('--model') + 1], wireModel);
+    assert.equal(b.args[b.args.indexOf('--model') + 1], wireModel);
+    const request = JSON.parse(await readFile(join(first.logDirectory!, 'request.json'), 'utf8'));
+    assert.equal(request.threadOptions.model, model.model);
     assert.equal((await stat(join(first.logDirectory!, 'mcp.json'))).mode & 0o777, 0o600);
   }
-  assert.equal(called, 4);
+  assert.equal(called, 8);
 });
 
 test('unavailable CLI sessions are replaced once without deleting existing deliveries', async t => {

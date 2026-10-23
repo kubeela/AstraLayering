@@ -12,6 +12,16 @@ export const reasoningEfforts = ['low', 'medium', 'high', 'xhigh'] as const;
 export type ReasoningEffort = typeof reasoningEfforts[number];
 export type AgentModel = { model: ModelId; effort: ReasoningEffort; harness: Harness };
 
+// Configuration uses version numbers; Anthropic's actual model IDs use hyphens.
+const claudeModelIds: Partial<Record<ModelId, string>> = {
+  'claude-sonnet-5.5': 'claude-sonnet-5-5',
+  'claude-opus-5.5': 'claude-opus-5-5',
+  'claude-haiku-5.5': 'claude-haiku-5-5',
+};
+export function cliModelId(selection: AgentModel): string {
+  return selection.harness === 'claude' ? claudeModelIds[selection.model] ?? selection.model : selection.model;
+}
+
 const medium = 'gpt-6.1-sol-xhigh', high = 'gpt-6-astra-xhigh';
 // User-facing model settings describe roles shared by character and clothing pipelines.
 export const modelSlotDefaults = {
