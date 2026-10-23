@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { MToonMaterial } from "@pixiv/three-vrm-materials-mtoon";
 import { defaults, reliefGrid, projectionDepth } from "./lighting-model.js";
+import { surfaceDistanceMaterial } from './surface-shadow.js';
 
 function pixels(image) {
   const c = document.createElement("canvas");
@@ -158,6 +159,8 @@ vec4 studioShadowCoord() {
     this.mesh.receiveShadow = true;
     this.scene.add(this.mesh);
     this.caster = new THREE.Mesh(this.mesh.geometry, this.casterMaterial);
+    this.surfaceDistance=surfaceDistanceMaterial(null,this.depthUniforms.studioDepth,this.depthUniforms.studioDepthScale);
+    this.caster.customDistanceMaterial=this.surfaceDistance;
     this.caster.castShadow = true;
     this.caster.renderOrder = -1;
     this.scene.add(this.caster);
@@ -236,6 +239,7 @@ vec4 studioShadowCoord() {
     this.material.needsUpdate = true;
     this.casterMaterial.map = this.color;
     this.casterMaterial.needsUpdate = true;
+    this.surfaceDistance.map=this.color;this.surfaceDistance.needsUpdate=true;
     this.grid = reliefGrid(heights, a, w, h);
     const g = new THREE.BufferGeometry();
     g.setAttribute(
@@ -362,6 +366,9 @@ vec4 studioShadowCoord() {
     this.setMode(this.mode);
   }
   frame(width, height, exporting = false) {
+    // Data views and disabled effects must not rebuild the point-light atlas.
+    // Keep its dirty flag so returning to lighting refreshes the current pose.
+    this.renderer.shadowMap.enabled=this.lightingEnabled&&this.hasDepth&&this.settings.shadow&&['lit','split','shading'].includes(this.mode);
     this.deformation?.compose();
     const visibleSize=this.deformation?.outputSize||[this.source?.w||1,this.source?.h||1],sourceHeight=this.source?.h||1;
     const aspect = width / height,
@@ -470,6 +477,7 @@ vec4 studioShadowCoord() {
     return blob;
   }
   clear() {
+    this.surfaceDistance.map=null;
     this.textures.forEach((t) => t.dispose());
     this.textures = [];
     this.source = this.grid = this.color = this.normal = this.depth = null;
@@ -498,6 +506,7 @@ vec4 studioShadowCoord() {
     this.material.dispose();
     this.basic.dispose();
     this.casterMaterial.dispose();
+    this.surfaceDistance.dispose();
     this.light.shadow.dispose();
     this.renderer.dispose();
   }

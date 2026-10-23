@@ -1,4 +1,6 @@
-import { ShapeUtils, Vector2 } from 'three';
+// Module workers have no document import map. They load the same pinned Three
+// module explicitly; Node and the page keep their existing package resolution.
+const { ShapeUtils, Vector2 } = await import(typeof WorkerGlobalScope !== 'undefined' && globalThis instanceof WorkerGlobalScope ? new URL('../vendor/three.module.js',import.meta.url).href : 'three');
 
 export const geometryVersion = 'astra-component-mesh-1';
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));

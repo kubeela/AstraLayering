@@ -63,9 +63,14 @@ export class ComponentBody {
         // a curled strand can tear an otherwise valid continuous centreline.
         const sigma=Math.max(8,...samples.filter(s=>s.d<nearest+1).map(s=>(a.widths[s.i]+a.widths[s.i+1])*.25));let sum=0;
         for(const s of samples){s.w=Math.exp(-(s.d*s.d-nearest*nearest)/(sigma*sigma));sum+=s.w;}
-        this.fieldSamples.push(samples.filter(s=>s.w/sum>1e-4).map(s=>({...s,w:s.w/sum})));
+        this.fieldSamples.push(samples.filter(s=>s.w/sum>1e-4).map(s=>({...s,w:s.w/sum,factor:Math.min(1,this.weights[v]/Math.max(1e-8,this.mobility[s.i]*(1-s.t)+this.mobility[s.i+1]*s.t))})));
       }
+      this.segmentRotations=new Float64Array((this.mobility.length-1)*2);
     }
+    this.supportPose=new Float64Array(component.supports.length*4).fill(NaN);
+    const influences=points=>{const result=new Float64Array(points.length/2*(component.supports.length+1));for(let i=0;i<points.length/2;i++){let total=0;for(let j=0;j<component.supports.length;j++){const s=component.supports[j],d=Math.hypot(points[i*2]-s.at[0],points[i*2+1]-s.at[1]),w=1/Math.max(1,d*d);result[i*(component.supports.length+1)+j]=w;total+=w;}result[i*(component.supports.length+1)+component.supports.length]=total;}return result;};
+    this.pInfluences=influences(this.pRest);this.meshInfluences=influences(this.rest);
+    this.measurePose();
     this.theta=0; this.angularVelocity=0; this.impulses=0; this.motion=this.kind==='cloth'?new PsdClothSolver(this):this.kind==='strand'?new CubismPendulumChain(this):new InochiPendulum(this); this.syncMesh(); this.stats=this.inspect();
   }
   invMass(i) { return this.mobility[i] / this.mass[i]; }
@@ -80,9 +85,21 @@ export class ComponentBody {
   }
   prepare(dt) {
     this.dt=dt; this.previous.set(this.p); this.previousPose.set(this.pPose); this.previousMesh.set(this.positions);
-    for(let i=0;i<this.mobility.length;i++){const q=this.target([this.pRest[i*2],this.pRest[i*2+1]]);this.pPose[i*2]=q[0];this.pPose[i*2+1]=q[1];}
-    if(this.kind==='cloth'&&!this.clothFactors)this.sampleCloth(this.pPose,this.pose);else for(let i=0;i<this.weights.length;i++){const q=this.target([this.rest[i*2],this.rest[i*2+1]]);this.pose[i*2]=q[0];this.pose[i*2+1]=q[1];}
-    this.limited=false;this.correction=0;this.fallback=false;
+    let changed=false;const supports=this.component.supports;
+    for(let j=0;j<supports.length;j++){const s=this.scene.support(supports[j]),k=j*4,cs=Math.cos(s.angle||0),sn=Math.sin(s.angle||0);if(this.supportPose[k]!==s.x||this.supportPose[k+1]!==s.y||this.supportPose[k+2]!==cs||this.supportPose[k+3]!==sn)changed=true;this.supportPose[k]=s.x;this.supportPose[k+1]=s.y;this.supportPose[k+2]=cs;this.supportPose[k+3]=sn;}
+    this.poseChanged=changed;
+    if(changed){
+      this.fillPose(this.pRest,this.pInfluences,this.pPose);
+      if(this.kind==='cloth'&&!this.clothFactors)this.sampleCloth(this.pPose,this.pose);else this.fillPose(this.rest,this.meshInfluences,this.pose);
+      this.measurePose();
+    }
+    this.limited=false;this.correction=0;this.fallback=false;this.finalStats=null;
+  }
+  fillPose(source,influences,target){const supports=this.component.supports,stride=supports.length+1;for(let i=0;i<source.length/2;i++){let x=0,y=0;for(let j=0;j<supports.length;j++){const s=supports[j],k=j*4,dx=source[i*2]-s.at[0],dy=source[i*2+1]-s.at[1],w=influences[i*stride+j];x+=(this.supportPose[k]+(this.supportPose[k+2]*dx-this.supportPose[k+3]*dy))*w;y+=(this.supportPose[k+1]+(this.supportPose[k+3]*dx+this.supportPose[k+2]*dy))*w;}const total=influences[i*stride+supports.length];target[i*2]=x/total;target[i*2+1]=y/total;}}
+  measurePose(){
+    const measure=(indices,p,old)=>{const out=old||{areas:new Float64Array(indices.length/3),angles:this.kind==='cloth'?new Float64Array(indices.length):null};for(let k=0;k<indices.length;k+=3){out.areas[k/3]=area(p,indices[k],indices[k+1],indices[k+2]);if(out.angles)for(let j=0;j<3;j++){const u=indices[k+j],v=indices[k+(j+1)%3],w=indices[k+(j+2)%3];out.angles[k+j]=angle(p[v*2]-p[u*2],p[v*2+1]-p[u*2+1],p[w*2]-p[u*2],p[w*2+1]-p[u*2+1]);}}return out;};
+    this.displayMeasures=measure(this.indices,this.pose,this.displayMeasures);
+    if(this.kind==='cloth')this.controlMeasures=measure(this.controlIndices,this.pPose,this.controlMeasures);
   }
   solve(){
     this.motion.step(this.dt);
@@ -107,20 +124,22 @@ export class ComponentBody {
   }
   pin(){for(let i=0;i<this.mobility.length;i++)if(!this.mobility[i]){this.p[i*2]=this.pPose[i*2];this.p[i*2+1]=this.pPose[i*2+1];}}
   correctDisplayAreas(){
-    if(this.kind!=='cloth'||!this.clothSamples)return;
+    if(this.kind!=='cloth'||!this.clothSamples)return false;
+    let changed=false;
     // Project the actual rendered area through the control-to-display Jacobian.
     // A valid control face can still compress a thin display face at a fixed
     // transition. Correct its nearby controls, rather than retreating the sheet.
     for(let k=0;k<this.indices.length;k+=3){
-      const tri=Array.from(this.indices.slice(k,k+3)),r=area(this.pose,...tri),current=area(this.positions,...tri),sign=Math.sign(r);
+      const a=this.indices[k],b=this.indices[k+1],c=this.indices[k+2],r=this.displayMeasures.areas[k/3],current=area(this.positions,a,b,c),sign=Math.sign(r);
       const C=sign*current-Math.abs(r)*(this.component.limits.minAreaRatio+.0001);if(C>=0||Math.abs(r)<1e-8)continue;
-      const[a,b,c]=tri,p=this.positions,grad=[[sign*(p[b*2+1]-p[c*2+1]),sign*(p[c*2]-p[b*2])],[sign*(p[c*2+1]-p[a*2+1]),sign*(p[a*2]-p[c*2])],[sign*(p[a*2+1]-p[b*2+1]),sign*(p[b*2]-p[a*2])]],controls=new Map();
+      const tri=[a,b,c],p=this.positions,grad=[[sign*(p[b*2+1]-p[c*2+1]),sign*(p[c*2]-p[b*2])],[sign*(p[c*2+1]-p[a*2+1]),sign*(p[a*2]-p[c*2])],[sign*(p[a*2+1]-p[b*2+1]),sign*(p[b*2]-p[a*2])]],controls=new Map();
       for(let n=0;n<3;n++){const vertex=tri[n],sample=this.clothSamples[vertex],factor=this.clothFactors?.[vertex]??1;
         for(let j=0;j<3;j++){const id=sample[j],g=controls.get(id)||[0,0],w=sample[j+3]*factor;g[0]+=grad[n][0]*w;g[1]+=grad[n][1]*w;controls.set(id,g);}}
       let mass=0;for(const[id,g]of controls)mass+=this.invMass(id)*(g[0]*g[0]+g[1]*g[1]);if(mass<1e-12)continue;
       const delta=-C/mass;for(const[id,g]of controls){this.p[id*2]+=this.invMass(id)*delta*g[0];this.p[id*2+1]+=this.invMass(id)*delta*g[1];}
-      this.syncMesh();this.limited=true;
+      this.syncMesh();this.limited=true;changed=true;
     }
+    return changed;
   }
   sampleCloth(source,target){for(let i=0;i<this.clothSamples.length;i++){const[a,b,c,u,v,w]=this.clothSamples[i];target[i*2]=source[a*2]*u+source[b*2]*v+source[c*2]*w;target[i*2+1]=source[a*2+1]*u+source[b*2+1]*v+source[c*2+1]*w;}}
   syncMesh(){
@@ -134,14 +153,14 @@ export class ComponentBody {
     }
     // Fixed-region boundaries are actual mesh edges. A pinned source pixel
     // cannot inherit residual motion through a triangle crossing the root.
+    for(let i=0;i<this.mobility.length-1;i++){const j=i+1,a=angle(this.pPose[j*2]-this.pPose[i*2],this.pPose[j*2+1]-this.pPose[i*2+1],this.p[j*2]-this.p[i*2],this.p[j*2+1]-this.p[i*2+1]);this.segmentRotations[i*2]=Math.cos(a);this.segmentRotations[i*2+1]=Math.sin(a);}
     for(let v=0;v<this.weights.length;v++){
       if(!this.weights[v]){this.positions[v*2]=this.pose[v*2];this.positions[v*2+1]=this.pose[v*2+1];continue;}
       let dx=0,dy=0;
-      for(const{i,t,w}of this.fieldSamples[v]){const j=i+1;
+      for(const{i,t,w,factor}of this.fieldSamples[v]){const j=i+1;
         const cx=this.p[i*2]*(1-t)+this.p[j*2]*t,cy=this.p[i*2+1]*(1-t)+this.p[j*2+1]*t,px=this.pPose[i*2]*(1-t)+this.pPose[j*2]*t,py=this.pPose[i*2+1]*(1-t)+this.pPose[j*2+1]*t;
-        const a=angle(this.pPose[j*2]-this.pPose[i*2],this.pPose[j*2+1]-this.pPose[i*2+1],this.p[j*2]-this.p[i*2],this.p[j*2+1]-this.p[i*2+1]);
-        const r=rotate(this.pose[v*2]-px,this.pose[v*2+1]-py,a),mobility=this.mobility[i]*(1-t)+this.mobility[j]*t,factor=Math.min(1,this.weights[v]/Math.max(1e-8,mobility));
-        dx+=(cx+r[0]-this.pose[v*2])*factor*w;dy+=(cy+r[1]-this.pose[v*2+1])*factor*w;
+        const cs=this.segmentRotations[i*2],sn=this.segmentRotations[i*2+1],rx=this.pose[v*2]-px,ry=this.pose[v*2+1]-py;
+        dx+=(cx+(cs*rx-sn*ry)-this.pose[v*2])*factor*w;dy+=(cy+(sn*rx+cs*ry)-this.pose[v*2+1])*factor*w;
       }
       this.positions[v*2]=this.pose[v*2]+dx;this.positions[v*2+1]=this.pose[v*2+1]+dy;
     }
@@ -160,13 +179,13 @@ export class ComponentBody {
       stretch=Math.max(stretch,ratio-1);maxAngle=Math.max(maxAngle,a);
       if(ratio>1+lim.maxStretch+1e-5||ratio<1-lim.maxCompression-1e-5||a>lim.maxAngle+1e-4)valid=false;
     }
-    const indices=controlsOnly&&this.kind==='cloth'?this.controlIndices:this.indices,pose=controlsOnly&&this.kind==='cloth'?this.pPose:this.pose,positions=controlsOnly&&this.kind==='cloth'?this.p:this.positions;
+    const indices=controlsOnly&&this.kind==='cloth'?this.controlIndices:this.indices,measures=controlsOnly&&this.kind==='cloth'?this.controlMeasures:this.displayMeasures,positions=controlsOnly&&this.kind==='cloth'?this.p:this.positions;
     for(let k=0;k<indices.length;k+=3){
-      const i=indices[k],j=indices[k+1],n=indices[k+2],r=area(pose,i,j,n),a=area(positions,i,j,n),ratio=a/r;
+      const i=indices[k],j=indices[k+1],n=indices[k+2],r=measures.areas[k/3],a=area(positions,i,j,n),ratio=a/r;
       minArea=Math.min(minArea,ratio);if(!Number.isFinite(ratio)||ratio<lim.minAreaRatio-1e-5)valid=false;
       if(this.kind==='cloth')for(let j=0;j<3;j++){
         const u=indices[k+j],v=indices[k+(j+1)%3],w=indices[k+(j+2)%3];
-        const before=angle(pose[v*2]-pose[u*2],pose[v*2+1]-pose[u*2+1],pose[w*2]-pose[u*2],pose[w*2+1]-pose[u*2+1]);
+        const before=measures.angles[k+j];
         const after=angle(positions[v*2]-positions[u*2],positions[v*2+1]-positions[u*2+1],positions[w*2]-positions[u*2],positions[w*2+1]-positions[u*2+1]);
         let delta=Math.abs(after-before);if(delta>Math.PI)delta=TAU-delta;delta*=DEG;shear=Math.max(shear,delta);if(delta>lim.maxShear+1e-4)valid=false;
       }
@@ -195,7 +214,7 @@ export class ComponentBody {
         if(Math.hypot(cx,cy)>1e-8){this.limited=true;this.correction=Math.max(this.correction,Math.hypot(cx,cy));
           this.p[i*2]-=cx*this.invMass(i)/mass;this.p[i*2+1]-=cy*this.invMass(i)/mass;this.p[j*2]+=cx*this.invMass(j)/mass;this.p[j*2+1]+=cy*this.invMass(j)/mass;}
       }
-      this.pin();this.syncMesh();this.correctDisplayAreas();this.pin();this.syncMesh();if(this.inspect(!this.clothFactors).valid)break;
+      this.pin();this.syncMesh();if(this.correctDisplayAreas()){this.pin();this.syncMesh();}const metrics=this.inspect(!this.clothFactors);if(metrics.valid){if(this.kind!=='cloth'||this.clothFactors)this.finalStats=metrics;return;}
       // Local triangle retreat fixes a fold without stopping the whole cloth.
       if(this.kind==='cloth')for(let k=0;k<this.controlIndices.length;k+=3){
         const tri=[...this.controlIndices.slice(k,k+3)],ratio=area(this.p,...tri)/area(this.pPose,...tri);
@@ -226,9 +245,9 @@ export class ComponentBody {
       const dx=this.p[i*2]-this.pPose[i*2],dy=this.p[i*2+1]-this.pPose[i*2+1],d=Math.hypot(dx,dy);
       if(d>=this.maxDistance*this.mobility[i]*.98&&d){const outward=Math.max(0,(this.velocity[i*2]*dx+this.velocity[i*2+1]*dy)/(d*d));this.velocity[i*2]-=outward*dx;this.velocity[i*2+1]-=outward*dy;}
     }
-    this.stats=this.inspect();
+    this.stats=this.motion.reconcile?this.inspect():this.finalStats||this.inspect();
   }
-  reset(){this.p.set(this.pRest);this.pPose.set(this.pRest);this.pose.set(this.rest);this.positions.set(this.rest);this.velocity.fill(0);this.theta=0;this.angularVelocity=0;this.pivot=null;this.motion.reset?.();if(this.motion.lastRoot)this.motion.lastRoot.set(this.pRest.slice(this.motion.root*2,this.motion.root*2+2));this.limited=false;this.fallback=false;this.correction=0;this.stats=this.inspect();}
+  reset(){this.p.set(this.pRest);this.pPose.set(this.pRest);this.pose.set(this.rest);this.positions.set(this.rest);this.supportPose.fill(NaN);this.measurePose();this.finalStats=null;this.velocity.fill(0);this.theta=0;this.angularVelocity=0;this.pivot=null;this.motion.reset?.();if(this.motion.lastRoot)this.motion.lastRoot.set(this.pRest.slice(this.motion.root*2,this.motion.root*2+2));this.limited=false;this.fallback=false;this.correction=0;this.stats=this.inspect();}
   moving(){return Math.abs(this.angularVelocity)>.0001||this.velocity.some(v=>Math.abs(v)>.02)||this.positions.some((v,i)=>Math.abs(v-this.pose[i])>.015)||this.pose.some((v,i)=>Math.abs(v-this.rest[i])>.015);}
   impulse(x,y,vx,vy,radius,weight=1){
     if(![x,y,vx,vy,radius].every(Number.isFinite)||radius<=0)return;
@@ -257,9 +276,16 @@ export class ComponentBody {
     return [point[0]+this.positions[nearest*2]-this.rest[nearest*2],point[1]+this.positions[nearest*2+1]-this.rest[nearest*2+1]];
   }
   sampleAlpha(x,y,layers){
-    for(let k=0;k<this.indices.length;k+=3){const tri=[...this.indices.slice(k,k+3)],weights=barycentric([x,y],...tri.map(i=>[this.positions[i*2],this.positions[i*2+1]]));if(!weights)continue;
-      const p=[0,1].map(axis=>tri.reduce((s,i,n)=>s+this.rest[i*2+axis]*weights[n],0));
-      let value=0;for(const l of layers){if(!l)continue;const ix=Math.floor(p[0]-l.bounds.x),iy=Math.floor(p[1]-l.bounds.y);if(ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height)value=Math.max(value,l.maskedRgba[(iy*l.bounds.width+ix)*4+3]);}return value;
+    for(let k=0;k<this.indices.length;k+=3){
+      const a=this.indices[k]*2,b=this.indices[k+1]*2,c=this.indices[k+2]*2,p=this.positions,ax=p[a],ay=p[a+1],bx=p[b],by=p[b+1],cx=p[c],cy=p[c+1];
+      // Reject empty space before barycentrics, without allocating triangle and
+      // vector arrays for every probe in the swept mouse contact.
+      const ex=(Math.abs(bx-ax)+Math.abs(cx-ax))*1e-6,ey=(Math.abs(by-ay)+Math.abs(cy-ay))*1e-6;
+      if(x<Math.min(ax,bx,cx)-ex||x>Math.max(ax,bx,cx)+ex||y<Math.min(ay,by,cy)-ey||y>Math.max(ay,by,cy)+ey)continue;
+      const d=(bx-ax)*(cy-ay)-(by-ay)*(cx-ax);if(Math.abs(d)<1e-12)continue;
+      const u=((bx-x)*(cy-y)-(by-y)*(cx-x))/d,v=((x-ax)*(cy-ay)-(y-ay)*(cx-ax))/d,w=1-u-v;if(u< -1e-6||v< -1e-6||w< -1e-6)continue;
+      const r=this.rest,rx=r[a]*u+r[b]*v+r[c]*w,ry=r[a+1]*u+r[b+1]*v+r[c+1]*w;
+      let value=0;for(const l of layers){if(!l)continue;const ix=Math.floor(rx-l.bounds.x),iy=Math.floor(ry-l.bounds.y);if(ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height)value=Math.max(value,l.maskedRgba[(iy*l.bounds.width+ix)*4+3]);}return value;
     }return 0;
   }
   hit(x,y,layers){return this.sampleAlpha(x,y,layers)>32;}

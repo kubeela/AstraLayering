@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { projectionField } from './projection-field.js';
+import { projectionDepth } from './lighting-model.js';
+import { surfaceDistanceMaterial } from './surface-shadow.js';
 const raster = (data, w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), w, h), 0, 0); return c; };
 const pixels = c => c.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, c.width, c.height).data;
 function tex(data, w, h, color = false) {
@@ -7,10 +9,18 @@ function tex(data, w, h, color = false) {
   t.colorSpace = color ? THREE.SRGBColorSpace : THREE.NoColorSpace;
   t.minFilter = t.magFilter = THREE.LinearFilter; t.needsUpdate = true; return t;
 }
+function surfaceTexture(layer){
+  const {width:w,height:h}=layer.bounds,raw=new Uint8Array(layer.map.data.length);
+  for(let q=0;q<raw.length;q+=4)raw[q]=layer.map.data[q+3];
+  const heights=projectionDepth(raw,layer.maskedRgba,w,h),half=new Uint16Array(heights.length);
+  for(let i=0;i<heights.length;i++)half[i]=THREE.DataUtils.toHalfFloat(heights[i]);
+  const t=new THREE.DataTexture(half,w,h,THREE.RedFormat,THREE.HalfFloatType);t.flipY=true;t.minFilter=t.magFilter=THREE.LinearFilter;t.needsUpdate=true;return t;
+}
 const vertex = `varying vec2 sourceUV; varying vec2 restPixel; varying vec2 currentPixel; varying vec2 displacement;
 attribute vec2 rest;
 void main(){sourceUV=uv;restPixel=rest;currentPixel=position.xy;displacement=position.xy-rest;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
 const fragment = `uniform sampler2D colorMap; uniform sampler2D dataMap;
+uniform sampler2D surfaceMap;
 uniform int pass; uniform float strength; uniform float normalY;
 uniform vec4 sourceBounds; uniform vec2 canvasOrigin;
 varying vec2 displacement;
@@ -35,7 +45,7 @@ void main(){
   }
   rgb=normalize(n)*0.5+0.5;
  }
- if(pass==2)rgb=vec3(m.a);
+ if(pass==2)rgb=vec3(m.a,m.a,texture2D(surfaceMap,sourceUV).r);
  gl_FragColor=vec4(rgb*alpha,alpha);
 }`;
 // Cache consecutive static layers, preserving their exact place between moving
@@ -65,12 +75,13 @@ export class PhysicsRenderer {
     const opts = { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: false, stencilBuffer: false };
     this.scratch = new THREE.WebGLRenderTarget(ow, oh, {...opts,stencilBuffer:true});
     this.targets = Array.from({ length: 3 }, () => new THREE.WebGLRenderTarget(ow, oh, opts));
+    this.surfaceTarget=new THREE.WebGLRenderTarget(ow,oh,{...opts,format:THREE.RedFormat});
     this.targets[0].texture.colorSpace = THREE.LinearSRGBColorSpace;
     this.resolveScene = new THREE.Scene(); this.resolveCamera = new THREE.Camera();
     this.resolveMaterial = new THREE.ShaderMaterial({ depthTest: false, depthWrite: false,
       uniforms: { source: { value: this.scratch.texture }, pass: { value: 0 } },
       vertexShader: 'varying vec2 coord;void main(){coord=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
-      fragmentShader: 'uniform sampler2D source;uniform int pass;varying vec2 coord;void main(){vec4 c=texture2D(source,coord);vec3 rgb=c.a>0.00001?c.rgb/c.a:vec3(0.0);if(pass==0)rgb=mix(rgb/12.92,pow((rgb+0.055)/1.055,vec3(2.4)),step(vec3(0.04045),rgb));gl_FragColor=vec4(rgb,c.a);}' });
+      fragmentShader: 'uniform sampler2D source;uniform int pass;varying vec2 coord;void main(){vec4 c=texture2D(source,coord);vec3 rgb=c.a>0.00001?c.rgb/c.a:vec3(0.0);if(pass==0)rgb=mix(rgb/12.92,pow((rgb+0.055)/1.055,vec3(2.4)),step(vec3(0.04045),rgb));if(pass==2)rgb=vec3(rgb.r);if(pass==3)rgb=vec3(rgb.b);gl_FragColor=vec4(rgb,c.a);}' });
     this.resolveQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.resolveMaterial); this.resolveScene.add(this.resolveQuad);
     let pending = [];
     const parentBody=l=>{if(!poseSource)return;const b=l.bounds,rest=new Float64Array([b.x,b.y,b.x+b.width,b.y,b.x,b.y+b.height,b.x+b.width,b.y+b.height]),positions=new Float64Array(rest);return {rest,positions,update(){for(let i=0;i<rest.length/2;i++)positions.set(poseSource.sourcePoint([rest[i*2],rest[i*2+1]]),i*2);}};};
@@ -81,16 +92,8 @@ export class PhysicsRenderer {
       geometry: stage.mesh.geometry, caster: stage.caster.geometry, distance: stage.caster.customDistanceMaterial,size:stage.depthUniforms.studioSize.value.clone() };
     this.displayGeometry = new THREE.PlaneGeometry(2 * ow / h, 2*oh/h);
     this.casterGeometry = new THREE.PlaneGeometry(2 * ow / h, 2*oh/h, Math.round(256 * ow / oh), 256);
-    this.distance = new THREE.MeshDistanceMaterial({ map: this.targets[0].texture, alphaTest: .5, side: THREE.DoubleSide });
-    const uniforms = { movingDepth: { value: this.targets[2].texture }, movingScale: { value: stage.settings.depthScale } };
-    this.distance.onBeforeCompile = shader => {
-      Object.assign(shader.uniforms, uniforms);
-      shader.vertexShader = 'uniform sampler2D movingDepth;uniform float movingScale;\n' + shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed.z=(texture2D(movingDepth,uv).r-0.5)*movingScale;');
-      const original='float dist = length( vWorldPosition - referencePosition );';
-      if(!shader.fragmentShader.includes(original))throw Error('Three.js 动态深度投影接口需要复核');
-      shader.fragmentShader='uniform sampler2D movingDepth;uniform float movingScale;\n'+shader.fragmentShader.replace(original,'float z=(texture2D(movingDepth,vMapUv).r-0.5)*movingScale;\nfloat dist=length(vec3(vWorldPosition.xy,z)-referencePosition);');
-    };
-    this.distance.customProgramCacheKey = () => 'astra-moving-depth-caster-1'; this.distanceUniforms = uniforms;
+    const uniforms = { movingDepth: { value: this.surfaceTarget.texture }, movingScale: { value: stage.settings.depthScale } };
+    this.distance=surfaceDistanceMaterial(this.targets[0].texture,uniforms.movingDepth,uniforms.movingScale,true);this.distanceUniforms = uniforms;
     this.baseNormalKey = `${stage.settings.normalStrength}/${stage.settings.normalY}`; this.baseDepthScale = stage.settings.depthScale;
     stage.deformation = this; stage.setMode(stage.mode);
   }
@@ -100,7 +103,7 @@ export class PhysicsRenderer {
     stage.color=neutral?saved.color:this.targets[0].texture;
     stage.normal=neutral?saved.normal:this.targets[1].texture;
     stage.depth=neutral?saved.depth:this.targets[2].texture;
-    stage.depthUniforms.studioDepth.value=neutral?saved.surface:stage.depth;
+    stage.depthUniforms.studioDepth.value=neutral?saved.surface:this.surfaceTarget.texture;
     stage.depthUniforms.studioSize.value.copy(neutral?saved.size:new THREE.Vector2(2*this.outputSize[0]/this.size[1],2*this.outputSize[1]/this.size[1]));
     stage.mesh.geometry=neutral?saved.geometry:this.displayGeometry;
     stage.caster.geometry=neutral?saved.caster:this.casterGeometry;
@@ -122,16 +125,16 @@ export class PhysicsRenderer {
     const color = new Uint8ClampedArray(l.rgba); for (let q = 3; q < color.length; q += 4) color[q] = l.maskedRgba[q];
     // Composite in source sRGB, matching Krita/Canvas alpha blending. Decode
     // once in the resolve pass before handing the texture to MToon.
-    const c = tex(color, b.width, b.height), m = tex(l.map.data, b.width, b.height);
+    const c = tex(color, b.width, b.height), m = tex(l.map.data, b.width, b.height),surface=surfaceTexture(l);
     const material = new THREE.ShaderMaterial({ vertexShader: vertex, fragmentShader: fragment,
       transparent: true, premultipliedAlpha: true, side: THREE.DoubleSide, depthTest: false, depthWrite: false,
       stencilWrite:true,stencilRef:1,stencilFunc:THREE.NotEqualStencilFunc,stencilZPass:THREE.ReplaceStencilOp,
-      uniforms: { colorMap: { value: c }, dataMap: { value: m }, pass: { value: 0 }, strength: { value: 1 }, normalY: { value: 1 }, sourceBounds:{value:new THREE.Vector4(b.x,b.y,b.width,b.height)},canvasOrigin:{value:new THREE.Vector2(-this.padding,this.size[1]+this.padding)} } });
+      uniforms: { colorMap: { value: c }, dataMap: { value: m },surfaceMap:{value:surface}, pass: { value: 0 }, strength: { value: 1 }, normalY: { value: 1 }, sourceBounds:{value:new THREE.Vector4(b.x,b.y,b.width,b.height)},canvasOrigin:{value:new THREE.Vector2(-this.padding,this.size[1]+this.padding)} } });
     const mesh = new THREE.Mesh(g, material); mesh.frustumCulled = false; mesh.renderOrder = this.items.length;
     // Artwork opacity applies once per source layer. GPU subpixel rounding at
     // very thin shared edges must not blend the same translucent texel twice.
     mesh.onBeforeRender=renderer=>renderer.clearStencil();
-    this.scene.add(mesh); this.items.push({ mesh, body, c, m });
+    this.scene.add(mesh); this.items.push({ mesh, body, c, m,surface });
     return this.items.at(-1);
   }
   addProjection(l,body,byUuid,opts){
@@ -154,7 +157,7 @@ export class PhysicsRenderer {
     const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array([-pad,-pad,0,w-pad,-pad,0,-pad,h-pad,0,w-pad,h-pad,0]),3));geometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array([0,1,1,1,0,0,1,0]),2));geometry.setIndex([0,1,2,1,3,2]);
     const material=new THREE.ShaderMaterial({vertexShader:'varying vec2 sourceUV;void main(){sourceUV=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'uniform sampler2D source;varying vec2 sourceUV;void main(){gl_FragColor=texture2D(source,sourceUV);}',uniforms:{source:{value:target.texture}},transparent:true,premultipliedAlpha:true,side:THREE.DoubleSide,depthTest:false,depthWrite:false});
     const mesh=new THREE.Mesh(geometry,material);mesh.frustumCulled=false;mesh.renderOrder=this.items.length;this.scene.add(mesh);this.items.push({mesh});
-    this.groups.push({scene,target,clip,base,shadows,opacity:l.opacity/255});
+    this.groups.push({scene,target,clip,base,shadows,mesh,opacity:l.opacity/255});
   }
   update() {
     for (const { mesh, body } of this.items) if (body) { body.update?.();const p = mesh.geometry.getAttribute('position'); for (let i = 0; i < p.count; i++) { p.array[i * 3] = body.positions[i * 2]; p.array[i * 3 + 1] = body.positions[i * 2 + 1]; } p.needsUpdate = true; }
@@ -191,6 +194,9 @@ export class PhysicsRenderer {
         this.resolveMaterial.uniforms.pass.value = pass;
         for (const { mesh } of this.items) { const u = mesh.material.uniforms; if(u.pass){u.pass.value = pass; u.strength.value = s.normalStrength; u.normalY.value = s.normalY;} }
         for(const g of this.groups){
+          g.mesh.visible=pass===0;
+          if(pass!==0){this.scene.add(g.base.mesh);g.base.mesh.renderOrder=g.mesh.renderOrder;continue;}
+          g.scene.add(g.base.mesh);g.base.mesh.renderOrder=0;
           for(const i of g.shadows)i.mesh.visible=false;
           renderer.setRenderTarget(g.clip);renderer.setClearColor(0,0);renderer.clear();renderer.render(g.scene,this.camera);
           for(const i of g.shadows)i.mesh.visible=pass===0;
@@ -200,8 +206,9 @@ export class PhysicsRenderer {
         renderer.setClearColor(pass === 0 ? new THREE.Color(0, 0, 0) : pass === 1 ? new THREE.Color(.5, .5, 1) : new THREE.Color(.5, .5, .5), pass === 0 ? 0 : 1);
         renderer.clear(); renderer.render(this.scene, this.camera);
         renderer.setRenderTarget(this.targets[pass]); renderer.setClearColor(0, 0); renderer.clear(); renderer.render(this.resolveScene, this.resolveCamera);
+        if(pass===2){this.resolveMaterial.uniforms.pass.value=3;renderer.setRenderTarget(this.surfaceTarget);renderer.clear();renderer.render(this.resolveScene,this.resolveCamera);}
       }
-    } finally { renderer.setRenderTarget(target); renderer.setClearColor(clear, alpha); renderer.setScissorTest(scissor); }
+    } finally {for(const g of this.groups){g.scene.add(g.base.mesh);g.base.mesh.renderOrder=0;g.mesh.visible=true;}renderer.setRenderTarget(target); renderer.setClearColor(clear, alpha); renderer.setScissorTest(scissor); }
     this.dirty = false; stage.renderer.shadowMap.needsUpdate = true;
   }
   dispose() {
@@ -216,10 +223,10 @@ export class PhysicsRenderer {
       stage.casterMaterial.map = saved.color; stage.casterMaterial.needsUpdate = stage.material.needsUpdate = true;
       stage.updateNormal(); stage.updateRelief(); stage.setMode(stage.mode);
     }
-    this.scratch.dispose(); for (const t of this.targets) t.dispose();
+    this.scratch.dispose();this.surfaceTarget.dispose(); for (const t of this.targets) t.dispose();
     for(const g of this.groups){g.target.dispose();g.clip.dispose();}
     this.displayGeometry.dispose(); this.casterGeometry.dispose();
-    for (const i of this.items) { i.mesh.geometry.dispose(); i.mesh.material.dispose(); i.c?.dispose(); i.m?.dispose(); }
+    for (const i of this.items) { i.mesh.geometry.dispose(); i.mesh.material.dispose(); i.c?.dispose(); i.m?.dispose();i.surface?.dispose(); }
     this.resolveQuad.geometry.dispose(); this.resolveMaterial.dispose(); this.distance.dispose();
   }
 }
