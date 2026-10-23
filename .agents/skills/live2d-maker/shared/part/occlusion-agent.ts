@@ -1,3 +1,4 @@
+import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -107,10 +108,11 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     tools: [createSvgPreviewTool({ directory: context.directory, reference,
       canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, observationDirectory: directory,
       observed: entry => observations.push(entry) }), propose, check, submit, problem],
-    prompt: `${prompt}\n提示词来源：${occlusionPromptPath}\n\n【本次输入】\n${JSON.stringify({
+    prompt: renderPrompt(prompt, {prompt_source: occlusionPromptPath,
+      runtime_context: JSON.stringify({
       preview: previewPath, reference, canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, parts, groups: walkGroups(context.groups).filter(({ group }) => group.groups.length)
         .map(({ group, parent }) => ({ id: group.id, parent: parent?.id, name: group.name, note: group.note })),
-    }, null, 2)}\n`,
+    }, null, 2)}, occlusionPromptPath, ["prompt_source","runtime_context"]),
   });
   await verify();
   if (!result) throw agentOutcomeError('层级规划未提交完整表或具体阻断', response);

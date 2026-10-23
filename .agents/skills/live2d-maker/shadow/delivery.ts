@@ -4,6 +4,7 @@ import { unzipSync, strFromU8 } from 'fflate';
 import sharp from 'sharp';
 import type { ShadowMode } from '../shared/shadow.ts';
 import type { ShadowInput } from './input.ts';
+import { parseXml, xmlAttributes } from '../shared/xml.ts';
 
 // Decompress the document directory and saved composite only, never every paint tile.
 export function kraContents(bytes: Uint8Array) {
@@ -17,17 +18,17 @@ export function kraContents(bytes: Uint8Array) {
 }
 const uuid = (value: string) => value.replace(/[{}]/g, '').toLowerCase();
 export function kraLayers(xml: string) {
-  const layers = new Map<string, Record<string, string>>(), parents: string[] = [];
+  const layers = new Map<string, Record<string, string>>(), ids = new Map<object, string>();
   // Krita stores mask children as <mask>, rather than <layer>.
-  for (const token of xml.matchAll(/<\/?(?:layer|mask)\b[^>]*>/g)) {
-    const tag = token[0];
-    if (tag.startsWith('</')) { parents.pop(); continue; }
-    const decode = (s: string) => s.replace(/&(quot|apos|amp|lt|gt);/g, (_m, k: string) => ({quot:'"',apos:"'",amp:'&',lt:'<',gt:'>'}[k]!));
-    const attrs = Object.fromEntries([...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map(match => [match[1], decode(match[2])]));
+  for (const node of Array.from(parseXml(xml).getElementsByTagName('*'))) {
+    if (!['layer', 'mask'].includes(node.tagName)) continue;
+    const attrs = xmlAttributes(node);
     const id = uuid(attrs.uuid ?? '');
     if (!id || layers.has(id)) throw new Error('KRA 图层 UUID 缺失或重复');
-    layers.set(id, { ...attrs, parent: parents.at(-1) ?? '', order: String(layers.size) });
-    if (!tag.endsWith('/>')) parents.push(id);
+    let parent = node.parentNode;
+    while (parent && !ids.has(parent)) parent = parent.parentNode;
+    layers.set(id, { ...attrs, parent: parent ? ids.get(parent)! : '', order: String(layers.size) });
+    ids.set(node, id);
   }
   return layers;
 }
@@ -69,8 +70,8 @@ export async function validateDelivery(output: string, input: ShadowInput, mode:
   if (merged.info.width !== width || merged.info.height !== height || !merged.data.equals(exported.data)) {
     throw new Error('阴影 KRA 保存合成图与原尺寸 PNG 不一致，请重开工程并重新导出');
   }
-  const image = kra.xml.match(/<IMAGE\b[^>]*>/)?.[0] ?? '';
-  if (!image.includes(`width="${width}"`) || !image.includes(`height="${height}"`)) throw new Error('阴影 KRA 画布尺寸改变');
+  const image = parseXml(kra.xml).getElementsByTagName('IMAGE')[0];
+  if (Number(image?.getAttribute('width')) !== width || Number(image?.getAttribute('height')) !== height) throw new Error('阴影 KRA 画布尺寸改变');
   const layers = kraLayers(kra.xml), parts = new Set<string>();
   const original = kraLayers(kraContents(await readFile(input.characterKra)).xml);
   for (const path of input.structureFiles.filter(path => path.endsWith('groups.json'))) {

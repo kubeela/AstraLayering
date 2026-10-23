@@ -27,7 +27,7 @@ SVG 合并由程序执行，不配置 LLM。内部步骤名和人物／衣服的
 | CLI | 模型枚举 | 入口 |
 | --- | --- | --- |
 | Codex | `gpt-6.1-sol`、`gpt-6-astra` | SDK 默认入口，或 `layering_codex_path` |
-| Claude Code | `claude-sonnet-5.5`、`claude-opus-5.5`、`claude-haiku-5.5` | `layering_claude_path`，未填则找全局 `claude` |
+| Claude Code | `claude-sonnet-5-5`、`claude-opus-5-5`、`claude-haiku-5-5` | `layering_claude_path`，未填则找全局 `claude` |
 | Antigravity（agv） | `gemini-4-argon` | `layering_agv_path`，未填则找全局 `agy`／`agv`／`antigravity` |
 
 支持力度 `low`、`medium`、`high`、`xhigh`。配置路径相对于 skill 根目录；模型是否获授权仍由用户的 CLI 登录或 provider 决定。pnpm 不安装 Claude Code 或 Antigravity。启动会明确报告缺失入口；缺少 CLI 或登录凭据时，调用 skill 的 agent 询问用户下一步，不自动安装或代替登录。
@@ -57,7 +57,7 @@ layering_agent_part_review_model=gemini-4-argon-high
 | `gpt-image-2.5-sunburst`／`gpt-image-2.5-flare` | `layering_openai_image_base_url`、`layering_openai_image_api_key`；协议为 `openai` |
 | `gemini-nano-banana-2.1` | `layering_google_image_base_url`、`layering_google_image_api_key`；`layering_google_image_protocol` 明确选择 `gemini` 或 `openai` |
 
-所有拥有生图工具的步骤，`codex-native` 与非 Codex harness 的组合都会在启动前报错。Codex 选择具体 GPT 或 Nano Banana 模型时，使用同一份[原生补丁](../tools/codex/README.md)：先配置对应 API 和 `layering_codex_path`，启动前检查 `image_provider_version: 2`。工作流为本请求启动本地生图路由，原生 imagegen 负责工具调用、保存图片和事件；路由复用共享 OpenAI／Google 协议适配，模型与凭据不进入提示词。`codex-native` 不启动此路由，也不注入自定义生图配置。
+所有拥有生图工具的步骤，`codex-native` 与非 Codex harness 的组合都会在启动前报错。Codex 选择具体 GPT 或 Nano Banana 模型时，使用同一份[原生补丁](../patches/codex/README.md)：配置对应 API；`layering_codex_path` 留空时按需自动构建，也可显式指定已有补丁。启动前检查 `image_provider_version: 2`。工作流为本请求启动本地生图路由，原生 imagegen 负责工具调用、保存图片和事件；路由复用共享 OpenAI／Google 协议适配，模型与凭据不进入提示词。`codex-native` 不启动此路由，也不注入自定义生图配置。
 
 Claude／AGV 继续注册共享 `image_generation` 函数工具，不使用 Codex 补丁。其 [description.md](../shared/tools/image_generation/description.md) 与 [schema.json](../shared/tools/image_generation/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用同一底层接口实现，调用者都只关心绘图要求和参考图。绘图任务与验收要求保持各管线自己的版本。
 
@@ -73,7 +73,7 @@ Nano 后处理不改变生成图尺寸和比例；工作流仍负责后续等比
 
 AGV 的 GenAI 网关 base URL 可以包含 `/v1beta`，转发会保留供应商前缀并避免重复追加 API 路径。请求日志记录实际图片数、请求字节数、上游响应头与首条内容时间，不记录正文或鉴权。
 
-部分供应商不接受 CLI 内部请求使用的 `MINIMAL`。`layering_agv_minimal_thinking_level` 默认留空，完整保留原生协议；只有实际接口确认不支持时才显式填写 `LOW`、`MEDIUM` 或 `HIGH`，仅替换 MINIMAL。支持 MINIMAL 的上游无需设置，不统一降低或改写 agent 的力度。若遇到 CLI 自身 60 秒响应头期限，按[可选 AGV 兼容补丁](../tools/agv/README.md)核对构建并验证；不自动安装、修改全局 CLI 或重建会话。
+部分供应商不接受 CLI 内部请求使用的 `MINIMAL`。`layering_agv_minimal_thinking_level` 默认留空，完整保留原生协议；只有实际接口确认不支持时才显式填写 `LOW`、`MEDIUM` 或 `HIGH`，仅替换 MINIMAL。支持 MINIMAL 的上游无需设置，不统一降低或改写 agent 的力度。若遇到 CLI 自身 60 秒响应头期限，按[可选 AGV 兼容补丁](../patches/agv/README.md)核对构建并验证；不自动安装、修改全局 CLI 或重建会话。
 
 ## 会话与记录
 

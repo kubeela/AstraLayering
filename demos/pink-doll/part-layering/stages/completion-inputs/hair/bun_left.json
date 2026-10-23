@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "hair/bun_left",
+  "beforeHash": "63d674e7d63a235d347fc6ac86d1e5d1fe18f879e58e56e28e43c015d62f1449",
+  "afterHash": "b2d3275dbbe95771686181dc5dd18c061d2c9f951de6e954898b9e2fc9ff1dc9",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda"
+    }
+  ]
+}

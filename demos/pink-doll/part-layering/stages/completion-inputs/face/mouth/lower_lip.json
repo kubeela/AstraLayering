@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/mouth/lower_lip",
+  "beforeHash": "997ef2c3a1f8acaaf44ea1b6d48bc912ee80b64f54426f270a0ac65f0ee5416e",
+  "afterHash": "5c902e846d233543f51719b0b26a996651f25ee567c9544b3b2f33c68ca63f4c",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda"
+    }
+  ]
+}

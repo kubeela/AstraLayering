@@ -38,14 +38,9 @@ pnpm start --name jianma --status --json
 
 首次创建 skill 根目录 `.env` 前，按[推荐模型方案](model-presets.md)让用户确认选择，再以 [example.env](../example.env) 为基础填写；已有配置不覆盖。直接调用脚本而没有 `.env` 时，使用默认方案：preparation 为 Codex low，其余默认模型保持，生图使用外部 Codex 内置服务。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
 
-`layering_image_compact_threshold` 留空关闭，只作用于 Codex；例如网关最多 50 张时可设 `49`。这项能力需要仓库提供的可选 Codex 补丁：
+`layering_image_compact_threshold` 留空关闭，只作用于 Codex；例如网关最多 50 张时可设 `49`。这项能力需要仓库提供的可选 Codex 补丁。启用此项或 Codex 自定义生图后，若 `layering_codex_path` 留空，启动预检自动准备补丁；有缓存直接复用，并发等待同一次构建。显式指定路径时检查该入口，失败不会替换用户配置。
 
-```bash
-pnpm build:codex
-# .env: layering_codex_path=.codex-build/bin/codex
-```
-
-构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改系统 Codex 或全局配置。已有图片压缩策略保持不变：恰好阈值时图片参加视觉 compact；超过阈值时按容量分段，保留尚未压缩的原图、对应文字与工具配对。见[构建与本地验证说明](../tools/codex/README.md)。Codex 自定义生图也使用这份补丁；`codex-native` 和 Claude／AGV 自定义生图不要求生图补丁。
+构建需要 Git 和平台 C/C++ 编译依赖。Rust 1.95.0 不可用时明确提示，在临时目录隔离安装，构建成功或失败均清理，不写全局 Cargo/Rustup 或 shell 设置。补丁固定在官方 0.161.0 源码，独立生成文件，不修改系统 Codex 或全局配置。已有图片压缩策略保持不变：恰好阈值时图片参加视觉 compact；超过阈值时按容量分段，保留尚未压缩的原图、对应文字与工具配对。见[构建与本地验证说明](../patches/codex/README.md)。Codex 自定义生图也使用这份补丁；`codex-native` 和 Claude／AGV 自定义生图不要求生图补丁。
 
 ### 生效配置核对
 
@@ -58,7 +53,7 @@ pnpm env:check
 此命令通过工作流同一个配置加载器只读展示生效的 LLM 职责模型与力度、逐步骤生图模型、API 是否已填写及协议、CLI 路径、Codex 配置目录和图片阈值。列出覆盖 `.env` 的 shell 键名，不输出密钥或 API URL，不启动模型、不验证登录，也不修改配置与任务。按[安装与前置](setup.md)另外检查所选路线的 CLI、权限和绘图能力。
 
 - 确认 `skill` 和 `configuration` 指向实际运行的安装；从网页发起时检查工作台 checkout 内的 skill 及服务环境，从 CLI 发起时检查原 CLI 环境。仅在另一份 checkout 或交互终端核对，不能证明后台配置正确。
-- `codex.imageCompaction.enabled: false`、`threshold: null` 表示未启用按图片数保护。**补丁存在或生图可用不能证明图片保护开启。** 已知上游拒绝含 50 张及以上图片的请求时，设置 `layering_image_compact_threshold=49`；报告须显示 `enabled: true`、`threshold: 49`、`childThreshold: "49"`，并用配置的二进制检查 `debug layering-capabilities` 中 `image_compaction_version: 2`。没有此限制的环境保持用户选择，默认仍关闭。
+- `codex.imageCompaction.enabled: false`、`threshold: null` 表示未启用按图片数保护。**补丁存在或生图可用不能证明图片保护开启。** 已知上游拒绝含 50 张及以上图片的请求时，设置 `layering_image_compact_threshold=49`；报告须显示 `enabled: true`、`threshold: 49`、`childThreshold: "49"`，并用启动时选定的二进制检查 `debug layering-capabilities` 中 `image_compaction_version: 2`。没有此限制的环境保持用户选择，默认仍关闭。
 - 用户已有 Codex 的 `model_auto_compact_token_limit` 是 token 阈值，与图片数量是两种独立限制；调大 token 窗口不会解除每请求 50 张限制。工作流不通过此 `.env` 键设置 token 窗口或改写用户 Codex 配置。
 - 更新模型方案只改用户指定的差异键；保留 provider、API、CLI 路径、`CODEX_HOME`、图片阈值及显示环境，不用完整模板覆盖已有 `.env`。配置由进程启动时加载，修改后让停止的任务用原入口续跑；正在执行的请求不会热更新。
 

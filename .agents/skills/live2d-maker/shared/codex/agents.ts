@@ -1,5 +1,7 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { checkCodexCapabilities, defaultModels, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment } from './environment.ts';
-import { formatAgentError } from './diagnostics.ts';
+import { agentCallError, formatAgentError } from './diagnostics.ts';
+import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { toolDefinition } from './tool-config.ts';
 import { workflowsDirectory } from '../paths.ts';
 import { Codex, type CodexOptions, type Usage, type UserInput } from '@openai/codex-sdk';
@@ -89,6 +91,8 @@ export class CodexAgents {
     let imageModel: string | undefined;
     let id = resumeThreadId;
     const functionOptions = () => ({ ...sessionOptions,
+      // Startup may select the cached patch after this session was constructed.
+      codexPathOverride: this.options.codexPathOverride ?? this.options.environment?.codex.codexPathOverride,
       env: { ...sessionOptions.env, ...route?.env } });
     const closing = new AbortController();
     let closed = false, busy = false;
@@ -272,7 +276,7 @@ export class CodexAgents {
     async function runSdkAttempt(task: AgentTask): Promise<AgentResult> {
       const input: UserInput[] = [{ type: 'text', text: task.prompt }];
       for (const image of task.images ?? []) {
-        input.push({ type: 'text', text: image.description });
+        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() });
         input.push({ type: 'local_image', path: resolve(image.path) });
       }
       const timeoutMs = task.timeoutMs;
@@ -286,7 +290,7 @@ export class CodexAgents {
       let finalResponse = '';
       let usage: Usage | null = null;
       let completed = false;
-      let lastError: string | undefined;
+      let lastError: unknown;
       try {
         const { events } = await thread.runStreamed(input, {
           outputSchema: task.outputSchema,
@@ -306,13 +310,13 @@ export class CodexAgents {
             completed = true;
             usage = event.usage;
           } else if (event.type === 'turn.failed') {
-            throw new AgentCallError(event.error.message);
+            throw agentCallError(event.error, 'Codex 回合失败');
           } else if (event.type === 'error') {
             // CLI 的内置重连也会发出 error。等待终态，不能提前切断它的重试。
-            lastError = event.message;
+            lastError = event;
           }
         }
-        if (!completed) throw lastError ? new AgentCallError(lastError) : new Error(`${task.name} 的事件流结束，但未收到 turn.completed`);
+        if (!completed) throw lastError ? agentCallError(lastError, 'Codex 事件流未完成') : new Error(`${task.name} 的事件流结束，但未收到 turn.completed`);
         const images: GeneratedImage[] = [];
         if (task.imageGeneration) {
           const output = JSON.parse(finalResponse) as { savedPath?: unknown; error?: unknown };
@@ -327,12 +331,15 @@ export class CodexAgents {
         progress?.(`agent 回合结束：${task.name}`);
         return { text: finalResponse, images: [...savedImages].map(savedPath => ({ savedPath })), threadId: thread.id, logDirectory: log.directory };
       } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        await log.finish({ status: 'failed', threadId: thread.id, usage, finalResponse, error: message,
-          images: [...savedImages].map(savedPath => ({ savedPath })) });
-        progress?.(`失败：${task.name}；${message}；记录：${log.directory}`);
+        const message = errorMessage(error, String(error));
         const reported = error instanceof AgentCallError ? error : new AgentCallError(message,
           completed || signal.aborted ? 'localError' : undefined, { cause: error });
+        reported.details ??= errorDetails(error);
+        if (lastError) reported.details = { terminal: reported.details, notification: errorDetails(lastError) };
+        await log.finish({ status: 'failed', threadId: thread.id, usage, finalResponse, error: message,
+          errorDetails: reported.details,
+          images: [...savedImages].map(savedPath => ({ savedPath })) });
+        progress?.(`失败：${task.name}；${message}；记录：${log.directory}`);
         reported.logDirectory = log.directory;
         reported.threadId = thread.id ?? undefined;
         reported.finalResponse = finalResponse;

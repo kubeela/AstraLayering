@@ -1,5 +1,7 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { loadWorkflowEnvironment, workflowCodexOptions } from './environment.ts';
-import { formatAgentError } from './diagnostics.ts';
+import { agentCallError, formatAgentError } from './diagnostics.ts';
+import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { workflowsDirectory } from '../paths.ts';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -13,7 +15,7 @@ import type { ToolResult } from './function-tools.ts';
 
 // Only the protocol subset used here is maintained. The CLI is pinned by codex-sdk.
 type Message = { id?: number | string; method?: string; params?: Record<string, any>;
-  result?: Record<string, any>; error?: { code: number; message: string } };
+  result?: Record<string, any>; error?: { code: number; message: string; data?: unknown } };
 
 export function appServerCommand(override?: string): { command: string; args: string[] } {
   if (override) return { command: override, args: ['app-server'] };
@@ -53,13 +55,14 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
   let sandbox: string | undefined, nextId = 0, closed = false, busy = false, stderr = '';
   let failure: { error: unknown } | undefined;
   const closing = new AbortController();
+  const transportEnded = new AbortController();
   const pending = new Map<number | string, ReturnType<typeof Promise.withResolvers<Record<string, any>>>>();
   const exited = Promise.withResolvers<void>();
   let current: {
     task: AgentTask; log: AgentLog; signal: AbortSignal;
     completion: ReturnType<typeof Promise.withResolvers<void>>;
     tools: Map<string, NonNullable<AgentTask['tools']>[number]>;
-    done: boolean; finalResponse: string; usage: unknown; images: GeneratedImage[];
+    done: boolean; finalResponse: string; usage: unknown; images: GeneratedImage[]; errors: unknown[];
   } | undefined;
 
   const fail = (error: unknown) => {
@@ -101,7 +104,11 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     child.once('error', fail);
     child.once('close', (code, exitSignal) => {
       exited.resolve();
-      if (!closed) fail(new Error(`Codex App Server 提前退出（${exitSignal ?? code}）：${stderr}`));
+      const error = new Error(`Codex App Server 提前退出（${exitSignal ?? code}）：${stderr}`);
+      transportEnded.abort(error);
+      // stdout can already be buffered while the reader awaits log writes.
+      // Drain its notifications before rejecting the turn and clearing state.
+      void (reader ?? Promise.resolve()).then(() => { if (!closed) fail(error); });
     });
     child.stdin!.on('error', error => { if (!closed) fail(error); });
     child.stderr!.on('data', (chunk: Buffer) => { stderr = (stderr + chunk.toString('utf8')).slice(-16_000); });
@@ -126,7 +133,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
             }
             const tool = current.tools.get(params.tool);
             if (!tool) throw new Error(`未注册的工具：${params.tool}`);
-            result = await abortable(tool.execute(params.arguments, current.signal), current.signal);
+            const signal = AbortSignal.any([current.signal, transportEnded.signal]);
+            result = await abortable(tool.execute(params.arguments, signal), signal);
           } catch (error) {
             result = { success: false, contentItems: [{ type: 'inputText',
               text: error instanceof Error ? error.message : String(error) }] };
@@ -136,7 +144,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
           const waiter = pending.get(message.id);
           if (waiter) {
             pending.delete(message.id);
-            if (message.error) waiter.reject(new AgentCallError(message.error.message));
+            if (message.error) waiter.reject(agentCallError(message.error, 'App Server RPC 调用失败'));
             else waiter.resolve(message.result ?? {});
           }
         } else if (message.method === 'item/completed' && current) {
@@ -154,8 +162,12 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
           current.usage = message.params?.tokenUsage;
         } else if (message.method === 'turn/completed' && current) {
           const turn = message.params?.turn;
-          if (turn?.status !== 'completed') failTurn(new AgentCallError(turn?.error?.message ?? `回合状态：${turn?.status}`, turn?.error?.codexErrorInfo));
+          if (turn?.status !== 'completed') {
+            failTurn(agentCallError(turn?.error, `回合状态：${turn?.status}`, turn?.error?.codexErrorInfo));
+          }
           else { current.done = true; current.completion.resolve(); }
+        } else if (message.method === 'error' && current) {
+          current.errors.push(errorDetails(message.params));
         }
         // error(willRetry=true/false) 都是通知。等 turn/completed 的终态后才决定恢复，
         // 不能在 CLI 仍重连或正在结束旧 turn 时启动另一个 turn。
@@ -207,7 +219,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       };
       const input: Record<string, unknown>[] = [{ type: 'text', text: task.prompt, text_elements: [] }];
       for (const image of task.images ?? []) {
-        input.push({ type: 'text', text: image.description, text_elements: [] });
+        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd(), text_elements: [] });
         input.push({ type: 'localImage', path: resolve(image.path) });
       }
       const log = await AgentLog.create(resolve(options.logDirectory ?? join(cwd, '.run/agents')), task.name, {
@@ -218,7 +230,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       });
       const completion = Promise.withResolvers<void>();
       void completion.promise.catch(() => {});
-      current = { task, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [] };
+      current = { task, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [], errors: [] };
       const state = current;
       options.progress?.(`开始：${task.name}；原生 function tools${threadId ? `；沿用会话 ${threadId}` : ''}；记录：${log.directory}`);
       const abort = () => {
@@ -237,12 +249,15 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         options.progress?.(`agent 回合结束：${task.name}`);
         return { text: state.finalResponse, images: state.images, threadId, logDirectory: log.directory };
       } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
+        const message = errorMessage(error, String(error));
+        const reported = error instanceof AgentCallError ? error : new AgentCallError(message, undefined, { cause: error });
+        reported.details ??= errorDetails(error);
+        if (state.errors.length) reported.details = { terminal: reported.details, notifications: state.errors };
         await log.finish({ status: 'failed', threadId, usage: state.usage, finalResponse: state.finalResponse,
           error: message, ...(error instanceof AgentCallError ? { errorInfo: error.info } : {}),
+          errorDetails: reported.details,
           images: state.images, ...(stderr ? { stderr } : {}) });
         options.progress?.(`失败：${task.name}；${message}；记录：${log.directory}`);
-        const reported = error instanceof AgentCallError ? error : new AgentCallError(message, undefined, { cause: error });
         reported.logDirectory = log.directory;
         reported.threadId = threadId;
         reported.finalResponse = state.finalResponse;

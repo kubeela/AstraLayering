@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "arms/arm_right/forearm",
+  "beforeHash": "8b02604276bc67a2ab8d7222c8f1e3802706926395ce08da16c5eeeddc7fd82f",
+  "afterHash": "20030e2ac7a253f2af75c84586536eb9b7a02ea10e6ebf77b415aa5369ddb96a",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "groupId": "neck",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成颈部（neck）组轮廓色块的全图叠加定位与分块高倍放大（左半部 crop=[570,300,65,70]、右半部 crop=[620,300,65,70] 8倍放大及整体区域 6倍放大）核对：\n1. 可见区域与接缝覆盖完整：上沿与下巴（face）接缝、左右两侧颈部及斜方肌外缘（与脑后 hair 交界）、两侧肩带内缘及下方锁骨分界（与 body 交界，锁骨归入 body）均完整覆盖，无漏画或越界。\n2. 边缘精度与转折：各处曲线弧度、转向及转折角均精确贴合原图线稿中心与结构分界。\n3. 轮廓干净度：单一闭合路径结构清晰连续，无孤立噪点、碎块或无依据缺口。审查通过。",
+      "candidateHash": "b164275ab593bfb122cc3a065f1333d1aaf386580669333a08089ea90364fcdc",
+      "observations": [
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-1.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-2.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-3.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "svg",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-4.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-5.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-6.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-7.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/neck.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/neck/2026-10-21T16-45-21-407Z-8.png"
+        }
+      ],
+      "updatedAt": "2026-10-21T17:10:59.915Z"
+    }
+  ]
+}

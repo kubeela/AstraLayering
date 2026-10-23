@@ -1,13 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile, readFile, rm, symlink } from 'node:fs/promises';
+import { mkdtemp, realpath, mkdir, writeFile, readFile, rm, symlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 import { createWorkbench } from '../server.ts';
 
 test('Chinese project names persist across views and restarts without changing a running task', async t => {
-  const root = await mkdtemp(join(tmpdir(), 'astra-project-name-')), dir = join(root, 'runs');
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'astra-project-name-'))), dir = join(root, 'runs');
   await mkdir(dir);
   const name = 'character-01', folder = join(dir, name);
   await mkdir(folder); await mkdir(join(folder, '.runner.lock'));
@@ -51,7 +51,7 @@ test('Chinese project names persist across views and restarts without changing a
 });
 
 test('new tasks accept Chinese display names and retain their stable directory names', async t => {
-  const root = await mkdtemp(join(tmpdir(), 'astra-new-project-name-'));
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'astra-new-project-name-')));
   const server = await createWorkbench({ settingsPath: join(root, 'settings.json'), defaultDir: root });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(async () => { await new Promise<void>(resolve => server.close(() => resolve())); await rm(root, { recursive: true, force: true }); });

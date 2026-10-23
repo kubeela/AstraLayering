@@ -1,3 +1,4 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { pipelineDirectory, resolveInput, resolveRunsDirectory, type PipelineId } from '../paths.ts';
@@ -159,18 +160,16 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         config.threadId = null; await saveConfig(directory, config);
       }
       const handoff = !fresh && !config.threadId ? config.threadHandoff : undefined;
-      if (!fresh && phase !== 'draw' && !config.threadId && !handoff) prompt = (await pipeline.buildPrompt(step, reference, output, krita, previous))
-        + '\n\n已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。\n' + prompt;
+      if (!fresh && phase !== 'draw' && !config.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});
       if (handoff) {
         const notes = await readFile(handoff.notes, 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
         // A new repair thread also needs the original drawing task and inputs.
-        if (phase !== 'draw') prompt = (await pipeline.buildPrompt(step, reference, output, krita, previous))
-          + '\n\n上方原绘制任务用于恢复背景；本次只接续下方修复任务，不重新提交首次绘制报告。\n' + prompt;
-        prompt += '\n\n---\n会话恢复交接（继续已有工作）：\n'
-          + '旧 threadId：' + handoff.previousThreadId + '\n原因：' + handoff.reason
-          + '\n已有产物与正式报告均保留。先核对文件，从未完成处继续；不要因更换会话重画已合格的部分或重置流程记录。'
-          + '\n当前阶段：' + step.id + ' / ' + phase + '\n交接记录：\n' + notes;
+        if (phase !== 'draw') prompt = renderPromptFile(new URL('../prompts/raster-handoff-repair.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});
+        prompt = renderPromptFile(new URL('../prompts/raster-handoff.md',import.meta.url),{
+          task_prompt:prompt, previous_thread_id:handoff.previousThreadId, reason:handoff.reason,
+          step_id:step.id, phase, notes,
+        });
       }
       await writeFile(join(output, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
       await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
@@ -184,8 +183,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         tools: pipeline.tools?.(output, reference, step, phase),
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         imageRoots: [dirname(directory), ...inputDirectories],
-        recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? (await pipeline.buildPrompt(step, reference, output, krita, previous))
-          + '\n\n已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。\n' + prompt : undefined,
+        recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');

@@ -1,3 +1,4 @@
+import {preparationImagePrompt} from '../shared/prompts/preparation.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { randomUUID } from 'node:crypto';
 import { readFile, rename, unlink, writeFile } from 'node:fs/promises';
@@ -7,7 +8,7 @@ import type { PreparationSteps } from './preparation.ts';
 import { checkStandardJudgment } from './preparation-state.ts';
 
 function imageTaskPrompt(drawingPrompt: string): string {
-  return `【绘制提示词】\n${drawingPrompt.trim()}\n\n【执行规则】\n将绘制提示词原样传给本步骤配置的生图工具（image_generation 是生图工具的概念总称，不要求工具字面同名；按当前配置使用实际生图工具，例如 Codex 内置 image_gen.imagegen。仅允许调用生图工具，禁止调用任何生图以外的工具；不得调用工具搜索、shell、文件操作、浏览器或其他辅助工具。不得切换到未配置的生图服务或直接 API），不增补绘制要求。传入两张参考图，启用透明背景，输出 PNG。只调用一次；完成后直接返回路径，不检查、不返修、不重试。成功时 savedPath 为真实路径、error 为 null；失败时 savedPath 为 null、error 填原因。`;
+  return preparationImagePrompt(drawingPrompt,'image');
 }
 
 async function saveImage(image: GeneratedImage | undefined, output: string): Promise<void> {
@@ -50,7 +51,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
       const result = await agents.run({
         step: 'part_standardize', name: '标准姿态', imageGeneration: true, outputSchema: imageOutputSchema,
         images: [{ path: image, description: '角色原始参考图。' }],
-        prompt: `【绘制提示词】\n${prompt.trim()}\n\n【执行规则】\n将绘制提示词原样传给本步骤配置的生图工具（image_generation 是生图工具的概念总称，不要求工具字面同名；按当前配置使用实际生图工具，例如 Codex 内置 image_gen.imagegen。仅允许调用生图工具，禁止调用任何生图以外的工具；不得调用工具搜索、shell、文件操作、浏览器或其他辅助工具。不得切换到未配置的生图服务或直接 API），不增补绘制要求。传入这张参考图，输出 PNG。只调用一次；完成后直接返回路径，不检查、不返修。工具不可用或生成失败时返回 error，不用原图替代生成结果。成功时 savedPath 为真实路径、error 为 null；失败时 savedPath 为 null、error 填原因。`,
+        prompt: preparationImagePrompt(prompt,'standardize'),
       });
       await validateAgentOutcome(result, () => saveImage(result.images.at(-1), output));
     },

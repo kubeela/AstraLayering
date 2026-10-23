@@ -98,7 +98,17 @@ test('codex-native does not enable image patches; custom Codex models require cu
   await checkCodexCapabilities(custom, custom.codex, { image: true });
   await assert.rejects(checkCodexCapabilities(custom, { codexPathOverride: '/missing/codex' }, { image: true }), /补丁能力检查/);
   const noBinary = loadWorkflowEnvironment({}, root);
-  await assert.rejects(checkCodexCapabilities(noBinary, noBinary.codex, { image: true }), /需要补丁版/);
+  let builds = 0;
+  const prepare = async () => { builds++; return executable; };
+  await checkCodexCapabilities(noBinary, noBinary.codex, {}, prepare);
+  assert.equal(builds, 0);
+  const requestOptions = {...noBinary.codex};
+  await checkCodexCapabilities(noBinary, requestOptions, { image: true }, prepare);
+  assert.equal(builds, 1);
+  assert.equal(requestOptions.codexPathOverride, executable);
+  assert.equal(noBinary.codex.codexPathOverride, executable);
+  await checkCodexCapabilities(noBinary, noBinary.codex, { image: true }, prepare);
+  assert.equal(builds, 1);
 });
 
 test('native routes share OpenAI/Gemini transports, preserve image bytes/alpha and isolate concurrent models', async t => {
@@ -189,4 +199,19 @@ test('Codex drawing/repair uses native image events, resumes after changing imag
       assert.ok(!r.params.dynamicTools.some((tool: any) => tool.name === 'image_generation'));
     }
   } finally { await session.close(); }
+});
+
+test('构造会话后才解析的补丁路径传给实际 App Server，不沿用构造时的入口快照', async t => {
+  const {root} = await fixture(t), server = await fakeAppServer(root, []);
+  const source = (await readFile(server.executable,'utf8')).replace('#!/usr/bin/env node', `#!${process.execPath}`)
+    .replace('const calls =', `if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(capabilities))}); process.exit(0); }\nconst calls =`);
+  await writeFile(server.executable,source);
+  const environment = loadWorkflowEnvironment({layering_image_compact_threshold:'49'},root);
+  const session = new CodexAgents({environment,cwd:root,logDirectory:join(root,'logs')}).createSession();
+  environment.codex.codexPathOverride = server.executable;
+  try {
+    await session.run({name:'late-patch',prompt:'fixture',tools:[]},AbortSignal.timeout(5000));
+    const protocol=(await readFile(server.capture,'utf8')).trim().split('\n').map(line=>JSON.parse(line));
+    assert.ok(protocol.some(event=>event.method==='thread/start'));
+  } finally {await session.close();}
 });

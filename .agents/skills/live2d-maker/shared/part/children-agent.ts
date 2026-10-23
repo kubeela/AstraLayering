@@ -1,3 +1,4 @@
+import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -70,10 +71,13 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
     images: [{ path: reference, description: profile.references.children }, ...(profile.attachChildrenReferences ? references : [])],
     tools: [createBitmapTool(context.directory, directory, references.map(image => image.path)), createSvgPreviewTool({ directory: context.directory, reference, canvas,
       observationDirectory: directory, observed: entry => observations.push(entry) }), submit],
-    prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${JSON.stringify({
+    prompt: renderPrompt(prompt.text, {prompt_source: prompt.path,
+      runtime_context: JSON.stringify({
       group: { id: context.group.id, name: context.group.name, kind: context.group.kind ?? 'group', note: context.group.note },
       sourceSvg, reference, additionalReferences: references, canvas, parentGroup: context.parent?.id ?? null,
-    }, null, 2)}\n\n【固定范围与操作约定】\n${rules}\n固定约定提示词来源：${rulesPath}\n`,
+    }, null, 2),
+      fixed_rules: rules,
+      fixed_rules_source: rulesPath}, prompt.path, ["prompt_source","runtime_context","fixed_rules","fixed_rules_source"]),
   });
   await verifySource();
   if (!submitted) throw agentOutcomeError('子组分析未通过 submit_children 提交', response);

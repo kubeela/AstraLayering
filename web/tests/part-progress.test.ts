@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdir, mkdtemp, readFile, rm, symlink, utimes, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, readFile, rm, symlink, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { snapshot } from '../snapshot.ts';
@@ -9,7 +9,7 @@ import { stampedSvg, svgHash } from '../../.agents/skills/live2d-maker/shared/pa
 
 const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0L10 10Z"/></svg>');
 async function fixture(t: any, pipeline = 'part-layering') {
-  const dir = await mkdtemp(join(tmpdir(), 'part-progress-')), task = join(dir, 'test');
+  const dir = await realpath(await mkdtemp(join(tmpdir(), 'part-progress-'))), task = join(dir, 'test');
   await mkdir(task);
   t.after(() => rm(dir, { recursive: true, force: true }));
   const put = async (path: string, value: any) => {

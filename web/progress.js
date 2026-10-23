@@ -59,9 +59,11 @@ export const pipelineSteps = [
   partSteps(false), rasterSteps(false), partSteps(true), rasterSteps(true),
   [step('step01', '人物与衣服 KRA 组装', 'pending', [],
     '同一 agent 调整穿戴关系、必要遮罩与局部笔触，重开验收并导出 KRA、合成 PNG 和报告。')],
-  [{ ...step('step01', '阴影方式 · 二选一', 'pending', [step('mask', 'Live2D 蒙版', 'pending'), step('normal-depth', '法线＋深度', 'pending', [
-    step('normal-depth-maps', '生成与验收贴图', 'pending'),
-  ])],
+  [{ ...step('step01', '阴影方式 · 二选一', 'pending', [
+    { ...step('mask', 'Live2D 蒙版', 'pending'), processDirectory: 'shadow/mask/step01' },
+    step('normal-depth', '法线＋深度', 'pending', [
+      { ...step('normal-depth-maps', '生成与验收贴图', 'pending'), processDirectory: 'shadow/normal-depth/step01' },
+    ])],
     '本轮执行所选分支；两种方式的已有产物分别保留。'), childrenMode: 'alternative' }],
   [step('step01','组件与实际连接','pending'),step('step02','固定区与约束绑定','pending'),step('step03','连续动画复核','pending')],
 ];

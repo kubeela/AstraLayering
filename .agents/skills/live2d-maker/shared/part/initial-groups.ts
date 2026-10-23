@@ -1,3 +1,4 @@
+import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -58,7 +59,10 @@ export async function recognizeInitialGroups(
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
     name: '首次分组识别', cwd: context.directory,
     images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...(profile.originalReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalReference }] : [])] : undefined,
-    prompt: `${prompt}\n本次运行目录：${context.directory}\n${profile.referenceLabel}：${reference}\n分组文件：${store.path}\n`,
+    prompt: renderPrompt(prompt, {run_directory: context.directory,
+      reference_label: profile.referenceLabel,
+      reference_path: reference,
+      groups_path: store.path}, join(profile.promptsDirectory, '4-初始分组.md'), ["run_directory","reference_label","reference_path","groups_path"]),
     tools: [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups],
   });
   if (!submitted) throw agentOutcomeError('首次分组未通过 write_groups 保存', response);

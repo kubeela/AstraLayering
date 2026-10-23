@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/eyebrow_right",
+  "beforeHash": "ea12d15cf6c9d36e5db6e87a20303b7630220c230fc8e65987fd9cf6980eaf1c",
+  "afterHash": "b13e66762a238e581c948882047c4782bc79d1e9d738c76da1fc1bfaa991376c",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda"
+    }
+  ]
+}

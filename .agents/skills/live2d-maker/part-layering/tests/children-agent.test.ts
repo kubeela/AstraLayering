@@ -68,7 +68,7 @@ test('拆分收到可选图片用途，按需调用能看到 prompts 外部参�
   const f = await fixture(t), external = await fixture(t);
   const prompts = join(external.directory, 'prompts'), hairDirectory = join(prompts, 'groups', 'hair');
   await mkdir(hairDirectory, { recursive: true });
-  await writeAtomic(join(hairDirectory, 'children.md'), '有长发粒度疑问时，按 additionalReferences 用 view_bitmap 查看完整长束。');
+  await writeAtomic(join(hairDirectory, 'children.md'), '有长发粒度疑问时，按 additionalReferences 用 view_bitmap 查看完整长束。\n提示词来源：{prompt_source}\n\n【本次输入】\n{runtime_context}\n\n【固定范围与操作约定】\n{fixed_rules}\n固定约定提示词来源：{fixed_rules_source}');
   await writeAtomic(join(hairDirectory, 'children.references.json'), JSON.stringify([
     { path: '../../../references/base.png', description: '长发主束与细束对照：按需查看，不固定层数' },
   ]));

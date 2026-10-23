@@ -1,3 +1,4 @@
+import {staticPromptPrefix} from '../../shared/tests/prompt-prefix.ts';
 import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -150,8 +151,8 @@ test('真实默认适配器接入绘制、自检和独立 review，之后停在�
   const result = await runLayering({ ...f, groups: null, steps: createLayeringSteps(mock) });
   assert.equal(result.status, 'pending');
   assert.equal(mock.calls.length, 2);
-  assert.ok(mock.calls[0].task.prompt.startsWith(await readFile(new URL('../prompts/5-组轮廓.md', import.meta.url), 'utf8')));
-  assert.ok(mock.calls[1].task.prompt.startsWith(await readFile(new URL('../prompts/6-轮廓review.md', import.meta.url), 'utf8')));
+  assert.ok(mock.calls[0].task.prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/5-组轮廓.md', import.meta.url), 'utf8'))));
+  assert.ok(mock.calls[1].task.prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/6-轮廓review.md', import.meta.url), 'utf8'))));
   assert.ok(mock.calls.every(call => call.task.cwd === f.directory));
   assert.equal(mock.calls[0].task.imageGeneration, true);
   assert.equal(mock.calls[1].task.imageGeneration, false);

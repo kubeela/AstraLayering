@@ -1,0 +1,6 @@
+---
+本次运行信息：
+- 工作目录为本任务根目录，使用正文中的固定相对路径。
+- Krita 已检查：{krita_executable}，版本 {krita_version}；沿用当前显示环境。
+- 本次报告写入指定暂存文件，调度器检查后发布正式 Markdown。不要自行写正式 review / repair 报告，不修改 run.json、.running、.completed 或调度日志。
+- 最后按输出 schema 返回 status 和 summary。completed 表示本次报告已完整写出；具体检查或修复结论以报告第一行为准。普通修复未完成应继续处理，或完整写出“仍有问题”报告并返回 completed，由调度继续原会话；不能因待确认、层序调整或标准冲突返回 blocked。仅在必要输入缺失、损坏或工具故障使执行无法继续时返回 blocked，说明具体错误、恢复尝试与已保存进度。

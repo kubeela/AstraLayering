@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "face/eye_left/lower_eyelashes",
+  "beforeHash": "b815ee83d0fd36a6c0f0b43a2e62ebacb2d9e3432884272af26cb3b521fcdb4f",
+  "afterHash": "a253b64430cb1234232dbb738bc4b333801871cd4e1da3a896f9c1121ed309d8",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda"
+    }
+  ]
+}

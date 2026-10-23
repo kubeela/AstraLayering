@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile, rm, copyFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, realpath, writeFile, rm, copyFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { test, type TestContext } from 'node:test';
-import { inspectAgv } from '../../tools/agv/inspect.ts';
+import { inspectAgv } from '../../patches/agv/inspect.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 
@@ -17,7 +17,7 @@ async function fixture(t: TestContext, code: string) {
   await writeFile(join(directory, 'antigravity.bin'), payload, { mode: 0o700 });
   await writeFile(join(directory, 'patch.json'), JSON.stringify({ defaultResponseHeaderTimeoutSeconds: 0, autoUpdateDisabledByTrue: true,
     patchedSha256: createHash('sha256').update(payload).digest('hex') }));
-  await copyFile(new URL('../../tools/agv/launch.mjs', import.meta.url), join(directory, 'launch.mjs'));
+  await copyFile(new URL('../agents/agv-launch.mjs', import.meta.url), join(directory, 'launch.mjs'));
   return directory;
 }
 
@@ -56,4 +56,15 @@ test('preflight exposes an ineffective patch setting instead of swallowing it as
   await assert.rejects(cliExecutable(loadWorkflowEnvironment({ layering_agv_path: executable }), 'agv'), error => {
     assert.match(String(error), /禁用自动更新/); assert.doesNotMatch(String(error), /没有可用的全局入口/); return true;
   });
+});
+
+test('AGV 自动补丁默认关闭；开启后实际进入兼容检查，不静默运行不支持的入口', async t => {
+  const root=await mkdtemp(join(tmpdir(),'agv-auto-')); t.after(()=>rm(root,{recursive:true,force:true}));
+  const executable=join(root,'agy'), bytes=Buffer.alloc(80); bytes.write('7f454c460201',0,'hex');
+  await writeFile(executable,bytes, {mode:0o700});
+  const disabled=loadWorkflowEnvironment({layering_agv_path:executable,layering_agv_patch:'false'},root);
+  assert.equal(await cliExecutable(disabled,'agv',root),await realpath(executable));
+  const enabled=loadWorkflowEnvironment({layering_agv_path:executable,layering_agv_patch:'true'},root);
+  await assert.rejects(cliExecutable(enabled,'agv',root),/无法确认/);
+  assert.deepEqual(await readFile(executable),bytes);
 });

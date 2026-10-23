@@ -18,6 +18,18 @@ BLENDS = {'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten'}
 FIELDS = ('visible', 'opacity', 'blend', 'inheritAlpha', 'passThrough')
 
 
+def part_label(label):
+    """Depth prefixes and ::regions are metadata, never another movable part."""
+    name = re.sub(r'^\d+(?:\s*\|\s*|\s+)', '', label.strip())
+    prefix = re.match(r'^(人物|衣服|衣装)\s*\|\s*', name)
+    namespace = 'character:' if prefix and prefix.group(1) == '人物' else 'clothing:' if prefix else ''
+    if prefix:
+        name = re.sub(r'^\d+(?:\s*\|\s*|\s+)', '', name[prefix.end():])
+    name = name.strip()
+    path = name.split('::', 1)[0]
+    return namespace, name, path
+
+
 def atomic(path, value):
     temp = path.with_suffix('.tmp')
     temp.write_text(json.dumps(value, ensure_ascii=False), encoding='utf-8')
@@ -275,11 +287,9 @@ class Layers(Extension):
             while parent:
                 visible = visible and session['nodes'][parent].visible()
                 parent = next(r['parentId'] for r in session['rows'] if r['id'] == parent)
-            prefix = re.match(r'^(人物|衣服|衣装)\s*\|\s*', row['name'])
-            namespace = 'character:' if prefix and prefix.group(1) == '人物' else 'clothing:' if prefix else ''
-            name = re.sub(r'^\d+\s+', '', row['name'][prefix.end():] if prefix else row['name'])
-            part_path = namespace + name if namespace else None
-            group = namespace + name.rsplit('/', 1)[0] if '/' in name else row['parentId'] or row['id']
+            namespace, name, path = part_label(row['name'])
+            part_path = namespace + path if namespace else None
+            group = namespace + path.rsplit('/', 1)[0] if '/' in path else row['parentId'] or row['id']
             members = []
             source_layers = []
             source_digest = hashlib.sha256()

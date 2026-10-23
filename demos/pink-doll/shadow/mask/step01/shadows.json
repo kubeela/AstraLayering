@@ -1,0 +1,246 @@
+{
+  "version": 2,
+  "shadows": [
+    {
+      "id": "bangs-to-face",
+      "casterPartId": "character:hair/bangs",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "casterLayerUuids": [
+        "afba6c2a-e2c9-4741-8d14-b343a2aa86a0"
+      ],
+      "receiverLayerUuids": [
+        "7800356f-9032-4024-869a-e72d6b74200a"
+      ],
+      "shadowLayerUuid": "da96d840-c3c6-4f13-a200-64b167e40a0a",
+      "clipBaseLayerUuid": "7800356f-9032-4024-869a-e72d6b74200a",
+      "blendMode": "normal",
+      "follow": "caster",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -6,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          0,
+          -4
+        ],
+        [
+          0,
+          6
+        ]
+      ],
+      "notes": "对照 simplified-subject.png 采样前额刘海投影实色 #d8b3ab（RGB 216, 179, 171），采用 normal 模式与两侧前侧发影层共享同一不透明发影色以避免重叠处叠黑。完整影层包含刘海被遮挡冠部、额角外扩余量、各分缝内侧投射与刘海尖下窄影带，置于 投影组｜face/face_base 内对 030 | face/face_base 启用原生透明度继承。"
+    },
+    {
+      "id": "front-side-hair-right-to-face",
+      "casterPartId": "character:hair/front_side_hair_right",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "casterLayerUuids": [
+        "1e71109d-8aa2-47de-a18b-b2263dac69d9",
+        "50caed0f-2a51-41b8-abee-e1cca6f5574b"
+      ],
+      "receiverLayerUuids": [
+        "7800356f-9032-4024-869a-e72d6b74200a"
+      ],
+      "shadowLayerUuid": "ae087aea-4d09-45fc-8de7-e6cde295760e",
+      "clipBaseLayerUuid": "7800356f-9032-4024-869a-e72d6b74200a",
+      "blendMode": "normal",
+      "follow": "caster",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          -4,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "notes": "右前侧发（画面左侧）仅在上方太阳穴至上睫外角上方（y=155..226）与脸缘实际接触并投出窄影，脸颊段（y=228..280）贴合脸缘无外露影带，完整影层保留该贴脸发束被遮挡主体与外侧余量以便向内偏移 [+6, 0] 时自然显影；外伸细发与下方离开脸缘的卷尾不向脸内搬移成影。采用与刘海一致的 #d8b3ab normal 模式避免叠黑。"
+    },
+    {
+      "id": "front-side-hair-left-to-face",
+      "casterPartId": "character:hair/front_side_hair_left",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "casterLayerUuids": [
+        "e9e0a043-bac8-43b9-9551-a96f91136236",
+        "1057823f-d760-4671-bfcd-e91cc0907013"
+      ],
+      "receiverLayerUuids": [
+        "7800356f-9032-4024-869a-e72d6b74200a"
+      ],
+      "shadowLayerUuid": "7be235e3-b70f-4809-8834-a0b56190afc6",
+      "clipBaseLayerUuid": "7800356f-9032-4024-869a-e72d6b74200a",
+      "blendMode": "normal",
+      "follow": "caster",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -6,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "notes": "左前侧发（画面右侧）仅在上方太阳穴至上睫外角上方（y=155..226）与脸缘实际接触并投出窄影，脸颊段（y=228..281）收于贴脸发束轮廓内，完整影层保留贴脸发束被遮挡主体与外侧余量以支持 [-6, 0] 等偏移；外伸细发与下方卷尾不向脸内搬移成影。采用 #d8b3ab normal 模式避免与刘海影叠黑。"
+    },
+    {
+      "id": "skirt-to-legs",
+      "casterPartId": "clothing:skirt/lower_tier",
+      "receiverPartIds": [
+        "character:legs/leg_right/leg",
+        "character:legs/leg_left/leg"
+      ],
+      "casterLayerUuids": [
+        "f16a16dc-91e9-448f-9e9a-fb3b096e5799",
+        "7381db10-bf7b-4238-bccf-25c11543179e"
+      ],
+      "receiverLayerUuids": [
+        "28730050-72ea-410f-98da-bb96875a6436",
+        "b7de4261-4b44-46ee-af8a-6f612d249448"
+      ],
+      "shadowLayerUuid": "3b090e20-4d6b-404b-961d-397373b46339",
+      "clipBaseLayerUuid": "80158e91-98bd-4e56-baff-8d32c3baa172",
+      "blendMode": "multiply",
+      "follow": "caster",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -10,
+          0
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          0,
+          -10
+        ],
+        [
+          0,
+          12
+        ]
+      ],
+      "notes": "裙摆下层对双腿大腿根部投出连续弧形阴影，先局部清理 007/008 大腿内侧上端（y=710..815）残留的旧连体衣投影底色，再用隔离组 投影组｜legs/leg 内的 受影底座｜legs/leg 联合承载左右腿。阴影层采用 #e0c0be（RGB 224, 192, 190）multiply 模式，叠乘亮部肤色后与 simplified-subject.png 大腿受影色（RGB 222, 171, 159）一致并保留腿部线稿。"
+    }
+  ],
+  "excluded": [
+    {
+      "casterPartId": "character:hair/side_hair_right",
+      "receiverPartIds": [
+        "character:face/face_base",
+        "character:arms/arm_right/upper_arm",
+        "clothing:bodice",
+        "clothing:skirt/upper_tier"
+      ],
+      "reason": "右后侧发（028 | hair/side_hair_right）深度在 face_base（030）之后且整体位于脸颊与躯干外侧，对照 simplified-subject.png 在脸部、上臂与衣身上均无该部件投出的落影。"
+    },
+    {
+      "casterPartId": "character:hair/side_hair_left",
+      "receiverPartIds": [
+        "character:face/face_base",
+        "character:arms/arm_left/upper_arm",
+        "clothing:bodice",
+        "clothing:skirt/upper_tier"
+      ],
+      "reason": "左后侧发（029 | hair/side_hair_left）深度在 face_base（030）之后且位于脸外侧，对照 simplified-subject.png 无落脸或落衣身投影。"
+    },
+    {
+      "casterPartId": "character:hair/bun_right",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "reason": "右侧发髻位于头顶后方（001 | hair/bun_right），不遮挡前向光源且不接触脸部。"
+    },
+    {
+      "casterPartId": "character:hair/bun_left",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "reason": "左侧发髻位于头顶后方（002 | hair/bun_left），不遮挡前向光源且不接触脸部。"
+    },
+    {
+      "casterPartId": "character:hair/back_hair",
+      "receiverPartIds": [
+        "character:face/face_base",
+        "character:neck",
+        "character:body"
+      ],
+      "reason": "后发位于角色最底层，属于背景体积，不向前景脸部或颈胸投射阴影。"
+    },
+    {
+      "casterPartId": "character:face/face_base",
+      "receiverPartIds": [
+        "character:neck",
+        "character:body"
+      ],
+      "reason": "对照 simplified-subject.png，锁骨结构线以上的整个颈部平面（010 | neck 及 013 | body 颈窝交界）均为同一固有暗面（RGB 223, 173, 159），无下巴局部投射边界，且已在原图层完整保留。"
+    },
+    {
+      "casterPartId": "clothing:chest_bow",
+      "receiverPartIds": [
+        "clothing:bodice",
+        "character:body"
+      ],
+      "reason": "对照 simplified-subject.png，胸前蝴蝶结下方与四周仅存在衣服褶皱固有明暗与轮廓线稿，无独立飘带投影带。"
+    },
+    {
+      "casterPartId": "clothing:bodice",
+      "receiverPartIds": [
+        "clothing:skirt/upper_tier",
+        "character:arms/arm_right/upper_arm",
+        "character:arms/arm_left/upper_arm"
+      ],
+      "reason": "对照 simplified-subject.png，上衣下缘与上层裙摆、双侧上臂之间无跨部件投射影带；上臂内侧窄暗边为手臂体积固有暗，已保留在原图层。"
+    },
+    {
+      "casterPartId": "clothing:skirt/upper_tier",
+      "receiverPartIds": [
+        "clothing:skirt/middle_tier"
+      ],
+      "reason": "对照 simplified-subject.png，上层裙摆与中层裙摆交界处仅按竖向褶皱分面着色，无跨层横向投影带。"
+    },
+    {
+      "casterPartId": "clothing:skirt/middle_tier",
+      "receiverPartIds": [
+        "clothing:skirt/lower_tier"
+      ],
+      "reason": "对照 simplified-subject.png，中层裙摆与下层裙摆交界处仅按竖向褶皱分面着色，无跨层横向投影带。"
+    }
+  ]
+}

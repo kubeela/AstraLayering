@@ -25,8 +25,8 @@ export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: 
   for (const step of steps) {
     validateImageSelection(settings, step);
     const harness = settings.stepModels[step].harness;
-    if (harness !== 'codex') await cliExecutable(settings, harness);
-    else await checkCodexCapabilities(settings, settings.codex, { image: usesPatchedImageTool(settings, step) });
+    if (harness !== 'codex') await cliExecutable(settings, harness, normalization.runsRoot);
+    else await checkCodexCapabilities(settings, settings.codex, { image: usesPatchedImageTool(settings, step), progress: normalization.progress });
   }
   if (steps.some(step => step !== 'shadow_maps' && settings.stepImages[step] && imageModelProviders[settings.stepImages[step]!] === 'google')) {
     await checkKrita(requireMattingKrita(normalization), undefined, normalization.env ?? settings.codex.env);

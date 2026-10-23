@@ -1,3 +1,4 @@
+import {renderPrompt,renderPromptFile} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -116,11 +117,13 @@ export async function drawGroupOutline(
       return textResult({ path: draft, bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
     },
   };
-  const taskPrompt = `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${runtime(context, input, { outputSvg: draft })}\n` +
-    `\n仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须先看整图与原图的叠加，再裁剪放大，以原图叠加和边缘图逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。\n` +
-    (repair ? `\n【独立 review 的返修意见】\n${repair.feedback}\n\n【返修要求】\n` +
-      `${await readFile(repairPromptPath, 'utf8')}\n提示词来源：${repairPromptPath}\n` : '') +
-    (noteRepair ? '\n发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。\n' : '');
+  const taskPrompt = renderPrompt(prompt.text, {
+    prompt_source: prompt.path, runtime_context: runtime(context, input, {outputSvg: draft}),
+    repair_context: repair ? renderPromptFile(new URL('../prompts/outline-repair-context.md',import.meta.url), {
+      feedback:repair.feedback, repair_rules:await readFile(repairPromptPath,'utf8'), repair_source:repairPromptPath,
+    }) : '',
+    note_repair_rule: noteRepair ? renderPromptFile(new URL('../prompts/outline-note-repair.md',import.meta.url)) : '',
+  }, prompt.path, ['prompt_source','runtime_context','repair_context','note_repair_rule']);
   if (repair) {
     await recordRepair(output, repair.feedback, taskPrompt);
   }
@@ -186,8 +189,8 @@ async function reviewOnce(
     sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory, [input.parent, candidate]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],
-    prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${runtime(context, input, { candidate })}\n` +
-      `\n审查报告：${reportPath}\n候选只读；完成全部检查后一次提交反馈。\n`,
+    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:runtime(context,input,{candidate}), report_path:reportPath},
+      prompt.path, ['prompt_source','runtime_context','report_path']),
   });
   if (!submitted) throw agentOutcomeError('独立 review 未通过 submit_review 保存结论', response);
   if (hash(await readFile(candidate)) !== candidateHash) throw agentOutcomeError('独立 review 修改了候选 SVG', response);

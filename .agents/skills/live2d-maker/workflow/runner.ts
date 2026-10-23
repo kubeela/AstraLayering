@@ -1,6 +1,6 @@
 import { fork, spawn, type ChildProcess } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createTaskLog, readTaskLog } from './log.ts';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
@@ -91,7 +91,7 @@ export async function runTask(options: TaskOptions, dependencies: {
     const selected = selectedPipelines(run.from, run.to);
     if (environment) {
       const standard = run.standard;
-      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { krita: run.krita });
+      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { krita: run.krita, runsRoot: dirname(directory), progress });
     }
     if (selectedPipelines(run.from, run.to).some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow')) {
       if (!run.krita) throw new Error('本次路线包含 Krita 步骤，请用 --krita 指定已安装的可执行文件；不会自动下载或搜索。');

@@ -18,6 +18,7 @@ export function configurationReport(env: NodeJS.ProcessEnv = process.env, direct
     shellOverrides: Object.keys(file).filter(key => env[key] !== undefined).sort(),
     codex: {
       executable: settings.codex.codexPathOverride ?? 'SDK default',
+      patchAutoBuild: !settings.codex.codexPathOverride,
       home: settings.codex.env?.CODEX_HOME ?? '~/.codex',
       provider: settings.codex.config?.model_provider ?? 'inherited',
       imageCompaction: {
@@ -33,5 +34,6 @@ export function configurationReport(env: NodeJS.ProcessEnv = process.env, direct
       return [provider, { configured: !!api, protocol: api?.protocol ?? null }];
     })),
     cliPaths: settings.cliPaths,
+    agvPatch: { enabled: settings.codex.env?.layering_agv_patch === 'true' },
   };
 }

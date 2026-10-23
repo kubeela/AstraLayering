@@ -1,3 +1,4 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { access, mkdir, readFile, writeFile, copyFile, rename, chmod, realpath, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
@@ -13,11 +14,14 @@ import type { WorkflowEnvironment } from '../codex/environment.ts';
 import type { AgentModel, Harness } from './models.ts';
 import type { AgentTask, AgentResult, AgentOptions } from '../codex/agents.ts';
 import { AgentCallError } from '../codex/agent-runtime.ts';
+import { agentCallError } from '../codex/diagnostics.ts';
+import { errorDetails, errorMessage } from './errors.ts';
 import { followNativeLog } from '../codex/native-log.ts';
-import { resolvePatchedAgv } from '../../tools/agv/patch-response-header.ts';
+import { resolvePatchedAgv } from './agv-patch.ts';
 import { AgentLog } from '../codex/agent-log.ts';
+import { resolveRunsDirectory } from '../paths.ts';
 
-export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness): Promise<string> {
+export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
   const names = harness === 'claude' ? ['claude'] : harness === 'agv' ? ['agy', 'agv', 'antigravity'] : ['codex'];
   const candidates = explicit ? [explicit] : (settings.codex.env?.PATH ?? process.env.PATH ?? '').split(delimiter)
@@ -28,7 +32,14 @@ export async function cliExecutable(settings: WorkflowEnvironment, harness: Harn
     catch { continue; }
     // Compatibility errors must reach the user, rather than be swallowed and
     // misreported as a missing CLI or silently fall back to an unpatched one.
-    return harness === 'agv' ? resolvePatchedAgv(executable) : executable;
+    if (harness !== 'agv') return executable;
+    if (settings.codex.env?.layering_agv_patch === 'true') {
+      const {createPatchedAgv} = await import('../../patches/agv/patch-response-header.ts');
+      const root = resolveRunsDirectory(runsRoot);
+      await mkdir(root, {recursive: true});
+      return createPatchedAgv(executable, root);
+    }
+    return resolvePatchedAgv(executable);
   }
   throw new Error(`所选步骤需要 ${harness} CLI，但没有可用的全局入口${explicit ? `：${explicit}` : ''}。工作流不会自动安装；请安装并登录，或设置 layering_${harness}_path / 改用已有模型。`);
 }
@@ -57,7 +68,7 @@ async function copyCredential(source: string, target: string) {
 
 export async function runCliTask(task: AgentTask, model: AgentModel, settings: WorkflowEnvironment, options: AgentOptions,
   signal: AbortSignal, resumed?: string): Promise<AgentResult> {
-  const executable = await cliExecutable(settings, model.harness);
+  const executable = await cliExecutable(settings, model.harness, options.imageNormalization?.runsRoot);
   const root = resolve(options.logDirectory || join(task.cwd || options.cwd!, 'agents'));
   const log = await AgentLog.create(root, task.name, { task: { ...task, tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) },
     prompt: task.prompt, sessionThreadId: resumed || null, threadOptions: { model: model.model, modelReasoningEffort: model.effort, harness: model.harness } });
@@ -66,6 +77,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
   let threadId = resumed, text = '', final: any, stderr = '';
   let processExitCode: number | null | undefined;
+  const eventErrors: unknown[] = [];
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
@@ -161,11 +173,12 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       child.stderr!.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(-16000); });
       child.stdin!.on('error', error => { spawnError ||= error; });
       const prompt = !resumed && requestedSession && task.recoveryPrompt ? task.recoveryPrompt : task.prompt;
-      const input: any[] = [{ type: 'text', text: prompt + `\n\n【CLI 运行信息】\n本请求临时工作区：${workspace}。正文中的相对文件路径均以 ${task.cwd || options.cwd} 为基准，请用对应绝对路径访问和写入。临时脚本放在本请求工作区。` }];
+      const input: any[] = [{ type: 'text', text: renderPromptFile(new URL('../prompts/cli-turn.md',import.meta.url),{task_prompt:prompt,workspace:workspace,working_directory:task.cwd || options.cwd!}) }];
+      await writeFile(join(log.directory,'prompt.md'),input[0].text);
       for (const image of task.images || []) {
-        if (model.harness === 'agv') { input.push({ type: 'text', text: `${image.description}\n参考图绝对路径：${resolve(image.path)}` }); continue; }
+        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:resolve(image.path)}).trimEnd() }); continue; }
         const bytes = await readFile(image.path);
-        input.push({ type: 'text', text: image.description }, { type: 'image', source: {
+        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() }, { type: 'image', source: {
           type: 'base64', media_type: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } });
       }
       child.stdin!.end(JSON.stringify(model.harness === 'agv' ? { event: 'user', message: { role: 'user', content: input } } : { type: 'user', message: { role: 'user', content: input } }) + '\n');
@@ -173,6 +186,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         if (!line.trim()) continue;
         let event: any; try { event = JSON.parse(line); } catch { await log.recordProtocol({ text: line }); continue; }
         await log.recordProtocol(event);
+        if (event.type === 'error' || event.event === 'error') eventErrors.push(errorDetails(event));
         const completedText = agvTurn?.record(event);
         const id = event.session_id || event.conversation_id || event.step_update?.conversation_id;
         if (id) await reportId(id);
@@ -199,7 +213,12 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       signal.throwIfAborted();
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
-      if (code !== 0 || !final || final.is_error || !successfulStatus) throw new AgentCallError(final?.error || final?.errors?.join('\n') || stderr || 'CLI 未返回成功终态');
+      if (code !== 0 || !final || final.is_error || !successfulStatus) {
+        const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态');
+        error.details = errorDetails({ error: final?.error, errors: final?.errors, events: eventErrors,
+          stderr, processExitCode, cliStatus: final?.status, subtype: final?.subtype });
+        throw error;
+      }
       if (recoveredError) {
         if (!final.structured_output) text = agvTurn!.completedResponse!;
         await log.recordProtocol({ type: 'agv.turn.completed', outcomeSource: 'current_turn_steps',
@@ -212,8 +231,10 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       return { text, images: [], threadId, logDirectory: log.directory };
     } finally { signal.removeEventListener('abort', abort); abort(); await close; if (killTimer) clearTimeout(killTimer); await nativeLog?.close(); }
   } catch (error) {
-    await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: String(error), stderr, processExitCode, cliStatus: final?.status });
-    const reported = error instanceof AgentCallError ? error : new AgentCallError(String(error));
+    const reported = error instanceof AgentCallError ? error : new AgentCallError(errorMessage(error, String(error)), undefined, { cause: error });
+    reported.details ??= errorDetails(error);
+    await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: reported.message,
+      errorDetails: reported.details, stderr, processExitCode, cliStatus: final?.status });
     reported.threadId = threadId; reported.finalResponse = text; reported.logDirectory = log.directory; throw reported;
   } finally { await bridge?.close(); await mcpServer?.close(); }
 }

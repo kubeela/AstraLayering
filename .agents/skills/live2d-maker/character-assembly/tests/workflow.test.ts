@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
@@ -12,7 +12,7 @@ import { loadConfig } from '../../shared/raster/run-store.ts';
 import { rasterCodexConfig, type AgentRequest } from '../../shared/raster/agent.ts';
 
 async function fixture(t: TestContext) {
-  const root = await mkdtemp(join(tmpdir(), 'character-assembly-'));
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'character-assembly-')));
   t.after(() => rm(root, { recursive: true, force: true }));
   const task = join(root, 'case');
   const inputs = {
@@ -76,13 +76,14 @@ test('dry-run 展开组装专用提示词与绝对路径，不混入拆层和深
   await assert.rejects(stat(f.output), { code: 'ENOENT' });
 });
 
-test('只调一次 medium 绘制 agent，无 reviewer 和深度工具；完整交付才完成', async t => {
+test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工具；完整交付才完成', async t => {
   const f = await fixture(t); let calls = 0;
   const agent = async (request: AgentRequest) => {
     calls++;
     assert.equal(request.directory, f.output);
     assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'xhigh');
     assert.equal(request.threadId, undefined);
+    assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences']);
 
     assert.equal('mcp_servers' in rasterCodexConfig(), false);
     await stat(join(f.output, 'step01/.running'));
