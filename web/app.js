@@ -212,10 +212,11 @@ function rasterItems(index, stepId) {
  return record?[{path:record.path,label:'Krita 最新保存画面',kind:'image'},...files]:files;
 }
 function kraPreviewPanel(index) {
- if(!isRasterPipeline(index))return '';
+ if(!isRasterPipeline(index)&&!(stages[index]?.id==='shadow'&&data.pipelines[index]?.mode==='mask'))return '';
  const record=latestKraPreview(data.pipelines[index]?.previews);
  const step=record&&pipelineSteps[index].find(step=>step.id===record.stepId);
- return `<section class="kra-preview-panel" data-kra-preview="${index}" aria-label="${esc(stages[index].name)}最新 KRA 预览"><h3>${icon('layers')}Krita 最新画面</h3>${record?`<p class="preview-source">${esc(step?.title||record.stepId)}</p>${artifacts([{path:record.path,label:'最新保存画面',kind:'image',sharedPreview:true}],index,record.stepId,'live-kra-artifacts')}`:'<p class="archive-gap">等待首次保存 KRA</p>'}</section>`;
+ const sourceTitle=stages[index].id==='shadow'?'Live2D 蒙版':step?.title||record?.stepId;
+ return `<section class="kra-preview-panel" data-kra-preview="${index}" aria-label="${esc(stages[index].name)}最新 KRA 预览"><h3>${icon('layers')}Krita 最新画面</h3>${record?`<p class="preview-source">${esc(sourceTitle)}</p>${artifacts([{path:record.path,label:'最新保存画面',kind:'image',sharedPreview:true}],index,record.stepId,'live-kra-artifacts')}`:'<p class="archive-gap">等待首次保存 KRA</p>'}</section>`;
 }
 function reportEvidence(index, stepId) {
  const report=data.pipelines[index]?.reports?.[stepId];
