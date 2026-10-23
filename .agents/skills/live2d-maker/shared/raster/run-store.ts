@@ -123,7 +123,8 @@ export async function inspectRun(directory: string, steps: readonly StepDefiniti
   const statuses = new Map<string, StepStatus>();
   let resetFrom: number | undefined;
   for (let number = 1; number <= Math.max(lastExisting, steps.length); number++) {
-    const id = stepId(number), status = await readStatus(join(directory, id));
+    const id = stepId(number), actual = await readStatus(join(directory, id));
+    const status = actual === 'unmarked' && steps[number - 1]?.allowsEarlyArtifacts ? 'absent' : actual;
     statuses.set(id, status);
     if (resetFrom === undefined && (status === 'unmarked' || (status === 'absent' && number < lastExisting))) resetFrom = number;
   }
