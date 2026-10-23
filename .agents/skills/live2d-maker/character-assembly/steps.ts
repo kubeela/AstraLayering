@@ -1,3 +1,4 @@
+import {renderPrompt, renderPromptFile} from '../shared/prompts/render.ts';
 import {kritaEnvironmentPrompt} from '../shared/krita/environment.ts';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -13,13 +14,17 @@ export const steps = [{
 }] as const satisfies readonly StepDefinition[];
 
 export async function buildPrompt(step: StepDefinition, input: AssemblyInput, output: string, krita: KritaInstallation): Promise<string> {
-  return `${await readFile(step.prompt, 'utf8')}\n${await kritaEnvironmentPrompt(krita)}\n---\n本次运行信息（以下均为绝对路径）：
-- 工作目录：${JSON.stringify(dirname(output))}。
-- 人物素体 KRA：${JSON.stringify(input.characterKra)}。
-- 衣服 KRA：${JSON.stringify(input.clothingKra)}。
-- 简化穿衣角色参考图：${JSON.stringify(input.simplifiedCharacter)}。
-- Krita：${JSON.stringify(krita.executable)}，版本 ${krita.version}；沿用当前显示环境。
-- 本次输出目录：${JSON.stringify(output)}；中间文件也放在这里。必须交付：${JSON.stringify(step.requiredFiles.map(file => join(output, file)))}。
-- 若已有进度，继续已有工程和本 thread 的工作。输入工程保持只读；run.json、.running、.completed 与调度日志由程序维护，不要改写。
-- 本流程由你独立完成，无后续 reviewer。完成交付后按输出 schema 返回 status=completed 和 summary；普通组装与局部修正继续处理；仅必要输入缺失、损坏或工具故障导致无法执行时返回 blocked，说明具体路径或错误、恢复尝试和已保存进度。\n`;
+  return renderPrompt(await readFile(step.prompt, 'utf8'), {
+    krita_environment: await kritaEnvironmentPrompt(krita),
+    runtime_context: renderPromptFile(new URL('../shared/prompts/assembly-runtime.md', import.meta.url), {
+      pipeline_directory: JSON.stringify(dirname(output)),
+      character_kra: JSON.stringify(input.characterKra),
+      clothing_kra: JSON.stringify(input.clothingKra),
+      simplified_character: JSON.stringify(input.simplifiedCharacter),
+      krita_executable: JSON.stringify(krita.executable),
+      krita_version: krita.version,
+      output_directory: JSON.stringify(output),
+      required_files: JSON.stringify(step.requiredFiles.map(file => join(output, file)))
+    })
+  }, String(step.prompt), ['krita_environment','runtime_context']);
 }

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
@@ -12,7 +12,7 @@ import { loadConfig } from '../../shared/raster/run-store.ts';
 import { rasterCodexConfig, type AgentRequest } from '../../shared/raster/agent.ts';
 
 async function fixture(t: TestContext) {
-  const root = await mkdtemp(join(tmpdir(), 'character-assembly-'));
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'character-assembly-')));
   t.after(() => rm(root, { recursive: true, force: true }));
   const task = join(root, 'case');
   const inputs = {

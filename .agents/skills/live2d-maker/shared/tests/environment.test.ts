@@ -1,3 +1,4 @@
+import {deliverRasterStep, isRasterReview} from './raster-delivery.ts';
 import assert from 'node:assert/strict';
 import { chmod, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -101,15 +102,17 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     await assert.rejects(readFile(join(directory, 'step01/.completed')), { code: 'ENOENT' });
     const changed = loadWorkflowEnvironment({ layering_high_model: 'gpt-6.1-sol-low' }, root);
     await runWorkflow(pipeline, { name: 'case' }, { ...deps, environment: changed, agent: async request => {
+      if (isRasterReview(request)) return deliverRasterStep(request, pipeline.steps[0]);
       assert.equal(request.threadId, 'persistent-thread');
       assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'low');
-      await request.onEvent({ type: 'thread.started', thread_id: 'persistent-thread' });
-      for (const file of pipeline.steps[0].requiredFiles) await writeFile(join(directory, 'step01', file), 'fixture');
-      return { status: 'completed', summary: '完成' };
+      return deliverRasterStep(request, pipeline.steps[0], 'persistent-thread');
     } });
     const config = JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
     assert.equal(config.threadId, 'persistent-thread');
-    assert.deepEqual(config.models.step01, { model: 'gpt-6.1-sol', effort: 'low' });
+    assert.equal(config.models, undefined);
+    const attempts = (await readFile(join(directory,'step01/attempts.jsonl'),'utf8')).trim().split('\n').map(line=>JSON.parse(line));
+    const draw = attempts.filter(attempt=>attempt.phase==='draw').at(-1);
+    assert.equal(draw.model,'gpt-6.1-sol'); assert.equal(draw.effort,'low');
   });
 });
 

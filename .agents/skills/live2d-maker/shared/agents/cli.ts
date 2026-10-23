@@ -1,3 +1,4 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { access, mkdir, readFile, writeFile, copyFile, rename, chmod, realpath, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
@@ -172,11 +173,12 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       child.stderr!.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(-16000); });
       child.stdin!.on('error', error => { spawnError ||= error; });
       const prompt = !resumed && requestedSession && task.recoveryPrompt ? task.recoveryPrompt : task.prompt;
-      const input: any[] = [{ type: 'text', text: prompt + `\n\n【CLI 运行信息】\n本请求临时工作区：${workspace}。正文中的相对文件路径均以 ${task.cwd || options.cwd} 为基准，请用对应绝对路径访问和写入。临时脚本放在本请求工作区。` }];
+      const input: any[] = [{ type: 'text', text: renderPromptFile(new URL('../prompts/cli-turn.md',import.meta.url),{task_prompt:prompt,workspace:workspace,working_directory:task.cwd || options.cwd!}) }];
+      await writeFile(join(log.directory,'prompt.md'),input[0].text);
       for (const image of task.images || []) {
-        if (model.harness === 'agv') { input.push({ type: 'text', text: `${image.description}\n参考图绝对路径：${resolve(image.path)}` }); continue; }
+        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:resolve(image.path)}).trimEnd() }); continue; }
         const bytes = await readFile(image.path);
-        input.push({ type: 'text', text: image.description }, { type: 'image', source: {
+        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() }, { type: 'image', source: {
           type: 'base64', media_type: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } });
       }
       child.stdin!.end(JSON.stringify(model.harness === 'agv' ? { event: 'user', message: { role: 'user', content: input } } : { type: 'user', message: { role: 'user', content: input } }) + '\n');

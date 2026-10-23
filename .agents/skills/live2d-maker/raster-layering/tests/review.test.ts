@@ -1,7 +1,8 @@
+import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { splitStructure } from '../../shared/tests/structure-fixture.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, realpath, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
@@ -26,14 +27,14 @@ async function report(request: AgentRequest, conclusion: string) {
   return completed;
 }
 async function fixture(t: TestContext) {
-  const directory = await mkdtemp(join(tmpdir(), 'raster-review-'));
+  const directory = await realpath(await mkdtemp(join(tmpdir(), 'raster-review-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const runsDirectory = join(directory, 'runs');
   const input = await seedUpstream('test', 'part-layering', runsDirectory);
   await mkdir(join(input, 'parts'), { recursive: true });
   await writeFile(join(input, 'parts/part.svg'), 'fixture');
   const options = { name: 'test', krita: process.execPath };
-  const deps = { preflight, runsDirectory, steps: steps.slice(0, 1) };
+  const deps = { environment: loadWorkflowEnvironment({}, directory), preflight, runsDirectory, steps: steps.slice(0, 1) };
   const drawingSteps = deps.steps.map((step: StepDefinition) => {
     const { review: _review, ...drawing } = step;
     return drawing;

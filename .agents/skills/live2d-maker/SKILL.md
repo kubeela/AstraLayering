@@ -16,4 +16,4 @@ description: 从角色参考图制作适合 Live2D 后续绑定的人物与衣�
 
 按需读取：指定组、拆分限深或单阶段调试见[单管线操作与验收](references/individual-pipelines.md)；LLM 职责配置和独立生图选择见[模型与 harness](references/agent-models.md)；provider、图片压缩和工具配置见[配置与工作流细节](references/workflow-details.md#codex-环境配置)。
 
-Krita 共用说明的附加方式：原阶段提示词在前，随后以“【工作流附加：Krita 共用环境说明】”独立段落附加全文，并显示 `shared/krita/environment.md` 的实际绝对路径；结束处有明确标记。完整最终提示词沿用现有 `prompt.md`／review 与返修提示词文件落盘，可直接审查。不修改全局或隐藏系统提示词，不新增执行工具。
+动态提示词只在 Markdown 已声明的 `{变量名}` 位置展开，位置由模板决定。Krita 说明使用各阶段的 `{krita_environment}`；全文有来源路径与开始／结束标记。生图规则、运行信息、恢复与 CLI 说明等均有显式模板，见[提示词模板与动态位置](references/prompt-templates.md)。最终提示词在请求目录 `prompt.md` 和既有阶段记录中可直接审查，不新增执行工具，不修改全局或隐藏系统提示词。

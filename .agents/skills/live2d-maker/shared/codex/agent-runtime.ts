@@ -1,3 +1,4 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { setTimeout as delay } from 'node:timers/promises';
 
 export const defaultAgentConcurrency = 3;
@@ -113,8 +114,11 @@ export class AgentRuntime {
   }
 }
 
-export const interruptedTaskPrompt = '继续刚才因临时服务错误中断的任务，沿用本会话中的原要求、输入和当前产物，从未完成处继续。已成功的操作和生图不重复执行；若已通过工具提交结果，不重复提交，只完成收尾回复。';
+export const interruptedTaskPrompt = renderPromptFile(new URL('../prompts/interrupted-task.md',import.meta.url)).trim();
 
 export function continuationPrompt(savedImagePaths: string[]): string {
-  return interruptedTaskPrompt + (savedImagePaths.length ? `\n已生成的图片：\n${savedImagePaths.join('\n')}\n需要返回图片路径时直接使用已有结果。` : '');
+  return renderPromptFile(new URL('../prompts/continuation.md',import.meta.url), {
+    interrupted_task:interruptedTaskPrompt,
+    saved_images_context:savedImagePaths.length?renderPromptFile(new URL('../prompts/continuation-images.md',import.meta.url),{saved_image_paths:savedImagePaths.join('\n')}):'',
+  }).trimEnd();
 }

@@ -1,3 +1,4 @@
+import {staticPromptPrefix} from '../../shared/tests/prompt-prefix.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -78,7 +79,7 @@ test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之
     assert.equal(request.threadId, undefined);
     assert.match(request.prompt, /旧 threadId：old-thread/);
     assert.match(request.prompt, /保留 draft.kra 中完成的衣领/);
-    assert.ok(request.prompt.startsWith(await readFile(assemblySteps[0].prompt, 'utf8')));
+    assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(assemblySteps[0].prompt, 'utf8'))));
     await request.onEvent({ type: 'thread.started', thread_id: 'new-thread' });
     throw new Error('interrupted again');
   } }), /interrupted again/);
@@ -147,7 +148,7 @@ for (const [pipeline, execute, definitions, upstream] of [
       if (resumed === 1) {
         assert.equal(request.threadId, undefined);
         const original = (await readFile(definitions[0].prompt, 'utf8')).replaceAll('step01/report.md', 'step01/report.md.tmp');
-        assert.ok(request.prompt.startsWith(original));
+        assert.ok(request.prompt.startsWith(staticPromptPrefix(original)));
         assert.match(request.prompt, /repair-01.md.tmp/); assert.match(request.prompt, /保留绘制/);
         await request.onEvent({ type: 'thread.started', thread_id: 'replacement-draw' });
         await writeFile(join(output, 'step01/repair-01.md.tmp'), '结论：已修复\n袖口已修画。');

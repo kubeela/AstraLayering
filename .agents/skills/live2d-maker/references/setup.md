@@ -73,4 +73,4 @@ Krita 的路径检查和实际启动使用工作流加载的同一环境，包�
 
 所有操作 Krita 的 agent 自动收到同一份[环境与故障恢复说明](../shared/krita/environment.md)，沿用现有 shell、computer use 或已验证 bridge。私有进程的 macOS 配置、Python 资源和 HOME 必须一致；不能把一次自建启动器失败直接当作不可恢复阻塞。
 
-Krita 共用说明的附加方式：原阶段提示词在前，随后以“【工作流附加：Krita 共用环境说明】”独立段落附加全文，并显示 `shared/krita/environment.md` 的实际绝对路径；结束处有明确标记。完整最终提示词沿用现有 `prompt.md`／review 与返修提示词文件落盘，可直接审查。不修改全局或隐藏系统提示词，不新增执行工具。
+动态提示词只在 Markdown 已声明的 `{变量名}` 位置展开，位置由模板决定。Krita 说明使用各阶段的 `{krita_environment}`；全文有来源路径与开始／结束标记。生图规则、运行信息、恢复与 CLI 说明等均有显式模板，见[提示词模板与动态位置](prompt-templates.md)。最终提示词在请求目录 `prompt.md` 和既有阶段记录中可直接审查，不新增执行工具，不修改全局或隐藏系统提示词。

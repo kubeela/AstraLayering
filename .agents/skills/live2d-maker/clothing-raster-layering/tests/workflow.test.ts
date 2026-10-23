@@ -1,8 +1,9 @@
+import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import { pipelineDirectory } from '../../shared/paths.ts';
 const runDirectory = (name: string) => pipelineDirectory(name, 'clothing-raster-layering');
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, realpath, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,7 +18,7 @@ import { runWorkflow } from '../run.ts';
 const completed: StepResult = { status: 'completed', summary: 'fixture' };
 const preflight = async (executable: string) => ({ executable, version: 'fixture' });
 async function fixture(t: TestContext) {
-  const directory = await mkdtemp(join(tmpdir(), 'clothing-raster-'));
+  const directory = await realpath(await mkdtemp(join(tmpdir(), 'clothing-raster-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const runsDirectory = join(directory, 'runs');
   const source = await seedUpstream('test', 'clothing-part-layering', runsDirectory);
@@ -27,7 +28,7 @@ async function fixture(t: TestContext) {
   await writeFile(join(source, 'parts/back.svg'), 'back');
   await writeFile(join(source, 'references/clothing.png'), 'clothing fixture');
   await writeFile(join(source, 'groups.json'), '{"groups":[]}');
-  return { source, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options: { name: 'test', krita: process.execPath }, deps: { runsDirectory, preflight } };
+  return { source, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options: { name: 'test', krita: process.execPath }, deps: { environment: loadWorkflowEnvironment({}, directory), runsDirectory, preflight } };
 }
 async function deliver(request: AgentRequest, thread = request.threadId ?? 'drawing-1'): Promise<StepResult> {
   if (request.prompt.startsWith('你负责对第一步交付')) {

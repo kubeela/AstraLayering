@@ -1,3 +1,4 @@
+import {staticPromptPrefix} from './prompt-prefix.ts';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
@@ -16,7 +17,8 @@ test('人物衣服绘制/review/返修、组装和两种阴影共用完整环境
     for(const step of steps) {
       const prompt = await buildPrompt(step,{directory:'/fixture/input',parts:'/fixture/parts'},'/fixture/output/step01',krita);
       const body = await readFile(step.prompt,'utf8');
-      assert.ok(prompt.startsWith('review' in step ? body.replaceAll(`${step.id}/report.md`,`${step.id}/report.md.tmp`) : body));
+      assert.ok(prompt.startsWith(staticPromptPrefix(body)));
+      assert.doesNotMatch(prompt, /\{(?:krita_environment|runtime_context|drawing_responsibilities|drawing_report_filename)\}/);
       prompts.push(prompt);
       if ('review' in step && step.review) for(const kind of ['review','repair'] as const) prompts.push(await buildReviewPrompt(step,
         {kind,filename:kind === 'review' ? 'review-01.md':'repair-01.md',index:kind === 'review'?0:1},krita));

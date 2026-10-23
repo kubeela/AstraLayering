@@ -1,8 +1,9 @@
+import {staticPromptPrefix} from '../../shared/tests/prompt-prefix.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import { pipelineDirectory } from '../../shared/paths.ts';
 const runDirectory = (name: string) => pipelineDirectory(name, 'raster-layering');
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, realpath, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -23,7 +24,7 @@ const forbidden = async (): Promise<never> => { assert.fail('must not call agent
 async function absent(path: string) { await assert.rejects(readFile(path), { code: 'ENOENT' }); }
 async function readConfig(directory: string): Promise<RunConfig> { return JSON.parse(await readFile(join(directory, 'run.json'), 'utf8')); }
 async function fixture(t: TestContext) {
-  const directory = await mkdtemp(join(tmpdir(), 'raster-workflow-'));
+  const directory = await realpath(await mkdtemp(join(tmpdir(), 'raster-workflow-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const runsDirectory = join(directory, 'runs'), name = 'test';
   const input = await seedUpstream(name, 'part-layering', runsDirectory);
@@ -39,7 +40,7 @@ async function fixture(t: TestContext) {
     return drawing;
   });
   return { directory, input, output: join(runsDirectory, name, 'raster-layering'), definitions,
-    options: { name, krita: process.execPath }, resume: { name }, deps: { runsDirectory, preflight, steps: [definitions[0]] } };
+    options: { name, krita: process.execPath }, resume: { name }, deps: { environment: loadWorkflowEnvironment({}, directory), runsDirectory, preflight, steps: [definitions[0]] } };
 }
 async function deliver(request: AgentRequest, step: StepDefinition = { ...steps[0], review: undefined }, thread = request.threadId ?? 'thread-1') {
   await readFile(join(request.directory, step.id, '.running'));
@@ -86,7 +87,7 @@ test('dry-run 按 name 定位上游，保留完整提示词，不写文件、不
   const expected = { directory: f.input, parts: join(f.input, 'parts') };
   assert.deepEqual(await resolvePartInput('test', 'part-layering', f.deps.runsDirectory), expected);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: forbidden });
-  assert.ok(prompt.startsWith(await readFile(steps[0].prompt, 'utf8')));
+  assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(steps[0].prompt, 'utf8'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.input, 'parts'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01'))));
   await assert.rejects(readdir(f.output), { code: 'ENOENT' });
@@ -124,7 +125,7 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
     assert.equal(request.threadId, 'thread-1');
     if (request.model === 'gpt-6.1-sol') {
       calls.push('step03'); await readFile(join(f.output, 'step02/.completed'));
-      assert.ok(request.prompt.startsWith(await readFile(steps[2].prompt, 'utf8')));
+      assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(steps[2].prompt, 'utf8'))));
       return deliver(request, steps[2]);
     }
     calls.push('resume-step02');
@@ -143,12 +144,13 @@ test('已完成第一步的任务可按 name 预览第二步，显示实际输�
   const deps = { ...f.deps, steps: f.definitions };
   const before = await readFile(join(f.output, 'run.json'));
   const prompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...deps, agent: forbidden });
-  assert.ok(prompt.startsWith((await readFile(steps[1].prompt, 'utf8'))));
+  assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(steps[1].prompt, 'utf8'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.input, 'references'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01/character-depth.kra'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.kra'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.png'))));
-  assert.ok(!prompt.includes('/Users/wutian/') && !prompt.includes('demos/soft-edge-krita'));
+  assert.ok(prompt.includes(JSON.stringify(process.execPath)), '当前显式 Krita 路径必须保留');
+  assert.ok(!prompt.includes('demos/soft-edge-krita'), '不引用历史示例工程');
   assert.deepEqual(await readFile(join(f.output, 'run.json')), before);
   await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
 });

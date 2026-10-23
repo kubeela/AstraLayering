@@ -7,7 +7,7 @@ export async function fakeAppServer(directory: string, calls: FakeToolCall[], mo
   behavior: { failedTurns?: number; errorInfo?: unknown; nativeReconnect?: boolean; skipCallsAfterFailure?: boolean } = {}) {
   const executable = join(directory, 'fake-app-server.mjs');
   const capture = join(directory, 'protocol.jsonl');
-  await writeFile(executable, `#!/usr/bin/env node
+  await writeFile(executable, `#!${process.execPath}
 import { createInterface } from 'node:readline';
 import { appendFile } from 'node:fs/promises';
 const calls = ${JSON.stringify(calls)};

@@ -1,6 +1,7 @@
+import {deliverRasterStep, isRasterReview} from './raster-delivery.ts';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { copyFile, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, realpath, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFile } from 'node:child_process';
@@ -34,7 +35,7 @@ test('默认 root 是仓库 .run，独立 skill 使用上一级 .run；--dir 必
 });
 
 test('同名任务可在不同 root 独立准备、读取上游、按 name 续跑并选择 groups', async t => {
-  const temporary = await mkdtemp(join(tmpdir(), 'skill-root-'));
+  const temporary = await realpath(await mkdtemp(join(tmpdir(), 'skill-root-')));
   t.after(() => rm(temporary, { recursive: true, force: true }));
   const name = 'same-name';
   for (const label of ['first root', "second'root"]) {
@@ -71,7 +72,7 @@ test('同名任务可在不同 root 独立准备、读取上游、按 name 续�
 });
 
 test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 root', async t => {
-  const dir = await mkdtemp(join(tmpdir(), 'skill-raster-root-'));
+  const dir = await realpath(await mkdtemp(join(tmpdir(), 'skill-raster-root-')));
   t.after(() => rm(dir, { recursive: true, force: true }));
   for (const [run, input, pipeline, definitions] of [
     [runPersonRaster, 'part-layering', 'raster-layering', personSteps],
@@ -90,10 +91,9 @@ test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 
     } }), /interrupted fixture/);
     await stat(join(output, 'step01/.running'));
     await run({ name: 'case', dir }, { ...deps, agent: async request => {
-      assert.equal(request.threadId, 'kept-thread');
-      assert.ok(request.prompt.includes(pipelineDirectory('case', input, dir)));
-      for (const file of definitions[0].requiredFiles) await writeFile(join(output, 'step01', file), 'fixture');
-      return { status: 'completed', summary: 'done' };
+      if (!isRasterReview(request)) assert.equal(request.threadId, 'kept-thread');
+      if (!isRasterReview(request)) assert.ok(request.prompt.includes(pipelineDirectory('case', input, dir)));
+      return deliverRasterStep(request, definitions[0], 'kept-thread');
     } });
     await stat(join(output, 'step01/.completed'));
     assert.equal(JSON.parse(await readFile(join(output, 'run.json'), 'utf8')).threadId, 'kept-thread');

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdtemp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, realpath, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { createServer } from 'node:http';
@@ -17,7 +17,7 @@ import { runAgent } from '../raster/agent.ts';
 import { pipelineAgentSteps } from '../agents/preflight.ts';
 
 async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
-  const root = await mkdtemp(join(tmpdir(), 'step-models-'));
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'step-models-')));
   t.after(() => rm(root, { recursive: true, force: true })); return root;
 }
 
@@ -219,6 +219,7 @@ test('Claude and agv use isolated request workspaces, original MCP schemas and r
     assert.equal(second.threadId, first.threadId);
     const a = JSON.parse(await readFile(join(first.logDirectory!, 'workspace/invocation.json'), 'utf8'));
     const b = JSON.parse(await readFile(join(second.logDirectory!, 'workspace/invocation.json'), 'utf8'));
+    assert.equal(await readFile(join(first.logDirectory!, 'prompt.md'), 'utf8'), a.input.message.content[0].text);
     assert.notEqual(a.cwd, b.cwd); assert.equal(a.data, b.data);
     for (const path of [a.cwd, a.data, a.agvData, b.cwd]) assert.ok(path.startsWith(join(cwd, 'agents')));
     assert.ok(a.input.message.content[0].text.startsWith(task.prompt));

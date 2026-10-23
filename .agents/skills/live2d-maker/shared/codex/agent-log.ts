@@ -69,6 +69,8 @@ export class AgentLog {
     const safeName = name.replace(/[^\p{L}\p{N}_-]/gu, '_').slice(0, 48) || 'agent';
     const log = new AgentLog(await mkdtemp(join(root, `${timestamp}-${safeName}-`)), name, root);
     await writeFile(join(log.directory, 'request.json'), JSON.stringify(request, null, 2) + '\n', 'utf8');
+    if (request && typeof request === 'object' && 'prompt' in request && typeof request.prompt === 'string')
+      await writeFile(join(log.directory, 'prompt.md'), request.prompt, 'utf8');
     await writeFile(join(log.directory, 'events.jsonl'), '', 'utf8');
     await log.write('请求记录：' + log.directory, log.startedAt);
     return log;

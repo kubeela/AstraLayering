@@ -97,7 +97,7 @@ pnpm raster-layering --name jianma --dry-run
 
 ## 第一步 review 与修复
 
-reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存或恢复 reviewer 的 thread ID；修复继续使用 `run.json.threadId` 中的原绘制会话。reviewer 依据当前 KRA、原图和已有 Markdown 记录独立检查。它的提示词使用固定目录，只将 `{review_report_filename}` 替换成本次报告文件名，不包含轮次或次数上限说明。
+reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存或恢复 reviewer 的 thread ID；修复继续使用 `run.json.threadId` 中的原绘制会话。reviewer 依据当前 KRA、原图和已有 Markdown 记录独立检查。它的 Markdown 声明报告文件名、共用环境与运行信息等占位符，来源见[提示词模板清单](../references/prompt-templates.md)；不包含轮次或次数上限说明。
 
 调度顺序固定为：
 

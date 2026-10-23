@@ -11,6 +11,8 @@ import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { runCliTask } from '../agents/cli.ts';
 import { parseAgentModel } from '../agents/models.ts';
 import { runAgent } from '../raster/agent.ts';
+import {AgentLog} from '../codex/agent-log.ts';
+import {setTimeout as delay} from 'node:timers/promises';
 
 const payload = { message: 'Provider rejected this reference', code: 'bad_reference',
   type: 'invalid_request_error', param: 'input[0]', status: 400, request_id: 'provider-request-123' };
@@ -60,6 +62,13 @@ test('error snapshots retain nested provider details and causes without serializ
 });
 
 for (const mode of ['rpc', 'turn', 'eof', 'recovered']) test(`Codex App Server ${mode}: preserve payloads and wait for terminal status`, async t => {
+  if (mode === 'eof') {
+    const record = AgentLog.prototype.recordProtocol;
+    t.mock.method(AgentLog.prototype, 'recordProtocol', async function(this: AgentLog, ...args: Parameters<typeof record>) {
+      if ((args[0] as {method?: string}).method === 'item/completed') await delay(100);
+      return record.apply(this, args);
+    });
+  }
   const f = await fixture(t);
   const executable = join(f.root, 'codex.mjs');
   await writeFile(executable, `#!${process.execPath}
