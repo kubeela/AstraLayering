@@ -5,6 +5,7 @@ export const retryDelays = { initial: 5_000, maximum: 60_000 } as const;
 
 export class AgentCallError extends Error {
   readonly info?: unknown;
+  details?: unknown;
   logDirectory?: string;
   threadId?: string;
   finalResponse?: string;

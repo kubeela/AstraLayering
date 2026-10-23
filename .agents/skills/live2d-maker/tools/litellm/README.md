@@ -2,6 +2,8 @@
 
 这是外部 LiteLLM Proxy 的可选兼容回调，不是工作流运行依赖；不安装或替用户启动 LiteLLM。已在 LiteLLM 1.106 实测。接口缺少所需钩子时，启动明确报错。
 
+工作流共享调用层已经为 Codex、Claude Code 和 AGV 保留实际收到的错误详情，在 `workflow.log`、请求失败记录和最终诊断中展示，不依赖 LiteLLM。本回调补的是代理在更早一层吞掉错误事件的问题；若代理或 CLI 只返回通用消息，共享层无法还原它没有收到的字段。
+
 有些 API 先返回 `response.failed` 且 `response.error=null`，随后才返回带具体原因的 `error`。代理若立即在前一事件抛异常，就会把真实原因改成 `server_error / Response API in-stream error`。本回调只暂存这一条空失败事件，用紧随的错误补齐，再沿用代理原有异常处理。普通成功、完整失败、重试及 fallback 配置不变；EOF 或后续成功不会把失败变成成功，也不引入等待超时。
 
 代理异常映射后，仍保留上游 `code`、`type`、`message`、`param` 和其他错误字段。日志只记录错误详情，保留代理原有脱敏，不记录整份上下文或图片。
