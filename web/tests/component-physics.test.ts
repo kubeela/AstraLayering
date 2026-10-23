@@ -158,20 +158,32 @@ test('Inochi nonlinear pendulum matches the small-angle period and preserves amp
   for(let n=1;n<=240;n++){p.step(h);minimum=Math.min(minimum,p.angle);maximum=Math.max(maximum,p.angle);if(!firstCrossing&&p.angle<0)firstCrossing=n*h;}
   assert(Math.abs(firstCrossing-.25)<.005);assert(Math.abs(p.angle-.02)<1e-6);assert(minimum<-.01999&&maximum>.01999);
 });
-test('pendant world output converts to the attachment frame and reconciles local constraints once',()=>{
+test('pendant world output converts to the attachment frame without accepting artwork state',()=>{
   let frame=.2;
   const body:any={freeLength:100,component:{authoring:{pivot:[0,0]},response:{frequencyHz:1,dampingRatio:0,inputGain:1}},scene:{airflow:{x:0}},target:([x,y]:number[])=>[Math.cos(frame)*x-Math.sin(frame)*y,Math.sin(frame)*x+Math.cos(frame)*y]};
   const p=new InochiPendulum(body),h=1/120;
   for(let n=0;n<60;n++){
     frame=.2+n*.001;p.step(h);
     assert(Math.abs(body.theta+frame-p.angle)<1e-10,'parent rotation must not be added a second time');
-    const worldAngle=p.angle,worldSpeed=p.speed;p.reconcile();
-    assert(Math.abs(p.angle-worldAngle)<1e-10);assert(Math.abs(p.speed-worldSpeed)<1e-10);
+    const worldAngle=p.angle,worldSpeed=p.speed;body.theta=.03;body.angularVelocity=.7;
+    assert.equal(p.angle,worldAngle);assert.equal(p.speed,worldSpeed);
   }
-  body.theta=.03;body.angularVelocity=.7;p.reconcile();
-  assert(Math.abs(p.angle-(frame+.03))<1e-10);
-  assert(Math.abs(p.speed-(.7+.001/h))<1e-10);
-  p.reset();assert.equal(p.lastFrameAngle,null);
+  p.reset();assert.equal(p.frameAngle,0);
+});
+test('short rigid parent drives a long rigid child continuously without feeding limits into the bob',()=>{
+  const parent=component('pendant',{id:'mount',layerRefs:[{uuid:'mount',contentHash:'a'.repeat(64)}],supports:[{id:'head',at:[100,40]}]});
+  parent.authoring.freeLength=20;parent.authoring.contour=[[90,40],[110,40],[110,60],[90,60]];parent.limits.maxAngle=2;
+  const child=component('pendant',{id:'tail',layerRefs:[{uuid:'tail',contentHash:'a'.repeat(64)}],supports:[{id:'mount-tip',at:[100,60],componentId:'mount'}]});
+  child.authoring.pivot=[100,60];child.authoring.contour=[[90,60],[110,60],[110,340],[90,340]];
+  const scene=new ComponentScene(config([parent,child])),tracker=new MotionStepTracker(scene.config.source.canvas,scene.bodies.get('tail').positions.length);let independent=false;
+  for(let step=0;step<=960;step++){
+    if(step){applyTestInput(scene,'support-reverse',step);scene.step();}
+    for(const b of scene.bodies.values()){assert(b.stats.valid);assert.equal(b.stats.root,0);assert(b.stats.travel<=b.maxDistance+1e-5);independent ||= Math.abs(b.motion.angle-b.theta-b.motion.frameAngle)>1e-6;}
+    tracker.update(scene.bodies.get('tail').positions,scene.sourcePose);
+  }
+  assert(tracker.maxStep<2,'bounded output must not transmit a hard-stop jump to the child');
+  assert(independent,'output mapping must retain independent physics');
+  scene.reset();assert.equal(scene.bodies.get('mount').displayTheta,0);
 });
 test('pendant parent input gain scales inertia without detaching the artwork or carrying state through reset',()=>{
   const sample=(gain:number)=>{

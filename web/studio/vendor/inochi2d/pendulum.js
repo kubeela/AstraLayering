@@ -4,13 +4,11 @@
 // e2235f6f29688d4013a0eec116a37ec8af8f1fb5. Source and license alongside.
 export class InochiPendulum {
   constructor(body){this.body=body;this.reset();}
-  reset(){this.angle=0;this.speed=0;this.bob=null;this.lastPivot=null;this.lastFrameAngle=null;this.frameAngle=0;this.frameSpeed=0;}
+  reset(){this.angle=0;this.speed=0;this.bob=null;this.lastPivot=null;this.frameAngle=0;}
   step(h){
     const b=this.body,c=b.component,pivot=b.target(c.authoring.pivot),L=b.freeLength;
     const down=b.target([c.authoring.pivot[0],c.authoring.pivot[1]+1]);
     this.frameAngle=Math.atan2(-(down[0]-pivot[0]),down[1]-pivot[1]);
-    this.frameSpeed=this.lastFrameAngle===null?0:Math.atan2(Math.sin(this.frameAngle-this.lastFrameAngle),Math.cos(this.frameAngle-this.lastFrameAngle))/h;
-    this.lastFrameAngle=this.frameAngle;
     if(this.bob){
       // The rendered attachment always follows its actual parent. Only the
       // inertia induced by parent translation is scaled by author inputGain.
@@ -26,9 +24,8 @@ export class InochiPendulum {
     this.bob=[pivot[0]-Math.sin(this.angle)*L,pivot[1]+Math.cos(this.angle)*L];b.pivot=pivot;
     // Inochi updateOutputs transforms its world output into the attachment's
     // local frame. The mesh already carries that frame, so only residual
-    // rotation and angular velocity may be applied again here.
+    // rotation may be applied again here. Artwork bounds never feed back into
+    // the integrated bob: doing that injects energy at a moving hard stop.
     b.theta=Math.atan2(Math.sin(this.angle-this.frameAngle),Math.cos(this.angle-this.frameAngle));
-    b.angularVelocity=this.speed-this.frameSpeed;
   }
-  reconcile(){const b=this.body;this.angle=b.theta+this.frameAngle;this.speed=b.angularVelocity+this.frameSpeed;this.bob=[b.pivot[0]-Math.sin(this.angle)*b.freeLength,b.pivot[1]+Math.cos(this.angle)*b.freeLength];}
 }
