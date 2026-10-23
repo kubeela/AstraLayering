@@ -54,6 +54,30 @@ test('a fresh AGV turn can recover an earlier error before its final response', 
   assert.deepEqual(turn.recoveredErrorStepIndices, [1]);
 });
 
+test('a completed finish and aggregated progress replies recover a stale stream timeout', () => {
+  const turn = new AgvTurn();
+  turn.record(step(0, 'user_input'));
+  turn.record(step(208, 'agent_response', 'DONE', '正在精修。\n'));
+  turn.record(step(234, 'agent_response', 'DONE', '正在重开核验。\n'));
+  turn.record(step(299, 'tool', 'ACTIVE'));
+  turn.record(step(299, 'tool'));
+  turn.record(step(300, 'error_message'));
+  turn.record(step(321, 'agent_response', 'DONE', '{"status":"completed","summary":"交付已保存"}\n'));
+  turn.record({ event: 'step_update', step_update: { step_index: 322, step_type: 'tool', state: 'ACTIVE', tool_name: 'finish' } });
+  const result = { conversation_id: 'same-session', status: 'ERROR',
+    error: 'API error (attempt 1): request failed: stream idle timeout (5m0s): context deadline exceeded',
+    response: '正在精修。\n正在重开核验。\n{"status":"completed","summary":"交付已保存"}\n' };
+  assert.equal(turn.recoveredError(result, 'same-session'), false, 'an active finish cannot complete the turn');
+  turn.record(step(322, 'finish'));
+  assert.equal(turn.recoveredError(result, 'same-session'), true);
+  assert.equal(turn.completedResponse, '{"status":"completed","summary":"交付已保存"}\n');
+  assert.deepEqual(turn.recoveredErrorStepIndices, [300]);
+  assert.equal(turn.recoveredError({ ...result, response: 'old text\n' + result.response }, 'same-session'), false);
+  turn.record(step(323, 'error_message'));
+  turn.record(step(324, 'finish'));
+  assert.equal(turn.recoveredError(result, 'same-session'), false, 'a finish cannot hide a terminal error');
+});
+
 const cli = `#!${process.execPath}
 import { randomUUID } from 'node:crypto';
 let input='';for await(const chunk of process.stdin)input+=chunk;
@@ -64,7 +88,13 @@ const step=(index,type,state='DONE',text='')=>emit({event:'step_update',step_upd
 emit({event:'init',conversation_id:id});
 if(mode!=='no-boundary')step(2,'user_input');
 if(mode==='initial-error'){step(3,'error_message');emit({event:'result',result:{conversation_id:id,status:'ERROR',error:'previous header timeout',response:''}});process.exit(3);}
-if(mode==='retry-header-timeout'){step(3,'error_message');emit({event:'result',result:{conversation_id:id,status:'ERROR',error:'net/http: timeout awaiting response headers',response:''}});process.exit(3);}
+if(mode==='retry-header-timeout'||mode==='retry-idle-timeout'){step(3,'error_message');emit({event:'result',result:{conversation_id:id,status:'ERROR',error:mode==='retry-idle-timeout'?'stream idle timeout (5m0s): context deadline exceeded':'net/http: timeout awaiting response headers',response:''}});process.exit(3);}
+if(mode==='aggregated-finish'||mode==='structured-finish'){
+ const output={status:'completed',summary:'saved artwork'},reply=JSON.stringify(output)+'\\n';
+ step(3,'agent_response','DONE','progress one\\n');step(4,'agent_response','DONE','progress two\\n');
+ step(5,'error_message');step(6,'agent_response','DONE',reply);step(7,'tool','ACTIVE');step(7,'finish');
+ emit({event:'result',result:{conversation_id:id,status:'ERROR',error:'stream idle timeout (5m0s): context deadline exceeded',response:'progress one\\nprogress two\\n'+reply,...(mode==='structured-finish'?{structured_output:output}:{})}});process.exit(0);
+}
 if(mode==='in-turn-recovery')step(3,'error_message');
 step(4,'agent_response','ACTIVE','current ');step(4,'agent_response','DONE','response');
 if(mode==='current-error'||mode==='terminal-error-zero')step(5,'error_message');
@@ -98,6 +128,15 @@ test('CLI adapter resumes after historical failure, preserves records, and still
   assert.equal(fresh.text, 'current response');
   const freshLog = JSON.parse(await readFile(join(fresh.logDirectory!, 'result.json'), 'utf8'));
   assert.equal(freshLog.processExitCode, 0); assert.equal(freshLog.cliStatus, 'ERROR');
+  for (const mode of ['aggregated-finish', 'structured-finish']) {
+    const recovered = await runCliTask({ name: mode, cwd, prompt: mode }, model, settings, options, new AbortController().signal, id);
+    assert.equal(recovered.threadId, id);
+    assert.deepEqual(JSON.parse(recovered.text), { status: 'completed', summary: 'saved artwork' });
+    assert.equal(await readFile(join(cwd, 'keep.svg'), 'utf8'), 'existing draft');
+    const recorded = await readFile(join(recovered.logDirectory!, 'events.jsonl'), 'utf8');
+    assert.match(recorded, /stream idle timeout/);
+    assert.match(recorded, /"outcomeSource":"current_turn_steps"/);
+  }
   for (const mode of ['current-error', 'terminal-error-zero', 'nonzero', 'missing-result', 'no-boundary', 'cancelled']) {
     const failing = runCliTask({ name: mode, cwd, prompt: mode }, model, settings, options, new AbortController().signal, id);
     if (mode === 'current-error') await assert.rejects(failing, /new timeout/);
@@ -110,7 +149,7 @@ test('CLI adapter resumes after historical failure, preserves records, and still
   await assert.rejects(aborting, /user cancelled/);
 });
 
-test('an exhausted AGV header timeout automatically resumes the same session and keeps its artifacts', async t => {
+for (const failure of ['retry-header-timeout', 'retry-idle-timeout']) test(`${failure}: an exhausted AGV timeout automatically resumes the same session and keeps its artifacts`, async t => {
   const root = await mkdtemp(join(tmpdir(), 'agv-retry-header-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const executable = join(root, 'agy.mjs'); await writeFile(executable, cli, { mode: 0o700 });
@@ -124,9 +163,9 @@ test('an exhausted AGV header timeout automatically resumes the same session and
     onThreadReplacement: async () => assert.fail('a network timeout must not replace the session') });
   const session = agents.createSession();
   t.after(() => session.close());
-  const result = await session.run({ name: 'header-timeout', cwd, prompt: 'retry-header-timeout' });
+  const result = await session.run({ name: 'transport-timeout', cwd, prompt: failure });
   assert.equal(result.text, 'current response'); assert.deepEqual(waits, [5000]);
   assert.equal(ids.length, 1); assert.equal(result.threadId, ids[0]);
-  assert.equal(retries.length, 1); assert.match(retries[0], /timeout awaiting response headers/);
+  assert.equal(retries.length, 1); assert.match(retries[0], /timeout awaiting response headers|stream idle timeout/);
   assert.equal(await readFile(join(cwd, 'keep.svg'), 'utf8'), 'existing draft');
 });
