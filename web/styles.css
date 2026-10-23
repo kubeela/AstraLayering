@@ -160,15 +160,21 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .overview-heading{display:flex;align-items:center;gap:16px;padding:12px 0 24px}
 .overview-heading h2{font-size:18px;font-weight:600}
 .overview-heading p{margin-top:8px;color:var(--muted);font-size:12px}
-.overview-grid{display:grid;grid-template-columns:repeat(6,minmax(190px,1fr));gap:16px;padding-bottom:16px;min-width:1220px}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;padding-bottom:16px;min-width:0}
 .overview-card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--line);border-radius:10px;background:white}
 .overview-card.selected{border-color:var(--accent)}
+.overview-card.done{border-color:#c8dfd7;background:#fbfdfc}
 .overview-card.running{border-color:#b4a0cb}
-.overview-stage{display:flex;align-items:center;gap:8px;text-align:left;padding:16px 12px;border-bottom:1px solid var(--line)}
+.overview-card.failed{border-color:#dfa8a5;background:#fffafa}
+.overview-card.selected{box-shadow:0 0 0 1px var(--accent)}
+.overview-stage{display:flex;align-items:center;gap:8px;text-align:left;padding:12px}
 .overview-stage h3{flex:1;font-size:14px;font-weight:600}
-.execution-state{display:flex;align-items:center;gap:8px;padding:20px 12px;font-size:12px;color:var(--muted)}
-.overview-actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px}
-.overview-actions .button{flex:1;font-size:11px;padding:0 8px}
+.overview-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 12px 12px}
+.execution-state{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap;color:var(--muted)}
+.execution-state.done{color:#287c63}.execution-state.running{color:var(--purple)}.execution-state.failed{color:#b34b45}.execution-state.available{color:#598086}
+.overview-actions{display:flex;gap:6px}
+.overview-actions .button{height:28px;font-size:11px;padding:0 6px;gap:4px}
+.overview-actions .button svg{width:13px;height:13px}
 #app:has(.preview-main){height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 #app:has(.preview-main)>.app-header{flex-shrink:0}
 .preview-main{flex:1;min-height:0;max-width:none;width:100%;margin:0;padding:10px;display:flex;flex-direction:column}
@@ -192,11 +198,23 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 
 .review-feedback{white-space:pre-wrap;font-size:12px;line-height:1.5;max-height:9em;overflow:auto;overscroll-behavior:contain;}
 
+.raster-review:not(.node-collapsed){height:auto;max-height:var(--step-height)}
+.raster-review .step-children>.step-node{height:auto;max-height:calc(var(--step-height) - 118px)}
+.raster-review .step-children>.step-node>.step-content{max-height:calc(var(--step-height) - 168px)}
+.step-children>.skipped-node{height:auto;background:#f5f8f9;border-style:dashed;color:var(--muted)}
+.skipped-heading{display:flex;align-items:center;gap:6px;padding:10px}
+.skipped-heading h3{font-size:12px;font-weight:500;flex:1}
+.skipped-heading small{font-size:10px;white-space:nowrap}
+.skipped-steps{display:flex;flex-direction:column;gap:8px;width:224px;flex:0 0 auto;position:relative}
+.skipped-steps:before{content:'→';position:absolute;left:-19px;top:16px;color:#9fb9b8}
+.skipped-steps>.step-node{height:auto;width:224px}
+.skipped-steps>.step-node:before{display:none}
+
 /* The live KRA remains beside the horizontal steps, outside their scroll areas. */
 .kra-preview-panel{width:300px;height:var(--step-height);flex:0 0 auto;display:flex;flex-direction:column;border:1px solid #cddeda;border-radius:8px;background:white;overflow:hidden}
 .kra-preview-panel h3{display:flex;align-items:center;gap:7px;padding:14px 12px;font-size:14px;font-weight:550;flex-shrink:0}
 .preview-source{padding:0 12px 10px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
-.live-kra-artifacts,.live-kra-artifacts .artifact-images{display:flex;flex:1;min-height:0;overflow:hidden}
+.live-kra-artifacts,.live-kra-artifacts .artifact-images{display:flex;flex:1;min-height:0;overflow:hidden;flex-wrap:nowrap}
 .live-kra-artifacts .artifact-image{flex:1;min-height:0}
 .live-kra-artifacts .artifact-image img{height:0;flex:1;min-height:0}
 .live-kra-artifacts .artifact-image span,.live-kra-artifacts .artifact-image small{flex-shrink:0}
