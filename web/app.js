@@ -43,6 +43,8 @@ const stages = [
  {name:'穿戴组装',id:'character-assembly'}, {name:'阴影制作',id:'shadow'},
 ];
 const isRasterPipeline = index => ['raster-layering','clothing-raster-layering'].includes(stages[index]?.id);
+const hasKraPreview = index => isRasterPipeline(index)||stages[index]?.id==='character-assembly'
+ ||stages[index]?.id==='shadow'&&data.pipelines[index]?.mode==='mask';
 async function post(path, value) {
  const response = await fetch('./api/'+path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dir:state.directory,...value})});
  const result = await response.json(); if(!response.ok)throw new Error(result.error); return result;
@@ -199,8 +201,8 @@ function observedDisplayStatus(index, status, stepId) {
 }
 function rasterItems(index, stepId) {
  const stage=stages[index].id, pipeline=data.pipelines[index];
- if(!['raster-layering','clothing-raster-layering','character-assembly'].includes(stage))return stepArtifacts[index][stepId];
- const record=pipeline?.previews?.[stepId];
+ if(!hasKraPreview(index))return stepArtifacts[index][stepId];
+ if(stage==='shadow')return (stepArtifacts[index][stepId]||[]).filter(item=>item.path!=='shadow/mask/step01/character-shadowed.png');
  const files=(stepArtifacts[index][stepId]||[]).filter(item=>item.kind==='file');
  const report=pipeline?.reports?.[stepId];
  const reportFile=report?[{path:report.path,label:report.draft?'报告草稿':'完整报告',kind:'file'}]:[];
@@ -209,10 +211,10 @@ function rasterItems(index, stepId) {
   if(stepId==='step01')return files.filter(item=>!item.path.endsWith('/report.md'));
   return [...files.filter(item=>!item.path.endsWith('.md')),...reportFile];
  }
- return record?[{path:record.path,label:'Krita 最新保存画面',kind:'image'},...files]:files;
+ return files;
 }
 function kraPreviewPanel(index) {
- if(!isRasterPipeline(index)&&!(stages[index]?.id==='shadow'&&data.pipelines[index]?.mode==='mask'))return '';
+ if(!hasKraPreview(index))return '';
  const record=latestKraPreview(data.pipelines[index]?.previews);
  const step=record&&pipelineSteps[index].find(step=>step.id===record.stepId);
  const sourceTitle=stages[index].id==='shadow'?'Live2D 蒙版':step?.title||record?.stepId;
@@ -251,7 +253,7 @@ function stepNode(index,step,nested=false) {
  ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap" title="人物准备阶段执行后展示标准参考图">尚无标准参考图</p>':''}
  ${context}
  ${reportEvidence(index,step.id)}
- ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...stepArtifacts[index][step.id],...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
+ ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${step.id.startsWith('step')?processArtifacts(index,step.id):''}
  </div>
