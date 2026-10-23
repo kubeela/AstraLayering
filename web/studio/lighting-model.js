@@ -1,5 +1,5 @@
 // Shared, renderer-independent contracts for recipes and geometry.
-export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v3";
+export const rendererVersion = "mtoon-3.5.5-three-0.180.0-v4";
 export const defaults = Object.freeze({
   lightX: 2.4,
   lightY: 0.4,

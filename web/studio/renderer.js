@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { MToonMaterial } from "@pixiv/three-vrm-materials-mtoon";
 import { defaults, reliefGrid, projectionDepth } from "./lighting-model.js";
-import { surfaceDistanceMaterial } from './surface-shadow.js';
+import { surfaceDistanceMaterial, smoothPointShadowGLSL } from './surface-shadow.js';
 
 function pixels(image) {
   const c = document.createElement("canvas");
@@ -77,7 +77,8 @@ export class LightingStage {
     this.material.toneMapped = false;
     this.material.outlineWidthMode = "none";
     // Reconstruct per-pixel surface position for BOTH point light and shadows.
-    // MToon's BRDF and Three's PCF shadow comparison remain upstream code.
+    // MToon's BRDF and Three's PCF shadow comparison remain upstream code;
+    // only the visibility is filtered, with neighbours on other surfaces rejected.
     // Interpolating depth across a hand/face edge creates false striped shadows.
     this.depthUniforms = {
       studioDepth: { value: null },
@@ -123,8 +124,12 @@ vec4 studioShadowCoord() {
  if(n.z<0.0)n=-n;
  // Native-style geometric normal bias, evaluated at the actual receiver.
  return studioShadowMatrix*vec4(p+n*0.012,1.0);
-}`,
+}
+${smoothPointShadowGLSL}`,
         )
+        .replaceAll('getPointShadow( pointShadowMap[ i ],','studioSmoothPointShadow( pointShadowMap[ i ],')
+        .replace('shading = linearstep( -1.0 + shadingToonyFactor, 1.0 - shadingToonyFactor, shading );',
+          'float studioRampWidth=max(1.0-shadingToonyFactor,fwidth(shading));\n  shading=smoothstep(-studioRampWidth,studioRampWidth,shading);')
         .replaceAll("vPointShadowCoord[ i ]", "studioShadowCoord()")
         .replace(
           "vec3 geometryPosition = - vViewPosition;",
@@ -141,7 +146,7 @@ vec4 studioShadowCoord() {
     };
     // MToon includes the debug mode and generated defines in its program key.
     // A constant key silently reuses the beauty shader in diagnostic modes.
-    this.material.customProgramCacheKey = () => upstreamProgramKey() + "|astra-mtoon-point-receiver-v3";
+    this.material.customProgramCacheKey = () => upstreamProgramKey() + "|astra-mtoon-point-receiver-v4";
     this.basic = new THREE.MeshBasicMaterial({
       transparent: true,
       alphaTest: 0.01,
@@ -206,6 +211,7 @@ vec4 studioShadowCoord() {
     this.hasNormal = !!normal;
     this.hasDepth = !!depth;
     this.source = { a, n, d, w, h };
+    this.lightingSource=null;this.lightingNormal=null;
     const dn = new Uint8Array(d);
     for (let i = 0; i < a.length; i += 4) dn[i + 3] = a[i + 3];
     this.color = texture(new Uint8Array(a), w, h, true);
@@ -294,6 +300,25 @@ vec4 studioShadowCoord() {
       b[i + 3] = a[i + 3];
     }
     this.normal.needsUpdate = true;
+    if(this.lightingNormal){
+      const source=this.lightingSource.normal,out=this.lightingNormal.image.data;
+      for(let i=0;i<source.length;i+=4){const x=(source[i]/127.5-1)*s,ny=(source[i+1]/127.5-1)*s*y,z=Math.max(.005,source[i+2]/127.5-1),l=Math.hypot(x,ny,z);out[i]=(x/l+1)*127.5;out[i+1]=(ny/l+1)*127.5;out[i+2]=(z/l+1)*127.5;out[i+3]=a[i+3];}
+      this.lightingNormal.needsUpdate=true;
+    }
+  }
+  setLightingFields(fields){
+    if(!fields&&!this.lightingSource)return;
+    this.lightingSource=fields;
+    if(this.lightingNormal){this.lightingNormal.dispose();this.textures=this.textures.filter(t=>t!==this.lightingNormal);this.lightingNormal=null;}
+    const {a,n,d,w,h}=this.source;
+    if(fields?.inherited.length){this.lightingNormal=texture(new Uint8Array(n.length),w,h);this.textures.push(this.lightingNormal);}
+    this.updateNormal();this.material.normalMap=this.lightingNormal||this.normal;
+    const heights=projectionDepth(fields?.depth||d,a,w,h),half=this.depthUniforms.studioDepth.value.image.data;
+    for(let i=0;i<heights.length;i++)half[i]=THREE.DataUtils.toHalfFloat(heights[i]);
+    this.depthUniforms.studioDepth.value.needsUpdate=true;
+    this.grid=reliefGrid(heights,a,w,h);
+    this.caster.geometry.setIndex(new THREE.BufferAttribute(this.grid.caster,1));
+    this.updateRelief();this.material.needsUpdate=true;
   }
   updateRelief() {
     if (this.deformation) { this.deformation.dirty = true; this.renderer.shadowMap.needsUpdate = true; return; }
@@ -481,6 +506,7 @@ vec4 studioShadowCoord() {
     this.textures.forEach((t) => t.dispose());
     this.textures = [];
     this.source = this.grid = this.color = this.normal = this.depth = null;
+    this.lightingSource=this.lightingNormal=null;
     this.material.map =
       this.material.shadeMultiplyTexture =
       this.material.normalMap =

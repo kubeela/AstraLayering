@@ -1,5 +1,6 @@
 // Source algorithm: ai-weapon-spirit character-studio; source-UV attribution and seeded harmonic completion.
 import { harmonicFill } from "./harmonic-fill.js";
+import { shareShallowSurfaceMaps } from './surface-lighting.js';
 function extractPartMaps(width, height, layers, normal, depth, surfaces = []) {
   const transmission = new Float32Array(width * height).fill(1), maps = /* @__PURE__ */ new Map();
   const means = /* @__PURE__ */ new Map();
@@ -63,6 +64,7 @@ function extractPartMaps(width, height, layers, normal, depth, surfaces = []) {
     for (let i = 0; i < count; i++) if (!visited[i]) for (let c = 0; c < 4; c++) map.data[i * 4 + c] = fallback[c];
     harmonicFill(map.data, w, visited, queue.subarray(knownEnd, end));
   }
+  shareShallowSurfaceMaps(layers, maps);
   return maps;
 }
 export {
