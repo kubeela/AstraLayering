@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict';
+import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { test } from 'node:test';
+import sharp from 'sharp';
+import { createWorkbench } from '../server.ts';
+import { snapshot } from '../snapshot.ts';
+import { reportPreview } from '../report.ts';
+import { renderReport, reportReferences } from '../report-markdown.js';
+
+test('报告图片兼容 Markdown、行内代码与纯路径，代码块不被当作证据', () => {
+  const text = '![标注](<evidence/有 空格.png>)\n[对照](evidence/fold(1).png)\n`/run/case/zoom.png`\nevidence/plain.webp\n```python\nopen("not-evidence.png")\n```';
+  const refs = reportReferences(text);
+  assert.deepEqual(refs.map(ref => ref.target), ['evidence/有 空格.png', 'evidence/fold(1).png', '/run/case/zoom.png', 'evidence/plain.webp']);
+  for (const ref of refs) assert.ok(text.slice(ref.start, ref.end).includes(ref.target));
+});
+
+test('报告图片只解析实际任务内的文件，拒绝外部路径与符号链接', async t => {
+  const base = await mkdtemp(join(tmpdir(), 'report-paths-')), root = join(base, 'case');
+  t.after(() => rm(base, { recursive: true, force: true }));
+  const image = 'clothing-raster-layering/step01/evidence/marked.png';
+  await mkdir(join(root, 'clothing-raster-layering/step01/evidence'), { recursive: true });
+  await writeFile(join(root, image), 'image');
+  await writeFile(join(base, 'outside.png'), 'private');
+  const alias = 'clothing-raster-layering/step01/alias.png';
+  await symlink(join(base, 'outside.png'), join(root, alias));
+  const text = ['结论：需要修复', '![标注](evidence/marked.png)', '`step01/evidence/marked.png`', '`' + join(root, image) + '`',
+    '`' + join(base, 'outside.png') + '`', '`../../../outside.png`', '`alias.png`', '![remote](https://example.com/image.png)', '`missing.png`'].join('\n');
+  const report = await reportPreview(root, 'clothing-raster-layering/step01/review-01.md', text, new Set([image, alias]));
+  assert.equal(report.summary, '结论：需要修复');
+  assert.equal(report.images.length, 3);
+  assert.ok(report.images.every(item => item.path === image));
+  const html = renderReport(text + '\n<script>alert(1)</script>', report.images, path => '/artifact?' + new URLSearchParams({ path }));
+  assert.equal((html.match(/<img /g) ?? []).length, 3);
+  assert.match(html, /alt="标注"/);
+  assert.match(html, /&lt;script&gt;/);
+  assert.doesNotMatch(html, /<script|src="https:|src="[^"]*outside/);
+});
+
+test('review 草稿展示引用图片，经 HTTP 可读，发布后采用正式报告但不提前标完成', async t => {
+  const base = await mkdtemp(join(tmpdir(), 'report-http-')), root = join(base, 'case'), step = 'clothing-raster-layering/step01';
+  t.after(() => rm(base, { recursive: true, force: true }));
+  await mkdir(join(root, step, 'evidence'), { recursive: true });
+  const image = step + '/evidence/marked.png', draft = step + '/review-01.md.tmp';
+  await writeFile(join(root, image), await sharp({ create: { width: 20, height: 20, channels: 4, background: '#ff0088' } }).png().toBuffer());
+  await writeFile(join(root, step, 'report.md'), '结论：完成绘制');
+  await writeFile(join(root, draft), '结论：需要修复\n![标注](evidence/marked.png)');
+  let value = await snapshot(root, 'case', base), report = value.pipelines[3].reports['review-01'];
+  assert.equal(report.path, draft); assert.equal(report.draft, true);
+  assert.equal(report.images[0].path, image); assert.ok(value.fileVersions[draft]);
+  assert.notEqual(value.pipelines[3].states['review-01'], 'done');
+  const server = await createWorkbench({ defaultDir: base, settingsPath: join(base, 'settings.json') });
+  await new Promise<void>(done => server.listen(0, '127.0.0.1', done));
+  t.after(() => new Promise<void>(done => server.close(() => done())));
+  const url = `http://127.0.0.1:${(server.address() as any).port}/artifact?`;
+  const module = await fetch(url.replace('/artifact?', '/report-markdown.js'));
+  assert.equal(module.status, 200); assert.match(await module.text(), /export function renderReport/);
+  const response = await fetch(url + new URLSearchParams({ name: 'case', dir: base, path: draft }));
+  assert.equal(response.status, 200); assert.match(response.headers.get('content-type')!, /text\/plain/);
+  assert.match(await response.text(), /标注/);
+  const picture = await fetch(url + new URLSearchParams({ name: 'case', dir: base, path: image }));
+  assert.equal(picture.status, 200); assert.equal((await sharp(Buffer.from(await picture.arrayBuffer())).metadata()).width, 20);
+  await writeFile(join(root, draft.replace('.tmp', '')), '结论：通过\n![标注](evidence/marked.png)');
+  value = await snapshot(root, 'case', base); report = value.pipelines[3].reports['review-01'];
+  assert.equal(report.draft, false); assert.equal(report.summary, '结论：通过');
+  assert.equal(value.pipelines[3].states['review-01'], 'done');
+});
