@@ -84,7 +84,22 @@ test('both tool routes key model-selected RGB backgrounds over Gemini and OpenAI
   });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => { server.closeAllConnections(); return new Promise<void>(done => server.close(() => done())); });
-  const processing = { krita: executable, matte: async (input: string, output: string) => { const r = await normalizeReference(input, input, output); return { ...r }; } };
+  const processing = { krita: executable, matte: async (input: string, output: string) => {
+    const r = await normalizeReference(input, input, output);
+    const source = await sharp(input).removeAlpha().raw().toBuffer();
+    const { data, info } = await sharp(output).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    // Simulate the observed failure: the matte overestimates edge coverage and
+    // leaves backdrop colour in foreground RGB. Both routes must refine this.
+    for (let y = 16; y <= 48; y++) {
+      const i = y * info.width + 11;
+      for (let c = 0; c < 3; c++) data[i * 4 + c] = source[i * 3 + c];
+      data[i * 4 + 3] = 200;
+    }
+    const image = sharp(data, { raw: info });
+    await writeFile(output, await image.clone().png().toBuffer());
+    await writeFile(output + '.alpha.png', await image.extractChannel(3).png().toBuffer());
+    return { ...r };
+  } };
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
   for (protocol of ['gemini', 'openai']) for (const color of [[11, 246, 12], [4, 9, 254], [249, 5, 9]]) {
     png = await solidImage(color);
@@ -127,6 +142,18 @@ test('both tool routes key model-selected RGB backgrounds over Gemini and OpenAI
       assert.equal(report.originalPrompt, prompt); assert.equal(report.requestedBackground, 'transparent');
       assert.equal(report.selection.reference, edit ? 'first-image' : 'none');
       assert.equal(report.selection.hex, '#00FF00');
+      if (edit) {
+        // The actual returned screen can differ from the requested green key.
+        assert.deepEqual(report.normalization.foregroundRecovery.background, color);
+        assert.ok(report.normalization.foregroundRecovery.adjustedPixels > 0);
+        assert.ok(Math.abs(alpha / 255 - .5) < .04);
+        for (let c = 0; c < 3; c++) assert.ok(Math.abs(image.data[(20 * 48 + 11) * 4 + c] - 65) <= 8);
+        const archived = await sharp(join(recordDirectory, 'matte.png')).ensureAlpha().raw().toBuffer();
+        assert.equal(archived[(20 * 48 + 11) * 4 + 3], 200);
+        const alphaImage = await sharp(join(recordDirectory, 'transparent.png.alpha.png')).greyscale().raw().toBuffer();
+        assert.equal(alphaImage[20 * 48 + 11], alpha);
+        assert.ok((await readdir(recordDirectory)).includes('matte-alpha.png'));
+      } else assert.equal(report.normalization.foregroundRecovery, undefined);
     }
   }
   assert.equal(calls, 24); assert.deepEqual(await readFile(reference), input);

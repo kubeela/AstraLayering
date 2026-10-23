@@ -68,6 +68,8 @@ OpenAI 兼容协议在 base URL 后追加 `/images/generations` 或 `/images/edi
 
 选色忽略透明像素的 RGB 和可识别的原背景，不让后续控制图／画风参考的颜色参与主体色盘。优先避开即使面积很小的同色细节，再比较与主体色相的分离程度；有彩色原背景时使用近不透明颜色锚点降低透色干扰。候选评分、原背景、选色理由写入 `background-selection.json`。没有图像参考时使用纯绿并记录原因；三色都有近色冲突时选综合风险最低者并记录冲突，不声称能无误判。选色是推荐，无法凭单张 RGB 图唯一恢复材料透明度。
 
+ViTMatte／PyMatting 后还会依据实际检测到的红、绿或蓝背景、邻近已透明区域的背景 RGB 和目标参考的主体色盘，修正边缘残色与偏高的 alpha。同色主体细节参与色盘约束；修正不会增加 alpha 或改变远离边缘的不透明内区。没有有效主体色盘时保留模型抠图结果。未能修正的像素数量记录在 `normalization.foregroundRecovery`，仍须看图确认；这不是保证所有半透明材料都能无损还原。发生修正时，原模型结果和 alpha 另存为 `matte.png`／`matte-alpha.png`。
+
 Nano 后处理不改变生成图尺寸和比例；工作流仍负责后续等比缩放与配准。原始 RGB 生图和后处理记录保存在本次请求的 `generated/` 下的 `image-processing/<id>/`，没有可靠纯色背景时明确报错并指出原图路径。半透明材料仍须逐图检查，不能仅凭存在 alpha 声称恢复准确；ViTMatte 和前景颜色恢复已用于 Nano 透明后处理；包在首次实际使用时自动装到运行根目录 `.runtime/`，后续复用。
 
 主模型网关与生图接口各自鉴权。Codex 默认继承当前用户配置；自定义 Codex provider 沿用 `layering_custom_provider` 和 provider URL／key。Claude／agv 可复用其已有登录，也可在 `.env` 填写 CLI 原生环境变量，例如 `ANTHROPIC_API_KEY`／`ANTHROPIC_BASE_URL`，或 `AGY_LLM_GATEWAY_API_KEY`／`AGY_LLM_GATEWAY_URL`／`AGY_LLM_GATEWAY_MODELS`／`AGY_LLM_GATEWAY_WIRE_PROTOCOL`。密钥不写入提示词、报告或 Git。

@@ -6,6 +6,7 @@ import type { ImageProcessingOptions } from '../image-processing.ts';
 import { imageModelProviders, type ImageModel } from './models.ts';
 import type { ImageArguments } from './images.ts';
 import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
+import { recoverScreenEdges } from './screen-recovery.ts';
 
 export function needsSolidBackground(model: ImageModel, args: ImageArguments): boolean {
   return imageModelProviders[model] === 'google' && (args.background ?? 'transparent') === 'transparent';
@@ -36,13 +37,33 @@ export async function transparentGeneratedImage(png: Buffer, model: ImageModel, 
     }
     // Matting does not scale or register the output; fixed workflow normalization owns that.
     const normalization = await (options.matte ?? matteImage)(source, output, options, signal);
-    await writeFile(join(directory, 'normalization.json'), JSON.stringify({ ...record, normalization }, null, 2) + '\n', { mode: 0o600 });
     signal.throwIfAborted();
     const before = await sharp(source).metadata(), after = await sharp(output).metadata();
     if (before.width !== after.width || before.height !== after.height) throw new Error('透明后处理改变了原始生图尺寸。');
     if ((await sharp(output).stats()).isOpaque) {
       throw new Error('生成图片没有可靠的纯色背景或抠图后没有实际透明区域。');
     }
+    if (Array.isArray(normalization.key) && normalization.key.length === 3) {
+      const key = normalization.key as number[], channel = key.indexOf(Math.max(...key));
+      const envelope = selection.foregroundEnvelopes?.find(value => value.channel === channel);
+      if (envelope) {
+        const originalMatte = await readFile(output);
+        const rgb = await sharp(source).toColourspace('srgb').removeAlpha().raw().toBuffer();
+        const rgba = await sharp(originalMatte).toColourspace('srgb').ensureAlpha().raw().toBuffer();
+        const recovered = recoverScreenEdges(rgb, rgba, before.width!, before.height!, key, envelope);
+        normalization.foregroundRecovery = recovered.report;
+        if (recovered.report.adjustedPixels) {
+          // Preserve the model's unrefined result for inspection and comparison.
+          await writeFile(join(directory, 'matte.png'), originalMatte, { mode: 0o600 });
+          try { await writeFile(join(directory, 'matte-alpha.png'), await readFile(output + '.alpha.png'), { mode: 0o600 }); }
+          catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+          const image = sharp(recovered.rgba, { raw: { width: before.width!, height: before.height!, channels: 4 } });
+          await writeFile(output, await image.clone().png().toBuffer(), { mode: 0o600 });
+          await writeFile(output + '.alpha.png', await image.extractChannel(3).png().toBuffer(), { mode: 0o600 });
+        }
+      }
+    }
+    await writeFile(join(directory, 'normalization.json'), JSON.stringify({ ...record, normalization }, null, 2) + '\n', { mode: 0o600 });
     return await readFile(output);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
