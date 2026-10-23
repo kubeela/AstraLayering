@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { ComponentScene } from '../studio/component-physics-model.js';
 import { componentDefaults } from '../studio/component-physics-schema.js';
 import { resolveComponentBindings } from '../studio/component-physics-binding.js';
-import { refineControlGeometry, conditionTriangles, cross } from '../studio/component-physics-geometry.js';
+import { refineControlGeometry, conditionTriangles, cross, gridControlGeometry } from '../studio/component-physics-geometry.js';
 import { applyTestInput } from '../studio/physics-test-input.js';
 import { projectionField } from '../studio/projection-field.js';
 import { simulate, traceWindow, validateFindings } from '../../.agents/skills/live2d-maker/physics/evidence.ts';
@@ -60,6 +60,14 @@ test('mesh conditioning preserves source vertices, boundary area and protected d
   assert(conditioned.every(t=>t.includes(b)&&t.includes(d)),'use the better interior diagonal without shifting the outline');
   assert.deepEqual(conditionTriangles(faces,[[a,c]]),faces,'fixed-region and control cuts may not be flipped');
   const concave=[[a,b,[20,10]],[a,[20,10],[0,100]]];assert.deepEqual(conditionTriangles(concave),concave,'an exterior diagonal must never replace a concave interior edge');
+});
+test('cloth boundary roundoff samples the last control cell without moving the source outline',()=>{
+  const contour=[[10.1,20.2],[30.3,20.2],[30.3,70.7],[10.1,70.7]],grid=gridControlGeometry({controlGrid:[4,8],contour},[]);
+  for(const p of [[30.3+1e-12,55],[21,70.7+1e-12],[30.3+1e-12,70.7+1e-12],[10.1-1e-12,20.2-1e-12]]){
+    const s=grid.sample(p),q=[0,1].map(k=>s.slice(0,3).reduce((sum:number,i:number,n:number)=>sum+grid.rest[i*2+k]*s[n+3],0));
+    assert(Math.abs(q[0]-Math.max(10.1,Math.min(30.3,p[0])))<1e-10);
+    assert(Math.abs(q[1]-Math.max(20.2,Math.min(70.7,p[1])))<1e-10);
+  }
 });
 test('rigid pendant preserves pair distances rather than stretching into jelly',()=>{
   const scene=new ComponentScene(config([component('pendant')])),b=scene.bodies.get('pendant');b.impulse(100,320,900,400,500);
@@ -149,6 +157,21 @@ test('Inochi nonlinear pendulum matches the small-angle period and preserves amp
   const p=new InochiPendulum(body);p.angle=.02;const h=1/240;let minimum=Infinity,maximum=-Infinity,firstCrossing=0;
   for(let n=1;n<=240;n++){p.step(h);minimum=Math.min(minimum,p.angle);maximum=Math.max(maximum,p.angle);if(!firstCrossing&&p.angle<0)firstCrossing=n*h;}
   assert(Math.abs(firstCrossing-.25)<.005);assert(Math.abs(p.angle-.02)<1e-6);assert(minimum<-.01999&&maximum>.01999);
+});
+test('pendant world output converts to the attachment frame and reconciles local constraints once',()=>{
+  let frame=.2;
+  const body:any={freeLength:100,component:{authoring:{pivot:[0,0]},response:{frequencyHz:1,dampingRatio:0,inputGain:1}},scene:{airflow:{x:0}},target:([x,y]:number[])=>[Math.cos(frame)*x-Math.sin(frame)*y,Math.sin(frame)*x+Math.cos(frame)*y]};
+  const p=new InochiPendulum(body),h=1/120;
+  for(let n=0;n<60;n++){
+    frame=.2+n*.001;p.step(h);
+    assert(Math.abs(body.theta+frame-p.angle)<1e-10,'parent rotation must not be added a second time');
+    const worldAngle=p.angle,worldSpeed=p.speed;p.reconcile();
+    assert(Math.abs(p.angle-worldAngle)<1e-10);assert(Math.abs(p.speed-worldSpeed)<1e-10);
+  }
+  body.theta=.03;body.angularVelocity=.7;p.reconcile();
+  assert(Math.abs(p.angle-(frame+.03))<1e-10);
+  assert(Math.abs(p.speed-(.7+.001/h))<1e-10);
+  p.reset();assert.equal(p.lastFrameAngle,null);
 });
 test('pendant parent input gain scales inertia without detaching the artwork or carrying state through reset',()=>{
   const sample=(gain:number)=>{

@@ -285,7 +285,7 @@ export class ComponentBody {
   impulse(x,y,vx,vy,radius,weight=1){
     if(![x,y,vx,vy,radius].every(Number.isFinite)||radius<=0)return;
     const speed=Math.hypot(vx,vy),cap=this.freeLength*2,scale=speed?cap*Math.tanh(speed/cap)/speed*this.component.response.inputGain*weight:0;
-    if(this.kind==='pendant'){const p=this.pivot||this.component.authoring.pivot;this.angularVelocity+=((x-p[0])*vy-(y-p[1])*vx)*scale/Math.max(1,this.freeLength*this.freeLength);this.motion.speed=this.angularVelocity;this.impulses++;return;}
+    if(this.kind==='pendant'){const p=this.pivot||this.component.authoring.pivot,delta=((x-p[0])*vy-(y-p[1])*vx)*scale/Math.max(1,this.freeLength*this.freeLength);this.angularVelocity+=delta;this.motion.speed+=delta;this.impulses++;return;}
     let affected=false;
     const apply=(i,w)=>{w*=this.mobility[i];if(w>0){this.velocity[i*2]+=vx*scale*w;this.velocity[i*2+1]+=vy*scale*w;this.motion.impulse?.(i,vx*scale*w,vy*scale*w);affected=true;}};
     for(let i=0;i<this.mobility.length;i++){

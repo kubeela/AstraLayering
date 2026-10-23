@@ -169,7 +169,10 @@ export function gridControlGeometry(authoring,supports){
   });
   const [xs,ys]=axes,rest=[],indices=[];for(const y of ys)for(const x of xs)rest.push(x,y);
   for(let y=0;y<ys.length-1;y++)for(let x=0;x<xs.length-1;x++){const a=y*xs.length+x,b=a+1,c=a+xs.length,d=c+1;indices.push(a,b,c,b,d,c);}
-  const sample=([x,y])=>{const cell=(axis,v)=>Math.max(0,Math.min(axis.length-2,axis.findIndex((p,i)=>i&&p>=v)-1));const ix=cell(xs,x),iy=cell(ys,y),u=clamp((x-xs[ix])/(xs[ix+1]-xs[ix]),0,1),v=clamp((y-ys[iy])/(ys[iy+1]-ys[iy]),0,1),a=iy*xs.length+ix,b=a+1,c=a+xs.length,d=c+1;return u+v<=1?[a,b,c,1-u-v,u,v]:[b,d,c,1-v,u+v-1,1-u];};
+  // A point a rounding error beyond the last axis belongs to the last cell.
+  // findIndex=-1 must never wrap that source pixel back to the first cell.
+  const cell=(axis,v)=>{const end=axis.findIndex((p,i)=>i>0&&p>=v);return end<0?axis.length-2:Math.max(0,end-1);};
+  const sample=([x,y])=>{const ix=cell(xs,x),iy=cell(ys,y),u=clamp((x-xs[ix])/(xs[ix+1]-xs[ix]),0,1),v=clamp((y-ys[iy])/(ys[iy+1]-ys[iy]),0,1),a=iy*xs.length+ix,b=a+1,c=a+xs.length,d=c+1;return u+v<=1?[a,b,c,1-u-v,u,v]:[b,d,c,1-v,u+v-1,1-u];};
   return {rest,indices,sample};
 }
 export function geometryFor(component) {
