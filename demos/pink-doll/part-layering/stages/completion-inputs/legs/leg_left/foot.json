@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "legs/leg_left/foot",
+  "beforeHash": "073621d380fe87d5c3a819559bca1ca619591b009c400fd60a88d3dcd3c5b908",
+  "afterHash": "8b7d3d0c741a6dde6d6714f55cc15d18e7806052187b000ac1ebb943968f0238",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda"
+    }
+  ]
+}

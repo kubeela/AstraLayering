@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "bodice",
+  "beforeHash": "bf2d1bb9a19ea6094ebfc645a8cf689877679ee0cd9ea8bdee84d460587d87e6",
+  "afterHash": "da07e21be0e685d9baa796a22126b17aedf1913228ee7c25d77886288a63d781",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "242bcceaba148a48fbf0c42de79e6202e5856587855e06c5cea58d9501d35192"
+    }
+  ]
+}

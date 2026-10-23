@@ -1,0 +1,559 @@
+{
+  "version": 3,
+  "direction": "back-to-front",
+  "sourceHash": "e92a0e5dc3a65dd061dcbd5dd0052b9e12087f6bc6c7460a2685fe533ae05b09",
+  "layers": [
+    {
+      "id": "head_accessories",
+      "note": "raster step01 落实上游已标注的发饰根部与辫环双向穿插：同一逻辑发饰保留完整补全，按原可见几何切成前部和根部两个普通绘画层，不删除根部、不增加运动节点。",
+      "check": {
+        "passed": true,
+        "note": "在 Krita 对照原图完成分片，根部不再压盖前方辫环；两片不重画且像素并集恢复完整部件。",
+        "regions": [
+          {
+            "level": 0,
+            "note": "仅原可见轮廓之外的补全根部像素，隐藏于辫环后方。"
+          },
+          {
+            "level": 4,
+            "note": "叶瓣及圆珠保留原可见轮廓，遮挡辫环上外侧补全。"
+          }
+        ]
+      },
+      "levels": [
+        {
+          "level": 0,
+          "region": "root：补全形状减去原可见叶瓣/圆珠形状的剩余像素；SVG data-completion-additions 区域中伸入辫环下方的根部，位于 bun_right 后。KRA 000 | head_accessories::root。"
+        },
+        {
+          "level": 4,
+          "region": "front：原可见形状（不含 data-completion-additions）覆盖的叶瓣与圆珠像素，位于 bun_right 前。KRA 004 | head_accessories::front。"
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "note": "右侧麻花发髻 level1：发饰根部 level0 在后，叶瓣圆珠 level4 在前；头盖与前发遮挡内侧发根补全。",
+      "id": "hair/bun_right",
+      "check": {
+        "passed": true,
+        "note": "Krita 已核对辫环与发饰的前后穿插，原待修项已通过发饰双深度分片解决。"
+      }
+    },
+    {
+      "note": "左侧麻花发髻 level2：内侧发根补全位于头盖及侧发之后。",
+      "level": 2,
+      "id": "hair/bun_left",
+      "check": {
+        "passed": true,
+        "note": "Krita 原尺寸核对头盖和辫谷交界，接缝已收口。"
+      }
+    },
+    {
+      "note": "后发主体与头顶头盖底形：上头盖外沿遮挡 hair/bun_right 与 hair/bun_left 的内侧发根伸入余量；整体位于 head_accessories、颈部、躯干、骨盆、四肢、面部及前侧发、刘海、长侧发之后。",
+      "id": "hair/back_hair",
+      "level": 3,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：hair/back_hair（level=3）上头盖外沿位于 hair/bun_right（level=1）与 hair/bun_left（level=2）内侧 #58b8a9 发根胶水余量前方并将其遮挡；整片后发与头盖底形位于 head_accessories、neck、body、pelvis、四肢、face 及 bangs、front_side_hair、side_hair 等所有前景部件后方。"
+      }
+    },
+    {
+      "level": 5,
+      "id": "legs/leg_right/foot",
+      "note": "角色完整右脚：位于 hair/back_hair 前方（无交叠）；上端踝部作为伸入端向上留出圆弧搭接余量，伸入 legs/leg_right/leg 下端踝部覆盖端下方。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：legs/leg_right/foot（level=5）上端踝部圆弧伸入余量位于 legs/leg_right/leg（level=7）下端踝部覆盖侧后方，被其完整遮挡，下端五趾轮廓完整显露。"
+      }
+    },
+    {
+      "level": 6,
+      "id": "legs/leg_left/foot",
+      "note": "角色完整左脚：位于 hair/back_hair 前方（无交叠）；上端踝部作为伸入端向上留出圆弧搭接余量，伸入 legs/leg_left/leg 下端踝部覆盖端下方。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：legs/leg_left/foot（level=6）上端踝部圆弧伸入余量位于 legs/leg_left/leg（level=8）下端踝部覆盖侧后方，被其完整遮挡，下端五趾轮廓完整显露。"
+      }
+    },
+    {
+      "note": "角色右腿主体：下端踝部作为覆盖端遮挡 legs/leg_right/foot 上端踝部伸入余量；上端髋部作为伸入端向内上方留出圆弧胶水余量，伸入 pelvis 白色连体衣下摆下方。",
+      "level": 7,
+      "id": "legs/leg_right/leg",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：legs/leg_right/leg（level=7）下端踝部覆盖端位于 legs/leg_right/foot（level=5）前方并遮挡其踝部伸入余量；上端髋部向内上方的圆弧胶水余量位于 pelvis（level=9）连体衣下摆后方并被完整遮挡。"
+      }
+    },
+    {
+      "id": "legs/leg_left/leg",
+      "level": 8,
+      "note": "角色左腿主体：下端踝部作为覆盖端遮挡 legs/leg_left/foot 上端踝部伸入余量；上端髋部 #58b8a9 圆弧胶水余量作为伸入端伸入 pelvis 白色连体衣下摆下方。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：legs/leg_left/leg（level=8）下端踝部覆盖端位于 legs/leg_left/foot（level=6）前方并遮挡其踝部伸入余量；上端髋部 #58b8a9 圆弧胶水余量位于 pelvis（level=9）连体衣下摆后方并被完整遮挡。"
+      }
+    },
+    {
+      "note": "下半身骨盆躯干区域：位于 hair/back_hair 前方；下摆作为覆盖端遮挡 legs/leg_right/leg 与 legs/leg_left/leg 上端髋部伸入余量；上端腰部 #58b8a9 圆弧胶水余量作为伸入端伸入 body 下端下方。",
+      "id": "pelvis",
+      "level": 9,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：pelvis（level=9）位于 hair/back_hair（level=3）前方；下摆作为覆盖侧遮挡 legs/leg_right/leg（level=7）与 legs/leg_left/leg（level=8）上端髋部胶水余量；上端腰部 #58b8a9 圆弧胶水余量位于 body（level=13）下缘后方并被完整遮挡。"
+      }
+    },
+    {
+      "note": "颈部区域：位于 hair/back_hair 前方；上端 #58b8a9 圆弧胶水余量伸入 face/face_base 下巴后方，下端及两侧 #58b8a9 胶水余量伸入 body 领口与肩带后方（待修说明：两侧肩带内角 #58b8a9 弧线较 body 肩带顶缘略高约 1-2px，以及外角伸入 hair/side_hair_left、side_hair_right 下方，由 raster step01 修齐）。",
+      "id": "neck",
+      "level": 10,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：neck（level=10）位于 hair/back_hair（level=3）前方；上端 #58b8a9 圆弧余量位于 face/face_base（level=30）下巴后方并被遮挡；下缘及两侧肩带下 #58b8a9 伸入余量位于 body（level=13）领口、肩带及 hair/side_hair_right（level=28）、hair/side_hair_left（level=29）后方（待修说明：两侧肩带内角 #58b8a9 弧线较 body 肩带顶缘略高约 1-2px，留待 raster step01 修齐）。"
+      }
+    },
+    {
+      "id": "arms/arm_right/upper_arm",
+      "note": "角色右上臂：外侧压在 hair/back_hair 前方；上端肩头与内侧 #58b8a9 补全余量作为伸入侧位于 body 右肩带外缘及 hair/side_hair_right 下方；下端肘部 #58b8a9 圆弧余量作为伸入侧位于 arms/arm_right/forearm 上端下方。",
+      "level": 11,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/upper_arm（level=11）外侧位于 hair/back_hair（level=3）前方；上端肩头与内侧 #58b8a9 补全余量位于 body（level=13）右肩带外缘与 hair/side_hair_right（level=28）后方并被完整遮挡；下端肘部 #58b8a9 圆弧余量位于 arms/arm_right/forearm（level=14）上端后方并被完整遮挡。"
+      }
+    },
+    {
+      "level": 12,
+      "id": "arms/arm_left/upper_arm",
+      "note": "角色左上臂：外侧压在 hair/back_hair 前方；上端肩头与内侧补全余量作为伸入侧位于 body 左肩带外缘及 hair/side_hair_left 下方；下端肘部圆弧余量作为伸入侧位于 arms/arm_left/forearm 上端下方。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/upper_arm（level=12）外侧位于 hair/back_hair（level=3）前方；上端肩头与内侧补全余量位于 body（level=13）左肩带外缘与 hair/side_hair_left（level=29）后方并被完整遮挡；下端肘部圆弧余量位于 arms/arm_left/forearm（level=15）上端后方并被完整遮挡。"
+      }
+    },
+    {
+      "note": "上半身躯干：位于 hair/back_hair 前方；上端领口与肩带遮挡 neck 下缘伸入部，下端遮挡 pelvis 腰部 #58b8a9 伸入部，两侧肩带外缘衔接并遮挡 upper_arm 肩根，且两侧肩头外扩的 #58b8a9 补全余量位于 hair/side_hair_right 与 hair/side_hair_left 下方（待修说明：body 肩头 #58b8a9 补全区与 upper_arm 肩头补全区在长侧发下方存在局部重叠，由 raster step01 统一处理）。",
+      "level": 13,
+      "id": "body",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：body（level=13）位于 hair/back_hair（level=3）前方；上端领口与肩带遮挡 neck（level=10）下缘伸入余量，下端遮挡 pelvis（level=9）腰部 #58b8a9 伸入余量，两侧肩带外缘衔接并遮挡左右 upper_arm 肩根，两侧肩头 #58b8a9 补全余量位于 hair/side_hair_right（level=28）与 hair/side_hair_left（level=29）后方并被完整遮挡（待修说明：body 肩头 #58b8a9 补全区与 upper_arm 肩头补全区在长侧发下方存在重叠，留待 raster step01 处理）。"
+      }
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "level": 14,
+      "note": "角色右前臂：位于 hair/back_hair 前方、hair/side_hair_right 发梢后方；上端肘部作为覆盖侧遮挡 arms/arm_right/upper_arm 下端肘部 #58b8a9 伸入余量；下端腕部 #58b8a9 圆弧余量作为伸入侧伸入 arms/arm_right/hand/palm 腕口下方。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/forearm（level=14）位于 hair/back_hair（level=3）前方、hair/side_hair_right（level=28）发梢后方；上端肘部覆盖侧遮挡 arms/arm_right/upper_arm（level=11）下端 #58b8a9 肘部伸入余量；下端腕部 #58b8a9 圆弧伸入余量被 arms/arm_right/hand/palm（level=22）腕口完整遮挡。"
+      }
+    },
+    {
+      "note": "角色左前臂：位于 hair/back_hair 前方、hair/side_hair_left 下段发梢后方；上端肘部作为覆盖侧遮挡 arms/arm_left/upper_arm 下端肘部伸入余量；下端腕部 #58b8a9 圆弧余量作为伸入侧伸入 arms/arm_left/hand/palm 腕口下方。",
+      "level": 15,
+      "id": "arms/arm_left/forearm",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/forearm（level=15）位于 hair/back_hair（level=3）前方、hair/side_hair_left（level=29）下段发梢后方；上端肘部覆盖侧遮挡 arms/arm_left/upper_arm（level=12）下端肘部伸入余量；下端腕部 #58b8a9 圆弧伸入余量被 arms/arm_left/hand/palm（level=23）腕口完整遮挡。"
+      }
+    },
+    {
+      "level": 16,
+      "id": "arms/arm_right/hand/little_finger",
+      "note": "右手小指：位于右手最深层尺侧后方，指根及 #58b8a9 补全余量向上伸入 palm 并被前方的 ring_finger、middle_finger、palm 与 index_finger 遮挡。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/hand/little_finger（level=16）位于右手最深层，指体与 #58b8a9 指根补全余量被前方的 ring_finger（level=18）、middle_finger（level=20）、palm（level=22）与 index_finger（level=24）完整遮挡，仅露出内后侧阴影边缘。"
+      }
+    },
+    {
+      "level": 17,
+      "note": "左手小指：位于左手最深层尺侧后方，指根向上伸入 palm 并被前方的 ring_finger、middle_finger、palm 与 index_finger 遮挡。",
+      "id": "arms/arm_left/hand/little_finger",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/hand/little_finger（level=17）位于左手最深层，指体与指根伸入余量被前方的 ring_finger（level=19）、middle_finger（level=21）、palm（level=23）与 index_finger（level=25）遮挡。"
+      }
+    },
+    {
+      "note": "右手无名指：位于 little_finger 前方，遮挡 little_finger 大部；其指根及左侧 #58b8a9 补全余量被前方的 middle_finger、palm 与 index_finger 遮挡。",
+      "level": 18,
+      "id": "arms/arm_right/hand/ring_finger",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/hand/ring_finger（level=18）位于 little_finger（level=16）前方并遮挡其主体；自身指根及左侧 #58b8a9 补全余量被前方的 middle_finger（level=20）、palm（level=22）与 index_finger（level=24）完整遮挡。"
+      }
+    },
+    {
+      "level": 19,
+      "id": "arms/arm_left/hand/ring_finger",
+      "note": "左手无名指：位于 little_finger 前方，遮挡 little_finger；其指根及右侧 #58b8a9 补全余量被前方的 middle_finger、palm 虎口蹼部与 index_finger 遮挡。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/hand/ring_finger（level=19）位于 little_finger（level=17）前方并遮挡其主体；自身指根及右侧 #58b8a9 补全余量被前方的 middle_finger（level=21）、palm（level=23）虎口蹼部与 index_finger（level=25）完整遮挡。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "note": "右手中指：位于 ring_finger 前方，遮挡 ring_finger 左侧 #58b8a9 补全边；其上中段及指根伸入部被前方的 palm 与 index_finger 遮挡。",
+      "level": 20,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/hand/middle_finger（level=20）位于 ring_finger（level=18）前方并遮挡其左侧 #58b8a9 补全边；自身上中段及指根伸入余量被前方的 palm（level=22）与 index_finger（level=24）遮挡。"
+      }
+    },
+    {
+      "level": 21,
+      "note": "左手中指：位于 ring_finger 前方，遮挡 ring_finger 右侧 #58b8a9 补全边及 little_finger 背侧指根；其上中段及指根伸入部被前方的 palm 与 index_finger 遮挡。",
+      "id": "arms/arm_left/hand/middle_finger",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/hand/middle_finger（level=21）位于 ring_finger（level=19）与 little_finger（level=17）前方并遮挡 ring_finger 右侧 #58b8a9 补全边；自身上中段及指根伸入余量被前方的 palm（level=23）与 index_finger（level=25）遮挡。"
+      }
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "note": "右手手掌：上端腕口作为覆盖侧遮挡 arms/arm_right/forearm 下端腕部 #58b8a9 伸入余量；下端掌指关节与大鱼际遮挡 little_finger、ring_finger、middle_finger 的指根顶部伸入余量，并与前景的 index_finger、thumb 指根圆弧余量衔接（待修说明：index_finger 与 thumb 指根圆弧余量向上伸入 palm 内部，raster step01 需保持掌背与虎口肤色平滑过渡）。",
+      "level": 22,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/hand/palm（level=22）上端腕口覆盖侧遮挡 arms/arm_right/forearm（level=14）下端腕部 #58b8a9 伸入余量；下端掌指关节遮挡 little_finger、ring_finger、middle_finger 的指根顶部伸入余量，并与前景的 index_finger（level=24）、thumb（level=26）指根圆弧余量平滑衔接。"
+      }
+    },
+    {
+      "level": 23,
+      "note": "左手手掌：上端腕口作为覆盖侧遮挡 arms/arm_left/forearm 下端腕部 #58b8a9 伸入余量；下端掌指关节与虎口蹼部遮挡 little_finger、ring_finger、middle_finger 的指根顶部伸入余量，虎口暗部蹼部位于前景 index_finger 掌侧折痕线后方，并与 index_finger、thumb 指根圆弧余量衔接（待修说明：index_finger 与 thumb 指根圆弧余量向上伸入 palm 内部，raster step01 需保持掌背与虎口分界平滑自然）。",
+      "id": "arms/arm_left/hand/palm",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/hand/palm（level=23）上端腕口覆盖侧遮挡 arms/arm_left/forearm（level=15）下端腕部 #58b8a9 伸入余量；下端掌指关节与虎口蹼部遮挡 little_finger、ring_finger、middle_finger 的指根顶部伸入余量，虎口蹼部内缘位于 index_finger（level=25）掌侧折痕线后方并与 thumb（level=27）指根平滑衔接。"
+      }
+    },
+    {
+      "note": "右手食指：位于右手四指最前景层，遮挡后方 middle_finger、ring_finger、little_finger 的中上段，指根与 palm 平滑衔接。",
+      "id": "arms/arm_right/hand/index_finger",
+      "level": 24,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/hand/index_finger（level=24）位于右手四指最前层，遮挡后方 middle_finger（level=20）、ring_finger（level=18）、little_finger（level=16）的中上段，指根与 palm（level=22）自然衔接。"
+      }
+    },
+    {
+      "level": 25,
+      "note": "左手食指：位于左手四指最前景层，左下掌侧边缘遮挡 palm 虎口蹼部内缘及后方 middle_finger、ring_finger、little_finger 的中上段，指根与 palm 平滑衔接。",
+      "id": "arms/arm_left/hand/index_finger",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/hand/index_finger（level=25）位于左手四指最前层，左下掌侧边缘遮挡 palm（level=23）虎口蹼部内缘及后方 middle_finger（level=21）、ring_finger（level=19）、little_finger（level=17）的中上段，指根与 palm 自然衔接。"
+      }
+    },
+    {
+      "note": "右手大拇指：位于右手内侧最前景层，整体完全可见，指根与 palm 大鱼际平滑衔接。",
+      "level": 26,
+      "id": "arms/arm_right/hand/thumb",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_right/hand/thumb（level=26）位于右手大鱼际侧最前景层，整体完全可见，指根与 palm（level=22）平滑衔接。"
+      }
+    },
+    {
+      "level": 27,
+      "note": "左手大拇指：位于左手桡侧最前景层，整体完全可见，指根与 palm 桡侧下部平滑衔接。",
+      "id": "arms/arm_left/hand/thumb",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：arms/arm_left/hand/thumb（level=27）位于左手桡侧最前景层，整体完全可见，指根与 palm（level=23）平滑衔接。"
+      }
+    },
+    {
+      "note": "角色右侧长侧发：上段外缘压在 hair/bun_right 根部 #58b8a9 胶水余量之上，中下段垂落于 hair/back_hair、neck 外角、body 右肩带外缘及 #58b8a9 肩头补全区、arms/arm_right/upper_arm（右肩头及上臂内侧 #58b8a9 补全区）与 forearm 内侧边缘前方；上段内侧被 hair/front_side_hair_right 遮挡。",
+      "id": "hair/side_hair_right",
+      "level": 28,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：hair/side_hair_right（level=28）上段外缘压在 hair/bun_right（level=1）根部 #58b8a9 胶水余量前方，中下段垂落于 hair/back_hair（level=3）、neck（level=10）外角、body（level=13）右肩带外缘及 #58b8a9 肩头补全区、arms/arm_right/upper_arm（level=11）肩头与上臂内侧 #58b8a9 补全区及 forearm（level=14）内缘前方；上段内侧被 hair/front_side_hair_right（level=52）完整遮挡。"
+      }
+    },
+    {
+      "note": "角色左侧长侧发：上段外缘压在 hair/bun_left 根部 #58b8a9 胶水余量之上，中下段垂落于 hair/back_hair、neck 外角、body 左肩带外缘及 #58b8a9 肩头补全区、arms/arm_left/upper_arm（左肩头及上臂内侧补全区）与 forearm 内侧边缘前方；上段内侧被 hair/front_side_hair_left 遮挡。",
+      "id": "hair/side_hair_left",
+      "level": 29,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：hair/side_hair_left（level=29）上段外缘压在 hair/bun_left（level=2）根部 #58b8a9 胶水余量前方，中下段垂落于 hair/back_hair（level=3）、neck（level=10）外角、body（level=13）左肩带外缘及 #58b8a9 肩头补全区、arms/arm_left/upper_arm（level=12）肩头与上臂内侧补全区及 forearm（level=15）内缘前方；上段内侧被 hair/front_side_hair_left（level=53）完整遮挡。"
+      }
+    },
+    {
+      "id": "face/face_base",
+      "level": 30,
+      "note": "完整脸底：下巴底缘作为覆盖侧遮挡 neck 上端 #58b8a9 伸入余量，两侧下颌及头侧位于 hair/back_hair 与 hair/side_hair_right、side_hair_left 前方；额头与两侧脸颊边缘的 #58b8a9 绿色补全区位于 hair/bangs、hair/front_side_hair_right、hair/front_side_hair_left 下方，且作为全部五官（眉、眼、鼻、口）的完整底层底形。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/face_base（level=30）下巴底缘遮挡 neck（level=10）上端 #58b8a9 伸入余量；额头及左右脸颊边缘的 #58b8a9 补全区被前方的 hair/bangs（level=51）、hair/front_side_hair_right（level=52）、hair/front_side_hair_left（level=53）遮挡（待修说明：右脸颊下侧 x≈559, y≈260 处 #58b8a9 补全边较 front_side_hair_right 内缘尖端略微内探约 1px，留待 raster step01 收口）；整体作为全部五官的底形。"
+      }
+    },
+    {
+      "level": 31,
+      "id": "face/nose",
+      "note": "鼻子：直接覆盖于 face/face_base 中央之上，与其余五官及头发无交叠。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/nose（level=31）直接覆盖于 face/face_base（level=30）中央之上，无其他遮挡交叠。"
+      }
+    },
+    {
+      "level": 32,
+      "id": "face/mouth/mouth_interior",
+      "note": "完整口腔开口底形：覆盖于 face/face_base 之上，位于口内最底层，其上沿、下沿及外缘分别被 upper_teeth、tongue、lower_lip 与 upper_lip 遮挡。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/mouth/mouth_interior（level=32）覆盖于 face/face_base（level=30）之上，位于口内最底层，其上沿、下沿与外周分别被 upper_teeth（level=33）、tongue（level=34）、lower_lip（level=35）和 upper_lip（level=36）遮挡。"
+      }
+    },
+    {
+      "level": 33,
+      "note": "上排牙齿：覆盖于 face/mouth/mouth_interior 上部之上，其上缘及两侧 #58b8a9 隐藏余量被前景的 face/mouth/upper_lip 遮挡。",
+      "id": "face/mouth/upper_teeth",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/mouth/upper_teeth（level=33）覆盖于 face/mouth/mouth_interior（level=32）上部之上，上缘及两侧 #58b8a9 隐藏余量被前方的 face/mouth/upper_lip（level=36）完整遮挡。"
+      }
+    },
+    {
+      "note": "舌头：覆盖于 face/mouth/mouth_interior 中下部之上，其下缘及两侧 #58b8a9 隐藏余量被前景的 face/mouth/lower_lip 与嘴角唇线遮挡。",
+      "level": 34,
+      "id": "face/mouth/tongue",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/mouth/tongue（level=34）覆盖于 face/mouth/mouth_interior（level=32）中下部之上，下缘及两侧 #58b8a9 隐藏余量被前方的 face/mouth/lower_lip（level=35）与 upper_lip（level=36）嘴角完整遮挡。"
+      }
+    },
+    {
+      "level": 35,
+      "id": "face/mouth/lower_lip",
+      "note": "下唇轮廓：覆盖于 face/face_base、face/mouth/mouth_interior 下半外缘及 face/mouth/tongue 的 #58b8a9 隐藏余量之上，左右嘴角与 upper_lip 衔接。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/mouth/lower_lip（level=35）覆盖于 face/face_base（level=30）、face/mouth/mouth_interior（level=32）下半外缘及 face/mouth/tongue（level=34）#58b8a9 隐藏余量之上，左右嘴角与 upper_lip（level=36）衔接。"
+      }
+    },
+    {
+      "note": "上唇轮廓：位于嘴部最前层，覆盖于 face/face_base、face/mouth/mouth_interior 上半外缘及 face/mouth/upper_teeth 的 #58b8a9 隐藏余量之上，左右嘴角与 lower_lip 平顺衔接。",
+      "level": 36,
+      "id": "face/mouth/upper_lip",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/mouth/upper_lip（level=36）位于嘴部最前层，覆盖于 face/face_base（level=30）、face/mouth/mouth_interior（level=32）上半外缘及 face/mouth/upper_teeth（level=33）#58b8a9 隐藏余量之上，左右嘴角与 lower_lip（level=35）平顺衔接。"
+      }
+    },
+    {
+      "note": "右眼完整眼白底形：覆盖于 face/face_base 之上，位于右眼内部最底层，作为 iris 与 highlight 的底形，上下边缘伸入 upper_eyelid 与 lower_eyelid 下方。",
+      "level": 37,
+      "id": "face/eye_right/sclera",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_right/sclera（level=37）覆盖于 face/face_base（level=30）之上，位于右眼内部最底层，在 iris（level=39）与 highlight（level=41）后方保持完整眼白底形，上下边缘伸入 upper_eyelid（level=54）与 lower_eyelid（level=43）下方。"
+      }
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "level": 38,
+      "note": "左眼完整眼白底形：覆盖于 face/face_base 之上，位于左眼内部最底层，作为 iris 与 highlight 的底形，上下边缘伸入 upper_eyelid 与 lower_eyelid 下方。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_left/sclera（level=38）覆盖于 face/face_base（level=30）之上，位于左眼内部最底层，在 iris（level=40）与 highlight（level=42）后方保持完整眼白底形，上下边缘伸入 upper_eyelid（level=55）与 lower_eyelid（level=44）下方。"
+      }
+    },
+    {
+      "id": "face/eye_right/iris",
+      "level": 39,
+      "note": "右眼虹膜与瞳孔主体：覆盖于 face/eye_right/sclera 之上，其上、下缘圆弧被 upper_eyelid 与 lower_eyelid 遮挡，左上方与右下方局部被 highlight 覆盖。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_right/iris（level=39）覆盖于 face/eye_right/sclera（level=37）之上，其上下圆弧边缘被 upper_eyelid（level=54）与 lower_eyelid（level=43）遮挡，左上方与右下方局部被 highlight（level=41）覆盖。"
+      }
+    },
+    {
+      "id": "face/eye_left/iris",
+      "note": "左眼虹膜与瞳孔主体：覆盖于 face/eye_left/sclera 之上，其上、下缘圆弧被 upper_eyelid 与 lower_eyelid 遮挡，左上方局部被 highlight 覆盖。",
+      "level": 40,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_left/iris（level=40）覆盖于 face/eye_left/sclera（level=38）之上，其上下圆弧边缘被 upper_eyelid（level=55）与 lower_eyelid（level=44）遮挡，左上方局部被 highlight（level=42）覆盖。"
+      }
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "level": 41,
+      "note": "右眼眼球高光：直接覆盖于 face/eye_right/iris 之上，位于 upper_eyelid 与 lower_eyelid 下方。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_right/highlight（level=41）覆盖于 face/eye_right/iris（level=39）之上，位于 upper_eyelid（level=54）与 lower_eyelid（level=43）下方。"
+      }
+    },
+    {
+      "note": "raster step01 对照原图，将虹膜右下方遗漏的浅色反光加入现有 highlight SVG，与上部反光共用运动身份和深度42；虹膜底层补回棕色。",
+      "id": "face/eye_left/highlight",
+      "level": 42,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_left/highlight（level=42）覆盖于 face/eye_left/iris（level=40）之上，位于 upper_eyelid（level=55）与 lower_eyelid（level=44）下方。"
+      }
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "level": 43,
+      "note": "右眼下眼睑线：覆盖于 face/face_base、face/eye_right/sclera 下缘与 face/eye_right/iris 下缘之上。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_right/lower_eyelid（level=43）覆盖于 face/face_base（level=30）、face/eye_right/sclera（level=37）下缘及 face/eye_right/iris（level=39）下缘之上。"
+      }
+    },
+    {
+      "note": "左眼下眼睑线：覆盖于 face/face_base、face/eye_left/sclera 下缘与 face/eye_left/iris 下缘之上。",
+      "id": "face/eye_left/lower_eyelid",
+      "level": 44,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_left/lower_eyelid（level=44）覆盖于 face/face_base（level=30）、face/eye_left/sclera（level=38）下缘及 face/eye_left/iris（level=40）下缘之上。"
+      }
+    },
+    {
+      "id": "face/eye_right/lower_eyelashes",
+      "note": "右眼点状下睫毛：独立覆盖于右眼外下方 face/face_base 皮肤之上。",
+      "level": 45,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_right/lower_eyelashes（level=45）独立覆盖于右眼外下方 face/face_base（level=30）皮肤之上，无其他遮挡交叠。"
+      }
+    },
+    {
+      "note": "左眼点状下睫毛：独立覆盖于左眼外下方 face/face_base 皮肤之上。",
+      "id": "face/eye_left/lower_eyelashes",
+      "level": 46,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_left/lower_eyelashes（level=46）独立覆盖于左眼外下方 face/face_base（level=30）皮肤之上，无其他遮挡交叠。"
+      }
+    },
+    {
+      "level": 47,
+      "id": "face/eye_right/eyelid_crease",
+      "note": "右眼双眼皮线：覆盖于 face/face_base 之上，中部偏左局部被 hair/bangs 垂落发尖（x≈578..580.5）遮挡。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_right/eyelid_crease（level=47）覆盖于 face/face_base（level=30）之上，中部偏左局部被 hair/bangs（level=51）垂落发尖（x≈578..580.5）自然遮挡。"
+      }
+    },
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "level": 48,
+      "note": "左眼双眼皮线：覆盖于 face/face_base 之上，中部偏右局部被 hair/bangs 垂落发尖（x≈675.8..679.8）遮挡。",
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_left/eyelid_crease（level=48）覆盖于 face/face_base（level=30）之上，中部偏右局部被 hair/bangs（level=51）垂落发尖（x≈675.8..679.8）自然遮挡。"
+      }
+    },
+    {
+      "id": "hair/front_side_hair_right",
+      "note": "raster step01 对照头顶中分缝：上游已提示发根舌片外露，单深度使补全端形成色块；同一逻辑鬓发分出根部深度，主发束深度不变。分片只切现有像素，无几何删减或新运动节点。",
+      "check": {
+        "passed": true,
+        "note": "实际 KRA 分片与原始可见几何核对，原图可见发束在前，发根补全舌片在刘海后。",
+        "regions": [
+          {
+            "level": 49,
+            "note": "root：x580..659,y60..89 范围内，完整形状中原可见 SVG 几何 alpha=0 的发根补全舌片像素；位于 bangs 后方。"
+          },
+          {
+            "level": 52,
+            "note": "front：除 root 外的现有全部像素，包含原可见贴脸鬓发和其他补全；覆盖 bangs 两侧余量，在 upper_eyelid 外眼角与 eyebrow 后。"
+          }
+        ]
+      },
+      "levels": [
+        {
+          "level": 49,
+          "region": "root：x580..659,y60..89 范围内，完整形状中原可见 SVG 几何 alpha=0 的发根补全舌片像素；位于 bangs 后方。"
+        },
+        {
+          "level": 52,
+          "region": "front：除 root 外的现有全部像素，包含原可见贴脸鬓发和其他补全；覆盖 bangs 两侧余量，在 upper_eyelid 外眼角与 eyebrow 后。"
+        }
+      ]
+    },
+    {
+      "id": "hair/front_side_hair_left",
+      "note": "raster step01 对照头顶中分缝：上游已提示发根舌片外露，单深度使补全端形成色块；同一逻辑鬓发分出根部深度，主发束深度不变。分片只切现有像素，无几何删减或新运动节点。",
+      "check": {
+        "passed": true,
+        "note": "实际 KRA 分片与原始可见几何核对，原图可见发束在前，发根补全舌片在刘海后。",
+        "regions": [
+          {
+            "level": 50,
+            "note": "root：x580..659,y60..89 范围内，完整形状中原可见 SVG 几何 alpha=0 的发根补全舌片像素；位于 bangs 后方。"
+          },
+          {
+            "level": 53,
+            "note": "front：除 root 外的现有全部像素，包含原可见贴脸鬓发和其他补全；覆盖 bangs 两侧余量，在 upper_eyelid 外眼角与 eyebrow 后。"
+          }
+        ]
+      },
+      "levels": [
+        {
+          "level": 50,
+          "region": "root：x580..659,y60..89 范围内，完整形状中原可见 SVG 几何 alpha=0 的发根补全舌片像素；位于 bangs 后方。"
+        },
+        {
+          "level": 53,
+          "region": "front：除 root 外的现有全部像素，包含原可见贴脸鬓发和其他补全；覆盖 bangs 两侧余量，在 upper_eyelid 外眼角与 eyebrow 后。"
+        }
+      ]
+    },
+    {
+      "level": 51,
+      "id": "hair/bangs",
+      "note": "额前刘海 depth51：覆盖 back_hair、face_base 额头和左右 eyelid_crease 中段，覆盖前侧发 root 分片（49/50）；两侧发根余量在 front 分片（52/53）下方。眉毛为原图透发眉，位于56/57，在本层前方。",
+      "check": {
+        "passed": true,
+        "note": "raster step01 实际拼装核对：刘海不含眉线残留，两个鬓发根部舌片藏在本层后方；52/53前束覆盖本层侧缘，56/57眉毛保持独立。"
+      }
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "note": "右眼上眼睑及一体式上睫毛：位于右眼及前侧发最前层，覆盖于 face/face_base、face/eye_right/sclera、iris、highlight 之上，外眼角最左侧睫毛尖刺（x≈546）局部压在 hair/front_side_hair_right 内缘之上。",
+      "level": 54,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_right/upper_eyelid（level=54）位于右眼及前侧发最前景层，覆盖于 face/face_base（level=30）、face/eye_right/sclera（level=37）、iris（level=39）、highlight（level=41）之上，外眼角最左侧睫毛尖刺（x≈546）压在 hair/front_side_hair_right（level=52）内缘之上。"
+      }
+    },
+    {
+      "note": "左眼上眼睑及一体式上睫毛：位于左眼及前侧发最前层，覆盖于 face/face_base、face/eye_left/sclera、iris、highlight 之上，外眼角最右侧睫毛尖刺（x≈709）局部压在 hair/front_side_hair_left 内缘之上。",
+      "id": "face/eye_left/upper_eyelid",
+      "level": 55,
+      "check": {
+        "passed": true,
+        "note": "对照候选预览与部件 blend 图：face/eye_left/upper_eyelid（level=55）位于左眼及前侧发最前景层，覆盖于 face/face_base（level=30）、face/eye_left/sclera（level=38）、iris（level=40）、highlight（level=42）之上，外眼角最右侧睫毛尖刺（x≈709）压在 hair/front_side_hair_left（level=53）内缘之上。"
+      }
+    },
+    {
+      "id": "face/eyebrow_right",
+      "level": 56,
+      "note": "raster step01 对照原图眉额局部确认：眉线连续画在刘海表面，属于动漫透发眉表现；本部件整体位于刘海及贴脸鬓发前方，保留独立眉毛运动身份。",
+      "check": {
+        "passed": true,
+        "note": "已直接查看 references/base-subject.png 眉额局部及本部件 SVG；原图眉线跨越多条刘海可见，证据位于 raster-layering/step01/evidence/eyebrow-over-bangs-original.png。"
+      }
+    },
+    {
+      "id": "face/eyebrow_left",
+      "level": 57,
+      "note": "raster step01 对照原图眉额局部确认：眉线连续画在刘海表面，属于动漫透发眉表现；本部件整体位于刘海及贴脸鬓发前方，保留独立眉毛运动身份。",
+      "check": {
+        "passed": true,
+        "note": "已直接查看 references/base-subject.png 眉额局部及本部件 SVG；原图眉线跨越多条刘海可见，证据位于 raster-layering/step01/evidence/eyebrow-over-bangs-original.png。"
+      }
+    }
+  ]
+}

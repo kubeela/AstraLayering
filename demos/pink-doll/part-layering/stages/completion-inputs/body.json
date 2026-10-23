@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "body",
+  "beforeHash": "fb23dc8104b6282d6f41d6f20829a507e399cff9f3f9c76f401af89455dad419",
+  "afterHash": "9a82acbccd827095d678f17a5a438014dbab4b9d141e4c24f30429bcbaea14cc",
+  "dependencies": [
+    {
+      "path": "references/base-subject.png",
+      "hash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda"
+    }
+  ]
+}

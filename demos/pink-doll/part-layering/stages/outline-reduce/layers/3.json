@@ -1,0 +1,66 @@
+{
+  "depth": 3,
+  "groups": [
+    {
+      "id": "arms/arm_left/hand/palm",
+      "inputHash": "a56e8d05fdd61a0ddc38871c7c7c962a041e20eda00870f9b41d94a6d258904a",
+      "outputHash": "a56e8d05fdd61a0ddc38871c7c7c962a041e20eda00870f9b41d94a6d258904a"
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "inputHash": "db61e31ab60bea911dcee41c17adc4cc541f037adc1a5dfc441282c1be30830d",
+      "outputHash": "db61e31ab60bea911dcee41c17adc4cc541f037adc1a5dfc441282c1be30830d"
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "inputHash": "3774690573421cf7da3e75f93273737d2559da088d408c6d3c039c78b27d196a",
+      "outputHash": "3774690573421cf7da3e75f93273737d2559da088d408c6d3c039c78b27d196a"
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "inputHash": "25aa808b1288ac44747e7cfc7972a5a4bff909b96c2cf7553e80eae0e3218125",
+      "outputHash": "25aa808b1288ac44747e7cfc7972a5a4bff909b96c2cf7553e80eae0e3218125"
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "inputHash": "c76aaf074873b7a8c470c706cbad5c0281e4ed668e723ab33941f49e56e2011a",
+      "outputHash": "c76aaf074873b7a8c470c706cbad5c0281e4ed668e723ab33941f49e56e2011a"
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "inputHash": "a262401a6627894febd12da5ae3a6a064892ca5ccac850be2788e5064357994c",
+      "outputHash": "a262401a6627894febd12da5ae3a6a064892ca5ccac850be2788e5064357994c"
+    },
+    {
+      "id": "arms/arm_right/hand/palm",
+      "inputHash": "713991edcfee567be78a47ab86aebb01caa4cdfcf2b2994476c03a3686cb4a15",
+      "outputHash": "713991edcfee567be78a47ab86aebb01caa4cdfcf2b2994476c03a3686cb4a15"
+    },
+    {
+      "id": "arms/arm_right/hand/thumb",
+      "inputHash": "9a073039140e0994b784acf8bba18e61d9cfff905865856d9d381cff5bd86103",
+      "outputHash": "9a073039140e0994b784acf8bba18e61d9cfff905865856d9d381cff5bd86103"
+    },
+    {
+      "id": "arms/arm_right/hand/index_finger",
+      "inputHash": "7865f4f868bf4208e1d329de78150690995a6287360615271c0523d9b231dc09",
+      "outputHash": "7865f4f868bf4208e1d329de78150690995a6287360615271c0523d9b231dc09"
+    },
+    {
+      "id": "arms/arm_right/hand/middle_finger",
+      "inputHash": "616d7c7a6d45f965be2d13fa80e49d53f22da0dfdc054356812295810ae1ae04",
+      "outputHash": "616d7c7a6d45f965be2d13fa80e49d53f22da0dfdc054356812295810ae1ae04"
+    },
+    {
+      "id": "arms/arm_right/hand/ring_finger",
+      "inputHash": "06ba6a8050dcd5f1e7eb0dce98895116947233e5a4de12d2c52e5293d8e56be5",
+      "outputHash": "06ba6a8050dcd5f1e7eb0dce98895116947233e5a4de12d2c52e5293d8e56be5"
+    },
+    {
+      "id": "arms/arm_right/hand/little_finger",
+      "inputHash": "2f7fad8dcd68619fb37d85b43472680d35e5e11125a0347195d44cea5c2d897e",
+      "outputHash": "2f7fad8dcd68619fb37d85b43472680d35e5e11125a0347195d44cea5c2d897e"
+    }
+  ],
+  "note": "经对照参考图、整层合成预览（含左右手局部放大）及全部12个手部子部件（左右手的 palm、thumb、index_finger、middle_finger、ring_finger、little_finger）的 SVG 源码与分层说明核对：各部件分别对应独立的手掌与五指解剖及绑定控制单元，均只包含各自单一连续的轮廓路径；掌指根部衔接余量及斜向视角下前后指列之间的遮挡补形均属合法的跨层遮挡与关节连接重叠，不存在同一可见实体被多个组重复领取的情况，故全部保持原样无需修改。"
+}

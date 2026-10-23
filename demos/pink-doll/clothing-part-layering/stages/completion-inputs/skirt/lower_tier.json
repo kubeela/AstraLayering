@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "skirt/lower_tier",
+  "beforeHash": "9c26d40a13e3dcdd027bb47f5bdd110da7346ed69cda81884c444a7f0f54a1d8",
+  "afterHash": "c48395ee3594d171f67d0e2ef38c378b5e83ef2576f860912c9ba688b291d167",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "242bcceaba148a48fbf0c42de79e6202e5856587855e06c5cea58d9501d35192"
+    }
+  ]
+}
