@@ -15,6 +15,30 @@ import { simulate, traceWindow, validateFindings } from '../../.agents/skills/li
 const component=(kind='strand',extra:any={})=>({id:kind,name:kind,kind,priority:'primary',enabled:true,layerRefs:[{uuid:kind,contentHash:'a'.repeat(64)}],sourcePartIds:[kind],supports:[{id:'root',at:[100,40]}],...componentDefaults(kind),authoring:{freeLength:300,transitionPixels:55,fixedRegions:[[[50,20],[150,20],[150,60],[50,60]]],contour:[[50,20],[150,20],[150,340],[50,340]],centerline:[[100,40],[100,80],[100,140],[100,200],[100,260],[100,320]],widths:[55,55,50,45,35,25],pivot:[100,40],subdivisions:2},...extra});
 const config=(components:any[])=>({kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:300,height:400}},components});
 
+test('an omitted pendant output rate preserves the previous physical and displayed motion',()=>{
+  const c=component('pendant'),explicit=structuredClone(c);explicit.response.outputFrequencyHz=c.response.frequencyHz;
+  const a=new ComponentScene(config([c])),b=new ComponentScene(config([explicit]));
+  for(const scene of [a,b])scene.bodies.get('pendant').impulse(110,310,500,0,300);
+  for(let n=0;n<240;n++){a.step();b.step();assert.deepEqual(a.bodies.get('pendant').positions,b.bodies.get('pendant').positions);assert.equal(a.bodies.get('pendant').motion.angle,b.bodies.get('pendant').motion.angle);}
+});
+
+test('pendant output smoothing reduces release speed without feeding back into the physical bob or widening bounds',()=>{
+  const c=component('pendant');c.response.dampingRatio=.8;c.limits.maxAngle=1;
+  const slow=structuredClone(c);slow.response.outputFrequencyHz=.4;
+  const scenes=[new ComponentScene(config([c])),new ComponentScene(config([slow]))];
+  // Hold a real parent offset so both solvers remain active for this comparison;
+  // sleeping at different sub-pixel times is a separate runtime behavior.
+  for(const scene of scenes)scene.sourcePose.x=1;
+  const trackers=scenes.map(s=>new MotionStepTracker(s.config.source.canvas,s.bodies.get('pendant').positions.length));
+  for(const scene of scenes)scene.bodies.get('pendant').impulse(110,310,500,0,300);
+  for(let n=0;n<960;n++){
+    for(const [i,scene]of scenes.entries()){scene.step();const b=scene.bodies.get('pendant');trackers[i].update(b.positions,scene.sourcePose);assert(b.stats.valid);assert(b.stats.angle<=1+1e-5);}
+    const [a,b]=scenes.map(s=>s.bodies.get('pendant'));assert.equal(a.motion.angle,b.motion.angle);assert.equal(a.motion.speed,b.motion.speed);
+  }
+  assert(trackers[1].maxStep<trackers[0].maxStep*.7,'the artwork can ease more slowly while the physical simulation stays identical');
+  for(const scene of scenes){assert(scene.bodies.get('pendant').stats.travel<.001);scene.reset();assert.deepEqual(scene.bodies.get('pendant').positions,scene.bodies.get('pendant').rest);}
+});
+
 test('strand has pinned source pixels, continuous curvature, constrained impulse and decaying residual',()=>{
   const scene=new ComponentScene(config([component()])),b=scene.bodies.get('strand');
   b.impulse(100,310,400,0,160);let peak=0,bent=false;

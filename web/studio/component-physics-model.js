@@ -227,7 +227,8 @@ export class ComponentBody {
       // retaining the independent physical state. Hard clipping and returning
       // that angle to the world bob creates recoil in a serial ornament chain.
       const previous=this.displayTheta,target=max*Math.tanh(this.theta/max);
-      this.displayTheta+=(target-previous)*(1-Math.exp(-TAU*this.component.response.frequencyHz*this.dt*3));
+      const outputFrequency=this.component.response.outputFrequencyHz??this.component.response.frequencyHz;
+      this.displayTheta+=(target-previous)*(1-Math.exp(-TAU*outputFrequency*this.dt*3));
       this.theta=this.displayTheta;this.angularVelocity=(this.displayTheta-previous)/this.dt;
       // Soft output bounds can plateau too. Retain the saturation signal for
       // persistent-limit review even though the mesh never crosses the bound.

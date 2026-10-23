@@ -6,7 +6,7 @@ import { PhysicsRenderer } from './physics-renderer.js';
 import { testNames } from './physics-test-input.js';
 import { ComponentPhysicsRunner } from './component-physics-runner.js';
 const $=s=>document.querySelector(s);
-const specs={frequencyHz:['摆动节奏',.15,6,.05,'Hz',1,'response'],dampingRatio:['衰减',.03,1.5,.01,'',1,'response'],inputGain:['受力倍率',0,2,.05,'',1,'response'],maxTravel:['最大位移',1,30,1,'%',100,'limits'],maxAngle:['最大摆角',1,45,1,'°',1,'limits'],maxStretch:['最大拉伸',.5,8,.5,'%',100,'limits'],maxCompression:['最大压缩',0,30,1,'%',100,'limits'],maxShear:['最大剪切',1,30,1,'°',1,'limits'],minAreaRatio:['最小面积',30,95,1,'%',100,'limits']};
+const specs={frequencyHz:['摆动节奏',.15,6,.05,'Hz',1,'response'],outputFrequencyHz:['角度过渡',.15,6,.05,'Hz',1,'response'],dampingRatio:['衰减',.03,1.5,.01,'',1,'response'],inputGain:['受力倍率',0,2,.05,'',1,'response'],maxTravel:['最大位移',1,30,1,'%',100,'limits'],maxAngle:['最大摆角',1,45,1,'°',1,'limits'],maxStretch:['最大拉伸',.5,8,.5,'%',100,'limits'],maxCompression:['最大压缩',0,30,1,'%',100,'limits'],maxShear:['最大剪切',1,30,1,'°',1,'limits'],minAreaRatio:['最小面积',30,95,1,'%',100,'limits']};
 export class ComponentPhysicsPanel extends PhysicsPanel {
   constructor(options){
     super(options);
@@ -128,7 +128,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     for(const id of ['physics-kind','physics-direction'])$('#'+id).closest('label').hidden=true;
     $('#physics-material').closest('section').hidden=true;$('#physics-limits').closest('section').hidden=true;
     this.options();const c=this.config.components.find(c=>c.id===this.selected);if(!c)return;$('#physics-enabled').checked=c.enabled;
-    for(const[key,[,min,max,,,factor,group]]of Object.entries(specs))for(const id of ['component-'+key,'component-number-'+key]){const el=$('#'+id);el.value=Number((c[group][key]*factor).toFixed(3));el.style.setProperty('--fill',(Number(el.value)-min)/(max-min)*100+'%');}
+    for(const[key,[,min,max,,,factor,group]]of Object.entries(specs))for(const id of ['component-'+key,'component-number-'+key]){const el=$('#'+id),output=key==='outputFrequencyHz';if(output)el.closest('.slider').hidden=c.kind!=='pendant';el.value=Number(((c[group][key]??(output?c.response.frequencyHz:0))*factor).toFixed(3));el.style.setProperty('--fill',(Number(el.value)-min)/(max-min)*100+'%');}
     if(document.activeElement!==$('#component-geometry'))$('#component-geometry').value=JSON.stringify(c.authoring,null,2);
     $('#component-info').textContent=`${c.kind==='strand'?'连续发束 / 飘带':c.kind==='cloth'?'布片':'刚性挂件'} · ${c.layerRefs.length} 层共用场 · 自由段 ${c.authoring.freeLength.toFixed(1)} px`;
     $('#component-save').disabled=!this.owner.project?.dir||this.busy();for(const id of ['physics-pause','physics-step','physics-pulse'])$('#'+id).disabled=!this.enabled||this.busy();$('#physics-demo').disabled=false;$('#physics-pause').textContent=this.paused?'继续':'暂停';this.stats();this.overlay();

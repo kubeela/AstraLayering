@@ -48,6 +48,10 @@ export function validateComponent(c, canvas, authoringRequired = true) {
   for (const [group, ranges] of Object.entries({ limits, response })) {
     object(c[group], '缺少 ' + group); for (const [key, range] of Object.entries(ranges)) number(c[group][key], ...range, key);
   }
+  if(c.response.outputFrequencyHz!==undefined){
+    if(c.kind!=='pendant')throw Error('角度过渡仅用于刚性挂件');
+    number(c.response.outputFrequencyHz,.15,6,'角度过渡');
+  }
   object(c.material, '缺少材质参数'); for (const key of ['stretchCompliance','shearCompliance','bendCompliance','shapeCompliance']) number(c.material[key], 0, .1, key);
   return c;
 }
