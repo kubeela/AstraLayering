@@ -47,6 +47,8 @@ pnpm physics:evidence --name <任务名> --test tip-impulse --steps 0,60,96,180,
 
 以上是证据生成命令。用户预览统一使用 `/studio?project=<任务名>&workspace=physics`，不创建单独试验编辑器。离线采集耗时包含轨迹、图片回读和 PNG 保存，不等于实时帧率。
 
+离线采集默认使用本地软件渲染。已有 GPU 浏览器可通过 `ASTRA_PHYSICS_RENDER_CDP_URL` 连接，并用 `ASTRA_PHYSICS_RENDER_PORT` 指定经隧道转发到该浏览器的本地工具端口；服务器仍只监听 loopback。每次采集创建并关闭独立浏览器上下文，保留外部浏览器已有页面。manifest 记录实际渲染设备；仍使用相同求解器、逐顶点重放门槛、工作台 shader、原尺寸贴图及完整规范输入。
+
 源 UV 由像素位置减去插值位移重建，避免细三角形丢失采样精度；共享边的切分点传播到邻面，避免透明缝隙；每层用 stencil 保证半透明像素只合成一次，避免细边重复叠加 alpha。动态投影按登记 caster 外推位移，并用 receiver 当前 alpha 裁切；这是二维素材跟随，不重算投影几何。
 
 规范输入 v3 以整角色刚性父姿态牵动支撑，静态父层、物理固定区和投影使用同一 sourcePose；不假装已经制作头／身体九轴。输出帧在原像素比例之外增加固定运动余量，framePadding 记录原图起点，避免衣片出界裁掉；法线／深度同样保留原纹理精度。
