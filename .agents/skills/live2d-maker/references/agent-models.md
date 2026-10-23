@@ -28,6 +28,7 @@ SVG 合并由程序执行，不配置 LLM。内部步骤名和人物／衣服的
 | Antigravity（agv） | `gemini-4-argon` | `layering_agv_path`，未填则找全局 `agy`／`agv`／`antigravity` |
 
 支持力度 `low`、`medium`、`high`、`xhigh`。配置路径相对于 skill 根目录；模型是否获授权仍由用户的 CLI 登录或 provider 决定。pnpm 不安装 Claude Code 或 Antigravity。启动会明确报告缺失入口；缺少 CLI 或登录凭据时，调用 skill 的 agent 询问用户下一步，不自动安装或代替登录。
+
 例如，将两套 part 的 review 改为 Argon：
 
 ```dotenv
