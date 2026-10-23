@@ -195,6 +195,12 @@ test('pendant parent input gain scales inertia without detaching the artwork or 
   const c=component('pendant');c.response.inputGain=0;const scene=new ComponentScene(config([c]));
   for(let step=1;step<=180;step++){scene.sourcePose={x:step/10,y:0,angle:0};scene.step();const b=scene.bodies.get(c.id);assert(b.stats.valid);assert.equal(b.theta,0);assert(b.positions.every((v:number,i:number)=>Math.abs(v-b.pose[i])<1e-8));}
 });
+test('bounded pendant output still reports sustained saturation for motion review',()=>{
+  const c=component('pendant');c.authoring.freeLength=20;c.authoring.contour=[[90,40],[110,40],[110,60],[90,60]];c.limits.maxAngle=2;
+  const scene=new ComponentScene(config([c])),b=scene.bodies.get(c.id);scene.airflow.x=2;let limited=0;
+  for(let step=0;step<360;step++){scene.step();assert(b.stats.valid);assert(b.stats.travel<=b.maxDistance+1e-5);limited+=+b.stats.limited;}
+  assert(limited>120,'a long plateau at the bound must not disappear from diagnostics');
+});
 test('motion review rejects invisible response, repeated retreat, jumps and non-decaying motion',()=>{
   const c=component(),good={invalid:0,root:0,fallback:0,limited:0,peak:8,final:.01,maxStep:.3};
   assert.deepEqual(motionIssues('light-brush',c,good),[]);
