@@ -11,7 +11,6 @@ import { AgvTurn } from './agv-turn.ts';
 import { createMcpBridge } from './mcp.ts';
 import type { WorkflowEnvironment } from '../codex/environment.ts';
 import type { AgentModel, Harness } from './models.ts';
-import { cliModelId } from './models.ts';
 import type { AgentTask, AgentResult, AgentOptions } from '../codex/agents.ts';
 import { AgentCallError } from '../codex/agent-runtime.ts';
 import { agentCallError } from '../codex/diagnostics.ts';
@@ -129,7 +128,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     await mkdir(join(env.GEMINI_DIR, 'config'), { recursive: true, mode: 0o700 });
     await writeFile(join(env.GEMINI_DIR, 'config/mcp_config.json'), JSON.stringify(mcp), { mode: 0o600 });
     const args = model.harness === 'claude'
-      ? ['--print', '--verbose', '--input-format', 'stream-json', '--output-format', 'stream-json', '--model', cliModelId(model), '--effort', model.effort,
+      ? ['--print', '--verbose', '--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
         '--strict-mcp-config', '--mcp-config', configPath, '--settings', authSettings, '--setting-sources', '', '--disable-slash-commands', '--dangerously-skip-permissions', '--add-dir', task.cwd || options.cwd!]
       : ['--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
         '--disable-slash-commands', '--dangerously-skip-permissions', '--log-file', join(env.TMPDIR, 'native.log'), '--add-dir', task.cwd || options.cwd!];

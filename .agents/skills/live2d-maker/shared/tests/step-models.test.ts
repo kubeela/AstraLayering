@@ -26,16 +26,17 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
     assert.deepEqual(parseAgentModel(`${id}-${effort}`, 'fixture'), { model: id, harness, effort });
   }
   assert.throws(() => parseAgentModel('gemini-4-argon-max', 'fixture'));
+  assert.throws(() => parseAgentModel('claude-sonnet-5.5-xhigh', 'fixture'), /claude-sonnet-5-5/);
   assert.throws(() => parseAgentModel('unlisted-high', 'fixture'));
   assert.throws(() => parseAgentModel('constructor-high', 'fixture'));
   const root = await fixture(t);
-  await writeFile(join(root, '.env'), 'layering_agent_part_review_model=gemini-4-argon-high\nlayering_agent_part_draw_model=claude-sonnet-5.5-low\nlayering_agent_part_groups_model=gemini-4-argon-high\n');
-  const settings = loadWorkflowEnvironment({ layering_agent_part_review_model: 'claude-haiku-5.5-medium',
-    layering_agent_raster_step01_model: 'claude-opus-5.5-medium', layering_agent_raster_step01_review_model: 'gemini-4-argon-high' }, root);
-  assert.equal(settings.stepModels.part_outline_review.model, 'claude-haiku-5.5');
+  await writeFile(join(root, '.env'), 'layering_agent_part_review_model=gemini-4-argon-high\nlayering_agent_part_draw_model=claude-sonnet-5-5-low\nlayering_agent_part_groups_model=gemini-4-argon-high\n');
+  const settings = loadWorkflowEnvironment({ layering_agent_part_review_model: 'claude-haiku-5-5-medium',
+    layering_agent_raster_step01_model: 'claude-opus-5-5-medium', layering_agent_raster_step01_review_model: 'gemini-4-argon-high' }, root);
+  assert.equal(settings.stepModels.part_outline_review.model, 'claude-haiku-5-5');
   assert.deepEqual(settings.stepModels.clothing_outline_review, settings.stepModels.part_outline_review);
   for (const step of ['part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair'] as const) {
-    assert.deepEqual(settings.stepModels[step], parseAgentModel('claude-sonnet-5.5-low', 'fixture'));
+    assert.deepEqual(settings.stepModels[step], parseAgentModel('claude-sonnet-5-5-low', 'fixture'));
   }
   for (const step of ['part_initial_groups', 'part_children', 'clothing_initial_groups', 'clothing_children'] as const) {
     assert.equal(settings.stepModels[step].model, 'gemini-4-argon');
@@ -43,7 +44,7 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
   assert.equal(settings.stepModels.part_occlusion.model, 'gpt-6.1-sol');
   assert.deepEqual(settings.stepModels.clothing_occlusion, settings.stepModels.part_occlusion);
   for (const step of ['raster_step01', 'raster_step01_repair', 'clothing_raster_step01', 'clothing_raster_step01_repair'] as const) {
-    assert.deepEqual(settings.stepModels[step], parseAgentModel('claude-opus-5.5-medium', 'fixture'));
+    assert.deepEqual(settings.stepModels[step], parseAgentModel('claude-opus-5-5-medium', 'fixture'));
   }
   assert.deepEqual(settings.stepModels.raster_step01_review, parseAgentModel('gemini-4-argon-high', 'fixture'));
   assert.deepEqual(settings.stepModels.clothing_raster_step01_review, settings.stepModels.raster_step01_review);
@@ -103,9 +104,9 @@ test('optimized preset only changes part roles and selected image tools; custom 
   }
   assert.equal(settings.imageCompactThreshold, undefined);
   assert.deepEqual(settings.codex.config, {});
-  const custom = loadWorkflowEnvironment({ layering_agent_part_review_model: 'claude-sonnet-5.5-xhigh', layering_part_simplify_image_model: 'gpt-image-2.5-flare',
+  const custom = loadWorkflowEnvironment({ layering_agent_part_review_model: 'claude-sonnet-5-5-xhigh', layering_part_simplify_image_model: 'gpt-image-2.5-flare',
     layering_openai_image_base_url: 'https://images.example/v1', layering_openai_image_api_key: 'fixture' }, root);
-  assert.equal(custom.stepModels.part_outline_review.model, 'claude-sonnet-5.5');
+  assert.equal(custom.stepModels.part_outline_review.model, 'claude-sonnet-5-5');
   assert.deepEqual(custom.stepModels.clothing_outline_review, custom.stepModels.part_outline_review);
   assert.equal(custom.stepImages.part_simplify, 'gpt-image-2.5-flare');
   assert.equal(custom.stepImages.part_base_subject, 'gemini-nano-banana-2.1');
@@ -115,9 +116,9 @@ test('optimized preset only changes part roles and selected image tools; custom 
 
 test('consistent legacy settings are shared, conflicts require an explicit role, and new configuration wins', async t => {
   const root = await fixture(t);
-  const consistent = loadWorkflowEnvironment({ layering_part_outline_model: 'claude-sonnet-5.5-high', layering_clothing_outline_model: 'claude-sonnet-5.5-high' }, root);
+  const consistent = loadWorkflowEnvironment({ layering_part_outline_model: 'claude-sonnet-5-5-high', layering_clothing_outline_model: 'claude-sonnet-5-5-high' }, root);
   assert.deepEqual(consistent.stepModels.part_outline_repair, consistent.stepModels.clothing_outline);
-  const conflict = { layering_part_outline_model: 'claude-sonnet-5.5-high', layering_clothing_outline_model: 'gemini-4-argon-high' };
+  const conflict = { layering_part_outline_model: 'claude-sonnet-5-5-high', layering_clothing_outline_model: 'gemini-4-argon-high' };
   assert.throws(() => loadWorkflowEnvironment(conflict, root), /不一致.*layering_agent_part_draw_model/);
   assert.throws(() => loadWorkflowEnvironment({ layering_raster_step01_model: 'gpt-6-astra-high', layering_raster_step01_repair_model: 'gpt-6-astra-low' }, root), /不一致.*layering_agent_raster_step01_model/);
   const unified = loadWorkflowEnvironment({ ...conflict, layering_agent_part_draw_model: 'gpt-6.1-sol-xhigh' }, root);
@@ -210,8 +211,8 @@ test('Claude and agv use isolated request workspaces, original MCP schemas and r
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli }, root);
   let called = 0;
-  for (const [id, wireModel] of [['claude-sonnet-5.5-high', 'claude-sonnet-5-5'],
-    ['claude-opus-5.5-xhigh', 'claude-opus-5-5'], ['claude-haiku-5.5-low', 'claude-haiku-5-5'], ['gemini-4-argon-xhigh', 'gemini-4-argon']]) {
+  for (const [id, wireModel] of [['claude-sonnet-5-5-high', 'claude-sonnet-5-5'],
+    ['claude-opus-5-5-xhigh', 'claude-opus-5-5'], ['claude-haiku-5-5-low', 'claude-haiku-5-5'], ['gemini-4-argon-xhigh', 'gemini-4-argon']]) {
     const model = parseAgentModel(id, 'test'), options = { cwd, logDirectory: join(cwd, 'agents') };
     const task = { name: 'fixture', cwd, prompt: '完整任务提示词', tools: [{ name: 'fixture_echo', description: '原始工具说明',
       inputSchema: { type: 'object' }, async execute() { called++; return { success: true, contentItems: [] }; } }] };
@@ -237,7 +238,7 @@ test('unavailable CLI sessions are replaced once without deleting existing deliv
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   await writeFile(join(cwd, 'keep.svg'), 'existing');
-  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_part_review_model: 'claude-sonnet-5.5-high' }, root);
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_part_review_model: 'claude-sonnet-5-5-high' }, root);
   await mkdir(join(cwd, 'agents'), { recursive: true });
   await mkdir(join(cwd, 'agents/old-data'), { recursive: true });
   await mkdir(join(cwd, 'agents/old-workspace'), { recursive: true });
@@ -258,7 +259,7 @@ test('model/effort changes resume within a harness, switching harness creates a 
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   await writeFile(join(cwd, 'keep.svg'), 'existing');
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli,
-    layering_agent_part_draw_model: 'claude-sonnet-5.5-high', layering_agent_part_completion_model: 'claude-opus-5.5-xhigh',
+    layering_agent_part_draw_model: 'claude-sonnet-5-5-high', layering_agent_part_completion_model: 'claude-opus-5-5-xhigh',
     layering_agent_part_review_model: 'gemini-4-argon-high', layering_default_image_model: 'gemini-nano-banana-2.1',
     layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture' }, root);
   const replaced: string[] = [];
@@ -285,7 +286,7 @@ test('CLI cancellation and early failures finish logs and stop the request proce
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli }, root);
   const options = { cwd, logDirectory: join(cwd, 'agents') };
   let error: any;
-  try { await runCliTask({ name: 'cancel', cwd, prompt: 'test' }, parseAgentModel('claude-sonnet-5.5-high', 'fixture'), settings, options, AbortSignal.timeout(200)); }
+  try { await runCliTask({ name: 'cancel', cwd, prompt: 'test' }, parseAgentModel('claude-sonnet-5-5-high', 'fixture'), settings, options, AbortSignal.timeout(200)); }
   catch (failure) { error = failure; }
   assert.match(String(error), /Timeout|abort/i);
   assert.equal(JSON.parse(await readFile(join(error.logDirectory, 'result.json'), 'utf8')).status, 'failed');
@@ -302,10 +303,10 @@ try { await readFile(flag); } catch {
 }
 const meta=`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"summary\":\"recovered\"}'");
   await writeFile(cli, script, { mode: 0o700 });
-  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_raster_step02_model: 'claude-sonnet-5.5-high',
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_raster_step02_model: 'claude-sonnet-5-5-high',
     layering_raster_step02_image_model: 'gemini-nano-banana-2.1', layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture' }, root);
   const ids: string[] = [], retries: number[] = [];
-  const result = await runAgent({ directory: cwd, step: 'raster_step02', model: 'claude-sonnet-5.5', effort: 'high',
+  const result = await runAgent({ directory: cwd, step: 'raster_step02', model: 'claude-sonnet-5-5', effort: 'high',
     environment: settings, prompt: 'continue', async onEvent(event) {
       if (event.type === 'thread.started') ids.push(event.thread_id);
     }, onRetry: retry => { retries.push(retry.nextAttempt); } }, undefined, new AgentRuntime(1, async () => {}));
@@ -340,10 +341,10 @@ const outside=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fix
 if(!outside.isError)throw new Error('outside task was accepted');
 const id=resumed||randomUUID();`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"summary\":\"generated\"}'");
   await writeFile(cli, script, { mode: 0o700 });
-  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_raster_step01_model: 'claude-sonnet-5.5-high',
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_raster_step01_model: 'claude-sonnet-5-5-high',
     layering_raster_step01_image_model: 'gpt-image-2.5-flare', layering_openai_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}/v1`,
     layering_openai_image_api_key: 'fixture', LAYERING_TEST_REFERENCE: source, LAYERING_TEST_OTHER_REFERENCE: other }, root);
-  const result = await runAgent({ directory: cwd, imageRoots: [task], step: 'raster_step01', model: 'claude-sonnet-5.5', effort: 'high',
+  const result = await runAgent({ directory: cwd, imageRoots: [task], step: 'raster_step01', model: 'claude-sonnet-5-5', effort: 'high',
     environment: settings, prompt: 'generate', onEvent: async () => {} }, undefined, new AgentRuntime(1));
   assert.equal(result.summary, 'generated'); assert.equal(called, 1);
   assert.deepEqual(await readFile(source), png);
