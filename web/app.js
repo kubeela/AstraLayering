@@ -43,6 +43,8 @@ const stages = [
  {name:'穿戴组装',id:'character-assembly'}, {name:'阴影制作',id:'shadow'},
 ];
 const isRasterPipeline = index => ['raster-layering','clothing-raster-layering'].includes(stages[index]?.id);
+const hasKraPreview = index => isRasterPipeline(index)||stages[index]?.id==='character-assembly'
+ ||stages[index]?.id==='shadow'&&data.pipelines[index]?.mode==='mask';
 async function post(path, value) {
  const response = await fetch('./api/'+path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dir:state.directory,...value})});
  const result = await response.json(); if(!response.ok)throw new Error(result.error); return result;
@@ -199,8 +201,8 @@ function observedDisplayStatus(index, status, stepId) {
 }
 function rasterItems(index, stepId) {
  const stage=stages[index].id, pipeline=data.pipelines[index];
- if(!['raster-layering','clothing-raster-layering','character-assembly'].includes(stage))return stepArtifacts[index][stepId];
- const record=pipeline?.previews?.[stepId];
+ if(!hasKraPreview(index))return stepArtifacts[index][stepId];
+ if(stage==='shadow')return (stepArtifacts[index][stepId]||[]).filter(item=>item.path!=='shadow/mask/step01/character-shadowed.png');
  const files=(stepArtifacts[index][stepId]||[]).filter(item=>item.kind==='file');
  const report=pipeline?.reports?.[stepId];
  const reportFile=report?[{path:report.path,label:report.draft?'报告草稿':'完整报告',kind:'file'}]:[];
@@ -209,13 +211,14 @@ function rasterItems(index, stepId) {
   if(stepId==='step01')return files.filter(item=>!item.path.endsWith('/report.md'));
   return [...files.filter(item=>!item.path.endsWith('.md')),...reportFile];
  }
- return record?[{path:record.path,label:'Krita 最新保存画面',kind:'image'},...files]:files;
+ return files;
 }
 function kraPreviewPanel(index) {
- if(!isRasterPipeline(index))return '';
+ if(!hasKraPreview(index))return '';
  const record=latestKraPreview(data.pipelines[index]?.previews);
  const step=record&&pipelineSteps[index].find(step=>step.id===record.stepId);
- return `<section class="kra-preview-panel" data-kra-preview="${index}" aria-label="${esc(stages[index].name)}最新 KRA 预览"><h3>${icon('layers')}Krita 最新画面</h3>${record?`<p class="preview-source">${esc(step?.title||record.stepId)}</p>${artifacts([{path:record.path,label:'最新保存画面',kind:'image',sharedPreview:true}],index,record.stepId,'live-kra-artifacts')}`:'<p class="archive-gap">等待首次保存 KRA</p>'}</section>`;
+ const sourceTitle=stages[index].id==='shadow'?'Live2D 蒙版':step?.title||record?.stepId;
+ return `<section class="kra-preview-panel" data-kra-preview="${index}" aria-label="${esc(stages[index].name)}最新 KRA 预览"><h3>${icon('layers')}Krita 最新画面</h3>${record?`<p class="preview-source">${esc(sourceTitle)}</p>${artifacts([{path:record.path,label:'最新保存画面',kind:'image',sharedPreview:true}],index,record.stepId,'live-kra-artifacts')}`:'<p class="archive-gap">等待首次保存 KRA</p>'}</section>`;
 }
 function reportEvidence(index, stepId) {
  const report=data.pipelines[index]?.reports?.[stepId];
@@ -250,19 +253,21 @@ function stepNode(index,step,nested=false) {
  ${step.id==='standard'&&!available(stepArtifacts[index][step.id]).some(item=>item.kind==='image')?'<p class="archive-gap" title="人物准备阶段执行后展示标准参考图">尚无标准参考图</p>':''}
  ${context}
  ${reportEvidence(index,step.id)}
- ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...stepArtifacts[index][step.id],...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
+ ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
- ${step.id.startsWith('step')?processArtifacts(index,step.id):''}
+ ${processArtifacts(index,step)}
  </div>
  `}
  </section>`;
 }
-function processArtifacts(index, stepId) {
- const prefix=stages[index].id+'/'+stepId+'/';
- const known=new Set(Object.values(stepArtifacts[index]).flat().map(item=>item.path));
+function processArtifacts(index, step) {
+ const directory=step.processDirectory||(step.id.startsWith('step')?stages[index].id+'/'+step.id:null);
+ if(!directory)return '';
+ const prefix=directory+'/';
+ const known=new Set([...Object.values(stepArtifacts[index]).flat(),...shadowInspectionArtifacts(data.files)].map(item=>item.path));
  const items=data.files.filter(path=>path.startsWith(prefix)&&!known.has(path));
  if(!items.length)return '';
- return `<details class="process-files" data-details="process:${index}:${stepId}"><summary>${items.length} 个过程文件</summary>${artifacts(items.map(path=>({path,label:path.slice(prefix.length),kind:/\.(png|jpe?g|webp|svg)$/i.test(path)?'image':'file'})),index,stepId)}</details>`;
+ return `<details class="process-files" data-details="process:${index}:${step.id}"><summary>${items.length} 个过程文件</summary>${artifacts(items.map(path=>({path,label:path.slice(prefix.length),kind:/\.(png|jpe?g|webp|svg)$/i.test(path)?'image':'file'})),index,step.id)}</details>`;
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);

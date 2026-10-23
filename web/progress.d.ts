@@ -15,6 +15,7 @@ export interface ProgressStep {
   children: ProgressStep[];
   note: string;
   childrenMode?: 'alternative';
+  processDirectory?: string;
 }
 export const groupPhases: [GroupPhase, string][];
 export const statusNames: Record<ProgressStatus, string>;

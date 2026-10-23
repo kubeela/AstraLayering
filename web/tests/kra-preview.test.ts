@@ -3,12 +3,38 @@ import { test } from 'node:test';
 import { mkdir, mkdtemp, realpath, readFile, rm, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { runInNewContext } from 'node:vm';
 import { zipSync } from 'fflate';
 import sharp from 'sharp';
 import { KRAPreviews } from '../kra-preview.ts';
 import { createWorkbench } from '../server.ts';
 import { snapshot } from '../snapshot.ts';
 import { pipelineSteps } from '../progress.js';
+
+test('阴影蒙版显示最新 KRA，首次保存前等待；法线分支不显示蒙版预览', async () => {
+  const { latestKraPreview } = await import(new URL('../progress.js', import.meta.url).href);
+  const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+  const helpers = source.slice(source.indexOf('const isRasterPipeline ='), source.indexOf('async function post('));
+  const renderer = source.slice(source.indexOf('function kraPreviewPanel('), source.indexOf('function reportEvidence('));
+  const pipeline: { mode: string; previews: Record<string, { path: string; savedAt: string }> } = { mode: 'mask', previews: {} };
+  const context = {
+    stages: [{ id: 'shadow', name: '阴影制作' }], data: { pipelines: [pipeline] }, pipelineSteps: [pipelineSteps[5]],
+    latestKraPreview, esc: String, icon: () => '',
+    artifacts: (items: { path: string; kind: string; sharedPreview: boolean }[]) => {
+      assert.equal(items[0].kind, 'image'); assert.equal(items[0].sharedPreview, true);
+      return items[0].path;
+    },
+  };
+  const render = () => runInNewContext(helpers + renderer + '\nkraPreviewPanel(0);', { ...context }) as string;
+  assert.match(render(), /等待首次保存 KRA/);
+  pipeline.previews.step01 = { path: 'shadow/mask/step01/working.kra', savedAt: '2026-10-24T00:00:00Z' };
+  const saved = render();
+  assert.match(saved, /data-kra-preview="0"/); assert.match(saved, /Live2D 蒙版/);
+  assert.match(saved, /shadow\/mask\/step01\/working\.kra/);
+  assert.doesNotMatch(saved, /selection\.json|等待首次保存/);
+  pipeline.mode = 'normal-depth';
+  assert.equal(render(), '');
+});
 
 test('共用 KRA 预览按最近保存选择跨步骤的新画面', async () => {
   const { latestKraPreview } = await import(new URL('../progress.js', import.meta.url).href);
