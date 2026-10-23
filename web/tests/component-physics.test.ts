@@ -36,6 +36,18 @@ test('regular cloth controls accept a point load between controls and settle wit
   let peak=0;for(let n=0;n<960;n++){scene.step();assert(b.stats.valid);assert.equal(b.stats.root,0);peak=Math.max(peak,b.stats.travel);}
   assert(peak>.1);assert(b.stats.travel<.1);b.reset();assert.equal(b.stats.fallback,false);assert.deepEqual(b.positions,b.rest);
 });
+test('display shear projects back to cloth controls while preserving pinned pixels and source geometry',()=>{
+  const c=component('cloth');c.authoring.controlGrid=[4,8];
+  const b=new ComponentScene(config([c])).bodies.get(c.id),source=new Float64Array(b.rest),indices=new Uint32Array(b.indices);
+  assert.equal(b.correctDisplayShear(),false);
+  for(let i=0;i<b.mobility.length;i++)b.p[i*2]+=(b.pRest[i*2+1]-60)*.65*b.mobility[i];
+  b.pin();b.syncMesh();const before=b.inspect();assert(before.shear>c.limits.maxShear);
+  for(let pass=0;pass<24;pass++){b.correctDisplayShear();b.pin();b.syncMesh();}
+  const after=b.inspect();assert(after.shear<before.shear*.5,'correct the rendered angle through its control Jacobian');
+  assert(after.shear<c.limits.maxShear+.2,'the projected angles converge toward the authored bound');
+  assert.equal(after.root,0);assert.equal(b.limited,true);assert.deepEqual(b.rest,source);assert.deepEqual(b.indices,indices);
+  assert.equal(c.limits.maxShear,18,'the author shear constraint remains in force');
+});
 test('thin display triangles retain their own control face through refinement',()=>{
   const control={rest:[0,0,100,100,100.00001,100,100,0],indices:[0,1,2,0,3,2]},mesh=refineControlGeometry(control,3);
   for(let i=0;i<mesh.samples.length;i++){const[a,b,c,u,v,w]=mesh.samples[i];assert(Math.abs(u+v+w-1)<1e-12);for(let axis=0;axis<2;axis++)assert(Math.abs(mesh.rest[i*2+axis]-(control.rest[a*2+axis]*u+control.rest[b*2+axis]*v+control.rest[c*2+axis]*w))<1e-10);}
@@ -72,6 +84,20 @@ test('passive parent rotation never counts pinned-point roundoff as hitting a mo
     scene.sourcePose={x:step/100,y:0,angle:step/10000};scene.step();const b=scene.bodies.get(c.id);
     assert(b.stats.valid);assert.equal(b.stats.root,0);assert.equal(b.stats.limited,false);assert.equal(b.stats.fallback,false);
   }
+});
+test('velocity safety limits secondary motion without clipping the commanded attachment velocity',()=>{
+  const c=component('cloth');c.authoring.controlGrid=[4,8];
+  const s=new ComponentScene(config([c])),b=s.bodies.get(c.id),dt=1/120;
+  s.sourcePose={x:10,y:0,angle:0};b.prepare(dt);b.p.set(b.pPose);b.syncMesh();b.finish();
+  const cap=b.maxDistance*2*Math.PI*c.response.frequencyHz*2;
+  assert(10/dt>cap,'the parent must actually exceed the local speed budget');
+  for(let i=0;i<b.mobility.length;i++){assert(Math.abs(b.velocity[i*2]-10/dt)<1e-7);assert(Math.abs(b.velocity[i*2+1])<1e-7);}
+  assert.equal(b.stats.root,0);assert(b.stats.valid);
+  s.sourcePose={x:20,y:0,angle:0};b.prepare(dt);b.p.set(b.pPose);
+  const free=b.mobility.findIndex((v:number)=>v>.99);assert(free>=0);b.p[free*2+1]+=b.maxDistance*1.2;
+  b.syncMesh();b.finish();
+  assert(Math.hypot(b.velocity[free*2]-10/dt,b.velocity[free*2+1])<=cap+1e-7);
+  assert(Math.abs(b.velocity[free*2+1])<1e-7,'the outward clip uses residual velocity, not parent velocity');
 });
 test('UUID bindings preserve multiple source layers through reorder and clipping islands without guessing ambiguity',()=>{
   const a=component(),b=component('cloth'),c=config([a,b]);
