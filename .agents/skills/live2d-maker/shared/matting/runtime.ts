@@ -1,7 +1,8 @@
+import {preparePrivateKrita} from '../krita/private-environment.ts';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { createWriteStream } from 'node:fs';
-import { access, copyFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -38,24 +39,15 @@ export async function runMattingWorker(krita: string, root: string, job: Job,
   options: ImageProcessingOptions, signal: AbortSignal): Promise<WorkerResult> {
   signal.throwIfAborted();
   const directory = join(root, 'jobs', randomUUID());
-  const home = join(directory, 'home'), config = join(directory, 'config'), share = join(directory, 'share');
-  const resource = join(share, 'krita'), plugin = join(resource, 'pykrita/layering_matting');
+  const home = join(directory, 'home');
+  const {config, resource, env: privateEnv} = await preparePrivateKrita(home, 'layering_matting',
+    join(resources, 'worker.py'), {...(options.env ?? process.env), HOME: home, USERPROFILE: home});
   const cache = join(root, 'cache');
-  const dirs = [home, config, plugin, cache, join(directory, 'runtime'), join(directory, 'tmp'),
-    join(directory, 'appdata'), join(directory, 'local'), join(home, 'Library/Preferences')];
-  await Promise.all(dirs.map(path => mkdir(path, { recursive: true, mode: 0o700 })));
-  await copyFile(join(resources, 'worker.py'), join(plugin, '__init__.py'));
-  await writeFile(join(resource, 'pykrita/layering_matting.desktop'), '[Desktop Entry]\nType=Service\nServiceTypes=Krita/PythonPlugin\nX-KDE-Library=layering_matting\nX-Python-2-Compatible=false\nName=Layering private matting\n');
-  await Promise.all([config, join(home, 'Library/Preferences'), join(directory, 'local'), join(directory, 'appdata')]
-    .map(path => writeFile(join(path, 'kritarc'), '[python]\nenable_layering_matting=true\n')));
+  await mkdir(cache, {recursive: true, mode: 0o700});
   const jobPath = join(directory, 'job.json');
   await writeFile(jobPath, JSON.stringify({ ...job, weights: join(resources, 'vitmatte-small'),
     requirements: join(resources, 'requirements.txt'), expectedHome: home, expectedConfig: config }), { mode: 0o600 });
-  const env = { ...(options.env ?? process.env), HOME: home, USERPROFILE: home,
-    APPDATA: join(directory, 'appdata'), LOCALAPPDATA: join(directory, 'local'),
-    XDG_CONFIG_HOME: config, XDG_DATA_HOME: share, XDG_CACHE_HOME: cache,
-    XDG_RUNTIME_DIR: join(directory, 'runtime'), TMPDIR: join(directory, 'tmp'),
-    TEMP: join(directory, 'tmp'), TMP: join(directory, 'tmp'),
+  const env = { ...privateEnv, XDG_CACHE_HOME: cache,
     PYTHONNOUSERSITE: '1', PYTHONDONTWRITEBYTECODE: '1',
     PIP_CONFIG_FILE: process.platform === 'win32' ? 'NUL' : '/dev/null', PIP_CACHE_DIR: join(cache, 'pip'),
     HF_HOME: join(cache, 'huggingface'), HF_HUB_OFFLINE: '1', TRANSFORMERS_OFFLINE: '1',

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { appendFile, mkdir, mkdtemp, readFile, rm, symlink, utimes, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, mkdtemp, realpath, readFile, rm, symlink, utimes, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import sharp from 'sharp';
@@ -11,7 +11,7 @@ import { atomicJSON, jsonFile } from '../files.ts';
 import { acquireTaskLock, configureRun, saveRun, readRun } from '../../.agents/skills/live2d-maker/workflow/state.ts';
 
 async function fixture(t: any, start?: NonNullable<Parameters<typeof createWorkbench>[0]>['start']) {
-  const base = await mkdtemp(join(tmpdir(), 'layering-web-'));
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'layering-web-')));
   const dir = join(base, 'runs'), settingsPath = join(base, 'settings.json');
   const server = await createWorkbench({ defaultDir: dir, settingsPath, start });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));

@@ -1,5 +1,6 @@
+import { preparePrivateKrita } from '../shared/krita/private-environment.ts';
 import { spawn } from 'node:child_process';
-import { mkdir, mkdtemp, copyFile, writeFile, readFile, stat } from 'node:fs/promises';
+import { mkdir, mkdtemp, writeFile, readFile, stat } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -13,19 +14,14 @@ export type NativeInspect = (document: string, relations: any[], output: string,
 export const inspectNative: NativeInspect = async (document, relations, output, krita, inherited, signal) => {
   signal?.throwIfAborted();
   const root = await mkdtemp(join(tmpdir(), 'astra-shadow-'));
-  const config = join(root, 'config'), share = join(root, 'share'), resource = join(share, 'krita');
-  for (const p of [config, join(resource, 'pykrita/astra_shadow'), join(root, 'runtime'), join(root, 'tmp')]) await mkdir(p, {recursive:true,mode:0o700});
-  await copyFile(fileURLToPath(new URL('./native_worker.py', import.meta.url)), join(resource, 'pykrita/astra_shadow/__init__.py'));
-  await writeFile(join(resource, 'pykrita/astra_shadow.desktop'), '[Desktop Entry]\nType=Service\nServiceTypes=Krita/PythonPlugin\nX-KDE-Library=astra_shadow\nX-Python-2-Compatible=false\nName=Private shadow inspection\n');
-  await writeFile(join(config, 'kritarc'), '[python]\nenable_astra_shadow=true\n');
+  const { resource, env: privateEnv } = await preparePrivateKrita(root, 'astra_shadow',
+    fileURLToPath(new URL('./native_worker.py', import.meta.url)), inherited);
   const job = join(root, 'job.json');
   await mkdir(output, { recursive: true });
   await writeFile(job, JSON.stringify({document,relations,output}), {mode:0o600});
-  const env: NodeJS.ProcessEnv = { ...inherited, XDG_CONFIG_HOME:config, XDG_DATA_HOME:share, XDG_RUNTIME_DIR:join(root,'runtime'),
-    TMPDIR:join(root,'tmp'), TEMP:join(root,'tmp'), TMP:join(root,'tmp'), APPDATA:config, LOCALAPPDATA:join(root,'local'),
-    ASTRA_SHADOW_JOB:job, PYTHONDONTWRITEBYTECODE:'1', ...(process.platform === 'linux' ? {
-      QT_QPA_PLATFORM:'xcb', FONTCONFIG_PATH: inherited.FONTCONFIG_PATH || '/etc/fonts', FONTCONFIG_FILE: inherited.FONTCONFIG_FILE || '/etc/fonts/fonts.conf',
-    } : {}) };
+  const env: NodeJS.ProcessEnv = { ...privateEnv, ASTRA_SHADOW_JOB:job, ...(process.platform === 'linux' ? {
+    QT_QPA_PLATFORM:'xcb', FONTCONFIG_PATH: inherited.FONTCONFIG_PATH || '/etc/fonts', FONTCONFIG_FILE: inherited.FONTCONFIG_FILE || '/etc/fonts/fonts.conf',
+  } : {}) };
   let displayProcess: ReturnType<typeof spawn> | undefined;
   if (process.platform === 'linux' && !env.DISPLAY) {
     // The bundled Krita may have only xcb. Own this display; do not alter any running X server.
@@ -77,6 +73,8 @@ export const inspectNative: NativeInspect = async (document, relations, output, 
         resultReady = true;
         return result;
       } catch (e) { if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e; }
+      if (log.includes('ModuleNotFoundError') && /(?:No module named ['"]astra_shadow['"]|Could not import astra_shadow)/.test(log))
+        throw new Error('Krita 已发现阴影插件，但 Python 无法导入；检查私有 HOME、CFFIXED_USER_HOME 和 macOS Library 路径。\n' + log);
       if (exited) throw new Error('Krita 未执行检查插件：' + log);
       await delay(150);
     }

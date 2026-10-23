@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createHash } from 'node:crypto';
-import { knownBuild, patchResponseHeaders } from '../../tools/agv/patch-response-header.ts';
+import { knownBuild, patchResponseHeaders } from '../../patches/agv/patch-response-header.ts';
 
 const hash = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
 const instruction = Buffer.from('48ba005847f80d00000048899000010000', 'hex');

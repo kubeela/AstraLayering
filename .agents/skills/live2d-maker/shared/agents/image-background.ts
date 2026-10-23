@@ -1,3 +1,4 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
@@ -14,9 +15,8 @@ export function needsSolidBackground(model: ImageModel, args: ImageArguments): b
 // Keep the caller's task verbatim; only the provider's output-background contract changes.
 export async function providerImageArguments(model: ImageModel, args: ImageArguments, selection?: BackgroundRecommendation): Promise<ImageArguments> {
   if (!needsSolidBackground(model, args)) return args;
-  const instructions = await readFile(new URL('../prompts/nano-solid-background.md', import.meta.url), 'utf8');
   const background = selection ?? await recommendBackground([]);
-  return { ...args, prompt: args.prompt + '\n\n' + instructions.trim().replaceAll('{background_hex}', background.hex), background: 'opaque' };
+  return { ...args, prompt: renderPromptFile(new URL('../prompts/image-request.md',import.meta.url), {drawing_prompt:args.prompt, background_instructions:renderPromptFile(new URL('../prompts/nano-solid-background.md',import.meta.url),{background_hex:background.hex}).trim()}).trimEnd(), background: 'opaque' };
 }
 
 export async function transparentGeneratedImage(png: Buffer, model: ImageModel, original: ImageArguments,

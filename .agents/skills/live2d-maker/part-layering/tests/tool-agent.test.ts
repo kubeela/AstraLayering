@@ -1,6 +1,7 @@
+import {loadWorkflowEnvironment} from '../../shared/codex/environment.ts';
 import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, sep } from 'node:path';
 import { test, type TestContext } from 'node:test';
@@ -16,7 +17,7 @@ import { nodeExecutables } from './node-executables.ts';
 
 async function fixture(t: TestContext) {
   nodeExecutables(t);
-  const directory = await mkdtemp(join(tmpdir(), 'part-layering-native-'));
+  const directory = await realpath(await mkdtemp(join(tmpdir(), 'part-layering-native-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
   return { directory, logDirectory: join(directory, 'part-layering/agents') };
 }
@@ -38,7 +39,7 @@ test('未声明时限的原生工具回合不注册超时计时器', async t => 
   t.mock.method(AbortSignal, 'timeout', () => assert.fail('不应自行设置超时'));
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory, []);
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
   await agents.run({ name: '无默认超时', prompt: 'test', tools: [tool(async () => textResult('ok'))] });
   const record = await log(f.logDirectory);
   assert.equal(record.request.task.timeoutMs, null);
@@ -56,7 +57,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
     { tool: 'view_bitmap', arguments: { path: references.baseSubject, crop: [10, 20, 20, 30], scale: 2 } },
     { tool: 'write_groups', arguments: grouping },
   ]);
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory,
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory,
     config: { custom_auth: 'test-secret-must-not-log' } });
   const steps = { ...createLayeringSteps(agents), async drawOutline() {
     return { status: 'pending' as const, message: '本测试仅验证首次分组' };
@@ -122,7 +123,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
 test('函数异常回传 success=false，保留参数与错误，回合失败不记成功', async t => {
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory, [{ tool: 'probe', arguments: { value: 1 } }], 'failed');
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
   await assert.rejects(agents.run({ name: '异常', prompt: 'test', tools: [tool(async () => { throw new Error('工具参数错误'); })] }), /测试回合失败/);
   const messages = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   const response = messages.find(item => item.id === 'call-1').result;
@@ -136,7 +137,7 @@ test('函数异常回传 success=false，保留参数与错误，回合失败不
 test('绘制会话多轮沿用一个 thread，回调按当前回合绑定；关闭后不能复用', async t => {
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory, [{ tool: 'probe', arguments: {} }]);
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
   const session = agents.createSession();
   const calls: string[] = [];
   try {
@@ -161,7 +162,7 @@ test('绘制会话多轮沿用一个 thread，回调按当前回合绑定；关�
 test('独立 review 会话使用只读沙箱，原生工具仍可由程序保存报告', async t => {
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory, [{ tool: 'probe', arguments: {} }]);
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
   await agents.run({ name: 'review', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('report'))] });
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(protocol.find(message => message.method === 'thread/start').params.sandbox, 'read-only');
@@ -179,7 +180,7 @@ test('绘制会话同时开放原生生图和函数工具，保存生图路径�
     type: 'imageGeneration', id: 'detail-1', status: 'completed', savedPath, result: resultData,
     revisedPrompt: '基于原参考局部放大，结构清晰优先，不添加不存在的细节。', failure: null,
   }]);
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
   const session = agents.createSession();
   const task = { name: '绘制', prompt: '产出 SVG，必要时生图辅助辨认。', imageGeneration: true,
     tools: [tool(async () => textResult('preview'))] };
@@ -209,7 +210,7 @@ test('绘制会话同时开放原生生图和函数工具，保存生图路径�
 test('关闭保留会话能取消挂起的工具并释放进程，不等待回合超时', { timeout: 5000 }, async t => {
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory, [{ tool: 'probe', arguments: {} }]);
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
   const session = agents.createSession();
   const called = Promise.withResolvers<void>();
   const run = session.run({ name: '挂起', prompt: 'test', timeoutMs: 60_000, tools: [tool(async () => {
@@ -229,7 +230,7 @@ test('错误会话或未知工具的请求不能执行已绑定函数', async t 
     { tool: 'probe', arguments: {}, threadId: 'another-thread' }, { tool: 'unregistered', arguments: {} },
   ]);
   let calls = 0;
-  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
   await agents.run({ name: '隔离', prompt: 'test', tools: [tool(async () => { calls++; return textResult('ok'); })] });
   assert.equal(calls, 0);
   const messages = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
@@ -241,7 +242,7 @@ test('原生回合超时、提前 EOF 与函数内部挂起都终止并保存失
     const f = await fixture(t);
     const server = await fakeAppServer(f.directory, mode === 'tool-hang' ? [{ tool: 'probe', arguments: {} }] : [],
       mode === 'tool-hang' ? 'completed' : mode);
-    const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+    const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
     const started = Date.now();
     await assert.rejects(agents.run({ name: mode, prompt: 'test', timeoutMs: 500,
       tools: [tool(async () => new Promise(() => {}))] }));

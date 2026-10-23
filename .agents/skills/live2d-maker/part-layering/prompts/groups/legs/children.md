@@ -1,3 +1,12 @@
 当前 legs 下一层列 leg_left、leg_right（group），每侧包含从髋部到脚趾的完整一侧下肢及当前归属附件。note 明确下一层至少拆 leg（part，大腿到脚踝，膝部不分段）与 foot（part，完整脚，不拆脚趾）。不要把每侧整条下肢提前定义为终止 part；不在本层直接提交孙节点。
 
 链饰、宝石等确实位于当前范围时，先保留在对应一侧 group，由下一层按硬软变形与摆动判断。普通皮肤细节不拆。左右以角色自身为准。
+
+提示词来源：{prompt_source}
+
+【本次输入】
+{runtime_context}
+
+【固定范围与操作约定】
+{fixed_rules}
+固定约定提示词来源：{fixed_rules_source}

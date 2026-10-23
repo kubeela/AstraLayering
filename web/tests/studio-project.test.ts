@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, writeFile, symlink, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, realpath, writeFile, symlink, rm } from "node:fs/promises";
 import { join, basename } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from 'node:crypto';
@@ -13,7 +13,7 @@ import { inputFingerprint, resolveShadowInput } from '../../.agents/skills/live2
 import { stepsFor } from '../../.agents/skills/live2d-maker/shadow/steps.ts';
 
 async function fixture(t: any) {
-  const root = await mkdtemp(join(tmpdir(), "astra-project-")),
+  const root = await realpath(await mkdtemp(join(tmpdir(), "astra-project-"))),
     dir = join(root, "runs"),
     name = "角色",
     project = join(dir, name);

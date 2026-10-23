@@ -4,17 +4,21 @@
 
 ## 构建
 
-在 `live2d-maker` 下执行：
+在 `.env` 开启 `layering_image_compact_threshold`，或为 Codex 选择 GPT／Nano 生图并填写对应 API。`layering_codex_path` 留空时，启动预检会自动准备补丁；`codex-native` 本身不需要补丁。显式指定入口时只检查该入口，不自动替换。
+
+需要 Git、C/C++ 编译工具及该版 Codex 的平台依赖。Rust 1.95.0 可用时复用；不可用时提示并从官方 Rust 站点下载、校验安装器，在临时目录使用独立 `RUSTUP_HOME` / `CARGO_HOME` 和 `--no-modify-path` 安装。构建成功或失败均清理，不改系统命令、用户 Rust、shell 设置或 Codex 全局配置；安装和构建日志保存在缓存内。
+
+缓存为 `.codex-build/<平台-架构>/<源码与补丁指纹>/`。进程锁防止并发重复构建，产物和官方 Code Mode companion 的 SHA-256 校验通过后才复用；失败不写成功标记，中断后可直接续跑。补丁更新使用新指纹目录，旧文件保留。生图要求 `image_provider_version: 2`，按图片数压缩要求 `image_compaction_version: 2`。
+
+也可在 `live2d-maker` 下提前准备，命令输出实际二进制路径：
 
 ```bash
 pnpm build:codex
-# 已有对应官方源码时，可从其创建独立 worktree，避免重复下载：
+# 已有对应官方源码时可创建独立 worktree：
 pnpm build:codex --source /absolute/codex-source --jobs 4
 ```
 
-需要 Git、Rust 1.95.0、C/C++ 编译工具及该版 Codex 的平台依赖。构建目录为 `.codex-build/`，不会替换系统命令；同时复制 SDK 所带的官方 Code Mode companion。使用 `--source` 时应保留该源码仓库，构建 worktree 共享它的 Git 对象。
-
-在 `.env` 设置 `layering_codex_path=.codex-build/bin/codex`（Windows 为 `codex.exe`）。`codex-native` 生图不启用补丁；Codex 选择具体 GPT／Nano 模型或开启图片压缩时，工作流调用 `debug layering-capabilities` 检查。生图要求 `image_provider_version: 2`，保证可独立路由并在任务目录保存。按图片数压缩要求 `image_compaction_version: 2`，旧的去图压缩二进制会明确报错，不能继续使用。已有旧构建时，先将 `.codex-build/source` 和 `.codex-build/applied.patch` 移到备份位置，再执行构建；保留 `.codex-build/target` 编译缓存。
+使用 `--source` 时应保留该源码仓库，worktree 共享它的 Git 对象。手工测试可把输出路径传给下方验证脚本，无需修改 `.env`。
 
 ## 行为
 
@@ -29,13 +33,11 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 ## 本地模拟验证
 
 ```bash
-python3 tools/codex/smoke.py
-# 或显式选择二进制：
-python3 tools/codex/smoke.py --codex /absolute/codex
+python3 patches/codex/smoke.py --codex /absolute/codex
 # 完整工作流路由：实际补丁 CLI，经共享适配器模拟 GPT 和 Nano 生图／编辑并恢复会话：
-node tools/codex/native-image-smoke.ts
+node patches/codex/native-image-smoke.ts --codex /absolute/codex
 # 图片完整性、溢出、失败恢复与真实 thread 续跑：
-python3 tools/codex/image-compaction-smoke.py --codex /absolute/codex
+python3 patches/codex/image-compaction-smoke.py --codex /absolute/codex
 ```
 
 测试仅启动本机 HTTP 模拟服务，使用虚拟密钥与生成的测试 PNG。图片专项测试使用不同图片逐张比对原始数据，服务拒绝任何含 50 张及以上图片的请求；覆盖 48/49/50/52/120 张、一次工具批量输出、单次 Code Mode 从 44 跳到 52、关闭保护、失败/空摘要后的同 thread 恢复、工具配对和消息 ID 唯一性。通用 smoke 另覆盖原生生图／编辑接口与分别鉴权。不调用真实模型、不消耗生图额度，也不修改已有作品；这些测试验证请求和恢复机制，不代替实际模型的视觉质量验收。

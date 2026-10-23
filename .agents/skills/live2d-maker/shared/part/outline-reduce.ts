@@ -1,3 +1,4 @@
+import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -81,12 +82,12 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
   const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, sandboxMode: 'workspace-write',
     imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory,
       [merged, ...context.entries.flatMap(entry => [entry.outline.path, entry.current?.path, entry.outputPath, entry.parent?.steps.completion.output?.path])])],
-    prompt: `${await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8')}\n【本次输入】\n${JSON.stringify({
+    prompt: renderPrompt(await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8'), {runtime_context: JSON.stringify({
       depth: context.depth, reference, canvas, mergedPreview: merged,
       groups: context.entries.map(entry => ({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
         sourceSvg: (entry.current ?? entry.outline).path, originalOutline: entry.outline.path,
         reusedReduction: !!entry.current, outputDraft: entry.outputPath, parentSvg: entry.parent?.steps.completion.output?.path ?? null })),
-    }, null, 2)}\n`,
+    }, null, 2)}, join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), ["runtime_context"]),
   });
   if (!submitted) throw agentOutcomeError('同层去重未通过 submit_reduction 提交', response);
   return submitted;

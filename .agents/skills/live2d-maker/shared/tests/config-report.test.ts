@@ -12,6 +12,10 @@ test('effective configuration reports shell overrides and disabled/enabled compa
   await writeFile(join(directory, '.env'), source);
   const disabled = configurationReport({}, directory);
   assert.deepEqual(disabled.codex.imageCompaction, { enabled: false, threshold: null, childThreshold: null });
+  assert.equal(disabled.codex.patchAutoBuild, true);
+  assert.deepEqual(disabled.agvPatch, {enabled: false});
+  assert.equal(configurationReport({layering_agv_patch: 'true', layering_codex_path: '/fixture/codex'}, directory).codex.patchAutoBuild, false);
+  assert.deepEqual(configurationReport({layering_agv_patch: 'true'}, directory).agvPatch, {enabled: true});
   const enabled = configurationReport({ layering_image_compact_threshold: '49', layering_agent_part_review_model: 'gemini-4-argon-high' }, directory);
   assert.deepEqual(enabled.codex.imageCompaction, { enabled: true, threshold: 49, childThreshold: '49' });
   assert.deepEqual(enabled.shellOverrides, ['layering_image_compact_threshold']);

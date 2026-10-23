@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -66,7 +66,7 @@ test('empty SVG stays transparent and oversized canvases are bounded', async () 
 });
 
 test('thumbnail endpoint preserves source and path protections, refreshes rewritten drafts, falls back for incomplete SVG', async t => {
-  const base = await mkdtemp(join(tmpdir(), 'layering-svg-thumbnail-'));
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'layering-svg-thumbnail-')));
   const dir = join(base, 'runs'), task = join(dir, 'test');
   await mkdir(task, { recursive: true });
   const source = svg('<rect x="500" y="900" width="100" height="100" fill="red"/>');

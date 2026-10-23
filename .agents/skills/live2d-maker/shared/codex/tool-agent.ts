@@ -1,3 +1,4 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { loadWorkflowEnvironment, workflowCodexOptions } from './environment.ts';
 import { agentCallError, formatAgentError } from './diagnostics.ts';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
@@ -54,6 +55,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
   let sandbox: string | undefined, nextId = 0, closed = false, busy = false, stderr = '';
   let failure: { error: unknown } | undefined;
   const closing = new AbortController();
+  const transportEnded = new AbortController();
   const pending = new Map<number | string, ReturnType<typeof Promise.withResolvers<Record<string, any>>>>();
   const exited = Promise.withResolvers<void>();
   let current: {
@@ -102,7 +104,11 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     child.once('error', fail);
     child.once('close', (code, exitSignal) => {
       exited.resolve();
-      if (!closed) fail(new Error(`Codex App Server 提前退出（${exitSignal ?? code}）：${stderr}`));
+      const error = new Error(`Codex App Server 提前退出（${exitSignal ?? code}）：${stderr}`);
+      transportEnded.abort(error);
+      // stdout can already be buffered while the reader awaits log writes.
+      // Drain its notifications before rejecting the turn and clearing state.
+      void (reader ?? Promise.resolve()).then(() => { if (!closed) fail(error); });
     });
     child.stdin!.on('error', error => { if (!closed) fail(error); });
     child.stderr!.on('data', (chunk: Buffer) => { stderr = (stderr + chunk.toString('utf8')).slice(-16_000); });
@@ -127,7 +133,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
             }
             const tool = current.tools.get(params.tool);
             if (!tool) throw new Error(`未注册的工具：${params.tool}`);
-            result = await abortable(tool.execute(params.arguments, current.signal), current.signal);
+            const signal = AbortSignal.any([current.signal, transportEnded.signal]);
+            result = await abortable(tool.execute(params.arguments, signal), signal);
           } catch (error) {
             result = { success: false, contentItems: [{ type: 'inputText',
               text: error instanceof Error ? error.message : String(error) }] };
@@ -212,7 +219,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       };
       const input: Record<string, unknown>[] = [{ type: 'text', text: task.prompt, text_elements: [] }];
       for (const image of task.images ?? []) {
-        input.push({ type: 'text', text: image.description, text_elements: [] });
+        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd(), text_elements: [] });
         input.push({ type: 'localImage', path: resolve(image.path) });
       }
       const log = await AgentLog.create(resolve(options.logDirectory ?? join(cwd, '.run/agents')), task.name, {

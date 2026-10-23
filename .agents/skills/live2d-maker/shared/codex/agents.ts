@@ -1,3 +1,4 @@
+import {renderPromptFile} from '../prompts/render.ts';
 import { checkCodexCapabilities, defaultModels, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment } from './environment.ts';
 import { agentCallError, formatAgentError } from './diagnostics.ts';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
@@ -90,6 +91,8 @@ export class CodexAgents {
     let imageModel: string | undefined;
     let id = resumeThreadId;
     const functionOptions = () => ({ ...sessionOptions,
+      // Startup may select the cached patch after this session was constructed.
+      codexPathOverride: this.options.codexPathOverride ?? this.options.environment?.codex.codexPathOverride,
       env: { ...sessionOptions.env, ...route?.env } });
     const closing = new AbortController();
     let closed = false, busy = false;
@@ -273,7 +276,7 @@ export class CodexAgents {
     async function runSdkAttempt(task: AgentTask): Promise<AgentResult> {
       const input: UserInput[] = [{ type: 'text', text: task.prompt }];
       for (const image of task.images ?? []) {
-        input.push({ type: 'text', text: image.description });
+        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() });
         input.push({ type: 'local_image', path: resolve(image.path) });
       }
       const timeoutMs = task.timeoutMs;

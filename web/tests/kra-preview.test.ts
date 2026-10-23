@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdir, mkdtemp, readFile, rm, utimes, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, readFile, rm, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { zipSync } from 'fflate';
@@ -28,7 +28,7 @@ test('raster review 位于 step01，step02 只有边缘精修', () => {
 });
 
 test('最新 KRA 保存画面通过真实 HTTP 预览，不采用过期导出或控制图；重写后刷新', async t => {
-  const base = await mkdtemp(join(tmpdir(), 'kra-workbench-')), task = join(base, 'case'), step = join(task, 'raster-layering/step02');
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'kra-workbench-'))), task = join(base, 'case'), step = join(task, 'raster-layering/step02');
   await mkdir(step, { recursive: true });
   t.after(() => rm(base, { recursive: true, force: true }));
   const png = async (color: string) => sharp({ create: { width: 16, height: 20, channels: 4, background: color } }).png().toBuffer();
@@ -57,7 +57,7 @@ test('最新 KRA 保存画面通过真实 HTTP 预览，不采用过期导出或
 });
 
 test('损坏或缺少合成图的 KRA 明确报错，不伪装为其他图片', async t => {
-  const base = await mkdtemp(join(tmpdir(), 'kra-preview-'));
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'kra-preview-')));
   t.after(() => rm(base, { recursive: true, force: true }));
   const file = join(base, 'draft.kra'), previews = new KRAPreviews();
   await writeFile(file, zipSync({ 'preview.png': new Uint8Array(0) }));
@@ -67,7 +67,7 @@ test('损坏或缺少合成图的 KRA 明确报错，不伪装为其他图片', 
 });
 
 test('KRA 略缩图按实际透明内容适配，完整预览保留画布和半透明像素', async t => {
-  const base = await mkdtemp(join(tmpdir(), 'kra-content-'));
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'kra-content-')));
   t.after(() => rm(base, { recursive: true, force: true }));
   const file = join(base, 'clothing.kra'), previews = new KRAPreviews();
   const patch = await sharp({ create: { width: 20, height: 40, channels: 4, background: { r: 255, g: 0, b: 0, alpha: .2 } } }).png().toBuffer();
