@@ -255,17 +255,19 @@ function stepNode(index,step,nested=false) {
  ${reportEvidence(index,step.id)}
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
- ${step.id.startsWith('step')?processArtifacts(index,step.id):''}
+ ${processArtifacts(index,step)}
  </div>
  `}
  </section>`;
 }
-function processArtifacts(index, stepId) {
- const prefix=stages[index].id+'/'+stepId+'/';
- const known=new Set(Object.values(stepArtifacts[index]).flat().map(item=>item.path));
+function processArtifacts(index, step) {
+ const directory=step.processDirectory||(step.id.startsWith('step')?stages[index].id+'/'+step.id:null);
+ if(!directory)return '';
+ const prefix=directory+'/';
+ const known=new Set([...Object.values(stepArtifacts[index]).flat(),...shadowInspectionArtifacts(data.files)].map(item=>item.path));
  const items=data.files.filter(path=>path.startsWith(prefix)&&!known.has(path));
  if(!items.length)return '';
- return `<details class="process-files" data-details="process:${index}:${stepId}"><summary>${items.length} 个过程文件</summary>${artifacts(items.map(path=>({path,label:path.slice(prefix.length),kind:/\.(png|jpe?g|webp|svg)$/i.test(path)?'image':'file'})),index,stepId)}</details>`;
+ return `<details class="process-files" data-details="process:${index}:${step.id}"><summary>${items.length} 个过程文件</summary>${artifacts(items.map(path=>({path,label:path.slice(prefix.length),kind:/\.(png|jpe?g|webp|svg)$/i.test(path)?'image':'file'})),index,step.id)}</details>`;
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
