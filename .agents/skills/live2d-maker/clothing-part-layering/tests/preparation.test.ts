@@ -33,6 +33,8 @@ test('preparation uses one configured image task, reads the upstream clothed ima
   const refs = await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 1);
   assert.equal(f.calls[0].imageGeneration, true);
+  assert.match(f.calls[0].prompt, /image_gen\.imagegen/);
+  assert.match(f.calls[0].prompt, /不要求工具字面同名/);
   assert.equal(f.calls[0].images!.length, 1);
   assert.equal(f.calls[0].images![0].path, refs.originalImage);
   assert.equal(f.calls[0].step, 'clothing_preparation');
