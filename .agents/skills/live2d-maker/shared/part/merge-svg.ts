@@ -3,6 +3,7 @@ import sharp from 'sharp';
 import { nodeKind, walkGroups, writeAtomic } from './groups.ts';
 import type { SvgMerger } from './layering-types.ts';
 import { validateGroupSvg } from './svg-tools.ts';
+import { editXmlAttributes, svgSource, xmlAttributes } from '../xml.ts';
 
 const xml = (value: string) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -10,22 +11,35 @@ const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$
 // Each part keeps its own SVG root, presentation attributes and coordinate system.
 // Prefix local resource IDs so gradients, clips and hrefs cannot bind another part.
 export function namespaceSvg(source: string, prefix: string): string {
-  const ids = new Map([...source.matchAll(/\sid\s*=\s*(['"])(.*?)\1/g)].map(([, , id]) => [id, `${prefix}-${id}`]));
-  let result = source.replace(/(\s)id\s*=\s*(['"])(.*?)\2/g, (text, space, quote, id) => `${space}id=${quote}${ids.get(id)}${quote}`)
-    .replace(/url\(\s*(['"]?)#([^\s)'";]+)\1\s*\)/g, (text, quote, id) => ids.has(id) ? `url(${quote}#${ids.get(id)}${quote})` : text)
-    .replace(/(\s(?:xlink:)?href\s*=\s*['"])#([^'"]+)(['"])/g, (text, start, id, end) => ids.has(id) ? `${start}#${ids.get(id)}${end}` : text);
-  result = result.replace(/<style\b([^>]*)>([\s\S]*?)<\/style>/g, (_text, attrs, css: string) => {
-    for (const [id, replacement] of ids) css = css.replace(new RegExp(`#${escapeRegex(id)}(?=[\\s.#:\\[>+~,({])`, 'g'), `#${replacement}`);
-    // Workflow SVGs use ordinary static selector rules. Scope selectors to this
-    // nested root; keep declarations and resource URLs unchanged.
-    css = css.replace(/([^{}]+)\{([^{}]*)\}/g, (rule, selectors: string, body: string) => {
-      if (selectors.trim().startsWith('@') || /^\s*(?:from|to|[\d.,%\s]+)\s*$/.test(selectors)) return rule;
-      return `${selectors.split(',').map(selector => `#${prefix} ${selector.trim()}`).join(', ')}{${body}}`;
-    });
-    return `<style${attrs}>${css}</style>`;
-  });
-  result = result.replace(/<svg\b[^>]*>/, root => root.replace(/\s(?:x|y)\s*=\s*(['"]).*?\1/g, '')
-    .replace(/>$/, ' x="0" y="0">'));
+  const parsed = svgSource(source);
+  const ids = new Map(parsed.elements.filter(({ element }) => element.hasAttribute('id'))
+    .map(({ element }) => { const id = element.getAttribute('id')!; return [id, `${prefix}-${id}`]; }));
+  const resourceUrls = (value: string) => value.replace(/url\(\s*(['"]?)#([^\s)'";]+)\1\s*\)/g,
+    (text, quote, id) => ids.has(id) ? `url(${quote}#${ids.get(id)}${quote})` : text);
+  let result = source;
+  for (const entry of [...parsed.elements].reverse()) {
+    if (entry.element.localName === 'style') {
+      let css = resourceUrls(result.slice(entry.openEnd, entry.closeStart));
+      const cdata = css.startsWith('<![CDATA[') && css.endsWith(']]>');
+      if (cdata) css = css.slice(9, -3);
+      for (const [id, replacement] of ids) css = css.replace(new RegExp(`#${escapeRegex(id)}(?=[\\s.#:\\[>+~,({])`, 'g'), `#${replacement}`);
+      // Workflow SVGs use ordinary static selector rules. Scope selectors to this
+      // nested root; keep declarations and resource URLs unchanged.
+      css = css.replace(/([^{}]+)\{([^{}]*)\}/g, (rule, selectors: string, body: string) => {
+        if (selectors.trim().startsWith('@') || /^\s*(?:from|to|[\d.,%\s]+)\s*$/.test(selectors)) return rule;
+        return `${selectors.split(',').map(selector => `#${prefix} ${selector.trim()}`).join(', ')}{${body}}`;
+      });
+      result = result.slice(0, entry.openEnd) + (cdata ? '<![CDATA[' + css + ']]>' : css) + result.slice(entry.closeStart);
+    }
+    const updates: Record<string, string | null> = {};
+    for (const [name, value] of Object.entries(xmlAttributes(entry.element))) {
+      const replacement = name === 'id' ? ids.get(value)! : ['href', 'xlink:href'].includes(name) && value.startsWith('#') && ids.has(value.slice(1))
+        ? '#' + ids.get(value.slice(1)) : resourceUrls(value);
+      if (replacement !== value) updates[name] = replacement;
+    }
+    if (entry === parsed.root) { updates.x = '0'; updates.y = '0'; }
+    if (Object.keys(updates).length) result = editXmlAttributes(result, entry, updates);
+  }
   return `<g id="${prefix}">${result}</g>`;
 }
 

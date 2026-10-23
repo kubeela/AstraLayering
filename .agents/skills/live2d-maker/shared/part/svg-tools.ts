@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import sharp from 'sharp';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
+import { svgSource, updateSvgRoot } from '../xml.ts';
 
 export type Canvas = { width: number; height: number };
 export type SvgObservation = { source: string; mode: 'svg' | 'blend' | 'edge'; savedPath: string };
@@ -43,23 +44,21 @@ export function createSvgReadTool(directory: string, paths: (string | undefined)
 async function svgDocument(path: string, canvas: Canvas) {
   const bytes = await readFile(path);
   const text = bytes.toString('utf8');
-  const root = text.match(/<svg\b[^>]*>/)?.[0];
-  const viewBox = root?.match(/\bviewBox\s*=\s*(['"])(.*?)\1/)?.[2].trim().split(/[\s,]+/).map(Number);
+  const parsed = svgSource(text), root = parsed.root;
+  const viewBox = root.element.getAttribute('viewBox')?.trim().split(/[\s,]+/).map(Number);
   if (!root || !viewBox || viewBox.length !== 4 ||
       viewBox.some((value, i) => value !== [0, 0, canvas.width, canvas.height][i])) {
     throw new Error(`SVG 必须沿用画布 viewBox="0 0 ${canvas.width} ${canvas.height}"：${path}`);
   }
   const metadata = await sharp(bytes, { limitInputPixels: 100_000_000 }).metadata();
   if (metadata.width !== canvas.width || metadata.height !== canvas.height) throw new Error(`SVG 画布尺寸不符：${path}`);
-  return { bytes, text, root };
+  return { bytes, text, root, elements: parsed.elements };
 }
 
 async function alpha(path: string, canvas: Canvas, scale = 1): Promise<Buffer> {
   const document = await svgDocument(path, canvas);
   const width = canvas.width * scale, height = canvas.height * scale;
-  const root = document.root.replace(/\s(?:width|height)\s*=\s*(['"]).*?\1/g, '')
-    .replace(/>$/, ` width="${width}" height="${height}">`);
-  const bytes = scale === 1 ? document.bytes : Buffer.from(document.text.replace(document.root, root));
+  const bytes = scale === 1 ? document.bytes : Buffer.from(updateSvgRoot(document.text, { width: String(width), height: String(height) }));
   const { data, info } = await sharp(bytes, { limitInputPixels: 100_000_000 })
     .ensureAlpha().extractChannel('alpha').raw().toBuffer({ resolveWithObject: true });
   if (info.width !== width || info.height !== height) throw new Error(`范围检查渲染尺寸不符：${path}`);
@@ -88,11 +87,12 @@ export async function checkParentBounds(path: string, parent: string, canvas: Ca
 
 export async function validateGroupSvg(path: string, id: string, canvas: Canvas, parent?: string, allowEmpty = false): Promise<Buffer> {
   const document = await svgDocument(path, canvas);
-  if (/<(?:image|script|foreignObject)\b/.test(document.text)) throw new Error('组 SVG 必须是可编辑矢量，不嵌入位图或脚本');
-  const bindings = [...document.text.matchAll(/\bdata-group-path\s*=\s*(['"])(.*?)\1/g)].map(match => match[2]);
+  if (document.elements.some(({ element }) => ['image', 'script', 'foreignObject'].includes(element.localName ?? ''))) throw new Error('组 SVG 必须是可编辑矢量，不嵌入位图或脚本');
+  const bindings = document.elements.filter(({ element }) => element.hasAttribute('data-group-path'))
+    .map(({ element }) => element.getAttribute('data-group-path'));
   if (!bindings.length || bindings.some(value => value !== id) ||
-      ![...document.text.matchAll(/<g\b[^>]*>/g)].some(match => /\sid\s*=/.test(match[0]) &&
-        new RegExp(`\\bdata-group-path\\s*=\\s*(['"])${id}\\1`).test(match[0]))) {
+      !document.elements.some(({ element }) => element.localName === 'g' && element.hasAttribute('id') &&
+        element.getAttribute('data-group-path') === id)) {
     throw new Error(`SVG 必须仅绑定当前组 data-group-path="${id}"，容器须有 id`);
   }
   const mask = await alpha(path, canvas);
@@ -135,9 +135,9 @@ export function createSvgPreviewTool(options: {
       signal.throwIfAborted();
       const document = await svgDocument(source, options.canvas);
       // 修改临时渲染的视口，在裁剪区域内直接放大矢量，不修改输入文件。
-      const tag = document.root.replace(/\s(?:width|height|viewBox)\s*=\s*(['"]).*?\1/g, '')
-        .replace(/>$/, ` width="${outWidth}" height="${outHeight}" viewBox="${crop.join(' ')}">`);
-      const vector = await sharp(Buffer.from(document.text.replace(document.root, tag))).ensureAlpha().raw().toBuffer();
+      const vector = await sharp(Buffer.from(updateSvgRoot(document.text, {
+        width: String(outWidth), height: String(outHeight), viewBox: crop.join(' '),
+      }))).ensureAlpha().raw().toBuffer();
       let data: Buffer;
       if (mode === 'svg') {
         data = await sharp(vector, { raw: { width: outWidth, height: outHeight, channels: 4 } }).flatten({ background: 'white' }).png().toBuffer();

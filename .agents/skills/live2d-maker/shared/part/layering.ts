@@ -14,6 +14,7 @@ import { assertCompletionPreserves } from './completion-svg.ts';
 import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from './occlusion-plan.ts';
 import { invalidatePendingArtifacts } from './artifact-invalidation.ts';
 import { completionInputsPath, completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
+import { updateSvgRoot } from '../xml.ts';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
   completion: '直接遮挡补形', completionCheck: '补形自检', children: '子组分析' };
@@ -133,8 +134,7 @@ export async function runLayering(input: {
       if (stage === 'completion') {
         const dependencies = result.output.dependencies ?? [];
         if (!await dependenciesMatch(directory, dependencies)) throw new Error('补全输入已变化，不能发布');
-        const marked = Buffer.from((await readSvg(draft))!.toString().replace(/<svg\b[^>]*>/, root =>
-          root.replace(/\sdata-completion-inputs=(['"]).*?\1/g, '').replace(/>$/, ' data-completion-inputs="v1">')));
+        const marked = Buffer.from(updateSvgRoot((await readSvg(draft))!.toString(), { 'data-completion-inputs': 'v1' }));
         await writeAtomic(draft, marked);
         // 输入记录先写，正式 SVG 最后发布；中断或记录不匹配不能恢复该补全。
         await writeAtomic(completionInputsPath(directory, id), JSON.stringify({ version: 1, groupId: id,

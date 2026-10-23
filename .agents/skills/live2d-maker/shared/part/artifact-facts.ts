@@ -5,6 +5,7 @@ import { groupCompleted, nodeSeed, normalizeGroups, walkGroups, writeAtomic } fr
 import { groupStages, type GroupsDocument, type ReviewedSvgArtifact } from './layering-types.ts';
 import { assertCompletionPreserves } from './completion-svg.ts';
 import { completionInputsMatch } from './completion-inputs.ts';
+import { svgSource, updateSvgRoot } from '../xml.ts';
 
 export const svgHash = (bytes: Buffer | string): string => createHash('sha256')
   .update(bytes.toString().replace(/\r\n/g, '\n')).digest('hex');
@@ -31,14 +32,14 @@ export async function readJson(path: string): Promise<any | undefined> {
 }
 export async function readSvg(path: string): Promise<Buffer | undefined> {
   const bytes = await readOptional(path);
-  if (bytes && (!/<svg\b[^>]*>/.test(bytes.toString()) || !/<\/svg>\s*$/.test(bytes.toString()))) {
-    throw new Error(`Invalid SVG output: ${path}`);
+  if (bytes) try {
+    if (svgSource(bytes.toString()).root.selfClosing) throw new Error('缺少 SVG 正文');
   }
+  catch (error) { throw new Error(`Invalid SVG output: ${path}`, { cause: error }); }
   return bytes;
 }
 export function stampedSvg(bytes: Buffer, sourceHash?: string): Buffer {
-  return sourceHash ? Buffer.from(bytes.toString().replace(/<svg\b[^>]*>/, root => root
-    .replace(/\sdata-source-sha256=(['"]).*?\1/g, '').replace(/>$/, ` data-source-sha256="${sourceHash}">`))) : bytes;
+  return sourceHash ? Buffer.from(updateSvgRoot(bytes.toString(), { 'data-source-sha256': sourceHash })) : bytes;
 }
 export async function publishSvg(draft: string, output: string, sourceHash?: string): Promise<void> {
   if (!draft.endsWith('.draft.svg') || output.endsWith('.draft.svg') || !output.endsWith('.svg')) {
@@ -52,7 +53,7 @@ export async function publishSvg(draft: string, output: string, sourceHash?: str
   await rename(draft, output);
 }
 function sourceMatches(bytes: Buffer, sourceHash: string): boolean {
-  return bytes.toString().match(/\bdata-source-sha256=['"]([^'"]+)['"]/)?.[1] === sourceHash;
+  return svgSource(bytes.toString()).root.element.getAttribute('data-source-sha256') === sourceHash;
 }
 
 export type Review = {
@@ -129,7 +130,7 @@ export async function restoreFacts(directory: string, document: GroupsDocument, 
       try { assertCompletionPreserves(before.toString(), after.toString()); }
       catch { continue; }
       if (!await completionInputsMatch(directory, group.id, svgHash(before), svgHash(after), nodes,
-        /\bdata-completion-inputs=['"]v1['"]/.test(after.toString()), promptsDirectory)) continue;
+        svgSource(after.toString()).root.element.getAttribute('data-completion-inputs') === 'v1', promptsDirectory)) continue;
       group.steps.completion = { status: 'completed', output: { path: partPath } };
       const check = await readJson(reportPath(directory, group.id, 'completion-check'));
       if (check?.groupId !== group.id || check.passed !== true ||
