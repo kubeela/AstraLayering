@@ -1,13 +1,19 @@
 import { readFile, stat } from 'node:fs/promises';
 import { unzipSync } from 'fflate';
 import sharp from 'sharp';
+import { renderContentThumbnail } from './svg-thumbnail.ts';
 
 // Krita writes its actual saved projection into the KRA. No model call,
 // document mutation, or another Krita process is needed for this preview.
 export class KRAPreviews {
-  private cache = new Map<string, { version: string; png: Buffer }>();
+  private cache = new Map<string, { version: string; png: Buffer; thumbnail?: Promise<Buffer> }>();
   private pending = new Map<string, Promise<Buffer>>();
-  async get(file: string, version: string): Promise<Buffer> {
+  async get(file: string, version: string, content = false): Promise<Buffer> {
+    if (content) {
+      const png = await this.get(file, version), cached = this.cache.get(file);
+      if (cached?.version === version) return cached.thumbnail ??= renderContentThumbnail(png);
+      return renderContentThumbnail(png);
+    }
     const cached = this.cache.get(file);
     if (cached?.version === version) return cached.png;
     const key = file + ':' + version;

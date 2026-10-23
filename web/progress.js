@@ -24,6 +24,11 @@ export function groupPreviewArtifacts(group, phaseFiles, files, versions = {}) {
   return list.sort((a, b) => Number(versions[b.path]?.split(':')[0] ?? 0) - Number(versions[a.path]?.split(':')[0] ?? 0)).slice(0, 1);
 }
 
+export function latestKraPreview(previews = {}) {
+  return Object.entries(previews).map(([stepId, preview]) => ({ ...preview, stepId }))
+    .sort((a, b) => Date.parse(b.savedAt) - Date.parse(a.savedAt) || b.stepId.localeCompare(a.stepId))[0];
+}
+
 const step = (id, title, status, children = [], note = '') => ({ id, title, status, children, note });
 const partSteps = clothing => [
   step('preparation', '准备参考', 'pending', clothing

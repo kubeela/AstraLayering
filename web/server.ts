@@ -214,7 +214,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         const info = await lstat(file);
         if (!info.isFile()) throw new Error('产物不是文件');
         if (url.searchParams.get('preview') === 'kra' && extname(file).toLowerCase() === '.kra') {
-          const image = await kraPreviews.get(file, `${info.mtimeMs}:${info.ctimeMs}:${info.size}:${info.ino}`);
+          const image = await kraPreviews.get(file, `${info.mtimeMs}:${info.ctimeMs}:${info.size}:${info.ino}`, url.searchParams.get('fit') === 'content');
           response.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-cache' });
           response.end(image); return;
         }
@@ -228,7 +228,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream', '.psd': 'application/octet-stream' };
         // SVG may be authored by an agent. Keep it inert even when opened in a new tab.
         response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
-        response.writeHead(200, { 'Content-Type': types[extname(file).toLowerCase()] });
+        response.writeHead(200, { 'Content-Type': types[selected.endsWith('.md.tmp') ? '.md' : extname(file).toLowerCase()] });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
       if (path === '/api/studio/layers') { json({ available: compositor.available, engine: 'Krita' }); return; }
@@ -278,7 +278,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         '/vendor/fflate.js': 'node_modules/fflate/umd/index.js',
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/task-selection.js': 'task-selection.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'projection-field.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'component-physics-binding.js', 'component-physics-geometry.js', 'component-physics-model.js', 'component-physics-schema.js', 'component-physics-panel.js', 'physics-test-input.js', 'physics-airflow.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       for (const name of ['component-physics-selection.js','vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }

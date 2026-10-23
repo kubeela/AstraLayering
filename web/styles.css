@@ -191,3 +191,24 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .phase-mark.failed{border-radius:50%}.failure-exclamation{font-size:12px;line-height:1;font-weight:800}
 
 .review-feedback{white-space:pre-wrap;font-size:12px;line-height:1.5;max-height:9em;overflow:auto;overscroll-behavior:contain;}
+
+/* The live KRA remains beside the horizontal steps, outside their scroll areas. */
+.kra-preview-panel{width:300px;height:var(--step-height);flex:0 0 auto;display:flex;flex-direction:column;border:1px solid #cddeda;border-radius:8px;background:white;overflow:hidden}
+.kra-preview-panel h3{display:flex;align-items:center;gap:7px;padding:14px 12px;font-size:14px;font-weight:550;flex-shrink:0}
+.preview-source{padding:0 12px 10px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.live-kra-artifacts,.live-kra-artifacts .artifact-images{display:flex;flex:1;min-height:0;overflow:hidden}
+.live-kra-artifacts .artifact-image{flex:1;min-height:0}
+.live-kra-artifacts .artifact-image img{height:0;flex:1;min-height:0}
+.live-kra-artifacts .artifact-image span,.live-kra-artifacts .artifact-image small{flex-shrink:0}
+.report-evidence .artifact-image img{height:170px}
+.report-evidence .artifact-image span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.report-draft{color:var(--purple)}
+.report-document{padding:0 14px;font-size:13px;line-height:1.8;overflow-wrap:anywhere}
+.report-document h2,.report-document h3,.report-document h4,.report-document h5,.report-document h6{font-size:15px;margin:20px 0 10px}
+.report-document p,.report-document ul,.report-document ol{margin:10px 0}
+.report-document ul,.report-document ol{padding-left:22px}
+.report-document pre{white-space:pre-wrap;padding:12px;background:var(--surface-soft);border-radius:6px}
+.report-document code{font-size:12px;background:var(--surface-soft)}
+.report-image{display:block;margin:10px 0;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--surface-soft)}
+.report-image img{display:block;width:100%;height:auto;max-height:480px;object-fit:contain}
+.report-image span{display:block;text-align:center;font-size:10px;color:var(--muted);margin-top:6px}

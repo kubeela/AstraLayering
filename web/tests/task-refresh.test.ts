@@ -69,6 +69,19 @@ test('loss of runner updates even before persisted status leaves running', async
   assert.deepEqual(f.calls, ['apply', 'render']);
 });
 
+test('打开中的报告草稿发布后读取正式文件，避免刷新成旧路径的错误', async () => {
+  const f = fixture('running', 'none'), draft = 'clothing-raster-layering/step01/review-01.md.tmp', published = draft.replace('.tmp', '');
+  const selected = { kind: 'file', path: draft, text: '草稿内容' };
+  f.context.state.asset = selected;
+  f.context.data.fileVersions = { [draft]: '1:100' };
+  (f.next as any).fileVersions = { [published]: '2:200' };
+  f.next.files = [published] as any;
+  f.context.artifact = (path: string) => path;
+  f.context.fetch = async (path: string) => { assert.equal(path, published); return { ok: true, text: async () => '正式内容' }; };
+  await f.run();
+  assert.equal(selected.text, '正式内容');
+});
+
 test('failure notice includes the last model message and stays visibly stopped', () => {
   const notice = source.slice(source.indexOf('function runNotice()'), source.indexOf('let flowObserver;'));
   const html = runInNewContext(notice + '\nrunNotice();', {
