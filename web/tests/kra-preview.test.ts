@@ -10,6 +10,16 @@ import { createWorkbench } from '../server.ts';
 import { snapshot } from '../snapshot.ts';
 import { pipelineSteps } from '../progress.js';
 
+test('共用 KRA 预览按最近保存选择跨步骤的新画面', async () => {
+  const { latestKraPreview } = await import(new URL('../progress.js', import.meta.url).href);
+  assert.equal(latestKraPreview({}), undefined);
+  const previews = { step01: { path: 'step01/character-depth.kra', savedAt: '2026-10-23T00:00:00Z' },
+    step02: { path: 'step02/working.kra', savedAt: '2026-10-23T00:01:00Z' } };
+  assert.equal(latestKraPreview(previews).path, 'step02/working.kra');
+  previews.step01.savedAt = '2026-10-23T00:02:00Z';
+  assert.equal(latestKraPreview(previews).path, 'step01/character-depth.kra');
+});
+
 test('raster review 位于 step01，step02 只有边缘精修', () => {
   for (const i of [1, 3]) {
     assert.deepEqual(pipelineSteps[i][0].children.map(step => step.id), ['draw', 'review-01', 'repair-01', 'review-02', 'repair-02']);
@@ -54,4 +64,20 @@ test('损坏或缺少合成图的 KRA 明确报错，不伪装为其他图片', 
   await assert.rejects(previews.get(file, 'first'), /尚未保存有效/);
   await writeFile(file, 'incomplete zip');
   await assert.rejects(previews.get(file, 'second'));
+});
+
+test('KRA 略缩图按实际透明内容适配，完整预览保留画布和半透明像素', async t => {
+  const base = await mkdtemp(join(tmpdir(), 'kra-content-'));
+  t.after(() => rm(base, { recursive: true, force: true }));
+  const file = join(base, 'clothing.kra'), previews = new KRAPreviews();
+  const patch = await sharp({ create: { width: 20, height: 40, channels: 4, background: { r: 255, g: 0, b: 0, alpha: .2 } } }).png().toBuffer();
+  const projection = await sharp({ create: { width: 200, height: 200, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: patch, left: 80, top: 140 }]).png().toBuffer();
+  await writeFile(file, zipSync({ 'mergedimage.png': projection }));
+  const full = await previews.get(file, '1'), thumbnail = await previews.get(file, '1', true);
+  assert.deepEqual(await sharp(full).raw().toBuffer(), await sharp(projection).raw().toBuffer());
+  const info = await sharp(thumbnail).metadata();
+  assert.ok(info.height! > info.width! * 1.8);
+  const { data, info: raw } = await sharp(thumbnail).raw().toBuffer({ resolveWithObject: true });
+  assert.ok(data[(Math.floor(raw.height / 2) * raw.width + Math.floor(raw.width / 2)) * raw.channels + 3] < 255);
 });

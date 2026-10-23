@@ -89,7 +89,7 @@ pnpm raster-layering --name jianma --dry-run
 
 第三步首次将第二步最终 KRA 另存为 `step03/character-dressup-base.kra`，去除连体服并补全身体底层，保持原尺寸与分层组织。重开核对后导出同名合成 PNG；标记过的 part、补全方式和检查结果写入 `step03/report.md`。三份文件交付并完成自检后写入 `.completed`，不再调用 reviewer；中断时保留工程，使用原 thread 续跑。
 
-`run.json` 保存配置与会话记录：任务名、原输入位置、显式 Krita 路径及版本、各步模型配置、当前共用的 `threadId`。**它不记录步骤完成状态**，不保存另一套 `steps[].status`。步骤进度只由标记文件决定；`result.json` 和日志也不是状态依据。
+`run.json` 保存任务与会话记录：任务名、原输入位置、显式 Krita 路径及版本、当前共用的 `threadId` 和 `threadHarness`。模型配置只从 `.env`、环境变量及代码默认值读取；旧 `models` 字段在续跑保存时移除，不影响会话或产物。**它不记录步骤完成状态**，不保存另一套 `steps[].status`。步骤进度只由标记文件决定；`result.json` 和日志也不是状态依据。
 
 `prompt.md` 保存本步初次绘制最近使用的完整提示词，`attempts.jsonl` 追加每次调用的阶段、时间、模型及绘制会话 ID，`events.jsonl` 追加带调用标识的 SDK 事件。中断续跑保留已有产物和历史日志；`result.json` 保存初次绘制的最近结果，`error.txt` 保存最近一次失败说明。review / 修复调用使用各自的提示词和结果日志。
 

@@ -1,4 +1,3 @@
-import type { ModelSelection } from '../codex/environment.ts';
 import type { Harness } from '../agents/models.ts';
 import { lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -6,7 +5,6 @@ import { isPartLayeringInput, type PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 
-export type ModelConfig = ModelSelection & { harness?: Harness };
 export type ThreadHandoff = {
   id: string;
   previousThreadId: string;
@@ -21,7 +19,6 @@ export type RunConfig<Input = PartLayeringInput> = {
   sourceInput: Input;
   inputFingerprint?: string;
   krita: KritaInstallation;
-  models: Record<string, ModelConfig>;
   threadId: string | null;
   threadHarness?: Harness;
   threadStep?: string;
@@ -60,16 +57,17 @@ export async function loadConfig<Input = PartLayeringInput>(directory: string, n
   if (!info.isDirectory() || info.isSymbolicLink()) throw new Error(`任务目录必须是普通目录：${directory}`);
   const file = join(directory, 'run.json');
   if (!await fileInfo(file)) throw new Error(`任务目录已存在但缺少 run.json：${directory}。请使用新的 --name，保留原文件。`);
-  const config = JSON.parse(await readFile(file, 'utf8')) as RunConfig<Input>;
+  const config = JSON.parse(await readFile(file, 'utf8')) as RunConfig<Input> & { models?: unknown };
   if (config?.version !== 2 || config.name !== name
     || !validateInput(config.sourceInput)
     || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim() || typeof config.krita.version !== 'string'
-    || !config.models || typeof config.models !== 'object' || Array.isArray(config.models)
-    || Object.values(config.models).some(model => !model || typeof model.model !== 'string' || !model.model.trim() || !['none', 'minimal', 'low', 'medium', 'high', 'xhigh'].includes(model.effort))
     || !(config.threadId === undefined || config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))
     || (config.threadHandoff !== undefined && !validHandoff(config.threadHandoff))) {
     throw new Error(`无效的任务配置：${file}`);
   }
+  // Old snapshots are ignored and removed on the next save. Model selection
+  // belongs to the current environment; session identity stays in this file.
+  delete config.models;
   config.threadId ??= null;
   return config;
 }
@@ -80,10 +78,8 @@ function validHandoff(value: ThreadHandoff): boolean {
     && (value.replacementThreadId === undefined || (typeof value.replacementThreadId === 'string' && !!value.replacementThreadId.trim()));
 }
 
-export function newConfig<Input>(name: string, input: Input, krita: KritaInstallation, steps: readonly StepDefinition[]): RunConfig<Input> {
-  const models: Record<string, ModelConfig> = {};
-  for (const step of steps) models[step.id] = { model: step.model, effort: step.effort };
-  return { version: 2, name, sourceInput: input, krita, models, threadId: null };
+export function newConfig<Input>(name: string, input: Input, krita: KritaInstallation): RunConfig<Input> {
+  return { version: 2, name, sourceInput: input, krita, threadId: null };
 }
 
 export async function saveConfig(directory: string, config: RunConfig<unknown>): Promise<void> {

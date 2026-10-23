@@ -28,7 +28,7 @@ async function fixture(t: TestContext, slow = false) {
     + (slow ? 'require("node:fs").writeFileSync(' + JSON.stringify(join(task, 'probe.pid')) + ', String(process.pid)); setTimeout(() => console.log("krita 5.3.4"), 6000);' : 'console.log("krita 5.3.4");');
   await writeFile(krita, script, { mode: 0o755 });
   const output = join(task, 'character-assembly');
-  const config = newConfig(name, inputs, { executable: krita, version: '5.3.4' }, steps);
+  const config = newConfig(name, inputs, { executable: krita, version: '5.3.4' });
   config.threadId = 'completed-fixture';
   await initializeRun(output, config);
   await mkdir(join(output, 'step01'));

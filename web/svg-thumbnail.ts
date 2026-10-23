@@ -3,7 +3,7 @@ import sharp from 'sharp';
 
 // Crop the rendered alpha, not path/control-point bounds: include strokes, clips,
 // transforms and translucent paint, while ignoring invisible SVG geometry.
-export async function renderSVGThumbnail(input: Buffer): Promise<Buffer> {
+export async function renderContentThumbnail(input: Buffer): Promise<Buffer> {
   const { data, info } = await sharp(input, { limitInputPixels: 40_000_000 })
     .resize({ width: 2048, height: 2048, fit: 'inside', withoutEnlargement: true })
     .ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -25,6 +25,8 @@ export async function renderSVGThumbnail(input: Buffer): Promise<Buffer> {
   return sharp(cropped.data).extend({ left: horizontal, right: horizontal, top: vertical, bottom: vertical,
     background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
 }
+
+export const renderSVGThumbnail = renderContentThumbnail;
 
 export class SVGThumbnails {
   // One version per file, bounded LRU and two renders at once. Polling unchanged
