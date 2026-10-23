@@ -71,6 +71,37 @@ function conformTriangles(triangles) {
   }
   return result;
 }
+// Improve the weakest triangle by flipping only a shared interior diagonal of
+// a convex pair. Contours, holes, fixed edges and control-face cuts stay intact;
+// source vertices are never moved or deleted to make area checks easier.
+export function conditionTriangles(triangles, constraints=[]) {
+  const points=[],catalog=new Map();
+  const index=p=>{const key=p.map(v=>Math.round(v*1e6)).join(',');if(!catalog.has(key)){catalog.set(key,points.length);points.push(p);}return catalog.get(key);};
+  const faces=triangles.map(t=>t.map(index)),protectedEdges=new Map();
+  const quality=(a,b,c)=>{
+    const p=points[a],q=points[b],r=points[c],ab=(p[0]-q[0])**2+(p[1]-q[1])**2,bc=(q[0]-r[0])**2+(q[1]-r[1])**2,ca=(r[0]-p[0])**2+(r[1]-p[1])**2;
+    return Math.abs(cross(p,q,r))/Math.max(1e-12,ab,bc,ca);
+  };
+  const protectedEdge=(key,a,b)=>{
+    if(!protectedEdges.has(key))protectedEdges.set(key,constraints.some(([p,q])=>segmentDistance(points[a],p,q)<1e-5&&segmentDistance(points[b],p,q)<1e-5));
+    return protectedEdges.get(key);
+  };
+  for(let pass=0;pass<24;pass++) {
+    const edges=new Map(),used=new Set();let changed=0;
+    for(let k=0;k<faces.length;k++)for(let e=0;e<3;e++) {
+      const a=faces[k][e],b=faces[k][(e+1)%3],c=faces[k][(e+2)%3],key=Math.min(a,b)+':'+Math.max(a,b);
+      if(!edges.has(key)){edges.set(key,{k,a,b,c});continue;}
+      const old=edges.get(key),d=old.c;
+      if(used.has(k)||used.has(old.k)||c===d||protectedEdge(key,a,b))continue;
+      if(cross(points[a],points[b],points[c])*cross(points[a],points[b],points[d])>=0||cross(points[c],points[d],points[a])*cross(points[c],points[d],points[b])>=0)continue;
+      const before=Math.min(quality(a,b,c),quality(a,b,d)),after=Math.min(quality(c,d,a),quality(c,d,b));
+      if(after<=before*1.000001+1e-12)continue;
+      faces[k]=[c,d,a];faces[old.k]=[d,c,b];used.add(k);used.add(old.k);changed++;
+    }
+    if(!changed)break;
+  }
+  return faces.map(f=>f.map(i=>points[i]));
+}
 export function clothGeometry(authoring) {
   const outer = authoring.contour, holes = authoring.holes || [], all = outer.concat(...holes);
   const faces = ShapeUtils.triangulateShape(outer.map(p => new Vector2(...p)), holes.map(h => h.map(p => new Vector2(...p))));
@@ -83,6 +114,8 @@ export function clothGeometry(authoring) {
   }
   for(const [a,b]of authoring.cutLines||[]){polys=polys.flatMap(p=>split(p,a,b));if(polys.length>12000)throw Error('活动轴过于复杂，请减少控制节');}
   let triangles = conformTriangles(polys.flatMap(p => p.slice(1, -1).map((_, i) => [p[0], p[i + 1], p[i + 2]])));
+  const constraints=[...authoring.fixedRegions.flatMap(region=>region.map((a,i)=>[a,region[(i+1)%region.length]])),...(authoring.cutLines||[])];
+  triangles=conditionTriangles(triangles,constraints);
   const levels = authoring.subdivisions ?? 2;
   for (let level = 0; level < levels; level++) {if(triangles.length>20000)throw Error('网格细分超出作者容量');triangles = triangles.flatMap(([a, b, c]) => {
     const ab = a.map((v, i) => (v + b[i]) / 2), bc = b.map((v, i) => (v + c[i]) / 2), ca = c.map((v, i) => (v + a[i]) / 2);

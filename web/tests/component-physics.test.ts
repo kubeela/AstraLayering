@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { ComponentScene } from '../studio/component-physics-model.js';
 import { componentDefaults } from '../studio/component-physics-schema.js';
 import { resolveComponentBindings } from '../studio/component-physics-binding.js';
-import { refineControlGeometry } from '../studio/component-physics-geometry.js';
+import { refineControlGeometry, conditionTriangles, cross } from '../studio/component-physics-geometry.js';
 import { applyTestInput } from '../studio/physics-test-input.js';
 import { projectionField } from '../studio/projection-field.js';
 import { simulate, traceWindow, validateFindings } from '../../.agents/skills/live2d-maker/physics/evidence.ts';
@@ -39,6 +39,15 @@ test('regular cloth controls accept a point load between controls and settle wit
 test('thin display triangles retain their own control face through refinement',()=>{
   const control={rest:[0,0,100,100,100.00001,100,100,0],indices:[0,1,2,0,3,2]},mesh=refineControlGeometry(control,3);
   for(let i=0;i<mesh.samples.length;i++){const[a,b,c,u,v,w]=mesh.samples[i];assert(Math.abs(u+v+w-1)<1e-12);for(let axis=0;axis<2;axis++)assert(Math.abs(mesh.rest[i*2+axis]-(control.rest[a*2+axis]*u+control.rest[b*2+axis]*v+control.rest[c*2+axis]*w))<1e-10);}
+});
+test('mesh conditioning preserves source vertices, boundary area and protected diagonals',()=>{
+  const a=[0,0],b=[100,0],c=[100,100],d=[0,1],faces=[[a,b,c],[a,c,d]];
+  const conditioned=conditionTriangles(faces),area=(triangles:number[][][])=>triangles.reduce((sum,t)=>sum+Math.abs(cross(t[0],t[1],t[2])),0);
+  assert.equal(area(conditioned),area(faces));
+  assert.deepEqual(new Set(conditioned.flat().map(p=>p.join(','))),new Set(faces.flat().map(p=>p.join(','))));
+  assert(conditioned.every(t=>t.includes(b)&&t.includes(d)),'use the better interior diagonal without shifting the outline');
+  assert.deepEqual(conditionTriangles(faces,[[a,c]]),faces,'fixed-region and control cuts may not be flipped');
+  const concave=[[a,b,[20,10]],[a,[20,10],[0,100]]];assert.deepEqual(conditionTriangles(concave),concave,'an exterior diagonal must never replace a concave interior edge');
 });
 test('rigid pendant preserves pair distances rather than stretching into jelly',()=>{
   const scene=new ComponentScene(config([component('pendant')])),b=scene.bodies.get('pendant');b.impulse(100,320,900,400,500);
