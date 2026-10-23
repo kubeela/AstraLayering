@@ -5,6 +5,38 @@ import { validatePhysicsConfig } from './component-physics-schema.js';
 import { PhysicsRenderer } from './physics-renderer.js';
 import { testNames } from './physics-test-input.js';
 import { ComponentPhysicsRunner } from './component-physics-runner.js';
+
+// Keep the same 120 Hz Worker state and transferable snapshots. Small jobs
+// publish intermediate poses; draining demand on completion avoids waiting for
+// another RAF between jobs. The page still has only one job in flight.
+export class ComponentPhysicsLiveRunner extends ComponentPhysicsRunner {
+  constructor(panel) {
+    super(panel);
+    this.pendingSteps = 0;
+    this.maxBatchSteps = 2;
+    const receive = this.worker.onmessage;
+    this.worker.onmessage = event => {
+      receive(event);
+      if (event.data.type === 'frame' && event.data.epoch === this.epoch) this.pump();
+    };
+  }
+  advance(steps, manual) {
+    if (manual) { this.pendingSteps = 0; return super.advance(steps, true); }
+    if (!this.ready || !this.panel.enabled || this.panel.paused) return false;
+    this.pendingSteps = Math.min(12, this.pendingSteps + steps);
+    this.pump();
+    return true;
+  }
+  pump() {
+    if (!this.ready || this.busy || !this.pendingSteps || !this.panel.enabled || this.panel.paused ||
+        typeof document !== 'undefined' && document.hidden) return;
+    const steps = Math.min(this.maxBatchSteps, this.pendingSteps);
+    if (super.advance(steps, false)) this.pendingSteps -= steps;
+  }
+  reset() { this.pendingSteps = 0; super.reset(); }
+  dispose() { this.pendingSteps = 0; super.dispose(); }
+}
+
 const $=s=>document.querySelector(s);
 const specs={frequencyHz:['摆动节奏',.15,6,.05,'Hz',1,'response'],outputFrequencyHz:['角度过渡',.15,6,.05,'Hz',1,'response'],dampingRatio:['衰减',.03,1.5,.01,'',1,'response'],inputGain:['受力倍率',0,2,.05,'',1,'response'],maxTravel:['最大位移',1,30,1,'%',100,'limits'],maxAngle:['最大摆角',1,45,1,'°',1,'limits'],maxStretch:['最大拉伸',.5,8,.5,'%',100,'limits'],maxCompression:['最大压缩',0,30,1,'%',100,'limits'],maxShear:['最大剪切',1,30,1,'°',1,'limits'],minAreaRatio:['最小面积',30,95,1,'%',100,'limits']};
 export class ComponentPhysicsPanel extends PhysicsPanel {
@@ -66,7 +98,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     this.runner?.dispose();
     this.renderer?.dispose();this.scene=new ComponentScene(this.config);this.bodies=this.scene.bodies;this.bindings=new Map(this.config.components.map(c=>[c.id,c]));
     const layers=new Map(),resolution=resolveComponentBindings(this.config,this.parts);this.contactLayers=new Map();for(const[id,c]of resolution.assignments){const b=this.bodies.get(c);if(b){layers.set(id,b);if(!this.contactLayers.has(c))this.contactLayers.set(c,[]);this.contactLayers.get(c).push(this.parts.find(l=>l.id===id));}}
-    this.renderer=new PhysicsRenderer(this.stage,this.parts,layers,this.size,this.scene);this.runner=new ComponentPhysicsRunner(this);this.lastTime=0;this.accumulator=0;this.elapsed=0;this.pointer=null;this.render();
+    this.renderer=new PhysicsRenderer(this.stage,this.parts,layers,this.size,this.scene);this.runner=new ComponentPhysicsLiveRunner(this);this.lastTime=0;this.accumulator=0;this.elapsed=0;this.pointer=null;this.render();
   }
   selectionEntries(){return this.formal?this.config.components.map(c=>({id:c.id,name:c.name,enabled:c.enabled,detail:(c.kind==='strand'?'发束 / 飘带':c.kind==='cloth'?'布片':'挂件')+' · '+c.layerRefs.length+' 层'})):super.selectionEntries();}
   selectionAssignments(){return this.formal?resolveComponentBindings(this.config,this.parts).assignments:super.selectionAssignments();}
