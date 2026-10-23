@@ -115,7 +115,9 @@ export class ComponentBody {
       // Bound output speed relative to the current support pose. A physical
       // high mode must not turn into an instantaneous visible contour change.
       for(let i=0;i<this.mobility.length;i++){
-        const x=this.pPose[i*2]+this.previous[i*2]-this.previousPose[i*2],y=this.pPose[i*2+1]+this.previous[i*2+1]-this.previousPose[i*2+1],dx=this.p[i*2]-x,dy=this.p[i*2+1]-y,len=Math.hypot(dx,dy);
+        // Subtract the old pose before adding the new one: adding large canvas
+        // coordinates first creates roundoff at pinned controls with a zero cap.
+        const x=this.pPose[i*2]+(this.previous[i*2]-this.previousPose[i*2]),y=this.pPose[i*2+1]+(this.previous[i*2+1]-this.previousPose[i*2+1]),dx=this.p[i*2]-x,dy=this.p[i*2+1]-y,len=Math.hypot(dx,dy);
         const cap=this.maxDistance*this.mobility[i]*TAU*this.component.response.frequencyHz*this.dt*.5;
         if(len>cap&&len){this.p[i*2]=x+dx*cap/len;this.p[i*2+1]=y+dy*cap/len;}
       }

@@ -66,6 +66,13 @@ test('parent test pose moves artwork and attachments in the same space without r
   const caster={rest:new Float64Array([100,40,100,320]),positions:new Float64Array([...scene.sourcePoint([100,40]),...scene.sourcePoint([100,320])]),freeLength:280};
   const field=projectionField({x:20,y:200,width:220,height:150},caster,scene);field.update();for(let i=0;i<field.rest.length/2;i++){const p=scene.sourcePoint([field.rest[i*2],field.rest[i*2+1]]);assert(Math.hypot(field.positions[i*2]-p[0],field.positions[i*2+1]-p[1])<1e-8,'parent rotation must not be approximated as caster residual outside the caster');}
 });
+test('passive parent rotation never counts pinned-point roundoff as hitting a motion limit',()=>{
+  const c=component();c.response.inputGain=0;const scene=new ComponentScene(config([c]));
+  for(let step=1;step<=180;step++){
+    scene.sourcePose={x:step/100,y:0,angle:step/10000};scene.step();const b=scene.bodies.get(c.id);
+    assert(b.stats.valid);assert.equal(b.stats.root,0);assert.equal(b.stats.limited,false);assert.equal(b.stats.fallback,false);
+  }
+});
 test('UUID bindings preserve multiple source layers through reorder and clipping islands without guessing ambiguity',()=>{
   const a=component(),b=component('cloth'),c=config([a,b]);
   let result=resolveComponentBindings(c,[{id:'new-order',uuid:'strand',contentHash:'a'.repeat(64)},{id:'other',uuid:'cloth',contentHash:'a'.repeat(64)}]);assert.equal(result.assignments.get('new-order'),'strand');
