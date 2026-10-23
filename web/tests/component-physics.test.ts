@@ -1,8 +1,8 @@
 import { InochiPendulum } from '../studio/vendor/inochi2d/pendulum.js';
-import { motionIssues } from '../studio/physics-motion-review.js';
+import { motionIssues, MotionStepTracker, motionStepBasis } from '../studio/physics-motion-review.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, readFile } from 'node:fs/promises';
+import { mkdtemp, rm, readFile, writeFile, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ComponentScene } from '../studio/component-physics-model.js';
@@ -65,12 +65,38 @@ test('UUID bindings preserve multiple source layers through reorder and clipping
   result=resolveComponentBindings(config([a]),[{id:'island',uuid:'shadow-group',composited:true,sourceLayers:[{uuid:'strand',contentHash:'a'.repeat(64)},{uuid:'unbound-static',contentHash:'b'.repeat(64)}]}]);assert.equal(result.assignments.size,0);assert.match(result.issues[0].reason,/未绑定/);
 });
 test('evidence records exact every-step states and never publishes numerical-only review',async()=>{
-  const directory=await mkdtemp(join(tmpdir(),'astra-component-test-'));try{
+  const root=await mkdtemp(join(tmpdir(),'astra-component-test-')),directory=join(root,'evidence');try{
     const c=config([component()]);const manifest=await simulate(c,directory);assert.equal(manifest.runs.length,9);assert.equal(manifest.coverage.render,'pending');
+    assert.equal(manifest.runs[0].metrics.motionReview.stepBasis,motionStepBasis);
     const rows=await traceWindow(directory,'tip-impulse',[59,60,61,960]);assert.equal(rows[1].time,.5);assert(rows[0].components.strand.stats.travel<1e-10);assert(rows[2].components.strand.stats.travel>0);assert(rows[2].components.strand.positions.length>0);
     assert.deepEqual((await traceWindow(directory,'tip-impulse',[61]))[0],rows[2]);
     await assert.rejects(validateFindings(c,directory,{configHash:manifest.configHash,evidenceVersion:manifest.version,components:[]}),/渲染/);
-  }finally{await rm(directory,{recursive:true,force:true});}
+    assert.equal((await simulate(c,directory)).createdAt,manifest.createdAt,'unchanged evidence should be reused');
+    await writeFile(join(directory,'manifest.json'),JSON.stringify({...manifest,simulationHash:'obsolete-measurement'}));
+    await assert.rejects(validateFindings(c,directory,{configHash:manifest.configHash,evidenceVersion:manifest.version,components:[]}),/重新生成证据/);
+    const regenerated=await simulate(c,directory);assert.equal(regenerated.simulationHash,manifest.simulationHash);
+    assert((await readdir(join(directory,'../backups'))).some(n=>n.startsWith('evidence-')),'old measured evidence must be archived');
+  }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('step review removes whole-character motion but preserves physical ancestor jumps',()=>{
+  const canvas={width:1000,height:2000},tracker=new MotionStepTracker(canvas,4);
+  const source=[480,170,495,190];
+  const world=(points:number[],pose:any)=>points.flatMap((_,i)=>i%2?[]:[
+    canvas.width/2+Math.cos(pose.angle)*(points[i]-canvas.width/2)-Math.sin(pose.angle)*(points[i+1]-canvas.height/2)+pose.x,
+    canvas.height/2+Math.sin(pose.angle)*(points[i]-canvas.width/2)+Math.cos(pose.angle)*(points[i+1]-canvas.height/2)+pose.y]);
+  const start={x:0,y:0,angle:0},moved={x:20,y:-10,angle:.05};
+  const positions=new Float64Array(world(source,start));tracker.update(positions,start);
+  positions.set(world(source,moved));tracker.update(positions,moved);
+  assert(tracker.maxWorldStep>2);assert(tracker.maxStep<1e-10);
+  const c=component('pendant');c.authoring.freeLength=20;c.limits.maxTravel=.1;
+  const metric={invalid:0,root:0,fallback:0,limited:0,peak:1,final:0,maxStep:tracker.maxStep};
+  assert.deepEqual(motionIssues('support-release',c,metric),[]);
+  // This could be inherited from a physical parent; it is not prescribed by
+  // sourcePose and therefore must still fail the continuity gate.
+  positions.set(world(source.map((v,i)=>v+(i%2?0:5)),moved));tracker.update(positions,moved);
+  assert(Math.abs(tracker.maxStep-5)<1e-10);
+  assert(motionIssues('support-release',c,{...metric,maxStep:tracker.maxStep}).includes('discontinuous-motion'));
 });
 
 
