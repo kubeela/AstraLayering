@@ -1,0 +1,41 @@
+{
+  "index": 67,
+  "id": "halter_dress/short_outer_skirt/front_drape",
+  "key": "clothing-part-layering/halter_dress/short_outer_skirt/front_drape",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "前裙垂布",
+  "prompt": "front skirt drape",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.54296875,
+  "seconds": 0.0805,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 147860,
+  "instances": [
+    {
+      "file": "assembled/67/instance-01.png",
+      "score": 0.54296875,
+      "box_xyxy": [
+        44.991127014160156,
+        875.4525146484375,
+        871.439208984375,
+        1465.6597900390625
+      ],
+      "area_pixels": 147860
+    }
+  ],
+  "crop_bbox": [
+    0,
+    805,
+    932,
+    1529
+  ],
+  "status": "detected",
+  "card": "assembled/67/card.jpg",
+  "mask": "assembled/67/mask.png",
+  "cutout": "assembled/67/cutout.png",
+  "overlay": "assembled/67/overlay.jpg"
+}

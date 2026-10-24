@@ -1,0 +1,41 @@
+{
+  "index": 74,
+  "id": "waist_bow/long_tail",
+  "key": "clothing-part-layering/waist_bow/long_tail",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "腰蝴蝶结长尾",
+  "prompt": "long bow ribbon tail",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.921875,
+  "seconds": 0.0728,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 4354,
+  "instances": [
+    {
+      "file": "assembled/74/instance-01.png",
+      "score": 0.921875,
+      "box_xyxy": [
+        386.47503662109375,
+        519.3904418945312,
+        459.5116271972656,
+        707.0750732421875
+      ],
+      "area_pixels": 4354
+    }
+  ],
+  "crop_bbox": [
+    370,
+    506,
+    474,
+    724
+  ],
+  "status": "detected",
+  "card": "assembled/74/card.jpg",
+  "mask": "assembled/74/mask.png",
+  "cutout": "assembled/74/cutout.png",
+  "overlay": "assembled/74/overlay.jpg"
+}

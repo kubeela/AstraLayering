@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-10-24T06:15:05.220258+00:00",
+  "python": "3.12.15",
+  "executable": "D:\\Resources\\workspace\\AstraLayering\\sam_veirfy\\env\\python.exe",
+  "torch": "2.10.0+cu128",
+  "torchvision": "0.25.0+cu128",
+  "transformers": "5.20.2",
+  "cuda_runtime": "12.8",
+  "gpu": "NVIDIA GeForce RTX 4090 D",
+  "gpu_memory_bytes": 25756696576,
+  "gpu_matmul_passed": true,
+  "sam3_classes_imported": true
+}

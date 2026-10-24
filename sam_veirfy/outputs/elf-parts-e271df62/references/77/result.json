@@ -1,0 +1,41 @@
+{
+  "index": 77,
+  "id": "trailing_skirt_image_left",
+  "key": "clothing-part-layering/trailing_skirt_image_left",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "画面左后裙长垂布",
+  "prompt": "long trailing skirt on the left side",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "references",
+  "source": "clothes",
+  "count": 1,
+  "max_score": 0.60546875,
+  "seconds": 0.0791,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 96802,
+  "instances": [
+    {
+      "file": "references/77/instance-01.png",
+      "score": 0.60546875,
+      "box_xyxy": [
+        10.116058349609375,
+        878.7911376953125,
+        365.7475891113281,
+        1509.510498046875
+      ],
+      "area_pixels": 96802
+    }
+  ],
+  "crop_bbox": [
+    0,
+    830,
+    419,
+    1561
+  ],
+  "status": "detected",
+  "card": "references/77/card.jpg",
+  "mask": "references/77/mask.png",
+  "cutout": "references/77/cutout.png",
+  "overlay": "references/77/overlay.jpg"
+}

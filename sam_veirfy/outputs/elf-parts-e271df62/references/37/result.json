@@ -1,0 +1,52 @@
+{
+  "index": 37,
+  "id": "body/torso",
+  "key": "part-layering/body/torso",
+  "family": "人物",
+  "group": "body",
+  "label": "躯干",
+  "prompt": "torso",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 2,
+  "max_score": 0.6171875,
+  "seconds": 0.0785,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 68327,
+  "instances": [
+    {
+      "file": "references/37/instance-01.png",
+      "score": 0.609375,
+      "box_xyxy": [
+        346.4305419921875,
+        335.30206298828125,
+        579.9353637695312,
+        778.6583251953125
+      ],
+      "area_pixels": 64736
+    },
+    {
+      "file": "references/37/instance-02.png",
+      "score": 0.6171875,
+      "box_xyxy": [
+        355.44073486328125,
+        337.1637878417969,
+        563.2376098632812,
+        427.5909423828125
+      ],
+      "area_pixels": 10133
+    }
+  ],
+  "crop_bbox": [
+    315,
+    305,
+    612,
+    809
+  ],
+  "status": "detected",
+  "card": "references/37/card.jpg",
+  "mask": "references/37/mask.png",
+  "cutout": "references/37/cutout.png",
+  "overlay": "references/37/overlay.jpg"
+}

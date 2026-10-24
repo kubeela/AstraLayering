@@ -1,0 +1,820 @@
+{
+  "git_commit": "e271df6283c4dc9332eafc38ca04079cd7af0850",
+  "created_at": "2026-10-24T06:38:17.333460+00:00",
+  "model_id": "facebook/sam3",
+  "threshold": 0.5,
+  "mask_threshold": 0.5,
+  "prompt_rule": "Fixed short English noun phrase from part name and parent identity; retain side labels. Identical phrase across both input cases. No prompt retries, boxes, points, SVG clipping or mask repair.",
+  "part_count": 79,
+  "query_count": 158,
+  "sources": {
+    "body": {
+      "path": "demos\\pink-elf\\part-layering\\references\\base-subject.png",
+      "sha256": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+    },
+    "clothes": {
+      "path": "demos\\pink-elf\\clothing-part-layering\\references\\clothing.png",
+      "sha256": "119c1d7ef01ca537a006bf49616ca68ef3b0ea4812b64d2e96a29d0dad23579d"
+    },
+    "assembled": {
+      "path": "demos\\pink-elf\\shadow\\mask\\step01\\character-shadowed.png",
+      "sha256": "90d376b7ffe68f70c15d6aa4adfad6096f821342bf7bbf582215ba53365f60f9"
+    }
+  },
+  "groups_sha256": {
+    "part-layering": "4915150a395a6ce91ea6ea46b1623458fb669b57c707ab46c76d4cf22396f18c",
+    "clothing-part-layering": "9432e021972c0448621ea308cf71d972a75ee405ffaab1e1ed4354a9665ffa9a"
+  },
+  "parts": [
+    {
+      "index": 1,
+      "id": "face/face_base",
+      "key": "part-layering/face/face_base",
+      "family": "人物",
+      "group": "face",
+      "label": "脸底",
+      "prompt": "face",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 2,
+      "id": "face/eye_left/upper_eyelid",
+      "key": "part-layering/face/eye_left/upper_eyelid",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左上眼睑",
+      "prompt": "left upper eyelid",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 3,
+      "id": "face/eye_left/lower_eyelid",
+      "key": "part-layering/face/eye_left/lower_eyelid",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左下眼睑",
+      "prompt": "left lower eyelid",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 4,
+      "id": "face/eye_left/sclera",
+      "key": "part-layering/face/eye_left/sclera",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左眼白",
+      "prompt": "left white of eye",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 5,
+      "id": "face/eye_left/iris",
+      "key": "part-layering/face/eye_left/iris",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左虹膜",
+      "prompt": "left iris",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 6,
+      "id": "face/eye_left/highlight",
+      "key": "part-layering/face/eye_left/highlight",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左眼睛高光",
+      "prompt": "left eye highlight",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 7,
+      "id": "face/eye_left/eyelid_crease",
+      "key": "part-layering/face/eye_left/eyelid_crease",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左眼睑褶线",
+      "prompt": "left eyelid crease",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 8,
+      "id": "face/eye_right/upper_eyelid",
+      "key": "part-layering/face/eye_right/upper_eyelid",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右上眼睑",
+      "prompt": "right upper eyelid",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 9,
+      "id": "face/eye_right/lower_eyelid",
+      "key": "part-layering/face/eye_right/lower_eyelid",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右下眼睑",
+      "prompt": "right lower eyelid",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 10,
+      "id": "face/eye_right/sclera",
+      "key": "part-layering/face/eye_right/sclera",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右眼白",
+      "prompt": "right white of eye",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 11,
+      "id": "face/eye_right/iris",
+      "key": "part-layering/face/eye_right/iris",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右虹膜",
+      "prompt": "right iris",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 12,
+      "id": "face/eye_right/highlight",
+      "key": "part-layering/face/eye_right/highlight",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右眼睛高光",
+      "prompt": "right eye highlight",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 13,
+      "id": "face/eye_right/eyelid_crease",
+      "key": "part-layering/face/eye_right/eyelid_crease",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右眼睑褶线",
+      "prompt": "right eyelid crease",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 14,
+      "id": "face/eyebrow_left",
+      "key": "part-layering/face/eyebrow_left",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左眉毛",
+      "prompt": "left eyebrow",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 15,
+      "id": "face/eyebrow_right",
+      "key": "part-layering/face/eyebrow_right",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右眉毛",
+      "prompt": "right eyebrow",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 16,
+      "id": "face/ear_left",
+      "key": "part-layering/face/ear_left",
+      "family": "人物",
+      "group": "face",
+      "label": "角色左精灵耳",
+      "prompt": "left elf ear",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 17,
+      "id": "face/ear_right",
+      "key": "part-layering/face/ear_right",
+      "family": "人物",
+      "group": "face",
+      "label": "角色右精灵耳",
+      "prompt": "right elf ear",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 18,
+      "id": "face/nose",
+      "key": "part-layering/face/nose",
+      "family": "人物",
+      "group": "face",
+      "label": "鼻子",
+      "prompt": "nose",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 19,
+      "id": "face/mouth/upper_lip",
+      "key": "part-layering/face/mouth/upper_lip",
+      "family": "人物",
+      "group": "face",
+      "label": "上唇",
+      "prompt": "upper lip",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 20,
+      "id": "face/mouth/lower_lip",
+      "key": "part-layering/face/mouth/lower_lip",
+      "family": "人物",
+      "group": "face",
+      "label": "下唇",
+      "prompt": "lower lip",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 21,
+      "id": "face/mouth/mouth_interior",
+      "key": "part-layering/face/mouth/mouth_interior",
+      "family": "人物",
+      "group": "face",
+      "label": "口腔内部",
+      "prompt": "mouth interior",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 22,
+      "id": "face/mouth/upper_teeth",
+      "key": "part-layering/face/mouth/upper_teeth",
+      "family": "人物",
+      "group": "face",
+      "label": "上齿",
+      "prompt": "upper teeth",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 23,
+      "id": "face/mouth/lower_teeth",
+      "key": "part-layering/face/mouth/lower_teeth",
+      "family": "人物",
+      "group": "face",
+      "label": "下齿",
+      "prompt": "lower teeth",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 24,
+      "id": "face/mouth/tongue",
+      "key": "part-layering/face/mouth/tongue",
+      "family": "人物",
+      "group": "face",
+      "label": "舌头",
+      "prompt": "tongue",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 25,
+      "id": "hair/bangs",
+      "key": "part-layering/hair/bangs",
+      "family": "人物",
+      "group": "hair",
+      "label": "刘海",
+      "prompt": "bangs",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 26,
+      "id": "hair/front_side_hair_left",
+      "key": "part-layering/hair/front_side_hair_left",
+      "family": "人物",
+      "group": "hair",
+      "label": "角色左前侧发",
+      "prompt": "left front side hair",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 27,
+      "id": "hair/front_side_hair_right",
+      "key": "part-layering/hair/front_side_hair_right",
+      "family": "人物",
+      "group": "hair",
+      "label": "角色右前侧发",
+      "prompt": "right front side hair",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 28,
+      "id": "hair/side_hair_left",
+      "key": "part-layering/hair/side_hair_left",
+      "family": "人物",
+      "group": "hair",
+      "label": "角色左侧发",
+      "prompt": "left side hair",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 29,
+      "id": "hair/side_hair_right",
+      "key": "part-layering/hair/side_hair_right",
+      "family": "人物",
+      "group": "hair",
+      "label": "角色右侧发",
+      "prompt": "right side hair",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 30,
+      "id": "hair/back_hair/cap",
+      "key": "part-layering/hair/back_hair/cap",
+      "family": "人物",
+      "group": "hair",
+      "label": "后发顶盖",
+      "prompt": "back hair crown",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 31,
+      "id": "hair/back_hair/long_left",
+      "key": "part-layering/hair/back_hair/long_left",
+      "family": "人物",
+      "group": "hair",
+      "label": "角色左长后发",
+      "prompt": "left long back hair",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 32,
+      "id": "hair/back_hair/long_right",
+      "key": "part-layering/hair/back_hair/long_right",
+      "family": "人物",
+      "group": "hair",
+      "label": "角色右长后发",
+      "prompt": "right long back hair",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 33,
+      "id": "hair/ahoge",
+      "key": "part-layering/hair/ahoge",
+      "family": "人物",
+      "group": "hair",
+      "label": "呆毛",
+      "prompt": "ahoge hair tuft",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 34,
+      "id": "head_accessories/left_earring",
+      "key": "part-layering/head_accessories/left_earring",
+      "family": "人物",
+      "group": "head_accessories",
+      "label": "角色左耳饰",
+      "prompt": "left earring",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 35,
+      "id": "head_accessories/right_earring",
+      "key": "part-layering/head_accessories/right_earring",
+      "family": "人物",
+      "group": "head_accessories",
+      "label": "角色右耳饰",
+      "prompt": "right earring",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 36,
+      "id": "neck",
+      "key": "part-layering/neck",
+      "family": "人物",
+      "group": "neck",
+      "label": "脖子",
+      "prompt": "neck",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 37,
+      "id": "body/torso",
+      "key": "part-layering/body/torso",
+      "family": "人物",
+      "group": "body",
+      "label": "躯干",
+      "prompt": "torso",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 38,
+      "id": "body/breast",
+      "key": "part-layering/body/breast",
+      "family": "人物",
+      "group": "body",
+      "label": "胸部",
+      "prompt": "breast",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 39,
+      "id": "arms/arm_left/upper_arm",
+      "key": "part-layering/arms/arm_left/upper_arm",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左上臂",
+      "prompt": "left upper arm",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 40,
+      "id": "arms/arm_left/forearm",
+      "key": "part-layering/arms/arm_left/forearm",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左前臂",
+      "prompt": "left forearm",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 41,
+      "id": "arms/arm_left/hand/palm",
+      "key": "part-layering/arms/arm_left/hand/palm",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左手掌",
+      "prompt": "left palm",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 42,
+      "id": "arms/arm_left/hand/thumb",
+      "key": "part-layering/arms/arm_left/hand/thumb",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左拇指",
+      "prompt": "left thumb",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 43,
+      "id": "arms/arm_left/hand/index_finger",
+      "key": "part-layering/arms/arm_left/hand/index_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左食指",
+      "prompt": "left index finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 44,
+      "id": "arms/arm_left/hand/middle_finger",
+      "key": "part-layering/arms/arm_left/hand/middle_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左中指",
+      "prompt": "left middle finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 45,
+      "id": "arms/arm_left/hand/ring_finger",
+      "key": "part-layering/arms/arm_left/hand/ring_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左无名指",
+      "prompt": "left ring finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 46,
+      "id": "arms/arm_left/hand/little_finger",
+      "key": "part-layering/arms/arm_left/hand/little_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色左小指",
+      "prompt": "left little finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 47,
+      "id": "arms/arm_right/upper_arm",
+      "key": "part-layering/arms/arm_right/upper_arm",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右上臂",
+      "prompt": "right upper arm",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 48,
+      "id": "arms/arm_right/forearm",
+      "key": "part-layering/arms/arm_right/forearm",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右前臂",
+      "prompt": "right forearm",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 49,
+      "id": "arms/arm_right/hand/palm",
+      "key": "part-layering/arms/arm_right/hand/palm",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右手掌",
+      "prompt": "right palm",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 50,
+      "id": "arms/arm_right/hand/thumb",
+      "key": "part-layering/arms/arm_right/hand/thumb",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右拇指",
+      "prompt": "right thumb",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 51,
+      "id": "arms/arm_right/hand/index_finger",
+      "key": "part-layering/arms/arm_right/hand/index_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右食指",
+      "prompt": "right index finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 52,
+      "id": "arms/arm_right/hand/middle_finger",
+      "key": "part-layering/arms/arm_right/hand/middle_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右中指",
+      "prompt": "right middle finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 53,
+      "id": "arms/arm_right/hand/ring_finger",
+      "key": "part-layering/arms/arm_right/hand/ring_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右无名指",
+      "prompt": "right ring finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 54,
+      "id": "arms/arm_right/hand/little_finger",
+      "key": "part-layering/arms/arm_right/hand/little_finger",
+      "family": "人物",
+      "group": "arms",
+      "label": "角色右小指",
+      "prompt": "right little finger",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 55,
+      "id": "pelvis",
+      "key": "part-layering/pelvis",
+      "family": "人物",
+      "group": "pelvis",
+      "label": "骨盆",
+      "prompt": "pelvis",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 56,
+      "id": "legs/leg_left/leg",
+      "key": "part-layering/legs/leg_left/leg",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色左腿",
+      "prompt": "left leg",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 57,
+      "id": "legs/leg_left/foot",
+      "key": "part-layering/legs/leg_left/foot",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色左短靴",
+      "prompt": "left boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 58,
+      "id": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "key": "part-layering/legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色左靴上大菱形宝石",
+      "prompt": "left large diamond gemstone on boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 59,
+      "id": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "key": "part-layering/legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色左靴上小菱形坠饰",
+      "prompt": "left small diamond charm on boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 60,
+      "id": "legs/leg_left/boot_gem_chain/round_bead",
+      "key": "part-layering/legs/leg_left/boot_gem_chain/round_bead",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色左靴上圆珠",
+      "prompt": "left round bead on boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 61,
+      "id": "legs/leg_left/boot_gem_chain/flexible_connector",
+      "key": "part-layering/legs/leg_left/boot_gem_chain/flexible_connector",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色左靴上柔性连接链",
+      "prompt": "left gemstone chain connector on boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 62,
+      "id": "legs/leg_right/leg",
+      "key": "part-layering/legs/leg_right/leg",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色右腿",
+      "prompt": "right leg",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 63,
+      "id": "legs/leg_right/foot",
+      "key": "part-layering/legs/leg_right/foot",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色右短靴",
+      "prompt": "right boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 64,
+      "id": "legs/leg_right/boot_gem",
+      "key": "part-layering/legs/leg_right/boot_gem",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色右靴上宝石",
+      "prompt": "right diamond gemstone on boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 65,
+      "id": "legs/leg_right/boot_flower_ornament",
+      "key": "part-layering/legs/leg_right/boot_flower_ornament",
+      "family": "人物",
+      "group": "legs",
+      "label": "角色右靴上花叶饰簇",
+      "prompt": "right flower ornament on boot",
+      "groups_file": "demos\\pink-elf\\part-layering\\groups.json"
+    },
+    {
+      "index": 66,
+      "id": "halter_dress/halter_bodice",
+      "key": "clothing-part-layering/halter_dress/halter_bodice",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "挂脖衣身",
+      "prompt": "halter dress bodice",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 67,
+      "id": "halter_dress/short_outer_skirt/front_drape",
+      "key": "clothing-part-layering/halter_dress/short_outer_skirt/front_drape",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "前裙垂布",
+      "prompt": "front skirt drape",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 68,
+      "id": "halter_dress/short_outer_skirt/right_skirt_panel",
+      "key": "clothing-part-layering/halter_dress/short_outer_skirt/right_skirt_panel",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "角色右外裙片",
+      "prompt": "right skirt panel",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 69,
+      "id": "halter_dress/short_outer_skirt/left_skirt_panel",
+      "key": "clothing-part-layering/halter_dress/short_outer_skirt/left_skirt_panel",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "角色左外裙片",
+      "prompt": "left skirt panel",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 70,
+      "id": "puff_sleeve_image_left",
+      "key": "clothing-part-layering/puff_sleeve_image_left",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "画面左泡泡袖",
+      "prompt": "puff sleeve on the left side",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 71,
+      "id": "puff_sleeve_image_right",
+      "key": "clothing-part-layering/puff_sleeve_image_right",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "画面右泡泡袖",
+      "prompt": "puff sleeve on the right side",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 72,
+      "id": "waist_bow/knot_and_loops",
+      "key": "clothing-part-layering/waist_bow/knot_and_loops",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "腰蝴蝶结结心与结环",
+      "prompt": "bow knot and loops",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 73,
+      "id": "waist_bow/short_tail",
+      "key": "clothing-part-layering/waist_bow/short_tail",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "腰蝴蝶结短尾",
+      "prompt": "short bow ribbon tail",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 74,
+      "id": "waist_bow/long_tail",
+      "key": "clothing-part-layering/waist_bow/long_tail",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "腰蝴蝶结长尾",
+      "prompt": "long bow ribbon tail",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 75,
+      "id": "chest_pendant",
+      "key": "clothing-part-layering/chest_pendant",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "胸前吊坠",
+      "prompt": "chest pendant",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 76,
+      "id": "floral_skirt_undertrim",
+      "key": "clothing-part-layering/floral_skirt_undertrim",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "裙底花簇饰边",
+      "prompt": "floral skirt hem trim",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 77,
+      "id": "trailing_skirt_image_left",
+      "key": "clothing-part-layering/trailing_skirt_image_left",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "画面左后裙长垂布",
+      "prompt": "long trailing skirt on the left side",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 78,
+      "id": "trailing_skirt_image_right/short_drape_left",
+      "key": "clothing-part-layering/trailing_skirt_image_right/short_drape_left",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "画面右后裙短垂布",
+      "prompt": "short trailing skirt drape on the right side",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    },
+    {
+      "index": 79,
+      "id": "trailing_skirt_image_right/spiral_train_left",
+      "key": "clothing-part-layering/trailing_skirt_image_right/spiral_train_left",
+      "family": "衣服",
+      "group": "clothing",
+      "label": "画面右后裙螺旋长尾",
+      "prompt": "spiral skirt train on the right side",
+      "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json"
+    }
+  ]
+}

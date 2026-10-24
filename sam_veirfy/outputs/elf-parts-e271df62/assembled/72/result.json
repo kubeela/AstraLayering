@@ -1,0 +1,41 @@
+{
+  "index": 72,
+  "id": "waist_bow/knot_and_loops",
+  "key": "clothing-part-layering/waist_bow/knot_and_loops",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "腰蝴蝶结结心与结环",
+  "prompt": "bow knot and loops",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.76171875,
+  "seconds": 0.0729,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 4296,
+  "instances": [
+    {
+      "file": "assembled/72/instance-01.png",
+      "score": 0.76171875,
+      "box_xyxy": [
+        386.3412780761719,
+        520.2447509765625,
+        459.3984375,
+        706.9668579101562
+      ],
+      "area_pixels": 4296
+    }
+  ],
+  "crop_bbox": [
+    370,
+    506,
+    474,
+    724
+  ],
+  "status": "detected",
+  "card": "assembled/72/card.jpg",
+  "mask": "assembled/72/mask.png",
+  "cutout": "assembled/72/cutout.png",
+  "overlay": "assembled/72/overlay.jpg"
+}

@@ -1,0 +1,4 @@
+transformers==5.20.2
+safetensors
+Pillow
+numpy

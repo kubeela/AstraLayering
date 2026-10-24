@@ -1,0 +1,97 @@
+{
+  "model_id": "facebook/sam3",
+  "implementation": "transformers",
+  "tested_at": "2026-10-24T06:15:58.954210+00:00",
+  "image": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\references\\base-subject.png",
+  "image_size": [
+    932,
+    1688
+  ],
+  "transparent_background_composite": "white",
+  "image_sha256": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e",
+  "gpu": "NVIDIA GeForce RTX 4090 D",
+  "threshold": 0.5,
+  "precision": "float32 weights, bfloat16 autocast",
+  "attention": "sdpa",
+  "load_seconds": 3.954,
+  "prompts": [
+    {
+      "prompt": "person",
+      "seconds": 0.507,
+      "peak_allocated_bytes": 5502434304,
+      "peak_reserved_bytes": 5737807872,
+      "instances": [
+        {
+          "mask": "01-person-mask-01.png",
+          "score": 0.93359375,
+          "box_xyxy": [
+            163.62136840820312,
+            28.226675033569336,
+            737.1285400390625,
+            1633.2867431640625
+          ],
+          "area_pixels": 389731
+        }
+      ]
+    },
+    {
+      "prompt": "hair",
+      "seconds": 0.15,
+      "peak_allocated_bytes": 5501061120,
+      "peak_reserved_bytes": 5739905024,
+      "instances": [
+        {
+          "mask": "02-hair-mask-01.png",
+          "score": 0.96484375,
+          "box_xyxy": [
+            163.55169677734375,
+            29.1860408782959,
+            737.7318725585938,
+            791.7728881835938
+          ],
+          "area_pixels": 101000
+        }
+      ]
+    },
+    {
+      "prompt": "face",
+      "seconds": 0.118,
+      "peak_allocated_bytes": 5501061120,
+      "peak_reserved_bytes": 5739905024,
+      "instances": [
+        {
+          "mask": "03-face-mask-01.png",
+          "score": 0.8671875,
+          "box_xyxy": [
+            389.50970458984375,
+            164.3162078857422,
+            522.287841796875,
+            293.1007995605469
+          ],
+          "area_pixels": 10978
+        }
+      ]
+    },
+    {
+      "prompt": "bodysuit",
+      "seconds": 0.132,
+      "peak_allocated_bytes": 5501061120,
+      "peak_reserved_bytes": 5739905024,
+      "instances": [
+        {
+          "mask": "04-bodysuit-mask-01.png",
+          "score": 0.9609375,
+          "box_xyxy": [
+            348.89898681640625,
+            335.90008544921875,
+            580.0700073242188,
+            777.6113891601562
+          ],
+          "area_pixels": 58216
+        }
+      ]
+    }
+  ],
+  "missing_weight_keys": [],
+  "unexpected_weight_keys_count": 0
+}

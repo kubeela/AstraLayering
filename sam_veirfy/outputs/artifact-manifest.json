@@ -1,0 +1,4713 @@
+{
+  "created_at": "2026-10-24T07:00:15.543183+00:00",
+  "decision": "Do not integrate SAM into the production pipeline at this time",
+  "batch_results": 158,
+  "logical_parts": 79,
+  "files": [
+    {
+      "path": "elf-parts-e271df62/assembled/01/card.jpg",
+      "bytes": 69375,
+      "sha256": "c49bf71ad6568dab87b44378683470de10ecb65ee7ffa67b076ae5f76a80f327"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/01/cutout.png",
+      "bytes": 956499,
+      "sha256": "64a954de110984ed9e2d9901c47ba0092d34a4a33349452107315ea5fa152b6f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/01/instance-01.png",
+      "bytes": 2353,
+      "sha256": "bf5ed0e3e484f03bd3fb1d78034b3beac689e641bd9fee7bb33c43b800e09129"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/01/mask.png",
+      "bytes": 2353,
+      "sha256": "bf5ed0e3e484f03bd3fb1d78034b3beac689e641bd9fee7bb33c43b800e09129"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/01/overlay.jpg",
+      "bytes": 200270,
+      "sha256": "107050c34445de340441af1795cf90e7c33a14ed20a1c0f9f9dac2adbcf3f2df"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/01/result.json",
+      "bytes": 942,
+      "sha256": "559a9e3649f72636d72f5431b76b959fa6389b5fe01b1e5fc43cdf3108a5baa7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/02/card.jpg",
+      "bytes": 67809,
+      "sha256": "0779ccd70b8b4b25918746ed0a0b134e954245e4408b4460dc838a6d4f264d9c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/02/cutout.png",
+      "bytes": 956399,
+      "sha256": "5bc65bf90ff33e77201499ae396afd66d9a2eb7682288375df9a3036b1d047e3"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/02/instance-01.png",
+      "bytes": 1782,
+      "sha256": "7d6e2a0ab87ddfa83685ba1b78647a3ff6cb4379422a2482701deb03effdd60d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/02/mask.png",
+      "bytes": 1782,
+      "sha256": "7d6e2a0ab87ddfa83685ba1b78647a3ff6cb4379422a2482701deb03effdd60d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/02/overlay.jpg",
+      "bytes": 200534,
+      "sha256": "33591ae4ed2dbcb4cc5cf172c44eceba2841046d19d7c71301bbc168c9f491a5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/02/result.json",
+      "bytes": 989,
+      "sha256": "562af651ef46fd7473ad544694d16869baf54c562dfc3da548bc6ccfb006afc1"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/03/card.jpg",
+      "bytes": 67598,
+      "sha256": "b72bc8a79c74bbea58b109c49fe72cc08ec8ee412e847d47d96357957cf5b403"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/03/cutout.png",
+      "bytes": 956402,
+      "sha256": "73c70219ab4b287a8ae055a08c78aafb09b9cd71523c558cc9e8b88711083f60"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/03/instance-01.png",
+      "bytes": 1765,
+      "sha256": "d446d237db56c54bbf9e6e23df061ef4f33edd258370883e9c30d60885768d61"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/03/mask.png",
+      "bytes": 1765,
+      "sha256": "d446d237db56c54bbf9e6e23df061ef4f33edd258370883e9c30d60885768d61"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/03/overlay.jpg",
+      "bytes": 200528,
+      "sha256": "5a2ef7942feaea26226a4cc982be429d9c6f06e04a3f8b982e40ceaabf3ed937"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/03/result.json",
+      "bytes": 984,
+      "sha256": "18ad0579d300e563950af369dc68ff47c39bef4946db850a98c0e62778ffcc72"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/04/card.jpg",
+      "bytes": 68752,
+      "sha256": "2bc34182bb8f249b8af1b0eab2998329d4ec96400aefceeb51b57455ee4cb320"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/04/cutout.png",
+      "bytes": 956436,
+      "sha256": "016189225d29f6dc9787bf4da2aebb490196b887d74bd53ddd5c8805363a5ac4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/04/instance-01.png",
+      "bytes": 1801,
+      "sha256": "802b804856ba5301f1092f67037e79c7f901c254624928495b25dfdd3111a64b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/04/instance-02.png",
+      "bytes": 1766,
+      "sha256": "fc5596895d3682ce6fb8fe545ba8e74d712b1663c300f9bf49658b24c22449a8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/04/mask.png",
+      "bytes": 1882,
+      "sha256": "7b7c5c2e73e8121d8ce58127137abe1ec3629fdb22c2ec34e3ce780737113a59"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/04/overlay.jpg",
+      "bytes": 200427,
+      "sha256": "9317883a85d3286075f964c425f404d4d16c219e6cc6753ff888b15b1d745185"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/04/result.json",
+      "bytes": 1229,
+      "sha256": "b28a3ab428f4f520ba0827b531d3cadb4ee896ab7eee9981c19f165c75fcdfce"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/05/card.jpg",
+      "bytes": 67797,
+      "sha256": "adb786a48aef236a6f94dcc5a8caa3fe5954993dd6a2c0d9cad99c84bcba9949"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/05/cutout.png",
+      "bytes": 956410,
+      "sha256": "fe519389cd9b106c09560d2ba51cf0b421a4f21f375cb77d1c946d9171d9157c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/05/instance-01.png",
+      "bytes": 1765,
+      "sha256": "ba185b22fa08ebbb8f2c14095630b19e4a0919564c742ac2cec00d779bdea0a2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/05/instance-02.png",
+      "bytes": 1766,
+      "sha256": "6aa8002c53c41ea9e1c87a4441c066c4199c6cabf0105354a9a6ce974db2c56a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/05/mask.png",
+      "bytes": 1852,
+      "sha256": "c55e68bf9c01b3a260aeaeab320fafad8e69a46d9ec99376a2c56ca6feb1398e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/05/overlay.jpg",
+      "bytes": 200429,
+      "sha256": "8b3e72d2a9a57135c1b8ebd3130f4ad7c385b3f7aea30017ea839ebf352e5519"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/05/result.json",
+      "bytes": 1219,
+      "sha256": "4c86a18847cdf178572c353c2464501afb43c94cb094af4f7994ab90d3a19c85"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/06/card.jpg",
+      "bytes": 69631,
+      "sha256": "35009d82f224d7af65a700142b7cd87435a989bf1ceab8f2cc913454828c6199"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/06/cutout.png",
+      "bytes": 956417,
+      "sha256": "0067d7e774d976a6a7d8260e16719915d09f40f29db1637c088f20895f2bd5a1"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/06/instance-01.png",
+      "bytes": 1778,
+      "sha256": "6ada83c21a5dedad042b387dca9fab256ce51831f30ecfe7f39e12577dbe1f47"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/06/instance-02.png",
+      "bytes": 1762,
+      "sha256": "f55c3b901df13162079c673f40cbb581e34bd312243d2f68b679abac8656a769"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/06/mask.png",
+      "bytes": 1861,
+      "sha256": "5a2f4cff572bce6838c72884f70a677bfa826ece0db8a848797b56d031756816"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/06/overlay.jpg",
+      "bytes": 200408,
+      "sha256": "96fd507a66f7463b33b0bf698cf78c2887eb0439074577fd531e49bf8593124e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/06/result.json",
+      "bytes": 1242,
+      "sha256": "4b4baaf72c44d6a87140ba8e72f14c7c4b142254e553e006b92f26c6a9b9e5f0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/07/card.jpg",
+      "bytes": 68183,
+      "sha256": "5dbf52bb757f8d7f2d6e578c720c26ecd2f746012fb3aac5e41e6204ecff8dcc"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/07/cutout.png",
+      "bytes": 956399,
+      "sha256": "aafdb2b13dd5c6af7d80116ed2c7dade3457f9cd883a6f5810e11a729b4f0432"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/07/instance-01.png",
+      "bytes": 1770,
+      "sha256": "68dbed01e5140cdf9d14068c021b94d48dc7edc7c34622b785bd2d872178919d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/07/mask.png",
+      "bytes": 1770,
+      "sha256": "68dbed01e5140cdf9d14068c021b94d48dc7edc7c34622b785bd2d872178919d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/07/overlay.jpg",
+      "bytes": 200548,
+      "sha256": "d69b9641f4c2751e9bb21ed755925d4de2a80e214523e2c72cfa955c0136dc81"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/07/result.json",
+      "bytes": 991,
+      "sha256": "2d6328781c784b309920e74a54e490311b0e63c373f2ee35f3ed7cde5e5a10b4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/08/card.jpg",
+      "bytes": 67710,
+      "sha256": "f7dd4e90fcbd433b1f96300cc816002a18eb60873f90c39778be6afe3e0acf3f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/08/cutout.png",
+      "bytes": 956388,
+      "sha256": "8461865ae8c3e0002064e64076a76f8755a59515ebc75eab1b8bbd8b623e8c98"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/08/instance-01.png",
+      "bytes": 1758,
+      "sha256": "217331ad5d2a68e5c6faeb7644c4137e1b8ed6bbf31c81711fb11fc6b7fddba0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/08/mask.png",
+      "bytes": 1758,
+      "sha256": "217331ad5d2a68e5c6faeb7644c4137e1b8ed6bbf31c81711fb11fc6b7fddba0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/08/overlay.jpg",
+      "bytes": 200489,
+      "sha256": "901002b6c6e1a5e42b3cebd8750e1048acecefe0c42d4fc72583af677f58e95d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/08/result.json",
+      "bytes": 985,
+      "sha256": "48f2efc71545fd82930d9b5405cb8fc4ef5153b376f9cb36a59f2b64cbe65755"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/09/card.jpg",
+      "bytes": 47364,
+      "sha256": "a0fc6ecc2995c0b9f5d239560a5efebcca1368bff3eb350472a6afeae39a04a5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/09/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/09/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/09/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/09/result.json",
+      "bytes": 676,
+      "sha256": "b5d94144ea04afeee0a3b03db5b59d3d12e7da04914d0ac87e9fb576a02e3eaf"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/10/card.jpg",
+      "bytes": 46419,
+      "sha256": "0b2a33370b793f027b1cec1d0c342b840ffe846a83cb96df089b22b3ba8da46e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/10/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/10/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/10/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/10/result.json",
+      "bytes": 662,
+      "sha256": "a12cdab2620839e0d417f86c69c917a5cf8a266d5422736fd14311d846965f26"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/11/card.jpg",
+      "bytes": 45295,
+      "sha256": "3be69f8dc5bb105d1f098aaa13c17f0f33c4c5cd05f81991299c7726c3fe06fe"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/11/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/11/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/11/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/11/result.json",
+      "bytes": 650,
+      "sha256": "64a6ae3bd5f5cb15c8200d52dabf73e1e6daac82ecf06a27b6533c35f78ce84e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/12/card.jpg",
+      "bytes": 68701,
+      "sha256": "c6b2f23ddc7cce98a0a73264cbf9bb930389d036d3aa26d41381ae764f298a4c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/12/cutout.png",
+      "bytes": 956396,
+      "sha256": "927de3212e113ff86d3b33e2b76d0557c616becf81c3b097e004cb1216686fa4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/12/instance-01.png",
+      "bytes": 1771,
+      "sha256": "2e6046da1cdf5aaf3ac652e52ba5b3bdc9581a292b68cc0686e4bca4bd84f88a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/12/mask.png",
+      "bytes": 1771,
+      "sha256": "2e6046da1cdf5aaf3ac652e52ba5b3bdc9581a292b68cc0686e4bca4bd84f88a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/12/overlay.jpg",
+      "bytes": 200397,
+      "sha256": "2ee760b86e0b09912e182a6b681951f4ee678635a463e1d6873524a37850c08e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/12/result.json",
+      "bytes": 987,
+      "sha256": "d48086730e0d46612f7bd5f017155b633e4d1837decaac9170fae834647fa318"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/13/card.jpg",
+      "bytes": 47996,
+      "sha256": "c7222c31e1d9f97918bca158d72c091d8ffe519c2c92304277b05aa0f00b6076"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/13/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/13/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/13/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/13/result.json",
+      "bytes": 683,
+      "sha256": "f2c6eced7ee9b5a6f57ad63c015faa1c544776c10995c727f90762ec5bf20669"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/14/card.jpg",
+      "bytes": 45450,
+      "sha256": "6e581aa94fd3200b96127d657879f9ae6dbb1da5e9c606dfa7c42236e2f70573"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/14/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/14/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/14/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/14/result.json",
+      "bytes": 648,
+      "sha256": "bd05c3ecf47a8846e5c639092d0016d077c521a3b3e6c8e2ed16b8eeb0546ce8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/15/card.jpg",
+      "bytes": 45853,
+      "sha256": "50502fc407e783f66afe2a638ff8dc2359d5720a951a29be110411e85b62d4c6"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/15/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/15/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/15/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/15/result.json",
+      "bytes": 651,
+      "sha256": "43bb8f560556aa900b300f2e58da1d44cf74f6390686974a5944710144ba1793"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/16/card.jpg",
+      "bytes": 65956,
+      "sha256": "8ba02c818042f346e4218f85bd591c7a4445fc40724f78a42965b5718a98836d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/16/cutout.png",
+      "bytes": 956583,
+      "sha256": "99105c758f2d47b59dcd35120ff192d899d841de7c77922b41b89ba72b0e225b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/16/instance-01.png",
+      "bytes": 1799,
+      "sha256": "21b606ce8fe8deab3454e132e46800ae347d354f1055349b7d4796822a9adff2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/16/mask.png",
+      "bytes": 1799,
+      "sha256": "21b606ce8fe8deab3454e132e46800ae347d354f1055349b7d4796822a9adff2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/16/overlay.jpg",
+      "bytes": 200707,
+      "sha256": "12a6643a5dc4402165deaac2cd258121d0b2299d754172c01d792607e8f378af"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/16/result.json",
+      "bytes": 959,
+      "sha256": "fd309b75490b8bdd287599d1d30c3bc1a99851c1b4f2da8821fe5f370c7be9e3"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/17/card.jpg",
+      "bytes": 66492,
+      "sha256": "e5ac7c6bccaa255ed88f1a38a0abaefcf2893a8f0d2face4aaedf61a4c65297f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/17/cutout.png",
+      "bytes": 956520,
+      "sha256": "b4009728866127dca2e385dcc9133da4a0391e5bea925f960d4907ea95b34a43"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/17/instance-01.png",
+      "bytes": 1799,
+      "sha256": "2fd36343f046f539ab72b81acb8fd0a1ce9054e8c7cdfbef62d204bb97dead39"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/17/mask.png",
+      "bytes": 1799,
+      "sha256": "2fd36343f046f539ab72b81acb8fd0a1ce9054e8c7cdfbef62d204bb97dead39"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/17/overlay.jpg",
+      "bytes": 200600,
+      "sha256": "59e99317a7ba00571e1cce8230c92fb106fbe7a8956181ceaa0cf6042ebad20b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/17/result.json",
+      "bytes": 961,
+      "sha256": "b4e7d703a3e0582df9e64600c68201a9d364c19cd52f520cf01584365986ee75"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/18/card.jpg",
+      "bytes": 42774,
+      "sha256": "f7e8b2ed8c14373c332d9ca2dd4e148018c73f7a609b4f04fdb781df0d9bd192"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/18/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/18/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/18/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/18/result.json",
+      "bytes": 615,
+      "sha256": "c6ed09a787c4f19ce071724e1f8ad9a986225fda7b06ed0e67158b7b1f9e9f92"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/19/card.jpg",
+      "bytes": 63777,
+      "sha256": "7e18e599baace40434e896d951ef3f8dadac7877ae9f5b735343c0d5875ddfd5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/19/cutout.png",
+      "bytes": 956382,
+      "sha256": "ca62c4abd11b7dc2c30dcb9936127f626cca1e3177512853bcc0b5a6985f5ee9"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/19/instance-01.png",
+      "bytes": 1686,
+      "sha256": "515a4996157ea53e3acc27c7350563d854d3108c21324bea387733ebef9a0f65"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/19/mask.png",
+      "bytes": 1686,
+      "sha256": "515a4996157ea53e3acc27c7350563d854d3108c21324bea387733ebef9a0f65"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/19/overlay.jpg",
+      "bytes": 200585,
+      "sha256": "28b8083c3b0944a870e4a9e57ea4b81dfcad1f298fda53622d44598bc6a5a03b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/19/result.json",
+      "bytes": 952,
+      "sha256": "6a8cc36632ba22099afc9113ac1fe58cf2ae036baeb6eda88ec57be97ca91c5a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/20/card.jpg",
+      "bytes": 63810,
+      "sha256": "1af563ee1db8585b55c2e80a2002f7c3afaba35f34237895c26cdbe61a5b3378"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/20/cutout.png",
+      "bytes": 956379,
+      "sha256": "74b32feb483c9184672e0489090b2a2f42193db49ba4bd14b1f5803ce10a3718"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/20/instance-01.png",
+      "bytes": 1712,
+      "sha256": "0a0e13b671ab195586c8d4a52e1e1110e12fa4f5c35668e0b83ae9b4c24119e2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/20/mask.png",
+      "bytes": 1712,
+      "sha256": "0a0e13b671ab195586c8d4a52e1e1110e12fa4f5c35668e0b83ae9b4c24119e2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/20/overlay.jpg",
+      "bytes": 200540,
+      "sha256": "43db31063d4a768d166377b486f2a8081590f976ec22c07077d8cc7d2f85f2c7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/20/result.json",
+      "bytes": 952,
+      "sha256": "474a00dd8c597fabeeda5d0d453278c2cd5ccfc38b9fc6c681464f581e2163ef"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/21/card.jpg",
+      "bytes": 65865,
+      "sha256": "58aea5e0f284fc2a9e7f7577b0f303bd7f1244836507773370d7a676bb3361ba"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/21/cutout.png",
+      "bytes": 956387,
+      "sha256": "3433c9c3d875f14b75269261405389eb655e6d4e5f4b64b50ed491156c1ba5f9"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/21/instance-01.png",
+      "bytes": 1714,
+      "sha256": "6dba3fb61c86dca3db25e21cce7710f6333e2fb1736bd4ca9f6b38bf9f5634cb"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/21/mask.png",
+      "bytes": 1714,
+      "sha256": "6dba3fb61c86dca3db25e21cce7710f6333e2fb1736bd4ca9f6b38bf9f5634cb"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/21/overlay.jpg",
+      "bytes": 200549,
+      "sha256": "f578cbcf19c6614a0c523111f5f1c30c2159a957f472bc9ca7cda99db7ee18bd"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/21/result.json",
+      "bytes": 975,
+      "sha256": "f0d4b53fbebb49493637e3f3ec2fee2e9f1e6eaf9e5d1f35238eeada60bc4fc2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/22/card.jpg",
+      "bytes": 44917,
+      "sha256": "e1bbd08c34855d5fc1a148c093fee00e93a9c12df7199228797d50506a3a2b93"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/22/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/22/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/22/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/22/result.json",
+      "bytes": 648,
+      "sha256": "61c89deeb11a576c6cd0faa4cd74c90c2ef0252dd091cc2eb061ae552bbc575a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/23/card.jpg",
+      "bytes": 44724,
+      "sha256": "98d91eeba5e599f13fdfb3cb4cc99aee825a9262ddd42da3531f15aec3a16e2d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/23/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/23/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/23/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/23/result.json",
+      "bytes": 648,
+      "sha256": "6da605d6a6f8b359e6a0d93599729dc4e300bc4196c4e192bbf84f461c7edfe3"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/24/card.jpg",
+      "bytes": 63619,
+      "sha256": "a34989d78f240f35efabeb3f10feb12d8c1f2668e201977169c4754af78c8c24"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/24/cutout.png",
+      "bytes": 956384,
+      "sha256": "da49f9571b744e9f746f558207f316b6af5102b010529af79477808a1ec1f564"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/24/instance-01.png",
+      "bytes": 1716,
+      "sha256": "0cc2c89215b65991c20e731c58328045c35aed76dd1639c021f171e68a546b5e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/24/mask.png",
+      "bytes": 1716,
+      "sha256": "0cc2c89215b65991c20e731c58328045c35aed76dd1639c021f171e68a546b5e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/24/overlay.jpg",
+      "bytes": 200552,
+      "sha256": "20c4871b3f688cfe3b8a09a341cba3036704500d3716bc3864a65c442a152416"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/24/result.json",
+      "bytes": 945,
+      "sha256": "181bdae1847f9ce0c16633a86dfaca5a9e468577bcd5b94f1fc479fb5978cd48"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/25/card.jpg",
+      "bytes": 72242,
+      "sha256": "2d0a6594632582ad455ce857312de240875be9413274a204b9527f2678877511"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/25/cutout.png",
+      "bytes": 956745,
+      "sha256": "43942c661d50a5556e370fd3bd3d4303889dcf6bed361ea40ddadcc650064c46"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/25/instance-01.png",
+      "bytes": 2718,
+      "sha256": "aa6effce3a4736234dc49a2e2595faad122361debf26d9e5f726c8e650967639"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/25/mask.png",
+      "bytes": 2718,
+      "sha256": "aa6effce3a4736234dc49a2e2595faad122361debf26d9e5f726c8e650967639"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/25/overlay.jpg",
+      "bytes": 200092,
+      "sha256": "1b692e6393921139cfe68dfc6aff115a696bc81cf8c68fe54354e370f9de3fe0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/25/result.json",
+      "bytes": 936,
+      "sha256": "b08fd329b3b02d583a8496e70c9903847f787a7053950c4be89a00b5cd242eb0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/26/card.jpg",
+      "bytes": 47234,
+      "sha256": "fc79cdbdca638ef8bc259ea6a0cb6641135b53df2d2f9077bc2d388640860f97"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/26/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/26/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/26/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/26/result.json",
+      "bytes": 675,
+      "sha256": "99b75bdc31d5667ef78ab473bd498c79d154091956a5c4ced52de2e7dfda8138"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/27/card.jpg",
+      "bytes": 83724,
+      "sha256": "2e86c0149a98b6ecebcb9cbd20afdc1697a9f413a0365a9f7c6da74b962668ac"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/27/cutout.png",
+      "bytes": 961645,
+      "sha256": "99207aed77330533b6166f5df97ab0a48e0ddad7bcf68250ed96e1fb39da3d81"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/27/instance-01.png",
+      "bytes": 6928,
+      "sha256": "0f7bdd0553c94f76b7f2b025d31c16face3f33a1631c730f195b5342ebf677e6"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/27/mask.png",
+      "bytes": 6928,
+      "sha256": "0f7bdd0553c94f76b7f2b025d31c16face3f33a1631c730f195b5342ebf677e6"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/27/overlay.jpg",
+      "bytes": 202450,
+      "sha256": "60fd6f51ce96f2a939ea2acabe8f5a4dd4937a4368d1d71a3ba0b839370b59c6"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/27/result.json",
+      "bytes": 995,
+      "sha256": "df872093d20e294c69ce170268b13136f7b3e674912ec90da75db3d488e85090"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/28/card.jpg",
+      "bytes": 45785,
+      "sha256": "c2bc8292bffc27ffe9c09cf6220b9e1d21b2f3ba96b71a9f1c02ecc6f0f94a6a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/28/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/28/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/28/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/28/result.json",
+      "bytes": 654,
+      "sha256": "4fed8a421822f060c148388524755b0ab33081de60d1f9128e35d907277d730a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/29/card.jpg",
+      "bytes": 46086,
+      "sha256": "9afe695991fe31c26eaa8ed22571d0e4c16201a77624195f50183b08e156a3a8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/29/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/29/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/29/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/29/result.json",
+      "bytes": 657,
+      "sha256": "e3c9cba8c1b8ea4a09ed6b9c8c62c48f1283aceb8d89cd8d441897b36163a386"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/30/card.jpg",
+      "bytes": 45613,
+      "sha256": "c3ce3296936cfc5862586653992222f22a077b7bea933d938c913b8f9b55347a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/30/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/30/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/30/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/30/result.json",
+      "bytes": 650,
+      "sha256": "34b965617e98b32e9f8b5af8fa491372fc8ef922bf88b169be2a365f1d015ec8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/31/card.jpg",
+      "bytes": 47086,
+      "sha256": "28aac5cccc045f8ef3135fa9bdbfa40d1835bd7727c98ca8a7673d5139fe270f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/31/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/31/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/31/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/31/result.json",
+      "bytes": 672,
+      "sha256": "d09d14a32961092ae3acac67776e91ef6b141adf7420e1e41f5933337be8c155"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/32/card.jpg",
+      "bytes": 83443,
+      "sha256": "69cc6669e89e85109779075462ea4e0818b00484ac094f74803434cded648251"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/32/cutout.png",
+      "bytes": 961571,
+      "sha256": "7b9a5151e75f5362fe80eaef99c82050e6c54dc19131799544612cc6e415ccc5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/32/instance-01.png",
+      "bytes": 6923,
+      "sha256": "9f888cdcb6bc81c223deb842d33041c2f3c52a1fc0d8e53b73efd24eda223606"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/32/mask.png",
+      "bytes": 6923,
+      "sha256": "9f888cdcb6bc81c223deb842d33041c2f3c52a1fc0d8e53b73efd24eda223606"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/32/overlay.jpg",
+      "bytes": 202489,
+      "sha256": "05ef84c6bd2934d8782b842f28cac058b0ded73422dbb9d84e7724102ec16482"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/32/result.json",
+      "bytes": 991,
+      "sha256": "b86a439ff0097863cf28d050caccd7385594b9e7217c27619cdc7047606beba2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/33/card.jpg",
+      "bytes": 44177,
+      "sha256": "660b0f542630dad589d53bf7547beb2d9fecc0e0a3b00c65533145a341850f32"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/33/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/33/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/33/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/33/result.json",
+      "bytes": 628,
+      "sha256": "23b22bdcc6513785237648c2a123b9bda3b36e4402b026ddf59599be779e5e43"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/34/card.jpg",
+      "bytes": 74637,
+      "sha256": "072e42f0998e00d1ca59bb700da6e3ae604ae699fa61b02711b8ded56ae82a57"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/34/cutout.png",
+      "bytes": 957410,
+      "sha256": "443094d648672af369ed22be34591d86125d6a4a6f958a314eca4af24789cc8c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/34/instance-01.png",
+      "bytes": 2537,
+      "sha256": "222a20584fbeb38a5a39b7421558b7ff5bad9a4e13a49f9eb9ba1532f90d107b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/34/mask.png",
+      "bytes": 2537,
+      "sha256": "222a20584fbeb38a5a39b7421558b7ff5bad9a4e13a49f9eb9ba1532f90d107b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/34/overlay.jpg",
+      "bytes": 199776,
+      "sha256": "969e0c8a97f56ac04edb0dad9b92cd71302077e614fc6e6c9bd2bceb88f9c85e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/34/result.json",
+      "bytes": 1000,
+      "sha256": "f9627ecb3ed1e15ca1092c57416fc9f7225838b312ab6b0b3a2678394a4b4795"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/35/card.jpg",
+      "bytes": 75925,
+      "sha256": "fd9d04cfe9d01c41ff0a1bb977049441230ffd02c6d7e3bfc2de45eb390113c5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/35/cutout.png",
+      "bytes": 957449,
+      "sha256": "88e6dd9aca1bc7caee846a8c8b439b62656f6e7a751578b91aa3aa6f91fe6509"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/35/instance-01.png",
+      "bytes": 2585,
+      "sha256": "17b7584d122e64d638b003b1662ecc6c5ecf8e4bbdcb51a38757cf3718e866bc"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/35/mask.png",
+      "bytes": 2585,
+      "sha256": "17b7584d122e64d638b003b1662ecc6c5ecf8e4bbdcb51a38757cf3718e866bc"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/35/overlay.jpg",
+      "bytes": 199903,
+      "sha256": "d7e665820637291a0fde687a22656ec387a5d581bed5a310ee1f0250f6b52d6d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/35/result.json",
+      "bytes": 996,
+      "sha256": "d48ec3c19b7ab4662d955e3c326188013d743c67b60e2f553a727a6a2fbf6726"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/36/card.jpg",
+      "bytes": 63426,
+      "sha256": "6712c840a97235761ebeac6b9ed8b918a168e947ec6b8f5363deac0e63e8b1cf"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/36/cutout.png",
+      "bytes": 956361,
+      "sha256": "df042b5d0527cdd440afac12a09cc74b72f5ba5c28d6e7dde701ed08ea6d8d1e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/36/instance-01.png",
+      "bytes": 1805,
+      "sha256": "58c0e150be11f86fc6faa6a9bbeb459850840a0a2c32d1b455c065d7fbcb9099"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/36/mask.png",
+      "bytes": 1805,
+      "sha256": "58c0e150be11f86fc6faa6a9bbeb459850840a0a2c32d1b455c065d7fbcb9099"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/36/overlay.jpg",
+      "bytes": 200633,
+      "sha256": "40a754a99991614321996e5c41d88c547a5cf04d8eeb0d8bdb343fde79778ead"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/36/result.json",
+      "bytes": 919,
+      "sha256": "ee53242db33034316e52f73319ba7578c216ddb28c3ab046bada10193b69271e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/37/card.jpg",
+      "bytes": 67111,
+      "sha256": "ba1b92b766789ab6434eb4b44ebe576efa183e1d21f63df252c038561aabecd1"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/37/cutout.png",
+      "bytes": 956511,
+      "sha256": "e82d0bd69247a5e8553bbf659a9037b404570bf3289b9cab127cf323c8e75d15"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/37/instance-01.png",
+      "bytes": 2323,
+      "sha256": "b5cde737550d38fb65879dd325996e7a97327527393ab86f96fa68742018a9ea"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/37/mask.png",
+      "bytes": 2323,
+      "sha256": "b5cde737550d38fb65879dd325996e7a97327527393ab86f96fa68742018a9ea"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/37/overlay.jpg",
+      "bytes": 201162,
+      "sha256": "2fa2535dcf09effaa489049e38c49f03d6a60bf5fa822f630a523bf82b600c23"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/37/result.json",
+      "bytes": 930,
+      "sha256": "9dc56f510253c09533125766e8a1c7950acfd6f82e1a1c9174ec700ea248d5e4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/38/card.jpg",
+      "bytes": 71723,
+      "sha256": "f59517aeef1189cf979fe13253c297b9a1af58917e372e311e33d732441aa1c0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/38/cutout.png",
+      "bytes": 956706,
+      "sha256": "602554113a53de179ae1ebd86bf6d05361e8b51e48eaa6cbce9dfae004616424"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/38/instance-01.png",
+      "bytes": 2979,
+      "sha256": "7dade2bd44a65280fea5762600dbe2b27b289f58b20de6250413d4d0f8ea31cf"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/38/mask.png",
+      "bytes": 2979,
+      "sha256": "7dade2bd44a65280fea5762600dbe2b27b289f58b20de6250413d4d0f8ea31cf"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/38/overlay.jpg",
+      "bytes": 200942,
+      "sha256": "698ae266794e10f64c6c8cd3dca3ab5f3f7bf87c82d1213aea758a5891a554f7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/38/result.json",
+      "bytes": 940,
+      "sha256": "3311d51741d375d66c2eeff43e9cff031eaf73fd638a652954d72623d9ebd117"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/39/card.jpg",
+      "bytes": 67243,
+      "sha256": "34df58fe8dff9ca2257e5271e1a4117d595f76882cbb1a42b416011324880843"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/39/cutout.png",
+      "bytes": 956414,
+      "sha256": "3a10bd21c29c64bd3d50eec6ea9cd6860a6b1f3abfd654ba34a750c2ac3cf6fb"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/39/instance-01.png",
+      "bytes": 2007,
+      "sha256": "61fda7d5358c4699d3ab3723e5cf5b32b613613f6aa5afedbfcdf7e09d43e92c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/39/mask.png",
+      "bytes": 2007,
+      "sha256": "61fda7d5358c4699d3ab3723e5cf5b32b613613f6aa5afedbfcdf7e09d43e92c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/39/overlay.jpg",
+      "bytes": 200731,
+      "sha256": "d530a82d33e51cd0b7acdd304e232e23df5d23f6b18afe2858b863d82ae05816"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/39/result.json",
+      "bytes": 979,
+      "sha256": "7fb059a2c03273f1134f510b0262daabd2ba8f599009c08e9c3a71cee8059f3a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/40/card.jpg",
+      "bytes": 70245,
+      "sha256": "931e0f062601c3ffc3b3d6ff33658bf0d6249e36de01cfb87e1b141b2992e2c7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/40/cutout.png",
+      "bytes": 956596,
+      "sha256": "4a31e6dd08cecf42916db424dc5d14d5d10c5e55ae15171bf2152b63c4342284"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/40/instance-01.png",
+      "bytes": 2587,
+      "sha256": "626c07f2000fded02fbf7d2c8086aa4de797157365acd778ff43e020b68848ae"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/40/mask.png",
+      "bytes": 2587,
+      "sha256": "626c07f2000fded02fbf7d2c8086aa4de797157365acd778ff43e020b68848ae"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/40/overlay.jpg",
+      "bytes": 201164,
+      "sha256": "b7fad53411c41dca1445fc2a7ad823fa0670953ee999c14839ca02d92682716c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/40/result.json",
+      "bytes": 967,
+      "sha256": "b79a2f943e83526ddd333be2930a401fef70a9bb869b19edcfc0fb760804ab2a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/41/card.jpg",
+      "bytes": 45992,
+      "sha256": "e69a08d6845ea5052e703b8fbbe82f0b528b4d6f718295559e85a47c0654e059"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/41/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/41/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/41/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/41/result.json",
+      "bytes": 657,
+      "sha256": "ace57f32fb78698b630e4166196da3e6240ed18f0d7f47d5c87207bc223ca4c5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/42/card.jpg",
+      "bytes": 46379,
+      "sha256": "9400b2c9c76cf7317fae8213b1e3174e2b6831993d8ec2041e93d0d0343d661c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/42/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/42/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/42/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/42/result.json",
+      "bytes": 660,
+      "sha256": "ea516c5ff53976b6f297824efbdbdbcb11741781a7d0679e6dc26fdd39739483"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/43/card.jpg",
+      "bytes": 47353,
+      "sha256": "0551ca82cc2cc87fa84a9b971cd2be546a8e094ed7cdb971313c70a2f9fd1b1f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/43/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/43/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/43/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/43/result.json",
+      "bytes": 681,
+      "sha256": "c29ca185af89c6b55071f9ae2a710c712b23d69b464c65d2a7362bff3c448430"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/44/card.jpg",
+      "bytes": 47811,
+      "sha256": "58f908aab25be785f4686c8259970e502c9ab2c604668283fbf1def649a4b379"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/44/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/44/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/44/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/44/result.json",
+      "bytes": 683,
+      "sha256": "5ffcc1162412698b05d49e739cfcbd891956a3c2e7bd1fc4ac0203b488dbcc17"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/45/card.jpg",
+      "bytes": 47457,
+      "sha256": "e7e1e950dbd74bd806efed42064d248bfe3f50670dec45668f80c6399835c558"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/45/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/45/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/45/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/45/result.json",
+      "bytes": 681,
+      "sha256": "fb2e98d84d7791358141cb653a457d22d01ac2f489f071b3f4a58f1dfdf2f3de"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/46/card.jpg",
+      "bytes": 47196,
+      "sha256": "4497171129cfa4ea381e424e76d83a8e871ff0a8f40da0e2be8fd40082fa6aa2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/46/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/46/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/46/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/46/result.json",
+      "bytes": 684,
+      "sha256": "24be6592b08e2732b3aa95f213b4a279d8cedc508bf8957ccb5dd3ab54df4da2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/47/card.jpg",
+      "bytes": 46537,
+      "sha256": "17df614528b723ff06bcf851b396b3dfb532cf3d535f653666965f4ccec238f7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/47/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/47/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/47/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/47/result.json",
+      "bytes": 664,
+      "sha256": "3acd2cc3c38c9ead599f61eb067c004ee4642e3265710af9577160f09a5c9c0a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/48/card.jpg",
+      "bytes": 70922,
+      "sha256": "234e6ce0dc323ca1759a044c0038d74836e6176de37ad5bb3334a3d8c8b75512"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/48/cutout.png",
+      "bytes": 956689,
+      "sha256": "fb3168cf5fe9515448645f637ee866b4ecd9b3f996fd597f4a4ccc14ddc04133"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/48/instance-01.png",
+      "bytes": 2661,
+      "sha256": "f1a752c941aeedcf914693c5c22bc92c4f5e903e355e18028b95355c7dc49ab6"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/48/mask.png",
+      "bytes": 2661,
+      "sha256": "f1a752c941aeedcf914693c5c22bc92c4f5e903e355e18028b95355c7dc49ab6"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/48/overlay.jpg",
+      "bytes": 201079,
+      "sha256": "fd9f97d1506d209a3478cdf8e328bc5d5ac4f11489abadf4212c5f67f0f7260e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/48/result.json",
+      "bytes": 972,
+      "sha256": "0870f910c35f58ff715ca73f1f0da0c45dd57b9b271d79f2dac5d33ceba719a8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/49/card.jpg",
+      "bytes": 46350,
+      "sha256": "6a136200faa41dad7d7a6d2f71d54f5a43c7edd8b676d5de7141dccac2a2bd03"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/49/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/49/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/49/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/49/result.json",
+      "bytes": 660,
+      "sha256": "cbc093e4dd54df762b14f7077c829731a1699ea9fa5dea14be713c9a0862356b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/50/card.jpg",
+      "bytes": 46794,
+      "sha256": "6c5034af3e2058f9bba400f3d980db83c9834af168545841b72e3ccd6f035a7f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/50/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/50/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/50/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/50/result.json",
+      "bytes": 663,
+      "sha256": "bf96ae91589a6f9cb7f06544418d12413d7a5c11d8ba799fa994f22d1783740e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/51/card.jpg",
+      "bytes": 68155,
+      "sha256": "a08d2cc32bb7f049ee200397516e8451278a88c0d2e7a4becf7d9b5a30fbb209"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/51/cutout.png",
+      "bytes": 956463,
+      "sha256": "be34dfbb4c6c53b4a32aa98f305f0ed243ba106835eb9b00e0d6cc6aff52aed5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/51/instance-01.png",
+      "bytes": 1830,
+      "sha256": "0d83cff3cdaf80a66a6b3980ee3824aa349b1f3ecf136b2632dabcdbf3d3c5ce"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/51/mask.png",
+      "bytes": 1830,
+      "sha256": "0d83cff3cdaf80a66a6b3980ee3824aa349b1f3ecf136b2632dabcdbf3d3c5ce"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/51/overlay.jpg",
+      "bytes": 200486,
+      "sha256": "6cc1786ba1e3df54cc7830e589a8142062bfb63e909f7bbc606554ce5764b0af"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/51/result.json",
+      "bytes": 999,
+      "sha256": "d87489fd867f5878ee6c604ec73ed512d8a58872ecd39e03c0ee583faf6b882e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/52/card.jpg",
+      "bytes": 48089,
+      "sha256": "131da22bf4965e22534cd591ccc6e8f9cab1acfaa6c87f8f6e9a1e6cabf7f2a3"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/52/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/52/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/52/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/52/result.json",
+      "bytes": 687,
+      "sha256": "11a3053607559fab5e21cd81733759b0f8e7442a96dd57ef29b905f723e8de00"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/53/card.jpg",
+      "bytes": 47791,
+      "sha256": "4cd05627ea96ffef65d4dfaa304dbb6bd76d847499592be873ef3f43f035f0a1"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/53/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/53/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/53/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/53/result.json",
+      "bytes": 684,
+      "sha256": "8f3e923d25c2f79781468bd93feb5aa6bc2b2202d2916739d2c19739ca8d3d1c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/54/card.jpg",
+      "bytes": 47572,
+      "sha256": "8dfcfa741acd4fa23c433bca165b704cc2a50416c3fc3f938d66eb9d849c7a38"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/54/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/54/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/54/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/54/result.json",
+      "bytes": 687,
+      "sha256": "65fc6d43943ffc5adac905d481c38ed16a5eb9e5442bc33c0722412eb299361f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/55/card.jpg",
+      "bytes": 42679,
+      "sha256": "c27fd5bc1e207f184b5afcd856e27756f1f3781a5e83a9a9e41abe4be4fe1250"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/55/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/55/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/55/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/55/result.json",
+      "bytes": 613,
+      "sha256": "31a13baa920b22c00d6948ee4f1a578c8ec05fd32209b828cf1fb4eae23fd9bb"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/56/card.jpg",
+      "bytes": 68897,
+      "sha256": "ed9fb8cef7955696c2203ab2d1a65305d5ecfc97c9fc07dacf2282fde6e7beb7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/56/cutout.png",
+      "bytes": 957255,
+      "sha256": "70e2d3f86cc4f504ba2644e91e630f55aea1207c20d581b6f533b90e417c6e5c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/56/instance-01.png",
+      "bytes": 3396,
+      "sha256": "b2fc288fc7d4318dd39bf2044816ff133c5ca8a6c6be4da1de3112121b5710e5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/56/mask.png",
+      "bytes": 3396,
+      "sha256": "b2fc288fc7d4318dd39bf2044816ff133c5ca8a6c6be4da1de3112121b5710e5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/56/overlay.jpg",
+      "bytes": 200621,
+      "sha256": "665f69b20547c16f03965a92fd42951815cda2a11aa39830c056a18e0452e25b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/56/result.json",
+      "bytes": 959,
+      "sha256": "48f071a2f39e72c4271ca50b6349b1e9057edca68ece345609ac5490afd71395"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/57/card.jpg",
+      "bytes": 83295,
+      "sha256": "cb82a849e56bec99ee69c49c40885c4cf5c420569ca51b225af3f8a7936bf3fb"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/57/cutout.png",
+      "bytes": 958430,
+      "sha256": "c54746dab7865b8eab733365a5ad4772e916641799566d4edbfad82b19370195"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/57/instance-01.png",
+      "bytes": 2509,
+      "sha256": "b0d2473672ef58332383459e00be3193787e22c751818a0aa03aff71e67c8b18"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/57/instance-02.png",
+      "bytes": 2582,
+      "sha256": "6f88ad24750ecb2b393041c34c78ecbae07653fa09deb0bf8f8dc12b18d35df8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/57/mask.png",
+      "bytes": 2896,
+      "sha256": "63272c87aae29f9cbff28cc86ad1d3fcca7a56170e6aa26edb66ec295996021b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/57/overlay.jpg",
+      "bytes": 199213,
+      "sha256": "053b2131eea26c709f74906d14e5a58872c8e9246fc014a7fd448acec01e1118"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/57/result.json",
+      "bytes": 1227,
+      "sha256": "1e977b2742ac26cb3a0f2d91e86258c652e22a6ac1614554b23830a38c12f2c0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/58/card.jpg",
+      "bytes": 52592,
+      "sha256": "09c49aaed4ee8093107dc397623ddd379f9718fbc781efd2d8e4f7756d6d14b8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/58/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/58/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/58/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/58/result.json",
+      "bytes": 744,
+      "sha256": "4c8df2970901d2db5abffa49c9494681a200adde5c531402324330f61b3df60c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/59/card.jpg",
+      "bytes": 80900,
+      "sha256": "32355a1cd4a3270ab61f4a4df68450d9a5741834a15729b326cca5a6044c9dc8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/59/cutout.png",
+      "bytes": 957363,
+      "sha256": "7142e17668a042eeb1b226e557588ca994fb977ee409bfddff112925705dc042"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/59/instance-01.png",
+      "bytes": 2520,
+      "sha256": "47c2f95882aa4a20deb9c79441a2b044f138dbb16631eeabd6b7eb89e2e74185"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/59/mask.png",
+      "bytes": 2520,
+      "sha256": "47c2f95882aa4a20deb9c79441a2b044f138dbb16631eeabd6b7eb89e2e74185"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/59/overlay.jpg",
+      "bytes": 199797,
+      "sha256": "ce47f348d465bbcd806543145e6e9d4648929d4ed4aabcca7306a480235cdb3d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/59/result.json",
+      "bytes": 1064,
+      "sha256": "3b1ca5b0a45d52b87816df91a4202155886c044f5860a40c0fbd4262c4df7351"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/60/card.jpg",
+      "bytes": 87740,
+      "sha256": "215160bd18b6be0faf54b217a9eb560858850909caa51c5c243e72be4807753a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/60/cutout.png",
+      "bytes": 958478,
+      "sha256": "1cb911503740be10011c3bb81fd331912d036d4ca65bc5cd719335c70883a948"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/60/instance-01.png",
+      "bytes": 2507,
+      "sha256": "672d53254a1e3e5b89d7211a1f3246f248a7595442596f01544d66312664a582"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/60/instance-02.png",
+      "bytes": 2600,
+      "sha256": "5e79c2ff6d09616729215cec5cf5e63a7d10bfae025a6555225603801b0c80fc"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/60/mask.png",
+      "bytes": 2900,
+      "sha256": "2ad2e8f2e8879f564059620184c1d7e4f09d52119f394819f504426e549494b2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/60/overlay.jpg",
+      "bytes": 199156,
+      "sha256": "104b2cca71b18f5e7cbca0881f88b2cf53e13c0bc80dc642737eaf9709ba42d8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/60/result.json",
+      "bytes": 1277,
+      "sha256": "f8fe7676d2db479b4c6fd6b59cbbc176d86f8070b6c8c128911b82e9ba467bb3"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/61/card.jpg",
+      "bytes": 81328,
+      "sha256": "30bec520d266d07bfb16efd01e5949441308ce0ba9794500ed655609c2f4b7d1"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/61/cutout.png",
+      "bytes": 957376,
+      "sha256": "fd606c371d5a3f867018ab2a2d7aea9b247a57768d93fc863f81c20c3afb947a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/61/instance-01.png",
+      "bytes": 2523,
+      "sha256": "fd04de377a2211d47a835dc12cd074043260d22a7ee691100721fc1ef388a7a9"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/61/mask.png",
+      "bytes": 2523,
+      "sha256": "fd04de377a2211d47a835dc12cd074043260d22a7ee691100721fc1ef388a7a9"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/61/overlay.jpg",
+      "bytes": 199756,
+      "sha256": "0a65a296f717bca27d8cd461e4acdc5556713daa065881f169241f48e4639c89"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/61/result.json",
+      "bytes": 1069,
+      "sha256": "2025b1e0b83ca4630ca12be130cb5a0192e4bd19927b489033c52090e603a82a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/62/card.jpg",
+      "bytes": 69983,
+      "sha256": "931414feeece96c18e3c2cef0eb1743eecd52dd49b575213f2613698c51d64a8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/62/cutout.png",
+      "bytes": 957150,
+      "sha256": "cd619092c916245fc49f27f9eb4822d639f096c55e2e7c40af866244b68d5371"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/62/instance-01.png",
+      "bytes": 3461,
+      "sha256": "a189bc25829f052139fb04a87253e7f3a2c4671a1c1cd69a0874fd08f5939ab9"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/62/mask.png",
+      "bytes": 3461,
+      "sha256": "a189bc25829f052139fb04a87253e7f3a2c4671a1c1cd69a0874fd08f5939ab9"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/62/overlay.jpg",
+      "bytes": 200615,
+      "sha256": "f6b1ee640496496b644cb5cc2bfb1cbafd62b0bdeb8782d8f28576206c0f28af"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/62/result.json",
+      "bytes": 965,
+      "sha256": "5fcf50582eddd1ed18718f6c66e517fab9ffc5f963dde92a0d195f087452d42e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/63/card.jpg",
+      "bytes": 73636,
+      "sha256": "2e53f39cd98edd51a68f85be82baf3c558c4aca3b026f15797a0000fc36677c7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/63/cutout.png",
+      "bytes": 957357,
+      "sha256": "cf49b989ede6d36215170efce43bc2044f8792aa0ee87e2991a9d37d94e83aa0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/63/instance-01.png",
+      "bytes": 2522,
+      "sha256": "a05573629332a2f74cc172ef334f08e741582c5a9ef7735389b38467fd27b4e4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/63/mask.png",
+      "bytes": 2522,
+      "sha256": "a05573629332a2f74cc172ef334f08e741582c5a9ef7735389b38467fd27b4e4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/63/overlay.jpg",
+      "bytes": 199789,
+      "sha256": "b633c24ade962babde5fdd3d81f372c68193eb7ffb0e6ea0ba4daad15d53652f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/63/result.json",
+      "bytes": 969,
+      "sha256": "9b479201b72d57cc25306df4c1493e8766cad6ff1058e824e761859821a4c002"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/64/card.jpg",
+      "bytes": 70892,
+      "sha256": "3f84be47241b0a767217631792514f5301d1467698a1859f5073b26e04f840b2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/64/cutout.png",
+      "bytes": 956424,
+      "sha256": "1a4f41eb636b735f9dd880edf98ed170dca51c0a0f9aed518d98e3ece2cfe008"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/64/instance-01.png",
+      "bytes": 1803,
+      "sha256": "61ee1fd3185dd2888b9da947f8ff474d5469d210c444742308dc67d46f5ce2b4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/64/instance-02.png",
+      "bytes": 1795,
+      "sha256": "2e83d3c798884f2172f7c10cfd60945d0e22c2e2d791002e24f98da844b710c7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/64/mask.png",
+      "bytes": 1886,
+      "sha256": "cdf99239931382e8ef319fe006300672184d1d143d8ed6c2cae3d4da8e3260ce"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/64/overlay.jpg",
+      "bytes": 200596,
+      "sha256": "27e2a7b78d63aea8d763ea8aa2c976c7e978531dbc69ce4aea21af30bf93c58d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/64/result.json",
+      "bytes": 1259,
+      "sha256": "1d5fb01615edf2297f25d1501092f0729b16967e552ab1835908968ee2107a6a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/65/card.jpg",
+      "bytes": 88958,
+      "sha256": "5f86c1ee2f550693cce2ee4308306852bfec4db8698c6f9ec08b64491383afbd"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/65/cutout.png",
+      "bytes": 958446,
+      "sha256": "59a5346e90813dbca32fcee51f7e2a1e69a35b11de525cacb4d4d05df9169413"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/65/instance-01.png",
+      "bytes": 2514,
+      "sha256": "4f985ac26698b2e85ce2965ae60582a1e4ee19641f23ad1c2286526b8e855f55"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/65/instance-02.png",
+      "bytes": 2583,
+      "sha256": "1a13d945a3bdcc641be9682ee9c897d9d2e13c5b152453366dd139166e712e11"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/65/mask.png",
+      "bytes": 2911,
+      "sha256": "a26759f89d953b1793f3536d8eecc014004faede38df084f9cbc96ccb9dbc882"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/65/overlay.jpg",
+      "bytes": 199197,
+      "sha256": "c6c147761fc4891e8af4c20e0bc2040dac863a774a1d864d5fac47836ef36a2c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/65/result.json",
+      "bytes": 1296,
+      "sha256": "c03116e16590729b5833452d8aae013f02fc02b5fb64d9c52efa1c2f1d3b17b1"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/66/card.jpg",
+      "bytes": 46748,
+      "sha256": "5db9cbecc0193cb2f92a4ae0b0a095363f4fbf5138a6271ceae700a5b5453edf"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/66/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/66/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/66/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/66/result.json",
+      "bytes": 692,
+      "sha256": "0d7c134f64eb3ed92321e522a23f03e730d38e16c29bf870beb2d1dadf7726db"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/67/card.jpg",
+      "bytes": 79044,
+      "sha256": "5ef1ca08ee2983a1d5bd6185295b3034751f32d594756ad8cc9792034611d9bf"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/67/cutout.png",
+      "bytes": 968185,
+      "sha256": "8a1cc654fe57e624e2e50d08557fc0d41b4004796e641da8251caa7dd05b569a"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/67/instance-01.png",
+      "bytes": 6861,
+      "sha256": "53549c9ad61be142bc55d66f0251dd2a193f00fcd62f687fac8b27e630f01f41"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/67/mask.png",
+      "bytes": 6861,
+      "sha256": "53549c9ad61be142bc55d66f0251dd2a193f00fcd62f687fac8b27e630f01f41"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/67/overlay.jpg",
+      "bytes": 198556,
+      "sha256": "4397d9cd5d81ff10c4642e7908260c587a68c912cf4b242062e71bd3fac818e4"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/67/result.json",
+      "bytes": 1042,
+      "sha256": "b9a2fae99afb3a6aa8d5a5408ea07df4ac5b2cf0b04b7156d08809d5f9bc4344"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/68/card.jpg",
+      "bytes": 49142,
+      "sha256": "91181e7776fd36572ac0398eb128735920cf12937c4847d7fa8ff7b6acbcb349"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/68/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/68/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/68/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/68/result.json",
+      "bytes": 739,
+      "sha256": "df2df3312ef1e816e254fb640151f8550248213c2e9825cb58d599f2ede8cd60"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/69/card.jpg",
+      "bytes": 79707,
+      "sha256": "061b5d165bec56574123e83ea3537dfb7933532ce38c8824d0459b9d399cbdc8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/69/cutout.png",
+      "bytes": 962611,
+      "sha256": "71a285ec50fb82c04857733e73314775411ecf53e01d758305f0e31fee12b72b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/69/instance-01.png",
+      "bytes": 4674,
+      "sha256": "68fa3b6292dd85172067158a3b5854fd331444ceb7904dbe89701b23dff7e37c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/69/mask.png",
+      "bytes": 4674,
+      "sha256": "68fa3b6292dd85172067158a3b5854fd331444ceb7904dbe89701b23dff7e37c"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/69/overlay.jpg",
+      "bytes": 199424,
+      "sha256": "d1dff7895e5d455e4219e708760d7a96647188f0a8e117da0c76681d0f40639d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/69/result.json",
+      "bytes": 1055,
+      "sha256": "e94a5368caaa7fada226ffe3630bf4f2f699b276b477ff25a3b677d727a660e2"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/70/card.jpg",
+      "bytes": 47959,
+      "sha256": "5de0b2f5d453f5ccebd8d00d7a8d14b5823438d3e774859a75d64a10b4c50018"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/70/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/70/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/70/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/70/result.json",
+      "bytes": 699,
+      "sha256": "dd07ba56cde6713ab05860fa3ddd12004d8a14f58c2c740ddb6145dd8674c319"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/71/card.jpg",
+      "bytes": 48155,
+      "sha256": "e2c7a8a2b0f74cbf4045c76732eba9cd19eb3af50cd96bcba33918c245ccc201"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/71/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/71/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/71/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/71/result.json",
+      "bytes": 702,
+      "sha256": "ceb5bc55cb789a1cb14652ab79e39fcb2162bd1c354044c27d067e4d66d6357f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/72/card.jpg",
+      "bytes": 75522,
+      "sha256": "49161304dd737ff63785b132c1d7fb0321d700fb7bac002865ddd66b9f756483"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/72/cutout.png",
+      "bytes": 956487,
+      "sha256": "b620ef8c5280c00639539992913056d12292e8a9ec8bdee309279147dddf85a0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/72/instance-01.png",
+      "bytes": 2361,
+      "sha256": "b4efd6804cd95875dbd155519e94175539c3b0034bbde57ace87473c02e827f0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/72/mask.png",
+      "bytes": 2361,
+      "sha256": "b4efd6804cd95875dbd155519e94175539c3b0034bbde57ace87473c02e827f0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/72/overlay.jpg",
+      "bytes": 200891,
+      "sha256": "fe2ee2cf0bc51c7582df94e2b1a4b911a98cf2a91fb407d62c273e87b6d4a8c9"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/72/result.json",
+      "bytes": 1012,
+      "sha256": "94f8cee733e58f9c618fed966ee0870d6fdec2f166ebf7268016d26622165c15"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/73/card.jpg",
+      "bytes": 74185,
+      "sha256": "290a8df60824f5be2db3155891484ce6ca9f5a6770dffe6573b7138c245f72e0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/73/cutout.png",
+      "bytes": 956495,
+      "sha256": "a977a38224c612ddc15d6603d2323cc18f6327a68f5c595ff042ad438539f1e3"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/73/instance-01.png",
+      "bytes": 2383,
+      "sha256": "be59180a88da0c28e4404cf33cb8ca84c224d6f3d6d8c48b33b51b79988b902d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/73/mask.png",
+      "bytes": 2383,
+      "sha256": "be59180a88da0c28e4404cf33cb8ca84c224d6f3d6d8c48b33b51b79988b902d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/73/overlay.jpg",
+      "bytes": 200902,
+      "sha256": "79577673a3fe842d610692433295ea562f50f17ee21c1285e9b3e4bfcbddcb2e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/73/result.json",
+      "bytes": 996,
+      "sha256": "acb8355bcda128aaf88b887c6f68d1d610e87ae5cc05390afa59afdfd26eafb7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/74/card.jpg",
+      "bytes": 73750,
+      "sha256": "49c9290745b933391e277bad0c94f669cd84d3a86468fcc087bd8ca3ec638a8d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/74/cutout.png",
+      "bytes": 956495,
+      "sha256": "06dc9968c053f2fafaa96d9d7913fda1def55baf4f9b8eda7abdac42608ebc85"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/74/instance-01.png",
+      "bytes": 2380,
+      "sha256": "d6ab28630598bbf66078b5ca8f0a511ba1392915ee6737bec2dd7aafb4464113"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/74/mask.png",
+      "bytes": 2380,
+      "sha256": "d6ab28630598bbf66078b5ca8f0a511ba1392915ee6737bec2dd7aafb4464113"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/74/overlay.jpg",
+      "bytes": 200886,
+      "sha256": "c3d710b1f35e9b7eda734e874b834fe6f96104222ccb9f91a0f4ad678763d9f7"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/74/result.json",
+      "bytes": 998,
+      "sha256": "66dcb1bcb0941a2e671019a6acae7f18b1632b591acd68d19b919274526e6db0"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/75/card.jpg",
+      "bytes": 68907,
+      "sha256": "fa45b98590b4268d7a91a276d3dd15a0758ac9ce571e0923b536afaadb2de04f"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/75/cutout.png",
+      "bytes": 956509,
+      "sha256": "dfbd8b6c8c1a905e3aeaa5669ab7b965837f96f972ba0aa43256d3981e31ef90"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/75/instance-01.png",
+      "bytes": 2180,
+      "sha256": "b2f130b4b79280315c521a0e52ed5e4b1059697653985f7ed57fdcf85b4ffe1d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/75/mask.png",
+      "bytes": 2180,
+      "sha256": "b2f130b4b79280315c521a0e52ed5e4b1059697653985f7ed57fdcf85b4ffe1d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/75/overlay.jpg",
+      "bytes": 200615,
+      "sha256": "b31a77bb228ae7ff4c5cf906c9a7e5884f7a550dd9e71f59144f6a10c1483167"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/75/result.json",
+      "bytes": 974,
+      "sha256": "d579c87f2ef1115c750f5ef561439f8d272bed882178151c5c1d0db53669507d"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/76/card.jpg",
+      "bytes": 47465,
+      "sha256": "b3a16f8f3ff571be89574b9f1171df7d0e587ab17e511393c778db1db1608ea1"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/76/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/76/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/76/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/76/result.json",
+      "bytes": 692,
+      "sha256": "50726f76e371818e0e8e268b32fcc8b57f6d8f58fd663091480ca675c2342f7b"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/77/card.jpg",
+      "bytes": 81583,
+      "sha256": "5a0972caa61decf5ea92b1ed21ee65f1ef02ac4c6efa7cf56270409db194952e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/77/cutout.png",
+      "bytes": 968838,
+      "sha256": "4339a5e2d7d7701333dafc9888e1c6161f1ef41fa779a617176606cebeb739b5"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/77/instance-01.png",
+      "bytes": 7039,
+      "sha256": "fe30a11d3e4da6427a2849015619d3616c7c5a9ef8f60a1d5550b1c8476eb778"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/77/mask.png",
+      "bytes": 7039,
+      "sha256": "fe30a11d3e4da6427a2849015619d3616c7c5a9ef8f60a1d5550b1c8476eb778"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/77/overlay.jpg",
+      "bytes": 197291,
+      "sha256": "f68fbc0609f40c15f7bcd3f2a8aadaf46a7e3689deb551367e944c1d42b6b8e8"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/77/result.json",
+      "bytes": 1035,
+      "sha256": "8db9d74cc6404e68c39d092e31b94f7ddc439aa0ccc6f61dda84a69da8045290"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/78/card.jpg",
+      "bytes": 51998,
+      "sha256": "5ca785bc0ee11d388478ce85c7ba3da919481f181e5295a46ef15935070dbf54"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/78/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/78/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/78/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/78/result.json",
+      "bytes": 763,
+      "sha256": "0cca7ff0c07da1c56a43ae3529a98daf0e20414b01fe09e8aae95d1f04ee1284"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/79/card.jpg",
+      "bytes": 51517,
+      "sha256": "84d2f36018eaa3b2d1c3d01c6de754075c47ce423a16dff0d2d02a4e6c26df6e"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/79/cutout.png",
+      "bytes": 956373,
+      "sha256": "0b37a98d434b1e55512fb427d38e520c95c4be761abebd1e64775e949e97e923"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/79/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/79/overlay.jpg",
+      "bytes": 200451,
+      "sha256": "e68259c06de4583a5b070b16bbc8afa3be81c3f9ac96ac36f4aa79b6a5650077"
+    },
+    {
+      "path": "elf-parts-e271df62/assembled/79/result.json",
+      "bytes": 760,
+      "sha256": "7c88137ca6e4592599e511a8bb713e357bd68d61ebd46d0142702631ebc09953"
+    },
+    {
+      "path": "elf-parts-e271df62/index.html",
+      "bytes": 147454,
+      "sha256": "d8fc141d636b79eadcfd6c6e29d2defa4bc93c5a5aa5aaf816332c50b4d677aa"
+    },
+    {
+      "path": "elf-parts-e271df62/left-earring-explained.png",
+      "bytes": 185561,
+      "sha256": "56654d5e911f34b0c599c7ba27485b5e5272d1721b8534231b9b3209cc084ffe"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-01.jpg",
+      "bytes": 540994,
+      "sha256": "ef30afb58500a189b3ea362fb6ddb691ac5ffa588df5f7ceb1ce35a0e4c9bc69"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-02.jpg",
+      "bytes": 414834,
+      "sha256": "5bd2537a2f7742a6ad6728730e01d2b0aec2ca241909ef22de1678b4b228d71e"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-03.jpg",
+      "bytes": 452399,
+      "sha256": "5af6ed8ec646c5259e9fb6cdade4ffb005f21cbdaf598b1edde404d72da4a848"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-04.jpg",
+      "bytes": 475480,
+      "sha256": "d26804aa2358358c834dcf97e96e33f4515b55248e6da7c857858fec2787ed8b"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-05.jpg",
+      "bytes": 530927,
+      "sha256": "7721f3adc849972cc3eaa0f0965e3b399ef1ac784fb5d35a3baab7fec8cf9b6f"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-06.jpg",
+      "bytes": 409088,
+      "sha256": "cd945ee74415f7612df943f46a5610a74cb61296f5119627118e515120f7652a"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-07.jpg",
+      "bytes": 418610,
+      "sha256": "cef2af72259554c02e314ee55282fb0f15888496a01cde2bf16c9c8f691d56d7"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-08.jpg",
+      "bytes": 603453,
+      "sha256": "5b114d9723f7260a586f4c312edafbd95225097ce491d602116fb3e6398c8af7"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-09.jpg",
+      "bytes": 519407,
+      "sha256": "5ab70641a571db758ccb0cacdf62d222fcd29f204febab720a356d8b4a3dbc0a"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/assembled-10.jpg",
+      "bytes": 463249,
+      "sha256": "808507fd1ea531e131cac74c2a0a00c4b0a9715bfee1ff60ae92f03b45456dd4"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-01.jpg",
+      "bytes": 469717,
+      "sha256": "eade6093331be5066369a4ca195219d5f66d8aa5b1ddb7a4c8e53d36527fdde1"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-02.jpg",
+      "bytes": 423558,
+      "sha256": "29a28f01a708dafdba2516879225ac9d5057f1abc01d25f5a583ce8150f83276"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-03.jpg",
+      "bytes": 384951,
+      "sha256": "9898b8cafadc47b90323fd058a212e8291a686ddf318d8ddafd4beaf53df8715"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-04.jpg",
+      "bytes": 427982,
+      "sha256": "47e67da2137de82a45490008a3e14e3510f42f0954fa03839e20dfdc0f459318"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-05.jpg",
+      "bytes": 482506,
+      "sha256": "96031ba7691535aa56fb197b7fae3db708c175095a6dafeb735a88684e16f824"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-06.jpg",
+      "bytes": 379160,
+      "sha256": "868a08e033c3b3469fa0882a2a456d16e912e0917c81d5ce754aca298a6a3f35"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-07.jpg",
+      "bytes": 363619,
+      "sha256": "b6e1d172e2e5f71acb6bf1189d7b68dbea319dfa55c56faf9977f84748d6e70a"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-08.jpg",
+      "bytes": 567710,
+      "sha256": "66f6894110c48a5ad2851f08d854e233f6793097ad9d2c3f00197e83a5e320b9"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-09.jpg",
+      "bytes": 483739,
+      "sha256": "5f6a03d9d1af0454776b79c5d82de16e109a7cd55663a0be2805caae5ccac2c5"
+    },
+    {
+      "path": "elf-parts-e271df62/pages/references-10.jpg",
+      "bytes": 431884,
+      "sha256": "c7dc49613991cd460cd5ad49041b8d04068bf804ee9a81ff368622da2e2baf37"
+    },
+    {
+      "path": "elf-parts-e271df62/plan.json",
+      "bytes": 27285,
+      "sha256": "5c923214b9f162bf36c5f9266f4ea4bf834cf0fb998259fc59d44874c33e9ee6"
+    },
+    {
+      "path": "elf-parts-e271df62/preview.jpg",
+      "bytes": 299808,
+      "sha256": "760bb1dd9e3d37009895dc3fa2c220b2aa4681078513ff9226e7f4d9ba4d4d43"
+    },
+    {
+      "path": "elf-parts-e271df62/references/01/card.jpg",
+      "bytes": 62275,
+      "sha256": "728e59d3d7728d93be13acc74048c9cfdab4332245d2a24c24838353dfcaae99"
+    },
+    {
+      "path": "elf-parts-e271df62/references/01/cutout.png",
+      "bytes": 654631,
+      "sha256": "11cf9f5fab066e5770e483345aa9fda85d956bd65423aaea3b397bb06c99e448"
+    },
+    {
+      "path": "elf-parts-e271df62/references/01/instance-01.png",
+      "bytes": 2277,
+      "sha256": "9852d287f4ba0ca91bfe0b762b4038a15c160b2c07de47f78ef16fcabcafa13d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/01/mask.png",
+      "bytes": 2277,
+      "sha256": "9852d287f4ba0ca91bfe0b762b4038a15c160b2c07de47f78ef16fcabcafa13d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/01/overlay.jpg",
+      "bytes": 133516,
+      "sha256": "8b51c1a4868a0cdc26438c9e3685b8625b7c167ff3b29edba17d8201d4d969ce"
+    },
+    {
+      "path": "elf-parts-e271df62/references/01/result.json",
+      "bytes": 941,
+      "sha256": "91aff11856488ff59fead118f4713b7b32a88e7af3b8fd718ed7886e3fa67e1b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/02/card.jpg",
+      "bytes": 60792,
+      "sha256": "42e7e82afded47b01496c92bddd4b5c6284e4db687be8e0b9c442259f30a7c91"
+    },
+    {
+      "path": "elf-parts-e271df62/references/02/cutout.png",
+      "bytes": 654453,
+      "sha256": "d1597996a960c5a17ae674f61f1fb9ba4fa593363e2aa00f581fed95baf35544"
+    },
+    {
+      "path": "elf-parts-e271df62/references/02/instance-01.png",
+      "bytes": 1755,
+      "sha256": "2129736a629f75773854b8b6923a9c209c343605edf34c3daebd832f010131be"
+    },
+    {
+      "path": "elf-parts-e271df62/references/02/mask.png",
+      "bytes": 1755,
+      "sha256": "2129736a629f75773854b8b6923a9c209c343605edf34c3daebd832f010131be"
+    },
+    {
+      "path": "elf-parts-e271df62/references/02/overlay.jpg",
+      "bytes": 134059,
+      "sha256": "5ed8b45954d3ba638274c1cf7dec863b6ccffe863cd0d984a03ef79a66c2eb46"
+    },
+    {
+      "path": "elf-parts-e271df62/references/02/result.json",
+      "bytes": 989,
+      "sha256": "9554a97dc4887410cfe517a5ea294966f502937eb2d195975c3f5243176619fc"
+    },
+    {
+      "path": "elf-parts-e271df62/references/03/card.jpg",
+      "bytes": 60756,
+      "sha256": "4188b97ed269cee447f37b4f3734050c89ee62bd425528db4bae7549b7ffcba3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/03/cutout.png",
+      "bytes": 654447,
+      "sha256": "71c09dacd57b8c48fe73d4e327b6a9024faa580f825f8263dacc126f01621433"
+    },
+    {
+      "path": "elf-parts-e271df62/references/03/instance-01.png",
+      "bytes": 1757,
+      "sha256": "141e3c12151fcca50ac277476957c1e33fed18379dbce005fdcf163b4958a7fc"
+    },
+    {
+      "path": "elf-parts-e271df62/references/03/mask.png",
+      "bytes": 1757,
+      "sha256": "141e3c12151fcca50ac277476957c1e33fed18379dbce005fdcf163b4958a7fc"
+    },
+    {
+      "path": "elf-parts-e271df62/references/03/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "3fc889c4f6398625fe32d5d2ab773e000862086a36c0f06847807645bc713a63"
+    },
+    {
+      "path": "elf-parts-e271df62/references/03/result.json",
+      "bytes": 989,
+      "sha256": "71671acbcad2d044773259a9f6ab07fe65ade3abb6bf0ac2b44b3b5e85884f9b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/04/card.jpg",
+      "bytes": 39228,
+      "sha256": "1cdfaf3d810113bd4fb0d236ff1ff935236d7e1b2a15a0eec42a865ff686bfe3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/04/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/04/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/04/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/04/result.json",
+      "bytes": 658,
+      "sha256": "70bc48083382e80791aa667525223dcc0f0391c202d2e550d90cae0f2c351a13"
+    },
+    {
+      "path": "elf-parts-e271df62/references/05/card.jpg",
+      "bytes": 60310,
+      "sha256": "cbd8c7487478b0abd0268812b170d2412a7dbb325d923f6a9af7cf9a9226e536"
+    },
+    {
+      "path": "elf-parts-e271df62/references/05/cutout.png",
+      "bytes": 654502,
+      "sha256": "5bfed28a77d85744cdc22acb6e6eafdc2504a8b1b63c4b42db5be59461c1317c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/05/instance-01.png",
+      "bytes": 1723,
+      "sha256": "9e2af9bd6b3ff3f26c3621e1a618e9b0b991f15c9932e9a3adcd9308b0938cd3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/05/instance-02.png",
+      "bytes": 1785,
+      "sha256": "0cc892d9f2f4c7400aac5c36dbecd0184e7d07dab146f48b0cd6aafe0934b944"
+    },
+    {
+      "path": "elf-parts-e271df62/references/05/mask.png",
+      "bytes": 1828,
+      "sha256": "8dbbb4cd65d211b19817db4c67dbbc638ebd71dd5da6b13ca604b4942326ca1e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/05/overlay.jpg",
+      "bytes": 134053,
+      "sha256": "4d4a4dbcf6831da8ff0a8029d033e859413b9927cdddde0d305112df973f90b4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/05/result.json",
+      "bytes": 1226,
+      "sha256": "bebed9eebe4da716fe4791c4a47ca8963277687274cec2ccfe8034bd5387418e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/06/card.jpg",
+      "bytes": 63021,
+      "sha256": "4632ef450013d063a2c2114ea0ed7d6700099b712c9ec6da07514e8fcac5f330"
+    },
+    {
+      "path": "elf-parts-e271df62/references/06/cutout.png",
+      "bytes": 654486,
+      "sha256": "e6bbed5d2b188ee2d772c1e67b8988067403a74d5dbcb0d99935add7230acc36"
+    },
+    {
+      "path": "elf-parts-e271df62/references/06/instance-01.png",
+      "bytes": 1715,
+      "sha256": "d8a39090d79e66293bde027d22721c143b28372f5fdf8c548bd98ad3c8afd5ca"
+    },
+    {
+      "path": "elf-parts-e271df62/references/06/instance-02.png",
+      "bytes": 1763,
+      "sha256": "8f6bdf503253f2c563f3c7ab9f194f80fe64f3af04e7e48e7cc1eb2411f1ce74"
+    },
+    {
+      "path": "elf-parts-e271df62/references/06/mask.png",
+      "bytes": 1806,
+      "sha256": "27c68f1628e066d41d185f7bd1ec15180b59596773def50313b8e846d22bf8b2"
+    },
+    {
+      "path": "elf-parts-e271df62/references/06/overlay.jpg",
+      "bytes": 134007,
+      "sha256": "5548e60331c2d14bbb463aa8de0c9044baac9f87319723e21ae90d06daaa1aa8"
+    },
+    {
+      "path": "elf-parts-e271df62/references/06/result.json",
+      "bytes": 1240,
+      "sha256": "e09da5d373a23544a6df6447f3969a4a45f095101596b2d72d4c9dcdfcc8b1a1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/07/card.jpg",
+      "bytes": 61324,
+      "sha256": "f5fd84f597bfb0d7ae630d65fbe5b7a6acee337a727ce34e031b1c6105aa26e0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/07/cutout.png",
+      "bytes": 654458,
+      "sha256": "ac05515fd81d830b5594a0898501fb2c84f7bbc5efb8a58f8ac2f54c579308b2"
+    },
+    {
+      "path": "elf-parts-e271df62/references/07/instance-01.png",
+      "bytes": 1760,
+      "sha256": "f8ba1ca431a54a39bceb34607f0f61b89e2e0d490ebc0a0a64279c4728ffa217"
+    },
+    {
+      "path": "elf-parts-e271df62/references/07/mask.png",
+      "bytes": 1760,
+      "sha256": "f8ba1ca431a54a39bceb34607f0f61b89e2e0d490ebc0a0a64279c4728ffa217"
+    },
+    {
+      "path": "elf-parts-e271df62/references/07/overlay.jpg",
+      "bytes": 134027,
+      "sha256": "a98733bc76b555c197c3de5d9839adc24c9a9812e95f3dabfa1e2dd7476ee0d0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/07/result.json",
+      "bytes": 993,
+      "sha256": "3386da3663de34bd5848ea7b093b11b7983e6cf9106b789ebcc6b0339e219b22"
+    },
+    {
+      "path": "elf-parts-e271df62/references/08/card.jpg",
+      "bytes": 60797,
+      "sha256": "21c079a94e53716df4bf24a5fb917149bed26cf72a9d384c92595e6c7d57d7ef"
+    },
+    {
+      "path": "elf-parts-e271df62/references/08/cutout.png",
+      "bytes": 654442,
+      "sha256": "ddbfb43c2cd42ca32d10a80fd1cd29242ca4397346b438590c6052e8c17cab65"
+    },
+    {
+      "path": "elf-parts-e271df62/references/08/instance-01.png",
+      "bytes": 1762,
+      "sha256": "c34fa1752f3a79d1339a9a4b441318ca584c4e49c9f961525ee2739cecb9f5f4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/08/mask.png",
+      "bytes": 1762,
+      "sha256": "c34fa1752f3a79d1339a9a4b441318ca584c4e49c9f961525ee2739cecb9f5f4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/08/overlay.jpg",
+      "bytes": 134020,
+      "sha256": "87127996aa76284b80b4709aee0074f8c8a7dd080385db1dc2d916cead586d8f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/08/result.json",
+      "bytes": 994,
+      "sha256": "0d10720102489c55fbdd9dc276d3f3584b006e6c0f6bc5b4fb9e8e033fb554fe"
+    },
+    {
+      "path": "elf-parts-e271df62/references/09/card.jpg",
+      "bytes": 40415,
+      "sha256": "11f9c2fdcf5cea30937b774ca2a8a654dd80db563b9312c7712a2eeac089438f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/09/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/09/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/09/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/09/result.json",
+      "bytes": 676,
+      "sha256": "8ac6c4720fe2acd46f0962a4b99e7842952e42c28d85838d8784cb33ad91dad5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/10/card.jpg",
+      "bytes": 39470,
+      "sha256": "1e68b92e6675ae6ad962b38318d5112b178045b805379a0df1ccaaa7b611d323"
+    },
+    {
+      "path": "elf-parts-e271df62/references/10/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/10/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/10/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/10/result.json",
+      "bytes": 662,
+      "sha256": "62b91037e77a8a6d87e4e8551b05c0036db894931711e7ee1323b9f53c1b8680"
+    },
+    {
+      "path": "elf-parts-e271df62/references/11/card.jpg",
+      "bytes": 38370,
+      "sha256": "32414c1da54cc5e84ade17a8d9fe5c17403cddf9640139bc69461ca45395fd65"
+    },
+    {
+      "path": "elf-parts-e271df62/references/11/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/11/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/11/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/11/result.json",
+      "bytes": 650,
+      "sha256": "c0304082efa90d7cc5523893c0940eed983d6d5f715c49307b1e21ca38f05e69"
+    },
+    {
+      "path": "elf-parts-e271df62/references/12/card.jpg",
+      "bytes": 61751,
+      "sha256": "2d0921fa720c3005bfb98b7ba9673fa3d2ca6556aad87237a0a94be34cf3bb75"
+    },
+    {
+      "path": "elf-parts-e271df62/references/12/cutout.png",
+      "bytes": 654450,
+      "sha256": "54a3e815820fc29e3ce39bb245483fe00cbcdf35a7b6e65aa90e7c8ca9f1583b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/12/instance-01.png",
+      "bytes": 1754,
+      "sha256": "50e758bbe85fedb7009c4ac72b78348209964651b21349d4cd1f33288d8ac2c7"
+    },
+    {
+      "path": "elf-parts-e271df62/references/12/mask.png",
+      "bytes": 1754,
+      "sha256": "50e758bbe85fedb7009c4ac72b78348209964651b21349d4cd1f33288d8ac2c7"
+    },
+    {
+      "path": "elf-parts-e271df62/references/12/overlay.jpg",
+      "bytes": 133974,
+      "sha256": "d078145f22ce5d710fc2155db8056dd21dd3114ea162de106988cca9add44f9c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/12/result.json",
+      "bytes": 991,
+      "sha256": "20f64b77f306b655992a5ada82aa05b90e16007b70f8ef060d625a2d3b11fd02"
+    },
+    {
+      "path": "elf-parts-e271df62/references/13/card.jpg",
+      "bytes": 61405,
+      "sha256": "7518aeac5052f463e987717987c7e0225054d7f3abcc49bcf144febf56e5cb6b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/13/cutout.png",
+      "bytes": 654445,
+      "sha256": "374b9b9a6388ac7305c7cfd288b67f94fde642dbee4ca174e6fc0b34bfefc0e4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/13/instance-01.png",
+      "bytes": 1753,
+      "sha256": "1df23669fd2c6597114f8d2a599a98c9c627a71d1c57922a1dbfca6cddbdeb9e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/13/mask.png",
+      "bytes": 1753,
+      "sha256": "1df23669fd2c6597114f8d2a599a98c9c627a71d1c57922a1dbfca6cddbdeb9e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/13/overlay.jpg",
+      "bytes": 134047,
+      "sha256": "801a0feae555af75e71f51fe29e22c691c1e59b6e51bef463c54304f5f2472f2"
+    },
+    {
+      "path": "elf-parts-e271df62/references/13/result.json",
+      "bytes": 998,
+      "sha256": "1cdbbc5024b124346fe5a6f5ed8d6b07f11c6502b1be7a7ba1d4340d69c13408"
+    },
+    {
+      "path": "elf-parts-e271df62/references/14/card.jpg",
+      "bytes": 59331,
+      "sha256": "c8513ef297a1a56d003da2adeb4e76d77770e540f5c750df4d8f5c6712737fe4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/14/cutout.png",
+      "bytes": 654460,
+      "sha256": "41e3d5f6aa5398371bcf66ab49d3c93a4ec6a8c5adec1b411ecf6b2fd83affc5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/14/instance-01.png",
+      "bytes": 1782,
+      "sha256": "8bba115d5123367be4551c8bcc6a194115bc7dee1502d627ba2a33bfb6349178"
+    },
+    {
+      "path": "elf-parts-e271df62/references/14/mask.png",
+      "bytes": 1782,
+      "sha256": "8bba115d5123367be4551c8bcc6a194115bc7dee1502d627ba2a33bfb6349178"
+    },
+    {
+      "path": "elf-parts-e271df62/references/14/overlay.jpg",
+      "bytes": 134146,
+      "sha256": "5741a2f71b6197b56bafa7593841007c97db304b74808cf7ece10f43e1683659"
+    },
+    {
+      "path": "elf-parts-e271df62/references/14/result.json",
+      "bytes": 963,
+      "sha256": "851c08b2413086578961c9d65a968bc931deb123511e232c09850aded670e74f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/15/card.jpg",
+      "bytes": 59518,
+      "sha256": "d1a7f8464d1524152b9c99b1e26c703e9d2714094bf64dffc085137241c3b8df"
+    },
+    {
+      "path": "elf-parts-e271df62/references/15/cutout.png",
+      "bytes": 654458,
+      "sha256": "b78ba57803a7dc0ea2c1f5a1897e376c374fdaec985f66a23d0f2d60ee7b0944"
+    },
+    {
+      "path": "elf-parts-e271df62/references/15/instance-01.png",
+      "bytes": 1781,
+      "sha256": "6c0aef473270ad476d73de573dc5ab5a2c20186cf4b690ac3fd3effaa04cceb6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/15/mask.png",
+      "bytes": 1781,
+      "sha256": "6c0aef473270ad476d73de573dc5ab5a2c20186cf4b690ac3fd3effaa04cceb6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/15/overlay.jpg",
+      "bytes": 134069,
+      "sha256": "0ff0b155d588cbe4d1901756cbd9eba28d51426ab041b79b759008cd2fa0b6db"
+    },
+    {
+      "path": "elf-parts-e271df62/references/15/result.json",
+      "bytes": 966,
+      "sha256": "cec1fe0ce451770a015a35a395702f7055e445409573f297db5d70bdfea09404"
+    },
+    {
+      "path": "elf-parts-e271df62/references/16/card.jpg",
+      "bytes": 61124,
+      "sha256": "4f2bcaa5141b6b421400f42c5aa36c7edd2fe18ce296400a50740cdf46864706"
+    },
+    {
+      "path": "elf-parts-e271df62/references/16/cutout.png",
+      "bytes": 654849,
+      "sha256": "3b152109baf1b7ad93fcd81e740e02cdef98159884bd0f6c482546500e75454f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/16/instance-01.png",
+      "bytes": 1839,
+      "sha256": "2c14a1f014cb665a05ff59b92a47a3b057b7bfa863200eba104d713d6e352589"
+    },
+    {
+      "path": "elf-parts-e271df62/references/16/instance-02.png",
+      "bytes": 1819,
+      "sha256": "7f148161df449c53596fc7be7bd15593324bdf36110a49b67f7a932c70e17ba7"
+    },
+    {
+      "path": "elf-parts-e271df62/references/16/mask.png",
+      "bytes": 1945,
+      "sha256": "be89ba72a83375e26be63429ebd4f9fcf9acd09793b05de3b5cda12f03755893"
+    },
+    {
+      "path": "elf-parts-e271df62/references/16/overlay.jpg",
+      "bytes": 134205,
+      "sha256": "41d0909043bf192150bf9de2c2525b93eb86c980d4ff450e9dc13280fc1d9d88"
+    },
+    {
+      "path": "elf-parts-e271df62/references/16/result.json",
+      "bytes": 1222,
+      "sha256": "7c0cc3a6842355f2a6210b77d461c6d34662b0f63c48436d00c28f5a3bd43680"
+    },
+    {
+      "path": "elf-parts-e271df62/references/17/card.jpg",
+      "bytes": 59783,
+      "sha256": "1dbe2873bc91336d659baca17de0c6f10dbd7feeb2ef574149e392558fb003dd"
+    },
+    {
+      "path": "elf-parts-e271df62/references/17/cutout.png",
+      "bytes": 654695,
+      "sha256": "f77fd434aa349d2887680df757ea5c58576e78d345ca0b7147ff4af1e670d1fa"
+    },
+    {
+      "path": "elf-parts-e271df62/references/17/instance-01.png",
+      "bytes": 1838,
+      "sha256": "7411ea0e6b8f56c5b557a2a940408e373cd19dd0b37d79cb616df9a5610edc30"
+    },
+    {
+      "path": "elf-parts-e271df62/references/17/mask.png",
+      "bytes": 1838,
+      "sha256": "7411ea0e6b8f56c5b557a2a940408e373cd19dd0b37d79cb616df9a5610edc30"
+    },
+    {
+      "path": "elf-parts-e271df62/references/17/overlay.jpg",
+      "bytes": 134108,
+      "sha256": "be93f10f2b9f8897f5598dd86d04236b7a9ba94238c50ad02ad11e9551c22b77"
+    },
+    {
+      "path": "elf-parts-e271df62/references/17/result.json",
+      "bytes": 962,
+      "sha256": "a6d954ade74d55264a47192a5051ea8d19ea762dddafe8aaa45cd29f1c6bf275"
+    },
+    {
+      "path": "elf-parts-e271df62/references/18/card.jpg",
+      "bytes": 35842,
+      "sha256": "b280abae8541515124cf43bcd2318c80b1a43289abcb38f5e3fb9313547dd184"
+    },
+    {
+      "path": "elf-parts-e271df62/references/18/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/18/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/18/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/18/result.json",
+      "bytes": 615,
+      "sha256": "edfa0052c65cec38689882065cc44237733776008f4da560fd97128706387aa6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/19/card.jpg",
+      "bytes": 37260,
+      "sha256": "2e4b0d70efb628456f9d8afd0bad7b2445295a92be61d6bdfe8e5a2eda23b9c9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/19/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/19/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/19/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/19/result.json",
+      "bytes": 642,
+      "sha256": "b4d5e8cc2695a2190470d59d9cfc370e9bda3cf77f5ff14864c98bfcf4831284"
+    },
+    {
+      "path": "elf-parts-e271df62/references/20/card.jpg",
+      "bytes": 57003,
+      "sha256": "c5942ea56d1e9624633b7e8d5aeac57e617d8901ba4964a642fe9d9a81d9b92c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/20/cutout.png",
+      "bytes": 654447,
+      "sha256": "811d8c5c801a1d0727976325c0c66fa3f883a34c7cdaf54caa8d584853abba72"
+    },
+    {
+      "path": "elf-parts-e271df62/references/20/instance-01.png",
+      "bytes": 1716,
+      "sha256": "a545bee20dce738306ac53146c1ac7b2d0c8e4df9d68a5f288f2e9ef0963ee8f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/20/mask.png",
+      "bytes": 1716,
+      "sha256": "a545bee20dce738306ac53146c1ac7b2d0c8e4df9d68a5f288f2e9ef0963ee8f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/20/overlay.jpg",
+      "bytes": 133986,
+      "sha256": "bfbe626aead59cdd7b1d8bd0bfa9a96c3c1d98cb8eda7d7e9c5938e834c10dbc"
+    },
+    {
+      "path": "elf-parts-e271df62/references/20/result.json",
+      "bytes": 956,
+      "sha256": "32668bd275480639ffab10c440100cc8dda0da9d2b78ea8272749577a95a552e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/21/card.jpg",
+      "bytes": 59009,
+      "sha256": "89424b937fe6adf54831ea34c82ce3a35e69ae2bb4803f1adc189d3412a040ab"
+    },
+    {
+      "path": "elf-parts-e271df62/references/21/cutout.png",
+      "bytes": 654444,
+      "sha256": "6cd7e150908d3ce5e4b9a163959a7d1bb4d43bc23fd5b27d5563ee2009581bbb"
+    },
+    {
+      "path": "elf-parts-e271df62/references/21/instance-01.png",
+      "bytes": 1715,
+      "sha256": "8f0d3b60c9925ddc639fe0c8b3559e5d667c171cdda6c48369acb137373ee195"
+    },
+    {
+      "path": "elf-parts-e271df62/references/21/mask.png",
+      "bytes": 1715,
+      "sha256": "8f0d3b60c9925ddc639fe0c8b3559e5d667c171cdda6c48369acb137373ee195"
+    },
+    {
+      "path": "elf-parts-e271df62/references/21/overlay.jpg",
+      "bytes": 133979,
+      "sha256": "74b1488bf8a079c7ee30f2d987dfe6066be6fa2485a391ca46545485147f400c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/21/result.json",
+      "bytes": 978,
+      "sha256": "34606403602cdb4fd814c4215215f4a174265d021584559937708b9b13840c43"
+    },
+    {
+      "path": "elf-parts-e271df62/references/22/card.jpg",
+      "bytes": 37985,
+      "sha256": "ae1a2d19a0109558b3fd2f24a9165474ba492767d821d64ad25276b9ba2db280"
+    },
+    {
+      "path": "elf-parts-e271df62/references/22/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/22/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/22/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/22/result.json",
+      "bytes": 648,
+      "sha256": "95e07b3f6d064061e7b11687a8551311e839870161048d87b4a40a80f2fdf583"
+    },
+    {
+      "path": "elf-parts-e271df62/references/23/card.jpg",
+      "bytes": 37793,
+      "sha256": "15f99b00762c68202831f1391ecd60818f1fb7b4b079d63e583b7c7ee2d9acf3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/23/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/23/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/23/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/23/result.json",
+      "bytes": 647,
+      "sha256": "e9c74005a13d95cb105958f3ed42d38011c3fcc5b93e41d34f6bab4b33b0130f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/24/card.jpg",
+      "bytes": 56821,
+      "sha256": "9a687670187c2e50899d568a81e049f968c3d09ddecab48e1fd7eb6f5003c793"
+    },
+    {
+      "path": "elf-parts-e271df62/references/24/cutout.png",
+      "bytes": 654443,
+      "sha256": "73f713186af714836405e5df5eaf9980dc7d4e6559e81e3de13887ab38f3c7c1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/24/instance-01.png",
+      "bytes": 1720,
+      "sha256": "4d54084ea2c73efc44509d670c0f2a1c9642746bbf7011fc9b6a1a417f68224e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/24/mask.png",
+      "bytes": 1720,
+      "sha256": "4d54084ea2c73efc44509d670c0f2a1c9642746bbf7011fc9b6a1a417f68224e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/24/overlay.jpg",
+      "bytes": 133990,
+      "sha256": "a13fca85fb8ed7368536d17936571899d86729e830ec1b6eaec886114ff5e712"
+    },
+    {
+      "path": "elf-parts-e271df62/references/24/result.json",
+      "bytes": 950,
+      "sha256": "1c28158b39b6ba36130e1e3756f145d63527cf1a7e580e03250abac79fc48e64"
+    },
+    {
+      "path": "elf-parts-e271df62/references/25/card.jpg",
+      "bytes": 65019,
+      "sha256": "515f3b61a4134fe86e21fbf568dfb7144dd72d85e0045f5a8f5aad9394881f38"
+    },
+    {
+      "path": "elf-parts-e271df62/references/25/cutout.png",
+      "bytes": 654957,
+      "sha256": "02a426bfeb521358100527e448893367de1a8a80c48f19a2f762117ae9d28938"
+    },
+    {
+      "path": "elf-parts-e271df62/references/25/instance-01.png",
+      "bytes": 2763,
+      "sha256": "40e7d7d92cd720a6df1a35a7858de1cca9d2a4c2a8a6532c95ab4a1bac3e2232"
+    },
+    {
+      "path": "elf-parts-e271df62/references/25/mask.png",
+      "bytes": 2763,
+      "sha256": "40e7d7d92cd720a6df1a35a7858de1cca9d2a4c2a8a6532c95ab4a1bac3e2232"
+    },
+    {
+      "path": "elf-parts-e271df62/references/25/overlay.jpg",
+      "bytes": 134118,
+      "sha256": "9fb93ea18e308e6ea389ef6117d25d0547ecd2ebdb406f2bd4b988294e445a96"
+    },
+    {
+      "path": "elf-parts-e271df62/references/25/result.json",
+      "bytes": 933,
+      "sha256": "0020ea44c1e17d84108c76559fc9852a17641914877fc64d365cbb77642bff23"
+    },
+    {
+      "path": "elf-parts-e271df62/references/26/card.jpg",
+      "bytes": 40303,
+      "sha256": "866673fae1f833d6f0148851d97aefda78a26c6cdfd6404a8aa911f1df582c2e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/26/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/26/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/26/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/26/result.json",
+      "bytes": 675,
+      "sha256": "f2bc4a17f9a14b28f84c94a658c8bd3054cfa50089f2ab7edc0a976f2626d3d3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/27/card.jpg",
+      "bytes": 79354,
+      "sha256": "4706c2d3532b04626db0a9b52db924228b44534547bac486683de0655986b0e4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/27/cutout.png",
+      "bytes": 664841,
+      "sha256": "66e8b7bb9cad15ce9154be0e4c2212b973ec734c44026cdae9c8beaa20f59e1d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/27/instance-01.png",
+      "bytes": 7940,
+      "sha256": "af52679e82be1bcbb26652697f45f95f9bae19c1c6b6f332c22dd3da8bb33c60"
+    },
+    {
+      "path": "elf-parts-e271df62/references/27/mask.png",
+      "bytes": 7940,
+      "sha256": "af52679e82be1bcbb26652697f45f95f9bae19c1c6b6f332c22dd3da8bb33c60"
+    },
+    {
+      "path": "elf-parts-e271df62/references/27/overlay.jpg",
+      "bytes": 132705,
+      "sha256": "21b29235835f3862a4753ef22a08c7cd61a6f004d62737f19fb6376e85db0119"
+    },
+    {
+      "path": "elf-parts-e271df62/references/27/result.json",
+      "bytes": 997,
+      "sha256": "eab31ae0a04b3d1e9fc433fec62498b45fd71ea809cebebd44bc0da9e932ce9f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/28/card.jpg",
+      "bytes": 38854,
+      "sha256": "59cdafc2056b4b17f3aa8b54372de889fa1d203972dc18293efbe5446d4d3e91"
+    },
+    {
+      "path": "elf-parts-e271df62/references/28/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/28/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/28/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/28/result.json",
+      "bytes": 654,
+      "sha256": "6c9d642f87cec86d86c16fbb321adc678d276c8c53751923ce271bd3616d699f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/29/card.jpg",
+      "bytes": 39159,
+      "sha256": "cc0c5d99c6d6410ffeab4dd2be1f9e5076e40088c55b32a8466d34df7b7e3e2e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/29/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/29/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/29/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/29/result.json",
+      "bytes": 657,
+      "sha256": "99b8e320feb0a343bdf91a9438363d291f28afa97052b6158ee0c4d8474fe37c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/30/card.jpg",
+      "bytes": 38682,
+      "sha256": "5b431d2b4a4edffbfc4e6761284f3374f63e070e041d9183b3fcc2135d3cb8b8"
+    },
+    {
+      "path": "elf-parts-e271df62/references/30/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/30/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/30/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/30/result.json",
+      "bytes": 650,
+      "sha256": "35383db2018b13408bb881bc6a591baf31234c14c03fa377967f293df3363beb"
+    },
+    {
+      "path": "elf-parts-e271df62/references/31/card.jpg",
+      "bytes": 40137,
+      "sha256": "fe681f47128a7070ebf356d81aa2ae16e49de7ed7691b8e1804594049bb81bc1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/31/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/31/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/31/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/31/result.json",
+      "bytes": 672,
+      "sha256": "e1532154d2d27e6bfafd0b6b95759e749e8077ffc9f67c750bce1850aba668ac"
+    },
+    {
+      "path": "elf-parts-e271df62/references/32/card.jpg",
+      "bytes": 79231,
+      "sha256": "611aabcea02a0a1a48757f0941424cad71514cc2eef6428ae5ea8f25f75654af"
+    },
+    {
+      "path": "elf-parts-e271df62/references/32/cutout.png",
+      "bytes": 664836,
+      "sha256": "4d4e8f4520460c1e4e0f0b0aec7ed9c76a684f52866a59f00f36ed6d321f48a6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/32/instance-01.png",
+      "bytes": 7962,
+      "sha256": "10400e269d7eccbdf2eb139a3ef7c16bd2ed019688ff988e884b20e8240af5da"
+    },
+    {
+      "path": "elf-parts-e271df62/references/32/mask.png",
+      "bytes": 7962,
+      "sha256": "10400e269d7eccbdf2eb139a3ef7c16bd2ed019688ff988e884b20e8240af5da"
+    },
+    {
+      "path": "elf-parts-e271df62/references/32/overlay.jpg",
+      "bytes": 132843,
+      "sha256": "800728737ebf6dd627b3d04f2b881e9838072c307f6a1048d20ab06115c82382"
+    },
+    {
+      "path": "elf-parts-e271df62/references/32/result.json",
+      "bytes": 994,
+      "sha256": "5621c04a7ee68f883a31e4437be982ef258dd8a0f76d8d13d7a462145d67556c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/33/card.jpg",
+      "bytes": 37252,
+      "sha256": "c7b99c9ff58d70ffef0380e2462a78344753fb63ee11eb3518f9da4b8e8b9bb1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/33/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/33/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/33/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/33/result.json",
+      "bytes": 628,
+      "sha256": "2ab73a95f8d1c89768c7979703006a0a48ec551e1010bae4b10c9c126ad27967"
+    },
+    {
+      "path": "elf-parts-e271df62/references/34/card.jpg",
+      "bytes": 68420,
+      "sha256": "29db92bc304b752978b1ee540086a0098bab4ddf0dda0774c40ef9990f549bc8"
+    },
+    {
+      "path": "elf-parts-e271df62/references/34/cutout.png",
+      "bytes": 655823,
+      "sha256": "938a288497d7dded557b63474f2d45dfba1ba3919e506ff669f1b82bbbde647b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/34/instance-01.png",
+      "bytes": 2569,
+      "sha256": "530ce531f7d10e16ea3a871d64596e5714d69e41d03ccb7c1f58932c83d6f85c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/34/mask.png",
+      "bytes": 2569,
+      "sha256": "530ce531f7d10e16ea3a871d64596e5714d69e41d03ccb7c1f58932c83d6f85c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/34/overlay.jpg",
+      "bytes": 133234,
+      "sha256": "40e611bb7e135b6aba6d06dabcc786bdaf9665f58d4600b3e36c7f8f7483fe3a"
+    },
+    {
+      "path": "elf-parts-e271df62/references/34/result.json",
+      "bytes": 1005,
+      "sha256": "066e1abf425a3a5030445f73412d583d997a37d0da5884a00b76d10191de5d3d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/35/card.jpg",
+      "bytes": 69344,
+      "sha256": "441279fd499eb316fe7c15742a2de01bd11ee010a2f3cb85b3914728f8d2de8e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/35/cutout.png",
+      "bytes": 655969,
+      "sha256": "e66af6c374f5ce7dedf3350fa289047cffe8e6ab9f05e770a126ead67ba633bc"
+    },
+    {
+      "path": "elf-parts-e271df62/references/35/instance-01.png",
+      "bytes": 2617,
+      "sha256": "0744c5dc28f49c5e2f517dd5db0d403f8e9fb01dd5e8f1530bfcd7b138c1a913"
+    },
+    {
+      "path": "elf-parts-e271df62/references/35/mask.png",
+      "bytes": 2617,
+      "sha256": "0744c5dc28f49c5e2f517dd5db0d403f8e9fb01dd5e8f1530bfcd7b138c1a913"
+    },
+    {
+      "path": "elf-parts-e271df62/references/35/overlay.jpg",
+      "bytes": 133366,
+      "sha256": "50a6bb0f90e9bd36f16b47839213c24836ed16d9dab46a9cb01bd3a504f8064e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/35/result.json",
+      "bytes": 1004,
+      "sha256": "beaaa3d679958c83cd52c50a28338538b5c9c882cdbad8dedb1a2ed5ffdd29fa"
+    },
+    {
+      "path": "elf-parts-e271df62/references/36/card.jpg",
+      "bytes": 57725,
+      "sha256": "96d28138a5b0ec4518869dd14b1de2dda3cd6f1d599ead8cd7568466864f6bcb"
+    },
+    {
+      "path": "elf-parts-e271df62/references/36/cutout.png",
+      "bytes": 654510,
+      "sha256": "268103133604964fd5d2e6c14e0d6154c4881b850fd0951bb486f3399d06956b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/36/instance-01.png",
+      "bytes": 1970,
+      "sha256": "b847b51dca6910fe1c5582bd1907b1c58d93cc78b358fddfd633817265e6550c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/36/mask.png",
+      "bytes": 1970,
+      "sha256": "b847b51dca6910fe1c5582bd1907b1c58d93cc78b358fddfd633817265e6550c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/36/overlay.jpg",
+      "bytes": 134207,
+      "sha256": "4fb72a6a7e0e24dfe204a6870de7d56bddc533d1e617877326dbd876973d8e81"
+    },
+    {
+      "path": "elf-parts-e271df62/references/36/result.json",
+      "bytes": 922,
+      "sha256": "2e12e7cf373a79d69a39074a6d2fb4375a451302d37ab6bb5204ba7844992cd5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/37/card.jpg",
+      "bytes": 63640,
+      "sha256": "6d893accf0da9bfb9f498debcdcac29e5a86496019eacce1a4a6ec130b024910"
+    },
+    {
+      "path": "elf-parts-e271df62/references/37/cutout.png",
+      "bytes": 655361,
+      "sha256": "7bb420b516a0ba338295d9a4cd524cb16d23530b2ef243276a07ca2ab338d080"
+    },
+    {
+      "path": "elf-parts-e271df62/references/37/instance-01.png",
+      "bytes": 4126,
+      "sha256": "4a213e6629f2267c08236da698179c0002e43712870d921ab3412d6f4162d197"
+    },
+    {
+      "path": "elf-parts-e271df62/references/37/instance-02.png",
+      "bytes": 2221,
+      "sha256": "03b99defa720fd2c41d8abc25e9d26b94a20f3fef77993d2d14d7fdca5460478"
+    },
+    {
+      "path": "elf-parts-e271df62/references/37/mask.png",
+      "bytes": 3794,
+      "sha256": "6b86782b802ff9238ce943d96ae74bcac7ae2784721ae1e76690bf83dae2c909"
+    },
+    {
+      "path": "elf-parts-e271df62/references/37/overlay.jpg",
+      "bytes": 133058,
+      "sha256": "fdc4242c9349eddb4f6f4310ce92cd02963aa2b651cd51b52130aebdfa2e5ee6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/37/result.json",
+      "bytes": 1196,
+      "sha256": "25fcf0ef99e80b99bdc1fa32aa5325d25b5e6e1375d6547a87bd4f982d4710d0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/38/card.jpg",
+      "bytes": 60022,
+      "sha256": "1ca2f1d50003730dae4ff5a0267251b1ce3c29ddf1255d07f854005eb3b64c0d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/38/cutout.png",
+      "bytes": 654891,
+      "sha256": "ab0a0bcfe834277ed62f245bda364360f3ba0b0b42ed60ee7260bd5d58baeaff"
+    },
+    {
+      "path": "elf-parts-e271df62/references/38/instance-01.png",
+      "bytes": 2438,
+      "sha256": "24db7287bd3fb3e632b4ace0eb2dfad016e61c73fad2e54a6e16e1dc69dd8071"
+    },
+    {
+      "path": "elf-parts-e271df62/references/38/mask.png",
+      "bytes": 2438,
+      "sha256": "24db7287bd3fb3e632b4ace0eb2dfad016e61c73fad2e54a6e16e1dc69dd8071"
+    },
+    {
+      "path": "elf-parts-e271df62/references/38/overlay.jpg",
+      "bytes": 134753,
+      "sha256": "4f54df2eb95266e20d0007296fd90293eb1267c3d4eee39edf1340733709afc2"
+    },
+    {
+      "path": "elf-parts-e271df62/references/38/result.json",
+      "bytes": 938,
+      "sha256": "b7540fcd5ca562a2bb46c51f716802109d3115cec692fad128d5bfdd9eb3b35a"
+    },
+    {
+      "path": "elf-parts-e271df62/references/39/card.jpg",
+      "bytes": 63459,
+      "sha256": "7f2c181d7dfc581e5d537f18b07561772eec35199fc2d94cc376534d6d4b2c46"
+    },
+    {
+      "path": "elf-parts-e271df62/references/39/cutout.png",
+      "bytes": 654671,
+      "sha256": "17bd169a246708a4f0138aff3d0ff91559e515389773e4b446e694d7b65a5049"
+    },
+    {
+      "path": "elf-parts-e271df62/references/39/instance-01.png",
+      "bytes": 2544,
+      "sha256": "6d5a4822dbb826e94fee8c86a7310951a6ef2b0440bd4c4213316e978dd5fd28"
+    },
+    {
+      "path": "elf-parts-e271df62/references/39/mask.png",
+      "bytes": 2544,
+      "sha256": "6d5a4822dbb826e94fee8c86a7310951a6ef2b0440bd4c4213316e978dd5fd28"
+    },
+    {
+      "path": "elf-parts-e271df62/references/39/overlay.jpg",
+      "bytes": 134499,
+      "sha256": "601ca9378fd632d8bde9823443b240ecc332108cb0753576268f1364453a35ea"
+    },
+    {
+      "path": "elf-parts-e271df62/references/39/result.json",
+      "bytes": 975,
+      "sha256": "89ce04392f06478936497b709500640f081c495577a2c50566531cf50fcd598d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/40/card.jpg",
+      "bytes": 63731,
+      "sha256": "1dadbe1f86abafe396bfc76893f2d6fff95fd497729919128182c8595470395c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/40/cutout.png",
+      "bytes": 654980,
+      "sha256": "03d01fa8768f655316b917767577391b32b507248dfd32d9f153e334d0a0f1e4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/40/instance-01.png",
+      "bytes": 2588,
+      "sha256": "18ddb2a046eb3b8be25dcefd967361169368497a82d9a88fbb525a6b28991ac5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/40/mask.png",
+      "bytes": 2588,
+      "sha256": "18ddb2a046eb3b8be25dcefd967361169368497a82d9a88fbb525a6b28991ac5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/40/overlay.jpg",
+      "bytes": 134635,
+      "sha256": "a9bb12460d2fcbd77c5749c74f6cd31cda5ef33cd09e0f32a0ddd67a5e5a83dd"
+    },
+    {
+      "path": "elf-parts-e271df62/references/40/result.json",
+      "bytes": 970,
+      "sha256": "b91311bfadb5994b782123744f660e210f156b1b75c21c73dc63f14b12dbf77f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/41/card.jpg",
+      "bytes": 39067,
+      "sha256": "bc5d7a5690e9b582d88d7b4e27265f89203139a62335de14782046ad3f0abdb8"
+    },
+    {
+      "path": "elf-parts-e271df62/references/41/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/41/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/41/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/41/result.json",
+      "bytes": 657,
+      "sha256": "06a084e607faf8be280024445b54a3a321197d8816b9a31e1769d65e06e5e942"
+    },
+    {
+      "path": "elf-parts-e271df62/references/42/card.jpg",
+      "bytes": 39447,
+      "sha256": "c5e6cdeade7eda0845a5f1cb0d79818552f5016ffeded73b1e33057121e029e1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/42/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/42/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/42/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/42/result.json",
+      "bytes": 658,
+      "sha256": "588a4c6a4ec2d93d34238a81cfdf22810e3a5c20f2cd06d722cc267889d84674"
+    },
+    {
+      "path": "elf-parts-e271df62/references/43/card.jpg",
+      "bytes": 40426,
+      "sha256": "cf8754c7ff0e4a87522d2bc2a83cac1dbb6adc0fc9bc2f77568168286162a4e7"
+    },
+    {
+      "path": "elf-parts-e271df62/references/43/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/43/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/43/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/43/result.json",
+      "bytes": 681,
+      "sha256": "656519bd3367792e1dc2a7b87d151d9d6889731e4406d28398dfd7e1eafb9b45"
+    },
+    {
+      "path": "elf-parts-e271df62/references/44/card.jpg",
+      "bytes": 40884,
+      "sha256": "6cc80345a6b9ca441e5e6a45241565c8161b5528d5fdf56712b41a9992fa8896"
+    },
+    {
+      "path": "elf-parts-e271df62/references/44/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/44/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/44/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/44/result.json",
+      "bytes": 684,
+      "sha256": "23ddcff6b7ebcb33d00e9237af44fc0f4a8f98377fb9c507199bbe6ec13d97c1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/45/card.jpg",
+      "bytes": 40525,
+      "sha256": "58790134c283c55c5077c4e183c2849e87f265c593b4e3966ffa85946941bbc4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/45/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/45/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/45/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/45/result.json",
+      "bytes": 681,
+      "sha256": "0df1877b4f4ffb8ed3d4a16fda155717ec1a06b202b0b2a209003713259e0faa"
+    },
+    {
+      "path": "elf-parts-e271df62/references/46/card.jpg",
+      "bytes": 40271,
+      "sha256": "e0c605a1f91433d0fd27e9b8c16e89cc1a808a9d5e4739ae04998631e961e1ca"
+    },
+    {
+      "path": "elf-parts-e271df62/references/46/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/46/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/46/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/46/result.json",
+      "bytes": 684,
+      "sha256": "255ec08c3aff0def1f242f8303c6efd48787bd02cae47e1f6255e498312a88af"
+    },
+    {
+      "path": "elf-parts-e271df62/references/47/card.jpg",
+      "bytes": 63941,
+      "sha256": "52540bdd635a4ca1074752b088ccb73b2e415e012d111dee5f5fade2c17a0a52"
+    },
+    {
+      "path": "elf-parts-e271df62/references/47/cutout.png",
+      "bytes": 654622,
+      "sha256": "cf9f01c92abac0abd531df3456cdcfc4b31d5a12c26c1c70d444b767a94c2967"
+    },
+    {
+      "path": "elf-parts-e271df62/references/47/instance-01.png",
+      "bytes": 2540,
+      "sha256": "195a62c4473aa8079ec49efbddd4f084fe22b0a65326f8920774142d3b36a6a6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/47/mask.png",
+      "bytes": 2540,
+      "sha256": "195a62c4473aa8079ec49efbddd4f084fe22b0a65326f8920774142d3b36a6a6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/47/overlay.jpg",
+      "bytes": 134608,
+      "sha256": "2a5e6ec772c08edec41f1d5ac82796b91afa3a45ebc9fc8eec8afc0844bb34f7"
+    },
+    {
+      "path": "elf-parts-e271df62/references/47/result.json",
+      "bytes": 982,
+      "sha256": "a76ae93c3346aa708bda1eb41e797f9b53151bcf9d93457eced2a09c068817ac"
+    },
+    {
+      "path": "elf-parts-e271df62/references/48/card.jpg",
+      "bytes": 64680,
+      "sha256": "aab3435a88b387de63f134438615639e1ef0969ed731084414280042d3c4588c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/48/cutout.png",
+      "bytes": 654925,
+      "sha256": "35b9129eed5324794096fd760b9a326e38cf1064eb5c2f3bf7b9b2fd6d3ae850"
+    },
+    {
+      "path": "elf-parts-e271df62/references/48/instance-01.png",
+      "bytes": 2617,
+      "sha256": "e507795789c0eb1d18f7114acb4b3c33203e4bdb885a01354265be7bcfbc5b3b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/48/mask.png",
+      "bytes": 2617,
+      "sha256": "e507795789c0eb1d18f7114acb4b3c33203e4bdb885a01354265be7bcfbc5b3b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/48/overlay.jpg",
+      "bytes": 134437,
+      "sha256": "deeccb2226134918297fdcb418d940482f7b6902b69ecbc163c149a60f33d935"
+    },
+    {
+      "path": "elf-parts-e271df62/references/48/result.json",
+      "bytes": 976,
+      "sha256": "b00a99d74b157ae58ef14d03448a90f942c1125b915aa2abbbb2b355acb771b5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/49/card.jpg",
+      "bytes": 39423,
+      "sha256": "6e6161d89c4858b9812194c9f018f4831e43595275c4ccc6c6e5455316b35dec"
+    },
+    {
+      "path": "elf-parts-e271df62/references/49/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/49/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/49/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/49/result.json",
+      "bytes": 660,
+      "sha256": "ebaf610232825fe1699ec50d0fa7ae187a8f79932149a323c90f72c83d15def6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/50/card.jpg",
+      "bytes": 39869,
+      "sha256": "32c5fa3c16f0568ede64987501212b483f6f454bed839549428190b5a60c3721"
+    },
+    {
+      "path": "elf-parts-e271df62/references/50/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/50/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/50/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/50/result.json",
+      "bytes": 663,
+      "sha256": "25ce5bf920b636b9a3c4bbb7b47be94add827a7377ce3af2823e1993878c542f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/51/card.jpg",
+      "bytes": 61584,
+      "sha256": "bd8006f18779308c03c5cd3f99882faeaa710943b6f09f44e1acfb35c39bc7de"
+    },
+    {
+      "path": "elf-parts-e271df62/references/51/cutout.png",
+      "bytes": 654735,
+      "sha256": "dd9ecf1c8f13de5e0eefe7ca6dc51e2f61bd4760b9a77e11d463edd6d07d6a90"
+    },
+    {
+      "path": "elf-parts-e271df62/references/51/instance-01.png",
+      "bytes": 1886,
+      "sha256": "cd65d8a6ce7f66434ff85964842d6b77bd8c93a1f9c53ac709d982f6c62996c4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/51/mask.png",
+      "bytes": 1886,
+      "sha256": "cd65d8a6ce7f66434ff85964842d6b77bd8c93a1f9c53ac709d982f6c62996c4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/51/overlay.jpg",
+      "bytes": 134153,
+      "sha256": "07dfd38b5bf573e3baf43f922b2497dba413f0e455814a98d6d382e1fbc387c9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/51/result.json",
+      "bytes": 998,
+      "sha256": "38f75307391fc064ea27d9a5878658b106b8ba546e7784b3465e9ec98611fa20"
+    },
+    {
+      "path": "elf-parts-e271df62/references/52/card.jpg",
+      "bytes": 41158,
+      "sha256": "3f946f763312ee27842d10df49fcf9813494c65f2e2647cf3fc38d265b832485"
+    },
+    {
+      "path": "elf-parts-e271df62/references/52/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/52/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/52/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/52/result.json",
+      "bytes": 687,
+      "sha256": "81981c4f31106618042a0cdb4bfd227b55a8c0932d0004245ad977d95bcfb72a"
+    },
+    {
+      "path": "elf-parts-e271df62/references/53/card.jpg",
+      "bytes": 40835,
+      "sha256": "c8af27c53fc149673edbb60559dbb79348fabae7ceb2d3c4940c55fb34687c25"
+    },
+    {
+      "path": "elf-parts-e271df62/references/53/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/53/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/53/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/53/result.json",
+      "bytes": 684,
+      "sha256": "5012e5693bffdf745e2f1e1ee275b39f0466b08964ee00026bb41fb5ef784209"
+    },
+    {
+      "path": "elf-parts-e271df62/references/54/card.jpg",
+      "bytes": 40623,
+      "sha256": "f16c9554244c85b48efbbd4cf98eeeb186142449f52630033feeab7a5c739b05"
+    },
+    {
+      "path": "elf-parts-e271df62/references/54/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/54/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/54/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/54/result.json",
+      "bytes": 687,
+      "sha256": "c96979719655fae8832937485d5221730b0ee7d58a31b9e7a38c3833618a2ace"
+    },
+    {
+      "path": "elf-parts-e271df62/references/55/card.jpg",
+      "bytes": 35752,
+      "sha256": "8430d34f4724adf1b9325d448252d8409a3fdc06cf901c1aef7b35b110e5336c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/55/cutout.png",
+      "bytes": 654423,
+      "sha256": "f8c0456e86cda5ac0547ae2e434c0a12c49825b641079ae6daf9f8e03f7af416"
+    },
+    {
+      "path": "elf-parts-e271df62/references/55/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/55/overlay.jpg",
+      "bytes": 134045,
+      "sha256": "844030940a826c6c5ca9d2e0bde687330dd83474220cb50af2d9067a6855edf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/55/result.json",
+      "bytes": 613,
+      "sha256": "a6692b8d9267b436fdf1ff3d863919d1fbcfe51c54dbc8fec9f5a3369372c60f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/56/card.jpg",
+      "bytes": 62202,
+      "sha256": "fdee7286e4bd4b11905b647653f9c8de702a598b708befec94bd3a9c4282c26d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/56/cutout.png",
+      "bytes": 656633,
+      "sha256": "c2557f7446a00d5484e810be54400461fd7ccee426636667e228d9a4b31c8769"
+    },
+    {
+      "path": "elf-parts-e271df62/references/56/instance-01.png",
+      "bytes": 4051,
+      "sha256": "d42216d7d8bd56dfb3398b6a6c7a001e08b50f727c585972a5e769864c21b7d6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/56/mask.png",
+      "bytes": 4051,
+      "sha256": "d42216d7d8bd56dfb3398b6a6c7a001e08b50f727c585972a5e769864c21b7d6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/56/overlay.jpg",
+      "bytes": 133419,
+      "sha256": "7e5fe8091bdf98893c3eccc3105b897538ba871849763885e8a7ab9d9590d0e0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/56/result.json",
+      "bytes": 958,
+      "sha256": "8bcf8dfe01568e8e7929fa4e2b29a136d5fcb027f06f4bf3daeca8a3d8427b2e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/57/card.jpg",
+      "bytes": 77203,
+      "sha256": "753b4224e3164a191c87a25d4928aedb4ad60d57e5a4972ec16fa22efd8da12f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/57/cutout.png",
+      "bytes": 657140,
+      "sha256": "399ad9d92f1087232f25d7dffd5802e75cac814c1e5e6c2803da8f36c8d68e21"
+    },
+    {
+      "path": "elf-parts-e271df62/references/57/instance-01.png",
+      "bytes": 2555,
+      "sha256": "34b96fd6b6d395a38384cc870618fe8fc81de779d166cfc95bbc6b2d61896437"
+    },
+    {
+      "path": "elf-parts-e271df62/references/57/instance-02.png",
+      "bytes": 2612,
+      "sha256": "840b0bdfde0e54404805e9d0127be7cc958b24559528d0c9222191461587c266"
+    },
+    {
+      "path": "elf-parts-e271df62/references/57/mask.png",
+      "bytes": 2949,
+      "sha256": "27361998385db18e691aa32de56758b86ecdf2da28583366bd261109c52a9d8a"
+    },
+    {
+      "path": "elf-parts-e271df62/references/57/overlay.jpg",
+      "bytes": 132540,
+      "sha256": "74379d98085baca20f727e38af885cfe29bf5d1dd44c399fe366ba49dbaea1bd"
+    },
+    {
+      "path": "elf-parts-e271df62/references/57/result.json",
+      "bytes": 1216,
+      "sha256": "08b627f4ffd0e7f17efbadc69b1d4fea654442848a9d3fac80c15331487c5050"
+    },
+    {
+      "path": "elf-parts-e271df62/references/58/card.jpg",
+      "bytes": 66751,
+      "sha256": "11637ef52e5eb7b8c4fdb4e583446aa98830a96c8f1e68bd456ce00ddc0444a0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/58/cutout.png",
+      "bytes": 654455,
+      "sha256": "66aa4876887b6a260a21174538b547ba704b7097895fa6d6493f45d9a1d85392"
+    },
+    {
+      "path": "elf-parts-e271df62/references/58/instance-01.png",
+      "bytes": 1834,
+      "sha256": "eb7bee43ad12fb943aa6fa988a7344649f658b6b3d6071ce06a1b2f04cee5d8e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/58/mask.png",
+      "bytes": 1834,
+      "sha256": "eb7bee43ad12fb943aa6fa988a7344649f658b6b3d6071ce06a1b2f04cee5d8e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/58/overlay.jpg",
+      "bytes": 133974,
+      "sha256": "3d084401701148d33e051ca88f6fd33d0ff849a6bd599249cf1d25f1e9276457"
+    },
+    {
+      "path": "elf-parts-e271df62/references/58/result.json",
+      "bytes": 1062,
+      "sha256": "c4a27aaf3838b4e6a940c1d789f45b06323707e5e2eee1602f2b572f54dd5322"
+    },
+    {
+      "path": "elf-parts-e271df62/references/59/card.jpg",
+      "bytes": 74695,
+      "sha256": "79e8bde95d73594bd3dfa7c3b48e4194beb7154d9e36d6712acd523798f20bf0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/59/cutout.png",
+      "bytes": 655745,
+      "sha256": "2bda552c5a4b239055d251104eaceab91890b331e1584a48e0842935e78a6f9e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/59/instance-01.png",
+      "bytes": 2571,
+      "sha256": "e91ee8e5fc9f363d87e0f7e1a39126f9e8e5c03c512c68eabc1cd271a84ef018"
+    },
+    {
+      "path": "elf-parts-e271df62/references/59/mask.png",
+      "bytes": 2571,
+      "sha256": "e91ee8e5fc9f363d87e0f7e1a39126f9e8e5c03c512c68eabc1cd271a84ef018"
+    },
+    {
+      "path": "elf-parts-e271df62/references/59/overlay.jpg",
+      "bytes": 133241,
+      "sha256": "3c047b29287d209e540dd6ec05c722514bcb9cb39754c9f8deb116242cb90fd5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/59/result.json",
+      "bytes": 1064,
+      "sha256": "22fa8be02b2c55a2de9ef176d48f49261bda2fd45f6539bc7142ff08c8be96cb"
+    },
+    {
+      "path": "elf-parts-e271df62/references/60/card.jpg",
+      "bytes": 80719,
+      "sha256": "04c3fc63d6bca70516f77540cb9cb01412c075789427ec97d2d4728dd5341845"
+    },
+    {
+      "path": "elf-parts-e271df62/references/60/cutout.png",
+      "bytes": 657171,
+      "sha256": "a881f2a1342f130458604a4dfcffa4cad591614a36e094071b756e2eaee667dd"
+    },
+    {
+      "path": "elf-parts-e271df62/references/60/instance-01.png",
+      "bytes": 2642,
+      "sha256": "3e8d35c7e1115046fd0759f63baab5e5c1d40bbb48eabc2f98ba802c115fef7d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/60/instance-02.png",
+      "bytes": 2580,
+      "sha256": "c8765f471c9c484d53f04b7db608fb90c79ea2d0fee6a5f2f13ffa398ce55d8a"
+    },
+    {
+      "path": "elf-parts-e271df62/references/60/mask.png",
+      "bytes": 2972,
+      "sha256": "249f8912680f8b83048111b0b906d2e64666b14e16da9713552a71bfb85b87b3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/60/overlay.jpg",
+      "bytes": 132508,
+      "sha256": "e377fbc8a6657571393fc4c34c759b08f4e844fb68868bd931fea4566bb26808"
+    },
+    {
+      "path": "elf-parts-e271df62/references/60/result.json",
+      "bytes": 1286,
+      "sha256": "83204b7995300a54e4f097f51499d67409af3a97f8540646f3fae3d097e96cac"
+    },
+    {
+      "path": "elf-parts-e271df62/references/61/card.jpg",
+      "bytes": 75053,
+      "sha256": "08b5c1fc82dc905814a459c06a3d96b6ba5872eab665c7a2be62d963363a5de2"
+    },
+    {
+      "path": "elf-parts-e271df62/references/61/cutout.png",
+      "bytes": 655801,
+      "sha256": "fe9436c9bb5767614be6f628e45b6fe144a021ffd052a8cf0db188800baf5247"
+    },
+    {
+      "path": "elf-parts-e271df62/references/61/instance-01.png",
+      "bytes": 2578,
+      "sha256": "dc26e2897cfcf8cbb2d8faad193f340aee4f919eb74330858cf26ce9439851a4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/61/mask.png",
+      "bytes": 2578,
+      "sha256": "dc26e2897cfcf8cbb2d8faad193f340aee4f919eb74330858cf26ce9439851a4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/61/overlay.jpg",
+      "bytes": 133247,
+      "sha256": "5c12b26cf4460aa7af766bd87e9a53ce710c1d354e64d5ae622aef6fc9096a96"
+    },
+    {
+      "path": "elf-parts-e271df62/references/61/result.json",
+      "bytes": 1069,
+      "sha256": "2bcb6340f88d9fd3c0cbc0500c4fca126f505d3bb2789f416fc8b9a20e85269b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/62/card.jpg",
+      "bytes": 62681,
+      "sha256": "3bffc9b84db0f984372aec866ee21c17eb5564a31f93b3d57e4927e22db32acb"
+    },
+    {
+      "path": "elf-parts-e271df62/references/62/cutout.png",
+      "bytes": 656877,
+      "sha256": "c1a86db3054e4c3b062c9a8cfd131cfb777621271d230ea073deaf72e8ebfee5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/62/instance-01.png",
+      "bytes": 4081,
+      "sha256": "1d000836cc7adebba64f2e518bbda55c640e32be55cbb108395830dab098eb18"
+    },
+    {
+      "path": "elf-parts-e271df62/references/62/mask.png",
+      "bytes": 4081,
+      "sha256": "1d000836cc7adebba64f2e518bbda55c640e32be55cbb108395830dab098eb18"
+    },
+    {
+      "path": "elf-parts-e271df62/references/62/overlay.jpg",
+      "bytes": 133401,
+      "sha256": "43daae3febb0f0ea75c294cd4f1f402a4cdaddf62c682d97be4f4dec6bd636e9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/62/result.json",
+      "bytes": 961,
+      "sha256": "61c0ed43c2ee4fe65800c354333561ce6d31aaf4ff10411239d3ed7548fe3ad5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/63/card.jpg",
+      "bytes": 67719,
+      "sha256": "c2d5c908c4f11c34955fcb091cfab28fbed9e9af7d789e95d74d4ff31750b2eb"
+    },
+    {
+      "path": "elf-parts-e271df62/references/63/cutout.png",
+      "bytes": 655784,
+      "sha256": "f6df8dd1e88b13438c430e61fa95a01404fc826d79f139100afb1a2a934e67eb"
+    },
+    {
+      "path": "elf-parts-e271df62/references/63/instance-01.png",
+      "bytes": 2563,
+      "sha256": "458e220890613f4909b6f6dc0bda50f14206e0cc0458e7bd889b94882c412136"
+    },
+    {
+      "path": "elf-parts-e271df62/references/63/mask.png",
+      "bytes": 2563,
+      "sha256": "458e220890613f4909b6f6dc0bda50f14206e0cc0458e7bd889b94882c412136"
+    },
+    {
+      "path": "elf-parts-e271df62/references/63/overlay.jpg",
+      "bytes": 133241,
+      "sha256": "f0d1ef2fa7554037a8b1924573e09b877c5855196f9a2b30bef53355fd10e3bc"
+    },
+    {
+      "path": "elf-parts-e271df62/references/63/result.json",
+      "bytes": 967,
+      "sha256": "b56ae9632b4aa2c81744833b5c85caa466082abc9db98b696462adc15d38be37"
+    },
+    {
+      "path": "elf-parts-e271df62/references/64/card.jpg",
+      "bytes": 63958,
+      "sha256": "e26d8513e9211185b51be80ca49782e70be03ed75e547c1f576d26eeadbe7ac0"
+    },
+    {
+      "path": "elf-parts-e271df62/references/64/cutout.png",
+      "bytes": 654476,
+      "sha256": "94e32c14bf3d68b9e23d5f89900c4d39e01e56e78536d81c23c4f77615336b17"
+    },
+    {
+      "path": "elf-parts-e271df62/references/64/instance-01.png",
+      "bytes": 1772,
+      "sha256": "06068b9abae8cb8f6853087632f715becf82d5e3d83f0d262a999371c147147c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/64/instance-02.png",
+      "bytes": 1811,
+      "sha256": "20e7eb4036895bc87ff5d522b3447a59cce833dcb75f4e65eba3608f9f9ca352"
+    },
+    {
+      "path": "elf-parts-e271df62/references/64/mask.png",
+      "bytes": 1897,
+      "sha256": "ceb81125378148fbfc63b41647dda8bb5608a66bba3c8f6522e7ba86745b8f09"
+    },
+    {
+      "path": "elf-parts-e271df62/references/64/overlay.jpg",
+      "bytes": 134152,
+      "sha256": "d64083fe096da20929002ea8d1087289691a3dc03591e3a8ad3c760524e6abf1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/64/result.json",
+      "bytes": 1258,
+      "sha256": "72bad69d49f8cbaf4376423e340b6429a512a90c8c6b4460f283b7660271225b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/65/card.jpg",
+      "bytes": 82950,
+      "sha256": "e624d40b6cab1b324f870a5a1accd8650dff08f14bd1ec2a3dd76b79d48d5f4d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/65/cutout.png",
+      "bytes": 657143,
+      "sha256": "c2367603e0132d210e1998995d23d4e9f88a5b4b157f657a9fe206e543b86247"
+    },
+    {
+      "path": "elf-parts-e271df62/references/65/instance-01.png",
+      "bytes": 2552,
+      "sha256": "aa76c6eb075d42adee6c0a327244cc550a78d9f379b21d21cbdec5addc1e2977"
+    },
+    {
+      "path": "elf-parts-e271df62/references/65/instance-02.png",
+      "bytes": 2608,
+      "sha256": "3d54b771cf9698f7f9df0b07fbd0bad4bbbcb7d15037b1ab3c90566db78e0f0f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/65/mask.png",
+      "bytes": 2924,
+      "sha256": "3a21086ebf7b42d55fc892c8acc3755ac4d1a499f969116cf54b08d6a5ef0998"
+    },
+    {
+      "path": "elf-parts-e271df62/references/65/overlay.jpg",
+      "bytes": 132549,
+      "sha256": "0d397bcf1643884626ded370ad01fafda08ab92b9f464a003c9dc409da00b9b3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/65/result.json",
+      "bytes": 1292,
+      "sha256": "a85fa0e4957e8c6edadfa2b55cda4d28d52fcbb77afbcc1a0a92c8b5b9abb8e4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/66/card.jpg",
+      "bytes": 41910,
+      "sha256": "9ac180039a45e98edcc401a41bf3887b4e7841040a38033528e1c593c85849c5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/66/cutout.png",
+      "bytes": 747605,
+      "sha256": "0b9b4c4d42d3401663609368c047df1fec0d870943adae33efd9c69d88da61a9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/66/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/66/overlay.jpg",
+      "bytes": 155414,
+      "sha256": "242021faa35e2c2bfc04f53d0bd922f1d15c4879e76e433ea56af3ddcfe193b1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/66/result.json",
+      "bytes": 695,
+      "sha256": "573e1dc3e51d0de411bfea774eb599427c18a45f1987f2df99c7f715c70adb98"
+    },
+    {
+      "path": "elf-parts-e271df62/references/67/card.jpg",
+      "bytes": 43066,
+      "sha256": "759295cf0852ebae5271d77b510cb0cf77017d358aaeff41984d938c99e4e25c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/67/cutout.png",
+      "bytes": 747605,
+      "sha256": "0b9b4c4d42d3401663609368c047df1fec0d870943adae33efd9c69d88da61a9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/67/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/67/overlay.jpg",
+      "bytes": 155414,
+      "sha256": "242021faa35e2c2bfc04f53d0bd922f1d15c4879e76e433ea56af3ddcfe193b1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/67/result.json",
+      "bytes": 725,
+      "sha256": "a454f1c467c0f0138a069a67eeeb9f2b19c52ca5999d1f3de64890bed9590601"
+    },
+    {
+      "path": "elf-parts-e271df62/references/68/card.jpg",
+      "bytes": 44313,
+      "sha256": "4b8ebf3e70696ee5925b6636c2d41c3ce5cf5f85ab06ebfc870fa1cf216c9740"
+    },
+    {
+      "path": "elf-parts-e271df62/references/68/cutout.png",
+      "bytes": 747605,
+      "sha256": "0b9b4c4d42d3401663609368c047df1fec0d870943adae33efd9c69d88da61a9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/68/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/68/overlay.jpg",
+      "bytes": 155414,
+      "sha256": "242021faa35e2c2bfc04f53d0bd922f1d15c4879e76e433ea56af3ddcfe193b1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/68/result.json",
+      "bytes": 741,
+      "sha256": "a4e73579609435f027052d8e3a3998ee841a9c4b84453949dcb68a4394317500"
+    },
+    {
+      "path": "elf-parts-e271df62/references/69/card.jpg",
+      "bytes": 78059,
+      "sha256": "649926334b1684c11dcac51643121e24f121634377d9c7e1fe63f2d5207ea8ed"
+    },
+    {
+      "path": "elf-parts-e271df62/references/69/cutout.png",
+      "bytes": 752842,
+      "sha256": "2b67041eadb68bafe77d8de7a95e9ee59b58442502287205bd211d18cc5f418a"
+    },
+    {
+      "path": "elf-parts-e271df62/references/69/instance-01.png",
+      "bytes": 5457,
+      "sha256": "03d2378253f20e6813ce5206002d06a3a036288b1deb9ba4ab51528fb9855219"
+    },
+    {
+      "path": "elf-parts-e271df62/references/69/mask.png",
+      "bytes": 5457,
+      "sha256": "03d2378253f20e6813ce5206002d06a3a036288b1deb9ba4ab51528fb9855219"
+    },
+    {
+      "path": "elf-parts-e271df62/references/69/overlay.jpg",
+      "bytes": 153730,
+      "sha256": "943fb0ff87e18ed5c3e28a080c89c55d167ce5d92f8459a140a250cd8ada37ba"
+    },
+    {
+      "path": "elf-parts-e271df62/references/69/result.json",
+      "bytes": 1057,
+      "sha256": "4296b1a1e1fcc37f1e66553162634d408533670bbf8d7561be9426f4dce09692"
+    },
+    {
+      "path": "elf-parts-e271df62/references/70/card.jpg",
+      "bytes": 69433,
+      "sha256": "d11e7ccd0558be2c8cc357d0bdafc646d3ff424f485bee84f8e8206127c50f71"
+    },
+    {
+      "path": "elf-parts-e271df62/references/70/cutout.png",
+      "bytes": 749729,
+      "sha256": "bcb8227110851a1c6e64ab3983feb0c3c4e114bc8b81d378aa3daaf041005309"
+    },
+    {
+      "path": "elf-parts-e271df62/references/70/instance-01.png",
+      "bytes": 2174,
+      "sha256": "41a3f331f350a5359ecb3c5f8474ca659b00a676e4f754115d1223106586217b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/70/instance-02.png",
+      "bytes": 2186,
+      "sha256": "15588627abf4d1db187c517ad901f1b3df2157d5753dedcfe8b2a51e9cb8318c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/70/mask.png",
+      "bytes": 2493,
+      "sha256": "0d08fe983492f99d31a0a667f8b293047201d8bb74beb2b688aabe5cf9eac4e3"
+    },
+    {
+      "path": "elf-parts-e271df62/references/70/overlay.jpg",
+      "bytes": 154544,
+      "sha256": "9ba10375ea585acb2f00d8a63fa8d2ec37d5cbc2ff360af64a950ceeaa8613d5"
+    },
+    {
+      "path": "elf-parts-e271df62/references/70/result.json",
+      "bytes": 1281,
+      "sha256": "2ae2d5c1cc5987f76fc53df54bd33ee2dd5c009666e78b1184b7c13aabc0eba9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/71/card.jpg",
+      "bytes": 43317,
+      "sha256": "075420e4fb343012d273e6f9f2fca9105dea575e57b45922a993f51a847d5de6"
+    },
+    {
+      "path": "elf-parts-e271df62/references/71/cutout.png",
+      "bytes": 747605,
+      "sha256": "0b9b4c4d42d3401663609368c047df1fec0d870943adae33efd9c69d88da61a9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/71/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/71/overlay.jpg",
+      "bytes": 155414,
+      "sha256": "242021faa35e2c2bfc04f53d0bd922f1d15c4879e76e433ea56af3ddcfe193b1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/71/result.json",
+      "bytes": 705,
+      "sha256": "097f2fe76261ed71f4d9d140cec289c48d942bb95bf8eec33ce98d34bcdfb107"
+    },
+    {
+      "path": "elf-parts-e271df62/references/72/card.jpg",
+      "bytes": 71147,
+      "sha256": "31e0a6f608e20065f495481963659904c6be6f223cee71cedd24db42f105d8ee"
+    },
+    {
+      "path": "elf-parts-e271df62/references/72/cutout.png",
+      "bytes": 747872,
+      "sha256": "4a5f741b02f92a753baddfd37992c1d5775cad77d8b5166ddbf2107928c9187a"
+    },
+    {
+      "path": "elf-parts-e271df62/references/72/instance-01.png",
+      "bytes": 2428,
+      "sha256": "0d32a621868e9178ead15a45368246034e0e767b058791b64413784d302e7854"
+    },
+    {
+      "path": "elf-parts-e271df62/references/72/mask.png",
+      "bytes": 2428,
+      "sha256": "0d32a621868e9178ead15a45368246034e0e767b058791b64413784d302e7854"
+    },
+    {
+      "path": "elf-parts-e271df62/references/72/overlay.jpg",
+      "bytes": 155869,
+      "sha256": "be2e14091d831db39cdc196f0401ca7c68b1cd847934a34cbc8cd0b022bcb785"
+    },
+    {
+      "path": "elf-parts-e271df62/references/72/result.json",
+      "bytes": 1019,
+      "sha256": "8fdd32e03ea704d97e9bdee17cb9375649b3217b6fea69902661b9089bb75591"
+    },
+    {
+      "path": "elf-parts-e271df62/references/73/card.jpg",
+      "bytes": 69704,
+      "sha256": "eacb6de81cee21757529e274f042246a77286dd4eb826fb894a1eabe5a51b103"
+    },
+    {
+      "path": "elf-parts-e271df62/references/73/cutout.png",
+      "bytes": 747887,
+      "sha256": "7dc33eab2170e4ac71f9999492b509fbc70d3e84a902705137eb76b4125db3c4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/73/instance-01.png",
+      "bytes": 2422,
+      "sha256": "ad542c327b2e09537dcddc6d77ffb7bb33ae074f70c81a8dffc0674f95ac2338"
+    },
+    {
+      "path": "elf-parts-e271df62/references/73/mask.png",
+      "bytes": 2422,
+      "sha256": "ad542c327b2e09537dcddc6d77ffb7bb33ae074f70c81a8dffc0674f95ac2338"
+    },
+    {
+      "path": "elf-parts-e271df62/references/73/overlay.jpg",
+      "bytes": 155859,
+      "sha256": "42109dc883f885ed7727c044fe8eb362c550af852593391996355feead773d5b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/73/result.json",
+      "bytes": 1002,
+      "sha256": "fb6debb91c0c8a69e555f79a2a24ee8eaac0c8393d116d710951f37559fb283c"
+    },
+    {
+      "path": "elf-parts-e271df62/references/74/card.jpg",
+      "bytes": 69269,
+      "sha256": "dbf837611a563deeea553a5c5ec38e2b0312bb85f33ca64b7802f36ce6fa1443"
+    },
+    {
+      "path": "elf-parts-e271df62/references/74/cutout.png",
+      "bytes": 747884,
+      "sha256": "f2f0f03c82354d88c56f88bd9571348e5075116b5ee76c4395cd551c5e21820e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/74/instance-01.png",
+      "bytes": 2417,
+      "sha256": "6bc118029ff672daf7a5d8beaea5b7cc7475ed2f05f94cd5f9974badc497c84b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/74/mask.png",
+      "bytes": 2417,
+      "sha256": "6bc118029ff672daf7a5d8beaea5b7cc7475ed2f05f94cd5f9974badc497c84b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/74/overlay.jpg",
+      "bytes": 155824,
+      "sha256": "92689918462499bf1f203d99073488cc28adf2c088b749920bb788209ac182c9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/74/result.json",
+      "bytes": 999,
+      "sha256": "f6138d20d525f54de95ce5066c2b1c77916f557b799b6180324acc29e20d61b4"
+    },
+    {
+      "path": "elf-parts-e271df62/references/75/card.jpg",
+      "bytes": 63614,
+      "sha256": "69bad2d14c44973b3b75ea18ebe5472d7ad02726d2badaa2e7d124d534eee0cd"
+    },
+    {
+      "path": "elf-parts-e271df62/references/75/cutout.png",
+      "bytes": 748377,
+      "sha256": "1f30b849bbd3a2436b96ec723b928104095a39c5efff92a591d6caefe804673e"
+    },
+    {
+      "path": "elf-parts-e271df62/references/75/instance-01.png",
+      "bytes": 2057,
+      "sha256": "3fbd3ca1e7375384224036c3a4e100b04c80bf46f47cdb4817bfc16d729f6287"
+    },
+    {
+      "path": "elf-parts-e271df62/references/75/mask.png",
+      "bytes": 2057,
+      "sha256": "3fbd3ca1e7375384224036c3a4e100b04c80bf46f47cdb4817bfc16d729f6287"
+    },
+    {
+      "path": "elf-parts-e271df62/references/75/overlay.jpg",
+      "bytes": 155331,
+      "sha256": "28e24e0735c317566788e2a7bc802a110256bbda55bf9a648f1346d42c1e22ee"
+    },
+    {
+      "path": "elf-parts-e271df62/references/75/result.json",
+      "bytes": 973,
+      "sha256": "109b0e9d09cda9d1fd22e7ffaae2c7fc8ac7520b0326ad1b2fd5cfbd793d1ea7"
+    },
+    {
+      "path": "elf-parts-e271df62/references/76/card.jpg",
+      "bytes": 42694,
+      "sha256": "2280ec9ee9a47e652e4f1209af1fba04972d79a6d2eee039567b3a6b0d90305f"
+    },
+    {
+      "path": "elf-parts-e271df62/references/76/cutout.png",
+      "bytes": 747605,
+      "sha256": "0b9b4c4d42d3401663609368c047df1fec0d870943adae33efd9c69d88da61a9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/76/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/76/overlay.jpg",
+      "bytes": 155414,
+      "sha256": "242021faa35e2c2bfc04f53d0bd922f1d15c4879e76e433ea56af3ddcfe193b1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/76/result.json",
+      "bytes": 695,
+      "sha256": "bfc9090eb1729ddc63ac493fb518f359fdcc083ed2d296616d14de298040ed61"
+    },
+    {
+      "path": "elf-parts-e271df62/references/77/card.jpg",
+      "bytes": 78235,
+      "sha256": "807558b518c14bf8683126592ff44a8d8729e4fffb358c367b1f7cb91d249cff"
+    },
+    {
+      "path": "elf-parts-e271df62/references/77/cutout.png",
+      "bytes": 752744,
+      "sha256": "c4213e990e5dc9b678d2be67a0574e72cf0c99e871c2bf3d008c782b87b7b51b"
+    },
+    {
+      "path": "elf-parts-e271df62/references/77/instance-01.png",
+      "bytes": 5281,
+      "sha256": "25edc15822873e4fab8254c589d9497c1abe5eed495c633ad707450fad773fb1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/77/mask.png",
+      "bytes": 5281,
+      "sha256": "25edc15822873e4fab8254c589d9497c1abe5eed495c633ad707450fad773fb1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/77/overlay.jpg",
+      "bytes": 152997,
+      "sha256": "7e57340aa3efb4c2ae8267ed1ee23a90a283166a891f2ad88ad69cd83a22a10d"
+    },
+    {
+      "path": "elf-parts-e271df62/references/77/result.json",
+      "bytes": 1041,
+      "sha256": "0400ce03eed354d327bdb038c1993944c4af10d0af0e29e978075a7d3a9622fe"
+    },
+    {
+      "path": "elf-parts-e271df62/references/78/card.jpg",
+      "bytes": 47169,
+      "sha256": "b265457ee9b3c353c605f5d5c0b23389f378116ae1cd8620d503698794eed5ef"
+    },
+    {
+      "path": "elf-parts-e271df62/references/78/cutout.png",
+      "bytes": 747605,
+      "sha256": "0b9b4c4d42d3401663609368c047df1fec0d870943adae33efd9c69d88da61a9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/78/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/78/overlay.jpg",
+      "bytes": 155414,
+      "sha256": "242021faa35e2c2bfc04f53d0bd922f1d15c4879e76e433ea56af3ddcfe193b1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/78/result.json",
+      "bytes": 766,
+      "sha256": "11ee057e7f4982d87190bcca16c24c8f41c77701d56c29392e811e180528e584"
+    },
+    {
+      "path": "elf-parts-e271df62/references/79/card.jpg",
+      "bytes": 46688,
+      "sha256": "3be6a01bf8ab4819f148270ba356f797db8db8c30df2da3b856472334c0acc03"
+    },
+    {
+      "path": "elf-parts-e271df62/references/79/cutout.png",
+      "bytes": 747605,
+      "sha256": "0b9b4c4d42d3401663609368c047df1fec0d870943adae33efd9c69d88da61a9"
+    },
+    {
+      "path": "elf-parts-e271df62/references/79/mask.png",
+      "bytes": 1606,
+      "sha256": "786ec14225e3b788448266373ec74b146c0c27ccf1bbb9675c3b389a2c8d6904"
+    },
+    {
+      "path": "elf-parts-e271df62/references/79/overlay.jpg",
+      "bytes": 155414,
+      "sha256": "242021faa35e2c2bfc04f53d0bd922f1d15c4879e76e433ea56af3ddcfe193b1"
+    },
+    {
+      "path": "elf-parts-e271df62/references/79/result.json",
+      "bytes": 763,
+      "sha256": "cf7ebb7cec2724719b6ae70edd990f278f2495810426696d193436f6b3c4465a"
+    },
+    {
+      "path": "elf-parts-e271df62/report.json",
+      "bytes": 190983,
+      "sha256": "25035f1c3d4ec7697220ed2cb4217f5c0311bf9af362d934573dd2b5f4c8f7e5"
+    },
+    {
+      "path": "elf-parts-e271df62/sources/assembled.png",
+      "bytes": 834771,
+      "sha256": "12b000e321b981137eccc52b6820a7b9da2719eeb3481a31914fd0e446700bb5"
+    },
+    {
+      "path": "elf-parts-e271df62/sources/body.png",
+      "bytes": 553128,
+      "sha256": "77d9fbf89ec174bd900ad420e8a27f2a22c9ac375cfeef97eca7e687ad9477fd"
+    },
+    {
+      "path": "elf-parts-e271df62/sources/clothes.png",
+      "bytes": 636087,
+      "sha256": "074b28a9a0494e00fdc2e4360fba88e2f512405b31fa8d6d85aac0e3607caa20"
+    },
+    {
+      "path": "environment.json",
+      "bytes": 426,
+      "sha256": "42f15146b4f4d6f76f5f0e963af04e3e8702b075b6cda25f0cd9eda1c8b96201"
+    },
+    {
+      "path": "model-license.txt",
+      "bytes": 7352,
+      "sha256": "bec48f70bd37bf8280a9d1ebf01642d26086f6122ba735baa08fe03c5a6e7448"
+    },
+    {
+      "path": "model-manifest.json",
+      "bytes": 3548,
+      "sha256": "c859303ea1c64f005a1f2f346c07f721d3be3a05cf84ed15fc7df0a5fa7e5789"
+    },
+    {
+      "path": "pink-elf-verified/01-person-mask-01.png",
+      "bytes": 10396,
+      "sha256": "9fa94df120caaf2f33230adeb0c88caca412bf9d710b2f2dd7e9a553e75bebd1"
+    },
+    {
+      "path": "pink-elf-verified/01-person-overlay.png",
+      "bytes": 433074,
+      "sha256": "2a1d2feec8be33527c0a430e3b23318163de63f67c3192513c56374e0e877a5b"
+    },
+    {
+      "path": "pink-elf-verified/01-person-union.png",
+      "bytes": 10396,
+      "sha256": "9fa94df120caaf2f33230adeb0c88caca412bf9d710b2f2dd7e9a553e75bebd1"
+    },
+    {
+      "path": "pink-elf-verified/02-hair-mask-01.png",
+      "bytes": 8029,
+      "sha256": "9b8aaf3c8f931db1cd9c6dd537be002419ebc5789e2ec872c59e4feb0fb7758d"
+    },
+    {
+      "path": "pink-elf-verified/02-hair-overlay.png",
+      "bytes": 522040,
+      "sha256": "db296d3dcda7b319e51492eca94b78055b9b26df5797d91d3a48c1915eb37292"
+    },
+    {
+      "path": "pink-elf-verified/02-hair-union.png",
+      "bytes": 8029,
+      "sha256": "9b8aaf3c8f931db1cd9c6dd537be002419ebc5789e2ec872c59e4feb0fb7758d"
+    },
+    {
+      "path": "pink-elf-verified/03-face-mask-01.png",
+      "bytes": 2277,
+      "sha256": "9852d287f4ba0ca91bfe0b762b4038a15c160b2c07de47f78ef16fcabcafa13d"
+    },
+    {
+      "path": "pink-elf-verified/03-face-overlay.png",
+      "bytes": 549592,
+      "sha256": "111b4a3f499a68c552d854576bc26b23a4ec8f15f1dbf0c17154c05ec3ae8895"
+    },
+    {
+      "path": "pink-elf-verified/03-face-union.png",
+      "bytes": 2277,
+      "sha256": "9852d287f4ba0ca91bfe0b762b4038a15c160b2c07de47f78ef16fcabcafa13d"
+    },
+    {
+      "path": "pink-elf-verified/04-bodysuit-mask-01.png",
+      "bytes": 3775,
+      "sha256": "26567a46ddf5e7e0e2f1e72a6170ea7bd6190db3d463f8f838bb838c48e47d33"
+    },
+    {
+      "path": "pink-elf-verified/04-bodysuit-overlay.png",
+      "bytes": 539543,
+      "sha256": "3e3fd69fdd20be9e33f9d4d8cdb0adbc7de761ad8761da091eba822dbe2ab3f5"
+    },
+    {
+      "path": "pink-elf-verified/04-bodysuit-union.png",
+      "bytes": 3775,
+      "sha256": "26567a46ddf5e7e0e2f1e72a6170ea7bd6190db3d463f8f838bb838c48e47d33"
+    },
+    {
+      "path": "pink-elf-verified/input.png",
+      "bytes": 553128,
+      "sha256": "77d9fbf89ec174bd900ad420e8a27f2a22c9ac375cfeef97eca7e687ad9477fd"
+    },
+    {
+      "path": "pink-elf-verified/overview.jpg",
+      "bytes": 156052,
+      "sha256": "e9863c47dba6779ed5592cb86fbdfcdd5ebc671fe36643d95d2e15d18b890fc2"
+    },
+    {
+      "path": "pink-elf-verified/report.json",
+      "bytes": 2598,
+      "sha256": "bce7929139a44b6caebeff532fb65cc07274660a5278ad39640e245946160ec0"
+    }
+  ]
+}

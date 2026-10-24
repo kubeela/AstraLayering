@@ -1,0 +1,41 @@
+{
+  "index": 73,
+  "id": "waist_bow/short_tail",
+  "key": "clothing-part-layering/waist_bow/short_tail",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "腰蝴蝶结短尾",
+  "prompt": "short bow ribbon tail",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.87890625,
+  "seconds": 0.0804,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 4283,
+  "instances": [
+    {
+      "file": "assembled/73/instance-01.png",
+      "score": 0.87890625,
+      "box_xyxy": [
+        386.7729797363281,
+        520.2191772460938,
+        459.46875,
+        707.0150146484375
+      ],
+      "area_pixels": 4283
+    }
+  ],
+  "crop_bbox": [
+    370,
+    506,
+    474,
+    724
+  ],
+  "status": "detected",
+  "card": "assembled/73/card.jpg",
+  "mask": "assembled/73/mask.png",
+  "cutout": "assembled/73/cutout.png",
+  "overlay": "assembled/73/overlay.jpg"
+}

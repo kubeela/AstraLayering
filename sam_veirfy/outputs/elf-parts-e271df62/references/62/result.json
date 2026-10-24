@@ -1,0 +1,41 @@
+{
+  "index": 62,
+  "id": "legs/leg_right/leg",
+  "key": "part-layering/legs/leg_right/leg",
+  "family": "人物",
+  "group": "legs",
+  "label": "角色右腿",
+  "prompt": "right leg",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 1,
+  "max_score": 0.90234375,
+  "seconds": 0.078,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 63738,
+  "instances": [
+    {
+      "file": "references/62/instance-01.png",
+      "score": 0.90234375,
+      "box_xyxy": [
+        317.9521179199219,
+        648.3508911132812,
+        457.043701171875,
+        1447.01318359375
+      ],
+      "area_pixels": 63738
+    }
+  ],
+  "crop_bbox": [
+    257,
+    584,
+    519,
+    1504
+  ],
+  "status": "detected",
+  "card": "references/62/card.jpg",
+  "mask": "references/62/mask.png",
+  "cutout": "references/62/cutout.png",
+  "overlay": "references/62/overlay.jpg"
+}

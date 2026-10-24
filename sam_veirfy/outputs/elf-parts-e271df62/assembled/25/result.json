@@ -1,0 +1,41 @@
+{
+  "index": 25,
+  "id": "hair/bangs",
+  "key": "part-layering/hair/bangs",
+  "family": "人物",
+  "group": "hair",
+  "label": "刘海",
+  "prompt": "bangs",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.70703125,
+  "seconds": 0.082,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 18980,
+  "instances": [
+    {
+      "file": "assembled/25/instance-01.png",
+      "score": 0.70703125,
+      "box_xyxy": [
+        353.06341552734375,
+        77.95265197753906,
+        557.7943725585938,
+        233.48831176757812
+      ],
+      "area_pixels": 18980
+    }
+  ],
+  "crop_bbox": [
+    337,
+    62,
+    575,
+    245
+  ],
+  "status": "detected",
+  "card": "assembled/25/card.jpg",
+  "mask": "assembled/25/mask.png",
+  "cutout": "assembled/25/cutout.png",
+  "overlay": "assembled/25/overlay.jpg"
+}
