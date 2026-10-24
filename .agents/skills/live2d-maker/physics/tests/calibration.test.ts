@@ -35,7 +35,8 @@ test('逐组选择候选不会回滚其它组，基线可恢复，绑定变化�
   try{
     const c=config([strand('a'),strand('b',180)]),ids=groupAssemblies(c).map(g=>g.id);
     for(const [i,id]of ids.entries())await calibrate(c,directory,id,'平缓释放',[{id:'slow',parameters:{[c.components[i].id]:{response:{frequencyHz:.7}}}}]);
-    let selected=await selectCandidate(c,directory,ids[0],'slow','曲线保持根固定且平缓');assert.equal((await json(join(directory,'tuning.json'))).status,'draft');
+    const legacy=await json(join(directory,'tuning.json'));legacy.calibrationVersion='astra-physics-calibration-2';await put(join(directory,'tuning.json'),legacy);
+    let selected=await selectCandidate(c,directory,ids[0],'slow','曲线保持根固定且平缓');assert.equal((await json(join(directory,'tuning.json'))).status,'draft');assert.equal((await json(join(directory,'tuning.json'))).calibrationVersion,calibrationVersion);
     selected=await selectCandidate(selected,directory,ids[1],'slow','独立组同样比较后选择');assert.equal(selected.components[0].response.frequencyHz,.7);assert.equal(selected.components[1].response.frequencyHz,.7);await validateCalibration(selected,directory);
     selected=await selectCandidate(selected,directory,ids[0],'baseline','保留较活跃的原响应');assert.equal(selected.components[0].response.frequencyHz,c.components[0].response.frequencyHz);assert.equal(selected.components[1].response.frequencyHz,.7);await validateCalibration(selected,directory);
     selected.components[0].limits.maxAngle=17;await assert.rejects(validateCalibration(selected,directory),/约束或输入尺度改变/);
@@ -84,6 +85,7 @@ test('求解器变化重测原参数并生成新指纹，保留来源、几何�
   const c=config([strand('a')]),id=groupAssemblies(c)[0].id;
   await calibrate(c,directory,id,'原参数复测',[],undefined,undefined,{preserveEligibleBaseline:true});await selectCandidate(c,directory,id,'baseline','当前原参数合格');
   const tuning=await json(join(directory,'tuning.json')),entry=tuning.groups[0],old=hash(calibrationGeneration(c,['a'],'old-solver'));tuning.calibrationVersion='astra-physics-calibration-2';tuning.solverHash='old-solver';entry.generation=old;entry.rounds[0].solverHash='old-solver';entry.rounds[0].generation=old;await put(join(directory,'tuning.json'),tuning);
+  await assert.rejects(selectCandidate(c,directory,id,'baseline','旧求解器不能仅更新标签'),/求解器改变/);assert.equal((await json(join(directory,'tuning.json'))).calibrationVersion,'astra-physics-calibration-2');
   const result=await calibrate(c,directory,id,'求解器修复后原参数复测',undefined,undefined,undefined,{preserveEligibleBaseline:true});assert.equal(result.reused,false);assert.equal(result.baselinePreserved,true);assert.deepEqual(result.round.candidates.map((v:any)=>v.id),['baseline']);assert.equal(result.round.solverHash,await simulationHash());
   const next=await selectCandidate(c,directory,id,'baseline','保持已认可的动作');assert.deepEqual(next,c);await validateCalibration(next,directory);assert.equal((await json(join(directory,'tuning.json'))).groups[0].history.length,1);
  }finally{await rm(directory,{recursive:true,force:true});}
