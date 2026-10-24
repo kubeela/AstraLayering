@@ -5,7 +5,6 @@ import { resolve } from 'node:path';
 import type { CodexOptions } from '@openai/codex-sdk';
 import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
 import { generateImage, validateImageSelection, type ImageArguments, type ImageInput } from './images.ts';
-import { requireMattingKrita } from '../matting/runtime.ts';
 import { imageModelProviders, type AgentStep } from './models.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 
@@ -25,7 +24,6 @@ export async function createCodexImageRoute(settings: WorkflowEnvironment, step:
   const model = settings.stepImages[step]!;
   const api = settings.imageApis[imageModelProviders[model] as 'openai' | 'google']!;
   const processing = { ...normalization, env: normalization.env ?? options.env, directory: outputDirectory };
-  if (imageModelProviders[model] === 'google' && step !== 'shadow_maps') requireMattingKrita(processing);
   const token = randomBytes(32).toString('hex');
   const closing = new AbortController();
   const server = createServer(async (request, response) => {

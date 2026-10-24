@@ -61,11 +61,13 @@ Claude／AGV 继续注册共享 `image_generation` 函数工具，不使用 Code
 
 OpenAI 兼容协议在 base URL 后追加 `/images/generations` 或 `/images/edits`；Gemini 原生协议追加 `/models/<模型>:generateContent`。参考图按顺序传入，输入文件不修改，生成结果保存在任务请求目录。接口是否能输出透明通道由模型能力决定；共享函数工具返回 `hasAlpha`，原生工具路径也应检查实际 PNG。棋盘格图不等于透明通道，仍须按原要求看图和验收。
 
-调用者统一提出透明 PNG 要求。GPT 图像模型保留返回的原生 alpha，不走纯色抠图。Nano 请求透明背景时，共享适配器在生图前分析第一张目标参考的主体颜色，从纯绿、纯蓝、纯红中推荐一个背景色，并通过[纯色背景要求](../shared/prompts/nano-solid-background.md)明确传给生图模型。原绘制任务完整保留，实际生图请求使用不透明背景。返回后仍采样四周的实际背景颜色，在 Krita 内嵌 Python 中用 ViTMatte 估计透明度、恢复前景颜色，最终交回透明 PNG。明确选择 `auto`／`opaque` 的请求不追加要求、不抠图。返回真实 alpha 时直接保留。
+调用者统一提出透明 PNG 要求。GPT 图像模型保留返回的原生 alpha，不走纯色抠图。Nano 请求透明背景时，共享适配器在生图前分析第一张目标参考的主体颜色，从纯绿、纯蓝、纯红中推荐一个背景色，并通过[纯色背景要求](../shared/prompts/nano-solid-background.md)明确传给生图模型。原绘制任务完整保留，实际生图请求使用不透明背景。第一张 RGB 图返回后，保留原图并以它作为唯一参考，按[仅换背景要求](../shared/prompts/nano-background-replacement.md)生成第二张白底或黑底图。Node／Sharp 采样两张图四周的实际背景色，通过双背景差分恢复前景颜色和透明度，最终交回一张透明 PNG。两次请求串行执行，共用原模型与协议。明确选择 `auto`／`opaque` 的请求不追加要求、不抠图。返回真实 alpha 时直接保留。
 
 选色忽略透明像素的 RGB 和可识别的原背景，不让后续控制图／画风参考的颜色参与主体色盘。优先避开即使面积很小的同色细节，再比较与主体色相的分离程度；有彩色原背景时使用近不透明颜色锚点降低透色干扰。候选评分、原背景、选色理由写入 `background-selection.json`。没有图像参考时使用纯绿并记录原因；三色都有近色冲突时选综合风险最低者并记录冲突，不声称能无误判。选色是推荐，无法凭单张 RGB 图唯一恢复材料透明度。
 
-Nano 后处理不改变生成图尺寸和比例；工作流仍负责后续等比缩放与配准。原始 RGB 生图和后处理记录保存在本次请求的 `generated/` 下的 `image-processing/<id>/`，没有可靠纯色背景时明确报错并指出原图路径。半透明材料仍须逐图检查，不能仅凭存在 alpha 声称恢复准确；ViTMatte 和前景颜色恢复已用于 Nano 透明后处理；包在首次实际使用时自动装到运行根目录 `.runtime/`，后续复用。
+差分使用 `C = alpha × F + (1-alpha) × B` 的已知背景公式，不把与背景同色的前景直接删掉。仅将接近完全不透明的 alpha 收到 1；90% 和 95% 的材料仍保留半透明值。两张图的前景必须尽量一致，第二次请求不再执行原绘制任务；模型换背景时仍可能改变局部颜色或几何，存在 alpha 并不保证无损恢复。
+
+Nano 后处理不改变第一张生成图尺寸和比例；工作流仍负责后续等比缩放与配准。原始 RGB `original.png`、换背景图 `counterpart.png`、透明结果 `transparent.png`、alpha 和处理记录保存在本次请求的 `generated/image-processing/<id>/`。第二张分辨率变化或少量画布取整时，Sharp 等比适配到第一张画布，仅用于差分；适配图另存为 `counterpart-aligned.png`，尺寸变换写入 `counterpartAlignment`。第二次请求失败或取消、实际背景不可靠、画布比例明显不同都会明确报错并指出原图路径。两张图与请求记录完整保留，不回退到单图抠色或抠图模型，也不自动安装 Python 包。
 
 主模型网关与生图接口各自鉴权。Codex 默认继承当前用户配置；自定义 Codex provider 沿用 `layering_custom_provider` 和 provider URL／key。Claude／agv 可复用其已有登录，也可在 `.env` 填写 CLI 原生环境变量，例如 `ANTHROPIC_API_KEY`／`ANTHROPIC_BASE_URL`，或 `AGY_LLM_GATEWAY_API_KEY`／`AGY_LLM_GATEWAY_URL`／`AGY_LLM_GATEWAY_MODELS`／`AGY_LLM_GATEWAY_WIRE_PROTOCOL`。密钥不写入提示词、报告或 Git。
 

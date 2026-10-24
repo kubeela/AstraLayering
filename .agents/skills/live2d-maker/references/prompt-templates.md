@@ -25,6 +25,7 @@
 | [中断继续](../shared/prompts/interrupted-task.md)、[续跑](../shared/prompts/continuation.md)、[已有图片](../shared/prompts/continuation-images.md) | `{interrupted_task}`、`{saved_images_context}`、`{saved_image_paths}`。没有已生成图片时对应位置为空。 |
 | [恢复返修](../shared/prompts/raster-repair-resume.md)、[交接返修](../shared/prompts/raster-handoff-repair.md)、[会话交接](../shared/prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
 | [生图请求](../shared/prompts/image-request.md)、[Nano 纯色背景](../shared/prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |
+| [Nano 仅换背景](../shared/prompts/nano-background-replacement.md) | `{background_hex}`、`{width}`、`{height}`。第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。 |
 
 工具说明和参数仍来自 `shared/tools/<工具名>/description.md`／`schema.json` 或各管线自己的工具定义；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
 

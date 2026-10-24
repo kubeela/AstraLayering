@@ -1,5 +1,5 @@
 // Legacy opaque reference cleanup in Node. Retains the established key/blend widths
-// and conservative spill mix; Nano generations use ViTMatte instead.
+// and conservative spill mix; Nano generations use dual-background matting instead.
 export function keyReferencePixels(data: Buffer, width: number, height: number, key: number[]) {
   const green = key[1] - Math.max(key[0], key[2]) > 40;
   const blue = key[2] - Math.max(key[0], key[1]) > 40;
