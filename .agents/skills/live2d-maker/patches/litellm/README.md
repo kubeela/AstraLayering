@@ -21,7 +21,7 @@ litellm_settings:
 从 skill 根目录运行纯 Python 检查（不需要安装 LiteLLM）：
 
 ```sh
-python3 -m unittest discover -s tools/litellm/tests
+python3 -m unittest discover -s patches/litellm/tests
 ```
 
 排查时区分原始 API、本机二次代理、Codex 和调度器。透传恢复后以实际错误为准，不把 `response stream error` 本身当作网络故障的证据。不要重复发送已经明确拒绝的原请求来测试；可将保存的 SSE 交给本地模拟上游验证。
