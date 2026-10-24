@@ -65,7 +65,7 @@ function agents(verdicts: string[], options: {
       if (options.failAfterSubmission) throw new Error('审查提交后中断');
     } else {
       assert.equal(task.sandboxMode, 'workspace-write');
-      assert.equal(task.imageGeneration, true);
+      assert.equal(task.imageGeneration, false);
       assert.ok(input.outputSvg);
       await writeFile(input.outputSvg, svg(input.group.id, 10 + drawingTurns++));
       if ((options.failRepair && drawingTurns > 1) || options.failDrawingTurn === drawingTurns) throw new Error('返修执行失败');
@@ -154,7 +154,7 @@ test('真实默认适配器接入绘制、自检和独立 review，之后停在�
   assert.ok(mock.calls[0].task.prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/5-组轮廓.md', import.meta.url), 'utf8'))));
   assert.ok(mock.calls[1].task.prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/6-轮廓review.md', import.meta.url), 'utf8'))));
   assert.ok(mock.calls.every(call => call.task.cwd === f.directory));
-  assert.equal(mock.calls[0].task.imageGeneration, true);
+  assert.equal(mock.calls[0].task.imageGeneration, false);
   assert.equal(mock.calls[1].task.imageGeneration, false);
   assert.notEqual(mock.calls[0].session, mock.calls[1].session);
   assert.deepEqual(mock.closed, [mock.calls[0].session]);
@@ -181,9 +181,7 @@ test('revise 由原绘制会话返修，每次 review 新会话，报告保留�
   assert.equal(mock.calls[0].session, mock.calls[2].session);
   assert.notEqual(mock.calls[1].session, mock.calls[3].session);
   assert.match(mock.calls[2].task.prompt, /左侧可见边界 x=10/);
-  assert.match(mock.calls[2].task.prompt, /若反馈涉及噪音或形体混乱，可调用 image_generation/);
-  assert.match(mock.calls[2].task.prompt, /结构清晰优先/);
-  assert.match(mock.calls[2].task.prompt, /不添加图中不存在的细节/);
+  assert.doesNotMatch(mock.calls[2].task.prompt, /image_generation|生成.*辅助图/);
   assert.equal(await readFile(join(f.directory, 'stages/outline/face.repairs/1/feedback.txt'), 'utf8'),
     '对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。\n');
   assert.equal(await readFile(join(f.directory, 'stages/outline/face.repairs/1/prompt.txt'), 'utf8'), mock.calls[2].task.prompt);
