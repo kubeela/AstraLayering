@@ -123,7 +123,7 @@ export async function runLayering(input: {
       if (resolve(directory, result.output.path) !== draft) throw new Error('SVG 步骤只能交付指定的 .draft.svg');
       const meta = await sharp(resolve(directory, input.references.baseSubject)).metadata();
       await validateGroupSvg(draft, id, { width: meta.autoOrient.width, height: meta.autoOrient.height },
-        context(id).parent?.steps.completion.output?.path, stage === 'completion');
+        context(id).parent?.steps.completion.output?.path, true);
       const parent = context(id).parent?.steps.completion.output?.path;
       const source = stage === 'completion' ? artifact(id, 'reduction').path : parent;
       if (before) {
@@ -224,14 +224,16 @@ export async function runLayering(input: {
     if (groupCompleted(context(id).group)) return;
     const reduced = artifact(id, 'reduction');
     const mask = await sharp(await readFile(reduced.path)).ensureAlpha().extractChannel('alpha').raw().toBuffer();
-    const empty = !mask.some(value => value >= 128);
+    // 去重删空的重复节点无需恢复；原本完全遮挡的空轮廓仍须交给补全。
+    const removedByReduction = !mask.some(value => value >= 128) &&
+      (await sharp(await readFile(artifact(id, 'outline').path)).ensureAlpha().extractChannel('alpha').raw().toBuffer()).some(value => value >= 128);
     if (!await drawing(id, 'completion', async outputPath => {
-      if (empty) { await writeAtomic(outputPath, await readFile(reduced.path)); return { status: 'completed', output: { path: outputPath } }; }
+      if (removedByReduction) { await writeAtomic(outputPath, await readFile(reduced.path)); return { status: 'completed', output: { path: outputPath } }; }
       return input.steps.completeOcclusion({ ...context(id), outputPath, reviewed: reduced });
     })) return;
     if (!await execute(id, 'completionCheck', async () => {
       const after = artifact(id, 'completion');
-      const result = empty ? { status: 'completed' as const, output: { passed: true as const, note: '去重后为空组' } }
+      const result = removedByReduction ? { status: 'completed' as const, output: { passed: true as const, note: '去重后为空组' } }
         : await input.steps.checkCompletion({ ...context(id), before: reduced, after });
       if (result.status === 'completed') {
         if (result.output.passed !== true) throw new Error(`${id}: completion check did not pass`);
@@ -247,7 +249,8 @@ export async function runLayering(input: {
     await execute(id, 'children', async () => {
       const completed = artifact(id, 'completion');
       const source = (await readSvg(completed.path))!;
-      const result = empty ? { status: 'completed' as const, output: { groups: [] } }
+      const completedMask = await sharp(source).ensureAlpha().extractChannel('alpha').raw().toBuffer();
+      const result = !completedMask.some(value => value >= 128) ? { status: 'completed' as const, output: { groups: [] } }
         : await input.steps.splitChildren({ ...context(id), completed });
       if (result.status === 'pending') return result;
       const document = store.snapshot();
