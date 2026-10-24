@@ -124,6 +124,7 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
   validatePhysicsConfig(config);if(!reason?.trim())throw Error('标定必须记录要解决的实际问题');
   const assemblies=groupAssemblies(config),group=assemblies.find(a=>a.id===assemblyId);if(!group?.enabledComponentIds.length)throw Error('装配组不存在或已关闭');
   const runtime=await simulationHash(),digest=configHash(config),tuning:any=await optional(join(directory,'tuning.json'))||{version:1,calibrationVersion,status:'draft',groups:[]};
+  const versionChanged=tuning.calibrationVersion!==calibrationVersion;tuning.calibrationVersion=calibrationVersion;
   let entry=tuning.groups.find((g:any)=>g.assemblyId===assemblyId);if(!entry){entry={assemblyId,componentIds:group.componentIds,rounds:[]};tuning.groups.push(entry);}
   const targetHash=reference?configHash(reference):null;
   const generation=hash(calibrationGeneration(config,group.componentIds,runtime)+(targetHash??''));
@@ -131,7 +132,10 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
   const baseComponents=componentHashes(config,group.componentIds),latest=entry.rounds.at(-1),selected=latest?.candidates.find((c:any)=>c.id===latest.selectedCandidate);
   // Exact current measurements can resume without spending another search
   // round. A solver, target, geometry or parameter change never takes this path.
-  if(options.preserveEligibleBaseline&&latest?.solverHash===runtime&&latest.targetHash===targetHash&&latest.motionTargetVersion===motionTargetVersion&&selected?.eligible&&Object.entries(baseComponents).every(([id,value])=>latest.selectedComponents?.[id]===value))return {reused:true,baselinePreserved:true,selection:selected.id,round:latest};
+  if(options.preserveEligibleBaseline&&latest?.solverHash===runtime&&latest.targetHash===targetHash&&latest.motionTargetVersion===motionTargetVersion&&selected?.eligible&&Object.entries(baseComponents).every(([id,value])=>latest.selectedComponents?.[id]===value)){
+    if(versionChanged)await put(join(directory,'tuning.json'),tuning);
+    return {reused:true,baselinePreserved:true,selection:selected.id,round:latest};
+  }
   const baselineMeasured=await measureCandidate(config,group.componentIds,signal);
   const targetIds=reference?group.enabledComponentIds.map(id=>matchTargetComponent(config.components.find((c:any)=>c.id===id),reference)?.id).filter(Boolean):[];
   const targetMeasurement=targetIds.length?await measureCandidate(reference,targetIds,signal):null;
@@ -142,7 +146,7 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
   const baseline=assess(structuredClone(baselineMeasured),config),baselinePreserved=!!options.preserveEligibleBaseline&&baseline.eligible;
   const supplied=baselinePreserved?[]:candidates??defaults(config,group.enabledComponentIds,reference,baselineMeasured);if(!Array.isArray(supplied)||supplied.length>3||new Set(supplied.map(c=>c.id)).size!==supplied.length||supplied.some(c=>c.id==='baseline'))throw Error('一次最多三个不同候选，baseline 由工具保留');
   const requestHash=hash(JSON.stringify({baseComponents,reason,candidates:supplied,preserveEligibleBaseline:!!options.preserveEligibleBaseline}));
-  const existing=entry.rounds.findLast((r:any)=>r.requestHash===requestHash);if(existing)return {reused:true,round:existing};
+  const existing=entry.rounds.findLast((r:any)=>r.requestHash===requestHash);if(existing){if(versionChanged)await put(join(directory,'tuning.json'),tuning);return {reused:true,round:existing};}
   if(entry.rounds.length>=3)throw Error('该装配组已完成三轮标定；保留候选与失败原因，等待明确修正方案');
   const round:any={round:entry.rounds.length+1,reason,requestHash,generation,targetHash,motionTargetVersion,baselinePolicy:options.preserveEligibleBaseline?'preserve-eligible':'search',baseComponents,baseConfigHash:digest,solverHash:runtime,inputVersion,inputScale:inputScale(config),createdAt:new Date().toISOString(),candidates:[]};
   const folder=join(directory,'calibration',hash(assemblyId).slice(0,16),generation.slice(0,16),'round-'+round.round);await mkdir(folder,{recursive:true});
