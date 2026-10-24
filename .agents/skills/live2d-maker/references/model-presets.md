@@ -5,7 +5,7 @@
 | 选择 | LLM | 生图 |
 | --- | --- | --- |
 | 方案 1（默认） | 全部 `gpt-6.1-sol`，按职责分配力度，见下表 | `codex-native`，继承宿主内置生图工具 |
-| 方案 2（混合） | GPT 准备与分析、Argon 分块绘制与组装、Claude 栅格绘制与阴影，详见下表 | 简化图用 GPT Image Sunburst；素体图和两套 part 绘制／返修用 Nano Banana 2.1，其余用 GPT Image Sunburst |
+| 方案 2（混合） | GPT 准备与分析、Argon 分块绘制与组装、Claude 栅格绘制与阴影，详见下表 | 简化图用 GPT Image Sunburst；素体图和两套 part 遮挡补全参考用 Nano Banana 2.1，其余用 GPT Image Sunburst |
 | 自定义 | 在方案 1 或方案 2 上覆盖所需职责 | 按实际生图 agent 覆盖 |
 
 ## 方案 1：默认配置
@@ -56,7 +56,7 @@
 
 SVG 合并由程序执行，不配置 LLM。步骤职责、绘图提示词、review 轮次和会话恢复规则保留原有实现。
 
-简化图使用 `gpt-image-2.5-sunburst`，保留模型返回的原生透明通道；素体图及人物／衣服轮廓绘制与返修使用 `gemini-nano-banana-2.1`；标准化、纯衣服参考准备、两套 raster、组装及可选阴影贴图使用默认的 `gpt-image-2.5-sunburst`。选择具体模型与工具是否实际生图是两件事，原有任务仍决定使用范围，reviewer 仍只提交反馈。已有 `.env` 仅在用户要求切换相应步骤时更新。
+简化图使用 `gpt-image-2.5-sunburst`，保留模型返回的原生透明通道；素体图及人物／衣服遮挡补全参考使用 `gemini-nano-banana-2.1`；标准化、纯衣服参考准备、两套 raster、组装及可选阴影贴图使用默认的 `gpt-image-2.5-sunburst`。选择具体模型与工具是否实际生图是两件事，原有任务仍决定使用范围，reviewer 仍只提交反馈。已有 `.env` 仅在用户要求切换相应步骤时更新。
 
 启动前检查已有 Codex、Antigravity 与 Claude CLI、各自登录／模型授权，以及两种生图服务。Sunburst 填写 `layering_openai_image_base_url` 和 `layering_openai_image_api_key`；Nano 填写 `layering_google_image_base_url`、`layering_google_image_api_key` 与 `layering_google_image_protocol`，Google 协议按实际服务选择 `gemini` 或 `openai`。复用已有凭据；缺失时请用户本地补充或确认自定义调整，不自行安装 CLI 或登录。
 

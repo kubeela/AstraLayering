@@ -45,7 +45,9 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
   const adapter = createLayeringSteps({ async run(task) {
     calls++;
     assert.equal(task.sandboxMode, 'read-only');
-    assert.equal(task.imageGeneration, false);
+    assert.equal(task.imageGeneration, true);
+    assert.ok(task.tools!.some(tool => tool.name === 'view_bitmap'));
+    assert.match(task.prompt, /被遮挡的结构难以判断时/);
     assert.match(task.prompt, /不设计侧面、背面/);
     const rules = await readFile(new URL('../prompts/9-补全操作约定.md', import.meta.url), 'utf8');
     assert.ok(task.prompt.includes(`【固定范围与操作约定】\n${rules}`));

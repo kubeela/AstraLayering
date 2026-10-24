@@ -132,7 +132,7 @@ export async function drawGroupOutline(
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory,
     sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory, [input.parent, repair?.candidate, draft]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
-      ...(noteRepair ? [noteRepair] : [])], imageGeneration: true,
+      ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.outline }],
     prompt: taskPrompt,
   });

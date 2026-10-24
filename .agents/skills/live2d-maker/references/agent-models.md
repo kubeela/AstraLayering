@@ -45,11 +45,13 @@ layering_agent_part_review_model=gemini-4-argon-high
 每个拥有生图工具的 agent 使用 `layering_<步骤名>_image_model`，未填继承 `layering_default_image_model`，默认 `codex-native`。生图配置保留实际步骤粒度，人物和衣服分别选择：
 
 - preparation：人物标准化、简化、素体，衣服的纯衣服参考准备。
-- part：人物／衣服轮廓绘制及返修。它们主要交付 SVG，但原有生图能力仍可配置。
+- part：人物／衣服的 SVG 遮挡补全，可生成隐藏结构辅助参考；轮廓绘制、返修及其 reviewer 不配生图。
 - raster：人物 step01、step01 review／返修、step02、step03；衣服 step01、step01 review／返修、step02。
 - 穿戴组装 agent。
 
-这张配置表描述工具能力；原任务要求继续约束使用范围，reviewer 仍只提交反馈。姿态／画风判断、首次分组、part review、去重、SVG 补全、细分组和深度分析没有开启生图，不增加生图配置。
+这张配置表描述工具能力；原任务要求继续约束使用范围，reviewer 仍只提交反馈。姿态／画风判断、首次分组、part 轮廓绘制／返修／review、去重、细分组和深度分析没有开启生图，不增加生图配置。
+
+part 遮挡补全分别使用 `layering_part_completion_image_model` 和 `layering_clothing_completion_image_model`。已有配置从 `layering_part_outline_image_model`／`layering_part_outline_repair_image_model` 迁到人物补全键，衣服的对应旧键迁到衣服补全键，保留原选择的生图模型并删除旧键。旧绘制与返修值不一致时先确认补全使用哪一个，不自动替用户选择。
 
 | 选择 | 配置 |
 | --- | --- |
