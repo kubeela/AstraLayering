@@ -21,7 +21,7 @@ function runCli(args: string[]) {
   return promisify(execFile)(process.execPath, [
     '--import', new URL('./forbid-model-processes.ts', import.meta.url).href,
     fileURLToPath(new URL('../run.ts', import.meta.url)), ...args,
-  ], { timeout: 10000 });
+  ], { timeout: 10000, env: { ...process.env, layering_codex_path: process.execPath } });
 }
 
 test('--jobs / -j 只设置 agent 并发上限，默认 3，不产生组调度上限', () => {

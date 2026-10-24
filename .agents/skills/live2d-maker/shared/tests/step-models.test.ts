@@ -51,7 +51,7 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
   for (const [step, role] of Object.entries(stepModelSlots)) if (role === 'preparation') {
     assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel('gpt-6.1-sol-low', 'fixture'));
   }
-  assert.equal(settings.stepModels.raster_step02.model, 'gpt-6-astra');
+  assert.deepEqual(settings.stepModels.raster_step02, parseAgentModel('gpt-6.1-sol-medium', 'fixture'));
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
   assert.ok(!pipelineAgentSteps('clothing-part-layering').some(step => step.startsWith('clothing_raster_')));
   assert.ok(!pipelineAgentSteps('part-layering').includes('part_standardize'));
@@ -71,7 +71,7 @@ test('every image-capable agent rejects native imagegen with a different harness
   assert.throws(() => validateImageSelection(custom, 'part_simplify'), /缺少 google/);
 });
 
-test('default template covers model roles and individual image choices without changing other defaults', async t => {
+test('scheme 1 template and code defaults resolve all role efforts and native images without extra providers', async t => {
   const contents = await readFile(new URL('../../example.env', import.meta.url), 'utf8');
   const variables = parseEnv(contents);
   assert.equal(Object.keys(modelSlotDefaults).length, 13);
@@ -83,6 +83,19 @@ test('default template covers model roles and individual image choices without c
   const settings = loadWorkflowEnvironment({}, root);
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
   assert.deepEqual(settings.stepModels, loadWorkflowEnvironment({}, await fixture(t)).stepModels);
+  const expected: Record<keyof typeof modelSlotDefaults, string> = {
+    preparation: 'low', part_draw: 'medium', part_review: 'medium',
+    part_groups: 'high', part_reduce: 'high', part_completion: 'high', part_depth: 'high',
+    raster_step01: 'xhigh', raster_step01_review: 'xhigh', raster_step02: 'medium',
+    raster_step03: 'medium', assembly: 'xhigh', shadow: 'medium',
+  };
+  for (const [step, role] of Object.entries(stepModelSlots)) {
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(`gpt-6.1-sol-${expected[role]}`, 'fixture'), step);
+  }
+  assert.deepEqual(settings.codex.config, {});
+  assert.deepEqual(settings.imageApis, {});
+  assert.deepEqual(settings.cliPaths, {});
+  assert.equal(settings.imageCompactThreshold, undefined);
   assert.ok(imageSteps.every(step => settings.stepImages[step] === 'codex-native'));
 });
 
@@ -137,6 +150,26 @@ test('consistent legacy settings are shared, conflicts require an explicit role,
   await writeFile(join(root, '.env'), oldFile);
   assert.equal(loadWorkflowEnvironment({}, root).stepModels.part_simplify.effort, 'xhigh');
   assert.equal(await readFile(join(root, '.env'), 'utf8'), oldFile);
+});
+
+test('legacy tier overrides keep their historical roles and explicit role and shell values still win', async t => {
+  const root = await fixture(t);
+  const file = 'layering_medium_model=gpt-6.1-sol-low\nlayering_high_model=gpt-6-astra-high\n';
+  await writeFile(join(root, '.env'), file);
+  const settings = loadWorkflowEnvironment({}, root);
+  const highRoles = new Set(['raster_step01', 'raster_step01_review', 'raster_step02']);
+  for (const [step, role] of Object.entries(stepModelSlots)) {
+    const expected = highRoles.has(role) ? 'gpt-6-astra-high' : 'gpt-6.1-sol-low';
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected, 'fixture'), step);
+  }
+  await writeFile(join(root, '.env'), file + 'layering_agent_raster_step02_model=claude-sonnet-5-5-medium\n');
+  const explicit = loadWorkflowEnvironment({}, root);
+  assert.equal(explicit.stepModels.clothing_raster_step02.harness, 'claude');
+  const shell = loadWorkflowEnvironment({ layering_agent_raster_step02_model: 'gemini-4-argon-high' }, root);
+  assert.equal(shell.stepModels.raster_step02.harness, 'agv');
+  assert.deepEqual(shell.stepModels.raster_step02, shell.stepModels.clothing_raster_step02);
+  assert.equal(shell.stepModels.raster_step01.model, 'gpt-6-astra');
+  assert.equal(await readFile(join(root, '.env'), 'utf8'), file + 'layering_agent_raster_step02_model=claude-sonnet-5-5-medium\n');
 });
 
 test('custom image edit transports original prompts and images over both protocols and preserves inputs', async t => {

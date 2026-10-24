@@ -36,7 +36,7 @@ pnpm start --name jianma --status --json
 
 ## Codex 环境配置
 
-首次创建 skill 根目录 `.env` 前，按[推荐模型方案](model-presets.md)确认混合方案或自定义，再以 [example.env](../example.env) 为字段基础填写；已有配置不覆盖。直接调用脚本而没有 `.env` 时，代码兼容默认值保持不变：preparation 为 Codex low，其余默认模型保持，生图使用外部 Codex 内置服务；该回退不作为推荐套餐。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
+首次创建 skill 根目录 `.env` 时，按[推荐模型方案](model-presets.md)使用方案 1 默认配置；用户指定方案 2 或自定义时按其选择填写。以 [example.env](../example.env) 为完整字段基础，已有配置不覆盖。没有 `.env` 时，代码默认值与方案 1 一致：全部职责为 `gpt-6.1-sol`，按职责使用 low／medium／high／xhigh，生图继承宿主 Codex 内置服务。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
 
 `layering_image_compact_threshold` 留空关闭，只作用于 Codex；例如网关最多 50 张时可设 `49`。这项能力需要仓库提供的可选 Codex 补丁。启用此项或 Codex 自定义生图后，若 `layering_codex_path` 留空，启动预检自动准备补丁；有缓存直接复用，并发等待同一次构建。显式指定路径时检查该入口，失败不会替换用户配置。
 
