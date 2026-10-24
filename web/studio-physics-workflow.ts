@@ -13,8 +13,9 @@ const urlFor = (name: string, dir: string, path: string, hash: string) =>
 const readableArtifact = (path: unknown): path is string => typeof path === 'string'
   && /\.(png|svg)$/.test(path) && !path.split(/[\\/]/).some(part => part === '..' || part.startsWith('.'));
 
-async function readRecords(directory: string) {
-  const paths = ['physics.json', 'manual-review.json', 'run.json', 'step01/analysis.json', 'step01/coverage.json',
+async function readRecords(directory: string, artifactsOnly = false) {
+  const paths = artifactsOnly ? ['step03/evidence/manifest.json', 'step03/evidence/frames.json']
+    : ['physics.json', 'manual-review.json', 'run.json', 'step01/analysis.json', 'step01/coverage.json',
     'step02/coverage.json', 'step02/assemblies.json', 'step02/tuning.json', 'step02/result.json', 'step02/initialization.json', 'step03/findings.json',
     'step03/feedback.json', 'step03/evidence/manifest.json', 'step03/evidence/frames.json'];
   const records = await Promise.all(paths.map(path => jsonFile(directory, 'physics/' + path)));
@@ -96,7 +97,9 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
     coverage: records['step02/coverage.json'] || records['step01/coverage.json'] || null,
     assemblies: records['step02/assemblies.json']?.configHash === provenance.configHash ? records['step02/assemblies.json']
       : config ? { version: 1, configHash: provenance.configHash, source: 'current-config', groups: groupAssemblies(config) } : null,
-    tuning: tuning || null,
+    // The panel compares this generation's measured candidates. Archived
+    // generations remain in the producer artifact, not every browser response.
+    tuning: tuning ? { ...tuning, groups: list(tuning.groups).map(({ history, ...group }) => group) } : null,
     initialization: records['step02/initialization.json'] || null,
     findings: linkedFindings, feedback: linkedFeedback,
     evidence: manifest ? { ...manifest, runs: list(manifest.runs).map(run => ({ ...run,
@@ -108,7 +111,7 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
 
 export async function studioPhysicsArtifact(directory: string, configPath: string | undefined, path: string, hash: string) {
   if (!readableArtifact(path)) throw Error('未登记的物理证据类型');
-  const records = await readRecords(directory);
+  const records = await readRecords(directory, true);
   const config = await jsonFile(directory, configPath || 'physics/physics.json');
   const provenance = await currentEvidence(records, config, directory);
   if (!provenance.evidenceMatchesCurrent || provenance.configHash !== hash) throw Error('物理证据已过期，请重新复核');
