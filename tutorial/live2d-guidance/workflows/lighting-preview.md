@@ -63,19 +63,7 @@ MToon 的目标是卡通材质与 PBR 场景协调；其规范明确说明，它
 
 `demos/lighting-lab/` 归档三个原创平涂角色及 Jianma 导入。三个测试角色已退出默认工作台，不在打开页面时下载；研究原图、提示词、配套数据与记录保留用于回归。Jianma 快捷入口读取正式 159 层 KRA，其保存合成图与之前导入的原画逐字节相同。每个新角色的三个 prompt、生成原画、处理后的 PNG 和 `sample.json` 一并保留。样例用 `gpt-image-2`、high、1536×2048；生成不可保证字节可重现，因此留存输入、prompt、实际输出与哈希，不能把相同 seed / 提示词当作资产身份。
 
-生成脚本只编排已安装的 imagegen CLI，不内置模型密钥，也不另写 SDK 调用。环境或私有配置提供服务信息：
-
-```sh
-python tools/lighting/generate-samples.py \
-  --cli /path/to/imagegen/scripts/image_gen.py --stage color
-# 查看原画，确认平涂及构图后，再生成对应数据图
-python tools/lighting/generate-samples.py \
-  --cli /path/to/imagegen/scripts/image_gen.py --stage maps
-python tools/lighting/prepare-samples.py \
-  --chroma-cli /path/to/imagegen/scripts/remove_chroma_key.py
-```
-
-可用 `--config /private/config.json` 读取 `base_url` / `api_key`，用 `--sample front` 限定一个样例。运行 Python 环境需要 imagegen CLI 的依赖以及 Pillow。已存在的生成文件只在 prompt、参考图及输出哈希与 generation receipt 一致时复用；有意重做时先备份旧版本，不覆写已审核的原始输出。生成日志在忽略目录 `.web/lighting-generation/`。
+样例生成和验证的旧辅助脚本已删除，历史实现可从 Git 提交记录查阅。现有样例、提示词、generation receipt 和原始输出继续保留；有意重做时先备份旧版本，不覆写已审核的原始输出。历史生成日志在忽略目录 `.web/lighting-generation/`。
 
 透明化只去除 chroma 背景，随后把原画 alpha 同步给法线 / 深度；不缩小、不放大，也不有损压缩源图。轮廓 alpha 相同并不代表内部几何自动对齐，仍需逐项目检。
 

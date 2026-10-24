@@ -44,4 +44,4 @@
 
 实现：`web/studio/surface-coverage.js`、`part-maps.js`、`harmonic-fill.js`；原生快照由 `web/krita/astra_layers.py` 提供。通用归属与覆盖算法来自原人物工作台的同名模块，求解核逐字节复用。
 
-定向复验：`web/tests/studio-surfaces.test.ts`、`tools/lighting/surface-native-check.mjs`、`tools/lighting/surface-browser-check.mjs`。原工作台对照脚本为 `verify-character-hand-surfaces.mjs` 和 `verify-character-surface-ownership.mjs`。临时图片与完整指标保留在忽略的检查目录，不作为新角色源文件提交；软件 GPU 检查不代表用户设备帧率。
+定向复验：`web/tests/studio-surfaces.test.ts`。历史原生与浏览器辅助检查脚本已删除，可从 Git 提交记录查阅；原工作台对照脚本为 `verify-character-hand-surfaces.mjs` 和 `verify-character-surface-ownership.mjs`。临时图片与完整指标保留在忽略的检查目录，不作为新角色源文件提交；软件 GPU 检查不代表用户设备帧率。

@@ -27,7 +27,7 @@
 | [Jianma：素体与衣装](jianma-svg-ver/readme.md) | 完整素体、独立衣装及默认穿戴快照；实际制作记录集中在同一案例下 | [穿戴 SVG](jianma-svg-ver/character.svg) · [素体制作](jianma-svg-ver/body-run/readme.md) · [衣装制作](jianma-svg-ver/clothing-run/readme.md) |
 | [Jianma / Opus 5.5](jianma-svg-ver/opus55/README.md) | 2026-10-05 的 SVG 流程 1–5 步产物；保留未解决的局部问题 | [成稿 SVG](jianma-svg-ver/opus55/refinement/character.svg) · [预览](jianma-svg-ver/opus55/refinement/preview.png) |
 | [Milly v1](./milly-complete-case/readme.md) | 完整阶段 1–5 与四个指定节点的独立审查；头发材质、手足局部仍有差异 | [成稿 SVG](./milly-complete-case/step05-base-character/05-2_局部色彩与材质.svg) · [参考对照](./milly-complete-case/reference-vs-svg.png) |
-| [Miku v3](./miku-v3/readme.md) | 完整阶段 1–5，重点保留头脸校准；终稿独立审查不可用 | [成稿 SVG](./miku-v3/step05-base-character/05-2_局部色彩与材质.svg) · [本轮复核](../analysis/miku-v3-review/readme.md) |
+| [Miku v3](./miku-v3/readme.md) | 完整阶段 1–5，重点保留头脸校准；终稿独立审查不可用 | [成稿 SVG](./miku-v3/step05-base-character/05-2_局部色彩与材质.svg) · [本轮复核](https://github.com/wu-tian807/AstraLayering/blob/ae7b7b5bb83275900a33c7d287b07987a55ffed5/analysis/miku-v3-review/readme.md) |
 | [首例 Miku](./first-complete-case/readme.md) | 完整成稿、部件树动图与遮挡补全独显；原阶段文件集中在 `source/` | [成稿 SVG](./first-complete-case/miku.svg) · [阶段文件](./first-complete-case/source/) · [独显示例](./first-complete-case/isolated-parts.png) |
 
 ## 方法对比与独立小例

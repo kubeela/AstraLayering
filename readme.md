@@ -19,6 +19,24 @@ Krita：/绝对路径/krita
 
 完整仓库的运行数据默认放在 `<仓库>/.run/<name>/`，独立安装时放在 `<skill上一级>/.run/<name>/`，不放在 skill 内；管线参数 `--dir /绝对路径/运行根目录` 可更改位置，相对输入从该目录下的 `<name>/` 解析。
 
+## 目录
+
+| 路径 | 用途 |
+| --- | --- |
+| `.agents/skills/live2d-maker/` | 可独立安装的制作 skill、管线和共享模块 |
+| skill 内 `scripts/` | 给使用者与维护者运行的配置、环境检查入口 |
+| skill 内 `patches/` | Codex、AGV、LiteLLM 等兼容补丁及配套构建、验证 |
+| skill 内 `shared/tools/`、各管线 `tools/` | Agent 工具的 description 与 schema 配置 |
+| skill 内各管线 `prompts/` | 各自独立的任务与验收提示词 |
+| `.run/` | 本地任务、请求记录和共享运行缓存；Git 忽略 |
+| `web/` | 真实制作工作台与角色预览 |
+| `demos/` | 可查看的制作成果与案例 |
+| `tutorial/` | 当前教程、原始参考资料及资料核验程序 |
+| `archive/` | 保留的旧技能与历史流程 |
+| `loading/`、`rigging/` | SVG 预览入口与绑定实验 |
+
+旧根目录 `analysis/` 与 `tools/lighting/` 已删除；历史资料可从 Git 提交记录查阅。
+
 ## 成果
 
 [Jianma 完整成果](demos/jianma/README.md) 包括人物素体、独立衣装及 **159 层 Krita 穿戴合成**。下图左侧是简化参考，右侧是实际装配结果：
