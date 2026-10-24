@@ -14,7 +14,7 @@ import { imageGenerationTool } from '../agents/images.ts';
 import { runAgent } from '../raster/agent.ts';
 import { textResult } from '../codex/function-tools.ts';
 
-const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true, image_compaction_version: 2 };
+const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true, image_compaction_version: 2, failed_error_event_version: 1 };
 
 test('raster 自定义框选工具与原生生图兼容，保留配置与会话', async t => {
   const { root } = await fixture(t);
@@ -90,7 +90,7 @@ test('codex-native does not enable image patches; custom Codex models require cu
     layering_image_base_url: 'https://legacy.example/v1', layering_image_api_key: 'fixture', layering_default_image_model: 'codex-native' }, root);
   assert.equal(usesPatchedImageTool(native, 'part_simplify'), false);
   assert.equal(native.codex.env!.LAYERING_IMAGE_BASE_URL, undefined);
-  await checkCodexCapabilities(native);
+  await assert.rejects(checkCodexCapabilities(native), /补丁能力检查/);
   const custom = loadWorkflowEnvironment({ layering_codex_path: executable,
     layering_part_simplify_image_model: 'gpt-image-2.5-flare', layering_openai_image_base_url: 'https://image.example/v1',
     layering_openai_image_api_key: 'fixture' }, root);
@@ -100,10 +100,8 @@ test('codex-native does not enable image patches; custom Codex models require cu
   const noBinary = loadWorkflowEnvironment({}, root);
   let builds = 0;
   const prepare = async () => { builds++; return executable; };
-  await checkCodexCapabilities(noBinary, noBinary.codex, {}, prepare);
-  assert.equal(builds, 0);
   const requestOptions = {...noBinary.codex};
-  await checkCodexCapabilities(noBinary, requestOptions, { image: true }, prepare);
+  await checkCodexCapabilities(noBinary, requestOptions, {}, prepare);
   assert.equal(builds, 1);
   assert.equal(requestOptions.codexPathOverride, executable);
   assert.equal(noBinary.codex.codexPathOverride, executable);

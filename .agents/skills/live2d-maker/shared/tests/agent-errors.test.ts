@@ -73,6 +73,7 @@ for (const mode of ['rpc', 'turn', 'eof', 'recovered']) test(`Codex App Server $
   const executable = join(f.root, 'codex.mjs');
   await writeFile(executable, `#!${process.execPath}
 import { createInterface } from 'node:readline';
+if(process.argv[2]==='debug'){console.log(JSON.stringify({version:1,failed_error_event_version:1}));process.exit(0);}
 const payload=${JSON.stringify(payload)}, mode=${JSON.stringify(mode)};
 const emit=value=>console.log(JSON.stringify(value));
 for await (const line of createInterface({input:process.stdin})) {
@@ -119,6 +120,7 @@ test('real Codex SDK adapter preserves turn.failed fields and last message in fa
   const f = await fixture(t);
   const executable = join(f.root, 'codex-sdk.mjs');
   await writeFile(executable, `#!${process.execPath}
+if(process.argv[2]==='debug'){console.log(JSON.stringify({version:1,failed_error_event_version:1}));process.exit(0);}
 for await(const chunk of process.stdin){}
 for(const event of ${JSON.stringify([
     { type: 'thread.started', thread_id: 'sdk-thread' },

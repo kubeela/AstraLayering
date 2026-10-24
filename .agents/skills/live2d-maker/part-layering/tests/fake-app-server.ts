@@ -16,6 +16,7 @@ const completedItems = ${JSON.stringify(completedItems)};
 const capture = ${JSON.stringify(capture)};
 const behavior = ${JSON.stringify(behavior)};
 const write = value => process.stdout.write(JSON.stringify(value) + '\\n');
+if (process.argv[2] === 'debug') { console.log(JSON.stringify({ version: 1, failed_error_event_version: 1 })); process.exit(0); }
 if (process.argv[2] === 'exec') {
   for await (const chunk of process.stdin) {}
   write({type:'thread.started',thread_id:'sdk-thread'});

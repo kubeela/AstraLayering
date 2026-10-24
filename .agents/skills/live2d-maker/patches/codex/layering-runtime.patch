@@ -1,5 +1,5 @@
 diff --git a/codex-rs/cli/src/main.rs b/codex-rs/cli/src/main.rs
-index ac06a66..bec3d9e 100644
+index ac06a66..394d572 100644
 --- a/codex-rs/cli/src/main.rs
 +++ b/codex-rs/cli/src/main.rs
 @@ -257,6 +257,8 @@ struct DebugCommand {
@@ -18,7 +18,7 @@ index ac06a66..bec3d9e 100644
 +            DebugSubcommand::LayeringCapabilities => {
 +                println!(
 +                    "{}",
-+                    serde_json::json!({"version": 1, "image_provider": true, "image_provider_version": 2, "image_compaction": true, "image_compaction_version": 2, "request_compaction_version": 1})
++                    serde_json::json!({"version": 1, "image_provider": true, "image_provider_version": 2, "image_compaction": true, "image_compaction_version": 2, "request_compaction_version": 1, "failed_error_event_version": 1})
 +                );
 +            }
              DebugSubcommand::Models(cmd) => {
@@ -126,6 +126,163 @@ index 2217ce8..79e321e 100644
  fn imagegen_request_id_from_headers(headers: &HeaderMap) -> Option<String> {
      headers
          .get(X_CODEX_IMAGEGEN_REQUEST_ID_HEADER)
+diff --git a/codex-rs/codex-api/src/sse/responses.rs b/codex-rs/codex-api/src/sse/responses.rs
+index 6b2a7ed..a6e9986 100644
+--- a/codex-rs/codex-api/src/sse/responses.rs
++++ b/codex-rs/codex-api/src/sse/responses.rs
+@@ -1,3 +1,5 @@
++use super::responses_error::EMPTY_FAILED_RESPONSE;
++use super::responses_error::parse_error_event;
+ use super::responses_error::parse_failed_response;
+ use crate::common::ResponseEvent;
+ use crate::common::ResponseStream;
+@@ -626,7 +628,24 @@ async fn process_sse_with_treatment(
+             return;
+         }
+
+-        match process_responses_event(event) {
++        // Flex errors keep their own handling; any other detailed `error` event is
++        // kept like a failed response, so LiteLLM's late detail is not dropped.
++        let error_event = if event.kind == "error"
++            && event
++                .error
++                .as_ref()
++                .and_then(parse_flex_unavailable)
++                .is_none()
++        {
++            parse_error_event(event.error.as_ref())
++        } else {
++            None
++        };
++        let result = match error_event {
++            Some(error) => Err(error),
++            None => process_responses_event(event).map_err(ResponsesEventError::into_api_error),
++        };
++        match result {
+             Ok(Some(event)) => {
+                 let is_completed = matches!(event, ResponseEvent::Completed { .. });
+                 if tx_event.send(Ok(event)).await.is_err() {
+@@ -638,12 +657,17 @@ async fn process_sse_with_treatment(
+             }
+             Ok(None) => {}
+             Err(error) => {
+-                let error = error.into_api_error();
+                 if matches!(error, ApiError::FlexUnavailable) {
+                     let _ = tx_event.send(Err(error)).await;
+                     return;
+                 }
+-                response_error = Some(error);
++                // A detailed error replaces the empty `response.failed` placeholder
++                // (LiteLLM sends the detail afterwards) but is never replaced by it.
++                if response_error.as_ref().is_none_or(|current| {
++                    matches!(current, ApiError::Stream(message) if message == EMPTY_FAILED_RESPONSE)
++                }) {
++                    response_error = Some(error);
++                }
+             }
+         };
+     }
+@@ -1088,6 +1112,47 @@ mod tests {
+         }
+     }
+
++    #[tokio::test]
++    async fn error_event_fills_empty_failed_response() {
++        let failed =
++            json!({"type": "response.failed", "response": {"status": "failed", "error": null}});
++        let error = json!({"type": "error", "error": {"type": "invalid_request_error", "code": "content_policy_violation", "message": "Image processing blocked due to content policy violation.", "param": "input"}});
++        for order in [[&failed, &error], [&error, &failed]] {
++            let body: String = order
++                .iter()
++                .map(|event| {
++                    format!(
++                        "event: {}\ndata: {event}\n\n",
++                        event["type"].as_str().unwrap_or_default()
++                    )
++                })
++                .collect();
++            let events = collect_events(&[body.as_bytes()]).await;
++            match events.as_slice() {
++                [Err(ApiError::InvalidRequest { message })] => {
++                    assert_eq!(
++                        message,
++                        "Image processing blocked due to content policy violation."
++                    );
++                }
++                _ => panic!("unexpected events: {events:?}"),
++            }
++        }
++    }
++
++    #[tokio::test]
++    async fn standard_failed_response_keeps_its_error() {
++        let failed = json!({"type": "response.failed", "response": {"error": {"code": "context_length_exceeded", "message": "too long"}}});
++        let error =
++            json!({"type": "error", "error": {"code": "server_is_overloaded", "message": "later"}});
++        let empty = json!({"type": "error", "error": null});
++        let body = format!(
++            "event: response.failed\ndata: {failed}\n\nevent: error\ndata: {error}\n\nevent: error\ndata: {empty}\n\n"
++        );
++        let events = collect_events(&[body.as_bytes()]).await;
++        assert_matches!(events.as_slice(), [Err(ApiError::ContextWindowExceeded)]);
++    }
++
+     #[tokio::test]
+     async fn context_window_error_is_fatal() {
+         let raw_error = r#"{"type":"response.failed","sequence_number":3,"response":{"id":"resp_5c66275b97b9baef1ed95550adb3b7ec13b17aafd1d2f11b","object":"response","created_at":1759510079,"status":"failed","background":false,"error":{"code":"context_length_exceeded","message":"Your input exceeds the context window of this model. Please adjust your input and try again."},"usage":null,"user":null,"metadata":{}}}"#;
+diff --git a/codex-rs/codex-api/src/sse/responses_error.rs b/codex-rs/codex-api/src/sse/responses_error.rs
+index 872769c..ac29a5d 100644
+--- a/codex-rs/codex-api/src/sse/responses_error.rs
++++ b/codex-rs/codex-api/src/sse/responses_error.rs
+@@ -22,6 +22,25 @@ struct Error {
+     misalignment: Option<Value>,
+ }
+
++pub(super) const EMPTY_FAILED_RESPONSE: &str = "response.failed event received";
++
++// LiteLLM ends a failed stream with `response.failed` whose `response.error` is
++// null and sends the detail in a separate `error` event. Read that detail the
++// same way as a standard `response.failed` error; `None` when it carries none.
++pub(super) fn parse_error_event(error: Option<&Value>) -> Option<ApiError> {
++    let error = error.filter(|error| {
++        ["code", "message"].iter().any(|key| {
++            error
++                .get(key)
++                .and_then(Value::as_str)
++                .is_some_and(|text| !text.is_empty())
++        })
++    })?;
++    Some(parse_failed_response(Some(
++        serde_json::json!({ "error": error }),
++    )))
++}
++
+ pub(super) fn parse_failed_response(response: Option<Value>) -> ApiError {
+     if let Some(error) = response
+         .as_ref()
+@@ -35,7 +54,7 @@ pub(super) fn parse_failed_response(response: Option<Value>) -> ApiError {
+         .and_then(|response| response.get("error"))
+         .and_then(|error| serde_json::from_value::<Error>(error.clone()).ok())
+     else {
+-        return ApiError::Stream("response.failed event received".into());
++        return ApiError::Stream(EMPTY_FAILED_RESPONSE.into());
+     };
+
+     match error.code.as_deref() {
+@@ -73,6 +92,13 @@ pub(super) fn parse_failed_response(response: Option<Value>) -> ApiError {
+                 }),
+             }
+         }
++        // Resending the same input is refused again, so report it without retrying.
++        Some("content_policy_violation") => ApiError::InvalidRequest {
++            message: error
++                .message
++                .filter(|message| !message.trim().is_empty())
++                .unwrap_or_else(|| "Request blocked due to content policy violation.".to_string()),
++        },
+         Some("invalid_prompt") => ApiError::InvalidPrompt {
+             message: error
+                 .message
 diff --git a/codex-rs/core/src/astra_image_guard.rs b/codex-rs/core/src/astra_image_guard.rs
 new file mode 100644
 index 0000000..4e07916
