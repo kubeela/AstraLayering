@@ -24,5 +24,9 @@ export async function checkKrita(requested: string, run?: Probe, env?: NodeJS.Pr
   catch (error) { throw new Error(`指定的 Krita 无法启动：${executable}。请检查安装依赖和显示环境。`, { cause: error }); }
   const version = output.match(/\bkrita\s+(\d[^\r\n]*)/i)?.[1];
   if (!version) throw new Error(`未能确认 Krita 版本：${executable}`);
+  const actual = env ?? process.env;
+  if (!run && process.platform === 'linux' && !actual.DISPLAY && !actual.WAYLAND_DISPLAY && !actual.QT_QPA_PLATFORM) {
+    throw new Error(`Krita 已安装，但工作流环境没有显示配置：${executable}。桌面模式请继承 DISPLAY 或 WAYLAND_DISPLAY；headless 模式请先配置虚拟显示（如 Xvfb）及 DISPLAY，或已验证的 Qt 平台。安装方案由 skill agent 与用户确认。`);
+  }
   return { executable, version: version.trim() };
 }
