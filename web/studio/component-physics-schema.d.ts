@@ -1,8 +1,2 @@
-export const componentSchemaVersion: number;
-export const componentPhysicsVersion: string;
-export const reviewCriteria: string[];
-export const reviewTests: string[];
-export function componentDefaults(kind: string): any;
-export function validatePoint(value: any, canvas: any): void;
-export function validateComponent(value: any, canvas: any, authoringRequired?: boolean): any;
-export function validatePhysicsConfig(value: any, options?: { requireReview?: boolean }): any;
+// Compatibility export; implementation is owned by the independently installable skill.
+export * from "../../.agents/skills/live2d-maker/shared/physics-core/component-physics-schema.js";

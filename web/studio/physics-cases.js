@@ -1,4 +1,4 @@
-import { componentDefaults } from './component-physics-schema.js';
+import { componentDefaults } from '#physics-core/component-physics-schema.js';
 import { bindingDefaults } from './physics-model.js';
 
 export const physicsCases = {

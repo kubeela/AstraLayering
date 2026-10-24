@@ -1,9 +1,9 @@
 import { PhysicsPanel } from './physics-panel.js';
-import { resolveComponentBindings } from './component-physics-binding.js';
-import { ComponentScene } from './component-physics-model.js';
-import { validatePhysicsConfig } from './component-physics-schema.js';
-import { PhysicsRenderer } from './physics-renderer.js';
-import { testNames } from './physics-test-input.js';
+import { resolveComponentBindings } from '#physics-core/component-physics-binding.js';
+import { ComponentScene } from '#physics-core/component-physics-model.js';
+import { validatePhysicsConfig } from '#physics-core/component-physics-schema.js';
+import { PhysicsRenderer } from '#character-render/physics-renderer.js';
+import { testNames } from '#physics-evidence/physics-test-input.js';
 import { ComponentPhysicsRunner } from './component-physics-runner.js';
 
 // Use the free-end load from the recorded review protocol. Mesh order does
@@ -111,7 +111,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     const epoch=++this.epoch;this.preparing=true;this.sync();
     try {
       if(!(owner.physicsCase||await this.surfaces.prepare({allowFlat:true}))||epoch!==this.epoch||this.source()!==owner)return;
-      this.config=structuredClone(validatePhysicsConfig(config));this.parts=owner.physicsCase?.layers||this.surfaces.layers;this.size=owner.physicsCase?.size||this.surfaces.size;this.owner=owner;
+      this.config=structuredClone(validatePhysicsConfig(config));this.dirty=false;this.parts=owner.physicsCase?.layers||this.surfaces.layers;this.size=owner.physicsCase?.size||this.surfaces.size;this.owner=owner;
       const resolution=resolveComponentBindings(this.config,this.parts);this.issues=resolution.issues;
       for(const c of this.config.components)if(!resolution.compatible.has(c.id))c.enabled=false;
       const compatible=this.config.components;
@@ -136,14 +136,14 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     if(!this.formal)return;const next=structuredClone(this.config),c=next.components.find(c=>c.id===this.selected);if(!c)return;
     if(key==='enabled'&&value&&!resolveComponentBindings(next,this.parts).compatible.has(c.id)){this.error('组件来源或隔离组结构未确认，不能启用');this.sync();return;}
     if(group)c[group][key]=value;else c[key]=value;next.review={status:'draft',baseConfigHash:this.config.review?.configHash||this.config.review?.baseConfigHash};
-    try{validatePhysicsConfig(next);new ComponentScene(next);this.config=next;this.playback='';$('#component-test').value='';this.rebuild();this.save();this.sync();}catch(e){this.error(e.message);this.sync();}
+    try{validatePhysicsConfig(next);new ComponentScene(next);this.config=next;this.dirty=true;this.playback='';$('#component-test').value='';this.rebuild();this.save();this.sync();this.changed();}catch(e){this.error(e.message);this.sync();}
   }
   recipe(){return this.formal?structuredClone(this.config):super.recipe();}
   restore(recipe){if(recipe?.kind==='astra-component-physics'){this.config=structuredClone(validatePhysicsConfig(recipe));this.formal=true;}else super.restore(recipe);}
   save(){if(!this.formal)return super.save();this.owner.componentPhysics=this.recipe();$('#physics-draft').textContent='草稿 · 待保存到项目';}
   async persist(){
     if(!this.formal||!this.owner.project)return;
-    try{const config=this.recipe();config.review={status:'draft',baseConfigHash:config.review?.baseConfigHash||config.review?.configHash};const response=await fetch('./api/studio/physics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:this.owner.project.name,dir:this.owner.project.dir,config})});const result=await response.json();if(!response.ok)throw Error(result.error);this.config=config;this.owner.componentPhysics=config;$('#physics-draft').textContent='草稿 · 已保存到项目';}catch(e){this.error(e.message);}
+    try{const config=this.recipe();config.review={status:'draft',baseConfigHash:config.review?.baseConfigHash||config.review?.configHash};const response=await fetch('./api/studio/physics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:this.owner.project.name,dir:this.owner.project.dir,config})});const result=await response.json();if(!response.ok)throw Error(result.error);this.config=config;this.owner.componentPhysics=config;this.dirty=false;$('#physics-draft').textContent='草稿 · 已保存到项目';this.persisted?.();}catch(e){this.error(e.message);}
   }
   input(e){
     if(!this.formal)return super.input(e);
@@ -194,7 +194,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     $('#component-info').textContent=`${c.kind==='strand'?'连续发束 / 飘带':c.kind==='cloth'?'布片':'刚性挂件'} · ${c.layerRefs.length} 层共用场 · 自由段 ${c.authoring.freeLength.toFixed(1)} px`;
     $('#component-save').disabled=!this.owner.project?.dir||this.busy();for(const id of ['physics-pause','physics-step','physics-pulse'])$('#'+id).disabled=!this.enabled||this.busy();$('#physics-demo').disabled=false;$('#physics-pause').textContent=this.paused?'继续':'暂停';this.stats();this.overlay();
   }
-  stats(){if(!this.formal)return super.stats();const b=this.bodies.get(this.selected);$('#component-stats').textContent=b?`位移 ${b.stats.travel.toFixed(1)} / ${b.maxDistance.toFixed(1)} px · 固定残差 ${b.stats.root.toFixed(3)} px · ${b.stats.fallback?'回退修正':b.stats.limited?'约束限幅':'自由响应'}${this.playback?' · '+(this.replayStep/120).toFixed(2)+' s':''}`:'当前组件已关闭';}
+  stats(){if(!this.formal)return super.stats();const b=this.bodies.get(this.selected);$('#component-stats').textContent=b?`位移 ${b.stats.travel.toFixed(1)} / ${b.maxDistance.toFixed(1)} px · 固定残差 ${b.stats.root.toFixed(3)} px · ${b.stats.fallback?'回退修正':b.stats.limited?'约束限幅':'自由响应'}${this.playback?' · '+(this.replayStep/120).toFixed(2)+' s':''}`:'当前组件已关闭';this.observed?.(b,this.elapsed);}
   overlay(){
     if(!this.formal)return super.overlay();const svg=$('#physics-overlay'),visible=this.ready&&this.workspace()==='physics';svg.toggleAttribute('hidden',!visible);if(!visible)return;
     const[w,h]=this.size,screen=(x,y)=>this.stage.worldToScreen((x-w/2)*2/h,(h/2-y)*2/h),b=this.bodies.get(this.selected),commands=[],fixed=[];

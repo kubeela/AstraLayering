@@ -1,5 +1,5 @@
 import { ClothBody, bindingDefaults, validateBinding, physicsVersion } from './physics-model.js';
-import { PhysicsRenderer } from './physics-renderer.js';
+import { PhysicsRenderer } from '#character-render/physics-renderer.js';
 import { physicsRecipe, restorePhysicsRecipe, physicsRecordKey } from './physics-recipe.js';
 import { physicsComponentsAt } from './component-physics-selection.js';
 const $ = s => document.querySelector(s);

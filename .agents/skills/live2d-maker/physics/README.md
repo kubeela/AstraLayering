@@ -1,8 +1,8 @@
 # 组件摆动物理
 
-本流程需要同版本的完整 AstraLayering 仓库（含 `web/`）及根工作台依赖，从该 checkout 执行并沿用原 `--dir`；独立安装 skill 的其他制作管线仍可运行。
+本流程可从独立安装的 skill 运行。共享格式／几何／求解位于 `shared/physics-core`，规范输入／轨迹／指标位于 `shared/physics-evidence`，颜色／法线／深度／投影渲染位于 `shared/character-render`；均由 skill 拥有，不导入 `web/`。前端引用这些模块并读取工作流产物。安装使用 skill 自身依赖，沿用原 `--dir`。
 
-独立读取同名 `character-assembly/step01/character-assembled.kra`、PNG 和两套 groups，不依赖阴影制作是否完成，不重画皮套。设计与审核方法见 [formal 11](../../../../tutorial/live2d-guidance/formal/11-secondary-physics-workflow.md) 和 [formal 12](../../../../tutorial/live2d-guidance/formal/12-physics-animation-review.md)。
+独立读取同名 `character-assembly/step01/character-assembled.kra`、PNG 和两套 groups，不依赖阴影制作是否完成，不重画皮套。独立制作所需方法已包含于 [guide.md](guide.md)，更完整的研究与审核方法见 [formal 11](../../../../tutorial/live2d-guidance/formal/11-secondary-physics-workflow.md) 和 [formal 12](../../../../tutorial/live2d-guidance/formal/12-physics-animation-review.md)。
 
 ```bash
 pnpm physics --name <任务名> --krita <可执行文件> --profile primary
@@ -17,7 +17,7 @@ pnpm start --name <任务名> --physics --physics-profile all --background
 | 步骤 | 产物 | 验证 |
 | --- | --- | --- |
 | step01 | analysis.json、coverage.json、report.md | 全部源 part 的判断、实际连接、UUID 与组件归属 |
-| step02 | physics.draft.json、coverage.json、report.md | 固定多边形、过渡、中心线或布片网格、源像素覆盖、参数与最大约束 |
+| step02 | physics.draft.json、assemblies.json、tuning.json、coverage.json、report.md | 固定多边形、过渡、中心线或布片网格、源像素覆盖、参数与最大约束 |
 | step03 | physics.json、findings.json、evidence/manifest.json、report.md | 规范输入、完整轨迹、均匀帧、事件窗、原尺寸局部与实际图像查看 |
 
 通过 step03 才发布 `physics/physics.json`。工作台从项目固定位置自动读取，和颜色、法线、深度、投影共用画布。工作台编辑保存为 `physics/physics.draft.json`，不冒充已完成的视觉复核；导出和项目保存均保留完整作者绑定。默认鼠标仍为移动，只有物理页签选择扰动才施力。复核动画从同一面板选择，支持暂停、单帧和复位。
@@ -38,7 +38,7 @@ pnpm start --name <任务名> --physics --physics-profile all --background
 
 复现验收使用只含 assembled、groups 和可选光照输入的独立目录，不复制 physics、组件缓存或完成标记。从 CLI 实际生成后检查同一工作台的前/侧/后发、衣料和挂件响应、固定区、保形及光照；重新运行只验证复用当前指纹的已审核产物。无缓存重做允许作者参数不同，比较的是范围、连接和同一组运动/视觉门槛，而非要求 LLM 输出逐字相同的 JSON。仅导入旧草稿、手调后截一帧或测试数值合法均不算工作流复现通过。
 
-证据由整数 120 Hz 步推进，不由截图耗时推进。9 组输入覆盖静止、末端脉冲、支撑移动与释放、往返、持续输入、极端、组合、轻扫和微风。完整轨迹使用 gzip 无损保存；查询默认返回指标摘要，指定单组件可读取精确完整网格；均匀帧每 100 ms，局部按必看时刻截取；事件窗由模型请求，以 60 Hz 或 120 Hz 加密。颜色与光照用同一工作台渲染器，局部裁切保留源像素尺寸。`physics_view` 和 `physics_strip` 实际返回图片并记录版本，结论引用未经查看或旧版图片时不能发布。AI 只声明所查看帧的覆盖范围，人工复核保持 unreviewed。
+证据由整数 120 Hz 步推进，不由截图耗时推进。9 组输入覆盖静止、末端脉冲、支撑移动与释放、往返、持续输入、极端、组合、轻扫和微风。完整轨迹使用 gzip 无损保存；查询默认返回指标摘要，指定单组件可读取精确完整网格；均匀帧每 100 ms，局部按必看时刻截取；事件窗由模型请求，以 60 Hz 或 120 Hz 加密。颜色与光照使用 skill 的共享渲染器，前端引用同一实现，局部裁切保留源像素尺寸。`physics_view` 和 `physics_strip` 实际返回图片并记录版本，结论引用未经查看或旧版图片时不能发布。AI 只声明所查看帧的覆盖范围，人工复核保持 unreviewed。
 
 ```bash
 pnpm physics:evidence --name <任务名> --simulate
@@ -47,12 +47,22 @@ pnpm physics:evidence --name <任务名> --test tip-impulse --steps 0,60,96,180,
 
 以上是证据生成命令。用户预览统一使用 `/studio?project=<任务名>&workspace=physics`，不创建单独试验编辑器。离线采集耗时包含轨迹、图片回读和 PNG 保存，不等于实时帧率。
 
-离线采集默认使用本地软件渲染。已有 GPU 浏览器可通过 `ASTRA_PHYSICS_RENDER_CDP_URL` 连接，并用 `ASTRA_PHYSICS_RENDER_PORT` 指定经隧道转发到该浏览器的本地工具端口；服务器仍只监听 loopback。每次采集创建并关闭独立浏览器上下文，保留外部浏览器已有页面。manifest 记录实际渲染设备；仍使用工作台 shader、原尺寸贴图及完整规范输入；证据渲染直接读取完整记录网格，实时求解一致性独立验证，见 formal 12。
+离线采集默认使用本地软件渲染。已有 GPU 浏览器可通过 `ASTRA_PHYSICS_RENDER_CDP_URL` 连接，并用 `ASTRA_PHYSICS_RENDER_PORT` 指定经隧道转发到该浏览器的本地工具端口；服务器仍只监听 loopback。每次采集创建并关闭独立浏览器上下文，保留外部浏览器已有页面。manifest 记录实际渲染设备；仍使用共享 character-render shader、原尺寸贴图及完整规范输入；证据渲染直接读取完整记录网格，实时求解一致性独立验证，见 formal 12。
 
 源 UV 由像素位置减去插值位移重建，避免细三角形丢失采样精度；共享边的切分点传播到邻面，避免透明缝隙；每层用 stencil 保证半透明像素只合成一次，避免细边重复叠加 alpha。动态投影按登记 caster 外推位移，并用 receiver 当前 alpha 裁切；这是二维素材跟随，不重算投影几何。
 
 规范输入 v3 以整角色刚性父姿态牵动支撑，静态父层、物理固定区和投影使用同一 sourcePose；不假装已经制作头／身体九轴。输出帧在原像素比例之外增加固定运动余量，framePadding 记录原图起点，避免衣片出界裁掉；法线／深度同样保留原纹理精度。
 
-真实源码、许可证及适配范围见 [vendor/README](../../../../web/studio/vendor/README.md)。数值复核除越界外还拒收弱响应、长期回退/顶限、跳变和不衰减；通过这些门槛仍须检查连续画面，不自动标为视觉 accepted。
+真实源码、许可证及适配范围见 [vendor/README](../shared/physics-core/vendor/README.md)。数值复核除越界外还拒收弱响应、长期回退/顶限、跳变和不衰减；通过这些门槛仍须检查连续画面，不自动标为视觉 accepted。
 
 刚性挂件可设置 `response.outputFrequencyHz`（0.15–6 Hz），在工作台显示为“角度过渡”：低值让显示角度更平缓，物理回弹仍由 `frequencyHz` 和阻尼控制。未设置时沿用原 `frequencyHz`，保留旧配置行为。它只调整现有有界输出的过渡，不覆盖 Inochi 物理状态、改变最大摆角或降低贴图精度；串联下游会读取这个真实显示挂点，必须重新验证整条链。配置和实现指纹变化后重跑九组及真实视觉，不能复用旧版通过结论。
+
+## 三职责、有限标定与真正返修
+
+默认 A 为 Sol high，B／C 为 Sol xhigh，分别使用 `layering_agent_physics_analysis_model`、`layering_agent_physics_authoring_model`、`layering_agent_physics_review_model`；已有显式配置优先，见[推荐方案](../references/model-presets.md)。A 保存全部源部件的判断；B 制作并调参；C 使用独立上下文、只读 B 草稿，不能代改绑定或选择候选。越权改写会被检测并恢复，异常版本保留。
+
+B 用 `physics_assemblies` 查看有向支撑的完整装配，再逐组 `physics_calibrate`。baseline 加最多三个 response/material 候选，使用同尺度微风、轻扫、支撑释放；保留原几何、来源和限幅。`physics_select_candidate` 明确选择，`tuning.json` 保存理由与末端／中段／根部曲线。三轮上限按装配与制作代次计算；新来源／几何／求解规则归档旧代。选择独立组不会回滚其它组，后改绑定或参数需重验。
+
+C 的失败通过 `physics_request_repair` 写 `step03/feedback.json`，包含版本指纹、reviewTurn、组件、准则、真实输入／整数步窗口与已查看图片。返回 blocked 后调度器将当前失败版本归档到 `step03/reviews/`，保存 `step02/repair-request.json`，恢复 B 的原 thread，B 修改后再新建 C 会话。每装配最多三轮制作／复核；普通异常、旧反馈、失败的工具调用均不自动触发返修。中断的交接可接续，不删除完整轨迹或重复增加轮次。
+
+`assemblies.json` 和 `tuning.json` 是独立结构化产物，可被前端展示为装配图、逐组状态、候选响应曲线和参数差异；`feedback.json` 展示当前返修及证据窗口。手动导入配置可以派生装配图，但没有真实工作流产物时不能显示为“自动标定已通过”。当前定向验证覆盖身份稳定、固定步可复现、参数边界、独立组选择、标定代次、角色权限与返修状态；它不等于无缓存重跑 Jianma 的视觉验收。

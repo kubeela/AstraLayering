@@ -54,3 +54,11 @@ Codex 选择具体 GPT／Nano 生图模型时使用补丁版原生 imagegen，�
 确认后复制基础模板，按方案替换已有键，不追加同名配置。API URL、协议与密钥使用用户确认的服务，密钥在本地填写，不写进提示词、报告或 Git。shell 同名变量优先于 `.env`，检查生效配置时说明实际覆盖；不修改用户全局 CLI 配置。
 
 切换已有配置的方案时，只替换本次选择的模型与生图差异键；用户只要求调整语言模型时保留全部生图键。不要重新复制完整 `example.env` 覆盖 `.env`，以免清空已确认的图片压缩阈值、CLI 路径、API 和显示环境。修改后执行 `pnpm env:check` 核对[实际生效值](workflow-details.md#生效配置核对)；套餐调整不撤销用户已开启的图片保护。
+
+## 组件物理职责
+
+| 职责 | 默认配置 | 配置键 |
+| --- | --- | --- |
+| 结构分析 A | `gpt-6.1-sol-high` | `layering_agent_physics_analysis_model` |
+| 制作、标定、返修 B | `gpt-6.1-sol-xhigh` | `layering_agent_physics_authoring_model` |
+| 独立复核 C | `gpt-6.1-sol-xhigh` | `layering_agent_physics_review_model` |

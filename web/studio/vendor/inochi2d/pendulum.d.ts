@@ -1,9 +1,2 @@
-export class InochiPendulum {
-  constructor(body: any);
-  angle: number;
-  speed: number;
-  lastPivot: number[] | null;
-  frameAngle: number;
-  step(h: number): void;
-  reset(): void;
-}
+// Compatibility export; source and license live in the skill.
+export * from "../../../../.agents/skills/live2d-maker/shared/physics-core/vendor/inochi2d/pendulum.d.ts";

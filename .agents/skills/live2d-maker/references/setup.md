@@ -69,4 +69,4 @@ Krita 的路径检查和实际启动使用工作流加载的同一环境，包�
 默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用显式构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。正常启动不会下载或构建 Codex。Nano 透明后处理使用已有 Node／Sharp，不安装 Python 包或抠图权重。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。
 
-组件摆动物理复用仓库 `web/studio` 的求解器与渲染器，需要在同版本完整工作台 checkout 执行并安装根依赖；不要从缺少 web/ 的独立 skill 启动该路线。原任务目录、上游产物及模型配置继续复用。普通制作路线不因此新增网页代码依赖。
+组件摆动物理使用 skill 自带 `shared/physics-core`、`shared/physics-evidence` 和 `shared/character-render`，可独立安装运行，不依赖 `web/` 或工作台服务。原任务目录、上游产物及模型配置继续复用；离线图像证据需要 Playwright 浏览器和带插件的 Krita。数值标定不需要浏览器，前端直接引用共享实现。

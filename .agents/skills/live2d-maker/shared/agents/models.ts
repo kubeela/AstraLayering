@@ -20,7 +20,7 @@ export const modelSlotDefaults = {
   part_groups: medium, part_depth: medium,
   raster_step01: high, raster_step02: high, raster_step01_review: high,
   raster_step03: medium,
-  assembly: medium, shadow: medium, physics_analysis: medium, physics_authoring: high, physics_review: high,
+  assembly: medium, shadow: medium, physics_analysis: 'gpt-6.1-sol-high', physics_authoring: 'gpt-6.1-sol-xhigh', physics_review: 'gpt-6.1-sol-xhigh',
 } as const;
 export type ModelSlot = keyof typeof modelSlotDefaults;
 
