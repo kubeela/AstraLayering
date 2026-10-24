@@ -3,5 +3,4 @@ export type ImageProcessingOptions = {
   krita?: string;
   runsRoot?: string;
   progress?: (message: string) => void;
-  matte?: (input: string, output: string, options: ImageProcessingOptions, signal: AbortSignal) => Promise<Record<string, unknown>>;
 };
