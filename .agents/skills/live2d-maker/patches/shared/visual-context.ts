@@ -63,10 +63,13 @@ function identityContext(message: any, fallback: string): string {
   return metadata.length ? JSON.stringify(metadata) : fallback;
 }
 
-// Only message image blocks are changed. Calls, results, coordinates, text and
-// signed assistant/thinking blocks remain in their original order and form.
+// FunctionResponse.parts accepts media only. Visual notes for those images go
+// in an adjacent ordinary text part, with the result ID and original media index.
+// Calls, result output, coordinates and signed model parts are left intact.
 function slots(body: any, protocol: VisualProtocol): Slot[] {
   const found: Slot[] = [], ordinals = new Map<string, number>();
+  type Media = { response: any; part: any; messageParts: any[] };
+  const notes = new Map<any, { part: any; entries: Map<number, string> }>();
   for (const message of body[protocol === 'genai' ? 'contents' : 'messages'] ?? []) {
     if (!['user', 'tool'].includes(message.role)) continue;
     const context = JSON.stringify(message, (key, value) => {
@@ -77,17 +80,42 @@ function slots(body: any, protocol: VisualProtocol): Slot[] {
     const identity = identityContext(message, context);
     const messageHash = digest(context), ordinal = ordinals.get(messageHash) ?? 0;
     ordinals.set(messageHash, ordinal + 1);
-    const walk = (value: any, parent: any, key: string | number, path: string) => {
+    const walk = (value: any, parent: any, key: string | number, path: string, media?: Media) => {
       const payload = image(value);
       if (payload) {
         const hash = digest(Buffer.from(payload.data, 'base64'));
-        found.push({ block: value, replace(replacement) { parent[key] = replacement; }, hash, ...payload,
-          ...(Array.isArray(parent) ? { label(value: any) { parent.splice(Number(key), 0, value); } } : {}),
+        const mediaPart = media && parent === media.response.parts;
+        const note = (replacement: any) => {
+          let record = notes.get(media!.part);
+          if (!record) {
+            record = { part: { text: '' }, entries: new Map() };
+            notes.set(media!.part, record);
+            media!.messageParts.splice(media!.messageParts.indexOf(media!.part) + 1, 0, record.part);
+          }
+          record.entries.set(Number(key), `Tool result ${media!.response.id ?? '(no ID)'} (${media!.response.name}), original media part ${Number(key) + 1}: ${replacement.text}`);
+          record.part.text = [...record.entries].sort(([a], [b]) => a - b).map(([, text]) => text).join('\n');
+        };
+        found.push({ block: value, replace(replacement) {
+          if (mediaPart) {
+            note(replacement);
+            parent.splice(parent.indexOf(value), 1);
+            if (!parent.length) delete media!.response.parts;
+          } else if (Array.isArray(parent)) parent[parent.indexOf(value)] = replacement;
+          else parent[key] = replacement;
+        }, hash, ...payload,
+          ...(Array.isArray(parent) ? { label(replacement: any) {
+            if (mediaPart) note(replacement);
+            else parent.splice(parent.indexOf(value), 0, replacement);
+          } } : {}),
           key: digest(`${messageHash}:${ordinal}:${path}`), context, identity });
         return;
       }
       if (!value || typeof value !== 'object') return;
-      for (const [childKey, child] of Object.entries(value)) walk(child, value, childKey, `${path}/${childKey}`);
+      for (const [childKey, child] of Object.entries(value)) {
+        const nested = protocol === 'genai' && ['functionResponse', 'function_response'].includes(childKey)
+          ? { response: child, part: value, messageParts: message.parts } : media;
+        walk(child, value, childKey, `${path}/${childKey}`, nested);
+      }
     };
     walk(message, null, '', '');
   }

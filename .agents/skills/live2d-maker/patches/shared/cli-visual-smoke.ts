@@ -33,6 +33,12 @@ const server = createServer(async (req, res) => {
   try {
     const chunks = []; for await (const chunk of req) chunks.push(chunk);
     const body = JSON.parse(Buffer.concat(chunks).toString());
+    if (protocol === 'genai') for (const content of body.contents ?? []) for (const part of content.parts ?? []) {
+      const result = part.functionResponse ?? part.function_response;
+      for (const media of result?.parts ?? []) assert.ok(Object.keys(media).length === 1
+        && ['inlineData', 'inline_data', 'fileData', 'file_data'].includes(Object.keys(media)[0]),
+      'Real CLI payload has invalid FunctionResponse media');
+    }
     const summary = JSON.stringify(body).includes('This is internal visual context compaction');
     const images = imageCount(body, protocol); requests.push({ images, bytes: requestBytes(body), summary });
     assert.ok(images < 50, `Real CLI sent ${images} images to strict upstream`);
