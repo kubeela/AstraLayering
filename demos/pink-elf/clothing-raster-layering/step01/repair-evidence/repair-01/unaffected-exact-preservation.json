@@ -1,0 +1,16 @@
+{
+  "layers_restored_exactly_from_starting_KRA": [
+    "0002 trailing_skirt_image_right/spiral_train_left :: depth_02",
+    "0004 trailing_skirt_image_right/spiral_train_left :: depth_04",
+    "0006 trailing_skirt_image_right/spiral_train_left :: depth_06",
+    "0017 puff_sleeve_image_left :: depth_17",
+    "0018 puff_sleeve_image_right :: depth_18",
+    "0029 puff_sleeve_image_left :: depth_29",
+    "0030 puff_sleeve_image_right :: depth_30",
+    "0040 chest_pendant",
+    "0041 waist_bow/short_tail",
+    "0042 waist_bow/long_tail",
+    "0043 waist_bow/knot_and_loops"
+  ],
+  "reason": "最终互补分配导入对未涉部件的半透明边缘出现1–3级RGB往返舍入；直接保留起始工程的11层原始字节。所有返修目标保留最新修画。"
+}

@@ -63,8 +63,8 @@ test('two drawing stages share context; review completes before step01 marker; o
   const f = await fixture(t), requests: AgentRequest[] = [];
   await runWorkflow(f.options, { ...f.deps, agent: async request => {
     requests.push(request);
-    assert.equal(request.model, 'gpt-6-astra');
-    assert.equal(request.effort, 'xhigh');
+    assert.equal(request.model, 'gpt-6.1-sol');
+    assert.equal(request.effort, request.step === 'clothing_raster_step02' ? 'medium' : 'xhigh');
     if (requests.length === 2) assert.equal(request.threadId, undefined);
     if (requests.length === 2) await assert.rejects(readFile(join(f.output, 'step01/.completed')), { code: 'ENOENT' });
     return deliver(request);

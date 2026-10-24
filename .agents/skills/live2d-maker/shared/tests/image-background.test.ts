@@ -9,7 +9,6 @@ import sharp from 'sharp';
 import { imageGenerationTool } from '../agents/images.ts';
 import { createCodexImageRoute } from '../agents/codex-images.ts';
 import { transparentGeneratedImage, providerImageArguments } from '../agents/image-background.ts';
-import { normalizeReference } from '../part/reference-normalization.ts';
 import { recommendBackground } from '../agents/background-selection.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 
@@ -51,31 +50,42 @@ test('background adaptation keeps original tasks, GPT alpha requests and explici
   }
 });
 
-test('both tool routes key model-selected RGB backgrounds over Gemini and OpenAI protocols at generated dimensions', async t => {
+test('both routes recover dual backgrounds over Gemini/OpenAI protocols without Krita, preserving first generated dimensions', async t => {
   const { root, executable } = await fixture(t);
   const reference = join(root, 'reference.png');
   const input = await sharp({ create: { width: 8, height: 10, channels: 4, background: '#ffaabb80' } }).png().toBuffer();
   await writeFile(reference, input);
-  let protocol = 'gemini', png = await solidImage([11, 246, 12]), calls = 0;
+  let protocol = 'gemini', first = await solidImage([11, 246, 12]), calls = 0;
+  const second = await solidImage([255, 255, 255]);
   const server = createServer(async (req, res) => {
     try {
-      let bytes = Buffer.alloc(0); for await (const chunk of req) bytes = Buffer.concat([bytes, chunk]);
-      let prompt: string;
+      const chunks = []; for await (const chunk of req) chunks.push(chunk);
+      const bytes = Buffer.concat(chunks);
+      let prompt: string, inputs: Buffer[] = [];
       if (protocol === 'gemini') {
         assert.equal(req.url, '/v1beta/models/gemini-nano-banana-2.1:generateContent');
         const parts = JSON.parse(bytes.toString()).contents[0].parts;
         prompt = parts[0].text;
-        for (const part of parts.slice(1)) assert.deepEqual(Buffer.from(part.inlineData.data, 'base64'), input);
+        inputs = parts.slice(1).map((part: any) => Buffer.from(part.inlineData.data, 'base64'));
       } else if (req.url?.endsWith('/edits')) {
         const form = await new Request('http://localhost', { method: 'POST', headers: { 'content-type': req.headers['content-type']! }, body: new Uint8Array(bytes) }).formData();
         prompt = String(form.get('prompt')).replaceAll('\r\n', '\n'); assert.equal(form.get('background'), 'opaque');
-        const picture = form.get('image') || form.get('image[]');
-        assert.deepEqual(Buffer.from(await (picture as File).arrayBuffer()), input);
+        for (const [key, value] of form) if (key.startsWith('image')) inputs.push(Buffer.from(await (value as File).arrayBuffer()));
       } else {
         const args = JSON.parse(bytes.toString()); prompt = args.prompt; assert.equal(args.background, 'opaque');
       }
-      assert.ok(prompt.startsWith('保留主体和正常开口，输出透明 PNG。\n\n'), JSON.stringify({ protocol, url: req.url, prompt }));
-      assert.match(prompt, /背景使用高纯度纯色 #[0-9A-F]{6}/); calls++;
+      const replacement = calls % 2 === 1;
+      if (replacement) {
+        assert.deepEqual(inputs, [first]);
+        assert.match(prompt, /只修改所附图片的背景/); assert.match(prompt, /#FFFFFF/); assert.match(prompt, /48×64/);
+        assert.ok(!prompt.includes('保留主体和正常开口，输出透明 PNG。'));
+      } else {
+        for (const picture of inputs) assert.deepEqual(picture, input);
+        assert.ok(prompt.startsWith('保留主体和正常开口，输出透明 PNG。\n\n'));
+        assert.match(prompt, /背景使用高纯度纯色 #[0-9A-F]{6}/);
+      }
+      calls++;
+      const png = replacement ? second : first;
       res.setHeader('content-type', 'application/json');
       res.end(JSON.stringify(protocol === 'gemini'
         ? { candidates: [{ content: { parts: [{ inlineData: { data: png.toString('base64') } }] } }] }
@@ -84,52 +94,51 @@ test('both tool routes key model-selected RGB backgrounds over Gemini and OpenAI
   });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => { server.closeAllConnections(); return new Promise<void>(done => server.close(() => done())); });
-  const processing = { krita: executable, matte: async (input: string, output: string) => { const r = await normalizeReference(input, input, output); return { ...r }; } };
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
   for (protocol of ['gemini', 'openai']) for (const color of [[11, 246, 12], [4, 9, 254], [249, 5, 9]]) {
-    png = await solidImage(color);
-    const settings = loadWorkflowEnvironment({ layering_codex_path: executable, PATH: process.env.PATH,
-      layering_part_simplify_image_model: 'gemini-nano-banana-2.1',
-      layering_google_image_base_url: base + (protocol === 'gemini' ? '/v1beta' : '/v1'),
-      layering_google_image_api_key: 'fixture-secret', layering_google_image_protocol: protocol }, root);
+    first = await solidImage(color);
     for (const native of [false, true]) for (const edit of [false, true]) {
       const directory = join(root, `${protocol}-${color[0]}-${native}-${edit}`);
-      let output: Buffer;
+      const settings = loadWorkflowEnvironment({ layering_codex_path: executable, PATH: '',
+        layering_part_simplify_image_model: 'gemini-nano-banana-2.1', layering_google_image_base_url: base + '/v1beta',
+        layering_google_image_api_key: 'fixture', layering_google_image_protocol: protocol }, root);
       const prompt = '保留主体和正常开口，输出透明 PNG。';
+      let output: Buffer;
       if (native) {
-        const route = await createCodexImageRoute(settings, 'part_simplify', directory, settings.codex, undefined, processing);
+        const route = await createCodexImageRoute(settings, 'part_simplify', directory);
         try {
-          const form = new FormData(); form.set('model', 'gemini-nano-banana-2.1'); form.set('prompt', prompt); form.set('background', 'transparent');
-          form.append('image', new Blob([new Uint8Array(input)], { type: 'image/png' }), 'reference.png');
-          const response = await fetch(route.env.LAYERING_IMAGE_BASE_URL + `/images/${edit ? 'edits' : 'generations'}`, {
-            method: 'POST', headers: { authorization: `Bearer ${route.env.LAYERING_IMAGE_API_KEY}`,
-              ...(!edit ? { 'content-type': 'application/json' } : {}) },
-            body: edit ? form : JSON.stringify({ model: 'gemini-nano-banana-2.1', prompt, background: 'transparent' }) });
-          const value = await response.json(); assert.equal(response.status, 200, JSON.stringify(value));
-          output = Buffer.from(value.data[0].b64_json, 'base64');
+          const form = new FormData(); form.set('model', 'gemini-nano-banana-2.1'); form.set('prompt', prompt);
+          if (edit) form.append('image', new Blob([new Uint8Array(input)], { type: 'image/png' }), 'reference.png');
+          const response = await fetch(route.env.LAYERING_IMAGE_BASE_URL + `/images/${edit ? 'edits' : 'generations'}`, { method: 'POST',
+            headers: { authorization: `Bearer ${route.env.LAYERING_IMAGE_API_KEY}`, ...(edit ? {} : { 'content-type': 'application/json' }) },
+            body: edit ? form : JSON.stringify({ model: 'gemini-nano-banana-2.1', prompt }) });
+          assert.equal(response.status, 200, await response.clone().text());
+          output = Buffer.from((await response.json()).data[0].b64_json, 'base64');
         } finally { await route.close(); }
       } else {
-        const tool = imageGenerationTool(settings, 'part_simplify', directory, [root], processing)!;
-        const result = await tool.execute({ prompt, input_images: edit ? [reference] : [], background: 'transparent' }, new AbortController().signal);
-        const value = JSON.parse((result.contentItems[0] as { text: string }).text);
-        assert.equal(value.hasAlpha, true); output = await readFile(value.savedPath);
+        const tool = imageGenerationTool(settings, 'part_simplify', directory, [root])!;
+        const result = await tool.execute({ prompt, input_images: edit ? [reference] : [] }, new AbortController().signal);
+        output = await readFile(JSON.parse((result.contentItems[0] as { text: string }).text).savedPath);
       }
       const image = await sharp(output).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-      assert.equal(image.info.width, 48); assert.equal(image.info.height, 64);
-      assert.equal(image.data[3], 0); assert.equal(image.data[(32 * 48 + 24) * 4 + 3], 0);
+      assert.deepEqual([image.info.width, image.info.height], [48, 64]);
+      assert.equal(image.data[(32 * 48 + 24) * 4 + 3], 0); // a genuine opening
       assert.deepEqual([...image.data.subarray((20 * 48 + 20) * 4, (20 * 48 + 20) * 4 + 4)], [65, 65, 65, 255]);
-      const alpha = image.data[(20 * 48 + 11) * 4 + 3]; assert.ok(alpha > 0 && alpha < 255);
-      const records = await readdir(join(directory, 'image-processing')); assert.equal(records.length, 1);
-      const recordDirectory = join(directory, 'image-processing', records[0]);
-      assert.deepEqual(await readFile(join(recordDirectory, 'original.png')), png);
-      const report = JSON.parse(await readFile(join(recordDirectory, 'normalization.json'), 'utf8'));
-      assert.deepEqual(report.normalization.key, color); assert.equal(report.normalization.scale, 1);
-      assert.equal(report.originalPrompt, prompt); assert.equal(report.requestedBackground, 'transparent');
+      const p = (20 * 48 + 11) * 4;
+      assert.ok(Math.abs(image.data[p + 3] - 128) <= 1);
+      for (let c = 0; c < 3; c++) assert.ok(Math.abs(image.data[p + c] - 65) <= 2);
+      const [id] = await readdir(join(directory, 'image-processing'));
+      const records = join(directory, 'image-processing', id);
+      assert.deepEqual(await readFile(join(records, 'original.png')), first);
+      assert.deepEqual(await readFile(join(records, 'counterpart.png')), second);
+      const report = JSON.parse(await readFile(join(records, 'normalization.json'), 'utf8'));
+      assert.equal(report.originalPrompt, prompt); assert.equal(report.normalization.method, 'dual-background');
+      assert.deepEqual(report.normalization.backgrounds, [color, [255, 255, 255]]);
       assert.equal(report.selection.reference, edit ? 'first-image' : 'none');
-      assert.equal(report.selection.hex, '#00FF00');
+      assert.ok(!(await readdir(directory)).includes('.runtime'));
     }
   }
-  assert.equal(calls, 24); assert.deepEqual(await readFile(reference), input);
+  assert.equal(calls, 48); assert.deepEqual(await readFile(reference), input);
 });
 
 test('program recommends green for pink, avoids small same-colour details and ignores control maps/transparent RGB', async () => {
@@ -170,36 +179,96 @@ test('Nano fails explicitly with retained raw generation when no reliable solid 
   const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: 'gemini-nano-banana-2.1', PATH: process.env.PATH,
     layering_google_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}`,
     layering_google_image_api_key: 'fixture', layering_google_image_protocol: 'openai' }, root);
-  const tool = imageGenerationTool(settings, 'part_simplify', root, [root], { krita: join(root,'krita'), matte: async () => { throw new Error('生成图片没有可靠纯色背景'); } })!;
+  const tool = imageGenerationTool(settings, 'part_simplify', root, [root])!;
   await assert.rejects(tool.execute({ prompt: '主体透明 PNG', input_images: [] }, new AbortController().signal), /Nano 透明背景处理失败.*原始生图保留在/);
   const [id] = await readdir(join(root, 'image-processing'));
   assert.deepEqual(await sharp(join(root, 'image-processing', id, 'original.png')).raw().toBuffer(), await sharp(png).raw().toBuffer());
   assert.ok((await readFile(join(root, 'image-processing', id, 'error.json'), 'utf8')).includes('主体透明 PNG'));
 });
 
-test('missing explicit Krita is reported before image API calls or native route startup', async t => {
-  const { root, executable } = await fixture(t);
-  let calls = 0;
-  const server = createServer((_req, res) => { calls++; res.writeHead(500).end(); });
+test('second request failures preserve the first image and expose the provider error without extra requests', async t => {
+  const { root } = await fixture(t); const first = await solidImage([11, 245, 5]); let calls = 0;
+  const server = createServer((_req, res) => {
+    calls++;
+    if (calls === 1) res.end(JSON.stringify({ data: [{ b64_json: first.toString('base64') }] }));
+    else res.writeHead(503).end('provider failed fixture-secret');
+  });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => { server.closeAllConnections(); return new Promise<void>(done => server.close(() => done())); });
-  const settings = loadWorkflowEnvironment({ layering_codex_path: executable, PATH: '',
-    layering_part_simplify_image_model: 'gemini-nano-banana-2.1', layering_google_image_protocol: 'openai',
-    layering_google_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}`, layering_google_image_api_key: 'fixture' }, root);
-  const tool = imageGenerationTool(settings, 'part_simplify', root, [root])!;
-  await assert.rejects(tool.execute({ prompt: '透明 PNG', input_images: [] }, new AbortController().signal), /Nano 透明后处理需要 Krita/);
-  await assert.rejects(createCodexImageRoute(settings, 'part_simplify', root), /Nano 透明后处理需要 Krita/);
-  assert.equal(calls, 0);
+  const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: 'gemini-nano-banana-2.1',
+    layering_google_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}`,
+    layering_google_image_api_key: 'fixture-secret', layering_google_image_protocol: 'openai' }, root);
+  await assert.rejects(imageGenerationTool(settings, 'part_simplify', root, [root])!.execute(
+    { prompt: '透明 PNG', input_images: [] }, new AbortController().signal), /HTTP 503.*provider failed \[redacted\].*原始生图保留在/);
+  assert.equal(calls, 2);
+  const [id] = await readdir(join(root, 'image-processing')); const directory = join(root, 'image-processing', id);
+  assert.deepEqual(await readFile(join(directory, 'original.png')), first);
+  assert.ok(!(await readdir(directory)).includes('transparent.png'));
+  assert.ok(!(await readFile(join(directory, 'error.json'), 'utf8')).includes('fixture-secret'));
 });
 
-test('原生半透明 alpha 原字节保留，不触发 Krita、安装或缩放', async t => {
+test('cancellation during the second call retains the first image and request record', async t => {
+  const { root } = await fixture(t); const first = await solidImage([11, 245, 5]); let calls = 0;
+  let secondStarted!: () => void;
+  const started = new Promise<void>(resolve => { secondStarted = resolve; });
+  const server = createServer((_req, res) => {
+    calls++;
+    if (calls === 1) res.end(JSON.stringify({ data: [{ b64_json: first.toString('base64') }] }));
+    else secondStarted();
+  });
+  server.listen(0, '127.0.0.1'); await once(server, 'listening');
+  t.after(() => { server.closeAllConnections(); return new Promise<void>(done => server.close(() => done())); });
+  const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: 'gemini-nano-banana-2.1',
+    layering_google_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}`,
+    layering_google_image_api_key: 'fixture', layering_google_image_protocol: 'openai' }, root);
+  const controller = new AbortController();
+  const rejected = assert.rejects(imageGenerationTool(settings, 'part_simplify', root, [root])!.execute(
+    { prompt: '透明 PNG', input_images: [] }, controller.signal), /cancelled.*原始生图保留在/);
+  await started; controller.abort(new Error('cancelled')); await rejected;
+  assert.equal(calls, 2);
+  const [id] = await readdir(join(root, 'image-processing')); const directory = join(root, 'image-processing', id);
+  assert.deepEqual(await readFile(join(directory, 'original.png')), first);
+  assert.ok((await readdir(directory)).includes('counterpart-request.json'));
+  assert.ok(!(await readdir(directory)).includes('transparent.png'));
+});
+
+test('invalid second images keep both observations without producing a successful result', async t => {
+  const { root } = await fixture(t); const first = await solidImage([11, 245, 5]);
+  for (const [name, second, message] of [
+    ['dimensions', await sharp(await solidImage([255, 255, 255])).resize(96, 64).png().toBuffer(), /画布尺寸/],
+    ['same-background', first, /颜色过于接近/],
+  ] as const) {
+    const directory = join(root, name);
+    const args = { prompt: '透明 PNG', background: 'transparent' as const };
+    await assert.rejects(transparentGeneratedImage(first, 'gemini-nano-banana-2.1', args, args,
+      { directory }, new AbortController().signal, await recommendBackground([]), async () => second), message);
+    assert.deepEqual(await readFile(join(directory, 'original.png')), first);
+    assert.deepEqual(await readFile(join(directory, 'counterpart.png')), second);
+    assert.ok(!(await readdir(directory)).includes('transparent.png'));
+  }
+});
+
+test('a proportional second resolution is normalized only for comparison, retaining both raw observations', async t => {
+  const { root } = await fixture(t); const first = await solidImage([11, 245, 5]);
+  const second = await sharp(await solidImage([255, 255, 255])).resize(96, 128).png().toBuffer();
+  const args = { prompt: '透明 PNG', background: 'transparent' as const };
+  const output = await transparentGeneratedImage(first, 'gemini-nano-banana-2.1', args, args,
+    { directory: root }, new AbortController().signal, await recommendBackground([]), async () => second);
+  const meta = await sharp(output).metadata(); assert.deepEqual([meta.width, meta.height], [48, 64]);
+  assert.deepEqual(await readFile(join(root, 'original.png')), first);
+  assert.deepEqual(await readFile(join(root, 'counterpart.png')), second);
+  const report = JSON.parse(await readFile(join(root, 'normalization.json'), 'utf8'));
+  assert.deepEqual(report.counterpartAlignment, { from: [96, 128], to: [48, 64], fit: 'contain' });
+});
+
+test('原生半透明 alpha 原字节保留，不触发第二次请求或缩放', async t => {
   const { root } = await fixture(t);
   const png = await sharp({ create: { width: 32, height: 24, channels: 4, background: '#ee88aa80' } }).png().toBuffer();
   const args = { prompt: '透明部件 PNG', background: 'transparent' as const };
   let called = false;
   const output = await transparentGeneratedImage(png, 'gemini-nano-banana-2.1', args, args,
-    { directory: root, runsRoot: root, matte: async () => { called = true; throw new Error('不应该初始化'); } },
-    new AbortController().signal, await recommendBackground([]));
+    { directory: root, runsRoot: root },
+    new AbortController().signal, await recommendBackground([]), async () => { called = true; throw new Error('不应该换背景'); });
   assert.equal(called, false); assert.deepEqual(output, png);
   assert.ok(!(await readdir(root)).includes('.runtime'));
   const record = JSON.parse(await readFile(join(root, 'normalization.json'), 'utf8'));

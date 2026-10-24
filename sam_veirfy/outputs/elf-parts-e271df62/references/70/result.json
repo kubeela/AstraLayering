@@ -1,0 +1,52 @@
+{
+  "index": 70,
+  "id": "puff_sleeve_image_left",
+  "key": "clothing-part-layering/puff_sleeve_image_left",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "画面左泡泡袖",
+  "prompt": "puff sleeve on the left side",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "references",
+  "source": "clothes",
+  "count": 2,
+  "max_score": 0.56640625,
+  "seconds": 0.0768,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 20186,
+  "instances": [
+    {
+      "file": "references/70/instance-01.png",
+      "score": 0.56640625,
+      "box_xyxy": [
+        271.6235656738281,
+        333.8927307128906,
+        384.3315734863281,
+        456.6212158203125
+      ],
+      "area_pixels": 10240
+    },
+    {
+      "file": "references/70/instance-02.png",
+      "score": 0.55859375,
+      "box_xyxy": [
+        550.5588989257812,
+        336.5204772949219,
+        662.0784912109375,
+        455.9347839355469
+      ],
+      "area_pixels": 9946
+    }
+  ],
+  "crop_bbox": [
+    241,
+    303,
+    694,
+    488
+  ],
+  "status": "detected",
+  "card": "references/70/card.jpg",
+  "mask": "references/70/mask.png",
+  "cutout": "references/70/cutout.png",
+  "overlay": "references/70/overlay.jpg"
+}

@@ -1,0 +1,41 @@
+{
+  "index": 15,
+  "id": "face/eyebrow_right",
+  "key": "part-layering/face/eyebrow_right",
+  "family": "人物",
+  "group": "face",
+  "label": "角色右眉毛",
+  "prompt": "right eyebrow",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 1,
+  "max_score": 0.5703125,
+  "seconds": 0.0757,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 444,
+  "instances": [
+    {
+      "file": "references/15/instance-01.png",
+      "score": 0.5703125,
+      "box_xyxy": [
+        387.95147705078125,
+        189.5470733642578,
+        435.8651428222656,
+        213.67347717285156
+      ],
+      "area_pixels": 444
+    }
+  ],
+  "crop_bbox": [
+    376,
+    176,
+    449,
+    228
+  ],
+  "status": "detected",
+  "card": "references/15/card.jpg",
+  "mask": "references/15/mask.png",
+  "cutout": "references/15/cutout.png",
+  "overlay": "references/15/overlay.jpg"
+}

@@ -1,0 +1,7 @@
+{
+  "groupId": "halter_dress/halter_bodice",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "61007c0d8c59cb29646742fa79ec9b4cfcabe8d518fb60679fd2bfa6c6d12b57",
+  "afterHash": "b6966a9a7586ddb4e840405c938d6e7e37f9d1062bf7eecae81d7b4ae2076933"
+}

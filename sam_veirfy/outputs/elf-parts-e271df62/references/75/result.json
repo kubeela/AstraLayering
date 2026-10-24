@@ -1,0 +1,41 @@
+{
+  "index": 75,
+  "id": "chest_pendant",
+  "key": "clothing-part-layering/chest_pendant",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "胸前吊坠",
+  "prompt": "chest pendant",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "references",
+  "source": "clothes",
+  "count": 1,
+  "max_score": 0.7734375,
+  "seconds": 0.076,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 3323,
+  "instances": [
+    {
+      "file": "references/75/instance-01.png",
+      "score": 0.7734375,
+      "box_xyxy": [
+        437.615234375,
+        290.8802490234375,
+        499.8937072753906,
+        383.0268249511719
+      ],
+      "area_pixels": 3323
+    }
+  ],
+  "crop_bbox": [
+    425,
+    280,
+    513,
+    398
+  ],
+  "status": "detected",
+  "card": "references/75/card.jpg",
+  "mask": "references/75/mask.png",
+  "cutout": "references/75/cutout.png",
+  "overlay": "references/75/overlay.jpg"
+}

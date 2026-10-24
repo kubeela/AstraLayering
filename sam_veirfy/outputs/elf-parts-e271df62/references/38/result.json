@@ -1,0 +1,41 @@
+{
+  "index": 38,
+  "id": "body/breast",
+  "key": "part-layering/body/breast",
+  "family": "人物",
+  "group": "body",
+  "label": "胸部",
+  "prompt": "breast",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 1,
+  "max_score": 0.5234375,
+  "seconds": 0.0789,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 18915,
+  "instances": [
+    {
+      "file": "references/38/instance-01.png",
+      "score": 0.5234375,
+      "box_xyxy": [
+        357.5736083984375,
+        401.3543395996094,
+        566.3749389648438,
+        523.6004028320312
+      ],
+      "area_pixels": 18915
+    }
+  ],
+  "crop_bbox": [
+    342,
+    386,
+    582,
+    539
+  ],
+  "status": "detected",
+  "card": "references/38/card.jpg",
+  "mask": "references/38/mask.png",
+  "cutout": "references/38/cutout.png",
+  "overlay": "references/38/overlay.jpg"
+}

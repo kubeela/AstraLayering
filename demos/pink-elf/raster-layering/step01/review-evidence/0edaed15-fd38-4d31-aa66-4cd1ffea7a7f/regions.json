@@ -1,0 +1,232 @@
+{
+  "image": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-02-evidence/current-krita.png",
+  "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering/references/base-subject.png",
+  "canvas": [
+    932,
+    1688
+  ],
+  "marked": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/marked.png",
+  "manifest": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/regions.json",
+  "regions": [
+    {
+      "id": "R1",
+      "bounds": [
+        260,
+        190,
+        205,
+        550
+      ],
+      "layers": [
+        "0010 hair/back_hair/long_right"
+      ],
+      "description": "画面左厚后发：隐藏根/中段存在大块平涂与圆拱硬色界，亮面和分束线在补绘边界停断；按本件发流重画过渡，保留完整宽面与发尾。参考中的身体不是隐藏发面绘画目标。",
+      "crop": [
+        244,
+        174,
+        237,
+        582
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R1-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R1-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R1-comparison.png"
+      }
+    },
+    {
+      "id": "R2",
+      "bounds": [
+        449,
+        180,
+        235,
+        560
+      ],
+      "layers": [
+        "0020 hair/back_hair/long_left"
+      ],
+      "description": "画面右厚后发：根部拱形换色和中部宽亮条仍呈补丁，纹理从圆头亮条突变到原有发束；单层及只显头发确认，需延续本件发流。",
+      "crop": [
+        433,
+        164,
+        267,
+        592
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R2-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R2-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R2-comparison.png"
+      }
+    },
+    {
+      "id": "R3",
+      "bounds": [
+        320,
+        322,
+        104,
+        45
+      ],
+      "layers": [
+        "0030 hair/side_hair_right"
+      ],
+      "description": "画面左肩后长侧发约y337的水平切线与矩形亮块，独显中同一发束的颜色和纹理被横截；用本层画笔跨缝接顺，保留隐藏圆端及悬空长弧。",
+      "crop": [
+        304,
+        306,
+        136,
+        77
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R3-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R3-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R3-comparison.png"
+      }
+    },
+    {
+      "id": "R4",
+      "bounds": [
+        530,
+        233,
+        38,
+        42
+      ],
+      "layers": [
+        "0040 hair/side_hair_left"
+      ],
+      "description": "画面右耳下侧发根有方头竖亮条及横折色块，同一发面内部发流突断；独显和隐藏cap后仍在，需在0040接通颜色及发纹。",
+      "crop": [
+        514,
+        217,
+        70,
+        74
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R4-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R4-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R4-comparison.png"
+      }
+    },
+    {
+      "id": "R5",
+      "bounds": [
+        389,
+        339,
+        36,
+        28
+      ],
+      "layers": [
+        "0250 body/torso",
+        "0530 hair/front_side_hair_right"
+      ],
+      "description": "torso独显带有粉色前侧发梢；隐藏前侧发后仍存在。清除0250中异属发丝，补回躯干皮肤/肩带，粉发仅由0530承担。",
+      "crop": [
+        373,
+        323,
+        68,
+        60
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R5-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R5-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R5-comparison.png"
+      }
+    },
+    {
+      "id": "R6",
+      "bounds": [
+        409,
+        337,
+        108,
+        34
+      ],
+      "layers": [
+        "0240 neck"
+      ],
+      "description": "neck独显的下端有横向浅色分界与三角状换色，隐藏torso后可见，补全端与上方颈皮肤不连续；保留完整端面，用本件肤色接顺。",
+      "crop": [
+        393,
+        321,
+        140,
+        66
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R6-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R6-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R6-comparison.png"
+      }
+    },
+    {
+      "id": "R7",
+      "bounds": [
+        381,
+        1305,
+        67,
+        85
+      ],
+      "layers": [
+        "0060 legs/leg_right/leg"
+      ],
+      "description": "画面左小腿至踝部约y1318有横向浅肤色色带，向下又切成平直色区；单层与无前靴状态相同，需重画宽区域连续皮肤过渡。",
+      "crop": [
+        365,
+        1289,
+        99,
+        117
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R7-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R7-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R7-comparison.png"
+      }
+    },
+    {
+      "id": "R8",
+      "bounds": [
+        386,
+        1408,
+        65,
+        49
+      ],
+      "layers": [
+        "0610 legs/leg_right/foot :: front",
+        "0056 legs/leg_right/foot :: rear"
+      ],
+      "description": "画面左靴内V前沿的浅粉滚边和暗轮廓仍断续，特别左支长段弱失；当前前后分片职责已合理，需在front补完整靴边而非再抬rear或扩靴。",
+      "crop": [
+        370,
+        1392,
+        97,
+        81
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R8-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R8-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R8-comparison.png"
+      }
+    },
+    {
+      "id": "R9",
+      "bounds": [
+        486,
+        1408,
+        64,
+        49
+      ],
+      "layers": [
+        "0600 legs/leg_left/foot :: front",
+        "0055 legs/leg_left/foot :: rear"
+      ],
+      "description": "画面右靴内V前沿滚边与暗轮廓长段弱失，肤色直接贴深靴面；在front恢复本侧连续滚边，保留rear后衬及独立链串。",
+      "crop": [
+        470,
+        1392,
+        96,
+        81
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R9-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R9-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R9-comparison.png"
+      }
+    }
+  ],
+  "note": "问题及坐标由 reviewer 看图确认后提供；左参考、右当前，局部图含上下文，不改变问题 bounds。"
+}

@@ -1,0 +1,41 @@
+{
+  "index": 27,
+  "id": "hair/front_side_hair_right",
+  "key": "part-layering/hair/front_side_hair_right",
+  "family": "人物",
+  "group": "hair",
+  "label": "角色右前侧发",
+  "prompt": "right front side hair",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.51171875,
+  "seconds": 0.0787,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 76944,
+  "instances": [
+    {
+      "file": "assembled/27/instance-01.png",
+      "score": 0.51171875,
+      "box_xyxy": [
+        179.05166625976562,
+        40.82181930541992,
+        731.3856811523438,
+        684.2548217773438
+      ],
+      "area_pixels": 76944
+    }
+  ],
+  "crop_bbox": [
+    127,
+    0,
+    783,
+    730
+  ],
+  "status": "detected",
+  "card": "assembled/27/card.jpg",
+  "mask": "assembled/27/mask.png",
+  "cutout": "assembled/27/cutout.png",
+  "overlay": "assembled/27/overlay.jpg"
+}

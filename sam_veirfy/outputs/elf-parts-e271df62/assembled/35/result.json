@@ -1,0 +1,41 @@
+{
+  "index": 35,
+  "id": "head_accessories/right_earring",
+  "key": "part-layering/head_accessories/right_earring",
+  "family": "人物",
+  "group": "head_accessories",
+  "label": "角色右耳饰",
+  "prompt": "right earring",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.8125,
+  "seconds": 0.0731,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 13723,
+  "instances": [
+    {
+      "file": "assembled/35/instance-01.png",
+      "score": 0.8125,
+      "box_xyxy": [
+        464.3448486328125,
+        1379.98583984375,
+        559.2155151367188,
+        1620.9716796875
+      ],
+      "area_pixels": 13723
+    }
+  ],
+  "crop_bbox": [
+    447,
+    1359,
+    578,
+    1642
+  ],
+  "status": "detected",
+  "card": "assembled/35/card.jpg",
+  "mask": "assembled/35/mask.png",
+  "cutout": "assembled/35/cutout.png",
+  "overlay": "assembled/35/overlay.jpg"
+}

@@ -1,0 +1,52 @@
+{
+  "index": 16,
+  "id": "face/ear_left",
+  "key": "part-layering/face/ear_left",
+  "family": "人物",
+  "group": "face",
+  "label": "角色左精灵耳",
+  "prompt": "left elf ear",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 2,
+  "max_score": 0.8828125,
+  "seconds": 0.0771,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 2171,
+  "instances": [
+    {
+      "file": "references/16/instance-01.png",
+      "score": 0.71484375,
+      "box_xyxy": [
+        315.3385009765625,
+        200.76608276367188,
+        379.82659912109375,
+        239.67047119140625
+      ],
+      "area_pixels": 1154
+    },
+    {
+      "file": "references/16/instance-02.png",
+      "score": 0.8828125,
+      "box_xyxy": [
+        535.5422973632812,
+        194.52899169921875,
+        594.3348388671875,
+        233.7316131591797
+      ],
+      "area_pixels": 1017
+    }
+  ],
+  "crop_bbox": [
+    292,
+    171,
+    617,
+    262
+  ],
+  "status": "detected",
+  "card": "references/16/card.jpg",
+  "mask": "references/16/mask.png",
+  "cutout": "references/16/cutout.png",
+  "overlay": "references/16/overlay.jpg"
+}

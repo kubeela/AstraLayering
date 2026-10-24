@@ -1,0 +1,52 @@
+{
+  "index": 4,
+  "id": "face/eye_left/sclera",
+  "key": "part-layering/face/eye_left/sclera",
+  "family": "人物",
+  "group": "face",
+  "label": "角色左眼白",
+  "prompt": "left white of eye",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 2,
+  "max_score": 0.6171875,
+  "seconds": 0.0752,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 1640,
+  "instances": [
+    {
+      "file": "assembled/04/instance-01.png",
+      "score": 0.5625,
+      "box_xyxy": [
+        401.6430358886719,
+        202.36264038085938,
+        438.2439270019531,
+        226.71946716308594
+      ],
+      "area_pixels": 788
+    },
+    {
+      "file": "assembled/04/instance-02.png",
+      "score": 0.6171875,
+      "box_xyxy": [
+        480.5997314453125,
+        198.94369506835938,
+        518.7955322265625,
+        222.68417358398438
+      ],
+      "area_pixels": 852
+    }
+  ],
+  "crop_bbox": [
+    389,
+    182,
+    533,
+    241
+  ],
+  "status": "detected",
+  "card": "assembled/04/card.jpg",
+  "mask": "assembled/04/mask.png",
+  "cutout": "assembled/04/cutout.png",
+  "overlay": "assembled/04/overlay.jpg"
+}

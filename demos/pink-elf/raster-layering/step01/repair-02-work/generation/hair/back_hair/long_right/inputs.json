@@ -1,0 +1,16 @@
+{
+  "part_id": "hair/back_hair/long_right",
+  "crop_xyxy": [
+    148,
+    161,
+    479,
+    809
+  ],
+  "size": [
+    588,
+    1152
+  ],
+  "scale": 1.7777777777777777,
+  "repair_region": "target own upper hair y<475; retain lower part source; no reference occluder pixels",
+  "reference_sha256": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
+}

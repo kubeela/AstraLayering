@@ -56,7 +56,7 @@ test('旧第一步交付直接补 review；无问题时一次结束，reviewer I
     calls++;
     assert.ok(isReview(request));
     assert.equal(request.threadId, undefined);
-    assert.equal(request.model, 'gpt-6-astra');
+    assert.equal(request.model, 'gpt-6.1-sol');
     assert.equal(request.effort, 'xhigh');
     assert.ok(!/第一轮|第二轮|最多|两轮|\{\w+\}/.test(request.prompt));
     await readFile(join(f.output, 'step01/.running'));

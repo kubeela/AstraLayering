@@ -1,0 +1,202 @@
+{
+  "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+  "parts": {
+    "hair/back_hair/cap": [
+      {
+        "level": 5,
+        "mask": "parts/hair/back_hair/cap/nape-depth-mask.png",
+        "region": "颈旁后脑承底与长/侧发根的交叠：y>=235，x在375–447或476–546，且原cap back像素与long_right/long_left/side_hair_right/side_hair_left的alpha>=128根面重叠。仅该交叠后置至5，位于10/20/30/40根面后。"
+      },
+      {
+        "level": 50,
+        "mask": "parts/hair/back_hair/cap/back-depth-mask.png",
+        "region": "原完整cap后脑承底扣除5颈旁交叠与560冠顶的其余部分；保留头侧、耳根与后脑接合，位于脸耳和前发后。"
+      },
+      {
+        "level": 560,
+        "mask": "parts/hair/back_hair/cap/upper-depth-mask.png",
+        "region": "y < 94+0.0033*(x-453)^2 且 y<151的原冠顶弧形覆盖区。三分片互补，联合为同一完整cap，运动身份不变。"
+      }
+    ],
+    "legs/leg_right/foot": [
+      {
+        "level": 56,
+        "mask": "parts/legs/leg_right/foot/rear-depth-mask.png",
+        "region": "蓝灰后衬/后唇保留在本腿后；扣除属于实际前翻边、暗轮廓和浅粉滚边的V前口像素。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。"
+      },
+      {
+        "level": 610,
+        "mask": "parts/legs/leg_right/foot/upper-depth-mask.png",
+        "region": "前V翻边、连续暗轮廓/浅粉滚边、靴筒鞋面鞋头鞋底及既有固定附件，在腿前。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。",
+        "original_V_polyline": [
+          [
+            367,
+            1395
+          ],
+          [
+            396.55,
+            1417.55
+          ],
+          [
+            409,
+            1431
+          ],
+          [
+            420.6,
+            1445.3
+          ],
+          [
+            430,
+            1422
+          ],
+          [
+            438.25,
+            1413.85
+          ],
+          [
+            462,
+            1393
+          ]
+        ],
+        "actual_inner_V_beziers": [
+          [
+            396.55,
+            1417.55
+          ],
+          [
+            408.2,
+            1419.3
+          ],
+          [
+            415.65,
+            1431.7
+          ],
+          [
+            420.6,
+            1445.3
+          ],
+          [
+            425.45,
+            1429.25
+          ],
+          [
+            430.15,
+            1417.2
+          ],
+          [
+            438.25,
+            1413.85
+          ]
+        ]
+      }
+    ],
+    "legs/leg_left/foot": [
+      {
+        "level": 55,
+        "mask": "parts/legs/leg_left/foot/rear-depth-mask.png",
+        "region": "蓝灰后衬/后唇保留在本腿后；扣除属于实际前翻边、暗轮廓和浅粉滚边的V前口像素。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。"
+      },
+      {
+        "level": 600,
+        "mask": "parts/legs/leg_left/foot/upper-depth-mask.png",
+        "region": "前V翻边、连续暗轮廓/浅粉滚边、靴筒鞋面鞋头鞋底及既有固定附件，在腿前。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。",
+        "original_V_polyline": [
+          [
+            468,
+            1393
+          ],
+          [
+            494,
+            1414
+          ],
+          [
+            505,
+            1428
+          ],
+          [
+            511,
+            1449
+          ],
+          [
+            523,
+            1424
+          ],
+          [
+            534,
+            1417
+          ],
+          [
+            566,
+            1395
+          ]
+        ],
+        "actual_inner_V_beziers": [
+          [
+            493.8,
+            1414.3
+          ],
+          [
+            499.7,
+            1416.4
+          ],
+          [
+            503.5,
+            1421.7
+          ],
+          [
+            505.4,
+            1427.8
+          ],
+          [
+            506.5,
+            1433.9
+          ],
+          [
+            508.5,
+            1443.8
+          ],
+          [
+            510.7,
+            1448.7
+          ],
+          [
+            514.1,
+            1442
+          ],
+          [
+            516.1,
+            1430.1
+          ],
+          [
+            522.7,
+            1423.8
+          ],
+          [
+            526.3,
+            1420.3
+          ],
+          [
+            530.1,
+            1418.1
+          ],
+          [
+            533.8,
+            1417.2
+          ]
+        ]
+      }
+    ],
+    "legs/leg_left/boot_gem_chain/flexible_connector": [
+      {
+        "level": 599,
+        "mask": "parts/legs/leg_left/boot_gem_chain/flexible_connector/hidden-depth-mask.png",
+        "region": "原y>=1527末梢，在左靴固定花瓣后；本轮保持原像素。"
+      },
+      {
+        "level": 620,
+        "mask": "parts/legs/leg_left/boot_gem_chain/flexible_connector/upper-depth-mask.png",
+        "region": "原y<1527三段外露连接，在靴前/硬件后；本轮保持原像素。"
+      }
+    ]
+  }
+}

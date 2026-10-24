@@ -1,0 +1,14 @@
+{
+  "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step02/character-soft-edges.kra",
+  "sha256": "43e02e0ceeeb8c5434b65b1a6f84a430c0e5994fd6265a6ccbdde541235cbe5c",
+  "layers": 70,
+  "size": [
+    932,
+    1688
+  ],
+  "all_layer_names_order_properties_and_RGBA_equal": true,
+  "projection_before_sha256": "5b2333c0a372d6a2436fae0dc8c7b216fd1d1b14d28b38104d7e629a778151c1",
+  "projection_after_sha256": "5b2333c0a372d6a2436fae0dc8c7b216fd1d1b14d28b38104d7e629a778151c1",
+  "projection_equal": true,
+  "no_masks_or_children": true
+}

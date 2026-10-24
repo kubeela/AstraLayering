@@ -1,0 +1,41 @@
+{
+  "index": 19,
+  "id": "face/mouth/upper_lip",
+  "key": "part-layering/face/mouth/upper_lip",
+  "family": "人物",
+  "group": "face",
+  "label": "上唇",
+  "prompt": "upper lip",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.546875,
+  "seconds": 0.075,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 288,
+  "instances": [
+    {
+      "file": "assembled/19/instance-01.png",
+      "score": 0.546875,
+      "box_xyxy": [
+        446.9960021972656,
+        248.26296997070312,
+        476.2164306640625,
+        257.6575927734375
+      ],
+      "area_pixels": 288
+    }
+  ],
+  "crop_bbox": [
+    435,
+    234,
+    488,
+    270
+  ],
+  "status": "detected",
+  "card": "assembled/19/card.jpg",
+  "mask": "assembled/19/mask.png",
+  "cutout": "assembled/19/cutout.png",
+  "overlay": "assembled/19/overlay.jpg"
+}

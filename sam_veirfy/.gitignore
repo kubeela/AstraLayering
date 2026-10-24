@@ -1,0 +1,16 @@
+env/
+cache/
+models/
+outputs/*
+!outputs/environment.json
+!outputs/model-manifest.json
+!outputs/model-license.txt
+!outputs/artifact-manifest.json
+!outputs/pink-elf-verified/
+!outputs/elf-parts-e271df62/
+**/server.json
+logs/
+tmp/
+__pycache__/
+*.pyc
+*.log

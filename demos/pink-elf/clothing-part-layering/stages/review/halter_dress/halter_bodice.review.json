@@ -1,0 +1,117 @@
+{
+  "groupId": "halter_dress/halter_bodice",
+  "reviews": [
+    {
+      "verdict": "revise",
+      "feedback": "已完成候选独显、全图 blend、衣身全部可见区域 3–4 倍 blend/edge、领口及左右侧缘 5–7 倍局部检查，并对照父完成 SVG 和当前 note。候选父范围检查通过：outsidePixels=0。审查仅针对纯色实体轮廓、开口与职责，不要求衣色、花纹、褶皱明暗、材质或透明度。\n\n确定需在当前父范围内修改：\n1. 画面左侧衣身外缘存在连续多填，尤其 x389–397/y455–490 的收腰段。7 倍 edge 中红线位于参考实际深色衣边左侧，腰部最窄处约多出 3–5 原图像素，使腰缘偏左、腰部变宽；上接 x392–430/y280–350 的挂脖斜边也有约 2–4 像素向外偏移。证据：observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-6.png、-9.png，整体对应 -3.png。请沿纯衣服图可见衣料外缘向内收回并平滑接续，尤其校正 y460–490 的凹腰曲线。蝴蝶结遮住的下接区域保留必要隐藏搭接，不按结的可见边切掉底布；泡袖实际遮挡接触处也保留合理搭接。\n2. 领口固定花瓣布边上缘 x433–471/y251–278 局部膨出，左颈尖至第一布瓣之间被简化成较长斜肩，瓣间凹口位置偏高。7 倍 edge 可见红色上缘在参考实体边之外，特别约(446,260)、(460,269)及中央凹口(470,278)，局部约多填 2–4 像素，削弱布瓣原有收口。证据：同目录 -8.png（领口 7 倍 edge），结合 -3.png。请依据参考固定布瓣真实外轮廓收回多余区域，恢复瓣峰和瓣间凹口的坐标与弧度；这属于外轮廓修正，不要求恢复内部花纹或金色描边。\n\n上游父范围限制（不要求当前候选越界）：\n右侧挂脖斜边约 x502–551/y280–365，候选与父 SVG 使用相同曲线，均处于参考可见外衣边内侧；从颈侧转折向泡袖上缘方向缺一条约 2–5 像素的窄衣料带。证据：同目录 -7.png 的 7 倍 edge，参考外缘持续在红线右侧；父稿局部 blend 为 -4.png，源码该段与候选一致。该条带位于父范围外，只能由上游先扩大父稿解决；当前 part 不应擅自越界。后续父稿修复后再同步承接。\n\n其余检查：胸腹主布、腰部连续控制交接及隐藏搭接可接受；两个前领实际开口仍保留，未把浅色胸布或薄衣料误删为空白。胸前垂饰和腰结按独立附件位于衣身之前，保留其后合理底布不算归属错误。note 已承接颈前/颈后连续深度区域、胸腰随动、附件关系及终止 part 职责，无需仅因跨深度再拆逻辑部件。",
+      "candidateHash": "dca2e5307e743dd61017cb156034faacb9d09538ee651a247bb0e2bc4af26303",
+      "observations": [
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-1.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-2.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-3.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-4.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "svg",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-5.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-6.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-7.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-8.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-9.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-41-33-441Z-10.png"
+        }
+      ],
+      "updatedAt": "2026-10-23T02:45:45.139Z",
+      "repairedCandidateHash": "61007c0d8c59cb29646742fa79ec9b4cfcabe8d518fb60679fd2bfa6c6d12b57"
+    },
+    {
+      "verdict": "pass",
+      "feedback": "已完成整图 blend、衣身全区域 3–4 倍参考与 edge 对照、领口 6 倍 edge、右颈侧 6 倍 blend 以及 SVG 独显核对。当前 part 在父范围内通过，无需当前绘制 agent 返修。胸腹两侧轮廓、领口花瓣布边、两处真实开口、袖身相邻边界及腰部隐藏搭接均已核对；腰部下沿为控制交接并保留搭接，不视作新增可见腰缝。金色垂饰与蝴蝶结前方遮挡下保留布面合理，不要求按附件像素挖除。note 已承接实体归属、颈前／颈后连续深度关系、共同随动及隐藏搭接职责；无需因环颈跨深度另拆逻辑 part。候选父范围检查 outsidePixels=0。\n上游范围限制（不要求本 part 越界）：画面右颈侧至右上胸斜边，约 x502–550/y280–365，纯衣服参考可见一条连续浅色衣料窄带及其外侧深色轮廓；候选边缘沿该窄带内侧，局部约少覆盖 3–5 原图像素。父完成 SVG 在此使用与候选完全相同的曲线 M502,280 C514,306 534,337 550,365，故仅扩大父稿才能补足，列为上游限制。上游修改要求：依据真实衣料外缘向右补齐连续窄带，再传递边界至本 part，不追随白色去背噪点。证据：observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-9.png（右斜边 6 倍 blend），2026-10-23T02-48-15-728Z-6.png（父稿 edge），2026-10-23T02-48-15-728Z-4.png（候选全衣身 edge）。未将衣色、纹样、褶皱明暗或不透明纯色表现列为缺陷。",
+      "candidateHash": "61007c0d8c59cb29646742fa79ec9b4cfcabe8d518fb60679fd2bfa6c6d12b57",
+      "observations": [
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-1.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-2.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-3.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-4.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-5.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-6.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-7.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "svg",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-8.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/halter_dress/halter_bodice.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/halter_dress/halter_bodice/2026-10-23T02-48-15-728Z-9.png"
+        }
+      ],
+      "updatedAt": "2026-10-23T02:49:41.224Z"
+    }
+  ]
+}

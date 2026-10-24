@@ -2,11 +2,17 @@
   "version": 1,
   "groupId": "arms/arm_left/hand/palm",
   "beforeHash": "479e143dc13b8f7166485520d8d04732cbeba22c117f9c00d5d609ea60ff0dba",
-  "afterHash": "e4c36e85262c1116ca0ca0e90c2e965b60982f63a4b15d3bad41d45d2afbb2cb",
+  "afterHash": "7b2d439bc0866fc0fdaecbc896cf27738d98ca8eca7b7675357ebda03d9829d8",
   "dependencies": [
     {
       "path": "references\\base-subject.png",
       "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
     }
-  ]
+  ],
+  "rasterRepair01": {
+    "previousAfterHash": "e4c36e85262c1116ca0ca0e90c2e965b60982f63a4b15d3bad41d45d2afbb2cb",
+    "reason": "R2去除越入真实虎口透明间隙的三角延伸，原掌体及隐藏圆端保留。",
+    "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering",
+    "report": "../raster-layering/step01/repair-01.md.tmp"
+  }
 }

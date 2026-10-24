@@ -1,0 +1,772 @@
+[
+  {
+    "layer": "0005 hair/back_hair/cap :: nape_under_roots",
+    "bounds": [
+      375,
+      235,
+      547,
+      299
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-1.png"
+  },
+  {
+    "layer": "0050 hair/back_hair/cap :: back",
+    "bounds": [
+      342,
+      94,
+      567,
+      300
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-1.png"
+  },
+  {
+    "layer": "0560 hair/back_hair/cap :: crown",
+    "bounds": [
+      362,
+      63,
+      557,
+      130
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-1.png"
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "bounds": [
+      162,
+      175,
+      465,
+      795
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-1.png"
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "bounds": [
+      448,
+      140,
+      739,
+      803
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-2.png"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "bounds": [
+      212,
+      81,
+      452,
+      544
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-2.png"
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "bounds": [
+      479,
+      83,
+      692,
+      542
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-3.png"
+  },
+  {
+    "layer": "0045 hair/ahoge",
+    "bounds": [
+      433,
+      27,
+      489,
+      105
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-3.png"
+  },
+  {
+    "layer": "0530 hair/front_side_hair_right",
+    "bounds": [
+      353,
+      92,
+      444,
+      361
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-3.png"
+  },
+  {
+    "layer": "0540 hair/front_side_hair_left",
+    "bounds": [
+      439,
+      79,
+      550,
+      288
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-3.png"
+  },
+  {
+    "layer": "0550 hair/bangs",
+    "bounds": [
+      361,
+      74,
+      524,
+      212
+    ],
+    "scale": 2,
+    "sheet": "sheet-hair-3.png"
+  },
+  {
+    "layer": "0055 legs/leg_left/foot :: rear",
+    "bounds": [
+      468,
+      1374,
+      567,
+      1446
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "bounds": [
+      468,
+      1393,
+      567,
+      1632
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0056 legs/leg_right/foot :: rear",
+    "bounds": [
+      366,
+      1374,
+      463,
+      1441
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "bounds": [
+      366,
+      1393,
+      463,
+      1632
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+    "bounds": [
+      509,
+      1527,
+      511,
+      1530
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+    "bounds": [
+      509,
+      1501,
+      512,
+      1527
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "bounds": [
+      498,
+      1461,
+      523,
+      1504
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "bounds": [
+      507,
+      1506,
+      514,
+      1513
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0650 legs/leg_left/boot_gem_chain/round_bead",
+    "bounds": [
+      508,
+      1516,
+      513,
+      1521
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0660 legs/leg_right/boot_gem",
+    "bounds": [
+      408,
+      1461,
+      434,
+      1504
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0670 legs/leg_right/boot_flower_ornament",
+    "bounds": [
+      392,
+      1525,
+      440,
+      1571
+    ],
+    "scale": 3,
+    "sheet": "sheet-boots-1.png"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "bounds": [
+      317,
+      603,
+      462,
+      1468
+    ],
+    "scale": 2,
+    "sheet": "sheet-legs-1.png"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "bounds": [
+      468,
+      604,
+      611,
+      1468
+    ],
+    "scale": 2,
+    "sheet": "sheet-legs-1.png"
+  },
+  {
+    "layer": "0080 pelvis",
+    "bounds": [
+      319,
+      536,
+      609,
+      777
+    ],
+    "scale": 2,
+    "sheet": "sheet-body-1.png"
+  },
+  {
+    "layer": "0240 neck",
+    "bounds": [
+      404,
+      255,
+      519,
+      370
+    ],
+    "scale": 2,
+    "sheet": "sheet-body-1.png"
+  },
+  {
+    "layer": "0250 body/torso",
+    "bounds": [
+      329,
+      339,
+      590,
+      632
+    ],
+    "scale": 2,
+    "sheet": "sheet-body-1.png"
+  },
+  {
+    "layer": "0260 body/breast",
+    "bounds": [
+      357,
+      374,
+      566,
+      529
+    ],
+    "scale": 2,
+    "sheet": "sheet-body-1.png"
+  },
+  {
+    "layer": "0090 arms/arm_left/hand/little_finger",
+    "bounds": [
+      699,
+      828,
+      723,
+      878
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0100 arms/arm_left/hand/ring_finger",
+    "bounds": [
+      692,
+      815,
+      712,
+      883
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0110 arms/arm_left/hand/middle_finger",
+    "bounds": [
+      695,
+      822,
+      720,
+      892
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0120 arms/arm_left/hand/index_finger",
+    "bounds": [
+      697,
+      806,
+      730,
+      886
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0130 arms/arm_left/hand/thumb",
+    "bounds": [
+      676,
+      799,
+      699,
+      855
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0140 arms/arm_left/hand/palm",
+    "bounds": [
+      672,
+      766,
+      730,
+      851
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0145 arms/arm_right/hand/little_finger",
+    "bounds": [
+      192,
+      817,
+      211,
+      884
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0150 arms/arm_right/hand/index_finger",
+    "bounds": [
+      212,
+      807,
+      244,
+      869
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0160 arms/arm_right/hand/middle_finger",
+    "bounds": [
+      211,
+      808,
+      238,
+      880
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0170 arms/arm_right/hand/ring_finger",
+    "bounds": [
+      201,
+      818,
+      233,
+      889
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0180 arms/arm_right/hand/thumb",
+    "bounds": [
+      224,
+      805,
+      244,
+      852
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0190 arms/arm_right/hand/palm",
+    "bounds": [
+      193,
+      759,
+      252,
+      834
+    ],
+    "scale": 4,
+    "sheet": "sheet-hands-1.png"
+  },
+  {
+    "layer": "0200 arms/arm_left/forearm",
+    "bounds": [
+      576,
+      546,
+      709,
+      798
+    ],
+    "scale": 2,
+    "sheet": "sheet-arms-1.png"
+  },
+  {
+    "layer": "0210 arms/arm_right/forearm",
+    "bounds": [
+      215,
+      531,
+      350,
+      788
+    ],
+    "scale": 2,
+    "sheet": "sheet-arms-1.png"
+  },
+  {
+    "layer": "0220 arms/arm_left/upper_arm",
+    "bounds": [
+      500,
+      339,
+      625,
+      598
+    ],
+    "scale": 2,
+    "sheet": "sheet-arms-1.png"
+  },
+  {
+    "layer": "0230 arms/arm_right/upper_arm",
+    "bounds": [
+      299,
+      340,
+      425,
+      587
+    ],
+    "scale": 2,
+    "sheet": "sheet-arms-1.png"
+  },
+  {
+    "layer": "0270 face/ear_left",
+    "bounds": [
+      512,
+      195,
+      597,
+      237
+    ],
+    "scale": 3,
+    "sheet": "sheet-face-ears-1.png"
+  },
+  {
+    "layer": "0280 face/ear_right",
+    "bounds": [
+      313,
+      201,
+      404,
+      241
+    ],
+    "scale": 3,
+    "sheet": "sheet-face-ears-1.png"
+  },
+  {
+    "layer": "0290 head_accessories/left_earring",
+    "bounds": [
+      514,
+      230,
+      527,
+      263
+    ],
+    "scale": 3,
+    "sheet": "sheet-face-ears-1.png"
+  },
+  {
+    "layer": "0300 head_accessories/right_earring",
+    "bounds": [
+      391,
+      226,
+      412,
+      265
+    ],
+    "scale": 3,
+    "sheet": "sheet-face-ears-1.png"
+  },
+  {
+    "layer": "0310 face/face_base",
+    "bounds": [
+      381,
+      123,
+      534,
+      295
+    ],
+    "scale": 3,
+    "sheet": "sheet-face-ears-1.png"
+  },
+  {
+    "layer": "0320 face/mouth/mouth_interior",
+    "bounds": [
+      442,
+      249,
+      473,
+      275
+    ],
+    "scale": 4,
+    "sheet": "sheet-mouth-1.png"
+  },
+  {
+    "layer": "0330 face/mouth/lower_teeth",
+    "bounds": [
+      447,
+      266,
+      468,
+      274
+    ],
+    "scale": 4,
+    "sheet": "sheet-mouth-1.png"
+  },
+  {
+    "layer": "0340 face/mouth/tongue",
+    "bounds": [
+      443,
+      258,
+      472,
+      275
+    ],
+    "scale": 4,
+    "sheet": "sheet-mouth-1.png"
+  },
+  {
+    "layer": "0350 face/mouth/upper_teeth",
+    "bounds": [
+      447,
+      248,
+      468,
+      253
+    ],
+    "scale": 4,
+    "sheet": "sheet-mouth-1.png"
+  },
+  {
+    "layer": "0360 face/mouth/lower_lip",
+    "bounds": [
+      441,
+      250,
+      474,
+      276
+    ],
+    "scale": 4,
+    "sheet": "sheet-mouth-1.png"
+  },
+  {
+    "layer": "0370 face/mouth/upper_lip",
+    "bounds": [
+      441,
+      248,
+      474,
+      260
+    ],
+    "scale": 4,
+    "sheet": "sheet-mouth-1.png"
+  },
+  {
+    "layer": "0380 face/nose",
+    "bounds": [
+      454,
+      233,
+      458,
+      241
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0390 face/eye_left/sclera",
+    "bounds": [
+      475,
+      194,
+      516,
+      222
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0400 face/eye_right/sclera",
+    "bounds": [
+      396,
+      197,
+      434,
+      225
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0410 face/eye_left/iris",
+    "bounds": [
+      478,
+      192,
+      505,
+      222
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0420 face/eye_right/iris",
+    "bounds": [
+      406,
+      197,
+      432,
+      225
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0430 face/eye_left/highlight",
+    "bounds": [
+      484,
+      199,
+      498,
+      221
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0440 face/eye_right/highlight",
+    "bounds": [
+      412,
+      202,
+      427,
+      225
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0450 face/eye_left/lower_eyelid",
+    "bounds": [
+      474,
+      205,
+      522,
+      224
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0460 face/eye_right/lower_eyelid",
+    "bounds": [
+      389,
+      201,
+      435,
+      226
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0470 face/eye_left/upper_eyelid",
+    "bounds": [
+      472,
+      189,
+      525,
+      215
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0480 face/eye_right/upper_eyelid",
+    "bounds": [
+      383,
+      191,
+      437,
+      221
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0490 face/eye_left/eyelid_crease",
+    "bounds": [
+      473,
+      185,
+      499,
+      194
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0500 face/eye_right/eyelid_crease",
+    "bounds": [
+      410,
+      189,
+      434,
+      196
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0570 face/eyebrow_left",
+    "bounds": [
+      471,
+      166,
+      515,
+      178
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  },
+  {
+    "layer": "0580 face/eyebrow_right",
+    "bounds": [
+      394,
+      169,
+      439,
+      181
+    ],
+    "scale": 4,
+    "sheet": "sheet-eyes-1.png"
+  }
+]

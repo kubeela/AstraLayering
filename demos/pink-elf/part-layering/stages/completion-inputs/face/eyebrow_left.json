@@ -2,11 +2,17 @@
   "version": 1,
   "groupId": "face/eyebrow_left",
   "beforeHash": "204a7807ae24cbf55765280f1e9f0a27dfe00a5ee7616fbd731f35567fd6ae46",
-  "afterHash": "76cbfc35f702a135b1d8f96cf56fdff24057971f70521e0e4c0bc3c9cdf7b79e",
+  "afterHash": "0c63841540cdc2ce0addfccafc7465650dd1a88c41893143878af69993c2967f",
   "dependencies": [
     {
       "path": "references\\base-subject.png",
       "hash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e"
     }
-  ]
+  ],
+  "rasterRevision": {
+    "step": "raster-layering/step01",
+    "reason": "真实眉弧与上睑褶分离。",
+    "report": "../raster-layering/step01/report.md.tmp",
+    "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering"
+  }
 }

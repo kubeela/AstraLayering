@@ -1,0 +1,41 @@
+{
+  "index": 21,
+  "id": "face/mouth/mouth_interior",
+  "key": "part-layering/face/mouth/mouth_interior",
+  "family": "人物",
+  "group": "face",
+  "label": "口腔内部",
+  "prompt": "mouth interior",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 1,
+  "max_score": 0.84765625,
+  "seconds": 0.0765,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 573,
+  "instances": [
+    {
+      "file": "references/21/instance-01.png",
+      "score": 0.84765625,
+      "box_xyxy": [
+        442.3368225097656,
+        250.1338348388672,
+        472.0843811035156,
+        274.4524230957031
+      ],
+      "area_pixels": 573
+    }
+  ],
+  "crop_bbox": [
+    431,
+    240,
+    484,
+    287
+  ],
+  "status": "detected",
+  "card": "references/21/card.jpg",
+  "mask": "references/21/mask.png",
+  "cutout": "references/21/cutout.png",
+  "overlay": "references/21/overlay.jpg"
+}

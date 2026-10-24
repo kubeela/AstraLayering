@@ -1,0 +1,214 @@
+{
+  "image": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/review-01/current-all.png",
+  "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/references/clothing.png",
+  "canvas": [
+    932,
+    1688
+  ],
+  "marked": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/marked.png",
+  "manifest": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/regions.json",
+  "regions": [
+    {
+      "id": "R1",
+      "bounds": [
+        427,
+        266,
+        82,
+        44
+      ],
+      "layers": [
+        "0038 halter_dress/halter_bodice :: depth_38",
+        "0040 chest_pendant"
+      ],
+      "description": "领口中央下垂V形花瓣和金色固定包边被水平浅粉补绘带截断；恢复本衣身花瓣轮廓与领尖连续性，保留原镂空和独立胸饰。",
+      "crop": [
+        411,
+        250,
+        114,
+        76
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R1-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R1-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R1-comparison.png"
+      }
+    },
+    {
+      "id": "R2",
+      "bounds": [
+        380,
+        488,
+        165,
+        62
+      ],
+      "layers": [
+        "0038 halter_dress/halter_bodice :: depth_38",
+        "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34",
+        "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35",
+        "0037 halter_dress/short_outer_skirt/front_drape :: depth_37"
+      ],
+      "description": "隐藏腰结、带尾及衣身后，腰根补绘和可见布面之间有横向块状色阶、断开的褶线及缝齿状纹理；逐part画顺接合，保留窄搭接，不新造腰带或衣缝。",
+      "crop": [
+        364,
+        472,
+        197,
+        94
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R2-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R2-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R2-comparison.png"
+      }
+    },
+    {
+      "id": "R3",
+      "bounds": [
+        375,
+        516,
+        51,
+        290
+      ],
+      "layers": [
+        "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34",
+        "0032 halter_dress/short_outer_skirt/right_skirt_panel :: depth_32",
+        "0037 halter_dress/short_outer_skirt/front_drape :: depth_37",
+        "0036 halter_dress/short_outer_skirt/front_drape :: depth_36"
+      ],
+      "description": "中央垂布画面左侧从腰下到蓝紫回卷边出现额外浅色描边和重复深粉短划，原本连续的褶面读成接缝；重画两片接触及正反面交界，保留真实褶线、回卷和露花缺口。",
+      "crop": [
+        359,
+        500,
+        83,
+        322
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R3-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R3-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R3-comparison.png"
+      }
+    },
+    {
+      "id": "R4",
+      "bounds": [
+        470,
+        514,
+        111,
+        230
+      ],
+      "layers": [
+        "0037 halter_dress/short_outer_skirt/front_drape :: depth_37",
+        "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35"
+      ],
+      "description": "中央垂布画面右侧长斜界有白粉镶边、暗色断续短划和局部色阶，褶线不如参考自然连续；用画笔协调本片边与下层衣料，保留真实紫粉折面和自由翻起端。",
+      "crop": [
+        454,
+        498,
+        143,
+        262
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R4-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R4-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R4-comparison.png"
+      }
+    },
+    {
+      "id": "R5",
+      "bounds": [
+        156,
+        776,
+        266,
+        74
+      ],
+      "layers": [
+        "0031 floral_skirt_undertrim :: depth_31"
+      ],
+      "description": "花簇左段独显仍有粉裙像素条，生成蓝花与可见瓣纹沿旧裙缘硬拼，花瓣被截断；去掉异属粉布，补成同一花瓣材质，保留参考可见花串和合法隐藏延伸。",
+      "crop": [
+        140,
+        760,
+        298,
+        106
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R5-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R5-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R5-comparison.png"
+      }
+    },
+    {
+      "id": "R6",
+      "bounds": [
+        535,
+        774,
+        241,
+        87
+      ],
+      "layers": [
+        "0031 floral_skirt_undertrim :: depth_31"
+      ],
+      "description": "花簇右段窗口左下有粉色裙布楔形残片，右上花瓣区有沿旧裙缘的粉线及明显材质拼接；移除外裙内容，用连续蓝紫/青蓝花瓣重画接缝，不吞并真实外裙反面。",
+      "crop": [
+        519,
+        758,
+        273,
+        119
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R6-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R6-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R6-comparison.png"
+      }
+    },
+    {
+      "id": "R7",
+      "bounds": [
+        200,
+        828,
+        173,
+        89
+      ],
+      "layers": [
+        "0007 trailing_skirt_image_left :: depth_07"
+      ],
+      "description": "左侧深色垂布隐藏根部与可见星点布约y885–902出现硬横切、色调/纹理跳变和被切断的装饰；在同片内画顺布褶和星点过渡，保留固定缘饰、合理根部与独立深度片。",
+      "crop": [
+        184,
+        812,
+        205,
+        121
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R7-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R7-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R7-comparison.png"
+      }
+    },
+    {
+      "id": "R8",
+      "bounds": [
+        580,
+        836,
+        160,
+        87
+      ],
+      "layers": [
+        "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+        "0010 trailing_skirt_image_right/short_drape_left :: depth_10"
+      ],
+      "description": "右短垂布隐藏上根有突兀深蓝写实褶皱与下方星点布硬拼，右上还有灰白块状横条；清除非衣料块，重画同片连贯根部，保留10层青点浅色翻面及金缘归属。",
+      "crop": [
+        564,
+        820,
+        192,
+        119
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R8-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R8-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R8-comparison.png"
+      }
+    }
+  ],
+  "note": "问题及坐标由 reviewer 看图确认后提供；左参考、右当前，局部图含上下文，不改变问题 bounds。"
+}

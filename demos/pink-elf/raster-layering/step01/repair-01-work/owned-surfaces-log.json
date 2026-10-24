@@ -1,0 +1,110 @@
+[
+  {
+    "part": "arms/arm_right/hand/palm",
+    "pixels": 1824,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_right/hand/palm.png",
+    "reason": "本掌可见皮肤；不含任何独立指甲或指尖。隐藏腕根不贴前臂。"
+  },
+  {
+    "part": "arms/arm_right/forearm",
+    "pixels": 718,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_right/forearm.png",
+    "reason": "本前臂腕端可见肤色；排除覆盖上层。"
+  },
+  {
+    "part": "arms/arm_right/hand/thumb",
+    "pixels": 189,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_right/hand/thumb.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_right/hand/index_finger",
+    "pixels": 26,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_right/hand/index_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_right/hand/middle_finger",
+    "pixels": 176,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_right/hand/middle_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_right/hand/ring_finger",
+    "pixels": 152,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_right/hand/ring_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_right/hand/little_finger",
+    "pixels": 52,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_right/hand/little_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_left/hand/palm",
+    "pixels": 1741,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_left/hand/palm.png",
+    "reason": "本掌可见皮肤；不含任何独立指甲或指尖。隐藏腕根不贴前臂。"
+  },
+  {
+    "part": "arms/arm_left/forearm",
+    "pixels": 772,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_left/forearm.png",
+    "reason": "本前臂腕端可见肤色；排除覆盖上层。"
+  },
+  {
+    "part": "arms/arm_left/hand/thumb",
+    "pixels": 188,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_left/hand/thumb.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_left/hand/index_finger",
+    "pixels": 32,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_left/hand/index_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_left/hand/middle_finger",
+    "pixels": 68,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_left/hand/middle_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_left/hand/ring_finger",
+    "pixels": 152,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_left/hand/ring_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "arms/arm_left/hand/little_finger",
+    "pixels": 0,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/arms/arm_left/hand/little_finger.png",
+    "reason": "本指根自身实际可见区域；排除掌和前侧指体，保留生成隐藏根。"
+  },
+  {
+    "part": "body/torso",
+    "pixels": 2850,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/body/torso.png",
+    "reason": "锁骨线只恢复在torso自身可见皮肤"
+  },
+  {
+    "part": "body/breast",
+    "pixels": 2556,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/body/breast.png",
+    "reason": "前部体积衣料与上端肤色；每侧单独定位，无上臂像素覆盖。"
+  },
+  {
+    "part": "legs/leg_right/leg",
+    "pixels": 4171,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/legs/leg_right/leg.png",
+    "reason": "仅靴外本腿皮肤。前靴/后衬足迹外扩3px排除混靴色；靴内下端保留原生重画。"
+  },
+  {
+    "part": "legs/leg_left/leg",
+    "pixels": 4158,
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/owned-surfaces/legs/leg_left/leg.png",
+    "reason": "仅靴外本腿皮肤。前靴/后衬足迹外扩3px排除混靴色；靴内下端保留原生重画。"
+  }
+]

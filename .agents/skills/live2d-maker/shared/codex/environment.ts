@@ -5,14 +5,18 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
+import { withNodePath } from '../process-environment.ts';
 import { modelSlotDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
 
 export type ModelTier = 'medium' | 'high';
 export type ModelSelection = { model: string; effort: NonNullable<ThreadOptions['modelReasoningEffort']> };
 export const defaultModels = {
-  medium: { model: 'gpt-6.1-sol', effort: 'xhigh' },
-  high: { model: 'gpt-6-astra', effort: 'xhigh' },
+  medium: { model: 'gpt-6.1-sol', effort: 'medium' },
+  high: { model: 'gpt-6.1-sol', effort: 'xhigh' },
 } as const satisfies Record<ModelTier, ModelSelection>;
+
+// Legacy tier overrides retain their historical roles when the default model changes.
+const legacyHighModelSlots: readonly ModelSlot[] = ['raster_step01', 'raster_step02', 'raster_step01_review'];
 
 export type WorkflowEnvironment = {
   models: Record<ModelTier, ModelSelection>;
@@ -27,7 +31,7 @@ export type WorkflowEnvironment = {
 export function parseModel(value: string | undefined, fallback: ModelSelection, name: string): ModelSelection {
   if (!value?.trim()) return { ...fallback };
   const match = value.trim().match(/^(.+)-(none|minimal|low|medium|high|xhigh)$/);
-  if (!match || /\s/.test(match[1])) throw new Error(`${name} 必须为 <模型 ID>-<思考力度>，例如 gpt-6-astra-xhigh。`);
+  if (!match || /\s/.test(match[1])) throw new Error(`${name} 必须为 <模型 ID>-<思考力度>，例如 gpt-6.1-sol-medium。`);
   return { model: match[1], effort: match[2] as ModelSelection['effort'] };
 }
 
@@ -90,7 +94,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
       if (values.size > 1) throw new Error(`旧模型配置 ${previous.join('、')} 不一致；请设置统一的 ${key}。原 .env 不会自动改写。`);
       selection = values.values().next().value;
     }
-    const tier = get(fallback.startsWith('gpt-6-astra') ? 'layering_high_model' : 'layering_medium_model');
+    const tier = get(legacyHighModelSlots.includes(slot) ? 'layering_high_model' : 'layering_medium_model');
     slotModels[slot] = parseAgentModel(selection || tier || fallback, key);
   }
   const stepModels = Object.fromEntries(Object.entries(stepModelSlots)
@@ -172,7 +176,7 @@ export function validateApiUrl(value: string, name: string): void {
 
 export function workflowCodexOptions(settings: WorkflowEnvironment, overrides: CodexOptions = {}): CodexOptions {
   return { ...settings.codex, ...overrides,
-    env: { ...settings.codex.env, ...overrides.env },
+    env: withNodePath({ ...settings.codex.env, ...overrides.env }),
     config: { ...settings.codex.config, ...overrides.config },
   };
 }

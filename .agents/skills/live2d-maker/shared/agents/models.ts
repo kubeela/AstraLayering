@@ -12,15 +12,15 @@ export const reasoningEfforts = ['low', 'medium', 'high', 'xhigh'] as const;
 export type ReasoningEffort = typeof reasoningEfforts[number];
 export type AgentModel = { model: ModelId; effort: ReasoningEffort; harness: Harness };
 
-const medium = 'gpt-6.1-sol-xhigh', high = 'gpt-6-astra-xhigh';
+const medium = 'gpt-6.1-sol-medium', high = 'gpt-6.1-sol-high', xhigh = 'gpt-6.1-sol-xhigh';
 // User-facing model settings describe roles shared by character and clothing pipelines.
 export const modelSlotDefaults = {
   preparation: 'gpt-6.1-sol-low',
-  part_draw: medium, part_review: medium, part_reduce: medium, part_completion: medium,
-  part_groups: medium, part_depth: medium,
-  raster_step01: high, raster_step02: high, raster_step01_review: high,
+  part_draw: medium, part_review: medium, part_reduce: high, part_completion: high,
+  part_groups: high, part_depth: high,
+  raster_step01: xhigh, raster_step02: medium, raster_step01_review: xhigh,
   raster_step03: medium,
-  assembly: medium, shadow: medium, physics_analysis: medium, physics_authoring: high, physics_review: high,
+  assembly: xhigh, shadow: medium, physics_analysis: high, physics_authoring: xhigh, physics_review: xhigh,
 } as const;
 export type ModelSlot = keyof typeof modelSlotDefaults;
 

@@ -1,6 +1,6 @@
 # part-layering
 
-启动条件见 [安装与前置](../references/setup.md)。使用 Nano 生图时提供 `--krita <可执行文件>`；透明后处理的 Python 模块首次实际使用时自动安装并复用。总入口传入已记录的 Krita 路径，已有参考续跑不重新处理。
+启动条件见 [安装与前置](../references/setup.md)。Nano 生图的透明后处理使用 Node／Sharp 双背景差分，不要求 Krita、Python 或自动装包。已有参考续跑不重新处理；后续 raster 的 Krita 前置条件由其管线检查。
 
 运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
@@ -13,7 +13,7 @@
 ```ts
 const codex = new Codex();
 const thread = codex.startThread({
-  model: 'gpt-6.1-sol', modelReasoningEffort: 'xhigh',
+  model: 'gpt-6.1-sol', modelReasoningEffort: 'high',
 });
 const { events } = await thread.runStreamed(prompt);
 for await (const event of events) {
@@ -31,7 +31,7 @@ for await (const event of events) {
 
 已收录的完整执行结构见 [jianma](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/part-layering/README.md)，直接采用标准运行格式：所有部位前三层的 86 个已完成节点、第四层 29 个已完成终止 part，以及替换后的最新 hair 均在同一棵树中。[交互预览](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/part-layering/previews/index.html) 可离线选择任意部位、层级和阶段；全部已执行补全均位于 `parts/`。
 
-`shared/codex/agents.ts` 统一使用 `gpt-6.1-sol / xhigh`。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `shared/part/layering-steps.ts`，首次分组位于 `shared/part/initial-groups.ts`，绘制和 review 位于 `shared/part/outline-agent.ts`。
+默认方案按职责使用 `gpt-6.1-sol`：preparation low，轮廓绘制／review medium，分组、去重、补全与深度 high；完整配置见[模型方案](../references/model-presets.md)。`shared/codex/agents.ts` 按所选职责配置运行。`CodexAgents.run()` 每次创建新会话；`createSession()` 保留原生 App Server 进程和 thread，后续 `session.run()` 在同一 thread 内开启新 turn。未配置 `tools` 的一次性调用通过 SDK 执行，函数工具调用使用 App Server 原生 `dynamicTools`，程序直接执行回调并返回文字或图片。`run.ts` 的 `runPartLayering(input, { steps, mergeSvg }, agentOptions)` 串联参考准备与组循环，返回 `{ references, layering }`。默认适配器位于 `shared/part/layering-steps.ts`，首次分组位于 `shared/part/initial-groups.ts`，绘制和 review 位于 `shared/part/outline-agent.ts`。
 
 `shared/codex/agent-runtime.ts` 独立管理 agent 并发、临时错误分类和退避恢复，不依赖分组树或步骤。SDK、一次性原生任务和保留绘制会话均通过 `shared/codex/agents.ts` 接入同一运行实例的限制；空闲会话和退避等待不占执行位置。CLI 的内置重试先照常运行，SDK 的重连 `error` 与 App Server 的 `willRetry` 通知不会提前截断它；仅回合最终因容量、断流或临时服务错误失败时，在 5、10、20、40、60 秒后恢复，之后保持 60 秒，不设次数上限。恢复沿用 thread 与已成功的产物，不重新派发组或清空草稿；认证、额度、上下文、参数、文件校验和主动取消不自动重试。内置重试的源码核对、模拟服务验证及恢复边界见 [agent-runtime.md](docs/agent-runtime.md)。
 

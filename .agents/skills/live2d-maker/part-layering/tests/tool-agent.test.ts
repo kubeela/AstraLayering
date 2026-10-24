@@ -82,7 +82,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
     ['function', 'write_groups'],
   ]);
   const turn = protocol.find(item => item.method === 'turn/start');
-  assert.equal(turn.params.effort, 'xhigh');
+  assert.equal(turn.params.effort, 'high');
   assert.deepEqual(turn.params.input.map((item: { type: string }) => item.type), ['text']);
   assert.ok(turn.params.input[0].text.includes(`素体参考图：${references.baseSubject}`));
   const observation = protocol.find(item => item.id === 'call-1').result;

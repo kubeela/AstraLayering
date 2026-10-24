@@ -1,0 +1,52 @@
+{
+  "index": 64,
+  "id": "legs/leg_right/boot_gem",
+  "key": "part-layering/legs/leg_right/boot_gem",
+  "family": "人物",
+  "group": "legs",
+  "label": "角色右靴上宝石",
+  "prompt": "right diamond gemstone on boot",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 2,
+  "max_score": 0.796875,
+  "seconds": 0.0771,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 1060,
+  "instances": [
+    {
+      "file": "references/64/instance-01.png",
+      "score": 0.75390625,
+      "box_xyxy": [
+        409.6294860839844,
+        1462.3773193359375,
+        433.0472106933594,
+        1503.2978515625
+      ],
+      "area_pixels": 495
+    },
+    {
+      "file": "references/64/instance-02.png",
+      "score": 0.796875,
+      "box_xyxy": [
+        498.78717041015625,
+        1461.1375732421875,
+        521.8851928710938,
+        1502.241455078125
+      ],
+      "area_pixels": 565
+    }
+  ],
+  "crop_bbox": [
+    399,
+    1448,
+    533,
+    1517
+  ],
+  "status": "detected",
+  "card": "references/64/card.jpg",
+  "mask": "references/64/mask.png",
+  "cutout": "references/64/cutout.png",
+  "overlay": "references/64/overlay.jpg"
+}

@@ -1,0 +1,41 @@
+{
+  "index": 63,
+  "id": "legs/leg_right/foot",
+  "key": "part-layering/legs/leg_right/foot",
+  "family": "人物",
+  "group": "legs",
+  "label": "角色右短靴",
+  "prompt": "right boot",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.7890625,
+  "seconds": 0.078,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 13700,
+  "instances": [
+    {
+      "file": "assembled/63/instance-01.png",
+      "score": 0.7890625,
+      "box_xyxy": [
+        365.5483703613281,
+        1377.9520263671875,
+        457.4256896972656,
+        1621.3653564453125
+      ],
+      "area_pixels": 13700
+    }
+  ],
+  "crop_bbox": [
+    347,
+    1362,
+    475,
+    1642
+  ],
+  "status": "detected",
+  "card": "assembled/63/card.jpg",
+  "mask": "assembled/63/mask.png",
+  "cutout": "assembled/63/cutout.png",
+  "overlay": "assembled/63/overlay.jpg"
+}

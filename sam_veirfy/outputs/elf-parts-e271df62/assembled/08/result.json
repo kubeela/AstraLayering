@@ -1,0 +1,41 @@
+{
+  "index": 8,
+  "id": "face/eye_right/upper_eyelid",
+  "key": "part-layering/face/eye_right/upper_eyelid",
+  "family": "人物",
+  "group": "face",
+  "label": "角色右上眼睑",
+  "prompt": "right upper eyelid",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.59375,
+  "seconds": 0.0732,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 498,
+  "instances": [
+    {
+      "file": "assembled/08/instance-01.png",
+      "score": 0.59375,
+      "box_xyxy": [
+        393.3907165527344,
+        194.91062927246094,
+        441.1915283203125,
+        218.4761962890625
+      ],
+      "area_pixels": 498
+    }
+  ],
+  "crop_bbox": [
+    380,
+    181,
+    452,
+    229
+  ],
+  "status": "detected",
+  "card": "assembled/08/card.jpg",
+  "mask": "assembled/08/mask.png",
+  "cutout": "assembled/08/cutout.png",
+  "overlay": "assembled/08/overlay.jpg"
+}

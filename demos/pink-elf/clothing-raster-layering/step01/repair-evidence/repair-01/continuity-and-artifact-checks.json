@@ -1,0 +1,152 @@
+{
+  "structure_checks_passed": true,
+  "painting_quality_passed": true,
+  "pending_regions": [],
+  "logical_parts": [
+    {
+      "part_id": "trailing_skirt_image_left",
+      "ordinary_layers": [
+        "0001 trailing_skirt_image_left :: depth_01",
+        "0003 trailing_skirt_image_left :: depth_03",
+        "0005 trailing_skirt_image_left :: depth_05",
+        "0007 trailing_skirt_image_left :: depth_07",
+        "0009 trailing_skirt_image_left :: depth_09",
+        "0011 trailing_skirt_image_left :: depth_11"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "trailing_skirt_image_right/spiral_train_left",
+      "ordinary_layers": [
+        "0002 trailing_skirt_image_right/spiral_train_left :: depth_02",
+        "0004 trailing_skirt_image_right/spiral_train_left :: depth_04",
+        "0006 trailing_skirt_image_right/spiral_train_left :: depth_06"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "trailing_skirt_image_right/short_drape_left",
+      "ordinary_layers": [
+        "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+        "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+        "0012 trailing_skirt_image_right/short_drape_left :: depth_12"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "floral_skirt_undertrim",
+      "ordinary_layers": [
+        "0013 floral_skirt_undertrim :: depth_13",
+        "0031 floral_skirt_undertrim :: depth_31"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "halter_dress/short_outer_skirt/right_skirt_panel",
+      "ordinary_layers": [
+        "0014 halter_dress/short_outer_skirt/right_skirt_panel :: depth_14",
+        "0032 halter_dress/short_outer_skirt/right_skirt_panel :: depth_32",
+        "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "halter_dress/short_outer_skirt/left_skirt_panel",
+      "ordinary_layers": [
+        "0015 halter_dress/short_outer_skirt/left_skirt_panel :: depth_15",
+        "0033 halter_dress/short_outer_skirt/left_skirt_panel :: depth_33",
+        "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "halter_dress/halter_bodice",
+      "ordinary_layers": [
+        "0016 halter_dress/halter_bodice :: depth_16",
+        "0038 halter_dress/halter_bodice :: depth_38"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "puff_sleeve_image_left",
+      "ordinary_layers": [
+        "0017 puff_sleeve_image_left :: depth_17",
+        "0029 puff_sleeve_image_left :: depth_29"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "puff_sleeve_image_right",
+      "ordinary_layers": [
+        "0018 puff_sleeve_image_right :: depth_18",
+        "0030 puff_sleeve_image_right :: depth_30"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "halter_dress/short_outer_skirt/front_drape",
+      "ordinary_layers": [
+        "0036 halter_dress/short_outer_skirt/front_drape :: depth_36",
+        "0037 halter_dress/short_outer_skirt/front_drape :: depth_37"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "chest_pendant",
+      "ordinary_layers": [
+        "0040 chest_pendant"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "waist_bow/short_tail",
+      "ordinary_layers": [
+        "0041 waist_bow/short_tail"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "waist_bow/long_tail",
+      "ordinary_layers": [
+        "0042 waist_bow/long_tail"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    },
+    {
+      "part_id": "waist_bow/knot_and_loops",
+      "ordinary_layers": [
+        "0043 waist_bow/knot_and_loops"
+      ],
+      "max_alpha_piece_coverage": 1,
+      "whole_part_alpha_union_equal": true,
+      "SVG_current_alpha_fingerprint_equal": true
+    }
+  ],
+  "actual_KRA_projection_equals_current_export_PNG": true
+}

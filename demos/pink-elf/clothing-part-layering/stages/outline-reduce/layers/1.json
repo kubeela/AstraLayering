@@ -1,0 +1,41 @@
+{
+  "depth": 1,
+  "groups": [
+    {
+      "id": "halter_dress/halter_bodice",
+      "inputHash": "61007c0d8c59cb29646742fa79ec9b4cfcabe8d518fb60679fd2bfa6c6d12b57",
+      "outputHash": "61007c0d8c59cb29646742fa79ec9b4cfcabe8d518fb60679fd2bfa6c6d12b57"
+    },
+    {
+      "id": "halter_dress/short_outer_skirt",
+      "inputHash": "d022d07d24269d85beaf247a06934c972650d046c2c02b91ea0a08ec105d2942",
+      "outputHash": "d022d07d24269d85beaf247a06934c972650d046c2c02b91ea0a08ec105d2942"
+    },
+    {
+      "id": "waist_bow/knot_and_loops",
+      "inputHash": "f6af6f5876466c642cea3fdcce633ef0b3119fadf4b875dd39583df8327bcf5e",
+      "outputHash": "f6af6f5876466c642cea3fdcce633ef0b3119fadf4b875dd39583df8327bcf5e"
+    },
+    {
+      "id": "waist_bow/short_tail",
+      "inputHash": "d840384cd20fa9529346f8db7773987a3c23887719b3d3a6fed5fa597f790d60",
+      "outputHash": "d840384cd20fa9529346f8db7773987a3c23887719b3d3a6fed5fa597f790d60"
+    },
+    {
+      "id": "waist_bow/long_tail",
+      "inputHash": "cd6ea5a5effbd533dd1c6fa1dc151339d2d60578a50b630f5af9d2331e3e7587",
+      "outputHash": "cd6ea5a5effbd533dd1c6fa1dc151339d2d60578a50b630f5af9d2331e3e7587"
+    },
+    {
+      "id": "trailing_skirt_image_right/short_drape_left",
+      "inputHash": "a847039ebcbf8323791b634e3747a1c3df422df18d6b4fdf7d637ec5e853d284",
+      "outputHash": "a847039ebcbf8323791b634e3747a1c3df422df18d6b4fdf7d637ec5e853d284"
+    },
+    {
+      "id": "trailing_skirt_image_right/spiral_train_left",
+      "inputHash": "1aa3faf97fea211b0784fdca68edd6b55f90c446c0cf3b537f74654b93b64483",
+      "outputHash": "1aa3faf97fea211b0784fdca68edd6b55f90c446c0cf3b537f74654b93b64483"
+    }
+  ],
+  "note": "已对照纯衣服参考、7 组本层 SVG 与 note，完成 mergedPreview 整体 blend 及腰部、腰结带尾、外裙下缘、画面右侧短垂布/盘卷长尾的局部 blend/edge 核对。本轮未发现同一实体且同一控制与深度职责被重复领取，实际修改项为空。保留：① halter_bodice 与 short_outer_skirt 在约 y500–518 的收腰控制交接及窄幅隐藏搭接，二者分别承担贴身胸腰与可独立摆动裙摆；② knot_and_loops 与 short_tail、long_tail 在约 x418–432/y499–511 的结下接头遮挡，两条自由带尾互不重复，腰结/带尾与裙面属于不同实体；③ short_drape_left 与 spiral_train_left 在上根及金缘/卷舌交界处的必要搭接，短垂布约 x617–690/y950–996 的浅色回翻面由短垂布独占，长尾沿其外缘后接，未重复领取该回翻面；④ 环颈衣身、环髋裙根及长尾连续翻卷的前后区域保留原职责，不因投影重叠或跨深度删空。固定衣饰与衣面不视为重复。所有输入 reusedReduction 均为 false，沿用各 sourceSvg；未写改草稿，未改源 SVG、正式文件或组树。"
+}

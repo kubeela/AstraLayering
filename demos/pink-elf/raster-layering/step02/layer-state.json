@@ -1,0 +1,988 @@
+{
+  "size": [
+    932,
+    1688
+  ],
+  "layers": [
+    {
+      "name": "0005 hair/back_hair/cap :: nape_under_roots",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "b2facac6dd410fa5e318c1bf30b25930fcdf5fd35100c8c7ca5cfc47af21d41d",
+      "alpha_sha256": "dcd5de9083e277cab6dfcdb7d713739f22402e4a1edffd6bf1bb13624788236c"
+    },
+    {
+      "name": "0010 hair/back_hair/long_right",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "5a6cf8afe9ca62d313399b2e23dd61b3cf866cc22bdbce3587de9400fc7d1beb",
+      "alpha_sha256": "d0a1fd260a74de53578cf252b2ca9017d461ad63ab7b46948b57d21c9e948b0d"
+    },
+    {
+      "name": "0020 hair/back_hair/long_left",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "2f735f5b07a07e695072cd59fa4ba48da8efa17fde3aee80e2628f2e73dfcea8",
+      "alpha_sha256": "c952ffd7618163e1db671501e4ac3a4ec3d8e4e547203901fbeab5cf28e30379"
+    },
+    {
+      "name": "0030 hair/side_hair_right",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "3a20cbe097d734df772f63b36e4f84b175961c302de1a50666140f011b572127",
+      "alpha_sha256": "acb60b94639fd93f703de6e11d101e425facc37da159438c9db395dda026512a"
+    },
+    {
+      "name": "0040 hair/side_hair_left",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "84ae612df0a79c0b8b67ceab7f48cb668497c1ae5b91dd50cc104c699816d385",
+      "alpha_sha256": "86f6a411229c4b20881939deea0fce1ed4a06f2bda2ef382e22a5673ce5906b6"
+    },
+    {
+      "name": "0045 hair/ahoge",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "ab99c0d719e62ffffe039957220d783a52f64a32cc70cb1a45f1b73c6392c934",
+      "alpha_sha256": "efe91f8408ddfefa2aa1c78a93ba119d45eaa094be5b5d99bdf45692245dc49f"
+    },
+    {
+      "name": "0050 hair/back_hair/cap :: back",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "a5184d42dbf19ea943718b3e104bd3a40f17a57574bb1030ab54027e62ad6737",
+      "alpha_sha256": "aa3a8d0739498549842a00205d270b5a872810309ab0dc2e32169068d6a46bdd"
+    },
+    {
+      "name": "0055 legs/leg_left/foot :: rear",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "b5a7febaeed37497293533eb07cffb88774b94b0d3d9d76ec02a8680b60654bc",
+      "alpha_sha256": "101ea4f30a36e84ba82a625d7e400cc7d69d7afa34244924c5d7c7e773b683b2"
+    },
+    {
+      "name": "0056 legs/leg_right/foot :: rear",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "7bfef433055f9e9f17f21669876f7795893e7ac6d4b535924c3b63bdfadc407c",
+      "alpha_sha256": "be90da36bc78516141d1eaf839da9dc3072fbe2b836cb4b956413733a4c3fbbe"
+    },
+    {
+      "name": "0060 legs/leg_right/leg",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "6f3eeca410e7da892f29226aea1d0dc8c8812f0ec9cf6dbad518cd488ee5534f",
+      "alpha_sha256": "fd4da4b8cb87d07811b1965c634195503cb7387768ff7805026ff4f7f19cd1b9"
+    },
+    {
+      "name": "0070 legs/leg_left/leg",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "4f796a4b3660252d7b9b9245a8edd2eef5668e2c2d1ad5cf01da0e70b39cb1e4",
+      "alpha_sha256": "3c1888bbdbee29fbf5514fa1f2f0421c812d073e8c53576e6b79ffb3bbdf152b"
+    },
+    {
+      "name": "0080 pelvis",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "31b264b93a4d1b44a5a9301f3dc2f7bcb585304e04978006dece13dc414660f0",
+      "alpha_sha256": "402f02383ec263c1c64cc4368d39796120817c755ed0e53f3efa35a12ee8909e"
+    },
+    {
+      "name": "0090 arms/arm_left/hand/little_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "ce47a275a11f13d1b0b6816b7c880db2aeb24921b5cdbeeafeba5e08e3ad9395",
+      "alpha_sha256": "b98e9c2e6c472138e01d4e6aac45f84ad2f668a19498cdbacca9d527885a0a81"
+    },
+    {
+      "name": "0100 arms/arm_left/hand/ring_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "5d5c0fbd8b8bbe2d7d377314edfcd60f74a414af7fa7d1d6884f5cfe3e1af8c2",
+      "alpha_sha256": "23a3d0f3a9bd653e5b328368f1c2f293d7517454d39d385ca379800a12c6ab26"
+    },
+    {
+      "name": "0110 arms/arm_left/hand/middle_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "3d865f2ecc1b130fec8b986e250a51966c0ef4753efad21fff0de89140cf8df7",
+      "alpha_sha256": "4a69e43032dcf2495ef2b6bb51eac68a01afe046488702dd74c7a34c85f5e2e5"
+    },
+    {
+      "name": "0120 arms/arm_left/hand/index_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "170bc1e90ca1f95175e05e86bab82e6fb85510cec358c9a24dc3b59f0a03ccd8",
+      "alpha_sha256": "087f290ee57a3fb3e771fa71fdb8cf9f8ecd8da5a6c235a294670ab15efe247c"
+    },
+    {
+      "name": "0130 arms/arm_left/hand/thumb",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "fdefea6fd3943b672f06cc5a7dd72369410be4c7f12d11ec62135e6796e0cece",
+      "alpha_sha256": "b55487e154503861a44c32125bfad2023ed0393bfbe24fdbb2798a707c6d927a"
+    },
+    {
+      "name": "0140 arms/arm_left/hand/palm",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "79b1466524d93a76c137bf0ffb6d8fd050eff4b75cc2a413e01c5b26e6cf02d4",
+      "alpha_sha256": "027e208e9480fd2725dd21ad9ea3e79cd321c21da379714fc6e18d2bcb04e3b3"
+    },
+    {
+      "name": "0145 arms/arm_right/hand/little_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "461d814fe15f590bedf99e91910cf947c7f280bcb49ab7c93c4fa1e50b7e8962",
+      "alpha_sha256": "4bddd881cdebd2c492be2b90bd982ad9bf83821a619324f447e9b7d7b3371f49"
+    },
+    {
+      "name": "0150 arms/arm_right/hand/index_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "79d440b9fa1a2a099492bad68d0ba38fc9a39b112d2e969fdbaed33425fb280f",
+      "alpha_sha256": "b38180e553b9cbf5a16921a6317aadc7be5f8dacb1656c6150c15c55de2cc433"
+    },
+    {
+      "name": "0160 arms/arm_right/hand/middle_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "f11a016cc050cb4bd4de86ff18d5ece397dd47fdd5b5822e3ff5eebe4f946f29",
+      "alpha_sha256": "f34a9e10ce9655a6df1f93a8116152f1330508efe727ac0178d8e9cda8e6f38c"
+    },
+    {
+      "name": "0170 arms/arm_right/hand/ring_finger",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "5ff884a5e8ca45668c287e84e91ac5e43492cb58660e9de29b655be06393c968",
+      "alpha_sha256": "4998e3e0eb0b73913492201b2ac6ba925eb23d1570f5efbd019bc2b0943f0d68"
+    },
+    {
+      "name": "0180 arms/arm_right/hand/thumb",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "fd54781d538db96521fe213eac273ea1864b4a087eb1ee6c2246a3bdc4b2fa6f",
+      "alpha_sha256": "afa34a7a322b3eddce8b5ba271449b33b801b8fbf2bd44df6102994e901fe33e"
+    },
+    {
+      "name": "0190 arms/arm_right/hand/palm",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "8540bd2b72ebb328952cfacebd8c546909d66c6a5e1eb4272076c17c4b624d8a",
+      "alpha_sha256": "2af9905515d1ac363636e1e22901a19be4e8e57fc2f75247461885792325ef77"
+    },
+    {
+      "name": "0200 arms/arm_left/forearm",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "96c2eea0525e25b224c80eba7a2de7b024a8afe0bb35329b2542899c3b483dd8",
+      "alpha_sha256": "73d9ad1529140ef85a2ed1be8bf3ad81d19d829d579c826889348e6da6ca3e34"
+    },
+    {
+      "name": "0210 arms/arm_right/forearm",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "a23514c848cff35b9c01b0c5c1eac6f7c544a9f17add260bd45316dd113ecb10",
+      "alpha_sha256": "0da2a9d0cc313de0ce8829b7d058fe209da2a64635fe58d86d7ed4905c03168a"
+    },
+    {
+      "name": "0220 arms/arm_left/upper_arm",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "08391259878a6ff8fefa5d25253ceba00da75caed24b120643ce379d43a43fa9",
+      "alpha_sha256": "b7e39656267936eb00566b78fd55a262a0e5a7df4d202bfb838daaf712cd49cb"
+    },
+    {
+      "name": "0230 arms/arm_right/upper_arm",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "ed9045ba170ab7c2e118bdd95212707c970987f110f25d21a8a8f60fb41a41c8",
+      "alpha_sha256": "0dfa93b139bb1808bfb4c8420d61104e139d60dfad01181fd348b468fb8f1791"
+    },
+    {
+      "name": "0240 neck",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "3bb014bfb9e891c59f2fcb719a28f705cb29ad3049de0b2b31d77a4b38efbaa3",
+      "alpha_sha256": "00ca8248ea08897fc17d38aba0ac2f482f3d1ea8d4f17f5e8ab9aca8623f6f98"
+    },
+    {
+      "name": "0250 body/torso",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "ccc338d4b6514329dc28fb6ecb517c9904108762d79a2d414544b7400a4b2164",
+      "alpha_sha256": "9fbe89172b317a35f5a42aaf422b26ea6fffabfc8996575f682fbc4abf98fa2f"
+    },
+    {
+      "name": "0260 body/breast",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "37b97c6efc26c6c71bac2eb09e229e90100942c5fbcc092ee6c57038c6a42472",
+      "alpha_sha256": "99aa44c139f9605fbfb90de165349b94a0c4b8ff3cf0cb90232080f99c0ac6ef"
+    },
+    {
+      "name": "0270 face/ear_left",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "6ff6200ef4eb189dd0e6902d4de0eb7f813b68f1aec84c711179c9f13e5dee1a",
+      "alpha_sha256": "b00febd0e76ca4f0b05b05a4e0c60fc2710038009e24027b005f0f081529afdf"
+    },
+    {
+      "name": "0280 face/ear_right",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "89665d455c676720377402b2ddedfa1ae70ae30d8cdea9ac9de258e92fa6e085",
+      "alpha_sha256": "fce5e23cad504c508511c0368ba0953eb902b322a9182ee50ea1b6ee196c45c8"
+    },
+    {
+      "name": "0290 head_accessories/left_earring",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "6b6c63aef65bbfcbb6a4ad83d524ad032ee6199175dedab37f5138c4367d6ebb",
+      "alpha_sha256": "ef0c182f3278e8674a51feedec33a7d75dc614a12e86ea0b64c29fc6934d6495"
+    },
+    {
+      "name": "0300 head_accessories/right_earring",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "cf9803a3c61fc497ac21cc6b3e781e7a61a511358ffffbb960d838b5c312c9b6",
+      "alpha_sha256": "5268c4465fccaf68beb17c349a2a8e98691c673728d03b6aa2c88890fadfc194"
+    },
+    {
+      "name": "0310 face/face_base",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "badebc80b40bb27d8aee0ad4461533baf5d029b6f5672c6c2c4b7390d55a886e",
+      "alpha_sha256": "66b6cf3e8508e3bd5beb6f08b7f90ac0a6243bb3b4998b3d057414e9a44ae149"
+    },
+    {
+      "name": "0320 face/mouth/mouth_interior",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "1537edabeba089a8f6289673d3ca879b5267b3bba9c6a9c604667eadbe11d02a",
+      "alpha_sha256": "a5905dfd59f4d2a87c529c11a67233ec274ff1e639ac2fd5e494e956d1edd9ce"
+    },
+    {
+      "name": "0330 face/mouth/lower_teeth",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "2f5badb96463f456673b17801971f54070a4aa8c3a0b091df92dc60bfcfed8e0",
+      "alpha_sha256": "b01b60a989cf0e728e15894e5681c3e92baf43b59c72f3b86ec1dff07237da38"
+    },
+    {
+      "name": "0340 face/mouth/tongue",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "0a913c9ac82acc9305844e608f51181559bdd897fcf1192c896a2ae1ed2b545d",
+      "alpha_sha256": "e21c8ca9523a8bff99d3246ab17fb6e1964c5fe21275977d4552e7b16c3ce35c"
+    },
+    {
+      "name": "0350 face/mouth/upper_teeth",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "589b8f06df16613d640759342fdc00798a0c2e880641821a3a3cb43148d913e5",
+      "alpha_sha256": "0d41d4a22e3a3db2f9ea381dc26f7d65ede91f732c490b2f44328daea83a36b3"
+    },
+    {
+      "name": "0360 face/mouth/lower_lip",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "7056aa0f15e06e4d7b8530b342c925eae4ea2fee3c47aae4335f186ca17e46bb",
+      "alpha_sha256": "46d5f0fddece0343cec44d8ee42714c9c7b8772069f74ec2a357526b91220f76"
+    },
+    {
+      "name": "0370 face/mouth/upper_lip",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "3e6cede7347eddd39a17ab934bc45fe470a24a3ba9822b12c91e185a9494c812",
+      "alpha_sha256": "918616e5489a5e54ad956eca592e2c1d22727fb183d55811c37ec88e6adbe4e5"
+    },
+    {
+      "name": "0380 face/nose",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 95,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "fbc5cd2822233e7f7e0b67985aa05dfbbf453d21e5054bf6557120ac4aff9367",
+      "alpha_sha256": "17a809274c110d8615966367ab876d429dd1cdd6cb68e29f7d8856dee77d599a"
+    },
+    {
+      "name": "0390 face/eye_left/sclera",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "a5e9d3febf32914207b85e7dc210e62bcd4c94348414913f343215497cf63157",
+      "alpha_sha256": "2112c3cc393ef1a02aa4867288a4b926f17f25432a8da6f95abe6b597eccddc7"
+    },
+    {
+      "name": "0400 face/eye_right/sclera",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "a8ffdba5ca2beda49c9d57cc5e60be4cf40de0597e6511a09669a10d6b947acf",
+      "alpha_sha256": "ce4712210c19841926df1fd57f9e3d132a2d4d216362954d44a2ab57ea0e91f3"
+    },
+    {
+      "name": "0410 face/eye_left/iris",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "bab0f0358f8ee5f6c0018df03759a92272081e0015d05559ea1402ede2b0116a",
+      "alpha_sha256": "b3255bb40b59ca33fcfc23a6225e514ff16bce4b4a63742406da823c053a8750"
+    },
+    {
+      "name": "0420 face/eye_right/iris",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "903bcbad7ae19f85f23009f5fa5c836ee2e513e84b1907f046158ee1c456af17",
+      "alpha_sha256": "d0cfe00c7a82f2222d18955a0dc67354316301d7295cf7f25462b77e233bf594"
+    },
+    {
+      "name": "0430 face/eye_left/highlight",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "dbab406c6df182be89a069fe21b6d214061e89968fe89528f247de63884b2291",
+      "alpha_sha256": "79fe6f3059849b67892a48f355f062a229d1259bfd534aa7abce95550ef5e789"
+    },
+    {
+      "name": "0440 face/eye_right/highlight",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "9a10b57b9db3ca35eafc70f57804de2b35fa41c29599153ac81fdb021c7f3c4c",
+      "alpha_sha256": "b41470e19ae23106d617e3bfebc90db97842d3ab046db28eb60324f69dd79467"
+    },
+    {
+      "name": "0450 face/eye_left/lower_eyelid",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "bad2ac30c5dd9a946492e5a5f403c6d364f4e1fe1630a526d2034599e786a036",
+      "alpha_sha256": "3f20fa16181cd17f42d12c16f20de2c1137ea3940f5a8d69b346160aba71b76c"
+    },
+    {
+      "name": "0460 face/eye_right/lower_eyelid",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "55ca2ce425e6228e6e3fea01c2f8efcefd5e0ed559757cdff0f46a54811a1bd0",
+      "alpha_sha256": "c7fefa70c20ef343761bf1887ee0b03b36b88b07e470fb9a54c9a4500fca3cb5"
+    },
+    {
+      "name": "0470 face/eye_left/upper_eyelid",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "a46d01b4b49b41c73c1fa98fc5346c6f37c9c758ec05b60d701ae3a63ef681a7",
+      "alpha_sha256": "abe7989b6f66bc78431cdc3b03790f9c7bb94433cc145e1f26e40df489c8e3c9"
+    },
+    {
+      "name": "0480 face/eye_right/upper_eyelid",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "32e0f4d0aef7bd5fa330cbaf9450854a3b1e380c8e138388044f6158c4a5d73c",
+      "alpha_sha256": "c12326e52cf1cee887074d3d8a67de3a674d3097402a036733f5d28d9b85f616"
+    },
+    {
+      "name": "0490 face/eye_left/eyelid_crease",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "ba01a125056cdcc1d01624e35d988072330871ce0d44366a89bcceb6de98d8de",
+      "alpha_sha256": "0de28f67e343ebaef80592876cf0ad06971e1885854248199c30446e55d2ab12"
+    },
+    {
+      "name": "0500 face/eye_right/eyelid_crease",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "9db315752df092f85f1428a59bdcc1c593b2065298b32a1d308d471affe6a259",
+      "alpha_sha256": "20ae818a1e0250c3db2c0d9ea544799896af229ddfef55ed436b32f088b2fb1d"
+    },
+    {
+      "name": "0530 hair/front_side_hair_right",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "05daaa0a259028a2dac3a6350d695657fc910d0440043db1c860ce0232e25d1e",
+      "alpha_sha256": "03e95c02034d1c75db74deb76e8aaf23611119039e260c85475ee7bc52233dc7"
+    },
+    {
+      "name": "0540 hair/front_side_hair_left",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "e646d73056a0131738f6829913d5332b57835df7f0be48e90ef5f75a8f66658e",
+      "alpha_sha256": "de901ca038842261fc558eac4ff4eeba67ada70651291e74f42f3959b38dfb9b"
+    },
+    {
+      "name": "0550 hair/bangs",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "1971860834dce5744580305777eef6ec8d19ea52617ce587fc8d702449495579",
+      "alpha_sha256": "ad8c5579162732d42664786d251badf47131c9d94a16cdadf26c57e9d3835897"
+    },
+    {
+      "name": "0560 hair/back_hair/cap :: crown",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "44c07c89810167fb6f33e50701a77abfc757513b86139d213bd659216b8bcbc8",
+      "alpha_sha256": "5391d4ffd83ce8b2c9ff93b87897cf9b71ebff9af0eeb42de7fe2a29ea27dfa5"
+    },
+    {
+      "name": "0570 face/eyebrow_left",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "05c0fa3bc07f5b039aae1a320ec15afa58c38846c3a8b37b48d6d6b94b0dac98",
+      "alpha_sha256": "47fb7b428877b07f325fe0cf966592e8f0bf2ae0474ca43ff2a0436183e7e0d1"
+    },
+    {
+      "name": "0580 face/eyebrow_right",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "f6888af307f7bd570fbf5f536cbfe0a712008e2ceb98ac7b7f02f29a7eb368d2",
+      "alpha_sha256": "1c81793b750d5e3877d6d757861216099cbd03c969a255881bbb6a42135f6c1e"
+    },
+    {
+      "name": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "d635e7f19be5649b0336f24d5ac465871c1a86cc8baba999aea6262ea741131f",
+      "alpha_sha256": "107040d9e0d28750f035815755ec5977a05557a72f4e2faab70a825189c11c69"
+    },
+    {
+      "name": "0600 legs/leg_left/foot :: front",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "7aa2b978dfedcf93ce1e6fd8eb48ec9d05757cf7388dca29b3694dc35236ce75",
+      "alpha_sha256": "eb0f232d9f53bb2455537a189d94e3842fdf553efdc429b2543077ed3473b5a9"
+    },
+    {
+      "name": "0610 legs/leg_right/foot :: front",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "3f891d3f9ed4afab23b19c152d2e15ea51a0eaf55dbf2338f907d6d007d5af72",
+      "alpha_sha256": "b3e8ddd1bb78bcf58b8190d51b86dcfb4910499b8f5da3d4cb37bdd4193bdfaa"
+    },
+    {
+      "name": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "5d6b5e5c61ccd74d5a80e9f540595c432208f57369164b30e6825ca884f212d5",
+      "alpha_sha256": "0f6111d5113b6c9e25289aca720d802f7b21b8ffe85eda878c57d9d59864b08e"
+    },
+    {
+      "name": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "9bb9d131594d25acf18b90319081c38432ce17418dd5d4bd814c3b83aff0f7aa",
+      "alpha_sha256": "da64025020ff4f82b1d313fb2bb2c028bd6bc5bb7a01b363afc42bfa703e4ab9"
+    },
+    {
+      "name": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "7c28f90e47b38874e4dae5b5e8b0063b16318ffe647f3eef9647221eff047bee",
+      "alpha_sha256": "8b7bfd3d5ef03a152567097c135aa04bf50d6db311b38e579cf5bb2f5ed2ef55"
+    },
+    {
+      "name": "0650 legs/leg_left/boot_gem_chain/round_bead",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "77c49fe81b0b6ee7b7a4443f3739971104c597c100c8b4c985f563752224d1c5",
+      "alpha_sha256": "4a4887f7ce04706b3aeafb244639b079f6406d2678e6b1411ea6df8741fa44a6"
+    },
+    {
+      "name": "0660 legs/leg_right/boot_gem",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "2461be025a0fb4bba88e3e7ef2afc73b5214158bd734227a50becc60425982c2",
+      "alpha_sha256": "b394a7bdb098449e05072c31a9ebd2adf96609e8c3ea7b07efeceab0664307f7"
+    },
+    {
+      "name": "0670 legs/leg_right/boot_flower_ornament",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "position": [
+        0,
+        0
+      ],
+      "blend": "normal",
+      "rgba_sha256": "10d79b62aa4c386adfb96bfde8f5467c7612ea27915467ca863bb682d071d44a",
+      "alpha_sha256": "87a92eddeb621319603e669d41833225822083b3db4cd3cf596164b4f3c9f7fe"
+    }
+  ]
+}

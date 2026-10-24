@@ -1,0 +1,23 @@
+{
+  "tests": [
+    {
+      "preset": "x) Filter Blur",
+      "size": 3.0,
+      "opacity": 0.3,
+      "changed": true
+    },
+    {
+      "preset": "k) Blender Blur",
+      "size": 3.6,
+      "opacity": 0.3,
+      "changed": true
+    },
+    {
+      "preset": "k) Blender Basic",
+      "size": 3.0,
+      "opacity": 0.2,
+      "changed": true
+    }
+  ],
+  "actual_project_pixels_unchanged": true
+}

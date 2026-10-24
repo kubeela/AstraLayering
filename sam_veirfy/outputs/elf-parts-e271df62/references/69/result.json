@@ -1,0 +1,41 @@
+{
+  "index": 69,
+  "id": "halter_dress/short_outer_skirt/left_skirt_panel",
+  "key": "clothing-part-layering/halter_dress/short_outer_skirt/left_skirt_panel",
+  "family": "衣服",
+  "group": "clothing",
+  "label": "角色左外裙片",
+  "prompt": "left skirt panel",
+  "groups_file": "demos\\pink-elf\\clothing-part-layering\\groups.json",
+  "case": "references",
+  "source": "clothes",
+  "count": 1,
+  "max_score": 0.6796875,
+  "seconds": 0.0764,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 93020,
+  "instances": [
+    {
+      "file": "references/69/instance-01.png",
+      "score": 0.6796875,
+      "box_xyxy": [
+        9.252107620239258,
+        881.3831176757812,
+        362.83221435546875,
+        1509.747314453125
+      ],
+      "area_pixels": 93020
+    }
+  ],
+  "crop_bbox": [
+    0,
+    831,
+    418,
+    1561
+  ],
+  "status": "detected",
+  "card": "references/69/card.jpg",
+  "mask": "references/69/mask.png",
+  "cutout": "references/69/cutout.png",
+  "overlay": "references/69/overlay.jpg"
+}

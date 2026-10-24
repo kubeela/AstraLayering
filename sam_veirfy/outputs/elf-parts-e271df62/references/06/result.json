@@ -1,0 +1,52 @@
+{
+  "index": 6,
+  "id": "face/eye_left/highlight",
+  "key": "part-layering/face/eye_left/highlight",
+  "family": "人物",
+  "group": "face",
+  "label": "角色左眼睛高光",
+  "prompt": "left eye highlight",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 2,
+  "max_score": 0.78125,
+  "seconds": 0.0757,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 1701,
+  "instances": [
+    {
+      "file": "references/06/instance-01.png",
+      "score": 0.78125,
+      "box_xyxy": [
+        394.22467041015625,
+        197.9447479248047,
+        432.4707336425781,
+        224.63034057617188
+      ],
+      "area_pixels": 786
+    },
+    {
+      "file": "references/06/instance-02.png",
+      "score": 0.5625,
+      "box_xyxy": [
+        476.10211181640625,
+        194.7054443359375,
+        515.9044189453125,
+        221.09725952148438
+      ],
+      "area_pixels": 915
+    }
+  ],
+  "crop_bbox": [
+    383,
+    181,
+    530,
+    235
+  ],
+  "status": "detected",
+  "card": "references/06/card.jpg",
+  "mask": "references/06/mask.png",
+  "cutout": "references/06/cutout.png",
+  "overlay": "references/06/overlay.jpg"
+}

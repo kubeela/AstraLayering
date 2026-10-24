@@ -1,0 +1,265 @@
+{
+  "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step02/clothing-soft-edges.kra",
+  "size": [
+    932,
+    1688
+  ],
+  "layers": [
+    {
+      "name": "0001 trailing_skirt_image_left :: depth_01",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "914392754319823e2268ca61e53d663bd509b31ad3308ab8b125d018328b20ed"
+    },
+    {
+      "name": "0002 trailing_skirt_image_right/spiral_train_left :: depth_02",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "56d1ffe4f497b988124b8b0e315b24c13855c152042a85cb91cf27f7349e63b5"
+    },
+    {
+      "name": "0003 trailing_skirt_image_left :: depth_03",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "d55ab4140be414485ed5fc2d571501496920786b61b1bb100d761b8b377f5af1"
+    },
+    {
+      "name": "0004 trailing_skirt_image_right/spiral_train_left :: depth_04",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "9fbd5d18ba9765661d19eb196b3a8b08b2b4024e2e9a76bc6b51096ee5ca60d4"
+    },
+    {
+      "name": "0005 trailing_skirt_image_left :: depth_05",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "b4c01a97357549c4617aa72a98ba21ce6199c8d0aed7903dcd9b1970465cdf5a"
+    },
+    {
+      "name": "0006 trailing_skirt_image_right/spiral_train_left :: depth_06",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "e1f3520d96559343acf23163ea09e2ac8c2fcd549132cb1becf051064d4689aa"
+    },
+    {
+      "name": "0007 trailing_skirt_image_left :: depth_07",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "a134f73643d083636fb97677da86b4b7d477758d9cf225b30f475f3aac6dfa03"
+    },
+    {
+      "name": "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "c3812cae66553c4d9fe59b5074de2827b050af1c2682f8838720fb99d4a6572b"
+    },
+    {
+      "name": "0009 trailing_skirt_image_left :: depth_09",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "3bc1e47bad7316e57e0ace4240ae84457f1ded950b884b32729764c128e195b7"
+    },
+    {
+      "name": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "68663d979527b76da2141d48b469f19a65f6787875d95c9753d545a01781b73c"
+    },
+    {
+      "name": "0011 trailing_skirt_image_left :: depth_11",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "3f12d3baa59cdcef262e5dc2d12a6747e74a23335775bf7c2bddd416dd5f6e99"
+    },
+    {
+      "name": "0012 trailing_skirt_image_right/short_drape_left :: depth_12",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "622535e88b9e1a2eac5c59ad5f3259a03d3b49ad50e24130089088860fa84e88"
+    },
+    {
+      "name": "0013 floral_skirt_undertrim :: depth_13",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "75e6551c85a4d716af46925133cbe9b443f8ec93cc86cedc3d2f7aac53a625b7"
+    },
+    {
+      "name": "0014 halter_dress/short_outer_skirt/right_skirt_panel :: depth_14",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "7117966484992a62d07b6e70d76eeb1c519719b3827782cc5af5ded6fae06650"
+    },
+    {
+      "name": "0015 halter_dress/short_outer_skirt/left_skirt_panel :: depth_15",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "888c812a7f2fc61c40fed2f687eaddb0a9c4e467a12e756b0c75b061c96112bf"
+    },
+    {
+      "name": "0016 halter_dress/halter_bodice :: depth_16",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "1cd10eb87ba15d4d9037d4aabd5aac1a8d09ca62064a840865e5041cafcf054b"
+    },
+    {
+      "name": "0017 puff_sleeve_image_left :: depth_17",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "4b12847d34dc63e11958f3d64e05fbae95031de75205246a97f7ad0dd8b0687b"
+    },
+    {
+      "name": "0018 puff_sleeve_image_right :: depth_18",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "fc80c3d0874de3d7e0d7c28b6979ff311a354dce989d531f48d5156cf3eeda14"
+    },
+    {
+      "name": "0029 puff_sleeve_image_left :: depth_29",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "6a28db6176bb5daddcaf67fd5df91db66def323fba574965cb30f6b534b0ee2b"
+    },
+    {
+      "name": "0030 puff_sleeve_image_right :: depth_30",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "94e45cfa32dc643baab42637c406026770f5e614c8daa472113f1d63f42f5b55"
+    },
+    {
+      "name": "0031 floral_skirt_undertrim :: depth_31",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "dcad8e3f2518c01121a3e7183f39378e91b652240efa619d8184ede3913cf85b"
+    },
+    {
+      "name": "0032 halter_dress/short_outer_skirt/right_skirt_panel :: depth_32",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "b781a0481c5c14502f55f393bf30e91cbb090f57942f03c82a7bfde96656c851"
+    },
+    {
+      "name": "0033 halter_dress/short_outer_skirt/left_skirt_panel :: depth_33",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "b80b5bd7d87352de055e8331a38ac466071876c5d3efc8cb238188ffea897bab"
+    },
+    {
+      "name": "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "404f00fd97e8265621f8d6592e8cf561bf5914ee612e3ed36106e8a711825e17"
+    },
+    {
+      "name": "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "0800d924c00a473c093f7fb4a7f064da1f4ba3ec7374385acde1f9069f68c3e0"
+    },
+    {
+      "name": "0036 halter_dress/short_outer_skirt/front_drape :: depth_36",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "d3a710caef2d8d0dcd053d3d323583ed9e7f9f8db79e6be390a0923c001a746e"
+    },
+    {
+      "name": "0037 halter_dress/short_outer_skirt/front_drape :: depth_37",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "f1c33d77e309ffecbbd2527c63a0494fdb4e54e4e1f11a38c0481b610ea03c2e"
+    },
+    {
+      "name": "0038 halter_dress/halter_bodice :: depth_38",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "f3268da4288702fda2f80a7aff384ae38cec1a414510197e94f4033def3cc939"
+    },
+    {
+      "name": "0040 chest_pendant",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "98abc785505fc618efa45e3666d934e5229cedd6e3e24317a1afdc2ed09f0063"
+    },
+    {
+      "name": "0041 waist_bow/short_tail",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "35481011ed0c46d8c38a9292e39c61ac0a98d7649ef9a15d05539042e49c5678"
+    },
+    {
+      "name": "0042 waist_bow/long_tail",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "c2d0d8abccc39c8c8424fd83caaefcfa412ce8faa1d27932ab33da0a27193a6b"
+    },
+    {
+      "name": "0043 waist_bow/knot_and_loops",
+      "type": "paintlayer",
+      "children": 0,
+      "opacity": 255,
+      "visible": true,
+      "pixel_sha256": "545307f2de1996032d7aa151ea78511cf16bcd057c4666b121aa01ae230eeef2"
+    }
+  ]
+}

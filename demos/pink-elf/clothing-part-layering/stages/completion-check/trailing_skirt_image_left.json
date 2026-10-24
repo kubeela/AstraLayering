@@ -1,0 +1,7 @@
+{
+  "groupId": "trailing_skirt_image_left",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "b41cac73420aa64b54d9a8d97c0396671d47731b1c3b202c9edc7a926febceee",
+  "afterHash": "d7b3dc0722a1588d672c5e2349337a961bfd4fef43828327f955892b334b4cb6"
+}

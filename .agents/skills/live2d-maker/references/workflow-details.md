@@ -36,7 +36,7 @@ pnpm start --name jianma --status --json
 
 ## Codex 环境配置
 
-首次创建 skill 根目录 `.env` 前，按[推荐模型方案](model-presets.md)让用户确认选择，再以 [example.env](../example.env) 为基础填写；已有配置不覆盖。直接调用脚本而没有 `.env` 时，使用默认方案：preparation 为 Codex low，其余默认模型保持，生图使用外部 Codex 内置服务。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
+首次创建 skill 根目录 `.env` 时，按[推荐模型方案](model-presets.md)使用方案 1 默认配置；用户指定方案 2 或自定义时按其选择填写。以 [example.env](../example.env) 为完整字段基础，已有配置不覆盖。没有 `.env` 时，代码默认值与方案 1 一致：全部职责为 `gpt-6.1-sol`，按职责使用 low／medium／high／xhigh，生图继承宿主 Codex 内置服务。shell 同名变量优先，文件不执行 shell 或展开变量，`.env` 不写入 Git。LLM 职责配置、独立生图选择、CLI、两种 Google 生图协议及会话隔离见[模型与 harness](agent-models.md)。
 
 `layering_image_compact_threshold` 留空关闭，只作用于 Codex；例如网关最多 50 张时可设 `49`。这项能力需要仓库提供的可选 Codex 补丁。启用此项或 Codex 自定义生图后，若 `layering_codex_path` 留空，启动预检自动准备补丁；有缓存直接复用，并发等待同一次构建。显式指定路径时检查该入口，失败不会替换用户配置。
 
@@ -171,13 +171,15 @@ pnpm test
 
 ### 生成参考的自动后处理
 
-新生成的 simplified、base-subject 和纯衣服参考共用 standard.png 的画布尺寸。Nano 请求透明背景时，由共享生图通道选择与参考前景最少冲突的红、绿或蓝纯色背景；图像返回后，首次真正需要时自动在 Krita 内嵌 Python 中准备 ViTMatte 环境，估计 alpha 并用 PyMatting 恢复前景 RGB。两种 CLI 接入路径使用同一后处理，不改变调用者的任务提示词。包和缓存共用运行根目录的 `.runtime/`，详见[安装与前置](setup.md)。
+新生成的 simplified、base-subject 和纯衣服参考共用 standard.png 的画布尺寸。Nano 请求透明背景时，由共享生图通道选择与参考前景最少冲突的红、绿或蓝纯色背景；图像返回后，保留原始 RGB，以它作为唯一参考再生成一张仅换背景的白底或黑底图，由 Node／Sharp 双背景差分恢复 alpha 和前景 RGB。两种 CLI 接入路径使用同一后处理，不改变调用者的任务提示词，也不需要额外 Python 包或抠图权重，详见[安装与前置](setup.md)。
 
 真实 alpha 不二次抠图。旧式不透明参考仍用 Node 内的边缘主色估计、颜色键和去溢色，不调用外部程序或 ML 安装；多色边缘没有可靠主色时保留原像素并记录跳过，衣服参考仍须有实际透明区域。颜色键不承担语义分割，近似背景色的前景仍可能误删。尺寸不同由 Sharp 等比缩放并居中透明补边，不裁紧人物或衣服；尺寸一致跳过缩放。已合格透明 PNG 在不需要缩放时原字节保留。
 
 后处理成功后直接替换正式参考文件，后续步骤只读取处理后的图片。处理前的生成原文件和处理报告保存于 references/archive/ 的独立历史目录，每次生成追加保存。archive 仅供人工查看，不参与程序输入、完成判断或恢复运行；删除 archive 不影响续跑，正式参考缺失时也不会从 archive 恢复。preparation.json 仅记录正式参考的文件指纹及输入依赖，不保存归档路径或后处理进度。旧任务已有参考只校验并复用，不在续跑时自动重处理；新衣服参考需要同名人物的 standard.png，避免误用 original 或简化图尺寸作为基准。该过程不额外调用 LLM。
 
-Nano 处理前的原始生图、背景选择、alpha、trimap 和错误／处理报告保留在调用步骤的 image-processing 目录。缺少 Krita、模块安装或推理失败时明确报错，日志指向实际文件，不发布未完成的新参考。无需透明化时不初始化 matting 环境；制作管线不再依赖 FFmpeg。
+Nano 两张背景图、背景选择、alpha 和错误／处理报告保留在调用步骤的 image-processing 目录。第二次生图、背景采样或画布适配失败时明确报错，日志指向实际文件，不发布未完成的新参考。无需透明化时直接保留输出；制作管线不依赖 FFmpeg 或 Python 抠图环境。
+
+模型抠图后共用 Node 边缘恢复：用实际背景颜色和第一张目标参考的主体色盘约束残色，必要时下调边缘 alpha，保留不透明内区与真实同色细节。详情、原模型结果归档和未修正数量见[生图通道](agent-models.md)。这一阶段不修改 Python worker、模块或模型权重，不额外安装依赖。
 
 ### 投影蒙版制作
 

@@ -1,0 +1,80 @@
+[
+  {
+    "part": "arms/arm_right/hand/thumb",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_right/hand/thumb.png",
+    "pixels": 282,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_right/hand/index_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_right/hand/index_finger.png",
+    "pixels": 117,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_right/hand/middle_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_right/hand/middle_finger.png",
+    "pixels": 318,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_right/hand/ring_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_right/hand/ring_finger.png",
+    "pixels": 831,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_right/hand/little_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_right/hand/little_finger.png",
+    "pixels": 416,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_left/hand/thumb",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_left/hand/thumb.png",
+    "pixels": 248,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_left/hand/index_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_left/hand/index_finger.png",
+    "pixels": 389,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_left/hand/middle_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_left/hand/middle_finger.png",
+    "pixels": 422,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_left/hand/ring_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_left/hand/ring_finger.png",
+    "pixels": 357,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "arms/arm_left/hand/little_finger",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/arms/arm_left/hand/little_finger.png",
+    "pixels": 0,
+    "reason": "只恢复本指可见皮肤和甲面；按当前top-owner隔离，不合手或改指尖"
+  },
+  {
+    "part": "body/torso",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/body/torso.png",
+    "pixels": 2690,
+    "reason": "肩带与衣边本件自身可见区域；当前上层遮挡排除，修掉torso与breast两层原人工交线"
+  },
+  {
+    "part": "body/breast",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/body/breast.png",
+    "pixels": 4073,
+    "reason": "肩带与衣边本件自身可见区域；当前上层遮挡排除，修掉torso与breast两层原人工交线"
+  },
+  {
+    "part": "neck",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/second-owned/neck.png",
+    "pixels": 1547,
+    "reason": "仅颈部真正可见皮肤，torso和前发足迹排除；隐藏圆端不贴上层内容"
+  }
+]

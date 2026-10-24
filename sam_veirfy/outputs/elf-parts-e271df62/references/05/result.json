@@ -1,0 +1,52 @@
+{
+  "index": 5,
+  "id": "face/eye_left/iris",
+  "key": "part-layering/face/eye_left/iris",
+  "family": "人物",
+  "group": "face",
+  "label": "角色左虹膜",
+  "prompt": "left iris",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 2,
+  "max_score": 0.78515625,
+  "seconds": 0.0776,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 1437,
+  "instances": [
+    {
+      "file": "references/05/instance-01.png",
+      "score": 0.78515625,
+      "box_xyxy": [
+        395.935791015625,
+        198.18467712402344,
+        432.19378662109375,
+        224.45669555664062
+      ],
+      "area_pixels": 738
+    },
+    {
+      "file": "references/05/instance-02.png",
+      "score": 0.54296875,
+      "box_xyxy": [
+        476.6341857910156,
+        195.06399536132812,
+        507.03863525390625,
+        220.72274780273438
+      ],
+      "area_pixels": 699
+    }
+  ],
+  "crop_bbox": [
+    383,
+    181,
+    524,
+    235
+  ],
+  "status": "detected",
+  "card": "references/05/card.jpg",
+  "mask": "references/05/mask.png",
+  "cutout": "references/05/cutout.png",
+  "overlay": "references/05/overlay.jpg"
+}

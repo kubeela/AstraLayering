@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, realpath, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative } from 'node:path';
+import { join, relative, dirname, delimiter } from 'node:path';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { parseEnv } from 'node:util';
@@ -51,7 +51,7 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
   for (const [step, role] of Object.entries(stepModelSlots)) if (role === 'preparation') {
     assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel('gpt-6.1-sol-low', 'fixture'));
   }
-  assert.equal(settings.stepModels.raster_step02.model, 'gpt-6-astra');
+  assert.deepEqual(settings.stepModels.raster_step02, parseAgentModel('gpt-6.1-sol-medium', 'fixture'));
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
   assert.ok(!pipelineAgentSteps('clothing-part-layering').some(step => step.startsWith('clothing_raster_')));
   assert.ok(!pipelineAgentSteps('part-layering').includes('part_standardize'));
@@ -71,7 +71,7 @@ test('every image-capable agent rejects native imagegen with a different harness
   assert.throws(() => validateImageSelection(custom, 'part_simplify'), /缺少 google/);
 });
 
-test('default template covers model roles and individual image choices without changing other defaults', async t => {
+test('scheme 1 template and code defaults resolve all role efforts and native images without extra providers', async t => {
   const contents = await readFile(new URL('../../example.env', import.meta.url), 'utf8');
   const variables = parseEnv(contents);
   assert.equal(Object.keys(modelSlotDefaults).length, 16);
@@ -83,23 +83,45 @@ test('default template covers model roles and individual image choices without c
   const settings = loadWorkflowEnvironment({}, root);
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
   assert.deepEqual(settings.stepModels, loadWorkflowEnvironment({}, await fixture(t)).stepModels);
+  const expected: Record<keyof typeof modelSlotDefaults, string> = {
+    preparation: 'low', part_draw: 'medium', part_review: 'medium',
+    part_groups: 'high', part_reduce: 'high', part_completion: 'high', part_depth: 'high',
+    raster_step01: 'xhigh', raster_step01_review: 'xhigh', raster_step02: 'medium',
+    raster_step03: 'medium', assembly: 'xhigh', shadow: 'medium',
+  };
+  for (const [step, role] of Object.entries(stepModelSlots)) {
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(`gpt-6.1-sol-${expected[role]}`, 'fixture'), step);
+  }
+  assert.deepEqual(settings.codex.config, {});
+  assert.deepEqual(settings.imageApis, {});
+  assert.deepEqual(settings.cliPaths, {});
+  assert.equal(settings.imageCompactThreshold, undefined);
   assert.ok(imageSteps.every(step => settings.stepImages[step] === 'codex-native'));
 });
 
-test('optimized preset only changes part roles and selected image tools; custom overrides preserve the base', async t => {
+test('mixed preset assigns shared GPT, Argon and Claude roles and uses Sunburst for simplification', async t => {
   const base = parseEnv(await readFile(new URL('../../example.env', import.meta.url), 'utf8'));
   const overrides = parseEnv(await readFile(new URL('../../presets/optimized.env', import.meta.url), 'utf8'));
-  const variables = { ...base, ...overrides, layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture' };
+  const variables = { ...base, ...overrides, layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture',
+    layering_openai_image_base_url: 'https://image.example/v1', layering_openai_image_api_key: 'fixture' };
   const root = await fixture(t);
   await writeFile(join(root, '.env'), Object.entries(variables).map(([key, value]) => `${key}=${value}\n`).join(''));
   const settings = loadWorkflowEnvironment({}, root);
+  const expected: Record<keyof typeof modelSlotDefaults, string> = {
+    ...modelSlotDefaults,
+    preparation: 'gpt-6.1-sol-low',
+    part_draw: 'gemini-4-argon-high', part_review: 'gemini-4-argon-high', part_completion: 'gemini-4-argon-high',
+    part_groups: 'gpt-6.1-sol-xhigh', part_depth: 'gpt-6.1-sol-xhigh', part_reduce: 'gpt-6.1-sol-xhigh',
+    raster_step01: 'claude-opus-5-5-xhigh', raster_step01_review: 'claude-sonnet-5-5-xhigh',
+    raster_step02: 'claude-sonnet-5-5-xhigh', raster_step03: 'claude-sonnet-5-5-xhigh',
+    assembly: 'gemini-4-argon-high', shadow: 'claude-sonnet-5-5-xhigh',
+  };
   for (const [step, role] of Object.entries(stepModelSlots)) {
-    const expected = role.startsWith('part_') ? 'gemini-4-argon-high' : modelSlotDefaults[role];
-    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected, 'fixture'), step);
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected[role], 'fixture'), step);
   }
-  const nanoSteps = new Set(['part_simplify', 'part_base_subject', 'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair']);
+  const nanoSteps = new Set(['part_base_subject', 'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair']);
   for (const step of imageSteps) {
-    assert.equal(settings.stepImages[step], nanoSteps.has(step) ? 'gemini-nano-banana-2.1' : 'codex-native', step);
+    assert.equal(settings.stepImages[step], nanoSteps.has(step) ? 'gemini-nano-banana-2.1' : 'gpt-image-2.5-sunburst', step);
     validateImageSelection(settings, step);
   }
   assert.equal(settings.imageCompactThreshold, undefined);
@@ -128,6 +150,26 @@ test('consistent legacy settings are shared, conflicts require an explicit role,
   await writeFile(join(root, '.env'), oldFile);
   assert.equal(loadWorkflowEnvironment({}, root).stepModels.part_simplify.effort, 'xhigh');
   assert.equal(await readFile(join(root, '.env'), 'utf8'), oldFile);
+});
+
+test('legacy tier overrides keep their historical roles and explicit role and shell values still win', async t => {
+  const root = await fixture(t);
+  const file = 'layering_medium_model=gpt-6.1-sol-low\nlayering_high_model=gpt-6-astra-high\n';
+  await writeFile(join(root, '.env'), file);
+  const settings = loadWorkflowEnvironment({}, root);
+  const highRoles = new Set(['raster_step01', 'raster_step01_review', 'raster_step02']);
+  for (const [step, role] of Object.entries(stepModelSlots)) {
+    const expected = highRoles.has(role) ? 'gpt-6-astra-high' : 'gpt-6.1-sol-low';
+    assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected, 'fixture'), step);
+  }
+  await writeFile(join(root, '.env'), file + 'layering_agent_raster_step02_model=claude-sonnet-5-5-medium\n');
+  const explicit = loadWorkflowEnvironment({}, root);
+  assert.equal(explicit.stepModels.clothing_raster_step02.harness, 'claude');
+  const shell = loadWorkflowEnvironment({ layering_agent_raster_step02_model: 'gemini-4-argon-high' }, root);
+  assert.equal(shell.stepModels.raster_step02.harness, 'agv');
+  assert.deepEqual(shell.stepModels.raster_step02, shell.stepModels.clothing_raster_step02);
+  assert.equal(shell.stepModels.raster_step01.model, 'gpt-6-astra');
+  assert.equal(await readFile(join(root, '.env'), 'utf8'), file + 'layering_agent_raster_step02_model=claude-sonnet-5-5-medium\n');
 });
 
 test('custom image edit transports original prompts and images over both protocols and preserves inputs', async t => {
@@ -233,6 +275,30 @@ test('Claude and agv use isolated request workspaces, original MCP schemas and r
     assert.equal((await stat(join(first.logDirectory!, 'mcp.json'))).mode & 0o777, 0o600);
   }
   assert.equal(called, 8);
+});
+
+test('Claude and AGV env-node launchers work when the service PATH has no Node, including child tools', async t => {
+  const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'env-node.mjs');
+  await mkdir(cwd, { recursive: true });
+  const script = fakeCli.replace(`#!${process.execPath}`, '#!/usr/bin/env node')
+    .replace('const meta=', `const {execFileSync}=await import('node:child_process');
+const childNode=execFileSync('/usr/bin/env',['node','-p','process.execPath'],{encoding:'utf8'}).trim();
+await writeFile(join(process.cwd(),'child-node.json'),JSON.stringify({path:process.env.PATH,childNode}));
+const meta=`);
+  await writeFile(cli, script, { mode: 0o700 });
+  const inheritedPath = join(root, 'service-bin'); await mkdir(inheritedPath);
+  const settings = loadWorkflowEnvironment({ PATH: inheritedPath, layering_claude_path: cli, layering_agv_path: cli }, root);
+  const hostPath = process.env.PATH;
+  for (const id of ['claude-sonnet-5-5-high', 'gemini-4-argon-high']) {
+    const result = await runCliTask({ name: 'env-node', cwd, prompt: 'fixture' }, parseAgentModel(id, 'fixture'), settings,
+      { cwd, logDirectory: join(cwd, 'agents') }, new AbortController().signal);
+    assert.equal(result.text, '完成');
+    const child = JSON.parse(await readFile(join(result.logDirectory!, 'workspace/child-node.json'), 'utf8'));
+    assert.equal(child.childNode, process.execPath);
+    assert.deepEqual(child.path.split(delimiter), [dirname(process.execPath), inheritedPath]);
+  }
+  assert.equal(settings.codex.env!.PATH, inheritedPath);
+  assert.equal(process.env.PATH, hostPath);
 });
 
 test('unavailable CLI sessions are replaced once without deleting existing deliveries', async t => {

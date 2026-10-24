@@ -1,0 +1,3868 @@
+[
+  {
+    "layer": "0005 hair/back_hair/cap :: nape_under_roots",
+    "page": "page-01.png",
+    "crop_centres": [
+      [
+        375,
+        235
+      ],
+      [
+        387,
+        271
+      ],
+      [
+        425,
+        292
+      ],
+      [
+        447,
+        283
+      ],
+      [
+        447,
+        245
+      ],
+      [
+        420,
+        235
+      ],
+      [
+        382,
+        235
+      ],
+      [
+        476,
+        266
+      ],
+      [
+        481,
+        297
+      ],
+      [
+        519,
+        277
+      ],
+      [
+        546,
+        242
+      ],
+      [
+        515,
+        235
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "page": "page-01.png",
+    "crop_centres": [
+      [
+        401,
+        175
+      ],
+      [
+        348,
+        295
+      ],
+      [
+        280,
+        438
+      ],
+      [
+        179,
+        580
+      ],
+      [
+        202,
+        686
+      ],
+      [
+        213,
+        660
+      ],
+      [
+        285,
+        747
+      ],
+      [
+        415,
+        784
+      ],
+      [
+        463,
+        701
+      ],
+      [
+        464,
+        558
+      ],
+      [
+        463,
+        415
+      ],
+      [
+        462,
+        272
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "page": "page-01.png",
+    "crop_centres": [
+      [
+        494,
+        140
+      ],
+      [
+        449,
+        283
+      ],
+      [
+        448,
+        435
+      ],
+      [
+        448,
+        587
+      ],
+      [
+        451,
+        739
+      ],
+      [
+        533,
+        783
+      ],
+      [
+        647,
+        734
+      ],
+      [
+        695,
+        583
+      ],
+      [
+        705,
+        686
+      ],
+      [
+        722,
+        574
+      ],
+      [
+        622,
+        423
+      ],
+      [
+        557,
+        273
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "page": "page-01.png",
+    "crop_centres": [
+      [
+        417,
+        81
+      ],
+      [
+        352,
+        166
+      ],
+      [
+        327,
+        243
+      ],
+      [
+        325,
+        325
+      ],
+      [
+        255,
+        418
+      ],
+      [
+        213,
+        511
+      ],
+      [
+        238,
+        525
+      ],
+      [
+        253,
+        432
+      ],
+      [
+        337,
+        357
+      ],
+      [
+        402,
+        343
+      ],
+      [
+        390,
+        250
+      ],
+      [
+        414,
+        157
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "page": "page-02.png",
+    "crop_centres": [
+      [
+        488,
+        83
+      ],
+      [
+        521,
+        162
+      ],
+      [
+        532,
+        247
+      ],
+      [
+        567,
+        332
+      ],
+      [
+        644,
+        417
+      ],
+      [
+        676,
+        501
+      ],
+      [
+        664,
+        538
+      ],
+      [
+        681,
+        460
+      ],
+      [
+        617,
+        374
+      ],
+      [
+        573,
+        289
+      ],
+      [
+        561,
+        237
+      ],
+      [
+        551,
+        152
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0045 hair/ahoge",
+    "page": "page-02.png",
+    "crop_centres": [
+      [
+        472,
+        27
+      ],
+      [
+        452,
+        34
+      ],
+      [
+        434,
+        53
+      ],
+      [
+        436,
+        74
+      ],
+      [
+        449,
+        95
+      ],
+      [
+        456,
+        96
+      ],
+      [
+        444,
+        76
+      ],
+      [
+        443,
+        55
+      ],
+      [
+        460,
+        35
+      ],
+      [
+        481,
+        30
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0050 hair/back_hair/cap :: back",
+    "page": "page-02.png",
+    "crop_centres": [
+      [
+        453,
+        94
+      ],
+      [
+        388,
+        108
+      ],
+      [
+        343,
+        161
+      ],
+      [
+        351,
+        226
+      ],
+      [
+        382,
+        234
+      ],
+      [
+        447,
+        234
+      ],
+      [
+        449,
+        299
+      ],
+      [
+        475,
+        259
+      ],
+      [
+        516,
+        234
+      ],
+      [
+        559,
+        223
+      ],
+      [
+        563,
+        158
+      ],
+      [
+        520,
+        109
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0055 legs/leg_left/foot :: rear",
+    "page": "page-02.png",
+    "crop_centres": [
+      [
+        539,
+        1378
+      ],
+      [
+        536,
+        1396
+      ],
+      [
+        534,
+        1415
+      ],
+      [
+        551,
+        1405
+      ],
+      [
+        562,
+        1391
+      ],
+      [
+        543,
+        1381
+      ],
+      [
+        481,
+        1389
+      ],
+      [
+        474,
+        1397
+      ],
+      [
+        493,
+        1413
+      ],
+      [
+        494,
+        1394
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0056 legs/leg_right/foot :: rear",
+    "page": "page-03.png",
+    "crop_centres": [
+      [
+        392,
+        1377
+      ],
+      [
+        376,
+        1390
+      ],
+      [
+        376,
+        1401
+      ],
+      [
+        395,
+        1416
+      ],
+      [
+        394,
+        1400
+      ],
+      [
+        392,
+        1381
+      ],
+      [
+        437,
+        1388
+      ],
+      [
+        438,
+        1406
+      ],
+      [
+        450,
+        1403
+      ],
+      [
+        456,
+        1390
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "page": "page-03.png",
+    "crop_centres": [
+      [
+        388,
+        604
+      ],
+      [
+        318,
+        745
+      ],
+      [
+        340,
+        894
+      ],
+      [
+        377,
+        1042
+      ],
+      [
+        363,
+        1191
+      ],
+      [
+        387,
+        1339
+      ],
+      [
+        434,
+        1460
+      ],
+      [
+        438,
+        1312
+      ],
+      [
+        446,
+        1163
+      ],
+      [
+        453,
+        1015
+      ],
+      [
+        454,
+        866
+      ],
+      [
+        460,
+        718
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "page": "page-03.png",
+    "crop_centres": [
+      [
+        516,
+        604
+      ],
+      [
+        470,
+        741
+      ],
+      [
+        477,
+        888
+      ],
+      [
+        476,
+        1037
+      ],
+      [
+        484,
+        1185
+      ],
+      [
+        494,
+        1334
+      ],
+      [
+        521,
+        1465
+      ],
+      [
+        549,
+        1317
+      ],
+      [
+        564,
+        1168
+      ],
+      [
+        558,
+        1020
+      ],
+      [
+        596,
+        871
+      ],
+      [
+        605,
+        723
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0080 pelvis",
+    "page": "page-03.png",
+    "crop_centres": [
+      [
+        445,
+        536
+      ],
+      [
+        387,
+        577
+      ],
+      [
+        348,
+        642
+      ],
+      [
+        324,
+        707
+      ],
+      [
+        351,
+        740
+      ],
+      [
+        416,
+        757
+      ],
+      [
+        481,
+        773
+      ],
+      [
+        546,
+        745
+      ],
+      [
+        608,
+        737
+      ],
+      [
+        590,
+        672
+      ],
+      [
+        559,
+        607
+      ],
+      [
+        511,
+        546
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0090 arms/arm_left/hand/little_finger",
+    "page": "page-04.png",
+    "crop_centres": [
+      [
+        717,
+        828
+      ],
+      [
+        713,
+        837
+      ],
+      [
+        711,
+        847
+      ],
+      [
+        707,
+        857
+      ],
+      [
+        701,
+        867
+      ],
+      [
+        701,
+        877
+      ],
+      [
+        708,
+        868
+      ],
+      [
+        715,
+        858
+      ],
+      [
+        719,
+        848
+      ],
+      [
+        721,
+        838
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0100 arms/arm_left/hand/ring_finger",
+    "page": "page-04.png",
+    "crop_centres": [
+      [
+        702,
+        815
+      ],
+      [
+        700,
+        828
+      ],
+      [
+        700,
+        842
+      ],
+      [
+        697,
+        856
+      ],
+      [
+        693,
+        870
+      ],
+      [
+        696,
+        881
+      ],
+      [
+        701,
+        867
+      ],
+      [
+        709,
+        853
+      ],
+      [
+        711,
+        839
+      ],
+      [
+        711,
+        825
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0110 arms/arm_left/hand/middle_finger",
+    "page": "page-04.png",
+    "crop_centres": [
+      [
+        711,
+        822
+      ],
+      [
+        707,
+        835
+      ],
+      [
+        710,
+        849
+      ],
+      [
+        703,
+        863
+      ],
+      [
+        696,
+        877
+      ],
+      [
+        699,
+        891
+      ],
+      [
+        708,
+        878
+      ],
+      [
+        714,
+        864
+      ],
+      [
+        719,
+        850
+      ],
+      [
+        718,
+        836
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0120 arms/arm_left/hand/index_finger",
+    "page": "page-04.png",
+    "crop_centres": [
+      [
+        699,
+        806
+      ],
+      [
+        704,
+        823
+      ],
+      [
+        713,
+        841
+      ],
+      [
+        713,
+        859
+      ],
+      [
+        712,
+        877
+      ],
+      [
+        721,
+        876
+      ],
+      [
+        726,
+        859
+      ],
+      [
+        728,
+        841
+      ],
+      [
+        727,
+        823
+      ],
+      [
+        718,
+        809
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0130 arms/arm_left/hand/thumb",
+    "page": "page-05.png",
+    "crop_centres": [
+      [
+        689,
+        799
+      ],
+      [
+        678,
+        805
+      ],
+      [
+        678,
+        817
+      ],
+      [
+        682,
+        829
+      ],
+      [
+        684,
+        842
+      ],
+      [
+        690,
+        854
+      ],
+      [
+        697,
+        846
+      ],
+      [
+        697,
+        833
+      ],
+      [
+        696,
+        821
+      ],
+      [
+        695,
+        809
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0140 arms/arm_left/hand/palm",
+    "page": "page-05.png",
+    "crop_centres": [
+      [
+        680,
+        767
+      ],
+      [
+        671,
+        788
+      ],
+      [
+        675,
+        810
+      ],
+      [
+        682,
+        831
+      ],
+      [
+        697,
+        818
+      ],
+      [
+        715,
+        839
+      ],
+      [
+        728,
+        842
+      ],
+      [
+        727,
+        821
+      ],
+      [
+        717,
+        799
+      ],
+      [
+        703,
+        777
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0145 arms/arm_right/hand/little_finger",
+    "page": "page-05.png",
+    "crop_centres": [
+      [
+        197,
+        818
+      ],
+      [
+        193,
+        831
+      ],
+      [
+        192,
+        845
+      ],
+      [
+        195,
+        859
+      ],
+      [
+        198,
+        873
+      ],
+      [
+        204,
+        881
+      ],
+      [
+        210,
+        868
+      ],
+      [
+        207,
+        854
+      ],
+      [
+        207,
+        840
+      ],
+      [
+        209,
+        826
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0150 arms/arm_right/hand/index_finger",
+    "page": "page-05.png",
+    "crop_centres": [
+      [
+        218,
+        808
+      ],
+      [
+        213,
+        821
+      ],
+      [
+        212,
+        834
+      ],
+      [
+        216,
+        847
+      ],
+      [
+        227,
+        860
+      ],
+      [
+        239,
+        866
+      ],
+      [
+        241,
+        855
+      ],
+      [
+        231,
+        842
+      ],
+      [
+        223,
+        830
+      ],
+      [
+        227,
+        817
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0160 arms/arm_right/hand/middle_finger",
+    "page": "page-06.png",
+    "crop_centres": [
+      [
+        215,
+        808
+      ],
+      [
+        212,
+        822
+      ],
+      [
+        212,
+        837
+      ],
+      [
+        215,
+        852
+      ],
+      [
+        224,
+        867
+      ],
+      [
+        236,
+        878
+      ],
+      [
+        233,
+        864
+      ],
+      [
+        226,
+        849
+      ],
+      [
+        223,
+        834
+      ],
+      [
+        223,
+        819
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0170 arms/arm_right/hand/ring_finger",
+    "page": "page-06.png",
+    "crop_centres": [
+      [
+        206,
+        818
+      ],
+      [
+        202,
+        832
+      ],
+      [
+        203,
+        847
+      ],
+      [
+        208,
+        862
+      ],
+      [
+        217,
+        876
+      ],
+      [
+        230,
+        887
+      ],
+      [
+        231,
+        872
+      ],
+      [
+        226,
+        858
+      ],
+      [
+        217,
+        843
+      ],
+      [
+        214,
+        828
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0180 arms/arm_right/hand/thumb",
+    "page": "page-06.png",
+    "crop_centres": [
+      [
+        234,
+        805
+      ],
+      [
+        227,
+        813
+      ],
+      [
+        226,
+        823
+      ],
+      [
+        224,
+        833
+      ],
+      [
+        224,
+        843
+      ],
+      [
+        231,
+        851
+      ],
+      [
+        236,
+        841
+      ],
+      [
+        238,
+        831
+      ],
+      [
+        241,
+        821
+      ],
+      [
+        243,
+        811
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0190 arms/arm_right/hand/palm",
+    "page": "page-06.png",
+    "crop_centres": [
+      [
+        230,
+        759
+      ],
+      [
+        215,
+        775
+      ],
+      [
+        204,
+        795
+      ],
+      [
+        193,
+        815
+      ],
+      [
+        199,
+        832
+      ],
+      [
+        219,
+        818
+      ],
+      [
+        235,
+        826
+      ],
+      [
+        245,
+        809
+      ],
+      [
+        251,
+        789
+      ],
+      [
+        249,
+        769
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0200 arms/arm_left/forearm",
+    "page": "page-07.png",
+    "crop_centres": [
+      [
+        590,
+        545
+      ],
+      [
+        578,
+        583
+      ],
+      [
+        597,
+        628
+      ],
+      [
+        622,
+        673
+      ],
+      [
+        648,
+        718
+      ],
+      [
+        668,
+        763
+      ],
+      [
+        690,
+        797
+      ],
+      [
+        699,
+        759
+      ],
+      [
+        683,
+        714
+      ],
+      [
+        666,
+        669
+      ],
+      [
+        650,
+        624
+      ],
+      [
+        630,
+        579
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0210 arms/arm_right/forearm",
+    "page": "page-07.png",
+    "crop_centres": [
+      [
+        320,
+        531
+      ],
+      [
+        294,
+        574
+      ],
+      [
+        271,
+        620
+      ],
+      [
+        256,
+        666
+      ],
+      [
+        240,
+        712
+      ],
+      [
+        223,
+        758
+      ],
+      [
+        243,
+        787
+      ],
+      [
+        258,
+        746
+      ],
+      [
+        283,
+        700
+      ],
+      [
+        310,
+        654
+      ],
+      [
+        334,
+        608
+      ],
+      [
+        347,
+        562
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0220 arms/arm_left/upper_arm",
+    "page": "page-07.png",
+    "crop_centres": [
+      [
+        545,
+        339
+      ],
+      [
+        502,
+        366
+      ],
+      [
+        523,
+        412
+      ],
+      [
+        547,
+        455
+      ],
+      [
+        555,
+        503
+      ],
+      [
+        570,
+        552
+      ],
+      [
+        587,
+        596
+      ],
+      [
+        620,
+        560
+      ],
+      [
+        607,
+        511
+      ],
+      [
+        601,
+        463
+      ],
+      [
+        597,
+        414
+      ],
+      [
+        588,
+        366
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0230 arms/arm_right/upper_arm",
+    "page": "page-07.png",
+    "crop_centres": [
+      [
+        363,
+        340
+      ],
+      [
+        328,
+        376
+      ],
+      [
+        323,
+        424
+      ],
+      [
+        319,
+        471
+      ],
+      [
+        312,
+        519
+      ],
+      [
+        299,
+        566
+      ],
+      [
+        338,
+        580
+      ],
+      [
+        356,
+        533
+      ],
+      [
+        371,
+        486
+      ],
+      [
+        379,
+        438
+      ],
+      [
+        417,
+        399
+      ],
+      [
+        412,
+        351
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0240 neck",
+    "page": "page-08.png",
+    "crop_centres": [
+      [
+        454,
+        255
+      ],
+      [
+        433,
+        276
+      ],
+      [
+        432,
+        303
+      ],
+      [
+        418,
+        330
+      ],
+      [
+        417,
+        342
+      ],
+      [
+        439,
+        359
+      ],
+      [
+        466,
+        369
+      ],
+      [
+        489,
+        348
+      ],
+      [
+        515,
+        338
+      ],
+      [
+        491,
+        321
+      ],
+      [
+        485,
+        294
+      ],
+      [
+        482,
+        267
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0250 body/torso",
+    "page": "page-08.png",
+    "crop_centres": [
+      [
+        397,
+        339
+      ],
+      [
+        330,
+        375
+      ],
+      [
+        374,
+        458
+      ],
+      [
+        389,
+        542
+      ],
+      [
+        359,
+        625
+      ],
+      [
+        443,
+        631
+      ],
+      [
+        527,
+        629
+      ],
+      [
+        544,
+        585
+      ],
+      [
+        546,
+        501
+      ],
+      [
+        561,
+        417
+      ],
+      [
+        566,
+        341
+      ],
+      [
+        482,
+        343
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0260 body/breast",
+    "page": "page-08.png",
+    "crop_centres": [
+      [
+        413,
+        374
+      ],
+      [
+        376,
+        405
+      ],
+      [
+        357,
+        450
+      ],
+      [
+        368,
+        496
+      ],
+      [
+        414,
+        527
+      ],
+      [
+        460,
+        518
+      ],
+      [
+        506,
+        528
+      ],
+      [
+        551,
+        498
+      ],
+      [
+        565,
+        453
+      ],
+      [
+        548,
+        407
+      ],
+      [
+        507,
+        375
+      ],
+      [
+        461,
+        382
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0270 face/ear_left",
+    "page": "page-08.png",
+    "crop_centres": [
+      [
+        583,
+        195
+      ],
+      [
+        565,
+        197
+      ],
+      [
+        547,
+        199
+      ],
+      [
+        529,
+        202
+      ],
+      [
+        513,
+        212
+      ],
+      [
+        519,
+        229
+      ],
+      [
+        537,
+        234
+      ],
+      [
+        555,
+        224
+      ],
+      [
+        573,
+        214
+      ],
+      [
+        591,
+        201
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0280 face/ear_right",
+    "page": "page-09.png",
+    "crop_centres": [
+      [
+        313,
+        201
+      ],
+      [
+        330,
+        215
+      ],
+      [
+        349,
+        226
+      ],
+      [
+        368,
+        235
+      ],
+      [
+        386,
+        236
+      ],
+      [
+        403,
+        224
+      ],
+      [
+        391,
+        210
+      ],
+      [
+        372,
+        207
+      ],
+      [
+        353,
+        202
+      ],
+      [
+        334,
+        201
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0290 head_accessories/left_earring",
+    "page": "page-09.png",
+    "crop_centres": [
+      [
+        520,
+        230
+      ],
+      [
+        515,
+        235
+      ],
+      [
+        515,
+        242
+      ],
+      [
+        514,
+        249
+      ],
+      [
+        514,
+        256
+      ],
+      [
+        518,
+        261
+      ],
+      [
+        522,
+        257
+      ],
+      [
+        523,
+        250
+      ],
+      [
+        524,
+        243
+      ],
+      [
+        525,
+        236
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0300 head_accessories/right_earring",
+    "page": "page-09.png",
+    "crop_centres": [
+      [
+        394,
+        226
+      ],
+      [
+        391,
+        235
+      ],
+      [
+        391,
+        245
+      ],
+      [
+        391,
+        254
+      ],
+      [
+        391,
+        264
+      ],
+      [
+        401,
+        263
+      ],
+      [
+        410,
+        260
+      ],
+      [
+        410,
+        250
+      ],
+      [
+        406,
+        241
+      ],
+      [
+        402,
+        231
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0310 face/face_base",
+    "page": "page-09.png",
+    "crop_centres": [
+      [
+        444,
+        123
+      ],
+      [
+        407,
+        136
+      ],
+      [
+        383,
+        173
+      ],
+      [
+        383,
+        211
+      ],
+      [
+        399,
+        249
+      ],
+      [
+        431,
+        282
+      ],
+      [
+        469,
+        291
+      ],
+      [
+        506,
+        262
+      ],
+      [
+        523,
+        224
+      ],
+      [
+        533,
+        186
+      ],
+      [
+        520,
+        148
+      ],
+      [
+        483,
+        126
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0320 face/mouth/mouth_interior",
+    "page": "page-10.png",
+    "crop_centres": [
+      [
+        448,
+        249
+      ],
+      [
+        442,
+        255
+      ],
+      [
+        442,
+        263
+      ],
+      [
+        448,
+        271
+      ],
+      [
+        456,
+        274
+      ],
+      [
+        465,
+        272
+      ],
+      [
+        471,
+        265
+      ],
+      [
+        472,
+        257
+      ],
+      [
+        466,
+        249
+      ],
+      [
+        458,
+        249
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0330 face/mouth/lower_teeth",
+    "page": "page-10.png",
+    "crop_centres": [
+      [
+        447,
+        266
+      ],
+      [
+        448,
+        270
+      ],
+      [
+        453,
+        273
+      ],
+      [
+        457,
+        273
+      ],
+      [
+        462,
+        272
+      ],
+      [
+        466,
+        270
+      ],
+      [
+        466,
+        266
+      ],
+      [
+        462,
+        267
+      ],
+      [
+        457,
+        267
+      ],
+      [
+        453,
+        267
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0340 face/mouth/tongue",
+    "page": "page-10.png",
+    "crop_centres": [
+      [
+        455,
+        258
+      ],
+      [
+        449,
+        260
+      ],
+      [
+        444,
+        264
+      ],
+      [
+        446,
+        270
+      ],
+      [
+        452,
+        273
+      ],
+      [
+        458,
+        274
+      ],
+      [
+        464,
+        273
+      ],
+      [
+        470,
+        268
+      ],
+      [
+        469,
+        262
+      ],
+      [
+        463,
+        259
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0350 face/mouth/upper_teeth",
+    "page": "page-10.png",
+    "crop_centres": [
+      [
+        453,
+        248
+      ],
+      [
+        450,
+        249
+      ],
+      [
+        447,
+        250
+      ],
+      [
+        451,
+        252
+      ],
+      [
+        455,
+        252
+      ],
+      [
+        459,
+        251
+      ],
+      [
+        463,
+        251
+      ],
+      [
+        466,
+        249
+      ],
+      [
+        462,
+        248
+      ],
+      [
+        458,
+        248
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0360 face/mouth/lower_lip",
+    "page": "page-11.png",
+    "crop_centres": [
+      [
+        445,
+        250
+      ],
+      [
+        441,
+        262
+      ],
+      [
+        451,
+        273
+      ],
+      [
+        463,
+        273
+      ],
+      [
+        472,
+        262
+      ],
+      [
+        469,
+        250
+      ],
+      [
+        471,
+        260
+      ],
+      [
+        464,
+        271
+      ],
+      [
+        451,
+        272
+      ],
+      [
+        443,
+        261
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0370 face/mouth/upper_lip",
+    "page": "page-11.png",
+    "crop_centres": [
+      [
+        452,
+        248
+      ],
+      [
+        444,
+        251
+      ],
+      [
+        441,
+        259
+      ],
+      [
+        445,
+        252
+      ],
+      [
+        453,
+        249
+      ],
+      [
+        461,
+        249
+      ],
+      [
+        469,
+        252
+      ],
+      [
+        473,
+        258
+      ],
+      [
+        469,
+        250
+      ],
+      [
+        461,
+        248
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0380 face/nose",
+    "page": "page-11.png",
+    "crop_centres": [
+      [
+        455,
+        234
+      ],
+      [
+        455,
+        234
+      ],
+      [
+        455,
+        235
+      ],
+      [
+        455,
+        236
+      ],
+      [
+        455,
+        237
+      ],
+      [
+        455,
+        238
+      ],
+      [
+        455,
+        237
+      ],
+      [
+        455,
+        236
+      ],
+      [
+        456,
+        235
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0390 face/eye_left/sclera",
+    "page": "page-11.png",
+    "crop_centres": [
+      [
+        488,
+        194
+      ],
+      [
+        479,
+        199
+      ],
+      [
+        475,
+        208
+      ],
+      [
+        479,
+        217
+      ],
+      [
+        489,
+        220
+      ],
+      [
+        499,
+        220
+      ],
+      [
+        508,
+        218
+      ],
+      [
+        515,
+        209
+      ],
+      [
+        509,
+        200
+      ],
+      [
+        499,
+        195
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0400 face/eye_right/sclera",
+    "page": "page-12.png",
+    "crop_centres": [
+      [
+        415,
+        197
+      ],
+      [
+        406,
+        200
+      ],
+      [
+        397,
+        209
+      ],
+      [
+        398,
+        218
+      ],
+      [
+        407,
+        223
+      ],
+      [
+        416,
+        224
+      ],
+      [
+        426,
+        222
+      ],
+      [
+        432,
+        216
+      ],
+      [
+        433,
+        206
+      ],
+      [
+        426,
+        199
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0410 face/eye_left/iris",
+    "page": "page-12.png",
+    "crop_centres": [
+      [
+        489,
+        192
+      ],
+      [
+        482,
+        197
+      ],
+      [
+        479,
+        205
+      ],
+      [
+        479,
+        212
+      ],
+      [
+        485,
+        219
+      ],
+      [
+        493,
+        220
+      ],
+      [
+        500,
+        217
+      ],
+      [
+        504,
+        209
+      ],
+      [
+        503,
+        202
+      ],
+      [
+        498,
+        194
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0420 face/eye_right/iris",
+    "page": "page-12.png",
+    "crop_centres": [
+      [
+        416,
+        197
+      ],
+      [
+        409,
+        202
+      ],
+      [
+        406,
+        209
+      ],
+      [
+        407,
+        216
+      ],
+      [
+        413,
+        223
+      ],
+      [
+        420,
+        224
+      ],
+      [
+        427,
+        221
+      ],
+      [
+        431,
+        213
+      ],
+      [
+        430,
+        206
+      ],
+      [
+        425,
+        199
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0430 face/eye_left/highlight",
+    "page": "page-12.png",
+    "crop_centres": [
+      [
+        489,
+        215
+      ],
+      [
+        486,
+        217
+      ],
+      [
+        485,
+        219
+      ],
+      [
+        489,
+        219
+      ],
+      [
+        493,
+        219
+      ],
+      [
+        497,
+        219
+      ],
+      [
+        493,
+        216
+      ],
+      [
+        493,
+        199
+      ],
+      [
+        492,
+        203
+      ],
+      [
+        496,
+        202
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0440 face/eye_right/highlight",
+    "page": "page-13.png",
+    "crop_centres": [
+      [
+        417,
+        218
+      ],
+      [
+        413,
+        221
+      ],
+      [
+        415,
+        224
+      ],
+      [
+        419,
+        224
+      ],
+      [
+        424,
+        223
+      ],
+      [
+        426,
+        220
+      ],
+      [
+        422,
+        218
+      ],
+      [
+        420,
+        203
+      ],
+      [
+        421,
+        207
+      ],
+      [
+        424,
+        205
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0450 face/eye_left/lower_eyelid",
+    "page": "page-13.png",
+    "crop_centres": [
+      [
+        474,
+        205
+      ],
+      [
+        478,
+        216
+      ],
+      [
+        488,
+        221
+      ],
+      [
+        500,
+        221
+      ],
+      [
+        508,
+        219
+      ],
+      [
+        519,
+        209
+      ],
+      [
+        515,
+        213
+      ],
+      [
+        504,
+        219
+      ],
+      [
+        492,
+        221
+      ],
+      [
+        481,
+        218
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0460 face/eye_right/lower_eyelid",
+    "page": "page-13.png",
+    "crop_centres": [
+      [
+        432,
+        202
+      ],
+      [
+        432,
+        214
+      ],
+      [
+        423,
+        222
+      ],
+      [
+        411,
+        223
+      ],
+      [
+        399,
+        220
+      ],
+      [
+        389,
+        213
+      ],
+      [
+        401,
+        222
+      ],
+      [
+        412,
+        224
+      ],
+      [
+        424,
+        223
+      ],
+      [
+        433,
+        215
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0470 face/eye_left/upper_eyelid",
+    "page": "page-13.png",
+    "crop_centres": [
+      [
+        489,
+        189
+      ],
+      [
+        477,
+        195
+      ],
+      [
+        474,
+        204
+      ],
+      [
+        485,
+        197
+      ],
+      [
+        497,
+        197
+      ],
+      [
+        509,
+        203
+      ],
+      [
+        514,
+        214
+      ],
+      [
+        522,
+        206
+      ],
+      [
+        511,
+        195
+      ],
+      [
+        502,
+        189
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0480 face/eye_right/upper_eyelid",
+    "page": "page-14.png",
+    "crop_centres": [
+      [
+        415,
+        191
+      ],
+      [
+        403,
+        195
+      ],
+      [
+        391,
+        202
+      ],
+      [
+        384,
+        214
+      ],
+      [
+        395,
+        218
+      ],
+      [
+        399,
+        210
+      ],
+      [
+        410,
+        201
+      ],
+      [
+        422,
+        200
+      ],
+      [
+        434,
+        205
+      ],
+      [
+        428,
+        195
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0490 face/eye_left/eyelid_crease",
+    "page": "page-14.png",
+    "crop_centres": [
+      [
+        486,
+        185
+      ],
+      [
+        482,
+        187
+      ],
+      [
+        477,
+        189
+      ],
+      [
+        475,
+        192
+      ],
+      [
+        480,
+        189
+      ],
+      [
+        485,
+        187
+      ],
+      [
+        489,
+        187
+      ],
+      [
+        494,
+        186
+      ],
+      [
+        497,
+        186
+      ],
+      [
+        492,
+        185
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0500 face/eye_right/eyelid_crease",
+    "page": "page-14.png",
+    "crop_centres": [
+      [
+        415,
+        189
+      ],
+      [
+        411,
+        191
+      ],
+      [
+        414,
+        191
+      ],
+      [
+        418,
+        190
+      ],
+      [
+        423,
+        190
+      ],
+      [
+        427,
+        192
+      ],
+      [
+        432,
+        194
+      ],
+      [
+        430,
+        192
+      ],
+      [
+        425,
+        190
+      ],
+      [
+        421,
+        189
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0530 hair/front_side_hair_right",
+    "page": "page-14.png",
+    "crop_centres": [
+      [
+        422,
+        92
+      ],
+      [
+        371,
+        134
+      ],
+      [
+        356,
+        188
+      ],
+      [
+        380,
+        241
+      ],
+      [
+        387,
+        296
+      ],
+      [
+        405,
+        350
+      ],
+      [
+        396,
+        321
+      ],
+      [
+        419,
+        324
+      ],
+      [
+        392,
+        271
+      ],
+      [
+        408,
+        234
+      ],
+      [
+        384,
+        184
+      ],
+      [
+        411,
+        129
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0540 hair/front_side_hair_left",
+    "page": "page-15.png",
+    "crop_centres": [
+      [
+        468,
+        79
+      ],
+      [
+        452,
+        101
+      ],
+      [
+        498,
+        112
+      ],
+      [
+        519,
+        160
+      ],
+      [
+        522,
+        208
+      ],
+      [
+        510,
+        240
+      ],
+      [
+        520,
+        260
+      ],
+      [
+        505,
+        286
+      ],
+      [
+        534,
+        243
+      ],
+      [
+        549,
+        195
+      ],
+      [
+        543,
+        147
+      ],
+      [
+        518,
+        99
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0550 hair/bangs",
+    "page": "page-15.png",
+    "crop_centres": [
+      [
+        446,
+        74
+      ],
+      [
+        404,
+        117
+      ],
+      [
+        389,
+        163
+      ],
+      [
+        365,
+        204
+      ],
+      [
+        411,
+        191
+      ],
+      [
+        443,
+        185
+      ],
+      [
+        455,
+        199
+      ],
+      [
+        473,
+        165
+      ],
+      [
+        486,
+        169
+      ],
+      [
+        522,
+        196
+      ],
+      [
+        516,
+        150
+      ],
+      [
+        492,
+        104
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0560 hair/back_hair/cap :: crown",
+    "page": "page-15.png",
+    "crop_centres": [
+      [
+        443,
+        62
+      ],
+      [
+        409,
+        73
+      ],
+      [
+        376,
+        100
+      ],
+      [
+        375,
+        114
+      ],
+      [
+        409,
+        100
+      ],
+      [
+        443,
+        94
+      ],
+      [
+        477,
+        95
+      ],
+      [
+        511,
+        105
+      ],
+      [
+        545,
+        121
+      ],
+      [
+        542,
+        106
+      ],
+      [
+        512,
+        76
+      ],
+      [
+        478,
+        63
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0570 face/eyebrow_left",
+    "page": "page-15.png",
+    "crop_centres": [
+      [
+        483,
+        166
+      ],
+      [
+        475,
+        169
+      ],
+      [
+        477,
+        169
+      ],
+      [
+        485,
+        168
+      ],
+      [
+        494,
+        169
+      ],
+      [
+        502,
+        171
+      ],
+      [
+        510,
+        175
+      ],
+      [
+        509,
+        173
+      ],
+      [
+        501,
+        169
+      ],
+      [
+        493,
+        167
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0580 face/eyebrow_right",
+    "page": "page-16.png",
+    "crop_centres": [
+      [
+        421,
+        169
+      ],
+      [
+        413,
+        171
+      ],
+      [
+        404,
+        175
+      ],
+      [
+        396,
+        179
+      ],
+      [
+        403,
+        177
+      ],
+      [
+        412,
+        173
+      ],
+      [
+        420,
+        171
+      ],
+      [
+        429,
+        171
+      ],
+      [
+        437,
+        172
+      ],
+      [
+        431,
+        169
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+    "page": "page-16.png",
+    "crop_centres": [
+      [
+        509,
+        1527
+      ],
+      [
+        509,
+        1527
+      ],
+      [
+        509,
+        1528
+      ],
+      [
+        510,
+        1528
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "page": "page-16.png",
+    "crop_centres": [
+      [
+        468,
+        1393
+      ],
+      [
+        483,
+        1445
+      ],
+      [
+        481,
+        1498
+      ],
+      [
+        477,
+        1550
+      ],
+      [
+        472,
+        1603
+      ],
+      [
+        517,
+        1629
+      ],
+      [
+        548,
+        1584
+      ],
+      [
+        541,
+        1531
+      ],
+      [
+        542,
+        1479
+      ],
+      [
+        551,
+        1426
+      ],
+      [
+        543,
+        1411
+      ],
+      [
+        508,
+        1440
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "page": "page-16.png",
+    "crop_centres": [
+      [
+        462,
+        1393
+      ],
+      [
+        422,
+        1439
+      ],
+      [
+        382,
+        1407
+      ],
+      [
+        382,
+        1431
+      ],
+      [
+        390,
+        1482
+      ],
+      [
+        389,
+        1534
+      ],
+      [
+        383,
+        1586
+      ],
+      [
+        414,
+        1628
+      ],
+      [
+        459,
+        1601
+      ],
+      [
+        454,
+        1549
+      ],
+      [
+        450,
+        1498
+      ],
+      [
+        449,
+        1446
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+    "page": "page-17.png",
+    "crop_centres": [
+      [
+        510,
+        1511
+      ],
+      [
+        510,
+        1515
+      ],
+      [
+        510,
+        1519
+      ],
+      [
+        510,
+        1523
+      ],
+      [
+        510,
+        1525
+      ],
+      [
+        511,
+        1521
+      ],
+      [
+        511,
+        1517
+      ],
+      [
+        510,
+        1512
+      ],
+      [
+        510,
+        1504
+      ],
+      [
+        510,
+        1506
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "page": "page-17.png",
+    "crop_centres": [
+      [
+        509,
+        1461
+      ],
+      [
+        504,
+        1469
+      ],
+      [
+        499,
+        1477
+      ],
+      [
+        501,
+        1486
+      ],
+      [
+        505,
+        1494
+      ],
+      [
+        510,
+        1503
+      ],
+      [
+        514,
+        1495
+      ],
+      [
+        518,
+        1487
+      ],
+      [
+        521,
+        1478
+      ],
+      [
+        516,
+        1470
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "page": "page-17.png",
+    "crop_centres": [
+      [
+        510,
+        1506
+      ],
+      [
+        509,
+        1507
+      ],
+      [
+        508,
+        1508
+      ],
+      [
+        508,
+        1509
+      ],
+      [
+        508,
+        1510
+      ],
+      [
+        509,
+        1512
+      ],
+      [
+        510,
+        1512
+      ],
+      [
+        511,
+        1511
+      ],
+      [
+        512,
+        1510
+      ],
+      [
+        512,
+        1509
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0650 legs/leg_left/boot_gem_chain/round_bead",
+    "page": "page-17.png",
+    "crop_centres": [
+      [
+        510,
+        1516
+      ],
+      [
+        509,
+        1517
+      ],
+      [
+        508,
+        1518
+      ],
+      [
+        509,
+        1519
+      ],
+      [
+        509,
+        1520
+      ],
+      [
+        510,
+        1520
+      ],
+      [
+        511,
+        1520
+      ],
+      [
+        512,
+        1519
+      ],
+      [
+        512,
+        1518
+      ],
+      [
+        512,
+        1517
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0660 legs/leg_right/boot_gem",
+    "page": "page-18.png",
+    "crop_centres": [
+      [
+        419,
+        1462
+      ],
+      [
+        414,
+        1470
+      ],
+      [
+        409,
+        1478
+      ],
+      [
+        411,
+        1486
+      ],
+      [
+        415,
+        1495
+      ],
+      [
+        420,
+        1503
+      ],
+      [
+        425,
+        1495
+      ],
+      [
+        430,
+        1486
+      ],
+      [
+        432,
+        1478
+      ],
+      [
+        426,
+        1470
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  },
+  {
+    "layer": "0670 legs/leg_right/boot_flower_ornament",
+    "page": "page-18.png",
+    "crop_centres": [
+      [
+        420,
+        1525
+      ],
+      [
+        409,
+        1532
+      ],
+      [
+        401,
+        1544
+      ],
+      [
+        394,
+        1554
+      ],
+      [
+        403,
+        1561
+      ],
+      [
+        414,
+        1564
+      ],
+      [
+        424,
+        1564
+      ],
+      [
+        434,
+        1556
+      ],
+      [
+        432,
+        1548
+      ],
+      [
+        431,
+        1536
+      ]
+    ],
+    "scale": 4,
+    "rows": [
+      "reference context",
+      "native solo",
+      "all upper layers hidden"
+    ],
+    "note": "hidden-completion reference positions may contain occluders and are not pixel targets"
+  }
+]

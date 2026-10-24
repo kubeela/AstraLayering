@@ -1,0 +1,41 @@
+{
+  "index": 48,
+  "id": "arms/arm_right/forearm",
+  "key": "part-layering/arms/arm_right/forearm",
+  "family": "人物",
+  "group": "arms",
+  "label": "角色右前臂",
+  "prompt": "right forearm",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.7734375,
+  "seconds": 0.0775,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 9599,
+  "instances": [
+    {
+      "file": "assembled/48/instance-01.png",
+      "score": 0.7734375,
+      "box_xyxy": [
+        221.2512969970703,
+        527.3448486328125,
+        350.759521484375,
+        756.9889526367188
+      ],
+      "area_pixels": 9599
+    }
+  ],
+  "crop_bbox": [
+    205,
+    513,
+    368,
+    774
+  ],
+  "status": "detected",
+  "card": "assembled/48/card.jpg",
+  "mask": "assembled/48/mask.png",
+  "cutout": "assembled/48/cutout.png",
+  "overlay": "assembled/48/overlay.jpg"
+}

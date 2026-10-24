@@ -1,0 +1,18 @@
+[
+  {
+    "part": "hair/back_hair/long_right",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/upper-owned/hair/back_hair/long_right.png",
+    "source_visible_pixels": 1114,
+    "ownership": "actual 70-layer top owner; all higher part footprints excluded by3px; source referencealpha>220; no occluded source pixels",
+    "selection_feather_px": 7,
+    "hidden_surface": "retained native09 repaint"
+  },
+  {
+    "part": "hair/back_hair/long_left",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/upper-owned/hair/back_hair/long_left.png",
+    "source_visible_pixels": 2865,
+    "ownership": "actual 70-layer top owner; all higher part footprints excluded by3px; source referencealpha>220; no occluded source pixels",
+    "selection_feather_px": 7,
+    "hidden_surface": "retained native09 repaint"
+  }
+]

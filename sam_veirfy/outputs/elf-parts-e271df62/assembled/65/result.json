@@ -1,0 +1,52 @@
+{
+  "index": 65,
+  "id": "legs/leg_right/boot_flower_ornament",
+  "key": "part-layering/legs/leg_right/boot_flower_ornament",
+  "family": "人物",
+  "group": "legs",
+  "label": "角色右靴上花叶饰簇",
+  "prompt": "right flower ornament on boot",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 2,
+  "max_score": 0.93359375,
+  "seconds": 0.0827,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 27383,
+  "instances": [
+    {
+      "file": "assembled/65/instance-01.png",
+      "score": 0.67578125,
+      "box_xyxy": [
+        366.35809326171875,
+        1378.4530029296875,
+        457.7952880859375,
+        1621.799560546875
+      ],
+      "area_pixels": 13712
+    },
+    {
+      "file": "assembled/65/instance-02.png",
+      "score": 0.93359375,
+      "box_xyxy": [
+        465.3226623535156,
+        1380.643310546875,
+        559.0809936523438,
+        1621.3487548828125
+      ],
+      "area_pixels": 13671
+    }
+  ],
+  "crop_bbox": [
+    347,
+    1359,
+    578,
+    1642
+  ],
+  "status": "detected",
+  "card": "assembled/65/card.jpg",
+  "mask": "assembled/65/mask.png",
+  "cutout": "assembled/65/cutout.png",
+  "overlay": "assembled/65/overlay.jpg"
+}

@@ -20,6 +20,7 @@ import { followNativeLog } from '../codex/native-log.ts';
 import { resolvePatchedAgv } from './agv-patch.ts';
 import { AgentLog } from '../codex/agent-log.ts';
 import { resolveRunsDirectory } from '../paths.ts';
+import { withNodePath } from '../process-environment.ts';
 
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
@@ -104,7 +105,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     await mkdir(data, { recursive: true, mode: 0o700 });
     // Some CLI releases ignore their config-directory overrides for native history.
     // Give only the child a private home; the host environment and user config stay untouched.
-    const env = { ...settings.codex.env, HOME: join(data, 'home'), USERPROFILE: join(data, 'home'), TMPDIR: join(log.directory, 'tmp'),
+    const env = { ...withNodePath(settings.codex.env),
+      HOME: join(data, 'home'), USERPROFILE: join(data, 'home'), TMPDIR: join(log.directory, 'tmp'),
       XDG_CONFIG_HOME: join(data, 'config'), XDG_DATA_HOME: join(data, 'data'), XDG_STATE_HOME: join(data, 'state'), XDG_CACHE_HOME: join(data, 'cache'),
       CLAUDE_CONFIG_DIR: join(data, 'claude'), CLAUDE_CODE_TMPDIR: join(log.directory, 'tmp'),
       ANTIGRAVITY_APP_DATA_DIR: join(data, 'home/.gemini/antigravity-cli'), JETSKI_APP_DATA_DIR: join(data, 'home/.gemini/antigravity-cli'),

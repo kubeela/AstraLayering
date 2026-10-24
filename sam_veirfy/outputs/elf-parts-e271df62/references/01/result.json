@@ -1,0 +1,41 @@
+{
+  "index": 1,
+  "id": "face/face_base",
+  "key": "part-layering/face/face_base",
+  "family": "人物",
+  "group": "face",
+  "label": "脸底",
+  "prompt": "face",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 1,
+  "max_score": 0.8671875,
+  "seconds": 0.2393,
+  "peak_allocated_bytes": 5643546112,
+  "area_pixels": 10978,
+  "instances": [
+    {
+      "file": "references/01/instance-01.png",
+      "score": 0.8671875,
+      "box_xyxy": [
+        389.50970458984375,
+        164.3162078857422,
+        522.287841796875,
+        293.1007995605469
+      ],
+      "area_pixels": 10978
+    }
+  ],
+  "crop_bbox": [
+    380,
+    152,
+    532,
+    305
+  ],
+  "status": "detected",
+  "card": "references/01/card.jpg",
+  "mask": "references/01/mask.png",
+  "cutout": "references/01/cutout.png",
+  "overlay": "references/01/overlay.jpg"
+}

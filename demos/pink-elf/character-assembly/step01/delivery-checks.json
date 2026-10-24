@@ -1,0 +1,27 @@
+{
+  "size": [
+    932,
+    1688
+  ],
+  "layer_types": {
+    "paintlayer": 102,
+    "transparencymask": 3
+  },
+  "kra_mergedimage_png_reopened_rgba_identical": true,
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "fully_transparent_pixels": 978122,
+  "opaque_pixels": 389336,
+  "input_sha256_preserved": {
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step03/character-dressup-base.kra": true,
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step02/clothing-soft-edges.kra": true,
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering/references/simplified-subject.png": true
+  },
+  "output_sha256": {
+    "character-assembled.kra": "c154716de18ef5fa8325d08bc9df9897cb90cebf0a712e2cce11fa536a3f7907",
+    "character-assembled.png": "5a474ff15c80df3a45f1fffd47d66b2aac5264af2cdf1c7657ddca8f40dc4228"
+  },
+  "final_diagnostics": "pixel-review/e220afcf-3fef-4953-a171-13be64b1d797/differences.json"
+}

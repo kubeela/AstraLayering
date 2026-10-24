@@ -1,0 +1,14 @@
+{
+  "logicalPart": "trailing_skirt_image_right/short_drape_left",
+  "frontFoldDepth": 10,
+  "backFaceDepth": 8,
+  "newlyPaintedRoot": [
+    692,
+    881,
+    719,
+    888
+  ],
+  "existingDepthPixelsReassigned": 12,
+  "noLongTrainTextureCopied": true,
+  "reason": "After trimming the protruding 8, the own pale flip neck had a tiny omitted contact strip; extend own cloth in 10 and keep 8/10 complementary."
+}

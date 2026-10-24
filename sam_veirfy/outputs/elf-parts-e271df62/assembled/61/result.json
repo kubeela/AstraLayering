@@ -1,0 +1,41 @@
+{
+  "index": 61,
+  "id": "legs/leg_left/boot_gem_chain/flexible_connector",
+  "key": "part-layering/legs/leg_left/boot_gem_chain/flexible_connector",
+  "family": "人物",
+  "group": "legs",
+  "label": "角色左靴上柔性连接链",
+  "prompt": "left gemstone chain connector on boot",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "assembled",
+  "source": "assembled",
+  "count": 1,
+  "max_score": 0.62890625,
+  "seconds": 0.0786,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 13708,
+  "instances": [
+    {
+      "file": "assembled/61/instance-01.png",
+      "score": 0.62890625,
+      "box_xyxy": [
+        366.3108215332031,
+        1379.2515869140625,
+        457.764404296875,
+        1621.4818115234375
+      ],
+      "area_pixels": 13708
+    }
+  ],
+  "crop_bbox": [
+    347,
+    1363,
+    475,
+    1642
+  ],
+  "status": "detected",
+  "card": "assembled/61/card.jpg",
+  "mask": "assembled/61/mask.png",
+  "cutout": "assembled/61/cutout.png",
+  "overlay": "assembled/61/overlay.jpg"
+}

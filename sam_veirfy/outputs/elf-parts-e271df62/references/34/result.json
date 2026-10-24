@@ -1,0 +1,41 @@
+{
+  "index": 34,
+  "id": "head_accessories/left_earring",
+  "key": "part-layering/head_accessories/left_earring",
+  "family": "人物",
+  "group": "head_accessories",
+  "label": "角色左耳饰",
+  "prompt": "left earring",
+  "groups_file": "demos\\pink-elf\\part-layering\\groups.json",
+  "case": "references",
+  "source": "body",
+  "count": 1,
+  "max_score": 0.7109375,
+  "seconds": 0.0774,
+  "peak_allocated_bytes": 5644073472,
+  "area_pixels": 14649,
+  "instances": [
+    {
+      "file": "references/34/instance-01.png",
+      "score": 0.7109375,
+      "box_xyxy": [
+        367.5901184082031,
+        1378.3521728515625,
+        462.2671813964844,
+        1630.4381103515625
+      ],
+      "area_pixels": 14649
+    }
+  ],
+  "crop_bbox": [
+    348,
+    1357,
+    482,
+    1650
+  ],
+  "status": "detected",
+  "card": "references/34/card.jpg",
+  "mask": "references/34/mask.png",
+  "cutout": "references/34/cutout.png",
+  "overlay": "references/34/overlay.jpg"
+}
