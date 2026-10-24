@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { AgentCallError, AgentRuntime, defaultAgentConcurrency, imageBlockedError, retryableAgentError } from '../../shared/codex/agent-runtime.ts';
+import { AgentCallError, AgentRuntime, defaultAgentConcurrency, agentErrorKind, retryableAgentError } from '../../shared/codex/agent-runtime.ts';
 
 test('独立运行层默认限制 3 个调用，失败也释放位置', async () => {
   assert.equal(defaultAgentConcurrency, 3);
@@ -83,8 +83,10 @@ test('只恢复可重试的通道错误，不重试认证、额度、参数、�
   // 内容审查拒绝虽以 stream disconnected 开头，原会话重放只会重复失败，交给步骤层新建会话。
   const blocked = new AgentCallError('stream disconnected before completion: Image processing blocked due to content policy violation.');
   assert.equal(retryableAgentError(blocked), false);
-  assert.equal(imageBlockedError(new Error('轮廓绘制失败', { cause: blocked })), true);
-  assert.equal(imageBlockedError(new AgentCallError('stream disconnected before completion')), false);
+  assert.equal(agentErrorKind(blocked), 'blocked');
+  assert.equal(agentErrorKind(new Error('轮廓绘制失败', { cause: blocked })), 'blocked');
+  assert.equal(agentErrorKind(new AgentCallError('stream disconnected before completion')), 'transient');
+  assert.equal(agentErrorKind(new AgentCallError('quota exceeded 503')), 'fatal');
   assert.equal(retryableAgentError(new Error('server overloaded')), false);
   assert.equal(retryableAgentError(new DOMException('cancelled', 'AbortError')), false);
   for (const value of [0, -1, 1.2, NaN]) assert.throws(() => new AgentRuntime(value), /正整数/);

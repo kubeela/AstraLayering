@@ -11,7 +11,7 @@ import { dirname, join } from 'node:path';
 import type { GroupContext } from './layering-types.ts';
 import { writeAtomic } from './groups.ts';
 import type { Harness } from '../agents/models.ts';
-import { imageBlockedError } from '../codex/agent-runtime.ts';
+import { agentErrorKind } from '../codex/agent-runtime.ts';
 
 // 上游敏感判定不稳定：同一输入有时通过、有时 image blocked。每次完整重试都清理草稿、
 // 观察图和 threadId，用新会话从头绘制；有上限，用尽后如实报错。
@@ -78,7 +78,7 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     for (let restart = 0; ; restart++) {
       try { return await operation(); }
       catch (error) {
-        if (!imageBlockedError(error) || restart >= maxImageBlockedRestarts) throw error;
+        if (agentErrorKind(error) !== 'blocked' || restart >= maxImageBlockedRestarts) throw error;
         await restartGroup(context, error);
       }
     }

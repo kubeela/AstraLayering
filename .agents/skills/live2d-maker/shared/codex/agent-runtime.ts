@@ -19,41 +19,51 @@ export class AgentCallError extends Error {
   }
 }
 
-// 上游对图片的内容审查拒绝（经 LiteLLM 透传补丁可见）。它常以 stream disconnected 开头，
-// 但在原会话内重放同一批历史图片只会重复失败；由步骤层清理产物后新建会话重试。
-export function imageBlockedError(error: unknown): boolean {
+// 调用失败分三类，先排除不可恢复的，再认定临时故障：
+// - blocked：上游内容审查拒绝图片（经 LiteLLM 透传补丁可见）。常以 stream disconnected 开头，
+//   但原会话重放同一批历史图片只会再被拒；不在此重试，交调用方决定（零件轮廓会清理产物后换新会话）。
+// - fatal：认证、额度、请求/上下文、单次图片上限，以及本地工具、绘图和文件校验异常。直接报错。
+// - transient：容量、5xx、429 速率限制与断流。AgentRuntime 在原会话内退避重试。
+export type AgentErrorKind = 'transient' | 'blocked' | 'fatal';
+
+const contentBlocked = /image (?:processing |input )?blocked|blocked due to content policy|content[\s_-]*policy[\s_-]*violation/i;
+// 即使带 429/5xx 状态，也可能是额度耗尽、认证失败或输入本身有误。
+const accountOrInput = /quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i;
+const imageCount = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i;
+const throughput = /\brate[\s_-]*limit\b|\bper\s+(?:second|minute|hour|day)\b/i;
+const transientCodes = new Set(['serverOverloaded', 'server_overloaded', 'server_is_overloaded', 'serverError', 'internalServerError',
+  'responseStreamDisconnected', 'responseStreamConnectionFailed', 'httpConnectionFailed', 'responseTooManyFailedAttempts', 'rateLimitExceeded']);
+// SDK 流错误只提供 message。
+const transientMessage = /selected model is at capacity|server.*overload|currently experiencing high demand|service unavailable|\b50[0234]\b|stream disconnected|stream idle timeout|websocket.*closed|ECONNRESET|ETIMEDOUT|timeout awaiting response headers|EAI_AGAIN|fetch failed|too many requests|rate limit exceeded/i;
+
+function causeMessages(error: unknown): string[] {
+  const texts: string[] = [];
   for (let current = error, depth = 0; current && depth < 5; current = (current as { cause?: unknown }).cause, depth++) {
-    const text = current instanceof Error ? current.message : String(current);
-    if (/image (?:processing |input )?blocked|blocked due to content policy|content[\s_-]*policy[\s_-]*violation/i.test(text)) return true;
+    texts.push(current instanceof Error ? current.message : String(current));
   }
-  return false;
+  return texts;
 }
 
-export function retryableAgentError(error: unknown): boolean {
-  // 只处理调用通道报告的错误，不能把绘图/工具/文件校验异常当成服务过载。
-  if (!(error instanceof AgentCallError)) return false;
-  if (imageBlockedError(error)) return false;
-  // Even a structured 429 can describe exhausted credit or an input image cap.
-  if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i.test(error.message)) return false;
-  const imageCountLimit = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i.test(error.message);
-  const throughputLimit = /\brate[\s_-]*limit\b|\bper\s+(?:second|minute|hour|day)\b/i.test(error.message);
-  // A service's image rate limit is temporary; a per-request input cap is not.
-  if (imageCountLimit && (!throughputLimit || /\bper\s+request\b/i.test(error.message))) return false;
-  const info = error.info;
+export function agentErrorKind(error: unknown): AgentErrorKind {
+  // 步骤层可能再包一层错误，审查拒绝沿 cause 链识别。
+  if (causeMessages(error).some(text => contentBlocked.test(text))) return 'blocked';
+  // 只信任调用通道报告的错误，不把绘图、工具或文件校验异常当成服务过载。
+  if (!(error instanceof AgentCallError)) return 'fatal';
+  const { message, info } = error;
+  if (accountOrInput.test(message)) return 'fatal';
+  // 服务的图片速率限制会过去，单次请求的图片数量上限不会。
+  if (imageCount.test(message) && (!throughput.test(message) || /\bper\s+request\b/i.test(message))) return 'fatal';
   const code = typeof info === 'string' ? info : info && typeof info === 'object' ? Object.keys(info)[0] : undefined;
-  if (code) {
-    if (['serverOverloaded', 'server_overloaded', 'server_is_overloaded', 'serverError', 'internalServerError',
-      'responseStreamDisconnected', 'responseStreamConnectionFailed', 'httpConnectionFailed', 'responseTooManyFailedAttempts', 'rateLimitExceeded'].includes(code)) {
-      const detail = info && typeof info === 'object' ? (info as Record<string, any>)[code] : undefined;
-      const status = detail?.httpStatusCode;
-      // 401/403/400 等不是重连就能解决的问题；429、5xx 和无 HTTP 状态的断流才重试。
-      return status == null || status === 429 || (status >= 500 && status <= 599);
-    }
-    if (code !== 'other') return false;
+  if (code && code !== 'other') {
+    if (!transientCodes.has(code)) return 'fatal';
+    const status = typeof info === 'object' ? (info as Record<string, { httpStatusCode?: number } | undefined>)[code]?.httpStatusCode : undefined;
+    // 400/401/403 等重连无法解决；429、5xx 和无 HTTP 状态的断流才重试。
+    return status == null || status === 429 || (status >= 500 && status <= 599) ? 'transient' : 'fatal';
   }
-  // SDK 流错误只提供 message；先排除需要用户处理的认证、额度和输入错误。
-  return /selected model is at capacity|server.*overload|currently experiencing high demand|service unavailable|\b50[0234]\b|stream disconnected|stream idle timeout|websocket.*closed|ECONNRESET|ETIMEDOUT|timeout awaiting response headers|EAI_AGAIN|fetch failed|too many requests|rate limit exceeded/i.test(error.message);
+  return transientMessage.test(message) ? 'transient' : 'fatal';
 }
+
+export const retryableAgentError = (error: unknown) => agentErrorKind(error) === 'transient';
 
 export type AgentRetry = { attempt: number; nextAttempt: number; delayMs: number; error: unknown };
 type Waiter = { start(): void; cancel(): void };
