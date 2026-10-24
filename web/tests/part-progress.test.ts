@@ -46,6 +46,8 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'available');
   await f.put('stages/review/body.review.json', { groupId: 'body', reviews: [review] });
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'done');
+  assert.deepEqual((await f.get()).part.groups[0].webReviewRounds.map((round: any) => [round.review.status, round.repair.status]),
+    [['done', 'skipped'], ['skipped', 'skipped']]);
   await f.put('stages/review/body.review.json', { groupId: 'body', reviews: [review, { ...review, verdict: 'revise', candidateHash: 'old', repairedCandidateHash: svgHash(svg) }] });
   assert.equal((await f.get()).part.groups[0].webMessages.review, '已完成');
   assert.match((await f.get()).part.groups[0].webDetails.review, /不再复审/);
@@ -161,6 +163,7 @@ test('running phases require current agent requests; queued groups, old calls an
   value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'done');
   assert.equal(value.part.groups[0].webPhases.review, 'running');
+  assert.equal(value.part.groups[0].webReviewRounds[0].review.status, 'running');
   run.runner.finishedAt = new Date().toISOString(); await saveRun(f.task, run);
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending');
 });

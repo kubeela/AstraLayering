@@ -230,3 +230,9 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .report-image{display:block;margin:10px 0;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--surface-soft)}
 .report-image img{display:block;width:100%;height:auto;max-height:480px;object-fit:contain}
 .report-image span{display:block;text-align:center;font-size:10px;color:var(--muted);margin-top:6px}
+
+/* Part previews share the live-canvas panel, within the group’s horizontal row. */
+.svg-preview-panel{height:auto;min-height:0;align-self:stretch}
+.svg-preview-panel .live-kra-artifacts .artifact-image img{max-height:none}
+.cycle-phase.skipped-node{flex:0 0 145px;opacity:.65}
+.cycle-phase.skipped-node.collapsed{flex-basis:42px}
