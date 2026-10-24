@@ -15,7 +15,7 @@ const readableArtifact = (path: unknown): path is string => typeof path === 'str
 
 async function readRecords(directory: string) {
   const paths = ['physics.json', 'manual-review.json', 'run.json', 'step01/analysis.json', 'step01/coverage.json',
-    'step02/coverage.json', 'step02/assemblies.json', 'step02/tuning.json', 'step02/result.json', 'step03/findings.json',
+    'step02/coverage.json', 'step02/assemblies.json', 'step02/tuning.json', 'step02/result.json', 'step02/initialization.json', 'step03/findings.json',
     'step03/feedback.json', 'step03/evidence/manifest.json', 'step03/evidence/frames.json'];
   const records = await Promise.all(paths.map(path => jsonFile(directory, 'physics/' + path)));
   return Object.fromEntries(paths.map((path, i) => [path, records[i]]));
@@ -97,6 +97,7 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
     assemblies: records['step02/assemblies.json']?.configHash === provenance.configHash ? records['step02/assemblies.json']
       : config ? { version: 1, configHash: provenance.configHash, source: 'current-config', groups: groupAssemblies(config) } : null,
     tuning: tuning || null,
+    initialization: records['step02/initialization.json'] || null,
     findings: linkedFindings, feedback: linkedFeedback,
     evidence: manifest ? { ...manifest, runs: list(manifest.runs).map(run => ({ ...run,
       ...(provenance.evidenceMatchesCurrent && readableArtifact(run.plot)

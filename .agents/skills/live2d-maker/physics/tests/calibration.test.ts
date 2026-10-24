@@ -49,3 +49,12 @@ test('每代最多三轮，同一请求恢复复用，几何更新归档旧代',
     const entry=(await json(join(directory,'tuning.json'))).groups[0];assert.equal(entry.history[0].rounds.length,3);assert(!entry.rounds[0].candidates[0].path.startsWith('/'));
   }finally{await rm(directory,{recursive:true,force:true});}
 });
+test('真实模拟中的零运动候选不能被选为认可参考的复现',async()=>{
+ const directory=await mkdtemp(join(tmpdir(),'astra-zero-motion-'));
+ try{
+  const reference=config([strand('a')]),c=structuredClone(reference);c.components[0].response.inputGain=0;c.components[0].response.windGain=0;
+  const assembly=groupAssemblies(c)[0].id,round=(await calibrate(c,directory,assembly,'检查静止不能获胜',[{id:'still',parameters:{a:{response:{outputGain:0}}}}],undefined,reference)).round;
+  assert.equal(round.recommendedCandidate,null);assert(round.candidates.every((v:any)=>!v.eligible));
+  await assert.rejects(selectCandidate(c,directory,assembly,'still','不能用静止换平滑'),/安全检查失败/);
+ }finally{await rm(directory,{recursive:true,force:true});}
+});

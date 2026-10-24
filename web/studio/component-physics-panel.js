@@ -67,10 +67,11 @@ export class ComponentPhysicsLiveRunner extends ComponentPhysicsRunner {
 }
 
 const $=s=>document.querySelector(s);
-const specs={frequencyHz:['摆动节奏',.15,6,.05,'Hz',1,'response'],outputFrequencyHz:['角度过渡',.15,6,.05,'Hz',1,'response'],dampingRatio:['衰减',.03,1.5,.01,'',1,'response'],inputGain:['受力倍率',0,2,.05,'',1,'response'],maxTravel:['最大位移',1,30,1,'%',100,'limits'],maxAngle:['最大摆角',1,45,1,'°',1,'limits'],maxStretch:['最大拉伸',.5,8,.5,'%',100,'limits'],maxCompression:['最大压缩',0,30,1,'%',100,'limits'],maxShear:['最大剪切',1,30,1,'°',1,'limits'],minAreaRatio:['最小面积',30,95,1,'%',100,'limits']};
+const specs={frequencyHz:['摆动节奏',.15,6,.05,'Hz',1,'response'],outputFrequencyHz:['角度过渡',.15,6,.05,'Hz',1,'response'],dampingRatio:['衰减',.03,1.5,.01,'',1,'response'],inputGain:['受力倍率',0,2,.05,'',1,'response'],parentGain:['牵动惯性',0,2,.05,'',1,'response'],parentVelocityLimit:['牵动速度',.1,20,.1,'px/s',1,'response'],outputGain:['摆幅倍率',0,8,.05,'',1,'response'],maxTravel:['最大位移',1,30,1,'%',100,'limits'],maxAngle:['最大摆角',1,45,1,'°',1,'limits'],maxStretch:['最大拉伸',.5,8,.5,'%',100,'limits'],maxCompression:['最大压缩',0,30,1,'%',100,'limits'],maxShear:['最大剪切',1,30,1,'°',1,'limits'],minAreaRatio:['最小面积',30,95,1,'%',100,'limits']};
 export class ComponentPhysicsPanel extends PhysicsPanel {
   constructor(options){
     super(options);
+    const limitRow=document.createElement('label');limitRow.id='component-parent-limit-row';limitRow.className='check';limitRow.innerHTML='<input id="component-parent-limit" type="checkbox">惯性限速';limitRow.title='缓和过快牵动引入的惯性，保留微风与直接扰动。挂点仍完整随动。';$('#component-response').append(limitRow);$('#component-parent-limit').onchange=e=>this.changeComponent('response','parentVelocityLimit',e.target.checked?2:undefined);
     this.breeze=true;this.breezeStrength=.2;this.breezeDirection=0;this.elapsed=0;
     $('#component-wind').onchange=e=>{this.breeze=e.target.checked;this.lastTime=0;};
     $('#component-wind-strength').oninput=e=>{this.breezeStrength=e.target.valueAsNumber/100;$('#component-wind-value').textContent=e.target.value+'%';};
@@ -78,7 +79,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     for(const [key,[label,min,max,step,unit,,group]]of Object.entries(specs)){
       const box=document.createElement('div');box.className='slider';box.innerHTML=`<div class="slider-head"><label>${label}</label><label class="slider-number"><input id="component-number-${key}" type="number" min="${min}" max="${max}" step="${step}" aria-label="${label}"><span>${unit}</span></label></div><input id="component-${key}" type="range" min="${min}" max="${max}" step="${step}" aria-label="${label}">`;
       $('#component-'+group).append(box);
-      for(const id of ['component-'+key,'component-number-'+key])$('#'+id).addEventListener(id.includes('number')?'change':'input',e=>{const n=e.target.valueAsNumber;if(Number.isFinite(n))this.changeComponent(group,key,Math.max(min,Math.min(max,n))/specs[key][5]);});
+      for(const id of ['component-'+key,'component-number-'+key])$('#'+id).addEventListener(id.includes('number')?'change':'input',e=>{const n=e.target.valueAsNumber;if(Number.isFinite(n))this.changeComponent(group,key,Math.max(Number(e.target.min),Math.min(Number(e.target.max),n))/(key==='parentVelocityLimit'?this.config.components.find(c=>c.id===this.selected).authoring.freeLength:specs[key][5]));});
     }
     $('#component-geometry-apply').onclick=()=>{try{const authoring=JSON.parse($('#component-geometry').value);this.changeComponent(null,'authoring',authoring);}catch(e){this.error(e.message);}};
     $('#component-save').onclick=()=>void this.persist();
@@ -188,8 +189,8 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     $('#physics-status').textContent=`${this.bodies.size} 个组件 · ${this.enabled?'已启用':'已关闭'}${this.issues.length?' · '+this.issues.length+' 个来源待确认':''}`;
     for(const id of ['physics-kind','physics-direction'])$('#'+id).closest('label').hidden=true;
     $('#physics-material').closest('section').hidden=true;$('#physics-limits').closest('section').hidden=true;
-    this.options();const c=this.config.components.find(c=>c.id===this.selected);if(!c)return;$('#physics-enabled').checked=c.enabled;
-    for(const[key,[,min,max,,,factor,group]]of Object.entries(specs))for(const id of ['component-'+key,'component-number-'+key]){const el=$('#'+id),output=key==='outputFrequencyHz';if(output)el.closest('.slider').hidden=c.kind!=='pendant';el.value=Number(((c[group][key]??(output?c.response.frequencyHz:0))*factor).toFixed(3));el.style.setProperty('--fill',(Number(el.value)-min)/(max-min)*100+'%');}
+    this.options();const c=this.config.components.find(c=>c.id===this.selected);if(!c)return;$('#physics-enabled').checked=c.enabled;$('#component-parent-limit-row').hidden=c.kind!=='pendant';$('#component-parent-limit').checked=Number.isFinite(c.response.parentVelocityLimit);
+    for(const[key,[,min,max,,,factor,group]]of Object.entries(specs))for(const id of ['component-'+key,'component-number-'+key]){const el=$('#'+id),output=key==='outputFrequencyHz';if(output||key==='parentGain'||key==='parentVelocityLimit')el.closest('.slider').hidden=c.kind!=='pendant';if(key==='outputGain')el.closest('.slider').hidden=c.kind==='cloth';const cap=key==='parentVelocityLimit',scale=cap?c.authoring.freeLength:factor,fallback=output?c.response.frequencyHz:key==='parentGain'?c.response.inputGain:key==='outputGain'?1:cap?2:0;if(cap){el.min=min*scale;el.max=max*scale;el.step=.1;el.disabled=!Number.isFinite(c.response.parentVelocityLimit);}el.value=Number(((c[group][key]??fallback)*scale).toFixed(3));el.style.setProperty('--fill',(Number(el.value)/scale-min)/(max-min)*100+'%');}
     if(document.activeElement!==$('#component-geometry'))$('#component-geometry').value=JSON.stringify(c.authoring,null,2);
     $('#component-info').textContent=`${c.kind==='strand'?'连续发束 / 飘带':c.kind==='cloth'?'布片':'刚性挂件'} · ${c.layerRefs.length} 层共用场 · 自由段 ${c.authoring.freeLength.toFixed(1)} px`;
     $('#component-save').disabled=!this.owner.project?.dir||this.busy();for(const id of ['physics-pause','physics-step','physics-pulse'])$('#'+id).disabled=!this.enabled||this.busy();$('#physics-demo').disabled=false;$('#physics-pause').textContent=this.paused?'继续':'暂停';this.stats();this.overlay();

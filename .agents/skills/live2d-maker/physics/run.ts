@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { copyFile, readFile, stat, rm } from 'node:fs/promises';
 import { pipelineDirectory, taskDirectory } from '../shared/paths.ts';
 import { acquireTaskLock } from '../workflow/state.ts';
@@ -11,7 +11,8 @@ import { validateFindings, configHash } from './evidence.ts';
 import {physicsEnvironment} from './environment.ts';
 import {validateCalibration} from './calibration.ts';
 import {roleAgent,dispatchRepair} from './feedback.ts';
-export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'all'},dependencies:Dependencies={}) {
+import {readReference,validateReferenceCoverage,validateReferenceReview} from './reference.ts';
+export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'all';referencePhysics?:string},dependencies:Dependencies={}) {
   const profile=options.profile??'primary';if(!['primary','all'].includes(profile))throw Error('物理范围必须为 primary 或 all');
   const directory=pipelineDirectory(options.name,'physics',options.dir??dependencies.runsDirectory);
   const renderedSource=async()=>await optional(join(directory,'preview/catalog.json'))?join(directory,'preview'):join(directory,'source');
@@ -21,13 +22,13 @@ export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'a
     try{await validateFindings(await json(join(directory,'step03/physics.json')),join(directory,'step03/evidence'),await json(join(directory,'step03/findings.json')),await renderedSource());}
     catch(e){await rm(join(directory,'step03/.completed'),{force:true});options.progress?.('step03：现有复核需更新，保留旧证据并重新复核：'+(e as Error).message);}
   }
-  const pipeline:KritaPipeline<PhysicsInput>={id:'physics',steps,resolveInput:(name,root)=>resolveInput(name,root,profile),validateInput:(v):v is PhysicsInput=>!!v&&typeof v==='object'&&'document'in v&&'profile'in v,inputDirectories:i=>[join(i.task,'character-assembly'),...i.structures.map(dirname)],fingerprintInput:fingerprint,buildPrompt,
+  const pipeline:KritaPipeline<PhysicsInput>={id:'physics',steps,resolveInput:async(name,root)=>({...await resolveInput(name,root,profile),...(options.referencePhysics?{referencePhysics:resolve(options.referencePhysics)}:{})}),validateInput:(v):v is PhysicsInput=>!!v&&typeof v==='object'&&'document'in v&&'profile'in v,inputDirectories:i=>[join(i.task,'character-assembly'),...i.structures.map(dirname)],fingerprintInput:fingerprint,buildPrompt,
     tools:toolsFor,prepareStep:async(output,input,step,krita)=>{if(step.id==='step01')await prepareSource(input,dirname(output),krita.executable);if(step.id==='step03')await prepareProjectionPreview(input,dirname(output),krita.executable);},
     validateDelivery:async(output,input,step)=>{
       const catalog=await json(join(dirname(output),'source/catalog.json'));
-      if(step.id==='step01')await validatePlan(await json(join(output,'analysis.json')),catalog,profile);
+      if(step.id==='step01'){const plan=await json(join(output,'analysis.json'));await validatePlan(plan,catalog,profile);validateReferenceCoverage(plan,await readReference(input),catalog);}
       else if(step.id==='step02'){const config=await json(join(output,'physics.draft.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);await validateCalibration(config,output);}
-      else {const config=await json(join(output,'physics.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);await validateFindings(config,join(output,'evidence'),await json(join(output,'findings.json')));if(config.review?.configHash!==configHash(config))throw Error('发布版本与复核不一致');}
+      else {const config=await json(join(output,'physics.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);const findings=await json(join(output,'findings.json'));await validateFindings(config,join(output,'evidence'),findings);await validateReferenceReview(input,join(output,'evidence'),findings);if(config.review?.configHash!==configHash(config))throw Error('发布版本与复核不一致');}
     },
   };
   const environment=dependencies.environment??physicsEnvironment();
@@ -50,8 +51,8 @@ export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'a
   await put(join(directory,'physics.json'),config);await put(join(taskDirectory(options.name,options.dir??dependencies.runsDirectory),'physics.components-cache.json'),{version:1,components:config.components});
   return result;
 }
-export const help='pnpm physics --name <任务名> --krita <可执行文件> [--dir <绝对运行根目录>] [--profile primary|all] [--dry-run]\n独立读取 assembled；不会要求重跑阴影。产出 physics/physics.json 和三步记录。总入口 --from physics --to physics 或 --physics --physics-profile primary|all。';
-if(import.meta.main){const {values}=parseArgs({options:{name:{type:'string'},dir:{type:'string'},krita:{type:'string'},profile:{type:'string'},'dry-run':{type:'boolean'},help:{type:'boolean'}}});if(values.help)console.log(help);else {
+export const help='pnpm physics --name <任务名> --krita <可执行文件> [--dir <绝对运行根目录>] [--profile primary|all] [--reference-physics <认可配置路径>] [--dry-run]\n独立读取 assembled；参考配置提供明确的初始化和运动目标，必须重新模拟复核，不继承通过状态。产出 physics/physics.json 和三步记录。';
+if(import.meta.main){const {values}=parseArgs({options:{name:{type:'string'},dir:{type:'string'},krita:{type:'string'},profile:{type:'string'},'reference-physics':{type:'string'},'dry-run':{type:'boolean'},help:{type:'boolean'}}});if(values.help)console.log(help);else {
   if(!values.name)throw Error('需要 --name');const controller=new AbortController();for(const s of ['SIGINT','SIGTERM'])process.once(s,()=>controller.abort(Error('物理工作流中断，进度保留')));
-  const release=values['dry-run']?undefined:await acquireTaskLock(taskDirectory(values.name,values.dir));try{console.log(await runWorkflow({name:values.name,dir:values.dir,krita:values.krita,profile:values.profile as any,dryRun:values['dry-run'],signal:controller.signal,progress:console.log}));}finally{await release?.();}
+  const release=values['dry-run']?undefined:await acquireTaskLock(taskDirectory(values.name,values.dir));try{console.log(await runWorkflow({name:values.name,dir:values.dir,krita:values.krita,profile:values.profile as any,referencePhysics:values['reference-physics'],dryRun:values['dry-run'],signal:controller.signal,progress:console.log}));}finally{await release?.();}
 }}

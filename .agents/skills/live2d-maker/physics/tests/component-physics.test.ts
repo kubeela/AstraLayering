@@ -278,6 +278,37 @@ test('bounded pendant output still reports sustained saturation for motion revie
   for(let step=0;step<360;step++){scene.step();assert(b.stats.valid);assert(b.stats.travel<=b.maxDistance+1e-5);limited+=+b.stats.limited;}
   assert(limited>120,'a long plateau at the bound must not disappear from diagnostics');
 });
+test('parent inertia tuning keeps direct impulses and attachment motion independent',()=>{
+ const original=component('pendant'),gentle=structuredClone(original);gentle.response.parentGain=.1;
+ const a=new ComponentScene(config([original])),b=new ComponentScene(config([gentle]));
+ for(const s of [a,b])s.bodies.get('pendant').impulse(100,300,50,0,300);
+ assert.equal(a.bodies.get('pendant').motion.speed,b.bodies.get('pendant').motion.speed,'direct pointer force must retain inputGain');
+ for(const s of [a,b])s.step();
+ for(const s of [a,b]){s.sourcePose.x=10;s.step();assert.deepEqual(s.bodies.get('pendant').pivot,[110,40]);assert(s.bodies.get('pendant').stats.valid);}
+ assert(Math.abs(b.bodies.get('pendant').motion.angle)<Math.abs(a.bodies.get('pendant').motion.angle));
+});
+test('small ornament residual gain retains its parent pose and independent physical state',()=>{
+ const original=component('pendant'),small=structuredClone(original);small.response.outputGain=.2;
+ const a=new ComponentScene(config([original])),b=new ComponentScene(config([small]));
+ for(const s of [a,b]){s.sourcePose.x=1;s.bodies.get('pendant').impulse(100,300,50,0,300);}
+ let difference=false;
+ for(let step=0;step<240;step++){
+  a.step();b.step();const first=a.bodies.get('pendant'),second=b.bodies.get('pendant');
+  assert.equal(first.motion.angle,second.motion.angle);assert.equal(first.motion.speed,second.motion.speed);assert.deepEqual(first.pivot,second.pivot);
+  assert(first.stats.valid&&second.stats.valid);difference ||= first.stats.travel>second.stats.travel*1.5;
+ }
+ assert(difference,'local residual should be smaller without suppressing the parent pose');
+});
+test('inherited inertia budget retains gentle response and limits fast input without detaching the pivot',()=>{
+ const measure=(distance:number,limit?:number)=>{
+  let pivot=[0,0];const body:any={freeLength:100,component:{authoring:{pivot:[0,0]},response:{frequencyHz:1,dampingRatio:.3,inputGain:1,parentVelocityLimit:limit}},scene:{airflow:{x:0}},target:()=>pivot};
+  const p=new InochiPendulum(body);p.step(1/120);pivot=[distance,0];p.step(1/120);assert.deepEqual(body.pivot,pivot);return p.angle;
+ };
+ assert(Math.abs(measure(.01,2)/measure(.01)-1)<.0001,'gentle inherited motion keeps its original gain');
+ assert(Math.abs(measure(10,2))<Math.abs(measure(10))*.2,'a fast input saturates smoothly');
+ const c=component('pendant');c.response.parentVelocityLimit=2;const scene=new ComponentScene(config([c]));scene.sourcePose.x=10;scene.bodies.get(c.id).impulse(100,300,50,0,300);scene.step();assert(scene.bodies.get(c.id).stats.valid);
+ c.response.parentVelocityLimit=0;assert.throws(()=>new ComponentScene(config([c])),/惯性限速/);
+});
 test('motion review rejects invisible response, repeated retreat, jumps and non-decaying motion',()=>{
   const c=component(),good={invalid:0,root:0,fallback:0,limited:0,peak:8,final:.01,maxStep:.3};
   assert.deepEqual(motionIssues('light-brush',c,good),[]);

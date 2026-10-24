@@ -6,6 +6,7 @@
 
 ```bash
 pnpm physics --name <任务名> --krita <可执行文件> --profile primary
+pnpm physics --name <任务名> --krita <可执行文件> --profile all --reference-physics <认可配置.json>
 pnpm start --name <任务名> --from physics --to physics --physics-profile primary --background
 pnpm start --name <任务名> --physics --physics-profile all --background
 ```
@@ -45,7 +46,7 @@ pnpm physics:evidence --name <任务名> --simulate
 pnpm physics:evidence --name <任务名> --test tip-impulse --steps 0,60,96,180,360,960
 ```
 
-以上是证据生成命令。用户预览统一使用 `/studio?project=<任务名>&workspace=physics`，不创建单独试验编辑器。离线采集耗时包含轨迹、图片回读和 PNG 保存，不等于实时帧率。
+以上是证据生成命令。用户预览统一使用 `/studio?project=<任务名>&workspace=physics`，不创建单独试验编辑器。明显退化或未完成候选保留为内部诊断，完成目标和独立复核后再交付用户体验。离线采集耗时包含轨迹、图片回读和 PNG 保存，不等于实时帧率。
 
 离线采集默认使用本地软件渲染。已有 GPU 浏览器可通过 `ASTRA_PHYSICS_RENDER_CDP_URL` 连接，并用 `ASTRA_PHYSICS_RENDER_PORT` 指定经隧道转发到该浏览器的本地工具端口；服务器仍只监听 loopback。每次采集创建并关闭独立浏览器上下文，保留外部浏览器已有页面。manifest 记录实际渲染设备；仍使用共享 character-render shader、原尺寸贴图及完整规范输入；证据渲染直接读取完整记录网格，实时求解一致性独立验证，见 formal 12。
 
@@ -62,6 +63,8 @@ pnpm physics:evidence --name <任务名> --test tip-impulse --steps 0,60,96,180,
 默认 A 为 Sol high，B／C 为 Sol xhigh，分别使用 `layering_agent_physics_analysis_model`、`layering_agent_physics_authoring_model`、`layering_agent_physics_review_model`；已有显式配置优先，见[推荐方案](../references/model-presets.md)。A 保存全部源部件的判断；B 制作并调参；C 使用独立上下文、只读 B 草稿，不能代改绑定或选择候选。越权改写会被检测并恢复，异常版本保留。
 
 B 用 `physics_assemblies` 查看有向支撑的完整装配，再逐组 `physics_calibrate`。baseline 加最多三个 response/material 候选，使用同尺度微风、轻扫、支撑释放；保留原几何、来源和限幅。`physics_select_candidate` 明确选择，`tuning.json` 保存理由与末端／中段／根部曲线。三轮上限按装配与制作代次计算；新来源／几何／求解规则归档旧代。选择独立组不会回滚其它组，后改绑定或参数需重验。
+
+参数初始化和搜索见 [formal 14](../../../../tutorial/live2d-guidance/formal/14-physics-initialization-and-targets.md)。提供 `--reference-physics` 时 A 不得遗漏匹配来源中的已验证活动部件，B 可用同源参考初始化；新角色用类型／长度配方。`physics_autotune` 自动选数值和目标都满足的候选，失败组交模型修正。参考约束峰值与活动 RMS，不能用静止换低加速度分。所有初始化只产生草稿，C 必须重新模拟与看图。
 
 C 的失败通过 `physics_request_repair` 写 `step03/feedback.json`，包含版本指纹、reviewTurn、组件、准则、真实输入／整数步窗口与已查看图片。返回 blocked 后调度器将当前失败版本归档到 `step03/reviews/`，保存 `step02/repair-request.json`，恢复 B 的原 thread，B 修改后再新建 C 会话。每装配最多三轮制作／复核；普通异常、旧反馈、失败的工具调用均不自动触发返修。中断的交接可接续，不删除完整轨迹或重复增加轮次。
 

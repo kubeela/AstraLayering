@@ -15,6 +15,8 @@ import { renderFrames } from './render.ts';
 import { json, optional, put, hash, type PhysicsInput } from './input.ts';
 import { validateMotionScope, coverageReport } from './coverage.ts';
 import {imageSheet} from './images.ts';
+import {referenceSummary,readReference,initializeFromReference,validateReferenceCoverage,validateReferenceReview} from './reference.ts';
+import {initializeConfigParameters,motionPresets,motionPresetVersion} from '../shared/physics-core/motion-presets.js';
 
 function summarizeEvidence(manifest:any,test?:string){
   return {...manifest,runs:manifest.runs.filter((r:any)=>!test||r.test===test).map((r:any)=>({...r,frameSteps:undefined,events:undefined,frameCount:r.frameSteps.length,eventCount:r.events.length,
@@ -69,6 +71,21 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
   const str={type:'string'},arr={type:'array',items:str};
   const getConfig=()=>json(join(pipeline,'step02/physics.draft.json'));
   const renderSource=async()=>await optional(join(pipeline,'preview/catalog.json'))?join(pipeline,'preview'):source;
+  const saveBinding=async(config:any,partial=false)=>{
+    config={...config,kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',review:{status:'draft'}};
+    const catalog=await json(join(source,'catalog.json'));await validateBindings(config,catalog,source);
+    const plan=await json(join(pipeline,'step01/analysis.json'));
+    // Seed matched reference geometry before authoring newly selected parts.
+    // Full save and stage completion still require every selected component.
+    if(partial) {
+      await validateProfile(config,{...plan,components:plan.components.filter((c:any)=>config.components.some((v:any)=>v.id===c.id))},input.profile);
+      if(config.components.some((c:any)=>!plan.components.some((v:any)=>v.id===c.id)))throw Error('参考初始化含分析未选择的组件');
+    } else await validateProfile(config,plan,input.profile);
+    validateReferenceCoverage(plan,await readReference(input),catalog);
+    validatePreservedComponents(config,catalog,await optional(join(input.task,'physics.components-cache.json')));
+    const groups=groupAssemblies(config);await put(join(pipeline,'step02/physics.draft.json'),config);await put(join(pipeline,'step02/assemblies.json'),{version:1,configHash:configHash(config),groups});await put(join(pipeline,'step02/coverage.json'),coverageReport(plan,config));
+    return {saved:true,configHash:configHash(config),components:config.components.length,assemblies:groups};
+  };
   const tools=[
     tool('physics_catalog','默认读取源层/UUID/指纹/原尺寸及简明分组索引。partIds 指定原 part 后返回这些部件及父组的完整连接和造型说明；先索引再按部位查询，不一次灌入所有长说明。无需生图。',{partIds:arr},async({partIds}:any)=>{
       const catalog=await json(join(source,'catalog.json')),structures=await Promise.all(input.structures.map(json)),descriptions=new Map<string,any>();
@@ -88,23 +105,22 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
       const items=await Promise.all(layers.map(async(l:any)=>({label:l?.partPath||'character',bytes:await readFile(join(source,l?l.original:'color.png'))})));
       const sheet=await imageSheet(items);return {success:true,contentItems:[{type:'inputText',text:JSON.stringify({sourcePixelScale:1,tiles:sheet.tiles,layers:layers.map((l:any)=>l||catalog.canvas)})},{type:'inputImage',imageUrl:'data:image/png;base64,'+sheet.image.toString('base64')}]};
     }),
-    tool('physics_save_plan','保存 version:2 分析。parts 每项 id/decision/reason/motion:{family(hair|fabric|accessory|other),region,freedom(free|fixed|follow|uncertain)}；defer 另需 deferCode。components 每项 id/name/kind/priority/sourcePartIds/layerUuids/connection。按实际自由段判断，固定发盖排除，头发和挂件不能整类跳过。',{plan:{type:'object'}},async({plan}:any)=>{await validatePlan(plan,await json(join(source,'catalog.json')),input.profile);await put(join(pipeline,'step01/analysis.json'),plan);const coverage=coverageReport(plan);await put(join(pipeline,'step01/coverage.json'),coverage);return textResult({saved:true,coverage});}),
+    tool('physics_reference','读取显式认可参考的完整绑定／参数与匹配来源。匹配以 UUID 和像素为准，可作为同源初始化；不继承审核通过。无参考时返回 unavailable。',{},async()=>textResult(await referenceSummary(input,await json(join(source,'catalog.json'))))),
+    tool('physics_save_plan','保存 version:2 分析。parts 每项 id/decision/reason/motion:{family(hair|fabric|accessory|other),region,freedom(free|fixed|follow|uncertain)}；defer 另需 deferCode。components 每项 id/name/kind/priority/sourcePartIds/layerUuids/connection。按实际自由段判断，固定发盖排除，头发和挂件不能整类跳过。',{plan:{type:'object'}},async({plan}:any)=>{const catalog=await json(join(source,'catalog.json'));await validatePlan(plan,catalog,input.profile);validateReferenceCoverage(plan,await readReference(input),catalog);await put(join(pipeline,'step01/analysis.json'),plan);const coverage=coverageReport(plan);await put(join(pipeline,'step01/coverage.json'),coverage);return textResult({saved:true,coverage});}),
     tool('physics_save_binding','保存完整组件配置。结构见 skill physics/guide.md，source.canvas、components；每项有 supports、authoring、response、material、limits。不接受仅按图层包围盒摆动。',{config:{type:'object'}},async({config}:any)=>{
-      config={...config,kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',review:{status:'draft'}};
-      const catalog=await json(join(source,'catalog.json'));await validateBindings(config,catalog,source);
-      const plan=await json(join(pipeline,'step01/analysis.json'));
-      await validateProfile(config,plan,input.profile);
-      validatePreservedComponents(config,catalog,await optional(join(input.task,'physics.components-cache.json')));
-      const groups=groupAssemblies(config);await put(join(pipeline,'step02/physics.draft.json'),config);await put(join(pipeline,'step02/assemblies.json'),{version:1,configHash:configHash(config),groups});await put(join(pipeline,'step02/coverage.json'),coverageReport(plan,config));return textResult({saved:true,configHash:configHash(config),components:config.components.length,assemblies:groups});
+      return textResult(await saveBinding(config));
     }),
+    tool('physics_initialize_reference','从同源认可参考初始化绑定草稿。逐 UUID／像素核对；保留固定区、自由段、原图、最大约束和参数。新增分析组件可随后补齐；完整保存及完成阶段仍要求全部组件。不是无参考从零制作，不继承审核。',{},async()=>{const config=await initializeFromReference(input,await json(join(source,'catalog.json')),join(pipeline,'step02'));return textResult(await saveBinding(config,true));}),
+    tool('physics_initialize_parameters','对已制作几何应用通用运动配方。presets 指定组件 ID 到配方 ID 时只初始化这些组件；省略时初始化全部。保持来源、固定区和最大约束，不决定图层范围。',{presets:{type:'object'}},async({presets}:any)=>{const config=initializeConfigParameters(await getConfig(),presets);const result=await saveBinding(config);const previous=await optional(join(pipeline,'step02/initialization.json'));await put(join(pipeline,'step02/initialization.json'),{...previous,version:1,mode:previous?.mode==='explicit-same-source-reference'?'reference-and-geometry-presets':'geometry-aware-presets',motionPresetVersion,initializedComponentIds:presets?Object.keys(presets):config.components.map((c:any)=>c.id),humanAcceptanceInherited:false});return textResult(result);}),
     tool('physics_assemblies','查看完整有向支撑装配与已记录标定。候选必须对完整装配组模拟，不能仅激活所选部件。',{},async()=>textResult({groups:groupAssemblies(await getConfig()),tuning:await optional(join(pipeline,'step02/tuning.json'))})),
-    tool('physics_recipes','读取发束、软带、布片与刚性挂件的起点配方。参数只是候选起点，最大约束与真实几何必须按源图制作。',{},async()=>textResult({recipes})),
+    tool('physics_recipes','读取经认可案例归纳的长度相关运动起点；真实根部／活动范围和最大约束必须按原图制作。',{},async()=>textResult({motionPresetVersion,presets:motionPresets,legacyRecipes:recipes})),
     tool('physics_repair_request','读取独立 reviewer 的返修原因、整数步窗口和当前完整装配组轮次；不得伪造复核通过。',{},async()=>textResult(await optional(join(pipeline,'step02/repair-request.json'))||{pending:false})),
-    tool('physics_calibrate','对完整装配组保留基线与最多三个 response/material 候选，运行一致的微风、轻扫和支撑释放。只调整响应和材质，不放宽限幅。每组最多三轮，返回曲线、指标和建议；尚未自动改草稿。',{assemblyId:str,reason:str,candidates:{type:'array',items:{type:'object'},maxItems:3}},async({assemblyId,reason,candidates}:any,signal:AbortSignal)=>textResult(await calibrate(await getConfig(),join(pipeline,'step02'),assemblyId,reason,candidates,signal))),
+    tool('physics_calibrate','对完整装配组保留基线与最多三个 response/material 候选，运行一致的微风、轻扫和支撑释放。有认可参考时同时约束幅度和持续活动，弱响应／长期回退不能被选择。每组最多三轮，不放宽限幅。',{assemblyId:str,reason:str,candidates:{type:'array',items:{type:'object'},maxItems:3}},async({assemblyId,reason,candidates}:any,signal:AbortSignal)=>textResult(await calibrate(await getConfig(),join(pipeline,'step02'),assemblyId,reason,candidates,signal,(await readReference(input))?.config))),
+    tool('physics_autotune','程序逐完整装配执行一轮有界参数搜索并选择合格候选。有参考时保持 80%–130% 幅度及活动量；失败组原样保留，返回模型修正几何／支撑。不授予视觉通过，之后仍需模拟看图。',{reason:str},async({reason}:any,signal:AbortSignal)=>{let config=await getConfig();const results:any[]=[];const reference=(await readReference(input))?.config;for(const group of groupAssemblies(config).filter(g=>g.enabledComponentIds.length)){signal.throwIfAborted();const result=await calibrate(config,join(pipeline,'step02'),group.id,reason,undefined,signal,reference);const best=result.round.recommendedCandidate;if(best)config=await selectCandidate(config,join(pipeline,'step02'),group.id,best,'程序按数值安全与运动目标选择；等待独立视觉复核');results.push({assemblyId:group.id,selected:best,candidates:result.round.candidates.map((c:any)=>({id:c.id,eligible:c.eligible,score:c.score,issues:c.issues}))});}return textResult({status:results.every(r=>r.selected)?'calibrated':'needs-repair',groups:results});}),
     tool('physics_select_candidate','根据完整装配的响应曲线和实际图像，明确选择标定候选；记录理由并保存草稿。只更新当前装配组，其他组保持原配置。',{assemblyId:str,candidateId:str,reason:str},async({assemblyId,candidateId,reason}:any)=>{const config=await selectCandidate(await getConfig(),join(pipeline,'step02'),assemblyId,candidateId,reason);return textResult({saved:true,configHash:configHash(config)});}),
     tool('physics_simulate','运行 9 组规范输入，每步保存完整网格、姿态残差与约束。改参数后必须重新运行。',{render:{type:'boolean'}},async({render}:any,signal:AbortSignal)=>{
       const config=await getConfig(),manifest=await simulate(config,evidence,signal);
-      if(render!==false)await renderFrames(config,await renderSource(),evidence,manifest.runs.map((r:any)=>({test:r.test,steps:Array.from({length:81},(_,i)=>i*12),modes:['color','lit'],cropSteps:[0,60,96,180,360,960]})),signal);
+      if(render!==false)await renderFrames(config,await renderSource(),evidence,manifest.runs.map((r:any)=>({test:r.test,steps:[...new Set([...Array.from({length:81},(_,i)=>i*12),...(r.durationSteps>960?[r.durationSteps-12,r.durationSteps]:[])])],modes:['color','lit'],cropSteps:[0,60,96,180,360,960]})),signal);
       return textResult(summarizeEvidence(await json(join(evidence,'manifest.json'))));
     }),
     tool('physics_frames','精确重放整数步并输出原尺寸固定取景帧。事件窗用间隔 2 步（60 Hz），疑似顿挫用 1 步；component 可仅截指定局部，完整索引分页读取。',{test:str,component:str,steps:{type:'array',items:{type:'integer'}},modes:arr},async({test,component,steps,modes}:any,signal:AbortSignal)=>{const frames=await renderFrames(await getConfig(),await renderSource(),evidence,[{test,steps,modes:modes||['color','lit','normal','depth'],components:component?[component]:undefined}],signal);return textResult({images:frames.slice(0,24),total:frames.length,index:'physics_evidence_index'});}),
@@ -113,6 +129,16 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
       const manifest=await json(join(evidence,'manifest.json')),frames=await json(join(evidence,'frames.json')),viewed=await optional(join(evidence,'viewed.json'))||[],items:any[]=[],chosen:any[]=[];
       for(const path of paths){const f=frames.find((f:any)=>f.path===path&&f.configHash===manifest.configHash);if(!f)throw Error('图片未在当前证据索引中');const bytes=await readFile(join(evidence,path));items.push({label:path,bytes});chosen.push({...f,path,configHash:manifest.configHash,imageHash:hash(bytes)});}
       const sheet=await imageSheet(items);await put(join(evidence,'viewed.json'),[...viewed,...chosen]);return {success:true,contentItems:[{type:'inputText',text:JSON.stringify({sourcePixelScale:1,tiles:sheet.tiles,frames:chosen})},{type:'inputImage',imageUrl:'data:image/png;base64,'+sheet.image.toString('base64')}]};
+    }),
+    tool('physics_reference_view','用同一规范输入与渲染器查看显式参考（1–8 帧），重新模拟，保存独立来源记录。参考不是通过结论；C 须与当前版的微风 0/180/360/540 步对照自然感。',{test:str,steps:{type:'array',items:{type:'integer'},maxItems:8},component:str,mode:str},async({test,steps,component,mode='color'}:any,signal:AbortSignal)=>{
+      if(!Array.isArray(steps)||!steps.length||steps.length>8)throw Error('一批 1–8 张参考帧');
+      const reference=await readReference(input);if(!reference)throw Error('未配置显式参考');
+      const folder=join(pipeline,'step03/reference-evidence');await simulate(reference.config,folder,signal);
+      const rendered=await renderFrames(reference.config,await renderSource(),folder,[{test,steps,modes:[mode],components:component?[component]:undefined}],signal);
+      const chosen=rendered.filter((f:any)=>f.test===test&&steps.includes(f.step)&&f.mode===mode&&(component?f.component===component:!f.component));
+      const items=await Promise.all(chosen.map(async(f:any)=>{const bytes=await readFile(join(folder,f.path));return {label:'reference / '+f.path,bytes};})),sheet=await imageSheet(items);
+      const viewed=await optional(join(folder,'viewed.json'))||[];await put(join(folder,'viewed.json'),[...viewed,...chosen]);
+      return {success:true,contentItems:[{type:'inputText',text:JSON.stringify({reference:true,sourcePixelScale:1,tiles:sheet.tiles,frames:chosen})},{type:'inputImage',imageUrl:'data:image/png;base64,'+sheet.image.toString('base64')}]};
     }),
     tool('physics_trace','读取精确步的指标、速度峰值、末端与支撑。指定 component 可聚焦；fullMesh=true 可读单组件最多 5 步完整顶点，完整所有步轨迹保留在 gzip JSONL。',{test:str,component:str,fullMesh:{type:'boolean'},steps:{type:'array',items:{type:'integer'}}},async({test,steps,component,fullMesh}:any)=>{
       if(fullMesh&&(!component||steps.length>5))throw Error('完整网格需指定单个组件，最多 5 步');
@@ -137,7 +163,7 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
     }),
     tool('physics_submit_review','逐组件提交六项视觉结论。每项 verdict/reason/images，images 必须通过 physics_view 读取。通过后生成 step03/physics.json。',{findings:{type:'object'}},async({findings}:any)=>{
       const session=await optional(join(pipeline,'step03/review-session.json')),feedback=await optional(join(pipeline,'step03/feedback.json'));if(feedback?.status==='repair-requested'&&feedback.reviewTurn===session?.id)throw Error('当前复核已请求返修，应交回制作 B 后重新独立复核');
-      const config=await getConfig(),manifest=await validateFindings(config,evidence,findings,await renderSource());
+      const config=await getConfig(),manifest=await validateFindings(config,evidence,findings,await renderSource());await validateReferenceReview(input,evidence,findings);
       await put(join(pipeline,'step03/findings.json'),findings);
       config.review={status:'accepted',configHash:manifest.configHash,evidenceVersion:manifest.version,coverage:{...manifest.coverage,aiVisual:'selected-frames',human:'unreviewed'},findings:'step03/findings.json',evidence:'step03/evidence/manifest.json'};
       await put(join(pipeline,'step03/physics.json'),config);if(session)await put(join(pipeline,'step03/feedback.json'),{version:1,status:'accepted',configHash:manifest.configHash,reviewTurn:session.id,createdAt:new Date().toISOString(),items:[],disposition:'accepted'});return textResult({published:true,coverage:config.review.coverage});
@@ -145,7 +171,7 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
     tool('physics_request_repair','独立复核拒收／需要补证据时，记录逐组件 component、criterion、verdict(rejected|needs-evidence)、reason、test、steps、images。返回 blocked；调度器会真正交回 B，保留当前证据。不得改写制作草稿。',{items:{type:'array',items:{type:'object'}}},async({items}:any)=>textResult(await rejectReview(await getConfig(),pipeline,items))),
   ];
   if(!step)return tools;
-  const read=['physics_catalog','physics_source_image'],evidenceTools=['physics_simulate','physics_frames','physics_view','physics_trace','physics_strip','physics_evidence_index','physics_assemblies'];
-  const allowed=step.id==='step01'?[...read,'physics_save_plan']:step.id==='step02'?[...read,...evidenceTools,'physics_save_binding','physics_recipes','physics_repair_request','physics_calibrate','physics_select_candidate']:[...read,...evidenceTools,'physics_submit_review','physics_request_repair'];
+  const read=['physics_catalog','physics_source_image','physics_reference'],evidenceTools=['physics_simulate','physics_frames','physics_view','physics_reference_view','physics_trace','physics_strip','physics_evidence_index','physics_assemblies'];
+  const allowed=step.id==='step01'?[...read,'physics_save_plan']:step.id==='step02'?[...read,...evidenceTools,'physics_save_binding','physics_initialize_reference','physics_initialize_parameters','physics_recipes','physics_repair_request','physics_calibrate','physics_autotune','physics_select_candidate']:[...read,...evidenceTools,'physics_submit_review','physics_request_repair'];
   return tools.filter(t=>allowed.includes(t.name));
 }

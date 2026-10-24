@@ -97,7 +97,8 @@ export async function renderFrames(config:any, source:string, evidence:string, r
     },{config,catalog});
     for(const request of requests) {
       const run=manifest.runs.find((r:any)=>r.test===request.test);if(!run)throw Error('未知证据测试');
-      const steps=[...new Set(request.steps)].sort((a,b)=>a-b);if(steps.length>600||steps.some(n=>!Number.isInteger(n)||n<0||n>960))throw Error('证据帧超出范围');
+      const maximum=manifest.runs.find((r:any)=>r.test===request.test)?.durationSteps??960;
+      const steps=[...new Set(request.steps)].sort((a,b)=>a-b);if(steps.length>600||steps.some(n=>!Number.isInteger(n)||n<0||n>maximum))throw Error('证据帧超出范围');
       const expectedRows=new Map((await traceWindow(evidence,request.test,steps,600)).map((r:any)=>[r.step,r]));
       if(request.modes.some(m=>!['color','lit','normal','depth'].includes(m)))throw Error('无效渲染模式');
       await page.evaluate(()=>{(window as any).evidence.scene.reset();});
