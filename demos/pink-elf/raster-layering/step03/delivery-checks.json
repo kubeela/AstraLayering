@@ -1,0 +1,15 @@
+{
+  "input_sha256": "43e02e0ceeeb8c5434b65b1a6f84a430c0e5994fd6265a6ccbdde541235cbe5c",
+  "kra_sha256": "ae309be9d77d964febc56f3437606437b3ca7473f90e0e38bd2aceb4c0af3ec1",
+  "png_sha256": "899ff6ae8c4240b5d3fa7578525984559472fe0fc80f38e2cd076af75e041008",
+  "png_matches_kra_merged_rgba": true,
+  "size": [
+    932,
+    1688
+  ],
+  "xml_layer_attribute_differences": [],
+  "alpha_extrema": [
+    0,
+    255
+  ]
+}

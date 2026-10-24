@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "waist_bow/long_tail",
+  "beforeHash": "cd6ea5a5effbd533dd1c6fa1dc151339d2d60578a50b630f5af9d2331e3e7587",
+  "afterHash": "74c306d49cd7d15f0951334d109b105f7a321dcc0377ed96d13e9c8defa80086",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "119c1d7ef01ca537a006bf49616ca68ef3b0ea4812b64d2e96a29d0dad23579d"
+    }
+  ]
+}

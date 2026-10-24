@@ -1,0 +1,208 @@
+{
+  "all_parts_inspected": 65,
+  "all_layers_inspected": 70,
+  "mapping": {
+    "hair/back_hair/cap": [
+      "0005 hair/back_hair/cap :: nape_under_roots",
+      "0050 hair/back_hair/cap :: back",
+      "0560 hair/back_hair/cap :: crown"
+    ],
+    "hair/back_hair/long_right": [
+      "0010 hair/back_hair/long_right"
+    ],
+    "hair/back_hair/long_left": [
+      "0020 hair/back_hair/long_left"
+    ],
+    "hair/side_hair_right": [
+      "0030 hair/side_hair_right"
+    ],
+    "hair/side_hair_left": [
+      "0040 hair/side_hair_left"
+    ],
+    "hair/ahoge": [
+      "0045 hair/ahoge"
+    ],
+    "legs/leg_left/foot": [
+      "0055 legs/leg_left/foot :: rear",
+      "0600 legs/leg_left/foot :: front"
+    ],
+    "legs/leg_right/foot": [
+      "0056 legs/leg_right/foot :: rear",
+      "0610 legs/leg_right/foot :: front"
+    ],
+    "legs/leg_right/leg": [
+      "0060 legs/leg_right/leg"
+    ],
+    "legs/leg_left/leg": [
+      "0070 legs/leg_left/leg"
+    ],
+    "pelvis": [
+      "0080 pelvis"
+    ],
+    "arms/arm_left/hand/little_finger": [
+      "0090 arms/arm_left/hand/little_finger"
+    ],
+    "arms/arm_left/hand/ring_finger": [
+      "0100 arms/arm_left/hand/ring_finger"
+    ],
+    "arms/arm_left/hand/middle_finger": [
+      "0110 arms/arm_left/hand/middle_finger"
+    ],
+    "arms/arm_left/hand/index_finger": [
+      "0120 arms/arm_left/hand/index_finger"
+    ],
+    "arms/arm_left/hand/thumb": [
+      "0130 arms/arm_left/hand/thumb"
+    ],
+    "arms/arm_left/hand/palm": [
+      "0140 arms/arm_left/hand/palm"
+    ],
+    "arms/arm_right/hand/little_finger": [
+      "0145 arms/arm_right/hand/little_finger"
+    ],
+    "arms/arm_right/hand/index_finger": [
+      "0150 arms/arm_right/hand/index_finger"
+    ],
+    "arms/arm_right/hand/middle_finger": [
+      "0160 arms/arm_right/hand/middle_finger"
+    ],
+    "arms/arm_right/hand/ring_finger": [
+      "0170 arms/arm_right/hand/ring_finger"
+    ],
+    "arms/arm_right/hand/thumb": [
+      "0180 arms/arm_right/hand/thumb"
+    ],
+    "arms/arm_right/hand/palm": [
+      "0190 arms/arm_right/hand/palm"
+    ],
+    "arms/arm_left/forearm": [
+      "0200 arms/arm_left/forearm"
+    ],
+    "arms/arm_right/forearm": [
+      "0210 arms/arm_right/forearm"
+    ],
+    "arms/arm_left/upper_arm": [
+      "0220 arms/arm_left/upper_arm"
+    ],
+    "arms/arm_right/upper_arm": [
+      "0230 arms/arm_right/upper_arm"
+    ],
+    "neck": [
+      "0240 neck"
+    ],
+    "body/torso": [
+      "0250 body/torso"
+    ],
+    "body/breast": [
+      "0260 body/breast"
+    ],
+    "face/ear_left": [
+      "0270 face/ear_left"
+    ],
+    "face/ear_right": [
+      "0280 face/ear_right"
+    ],
+    "head_accessories/left_earring": [
+      "0290 head_accessories/left_earring"
+    ],
+    "head_accessories/right_earring": [
+      "0300 head_accessories/right_earring"
+    ],
+    "face/face_base": [
+      "0310 face/face_base"
+    ],
+    "face/mouth/mouth_interior": [
+      "0320 face/mouth/mouth_interior"
+    ],
+    "face/mouth/lower_teeth": [
+      "0330 face/mouth/lower_teeth"
+    ],
+    "face/mouth/tongue": [
+      "0340 face/mouth/tongue"
+    ],
+    "face/mouth/upper_teeth": [
+      "0350 face/mouth/upper_teeth"
+    ],
+    "face/mouth/lower_lip": [
+      "0360 face/mouth/lower_lip"
+    ],
+    "face/mouth/upper_lip": [
+      "0370 face/mouth/upper_lip"
+    ],
+    "face/nose": [
+      "0380 face/nose"
+    ],
+    "face/eye_left/sclera": [
+      "0390 face/eye_left/sclera"
+    ],
+    "face/eye_right/sclera": [
+      "0400 face/eye_right/sclera"
+    ],
+    "face/eye_left/iris": [
+      "0410 face/eye_left/iris"
+    ],
+    "face/eye_right/iris": [
+      "0420 face/eye_right/iris"
+    ],
+    "face/eye_left/highlight": [
+      "0430 face/eye_left/highlight"
+    ],
+    "face/eye_right/highlight": [
+      "0440 face/eye_right/highlight"
+    ],
+    "face/eye_left/lower_eyelid": [
+      "0450 face/eye_left/lower_eyelid"
+    ],
+    "face/eye_right/lower_eyelid": [
+      "0460 face/eye_right/lower_eyelid"
+    ],
+    "face/eye_left/upper_eyelid": [
+      "0470 face/eye_left/upper_eyelid"
+    ],
+    "face/eye_right/upper_eyelid": [
+      "0480 face/eye_right/upper_eyelid"
+    ],
+    "face/eye_left/eyelid_crease": [
+      "0490 face/eye_left/eyelid_crease"
+    ],
+    "face/eye_right/eyelid_crease": [
+      "0500 face/eye_right/eyelid_crease"
+    ],
+    "hair/front_side_hair_right": [
+      "0530 hair/front_side_hair_right"
+    ],
+    "hair/front_side_hair_left": [
+      "0540 hair/front_side_hair_left"
+    ],
+    "hair/bangs": [
+      "0550 hair/bangs"
+    ],
+    "face/eyebrow_left": [
+      "0570 face/eyebrow_left"
+    ],
+    "face/eyebrow_right": [
+      "0580 face/eyebrow_right"
+    ],
+    "legs/leg_left/boot_gem_chain/flexible_connector": [
+      "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+      "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible"
+    ],
+    "legs/leg_left/boot_gem_chain/large_diamond_gem": [
+      "0630 legs/leg_left/boot_gem_chain/large_diamond_gem"
+    ],
+    "legs/leg_left/boot_gem_chain/small_diamond_charm": [
+      "0640 legs/leg_left/boot_gem_chain/small_diamond_charm"
+    ],
+    "legs/leg_left/boot_gem_chain/round_bead": [
+      "0650 legs/leg_left/boot_gem_chain/round_bead"
+    ],
+    "legs/leg_right/boot_gem": [
+      "0660 legs/leg_right/boot_gem"
+    ],
+    "legs/leg_right/boot_flower_ornament": [
+      "0670 legs/leg_right/boot_flower_ornament"
+    ]
+  },
+  "sheet_index": "sheet-index.json",
+  "all_raw_exports_current": true
+}

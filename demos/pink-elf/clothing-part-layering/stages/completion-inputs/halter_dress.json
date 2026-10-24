@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "groupId": "halter_dress",
+  "beforeHash": "77df3a99879b594a192e706fa90c676aade78293a07a5861eba5cbcf59363d49",
+  "afterHash": "14ea1dbb90711f7ed4aad795b88456f9153deb7106d6bb3609d713fefdba9eda",
+  "dependencies": [
+    {
+      "path": "references/clothing.png",
+      "hash": "119c1d7ef01ca537a006bf49616ca68ef3b0ea4812b64d2e96a29d0dad23579d"
+    }
+  ]
+}

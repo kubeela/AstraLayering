@@ -1,25 +1,27 @@
-# Pink Elf：标准模式的阶段性归档
+# Pink Elf：完整制作路线归档
 
-本例来自本地任务 pink-elf-20261020，2026-10-21 在第二步返修期间按用户要求停止。它用于审核分层成果及工作流问题，**尚未完成标准模式全部五阶段，也未通过最终美术验收**。本次仅归档已有产物，没有重新绘制或继续任务。
+本例来自本地任务 `pink-elf`，本轮于 2026-10-24 04:51（北京时间）由总调度完成。此目录替换原先停在 step02 的阶段性快照，供查看与下载，不作为可直接续跑的运行目录。
 
-| 阶段 | 当前状态与入口 |
+| 阶段 | 产物入口 |
 | --- | --- |
-| 原图与标准化参考 | [原图](input/original.png) · [标准化图](part-layering/references/standard.png) · [人物参考](part-layering/references/base-subject.png) |
-| 人物分件 | 已完成；82 个节点、65 个终止 part。[预览 SVG](part-layering/preview.svg) · [分组树](part-layering/groups.json) · [深度表](part-layering/occlusion.json) |
-| 人物分层与补全 | step01 已完成。[KRA](raster-layering/step01/character-depth.kra) · [工程内预览](raster-layering/step01/character-depth-snapshot.png) · [报告](raster-layering/step01/report.md) |
-| 边缘修画 | step02 返修未完成。[当前 KRA](raster-layering/step02/character-soft-edges.kra) · [工程内预览](raster-layering/step02/character-soft-edges-snapshot.png) · [首次审核](raster-layering/step02/review-01.md) · [未完成的修复记录](raster-layering/step02/repair-01-attempt-20261021-1002.md) |
-| 换装素体、衣服分件、衣服栅格及最终组装 | 尚未执行，不提供完成结论。 |
+| 原图与人物分件 | [原图](input/original.png) · [参考](part-layering/references/base-subject.png) · [分组](part-layering/groups.json) · [深度](part-layering/occlusion.json) |
+| 人物 step01 | [KRA](raster-layering/step01/character-depth.kra) · [报告](raster-layering/step01/report.md) |
+| 人物 step02 | [KRA](raster-layering/step02/character-soft-edges.kra) · [PNG](raster-layering/step02/character-soft-edges.png) · [报告](raster-layering/step02/report.md) |
+| 人物 step03 | [KRA](raster-layering/step03/character-dressup-base.kra) · [PNG](raster-layering/step03/character-dressup-base.png) · [报告](raster-layering/step03/report.md) |
+| 衣服分件 | [分组](clothing-part-layering/groups.json) · [深度](clothing-part-layering/occlusion.json) · [分件预览](clothing-part-layering/preview.svg) |
+| 衣服 step01 | [KRA](clothing-raster-layering/step01/clothing-depth.kra) · [报告](clothing-raster-layering/step01/report.md) |
+| 衣服 step02 | [KRA](clothing-raster-layering/step02/clothing-soft-edges.kra) · [PNG](clothing-raster-layering/step02/clothing-soft-edges.png) · [报告](clothing-raster-layering/step02/report.md) |
+| 穿戴组装 | [KRA](character-assembly/step01/character-assembled.kra) · [PNG](character-assembly/step01/character-assembled.png) · [报告](character-assembly/step01/report.md) |
+| 投影阴影蒙版 | [最终 KRA](shadow/mask/step01/character-shadowed.kra) · [最终 PNG](shadow/mask/step01/character-shadowed.png) · [关系表](shadow/mask/step01/shadows.json) · [报告](shadow/mask/step01/report.md) |
 
-![停止时已保存工程的合成预览](raster-layering/step02/character-soft-edges-snapshot.png)
+![本轮最终合成](shadow/mask/step01/character-shadowed.png)
 
-## 审核上下文
+## 验证与保留问题
 
-首次 reviewer 报告列出 10 项修复问题和 3 项“待确认”事项。原绘制会话将标准冲突当作等待外部确认的阻碍，因此没有完成返修。报告保留原文，用于解释本次工作流改动，不代表新规范仍允许这种中间态。step02/report.md 是初次绘制的历史自检记录，其通过说法被后续独立审核否定。
-
-修复记录来自较早的一次未完成尝试；此后继续修画又被用户停止。当前 KRA 可能包含记录之后保存的改动，不能用旧报告证明当前工程已经通过。原有 PNG 按原样保留；文件名带 -snapshot 的 PNG 直接提取自对应 KRA 的 mergedimage.png，用于展示这份已保存工程，未另行渲染或改画。
+本轮人物 step01/02 和衣服已有成果保留，从人物 step03 重做后接续组装、阴影。归档时检查各阶段 KRA 完整性及现有导出 PNG 与工程内合成一致；阴影原生检查通过。这些检查不等于没有美术差异：肘部仍有原分片接色差异，袖下、裙下影带较明显，其他参考还原差异见各阶段报告。尚未制作 Cubism 绑定或动画。
 
 ## 归档范围
 
-保留原图、参考、完整 SVG 分件、轮廓／去重／补全检查记录、深度表、两步 KRA、导出图和首次 reviewer 的图像证据。[清单](manifest.json)记录来源、大小与 SHA-256，复制的文件与本地来源逐字节一致。
+保留正式工程、导出图、参考、分件结构、review/repair 报告和报告引用的图像证据；不复制会话日志、运行脚本、私有 Krita 环境、缓存、锁和历史备份。历史报告及 JSON 按原文保留，部分本机路径、未收录脚本或观察图引用仅供追溯。完整工作记录仍在本机 `.run/pink-elf`，未移动或修改。
 
-逐次观察图、agent 日志、会话、工具脚本、缓存、锁、运行状态及备份不收录。历史 JSON 和报告中的本机路径、未收录观察图引用按原文保留，只用于追溯；本目录是供查看的快照，不是可直接续跑的任务目录。运行数据继续保存在被 Git 忽略的 .run/，没有移动或修改该目录。
+[校验清单](manifest.json)记录每个复制文件的来源、大小和 SHA-256；复制文件与本轮运行产物逐字节一致。本目录不保留旧版 demos 或修复前工程备份。

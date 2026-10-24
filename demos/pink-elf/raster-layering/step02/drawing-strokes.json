@@ -1,0 +1,9582 @@
+[
+  {
+    "layer": "0310 face/face_base",
+    "start": [
+      454,
+      123
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          423,
+          123,
+          395,
+          143,
+          384,
+          176
+        ]
+      ],
+      [
+        "C",
+        [
+          378,
+          193,
+          381,
+          217,
+          395,
+          239
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.45,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "脸底额缘与左侧皮肤边的局部半透明过渡，保留完整脸型"
+  },
+  {
+    "layer": "0310 face/face_base",
+    "start": [
+      395,
+      239
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          410,
+          266,
+          436,
+          289,
+          460,
+          294
+        ]
+      ],
+      [
+        "C",
+        [
+          479,
+          293,
+          503,
+          267,
+          518,
+          234
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.52,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "下颌两弧描边去台阶，参照原图约一像素柔边，不改下巴位置"
+  },
+  {
+    "layer": "0310 face/face_base",
+    "start": [
+      518,
+      234
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          533,
+          206,
+          537,
+          181,
+          526,
+          158
+        ]
+      ],
+      [
+        "C",
+        [
+          516,
+          139,
+          493,
+          128,
+          454,
+          123
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "脸右侧与隐藏太阳穴外缘柔化，不借用头发或耳朵颜色"
+  },
+  {
+    "layer": "0270 face/ear_left",
+    "start": [
+      589,
+      195
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          570,
+          196,
+          543,
+          199,
+          520,
+          205
+        ]
+      ],
+      [
+        "C",
+        [
+          511,
+          209,
+          512,
+          222,
+          530,
+          236
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.7,
+    "opacity": 0.45,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面右耳尖上沿和耳根半透明边，保留尖端"
+  },
+  {
+    "layer": "0270 face/ear_left",
+    "start": [
+      530,
+      236
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          547,
+          229,
+          571,
+          215,
+          589,
+          195
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.45,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右侧长耳下缘软化，保留原暖色描边"
+  },
+  {
+    "layer": "0270 face/ear_left",
+    "start": [
+      581,
+      203
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          562,
+          211,
+          544,
+          220,
+          533,
+          227
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.25,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "内耳已有暖色细线局部减锐，不新增纹理"
+  },
+  {
+    "layer": "0280 face/ear_right",
+    "start": [
+      313,
+      201
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          335,
+          200,
+          363,
+          202,
+          389,
+          208
+        ]
+      ],
+      [
+        "C",
+        [
+          405,
+          213,
+          407,
+          224,
+          386,
+          236
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.44,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面左耳上沿/根端柔边，独显轮廓仍完整"
+  },
+  {
+    "layer": "0280 face/ear_right",
+    "start": [
+      386,
+      236
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          363,
+          235,
+          331,
+          218,
+          313,
+          201
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.46,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左耳下弧去离散色点及锯齿，不改尖耳长度"
+  },
+  {
+    "layer": "0280 face/ear_right",
+    "start": [
+      326,
+      207
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          345,
+          213,
+          364,
+          220,
+          379,
+          226
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.24,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "内耳细线只柔化边缘，保持原体积"
+  },
+  {
+    "layer": "0290 head_accessories/left_earring",
+    "start": [
+      520,
+      230
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          515,
+          232,
+          514,
+          243,
+          514,
+          250
+        ]
+      ],
+      [
+        "C",
+        [
+          513,
+          259,
+          518,
+          265,
+          522,
+          258
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.28,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "小耳饰左缘与粉坠底尖柔化，金色顶边保留"
+  },
+  {
+    "layer": "0290 head_accessories/left_earring",
+    "start": [
+      523,
+      257
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          526,
+          247,
+          527,
+          237,
+          520,
+          230
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.6,
+    "opacity": 0.23,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "小耳饰右缘轻柔，不糊金色横纹"
+  },
+  {
+    "layer": "0300 head_accessories/right_earring",
+    "start": [
+      394,
+      226
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          390,
+          230,
+          391,
+          248,
+          391,
+          256
+        ]
+      ],
+      [
+        "C",
+        [
+          391,
+          264,
+          400,
+          269,
+          410,
+          260
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.1,
+    "opacity": 0.3,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一耳饰粉坠左缘/底部局部柔化，维持金边和位置"
+  },
+  {
+    "layer": "0300 head_accessories/right_earring",
+    "start": [
+      410,
+      260
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          411,
+          251,
+          405,
+          237,
+          402,
+          231
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.25,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "粉坠右缘的细阶梯柔化，不混入脸/发"
+  },
+  {
+    "layer": "0320 face/mouth/mouth_interior",
+    "start": [
+      448,
+      249
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          439,
+          252,
+          439,
+          266,
+          449,
+          272
+        ]
+      ],
+      [
+        "C",
+        [
+          456,
+          278,
+          470,
+          273,
+          472,
+          260
+        ]
+      ],
+      [
+        "C",
+        [
+          474,
+          251,
+          466,
+          248,
+          458,
+          249
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.3,
+    "opacity": 0.46,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "口腔外缘和嘴角半透明过渡，消除红色锯齿，不改开口"
+  },
+  {
+    "layer": "0330 face/mouth/lower_teeth",
+    "start": [
+      447,
+      267
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          451,
+          275,
+          462,
+          275,
+          466,
+          268
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.35,
+    "opacity": 0.24,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "下齿片外弧轻柔，保留细白核心"
+  },
+  {
+    "layer": "0340 face/mouth/tongue",
+    "start": [
+      444,
+      264
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          449,
+          258,
+          463,
+          256,
+          470,
+          267
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.0,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "舌上弧与根部的软过渡，不改变舌片身份"
+  },
+  {
+    "layer": "0340 face/mouth/tongue",
+    "start": [
+      446,
+      270
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          453,
+          277,
+          466,
+          275,
+          470,
+          268
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.32,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "舌下弧柔化，防止独显硬粉边"
+  },
+  {
+    "layer": "0350 face/mouth/upper_teeth",
+    "start": [
+      447,
+      249
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          452,
+          248,
+          461,
+          248,
+          466,
+          250
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.3,
+    "opacity": 0.22,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "上齿白边轻柔，保留窄齿片不减为透明"
+  },
+  {
+    "layer": "0360 face/mouth/lower_lip",
+    "start": [
+      442,
+      262
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          445,
+          277,
+          466,
+          280,
+          472,
+          262
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.65,
+    "opacity": 0.29,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "下唇暖色细弧减硬边，保持原弧度"
+  },
+  {
+    "layer": "0370 face/mouth/upper_lip",
+    "start": [
+      441,
+      259
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          441,
+          250,
+          447,
+          247,
+          454,
+          249
+        ]
+      ],
+      [
+        "C",
+        [
+          462,
+          247,
+          472,
+          248,
+          473,
+          258
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.7,
+    "opacity": 0.28,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "上唇外弧和两角减锐，避免实线新描边"
+  },
+  {
+    "layer": "0390 face/eye_left/sclera",
+    "start": [
+      488,
+      194
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          479,
+          193,
+          473,
+          205,
+          480,
+          218
+        ]
+      ],
+      [
+        "C",
+        [
+          487,
+          224,
+          507,
+          224,
+          515,
+          213
+        ]
+      ],
+      [
+        "C",
+        [
+          522,
+          205,
+          510,
+          195,
+          488,
+          194
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.2,
+    "opacity": 0.34,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面右眼完整眼白外缘逐弧柔化，隐藏实心承底保持"
+  },
+  {
+    "layer": "0400 face/eye_right/sclera",
+    "start": [
+      416,
+      197
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          404,
+          195,
+          394,
+          207,
+          398,
+          219
+        ]
+      ],
+      [
+        "C",
+        [
+          404,
+          227,
+          426,
+          228,
+          432,
+          217
+        ]
+      ],
+      [
+        "C",
+        [
+          439,
+          207,
+          429,
+          198,
+          416,
+          197
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.2,
+    "opacity": 0.33,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面左眼白上下与外角半透明过渡，不混入虹膜"
+  },
+  {
+    "layer": "0410 face/eye_left/iris",
+    "start": [
+      489,
+      192
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          478,
+          192,
+          475,
+          210,
+          483,
+          217
+        ]
+      ],
+      [
+        "C",
+        [
+          491,
+          225,
+          504,
+          222,
+          505,
+          206
+        ]
+      ],
+      [
+        "C",
+        [
+          505,
+          196,
+          498,
+          192,
+          489,
+          192
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.15,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "虹膜椭圆边缘去台阶，保持瞳孔与原有紫蓝/青蓝颜色"
+  },
+  {
+    "layer": "0410 face/eye_left/iris",
+    "start": [
+      490,
+      199
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          488,
+          204,
+          489,
+          208,
+          492,
+          211
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.6,
+    "opacity": 0.18,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "虹膜自身瞳孔左侧过锐小线轻柔，不洗掉黑色核心"
+  },
+  {
+    "layer": "0420 face/eye_right/iris",
+    "start": [
+      416,
+      197
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          404,
+          196,
+          402,
+          218,
+          414,
+          224
+        ]
+      ],
+      [
+        "C",
+        [
+          428,
+          229,
+          435,
+          214,
+          431,
+          203
+        ]
+      ],
+      [
+        "C",
+        [
+          427,
+          198,
+          422,
+          196,
+          416,
+          197
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.1,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一虹膜按本侧椭圆单独柔化，位置大小保持"
+  },
+  {
+    "layer": "0420 face/eye_right/iris",
+    "start": [
+      418,
+      202
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          415,
+          207,
+          416,
+          211,
+          419,
+          214
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.5,
+    "opacity": 0.16,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "本虹膜瞳孔边线轻柔，保留原竖向形体"
+  },
+  {
+    "layer": "0430 face/eye_left/highlight",
+    "start": [
+      492,
+      199
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          489,
+          201,
+          492,
+          205,
+          495,
+          203
+        ]
+      ],
+      [
+        "C",
+        [
+          498,
+          201,
+          495,
+          198,
+          492,
+          199
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.3,
+    "opacity": 0.18,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "上反光白点只处理外缘，保留白色中心"
+  },
+  {
+    "layer": "0430 face/eye_left/highlight",
+    "start": [
+      485,
+      219
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          488,
+          215,
+          494,
+          215,
+          497,
+          219
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.45,
+    "opacity": 0.24,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "下反光青白小斑边缘微柔，不合并虹膜底色"
+  },
+  {
+    "layer": "0440 face/eye_right/highlight",
+    "start": [
+      420,
+      203
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          418,
+          205,
+          420,
+          208,
+          423,
+          207
+        ]
+      ],
+      [
+        "C",
+        [
+          425,
+          206,
+          423,
+          202,
+          420,
+          203
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.3,
+    "opacity": 0.19,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一高光白点局部软化，不扩大为新高光"
+  },
+  {
+    "layer": "0440 face/eye_right/highlight",
+    "start": [
+      411,
+      223
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          416,
+          219,
+          424,
+          219,
+          426,
+          222
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.45,
+    "opacity": 0.23,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一眼下反光边缘微柔，原形保持"
+  },
+  {
+    "layer": "0450 face/eye_left/lower_eyelid",
+    "start": [
+      474,
+      205
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          474,
+          214,
+          480,
+          220,
+          490,
+          221
+        ]
+      ],
+      [
+        "C",
+        [
+          502,
+          224,
+          512,
+          217,
+          519,
+          209
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.85,
+    "opacity": 0.35,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "浅下眼缘和外角细线去阶梯，保持细淡暖色"
+  },
+  {
+    "layer": "0460 face/eye_right/lower_eyelid",
+    "start": [
+      432,
+      202
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          436,
+          214,
+          429,
+          224,
+          416,
+          224
+        ]
+      ],
+      [
+        "C",
+        [
+          404,
+          224,
+          394,
+          222,
+          389,
+          213
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.33,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一侧下眼缘与小翼柔化，不新增粗眼线"
+  },
+  {
+    "layer": "0470 face/eye_left/upper_eyelid",
+    "start": [
+      473,
+      204
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          481,
+          194,
+          488,
+          188,
+          495,
+          190
+        ]
+      ],
+      [
+        "C",
+        [
+          500,
+          191,
+          503,
+          188,
+          506,
+          191
+        ]
+      ],
+      [
+        "C",
+        [
+          514,
+          194,
+          520,
+          203,
+          522,
+          207
+        ]
+      ],
+      [
+        "C",
+        [
+          520,
+          209,
+          517,
+          210,
+          515,
+          212
+        ]
+      ],
+      [
+        "C",
+        [
+          514,
+          205,
+          506,
+          198,
+          495,
+          196
+        ]
+      ],
+      [
+        "C",
+        [
+          487,
+          193,
+          479,
+          198,
+          473,
+          204
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.52,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面右上眼线外缘/睫毛局部减硬，保留深棕色厚核心与原尖翼"
+  },
+  {
+    "layer": "0480 face/eye_right/upper_eyelid",
+    "start": [
+      435,
+      205
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          430,
+          197,
+          422,
+          192,
+          414,
+          192
+        ]
+      ],
+      [
+        "C",
+        [
+          403,
+          193,
+          392,
+          200,
+          385,
+          214
+        ]
+      ],
+      [
+        "C",
+        [
+          389,
+          216,
+          394,
+          219,
+          397,
+          219
+        ]
+      ],
+      [
+        "C",
+        [
+          397,
+          210,
+          404,
+          202,
+          413,
+          200
+        ]
+      ],
+      [
+        "C",
+        [
+          422,
+          198,
+          430,
+          201,
+          435,
+          205
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.75,
+    "opacity": 0.5,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面左上眼线按本侧实际弧及外翼柔化，不重画造型"
+  },
+  {
+    "layer": "0490 face/eye_left/eyelid_crease",
+    "start": [
+      475,
+      192
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          480,
+          186,
+          488,
+          184,
+          497,
+          186
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.55,
+    "opacity": 0.25,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "浅上睑褶轻柔边缘，保留独立弧线"
+  },
+  {
+    "layer": "0500 face/eye_right/eyelid_crease",
+    "start": [
+      411,
+      191
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          420,
+          186,
+          430,
+          188,
+          434,
+          194
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.55,
+    "opacity": 0.24,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一浅睑褶微柔，不加深眉眼"
+  },
+  {
+    "layer": "0090 arms/arm_left/hand/little_finger",
+    "start": [
+      717,
+      828
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          711,
+          829,
+          710,
+          839,
+          711,
+          847
+        ]
+      ],
+      [
+        "C",
+        [
+          711,
+          855,
+          704,
+          861,
+          701,
+          867
+        ]
+      ],
+      [
+        "C",
+        [
+          699,
+          870,
+          699,
+          874,
+          701,
+          877
+        ]
+      ],
+      [
+        "C",
+        [
+          704,
+          879,
+          708,
+          871,
+          708,
+          868
+        ]
+      ],
+      [
+        "C",
+        [
+          711,
+          864,
+          716,
+          860,
+          719,
+          848
+        ]
+      ],
+      [
+        "C",
+        [
+          722,
+          840,
+          723,
+          830,
+          717,
+          828
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.2,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左手小指两缘与小尖渐软，保留完整指根和指缝"
+  },
+  {
+    "layer": "0100 arms/arm_left/hand/ring_finger",
+    "start": [
+      702,
+      815
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          698,
+          817,
+          698,
+          824,
+          700,
+          828
+        ]
+      ],
+      [
+        "C",
+        [
+          702,
+          837,
+          701,
+          845,
+          697,
+          856
+        ]
+      ],
+      [
+        "C",
+        [
+          695,
+          864,
+          693,
+          872,
+          693,
+          878
+        ]
+      ],
+      [
+        "C",
+        [
+          693,
+          883,
+          696,
+          885,
+          699,
+          878
+        ]
+      ],
+      [
+        "C",
+        [
+          704,
+          865,
+          709,
+          855,
+          711,
+          839
+        ]
+      ],
+      [
+        "C",
+        [
+          713,
+          829,
+          711,
+          818,
+          702,
+          815
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.25,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左手无名指周缘台阶柔化，不混入别指颜色"
+  },
+  {
+    "layer": "0110 arms/arm_left/hand/middle_finger",
+    "start": [
+      711,
+      822
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          703,
+          825,
+          704,
+          833,
+          708,
+          839
+        ]
+      ],
+      [
+        "C",
+        [
+          713,
+          845,
+          712,
+          850,
+          707,
+          858
+        ]
+      ],
+      [
+        "C",
+        [
+          703,
+          866,
+          697,
+          874,
+          697,
+          885
+        ]
+      ],
+      [
+        "C",
+        [
+          697,
+          892,
+          700,
+          892,
+          703,
+          886
+        ]
+      ],
+      [
+        "C",
+        [
+          709,
+          878,
+          716,
+          865,
+          718,
+          851
+        ]
+      ],
+      [
+        "C",
+        [
+          721,
+          836,
+          718,
+          824,
+          711,
+          822
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.35,
+    "opacity": 0.39,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左手中指周缘软化，保留最低指尖、指甲及弯曲方向"
+  },
+  {
+    "layer": "0120 arms/arm_left/hand/index_finger",
+    "start": [
+      699,
+      806
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          693,
+          810,
+          701,
+          818,
+          704,
+          823
+        ]
+      ],
+      [
+        "C",
+        [
+          708,
+          830,
+          714,
+          837,
+          713,
+          841
+        ]
+      ],
+      [
+        "C",
+        [
+          714,
+          851,
+          715,
+          867,
+          713,
+          877
+        ]
+      ],
+      [
+        "C",
+        [
+          713,
+          881,
+          716,
+          889,
+          718,
+          890
+        ]
+      ],
+      [
+        "C",
+        [
+          721,
+          887,
+          721,
+          881,
+          721,
+          876
+        ]
+      ],
+      [
+        "C",
+        [
+          727,
+          862,
+          731,
+          846,
+          728,
+          841
+        ]
+      ],
+      [
+        "C",
+        [
+          729,
+          828,
+          724,
+          818,
+          718,
+          809
+        ]
+      ],
+      [
+        "C",
+        [
+          712,
+          806,
+          703,
+          805,
+          699,
+          806
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.4,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左手食指外侧与弯折处微柔，不改变外轮廓和最低尖端"
+  },
+  {
+    "layer": "0130 arms/arm_left/hand/thumb",
+    "start": [
+      690,
+      799
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          685,
+          799,
+          680,
+          802,
+          678,
+          805
+        ]
+      ],
+      [
+        "C",
+        [
+          676,
+          811,
+          678,
+          819,
+          680,
+          825
+        ]
+      ],
+      [
+        "C",
+        [
+          683,
+          831,
+          684,
+          839,
+          684,
+          841
+        ]
+      ],
+      [
+        "C",
+        [
+          685,
+          849,
+          688,
+          855,
+          690,
+          854
+        ]
+      ],
+      [
+        "C",
+        [
+          696,
+          854,
+          697,
+          848,
+          697,
+          846
+        ]
+      ],
+      [
+        "C",
+        [
+          698,
+          840,
+          696,
+          831,
+          696,
+          822
+        ]
+      ],
+      [
+        "C",
+        [
+          696,
+          813,
+          695,
+          804,
+          690,
+          799
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.43,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左手拇指圆端及指侧暖线软化，原虎口空隙不填"
+  },
+  {
+    "layer": "0140 arms/arm_left/hand/palm",
+    "start": [
+      682,
+      767
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          676,
+          769,
+          670,
+          779,
+          672,
+          787
+        ]
+      ],
+      [
+        "C",
+        [
+          674,
+          796,
+          674,
+          802,
+          676,
+          809
+        ]
+      ],
+      [
+        "C",
+        [
+          677,
+          818,
+          678,
+          827,
+          682,
+          831
+        ]
+      ],
+      [
+        "C",
+        [
+          686,
+          835,
+          689,
+          826,
+          695,
+          817
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左掌隐藏腕端与拇指侧的局部柔边，避免关节假描边"
+  },
+  {
+    "layer": "0140 arms/arm_left/hand/palm",
+    "start": [
+      695,
+      817
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          703,
+          823,
+          708,
+          830,
+          714,
+          837
+        ]
+      ],
+      [
+        "C",
+        [
+          720,
+          842,
+          724,
+          846,
+          728,
+          844
+        ]
+      ],
+      [
+        "C",
+        [
+          731,
+          835,
+          729,
+          828,
+          727,
+          823
+        ]
+      ],
+      [
+        "C",
+        [
+          726,
+          813,
+          722,
+          807,
+          718,
+          801
+        ]
+      ],
+      [
+        "C",
+        [
+          711,
+          790,
+          704,
+          781,
+          695,
+          774
+        ]
+      ],
+      [
+        "C",
+        [
+          690,
+          770,
+          686,
+          768,
+          682,
+          767
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左掌远端覆盖边与外侧细缘轻柔，完整掌体和真实指缝保持"
+  },
+  {
+    "layer": "0145 arms/arm_right/hand/little_finger",
+    "start": [
+      198,
+      818
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          192,
+          819,
+          192,
+          829,
+          193,
+          830
+        ]
+      ],
+      [
+        "C",
+        [
+          191,
+          835,
+          191,
+          840,
+          192,
+          844
+        ]
+      ],
+      [
+        "C",
+        [
+          192,
+          851,
+          194,
+          857,
+          195,
+          858
+        ]
+      ],
+      [
+        "C",
+        [
+          196,
+          865,
+          197,
+          874,
+          198,
+          877
+        ]
+      ],
+      [
+        "C",
+        [
+          200,
+          882,
+          203,
+          885,
+          206,
+          879
+        ]
+      ],
+      [
+        "C",
+        [
+          209,
+          875,
+          210,
+          871,
+          210,
+          869
+        ]
+      ],
+      [
+        "C",
+        [
+          210,
+          864,
+          207,
+          859,
+          207,
+          855
+        ]
+      ],
+      [
+        "C",
+        [
+          205,
+          849,
+          205,
+          843,
+          206,
+          841
+        ]
+      ],
+      [
+        "C",
+        [
+          209,
+          835,
+          210,
+          831,
+          209,
+          827
+        ]
+      ],
+      [
+        "C",
+        [
+          206,
+          822,
+          202,
+          818,
+          198,
+          818
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.3,
+    "opacity": 0.39,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右手小指指缘与指尖去台阶，浅暖描边仍属本指"
+  },
+  {
+    "layer": "0150 arms/arm_right/hand/index_finger",
+    "start": [
+      219,
+      808
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          214,
+          809,
+          212,
+          816,
+          213,
+          820
+        ]
+      ],
+      [
+        "C",
+        [
+          214,
+          827,
+          211,
+          831,
+          212,
+          833
+        ]
+      ],
+      [
+        "C",
+        [
+          213,
+          842,
+          214,
+          846,
+          215,
+          846
+        ]
+      ],
+      [
+        "C",
+        [
+          219,
+          851,
+          225,
+          856,
+          226,
+          859
+        ]
+      ],
+      [
+        "C",
+        [
+          231,
+          864,
+          237,
+          869,
+          238,
+          866
+        ]
+      ],
+      [
+        "C",
+        [
+          242,
+          865,
+          245,
+          861,
+          242,
+          856
+        ]
+      ],
+      [
+        "C",
+        [
+          239,
+          851,
+          235,
+          847,
+          232,
+          843
+        ]
+      ],
+      [
+        "C",
+        [
+          228,
+          839,
+          225,
+          835,
+          222,
+          831
+        ]
+      ],
+      [
+        "C",
+        [
+          224,
+          825,
+          228,
+          822,
+          227,
+          818
+        ]
+      ],
+      [
+        "C",
+        [
+          226,
+          812,
+          224,
+          808,
+          219,
+          808
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.4,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右手食指侧缘与斜向指尖柔化，保留原指甲与纹理"
+  },
+  {
+    "layer": "0160 arms/arm_right/hand/middle_finger",
+    "start": [
+      215,
+      808
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          209,
+          813,
+          212,
+          822,
+          213,
+          822
+        ]
+      ],
+      [
+        "C",
+        [
+          213,
+          830,
+          211,
+          835,
+          212,
+          837
+        ]
+      ],
+      [
+        "C",
+        [
+          212,
+          844,
+          214,
+          850,
+          215,
+          852
+        ]
+      ],
+      [
+        "C",
+        [
+          219,
+          860,
+          224,
+          867,
+          230,
+          873
+        ]
+      ],
+      [
+        "C",
+        [
+          234,
+          879,
+          238,
+          880,
+          238,
+          875
+        ]
+      ],
+      [
+        "C",
+        [
+          239,
+          872,
+          237,
+          868,
+          232,
+          864
+        ]
+      ],
+      [
+        "C",
+        [
+          230,
+          859,
+          228,
+          854,
+          226,
+          849
+        ]
+      ],
+      [
+        "C",
+        [
+          224,
+          844,
+          223,
+          838,
+          223,
+          834
+        ]
+      ],
+      [
+        "C",
+        [
+          224,
+          827,
+          227,
+          823,
+          223,
+          819
+        ]
+      ],
+      [
+        "C",
+        [
+          221,
+          813,
+          219,
+          809,
+          215,
+          808
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.45,
+    "opacity": 0.39,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右手中指长外缘半透明过渡，不磨平弯节及独立根端"
+  },
+  {
+    "layer": "0170 arms/arm_right/hand/ring_finger",
+    "start": [
+      206,
+      818
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          201,
+          821,
+          201,
+          828,
+          202,
+          832
+        ]
+      ],
+      [
+        "C",
+        [
+          201,
+          841,
+          202,
+          845,
+          203,
+          847
+        ]
+      ],
+      [
+        "C",
+        [
+          204,
+          852,
+          207,
+          858,
+          208,
+          861
+        ]
+      ],
+      [
+        "C",
+        [
+          211,
+          870,
+          217,
+          876,
+          226,
+          884
+        ]
+      ],
+      [
+        "C",
+        [
+          232,
+          891,
+          234,
+          887,
+          230,
+          880
+        ]
+      ],
+      [
+        "C",
+        [
+          232,
+          879,
+          231,
+          876,
+          231,
+          872
+        ]
+      ],
+      [
+        "C",
+        [
+          230,
+          866,
+          228,
+          861,
+          226,
+          857
+        ]
+      ],
+      [
+        "C",
+        [
+          223,
+          850,
+          220,
+          846,
+          217,
+          843
+        ]
+      ],
+      [
+        "C",
+        [
+          216,
+          837,
+          214,
+          832,
+          214,
+          828
+        ]
+      ],
+      [
+        "C",
+        [
+          215,
+          822,
+          212,
+          817,
+          206,
+          818
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.4,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右手无名指两缘和尖端软化，指缝不封闭"
+  },
+  {
+    "layer": "0180 arms/arm_right/hand/thumb",
+    "start": [
+      234,
+      805
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          228,
+          805,
+          227,
+          810,
+          227,
+          813
+        ]
+      ],
+      [
+        "C",
+        [
+          226,
+          818,
+          227,
+          821,
+          227,
+          823
+        ]
+      ],
+      [
+        "C",
+        [
+          226,
+          828,
+          226,
+          831,
+          225,
+          833
+        ]
+      ],
+      [
+        "C",
+        [
+          224,
+          837,
+          223,
+          841,
+          224,
+          843
+        ]
+      ],
+      [
+        "C",
+        [
+          225,
+          848,
+          229,
+          852,
+          231,
+          851
+        ]
+      ],
+      [
+        "C",
+        [
+          235,
+          852,
+          236,
+          845,
+          236,
+          841
+        ]
+      ],
+      [
+        "C",
+        [
+          238,
+          837,
+          238,
+          833,
+          238,
+          831
+        ]
+      ],
+      [
+        "C",
+        [
+          241,
+          825,
+          242,
+          824,
+          241,
+          821
+        ]
+      ],
+      [
+        "C",
+        [
+          244,
+          817,
+          245,
+          814,
+          243,
+          811
+        ]
+      ],
+      [
+        "C",
+        [
+          242,
+          807,
+          238,
+          805,
+          234,
+          805
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.41,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右拇指周缘、甲尖邻近细阶梯柔化，不把其他指体并入"
+  },
+  {
+    "layer": "0190 arms/arm_right/hand/palm",
+    "start": [
+      230,
+      759
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          222,
+          761,
+          219,
+          769,
+          216,
+          775
+        ]
+      ],
+      [
+        "C",
+        [
+          212,
+          782,
+          208,
+          788,
+          205,
+          795
+        ]
+      ],
+      [
+        "C",
+        [
+          200,
+          801,
+          196,
+          809,
+          194,
+          815
+        ]
+      ],
+      [
+        "C",
+        [
+          191,
+          819,
+          196,
+          825,
+          199,
+          832
+        ]
+      ],
+      [
+        "C",
+        [
+          205,
+          832,
+          212,
+          824,
+          219,
+          818
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.85,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右掌腕端和外侧连续柔边，保留原完整掌体与手势"
+  },
+  {
+    "layer": "0190 arms/arm_right/hand/palm",
+    "start": [
+      219,
+      818
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          224,
+          821,
+          230,
+          828,
+          235,
+          826
+        ]
+      ],
+      [
+        "C",
+        [
+          242,
+          829,
+          247,
+          820,
+          245,
+          809
+        ]
+      ],
+      [
+        "C",
+        [
+          249,
+          802,
+          251,
+          796,
+          250,
+          789
+        ]
+      ],
+      [
+        "C",
+        [
+          254,
+          780,
+          253,
+          773,
+          249,
+          769
+        ]
+      ],
+      [
+        "C",
+        [
+          244,
+          762,
+          238,
+          758,
+          230,
+          759
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.65,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右掌覆盖指根的内部片边轻柔，不重新画闭合掌缘"
+  },
+  {
+    "layer": "0200 arms/arm_left/forearm",
+    "start": [
+      587,
+      546
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          574,
+          548,
+          571,
+          568,
+          580,
+          588
+        ]
+      ],
+      [
+        "C",
+        [
+          589,
+          615,
+          607,
+          650,
+          626,
+          678
+        ]
+      ],
+      [
+        "C",
+        [
+          644,
+          707,
+          657,
+          736,
+          670,
+          767
+        ]
+      ],
+      [
+        "C",
+        [
+          683,
+          790,
+          696,
+          810,
+          703,
+          797
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.4,
+    "opacity": 0.46,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左前臂外缘与腕端：对照参考逐段软化皮肤细阶梯"
+  },
+  {
+    "layer": "0200 arms/arm_left/forearm",
+    "start": [
+      703,
+      797
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          707,
+          788,
+          702,
+          771,
+          698,
+          755
+        ]
+      ],
+      [
+        "C",
+        [
+          684,
+          717,
+          667,
+          671,
+          649,
+          621
+        ]
+      ],
+      [
+        "C",
+        [
+          639,
+          593,
+          632,
+          575,
+          622,
+          566
+        ]
+      ],
+      [
+        "C",
+        [
+          613,
+          551,
+          598,
+          544,
+          587,
+          546
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左前臂另一侧及隐藏肘端自然半透明收边"
+  },
+  {
+    "layer": "0210 arms/arm_right/forearm",
+    "start": [
+      322,
+      531
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          308,
+          532,
+          298,
+          552,
+          295,
+          573
+        ]
+      ],
+      [
+        "C",
+        [
+          286,
+          590,
+          279,
+          608,
+          272,
+          619
+        ]
+      ],
+      [
+        "C",
+        [
+          266,
+          633,
+          262,
+          650,
+          257,
+          665
+        ]
+      ],
+      [
+        "C",
+        [
+          252,
+          681,
+          248,
+          696,
+          241,
+          711
+        ]
+      ],
+      [
+        "C",
+        [
+          235,
+          727,
+          228,
+          744,
+          224,
+          757
+        ]
+      ],
+      [
+        "C",
+        [
+          218,
+          772,
+          224,
+          790,
+          241,
+          787
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.3,
+    "opacity": 0.45,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右前臂肘侧至腕端局部曲线柔化，保持手势"
+  },
+  {
+    "layer": "0210 arms/arm_right/forearm",
+    "start": [
+      241,
+      787
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          250,
+          783,
+          253,
+          766,
+          257,
+          748
+        ]
+      ],
+      [
+        "C",
+        [
+          266,
+          732,
+          274,
+          718,
+          281,
+          702
+        ]
+      ],
+      [
+        "C",
+        [
+          292,
+          685,
+          300,
+          670,
+          309,
+          656
+        ]
+      ],
+      [
+        "C",
+        [
+          322,
+          639,
+          330,
+          623,
+          333,
+          610
+        ]
+      ],
+      [
+        "C",
+        [
+          341,
+          591,
+          346,
+          577,
+          347,
+          564
+        ]
+      ],
+      [
+        "C",
+        [
+          348,
+          549,
+          337,
+          533,
+          322,
+          531
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右前臂外侧连续细缘去锯齿；保留肘部已有明暗"
+  },
+  {
+    "layer": "0220 arms/arm_left/upper_arm",
+    "start": [
+      551,
+      339
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          524,
+          338,
+          503,
+          343,
+          505,
+          360
+        ]
+      ],
+      [
+        "C",
+        [
+          503,
+          378,
+          512,
+          397,
+          517,
+          408
+        ]
+      ],
+      [
+        "C",
+        [
+          530,
+          427,
+          540,
+          439,
+          547,
+          449
+        ]
+      ],
+      [
+        "C",
+        [
+          552,
+          465,
+          552,
+          483,
+          554,
+          497
+        ]
+      ],
+      [
+        "C",
+        [
+          557,
+          514,
+          562,
+          531,
+          569,
+          546
+        ]
+      ],
+      [
+        "C",
+        [
+          574,
+          565,
+          576,
+          586,
+          582,
+          594
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左上臂内侧与独显肩端柔化，范围限现有边缘过渡"
+  },
+  {
+    "layer": "0220 arms/arm_left/upper_arm",
+    "start": [
+      582,
+      594
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          601,
+          602,
+          620,
+          584,
+          622,
+          566
+        ]
+      ],
+      [
+        "C",
+        [
+          623,
+          548,
+          615,
+          530,
+          608,
+          517
+        ]
+      ],
+      [
+        "C",
+        [
+          604,
+          504,
+          603,
+          486,
+          602,
+          469
+        ]
+      ],
+      [
+        "C",
+        [
+          600,
+          452,
+          600,
+          435,
+          598,
+          420
+        ]
+      ],
+      [
+        "C",
+        [
+          597,
+          401,
+          594,
+          383,
+          590,
+          372
+        ]
+      ],
+      [
+        "C",
+        [
+          582,
+          350,
+          568,
+          340,
+          551,
+          339
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.5,
+    "opacity": 0.43,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左上臂外缘和肘关节补全端柔化，不加投影"
+  },
+  {
+    "layer": "0230 arms/arm_right/upper_arm",
+    "start": [
+      365,
+      340
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          345,
+          339,
+          331,
+          350,
+          329,
+          374
+        ]
+      ],
+      [
+        "C",
+        [
+          324,
+          391,
+          322,
+          406,
+          323,
+          422
+        ]
+      ],
+      [
+        "C",
+        [
+          324,
+          438,
+          322,
+          455,
+          320,
+          469
+        ]
+      ],
+      [
+        "C",
+        [
+          317,
+          490,
+          315,
+          504,
+          313,
+          517
+        ]
+      ],
+      [
+        "C",
+        [
+          307,
+          535,
+          303,
+          552,
+          300,
+          564
+        ]
+      ],
+      [
+        "C",
+        [
+          300,
+          575,
+          317,
+          590,
+          336,
+          582
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.41,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右上臂肩至肘外侧边缘局部柔化"
+  },
+  {
+    "layer": "0230 arms/arm_right/upper_arm",
+    "start": [
+      336,
+      582
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          349,
+          572,
+          351,
+          550,
+          355,
+          535
+        ]
+      ],
+      [
+        "C",
+        [
+          361,
+          514,
+          366,
+          502,
+          370,
+          488
+        ]
+      ],
+      [
+        "C",
+        [
+          376,
+          473,
+          378,
+          456,
+          378,
+          440
+        ]
+      ],
+      [
+        "C",
+        [
+          380,
+          427,
+          395,
+          410,
+          414,
+          401
+        ]
+      ],
+      [
+        "C",
+        [
+          420,
+          386,
+          421,
+          365,
+          413,
+          353
+        ]
+      ],
+      [
+        "C",
+        [
+          399,
+          342,
+          382,
+          340,
+          365,
+          340
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.3,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右上臂内侧和完整隐藏肩端微柔，不改变肌肤归属"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      392,
+      604
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          352,
+          603,
+          318,
+          665,
+          319,
+          741
+        ]
+      ],
+      [
+        "C",
+        [
+          317,
+          792,
+          328,
+          850,
+          339,
+          889
+        ]
+      ],
+      [
+        "C",
+        [
+          352,
+          935,
+          368,
+          991,
+          377,
+          1038
+        ]
+      ],
+      [
+        "C",
+        [
+          385,
+          1086,
+          370,
+          1152,
+          363,
+          1186
+        ]
+      ],
+      [
+        "C",
+        [
+          363,
+          1247,
+          373,
+          1304,
+          387,
+          1335
+        ]
+      ],
+      [
+        "C",
+        [
+          395,
+          1394,
+          392,
+          1447,
+          411,
+          1467
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.6,
+    "opacity": 0.45,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面左腿外侧微柔；对照原皮肤轮廓，不新添阴影"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      411,
+      1467
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          420,
+          1477,
+          436,
+          1467,
+          438,
+          1447
+        ]
+      ],
+      [
+        "C",
+        [
+          441,
+          1414,
+          441,
+          1365,
+          438,
+          1316
+        ]
+      ],
+      [
+        "C",
+        [
+          440,
+          1253,
+          448,
+          1187,
+          446,
+          1167
+        ]
+      ],
+      [
+        "C",
+        [
+          448,
+          1115,
+          452,
+          1066,
+          453,
+          1019
+        ]
+      ],
+      [
+        "C",
+        [
+          456,
+          965,
+          454,
+          916,
+          454,
+          870
+        ]
+      ],
+      [
+        "C",
+        [
+          454,
+          820,
+          462,
+          774,
+          460,
+          722
+        ]
+      ],
+      [
+        "C",
+        [
+          456,
+          667,
+          441,
+          607,
+          392,
+          604
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.4,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左腿内侧和靴内圆端局部柔化，腿靴分件不混色"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      520,
+      604
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          488,
+          604,
+          465,
+          656,
+          470,
+          737
+        ]
+      ],
+      [
+        "C",
+        [
+          474,
+          789,
+          476,
+          841,
+          477,
+          885
+        ]
+      ],
+      [
+        "C",
+        [
+          480,
+          938,
+          478,
+          990,
+          477,
+          1034
+        ]
+      ],
+      [
+        "C",
+        [
+          477,
+          1095,
+          480,
+          1138,
+          484,
+          1182
+        ]
+      ],
+      [
+        "C",
+        [
+          490,
+          1251,
+          492,
+          1302,
+          494,
+          1330
+        ]
+      ],
+      [
+        "C",
+        [
+          496,
+          1385,
+          490,
+          1453,
+          510,
+          1469
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.5,
+    "opacity": 0.43,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面右腿内缘与隐藏踝端去细台阶，保持原比例"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      510,
+      1469
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          522,
+          1478,
+          544,
+          1466,
+          544,
+          1442
+        ]
+      ],
+      [
+        "C",
+        [
+          547,
+          1394,
+          547,
+          1349,
+          548,
+          1320
+        ]
+      ],
+      [
+        "C",
+        [
+          556,
+          1271,
+          564,
+          1220,
+          564,
+          1172
+        ]
+      ],
+      [
+        "C",
+        [
+          564,
+          1118,
+          553,
+          1067,
+          557,
+          1023
+        ]
+      ],
+      [
+        "C",
+        [
+          570,
+          971,
+          588,
+          920,
+          595,
+          875
+        ]
+      ],
+      [
+        "C",
+        [
+          609,
+          821,
+          612,
+          777,
+          606,
+          727
+        ]
+      ],
+      [
+        "C",
+        [
+          603,
+          666,
+          564,
+          603,
+          520,
+          604
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.7,
+    "opacity": 0.44,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右腿外侧柔软半透明轮廓，肤色自然留存"
+  },
+  {
+    "layer": "0080 pelvis",
+    "start": [
+      447,
+      536
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          409,
+          536,
+          372,
+          579,
+          349,
+          640
+        ]
+      ],
+      [
+        "C",
+        [
+          334,
+          665,
+          324,
+          688,
+          325,
+          705
+        ]
+      ],
+      [
+        "C",
+        [
+          324,
+          720,
+          336,
+          735,
+          349,
+          740
+        ]
+      ],
+      [
+        "C",
+        [
+          372,
+          739,
+          395,
+          747,
+          414,
+          756
+        ]
+      ],
+      [
+        "C",
+        [
+          435,
+          770,
+          456,
+          780,
+          479,
+          774
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "骨盆衣片左缘和裤口细硬线柔化"
+  },
+  {
+    "layer": "0080 pelvis",
+    "start": [
+      479,
+      774
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          500,
+          771,
+          524,
+          755,
+          544,
+          745
+        ]
+      ],
+      [
+        "C",
+        [
+          567,
+          743,
+          590,
+          747,
+          608,
+          739
+        ]
+      ],
+      [
+        "C",
+        [
+          614,
+          722,
+          607,
+          698,
+          591,
+          674
+        ]
+      ],
+      [
+        "C",
+        [
+          583,
+          652,
+          573,
+          628,
+          560,
+          609
+        ]
+      ],
+      [
+        "C",
+        [
+          542,
+          577,
+          524,
+          551,
+          513,
+          547
+        ]
+      ],
+      [
+        "C",
+        [
+          492,
+          538,
+          467,
+          536,
+          447,
+          536
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3,
+    "opacity": 0.37,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "骨盆衣片右缘与隐藏腰端微柔，保留内部衣褶"
+  },
+  {
+    "layer": "0240 neck",
+    "start": [
+      454,
+      255
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          439,
+          256,
+          430,
+          273,
+          433,
+          276
+        ]
+      ],
+      [
+        "C",
+        [
+          436,
+          286,
+          433,
+          297,
+          433,
+          303
+        ]
+      ],
+      [
+        "C",
+        [
+          430,
+          317,
+          420,
+          325,
+          418,
+          330
+        ]
+      ],
+      [
+        "C",
+        [
+          411,
+          336,
+          417,
+          345,
+          428,
+          353
+        ]
+      ],
+      [
+        "C",
+        [
+          439,
+          362,
+          454,
+          370,
+          466,
+          369
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.9,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "颈皮肤左右完整隐藏端与外缘微柔，已有连续底色保持"
+  },
+  {
+    "layer": "0240 neck",
+    "start": [
+      466,
+      369
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          478,
+          364,
+          488,
+          348,
+          489,
+          348
+        ]
+      ],
+      [
+        "C",
+        [
+          500,
+          342,
+          512,
+          343,
+          516,
+          338
+        ]
+      ],
+      [
+        "C",
+        [
+          507,
+          330,
+          497,
+          327,
+          491,
+          322
+        ]
+      ],
+      [
+        "C",
+        [
+          485,
+          313,
+          484,
+          302,
+          485,
+          294
+        ]
+      ],
+      [
+        "C",
+        [
+          486,
+          283,
+          486,
+          274,
+          482,
+          267
+        ]
+      ],
+      [
+        "C",
+        [
+          475,
+          255,
+          464,
+          252,
+          454,
+          255
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.35,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "颈另一侧柔边，不画锁骨或投影"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      405,
+      339
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          378,
+          339,
+          341,
+          348,
+          330,
+          367
+        ]
+      ],
+      [
+        "C",
+        [
+          332,
+          396,
+          357,
+          433,
+          373,
+          450
+        ]
+      ],
+      [
+        "C",
+        [
+          387,
+          477,
+          393,
+          510,
+          387,
+          534
+        ]
+      ],
+      [
+        "C",
+        [
+          377,
+          563,
+          365,
+          592,
+          360,
+          618
+        ]
+      ],
+      [
+        "C",
+        [
+          378,
+          632,
+          412,
+          633,
+          435,
+          631
+        ]
+      ],
+      [
+        "C",
+        [
+          460,
+          631,
+          495,
+          632,
+          519,
+          630
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "躯干肩缘、左衣料边及底沿微柔，不改既有绘画内容"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      519,
+      630
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          538,
+          628,
+          552,
+          613,
+          550,
+          593
+        ]
+      ],
+      [
+        "C",
+        [
+          546,
+          567,
+          546,
+          532,
+          544,
+          509
+        ]
+      ],
+      [
+        "C",
+        [
+          543,
+          482,
+          550,
+          446,
+          555,
+          425
+        ]
+      ],
+      [
+        "C",
+        [
+          563,
+          395,
+          578,
+          363,
+          574,
+          343
+        ]
+      ],
+      [
+        "C",
+        [
+          550,
+          337,
+          513,
+          340,
+          490,
+          342
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.35,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "躯干右衣缘与肩带轮廓细阶梯局部处理"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      545,
+      499
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          544,
+          503,
+          544,
+          510,
+          544,
+          515
+        ]
+      ]
+    ],
+    "brush": "b) Airbrush Soft",
+    "size": 1.5,
+    "opacity": 0.48,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      242,
+      238,
+      245
+    ],
+    "own_sample": [
+      540,
+      503
+    ],
+    "reason": "独显确认右衣缘粉发残色；只采本层邻近衣料色小笔收净，不引用参考像素"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      545,
+      498
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          544,
+          504,
+          543,
+          511,
+          544,
+          516
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.33,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "清理衣缘后接顺本衣料颜色与透明边"
+  },
+  {
+    "layer": "0260 body/breast",
+    "start": [
+      421,
+      374
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          400,
+          373,
+          386,
+          384,
+          380,
+          398
+        ]
+      ],
+      [
+        "C",
+        [
+          369,
+          413,
+          357,
+          430,
+          359,
+          444
+        ]
+      ],
+      [
+        "C",
+        [
+          355,
+          461,
+          358,
+          479,
+          365,
+          490
+        ]
+      ],
+      [
+        "C",
+        [
+          374,
+          508,
+          391,
+          520,
+          409,
+          525
+        ]
+      ],
+      [
+        "C",
+        [
+          426,
+          528,
+          442,
+          521,
+          454,
+          519
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "胸衣左缘和下弧柔化，保留本件紫灰描边核心"
+  },
+  {
+    "layer": "0260 body/breast",
+    "start": [
+      454,
+      519
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          469,
+          519,
+          483,
+          529,
+          500,
+          527
+        ]
+      ],
+      [
+        "C",
+        [
+          520,
+          529,
+          535,
+          518,
+          545,
+          504
+        ]
+      ],
+      [
+        "C",
+        [
+          558,
+          489,
+          566,
+          473,
+          565,
+          459
+        ]
+      ],
+      [
+        "C",
+        [
+          566,
+          442,
+          559,
+          425,
+          551,
+          414
+        ]
+      ],
+      [
+        "C",
+        [
+          540,
+          391,
+          528,
+          378,
+          514,
+          376
+        ]
+      ],
+      [
+        "C",
+        [
+          495,
+          374,
+          483,
+          381,
+          468,
+          381
+        ]
+      ],
+      [
+        "C",
+        [
+          449,
+          379,
+          435,
+          375,
+          421,
+          374
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "胸衣右侧及完整隐藏上缘软化，保留衣服体积与合格补全"
+  },
+  {
+    "layer": "0005 hair/back_hair/cap :: nape_under_roots",
+    "start": [
+      387,
+      271
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          397,
+          282,
+          410,
+          289,
+          425,
+          292
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.32,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "后脑颈旁片仅处理物理外缘；深度互补切口保持"
+  },
+  {
+    "layer": "0005 hair/back_hair/cap :: nape_under_roots",
+    "start": [
+      481,
+      297
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          498,
+          292,
+          519,
+          280,
+          533,
+          267
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.32,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一侧颈旁承底物理轮廓微柔，内部切口不羽化"
+  },
+  {
+    "layer": "0050 hair/back_hair/cap :: back",
+    "start": [
+      376,
+      101
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          354,
+          116,
+          342,
+          137,
+          344,
+          161
+        ]
+      ],
+      [
+        "C",
+        [
+          341,
+          183,
+          346,
+          211,
+          351,
+          226
+        ]
+      ],
+      [
+        "C",
+        [
+          362,
+          254,
+          381,
+          276,
+          400,
+          287
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "后脑左外侧细阶梯柔化；冠顶交接线不处理"
+  },
+  {
+    "layer": "0050 hair/back_hair/cap :: back",
+    "start": [
+      542,
+      106
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          554,
+          120,
+          564,
+          139,
+          562,
+          158
+        ]
+      ],
+      [
+        "C",
+        [
+          565,
+          182,
+          563,
+          205,
+          558,
+          223
+        ]
+      ],
+      [
+        "C",
+        [
+          551,
+          249,
+          536,
+          271,
+          516,
+          283
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.9,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "后脑右外缘轻柔，保留与冠顶和颈片互补的现有内部边"
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "start": [
+      402,
+      175
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          383,
+          205,
+          363,
+          258,
+          349,
+          294
+        ]
+      ],
+      [
+        "C",
+        [
+          327,
+          348,
+          308,
+          398,
+          282,
+          437
+        ]
+      ],
+      [
+        "C",
+        [
+          254,
+          481,
+          199,
+          540,
+          180,
+          579
+        ]
+      ],
+      [
+        "C",
+        [
+          162,
+          617,
+          167,
+          655,
+          190,
+          680
+        ]
+      ],
+      [
+        "C",
+        [
+          199,
+          690,
+          205,
+          691,
+          203,
+          687
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "画面左厚后发外长弧按参考软化，保留补绘发流"
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "start": [
+      203,
+      687
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          191,
+          679,
+          194,
+          665,
+          212,
+          658
+        ]
+      ],
+      [
+        "C",
+        [
+          223,
+          693,
+          252,
+          729,
+          286,
+          749
+        ]
+      ],
+      [
+        "C",
+        [
+          329,
+          775,
+          382,
+          798,
+          413,
+          784
+        ]
+      ],
+      [
+        "C",
+        [
+          444,
+          774,
+          459,
+          740,
+          463,
+          703
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.9,
+    "opacity": 0.37,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左后发外卷回钩及下缘局部微柔，不合并开放空隙"
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "start": [
+      463,
+      703
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          465,
+          656,
+          464,
+          606,
+          464,
+          560
+        ]
+      ],
+      [
+        "C",
+        [
+          464,
+          511,
+          463,
+          462,
+          463,
+          417
+        ]
+      ],
+      [
+        "C",
+        [
+          463,
+          363,
+          463,
+          312,
+          462,
+          274
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.34,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左厚发独显内侧直缘微柔，现有宽度与完整隐藏面保持"
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "start": [
+      495,
+      140
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          468,
+          159,
+          452,
+          220,
+          449,
+          282
+        ]
+      ],
+      [
+        "C",
+        [
+          448,
+          331,
+          449,
+          384,
+          449,
+          434
+        ]
+      ],
+      [
+        "C",
+        [
+          449,
+          485,
+          449,
+          537,
+          449,
+          586
+        ]
+      ],
+      [
+        "C",
+        [
+          449,
+          645,
+          448,
+          704,
+          451,
+          738
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.7,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右厚后发根及内侧细缘微柔，不扩张中间交叠"
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "start": [
+      451,
+      738
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          470,
+          780,
+          504,
+          801,
+          532,
+          783
+        ]
+      ],
+      [
+        "C",
+        [
+          574,
+          783,
+          617,
+          762,
+          646,
+          736
+        ]
+      ],
+      [
+        "C",
+        [
+          679,
+          705,
+          692,
+          638,
+          696,
+          585
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右后发下尖与外展边缘软化，独立尖束保留"
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "start": [
+      707,
+      686
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          724,
+          680,
+          739,
+          665,
+          737,
+          643
+        ]
+      ],
+      [
+        "C",
+        [
+          738,
+          615,
+          733,
+          594,
+          723,
+          576
+        ]
+      ],
+      [
+        "C",
+        [
+          697,
+          530,
+          650,
+          468,
+          623,
+          425
+        ]
+      ],
+      [
+        "C",
+        [
+          594,
+          378,
+          574,
+          318,
+          557,
+          274
+        ]
+      ],
+      [
+        "C",
+        [
+          538,
+          221,
+          518,
+          168,
+          495,
+          140
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右后发外卷长弧消除硬阶梯，原尾卷位置不变"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "start": [
+      419,
+      81
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          387,
+          93,
+          359,
+          132,
+          353,
+          165
+        ]
+      ],
+      [
+        "C",
+        [
+          334,
+          191,
+          327,
+          222,
+          328,
+          243
+        ]
+      ],
+      [
+        "C",
+        [
+          323,
+          271,
+          327,
+          298,
+          326,
+          324
+        ]
+      ],
+      [
+        "C",
+        [
+          307,
+          358,
+          275,
+          395,
+          256,
+          417
+        ]
+      ],
+      [
+        "C",
+        [
+          231,
+          449,
+          213,
+          486,
+          213,
+          510
+        ]
+      ],
+      [
+        "C",
+        [
+          210,
+          526,
+          225,
+          536,
+          238,
+          526
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左肩后长侧发主外弧局部柔化，沿既有形体不重画发面"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "start": [
+      238,
+      526
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          252,
+          514,
+          250,
+          464,
+          252,
+          433
+        ]
+      ],
+      [
+        "C",
+        [
+          275,
+          399,
+          313,
+          365,
+          337,
+          354
+        ]
+      ],
+      [
+        "C",
+        [
+          361,
+          351,
+          390,
+          350,
+          403,
+          346
+        ]
+      ],
+      [
+        "C",
+        [
+          402,
+          316,
+          393,
+          280,
+          390,
+          253
+        ]
+      ],
+      [
+        "C",
+        [
+          387,
+          220,
+          397,
+          183,
+          412,
+          160
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.7,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左侧发回钩与内弧软化，开放孔与修复过的接头保持"
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "start": [
+      488,
+      83
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          509,
+          104,
+          518,
+          136,
+          521,
+          162
+        ]
+      ],
+      [
+        "C",
+        [
+          529,
+          193,
+          533,
+          223,
+          532,
+          247
+        ]
+      ],
+      [
+        "C",
+        [
+          537,
+          276,
+          555,
+          311,
+          567,
+          332
+        ]
+      ],
+      [
+        "C",
+        [
+          588,
+          364,
+          622,
+          391,
+          644,
+          417
+        ]
+      ],
+      [
+        "C",
+        [
+          662,
+          442,
+          677,
+          481,
+          676,
+          502
+        ]
+      ],
+      [
+        "C",
+        [
+          679,
+          523,
+          676,
+          536,
+          665,
+          538
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.9,
+    "opacity": 0.39,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右耳后侧发外长弧与细尾局部柔化，保留补绘亮暗的曲率"
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "start": [
+      665,
+      538
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          656,
+          521,
+          675,
+          483,
+          680,
+          459
+        ]
+      ],
+      [
+        "C",
+        [
+          668,
+          425,
+          638,
+          397,
+          616,
+          373
+        ]
+      ],
+      [
+        "C",
+        [
+          597,
+          348,
+          579,
+          314,
+          572,
+          288
+        ]
+      ],
+      [
+        "C",
+        [
+          569,
+          269,
+          565,
+          252,
+          561,
+          237
+        ]
+      ],
+      [
+        "C",
+        [
+          562,
+          209,
+          557,
+          175,
+          551,
+          152
+        ]
+      ],
+      [
+        "C",
+        [
+          544,
+          118,
+          513,
+          90,
+          488,
+          83
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.33,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右侧发悬空内弧与根部微柔，不糊合长弧的空隙"
+  },
+  {
+    "layer": "0045 hair/ahoge",
+    "start": [
+      474,
+      27
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          455,
+          29,
+          440,
+          40,
+          435,
+          52
+        ]
+      ],
+      [
+        "C",
+        [
+          430,
+          65,
+          439,
+          82,
+          449,
+          94
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.9,
+    "opacity": 0.27,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "呆毛外弧只软化细缘，末端仍尖细"
+  },
+  {
+    "layer": "0045 hair/ahoge",
+    "start": [
+      457,
+      96
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          449,
+          88,
+          444,
+          81,
+          444,
+          77
+        ]
+      ],
+      [
+        "C",
+        [
+          438,
+          66,
+          444,
+          48,
+          458,
+          37
+        ]
+      ],
+      [
+        "C",
+        [
+          465,
+          32,
+          473,
+          30,
+          479,
+          30
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.65,
+    "opacity": 0.24,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "呆毛内弧细缘轻柔，不改变弧长及根端"
+  },
+  {
+    "layer": "0530 hair/front_side_hair_right",
+    "start": [
+      424,
+      92
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          402,
+          99,
+          382,
+          115,
+          373,
+          132
+        ]
+      ],
+      [
+        "C",
+        [
+          359,
+          149,
+          351,
+          170,
+          355,
+          187
+        ]
+      ],
+      [
+        "C",
+        [
+          360,
+          209,
+          374,
+          227,
+          380,
+          240
+        ]
+      ],
+      [
+        "C",
+        [
+          383,
+          255,
+          382,
+          279,
+          387,
+          294
+        ]
+      ],
+      [
+        "C",
+        [
+          390,
+          315,
+          397,
+          339,
+          404,
+          349
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.44,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左前侧发可见外弧与长发梢微柔，不改分叉和颈侧形体"
+  },
+  {
+    "layer": "0530 hair/front_side_hair_right",
+    "start": [
+      404,
+      349
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          413,
+          346,
+          418,
+          335,
+          421,
+          326
+        ]
+      ],
+      [
+        "C",
+        [
+          411,
+          326,
+          407,
+          305,
+          406,
+          290
+        ]
+      ],
+      [
+        "C",
+        [
+          408,
+          272,
+          400,
+          250,
+          398,
+          236
+        ]
+      ],
+      [
+        "C",
+        [
+          390,
+          217,
+          384,
+          200,
+          386,
+          183
+        ]
+      ],
+      [
+        "C",
+        [
+          394,
+          150,
+          414,
+          118,
+          424,
+          92
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左前侧发脸旁内弧与尾尖收边，仅过滤本层"
+  },
+  {
+    "layer": "0530 hair/front_side_hair_right",
+    "start": [
+      376,
+      177
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          373,
+          199,
+          386,
+          225,
+          390,
+          246
+        ]
+      ],
+      [
+        "C",
+        [
+          396,
+          271,
+          391,
+          304,
+          405,
+          328
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.23,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左前侧发少数过硬发丝线局部柔化，保留发流核心"
+  },
+  {
+    "layer": "0540 hair/front_side_hair_left",
+    "start": [
+      468,
+      79
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          460,
+          85,
+          454,
+          94,
+          452,
+          101
+        ]
+      ],
+      [
+        "C",
+        [
+          477,
+          99,
+          494,
+          104,
+          499,
+          113
+        ]
+      ],
+      [
+        "C",
+        [
+          516,
+          127,
+          523,
+          146,
+          520,
+          162
+        ]
+      ],
+      [
+        "C",
+        [
+          525,
+          178,
+          525,
+          198,
+          521,
+          210
+        ]
+      ],
+      [
+        "C",
+        [
+          518,
+          223,
+          511,
+          236,
+          507,
+          242
+        ]
+      ],
+      [
+        "C",
+        [
+          512,
+          250,
+          516,
+          256,
+          518,
+          263
+        ]
+      ],
+      [
+        "C",
+        [
+          513,
+          275,
+          508,
+          283,
+          502,
+          287
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.7,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右前侧发额旁、耳下弧及小尖逐段柔化"
+  },
+  {
+    "layer": "0540 hair/front_side_hair_left",
+    "start": [
+      502,
+      287
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          517,
+          281,
+          527,
+          259,
+          533,
+          245
+        ]
+      ],
+      [
+        "C",
+        [
+          544,
+          229,
+          550,
+          210,
+          549,
+          196
+        ]
+      ],
+      [
+        "C",
+        [
+          551,
+          178,
+          548,
+          160,
+          543,
+          148
+        ]
+      ],
+      [
+        "C",
+        [
+          538,
+          127,
+          530,
+          110,
+          518,
+          99
+        ]
+      ],
+      [
+        "C",
+        [
+          502,
+          83,
+          484,
+          78,
+          468,
+          79
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右前侧发外缘微柔，保持独立耳饰空间"
+  },
+  {
+    "layer": "0540 hair/front_side_hair_left",
+    "start": [
+      531,
+      151
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          539,
+          177,
+          535,
+          210,
+          521,
+          235
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.22,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右前侧发硬线局部减锐，柔光层次保持"
+  },
+  {
+    "layer": "0550 hair/bangs",
+    "start": [
+      446,
+      74
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          426,
+          76,
+          411,
+          98,
+          404,
+          118
+        ]
+      ],
+      [
+        "C",
+        [
+          394,
+          134,
+          389,
+          153,
+          389,
+          165
+        ]
+      ],
+      [
+        "C",
+        [
+          382,
+          183,
+          373,
+          198,
+          367,
+          205
+        ]
+      ],
+      [
+        "C",
+        [
+          383,
+          206,
+          402,
+          196,
+          414,
+          190
+        ]
+      ],
+      [
+        "C",
+        [
+          424,
+          189,
+          437,
+          190,
+          442,
+          189
+        ]
+      ],
+      [
+        "C",
+        [
+          449,
+          194,
+          451,
+          199,
+          456,
+          198
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "刘海左缘、发尖和额前切边精细柔化，尖束不钝化"
+  },
+  {
+    "layer": "0550 hair/bangs",
+    "start": [
+      456,
+      198
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          463,
+          190,
+          470,
+          177,
+          472,
+          165
+        ]
+      ],
+      [
+        "C",
+        [
+          477,
+          166,
+          483,
+          169,
+          487,
+          170
+        ]
+      ],
+      [
+        "C",
+        [
+          497,
+          182,
+          507,
+          191,
+          517,
+          195
+        ]
+      ],
+      [
+        "C",
+        [
+          522,
+          184,
+          521,
+          166,
+          517,
+          154
+        ]
+      ],
+      [
+        "C",
+        [
+          513,
+          134,
+          505,
+          118,
+          494,
+          107
+        ]
+      ],
+      [
+        "C",
+        [
+          482,
+          87,
+          462,
+          74,
+          446,
+          74
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "刘海右侧及根部柔化，保留真实透明眉线职责"
+  },
+  {
+    "layer": "0550 hair/bangs",
+    "start": [
+      423,
+      140
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          419,
+          155,
+          415,
+          169,
+          414,
+          181
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.24,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "刘海左细发丝过锐边缘局部柔化"
+  },
+  {
+    "layer": "0550 hair/bangs",
+    "start": [
+      487,
+      113
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          493,
+          132,
+          498,
+          150,
+          501,
+          165
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.85,
+    "opacity": 0.25,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "刘海右细发丝局部软化，不洗掉淡粉发色"
+  },
+  {
+    "layer": "0560 hair/back_hair/cap :: crown",
+    "start": [
+      376,
+      101
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          386,
+          88,
+          398,
+          79,
+          409,
+          74
+        ]
+      ],
+      [
+        "C",
+        [
+          421,
+          68,
+          433,
+          64,
+          442,
+          63
+        ]
+      ],
+      [
+        "C",
+        [
+          455,
+          61,
+          468,
+          62,
+          477,
+          64
+        ]
+      ],
+      [
+        "C",
+        [
+          490,
+          66,
+          502,
+          70,
+          511,
+          76
+        ]
+      ],
+      [
+        "C",
+        [
+          525,
+          84,
+          536,
+          96,
+          542,
+          106
+        ]
+      ],
+      [
+        "C",
+        [
+          545,
+          111,
+          546,
+          117,
+          545,
+          121
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.43,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "冠顶物理上轮廓柔化；与back分片的内部切口保持原像素"
+  },
+  {
+    "layer": "0570 face/eyebrow_left",
+    "start": [
+      475,
+      169
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          481,
+          165,
+          487,
+          167,
+          494,
+          169
+        ]
+      ],
+      [
+        "C",
+        [
+          501,
+          172,
+          506,
+          173,
+          510,
+          175
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.33,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左眉细软线条减锐，位置、长度与透明发前层序不变"
+  },
+  {
+    "layer": "0580 face/eyebrow_right",
+    "start": [
+      396,
+      179
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          401,
+          176,
+          407,
+          173,
+          413,
+          171
+        ]
+      ],
+      [
+        "C",
+        [
+          421,
+          168,
+          429,
+          169,
+          437,
+          172
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.85,
+    "opacity": 0.34,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右眉弧线局部柔化，保留细端和淡暖色"
+  },
+  {
+    "layer": "0055 legs/leg_left/foot :: rear",
+    "start": [
+      481,
+      1389
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          477,
+          1388,
+          474,
+          1393,
+          474,
+          1397
+        ]
+      ],
+      [
+        "C",
+        [
+          479,
+          1404,
+          486,
+          1410,
+          493,
+          1413
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.31,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左靴后片外唇柔边，互补深度切口保持"
+  },
+  {
+    "layer": "0055 legs/leg_left/foot :: rear",
+    "start": [
+      539,
+      1378
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          550,
+          1380,
+          560,
+          1387,
+          562,
+          1392
+        ]
+      ],
+      [
+        "C",
+        [
+          559,
+          1399,
+          554,
+          1403,
+          551,
+          1405
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.7,
+    "opacity": 0.33,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左靴后唇外弧微柔，不将后衬糊入腿层"
+  },
+  {
+    "layer": "0056 legs/leg_right/foot :: rear",
+    "start": [
+      392,
+      1377
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          382,
+          1378,
+          370,
+          1385,
+          367,
+          1390
+        ]
+      ],
+      [
+        "C",
+        [
+          369,
+          1395,
+          373,
+          1399,
+          376,
+          1401
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.31,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右靴后唇物理边缘轻柔，内部互补切边不变"
+  },
+  {
+    "layer": "0056 legs/leg_right/foot :: rear",
+    "start": [
+      437,
+      1388
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          446,
+          1387,
+          453,
+          1388,
+          456,
+          1390
+        ]
+      ],
+      [
+        "C",
+        [
+          455,
+          1397,
+          453,
+          1400,
+          450,
+          1403
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.4,
+    "opacity": 0.29,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右靴后片另一唇弧微柔，保留后衬颜色"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "start": [
+      468,
+      1393
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          477,
+          1409,
+          482,
+          1428,
+          483,
+          1445
+        ]
+      ],
+      [
+        "C",
+        [
+          486,
+          1462,
+          483,
+          1482,
+          481,
+          1498
+        ]
+      ],
+      [
+        "C",
+        [
+          479,
+          1517,
+          478,
+          1535,
+          477,
+          1550
+        ]
+      ],
+      [
+        "C",
+        [
+          475,
+          1570,
+          473,
+          1589,
+          472,
+          1603
+        ]
+      ],
+      [
+        "C",
+        [
+          479,
+          1620,
+          500,
+          1634,
+          517,
+          1629
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左前靴内侧、鞋底和圆趾小范围软边，保持现有靴宽"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "start": [
+      517,
+      1629
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          535,
+          1623,
+          550,
+          1606,
+          548,
+          1584
+        ]
+      ],
+      [
+        "C",
+        [
+          547,
+          1564,
+          541,
+          1546,
+          541,
+          1532
+        ]
+      ],
+      [
+        "C",
+        [
+          540,
+          1515,
+          542,
+          1496,
+          542,
+          1479
+        ]
+      ],
+      [
+        "C",
+        [
+          544,
+          1459,
+          548,
+          1442,
+          551,
+          1427
+        ]
+      ],
+      [
+        "C",
+        [
+          555,
+          1417,
+          548,
+          1413,
+          543,
+          1411
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.3,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左前靴外缘柔化；保留鞋面原本柔光，不新增投影"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "start": [
+      468,
+      1393
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          482,
+          1408,
+          496,
+          1428,
+          508,
+          1440
+        ]
+      ],
+      [
+        "C",
+        [
+          523,
+          1430,
+          535,
+          1416,
+          543,
+          1411
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.3,
+    "opacity": 0.29,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左靴V口只柔化滚边的过锐细缘，连续粉色滚边核心保留"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "start": [
+      462,
+      1393
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          454,
+          1409,
+          450,
+          1431,
+          449,
+          1446
+        ]
+      ],
+      [
+        "C",
+        [
+          447,
+          1464,
+          449,
+          1481,
+          450,
+          1498
+        ]
+      ],
+      [
+        "C",
+        [
+          451,
+          1517,
+          454,
+          1534,
+          454,
+          1549
+        ]
+      ],
+      [
+        "C",
+        [
+          457,
+          1570,
+          460,
+          1587,
+          459,
+          1601
+        ]
+      ],
+      [
+        "C",
+        [
+          452,
+          1617,
+          432,
+          1634,
+          414,
+          1628
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.3,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右前靴内侧与脚尖软化，靴腿位置不变"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "start": [
+      414,
+      1628
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          394,
+          1622,
+          381,
+          1603,
+          383,
+          1586
+        ]
+      ],
+      [
+        "C",
+        [
+          384,
+          1567,
+          390,
+          1549,
+          389,
+          1534
+        ]
+      ],
+      [
+        "C",
+        [
+          388,
+          1516,
+          390,
+          1498,
+          390,
+          1482
+        ]
+      ],
+      [
+        "C",
+        [
+          388,
+          1462,
+          384,
+          1444,
+          382,
+          1431
+        ]
+      ],
+      [
+        "C",
+        [
+          379,
+          1417,
+          379,
+          1410,
+          382,
+          1407
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右前靴外缘和底端柔和过渡，保留合格鞋面与完整跟端"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "start": [
+      382,
+      1407
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          395,
+          1415,
+          409,
+          1431,
+          422,
+          1439
+        ]
+      ],
+      [
+        "C",
+        [
+          437,
+          1427,
+          453,
+          1408,
+          462,
+          1393
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.3,
+    "opacity": 0.29,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右靴V口滚边外缘轻柔，不改repair02连续滚边"
+  },
+  {
+    "layer": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "start": [
+      510,
+      1461
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          499,
+          1477
+        ]
+      ],
+      [
+        "L",
+        [
+          510,
+          1502
+        ]
+      ],
+      [
+        "L",
+        [
+          522,
+          1479
+        ]
+      ],
+      [
+        "L",
+        [
+          510,
+          1461
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.75,
+    "opacity": 0.25,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左大菱饰只柔化轮廓，保留原有顶点与淡粉色面"
+  },
+  {
+    "layer": "0660 legs/leg_right/boot_gem",
+    "start": [
+      419,
+      1462
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          409,
+          1478
+        ]
+      ],
+      [
+        "L",
+        [
+          420,
+          1503
+        ]
+      ],
+      [
+        "L",
+        [
+          432,
+          1486
+        ]
+      ],
+      [
+        "L",
+        [
+          431,
+          1479
+        ]
+      ],
+      [
+        "L",
+        [
+          419,
+          1462
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.7,
+    "opacity": 0.24,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右菱饰斜缘微柔；不新增切面或高光"
+  },
+  {
+    "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+    "start": [
+      510,
+      1504
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          510,
+          1506
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.1,
+    "opacity": 0.16,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "细链上段外缘极轻软化，连接末梢分片与链宽保持"
+  },
+  {
+    "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+    "start": [
+      510,
+      1512
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          510,
+          1515
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.1,
+    "opacity": 0.16,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "细链中段局部减硬，不并入小菱坠或珠"
+  },
+  {
+    "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+    "start": [
+      510,
+      1521
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          510,
+          1525
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.1,
+    "opacity": 0.15,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "细链下段局部减硬；隐藏tip不动"
+  },
+  {
+    "layer": "0670 legs/leg_right/boot_flower_ornament",
+    "start": [
+      420,
+      1525
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          414,
+          1525,
+          409,
+          1529,
+          409,
+          1532
+        ]
+      ],
+      [
+        "C",
+        [
+          400,
+          1530,
+          398,
+          1538,
+          401,
+          1544
+        ]
+      ],
+      [
+        "C",
+        [
+          393,
+          1546,
+          390,
+          1553,
+          395,
+          1555
+        ]
+      ],
+      [
+        "C",
+        [
+          393,
+          1561,
+          400,
+          1565,
+          403,
+          1561
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.1,
+    "opacity": 0.3,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右鞋花饰上左外缘和花瓣小尖柔化，保留薄花瓣层次"
+  },
+  {
+    "layer": "0670 legs/leg_right/boot_flower_ornament",
+    "start": [
+      403,
+      1561
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          406,
+          1568,
+          412,
+          1569,
+          414,
+          1564
+        ]
+      ],
+      [
+        "C",
+        [
+          418,
+          1570,
+          423,
+          1568,
+          424,
+          1563
+        ]
+      ],
+      [
+        "C",
+        [
+          433,
+          1566,
+          439,
+          1561,
+          433,
+          1557
+        ]
+      ],
+      [
+        "C",
+        [
+          438,
+          1553,
+          436,
+          1549,
+          432,
+          1548
+        ]
+      ],
+      [
+        "C",
+        [
+          438,
+          1543,
+          434,
+          1536,
+          430,
+          1536
+        ]
+      ],
+      [
+        "C",
+        [
+          432,
+          1528,
+          425,
+          1523,
+          420,
+          1525
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.05,
+    "opacity": 0.29,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右鞋花饰下右外缘轻柔，固定花瓣与链条归属不混"
+  },
+  {
+    "layer": "0310 face/face_base",
+    "start": [
+      394.2,
+      237.223
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          388.4,
+          223.1,
+          381.8,
+          210,
+          381.4,
+          194
+        ]
+      ],
+      [
+        "C",
+        [
+          380.9,
+          174,
+          387.2,
+          154.9,
+          401.4,
+          141.8
+        ]
+      ],
+      [
+        "C",
+        [
+          414.7,
+          129.6,
+          435,
+          124,
+          456.5,
+          123.8
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.55,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "复看独显额头左轮廓仍有细硬阶梯，沿真实原轮廓接顺半透明过渡"
+  },
+  {
+    "layer": "0310 face/face_base",
+    "start": [
+      456.5,
+      123.8
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          478.6,
+          123.6,
+          499.7,
+          128.9,
+          514,
+          141.4
+        ]
+      ],
+      [
+        "C",
+        [
+          528,
+          153.7,
+          534.4,
+          172.8,
+          534,
+          193
+        ]
+      ],
+      [
+        "C",
+        [
+          533.6,
+          211.2,
+          521.3,
+          225.2,
+          515.4,
+          243.6
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.5,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "复看隐藏右额与侧脸边，按既有轮廓细笔柔化，不画发色"
+  },
+  {
+    "layer": "0310 face/face_base",
+    "start": [
+      515.4,
+      243.6
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          510.5,
+          258.9,
+          504.1,
+          267.3,
+          492.7,
+          276.4
+        ]
+      ],
+      [
+        "C",
+        [
+          483.1,
+          284.2,
+          470.7,
+          290.7,
+          464.1,
+          294.1
+        ]
+      ],
+      [
+        "C",
+        [
+          460.3,
+          295.1,
+          457.6,
+          295.1,
+          453.7,
+          293.8
+        ]
+      ],
+      [
+        "C",
+        [
+          443.2,
+          289.5,
+          430.7,
+          282.1,
+          420.6,
+          274.7
+        ]
+      ],
+      [
+        "C",
+        [
+          410.2,
+          267,
+          404.1,
+          259.2,
+          399.1,
+          248.4
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "下颌可见边缘复核后轻柔收顺，保持原有细描边与脸型"
+  },
+  {
+    "layer": "0270 face/ear_left",
+    "start": [
+      548.6,
+      200.2
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          565.1,
+          198.3,
+          581.6,
+          196.7,
+          595.1,
+          195.3
+        ]
+      ],
+      [
+        "C",
+        [
+          596.65,
+          195.15,
+          596.65,
+          196.7,
+          595,
+          198.4
+        ]
+      ],
+      [
+        "C",
+        [
+          594.35,
+          199.15,
+          593.173,
+          200.229,
+          591.805,
+          201.3833
+        ]
+      ],
+      [
+        "C",
+        [
+          579.493,
+          211.772,
+          556.57,
+          224.21,
+          534.7,
+          236
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.8,
+    "opacity": 0.46,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右屏尖耳末端细缘仍略硬，沿原尖端弧补做柔边，耳尖不缩短"
+  },
+  {
+    "layer": "0390 face/eye_left/sclera",
+    "start": [
+      476,
+      203
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          474,
+          209,
+          478,
+          215,
+          480,
+          218
+        ]
+      ],
+      [
+        "C",
+        [
+          489,
+          222,
+          500,
+          221,
+          509,
+          218
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.45,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "眼白下弧复看后局部收软，保留完整眼白而不并入皮肤"
+  },
+  {
+    "layer": "0400 face/eye_right/sclera",
+    "start": [
+      399,
+      220
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          406,
+          224,
+          420,
+          225,
+          429,
+          220
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "另一眼白下弧轻柔去硬边，不扩充虹膜"
+  },
+  {
+    "layer": "0410 face/eye_left/iris",
+    "start": [
+      479,
+      212
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          483,
+          220,
+          491,
+          222,
+          498,
+          218
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左虹膜下缘复核后轻柔，不改变蓝色层次和边界位置"
+  },
+  {
+    "layer": "0470 face/eye_left/upper_eyelid",
+    "start": [
+      472.05,
+      203.35
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          472.82,
+          200.86,
+          474.03,
+          198.77,
+          476.25,
+          197.25
+        ]
+      ],
+      [
+        "C",
+        [
+          480.17,
+          194.32,
+          484.43,
+          192.11,
+          488.48,
+          190.68
+        ]
+      ],
+      [
+        "C",
+        [
+          492.25,
+          189.46,
+          496.66,
+          189.28,
+          500.04,
+          190.23
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.8,
+    "opacity": 0.5,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "对照参考上眼缘外侧仍稍锐，沿实有眼线只柔化边缘，保留深色核心"
+  },
+  {
+    "layer": "0470 face/eye_left/upper_eyelid",
+    "start": [
+      514.57,
+      214.99
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          515.76,
+          212.37,
+          515.71,
+          209.64,
+          514.39,
+          207.17
+        ]
+      ],
+      [
+        "C",
+        [
+          512.51,
+          203.69,
+          509.04,
+          201.25,
+          505.37,
+          199.53
+        ]
+      ],
+      [
+        "C",
+        [
+          500.09,
+          197.08,
+          494.76,
+          196.31,
+          489.59,
+          196.6
+        ]
+      ],
+      [
+        "C",
+        [
+          484.4,
+          196.81,
+          479.76,
+          198.51,
+          476.69,
+          201.38
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.4,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左上眼线内侧及外翼的柔边，睫毛原尖和眼眶厚度保留"
+  },
+  {
+    "layer": "0045 hair/ahoge",
+    "start": [
+      451.2,
+      94
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          446.8,
+          90,
+          440.9,
+          83,
+          437.6,
+          76.5
+        ]
+      ],
+      [
+        "C",
+        [
+          434.8,
+          70.9,
+          433.5,
+          67.1,
+          433.24,
+          62.5
+        ]
+      ],
+      [
+        "C",
+        [
+          433,
+          57,
+          434,
+          53,
+          436.15,
+          50.5
+        ]
+      ],
+      [
+        "C",
+        [
+          440,
+          44,
+          446,
+          38,
+          452.82,
+          34.5
+        ]
+      ],
+      [
+        "C",
+        [
+          459,
+          31,
+          466,
+          28,
+          477,
+          27.8
+        ]
+      ],
+      [
+        "C",
+        [
+          482,
+          27.8,
+          487,
+          30,
+          488.8,
+          33.5
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "呆毛实际极细轮廓复看，沿准确外弧轻柔，消除先前未触及的顶端阶梯"
+  },
+  {
+    "layer": "0045 hair/ahoge",
+    "start": [
+      476,
+      30.8
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          466,
+          30.8,
+          459,
+          36,
+          453.83,
+          40.5
+        ]
+      ],
+      [
+        "C",
+        [
+          448,
+          46,
+          444,
+          53,
+          442.83,
+          58.5
+        ]
+      ],
+      [
+        "C",
+        [
+          440,
+          70,
+          444.7,
+          83.8,
+          451.9,
+          93.2
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.9,
+    "opacity": 0.34,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "呆毛细内弧复看轻柔，不改变弧形或加宽根端"
+  },
+  {
+    "layer": "0480 face/eye_right/upper_eyelid",
+    "start": [
+      390,
+      204.3
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          393.2,
+          200.5,
+          397.7,
+          197.7,
+          402.7,
+          196.5
+        ]
+      ],
+      [
+        "L",
+        [
+          406.1,
+          195.7
+        ]
+      ],
+      [
+        "C",
+        [
+          408.7,
+          194.6,
+          411.5,
+          194,
+          414,
+          193.8
+        ]
+      ],
+      [
+        "C",
+        [
+          419,
+          193.7,
+          422.6,
+          194.2,
+          425.6,
+          195.1
+        ]
+      ],
+      [
+        "C",
+        [
+          429.4,
+          196.2,
+          432.9,
+          198.3,
+          435,
+          200.7
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.7,
+    "opacity": 0.48,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右上眼线外缘对应参考局部再软化，保留睫毛细端"
+  },
+  {
+    "layer": "0480 face/eye_right/upper_eyelid",
+    "start": [
+      433.1,
+      204.3
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          429.5,
+          201,
+          424.6,
+          199.5,
+          419.3,
+          199.5
+        ]
+      ],
+      [
+        "C",
+        [
+          414.7,
+          199.3,
+          411.3,
+          199.9,
+          408,
+          201.5
+        ]
+      ],
+      [
+        "C",
+        [
+          404.3,
+          203.4,
+          401,
+          206,
+          398.8,
+          209
+        ]
+      ],
+      [
+        "C",
+        [
+          396.6,
+          212.1,
+          396.5,
+          215.6,
+          398.4,
+          220.1
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.3,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右上眼线内侧柔和过渡，保持完整眼眶、浓淡与厚度"
+  },
+  {
+    "layer": "0560 hair/back_hair/cap :: crown",
+    "start": [
+      377.1,
+      100.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          383.92,
+          93,
+          390.57,
+          87.17,
+          399.38,
+          80.5
+        ]
+      ],
+      [
+        "C",
+        [
+          404.36,
+          77.17,
+          411.1,
+          73.83,
+          419.63,
+          70.5
+        ]
+      ],
+      [
+        "C",
+        [
+          425.94,
+          69.12,
+          430.39,
+          67.88,
+          433,
+          66.8
+        ]
+      ],
+      [
+        "C",
+        [
+          436.3,
+          65.4,
+          439.6,
+          64.2,
+          443.1,
+          63.7
+        ]
+      ],
+      [
+        "C",
+        [
+          453.35,
+          63.42,
+          471.67,
+          63.58,
+          477,
+          64.2
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.7,
+    "opacity": 0.52,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "400%复查冠顶细阶梯后逐段沿物理边缘柔化；避免碰到内部冠顶切口"
+  },
+  {
+    "layer": "0560 hair/back_hair/cap :: crown",
+    "start": [
+      477,
+      64.2
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          487,
+          66.15,
+          495,
+          68.25,
+          501.02,
+          70.5
+        ]
+      ],
+      [
+        "C",
+        [
+          507.66,
+          73.83,
+          513.12,
+          77.17,
+          517.39,
+          80.5
+        ]
+      ],
+      [
+        "C",
+        [
+          521.83,
+          83.83,
+          527.57,
+          88.83,
+          529.21,
+          90.5
+        ]
+      ],
+      [
+        "C",
+        [
+          533.65,
+          95.5,
+          539.2,
+          102.17,
+          541.76,
+          105.5
+        ]
+      ],
+      [
+        "C",
+        [
+          545.94,
+          112.17,
+          548.76,
+          117.17,
+          550.26,
+          120.5
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.5,
+    "opacity": 0.5,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "冠顶右斜缘按实际参考细过渡精修，保持粉发层次与原宽度"
+  },
+  {
+    "layer": "0050 hair/back_hair/cap :: back",
+    "start": [
+      344.56,
+      160.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          343.9,
+          162.83,
+          342.5,
+          169.67,
+          342.7,
+          171.5
+        ]
+      ],
+      [
+        "C",
+        [
+          342.9,
+          173.33,
+          345.36,
+          178.83,
+          345.19,
+          180.5
+        ]
+      ],
+      [
+        "C",
+        [
+          345.02,
+          182.17,
+          343.43,
+          188.67,
+          343.26,
+          190.5
+        ]
+      ],
+      [
+        "C",
+        [
+          343.04,
+          198.25,
+          346,
+          208,
+          350,
+          223
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.4,
+    "opacity": 0.46,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "后脑屏左耳外缘小折点过锐，按本件原折线细软化，不拉直折点"
+  },
+  {
+    "layer": "0050 hair/back_hair/cap :: back",
+    "start": [
+      561.87,
+      150.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          562.24,
+          154.33,
+          563.04,
+          158.92,
+          563.46,
+          160.5
+        ]
+      ],
+      [
+        "C",
+        [
+          564.63,
+          163.67,
+          565.5,
+          170.5,
+          565.6,
+          171.5
+        ]
+      ],
+      [
+        "C",
+        [
+          566.8,
+          177,
+          566,
+          181.8,
+          565.5,
+          185.5
+        ]
+      ],
+      [
+        "L",
+        [
+          566,
+          195.5
+        ]
+      ],
+      [
+        "C",
+        [
+          566,
+          205,
+          562,
+          216,
+          558,
+          226
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.44,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "后脑屏右外缘褶点小范围软化，保留原纹理和耳前发独立性"
+  },
+  {
+    "layer": "0120 arms/arm_left/hand/index_finger",
+    "start": [
+      727,
+      823
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          730,
+          834,
+          731,
+          841,
+          727,
+          851
+        ]
+      ],
+      [
+        "C",
+        [
+          726,
+          862,
+          722,
+          878,
+          719,
+          887
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.48,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左食指外侧放大仍有硬阶梯，仅复修露出侧缘"
+  },
+  {
+    "layer": "0140 arms/arm_left/hand/palm",
+    "start": [
+      682,
+      767
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          674,
+          776,
+          671,
+          783,
+          672,
+          790
+        ]
+      ],
+      [
+        "C",
+        [
+          674,
+          802,
+          677,
+          817,
+          680,
+          825
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.3,
+    "opacity": 0.48,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "左掌外侧斜缘复核，增强不足一像素的柔和过渡"
+  },
+  {
+    "layer": "0190 arms/arm_right/hand/palm",
+    "start": [
+      249,
+      769
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          254,
+          783,
+          250,
+          799,
+          248,
+          809
+        ]
+      ],
+      [
+        "C",
+        [
+          249,
+          819,
+          244,
+          830,
+          237,
+          827
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.2,
+    "opacity": 0.46,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右掌外缘细阶梯复修，不触及指缝内独立部件"
+  },
+  {
+    "layer": "0190 arms/arm_right/hand/palm",
+    "start": [
+      216,
+      775
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          208,
+          790,
+          199,
+          803,
+          194,
+          815
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.1,
+    "opacity": 0.44,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右掌另一侧斜缘按参考肤色边微柔，保留掌形"
+  },
+  {
+    "layer": "0260 body/breast",
+    "start": [
+      376,
+      405
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          366,
+          421,
+          358,
+          439,
+          358,
+          451
+        ]
+      ],
+      [
+        "C",
+        [
+          357,
+          469,
+          361,
+          486,
+          369,
+          497
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.4,
+    "opacity": 0.45,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "胸衣左弧放大后描边偏硬，局部柔化紫灰轮廓而保留核心"
+  },
+  {
+    "layer": "0260 body/breast",
+    "start": [
+      547,
+      406
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          559,
+          420,
+          566,
+          440,
+          565,
+          452
+        ]
+      ],
+      [
+        "C",
+        [
+          566,
+          471,
+          561,
+          486,
+          552,
+          498
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 3.25,
+    "opacity": 0.43,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "胸衣右弧描边局部减锐，衣料高光和外轮廓位置不变"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      543.7,
+      509.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          542.5,
+          517,
+          540.5,
+          526,
+          538.8,
+          534
+        ]
+      ],
+      [
+        "C",
+        [
+          538.2,
+          537,
+          537.5,
+          540.5,
+          537,
+          543
+        ]
+      ]
+    ],
+    "brush": "b) Airbrush Soft",
+    "size": 2.7,
+    "opacity": 0.85,
+    "passes": 2,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      170,
+      166,
+      185
+    ],
+    "own_sample": [
+      542,
+      510
+    ],
+    "reason": "8倍单层复看确认衣料边510–543仍有邻发粉色：只在1–2px边缘带用本层合法紫灰描边色逐段覆盖，不改变alpha或贴参考"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      543.7,
+      509.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          542.5,
+          517,
+          540.5,
+          526,
+          538.8,
+          534
+        ]
+      ],
+      [
+        "C",
+        [
+          538.2,
+          537,
+          537.5,
+          540.5,
+          537,
+          543
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.31,
+    "passes": 1,
+    "alpha_lock": false,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "局部紫灰收边后小笔接顺衣料与透明过渡，保留原轮廓"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      544,
+      510
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          543,
+          516,
+          542,
+          521,
+          541,
+          525
+        ]
+      ],
+      [
+        "C",
+        [
+          540,
+          530,
+          539,
+          535,
+          538,
+          540
+        ]
+      ]
+    ],
+    "brush": "b) Basic-5 Size Opacity",
+    "size": 1.9,
+    "opacity": 0.94,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      172,
+      167,
+      185
+    ],
+    "own_sample": [
+      542,
+      510
+    ],
+    "reason": "衣缘最外侧一像素粉发晕边最后收净：用本层紫灰线色精细重描，保留已有透明度，不改变部件形状"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      544,
+      510
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          543,
+          516,
+          542,
+          521,
+          541,
+          525
+        ]
+      ],
+      [
+        "C",
+        [
+          540,
+          530,
+          539,
+          535,
+          538,
+          540
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 1.8,
+    "opacity": 0.27,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "修过的衣缘颜色在本层内接顺，不再扩展轮廓"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      544,
+      510
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          543,
+          516,
+          542,
+          521,
+          541,
+          525
+        ]
+      ],
+      [
+        "C",
+        [
+          540,
+          530,
+          539,
+          535,
+          538,
+          540
+        ]
+      ]
+    ],
+    "brush": "b) Basic-1",
+    "size": 3.4,
+    "opacity": 1,
+    "passes": 2,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      172,
+      167,
+      185
+    ],
+    "own_sample": [
+      542,
+      510
+    ],
+    "reason": "衣缘外侧残留暖粉仍可辨：沿本层原细描边用实笔完成颜色归属收净，alpha锁定，修改带限定衣缘约1–2像素"
+  },
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      544,
+      510
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          543,
+          516,
+          542,
+          521,
+          541,
+          525
+        ]
+      ],
+      [
+        "C",
+        [
+          540,
+          530,
+          539,
+          535,
+          538,
+          540
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.2,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "实笔收净后在衣缘内接顺色质，保留原半透明外缘不增厚"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      353.1,
+      940
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          356.7,
+          953.3,
+          362.1,
+          973.3,
+          363.9,
+          980
+        ]
+      ],
+      [
+        "C",
+        [
+          367.4,
+          993.3,
+          370.8,
+          1006.7,
+          374,
+          1020
+        ]
+      ],
+      [
+        "C",
+        [
+          376.9,
+          1033.3,
+          380.9,
+          1053.3,
+          381.6,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          383.1,
+          1073.3,
+          383.1,
+          1086.7,
+          381.8,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          379.1,
+          1113.3,
+          373.8,
+          1133.3,
+          372.1,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          368.8,
+          1153.3,
+          364.8,
+          1173.3,
+          364.3,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          363.3,
+          1193.3,
+          363.3,
+          1206.7,
+          364.4,
+          1220
+        ]
+      ],
+      [
+        "C",
+        [
+          366.1,
+          1233.3,
+          369.3,
+          1253.3,
+          370.7,
+          1260
+        ]
+      ],
+      [
+        "C",
+        [
+          373.8,
+          1273.3,
+          378.6,
+          1293.3,
+          380.1,
+          1300
+        ]
+      ],
+      [
+        "C",
+        [
+          383,
+          1313.3,
+          386.8,
+          1333.3,
+          387.9,
+          1340
+        ]
+      ],
+      [
+        "C",
+        [
+          390.1,
+          1353.3,
+          392,
+          1369.3,
+          392.4,
+          1374
+        ]
+      ]
+    ],
+    "brush": "b) Basic-1",
+    "size": 1.6,
+    "opacity": 0.63,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      210,
+      177,
+      162
+    ],
+    "own_sample": [
+      445,
+      1200
+    ],
+    "reason": "最终同坐标小腿放大确认外缘白色残线；只用本腿自身暖色描边色在约1px边缘带接续，保留形体与alpha，不新增阴影"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      353.1,
+      940
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          356.7,
+          953.3,
+          362.1,
+          973.3,
+          363.9,
+          980
+        ]
+      ],
+      [
+        "C",
+        [
+          367.4,
+          993.3,
+          370.8,
+          1006.7,
+          374,
+          1020
+        ]
+      ],
+      [
+        "C",
+        [
+          376.9,
+          1033.3,
+          380.9,
+          1053.3,
+          381.6,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          383.1,
+          1073.3,
+          383.1,
+          1086.7,
+          381.8,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          379.1,
+          1113.3,
+          373.8,
+          1133.3,
+          372.1,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          368.8,
+          1153.3,
+          364.8,
+          1173.3,
+          364.3,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          363.3,
+          1193.3,
+          363.3,
+          1206.7,
+          364.4,
+          1220
+        ]
+      ],
+      [
+        "C",
+        [
+          366.1,
+          1233.3,
+          369.3,
+          1253.3,
+          370.7,
+          1260
+        ]
+      ],
+      [
+        "C",
+        [
+          373.8,
+          1273.3,
+          378.6,
+          1293.3,
+          380.1,
+          1300
+        ]
+      ],
+      [
+        "C",
+        [
+          383,
+          1313.3,
+          386.8,
+          1333.3,
+          387.9,
+          1340
+        ]
+      ],
+      [
+        "C",
+        [
+          390.1,
+          1353.3,
+          392,
+          1369.3,
+          392.4,
+          1374
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.38,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "本腿暖色细线与相邻皮肤在边缘带内接顺，不触及内部补绘色面"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      353.1,
+      940
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          356.7,
+          953.3,
+          362.1,
+          973.3,
+          363.9,
+          980
+        ]
+      ],
+      [
+        "C",
+        [
+          367.4,
+          993.3,
+          370.8,
+          1006.7,
+          374,
+          1020
+        ]
+      ],
+      [
+        "C",
+        [
+          376.9,
+          1033.3,
+          380.9,
+          1053.3,
+          381.6,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          383.1,
+          1073.3,
+          383.1,
+          1086.7,
+          381.8,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          379.1,
+          1113.3,
+          373.8,
+          1133.3,
+          372.1,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          368.8,
+          1153.3,
+          364.8,
+          1173.3,
+          364.3,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          363.3,
+          1193.3,
+          363.3,
+          1206.7,
+          364.4,
+          1220
+        ]
+      ],
+      [
+        "C",
+        [
+          366.1,
+          1233.3,
+          369.3,
+          1253.3,
+          370.7,
+          1260
+        ]
+      ],
+      [
+        "C",
+        [
+          373.8,
+          1273.3,
+          378.6,
+          1293.3,
+          380.1,
+          1300
+        ]
+      ],
+      [
+        "C",
+        [
+          383,
+          1313.3,
+          386.8,
+          1333.3,
+          387.9,
+          1340
+        ]
+      ],
+      [
+        "C",
+        [
+          390.1,
+          1353.3,
+          392,
+          1369.3,
+          392.4,
+          1374
+        ]
+      ]
+    ],
+    "brush": "b) Basic-1",
+    "size": 3.4,
+    "opacity": 0.93,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      210,
+      177,
+      162
+    ],
+    "own_sample": [
+      445,
+      1200
+    ],
+    "reason": "小腿白缘复看仍可辨：以本腿暖线色沿准确外缘收净，限制在既有边缘两像素带内，原透明度与腿形保留"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      353.1,
+      940
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          356.7,
+          953.3,
+          362.1,
+          973.3,
+          363.9,
+          980
+        ]
+      ],
+      [
+        "C",
+        [
+          367.4,
+          993.3,
+          370.8,
+          1006.7,
+          374,
+          1020
+        ]
+      ],
+      [
+        "C",
+        [
+          376.9,
+          1033.3,
+          380.9,
+          1053.3,
+          381.6,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          383.1,
+          1073.3,
+          383.1,
+          1086.7,
+          381.8,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          379.1,
+          1113.3,
+          373.8,
+          1133.3,
+          372.1,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          368.8,
+          1153.3,
+          364.8,
+          1173.3,
+          364.3,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          363.3,
+          1193.3,
+          363.3,
+          1206.7,
+          364.4,
+          1220
+        ]
+      ],
+      [
+        "C",
+        [
+          366.1,
+          1233.3,
+          369.3,
+          1253.3,
+          370.7,
+          1260
+        ]
+      ],
+      [
+        "C",
+        [
+          373.8,
+          1273.3,
+          378.6,
+          1293.3,
+          380.1,
+          1300
+        ]
+      ],
+      [
+        "C",
+        [
+          383,
+          1313.3,
+          386.8,
+          1333.3,
+          387.9,
+          1340
+        ]
+      ],
+      [
+        "C",
+        [
+          390.1,
+          1353.3,
+          392,
+          1369.3,
+          392.4,
+          1374
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.7,
+    "opacity": 0.42,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "暖色收边后局部接顺，避免画成硬描线"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      558.8,
+      1020
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          555.9,
+          1033.3,
+          552.1,
+          1053.3,
+          551.4,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          549.8,
+          1073.3,
+          549.8,
+          1086.7,
+          550.8,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          552.7,
+          1113.3,
+          557.2,
+          1133.3,
+          558.7,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          561.7,
+          1153.3,
+          565.1,
+          1173.3,
+          565.6,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          566.7,
+          1193.3,
+          566.7,
+          1206.7,
+          566,
+          1220
+        ]
+      ],
+      [
+        "C",
+        [
+          564.8,
+          1233.3,
+          562.1,
+          1253.3,
+          560.9,
+          1260
+        ]
+      ],
+      [
+        "C",
+        [
+          558.3,
+          1273.3,
+          554.3,
+          1293.3,
+          552.9,
+          1300
+        ]
+      ],
+      [
+        "C",
+        [
+          550,
+          1313.3,
+          546.3,
+          1333.3,
+          545.1,
+          1340
+        ]
+      ],
+      [
+        "C",
+        [
+          542.8,
+          1353.3,
+          540.2,
+          1369.3,
+          539.5,
+          1374
+        ]
+      ]
+    ],
+    "brush": "b) Basic-1",
+    "size": 3.2,
+    "opacity": 0.87,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      231,
+      184,
+      168
+    ],
+    "own_sample": [
+      478,
+      1100
+    ],
+    "reason": "右小腿外缘同类偏白残线；用本腿原暖色细缘色修正，不抄邻腿像素、不改变边界"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      558.8,
+      1020
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          555.9,
+          1033.3,
+          552.1,
+          1053.3,
+          551.4,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          549.8,
+          1073.3,
+          549.8,
+          1086.7,
+          550.8,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          552.7,
+          1113.3,
+          557.2,
+          1133.3,
+          558.7,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          561.7,
+          1153.3,
+          565.1,
+          1173.3,
+          565.6,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          566.7,
+          1193.3,
+          566.7,
+          1206.7,
+          566,
+          1220
+        ]
+      ],
+      [
+        "C",
+        [
+          564.8,
+          1233.3,
+          562.1,
+          1253.3,
+          560.9,
+          1260
+        ]
+      ],
+      [
+        "C",
+        [
+          558.3,
+          1273.3,
+          554.3,
+          1293.3,
+          552.9,
+          1300
+        ]
+      ],
+      [
+        "C",
+        [
+          550,
+          1313.3,
+          546.3,
+          1333.3,
+          545.1,
+          1340
+        ]
+      ],
+      [
+        "C",
+        [
+          542.8,
+          1353.3,
+          540.2,
+          1369.3,
+          539.5,
+          1374
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.6,
+    "opacity": 0.4,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右小腿外侧描边局部柔化，保持暖色半透明质感"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      479.3,
+      1020
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          478.7,
+          1026.7,
+          475.1,
+          1053.3,
+          475,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          474.9,
+          1073.3,
+          474.9,
+          1086.7,
+          478,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          480.5,
+          1113.3,
+          484.2,
+          1126.7,
+          485.8,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          485.9,
+          1153.3,
+          485.9,
+          1166.7,
+          484.7,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          484.4,
+          1186.7,
+          484,
+          1193.3,
+          484,
+          1200
+        ]
+      ],
+      [
+        "C",
+        [
+          484,
+          1206.7,
+          484.8,
+          1226.7,
+          486.3,
+          1240
+        ]
+      ],
+      [
+        "C",
+        [
+          486.9,
+          1246.7,
+          488.9,
+          1266.7,
+          490.3,
+          1280
+        ]
+      ],
+      [
+        "C",
+        [
+          491.6,
+          1293.3,
+          493.4,
+          1313.3,
+          493.8,
+          1320
+        ]
+      ],
+      [
+        "C",
+        [
+          494.7,
+          1333.3,
+          495.3,
+          1353.3,
+          495.3,
+          1360
+        ]
+      ],
+      [
+        "L",
+        [
+          495.2,
+          1374
+        ]
+      ]
+    ],
+    "brush": "b) Basic-1",
+    "size": 3.1,
+    "opacity": 0.76,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": [
+      231,
+      184,
+      168
+    ],
+    "own_sample": [
+      478,
+      1100
+    ],
+    "reason": "右小腿内侧细白边收成本腿暖肤线；膝部已有深浅不改"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      479.3,
+      1020
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          478.7,
+          1026.7,
+          475.1,
+          1053.3,
+          475,
+          1060
+        ]
+      ],
+      [
+        "C",
+        [
+          474.9,
+          1073.3,
+          474.9,
+          1086.7,
+          478,
+          1100
+        ]
+      ],
+      [
+        "C",
+        [
+          480.5,
+          1113.3,
+          484.2,
+          1126.7,
+          485.8,
+          1140
+        ]
+      ],
+      [
+        "C",
+        [
+          485.9,
+          1153.3,
+          485.9,
+          1166.7,
+          484.7,
+          1180
+        ]
+      ],
+      [
+        "C",
+        [
+          484.4,
+          1186.7,
+          484,
+          1193.3,
+          484,
+          1200
+        ]
+      ],
+      [
+        "C",
+        [
+          484,
+          1206.7,
+          484.8,
+          1226.7,
+          486.3,
+          1240
+        ]
+      ],
+      [
+        "C",
+        [
+          486.9,
+          1246.7,
+          488.9,
+          1266.7,
+          490.3,
+          1280
+        ]
+      ],
+      [
+        "C",
+        [
+          491.6,
+          1293.3,
+          493.4,
+          1313.3,
+          493.8,
+          1320
+        ]
+      ],
+      [
+        "C",
+        [
+          494.7,
+          1333.3,
+          495.3,
+          1353.3,
+          495.3,
+          1360
+        ]
+      ],
+      [
+        "L",
+        [
+          495.2,
+          1374
+        ]
+      ]
+    ],
+    "brush": "x) Filter Blur",
+    "size": 2.5,
+    "opacity": 0.36,
+    "passes": 1,
+    "alpha_lock": true,
+    "eraser": false,
+    "color": null,
+    "own_sample": null,
+    "reason": "右小腿内侧收边后微柔过渡，不新增体积阴影"
+  }
+]

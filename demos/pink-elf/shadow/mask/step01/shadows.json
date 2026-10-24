@@ -1,0 +1,371 @@
+{
+  "version": 2,
+  "shadows": [
+    {
+      "id": "hair-bangs",
+      "casterPartId": "character:hair/bangs",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "casterLayerUuids": [
+        "292e0816-48fe-49ee-a099-4db9fa9dd668"
+      ],
+      "receiverLayerUuids": [
+        "4d5fe42c-976b-4831-a511-14fa6b576105"
+      ],
+      "shadowLayerUuid": "92d8f48c-9e35-447a-8268-98c8678e7eb2",
+      "clipBaseLayerUuid": "4d5fe42c-976b-4831-a511-14fa6b576105",
+      "follow": "caster",
+      "blendMode": "normal",
+      "color": "#f1d8cc",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -3,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "notes": "实际刘海轮廓向右下1/3px；额头隐藏根部完整，保留所有原发尖；不增加脸外细丝影。 颜色取面部暖肤阴影，正常不透明色避免重叠叠黑；保留原始alpha边缘。",
+      "projectionOffset": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "hair-front_side_hair_right",
+      "casterPartId": "character:hair/front_side_hair_right",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "casterLayerUuids": [
+        "7372d1ba-da80-4844-a396-bb41871b43d1"
+      ],
+      "receiverLayerUuids": [
+        "4d5fe42c-976b-4831-a511-14fa6b576105"
+      ],
+      "shadowLayerUuid": "1de80187-9686-4c74-a7a7-26a78bcdd44a",
+      "clipBaseLayerUuid": "4d5fe42c-976b-4831-a511-14fa6b576105",
+      "follow": "caster",
+      "blendMode": "normal",
+      "color": "#f1d8cc",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "notes": "画面左前侧发仅贴脸主体与短尖有落脸依据；长颈旁细梢按真实位置保留在脸外，不向内搬线。 颜色取面部暖肤阴影，正常不透明色避免重叠叠黑；保留原始alpha边缘。",
+      "projectionOffset": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "hair-front_side_hair_left",
+      "casterPartId": "character:hair/front_side_hair_left",
+      "receiverPartIds": [
+        "character:face/face_base"
+      ],
+      "casterLayerUuids": [
+        "b4e2dc9a-6121-4df3-940c-23eb54943b2b"
+      ],
+      "receiverLayerUuids": [
+        "4d5fe42c-976b-4831-a511-14fa6b576105"
+      ],
+      "shadowLayerUuid": "ad8b7a57-c27d-4813-9e48-f219db29804d",
+      "clipBaseLayerUuid": "4d5fe42c-976b-4831-a511-14fa6b576105",
+      "follow": "caster",
+      "blendMode": "normal",
+      "color": "#f1d8cc",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "notes": "画面右前侧发仅真实重叠脸缘处受影；外伸细梢与下卷尾不强求显影、不做对称线。 颜色取面部暖肤阴影，正常不透明色避免重叠叠黑；保留原始alpha边缘。",
+      "projectionOffset": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "upper-lid-right",
+      "casterPartId": "character:face/eye_right/upper_eyelid",
+      "receiverPartIds": [
+        "character:face/eye_right/iris"
+      ],
+      "casterLayerUuids": [
+        "cab5e3dc-bae4-4f8d-9280-8e10b383f3de"
+      ],
+      "receiverLayerUuids": [
+        "f0c14006-2bc4-4320-976b-8680c32c0769"
+      ],
+      "shadowLayerUuid": "d9352120-636a-418a-a438-959d2404413b",
+      "clipBaseLayerUuid": "f0c14006-2bc4-4320-976b-8680c32c0769",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "color": "#e4deed",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "notes": "原眼白上缘淡紫灰投影已正确，保留不叠加；此层仅补虹膜上缘窄带，以相应上眼睑为运动来源，不跟随视线。保留虹膜渐变、瞳孔及独立高光；上方隐藏片延伸至y163/165，实际眼白alpha裁切到眼球开口。 原尺寸复核后以真实上睑不透明下缘向下2px构建接触影窄带，上部隐藏余量延至y160；未加深颜色、未重复眼白阴影。",
+      "projectionOffset": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "upper-lid-left",
+      "casterPartId": "character:face/eye_left/upper_eyelid",
+      "receiverPartIds": [
+        "character:face/eye_left/iris"
+      ],
+      "casterLayerUuids": [
+        "ed14dc02-ed0e-441b-9b17-5defde2b0f09"
+      ],
+      "receiverLayerUuids": [
+        "266d7f45-cd63-4a6a-8de4-66bc60283290"
+      ],
+      "shadowLayerUuid": "e9461139-6e14-4dc8-9f9d-f4a629034ec4",
+      "clipBaseLayerUuid": "266d7f45-cd63-4a6a-8de4-66bc60283290",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "color": "#e4deed",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "notes": "原眼白上缘淡紫灰投影已正确，保留不叠加；此层仅补虹膜上缘窄带，以相应上眼睑为运动来源，不跟随视线。保留虹膜渐变、瞳孔及独立高光；上方隐藏片延伸至y163/165，实际眼白alpha裁切到眼球开口。 原尺寸复核后以真实上睑不透明下缘向下2px构建接触影窄带，上部隐藏余量延至y160；未加深颜色、未重复眼白阴影。",
+      "projectionOffset": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "floral-hem-to-legs",
+      "casterPartId": "clothing:floral_skirt_undertrim",
+      "receiverPartIds": [
+        "character:legs/leg_left/leg",
+        "character:legs/leg_right/leg"
+      ],
+      "casterLayerUuids": [
+        "0a4c8909-0a77-457e-b013-c306deca21c1",
+        "454c7533-399a-45c8-b053-7bf5f4d1cb21"
+      ],
+      "receiverLayerUuids": [
+        "714ddb32-2a8f-4e6f-aef2-eaedc538093a",
+        "e9351f86-367d-4970-a9fa-7e6b9ade9736"
+      ],
+      "shadowLayerUuid": "973d6f02-9769-4fc2-a4d7-ee2b59298cd8",
+      "clipBaseLayerUuid": "fe0c48e2-1d1d-4bef-81b5-369717a52d45",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "color": "#eddcd5",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -7,
+          0
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          0,
+          9
+        ]
+      ],
+      "notes": "像素确认两层为花边裙底；原大腿暖褐烘焙影局部去除并插值接回相邻皮肤底色，轮廓线和腿部固有明暗保留。下缘依据原实际裙影的细小起伏，完整片上延到y755、横跨两腿与中间隐藏区；7px横向/9px下移检查。 原尺寸偏移复核后补顺裁切外下缘，消除由接收层边缘采样带来的直角／尖角，跨越隐藏区保持连续。",
+      "projectionOffset": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "sleeve-right-to-arm",
+      "casterPartId": "clothing:puff_sleeve_image_left",
+      "receiverPartIds": [
+        "character:arms/arm_right/upper_arm"
+      ],
+      "casterLayerUuids": [
+        "0ab50d7b-35d4-4b99-9597-54d261fd3ad7",
+        "de5a86bd-360c-4f61-8dc2-41df86dd27f9"
+      ],
+      "receiverLayerUuids": [
+        "944f881d-5e81-4fef-a46a-160d96d8656d"
+      ],
+      "shadowLayerUuid": "6cc34e2b-7e94-442b-a937-dd08bf74cec9",
+      "clipBaseLayerUuid": "944f881d-5e81-4fef-a46a-160d96d8656d",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "color": "#eddcd5",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -4,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "notes": "确认花袖前后两层同属同一衣服part；去掉原袖下烘焙投影，保留上臂轮廓与转面。完整影上延至袖内y420并超出手臂两侧；下缘沿已有花边影，暖灰粉正片叠底。 原尺寸偏移复核后补顺裁切外下缘，消除由接收层边缘采样带来的直角／尖角，跨越隐藏区保持连续。",
+      "projectionOffset": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "sleeve-left-to-arm",
+      "casterPartId": "clothing:puff_sleeve_image_right",
+      "receiverPartIds": [
+        "character:arms/arm_left/upper_arm"
+      ],
+      "casterLayerUuids": [
+        "3c7172a2-e903-48fc-8049-e6ee299cc486",
+        "7f1b2f9d-ba9d-4733-bb86-1dc6ae6a379c"
+      ],
+      "receiverLayerUuids": [
+        "1e401e39-8c74-4c22-a6d4-c5dc7bbfbd32"
+      ],
+      "shadowLayerUuid": "37a8292c-c916-4ebb-84c7-5d1c662b87ae",
+      "clipBaseLayerUuid": "1e401e39-8c74-4c22-a6d4-c5dc7bbfbd32",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "color": "#eddcd5",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -4,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "notes": "确认花袖前后两层同属同一衣服part；去掉原袖下烘焙投影，保留上臂轮廓与转面。完整影上延至袖内y420并超出手臂两侧；下缘沿已有花边影，暖灰粉正片叠底。 原尺寸偏移复核后补顺裁切外下缘，消除由接收层边缘采样带来的直角／尖角，跨越隐藏区保持连续。",
+      "projectionOffset": [
+        0,
+        0
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "casterPartId": "character:hair/ahoge",
+      "reason": "头顶翘发远离脸部，没有落脸投影依据。"
+    },
+    {
+      "casterPartId": "character:hair/side_hair_left",
+      "reason": "耳后长侧发位于脸后；外伸细发与卷尾在脸外，不向脸内平移。"
+    },
+    {
+      "casterPartId": "character:hair/side_hair_right",
+      "reason": "耳后长侧发位于脸后；不按深度序号捏造距离或左右对称影线。"
+    },
+    {
+      "casterPartId": "character:hair/back_hair",
+      "reason": "后发位于脸后，保留发面自身明暗与材质。"
+    },
+    {
+      "casterPartId": "character:face/eye_left/upper_eyelid",
+      "receiverPartIds": [
+        "character:face/eye_left/sclera"
+      ],
+      "reason": "眼白原有正确淡紫灰上缘阴影保留；新增独立片只补虹膜，避免重复加深。"
+    },
+    {
+      "casterPartId": "character:face/eye_right/upper_eyelid",
+      "receiverPartIds": [
+        "character:face/eye_right/sclera"
+      ],
+      "reason": "眼白原有正确淡紫灰上缘阴影保留；新增独立片只补虹膜，避免重复加深。"
+    }
+  ],
+  "coordinateNotes": "projectionOffset 为静帧绘制时相对来源轮廓的像素偏移；非发影片按实际已画投影重建，记0/0而非物理距离。testOffsets 为相对当前影片的原画像素测试。"
+}

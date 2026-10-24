@@ -1,0 +1,159 @@
+[
+  {
+    "id": "halter_dress/halter_bodice",
+    "svg_sha256": "a04539f56d2bcca8197c45810d5c2c73aca9e14c845f262adc6368bac053897b",
+    "changed": true,
+    "before_sha256": "949b4bda7dc652fa4609dab0f51df0b0cb00d7237212e5cebc2131b2acbc7a87",
+    "repair_issues": [
+      "R1",
+      "R2"
+    ]
+  },
+  {
+    "id": "halter_dress/short_outer_skirt/front_drape",
+    "svg_sha256": "bbb27d76d00aa4f00e13e1e3bca84a77c46332ec853138a6979a130cc07984af",
+    "changed": true,
+    "before_sha256": "086ba02ae2a8a65d61e3a2f4f92efa39af15ccd5f9aa16c98ce135e4cf08284d",
+    "repair_issues": [
+      "R2",
+      "R3",
+      "R4"
+    ]
+  },
+  {
+    "id": "halter_dress/short_outer_skirt/right_skirt_panel",
+    "svg_sha256": "6c08f8a5a7cd16671147ab5aa7bcef52a39dfdbb8bf1b7fded1f49657378ddbd",
+    "changed": true,
+    "before_sha256": "d0465376c834b0d950a4014e6f2a5aa2f56a7d914d0f837c3ae1af9b11545392",
+    "repair_issues": [
+      "R2",
+      "R3"
+    ]
+  },
+  {
+    "id": "halter_dress/short_outer_skirt/left_skirt_panel",
+    "svg_sha256": "c3e0ec0fcdbf19b73bd5719830c373a0fee00f68335c58cb346e3028eb867821",
+    "changed": true,
+    "before_sha256": "4017b0b3d02ce7491a0a98fbdde022d4d847d09191673c59ab18e6681d5b8a60",
+    "repair_issues": [
+      "R2",
+      "R4"
+    ]
+  },
+  {
+    "id": "halter_dress/short_outer_skirt",
+    "svg_sha256": "9e2a3f41457d277d4e953792aa60e4357efd23116d413e4bcd2b0c61ae59f654",
+    "changed": true,
+    "before_sha256": "04f25cb33c1bc202f40651884f29c4d169a5ba60ddc9ca978a7f9f30ae49ab9b",
+    "repair_issues": [
+      "R2",
+      "R3",
+      "R4"
+    ]
+  },
+  {
+    "id": "halter_dress",
+    "svg_sha256": "bc6f5820afd4e8c509c2f98720344ba343f26cec7c4d386a4ebf0f8a25feab76",
+    "changed": true,
+    "before_sha256": "e8952d1b5eb1550bd9194c10f6012857e6adda49cf342225bb1523501040558e",
+    "repair_issues": [
+      "R1",
+      "R2",
+      "R3",
+      "R4"
+    ]
+  },
+  {
+    "id": "puff_sleeve_image_left",
+    "svg_sha256": "01ebe953b72d27d7a972328a03a83032dfd855c22ed320284c49f850168fba0d",
+    "changed": false,
+    "before_sha256": "01ebe953b72d27d7a972328a03a83032dfd855c22ed320284c49f850168fba0d",
+    "repair_issues": []
+  },
+  {
+    "id": "puff_sleeve_image_right",
+    "svg_sha256": "30566d1a32c041220902db3e055c00e723d410d82d4ee957dddd5ec04bf18255",
+    "changed": false,
+    "before_sha256": "30566d1a32c041220902db3e055c00e723d410d82d4ee957dddd5ec04bf18255",
+    "repair_issues": []
+  },
+  {
+    "id": "waist_bow/knot_and_loops",
+    "svg_sha256": "b3227f5cd4b277c45bf3ec42d049d0e34a5f5f75acc6c1e3c302e16f2e7d3a2a",
+    "changed": false,
+    "before_sha256": "b3227f5cd4b277c45bf3ec42d049d0e34a5f5f75acc6c1e3c302e16f2e7d3a2a",
+    "repair_issues": []
+  },
+  {
+    "id": "waist_bow/short_tail",
+    "svg_sha256": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f",
+    "changed": false,
+    "before_sha256": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f",
+    "repair_issues": []
+  },
+  {
+    "id": "waist_bow/long_tail",
+    "svg_sha256": "1e46095663bc14f5cbad66203ddfd79c0023a3ba88bbc15020a80fa14f0b1c2e",
+    "changed": false,
+    "before_sha256": "1e46095663bc14f5cbad66203ddfd79c0023a3ba88bbc15020a80fa14f0b1c2e",
+    "repair_issues": []
+  },
+  {
+    "id": "waist_bow",
+    "svg_sha256": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d",
+    "changed": false,
+    "before_sha256": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d",
+    "repair_issues": []
+  },
+  {
+    "id": "chest_pendant",
+    "svg_sha256": "dc7124c9d936dc5d44e8781f325e5deaabd3a8d112f81ff749dcffb6bea04ca1",
+    "changed": false,
+    "before_sha256": "dc7124c9d936dc5d44e8781f325e5deaabd3a8d112f81ff749dcffb6bea04ca1",
+    "repair_issues": []
+  },
+  {
+    "id": "floral_skirt_undertrim",
+    "svg_sha256": "aa1aa28214b11bd5955613316bff026356989ff36a2e4c2ed1eab209e8dffa10",
+    "changed": true,
+    "before_sha256": "fbd9dfe77f86149ba853f34a0b5b88abbb9f064ceb921c4396a56ffbe911721e",
+    "repair_issues": [
+      "R5",
+      "R6"
+    ]
+  },
+  {
+    "id": "trailing_skirt_image_left",
+    "svg_sha256": "8d24b10f7b7d6a3359bd973e688d6108f83607feb68afc6c36b9159bd3757cf7",
+    "changed": true,
+    "before_sha256": "2f3622ba9cadd1f2ba6f6660d0181de21abac3f3ba06ab9043a5708b1f6b3bf1",
+    "repair_issues": [
+      "R7"
+    ]
+  },
+  {
+    "id": "trailing_skirt_image_right/short_drape_left",
+    "svg_sha256": "c857d12fcd9f02f5658ed597fe40430216622425052bc83e2f7e3d07c487bd8f",
+    "changed": true,
+    "before_sha256": "687267ae2dce809f32623ef0f4e6a808c6364754dda6d2d703cb6466b8bc31b9",
+    "repair_issues": [
+      "R8"
+    ]
+  },
+  {
+    "id": "trailing_skirt_image_right/spiral_train_left",
+    "svg_sha256": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50",
+    "changed": false,
+    "before_sha256": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50",
+    "repair_issues": []
+  },
+  {
+    "id": "trailing_skirt_image_right",
+    "svg_sha256": "f5fc41a6f54ab562e0836eb0dc55a35c0f3700d4df285586f19c2c2f4bb2997f",
+    "changed": true,
+    "before_sha256": "8b074d26029fe87b646a05ba004b82347f3f9e2df70be9c85036f7f740e1a4b0",
+    "repair_issues": [
+      "R8"
+    ]
+  }
+]

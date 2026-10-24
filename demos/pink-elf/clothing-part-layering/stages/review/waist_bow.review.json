@@ -1,0 +1,43 @@
+{
+  "groupId": "waist_bow",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对纯衣服参考 references/clothing.png、groups.json 中 waist_bow 的 note 与候选 stages/outline/waist_bow.svg；本组无父组及父 SVG。完成全图 blend、覆盖整个组件的 x375–475/y480–705 局部 4 倍 blend、5 倍参考与 edge，以及纯 SVG 独显检查。中央结及左右结耳（约 x384–466/y489–527）、左侧短带尾及侧突和尾尖（约 x390–423/y503–637）、右侧长带尾及下段弯曲和尾尖（约 x424–449/y503–695）均与参考的可见实体范围贴合，位置、比例及联合覆盖完整；两尾之间的裙面间隙保留，接根连续且有合理遮挡搭接，无将裙面或人体并入的情况。note 已明确根部连接、中央结对结耳根和尾根的覆盖、全组件位于裙前、腰部随动、带尾柔性控制及子节点职责继承。按 group 联合覆盖审查，不要求内部绘画路径或恢复配色、折痕明暗。未发现有图像依据且需要修改的轮廓或说明问题，无上游范围限制。",
+      "candidateHash": "abe7707e81d5611a4440a0e967ce461effacce35e9a44d14e3123ff05fec97c7",
+      "observations": [
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/waist_bow.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/waist_bow/2026-10-23T01-48-27-547Z-1.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/waist_bow.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/waist_bow/2026-10-23T01-48-27-547Z-2.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/waist_bow.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/waist_bow/2026-10-23T01-48-27-547Z-3.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/waist_bow.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/waist_bow/2026-10-23T01-48-27-547Z-4.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/waist_bow.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/waist_bow/2026-10-23T01-48-27-547Z-5.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/waist_bow.svg",
+          "mode": "svg",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/waist_bow/2026-10-23T01-48-27-547Z-6.png"
+        }
+      ],
+      "updatedAt": "2026-10-23T02:02:54.152Z"
+    }
+  ]
+}

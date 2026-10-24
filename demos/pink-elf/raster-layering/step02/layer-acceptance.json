@@ -1,0 +1,1122 @@
+[
+  {
+    "layer": "0005 hair/back_hair/cap :: nape_under_roots",
+    "logical_part": "hair/back_hair/cap",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "颈旁承底的物理外弧细阶梯；只柔化真实外缘，互补直切边保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-01.png",
+    "solo": "inspection/final/solos/0005.png",
+    "upper_hidden": "inspection/final/upper-hidden/0005.png",
+    "union": "inspection/final/parts/hair/back_hair/cap.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "logical_part": "hair/back_hair/long_right",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左厚后发长弧、卷尾及独显内侧边局部柔化，保留第一步渐收尖发流。",
+    "edge_atlas": "inspection/final/edge-atlas/page-01.png",
+    "solo": "inspection/final/solos/0010.png",
+    "upper_hidden": "inspection/final/upper-hidden/0010.png",
+    "union": "inspection/final/parts/hair/back_hair/long_right.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "logical_part": "hair/back_hair/long_left",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右厚后发根端、内缘、外展弧及尾卷局部柔化，保留尖束和原补绘。",
+    "edge_atlas": "inspection/final/edge-atlas/page-01.png",
+    "solo": "inspection/final/solos/0020.png",
+    "upper_hidden": "inspection/final/upper-hidden/0020.png",
+    "union": "inspection/final/parts/hair/back_hair/long_left.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "logical_part": "hair/side_hair_right",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左肩后长侧发主弧、回钩及内弧微柔，原横缝修复保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-01.png",
+    "solo": "inspection/final/solos/0030.png",
+    "upper_hidden": "inspection/final/upper-hidden/0030.png",
+    "union": "inspection/final/parts/hair/side_hair_right.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "logical_part": "hair/side_hair_left",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右耳后长侧发外弧与悬空内弧微柔，未合拢开放空隙。",
+    "edge_atlas": "inspection/final/edge-atlas/page-02.png",
+    "solo": "inspection/final/solos/0040.png",
+    "upper_hidden": "inspection/final/upper-hidden/0040.png",
+    "union": "inspection/final/parts/hair/side_hair_left.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0045 hair/ahoge",
+    "logical_part": "hair/ahoge",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "呆毛内外细弧局部减锐，二次沿准确轮廓收顺顶端，细梢保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-02.png",
+    "solo": "inspection/final/solos/0045.png",
+    "upper_hidden": "inspection/final/upper-hidden/0045.png",
+    "union": "inspection/final/parts/hair/ahoge.png",
+    "stroke_records": 4
+  },
+  {
+    "layer": "0050 hair/back_hair/cap :: back",
+    "logical_part": "hair/back_hair/cap",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "后脑两侧轮廓与耳旁小折点微柔；冠顶和颈片互补切口保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-02.png",
+    "solo": "inspection/final/solos/0050.png",
+    "upper_hidden": "inspection/final/upper-hidden/0050.png",
+    "union": "inspection/final/parts/hair/back_hair/cap.png",
+    "stroke_records": 4
+  },
+  {
+    "layer": "0055 legs/leg_left/foot :: rear",
+    "logical_part": "legs/leg_left/foot",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左靴后衬物理外唇微柔，原后片内部切口保留。",
+    "edge_atlas": "inspection/final/edge-atlas/page-02.png",
+    "solo": "inspection/final/solos/0055.png",
+    "upper_hidden": "inspection/final/upper-hidden/0055.png",
+    "union": "inspection/final/parts/legs/leg_left/foot.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0056 legs/leg_right/foot :: rear",
+    "logical_part": "legs/leg_right/foot",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右靴后衬两侧唇弧微柔，未改变后衬在腿后关系。",
+    "edge_atlas": "inspection/final/edge-atlas/page-03.png",
+    "solo": "inspection/final/solos/0056.png",
+    "upper_hidden": "inspection/final/upper-hidden/0056.png",
+    "union": "inspection/final/parts/legs/leg_right/foot.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "logical_part": "legs/leg_right/leg",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "腿缘局部去台阶；最终复看外侧小腿白缘，用本腿暖线色在1–2px边缘带重接后局部柔化。",
+    "edge_atlas": "inspection/final/edge-atlas/page-03.png",
+    "solo": "inspection/final/solos/0060.png",
+    "upper_hidden": "inspection/final/upper-hidden/0060.png",
+    "union": "inspection/final/parts/legs/leg_right/leg.png",
+    "stroke_records": 6
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "logical_part": "legs/leg_left/leg",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "腿缘局部去台阶；小腿内外偏白细缘用本腿已有暖线色接顺，原腿形与膝部明暗保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-03.png",
+    "solo": "inspection/final/solos/0070.png",
+    "upper_hidden": "inspection/final/upper-hidden/0070.png",
+    "union": "inspection/final/parts/legs/leg_left/leg.png",
+    "stroke_records": 6
+  },
+  {
+    "layer": "0080 pelvis",
+    "logical_part": "pelvis",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "骨盆衣片两侧、裤口细硬线及隐藏腰端微柔，内部衣褶保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-03.png",
+    "solo": "inspection/final/solos/0080.png",
+    "upper_hidden": "inspection/final/upper-hidden/0080.png",
+    "union": "inspection/final/parts/pelvis.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0090 arms/arm_left/hand/little_finger",
+    "logical_part": "arms/arm_left/hand/little_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-04.png",
+    "solo": "inspection/final/solos/0090.png",
+    "upper_hidden": "inspection/final/upper-hidden/0090.png",
+    "union": "inspection/final/parts/arms/arm_left/hand/little_finger.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0100 arms/arm_left/hand/ring_finger",
+    "logical_part": "arms/arm_left/hand/ring_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-04.png",
+    "solo": "inspection/final/solos/0100.png",
+    "upper_hidden": "inspection/final/upper-hidden/0100.png",
+    "union": "inspection/final/parts/arms/arm_left/hand/ring_finger.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0110 arms/arm_left/hand/middle_finger",
+    "logical_part": "arms/arm_left/hand/middle_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-04.png",
+    "solo": "inspection/final/solos/0110.png",
+    "upper_hidden": "inspection/final/upper-hidden/0110.png",
+    "union": "inspection/final/parts/arms/arm_left/hand/middle_finger.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0120 arms/arm_left/hand/index_finger",
+    "logical_part": "arms/arm_left/hand/index_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-04.png",
+    "solo": "inspection/final/solos/0120.png",
+    "upper_hidden": "inspection/final/upper-hidden/0120.png",
+    "union": "inspection/final/parts/arms/arm_left/hand/index_finger.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0130 arms/arm_left/hand/thumb",
+    "logical_part": "arms/arm_left/hand/thumb",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-05.png",
+    "solo": "inspection/final/solos/0130.png",
+    "upper_hidden": "inspection/final/upper-hidden/0130.png",
+    "union": "inspection/final/parts/arms/arm_left/hand/thumb.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0140 arms/arm_left/hand/palm",
+    "logical_part": "arms/arm_left/hand/palm",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左掌腕端、拇指侧及外缘微柔，复修硬斜缘，虎口空隙保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-05.png",
+    "solo": "inspection/final/solos/0140.png",
+    "upper_hidden": "inspection/final/upper-hidden/0140.png",
+    "union": "inspection/final/parts/arms/arm_left/hand/palm.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0145 arms/arm_right/hand/little_finger",
+    "logical_part": "arms/arm_right/hand/little_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-05.png",
+    "solo": "inspection/final/solos/0145.png",
+    "upper_hidden": "inspection/final/upper-hidden/0145.png",
+    "union": "inspection/final/parts/arms/arm_right/hand/little_finger.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0150 arms/arm_right/hand/index_finger",
+    "logical_part": "arms/arm_right/hand/index_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-05.png",
+    "solo": "inspection/final/solos/0150.png",
+    "upper_hidden": "inspection/final/upper-hidden/0150.png",
+    "union": "inspection/final/parts/arms/arm_right/hand/index_finger.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0160 arms/arm_right/hand/middle_finger",
+    "logical_part": "arms/arm_right/hand/middle_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-06.png",
+    "solo": "inspection/final/solos/0160.png",
+    "upper_hidden": "inspection/final/upper-hidden/0160.png",
+    "union": "inspection/final/parts/arms/arm_right/hand/middle_finger.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0170 arms/arm_right/hand/ring_finger",
+    "logical_part": "arms/arm_right/hand/ring_finger",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-06.png",
+    "solo": "inspection/final/solos/0170.png",
+    "upper_hidden": "inspection/final/upper-hidden/0170.png",
+    "union": "inspection/final/parts/arms/arm_right/hand/ring_finger.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0180 arms/arm_right/hand/thumb",
+    "logical_part": "arms/arm_right/hand/thumb",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "本指两侧、弯折与指尖按参考局部微柔；指甲和已有暖描边保持，未糊合邻指或指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-06.png",
+    "solo": "inspection/final/solos/0180.png",
+    "upper_hidden": "inspection/final/upper-hidden/0180.png",
+    "union": "inspection/final/parts/arms/arm_right/hand/thumb.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0190 arms/arm_right/hand/palm",
+    "logical_part": "arms/arm_right/hand/palm",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右掌腕端与两侧斜缘局部微柔，保持指根覆盖与真实指缝。",
+    "edge_atlas": "inspection/final/edge-atlas/page-06.png",
+    "solo": "inspection/final/solos/0190.png",
+    "upper_hidden": "inspection/final/upper-hidden/0190.png",
+    "union": "inspection/final/parts/arms/arm_right/hand/palm.png",
+    "stroke_records": 4
+  },
+  {
+    "layer": "0200 arms/arm_left/forearm",
+    "logical_part": "arms/arm_left/forearm",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左前臂两侧和完整肘腕端局部柔化，保留皮肤自有暖线。",
+    "edge_atlas": "inspection/final/edge-atlas/page-07.png",
+    "solo": "inspection/final/solos/0200.png",
+    "upper_hidden": "inspection/final/upper-hidden/0200.png",
+    "union": "inspection/final/parts/arms/arm_left/forearm.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0210 arms/arm_right/forearm",
+    "logical_part": "arms/arm_right/forearm",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右前臂肘侧至腕端及外斜缘局部柔化，原手势保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-07.png",
+    "solo": "inspection/final/solos/0210.png",
+    "upper_hidden": "inspection/final/upper-hidden/0210.png",
+    "union": "inspection/final/parts/arms/arm_right/forearm.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0220 arms/arm_left/upper_arm",
+    "logical_part": "arms/arm_left/upper_arm",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左上臂肩端、内外缘与完整肘端局部柔化，不增加投影。",
+    "edge_atlas": "inspection/final/edge-atlas/page-07.png",
+    "solo": "inspection/final/solos/0220.png",
+    "upper_hidden": "inspection/final/upper-hidden/0220.png",
+    "union": "inspection/final/parts/arms/arm_left/upper_arm.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0230 arms/arm_right/upper_arm",
+    "logical_part": "arms/arm_right/upper_arm",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右上臂肩缘、内外侧及肘端局部微柔，原关节体积保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-07.png",
+    "solo": "inspection/final/solos/0230.png",
+    "upper_hidden": "inspection/final/upper-hidden/0230.png",
+    "union": "inspection/final/parts/arms/arm_right/upper_arm.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0240 neck",
+    "logical_part": "neck",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "颈的完整隐藏端和两侧轮廓微柔，第一步连续底色与下端保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-08.png",
+    "solo": "inspection/final/solos/0240.png",
+    "upper_hidden": "inspection/final/upper-hidden/0240.png",
+    "union": "inspection/final/parts/neck.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0250 body/torso",
+    "logical_part": "body/torso",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "肩/衣缘局部微柔；右衣缘y约510–543的粉发残色以本层紫灰描边色逐段收净，再局部接顺。",
+    "edge_atlas": "inspection/final/edge-atlas/page-08.png",
+    "solo": "inspection/final/solos/0250.png",
+    "upper_hidden": "inspection/final/upper-hidden/0250.png",
+    "union": "inspection/final/parts/body/torso.png",
+    "stroke_records": 10
+  },
+  {
+    "layer": "0260 body/breast",
+    "logical_part": "body/breast",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "胸衣两侧、下弧及隐藏上缘局部微柔；复修过硬紫灰描边，保留描边核心。",
+    "edge_atlas": "inspection/final/edge-atlas/page-08.png",
+    "solo": "inspection/final/solos/0260.png",
+    "upper_hidden": "inspection/final/upper-hidden/0260.png",
+    "union": "inspection/final/parts/body/breast.png",
+    "stroke_records": 4
+  },
+  {
+    "layer": "0270 face/ear_left",
+    "logical_part": "face/ear_left",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "尖耳根、内耳细线与外弧局部微柔，准确耳尖二次收顺，不缩短尖耳。",
+    "edge_atlas": "inspection/final/edge-atlas/page-08.png",
+    "solo": "inspection/final/solos/0270.png",
+    "upper_hidden": "inspection/final/upper-hidden/0270.png",
+    "union": "inspection/final/parts/face/ear_left.png",
+    "stroke_records": 4
+  },
+  {
+    "layer": "0280 face/ear_right",
+    "logical_part": "face/ear_right",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "另一尖耳完整耳根、耳尖、外弧及内耳线局部微柔，耳肉补全保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-09.png",
+    "solo": "inspection/final/solos/0280.png",
+    "upper_hidden": "inspection/final/upper-hidden/0280.png",
+    "union": "inspection/final/parts/face/ear_right.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0290 head_accessories/left_earring",
+    "logical_part": "head_accessories/left_earring",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左耳饰金属端和粉色垂坠外缘轻柔，未加入宝石细节。",
+    "edge_atlas": "inspection/final/edge-atlas/page-09.png",
+    "solo": "inspection/final/solos/0290.png",
+    "upper_hidden": "inspection/final/upper-hidden/0290.png",
+    "union": "inspection/final/parts/head_accessories/left_earring.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0300 head_accessories/right_earring",
+    "logical_part": "head_accessories/right_earring",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右耳饰外缘与垂坠细线轻柔，金色浅纹保留。",
+    "edge_atlas": "inspection/final/edge-atlas/page-09.png",
+    "solo": "inspection/final/solos/0300.png",
+    "upper_hidden": "inspection/final/upper-hidden/0300.png",
+    "union": "inspection/final/parts/head_accessories/right_earring.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0310 face/face_base",
+    "logical_part": "face/face_base",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "脸底额头、太阳穴及下颌逐段微柔；复修隐藏额缘和下颌细硬阶梯，不画眉眼发色。",
+    "edge_atlas": "inspection/final/edge-atlas/page-09.png",
+    "solo": "inspection/final/solos/0310.png",
+    "upper_hidden": "inspection/final/upper-hidden/0310.png",
+    "union": "inspection/final/parts/face/face_base.png",
+    "stroke_records": 6
+  },
+  {
+    "layer": "0320 face/mouth/mouth_interior",
+    "logical_part": "face/mouth/mouth_interior",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "口腔完整底片外缘轻柔，内部原色面保留。",
+    "edge_atlas": "inspection/final/edge-atlas/page-10.png",
+    "solo": "inspection/final/solos/0320.png",
+    "upper_hidden": "inspection/final/upper-hidden/0320.png",
+    "union": "inspection/final/parts/face/mouth/mouth_interior.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0330 face/mouth/lower_teeth",
+    "logical_part": "face/mouth/lower_teeth",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "下齿浅白片下弧轻柔，保留完整独立齿片。",
+    "edge_atlas": "inspection/final/edge-atlas/page-10.png",
+    "solo": "inspection/final/solos/0330.png",
+    "upper_hidden": "inspection/final/upper-hidden/0330.png",
+    "union": "inspection/final/parts/face/mouth/lower_teeth.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0340 face/mouth/tongue",
+    "logical_part": "face/mouth/tongue",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "舌面的外缘与小弧微柔，原粉色层次保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-10.png",
+    "solo": "inspection/final/solos/0340.png",
+    "upper_hidden": "inspection/final/upper-hidden/0340.png",
+    "union": "inspection/final/parts/face/mouth/tongue.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0350 face/mouth/upper_teeth",
+    "logical_part": "face/mouth/upper_teeth",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "上齿薄片边缘极轻柔，保留完整浅白片。",
+    "edge_atlas": "inspection/final/edge-atlas/page-10.png",
+    "solo": "inspection/final/solos/0350.png",
+    "upper_hidden": "inspection/final/upper-hidden/0350.png",
+    "union": "inspection/final/parts/face/mouth/upper_teeth.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0360 face/mouth/lower_lip",
+    "logical_part": "face/mouth/lower_lip",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "下唇细浅弧轻柔，不加粗唇线。",
+    "edge_atlas": "inspection/final/edge-atlas/page-11.png",
+    "solo": "inspection/final/solos/0360.png",
+    "upper_hidden": "inspection/final/upper-hidden/0360.png",
+    "union": "inspection/final/parts/face/mouth/lower_lip.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0370 face/mouth/upper_lip",
+    "logical_part": "face/mouth/upper_lip",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "上唇细暖弧局部柔化，保持角端与完整弧。",
+    "edge_atlas": "inspection/final/edge-atlas/page-11.png",
+    "solo": "inspection/final/solos/0370.png",
+    "upper_hidden": "inspection/final/upper-hidden/0370.png",
+    "union": "inspection/final/parts/face/mouth/upper_lip.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0380 face/nose",
+    "logical_part": "face/nose",
+    "modified": false,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "原鼻点已经淡软，95/255层透明度及原生RGBA全部保留。",
+    "edge_atlas": "inspection/final/edge-atlas/page-11.png",
+    "solo": "inspection/final/solos/0380.png",
+    "upper_hidden": "inspection/final/upper-hidden/0380.png",
+    "union": "inspection/final/parts/face/nose.png",
+    "stroke_records": 0
+  },
+  {
+    "layer": "0390 face/eye_left/sclera",
+    "logical_part": "face/eye_left/sclera",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "完整左眼白轮廓及下弧微柔，未混入皮肤/虹膜。",
+    "edge_atlas": "inspection/final/edge-atlas/page-11.png",
+    "solo": "inspection/final/solos/0390.png",
+    "upper_hidden": "inspection/final/upper-hidden/0390.png",
+    "union": "inspection/final/parts/face/eye_left/sclera.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0400 face/eye_right/sclera",
+    "logical_part": "face/eye_right/sclera",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "完整右眼白外轮廓及下弧微柔，浅紫灰角部保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-12.png",
+    "solo": "inspection/final/solos/0400.png",
+    "upper_hidden": "inspection/final/upper-hidden/0400.png",
+    "union": "inspection/final/parts/face/eye_right/sclera.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0410 face/eye_left/iris",
+    "logical_part": "face/eye_left/iris",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左虹膜圆缘与极小瞳孔边局部减锐，下缘复修，蓝色层次保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-12.png",
+    "solo": "inspection/final/solos/0410.png",
+    "upper_hidden": "inspection/final/upper-hidden/0410.png",
+    "union": "inspection/final/parts/face/eye_left/iris.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0420 face/eye_right/iris",
+    "logical_part": "face/eye_right/iris",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右虹膜圆缘和极小瞳孔边轻柔，原完整椭圆保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-12.png",
+    "solo": "inspection/final/solos/0420.png",
+    "upper_hidden": "inspection/final/upper-hidden/0420.png",
+    "union": "inspection/final/parts/face/eye_right/iris.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0430 face/eye_left/highlight",
+    "logical_part": "face/eye_left/highlight",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左白点与青白反光边极轻柔，不减掉小亮点。",
+    "edge_atlas": "inspection/final/edge-atlas/page-12.png",
+    "solo": "inspection/final/solos/0430.png",
+    "upper_hidden": "inspection/final/upper-hidden/0430.png",
+    "union": "inspection/final/parts/face/eye_left/highlight.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0440 face/eye_right/highlight",
+    "logical_part": "face/eye_right/highlight",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右反光点及下斑微柔，保留独立透明职责。",
+    "edge_atlas": "inspection/final/edge-atlas/page-13.png",
+    "solo": "inspection/final/solos/0440.png",
+    "upper_hidden": "inspection/final/upper-hidden/0440.png",
+    "union": "inspection/final/parts/face/eye_right/highlight.png",
+    "stroke_records": 2
+  },
+  {
+    "layer": "0450 face/eye_left/lower_eyelid",
+    "logical_part": "face/eye_left/lower_eyelid",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左下眼缘细浅弧局部减锐，不扩成粗线。",
+    "edge_atlas": "inspection/final/edge-atlas/page-13.png",
+    "solo": "inspection/final/solos/0450.png",
+    "upper_hidden": "inspection/final/upper-hidden/0450.png",
+    "union": "inspection/final/parts/face/eye_left/lower_eyelid.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0460 face/eye_right/lower_eyelid",
+    "logical_part": "face/eye_right/lower_eyelid",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右下眼缘薄弧局部微柔，保留角端短尖。",
+    "edge_atlas": "inspection/final/edge-atlas/page-13.png",
+    "solo": "inspection/final/solos/0460.png",
+    "upper_hidden": "inspection/final/upper-hidden/0460.png",
+    "union": "inspection/final/parts/face/eye_right/lower_eyelid.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0470 face/eye_left/upper_eyelid",
+    "logical_part": "face/eye_left/upper_eyelid",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左上眼缘内外边分段柔化并复修偏锐段，深棕核心与睫毛尖保留。",
+    "edge_atlas": "inspection/final/edge-atlas/page-13.png",
+    "solo": "inspection/final/solos/0470.png",
+    "upper_hidden": "inspection/final/upper-hidden/0470.png",
+    "union": "inspection/final/parts/face/eye_left/upper_eyelid.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0480 face/eye_right/upper_eyelid",
+    "logical_part": "face/eye_right/upper_eyelid",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右上眼缘内外弧分段柔化，外翼与睫毛细端保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-14.png",
+    "solo": "inspection/final/solos/0480.png",
+    "upper_hidden": "inspection/final/upper-hidden/0480.png",
+    "union": "inspection/final/parts/face/eye_right/upper_eyelid.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0490 face/eye_left/eyelid_crease",
+    "logical_part": "face/eye_left/eyelid_crease",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左睑褶细暖弧轻柔，原隐藏端连续。",
+    "edge_atlas": "inspection/final/edge-atlas/page-14.png",
+    "solo": "inspection/final/solos/0490.png",
+    "upper_hidden": "inspection/final/upper-hidden/0490.png",
+    "union": "inspection/final/parts/face/eye_left/eyelid_crease.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0500 face/eye_right/eyelid_crease",
+    "logical_part": "face/eye_right/eyelid_crease",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右睑褶细暖弧轻柔，不混入眉线。",
+    "edge_atlas": "inspection/final/edge-atlas/page-14.png",
+    "solo": "inspection/final/solos/0500.png",
+    "upper_hidden": "inspection/final/upper-hidden/0500.png",
+    "union": "inspection/final/parts/face/eye_right/eyelid_crease.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0530 hair/front_side_hair_right",
+    "logical_part": "hair/front_side_hair_right",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左前侧发脸旁内外弧、颈侧细梢及少数硬发丝局部柔化。",
+    "edge_atlas": "inspection/final/edge-atlas/page-14.png",
+    "solo": "inspection/final/solos/0530.png",
+    "upper_hidden": "inspection/final/upper-hidden/0530.png",
+    "union": "inspection/final/parts/hair/front_side_hair_right.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0540 hair/front_side_hair_left",
+    "logical_part": "hair/front_side_hair_left",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右前侧发额旁、耳下小尖及内外弧微柔，保持耳饰空间。",
+    "edge_atlas": "inspection/final/edge-atlas/page-15.png",
+    "solo": "inspection/final/solos/0540.png",
+    "upper_hidden": "inspection/final/upper-hidden/0540.png",
+    "union": "inspection/final/parts/hair/front_side_hair_left.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0550 hair/bangs",
+    "logical_part": "hair/bangs",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "刘海轮廓、额前切边及两处硬细发丝局部减锐，细尖保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-15.png",
+    "solo": "inspection/final/solos/0550.png",
+    "upper_hidden": "inspection/final/upper-hidden/0550.png",
+    "union": "inspection/final/parts/hair/bangs.png",
+    "stroke_records": 4
+  },
+  {
+    "layer": "0560 hair/back_hair/cap :: crown",
+    "logical_part": "hair/back_hair/cap",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "冠顶真实上轮廓和两侧斜缘复修细阶梯；内部互补弧切口保留。",
+    "edge_atlas": "inspection/final/edge-atlas/page-15.png",
+    "solo": "inspection/final/solos/0560.png",
+    "upper_hidden": "inspection/final/upper-hidden/0560.png",
+    "union": "inspection/final/parts/hair/back_hair/cap.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0570 face/eyebrow_left",
+    "logical_part": "face/eyebrow_left",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左眉细弧减锐，原长度、位置和透发层序保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-15.png",
+    "solo": "inspection/final/solos/0570.png",
+    "upper_hidden": "inspection/final/upper-hidden/0570.png",
+    "union": "inspection/final/parts/face/eyebrow_left.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0580 face/eyebrow_right",
+    "logical_part": "face/eyebrow_right",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右眉弧微柔，细端及淡暖色保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-16.png",
+    "solo": "inspection/final/solos/0580.png",
+    "upper_hidden": "inspection/final/upper-hidden/0580.png",
+    "union": "inspection/final/parts/face/eyebrow_right.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+    "logical_part": "legs/leg_left/boot_gem_chain/flexible_connector",
+    "modified": false,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "仅2×3px的隐藏链尖原已柔和，原生RGBA与切口全部保留。",
+    "edge_atlas": "inspection/final/edge-atlas/page-16.png",
+    "solo": "inspection/final/solos/0599.png",
+    "upper_hidden": "inspection/final/upper-hidden/0599.png",
+    "union": "inspection/final/parts/legs/leg_left/boot_gem_chain/flexible_connector.png",
+    "stroke_records": 0
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "logical_part": "legs/leg_left/foot",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左前靴外侧、鞋底、圆趾及V口滚边细缘局部柔化，连续粉滚边核心保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-16.png",
+    "solo": "inspection/final/solos/0600.png",
+    "upper_hidden": "inspection/final/upper-hidden/0600.png",
+    "union": "inspection/final/parts/legs/leg_left/foot.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "logical_part": "legs/leg_right/foot",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右前靴内外侧、底端及V口局部轻柔，保留第一步连续滚边。",
+    "edge_atlas": "inspection/final/edge-atlas/page-16.png",
+    "solo": "inspection/final/solos/0610.png",
+    "upper_hidden": "inspection/final/upper-hidden/0610.png",
+    "union": "inspection/final/parts/legs/leg_right/foot.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+    "logical_part": "legs/leg_left/boot_gem_chain/flexible_connector",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "可见细链三个短段极轻减硬，连接tip和小坠独立性保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-17.png",
+    "solo": "inspection/final/solos/0620.png",
+    "upper_hidden": "inspection/final/upper-hidden/0620.png",
+    "union": "inspection/final/parts/legs/leg_left/boot_gem_chain/flexible_connector.png",
+    "stroke_records": 3
+  },
+  {
+    "layer": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "logical_part": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "左大菱饰斜缘轻柔，保留原顶点及淡色面。",
+    "edge_atlas": "inspection/final/edge-atlas/page-17.png",
+    "solo": "inspection/final/solos/0630.png",
+    "upper_hidden": "inspection/final/upper-hidden/0630.png",
+    "union": "inspection/final/parts/legs/leg_left/boot_gem_chain/large_diamond_gem.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "logical_part": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "modified": false,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "7×7px小菱坠原有半透明过渡足够，原生RGBA保留，避免把尖端磨掉。",
+    "edge_atlas": "inspection/final/edge-atlas/page-17.png",
+    "solo": "inspection/final/solos/0640.png",
+    "upper_hidden": "inspection/final/upper-hidden/0640.png",
+    "union": "inspection/final/parts/legs/leg_left/boot_gem_chain/small_diamond_charm.png",
+    "stroke_records": 0
+  },
+  {
+    "layer": "0650 legs/leg_left/boot_gem_chain/round_bead",
+    "logical_part": "legs/leg_left/boot_gem_chain/round_bead",
+    "modified": false,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "5×5px小珠原已柔和，原生RGBA保留，未新增光晕。",
+    "edge_atlas": "inspection/final/edge-atlas/page-17.png",
+    "solo": "inspection/final/solos/0650.png",
+    "upper_hidden": "inspection/final/upper-hidden/0650.png",
+    "union": "inspection/final/parts/legs/leg_left/boot_gem_chain/round_bead.png",
+    "stroke_records": 0
+  },
+  {
+    "layer": "0660 legs/leg_right/boot_gem",
+    "logical_part": "legs/leg_right/boot_gem",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右菱饰斜缘微柔，未新增切面或高光。",
+    "edge_atlas": "inspection/final/edge-atlas/page-18.png",
+    "solo": "inspection/final/solos/0660.png",
+    "upper_hidden": "inspection/final/upper-hidden/0660.png",
+    "union": "inspection/final/parts/legs/leg_right/boot_gem.png",
+    "stroke_records": 1
+  },
+  {
+    "layer": "0670 legs/leg_right/boot_flower_ornament",
+    "logical_part": "legs/leg_right/boot_flower_ornament",
+    "modified": true,
+    "inspection": {
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "assembled": "passed"
+    },
+    "note": "右鞋花饰逐段柔化外瓣细缘，原薄瓣层次与固定归属保持。",
+    "edge_atlas": "inspection/final/edge-atlas/page-18.png",
+    "solo": "inspection/final/solos/0670.png",
+    "upper_hidden": "inspection/final/upper-hidden/0670.png",
+    "union": "inspection/final/parts/legs/leg_right/boot_flower_ornament.png",
+    "stroke_records": 2
+  }
+]

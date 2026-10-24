@@ -1,0 +1,21 @@
+{
+  "input": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step02/character-soft-edges.kra",
+  "final": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step03/character-dressup-base.kra",
+  "changed_layers": [
+    "0080 pelvis",
+    "0250 body/torso",
+    "0260 body/breast"
+  ],
+  "all_70_alpha_identical": true,
+  "67_layers_rgba_unchanged": true,
+  "metadata_preserved": true,
+  "saved_closed_reopened": true,
+  "facts_identical": true,
+  "projection_sha256": "c974439bde25a0a35cf4ee564f3ea3fea97bc03d25c48355115cf55dd67d053d",
+  "active_layer": "0600 legs/leg_left/foot :: front",
+  "size": [
+    932,
+    1688
+  ],
+  "strokes": 86
+}

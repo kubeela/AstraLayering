@@ -1,0 +1,61 @@
+{
+  "stage": "raster-layering/step01/repair-01",
+  "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering",
+  "logicalParts": 65,
+  "paintLayers": 70,
+  "mergeSourceHash": "e0d8e8a6527a10b5edfb0584289ca94173bb8504391e817f9eaffb41ba18ea23",
+  "occlusionSourceHash": "4c838a19c385c015f6d498ed3bd00fef5daa43a7e267bf2d5f0068e9dc8fcba9",
+  "referenceHash": "811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e",
+  "revised": [
+    {
+      "id": "hair/back_hair/cap",
+      "afterHash": "c61f71d73eff60bab673d7ce6f1579d4f9a9347118a5f901eab2d5fe84d70595",
+      "inputRecord": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering/stages/completion-inputs/hair/back_hair/cap.json"
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "afterHash": "010780db6a60481ee657e5b298658a43f8b349000058d9abfe9625899607d773",
+      "inputRecord": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering/stages/completion-inputs/legs/leg_left/foot.json"
+    },
+    {
+      "id": "legs/leg_right/foot",
+      "afterHash": "5034cf3e702b0c102f47b26d6d9b42aab454d9e7a9c79ceaceedf13b0797b2af",
+      "inputRecord": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering/stages/completion-inputs/legs/leg_right/foot.json"
+    },
+    {
+      "id": "arms/arm_left/hand/palm",
+      "afterHash": "7b2d439bc0866fc0fdaecbc896cf27738d98ca8eca7b7675357ebda03d9829d8",
+      "inputRecord": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering/stages/completion-inputs/arms/arm_left/hand/palm.json"
+    }
+  ],
+  "kra": "../raster-layering/step01/character-depth.kra",
+  "report": "../raster-layering/step01/report.md",
+  "repair": "../raster-layering/step01/repair-01.md.tmp",
+  "depthPreview": "preview-depth.svg",
+  "logicalUnionPreview": "preview.svg",
+  "finalKraSha256": "9a01458380d4a0e8d1a03d13c0e18fb8d9d5ee9ebde144b3ae821412b18e71b4",
+  "finalPngSha256": "7f8451b9dead15b93241eb1c29b755c770604381edcfed6ae565e3b261f27507",
+  "savedReopenedVerified": true,
+  "inspectionRecord": "../raster-layering/step01/delivery-integrity.json",
+  "repairConclusion": "已修复",
+  "reviewItems": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R9",
+    "R10",
+    "R11",
+    "R12",
+    "R13",
+    "R14",
+    "R15"
+  ],
+  "reportSha256": "8564e4cb2bc9ed9e6ccb628904f48fa81e6253fefa29bdcfc48cbda241bbbca7",
+  "repairReportSha256": "5e91432f0cc477a242bcc45b7946c24a1d0ffd7aaab9e84915751504c809c5dc",
+  "priorReceipt": "../raster-layering/step01/repair-01-work/before/raster-step01-artifacts.json"
+}

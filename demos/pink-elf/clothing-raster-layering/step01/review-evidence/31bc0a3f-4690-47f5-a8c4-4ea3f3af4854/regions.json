@@ -1,0 +1,64 @@
+{
+  "image": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/review-02/current-all.png",
+  "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/references/clothing.png",
+  "canvas": [
+    932,
+    1688
+  ],
+  "marked": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/marked.png",
+  "manifest": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/regions.json",
+  "regions": [
+    {
+      "id": "R1",
+      "bounds": [
+        208,
+        868,
+        74,
+        28
+      ],
+      "layers": [
+        "0031 floral_skirt_undertrim :: depth_31",
+        "0007 trailing_skirt_image_left :: depth_07"
+      ],
+      "description": "左花簇下缘与垂布交界有参考没有的粉白近水平桥线，蓝灰瓣缘被削平、接触不连续。按真实瓣缘修正31的自有可见轮廓并修顺7本片接头；保留下方浅色圆点翻面、水滴与金缘，不能把它们画进花簇。",
+      "crop": [
+        190,
+        850,
+        110,
+        64
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R1-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R1-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R1-comparison.png"
+      }
+    },
+    {
+      "id": "R2",
+      "bounds": [
+        691,
+        871,
+        53,
+        43
+      ],
+      "layers": [
+        "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+        "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+        "0006 trailing_skirt_image_right/spiral_train_left :: depth_06"
+      ],
+      "description": "8层右上深紫补绘向外越界，在青点浅色翻面上方及右侧形成宽硬角，盖住参考应显露的浅粉长尾。隐藏8后可定位；收回8的越界轮廓，保留其花簇后的合理根部、10青点翻面独立归属及后方6的浅色长尾。",
+      "crop": [
+        673,
+        853,
+        89,
+        79
+      ],
+      "files": {
+        "current": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R2-current.png",
+        "reference": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R2-reference.png",
+        "comparison": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R2-comparison.png"
+      }
+    }
+  ],
+  "note": "问题及坐标由 reviewer 看图确认后提供；左参考、右当前，局部图含上下文，不改变问题 bounds。"
+}

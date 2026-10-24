@@ -1,0 +1,26 @@
+{
+  "part_id": "hair/back_hair/long_right",
+  "review_id": "R1",
+  "tool": "built-in image_gen.imagegen",
+  "attempts": 1,
+  "adopted": "generated-01.png",
+  "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right",
+  "assets": {
+    "source-gray.png": "fa1640e9adef919af7acc7f81e5ec64d09946e4bf0093af9872f2ddeb90ad02d",
+    "control.png": "2df4b757ec27862c1458233c0b7f908410f1194becebabfd4bad60356754cc53",
+    "prompt.txt": "92746108794f0207044f3f3424a67f3a67dcf18b0dffbfb599491068a2e7f783",
+    "generated-01.png": "c00ba8ef5d7ccbd1497242de944d3b77ac9396a9df88727aecf255ee6a9cda49",
+    "registered-generation.png": "15cc7427d70c08742e519ed0bcc8c15db1e165760b7a9bdc3593263425a248b1",
+    "adopted-underpaint.png": "49687552c15b3199f9b8275e2f032e69696a9b439feed524a4cded49e8d3160f",
+    "adoption-mask.png": "2267ef01045d9f8c5d986b2aab62969d917323b3626684fa2bfbd3b8f82c21f7",
+    "inputs.json": "fdb0bcf8ae2b6a339c550d15c10da40953a670707f4944a987b1973c3c773637"
+  },
+  "prompt": "prompt.txt",
+  "input_roles": {
+    "source-gray.png": "own retained lower hair; upper and exterior cleared to neutral gray",
+    "control.png": "same coordinates; red own retained hair, yellow completed hair, green transparent exterior"
+  },
+  "visual_check": "yellow is coherent pink hair, no occluder or adjacent part; inspected full size; adopted upper and native repaired overlap; original lower y>=585 preserved",
+  "geometry": "exact current part alpha retained",
+  "final_kra_sha256": "f9de3407e4c8c6e589ff9ce9ae3992ace16145b9ad3b35f7ce66566b2be940f9"
+}

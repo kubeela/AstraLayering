@@ -1,0 +1,31 @@
+{
+  "all_inputs_unchanged": true,
+  "hashes": {
+    "step01/clothing-depth.kra": "08074fcd5ba8671ae426d0ff936eeedc4b7635d339562f1a7ff72f6e0c098136",
+    "../clothing-part-layering/groups.json": "4f31a0049cc0f1060c997c247bfd784503cf29c7163cdfd2ea559729e850fa0b",
+    "../clothing-part-layering/occlusion.json": "499807f03824291934f4bca18a3b6938c7a16b1f8f7d97deca0054c2bfe3f9d6",
+    "../clothing-part-layering/references/clothing.png": "119c1d7ef01ca537a006bf49616ca68ef3b0ea4812b64d2e96a29d0dad23579d",
+    "../clothing-part-layering/parts/chest_pendant.svg": "dc7124c9d936dc5d44e8781f325e5deaabd3a8d112f81ff749dcffb6bea04ca1",
+    "../clothing-part-layering/parts/puff_sleeve_image_left.svg": "01ebe953b72d27d7a972328a03a83032dfd855c22ed320284c49f850168fba0d",
+    "../clothing-part-layering/parts/puff_sleeve_image_right.svg": "30566d1a32c041220902db3e055c00e723d410d82d4ee957dddd5ec04bf18255",
+    "../clothing-part-layering/parts/waist_bow.svg": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d",
+    "../clothing-part-layering/parts/trailing_skirt_image_left.svg": "b87ff26f2ba74b9db7c413ffb6d0b4956107e4a4b107cdc1b181c180e6eecee3",
+    "../clothing-part-layering/parts/floral_skirt_undertrim.svg": "ca3abd56e54fb8f42f8b8a5e4f1bad28e3ddba529fc751b54a7d2dd6883698f3",
+    "../clothing-part-layering/parts/halter_dress.svg": "b82c5160ae1f83557a4335e031bf767b33c318fdfa6b778790d52f29d400951e",
+    "../clothing-part-layering/parts/trailing_skirt_image_right.svg": "cb8c993c4b202c7b67c681864e5030ffd50f2d6ff347c320dac929fd1bab8a87",
+    "../clothing-part-layering/parts/trailing_skirt_image_right/short_drape_left.svg": "19e6f4556595868fb8b31bc92a7bbb3d284424c959282d991dd0b126d7eb352f",
+    "../clothing-part-layering/parts/trailing_skirt_image_right/spiral_train_left.svg": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50",
+    "../clothing-part-layering/parts/waist_bow/knot_and_loops.svg": "b3227f5cd4b277c45bf3ec42d049d0e34a5f5f75acc6c1e3c302e16f2e7d3a2a",
+    "../clothing-part-layering/parts/waist_bow/long_tail.svg": "1e46095663bc14f5cbad66203ddfd79c0023a3ba88bbc15020a80fa14f0b1c2e",
+    "../clothing-part-layering/parts/waist_bow/short_tail.svg": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f",
+    "../clothing-part-layering/parts/halter_dress/short_outer_skirt.svg": "675c1bca323dd5d44936654034b4b3fd18db5870bfbd9b2cb109f4888d419690",
+    "../clothing-part-layering/parts/halter_dress/halter_bodice.svg": "b3beb8a3bfd2096bb246cc0f68d49afc85ce15c73d11973564c3fd522465a491",
+    "../clothing-part-layering/parts/halter_dress/short_outer_skirt/front_drape.svg": "d2aad6ac011483f4f80e82627e5558ed7bf7aad107ffe94ea25aa5c39930baab",
+    "../clothing-part-layering/parts/halter_dress/short_outer_skirt/right_skirt_panel.svg": "55e2b08b62b6411520e72a5a465612fdb73717b995706079027675d558ca6c54",
+    "../clothing-part-layering/parts/halter_dress/short_outer_skirt/left_skirt_panel.svg": "71da98c03015f04aff366153a43941b611637bab6eb4061a86612cd42b1e6c6e"
+  },
+  "kra_projection_equals_initial_review_export": true,
+  "all_inputs_unchanged_at_delivery": true,
+  "review_generated_autosave_quarantined_in_evidence": "step01/review-evidence/review-01/discarded-review-autosave.kra",
+  "command_script_restored": true
+}

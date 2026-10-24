@@ -1,0 +1,466 @@
+{
+  "baseline_kra": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-02-work/before/character-depth.kra",
+  "all_70_raw_alpha_arrays_identical": true,
+  "unchanged_layer_count": 61,
+  "changed_layers": [
+    "0010 hair/back_hair/long_right",
+    "0020 hair/back_hair/long_left",
+    "0030 hair/side_hair_right",
+    "0040 hair/side_hair_left",
+    "0060 legs/leg_right/leg",
+    "0240 neck",
+    "0250 body/torso",
+    "0600 legs/leg_left/foot :: front",
+    "0610 legs/leg_right/foot :: front"
+  ],
+  "depths_and_nodes_unchanged": true,
+  "qualified_pixels_restored_from_same_part_history_outside_boxes": {
+    "0010 hair/back_hair/long_right": [
+      0,
+      0,
+      932,
+      585
+    ],
+    "0020 hair/back_hair/long_left": [
+      0,
+      0,
+      932,
+      585
+    ],
+    "0250 body/torso": [
+      390,
+      338,
+      426,
+      369
+    ],
+    "0060 legs/leg_right/leg": [
+      378,
+      1211,
+      450,
+      1390
+    ]
+  },
+  "parts": [
+    {
+      "layer": "0005 hair/back_hair/cap :: nape_under_roots",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "4a9ec172553f6376fc221cbff111cb5c1d73212bdd82c8add0eea3ff662078b7"
+    },
+    {
+      "layer": "0010 hair/back_hair/long_right",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "188f12d7629efe462ab01b00370e06e9abb989f5d3272a744175d69bf236f5dd"
+    },
+    {
+      "layer": "0020 hair/back_hair/long_left",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "9a15e828beb75c4b7a96993558d3d15bb899de7cacb65dc3b4e48e61be4c0722"
+    },
+    {
+      "layer": "0030 hair/side_hair_right",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "6470338eec11e04efefa4e269594e6395950f74dd2dc8e88b7de35e617eb3712"
+    },
+    {
+      "layer": "0040 hair/side_hair_left",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "258a599374c59ed1b6f75b393e190380dbc689456fcc08b10a25e903dcfac564"
+    },
+    {
+      "layer": "0045 hair/ahoge",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "9480712ca4d4dc77dcfbcb63c810c3d5a9cbc831434ecb5cdef1b07ffd348c7c"
+    },
+    {
+      "layer": "0050 hair/back_hair/cap :: back",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "b1373d8dbdd1ea55503d67842ea9854faa6ea891168308f1c174fc2bf99fde00"
+    },
+    {
+      "layer": "0055 legs/leg_left/foot :: rear",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "90822067c0ac2ca7a3a04e5b51f2f3f7d9152d1a7cbb2de8ef6bb3c9e08340e5"
+    },
+    {
+      "layer": "0056 legs/leg_right/foot :: rear",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "9abdd4a2bc57052e9709bfde57ff4f25bcb1e63c967f68aca5860dce480dee49"
+    },
+    {
+      "layer": "0060 legs/leg_right/leg",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "29a0f0a7b247f8f04c2bc3da9f32750419eaf558100539b59ef531067fadfd1e"
+    },
+    {
+      "layer": "0070 legs/leg_left/leg",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "5895481eba21119998513d2dd365a419ee4b238cab3e4d765d70ae43b9dc0a65"
+    },
+    {
+      "layer": "0080 pelvis",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "68bd43abe9c657410e1ff79d447ec0cea0007f6507c7dc805e0e5645bbd3284d"
+    },
+    {
+      "layer": "0090 arms/arm_left/hand/little_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "f824a81633fe980faa1248d1f5d67e7888ce1867115834abde073268f227a3e6"
+    },
+    {
+      "layer": "0100 arms/arm_left/hand/ring_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "1bf2569cac1110b301ecd7d6b7d69acf03f7671833c42abb50343638bd8438eb"
+    },
+    {
+      "layer": "0110 arms/arm_left/hand/middle_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "1a7fb0810ff5801a91d4ade0e9d1afef7b9ddafea4529d6dcf6b62bb90a4aaf5"
+    },
+    {
+      "layer": "0120 arms/arm_left/hand/index_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "a4b337b1b4e96b8ff5d57530dd079de25cdb22ceb7776a5127d7092893fc30ed"
+    },
+    {
+      "layer": "0130 arms/arm_left/hand/thumb",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "9a6a09ba86d99a6dd35f6f98058f56d318c4635f0c2e08e9412890e25fbe7d2f"
+    },
+    {
+      "layer": "0140 arms/arm_left/hand/palm",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "b22e4a7528bf0849e15c5a16639eac9970bad3d161dbb1a21db675c3f33fe201"
+    },
+    {
+      "layer": "0145 arms/arm_right/hand/little_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "e37eaeb0ebc6f7e1ba0bdc8d3b0b8aa294ca79b8f4161633794b991109a724a4"
+    },
+    {
+      "layer": "0150 arms/arm_right/hand/index_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "6c0d3c522f90f69b13f6f8eb5f51c17e14538e529cb7d590c3007cac5cb84fc7"
+    },
+    {
+      "layer": "0160 arms/arm_right/hand/middle_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "3454cdd13c33b4effae927b60da476a0b00a23fa2a4c9f8a2488c9a3ed88847c"
+    },
+    {
+      "layer": "0170 arms/arm_right/hand/ring_finger",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "a4620152ad466d65fb00beb9381827c3f9acda66ae95adb8bb14d97174632267"
+    },
+    {
+      "layer": "0180 arms/arm_right/hand/thumb",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "2bb8eaf38f0126811ac4a0444b5780d0207d3c8c9e9fcf697479deed4ff39bf0"
+    },
+    {
+      "layer": "0190 arms/arm_right/hand/palm",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "76746addc24dcd451379a33aaf49e2acb8959a734eeb17c1e8a7d275f600d4dc"
+    },
+    {
+      "layer": "0200 arms/arm_left/forearm",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "41a26a1d503ba2abed748cd80706545c17071f204151f37bf6ce9a6b922c1229"
+    },
+    {
+      "layer": "0210 arms/arm_right/forearm",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "fe2418c9b6448e5b8edf579fa5df1cbc5bfe85041793fc2f1988943d1a9f3ad5"
+    },
+    {
+      "layer": "0220 arms/arm_left/upper_arm",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "79b244783b1d6b5d877d69381b8d3bcff0113468806ae5f8673d6b28f6b79586"
+    },
+    {
+      "layer": "0230 arms/arm_right/upper_arm",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "b6c6292ac1966bd9b8d991cea44802e1dbe40857bc15c8e3fda4b2cd97375175"
+    },
+    {
+      "layer": "0240 neck",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "38ebfaf8f4b117c7d7903c8318d273f5be45e9105cc4b02b5e416ecf008087bc"
+    },
+    {
+      "layer": "0250 body/torso",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "1d8ba092235238dc996601c632d2bf4910dce18d395a2299615b2f6e79102710"
+    },
+    {
+      "layer": "0260 body/breast",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "ba80ac070dd887b8e8c59e15bdc9f17186f88e6097a41f9b6b8bd26f406c91b8"
+    },
+    {
+      "layer": "0270 face/ear_left",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "3ec7ff7862969abaf567800f0575f57deec159f76930fcc492c41f910dbd8ef5"
+    },
+    {
+      "layer": "0280 face/ear_right",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "afca02c39cf8514688efd341cff128de0b6186d5533f7596f0b5b7c93256bbfc"
+    },
+    {
+      "layer": "0290 head_accessories/left_earring",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "99174ec8e291d08a18cc07dde598236f223b4eee276b666044aca31132a82e67"
+    },
+    {
+      "layer": "0300 head_accessories/right_earring",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "8d5c53d21dc762fe4bb5c8a639f9cddbca8424039a072b98299fea3a89e7b517"
+    },
+    {
+      "layer": "0310 face/face_base",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "f7d8f2afb317b02f6030751e86ac70be39f979c58c0858c95ec167337590a862"
+    },
+    {
+      "layer": "0320 face/mouth/mouth_interior",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "53eff1478ed300236e64f0099e6bbf556675a9594e5b3bef6987f2e14f85fb33"
+    },
+    {
+      "layer": "0330 face/mouth/lower_teeth",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "22de1ee98a2c5d1e7ce33cf2882d2bc5ca266f665972740f49fabb1f1d32f684"
+    },
+    {
+      "layer": "0340 face/mouth/tongue",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "716f18e365304b5f2111d95c8581bccaca35bb818016158642b856b14b48c3f8"
+    },
+    {
+      "layer": "0350 face/mouth/upper_teeth",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "131729b6acc945955c413671e7b3a6ce9ce717fec25adf13ebf994f57e9c0d16"
+    },
+    {
+      "layer": "0360 face/mouth/lower_lip",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "74a4145e88e8084776a27d290de83cee1a1796697580d350212398d6536fc465"
+    },
+    {
+      "layer": "0370 face/mouth/upper_lip",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "bf0714c2f0dc0c9f52e31e0bcb251db096451c96599f763b728148e0c466957c"
+    },
+    {
+      "layer": "0380 face/nose",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "17a809274c110d8615966367ab876d429dd1cdd6cb68e29f7d8856dee77d599a"
+    },
+    {
+      "layer": "0390 face/eye_left/sclera",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "70957f4ac14ded0baab873ce7e6f3a9d27d2d4d45010fe57d26403d44d30951f"
+    },
+    {
+      "layer": "0400 face/eye_right/sclera",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "328b7d81369e1e2212093d5468a1c60a005bb034bac31bc5ec42d541958d46c7"
+    },
+    {
+      "layer": "0410 face/eye_left/iris",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "f4b5c1412018cd02d0dea11d27e803dedec9840b1039364a301be15d5f60b502"
+    },
+    {
+      "layer": "0420 face/eye_right/iris",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "f4cb56b7393db8c9e7fc74c5d817608e60543b446bf29482615c9cd94b4f5cef"
+    },
+    {
+      "layer": "0430 face/eye_left/highlight",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "5cc04aab30fcd30aa922f213b335bcb342982afbf064a3e4e8a765ccf6b7352b"
+    },
+    {
+      "layer": "0440 face/eye_right/highlight",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "147516391fbe18130fe93c143ead97ddb78d335daef82aeac43085ce2f115eda"
+    },
+    {
+      "layer": "0450 face/eye_left/lower_eyelid",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "5e1069f25dd54459798245a75572a5db66e1f0fe6f7578907a505fa75e569e13"
+    },
+    {
+      "layer": "0460 face/eye_right/lower_eyelid",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "edbfe86784c964540a4ce9be1755b4f1eaa30e8ffc631151d17146fb6844462a"
+    },
+    {
+      "layer": "0470 face/eye_left/upper_eyelid",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "e454cb0df29fa569d60baac3531ac839fafe79bf36d881c00fe29b3b3f9ca9a2"
+    },
+    {
+      "layer": "0480 face/eye_right/upper_eyelid",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "8b4d5d7a9af438e059c966450cc08eb36505be369e4c6a6483c5594cfefa8ed4"
+    },
+    {
+      "layer": "0490 face/eye_left/eyelid_crease",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "314f6513c4dc476b853205f75b1faf0dda51aa00aeb3eb60d2942eb19f8fd82f"
+    },
+    {
+      "layer": "0500 face/eye_right/eyelid_crease",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "c5d35d2a8bf98fa3f29a55d9c0e03e88ba8922b695bc7f86a0701c73cb4c156b"
+    },
+    {
+      "layer": "0530 hair/front_side_hair_right",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "676752e378a2d2ac3b27d252281b08a8996bbec298b05323af3a1789e683b472"
+    },
+    {
+      "layer": "0540 hair/front_side_hair_left",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "d4cc91bf85fcb7849ffdee1422ee9e82d0065ebc015545a15b59f0fcbde1681a"
+    },
+    {
+      "layer": "0550 hair/bangs",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "4365ab5883d7d689ac46ded47a8b4c524a0aa2cd2a6b32f83fb6c1f657988f07"
+    },
+    {
+      "layer": "0560 hair/back_hair/cap :: crown",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "1b010fcfbb3f95a715a34cd36374980a51bc6d7eb446ea05ec05de347b68f51c"
+    },
+    {
+      "layer": "0570 face/eyebrow_left",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "6d6d8d55010314dee06bf1ce11225ba12630d5b1fccd377e7b59157ea9d801a6"
+    },
+    {
+      "layer": "0580 face/eyebrow_right",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "7c912ddc486ebe2539ca093d35592e7947dbe628408f9bb58be8f2f979e8bff5"
+    },
+    {
+      "layer": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "107040d9e0d28750f035815755ec5977a05557a72f4e2faab70a825189c11c69"
+    },
+    {
+      "layer": "0600 legs/leg_left/foot :: front",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "d255ccf874a97936808aa265b6d25743f0c67e404e0d1d55aab3b11315b79c79"
+    },
+    {
+      "layer": "0610 legs/leg_right/foot :: front",
+      "raw_rgba_identical": false,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "d33ec3265f180413415aec90b7a912487a53a6afb88a8bc7558045da934c4a3f"
+    },
+    {
+      "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "c45005697eb4b0970d4127fd394e0fb7321739d7432e0aeb6fd22fae5b4c33e4"
+    },
+    {
+      "layer": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "5db5275f12b048d905dde9282b1b9fdb3cc929b193cbc3ba517a9601e86a724c"
+    },
+    {
+      "layer": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "8b7bfd3d5ef03a152567097c135aa04bf50d6db311b38e579cf5bb2f5ed2ef55"
+    },
+    {
+      "layer": "0650 legs/leg_left/boot_gem_chain/round_bead",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "4a4887f7ce04706b3aeafb244639b079f6406d2678e6b1411ea6df8741fa44a6"
+    },
+    {
+      "layer": "0660 legs/leg_right/boot_gem",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "5f8c54572241bf1d34d84eb112f87695869d3fe5b23b45a680fd594eb39afd29"
+    },
+    {
+      "layer": "0670 legs/leg_right/boot_flower_ornament",
+      "raw_rgba_identical": true,
+      "raw_alpha_identical": true,
+      "alpha_sha256": "58009a568d522bb22a7e30554010e981ede65f9b4617000051dc3ede21f8fc51"
+    }
+  ],
+  "note": "Raw native alpha checked, including nose95/255. Reviewer solo PNG nose opacity encoding differs; no painting/alpha change to that layer."
+}

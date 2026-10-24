@@ -1,0 +1,616 @@
+{
+  "logical_parts": 65,
+  "paint_layers": 70,
+  "mapping": {
+    "hair/back_hair/cap": [
+      {
+        "name": "0005 hair/back_hair/cap :: nape_under_roots",
+        "level": 5
+      },
+      {
+        "name": "0050 hair/back_hair/cap :: back",
+        "level": 50
+      },
+      {
+        "name": "0560 hair/back_hair/cap :: crown",
+        "level": 560
+      }
+    ],
+    "hair/back_hair/long_right": [
+      {
+        "name": "0010 hair/back_hair/long_right",
+        "level": 10
+      }
+    ],
+    "hair/back_hair/long_left": [
+      {
+        "name": "0020 hair/back_hair/long_left",
+        "level": 20
+      }
+    ],
+    "hair/side_hair_right": [
+      {
+        "name": "0030 hair/side_hair_right",
+        "level": 30
+      }
+    ],
+    "hair/side_hair_left": [
+      {
+        "name": "0040 hair/side_hair_left",
+        "level": 40
+      }
+    ],
+    "hair/ahoge": [
+      {
+        "name": "0045 hair/ahoge",
+        "level": 45
+      }
+    ],
+    "legs/leg_left/foot": [
+      {
+        "name": "0055 legs/leg_left/foot :: rear",
+        "level": 55
+      },
+      {
+        "name": "0600 legs/leg_left/foot :: front",
+        "level": 600
+      }
+    ],
+    "legs/leg_right/foot": [
+      {
+        "name": "0056 legs/leg_right/foot :: rear",
+        "level": 56
+      },
+      {
+        "name": "0610 legs/leg_right/foot :: front",
+        "level": 610
+      }
+    ],
+    "legs/leg_right/leg": [
+      {
+        "name": "0060 legs/leg_right/leg",
+        "level": 60
+      }
+    ],
+    "legs/leg_left/leg": [
+      {
+        "name": "0070 legs/leg_left/leg",
+        "level": 70
+      }
+    ],
+    "pelvis": [
+      {
+        "name": "0080 pelvis",
+        "level": 80
+      }
+    ],
+    "arms/arm_left/hand/little_finger": [
+      {
+        "name": "0090 arms/arm_left/hand/little_finger",
+        "level": 90
+      }
+    ],
+    "arms/arm_left/hand/ring_finger": [
+      {
+        "name": "0100 arms/arm_left/hand/ring_finger",
+        "level": 100
+      }
+    ],
+    "arms/arm_left/hand/middle_finger": [
+      {
+        "name": "0110 arms/arm_left/hand/middle_finger",
+        "level": 110
+      }
+    ],
+    "arms/arm_left/hand/index_finger": [
+      {
+        "name": "0120 arms/arm_left/hand/index_finger",
+        "level": 120
+      }
+    ],
+    "arms/arm_left/hand/thumb": [
+      {
+        "name": "0130 arms/arm_left/hand/thumb",
+        "level": 130
+      }
+    ],
+    "arms/arm_left/hand/palm": [
+      {
+        "name": "0140 arms/arm_left/hand/palm",
+        "level": 140
+      }
+    ],
+    "arms/arm_right/hand/little_finger": [
+      {
+        "name": "0145 arms/arm_right/hand/little_finger",
+        "level": 145
+      }
+    ],
+    "arms/arm_right/hand/index_finger": [
+      {
+        "name": "0150 arms/arm_right/hand/index_finger",
+        "level": 150
+      }
+    ],
+    "arms/arm_right/hand/middle_finger": [
+      {
+        "name": "0160 arms/arm_right/hand/middle_finger",
+        "level": 160
+      }
+    ],
+    "arms/arm_right/hand/ring_finger": [
+      {
+        "name": "0170 arms/arm_right/hand/ring_finger",
+        "level": 170
+      }
+    ],
+    "arms/arm_right/hand/thumb": [
+      {
+        "name": "0180 arms/arm_right/hand/thumb",
+        "level": 180
+      }
+    ],
+    "arms/arm_right/hand/palm": [
+      {
+        "name": "0190 arms/arm_right/hand/palm",
+        "level": 190
+      }
+    ],
+    "arms/arm_left/forearm": [
+      {
+        "name": "0200 arms/arm_left/forearm",
+        "level": 200
+      }
+    ],
+    "arms/arm_right/forearm": [
+      {
+        "name": "0210 arms/arm_right/forearm",
+        "level": 210
+      }
+    ],
+    "arms/arm_left/upper_arm": [
+      {
+        "name": "0220 arms/arm_left/upper_arm",
+        "level": 220
+      }
+    ],
+    "arms/arm_right/upper_arm": [
+      {
+        "name": "0230 arms/arm_right/upper_arm",
+        "level": 230
+      }
+    ],
+    "neck": [
+      {
+        "name": "0240 neck",
+        "level": 240
+      }
+    ],
+    "body/torso": [
+      {
+        "name": "0250 body/torso",
+        "level": 250
+      }
+    ],
+    "body/breast": [
+      {
+        "name": "0260 body/breast",
+        "level": 260
+      }
+    ],
+    "face/ear_left": [
+      {
+        "name": "0270 face/ear_left",
+        "level": 270
+      }
+    ],
+    "face/ear_right": [
+      {
+        "name": "0280 face/ear_right",
+        "level": 280
+      }
+    ],
+    "head_accessories/left_earring": [
+      {
+        "name": "0290 head_accessories/left_earring",
+        "level": 290
+      }
+    ],
+    "head_accessories/right_earring": [
+      {
+        "name": "0300 head_accessories/right_earring",
+        "level": 300
+      }
+    ],
+    "face/face_base": [
+      {
+        "name": "0310 face/face_base",
+        "level": 310
+      }
+    ],
+    "face/mouth/mouth_interior": [
+      {
+        "name": "0320 face/mouth/mouth_interior",
+        "level": 320
+      }
+    ],
+    "face/mouth/lower_teeth": [
+      {
+        "name": "0330 face/mouth/lower_teeth",
+        "level": 330
+      }
+    ],
+    "face/mouth/tongue": [
+      {
+        "name": "0340 face/mouth/tongue",
+        "level": 340
+      }
+    ],
+    "face/mouth/upper_teeth": [
+      {
+        "name": "0350 face/mouth/upper_teeth",
+        "level": 350
+      }
+    ],
+    "face/mouth/lower_lip": [
+      {
+        "name": "0360 face/mouth/lower_lip",
+        "level": 360
+      }
+    ],
+    "face/mouth/upper_lip": [
+      {
+        "name": "0370 face/mouth/upper_lip",
+        "level": 370
+      }
+    ],
+    "face/nose": [
+      {
+        "name": "0380 face/nose",
+        "level": 380
+      }
+    ],
+    "face/eye_left/sclera": [
+      {
+        "name": "0390 face/eye_left/sclera",
+        "level": 390
+      }
+    ],
+    "face/eye_right/sclera": [
+      {
+        "name": "0400 face/eye_right/sclera",
+        "level": 400
+      }
+    ],
+    "face/eye_left/iris": [
+      {
+        "name": "0410 face/eye_left/iris",
+        "level": 410
+      }
+    ],
+    "face/eye_right/iris": [
+      {
+        "name": "0420 face/eye_right/iris",
+        "level": 420
+      }
+    ],
+    "face/eye_left/highlight": [
+      {
+        "name": "0430 face/eye_left/highlight",
+        "level": 430
+      }
+    ],
+    "face/eye_right/highlight": [
+      {
+        "name": "0440 face/eye_right/highlight",
+        "level": 440
+      }
+    ],
+    "face/eye_left/lower_eyelid": [
+      {
+        "name": "0450 face/eye_left/lower_eyelid",
+        "level": 450
+      }
+    ],
+    "face/eye_right/lower_eyelid": [
+      {
+        "name": "0460 face/eye_right/lower_eyelid",
+        "level": 460
+      }
+    ],
+    "face/eye_left/upper_eyelid": [
+      {
+        "name": "0470 face/eye_left/upper_eyelid",
+        "level": 470
+      }
+    ],
+    "face/eye_right/upper_eyelid": [
+      {
+        "name": "0480 face/eye_right/upper_eyelid",
+        "level": 480
+      }
+    ],
+    "face/eye_left/eyelid_crease": [
+      {
+        "name": "0490 face/eye_left/eyelid_crease",
+        "level": 490
+      }
+    ],
+    "face/eye_right/eyelid_crease": [
+      {
+        "name": "0500 face/eye_right/eyelid_crease",
+        "level": 500
+      }
+    ],
+    "hair/front_side_hair_right": [
+      {
+        "name": "0530 hair/front_side_hair_right",
+        "level": 530
+      }
+    ],
+    "hair/front_side_hair_left": [
+      {
+        "name": "0540 hair/front_side_hair_left",
+        "level": 540
+      }
+    ],
+    "hair/bangs": [
+      {
+        "name": "0550 hair/bangs",
+        "level": 550
+      }
+    ],
+    "face/eyebrow_left": [
+      {
+        "name": "0570 face/eyebrow_left",
+        "level": 570
+      }
+    ],
+    "face/eyebrow_right": [
+      {
+        "name": "0580 face/eyebrow_right",
+        "level": 580
+      }
+    ],
+    "legs/leg_left/boot_gem_chain/flexible_connector": [
+      {
+        "name": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+        "level": 599
+      },
+      {
+        "name": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+        "level": 620
+      }
+    ],
+    "legs/leg_left/boot_gem_chain/large_diamond_gem": [
+      {
+        "name": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+        "level": 630
+      }
+    ],
+    "legs/leg_left/boot_gem_chain/small_diamond_charm": [
+      {
+        "name": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+        "level": 640
+      }
+    ],
+    "legs/leg_left/boot_gem_chain/round_bead": [
+      {
+        "name": "0650 legs/leg_left/boot_gem_chain/round_bead",
+        "level": 650
+      }
+    ],
+    "legs/leg_right/boot_gem": [
+      {
+        "name": "0660 legs/leg_right/boot_gem",
+        "level": 660
+      }
+    ],
+    "legs/leg_right/boot_flower_ornament": [
+      {
+        "name": "0670 legs/leg_right/boot_flower_ornament",
+        "level": 670
+      }
+    ]
+  },
+  "depth_regions": {
+    "hair/back_hair/cap": [
+      {
+        "level": 5,
+        "mask": "parts/hair/back_hair/cap/nape-depth-mask.png",
+        "region": "颈旁后脑承底与长/侧发根的交叠：y>=235，x在375–447或476–546，且原cap back像素与long_right/long_left/side_hair_right/side_hair_left的alpha>=128根面重叠。仅该交叠后置至5，位于10/20/30/40根面后。"
+      },
+      {
+        "level": 50,
+        "mask": "parts/hair/back_hair/cap/back-depth-mask.png",
+        "region": "原完整cap后脑承底扣除5颈旁交叠与560冠顶的其余部分；保留头侧、耳根与后脑接合，位于脸耳和前发后。"
+      },
+      {
+        "level": 560,
+        "mask": "parts/hair/back_hair/cap/upper-depth-mask.png",
+        "region": "y < 94+0.0033*(x-453)^2 且 y<151的原冠顶弧形覆盖区。三分片互补，联合为同一完整cap，运动身份不变。"
+      }
+    ],
+    "legs/leg_right/foot": [
+      {
+        "level": 56,
+        "mask": "parts/legs/leg_right/foot/rear-depth-mask.png",
+        "region": "蓝灰后衬/后唇保留在本腿后；扣除属于实际前翻边、暗轮廓和浅粉滚边的V前口像素。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。"
+      },
+      {
+        "level": 610,
+        "mask": "parts/legs/leg_right/foot/upper-depth-mask.png",
+        "region": "前V翻边、连续暗轮廓/浅粉滚边、靴筒鞋面鞋头鞋底及既有固定附件，在腿前。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。",
+        "original_V_polyline": [
+          [
+            367,
+            1395
+          ],
+          [
+            396.55,
+            1417.55
+          ],
+          [
+            409,
+            1431
+          ],
+          [
+            420.6,
+            1445.3
+          ],
+          [
+            430,
+            1422
+          ],
+          [
+            438.25,
+            1413.85
+          ],
+          [
+            462,
+            1393
+          ]
+        ],
+        "actual_inner_V_beziers": [
+          [
+            396.55,
+            1417.55
+          ],
+          [
+            408.2,
+            1419.3
+          ],
+          [
+            415.65,
+            1431.7
+          ],
+          [
+            420.6,
+            1445.3
+          ],
+          [
+            425.45,
+            1429.25
+          ],
+          [
+            430.15,
+            1417.2
+          ],
+          [
+            438.25,
+            1413.85
+          ]
+        ]
+      }
+    ],
+    "legs/leg_left/foot": [
+      {
+        "level": 55,
+        "mask": "parts/legs/leg_left/foot/rear-depth-mask.png",
+        "region": "蓝灰后衬/后唇保留在本腿后；扣除属于实际前翻边、暗轮廓和浅粉滚边的V前口像素。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。"
+      },
+      {
+        "level": 600,
+        "mask": "parts/legs/leg_left/foot/upper-depth-mask.png",
+        "region": "前V翻边、连续暗轮廓/浅粉滚边、靴筒鞋面鞋头鞋底及既有固定附件，在腿前。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。",
+        "original_V_polyline": [
+          [
+            468,
+            1393
+          ],
+          [
+            494,
+            1414
+          ],
+          [
+            505,
+            1428
+          ],
+          [
+            511,
+            1449
+          ],
+          [
+            523,
+            1424
+          ],
+          [
+            534,
+            1417
+          ],
+          [
+            566,
+            1395
+          ]
+        ],
+        "actual_inner_V_beziers": [
+          [
+            493.8,
+            1414.3
+          ],
+          [
+            499.7,
+            1416.4
+          ],
+          [
+            503.5,
+            1421.7
+          ],
+          [
+            505.4,
+            1427.8
+          ],
+          [
+            506.5,
+            1433.9
+          ],
+          [
+            508.5,
+            1443.8
+          ],
+          [
+            510.7,
+            1448.7
+          ],
+          [
+            514.1,
+            1442
+          ],
+          [
+            516.1,
+            1430.1
+          ],
+          [
+            522.7,
+            1423.8
+          ],
+          [
+            526.3,
+            1420.3
+          ],
+          [
+            530.1,
+            1418.1
+          ],
+          [
+            533.8,
+            1417.2
+          ]
+        ]
+      }
+    ],
+    "legs/leg_left/boot_gem_chain/flexible_connector": [
+      {
+        "level": 599,
+        "mask": "parts/legs/leg_left/boot_gem_chain/flexible_connector/hidden-depth-mask.png",
+        "region": "原y>=1527末梢，在左靴固定花瓣后；本轮保持原像素。"
+      },
+      {
+        "level": 620,
+        "mask": "parts/legs/leg_left/boot_gem_chain/flexible_connector/upper-depth-mask.png",
+        "region": "原y<1527三段外露连接，在靴前/硬件后；本轮保持原像素。"
+      }
+    ]
+  },
+  "repair": "repair-01"
+}

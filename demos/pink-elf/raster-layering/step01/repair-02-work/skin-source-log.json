@@ -1,0 +1,19 @@
+[
+  {
+    "part": "body/torso",
+    "R": "R5",
+    "source": "parts/body/torso/aligned-underpaint.png — previously generated own body, not reference",
+    "mask": "0530 geometry dilated6px within manual ROI390..425,338..368; own target alpha unchanged",
+    "output": "torso-own-underpaint.png",
+    "source_pixels": 678
+  },
+  {
+    "part": "legs/leg_right/leg",
+    "R": "R7",
+    "source": "base-subject.png own exposed skin only, no foot or accessories",
+    "mask": "manual1210<y<1390; current leg alpha; every boot silhouette excluded+dilated5px; selection feather7px",
+    "output": "leg-own-visible.png",
+    "source_pixels": 10491,
+    "alpha_unchanged": true
+  }
+]

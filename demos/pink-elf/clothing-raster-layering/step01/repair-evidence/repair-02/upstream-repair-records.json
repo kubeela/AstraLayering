@@ -1,0 +1,162 @@
+[
+  {
+    "id": "halter_dress/halter_bodice",
+    "beforeSvgSha": "a04539f56d2bcca8197c45810d5c2c73aca9e14c845f262adc6368bac053897b",
+    "currentSvgSha": "a04539f56d2bcca8197c45810d5c2c73aca9e14c845f262adc6368bac053897b",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "halter_dress/short_outer_skirt/front_drape",
+    "beforeSvgSha": "bbb27d76d00aa4f00e13e1e3bca84a77c46332ec853138a6979a130cc07984af",
+    "currentSvgSha": "bbb27d76d00aa4f00e13e1e3bca84a77c46332ec853138a6979a130cc07984af",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "halter_dress/short_outer_skirt/right_skirt_panel",
+    "beforeSvgSha": "6c08f8a5a7cd16671147ab5aa7bcef52a39dfdbb8bf1b7fded1f49657378ddbd",
+    "currentSvgSha": "6c08f8a5a7cd16671147ab5aa7bcef52a39dfdbb8bf1b7fded1f49657378ddbd",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "halter_dress/short_outer_skirt/left_skirt_panel",
+    "beforeSvgSha": "c3e0ec0fcdbf19b73bd5719830c373a0fee00f68335c58cb346e3028eb867821",
+    "currentSvgSha": "c3e0ec0fcdbf19b73bd5719830c373a0fee00f68335c58cb346e3028eb867821",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "halter_dress/short_outer_skirt",
+    "beforeSvgSha": "9e2a3f41457d277d4e953792aa60e4357efd23116d413e4bcd2b0c61ae59f654",
+    "currentSvgSha": "9e2a3f41457d277d4e953792aa60e4357efd23116d413e4bcd2b0c61ae59f654",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "halter_dress",
+    "beforeSvgSha": "bc6f5820afd4e8c509c2f98720344ba343f26cec7c4d386a4ebf0f8a25feab76",
+    "currentSvgSha": "bc6f5820afd4e8c509c2f98720344ba343f26cec7c4d386a4ebf0f8a25feab76",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "puff_sleeve_image_left",
+    "beforeSvgSha": "01ebe953b72d27d7a972328a03a83032dfd855c22ed320284c49f850168fba0d",
+    "currentSvgSha": "01ebe953b72d27d7a972328a03a83032dfd855c22ed320284c49f850168fba0d",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "puff_sleeve_image_right",
+    "beforeSvgSha": "30566d1a32c041220902db3e055c00e723d410d82d4ee957dddd5ec04bf18255",
+    "currentSvgSha": "30566d1a32c041220902db3e055c00e723d410d82d4ee957dddd5ec04bf18255",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "waist_bow/knot_and_loops",
+    "beforeSvgSha": "b3227f5cd4b277c45bf3ec42d049d0e34a5f5f75acc6c1e3c302e16f2e7d3a2a",
+    "currentSvgSha": "b3227f5cd4b277c45bf3ec42d049d0e34a5f5f75acc6c1e3c302e16f2e7d3a2a",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "waist_bow/short_tail",
+    "beforeSvgSha": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f",
+    "currentSvgSha": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "waist_bow/long_tail",
+    "beforeSvgSha": "1e46095663bc14f5cbad66203ddfd79c0023a3ba88bbc15020a80fa14f0b1c2e",
+    "currentSvgSha": "1e46095663bc14f5cbad66203ddfd79c0023a3ba88bbc15020a80fa14f0b1c2e",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "waist_bow",
+    "beforeSvgSha": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d",
+    "currentSvgSha": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "chest_pendant",
+    "beforeSvgSha": "dc7124c9d936dc5d44e8781f325e5deaabd3a8d112f81ff749dcffb6bea04ca1",
+    "currentSvgSha": "dc7124c9d936dc5d44e8781f325e5deaabd3a8d112f81ff749dcffb6bea04ca1",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "floral_skirt_undertrim",
+    "beforeSvgSha": "aa1aa28214b11bd5955613316bff026356989ff36a2e4c2ed1eab209e8dffa10",
+    "currentSvgSha": "3f29d2df6e3a33d0e5b48c0a23d6d0969d95e365568433b9b8ee9cce55311861",
+    "changed": true,
+    "repair02": {
+      "issues": [
+        "R1",
+        "R2-contact"
+      ],
+      "currentPartPngSha256": "4f56db4482de09a376a9adfba2c8f8f17719d8bdbdafdf5aea247f67f6e833fe",
+      "report": "../clothing-raster-layering/step01/repair-02.md.tmp",
+      "paintingStatus": "self_checked_this_repair",
+      "note": "按review-02原坐标局部修复。花瓣/浅色翻面/深色星点布归属保持；收回8的右上外扩，10自有窄根接续，6长尾不改绘画。"
+    }
+  },
+  {
+    "id": "trailing_skirt_image_left",
+    "beforeSvgSha": "8d24b10f7b7d6a3359bd973e688d6108f83607feb68afc6c36b9159bd3757cf7",
+    "currentSvgSha": "257d161f1c8aa1ce583075d9430e298dfd91799d83699a93745b0b6818feb9e2",
+    "changed": true,
+    "repair02": {
+      "issues": [
+        "R1"
+      ],
+      "currentPartPngSha256": "d930a251528b1c4f3aedd86637759178c77e393d6b943a195c37ecf4139cb0ca",
+      "report": "../clothing-raster-layering/step01/repair-02.md.tmp",
+      "paintingStatus": "self_checked_this_repair",
+      "note": "按review-02原坐标局部修复。花瓣/浅色翻面/深色星点布归属保持；收回8的右上外扩，10自有窄根接续，6长尾不改绘画。"
+    }
+  },
+  {
+    "id": "trailing_skirt_image_right/short_drape_left",
+    "beforeSvgSha": "c857d12fcd9f02f5658ed597fe40430216622425052bc83e2f7e3d07c487bd8f",
+    "currentSvgSha": "4cbdb6a7858424008c22b69cd54d6801a8d21ae4c766b2deb8f68455aafc485a",
+    "changed": true,
+    "repair02": {
+      "issues": [
+        "R2"
+      ],
+      "currentPartPngSha256": "94d413f8383c42feb89a8d0b1bd29ba923a6f5a2f3bb93df92e75748a60d167a",
+      "report": "../clothing-raster-layering/step01/repair-02.md.tmp",
+      "paintingStatus": "self_checked_this_repair",
+      "note": "按review-02原坐标局部修复。花瓣/浅色翻面/深色星点布归属保持；收回8的右上外扩，10自有窄根接续，6长尾不改绘画。"
+    }
+  },
+  {
+    "id": "trailing_skirt_image_right/spiral_train_left",
+    "beforeSvgSha": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50",
+    "currentSvgSha": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50",
+    "changed": false,
+    "repair02": null
+  },
+  {
+    "id": "trailing_skirt_image_right",
+    "beforeSvgSha": "f5fc41a6f54ab562e0836eb0dc55a35c0f3700d4df285586f19c2c2f4bb2997f",
+    "currentSvgSha": "1ed686690a06a03431c9bb7d34056f1c4abd7e449b987d581c3f718dde2d6875",
+    "changed": true,
+    "repair02": {
+      "changedDescendants": [
+        "trailing_skirt_image_right/short_drape_left"
+      ],
+      "currentChildSvgSha256": {
+        "trailing_skirt_image_right/short_drape_left": "4cbdb6a7858424008c22b69cd54d6801a8d21ae4c766b2deb8f68455aafc485a",
+        "trailing_skirt_image_right/spiral_train_left": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50"
+      },
+      "report": "../clothing-raster-layering/step01/repair-02.md.tmp"
+    }
+  }
+]

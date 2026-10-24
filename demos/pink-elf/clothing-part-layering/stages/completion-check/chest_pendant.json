@@ -1,0 +1,7 @@
+{
+  "groupId": "chest_pendant",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，2 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "24d5d8f66710ba281195e3c344c2e1dc7a5a2ae123368de574608170f48833bb",
+  "afterHash": "eaeb100230d1c00abbae41d9ed2affe3ade6744a04e4a7d88ec4dd0734d562f3"
+}

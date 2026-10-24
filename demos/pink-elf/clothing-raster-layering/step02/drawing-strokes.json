@@ -1,0 +1,1305 @@
+[
+  {
+    "layer": "0041 waist_bow/short_tail",
+    "points": [
+      [
+        399.5,
+        560
+      ],
+      [
+        398.5,
+        565
+      ],
+      [
+        397.5,
+        571
+      ],
+      [
+        396.5,
+        576
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 0.45,
+    "color": [
+      130,
+      132,
+      112
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "Test local stair transition along short bow tail"
+  },
+  {
+    "layer": "0041 waist_bow/short_tail",
+    "points": [
+      [
+        408,
+        535
+      ],
+      [
+        405,
+        543
+      ],
+      [
+        403,
+        550
+      ],
+      [
+        401,
+        557
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 0.6,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "短带尾斜缘阶梯，接续已验证的小段"
+  },
+  {
+    "layer": "0041 waist_bow/short_tail",
+    "points": [
+      [
+        395,
+        578
+      ],
+      [
+        392,
+        589
+      ],
+      [
+        390,
+        599
+      ],
+      [
+        389.5,
+        607
+      ]
+    ],
+    "size": 2.3,
+    "opacity": 0.55,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "短带尾左下斜缘硬台阶"
+  },
+  {
+    "layer": "0041 waist_bow/short_tail",
+    "points": [
+      [
+        396,
+        612
+      ],
+      [
+        396.5,
+        618
+      ],
+      [
+        395,
+        626
+      ],
+      [
+        393.5,
+        633
+      ]
+    ],
+    "size": 2,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "短带尾尖端右侧过硬折角"
+  },
+  {
+    "layer": "0042 waist_bow/long_tail",
+    "points": [
+      [
+        429,
+        564
+      ],
+      [
+        429,
+        582
+      ],
+      [
+        429,
+        602
+      ]
+    ],
+    "size": 2.2,
+    "opacity": 0.55,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "长带尾竖向边缘阶梯，仅窄带"
+  },
+  {
+    "layer": "0042 waist_bow/long_tail",
+    "points": [
+      [
+        435,
+        651
+      ],
+      [
+        438,
+        665
+      ],
+      [
+        443,
+        676
+      ],
+      [
+        446,
+        687
+      ],
+      [
+        445,
+        693
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 0.6,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "长带尾下端斜缘和尖端台阶"
+  },
+  {
+    "layer": "0043 waist_bow/knot_and_loops",
+    "points": [
+      [
+        385,
+        505
+      ],
+      [
+        387,
+        513
+      ],
+      [
+        391,
+        520
+      ],
+      [
+        395,
+        521
+      ],
+      [
+        401,
+        519
+      ]
+    ],
+    "size": 2,
+    "opacity": 0.45,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "结耳左下包边的硬像素角"
+  },
+  {
+    "layer": "0043 waist_bow/knot_and_loops",
+    "points": [
+      [
+        453,
+        525
+      ],
+      [
+        457,
+        522
+      ],
+      [
+        462,
+        514
+      ],
+      [
+        465,
+        507
+      ]
+    ],
+    "size": 2,
+    "opacity": 0.45,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "结耳右下转角软化，不加阴影"
+  },
+  {
+    "layer": "0040 chest_pendant",
+    "points": [
+      [
+        438,
+        316
+      ],
+      [
+        438,
+        320
+      ],
+      [
+        441,
+        323
+      ],
+      [
+        445,
+        324
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "胸饰左金卷边细线锯齿"
+  },
+  {
+    "layer": "0040 chest_pendant",
+    "points": [
+      [
+        496,
+        317
+      ],
+      [
+        497,
+        321
+      ],
+      [
+        494,
+        324
+      ],
+      [
+        490,
+        325
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "胸饰右金卷边细线锯齿"
+  },
+  {
+    "layer": "0040 chest_pendant",
+    "points": [
+      [
+        449,
+        369
+      ],
+      [
+        450,
+        373
+      ],
+      [
+        454,
+        376
+      ]
+    ],
+    "size": 1.6,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "胸饰下部叶尖边缘"
+  },
+  {
+    "layer": "0040 chest_pendant",
+    "points": [
+      [
+        477,
+        376
+      ],
+      [
+        482,
+        373
+      ],
+      [
+        483,
+        369
+      ]
+    ],
+    "size": 1.6,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "胸饰下部右叶尖边缘"
+  },
+  {
+    "layer": "0029 puff_sleeve_image_left :: depth_29",
+    "points": [
+      [
+        283,
+        432
+      ],
+      [
+        286,
+        438
+      ],
+      [
+        293,
+        442
+      ],
+      [
+        300,
+        444
+      ]
+    ],
+    "size": 1.9,
+    "opacity": 0.45,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左袖下缘局部硬描边，保持纱边"
+  },
+  {
+    "layer": "0030 puff_sleeve_image_right :: depth_30",
+    "points": [
+      [
+        575,
+        453
+      ],
+      [
+        581,
+        457
+      ],
+      [
+        587,
+        458
+      ],
+      [
+        593,
+        456
+      ]
+    ],
+    "size": 2,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右袖下缘圆瓣台阶"
+  },
+  {
+    "layer": "0030 puff_sleeve_image_right :: depth_30",
+    "points": [
+      [
+        637,
+        428
+      ],
+      [
+        632,
+        435
+      ],
+      [
+        625,
+        438
+      ]
+    ],
+    "size": 1.9,
+    "opacity": 0.45,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右袖外侧收口细小锯齿"
+  },
+  {
+    "layer": "0038 halter_dress/halter_bodice :: depth_38",
+    "points": [
+      [
+        373,
+        382
+      ],
+      [
+        372.5,
+        390
+      ],
+      [
+        374,
+        398
+      ],
+      [
+        377,
+        405
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.45,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "衣身左侧窄包边阶梯，不动袖身分片"
+  },
+  {
+    "layer": "0038 halter_dress/halter_bodice :: depth_38",
+    "points": [
+      [
+        563,
+        390
+      ],
+      [
+        562,
+        399
+      ],
+      [
+        559,
+        407
+      ],
+      [
+        555,
+        418
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.45,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "衣身右侧包边过硬小段"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        222,
+        876
+      ],
+      [
+        224,
+        880
+      ],
+      [
+        229,
+        883
+      ],
+      [
+        233,
+        883
+      ]
+    ],
+    "size": 2.2,
+    "opacity": 0.7,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左灰蓝瓣底缘硬台阶，保留完整花瓣"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        238,
+        880
+      ],
+      [
+        242,
+        879
+      ],
+      [
+        246,
+        877
+      ]
+    ],
+    "size": 1.8,
+    "opacity": 0.65,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左接触处短锯齿边，不扩大花瓣归属"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        267,
+        875
+      ],
+      [
+        268,
+        879
+      ],
+      [
+        273,
+        882
+      ],
+      [
+        279,
+        884
+      ]
+    ],
+    "size": 2.2,
+    "opacity": 0.7,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左青色瓣下缘像素角"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        284,
+        889
+      ],
+      [
+        290,
+        892
+      ],
+      [
+        296,
+        892
+      ],
+      [
+        301,
+        889
+      ]
+    ],
+    "size": 2.2,
+    "opacity": 0.65,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左侧青瓣弧底过硬轮廓"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        322,
+        895
+      ],
+      [
+        326,
+        899
+      ],
+      [
+        331,
+        900
+      ],
+      [
+        335,
+        898
+      ]
+    ],
+    "size": 2,
+    "opacity": 0.65,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左花簇最下端圆瓣"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        613,
+        893
+      ],
+      [
+        620,
+        897
+      ],
+      [
+        626,
+        896
+      ],
+      [
+        629,
+        894
+      ]
+    ],
+    "size": 2.2,
+    "opacity": 0.7,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右下青瓣尖角"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        643,
+        888
+      ],
+      [
+        649,
+        891
+      ],
+      [
+        655,
+        892
+      ],
+      [
+        662,
+        890
+      ]
+    ],
+    "size": 2.2,
+    "opacity": 0.7,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右侧青瓣下弧窄带过渡"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        675,
+        881
+      ],
+      [
+        675,
+        887
+      ],
+      [
+        676,
+        890
+      ]
+    ],
+    "size": 1.8,
+    "opacity": 0.6,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右窄青瓣外缘小阶梯"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        697,
+        877
+      ],
+      [
+        702,
+        879
+      ],
+      [
+        708,
+        880
+      ],
+      [
+        712,
+        878
+      ]
+    ],
+    "size": 2,
+    "opacity": 0.6,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右接触灰蓝瓣底缘细锯齿"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        349,
+        827
+      ],
+      [
+        352,
+        834
+      ],
+      [
+        356,
+        840
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.55,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "花簇深色瓣线小段偏硬"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        367,
+        817
+      ],
+      [
+        372,
+        822
+      ],
+      [
+        378,
+        824
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.55,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左窗口花簇瓣线局部软化"
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "points": [
+      [
+        651,
+        825
+      ],
+      [
+        658,
+        829
+      ],
+      [
+        664,
+        828
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.55,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右花簇瓣间线局部浓淡过渡"
+  },
+  {
+    "layer": "0013 floral_skirt_undertrim :: depth_13",
+    "points": [
+      [
+        159,
+        804
+      ],
+      [
+        158,
+        809
+      ],
+      [
+        162,
+        814
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左后侧花簇露出外缘小阶梯"
+  },
+  {
+    "layer": "0013 floral_skirt_undertrim :: depth_13",
+    "points": [
+      [
+        772,
+        803
+      ],
+      [
+        773,
+        808
+      ],
+      [
+        770,
+        813
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右后侧花簇露出外缘小阶梯"
+  },
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "points": [
+      [
+        227,
+        881
+      ],
+      [
+        232,
+        883
+      ],
+      [
+        237,
+        884
+      ],
+      [
+        241,
+        882
+      ]
+    ],
+    "size": 1.8,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左浅色翻面接头原有窄接色带，不改补全"
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "points": [
+      [
+        723,
+        887
+      ],
+      [
+        727,
+        891
+      ],
+      [
+        729,
+        896
+      ],
+      [
+        727,
+        900
+      ]
+    ],
+    "size": 1.9,
+    "opacity": 0.55,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右浅色回翻外缘细阶梯，保持圆点与开口"
+  },
+  {
+    "layer": "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+    "points": [
+      [
+        733,
+        922
+      ],
+      [
+        737,
+        925
+      ],
+      [
+        739,
+        928
+      ],
+      [
+        738,
+        931
+      ]
+    ],
+    "size": 1.8,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右金缘附件外侧抗锯齿，饰件留在原片"
+  },
+  {
+    "layer": "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34",
+    "points": [
+      [
+        184,
+        810
+      ],
+      [
+        190,
+        814
+      ],
+      [
+        196,
+        815
+      ],
+      [
+        200,
+        814
+      ]
+    ],
+    "size": 1.8,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左外裙波浪包边局部硬角"
+  },
+  {
+    "layer": "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35",
+    "points": [
+      [
+        631,
+        853
+      ],
+      [
+        636,
+        858
+      ],
+      [
+        641,
+        860
+      ],
+      [
+        646,
+        859
+      ]
+    ],
+    "size": 1.8,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "右外裙下缘波浪局部硬角"
+  },
+  {
+    "layer": "0037 halter_dress/short_outer_skirt/front_drape :: depth_37",
+    "points": [
+      [
+        490,
+        849
+      ],
+      [
+        496,
+        854
+      ],
+      [
+        503,
+        855
+      ],
+      [
+        508,
+        852
+      ]
+    ],
+    "size": 1.8,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "中央垂布底缘局部锯齿"
+  },
+  {
+    "layer": "0036 halter_dress/short_outer_skirt/front_drape :: depth_36",
+    "points": [
+      [
+        550,
+        779
+      ],
+      [
+        553,
+        785
+      ],
+      [
+        555,
+        791
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "中央右翻边描边硬台阶"
+  },
+  {
+    "layer": "0032 halter_dress/short_outer_skirt/right_skirt_panel :: depth_32",
+    "points": [
+      [
+        392,
+        775
+      ],
+      [
+        397,
+        779
+      ],
+      [
+        400,
+        785
+      ]
+    ],
+    "size": 1.7,
+    "opacity": 0.5,
+    "color": [
+      128,
+      128,
+      128
+    ],
+    "eraser": false,
+    "preset": "k) Blender Blur",
+    "reason": "左缺口自卷窄缘像素角"
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "points": [
+      [
+        718.25,
+        883.35
+      ],
+      [
+        719.3,
+        883.35
+      ]
+    ],
+    "size": 2.8,
+    "opacity": 1.0,
+    "color": [
+      239,
+      223,
+      230
+    ],
+    "eraser": false,
+    "preset": "b) Airbrush Soft",
+    "reason": "右浅色回翻外缘两像素深紫残点，以本片邻近浅布色柔笔接色"
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "points": [
+      [
+        718.25,
+        883.35
+      ],
+      [
+        719.3,
+        883.35
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 1.0,
+    "color": [
+      239,
+      223,
+      230
+    ],
+    "eraser": false,
+    "preset": "b) Airbrush Soft",
+    "reason": "同处柔笔收尾，保留斜向粉色包边"
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "points": [
+      [
+        718.25,
+        883.35
+      ],
+      [
+        719.3,
+        883.35
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 1.0,
+    "color": [
+      239,
+      223,
+      230
+    ],
+    "eraser": false,
+    "preset": "b) Airbrush Soft",
+    "reason": "右翻面两像素接色残点柔笔逐次收净"
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "points": [
+      [
+        718.25,
+        883.35
+      ],
+      [
+        719.3,
+        883.35
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 1.0,
+    "color": [
+      239,
+      223,
+      230
+    ],
+    "eraser": false,
+    "preset": "b) Airbrush Soft",
+    "reason": "右翻面两像素接色残点柔笔逐次收净"
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "points": [
+      [
+        718.25,
+        883.35
+      ],
+      [
+        719.3,
+        883.35
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 1.0,
+    "color": [
+      239,
+      223,
+      230
+    ],
+    "eraser": false,
+    "preset": "b) Airbrush Soft",
+    "reason": "右翻面两像素接色残点柔笔逐次收净"
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "points": [
+      [
+        718.25,
+        883.35
+      ],
+      [
+        719.3,
+        883.35
+      ]
+    ],
+    "size": 2.4,
+    "opacity": 1.0,
+    "color": [
+      239,
+      223,
+      230
+    ],
+    "eraser": false,
+    "preset": "b) Airbrush Soft",
+    "reason": "右翻面两像素接色残点柔笔逐次收净"
+  }
+]

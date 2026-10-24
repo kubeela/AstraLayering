@@ -1,0 +1,2791 @@
+[
+  {
+    "candidate": 1,
+    "kind": "color",
+    "bounds": [
+      230,
+      234,
+      209,
+      508
+    ],
+    "pixels": 4018,
+    "overlapping_changed_layer_bounds": [
+      "0005",
+      "0010",
+      "0030",
+      "0050",
+      "0060",
+      "0080",
+      "0210",
+      "0230",
+      "0240",
+      "0250",
+      "0260",
+      "0280",
+      "0300",
+      "0310",
+      "0530"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 2,
+    "kind": "color",
+    "bounds": [
+      463,
+      194,
+      145,
+      203
+    ],
+    "pixels": 3385,
+    "overlapping_changed_layer_bounds": [
+      "0005",
+      "0010",
+      "0020",
+      "0040",
+      "0050",
+      "0220",
+      "0240",
+      "0250",
+      "0260",
+      "0270",
+      "0290",
+      "0310",
+      "0320",
+      "0330",
+      "0340",
+      "0350",
+      "0360",
+      "0370",
+      "0390",
+      "0410",
+      "0430",
+      "0450",
+      "0470",
+      "0540",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 3,
+    "kind": "color",
+    "bounds": [
+      275,
+      430,
+      119,
+      339
+    ],
+    "pixels": 1803,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0060",
+      "0080",
+      "0210",
+      "0230",
+      "0250",
+      "0260"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 4,
+    "kind": "color",
+    "bounds": [
+      551,
+      484,
+      119,
+      307
+    ],
+    "pixels": 1062,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0070",
+      "0080",
+      "0200",
+      "0220",
+      "0250",
+      "0260"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 5,
+    "kind": "color",
+    "bounds": [
+      595,
+      391,
+      94,
+      302
+    ],
+    "pixels": 1010,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0070",
+      "0080",
+      "0200",
+      "0220"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 6,
+    "kind": "color",
+    "bounds": [
+      419,
+      141,
+      92,
+      82
+    ],
+    "pixels": 995,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0020",
+      "0030",
+      "0040",
+      "0050",
+      "0310",
+      "0390",
+      "0400",
+      "0410",
+      "0420",
+      "0430",
+      "0440",
+      "0450",
+      "0460",
+      "0470",
+      "0480",
+      "0490",
+      "0500",
+      "0530",
+      "0540",
+      "0550",
+      "0570",
+      "0580"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 7,
+    "kind": "color",
+    "bounds": [
+      383,
+      1340,
+      79,
+      111
+    ],
+    "pixels": 909,
+    "overlapping_changed_layer_bounds": [
+      "0056",
+      "0060",
+      "0610"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 8,
+    "kind": "color",
+    "bounds": [
+      482,
+      1340,
+      66,
+      113
+    ],
+    "pixels": 775,
+    "overlapping_changed_layer_bounds": [
+      "0055",
+      "0070",
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 9,
+    "kind": "color",
+    "bounds": [
+      351,
+      933,
+      34,
+      387
+    ],
+    "pixels": 642,
+    "overlapping_changed_layer_bounds": [
+      "0060"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 10,
+    "kind": "color",
+    "bounds": [
+      332,
+      189,
+      76,
+      38
+    ],
+    "pixels": 467,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0280",
+      "0300",
+      "0310",
+      "0400",
+      "0420",
+      "0460",
+      "0480",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 11,
+    "kind": "color",
+    "bounds": [
+      701,
+      539,
+      38,
+      151
+    ],
+    "pixels": 448,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 12,
+    "kind": "color",
+    "bounds": [
+      448,
+      769,
+      36,
+      60
+    ],
+    "pixels": 425,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0020",
+      "0060",
+      "0070",
+      "0080"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 13,
+    "kind": "color",
+    "bounds": [
+      548,
+      794,
+      61,
+      301
+    ],
+    "pixels": 373,
+    "overlapping_changed_layer_bounds": [
+      "0070",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 14,
+    "kind": "color",
+    "bounds": [
+      633,
+      473,
+      39,
+      55
+    ],
+    "pixels": 371,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 15,
+    "kind": "color",
+    "bounds": [
+      663,
+      537,
+      18,
+      34
+    ],
+    "pixels": 364,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 16,
+    "kind": "extra",
+    "bounds": [
+      610,
+      721,
+      48,
+      45
+    ],
+    "pixels": 363,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0070",
+      "0080",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 17,
+    "kind": "color",
+    "bounds": [
+      407,
+      1461,
+      27,
+      47
+    ],
+    "pixels": 336,
+    "overlapping_changed_layer_bounds": [
+      "0060",
+      "0610",
+      "0660"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 18,
+    "kind": "color",
+    "bounds": [
+      315,
+      202,
+      67,
+      51
+    ],
+    "pixels": 307,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0280",
+      "0310",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 19,
+    "kind": "color",
+    "bounds": [
+      446,
+      891,
+      12,
+      251
+    ],
+    "pixels": 293,
+    "overlapping_changed_layer_bounds": [
+      "0060"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 20,
+    "kind": "color",
+    "bounds": [
+      614,
+      410,
+      65,
+      97
+    ],
+    "pixels": 258,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0220"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 21,
+    "kind": "color",
+    "bounds": [
+      193,
+      844,
+      50,
+      44
+    ],
+    "pixels": 248,
+    "overlapping_changed_layer_bounds": [
+      "0145",
+      "0150",
+      "0160",
+      "0170",
+      "0180"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 22,
+    "kind": "color",
+    "bounds": [
+      484,
+      1139,
+      11,
+      193
+    ],
+    "pixels": 237,
+    "overlapping_changed_layer_bounds": [
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 23,
+    "kind": "color",
+    "bounds": [
+      196,
+      600,
+      15,
+      45
+    ],
+    "pixels": 235,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 24,
+    "kind": "color",
+    "bounds": [
+      629,
+      487,
+      25,
+      46
+    ],
+    "pixels": 234,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 25,
+    "kind": "color",
+    "bounds": [
+      237,
+      547,
+      13,
+      33
+    ],
+    "pixels": 226,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 26,
+    "kind": "color",
+    "bounds": [
+      434,
+      28,
+      50,
+      36
+    ],
+    "pixels": 213,
+    "overlapping_changed_layer_bounds": [
+      "0045",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 27,
+    "kind": "color",
+    "bounds": [
+      163,
+      630,
+      50,
+      60
+    ],
+    "pixels": 208,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 28,
+    "kind": "color",
+    "bounds": [
+      319,
+      779,
+      32,
+      149
+    ],
+    "pixels": 207,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0060",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 29,
+    "kind": "extra",
+    "bounds": [
+      208,
+      846,
+      35,
+      43
+    ],
+    "pixels": 191,
+    "overlapping_changed_layer_bounds": [
+      "0145",
+      "0150",
+      "0160",
+      "0170",
+      "0180"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 30,
+    "kind": "color",
+    "bounds": [
+      423,
+      93,
+      42,
+      7
+    ],
+    "pixels": 188,
+    "overlapping_changed_layer_bounds": [
+      "0045",
+      "0530",
+      "0540",
+      "0550",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 31,
+    "kind": "color",
+    "bounds": [
+      608,
+      682,
+      13,
+      26
+    ],
+    "pixels": 187,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0070",
+      "0080",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 32,
+    "kind": "color",
+    "bounds": [
+      247,
+      424,
+      44,
+      61
+    ],
+    "pixels": 177,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 33,
+    "kind": "color",
+    "bounds": [
+      482,
+      97,
+      29,
+      33
+    ],
+    "pixels": 142,
+    "overlapping_changed_layer_bounds": [
+      "0040",
+      "0050",
+      "0310",
+      "0540",
+      "0550",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 34,
+    "kind": "color",
+    "bounds": [
+      547,
+      1214,
+      19,
+      107
+    ],
+    "pixels": 140,
+    "overlapping_changed_layer_bounds": [
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 35,
+    "kind": "color",
+    "bounds": [
+      344,
+      149,
+      13,
+      45
+    ],
+    "pixels": 132,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0530"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 36,
+    "kind": "color",
+    "bounds": [
+      475,
+      839,
+      7,
+      106
+    ],
+    "pixels": 131,
+    "overlapping_changed_layer_bounds": [
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 37,
+    "kind": "color",
+    "bounds": [
+      475,
+      948,
+      7,
+      122
+    ],
+    "pixels": 130,
+    "overlapping_changed_layer_bounds": [
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 38,
+    "kind": "color",
+    "bounds": [
+      497,
+      1462,
+      15,
+      31
+    ],
+    "pixels": 128,
+    "overlapping_changed_layer_bounds": [
+      "0070",
+      "0600",
+      "0630"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 39,
+    "kind": "color",
+    "bounds": [
+      383,
+      1536,
+      7,
+      76
+    ],
+    "pixels": 128,
+    "overlapping_changed_layer_bounds": [
+      "0610"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 40,
+    "kind": "missing",
+    "bounds": [
+      556,
+      219,
+      9,
+      21
+    ],
+    "pixels": 123,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0050",
+      "0270"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 41,
+    "kind": "color",
+    "bounds": [
+      213,
+      496,
+      17,
+      57
+    ],
+    "pixels": 122,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 42,
+    "kind": "color",
+    "bounds": [
+      508,
+      1487,
+      11,
+      33
+    ],
+    "pixels": 117,
+    "overlapping_changed_layer_bounds": [
+      "0600",
+      "0620",
+      "0630"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 43,
+    "kind": "color",
+    "bounds": [
+      556,
+      423,
+      12,
+      55
+    ],
+    "pixels": 111,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0220",
+      "0250",
+      "0260"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 44,
+    "kind": "color",
+    "bounds": [
+      246,
+      512,
+      11,
+      22
+    ],
+    "pixels": 107,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 45,
+    "kind": "color",
+    "bounds": [
+      425,
+      1536,
+      14,
+      30
+    ],
+    "pixels": 102,
+    "overlapping_changed_layer_bounds": [
+      "0610",
+      "0670"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 46,
+    "kind": "color",
+    "bounds": [
+      399,
+      200,
+      18,
+      23
+    ],
+    "pixels": 101,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0280",
+      "0310",
+      "0400",
+      "0420",
+      "0440",
+      "0460",
+      "0480",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 47,
+    "kind": "color",
+    "bounds": [
+      533,
+      559,
+      30,
+      52
+    ],
+    "pixels": 101,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0070",
+      "0080",
+      "0220",
+      "0250"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 48,
+    "kind": "color",
+    "bounds": [
+      548,
+      166,
+      19,
+      42
+    ],
+    "pixels": 99,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0050",
+      "0270",
+      "0540"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 49,
+    "kind": "extra",
+    "bounds": [
+      454,
+      782,
+      18,
+      21
+    ],
+    "pixels": 96,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0020",
+      "0060",
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 50,
+    "kind": "color",
+    "bounds": [
+      383,
+      156,
+      8,
+      25
+    ],
+    "pixels": 94,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0310",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 51,
+    "kind": "color",
+    "bounds": [
+      452,
+      803,
+      3,
+      83
+    ],
+    "pixels": 91,
+    "overlapping_changed_layer_bounds": [
+      "0060"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 52,
+    "kind": "color",
+    "bounds": [
+      527,
+      111,
+      23,
+      50
+    ],
+    "pixels": 89,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0050",
+      "0310",
+      "0540",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 53,
+    "kind": "color",
+    "bounds": [
+      426,
+      166,
+      19,
+      34
+    ],
+    "pixels": 88,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0050",
+      "0310",
+      "0400",
+      "0420",
+      "0480",
+      "0500",
+      "0550",
+      "0580"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 54,
+    "kind": "color",
+    "bounds": [
+      436,
+      1252,
+      7,
+      78
+    ],
+    "pixels": 85,
+    "overlapping_changed_layer_bounds": [
+      "0060"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 55,
+    "kind": "color",
+    "bounds": [
+      442,
+      1177,
+      5,
+      72
+    ],
+    "pixels": 83,
+    "overlapping_changed_layer_bounds": [
+      "0060"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 56,
+    "kind": "missing",
+    "bounds": [
+      693,
+      741,
+      30,
+      66
+    ],
+    "pixels": 79,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0120",
+      "0130",
+      "0140",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 57,
+    "kind": "color",
+    "bounds": [
+      228,
+      484,
+      10,
+      36
+    ],
+    "pixels": 78,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 58,
+    "kind": "missing",
+    "bounds": [
+      675,
+      670,
+      19,
+      33
+    ],
+    "pixels": 75,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 59,
+    "kind": "extra",
+    "bounds": [
+      281,
+      730,
+      9,
+      26
+    ],
+    "pixels": 74,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 60,
+    "kind": "color",
+    "bounds": [
+      386,
+      1441,
+      8,
+      37
+    ],
+    "pixels": 73,
+    "overlapping_changed_layer_bounds": [
+      "0060",
+      "0610"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 61,
+    "kind": "color",
+    "bounds": [
+      276,
+      729,
+      14,
+      19
+    ],
+    "pixels": 70,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 62,
+    "kind": "color",
+    "bounds": [
+      392,
+      124,
+      11,
+      25
+    ],
+    "pixels": 69,
+    "overlapping_changed_layer_bounds": [
+      "0030",
+      "0050",
+      "0310",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 63,
+    "kind": "color",
+    "bounds": [
+      538,
+      1437,
+      9,
+      45
+    ],
+    "pixels": 69,
+    "overlapping_changed_layer_bounds": [
+      "0070",
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 64,
+    "kind": "missing",
+    "bounds": [
+      293,
+      321,
+      35,
+      53
+    ],
+    "pixels": 66,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0230"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 65,
+    "kind": "color",
+    "bounds": [
+      185,
+      532,
+      30,
+      46
+    ],
+    "pixels": 65,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 66,
+    "kind": "color",
+    "bounds": [
+      229,
+      564,
+      4,
+      20
+    ],
+    "pixels": 65,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 67,
+    "kind": "color",
+    "bounds": [
+      209,
+      647,
+      17,
+      37
+    ],
+    "pixels": 64,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 68,
+    "kind": "color",
+    "bounds": [
+      412,
+      179,
+      20,
+      15
+    ],
+    "pixels": 62,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0310",
+      "0480",
+      "0500",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 69,
+    "kind": "extra",
+    "bounds": [
+      193,
+      849,
+      9,
+      35
+    ],
+    "pixels": 58,
+    "overlapping_changed_layer_bounds": [
+      "0145",
+      "0170"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 70,
+    "kind": "color",
+    "bounds": [
+      661,
+      437,
+      30,
+      54
+    ],
+    "pixels": 58,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 71,
+    "kind": "color",
+    "bounds": [
+      543,
+      1551,
+      5,
+      32
+    ],
+    "pixels": 58,
+    "overlapping_changed_layer_bounds": [
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 72,
+    "kind": "missing",
+    "bounds": [
+      688,
+      513,
+      13,
+      25
+    ],
+    "pixels": 56,
+    "overlapping_changed_layer_bounds": [
+      "0020"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 73,
+    "kind": "color",
+    "bounds": [
+      390,
+      1499,
+      4,
+      33
+    ],
+    "pixels": 54,
+    "overlapping_changed_layer_bounds": [
+      "0610",
+      "0670"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 74,
+    "kind": "color",
+    "bounds": [
+      376,
+      108,
+      13,
+      20
+    ],
+    "pixels": 52,
+    "overlapping_changed_layer_bounds": [
+      "0030",
+      "0050",
+      "0310",
+      "0530",
+      "0550",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 75,
+    "kind": "color",
+    "bounds": [
+      687,
+      494,
+      11,
+      43
+    ],
+    "pixels": 51,
+    "overlapping_changed_layer_bounds": [
+      "0020"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 76,
+    "kind": "missing",
+    "bounds": [
+      252,
+      721,
+      21,
+      48
+    ],
+    "pixels": 47,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0190",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 77,
+    "kind": "color",
+    "bounds": [
+      330,
+      291,
+      12,
+      26
+    ],
+    "pixels": 46,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 78,
+    "kind": "color",
+    "bounds": [
+      538,
+      1497,
+      4,
+      37
+    ],
+    "pixels": 46,
+    "overlapping_changed_layer_bounds": [
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 79,
+    "kind": "color",
+    "bounds": [
+      527,
+      1594,
+      22,
+      31
+    ],
+    "pixels": 46,
+    "overlapping_changed_layer_bounds": [
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 80,
+    "kind": "extra",
+    "bounds": [
+      314,
+      201,
+      34,
+      24
+    ],
+    "pixels": 45,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0280"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 81,
+    "kind": "missing",
+    "bounds": [
+      578,
+      304,
+      23,
+      45
+    ],
+    "pixels": 44,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0220"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 82,
+    "kind": "missing",
+    "bounds": [
+      212,
+      741,
+      18,
+      42
+    ],
+    "pixels": 44,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0190",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 83,
+    "kind": "color",
+    "bounds": [
+      562,
+      1165,
+      5,
+      43
+    ],
+    "pixels": 44,
+    "overlapping_changed_layer_bounds": [
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 84,
+    "kind": "extra",
+    "bounds": [
+      693,
+      819,
+      5,
+      36
+    ],
+    "pixels": 39,
+    "overlapping_changed_layer_bounds": [
+      "0100",
+      "0110",
+      "0120",
+      "0130",
+      "0140"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 85,
+    "kind": "missing",
+    "bounds": [
+      671,
+      773,
+      5,
+      35
+    ],
+    "pixels": 38,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0140",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 86,
+    "kind": "extra",
+    "bounds": [
+      344,
+      159,
+      5,
+      17
+    ],
+    "pixels": 38,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 87,
+    "kind": "color",
+    "bounds": [
+      401,
+      1559,
+      14,
+      7
+    ],
+    "pixels": 38,
+    "overlapping_changed_layer_bounds": [
+      "0610",
+      "0670"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 88,
+    "kind": "extra",
+    "bounds": [
+      331,
+      237,
+      18,
+      14
+    ],
+    "pixels": 37,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 89,
+    "kind": "color",
+    "bounds": [
+      724,
+      810,
+      3,
+      27
+    ],
+    "pixels": 36,
+    "overlapping_changed_layer_bounds": [
+      "0120",
+      "0140"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 90,
+    "kind": "missing",
+    "bounds": [
+      696,
+      817,
+      5,
+      16
+    ],
+    "pixels": 34,
+    "overlapping_changed_layer_bounds": [
+      "0090",
+      "0100",
+      "0110",
+      "0120",
+      "0130",
+      "0140"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 91,
+    "kind": "extra",
+    "bounds": [
+      727,
+      814,
+      2,
+      34
+    ],
+    "pixels": 34,
+    "overlapping_changed_layer_bounds": [
+      "0120",
+      "0140"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 92,
+    "kind": "color",
+    "bounds": [
+      165,
+      579,
+      17,
+      34
+    ],
+    "pixels": 33,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 93,
+    "kind": "color",
+    "bounds": [
+      477,
+      1093,
+      9,
+      41
+    ],
+    "pixels": 31,
+    "overlapping_changed_layer_bounds": [
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 94,
+    "kind": "missing",
+    "bounds": [
+      564,
+      245,
+      13,
+      17
+    ],
+    "pixels": 30,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0050"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 95,
+    "kind": "color",
+    "bounds": [
+      503,
+      267,
+      10,
+      7
+    ],
+    "pixels": 30,
+    "overlapping_changed_layer_bounds": [
+      "0005",
+      "0020",
+      "0040",
+      "0050",
+      "0240",
+      "0310",
+      "0540"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 96,
+    "kind": "color",
+    "bounds": [
+      219,
+      436,
+      24,
+      37
+    ],
+    "pixels": 30,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 97,
+    "kind": "color",
+    "bounds": [
+      550,
+      1108,
+      11,
+      43
+    ],
+    "pixels": 30,
+    "overlapping_changed_layer_bounds": [
+      "0070"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 98,
+    "kind": "color",
+    "bounds": [
+      720,
+      840,
+      9,
+      38
+    ],
+    "pixels": 29,
+    "overlapping_changed_layer_bounds": [
+      "0090",
+      "0120",
+      "0140"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 99,
+    "kind": "color",
+    "bounds": [
+      517,
+      1472,
+      6,
+      12
+    ],
+    "pixels": 29,
+    "overlapping_changed_layer_bounds": [
+      "0070",
+      "0600",
+      "0630"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 100,
+    "kind": "missing",
+    "bounds": [
+      566,
+      195,
+      27,
+      3
+    ],
+    "pixels": 27,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0050",
+      "0270"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 101,
+    "kind": "extra",
+    "bounds": [
+      368,
+      1390,
+      15,
+      4
+    ],
+    "pixels": 27,
+    "overlapping_changed_layer_bounds": [
+      "0056",
+      "0060",
+      "0610"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 102,
+    "kind": "color",
+    "bounds": [
+      445,
+      1145,
+      1,
+      27
+    ],
+    "pixels": 27,
+    "overlapping_changed_layer_bounds": [
+      "0060"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 103,
+    "kind": "color",
+    "bounds": [
+      399,
+      1529,
+      18,
+      19
+    ],
+    "pixels": 27,
+    "overlapping_changed_layer_bounds": [
+      "0610",
+      "0670"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 104,
+    "kind": "color",
+    "bounds": [
+      694,
+      746,
+      10,
+      25
+    ],
+    "pixels": 26,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0140",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 105,
+    "kind": "extra",
+    "bounds": [
+      200,
+      626,
+      8,
+      10
+    ],
+    "pixels": 25,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 106,
+    "kind": "extra",
+    "bounds": [
+      193,
+      823,
+      2,
+      22
+    ],
+    "pixels": 25,
+    "overlapping_changed_layer_bounds": [
+      "0145",
+      "0190"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 107,
+    "kind": "extra",
+    "bounds": [
+      550,
+      1389,
+      16,
+      6
+    ],
+    "pixels": 25,
+    "overlapping_changed_layer_bounds": [
+      "0055",
+      "0070",
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 108,
+    "kind": "color",
+    "bounds": [
+      569,
+      238,
+      14,
+      9
+    ],
+    "pixels": 25,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 109,
+    "kind": "color",
+    "bounds": [
+      541,
+      501,
+      6,
+      7
+    ],
+    "pixels": 25,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0220",
+      "0250",
+      "0260"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 110,
+    "kind": "color",
+    "bounds": [
+      367,
+      102,
+      11,
+      12
+    ],
+    "pixels": 24,
+    "overlapping_changed_layer_bounds": [
+      "0030",
+      "0530",
+      "0550",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 111,
+    "kind": "color",
+    "bounds": [
+      385,
+      78,
+      18,
+      15
+    ],
+    "pixels": 23,
+    "overlapping_changed_layer_bounds": [
+      "0030",
+      "0530",
+      "0550",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 112,
+    "kind": "extra",
+    "bounds": [
+      720,
+      853,
+      8,
+      26
+    ],
+    "pixels": 22,
+    "overlapping_changed_layer_bounds": [
+      "0090",
+      "0120"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 113,
+    "kind": "color",
+    "bounds": [
+      466,
+      250,
+      7,
+      23
+    ],
+    "pixels": 22,
+    "overlapping_changed_layer_bounds": [
+      "0005",
+      "0020",
+      "0050",
+      "0240",
+      "0310",
+      "0320",
+      "0340",
+      "0360",
+      "0370",
+      "0540"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 114,
+    "kind": "color",
+    "bounds": [
+      694,
+      859,
+      5,
+      14
+    ],
+    "pixels": 22,
+    "overlapping_changed_layer_bounds": [
+      "0090",
+      "0100",
+      "0110",
+      "0120"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 115,
+    "kind": "missing",
+    "bounds": [
+      494,
+      1393,
+      1,
+      21
+    ],
+    "pixels": 21,
+    "overlapping_changed_layer_bounds": [
+      "0055",
+      "0070",
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 116,
+    "kind": "color",
+    "bounds": [
+      237,
+      439,
+      11,
+      19
+    ],
+    "pixels": 21,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 117,
+    "kind": "color",
+    "bounds": [
+      607,
+      676,
+      3,
+      9
+    ],
+    "pixels": 21,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0070",
+      "0080",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 118,
+    "kind": "missing",
+    "bounds": [
+      235,
+      694,
+      11,
+      11
+    ],
+    "pixels": 20,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 119,
+    "kind": "missing",
+    "bounds": [
+      393,
+      1379,
+      2,
+      19
+    ],
+    "pixels": 19,
+    "overlapping_changed_layer_bounds": [
+      "0056",
+      "0060",
+      "0610"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 120,
+    "kind": "extra",
+    "bounds": [
+      698,
+      640,
+      4,
+      16
+    ],
+    "pixels": 19,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 121,
+    "kind": "color",
+    "bounds": [
+      358,
+      118,
+      9,
+      13
+    ],
+    "pixels": 19,
+    "overlapping_changed_layer_bounds": [
+      "0030",
+      "0050",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 122,
+    "kind": "color",
+    "bounds": [
+      363,
+      138,
+      8,
+      18
+    ],
+    "pixels": 19,
+    "overlapping_changed_layer_bounds": [
+      "0030",
+      "0050",
+      "0530",
+      "0550"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 123,
+    "kind": "color",
+    "bounds": [
+      496,
+      168,
+      18,
+      9
+    ],
+    "pixels": 19,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0050",
+      "0310",
+      "0540",
+      "0550",
+      "0570"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 124,
+    "kind": "color",
+    "bounds": [
+      566,
+      262,
+      8,
+      30
+    ],
+    "pixels": 19,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0050"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 125,
+    "kind": "extra",
+    "bounds": [
+      472,
+      29,
+      15,
+      3
+    ],
+    "pixels": 18,
+    "overlapping_changed_layer_bounds": [
+      "0045"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 126,
+    "kind": "extra",
+    "bounds": [
+      340,
+      264,
+      7,
+      26
+    ],
+    "pixels": 18,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 127,
+    "kind": "extra",
+    "bounds": [
+      702,
+      871,
+      11,
+      18
+    ],
+    "pixels": 18,
+    "overlapping_changed_layer_bounds": [
+      "0090",
+      "0100",
+      "0110",
+      "0120"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 128,
+    "kind": "color",
+    "bounds": [
+      507,
+      1525,
+      8,
+      4
+    ],
+    "pixels": 18,
+    "overlapping_changed_layer_bounds": [
+      "0600"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 129,
+    "kind": "extra",
+    "bounds": [
+      695,
+      858,
+      3,
+      9
+    ],
+    "pixels": 17,
+    "overlapping_changed_layer_bounds": [
+      "0100",
+      "0110",
+      "0120"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 130,
+    "kind": "color",
+    "bounds": [
+      412,
+      69,
+      16,
+      5
+    ],
+    "pixels": 17,
+    "overlapping_changed_layer_bounds": [
+      "0550",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 131,
+    "kind": "color",
+    "bounds": [
+      356,
+      239,
+      4,
+      5
+    ],
+    "pixels": 17,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0530"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 132,
+    "kind": "color",
+    "bounds": [
+      715,
+      601,
+      10,
+      22
+    ],
+    "pixels": 17,
+    "overlapping_changed_layer_bounds": [
+      "0020"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 133,
+    "kind": "color",
+    "bounds": [
+      698,
+      640,
+      3,
+      12
+    ],
+    "pixels": 17,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 134,
+    "kind": "color",
+    "bounds": [
+      194,
+      827,
+      2,
+      15
+    ],
+    "pixels": 17,
+    "overlapping_changed_layer_bounds": [
+      "0145",
+      "0190"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 135,
+    "kind": "missing",
+    "bounds": [
+      188,
+      622,
+      2,
+      16
+    ],
+    "pixels": 16,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 136,
+    "kind": "extra",
+    "bounds": [
+      235,
+      817,
+      8,
+      26
+    ],
+    "pixels": 16,
+    "overlapping_changed_layer_bounds": [
+      "0150",
+      "0160",
+      "0180",
+      "0190"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 137,
+    "kind": "missing",
+    "bounds": [
+      479,
+      64,
+      18,
+      5
+    ],
+    "pixels": 15,
+    "overlapping_changed_layer_bounds": [
+      "0045",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 138,
+    "kind": "extra",
+    "bounds": [
+      679,
+      818,
+      5,
+      16
+    ],
+    "pixels": 15,
+    "overlapping_changed_layer_bounds": [
+      "0130",
+      "0140"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 139,
+    "kind": "color",
+    "bounds": [
+      393,
+      1549,
+      9,
+      8
+    ],
+    "pixels": 15,
+    "overlapping_changed_layer_bounds": [
+      "0610",
+      "0670"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 140,
+    "kind": "extra",
+    "bounds": [
+      221,
+      677,
+      6,
+      10
+    ],
+    "pixels": 14,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 141,
+    "kind": "color",
+    "bounds": [
+      181,
+      645,
+      1,
+      14
+    ],
+    "pixels": 14,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 142,
+    "kind": "color",
+    "bounds": [
+      433,
+      58,
+      5,
+      10
+    ],
+    "pixels": 13,
+    "overlapping_changed_layer_bounds": [
+      "0045",
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 143,
+    "kind": "color",
+    "bounds": [
+      370,
+      255,
+      4,
+      6
+    ],
+    "pixels": 13,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0030",
+      "0050",
+      "0530"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 144,
+    "kind": "color",
+    "bounds": [
+      399,
+      291,
+      3,
+      6
+    ],
+    "pixels": 13,
+    "overlapping_changed_layer_bounds": [
+      "0005",
+      "0010",
+      "0030",
+      "0310",
+      "0530"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 145,
+    "kind": "color",
+    "bounds": [
+      610,
+      364,
+      18,
+      26
+    ],
+    "pixels": 13,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0220"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 146,
+    "kind": "color",
+    "bounds": [
+      697,
+      589,
+      4,
+      17
+    ],
+    "pixels": 13,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0200"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 147,
+    "kind": "color",
+    "bounds": [
+      182,
+      623,
+      5,
+      18
+    ],
+    "pixels": 13,
+    "overlapping_changed_layer_bounds": [
+      "0010"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 148,
+    "kind": "extra",
+    "bounds": [
+      593,
+      361,
+      6,
+      7
+    ],
+    "pixels": 12,
+    "overlapping_changed_layer_bounds": [
+      "0020",
+      "0040",
+      "0220"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 149,
+    "kind": "extra",
+    "bounds": [
+      318,
+      769,
+      1,
+      12
+    ],
+    "pixels": 12,
+    "overlapping_changed_layer_bounds": [
+      "0010",
+      "0060",
+      "0210"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 150,
+    "kind": "color",
+    "bounds": [
+      491,
+      67,
+      14,
+      6
+    ],
+    "pixels": 12,
+    "overlapping_changed_layer_bounds": [
+      "0560"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  },
+  {
+    "candidate": 151,
+    "kind": "color",
+    "bounds": [
+      691,
+      841,
+      6,
+      14
+    ],
+    "pixels": 12,
+    "overlapping_changed_layer_bounds": [
+      "0100",
+      "0110",
+      "0120",
+      "0130",
+      "0140"
+    ],
+    "inspection_basis": "同坐标参考/全图对照、覆盖该位置的完整独显与400%外缘图；候选不作为自动改形或重配色指令。",
+    "disposition": "仅修本步职责内的边缘、细线或残色；第一步已确认的补绘色面与形体差异保留。"
+  }
+]

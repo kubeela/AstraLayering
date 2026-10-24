@@ -1,0 +1,194 @@
+[
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "changed_pixels": 17,
+    "alpha_changed_pixels": 2,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      227,
+      880,
+      241,
+      884
+    ]
+  },
+  {
+    "layer": "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+    "changed_pixels": 11,
+    "alpha_changed_pixels": 6,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      733,
+      922,
+      739,
+      931
+    ]
+  },
+  {
+    "layer": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "changed_pixels": 24,
+    "alpha_changed_pixels": 17,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      718,
+      882,
+      729,
+      900
+    ]
+  },
+  {
+    "layer": "0013 floral_skirt_undertrim :: depth_13",
+    "changed_pixels": 20,
+    "alpha_changed_pixels": 9,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      158,
+      803,
+      773,
+      814
+    ]
+  },
+  {
+    "layer": "0030 puff_sleeve_image_right :: depth_30",
+    "changed_pixels": 49,
+    "alpha_changed_pixels": 29,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      575,
+      432,
+      634,
+      459
+    ]
+  },
+  {
+    "layer": "0031 floral_skirt_undertrim :: depth_31",
+    "changed_pixels": 313,
+    "alpha_changed_pixels": 65,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      221,
+      817,
+      712,
+      901
+    ]
+  },
+  {
+    "layer": "0032 halter_dress/short_outer_skirt/right_skirt_panel :: depth_32",
+    "changed_pixels": 14,
+    "alpha_changed_pixels": 5,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      392,
+      775,
+      400,
+      785
+    ]
+  },
+  {
+    "layer": "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34",
+    "changed_pixels": 11,
+    "alpha_changed_pixels": 4,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      190,
+      813,
+      200,
+      815
+    ]
+  },
+  {
+    "layer": "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35",
+    "changed_pixels": 12,
+    "alpha_changed_pixels": 6,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      636,
+      857,
+      646,
+      860
+    ]
+  },
+  {
+    "layer": "0036 halter_dress/short_outer_skirt/front_drape :: depth_36",
+    "changed_pixels": 13,
+    "alpha_changed_pixels": 0,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      549,
+      779,
+      555,
+      791
+    ]
+  },
+  {
+    "layer": "0037 halter_dress/short_outer_skirt/front_drape :: depth_37",
+    "changed_pixels": 9,
+    "alpha_changed_pixels": 7,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      501,
+      851,
+      508,
+      855
+    ]
+  },
+  {
+    "layer": "0038 halter_dress/halter_bodice :: depth_38",
+    "changed_pixels": 35,
+    "alpha_changed_pixels": 12,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      372,
+      391,
+      562,
+      418
+    ]
+  },
+  {
+    "layer": "0040 chest_pendant",
+    "changed_pixels": 44,
+    "alpha_changed_pixels": 19,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      437,
+      317,
+      497,
+      376
+    ]
+  },
+  {
+    "layer": "0041 waist_bow/short_tail",
+    "changed_pixels": 156,
+    "alpha_changed_pixels": 61,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      389,
+      535,
+      408,
+      633
+    ]
+  },
+  {
+    "layer": "0042 waist_bow/long_tail",
+    "changed_pixels": 185,
+    "alpha_changed_pixels": 5,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      427,
+      563,
+      447,
+      693
+    ]
+  },
+  {
+    "layer": "0043 waist_bow/knot_and_loops",
+    "changed_pixels": 99,
+    "alpha_changed_pixels": 34,
+    "new_support_beyond_2px": 0,
+    "bbox": [
+      384,
+      505,
+      465,
+      525
+    ]
+  }
+]
