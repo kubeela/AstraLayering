@@ -7,7 +7,7 @@ import { InochiPendulum } from './vendor/inochi2d/pendulum.js';
 export { componentPhysicsVersion };
 const TAU = Math.PI * 2, DEG = 180 / Math.PI;
 // Additional projection passes run only while the displayed constraints fail.
-const MAX_PROJECTION_PASSES = 20;
+const MAX_PROJECTION_PASSES = 40;
 const distance = (a, b, i, j) => Math.hypot(a[i * 2] - b[j * 2], a[i * 2 + 1] - b[j * 2 + 1]);
 const area = (p, a, b, c) => (p[b * 2] - p[a * 2]) * (p[c * 2 + 1] - p[a * 2 + 1]) - (p[b * 2 + 1] - p[a * 2 + 1]) * (p[c * 2] - p[a * 2]);
 const angle = (ax, ay, bx, by) => Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
