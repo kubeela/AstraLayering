@@ -158,9 +158,39 @@
     ],
     "scope": "同一工作台前端的私有诊断代理，仅替换两份待发布调度源码；完整项目读取、法线、深度、6组投影和物理启用。四秒样本不代表所有设备或长期性能。"
   },
+  "reportedMissingMotionAudit": {
+    "userFeedback": "刷新后画面正常，但头发／挂件不动，物理看起来像只剩旧版衣服。此反馈不构成原 Safari 故障修复通过。",
+    "rollbackFound": false,
+    "publishedComponentCounts": { "cloth": 14, "strand": 10, "pendant": 16 },
+    "configurationChanged": false,
+    "defaultBreezeObservation": "原发布页在第123步，前发最大位移约0.29–0.47 px、耳坠约0.45 px；缩小显示时容易不可见。最大网格位移也可能发生在被衣服遮住的长发末端，不能据此断言可见发束摆动明显。",
+    "livePulseIssue": "工作台单次扰动取网格顺序最后一个最大权重点；刚性挂件每点权重均为1，因此可选到挂点附近。原耳坠脉冲第24步仅0.02684 px。",
+    "livePulseFix": "选择最大活动权重中离支撑最远的自由点，沿支撑半径的切向施力。与既有管线tip-impulse加载方式一致；求解器、正式配置、复核输入文件及旧证据保持原字节。",
+    "originalSizePixelCheck": {
+      "device": "Linux Chrome / ANGLE SwiftShader，定点取图；不代表Safari连续播放",
+      "sourceSize": [1024, 1536],
+      "components": 40,
+      "bindingIssues": [],
+      "pageErrors": [],
+      "earringRightStep24": { "travelPixels": 0.8374232814766351, "changedPixelsAbove5Of255": 149, "allSampledFramesValid": true },
+      "hairFrontRightStep12": { "travelPixels": 1.653433208882819, "changedPixelsAbove5Of255": 657, "allSampledFramesValid": true },
+      "crownRibbonLeftStep12": { "travelPixels": 3.5851352224738773, "changedPixelsAbove5Of255": 3730, "allSampledFramesValid": true },
+      "scope": "比较各组件单独脉冲的0、6、12、24、48、96步原尺寸颜色画面；实际查看前发和耳坠局部及全身。像素差证明此采样下有画面变化，不代替自然度与所有图层可见性复核。"
+    },
+    "macChromeHover": {
+      "components": 40,
+      "selected": "sleeve-gauze-right",
+      "scope": "all",
+      "hairFrontRight": { "receivedImpulses": 27, "peakTravelPixels": 2.2591121786943984 },
+      "earringRight": { "receivedImpulses": 10, "peakTravelPixels": 1.6114416710292077 },
+      "pageErrors": [],
+      "scopeOfConclusion": "真实pointermove和同工作台连续Worker运行证明头部组件无需单独选中即可受力。用户实际Safari是否加载40组件及其可见运动仍未确认。"
+    }
+  },
   "checks": [
     "5 targeted Worker and presentation tests passed",
-    "web TypeScript check passed"
+    "web TypeScript check passed",
+    "2 targeted live pulse tests passed: all-component free-end torque matches review, fixed roots and limits remain valid, current-component scope and disable switch respected"
   ],
   "mergeReadiness": "PR 78 remains Draft; original Safari failure unresolved"
 }
