@@ -332,23 +332,21 @@ test('缺少自检不能提交轮廓；返修回合失败保留此前已登记 S
   assert.equal(await readFile(join(repairDirectory, '2/prompt.txt'), 'utf8'), resumed.calls[0].task.prompt);
 });
 
-test('子组绘制收到父组完成 SVG；越界不能进入 review，父组文件保持原样', async t => {
+test('子组绘制收到父组完成 SVG；越界由写入工具当回合退回，不能进入 review，父组文件保持原样', async t => {
   const f = await fixture(t);
   const parent = join(f.directory, 'parent.svg');
   const before = svg('face', 20, 80);
   await writeFile(parent, before);
-  await f.store.update(document => {
-    document.groups = normalizeGroups([{ id: 'face', groups: [{ id: 'face/eye' }], steps: {
-      outline: { status: 'completed', output: { path: parent } }, review: { status: 'completed', output: { path: parent } },
-      completion: { status: 'completed', output: { path: parent } }, completionCheck: { status: 'completed', output: { passed: true } },
-    } }]);
-  });
-  const mock = agents(['pass']);
   const group = normalizeGroups([{ id: 'face/eye' }])[0];
   const parentGroup = normalizeGroups([{ id: 'face', steps: { completion: { status: 'completed', output: { path: parent } } } }])[0];
-  await assert.rejects(drawGroupOutline({ ...f, group, parent: parentGroup, outputPath: join(f.directory, 'child.draft.svg') }, mock), /超出父轮廓/);
-  assert.equal(mock.calls.length, 1);
-  assert.equal(runtime(mock.calls[0].task).parentSvg!.endsWith('parent.svg'), true);
+  const calls: AgentTask[] = [];
+  await assert.rejects(drawGroupOutline({ ...f, group, parent: parentGroup, outputPath: join(f.directory, 'child.draft.svg') }, { async run(task) {
+    calls.push(task);
+    assert.equal(runtime(task).parentSvg!.endsWith('parent.svg'), true);
+    await assert.rejects(task.tools!.find(tool => tool.name === 'write_outline_svg')!.execute({ svg: svg('face/eye', 10) }, signal), /超出父轮廓/);
+    return { text: '完成', images: [], threadId: 'out-of-bounds' };
+  } }));
+  assert.equal(calls.length, 1);
   assert.equal(await readFile(parent, 'utf8'), before);
 });
 
