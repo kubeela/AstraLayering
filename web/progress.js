@@ -139,10 +139,6 @@ export const stepArtifacts = [
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),
     step02: rasterDelivery('clothing-raster-layering', 'step02', 'composite.png', 'clothing-soft-edges.kra'),
-    'review-01': [file('clothing-raster-layering/step01/review-01.md', '第 1 轮反馈')],
-    'repair-01': [file('clothing-raster-layering/step01/repair-01.md', '第 1 轮修复记录')],
-    'review-02': [file('clothing-raster-layering/step01/review-02.md', '第 2 轮反馈')],
-    'repair-02': [file('clothing-raster-layering/step01/repair-02.md', '第 2 轮修复记录')],
   },
   {
     step01: [...rasterDelivery('character-assembly', 'step01', 'character-assembled.png', 'character-assembled.kra'),
