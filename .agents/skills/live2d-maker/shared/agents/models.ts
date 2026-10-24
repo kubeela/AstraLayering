@@ -45,7 +45,7 @@ export const stepDefaults = Object.fromEntries(Object.entries(stepModelSlots)
   .map(([step, slot]) => [step, modelSlotDefaults[slot]])) as Record<AgentStep, string>;
 export const imageSteps: readonly AgentStep[] = [
   'part_standardize', 'part_simplify', 'part_base_subject', 'clothing_preparation',
-  'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair',
+  'part_completion', 'clothing_completion',
   'raster_step01', 'raster_step02', 'raster_step01_review', 'raster_step01_repair', 'raster_step03',
   'clothing_raster_step01', 'clothing_raster_step02', 'clothing_raster_step01_review', 'clothing_raster_step01_repair',
   'assembly', 'shadow_maps',

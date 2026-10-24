@@ -6,6 +6,7 @@ import { readFile, realpath } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
+import { createBitmapTool } from './bitmap-tool.ts';
 import { svgHash } from './artifact-facts.ts';
 import { assertCompletionPreserves, composeCompletion, completionPaths } from './completion-svg.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
@@ -93,10 +94,12 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       return textResult(submitted);
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: true,
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: [preview, set, submit, createSvgReadTool(context.directory,
-      [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)])], prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${JSON.stringify({
+      [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)]),
+      createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'),
+        [reference, ...references.map(ref => ref.path)])], prompt: `${prompt.text}\n提示词来源：${prompt.path}\n\n【本次输入】\n${JSON.stringify({
       group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
       reference, additionalReferences: references, canvas, sourceSvg: sourcePath, outputDraft: draft, parentSvg: parent ?? null,
     }, null, 2)}\n\n【固定范围与操作约定】\n${rules}\n固定约定提示词来源：${rulesPath}\n` });
