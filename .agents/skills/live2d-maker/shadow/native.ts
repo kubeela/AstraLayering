@@ -29,7 +29,7 @@ export const inspectNative: NativeInspect = async (document, relations, output, 
   let displayProcess: ReturnType<typeof spawn> | undefined;
   if (process.platform === 'linux' && !env.DISPLAY) {
     // The bundled Krita may have only xcb. Own this display; do not alter any running X server.
-    displayProcess = spawn(inherited.ASTRA_STUDIO_XVFB || 'Xvfb', ['-displayfd','1','-screen','0','1280x800x24','-nolisten','tcp'], {stdio:['ignore','pipe','pipe']});
+    displayProcess = spawn(inherited.ASTRA_STUDIO_XVFB || 'Xvfb', ['-displayfd','1','-screen','0','1280x800x24','-nolisten','tcp'], {env,stdio:['ignore','pipe','pipe']});
     try {
       env.DISPLAY = ':' + await new Promise<string>((resolve,reject) => {
         let buffer = '';

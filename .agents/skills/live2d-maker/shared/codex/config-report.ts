@@ -13,6 +13,7 @@ export function configurationReport(env: NodeJS.ProcessEnv = process.env, direct
   try { file = parseEnv(readFileSync(path, 'utf8')); }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   return {
+    verification: 'configuration-only',
     skill: directory,
     configuration: path,
     shellOverrides: Object.keys(file).filter(key => env[key] !== undefined).sort(),
