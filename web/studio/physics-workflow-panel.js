@@ -1,4 +1,4 @@
-import { normalizedStages, provenanceSummary, coverageRows, selectedAssemblies, tuningRounds, candidateMetrics, candidateResponseCurves, selectedFindings, selectedEvents, recordedCurve, curveGeometry, responseProbes, sampleResponse, statusLabel } from './physics-workflow-model.js';
+import { normalizedStages, provenanceSummary, coverageRows, selectedAssemblies, tuningRounds, candidateMetrics, candidateMotionTarget, candidateResponseCurves, selectedFindings, selectedEvents, recordedCurve, curveGeometry, responseProbes, sampleResponse, statusLabel } from './physics-workflow-model.js';
 
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
@@ -8,7 +8,7 @@ const criterionNames = { attachment: '固定与连接', shape: '轮廓与形变'
 const verdictNames = { supported: '有证据支持', unsupported: '需修复', uncertain: '待确认', missing: '待复核', failed: '需修复' };
 const eventNames = { peak: '位移峰值', reversal: '换向', limit: '触及约束', fallback: '安全回退' };
 const inputNames = { neutral: '静止', 'tip-impulse': '末端脉冲', 'support-release': '支撑移动后释放', 'support-reverse': '支撑往返', sustained: '持续输入后停止', extreme: '极端输入', combined: '组合运动', 'light-brush': '轻扫后释放', airflow: '微风后停止' };
-const parameterNames = { frequencyHz: '摆动节奏', outputFrequencyHz: '角度过渡', dampingRatio: '衰减', inputGain: '受力倍率', maxTravel: '最大位移', maxAngle: '最大摆角', maxStretch: '最大拉伸', maxCompression: '最大压缩', maxShear: '最大剪切', minAreaRatio: '最小面积' };
+const parameterNames = { frequencyHz: '摆动节奏', outputFrequencyHz: '角度过渡', dampingRatio: '衰减', inputGain: '受力倍率', parentGain: '牵动惯性', parentVelocityLimit: '惯性预算（L/s）', outputGain: '摆幅倍率', maxTravel: '最大位移', maxAngle: '最大摆角', maxStretch: '最大拉伸', maxCompression: '最大压缩', maxShear: '最大剪切', minAreaRatio: '最小面积' };
 const familyNames = { hair: '头发', fabric: '衣物', accessory: '配饰', other: '其他' };
 
 function curveMarkup(series, options = {}) {
@@ -100,7 +100,8 @@ export class PhysicsWorkflowPanel {
     const badge = $('#physics-workflow-source'); badge.hidden = !this.data;
     badge.textContent = summary.title; badge.dataset.status = summary.tone; badge.title = summary.detail;
     $('#physics-workflow-provenance').hidden = !this.data;
-    $('#physics-workflow-provenance').textContent = summary.detail;
+    const initialization=this.data?.initialization;
+    $('#physics-workflow-provenance').textContent = summary.detail + (initialization?.mode==='explicit-same-source-reference' ? ' 参考初始化 · 重新复核。' : initialization?.mode==='reference-and-geometry-presets' ? ' 参考与新组件配方初始化 · 重新复核。' : initialization?.mode==='geometry-aware-presets' ? ' 类型与长度配方初始化。' : '');
     if (this.data?.source === 'manual' && this.physics.formal && !this.physics.dirty) $('#physics-draft').textContent = summary.title.includes('已认可') ? '手动 · 已认可' : '手动 · 待确认';
     this.renderEvidence();
   }
@@ -124,8 +125,8 @@ export class PhysicsWorkflowPanel {
     const curves = candidateResponseCurves(round, this.selected, control.value);
     $('#physics-tuning-curve').innerHTML = curves.some(curve => curve.points.length > 1) ? `${curveMarkup(curves, { label: '各标定候选的末端横向响应，单位像素' })}<div class="response-legend tuning-legend">${curves.filter(curve => curve.points.length).map(curve => `<span class="response-${curve.id}">${esc(curve.name)}${curve.selected ? ' ✓' : ''}</span>`).join('')}</div>` : empty('候选响应曲线待生成');
     $('#physics-workflow-tuning').innerHTML = round ? `${round.reason ? `<p class="workflow-note">${esc(round.reason)}</p>` : ''}<div class="workflow-candidates">${round.candidates.map(candidate => {
-      const metrics = candidateMetrics(candidate, this.selected), chosen = candidate.id === round.selectedCandidate;
-      return `<div class="workflow-candidate${chosen ? ' chosen' : ''}"><b>${esc(candidate.id)}${chosen ? ' · 已选择' : candidate.eligible === false ? ' · 未通过约束' : ''}</b>${(candidate.changes || []).filter(change => !this.selected || change.component === this.selected).map(change => `<p>${esc(parameterNames[change.key] || change.key)} <span>${esc(change.from)} → ${esc(change.to)}</span></p>`).join('') || '<p>基准配置</p>'}${metrics ? `<div class="workflow-metrics"><span>峰值 <b>${number(metrics.peak)} px</b></span><span>单步 <b>${number(metrics.maxStep)} px</b></span><span>限幅 / 回退 <b>${metrics.limited} / ${metrics.fallback}</b></span></div>` : '<p class="workflow-note">数值证据待生成</p>'}${(candidate.issues || []).length ? `<p class="workflow-warning">${esc(candidate.issues.join('、'))}</p>` : ''}</div>`;
+      const metrics = candidateMetrics(candidate, this.selected), target=candidateMotionTarget(candidate,this.selected,control.value), chosen = candidate.id === round.selectedCandidate;
+      return `<div class="workflow-candidate${chosen ? ' chosen' : ''}"><b>${esc(candidate.id)}${chosen ? ' · 已选择' : candidate.eligible === false ? ' · 未达到目标' : ''}</b>${(candidate.changes || []).filter(change => !this.selected || change.component === this.selected).map(change => `<p>${esc(parameterNames[change.key] || change.key)} <span>${esc(change.from)} → ${esc(change.to)}</span></p>`).join('') || '<p>基准配置</p>'}${metrics ? `<div class="workflow-metrics"><span>峰值 <b>${number(metrics.peak)} px</b></span><span>单步 <b>${number(metrics.maxStep)} px</b></span><span>限幅 / 回退 <b>${metrics.limited} / ${metrics.fallback}</b></span></div>` : '<p class="workflow-note">数值证据待生成</p>'}${target?.usable===false?'<p class="workflow-note">参考片段未通过运动检查，仅作初始化</p>':target ? `<div class="workflow-metrics${target.issues?.length?' workflow-warning':''}"><span>参考幅度 <b>${Math.round(target.ratios.peak*100)}%</b></span><span>参考活动量 <b>${Math.round(target.ratios.activity*100)}%</b></span><span>自由段 <b>${Math.round(target.freeLengthRatio*100)}%</b></span></div>`:''}${(candidate.issues || []).length ? `<p class="workflow-warning">${esc(candidate.issues.join('、'))}</p>` : ''}</div>`;
     }).join('')}</div>` : empty('标定候选尚未生成');
   }
   renderFindings() {

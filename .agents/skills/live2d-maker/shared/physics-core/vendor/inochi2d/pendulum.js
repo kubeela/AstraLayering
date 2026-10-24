@@ -13,7 +13,11 @@ export class InochiPendulum {
       // The rendered attachment always follows its actual parent. Only the
       // inertia induced by parent translation is scaled by author inputGain.
       // Carrying the remaining fraction avoids treating gain=0 as full input.
-      const gain=c.response.inputGain??1,dx=pivot[0]-this.lastPivot[0],dy=pivot[1]-this.lastPivot[1];
+      const dx=pivot[0]-this.lastPivot[0],dy=pivot[1]-this.lastPivot[1],speed=Math.hypot(dx,dy)/h;
+      const cap=c.response.parentVelocityLimit===undefined?Infinity:L*c.response.parentVelocityLimit,ratio=speed/cap;
+      // Carry the artwork through its complete parent pose. Saturate only the
+      // inherited inertial force at high speeds, retaining gentle-motion gain.
+      const gain=(c.response.parentGain??c.response.inputGain??1)*(ratio>1e-8?Math.tanh(ratio)/ratio:1);
       this.angle=Math.atan2(-(this.bob[0]+dx*(1-gain)-pivot[0]),this.bob[1]+dy*(1-gain)-pivot[1]);
     }
     this.lastPivot=[...pivot];

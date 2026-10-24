@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizedStages, provenanceSummary, coverageRows, selectedAssemblies, tuningRounds, candidateMetrics, candidateResponseCurves, selectedFindings, selectedEvents, recordedCurve, curveGeometry, responseProbes, sampleResponse } from '../studio/physics-workflow-model.js';
+import { normalizedStages, provenanceSummary, coverageRows, selectedAssemblies, tuningRounds, candidateMetrics, candidateMotionTarget, candidateResponseCurves, selectedFindings, selectedEvents, recordedCurve, curveGeometry, responseProbes, sampleResponse } from '../studio/physics-workflow-model.js';
 
 test('current manual approval never becomes workflow acceptance through archived production records', () => {
   const data = { source: 'manual', stages: [{ id: 'review', status: 'accepted' }], provenance: { configHash: 'current', workflowAccepted: true, manualReview: { status: 'approved', configHash: 'current' } }, evidence: { configHash: 'older' } };
@@ -63,6 +63,13 @@ test('tuning comparison uses the same component and standard input for every can
   assert.deepEqual(curves.map(curve => curve.selected), [false, true]);
   assert.deepEqual(candidateResponseCurves(round, undefined, 'airflow'), []);
   assert(curves.every(curve => !curve.points.some(point => point[1] === 99)));
+});
+test('movement target display follows the selected component and input, preserving failed activity ratios',()=>{
+  const target={ratios:{peak:.3,activity:.25},freeLengthRatio:.45,issues:['reference-amplitude']};
+  const candidate={metrics:{airflow:{front:{target},hem:{target:{ratios:{peak:1,activity:1}}}}}};
+  assert.deepEqual(candidateMotionTarget(candidate,'front','airflow'),target);
+  assert.equal(candidateMotionTarget(candidate,'front','light-brush'),null);
+  assert.equal(candidateMotionTarget(candidate,undefined,'airflow'),null);
 });
 
 test('live responses remove current support motion while preserving local middle and tip deformation', () => {

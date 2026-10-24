@@ -19,6 +19,12 @@ async function fixture(t: TestContext) {
 }
 const preflight = async (executable: string) => ({ executable, version: 'test' });
 
+test('物理参考路径保存在总控并在无重复参数的续跑中保留',async t=>{
+ const f=await fixture(t),parsed=parseArguments(['--name','case','--dir',f.options.dir,'--physics','--physics-reference','approved.json']);
+ assert('options' in parsed);const run=await configureRun({...f.options,...parsed.options},f.directory);assert.equal(run.physicsReference,join(f.directory,'approved.json'));await saveRun(f.directory,run);
+ const resumed=await configureRun(f.options,f.directory);assert.equal(resumed.physicsReference,run.physicsReference);
+});
+
 test('状态保存失败不能切断后续 agent 日志、状态和阶段推进', async t => {
   const f = await fixture(t);
   let injected = false;

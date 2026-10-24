@@ -7,7 +7,7 @@ import { taskDirectory } from '../shared/paths.ts';
 import { LayerCompositor } from '../shared/krita/layer-compositor.ts';
 import { studioProject } from '../shared/character-render/project-inputs.ts';
 
-export type PhysicsInput = { task: string; document: string; color: string; profile: 'primary'|'all'; structures: string[] };
+export type PhysicsInput = { task: string; document: string; color: string; profile: 'primary'|'all'; structures: string[]; referencePhysics?:string };
 export const hash = (v: Uint8Array | string) => createHash('sha256').update(v).digest('hex');
 export const json = async (p: string) => JSON.parse(await readFile(p, 'utf8'));
 export async function put(p: string, v: unknown) { await mkdir(dirname(p), {recursive:true}); await (await import('../shared/artifact-files.ts')).atomicJSON(p,v); }
@@ -20,8 +20,8 @@ export async function resolveInput(name: string, root: string, profile: 'primary
   return {task,document,color,profile,structures};
 }
 export async function fingerprint(input: PhysicsInput) {
-  const rules=await Promise.all(['guide.md','prompts/analysis.md','prompts/authoring.md','prompts/review.md','coverage.ts','images.ts','tools.ts','calibration.ts','feedback.ts','steps.ts'].map(p=>readFile(new URL(p,import.meta.url))));
-  return hash(JSON.stringify({version:2,rules:rules.map(hash),profile:input.profile,source:hash(await readFile(input.color)),document:hash(await readFile(input.document)),structures:await Promise.all(input.structures.map(p=>json(p)))}));
+  const rules=await Promise.all(['guide.md','prompts/analysis.md','prompts/authoring.md','prompts/review.md','coverage.ts','images.ts','tools.ts','calibration.ts','motion-targets.ts','reference.ts','../shared/physics-core/motion-presets.js','feedback.ts','steps.ts'].map(p=>readFile(new URL(p,import.meta.url))));
+  return hash(JSON.stringify({version:3,rules:rules.map(hash),reference:input.referencePhysics?hash(await readFile(input.referencePhysics)):null,profile:input.profile,source:hash(await readFile(input.color)),document:hash(await readFile(input.document)),structures:await Promise.all(input.structures.map(p=>json(p)))}));
 }
 export async function prepareSource(input: PhysicsInput, directory: string, krita: string) {
   const source=join(directory,'source'), digest=hash(await readFile(input.document));

@@ -249,7 +249,7 @@ export class ComponentBody {
       // As in the Cubism strand output, bound the displayed deformation while
       // retaining the independent physical state. Hard clipping and returning
       // that angle to the world bob creates recoil in a serial ornament chain.
-      const previous=this.displayTheta,target=max*Math.tanh(this.theta/max);
+      const previous=this.displayTheta,target=max*Math.tanh(this.theta*(this.component.response.outputGain??1)/max);
       const outputFrequency=this.component.response.outputFrequencyHz??this.component.response.frequencyHz;
       this.displayTheta+=(target-previous)*(1-Math.exp(-TAU*outputFrequency*this.dt*3));
       this.theta=this.displayTheta;this.angularVelocity=(this.displayTheta-previous)/this.dt;

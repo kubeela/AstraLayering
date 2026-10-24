@@ -6,6 +6,7 @@ export function coverageRows(coverage?: any): any[];
 export function selectedAssemblies(assemblies?: any, selected?: string): any[];
 export function tuningRounds(tuning?: any, selected?: string): any[];
 export function candidateMetrics(candidate: any, selected?: string): { peak: number; maxStep: number; fallback: number; limited: number } | null;
+export function candidateMotionTarget(candidate: any, selected?: string, test?: string): any | null;
 export function candidateResponseCurves(round: any, selected?: string, test?: string): { id: string; name: string; selected: boolean; points: number[][] }[];
 export function selectedFindings(findings?: any, selected?: string): any[];
 export function selectedEvents(run?: any, selected?: string): any[];

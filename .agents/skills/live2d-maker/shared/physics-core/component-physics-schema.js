@@ -54,7 +54,9 @@ export function validateComponent(c, canvas, authoringRequired = true) {
     number(c.response.outputFrequencyHz,.15,6,'角度过渡');
   }
   if(c.response.windGain!==undefined)number(c.response.windGain,0,4,'风力响应');
-  if(c.response.outputGain!==undefined){if(c.kind!=='strand')throw Error('弯曲输出倍率只用于发束和软带');number(c.response.outputGain,0,8,'弯曲输出倍率');}
+  if(c.response.parentGain!==undefined){if(c.kind!=='pendant')throw Error('牵动惯性仅用于刚性挂件');number(c.response.parentGain,0,2,'牵动惯性');}
+  if(c.response.parentVelocityLimit!==undefined){if(c.kind!=='pendant')throw Error('惯性限速仅用于刚性挂件');number(c.response.parentVelocityLimit,.1,20,'惯性限速（自由长度每秒）');}
+  if(c.response.outputGain!==undefined){if(!['strand','pendant'].includes(c.kind))throw Error('输出倍率只用于发束、软带和刚性挂件');number(c.response.outputGain,0,8,'输出倍率');}
   object(c.material, '缺少材质参数'); for (const key of ['stretchCompliance','shearCompliance','bendCompliance','shapeCompliance']) number(c.material[key], 0, .1, key);
   return c;
 }

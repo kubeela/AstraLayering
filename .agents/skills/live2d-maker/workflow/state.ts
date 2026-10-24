@@ -11,7 +11,7 @@ import { readTaskLog } from './log.ts';
 
 export type TaskOptions = {
   name: string; dir?: string; image?: string; krita?: string;
-  from?: PipelineId; to?: PipelineId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode; physicsProfile?: 'primary' | 'all'; physicsEnabled?: boolean;
+  from?: PipelineId; to?: PipelineId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode; physicsProfile?: 'primary' | 'all'; physicsEnabled?: boolean; physicsReference?:string;
 };
 export type PipelineProgress = {
   status: 'pending' | 'running' | 'completed' | 'failed';
@@ -19,7 +19,7 @@ export type PipelineProgress = {
 };
 export type TaskRun = {
   version: 1; name: string; dir: string; from: PipelineId; to: PipelineId;
-  image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode; physicsProfile?: 'primary' | 'all'; physicsEnabled?: boolean;
+  image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode; physicsProfile?: 'primary' | 'all'; physicsEnabled?: boolean; physicsReference?:string;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   activePipeline?: PipelineId;
@@ -138,6 +138,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
     physicsProfile: options.physicsProfile ?? saved?.physicsProfile ?? 'primary', physicsEnabled: to === 'physics',
     shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
   run.image = image ?? saved?.image;
+  if(options.physicsReference)run.physicsReference=resolveInput(options.name,options.physicsReference,options.dir);
   if (options.krita) run.krita = resolveInput(options.name, options.krita, options.dir);
   if (!run.krita && selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow' || id === 'physics')) {
     for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow/mask', 'shadow/normal-depth', 'physics']) {

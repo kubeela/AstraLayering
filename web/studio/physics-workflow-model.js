@@ -54,6 +54,12 @@ export function candidateMetrics(candidate, selected) {
   if (!metrics.length) return null;
   return { peak: Math.max(...metrics.map(metric => Number(metric.peak) || 0)), maxStep: Math.max(...metrics.map(metric => Number(metric.maxStep) || 0)), fallback: metrics.reduce((sum, metric) => sum + (Number(metric.fallback) || 0), 0), limited: metrics.reduce((sum, metric) => sum + (Number(metric.limited) || 0), 0) };
 }
+export function candidateMotionTarget(candidate, selected, test) {
+  if(!selected||!test)return null;
+  const target=candidate?.metrics?.[test]?.[selected]?.target;
+  if(!target||!Number.isFinite(target.ratios?.peak)||!Number.isFinite(target.ratios?.activity))return null;
+  return target;
+}
 export function candidateResponseCurves(round, selected, test) {
   if (!selected || !test) return [];
   return list(round?.candidates).map((candidate, index) => ({
