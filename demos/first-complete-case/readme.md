@@ -1,6 +1,6 @@
 # 首次完整生成：基础连体服角色
 
-本例已从基础角色参考走通阶段1—5，生成第一份完整分层彩图SVG。整图形体保持较好；局部线稿、配件构造、虹膜分层和头发配色仍有差异，具体证据与改进阶段见[开发进度](../../archive/svg-layering/workflows/开发进度.md)与[终稿复核](../../analysis/stage5-final-review/2026-09-13_阶段5终稿差异与流程链路分析.md)。
+本例已从基础角色参考走通阶段1—5，生成第一份完整分层彩图SVG。整图形体保持较好；局部线稿、配件构造、虹膜分层和头发配色仍有差异，具体证据与改进阶段见[开发进度](../../archive/svg-layering/workflows/开发进度.md)与[终稿复核](https://github.com/wu-tian807/AstraLayering/blob/ae7b7b5bb83275900a33c7d287b07987a55ffed5/analysis/stage5-final-review/2026-09-13_%E9%98%B6%E6%AE%B55%E7%BB%88%E7%A8%BF%E5%B7%AE%E5%BC%82%E4%B8%8E%E6%B5%81%E7%A8%8B%E9%93%BE%E8%B7%AF%E5%88%86%E6%9E%90.md)。
 
 ## 参考与生成结果
 

@@ -19,4 +19,4 @@
 
 当前技能入口为 [`$live2d-clothing`](../../../.agents/skills/live2d-clothing/readme.md)；旧记录中的 `workflow_clothing/` 是当时的目录名，历史脚本保留当时环境路径，复用时需适配。
 
-衣装集合须按索引插入素体的实际层位；本次完成静态默认穿戴与隐藏补形，尚未完成动态绑定验收，具体准备情况及纱袖控制范围问题见[动画素材核查](../../../analysis/clothing-animation-readiness-20260927/动画素材核查.md)。
+衣装集合须按索引插入素体的实际层位；本次完成静态默认穿戴与隐藏补形，尚未完成动态绑定验收，具体准备情况及纱袖控制范围问题见[动画素材核查](https://github.com/wu-tian807/AstraLayering/blob/ae7b7b5bb83275900a33c7d287b07987a55ffed5/analysis/clothing-animation-readiness-20260927/%E5%8A%A8%E7%94%BB%E7%B4%A0%E6%9D%90%E6%A0%B8%E6%9F%A5.md)。

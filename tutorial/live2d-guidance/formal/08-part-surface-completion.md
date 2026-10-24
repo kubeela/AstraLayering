@@ -44,4 +44,4 @@
 
 实现：前端交互位于 `web/studio/surface-coverage.js`；贴图归属与补全由 skill 的 `shared/character-render/part-maps.js`、`harmonic-fill.js` 维护，原生快照由 `shared/krita/native/astra_layers.py` 提供。前端直接消费共享实现，skill 可独立安装运行。
 
-定向复验：`web/tests/studio-surfaces.test.ts`、`tools/lighting/surface-native-check.mjs`、`tools/lighting/surface-browser-check.mjs`。原工作台对照脚本为 `verify-character-hand-surfaces.mjs` 和 `verify-character-surface-ownership.mjs`。临时图片与完整指标保留在忽略的检查目录，不作为新角色源文件提交；软件 GPU 检查不代表用户设备帧率。
+定向复验：`web/tests/studio-surfaces.test.ts`。历史原生与浏览器辅助检查脚本已删除，可从 Git 提交记录查阅；原工作台对照脚本为 `verify-character-hand-surfaces.mjs` 和 `verify-character-surface-ownership.mjs`。临时图片与完整指标保留在忽略的检查目录，不作为新角色源文件提交；软件 GPU 检查不代表用户设备帧率。
