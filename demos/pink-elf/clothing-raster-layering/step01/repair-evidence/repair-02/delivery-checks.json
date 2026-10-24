@@ -1,0 +1,323 @@
+{
+  "KRAsha": "4ab1b3a49f127a48d4d745775618d95acd43c05d63df828ad8bc034d7495f8b1",
+  "beforeKRAsha": "56561f759db31d2ac8cb18697af202d3d30bdf0a3a8581d1d595b6f40ad148df",
+  "canvas": [
+    932,
+    1688
+  ],
+  "logicalParts": 14,
+  "ordinaryPaintLayers": 32,
+  "changedLayers": [
+    "0007 trailing_skirt_image_left :: depth_07",
+    "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+    "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+    "0031 floral_skirt_undertrim :: depth_31"
+  ],
+  "other28RawLayerPixelsUnchanged": true,
+  "unaffected11LogicalPartsRGBAExact": [
+    "halter_dress/halter_bodice",
+    "halter_dress/short_outer_skirt/front_drape",
+    "halter_dress/short_outer_skirt/right_skirt_panel",
+    "halter_dress/short_outer_skirt/left_skirt_panel",
+    "puff_sleeve_image_left",
+    "puff_sleeve_image_right",
+    "waist_bow/knot_and_loops",
+    "waist_bow/short_tail",
+    "waist_bow/long_tail",
+    "chest_pendant",
+    "trailing_skirt_image_right/spiral_train_left"
+  ],
+  "noMasksOrChildren": true,
+  "depthNamesOrderPreserved": true,
+  "reopenEqual": true,
+  "PNGandKRAmergedAndActualProjectionEqual": true,
+  "parts": [
+    {
+      "id": "halter_dress/halter_bodice",
+      "layers": [
+        "0016 halter_dress/halter_bodice :: depth_16",
+        "0038 halter_dress/halter_bodice :: depth_38"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "halter_dress/short_outer_skirt/front_drape",
+      "layers": [
+        "0036 halter_dress/short_outer_skirt/front_drape :: depth_36",
+        "0037 halter_dress/short_outer_skirt/front_drape :: depth_37"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "halter_dress/short_outer_skirt/right_skirt_panel",
+      "layers": [
+        "0014 halter_dress/short_outer_skirt/right_skirt_panel :: depth_14",
+        "0032 halter_dress/short_outer_skirt/right_skirt_panel :: depth_32",
+        "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "halter_dress/short_outer_skirt/left_skirt_panel",
+      "layers": [
+        "0015 halter_dress/short_outer_skirt/left_skirt_panel :: depth_15",
+        "0033 halter_dress/short_outer_skirt/left_skirt_panel :: depth_33",
+        "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "puff_sleeve_image_left",
+      "layers": [
+        "0017 puff_sleeve_image_left :: depth_17",
+        "0029 puff_sleeve_image_left :: depth_29"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "puff_sleeve_image_right",
+      "layers": [
+        "0018 puff_sleeve_image_right :: depth_18",
+        "0030 puff_sleeve_image_right :: depth_30"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "waist_bow/knot_and_loops",
+      "layers": [
+        "0043 waist_bow/knot_and_loops"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "waist_bow/short_tail",
+      "layers": [
+        "0041 waist_bow/short_tail"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "waist_bow/long_tail",
+      "layers": [
+        "0042 waist_bow/long_tail"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "chest_pendant",
+      "layers": [
+        "0040 chest_pendant"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "floral_skirt_undertrim",
+      "layers": [
+        "0013 floral_skirt_undertrim :: depth_13",
+        "0031 floral_skirt_undertrim :: depth_31"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "trailing_skirt_image_left",
+      "layers": [
+        "0001 trailing_skirt_image_left :: depth_01",
+        "0003 trailing_skirt_image_left :: depth_03",
+        "0005 trailing_skirt_image_left :: depth_05",
+        "0007 trailing_skirt_image_left :: depth_07",
+        "0009 trailing_skirt_image_left :: depth_09",
+        "0011 trailing_skirt_image_left :: depth_11"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "trailing_skirt_image_right/short_drape_left",
+      "layers": [
+        "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+        "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+        "0012 trailing_skirt_image_right/short_drape_left :: depth_12"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    },
+    {
+      "id": "trailing_skirt_image_right/spiral_train_left",
+      "layers": [
+        "0002 trailing_skirt_image_right/spiral_train_left :: depth_02",
+        "0004 trailing_skirt_image_right/spiral_train_left :: depth_04",
+        "0006 trailing_skirt_image_right/spiral_train_left :: depth_06"
+      ],
+      "maxSamePartDepthCoverage": 1,
+      "partAlphaEqualsDepthUnion": true,
+      "SVGalphaFingerprintMatches": true
+    }
+  ],
+  "nativeBrushRecords": 1203,
+  "newImageGenerationRequests": 0,
+  "retainedPreviousImageGenerationRequests": 41,
+  "referencesClothingSha": "119c1d7ef01ca537a006bf49616ca68ef3b0ea4812b64d2e96a29d0dad23579d",
+  "upstreamValidation": {
+    "schema": "passed",
+    "occlusionFingerprintMatches": true,
+    "allSVGsValid": true,
+    "allSourceFingerprintsMatch": true,
+    "files": [
+      {
+        "id": "halter_dress",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress.svg",
+        "sha256": "bc6f5820afd4e8c509c2f98720344ba343f26cec7c4d386a4ebf0f8a25feab76",
+        "leaf": false
+      },
+      {
+        "id": "halter_dress/halter_bodice",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress/halter_bodice.svg",
+        "sha256": "a04539f56d2bcca8197c45810d5c2c73aca9e14c845f262adc6368bac053897b",
+        "leaf": true
+      },
+      {
+        "id": "halter_dress/short_outer_skirt",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress/short_outer_skirt.svg",
+        "sha256": "9e2a3f41457d277d4e953792aa60e4357efd23116d413e4bcd2b0c61ae59f654",
+        "leaf": false
+      },
+      {
+        "id": "halter_dress/short_outer_skirt/front_drape",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress/short_outer_skirt/front_drape.svg",
+        "sha256": "bbb27d76d00aa4f00e13e1e3bca84a77c46332ec853138a6979a130cc07984af",
+        "leaf": true
+      },
+      {
+        "id": "halter_dress/short_outer_skirt/right_skirt_panel",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress/short_outer_skirt/right_skirt_panel.svg",
+        "sha256": "6c08f8a5a7cd16671147ab5aa7bcef52a39dfdbb8bf1b7fded1f49657378ddbd",
+        "leaf": true
+      },
+      {
+        "id": "halter_dress/short_outer_skirt/left_skirt_panel",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/halter_dress/short_outer_skirt/left_skirt_panel.svg",
+        "sha256": "c3e0ec0fcdbf19b73bd5719830c373a0fee00f68335c58cb346e3028eb867821",
+        "leaf": true
+      },
+      {
+        "id": "puff_sleeve_image_left",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/puff_sleeve_image_left.svg",
+        "sha256": "01ebe953b72d27d7a972328a03a83032dfd855c22ed320284c49f850168fba0d",
+        "leaf": true
+      },
+      {
+        "id": "puff_sleeve_image_right",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/puff_sleeve_image_right.svg",
+        "sha256": "30566d1a32c041220902db3e055c00e723d410d82d4ee957dddd5ec04bf18255",
+        "leaf": true
+      },
+      {
+        "id": "waist_bow",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/waist_bow.svg",
+        "sha256": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d",
+        "leaf": false
+      },
+      {
+        "id": "waist_bow/knot_and_loops",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/waist_bow/knot_and_loops.svg",
+        "sha256": "b3227f5cd4b277c45bf3ec42d049d0e34a5f5f75acc6c1e3c302e16f2e7d3a2a",
+        "leaf": true
+      },
+      {
+        "id": "waist_bow/short_tail",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/waist_bow/short_tail.svg",
+        "sha256": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f",
+        "leaf": true
+      },
+      {
+        "id": "waist_bow/long_tail",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/waist_bow/long_tail.svg",
+        "sha256": "1e46095663bc14f5cbad66203ddfd79c0023a3ba88bbc15020a80fa14f0b1c2e",
+        "leaf": true
+      },
+      {
+        "id": "chest_pendant",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/chest_pendant.svg",
+        "sha256": "dc7124c9d936dc5d44e8781f325e5deaabd3a8d112f81ff749dcffb6bea04ca1",
+        "leaf": true
+      },
+      {
+        "id": "floral_skirt_undertrim",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/floral_skirt_undertrim.svg",
+        "sha256": "3f29d2df6e3a33d0e5b48c0a23d6d0969d95e365568433b9b8ee9cce55311861",
+        "leaf": true
+      },
+      {
+        "id": "trailing_skirt_image_left",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_left.svg",
+        "sha256": "257d161f1c8aa1ce583075d9430e298dfd91799d83699a93745b0b6818feb9e2",
+        "leaf": true
+      },
+      {
+        "id": "trailing_skirt_image_right",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_right.svg",
+        "sha256": "1ed686690a06a03431c9bb7d34056f1c4abd7e449b987d581c3f718dde2d6875",
+        "leaf": false
+      },
+      {
+        "id": "trailing_skirt_image_right/short_drape_left",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_right/short_drape_left.svg",
+        "sha256": "4cbdb6a7858424008c22b69cd54d6801a8d21ae4c766b2deb8f68455aafc485a",
+        "leaf": true
+      },
+      {
+        "id": "trailing_skirt_image_right/spiral_train_left",
+        "svg": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_right/spiral_train_left.svg",
+        "sha256": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50",
+        "leaf": true
+      }
+    ]
+  },
+  "sourceHashes": {
+    "terminal_parts": 14,
+    "logical_ids": [
+      "halter_dress/halter_bodice",
+      "halter_dress/short_outer_skirt/front_drape",
+      "halter_dress/short_outer_skirt/right_skirt_panel",
+      "halter_dress/short_outer_skirt/left_skirt_panel",
+      "puff_sleeve_image_left",
+      "puff_sleeve_image_right",
+      "waist_bow/knot_and_loops",
+      "waist_bow/short_tail",
+      "waist_bow/long_tail",
+      "chest_pendant",
+      "floral_skirt_undertrim",
+      "trailing_skirt_image_left",
+      "trailing_skirt_image_right/short_drape_left",
+      "trailing_skirt_image_right/spiral_train_left"
+    ],
+    "previewSourceHash": "b2d9fe1bea08b7f5ac14bf815c3d0570c20393d058bb97dd6604b374281b20e9",
+    "occlusionSourceHash": "0cac930e961c3f301e22da104a80f1a853120a318e76c9b86a46d5487b5c68bb",
+    "schemaValidation": "passed",
+    "referencesComplete": true
+  }
+}

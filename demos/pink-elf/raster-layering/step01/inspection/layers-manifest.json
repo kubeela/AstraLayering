@@ -1,0 +1,1192 @@
+[
+  {
+    "part_id": "hair/back_hair/cap",
+    "layer": "0005 hair/back_hair/cap :: nape_under_roots",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/back_hair/cap/0005.png",
+    "opacity": 255,
+    "bbox": [
+      375,
+      235,
+      547,
+      299
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      320,
+      1278
+    ]
+  },
+  {
+    "part_id": "hair/back_hair/long_right",
+    "layer": "0010 hair/back_hair/long_right",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/back_hair/long_right/0010.png",
+    "opacity": 255,
+    "bbox": [
+      162,
+      175,
+      465,
+      795
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      331,
+      40
+    ]
+  },
+  {
+    "part_id": "hair/back_hair/long_left",
+    "layer": "0020 hair/back_hair/long_left",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/back_hair/long_left/0020.png",
+    "opacity": 255,
+    "bbox": [
+      448,
+      140,
+      739,
+      803
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      12,
+      40
+    ]
+  },
+  {
+    "part_id": "hair/side_hair_right",
+    "layer": "0030 hair/side_hair_right",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/side_hair_right/0030.png",
+    "opacity": 255,
+    "bbox": [
+      212,
+      81,
+      452,
+      544
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      662,
+      40
+    ]
+  },
+  {
+    "part_id": "hair/side_hair_left",
+    "layer": "0040 hair/side_hair_left",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/side_hair_left/0040.png",
+    "opacity": 255,
+    "bbox": [
+      479,
+      83,
+      692,
+      542
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      12,
+      761
+    ]
+  },
+  {
+    "part_id": "hair/ahoge",
+    "layer": "0045 hair/ahoge",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/ahoge/0045.png",
+    "opacity": 255,
+    "bbox": [
+      433,
+      27,
+      489,
+      105
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      12,
+      1278
+    ]
+  },
+  {
+    "part_id": "hair/back_hair/cap",
+    "layer": "0050 hair/back_hair/cap :: back",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/back_hair/cap/0050.png",
+    "opacity": 255,
+    "bbox": [
+      342,
+      94,
+      567,
+      300
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      640,
+      761
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/foot",
+    "layer": "0055 legs/leg_left/foot :: rear",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/foot/0055.png",
+    "opacity": 255,
+    "bbox": [
+      468,
+      1374,
+      567,
+      1446
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      264,
+      40
+    ]
+  },
+  {
+    "part_id": "legs/leg_right/foot",
+    "layer": "0056 legs/leg_right/foot :: rear",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_right/foot/0056.png",
+    "opacity": 255,
+    "bbox": [
+      366,
+      1374,
+      463,
+      1441
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      391,
+      40
+    ]
+  },
+  {
+    "part_id": "legs/leg_right/leg",
+    "layer": "0060 legs/leg_right/leg",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_right/leg/0060.png",
+    "opacity": 255,
+    "bbox": [
+      317,
+      603,
+      462,
+      1468
+    ],
+    "contact_sheet": "body.png",
+    "contact_position": [
+      12,
+      40
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/leg",
+    "layer": "0070 legs/leg_left/leg",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/leg/0070.png",
+    "opacity": 255,
+    "bbox": [
+      468,
+      604,
+      611,
+      1468
+    ],
+    "contact_sheet": "body.png",
+    "contact_position": [
+      185,
+      40
+    ]
+  },
+  {
+    "part_id": "pelvis",
+    "layer": "0080 pelvis",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/pelvis/0080.png",
+    "opacity": 255,
+    "bbox": [
+      319,
+      536,
+      609,
+      777
+    ],
+    "contact_sheet": "body.png",
+    "contact_position": [
+      12,
+      963
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/hand/little_finger",
+    "layer": "0090 arms/arm_left/hand/little_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/hand/little_finger/0090.png",
+    "opacity": 255,
+    "bbox": [
+      699,
+      828,
+      723,
+      878
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      372,
+      495
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/hand/ring_finger",
+    "layer": "0100 arms/arm_left/hand/ring_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/hand/ring_finger/0100.png",
+    "opacity": 255,
+    "bbox": [
+      692,
+      815,
+      712,
+      883
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      642,
+      357
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/hand/middle_finger",
+    "layer": "0110 arms/arm_left/hand/middle_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/hand/middle_finger/0110.png",
+    "opacity": 255,
+    "bbox": [
+      695,
+      822,
+      720,
+      892
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      501,
+      357
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/hand/index_finger",
+    "layer": "0120 arms/arm_left/hand/index_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/hand/index_finger/0120.png",
+    "opacity": 255,
+    "bbox": [
+      697,
+      806,
+      730,
+      886
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      12,
+      357
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/hand/thumb",
+    "layer": "0130 arms/arm_left/hand/thumb",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/hand/thumb/0130.png",
+    "opacity": 255,
+    "bbox": [
+      676,
+      799,
+      699,
+      855
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      287,
+      495
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/hand/palm",
+    "layer": "0140 arms/arm_left/hand/palm",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/hand/palm/0140.png",
+    "opacity": 255,
+    "bbox": [
+      672,
+      766,
+      730,
+      851
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      643,
+      40
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/hand/little_finger",
+    "layer": "0145 arms/arm_right/hand/little_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/hand/little_finger/0145.png",
+    "opacity": 255,
+    "bbox": [
+      192,
+      817,
+      211,
+      884
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      12,
+      495
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/hand/index_finger",
+    "layer": "0150 arms/arm_right/hand/index_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/hand/index_finger/0150.png",
+    "opacity": 255,
+    "bbox": [
+      212,
+      807,
+      244,
+      869
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      153,
+      495
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/hand/middle_finger",
+    "layer": "0160 arms/arm_right/hand/middle_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/hand/middle_finger/0160.png",
+    "opacity": 255,
+    "bbox": [
+      211,
+      808,
+      238,
+      880
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      233,
+      357
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/hand/ring_finger",
+    "layer": "0170 arms/arm_right/hand/ring_finger",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/hand/ring_finger/0170.png",
+    "opacity": 255,
+    "bbox": [
+      201,
+      818,
+      233,
+      889
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      374,
+      357
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/hand/thumb",
+    "layer": "0180 arms/arm_right/hand/thumb",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/hand/thumb/0180.png",
+    "opacity": 255,
+    "bbox": [
+      224,
+      805,
+      244,
+      852
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      513,
+      495
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/hand/palm",
+    "layer": "0190 arms/arm_right/hand/palm",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/hand/palm/0190.png",
+    "opacity": 255,
+    "bbox": [
+      193,
+      759,
+      252,
+      834
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      146,
+      357
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/forearm",
+    "layer": "0200 arms/arm_left/forearm",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/forearm/0200.png",
+    "opacity": 255,
+    "bbox": [
+      576,
+      546,
+      709,
+      798
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      328,
+      40
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/forearm",
+    "layer": "0210 arms/arm_right/forearm",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/forearm/0210.png",
+    "opacity": 255,
+    "bbox": [
+      215,
+      531,
+      350,
+      788
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      165,
+      40
+    ]
+  },
+  {
+    "part_id": "arms/arm_left/upper_arm",
+    "layer": "0220 arms/arm_left/upper_arm",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_left/upper_arm/0220.png",
+    "opacity": 255,
+    "bbox": [
+      500,
+      339,
+      625,
+      598
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      12,
+      40
+    ]
+  },
+  {
+    "part_id": "arms/arm_right/upper_arm",
+    "layer": "0230 arms/arm_right/upper_arm",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/arms/arm_right/upper_arm/0230.png",
+    "opacity": 255,
+    "bbox": [
+      299,
+      340,
+      425,
+      587
+    ],
+    "contact_sheet": "arms-hands.png",
+    "contact_position": [
+      489,
+      40
+    ]
+  },
+  {
+    "part_id": "neck",
+    "layer": "0240 neck",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/neck/0240.png",
+    "opacity": 255,
+    "bbox": [
+      404,
+      255,
+      519,
+      370
+    ],
+    "contact_sheet": "body.png",
+    "contact_position": [
+      567,
+      963
+    ]
+  },
+  {
+    "part_id": "body/torso",
+    "layer": "0250 body/torso",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/body/torso/0250.png",
+    "opacity": 255,
+    "bbox": [
+      329,
+      339,
+      590,
+      632
+    ],
+    "contact_sheet": "body.png",
+    "contact_position": [
+      356,
+      40
+    ]
+  },
+  {
+    "part_id": "body/breast",
+    "layer": "0260 body/breast",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/body/breast/0260.png",
+    "opacity": 255,
+    "bbox": [
+      357,
+      374,
+      566,
+      529
+    ],
+    "contact_sheet": "body.png",
+    "contact_position": [
+      330,
+      963
+    ]
+  },
+  {
+    "part_id": "face/ear_left",
+    "layer": "0270 face/ear_left",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/ear_left/0270.png",
+    "opacity": 255,
+    "bbox": [
+      512,
+      195,
+      597,
+      237
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      193,
+      40
+    ]
+  },
+  {
+    "part_id": "face/ear_right",
+    "layer": "0280 face/ear_right",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/ear_right/0280.png",
+    "opacity": 255,
+    "bbox": [
+      313,
+      201,
+      404,
+      241
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      306,
+      40
+    ]
+  },
+  {
+    "part_id": "head_accessories/left_earring",
+    "layer": "0290 head_accessories/left_earring",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/head_accessories/left_earring/0290.png",
+    "opacity": 255,
+    "bbox": [
+      514,
+      230,
+      527,
+      263
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      566,
+      40
+    ]
+  },
+  {
+    "part_id": "head_accessories/right_earring",
+    "layer": "0300 head_accessories/right_earring",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/head_accessories/right_earring/0300.png",
+    "opacity": 255,
+    "bbox": [
+      391,
+      226,
+      412,
+      265
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      425,
+      40
+    ]
+  },
+  {
+    "part_id": "face/face_base",
+    "layer": "0310 face/face_base",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/face_base/0310.png",
+    "opacity": 255,
+    "bbox": [
+      381,
+      123,
+      534,
+      295
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      12,
+      40
+    ]
+  },
+  {
+    "part_id": "face/mouth/mouth_interior",
+    "layer": "0320 face/mouth/mouth_interior",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/mouth/mouth_interior/0320.png",
+    "opacity": 255,
+    "bbox": [
+      442,
+      249,
+      473,
+      275
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      274,
+      270
+    ]
+  },
+  {
+    "part_id": "face/mouth/lower_teeth",
+    "layer": "0330 face/mouth/lower_teeth",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/mouth/lower_teeth/0330.png",
+    "opacity": 255,
+    "bbox": [
+      447,
+      266,
+      468,
+      274
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      153,
+      437
+    ]
+  },
+  {
+    "part_id": "face/mouth/tongue",
+    "layer": "0340 face/mouth/tongue",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/mouth/tongue/0340.png",
+    "opacity": 255,
+    "bbox": [
+      443,
+      258,
+      472,
+      275
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      372,
+      356
+    ]
+  },
+  {
+    "part_id": "face/mouth/upper_teeth",
+    "layer": "0350 face/mouth/upper_teeth",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/mouth/upper_teeth/0350.png",
+    "opacity": 255,
+    "bbox": [
+      447,
+      248,
+      468,
+      253
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      499,
+      437
+    ]
+  },
+  {
+    "part_id": "face/mouth/lower_lip",
+    "layer": "0360 face/mouth/lower_lip",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/mouth/lower_lip/0360.png",
+    "opacity": 255,
+    "bbox": [
+      441,
+      250,
+      474,
+      276
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      422,
+      270
+    ]
+  },
+  {
+    "part_id": "face/mouth/upper_lip",
+    "layer": "0370 face/mouth/upper_lip",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/mouth/upper_lip/0370.png",
+    "opacity": 255,
+    "bbox": [
+      441,
+      248,
+      474,
+      260
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      464,
+      356
+    ]
+  },
+  {
+    "part_id": "face/nose",
+    "layer": "0380 face/nose",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/nose/0380.png",
+    "opacity": 95,
+    "bbox": [
+      454,
+      233,
+      458,
+      241
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      280,
+      437
+    ]
+  },
+  {
+    "part_id": "face/eye_left/sclera",
+    "layer": "0390 face/eye_left/sclera",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_left/sclera/0390.png",
+    "opacity": 255,
+    "bbox": [
+      475,
+      194,
+      516,
+      222
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      12,
+      270
+    ]
+  },
+  {
+    "part_id": "face/eye_right/sclera",
+    "layer": "0400 face/eye_right/sclera",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_right/sclera/0400.png",
+    "opacity": 255,
+    "bbox": [
+      396,
+      197,
+      434,
+      225
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      104,
+      270
+    ]
+  },
+  {
+    "part_id": "face/eye_left/iris",
+    "layer": "0410 face/eye_left/iris",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_left/iris/0410.png",
+    "opacity": 255,
+    "bbox": [
+      478,
+      192,
+      505,
+      222
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      700,
+      40
+    ]
+  },
+  {
+    "part_id": "face/eye_right/iris",
+    "layer": "0420 face/eye_right/iris",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_right/iris/0420.png",
+    "opacity": 255,
+    "bbox": [
+      406,
+      197,
+      432,
+      225
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      196,
+      270
+    ]
+  },
+  {
+    "part_id": "face/eye_left/highlight",
+    "layer": "0430 face/eye_left/highlight",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_left/highlight/0430.png",
+    "opacity": 255,
+    "bbox": [
+      484,
+      199,
+      498,
+      221
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      125,
+      356
+    ]
+  },
+  {
+    "part_id": "face/eye_right/highlight",
+    "layer": "0440 face/eye_right/highlight",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_right/highlight/0440.png",
+    "opacity": 255,
+    "bbox": [
+      412,
+      202,
+      427,
+      225
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      12,
+      356
+    ]
+  },
+  {
+    "part_id": "face/eye_left/lower_eyelid",
+    "layer": "0450 face/eye_left/lower_eyelid",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_left/lower_eyelid/0450.png",
+    "opacity": 255,
+    "bbox": [
+      474,
+      205,
+      522,
+      224
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      238,
+      356
+    ]
+  },
+  {
+    "part_id": "face/eye_right/lower_eyelid",
+    "layer": "0460 face/eye_right/lower_eyelid",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_right/lower_eyelid/0460.png",
+    "opacity": 255,
+    "bbox": [
+      389,
+      201,
+      435,
+      226
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      669,
+      270
+    ]
+  },
+  {
+    "part_id": "face/eye_left/upper_eyelid",
+    "layer": "0470 face/eye_left/upper_eyelid",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_left/upper_eyelid/0470.png",
+    "opacity": 255,
+    "bbox": [
+      472,
+      189,
+      525,
+      215
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      535,
+      270
+    ]
+  },
+  {
+    "part_id": "face/eye_right/upper_eyelid",
+    "layer": "0480 face/eye_right/upper_eyelid",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_right/upper_eyelid/0480.png",
+    "opacity": 255,
+    "bbox": [
+      383,
+      191,
+      437,
+      221
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      778,
+      40
+    ]
+  },
+  {
+    "part_id": "face/eye_left/eyelid_crease",
+    "layer": "0490 face/eye_left/eyelid_crease",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_left/eyelid_crease/0490.png",
+    "opacity": 255,
+    "bbox": [
+      473,
+      185,
+      499,
+      194
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      12,
+      437
+    ]
+  },
+  {
+    "part_id": "face/eye_right/eyelid_crease",
+    "layer": "0500 face/eye_right/eyelid_crease",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eye_right/eyelid_crease/0500.png",
+    "opacity": 255,
+    "bbox": [
+      410,
+      189,
+      434,
+      196
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      358,
+      437
+    ]
+  },
+  {
+    "part_id": "hair/front_side_hair_right",
+    "layer": "0530 hair/front_side_hair_right",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/front_side_hair_right/0530.png",
+    "opacity": 255,
+    "bbox": [
+      353,
+      92,
+      444,
+      361
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      253,
+      761
+    ]
+  },
+  {
+    "part_id": "hair/front_side_hair_left",
+    "layer": "0540 hair/front_side_hair_left",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/front_side_hair_left/0540.png",
+    "opacity": 255,
+    "bbox": [
+      439,
+      79,
+      550,
+      288
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      450,
+      761
+    ]
+  },
+  {
+    "part_id": "hair/bangs",
+    "layer": "0550 hair/bangs",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/bangs/0550.png",
+    "opacity": 255,
+    "bbox": [
+      361,
+      74,
+      524,
+      212
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      893,
+      761
+    ]
+  },
+  {
+    "part_id": "hair/back_hair/cap",
+    "layer": "0560 hair/back_hair/cap :: crown",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/hair/back_hair/cap/0560.png",
+    "opacity": 255,
+    "bbox": [
+      362,
+      63,
+      557,
+      130
+    ],
+    "contact_sheet": "hair.png",
+    "contact_position": [
+      97,
+      1278
+    ]
+  },
+  {
+    "part_id": "face/eyebrow_left",
+    "layer": "0570 face/eyebrow_left",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eyebrow_left/0570.png",
+    "opacity": 255,
+    "bbox": [
+      471,
+      166,
+      515,
+      178
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      577,
+      356
+    ]
+  },
+  {
+    "part_id": "face/eyebrow_right",
+    "layer": "0580 face/eyebrow_right",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/face/eyebrow_right/0580.png",
+    "opacity": 255,
+    "bbox": [
+      394,
+      169,
+      439,
+      181
+    ],
+    "contact_sheet": "face.png",
+    "contact_position": [
+      711,
+      356
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/boot_gem_chain/flexible_connector",
+    "layer": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/boot_gem_chain/flexible_connector/0599.png",
+    "opacity": 255,
+    "bbox": [
+      509,
+      1527,
+      511,
+      1530
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      132,
+      438
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/foot",
+    "layer": "0600 legs/leg_left/foot :: front",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/foot/0600.png",
+    "opacity": 255,
+    "bbox": [
+      468,
+      1393,
+      567,
+      1632
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      12,
+      40
+    ]
+  },
+  {
+    "part_id": "legs/leg_right/foot",
+    "layer": "0610 legs/leg_right/foot :: front",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_right/foot/0610.png",
+    "opacity": 255,
+    "bbox": [
+      366,
+      1393,
+      463,
+      1632
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      139,
+      40
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/boot_gem_chain/flexible_connector",
+    "layer": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/boot_gem_chain/flexible_connector/0620.png",
+    "opacity": 255,
+    "bbox": [
+      509,
+      1501,
+      512,
+      1527
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      287,
+      337
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "layer": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/boot_gem_chain/large_diamond_gem/0630.png",
+    "opacity": 255,
+    "bbox": [
+      498,
+      1461,
+      523,
+      1504
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      12,
+      337
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "layer": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/boot_gem_chain/small_diamond_charm/0640.png",
+    "opacity": 255,
+    "bbox": [
+      507,
+      1506,
+      514,
+      1513
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      463,
+      337
+    ]
+  },
+  {
+    "part_id": "legs/leg_left/boot_gem_chain/round_bead",
+    "layer": "0650 legs/leg_left/boot_gem_chain/round_bead",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_left/boot_gem_chain/round_bead/0650.png",
+    "opacity": 255,
+    "bbox": [
+      508,
+      1516,
+      513,
+      1521
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      12,
+      438
+    ]
+  },
+  {
+    "part_id": "legs/leg_right/boot_gem",
+    "layer": "0660 legs/leg_right/boot_gem",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_right/boot_gem/0660.png",
+    "opacity": 255,
+    "bbox": [
+      408,
+      1461,
+      434,
+      1504
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      181,
+      337
+    ]
+  },
+  {
+    "part_id": "legs/leg_right/boot_flower_ornament",
+    "layer": "0670 legs/leg_right/boot_flower_ornament",
+    "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/inspection/solos/legs/leg_right/boot_flower_ornament/0670.png",
+    "opacity": 255,
+    "bbox": [
+      392,
+      1525,
+      440,
+      1571
+    ],
+    "contact_sheet": "boots.png",
+    "contact_position": [
+      516,
+      40
+    ]
+  }
+]

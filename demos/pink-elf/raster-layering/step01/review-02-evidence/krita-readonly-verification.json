@@ -1,0 +1,575 @@
+{
+  "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/character-depth.kra",
+  "kra_sha256_before": "9a01458380d4a0e8d1a03d13c0e18fb8d9d5ee9ebde144b3ae821412b18e71b4",
+  "method": "Krita existing Python bridge; open actual saved KRA, toggle in-memory visibility, export, close without save",
+  "size": [
+    932,
+    1688
+  ],
+  "layers": [
+    {
+      "name": "0005 hair/back_hair/cap :: nape_under_roots",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "7a6f7edd27b0237219c5a4555214a541aefdfb451b974db2efbd1d9d1aa08c05"
+    },
+    {
+      "name": "0010 hair/back_hair/long_right",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "dd5df28c0529d6a7a3f81157723e351a079a2a6ffb935ecc48571b94bd961e7f"
+    },
+    {
+      "name": "0020 hair/back_hair/long_left",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "9d36bbbcd68843503748ee5d5b66b3478635b1d01a184f0fb994594be939cffa"
+    },
+    {
+      "name": "0030 hair/side_hair_right",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "b029207985f1afcf8897cabfc25a5ac431a164411be4b51ed473143938f37014"
+    },
+    {
+      "name": "0040 hair/side_hair_left",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "d6b35747175b0021fd1a37a8318684e75e2751ff5e2e9d34db2714d19c72221c"
+    },
+    {
+      "name": "0045 hair/ahoge",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "644c009eee24f7765acb039e474fb9ac52797323d0179bdea02c7891af31232c"
+    },
+    {
+      "name": "0050 hair/back_hair/cap :: back",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "da5c31e25f20180a72b2c16117c1cf6b3f7f261409b89a9c920229ffd7abb0ea"
+    },
+    {
+      "name": "0055 legs/leg_left/foot :: rear",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "f24b34116c399e397561dff361d1c4c62ce961fa9a64af06d2b5f8c8c7941b4f"
+    },
+    {
+      "name": "0056 legs/leg_right/foot :: rear",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "b1474ec484b91626489731537be87d8adc26557ac85206a3e8f135af8660d34e"
+    },
+    {
+      "name": "0060 legs/leg_right/leg",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "dd20bdf3e95cb4058851bd7ae9bf75b268df1e657f954744b0ec3a1cd356f1da"
+    },
+    {
+      "name": "0070 legs/leg_left/leg",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "e711287a37af43682a2c0530dbd5cafaa4f23a35667a32ef95799959aa11a7c0"
+    },
+    {
+      "name": "0080 pelvis",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "76ebfea65846b224161eff5cfbd1767add1f68474717308bf56de8efea5c1295"
+    },
+    {
+      "name": "0090 arms/arm_left/hand/little_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "7164ba7667e75931a97fcf79bc8ea109732f5270482c404aa3aaac85f4bc30cf"
+    },
+    {
+      "name": "0100 arms/arm_left/hand/ring_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "926fbbe9d440228b615f542fc0ad74aec93d4fbba8d462bc7737698a8685316b"
+    },
+    {
+      "name": "0110 arms/arm_left/hand/middle_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "3994680e019fc9ff432c6b888e801a4c621fd8ccdff84bc466bcc7c4e49e143a"
+    },
+    {
+      "name": "0120 arms/arm_left/hand/index_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "dc6ca3203be4ddaf79026048cb36c946592cd809d4d0b0bc63af13f667f1afef"
+    },
+    {
+      "name": "0130 arms/arm_left/hand/thumb",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "098db1357e83f5e35091bbe9014f64e128b2e93201be4c5a588add1bd980daa5"
+    },
+    {
+      "name": "0140 arms/arm_left/hand/palm",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "be7c2ca18eca50d8924894725bd4dfd794c65735e315f5755393f79d0422a66d"
+    },
+    {
+      "name": "0145 arms/arm_right/hand/little_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "392f1554e1d811c6235034a77dcbb19ecd0a389b8089b051804a792b650e9b8e"
+    },
+    {
+      "name": "0150 arms/arm_right/hand/index_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "785ea3a7389332280d589e85a38ba87faf47d8d5c0dac2b08833070313e651a6"
+    },
+    {
+      "name": "0160 arms/arm_right/hand/middle_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "8bbc7be93de9ffea66d012a38a2ca7df8c00679a361abc8005b3fb739608a2c5"
+    },
+    {
+      "name": "0170 arms/arm_right/hand/ring_finger",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "c67c8ad0d1d7c00998af697152e711b94103cbf1e2817801c485c9a2d6819901"
+    },
+    {
+      "name": "0180 arms/arm_right/hand/thumb",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "06f844bbab6e024fc397e7bcb656d58d1401265e7ce34b96b3ab9c4b9d61b1be"
+    },
+    {
+      "name": "0190 arms/arm_right/hand/palm",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "1d01f4e280f112ab270f36079209da6a14823967287258f1525ba64501d5f8e3"
+    },
+    {
+      "name": "0200 arms/arm_left/forearm",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "10bcfc8228cb284aaf958329a43630bb8ec1c72b58eac23afc3ecb89eb057c14"
+    },
+    {
+      "name": "0210 arms/arm_right/forearm",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "d4d8a122e62b87b4107a50f4a6d17bac5ded7f56cd36522501985be44edb3fff"
+    },
+    {
+      "name": "0220 arms/arm_left/upper_arm",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "e56d53fd2de83905b8e7edae79accf1b5621d0cad1026fbd75c8b5c89e8a1d25"
+    },
+    {
+      "name": "0230 arms/arm_right/upper_arm",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "e036703ba29830eab29f10d89b72b18532e33b28765685aa6f0399987f41d186"
+    },
+    {
+      "name": "0240 neck",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "376c7db6670fbc4ececeb2ab6667894c0d09aefe2ed37bb40aef35ebb0b4e4a0"
+    },
+    {
+      "name": "0250 body/torso",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "a8d063ea09266e3054eb89a76fc7a984d42012701b13145e6b76f14c26094fd1"
+    },
+    {
+      "name": "0260 body/breast",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "99c1222f152ad8122a65e148c5a0cfa549b1b735fecc4de8b694f69f8c13781a"
+    },
+    {
+      "name": "0270 face/ear_left",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "422908a9c58fa03d4cc1d5c24736c4f9b62752e73329c85f6ffd210fb5671396"
+    },
+    {
+      "name": "0280 face/ear_right",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "bdd6ec4cf09245cdb3999b55cb78e1a86e6beeacc071148a3d303b3f46c6d73d"
+    },
+    {
+      "name": "0290 head_accessories/left_earring",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "78b543b921ece4afe3c12a088ab54f58064a983761b6d5e694c808c0aaaa5393"
+    },
+    {
+      "name": "0300 head_accessories/right_earring",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "fbb90c2abf490b448f28475dd7036aa30441e33bd2847b4467cc9312905a6297"
+    },
+    {
+      "name": "0310 face/face_base",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "0b0ddbb34659eba1436180fb6e315c6d931031bdcdefc05c9a835fb3af997dd0"
+    },
+    {
+      "name": "0320 face/mouth/mouth_interior",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "1111984fb5f404fa97a68379569caad1f09e515cabd51783b166ff0cc86b7ea3"
+    },
+    {
+      "name": "0330 face/mouth/lower_teeth",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "adb229ee8f777b4a284da25b811b871cd3b5739bd487ed70edfbbd178197c15c"
+    },
+    {
+      "name": "0340 face/mouth/tongue",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "caba0f5e68dd90cc70c4b2029eb62744c435503da3f12f23eba5ac7f56b9aaef"
+    },
+    {
+      "name": "0350 face/mouth/upper_teeth",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "bcf3eb3a0201aee88a0f4d30d44645599c32a241a7fe04a88e8f154a01c88c96"
+    },
+    {
+      "name": "0360 face/mouth/lower_lip",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "0040af24a8367b21551fa0990ccc58a538d1e6692d4c0fc7884a83fa9921989e"
+    },
+    {
+      "name": "0370 face/mouth/upper_lip",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "74417e44b1d63ec58c9c786559b0dc6b49d80ff918c696a4155a7a3bc9159e3f"
+    },
+    {
+      "name": "0380 face/nose",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 95,
+      "children": 0,
+      "rgba_sha256": "fbc5cd2822233e7f7e0b67985aa05dfbbf453d21e5054bf6557120ac4aff9367"
+    },
+    {
+      "name": "0390 face/eye_left/sclera",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "acd08ae74108ccd14ccf757e7de6aeda187de0de3c0bbfae40ccb678717f5680"
+    },
+    {
+      "name": "0400 face/eye_right/sclera",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "4380a13eb9af040ce34a8726dffe91a08d5ea54d0b0a6d7fe749dbfbcdc49835"
+    },
+    {
+      "name": "0410 face/eye_left/iris",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "33c25ff1edfa21a7718e85d1e749fbbf32ae59e987df662b9fbbdd97e9505923"
+    },
+    {
+      "name": "0420 face/eye_right/iris",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "c2d94a438c2297ecbbcb5510539b720244d7e4f50b410fa3cfbc26490c7afaee"
+    },
+    {
+      "name": "0430 face/eye_left/highlight",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "e8bbc157fe3a7a0e28d4b817f8e5c9e58a9e155ee459288d2958d7b85e71edd7"
+    },
+    {
+      "name": "0440 face/eye_right/highlight",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "ad8f98ca959aaf5e5d6bd24d388461ad8533eb33adb6414ca87ae6667125bbe2"
+    },
+    {
+      "name": "0450 face/eye_left/lower_eyelid",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "e16270d2e2231c61fe66c8c702624d532212fad157a8a0d4499c5fc1895fe771"
+    },
+    {
+      "name": "0460 face/eye_right/lower_eyelid",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "e9fae575de0a30507de9a521bef3cd4b9abc07fa30b7237c37ac0a67386061a2"
+    },
+    {
+      "name": "0470 face/eye_left/upper_eyelid",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "dc291d4de0e49d673b0cee6bd9df72ea67bd8b1676ce096369ab8e667add1696"
+    },
+    {
+      "name": "0480 face/eye_right/upper_eyelid",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "91a6343d59a757ac328a3ccd17db64ff9dfc422c091ca6424be1980f718340dd"
+    },
+    {
+      "name": "0490 face/eye_left/eyelid_crease",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "75ddf18c95fd75b92adbc8f1e93ab994fba982aa3f89a9f16a45912bfcb50f20"
+    },
+    {
+      "name": "0500 face/eye_right/eyelid_crease",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "130cc1fc351f849fc082aabf6313f050d076f96ff1a81ca9b1e8afa629d6fa14"
+    },
+    {
+      "name": "0530 hair/front_side_hair_right",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "3223155c739da523d56b936a5b2315e9a8c7e2086f20221774dbb92ed040c8e5"
+    },
+    {
+      "name": "0540 hair/front_side_hair_left",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "41625d3fbad617a6ca80e7472c59e59ad1400330e4f03f45fe45f70536f72997"
+    },
+    {
+      "name": "0550 hair/bangs",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "08487cb5fdb1f3ea3687283c9c19edebbdf7dcefc961d030b4a9752e0a80ba68"
+    },
+    {
+      "name": "0560 hair/back_hair/cap :: crown",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "156ab8d01abcab0a6b38bcafffa124e6749f17c0e5788e4c607ffd590632809a"
+    },
+    {
+      "name": "0570 face/eyebrow_left",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "9c6e121ee94f0e1d6d78bd5d025339e45a1417e85d4ad1f828150af8c6f30677"
+    },
+    {
+      "name": "0580 face/eyebrow_right",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "d945d83fc0a051e12cf916bc37c72840e06d994a3a23487a653f20dd475dc333"
+    },
+    {
+      "name": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "d635e7f19be5649b0336f24d5ac465871c1a86cc8baba999aea6262ea741131f"
+    },
+    {
+      "name": "0600 legs/leg_left/foot :: front",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "c106363d138b9d1cfe6e9aef133e2447ea4cc6959f4c390eadb76b8cd491cf77"
+    },
+    {
+      "name": "0610 legs/leg_right/foot :: front",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "b6442ca9a23092425978ca22b431e35eaf0ebedc99554c8c1cbe79e3c5507ae7"
+    },
+    {
+      "name": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "e6d88064f8e6da80282123e1ba889708abafd34aa526305ffcb3dc56229298df"
+    },
+    {
+      "name": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "b6bb6d932acef85dbf0d1173feb342236477811953a008ff6b121b908dc7a561"
+    },
+    {
+      "name": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "7c28f90e47b38874e4dae5b5e8b0063b16318ffe647f3eef9647221eff047bee"
+    },
+    {
+      "name": "0650 legs/leg_left/boot_gem_chain/round_bead",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "77c49fe81b0b6ee7b7a4443f3739971104c597c100c8b4c985f563752224d1c5"
+    },
+    {
+      "name": "0660 legs/leg_right/boot_gem",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "a08c7a0f92addc979bff80b0531b46de0aac4f0bae44f14e00096785e64ee3ed"
+    },
+    {
+      "name": "0670 legs/leg_right/boot_flower_ornament",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "children": 0,
+      "rgba_sha256": "67e920ac8658b69ff2c779c9c29d3cc2ff1dd9b300dcb94a548080de9a65904d"
+    }
+  ],
+  "restored_layers_identical": true,
+  "kra_sha256_after": "9a01458380d4a0e8d1a03d13c0e18fb8d9d5ee9ebde144b3ae821412b18e71b4",
+  "closed_without_save": true,
+  "completed": true
+}

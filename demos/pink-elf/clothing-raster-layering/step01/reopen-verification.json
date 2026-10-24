@@ -1,0 +1,16 @@
+{
+  "file": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-raster-layering/step01/clothing-depth.kra",
+  "file_sha256": "4ab1b3a49f127a48d4d745775618d95acd43c05d63df828ad8bc034d7495f8b1",
+  "size": [
+    932,
+    1688
+  ],
+  "paint_layers": 32,
+  "all_layer_names_order_properties_and_pixels_equal": true,
+  "projection_equal": true,
+  "projection_before_sha256": "e73bfe1cbe2c64c10844b129991bb7dbf770f4325a5a84008b8ced6fcff13cc9",
+  "projection_after_sha256": "e73bfe1cbe2c64c10844b129991bb7dbf770f4325a5a84008b8ced6fcff13cc9",
+  "all_ordinary_paint_layers_no_children": true,
+  "all_layers_visible": true,
+  "selection_empty": true
+}

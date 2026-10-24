@@ -1,0 +1,850 @@
+[
+  {
+    "layer": "0250 body/torso",
+    "start": [
+      405,
+      352
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          408,
+          356,
+          414,
+          360,
+          421,
+          362
+        ]
+      ]
+    ],
+    "size": 6,
+    "color": [
+      254,
+      233,
+      218
+    ],
+    "opacity": 0.4,
+    "preset": "b) Airbrush Soft",
+    "passes": 2,
+    "reason": "R5 恢复本件已生成皮肤后，逐处接顺原异属发梢处肤色；0530保留"
+  },
+  {
+    "layer": "0240 neck",
+    "start": [
+      417,
+      341
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          443,
+          346,
+          486,
+          346,
+          509,
+          340
+        ]
+      ]
+    ],
+    "size": 28,
+    "color": [
+      252,
+      231,
+      215
+    ],
+    "opacity": 0.8,
+    "preset": "b) Airbrush Soft",
+    "passes": 4,
+    "reason": "R6 跨横向肤色界实画连续皮肤，保留完整圆端，不添锁骨或投影"
+  },
+  {
+    "layer": "0240 neck",
+    "start": [
+      441,
+      347
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          450,
+          356,
+          474,
+          360,
+          489,
+          347
+        ]
+      ]
+    ],
+    "size": 34,
+    "color": [
+      252,
+      228,
+      212
+    ],
+    "opacity": 0.75,
+    "preset": "b) Airbrush Soft",
+    "passes": 3,
+    "reason": "R6 隐藏端上下肤色逐渐承接，消去三角换色面"
+  },
+  {
+    "layer": "0240 neck",
+    "start": [
+      450,
+      359
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          458,
+          365,
+          472,
+          365,
+          481,
+          356
+        ]
+      ]
+    ],
+    "size": 28,
+    "color": [
+      251,
+      226,
+      209
+    ],
+    "opacity": 0.65,
+    "preset": "b) Airbrush Soft",
+    "passes": 3,
+    "reason": "R6 接到既有暖色圆端，不裁短或改外轮廓"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      414,
+      1322
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          414,
+          1345,
+          415,
+          1363,
+          416,
+          1382
+        ]
+      ]
+    ],
+    "size": 32,
+    "color": [
+      252,
+      234,
+      223
+    ],
+    "opacity": 0.12,
+    "preset": "b) Airbrush Soft",
+    "passes": 2,
+    "reason": "R7 自有可见皮肤恢复后沿腿轴接顺过渡，避免水平亮带与竖柱"
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "type": "native tapered brush path",
+    "start": [
+      402,
+      430
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          392,
+          476,
+          383,
+          522,
+          380,
+          566
+        ]
+      ]
+    ],
+    "maximum_size": 0.8,
+    "color": [
+      213,
+      121,
+      149
+    ],
+    "opacity": 0.2,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R1 新补绘与保留段的浅分束线沿发流接通，非圆头补丁"
+  },
+  {
+    "layer": "0010 hair/back_hair/long_right",
+    "type": "native tapered brush path",
+    "start": [
+      377,
+      430
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          353,
+          472,
+          335,
+          516,
+          326,
+          555
+        ]
+      ]
+    ],
+    "maximum_size": 8,
+    "color": [
+      250,
+      182,
+      200
+    ],
+    "opacity": 0.15,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R1 用渐收尖的本件亮面接合生成与保留区域"
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "type": "native tapered brush path",
+    "start": [
+      535,
+      430
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          549,
+          480,
+          567,
+          524,
+          584,
+          562
+        ]
+      ]
+    ],
+    "maximum_size": 0.8,
+    "color": [
+      213,
+      121,
+      149
+    ],
+    "opacity": 0.19,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R2 本侧宽发面分束上下自然接通"
+  },
+  {
+    "layer": "0020 hair/back_hair/long_left",
+    "type": "native tapered brush path",
+    "start": [
+      546,
+      430
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          562,
+          474,
+          579,
+          515,
+          597,
+          552
+        ]
+      ]
+    ],
+    "maximum_size": 7,
+    "color": [
+      250,
+      181,
+      199
+    ],
+    "opacity": 0.15,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R2 亮面宽度逐渐收尖，避免胶囊笔印"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "start": [
+      372,
+      320
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          367,
+          339,
+          370,
+          358,
+          379,
+          368
+        ]
+      ]
+    ],
+    "size": 78,
+    "color": [
+      244,
+      158,
+      181
+    ],
+    "opacity": 0.92,
+    "preset": "b) Airbrush Soft",
+    "passes": 4,
+    "reason": "R3 跨337横向硬界重画本侧发底色，保留完整隐藏圆端与外轮廓"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "type": "native tapered brush path",
+    "start": [
+      365,
+      301
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          359,
+          322,
+          349,
+          346,
+          343,
+          365
+        ]
+      ]
+    ],
+    "maximum_size": 15,
+    "color": [
+      228,
+      134,
+      164
+    ],
+    "opacity": 0.48,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R3 深粉分束从上向下贯通原接头"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "type": "native tapered brush path",
+    "start": [
+      384,
+      301
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          376,
+          324,
+          370,
+          347,
+          371,
+          370
+        ]
+      ]
+    ],
+    "maximum_size": 16,
+    "color": [
+      250,
+      180,
+      199
+    ],
+    "opacity": 0.48,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R3 接续同一束亮面并自然收尖，不留方形亮块"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "type": "native tapered brush path",
+    "start": [
+      397,
+      309
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          394,
+          329,
+          394,
+          350,
+          395,
+          368
+        ]
+      ]
+    ],
+    "maximum_size": 9,
+    "color": [
+      248,
+      174,
+      196
+    ],
+    "opacity": 0.4,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R3 右侧窄亮面顺接到自身圆端"
+  },
+  {
+    "layer": "0030 hair/side_hair_right",
+    "type": "native tapered brush path",
+    "start": [
+      365,
+      309
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          352,
+          336,
+          343,
+          355,
+          342,
+          364
+        ]
+      ]
+    ],
+    "maximum_size": 0.9,
+    "color": [
+      210,
+      115,
+      146
+    ],
+    "opacity": 0.3,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R3 少量细软发线接顺，回钩不移动"
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "start": [
+      541,
+      226
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          542,
+          238,
+          548,
+          253,
+          551,
+          267
+        ]
+      ]
+    ],
+    "size": 24,
+    "color": [
+      244,
+      158,
+      181
+    ],
+    "opacity": 0.9,
+    "preset": "b) Airbrush Soft",
+    "passes": 4,
+    "reason": "R4 去方头与横折色块，根部与下行发面实画接顺"
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "type": "native tapered brush path",
+    "start": [
+      542,
+      219
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          545,
+          234,
+          550,
+          251,
+          556,
+          269
+        ]
+      ]
+    ],
+    "maximum_size": 9,
+    "color": [
+      225,
+      131,
+      161
+    ],
+    "opacity": 0.5,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R4 本侧耳后向下转弯的浅暗发束连续"
+  },
+  {
+    "layer": "0040 hair/side_hair_left",
+    "type": "native tapered brush path",
+    "start": [
+      535,
+      219
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          537,
+          238,
+          541,
+          254,
+          548,
+          271
+        ]
+      ]
+    ],
+    "maximum_size": 6,
+    "color": [
+      251,
+      185,
+      204
+    ],
+    "opacity": 0.55,
+    "steps": 32,
+    "preset": "b) Basic-5 Size Opacity",
+    "reason": "R4 延续亮面而非短横边起笔，保留小翘梢"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "start": [
+      396.6,
+      1418.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          408.2,
+          1420.2,
+          415.7,
+          1434.3,
+          420.8,
+          1449.6
+        ]
+      ],
+      [
+        "C",
+        [
+          425.8,
+          1432.3,
+          431.1,
+          1419.4,
+          438.8,
+          1415.5
+        ]
+      ]
+    ],
+    "size": 5.2,
+    "color": [
+      92,
+      65,
+      84
+    ],
+    "opacity": 0.92,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 靴前口暗边沿实际靴内侧连续描绘，后衬与腿层不动，alpha锁定"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "start": [
+      396.6,
+      1418.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          408.2,
+          1420.2,
+          415.7,
+          1434.3,
+          420.8,
+          1449.6
+        ]
+      ],
+      [
+        "C",
+        [
+          425.8,
+          1432.3,
+          431.1,
+          1419.4,
+          438.8,
+          1415.5
+        ]
+      ]
+    ],
+    "size": 2.8,
+    "color": [
+      224,
+      184,
+      202
+    ],
+    "opacity": 1,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 完整浅粉滚边重画于既有靴面内，避开旧切边的低alpha像素，形状不外扩"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "start": [
+      493.8,
+      1415
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          499.7,
+          1417.6,
+          503.5,
+          1424,
+          505.4,
+          1431
+        ]
+      ],
+      [
+        "C",
+        [
+          506.7,
+          1437.7,
+          508.6,
+          1447.3,
+          511,
+          1451
+        ]
+      ],
+      [
+        "C",
+        [
+          514.8,
+          1446.6,
+          517.1,
+          1435.3,
+          522.7,
+          1426.7
+        ]
+      ],
+      [
+        "C",
+        [
+          526.3,
+          1422.3,
+          530.4,
+          1420.2,
+          533.9,
+          1418
+        ]
+      ]
+    ],
+    "size": 5.2,
+    "color": [
+      92,
+      65,
+      84
+    ],
+    "opacity": 0.92,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 靴前口暗边沿实际靴内侧连续描绘，后衬与腿层不动，alpha锁定"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "start": [
+      493.8,
+      1415
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          499.7,
+          1417.6,
+          503.5,
+          1424,
+          505.4,
+          1431
+        ]
+      ],
+      [
+        "C",
+        [
+          506.7,
+          1437.7,
+          508.6,
+          1447.3,
+          511,
+          1451
+        ]
+      ],
+      [
+        "C",
+        [
+          514.8,
+          1446.6,
+          517.1,
+          1435.3,
+          522.7,
+          1426.7
+        ]
+      ],
+      [
+        "C",
+        [
+          526.3,
+          1422.3,
+          530.4,
+          1420.2,
+          533.9,
+          1418
+        ]
+      ]
+    ],
+    "size": 2.8,
+    "color": [
+      224,
+      184,
+      202
+    ],
+    "opacity": 1,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 完整浅粉滚边重画于既有靴面内，避开旧切边的低alpha像素，形状不外扩"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "start": [
+      396.6,
+      1418.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          402,
+          1420,
+          408,
+          1426,
+          414,
+          1438
+        ]
+      ]
+    ],
+    "size": 1.1,
+    "color": [
+      245,
+      217,
+      229
+    ],
+    "opacity": 0.72,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 滚边上段原有浅亮材质衔接；V底保持暖粉色，不新增投影或皮肤像素"
+  },
+  {
+    "layer": "0610 legs/leg_right/foot :: front",
+    "start": [
+      438.8,
+      1415.5
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          435,
+          1417,
+          431.5,
+          1422,
+          428.5,
+          1432
+        ]
+      ]
+    ],
+    "size": 1.1,
+    "color": [
+      245,
+      217,
+      229
+    ],
+    "opacity": 0.72,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 滚边上段原有浅亮材质衔接；V底保持暖粉色，不新增投影或皮肤像素"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "start": [
+      493.8,
+      1415
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          500,
+          1418,
+          503,
+          1424,
+          506.2,
+          1434
+        ]
+      ]
+    ],
+    "size": 1.1,
+    "color": [
+      245,
+      217,
+      229
+    ],
+    "opacity": 0.72,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 滚边上段原有浅亮材质衔接；V底保持暖粉色，不新增投影或皮肤像素"
+  },
+  {
+    "layer": "0600 legs/leg_left/foot :: front",
+    "start": [
+      533.9,
+      1418
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          526.8,
+          1420.9,
+          521.6,
+          1427.5,
+          516.8,
+          1438.1
+        ]
+      ]
+    ],
+    "size": 1.1,
+    "color": [
+      245,
+      217,
+      229
+    ],
+    "opacity": 0.72,
+    "preset": "b) Basic-5 Size Opacity",
+    "passes": 1,
+    "reason": "R8/R9 滚边上段原有浅亮材质衔接；V底保持暖粉色，不新增投影或皮肤像素"
+  }
+]

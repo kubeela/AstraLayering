@@ -1,0 +1,141 @@
+[
+  {
+    "parts": "all 32 clothing paint layers",
+    "native_operation": "temporary group scaleNode, restore original layers and stacking, translate nodes",
+    "origin": [
+      0,
+      0
+    ],
+    "group_bounds": [
+      2,
+      248,
+      928,
+      1264
+    ],
+    "scale": [
+      0.9094827586206896,
+      0.9232594936708861
+    ],
+    "translation": [
+      36,
+      69
+    ],
+    "reason": "match reference collar, sleeve, waist, hem and train proportions on unchanged 932x1688 canvas"
+  },
+  {
+    "parts": "all existing head/hair/ears/face components",
+    "native_operation": "shared native scaleNode and translation; original layers restored",
+    "origin": [
+      461,
+      294
+    ],
+    "scale": [
+      0.9653379549393414,
+      0.9703989703989704
+    ],
+    "translation": [
+      4,
+      0
+    ],
+    "reason": "align ears, eyes, chin and hair silhouette while preserving source facial drawing"
+  },
+  {
+    "parts": [
+      "0060 legs/leg_right/leg"
+    ],
+    "native_operation": "shared native scaleNode and translation; restore original paint layers",
+    "origin": [
+      400,
+      0
+    ],
+    "scale": [
+      0.9379310344827586,
+      1.0
+    ],
+    "translation": [
+      0,
+      0
+    ],
+    "reason": "align image-left thigh/calf width under floral hem and into boot"
+  },
+  {
+    "parts": [
+      "0070 legs/leg_left/leg"
+    ],
+    "native_operation": "shared native scaleNode and translation; restore original paint layers",
+    "origin": [
+      520,
+      0
+    ],
+    "scale": [
+      0.9020979020979021,
+      1.0
+    ],
+    "translation": [
+      0,
+      0
+    ],
+    "reason": "align image-right thigh/calf width without altering painted anatomy"
+  },
+  {
+    "parts": [
+      "0090 arms/arm_left/hand/little_finger",
+      "0100 arms/arm_left/hand/ring_finger",
+      "0110 arms/arm_left/hand/middle_finger",
+      "0120 arms/arm_left/hand/index_finger",
+      "0130 arms/arm_left/hand/thumb",
+      "0140 arms/arm_left/hand/palm",
+      "0145 arms/arm_right/hand/little_finger",
+      "0150 arms/arm_right/hand/index_finger",
+      "0160 arms/arm_right/hand/middle_finger",
+      "0170 arms/arm_right/hand/ring_finger",
+      "0180 arms/arm_right/hand/thumb",
+      "0190 arms/arm_right/hand/palm",
+      "0200 arms/arm_left/forearm",
+      "0210 arms/arm_right/forearm"
+    ],
+    "native_operation": "shared native scaleNode and translation; restore original paint layers",
+    "origin": [
+      0,
+      490
+    ],
+    "scale": [
+      1.0,
+      0.9613259668508287
+    ],
+    "translation": [
+      0,
+      0
+    ],
+    "reason": "align wrist and fingertips with reference while preserving forearm/hand components and overlap"
+  },
+  {
+    "parts": [
+      "0055 legs/leg_left/foot :: rear",
+      "0056 legs/leg_right/foot :: rear",
+      "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+      "0600 legs/leg_left/foot :: front",
+      "0610 legs/leg_right/foot :: front",
+      "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+      "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "0650 legs/leg_left/boot_gem_chain/round_bead",
+      "0660 legs/leg_right/boot_gem",
+      "0670 legs/leg_right/boot_flower_ornament"
+    ],
+    "native_operation": "shared native scaleNode and translation; restore original paint layers",
+    "origin": [
+      461,
+      1390
+    ],
+    "scale": [
+      0.9800995024875622,
+      0.9573643410852714
+    ],
+    "translation": [
+      -4,
+      0
+    ],
+    "reason": "align boot soles and ankle cups while preserving rear/front and ornament fragments"
+  }
+]

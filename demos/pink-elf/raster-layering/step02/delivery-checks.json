@@ -1,0 +1,25 @@
+{
+  "readonly_inputs_checked": 88,
+  "readonly_changes": [],
+  "all_input_layer_XML_attributes_preserved": true,
+  "layer_XML_differences": [],
+  "exported_PNG_matches_KRA_merged_RGBA": true,
+  "canvas": [
+    932,
+    1688
+  ],
+  "transparent_corner": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "modified_layers": 66,
+  "changed_pixels_sum": 64296,
+  "max_half_alpha_outward_px": 1.0,
+  "max_half_alpha_inward_px": 2.0,
+  "file_sha256": {
+    "character-soft-edges.kra": "43e02e0ceeeb8c5434b65b1a6f84a430c0e5994fd6265a6ccbdde541235cbe5c",
+    "character-soft-edges.png": "c72636222385240859a31789d363bd79d9f9be2dc262dba9feecc178001b2459"
+  }
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "part": "hair/back_hair/long_right",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/nape-owned/hair/back_hair/long_right.png",
+    "source_visible_pixels": 1114,
+    "ownership": "actual 70-layer top owner; all higher-part footprints dilated3px, including face/neck/earring/front wisps; inferred hidden hair kept",
+    "region": "two soft local windows near nape, no whole-layer blur"
+  },
+  {
+    "part": "hair/back_hair/long_left",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/nape-owned/hair/back_hair/long_left.png",
+    "source_visible_pixels": 2865,
+    "ownership": "actual 70-layer top owner; all higher-part footprints dilated3px, including face/neck/earring/front wisps; inferred hidden hair kept",
+    "region": "two soft local windows near nape, no whole-layer blur"
+  },
+  {
+    "part": "hair/side_hair_right",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/nape-owned/hair/side_hair_right.png",
+    "source_visible_pixels": 1786,
+    "ownership": "actual 70-layer top owner; all higher-part footprints dilated3px, including face/neck/earring/front wisps; inferred hidden hair kept",
+    "region": "two soft local windows near nape, no whole-layer blur"
+  },
+  {
+    "part": "hair/side_hair_left",
+    "output": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01/repair-01-work/nape-owned/hair/side_hair_left.png",
+    "source_visible_pixels": 1512,
+    "ownership": "actual 70-layer top owner; all higher-part footprints dilated3px, including face/neck/earring/front wisps; inferred hidden hair kept",
+    "region": "two soft local windows near nape, no whole-layer blur"
+  }
+]

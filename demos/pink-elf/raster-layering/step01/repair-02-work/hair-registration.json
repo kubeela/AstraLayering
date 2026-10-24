@@ -1,0 +1,48 @@
+[
+  {
+    "part": "hair/back_hair/long_right",
+    "generation": "generated-01.png",
+    "method": "smooth RBF contour registration; old exact alpha preserved; generated upper completion with local overlap awaiting native brush seam repair",
+    "source_bbox": [
+      31,
+      42,
+      872,
+      1723
+    ],
+    "target_bbox": [
+      162,
+      175,
+      465,
+      795
+    ],
+    "generated_edge_extension_pixels": 992,
+    "old_alpha_sha256": "188f12d7629efe462ab01b00370e06e9abb989f5d3272a744175d69bf236f5dd",
+    "new_alpha_sha256": "188f12d7629efe462ab01b00370e06e9abb989f5d3272a744175d69bf236f5dd",
+    "no_original_reference_pixels_used": true,
+    "lower_y_ge": 585,
+    "qualified_lower_pixels_unchanged": true
+  },
+  {
+    "part": "hair/back_hair/long_left",
+    "generation": "generated-01.png",
+    "method": "smooth RBF contour registration; old exact alpha preserved; generated upper completion with local overlap awaiting native brush seam repair",
+    "source_bbox": [
+      35,
+      34,
+      830,
+      1800
+    ],
+    "target_bbox": [
+      448,
+      140,
+      739,
+      803
+    ],
+    "generated_edge_extension_pixels": 428,
+    "old_alpha_sha256": "9a15e828beb75c4b7a96993558d3d15bb899de7cacb65dc3b4e48e61be4c0722",
+    "new_alpha_sha256": "9a15e828beb75c4b7a96993558d3d15bb899de7cacb65dc3b4e48e61be4c0722",
+    "no_original_reference_pixels_used": true,
+    "lower_y_ge": 585,
+    "qualified_lower_pixels_unchanged": true
+  }
+]

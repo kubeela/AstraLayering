@@ -1,0 +1,1107 @@
+[
+  {
+    "part": "face/face_base",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      381,
+      123,
+      534,
+      295
+    ],
+    "final_bbox": [
+      381,
+      123,
+      534,
+      295
+    ]
+  },
+  {
+    "part": "face/eye_left/upper_eyelid",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      472,
+      189,
+      525,
+      215
+    ],
+    "final_bbox": [
+      472,
+      189,
+      525,
+      215
+    ]
+  },
+  {
+    "part": "face/eye_left/lower_eyelid",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      474,
+      205,
+      522,
+      224
+    ],
+    "final_bbox": [
+      474,
+      205,
+      522,
+      224
+    ]
+  },
+  {
+    "part": "face/eye_left/sclera",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      475,
+      194,
+      516,
+      222
+    ],
+    "final_bbox": [
+      475,
+      194,
+      516,
+      222
+    ]
+  },
+  {
+    "part": "face/eye_left/iris",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      478,
+      192,
+      505,
+      222
+    ],
+    "final_bbox": [
+      478,
+      192,
+      505,
+      222
+    ]
+  },
+  {
+    "part": "face/eye_left/highlight",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      484,
+      199,
+      498,
+      221
+    ],
+    "final_bbox": [
+      484,
+      199,
+      498,
+      221
+    ]
+  },
+  {
+    "part": "face/eye_left/eyelid_crease",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      473,
+      185,
+      499,
+      194
+    ],
+    "final_bbox": [
+      473,
+      185,
+      499,
+      194
+    ]
+  },
+  {
+    "part": "face/eye_right/upper_eyelid",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      383,
+      191,
+      437,
+      221
+    ],
+    "final_bbox": [
+      383,
+      191,
+      437,
+      221
+    ]
+  },
+  {
+    "part": "face/eye_right/lower_eyelid",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      389,
+      201,
+      435,
+      226
+    ],
+    "final_bbox": [
+      389,
+      201,
+      435,
+      226
+    ]
+  },
+  {
+    "part": "face/eye_right/sclera",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      396,
+      197,
+      434,
+      225
+    ],
+    "final_bbox": [
+      396,
+      197,
+      434,
+      225
+    ]
+  },
+  {
+    "part": "face/eye_right/iris",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      406,
+      197,
+      432,
+      225
+    ],
+    "final_bbox": [
+      406,
+      197,
+      432,
+      225
+    ]
+  },
+  {
+    "part": "face/eye_right/highlight",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      412,
+      202,
+      427,
+      225
+    ],
+    "final_bbox": [
+      412,
+      202,
+      427,
+      225
+    ]
+  },
+  {
+    "part": "face/eye_right/eyelid_crease",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      410,
+      189,
+      434,
+      196
+    ],
+    "final_bbox": [
+      410,
+      189,
+      434,
+      196
+    ]
+  },
+  {
+    "part": "face/eyebrow_left",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      471,
+      166,
+      515,
+      178
+    ],
+    "final_bbox": [
+      471,
+      166,
+      515,
+      178
+    ]
+  },
+  {
+    "part": "face/eyebrow_right",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      394,
+      169,
+      439,
+      181
+    ],
+    "final_bbox": [
+      394,
+      169,
+      439,
+      181
+    ]
+  },
+  {
+    "part": "face/ear_left",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      512,
+      195,
+      597,
+      237
+    ],
+    "final_bbox": [
+      512,
+      195,
+      597,
+      237
+    ]
+  },
+  {
+    "part": "face/ear_right",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      313,
+      201,
+      404,
+      241
+    ],
+    "final_bbox": [
+      313,
+      201,
+      404,
+      241
+    ]
+  },
+  {
+    "part": "face/nose",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      454,
+      233,
+      458,
+      241
+    ],
+    "final_bbox": [
+      454,
+      233,
+      458,
+      241
+    ]
+  },
+  {
+    "part": "face/mouth/upper_lip",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      441,
+      248,
+      474,
+      260
+    ],
+    "final_bbox": [
+      441,
+      248,
+      474,
+      260
+    ]
+  },
+  {
+    "part": "face/mouth/lower_lip",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      441,
+      250,
+      474,
+      276
+    ],
+    "final_bbox": [
+      441,
+      250,
+      474,
+      276
+    ]
+  },
+  {
+    "part": "face/mouth/mouth_interior",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      442,
+      249,
+      473,
+      275
+    ],
+    "final_bbox": [
+      442,
+      249,
+      473,
+      275
+    ]
+  },
+  {
+    "part": "face/mouth/upper_teeth",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      447,
+      248,
+      468,
+      253
+    ],
+    "final_bbox": [
+      447,
+      248,
+      468,
+      253
+    ]
+  },
+  {
+    "part": "face/mouth/lower_teeth",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      447,
+      266,
+      468,
+      274
+    ],
+    "final_bbox": [
+      447,
+      266,
+      468,
+      274
+    ]
+  },
+  {
+    "part": "face/mouth/tongue",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      443,
+      258,
+      472,
+      275
+    ],
+    "final_bbox": [
+      443,
+      258,
+      472,
+      275
+    ]
+  },
+  {
+    "part": "hair/bangs",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      361,
+      74,
+      524,
+      212
+    ],
+    "final_bbox": [
+      361,
+      74,
+      524,
+      212
+    ]
+  },
+  {
+    "part": "hair/front_side_hair_left",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      439,
+      79,
+      550,
+      288
+    ],
+    "final_bbox": [
+      439,
+      79,
+      550,
+      288
+    ]
+  },
+  {
+    "part": "hair/front_side_hair_right",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      353,
+      92,
+      444,
+      361
+    ],
+    "final_bbox": [
+      353,
+      92,
+      444,
+      361
+    ]
+  },
+  {
+    "part": "hair/side_hair_left",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      479,
+      83,
+      692,
+      542
+    ],
+    "final_bbox": [
+      479,
+      83,
+      692,
+      542
+    ]
+  },
+  {
+    "part": "hair/side_hair_right",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      212,
+      81,
+      452,
+      544
+    ],
+    "final_bbox": [
+      212,
+      81,
+      452,
+      544
+    ]
+  },
+  {
+    "part": "hair/back_hair/cap",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      342,
+      63,
+      567,
+      300
+    ],
+    "final_bbox": [
+      342,
+      63,
+      567,
+      300
+    ]
+  },
+  {
+    "part": "hair/back_hair/long_left",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      448,
+      140,
+      739,
+      803
+    ],
+    "final_bbox": [
+      448,
+      140,
+      739,
+      803
+    ]
+  },
+  {
+    "part": "hair/back_hair/long_right",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      162,
+      175,
+      465,
+      795
+    ],
+    "final_bbox": [
+      162,
+      175,
+      465,
+      795
+    ]
+  },
+  {
+    "part": "hair/ahoge",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      433,
+      27,
+      489,
+      105
+    ],
+    "final_bbox": [
+      433,
+      27,
+      489,
+      105
+    ]
+  },
+  {
+    "part": "head_accessories/left_earring",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      514,
+      230,
+      527,
+      263
+    ],
+    "final_bbox": [
+      514,
+      230,
+      527,
+      263
+    ]
+  },
+  {
+    "part": "head_accessories/right_earring",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      391,
+      226,
+      412,
+      265
+    ],
+    "final_bbox": [
+      391,
+      226,
+      412,
+      265
+    ]
+  },
+  {
+    "part": "neck",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      404,
+      255,
+      519,
+      370
+    ],
+    "final_bbox": [
+      404,
+      255,
+      519,
+      370
+    ]
+  },
+  {
+    "part": "body/torso",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      329,
+      339,
+      590,
+      632
+    ],
+    "final_bbox": [
+      329,
+      339,
+      590,
+      632
+    ]
+  },
+  {
+    "part": "body/breast",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      357,
+      374,
+      566,
+      529
+    ],
+    "final_bbox": [
+      357,
+      374,
+      566,
+      529
+    ]
+  },
+  {
+    "part": "arms/arm_left/upper_arm",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      500,
+      339,
+      625,
+      598
+    ],
+    "final_bbox": [
+      500,
+      339,
+      625,
+      598
+    ]
+  },
+  {
+    "part": "arms/arm_left/forearm",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      576,
+      546,
+      709,
+      798
+    ],
+    "final_bbox": [
+      576,
+      546,
+      709,
+      798
+    ]
+  },
+  {
+    "part": "arms/arm_left/hand/palm",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      672,
+      766,
+      730,
+      851
+    ],
+    "final_bbox": [
+      672,
+      766,
+      730,
+      851
+    ]
+  },
+  {
+    "part": "arms/arm_left/hand/thumb",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      676,
+      799,
+      699,
+      855
+    ],
+    "final_bbox": [
+      676,
+      799,
+      699,
+      855
+    ]
+  },
+  {
+    "part": "arms/arm_left/hand/index_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      697,
+      806,
+      730,
+      886
+    ],
+    "final_bbox": [
+      697,
+      806,
+      730,
+      886
+    ]
+  },
+  {
+    "part": "arms/arm_left/hand/middle_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      695,
+      822,
+      720,
+      892
+    ],
+    "final_bbox": [
+      695,
+      822,
+      720,
+      892
+    ]
+  },
+  {
+    "part": "arms/arm_left/hand/ring_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      692,
+      815,
+      712,
+      883
+    ],
+    "final_bbox": [
+      692,
+      815,
+      712,
+      883
+    ]
+  },
+  {
+    "part": "arms/arm_left/hand/little_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      699,
+      828,
+      723,
+      878
+    ],
+    "final_bbox": [
+      699,
+      828,
+      723,
+      878
+    ]
+  },
+  {
+    "part": "arms/arm_right/upper_arm",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      299,
+      340,
+      425,
+      587
+    ],
+    "final_bbox": [
+      299,
+      340,
+      425,
+      587
+    ]
+  },
+  {
+    "part": "arms/arm_right/forearm",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      215,
+      531,
+      350,
+      788
+    ],
+    "final_bbox": [
+      215,
+      531,
+      350,
+      788
+    ]
+  },
+  {
+    "part": "arms/arm_right/hand/palm",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      193,
+      759,
+      252,
+      834
+    ],
+    "final_bbox": [
+      193,
+      759,
+      252,
+      834
+    ]
+  },
+  {
+    "part": "arms/arm_right/hand/thumb",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      224,
+      805,
+      244,
+      852
+    ],
+    "final_bbox": [
+      224,
+      805,
+      244,
+      852
+    ]
+  },
+  {
+    "part": "arms/arm_right/hand/index_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      212,
+      807,
+      244,
+      869
+    ],
+    "final_bbox": [
+      212,
+      807,
+      244,
+      869
+    ]
+  },
+  {
+    "part": "arms/arm_right/hand/middle_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      211,
+      808,
+      238,
+      880
+    ],
+    "final_bbox": [
+      211,
+      808,
+      238,
+      880
+    ]
+  },
+  {
+    "part": "arms/arm_right/hand/ring_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      201,
+      818,
+      233,
+      889
+    ],
+    "final_bbox": [
+      201,
+      818,
+      233,
+      889
+    ]
+  },
+  {
+    "part": "arms/arm_right/hand/little_finger",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      192,
+      817,
+      211,
+      884
+    ],
+    "final_bbox": [
+      192,
+      817,
+      211,
+      884
+    ]
+  },
+  {
+    "part": "pelvis",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      319,
+      536,
+      609,
+      777
+    ],
+    "final_bbox": [
+      319,
+      536,
+      609,
+      777
+    ]
+  },
+  {
+    "part": "legs/leg_left/leg",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      468,
+      604,
+      611,
+      1468
+    ],
+    "final_bbox": [
+      468,
+      604,
+      611,
+      1468
+    ]
+  },
+  {
+    "part": "legs/leg_left/foot",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      468,
+      1374,
+      567,
+      1632
+    ],
+    "final_bbox": [
+      468,
+      1374,
+      567,
+      1632
+    ]
+  },
+  {
+    "part": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      498,
+      1461,
+      523,
+      1504
+    ],
+    "final_bbox": [
+      498,
+      1461,
+      523,
+      1504
+    ]
+  },
+  {
+    "part": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      507,
+      1506,
+      514,
+      1513
+    ],
+    "final_bbox": [
+      507,
+      1506,
+      514,
+      1513
+    ]
+  },
+  {
+    "part": "legs/leg_left/boot_gem_chain/round_bead",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      508,
+      1516,
+      513,
+      1521
+    ],
+    "final_bbox": [
+      508,
+      1516,
+      513,
+      1521
+    ]
+  },
+  {
+    "part": "legs/leg_left/boot_gem_chain/flexible_connector",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      509,
+      1501,
+      512,
+      1530
+    ],
+    "final_bbox": [
+      509,
+      1501,
+      512,
+      1530
+    ]
+  },
+  {
+    "part": "legs/leg_right/leg",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      317,
+      603,
+      462,
+      1468
+    ],
+    "final_bbox": [
+      317,
+      603,
+      462,
+      1468
+    ]
+  },
+  {
+    "part": "legs/leg_right/foot",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      366,
+      1374,
+      463,
+      1632
+    ],
+    "final_bbox": [
+      366,
+      1374,
+      463,
+      1632
+    ]
+  },
+  {
+    "part": "legs/leg_right/boot_gem",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      408,
+      1461,
+      434,
+      1504
+    ],
+    "final_bbox": [
+      408,
+      1461,
+      434,
+      1504
+    ]
+  },
+  {
+    "part": "legs/leg_right/boot_flower_ornament",
+    "outside_alpha_gt16": 0,
+    "inside_alpha_missing_gt128": 0,
+    "target_bbox": [
+      392,
+      1525,
+      440,
+      1571
+    ],
+    "final_bbox": [
+      392,
+      1525,
+      440,
+      1571
+    ]
+  }
+]

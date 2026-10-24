@@ -1,0 +1,16 @@
+{
+  "groups_leaves": 65,
+  "occlusion_parts": 65,
+  "ordinary_paint_layers": 70,
+  "no_masks_or_children": true,
+  "layer_order_matches_depths": true,
+  "all_current_svgs_and_references_parsed": true,
+  "leaf_svg_count": 65,
+  "all_65_generation_assets_and_controls_present": true,
+  "all_65_part_pngs_nonempty": true,
+  "all_parts_current_shape_support": true,
+  "kra_zip_crc_ok": true,
+  "reopened_export_pixels_identical": true,
+  "kra_sha256": "f9de3407e4c8c6e589ff9ce9ae3992ace16145b9ad3b35f7ce66566b2be940f9",
+  "png_sha256": "bf2f6be1856590a51d100bf4c739898ba17384a10c0eadea9286931f66cf3899"
+}

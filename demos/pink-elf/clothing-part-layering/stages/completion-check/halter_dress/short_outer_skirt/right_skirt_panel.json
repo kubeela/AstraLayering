@@ -1,0 +1,7 @@
+{
+  "groupId": "halter_dress/short_outer_skirt/right_skirt_panel",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "46e210ff4fbcdbe6333d7e4caced8b87270f1583b9e5374d6fff81949f6bd3a7",
+  "afterHash": "2fec110b166719f0f36ca7ac5add9f5d204b158b2e7c4d1d48509025a94cb17b"
+}

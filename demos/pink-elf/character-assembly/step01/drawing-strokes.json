@@ -1,0 +1,1225 @@
+[
+  {
+    "layer": "0029 puff_sleeve_image_left :: depth_29",
+    "start": [
+      310,
+      477
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          330,
+          478,
+          354,
+          481,
+          380,
+          481
+        ]
+      ]
+    ],
+    "size": 32,
+    "opacity": 0.66,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      202,
+      197,
+      224
+    ],
+    "blend": "behind",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "fill missing translucent cuff band behind existing scalloped contour; retain skin transmission"
+  },
+  {
+    "layer": "0030 puff_sleeve_image_right :: depth_30",
+    "start": [
+      612,
+      477
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          592,
+          478,
+          568,
+          481,
+          542,
+          481
+        ]
+      ]
+    ],
+    "size": 32,
+    "opacity": 0.66,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      202,
+      197,
+      224
+    ],
+    "blend": "behind",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "right translucent cuff backing, on existing front sleeve layer"
+  },
+  {
+    "layer": "0029 puff_sleeve_image_left :: depth_29",
+    "start": [
+      325,
+      480
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          325.2,
+          480
+        ]
+      ]
+    ],
+    "size": 2.5,
+    "opacity": 0.75,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      123,
+      113,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": false,
+    "reason": "restore small cuff embroidery dot in repaired band"
+  },
+  {
+    "layer": "0029 puff_sleeve_image_left :: depth_29",
+    "start": [
+      349,
+      482
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          349.2,
+          482
+        ]
+      ]
+    ],
+    "size": 2.5,
+    "opacity": 0.75,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      123,
+      113,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": false,
+    "reason": "restore small cuff embroidery dot in repaired band"
+  },
+  {
+    "layer": "0029 puff_sleeve_image_left :: depth_29",
+    "start": [
+      369,
+      485
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          369.2,
+          485
+        ]
+      ]
+    ],
+    "size": 2.5,
+    "opacity": 0.75,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      123,
+      113,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": false,
+    "reason": "restore small cuff embroidery dot in repaired band"
+  },
+  {
+    "layer": "0030 puff_sleeve_image_right :: depth_30",
+    "start": [
+      597,
+      480
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          597.2,
+          480
+        ]
+      ]
+    ],
+    "size": 2.5,
+    "opacity": 0.75,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      123,
+      113,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": false,
+    "reason": "restore small cuff embroidery dot in repaired band"
+  },
+  {
+    "layer": "0030 puff_sleeve_image_right :: depth_30",
+    "start": [
+      573,
+      482
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          573.2,
+          482
+        ]
+      ]
+    ],
+    "size": 2.5,
+    "opacity": 0.75,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      123,
+      113,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": false,
+    "reason": "restore small cuff embroidery dot in repaired band"
+  },
+  {
+    "layer": "0030 puff_sleeve_image_right :: depth_30",
+    "start": [
+      553,
+      485
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          553.2,
+          485
+        ]
+      ]
+    ],
+    "size": 2.5,
+    "opacity": 0.75,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      123,
+      113,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": false,
+    "reason": "restore small cuff embroidery dot in repaired band"
+  },
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "start": [
+      407,
+      852
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          407,
+          994
+        ]
+      ],
+      [
+        "L",
+        [
+          478,
+          994
+        ]
+      ],
+      [
+        "L",
+        [
+          478,
+          852
+        ]
+      ]
+    ],
+    "size": 95,
+    "opacity": 1,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      70,
+      75,
+      114
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "extend existing rear train behind legs into visible center gap; no new paint layer"
+  },
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "start": [
+      466,
+      875
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          472,
+          919,
+          463,
+          960,
+          467,
+          995
+        ]
+      ]
+    ],
+    "size": 22,
+    "opacity": 0.2,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      111,
+      113,
+      160
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "soft vertical fabric tone on center continuation"
+  },
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "start": [
+      444,
+      1000
+    ],
+    "commands": [
+      [
+        "Q",
+        [
+          463,
+          1004,
+          483,
+          998
+        ]
+      ]
+    ],
+    "size": 10,
+    "opacity": 0.8,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      153,
+      78,
+      124
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "join magenta rear train lower edge"
+  },
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "start": [
+      460.8,
+      891
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          467.2,
+          891
+        ]
+      ]
+    ],
+    "size": 10,
+    "opacity": 0.65,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      139,
+      174,
+      202
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "small blue diamond motif continuing rear fabric"
+  },
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "start": [
+      465.8,
+      937
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          474.2,
+          937
+        ]
+      ]
+    ],
+    "size": 10,
+    "opacity": 0.65,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      139,
+      174,
+      202
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "small blue diamond motif continuing rear fabric"
+  },
+  {
+    "layer": "0007 trailing_skirt_image_left :: depth_07",
+    "start": [
+      457.2,
+      969
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          462.8,
+          969
+        ]
+      ]
+    ],
+    "size": 10,
+    "opacity": 0.65,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      139,
+      174,
+      202
+    ],
+    "blend": "normal",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "small blue diamond motif continuing rear fabric"
+  },
+  {
+    "layer": "0210 arms/arm_right/forearm",
+    "start": [
+      315,
+      537
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          324,
+          530,
+          340,
+          530,
+          347,
+          541
+        ]
+      ]
+    ],
+    "size": 3.2,
+    "opacity": 0.82,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      253,
+      234,
+      219
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "remove exposed forearm-cap arc at elbow join using own skin color"
+  },
+  {
+    "layer": "0210 arms/arm_right/forearm",
+    "start": [
+      315,
+      537
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          324,
+          530,
+          340,
+          530,
+          347,
+          541
+        ]
+      ]
+    ],
+    "size": 10,
+    "opacity": 0.32,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      253,
+      234,
+      219
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "small soft skin transition across forearm cap"
+  },
+  {
+    "layer": "0200 arms/arm_left/forearm",
+    "start": [
+      580,
+      551
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          588,
+          545,
+          602,
+          548,
+          609,
+          560
+        ]
+      ]
+    ],
+    "size": 3.2,
+    "opacity": 0.82,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      252,
+      237,
+      225
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "remove exposed forearm-cap arc at elbow join using own skin color"
+  },
+  {
+    "layer": "0200 arms/arm_left/forearm",
+    "start": [
+      580,
+      551
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          588,
+          545,
+          602,
+          548,
+          609,
+          560
+        ]
+      ]
+    ],
+    "size": 10,
+    "opacity": 0.32,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      252,
+      237,
+      225
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "small soft skin transition across forearm cap"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      342,
+      872
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          365,
+          867,
+          381,
+          886,
+          399,
+          879
+        ]
+      ],
+      [
+        "C",
+        [
+          416,
+          883,
+          433,
+          884,
+          451,
+          877
+        ]
+      ]
+    ],
+    "size": 31,
+    "opacity": 0.38,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      211,
+      160,
+      141
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "local warm contact shade immediately beneath floral hem, on existing leg layer"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      342,
+      872
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          365,
+          867,
+          381,
+          886,
+          399,
+          879
+        ]
+      ],
+      [
+        "C",
+        [
+          416,
+          883,
+          433,
+          884,
+          451,
+          877
+        ]
+      ]
+    ],
+    "size": 44,
+    "opacity": 0.18,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      220,
+      171,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "soften lower edge of hem shadow into original thigh skin"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      478,
+      878
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          500,
+          883,
+          514,
+          871,
+          530,
+          875
+        ]
+      ],
+      [
+        "C",
+        [
+          550,
+          874,
+          567,
+          860,
+          585,
+          863
+        ]
+      ]
+    ],
+    "size": 31,
+    "opacity": 0.38,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      211,
+      160,
+      141
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "local warm contact shade immediately beneath floral hem, on existing leg layer"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      478,
+      878
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          500,
+          883,
+          514,
+          871,
+          530,
+          875
+        ]
+      ],
+      [
+        "C",
+        [
+          550,
+          874,
+          567,
+          860,
+          585,
+          863
+        ]
+      ]
+    ],
+    "size": 44,
+    "opacity": 0.18,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      220,
+      171,
+      151
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "soften lower edge of hem shadow into original thigh skin"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      330,
+      900
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          610,
+          900
+        ]
+      ]
+    ],
+    "size": 65,
+    "opacity": 1,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      251,
+      233,
+      222
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": true,
+    "reason": "shape hem shade into small soft scallops instead of a horizontal band"
+  },
+  {
+    "layer": "0060 legs/leg_right/leg",
+    "start": [
+      342,
+      888
+    ],
+    "commands": [
+      [
+        "C",
+        [
+          347,
+          889,
+          350,
+          895,
+          356,
+          894
+        ]
+      ],
+      [
+        "Q",
+        [
+          362,
+          898,
+          368,
+          892
+        ]
+      ],
+      [
+        "Q",
+        [
+          375,
+          897,
+          382,
+          892
+        ]
+      ],
+      [
+        "Q",
+        [
+          389,
+          899,
+          397,
+          893
+        ]
+      ],
+      [
+        "Q",
+        [
+          404,
+          895,
+          409,
+          891
+        ]
+      ],
+      [
+        "Q",
+        [
+          419,
+          895,
+          426,
+          888
+        ]
+      ],
+      [
+        "Q",
+        [
+          433,
+          893,
+          439,
+          888
+        ]
+      ],
+      [
+        "Q",
+        [
+          446,
+          891,
+          451,
+          886
+        ]
+      ]
+    ],
+    "size": 3.6,
+    "opacity": 0.48,
+    "preset": "k) Blender Blur",
+    "color": null,
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "soften only the new scalloped contact-shade boundary"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      330,
+      900
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          610,
+          900
+        ]
+      ]
+    ],
+    "size": 65,
+    "opacity": 1,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      251,
+      233,
+      222
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": true,
+    "reason": "shape hem shade into small soft scallops instead of a horizontal band"
+  },
+  {
+    "layer": "0070 legs/leg_left/leg",
+    "start": [
+      478,
+      893
+    ],
+    "commands": [
+      [
+        "Q",
+        [
+          487,
+          892,
+          493,
+          887
+        ]
+      ],
+      [
+        "Q",
+        [
+          500,
+          890,
+          507,
+          884
+        ]
+      ],
+      [
+        "Q",
+        [
+          516,
+          887,
+          523,
+          882
+        ]
+      ],
+      [
+        "Q",
+        [
+          531,
+          886,
+          538,
+          881
+        ]
+      ],
+      [
+        "Q",
+        [
+          545,
+          883,
+          552,
+          877
+        ]
+      ],
+      [
+        "Q",
+        [
+          560,
+          879,
+          567,
+          873
+        ]
+      ],
+      [
+        "Q",
+        [
+          576,
+          875,
+          585,
+          868
+        ]
+      ]
+    ],
+    "size": 3.6,
+    "opacity": 0.48,
+    "preset": "k) Blender Blur",
+    "color": null,
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "soften only the new scalloped contact-shade boundary"
+  },
+  {
+    "layer": "0230 arms/arm_right/upper_arm",
+    "start": [
+      317,
+      486
+    ],
+    "commands": [
+      [
+        "Q",
+        [
+          329,
+          494,
+          338,
+          488
+        ]
+      ],
+      [
+        "Q",
+        [
+          350,
+          497,
+          358,
+          491
+        ]
+      ],
+      [
+        "Q",
+        [
+          369,
+          499,
+          377,
+          490
+        ]
+      ]
+    ],
+    "size": 16,
+    "opacity": 0.36,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      208,
+      155,
+      135
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "restore small warm cuff contact shade while preserving visible arm skin and translucent lace"
+  },
+  {
+    "layer": "0230 arms/arm_right/upper_arm",
+    "start": [
+      317,
+      486
+    ],
+    "commands": [
+      [
+        "Q",
+        [
+          329,
+          494,
+          338,
+          488
+        ]
+      ],
+      [
+        "Q",
+        [
+          350,
+          497,
+          358,
+          491
+        ]
+      ],
+      [
+        "Q",
+        [
+          369,
+          499,
+          377,
+          490
+        ]
+      ]
+    ],
+    "size": 22,
+    "opacity": 0.13,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      218,
+      169,
+      147
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "soft lower transition of cuff contact shade"
+  },
+  {
+    "layer": "0220 arms/arm_left/upper_arm",
+    "start": [
+      605,
+      486
+    ],
+    "commands": [
+      [
+        "Q",
+        [
+          593,
+          494,
+          584,
+          488
+        ]
+      ],
+      [
+        "Q",
+        [
+          572,
+          497,
+          564,
+          491
+        ]
+      ],
+      [
+        "Q",
+        [
+          553,
+          499,
+          545,
+          490
+        ]
+      ]
+    ],
+    "size": 16,
+    "opacity": 0.36,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      208,
+      155,
+      135
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "restore small warm cuff contact shade while preserving visible arm skin and translucent lace"
+  },
+  {
+    "layer": "0220 arms/arm_left/upper_arm",
+    "start": [
+      605,
+      486
+    ],
+    "commands": [
+      [
+        "Q",
+        [
+          593,
+          494,
+          584,
+          488
+        ]
+      ],
+      [
+        "Q",
+        [
+          572,
+          497,
+          564,
+          491
+        ]
+      ],
+      [
+        "Q",
+        [
+          553,
+          499,
+          545,
+          490
+        ]
+      ]
+    ],
+    "size": 22,
+    "opacity": 0.13,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      218,
+      169,
+      147
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": false,
+    "reason": "soft lower transition of cuff contact shade"
+  },
+  {
+    "layer": "0038 halter_dress/halter_bodice :: depth_38",
+    "start": [
+      462,
+      338
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          462,
+          374
+        ]
+      ]
+    ],
+    "size": 66,
+    "opacity": 1,
+    "preset": "b) Basic-5 Size",
+    "color": [
+      249,
+      243,
+      242
+    ],
+    "blend": "behind",
+    "alpha_lock": false,
+    "manual_selection": true,
+    "reason": "close two input bodice cutouts which incorrectly expose clavicle skin; reference has opaque white fabric here, preserve neck skin above collar"
+  },
+  {
+    "layer": "0038 halter_dress/halter_bodice :: depth_38",
+    "start": [
+      446,
+      341
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          446,
+          347
+        ]
+      ]
+    ],
+    "size": 22,
+    "opacity": 0.38,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      230,
+      210,
+      213
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": true,
+    "reason": "small gray-pink cloth transition around closed neckline cutout; own bodice palette, no reference pixels"
+  },
+  {
+    "layer": "0038 halter_dress/halter_bodice :: depth_38",
+    "start": [
+      479,
+      341
+    ],
+    "commands": [
+      [
+        "L",
+        [
+          479,
+          347
+        ]
+      ]
+    ],
+    "size": 22,
+    "opacity": 0.38,
+    "preset": "b) Airbrush Soft",
+    "color": [
+      230,
+      210,
+      213
+    ],
+    "blend": "normal",
+    "alpha_lock": true,
+    "manual_selection": true,
+    "reason": "small gray-pink cloth transition around closed neckline cutout; own bodice palette, no reference pixels"
+  }
+]
