@@ -8,7 +8,6 @@
 | 三种 CLI 图片／请求体预算 | `layering_<codex/claude/agv>_image_compact_threshold` / `layering_<codex/claude/agv>_request_compact_mib` | 留空关闭；按实际发送内容检查，带图分批压缩，保留最新图与恢复记录 |
 | Codex 自定义生图 | 对应步骤选择 GPT／Nano，并填写对应 API | 与 compact 共用同一补丁，按所选路线实际需要准备 |
 | AGV 响应头期限兼容 | `layering_agv_unlimited_response_header_timeout=true` | 自动检查已安装 CLI，准备独立受控副本，不需要 Rust |
-| LiteLLM 错误透传 | `layering_litellm_config=<litellm.yaml>` | 启动时同步回调文件并追加 callbacks；有变化时提示重启代理，不自动重启 |
 
 Codex 的 Git、C/C++ 及平台编译依赖仍须可用。Rust 1.95.0 缺失时，启动器明确提示并在临时目录安装，构建后清理，不改用户环境。默认 Codex 内置生图且未开启 compact、未开启 AGV 补丁时不构建。
 

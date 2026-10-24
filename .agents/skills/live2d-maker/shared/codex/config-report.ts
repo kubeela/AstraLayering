@@ -35,7 +35,6 @@ export function configurationReport(env: NodeJS.ProcessEnv = process.env, direct
       return [provider, { configured: !!api, protocol: api?.protocol ?? null }];
     })),
     cliPaths: settings.cliPaths,
-    litellmCallback: { config: settings.litellmConfig ?? null },
     agvPatch: { enabled: settings.codex.env?.layering_agv_unlimited_response_header_timeout === 'true' },
     imageBudgets: Object.fromEntries(Object.entries(settings.imageBudgets ?? {}).map(([harness, budget]) => [harness, {
       enabled: budget.images !== undefined || budget.bytes !== undefined || budget.deduplicate === true,

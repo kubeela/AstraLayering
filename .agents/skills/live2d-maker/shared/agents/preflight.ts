@@ -10,7 +10,6 @@ import { promisify } from 'node:util';
 import { appServerCommand } from '../codex/tool-agent.ts';
 import { withNodePath } from '../process-environment.ts';
 import type { Harness } from './models.ts';
-import { ensureLitellmCallback } from '../../patches/litellm/install.ts';
 
 export async function checkAgentCli(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const launch = harness === 'codex' ? appServerCommand(settings.codex.codexPathOverride)
@@ -41,12 +40,6 @@ export function pipelineAgentSteps(pipeline: PipelineId, standard = false, shado
   });
 }
 export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: readonly AgentStep[], normalization: ImageProcessingOptions = {}): Promise<void> {
-  if (settings.litellmConfig) {
-    const changed = await ensureLitellmCallback(settings.litellmConfig);
-    normalization.progress?.(changed.length
-      ? `LiteLLM 错误透传回调已更新：${changed.join('、')}。需重启该代理后生效；共享代理不会被自动重启。`
-      : 'LiteLLM 错误透传回调已就绪。');
-  }
   const harnesses = new Set<Harness>();
   for (const step of steps) {
     validateImageSelection(settings, step);

@@ -28,7 +28,6 @@ export type WorkflowEnvironment = {
   codex: CodexOptions;
   imageCompactThreshold?: number;
   imageBudgets?: Record<Harness, ImageBudget>;
-  litellmConfig?: string;
 };
 
 export function parseModel(value: string | undefined, fallback: ModelSelection, name: string): ModelSelection {
@@ -128,7 +127,6 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
     if (value) cliPaths[harness] = path(value);
   }
   if (executable) cliPaths.codex = path(executable);
-  const litellm = get('layering_litellm_config');
   return {
     stepModels, stepImages, imageApis, cliPaths, imageBudgets,
     models: {
@@ -137,7 +135,6 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
     },
     codex: { env: effective, config, ...(executable ? { codexPathOverride: path(executable) } : {}) },
     ...(threshold === undefined ? {} : { imageCompactThreshold: threshold }),
-    ...(litellm ? { litellmConfig: path(litellm) } : {}),
   };
 }
 

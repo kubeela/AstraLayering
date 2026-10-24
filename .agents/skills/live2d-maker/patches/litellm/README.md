@@ -1,6 +1,6 @@
 # Responses 错误透传
 
-这是外部 LiteLLM Proxy 的可选兼容回调，不是工作流运行依赖；不安装、不启动也不重启 LiteLLM。已在 LiteLLM 1.106 实测。接口缺少所需钩子时，启动明确报错。
+这是外部 LiteLLM Proxy 的可选兼容回调，不是工作流运行依赖；不安装或替用户启动 LiteLLM。已在 LiteLLM 1.106 实测。接口缺少所需钩子时，启动明确报错。
 
 工作流共享调用层已经为 Codex、Claude Code 和 AGV 保留实际收到的错误详情，在 `workflow.log`、请求失败记录和最终诊断中展示，不依赖 LiteLLM。本回调补的是代理在更早一层吞掉错误事件的问题；若代理或 CLI 只返回通用消息，共享层无法还原它没有收到的字段。
 
@@ -8,9 +8,7 @@
 
 代理异常映射后，仍保留上游 `code`、`type`、`message`、`param` 和其他错误字段。日志只记录错误详情，保留代理原有脱敏，不记录整份上下文或图片。
 
-在 `.env` 设置 `layering_litellm_config=<代理的 litellm.yaml>` 即自动装配：每次启动时把两个回调文件同步到该 YAML 所在目录（LiteLLM 从配置目录导入 `module.attr` 回调），并在 `litellm_settings.callbacks` 追加下面这一项。只按文本追加，保留注释、键序和已有回调，原文件权限不变；callbacks 若不是列表则明确报错，不改写。已装好时不写任何文件。有变化时提示需要重启代理；代理通常是共享的，工作流不会替你重启。留空则不处理代理。
-
-手动安装时，把 `responses_compat.py` 和 `responses_error_events.py` 放到代理自己的可导入目录，在原有 YAML 的 `litellm_settings.callbacks` **追加**：
+把 `responses_compat.py` 和 `responses_error_events.py` 放到代理自己的可导入目录，在原有 YAML 的 `litellm_settings.callbacks` **追加**：
 
 ```yaml
 litellm_settings:
