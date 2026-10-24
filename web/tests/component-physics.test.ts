@@ -97,6 +97,24 @@ test('rigid pendant preserves pair distances rather than stretching into jelly',
   const scene=new ComponentScene(config([component('pendant')])),b=scene.bodies.get('pendant');b.impulse(100,320,900,400,500);
   for(let n=0;n<180;n++){scene.step();assert(b.stats.valid);for(let i=1;i<b.weights.length;i++)assert(Math.abs(Math.hypot(b.positions[i*2]-b.positions[0],b.positions[i*2+1]-b.positions[1])-Math.hypot(b.rest[i*2]-b.rest[0],b.rest[i*2+1]-b.rest[1]))<1e-8);}
 });
+test('authored hair bends visibly in a breeze while its pinned pixels and segment lengths stay safe',()=>{
+  const c=component();c.authoring.swing={parallel:.8};Object.assign(c.response,{frequencyHz:1.3,dampingRatio:.25,windGain:.5,outputGain:1.7});c.limits.maxTravel=.2;
+  const scene=new ComponentScene(config([c])),b=scene.bodies.get(c.id);let peak=0,differential=0;
+  for(let n=0;n<720;n++){
+    scene.airflow={x:.2*(.6+.3*Math.sin(n/120)),y:0};scene.step();
+    assert(b.stats.valid);assert.equal(b.stats.root,0);assert.equal(b.stats.fallback,false);
+    peak=Math.max(peak,b.stats.travel);differential=Math.max(differential,Math.abs((b.p[6]-b.pPose[6])-(b.p.at(-2)-b.pPose.at(-2))));
+  }
+  assert(peak>12,'a normal breeze must produce visible authored deformation');assert(differential>8,'the midsection and tip must bend differently');
+  assert.throws(()=>new ComponentScene(config([{...c,response:{...c.response,windGain:Infinity}}])),/风力响应/);
+});
+test('a rigid ornament extrapolates off-contour attachment points in its rotating frame',()=>{
+  const c=component('pendant'),b=new ComponentScene(config([c])).bodies.get(c.id);b.theta=.17;b.syncMesh();
+  const points=[[150,360],[151,360],[100,420]],samples=points.map(p=>b.sample(p));
+  assert(Math.abs(Math.hypot(samples[1][0]-samples[0][0],samples[1][1]-samples[0][1])-1)<1e-10);
+  assert(Math.abs(Math.atan2(samples[1][1]-samples[0][1],samples[1][0]-samples[0][0])-.17)<1e-10);
+  for(let i=1;i<points.length;i++)assert(Math.abs(Math.hypot(samples[i][0]-samples[0][0],samples[i][1]-samples[0][1])-Math.hypot(points[i][0]-points[0][0],points[i][1]-points[0][1]))<1e-10);
+});
 test('moving support is measured against the same-time pose and child stays attached',()=>{
   const parent=component(),child=component('pendant',{supports:[{id:'tail',at:[100,320],componentId:'strand'}]});
   const scene=new ComponentScene(config([parent,child]));
