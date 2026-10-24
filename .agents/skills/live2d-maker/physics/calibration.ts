@@ -12,7 +12,7 @@ import {within} from '../shared/raster/run-store.ts';
 import {compareMotionTarget,matchTargetComponent,motionTargetVersion} from './motion-targets.ts';
 import {recoveryBudgetSteps,recoveryState,settlingVersion} from '../shared/physics-evidence/settling.js';
 
-export const calibrationVersion='astra-physics-calibration-2';
+export const calibrationVersion='astra-physics-calibration-3';
 export const quickTests=['airflow','light-brush','support-release'] as const;
 export const recipes=[
   {id:'hair-bend',kind:'strand',purpose:'游离发束：固定贴头根部，宽片克制截面旋转，开放中段和末端',response:{frequencyHz:1.3,dampingRatio:.25,inputGain:.65,windGain:.5,outputGain:1.7},authoring:{swing:{parallel:.8}}},
@@ -105,8 +105,8 @@ export async function measureCandidate(config:any,ids:string[],signal?:AbortSign
       for(const [id,b]of scene.bodies){const m=metrics[id],s=b.stats,{tip,mid}=points.get(id),tx=b.positions[tip*2]-b.pose[tip*2],ty=b.positions[tip*2+1]-b.pose[tip*2+1],mx=b.positions[mid*2]-b.pose[mid*2],my=b.positions[mid*2+1]-b.pose[mid*2+1];
         if(step<=960){m.peak=Math.max(m.peak,s.travel);m.limited+=+s.limited;m.fallback+=+s.fallback;}m.root=Math.max(m.root,s.root);m.invalid+=+!s.valid;const tracker=trackers.get(id);tracker.update(b.positions,scene.sourcePose);m.maxStep=tracker.maxStep;m.maxWorldStep=tracker.maxWorldStep;m.maxAcceleration=tracker.maxAcceleration;m.discontinuityRatio=tracker.discontinuityRatio;if(step<=960)m.visiblePeak=tracker.visiblePeak;m.curvature=Math.max(m.curvature,Math.hypot(tx-mx,ty-my));
         if(step>=840&&step<=960)m.tailRms+=s.travel*s.travel/121;if(step<=960)m.final=s.travel;
-        if(step===960&&!recoveryState(b,m.visiblePeak,tracker.visibleTravel).quiet)recovery.set(id,{quietSteps:0,fallbackSteps:0});
-        if(step>960&&recovery.has(id)){const r=recovery.get(id),state=recoveryState(b,m.visiblePeak,tracker.visibleTravel);r.quietSteps=state.quiet?r.quietSteps+1:0;r.fallbackSteps+=+s.fallback;r.final=state.travel;r.internalSpeed=state.internalSpeed;}
+        if(step===960)recovery.set(id,{quietSteps:0,fallbackSteps:0});
+        if(step>=960&&recovery.has(id)){const r=recovery.get(id),state=recoveryState(b,m.visiblePeak,tracker.visibleTravel);r.quietSteps=state.quiet?r.quietSteps+1:0;if(step>960)r.fallbackSteps+=+s.fallback;r.final=state.travel;r.internalSpeed=state.internalSpeed;r.tolerance=state.tolerance;}
         if(step%6===0&&step<=960){let velocity=0;for(const v of b.velocity)velocity=Math.max(velocity,Math.abs(v));m.samples.push({step,time:step/120,tip:[tx,ty],mid:[mx,my],root:s.root,travel:s.travel,visibleTravel:tracker.visibleTravel,velocity,curvature:Math.hypot(tx-mx,ty-my)});}
       }
       if(step%120===0)await setImmediate();

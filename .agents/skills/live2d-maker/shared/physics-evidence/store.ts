@@ -48,8 +48,8 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
         m.root=Math.max(m.root,b.stats.root);m.invalid+=+!b.stats.valid;
         let tracker=stepTrackers.get(id);if(!tracker){tracker=new MotionStepTracker(config.source.canvas,b.positions.length,b.maxDistance);stepTrackers.set(id,tracker);}
         tracker.update(b.positions,scene.sourcePose,b.stats.fallback);m.maxStep=tracker.maxStep;m.maxWorldStep=tracker.maxWorldStep;m.maxAcceleration=tracker.maxAcceleration;m.discontinuityRatio=tracker.discontinuityRatio;m.maxFallbackStreak=tracker.maxFallbackStreak;if(step<=960)m.visiblePeak=tracker.visiblePeak;
-        if(step===960&&!['neutral','extreme'].includes(test)&&!recoveryState(b,m.visiblePeak,tracker.visibleTravel).quiet)recovery.set(id,{quietSteps:0,fallbackSteps:0});
-        if(step>960&&recovery.has(id)){const r=recovery.get(id),state=recoveryState(b,m.visiblePeak,tracker.visibleTravel);r.quietSteps=state.quiet?r.quietSteps+1:0;r.fallbackSteps+=+b.stats.fallback;r.final=state.travel;r.internalSpeed=state.internalSpeed;}
+        if(step===960&&test!=='neutral')recovery.set(id,{quietSteps:0,fallbackSteps:0});
+        if(step>=960&&recovery.has(id)){const r=recovery.get(id),state=recoveryState(b,m.visiblePeak,tracker.visibleTravel);r.quietSteps=state.quiet?r.quietSteps+1:0;if(step>960)r.fallbackSteps+=+b.stats.fallback;r.final=state.travel;r.internalSpeed=state.internalSpeed;r.tolerance=state.tolerance;}
         const stats=b.stats,residual=Array.from(b.positions,(v:any,i:number)=>v-b.pose[i]);
         let tip=0;for(let i=1;i<b.weights.length;i++)if(b.weights[i]>b.weights[tip]||b.weights[i]===b.weights[tip]&&Math.hypot(b.rest[i*2]-b.component.supports[0].at[0],b.rest[i*2+1]-b.component.supports[0].at[1])>Math.hypot(b.rest[tip*2]-b.component.supports[0].at[0],b.rest[tip*2+1]-b.component.supports[0].at[1]))tip=i;
         const sign=Math.sign(residual[tip*2]);if(sign&&signs.get(id)&&signs.get(id)!==sign&&stats.travel>.1)events.push({type:'reversal',component:id,step});if(sign)signs.set(id,sign);
