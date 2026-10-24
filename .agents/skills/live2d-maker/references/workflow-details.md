@@ -45,7 +45,7 @@ pnpm build:codex
 # .env: layering_codex_path=.codex-build/bin/codex
 ```
 
-构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改系统 Codex 或全局配置。已有图片压缩策略保持不变：恰好阈值时图片参加视觉 compact；超过阈值时按容量分段，保留尚未压缩的原图、对应文字与工具配对。见[构建与本地验证说明](../tools/codex/README.md)。Codex 自定义生图也使用这份补丁；`codex-native` 和 Claude／AGV 自定义生图不要求生图补丁。
+构建是显式操作，需要 Git、Rust 1.95.0 与平台编译依赖；正常运行不会下载或构建 Codex。补丁固定在官方 0.161.0 源码，独立生成文件，不修改系统 Codex 或全局配置。已有图片压缩策略保持不变：恰好阈值时图片参加视觉 compact；超过阈值时按容量分段，保留尚未压缩的原图、对应文字与工具配对。见[构建与本地验证说明](../patches/codex/README.md)。Codex 自定义生图也使用这份补丁；`codex-native` 和 Claude／AGV 自定义生图不要求生图补丁。
 
 ### 生效配置核对
 
@@ -195,3 +195,7 @@ Nano 两张背景图、背景选择、alpha 和错误／处理报告保留在调
 step01 reviewer 看图确认形体、画风和衔接过渡问题，使用 `annotate_review_regions` 标记编号框、对应图层和问题说明，生成整图标记及同坐标局部对照；绘制者按编号反馈修复。工具仅为独立 reviewer 注册，定义在 `shared/tools/annotate_review_regions/description.md` 和 `schema.json`；它不自动检测差异、计算相似度或决定通过。step01 重点处理缺口、错位和明显画风差异；仅可覆盖本部件自己的原图可见像素，不能为缩小整图差异混入其他部件。覆盖区与补绘区、相邻 part 的接缝用画笔修自然。隐藏补全根据形体和上下文检查，不与遮挡物像素强行匹配。step02 使用 `locate_pixel_differences` 的候选框作为细节检查入口，对照参考确认后局部小改，并逐层扩展检查全部部件；精修边缘、抗锯齿、瑕疵、描边和部件细节，不拆层或修改归属，也不再独立 review。
 
 旧的 step01 完成交付在新版本下补跑轮廓 review，保留绘制会话和工程。检查没有改变 KRA／必要 PNG 时保留后续成果；实际修复改变工程时，后续步骤移入本管线 `recovery/` 保留，随后从修正输入继续。主动删除 `.completed` 仍沿用原有全重跑规则。旧 step02 已发布初次绘制报告、完成结果与有效交付但停在已移除 review 时，继续启动会完成其标记，不重画已完成柔边。
+
+### 各 CLI 请求大小预算
+
+`.env` 中 `layering_codex_request_compact_mib`、`layering_claude_request_compact_mib`、`layering_agv_request_compact_mib` 分别控制提前带图压缩的 MiB 预算；对应 `layering_<cli>_image_compact_threshold` 控制图片数，留空关闭。Codex 专用图片键优先于旧 `layering_image_compact_threshold`。完整机制、支持的协议、可选去重及失败恢复见 [图片容量保护](../patches/README.md#图片容量保护)。`env:check` 只预览生效配置；真正发包时再核查容量，不改上游硬上限。

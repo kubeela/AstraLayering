@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { test, type TestContext } from 'node:test';
-import { inspectAgv } from '../../tools/agv/inspect.ts';
+import { inspectAgv } from '../../patches/agv/inspect.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 
@@ -17,7 +17,7 @@ async function fixture(t: TestContext, code: string) {
   await writeFile(join(directory, 'antigravity.bin'), payload, { mode: 0o700 });
   await writeFile(join(directory, 'patch.json'), JSON.stringify({ defaultResponseHeaderTimeoutSeconds: 0, autoUpdateDisabledByTrue: true,
     patchedSha256: createHash('sha256').update(payload).digest('hex') }));
-  await copyFile(new URL('../../tools/agv/launch.mjs', import.meta.url), join(directory, 'launch.mjs'));
+  await copyFile(new URL('../../patches/agv/launch.mjs', import.meta.url), join(directory, 'launch.mjs'));
   return directory;
 }
 

@@ -14,7 +14,7 @@ if (values.help) {
 }
 if (!/^\d+$/.test(values.jobs!) || Number(values.jobs) < 1) throw new Error('--jobs 必须为正整数');
 const root = join(workflowsDirectory, '.codex-build'), source = join(root, 'source');
-const patch = join(workflowsDirectory, 'tools/codex/layering-runtime.patch');
+const patch = join(workflowsDirectory, 'patches/codex/layering-runtime.patch');
 async function run(command: string, args: string[], cwd = root, capture = false): Promise<string> {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { cwd, stdio: capture ? ['ignore', 'pipe', 'inherit'] : 'inherit' });

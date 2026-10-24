@@ -29,18 +29,18 @@
 | 现象 | 检查与恢复 |
 | --- | --- |
 | `Exceeded maximum number of images (50)` | 检查图片阈值是否留空、被 shell 覆盖或在另一份 skill 中配置。已确认此上限的环境使用 49，检查子进程生效值和补丁 `image_compaction_version: 2`。修正后先续原 thread，不删产物或阶段目录。 |
-| `Response API in-stream error`，没有具体原因 | 先查看 `workflow.log` 的“错误详情”和对应请求的 `result.json`；Codex、Claude Code、AGV 共用错误保留能力，按各 CLI 实际返回保留错误码、类型、参数、状态、原因链和最后模型消息。若仍只有通用断流文案，检查原始 API 与代理事件，不能据此认定网络超时或图片上限。外部 LiteLLM 可使用[错误透传回调](../tools/litellm/README.md)兼容“先空 `response.failed`、后详细 `error`”；按真正的错误恢复，可用保存的事件做本地模拟验证。 |
+| `Response API in-stream error`，没有具体原因 | 先查看 `workflow.log` 的“错误详情”和对应请求的 `result.json`；Codex、Claude Code、AGV 共用错误保留能力，按各 CLI 实际返回保留错误码、类型、参数、状态、原因链和最后模型消息。若仍只有通用断流文案，检查原始 API 与代理事件，不能据此认定网络超时或图片上限。外部 LiteLLM 可使用[错误透传回调](../patches/litellm/README.md)兼容“先空 `response.failed`、后详细 `error`”；按真正的错误恢复，可用保存的事件做本地模拟验证。 |
 | 有补丁却没有图片压缩日志 | 区分能力与启用状态。补丁安装不启用阈值；检查 `codex.imageCompaction`。普通请求前达到阈值时应出现 `Layering image guard: N images; compacting with vision...`；此诊断虽通过 CLI error item 传递，不等于整个回合执行失败。 |
 | 已进入压缩但回合失败 | 检查随后实际错误及回合结果：鉴权、额度、服务错误或空摘要。保留原 thread、rollout 和图片，修正已获授权的配置后续跑；补丁只在成功得到非空摘要后替换历史。不要把这些错误都解释成 50 张限制。 |
 | token 上下文超限 | 与图片张数分开检查，查看实际 Codex provider 的 token 窗口与自动压缩设置。图片保护不解除 token 上限，不凭字符数推断 token 数，也不靠丢弃未总结图片救场。 |
 | 没有 `image_generation` 工具，agent 退出且无交付 | 阅读最后模型消息；核对所选 harness、生图模型、API 配置、原生工具能力或补丁版本。修好通道再续跑，不能把退出当完成。 |
-| AGV 60 秒响应头超时或 `MINIMAL` 拒绝 | 对照[AGV 补丁说明](../tools/agv/README.md)及[模型与 harness](agent-models.md)，核对实际 CLI 版本、补丁和已配置的兼容项；主请求与 CLI 内部检查分开诊断，不臆造新的工作流超时。 |
+| AGV 60 秒响应头超时或 `MINIMAL` 拒绝 | 对照[AGV 补丁说明](../patches/agv/README.md)及[模型与 harness](agent-models.md)，核对实际 CLI 版本、补丁和已配置的兼容项；主请求与 CLI 内部检查分开诊断，不臆造新的工作流超时。 |
 | AGV `stream idle timeout` 或旧错误仍留在 `ERROR` 终态 | 未完成的流空闲超时会在原会话自动退避重试。若本轮事件均已结束、最终回复一致，适配器会识别恢复，兼容末尾 `finish` 与多条回复汇总；原始错误仍保留在请求日志中。旧版本已误报停止时，先重放原调用事件并核对交付，再恢复调度；不能仅凭模型说 completed 手工写 `.completed`，绘制后的 review 仍须执行。 |
 
 对于已超出阈值的历史，补丁按容量带图分段：阈值 49、历史 52 张时先压缩 49 张，剩余 3 张保留给下一次普通请求；它们的文字、图序和已完成工具配对一起保留，不重新执行工具。需要验证配置的二进制时，从实际 skill 根目录运行本机模拟：
 
 ```bash
-python3 tools/codex/image-compaction-smoke.py --codex /绝对路径/补丁版codex --case 52
+python3 patches/codex/image-compaction-smoke.py --codex /绝对路径/补丁版codex --case 52
 ```
 
 此模拟不访问付费模型、不修改任务。实际恢复后仍核对原 threadId、压缩完成及随后绘图或工具进展；“已启动”或只有 guard 提示不等于压缩已经成功。只有原历史确实无法继续时才用下面的保留产物交接。
@@ -71,3 +71,9 @@ pnpm start --name jianma --dir /绝对路径/运行根目录 --background
 **宿主没有定时能力时明确告知缺少这项能力，不自行安装 cron 或其他系统定时替代方案，也不声称已经安排检查。** 后台总调度仍可执行；持续巡检不可用需如实说明。
 
 `monitor.md` 另需记录检查指令与启停状态，以及实际 skill 路径／版本、原启动命令与所选范围、Codex 路径／配置目录与启动方式、图片压缩启停状态和阈值、必要 shell 覆盖、Krita 路径及显示环境、工作台 checkout／URL／端口／追踪目录与服务启动方式。只记录配置位置和非敏感启用值，不记录密钥。续跑复用原环境；工作台 checkout 内的另一份 skill 不会自动拥有原 thread 历史。更新 `monitor.md` 不与程序并发改写总控 `run.json`。完成或取消时关闭本任务的定时检查，保留产物和共享工作台服务。
+
+### 图片数或请求体超限
+
+`50 images`、HTTP 413 和 `payloads cannot be larger than ...` 属于单次请求容量问题，重复发送原包不会恢复。先查看 `pnpm env:check` 的 `imageBudgets`，核对报错路由对应的图片阈值、请求字节预算及 Codex 字节补丁能力；配置按已确认的服务上限保留余量，例如 100 MiB 路由可设 80 MiB。AGV 已通过 GenAI 接入补丁才能保护最终发包，Claude 支持 Messages 路由，配置不适用时必须看到明确错误。
+
+`agent.visual_context` 记录分批压缩、复用摘要与最终请求的图片数／字节数。确认有成功批次和后续真实请求，不能只凭心跳判断恢复。失败的图片与已成功摘要均保留在任务内；修复配置后先续原会话，不删除产物、草稿或 review。协议与参数见 [图片容量保护](../patches/README.md#图片容量保护)。

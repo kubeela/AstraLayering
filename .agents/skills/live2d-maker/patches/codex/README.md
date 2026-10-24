@@ -29,13 +29,15 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 ## 本地模拟验证
 
 ```bash
-python3 tools/codex/smoke.py
+python3 patches/codex/smoke.py
 # 或显式选择二进制：
-python3 tools/codex/smoke.py --codex /absolute/codex
+python3 patches/codex/smoke.py --codex /absolute/codex
 # 完整工作流路由：实际补丁 CLI，经共享适配器模拟 GPT 和 Nano 生图／编辑并恢复会话：
-node tools/codex/native-image-smoke.ts
+node patches/codex/native-image-smoke.ts
 # 图片完整性、溢出、失败恢复与真实 thread 续跑：
-python3 tools/codex/image-compaction-smoke.py --codex /absolute/codex
+python3 patches/codex/image-compaction-smoke.py --codex /absolute/codex
 ```
 
 测试仅启动本机 HTTP 模拟服务，使用虚拟密钥与生成的测试 PNG。图片专项测试使用不同图片逐张比对原始数据，服务拒绝任何含 50 张及以上图片的请求；覆盖 48/49/50/52/120 张、一次工具批量输出、单次 Code Mode 从 44 跳到 52、关闭保护、失败/空摘要后的同 thread 恢复、工具配对和消息 ID 唯一性。通用 smoke 另覆盖原生生图／编辑接口与分别鉴权。不调用真实模型、不消耗生图额度，也不修改已有作品；这些测试验证请求和恢复机制，不代替实际模型的视觉质量验收。
+
+`layering_codex_request_compact_mib` 开启后，普通请求和视觉 compact 均使用真实 Responses 序列化器计算大小（含指令、工具和 Base64），预留传输元数据。HTTP／WebSocket 发包前还有最终字节检查。溢出时按图片数量与字节两种预算选择可实际总结的前缀，其余原图及工具配对保留；无法容纳文本和一张图时明确报错，不删除未总结的历史。关闭此项时原 49 张图片保护保持原行为。

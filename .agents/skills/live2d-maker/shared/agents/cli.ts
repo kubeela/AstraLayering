@@ -7,6 +7,8 @@ import { createInterface } from 'node:readline';
 import { once } from 'node:events';
 import { randomUUID } from 'node:crypto';
 import { genaiGateway } from './agv-gateway.ts';
+import { claudeGateway } from '../../patches/claude/gateway.ts';
+import { VisualContext, imageBudget, protectedImages } from '../../patches/shared/visual-context.ts';
 import { AgvTurn } from './agv-turn.ts';
 import { createMcpBridge } from './mcp.ts';
 import type { WorkflowEnvironment } from '../codex/environment.ts';
@@ -16,7 +18,7 @@ import { AgentCallError } from '../codex/agent-runtime.ts';
 import { agentCallError } from '../codex/diagnostics.ts';
 import { errorDetails, errorMessage } from './errors.ts';
 import { followNativeLog } from '../codex/native-log.ts';
-import { resolvePatchedAgv } from '../../tools/agv/patch-response-header.ts';
+import { resolvePatchedAgv } from '../../patches/agv/patch-response-header.ts';
 import { AgentLog } from '../codex/agent-log.ts';
 import { withNodePath } from '../process-environment.ts';
 
@@ -120,12 +122,32 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     const inherited = { ...(userSettings.apiKeyHelper ? { apiKeyHelper: userSettings.apiKeyHelper } : {}),
       env: Object.fromEntries(Object.entries(userSettings.env || {}).filter(([key]) => /^(ANTHROPIC_|CLAUDE_CODE_USE_|AWS_|AZURE_|GOOGLE_|VERTEX_)/.test(key))
         .map(([key, value]) => [key, settings.codex.env?.[key] ?? value])) };
-    await writeFile(authSettings, JSON.stringify(inherited), { mode: 0o600 });
     mcpServer = await createMcpBridge(task.tools || [], signal, event => log.recordProtocol(event));
     const mcp = { mcpServers: { layering: mcpServer.config } };
-    bridge = model.harness === 'agv' ? await genaiGateway(env, task.tools || [], root, signal, task.images, workspace,
-      event => log.recordProtocol(event).then(() => {})) : undefined;
-    Object.assign(env, mcp.mcpServers.layering.env, { LAYERING_BRIDGE_RESULTS: join(log.directory, 'bridge-results') }, bridge ? { AGY_LLM_GATEWAY_URL: bridge.url } : {});
+    const budget = imageBudget(env, model.harness);
+    const visual = new VisualContext({ directory: join(data, 'visual-context'), protocol: model.harness === 'agv' ? 'genai' : 'anthropic', budget,
+      protectedImageHashes: protectedImages(await Promise.all((task.images ?? []).map(async image => ({ data: (await readFile(image.path)).toString('base64') })))),
+      observe: async event => {
+        await log.recordProtocol(event);
+        if (event.phase !== 'prepared' || model.harness === 'claude') options.progress?.(`[${task.name}] 图片容量保护 ${event.phase}；${event.images} 张；${event.requestBytes} 字节${event.batchImages ? `；本批 ${event.batchImages} 张 / ${event.batchBytes ?? 0} 字节` : ''}`);
+      } });
+    if (model.harness === 'agv') {
+      bridge = await genaiGateway(env, task.tools || [], root, signal, task.images, workspace,
+        event => log.recordProtocol(event).then(() => {}), visual);
+      if (bridge) Object.assign(env, { AGY_LLM_GATEWAY_URL: bridge.url });
+    } else if (budget.images || budget.bytes || budget.deduplicate) {
+      const nativeEnv: NodeJS.ProcessEnv = { ...inherited.env, ...env };
+      if (['CLAUDE_CODE_USE_BEDROCK', 'CLAUDE_CODE_USE_VERTEX', 'CLAUDE_CODE_USE_FOUNDRY'].some(key => /^(true|1)$/.test(String(nativeEnv[key])))) {
+        throw new Error('当前 Claude 原生云平台协议无法使用 Messages 图片容量保护；保护配置未被忽略，未启动模型。');
+      }
+      const upstream = String(nativeEnv.ANTHROPIC_BASE_URL || 'https://api.anthropic.com');
+      const secrets = ['ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN'].map(key => nativeEnv[key]).filter((value): value is string => !!value);
+      bridge = await claudeGateway(upstream, visual, signal, text => secrets.reduce((value, secret) => value.replaceAll(String(secret), '[redacted]'), text));
+      Object.assign(env, { ANTHROPIC_BASE_URL: bridge.url });
+      inherited.env.ANTHROPIC_BASE_URL = bridge.url;
+    }
+    await writeFile(authSettings, JSON.stringify(inherited), { mode: 0o600 });
+    Object.assign(env, mcp.mcpServers.layering.env, { LAYERING_BRIDGE_RESULTS: join(log.directory, 'bridge-results') });
     const configPath = join(log.directory, 'mcp.json'); await writeFile(configPath, JSON.stringify(mcp), { mode: 0o600 });
     await mkdir(join(env.GEMINI_DIR, 'config'), { recursive: true, mode: 0o700 });
     await writeFile(join(env.GEMINI_DIR, 'config/mcp_config.json'), JSON.stringify(mcp), { mode: 0o600 });
