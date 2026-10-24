@@ -73,6 +73,23 @@ test('manual approval never masquerades as workflow acceptance and parameter edi
   assert.equal(data?.stages[2].status, 'stale');
 });
 
+test('the project panel keeps current candidate curves without transferring archived generations', async t => {
+  const f = await fixture(t);
+  const round = { round: 1, selectedCandidate: 'baseline', candidates: [{ id: 'baseline', metrics: {
+    airflow: { cloth: { samples: [{ time: 0, tip: [0, 0] }, { time: 1, tip: [4, 0] }] } }
+  } }] };
+  const tuning = { configHash: f.digest, solverHash: await simulationHash(), status: 'calibrated',
+    groups: [{ assemblyId: 'cloth', componentIds: ['cloth'], rounds: [round], history: [{
+      generation: 'old-solver', rounds: Array.from({ length: 100 }, () => round)
+    }] }] };
+  await f.put('physics/step02/tuning.json', tuning);
+  const data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
+  assert.deepEqual(data?.tuning.groups[0].rounds, [round]);
+  assert.equal(data?.tuning.groups[0].history, undefined);
+  assert(JSON.stringify(data?.tuning).length < JSON.stringify(tuning).length / 10);
+  assert.equal(JSON.parse(await (await import('node:fs/promises')).readFile(join(f.root, 'physics/step02/tuning.json'), 'utf8')).groups[0].history.length, 1);
+});
+
 test('browser and Worker load the skill-owned modules through the workbench', async t => {
   const root = await mkdtemp(join(tmpdir(), 'astra-shared-route-'));
   const server = await createWorkbench({ defaultDir: join(root, 'runs'), settingsPath: join(root, 'settings.json') });
