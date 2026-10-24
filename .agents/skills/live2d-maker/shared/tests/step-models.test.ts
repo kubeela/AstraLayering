@@ -115,7 +115,7 @@ test('mixed preset assigns shared GPT, Argon and Claude roles and uses Sunburst 
   const expected: Record<keyof typeof modelSlotDefaults, string> = {
     ...modelSlotDefaults,
     preparation: 'gpt-6.1-sol-low',
-    part_draw: 'gemini-4-argon-high', part_review: 'gemini-4-argon-high', part_completion: 'gemini-4-argon-high',
+    part_draw: 'gpt-6.1-sol-xhigh', part_review: 'gpt-6.1-sol-xhigh', part_completion: 'gemini-4-argon-high',
     part_groups: 'gpt-6.1-sol-xhigh', part_depth: 'gpt-6.1-sol-xhigh', part_reduce: 'gpt-6.1-sol-xhigh',
     raster_step01: 'claude-opus-5-5-xhigh', raster_step01_review: 'claude-sonnet-5-5-xhigh',
     raster_step02: 'claude-sonnet-5-5-xhigh', raster_step03: 'claude-sonnet-5-5-xhigh',

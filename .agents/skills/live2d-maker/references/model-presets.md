@@ -5,7 +5,7 @@
 | 选择 | LLM | 生图 |
 | --- | --- | --- |
 | 方案 1（默认） | 全部 `gpt-6.1-sol`，按职责分配力度，见下表 | `codex-native`，继承宿主内置生图工具 |
-| 方案 2（混合） | GPT 准备与分析、Argon 分块绘制与组装、Claude 栅格绘制与阴影，详见下表 | 简化图用 GPT Image Sunburst；素体图和两套 part 遮挡补全参考用 Nano Banana 2.1，其余用 GPT Image Sunburst |
+| 方案 2（混合） | GPT 准备、part 描线／review／去重及分析，Argon 遮挡补全与组装，Claude 栅格绘制与阴影，详见下表 | 简化图用 GPT Image Sunburst；素体图和两套 part 遮挡补全参考用 Nano Banana 2.1，其余用 GPT Image Sunburst |
 | 自定义 | 在方案 1 或方案 2 上覆盖所需职责 | 按实际生图 agent 覆盖 |
 
 ## 方案 1：默认配置
@@ -41,8 +41,8 @@
 | 职责 | 模型与力度 | `.env` 配置键 |
 | --- | --- | --- |
 | 全部 preparation | `gpt-6.1-sol-low` | `layering_agent_preparation_model` |
-| part 轮廓绘制与返修 | `gemini-4-argon-high` | `layering_agent_part_draw_model` |
-| part 轮廓 review | `gemini-4-argon-high` | `layering_agent_part_review_model` |
+| part 轮廓绘制与返修 | `gpt-6.1-sol-xhigh` | `layering_agent_part_draw_model` |
+| part 轮廓 review | `gpt-6.1-sol-xhigh` | `layering_agent_part_review_model` |
 | 同层去重／重叠分析 | `gpt-6.1-sol-xhigh` | `layering_agent_part_reduce_model` |
 | SVG 遮挡补全 | `gemini-4-argon-high` | `layering_agent_part_completion_model` |
 | 首次分组与后续细分组 | `gpt-6.1-sol-xhigh` | `layering_agent_part_groups_model` |
