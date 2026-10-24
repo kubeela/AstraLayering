@@ -21,7 +21,8 @@
     "shadow": "node shadow/run.ts",
     "patch:agv": "node patches/agv/patch-response-header.ts",
     "physics": "node physics/run.ts",
-    "physics:evidence": "node physics/evidence-cli.ts"
+    "physics:evidence": "node physics/evidence-cli.ts",
+    "physics:probe": "node physics/initialization-probe.ts"
   },
   "dependencies": {
     "@openai/codex-sdk": "0.161.0",

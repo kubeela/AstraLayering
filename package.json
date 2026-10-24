@@ -10,7 +10,8 @@
     "test:web": "node --test web/tests/*.test.ts",
     "check:web": "tsc -p web/tsconfig.json",
     "physics": "node .agents/skills/live2d-maker/physics/run.ts",
-    "physics:evidence": "node .agents/skills/live2d-maker/physics/evidence-cli.ts"
+    "physics:evidence": "node .agents/skills/live2d-maker/physics/evidence-cli.ts",
+    "physics:probe": "node .agents/skills/live2d-maker/physics/initialization-probe.ts"
   },
   "packageManager": "pnpm@10.33.0",
   "dependencies": {

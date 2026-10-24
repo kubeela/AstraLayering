@@ -74,6 +74,13 @@ B 用 `physics_assemblies` 查看有向支撑的完整装配，再逐组 `physic
 
 参数初始化和搜索见 [formal 14](../../../../tutorial/live2d-guidance/formal/14-physics-initialization-and-targets.md)。提供 `--reference-physics` 时 A 不得遗漏匹配来源中的已验证活动部件，B 可用同源参考初始化；新角色用类型／长度配方。`physics_autotune` 自动选数值和目标都满足的候选，失败组交模型修正。参考约束峰值与活动 RMS，不能用静止换低加速度分。所有初始化只产生草稿，C 必须重新模拟与看图。
 
+独立参数探针不需要工作台、Krita 或角色参考。它生成九种明确指定类型的合成几何，在 0.5／1／2 倍尺度下调用实际装配标定与九组证据生产者；输出完整数值轨迹、曲线和失败原因，不发布 `physics.json`。`--repair` 只对初筛失败组追加最多三个 response 候选，保持几何与六项最大约束；初筛与追加候选记录均保留。数值通过不授予角色语义、图像或人工验收。
+
+```bash
+pnpm physics:probe --output /tmp/physics-probes
+pnpm physics:probe --output /tmp/physics-probes-repair --cases long-ribbon-2,tassel-0.5 --repair
+```
+
 C 的失败通过 `physics_request_repair` 写 `step03/feedback.json`，包含版本指纹、reviewTurn、组件、准则、真实输入／整数步窗口与已查看图片。返回 blocked 后调度器将当前失败版本归档到 `step03/reviews/`，保存 `step02/repair-request.json`，恢复 B 的原 thread，B 修改后再新建 C 会话。每装配最多三轮制作／复核；普通异常、旧反馈、失败的工具调用均不自动触发返修。中断的交接可接续，不删除完整轨迹或重复增加轮次。
 
 `assemblies.json` 和 `tuning.json` 是独立结构化产物，可被前端展示为装配图、逐组状态、候选响应曲线和参数差异；`feedback.json` 展示当前返修及证据窗口。手动导入配置可以派生装配图，但没有真实工作流产物时不能显示为“自动标定已通过”。当前定向验证覆盖身份稳定、固定步可复现、参数边界、独立组选择、标定代次、角色权限与返修状态；它不等于无缓存重跑 Jianma 的视觉验收。
