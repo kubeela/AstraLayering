@@ -10,7 +10,7 @@ import { groupAssemblies } from '../shared/physics-core/assemblies.js';
 import {calibrate,selectCandidate,recipes} from './calibration.ts';
 import {rejectReview} from './feedback.ts';
 import type {StepDefinition} from '../shared/raster/steps.ts';
-import { simulate, validateFindings, configHash, traceWindow } from './evidence.ts';
+import { simulate, validateFindings, configHash, simulationHash, traceWindow } from './evidence.ts';
 import { renderFrames } from './render.ts';
 import { json, optional, put, hash, type PhysicsInput } from './input.ts';
 import { validateMotionScope, coverageReport } from './coverage.ts';
@@ -22,6 +22,20 @@ function summarizeEvidence(manifest:any,test?:string){
   return {...manifest,runs:manifest.runs.filter((r:any)=>!test||r.test===test).map((r:any)=>({...r,frameSteps:undefined,events:undefined,frameCount:r.frameSteps.length,eventCount:r.events.length,
     ...(test?{windows:[...new Set(r.events.map((e:any)=>e.component))].map(id=>{const fallback=r.events.find((e:any)=>e.component===id&&e.type==='fallback'),peak=r.events.find((e:any)=>e.component===id&&e.type==='peak');return {component:id,firstFallback:fallback?.step,peak:peak?.step,peakTravel:peak?.travel};})}:{}),
   }))};
+}
+
+export function summarizeAssemblyTuning(config:any,tuning:any,assemblyId?:string,runtimeHash=tuning?.solverHash){
+  const assemblies=groupAssemblies(config).filter(g=>!assemblyId||g.id===assemblyId);
+  if(assemblyId&&!assemblies.length)throw Error('装配组不存在：'+assemblyId);
+  const scalars=(value:any)=>Object.fromEntries(Object.entries(value||{}).filter(([,v])=>typeof v==='boolean'||typeof v==='number'&&Number.isFinite(v)));
+  const groups=assemblies.map(assembly=>{
+    const record=tuning?.groups.find((g:any)=>g.assemblyId===assembly.id),round=record?.rounds.at(-1),current=round?.selectedCandidate&&round.solverHash===runtimeHash&&assembly.componentIds.every(id=>round.selectedComponents?.[id]===hash(JSON.stringify(config.components.find((c:any)=>c.id===id))));
+    const candidates=(round?.candidates||[]).map((c:any)=>({id:c.id,eligible:c.eligible,score:c.score,issues:c.issues,
+      ...(assemblyId?{changes:(c.changes||[]).map(({component,group,key,from,to}:any)=>({component,group,key,from,to})),metrics:Object.fromEntries(Object.entries(c.metrics||{}).map(([test,components]:any)=>[test,Object.fromEntries(Object.entries(components).map(([id,m]:any)=>[id,{...scalars(m),...(m.target?{target:{...scalars(m.target),ratios:scalars(m.target.ratios)}}:{}),...(m.recovery?{recovery:scalars(m.recovery)}:{})}]))]))}:{}),
+    }));
+    return {assemblyId:assembly.id,componentIds:assembly.componentIds,status:!round?'unmeasured':!round.selectedCandidate?'needs-selection':current?'selected':'stale',round:round?.round,roundCount:record?.rounds.length||0,historyCount:record?.history?.length||0,historyRoundCount:(record?.history||[]).reduce((n:number,h:any)=>n+(h.rounds?.length||0),0),selectedCandidate:round?.selectedCandidate,selectionReason:round?.selectionReason,recommendedCandidate:round?.recommendedCandidate,candidates};
+  });
+  return {groups:assemblies,tuning:{version:tuning?.version,status:!tuning?'missing':tuning.configHash===configHash(config)&&tuning.solverHash===runtimeHash?tuning.status:'stale',configHash:tuning?.configHash,solverHash:tuning?.solverHash,groups},details:'step02/tuning.json'};
 }
 
 export async function validateBindings(config:any,catalog:any,source?:string) {
@@ -112,7 +126,7 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
     }),
     tool('physics_initialize_reference','从同源认可参考初始化绑定草稿。逐 UUID／像素核对；保留固定区、自由段、原图、最大约束和参数。新增分析组件可随后补齐；完整保存及完成阶段仍要求全部组件。不是无参考从零制作，不继承审核。',{},async()=>{const config=await initializeFromReference(input,await json(join(source,'catalog.json')),join(pipeline,'step02'));return textResult(await saveBinding(config,true));}),
     tool('physics_initialize_parameters','对已制作几何应用通用运动配方。presets 指定组件 ID 到配方 ID 时只初始化这些组件；省略时初始化全部。保持来源、固定区和最大约束，不决定图层范围。',{presets:{type:'object'}},async({presets}:any)=>{const config=initializeConfigParameters(await getConfig(),presets);const result=await saveBinding(config);const previous=await optional(join(pipeline,'step02/initialization.json'));await put(join(pipeline,'step02/initialization.json'),{...previous,version:1,mode:previous?.mode==='explicit-same-source-reference'?'reference-and-geometry-presets':'geometry-aware-presets',motionPresetVersion,initializedComponentIds:presets?Object.keys(presets):config.components.map((c:any)=>c.id),humanAcceptanceInherited:false});return textResult(result);}),
-    tool('physics_assemblies','查看完整有向支撑装配与已记录标定。候选必须对完整装配组模拟，不能仅激活所选部件。',{},async()=>textResult({groups:groupAssemblies(await getConfig()),tuning:await optional(join(pipeline,'step02/tuning.json'))})),
+    tool('physics_assemblies','默认读取有向装配连接与当前标定摘要，不返回历史轮次或完整曲线。assemblyId 定位一组后提供当前候选参数差异和标量指标；精确轨迹用 physics_trace，完整曲线留在 step02/tuning.json。候选按完整装配模拟。',{assemblyId:str},async({assemblyId}:any)=>textResult(summarizeAssemblyTuning(await getConfig(),await optional(join(pipeline,'step02/tuning.json')),assemblyId,await simulationHash()))),
     tool('physics_recipes','读取经认可案例归纳的长度相关运动起点；真实根部／活动范围和最大约束必须按原图制作。',{},async()=>textResult({motionPresetVersion,presets:motionPresets,legacyRecipes:recipes})),
     tool('physics_repair_request','读取独立 reviewer 的返修原因、整数步窗口和当前完整装配组轮次；不得伪造复核通过。',{},async()=>textResult(await optional(join(pipeline,'step02/repair-request.json'))||{pending:false})),
     tool('physics_calibrate','对完整装配组保留基线与最多三个 response/material 候选，运行一致的微风、轻扫和支撑释放。有认可参考时同时约束幅度和持续活动，弱响应／长期回退不能被选择。每组最多三轮，不放宽限幅。',{assemblyId:str,reason:str,candidates:{type:'array',items:{type:'object'},maxItems:3}},async({assemblyId,reason,candidates}:any,signal:AbortSignal)=>textResult(await calibrate(await getConfig(),join(pipeline,'step02'),assemblyId,reason,candidates,signal,(await readReference(input))?.config))),
