@@ -60,6 +60,41 @@ test('regular cloth controls accept a point load between controls and settle wit
   let peak=0;for(let n=0;n<960;n++){scene.step();assert(b.stats.valid);assert.equal(b.stats.root,0);peak=Math.max(peak,b.stats.travel);}
   assert(peak>.1);assert(b.stats.travel<.1);b.reset();assert.equal(b.stats.fallback,false);assert.deepEqual(b.positions,b.rest);
 });
+test('unlimited cloth retains the solver last-substep velocity through presentation',()=>{
+  const c=component('cloth');c.authoring.controlGrid=[4,8];
+  Object.assign(c.material,{shearCompliance:.0005,compressionCompliance:.0005,bendCompliance:.0006,shapeCompliance:.00065});
+  Object.assign(c.response,{frequencyHz:1.1,dampingRatio:.48});
+  const s=new ComponentScene(config([c])),b=s.bodies.get(c.id),dt=1/120;s.airflow={x:.025,y:0};
+  let differentFromOuterAverage=false;
+  for(let step=0;step<48;step++){
+    b.prepare(dt);b.solve();const solved=new Float64Array(b.p),velocity=new Float64Array(b.velocity);
+    differentFromOuterAverage ||= velocity.some((v:number,i:number)=>Math.abs(v-(b.p[i]-b.previous[i])/dt)>1e-5);
+    b.constrain();assert.equal(b.limited,false);assert.deepEqual(b.p,solved);
+    b.finish();
+    for(let i=0;i<b.velocity.length;i++){
+      if(b.mobility[Math.floor(i/2)])assert.equal(b.velocity[i],velocity[i],'presentation must not replace the free-particle substep velocity');
+      else assert(Math.abs(b.velocity[i])<1e-9,'pinned velocity follows the stationary support, allowing coordinate roundoff');
+    }
+    assert(b.stats.valid);
+  }
+  assert(differentFromOuterAverage,'this load must exercise distinct end and average velocities');
+});
+test('cloth safety correction removes blocked motion without injecting rebound or removing parent motion',()=>{
+  const c=component('cloth');c.authoring.controlGrid=[4,8];
+  const s=new ComponentScene(config([c])),b=s.bodies.get(c.id),dt=1/120;
+  s.sourcePose.x=10;b.prepare(dt);b.p.set(b.pPose);
+  const free=b.mobility.findIndex((v:number)=>v>.99),q=free*2,parent=10/dt;
+  b.velocity.fill(0);b.velocity[q]=parent+12;b.velocity[q+1]=7;
+  b.motion.solved.set(b.p);b.motion.solvedStep=true;b.p[q]-=2;
+  b.motion.reconcile();
+  assert.equal(b.velocity[q],parent,'remove velocity into the blocked direction');
+  assert.equal(b.velocity[q+1],7,'retain unblocked tangent motion');
+  for(let i=0;i<b.mobility.length;i++)if(!b.mobility[i])assert.equal(b.velocity[i*2],parent);
+  // A positional correction aligned with an already allowed velocity must
+  // not add energy either, regardless of the correction's size.
+  b.motion.solved.set(b.p);b.motion.solvedStep=true;b.p[q+1]+=3;b.motion.reconcile();
+  assert.equal(b.velocity[q],parent);assert.equal(b.velocity[q+1],7);
+});
 test('display shear projects back to cloth controls while preserving pinned pixels and source geometry',()=>{
   const c=component('cloth');c.authoring.controlGrid=[4,8];
   const b=new ComponentScene(config([c])).bodies.get(c.id),source=new Float64Array(b.rest),indices=new Uint32Array(b.indices);

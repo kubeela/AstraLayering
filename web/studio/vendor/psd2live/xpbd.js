@@ -7,6 +7,7 @@ export class PsdClothSolver {
   constructor(body) {
     this.body=body;this.n=body.mobility.length;
     this.goal=new Float64Array(body.p.length);this.old=new Float64Array(body.p.length);
+    this.solved=new Float64Array(body.p.length);
     this.edges=body.edges.filter(e=>e.type!=='bend').map(e=>({...e,rest:Math.hypot(body.pRest[e.i*2]-body.pRest[e.j*2],body.pRest[e.i*2+1]-body.pRest[e.j*2+1])}));
     this.triangles=[];this.bends=[];const adjacent=new Map();
     for(let k=0;k<body.controlIndices.length;k+=3){
@@ -95,6 +96,28 @@ export class PsdClothSolver {
       }
       this.distances(h,!reverse);
       for(let q=0;q<p.length;q++)v[q]=(p[q]-this.old[q])/h;
+    }
+    this.solved.set(p);
+    this.solvedStep=true;
+  }
+  reconcile(){
+    const b=this.body,p=b.p,v=b.velocity;
+    // A binding editor can prepare and finish a commanded pose without a
+    // solver step. That remains a kinematic update, including parent velocity.
+    if(!this.solvedStep){for(let q=0;q<p.length;q++)v[q]=(p[q]-b.previous[q])/b.dt;return;}
+    this.solvedStep=false;
+    // Keep upstream's velocity from the last substep. Averaging it over the
+    // outer step afterwards changes the cloth's response on every frame.
+    // Author safety projections may block motion, but must not create a new
+    // rebound impulse from a positional correction.
+    for(let i=0;i<this.n;i++){
+      const q=i*2;
+      if(!b.mobility[i]){v[q]=(b.pPose[q]-b.previousPose[q])/b.dt;v[q+1]=(b.pPose[q+1]-b.previousPose[q+1])/b.dt;continue;}
+      const dx=p[q]-this.solved[q],dy=p[q+1]-this.solved[q+1],length=dx*dx+dy*dy;
+      if(length<1e-16)continue;
+      const px=(b.pPose[q]-b.previousPose[q])/b.dt,py=(b.pPose[q+1]-b.previousPose[q+1])/b.dt;
+      const blocked=((v[q]-px)*dx+(v[q+1]-py)*dy)/length;
+      if(blocked<0){v[q]-=blocked*dx;v[q+1]-=blocked*dy;}
     }
   }
 }
