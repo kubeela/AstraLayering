@@ -55,12 +55,18 @@ test('a thin pinned display face no longer stops the whole hair curve when its p
 
 test('legal breeze movement stays identical when display projection is available', () => {
   const current = scene(), prior = scene(); prior.bodies.get('hair').correctDisplayAreas = () => false;
+  const body = current.bodies.get('hair'), project = body.correctDisplayAreas.bind(body); let passes = 0, projectedSteps = 0;
+  body.correctDisplayAreas = () => { passes++; return project(); };
   for (let step = 1; step <= 960; step++) {
     // The slit fixture deliberately fails at the full load. Here exercise the
     // legal low-load path, where no projection should alter the artwork.
+    passes = 0;
     for (const s of [current, prior]) { applyTestInput(s, 'airflow', step); s.airflow.x *= .05; s.airflow.y *= .05; s.step(); assert.equal(s.bodies.get('hair').stats.fallback, false); }
+    assert(passes <= 1, 'legal movement must exit after its first projection pass; sleeping steps need none');
+    projectedSteps += +!!passes;
     assert.deepEqual(current.bodies.get('hair').positions, prior.bodies.get('hair').positions);
   }
+  assert(projectedSteps > 0, 'exercise active projection as well as sleeping steps');
 });
 
 test('a continuous retreat cannot hide behind a low total or a strong-input exception', () => {
@@ -71,4 +77,33 @@ test('a continuous retreat cannot hide behind a low total or a strong-input exce
     visiblePeak: 5, peak: 5, final: 0, maxStep: 0, maxAcceleration: 0, maxFallbackStreak: tracker.maxFallbackStreak };
   for (const test of ['support-release', 'combined', 'extreme']) assert(motionIssues(test, c, metric).includes('continuous-retreat'));
   assert(!motionIssues('combined', c, { ...metric, maxFallbackStreak: 2 }).includes('continuous-retreat'));
+});
+
+test('a tightly pinned cloth converges without retreat during a character-scale parent move', () => {
+  // Nine-point reduction of a curled cuff failure. The root and material
+  // remain tight; increasing the allowed stretch would conceal the defect.
+  const component = { id: 'cloth', name: 'cloth', kind: 'cloth', priority: 'primary', enabled: true,
+    layerRefs: [{ uuid: 'cloth', contentHash: 'a'.repeat(64) }], sourcePartIds: ['cloth'],
+    supports: [[379, 734], [367, 780], [315, 797], [252, 792]].map((at, i) => ({ id: 'root-' + i, at })),
+    authoring: { contour: [[376, 712], [315, 1096], [174, 1280], [25, 1315], [94, 1277], [279, 868], [248, 775], [316, 780], [374, 716]],
+      fixedRegions: [[[368, 709], [390, 709], [390, 761], [366, 772]], [[240, 771], [326, 766], [384, 742], [384, 821], [250, 824]]],
+      holes: [], subdivisions: 2, transitionPixels: 60, freeLength: 613.54, controlGrid: [3, 8] },
+    response: { frequencyHz: 1.1, dampingRatio: .48, inputGain: 1.5 },
+    material: { stretchCompliance: 1e-9, shearCompliance: .0005, bendCompliance: .0006, shapeCompliance: .00065, compressionCompliance: .0005 },
+    limits: { maxTravel: .1, maxAngle: 16, maxStretch: .02, maxCompression: .12, maxShear: 14, minAreaRatio: .7 } };
+  const s = new ComponentScene({ kind: 'astra-component-physics', version: 1, solver: 'astra-component-physics-1',
+    source: { canvas: { width: 1024, height: 1536 } }, components: [component] }), b = s.bodies.get('cloth');
+  const author = structuredClone(b.component), rest = new Float64Array(b.rest), indices = new Uint32Array(b.indices);
+  // The protocol's parent excursion uses the longest character appendage,
+  // rather than shrinking the input to the selected cloth's length.
+  const driver: any = { bodies: new Map([['scale', { freeLength: 1235.444, component: { authoring: {} } }]]), inputs: new Map() },
+    tracker = new MotionStepTracker(s.config.source.canvas, b.positions.length, b.maxDistance);
+  for (let n = 0; n <= 400; n++) {
+    applyTestInput(driver, 'support-release', n); s.sourcePose = driver.sourcePose; s.airflow = driver.airflow;
+    if (n) s.step(); tracker.update(b.positions, s.sourcePose, b.stats.fallback);
+    assert(b.stats.valid); assert.equal(b.stats.root, 0); assert.equal(b.stats.fallback, false, 'retreat at step ' + n);
+    assert(b.stats.stretch <= component.limits.maxStretch + 1e-5);
+  }
+  assert(tracker.visiblePeak > 25, 'keeping the cloth still must not satisfy convergence');
+  assert.deepEqual(b.component, author); assert.deepEqual(b.rest, rest); assert.deepEqual(b.indices, indices);
 });
