@@ -40,7 +40,7 @@ if(input.outputSvg){
  await call('preview_svg',{path:input.outputSvg,mode:'blend'});
 }else{
  assert.ok(names.includes('image_generation'));assert.ok(names.includes('view_bitmap'));
- assert.ok(prompt.includes('生成局部结构辅助图'));
+ assert.ok(prompt.includes('必须先基于本次参考生成露出该'+(input.group.id==='face'?'部件':'衣片')+'的局部结构辅助图并查看'));
  const crop=await call('view_bitmap',{path:input.reference,crop:[10,10,20,20],scale:2});
  const cropPath=JSON.parse(crop.content.find(item=>item.type==='text').text).savedPath;
  const generated=await call('image_generation',{prompt:'Reveal the hidden structure while retaining visible shapes.',input_images:[cropPath],background:'auto'});
