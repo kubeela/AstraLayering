@@ -92,3 +92,21 @@ test('browser and Worker load the skill-owned modules through the workbench', as
   }
   assert.notEqual((await fetch(base + '/shared/physics-evidence/store.ts')).status, 200);
 });
+
+test('selected candidates cannot hide a failed author delivery or imply C ran', async t => {
+  const f = await fixture(t);
+  await rm(join(f.root, 'physics/step03'), { recursive: true });
+  await f.put('physics/step02/tuning.json', { configHash: f.digest, solverHash: await simulationHash(), status: 'calibrated', groups: [] });
+  await f.put('physics/step02/result.json', { status: 'blocked', summary: 'Persistent retreat after three rounds.' });
+  let data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
+  assert.equal(data?.stages[1].status, 'failed');
+  assert.equal(data?.stages[2].status, 'not-started');
+  assert.match(data!.stages[2].reason!, /未通过/);
+  assert.equal(data?.provenance.workflowAccepted, false);
+  await f.put('physics/physics.draft.json', { ...f.config, profile: 'all' });
+  data = await studioPhysicsWorkflow(f.root, 'project', '/runs', 'physics/physics.draft.json');
+  assert.equal(data?.stages[1].status, 'stale', 'old failures do not describe edited configurations');
+  await f.put('physics/step02/.completed', '');
+  data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
+  assert.equal(data?.stages[1].status, 'completed', 'a later successful delivery supersedes the blocked outcome');
+});

@@ -15,7 +15,7 @@ const readableArtifact = (path: unknown): path is string => typeof path === 'str
 
 async function readRecords(directory: string) {
   const paths = ['physics.json', 'manual-review.json', 'run.json', 'step01/analysis.json', 'step01/coverage.json',
-    'step02/coverage.json', 'step02/assemblies.json', 'step02/tuning.json', 'step03/findings.json',
+    'step02/coverage.json', 'step02/assemblies.json', 'step02/tuning.json', 'step02/result.json', 'step03/findings.json',
     'step03/feedback.json', 'step03/evidence/manifest.json', 'step03/evidence/frames.json'];
   const records = await Promise.all(paths.map(path => jsonFile(directory, 'physics/' + path)));
   return Object.fromEntries(paths.map((path, i) => [path, records[i]]));
@@ -57,6 +57,11 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
     try { return (await lstat(await safePath(directory, 'physics/' + stage + '/.completed'))).isFile(); }
     catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error; }
   }));
+  // Candidate selection can finish while the author rejects the actual motion.
+  // A matching record is still a failed B delivery; it cannot advance to C.
+  const authorResult = records['step02/result.json'];
+  const authorFailed = !markers[1] && calibrationMatches
+    && ['blocked', 'failed'].includes(authorResult?.status);
   const workflowAccepted = !manual && configPath !== 'physics/physics.draft.json' && provenance.evidenceMatchesCurrent
     && markers[2] && findings?.configHash === provenance.configHash && config?.review?.status === 'accepted';
   const indexed = list(records['step03/evidence/frames.json']).filter(frame =>
@@ -80,11 +85,13 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
     provenance: { ...provenance, manualReview: manualReview?.configHash === provenance.configHash ? manualReview : null, workflowAccepted },
     stages: [
       { id: 'analysis', status: markers[0] ? 'completed' : records['step01/analysis.json'] ? 'draft' : 'pending' },
-      { id: 'calibration', status: calibrationMatches && tuning.status === 'calibrated' && markers[1] ? 'completed'
+      { id: 'calibration', status: authorFailed ? 'failed' : calibrationMatches && tuning.status === 'calibrated' && markers[1] ? 'completed'
         : tuning && !calibrationMatches ? 'stale' : tuning ? 'draft' : 'pending',
-        reason: !tuning ? '当前版本尚无装配标定记录。' : !calibrationMatches ? '配置或求解器已变化，标定记录需要更新。' : '' },
-      { id: 'review', status: workflowAccepted ? 'accepted' : manifest && !provenance.evidenceMatchesCurrent ? 'stale' : markers[2] ? 'draft' : 'pending',
-        reason: manifest && !provenance.evidenceMatchesCurrent ? '配置、求解器或渲染输入已变化，旧证据需要更新。' : '' },
+        reason: authorFailed ? '候选已选定，运动或画面预检未通过。' : !tuning ? '当前版本尚无装配标定记录。' : !calibrationMatches ? '配置或求解器已变化，标定记录需要更新。' : '' },
+      { id: 'review', status: workflowAccepted ? 'accepted' : authorFailed && !manifest && !markers[2] ? 'not-started'
+        : manifest && !provenance.evidenceMatchesCurrent ? 'stale' : markers[2] ? 'draft' : 'pending',
+        reason: authorFailed && !manifest && !markers[2] ? '制作标定未通过，独立复核尚未启动。'
+          : manifest && !provenance.evidenceMatchesCurrent ? '配置、求解器或渲染输入已变化，旧证据需要更新。' : '' },
     ],
     coverage: records['step02/coverage.json'] || records['step01/coverage.json'] || null,
     assemblies: records['step02/assemblies.json']?.configHash === provenance.configHash ? records['step02/assemblies.json']
