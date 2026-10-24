@@ -45,7 +45,7 @@ export function createFrameRenderer(dependencies: Dependencies): Renderer {
     const normalized = requests.map(request => ({ ...request,
       ...(!request.components && request.cropSteps === undefined ? { cropSteps: [] } : {}) }));
     const manifest = await optional(join(evidence, 'manifest.json'));
-    if (!manifest || manifest.coverage?.render !== 'completed' || manifest.configHash !== configHash(config) ||
+    if (!manifest || !['partial', 'completed'].includes(manifest.coverage?.render) || manifest.configHash !== configHash(config) ||
         manifest.simulationHash !== await dependencies.simulationHash() ||
         !manifest.renderDirectory || resolve(evidence, manifest.renderDirectory) !== resolve(source) ||
         manifest.renderHash !== await dependencies.fingerprint(source)) {

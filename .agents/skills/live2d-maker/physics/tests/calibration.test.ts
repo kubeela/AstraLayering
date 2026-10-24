@@ -5,8 +5,10 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {componentDefaults} from '../../shared/physics-core/component-physics-schema.js';
 import {groupAssemblies} from '../../shared/physics-core/assemblies.js';
-import {calibrate,measureCandidate,parameterCandidate,selectCandidate,validateCalibration} from '../calibration.ts';
-import {json} from '../input.ts';
+import {calibrate,calibrationGeneration,measureCandidate,parameterCandidate,selectCandidate,validateCalibration} from '../calibration.ts';
+import {json,put,hash} from '../input.ts';
+import {simulationHash} from '../evidence.ts';
+import {toolsFor} from '../tools.ts';
 const strand=(id:string,x=60)=>({id,name:id,kind:'strand',priority:'primary',enabled:true,layerRefs:[{uuid:id,contentHash:'a'.repeat(64)}],sourcePartIds:[id],supports:[{id:'root',at:[x,20]}],...componentDefaults('strand'),authoring:{freeLength:130,transitionPixels:20,fixedRegions:[[[x-20,0],[x+20,0],[x+20,30],[x-20,30]]],centerline:[[x,20],[x,70],[x,140]],widths:[20,20,15]}});
 const config=(components:any[])=>({kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:300,height:200}},components});
 
@@ -57,4 +59,39 @@ test('真实模拟中的零运动候选不能被选为认可参考的复现',asy
   assert.equal(round.recommendedCandidate,null);assert(round.candidates.every((v:any)=>!v.eligible));
   await assert.rejects(selectCandidate(c,directory,assembly,'still','不能用静止换平滑'),/安全检查失败/);
  }finally{await rm(directory,{recursive:true,force:true});}
+});
+test('自动标定保留合格的当前参数，恢复已有选择而不追逐另一候选分数',async()=>{
+ const directory=await mkdtemp(join(tmpdir(),'astra-preserve-baseline-'));
+ try{
+  const c=config([strand('a')]),id=groupAssemblies(c)[0].id;
+  const search=await calibrate(c,directory,id,'有限比较',[{id:'slow',parameters:{a:{response:{frequencyHz:.7}}}}]);assert(search.round.candidates.find((v:any)=>v.id==='slow').eligible);
+  const selected=await selectCandidate(c,directory,id,'baseline','原动作已合格，保留认可参数');
+  const resumed=await calibrate(selected,directory,id,'续跑，优先保留',undefined,undefined,undefined,{preserveEligibleBaseline:true});
+  assert.equal(resumed.reused,true);assert.equal(resumed.selection,'baseline');assert.equal((await json(join(directory,'tuning.json'))).groups[0].rounds.length,1);
+  const fresh=await mkdtemp(join(tmpdir(),'astra-preserve-fresh-'));
+  try{const result=await calibrate(c,fresh,id,'原参数复测',undefined,undefined,c,{preserveEligibleBaseline:true});assert.equal(result.baselinePreserved,true);assert.deepEqual(result.round.candidates.map((v:any)=>v.id),['baseline']);const saved=await selectCandidate(c,fresh,id,'baseline','数值与参考目标均通过');assert.deepEqual(saved,c);await validateCalibration(saved,fresh);}
+  finally{await rm(fresh,{recursive:true,force:true});}
+ }finally{await rm(directory,{recursive:true,force:true});}
+});
+test('求解器变化重测原参数并生成新指纹，保留来源、几何、力度和限幅',async()=>{
+ const directory=await mkdtemp(join(tmpdir(),'astra-preserve-solver-'));
+ try{
+  const c=config([strand('a')]),id=groupAssemblies(c)[0].id;
+  await calibrate(c,directory,id,'原参数复测',[],undefined,undefined,{preserveEligibleBaseline:true});await selectCandidate(c,directory,id,'baseline','当前原参数合格');
+  const tuning=await json(join(directory,'tuning.json')),entry=tuning.groups[0],old=hash(calibrationGeneration(c,['a'],'old-solver'));tuning.solverHash='old-solver';entry.generation=old;entry.rounds[0].solverHash='old-solver';entry.rounds[0].generation=old;await put(join(directory,'tuning.json'),tuning);
+  const result=await calibrate(c,directory,id,'求解器修复后原参数复测',undefined,undefined,undefined,{preserveEligibleBaseline:true});assert.equal(result.reused,false);assert.equal(result.baselinePreserved,true);assert.deepEqual(result.round.candidates.map((v:any)=>v.id),['baseline']);assert.equal(result.round.solverHash,await simulationHash());
+  const next=await selectCandidate(c,directory,id,'baseline','保持已认可的动作');assert.deepEqual(next,c);await validateCalibration(next,directory);assert.equal((await json(join(directory,'tuning.json'))).groups[0].history.length,1);
+ }finally{await rm(directory,{recursive:true,force:true});}
+});
+test('autotune 只搜索运动目标失败组，保留已合格组并严格恢复参考幅度与活动量',async()=>{
+ const task=await mkdtemp(join(tmpdir(),'astra-autotune-target-')),directory=join(task,'physics/step02');
+ try{
+  const reference=config([strand('a'),strand('b',180)]);for(const component of reference.components)component.response.outputGain=1;const c=structuredClone(reference);c.components[1].response.outputGain=.55;
+  const referencePhysics=join(task,'reference.json');await put(referencePhysics,reference);await put(join(directory,'physics.draft.json'),c);
+  const tool=toolsFor(directory,{task,referencePhysics,profile:'all'} as any,{id:'step02'}).find(t=>t.name==='physics_autotune')!,result=await tool.execute({reason:'保持当前好参数，只修参考运动退化'},new AbortController().signal);assert.equal(result.success,true,JSON.stringify(result));
+  const tuning=await json(join(directory,'tuning.json')),good=tuning.groups.find((g:any)=>g.componentIds.includes('a')).rounds.at(-1),failed=tuning.groups.find((g:any)=>g.componentIds.includes('b')).rounds.at(-1);
+  assert.deepEqual(good.candidates.map((v:any)=>v.id),['baseline']);assert.equal(good.selectedCandidate,'baseline');assert(failed.candidates.length>1&&failed.candidates.length<=4);assert.equal(failed.candidates[0].eligible,false);assert(failed.candidates[0].issues.some((v:string)=>v.includes('reference-amplitude')||v.includes('reference-activity')));
+  const next=await json(join(directory,'physics.draft.json'));assert.deepEqual(next.components[0],c.components[0]);assert.deepEqual(next.components[1].authoring,c.components[1].authoring);assert.deepEqual(next.components[1].limits,c.components[1].limits);await validateCalibration(next,directory);
+  for(const metric of Object.values(failed.candidates.find((v:any)=>v.id===failed.selectedCandidate).metrics) as any[])for(const value of Object.values(metric) as any[])if(value.target?.usable){assert(value.target.ratios.peak>=.8&&value.target.ratios.peak<=1.3);assert(value.target.ratios.activity>=.8&&value.target.ratios.activity<=1.3);}
+ }finally{await rm(task,{recursive:true,force:true});}
 });
