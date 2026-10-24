@@ -8,7 +8,9 @@ import { ComponentPhysicsRunner } from './component-physics-runner.js';
 
 // Keep the same 120 Hz Worker state and transferable snapshots. Small jobs
 // publish intermediate poses; draining demand on completion avoids waiting for
-// another RAF between jobs. The page still has only one job in flight.
+// another RAF between jobs. Present only the latest complete pose once per
+// display frame; Worker completion must not submit a burst of full GPU passes.
+// The page still has only one job in flight.
 export class ComponentPhysicsLiveRunner extends ComponentPhysicsRunner {
   constructor(panel) {
     super(panel);
@@ -33,8 +35,21 @@ export class ComponentPhysicsLiveRunner extends ComponentPhysicsRunner {
     const steps = Math.min(this.maxBatchSteps, this.pendingSteps);
     if (super.advance(steps, false)) this.pendingSteps -= steps;
   }
-  reset() { this.pendingSteps = 0; super.reset(); }
-  dispose() { this.pendingSteps = 0; super.dispose(); }
+  present(manual) {
+    if (manual) { this.cancelPresentation(); super.present(); return; }
+    if (this.presentation !== undefined) return;
+    this.presentation = requestAnimationFrame(() => {
+      this.presentation = undefined;
+      if (this.panel.enabled) super.present();
+    });
+  }
+  cancelPresentation() {
+    if (this.presentation === undefined) return;
+    cancelAnimationFrame(this.presentation); this.presentation = undefined;
+  }
+  reset() { this.cancelPresentation(); this.pendingSteps = 0; super.reset(); }
+  fail(message) { this.cancelPresentation(); super.fail(message); }
+  dispose() { this.cancelPresentation(); this.pendingSteps = 0; super.dispose(); }
 }
 
 const $=s=>document.querySelector(s);
