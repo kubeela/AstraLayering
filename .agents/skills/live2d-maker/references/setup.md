@@ -62,11 +62,11 @@ Krita 的路径检查和实际启动使用工作流加载的同一环境，包�
 
 - 工作台浏览进度、图片和分组树不要求额外 Python 包。启用网页原生图层合成器时，当前实现需要带 Python 插件的 Krita 和 Xvfb（即使宿主有桌面，也会启动独立显示）；部署说明见[工作台启动与连接](workbench.md)，详细环境项见工作台 checkout 的 `web/README.md`。
 - Linux headless 绘图需要所选显示方案，例如 Xvfb；桌面 computer use 使用宿主已有能力，不统一要求 xdotool 或 Playwright。
-- Git 用于仓库安装、工作台配置历史浏览与补丁构建。自行构建 Codex 自定义生图／图片压缩补丁才需要 Rust 1.95.0 和平台编译工具；复用现成二进制不需要构建链。
+- Git 用于仓库安装、工作台配置历史浏览与补丁构建。自行构建 Codex 补丁才需要 Rust 1.95.0 和平台编译工具；复用现成二进制不需要构建链。
 - 普通网页使用现代浏览器。Playwright／Chromium 仅用于浏览器自动验证，不是运行制作管线的必装项。
 - `archive/`、`demos/`、`rigging/` 和资料重建脚本的 Pillow、NumPy、SciPy、OpenCV、lxml、PyYAML 等依赖只在实际执行相应脚本时成立，不纳入 skill 默认安装。读取已生成的头发参考图不需要重建图片的 Python 包。
 
-默认[方案 1](model-presets.md)全部使用 `gpt-6.1-sol`：preparation low；两套 part 绘制／review medium，分组／去重／补全／深度 high；两套 raster step01 绘制／返修／review 与组装 xhigh；raster step02、人物 step03 和阴影 medium。生图使用 `codex-native`，复用宿主内置工具；不固定底层图像模型版本，无需单独填写生图 API。方案 2 为可选混合配置。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用按需自动构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。未启用相关功能时不构建 Codex；启用且未指定入口时自动构建，缺 Rust 1.95.0 会提示并安装到临时目录，结束后清理。Git 和平台 C/C++ 编译依赖仍须可用。AGV 用 `layering_agv_unlimited_response_header_timeout=true` 开启独立副本的自动准备，见 [patches](../patches/README.md)。Nano 透明后处理使用已有 Node／Sharp，不安装 Python 包或抠图权重。
+默认[方案 1](model-presets.md)全部使用 `gpt-6.1-sol`：preparation low；两套 part 绘制／review medium，分组／去重／补全／深度 high；两套 raster step01 绘制／返修／review 与组装 xhigh；raster step02、人物 step03 和阴影 medium。生图使用 `codex-native`，复用宿主内置工具；不固定底层图像模型版本，无需单独填写生图 API。方案 2 为可选混合配置。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。使用 Codex 时需要补丁版：它修正失败流的错误读取，并承载自定义生图和按图片数 compact；Claude／AGV 不要求 Codex 补丁。未指定入口时自动构建，缺 Rust 1.95.0 会提示并安装到临时目录，结束后清理。Git 和平台 C/C++ 编译依赖仍须可用。AGV 用 `layering_agv_unlimited_response_header_timeout=true` 开启独立副本的自动准备，见 [patches](../patches/README.md)。Nano 透明后处理使用已有 Node／Sharp，不安装 Python 包或抠图权重。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。
 
 所有操作 Krita 的 agent 自动收到同一份[环境与故障恢复说明](../shared/krita/environment.md)，沿用现有 shell、computer use 或已验证 bridge。私有进程的 macOS 配置、Python 资源和 HOME 必须一致；不能把一次自建启动器失败直接当作不可恢复阻塞。

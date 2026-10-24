@@ -16,7 +16,7 @@ async function fixture(t: TestContext) {
   const root = await mkdtemp(join(tmpdir(), 'image-background-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const executable = join(root, 'codex.mjs');
-  await writeFile(executable, `#!${process.execPath}\nconsole.log(JSON.stringify({version:1,image_provider:true,image_provider_version:2}));\n`, { mode: 0o700 });
+  await writeFile(executable, `#!${process.execPath}\nconsole.log(JSON.stringify({version:1,image_provider:true,image_provider_version:2,failed_error_event_version:1}));\n`, { mode: 0o700 });
   return { root, executable };
 }
 

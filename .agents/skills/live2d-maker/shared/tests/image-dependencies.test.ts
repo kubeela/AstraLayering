@@ -47,7 +47,7 @@ test('透明图后处理与已完成参考不要求 外部图片程序，缺参�
 
 test('Nano-only preparation starts without Krita/Python; missing image credentials and raster requirements still fail before ready', async t => {
   const f = await fixture(t);
-  await writeFile(f.krita, `#!${process.execPath}\nif(process.argv.includes('--version'))console.log('codex-cli 0.161.0');else console.log(JSON.stringify({version:1,image_provider:true,image_provider_version:2}));\n`);
+  await writeFile(f.krita, `#!${process.execPath}\nif(process.argv.includes('--version'))console.log('codex-cli 0.161.0');else console.log(JSON.stringify({version:1,image_provider:true,image_provider_version:2,failed_error_event_version:1}));\n`);
   const options = { name: 'case', dir: f.directory, from: 'part-layering' as const, to: 'part-layering' as const };
   const environment = loadWorkflowEnvironment({ layering_codex_path: f.krita, PATH: '',
     layering_part_simplify_image_model: 'gemini-nano-banana-2.1', layering_google_image_api_key: 'fixture',

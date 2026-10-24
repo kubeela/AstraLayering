@@ -87,7 +87,8 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
       const staged = join(output, name + '.tmp'); await copyFile(from, staged); await rename(staged, join(output, name));
     }
     const capabilities = JSON.parse(await exec(executable, ['debug', 'layering-capabilities']));
-    if (capabilities.version !== 1 || capabilities.image_provider_version !== 2 || capabilities.image_compaction_version !== 2 || capabilities.request_compaction_version !== 1) throw new Error('新构建未通过补丁能力检查');
+    if (capabilities.version !== 1 || capabilities.image_provider_version !== 2 || capabilities.image_compaction_version !== 2 || capabilities.request_compaction_version !== 1
+      || capabilities.failed_error_event_version !== 1) throw new Error('新构建未通过补丁能力检查');
     if (compromised) throw compromised;
     await writeFile(receipt + '.tmp', JSON.stringify({ binary: sha256(await readFile(executable)), host: sha256(await readFile(join(output, host))) }));
     await rename(receipt + '.tmp', receipt);
