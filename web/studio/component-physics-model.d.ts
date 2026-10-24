@@ -1,15 +1,2 @@
-export const componentPhysicsVersion: string;
-export class ComponentBody {
-  constructor(component: any, scene: any);
-  [key: string]: any;
-  step(dt?: number): void;
-  reset(): void;
-  inspect(): any;
-}
-export class ComponentScene {
-  constructor(config: any);
-  [key: string]: any;
-  step(dt?: number): void;
-  reset(): void;
-  inspect(): any;
-}
+// Compatibility export; implementation is owned by the independently installable skill.
+export * from "../../.agents/skills/live2d-maker/shared/physics-core/component-physics-model.js";

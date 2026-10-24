@@ -3,9 +3,13 @@ import { join, dirname } from 'node:path';
 import sharp from 'sharp';
 import type { FunctionTool } from '../shared/codex/function-tools.ts';
 import { textResult } from '../shared/codex/function-tools.ts';
-import { validatePhysicsConfig, componentDefaults } from '../../../../web/studio/component-physics-schema.js';
-import { ComponentScene } from '../../../../web/studio/component-physics-model.js';
-import { meshCoverage } from '../../../../web/studio/component-physics-geometry.js';
+import { validatePhysicsConfig, componentDefaults } from '../shared/physics-core/component-physics-schema.js';
+import { ComponentScene } from '../shared/physics-core/component-physics-model.js';
+import { meshCoverage } from '../shared/physics-core/component-physics-geometry.js';
+import { groupAssemblies } from '../shared/physics-core/assemblies.js';
+import {calibrate,selectCandidate,recipes} from './calibration.ts';
+import {rejectReview} from './feedback.ts';
+import type {StepDefinition} from '../shared/raster/steps.ts';
 import { simulate, validateFindings, configHash, traceWindow } from './evidence.ts';
 import { renderFrames } from './render.ts';
 import { json, optional, put, hash, type PhysicsInput } from './input.ts';
@@ -59,13 +63,13 @@ export async function validateProfile(config:any,plan:any,profile:string){
 export function validatePreservedComponents(config:any,catalog:any,cache:any){
   for(const old of cache?.components||[]){if(!old.layerRefs.every((r:any)=>catalog.layers.some((l:any)=>l.uuid===r.uuid&&l.contentHash===r.contentHash)))continue;const next=config.components.find((c:any)=>c.id===old.id);if(!next||old.enabled&&!next.enabled&&!next.disabledReason?.trim())throw Error('保留已制作组件，或明确关闭并记录 disabledReason：'+old.name);}
 }
-export function toolsFor(output:string,input:PhysicsInput):FunctionTool[] {
+export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinition,'id'>,_phase?:string):FunctionTool[] {
   const pipeline=dirname(output),source=join(pipeline,'source'),evidence=join(pipeline,'step03/evidence');
   const tool=(name:string,description:string,properties:any,execute:any):FunctionTool=>({name,description,inputSchema:{type:'object',properties,additionalProperties:false},execute:async(args:any,signal)=>{signal.throwIfAborted();try{return await execute(args,signal);}catch(e){return {success:false,contentItems:[{type:'inputText',text:(e as Error).message}]};}}});
   const str={type:'string'},arr={type:'array',items:str};
   const getConfig=()=>json(join(pipeline,'step02/physics.draft.json'));
   const renderSource=async()=>await optional(join(pipeline,'preview/catalog.json'))?join(pipeline,'preview'):source;
-  return [
+  const tools=[
     tool('physics_catalog','默认读取源层/UUID/指纹/原尺寸及简明分组索引。partIds 指定原 part 后返回这些部件及父组的完整连接和造型说明；先索引再按部位查询，不一次灌入所有长说明。无需生图。',{partIds:arr},async({partIds}:any)=>{
       const catalog=await json(join(source,'catalog.json')),structures=await Promise.all(input.structures.map(json)),descriptions=new Map<string,any>();
       const indexed=structures.map((s:any,i:number)=>{
@@ -85,14 +89,19 @@ export function toolsFor(output:string,input:PhysicsInput):FunctionTool[] {
       const sheet=await imageSheet(items);return {success:true,contentItems:[{type:'inputText',text:JSON.stringify({sourcePixelScale:1,tiles:sheet.tiles,layers:layers.map((l:any)=>l||catalog.canvas)})},{type:'inputImage',imageUrl:'data:image/png;base64,'+sheet.image.toString('base64')}]};
     }),
     tool('physics_save_plan','保存 version:2 分析。parts 每项 id/decision/reason/motion:{family(hair|fabric|accessory|other),region,freedom(free|fixed|follow|uncertain)}；defer 另需 deferCode。components 每项 id/name/kind/priority/sourcePartIds/layerUuids/connection。按实际自由段判断，固定发盖排除，头发和挂件不能整类跳过。',{plan:{type:'object'}},async({plan}:any)=>{await validatePlan(plan,await json(join(source,'catalog.json')),input.profile);await put(join(pipeline,'step01/analysis.json'),plan);const coverage=coverageReport(plan);await put(join(pipeline,'step01/coverage.json'),coverage);return textResult({saved:true,coverage});}),
-    tool('physics_save_binding','保存完整组件配置。结构与 formal 11 一致，source.canvas、components；每项有 supports、authoring、response、material、limits。不接受仅按图层包围盒摆动。',{config:{type:'object'}},async({config}:any)=>{
+    tool('physics_save_binding','保存完整组件配置。结构见 skill physics/guide.md，source.canvas、components；每项有 supports、authoring、response、material、limits。不接受仅按图层包围盒摆动。',{config:{type:'object'}},async({config}:any)=>{
       config={...config,kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',review:{status:'draft'}};
       const catalog=await json(join(source,'catalog.json'));await validateBindings(config,catalog,source);
       const plan=await json(join(pipeline,'step01/analysis.json'));
       await validateProfile(config,plan,input.profile);
       validatePreservedComponents(config,catalog,await optional(join(input.task,'physics.components-cache.json')));
-      await put(join(pipeline,'step02/physics.draft.json'),config);await put(join(pipeline,'step02/coverage.json'),coverageReport(plan,config));return textResult({saved:true,configHash:configHash(config),components:config.components.length});
+      const groups=groupAssemblies(config);await put(join(pipeline,'step02/physics.draft.json'),config);await put(join(pipeline,'step02/assemblies.json'),{version:1,configHash:configHash(config),groups});await put(join(pipeline,'step02/coverage.json'),coverageReport(plan,config));return textResult({saved:true,configHash:configHash(config),components:config.components.length,assemblies:groups});
     }),
+    tool('physics_assemblies','查看完整有向支撑装配与已记录标定。候选必须对完整装配组模拟，不能仅激活所选部件。',{},async()=>textResult({groups:groupAssemblies(await getConfig()),tuning:await optional(join(pipeline,'step02/tuning.json'))})),
+    tool('physics_recipes','读取发束、软带、布片与刚性挂件的起点配方。参数只是候选起点，最大约束与真实几何必须按源图制作。',{},async()=>textResult({recipes})),
+    tool('physics_repair_request','读取独立 reviewer 的返修原因、整数步窗口和当前完整装配组轮次；不得伪造复核通过。',{},async()=>textResult(await optional(join(pipeline,'step02/repair-request.json'))||{pending:false})),
+    tool('physics_calibrate','对完整装配组保留基线与最多三个 response/material 候选，运行一致的微风、轻扫和支撑释放。只调整响应和材质，不放宽限幅。每组最多三轮，返回曲线、指标和建议；尚未自动改草稿。',{assemblyId:str,reason:str,candidates:{type:'array',items:{type:'object'},maxItems:3}},async({assemblyId,reason,candidates}:any,signal:AbortSignal)=>textResult(await calibrate(await getConfig(),join(pipeline,'step02'),assemblyId,reason,candidates,signal))),
+    tool('physics_select_candidate','根据完整装配的响应曲线和实际图像，明确选择标定候选；记录理由并保存草稿。只更新当前装配组，其他组保持原配置。',{assemblyId:str,candidateId:str,reason:str},async({assemblyId,candidateId,reason}:any)=>{const config=await selectCandidate(await getConfig(),join(pipeline,'step02'),assemblyId,candidateId,reason);return textResult({saved:true,configHash:configHash(config)});}),
     tool('physics_simulate','运行 9 组规范输入，每步保存完整网格、姿态残差与约束。改参数后必须重新运行。',{render:{type:'boolean'}},async({render}:any,signal:AbortSignal)=>{
       const config=await getConfig(),manifest=await simulate(config,evidence,signal);
       if(render!==false)await renderFrames(config,await renderSource(),evidence,manifest.runs.map((r:any)=>({test:r.test,steps:Array.from({length:81},(_,i)=>i*12),modes:['color','lit'],cropSteps:[0,60,96,180,360,960]})),signal);
@@ -127,10 +136,16 @@ export function toolsFor(output:string,input:PhysicsInput):FunctionTool[] {
       return textResult({manifest:summarizeEvidence(manifest,test),images:images.slice(Math.max(0,offset),Math.max(0,offset)+Math.min(60,Math.max(1,limit))),total:images.length,nextOffset:offset+limit<images.length?offset+limit:null});
     }),
     tool('physics_submit_review','逐组件提交六项视觉结论。每项 verdict/reason/images，images 必须通过 physics_view 读取。通过后生成 step03/physics.json。',{findings:{type:'object'}},async({findings}:any)=>{
+      const session=await optional(join(pipeline,'step03/review-session.json')),feedback=await optional(join(pipeline,'step03/feedback.json'));if(feedback?.status==='repair-requested'&&feedback.reviewTurn===session?.id)throw Error('当前复核已请求返修，应交回制作 B 后重新独立复核');
       const config=await getConfig(),manifest=await validateFindings(config,evidence,findings,await renderSource());
       await put(join(pipeline,'step03/findings.json'),findings);
       config.review={status:'accepted',configHash:manifest.configHash,evidenceVersion:manifest.version,coverage:{...manifest.coverage,aiVisual:'selected-frames',human:'unreviewed'},findings:'step03/findings.json',evidence:'step03/evidence/manifest.json'};
-      await put(join(pipeline,'step03/physics.json'),config);return textResult({published:true,coverage:config.review.coverage});
+      await put(join(pipeline,'step03/physics.json'),config);if(session)await put(join(pipeline,'step03/feedback.json'),{version:1,status:'accepted',configHash:manifest.configHash,reviewTurn:session.id,createdAt:new Date().toISOString(),items:[],disposition:'accepted'});return textResult({published:true,coverage:config.review.coverage});
     }),
+    tool('physics_request_repair','独立复核拒收／需要补证据时，记录逐组件 component、criterion、verdict(rejected|needs-evidence)、reason、test、steps、images。返回 blocked；调度器会真正交回 B，保留当前证据。不得改写制作草稿。',{items:{type:'array',items:{type:'object'}}},async({items}:any)=>textResult(await rejectReview(await getConfig(),pipeline,items))),
   ];
+  if(!step)return tools;
+  const read=['physics_catalog','physics_source_image'],evidenceTools=['physics_simulate','physics_frames','physics_view','physics_trace','physics_strip','physics_evidence_index','physics_assemblies'];
+  const allowed=step.id==='step01'?[...read,'physics_save_plan']:step.id==='step02'?[...read,...evidenceTools,'physics_save_binding','physics_recipes','physics_repair_request','physics_calibrate','physics_select_candidate']:[...read,...evidenceTools,'physics_submit_review','physics_request_repair'];
+  return tools.filter(t=>allowed.includes(t.name));
 }

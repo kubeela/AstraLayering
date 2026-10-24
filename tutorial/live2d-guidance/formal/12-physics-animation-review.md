@@ -227,3 +227,11 @@ AI 不需要凭一张图“猜出动画”。它需要从真实时间线中查�
 ![固定源像素与自由端弯曲对照](references/component-physics-motion.png)
 
 该图由工作台同一渲染器输出：300×400 源画布，长束自由段 280 px，频率 0.9 Hz、阻尼比 0.24，末端脉冲在第 60 步施加。左图是第 0 步，右图是第 96 步；黄色标记属于原色贴图。固定根部保持原位，尾部及标记随连续弯曲运动，法线与深度使用同一场。图中只是两个精确时刻的说明，不代替回弹过程的连续复核。
+
+## 有限标定与独立返修产物（2026-10-24）
+
+快速标定不是最终复核。`step02/tuning.json` 的三种输入各保留 161 个显示样本（每 6 步一次），末端／中段位移、根残差、速度、曲率与约束摘要来自真实 120 Hz 推进；曲线用于比较候选，不用于伪造中间精确渲染帧。完整九组证据和事件窗仍由 step03 生成。
+
+独立 C 使用 `physics_request_repair` 提交 `step03/feedback.json`：`version,status,configHash,reviewTurn,items,disposition,repairRounds`。每项含 `component,criterion,verdict,reason,test,steps,images`；视觉否决引用已查看当前图像，数值 response／limits 可引用真实步窗口；缺图用 needs-evidence。反馈只针对当前 reviewer 与配置，旧反馈不能重复触发返修。
+
+调度状态 pending→dispatching→dispatched 保证交接中断可恢复。失败版本、报告与反馈保存在 `step03/reviews/<reviewTurn>/`；完整轨迹仍按实现／配置指纹归档。B 读取 `step02/repair-request.json` 后修改、重测；C 不代改草稿，后续使用新独立会话。每装配最多三轮制作／复核，达到上限保留失败而不放宽输入或形变上限。当前测试证明这条调度边界，未据此声称自动角色美术验收已经完成。

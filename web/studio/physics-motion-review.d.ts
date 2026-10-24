@@ -1,9 +1,2 @@
-export const motionReviewVersion: string;
-export const motionStepBasis: string;
-export class MotionStepTracker {
-  constructor(canvas: {width: number; height: number}, length: number);
-  maxStep: number;
-  maxWorldStep: number;
-  update(positions: ArrayLike<number>, pose: {x: number; y: number; angle: number}): void;
-}
-export function motionIssues(test: string, component: any, metric: {invalid: number;root: number;fallback: number;limited: number;peak: number;final: number;maxStep: number}, steps?: number): string[];
+// Compatibility export; implementation is owned by the independently installable skill.
+export * from "../../.agents/skills/live2d-maker/shared/physics-evidence/physics-motion-review.js";

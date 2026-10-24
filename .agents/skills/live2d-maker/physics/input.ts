@@ -1,17 +1,16 @@
 import { readFile, mkdir, copyFile, stat, rm } from 'node:fs/promises';
 import { join, dirname, basename } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
 import { taskDirectory } from '../shared/paths.ts';
-import { LayerCompositor } from '../../../../web/layer-compositor.ts';
-import { studioProject } from '../../../../web/studio-project.ts';
+import { LayerCompositor } from '../shared/krita/layer-compositor.ts';
+import { studioProject } from '../shared/character-render/project-inputs.ts';
 
 export type PhysicsInput = { task: string; document: string; color: string; profile: 'primary'|'all'; structures: string[] };
 export const hash = (v: Uint8Array | string) => createHash('sha256').update(v).digest('hex');
 export const json = async (p: string) => JSON.parse(await readFile(p, 'utf8'));
-export async function put(p: string, v: unknown) { await mkdir(dirname(p), {recursive:true}); await (await import('../../../../web/files.ts')).atomicJSON(p,v); }
+export async function put(p: string, v: unknown) { await mkdir(dirname(p), {recursive:true}); await (await import('../shared/artifact-files.ts')).atomicJSON(p,v); }
 export async function optional(p: string) { try { return await json(p); } catch(e) { if((e as NodeJS.ErrnoException).code!=='ENOENT') throw e; } }
 export async function resolveInput(name: string, root: string, profile: 'primary'|'all'): Promise<PhysicsInput> {
   const task=taskDirectory(name,root), document=join(task,'character-assembly/step01/character-assembled.kra'), color=join(task,'character-assembly/step01/character-assembled.png');
@@ -21,7 +20,7 @@ export async function resolveInput(name: string, root: string, profile: 'primary
   return {task,document,color,profile,structures};
 }
 export async function fingerprint(input: PhysicsInput) {
-  const rules=await Promise.all(['prompts/analysis.md','prompts/authoring.md','prompts/review.md','coverage.ts','images.ts','tools.ts'].map(p=>readFile(new URL(p,import.meta.url))));
+  const rules=await Promise.all(['guide.md','prompts/analysis.md','prompts/authoring.md','prompts/review.md','coverage.ts','images.ts','tools.ts','calibration.ts','feedback.ts','steps.ts'].map(p=>readFile(new URL(p,import.meta.url))));
   return hash(JSON.stringify({version:2,rules:rules.map(hash),profile:input.profile,source:hash(await readFile(input.color)),document:hash(await readFile(input.document)),structures:await Promise.all(input.structures.map(p=>json(p)))}));
 }
 export async function prepareSource(input: PhysicsInput, directory: string, krita: string) {
@@ -55,8 +54,7 @@ async function nativeExtractor(krita:string){
     environment.ASTRA_STUDIO_KRITA_PYTHONHOME ||= usr;
     environment.ASTRA_STUDIO_KRITA_PYTHONPATH ||= [join(usr,'share/krita/pykrita'),join(usr,'lib/krita-python-libs')].join(':');
   }
-  const repository=fileURLToPath(new URL('../../../../',import.meta.url));
-  return new LayerCompositor(repository,environment);
+  return new LayerCompositor(environment);
 }
 async function copySurfaceFiles(native:LayerCompositor,session:any,packet:any,source:string){
   await mkdir(source,{recursive:true});

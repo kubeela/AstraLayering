@@ -3,7 +3,7 @@
 export class ComponentPhysicsRunner {
   constructor(panel) {
     this.panel = panel; this.epoch = 0; this.commands = []; this.ready = false; this.busy = false;
-    this.worker = new Worker(new URL('./component-physics-worker.js', import.meta.url), { type: 'module' });
+    this.worker = new Worker(new URL('../../shared/physics-evidence/component-physics-worker.js', import.meta.url), { type: 'module' });
     this.worker.onmessage = ({ data }) => {
       if (data.type === 'boot') { this.worker.postMessage({ type: 'init', config: panel.config }); return; }
       if (data.type === 'ready') { this.ready = true; return; }

@@ -217,3 +217,24 @@ test('Unified studio discovers pending maps, ignores legacy light files and pref
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, false); assert.equal(data.files.normal.path, studioArtifacts.normal);
 });
+
+test('frozen physics preview keeps exact maps across review-rule changes without accepting a shadow delivery', async t => {
+  const f = await fixture(t), hash = (v: string) => createHash('sha256').update(v).digest('hex');
+  await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
+  await f.put(shadowArtifacts.draftNormal, 'normal'); await f.put(shadowArtifacts.draftDepth, 'depth');
+  await f.put('physics/physics.json', JSON.stringify({ source: { documentHash: hash('source'), colorHash: hash('color') }, components: [] }));
+  await f.put('physics/source/surface-inputs.json', JSON.stringify({ version: 1, documentHash: hash('source'), maps: {
+    normal: { path: shadowArtifacts.draftNormal, contentHash: hash('normal') },
+    depth: { path: shadowArtifacts.draftDepth, contentHash: hash('depth') },
+  } }));
+  let data = await (await f.get()).json() as any;
+  assert.equal(data.files.normal.available, true); assert.equal(data.files.depth.available, true);
+  assert.equal(data.previewReview, 'frozen-preview-input'); assert.equal(data.previewFrozen, true);
+  assert.equal(data.shadowMode, undefined);
+  await f.put(shadowArtifacts.draftNormal, 'changed');
+  data = await (await f.get()).json() as any;
+  assert.equal(data.files.normal.available, false); assert.equal(data.files.depth.available, false);
+  await f.put(shadowArtifacts.draftNormal, 'normal'); await f.put(studioArtifacts.color, 'changed');
+  data = await (await f.get()).json() as any;
+  assert.equal(data.files.normal.available, false);
+});

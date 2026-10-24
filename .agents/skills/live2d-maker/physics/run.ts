@@ -9,6 +9,8 @@ import { fingerprint, prepareSource, prepareProjectionPreview, resolveInput, put
 import { toolsFor, validatePlan, validateBindings, validateProfile } from './tools.ts';
 import { validateFindings, configHash } from './evidence.ts';
 import {physicsEnvironment} from './environment.ts';
+import {validateCalibration} from './calibration.ts';
+import {roleAgent,dispatchRepair} from './feedback.ts';
 export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'all'},dependencies:Dependencies={}) {
   const profile=options.profile??'primary';if(!['primary','all'].includes(profile))throw Error('物理范围必须为 primary 或 all');
   const directory=pipelineDirectory(options.name,'physics',options.dir??dependencies.runsDirectory);
@@ -24,13 +26,23 @@ export async function runWorkflow(options:WorkflowOptions&{profile?:'primary'|'a
     validateDelivery:async(output,input,step)=>{
       const catalog=await json(join(dirname(output),'source/catalog.json'));
       if(step.id==='step01')await validatePlan(await json(join(output,'analysis.json')),catalog,profile);
-      else if(step.id==='step02'){const config=await json(join(output,'physics.draft.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);}
+      else if(step.id==='step02'){const config=await json(join(output,'physics.draft.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);await validateCalibration(config,output);}
       else {const config=await json(join(output,'physics.json'));await validateBindings(config,catalog,join(dirname(output),'source'));await validateProfile(config,await json(join(dirname(output),'step01/analysis.json')),profile);await validateFindings(config,join(output,'evidence'),await json(join(output,'findings.json')));if(config.review?.configHash!==configHash(config))throw Error('发布版本与复核不一致');}
     },
   };
   const environment=dependencies.environment??physicsEnvironment();
   options.progress?.('物理看图上下文：'+(environment.imageCompactThreshold?`${environment.imageCompactThreshold} 张后分段整理，保留原尺寸图像`:'未配置图片数整理；使用原尺寸拼图降低请求图片数'));
-  const result=await shared(pipeline,options,{...dependencies,environment});if(options.dryRun)return result;
+  let result:string;
+  const execution={...dependencies,environment,...(!options.dryRun?{agent:roleAgent(directory,dependencies.agent)}:{})};
+  if(!options.dryRun)await dispatchRepair(directory);
+  // A rejection is a measured, versioned transition back to the preserved
+  // author session. Ordinary exceptions and stale feedback are never retries.
+  for(;;){try{result=await shared(pipeline,options,execution);break;}catch(error){
+    options.signal?.throwIfAborted();if(options.dryRun)throw error;
+    const feedback=await dispatchRepair(directory);if(!feedback)throw error;
+    options.progress?.('独立复核已交回制作 B：'+feedback.items.map((i:any)=>i.component+' / '+i.criterion+'：'+i.reason).join('；'));
+  }}
+  if(options.dryRun)return result;
   const config=await json(join(directory,'step03/physics.json'));
   await validateBindings(config,await json(join(directory,'source/catalog.json')),join(directory,'source'));
   await validateProfile(config,await json(join(directory,'step01/analysis.json')),profile);

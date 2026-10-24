@@ -10,7 +10,7 @@
 | 裙片、宽飘带、袖尾 | psd2live small steps XPBD：非对称长度、面积、形变梯度旋转弯曲、软目标 | [XpbdSolver.kt](https://github.com/tsunehimatoi/psd2live/blob/24b1e87892f0051f1168058e1d60405d88a8a07c/src/main/kotlin/io/github/psd2live/core/sim/XpbdSolver.kt)、[SimScene.kt](https://github.com/tsunehimatoi/psd2live/blob/24b1e87892f0051f1168058e1d60405d88a8a07c/src/main/kotlin/io/github/psd2live/core/sim/SimScene.kt) |
 | 宝石、硬质吊牌等 | Inochi2D 非线性摆与 RK4 积分，保持刚性 | [simplephysics.d](https://github.com/Inochi2D/inochi2d/blob/e2235f6f29688d4013a0eec116a37ec8af8f1fb5/source/inochi2d/core/nodes/drivers/simplephysics.d)、[system.d](https://github.com/Inochi2D/inochi2d/blob/e2235f6f29688d4013a0eec116a37ec8af8f1fb5/source/inochi2d/phys/system.d) |
 
-真实源码、许可证、浏览器实际加载的 JavaScript 移植及适配说明放在 [web/studio/vendor](../../../web/studio/vendor/README.md)。psd2live 部分为 GPL-3.0，Inochi2D 部分为 BSD-2-Clause；不得把派生代码改标为其他许可证。Cubism 算法通过 psd2live 实现移植，并非接入 Cubism SDK。Rive、Spine 等只作此前架构对照，本轮没有使用其求解代码。
+真实源码、许可证、浏览器实际加载的 JavaScript 移植及适配说明由 skill 的 [shared/physics-core/vendor](../../../.agents/skills/live2d-maker/shared/physics-core/vendor/README.md) 维护，前端直接引用。psd2live 部分为 GPL-3.0，Inochi2D 部分为 BSD-2-Clause；不得把派生代码改标为其他许可证。Cubism 算法通过 psd2live 实现移植，并非接入 Cubism SDK。Rive、Spine 等只作此前架构对照，本轮没有使用其求解代码。
 
 ## 2. 发束的物理链与原画曲线是两件事
 

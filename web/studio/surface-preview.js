@@ -1,4 +1,4 @@
-import { loadImage } from './renderer.js';
+import { loadImage } from '#character-render/renderer.js';
 const $ = s => document.querySelector(s);
 const canvas = (w,h) => { const c=document.createElement('canvas');c.width=w;c.height=h;return c; };
 const pixels = image => { const c=canvas(image.width,image.height),ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,0,0);return ctx.getImageData(0,0,c.width,c.height).data; };

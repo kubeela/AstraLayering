@@ -1,1 +1,2 @@
-export function airflowAt(time: number, strength?: number, direction?: number): { x: number; y: number };
+// Compatibility export; implementation is owned by the independently installable skill.
+export * from "../../.agents/skills/live2d-maker/shared/physics-core/physics-airflow.js";

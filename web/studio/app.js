@@ -1,4 +1,4 @@
-import { LightingStage, loadImage } from "./renderer.js";
+import { LightingStage, loadImage } from "#character-render/renderer.js";
 import { LayerPanel } from "./layer-panel.js";
 import { SurfacePreview } from "./surface-preview.js";
 import { stateKey } from "./layer-model.js";
@@ -6,13 +6,14 @@ import { openDocument } from "./document-loader.js";
 import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
 import { ComponentPhysicsPanel as PhysicsPanel } from './component-physics-panel.js';
+import { PhysicsWorkflowPanel } from './physics-workflow-panel.js';
 import { physicsProjects, createPhysicsCase } from './physics-cases.js';
 import {
   defaults,
   presets,
   validateSettings,
   rendererVersion,
-} from "./lighting-model.js";
+} from "#character-render/lighting-model.js";
 const $ = (s) => document.querySelector(s);
 const esc = (s) =>
   String(s ?? "").replace(
@@ -37,7 +38,7 @@ const state = {
   workspace: 'lighting',
   lightingEnabled: true,
 };
-let projections, physics;
+let projections, physics, physicsWorkflow;
 function toast(message) {
   $("#toast").textContent = message;
   $("#toast").classList.add("visible");
@@ -349,6 +350,7 @@ function sync() {
   }
   overlay();
   physics?.sync();
+  physicsWorkflow?.sync(physical);
 }
 function apply(custom = false) {
   state.settings = validateSettings(state.settings);
@@ -618,6 +620,9 @@ physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprin
   workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
   layerState:()=>({loading:layers.loading,error:layers.openError}), retryLayers:retryNativeLayers,
   download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb'||!physics.ready&&state.tool==='physics-select')selectTool('move');sync();}, selectLayer(id,uuids=[]){if(uuids.includes(layers.layers.find(l=>l.id===layers.selected)?.uuid))return;if(layers.selected!==id)layers.select(id,{notify:false});}});
+physicsWorkflow = new PhysicsWorkflowPanel({ physics, source: () => state.source });
+physics.observed = (body, elapsed) => physicsWorkflow.sample(body, elapsed);
+physics.persisted = () => { physicsWorkflow.sync(state.workspace === 'physics'); void physicsWorkflow.refresh(); };
 async function retryNativeLayers() {
   const owner = state.source;
   if (!owner || state.busy || layers.pending) return;
@@ -1134,6 +1139,7 @@ else if (
   void openJianma();
 else if (requested.get("name")) void openProject(requested.get("name"));
 window.addEventListener("pagehide", () => {
+  physicsWorkflow.dispose();
   surfaces.clear();
   layers.clear(true);
   cancelAnimationFrame(frame);
@@ -1141,6 +1147,7 @@ window.addEventListener("pagehide", () => {
 });
 window.studioDiagnostics = () => ({
   physics: physics.diagnostics(),
+  physicsWorkflow: physicsWorkflow.diagnostics(),
   tool: state.tool,
   surface: surfaces.diagnostics(),
   renderer: rendererVersion,

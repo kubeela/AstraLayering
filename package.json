@@ -24,5 +24,10 @@
   "devDependencies": {
     "@types/node": "24.19.1",
     "typescript": "7.0.2"
+  },
+  "imports": {
+    "#physics-core/*": "./.agents/skills/live2d-maker/shared/physics-core/*",
+    "#physics-evidence/*": "./.agents/skills/live2d-maker/shared/physics-evidence/*",
+    "#character-render/*": "./.agents/skills/live2d-maker/shared/character-render/*"
   }
 }
