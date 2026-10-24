@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative } from 'node:path';
+import { join, relative, dirname, delimiter } from 'node:path';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { parseEnv } from 'node:util';
@@ -241,6 +241,30 @@ test('Claude and agv use isolated request workspaces, original MCP schemas and r
     assert.equal((await stat(join(first.logDirectory!, 'mcp.json'))).mode & 0o777, 0o600);
   }
   assert.equal(called, 8);
+});
+
+test('Claude and AGV env-node launchers work when the service PATH has no Node, including child tools', async t => {
+  const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'env-node.mjs');
+  await mkdir(cwd, { recursive: true });
+  const script = fakeCli.replace(`#!${process.execPath}`, '#!/usr/bin/env node')
+    .replace('const meta=', `const {execFileSync}=await import('node:child_process');
+const childNode=execFileSync('/usr/bin/env',['node','-p','process.execPath'],{encoding:'utf8'}).trim();
+await writeFile(join(process.cwd(),'child-node.json'),JSON.stringify({path:process.env.PATH,childNode}));
+const meta=`);
+  await writeFile(cli, script, { mode: 0o700 });
+  const inheritedPath = join(root, 'service-bin'); await mkdir(inheritedPath);
+  const settings = loadWorkflowEnvironment({ PATH: inheritedPath, layering_claude_path: cli, layering_agv_path: cli }, root);
+  const hostPath = process.env.PATH;
+  for (const id of ['claude-sonnet-5-5-high', 'gemini-4-argon-high']) {
+    const result = await runCliTask({ name: 'env-node', cwd, prompt: 'fixture' }, parseAgentModel(id, 'fixture'), settings,
+      { cwd, logDirectory: join(cwd, 'agents') }, new AbortController().signal);
+    assert.equal(result.text, '完成');
+    const child = JSON.parse(await readFile(join(result.logDirectory!, 'workspace/child-node.json'), 'utf8'));
+    assert.equal(child.childNode, process.execPath);
+    assert.deepEqual(child.path.split(delimiter), [dirname(process.execPath), inheritedPath]);
+  }
+  assert.equal(settings.codex.env!.PATH, inheritedPath);
+  assert.equal(process.env.PATH, hostPath);
 });
 
 test('unavailable CLI sessions are replaced once without deleting existing deliveries', async t => {

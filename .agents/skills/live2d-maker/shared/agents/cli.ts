@@ -1,7 +1,7 @@
 import { access, mkdir, readFile, writeFile, copyFile, rename, chmod, realpath, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, resolve, delimiter, relative, isAbsolute } from 'node:path';
+import { join, resolve, delimiter, relative, isAbsolute, dirname } from 'node:path';
 import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { once } from 'node:events';
@@ -95,7 +95,10 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     await mkdir(data, { recursive: true, mode: 0o700 });
     // Some CLI releases ignore their config-directory overrides for native history.
     // Give only the child a private home; the host environment and user config stay untouched.
-    const env = { ...settings.codex.env, HOME: join(data, 'home'), USERPROFILE: join(data, 'home'), TMPDIR: join(log.directory, 'tmp'),
+    // A service can launch this workflow by absolute Node path without having
+    // Node on PATH. CLI launchers and their tools still use /usr/bin/env node.
+    const env = { ...settings.codex.env, PATH: [dirname(process.execPath), settings.codex.env?.PATH].filter(Boolean).join(delimiter),
+      HOME: join(data, 'home'), USERPROFILE: join(data, 'home'), TMPDIR: join(log.directory, 'tmp'),
       XDG_CONFIG_HOME: join(data, 'config'), XDG_DATA_HOME: join(data, 'data'), XDG_STATE_HOME: join(data, 'state'), XDG_CACHE_HOME: join(data, 'cache'),
       CLAUDE_CONFIG_DIR: join(data, 'claude'), CLAUDE_CODE_TMPDIR: join(log.directory, 'tmp'),
       ANTIGRAVITY_APP_DATA_DIR: join(data, 'home/.gemini/antigravity-cli'), JETSKI_APP_DATA_DIR: join(data, 'home/.gemini/antigravity-cli'),
