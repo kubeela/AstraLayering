@@ -40,7 +40,7 @@ test('完全遮挡节点可提交空可见轮廓，经独立 review 后补出形
       assert.equal(task.imageGeneration, true);
       // face 使用专用正文，通用规则修改不能遗漏它。
       assert.doesNotMatch(task.prompt, /露出双耳的结构参考并查看|本次参考只露耳缘/);
-      assert.match(task.prompt, /被遮挡的结构难以判断时/);
+      assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
       assert.doesNotMatch(task.prompt, /\{runtime_context\}|\{fixed_rules\}/);
       await tool(task, 'set_completion_paths').execute({ paths }, signal);
       await submit(task, input.outputDraft);
@@ -90,7 +90,7 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
     assert.equal(task.sandboxMode, 'read-only');
     assert.equal(task.imageGeneration, true);
     assert.ok(task.tools!.some(tool => tool.name === 'view_bitmap'));
-    assert.match(task.prompt, /被遮挡的结构难以判断时/);
+    assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
     assert.match(task.prompt, /不设计侧面、背面/);
     const rules = await readFile(new URL('../prompts/9-补全操作约定.md', import.meta.url), 'utf8');
     assert.ok(task.prompt.includes(`【固定范围与操作约定】\n${rules}`));
