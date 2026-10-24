@@ -39,11 +39,19 @@ async function until(check: () => Promise<boolean>, timeout = 10_000) {
   const end = Date.now() + timeout;
   while (!await check()) { if (Date.now() > end) assert.fail('timed out'); await delay(30); }
 }
+async function startFixtureBackground(f: Awaited<ReturnType<typeof fixture>>, krita?: string) {
+  // The fixture only prints a version; give its worker an explicit Qt platform
+  // without depending on the test host's desktop or launching a real Krita.
+  return promisify(execFile)(process.execPath, [cli, '--name', f.name, '--dir', f.dir,
+    '--from', 'character-assembly', '--to', 'character-assembly', '--background',
+    ...(krita === undefined ? [] : ['--krita', krita])], {
+    timeout: 15_000, env: { ...process.env, QT_QPA_PLATFORM: 'offscreen' },
+  });
+}
 
 test('真实后台父进程退出后任务继续，已完成组装跳过模型并记录交付', { skip: process.platform === 'win32' }, async t => {
   const f = await fixture(t);
-  const { stdout } = await promisify(execFile)(process.execPath, [cli, '--name', f.name, '--dir', f.dir,
-    '--from', 'character-assembly', '--to', 'character-assembly', '--background'], { timeout: 15_000 });
+  const { stdout } = await startFixtureBackground(f);
   assert.match(stdout, /后台总调度已启动/);
   await until(async () => !(await taskStatus(f.options)).lockHeld);
   const status = await taskStatus(f.options);
@@ -60,7 +68,7 @@ test('后台前置错误不假报启动；子管线错误完整进入总控', { 
   await assert.rejects(startBackground({ ...f.options, krita: join(f.task, 'missing') }), /不存在或不可执行/);
   assert.equal((await taskStatus(f.options)).status, 'failed');
   await rm(f.inputs.clothingKra);
-  await startBackground(f.options);
+  await startFixtureBackground(f, f.options.krita);
   await until(async () => !(await taskStatus(f.options)).lockHeld);
   const status = await taskStatus(f.options);
   assert.equal(status.status, 'failed'); assert.match(status.error!, /clothing-soft-edges.kra/);
