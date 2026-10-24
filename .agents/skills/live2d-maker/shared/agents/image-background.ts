@@ -1,13 +1,12 @@
-import {renderPromptFile} from '../prompts/render.ts';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { renderPromptFile } from '../prompts/render.ts';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
-import { matteImage } from '../matting/runtime.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { imageModelProviders, type ImageModel } from './models.ts';
 import type { ImageArguments } from './images.ts';
 import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
-import { recoverScreenEdges } from './screen-recovery.ts';
+import { counterpartBackground, recoverDualBackground } from './dual-background.ts';
 
 export function needsSolidBackground(model: ImageModel, args: ImageArguments): boolean {
   return imageModelProviders[model] === 'google' && (args.background ?? 'transparent') === 'transparent';
@@ -17,12 +16,13 @@ export function needsSolidBackground(model: ImageModel, args: ImageArguments): b
 export async function providerImageArguments(model: ImageModel, args: ImageArguments, selection?: BackgroundRecommendation): Promise<ImageArguments> {
   if (!needsSolidBackground(model, args)) return args;
   const background = selection ?? await recommendBackground([]);
-  return { ...args, prompt: renderPromptFile(new URL('../prompts/image-request.md',import.meta.url), {drawing_prompt:args.prompt, background_instructions:renderPromptFile(new URL('../prompts/nano-solid-background.md',import.meta.url),{background_hex:background.hex}).trim()}).trimEnd(), background: 'opaque' };
+  return { ...args, prompt: renderPromptFile(new URL('../prompts/image-request.md', import.meta.url), { drawing_prompt: args.prompt,
+    background_instructions: renderPromptFile(new URL('../prompts/nano-solid-background.md', import.meta.url), { background_hex: background.hex }).trim() }).trimEnd(), background: 'opaque' };
 }
 
 export async function transparentGeneratedImage(png: Buffer, model: ImageModel, original: ImageArguments,
-  request: ImageArguments, options: ImageProcessingOptions & { directory: string }, signal: AbortSignal, selection: BackgroundRecommendation): Promise<Buffer> {
-  signal.throwIfAborted();
+  request: ImageArguments, options: ImageProcessingOptions & { directory: string }, signal: AbortSignal,
+  selection: BackgroundRecommendation, replaceBackground: (request: ImageArguments, input: Buffer) => Promise<Buffer>): Promise<Buffer> {
   const directory = options.directory;
   await mkdir(directory, { recursive: true });
   const source = join(directory, 'original.png'), output = join(directory, 'transparent.png');
@@ -30,41 +30,45 @@ export async function transparentGeneratedImage(png: Buffer, model: ImageModel, 
   const record = { model, originalPrompt: original.prompt, providerPrompt: request.prompt,
     requestedBackground: original.background ?? 'transparent', generatedBackground: request.background, selection };
   try {
+    signal.throwIfAborted();
     // A real alpha channel, if returned, is authoritative; never key it a second time.
     if (!(await sharp(png).stats()).isOpaque) {
       await writeFile(join(directory, 'normalization.json'), JSON.stringify({ ...record, nativeAlphaPreserved: true }, null, 2) + '\n', { mode: 0o600 });
       return png;
     }
-    // Matting does not scale or register the output; fixed workflow normalization owns that.
-    const normalization = await (options.matte ?? matteImage)(source, output, options, signal);
-    signal.throwIfAborted();
-    const before = await sharp(source).metadata(), after = await sharp(output).metadata();
-    if (before.width !== after.width || before.height !== after.height) throw new Error('透明后处理改变了原始生图尺寸。');
-    if ((await sharp(output).stats()).isOpaque) {
-      throw new Error('生成图片没有可靠的纯色背景或抠图后没有实际透明区域。');
-    }
-    if (Array.isArray(normalization.key) && normalization.key.length === 3) {
-      const key = normalization.key as number[], channel = key.indexOf(Math.max(...key));
-      const envelope = selection.foregroundEnvelopes?.find(value => value.channel === channel);
-      if (envelope) {
-        const originalMatte = await readFile(output);
-        const rgb = await sharp(source).toColourspace('srgb').removeAlpha().raw().toBuffer();
-        const rgba = await sharp(originalMatte).toColourspace('srgb').ensureAlpha().raw().toBuffer();
-        const recovered = recoverScreenEdges(rgb, rgba, before.width!, before.height!, key, envelope);
-        normalization.foregroundRecovery = recovered.report;
-        if (recovered.report.adjustedPixels) {
-          // Preserve the model's unrefined result for inspection and comparison.
-          await writeFile(join(directory, 'matte.png'), originalMatte, { mode: 0o600 });
-          try { await writeFile(join(directory, 'matte-alpha.png'), await readFile(output + '.alpha.png'), { mode: 0o600 }); }
-          catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-          const image = sharp(recovered.rgba, { raw: { width: before.width!, height: before.height!, channels: 4 } });
-          await writeFile(output, await image.clone().png().toBuffer(), { mode: 0o600 });
-          await writeFile(output + '.alpha.png', await image.extractChannel(3).png().toBuffer(), { mode: 0o600 });
-        }
+    const { width, height } = await sharp(png).metadata();
+    const backgroundHex = await counterpartBackground(png);
+    const replacement: ImageArguments = { background: 'opaque', ...(original.quality ? { quality: original.quality } : {}),
+      prompt: renderPromptFile(new URL('../prompts/nano-background-replacement.md', import.meta.url),
+        { background_hex: backgroundHex, width: String(width), height: String(height) }).trimEnd() };
+    await writeFile(join(directory, 'counterpart-request.json'), JSON.stringify(replacement, null, 2) + '\n', { mode: 0o600 });
+    options.progress?.('Nano 透明后处理：以原始生图为参考，仅替换背景。');
+    const counterpart = await replaceBackground(replacement, png);
+    await writeFile(join(directory, 'counterpart.png'), counterpart, { mode: 0o600 });
+    // A genuinely transparent edit can be observed on the requested solid colour.
+    let observation = await sharp(counterpart).flatten({ background: backgroundHex }).png().toBuffer();
+    const secondSize = await sharp(observation).metadata();
+    let alignment: { from: number[]; to: number[]; fit: string } | undefined;
+    if (width !== secondSize.width || height !== secondSize.height) {
+      if (!width || !height || !secondSize.width || !secondSize.height
+        || Math.abs((secondSize.width / secondSize.height) / (width / height) - 1) > 0.02) {
+        throw new Error('第二次换背景的画布尺寸与比例明显不同，不能可靠差分。');
       }
+      // Match only the observation canvas. Keep the first image/output dimensions
+      // unchanged and never stretch either subject or infer alpha from one image.
+      observation = await sharp(observation).resize(width, height, { fit: 'contain', background: backgroundHex }).png().toBuffer();
+      alignment = { from: [secondSize.width, secondSize.height], to: [width, height], fit: 'contain' };
+      await writeFile(join(directory, 'counterpart-aligned.png'), observation, { mode: 0o600 });
     }
-    await writeFile(join(directory, 'normalization.json'), JSON.stringify({ ...record, normalization }, null, 2) + '\n', { mode: 0o600 });
-    return await readFile(output);
+    options.progress?.('Nano 透明后处理：双背景差分恢复前景颜色与透明度。');
+    const recovered = await recoverDualBackground(png, observation, signal);
+    if (!recovered.report.transparentPixels) throw new Error('双背景差分后没有实际透明区域。');
+    await writeFile(output, recovered.png, { mode: 0o600 });
+    await writeFile(output + '.alpha.png', recovered.alpha, { mode: 0o600 });
+    await writeFile(join(directory, 'normalization.json'), JSON.stringify({ ...record,
+      counterpartBackground: backgroundHex, counterpartAlignment: alignment,
+      normalization: recovered.report }, null, 2) + '\n', { mode: 0o600 });
+    return recovered.png;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     await writeFile(join(directory, 'error.json'), JSON.stringify({ ...record, error: message }, null, 2) + '\n', { mode: 0o600 });

@@ -1,6 +1,5 @@
 import sharp from 'sharp';
 import type { ImageInput } from './images.ts';
-import { foregroundEnvelope, type ForegroundEnvelope } from './screen-recovery.ts';
 
 const candidates = [
   { name: 'green', hex: '#00FF00', rgb: [0, 255, 0] },
@@ -11,7 +10,6 @@ export type BackgroundRecommendation = {
   version: 1; name: string; hex: string; rgb: readonly number[]; reason: string;
   reference: 'first-image' | 'none'; sourceBackground: number[] | null;
   foregroundPixels: number; anchorPixels: number;
-  foregroundEnvelopes?: ForegroundEnvelope[];
   candidates: { name: string; hex: string; score: number; collisionPixels: number; hueRisk: number }[];
 };
 
@@ -95,7 +93,6 @@ export async function recommendBackground(inputs: readonly ImageInput[]): Promis
   const ranked = [...result.candidates].sort((a, b) => a.score - b.score);
   const selected = candidates.find(c => c.name === ranked[0].name)!;
   Object.assign(result, selected);
-  result.foregroundEnvelopes = [0, 1, 2].map(channel => foregroundEnvelope(colors.filter(bin => bin.anchors).map(bin => bin.color), channel));
   result.reason = ranked[0].collisionPixels
     ? '三个候选均有主体近色，选择冲突面积和色相混淆综合风险最低者；仍需检查同色细节。'
     : '优先避开主体近色细节，再选择与主体色相分离最明显的候选；使用近不透明颜色锚点降低背景透色的干扰。';

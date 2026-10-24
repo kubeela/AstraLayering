@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
-import { checkKrita } from '../raster/krita.ts';
+import { preflightAgentSteps } from '../agents/preflight.ts';
 import { normalizeReference, referenceNeedsGeneration } from '../part/reference-normalization.ts';
 import { runTask } from '../../workflow/runner.ts';
 import { taskStatus } from '../../workflow/state.ts';
@@ -45,17 +45,23 @@ test('透明图后处理与已完成参考不要求 外部图片程序，缺参�
   assert.equal(await referenceNeedsGeneration('character-assembly', 'case', f.directory), false);
 });
 
-test('总入口依赖错误发生在后台 ready 和制作之前，错误状态可查询', async t => {
+test('Nano-only preparation starts without Krita/Python; missing image credentials and raster requirements still fail before ready', async t => {
   const f = await fixture(t);
   await writeFile(f.krita, `#!${process.execPath}\nconsole.log(JSON.stringify({version:1,image_provider:true,image_provider_version:2}));\n`);
   const options = { name: 'case', dir: f.directory, from: 'part-layering' as const, to: 'part-layering' as const };
+  const environment = loadWorkflowEnvironment({ layering_codex_path: f.krita, PATH: '',
+    layering_part_simplify_image_model: 'gemini-nano-banana-2.1', layering_google_image_api_key: 'fixture',
+    layering_google_image_base_url: 'https://example.invalid' }, f.directory);
   let started = false, ready = false;
-  await assert.rejects(runTask(options, {
-    environment: loadWorkflowEnvironment({ layering_codex_path: f.krita, layering_part_simplify_image_model: 'gemini-nano-banana-2.1', layering_google_image_api_key: 'fixture', layering_google_image_base_url: 'https://example.invalid' }, f.directory),
-    ready() { ready = true; }, execute: async () => { started = true; return { summary: 'unexpected' }; },
-  }), /Nano 透明后处理需要 Krita/);
-  assert.equal(started, false); assert.equal(ready, false);
-  const status = await taskStatus(options);
-  assert.equal(status.status, 'failed'); assert.equal(status.runnerAlive, false);
-  assert.match(status.error!, /Nano 透明后处理需要 Krita/);
+  await runTask(options, { environment, ready() { ready = true; }, execute: async () => { started = true; return { summary: 'prepared' }; } });
+  assert.equal(started, true); assert.equal(ready, true);
+  assert.equal((await taskStatus(options)).status, 'completed');
+  const missingCredentials = loadWorkflowEnvironment({ layering_codex_path: f.krita,
+    layering_part_simplify_image_model: 'gemini-nano-banana-2.1' }, f.directory);
+  await assert.rejects(preflightAgentSteps(missingCredentials, ['part_simplify']), /API URL \/ API key/);
+  ready = false;
+  const raster = { ...options, name: 'raster', from: 'raster-layering' as const, to: 'raster-layering' as const };
+  await assert.rejects(runTask(raster, { ready() { ready = true; }, execute: async () => assert.fail('Krita is required for raster') }), /--krita/);
+  assert.equal(ready, false);
+  assert.equal((await taskStatus(raster)).status, 'failed');
 });

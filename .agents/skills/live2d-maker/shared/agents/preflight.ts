@@ -1,8 +1,6 @@
 import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
 import type { PipelineId } from '../paths.ts';
-import { imageModelProviders, stepDefaults, type AgentStep } from './models.ts';
-import { requireMattingKrita } from '../matting/runtime.ts';
-import { checkKrita } from '../raster/krita.ts';
+import { stepDefaults, type AgentStep } from './models.ts';
 import { cliExecutable } from './cli.ts';
 import { validateImageSelection } from './images.ts';
 import { usesPatchedImageTool } from './codex-images.ts';
@@ -24,8 +22,5 @@ export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: 
     const harness = settings.stepModels[step].harness;
     if (harness !== 'codex') await cliExecutable(settings, harness, normalization.runsRoot);
     else await checkCodexCapabilities(settings, settings.codex, { image: usesPatchedImageTool(settings, step), progress: normalization.progress });
-  }
-  if (steps.some(step => step !== 'shadow_maps' && settings.stepImages[step] && imageModelProviders[settings.stepImages[step]!] === 'google')) {
-    await checkKrita(requireMattingKrita(normalization), undefined, normalization.env ?? settings.codex.env);
   }
 }

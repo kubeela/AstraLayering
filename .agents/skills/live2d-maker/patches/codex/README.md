@@ -23,7 +23,7 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 ## 行为
 
 - 生图继续走原生 image generation extension 的工具、鉴权、重试、文件落盘及事件。独立配置不替换主模型 provider；每个请求的本地路由将 `/images/generations` JSON 和 `/images/edits` 标准 multipart 交给共享 OpenAI／Google 适配器。GPT／Nano 模型均由逐步骤配置选择，图片保存到本次任务的 `agents/generated/`；旧 `layering_image_base_url / api_key / model` 仅作为同一套配置的兼容输入，不再单独启动旧补丁通道。Claude／AGV 使用同一个适配器的函数工具，配置见 [模型与 harness](../../references/agent-models.md)。
-- Nano 的透明请求在共享适配器中先按目标参考颜色从红／绿／蓝里推荐背景色，再将明确的纯色要求交给模型；返回后在 Krita 内嵌 Python 中运行 ViTMatte 与前景颜色恢复；固定包首次实际使用时自动安装到运行根目录 `.runtime/` 并复用，不改变图像尺寸。选色评分、原始图及处理报告保存在任务的 `generated/` 下的 `image-processing/`。GPT 原生 alpha、`codex-native` 路径及现有 Rust 补丁保持不变，本项无需重新构建 Codex。
+- Nano 的透明请求在共享适配器中先按目标参考颜色从红／绿／蓝里推荐背景色，再将明确的纯色要求交给模型；返回后保留原始 RGB，以它为唯一参考再生成一张仅换背景的白底或黑底图，由 Node／Sharp 差分恢复透明度与前景颜色，不改变第一张图像的尺寸；不需要抠图权重或额外 Python 包。选色评分、两张 RGB 图、alpha 及处理报告保存在任务的 `generated/image-processing/`。GPT 原生 alpha、`codex-native` 路径及现有 Rust 补丁保持不变，本项无需重新构建 Codex。
 - 在每次普通模型请求前检查图片数，涵盖用户图片、工具图片与生图结果。阈值设为 49 时，恰好 49 张会全部参与原生带图 compact；不移除视觉能力，也不使用“不支持图片输入”的占位语。
 - 批量工具使图片数跳到 52 时，先带图压缩前 49 张，将剩余 3 张原样放入新上下文。保留对应文字、图序、图片精度、调用参数和已完成的工具调用/结果配对；无需再次执行工具。同一条消息或一次 Code Mode 输出含多图也适用。120 张会按 49、49、22 分段，最后 22 张直接供正常请求查看。每张图必须实际进入一次成功的视觉压缩，或仍以原图保留。
 - 仅在请求成功且有非空摘要后，将摘要与保留图片一起写回历史。失败、空摘要或 token 超限时保留可恢复历史，不靠删除尚未总结的图片救场；一个大批次已成功的分段保留其摘要与剩余原图。图片文件和旧 rollout 不变。摘要仍有正常压缩的信息损失，精细复查时可再次读取原图。

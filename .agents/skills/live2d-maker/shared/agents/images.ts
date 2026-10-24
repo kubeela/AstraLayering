@@ -8,7 +8,6 @@ import { imageModelProviders, type AgentStep, type ImageApi, type ImageModel } f
 import { toolDefinition } from '../codex/tool-config.ts';
 import { needsSolidBackground, providerImageArguments, transparentGeneratedImage } from './image-background.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
-import { requireMattingKrita } from '../matting/runtime.ts';
 import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
 
 export function validateImageSelection(settings: WorkflowEnvironment, step: AgentStep): void {
@@ -73,7 +72,6 @@ export async function generateImage(api: ImageApi, model: ImageModel, args: Imag
   let selection: BackgroundRecommendation | undefined;
   if (solidBackground) {
     if (!processing) throw new Error('Nano 透明背景处理缺少本次任务的产物目录。');
-    requireMattingKrita(processing);
     selection = await recommendBackground(inputs);
     processing = { ...processing, directory: join(processing.directory, 'image-processing', randomUUID()) };
   }
@@ -83,6 +81,16 @@ export async function generateImage(api: ImageApi, model: ImageModel, args: Imag
     await writeFile(join(processing!.directory, 'background-selection.json'), JSON.stringify({ selection,
       originalPrompt: original.prompt, providerPrompt: args.prompt }, null, 2) + '\n', { mode: 0o600 });
   }
+  const png = await requestImage(api, model, args, inputs, signal);
+  return solidBackground ? transparentGeneratedImage(png, model, original, args, processing!, signal, selection!,
+    (replacement, input) => requestImage(api, model, replacement, [{ bytes: input, mime: 'image/png' }], signal)) : png;
+}
+
+// Background-only edits share the provider and cancellation, without recursively
+// starting another transparent-image request.
+async function requestImage(api: ImageApi, model: ImageModel, args: ImageArguments,
+  inputs: ImageInput[], signal: AbortSignal): Promise<Buffer> {
+  signal.throwIfAborted();
   const base = api.baseUrl.replace(/\/+$/, '');
   let url: string, body: BodyInit, headers: Record<string, string>;
   if (api.protocol === 'gemini') {
@@ -123,6 +131,5 @@ export async function generateImage(api: ImageApi, model: ImageModel, args: Imag
       bytes = Buffer.from(await download.arrayBuffer());
     } else throw new Error(`生图 ${model} 没有返回图片。`);
   }
-  const png = await sharp(bytes).png().toBuffer();
-  return solidBackground ? transparentGeneratedImage(png, model, original, args, processing!, signal, selection!) : png;
+  return sharp(bytes).png().toBuffer();
 }
