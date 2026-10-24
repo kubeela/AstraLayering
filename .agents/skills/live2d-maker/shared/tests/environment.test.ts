@@ -53,7 +53,8 @@ test('主模型与生图分别鉴权；只填生图模型不启用，按需准�
   assert.equal(settings.codex.env!.LAYERING_IMAGE_COMPACT_THRESHOLD, '49');
   assert.ok(!JSON.stringify(settings.codex.config).includes('secret'));
   await assert.rejects(checkCodexCapabilities(settings, settings.codex, {}, async () => { throw new Error('fixture build failure'); }), /fixture build failure/);
-  assert.throws(() => loadWorkflowEnvironment({layering_agv_patch: 'yes'}, root), /layering_agv_patch/);
+  assert.throws(() => loadWorkflowEnvironment({layering_agv_unlimited_response_header_timeout: 'yes'}, root), /layering_agv_unlimited_response_header_timeout/);
+  assert.throws(() => loadWorkflowEnvironment({layering_agv_patch: 'true'}, root), /已改名为 layering_agv_unlimited_response_header_timeout/);
   assert.throws(() => loadWorkflowEnvironment({ layering_custom_provider: 'true' }, root), /需要填写/);
   assert.throws(() => loadWorkflowEnvironment({ layering_image_api_key: 'secret' }, root), /同时填写/);
   for (const invalid of ['0', '-1', '49.2', 'NaN']) assert.throws(() => loadWorkflowEnvironment({ layering_image_compact_threshold: invalid }, root), /正整数/);
@@ -63,7 +64,7 @@ test('主模型与生图分别鉴权；只填生图模型不启用，按需准�
 test('图片压缩拒绝旧去图补丁，生图能力缓存不能绕过 v2 检查', { skip: process.platform === 'win32' }, async t => {
   const root = await fixture(t);
   const executable = join(root, 'codex-fixture');
-  const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true };
+  const capabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true, failed_error_event_version: 1 };
   const install = async (value: object) => {
     await writeFile(executable, `#!${process.execPath}\nconsole.log(${JSON.stringify(JSON.stringify(value))});\n`);
     await chmod(executable, 0o755);
@@ -87,7 +88,7 @@ test('独立字节预算保留 env 控制权，Codex 明确拒绝缺少字节保
   assert.deepEqual(settings.imageBudgets!.agv, { bytes: 80 * 1048576 });
   assert.deepEqual(settings.imageBudgets!.claude, { images: 90 });
   const install = async (version?: number) => {
-    await writeFile(executable, `#!${process.execPath}\nconsole.log(${JSON.stringify(JSON.stringify({ version: 1, image_compaction: true, image_compaction_version: 2, request_compaction_version: version }))});\n`);
+    await writeFile(executable, `#!${process.execPath}\nconsole.log(${JSON.stringify(JSON.stringify({ version: 1, image_compaction: true, image_compaction_version: 2, request_compaction_version: version, failed_error_event_version: 1 }))});\n`);
     await chmod(executable, 0o755);
   };
   await install(); await assert.rejects(checkCodexCapabilities(settings), /补丁能力检查/);

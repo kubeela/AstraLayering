@@ -122,8 +122,7 @@ export async function runLayering(input: {
       if (result.status === 'pending') return result;
       if (resolve(directory, result.output.path) !== draft) throw new Error('SVG 步骤只能交付指定的 .draft.svg');
       const meta = await sharp(resolve(directory, input.references.baseSubject)).metadata();
-      await validateGroupSvg(draft, id, { width: meta.autoOrient.width, height: meta.autoOrient.height },
-        context(id).parent?.steps.completion.output?.path, true);
+      await validateGroupSvg(draft, id, { width: meta.autoOrient.width, height: meta.autoOrient.height }, undefined, true);
       const parent = context(id).parent?.steps.completion.output?.path;
       const source = stage === 'completion' ? artifact(id, 'reduction').path : parent;
       if (before) {
@@ -188,8 +187,7 @@ export async function runLayering(input: {
     for (const entry of inputs) {
       if (!(await readFile(artifact(entry.group.id, 'outline').path)).equals(entry.bytes)) throw new Error('去重修改了原轮廓');
       if (changes.has(entry.group.id)) {
-        await validateGroupSvg(entry.draft, entry.group.id, { width: meta!.autoOrient.width, height: meta!.autoOrient.height },
-          context(entry.group.id).parent?.steps.completion.output?.path, true);
+        await validateGroupSvg(entry.draft, entry.group.id, { width: meta!.autoOrient.width, height: meta!.autoOrient.height }, undefined, true);
       }
       else await writeAtomic(entry.draft, entry.current ? await readFile(entry.current.path) : entry.bytes);
     }

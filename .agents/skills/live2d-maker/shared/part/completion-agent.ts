@@ -118,7 +118,6 @@ export async function checkGroupCompletion(context: GroupContext & { before: Svg
   const [before, after, meta] = await Promise.all([readFile(context.before.path), readFile(context.after.path),
     sharp(resolve(context.directory, context.references.baseSubject)).metadata()]);
   const count = assertCompletionPreserves(before.toString(), after.toString());
-  await validateGroupSvg(context.after.path, context.group.id, { width: meta.autoOrient.width, height: meta.autoOrient.height },
-    context.parent?.steps.completion.output?.path, true);
+  await validateGroupSvg(context.after.path, context.group.id, { width: meta.autoOrient.width, height: meta.autoOrient.height }, undefined, true);
   return { passed: true, note: `程序核对：原 SVG 正文保留，${count} 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。` };
 }

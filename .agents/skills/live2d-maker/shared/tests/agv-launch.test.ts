@@ -62,9 +62,9 @@ test('AGV 自动补丁默认关闭；开启后实际进入兼容检查，不静�
   const root=await mkdtemp(join(tmpdir(),'agv-auto-')); t.after(()=>rm(root,{recursive:true,force:true}));
   const executable=join(root,'agy'), bytes=Buffer.alloc(80); bytes.write('7f454c460201',0,'hex');
   await writeFile(executable,bytes, {mode:0o700});
-  const disabled=loadWorkflowEnvironment({layering_agv_path:executable,layering_agv_patch:'false'},root);
+  const disabled=loadWorkflowEnvironment({layering_agv_path:executable,layering_agv_unlimited_response_header_timeout:'false'},root);
   assert.equal(await cliExecutable(disabled,'agv',root),await realpath(executable));
-  const enabled=loadWorkflowEnvironment({layering_agv_path:executable,layering_agv_patch:'true'},root);
+  const enabled=loadWorkflowEnvironment({layering_agv_path:executable,layering_agv_unlimited_response_header_timeout:'true'},root);
   await assert.rejects(cliExecutable(enabled,'agv',root),/无法确认/);
   assert.deepEqual(await readFile(executable),bytes);
 });

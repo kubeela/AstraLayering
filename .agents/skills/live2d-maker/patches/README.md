@@ -4,12 +4,13 @@
 
 | 功能 | .env 开关／选择 | 启动行为 |
 | --- | --- | --- |
+| Codex 失败流错误读取 | 使用 Codex 即生效，无开关 | 未指定 `layering_codex_path` 时自动构建并复用缓存；读取 LiteLLM 在空 `response.failed` 后单独发送的 `error` 事件 |
 | Codex 图片数 compact | `layering_image_compact_threshold=<正整数>` | 未指定 `layering_codex_path` 时自动构建并复用缓存 |
 | 三种 CLI 图片／请求体预算 | `layering_<codex/claude/agv>_image_compact_threshold` / `layering_<codex/claude/agv>_request_compact_mib` | 留空关闭；按实际发送内容检查，带图分批压缩，保留最新图与恢复记录 |
 | Codex 自定义生图 | 对应步骤选择 GPT／Nano，并填写对应 API | 与 compact 共用同一补丁，按所选路线实际需要准备 |
-| AGV 响应头期限兼容 | `layering_agv_patch=true` | 自动检查已安装 CLI，准备独立受控副本，不需要 Rust |
+| AGV 响应头期限兼容 | `layering_agv_unlimited_response_header_timeout=true` | 自动检查已安装 CLI，准备独立受控副本，不需要 Rust |
 
-Codex 的 Git、C/C++ 及平台编译依赖仍须可用。Rust 1.95.0 缺失时，启动器明确提示并在临时目录安装，构建后清理，不改用户环境。默认 Codex 内置生图且未开启 compact、未开启 AGV 补丁时不构建。
+Codex 的 Git、C/C++ 及平台编译依赖仍须可用。Rust 1.95.0 缺失时，启动器明确提示并在临时目录安装，构建后清理，不改用户环境。使用 Codex harness 时始终准备 Codex 补丁；只用 Claude／AGV 时不构建。
 
 详细行为与验证见 [Codex](codex/README.md)、[AGV](agv/README.md)；外部 LiteLLM 的错误透传回调见 [LiteLLM](litellm/README.md)。显式指定已有补丁路径仍兼容，但必须通过能力／完整性检查。所有失败保留制作产物和会话，可修复依赖后用原总入口续跑。
 

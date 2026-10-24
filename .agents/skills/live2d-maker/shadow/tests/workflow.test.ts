@@ -8,6 +8,7 @@ import { zipSync, strToU8 } from 'fflate';
 import { runWorkflow, parseRunArguments } from '../run.ts';
 import type { NativeInspect } from '../native.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
+import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
 import type { AgentRequest } from '../../shared/raster/agent.ts';
 import { rasterCodexConfig } from '../../shared/raster/agent.ts';
 import { pipelineAgentSteps } from '../../shared/agents/preflight.ts';
@@ -48,7 +49,7 @@ async function fixture(t: TestContext) {
     }
     return {success:true,width:2,height:2,nativeVersion:'fixture',relations:relations.map((r,i)=>({id:r.id,bounds:[0,0,2,2],fullPaint:`paint-${i}.png`,receiver:`receiver-${i}.png`,clipBase:`receiver-${i}.png`,frames:r.testOffsets.map((offset:number[],j:number)=>({offset,file:`offset-${i}-${j}.png`,clipped:`offset-${i}-${j}.png`}))}))};
   };
-  const deps = { inspectNative, environment: loadWorkflowEnvironment({}, root), preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+  const deps = { inspectNative, environment: loadWorkflowEnvironment({ layering_codex_path: await fakePatchedCodex(root) }, root), preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
   const deliver = async (request: AgentRequest) => {
     await request.onEvent({ type: 'thread.started', thread_id: request.threadId ?? (request.step + '-thread') });
     const path = join(request.directory, 'step01');
