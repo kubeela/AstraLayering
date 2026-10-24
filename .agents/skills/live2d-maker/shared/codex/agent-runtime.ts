@@ -22,7 +22,8 @@ export class AgentCallError extends Error {
 // 调用失败分三类，先排除不可恢复的，再认定临时故障：
 // - blocked：上游内容审查拒绝图片（经 LiteLLM 透传补丁可见）。常以 stream disconnected 开头，
 //   但原会话重放同一批历史图片只会再被拒；不在此重试，交调用方决定（零件轮廓会清理产物后换新会话）。
-// - fatal：认证、额度、请求/上下文、单次图片上限，以及本地工具、绘图和文件校验异常。直接报错。
+// - fatal：认证、额度、请求/上下文、单次请求的图片数与体积上限，以及本地工具、绘图和文件校验异常。直接报错。
+//   图片数与体积本由 patches 的压缩保护在发包前控制；仍被上游拒绝说明预算与上游不符，原样重发不会通过。
 // - transient：容量、5xx、429 速率限制与断流。AgentRuntime 在原会话内退避重试。
 export type AgentErrorKind = 'transient' | 'blocked' | 'fatal';
 
@@ -30,6 +31,7 @@ const contentBlocked = /image (?:processing |input )?blocked|blocked due to cont
 // 即使带 429/5xx 状态，也可能是额度耗尽、认证失败或输入本身有误。
 const accountOrInput = /quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i;
 const imageCount = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i;
+const requestSize = /request[\s_-]*(?:entity[\s_-]*)?too[\s_-]*large|payload too large|(?:maximum|max|exceeds?|limit).{0,30}\b\d+(?:\.\d+)?\s*(?:MiB|MB)\b/i;
 const throughput = /\brate[\s_-]*limit\b|\bper\s+(?:second|minute|hour|day)\b/i;
 const transientCodes = new Set(['serverOverloaded', 'server_overloaded', 'server_is_overloaded', 'serverError', 'internalServerError',
   'responseStreamDisconnected', 'responseStreamConnectionFailed', 'httpConnectionFailed', 'responseTooManyFailedAttempts', 'rateLimitExceeded']);
@@ -51,7 +53,8 @@ export function agentErrorKind(error: unknown): AgentErrorKind {
   if (!(error instanceof AgentCallError)) return 'fatal';
   const { message, info } = error;
   if (accountOrInput.test(message)) return 'fatal';
-  // 服务的图片速率限制会过去，单次请求的图片数量上限不会。
+  // 服务的图片速率限制会过去，单次请求的图片数量与体积上限不会；后者常以 stream disconnected 开头。
+  if (requestSize.test(message)) return 'fatal';
   if (imageCount.test(message) && (!throughput.test(message) || /\bper\s+request\b/i.test(message))) return 'fatal';
   const code = typeof info === 'string' ? info : info && typeof info === 'object' ? Object.keys(info)[0] : undefined;
   if (code && code !== 'other') {

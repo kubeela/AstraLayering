@@ -87,6 +87,8 @@ test('只恢复可重试的通道错误，不重试认证、额度、参数、�
   assert.equal(agentErrorKind(new Error('轮廓绘制失败', { cause: blocked })), 'blocked');
   assert.equal(agentErrorKind(new AgentCallError('stream disconnected before completion')), 'transient');
   assert.equal(agentErrorKind(new AgentCallError('quota exceeded 503')), 'fatal');
+  for (const message of ['stream disconnected before completion: Request too large (max 100 MiB)', 'request_too_large: request exceeds 32 MB'])
+    assert.equal(agentErrorKind(new AgentCallError(message)), 'fatal', message);
   assert.equal(retryableAgentError(new Error('server overloaded')), false);
   assert.equal(retryableAgentError(new DOMException('cancelled', 'AbortError')), false);
   for (const value of [0, -1, 1.2, NaN]) assert.throws(() => new AgentRuntime(value), /正整数/);
