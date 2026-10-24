@@ -33,6 +33,8 @@ pnpm start --name <任务名> --physics --physics-profile all --background
 
 中断后若旧会话上下文无法正确接续，先停止当前任务，再从 skill 目录执行 `pnpm start --name <任务名> --dir <运行根目录> --replace-thread physics --handoff <交接.md> --reason <原因>`，随后正常续跑。恢复工具归档旧会话及交接，保留绑定、数值轨迹、贴图和步骤标记；不会批准视觉复核。仅渲染未完成或贴图变化，不应删除同指纹的完整数值轨迹。
 
+原生工具会话恢复使用 `thread/resume` 的 `excludeTurns:true`，仅接收会话元数据与恢复状态；模型历史继续由 CLI 保留。客户端不需要整段历史来启动下一回合，不把大量原尺寸图片历史重新塞入单条 RPC。确需查看历史时采用分页；这不会缩小图片、改变模型上下文或丢弃已有证据。
+
 分析 version:2 逐 part 保存 `motion:{family,region,freedom}`；family 为 hair/fabric/accessory/other，freedom 为 free/fixed/follow/uncertain。coverage.json 由工具生成，按实际部位列出绑定、固定和暂缓，不由报告自称覆盖完成。all 拒绝 profile-secondary；unsupported-topology 必须说明具体无法表达的连接。制作阶段核对选定 part、UUID 和真实绑定完全相符，不能同名换层。提示词与制作工具的指纹变化会归档旧分析并重新执行；旧工作台草稿仍可预览。
 
 `physics_catalog` 默认提供简明索引，`partIds` 按部位读取完整源 note。`physics_source_image` 的 `uuids` 一批 1–16 层，`physics_view` 一批最多 8 帧，返回带编号的原像素拼图，所有原文件和尺寸保持不变；拼图位置只用于观看，绑定使用原 bounds。分析、制作、复核采用独立上下文。存在每请求图片数量上限时，宿主可用 `ASTRA_PHYSICS_CODEX_PATH` 指定已有补丁 CLI，并用 `ASTRA_PHYSICS_IMAGE_COMPACT_THRESHOLD` 设置图片数整理阈值；沿用其他模型和配置，覆盖只限物理管线，CLI 须通过共享 v2 能力检查。整理历史上下文不缩小纹理，也不删除源图片或复核记录；明确的图片上限错误不能当服务过载无限重试。
@@ -51,6 +53,8 @@ pnpm physics:evidence --name <任务名> --test tip-impulse --steps 0,60,96,180,
 离线采集默认使用本地软件渲染。已有 GPU 浏览器可通过 `ASTRA_PHYSICS_RENDER_CDP_URL` 连接，并用 `ASTRA_PHYSICS_RENDER_PORT` 指定经隧道转发到该浏览器的本地工具端口；服务器仍只监听 loopback。每次采集创建并关闭独立浏览器上下文，保留外部浏览器已有页面。manifest 记录实际渲染设备；仍使用共享 character-render shader、原尺寸贴图及完整规范输入；证据渲染直接读取完整记录网格，实时求解一致性独立验证，见 formal 12。
 
 源 UV 由像素位置减去插值位移重建，避免细三角形丢失采样精度；共享边的切分点传播到邻面，避免透明缝隙；每层用 stencil 保证半透明像素只合成一次，避免细边重复叠加 alpha。动态投影按登记 caster 外推位移，并用 receiver 当前 alpha 裁切；这是二维素材跟随，不重算投影几何。
+
+复核工具按配置、求解器、渲染输入与完整 PNG 尺寸复用已有图片，只采集缺失或损坏的帧。整体 `physics_frames` 请求只生成整体图；指定 component 才生成对应原尺寸局部。九组初始模拟仍保留六个规定时刻的逐组件局部；缓存命中不会写入 viewed 或授予视觉通过。密集窗口应先按测试合并所有组件需要的整数步，再批量取整体帧；实际查看与局部接缝检查照常完成。缓存策略属于工作流适配层，像素渲染核心保持独立。
 
 规范输入 v3 以整角色刚性父姿态牵动支撑，静态父层、物理固定区和投影使用同一 sourcePose；不假装已经制作头／身体九轴。输出帧在原像素比例之外增加固定运动余量，framePadding 记录原图起点，避免衣片出界裁掉；法线／深度同样保留原纹理精度。
 
