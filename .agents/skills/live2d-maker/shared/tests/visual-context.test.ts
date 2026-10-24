@@ -14,6 +14,17 @@ const bitmap = (protocol: VisualProtocol, index: number, bytes = 300) => {
   return protocol === 'genai' ? { inlineData: { mimeType: 'image/png', data } }
     : { type: 'image', source: { type: 'base64', media_type: 'image/png', data } };
 };
+// GenAI FunctionResponsePart is a media union, unlike an ordinary Content Part.
+// A text sibling is valid; a text block inside functionResponse.parts is not.
+function assertGenaiMedia(body: any) {
+  for (const content of body.contents ?? []) for (const part of content.parts ?? []) {
+    const response = part.functionResponse ?? part.function_response;
+    for (const media of response?.parts ?? []) {
+      assert.ok(Object.keys(media).length === 1 && ['inlineData', 'inline_data', 'fileData', 'file_data'].includes(Object.keys(media)[0]),
+        'FunctionResponse.parts must contain only media, never text');
+    }
+  }
+}
 function history(protocol: VisualProtocol, count: number, bytes = 300) {
   const result = Array.from({ length: count }, (_, index) => bitmap(protocol, index, bytes));
   return protocol === 'genai' ? { systemInstruction: { parts: [{ text: 'original drawing instructions' }] },
@@ -43,6 +54,7 @@ test('exact-image dedup retains the latest image and all source/coordinate/call 
     response: { output: meta(index === 2 ? [10, 0, 10, 10] : [0, 0, 10, 10]).text }, parts: [bitmap('genai', 0)] } }] })) };
   const latest = structuredClone(body.contents[1]), other = structuredClone(body.contents[2]);
   assert.equal(deduplicateImages(body, 'genai'), 1);
+  assertGenaiMedia(body);
   assert.deepEqual(body.contents[1].parts[0].functionResponse.response, latest.parts[0].functionResponse.response);
   assert.deepEqual(body.contents[1].parts[0].functionResponse.parts.at(-1), latest.parts[0].functionResponse.parts[0]);
   assert.match(JSON.stringify(body.contents[1]), /Retained latest original image/);
@@ -53,13 +65,39 @@ test('exact-image dedup retains the latest image and all source/coordinate/call 
   assert.equal(imageCount(body, 'genai'), 2);
 });
 
+test('GenAI visual notes preserve media order, result identity/output and ordinary neighboring parts in both wire spellings', async t => {
+  for (const key of ['functionResponse', 'function_response']) {
+    const directory = await fixture(t), original: any = { contents: [{ role: 'user', parts: [
+      { text: 'before' }, { [key]: { id: 'result-1', name: 'preview', response: { output: { crop: [1, 2, 3, 4], text: 'original' } },
+        parts: [bitmap('genai', 1), bitmap('genai', 2), bitmap('genai', 3), bitmap('genai', 4), bitmap('genai', 5)] } },
+      { text: 'after' }, bitmap('genai', 6)] }] };
+    const prepared = await new VisualContext({ directory, protocol: 'genai', budget: { images: 5 } }).prepare(original, async wire => {
+      assertGenaiMedia(wire); return 'observed colors and boundaries';
+    });
+    assertGenaiMedia(prepared);
+    const response = prepared.contents[0].parts[1][key];
+    assert.equal(response.id, 'result-1'); assert.equal(response.name, 'preview');
+    assert.deepEqual(response.response, original.contents[0].parts[1][key].response);
+    assert.deepEqual(response.parts, original.contents[0].parts[1][key].parts.slice(2));
+    assert.deepEqual(prepared.contents[0].parts[0], { text: 'before' });
+    assert.match(prepared.contents[0].parts[2].text, /result-1.*original media part 1/);
+    assert.match(prepared.contents[0].parts[2].text, /original media part 2/);
+    assert.deepEqual(prepared.contents[0].parts[3], { text: 'after' });
+    assert.deepEqual(prepared.contents[0].parts[4], original.contents[0].parts[3]);
+    const resumed = new VisualContext({ directory, protocol: 'genai', budget: { images: 5 } });
+    assert.deepEqual(await resumed.prepare(original, async () => { throw new Error('must reuse successful summary'); }), prepared);
+  }
+});
+
 for (const protocol of ['genai', 'anthropic'] as const) {
   test(`${protocol}: oversized single tool result is visually summarized in bounded batches, with latest originals and signed pairs intact`, async t => {
     const directory = await fixture(t), original = history(protocol, 120), snapshot = structuredClone(original), events: any[] = [], seen: any[] = [];
     const context = new VisualContext({ directory, protocol, budget: { images: 49 }, observe: async event => { events.push(event); } });
     const output = await context.prepare(original, async body => {
+      if (protocol === 'genai') assertGenaiMedia(body);
       assert.ok(imageCount(body, protocol) <= 49); seen.push(body); return `actual visual memory ${seen.length}`;
     });
+    if (protocol === 'genai') assertGenaiMedia(output);
     assert.deepEqual(original, snapshot);
     assert.ok(imageCount(output, protocol) < 49);
     assert.equal(seen.reduce((count, body) => count + imageCount(body, protocol), 0) + imageCount(output, protocol), 120);
@@ -131,6 +169,7 @@ test('AGV transport partitions actual inline request bytes before forwarding; ca
   const server = createServer(async (req, res) => {
     const chunks = []; for await (const chunk of req) chunks.push(chunk);
     const payload = Buffer.concat(chunks), body = JSON.parse(payload.toString()); requests.push(body);
+    assertGenaiMedia(body);
     assert.ok(payload.length < budget);
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(JSON.stringify({ candidates: [{ finishReason: 'STOP', content: { parts: [{ text: 'actual complete visual summary' }] } }] }));
