@@ -8,6 +8,8 @@ export class MotionStepTracker {
   maxAcceleration:number;
   visiblePeak:number;
   visibleTravel:number;
-  update(positions: ArrayLike<number>, pose: {x: number; y: number; angle: number}): void;
+  fallbackStreak:number;
+  maxFallbackStreak:number;
+  update(positions: ArrayLike<number>, pose: {x: number; y: number; angle: number}, fallback?:boolean): void;
 }
-export function motionIssues(test: string, component: any, metric: {invalid: number;root: number;fallback: number;limited: number;peak: number;final: number;maxStep: number;maxAcceleration?:number;discontinuityRatio?:number;visiblePeak?:number;recovery?:any}, steps?: number): string[];
+export function motionIssues(test: string, component: any, metric: {invalid: number;root: number;fallback: number;limited: number;peak: number;final: number;maxStep: number;maxAcceleration?:number;discontinuityRatio?:number;visiblePeak?:number;maxFallbackStreak?:number;recovery?:any}, steps?: number): string[];

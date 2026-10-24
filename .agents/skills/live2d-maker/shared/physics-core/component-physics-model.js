@@ -6,6 +6,8 @@ import { CubismPendulumChain } from './vendor/psd2live/pendulum.js';
 import { InochiPendulum } from './vendor/inochi2d/pendulum.js';
 export { componentPhysicsVersion };
 const TAU = Math.PI * 2, DEG = 180 / Math.PI;
+// Additional projection passes run only while the displayed constraints fail.
+const MAX_PROJECTION_PASSES = 20;
 const distance = (a, b, i, j) => Math.hypot(a[i * 2] - b[j * 2], a[i * 2 + 1] - b[j * 2 + 1]);
 const area = (p, a, b, c) => (p[b * 2] - p[a * 2]) * (p[c * 2 + 1] - p[a * 2 + 1]) - (p[b * 2 + 1] - p[a * 2 + 1]) * (p[c * 2] - p[a * 2]);
 const angle = (ax, ay, bx, by) => Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
@@ -139,7 +141,7 @@ export class ComponentBody {
   }
   pin(){for(let i=0;i<this.mobility.length;i++)if(!this.mobility[i]){this.p[i*2]=this.pPose[i*2];this.p[i*2+1]=this.pPose[i*2+1];}}
   correctDisplayAreas(){
-    if(this.kind!=='cloth'||!this.clothSamples)return false;
+    if(this.kind!=='strand'&&(this.kind!=='cloth'||!this.clothSamples))return false;
     let changed=false;
     // Project the actual rendered area through the control-to-display Jacobian.
     // A valid control face can still compress a thin display face at a fixed
@@ -148,13 +150,37 @@ export class ComponentBody {
       const a=this.indices[k],b=this.indices[k+1],c=this.indices[k+2],r=this.displayMeasures.areas[k/3],current=area(this.positions,a,b,c),sign=Math.sign(r);
       const C=sign*current-Math.abs(r)*(this.component.limits.minAreaRatio+.0001);if(C>=0||Math.abs(r)<1e-8)continue;
       const tri=[a,b,c],p=this.positions,grad=[[sign*(p[b*2+1]-p[c*2+1]),sign*(p[c*2]-p[b*2])],[sign*(p[c*2+1]-p[a*2+1]),sign*(p[a*2]-p[c*2])],[sign*(p[a*2+1]-p[b*2+1]),sign*(p[b*2]-p[a*2])]],controls=new Map();
-      for(let n=0;n<3;n++){const vertex=tri[n],sample=this.clothSamples[vertex],factor=this.clothFactors?.[vertex]??1;
-        for(let j=0;j<3;j++){const id=sample[j],g=controls.get(id)||[0,0],w=sample[j+3]*factor;g[0]+=grad[n][0]*w;g[1]+=grad[n][1]*w;controls.set(id,g);}}
+      for(let n=0;n<3;n++)this.accumulateDisplayGradient(tri[n],grad[n],controls);
       let mass=0;for(const[id,g]of controls)mass+=this.invMass(id)*(g[0]*g[0]+g[1]*g[1]);if(mass<1e-12)continue;
       const delta=-C/mass;for(const[id,g]of controls){this.p[id*2]+=this.invMass(id)*delta*g[0];this.p[id*2+1]+=this.invMass(id)*delta*g[1];}
       this.syncMesh();this.limited=true;changed=true;
     }
     return changed;
+  }
+  accumulateDisplayGradient(vertex,gradient,controls){
+    if(this.kind==='cloth'){
+      const sample=this.clothSamples[vertex],factor=this.clothFactors?.[vertex]??1;
+      for(let j=0;j<3;j++){const id=sample[j],g=controls.get(id)||[0,0],w=sample[j+3]*factor;g[0]+=gradient[0]*w;g[1]+=gradient[1]*w;controls.set(id,g);}
+      return;
+    }
+    // Differentiate the actual blended strand field, including cross-section
+    // rotation and source-pixel attachment weights. Correct the nearby curve
+    // controls rather than freezing the entire strand at a compressed face.
+    const swing=this.component.authoring.swing,beta=swing?1-swing.parallel:1;
+    for(const {i,t,w,factor} of this.fieldSamples[vertex]){
+      const j=i+1,dx=this.p[j*2]-this.p[i*2],dy=this.p[j*2+1]-this.p[i*2+1],length2=dx*dx+dy*dy;
+      if(length2<1e-12)continue;
+      const px=this.pPose[i*2]*(1-t)+this.pPose[j*2]*t,py=this.pPose[i*2+1]*(1-t)+this.pPose[j*2+1]*t;
+      const rx=this.pose[vertex*2]-px,ry=this.pose[vertex*2+1]-py;
+      const theta=angle(this.pPose[j*2]-this.pPose[i*2],this.pPose[j*2+1]-this.pPose[i*2+1],dx,dy)*beta;
+      const cs=Math.cos(theta),sn=Math.sin(theta),rotX=cs*rx-sn*ry,rotY=sn*rx+cs*ry;
+      const f=(swing?this.weights[vertex]:factor)*w,angular=beta*(-gradient[0]*rotY+gradient[1]*rotX);
+      for(const [id,linear,sign] of [[i,1-t,1],[j,t,-1]]){
+        const g=controls.get(id)||[0,0];
+        g[0]+=f*(gradient[0]*linear+angular*sign*dy/length2);
+        g[1]+=f*(gradient[1]*linear-angular*sign*dx/length2);controls.set(id,g);
+      }
+    }
   }
   sampleCloth(source,target){for(let i=0;i<this.clothSamples.length;i++){const[a,b,c,u,v,w]=this.clothSamples[i];target[i*2]=source[a*2]*u+source[b*2]*v+source[c*2]*w;target[i*2+1]=source[a*2+1]*u+source[b*2+1]*v+source[c*2+1]*w;}}
   correctDisplayShear(){
@@ -258,7 +284,7 @@ export class ComponentBody {
       this.limited=Math.abs(this.displayTheta)>=max*.98;
       this.syncMesh();return;
     }
-    for(let pass=0;pass<5;pass++){
+    for(let pass=0;pass<MAX_PROJECTION_PASSES;pass++){
       for(let i=0;i<this.mobility.length;i++){
         const dx=this.p[i*2]-this.pPose[i*2],dy=this.p[i*2+1]-this.pPose[i*2+1],d=Math.hypot(dx,dy),max=this.maxDistance*this.mobility[i];
         if(d>max&&d){const scale=max/d;this.p[i*2]=this.pPose[i*2]+dx*scale;this.p[i*2+1]=this.pPose[i*2+1]+dy*scale;this.limited=true;this.correction=Math.max(this.correction,d-max);}

@@ -1,5 +1,5 @@
 // Numerical rejection gates, not a substitute for animation/shape review.
-export const motionReviewVersion='astra-motion-review-4';
+export const motionReviewVersion='astra-motion-review-5';
 export const motionStepBasis='inverse-sourcePose-only';
 
 // Remove only the prescribed whole-character rigid pose. A component's own
@@ -10,9 +10,12 @@ export class MotionStepTracker {
     this.world=new Float64Array(length);this.source=new Float64Array(length);
     this.origin=new Float64Array(length);this.delta=new Float64Array(length);
     this.initialized=false;this.maxStep=0;this.maxWorldStep=0;this.maxAcceleration=0;this.visiblePeak=0;
+    this.fallbackStreak=0;this.maxFallbackStreak=0;
     if(maximum!==undefined){this.stepThreshold=Math.max(2,maximum*.2);this.accelerationThreshold=Math.max(.5,maximum*.03);this.discontinuityRatio=0;}
   }
-  update(positions, pose) {
+  update(positions, pose, fallback=false) {
+    this.fallbackStreak=fallback?this.fallbackStreak+1:0;
+    this.maxFallbackStreak=Math.max(this.maxFallbackStreak,this.fallbackStreak);
     const c=Math.cos(pose.angle),s=Math.sin(pose.angle);
     this.visibleTravel=0;
     for(let i=0;i<positions.length;i+=2) {
@@ -41,6 +44,9 @@ export function motionIssues(test, component, metric, steps=960){
   const ordinary=!['neutral','extreme','sustained','combined'].includes(test);
   if(metric.invalid)issues.push('invalid-mesh');
   if(metric.root>1e-5)issues.push('attachment-slip');
+  // A short continuous stop can be hidden by a low eight-second total. This
+  // includes strong and combined input, even when the final mesh is legal.
+  if(metric.maxFallbackStreak>2)issues.push('continuous-retreat');
   if(ordinary&&metric.fallback/steps>.05)issues.push('persistent-retreat');
   if(ordinary&&metric.limited/steps>.35)issues.push('persistent-limit');
   if(['light-brush','tip-impulse','airflow'].includes(test)&&(metric.visiblePeak??metric.peak)<Math.max(.05,maximum*.005))issues.push('weak-response');
