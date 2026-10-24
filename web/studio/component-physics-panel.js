@@ -6,6 +6,20 @@ import { PhysicsRenderer } from './physics-renderer.js';
 import { testNames } from './physics-test-input.js';
 import { ComponentPhysicsRunner } from './component-physics-runner.js';
 
+// Use the free-end load from the recorded review protocol. Mesh order does
+// not describe leverage: rigid ornaments have weight=1 even at their pins.
+function pulseComponent(body, speed, radius) {
+  const root = body.component.supports[0].at;
+  let best = 0;
+  const distance = i => Math.hypot(body.rest[i * 2] - root[0], body.rest[i * 2 + 1] - root[1]);
+  for (let i = 1; i < body.weights.length; i++) {
+    if (body.weights[i] > body.weights[best] || body.weights[i] === body.weights[best] && distance(i) > distance(best)) best = i;
+  }
+  if (!(body.weights[best] > 0)) return;
+  const dx = body.rest[best * 2] - root[0], dy = body.rest[best * 2 + 1] - root[1], length = Math.max(1, Math.hypot(dx, dy));
+  body.impulse(body.positions[best * 2], body.positions[best * 2 + 1], speed * dy / length, -speed * dx / length, radius);
+}
+
 // Keep the same 120 Hz Worker state and transferable snapshots. Small jobs
 // publish intermediate poses; draining demand on completion avoids waiting for
 // another RAF between jobs. Present only the latest complete pose once per
@@ -153,7 +167,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     this.pointer={x,y,time};this.overlay();
   }
   setDemo(enabled){if(!this.formal)return super.setDemo(enabled);this.demo=!!enabled;this.playback=enabled?'support-reverse':'';this.replayStep=0;this.scene?.reset();this.lastTime=0;this.sync();}
-  pulse(direction=1){if(!this.formal)return super.pulse(direction);if(!this.enabled||this.category==='jelly')return;this.editing=false;for(const[id,b]of this.bodies)if(this.scope==='all'||id===this.selected){let i=0;for(let n=1;n<b.weights.length;n++)if(b.weights[n]>=b.weights[i])i=n;b.impulse(b.positions[i*2],b.positions[i*2+1],direction*b.freeLength*this.force,0,Math.max(this.radius,b.freeLength*.5));}this.lastTime=0;this.sync();}
+  pulse(direction=1){if(!this.formal)return super.pulse(direction);if(!this.enabled||this.category==='jelly')return;this.editing=false;for(const[id,b]of this.bodies)if(this.scope==='all'||id===this.selected)pulseComponent(b,direction*b.freeLength*this.force,Math.max(this.radius,b.freeLength*.5));this.lastTime=0;this.sync();}
   sourcePoint(e){const r=this.stage.canvas.getBoundingClientRect(),[x,y]=this.stage.screenToWorld(e.clientX-r.x,e.clientY-r.y),[w,h]=this.size;return [Math.round((x*h/2+w/2)*10)/10,Math.round((h/2-y*h/2)*10)/10];}
   advance(dt,manual=true){if(!this.formal)return super.advance(dt);if(!this.enabled)return false;return this.runner.advance(Math.round(dt*120),manual);}
   tick(time){
