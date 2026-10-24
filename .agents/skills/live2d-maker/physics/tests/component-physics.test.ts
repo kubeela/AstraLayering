@@ -219,7 +219,7 @@ test('step review removes whole-character motion but preserves physical ancestor
   positions.set(world(source,moved));tracker.update(positions,moved);
   assert(tracker.maxWorldStep>2);assert(tracker.maxStep<1e-10);
   const c=component('pendant');c.authoring.freeLength=20;c.limits.maxTravel=.1;
-  const metric={invalid:0,root:0,fallback:0,limited:0,peak:1,final:0,maxStep:tracker.maxStep};
+  const metric={invalid:0,root:0,fallback:0,limited:0,peak:1,final:0,maxStep:tracker.maxStep,recovery:{passed:true}};
   assert.deepEqual(motionIssues('support-release',c,metric),[]);
   // This could be inherited from a physical parent; it is not prescribed by
   // sourcePose and therefore must still fail the continuity gate.
@@ -310,10 +310,10 @@ test('inherited inertia budget retains gentle response and limits fast input wit
  c.response.parentVelocityLimit=0;assert.throws(()=>new ComponentScene(config([c])),/惯性限速/);
 });
 test('motion review rejects invisible response, repeated retreat, jumps and non-decaying motion',()=>{
-  const c=component(),good={invalid:0,root:0,fallback:0,limited:0,peak:8,final:.01,maxStep:.3};
+  const c=component(),good={invalid:0,root:0,fallback:0,limited:0,peak:8,final:.01,maxStep:.3,recovery:{passed:true}};
   assert.deepEqual(motionIssues('light-brush',c,good),[]);
   assert(motionIssues('light-brush',c,{...good,peak:0}).includes('weak-response'));
   assert(motionIssues('support-release',c,{...good,fallback:500}).includes('persistent-retreat'));
   assert(motionIssues('tip-impulse',c,{...good,maxStep:20}).includes('discontinuous-motion'));
-  assert(motionIssues('tip-impulse',c,{...good,final:7}).includes('unsettled'));
+  assert(motionIssues('tip-impulse',c,{...good,final:7,recovery:{passed:false}}).includes('unsettled'));
 });

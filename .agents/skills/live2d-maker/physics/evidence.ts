@@ -3,12 +3,20 @@ import { join, resolve } from 'node:path';
 import { reviewCriteria } from '../shared/physics-core/component-physics-schema.js';
 import { json } from './input.ts';
 import { configHash, simulationHash, evidenceVersion } from '../shared/physics-evidence/store.ts';
+import { recoveryProofValid } from '../shared/physics-evidence/settling.js';
+import { motionReviewVersion } from '../shared/physics-evidence/physics-motion-review.js';
 export { configHash, simulationHash, evidenceVersion, simulate, traceWindow, traceReplayWindow } from '../shared/physics-evidence/store.ts';
 export async function validateFindings(config:any,evidence:string,findings:any,expectedSource?:string) {
   const manifest=await json(join(evidence,'manifest.json'));
   if(manifest.simulationHash!==await simulationHash())throw Error('求解器实现已改变，需要重新生成证据');
   if(manifest.version!==evidenceVersion||manifest.configHash!==configHash(config)||findings.configHash!==manifest.configHash||findings.evidenceVersion!==evidenceVersion)throw Error('复核引用了另一版配置或证据');
   if(manifest.runs.some((r:any)=>r.metrics.invalidSteps||r.metrics.maxRoot>1e-5))throw Error('数值复核失败');
+  for(const run of manifest.runs){
+    if(run.metrics.motionReview?.version!==motionReviewVersion)throw Error('运动复核规则已改变，需要重新测量');
+    if(run.test!=='neutral')for(const c of config.components.filter((c:any)=>c.enabled))
+      if(!recoveryProofValid(run.metrics.motionReview?.components?.[c.id]?.recovery,run.durationSteps))
+        throw Error(c.name+' 缺少 '+run.test+' 的连续近静止及内部速度回落证明');
+  }
   const failed=manifest.runs.flatMap((r:any)=>Object.entries(r.metrics.motionReview?.components||{}).filter(([,v]:any)=>v.issues.length).map(([id,v]:any)=>r.test+'/'+id+': '+v.issues.join(', ')));
   if(failed.length)throw Error('运动响应复核失败：'+failed.join('; '));
   if(manifest.coverage.render!=='completed')throw Error('渲染复核未完成');

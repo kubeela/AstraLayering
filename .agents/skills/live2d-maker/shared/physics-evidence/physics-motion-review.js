@@ -1,5 +1,5 @@
 // Numerical rejection gates, not a substitute for animation/shape review.
-export const motionReviewVersion='astra-motion-review-5';
+export const motionReviewVersion='astra-motion-review-6';
 export const motionStepBasis='inverse-sourcePose-only';
 
 // Remove only the prescribed whole-character rigid pose. A component's own
@@ -53,6 +53,6 @@ export function motionIssues(test, component, metric, steps=960){
   // Speed alone is not a jump. Keep inherited physical motion, and reject a
   // large step when its source-relative acceleration also changes abruptly.
   if(ordinary&&(metric.discontinuityRatio!==undefined?metric.discontinuityRatio>1:metric.maxStep>Math.max(2,maximum*.2)&&(metric.maxAcceleration===undefined||metric.maxAcceleration>Math.max(.5,maximum*.03))))issues.push('discontinuous-motion');
-  if(!['neutral','extreme'].includes(test)&&(metric.recovery?.passed===false||metric.peak>.1&&metric.final>Math.max(.1,metric.peak*.08)&&metric.recovery?.passed!==true))issues.push('unsettled');
+  if(test!=='neutral'&&metric.recovery?.passed!==true)issues.push('unsettled');
   return issues;
 }
