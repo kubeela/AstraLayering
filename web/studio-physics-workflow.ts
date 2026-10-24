@@ -51,6 +51,8 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
   const manualReview = records['manual-review.json'];
   const manual = manualReview?.configHash === provenance.configHash
     || config?.review?.workflowAccepted === false && config?.review?.authoring?.startsWith('manual-');
+  const tuning = records['step02/tuning.json'];
+  const calibrationMatches = !!tuning && tuning.configHash === provenance.configHash && tuning.solverHash === await simulationHash();
   const markers = await Promise.all(['step01', 'step02', 'step03'].map(async stage => {
     try { return (await lstat(await safePath(directory, 'physics/' + stage + '/.completed'))).isFile(); }
     catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error; }
@@ -78,14 +80,16 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
     provenance: { ...provenance, manualReview: manualReview?.configHash === provenance.configHash ? manualReview : null, workflowAccepted },
     stages: [
       { id: 'analysis', status: markers[0] ? 'completed' : records['step01/analysis.json'] ? 'draft' : 'pending' },
-      { id: 'calibration', status: markers[1] ? 'completed' : records['step02/tuning.json'] ? 'running' : 'pending' },
+      { id: 'calibration', status: calibrationMatches && tuning.status === 'calibrated' && markers[1] ? 'completed'
+        : tuning && !calibrationMatches ? 'stale' : tuning ? 'draft' : 'pending',
+        reason: !tuning ? '当前版本尚无装配标定记录。' : !calibrationMatches ? '配置或求解器已变化，标定记录需要更新。' : '' },
       { id: 'review', status: workflowAccepted ? 'accepted' : manifest && !provenance.evidenceMatchesCurrent ? 'stale' : markers[2] ? 'draft' : 'pending',
         reason: manifest && !provenance.evidenceMatchesCurrent ? '配置、求解器或渲染输入已变化，旧证据需要更新。' : '' },
     ],
     coverage: records['step02/coverage.json'] || records['step01/coverage.json'] || null,
     assemblies: records['step02/assemblies.json']?.configHash === provenance.configHash ? records['step02/assemblies.json']
       : config ? { version: 1, configHash: provenance.configHash, source: 'current-config', groups: groupAssemblies(config) } : null,
-    tuning: records['step02/tuning.json'] || null,
+    tuning: tuning || null,
     findings: linkedFindings, feedback: linkedFeedback,
     evidence: manifest ? { ...manifest, runs: list(manifest.runs).map(run => ({ ...run,
       ...(provenance.evidenceMatchesCurrent && readableArtifact(run.plot)

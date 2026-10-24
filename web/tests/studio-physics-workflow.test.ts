@@ -57,6 +57,9 @@ test('manual approval never masquerades as workflow acceptance and parameter edi
   let data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
   assert.equal(data?.source, 'manual');
   assert.equal(data?.provenance.workflowAccepted, false);
+  await f.put('physics/step02/.completed', '');
+  data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
+  assert.equal(data?.stages[1].status, 'pending', 'an old completion marker is not a calibration record');
   await f.put('physics/physics.draft.json', { ...f.config, profile: 'all' });
   data = await studioPhysicsWorkflow(f.root, 'project', '/runs', 'physics/physics.draft.json');
   assert.equal(data?.stages[2].status, 'stale');
