@@ -22,6 +22,14 @@ async function fixture(){
   return directory;
 }
 const item={component:'cloth',criterion:'response',verdict:'rejected',reason:'释放后持续顿挫，轨迹提供数值依据',test:'light-brush',steps:[180,181],images:[]};
+test('返修可引用实际采集的回落尾段，不能引用记录结束后的步数',async()=>{
+  const directory=await fixture();try{
+    await put(join(directory,'step03/evidence/manifest.json'),{configHash:configHash(config()),runs:[{test:'extreme',durationSteps:1200}],renderHash:'renderer'});
+    await rejectReview(config(),directory,[{...item,test:'extreme',steps:[1188,1200]}]);
+    assert.deepEqual((await json(join(directory,'step03/feedback.json'))).items[0].steps,[1188,1200]);
+    await assert.rejects(rejectReview(config(),directory,[{...item,test:'extreme',steps:[1201]}]),/真实整数步/);
+  }finally{await rm(directory,{recursive:true,force:true});}
+});
 test('正式工具按 A/B/C 隔离，复核不能改绑定或代选候选',()=>{
   const input:any={task:'/task',structures:[]},names=(id:string)=>toolsFor('/task/physics/'+id,input,{id}).map(t=>t.name);
   assert(names('step01').includes('physics_save_plan'));assert(!names('step01').includes('physics_save_binding'));

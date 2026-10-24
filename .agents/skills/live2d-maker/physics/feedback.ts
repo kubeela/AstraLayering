@@ -15,7 +15,8 @@ export async function rejectReview(config:any,directory:string,items:any[]){
   const manifest=await optional(join(directory,'step03/evidence/manifest.json')),viewed=await optional(join(directory,'step03/evidence/viewed.json'))||[];
   for(const item of items){
     if(!config.components.some((c:any)=>c.id===item.component&&c.enabled)||!reviewCriteria.includes(item.criterion)||!['rejected','needs-evidence'].includes(item.verdict)||!item.reason?.trim())throw Error('无效的逐组件返修项');
-    if(!Array.isArray(item.steps)||!item.steps.length||item.steps.some((s:any)=>!Number.isInteger(s)||s<0||s>960)||!manifest?.runs.some((r:any)=>r.test===item.test)||manifest.configHash!==digest)throw Error('返修需引用当前规范输入和真实整数步');
+    const run=manifest?.runs.find((r:any)=>r.test===item.test);
+    if(!Array.isArray(item.steps)||!item.steps.length||item.steps.some((s:any)=>!Number.isInteger(s)||s<0||s>(run?.durationSteps??960))||!run||manifest.configHash!==digest)throw Error('返修需引用当前规范输入和真实整数步');
     if(!Array.isArray(item.images))throw Error('images 必须为当前已查看证据路径，可在需要补证据时为空');
     for(const path of item.images)if(!viewed.some((v:any)=>v.path===path&&v.configHash===digest&&v.renderHash===manifest.renderHash&&v.test===item.test&&(!v.component||v.component===item.component)))throw Error('返修引用了未查看的当前图像');
     if(item.verdict==='rejected'&&!item.images.length&&!['response','limits'].includes(item.criterion))throw Error('视觉否决需要实际图像；缺图应使用 needs-evidence');
