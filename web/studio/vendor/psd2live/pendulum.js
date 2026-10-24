@@ -21,13 +21,13 @@ export class CubismPendulumChain {
     const root=b.pPose.slice(this.root*2,this.root*2+2),dx=(root[0]-this.lastRoot[0])*this.scale*c.response.inputGain,dy=(root[1]-this.lastRoot[1])*this.scale*c.response.inputGain;this.lastRoot.set(root);
     // Keep root at zero and carry the old bobs against the moving attachment.
     for(let i=1;i<this.count;i++){this.x[i]-=dx;this.y[i]-=dy;}
-    const acceleration=omega*omega*15/900,flow=b.scene.airflow,orientation=b.scene.support(c.supports[0]).angle*c.response.inputGain,gx=Math.sin(orientation),gy=Math.cos(orientation);
+    const acceleration=omega*omega*15/900,flow=b.scene.airflow,windGain=c.response.windGain??.04,orientation=b.scene.support(c.supports[0]).angle*c.response.inputGain,gx=Math.sin(orientation),gy=Math.cos(orientation);
     for(let i=1;i<this.count;i++){
       const oldX=this.x[i],oldY=this.y[i];
       const turn=Math.atan2(this.gravityX[i]*gy-this.gravityY[i]*gx,this.gravityX[i]*gx+this.gravityY[i]*gy)/5;
       const ex=this.x[i]-this.x[i-1],ey=this.y[i]-this.y[i-1],cs=Math.cos(turn),sn=Math.sin(turn);
-      let px=this.x[i-1]+cs*ex-sn*ey+this.vx[i]*delay+acceleration*(gx+flow.x*.04)*delay*delay;
-      let py=this.y[i-1]+sn*ex+cs*ey+this.vy[i]*delay+acceleration*(gy+flow.y*.04)*delay*delay;
+      let px=this.x[i-1]+cs*ex-sn*ey+this.vx[i]*delay+acceleration*(gx+flow.x*windGain)*delay*delay;
+      let py=this.y[i-1]+sn*ex+cs*ey+this.vy[i]*delay+acceleration*(gy+flow.y*windGain)*delay*delay;
       let nx=px-this.x[i-1],ny=py-this.y[i-1],len=Math.hypot(nx,ny)||1;
       px=this.x[i-1]+nx/len*this.length[i];py=this.y[i-1]+ny/len*this.length[i];
       const mobility=Math.exp(-2*c.response.dampingRatio*omega*dt*1.35*(1-.3*i/(this.count-1)));
@@ -38,7 +38,17 @@ export class CubismPendulumChain {
       const u=this.arc[j]/this.total*(this.count-1),lo=Math.max(1,Math.floor(u)),hi=Math.min(this.count-1,lo+1),t=Math.max(0,u-lo);
       // Cubism's X output normalized by segment length has no +/-pi wrap.
       const angleAt=i=>-(this.x[i]-this.x[i-1])/this.length[i];
-      const physicalAngle=angleAt(lo)*(1-t)+angleAt(hi)*t;
+      let physicalAngle=angleAt(lo)*(1-t)+angleAt(hi)*t;
+      if(c.authoring.swing){
+        // Author a parent bend and progressively delayed bends below it.
+        // Integrating rotated rest tangents preserves the curved drawing's
+        // arc length, including a curled tip. Each later bend affects only
+        // the section below its own attachment (psd2live SwingDeformer).
+        const s=this.arc[j]/this.total,ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};
+        physicalAngle=0;let previous=0;
+        for(let k=1;k<this.count;k++){const current=angleAt(k);physicalAngle+=(current-previous)*ease((s-(k-1)/(this.count-1))/(1-(k-1)/(this.count-1)));previous=current;}
+      }
+      physicalAngle*=c.response.outputGain??1;
       const limit=c.limits.maxAngle*Math.PI/180,targetAngle=limit*Math.tanh(physicalAngle/limit)*b.mobility[j];
       this.angles[j]+=(targetAngle-this.angles[j])*(1-Math.exp(-omega*dt*3));const angle=this.angles[j];
       const rx=b.pPose[j*2]-b.pPose[(j-1)*2],ry=b.pPose[j*2+1]-b.pPose[(j-1)*2+1],cs=Math.cos(angle),sn=Math.sin(angle);

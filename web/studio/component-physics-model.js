@@ -114,12 +114,25 @@ export class ComponentBody {
       for(let q=0;q<this.p.length;q++)this.p[q]=this.pPose[q]+(this.p[q]-this.pPose[q])*scale;
       // Bound output speed relative to the current support pose. A physical
       // high mode must not turn into an instantaneous visible contour change.
+      const swing=this.component.authoring.swing;
+      let stepScale=1,cs=1,sn=0;
+      if(swing){
+        const a=angle(this.previousPose[2]-this.previousPose[0],this.previousPose[3]-this.previousPose[1],this.pPose[2]-this.pPose[0],this.pPose[3]-this.pPose[1]);cs=Math.cos(a);sn=Math.sin(a);
+        for(let i=0;i<this.mobility.length;i++)if(this.mobility[i]>1e-8){
+          const ox=this.previous[i*2]-this.previousPose[i*2],oy=this.previous[i*2+1]-this.previousPose[i*2+1],dx=this.p[i*2]-this.pPose[i*2]-(cs*ox-sn*oy),dy=this.p[i*2+1]-this.pPose[i*2+1]-(sn*ox+cs*oy),cap=this.maxDistance*this.mobility[i]*TAU*this.component.response.frequencyHz*this.dt*.5;
+          stepScale=Math.min(stepScale,cap/Math.max(cap,Math.hypot(dx,dy)));
+        }
+      }
       for(let i=0;i<this.mobility.length;i++){
         // Subtract the old pose before adding the new one: adding large canvas
         // coordinates first creates roundoff at pinned controls with a zero cap.
-        const x=this.pPose[i*2]+(this.previous[i*2]-this.previousPose[i*2]),y=this.pPose[i*2+1]+(this.previous[i*2+1]-this.previousPose[i*2+1]),dx=this.p[i*2]-x,dy=this.p[i*2+1]-y,len=Math.hypot(dx,dy);
+        const ox=this.previous[i*2]-this.previousPose[i*2],oy=this.previous[i*2+1]-this.previousPose[i*2+1],x=this.pPose[i*2]+cs*ox-sn*oy,y=this.pPose[i*2+1]+sn*ox+cs*oy,dx=this.p[i*2]-x,dy=this.p[i*2+1]-y,len=Math.hypot(dx,dy);
         const cap=this.maxDistance*this.mobility[i]*TAU*this.component.response.frequencyHz*this.dt*.5;
-        if(len>cap&&len){this.p[i*2]=x+dx*cap/len;this.p[i*2+1]=y+dy*cap/len;}
+        // One interpolation factor for the complete authored curve preserves
+        // segment lengths. Per-node speed clipping stretches adjacent links
+        // and repeatedly invokes emergency retreat on a moving pendant.
+        const scale=swing?stepScale:len>cap&&len?cap/len:1;
+        if(swing||len>cap&&len){this.p[i*2]=x+dx*scale;this.p[i*2+1]=y+dy*scale;}
       }
 
     }
@@ -171,6 +184,8 @@ export class ComponentBody {
     if(this.kind==='cloth'){this.sampleCloth(this.p,this.positions);if(this.clothFactors)for(let i=0;i<this.clothSamples.length;i++){const[a,b,c,u,v,w]=this.clothSamples[i],factor=this.clothFactors[i];for(let k=0;k<2;k++)this.positions[i*2+k]=this.pose[i*2+k]+(this.positions[i*2+k]-(this.pPose[a*2+k]*u+this.pPose[b*2+k]*v+this.pPose[c*2+k]*w))*factor;}return;}
     if(this.kind==='pendant'){
       const pivot=this.component.authoring.pivot,current=this.pivot||this.target(pivot);
+      const a=angle(this.rest[2]-this.rest[0],this.rest[3]-this.rest[1],this.pose[2]-this.pose[0],this.pose[3]-this.pose[1])+this.theta;
+      this.rigidFrame??=new Float64Array(4);this.rigidFrame[0]=current[0];this.rigidFrame[1]=current[1];this.rigidFrame[2]=Math.cos(a);this.rigidFrame[3]=Math.sin(a);
       for(let i=0;i<this.weights.length;i++){
         const q=this.target([this.rest[i*2],this.rest[i*2+1]]),r=rotate(q[0]-current[0],q[1]-current[1],this.theta);
         this.positions[i*2]=current[0]+r[0];this.positions[i*2+1]=current[1]+r[1];
@@ -184,8 +199,16 @@ export class ComponentBody {
       let dx=0,dy=0;
       for(const{i,t,w,factor}of this.fieldSamples[v]){const j=i+1;
         const cx=this.p[i*2]*(1-t)+this.p[j*2]*t,cy=this.p[i*2+1]*(1-t)+this.p[j*2+1]*t,px=this.pPose[i*2]*(1-t)+this.pPose[j*2]*t,py=this.pPose[i*2+1]*(1-t)+this.pPose[j*2+1]*t;
-        const cs=this.segmentRotations[i*2],sn=this.segmentRotations[i*2+1],rx=this.pose[v*2]-px,ry=this.pose[v*2+1]-py;
-        dx+=(cx+(cs*rx-sn*ry)-this.pose[v*2])*factor*w;dy+=(cy+(sn*rx+cs*ry)-this.pose[v*2+1])*factor*w;
+        let cs=this.segmentRotations[i*2],sn=this.segmentRotations[i*2+1];
+        // Wide hair sheets need independently hanging cross-sections rather
+        // than a board rotating around the centreline. Apply the source-pixel
+        // attachment weight exactly to the complete displacement: dividing
+        // by a nearby control's weight lets a nearly pinned boundary pixel
+        // shrink the motion of the entire strand.
+        const swing=this.component.authoring.swing;
+        if(swing){const a=Math.atan2(sn,cs)*(1-swing.parallel);cs=Math.cos(a);sn=Math.sin(a);}
+        const rx=this.pose[v*2]-px,ry=this.pose[v*2+1]-py,f=swing?this.weights[v]:factor;
+        dx+=(cx+(cs*rx-sn*ry)-this.pose[v*2])*f*w;dy+=(cy+(sn*rx+cs*ry)-this.pose[v*2+1])*f*w;
       }
       this.positions[v*2]=this.pose[v*2]+dx;this.positions[v*2+1]=this.pose[v*2+1]+dy;
     }
@@ -309,6 +332,14 @@ export class ComponentBody {
     this.impulses++;
   }
   sample(point){
+    if(this.kind==='pendant'){
+      // A connector may sit just outside the visible metal's contour. It
+      // still belongs to the same rigid frame, including its rotation. A
+      // nearest-vertex translation gives neighbouring probes different
+      // frames and can jerk every downstream link.
+      const f=this.rigidFrame,p=this.component.authoring.pivot,x=point[0]-p[0],y=point[1]-p[1];
+      return [f[0]+f[2]*x-f[3]*y,f[1]+f[3]*x+f[2]*y];
+    }
     for(let k=0;k<this.indices.length;k+=3){
       const tri=[...this.indices.slice(k,k+3)],weights=barycentric(point,...tri.map(i=>[this.rest[i*2],this.rest[i*2+1]]));
       if(weights)return [0,1].map(axis=>tri.reduce((s,i,n)=>s+this.positions[i*2+axis]*weights[n],0));

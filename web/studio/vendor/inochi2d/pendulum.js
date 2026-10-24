@@ -17,7 +17,7 @@ export class InochiPendulum {
       this.angle=Math.atan2(-(this.bob[0]+dx*(1-gain)-pivot[0]),this.bob[1]+dy*(1-gain)-pivot[1]);
     }
     this.lastPivot=[...pivot];
-    const g=(2*Math.PI*c.response.frequencyHz)**2,damp=2*Math.sqrt(g)*c.response.dampingRatio,wind=b.scene.airflow.x*.08*g;
+    const g=(2*Math.PI*c.response.frequencyHz)**2,damp=2*Math.sqrt(g)*c.response.dampingRatio,wind=b.scene.airflow.x*(c.response.windGain??.08)*g;
     const acceleration=(a,v)=>-g*Math.sin(a)-damp*v-wind;
     const a=this.angle,v=this.speed,k1a=v,k1v=acceleration(a,v),k2a=v+h*k1v/2,k2v=acceleration(a+h*k1a/2,v+h*k1v/2),k3a=v+h*k2v/2,k3v=acceleration(a+h*k2a/2,v+h*k2v/2),k4a=v+h*k3v,k4v=acceleration(a+h*k3a,v+h*k3v);
     this.angle=a+h*(k1a+2*k2a+2*k3a+k4a)/6;this.speed=v+h*(k1v+2*k2v+2*k3v+k4v)/6;

@@ -43,6 +43,7 @@ export function validateComponent(c, canvas, authoringRequired = true) {
       a.widths.forEach(w => number(w, .5, Math.max(canvas.width, canvas.height), '横截面宽度'));
     } else { polygon(a.contour, canvas); (a.holes || []).forEach(p => polygon(p, canvas)); number(a.subdivisions ?? 2, 0, 4, '网格细分');if(!Number.isInteger(a.subdivisions??2))throw Error('网格细分必须为整数'); }
   }
+  if(a.swing!==undefined){object(a.swing,'发束弯曲设置无效');if(c.kind!=='strand')throw Error('分段弯曲只用于发束和软带');number(a.swing.parallel,0,1,'截面保持');}
   const limits = { maxTravel: [.01, .3], maxAngle: [1, 45], maxStretch: [.005, .08], maxCompression: [0, .3], maxShear: [1, 30], minAreaRatio: [.3, .95] };
   const response = { frequencyHz: [.15, 6], dampingRatio: [.03, 1.5], inputGain: [0, 2] };
   for (const [group, ranges] of Object.entries({ limits, response })) {
@@ -52,6 +53,8 @@ export function validateComponent(c, canvas, authoringRequired = true) {
     if(c.kind!=='pendant')throw Error('角度过渡仅用于刚性挂件');
     number(c.response.outputFrequencyHz,.15,6,'角度过渡');
   }
+  if(c.response.windGain!==undefined)number(c.response.windGain,0,4,'风力响应');
+  if(c.response.outputGain!==undefined){if(c.kind!=='strand')throw Error('弯曲输出倍率只用于发束和软带');number(c.response.outputGain,0,8,'弯曲输出倍率');}
   object(c.material, '缺少材质参数'); for (const key of ['stretchCompliance','shearCompliance','bendCompliance','shapeCompliance']) number(c.material[key], 0, .1, key);
   return c;
 }
