@@ -297,7 +297,7 @@ export class ComponentBody {
   }
   finish(){
     this.motion.reconcile?.();
-    if(this.kind!=='pendant')for(let i=0;i<this.mobility.length;i++)for(let k=0;k<2;k++)this.velocity[i*2+k]=(this.p[i*2+k]-this.previous[i*2+k])/this.dt;
+    if(this.kind==='strand')for(let i=0;i<this.mobility.length;i++)for(let k=0;k<2;k++)this.velocity[i*2+k]=(this.p[i*2+k]-this.previous[i*2+k])/this.dt;
     if(this.kind!=='pendant')for(let i=0;i<this.mobility.length;i++){
       // The speed budget bounds secondary motion, not the commanded parent
       // pose. Clipping world velocity makes a short piece lag behind a moving
