@@ -13,7 +13,7 @@ async function fixture(t: TestContext) {
   const root = await mkdtemp(join(tmpdir(), 'patch-startup-'));
   t.after(() => rm(root, {recursive: true, force: true})); return root;
 }
-const capabilities = {version: 1, image_provider_version: 2, image_compaction_version: 2};
+const capabilities = {version: 1, image_provider_version: 2, image_compaction_version: 2, request_compaction_version: 1};
 test('并发自动构建只运行一次，校验缓存，损坏后重建，失败不写成功记录', async t => {
   const root = await fixture(t), sdkHost = join(root, 'sdk-host'); await writeFile(sdkHost, 'companion');
   let builds = 0, fail = true;

@@ -16,6 +16,7 @@ import { pipelineAgentSteps, preflightAgentSteps } from '../agents/preflight.ts'
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { validateWorkflowOptions } from './workflow.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
+import { readPreparationOptions } from './preparation-cache.ts';
 export type PartPipeline = {
   profile: PartProfile; imageHelp: string; preparationHelp: string;
   getPreparationDirectory(name: string, root?: string): string;
@@ -43,9 +44,7 @@ export async function runPartPipeline(
     krita: input.reference.krita ? resolveInput(input.reference.runName, input.reference.krita, input.reference.dir) : agentOptions.imageNormalization?.krita };
   if (!adapters.steps) {
     let standard = input.reference.standard;
-    if (standard === undefined && pipeline.profile.id === 'part-layering') try {
-      standard = JSON.parse(await readFile(join(directory, 'preparation.json'), 'utf8')).standard;
-    } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+    if (standard === undefined && pipeline.profile.id === 'part-layering') standard = await readPreparationOptions(directory);
     await preflightAgentSteps(environment, pipelineAgentSteps(pipeline.profile.id, standard), normalization);
   }
   const agents = new CodexAgents({

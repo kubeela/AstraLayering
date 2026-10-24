@@ -22,6 +22,49 @@ async function submit(task: AgentTask, path: string) {
   await tool(task, 'submit_completion').execute({ note: '正面被相邻组遮挡，沿原轮廓保守连接。' }, signal);
 }
 
+test('完全遮挡节点可提交空可见轮廓，经独立 review 后补出形体，续跑保留原稿与事实', async t => {
+  const f = await fixture(t), calls: string[] = [];
+  const run = async (task: AgentTask) => {
+    calls.push(task.name);
+    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    if (task.name.startsWith('组轮廓绘制')) {
+      assert.equal(task.imageGeneration, false);
+      await tool(task, 'write_outline_svg').execute({ svg: shape('face', 10, 90, true) }, signal);
+      await tool(task, 'preview_svg').execute({ path: input.outputSvg, mode: 'blend' }, signal);
+    } else if (task.name.startsWith('组轮廓review')) {
+      assert.equal(task.imageGeneration, false);
+      await tool(task, 'preview_svg').execute({ path: input.candidate, mode: 'edge' }, signal);
+      await tool(task, 'submit_review').execute({ verdict: 'pass', feedback: '本测试参考中该节点完全遮挡，没有可见轮廓；隐藏形体留给补全。' }, signal);
+    } else {
+      assert.ok(task.name.startsWith('正面遮挡补全'));
+      assert.equal(task.imageGeneration, true);
+      // face 使用专用正文，通用规则修改不能遗漏它。
+      assert.doesNotMatch(task.prompt, /露出双耳的结构参考并查看|本次参考只露耳缘/);
+      assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
+      assert.doesNotMatch(task.prompt, /\{runtime_context\}|\{fixed_rules\}/);
+      await tool(task, 'set_completion_paths').execute({ paths }, signal);
+      await submit(task, input.outputDraft);
+    }
+    return { text: 'fixture done', images: [], threadId: 'empty-outline-thread' };
+  };
+  const adapter = createLayeringSteps({ run, createSession: () => ({ run, async close() {} }) });
+  const steps = { ...workingSteps([], [{ id: 'face', note: '参考中被完全遮挡的真实脸部节点' }]),
+    drawOutline: adapter.drawOutline, reviewOutline: adapter.reviewOutline,
+    completeOcclusion: adapter.completeOcclusion, checkCompletion: adapter.checkCompletion };
+  await runLayering({ ...f, groups: null, steps });
+  assert.deepEqual(calls, ['组轮廓绘制-face', '组轮廓review-face', '正面遮挡补全-face']);
+  const before = await readFile(artifactPath(f.directory, 'face', 'reduction'), 'utf8');
+  const after = await readFile(artifactPath(f.directory, 'face', 'completion'), 'utf8');
+  assert.doesNotMatch(before, /<path/);
+  assert.equal(assertCompletionPreserves(before, after), 1);
+  const restored = (await GroupStore.open(f.directory)).snapshot().groups[0];
+  assert.equal(restored.steps.outline.status, 'completed');
+  assert.equal(restored.steps.review.output?.reviewOutcome, 'pass');
+  assert.equal(restored.steps.completionCheck.status, 'completed');
+  await runLayering({ ...f, groups: null, steps });
+  assert.equal(calls.length, 3);
+});
+
 test('补全原 SVG 正文原样保留，禁止删改属性、重排或注入任意节点', () => {
   const source = shape('head');
   const complete = composeCompletion(source, paths);
@@ -45,7 +88,9 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
   const adapter = createLayeringSteps({ async run(task) {
     calls++;
     assert.equal(task.sandboxMode, 'read-only');
-    assert.equal(task.imageGeneration, false);
+    assert.equal(task.imageGeneration, true);
+    assert.ok(task.tools!.some(tool => tool.name === 'view_bitmap'));
+    assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
     assert.match(task.prompt, /不设计侧面、背面/);
     const rules = await readFile(new URL('../prompts/9-补全操作约定.md', import.meta.url), 'utf8');
     assert.ok(task.prompt.includes(`【固定范围与操作约定】\n${rules}`));

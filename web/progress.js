@@ -16,12 +16,40 @@ export function groupSummary(group) {
   return { status, text: statusNames[status] };
 }
 
+function latestSvgArtifacts(items, files, versions) {
+  return items.filter(item => item.kind === 'image' && files.has(item.path))
+    .sort((a, b) => Number(versions[b.path]?.split(':')[0] ?? 0) - Number(versions[a.path]?.split(':')[0] ?? 0)).slice(0, 1);
+}
 export function groupPreviewArtifacts(group, phaseFiles, files, versions = {}) {
   // A running phase can lag behind the saved artwork. Show the latest actual
   // drawing across all three stages, including drafts, regardless of status.
-  const list = [...phaseFiles.completion, ...phaseFiles.reduction, ...phaseFiles.outline]
-    .filter(item => item.kind === 'image' && files.has(item.path));
-  return list.sort((a, b) => Number(versions[b.path]?.split(':')[0] ?? 0) - Number(versions[a.path]?.split(':')[0] ?? 0)).slice(0, 1);
+  return latestSvgArtifacts([...phaseFiles.completion, ...phaseFiles.reduction, ...phaseFiles.outline], files, versions);
+}
+
+export function groupStagePreviewArtifacts(phase, phaseFiles, files, versions = {}) {
+  const phases = phase === 'outline' ? ['outline'] : ['completion', 'reduction', 'outline'];
+  return latestSvgArtifacts(phases.flatMap(id => phaseFiles[id]), files, versions);
+}
+
+export function groupReviewSteps(group, pipeline, groupId) {
+  return [1, 2].flatMap(number => ['review', 'repair'].map(mode => {
+    const record = group.webReviewRounds?.[number - 1]?.[mode];
+    const title = `第 ${number} 轮${mode === 'review' ? '轮廓复核' : '返修'}`;
+    return { id: `${mode}-${number}`, title, status: record?.status || 'pending', detail: record?.detail || '',
+      artifacts: record?.reportIndex === undefined ? [] : [{ path: `${pipeline}/stages/review/${groupId}.review.json`,
+        label: mode === 'review' ? `第 ${number} 轮反馈` : `第 ${number} 轮返修记录`, kind: 'file',
+        reviewIndex: record.reportIndex, reviewMode: mode }] };
+  }));
+}
+
+export function reviewReportText(text, item) {
+  try {
+    const review = JSON.parse(text).reviews?.[item.reviewIndex];
+    if (!review) return '本轮记录尚未保存';
+    if (item.reviewMode === 'repair') return `${review.repairedCandidateHash ? '已按本轮意见返修并自检' : '尚无本轮返修完成记录'}\n\n${review.feedback}`;
+    const verdict = { pass: '通过', revise: '需要返修', blocked: '复核受阻' }[review.verdict] || review.verdict;
+    return `结论：${verdict}\n\n${review.feedback}`;
+  } catch { return text; }
 }
 
 export function latestKraPreview(previews = {}) {
@@ -112,10 +140,6 @@ export const stepArtifacts = [
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),
     step02: rasterDelivery('clothing-raster-layering', 'step02', 'composite.png', 'clothing-soft-edges.kra'),
-    'review-01': [file('clothing-raster-layering/step01/review-01.md', '第 1 轮反馈')],
-    'repair-01': [file('clothing-raster-layering/step01/repair-01.md', '第 1 轮修复记录')],
-    'review-02': [file('clothing-raster-layering/step01/review-02.md', '第 2 轮反馈')],
-    'repair-02': [file('clothing-raster-layering/step01/repair-02.md', '第 2 轮修复记录')],
   },
   {
     step01: [...rasterDelivery('character-assembly', 'step01', 'character-assembled.png', 'character-assembled.kra'),

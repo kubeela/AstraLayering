@@ -113,7 +113,7 @@ export async function drawGroupOutline(
       if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => key !== 'svg') ||
           typeof (value as { svg?: unknown }).svg !== 'string' || !(value as { svg: string }).svg.trim()) throw new Error('仅提交非空 svg 文本，草稿路径由程序绑定');
       await writeAtomic(draft, (value as { svg: string }).svg);
-      const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, input.parent);
+      const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, input.parent, true);
       return textResult({ path: draft, bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
     },
   };
@@ -132,7 +132,7 @@ export async function drawGroupOutline(
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory,
     sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory, [input.parent, repair?.candidate, draft]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
-      ...(noteRepair ? [noteRepair] : [])], imageGeneration: true,
+      ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.outline }],
     prompt: taskPrompt,
   });
@@ -143,7 +143,7 @@ export async function drawGroupOutline(
   if (!observations.some(entry => entry.source === actualDraft && entry.mode === 'blend')) {
     throw agentOutcomeError('轮廓绘制未通过 preview_svg 完成混合叠加自检', response);
   }
-  const bytes = await validateAgentOutcome(response, () => validateGroupSvg(draft, context.group.id, input.canvas, input.parent));
+  const bytes = await validateAgentOutcome(response, () => validateGroupSvg(draft, context.group.id, input.canvas, undefined, true));
   if (draft !== output) await publishSvg(draft, output, input.parent ? hash(await readFile(input.parent)) : undefined);
   return { path: output };
 }
@@ -154,7 +154,7 @@ async function reviewOnce(
   const profile = partProfile(context);
   const input = await inputs(context);
   const prompt = await readGroupPrompt(context.group.id, 'review', profile.promptsDirectory);
-  const bytes = await validateGroupSvg(candidate, context.group.id, input.canvas, input.parent);
+  const bytes = await validateGroupSvg(candidate, context.group.id, input.canvas, undefined, true);
   const candidateHash = hash(bytes);
   const observations: SvgObservation[] = [];
   const preview = createSvgPreviewTool({ ...input, directory: context.directory,

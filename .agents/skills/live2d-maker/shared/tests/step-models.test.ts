@@ -60,6 +60,11 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
 
 test('every image-capable agent rejects native imagegen with a different harness; part review stays text-only', async t => {
   const root = await fixture(t);
+  for (const step of ['part_completion', 'clothing_completion'] as const) assert.ok(imageSteps.includes(step));
+  for (const step of ['part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair', 'part_outline_review', 'clothing_outline_review'] as const) {
+    assert.ok(!imageSteps.includes(step));
+    assert.equal(loadWorkflowEnvironment({}, root).stepImages[step], undefined);
+  }
   for (const step of imageSteps) {
     const settings = loadWorkflowEnvironment({ [`layering_agent_${stepModelSlots[step]}_model`]: 'gemini-4-argon-high' }, root);
     assert.throws(() => validateImageSelection(settings, step), /Codex 内置 imagegen.*harness.*agv/, step);
@@ -111,7 +116,7 @@ test('mixed preset assigns shared GPT, Argon and Claude roles and uses Sunburst 
   const expected: Record<keyof typeof modelSlotDefaults, string> = {
     ...modelSlotDefaults,
     preparation: 'gpt-6.1-sol-low',
-    part_draw: 'gemini-4-argon-high', part_review: 'gemini-4-argon-high', part_completion: 'gemini-4-argon-high',
+    part_draw: 'gpt-6.1-sol-xhigh', part_review: 'gpt-6.1-sol-xhigh', part_completion: 'gemini-4-argon-high',
     part_groups: 'gpt-6.1-sol-xhigh', part_depth: 'gpt-6.1-sol-xhigh', part_reduce: 'gpt-6.1-sol-xhigh',
     raster_step01: 'claude-opus-5-5-xhigh', raster_step01_review: 'claude-sonnet-5-5-xhigh',
     raster_step02: 'claude-sonnet-5-5-xhigh', raster_step03: 'claude-sonnet-5-5-xhigh',
@@ -120,7 +125,7 @@ test('mixed preset assigns shared GPT, Argon and Claude roles and uses Sunburst 
   for (const [step, role] of Object.entries(stepModelSlots)) {
     assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected[role], 'fixture'), step);
   }
-  const nanoSteps = new Set(['part_base_subject', 'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair']);
+  const nanoSteps = new Set(['part_base_subject', 'part_completion', 'clothing_completion']);
   for (const step of imageSteps) {
     assert.equal(settings.stepImages[step], nanoSteps.has(step) ? 'gemini-nano-banana-2.1' : 'gpt-image-2.5-sunburst', step);
     validateImageSelection(settings, step);

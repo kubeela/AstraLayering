@@ -8,7 +8,8 @@ import { randomUUID } from 'node:crypto';
 import { runAgent, type Agent, type AgentRequest } from './agent.ts';
 import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
-import { canonicalPath, fileInfo, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, saveConfig, within } from './run-store.ts';
+import { startStep } from '../step-chain.ts';
+import { canonicalPath, completeRasterStep, fileInfo, initializeRun, inspectRun, loadConfig, newConfig, resetSteps, saveConfig, within } from './run-store.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { modelHarnesses } from '../agents/models.ts';
 import { cliExecutable } from '../agents/cli.ts';
@@ -139,8 +140,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       continue;
     }
     await mkdir(output, { recursive: true });
-    if (status === 'completed') await rename(join(output, '.completed'), join(output, '.running'));
-    else if (status !== 'running') await writeFile(join(output, '.running'), '', { flag: 'wx' });
+    await startStep(output, status ?? 'absent');
     let lastAgentMessage = '';
     let lastThreadId: string | undefined;
     if(step.freshSession&&config.threadStep!==step.id){
@@ -245,7 +245,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await pipeline.validateDelivery?.(output, reference, step, krita);
       options.signal?.throwIfAborted();
       if (step.review) await finishReview(directory, step, plan, options.progress);
-      await rename(join(output, '.running'), join(output, '.completed'));
+      await completeRasterStep(directory, step.id);
       options.progress?.(`${step.id}：交付检查通过，已写入 .completed`);
       previous.push(output);
     } catch (error) {

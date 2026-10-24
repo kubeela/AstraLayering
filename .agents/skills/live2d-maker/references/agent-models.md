@@ -48,11 +48,13 @@ layering_agent_part_review_model=gemini-4-argon-high
 每个拥有生图工具的 agent 使用 `layering_<步骤名>_image_model`，未填继承 `layering_default_image_model`，默认 `codex-native`。生图配置保留实际步骤粒度，人物和衣服分别选择：
 
 - preparation：人物标准化、简化、素体，衣服的纯衣服参考准备。
-- part：人物／衣服轮廓绘制及返修。它们主要交付 SVG，但原有生图能力仍可配置。
+- part：人物／衣服的 SVG 遮挡补全，可生成隐藏结构辅助参考；轮廓绘制、返修及其 reviewer 不配生图。
 - raster：人物 step01、step01 review／返修、step02、step03；衣服 step01、step01 review／返修、step02。
 - 穿戴组装 agent。
 
-这张配置表描述工具能力；原任务要求继续约束使用范围，reviewer 仍只提交反馈。姿态／画风判断、首次分组、part review、去重、SVG 补全、细分组和深度分析没有开启生图，不增加生图配置。
+这张配置表描述工具能力；原任务要求继续约束使用范围，reviewer 仍只提交反馈。姿态／画风判断、首次分组、part 轮廓绘制／返修／review、去重、细分组和深度分析没有开启生图，不增加生图配置。
+
+part 遮挡补全分别使用 `layering_part_completion_image_model` 和 `layering_clothing_completion_image_model`。已有配置从 `layering_part_outline_image_model`／`layering_part_outline_repair_image_model` 迁到人物补全键，衣服的对应旧键迁到衣服补全键，保留原选择的生图模型并删除旧键。旧绘制与返修值不一致时先确认补全使用哪一个，不自动替用户选择。
 
 | 选择 | 配置 |
 | --- | --- |
@@ -88,6 +90,6 @@ part 绘制 ID 和 harness 记录在各管线 `stages/sessions/<完整groupID>.j
 
 同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
 
-`layering_image_compact_threshold` 仅作用于 Codex，并沿用现有带图压缩补丁；不自动改写其他 CLI 的压缩策略。
+旧 `layering_image_compact_threshold` 仅作用于 Codex，沿用原生带图压缩补丁。新增各 CLI 独立的图片数和请求体 MiB 预算，可按实际路由开启；留空保持原行为。AGV／Claude 接入补丁复用同一视觉压缩模块，原生自动压缩仍保留。配置和恢复边界见 [图片容量保护](../patches/README.md#图片容量保护)。
 
 独立 raster reviewer 使用 `layering_agent_raster_step01_review_model`；返修与绘制共用 `layering_agent_raster_step01_model`。原 `layering_agent_raster_step02_review_model` 配置需迁移为新的 step01 键；各自独立的生图键同样从 `raster_step02_review/repair` 改为 `raster_step01_review/repair`，衣服带 `clothing_` 前缀。模型、力度和生图选择保持可自定义，见 [example.env](../example.env)。

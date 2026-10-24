@@ -3,6 +3,7 @@ import { matchesHash, reviewedArtifact, svgHash } from '../.agents/skills/live2d
 import { safePath } from './files.ts';
 import { currentAgentCalls, type AgentCall } from './agent-progress.ts';
 import { partStages } from './part-stages.ts';
+import { partReviewRounds } from './part-review.ts';
 
 export const phases = ['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'] as const;
 type Phase = typeof phases[number];
@@ -24,6 +25,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
   const visit = (nodes: any[], depth: number) => nodes.forEach(node => { entries.push({ node, depth }); visit(node.groups ?? [], depth + 1); });
   visit(groups, 0);
   const receipts = new Map<number, any>();
+  const reviewInputs = new Map<any, { report: any; outline: Buffer | undefined }>();
   for (const depth of new Set(entries.map(entry => entry.depth))) {
     receipts.set(depth, await json(`${pipeline}/stages/outline-reduce/layers/${depth}.json`));
   }
@@ -45,6 +47,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
 
     const report = await json(path('stages/review', '.review.json'));
     const validReport = report?.groupId === node.id && Array.isArray(report.reviews);
+    reviewInputs.set(node, { report: validReport ? report : undefined, outline });
     const reviewed = outline && validReport ? reviewedArtifact(outline, path('stages/outline'), report) : undefined;
     const last = validReport ? report.reviews.at(-1) : undefined;
     mark('review', !!reviewed, !!report, reviewed ? reviewed.note ?? '复核通过'
@@ -75,6 +78,10 @@ export async function partProgress(directory: string, pipeline: string, groups: 
   // request.json is created only after the agent obtains a concurrency slot.
   // A leftover draft or a queued group is not evidence that an agent is drawing.
   const calls = await currentAgentCalls(directory, pipeline, files, errors, activeSince ?? failedSince, !!failedSince);
+  for (const { node } of entries) {
+    const { report, outline } = reviewInputs.get(node)!;
+    node.webReviewRounds = partReviewRounds(node.id, report, outline, calls, !!activeSince);
+  }
   const latest = new Map<string, { call: AgentCall; phase: Phase; targets: any[] }>();
   for (const call of calls) {
     const match = /^(组轮廓绘制|组轮廓返修|组轮廓review|正面遮挡补全|直属结构拆分|同层轮廓去重)-(.+)$/.exec(call.name);

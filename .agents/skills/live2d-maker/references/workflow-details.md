@@ -30,7 +30,7 @@ pnpm start --name jianma --status --json
 
 `--standard` 是人物 part 的 preparation 选项，不增加独立管线。启动新任务前确认用户是否需要标准化；省略时默认关闭。启用后由 preparation agent 判断嘴部是否张大、眼睛是否张开、是否正视站立且双手在身体两侧；已符合就复制原图，否则通过本步骤配置的 `image_generation` 调整。未启用时不调用姿态判断或生图，直接复制原图。两种模式都输出 `part-layering/references/standard.png`，非 PNG 原图会转换格式，`input/original.<扩展名>` 保留原始文件。
 
-后续沿用现有画风判断、简化和素体流程，只把输入改为 `standard.png`。新步骤不额外增加视觉 review。总控 `run.json` 和人物 `references/preparation.json` 记录选项；前台、后台和仅用 `--name` 续跑都沿用保存值。独立 part 已保存的选项也可被首次总控继承。`--no-standard` 显式关闭；切换时仍须通过下方指纹检查。显式指定这两个选项时，所选路线必须包含人物 part。
+后续沿用现有画风判断、简化和素体流程，只把输入改为 `standard.png`。新步骤不额外增加视觉 review。总控 `run.json` 和人物 `references/options.json` 记录选项；前台、后台和仅用 `--name` 续跑都沿用保存值。独立 part 已保存的选项也可被首次总控继承。`--no-standard` 显式关闭；已完成的任务不能直接切换，须对 options 步骤执行重试（删除 `references/.steps/options/.completed`），其后的参考随之重做。显式指定这两个选项时，所选路线必须包含人物 part。
 
 只操作特定组、设置拆分限深或调试单阶段时，使用[单管线操作与验收](individual-pipelines.md)中的独立入口；不要与同一任务的总调度同时运行。
 
@@ -175,7 +175,7 @@ pnpm test
 
 真实 alpha 不二次抠图。旧式不透明参考仍用 Node 内的边缘主色估计、颜色键和去溢色，不调用外部程序或 ML 安装；多色边缘没有可靠主色时保留原像素并记录跳过，衣服参考仍须有实际透明区域。颜色键不承担语义分割，近似背景色的前景仍可能误删。尺寸不同由 Sharp 等比缩放并居中透明补边，不裁紧人物或衣服；尺寸一致跳过缩放。已合格透明 PNG 在不需要缩放时原字节保留。
 
-后处理成功后直接替换正式参考文件，后续步骤只读取处理后的图片。处理前的生成原文件和处理报告保存于 references/archive/ 的独立历史目录，每次生成追加保存。archive 仅供人工查看，不参与程序输入、完成判断或恢复运行；删除 archive 不影响续跑，正式参考缺失时也不会从 archive 恢复。preparation.json 仅记录正式参考的文件指纹及输入依赖，不保存归档路径或后处理进度。旧任务已有参考只校验并复用，不在续跑时自动重处理；新衣服参考需要同名人物的 standard.png，避免误用 original 或简化图尺寸作为基准。该过程不额外调用 LLM。
+后处理成功后直接替换正式参考文件，后续步骤只读取处理后的图片。处理前的生成原文件和处理报告保存于 references/archive/ 的独立历史目录，每次生成追加保存。archive 仅供人工查看，不参与程序输入、完成判断或恢复运行；删除 archive 不影响续跑，正式参考缺失时也不会从 archive 恢复。人物 part 的步骤记录（`references/.steps/`）仅记录正式参考的文件指纹及输入依赖，不保存归档路径或后处理进度。旧任务已有参考只校验并复用，不在续跑时自动重处理；新衣服参考需要同名人物的 standard.png，避免误用 original 或简化图尺寸作为基准。该过程不额外调用 LLM。
 
 Nano 两张背景图、背景选择、alpha 和错误／处理报告保留在调用步骤的 image-processing 目录。第二次生图、背景采样或画布适配失败时明确报错，日志指向实际文件，不发布未完成的新参考。无需透明化时直接保留输出；制作管线不依赖 FFmpeg 或 Python 抠图环境。
 
@@ -190,3 +190,7 @@ Nano 两张背景图、背景选择、alpha 和错误／处理报告保留在调
 step01 reviewer 看图确认形体、画风和衔接过渡问题，使用 `annotate_review_regions` 标记编号框、对应图层和问题说明，生成整图标记及同坐标局部对照；绘制者按编号反馈修复。工具仅为独立 reviewer 注册，定义在 `shared/tools/annotate_review_regions/description.md` 和 `schema.json`；它不自动检测差异、计算相似度或决定通过。step01 重点处理缺口、错位和明显画风差异；仅可覆盖本部件自己的原图可见像素，不能为缩小整图差异混入其他部件。覆盖区与补绘区、相邻 part 的接缝用画笔修自然。隐藏补全根据形体和上下文检查，不与遮挡物像素强行匹配。step02 使用 `locate_pixel_differences` 的候选框作为细节检查入口，对照参考确认后局部小改，并逐层扩展检查全部部件；精修边缘、抗锯齿、瑕疵、描边和部件细节，不拆层或修改归属，也不再独立 review。
 
 旧的 step01 完成交付在新版本下补跑轮廓 review，保留绘制会话和工程。检查没有改变 KRA／必要 PNG 时保留后续成果；实际修复改变工程时，后续步骤移入本管线 `recovery/` 保留，随后从修正输入继续。主动删除 `.completed` 仍沿用原有全重跑规则。旧 step02 已发布初次绘制报告、完成结果与有效交付但停在已移除 review 时，继续启动会完成其标记，不重画已完成柔边。
+
+### 各 CLI 请求大小预算
+
+`.env` 中 `layering_codex_request_compact_mib`、`layering_claude_request_compact_mib`、`layering_agv_request_compact_mib` 分别控制提前带图压缩的 MiB 预算；对应 `layering_<cli>_image_compact_threshold` 控制图片数，留空关闭。Codex 专用图片键优先于旧 `layering_image_compact_threshold`。完整机制、支持的协议、可选去重及失败恢复见 [图片容量保护](../patches/README.md#图片容量保护)。`env:check` 只预览生效配置；真正发包时再核查容量，不改上游硬上限。

@@ -6,7 +6,7 @@ import { extname, join, relative } from 'node:path';
 import lockfile from 'proper-lockfile';
 import { pipelineIds, resolveInput, resolveRunsDirectory, taskDirectory, type PipelineId } from '../shared/paths.ts';
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
-import { readPreparationState } from '../part-layering/preparation-state.ts';
+import { readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { readTaskLog } from './log.ts';
 
 export type TaskOptions = {
@@ -126,7 +126,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
     throw new Error('--standard / --no-standard 需要本次路线包含 part-layering；请用 --from part-layering 运行人物 preparation。');
   }
   const standard = options.standard ?? saved?.standard
-    ?? (await readPreparationState(join(directory, 'part-layering/references')))?.standard ?? false;
+    ?? await readPreparationOptions(join(directory, 'part-layering/references')) ?? false;
   const jobs = options.jobs ?? saved?.jobs ?? defaultAgentConcurrency;
   if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error('--jobs 必须为正整数。');
   const image = await originalImage(directory, options.image && resolveInput(options.name, options.image, options.dir));

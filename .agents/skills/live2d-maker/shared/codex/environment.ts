@@ -6,6 +6,7 @@ import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
 import { withNodePath } from '../process-environment.ts';
+import { imageBudget, type ImageBudget } from '../../patches/shared/visual-context.ts';
 import { modelSlotDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
 
 export type ModelTier = 'medium' | 'high';
@@ -26,6 +27,7 @@ export type WorkflowEnvironment = {
   cliPaths: Partial<Record<Harness, string>>;
   codex: CodexOptions;
   imageCompactThreshold?: number;
+  imageBudgets?: Record<Harness, ImageBudget>;
 };
 
 export function parseModel(value: string | undefined, fallback: ModelSelection, name: string): ModelSelection {
@@ -45,9 +47,10 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   const get = (name: string) => effective[name]?.trim();
   const flag = get('layering_custom_provider');
   if (flag && !['true', 'false', '1', '0'].includes(flag)) throw new Error('layering_custom_provider 只能为 true 或 false。');
-  const agvPatch = get('layering_agv_patch');
-  if (agvPatch && !['true', 'false'].includes(agvPatch)) throw new Error('layering_agv_patch 只能为 true 或 false。');
-  if (agvPatch) effective.layering_agv_patch = agvPatch;
+  if (get('layering_agv_patch')) throw new Error('layering_agv_patch 已改名为 layering_agv_unlimited_response_header_timeout，请在 .env 中改用新名称。');
+  const agvPatch = get('layering_agv_unlimited_response_header_timeout');
+  if (agvPatch && !['true', 'false'].includes(agvPatch)) throw new Error('layering_agv_unlimited_response_header_timeout 只能为 true 或 false。');
+  if (agvPatch) effective.layering_agv_unlimited_response_header_timeout = agvPatch;
   const config: NonNullable<CodexOptions['config']> = {};
   if (flag === 'true' || flag === '1') {
     const baseUrl = get('layering_provider_base_url'), key = get('layering_provider_api_key');
@@ -72,12 +75,12 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   // The old image keys feed the same per-step API settings below. Only the
   // request's native route may set extension variables in a Codex child.
   for (const key of ['LAYERING_IMAGE_BASE_URL', 'LAYERING_IMAGE_API_KEY', 'LAYERING_IMAGE_MODEL', 'LAYERING_IMAGE_OUTPUT_DIR']) delete effective[key];
-  const limit = get('layering_image_compact_threshold');
-  const threshold = limit ? Number(limit) : undefined;
-  if (threshold !== undefined && (!/^\d+$/.test(limit!) || !Number.isSafeInteger(threshold) || threshold < 1)) {
-    throw new Error('layering_image_compact_threshold 必须是正整数；留空表示不启用。');
-  }
+  const imageBudgets = Object.fromEntries((['codex', 'claude', 'agv'] as const).map(harness => [harness, imageBudget(effective, harness)])) as Record<Harness, ImageBudget>;
+  const threshold = imageBudgets.codex.images;
   if (threshold !== undefined) effective.LAYERING_IMAGE_COMPACT_THRESHOLD = String(threshold);
+  else delete effective.LAYERING_IMAGE_COMPACT_THRESHOLD;
+  if (imageBudgets.codex.bytes) effective.LAYERING_REQUEST_COMPACT_BYTES = String(imageBudgets.codex.bytes);
+  else delete effective.LAYERING_REQUEST_COMPACT_BYTES;
   const slotModels = {} as Record<ModelSlot, AgentModel>;
   for (const [slot, fallback] of Object.entries(modelSlotDefaults) as [ModelSlot, string][]) {
     const key = `layering_agent_${slot}_model`;
@@ -125,7 +128,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   }
   if (executable) cliPaths.codex = path(executable);
   return {
-    stepModels, stepImages, imageApis, cliPaths,
+    stepModels, stepImages, imageApis, cliPaths, imageBudgets,
     models: {
       medium: parseModel(get('layering_medium_model'), defaultModels.medium, 'layering_medium_model'),
       high: parseModel(get('layering_high_model'), defaultModels.high, 'layering_high_model'),
@@ -139,11 +142,12 @@ const checkedCapabilities = new Map<string, Promise<void>>();
 export async function checkCodexCapabilities(settings: WorkflowEnvironment, options = settings.codex,
   needs: { image?: boolean; progress?: (message: string) => void } = {},
   prepare = async () => (await import('../../patches/codex/build.ts')).ensurePatchedCodex({ env: options.env, progress: needs.progress })): Promise<void> {
-  if (settings.imageCompactThreshold === undefined && !needs.image) return;
+  const needsBytes = settings.imageBudgets?.codex.bytes !== undefined;
+  if (settings.imageCompactThreshold === undefined && !needsBytes && !needs.image) return;
   const executable = options.codexPathOverride ?? settings.codex.codexPathOverride ?? await prepare();
   const instruction = 'layering_codex_path 显式指定的入口必须具备对应能力；清空此项可在启用补丁功能时自动构建。';
-  const needsVisualCompaction = settings.imageCompactThreshold !== undefined;
-  const cacheKey = `${executable}\0${needs.image ? 'image-provider-v2' : ''}\0${needsVisualCompaction ? 'visual-compaction-v2' : ''}`;
+  const needsVisualCompaction = settings.imageCompactThreshold !== undefined || needsBytes;
+  const cacheKey = `${executable}\0${needs.image ? 'image-provider-v2' : ''}\0${needsVisualCompaction ? 'visual-compaction-v2' : ''}\0${needsBytes ? 'request-compaction-v1' : ''}`;
   let check = checkedCapabilities.get(cacheKey);
   if (!check) {
     check = (async () => {
@@ -156,6 +160,7 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
         if (needsVisualCompaction && (value.image_compaction !== true || value.image_compaction_version !== 2)) {
           throw new Error('visual compaction v2 required');
         }
+        if (needsBytes && value.request_compaction_version !== 1) throw new Error('request compaction v1 required');
       } catch { throw new Error(`配置的 Codex 未通过 Layering 补丁能力检查。${instruction}`); }
     })();
     checkedCapabilities.set(cacheKey, check);

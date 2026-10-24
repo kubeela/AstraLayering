@@ -174,7 +174,7 @@ test('native routes share OpenAI/Gemini transports, preserve image bytes/alpha a
   await assert.rejects(fetch(openai.env.LAYERING_IMAGE_BASE_URL + '/images/generations'));
 });
 
-test('Codex drawing/repair uses native image events, resumes after changing image model and keeps products', async t => {
+test('Codex completion uses native image events, resumes after changing image model and keeps products', async t => {
   const { root } = await fixture(t);
   const savedPath = join(root, 'existing.png'); await writeFile(savedPath, 'keep');
   const server = await fakeAppServer(root, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath }]);
@@ -183,12 +183,13 @@ test('Codex drawing/repair uses native image events, resumes after changing imag
   source = source.replace('const calls =', `if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(capabilities))}); process.exit(0); }\nconst calls =`);
   await writeFile(server.executable, source);
   const settings = loadWorkflowEnvironment({ layering_codex_path: server.executable,
-    layering_part_outline_image_model: 'gpt-image-2.5-flare', layering_part_outline_repair_image_model: 'gpt-image-2.5-sunburst',
+    layering_part_completion_image_model: 'gpt-image-2.5-flare',
     layering_openai_image_base_url: 'https://image.example/v1', layering_openai_image_api_key: 'fixture' }, root);
   const session = new CodexAgents({ environment: settings, cwd: root, logDirectory: join(root, 'logs') }).createSession();
   try {
-    const a = await session.run({ step: 'part_outline', name: 'draw', prompt: '原绘图任务' });
-    const b = await session.run({ step: 'part_outline_repair', name: 'repair', prompt: '原返修任务' });
+    const a = await session.run({ step: 'part_completion', name: 'complete', prompt: '原补全任务' });
+    settings.stepImages.part_completion = 'gpt-image-2.5-sunburst';
+    const b = await session.run({ step: 'part_completion', name: 'continue', prompt: '继续补全任务' });
     assert.equal(a.threadId, b.threadId); assert.deepEqual(b.images, [{ savedPath }]);
     assert.equal(await readFile(savedPath, 'utf8'), 'keep');
     const records = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
