@@ -86,7 +86,7 @@ test('default template covers model roles and individual image choices without c
   assert.ok(imageSteps.every(step => settings.stepImages[step] === 'codex-native'));
 });
 
-test('mixed preset assigns shared GPT, Argon and Claude roles with the existing Nano/Sunburst image combination', async t => {
+test('mixed preset assigns shared GPT, Argon and Claude roles and uses Sunburst for simplification', async t => {
   const base = parseEnv(await readFile(new URL('../../example.env', import.meta.url), 'utf8'));
   const overrides = parseEnv(await readFile(new URL('../../presets/optimized.env', import.meta.url), 'utf8'));
   const variables = { ...base, ...overrides, layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture',
@@ -106,7 +106,7 @@ test('mixed preset assigns shared GPT, Argon and Claude roles with the existing 
   for (const [step, role] of Object.entries(stepModelSlots)) {
     assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected[role], 'fixture'), step);
   }
-  const nanoSteps = new Set(['part_simplify', 'part_base_subject', 'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair']);
+  const nanoSteps = new Set(['part_base_subject', 'part_outline', 'part_outline_repair', 'clothing_outline', 'clothing_outline_repair']);
   for (const step of imageSteps) {
     assert.equal(settings.stepImages[step], nanoSteps.has(step) ? 'gemini-nano-banana-2.1' : 'gpt-image-2.5-sunburst', step);
     validateImageSelection(settings, step);
