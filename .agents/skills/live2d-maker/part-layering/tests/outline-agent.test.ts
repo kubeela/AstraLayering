@@ -108,6 +108,45 @@ test('绘制 ID 在中断前落盘；重启调度后恢复同一会话，reviewe
   assert.equal(JSON.parse(await readFile(path, 'utf8')).threadId, 'persistent-drawing-thread');
 });
 
+test('image blocked 时清理草稿、观察图和 threadId，新会话完整重试；有次数上限', async t => {
+  const f = await fixture(t), resumed: (string | undefined)[] = [];
+  const blocked = () => Object.assign(new Error('stream disconnected before completion: Image processing blocked due to content policy violation.'),
+    { threadId: 'blocked-thread' });
+  function flaky(failures: number) {
+    const mock = agents(['pass']);
+    let attempts = 0;
+    return { mock, steps: createLayeringSteps({ run: mock.run, createSession(id?: string): AgentSession {
+      resumed.push(id);
+      const inner = mock.createSession();
+      return { close: inner.close, async run(task, signal) {
+        if (task.name.startsWith('组轮廓绘制') && attempts++ < failures) {
+          const input = runtime(task);
+          await writeFile(input.outputSvg!, svg('face'));
+          await mkdir(join(f.directory, 'observations/outline/face'), { recursive: true });
+          await writeFile(join(f.directory, 'observations/outline/face/crop.png'), 'x');
+          throw blocked();
+        }
+        return inner.run(task, signal);
+      } };
+    } }) };
+  }
+  const first = flaky(2);
+  await runLayering({ ...f, groups: null, steps: first.steps });
+  assert.deepEqual(resumed, [undefined, undefined, undefined]);
+  const sessions = join(f.directory, 'stages/sessions/face.json');
+  const history = (await readFile(sessions + '.history.jsonl', 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(history.length, 2);
+  assert.ok(history.every(entry => entry.threadId === 'blocked-thread' && /image blocked/.test(entry.reason)));
+  await assert.rejects(readFile(join(f.directory, 'observations/outline/face/crop.png')), { code: 'ENOENT' });
+  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.review.status, 'completed');
+
+  const g = await fixture(t);
+  const always = flaky(Infinity);
+  resumed.length = 0;
+  await assert.rejects(runLayering({ ...g, groups: null, steps: always.steps }), /content policy/);
+  assert.equal(resumed.length, 4);
+});
+
 test('提示词按完整 group ID 和步骤独立替换；子组不继承父组特化', async t => {
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-prompts-'));
   t.after(() => rm(directory, { recursive: true, force: true }));

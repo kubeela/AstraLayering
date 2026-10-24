@@ -19,9 +19,20 @@ export class AgentCallError extends Error {
   }
 }
 
+// 上游对图片的内容审查拒绝（经 LiteLLM 透传补丁可见）。它常以 stream disconnected 开头，
+// 但在原会话内重放同一批历史图片只会重复失败；由步骤层清理产物后新建会话重试。
+export function imageBlockedError(error: unknown): boolean {
+  for (let current = error, depth = 0; current && depth < 5; current = (current as { cause?: unknown }).cause, depth++) {
+    const text = current instanceof Error ? current.message : String(current);
+    if (/image (?:processing |input )?blocked|blocked due to content policy|content[\s_-]*policy[\s_-]*violation/i.test(text)) return true;
+  }
+  return false;
+}
+
 export function retryableAgentError(error: unknown): boolean {
   // 只处理调用通道报告的错误，不能把绘图/工具/文件校验异常当成服务过载。
   if (!(error instanceof AgentCallError)) return false;
+  if (imageBlockedError(error)) return false;
   // Even a structured 429 can describe exhausted credit or an input image cap.
   if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i.test(error.message)) return false;
   const imageCountLimit = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i.test(error.message);
