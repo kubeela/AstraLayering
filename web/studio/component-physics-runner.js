@@ -28,8 +28,9 @@ export class ComponentPhysicsRunner {
     panel.scene.sourcePose = data.sourcePose; panel.scene.stepNumber = data.clockStep;
     panel.elapsed = data.elapsed; panel.replayStep = data.replayStep; panel.playback = data.playback;
     if (data.paused) { panel.paused = true; document.querySelector('#component-test').value = ''; panel.sync(); }
-    panel.render();
+    this.present(data.manual);
   }
+  present() { this.panel.render(); }
   advance(steps, manual) {
     if (!this.ready || this.busy) return false;
     if (this.deferred) { this.apply(this.deferred); this.deferred = null; }

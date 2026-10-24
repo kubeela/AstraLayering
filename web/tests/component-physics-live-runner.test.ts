@@ -21,13 +21,16 @@ function setup(t: any) {
     }
     terminate() { this.terminated=true; }
   }
-  const prior=globalThis.Worker;(globalThis as any).Worker=Worker;
-  t.after(()=>{(globalThis as any).Worker=prior;});
-  const config=rig(),scene=new ComponentScene(config),panel:any={config,scene,bodies:scene.bodies,enabled:true,paused:false,elapsed:0,replayStep:0,playback:'',breeze:true,breezeStrength:.2,breezeDirection:0,render(){},sync(){},changed(){},error(message:string){throw Error(message);}};
+  const prior={Worker:globalThis.Worker,raf:globalThis.requestAnimationFrame,cancel:globalThis.cancelAnimationFrame};
+  const frames=new Map<number,FrameRequestCallback>();let frameId=0;
+  (globalThis as any).Worker=Worker;
+  globalThis.requestAnimationFrame=callback=>{frames.set(++frameId,callback);return frameId;};
+  globalThis.cancelAnimationFrame=id=>{frames.delete(id);};
+  const config=rig(),scene=new ComponentScene(config),panel:any={config,scene,bodies:scene.bodies,enabled:true,paused:false,elapsed:0,replayStep:0,playback:'',breeze:true,breezeStrength:.2,breezeDirection:0,renders:[] as number[],render(){this.renders.push(this.scene.stepNumber);},sync(){},changed(){},error(message:string){throw Error(message);}};
   const runner=new ComponentPhysicsLiveRunner(panel),worker=runner.worker as any;
   worker.onmessage({data:{type:'boot'}});
-  t.after(()=>runner.dispose());
-  return {runner,worker,panel};
+  t.after(()=>{runner.dispose();(globalThis as any).Worker=prior.Worker;globalThis.requestAnimationFrame=prior.raf;globalThis.cancelAnimationFrame=prior.cancel;});
+  return {runner,worker,panel,frames,paint(){const pending=[...frames.values()];frames.clear();for(const callback of pending)callback(16);}};
 }
 
 test('live jobs publish intermediate exact poses and drain demand without another animation frame',t=>{
@@ -44,6 +47,24 @@ test('live jobs publish intermediate exact poses and drain demand without anothe
   }
   assert.equal(worker.jobs.length,0);assert.equal(runner.pendingSteps,0);
   assert.equal(panel.bodies.get('hair').impulses,1);
+});
+
+test('multiple Worker replies keep exact poses but present the latest pose once per display frame',t=>{
+  const {runner,worker,panel,frames,paint}=setup(t);
+  runner.advance(6,false);worker.flush();worker.flush();worker.flush();
+  assert.equal(panel.scene.stepNumber,6);assert.equal(frames.size,1);
+  assert.deepEqual(panel.renders,[],'Worker completion must not draw outside the display frame');
+  paint();assert.deepEqual(panel.renders,[6]);assert.equal(frames.size,0);
+  runner.advance(2,false);worker.flush();paint();assert.deepEqual(panel.renders,[6,8]);
+});
+
+test('manual stepping presents immediately and reset or disposal cancels queued presentation',t=>{
+  const {runner,worker,panel,frames,paint}=setup(t);
+  runner.advance(2,false);worker.flush();assert.equal(frames.size,1);
+  runner.advance(2,true);worker.flush();assert.deepEqual(panel.renders,[4]);assert.equal(frames.size,0);
+  runner.advance(2,false);worker.flush();panel.scene.reset();paint();assert.deepEqual(panel.renders,[4]);
+  runner.advance(2,false);worker.flush();assert.equal(frames.size,1);
+  runner.dispose();paint();assert.equal(frames.size,0);assert.deepEqual(panel.renders,[4]);
 });
 
 test('pause retains the visible pose and pending demand; reset discards old demand and snapshots',t=>{
