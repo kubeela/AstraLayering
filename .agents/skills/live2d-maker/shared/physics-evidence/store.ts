@@ -47,7 +47,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
         if(step<=960){m.peak=Math.max(m.peak,b.stats.travel);m.fallback+=+b.stats.fallback;m.limited+=+b.stats.limited;m.final=b.stats.travel;}
         m.root=Math.max(m.root,b.stats.root);m.invalid+=+!b.stats.valid;
         let tracker=stepTrackers.get(id);if(!tracker){tracker=new MotionStepTracker(config.source.canvas,b.positions.length,b.maxDistance);stepTrackers.set(id,tracker);}
-        tracker.update(b.positions,scene.sourcePose);m.maxStep=tracker.maxStep;m.maxWorldStep=tracker.maxWorldStep;m.maxAcceleration=tracker.maxAcceleration;m.discontinuityRatio=tracker.discontinuityRatio;if(step<=960)m.visiblePeak=tracker.visiblePeak;
+        tracker.update(b.positions,scene.sourcePose,b.stats.fallback);m.maxStep=tracker.maxStep;m.maxWorldStep=tracker.maxWorldStep;m.maxAcceleration=tracker.maxAcceleration;m.discontinuityRatio=tracker.discontinuityRatio;m.maxFallbackStreak=tracker.maxFallbackStreak;if(step<=960)m.visiblePeak=tracker.visiblePeak;
         if(step===960&&!['neutral','extreme'].includes(test)&&!recoveryState(b,m.visiblePeak,tracker.visibleTravel).quiet)recovery.set(id,{quietSteps:0,fallbackSteps:0});
         if(step>960&&recovery.has(id)){const r=recovery.get(id),state=recoveryState(b,m.visiblePeak,tracker.visibleTravel);r.quietSteps=state.quiet?r.quietSteps+1:0;r.fallbackSteps+=+b.stats.fallback;r.final=state.travel;r.internalSpeed=state.internalSpeed;}
         const stats=b.stats,residual=Array.from(b.positions,(v:any,i:number)=>v-b.pose[i]);
