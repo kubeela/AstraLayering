@@ -66,20 +66,26 @@ test('source pixel dimensions prevent accepting resized cached images', async t 
   assert.equal(f.calls.length, 1);
 });
 
-test('changed render fingerprint or incomplete render coverage never grants a cache hit', async t => {
+test('changed render, configuration or solver fingerprints never grant a cache hit', async t => {
   const f = await fixture(t); await f.image(180); await f.save();
   await createFrameRenderer({ ...f.dependencies, fingerprint: async () => 'new-pixels' })(f.config, f.source, f.evidence,
     [{ test: 'airflow', steps: [180], modes: ['color'] }]);
   assert.deepEqual(f.calls[0], [{ test: 'airflow', steps: [180], modes: ['color'], cropSteps: [] }]);
-  f.manifest.coverage.render = 'partial'; await f.save();
-  await createFrameRenderer(f.dependencies)(f.config, f.source, f.evidence, [{ test: 'airflow', steps: [180], modes: ['color'] }]);
-  assert.equal(f.calls.length, 2);
-  f.manifest.coverage.render = 'completed'; await f.save();
   await createFrameRenderer(f.dependencies)({ ...f.config, solver: 'changed' }, f.source, f.evidence,
     [{ test: 'airflow', steps: [180], modes: ['color'] }]);
   await createFrameRenderer({ ...f.dependencies, simulationHash: async () => 'new-solver' })(f.config, f.source, f.evidence,
     [{ test: 'airflow', steps: [180], modes: ['color'] }]);
-  assert.equal(f.calls.length, 4);
+  assert.equal(f.calls.length, 3);
+});
+
+test('partial evidence retains valid full-size frames and only renders missing crops without granting review', async t => {
+  const f = await fixture(t);f.manifest.coverage.render='partial';
+  const whole=await f.image(180),hair=await f.image(180,'color','hair');await f.save();
+  await writeFile(join(f.evidence,'viewed.json'),'[]');
+  const before=await readFile(join(f.evidence,'manifest.json'),'utf8'),pixels=await readFile(join(f.evidence,whole.path));
+  const result=await createFrameRenderer(f.dependencies)(f.config,f.source,f.evidence,[{test:'airflow',steps:[180],modes:['color'],cropSteps:[180]}]);
+  assert.deepEqual(f.calls[0],[{test:'airflow',steps:[180],modes:['color'],components:['robe']}]);assert.deepEqual(result.slice(0,2),[whole,hair]);
+  assert.deepEqual(await readFile(join(f.evidence,whole.path)),pixels);assert.equal(await readFile(join(f.evidence,'manifest.json'),'utf8'),before);assert.equal(await readFile(join(f.evidence,'viewed.json'),'utf8'),'[]');
 });
 
 test('missing times are batched by mode and explicit component requests keep their local crops', async t => {

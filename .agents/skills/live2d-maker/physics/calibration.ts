@@ -120,34 +120,42 @@ export async function measureCandidate(config:any,ids:string[],signal?:AbortSign
   }
   return {metrics:result,score,eligible,issues,inputScale:allLength};
 }
-export async function calibrate(config:any,directory:string,assemblyId:string,reason:string,candidates?:Candidate[],signal?:AbortSignal,reference?:any){
+export async function calibrate(config:any,directory:string,assemblyId:string,reason:string,candidates?:Candidate[],signal?:AbortSignal,reference?:any,options:{preserveEligibleBaseline?:boolean}={}){
   validatePhysicsConfig(config);if(!reason?.trim())throw Error('标定必须记录要解决的实际问题');
   const assemblies=groupAssemblies(config),group=assemblies.find(a=>a.id===assemblyId);if(!group?.enabledComponentIds.length)throw Error('装配组不存在或已关闭');
   const runtime=await simulationHash(),digest=configHash(config),tuning:any=await optional(join(directory,'tuning.json'))||{version:1,calibrationVersion,status:'draft',groups:[]};
-  const baselineMeasured=await measureCandidate(config,group.componentIds,signal);
-  const supplied=candidates??defaults(config,group.enabledComponentIds,reference,baselineMeasured);if(!Array.isArray(supplied)||supplied.length>3||new Set(supplied.map(c=>c.id)).size!==supplied.length||supplied.some(c=>c.id==='baseline'))throw Error('一次最多三个不同候选，baseline 由工具保留');
   let entry=tuning.groups.find((g:any)=>g.assemblyId===assemblyId);if(!entry){entry={assemblyId,componentIds:group.componentIds,rounds:[]};tuning.groups.push(entry);}
   const targetHash=reference?configHash(reference):null;
   const generation=hash(calibrationGeneration(config,group.componentIds,runtime)+(targetHash??''));
   if(entry.generation!==generation){if(entry.rounds.length)(entry.history||=[]).push({generation:entry.generation,rounds:entry.rounds});entry.rounds=[];entry.generation=generation;entry.componentIds=group.componentIds;}
-  const baseComponents=componentHashes(config,group.componentIds),requestHash=hash(JSON.stringify({baseComponents,reason,candidates:supplied}));
-  const existing=entry.rounds.findLast((r:any)=>r.requestHash===requestHash);if(existing)return {reused:true,round:existing};
-  if(entry.rounds.length>=3)throw Error('该装配组已完成三轮标定；保留候选与失败原因，等待明确修正方案');
-  const round:any={round:entry.rounds.length+1,reason,requestHash,generation,targetHash,motionTargetVersion,baseComponents,baseConfigHash:digest,solverHash:runtime,inputVersion,inputScale:inputScale(config),createdAt:new Date().toISOString(),candidates:[]};
-  const folder=join(directory,'calibration',hash(assemblyId).slice(0,16),generation.slice(0,16),'round-'+round.round);await mkdir(folder,{recursive:true});
+  const baseComponents=componentHashes(config,group.componentIds),latest=entry.rounds.at(-1),selected=latest?.candidates.find((c:any)=>c.id===latest.selectedCandidate);
+  // Exact current measurements can resume without spending another search
+  // round. A solver, target, geometry or parameter change never takes this path.
+  if(options.preserveEligibleBaseline&&latest?.solverHash===runtime&&latest.targetHash===targetHash&&latest.motionTargetVersion===motionTargetVersion&&selected?.eligible&&Object.entries(baseComponents).every(([id,value])=>latest.selectedComponents?.[id]===value))return {reused:true,baselinePreserved:true,selection:selected.id,round:latest};
+  const baselineMeasured=await measureCandidate(config,group.componentIds,signal);
   const targetIds=reference?group.enabledComponentIds.map(id=>matchTargetComponent(config.components.find((c:any)=>c.id===id),reference)?.id).filter(Boolean):[];
   const targetMeasurement=targetIds.length?await measureCandidate(reference,targetIds,signal):null;
+  const assess=(measured:any,next:any)=>{
+    if(targetMeasurement)for(const test of quickTests)for(const c of next.components.filter((c:any)=>group.enabledComponentIds.includes(c.id))){const r=matchTargetComponent(c,reference);if(!r)continue;const m=measured.metrics[test][c.id],target=compareMotionTarget(c,m,r,{...targetMeasurement.metrics[test][r.id],referenceAssemblyIssues:targetMeasurement.issues});m.target=target;measured.score+=target.envelopeLoss*10;measured.issues.push(...target.issues.map(issue=>test+'/'+c.id+': '+issue));if(target.issues.length)measured.eligible=false;}
+    return measured;
+  };
+  const baseline=assess(structuredClone(baselineMeasured),config),baselinePreserved=!!options.preserveEligibleBaseline&&baseline.eligible;
+  const supplied=baselinePreserved?[]:candidates??defaults(config,group.enabledComponentIds,reference,baselineMeasured);if(!Array.isArray(supplied)||supplied.length>3||new Set(supplied.map(c=>c.id)).size!==supplied.length||supplied.some(c=>c.id==='baseline'))throw Error('一次最多三个不同候选，baseline 由工具保留');
+  const requestHash=hash(JSON.stringify({baseComponents,reason,candidates:supplied,preserveEligibleBaseline:!!options.preserveEligibleBaseline}));
+  const existing=entry.rounds.findLast((r:any)=>r.requestHash===requestHash);if(existing)return {reused:true,round:existing};
+  if(entry.rounds.length>=3)throw Error('该装配组已完成三轮标定；保留候选与失败原因，等待明确修正方案');
+  const round:any={round:entry.rounds.length+1,reason,requestHash,generation,targetHash,motionTargetVersion,baselinePolicy:options.preserveEligibleBaseline?'preserve-eligible':'search',baseComponents,baseConfigHash:digest,solverHash:runtime,inputVersion,inputScale:inputScale(config),createdAt:new Date().toISOString(),candidates:[]};
+  const folder=join(directory,'calibration',hash(assemblyId).slice(0,16),generation.slice(0,16),'round-'+round.round);await mkdir(folder,{recursive:true});
   round.referenceValidation=targetMeasurement?{usable:targetMeasurement.eligible,issues:targetMeasurement.issues,purpose:targetMeasurement.eligible?'numerical-motion-target':'initialization-and-visual-reference-only'}:null;
   const seen=new Set<string>();
   for(const candidate of [{id:'baseline',parameters:{}},...supplied]){
     signal?.throwIfAborted();const next=parameterCandidate(config,group.componentIds,candidate),nextHash=configHash(next.config);if(seen.has(nextHash))continue;seen.add(nextHash);
-    const measured=candidate.id==='baseline'?structuredClone(baselineMeasured):await measureCandidate(next.config,group.componentIds,signal),path=join(folder,candidate.id+'.json');await put(path,next.config);
-    if(targetMeasurement)for(const test of quickTests)for(const c of next.config.components.filter((c:any)=>group.enabledComponentIds.includes(c.id))){const r=matchTargetComponent(c,reference);if(!r)continue;const m=measured.metrics[test][c.id],target=compareMotionTarget(c,m,r,{...targetMeasurement.metrics[test][r.id],referenceAssemblyIssues:targetMeasurement.issues});m.target=target;measured.score+=target.envelopeLoss*10;measured.issues.push(...target.issues.map(issue=>test+'/'+c.id+': '+issue));if(target.issues.length)measured.eligible=false;}
+    const measured=candidate.id==='baseline'?baseline:assess(await measureCandidate(next.config,group.componentIds,signal),next.config),path=join(folder,candidate.id+'.json');await put(path,next.config);
     round.candidates.push({id:candidate.id,changes:next.changes,configHash:nextHash,...measured,path:relative(directory,path)});
   }
   const best=round.candidates.filter((c:any)=>c.eligible).sort((a:any,b:any)=>a.score-b.score)[0];round.recommendedCandidate=best?.id??null;
   entry.rounds.push(round);tuning.configHash=digest;tuning.solverHash=runtime;tuning.status='draft';await put(join(directory,'assemblies.json'),{version:1,configHash:digest,groups:assemblies});await put(join(directory,'tuning.json'),tuning);
-  return {reused:false,round};
+  return {reused:false,baselinePreserved,round};
 }
 export async function selectCandidate(config:any,directory:string,assemblyId:string,candidateId:string,reason:string){
   if(!reason?.trim())throw Error('选择候选需要说明依据');const tuning:any=await optional(join(directory,'tuning.json')),entry=tuning?.groups.find((g:any)=>g.assemblyId===assemblyId),round=entry?.rounds.at(-1),candidate=round?.candidates.find((c:any)=>c.id===candidateId);
