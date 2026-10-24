@@ -36,7 +36,7 @@ export async function cliExecutable(settings: WorkflowEnvironment, harness: Harn
     // Compatibility errors must reach the user, rather than be swallowed and
     // misreported as a missing CLI or silently fall back to an unpatched one.
     if (harness !== 'agv') return executable;
-    if (settings.codex.env?.layering_agv_patch === 'true') {
+    if (settings.codex.env?.layering_agv_unlimited_response_header_timeout === 'true') {
       const {createPatchedAgv} = await import('../../patches/agv/patch-response-header.ts');
       const root = resolveRunsDirectory(runsRoot);
       await mkdir(root, {recursive: true});

@@ -28,6 +28,7 @@ export type WorkflowEnvironment = {
   codex: CodexOptions;
   imageCompactThreshold?: number;
   imageBudgets?: Record<Harness, ImageBudget>;
+  litellmConfig?: string;
 };
 
 export function parseModel(value: string | undefined, fallback: ModelSelection, name: string): ModelSelection {
@@ -47,9 +48,10 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   const get = (name: string) => effective[name]?.trim();
   const flag = get('layering_custom_provider');
   if (flag && !['true', 'false', '1', '0'].includes(flag)) throw new Error('layering_custom_provider 只能为 true 或 false。');
-  const agvPatch = get('layering_agv_patch');
-  if (agvPatch && !['true', 'false'].includes(agvPatch)) throw new Error('layering_agv_patch 只能为 true 或 false。');
-  if (agvPatch) effective.layering_agv_patch = agvPatch;
+  if (get('layering_agv_patch')) throw new Error('layering_agv_patch 已改名为 layering_agv_unlimited_response_header_timeout，请在 .env 中改用新名称。');
+  const agvPatch = get('layering_agv_unlimited_response_header_timeout');
+  if (agvPatch && !['true', 'false'].includes(agvPatch)) throw new Error('layering_agv_unlimited_response_header_timeout 只能为 true 或 false。');
+  if (agvPatch) effective.layering_agv_unlimited_response_header_timeout = agvPatch;
   const config: NonNullable<CodexOptions['config']> = {};
   if (flag === 'true' || flag === '1') {
     const baseUrl = get('layering_provider_base_url'), key = get('layering_provider_api_key');
@@ -126,6 +128,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
     if (value) cliPaths[harness] = path(value);
   }
   if (executable) cliPaths.codex = path(executable);
+  const litellm = get('layering_litellm_config');
   return {
     stepModels, stepImages, imageApis, cliPaths, imageBudgets,
     models: {
@@ -134,6 +137,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
     },
     codex: { env: effective, config, ...(executable ? { codexPathOverride: path(executable) } : {}) },
     ...(threshold === undefined ? {} : { imageCompactThreshold: threshold }),
+    ...(litellm ? { litellmConfig: path(litellm) } : {}),
   };
 }
 

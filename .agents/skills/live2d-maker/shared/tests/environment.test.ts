@@ -53,7 +53,8 @@ test('主模型与生图分别鉴权；只填生图模型不启用，按需准�
   assert.equal(settings.codex.env!.LAYERING_IMAGE_COMPACT_THRESHOLD, '49');
   assert.ok(!JSON.stringify(settings.codex.config).includes('secret'));
   await assert.rejects(checkCodexCapabilities(settings, settings.codex, {}, async () => { throw new Error('fixture build failure'); }), /fixture build failure/);
-  assert.throws(() => loadWorkflowEnvironment({layering_agv_patch: 'yes'}, root), /layering_agv_patch/);
+  assert.throws(() => loadWorkflowEnvironment({layering_agv_unlimited_response_header_timeout: 'yes'}, root), /layering_agv_unlimited_response_header_timeout/);
+  assert.throws(() => loadWorkflowEnvironment({layering_agv_patch: 'true'}, root), /已改名为 layering_agv_unlimited_response_header_timeout/);
   assert.throws(() => loadWorkflowEnvironment({ layering_custom_provider: 'true' }, root), /需要填写/);
   assert.throws(() => loadWorkflowEnvironment({ layering_image_api_key: 'secret' }, root), /同时填写/);
   for (const invalid of ['0', '-1', '49.2', 'NaN']) assert.throws(() => loadWorkflowEnvironment({ layering_image_compact_threshold: invalid }, root), /正整数/);
