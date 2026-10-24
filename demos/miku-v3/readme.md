@@ -1,6 +1,6 @@
 # Miku v3：头脸还原改进与完整彩图
 
-2026-09-17归档。本轮已生成阶段1—5全部结果，阶段3使用新的五步流程。脸型、头型和发束包脸关系有明显进步；局部眼睑、睫毛、手足线条与头发材质仍需改进。详细观察和同坐标对照见[本轮复核](../../analysis/miku-v3-review/readme.md)。
+2026-09-17归档。本轮已生成阶段1—5全部结果，阶段3使用新的五步流程。脸型、头型和发束包脸关系有明显进步；局部眼睑、睫毛、手足线条与头发材质仍需改进。详细观察和同坐标对照见[本轮复核](https://github.com/wu-tian807/AstraLayering/blob/ae7b7b5bb83275900a33c7d287b07987a55ffed5/analysis/miku-v3-review/readme.md)。
 
 ## 输入与产物
 
@@ -28,6 +28,6 @@
 
 本次已检查整图、头脸、头顶、手足与发尾，并核对阶段间脸型和眼部路径继承。结论为明显改善、仍有局部差异；不等同于全部隐藏部件和动态遮挡均已验收。终稿metadata注明独立审查不可用，不能登记为已完成独立审查；根title／desc仍沿用05-1，属于记录遗漏，见复核说明。
 
-线稿增加独立审查subagent、增加检查与返修投入目前仅为[候选改进](../../analysis/miku-v3-review/readme.md#pending-review)，尚未修改执行提示词或启用。
+线稿增加独立审查subagent、增加检查与返修投入目前仅为[候选改进](https://github.com/wu-tian807/AstraLayering/blob/ae7b7b5bb83275900a33c7d287b07987a55ffed5/analysis/miku-v3-review/readme.md#pending-review)，尚未修改执行提示词或启用。
 
 使用现有[SVG预览器](../../loading/part-preview.html)加载本目录彩图与SVG即可比较。返回[案例索引](../readme.md)。

@@ -17,15 +17,6 @@ node_modules/
 # Recreate them with the preview scripts, or use loading/part-preview.html.
 /demos/deep-sea-method-comparison/*/绘制过程.html
 
-# Regenerable display variants from the archived analysis script.
-/analysis/suzuran-analysis/annotated.svg
-/analysis/suzuran-analysis/original.svg
-/analysis/suzuran-analysis/original.html
-/analysis/suzuran-analysis/no-hair-strokes.svg
-/analysis/suzuran-analysis/no-hair-strokes.html
-/analysis/suzuran-analysis/heavy-hair-strokes.svg
-/analysis/suzuran-analysis/heavy-hair-strokes.html
-
 # Locally held third-party tutorial assets; existing tracked videos are preserved.
 /tutorial/live2d-guidance/local-assets/
 # Layering source models and original packages are versioned under tutorial.
