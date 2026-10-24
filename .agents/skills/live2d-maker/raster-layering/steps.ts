@@ -5,7 +5,7 @@ export { buildPrompt } from '../shared/raster/steps.ts';
 
 export const stepModels = {
   1: defaultModels.high,
-  2: defaultModels.high,
+  2: defaultModels.medium,
   3: defaultModels.medium,
 } as const;
 

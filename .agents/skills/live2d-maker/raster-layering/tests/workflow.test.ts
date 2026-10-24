@@ -123,7 +123,7 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
   await readFile(join(f.output, 'step02/.running'));
   await runWorkflow(f.resume, { ...deps, agent: async request => {
     assert.equal(request.threadId, 'thread-1');
-    if (request.model === 'gpt-6.1-sol') {
+    if (request.step === 'raster_step03') {
       calls.push('step03'); await readFile(join(f.output, 'step02/.completed'));
       assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(steps[2].prompt, 'utf8'))));
       return deliver(request, steps[2]);
@@ -158,7 +158,7 @@ test('已完成第一步的任务可按 name 预览第二步，显示实际输�
 test('直接读取上游；中断保留 .running、产物和 thread；只用 name 续跑', async t => {
   const f = await fixture(t);
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
-    assert.equal(request.model, 'gpt-6-astra');
+    assert.equal(request.model, 'gpt-6.1-sol');
     assert.equal(request.effort, 'xhigh');
     await readFile(join(f.output, 'step01/.running'));
     await request.onEvent({ type: 'thread.started', thread_id: 'thread-1' });
@@ -188,7 +188,7 @@ test('直接读取上游；中断保留 .running、产物和 thread；只用 nam
   await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
 });
 
-test('已完成第一步的任务接续后两步，共用 thread 并在第三步切换模型', async t => {
+test('已完成第一步的任务接续后两步，共用 thread 并使用各步模型配置', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
   let index = 1;
@@ -196,7 +196,7 @@ test('已完成第一步的任务接续后两步，共用 thread 并在第三步
     const step = f.definitions[index++];
     assert.equal(request.threadId, 'thread-1');
     assert.equal(request.model, step.model);
-    assert.equal(request.effort, 'xhigh');
+    assert.equal(request.effort, 'medium');
     assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step01/report.md'))));
     return deliver(request, step);
   } });
@@ -231,7 +231,7 @@ test('旧 models 快照不影响续跑；使用当前环境模型，保留会话
   assert.equal(current.threadId, old.threadId); assert.equal(current.threadHarness, old.threadHarness);
   const attempts = (await readFile(join(f.output, 'step01/attempts.jsonl'), 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(attempts.length, 2);
-  assert.equal(attempts[0].model, 'gpt-6-astra');
+  assert.equal(attempts[0].model, 'gpt-6.1-sol');
   assert.equal(attempts[1].model, 'gpt-6.1-sol'); assert.equal(attempts[1].effort, 'low');
 });
 
@@ -396,7 +396,7 @@ test('SDK 使用指定模型与 reasoning；临时 error 等待 CLI 终态，失
   };
   const request: AgentRequest = { prompt: 'test', directory: tmpdir(), ...stepModels[1], onEvent: async e => { received.push(e); } };
   assert.deepEqual(await runAgent(request, client), complete);
-  assert.equal(options[0].model, 'gpt-6-astra');
+  assert.equal(options[0].model, 'gpt-6.1-sol');
   assert.equal(options[0].modelReasoningEffort, 'xhigh');
   assert.equal(received.length, 4);
   events.splice(0, events.length, { type: 'turn.failed', error: { message: 'image policy error' } });

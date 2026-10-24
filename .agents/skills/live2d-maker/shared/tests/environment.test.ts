@@ -23,7 +23,8 @@ test('默认继承 Codex 配置，.env 模型后缀是力度，shell 优先且�
   const baseline = loadWorkflowEnvironment({ CODEX_HOME: '/existing/codex' }, root);
   assert.deepEqual(baseline.codex.config, {});
   assert.equal(baseline.codex.env!.CODEX_HOME, '/existing/codex');
-  assert.deepEqual(baseline.models.medium, { model: 'gpt-6.1-sol', effort: 'xhigh' });
+  assert.deepEqual(baseline.models.medium, { model: 'gpt-6.1-sol', effort: 'medium' });
+  assert.deepEqual(baseline.models.high, { model: 'gpt-6.1-sol', effort: 'xhigh' });
   assert.equal(baseline.imageCompactThreshold, undefined);
   await writeFile(join(root, '.env'), 'layering_medium_model=gpt-6.1-sol-low\nlayering_high_model=gpt-6-astra-high\nlayering_codex_path=bin/codex\n');
   const settings = loadWorkflowEnvironment({ layering_medium_model: 'gpt-6.1-sol-medium' }, root);
