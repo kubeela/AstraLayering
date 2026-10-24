@@ -172,7 +172,7 @@ export async function selectCandidate(config:any,directory:string,assemblyId:str
   // selected after this run never get rolled back to a candidate snapshot.
   const next=structuredClone(config);for(const c of next.components.filter((c:any)=>entry.componentIds.includes(c.id))){const measured=selected.components.find((v:any)=>v.id===c.id);c.response=structuredClone(measured.response);c.material=structuredClone(measured.material);}validatePhysicsConfig(next);
   round.selectedCandidate=candidate.id;round.selectionReason=reason;round.selectedConfigHash=configHash(next);round.selectedComponents=Object.fromEntries(next.components.filter((c:any)=>entry.componentIds.includes(c.id)).map((c:any)=>[c.id,hash(JSON.stringify(c))]));
-  tuning.configHash=configHash(next);tuning.status=selectedMatches(next,tuning)?'calibrated':'draft';await put(join(directory,'physics.draft.json'),next);await put(join(directory,'tuning.json'),tuning);await put(join(directory,'assemblies.json'),{version:1,configHash:configHash(next),groups:groupAssemblies(next)});return next;
+  tuning.calibrationVersion=calibrationVersion;tuning.configHash=configHash(next);tuning.status=selectedMatches(next,tuning)?'calibrated':'draft';await put(join(directory,'physics.draft.json'),next);await put(join(directory,'tuning.json'),tuning);await put(join(directory,'assemblies.json'),{version:1,configHash:configHash(next),groups:groupAssemblies(next)});return next;
 }
 export async function validateCalibration(config:any,directory:string){
   const tuning:any=await optional(join(directory,'tuning.json'));if(tuning?.calibrationVersion!==calibrationVersion||tuning.solverHash!==await simulationHash())throw Error('制作需使用当前求解器完成装配组标定');
