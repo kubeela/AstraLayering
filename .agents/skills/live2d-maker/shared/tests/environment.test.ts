@@ -78,6 +78,25 @@ test('图片压缩拒绝旧去图补丁，生图能力缓存不能绕过 v2 检�
   await checkCodexCapabilities(compact);
 });
 
+test('独立字节预算保留 env 控制权，Codex 明确拒绝缺少字节保护能力的旧补丁', { skip: process.platform === 'win32' }, async t => {
+  const root = await fixture(t), executable = join(root, 'codex-budget-fixture');
+  await writeFile(join(root, '.env'), 'layering_image_compact_threshold=49\nlayering_agv_request_compact_mib=80\nlayering_claude_image_compact_threshold=90\n');
+  const settings = loadWorkflowEnvironment({ layering_codex_path: executable, layering_codex_request_compact_mib: '28' }, root);
+  assert.equal(settings.imageCompactThreshold, 49);
+  assert.equal(settings.codex.env!.LAYERING_REQUEST_COMPACT_BYTES, String(28 * 1048576));
+  assert.deepEqual(settings.imageBudgets!.agv, { bytes: 80 * 1048576 });
+  assert.deepEqual(settings.imageBudgets!.claude, { images: 90 });
+  const install = async (version?: number) => {
+    await writeFile(executable, `#!${process.execPath}\nconsole.log(${JSON.stringify(JSON.stringify({ version: 1, image_compaction: true, image_compaction_version: 2, request_compaction_version: version }))});\n`);
+    await chmod(executable, 0o755);
+  };
+  await install(); await assert.rejects(checkCodexCapabilities(settings), /补丁能力检查/);
+  await install(1); await checkCodexCapabilities(settings);
+  const disabled = loadWorkflowEnvironment({ LAYERING_IMAGE_COMPACT_THRESHOLD: '49', LAYERING_REQUEST_COMPACT_BYTES: '100' }, await fixture(t));
+  assert.equal(disabled.codex.env!.LAYERING_IMAGE_COMPACT_THRESHOLD, undefined);
+  assert.equal(disabled.codex.env!.LAYERING_REQUEST_COMPACT_BYTES, undefined);
+});
+
 test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺产物诊断带最后消息', async t => {
   for (const pipeline of [character, clothing]) await t.test(pipeline.id, async t => {
     const root = await fixture(t); await seedUpstream('case', pipeline.inputPipeline, root);

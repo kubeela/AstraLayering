@@ -5,6 +5,7 @@ import { relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import type { FunctionTool } from '../codex/function-tools.ts';
+import { imageBudget, VisualContext, protectedImages, readVisualSummary, visualErrorStatus } from '../../patches/shared/visual-context.ts';
 
 const helper = fileURLToPath(new URL('./agv-tool.ts', import.meta.url));
 const quote = (value: string) => "'" + value.replaceAll("'", "'\\''") + "'";
@@ -91,8 +92,12 @@ export function rewriteGenaiTools(event: any, tools: readonly FunctionTool[]) {
 
 export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly FunctionTool[], logsRoot: string, signal: AbortSignal,
   inputImages: readonly { path: string; description: string }[] = [], workspace = '',
-  observe?: (event: GatewayEvent) => Promise<void>) {
-  if (!env.AGY_LLM_GATEWAY_URL || env.AGY_LLM_GATEWAY_WIRE_PROTOCOL !== 'genai') return;
+  observe?: (event: GatewayEvent) => Promise<void>, context?: VisualContext) {
+  const budget = imageBudget(env, 'agv');
+  if (!env.AGY_LLM_GATEWAY_URL || env.AGY_LLM_GATEWAY_WIRE_PROTOCOL !== 'genai') {
+    if (budget.images || budget.bytes || budget.deduplicate) throw new Error('AGV 图片容量保护需要已配置的 genai 网关；当前接口无法拦截实际请求，未静默忽略保护配置。');
+    return;
+  }
   const minimalThinking = env.layering_agv_minimal_thinking_level?.trim();
   if (minimalThinking && !['LOW', 'MEDIUM', 'HIGH'].includes(minimalThinking)) {
     throw new Error('layering_agv_minimal_thinking_level 只能为 LOW、MEDIUM、HIGH；留空保留 CLI 原值。');
@@ -101,6 +106,8 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
     const bytes = await readFile(image.path);
     return { inlineData: { mimeType: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } };
   }));
+  const visual = context ?? new VisualContext({ directory: `${logsRoot}/visual-context`, protocol: 'genai', budget,
+    protectedImageHashes: protectedImages(images.map(image => image.inlineData)) });
   const upstream = env.AGY_LLM_GATEWAY_URL.replace(/\/+$/, '');
   const controllers = new Set<AbortController>();
   const server = createServer(async (req, res) => {
@@ -113,7 +120,7 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
     try {
       await trace('started');
       const chunks = []; for await (const chunk of req) chunks.push(chunk);
-      const body = JSON.parse(Buffer.concat(chunks).toString());
+      let body = JSON.parse(Buffer.concat(chunks).toString());
       if (body.contents) await prepareGenaiTools(body, tools, logsRoot);
       // agy's stream-json currently accepts text only. On a configured GenAI
       // gateway attach the originals to this turn's user message directly.
@@ -123,10 +130,13 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
       const thinking = body.generationConfig?.thinkingConfig ?? body.generation_config?.thinking_config;
       const requestedThinkingLevel = thinking?.thinkingLevel ?? thinking?.thinking_level;
       prepareGenaiThinking(body, minimalThinking);
-      const target = gatewayRequestUrl(upstream, req.url || '/'), payload = JSON.stringify(body);
+      const target = gatewayRequestUrl(upstream, req.url || '/');
+      const headers = Object.fromEntries(Object.entries(req.headers).filter(([key, value]) => !['host', 'content-length', 'connection'].includes(key) && typeof value === 'string')) as Record<string, string>;
+      body = await visual.prepare(body, async summary => readVisualSummary(await fetch(target, { method: 'POST', headers,
+        body: JSON.stringify(summary), signal: AbortSignal.any([signal, controller.signal]) }), 'genai'));
+      const payload = JSON.stringify(body);
       await trace('prepared', { upstreamPath: target.pathname, requestBytes: Buffer.byteLength(payload), inputImages: imageCount(body),
         requestedThinkingLevel, thinkingLevel: thinking?.thinkingLevel ?? thinking?.thinking_level });
-      const headers = Object.fromEntries(Object.entries(req.headers).filter(([key, value]) => !['host', 'content-length', 'connection'].includes(key) && typeof value === 'string')) as Record<string, string>;
       const response = await fetch(target, { method: req.method, headers, body: payload, signal: AbortSignal.any([signal, controller.signal]) });
       res.writeHead(response.status, { 'content-type': response.headers.get('content-type') || 'application/json', 'cache-control': 'no-store' });
       // writeHead alone buffers headers until the first body write. agy has a
@@ -155,7 +165,7 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
       res.end();
       await trace('completed', { status: response.status });
     } catch (error) {
-      if (!res.headersSent) { res.writeHead(502, { 'content-type': 'application/json' }); res.end(JSON.stringify({ error: { message: String(error).replaceAll(env.AGY_LLM_GATEWAY_API_KEY || '\0', '[redacted]') } })); }
+      if (!res.headersSent) { res.writeHead(visualErrorStatus(error), { 'content-type': 'application/json' }); res.end(JSON.stringify({ error: { message: String(error).replaceAll(env.AGY_LLM_GATEWAY_API_KEY || '\0', '[redacted]') } })); }
       else res.destroy();
       await trace('failed', { aborted: signal.aborted || controller.signal.aborted,
         errorName: error instanceof Error ? error.name : 'Error' });

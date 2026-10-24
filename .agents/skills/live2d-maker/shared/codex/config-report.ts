@@ -36,5 +36,10 @@ export function configurationReport(env: NodeJS.ProcessEnv = process.env, direct
     })),
     cliPaths: settings.cliPaths,
     agvPatch: { enabled: settings.codex.env?.layering_agv_patch === 'true' },
+    imageBudgets: Object.fromEntries(Object.entries(settings.imageBudgets ?? {}).map(([harness, budget]) => [harness, {
+      enabled: budget.images !== undefined || budget.bytes !== undefined || budget.deduplicate === true,
+      images: budget.images ?? null, requestBytes: budget.bytes ?? null, deduplicate: budget.deduplicate === true,
+      implementation: harness === 'codex' ? 'native-patch' : 'message-transport',
+    }])),
   };
 }

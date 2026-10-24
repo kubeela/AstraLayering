@@ -85,6 +85,6 @@ part 绘制 ID 和 harness 记录在各管线 `stages/sessions/<完整groupID>.j
 
 同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
 
-`layering_image_compact_threshold` 仅作用于 Codex，并沿用现有带图压缩补丁；不自动改写其他 CLI 的压缩策略。
+旧 `layering_image_compact_threshold` 仅作用于 Codex，沿用原生带图压缩补丁。新增各 CLI 独立的图片数和请求体 MiB 预算，可按实际路由开启；留空保持原行为。AGV／Claude 接入补丁复用同一视觉压缩模块，原生自动压缩仍保留。配置和恢复边界见 [图片容量保护](../patches/README.md#图片容量保护)。
 
 独立 raster reviewer 使用 `layering_agent_raster_step01_review_model`；返修与绘制共用 `layering_agent_raster_step01_model`。原 `layering_agent_raster_step02_review_model` 配置需迁移为新的 step01 键；各自独立的生图键同样从 `raster_step02_review/repair` 改为 `raster_step01_review/repair`，衣服带 `clothing_` 前缀。模型、力度和生图选择保持可自定义，见 [example.env](../example.env)。
