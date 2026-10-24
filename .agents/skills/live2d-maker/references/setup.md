@@ -9,7 +9,7 @@ cd /安装位置/live2d-maker
 pnpm install --frozen-lockfile
 ```
 
-需要 Node.js 24.12+、pnpm 10.33.0。五条管线共用一次安装。完整仓库可在仓库根目录执行一次 `pnpm install --frozen-lockfile`，同时安装工作台与 skill 的依赖，无需在每个管线目录安装。不要把运行任务建在 skill 内。
+安装前先运行 `node --version` 和 `pnpm --version`，确认 Node.js 24.12+、pnpm 10.33.0；后台服务也要使用已验证的 Node 入口。五条管线共用一次安装。完整仓库可在仓库根目录执行一次 `pnpm install --frozen-lockfile`，同时安装工作台与 skill 的依赖，无需在每个管线目录安装。不要把运行任务建在 skill 内。
 
 任务启动后还需展示真实工作台。独立安装的 skill 不包含仓库根目录的 `web/`，按[工作台启动与连接](workbench.md)复用已有服务或补齐网页仓库；执行管线的 skill 路径、任务根目录和 Codex 会话环境沿用本次任务配置。
 
@@ -37,7 +37,7 @@ Nano 生图与透明后处理只需要所选接口和已有 Node／Sharp，不�
 
 **在实际任务环境里验证。** 后台 CLI 和网页发起的任务应复用同一环境，不能只检查交互终端。Claude Code／Antigravity 的每次请求有受控的配置与临时目录，使用隔离 HOME；宿主 `pip --user` 装的包可能不可见。已有虚拟环境或解释器可直接复用，不把凭据隔离改成共享用户 HOME。Krita 的 Python 插件在 Krita 进程内检查，不能用系统 Python 的 `import krita` 作为验收；Krita 自带的 PyQt5 也无需再为系统 Python 安装一份。
 
-在这个环境从实际 skill 根目录执行 `pnpm env:check`，检查[生效配置](workflow-details.md#生效配置核对)，再检查所选路线的能力。已确认使用图片数保护时，核对报告中的启用状态和阈值，不能只以补丁二进制存在作为通过条件；切换模型方案或升级时不清空已有阈值、凭据与路径。
+在这个环境从实际 skill 根目录执行 `pnpm env:check`，检查[生效配置](workflow-details.md#生效配置核对)。此命令只展示配置，不验证安装、登录或工具能力。总入口及独立管线启动前会对所选 Codex／Claude／AGV 实际执行本地 `--version`，在子进程中复用当前 Node 路径；版本检查不发送模型请求，也不证明已登录。再按[启动验证条件](validation.md)验证本次路线的真实工具与登录能力。已确认使用图片数保护时，核对报告中的启用状态和阈值，不能只以补丁二进制存在作为通过条件；切换模型方案或升级时不清空已有阈值、凭据与路径。
 
 **Nano 双背景透明后处理。** 共享适配器按参考主体颜色推荐纯绿、纯蓝或纯红背景，生成第一张 RGB 图；保留这张图，再以它作为唯一参考，仅将背景换成白色或黑色。Node／Sharp 采样两张图边缘的实际背景色，通过双背景差分恢复前景 RGB 和 alpha；调用者仍得到一张透明 PNG。两次请求串行执行，因此比单次生图多一次请求耗时与费用。若第一张已经有真实 alpha，直接保留，不调用第二次。
 
@@ -56,7 +56,7 @@ Nano 生图与透明后处理只需要所选接口和已有 Node／Sharp，不�
 
 安装由调用 skill 的 agent 在确认后处理；工作流脚本仍只检查明确传入或已保存的可执行路径，不自动下载或探索安装位置。路径检查可用 `pnpm raster-layering --check-krita --krita /绝对路径/krita`。
 
-Krita 的路径检查和实际启动使用工作流加载的同一环境，包括 `.env` 中已有的显示、动态库与 Python 配置。agent 仍须确认可操作文档、查看图像并保存；程序版本检查不替代这些操作验证。
+Krita 的路径检查和实际启动使用工作流加载的同一环境，包括 `.env` 中已有的显示、动态库与 Python 配置。Linux 真实启动检查会拒绝没有 DISPLAY、WAYLAND_DISPLAY 或显式 Qt 平台配置的环境，并说明桌面／headless 配置路径。Xvfb 是 Linux 无桌面方案的外部程序，不由 pnpm 安装，也不是桌面用户的统一必装项；仓库负责正确传递环境和清晰报告缺失。agent 仍须确认可操作文档、查看图像并保存；程序版本检查不替代这些操作验证。
 
 ## 可选功能与历史脚本
 
@@ -66,7 +66,7 @@ Krita 的路径检查和实际启动使用工作流加载的同一环境，包�
 - 普通网页使用现代浏览器。Playwright／Chromium 仅用于浏览器自动验证，不是运行制作管线的必装项。
 - `archive/`、`analysis/`、`demos/`、`rigging/` 和资料重建脚本的 Pillow、NumPy、SciPy、OpenCV、lxml、PyYAML 等依赖只在实际执行相应脚本时成立，不纳入 skill 默认安装。读取已生成的头发参考图不需要重建图片的 Python 包。
 
-默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用按需自动构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。未启用相关功能时不构建 Codex；启用且未指定入口时自动构建，缺 Rust 1.95.0 会提示并安装到临时目录，结束后清理。Git 和平台 C/C++ 编译依赖仍须可用。AGV 用 `layering_agv_patch=true` 开启独立副本的自动准备，见 [patches](../patches/README.md)；Nano Python 包仅在首次实际透明后处理时自动准备。
+默认 preparation 的全部 agent 使用 `gpt-6.1-sol-low`；人物／衣服 part 的拆分阶段、人物 raster step03 和组装使用 `gpt-6.1-sol-xhigh`；两套 raster 的前两步及其 review／返修使用 `gpt-6-astra-xhigh`。LLM 按职责覆盖，生图按拥有工具的实际 agent 覆盖，见 [模型与 harness](agent-models.md) 和 [example.env](../example.env)。Codex 自定义生图和按图片数 compact 共用按需自动构建的可选补丁；`codex-native` 生图以及 Claude／AGV 自定义生图不要求补丁。未启用相关功能时不构建 Codex；启用且未指定入口时自动构建，缺 Rust 1.95.0 会提示并安装到临时目录，结束后清理。Git 和平台 C/C++ 编译依赖仍须可用。AGV 用 `layering_agv_patch=true` 开启独立副本的自动准备，见 [patches](../patches/README.md)。Nano 透明后处理使用已有 Node／Sharp，不安装 Python 包或抠图权重。
 环境变量、图片阈值、临时错误重试和工具配置细节见 [配置与工作流细节](workflow-details.md)。
 
 所有操作 Krita 的 agent 自动收到同一份[环境与故障恢复说明](../shared/krita/environment.md)，沿用现有 shell、computer use 或已验证 bridge。私有进程的 macOS 配置、Python 资源和 HOME 必须一致；不能把一次自建启动器失败直接当作不可恢复阻塞。

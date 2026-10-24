@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
+import { withNodePath } from '../process-environment.ts';
 import { modelSlotDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
 
 export type ModelTier = 'medium' | 'high';
@@ -172,7 +173,7 @@ export function validateApiUrl(value: string, name: string): void {
 
 export function workflowCodexOptions(settings: WorkflowEnvironment, overrides: CodexOptions = {}): CodexOptions {
   return { ...settings.codex, ...overrides,
-    env: { ...settings.codex.env, ...overrides.env },
+    env: withNodePath({ ...settings.codex.env, ...overrides.env }),
     config: { ...settings.codex.config, ...overrides.config },
   };
 }
