@@ -78,3 +78,22 @@ test('声明产物的步骤：续跑发现产物被换则报告改动；重试�
   await finish(0, 'changed');
   assert.deepEqual((await inspectChain(steps)).reset, ['b']);
 });
+
+test('产物可在步骤目录外：删除产物即重试该步骤，重置会一并删除后代的产物', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'step-chain-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const steps: ChainStep[] = [{ id: 'a', directory: join(root, '.steps/a'), dependsOn: [], outputs: ['../../a.png'] },
+    { id: 'b', directory: join(root, '.steps/b'), dependsOn: ['a'], outputs: ['../../b.png'] }];
+  for (const step of steps) {
+    await mkdir(step.directory, { recursive: true });
+    await writeFile(join(root, `${step.id}.png`), step.id);
+    await startStep(step.directory, 'absent');
+    await completeStep(step, steps);
+  }
+  assert.deepEqual(Object.keys(JSON.parse(await readFile(join(root, '.steps/b/.completed'), 'utf8')).outputs), ['../../b.png']);
+  await rm(join(root, 'a.png'));
+  const plan = await inspectChain(steps);
+  assert.deepEqual([plan.reset, plan.modified], [['a', 'b'], []]);
+  await resetChain(steps, plan);
+  for (const path of ['b.png', '.steps/a', '.steps/b']) await assert.rejects(stat(join(root, path)), { code: 'ENOENT' });
+});

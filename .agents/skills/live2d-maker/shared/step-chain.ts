@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { lstat, readFile, rename, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
 // One rerun rule for every pipeline. A step owns a directory with a .running
 // or .completed marker. .completed records a fresh stamp and the stamps its
@@ -12,7 +12,9 @@ import { join } from 'node:path';
 // A step that declares outputs records their hashes and uses them as its stamp:
 // regenerating identical bytes keeps dependents, and outputs replaced while the
 // run was interrupted are reported as modified, so continuing refuses until the
-// step is explicitly retried.
+// step is explicitly retried. Output paths are relative to the step directory
+// and may point outside it; a missing output reruns the step, and resetting a
+// step deletes its outputs.
 export type ChainStep = { id: string; directory: string; dependsOn: readonly string[]; outputs?: readonly string[] };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
 export type StepRecord = { stamp: string; inputs: Record<string, string>; outputs?: Record<string, string> };
@@ -56,7 +58,7 @@ export async function readStep(directory: string): Promise<{ status: StepStatus;
 async function outputHashes(step: ChainStep): Promise<Record<string, string>> {
   const hashes: Record<string, string> = {};
   for (const name of step.outputs ?? []) {
-    try { hashes[name] = createHash('sha256').update(await readFile(join(step.directory, name))).digest('hex'); }
+    try { hashes[name] = createHash('sha256').update(await readFile(resolve(step.directory, name))).digest('hex'); }
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   }
   return hashes;
@@ -83,11 +85,14 @@ export async function inspectChain(steps: readonly ChainStep[]): Promise<ChainPl
     const broken = step.dependsOn.some(dependency => unusable.has(dependency));
     const changed = status !== 'unmarked' && !!record && step.dependsOn.some(dependency =>
       dependency in record.inputs && record.inputs[dependency] !== stamps.get(dependency));
-    if (status === 'unmarked' || changed || (broken && status !== 'absent')) reset.push(step.id);
+    // Deleting a completed step's output is a retry of that step.
+    const outputs = status === 'completed' && step.outputs ? await outputHashes(step) : undefined;
+    const missing = !!outputs && step.outputs!.some(name => !(name in outputs));
+    if (status === 'unmarked' || changed || missing || (broken && status !== 'absent')) reset.push(step.id);
     // An absent step only breaks the steps that already exist after it. A running
     // step does not: it continues the work its dependents were built on.
     if (status === 'absent' || reset.includes(step.id)) unusable.add(step.id);
-    else if (status === 'completed' && record?.outputs && !sameOutputs(record.outputs, await outputHashes(step))) modified.push(step.id);
+    else if (outputs && record?.outputs && !sameOutputs(record.outputs, outputs)) modified.push(step.id);
   }
   return { statuses, reset, modified };
 }
@@ -95,14 +100,16 @@ export async function inspectChain(steps: readonly ChainStep[]): Promise<ChainPl
 export function modifiedError(plan: ChainPlan, steps: readonly ChainStep[]): Error | undefined {
   if (!plan.modified.length) return;
   const paths = steps.filter(step => plan.modified.includes(step.id)).map(step => step.directory);
-  return new Error(`已完成步骤的产物在中断期间被改动，不能直接续跑：\n${paths.join('\n')}\n请对该步骤执行重试（删除其 .completed 后重跑），依赖它的后续步骤会随之重跑。已有文件已保留。`);
+  return new Error(`已完成步骤的产物在中断期间被改动，不能直接续跑：\n${paths.join('\n')}\n请对该步骤执行重试（删除其 .completed 或产物后重跑），依赖它的后续步骤会随之重跑。已有文件已保留。`);
 }
 
 export async function resetChain(steps: readonly ChainStep[], plan: ChainPlan): Promise<void> {
   // Remove descendants first. The triggering step goes last, so a crash during
   // deletion still shows the break on the next launch.
   for (const step of [...steps].reverse()) {
-    if (plan.reset.includes(step.id)) await rm(step.directory, { recursive: true, force: true });
+    if (!plan.reset.includes(step.id)) continue;
+    for (const name of step.outputs ?? []) await rm(resolve(step.directory, name), { force: true });
+    await rm(step.directory, { recursive: true, force: true });
   }
 }
 
