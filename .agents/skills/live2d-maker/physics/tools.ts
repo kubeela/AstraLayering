@@ -17,12 +17,7 @@ import { validateMotionScope, coverageReport } from './coverage.ts';
 import {imageSheet} from './images.ts';
 import {referenceSummary,readReference,initializeFromReference,validateReferenceCoverage,validateReferenceReview} from './reference.ts';
 import {initializeConfigParameters,motionPresets,motionPresetVersion} from '../shared/physics-core/motion-presets.js';
-
-function summarizeEvidence(manifest:any,test?:string){
-  return {...manifest,runs:manifest.runs.filter((r:any)=>!test||r.test===test).map((r:any)=>({...r,frameSteps:undefined,events:undefined,frameCount:r.frameSteps.length,eventCount:r.events.length,
-    ...(test?{windows:[...new Set(r.events.map((e:any)=>e.component))].map(id=>{const fallback=r.events.find((e:any)=>e.component===id&&e.type==='fallback'),peak=r.events.find((e:any)=>e.component===id&&e.type==='peak');return {component:id,firstFallback:fallback?.step,peak:peak?.step,peakTravel:peak?.travel};})}:{}),
-  }))};
-}
+import { summarizeEvidence } from './evidence-summary.ts';
 
 export function summarizeAssemblyTuning(config:any,tuning:any,assemblyId?:string,runtimeHash=tuning?.solverHash){
   const assemblies=groupAssemblies(config).filter(g=>!assemblyId||g.id===assemblyId);
