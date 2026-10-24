@@ -4,6 +4,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { isPartLayeringInput, type PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
+import { completeStep, inspectChain, resetChain, type ChainStep, type StepStatus } from '../step-chain.ts';
 
 export type ThreadHandoff = {
   id: string;
@@ -23,7 +24,7 @@ export type RunConfig<Input = PartLayeringInput> = {
   threadHarness?: Harness;
   threadHandoff?: ThreadHandoff;
 };
-export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
+export type { StepStatus };
 export type RunPlan = { statuses: Map<string, StepStatus>; resetFrom?: number };
 
 
@@ -97,17 +98,10 @@ export async function initializeRun(directory: string, config: RunConfig<unknown
   } finally { await rm(staging, { recursive: true, force: true }); }
 }
 
-async function readStatus(directory: string): Promise<StepStatus> {
-  const info = await fileInfo(directory);
-  if (!info) return 'absent';
-  if (!info.isDirectory() || info.isSymbolicLink()) throw new Error(`步骤路径必须是普通目录：${directory}`);
-  for (const marker of ['completed', 'running'] as const) {
-    const info = await fileInfo(join(directory, `.${marker}`));
-    if (!info) continue;
-    if (!info.isFile() || info.isSymbolicLink()) throw new Error(`步骤标记必须是普通文件：${directory}/.${marker}`);
-    return marker;
-  }
-  return 'unmarked';
+// Raster steps form a linear chain: each step depends on the one before it.
+function rasterChain(directory: string, count: number): ChainStep[] {
+  return Array.from({ length: count }, (_, index) => ({ id: stepId(index + 1), directory: join(directory, stepId(index + 1)),
+    dependsOn: index ? [stepId(index)] : [] }));
 }
 
 export async function inspectRun(directory: string, steps: readonly StepDefinition[]): Promise<RunPlan> {
@@ -118,15 +112,12 @@ export async function inspectRun(directory: string, steps: readonly StepDefiniti
   try { entries = await readdir(directory); }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   const numbers = entries.filter(name => /^step\d{2}$/.test(name) && name !== 'step00').map(name => Number(name.slice(4)));
-  const lastExisting = Math.max(0, ...numbers);
-  const statuses = new Map<string, StepStatus>();
-  let resetFrom: number | undefined;
-  for (let number = 1; number <= Math.max(lastExisting, steps.length); number++) {
-    const id = stepId(number), status = await readStatus(join(directory, id));
-    statuses.set(id, status);
-    if (resetFrom === undefined && (status === 'unmarked' || (status === 'absent' && number < lastExisting))) resetFrom = number;
-  }
-  return { statuses, resetFrom };
+  const plan = await inspectChain(rasterChain(directory, Math.max(0, ...numbers, steps.length)));
+  if (!plan.reset.length) return { statuses: plan.statuses };
+  // Report the break from the first missing step before it, as the gap caused it.
+  let resetFrom = Number(plan.reset[0].slice(4));
+  while (resetFrom > 1 && plan.statuses.get(stepId(resetFrom - 1)) === 'absent') resetFrom--;
+  return { statuses: plan.statuses, resetFrom };
 }
 
 export async function resetSteps(directory: string, config: RunConfig<unknown>, plan: RunPlan): Promise<void> {
@@ -134,11 +125,12 @@ export async function resetSteps(directory: string, config: RunConfig<unknown>, 
   config.threadId = null;
   delete config.threadHandoff;
   await saveConfig(directory, config);
-  // Remove descendants first. The unmarked triggering directory survives until last,
-  // so a crash during deletion still signals the reset on the next launch.
-  for (const [id, status] of [...plan.statuses].reverse()) {
-    if (Number(id.slice(4)) >= plan.resetFrom && status !== 'absent') {
-      await rm(join(directory, id), { recursive: true, force: true });
-    }
-  }
+  const chain = rasterChain(directory, plan.statuses.size);
+  await resetChain(chain, { statuses: plan.statuses, modified: [],
+    reset: chain.filter(step => Number(step.id.slice(4)) >= plan.resetFrom! && plan.statuses.get(step.id) !== 'absent').map(step => step.id) });
 }
+
+export const completeRasterStep = (directory: string, id: string) => {
+  const chain = rasterChain(directory, Number(id.slice(4)));
+  return completeStep(chain.at(-1)!, chain);
+};
