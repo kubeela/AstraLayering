@@ -64,7 +64,7 @@ function header() {
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
 function pageHeading() {
- return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button>${state.name?`<span class="task-status">${esc(taskStatusNames[data.status]||data.status||'正在读取')}</span>`:''}</div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${data.canStop?`<button class="button" data-action="stop">停止</button>`:''}<button class="primary" data-action="run" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button>`:''}</div></div>`;
+ return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button>${state.name?`<span class="task-status">${esc(taskStatusNames[data.status]||data.status||'正在读取')}</span>`:''}</div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${data.canStop?`<button class="button" data-action="stop">停止</button>`:''}${stepToolbar()}<button class="primary" data-action="run" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button>`:''}</div></div>`;
 }
 let archivedFiles = new Set();
 const assetLookup = new Map();
@@ -168,25 +168,30 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
 }
 // Step recovery: 继续 keeps products and session, 恢复 drops the session and keeps
 // products, 重试 deletes the step products and session; dependents rerun with it.
+// One fixed bar at the top right lists every recorded step of the task, with the
+// failed or interrupted one selected; each action then runs the task again.
 const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
-const stepActionTitles={continue:'保留产物与会话，从中断处继续',resume:'清除会话、保留产物，在新会话中继续',retry:'删除本步骤产物与会话后重做；依赖它的后续步骤自动重跑'};
-function chainStep(index,id){return data.pipelines[index]?.steps?.find(step=>step.id===id);}
-function stepActions(index,id) {
- const step=id&&chainStep(index,id);
- if(!step)return '';
- const busy=data.runnerAlive||data.lockHeld, actions=step.status==='completed'?['retry']:['continue','resume','retry'];
- return `<div class="step-actions" aria-label="${esc(id)} 步骤操作">${actions.map(action=>`<button class="button" data-step-action="${index}|${esc(id)}|${action}" title="${esc(stepActionTitles[action])}" ${busy?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
+const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除本步骤产物与会话后重做；依赖它的后续步骤自动重跑'};
+const stepStatusNames={running:'中断 / 失败',unmarked:'无完成标记',completed:'已完成',legacy:'旧版目录，继续时自动转换'};
+function stepTargets() {
+ return (data.pipelines||[]).flatMap((pipeline,index)=>[
+  ...(pipeline.legacy?[{index,id:'',status:'legacy'}]:[]),
+  ...(pipeline.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session}))]);
 }
-// The chain step a raster-style node stands for; part nodes map through webSteps.
-function nodeChainStep(index,id) {
- const stage=stages[index].id;
- if(stage==='shadow')return id===(data.pipelines[index]?.mode==='normal-depth'?'normal-depth-maps':'mask')?'step01':undefined;
- return ['part-layering','clothing-part-layering'].includes(stage)?undefined:/^step\d{2}$/.test(id)?id:undefined;
+const stepTargetKey=target=>`${target.index}|${target.id}`;
+function selectedStepTarget(targets=stepTargets()) {
+ return targets.find(target=>stepTargetKey(target)===state.stepTarget)||targets.find(target=>target.status==='running')
+  ||targets.find(target=>target.status==='legacy')||targets.find(target=>target.status==='unmarked')||targets[0];
 }
-function unfinishedSteps(index) {
- const steps=(data.pipelines[index]?.steps||[]).filter(step=>step.status!=='completed');
- if(!steps.length)return '';
- return `<section class="unfinished-steps" aria-label="${esc(stages[index].name)}未完成的步骤"><h3>未完成的步骤</h3>${steps.map(step=>`<div class="unfinished-step"><code title="${esc(step.id)}">${esc(step.id)}</code><small>${step.status==='running'?'中断 / 失败':'无完成标记'}${step.session?' · 有会话':''}</small>${stepActions(index,step.id)}</div>`).join('')}</section>`;
+function stepToolbar() {
+ if(!state.name)return '';
+ const targets=stepTargets(),chosen=selectedStepTarget(targets),busy=data.runnerAlive||data.lockHeld;
+ const allowed=action=>!!chosen&&(chosen.status==='legacy'?action==='continue':chosen.status!=='completed'||action==='retry');
+ const reason=action=>busy?'任务正在运行，结束或停止后可操作':!chosen?'当前任务还没有步骤记录，请用“运行 / 续跑”':
+  !allowed(action)?(chosen.status==='completed'?'已完成的步骤只能重试':'旧版目录请先继续，转换后可恢复或重试'):stepActionTitles[action];
+ const option=target=>`<option value="${esc(stepTargetKey(target))}" ${target===chosen?'selected':''}>${esc(target.id||'整条管线')} · ${stepStatusNames[target.status]}${target.session?' · 有会话':''}</option>`;
+ const groups=[...new Set(targets.map(target=>target.index))].map(index=>`<optgroup label="${esc(stages[index].name)}">${targets.filter(target=>target.index===index).map(option).join('')}</optgroup>`).join('');
+ return `<div class="step-toolbar" role="group" aria-label="步骤恢复"><span>步骤</span><select id="step-target" aria-label="选择要操作的步骤" ${targets.length?'':'disabled'}>${groups||'<option>暂无步骤记录</option>'}</select>${Object.keys(stepActionNames).map(action=>`<button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" title="${esc(reason(action))}" ${busy||!allowed(action)?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
 }
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
@@ -197,13 +202,10 @@ function groupDetailPhases(index,group,phaseFiles) {
   ?groupReviewSteps(group,stages[index].id,group.id)
   :[{id,title:label,status:group.webPhases?.[id]||'pending',detail:group.webDetails?.[id]||'',
     artifacts:['outline','completion'].includes(id)?phaseFiles[id].filter(item=>item.kind==='file'):phaseFiles[id]}]);
- const shown=new Set();
  return steps.map((step,i)=>{
-  const chain=group.webSteps?.[step.id], first=chain&&!shown.has(chain);
-  if(chain)shown.add(chain);
   return (['outline','completion'].includes(step.id)?svgPreviewPanel(index,group,step.id,phaseFiles):'')
    +groupPhaseNode(index,step.id,step.title,step.status,step.detail,step.artifacts,i+1,
-    ['outline','completion'].includes(step.id)&&available(phaseFiles[step.id]).some(item=>item.kind==='image'))+(first?stepActions(index,chain):'');
+    ['outline','completion'].includes(step.id)&&available(phaseFiles[step.id]).some(item=>item.kind==='image'));
  }).join('');
 }
 function groupCycle(index) {
@@ -297,7 +299,6 @@ function stepNode(index,step,nested=false) {
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${processArtifacts(index,step)}
- ${stepActions(index,nodeChainStep(index,step.id))}
  </div>
  `}
  </section>`;
@@ -313,7 +314,7 @@ function processArtifacts(index, step) {
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
- return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${unfinishedSteps(index)}<button class="button pipeline-run" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 恢复${stage.name}</button>${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
+ return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}<button class="button pipeline-run" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 恢复${stage.name}</button>${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
 }
 function inspector() {
  const stage=stages[state.stage],step=selectedStep(),item=state.asset;
@@ -339,7 +340,7 @@ function projectPage() {
 }
 function graph() {
  if(!state.name)return '<section class="empty-workspace"><h2>尚未选择任务</h2><button class="button" data-page="project">选择任务</button></section>';
- return `<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><button class="button preview-back" data-page="project">${icon('branch')}执行控制</button><span>${esc(state.name)} · 完整流程</span><div class="flow-legend">${Object.keys(statusNames).map(status=>`<span>${statusMark(status)}${statusNames[status]}</span>`).join('')}</div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div></div>
+ return `<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><button class="button preview-back" data-page="project">${icon('branch')}执行控制</button><span>${esc(state.name)} · 完整流程</span><div class="flow-legend">${Object.keys(statusNames).map(status=>`<span>${statusMark(status)}${statusNames[status]}</span>`).join('')}</div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div>${stepToolbar()}</div>
  <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，横向滚动或拖动浏览"><div class="flow-size"><div class="flow-world preview-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,index)=>flowCard(index)).join('')}</div></div></div></div>
  <footer class="flow-footnote">横向浏览 · 点击部件切换预览 · 部件详情手动展开 · 点击产物放大查看</footer></div>${state.inspect?inspector():''}</section>`;
 }
@@ -555,11 +556,14 @@ function updateViewURL() {
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-run-stage]').forEach(b=>b.onclick=()=>{state.stage=Number(b.dataset.runStage);showNew(true,true);});
- document.querySelectorAll('[data-step-action]').forEach(b=>b.onclick=async()=>{
-  const [index,step,action]=b.dataset.stepAction.split('|');
-  if(action==='retry'&&!confirm(`重试 ${step}：删除该步骤的产物与会话并重新运行，依赖它的后续步骤会随之重跑。确定吗？`))return;
+ const target=document.querySelector('#step-target');if(target)target.onchange=()=>{state.stepTarget=target.value;render();};
+ document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
+  const chosen=selectedStepTarget(),action=b.dataset.stepToolbar;
+  if(!chosen)return;
+  const label=chosen.id||stages[chosen.index].name;
+  if(action==='retry'&&!confirm(`重试 ${label}：删除该步骤的产物与会话并重新运行，依赖它的后续步骤会随之重跑。确定吗？`))return;
   b.disabled=true;
-  try{const result=await post('step-action',{name:state.name,pipeline:stages[Number(index)].id,step,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
+  try{const result=await post('step-action',{name:state.name,pipeline:stages[chosen.index].id,step:chosen.id,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
   catch(error){toast(error.message);b.disabled=false;}
  });
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
