@@ -60,6 +60,10 @@ export const executeChild: PipelineExecution = async (id, run, context) => {
 export async function runTask(options: TaskOptions, dependencies: {
   execute?: PipelineExecution; signal?: AbortSignal; progress?: (message: string) => void;
   ready?: (run: TaskRun) => void;
+  // Called instead of waiting for ready when the preflight has to build the
+  // patched Codex: the task lock is held and the run is recorded as running, so
+  // a launcher can confirm the start; the build and its outcome go to the log.
+  preparing?: (run: TaskRun) => void;
   environment?: WorkflowEnvironment;
   preflight?: (path: string) => Promise<KritaInstallation>;
   save?: typeof saveRun;
@@ -89,13 +93,15 @@ export async function runTask(options: TaskOptions, dependencies: {
     await persist();
     const environment = !dependencies.execute || dependencies.environment ? dependencies.environment ?? loadWorkflowEnvironment() : undefined;
     const selected = selectedPipelines(run.from, run.to);
-    if (environment) {
-      const standard = run.standard;
-      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { krita: run.krita, runsRoot: dirname(directory), progress });
-    }
+    // Krita is checked first: it is quick, while the agent preflight may build the patched Codex.
     if (selectedPipelines(run.from, run.to).some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow')) {
       if (!run.krita) throw new Error('本次路线包含 Krita 步骤，请用 --krita 指定已安装的可执行文件；不会自动下载或搜索。');
       await (dependencies.preflight ? dependencies.preflight(run.krita) : checkKrita(run.krita, undefined, environment?.codex.env));
+    }
+    if (environment) {
+      const standard = run.standard;
+      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { krita: run.krita, runsRoot: dirname(directory), progress,
+        building: () => { progress('准备中：构建补丁版 Codex，完成后自动开始；构建期间的停止请求在构建结束后生效。'); dependencies.preparing?.(run!); } });
     }
     signal.throwIfAborted();
     dependencies.ready?.(run);

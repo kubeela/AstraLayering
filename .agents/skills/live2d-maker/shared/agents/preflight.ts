@@ -40,13 +40,14 @@ export function pipelineAgentSteps(pipeline: PipelineId, standard = false, shado
     return step === 'assembly';
   });
 }
-export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: readonly AgentStep[], normalization: ImageProcessingOptions = {}): Promise<void> {
+export async function preflightAgentSteps(settings: WorkflowEnvironment, steps: readonly AgentStep[],
+  normalization: ImageProcessingOptions & { building?: () => void } = {}): Promise<void> {
   const harnesses = new Set<Harness>();
   for (const step of steps) {
     validateImageSelection(settings, step);
     const harness = settings.stepModels[step].harness;
     harnesses.add(harness);
-    if (harness === 'codex') await checkCodexCapabilities(settings, settings.codex, { image: usesPatchedImageTool(settings, step), progress: normalization.progress });
+    if (harness === 'codex') await checkCodexCapabilities(settings, settings.codex, { image: usesPatchedImageTool(settings, step), progress: normalization.progress, building: normalization.building });
   }
   for (const harness of harnesses) {
     const version = await checkAgentCli(settings, harness, normalization.runsRoot);

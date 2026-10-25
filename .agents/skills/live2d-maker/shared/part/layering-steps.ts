@@ -11,17 +11,19 @@ import { dirname, join } from 'node:path';
 import type { GroupContext } from './layering-types.ts';
 import { writeAtomic } from './groups.ts';
 import type { Harness } from '../agents/models.ts';
-import { groupDirectory } from './part-steps.ts';
+import { groupStepId } from './part-steps.ts';
 
 // 补形与子组分析使用只读 agent，经工具提交后由程序验证并发布事实。
 export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<Pick<CodexAgents, 'createSession'>>): LayeringSteps {
+  // Agents that iterate on a draft keep their thread in the step directory, so
+  // continuing a step resumes it and resetting the step drops it.
   const sessions = new Map<string, AgentSession>();
-  async function drawing(context: GroupContext): Promise<AgentSession> {
-    const id = context.group.id;
-    let session = sessions.get(id);
+  async function stepSession(context: GroupContext, step: 1 | 2): Promise<AgentSession> {
+    const key = groupStepId(context.group.id, step);
+    let session = sessions.get(key);
     if (!session) {
-      if (!agents.createSession) throw new Error('轮廓绘制需要可复用的 agent 会话');
-      const path = join(groupDirectory(context.directory, id), 'step01', 'session.json');
+      if (!agents.createSession) throw new Error('轮廓绘制和补全需要可复用的 agent 会话');
+      const path = join(context.directory, key, 'session.json');
       let saved: { threadId?: string; harness?: Harness } = {};
       try { saved = JSON.parse(await readFile(path, 'utf8')); }
       catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
@@ -47,30 +49,35 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
           throw error;
         }
       } };
-      sessions.set(id, session);
+      sessions.set(key, session);
     }
     return session;
   }
-  async function closeGroup(id: string) {
-    const session = sessions.get(id);
-    sessions.delete(id);
+  async function closeSession(context: GroupContext, step: 1 | 2) {
+    const key = groupStepId(context.group.id, step), session = sessions.get(key);
+    sessions.delete(key);
     await session?.close();
   }
   return {
     async close() {
-      await Promise.allSettled([...sessions.keys()].map(closeGroup));
+      const open = [...sessions.values()];
+      sessions.clear();
+      await Promise.allSettled(open.map(session => session.close()));
     },
     initialGroups: async context => ({ status: 'completed', output: await recognizeInitialGroups(context, agents) }),
     drawOutline: async context => {
-      try { return { status: 'completed', output: await drawGroupOutline(context, await drawing(context)) }; }
-      catch (error) { await closeGroup(context.group.id); throw error; }
+      try { return { status: 'completed', output: await drawGroupOutline(context, await stepSession(context, 1)) }; }
+      catch (error) { await closeSession(context, 1); throw error; }
     },
     reviewOutline: async context => {
-      try { return await reviewGroupOutline(context, agents, await drawing(context)); }
-      finally { await closeGroup(context.group.id); }
+      try { return await reviewGroupOutline(context, agents, await stepSession(context, 1)); }
+      finally { await closeSession(context, 1); }
     },
     reduceOutlines: async context => ({ status: 'completed', output: await reduceGroupOutlines(context, agents) }),
-    completeOcclusion: async context => ({ status: 'completed', output: await completeGroupOcclusion(context, agents) }),
+    completeOcclusion: async context => {
+      try { return { status: 'completed', output: await completeGroupOcclusion(context, await stepSession(context, 2)) }; }
+      finally { await closeSession(context, 2); }
+    },
     checkCompletion: async context => ({ status: 'completed', output: await checkGroupCompletion(context) }),
     splitChildren: async context => ({ status: 'completed', output: await analyzeChildren(context, agents) }),
     planOcclusion: context => planPartOcclusion(context, agents),

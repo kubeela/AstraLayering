@@ -86,7 +86,7 @@ AGV 的 GenAI 网关 base URL 可以包含 `/v1beta`，转发会保留供应商�
 
 Claude／agv 的每次请求有独立工作区、私有配置和临时文件，均在 `<dir>/<name>/` 的 `agents/<请求>/` 下。仅从用户环境复用鉴权信息，隔离 CLI 的会话、项目设置及工具配置，不修改用户的全局配置。恢复同一 session 时复用原请求的私有会话数据；后续请求仍各有独立工作区。Antigravity 的 GenAI 自定义网关会转发原始工具定义，并保留工具返回的图片。
 
-part 绘制 ID 和 harness 记录在各管线 `groups/<完整groupID>/step01/session.json`（子组嵌套为 `groups/<父>/children/<名>`），绘制与返修共用，重跑轮廓步骤时随目录一起重置；独立 reviewer 每次新建。raster 的绘制 ID 仍记录在本管线 `run.json`，`.running`／`.completed`、两轮 review 和产物检查规则不变。
+part 绘制 ID 和 harness 记录在各管线 `groups/<完整groupID>/step01/session.json`（子组嵌套为 `groups/<父>/children/<名>`），绘制与返修共用，重跑轮廓步骤时随目录一起重置；补全会反复修改草稿，同样把 ID 记在 `step02/session.json`，中断续跑时恢复同一会话，重跑补全步骤时随目录一起重置。独立 reviewer、去重和子组分析等一次性 agent 每次新建，不记录 ID。换线程时旧记录追加到 `session.json.history.jsonl`。raster 的绘制 ID 仍记录在本管线 `run.json`，`.running`／`.completed`、两轮 review 和产物检查规则不变。
 
 同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
 

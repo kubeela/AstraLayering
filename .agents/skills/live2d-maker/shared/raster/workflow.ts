@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto';
 import { runAgent, type Agent, type AgentRequest } from './agent.ts';
 import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
-import type { StepStatus } from '../step-chain.ts';
+import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
 import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSteps, saveConfig, within } from './run-store.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
@@ -48,6 +48,8 @@ export type KritaPipeline<Input> = {
   directorySuffix?: string;
   tools?(output: string, input: Input, step: StepDefinition, phase: string): NonNullable<AgentRequest['tools']>;
   fingerprintInput?(input: Input): Promise<string>;
+  // The upstream pipeline's final step; step01 records its stamp and reruns when it changes.
+  upstreamStep?(input: Input): ChainStep;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
   validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean): Promise<void>;
@@ -57,6 +59,16 @@ export type KritaPipeline<Input> = {
   inputDirectories(input: Input): readonly string[];
   buildPrompt(step: StepDefinition, input: Input, output: string, krita: KritaInstallation, previous: readonly string[]): Promise<string>;
 };
+
+// Upstream runs from before the step was recorded have no step directory; they
+// are read as they are. An unfinished upstream step must finish first.
+async function upstreamSteps(step: ChainStep | undefined): Promise<ChainStep[]> {
+  if (!step) return [];
+  const { status } = await readStep(step.directory);
+  if (status === 'absent') return [];
+  if (status !== 'completed') throw new Error(`上游步骤 ${step.id} 尚未完成（${step.directory}），请先完成上游再运行本管线。`);
+  return [step];
+}
 
 export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
   const root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
@@ -79,6 +91,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const fingerprint = await pipeline.fingerprintInput?.(reference);
   const inputChanged = !!saved && fingerprint !== undefined && saved.inputFingerprint !== fingerprint;
   const inputDirectories = pipeline.inputDirectories(reference);
+  const upstream = await upstreamSteps(pipeline.upstreamStep?.(reference));
   for (const source of inputDirectories) {
     if (within(source, directory) || within(directory, source)) throw new Error('上游与本管线目录必须分开');
   }
@@ -96,7 +109,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const previous: string[] = [];
   const previews: string[] = [];
   const byId = new Map(definitions.map(step => [step.id, step]));
-  await runSection({ directory, steps: rasterSteps(definitions), dryRun: options.dryRun, signal: options.signal,
+  await runSection({ directory, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
     progress: options.progress, fresh: inputChanged, resetNote: '，并清除旧 threadId',
     // Validate retained deliveries before making any reset destructive.
     async keep(chainStep) {

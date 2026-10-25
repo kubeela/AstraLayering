@@ -18,6 +18,7 @@ export const help = `raster-layering — 按顺序执行 Krita 栅格分层流�
 按 --name 直接读取同名 part-layering/ 的 parts、参考、groups.json 与 occlusion.json，无需指定输入路径。缺少产物时提示上游命令与手动放置路径。
 不复制上游输入；run.json 保存配置和共用 threadId，步骤状态由 .running / .completed 决定。
 中断保留 .running 并继续原 thread；删除某步 .completed 后，下次启动清空该步及后续目录，开启新 thread；上游 occlusion.json 的修正保留。
+step01 依赖上游 part 的最后一步 occlusion：part 重做后 step01 及后续重跑、开启新 thread；上游该步未完成时拒绝运行。
 第一步分层与补全、第二步边缘柔化均使用 gpt-6-astra / xhigh；第三步去除连体服使用 gpt-6.1-sol / xhigh。
 第一步 reviewer 使用 gpt-6-astra / xhigh，每次新会话；反馈由原 thread 全部修完。最多检查两次，无问题即结束，第二次修完不再检查。
 第一步完成 review / 修复、第二步边缘精修后，第三步沿用绘制 thread，交付 character-dressup-base.kra、同名 PNG 和 report.md，不设 reviewer。

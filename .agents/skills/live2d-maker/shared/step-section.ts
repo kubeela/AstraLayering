@@ -9,10 +9,11 @@ import { completeStep, inspectChain, modifiedError, resetChain, startStep, type 
 // after the step before them, so retrying upstream clears them too.
 export const stepId = (number: number) => `step${String(number).padStart(2, '0')}`;
 // dependsOn defaults to the step before it; dependencies the run does not define are dropped.
-export type SectionStep = { number: number; dependsOn?: readonly number[]; outputs?: readonly string[]; allowsEarlyArtifacts?: boolean };
+// upstream names completed steps of another pipeline (see SectionRun.upstream) that this step was built on.
+export type SectionStep = { number: number; dependsOn?: readonly number[]; upstream?: readonly string[]; outputs?: readonly string[]; allowsEarlyArtifacts?: boolean };
 export type SectionPlan = ChainPlan & { chain: ChainStep[]; defined: Set<string>; resetFrom?: number };
 
-export async function sectionChain(directory: string, steps: readonly SectionStep[], scan = true): Promise<ChainStep[]> {
+export async function sectionChain(directory: string, steps: readonly SectionStep[], scan = true, upstream: readonly ChainStep[] = []): Promise<ChainStep[]> {
   const defined = new Map<number, SectionStep>();
   for (const step of steps) {
     if (!Number.isInteger(step.number) || step.number < 1 || step.number > 99 || defined.has(step.number)
@@ -27,24 +28,27 @@ export async function sectionChain(directory: string, steps: readonly SectionSte
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
     for (const name of entries) if (/^step\d{2}$/.test(name) && name !== 'step00') numbers.add(Number(name.slice(4)));
   }
-  const chain: ChainStep[] = [];
+  // Upstream steps lead the chain so their stamps are recorded and checked, but
+  // the section never runs or resets them; only completed ones may be passed in.
+  const chain: ChainStep[] = [...upstream], external = new Set(upstream.map(step => step.id));
   for (const number of [...numbers].sort((a, b) => a - b)) {
-    const step = defined.get(number), previous = chain.at(-1);
+    const step = defined.get(number), previous = chain.length > upstream.length ? chain.at(-1) : undefined;
+    const local = step?.dependsOn ? step.dependsOn.filter(dependency => defined.has(dependency)).map(stepId) : previous ? [previous.id] : [];
     chain.push({ id: stepId(number), directory: join(directory, stepId(number)),
-      dependsOn: step?.dependsOn ? step.dependsOn.filter(dependency => defined.has(dependency)).map(stepId) : previous ? [previous.id] : [],
+      dependsOn: [...(step?.upstream ?? []).filter(id => external.has(id)), ...local],
       ...(step?.outputs ? { outputs: step.outputs } : {}),
       ...(step?.allowsEarlyArtifacts ? { allowsEarlyArtifacts: true } : {}) });
   }
   return chain;
 }
 
-export async function inspectSection(directory: string, steps: readonly SectionStep[], scan = true): Promise<SectionPlan> {
-  const chain = await sectionChain(directory, steps, scan);
+export async function inspectSection(directory: string, steps: readonly SectionStep[], scan = true, upstream: readonly ChainStep[] = []): Promise<SectionPlan> {
+  const chain = await sectionChain(directory, steps, scan, upstream);
   const plan = { ...await inspectChain(chain), chain, defined: new Set(steps.map(step => stepId(step.number))) };
   if (!plan.reset.length) return plan;
   // Report the break from the first missing step before it, as the gap caused it.
   let index = chain.findIndex(step => step.id === plan.reset[0]);
-  while (index > 0 && plan.statuses.get(chain[index - 1].id) === 'absent') index--;
+  while (index > upstream.length && plan.statuses.get(chain[index - 1].id) === 'absent') index--;
   return { ...plan, resetFrom: Number(chain[index].id.slice(4)) };
 }
 
@@ -57,6 +61,8 @@ export type SectionRun = {
   // The section starts over: whatever is on disk is set aside by `prepare`.
   fresh?: boolean;
   resetNote?: string;
+  // Completed steps of the pipeline this section reads (see SectionStep.upstream).
+  upstream?: readonly ChainStep[];
   // Both run after inspection and before anything changes, so they can refuse safely.
   check?(plan: SectionPlan): Promise<void>;
   keep?(step: ChainStep, plan: SectionPlan): Promise<void>;
@@ -70,7 +76,7 @@ export type SectionRun = {
 // The one run loop: refuse modified outputs, retry what broke, then run each
 // unfinished step under a .running marker and complete it with its record.
 export async function runSection(run: SectionRun): Promise<SectionPlan> {
-  const plan = await inspectSection(run.directory, run.steps, !run.fresh);
+  const plan = await inspectSection(run.directory, run.steps, !run.fresh, run.upstream);
   const modified = modifiedError(plan, plan.chain);
   if (modified) throw modified;
   await run.check?.(plan);

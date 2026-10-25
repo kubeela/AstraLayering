@@ -14,7 +14,7 @@ export async function runWebTask(options: TaskOptions, token: string, dependenci
   const directory = directoryFor(options), controller = new AbortController();
   const interrupt = () => controller.abort(new Error('已请求停止；保留已有产物与 thread，稍后可续跑。'));
   process.once('SIGTERM', interrupt); process.once('SIGINT', interrupt);
-  let polling = false, readyWrite = Promise.resolve();
+  let polling = false, readyWrite: Promise<void> | undefined;
   const timer = setInterval(async () => {
     if (polling) return; polling = true;
     try { if ((await jsonFile(directory, '.web-cancel.json'))?.token === token) interrupt(); }
@@ -22,14 +22,14 @@ export async function runWebTask(options: TaskOptions, token: string, dependenci
     finally { polling = false; }
   }, 1000);
   try {
-    return await runTask(options, { ...dependencies, signal: controller.signal,
-      ready: run => {
-        // The task lock is already held when this callback runs.
-        readyWrite = atomicJSON(join(directory, '.web-worker.json'), { token, pid: process.pid, runnerId: run.runner!.id })
-          .then(() => { dependencies.ready?.(run); process.send?.({ type: 'ready' }); })
-          .catch(error => { controller.abort(error); process.send?.({ type: 'failure', message: String(error) }); });
-      },
-    });
+    // The task lock is already held when either callback runs. A Codex build
+    // confirms the start early, so launch does not time out while it builds.
+    const confirm = (run: Parameters<NonNullable<typeof dependencies.ready>>[0]) => {
+      readyWrite ??= atomicJSON(join(directory, '.web-worker.json'), { token, pid: process.pid, runnerId: run.runner!.id })
+        .then(() => { dependencies.ready?.(run); process.send?.({ type: 'ready' }); })
+        .catch(error => { controller.abort(error); process.send?.({ type: 'failure', message: String(error) }); });
+    };
+    return await runTask(options, { ...dependencies, signal: controller.signal, preparing: confirm, ready: confirm });
   } finally {
     clearInterval(timer);
     await readyWrite;

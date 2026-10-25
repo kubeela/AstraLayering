@@ -166,6 +166,28 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
  const title=phase==='outline'?'轮廓 SVG 最新画面':'补全 SVG 最新画面';
  return `<section class="kra-preview-panel svg-preview-panel" data-svg-preview="${index}:${phase}" aria-label="${esc(group.id)} ${title}"><h3>${icon('layers')}${title}</h3><p class="preview-source" title="${esc(items[0]?.path||group.id)}">${esc(items[0]?.label||group.id)}</p>${items.length?artifacts(items,index,phase,'live-kra-artifacts'):'<p class="archive-gap">等待首次保存 SVG</p>'}</section>`;
 }
+// Step recovery: 继续 keeps products and session, 恢复 drops the session and keeps
+// products, 重试 deletes the step products and session; dependents rerun with it.
+const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
+const stepActionTitles={continue:'保留产物与会话，从中断处继续',resume:'清除会话、保留产物，在新会话中继续',retry:'删除本步骤产物与会话后重做；依赖它的后续步骤自动重跑'};
+function chainStep(index,id){return data.pipelines[index]?.steps?.find(step=>step.id===id);}
+function stepActions(index,id) {
+ const step=id&&chainStep(index,id);
+ if(!step)return '';
+ const busy=data.runnerAlive||data.lockHeld, actions=step.status==='completed'?['retry']:['continue','resume','retry'];
+ return `<div class="step-actions" aria-label="${esc(id)} 步骤操作">${actions.map(action=>`<button class="button" data-step-action="${index}|${esc(id)}|${action}" title="${esc(stepActionTitles[action])}" ${busy?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
+}
+// The chain step a raster-style node stands for; part nodes map through webSteps.
+function nodeChainStep(index,id) {
+ const stage=stages[index].id;
+ if(stage==='shadow')return id===(data.pipelines[index]?.mode==='normal-depth'?'normal-depth-maps':'mask')?'step01':undefined;
+ return ['part-layering','clothing-part-layering'].includes(stage)?undefined:/^step\d{2}$/.test(id)?id:undefined;
+}
+function unfinishedSteps(index) {
+ const steps=(data.pipelines[index]?.steps||[]).filter(step=>step.status!=='completed');
+ if(!steps.length)return '';
+ return `<section class="unfinished-steps" aria-label="${esc(stages[index].name)}未完成的步骤"><h3>未完成的步骤</h3>${steps.map(step=>`<div class="unfinished-step"><code title="${esc(step.id)}">${esc(step.id)}</code><small>${step.status==='running'?'中断 / 失败':'无完成标记'}${step.session?' · 有会话':''}</small>${stepActions(index,step.id)}</div>`).join('')}</section>`;
+}
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
  return `<section class="cycle-phase ${status==='skipped'?'skipped-node':''} ${closed?'collapsed':''}" data-phase="${key}"><button data-phase-toggle="${key}" aria-expanded="${!closed}" aria-label="${closed?'展开':'收起'}${label}"><span class="cycle-number">${number}</span><b>${esc(label)}</b>${statusMark(status)}${icon(closed?'chevron':'down')}</button>${closed?'':`<p class="phase-state ${displayStatus(status)}" title="${esc(detail)}">${status==='skipped'?'无需执行':esc(statusLabel(status))}</p>${artifacts(items,index,id,'phase-artifacts')}${status==='skipped'?'':hasPreview?'<span class="phase-explanation">SVG 见左侧预览</span>':!available(items).length?'<span class="phase-explanation">尚无本步骤产物</span>':''}`}</section>`;
@@ -175,9 +197,14 @@ function groupDetailPhases(index,group,phaseFiles) {
   ?groupReviewSteps(group,stages[index].id,group.id)
   :[{id,title:label,status:group.webPhases?.[id]||'pending',detail:group.webDetails?.[id]||'',
     artifacts:['outline','completion'].includes(id)?phaseFiles[id].filter(item=>item.kind==='file'):phaseFiles[id]}]);
- return steps.map((step,i)=>(['outline','completion'].includes(step.id)?svgPreviewPanel(index,group,step.id,phaseFiles):'')
-  +groupPhaseNode(index,step.id,step.title,step.status,step.detail,step.artifacts,i+1,
-    ['outline','completion'].includes(step.id)&&available(phaseFiles[step.id]).some(item=>item.kind==='image'))).join('');
+ const shown=new Set();
+ return steps.map((step,i)=>{
+  const chain=group.webSteps?.[step.id], first=chain&&!shown.has(chain);
+  if(chain)shown.add(chain);
+  return (['outline','completion'].includes(step.id)?svgPreviewPanel(index,group,step.id,phaseFiles):'')
+   +groupPhaseNode(index,step.id,step.title,step.status,step.detail,step.artifacts,i+1,
+    ['outline','completion'].includes(step.id)&&available(phaseFiles[step.id]).some(item=>item.kind==='image'))+(first?stepActions(index,chain):'');
+ }).join('');
 }
 function groupCycle(index) {
  const roots=pipelineTree(index), view=groupViews[index], layers=groupLayers(roots), all=flat(roots);
@@ -270,6 +297,7 @@ function stepNode(index,step,nested=false) {
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${processArtifacts(index,step)}
+ ${stepActions(index,nodeChainStep(index,step.id))}
  </div>
  `}
  </section>`;
@@ -285,7 +313,7 @@ function processArtifacts(index, step) {
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
- return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}<button class="button pipeline-run" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 恢复${stage.name}</button>${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
+ return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${unfinishedSteps(index)}<button class="button pipeline-run" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 恢复${stage.name}</button>${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
 }
 function inspector() {
  const stage=stages[state.stage],step=selectedStep(),item=state.asset;
@@ -531,6 +559,13 @@ function updateViewURL() {
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-run-stage]').forEach(b=>b.onclick=()=>{state.stage=Number(b.dataset.runStage);showNew(true,true);});
+ document.querySelectorAll('[data-step-action]').forEach(b=>b.onclick=async()=>{
+  const [index,step,action]=b.dataset.stepAction.split('|');
+  if(action==='retry'&&!confirm(`重试 ${step}：删除该步骤的产物与会话并重新运行，依赖它的后续步骤会随之重跑。确定吗？`))return;
+  b.disabled=true;
+  try{const result=await post('step-action',{name:state.name,pipeline:stages[Number(index)].id,step,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
+  catch(error){toast(error.message);b.disabled=false;}
+ });
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
  document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>selectStage(Number(b.dataset.stage)));
  document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const [index,step]=b.dataset.step.split(':'),i=Number(index);const item=available(stepArtifacts[i][step])[0];if(item)openAsset(item,i,step);else{state.stage=i;state.selectedStep=step;state.asset=null;state.inspect=true;render();}});

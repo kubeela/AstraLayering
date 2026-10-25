@@ -11,7 +11,8 @@ import { runCommand, type Command } from './process.ts';
 import { withRust } from './rust.ts';
 
 export const codexCommit = '979011409de0a60b52f179721948e65531d26144';
-type Options = { source?: string; jobs?: number; root?: string; env?: NodeJS.ProcessEnv; progress?: (message: string) => void };
+// building: called once before waiting for or running a build, which can take many minutes.
+type Options = { source?: string; jobs?: number; root?: string; env?: NodeJS.ProcessEnv; progress?: (message: string) => void; building?: () => void };
 type Services = { run?: Command; rust?: typeof withRust; companion?: () => string };
 const platforms: Record<string, string> = { 'linux-x64': 'x86_64-unknown-linux-musl', 'linux-arm64': 'aarch64-unknown-linux-musl',
   'darwin-x64': 'x86_64-apple-darwin', 'darwin-arm64': 'aarch64-apple-darwin', 'win32-x64': 'x86_64-pc-windows-msvc', 'win32-arm64': 'aarch64-pc-windows-msvc' };
@@ -49,12 +50,13 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
     try { release = await lockfile.lock(root, { realpath: false, stale: 30_000, update: 5000, onCompromised(error) { compromised = error; } }); }
     catch (error) {
       if ((error as NodeJS.ErrnoException).code !== 'ELOCKED') throw error;
-      if (!waiting) { progress('等待同一 Codex 补丁构建完成；不会重复构建。'); waiting = true; }
+      if (!waiting) { options.building?.(); progress('等待同一 Codex 补丁构建完成；不会重复构建。'); waiting = true; }
       await delay(250);
     }
   }
   try {
     if (await cached()) return executable;
+    if (!waiting) options.building?.();
     progress(`已开启 Codex 补丁功能，正在自动构建并缓存；日志：${log}`);
     const source = join(root, 'source');
     const exec = (command: string, args: string[], cwd = root) => run(command, args, { cwd, env, log });

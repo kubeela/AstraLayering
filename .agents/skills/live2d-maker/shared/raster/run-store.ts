@@ -102,11 +102,13 @@ export async function initializeRun(directory: string, config: RunConfig<unknown
 // Raster steps form one linear section. Each records the hashes of its
 // artwork (the .kra/.png deliveries), so edits made while a run was stopped are
 // refused instead of silently built upon.
-export function rasterSteps(steps: readonly StepDefinition[]): SectionStep[] {
+// step01 also depends on the upstream pipeline's final step, so redoing the
+// parts reruns the artwork built on them.
+export function rasterSteps(steps: readonly StepDefinition[], upstream: readonly string[] = []): SectionStep[] {
   return steps.map((step, index) => {
     if (step.id !== stepId(index + 1)) throw new Error('已定义步骤必须从 step01 开始连续排列。');
     const outputs = step.requiredFiles.filter(file => /\.(kra|png)$/i.test(file));
-    return { number: index + 1, ...(outputs.length ? { outputs } : {}),
+    return { number: index + 1, ...(index === 0 && upstream.length ? { upstream } : {}), ...(outputs.length ? { outputs } : {}),
       ...(step.allowsEarlyArtifacts ? { allowsEarlyArtifacts: true } : {}) };
   });
 }

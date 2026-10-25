@@ -117,7 +117,7 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
   assert.ok(localFiles.paths.includes('references/model-presets.md'));
   const preset = await fetch(f.url + '/api/config/content?ref=worktree&path=presets/optimized.env');
   assert.equal(preset.status, 200);
-  assert.match((await preset.json() as any).text, /layering_agent_part_draw_model=gemini-4-argon-high/);
+  assert.match((await preset.json() as any).text, /layering_agent_part_draw_model=gpt-6.1-sol-xhigh/);
   assert.equal((await fetch(f.url + '/api/config/content?ref=HEAD&path=../../.env')).status, 400);
 });
 
@@ -199,4 +199,29 @@ test('shadow reference routes serve only bundled guides, and inspection previews
   const {shadowInspectionArtifacts}=await import(new URL('../progress.js',import.meta.url).href);
   const path='shadow/mask/step01/inspection/relation-001-review.png';
   assert.deepEqual(shadowInspectionArtifacts([path,'shadow/mask/step01/inspection/native-123/offset.png','shadow/normal-depth/step01/inspection/relation-000-review.png']).map((a:any)=>a.path),[path]);
+});
+
+test('步骤操作接口：重试人物与衣服分块的步骤后按保存的路线重新运行，快照列出未完成步骤', async t => {
+  const started: any[] = [];
+  const f = await fixture(t, async options => { started.push(options); return 456; }), task = join(f.dir, 'case');
+  await mkdir(task);
+  await saveRun(task, await configureRun({ name: 'case', dir: f.dir }, task));
+  for (const pipeline of ['part-layering', 'clothing-part-layering']) {
+    await put(task, `${pipeline}/groups/head/step02/.running`, JSON.stringify({ inputs: {} }));
+    await put(task, `${pipeline}/groups/head/step02/session.json`, JSON.stringify({ threadId: 'thread-' + pipeline }));
+  }
+  const pipelines = (await snapshot(task, 'case', f.dir)).pipelines;
+  for (const id of ['part-layering', 'clothing-part-layering']) {
+    assert.deepEqual(pipelines.find(pipeline => pipeline.id === id)!.steps, [{ id: 'groups/head/step02', status: 'running', session: true }]);
+  }
+  const resumed = await f.post('step-action', { name: 'case', pipeline: 'clothing-part-layering', step: 'groups/head/step02', action: 'resume' });
+  assert.equal(resumed.status, 202); assert.equal(resumed.value.pid, 456); assert.match(resumed.value.message, /thread-clothing-part-layering/);
+  await assert.rejects(readFile(join(task, 'clothing-part-layering/groups/head/step02/session.json')), { code: 'ENOENT' });
+  const retried = await f.post('step-action', { name: 'case', pipeline: 'part-layering', step: 'groups/head/step02', action: 'retry' });
+  assert.equal(retried.status, 202);
+  await assert.rejects(readFile(join(task, 'part-layering/groups/head/step02/.running')), { code: 'ENOENT' });
+  assert.equal(started.length, 2); assert.equal(started[0].name, 'case'); assert.equal(started[0].from, undefined);
+  const refused = await f.post('step-action', { name: 'case', pipeline: 'part-layering', step: 'groups/head/step02', action: 'retry' });
+  assert.equal(refused.status >= 400, true); assert.match(refused.value.error, /不存在/);
+  assert.equal(started.length, 2);
 });
