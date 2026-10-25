@@ -33,14 +33,10 @@ test('停止后已有绘画仍是已有产物，不能误报完成或进行中',
   assert.doesNotMatch(html, /已完成|进行中/);
 });
 
-test('执行入口遵循总控锁，停止后可续跑已有或失败管线', () => {
-  for (const [running, locked] of [[true, false], [false, true], [true, true]]) {
-    const html = render(['done', 'failed'], [], running, locked);
-    assert.equal((html.match(/data-run-stage="\d+" disabled/g) ?? []).length, 2);
-  }
-  const stopped = render(['done', 'failed']);
-  assert.doesNotMatch(stopped, /data-run-stage="\d+" disabled/);
-  assert.equal((stopped.match(/data-stage="\d+"/g) ?? []).length, 4, 'title and preview keep opening the detailed pipeline');
+test('管线卡片只保留预览，运行统一由标题栏的继续 / 恢复 / 重试负责', () => {
+  const html = render(['done', 'failed'], [], true, true);
+  assert.doesNotMatch(html, /data-run-stage|运行 \/ 续跑/);
+  assert.equal((html.match(/data-stage="\d+"/g) ?? []).length, 4, 'title and preview keep opening the detailed pipeline');
 });
 
 test('人物和衣服跳过的 review/repair 共用紧凑节点，明确为无需执行', () => {
