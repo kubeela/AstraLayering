@@ -235,3 +235,11 @@ AI 不需要凭一张图“猜出动画”。它需要从真实时间线中查�
 独立 C 使用 `physics_request_repair` 提交 `step03/feedback.json`：`version,status,configHash,reviewTurn,items,disposition,repairRounds`。每项含 `component,criterion,verdict,reason,test,steps,images`；视觉否决引用已查看当前图像，数值 response／limits 可引用真实步窗口；缺图用 needs-evidence。反馈只针对当前 reviewer 与配置，旧反馈不能重复触发返修。
 
 调度状态 pending→dispatching→dispatched 保证交接中断可恢复。失败版本、报告与反馈保存在 `step03/reviews/<reviewTurn>/`；完整轨迹仍按实现／配置指纹归档。B 读取 `step02/repair-request.json` 后修改、重测；C 不代改草稿，后续使用新独立会话。每装配最多三轮制作／复核，达到上限保留失败而不放宽输入或形变上限。当前测试证明这条调度边界，未据此声称自动角色美术验收已经完成。
+
+## 当前独立复核的实际范围（2026-10-25）
+
+Jianma 同源复现已完成，完整结果见 [14 正式复现结果](14-physics-initialization-and-targets.md)及[案例记录](cases/jianma-physics-guided-validation-20261025.json)。九组完整数值轨迹覆盖全部 46 个活动组件，八组非静止输入均有当前回落证明。极端输入第 60 步的内裙一次孤立回退仍保留；对应邻帧和连续窗已经实际检查。
+
+独立 C 查看 1737 次、1595 张不同图片，六项结论均引用当前 C 实际观察；制作阶段 150 次看图没有算入其中。审核同时核对规定全身帧、逐组件局部、运动光照／法线／深度及参考对比，引用不属于本人的图片会阻止通过。新会话的读取由工具登记 `reviewSession`，同一 C 恢复继续使用原记录；旧格式这次通过原制作前缀与当前 C 的后续记录显式审计，没有改写旧看图记录。
+
+这份范围记录证明独立复核实际完成，不将选帧审核写成观看全部 120 Hz 像素帧，也不将人工状态从 `unreviewed` 自动改为通过。只要配置或物理／渲染指纹改变，仍按对应依赖重新测量和复核。
