@@ -9,7 +9,7 @@ import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { referenceUrl } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
 import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
-import { applyStepAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
+import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI } from './config.ts';
 import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
@@ -195,6 +195,16 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           } finally { starts.delete(directory); }
           return;
         }
+        if (path === '/api/task-action') {
+          // The toolbar form: recover every interrupted or failed step, then run the saved route again.
+          if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
+          starts.add(directory);
+          try {
+            const message = await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action });
+            json({ message, pid: await start(opts), name: opts.name }, 202);
+          } finally { starts.delete(directory); }
+          return;
+        }
         if (path === '/api/stop') {
           const run = await readRun(directory, opts.name), worker = await jsonFile(directory, '.web-worker.json');
           const live = await taskStatus(opts);
@@ -318,7 +328,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' });
         response.end(await readFile(file)); return;
       }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'projection-field.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'component-physics-binding.js', 'component-physics-geometry.js', 'component-physics-model.js', 'component-physics-schema.js', 'component-physics-panel.js', 'physics-test-input.js', 'physics-airflow.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       for (const name of ['component-physics-selection.js','component-physics-runner.js','component-physics-worker.js','surface-shadow.js','surface-lighting.js','vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       for (const name of ['physics-workflow-model.js', 'physics-workflow-panel.js', 'physics-recorded-frame.js', 'physics-motion-review.js']) staticFiles['/studio/' + name] = 'studio/' + name;
