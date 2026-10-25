@@ -82,7 +82,7 @@ hair/completion.md 补充正面被脸和身体遮住的完整后发联合范围�
 | 首次分组 | initial/step01/groups.json |
 | 轮廓与复核 | groups/<id>/step01/：outline.svg、review.json、outline.repairs/、session.json |
 | 同层去重 | layers/depthNN/<id>.svg |
-| 补全与检查 | groups/<id>/step02/check.json，产物 parts/<id>.svg |
+| 补全与检查 | groups/<id>/step02/：check.json、session.json，产物 parts/<id>.svg |
 | 直属子组拆分 | groups/<id>/step03/children.json |
 | 整树预览合并 | merge/，产物 preview.svg |
 | 遮挡层级表及逐件检查 | occlusion/（含 candidate.svg），产物 occlusion.json |
