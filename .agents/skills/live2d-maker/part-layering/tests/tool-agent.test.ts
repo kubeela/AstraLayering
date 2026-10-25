@@ -101,9 +101,9 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const submission = protocol.find(item => item.id === 'call-2').result;
   assert.equal(submission.success, true);
   const saved = JSON.parse(submission.contentItems[0].text).path;
-  assert.equal(saved, join(f.directory, 'groups.json'));
+  assert.equal(saved, join(f.directory, 'initial/step01/groups.json'));
   assert.deepEqual(JSON.parse(await readFile(saved, 'utf8')), {
-    subject: 'character', groups: [{ id: 'head', name: 'head', note: '头部', groups: [] }],
+    subject: 'character', groups: [{ id: 'head', kind: 'group', name: 'head', note: '头部' }],
   });
   const logged = await log(f.logDirectory);
   assert.equal(logged.request.transport, 'app-server');

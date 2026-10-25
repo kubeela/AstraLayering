@@ -50,9 +50,12 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
     clothing.png
     preparation-prompt.md
     preparation.json           # 来源、生成图和提示词指纹；不保存鉴权
-  groups.json                  # 归属树、part 职责及分析依据
+  groups.json                  # 归属树视图，可编辑名称与 part 职责说明
+  initial/step01/              # 首次分组
+  groups/<id>/step01..03/      # 轮廓与复核、补全与检查、子组拆分；子组嵌套在 children/ 下
+  layers/depthNN/              # 同层去重
   parts/                       # 完整的分件 SVG，主要交接产物
-  stages/                      # 轮廓、检查及中间成果
+  merge/  occlusion/           # 合并与遮挡规划的步骤记录
   observations/
   agents/                      # 请求、结果和恢复日志
   preview.svg

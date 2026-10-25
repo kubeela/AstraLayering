@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { completeStep, inspectChain, modifiedError, resetChain, startStep, type ChainStep } from '../step-chain.ts';
+import { beginStep, checkStep, completeStep, inspectChain, modifiedError, resetChain, startStep, type ChainStep } from '../step-chain.ts';
 
 async function tree(t: { after(fn: () => Promise<void>): void }) {
   const root = await mkdtemp(join(tmpdir(), 'step-chain-'));
@@ -96,4 +96,35 @@ test('产物可在步骤目录外：删除产物即重试该步骤，重置会�
   assert.deepEqual([plan.reset, plan.modified], [['a', 'b'], []]);
   await resetChain(steps, plan);
   for (const path of ['b.png', '.steps/a', '.steps/b']) await assert.rejects(stat(join(root, path)), { code: 'ENOENT' });
+});
+
+test('按产物依赖（id#output）：只有所依赖的产物变化才重跑；中断时同输入续跑，输入变了重跑', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'step-chain-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const layer: ChainStep = { id: 'layer', directory: join(root, 'layer'), dependsOn: [], outputs: ['x.svg', 'y.svg'] };
+  const step = (name: string): ChainStep => ({ id: name, directory: join(root, name), dependsOn: [`layer#${name}.svg`] });
+  const [x, y] = [step('x'), step('y')], steps = [layer, x, y];
+  const write = async (name: string, text: string) => { await mkdir(layer.directory, { recursive: true }); await writeFile(join(layer.directory, name), text); };
+  const run = async (target: ChainStep) => { await beginStep(target.directory, (await checkStep(target, steps)).inputs); await completeStep(target, steps); };
+  await beginStep(layer.directory, {});
+  await write('x.svg', 'x1'); await write('y.svg', 'y1');
+  await completeStep(layer, steps);
+  for (const target of [x, y]) await run(target);
+  assert.deepEqual(await Promise.all([x, y].map(async target => (await checkStep(target, steps)).action)), ['keep', 'keep']);
+
+  // The layer reruns and rewrites y only; x keeps, y reruns.
+  await beginStep(layer.directory, {});
+  await write('y.svg', 'y2');
+  await completeStep(layer, steps);
+  assert.equal((await checkStep(x, steps)).action, 'keep');
+  assert.equal((await checkStep(y, steps)).action, 'rerun');
+
+  // Interrupted against the current inputs: continue. Inputs changed meanwhile: rerun.
+  await beginStep(y.directory, (await checkStep(y, steps)).inputs);
+  assert.equal((await checkStep(y, steps)).action, 'continue');
+  await beginStep(layer.directory, {});
+  await write('y.svg', 'y3');
+  await completeStep(layer, steps);
+  assert.equal((await checkStep(y, steps)).action, 'rerun');
+  assert.equal((await checkStep(x, steps)).action, 'keep');
 });

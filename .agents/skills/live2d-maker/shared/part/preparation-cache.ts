@@ -21,7 +21,7 @@ export async function readPreparationOptions(directory: string): Promise<boolean
 
 // Only the current part pipeline owns these files. Raster/assembly markers and threads are untouched.
 export async function clearPreparedParts(directory: string): Promise<void> {
-  for (const entry of ['groups.json', 'parts', 'stages', 'observations', 'preview.svg', 'occlusion.json']) {
+  for (const entry of ['groups.json', 'initial', 'groups', 'layers', 'parts', 'merge', 'occlusion', 'stages', 'observations', 'preview.svg', 'occlusion.json']) {
     await rm(join(directory, entry), { recursive: true, force: true });
   }
 }

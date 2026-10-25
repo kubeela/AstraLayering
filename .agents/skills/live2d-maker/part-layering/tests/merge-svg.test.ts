@@ -13,7 +13,7 @@ const sample = async (svg: string, x: number, y: number) => {
   return [...data.subarray((y * info.width + x) * 4, (y * info.width + x) * 4 + 4)];
 };
 
-test('所有 part 完成后默认合并只绘制叶子，保留分组 ID 与叠放顺序，续跑复用且树顺序变化重建', async t => {
+test('所有 part 完成后默认合并只绘制叶子，保留分组 ID 与叠放顺序，续跑复用且树顺序以拆分记录为准', async t => {
   const f = await fixture(t), events: string[] = [];
   const steps = workingSteps(events, [{ id: 'body' }], { body: [{ id: 'body/a', kind: 'part' }, { id: 'body/b', kind: 'part' }] });
   const originalDraw = steps.drawOutline;
@@ -42,11 +42,10 @@ test('所有 part 完成后默认合并只绘制叶子，保留分组 ID 与叠�
   const treePath = join(f.directory, 'groups.json'), tree = JSON.parse(await readFile(treePath, 'utf8'));
   tree.groups[0].groups.reverse();
   await writeFile(treePath, JSON.stringify(tree));
+  // 树结构与顺序以子组拆分记录为准；groups.json 中的顺序编辑不改变合并结果。
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, []);
-  const reordered = await readFile(result.output!, 'utf8');
-  assert.notEqual(reordered, svg);
-  assert.deepEqual(await sample(reordered, 50, 50), [255, 0, 0, 255]);
+  assert.equal(await readFile(result.output!, 'utf8'), svg);
   assert.equal((await GroupStore.open(f.directory)).snapshot().merge.status, 'completed');
 });
 

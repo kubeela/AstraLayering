@@ -1,5 +1,7 @@
 import { readFile } from 'node:fs/promises';
-import { matchesHash, reviewedArtifact, svgHash } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
+import { artifactPath, matchesHash, reportPath, reviewedArtifact } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
+import { groupStepId, layerStepId } from '../.agents/skills/live2d-maker/shared/part/part-steps.ts';
+import { readStep, type StepStatus } from '../.agents/skills/live2d-maker/shared/step-chain.ts';
 import { safePath } from './files.ts';
 import { currentAgentCalls, type AgentCall } from './agent-progress.ts';
 import { partStages } from './part-stages.ts';
@@ -8,8 +10,14 @@ import { partReviewRounds } from './part-review.ts';
 export const phases = ['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'] as const;
 type Phase = typeof phases[number];
 
-// These are file observations for display, not a second scheduler or a resume check.
-// In particular, never run recovery/migration or follow dependency paths from reports.
+// Step markers are dotfiles, which the file inventory skips; read them directly.
+export async function stepStatus(directory: string, pipeline: string, id: string): Promise<StepStatus> {
+  try { return (await readStep(await safePath(directory, `${pipeline}/${id}`))).status; }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return 'absent'; throw error; }
+}
+
+// These are file observations for display, not a second scheduler or a resume check:
+// a completed marker is shown as done without checking it against its inputs.
 export async function partProgress(directory: string, pipeline: string, groups: any[], files: Set<string>,
   json: (path: string) => Promise<any>, errors: string[], activeSince?: string, failedSince?: string) {
   const bytes = new Map<string, Promise<Buffer | undefined>>();
@@ -24,13 +32,15 @@ export async function partProgress(directory: string, pipeline: string, groups: 
   const entries: { node: any; depth: number }[] = [];
   const visit = (nodes: any[], depth: number) => nodes.forEach(node => { entries.push({ node, depth }); visit(node.groups ?? [], depth + 1); });
   visit(groups, 0);
-  const receipts = new Map<number, any>();
   const reviewInputs = new Map<any, { report: any; outline: Buffer | undefined }>();
-  for (const depth of new Set(entries.map(entry => entry.depth))) {
-    receipts.set(depth, await json(`${pipeline}/stages/outline-reduce/layers/${depth}.json`));
-  }
+  const steps = new Map<string, Promise<StepStatus>>();
+  const step = (id: string) => {
+    if (!steps.has(id)) steps.set(id, stepStatus(directory, pipeline, id).catch(error => { errors.push(`${pipeline}/${id}: ${String(error)}`); return 'absent' as const; }));
+    return steps.get(id)!;
+  };
   for (const { node, depth } of entries) {
-    const path = (stage: string, suffix = '.svg') => `${pipeline}/${stage}/${node.id}${suffix}`;
+    const path = (stage: 'outline' | 'reduction' | 'completion') => artifactPath(pipeline, node.id, stage);
+    const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
     node.webMessages = {};
     node.webDetails = {};
@@ -39,39 +49,32 @@ export async function partProgress(directory: string, pipeline: string, groups: 
       node.webMessages[phase] = done ? '已完成' : present ? '已有产物' : '待执行';
       if (present) node.webDetails[phase] = message;
     };
-    const outline = await read(path('stages/outline'));
-    const reduced = await read(path('stages/outline-reduce'));
-    const completed = await read(path('parts'));
-    const draft = files.has(path('stages/outline', '.draft.svg'));
-    mark('outline', !!outline, !!outline || draft, outline ? '已落稿' : '草稿 · 未落稿');
+    const outline = await read(path('outline'));
+    const reduced = await read(path('reduction'));
+    const completed = await read(path('completion'));
+    const [prepared, layer, finished, split] = await Promise.all([step(groupStepId(node.id, 1)), step(layerStepId(depth)),
+      step(groupStepId(node.id, 2)), step(groupStepId(node.id, 3))]);
+    mark('outline', !!outline, !!outline || draft('outline'), outline ? '已落稿' : '草稿 · 未落稿');
 
-    const report = await json(path('stages/review', '.review.json'));
+    const report = await json(reportPath(pipeline, node.id, 'review'));
     const validReport = report?.groupId === node.id && Array.isArray(report.reviews);
     reviewInputs.set(node, { report: validReport ? report : undefined, outline });
-    const reviewed = outline && validReport ? reviewedArtifact(outline, path('stages/outline'), report) : undefined;
+    const reviewed = outline && validReport ? reviewedArtifact(outline, path('outline'), report) : undefined;
     const last = validReport ? report.reviews.at(-1) : undefined;
-    mark('review', !!reviewed, !!report, reviewed ? reviewed.note ?? '复核通过'
+    mark('review', !!reviewed && prepared === 'completed', !!report, reviewed ? reviewed.note ?? '复核通过'
       : last && outline && matchesHash(outline, last.candidateHash)
         ? last.verdict === 'revise' ? '需要返修' : last.verdict === 'blocked' ? '复核受阻' : '记录待确认'
         : '复核记录与当前稿未匹配');
 
-    const receipt = receipts.get(depth);
-    const reducedRecord = receipt?.depth === depth && Array.isArray(receipt.groups)
-      ? receipt.groups.find((item: any) => item.id === node.id) : undefined;
-    const reductionDone = !!(reduced && outline && matchesHash(outline, reducedRecord?.inputHash) && matchesHash(reduced, reducedRecord?.outputHash));
-    mark('reduction', reductionDone, !!reduced || files.has(path('stages/outline-reduce', '.draft.svg')),
-      reductionDone ? '已落稿 · 去重记录匹配' : reduced ? '已有正式稿 · 记录待确认' : '草稿 · 未落稿');
-
-    const completionDone = !!(completed && reduced && completed.toString().match(/\bdata-source-sha256=['"]([^'"]+)['"]/)?.[1] === svgHash(reduced));
-    mark('completion', completionDone, !!completed || files.has(path('parts', '.draft.svg')),
-      completionDone ? '已落稿 · 来源匹配' : completed ? '已有正式稿 · 来源待确认' : '草稿 · 未落稿');
-    const check = await json(path('stages/completion-check', '.json'));
-    const checked = !!(check?.groupId === node.id && check.passed === true && reduced && completed
-      && matchesHash(reduced, check.beforeHash) && matchesHash(completed, check.afterHash));
-    mark('completionCheck', checked, !!check, checked ? '补全检查通过' : '检查记录与当前稿未匹配');
-    const childrenDone = !!(completed && node.childrenAnalysis && matchesHash(completed, node.childrenAnalysis.sourceHash));
-    mark('children', childrenDone || (node.kind === 'part' && checked), !!node.childrenAnalysis || !!node.groups?.length,
-      childrenDone ? `已分析 · ${node.groups?.length ?? 0} 个直属节点` : '已有分组 · 来源待确认');
+    const reductionDone = !!reduced && layer === 'completed';
+    mark('reduction', reductionDone, !!reduced || draft('reduction'), reductionDone ? '已落稿 · 本层去重完成' : reduced ? '已有正式稿 · 本层去重未完成' : '草稿 · 未落稿');
+    const completionDone = !!completed && finished !== 'absent';
+    mark('completion', completionDone, !!completed || draft('completion'), completionDone ? '已落稿' : completed ? '已有正式稿 · 步骤待重做' : '草稿 · 未落稿');
+    const check = await json(reportPath(pipeline, node.id, 'completion-check'));
+    const checked = !!check && finished === 'completed';
+    mark('completionCheck', checked, !!check, checked ? '补全检查通过' : '检查记录待确认');
+    const childrenDone = split === 'completed';
+    mark('children', childrenDone, childrenDone || !!node.groups?.length, childrenDone ? `已分析 · ${node.groups?.length ?? 0} 个直属节点` : '已有分组 · 待重新分析');
     if (node.kind === 'part') node.webDetails.children = '终止 part，不再拆分';
   }
 
@@ -111,5 +114,5 @@ export async function partProgress(directory: string, pipeline: string, groups: 
         : ({ outline: '正在绘制 / 自检', review: '正在复核', reduction: '正在同层去重', completion: '正在补全 / 自检', children: '正在分析直属结构' } as any)[phase];
     }
   }
-  return partStages(directory, pipeline, groups, files, json, read, calls, errors, !!activeSince);
+  return partStages(directory, pipeline, groups, files, json, read, calls, errors, !!activeSince, step);
 }

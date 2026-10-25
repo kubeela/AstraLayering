@@ -7,7 +7,8 @@ import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
-import { GroupStore, normalizeGroups } from './groups.ts';
+import { normalizeGroups, writeAtomic } from './groups.ts';
+import { initialStepId, readInitialGroups } from './part-steps.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { InitialContext, InitialGrouping } from './layering-types.ts';
 
@@ -37,7 +38,9 @@ export async function recognizeInitialGroups(
 ): Promise<InitialGrouping> {
   const profile = partProfile(context);
   const prompt = await readFile(join(profile.promptsDirectory, '4-初始分组.md'), 'utf8');
-  const store = context.store ?? await GroupStore.open(context.directory, profile.promptsDirectory);
+  // The tool writes the step output directly, so a turn that fails after saving
+  // continues from the saved grouping instead of asking again.
+  const path = join(context.directory, initialStepId, 'groups.json');
   const reference = resolve(context.directory, context.references.baseSubject);
   let submitted = false;
   const writeGroups: FunctionTool = {
@@ -45,15 +48,12 @@ export async function recognizeInitialGroups(
     async execute(value, signal) {
       signal.throwIfAborted();
       const result = decodeInitialGrouping(value, profile.subjects);
-      await store.update(document => {
-        signal.throwIfAborted();
-        if (document.groups.length) throw new Error('已有分组，不能覆盖；请继续现有进度');
-        document.groups = normalizeGroups(result.groups);
-        document.subject = result.subject;
-        document.merge = { status: 'pending' };
-      });
+      if (submitted) throw new Error('已有分组，不能覆盖；请继续现有进度');
+      normalizeGroups(result.groups);
+      signal.throwIfAborted();
+      await writeAtomic(path, JSON.stringify(result, null, 2) + '\n');
       submitted = true;
-      return textResult({ path: store.path, ids: result.groups.map(group => group.id) });
+      return textResult({ path, ids: result.groups.map(group => group.id) });
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
@@ -62,10 +62,9 @@ export async function recognizeInitialGroups(
     prompt: renderPrompt(prompt, {run_directory: context.directory,
       reference_label: profile.referenceLabel,
       reference_path: reference,
-      groups_path: store.path}, join(profile.promptsDirectory, '4-初始分组.md'), ["run_directory","reference_label","reference_path","groups_path"]),
+      groups_path: path}, join(profile.promptsDirectory, '4-初始分组.md'), ["run_directory","reference_label","reference_path","groups_path"]),
     tools: [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups],
   });
   if (!submitted) throw agentOutcomeError('首次分组未通过 write_groups 保存', response);
-  const saved = store.snapshot();
-  return { subject: saved.subject, groups: saved.groups.map(({ groups, steps, ...seed }) => seed) };
+  return readInitialGroups(context.directory);
 }

@@ -85,7 +85,7 @@ pnpm env:check
 
 人物和衣服 preparation 均按内容指纹验证缓存：一致才复用，已有参考或输入不匹配时明确报错并保留文件。人物记录还覆盖标准化选项，以及 `standard.png`、`judgment.json`、简化参考、素体参考的输入和输出指纹；判断与生图中断后可继续已完成的小步骤，生成失败不会回退原图。提示词编辑本身不触发重画。
 
-制作不同参考图优先使用新的 `--name`。若有意重做当前人物 preparation，删除报错指向的参考文件再运行人物 part；切换标准化模式时先删除 `part-layering/references/standard.png`。后续参考会逐项检查，不匹配时也须删除对应文件后重做。缺失输出重新生成后，内容相同就保留已有拆分；简化／素体参考内容改变且 preparation 完整后，仅重置当前人物 part 的 `groups.json`、`parts/`、`stages/`、`observations/`、`preview.svg`、`occlusion.json`。此机制不自动重置 raster、衣服或组装的成果、完成标记及 thread；需重做它们时仍用各自原有重跑方式。
+制作不同参考图优先使用新的 `--name`。若有意重做当前人物 preparation，删除报错指向的参考文件再运行人物 part；切换标准化模式时先删除 `part-layering/references/standard.png`。后续参考会逐项检查，不匹配时也须删除对应文件后重做。缺失输出重新生成后，内容相同就保留已有拆分；简化／素体参考内容改变且 preparation 完整后，仅重置当前人物 part 的 `groups.json`、`initial/`、`groups/`、`layers/`、`parts/`、`merge/`、`occlusion/`、`observations/`、`preview.svg`、`occlusion.json`。此机制不自动重置 raster、衣服或组装的成果、完成标记及 thread；需重做它们时仍用各自原有重跑方式。
 
 旧人物任务没有 preparation 指纹时，默认续跑会明确提示并以当前文件建立一次基线，不重画已有参考；有原图则补一份不调姿态的 `standard.png`。旧任务缺原图但参考齐全时仍可续跑，暂不补 standard；不能在无法确认旧参考来源的情况下直接开启标准化，应使用新任务或移除旧参考后重做。`--groups` 始终只读校验，不迁移文件、不生图、不清理缓存。
 

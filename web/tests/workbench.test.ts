@@ -125,7 +125,7 @@ test('snapshots distinguish artifacts, real group states, missing outputs, revie
   const f = await fixture(t), task = join(f.dir, 'test');
   await mkdir(task);
   await put(task, 'part-layering/groups.json', JSON.stringify({ groups: [{ id: 'body', groups: [] }] }));
-  await put(task, 'part-layering/stages/outline/body.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
+  await put(task, 'part-layering/groups/body/step01/outline.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
   await put(task, 'part-layering/preview.svg');
   let value = await snapshot(task, 'test', f.dir);
   assert.equal(value.status, 'untracked');
