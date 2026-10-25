@@ -14,9 +14,9 @@ async function fixture(t: TestContext) {
   t.after(() => rm(root, {recursive: true, force: true})); return root;
 }
 const capabilities = {version: 1, image_provider_version: 2, image_compaction_version: 2, request_compaction_version: 1, failed_error_event_version: 1};
-test('并发自动构建只运行一次，校验缓存，损坏后重建，失败不写成功记录', async t => {
+test('并发自动构建只运行一次，校验缓存，损坏后重建，失败不写成功记录；构建或等待前通知调用方', async t => {
   const root = await fixture(t), sdkHost = join(root, 'sdk-host'); await writeFile(sdkHost, 'companion');
-  let builds = 0, fail = true;
+  let builds = 0, building = 0, fail = true;
   const run: Command = async (command, args) => {
     if (command === 'git') {
       if (args[0] === 'clone') await mkdir(args.at(-1)!, {recursive: true});
@@ -32,15 +32,16 @@ test('并发自动构建只运行一次，校验缓存，损坏后重建，失�
   };
   const services = {run, companion: () => sdkHost,
     rust: (async (env, action) => action({cargo: 'cargo', prefix: [], env})) as typeof withRust};
-  const opts = {root: join(root, 'cache'), env: {PATH: 'fixture'}, progress() {}};
+  const opts = {root: join(root, 'cache'), env: {PATH: 'fixture'}, progress() {}, building() { building++; }};
   await assert.rejects(ensurePatchedCodex(opts, services), /自动构建失败/);
   const [platform] = await readdir(opts.root), [key] = await readdir(join(opts.root, platform));
   const cache = join(opts.root, platform, key);
   await assert.rejects(readFile(join(cache, 'ready.json')), {code: 'ENOENT'});
   fail = false;
   const results = await Promise.all([ensurePatchedCodex(opts, services), ensurePatchedCodex(opts, services)]);
-  assert.equal(results[0], results[1]); assert.equal(builds, 2);
-  await ensurePatchedCodex(opts, services); assert.equal(builds, 2);
+  // The waiting call is notified too: it can take as long as the build.
+  assert.equal(results[0], results[1]); assert.equal(builds, 2); assert.equal(building, 3);
+  await ensurePatchedCodex(opts, services); assert.equal(builds, 2); assert.equal(building, 3);
   await writeFile(results[0], 'corrupted'); await ensurePatchedCodex(opts, services); assert.equal(builds, 3);
   assert.equal(await readFile(results[0], 'utf8'), 'binary');
   assert.equal(await readFile(join(cache, 'bin', process.platform === 'win32' ? 'codex-code-mode-host.exe' : 'codex-code-mode-host'), 'utf8'), 'companion');
