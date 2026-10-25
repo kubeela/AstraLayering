@@ -238,3 +238,26 @@ test('frozen physics preview keeps exact maps across review-rule changes without
   data = await (await f.get()).json() as any;
   assert.equal(data.files.normal.available, false);
 });
+
+test('normalized physics uses extractor source identity and refuses changed source or maps', async t => {
+  const f = await fixture(t), hash = (v: string) => createHash('sha256').update(v).digest('hex');
+  await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
+  await f.put(shadowArtifacts.draftNormal, 'normal'); await f.put(shadowArtifacts.draftDepth, 'depth');
+  await f.put('physics/physics.json', JSON.stringify({ source: { canvas: { width: 2, height: 2 } }, components: [] }));
+  await f.put('physics/source/surface-inputs.json', JSON.stringify({ version: 1, documentHash: hash('source'), maps: {
+    normal: { path: shadowArtifacts.draftNormal, contentHash: hash('normal') },
+    depth: { path: shadowArtifacts.draftDepth, contentHash: hash('depth') },
+  } }));
+  assert.equal((await (await f.get()).json() as any).files.normal.available, false);
+  await f.put('physics/source/catalog.json', JSON.stringify({ version: 1, documentHash: hash('source'), colorHash: hash('color') }));
+  let data = await (await f.get()).json() as any;
+  assert.equal(data.files.normal.available, true); assert.equal(data.files.depth.available, true);
+  assert.equal(data.previewReview, 'frozen-preview-input'); assert.equal(data.previewDraft, true);
+  await f.put(studioArtifacts.color, 'changed');
+  assert.equal((await (await f.get()).json() as any).files.normal.available, false);
+  await f.put(studioArtifacts.color, 'color'); await f.put(shadowArtifacts.draftDepth, 'changed');
+  assert.equal((await (await f.get()).json() as any).files.depth.available, false);
+  await f.put(shadowArtifacts.draftDepth, 'depth');
+  await f.put('physics/source/catalog.json', JSON.stringify({ version: 1, documentHash: hash('another source'), colorHash: hash('color') }));
+  assert.equal((await (await f.get()).json() as any).files.normal.available, false);
+});

@@ -63,9 +63,14 @@ export async function studioProject(directory: string, name: string, dir: string
   if (!draftRecord && !publishedMaps && all.draftNormal.available && all.draftDepth.available) {
     const selectedPhysics = draftPhysics && !physicsDraftStale ? draftPhysics : formalPhysics;
     const frozen = await jsonFile(directory, 'physics/source/surface-inputs.json');
-    if (frozen?.version === 1 && frozen.documentHash === sourceHashes[0]
-      && selectedPhysics?.source?.documentHash === sourceHashes[0]
-      && selectedPhysics?.source?.colorHash === sourceHashes[1]
+    // Normalized bindings retain the canvas; the extractor owns source hashes.
+    // Keep explicit legacy identities authoritative when they are present.
+    const catalog = selectedPhysics && await jsonFile(directory, 'physics/source/catalog.json');
+    const catalogSource = catalog?.version === 1 ? catalog : undefined;
+    const documentHash = selectedPhysics?.source?.documentHash ?? catalogSource?.documentHash;
+    const colorHash = selectedPhysics?.source?.colorHash ?? catalogSource?.colorHash;
+    if (selectedPhysics && frozen?.version === 1 && frozen.documentHash === sourceHashes[0]
+      && documentHash === sourceHashes[0] && colorHash === sourceHashes[1]
       && frozen.maps?.normal?.path === shadowArtifacts.draftNormal && frozen.maps?.depth?.path === shadowArtifacts.draftDepth) {
       const hashes = await Promise.all([all.draftNormal.path, all.draftDepth.path].map(async path =>
         createHash('sha256').update(await readFile(await safePath(directory, path))).digest('hex')));
