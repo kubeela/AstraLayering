@@ -4,7 +4,7 @@
 
 运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
 
-从**简化后的穿衣角色图**提取纯衣服，再生成可独立控制的衣服 part 色块及深度表，交给 [clothing-raster-layering](../clothing-raster-layering/README.md) 绘制分层 KRA。输入暂时固定为穿衣角色图，以保留衣服与角色身形、姿态和坐标的对应关系。
+从**简化穿衣图和同一角色的素体图**提取互补的主体衣装，再生成可独立控制的衣服 part 色块及深度表，交给 [clothing-raster-layering](../clothing-raster-layering/README.md) 绘制分层 KRA。衣装保留原款式、局部比例与结构；整套衣装的大小和位置由后续组装适配人物。
 
 调度、Codex SDK / App Server 适配及文件恢复使用 `../shared/` 的公共实现。本目录保留衣服 preparation、提示词和专项配置，不加载人物先验。所有文字 agent 使用 `gpt-6.1-sol / xhigh`。
 
@@ -21,13 +21,13 @@ pnpm clothing-part-layering --name jianma
 pnpm clothing-part-layering --name jianma
 ```
 
-preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服务、鉴权以及该工具的实际可用性统一由外部 Codex 环境提供；工作流只启用和调用工具，不管理 provider、不直连生图 API、不注册替代生图工具。内置工具不可用或生成结果无效时明确失败，保留输入供重试，不以原图或脚本结果冒充生图。
+preparation 使用当前配置的生图工具，将两张参考按顺序放入同一次请求；模型与接口配置见[模型与生图通道](../references/agent-models.md)。工具不可用或生成结果无效时明确失败，保留输入供重试，不以原图或脚本结果冒充生图。
 
 `--jobs` / `-j` 设置所有步骤共用的 agent 并发上限，默认 3；`--agents` / `-a` 是同义参数。`--max-depth 1` 只完成第一层并登记下一层，省略时一直拆到终止 part。`--groups <JSON路径>` 选择本任务已有的组及其子组；不导入新树、不重新 preparation，须有已完成的参考图和相应前置产物。
 
 ## 参考与拆分
 
-1. 按 `--name` 直接读取同名人物 part 的 `references/simplified-subject.*`，支持 PNG、JPEG、WebP，不再保存输入副本。缺少时明确提示上游命令与手动放置的路径。使用 [preparation 提示词](prompts/preparation.md) 去除人物和衣服之外的饰品，生成同画布的透明 `references/clothing.png`。保留衣料、衣服自带附件、薄纱及正常开口，补全被移除对象遮住的衣料；不移动、居中或重新设计衣服。
+1. 按 `--name` 读取同名人物 part 的 `references/simplified-subject.*`（PNG、JPEG、WebP）与 `references/base-subject.png`，不保存输入副本。缺少时明确提示上游命令与手动放置的路径。使用 [preparation 提示词](prompts/preparation.md) 提取两图之间的换装衣物，生成统一画布尺寸的透明 `references/clothing.png`。保留衣料、衣服自身附件、薄纱及正常开口，补全遮住的衣料；允许整套衣装等比缩放和移动，衣片间的相对比例与连接保持一致。
 2. 查看纯衣服图与原穿衣角色，按外到内检查结构、建立初始 group。纯衣服图是衣片轮廓与绘画标准，原角色用于判断穿插与随动关系。group 表示结构归属，包含关系和数组顺序不代表绘制深度。
 3. 逐层执行轮廓绘制、review / 返修、同层去重、遮挡补全、自检及直属 group / part 分析。完成当前层后继续下一层，实际结构决定拆分深度。
 4. 合成 `preview.svg`，为所有终止 part 规划并逐件、逐区域检查深度，保存 `occlusion.json`。
@@ -62,7 +62,7 @@ preparation 只使用 Codex 内置 `image_generation`。订阅、API、模型服
   occlusion.json               # 全部终止衣片从后到前的深度表
 ```
 
-同名续跑复用输入与正式文件，不依赖最初的外部图片路径。preparation 校验上游简化角色与衣服图指纹，检测到被改写时拒绝静默沿用；生成图也须为原画布尺寸且含实际透明区域的 PNG。尺寸与文件检查不代替模型的视觉判断。
+同名续跑复用输入与正式文件，不依赖最初的外部图片路径。新 preparation 同时校验上游简化角色、素体与衣服图指纹，检测到被改写时拒绝静默沿用；旧单参考记录继续按原有指纹复用，不自动重画。生成图须为统一画布尺寸且含实际透明区域的 PNG；尺寸与文件检查不代替模型的视觉判断，组装阶段负责衣装与人物的整体配准。
 
 在停止当前进程后，删除 `references/clothing.png` 可重新生成衣服参考；下次启动会先清除依赖旧参考的分组、parts、阶段记录、观察图、预览和深度表。重新制作全部衣服时也可使用新的 `--name`。不要用同一个名字并发启动。
 
