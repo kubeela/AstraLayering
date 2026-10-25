@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
-import { listSteps } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
+import { legacyLayout, listSteps } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { readRun, taskStatus, type TaskRun } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { steps as personSteps } from '../.agents/skills/live2d-maker/raster-layering/steps.ts';
 import { steps as clothingSteps } from '../.agents/skills/live2d-maker/clothing-raster-layering/steps.ts';
@@ -165,7 +165,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
     }
     // Every marked step, for the continue / resume / retry actions.
     const steps = await listSteps(join(directory, branch), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
-    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
+    const legacy = await legacyLayout(join(directory, branch), id).catch(() => false);
+    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps, legacy,
       threadId: config?.threadId ?? null, summary: saved?.summary });
   }
   const log = await readTaskLog(directory);

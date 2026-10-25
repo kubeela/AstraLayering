@@ -392,3 +392,24 @@ test('连续 blocked 保留记录但不消耗正式审核轮次，恢复仍需�
   assert.equal(state.steps.review.output!.reviewOutcome, 'repaired');
   assert.match(state.steps.review.output!.note!, /第 2 轮/);
 });
+
+test('续跑轮廓沿用中断前的草稿并提示 agent 在其上继续；非续跑从空草稿开始', async t => {
+  const f = await fixture(t), outputPath = join(f.directory, 'face.draft.svg');
+  const group = normalizeGroups([{ id: 'face' }])[0];
+  for (const resumeDraft of [true, false]) {
+    await writeFile(outputPath, svg('face', 30, 70));
+    await drawGroupOutline({ ...f, group, outputPath, resumeDraft }, { async run(task) {
+      const input = runtime(task) as Runtime & { resumedDraft?: string };
+      if (resumeDraft) {
+        assert.ok(input.resumedDraft);
+        assert.equal(await readFile(outputPath, 'utf8'), svg('face', 30, 70));
+      } else {
+        assert.equal(input.resumedDraft, undefined);
+        await assert.rejects(readFile(outputPath), { code: 'ENOENT' });
+        await task.tools!.find(tool => tool.name === 'write_outline_svg')!.execute({ svg: svg('face') }, signal);
+      }
+      await task.tools!.find(tool => tool.name === 'preview_svg')!.execute({ path: outputPath, mode: 'blend' }, signal);
+      return { text: 'done', images: [] };
+    } });
+  }
+});

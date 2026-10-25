@@ -48,7 +48,7 @@ async function inputs(context: GroupContext) {
   return { reference, canvas, parent };
 }
 
-function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: { outputSvg?: string; candidate?: string }) {
+function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: { outputSvg?: string; candidate?: string; resumedDraft?: string }) {
   return JSON.stringify({
     group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
     reference: input.reference, groups: join(context.directory, 'groups.json'),
@@ -86,6 +86,8 @@ function groupNoteTool(context: GroupContext): FunctionTool | undefined {
   };
 }
 
+const resumedDraftNote = 'outputSvg 已有上次中断前画到的草稿：先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。';
+
 export async function drawGroupOutline(
   context: DrawingContext, agents: Pick<CodexAgents, 'run'>,
   repair?: { candidate: string; feedback: string },
@@ -98,7 +100,9 @@ export async function drawGroupOutline(
   if (!output.endsWith('.svg')) throw new Error('轮廓输出路径须以 .svg 结尾');
   const draft = output.endsWith('.draft.svg') ? output : draftPath(output);
   await mkdir(dirname(draft), { recursive: true });
-  await rm(draft, { force: true });
+  // A continued step keeps the draft drawn so far; a repair starts from its candidate.
+  const resumed = !repair && !!context.resumeDraft;
+  if (!resumed) await rm(draft, { force: true });
   if (repair) await writeAtomic(draft, await readFile(repair.candidate));
   const observations: SvgObservation[] = [];
   // 首次绘制和返修使用同一组工具，均允许修正本组 note。
@@ -118,7 +122,7 @@ export async function drawGroupOutline(
     },
   };
   const taskPrompt = renderPrompt(prompt.text, {
-    prompt_source: prompt.path, runtime_context: runtime(context, input, {outputSvg: draft}),
+    prompt_source: prompt.path, runtime_context: runtime(context, input, {outputSvg: draft, ...(resumed ? { resumedDraft: resumedDraftNote } : {})}),
     repair_context: repair ? renderPromptFile(new URL('../prompts/outline-repair-context.md',import.meta.url), {
       feedback:repair.feedback, repair_rules:await readFile(repairPromptPath,'utf8'), repair_source:repairPromptPath,
     }) : '',

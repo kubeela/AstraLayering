@@ -3,6 +3,7 @@ import { pipelineSteps as stepTemplates, groupLayers, groupPhases, stepArtifacts
  latestKraPreview, statusNames, displayStatus, statusLabel } from './progress.js';
 import { selectedTask, rememberTask } from './task-selection.js';
 import { renderReport } from './report-markdown.js';
+import { morph } from './dom-morph.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -64,11 +65,24 @@ function header() {
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
 function pageHeading() {
- return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button>${state.name?`<span class="task-status">${esc(taskStatusNames[data.status]||data.status||'正在读取')}</span>`:''}</div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${data.canStop?`<button class="button" data-action="stop">停止</button>`:''}<button class="primary" data-action="run" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button>`:''}</div></div>`;
+ return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${data.canStop?`<button class="button" data-action="stop">停止</button>`:''}${stepToolbar()}`:''}</div></div>`;
 }
 let archivedFiles = new Set();
 const assetLookup = new Map();
 const groupViews = {0:{selected:'',depth:-1,search:'',open:false,expanded:new Set()},2:{selected:'',depth:-1,search:'',open:false,expanded:new Set()}};
+// Expanded and collapsed sections survive a page reload (per browser tab).
+const viewKey='astra-layering-view';
+function saveView() {
+ try{sessionStorage.setItem(viewKey,JSON.stringify({details:[...state.details],pipelines:[...state.collapsedPipelines],steps:[...state.collapsedSteps],phases:[...state.collapsedPhases],notice:state.noticeStatus,
+  groups:Object.fromEntries(Object.entries(groupViews).map(([index,view])=>[index,{...view,expanded:[...view.expanded]}]))}));}catch{}
+}
+try{
+ const saved=JSON.parse(sessionStorage.getItem(viewKey)||'null');
+ if(saved){
+  state.details=new Map(saved.details);state.collapsedPipelines=new Set(saved.pipelines);state.collapsedSteps=new Set(saved.steps);state.collapsedPhases=new Set(saved.phases);state.noticeStatus=saved.notice;
+  for(const [index,view] of Object.entries(saved.groups||{}))if(groupViews[index])Object.assign(groupViews[index],{...view,expanded:new Set(view.expanded)});
+ }
+}catch{}
 const pipelineTree = index => data.pipelines?.[index]?.groups||[];
 const available = items => (items||[]).flatMap(item=> {
  if(archivedFiles.has(item.path))return [item];
@@ -166,27 +180,27 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
  const title=phase==='outline'?'轮廓 SVG 最新画面':'补全 SVG 最新画面';
  return `<section class="kra-preview-panel svg-preview-panel" data-svg-preview="${index}:${phase}" aria-label="${esc(group.id)} ${title}"><h3>${icon('layers')}${title}</h3><p class="preview-source" title="${esc(items[0]?.path||group.id)}">${esc(items[0]?.label||group.id)}</p>${items.length?artifacts(items,index,phase,'live-kra-artifacts'):'<p class="archive-gap">等待首次保存 SVG</p>'}</section>`;
 }
-// Step recovery: 继续 keeps products and session, 恢复 drops the session and keeps
-// products, 重试 deletes the step products and session; dependents rerun with it.
+// Task recovery: 继续 keeps products and sessions, 恢复 drops the sessions and keeps
+// products, 重试 deletes the step products and sessions; dependents rerun with them.
+// Each acts on every interrupted or failed step of the task at once, then runs the
+// task again. Without any step record 继续 opens the run dialog instead.
 const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
-const stepActionTitles={continue:'保留产物与会话，从中断处继续',resume:'清除会话、保留产物，在新会话中继续',retry:'删除本步骤产物与会话后重做；依赖它的后续步骤自动重跑'};
-function chainStep(index,id){return data.pipelines[index]?.steps?.find(step=>step.id===id);}
-function stepActions(index,id) {
- const step=id&&chainStep(index,id);
- if(!step)return '';
- const busy=data.runnerAlive||data.lockHeld, actions=step.status==='completed'?['retry']:['continue','resume','retry'];
- return `<div class="step-actions" aria-label="${esc(id)} 步骤操作">${actions.map(action=>`<button class="button" data-step-action="${index}|${esc(id)}|${action}" title="${esc(stepActionTitles[action])}" ${busy?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
+const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑'};
+function stepTargets() {
+ return (data.pipelines||[]).flatMap((pipeline,index)=>[
+  ...(pipeline.legacy?[{index,id:'',status:'legacy'}]:[]),
+  ...(pipeline.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session}))]);
 }
-// The chain step a raster-style node stands for; part nodes map through webSteps.
-function nodeChainStep(index,id) {
- const stage=stages[index].id;
- if(stage==='shadow')return id===(data.pipelines[index]?.mode==='normal-depth'?'normal-depth-maps':'mask')?'step01':undefined;
- return ['part-layering','clothing-part-layering'].includes(stage)?undefined:/^step\d{2}$/.test(id)?id:undefined;
-}
-function unfinishedSteps(index) {
- const steps=(data.pipelines[index]?.steps||[]).filter(step=>step.status!=='completed');
- if(!steps.length)return '';
- return `<section class="unfinished-steps" aria-label="${esc(stages[index].name)}未完成的步骤"><h3>未完成的步骤</h3>${steps.map(step=>`<div class="unfinished-step"><code title="${esc(step.id)}">${esc(step.id)}</code><small>${step.status==='running'?'中断 / 失败':'无完成标记'}${step.session?' · 有会话':''}</small>${stepActions(index,step.id)}</div>`).join('')}</section>`;
+const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running'||target.status==='legacy');
+const stepLabel=target=>`${stages[target.index].name} ${target.id||'（旧版目录）'}`;
+function stepToolbar() {
+ if(!state.name)return '';
+ const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;
+ const allowed=action=>action==='continue'||broken.length>0;
+ const scope=broken.length?`（${broken.length} 个中断 / 失败步骤：${broken.map(stepLabel).join('、')}）`:'';
+ const reason=action=>busy?'任务正在运行，结束或停止后可操作':!targets.length?'运行任务（可选择范围）':
+  !allowed(action)?'没有中断或失败的步骤':stepActionTitles[action]+scope;
+ return `<div class="step-toolbar" role="group" aria-label="任务恢复">${Object.keys(stepActionNames).map(action=>`<button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" title="${esc(reason(action))}" ${busy||!allowed(action)?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
 }
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
@@ -197,13 +211,10 @@ function groupDetailPhases(index,group,phaseFiles) {
   ?groupReviewSteps(group,stages[index].id,group.id)
   :[{id,title:label,status:group.webPhases?.[id]||'pending',detail:group.webDetails?.[id]||'',
     artifacts:['outline','completion'].includes(id)?phaseFiles[id].filter(item=>item.kind==='file'):phaseFiles[id]}]);
- const shown=new Set();
  return steps.map((step,i)=>{
-  const chain=group.webSteps?.[step.id], first=chain&&!shown.has(chain);
-  if(chain)shown.add(chain);
   return (['outline','completion'].includes(step.id)?svgPreviewPanel(index,group,step.id,phaseFiles):'')
    +groupPhaseNode(index,step.id,step.title,step.status,step.detail,step.artifacts,i+1,
-    ['outline','completion'].includes(step.id)&&available(phaseFiles[step.id]).some(item=>item.kind==='image'))+(first?stepActions(index,chain):'');
+    ['outline','completion'].includes(step.id)&&available(phaseFiles[step.id]).some(item=>item.kind==='image'));
  }).join('');
 }
 function groupCycle(index) {
@@ -297,7 +308,6 @@ function stepNode(index,step,nested=false) {
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
  ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
  ${processArtifacts(index,step)}
- ${stepActions(index,nodeChainStep(index,step.id))}
  </div>
  `}
  </section>`;
@@ -313,7 +323,7 @@ function processArtifacts(index, step) {
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
- return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${unfinishedSteps(index)}<button class="button pipeline-run" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 恢复${stage.name}</button>${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
+ return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
 }
 function inspector() {
  const stage=stages[state.stage],step=selectedStep(),item=state.asset;
@@ -321,14 +331,13 @@ function inspector() {
  const report=item&&Object.values(data.pipelines[state.stage]?.reports||{}).find(report=>report.path===item.path);
  return `<aside class="output-inspector" aria-label="产物放大查看"><header class="output-heading"><div><small>${esc(stage.name)} · ${esc(step.title)}</small><h2>${esc(item?.label||step.title)}</h2></div><button class="icon-button" data-action="close-inspector" aria-label="关闭产物面板">${icon('close')}</button></header><div class="output-scroll">
  ${image?`<div class="output-caption"><span>当前任务产物</span><label><input type="checkbox" id="compare-reference" ${state.compare?'checked':''}>对照参考</label></div><div class="output-image ${state.compare?'compare':''}">${state.compare&&data.reference?`<figure><img src="${artifact(data.reference)}" alt="简化角色参考"><figcaption>简化角色参考</figcaption></figure>`:''}<figure><a href="${artifact(item.path)}" target="_blank" rel="noopener"><img loading="lazy" src="${artifact(item.path)}" alt="${esc(item.label)}"></a><figcaption>点击打开原尺寸</figcaption></figure></div>`:item?item.reviewIndex!==undefined?`<article class="report-document">${renderReport(reviewReportText(item.text??'正在读取…',item))}</article>`:/\.md(?:\.tmp)?$/.test(item.path)?`<article class="report-document">${renderReport(item.text??'正在读取…',report?.images,path=>artifact(path))}</article>`:`<pre class="artifact-text">${esc(item.text??'正在读取…')}</pre>`:`<p class="step-note">${esc(step.note||'此步骤的过程和已有产物直接展示在画布中。')}</p>`}
- ${item?`<a class="artifact-source" href="${artifact(item.path)}" target="_blank" rel="noopener">${esc(item.path)} ${icon('arrow')}</a>`:''}</div>
- <footer class="output-footer"><button class="button" data-action="single">${icon('play')}运行 / 恢复${esc(stage.name)}</button></footer></aside>`;
+ ${item?`<a class="artifact-source" href="${artifact(item.path)}" target="_blank" rel="noopener">${esc(item.path)} ${icon('arrow')}</a>`:''}</div></aside>`;
 }
 function overviewCard(stage,index) {
  const status=observedDisplayStatus(index,stage.status);
  return `<article class="overview-card ${status} ${state.stage===index?'selected':''}" data-overview="${index}">
  <button class="overview-stage" data-stage="${index}" aria-label="查看${esc(stage.name)}进展"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h3>${esc(stage.name)}</h3></button>
- <div class="overview-footer"><span class="execution-state ${status}">${statusMark(status)}${esc(statusLabel(status))}</span><div class="overview-actions"><button class="button" data-stage="${index}">${icon('eye')}预览</button><button class="button" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button></div></div>
+ <div class="overview-footer"><span class="execution-state ${status}">${statusMark(status)}${esc(statusLabel(status))}</span><div class="overview-actions"><button class="button" data-stage="${index}">${icon('eye')}预览</button></div></div>
  </article>`;
 }
 function projectPage() {
@@ -339,7 +348,7 @@ function projectPage() {
 }
 function graph() {
  if(!state.name)return '<section class="empty-workspace"><h2>尚未选择任务</h2><button class="button" data-page="project">选择任务</button></section>';
- return `<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><button class="button preview-back" data-page="project">${icon('branch')}执行控制</button><span>${esc(state.name)} · 完整流程</span><div class="flow-legend">${Object.keys(statusNames).map(status=>`<span>${statusMark(status)}${statusNames[status]}</span>`).join('')}</div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div></div>
+ return `<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><button class="button preview-back" data-page="project">${icon('branch')}执行控制</button><span>${esc(state.name)} · 完整流程</span><div class="flow-legend">${Object.keys(statusNames).map(status=>`<span>${statusMark(status)}${statusNames[status]}</span>`).join('')}</div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div>${stepToolbar()}</div>
  <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，横向滚动或拖动浏览"><div class="flow-size"><div class="flow-world preview-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,index)=>flowCard(index)).join('')}</div></div></div></div>
  <footer class="flow-footnote">横向浏览 · 点击部件切换预览 · 部件详情手动展开 · 点击产物放大查看</footer></div>${state.inspect?inspector():''}</section>`;
 }
@@ -469,10 +478,14 @@ function render() {
  const outputScroll=document.querySelector('.output-scroll')?.scrollTop||0;
  document.querySelectorAll('[data-details]').forEach(node=>state.details.set(node.dataset.details,node.open));
  flowObserver?.disconnect();
- document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`;
+ morph(document.querySelector('#app'),header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`);
  bind();setConfigBusy(configBusy);
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
- if(data.status==='failed'||data.status==='interrupted')document.querySelector('[data-details="run-notice"]')?.setAttribute('open','');
+ // A run that newly stops opens its notice once; closing it afterwards sticks.
+ const stopped=data.status==='failed'||data.status==='interrupted';
+ if(stopped&&state.noticeStatus!==data.status){const notice=document.querySelector('[data-details="run-notice"]');if(notice){notice.open=true;state.details.set('run-notice',true);}}
+ state.noticeStatus=data.status;
+ saveView();
  if(focusId&&focused&&!focused.isConnected){const replacement=document.getElementById(focusId);replacement?.focus({preventScroll:true});if(selection&&replacement?.tagName==='INPUT')replacement.setSelectionRange(...selection);}
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
  if(state.page==='preview'&&state.name) {
@@ -484,7 +497,7 @@ function render() {
 }
 function showNew(single=false, existing=false) {
  const dialog=document.querySelector('#new-task'); state.uploaded=null;
- dialog.innerHTML=`<div class="modal-heading"><div><span class="eyebrow">${existing?'CONTINUE CREATION':'NEW CREATION'}</span><h2>${existing?'运行 / 续跑 '+esc(state.name):'开始一次新的制作'}</h2><p>${existing?'沿用已有产物、完成标记与绘制 thread。':'提供一张角色图，制作分层素材。'}</p></div><button class="icon-button" data-close>${icon('close')}</button></div><form id="new-task-form"><div class="new-task-columns"><div>${!existing?`<label class="field-label">输入参考图</label><label class="upload-zone" id="upload-zone"><input id="image-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><span class="upload-icon">${icon('upload')}</span><b>选择或拖入角色图片</b><p>PNG、JPG、WebP · 最大 20 MB</p></label><label class="field-label">或填写服务器上的图片路径</label><input name="image" placeholder="绝对路径；相对路径基于任务目录">`:data.original?`<img class="resume-reference" src="${artifact(data.original)}" alt="已保存的原图">`:'<p>从该任务已有的上游产物继续。</p>'}<div class="input-note">${icon('folder')}${esc(state.directory)}</div></div><div class="task-form-fields"><label class="field-label" for="task-display-name">显示名称</label><input id="task-display-name" name="displayName" value="${existing?esc(data.displayName||state.name):''}" placeholder="可使用中文"><label class="field-label" for="task-name">任务目录名</label><input id="task-name" name="name" value="${existing?esc(state.name):''}" ${existing?'readonly':''} placeholder="例如 character-03" required><label class="field-label">执行范围</label><div class="scope-options"><label class="${!single?'selected':''}"><input type="radio" name="scope" value="all" ${!single?'checked':''}>整条流程<span>六条管线依次执行</span></label><label class="${single?'selected':''}"><input type="radio" name="scope" value="single" ${single?'checked':''}>单条管线<span>读取本任务已有上游产物</span></label></div><select name="stage" id="new-stage" ${!single?'hidden':''}>${stages.map((s,i)=>`<option value="${i}" ${i===state.stage?'selected':''}>${s.name} · ${s.id}</option>`).join('')}</select><label class="standard-option"><div><b>标准化人物姿态</b><p>先判断是否需要调整，再按需生图。</p></div><input type="checkbox" name="standard" ${existing&&data.run?.standard?'checked':''} role="switch" aria-label="标准化人物姿态"></label><div class="standard-detail">嘴部张大、眼睛张开，正视站立，双手放在身体两侧。仅人物准备阶段使用。</div><label class="field-label">阴影方式</label><select name="shadowMode"><option value="mask" ${!existing||data.run?.shadowMode!=='normal-depth'?'selected':''}>Live2D 蒙版</option><option value="normal-depth" ${existing&&data.run?.shadowMode==='normal-depth'?'selected':''}>法线＋深度</option></select><label class="field-label">Krita 可执行文件</label><input name="krita" value="${existing?esc(data.run?.krita||''):''}" placeholder="例如 /usr/bin/krita；已记录时可留空"><small>绘制与组装管线需要 Krita。未安装时，请先由 agent 协助安装桌面版或配置无桌面显示环境。</small><label class="field-label">调度并发 jobs</label><input name="jobs" type="number" min="1" value="${existing?data.run?.jobs||3:3}"></div></div><p class="form-error" role="alert"></p><div class="modal-footer"><span>操作由服务器执行，关闭网页仍会继续。</span><button type="button" class="button" data-close>取消</button><button class="primary" type="submit">${icon('play')}开始${existing?' / 续跑':'制作'}</button></div></form>`;
+ dialog.innerHTML=`<div class="modal-heading"><div><span class="eyebrow">${existing?'CONTINUE CREATION':'NEW CREATION'}</span><h2>${existing?'继续 '+esc(state.name):'开始一次新的制作'}</h2><p>${existing?'沿用已有产物、完成标记与绘制 thread。':'提供一张角色图，制作分层素材。'}</p></div><button class="icon-button" data-close>${icon('close')}</button></div><form id="new-task-form"><div class="new-task-columns"><div>${!existing?`<label class="field-label">输入参考图</label><label class="upload-zone" id="upload-zone"><input id="image-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><span class="upload-icon">${icon('upload')}</span><b>选择或拖入角色图片</b><p>PNG、JPG、WebP · 最大 20 MB</p></label><label class="field-label">或填写服务器上的图片路径</label><input name="image" placeholder="绝对路径；相对路径基于任务目录">`:data.original?`<img class="resume-reference" src="${artifact(data.original)}" alt="已保存的原图">`:'<p>从该任务已有的上游产物继续。</p>'}<div class="input-note">${icon('folder')}${esc(state.directory)}</div></div><div class="task-form-fields"><label class="field-label" for="task-display-name">显示名称</label><input id="task-display-name" name="displayName" value="${existing?esc(data.displayName||state.name):''}" placeholder="可使用中文"><label class="field-label" for="task-name">任务目录名</label><input id="task-name" name="name" value="${existing?esc(state.name):''}" ${existing?'readonly':''} placeholder="例如 character-03" required><label class="field-label">执行范围</label><div class="scope-options"><label class="${!single?'selected':''}"><input type="radio" name="scope" value="all" ${!single?'checked':''}>整条流程<span>六条管线依次执行</span></label><label class="${single?'selected':''}"><input type="radio" name="scope" value="single" ${single?'checked':''}>单条管线<span>读取本任务已有上游产物</span></label></div><select name="stage" id="new-stage" ${!single?'hidden':''}>${stages.map((s,i)=>`<option value="${i}" ${i===state.stage?'selected':''}>${s.name} · ${s.id}</option>`).join('')}</select><label class="standard-option"><div><b>标准化人物姿态</b><p>先判断是否需要调整，再按需生图。</p></div><input type="checkbox" name="standard" ${existing&&data.run?.standard?'checked':''} role="switch" aria-label="标准化人物姿态"></label><div class="standard-detail">嘴部张大、眼睛张开，正视站立，双手放在身体两侧。仅人物准备阶段使用。</div><label class="field-label">阴影方式</label><select name="shadowMode"><option value="mask" ${!existing||data.run?.shadowMode!=='normal-depth'?'selected':''}>Live2D 蒙版</option><option value="normal-depth" ${existing&&data.run?.shadowMode==='normal-depth'?'selected':''}>法线＋深度</option></select><label class="field-label">Krita 可执行文件</label><input name="krita" value="${existing?esc(data.run?.krita||''):''}" placeholder="例如 /usr/bin/krita；已记录时可留空"><small>绘制与组装管线需要 Krita。未安装时，请先由 agent 协助安装桌面版或配置无桌面显示环境。</small><label class="field-label">调度并发 jobs</label><input name="jobs" type="number" min="1" value="${existing?data.run?.jobs||3:3}"></div></div><p class="form-error" role="alert"></p><div class="modal-footer"><span>操作由服务器执行，关闭网页仍会继续。</span><button type="button" class="button" data-close>取消</button><button class="primary" type="submit">${icon('play')}${existing?'继续':'开始制作'}</button></div></form>`;
  dialog.showModal();dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>dialog.close());
  if(!existing) {
   let previewURL;
@@ -552,14 +565,15 @@ function updateViewURL() {
  if(state.name)url.searchParams.set('name',state.name);
  history.replaceState(null,'',url);
 }
+const wheelBound=new WeakSet();
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
- document.querySelectorAll('[data-run-stage]').forEach(b=>b.onclick=()=>{state.stage=Number(b.dataset.runStage);showNew(true,true);});
- document.querySelectorAll('[data-step-action]').forEach(b=>b.onclick=async()=>{
-  const [index,step,action]=b.dataset.stepAction.split('|');
-  if(action==='retry'&&!confirm(`重试 ${step}：删除该步骤的产物与会话并重新运行，依赖它的后续步骤会随之重跑。确定吗？`))return;
+ document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
+  const targets=stepTargets(),broken=brokenSteps(targets),action=b.dataset.stepToolbar;
+  if(!targets.length){if(action==='continue')showNew(false,true);return;}
+  if(action==='retry'&&!confirm(`重试：删除以下步骤的产物与会话并重新运行，依赖它们的后续步骤会随之重跑。\n${broken.map(stepLabel).join('\n')}\n确定吗？`))return;
   b.disabled=true;
-  try{const result=await post('step-action',{name:state.name,pipeline:stages[Number(index)].id,step,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
+  try{const result=await post('task-action',{name:state.name,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
   catch(error){toast(error.message);b.disabled=false;}
  });
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
@@ -587,7 +601,6 @@ function bind() {
   else if(action==='run')showNew(false,true);
   else if(action==='files')showFiles();
   else if(action==='stop')post('stop',{name:state.name}).then(result=>toast(result.message)).catch(error=>toast(error.message));
-  else if(action==='single')showNew(true,true);
   else if(action==='directory')showDirectory();
   else if(action==='history')showHistory();
   else if(action==='close-inspector'){state.inspect=false;render();}
@@ -598,7 +611,8 @@ function bind() {
  });
  const compare=document.querySelector('#compare-reference');if(compare)compare.onchange=()=>{state.compare=compare.checked;render();};
  const viewport=document.querySelector('.flow-scroll');if(viewport){
-  viewport.addEventListener('wheel',event=>{
+  // The viewport survives refreshes (dom-morph), so its listener is added once.
+  if(!wheelBound.has(viewport))wheelBound.add(viewport),viewport.addEventListener('wheel',event=>{
    if(event.ctrlKey||event.metaKey||Math.abs(event.deltaX)>=Math.abs(event.deltaY))return;
    for(let node=event.target;node&&node!==viewport;node=node.parentElement){
     // Inner lists keep their wheel gestures even at a boundary or with few rows.

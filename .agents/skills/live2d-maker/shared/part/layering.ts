@@ -14,6 +14,7 @@ import { assertCompletionPreserves } from './completion-svg.ts';
 import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from './occlusion-plan.ts';
 import { completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
 import { beginStep, checkStep, completeStep, readStep, resetStep, runningInputs, type ChainStep, type StepCheck } from '../step-chain.ts';
+import { migrateLegacyLayout } from './legacy-layout.ts';
 import { groupDirectory, groupStep, groupStepId, initialStepId, layerStep, parentGroupId, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
@@ -55,9 +56,7 @@ export async function runLayering(input: {
 }): Promise<LayeringResult> {
   validateWorkflowOptions(input);
   const directory = resolve(input.directory);
-  if (await exists(join(directory, 'stages')) && !await exists(join(directory, initialStepId))) {
-    throw new Error(`旧版目录结构（stages/）不能续跑，请使用新的运行目录：${directory}`);
-  }
+  if (await migrateLegacyLayout(directory, input.profile?.promptsDirectory)) input.progress?.('旧版目录（stages/）已转换为步骤目录，原文件保留在 stages.legacy/');
   const store = await GroupStore.open(directory);
   // 即使本次没有新工作，也将由步骤记录重建的树落盘。
   await store.update(() => {});
@@ -122,13 +121,18 @@ export async function runLayering(input: {
       throw new GroupExecutionError(id, stage, error);
     }
   }
-  async function drawing(id: string, stage: 'outline' | 'completion', action: (draft: string) => Promise<StepResult<SvgArtifact>>) {
+  // A continued step (继续 / 恢复 keep the products) hands its draft back to the
+  // agent; only a fresh or rerun step starts from an empty draft.
+  async function drawing(id: string, stage: 'outline' | 'completion', continued: boolean,
+    action: (draft: string, resumeDraft: boolean) => Promise<StepResult<SvgArtifact>>) {
     return execute(id, stage, async () => {
       const output = artifactPath(directory, id, stage), draft = draftPath(output);
       const before = stage === 'completion' ? (await readSvg(artifact(id, 'reduction').path))! : undefined;
       await mkdir(dirname(draft), { recursive: true });
-      await rm(draft, { force: true });
-      const result = await action(draft);
+      const resumeDraft = continued && !!await readSvg(draft);
+      if (!resumeDraft) await rm(draft, { force: true });
+      if (resumeDraft) report(`[${id}] ${labels[stage]}：沿用上次的草稿继续`);
+      const result = await action(draft, resumeDraft);
       if (result.status === 'pending') return result;
       if (resolve(directory, result.output.path) !== draft) throw new Error('SVG 步骤只能交付指定的 .draft.svg');
       const meta = await sharp(resolve(directory, input.references.baseSubject)).metadata();
@@ -156,7 +160,8 @@ export async function runLayering(input: {
     await begin(step, check);
     const outline = artifactPath(directory, id, 'outline');
     if (check.action === 'continue' && await readSvg(outline)) await completed(id, 'outline', { path: outline });
-    else if (!await drawing(id, 'outline', outputPath => input.steps.drawOutline({ ...context(id), outputPath }))) return;
+    else if (!await drawing(id, 'outline', check.action === 'continue',
+      (outputPath, resumeDraft) => input.steps.drawOutline({ ...context(id), outputPath, resumeDraft }))) return;
     if (!await execute(id, 'review', async () => {
       const outline = artifact(id, 'outline');
       const path = reportPath(directory, id, 'review');
@@ -243,9 +248,9 @@ export async function runLayering(input: {
         (await sharp(await readFile(artifact(id, 'outline').path)).ensureAlpha().extractChannel('alpha').raw().toBuffer()).some(value => value >= 128);
       const completion = artifactPath(directory, id, 'completion');
       if (check.action === 'continue' && await readSvg(completion)) await completed(id, 'completion', { path: completion });
-      else if (!await drawing(id, 'completion', async outputPath => {
+      else if (!await drawing(id, 'completion', check.action === 'continue', async (outputPath, resumeDraft) => {
         if (removedByReduction) { await writeAtomic(outputPath, await readFile(reduced.path)); return { status: 'completed', output: { path: outputPath } }; }
-        return input.steps.completeOcclusion({ ...context(id), outputPath, reviewed: reduced });
+        return input.steps.completeOcclusion({ ...context(id), outputPath, resumeDraft, reviewed: reduced });
       })) return;
       if (!await execute(id, 'completionCheck', async () => {
         const after = artifact(id, 'completion');
