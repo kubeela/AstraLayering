@@ -328,3 +328,38 @@ test('SDK、一次性原生任务和保留会话共享同一个并发限制', {t
     assert.equal((await readdir(f.logDirectory)).length, 3);
   } finally {release.resolve();await session.close();}
 });
+
+test('图片被内容策略拦截：本批图片换成文字后在新会话继续，多张图引导逐张读取', async t => {
+  const f = await fixture(t);
+  const server = await fakeAppServer(f.directory, [{ tool: 'probe', arguments: {} }], 'completed', [], { blockedTurns: 1 });
+  const replaced: string[] = [], started: string[] = [];
+  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory,
+    runtime: new AgentRuntime(3, async () => assert.fail('拦截不是临时错误，不退避重试')) });
+  const session = agents.createSession(undefined, { onThreadReplacement: async id => { replaced.push(id); },
+    onSessionStarted: async id => { started.push(id); } });
+  t.after(() => session.close());
+  const images = ['a.png', 'b.png'].map(name => ({ path: join(f.directory, name), description: name }));
+  const result = await session.run({ name: '拦截', prompt: '原始任务', images, tools: [tool(async () => textResult('已提交'))] });
+  assert.equal(result.threadId, 'native-thread-2');
+  assert.deepEqual(replaced, ['native-thread-1']);
+  assert.deepEqual(started, ['native-thread-1', 'native-thread-2']);
+  const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  const [injected] = protocol.filter(message => message.method === 'thread/inject_items');
+  const history = JSON.stringify(injected.params.items);
+  assert.ok(!history.includes('input_image') && !history.includes('instructions'));
+  for (const image of images) assert.ok(history.includes(`输入图片 ${image.path}`));
+  const turns = protocol.filter(message => message.method === 'turn/start');
+  assert.deepEqual(turns.map(message => message.params.threadId), ['native-thread-1', 'native-thread-2']);
+  assert.equal(turns[1].params.input.length, 1);
+  assert.match(turns[1].params.input[0].text, /2 张图片被内容策略拦截[\s\S]*一次只读取一张[\s\S]*不要提交任何产物/);
+});
+
+test('历史里没有图片可换时，内容策略拦截按致命错误结束', async t => {
+  const f = await fixture(t);
+  const server = await fakeAppServer(f.directory, [], 'completed', [], { blockedTurns: 1 });
+  const agents = new CodexAgents({ codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory,
+    runtime: new AgentRuntime(3, async () => assert.fail('不重试')) });
+  await assert.rejects(agents.run({ name: '无图拦截', prompt: '原始任务', tools: [tool(async () => textResult('ok'))] }), /content policy/);
+  const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(protocol.filter(message => message.method === 'turn/start').length, 1);
+});
