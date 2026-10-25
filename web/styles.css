@@ -226,3 +226,4 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .svg-preview-panel .live-kra-artifacts .artifact-image img{max-height:none}
 .cycle-phase.skipped-node{flex:0 0 145px;opacity:.65}
 .cycle-phase.skipped-node.collapsed{flex-basis:42px}
+.step-actions{display:flex;gap:6px;padding:0 11px 12px;flex-wrap:wrap}.step-actions .button{padding:4px 10px;font-size:11px}.cycle-phases>.step-actions{padding:0 0 4px}.unfinished-steps{width:230px;flex:0 0 auto;border:1px dashed #d8b9a5;border-radius:8px;background:#fffaf6;padding:10px 0 2px}.unfinished-steps h3{font-size:12px;font-weight:600;padding:0 11px 6px;margin:0}.unfinished-step{display:flex;flex-direction:column;gap:3px}.unfinished-step code{font-size:10px;padding:0 11px;overflow-wrap:anywhere}.unfinished-step small{font-size:10px;color:var(--muted);padding:0 11px}

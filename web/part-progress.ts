@@ -44,6 +44,9 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
     node.webMessages = {};
     node.webDetails = {};
+    // The chain step each phase belongs to, for the step recovery actions.
+    node.webSteps = { outline: groupStepId(node.id, 1), review: groupStepId(node.id, 1), reduction: layerStepId(depth),
+      completion: groupStepId(node.id, 2), completionCheck: groupStepId(node.id, 2), children: groupStepId(node.id, 3) };
     const mark = (phase: Phase, done: boolean, present: boolean, message: string) => {
       node.webPhases[phase] = done ? 'done' : present ? 'available' : 'pending';
       node.webMessages[phase] = done ? '已完成' : present ? '已有产物' : '待执行';
