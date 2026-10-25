@@ -117,7 +117,7 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
   assert.ok(localFiles.paths.includes('references/model-presets.md'));
   const preset = await fetch(f.url + '/api/config/content?ref=worktree&path=presets/optimized.env');
   assert.equal(preset.status, 200);
-  assert.match((await preset.json() as any).text, /layering_agent_part_draw_model=gemini-4-argon-high/);
+  assert.match((await preset.json() as any).text, /layering_agent_part_draw_model=gpt-6.1-sol-xhigh/);
   assert.equal((await fetch(f.url + '/api/config/content?ref=HEAD&path=../../.env')).status, 400);
 });
 

@@ -98,6 +98,7 @@ test('initial drawing and repair reuse one actual app-server session with stable
 import { createInterface } from 'node:readline';
 import { appendFileSync } from 'node:fs';
 const send = value => process.stdout.write(JSON.stringify(value) + '\\n');
+if (process.argv[2] === 'debug') { console.log(JSON.stringify({ version: 1, failed_error_event_version: 1 })); process.exit(0); }
 for await (const line of createInterface({ input: process.stdin })) {
   const message = JSON.parse(line);
   appendFileSync(${JSON.stringify(requests)}, JSON.stringify(message) + '\\n');
