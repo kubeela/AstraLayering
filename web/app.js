@@ -183,10 +183,22 @@ function nodeChainStep(index,id) {
  if(stage==='shadow')return id===(data.pipelines[index]?.mode==='normal-depth'?'normal-depth-maps':'mask')?'step01':undefined;
  return ['part-layering','clothing-part-layering'].includes(stage)?undefined:/^step\d{2}$/.test(id)?id:undefined;
 }
+const groupStepNames={step01:'轮廓与复核',step02:'补全与检查',step03:'子组分析'};
+function stepLabel(id) {
+ const group=/^groups\/(.+)\/(step0[123])$/.exec(id);
+ if(group)return `${group[1].split('/children/').join('/')} · ${groupStepNames[group[2]]}`;
+ const layer=/^layers\/depth(\d{2})$/.exec(id);
+ if(layer)return `第 ${Number(layer[1])} 层轮廓去重`;
+ return {'initial/step01':'首次分组',merge:'合并预览',occlusion:'遮挡关系'}[id]||id.replace(/^preparation\//,'准备 ');
+}
+const unfinished=index=>(data.pipelines[index]?.steps||[]).filter(step=>step.status!=='completed');
+function unfinishedStep(index,step) {
+ return `<div class="unfinished-step"><b title="${esc(step.id)}">${esc(stepLabel(step.id))}</b><small>${step.status==='running'?'中断 / 失败':'无完成标记'}${step.session?' · 有会话':''}</small>${stepActions(index,step.id)}</div>`;
+}
 function unfinishedSteps(index) {
- const steps=(data.pipelines[index]?.steps||[]).filter(step=>step.status!=='completed');
+ const steps=unfinished(index);
  if(!steps.length)return '';
- return `<section class="unfinished-steps" aria-label="${esc(stages[index].name)}未完成的步骤"><h3>未完成的步骤</h3>${steps.map(step=>`<div class="unfinished-step"><code title="${esc(step.id)}">${esc(step.id)}</code><small>${step.status==='running'?'中断 / 失败':'无完成标记'}${step.session?' · 有会话':''}</small>${stepActions(index,step.id)}</div>`).join('')}</section>`;
+ return `<section class="unfinished-steps" aria-label="${esc(stages[index].name)}未完成的步骤"><h3>未完成的步骤</h3>${steps.map(step=>unfinishedStep(index,step)).join('')}</section>`;
 }
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
@@ -329,6 +341,7 @@ function overviewCard(stage,index) {
  return `<article class="overview-card ${status} ${state.stage===index?'selected':''}" data-overview="${index}">
  <button class="overview-stage" data-stage="${index}" aria-label="查看${esc(stage.name)}进展"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h3>${esc(stage.name)}</h3></button>
  <div class="overview-footer"><span class="execution-state ${status}">${statusMark(status)}${esc(statusLabel(status))}</span><div class="overview-actions"><button class="button" data-stage="${index}">${icon('eye')}预览</button><button class="button" data-run-stage="${index}" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button></div></div>
+ ${unfinished(index).length?`<div class="overview-steps" aria-label="${esc(stage.name)}未完成的步骤">${unfinished(index).map(step=>unfinishedStep(index,step)).join('')}</div>`:''}
  </article>`;
 }
 function projectPage() {
