@@ -52,8 +52,8 @@ test('同名任务可在不同 root 独立准备、读取上游、按 name 续�
     assert.deepEqual(await preparePerson({ runName: name, dir }, person), refs);
     assert.deepEqual(await loadPerson(name, dir), refs);
     assert.equal(personCalls, 2);
-    const clothing = { async extract(input: string, output: string) {
-      clothingCalls++; assert.equal(input, refs.simplifiedSubject); await copyFile(input, output);
+    const clothing = { async extract(input: string, baseImage: string, output: string) {
+      clothingCalls++; assert.equal(input, refs.simplifiedSubject); assert.equal(baseImage, refs.baseSubject); await copyFile(input, output);
     } };
     const clothes = await prepareClothing({ runName: name, dir }, clothing);
     assert.equal(clothes.directory, join(task, 'clothing-part-layering/references'));
