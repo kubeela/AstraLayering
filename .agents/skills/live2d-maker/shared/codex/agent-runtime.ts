@@ -9,6 +9,7 @@ export class AgentCallError extends Error {
   details?: unknown;
   logDirectory?: string;
   threadId?: string;
+  threadPath?: string;
   finalResponse?: string;
   savedImagePaths: string[] = [];
   sessionBroken = false;
@@ -19,9 +20,20 @@ export class AgentCallError extends Error {
   }
 }
 
+const imageBlocked = /image (?:processing |input )?blocked|blocked due to content policy|content[\s_-]*policy[\s_-]*violation/i;
+// 内容策略拦截图片：重连只会重发同一张图，要换掉历史里的图片再继续。
+export function blockedAgentError(error: unknown): boolean {
+  const seen = new Set<unknown>();
+  for (let current = error; current instanceof Error && !seen.has(current); current = current.cause) {
+    seen.add(current);
+    if (imageBlocked.test(current.message)) return true;
+  }
+  return false;
+}
+
 export function retryableAgentError(error: unknown): boolean {
   // 只处理调用通道报告的错误，不能把绘图/工具/文件校验异常当成服务过载。
-  if (!(error instanceof AgentCallError)) return false;
+  if (!(error instanceof AgentCallError) || blockedAgentError(error)) return false;
   // Even a structured 429 can describe exhausted credit or an input image cap.
   if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i.test(error.message)) return false;
   const imageCountLimit = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i.test(error.message);

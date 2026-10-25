@@ -7,7 +7,8 @@ import { workflowsDirectory } from '../paths.ts';
 import { Codex, type CodexOptions, type Usage, type UserInput } from '@openai/codex-sdk';
 import { join, resolve } from 'node:path';
 import { AgentLog } from './agent-log.ts';
-import { AgentCallError, AgentRuntime, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
+import { AgentCallError, AgentRuntime, blockedAgentError, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
+import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './blocked-images.ts';
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
 import { parseAgentModel, type AgentStep, type AgentModel } from '../agents/models.ts';
@@ -117,25 +118,42 @@ export class CodexAgents {
             imageModel = nextImage;
           }
           session ||= createFunctionToolSession(functionOptions(), id);
+          let blocked: BlockedImages | undefined;
           return await this.invoke(task, signal, async () => {
-            try {
-              const result = await session!.run(interrupted ? { ...task,
-                prompt: continuationPrompt([...savedImages]), images: undefined } : task, signal);
-              id = result.threadId || id;
-              for (const image of result.images) savedImages.add(image.savedPath);
-              return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
-            } catch (error) {
-              if (retryableAgentError(error) && !signal.aborted) {
+            for (;;) {
+              try {
+                const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
+                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages]), images: undefined } : task, signal);
+                id = result.threadId || id;
+                for (const image of result.images) savedImages.add(image.savedPath);
+                return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
+              } catch (error) {
                 const failure = error as AgentCallError;
-                id = failure.threadId || id;
-                for (const path of failure.savedImagePaths) savedImages.add(path);
-                interrupted = !!failure.threadId;
-                if (failure.sessionBroken) {
+                // 每次拦截都把本批图片换成文字，在新会话里引导 agent 换法读取；
+                // 没有图片可换时拦截与图片无关，按致命错误结束。
+                const replaced = !signal.aborted && blockedAgentError(error) && failure.threadPath
+                  ? await readBlockedImages(failure.threadPath) : undefined;
+                if (replaced) {
+                  for (const path of failure.savedImagePaths) savedImages.add(path);
                   await session!.close();
-                  session = createFunctionToolSession(functionOptions(), failure.threadId);
+                  const old = failure.threadId || id;
+                  if (old) await this.options.onThreadReplacement?.(old, '图片被内容策略拦截，历史图片已换成文字');
+                  this.options.progress?.(`[${task.name}] 图片被内容策略拦截；${replaced.origins.length} 张图片已换成文字，新会话继续。`);
+                  session = createFunctionToolSession(functionOptions(), undefined, replaced.items);
+                  id = undefined; blocked = replaced; interrupted = false;
+                  continue;
                 }
+                if (retryableAgentError(error) && !signal.aborted) {
+                  id = failure.threadId || id;
+                  for (const path of failure.savedImagePaths) savedImages.add(path);
+                  interrupted = !!failure.threadId; blocked = undefined;
+                  if (failure.sessionBroken) {
+                    await session!.close();
+                    session = createFunctionToolSession(functionOptions(), failure.threadId);
+                  }
+                }
+                throw error;
               }
-              throw error;
             }
           });
         } finally { busy = false; }
