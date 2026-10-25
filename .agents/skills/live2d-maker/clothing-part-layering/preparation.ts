@@ -38,7 +38,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
   return { async extract(image, output, prompt) {
     const result = await agents.run({
       step: 'clothing_preparation', name: '纯衣服参考准备', imageGeneration: true,
-      images: [{ path: image, description: '图 1：简化后的穿衣角色原稿。保留衣服与穿着形态，去除人物和非衣装饰品。' }],
+      images: [{ path: image, description: '图 1：简化后的穿衣角色原稿。提取整套衣装，包含衣服、手套、袜子、丝袜、连裤袜和鞋靴；保留原位穿着形态，去除人物和非衣装饰品。' }],
       prompt: preparationImagePrompt(prompt,'clothing'),
       outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
         properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
