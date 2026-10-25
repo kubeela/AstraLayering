@@ -90,6 +90,12 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.equal(groupStagePreviewArtifacts('completion', artifacts, files, versions)[0].path, draft);
   files.delete(draft);
   assert.equal(groupStagePreviewArtifacts('completion', artifacts, files, versions)[0].path, final);
+  // A reduction rewritten after the part does not replace it in the completion panel.
+  const reduced = `${pipeline}/layers/depth01/face.svg`;
+  files.add(reduced); Object.assign(versions, { [reduced]: '40:1' });
+  assert.equal(groupStagePreviewArtifacts('completion', artifacts, files, versions)[0].path, final);
   files.delete(final);
+  assert.equal(groupStagePreviewArtifacts('completion', artifacts, files, versions)[0].path, reduced);
+  files.delete(reduced);
   assert.equal(groupStagePreviewArtifacts('completion', artifacts, files, versions)[0].path, outline);
 });

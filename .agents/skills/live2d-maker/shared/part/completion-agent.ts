@@ -57,7 +57,12 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       { groupId: ref.groupId, stage: 'reduction' }) : fileDependency(context.directory, ref.path))]);
   const observations: SvgObservation[] = [];
   let submitted: SvgArtifact | undefined, submittedHash: string | undefined;
-  await writeAtomic(draft, source);
+  // A continued step keeps the additions drawn so far when they still sit on the
+  // unchanged source; otherwise the draft starts as the source itself.
+  const resumed = !!context.resumeDraft && await readFile(draft).then(bytes => {
+    try { assertCompletionPreserves(source.toString(), bytes.toString()); return true; } catch { return false; }
+  }, () => false);
+  if (!resumed) await writeAtomic(draft, source);
   const preview = createSvgPreviewTool({ directory: context.directory, reference, canvas, parent,
     observationDirectory: join(context.directory, 'observations', 'completion', context.group.id),
     observed: entry => observations.push(entry) });
@@ -104,6 +109,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       runtime_context: JSON.stringify({
       group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
       reference, additionalReferences: references, canvas, sourceSvg: sourcePath, outputDraft: draft, parentSvg: parent ?? null,
+      ...(resumed ? { resumedDraft: 'outputDraft 已含上次中断前补上的形状：先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。' } : {}),
     }, null, 2),
       fixed_rules: rules,
       fixed_rules_source: rulesPath}, prompt.path, ["prompt_source","runtime_context","fixed_rules","fixed_rules_source"]) });

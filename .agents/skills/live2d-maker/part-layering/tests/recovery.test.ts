@@ -163,3 +163,36 @@ test('去重实际改变别件时只重跑变化的补全；未改变的去重�
   assert.ok(!events.some(event => event.startsWith('d:') || event.endsWith(':outline') || event.endsWith(':reduce')));
   assert.deepEqual(await snapshot(preserved), before);
 });
+
+for (const stage of ['outline', 'completion'] as const) {
+  test(`${stage} 中断后续跑沿用草稿；重试删除步骤后从空草稿重画`, async t => {
+    const f = await fixture(t), events: string[] = [];
+    const steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
+    const partial = Buffer.from(shape('a', 30, 70));
+    const draw = stage === 'outline' ? 'drawOutline' : 'completeOcclusion';
+    await assert.rejects(runLayering({ ...f, groups: null, mergeSvg: workingMerger(events), steps: { ...steps, async [draw](context: never) {
+      const { group, outputPath, resumeDraft } = context as { group: { id: string }; outputPath: string; resumeDraft?: boolean };
+      if (group.id !== 'a') return (steps[draw] as (c: never) => Promise<unknown>)(context);
+      assert.equal(resumeDraft, false);
+      await writeAtomic(outputPath, partial);
+      throw new Error('interrupted while drawing');
+    } } }), /interrupted while drawing/);
+    const resumed: (boolean | undefined)[] = [];
+    const resuming = { ...steps, async [draw](context: never) {
+      const { group, outputPath, resumeDraft } = context as { group: { id: string }; outputPath: string; resumeDraft?: boolean };
+      if (group.id === 'a') {
+        resumed.push(resumeDraft);
+        if (resumeDraft) assert.deepEqual(await readFile(outputPath), partial);
+        else await missing([outputPath]);
+      }
+      return (steps[draw] as (c: never) => Promise<unknown>)(context);
+    } };
+    await runLayering({ ...f, groups: null, steps: resuming, mergeSvg: workingMerger(events) });
+    assert.deepEqual(resumed, [true]);
+    // 重试：删掉步骤目录（及补全草稿）后不再沿用。
+    await rm(join(f.directory, groupStepId('a', stage === 'outline' ? 1 : 2)), { recursive: true });
+    if (stage === 'completion') await rm(artifactPath(f.directory, 'a', 'completion'));
+    await runLayering({ ...f, groups: null, steps: resuming, mergeSvg: workingMerger(events) });
+    assert.deepEqual(resumed, [true, false]);
+  });
+}
