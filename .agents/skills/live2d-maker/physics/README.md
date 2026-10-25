@@ -1,5 +1,7 @@
 # 组件摆动物理
 
+新建独立 C 时，正常调度器登记看图范围版本；`physics_view`、`physics_strip` 与参考查看工具把真实读取记到当前 `reviewSession`。六项结论、规定尾帧、参考对比及返修引用只使用本人的记录，不能继承 B 或旧 C；同一会话恢复保留有效记录。历史复核仍按原格式读取，不反向写入新的独立通过。本轮旧格式 Jianma 复核另做制作前缀与当前 C 的实际记录核对，正式案例明确记录范围。
+
 本流程可从独立安装的 skill 运行。共享格式／几何／求解位于 `shared/physics-core`，规范输入／轨迹／指标位于 `shared/physics-evidence`，颜色／法线／深度／投影渲染位于 `shared/character-render`；均由 skill 拥有，不导入 `web/`。前端引用这些模块并读取工作流产物。安装使用 skill 自身依赖，沿用原 `--dir`。
 
 独立读取同名 `character-assembly/step01/character-assembled.kra`、PNG 和两套 groups，不依赖阴影制作是否完成，不重画皮套。独立制作所需方法已包含于 [guide.md](guide.md)，更完整的研究与审核方法见 [formal 11](../../../../tutorial/live2d-guidance/formal/11-secondary-physics-workflow.md) 和 [formal 12](../../../../tutorial/live2d-guidance/formal/12-physics-animation-review.md)。

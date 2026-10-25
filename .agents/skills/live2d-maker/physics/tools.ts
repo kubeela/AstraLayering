@@ -137,6 +137,7 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
       if(!Array.isArray(paths)||!paths.length||paths.length>8)throw Error('一次查看 1–8 张');
       const manifest=await json(join(evidence,'manifest.json')),frames=await json(join(evidence,'frames.json')),viewed=await optional(join(evidence,'viewed.json'))||[],items:any[]=[],chosen:any[]=[];
       for(const path of paths){const f=frames.find((f:any)=>f.path===path&&f.configHash===manifest.configHash);if(!f)throw Error('图片未在当前证据索引中');const bytes=await readFile(join(evidence,path));items.push({label:path,bytes});chosen.push({...f,path,configHash:manifest.configHash,imageHash:hash(bytes)});}
+      if(step?.id==='step03'){const session=await json(join(pipeline,'step03/review-session.json'));for(const frame of chosen)frame.reviewSession=session.id;}
       const sheet=await imageSheet(items);await put(join(evidence,'viewed.json'),[...viewed,...chosen]);return {success:true,contentItems:[{type:'inputText',text:JSON.stringify({sourcePixelScale:1,tiles:sheet.tiles,frames:chosen})},{type:'inputImage',imageUrl:'data:image/png;base64,'+sheet.image.toString('base64')}]};
     }),
     tool('physics_reference_view','用同一规范输入与渲染器查看显式参考（1–8 帧），重新模拟，保存独立来源记录。参考不是通过结论；C 须与当前版的微风 0/180/360/540 步对照自然感。',{test:str,steps:{type:'array',items:{type:'integer'},maxItems:8},component:str,mode:str},async({test,steps,component,mode='color'}:any,signal:AbortSignal)=>{
@@ -146,6 +147,7 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
       const rendered=await renderFrames(reference.config,await renderSource(),folder,[{test,steps,modes:[mode],components:component?[component]:undefined}],signal);
       const chosen=rendered.filter((f:any)=>f.test===test&&steps.includes(f.step)&&f.mode===mode&&(component?f.component===component:!f.component));
       const items=await Promise.all(chosen.map(async(f:any)=>{const bytes=await readFile(join(folder,f.path));return {label:'reference / '+f.path,bytes};})),sheet=await imageSheet(items);
+      if(step?.id==='step03'){const session=await json(join(pipeline,'step03/review-session.json'));for(const frame of chosen)frame.reviewSession=session.id;}
       const viewed=await optional(join(folder,'viewed.json'))||[];await put(join(folder,'viewed.json'),[...viewed,...chosen]);
       return {success:true,contentItems:[{type:'inputText',text:JSON.stringify({reference:true,sourcePixelScale:1,tiles:sheet.tiles,frames:chosen})},{type:'inputImage',imageUrl:'data:image/png;base64,'+sheet.image.toString('base64')}]};
     }),
@@ -161,7 +163,7 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
       const width=meta.width!,height=meta.height!;
       if(width*height*images.length>64_000_000)throw Error('拼图过大，请减少帧数');
       const strip=await sharp({create:{width:width*images.length,height:height+28,channels:4,background:'#182232'}}).composite(images.map((input,i)=>({input,left:i*width,top:28}))).png().toBuffer();
-      const viewed=await optional(join(evidence,'viewed.json'))||[];for(let i=0;i<chosen.length;i++)viewed.push({...chosen[i],imageHash:hash(images[i])});await put(join(evidence,'viewed.json'),viewed);
+      const viewed=await optional(join(evidence,'viewed.json'))||[];for(let i=0;i<chosen.length;i++)viewed.push({...chosen[i],...(step?.id==='step03'?{reviewSession:(await json(join(pipeline,'step03/review-session.json'))).id}:{}),imageHash:hash(images[i])});await put(join(evidence,'viewed.json'),viewed);
       return {success:true,contentItems:[{type:'inputText',text:JSON.stringify({leftToRight:chosen,sourcePixelScale:1})},{type:'inputImage',imageUrl:'data:image/png;base64,'+strip.toString('base64')}]};
     }),
     tool('physics_evidence_index','查询事件、指标与图片索引（分页）。不要猜不存在的帧。',{test:str,component:str,offset:{type:'integer'},limit:{type:'integer'}},async({test,component,offset=0,limit=24}:any)=>{
@@ -172,6 +174,7 @@ export function toolsFor(output:string,input:PhysicsInput,step?:Pick<StepDefinit
     }),
     tool('physics_submit_review','逐组件提交六项视觉结论。每项 verdict/reason/images，images 必须通过 physics_view 读取。通过后生成 step03/physics.json。',{findings:{type:'object'}},async({findings}:any)=>{
       const session=await optional(join(pipeline,'step03/review-session.json')),feedback=await optional(join(pipeline,'step03/feedback.json'));if(feedback?.status==='repair-requested'&&feedback.reviewTurn===session?.id)throw Error('当前复核已请求返修，应交回制作 B 后重新独立复核');
+      if(session)findings={...findings,reviewSession:session.id};
       const config=await getConfig(),manifest=await validateFindings(config,evidence,findings,await renderSource());await validateReferenceReview(input,evidence,findings);
       await put(join(pipeline,'step03/findings.json'),findings);
       config.review={status:'accepted',configHash:manifest.configHash,evidenceVersion:manifest.version,coverage:{...manifest.coverage,aiVisual:'selected-frames',human:'unreviewed'},findings:'step03/findings.json',evidence:'step03/evidence/manifest.json'};
