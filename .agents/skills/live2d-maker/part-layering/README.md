@@ -82,7 +82,7 @@ for await (const event of events) {
 | 首次分组 | `initial/step01/groups.json` |
 | 轮廓与复核 | `groups/<id>/step01/`：`outline.svg`、`review.json`、`outline.repairs/`、`session.json` |
 | 同层去重 | `layers/depthNN/<id>.svg`，一层一个节点 |
-| 补全与检查 | `groups/<id>/step02/check.json`，产物 `parts/<id>.svg` |
+| 补全与检查 | `groups/<id>/step02/`：`check.json`、`session.json`，产物 `parts/<id>.svg` |
 | 直属子组拆分 | `groups/<id>/step03/children.json` |
 | 合并 | `merge/`，产物 `preview.svg` |
 | 遮挡层级 | `occlusion/`（含 `candidate.svg`），产物 `occlusion.json` |

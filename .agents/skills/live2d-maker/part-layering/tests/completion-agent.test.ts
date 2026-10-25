@@ -1,9 +1,9 @@
 import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import type { AgentTask } from '../../shared/codex/agents.ts';
+import type { AgentResult, AgentSession, AgentTask } from '../../shared/codex/agents.ts';
 import { artifactPath, publishSvg, svgHash } from '../../shared/part/artifact-facts.ts';
 import { completeGroupOcclusion, checkGroupCompletion, readCompletionReferences } from '../../shared/part/completion-agent.ts';
 import { assertCompletionPreserves, composeCompletion } from '../../shared/part/completion-svg.ts';
@@ -11,6 +11,7 @@ import { normalizeGroups, GroupStore, walkGroups, writeAtomic } from '../../shar
 import { readGroupPrompt, readGroupReferences } from '../../shared/part/group-prompts.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
+import { groupStepId } from '../../shared/part/part-steps.ts';
 import { fixture, shape, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;
@@ -20,6 +21,10 @@ async function submit(task: AgentTask, path: string) {
   await tool(task, 'preview_svg').execute({ path, mode: 'blend' }, signal);
   await tool(task, 'preview_svg').execute({ path, mode: 'svg' }, signal);
   await tool(task, 'submit_completion').execute({ note: '正面被相邻组遮挡，沿原轮廓保守连接。' }, signal);
+}
+// Completion runs in a reusable session; these fixtures answer every turn with the same function.
+function sessioned(run: (task: AgentTask) => Promise<AgentResult>) {
+  return { run, createSession: (): AgentSession => ({ run, async close() {} }) };
 }
 
 test('完全遮挡节点可提交空可见轮廓，经独立 review 后补出形体，续跑保留原稿与事实', async t => {
@@ -47,7 +52,7 @@ test('完全遮挡节点可提交空可见轮廓，经独立 review 后补出形
     }
     return { text: 'fixture done', images: [], threadId: 'empty-outline-thread' };
   };
-  const adapter = createLayeringSteps({ run, createSession: () => ({ run, async close() {} }) });
+  const adapter = createLayeringSteps(sessioned(run));
   const steps = { ...workingSteps([], [{ id: 'face', note: '参考中被完全遮挡的真实脸部节点' }]),
     drawOutline: adapter.drawOutline, reviewOutline: adapter.reviewOutline,
     completeOcclusion: adapter.completeOcclusion, checkCompletion: adapter.checkCompletion };
@@ -85,7 +90,7 @@ test('补全原 SVG 正文原样保留，禁止删改属性、重排或注入任
 test('补全默认适配器用只读 agent 和新增工具，提交后正式发布并由文件恢复', async t => {
   const f = await fixture(t), events: string[] = [];
   let calls = 0;
-  const adapter = createLayeringSteps({ async run(task) {
+  const adapter = createLayeringSteps(sessioned(async task => {
     calls++;
     assert.equal(task.sandboxMode, 'read-only');
     assert.equal(task.imageGeneration, true);
@@ -100,7 +105,7 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
     await tool(task, 'set_completion_paths').execute({ paths }, signal);
     await submit(task, input.outputDraft);
     return { text: 'done', images: [] };
-  } });
+  }));
   const steps = { ...workingSteps(events), completeOcclusion: adapter.completeOcclusion, checkCompletion: adapter.checkCompletion };
   await runLayering({ ...f, groups: null, steps });
   assert.equal(calls, 1);
@@ -153,7 +158,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     ]),
   ]);
   const steps = workingSteps(events, [{ id: 'arms' }], children), calls: string[] = [];
-  const adapter = createLayeringSteps({ async run(task) {
+  const adapter = createLayeringSteps(sessioned(async task => {
     const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
     const id = input.group.id;
     calls.push(id);
@@ -179,7 +184,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     await assert.rejects(tool(task, 'read_svg').execute({ path: otherPalm }, signal), /只能读取本次明确提供/);
     await submit(task, input.outputDraft);
     return { text: 'done', images: [] };
-  } });
+  }));
   await runLayering({ ...f, groups: null, steps: { ...steps, completeOcclusion: context =>
     fingers.includes(context.group.id.split('/').at(-1)!) ? adapter.completeOcclusion(context) : steps.completeOcclusion(context),
     checkCompletion: adapter.checkCompletion } });
@@ -257,4 +262,34 @@ test('补全子组必须在父完成范围内，即使原形保留也不能越�
       return { text: '', images: [] };
     },
   }), /超出父轮廓/);
+});
+
+test('补全 threadId 记在 step02：中断后续跑恢复同一会话，step02 重做时随目录一起重置', async t => {
+  const f = await fixture(t), resumed: (string | undefined)[] = [];
+  const session = join(f.directory, groupStepId('head', 2), 'session.json');
+  let fail = true;
+  const agents = { async run(): Promise<AgentResult> { assert.fail('补全必须走可复用会话'); },
+    createSession(id?: string, callbacks?: { onSessionStarted?: (id: string, harness: 'agv') => Promise<void> }): AgentSession {
+      resumed.push(id);
+      const threadId = id || `completion-thread-${resumed.length}`;
+      return { async close() {}, async run(task) {
+        await callbacks?.onSessionStarted?.(threadId, 'agv');
+        if (fail) { fail = false; throw new Error('补全中断'); }
+        const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+        await tool(task, 'set_completion_paths').execute({ paths }, signal);
+        await submit(task, input.outputDraft);
+        return { text: 'done', images: [], threadId, harness: 'agv' };
+      } };
+    } };
+  const adapter = createLayeringSteps(agents);
+  const steps = { ...workingSteps([]), completeOcclusion: adapter.completeOcclusion, checkCompletion: adapter.checkCompletion };
+  await assert.rejects(runLayering({ ...f, groups: null, steps }), /补全中断/);
+  assert.deepEqual(JSON.parse(await readFile(session, 'utf8')), { threadId: 'completion-thread-1', harness: 'agv' });
+  await runLayering({ ...f, groups: null, steps });
+  assert.deepEqual(resumed, [undefined, 'completion-thread-1']);
+  // 删掉补全产物后 step02 重做：旧会话随步骤目录删除，新一轮从新会话开始。
+  await rm(artifactPath(f.directory, 'head', 'completion'));
+  await runLayering({ ...f, groups: null, steps });
+  assert.deepEqual(resumed, [undefined, 'completion-thread-1', undefined]);
+  assert.deepEqual(JSON.parse(await readFile(session, 'utf8')), { threadId: 'completion-thread-3', harness: 'agv' });
 });
