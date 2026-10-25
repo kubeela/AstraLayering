@@ -5,6 +5,10 @@ import { saveConfig, within, type RunConfig } from '../shared/raster/run-store.t
 import { occlusionPath } from '../shared/part/occlusion-plan.ts';
 import { artifactPath, draftPath } from '../shared/part/artifact-facts.ts';
 import { shadowMode } from '../shared/shadow.ts';
+import { migrateLegacyLayout } from '../shared/part/legacy-layout.ts';
+import { initialStepId } from '../shared/part/part-steps.ts';
+import { profile as partProfile } from '../part-layering/profile.ts';
+import { profile as clothingProfile } from '../clothing-part-layering/profile.ts';
 import type { PipelineId } from '../shared/paths.ts';
 import { acquireTaskLock, directoryFor, now, pipelineId, readRun, type TaskOptions } from './state.ts';
 
@@ -18,6 +22,8 @@ import { acquireTaskLock, directoryFor, now, pipelineId, readRun, type TaskOptio
 // Part steps keep their session in <step>/session.json; raster-style pipelines
 // share one drawing thread in run.json. Steps without a session (one-shot
 // agents) simply rerun when they have no product, so resume equals continue.
+// A part run of the earlier stages/ layout is converted first (legacy-layout.ts);
+// the empty step id continues the whole pipeline.
 export const stepActions = ['continue', 'resume', 'retry'] as const;
 export type StepAction = typeof stepActions[number];
 export type StepEntry = { id: string; status: Exclude<StepStatus, 'absent'>; session: boolean };
@@ -40,6 +46,13 @@ export async function pipelineRoot(directory: string, pipeline: PipelineId, name
 const exists = (path: string) => readFile(path).then(() => true, error => {
   if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error;
 });
+
+// A part run still in the stages/ layout, converted by the next run or step action.
+export async function legacyLayout(root: string, pipeline: PipelineId): Promise<boolean> {
+  if (!partPipelines.includes(pipeline)) return false;
+  const present = (path: string) => readdir(path).then(() => true, () => false);
+  return await present(join(root, 'stages')) && (await readStep(join(root, initialStepId))).status !== 'completed';
+}
 
 // Every marked or unmarked step directory of a pipeline, in path order.
 export async function listSteps(root: string, pipeline: PipelineId): Promise<StepEntry[]> {
@@ -65,12 +78,16 @@ async function readConfig(root: string): Promise<RunConfig<unknown>> {
 export async function applyStepAction(options: Pick<TaskOptions, 'name' | 'dir'> & { pipeline: string; step: string; action: string }): Promise<string> {
   const pipeline = pipelineId(options.pipeline);
   if (!(stepActions as readonly string[]).includes(options.action)) throw new Error('未知操作：' + options.action + '；可选：' + stepActions.join(', '));
-  if (!validStepId(pipeline, options.step)) throw new Error(`${pipeline} 没有步骤 ${options.step}`);
+  const whole = options.step === '';
+  if (whole ? options.action !== 'continue' : !validStepId(pipeline, options.step)) throw new Error(`${pipeline} 没有步骤 ${options.step}`);
   const directory = directoryFor(options);
   // The task lock keeps a running coordinator and a second recovery out.
   const release = await acquireTaskLock(directory);
   try {
     const root = await pipelineRoot(directory, pipeline, options.name), stepDirectory = join(root, options.step);
+    const migrated = partPipelines.includes(pipeline) &&
+      await migrateLegacyLayout(root, (pipeline === 'part-layering' ? partProfile : clothingProfile).promptsDirectory);
+    if (whole) return `${pipeline}：${migrated ? '旧版目录已转换为步骤目录（原文件在 stages.legacy/），' : ''}保留全部产物，下次运行续跑。`;
     const { status, record } = await readStep(stepDirectory);
     if (status === 'absent') throw new Error(`步骤 ${pipeline}/${options.step} 不存在，下次运行会直接执行。`);
     const part = partPipelines.includes(pipeline);
