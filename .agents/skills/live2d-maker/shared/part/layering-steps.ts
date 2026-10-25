@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path';
 import type { GroupContext } from './layering-types.ts';
 import { writeAtomic } from './groups.ts';
 import type { Harness } from '../agents/models.ts';
+import { groupDirectory } from './part-steps.ts';
 
 // 补形与子组分析使用只读 agent，经工具提交后由程序验证并发布事实。
 export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<Pick<CodexAgents, 'createSession'>>): LayeringSteps {
@@ -20,7 +21,7 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     let session = sessions.get(id);
     if (!session) {
       if (!agents.createSession) throw new Error('轮廓绘制需要可复用的 agent 会话');
-      const path = join(context.directory, 'stages', 'sessions', `${id}.json`);
+      const path = join(groupDirectory(context.directory, id), 'step01', 'session.json');
       let saved: { threadId?: string; harness?: Harness } = {};
       try { saved = JSON.parse(await readFile(path, 'utf8')); }
       catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }

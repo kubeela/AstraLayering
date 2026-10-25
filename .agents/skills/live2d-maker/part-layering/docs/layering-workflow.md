@@ -39,7 +39,7 @@ workflow.ts 仍是通用并发执行器，不引入工作流领域规则；layer
 
 同组绘制与返修保留一个 thread，每次 review 使用新的只读会话。每组最多两次正式 review：绘制自检 → review 1 → 返修自检 → review 2 → 返修自检 → 下一阶段。任一轮 pass 可提前结束；第二轮 revise 落实后不做第三轮。原 verdict 保留，事实推导结果区分 pass 与 repaired，不把 repaired 称为独立审查通过。轮数来自报告 reviews，跨启动累计；服务重试不额外消费轮数。
 
-review 通过 submit_review 保存候选哈希、结论、反馈和实际观察图。返修后的哈希写入 repairedCandidateHash，只有它匹配当前正式 SVG 才证明返修落实。stages/outline/<id>.repairs/<序号>/ 保存反馈和实际提示词，过程目录存在或数量增加都不能证明返修成功。反馈和失败草稿保留；结束、pending 或异常时关闭绘制会话，跨启动只恢复产物和事实记录。
+review 通过 submit_review 保存候选哈希、结论、反馈和实际观察图。返修后的哈希写入 repairedCandidateHash，只有它匹配当前正式 SVG 才证明返修落实。groups/<id>/step01/outline.repairs/<序号>/ 保存反馈和实际提示词，过程目录存在或数量增加都不能证明返修成功。反馈和失败草稿保留；结束、pending 或异常时关闭绘制会话，跨启动只恢复产物和事实记录。
 
 通用正文来自 prompts/5-组轮廓.md 和 6-轮廓review.md；prompts/groups/<完整ID>/outline.md、review.md 分别完整替换对应正文，不继承父组特化。返修附加 prompts/7-轮廓返修.md。绘制、返修与 review 只核对原参考的可见轮廓，不提供生图；辅助生图由遮挡补全使用。先确认归属和主要形体，再检查局部边缘；大错误可重画当前草稿。已登记但完全遮挡的节点可交付空轮廓，经 review 确认没有可见遗漏后进入补全。preview_svg 提供独显、blend、edge 和裁剪放大；父范围沿用四倍采样与 alpha 覆盖差校验，允许贴边和共边，不扩张父范围。
 
@@ -51,7 +51,7 @@ review 通过 submit_review 保存候选哈希、结论、反馈和实际观察�
 
 工作正文为 prompts/8-同层轮廓去重.md。preview_svg 提供整体和局部观察；write_reduction_svg 只接受本层 groupId 与 SVG 文本，绑定该组草稿并验证，写后须重新预览。submit_reduction 只接受实际修改组的指定 .draft.svg；未修改组由程序按字节原样复制。本层只有一个组时无需跨组模型处理，直接复制。
 
-全部组的输出保存为 stages/outline-reduce/<完整组ID>.svg，原轮廓不覆盖。验证完整输出后再发布，最后原子提交 layers/<深度>.json，记录参与组和输入／输出哈希以及处理说明。只有整批记录与实际文件匹配时，去重阶段才完成；部分输出、草稿和过期批次不放行补形。原本非空、去重后删空的重复组仍保留含组容器的空 SVG，由程序完成空产物和空子组结果，不调用补形／分析模型。原本完全遮挡而为空的节点仍进入补全；子组分析是否跳过取决于补全后的实际形体。
+全部组的输出保存为 layers/depthNN/<完整组ID>.svg，原轮廓不覆盖。验证完整输出后再发布，最后完成本层步骤，逐件记录输出哈希。部分输出和草稿不放行补形；某件输出缺失或被改动只影响该件。原本非空、去重后删空的重复组仍保留含组容器的空 SVG，由程序完成空产物和空子组结果，不调用补形／分析模型。原本完全遮挡而为空的节点仍进入补全；子组分析是否跳过取决于补全后的实际形体。
 
 ## 补形与子组
 
@@ -65,7 +65,7 @@ review 通过 submit_review 保存候选哈希、结论、反馈和实际观察�
 
 自检通过后才分析组内轮廓，返回直属 group/part 并登记到树。part 同样经过绘制、review、整层去重、补形和检查，随后终止，无独立子组分析文件；kind 来自父分析结果。没有 kind 的历史节点按待分析 group 兼容。group 分析产生空列表时，事实明确其本身是最终单元，保留既有 ID 和 SVG，不造唯一同范围 part；初始层仍只识别 group。nodeKind 从明确类型或有效终止分析推导当前角色，不从尚待分析的空树猜测。
 
-拆分使用 children-agent.ts 的只读会话，实际观察父完成稿的 svg/blend 后调用 submit_children。name 使用 snake_case，程序构造父路径下的直属 ID；拒绝重复、嵌套树、进度字段、非法类型及单 part 包装。提交前后检查父 SVG 未被改写，然后将子节点和当前节点的 childrenAnalysis（sourceHash、可选 note）一次原子写入 groups.json。不生成第二份结构报告；中断前后读取的都是完整的单一组树。输入完成 SVG 改变时，旧分析哈希不能放行下一层。
+拆分使用 children-agent.ts 的只读会话，实际观察父完成稿的 svg/blend 后调用 submit_children。name 使用 snake_case，程序构造父路径下的直属 ID；拒绝重复、嵌套树、进度字段、非法类型及单 part 包装。提交前后检查父 SVG 未被改写，然后将子节点和可选 note 写入 groups/<id>/step03/children.json，它是该组子树的唯一来源。补全稿变化时拆分步骤按依赖重跑，旧拆分不能放行下一层。
 
 正文来自 prompts/10-直属结构拆分.md，prompts/groups/<完整ID>/children.md 完整替换，10-拆分操作约定.md 始终附加。特化和通用均按独立变形、硬软、摆动、透视、绘制顺序、显隐及剪贴判断，固定纹理不机械拆；同名节点可依实际需求为 group 或 part。breast 左右一件；手臂先分左右，再分 upper_arm/forearm/hand，手分手掌和五根完整手指；腿先分左右，每侧分 leg/foot，不拆膝和脚趾。头发按完整发面、合理发根和独立控制需要规划；前发、侧发、后发是常见组织方式，不固定节点数量或树深。侧发不等同于鬓角细丝，完整统一控制的发面直接为 part；头盖可独立，也可由合理的后发单元承担，不强制巨大 base。教程作为开发先验落实在提示词，运行时不追加整套教程。
 
@@ -73,31 +73,25 @@ review 通过 submit_review 保存候选哈希、结论、反馈和实际观察�
 
 hair/completion.md 补充正面被脸和身体遮住的完整后发联合范围，给子组提供足够父范围；不制作侧视、后视或九轴关键形。子层去重明确区分底形与其上五官、虹膜、breast 等合法覆盖。子节点仍受父组完成范围约束，当前层全部结束才进入下一层。CLI --max-depth 控制处理层数，1 完成根层并登记下一层，2 制作到第二层并登记第三层，不改变拆分语义。
 
-## 事实文件与草稿发布
+## 步骤目录与草稿发布
 
-所有 SVG 制作接口，包括绘制、返修、去重、补形和合并，统一先写指定的 .draft.svg。验证与回合成功后才发布正式 SVG；读取事实时不扫描草稿。正式结果的位置固定，不保存旧机器的绝对输出路径。
+所有 SVG 制作接口，包括绘制、返修、去重、补形和合并，统一先写指定的 .draft.svg。验证与回合成功后才发布正式 SVG。每个步骤是带 .running／.completed 标记的目录（shared/part/part-steps.ts，规则见 shared/step-chain.ts）：
 
-| 事实 | 文件 |
+| 步骤 | 目录与产物 |
 | --- | --- |
-| 主体与组树 | groups.json |
-| 轮廓 | stages/outline/<id>.svg |
-| review 轮数、结论和返修版本 | stages/review/<id>.review.json |
-| 去重版及整批提交 | stages/outline-reduce/<id>.svg、layers/<深度>.json |
-| 补形完成 SVG | parts/<id>.svg |
-| 对应版本的自检结论 | stages/completion-check/<id>.json |
-| 唯一子组树及分析输入版本、依据，含空列表 | groups.json 中的 groups 与 childrenAnalysis |
-| 整树预览合并结果 | preview.svg（对应 groups.json 同目录） |
-| 最后一步的独立遮挡层级表及逐件检查 | occlusion.json（对应 groups.json 同目录） |
+| 首次分组 | initial/step01/groups.json |
+| 轮廓与复核 | groups/<id>/step01/：outline.svg、review.json、outline.repairs/、session.json |
+| 同层去重 | layers/depthNN/<id>.svg |
+| 补全与检查 | groups/<id>/step02/check.json，产物 parts/<id>.svg |
+| 直属子组拆分 | groups/<id>/step03/children.json |
+| 整树预览合并 | merge/，产物 preview.svg |
+| 遮挡层级表及逐件检查 | occlusion/（含 candidate.svg），产物 occlusion.json |
 
-SVG 哈希兼容 LF/CRLF 差异。补形和子组轮廓在 SVG 中携带输入版本，自检报告与组树内的分析元数据绑定实际 SVG 哈希；输入改变时，过期结果不会被当作当前事实。保存分组的并发写入队列和原子写入继续使用，结构与分析版本同一次提交。历史 children 报告仅用于已有运行的兼容迁入；新运行不再写入，已经保存新元数据后不再读取旧报告。
+子组目录嵌套为 groups/<父>/children/<名>。依赖写成「步骤#产物」，只读该产物的最新哈希；重新生成相同字节时下游保留，产物变化只重跑真实使用者。删除 .completed 或产物即重跑该步骤及下游；已完成步骤记录的产物被手改时拒绝直接续跑。重跑先删除整个步骤目录，其中的复核记录和会话随之重置。补全读取的同级去重稿写成依赖；图片参考和提示词编辑仍需显式重跑。
 
-恢复逐层、逐 part 进行：当前父节点全部事实完成后才读取子节点，去重记录逐行核对本件输入/输出。统一执行入口开始新制作前撤下本件失效文件及草稿，不因同层别件缺 outline 清掉有效部件。去重仍查看整层当前底稿；有效旧去重结果继续作为底稿，未修改时保留其内容和正式文件。仅实际输出变化的组及真实引用者使补全、自检、分析和后代失效，文件先清、树最后原子撤销。实际受影响的未选组及引用者可加入后续制作；无依赖的未选组保持。merge 失效撤下旧 preview/occlusion。同一轮 outline 的待返修 review 保留累计轮次。
+groups.json 是组树视图，只保留可编辑的名称、note 和元数据；结构、kind 与顺序来自首次分组和各拆分记录。SVG 哈希兼容 LF/CRLF 差异。新运行不创建或读取 progress.json；旧 stages/ 布局的运行不迁移，续跑报错。不删除原始参考、调用日志和返修诊断，也不清其他 raster 工作目录。
 
-清理在新制作前完成，重建出相同 outline 并中断不会复活该件旧 part；其他有效部件仍保留。补全另用 stages/completion-inputs/<id>.json 记录本次实际图片和同级 SVG 的版本及引用组阶段，绑定去重与正式补全哈希。记录在正式 SVG 发布前写入，正式稿标记 data-completion-inputs=v1；标记稿缺少匹配记录不能恢复。输入文件或引用组阶段失效只传给真实使用者；旧有额外参考但无输入证据时只重做该补全。失效记录保留引用关系，不作为独立完成证明。清理不另存步骤状态矩阵，不删除原始参考、调用日志和返修诊断，也不清其他 raster 工作目录。提示词和参考清单编辑仍需显式安排重跑。
-
-新运行不创建或读取 progress.json，历史文件保留但不用于续跑。steps/status 仅在内存中供调度和终端展示；运行错误记录在 agent 日志。不能从一个 SVG 判断的信息由实际自检或分析结果文件表达，不复制完整步骤状态矩阵。
-
-全部节点及后代完成后进入程序合并，默认实现为 mergePartSvgs，不调用模型。parts 仅包含终止叶节点，完整树另传；按树顺序保留逻辑容器并嵌入各 part，父组引导底形不重复绘制，各 SVG 的资源 ID 隔离。写 preview.draft.svg，验证后发布 preview.svg，与 groups.json 同目录；SVG 记录对应树的节点 ID、父子关系与 kind，供 part-preview 核对。已有匹配当前输入版本的预览继续复用，未完成树不会发布。事实读取和调度测试使用本地模拟 agent，不证明真实模型的拆分、去重或视觉审查质量。
+全部节点及后代完成后进入程序合并，默认实现为 mergePartSvgs，不调用模型。parts 仅包含终止叶节点，完整树另传；按树顺序保留逻辑容器并嵌入各 part，父组引导底形不重复绘制，各 SVG 的资源 ID 隔离。写 preview.draft.svg，验证后发布 preview.svg，与 groups.json 同目录；SVG 记录对应树的节点 ID、父子关系与 kind，供 part-preview 核对。merge 步骤输入未变时预览继续复用，未完成树不会发布。事实读取和调度测试使用本地模拟 agent，不证明真实模型的拆分、去重或视觉审查质量。
 
 ## 最后一步：整件深度规划
 

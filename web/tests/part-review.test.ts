@@ -83,7 +83,7 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.doesNotMatch(reviewReportText(JSON.stringify(report), steps[0].artifacts[0]), /意见 50/);
   assert.match(reviewReportText(JSON.stringify(report), steps[2].artifacts[0]), /意见 50/);
   const artifacts = groupArtifacts(pipeline, { id: 'face' }, 0);
-  const outline = `${pipeline}/stages/outline/face.svg`, draft = `${pipeline}/parts/face.draft.svg`, final = `${pipeline}/parts/face.svg`;
+  const outline = `${pipeline}/groups/face/step01/outline.svg`, draft = `${pipeline}/parts/face.draft.svg`, final = `${pipeline}/parts/face.svg`;
   const files = new Set([outline, draft, final]);
   const versions = { [outline]: '10:1', [draft]: '30:1', [final]: '20:1' };
   assert.equal(groupStagePreviewArtifacts('outline', artifacts, files, versions)[0].path, outline);

@@ -3,8 +3,9 @@ import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import {
   groupStages, type GroupInput, type GroupNode, type GroupProgress, type GroupsDocument,
-  type GroupStage, type GroupStageOutputs, type StepProgress, type Subject,
+  type GroupSeed, type GroupStage, type GroupStageOutputs, type StepProgress,
 } from './layering-types.ts';
+import { readStepTree } from './part-steps.ts';
 
 export async function writeAtomic(path: string, content: string | Buffer): Promise<void> {
   await mkdir(dirname(path), { recursive: true });
@@ -63,14 +64,6 @@ export function normalizeGroups(values: unknown, seen = new Set<string>()): Grou
       if (input[field] !== undefined && typeof input[field] !== 'string') throw new Error(`group.${field} must be a string`);
     }
     if (input.metadata !== undefined) record(input.metadata, 'group.metadata');
-    if (input.childrenAnalysis !== undefined) {
-      const analysis = record(input.childrenAnalysis, 'group.childrenAnalysis');
-      if (typeof analysis.sourceHash !== 'string' || !/^[a-f0-9]{64}$/i.test(analysis.sourceHash) ||
-          (analysis.note !== undefined && typeof analysis.note !== 'string') ||
-          Object.keys(analysis).some(key => !['sourceHash', 'note'].includes(key))) {
-        throw new Error('group.childrenAnalysis requires an input SVG hash and optional note');
-      }
-    }
     if (input.kind !== undefined && input.kind !== 'group' && input.kind !== 'part') throw new Error('节点 kind 必须为 group 或 part');
     if (input.kind === 'part' && Array.isArray(input.groups) && input.groups.length) throw new Error('part 不能包含子节点');
     const rawSteps = input.steps === undefined ? {} : record(input.steps, 'group.steps');
@@ -85,7 +78,6 @@ export function normalizeGroups(values: unknown, seen = new Set<string>()): Grou
       ...(input.name !== undefined ? { name: input.name as string } : {}),
       ...(input.note !== undefined ? { note: input.note as string } : {}),
       ...(input.metadata !== undefined ? { metadata: structuredClone(input.metadata) as Record<string, unknown> } : {}),
-      ...(input.childrenAnalysis !== undefined ? { childrenAnalysis: structuredClone(input.childrenAnalysis) as GroupNode['childrenAnalysis'] } : {}),
       groups: normalizeGroups(input.groups ?? [], seen), steps,
     };
     if (group.groups.length && rawSteps.children === undefined) {
@@ -132,7 +124,7 @@ export function nodeKind(group: GroupNode): 'group' | 'part' {
 }
 
 export function nodeSeed(group: GroupNode) {
-  const { groups, steps, childrenAnalysis, ...seed } = group;
+  const { groups, steps, ...seed } = group;
   return { ...seed, kind: seed.kind ?? 'group' };
 }
 
@@ -154,30 +146,31 @@ export class GroupStore {
     this.savedGroups = savedGroups;
   }
 
-  static async open(directory: string, promptsDirectory?: string): Promise<GroupStore> {
+  // The tree comes from the step records (part-steps.ts); groups.json only
+  // contributes edited names, notes and metadata.
+  static async open(directory: string): Promise<GroupStore> {
     const path = join(directory, 'groups.json');
     const input = await readDocument(path) ?? { groups: [] };
     if (input.version !== undefined && input.version !== 1) throw new Error('Unsupported groups document version');
-    // 旧 progress.json 和混在树里的 steps 都不作为续跑依据。
-    function structure(values: unknown): unknown {
+    const saved = new Map<string, GroupSeed>();
+    (function collect(values: unknown) {
       if (!Array.isArray(values)) throw new Error('groups must be an array');
-      return values.map(value => {
-        const { steps, groups, ...seed } = record(value, 'group');
-        return { ...seed, groups: structure(groups ?? []) };
-      });
-    }
-    const groups = normalizeGroups(structure(input.groups));
+      for (const value of values) {
+        const { steps, groups, childrenAnalysis, ...seed } = record(value, 'group');
+        if (typeof seed.id === 'string') saved.set(seed.id, seed as GroupSeed);
+        collect(groups ?? []);
+      }
+    })(input.groups);
+    const tree = await readStepTree(directory, saved);
     const document: GroupsDocument = {
       version: 1,
-      ...(input.subject !== undefined ? { subject: input.subject as Subject } : {}),
-      groups,
-      merge: { status: 'pending' },
+      ...(tree.subject !== undefined ? { subject: tree.subject } : {}),
+      groups: normalizeGroups(tree.groups),
+      merge: tree.merged ? { status: 'completed', output: { path: join(directory, 'preview.svg') } } : { status: 'pending' },
     };
     checkSubject(document.subject);
-    await (await import('./artifact-facts.ts')).restoreFacts(directory, document, promptsDirectory);
     const savedGroups = JSON.stringify(input) === JSON.stringify(groupStructure(document)) ? serialize(input) : undefined;
-    const store = new GroupStore(path, document, savedGroups);
-    return store;
+    return new GroupStore(path, document, savedGroups);
   }
 
   snapshot(): GroupsDocument { return structuredClone(this.document); }

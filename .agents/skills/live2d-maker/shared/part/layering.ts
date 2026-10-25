@@ -1,20 +1,20 @@
 import { formatAgentError } from '../codex/diagnostics.ts';
 import type { PartProfile } from './profile.ts';
-import { mkdir, readFile, rm, stat } from 'node:fs/promises';
+import { lstat, mkdir, readdir, readFile, rm, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
-import { checkSubject, findGroup, groupCompleted, GroupStore, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
-import { artifactPath, draftPath, mergeSourceHash, publishSvg, readJson, readReviewReport, readSvg, reductionReportPath, reportPath, restoreFacts, reviewedArtifact, stampedSvg, svgHash } from './artifact-facts.ts';
+import { checkSubject, findGroup, groupCompleted, GroupStore, nodeSeed, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
+import { artifactPath, draftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact, svgHash } from './artifact-facts.ts';
 import { mergePartSvgs } from './merge-svg.ts';
-import type { GroupContext, GroupInput, GroupNode, GroupsDocument, GroupSeed, GroupStage, GroupStageOutputs, LayeringResult, LayeringSteps, StepResult, SvgArtifact, SvgMerger } from './layering-types.ts';
+import { groupStages, type GroupContext, type GroupInput, type GroupNode, type GroupSeed, type GroupStage, type GroupStageOutputs, type LayeringResult, type LayeringSteps, type StepResult, type SvgArtifact, type SvgMerger } from './layering-types.ts';
 import type { PreparationReferences } from './preparation-types.ts';
 import { runWorkflow, validateWorkflowOptions } from './workflow.ts';
 import { validateGroupSvg } from './svg-tools.ts';
 import { assertCompletionPreserves } from './completion-svg.ts';
 import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from './occlusion-plan.ts';
-import { invalidatePendingArtifacts } from './artifact-invalidation.ts';
-import { completionInputsPath, completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
-import { updateSvgRoot } from '../xml.ts';
+import { completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
+import { beginStep, checkStep, completeStep, readStep, resetStep, runningInputs, type ChainStep, type StepCheck } from '../step-chain.ts';
+import { groupDirectory, groupStep, groupStepId, initialStepId, layerStep, parentGroupId, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
   completion: '直接遮挡补形', completionCheck: '补形自检', children: '子组分析' };
@@ -32,17 +32,22 @@ export class GroupExecutionError extends Error {
   }
 }
 
-function proposal(output: { groups: GroupSeed[] }, document: GroupsDocument, allowParts = false): GroupNode[] {
+function proposal(output: { groups: GroupSeed[] }, seen: Set<string>, allowParts = false): GroupNode[] {
   if (!output || !Array.isArray(output.groups) || 'parts' in output) throw new Error('分组提案必须只包含直属 groups');
   for (const group of output.groups) {
-    if (!group || typeof group !== 'object' || 'groups' in group || 'steps' in group || 'parts' in group || 'childrenAnalysis' in group ||
+    if (!group || typeof group !== 'object' || 'groups' in group || 'steps' in group || 'parts' in group ||
       (!allowParts && group.kind === 'part') || 'type' in group) {
       throw new Error('Agent proposals must contain direct group seeds without children or progress');
     }
   }
-  return normalizeGroups(output.groups, new Set(walkGroups(document.groups).map(entry => entry.group.id)));
+  return normalizeGroups(output.groups, new Set(seen));
 }
 
+// Every unit of work is a step directory (part-steps.ts). Steps are checked
+// lazily in topological order as the tree grows: a step whose inputs (the
+// stamps of the outputs it reads) are unchanged and whose outputs are intact is
+// kept; one interrupted against the same inputs continues with its drafts and
+// session; anything else is reset, which drops its session, and rerun.
 export async function runLayering(input: {
   profile?: PartProfile; directory: string; references: PreparationReferences; groups: GroupInput | GroupInput[] | null;
   steps: LayeringSteps; mergeSvg?: SvgMerger; maxDepth?: number;
@@ -50,16 +55,19 @@ export async function runLayering(input: {
 }): Promise<LayeringResult> {
   validateWorkflowOptions(input);
   const directory = resolve(input.directory);
-  const store = await GroupStore.open(directory, input.profile?.promptsDirectory);
-  // 即使本次仅恢复已提交事实、没有新工作，也将恢复出来的树落盘。
+  if (await exists(join(directory, 'stages')) && !await exists(join(directory, initialStepId))) {
+    throw new Error(`旧版目录结构（stages/）不能续跑，请使用新的运行目录：${directory}`);
+  }
+  const store = await GroupStore.open(directory);
+  // 即使本次没有新工作，也将由步骤记录重建的树落盘。
   await store.update(() => {});
   const report = input.progress ?? (() => {});
   const initial = { profile: input.profile, directory, references: input.references, store };
-  const statePath = join(directory, 'stages');
+  const promptsDirectory = input.profile?.promptsDirectory;
+  const statePath = directory;
   let selected: Set<string> | undefined;
   let completedOcclusion: string | undefined;
-  const referencesByGroup = new Map(await Promise.all(walkGroups(store.snapshot().groups).map(async ({ group, parent }) =>
-    [group.id, await completionReferenceGroups(directory, group.id, parent?.id, input.profile?.promptsDirectory)] as const)));
+  const lookup = (id: string): ChainStep => ({ id, directory: join(directory, id), dependsOn: [] });
 
   function context(id: string): GroupContext {
     const entry = walkGroups(store.snapshot().groups).find(entry => entry.group.id === id);
@@ -72,32 +80,34 @@ export async function runLayering(input: {
     for (const entry of walkGroups(store.snapshot().groups)) if (entry.parent && result.has(entry.parent.id)) result.add(entry.group.id);
     return result;
   }
-  function expandReferences() {
-    if (!selected) return;
-    let changed: boolean;
-    do {
-      changed = false;
-      const ids = scope()!;
-      for (const [id, references] of referencesByGroup) if (!ids.has(id) && references.some(reference => ids.has(reference))) {
-        selected.add(id); changed = true;
-      }
-    } while (changed);
+  // Ids a children split of `id` must not reuse: everything outside its own subtree.
+  function seenOutside(id: string): Set<string> {
+    return new Set(walkGroups(store.snapshot().groups).map(entry => entry.group.id).filter(other => !other.startsWith(`${id}/`)));
   }
   function artifact(id: string, stage: 'outline' | 'review' | 'reduction' | 'completion'): SvgArtifact {
     const saved = context(id).group.steps[stage];
     if (saved.status !== 'completed' || !saved.output) throw new Error(`${id}.${stage} is not completed`);
     return saved.output;
   }
-  async function refresh() {
-    const document = store.snapshot();
-    await restoreFacts(directory, document, input.profile?.promptsDirectory);
-    await store.update(draft => { draft.groups = document.groups; draft.merge = document.merge; });
+  async function guard<T>(id: string, stage: GroupStage, action: () => Promise<T>): Promise<T> {
+    try { return await action(); }
+    catch (error) { throw error instanceof GroupExecutionError ? error : new GroupExecutionError(id, stage, error); }
+  }
+  async function resetProgress(id: string, from: GroupStage) {
+    const stages = groupStages.slice(groupStages.indexOf(from));
+    await store.update(document => {
+      Object.assign(findGroup(document, id).steps, Object.fromEntries(stages.map(stage => [stage, { status: 'pending' }])));
+    });
+  }
+  async function completed<S extends GroupStage>(id: string, stage: S, output: GroupStageOutputs[S]) {
+    await store.update(document => setGroupProgress(findGroup(document, id), stage, { status: 'completed', output }));
+  }
+  // Starts a step that is not kept; a rerun first removes its directory and outputs.
+  async function begin(step: ChainStep, check: StepCheck) {
+    if (check.action === 'rerun') await resetStep(step);
+    await beginStep(step.directory, check.inputs);
   }
   async function execute<S extends GroupStage>(id: string, stage: S, action: () => Promise<StepResult<GroupStageOutputs[S]>>): Promise<boolean> {
-    if (context(id).group.steps[stage].status === 'completed') {
-      report(`[${id}] ${labels[stage]}：沿用事实结果`);
-      return true;
-    }
     await store.update(document => setGroupProgress(findGroup(document, id), stage, { status: 'running' }));
     report(`[${id}] ${labels[stage]}：开始`);
     try {
@@ -129,23 +139,25 @@ export async function runLayering(input: {
         if (!(await readFile(source!)).equals(before)) throw new Error('补全过程修改了原轮廓');
         assertCompletionPreserves(before.toString(), (await readFile(draft)).toString());
       }
-      const sourceHash = source ? svgHash((await readSvg(source))!) : undefined;
-      if (stage === 'completion') {
-        const dependencies = result.output.dependencies ?? [];
-        if (!await dependenciesMatch(directory, dependencies)) throw new Error('补全输入已变化，不能发布');
-        const marked = Buffer.from(updateSvgRoot((await readSvg(draft))!.toString(), { 'data-completion-inputs': 'v1' }));
-        await writeAtomic(draft, marked);
-        // 输入记录先写，正式 SVG 最后发布；中断或记录不匹配不能恢复该补全。
-        await writeAtomic(completionInputsPath(directory, id), JSON.stringify({ version: 1, groupId: id,
-          beforeHash: sourceHash, afterHash: svgHash(stampedSvg(marked, sourceHash)), dependencies }, null, 2) + '\n');
+      if (stage === 'completion' && !await dependenciesMatch(directory, result.output.dependencies ?? [])) {
+        throw new Error('补全输入已变化，不能发布');
       }
-      await publishSvg(draft, output, sourceHash);
+      await publishSvg(draft, output, source ? svgHash((await readSvg(source))!) : undefined);
       return { status: 'completed', output: { ...result.output, path: output } };
     });
   }
-  async function prepare(id: string) {
-    if (!await drawing(id, 'outline', outputPath => input.steps.drawOutline({ ...context(id), outputPath }))) return;
-    await execute(id, 'review', async () => {
+  // step01: outline + review.
+  async function prepare(id: string, run: boolean) {
+    const step = groupStep(directory, id, 1);
+    const check = await guard(id, 'outline', () => checkStep(step, lookup));
+    if (check.action === 'keep') return;
+    await resetProgress(id, 'outline');
+    if (!run) return;
+    await begin(step, check);
+    const outline = artifactPath(directory, id, 'outline');
+    if (check.action === 'continue' && await readSvg(outline)) await completed(id, 'outline', { path: outline });
+    else if (!await drawing(id, 'outline', outputPath => input.steps.drawOutline({ ...context(id), outputPath }))) return;
+    if (!await execute(id, 'review', async () => {
       const outline = artifact(id, 'outline');
       const path = reportPath(directory, id, 'review');
       const result = await input.steps.reviewOutline({ ...context(id), outline, reportPath: path });
@@ -154,20 +166,36 @@ export async function runLayering(input: {
       const verified = reviewedArtifact((await readSvg(outline.path))!, outline.path, await readReviewReport(path, id));
       if (!verified) throw new Error('review 未保存与当前 SVG 对应的完成事实');
       return { status: 'completed', output: verified };
-    });
+    })) return;
+    await guard(id, 'review', () => completeStep(step, lookup));
   }
+  // layers/depthNN: one reduction over every outline at that depth. It is reopened
+  // in place; a group whose outline is unchanged keeps its current reduction, and
+  // only the outputs whose bytes change rerun the completions that read them.
   async function reduce(depth: number, entries: ReturnType<typeof walkGroups>): Promise<boolean> {
-    const receipt = await readJson(reductionReportPath(directory, depth));
-    if (receipt?.groups?.length === entries.length && entries.every(entry =>
-      context(entry.group.id).group.steps.reduction.status === 'completed')) return true;
+    const ids = entries.map(entry => entry.group.id);
+    const step = layerStep(directory, depth, ids);
+    const check = await checkStep(step, lookup);
+    const finished = () => store.update(document => {
+      for (const id of ids) setGroupProgress(findGroup(document, id), 'reduction', { status: 'completed', output: { path: artifactPath(directory, id, 'reduction') } });
+    });
+    if (check.action === 'keep') { await finished(); return true; }
     report(`第 ${depth} 层轮廓去重：开始`);
+    const previous = (check.status === 'running' ? await runningInputs(step.directory) : undefined) ?? check.record?.inputs ?? {};
+    await beginStep(step.directory, check.inputs);
+    const wanted = new Set(ids.map(id => artifactPath(directory, id, 'reduction')));
+    for (const name of await readdir(step.directory, { recursive: true })) {
+      if (name.endsWith('.svg') && !wanted.has(join(step.directory, name))) await rm(join(step.directory, name), { force: true });
+    }
+    await store.update(document => { for (const id of ids) setGroupProgress(findGroup(document, id), 'reduction', { status: 'running' }); });
     const inputs = await Promise.all(entries.map(async entry => {
-      const bytes = (await readSvg(artifact(entry.group.id, 'outline').path))!;
-      const output = artifactPath(directory, entry.group.id, 'reduction'), draft = draftPath(output);
+      const id = entry.group.id, outline = groupStepId(id, 1);
+      const bytes = (await readSvg(artifactPath(directory, id, 'outline')))!;
+      const output = artifactPath(directory, id, 'reduction'), draft = draftPath(output);
       await mkdir(dirname(draft), { recursive: true });
       await rm(draft, { force: true });
-      const current = context(entry.group.id).group.steps.reduction.status === 'completed' ? { path: output } : undefined;
-      return { ...entry, bytes, output, draft, current, hash: svgHash(bytes) };
+      const current = previous[outline] === check.inputs[outline] && await readSvg(output) ? { path: output } : undefined;
+      return { ...entry, bytes, output, draft, current };
     }));
     const result = inputs.length === 1 ? { status: 'completed' as const, output: { changed: [], note: '本层只有一个组，无跨组重复' } }
       : input.steps.reduceOutlines ? await input.steps.reduceOutlines({ ...initial, depth,
@@ -182,87 +210,100 @@ export async function runLayering(input: {
       if (!entry || changes.has(change.groupId) || resolve(change.path) !== entry.draft) throw new Error('去重结果只能引用本层组的指定 .draft.svg');
       changes.set(change.groupId, change.path);
     }
-    // 整批检查后再发布；提交记录最后落盘，部分输出不构成完成事实。
+    // 整批检查后再发布；完成标记最后落盘，部分输出不构成完成。
     const meta = changes.size ? await sharp(resolve(directory, input.references.baseSubject)).metadata() : undefined;
     for (const entry of inputs) {
-      if (!(await readFile(artifact(entry.group.id, 'outline').path)).equals(entry.bytes)) throw new Error('去重修改了原轮廓');
+      if (!(await readFile(artifactPath(directory, entry.group.id, 'outline'))).equals(entry.bytes)) throw new Error('去重修改了原轮廓');
       if (changes.has(entry.group.id)) {
         await validateGroupSvg(entry.draft, entry.group.id, { width: meta!.autoOrient.width, height: meta!.autoOrient.height }, undefined, true);
       }
       else await writeAtomic(entry.draft, entry.current ? await readFile(entry.current.path) : entry.bytes);
     }
-    const revised = [];
+    // Unchanged outputs stay untouched, so nothing downstream sees a rewrite.
     for (const entry of inputs) {
-      const previous = await readSvg(entry.output);
-      if (!previous || !previous.equals((await readSvg(entry.draft))!)) revised.push(entry);
+      if ((await readSvg(entry.output))?.equals(await readFile(entry.draft))) await rm(entry.draft, { force: true });
+      else await publishSvg(entry.draft, entry.output);
     }
-    // 只在某件去重输出确实改变时撤下该输出，让恢复器沿真实引用找到受影响补全。
-    // 删除在新输出发布前完成；其他 part 的输出与完成事实保持原样。
-    for (const entry of revised) {
-      await rm(entry.output, { force: true });
-      if (selected && entry.current) selected.add(entry.group.id);
-    }
-    expandReferences();
-    if (revised.length) {
-      await refresh();
-      await invalidatePendingArtifacts(directory, store, new Set(inputs.map(entry => entry.draft)));
-    }
-    const groups = [];
-    for (const entry of inputs) {
-      if (revised.includes(entry)) await publishSvg(entry.draft, entry.output);
-      else await rm(entry.draft, { force: true });
-      groups.push({ id: entry.group.id, inputHash: entry.hash, outputHash: svgHash((await readSvg(entry.output))!) });
-    }
-    await writeAtomic(reductionReportPath(directory, depth), JSON.stringify({ depth, groups, note: result.output.note ?? '' }, null, 2) + '\n');
-    await refresh();
+    await completeStep(step, lookup);
+    await finished();
     report(`第 ${depth} 层轮廓去重：完成`);
     return true;
   }
+  // step02: completion + check; step03: children split.
   async function finish(id: string) {
-    if (groupCompleted(context(id).group)) return;
-    const reduced = artifact(id, 'reduction');
-    const mask = await sharp(await readFile(reduced.path)).ensureAlpha().extractChannel('alpha').raw().toBuffer();
-    // 去重删空的重复节点无需恢复；原本完全遮挡的空轮廓仍须交给补全。
-    const removedByReduction = !mask.some(value => value >= 128) &&
-      (await sharp(await readFile(artifact(id, 'outline').path)).ensureAlpha().extractChannel('alpha').raw().toBuffer()).some(value => value >= 128);
-    if (!await drawing(id, 'completion', async outputPath => {
-      if (removedByReduction) { await writeAtomic(outputPath, await readFile(reduced.path)); return { status: 'completed', output: { path: outputPath } }; }
-      return input.steps.completeOcclusion({ ...context(id), outputPath, reviewed: reduced });
-    })) return;
-    if (!await execute(id, 'completionCheck', async () => {
-      const after = artifact(id, 'completion');
-      const result = removedByReduction ? { status: 'completed' as const, output: { passed: true as const, note: '去重后为空组' } }
-        : await input.steps.checkCompletion({ ...context(id), before: reduced, after });
-      if (result.status === 'completed') {
-        if (result.output.passed !== true) throw new Error(`${id}: completion check did not pass`);
-        await writeAtomic(reportPath(directory, id, 'completion-check'), JSON.stringify({ groupId: id, ...result.output,
-          beforeHash: svgHash((await readSvg(reduced.path))!), afterHash: svgHash((await readSvg(after.path))!) }, null, 2) + '\n');
+    const step = groupStep(directory, id, 2, await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+    const check = await guard(id, 'completion', () => checkStep(step, lookup));
+    if (check.action !== 'keep') {
+      await resetProgress(id, 'completion');
+      await begin(step, check);
+      const reduced = artifact(id, 'reduction');
+      const mask = await sharp(await readFile(reduced.path)).ensureAlpha().extractChannel('alpha').raw().toBuffer();
+      // 去重删空的重复节点无需恢复；原本完全遮挡的空轮廓仍须交给补全。
+      const removedByReduction = !mask.some(value => value >= 128) &&
+        (await sharp(await readFile(artifact(id, 'outline').path)).ensureAlpha().extractChannel('alpha').raw().toBuffer()).some(value => value >= 128);
+      const completion = artifactPath(directory, id, 'completion');
+      if (check.action === 'continue' && await readSvg(completion)) await completed(id, 'completion', { path: completion });
+      else if (!await drawing(id, 'completion', async outputPath => {
+        if (removedByReduction) { await writeAtomic(outputPath, await readFile(reduced.path)); return { status: 'completed', output: { path: outputPath } }; }
+        return input.steps.completeOcclusion({ ...context(id), outputPath, reviewed: reduced });
+      })) return;
+      if (!await execute(id, 'completionCheck', async () => {
+        const after = artifact(id, 'completion');
+        const result = removedByReduction ? { status: 'completed' as const, output: { passed: true as const, note: '去重后为空组' } }
+          : await input.steps.checkCompletion({ ...context(id), before: reduced, after });
+        if (result.status === 'completed') {
+          if (result.output.passed !== true) throw new Error(`${id}: completion check did not pass`);
+          await writeAtomic(reportPath(directory, id, 'completion-check'), JSON.stringify({ groupId: id, ...result.output }, null, 2) + '\n');
+        }
+        return result;
+      })) return;
+      await guard(id, 'completionCheck', () => completeStep(step, lookup));
+    }
+    const split = groupStep(directory, id, 3);
+    const splitCheck = await guard(id, 'children', () => checkStep(split, lookup));
+    if (splitCheck.action === 'keep') {
+      // An interrupted rerun of step02 that reproduced the same part keeps the split;
+      // the tree then lacks its children until they are read back.
+      const { groups } = await guard(id, 'children', () => readChildren(directory, id));
+      if (JSON.stringify(context(id).group.groups.map(child => child.id)) !== JSON.stringify(groups.map(child => child.id))) {
+        const children = normalizeGroups(await Promise.all(groups.map(seed => readGroupTree(directory, seed, new Map()))), seenOutside(id));
+        await store.update(document => { findGroup(document, id).groups = children; });
       }
-      return result;
-    })) return;
-    if (context(id).group.kind === 'part') {
-      await store.update(document => setGroupProgress(findGroup(document, id), 'children', { status: 'completed', output: { ids: [] } }));
+      await completed(id, 'children', { ids: groups.map(child => child.id) });
       return;
     }
+    await resetProgress(id, 'children');
+    await begin(split, splitCheck);
     await execute(id, 'children', async () => {
       const completed = artifact(id, 'completion');
       const source = (await readSvg(completed.path))!;
       const completedMask = await sharp(source).ensureAlpha().extractChannel('alpha').raw().toBuffer();
-      const result = !completedMask.some(value => value >= 128) ? { status: 'completed' as const, output: { groups: [] } }
+      const result = context(id).group.kind === 'part' || !completedMask.some(value => value >= 128)
+        ? { status: 'completed' as const, output: { groups: [] as GroupSeed[], note: undefined } }
         : await input.steps.splitChildren({ ...context(id), completed });
       if (result.status === 'pending') return result;
-      const document = store.snapshot();
       if (!(await readFile(completed.path)).equals(source)) throw new Error('子组分析修改了父组完成 SVG');
-      const children = proposal(result.output, document, true);
+      const children = proposal(result.output, seenOutside(id), true);
       if (children.some(child => !child.id.startsWith(`${id}/`) || child.id.slice(id.length + 1).includes('/'))) {
         throw new Error('子组 ID 必须是父组 ID 下的直属路径');
       }
-      if (context(id).group.groups.length) throw new Error(`${id}: children are already registered without a matching analysis`);
+      await writeAtomic(join(split.directory, 'children.json'), JSON.stringify({ groupId: id, groups: children.map(nodeSeed),
+        ...(result.output.note ? { note: result.output.note } : {}) }, null, 2) + '\n');
+      // Children kept by id keep their subtrees (their own steps decide what reruns);
+      // removed children lose their step directories and parts.
+      const previous = context(id).group.groups;
+      for (const old of previous) if (!children.some(child => child.id === old.id)) {
+        await rm(groupDirectory(directory, old.id), { recursive: true, force: true });
+        for (const { group } of walkGroups([old])) await rm(artifactPath(directory, group.id, 'completion'), { force: true });
+      }
       await store.update(draft => {
-        const group = findGroup(draft, id);
-        group.groups = children;
-        group.childrenAnalysis = { sourceHash: svgHash(source), ...(result.output.note ? { note: result.output.note } : {}) };
+        findGroup(draft, id).groups = children.map(child => {
+          const kept = previous.find(old => old.id === child.id);
+          const seed = normalizeGroups([nodeSeed(child)])[0];
+          return kept ? { ...seed, groups: kept.groups, steps: kept.steps } : seed;
+        });
       });
+      await completeStep(split, lookup);
       return { status: 'completed', output: { ids: children.map(child => child.id) } };
     });
   }
@@ -272,6 +313,7 @@ export async function runLayering(input: {
       runRound: group => action(group.id),
     }, { maxDepth: input.maxDepth });
   }
+
 
   try {
     if (input.groups !== null) {
@@ -297,35 +339,59 @@ export async function runLayering(input: {
       for (const path of [input.references.judgment, input.references.simplifiedSubject, input.references.baseSubject]) {
         if (!(await stat(resolve(directory, path))).isFile()) throw new Error(`显式 groups 缺少前置参考：${path}`);
       }
-    } else if (!store.snapshot().groups.length) {
-      const result = await input.steps.initialGroups(initial);
-      if (result.status === 'completed') await store.update(document => {
-        if (!document.groups.length) {
-          document.groups = proposal(result.output, document);
-          if (!document.groups.length) throw new Error('Initial grouping must contain at least one group');
+    } else {
+      const step: ChainStep = { id: initialStepId, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
+      const check = await checkStep(step, lookup);
+      if (check.action === 'keep') report('首次分组：沿用已有结果');
+      else {
+        if (check.action === 'rerun') {
+          // Everything else hangs off the first grouping.
+          for (const entry of ['groups', 'layers', 'parts', 'merge', 'occlusion', 'preview.svg', 'occlusion.json']) {
+            await rm(join(directory, entry), { recursive: true, force: true });
+          }
+          await store.update(document => { document.groups = []; delete document.subject; document.merge = { status: 'pending' }; });
         }
-        if (result.output.subject !== undefined) document.subject = result.output.subject;
-        checkSubject(document.subject);
-      });
-      else report(result.message);
-    } else report('首次分组：沿用已有结果');
+        await begin(step, check);
+        // A turn that saved its grouping before failing continues from that file.
+        const saved = check.action === 'continue' && await exists(join(step.directory, 'groups.json'));
+        const result = saved ? { status: 'completed' as const, output: await readInitialGroups(directory) } : await input.steps.initialGroups(initial);
+        if (result.status === 'completed') {
+          const groups = proposal(result.output, new Set());
+          if (!groups.length) throw new Error('Initial grouping must contain at least one group');
+          checkSubject(result.output.subject);
+          await writeAtomic(join(step.directory, 'groups.json'), JSON.stringify({
+            ...(result.output.subject !== undefined ? { subject: result.output.subject } : {}), groups: groups.map(nodeSeed) }, null, 2) + '\n');
+          // The tree is what a later run rebuilds from groups.json, kinds included.
+          await store.update(document => {
+            document.groups = normalizeGroups(groups.map(nodeSeed));
+            if (result.output.subject !== undefined) document.subject = result.output.subject;
+          });
+          await completeStep(step, lookup);
+        } else report(result.message);
+      }
+    }
 
-    // 开始任何新制作前撤下失效正式产物，防止相同输入重建后旧下游再次复活。
-    expandReferences();
-    await invalidatePendingArtifacts(directory, store);
     for (let depth = 0; depth < (input.maxDepth ?? Infinity); depth++) {
       const entries = walkGroups(store.snapshot().groups).filter(entry => entry.depth === depth);
       if (!entries.length) break;
+      // --groups only filters the work; every group of the layer is still checked.
       const selectedIds = scope();
-      const targets = entries.filter(entry => !selectedIds || selectedIds.has(entry.group.id));
-      if (!targets.length) continue;
-      await batch(targets, prepare);
+      await batch(entries, id => prepare(id, !selectedIds || selectedIds.has(id)));
       if (entries.some(entry => context(entry.group.id).group.steps.review.status !== 'completed')) {
         report(`第 ${depth} 层仍有未完成轮廓，等待本层齐备后去重`);
         break;
       }
       try { if (!await reduce(depth, entries)) break; }
       catch (error) { throw new GroupExecutionError(`第 ${depth} 层`, 'reduction', error); }
+      // Started completions whose reduced inputs changed rerun even when not selected.
+      if (selected) for (const entry of entries) {
+        const id = entry.group.id;
+        if (scope()!.has(id)) continue;
+        const step = groupStep(directory, id, 2, await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+        if ((await readStep(step.directory)).status === 'absent') continue;
+        // Only completions whose inputs changed; an unfinished one is not a change.
+        if ((await checkStep(step, lookup).catch(() => undefined))?.action === 'rerun') selected.add(id);
+      }
       const finishIds = scope();
       const finishTargets = entries.filter(entry => !finishIds || finishIds.has(entry.group.id));
       await batch(finishTargets, finish);
@@ -336,29 +402,44 @@ export async function runLayering(input: {
         break;
       }
     }
-    const document = store.snapshot();
-    if (document.groups.length && walkGroups(document.groups).every(entry => groupCompleted(entry.group)) && document.merge.status !== 'completed') {
-      const output = join(directory, 'preview.svg'), draft = draftPath(output);
-      await mkdir(dirname(draft), { recursive: true });
-      await rm(draft, { force: true });
-      report('最终预览合并：开始');
-      const result = await (input.mergeSvg ?? mergePartSvgs)({ directory, outputPath: draft, groups: document.groups,
-        parts: walkGroups(document.groups).filter(({ group }) => !group.groups.length).map(({ group }) => ({ groupId: group.id, svg: artifact(group.id, 'completion') })) });
-      if (result.status === 'completed') {
-        if (resolve(result.output.path) !== draft) throw new Error('合并只能交付 preview.draft.svg');
-        await publishSvg(draft, output, await mergeSourceHash(directory, document));
-        await store.update(draft => { draft.merge = { status: 'completed', output: { path: output } }; });
-        report(`最终预览合并：完成 ${output}`);
-      } else report(result.message);
-    }
-    // 独立的最后一步；已有 preview 和各组事实不因层级表缺失而重做。
+    const document = store.snapshot(), all = walkGroups(document.groups);
+    if (all.length && all.every(entry => groupCompleted(entry.group))) {
+      const step: ChainStep = { id: 'merge', directory: join(directory, 'merge'), outputs: ['../preview.svg'],
+        dependsOn: [...all.map(entry => groupStepId(entry.group.id, 3)),
+          ...all.filter(entry => !entry.group.groups.length).map(entry => groupStepId(entry.group.id, 2))] };
+      const output = join(directory, 'preview.svg');
+      const check = await checkStep(step, lookup);
+      if (check.action === 'keep') report('最终预览合并：沿用');
+      else {
+        await begin(step, check);
+        const draft = draftPath(output);
+        await rm(draft, { force: true });
+        report('最终预览合并：开始');
+        const result = await (input.mergeSvg ?? mergePartSvgs)({ directory, outputPath: draft, groups: document.groups,
+          parts: all.filter(({ group }) => !group.groups.length).map(({ group }) => ({ groupId: group.id, svg: artifact(group.id, 'completion') })) });
+        if (result.status === 'completed') {
+          if (resolve(result.output.path) !== draft) throw new Error('合并只能交付 preview.draft.svg');
+          await publishSvg(draft, output, await mergeSourceHash(directory, document));
+          await completeStep(step, lookup);
+          report(`最终预览合并：完成 ${output}`);
+        } else report(result.message);
+      }
+      const merged = (await readStep(step.directory)).status === 'completed';
+      await store.update(draft => { draft.merge = merged ? { status: 'completed', output: { path: output } } : { status: 'pending' }; });
+    } else if (document.merge.status !== 'pending') await store.update(draft => { draft.merge = { status: 'pending' }; });
+    // 独立的最后一步。raster 会改写层级表中的深度，因此不登记产物哈希，
+    // 只要 merge 未变且层级表完整、输入指纹一致就沿用。
     const merged = store.snapshot();
     if (merged.merge.status === 'completed') {
       const context = { ...initial, groups: merged.groups, preview: merged.merge.output! };
-      if (await restoreOcclusionPlan(context)) {
+      const step: ChainStep = { id: 'occlusion', directory: join(directory, 'occlusion'), dependsOn: ['merge'] };
+      const check = await checkStep(step, lookup);
+      if (check.action === 'keep' && await restoreOcclusionPlan(context)) {
         completedOcclusion = occlusionPath(directory);
         report('遮挡层级规划：沿用完整且输入一致的独立层级表');
       } else {
+        if (check.action !== 'continue') await rm(occlusionPath(directory), { force: true });
+        await begin(step, check.action === 'keep' ? { ...check, action: 'rerun' } : check);
         report('遮挡层级规划：开始');
         const sourceHash = await occlusionSourceHash(context);
         const result = input.steps.planOcclusion ? await input.steps.planOcclusion(context)
@@ -368,6 +449,7 @@ export async function runLayering(input: {
           const plan = validateOcclusionPlan(result.output, context, sourceHash);
           completedOcclusion = occlusionPath(directory);
           await writeAtomic(completedOcclusion, JSON.stringify(plan, null, 2) + '\n');
+          await completeStep(step, lookup);
           report(`遮挡层级规划：完成 ${completedOcclusion}`);
         } else report(`遮挡层级规划：${result.message}`);
       }
@@ -380,4 +462,9 @@ export async function runLayering(input: {
   return { status: final.merge.status === 'completed' && completedOcclusion ? 'completed' : 'pending', statePath, groupsPath: store.path,
     ...(completedOcclusion ? { occlusionPath: completedOcclusion } : {}),
     groups: final.groups, ...(final.merge.status === 'completed' ? { output: final.merge.output!.path } : {}) };
+}
+
+async function exists(path: string): Promise<boolean> {
+  try { await lstat(path); return true; }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error; }
 }

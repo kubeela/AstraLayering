@@ -48,7 +48,7 @@ test('生图服务的速率限制会重试，单次输入图片上限仍直接�
   }
 });
 
-test('首次分组拒绝非字符串 subject，错误参数不能写坏 groups.json', async t => {
+test('首次分组拒绝非字符串 subject，错误参数不能写坏首次分组记录', async t => {
   for (const profile of [character, clothing]) {
     const f = await fixture(t);
     await recognizeInitialGroups({ ...f, profile }, { run: async task => {
@@ -56,11 +56,11 @@ test('首次分组拒绝非字符串 subject，错误参数不能写坏 groups.j
       const signal = new AbortController().signal;
       const groups = [{ name: 'shape', groups: [], note: '独立实体' }];
       await assert.rejects(write.execute({ subject: ['other'], groups }, signal), /subject/);
-      await assert.rejects(readFile(join(f.directory, 'groups.json')), { code: 'ENOENT' });
+      await assert.rejects(readFile(join(f.directory, 'initial/step01/groups.json')), { code: 'ENOENT' });
       await write.execute({ subject: 'other', groups }, signal);
       return { text: 'saved', images: [] };
     } });
-    assert.equal(JSON.parse(await readFile(join(f.directory, 'groups.json'), 'utf8')).subject, 'other');
+    assert.equal(JSON.parse(await readFile(join(f.directory, 'initial/step01/groups.json'), 'utf8')).subject, 'other');
   }
 });
 
