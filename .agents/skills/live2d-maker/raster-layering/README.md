@@ -122,6 +122,8 @@ reviewer 使用 `gpt-6-astra / xhigh`，每次调用都新建会话，不保存�
 | 存在 `.running`，没有 `.completed` | 保留目录与产物，从当前 thread 继续 |
 | 步骤目录存在，两个标记都没有 | 清空该步及所有后续步骤目录，清除旧 thread ID，重新开始 |
 | 步骤目录不存在 | 正常开始新步骤；如果后续目录仍在，则先使后续目录失效并重置 thread |
+| 上游 `part-layering/occlusion` 重新完成（part 重做） | step01 记录的上游戳不再吻合：清空 step01 及后续步骤，重置 thread 后重跑 |
+| 上游 `part-layering/occlusion` 为 `.running` 或无标记 | 拒绝运行，不改动本管线；先完成上游 |
 
 `.running` 在调用 agent 前创建，表示“已开始、尚未完成”，不代表系统进程仍在运行。退出、断网、受阻、交付缺失或其他错误都保留它。若首次调用尚未取得 thread ID 就中断，下次会创建会话；已有 ID 时必须恢复原会话，恢复失败直接报错，绝不悄悄换新 thread。
 

@@ -271,6 +271,36 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
   assert.equal((await readConfig(f.output)).threadId, 'thread-new');
 });
 
+test('part 终止步骤 occlusion 重做后 step01 及后续重跑并换新 thread；上游未完成时拒绝且不动本管线', async t => {
+  const f = await fixture(t), occlusion = join(f.input, 'occlusion');
+  const mark = (stamp: string) => writeFile(join(occlusion, '.completed'), JSON.stringify({ stamp, inputs: {} }));
+  await mkdir(occlusion);
+  await mark('part-a');
+  let index = 0;
+  await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
+  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/occlusion': 'part-a' });
+  // 上游没有变化时全部沿用。
+  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden });
+  await rm(join(occlusion, '.completed'));
+  await writeFile(join(occlusion, '.running'), '');
+  const before = await readFile(join(f.output, 'step03/.completed'));
+  await assert.rejects(runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden }), /上游步骤 part-layering\/occlusion 尚未完成/);
+  assert.deepEqual(await readFile(join(f.output, 'step03/.completed')), before);
+  await rm(join(occlusion, '.running'));
+  await mark('part-b');
+  index = 0;
+  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: async request => {
+    const step = f.definitions[index++];
+    if (step.id === 'step01') {
+      assert.equal(request.threadId, undefined);
+      for (const id of ['step02', 'step03']) await assert.rejects(readdir(join(f.output, id)), { code: 'ENOENT' });
+    } else assert.equal(request.threadId, 'thread-part-b');
+    return deliver(request, step, 'thread-part-b');
+  } });
+  assert.equal(index, 3);
+  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/occlusion': 'part-b' });
+});
+
 test('删 step01 完成标记清空所有后续步骤，包括尚未定义提示词的目录', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
