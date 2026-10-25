@@ -3,6 +3,7 @@ import { pipelineSteps as stepTemplates, groupLayers, groupPhases, stepArtifacts
  latestKraPreview, statusNames, displayStatus, statusLabel } from './progress.js';
 import { selectedTask, rememberTask } from './task-selection.js';
 import { renderReport } from './report-markdown.js';
+import { morph } from './dom-morph.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -69,6 +70,19 @@ function pageHeading() {
 let archivedFiles = new Set();
 const assetLookup = new Map();
 const groupViews = {0:{selected:'',depth:-1,search:'',open:false,expanded:new Set()},2:{selected:'',depth:-1,search:'',open:false,expanded:new Set()}};
+// Expanded and collapsed sections survive a page reload (per browser tab).
+const viewKey='astra-layering-view';
+function saveView() {
+ try{sessionStorage.setItem(viewKey,JSON.stringify({details:[...state.details],pipelines:[...state.collapsedPipelines],steps:[...state.collapsedSteps],phases:[...state.collapsedPhases],
+  groups:Object.fromEntries(Object.entries(groupViews).map(([index,view])=>[index,{...view,expanded:[...view.expanded]}]))}));}catch{}
+}
+try{
+ const saved=JSON.parse(sessionStorage.getItem(viewKey)||'null');
+ if(saved){
+  state.details=new Map(saved.details);state.collapsedPipelines=new Set(saved.pipelines);state.collapsedSteps=new Set(saved.steps);state.collapsedPhases=new Set(saved.phases);
+  for(const [index,view] of Object.entries(saved.groups||{}))if(groupViews[index])Object.assign(groupViews[index],{...view,expanded:new Set(view.expanded)});
+ }
+}catch{}
 const pipelineTree = index => data.pipelines?.[index]?.groups||[];
 const available = items => (items||[]).flatMap(item=> {
  if(archivedFiles.has(item.path))return [item];
@@ -166,33 +180,27 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
  const title=phase==='outline'?'轮廓 SVG 最新画面':'补全 SVG 最新画面';
  return `<section class="kra-preview-panel svg-preview-panel" data-svg-preview="${index}:${phase}" aria-label="${esc(group.id)} ${title}"><h3>${icon('layers')}${title}</h3><p class="preview-source" title="${esc(items[0]?.path||group.id)}">${esc(items[0]?.label||group.id)}</p>${items.length?artifacts(items,index,phase,'live-kra-artifacts'):'<p class="archive-gap">等待首次保存 SVG</p>'}</section>`;
 }
-// Step recovery: 继续 keeps products and session, 恢复 drops the session and keeps
-// products, 重试 deletes the step products and session; dependents rerun with it.
-// One fixed bar at the top right lists every recorded step of the task, with the
-// failed or interrupted one selected; each action then runs the task again. 继续
-// also replaces the heading's 运行 / 续跑: without any step record it opens the run dialog.
+// Task recovery: 继续 keeps products and sessions, 恢复 drops the sessions and keeps
+// products, 重试 deletes the step products and sessions; dependents rerun with them.
+// Each acts on every interrupted or failed step of the task at once, then runs the
+// task again. Without any step record 继续 opens the run dialog instead.
 const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
-const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除本步骤产物与会话后重做；依赖它的后续步骤自动重跑'};
-const stepStatusNames={running:'中断 / 失败',unmarked:'无完成标记',completed:'已完成',legacy:'旧版目录，继续时自动转换'};
+const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑'};
 function stepTargets() {
  return (data.pipelines||[]).flatMap((pipeline,index)=>[
   ...(pipeline.legacy?[{index,id:'',status:'legacy'}]:[]),
   ...(pipeline.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session}))]);
 }
-const stepTargetKey=target=>`${target.index}|${target.id}`;
-function selectedStepTarget(targets=stepTargets()) {
- return targets.find(target=>stepTargetKey(target)===state.stepTarget)||targets.find(target=>target.status==='running')
-  ||targets.find(target=>target.status==='legacy')||targets.find(target=>target.status==='unmarked')||targets[0];
-}
+const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running'||target.status==='legacy');
+const stepLabel=target=>`${stages[target.index].name} ${target.id||'（旧版目录）'}`;
 function stepToolbar() {
  if(!state.name)return '';
- const targets=stepTargets(),chosen=selectedStepTarget(targets),busy=data.runnerAlive||data.lockHeld;
- const allowed=action=>!chosen?action==='continue':chosen.status==='legacy'?action==='continue':chosen.status!=='completed'||action==='retry';
- const reason=action=>busy?'任务正在运行，结束或停止后可操作':!chosen&&action!=='continue'?'当前任务还没有步骤记录，先继续运行':!chosen?'运行任务（可选择范围）':
-  !allowed(action)?(chosen.status==='completed'?'已完成的步骤只能重试':'旧版目录请先继续，转换后可恢复或重试'):stepActionTitles[action];
- const option=target=>`<option value="${esc(stepTargetKey(target))}" ${target===chosen?'selected':''}>${esc(target.id||'整条管线')} · ${stepStatusNames[target.status]}${target.session?' · 有会话':''}</option>`;
- const groups=[...new Set(targets.map(target=>target.index))].map(index=>`<optgroup label="${esc(stages[index].name)}">${targets.filter(target=>target.index===index).map(option).join('')}</optgroup>`).join('');
- return `<div class="step-toolbar" role="group" aria-label="步骤恢复"><span>步骤</span><select id="step-target" aria-label="选择要操作的步骤" ${targets.length?'':'disabled'}>${groups||'<option>暂无步骤记录</option>'}</select>${Object.keys(stepActionNames).map(action=>`<button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" title="${esc(reason(action))}" ${busy||!allowed(action)?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
+ const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;
+ const allowed=action=>action==='continue'||broken.length>0;
+ const scope=broken.length?`（${broken.length} 个中断 / 失败步骤：${broken.map(stepLabel).join('、')}）`:'';
+ const reason=action=>busy?'任务正在运行，结束或停止后可操作':!targets.length?'运行任务（可选择范围）':
+  !allowed(action)?'没有中断或失败的步骤':stepActionTitles[action]+scope;
+ return `<div class="step-toolbar" role="group" aria-label="任务恢复">${Object.keys(stepActionNames).map(action=>`<button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" title="${esc(reason(action))}" ${busy||!allowed(action)?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
 }
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
@@ -460,6 +468,7 @@ function configPage() {
  ${state.diff?`<div class="diff-content">${diffText?diffText.split('\n').map(line=>`<pre class="${line.startsWith('+')?'addition':line.startsWith('-')?'deletion':''}">${esc(line)}</pre>`).join(''):`<div class="empty-diff">${icon('check')}这个文件在两个版本之间没有变化。</div>`}</div>`:`<div class="config-pair"><article class="markdown-panel"><header><span>${icon('file')}${currentFile.endsWith('.json')?'Schema JSON':currentFile}</span><small>${currentFile.endsWith('.json')?'JSON':'MARKDOWN'}</small></header><div class="markdown-body">${currentFile.endsWith('.json')?`<pre>${esc(configText)}</pre>`:markdown(configText)}</div></article>${schemaText?`<article class="schema-panel"><header><span>${icon('code')}schema.json</span><small>JSON SCHEMA</small></header><div class="code-body">${jsonLines(schemaText)}</div></article>`:''}</div>`}
  <div class="config-content-footer">${icon('info')}description 与 schema 来自同一版本；预览不会影响正在运行的 agent。</div></section></div>`;
 }
+let noticeStatus;
 function render() {
  const focused=document.activeElement;
  const focusId=focused?.id;
@@ -470,10 +479,14 @@ function render() {
  const outputScroll=document.querySelector('.output-scroll')?.scrollTop||0;
  document.querySelectorAll('[data-details]').forEach(node=>state.details.set(node.dataset.details,node.open));
  flowObserver?.disconnect();
- document.querySelector('#app').innerHTML=header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`;
+ morph(document.querySelector('#app'),header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`);
  bind();setConfigBusy(configBusy);
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
- if(data.status==='failed'||data.status==='interrupted')document.querySelector('[data-details="run-notice"]')?.setAttribute('open','');
+ // A run that newly stops opens its notice once; closing it afterwards sticks.
+ const stopped=data.status==='failed'||data.status==='interrupted';
+ if(stopped&&noticeStatus!==data.status){const notice=document.querySelector('[data-details="run-notice"]');if(notice){notice.open=true;state.details.set('run-notice',true);}}
+ noticeStatus=data.status;
+ saveView();
  if(focusId&&focused&&!focused.isConnected){const replacement=document.getElementById(focusId);replacement?.focus({preventScroll:true});if(selection&&replacement?.tagName==='INPUT')replacement.setSelectionRange(...selection);}
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
  if(state.page==='preview'&&state.name) {
@@ -553,16 +566,15 @@ function updateViewURL() {
  if(state.name)url.searchParams.set('name',state.name);
  history.replaceState(null,'',url);
 }
+const wheelBound=new WeakSet();
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
- const target=document.querySelector('#step-target');if(target)target.onchange=()=>{state.stepTarget=target.value;render();};
  document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
-  const chosen=selectedStepTarget(),action=b.dataset.stepToolbar;
-  if(!chosen){if(action==='continue')showNew(false,true);return;}
-  const label=chosen.id||stages[chosen.index].name;
-  if(action==='retry'&&!confirm(`重试 ${label}：删除该步骤的产物与会话并重新运行，依赖它的后续步骤会随之重跑。确定吗？`))return;
+  const targets=stepTargets(),broken=brokenSteps(targets),action=b.dataset.stepToolbar;
+  if(!targets.length){if(action==='continue')showNew(false,true);return;}
+  if(action==='retry'&&!confirm(`重试：删除以下步骤的产物与会话并重新运行，依赖它们的后续步骤会随之重跑。\n${broken.map(stepLabel).join('\n')}\n确定吗？`))return;
   b.disabled=true;
-  try{const result=await post('step-action',{name:state.name,pipeline:stages[chosen.index].id,step:chosen.id,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
+  try{const result=await post('task-action',{name:state.name,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
   catch(error){toast(error.message);b.disabled=false;}
  });
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
@@ -600,7 +612,8 @@ function bind() {
  });
  const compare=document.querySelector('#compare-reference');if(compare)compare.onchange=()=>{state.compare=compare.checked;render();};
  const viewport=document.querySelector('.flow-scroll');if(viewport){
-  viewport.addEventListener('wheel',event=>{
+  // The viewport survives refreshes (dom-morph), so its listener is added once.
+  if(!wheelBound.has(viewport))wheelBound.add(viewport),viewport.addEventListener('wheel',event=>{
    if(event.ctrlKey||event.metaKey||Math.abs(event.deltaX)>=Math.abs(event.deltaY))return;
    for(let node=event.target;node&&node!==viewport;node=node.parentElement){
     // Inner lists keep their wheel gestures even at a boundary or with few rows.

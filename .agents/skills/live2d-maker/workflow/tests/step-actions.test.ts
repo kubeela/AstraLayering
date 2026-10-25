@@ -7,7 +7,7 @@ import { artifactPath, draftPath } from '../../shared/part/artifact-facts.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
 import { readStep } from '../../shared/step-chain.ts';
 import { acquireTaskLock } from '../state.ts';
-import { applyStepAction, legacyLayout, listSteps, validStepId } from '../step-actions.ts';
+import { applyStepAction, applyTaskAction, legacyLayout, listSteps, validStepId } from '../step-actions.ts';
 
 async function fixture(t: TestContext) {
   const dir = await mkdtemp(join(tmpdir(), 'step-actions-')), task = join(dir, 'case');
@@ -48,6 +48,32 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) {
     assert.equal((await readStep(join(root, groupStepId('body', 2)))).status, 'completed');
   });
 }
+
+test('任务级操作作用于全部中断或失败的步骤，已完成步骤不动', async t => {
+  const f = await fixture(t), task = (action: string) => applyTaskAction({ name: 'case', dir: f.dir, action });
+  const part = join(f.task, 'part-layering'), clothing = join(f.task, 'clothing-part-layering');
+  const face = join(part, groupStepId('face', 3)), shirt = join(clothing, groupStepId('shirt', 2));
+  const done = join(part, groupStepId('body', 2)), shirtPart = artifactPath(clothing, 'shirt', 'completion');
+  for (const step of [face, shirt]) {
+    await put(join(step, '.running'), JSON.stringify({ inputs: {} }));
+    await put(join(step, 'session.json'), JSON.stringify({ threadId: 'thread-' + step.length }));
+  }
+  await put(join(done, '.completed'), completed({})); await put(join(done, 'session.json'), '{}');
+  await put(draftPath(shirtPart), 'draft');
+
+  assert.match(await task('continue'), /face\/step03[\s\S]*shirt\/step02/);
+  assert.equal((await readStep(face)).status, 'running');
+  await task('resume');
+  await gone(join(face, 'session.json')); await gone(join(shirt, 'session.json'));
+  assert.equal(await text(join(done, 'session.json')), '{}');
+  assert.equal(await text(draftPath(shirtPart)), 'draft');
+  await task('retry');
+  assert.equal((await readStep(face)).status, 'absent'); assert.equal((await readStep(shirt)).status, 'absent');
+  await gone(draftPath(shirtPart));
+  assert.equal((await readStep(done)).status, 'completed');
+  await assert.rejects(task('resume'), /没有中断或失败的步骤/);
+  assert.match(await task('continue'), /从未完成处续跑/);
+});
 
 test('part 合并与遮挡重试删除步骤外的产物；已完成步骤只能重试', async t => {
   const f = await fixture(t), root = join(f.task, 'part-layering');
