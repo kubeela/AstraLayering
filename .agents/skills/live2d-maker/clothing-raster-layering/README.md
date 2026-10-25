@@ -63,6 +63,8 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 | `.running` 存在 | 保留现有工程与日志，继续原绘制 thread 和未完成环节 |
 | 步骤目录存在，两个标记都没有 | 清空该步及后续步骤目录，重置绘制 thread 后重跑 |
 | 某份正式 review / repair 被删除 | 从该环节接续，清除后续反馈记录，保留当前 KRA 与绘制 thread |
+| 上游 `clothing-part-layering/occlusion` 重新完成（part 重做） | 清空 step01 及后续步骤，重置绘制 thread 后重跑 |
+| 上游 occlusion 步骤未完成 | 拒绝运行，不改动本管线 |
 
 `.running` 表示已开始但未完成，不表示系统进程仍在运行。报告先写 `.tmp`，只有模型回合成功、报告结论有效且交付检查通过后才发布正式 Markdown；日志和暂存文件不算完成事实。
 

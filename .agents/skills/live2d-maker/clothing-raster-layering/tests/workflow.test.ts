@@ -121,3 +121,20 @@ test('deleting step02 completion resets its directory and context, preserving st
   assert.deepEqual(await readFile(join(f.output, 'step01/events.jsonl')), first);
   await readFile(join(f.source, 'parts/front.svg'));
 });
+
+test('clothing-part-layering occlusion 重做后 step01 及后续重跑并换新 thread', async t => {
+  const f = await fixture(t), occlusion = join(f.source, 'occlusion');
+  const mark = (stamp: string) => writeFile(join(occlusion, '.completed'), JSON.stringify({ stamp, inputs: {} }));
+  await mkdir(occlusion);
+  await mark('clothing-a');
+  await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
+  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'clothing-part-layering/occlusion': 'clothing-a' });
+  await mark('clothing-b');
+  const drawn: (string | undefined)[] = [];
+  await runWorkflow({ name: 'test' }, { ...f.deps, agent: async request => {
+    if (!request.prompt.startsWith('你负责对第一步交付')) drawn.push(request.threadId);
+    return deliver(request, request.threadId ?? 'drawing-2');
+  } });
+  assert.deepEqual(drawn, [undefined, 'drawing-2']);
+  assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-2');
+});

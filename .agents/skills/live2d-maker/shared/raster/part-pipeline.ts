@@ -19,6 +19,8 @@ export function partRasterPipeline<T extends PartRasterDefinition>(definition: T
     resolveInput: (name, root) => resolvePartInput(name, definition.inputPipeline, root),
     validateInput: isPartLayeringInput,
     inputDirectories: input => [input.directory],
+    // occlusion is the last part step, so its stamp changes whenever the parts are redone.
+    upstreamStep: input => ({ id: `${definition.inputPipeline}/occlusion`, directory: join(input.directory, 'occlusion'), dependsOn: [] }),
     tools: (output, _input, step, phase) => step.id === 'step01' && phase.startsWith('review-')
       ? [createReviewAnnotationTool(dirname(output), dirname(dirname(output)), join(output, 'review-evidence'))]
       : step.id === 'step02' && phase === 'draw'
