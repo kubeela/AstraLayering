@@ -10,6 +10,8 @@ import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { GroupStore } from '../../shared/part/groups.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
+import { initialStepId, readInitialGroups } from '../../shared/part/part-steps.ts';
+import { readStep } from '../../shared/step-chain.ts';
 import type { InitialContext } from '../../shared/part/layering-types.ts';
 
 function initialSteps(agents: Parameters<typeof createLayeringSteps>[0]) {
@@ -70,11 +72,7 @@ test('首次识别一次调用，绑定 view_bitmap 和 write_groups；直接保
       { id: 'right_wing', name: 'right_wing' },
     ],
   } });
-  const saved = JSON.parse(await readFile(join(context.directory, 'groups.json'), 'utf8'));
-  assert.deepEqual(saved, { subject: 'other', groups: [
-    { id: 'left_wing', name: 'left_wing', note: '主体左翼', groups: [] },
-    { id: 'right_wing', name: 'right_wing', groups: [] },
-  ] });
+  assert.deepEqual(await readInitialGroups(context.directory), result.output);
   assert.ok(!(await readdir(context.directory)).includes('initial-groups'));
 });
 
@@ -177,9 +175,9 @@ test('工具报错可修正参数后提交；重复提交不能覆盖已有组',
   const steps = initialSteps({ async run(task) {
     await assert.rejects(saveGrouping(task, { ...wingGroups, groups: [] }), /非空/);
     await saveGrouping(task);
-    const before = await readFile(join(context.directory, 'groups.json'), 'utf8');
+    const before = await readFile(join(context.directory, initialStepId, 'groups.json'), 'utf8');
     await assert.rejects(saveGrouping(task, { subject: 'character', groups: [{ name: 'head', groups: [], note: null }] }), /不能覆盖/);
-    assert.equal(await readFile(join(context.directory, 'groups.json'), 'utf8'), before);
+    assert.equal(await readFile(join(context.directory, initialStepId, 'groups.json'), 'utf8'), before);
     return { text: 'ok', images: [] };
   } });
   const result = await runLayering({ ...context, groups: null, steps });
@@ -193,8 +191,7 @@ test('工具已保存分组后回合失败，续跑仍跳过已完成识别', as
     throw new Error('回合中断');
   } });
   await assert.rejects(runLayering({ ...context, groups: null, steps }), /回合中断/);
-  const saved = (await GroupStore.open(context.directory)).snapshot();
-  assert.ok(!('initial' in saved));
-  assert.equal(saved.groups.length, 2);
+  assert.equal((await readStep(join(context.directory, initialStepId))).status, 'running');
+  assert.equal((await readInitialGroups(context.directory)).groups.length, 2);
   await runLayering({ ...context, groups: null, steps: initialSteps({ async run() { assert.fail('不应重做首次识别'); } }) });
 });

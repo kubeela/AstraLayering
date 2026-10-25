@@ -7,6 +7,10 @@ import { pipelineIds, type PipelineId } from '../../shared/paths.ts';
 import { runTask } from '../runner.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, taskStatus } from '../state.ts';
 import { parseArguments, startBackground } from '../run.ts';
+import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
+
+// Real background workers inherit this and pass the Codex startup check without a build.
+process.env.layering_codex_path = await fakePatchedCodex();
 
 async function fixture(t: TestContext) {
   const dir = await mkdtemp(join(tmpdir(), 'live2d-runner-'));

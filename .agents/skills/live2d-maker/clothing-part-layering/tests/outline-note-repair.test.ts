@@ -3,9 +3,9 @@ import { chmod, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import { CodexAgents, type AgentTask } from '../../shared/codex/agents.ts';
-import { findGroup, GroupStore, normalizeGroups, writeAtomic } from '../../shared/part/groups.ts';
+import { findGroup, GroupStore, writeAtomic } from '../../shared/part/groups.ts';
 import { drawGroupOutline, reviewGroupOutline } from '../../shared/part/outline-agent.ts';
-import { fixture, shape } from './layering-fixture.ts';
+import { fixture, seedInitialGroups, shape } from './layering-fixture.ts';
 import { nodeExecutables } from './node-executables.ts';
 
 const signal = new AbortController().signal;
@@ -13,15 +13,16 @@ const inputs = (task: AgentTask) => JSON.parse(task.prompt.match(/【本次输�
 const tool = (task: AgentTask, name: string) => task.tools!.find(item => item.name === name)!;
 
 async function noteFixture(t: TestContext, note: string) {
-  const f = await fixture(t), store = await GroupStore.open(f.directory);
-  await store.update(document => { document.groups = normalizeGroups([
+  const f = await fixture(t);
+  await seedInitialGroups(f.directory, [
     { id: 'band', kind: 'group', name: 'band', note },
     { id: 'tail', kind: 'part', name: 'tail', note: '独立长幅', metadata: { preserved: true } },
-  ]); });
-  const candidate = join(f.directory, 'stages/outline/band.svg');
+  ]);
+  const store = await GroupStore.open(f.directory);
+  const candidate = join(f.directory, 'groups/band/step01/outline.svg');
   await writeAtomic(candidate, shape('band'));
   return { ...f, store, group: findGroup(store.snapshot(), 'band'), outline: { path: candidate },
-    outputPath: candidate, reportPath: join(f.directory, 'stages/review/band.review.json') };
+    outputPath: candidate, reportPath: join(f.directory, 'groups/band/step01/review.json') };
 }
 
 test('note-only feedback is persisted and visible to the next reviewer without changing correct geometry', async t => {
@@ -29,7 +30,7 @@ test('note-only feedback is persisted and visible to the next reviewer without c
   const replacement = '前结在前带之前，长幅根部在前带之后';
   const after = before.replace('前结及长幅根部位于前带之前', replacement);
   const f = await noteFixture(t, before), svg = await readFile(f.outline.path);
-  const originalSibling = JSON.parse(await readFile(f.store.path, 'utf8')).groups[1];
+  const originalSibling = f.store.snapshot().groups[1];
   let reviews = 0, repairs = 0;
   const result = await reviewGroupOutline(f, { async run(task) {
     const input = inputs(task);
@@ -49,7 +50,7 @@ test('note-only feedback is persisted and visible to the next reviewer without c
   assert.equal(reviews, 2);
   assert.equal(repairs, 1);
   assert.equal(findGroup((await GroupStore.open(f.directory)).snapshot(), 'band').note, after);
-  assert.deepEqual(JSON.parse(await readFile(f.store.path, 'utf8')).groups[1], originalSibling);
+  assert.deepEqual((await GroupStore.open(f.directory)).snapshot().groups[1], originalSibling);
   assert.deepEqual(await readFile(f.outline.path), svg);
 });
 

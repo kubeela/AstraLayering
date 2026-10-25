@@ -12,6 +12,10 @@ import { steps } from '../../character-assembly/steps.ts';
 import { startBackground } from '../run.ts';
 import { runTask } from '../runner.ts';
 import { processAlive, taskStatus } from '../state.ts';
+import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
+
+// Real background workers inherit this and pass the Codex startup check without a build.
+process.env.layering_codex_path = await fakePatchedCodex();
 
 const cli = fileURLToPath(new URL('../run.ts', import.meta.url));
 async function fixture(t: TestContext, slow = false) {

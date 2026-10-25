@@ -103,8 +103,6 @@ export async function restoreOcclusionPlan(context: OcclusionContext): Promise<O
   const bytes = await readOptional(occlusionPath(context.directory));
   if (!bytes) return;
   const sourceHash = await occlusionSourceHash(context);
-  try {
-    return validateOcclusionPlan(JSON.parse(bytes.toString()), context, sourceHash);
-  }
+  try { return validateOcclusionPlan(JSON.parse(bytes.toString()), context, sourceHash); }
   catch { return; } // 不完整、旧版本、损坏或过期的表只重做最后一步。
 }

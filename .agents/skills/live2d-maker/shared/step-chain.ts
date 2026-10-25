@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { lstat, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 // One rerun rule for every pipeline. A step owns a directory with a .running
@@ -15,6 +15,10 @@ import { join, resolve } from 'node:path';
 // step is explicitly retried. Output paths are relative to the step directory
 // and may point outside it; a missing output reruns the step, and resetting a
 // step deletes its outputs.
+//
+// A dependency is a step id, or `id#output` to depend on one declared output's
+// hash only, so a step that rewrites several files reruns just the dependents of
+// the files that actually changed.
 export type ChainStep = { id: string; directory: string; dependsOn: readonly string[]; outputs?: readonly string[]; allowsEarlyArtifacts?: boolean };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
 export type StepRecord = { stamp: string; inputs: Record<string, string>; outputs?: Record<string, string> };
@@ -65,17 +69,22 @@ async function outputHashes(step: ChainStep): Promise<Record<string, string>> {
 }
 const sameOutputs = (a: Record<string, string>, b: Record<string, string>) =>
   Object.keys(a).length === Object.keys(b).length && Object.entries(a).every(([name, hash]) => b[name] === hash);
+const dependencyStep = (dependency: string) => dependency.split('#', 1)[0];
+const dependencyStamp = (dependency: string, record?: StepRecord) => {
+  const at = dependency.indexOf('#');
+  return at < 0 ? record?.stamp : record?.outputs?.[dependency.slice(at + 1)];
+};
 
 export async function inspectChain(steps: readonly ChainStep[]): Promise<ChainPlan> {
   const known = new Set<string>();
   for (const step of steps) {
     if (known.has(step.id)) throw new Error(`重复的步骤：${step.id}`);
     for (const dependency of step.dependsOn) {
-      if (!known.has(dependency)) throw new Error(`${step.id} 的依赖 ${dependency} 必须排在它之前`);
+      if (!known.has(dependencyStep(dependency))) throw new Error(`${step.id} 的依赖 ${dependency} 必须排在它之前`);
     }
     known.add(step.id);
   }
-  const statuses = new Map<string, StepStatus>(), stamps = new Map<string, string | undefined>();
+  const statuses = new Map<string, StepStatus>(), records = new Map<string, StepRecord | undefined>();
   const unusable = new Set<string>(), reset: string[] = [], modified: string[] = [];
   for (const step of steps) {
     const state = await readStep(step.directory), record = state.record;
@@ -84,10 +93,10 @@ export async function inspectChain(steps: readonly ChainStep[]): Promise<ChainPl
     const status = state.status === 'unmarked' && step.allowsEarlyArtifacts ? 'absent' : state.status;
     statuses.set(step.id, status);
     // A completed step reopened for more work keeps its stamp while running.
-    stamps.set(step.id, record?.stamp);
-    const broken = step.dependsOn.some(dependency => unusable.has(dependency));
+    records.set(step.id, record);
+    const broken = step.dependsOn.some(dependency => unusable.has(dependencyStep(dependency)));
     const changed = status !== 'unmarked' && !!record && step.dependsOn.some(dependency =>
-      dependency in record.inputs && record.inputs[dependency] !== stamps.get(dependency));
+      dependency in record.inputs && record.inputs[dependency] !== dependencyStamp(dependency, records.get(dependencyStep(dependency))));
     // Deleting a completed step's output is a retry of that step.
     const outputs = status === 'completed' && step.outputs ? await outputHashes(step) : undefined;
     const missing = !!outputs && step.outputs!.some(name => !(name in outputs));
@@ -122,21 +131,80 @@ export async function startStep(directory: string, status: StepStatus): Promise<
   else if (status !== 'running') await writeFile(join(directory, '.running'), '', { flag: 'wx' });
 }
 
-export async function completeStep(step: ChainStep, steps: readonly ChainStep[]): Promise<void> {
+type StepLookup = readonly ChainStep[] | ((id: string) => ChainStep | undefined);
+
+// The stamps a step's dependencies have now. Every dependency must be completed.
+export async function stepInputs(step: ChainStep, steps: StepLookup): Promise<Record<string, string>> {
+  const inputs: Record<string, string> = {};
+  for (const dependency of step.dependsOn) {
+    const id = dependencyStep(dependency);
+    const upstream = typeof steps === 'function' ? steps(id) : steps.find(candidate => candidate.id === id);
+    if (!upstream) throw new Error(`${step.id} 的依赖 ${dependency} 不在链上`);
+    const { status, record } = await readStep(upstream.directory);
+    if (status !== 'completed') throw new Error(`${step.id} 的依赖 ${dependency} 尚未完成`);
+    const stamp = dependencyStamp(dependency, record);
+    if (record && stamp === undefined) throw new Error(`${step.id} 的依赖 ${dependency} 没有该产物`);
+    if (stamp !== undefined) inputs[dependency] = stamp;
+  }
+  return inputs;
+}
+const sameInputs = (a: Record<string, string>, b: Record<string, string>) => sameOutputs(a, b);
+
+// Checks one step once its dependencies are settled, for graphs that grow while
+// they run. keep: completed against the current inputs with its outputs intact.
+// continue: interrupted while running against the same inputs, so its own
+// partial work (drafts, session) is still valid. rerun: anything else; the
+// caller resets the step (and with it the session) before starting it again.
+export type StepCheck = { action: 'keep' | 'continue' | 'rerun'; status: StepStatus; record?: StepRecord; inputs: Record<string, string> };
+export async function checkStep(step: ChainStep, steps: StepLookup): Promise<StepCheck> {
+  const { status, record } = await readStep(step.directory);
+  const inputs = await stepInputs(step, steps);
+  const started = status === 'running' ? await runningInputs(step.directory) : undefined;
+  if (status === 'running' && started && sameInputs(started, inputs)) return { action: 'continue', status, record, inputs };
+  if (status !== 'completed' || !record || !sameInputs(record.inputs, inputs)) return { action: 'rerun', status, record, inputs };
+  const outputs = await outputHashes(step);
+  if (step.outputs?.some(name => !(name in outputs))) return { action: 'rerun', status, record, inputs };
+  if (record.outputs && !sameOutputs(record.outputs, outputs)) {
+    throw new Error(`已完成步骤的产物被改动，不能直接续跑：${step.directory}\n请对该步骤执行重试（删除其 .completed 或产物后重跑），依赖它的后续步骤会随之重跑。`);
+  }
+  return { action: 'keep', status, record, inputs };
+}
+
+// The inputs a lazily checked step was started against (see beginStep).
+export async function runningInputs(directory: string): Promise<Record<string, string> | undefined> {
+  try {
+    const value = JSON.parse(await readFile(join(directory, '.running'), 'utf8')) as { inputs?: unknown };
+    if (value?.inputs && typeof value.inputs === 'object' && Object.values(value.inputs).every(stamp => typeof stamp === 'string')) {
+      return value.inputs as Record<string, string>;
+    }
+  } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; }
+}
+
+// Marks a step running against the given inputs, replacing any earlier marker.
+export async function beginStep(directory: string, inputs: Record<string, string>): Promise<void> {
+  await mkdir(directory, { recursive: true });
+  const temporary = join(directory, `.running.${randomUUID()}.tmp`);
+  try {
+    await writeFile(temporary, JSON.stringify({ inputs }) + '\n');
+    await rename(temporary, join(directory, '.running'));
+  } finally { await rm(temporary, { force: true }); }
+  await rm(join(directory, '.completed'), { force: true });
+}
+
+// Removes a step and its declared outputs.
+export async function resetStep(step: ChainStep): Promise<void> {
+  for (const name of step.outputs ?? []) await rm(resolve(step.directory, name), { force: true });
+  await rm(step.directory, { recursive: true, force: true });
+}
+
+export async function completeStep(step: ChainStep, steps: StepLookup): Promise<void> {
   const running = join(step.directory, '.running');
   const reopened = parseRecord(await readFile(running, 'utf8'));
   if (reopened && !step.outputs) {
     await rename(running, join(step.directory, '.completed'));
     return;
   }
-  const inputs: Record<string, string> = {};
-  for (const dependency of step.dependsOn) {
-    const upstream = steps.find(candidate => candidate.id === dependency);
-    if (!upstream) throw new Error(`${step.id} 的依赖 ${dependency} 不在链上`);
-    const { status, record } = await readStep(upstream.directory);
-    if (status !== 'completed') throw new Error(`${step.id} 完成时依赖 ${dependency} 尚未完成`);
-    if (record) inputs[dependency] = record.stamp;
-  }
+  const inputs = await stepInputs(step, steps);
   let record: StepRecord;
   if (step.outputs) {
     const outputs = await outputHashes(step);

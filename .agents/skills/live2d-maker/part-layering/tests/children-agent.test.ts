@@ -8,6 +8,7 @@ import { analyzeChildren, decodeChildren } from '../../shared/part/children-agen
 import { GroupStore, nodeKind, normalizeGroups, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
+import { groupStepId } from '../../shared/part/part-steps.ts';
 import { parseRunArguments } from '../run.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
 
@@ -49,19 +50,21 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
   const steps = { ...workingSteps(events, [{ id: 'face' }]), splitChildren: adapter.splitChildren };
   await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
   assert.equal(calls, 1);
-  assert.equal(await readJson(reportPath(f.directory, 'face', 'children')), undefined);
+  const record = await readJson(reportPath(f.directory, 'face', 'children'));
+  assert.deepEqual(record.groups.map((node: { id: string; kind: string }) => [node.id, node.kind]), [['face/base', 'part'], ['face/eye', 'group']]);
+  assert.equal(record.note, '脸底与独立眼睛');
   const tree = await readJson(join(f.directory, 'groups.json'));
   assert.equal(tree.groups[0].groups[0].kind, 'part');
-  assert.equal(typeof tree.groups[0].childrenAnalysis.sourceHash, 'string');
-  assert.equal(tree.groups[0].childrenAnalysis.note, '脸底与独立眼睛');
+  assert.equal(tree.groups[0].childrenAnalysis, undefined);
   const restored = (await GroupStore.open(f.directory)).snapshot();
   assert.deepEqual(restored.groups[0].groups.map(node => node.kind), ['part', 'group']);
   await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
   assert.equal(calls, 1);
+  // 类型以 step03/children.json 为准；groups.json 只保留可编辑的名称与 note。
   const changed = await readJson(join(f.directory, 'groups.json'));
   changed.groups[0].groups[0].kind = 'group';
   await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(changed));
-  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].groups[0].kind, 'group');
+  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].groups[0].kind, 'part');
 });
 
 test('拆分收到可选图片用途，按需调用能看到 prompts 外部参考且原图保持只读', async t => {
@@ -111,7 +114,7 @@ test('part 仍完成绘制到补全检查但不分析，混合层 BFS、深度�
   assert.ok(events.includes('body/torso:outline') && events.includes('body/torso:check'));
   assert.ok(!events.includes('body/torso:children'));
   assert.ok(!events.includes('body/arm/upper:outline'));
-  await assert.rejects(readFile(reportPath(f.directory, 'body/torso', 'children')), { code: 'ENOENT' });
+  assert.deepEqual(await readJson(reportPath(f.directory, 'body/torso', 'children')), { groupId: 'body/torso', groups: [] });
   const state = (await GroupStore.open(f.directory)).snapshot();
   assert.equal(state.groups[0].groups[0].steps.children.status, 'completed');
   assert.equal(nodeKind(state.groups[0].groups[0]), 'part');
@@ -144,7 +147,7 @@ test('分析期间或提交后修改父 SVG 会失败，未提交的最终文本
 test('父完成稿改变后旧分析不能放行下一层，CLI 深度输入有边界', async t => {
   const f = await fixture(t), steps = workingSteps([], [{ id: 'a' }], { a: [{ id: 'a/child', kind: 'part' }] });
   await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
-  await rm(reportPath(f.directory, 'a', 'completion-check'));
+  await rm(join(f.directory, groupStepId('a', 2), '.completed'));
   await assert.rejects(runLayering({ ...f, groups: { id: 'a/child' }, steps }), /前层尚未全部完成/);
   assert.equal(parseRunArguments(['--max-depth', '2']).maxDepth, 2);
   for (const value of ['0', '-1', '1.5', 'NaN', '9007199254740992']) assert.throws(() => parseRunArguments([`--max-depth=${value}`]), /正整数/);

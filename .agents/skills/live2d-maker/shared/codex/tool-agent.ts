@@ -43,14 +43,16 @@ async function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise
   finally { signal.removeEventListener('abort', abort); }
 }
 
-export function createFunctionToolSession(options: AgentOptions, resumeThreadId?: string): AgentSession {
+// history: model-visible items for a new thread (e.g. after blocked images were
+// replaced). Tools are registered by thread/start, so history is injected after it.
+export function createFunctionToolSession(options: AgentOptions, resumeThreadId?: string, history?: unknown[]): AgentSession {
   const environment = options.environment ?? loadWorkflowEnvironment(options.env);
   options = { ...options, ...workflowCodexOptions(environment, options) };
   const selectedModel = options.selectedModel ?? environment.models.medium;
   let child: ReturnType<typeof spawn> | undefined;
   let lines: ReturnType<typeof createInterface> | undefined;
   let reader: Promise<void> | undefined;
-  let threadId: string | undefined, cwd: string | undefined, toolDefinitions: string | undefined;
+  let threadId: string | undefined, threadPath: string | undefined, cwd: string | undefined, toolDefinitions: string | undefined;
   let imageGeneration: boolean | undefined;
   let sandbox: string | undefined, nextId = 0, closed = false, busy = false, stderr = '';
   let failure: { error: unknown } | undefined;
@@ -186,6 +188,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       resumeThreadId ? { ...threadOptions, threadId: resumeThreadId, excludeTurns: true } : threadOptions);
     threadId = started.thread?.id;
     if (typeof threadId !== 'string') throw new Error('App Server 未返回会话 ID');
+    threadPath = typeof started.thread?.path === 'string' ? started.thread.path : undefined;
+    if (history?.length && !resumeThreadId) await request('thread/inject_items', { threadId, items: history });
     await options.onEvent?.({ type: 'thread.started', thread_id: threadId });
   }
 
@@ -263,6 +267,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         options.progress?.(`失败：${task.name}；${message}；记录：${log.directory}`);
         reported.logDirectory = log.directory;
         reported.threadId = threadId;
+        reported.threadPath = threadPath;
         reported.finalResponse = state.finalResponse;
         reported.sessionBroken = !!failure || !threadId;
         reported.savedImagePaths = state.images.map(image => image.savedPath);

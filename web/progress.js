@@ -31,12 +31,16 @@ export function groupStagePreviewArtifacts(phase, phaseFiles, files, versions = 
   return latestSvgArtifacts(phases.flatMap(id => phaseFiles[id]), files, versions);
 }
 
+// Mirrors shared/part/part-steps.ts: child groups nest under groups/<parent>/children/.
+const groupStepPath = (pipeline, id, step) => [pipeline, 'groups', ...id.split('/').flatMap((segment, index) => index ? ['children', segment] : [segment]), `step0${step}`].join('/');
+const layerPath = (pipeline, depth) => `${pipeline}/layers/depth${String(depth + 1).padStart(2, '0')}`;
+
 export function groupReviewSteps(group, pipeline, groupId) {
   return [1, 2].flatMap(number => ['review', 'repair'].map(mode => {
     const record = group.webReviewRounds?.[number - 1]?.[mode];
     const title = `第 ${number} 轮${mode === 'review' ? '轮廓复核' : '返修'}`;
     return { id: `${mode}-${number}`, title, status: record?.status || 'pending', detail: record?.detail || '',
-      artifacts: record?.reportIndex === undefined ? [] : [{ path: `${pipeline}/stages/review/${groupId}.review.json`,
+      artifacts: record?.reportIndex === undefined ? [] : [{ path: `${groupStepPath(pipeline, groupId, 1)}/review.json`,
         label: mode === 'review' ? `第 ${number} 轮反馈` : `第 ${number} 轮返修记录`, kind: 'file',
         reviewIndex: record.reportIndex, reviewMode: mode }] };
   }));
@@ -124,7 +128,7 @@ export const stepArtifacts = [
     base: [image('part-layering/references/base-subject.png', '素体参考')],
     initial: [file('part-layering/groups.json', '分组树')],
     merge: [image('part-layering/preview.draft.svg', '分块合成 · 中间产物'), image('part-layering/preview.svg', '分块合成 SVG')],
-    occlusion: [image('part-layering/stages/occlusion/candidate.svg', '深度规划 · 中间产物'), file('part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('raster-layering', 'step01', 'composite.png', 'character-depth.kra'),
@@ -135,7 +139,7 @@ export const stepArtifacts = [
     clothing: [image('clothing-part-layering/references/clothing.png', '纯衣服参考')],
     initial: [file('clothing-part-layering/groups.json', '分组树')],
     merge: [image('clothing-part-layering/preview.draft.svg', '衣服分块 · 中间产物'), image('clothing-part-layering/preview.svg', '衣服分块 SVG')],
-    occlusion: [image('clothing-part-layering/stages/occlusion/candidate.svg', '深度规划 · 中间产物'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('clothing-part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),
@@ -165,17 +169,18 @@ for (const index of [1, 3]) {
 }
 
 export function groupArtifacts(pipeline, group, depth) {
- const svg = (folder, label) => [
-  image(`${pipeline}/${folder}/${group.id}.draft.svg`, `${label} · 中间产物`),
-  image(`${pipeline}/${folder}/${group.id}.svg`, `${label}图`),
+ const svg = (path, label) => [
+  image(path.replace(/\.svg$/, '.draft.svg'), `${label} · 中间产物`),
+  image(path, `${label}图`),
  ];
+ const step = number => groupStepPath(pipeline, group.id, number);
  return {
-  outline: svg('stages/outline', '轮廓'),
-  review: [file(`${pipeline}/stages/review/${group.id}.review.json`, '复核 / 返修记录')],
-  reduction: [...svg('stages/outline-reduce', '去重'), file(`${pipeline}/stages/outline-reduce/layers/${depth}.json`, '同层去重记录')],
-  completion: [...svg('parts', '补全'), file(`${pipeline}/stages/completion-inputs/${group.id}.json`, '补全输入记录')],
-  completionCheck: [file(`${pipeline}/stages/completion-check/${group.id}.json`, '补全检查记录')],
-  children: [file(`${pipeline}/groups.json`, '分组树与分析记录')],
+  outline: svg(`${step(1)}/outline.svg`, '轮廓'),
+  review: [file(`${step(1)}/review.json`, '复核 / 返修记录')],
+  reduction: svg(`${layerPath(pipeline, depth)}/${group.id}.svg`, '去重'),
+  completion: svg(`${pipeline}/parts/${group.id}.svg`, '补全'),
+  completionCheck: [file(`${step(2)}/check.json`, '补全检查记录')],
+  children: [file(`${step(3)}/children.json`, '子组分析记录')],
  };
 }
 

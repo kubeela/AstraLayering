@@ -25,7 +25,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
   const meta = await sharp(reference).metadata();
   const directory = join(context.directory, 'observations', 'occlusion');
   const previewPath = await realpath(context.preview.path);
-  const candidatePath = join(await realpath(context.directory), 'stages', 'occlusion', 'candidate.svg');
+  const candidatePath = join(await realpath(context.directory), 'occlusion', 'candidate.svg');
   const parts = await Promise.all(terminalParts(context).map(async ({ group, parent }) => ({
     id: group.id, name: group.name, note: group.note, parent: parent?.id,
     full: await realpath(artifactPath(context.directory, group.id, 'completion')),

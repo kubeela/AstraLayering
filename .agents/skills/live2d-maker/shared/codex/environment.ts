@@ -143,9 +143,10 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
   needs: { image?: boolean; progress?: (message: string) => void } = {},
   prepare = async () => (await import('../../patches/codex/build.ts')).ensurePatchedCodex({ env: options.env, progress: needs.progress })): Promise<void> {
   const needsBytes = settings.imageBudgets?.codex.bytes !== undefined;
-  if (settings.imageCompactThreshold === undefined && !needsBytes && !needs.image) return;
+  // Every Codex run needs the patched build: it reads the failure detail LiteLLM
+  // sends after an empty response.failed, so blocked input is reported, not retried.
   const executable = options.codexPathOverride ?? settings.codex.codexPathOverride ?? await prepare();
-  const instruction = 'layering_codex_path 显式指定的入口必须具备对应能力；清空此项可在启用补丁功能时自动构建。';
+  const instruction = 'layering_codex_path 显式指定的入口必须具备对应能力；清空此项即自动构建补丁版 Codex。';
   const needsVisualCompaction = settings.imageCompactThreshold !== undefined || needsBytes;
   const cacheKey = `${executable}\0${needs.image ? 'image-provider-v2' : ''}\0${needsVisualCompaction ? 'visual-compaction-v2' : ''}\0${needsBytes ? 'request-compaction-v1' : ''}`;
   let check = checkedCapabilities.get(cacheKey);
@@ -155,7 +156,7 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
         const { stdout } = await promisify(execFile)(executable, ['debug', 'layering-capabilities'],
           { env: options.env, timeout: 10_000, maxBuffer: 64 * 1024 });
         const value = JSON.parse(stdout);
-        if (value.version !== 1) throw new Error('unsupported');
+        if (value.version !== 1 || value.failed_error_event_version !== 1) throw new Error('unsupported');
         if (needs.image && (value.image_provider !== true || value.image_provider_version !== 2)) throw new Error('native image provider v2 required');
         if (needsVisualCompaction && (value.image_compaction !== true || value.image_compaction_version !== 2)) {
           throw new Error('visual compaction v2 required');

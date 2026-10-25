@@ -49,3 +49,14 @@ SSE 解析依据为 [responses_error.rs](https://github.com/openai/codex/blob/ru
 每次尝试保留自己的请求、原始事件、可读过程与结果。前一次日志追加 `retry.scheduled`，记录序号、等待时长与原因；恢复请求记录原 thread ID。失败的单次尝试记录仍为 failed，组步骤在整个调用成功后才完成；重试不会增加视觉 review 或返修反馈轮号。不能恢复的错误继续交给原分组失败处理，结果列出具体组和步骤。
 
 验证覆盖：三种调用入口共享限制、默认最多 3 个执行、异常释放位置、退避释放位置、超过 7 次失败后仍恢复、关闭取消、内置重连不中断、同 thread 继续、已提交工具不重放、已有生图路径复用、每次尝试落盘、CLI 参数相互独立。自动化测试只使用本地模拟进程。
+
+## 图片被内容策略拦截
+
+`Image processing blocked due to content policy violation` 不是临时错误：回合立即失败，重连只会重发同一张图。原生 function tools 会话（`shared/codex/blocked-images.ts`）每遇到一次拦截就读取该 thread 的 rollout，按 Codex 的重建规则（压缩以替换历史为准）取出模型可见历史，把本批图片换成说明来源的文字，再用 `thread/start` 注册原工具并 `thread/inject_items` 写入改写后的历史，在新 thread 中继续：
+
+- 本批指模型上一次输出之后送入的图片（回合输入或工具返回）；本批没有图片时，换掉历史中仍在的全部图片。
+- 本批有多张图时，引导 agent 逐张读取，找出能用的；只有一张时，引导它改变缩放、查看中心、色彩或转灰度后再读，不重复已被拦截的方式。
+- 两种提示都要求：可用方式都试过仍被拦截、缺少该图无法完成时，说明原因并结束回合，不提交产物。步骤随后按“未交付”报错，不设次数上限，也不另加工具。
+- 历史中已没有图片可换时，拦截与图片无关，按致命错误结束。
+
+旧 thread 经 `onThreadReplacement` 撤下，新 thread 照常经 `onSessionStarted` 记录。Claude / AGV CLI 会话不处理拦截，按致命错误结束。

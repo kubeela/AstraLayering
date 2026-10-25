@@ -1,14 +1,14 @@
-# 可选的原生 Codex 补丁
+# 原生 Codex 补丁
 
-固定官方 `rust-v0.161.0`，提交 `979011409de0a60b52f179721948e65531d26144`。`layering-runtime.patch` 增加独立 Images API 路由、模型选择及按图片数量／请求字节触发的原 thread compact；正常订阅或已有 provider 在未启用选项时沿用原路径。
+固定官方 `rust-v0.161.0`，提交 `979011409de0a60b52f179721948e65531d26144`。`layering-runtime.patch` 修正 Responses 失败流的错误读取，并增加独立 Images API 路由、模型选择及按图片数量／请求字节触发的原 thread compact；正常订阅或已有 provider 在未启用后几项选项时沿用原路径。
 
 ## 构建
 
-在 `.env` 开启图片数或请求体预算，或为 Codex 选择 GPT／Nano 生图并填写对应 API。`layering_codex_path` 留空时，启动预检会自动准备补丁；`codex-native` 本身不需要补丁。显式指定入口时只检查该入口，不自动替换。
+使用 Codex harness 时始终需要补丁版：错误读取修正对所有请求生效。`layering_codex_path` 留空时，启动预检自动准备并复用缓存；显式指定入口时只检查该入口，不自动替换。
 
 需要 Git、C/C++ 编译工具及该版 Codex 的平台依赖。Rust 1.95.0 可用时复用；不可用时提示并从官方 Rust 站点下载、校验安装器，在临时目录使用独立 `RUSTUP_HOME` / `CARGO_HOME` 和 `--no-modify-path` 安装。构建成功或失败均清理，不改系统命令、用户 Rust、shell 设置或 Codex 全局配置；安装和构建日志保存在缓存内。
 
-缓存为 `.codex-build/<平台-架构>/<源码与补丁指纹>/`。进程锁防止并发重复构建，产物和官方 Code Mode companion 的 SHA-256 校验通过后才复用；失败不写成功标记，中断后可直接续跑。补丁更新使用新指纹目录，旧文件保留。生图要求 `image_provider_version: 2`，按图片数压缩要求 `image_compaction_version: 2`，请求体预算另外要求 `request_compaction_version: 1`。
+缓存为 `.codex-build/<平台-架构>/<源码与补丁指纹>/`。进程锁防止并发重复构建，产物和官方 Code Mode companion 的 SHA-256 校验通过后才复用；失败不写成功标记，中断后可直接续跑。补丁更新使用新指纹目录，旧文件保留。所有入口要求 `failed_error_event_version: 1`；生图要求 `image_provider_version: 2`，按图片数压缩要求 `image_compaction_version: 2`，请求体预算另外要求 `request_compaction_version: 1`。
 
 也可在 `live2d-maker` 下提前准备，命令输出实际二进制路径：
 
@@ -22,6 +22,7 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 
 ## 行为
 
+- 标准 Responses 流在 `response.failed.error` 中给出失败原因，读取方式不变。LiteLLM 的流式失败先发 `error: null` 的 `response.failed`，再以独立 `error` 事件给出原因；补丁用后者替换空失败的通用提示，按同一错误码映射，不会让通用提示覆盖已有原因。`content_policy_violation`（如图片审查拒绝）报告为不可重试的请求错误并保留原文，不再以“stream disconnected… response.failed event received”重连 5 次。WebSocket 路径不变。
 - 生图继续走原生 image generation extension 的工具、鉴权、重试、文件落盘及事件。独立配置不替换主模型 provider；每个请求的本地路由将 `/images/generations` JSON 和 `/images/edits` 标准 multipart 交给共享 OpenAI／Google 适配器。GPT／Nano 模型均由逐步骤配置选择，图片保存到本次任务的 `agents/generated/`；旧 `layering_image_base_url / api_key / model` 仅作为同一套配置的兼容输入，不再单独启动旧补丁通道。Claude／AGV 使用同一个适配器的函数工具，配置见 [模型与 harness](../../references/agent-models.md)。
 - Nano 的透明请求在共享适配器中先按目标参考颜色从红／绿／蓝里推荐背景色，再将明确的纯色要求交给模型；返回后保留原始 RGB，以它为唯一参考再生成一张仅换背景的白底或黑底图，由 Node／Sharp 差分恢复透明度与前景颜色，不改变第一张图像的尺寸；不需要抠图权重或额外 Python 包。选色评分、两张 RGB 图、alpha 及处理报告保存在任务的 `generated/image-processing/`。GPT 原生 alpha、`codex-native` 路径及现有 Rust 补丁保持不变，本项无需重新构建 Codex。
 - 在每次普通模型请求前检查图片数，涵盖用户图片、工具图片与生图结果。阈值设为 49 时，恰好 49 张会全部参与原生带图 compact；不移除视觉能力，也不使用“不支持图片输入”的占位语。

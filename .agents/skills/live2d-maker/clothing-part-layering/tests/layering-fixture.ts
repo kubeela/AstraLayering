@@ -6,7 +6,9 @@ import type { TestContext } from 'node:test';
 import sharp from 'sharp';
 import { svgHash } from '../../shared/part/artifact-facts.ts';
 import { writeAtomic } from '../../shared/part/groups.ts';
-import type { GroupSeed, LayeringSteps, SvgMerger } from '../../shared/part/layering-types.ts';
+import type { GroupSeed, LayeringSteps, Subject, SvgMerger } from '../../shared/part/layering-types.ts';
+import { initialStepId } from '../../shared/part/part-steps.ts';
+import { beginStep, completeStep } from '../../shared/step-chain.ts';
 import { occlusionSourceHash, terminalParts } from '../../shared/part/occlusion-plan.ts';
 
 export function shape(id: string, left = 10, right = 90, empty = false) {
@@ -47,4 +49,11 @@ export function workingSteps(events: string[], roots: GroupSeed[] = [{ id: 'head
 export function workingMerger(events: string[]): SvgMerger {
   return async context => { events.push('merge'); await writeAtomic(context.outputPath, shape('character'));
     return { status: 'completed', output: { path: context.outputPath } }; };
+}
+// Records a finished first grouping, as if initial/step01 had run.
+export async function seedInitialGroups(directory: string, groups: GroupSeed[], subject?: Subject) {
+  const step = { id: initialStepId, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
+  await beginStep(step.directory, {});
+  await writeAtomic(join(step.directory, 'groups.json'), JSON.stringify({ ...(subject !== undefined ? { subject } : {}), groups }, null, 2) + '\n');
+  await completeStep(step, id => ({ id, directory: join(directory, id), dependsOn: [] }));
 }

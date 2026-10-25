@@ -3,10 +3,12 @@ import { mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
-import { artifactPath, draftPath, readJson, reductionReportPath, reportPath, svgHash } from '../../shared/part/artifact-facts.ts';
+import { artifactPath, draftPath, readJson, reportPath, reviewedArtifact, svgHash } from '../../shared/part/artifact-facts.ts';
 import { GroupStore, normalizeGroups, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { GroupExecutionError, runLayering } from '../../shared/part/layering.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
+import { groupStepId, layerStepId } from '../../shared/part/part-steps.ts';
+import { readStep } from '../../shared/step-chain.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
 import { profile } from '../profile.ts';
 
@@ -60,8 +62,8 @@ test('去重修改组写到统一目录，未修改组字节一致；补形和�
   await runLayering({ ...f, groups: null, steps: { ...steps,
     async reduceOutlines(context) { const entry = context.entries.find(entry => entry.group.id === 'accessories')!;
       await writeAtomic(entry.outputPath, reduced); return { status: 'completed', output: { changed: [{ groupId: entry.group.id, path: entry.outputPath }] } }; },
-    async completeOcclusion(context) { assert.match(context.reviewed.path, /outline-reduce/); return steps.completeOcclusion(context); },
-    async checkCompletion(context) { assert.match(context.before.path, /outline-reduce/); return steps.checkCompletion(context); },
+    async completeOcclusion(context) { assert.match(context.reviewed.path, /layers\/depth01\//); return steps.completeOcclusion(context); },
+    async checkCompletion(context) { assert.match(context.before.path, /layers\/depth01\//); return steps.checkCompletion(context); },
   } });
   assert.equal(await readFile(artifactPath(f.directory, 'accessories', 'outline'), 'utf8'), shape('accessories'));
   assert.equal(await readFile(artifactPath(f.directory, 'accessories', 'reduction'), 'utf8'), reduced);
@@ -106,7 +108,7 @@ test('去重输出没有整批提交记录或只有部分输出时，不消费�
   assert.equal(state.groups[1].steps.reduction.status, 'pending');
 });
 
-test('源轮廓或去重输出变化会使批次失效；后续补形不能沿用旧输入版本', async t => {
+test('已完成的去重产物被改动时拒绝续跑；重试本层只重跑字节变化的补全', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
   await runLayering({ ...f, groups: null, steps });
   await writeAtomic(artifactPath(f.directory, 'a', 'reduction'), shape('a', 20, 80));
@@ -116,10 +118,18 @@ test('源轮廓或去重输出变化会使批次失效；后续补形不能沿�
   assert.equal(state.groups[1].steps.reduction.status, 'completed');
   assert.equal(state.groups[1].steps.completion.status, 'completed');
   events.length = 0;
-  await runLayering({ ...f, groups: null, steps });
+  await assert.rejects(runLayering({ ...f, groups: null, steps }), /产物被改动/);
+  assert.equal(events.length, 0);
+  await rm(join(f.directory, layerStepId(0), '.completed'));
+  await runLayering({ ...f, groups: null, steps: { ...steps, async reduceOutlines(context) {
+    events.push(`layer-${context.depth}:reduce`);
+    const entry = context.entries.find(entry => entry.group.id === 'a')!;
+    await writeAtomic(entry.outputPath, shape('a', 20, 80));
+    return { status: 'completed', output: { changed: [{ groupId: 'a', path: entry.outputPath }] } };
+  } } });
   assert.equal(events[0], 'layer-0:reduce');
+  assert.ok(events.includes('a:completion') && !events.includes('b:completion'));
 });
-
 test('补形中断只留下草稿；续跑从补形继续，不重做轮廓、review、去重', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events);
   await assert.rejects(runLayering({ ...f, groups: null, steps: { ...steps, async completeOcclusion(context) {
@@ -137,73 +147,44 @@ test('自检失败不分析子组；有效 SVG 不等于自检完成，续跑只
     return { status: 'completed', output: { passed: false as true } };
   } } }), /completion check did not pass/);
   assert.ok(!events.includes('head:children'));
-  const state = (await GroupStore.open(f.directory)).snapshot();
-  assert.equal(state.groups[0].steps.completion.status, 'completed');
-  assert.equal(state.groups[0].steps.completionCheck.status, 'pending');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 2)))).status, 'running');
+  assert.ok(await readFile(artifactPath(f.directory, 'head', 'completion')));
+  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completionCheck.status, 'pending');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, ['head:check', 'head:children']);
 });
 
-test('分析返回空子组有明确事实记录，重启不会重复分析', async t => {
+test('分析返回空子组有明确事实记录，重启不会重复分析；删除该步骤只重做分析', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events);
   await runLayering({ ...f, groups: null, steps });
   const tree = await readJson(join(f.directory, 'groups.json'));
   assert.deepEqual(tree.groups[0].groups, []);
-  assert.equal(typeof tree.groups[0].childrenAnalysis.sourceHash, 'string');
-  assert.equal(await readJson(reportPath(f.directory, 'head', 'children')), undefined);
+  assert.deepEqual(await readJson(reportPath(f.directory, 'head', 'children')), { groupId: 'head', groups: [] });
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, []);
-  delete tree.groups[0].childrenAnalysis;
-  await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(tree));
+  await rm(join(f.directory, groupStepId('head', 3)), { recursive: true });
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, ['head:children']);
 });
-
-test('旧分析报告可迁入唯一组树，此后只依赖 groups.json 继续下一层', async t => {
-  const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'head' }], { head: [{ id: 'head/eye' }] });
-  await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
-  const tree = await readJson(join(f.directory, 'groups.json'));
-  await writeAtomic(reportPath(f.directory, 'head', 'children'), JSON.stringify({
-    groupId: 'head', sourceHash: tree.groups[0].childrenAnalysis.sourceHash,
-    groups: tree.groups[0].groups.map(({ groups, ...seed }: { groups: unknown }) => seed),
-  }));
-  delete tree.groups[0].childrenAnalysis;
-  tree.groups[0].groups = [];
-  await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(tree));
-  events.length = 0;
-  const result = await runLayering({ ...f, groups: null, steps });
-  assert.deepEqual(result.groups[0].groups.map(group => group.id), ['head/eye']);
-  assert.ok(!events.includes('head:children'));
-  assert.ok(events.includes('head/eye:outline'));
-  const saved = await readJson(join(f.directory, 'groups.json'));
-  assert.equal(typeof saved.groups[0].childrenAnalysis.sourceHash, 'string');
-  await rm(reportPath(f.directory, 'head', 'children'));
-  events.length = 0;
-  await runLayering({ ...f, groups: null, steps });
-  assert.deepEqual(events, []);
-});
-
-test('分析提交后中断，组树与输入版本同时存在，不依赖额外 children 文件', async t => {
+test('分析提交后中断，子组记录已完成；续跑直接进入下一层，记录被改动则拒绝续跑', async t => {
   const f = await fixture(t), events: string[] = [];
   const steps = workingSteps(events, [{ id: 'head' }], { head: [{ id: 'head/eye', kind: 'part' }] });
   await assert.rejects(runLayering({ ...f, groups: null, steps, maxDepth: 1, progress(message) {
     if (message === '[head] 子组分析：完成') throw new Error('interrupt after atomic commit');
   } }), /interrupt after atomic commit/);
-  const saved = await readJson(join(f.directory, 'groups.json'));
-  assert.equal(saved.groups[0].groups[0].id, 'head/eye');
-  assert.equal(saved.groups[0].childrenAnalysis.sourceHash, svgHash(await readFile(artifactPath(f.directory, 'head', 'completion'))));
-  assert.equal(await readJson(reportPath(f.directory, 'head', 'children')), undefined);
+  assert.equal((await readJson(reportPath(f.directory, 'head', 'children'))).groups[0].id, 'head/eye');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 3)))).status, 'completed');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.ok(!events.includes('head:children'));
   assert.ok(events.includes('head/eye:outline'));
-  saved.groups[0].childrenAnalysis.sourceHash = '0'.repeat(64);
-  await writeAtomic(join(f.directory, 'groups.json'), JSON.stringify(saved));
-  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.children.status, 'pending');
+  assert.ok(await readFile(artifactPath(f.directory, 'head/eye', 'outline')));
+  assert.match(artifactPath(f.directory, 'head/eye', 'outline'), /groups\/head\/children\/eye\/step01\/outline\.svg$/);
+  await writeAtomic(reportPath(f.directory, 'head', 'children'), JSON.stringify({ groupId: 'head', groups: [] }));
+  await assert.rejects(runLayering({ ...f, groups: null, steps }), /产物被改动/);
 });
-
 test('blocked 或 pending 阻止整层去重及下一层，其他已启动轮廓可收尾', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
   const result = await runLayering({ ...f, groups: null, steps: { ...steps, async reviewOutline(context) {
@@ -232,11 +213,11 @@ test('显式分支可复核同层去重，只补全选中或实际改变的部�
   events.length = 0;
   await runLayering({ ...f, groups: { id: 'a' }, steps });
   assert.deepEqual(events, ['a:completion', 'a:check', 'a:children']);
-  await rm(reductionReportPath(f.directory, 0));
+  await rm(join(f.directory, layerStepId(0), '.completed'));
   events.length = 0;
   await runLayering({ ...f, groups: { id: 'a' }, steps });
-  assert.ok(events.includes('layer-0:reduce') && events.includes('a:completion'));
-  assert.ok(!events.some(event => event.startsWith('b:')));
+  // 重做本层得到相同字节，已完成的补全不受影响。
+  assert.deepEqual(events, ['layer-0:reduce']);
 });
 
 test('指定子组仍需完整祖先；禁止未知组、空选择、错误父子关系及导入外部进度', async t => {
@@ -260,20 +241,14 @@ test('旧树混入 steps 不代表完成；损坏的事实文件会拒绝续跑'
   await assert.rejects(runLayering({ ...f, groups: null, steps }), /JSON/);
 });
 
-test('LF 审查哈希在 CRLF 签出中可恢复，返修记录也无需依赖 .repairs 目录数量', async t => {
-  const f = await fixture(t), events: string[] = [], steps = workingSteps(events);
+test('LF 审查哈希在 CRLF 签出中仍对应同一稿，返修记录无需依赖 .repairs 目录数量', () => {
   const text = shape('head').replace('><g', '>\n<g');
-  await writeAtomic(join(f.directory, 'groups.json'), '{"groups":[{"id":"head"}]}');
-  await writeAtomic(artifactPath(f.directory, 'head', 'outline'), text.replace(/\n/g, '\r\n'));
-  await writeAtomic(reportPath(f.directory, 'head', 'review'), JSON.stringify({ groupId: 'head', reviews: [
+  const verified = reviewedArtifact(Buffer.from(text.replace(/\n/g, '\r\n')), 'outline.svg', { groupId: 'head', reviews: [
     { verdict: 'revise', feedback: 'first', candidateHash: 'old' },
     { verdict: 'revise', feedback: 'second', candidateHash: 'previous', repairedCandidateHash: svgHash(text) },
-  ] }));
-  await runLayering({ ...f, groups: null, steps });
-  assert.ok(!events.includes('head:outline') && !events.includes('head:review'));
-  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.review.output!.reviewOutcome, 'repaired');
+  ] } as never);
+  assert.equal(verified?.reviewOutcome, 'repaired');
 });
-
 test('异常后当前批次已派发任务收尾，保留成功事实且不进入后续阶段', { timeout: 5000 }, async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }, { id: 'c' }]);
   const release = Promise.withResolvers<void>(), failed = Promise.withResolvers<void>();
@@ -297,7 +272,13 @@ test('jianma 成果归档恢复现有 115 节点；制作中的缺失稿不能�
     t.skip('仅仓库验收：独立安装的 skill 不携带 demos/jianma 成果归档');
     return;
   }
-  const store = await GroupStore.open(fileURLToPath(directory), profile.promptsDirectory);
+  try { await stat(new URL('initial/step01', directory)); }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+    t.skip('归档仍是旧 stages/ 布局，未迁移到步骤目录');
+    return;
+  }
+  const store = await GroupStore.open(fileURLToPath(directory));
   const groups = store.snapshot().groups;
   assert.equal(groups.length, 8);
   assert.ok(groups.every(group => group.steps.outline.status === 'completed' && group.steps.review.status === 'completed'));

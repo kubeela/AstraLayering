@@ -40,7 +40,7 @@ for await (const event of events) {
 - `initialGroups`：首次识别直属组，仅在 `null` 输入且实际没有已有组时执行。
 - `drawOutline`：组轮廓绘制与分块自检。
 - `reviewOutline`：外轮廓、主要结构与去噪的严格 review。
-- `reduceOutlines`：轮廓与 review 全部结束后，统一处理同层重复对象，保存到 `stages/outline-reduce/<组ID>.svg`；未修改组原样复制。
+- `reduceOutlines`：轮廓与 review 全部结束后，统一处理同层重复对象，保存到 `layers/depthNN/<组ID>.svg`；未修改组原样保留。
 - `completeOcclusion`：读取去重后的 SVG，按部位提示词补直接遮挡。
 - `checkCompletion`：程序检查原形保留、矢量结构和父范围；视觉合理性在补全回合中自检。
 - `splitChildren`：基于完成轮廓识别直属子组；程序将子组登记到树并加入后续调度。
@@ -49,9 +49,9 @@ for await (const event of events) {
 
 正式深度表为本管线的 `occlusion.json`，独立于 `groups.json`。新写入版本为 v3，单深度保留 `level`，多深度用 `levels: [{ level, region }]`；每个逻辑 part 一条记录，保留 `id`、`note` 和逐件 `check`，多深度还须逐区域检查。全部数值属于同一从后到前的顺序，越大越靠前，不与数组位置绑定。v2 单深度仍能读取。
 
-`stages/occlusion/candidate.svg` 每个完整 part 只叠放一次，多深度暂按最靠后数值排列；它不是精确分片预览，不能据此声称穿插已实现。实际 KRA 拆层由 raster step01 自行处理，并可通过精准工具写回此处深度表。输入指纹不因深度修正本身改变，因此不会触发上游重画；缺失、损坏或真实输入变化仍只重做最终规划。RGB 控制图仍由 raster 第一步即时生成。
+`occlusion/candidate.svg` 每个完整 part 只叠放一次，多深度暂按最靠后数值排列；它不是精确分片预览，不能据此声称穿插已实现。实际 KRA 拆层由 raster step01 自行处理，并可通过精准工具写回此处深度表。输入指纹不因深度修正本身改变，因此不会触发上游重画；缺失、损坏或真实输入变化仍只重做最终规划。RGB 控制图仍由 raster 第一步即时生成。
 
-首次分组仍只识别直属 group；子组分析返回混合 group/part 节点描述，不替程序标记进度。子节点与当前节点的 `childrenAnalysis: { sourceHash, note? }` 一起原子写入唯一的 `groups.json`，不再生成 `stages/children/`。元数据只保存分析所依据的完成 SVG 哈希及依据，不重复存子节点、ID 列表或步骤状态。有效分析搭配空子节点表示终止；初始树的空数组本身不是终止证据。明确的 part 完成制作与检查后直接终止。
+首次分组仍只识别直属 group；子组分析返回混合 group/part 节点描述，不替程序标记进度。子节点与可选 note 写入 `groups/<id>/step03/children.json`，它是该组子树的唯一来源。已完成拆分搭配空子节点表示终止；初始树的空数组本身不是终止证据。明确的 part 完成制作与检查后直接终止。
 
 `--max-depth 1` 只完成第一层并登记第二层，`--max-depth 2` 制作到第二层并登记第三层，以此类推；省略则按层继续。这个参数控制本次执行边界，不作为把 group 判成 part 的依据。
 
@@ -59,7 +59,7 @@ for await (const event of events) {
 
 首次分组读取本模块 `prompts/4-初始分组.md`，agent 的工作目录设为 `<运行根目录>/<运行名>/part-layering`，程序明确传入参考准备完成的素体图绝对路径，不预先附图，也不让 agent 自行寻找目标图。它用内置 `view_image` 观察整体，按需裁剪放大细节。人体头部在第一层拆为 `face`（脸部、五官、耳朵）、`hair`（全部头发、发髻）、`head_accessories`（头部装饰物，含其长飘带）；脸部说明明确只补脸型与耳朵，不补头顶与后脑。`neck`、`body`、`arms`、`pelvis`、`legs` 的范围及临时连体服不分组要求沿用原版，无跨目录运行依赖。
 
-首次分组注册 `view_bitmap({ path, crop?, scale? })` 和 `write_groups({ subject, groups })`。整体可用内置 `view_image` 查看，细节按需用 `view_bitmap` 裁剪放大，观察图保存在 `observations/initial-groups/`。分组工具绑定本次运行的正式 `groups.json`，校验组名、重复名称和一层 group 结构，再以 `name` 生成稳定 `id`，保留 `note`。无效输入不写入；已有组时拒绝覆盖。工具与调度器共用 `GroupStore` 写入队列，agent 不能通过工具修改制作进度。分组保存必须调用 `write_groups`，不再通过 terminal 写临时 JSON。最终回复不参与解析；没有成功调用写入工具时失败。调度器只发起一次识别任务，临时服务中断由 agent 调用层沿用会话恢复；实际已有组时继续现有进度。
+首次分组注册 `view_bitmap({ path, crop?, scale? })` 和 `write_groups({ subject, groups })`。整体可用内置 `view_image` 查看，细节按需用 `view_bitmap` 裁剪放大，观察图保存在 `observations/initial-groups/`。分组工具绑定本次运行的 `initial/step01/groups.json`，校验组名、重复名称和一层 group 结构，再以 `name` 生成稳定 `id`，保留 `note`。无效输入不写入；已有分组时拒绝覆盖，agent 不能通过工具修改制作进度。分组保存必须调用 `write_groups`，不再通过 terminal 写临时 JSON。最终回复不参与解析；没有成功调用写入工具时失败。调度器只发起一次识别任务，临时服务中断由 agent 调用层沿用会话恢复；实际已有组时继续现有进度。
 
 组轮廓绘制和 review 的通用提示词为 `prompts/5-组轮廓.md`、`prompts/6-轮廓review.md`，复用迁移流程的轮廓色块及独立审查要求，适配为每次只产出当前组的独立 SVG。agent 收到素体参考、组说明、完整画布尺寸，以及父组完成 SVG（如有）。绘制 agent 优先用绑定的 `write_outline_svg` 写草稿，也可用可用的本地文件接口；以 `preview_svg` 先看整图，再裁剪放大，用 blend 和 edge 逐块自检全部可见区域；程序读取实际文件，校验 SVG、当前组绑定、画布及父范围后保存正式轮廓。草稿和失败返修不会覆盖此前已登记的有效 SVG。
 
@@ -69,19 +69,27 @@ for await (const event of events) {
 
 同一个组的一次绘制任务保留一个绘制会话，首次绘制与返修沿用其 thread；每次严格 review 均创建新的只读会话，审查后关闭。review 通过 `submit_review` 保存 `pass`、`revise` 或 `blocked` 及具体意见，最终回复不参与解析。每组最多提交两次正式 review：绘制并自检 → review 1 → 按意见返修并自检 → review 2 → 再返修并自检，然后直接进入下一步，不启动第三次 review。任何一轮 pass 则提前进入下一步。轮数按本组 pass / revise 审查报告累计；blocked 保留记录但不占正式审查名额，重启不清零，临时服务重试不另计一轮。blocked（无法核对）与执行异常仍保留原有处理，不视为返修成功。续跑先落实尚未完成的返修意见；报告以 repairedCandidateHash 记录已完成返修的 SVG，避免中断恢复后重复返修。审查原结论保持不变；两轮意见修正完成后，review 步骤登记 completed，output.reviewOutcome 为 repaired，表示流程完成而非 reviewer 给过 pass。终端显示已按第 2 轮意见返修并自检、不再复审。会话复用和审查循环由程序控制，工作提示词不解释会话管理规则。任务结束、暂停或异常时关闭绘制会话；跨启动不保留活动会话。
 
-每次返修分别保存到 `stages/outline/<组ID>.repairs/<序号>/`，其中 `feedback.txt` 是返修意见，`prompt.txt` 是实际发给绘制 agent 的完整提示词。序号从 1 递增，续跑接着已有序号，失败回合也保留记录，不覆盖前几轮。每轮完整输入仍分别保留在 `agents/<时间-步骤名-唯一后缀>/request.json`。独立审查报告保留各轮反馈、候选和观察记录。原生生图事件及修订提示词记录到 `events.jsonl`；工具返回的已保存图片路径登记到 `result.json`，可读日志省略图片二进制数据。
+每次返修分别保存到 `groups/<组ID>/step01/outline.repairs/<序号>/`，其中 `feedback.txt` 是返修意见，`prompt.txt` 是实际发给绘制 agent 的完整提示词。序号从 1 递增，续跑接着已有序号，失败回合也保留记录，不覆盖前几轮。每轮完整输入仍分别保留在 `agents/<时间-步骤名-唯一后缀>/request.json`。独立审查报告保留各轮反馈、候选和观察记录。原生生图事件及修订提示词记录到 `events.jsonl`；工具返回的已保存图片路径登记到 `result.json`，可读日志省略图片二进制数据。
 
 特化提示词按完整组 ID 查找：`prompts/groups/face/outline.md` 替换 face 的绘制正文，`prompts/groups/face/review.md` 替换其审查正文，`prompts/groups/face/eye/outline.md` 只作用于 face/eye。两个步骤独立选择；对应文件不存在时用通用正文，空文件报错，不继承父组特化。程序继续附加组、参考、父 SVG 和画布等运行输入；绘制收到草稿输出路径，review 收到候选 SVG 和审查报告路径。实际来源和全文保留在 request.json 中。详见 `prompts/groups/README.md`。改提示词不自动重做已完成步骤。
 
-`preview_svg` 支持 `svg` 白底独显、`blend` 半透明混合和 `edge` 红色边缘叠加，支持原图坐标裁剪 `crop` 和矢量放大 `scale`，直接返回图片并保存到 `observations/<步骤>/<组ID>/`。子组同时返回父范围检查；父子 SVG 在同一画布上宽、高各四倍渲染，先计算 `max(子 alpha - 父 alpha, 0)`，再用阈值 128 判断未覆盖采样，避免独立二值化把共用曲线的抗锯齿差异误判为越界。允许正常贴边和共边，不扩张父轮廓，不按越界数量放行；任一未覆盖采样达到阈值即失败。孔洞、分离区域、变换与裁剪沿用实际 SVG 渲染。报告的 `scale` 固定为 4，不受预览选框或倍率影响；`outsideSamples` 为越界采样数，`outsidePixels` 为除以 16 后的原图像素面积估算，`outsideBox` 为原图坐标，可有四分之一像素的小数。范围渲染沿用 1 亿像素的资源上限，有限采样不是数学上绝对包含的证明。输入 SVG 不修改。独立审查记录及每轮实际观察图路径保存在 `stages/review/<组ID>.review.json`。通过后进度直接引用已绘制的轮廓 SVG，review 不生成或复制 SVG；后续补形沿用该路径。
+`preview_svg` 支持 `svg` 白底独显、`blend` 半透明混合和 `edge` 红色边缘叠加，支持原图坐标裁剪 `crop` 和矢量放大 `scale`，直接返回图片并保存到 `observations/<步骤>/<组ID>/`。子组同时返回父范围检查；父子 SVG 在同一画布上宽、高各四倍渲染，先计算 `max(子 alpha - 父 alpha, 0)`，再用阈值 128 判断未覆盖采样，避免独立二值化把共用曲线的抗锯齿差异误判为越界。允许正常贴边和共边，不扩张父轮廓，不按越界数量放行；任一未覆盖采样达到阈值即失败。孔洞、分离区域、变换与裁剪沿用实际 SVG 渲染。报告的 `scale` 固定为 4，不受预览选框或倍率影响；`outsideSamples` 为越界采样数，`outsidePixels` 为除以 16 后的原图像素面积估算，`outsideBox` 为原图坐标，可有四分之一像素的小数。范围渲染沿用 1 亿像素的资源上限，有限采样不是数学上绝对包含的证明。输入 SVG 不修改。独立审查记录及每轮实际观察图路径保存在 `groups/<组ID>/step01/review.json`。通过后进度直接引用已绘制的轮廓 SVG，review 不生成或复制 SVG；后续补形沿用该路径。
 
-`groups.json` 保存主体、唯一分组树，以及各组必要的分析输入版本和依据。新运行不创建或读取 `progress.json`；旧机器的绝对路径不再参与续跑。轮廓完成看正式 SVG；review 轮次、结论和返修落实情况读取 `.review.json`，并核对候选或 repairedCandidateHash。哈希兼容 LF/CRLF 签出。自检结论保存在 `stages/completion-check/<组ID>.json`，绑定去重与补全版本；分析版本来自组树自身。旧 `stages/children` 仅作兼容迁入，保存树后即不再依赖它，新运行不会写它。没有另一份子组定义或步骤状态矩阵。
+步骤图见 `shared/part/part-steps.ts`。每个节点是带 `.running`／`.completed` 标记的步骤目录，续跑与重跑规则统一由 `shared/step-chain.ts` 判断：
 
-所有 SVG 制作接口统一收到 `.draft.svg` 路径，正式文件只在任务成功并验证后发布。草稿、失败回合和仅有 `.repairs` 目录不代表完成。轮廓为 `stages/outline/<组ID>.svg`；去重结果为 `stages/outline-reduce/<组ID>.svg`；补形为 `parts/<组ID>.svg`；最终预览合并为 `preview.svg`，同目录保留对应的 `groups.json`。补形和补形自检的 before 均读取去重版本，子组仍以父组完成 SVG 为范围。完成文件携带必要的输入版本信息，旧输入下的自检或分析结论不能用于新版本。
+| 步骤 | 目录与产物 |
+| --- | --- |
+| 首次分组 | `initial/step01/groups.json` |
+| 轮廓与复核 | `groups/<id>/step01/`：`outline.svg`、`review.json`、`outline.repairs/`、`session.json` |
+| 同层去重 | `layers/depthNN/<id>.svg`，一层一个节点 |
+| 补全与检查 | `groups/<id>/step02/check.json`，产物 `parts/<id>.svg` |
+| 直属子组拆分 | `groups/<id>/step03/children.json` |
+| 合并 | `merge/`，产物 `preview.svg` |
+| 遮挡层级 | `occlusion/`（含 `candidate.svg`），产物 `occlusion.json` |
 
-续跑按父层到子层、逐 part 恢复事实；只有当前父节点完整完成，才恢复子节点。去重记录中的每一行独立核对本件输入/输出，某件 outline 缺失不会清掉同层其他有效部件。统一入口开始新制作前，撤下本件失效的正式文件和草稿；outline 失效同时撤下该件旧 review。去重仍查看整层，未修改的有效去重结果原样保留；只有实际输出改变的 part 及真实引用者才撤销补全、自检和依赖后代。子组分析失效时先清后代文件，最后撤销旧分析和子树。最终 preview/occlusion 依赖整套有效部件，输入不齐时失效。同一候选的待返修 review 保留累计轮次。
+子组目录嵌套为 `groups/<父>/children/<名>`。依赖写成 `步骤#产物`，只读该产物的最新哈希：去重只改了某件时只重跑该件及其引用者的补全；重新生成相同字节时下游保留。删除 `.completed` 或产物即重跑该步骤及其下游；已完成步骤记录的产物被手改时拒绝直接续跑。重跑先删除整个步骤目录，其中的复核记录和绘制会话随之重置。补全读取的同级去重稿（`completion.references.json` 的 sibling）也写成依赖；图片参考和提示词编辑仍需显式重跑。
 
-清理完成后才发布新产物。即使重建的 outline 与旧版字节相同，该件旧 part、自检和合并也已撤下；中断后仍须生成新补全。只读 `GroupStore.open` 不删除文件。补全输入记录为 `stages/completion-inputs/<id>.json`，绑定正式 SVG 和本次实际使用的图片/同级 SVG 哈希；引用组还须有有效的对应阶段。记录在正式补全前写入，正式稿有版本标记，记录缺失或不匹配不会恢复。旧稿只在未声明额外参考时兼容；声明了引用却缺版本证据的旧补全仅重做该件。失效输入记录保留引用证据，不单独构成完成事实。特化提示词或参考清单编辑本身仍需显式安排重跑；已有输入记录中实际文件的变化会使其真实使用者失效。原始参考、agent 日志及 `.repairs` 诊断保留；不自动清理其他 raster 目录的 PNG/Krita。
+`groups.json` 是组树视图，只保留可编辑的名称、note 和元数据；结构、kind 与顺序来自首次分组和各拆分记录，只读 `GroupStore.open` 不删除文件。草稿、失败回合和仅有 `.repairs` 目录不代表完成。补形和补形自检的 before 均读取去重版本，子组仍以父组完成 SVG 为范围。旧 `stages/` 布局的运行不迁移，续跑会报错，请使用新的运行目录。原始参考、agent 日志及 `.repairs` 诊断保留；不自动清理其他 raster 目录的 PNG/Krita。
 
 轮廓绘制和返修提供 `write_outline_svg`，只接受完整 SVG 文本，写入程序绑定的草稿并检查画布、组标识和父范围；不接受自选路径，不发布正式稿，也不替代预览自检。终端不可用时仍可继续制作。绘制和 review 均提供 `view_bitmap` 裁剪本次运行内的参考图，`preview_svg` 对照 SVG。group 轮廓需覆盖所属的独立组件；“不审组内细节”不豁免眼褶线、链与吊坠等完整组件的漏画。
 
@@ -93,11 +101,11 @@ group 的组件覆盖按联合色块判断。踝饰等完全落在本组底形�
 
 子组 review 区分父范围内的可修缺漏与父底稿已有的范围限制。只有扩大父范围才能恢复的参考区域，在 feedback 中明确记录为上游问题，不要求子组越界修复；父内可修问题仍须返修。该区分不改变程序的严格父范围检查，也不表示上游参考偏差已经修好。
 
-整层去重使用 `prompts/8-同层轮廓去重.md`，先查看带组色的合成预览，再分别检查疑似重复区域。分组名允许分类上的宽容；合理遮挡重叠不直接相减。增量运行的有效旧稿作为 `sourceSvg`，另提供 `originalOutline` 和 `reusedReduction`；未修改的有效旧去重结果保留，不能恢复成去重前的原轮廓。新输出与正式稿逐件比较，只在实际变化时清理该件及其引用者，再发布新稿，最后原子提交 `stages/outline-reduce/layers/<深度>.json`。恢复逐行核对版本，缺失或不匹配的某行不能放行该件，不连带撤销其他有效行。显式选择允许查看同层未选组作去重复核，只把实际改变的组及真实引用者加入后续制作。空去重稿仍由程序跳过模型补形。
+整层去重使用 `prompts/8-同层轮廓去重.md`，先查看带组色的合成预览，再分别检查疑似重复区域。分组名允许分类上的宽容；合理遮挡重叠不直接相减。增量运行的有效旧稿作为 `sourceSvg`，另提供 `originalOutline` 和 `reusedReduction`；未修改的有效旧去重结果保留，不能恢复成去重前的原轮廓。新输出与正式稿逐件比较，只在实际变化时清理该件及其引用者，再发布新稿，最后完成本层步骤，记录每件输出的哈希；某件输出缺失或被改动只影响该件。显式选择允许查看同层未选组作去重复核，只把实际改变的组及真实引用者加入后续制作。空去重稿仍由程序跳过模型补形。
 
 正面遮挡补全使用 `prompts/9-正面遮挡补全.md`；`prompts/groups/<完整ID>/completion.md` 可完整替换正文。face 已配置脸型与耳部的指导，不补头顶、后脑或五官。旁边的 `completion.references.json` 可显式列出 `{ "path": "参考图.png", "description": "参考用途" }` 数组，路径相对清单目录；无清单则仅使用本次素体参考，不继承父组参考。即使正文回退到通用提示词，也读取当前完整 ID 下的清单。配置图只用于形状先验，不替代当前角色可见部分。
 
-补全清单也支持 `{ "sibling": "palm", "description": "同手实际掌片" }`，仅显式引用当前父节点下其他直属节点的已审查、去重底形；运行器生成参考 PNG，并将只读源 SVG、版本与用途交给模型，避免依赖同级补全的并发完成顺序。左右手的 `thumb`、`index_finger`、`middle_finger`、`ring_finger`、`little_finger` 十个完整 ID 均配置手指连接先验与同手掌片参考；`hand` 和 `palm` 不套用手指伸入侧提示词。详见 `prompts/groups/README.md` 的适用表。改配置不自动重做已有结果，验证时须删除所测 part 的正式补全 SVG 和对应 completion-check，再从统一入口续跑；轮廓、审查和整层去重可复用。
+补全清单也支持 `{ "sibling": "palm", "description": "同手实际掌片" }`，仅显式引用当前父节点下其他直属节点的已审查、去重底形；运行器生成参考 PNG，并将只读源 SVG、版本与用途交给模型，避免依赖同级补全的并发完成顺序。左右手的 `thumb`、`index_finger`、`middle_finger`、`ring_finger`、`little_finger` 十个完整 ID 均配置手指连接先验与同手掌片参考；`hand` 和 `palm` 不套用手指伸入侧提示词。详见 `prompts/groups/README.md` 的适用表。改配置不自动重做已有结果，验证时须删除所测 part 的 `groups/<id>/step02/.completed`，再从统一入口续跑；轮廓、审查和整层去重可复用。
 
 十指另显式附加 Milly／樱桃的完整指体图例，实际补全图片输入为当前角色、同手掌片、完整指体参考板。用途是核对被遮指身、近端厚度和局部搭接，不能以连通或根端相交替代完整形体验收，不照搬第三方姿势、宽度、朝向和肤色。图片与来源见 `prompts/groups/arms/references/fingers/`；沿用第三方像素本地忽略约定，缺少已配置图片时明确报错。此参考仅作用于 completion，不自动传入 outline/review，也未重跑现有十指。
 
@@ -145,8 +153,7 @@ group 的组件覆盖按联合色块判断。踝饰等完全落在本组底形�
 
 - `../input/original.<原扩展名>`（相对本管线目录）：首次原图只保存在任务根的 input，用于续跑和补齐缺失参考。
 - `standard.png`：标准参考；默认不调姿态，开启 `--standard` 后先判断再按需调整。
-- `options.json`：标准化选项 `{ "standard": boolean }`。
-- `.steps/<步骤>/`：original、options、pose、standard、judgment、simplified、base、ready 各自的 `.running` / `.completed` 标记，与 raster 共用 `shared/step-chain.ts` 的断链重试规则。`.completed` 记录产物指纹与依赖戳；姿态判断保存在 `.steps/pose/judgment.json`。删除某步的 `.completed` 或产物即重试该步，依赖它的后续步骤随之重做，ready 重做时清空本 part 拆分缓存；已完成步骤的产物在中断期间被替换时拒绝续跑并保留文件。旧任务的 `preparation.json` 在首次默认流程运行时一次性转换并删除，指纹仍吻合的步骤直接沿用。
+- `../preparation/stepNN/`：参考准备的步骤目录，与 raster 共用 `shared/step-section.ts` 的 section/stepNN 驱动和 `shared/step-chain.ts` 的断链重试规则。编号固定：step01 original、step02 options（`options.json` 记录 `{ "standard": boolean }`）、step03 pose（`judgment.json` 姿态判断）、step04 standard、step05 judgment、step06 simplified、step07 base、step08 ready；本次不用的步骤（如未开启 `--standard` 时的 pose）留空编号。`.completed` 记录产物指纹与依赖戳。删除某步的 `.completed` 或产物即重试该步，依赖它的后续步骤随之重做，ready 重做时清空本 part 拆分缓存；已完成步骤的产物在中断期间被替换时拒绝续跑并保留文件。旧任务的 `references/.steps/`、`references/options.json` 与 `preparation.json` 在首次默认流程运行时一次性迁入并删除，指纹仍吻合的步骤直接沿用。
 - `judgment.json`：原有画风判断，包含 `needsSimplification` 与 `reason`；兼容不含 `reason` 的旧记录。
 - `simplified-subject.png`：需要简化时生成，否则复制 standard.png；旧任务仍可沿用原扩展名。
 - `base-subject.png`：以简化参考和连体服款式图为输入生成素体换装参考。

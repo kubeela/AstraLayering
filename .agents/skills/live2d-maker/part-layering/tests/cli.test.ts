@@ -12,8 +12,7 @@ import { getPreparationDirectory, loadPreparedReferences } from '../preparation.
 import { formatLayeringSummary, parseRunArguments, readGroupInput } from '../run.ts';
 import { GroupStore, normalizeGroups } from '../../shared/part/groups.ts';
 import sharp from 'sharp';
-import { artifactPath, draftPath, publishSvg, reportPath, svgHash } from '../../shared/part/artifact-facts.ts';
-import { shape, workingSteps } from './layering-fixture.ts';
+import { seedInitialGroups, shape, workingSteps } from './layering-fixture.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { taskDirectory } from '../../shared/paths.ts';
 
@@ -60,34 +59,15 @@ test('预览缺失时用模拟步骤重建；实际入口复用完整事实且�
   await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
   await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
   await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toFile(join(references, 'base-subject.png'));
-  const svgPath = artifactPath(directory, 'head', 'outline');
-  await mkdir(dirname(svgPath), { recursive: true });
-  await writeFile(svgPath, shape('head'));
-  const reviewPath = reportPath(directory, 'head', 'review');
-  await mkdir(dirname(reviewPath), { recursive: true });
-  await writeFile(reviewPath, JSON.stringify({ groupId: 'head', reviews: [{ verdict: 'pass', feedback: 'checked', candidateHash: svgHash(shape('head')) }] }));
-  const part = artifactPath(directory, 'head', 'completion');
-  await mkdir(dirname(part), { recursive: true });
-  await writeFile(draftPath(part), shape('head'));
-  await publishSvg(draftPath(part), part, svgHash(shape('head')));
-  const check = reportPath(directory, 'head', 'completion-check');
-  await mkdir(dirname(check), { recursive: true });
-  await writeFile(check, JSON.stringify({ groupId: 'head', passed: true,
-    beforeHash: svgHash(shape('head')), afterHash: svgHash(await readFile(part)) }));
-  const store = await GroupStore.open(directory);
-  const analysisSourceHash = svgHash(await readFile(part));
-  await store.update(document => { document.groups = normalizeGroups([{ id: 'head', note: '已有识别的组',
-    childrenAnalysis: { sourceHash: analysisSourceHash }, steps: {
-    outline: { status: 'completed', output: { path: svgPath } }, review: { status: 'completed', output: { path: svgPath } },
-  } }]); });
-  // 缺预览会连带撤销层级表，这一分支必须用模拟步骤完成，不能靠旧缓存避免真实调用。
+  await seedInitialGroups(directory, [{ id: 'head', note: '已有识别的组' }]);
+  // 缺预览只重做合并；重建字节不变时层级规划沿用。
   await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null, steps: workingSteps([]) });
   await rm(join(directory, 'preview.svg'));
   const progress: string[] = [];
   await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null,
     steps: workingSteps([]), progress: message => progress.push(message) });
   assert.ok(progress.some(message => message.includes('最终预览合并：完成')));
-  assert.ok(progress.includes('遮挡层级规划：开始'));
+  assert.ok(progress.some(message => message.startsWith('遮挡层级规划：沿用')));
   const groupsPath = join(directory, 'input.json');
   await writeFile(groupsPath, JSON.stringify([{ id: 'head', note: '不能覆盖已有的说明' }]));
   const first = await runCli(['--name', runName, '--groups', groupsPath, '-j', '2']);
@@ -152,10 +132,7 @@ test('实际入口遇到组产物问题时报告组名、步骤和停止派发�
   await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
   await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
   await writeFile(join(references, 'base-subject.png'), 'cached base');
-  const store = await GroupStore.open(directory);
-  await store.update(document => { document.groups = normalizeGroups([{ id: 'head_accessories', steps: {
-    outline: { status: 'completed', output: { path: join(directory, 'missing.svg') } },
-  } }]); });
+  await seedInitialGroups(directory, [{ id: 'head_accessories' }]);
   await assert.rejects(runCli(['--name', runName]), error => {
     const failure = error as Error & { code: number; stderr: string };
     assert.equal(failure.code, 1);
