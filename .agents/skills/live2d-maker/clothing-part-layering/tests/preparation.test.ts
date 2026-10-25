@@ -20,29 +20,34 @@ async function fixture(t: TestContext) {
   await mkdir(dirname(upstream), { recursive: true });
   await copyFile(input, upstream);
   await copyFile(input, join(dirname(upstream), 'standard.png'));
+  const base = join(dirname(upstream), 'base-subject.png');
+  await sharp({ create: { width: 96, height: 128, channels: 4, background: '#a0b0c0' } }).png().toFile(base);
   const calls: AgentTask[] = [];
   const steps = createPreparationSteps({ async run(task) {
     calls.push(task);
     return { text: JSON.stringify({ savedPath: generated, error: null }), images: [{ savedPath: generated }] };
   } });
-  return { temporary, directory, runName, input, upstream, generated, calls, steps };
+  return { temporary, directory, runName, input, upstream, base, generated, calls, steps };
 }
 
-test('preparation uses one configured image task, reads the upstream clothed image, and resumes without external input', async t => {
+test('preparation sends clothed and base references in order through one configured image task and resumes without external input', async t => {
   const f = await fixture(t);
   const refs = await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 1);
   assert.equal(f.calls[0].imageGeneration, true);
   assert.match(f.calls[0].prompt, /image_gen\.imagegen/);
   assert.match(f.calls[0].prompt, /不要求工具字面同名/);
-  assert.equal(f.calls[0].images!.length, 1);
-  assert.equal(f.calls[0].images![0].path, refs.originalImage);
+  assert.deepEqual(f.calls[0].images!.map(image => image.path), [refs.originalImage, f.base]);
   assert.equal(f.calls[0].step, 'clothing_preparation');
   assert.ok(f.calls[0].prompt.includes('96×128'));
   assert.ok(!f.calls[0].prompt.includes('{width}'));
   assert.deepEqual(await readFile(refs.originalImage!), await readFile(f.input));
   assert.deepEqual(await readFile(refs.baseSubject), await readFile(f.generated));
   assert.equal(refs.baseSubject, refs.simplifiedSubject);
+  const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
+  assert.equal(record.version, 2);
+  assert.equal(typeof record.baseInputHash, 'string');
+  assert.notEqual(record.inputHash, record.baseInputHash);
   await rm(f.input);
   f.calls.length = 0;
   assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
@@ -102,6 +107,50 @@ test('changed cached references are not silently reused; loading missing referen
   const refs = await prepareReferences({ runName: f.runName }, f.steps);
   await writeFile(refs.originalImage!, 'changed source');
   await assert.rejects(loadPreparedReferences(f.runName), /参考已变化/);
+  assert.equal(f.calls.length, 1);
+});
+
+test('new clothing generation requires the base reference before calling an agent', async t => {
+  const f = await fixture(t);
+  await rm(f.base);
+  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), error => {
+    assert.ok(error instanceof Error);
+    assert.ok(error.message.includes(f.base));
+    assert.match(error.message, /part-layering --name/);
+    return true;
+  });
+  assert.equal(f.calls.length, 0);
+  await assert.rejects(readFile(join(f.directory, 'clothing.png')), { code: 'ENOENT' });
+});
+
+test('changed base reference invalidates the new cache without deleting existing clothing or decomposition', async t => {
+  const f = await fixture(t);
+  const refs = await prepareReferences({ runName: f.runName }, f.steps);
+  const oldBase = await readFile(f.base), oldClothing = await readFile(refs.baseSubject);
+  const part = join(dirname(f.directory), 'parts/kept.svg');
+  await mkdir(dirname(part), { recursive: true });
+  await writeFile(part, 'keep existing decomposition');
+  await sharp({ create: { width: 96, height: 128, channels: 4, background: '#405060' } }).png().toFile(f.base);
+  await assert.rejects(loadPreparedReferences(f.runName), /base-subject 参考已变化/);
+  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /base-subject 参考已变化/);
+  assert.equal(f.calls.length, 1);
+  assert.deepEqual(await readFile(refs.baseSubject), oldClothing);
+  assert.equal(await readFile(part, 'utf8'), 'keep existing decomposition');
+  await writeFile(f.base, oldBase);
+  assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
+  assert.equal(f.calls.length, 1);
+});
+
+test('legacy single-reference cache stays reusable without requiring or regenerating the base reference', async t => {
+  const f = await fixture(t);
+  const refs = await prepareReferences({ runName: f.runName }, f.steps);
+  const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
+  record.version = 1;
+  delete record.baseInputHash;
+  await writeFile(refs.judgment, JSON.stringify(record));
+  await rm(f.base);
+  assert.deepEqual(await loadPreparedReferences(f.runName), refs);
+  assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
   assert.equal(f.calls.length, 1);
 });
 

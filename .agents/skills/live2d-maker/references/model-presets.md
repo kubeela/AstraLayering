@@ -59,7 +59,7 @@
 
 SVG 合并由程序执行，不配置 LLM。步骤职责、绘图提示词、review 轮次和会话恢复规则保留原有实现。
 
-简化图使用 `gpt-image-2.5-sunburst`，保留模型返回的原生透明通道；素体图及人物／衣服遮挡补全参考使用 `gemini-nano-banana-2.1`；标准化、纯衣服参考准备、两套 raster、组装及可选阴影贴图使用默认的 `gpt-image-2.5-sunburst`。选择具体模型与工具是否实际生图是两件事，原有任务仍决定使用范围，reviewer 仍只提交反馈。已有 `.env` 仅在用户要求切换相应步骤时更新。
+简化图使用 `gpt-image-2.5-sunburst`，保留模型返回的原生透明通道；素体图及人物／衣服遮挡补全参考使用 `gemini-nano-banana-2.1`。纯衣服参考准备通过 `layering_clothing_preparation_image_model=gpt-image-2.5-sunburst` 显式指定；标准化、两套 raster、组装及可选阴影贴图使用默认的 `gpt-image-2.5-sunburst`。选择具体模型与工具是否实际生图是两件事，原有任务仍决定使用范围，reviewer 仍只提交反馈。已有 `.env` 仅在用户要求切换相应步骤时更新。
 
 启动前检查已有 Codex、Antigravity 与 Claude CLI、各自登录／模型授权，以及两种生图服务。Sunburst 填写 `layering_openai_image_base_url` 和 `layering_openai_image_api_key`；Nano 填写 `layering_google_image_base_url`、`layering_google_image_api_key` 与 `layering_google_image_protocol`，Google 协议按实际服务选择 `gemini` 或 `openai`。复用已有凭据；缺失时请用户本地补充或确认自定义调整，不自行安装 CLI 或登录。
 

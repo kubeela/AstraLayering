@@ -3,7 +3,7 @@ import { normalizeGeneratedReference } from '../shared/part/reference-normalizat
 import type { ImageProcessingOptions } from '../shared/image-processing.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { pipelineDirectory, resolveInput } from '../shared/paths.ts';
-import { simplifiedCharacter } from '../shared/upstream.ts';
+import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import { randomUUID } from 'node:crypto';
 import { copyFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -13,7 +13,7 @@ import { clearPreparedParts, preparationHash as hash } from '../shared/part/prep
 import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
 
 export type { PreparationInput, PreparationReferences };
-export type PreparationSteps = { extract(image: string, output: string, prompt: string): Promise<void> };
+export type PreparationSteps = { extract(image: string, baseImage: string, output: string, prompt: string): Promise<void> };
 
 export function getPreparationDirectory(runName: string, root?: string): string {
   return join(pipelineDirectory(runName, 'clothing-part-layering', root), 'references');
@@ -26,6 +26,10 @@ function references(directory: string, originalImage: string): PreparationRefere
   return { directory, originalImage, judgment: join(directory, 'preparation.json'),
     simplifiedSubject: join(directory, 'clothing.png'), baseSubject: join(directory, 'clothing.png') };
 }
+async function characterBase(runName: string, root?: string): Promise<string> {
+  const directory = await requireUpstream(runName, 'part-layering', [{ path: 'references/base-subject.png' }], root);
+  return join(directory, 'references/base-subject.png');
+}
 async function checkImage(image: string, input: string): Promise<void> {
   const [output, source] = await Promise.all([sharp(image).metadata(), sharp(input).metadata()]);
   if (output.format !== 'png' || output.width !== source.autoOrient.width || output.height !== source.autoOrient.height
@@ -35,10 +39,13 @@ async function checkImage(image: string, input: string): Promise<void> {
 }
 
 export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): PreparationSteps {
-  return { async extract(image, output, prompt) {
+  return { async extract(image, baseImage, output, prompt) {
     const result = await agents.run({
       step: 'clothing_preparation', name: '纯衣服参考准备', imageGeneration: true,
-      images: [{ path: image, description: '图 1：简化后的穿衣角色原稿。保留衣服与穿着形态，去除人物和非衣装饰品。' }],
+      images: [
+        { path: image, description: '图 1：简化后的穿衣角色原稿，提供待提取衣装的款式、比例和画风。' },
+        { path: baseImage, description: '图 2：同一角色的素体参考，用于确认换装范围；人物及随人物保留的外观由素体自身提供。' },
+      ],
       prompt: preparationImagePrompt(prompt,'clothing'),
       outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
         properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
@@ -58,8 +65,12 @@ export async function loadPreparedReferences(runName: string, root?: string): Pr
   const refs = references(directory, image);
   if (!await exists(refs.judgment) || !await exists(refs.baseSubject)) throw new Error('纯衣服参考尚未完成，请先不带 --groups 运行 preparation。');
   const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
-  if (record.version !== 1 || record.inputHash !== hash(await readFile(image)) || record.clothingHash !== hash(await readFile(refs.baseSubject))) {
+  if (![1, 2].includes(record.version) || record.inputHash !== hash(await readFile(image)) || record.clothingHash !== hash(await readFile(refs.baseSubject))) {
     throw new Error('preparation 参考已变化；请使用新的 --name，或删除 references/clothing.png 后重做 preparation 和拆分。');
+  }
+  // Old single-reference products remain usable; new products depend on both inputs.
+  if (record.version === 2 && record.baseInputHash !== hash(await readFile(await characterBase(runName, root)))) {
+    throw new Error('base-subject 参考已变化；请删除 references/clothing.png 后重做衣服 preparation 和拆分，或使用新的 --name。');
   }
   const standard = join(pipelineDirectory(runName, 'part-layering', root), 'references/standard.png');
   if (record.standardHash && record.standardHash !== hash(await readFile(standard))) throw new Error('standard 参考已变化，请重做衣服 preparation。');
@@ -85,6 +96,8 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   const standard = join(pipelineDirectory(input.runName, 'part-layering', input.dir), 'references/standard.png');
   if (!await exists(standard)) throw new Error(`纯衣服参考后处理缺少上游：${standard}。请先执行同名 part-layering，或手动放置上游 standard.png 到该路径。`);
   const standardHash = hash(await readFile(standard));
+  const baseImage = await characterBase(input.runName, input.dir);
+  const baseInputHash = hash(await readFile(baseImage));
   const meta = await sharp(standard).metadata();
   const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
     .replaceAll('{width}', String(meta.autoOrient.width)).replaceAll('{height}', String(meta.autoOrient.height));
@@ -92,10 +105,10 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   progress?.('preparation：使用已配置生图工具生成纯衣服参考。');
   const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
   try {
-    await steps.extract(image, temporary, prompt);
+    await steps.extract(image, baseImage, temporary, prompt);
     await normalizeGeneratedReference(temporary, standard, directory, 'clothing', normalization);
     await checkImage(temporary, standard);
-    const record = { version: 1, inputHash: hash(await readFile(image)), clothingHash: hash(await readFile(temporary)),
+    const record = { version: 2, inputHash: hash(await readFile(image)), baseInputHash, clothingHash: hash(await readFile(temporary)),
       standardHash, tool: 'image_generation', promptHash: hash(Buffer.from(prompt)) };
     await clearPreparedParts(dirname(directory));
     await rename(temporary, refs.baseSubject);
