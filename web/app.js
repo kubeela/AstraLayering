@@ -73,13 +73,13 @@ const groupViews = {0:{selected:'',depth:-1,search:'',open:false,expanded:new Se
 // Expanded and collapsed sections survive a page reload (per browser tab).
 const viewKey='astra-layering-view';
 function saveView() {
- try{sessionStorage.setItem(viewKey,JSON.stringify({details:[...state.details],pipelines:[...state.collapsedPipelines],steps:[...state.collapsedSteps],phases:[...state.collapsedPhases],
+ try{sessionStorage.setItem(viewKey,JSON.stringify({details:[...state.details],pipelines:[...state.collapsedPipelines],steps:[...state.collapsedSteps],phases:[...state.collapsedPhases],notice:state.noticeStatus,
   groups:Object.fromEntries(Object.entries(groupViews).map(([index,view])=>[index,{...view,expanded:[...view.expanded]}]))}));}catch{}
 }
 try{
  const saved=JSON.parse(sessionStorage.getItem(viewKey)||'null');
  if(saved){
-  state.details=new Map(saved.details);state.collapsedPipelines=new Set(saved.pipelines);state.collapsedSteps=new Set(saved.steps);state.collapsedPhases=new Set(saved.phases);
+  state.details=new Map(saved.details);state.collapsedPipelines=new Set(saved.pipelines);state.collapsedSteps=new Set(saved.steps);state.collapsedPhases=new Set(saved.phases);state.noticeStatus=saved.notice;
   for(const [index,view] of Object.entries(saved.groups||{}))if(groupViews[index])Object.assign(groupViews[index],{...view,expanded:new Set(view.expanded)});
  }
 }catch{}
@@ -468,7 +468,6 @@ function configPage() {
  ${state.diff?`<div class="diff-content">${diffText?diffText.split('\n').map(line=>`<pre class="${line.startsWith('+')?'addition':line.startsWith('-')?'deletion':''}">${esc(line)}</pre>`).join(''):`<div class="empty-diff">${icon('check')}这个文件在两个版本之间没有变化。</div>`}</div>`:`<div class="config-pair"><article class="markdown-panel"><header><span>${icon('file')}${currentFile.endsWith('.json')?'Schema JSON':currentFile}</span><small>${currentFile.endsWith('.json')?'JSON':'MARKDOWN'}</small></header><div class="markdown-body">${currentFile.endsWith('.json')?`<pre>${esc(configText)}</pre>`:markdown(configText)}</div></article>${schemaText?`<article class="schema-panel"><header><span>${icon('code')}schema.json</span><small>JSON SCHEMA</small></header><div class="code-body">${jsonLines(schemaText)}</div></article>`:''}</div>`}
  <div class="config-content-footer">${icon('info')}description 与 schema 来自同一版本；预览不会影响正在运行的 agent。</div></section></div>`;
 }
-let noticeStatus;
 function render() {
  const focused=document.activeElement;
  const focusId=focused?.id;
@@ -484,8 +483,8 @@ function render() {
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
  // A run that newly stops opens its notice once; closing it afterwards sticks.
  const stopped=data.status==='failed'||data.status==='interrupted';
- if(stopped&&noticeStatus!==data.status){const notice=document.querySelector('[data-details="run-notice"]');if(notice){notice.open=true;state.details.set('run-notice',true);}}
- noticeStatus=data.status;
+ if(stopped&&state.noticeStatus!==data.status){const notice=document.querySelector('[data-details="run-notice"]');if(notice){notice.open=true;state.details.set('run-notice',true);}}
+ state.noticeStatus=data.status;
  saveView();
  if(focusId&&focused&&!focused.isConnected){const replacement=document.getElementById(focusId);replacement?.focus({preventScroll:true});if(selection&&replacement?.tagName==='INPUT')replacement.setSelectionRange(...selection);}
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
