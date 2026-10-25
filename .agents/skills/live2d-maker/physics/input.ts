@@ -19,14 +19,17 @@ export async function resolveInput(name: string, root: string, profile: 'primary
   for(const p of structures) await json(p);
   return {task,document,color,profile,structures};
 }
-export const rulePaths=['guide.md','prompts/analysis.md','prompts/authoring.md','prompts/review.md','coverage.ts','images.ts','tools.ts','calibration.ts','motion-targets.ts','reference.ts','../shared/physics-core/motion-presets.js','feedback.ts','steps.ts'] as const;
+export const rulePaths=['guide.md','prompts/analysis.md','prompts/authoring.md','prompts/review.md','coverage.ts','images.ts','tools.ts','calibration.ts','motion-targets.ts','reference.ts','../shared/physics-core/motion-presets.js','feedback.ts','steps.ts','review-observations.ts'] as const;
 export type RuleBaseline={version:1;rules:{path:string;hash:string}[]};
 export async function ruleBaseline():Promise<RuleBaseline>{
   return {version:1,rules:await Promise.all(rulePaths.map(async path=>({path,hash:hash(await readFile(new URL(path,import.meta.url)))})))};
 }
 export async function fingerprint(input: PhysicsInput, baseline?:RuleBaseline) {
   const rules=(baseline??await ruleBaseline()).rules;
-  if(baseline?.version!==undefined&&baseline.version!==1||rules.length!==rulePaths.length||rules.some((r,i)=>r.path!==rulePaths[i]||!/^[a-f0-9]{64}$/.test(r.hash)))throw Error('无效的物理规则基线');
+  // The previous version had the exact first thirteen paths. Its explicit
+  // baseline still proves the old input digest during the scoped-review upgrade.
+  const legacyBaseline=!!baseline&&rules.length===13;
+  if(baseline?.version!==undefined&&baseline.version!==1||rules.length!==rulePaths.length&&!legacyBaseline||rules.some((r,i)=>r.path!==rulePaths[i]||!/^[a-f0-9]{64}$/.test(r.hash)))throw Error('无效的物理规则基线');
   return hash(JSON.stringify({version:3,rules:rules.map(r=>r.hash),reference:input.referencePhysics?hash(await readFile(input.referencePhysics)):null,profile:input.profile,source:hash(await readFile(input.color)),document:hash(await readFile(input.document)),structures:await Promise.all(input.structures.map(p=>json(p)))}));
 }
 export async function prepareSource(input: PhysicsInput, directory: string, krita: string) {

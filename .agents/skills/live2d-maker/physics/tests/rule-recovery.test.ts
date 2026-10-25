@@ -48,3 +48,15 @@ test('a failed current binding validation cannot migrate the input fingerprint',
     assert.equal(await readFile(join(f.root,'run.json'),'utf8'),before);
   }finally{await rm(f.root,{recursive:true,force:true});}
 });
+test('the exact pre-scope rule list can prove an old run; incomplete or reordered lists cannot',async()=>{
+  const f=await fixture();try{
+    const legacy={version:1 as const,rules:f.baseline.rules.slice(0,13)};
+    await put(join(f.root,'run.json'),{...f.run,inputFingerprint:await fingerprint(f.input,legacy)});
+    let validations=0;
+    const result=await resumeRuleUpdate(f.input,f.root,legacy,async()=>{validations++;});
+    assert.equal(result.status,'migrated');assert.equal(validations,1);
+    assert.equal(JSON.parse(await readFile(join(f.root,'run.json'),'utf8')).inputFingerprint,await fingerprint(f.input));
+    await assert.rejects(fingerprint(f.input,{...legacy,rules:legacy.rules.slice(0,12)}),/无效/);
+    await assert.rejects(fingerprint(f.input,{...legacy,rules:[...legacy.rules].reverse()}),/无效/);
+  }finally{await rm(f.root,{recursive:true,force:true});}
+});
