@@ -5,6 +5,7 @@ import {configHash} from './evidence.ts';
 import {join} from 'node:path';
 import {optional,json} from './input.ts';
 import {simulationHash} from './evidence.ts';
+import {scopedObservations} from './review-observations.ts';
 
 export const referenceVersion='astra-physics-reference-1';
 export async function readReference(input:PhysicsInput){
@@ -43,7 +44,7 @@ export async function initializeFromReference(input:PhysicsInput,catalog:any,dir
 }
 export async function validateReferenceReview(input:PhysicsInput,evidence:string,findings:any){
   const reference=await readReference(input);if(!reference)return;
-  const folder=join(evidence,'../reference-evidence'),manifest=await json(join(folder,'manifest.json')),viewed=await optional(join(folder,'viewed.json'))||[];
+  const folder=join(evidence,'../reference-evidence'),manifest=await json(join(folder,'manifest.json')),viewed=scopedObservations(await optional(join(folder,'viewed.json'))||[],await optional(join(evidence,'../review-session.json')),findings);
   if(manifest.configHash!==reference.configHash||manifest.simulationHash!==await simulationHash())throw Error('参考画面已过期，需要重新比较');
   const row=findings.referenceComparison;if(row?.verdict!=='supported'||!row.reason?.trim())throw Error('需要明确比较参考版的发束、衣料与挂件自然感，不只比较合法数值');
   for(const step of [0,180,360,540])if(!viewed.some((v:any)=>v.configHash===manifest.configHash&&v.renderHash===manifest.renderHash&&v.test==='airflow'&&v.step===step&&v.mode==='color'&&!v.component))throw Error('缺少参考版微风 '+step+' 步的实际画面对比');

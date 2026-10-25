@@ -7,12 +7,13 @@ import {runAgent,type Agent} from '../shared/raster/agent.ts';
 import {saveConfig} from '../shared/raster/run-store.ts';
 import {configHash} from './evidence.ts';
 import {json,optional,put} from './input.ts';
+import {observationScopeVersion,scopedObservations} from './review-observations.ts';
 
 export async function rejectReview(config:any,directory:string,items:any[]){
   const session=await json(join(directory,'step03/review-session.json')),digest=configHash(config);
   if(session.configHash!==digest)throw Error('复核会话与当前草稿不一致');
   if(!Array.isArray(items)||!items.length)throw Error('返修必须记录明确的组件、准则、原因和证据窗口');
-  const manifest=await optional(join(directory,'step03/evidence/manifest.json')),viewed=await optional(join(directory,'step03/evidence/viewed.json'))||[];
+  const manifest=await optional(join(directory,'step03/evidence/manifest.json')),viewed=scopedObservations(await optional(join(directory,'step03/evidence/viewed.json'))||[],session);
   for(const item of items){
     if(!config.components.some((c:any)=>c.id===item.component&&c.enabled)||!reviewCriteria.includes(item.criterion)||!['rejected','needs-evidence'].includes(item.verdict)||!item.reason?.trim())throw Error('无效的逐组件返修项');
     const run=manifest?.runs.find((r:any)=>r.test===item.test);
@@ -34,7 +35,7 @@ export function roleAgent(directory:string,agent:Agent=runAgent):Agent{
     let before:string|undefined;
     if(role==='review'){
       before=await readFile(draft,'utf8');const config=JSON.parse(before),old=await optional(join(directory,'step03/review-session.json'));
-      const session=old&&old.threadId&&old.threadId===request.threadId&&old.configHash===configHash(config)?old:{id:randomUUID(),configHash:configHash(config),createdAt:new Date().toISOString(),threadId:request.threadId||null};
+      const session=old&&old.threadId&&old.threadId===request.threadId&&old.configHash===configHash(config)?old:{id:randomUUID(),configHash:configHash(config),observationScopeVersion,createdAt:new Date().toISOString(),threadId:request.threadId||null};
       await put(join(directory,'step03/review-session.json'),session);
       if(session.id!==old?.id){
         const feedback=await optional(join(directory,'step03/feedback.json'));if(feedback){await mkdir(join(directory,'step03/reviews',feedback.reviewTurn),{recursive:true});await copyFile(join(directory,'step03/feedback.json'),join(directory,'step03/reviews',feedback.reviewTurn,'feedback.json'));await rm(join(directory,'step03/feedback.json'),{force:true});}

@@ -1,7 +1,8 @@
 // Workflow review policy uses the standalone evidence store; no frontend imports.
 import { join, resolve } from 'node:path';
 import { reviewCriteria } from '../shared/physics-core/component-physics-schema.js';
-import { json } from './input.ts';
+import { json, optional } from './input.ts';
+import {scopedObservations} from './review-observations.ts';
 import { configHash, simulationHash, evidenceVersion } from '../shared/physics-evidence/store.ts';
 import { recoveryProofValid } from '../shared/physics-evidence/settling.js';
 import { motionReviewVersion } from '../shared/physics-evidence/physics-motion-review.js';
@@ -23,7 +24,7 @@ export async function validateFindings(config:any,evidence:string,findings:any,e
   if(!manifest.renderDirectory||manifest.renderHash!==await(await import('./render.ts')).renderFingerprint(resolve(evidence,manifest.renderDirectory)))throw Error('渲染器、贴图或裁切关系已变化，需要重新复核');
   if(expectedSource&&resolve(evidence,manifest.renderDirectory)!==resolve(expectedSource))throw Error('可用投影输入已变化，需要重新复核');
   if(!Array.isArray(findings.components))throw Error('缺少逐组件复核');
-  const viewed=await json(join(evidence,'viewed.json'));
+  const viewed=scopedObservations(await json(join(evidence,'viewed.json')),await optional(join(evidence,'../review-session.json')),findings);
   for(const c of config.components.filter((c:any)=>c.enabled)) {
     const row=findings.components.find((r:any)=>r.id===c.id);if(!row)throw Error('未复核组件：'+c.name);
     for(const run of manifest.runs) {
