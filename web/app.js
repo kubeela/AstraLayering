@@ -64,7 +64,7 @@ function header() {
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
 function pageHeading() {
- return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button>${state.name?`<span class="task-status">${esc(taskStatusNames[data.status]||data.status||'正在读取')}</span>`:''}</div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${data.canStop?`<button class="button" data-action="stop">停止</button>`:''}${stepToolbar()}<button class="primary" data-action="run" ${data.runnerAlive||data.lockHeld?'disabled':''}>${icon('play')}运行 / 续跑</button>`:''}</div></div>`;
+ return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${data.canStop?`<button class="button" data-action="stop">停止</button>`:''}${stepToolbar()}`:''}</div></div>`;
 }
 let archivedFiles = new Set();
 const assetLookup = new Map();
@@ -169,7 +169,8 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
 // Step recovery: 继续 keeps products and session, 恢复 drops the session and keeps
 // products, 重试 deletes the step products and session; dependents rerun with it.
 // One fixed bar at the top right lists every recorded step of the task, with the
-// failed or interrupted one selected; each action then runs the task again.
+// failed or interrupted one selected; each action then runs the task again. 继续
+// also replaces the heading's 运行 / 续跑: without any step record it opens the run dialog.
 const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
 const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除本步骤产物与会话后重做；依赖它的后续步骤自动重跑'};
 const stepStatusNames={running:'中断 / 失败',unmarked:'无完成标记',completed:'已完成',legacy:'旧版目录，继续时自动转换'};
@@ -186,8 +187,8 @@ function selectedStepTarget(targets=stepTargets()) {
 function stepToolbar() {
  if(!state.name)return '';
  const targets=stepTargets(),chosen=selectedStepTarget(targets),busy=data.runnerAlive||data.lockHeld;
- const allowed=action=>!!chosen&&(chosen.status==='legacy'?action==='continue':chosen.status!=='completed'||action==='retry');
- const reason=action=>busy?'任务正在运行，结束或停止后可操作':!chosen?'当前任务还没有步骤记录，请用“运行 / 续跑”':
+ const allowed=action=>!chosen?action==='continue':chosen.status==='legacy'?action==='continue':chosen.status!=='completed'||action==='retry';
+ const reason=action=>busy?'任务正在运行，结束或停止后可操作':!chosen&&action!=='continue'?'当前任务还没有步骤记录，先继续运行':!chosen?'运行任务（可选择范围）':
   !allowed(action)?(chosen.status==='completed'?'已完成的步骤只能重试':'旧版目录请先继续，转换后可恢复或重试'):stepActionTitles[action];
  const option=target=>`<option value="${esc(stepTargetKey(target))}" ${target===chosen?'selected':''}>${esc(target.id||'整条管线')} · ${stepStatusNames[target.status]}${target.session?' · 有会话':''}</option>`;
  const groups=[...new Set(targets.map(target=>target.index))].map(index=>`<optgroup label="${esc(stages[index].name)}">${targets.filter(target=>target.index===index).map(option).join('')}</optgroup>`).join('');
@@ -563,7 +564,7 @@ function bind() {
  const target=document.querySelector('#step-target');if(target)target.onchange=()=>{state.stepTarget=target.value;render();};
  document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
   const chosen=selectedStepTarget(),action=b.dataset.stepToolbar;
-  if(!chosen)return;
+  if(!chosen){if(action==='continue')showNew(false,true);return;}
   const label=chosen.id||stages[chosen.index].name;
   if(action==='retry'&&!confirm(`重试 ${label}：删除该步骤的产物与会话并重新运行，依赖它的后续步骤会随之重跑。确定吗？`))return;
   b.disabled=true;

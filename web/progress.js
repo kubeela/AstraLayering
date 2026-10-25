@@ -26,9 +26,16 @@ export function groupPreviewArtifacts(group, phaseFiles, files, versions = {}) {
   return latestSvgArtifacts([...phaseFiles.completion, ...phaseFiles.reduction, ...phaseFiles.outline], files, versions);
 }
 
+// A stage panel shows its own latest drawing (draft or published); an earlier
+// stage stands in only until the stage has drawn anything, however recently the
+// earlier one was rewritten.
 export function groupStagePreviewArtifacts(phase, phaseFiles, files, versions = {}) {
   const phases = phase === 'outline' ? ['outline'] : ['completion', 'reduction', 'outline'];
-  return latestSvgArtifacts(phases.flatMap(id => phaseFiles[id]), files, versions);
+  for (const id of phases) {
+    const latest = latestSvgArtifacts(phaseFiles[id], files, versions);
+    if (latest.length) return latest;
+  }
+  return [];
 }
 
 // Mirrors shared/part/part-steps.ts: child groups nest under groups/<parent>/children/.

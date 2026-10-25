@@ -56,7 +56,9 @@ export type GroupContext = InitialContext & {
   parent?: GroupNode;
 };
 // 所有 SVG 生产接口只写 .draft.svg；正式路径由调度器验证后发布。
-export type DrawingContext = GroupContext & { outputPath: string };
+// resumeDraft：继续中断的步骤（继续或恢复）时，outputPath 上的草稿是上次画到的进度，
+// 应在其上接着画而不是从头开始。
+export type DrawingContext = GroupContext & { outputPath: string; resumeDraft?: boolean };
 export type ReviewContext = GroupContext & { outline: SvgArtifact; reportPath: string };
 
 export type LayeringSteps = {
