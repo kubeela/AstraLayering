@@ -48,6 +48,17 @@ test('a failed current binding validation cannot migrate the input fingerprint',
     assert.equal(await readFile(join(f.root,'run.json'),'utf8'),before);
   }finally{await rm(f.root,{recursive:true,force:true});}
 });
+test('a genuine rules generation preserves exhausted review history, resumes B and cannot reset the budget twice',async()=>{
+ const f=await fixture();try{
+  await put(join(f.root,'roles.json'),{authoring:{threadId:'preserved-b',threadHarness:'codex'},repairRounds:{hair:3}});
+  await writeFile(join(f.root,'step02/.completed'),'old binding approval');await put(join(f.root,'step03/feedback.json'),{status:'repair-requested',reason:'weak response',repairRounds:{hair:3}});
+  const result=await resumeRuleUpdate(f.input,f.root,f.baseline,async()=>{}),run=JSON.parse(await readFile(join(f.root,'run.json'),'utf8'));
+  assert.equal(run.threadId,'preserved-b');assert.equal(run.threadStep,'step02');assert.equal(await readFile(join(result.archive!,'step02-.completed'),'utf8'),'old binding approval');
+  assert.equal(JSON.parse(await readFile(join(result.archive!,'step03-feedback.json'),'utf8')).reason,'weak response');
+  const roles=JSON.parse(await readFile(join(f.root,'roles.json'),'utf8'));assert.deepEqual(roles.repairRounds,{});assert.deepEqual(roles.previousRepairRounds,{hair:3});
+  await put(join(f.root,'roles.json'),{...roles,repairRounds:{hair:1}});assert.equal((await resumeRuleUpdate(f.input,f.root,f.baseline,async()=>assert.fail())).status,'current');assert.deepEqual(JSON.parse(await readFile(join(f.root,'roles.json'),'utf8')).repairRounds,{hair:1});
+ }finally{await rm(f.root,{recursive:true,force:true});}
+});
 test('the exact pre-scope rule list can prove an old run; incomplete or reordered lists cannot',async()=>{
   const f=await fixture();try{
     const legacy={version:1 as const,rules:f.baseline.rules.slice(0,13)};

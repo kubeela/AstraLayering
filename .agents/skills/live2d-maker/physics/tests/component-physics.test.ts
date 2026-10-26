@@ -194,12 +194,12 @@ test('UUID bindings preserve multiple source layers through reorder and clipping
 test('evidence records exact every-step states and never publishes numerical-only review',async()=>{
   const root=await mkdtemp(join(tmpdir(),'astra-component-test-')),directory=join(root,'evidence');try{
     await mkdir(directory);await writeFile(join(directory,'partial-trace'),'interrupted-diagnostic');
-    const c=config([component()]);const manifest=await simulate(c,directory);assert.equal(manifest.runs.length,9);assert.equal(manifest.coverage.render,'pending');
+    const c=config([component()]);const manifest=await simulate(c,directory);assert.equal(manifest.runs.length,10);assert.equal(manifest.coverage.render,'pending');
     const partialBackup=(await readdir(join(root,'backups')))[0];assert.equal(await readFile(join(root,'backups',partialBackup,'partial-trace'),'utf8'),'interrupted-diagnostic');
     assert.equal(manifest.runs[0].metrics.motionReview.stepBasis,motionStepBasis);
     const rows=await traceWindow(directory,'tip-impulse',[59,60,61,960]);assert.equal(rows[1].time,.5);assert(rows[0].components.strand.stats.travel<1e-10);assert(rows[2].components.strand.stats.travel>0);assert(rows[2].components.strand.positions.length>0);
     assert.deepEqual((await traceWindow(directory,'tip-impulse',[61]))[0],rows[2]);
-    await assert.rejects(validateFindings(c,directory,{configHash:manifest.configHash,evidenceVersion:manifest.version,components:[]}),/渲染/);
+    await assert.rejects(validateFindings(c,directory,{configHash:manifest.configHash,evidenceVersion:manifest.version,components:[]}),/运动响应复核失败.*weak-visible-response/);
     assert.equal((await simulate(c,directory)).createdAt,manifest.createdAt,'unchanged evidence should be reused');
     await writeFile(join(directory,'manifest.json'),JSON.stringify({...manifest,simulationHash:'obsolete-measurement'}));
     await assert.rejects(validateFindings(c,directory,{configHash:manifest.configHash,evidenceVersion:manifest.version,components:[]}),/重新生成证据/);

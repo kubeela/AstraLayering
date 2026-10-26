@@ -4,6 +4,8 @@ import { ComponentScene } from '#physics-core/component-physics-model.js';
 import { validatePhysicsConfig } from '#physics-core/component-physics-schema.js';
 import { PhysicsRenderer } from '#character-render/physics-renderer.js';
 import { testNames } from '#physics-evidence/physics-test-input.js';
+import {preparePointerBrush} from '#physics-evidence/pointer-brush.js';
+import {pointerCommand} from '#physics-evidence/physics-pointer-contact.js';
 import { ComponentPhysicsRunner } from './component-physics-runner.js';
 
 // Use the free-end load from the recorded review protocol. Mesh order does
@@ -88,8 +90,8 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     const svg=$('#physics-overlay'),handles=document.createElementNS('http://www.w3.org/2000/svg','g');handles.classList.add('component-handles');svg.append(handles);
     svg.addEventListener('pointermove',e=>{if(!this.dragControl)return;e.stopPropagation();const point=this.sourcePoint(e),{authoring,path}=this.dragControl;let target=authoring;for(const key of path.slice(0,-1))target=target[key];target[path.at(-1)]=point;$('#component-geometry').value=JSON.stringify(authoring,null,2);this.overlay();});
     const end=e=>{if(!this.dragControl)return;e.stopPropagation();const a=this.dragControl.authoring;this.dragControl=null;if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId);this.changeComponent(null,'authoring',a);};svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',()=>{this.dragControl=null;this.overlay();});
-    $('#component-test').replaceChildren(new Option('自由预览',''),...testNames.map((name,i)=>new Option(['静止','末端脉冲','支撑移动后释放','支撑往返','持续输入后停止','极端输入','组合运动','轻扫后释放','微风吹拂后停止'][i],name)));
-    $('#component-test').onchange=e=>{this.playback=e.target.value;this.editing=false;this.paused=false;this.replayStep=0;this.scene?.reset();this.lastTime=0;this.render();this.sync();};
+    $('#component-test').replaceChildren(new Option('自由预览',''),...testNames.map((name,i)=>new Option(['静止','末端脉冲','支撑移动后释放','支撑往返','持续输入后停止','极端输入','组合运动','单次轻扫脉冲','微风吹拂后停止','连续鼠标轻扫'][i],name)));
+    $('#component-test').onchange=e=>{this.playback=e.target.value;this.editing=false;this.paused=false;this.replayStep=0;this.scene?.reset();if(this.playback==='pointer-brush'&&!this.scene.pointerBrush){this.scene.pointerBrush=preparePointerBrush(this.scene,this.parts);if(this.runner.ready)this.runner.worker.postMessage({type:'pointer-context',pointerBrush:this.scene.pointerBrush});}this.lastTime=0;this.render();this.sync();};
     const toggle=$('#physics-enabled').onchange;$('#physics-enabled').onchange=e=>this.formal?this.changeComponent(null,'enabled',e.target.checked):toggle(e);
     $('#physics-export').onclick=()=>this.download(new Blob([JSON.stringify(this.recipe(),null,2)+'\n'],{type:'application/json'}),this.formal?'physics.draft.json':'character.physics.json');
     const importLegacy=$('#physics-import').onchange;
@@ -153,16 +155,8 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
     if(this.pointer){
       const dt=(time-this.pointer.time)/1000,dx=x-this.pointer.x,dy=y-this.pointer.y;
       if(dt>0&&dt<.12)for(const[id,b]of this.bodies)if(this.scope==='all'||id===this.selected){
-        const steps=Math.min(12,Math.max(1,Math.ceil(Math.hypot(dx,dy)/Math.max(10,this.radius*.5))));let contact=null;
-        // Both ends belong to the swept contact. A thin ribbon can be under
-        // the previous point and already outside the next pointer sample.
-        for(let n=0;n<=steps&&!contact;n++){
-          const px=this.pointer.x+dx*n/steps,py=this.pointer.y+dy*n/steps,parts=this.contactLayers.get(id)||[];
-          if(b.hit(px,py,parts))contact=[px,py];
-          else for(let k=0;k<8&&!contact;k++){const a=k*Math.PI/4,qx=px+Math.cos(a)*this.radius*.65,qy=py+Math.sin(a)*this.radius*.65;if(b.hit(qx,qy,parts))contact=[qx,qy];}
-        }
-        // Weight by elapsed contact time, not the number of pointer events.
-        if(contact)b.impulse(...contact,dx/dt*this.force,dy/dt*this.force,this.radius,dt*12);
+        const command=pointerCommand(b,this.contactLayers.get(id)||[],[this.pointer.x,this.pointer.y],[x,y],dt,this.radius,this.force);
+        if(command)b.impulse(...command.args);
       }
     }
     this.pointer={x,y,time};this.overlay();

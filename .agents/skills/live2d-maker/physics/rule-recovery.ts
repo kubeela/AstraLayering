@@ -1,5 +1,6 @@
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
+import {copyFile,rm} from 'node:fs/promises';
 import {fingerprint,json,optional,put,ruleBaseline,type PhysicsInput,type RuleBaseline} from './input.ts';
 
 // Prove the old digest using current source bytes before preserving analysis.
@@ -13,7 +14,16 @@ export async function resumeRuleUpdate(input:PhysicsInput,directory:string,basel
   await put(join(archive,'run-before.json'),run);
   await put(join(archive,'rules-before.json'),baseline);
   await put(join(archive,'rules-after.json'),await ruleBaseline());
-  await put(join(archive,'migration.json'),{version:1,reason:'Explicit rule maintenance; all source inputs match the previous fingerprint',previousFingerprint:run.inputFingerprint,inputFingerprint:current,at:new Date().toISOString(),analysisValidated:true,bindingsValidated:!!await optional(join(directory,'step02/physics.draft.json')),reviewAcceptanceInherited:false});
-  await put(join(directory,'run.json'),{...run,inputFingerprint:current,sourceInput:input});
+  const roles=await optional(join(directory,'roles.json'));
+  if(roles)await put(join(archive,'roles-before.json'),roles);
+  for(const path of ['step02/.completed','step03/.completed','step02/repair-request.json','step03/feedback.json','step03/review-session.json']) {
+    const target=path.replaceAll('/','-');
+    try{await copyFile(join(directory,path),join(archive,target));await rm(join(directory,path));}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
+  }
+  if(roles)await put(join(directory,'roles.json'),{...roles,repairRounds:{},repairGeneration:current,previousRepairRounds:roles.repairRounds||{}});
+  const next={...run,inputFingerprint:current,sourceInput:input};
+  if(roles?.authoring?.threadId){next.threadId=roles.authoring.threadId;next.threadHarness=roles.authoring.threadHarness;next.threadStep='step02';if(next.threadHandoff?.replacementThreadId!==next.threadId)delete next.threadHandoff;}
+  await put(join(archive,'migration.json'),{version:1,reason:'Explicit rule maintenance; all source inputs match the previous fingerprint',previousFingerprint:run.inputFingerprint,inputFingerprint:current,at:new Date().toISOString(),analysisValidated:true,bindingsValidated:!!await optional(join(directory,'step02/physics.draft.json')),reviewAcceptanceInherited:false,authoringAndReviewMustRepeat:true,oldFeedbackAndBudgetArchived:true});
+  await put(join(directory,'run.json'),next);
   return {status:'migrated' as const,archive};
 }

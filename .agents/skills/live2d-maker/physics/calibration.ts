@@ -11,9 +11,10 @@ import {put,optional,hash} from './input.ts';
 import {within} from '../shared/raster/run-store.ts';
 import {compareMotionTarget,matchTargetComponent,motionTargetVersion} from './motion-targets.ts';
 import {recoveryBudgetSteps,recoveryState,settlingVersion} from '../shared/physics-evidence/settling.js';
+import {pointerSource,pointerContext} from '../shared/physics-evidence/pointer-source.ts';
 
-export const calibrationVersion='astra-physics-calibration-4';
-export const quickTests=['airflow','light-brush','support-release'] as const;
+export const calibrationVersion='astra-physics-calibration-5';
+export const quickTests=['airflow','light-brush','support-release','pointer-brush'] as const;
 export const recipes=[
   {id:'hair-bend',kind:'strand',purpose:'游离发束：固定贴头根部，宽片克制截面旋转，开放中段和末端',response:{frequencyHz:1.3,dampingRatio:.25,inputGain:.65,windGain:.5,outputGain:1.7},authoring:{swing:{parallel:.8}}},
   {id:'soft-ribbon',kind:'strand',purpose:'窄软带／长绳：真实单向挂点，分段弯曲与后段余摆',response:{frequencyHz:1.15,dampingRatio:.3,inputGain:.65,windGain:.45,outputGain:1.4},authoring:{swing:{parallel:.15}}},
@@ -64,7 +65,7 @@ function defaults(config:any,ids:string[],reference?:any,baseline?:any):Candidat
   if(baseline?.issues.length){
     const driven=Object.fromEntries(ids.map(id=>{
       const c=config.components.find((c:any)=>c.id===id),response:any={};
-      const weak=quickTests.map(test=>baseline.metrics[test][id]).filter(m=>m.issues.includes('weak-response'));
+      const weak=quickTests.map(test=>baseline.metrics[test][id]).filter(m=>m.issues.includes('weak-response')||m.issues.includes('weak-visible-response'));
       if(weak.length){const required=Math.max(.05,c.authoring.freeLength*c.limits.maxTravel*.005),factor=Math.max(...weak.map(m=>required/Math.max(.005,m.visiblePeak)*1.15));response.inputGain=Math.min(2,Math.max(.15,c.response.inputGain)*factor);}
       // A tightly constrained, high-rate sheet can remain insensitive after
       // reaching the input budget. Test a slower response before changing its
@@ -86,11 +87,12 @@ function defaults(config:any,ids:string[],reference?:any,baseline?:any):Candidat
   }
   return candidates;
 }
-export async function measureCandidate(config:any,ids:string[],signal?:AbortSignal){
+export async function measureCandidate(config:any,ids:string[],signal?:AbortSignal,brush?:any){
   const allLength=inputScale(config),filtered={...config,components:config.components.filter((c:any)=>ids.includes(c.id))},result:any={},issues:string[]=[];
   let score=0,eligible=true;
   for(const test of quickTests){
     const scene=new ComponentScene(filtered),metrics:any={},trackers=new Map(),points=new Map(),recovery=new Map<string,any>(),budgetSteps=recoveryBudgetSteps(filtered);let durationSteps=960;
+    scene.pointerBrush=brush??pointerContext(scene);
     for(const [id,b]of scene.bodies){
       metrics[id]={peak:0,root:0,invalid:0,limited:0,fallback:0,maxStep:0,maxAcceleration:0,tailRms:0,curvature:0,samples:[]};trackers.set(id,new MotionStepTracker(config.source.canvas,b.positions.length,b.maxDistance));
       const dist=(i:number)=>Math.hypot(b.rest[i*2]-b.component.supports[0].at[0],b.rest[i*2+1]-b.component.supports[0].at[1]);
@@ -103,6 +105,7 @@ export async function measureCandidate(config:any,ids:string[],signal?:AbortSign
       signal?.throwIfAborted();if(step){applyTestInput(scene,test,step);if(test==='support-release')scene.sourcePose.x*=allLength/localLength;
         try{scene.step();}catch(e){eligible=false;issues.push(test+': '+(e as Error).message);for(const m of Object.values(metrics)as any[])m.invalid++;break;}}
       for(const [id,b]of scene.bodies){const m=metrics[id],s=b.stats,{tip,mid}=points.get(id),tx=b.positions[tip*2]-b.pose[tip*2],ty=b.positions[tip*2+1]-b.pose[tip*2+1],mx=b.positions[mid*2]-b.pose[mid*2],my=b.positions[mid*2+1]-b.pose[mid*2+1];
+        if(test==='pointer-brush'){const path=scene.pointerBrush.paths.find((p:any)=>p.id===id);m.pointerReachable=path?.status==='reachable';m.contacts=(m.contacts||0)+(scene.pointerCommands||[]).filter((p:any)=>p.id===id).length;if(path?.sourcePoint){const p=b.sample(path.sourcePoint);m.sourcePixelPeak=Math.max(m.sourcePixelPeak||0,Math.hypot(p[0]-path.sourcePoint[0],p[1]-path.sourcePoint[1]));}}
         if(step<=960){m.peak=Math.max(m.peak,s.travel);m.limited+=+s.limited;m.fallback+=+s.fallback;}m.root=Math.max(m.root,s.root);m.invalid+=+!s.valid;const tracker=trackers.get(id);tracker.update(b.positions,scene.sourcePose,!!s.fallback);m.maxFallbackStreak=tracker.maxFallbackStreak;m.maxStep=tracker.maxStep;m.maxWorldStep=tracker.maxWorldStep;m.maxAcceleration=tracker.maxAcceleration;m.discontinuityRatio=tracker.discontinuityRatio;if(step<=960)m.visiblePeak=tracker.visiblePeak;m.curvature=Math.max(m.curvature,Math.hypot(tx-mx,ty-my));
         if(step>=840&&step<=960)m.tailRms+=s.travel*s.travel/121;if(step<=960)m.final=s.travel;
         if(step===960)recovery.set(id,{quietSteps:0,fallbackSteps:0});
@@ -120,13 +123,14 @@ export async function measureCandidate(config:any,ids:string[],signal?:AbortSign
   }
   return {metrics:result,score,eligible,issues,inputScale:allLength};
 }
-export async function calibrate(config:any,directory:string,assemblyId:string,reason:string,candidates?:Candidate[],signal?:AbortSignal,reference?:any,options:{preserveEligibleBaseline?:boolean}={}){
+export async function calibrate(config:any,directory:string,assemblyId:string,reason:string,candidates?:Candidate[],signal?:AbortSignal,reference?:any,options:{preserveEligibleBaseline?:boolean;pointerSource?:string}={}){
   validatePhysicsConfig(config);if(!reason?.trim())throw Error('标定必须记录要解决的实际问题');
   const assemblies=groupAssemblies(config),group=assemblies.find(a=>a.id===assemblyId);if(!group?.enabledComponentIds.length)throw Error('装配组不存在或已关闭');
   const runtime=await simulationHash(),digest=configHash(config),tuning:any=await optional(join(directory,'tuning.json'))||{version:1,calibrationVersion,status:'draft',groups:[]};
   const versionChanged=tuning.calibrationVersion!==calibrationVersion;tuning.calibrationVersion=calibrationVersion;
   let entry=tuning.groups.find((g:any)=>g.assemblyId===assemblyId);if(!entry){entry={assemblyId,componentIds:group.componentIds,rounds:[]};tuning.groups.push(entry);}
   const targetHash=reference?configHash(reference):null;
+  const source=options.pointerSource?await pointerSource(options.pointerSource):undefined,brush=pointerContext(new ComponentScene(config),source);
   const generation=hash(calibrationGeneration(config,group.componentIds,runtime)+(targetHash??''));
   if(entry.generation!==generation){if(entry.rounds.length)(entry.history||=[]).push({generation:entry.generation,rounds:entry.rounds});entry.rounds=[];entry.generation=generation;entry.componentIds=group.componentIds;}
   const baseComponents=componentHashes(config,group.componentIds),latest=entry.rounds.at(-1),selected=latest?.candidates.find((c:any)=>c.id===latest.selectedCandidate);
@@ -136,9 +140,9 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
     if(versionChanged)await put(join(directory,'tuning.json'),tuning);
     return {reused:true,baselinePreserved:true,selection:selected.id,round:latest};
   }
-  const baselineMeasured=await measureCandidate(config,group.componentIds,signal);
+  const baselineMeasured=await measureCandidate(config,group.componentIds,signal,brush);
   const targetIds=reference?group.enabledComponentIds.map(id=>matchTargetComponent(config.components.find((c:any)=>c.id===id),reference)?.id).filter(Boolean):[];
-  const targetMeasurement=targetIds.length?await measureCandidate(reference,targetIds,signal):null;
+  const targetMeasurement=targetIds.length?await measureCandidate(reference,targetIds,signal,pointerContext(new ComponentScene(reference),source)):null;
   const assess=(measured:any,next:any)=>{
     if(targetMeasurement)for(const test of quickTests)for(const c of next.components.filter((c:any)=>group.enabledComponentIds.includes(c.id))){const r=matchTargetComponent(c,reference);if(!r)continue;const m=measured.metrics[test][c.id],target=compareMotionTarget(c,m,r,{...targetMeasurement.metrics[test][r.id],referenceAssemblyIssues:targetMeasurement.issues});m.target=target;measured.score+=target.envelopeLoss*10;measured.issues.push(...target.issues.map(issue=>test+'/'+c.id+': '+issue));if(target.issues.length)measured.eligible=false;}
     return measured;
@@ -154,7 +158,7 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
   const seen=new Set<string>();
   for(const candidate of [{id:'baseline',parameters:{}},...supplied]){
     signal?.throwIfAborted();const next=parameterCandidate(config,group.componentIds,candidate),nextHash=configHash(next.config);if(seen.has(nextHash))continue;seen.add(nextHash);
-    const measured=candidate.id==='baseline'?baseline:assess(await measureCandidate(next.config,group.componentIds,signal),next.config),path=join(folder,candidate.id+'.json');await put(path,next.config);
+    const measured=candidate.id==='baseline'?baseline:assess(await measureCandidate(next.config,group.componentIds,signal,brush),next.config),path=join(folder,candidate.id+'.json');await put(path,next.config);
     round.candidates.push({id:candidate.id,changes:next.changes,configHash:nextHash,...measured,path:relative(directory,path)});
   }
   const best=round.candidates.filter((c:any)=>c.eligible).sort((a:any,b:any)=>a.score-b.score)[0];round.recommendedCandidate=best?.id??null;

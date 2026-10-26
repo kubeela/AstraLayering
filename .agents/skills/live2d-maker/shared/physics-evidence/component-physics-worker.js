@@ -39,8 +39,9 @@ if (typeof WorkerGlobalScope !== 'undefined' && globalThis instanceof WorkerGlob
   let scene;
   self.onmessage = ({ data: job }) => {
     try {
-      if (job.type === 'init') { scene = new ComponentScene(job.config); self.postMessage({ type: 'ready' }); return; }
+      if (job.type === 'init') { scene = new ComponentScene(job.config); scene.pointerBrush=job.pointerBrush; self.postMessage({ type: 'ready' }); return; }
       if (job.type === 'reset') { scene.reset(); return; }
+      if (job.type === 'pointer-context') { scene.pointerBrush=job.pointerBrush; return; }
       const clock = advancePhysicsJob(scene, job), snapshot = physicsSnapshot(scene, job.buffer);
       self.postMessage({ type: 'frame', epoch: job.epoch, manual: job.manual, ...clock, ...snapshot }, [snapshot.buffer]);
     } catch (error) { self.postMessage({ type: 'error', message: error.message }); }
