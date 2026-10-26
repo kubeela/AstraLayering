@@ -37,7 +37,7 @@ export async function inventory(root: string) {
     if (entries.some(entry => /^Krita_.*_Default_Resources\.bundle$/.test(entry.name))) return;
     for (const entry of entries) {
       if (entry.name.startsWith('.') || excluded.has(entry.name) || entry.isSymbolicLink()) continue;
-      if (path.includes('agents/') && !path.includes('/workspace/') && ['tmp', 'bridge-results'].includes(entry.name)) continue;
+      if (path.includes('agents/') && !path.split('/').includes('workspace') && ['tmp', 'bridge-results'].includes(entry.name)) continue;
       if (path.includes('agents/') && ['auth-settings.json', 'mcp.json', 'sessions.json', 'tool-log-forwarder.json'].includes(entry.name)) continue;
       const child = path ? path + '/' + entry.name : entry.name;
       if (entry.isDirectory()) {
