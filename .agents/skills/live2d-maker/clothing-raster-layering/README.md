@@ -6,13 +6,11 @@
 
 顺序调度、上游产物读取、会话及标记恢复使用 `../shared/raster/` 的公共实现；本目录保留衣服步骤定义和提示词。仅有两步，模型按职责读取 `.env`，默认值见 [模型方案](../references/model-presets.md)。
 
-## 启动
+## 单独运行本 section
 
-需要 Node 24.12+、pnpm、已安装的 Krita，以及能提供绘制所需工具的外部 Codex 环境。从安装后的 skill 根目录执行：
+需要 Node 24.12+、pnpm、已安装的 Krita，以及能提供绘制所需工具的外部 Codex 环境。先准备同名衣服 part 的轮廓、参考、分组与深度，停止同任务总调度，再从 skill 根目录执行本 section：
 
 ```bash
-cd /安装位置/live2d-maker
-pnpm install --frozen-lockfile
 pnpm clothing-raster-layering --name jianma --krita /path/to/krita
 
 # 续跑使用已保存的输入、Krita 路径和绘制会话
@@ -81,7 +79,6 @@ pnpm clothing-raster-layering --name jianma
 
 ```bash
 pnpm check
-node --test clothing-raster-layering/tests/*.test.ts
 ```
 
 [steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
@@ -95,7 +92,3 @@ node --test clothing-raster-layering/tests/*.test.ts
 多深度与工具协议见 [共享说明](../shared/README.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。
 
 step01 重点修轮廓缺口、错位和明显画风差异，可用本部件原图可见像素覆盖来拟合，不能串入其他部件；补绘和覆盖间接缝用画笔修自然。reviewer 看图确认形体、画风和衔接问题，用框选工具标记位置、相关图层并生成局部对照，绘制者按编号返修；step02 以像素差异候选框为细节检查入口，逐层扩展检查，广泛检查、局部小改，精修边缘、瑕疵、描边和部件细节。模型配置见 [模型与 harness](../references/model-presets.md)，各步骤预览为最新保存 KRA 的合成画面。
-
-## 单测本 section
-
-从 skill 根目录运行 `node --test clothing-raster-layering/tests/*.test.ts`；单文件可直接指定文件名。测试使用本地模拟，不调用付费模型。

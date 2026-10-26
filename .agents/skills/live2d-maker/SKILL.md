@@ -39,9 +39,9 @@ pnpm start --name my-character --background
 
 相对输入路径均从 `<dir>/<name>/` 解析。已有记录保存范围与选项；续跑优先只给任务名和原运行根目录。普通中断保留完成标记与工程，按原参数续跑。
 
-## 单独运行或单测 section
+## 单独运行一个 section
 
-选择所需 section 的 README，按该入口检查上游。独立调试前先停止同任务的总调度，保持单一执行入口。
+单跑指使用真实输入制作某一段管线，会调用所选模型并保存该段成果。选择对应 README 检查上游，先停止同任务的总调度，再启动该 section。
 
 | section ID／pnpm 入口 | 何时读取 |
 | --- | --- |
@@ -53,18 +53,15 @@ pnpm start --name my-character --background
 | [shadow](shadow/README.md) | 阴影蒙版或法线／深度 |
 
 ```sh
-# 只运行一段（沿用总入口的后台、状态和范围记录）
-pnpm start --name my-character --from shadow --to shadow --krita /绝对路径/krita --background
-# 单测某 section；替换目录名即可，不调用付费模型
-node --test shadow/tests/*.test.ts
-# 单个测试文件
-node --test workflow/tests/runner.test.ts
-# 类型检查；全部回归按维护需要运行
-pnpm check
-pnpm test
+# 独立运行穿戴组装：读取已有的人物、衣服 KRA 与简化穿衣参考
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita
+# 同名续跑，沿用该段保存的 Krita 和绘制会话
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录
+# 通过总入口只运行一段，使用后台、状态查询和范围记录
+pnpm start --name my-character --dir /绝对路径/运行根目录 --from character-assembly --to character-assembly --krita /绝对路径/krita --background
 ```
 
-两套 part 的独立入口支持 `--groups <JSON>`、`--max-depth <层数>`；两套 raster、组装、阴影的独立入口支持 `--dry-run` 检查输入和提示词而不调用模型。具体前置与重试见相应 README。
+两套 part 的独立入口支持 `--groups <JSON>`、`--max-depth <层数>`；两套 raster、组装、阴影的独立入口支持 `--dry-run` 检查输入和提示词而不调用模型。具体前置与重试见相应 README；代码维护的自动化测试见 [shared](shared/README.md#自动化测试维护用)。
 
 ## 其他按需参考
 

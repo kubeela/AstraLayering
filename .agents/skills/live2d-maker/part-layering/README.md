@@ -2,7 +2,7 @@
 
 从参考图准备标准参考、简化图和换装素体，逐层生成部件控制 SVG 与遮挡深度表，交给 [raster-layering](../raster-layering/README.md) 绘制 KRA。模型与默认力度统一见 [模型方案](../references/model-presets.md)，首次安装见 [setup](../references/setup.md)。
 
-## 独立运行与单测
+## 单独运行本 section
 
 从 skill 根目录执行，数据位于 `<dir>/<name>/part-layering/`：
 
@@ -14,7 +14,6 @@ pnpm part-layering --name my-character
 pnpm part-layering --name my-character --max-depth 1
 # 选择已有组及后代，需已有参考、祖先与前层成果
 pnpm part-layering --name my-character --groups /绝对路径/selection.json
-node --test part-layering/tests/*.test.ts
 ```
 
 `--dir` 为运行根目录，相对输入从 `<dir>/<name>/` 解析。`--jobs`／`-j`（别名 `--agents`／`-a`）控制全局实际 agent 并发，默认 3。`--max-depth` 从根深度 0 计数，1 制作根层，2 制作至第二层；省略则处理完整树。`--groups` JSON 按 ID 选择本任务已有组，沿用准备参考与前置事实；前层去重尚未完成时需要完整处理该层。独立调试先停止同任务总调度。

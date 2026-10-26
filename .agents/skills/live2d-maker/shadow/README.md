@@ -1,9 +1,13 @@
 # 阴影制作
 
+## 单独运行本 section
+
+先准备同名任务的组装成果及下表所需参考，停止同任务总调度，再从 skill 根目录运行。独立入口只制作所选阴影分支：
+
 ```sh
 pnpm shadow --name jianma --krita /path/to/krita
 pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita
-# 总流程透传；首次默认 mask
+# 总入口只运行阴影；首次默认 mask
 pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 ```
 
@@ -51,7 +55,3 @@ node shadow/inspect.ts --output /path/to/shadow/mask/step01 --krita /path/to/kri
 私有运行目录使用短系统临时路径和 `0700` 权限；Krita 退出通过 `file_quit` 动作请求。启动警告、插件执行结果与进程退出是不同检查项；`Krita.instance().quit()` 不属于本次实测 Krita 5.3.4.1 的 Python API。Jianma 从头测试及环境问题见仓库 `tutorial/live2d-guidance/formal/sources/jianma-shadow-fresh-run.md`。
 
 工作台阴影栏目提供参考图、去影对照、逐处余量拼图和检查记录；拼图只供比较，记录中的完整 PNG 保持原分辨率。此检查覆盖素材与原生裁切，尚不验证实际 deformer／物理动画或 Cubism 导出。
-
-## 单测本 section
-
-从 skill 根目录运行 `node --test shadow/tests/*.test.ts`；单文件可直接指定文件名。测试使用本地模拟，不调用付费模型。

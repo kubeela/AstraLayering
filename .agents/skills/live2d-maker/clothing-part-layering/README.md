@@ -8,13 +8,11 @@
 
 调度、Codex SDK / App Server 适配及文件恢复使用 `../shared/` 的公共实现。本目录保留衣服 preparation、提示词和专项配置，不加载人物先验。各职责默认值与覆盖键以 [模型方案](../references/model-presets.md) 为准。
 
-## 启动
+## 单独运行本 section
 
-需要 Node 24.12+、pnpm，以及外部已配置好的 Codex。以下命令从安装后的 skill 根目录执行：
+需要 Node 24.12+、pnpm，以及外部已配置好的 Codex。先准备同名人物 part 的简化穿衣图与素体图，停止同任务总调度，再从 skill 根目录执行本 section；制作结果保存在衣服 part 目录：
 
 ```bash
-cd /安装位置/live2d-maker
-pnpm install --frozen-lockfile
 pnpm clothing-part-layering --name jianma
 
 # 首次及续跑都通过任务名定位上游
@@ -72,7 +70,6 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
 
 ```bash
 pnpm check
-node --test clothing-part-layering/tests/*.test.ts
 ```
 
 [run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 使用同版本 Codex SDK / App Server。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
@@ -82,7 +79,3 @@ node --test clothing-part-layering/tests/*.test.ts
 现已完成 [2026-10-18—19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；该历史案例推动的多深度与 step01 拆层协议现已接入，说明见 [共享流程](../shared/README.md#多深度与上游修正)。
 
 共享安装、路径规则、工具配置和临时错误恢复见 [live2d-maker 使用说明](../SKILL.md)。所有相对输入路径从 `<运行根目录>/<name>/` 解析；本管线只管理自身目录。
-
-## 单测本 section
-
-从 skill 根目录运行 `node --test clothing-part-layering/tests/*.test.ts`；单文件可直接指定文件名。测试使用本地模拟，不调用付费模型。

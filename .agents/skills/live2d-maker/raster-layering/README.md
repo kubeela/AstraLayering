@@ -2,7 +2,7 @@
 
 读取同名人物 part 的轮廓、参考、分组与深度，在 Krita 中交付三步工程。模型按职责读取 skill 的 `.env`，默认值见 [模型方案](../references/model-presets.md)；启动环境见 [setup](../references/setup.md)。
 
-## 独立运行与单测
+## 单独运行本 section
 
 从 skill 根目录执行：
 
@@ -13,7 +13,6 @@ pnpm raster-layering --name my-character
 pnpm raster-layering --name my-character --dir /绝对路径/运行根目录 --dry-run
 # 单独核对指定 Krita 入口
 pnpm raster-layering --check-krita --krita /绝对路径/krita
-node --test raster-layering/tests/*.test.ts
 ```
 
 数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。首次明确传 Krita 的实际可执行文件，续跑复用保存值；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。

@@ -126,7 +126,7 @@ pnpm start --name jianma --dir /绝对路径/运行根目录 --background
 
 网页“恢复”直接清除会话、保留产物，不写交接；“重试”会删除该步骤及依赖产物，需按 UI 确认。主动重做和保留产物换会话是不同操作。
 
-## 交付与单测
+## 交付与自动化测试
 
 最终文件位置由各 section README 约定，核对实际文件，特别是衣服 PNG 按实际导出位置提供。阴影默认交付 `shadow/mask/step01/character-shadowed.kra` 与 PNG；normal-depth 交付贴图并发布 `lighting/`。成果是静态素材，不能声称已完成绑定。
 
