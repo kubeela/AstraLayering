@@ -1,5 +1,5 @@
 import { lstat, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
@@ -15,6 +15,8 @@ import { partProgress, phases } from './part-progress.ts';
 import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { projectDisplayName } from './project-metadata.ts';
 import { reportPreview, type ReportPreview } from './report.ts';
+import { legacyWorkspaces } from './workspaces.ts';
+import { copiedInput, inputKras } from './kra-inputs.ts';
 
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps, physics: physicsSteps };
@@ -42,6 +44,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
     errors.push(String(error)); return { name, status: 'failed', directory, run: undefined as TaskRun | undefined, runnerAlive: false, lockHeld: false };
   });
   const files = await inventory(directory), fileSet = new Set(files);
+  const processWorkspaces = await legacyWorkspaces(directory, files);
   const optional = async (path: string) => jsonFile(directory, path).catch(error => { errors.push(String(error)); return undefined; });
   const exists = async (path: string) => {
     try { return (await lstat(await safePath(directory, path))).isFile(); }
@@ -96,9 +99,16 @@ export async function snapshot(directory: string, name: string, dir: string) {
       for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
         const prefix = branch + '/' + step.id;
         await loadReport(step.id, prefix + '/report.md');
-        const candidates = await Promise.all(files.filter(path => path.startsWith(prefix + '/') && /\.kra$/i.test(path)
-          && !path.split('/').some(segment => segment.startsWith('.') || ['agents', 'recovery', 'archive'].includes(segment)))
-          .map(async path => ({ path, info: await lstat(await safePath(directory, path)) })));
+        const legacy = processWorkspaces[prefix] || [];
+        const previewInputs = [...inputKras(config?.sourceInput), ...files
+          .filter(path => path.startsWith(prefix + '/') && !path.includes('/workspace/') && /\.kra$/i.test(path))
+          .map(path => resolve(directory, path))];
+        const candidates = await Promise.all(files.filter(path => /\.kra$/i.test(path) &&
+          (path.startsWith(prefix + '/') || legacy.some(root => path.startsWith(root + '/')))
+          && !path.split('/').some(segment => segment.startsWith('.') || ['recovery', 'archive'].includes(segment)))
+          .map(async path => ({ path, info: await lstat(await safePath(directory, path)),
+            inputCopy: await copiedInput(await safePath(directory, path), previewInputs) })));
+        for (let index = candidates.length - 1; index >= 0; index--) if (candidates[index].inputCopy) candidates.splice(index, 1);
         candidates.sort((a, b) => b.info.mtimeMs - a.info.mtimeMs || a.path.localeCompare(b.path));
         if (candidates[0]) previews[step.id] = { path: candidates[0].path, savedAt: candidates[0].info.mtime.toISOString() };
         const completed = await exists(prefix + '/.completed'), running = await exists(prefix + '/.running');
@@ -174,14 +184,16 @@ export async function snapshot(directory: string, name: string, dir: string) {
   const worker = await optional('.web-worker.json');
   // The URL version changes when an existing draft is rewritten, even if no log or filename changes.
   const fileVersions: Record<string, string> = {};
-  const previewFiles = files.filter(path => /\.(kra|svg|png|jpe?g|webp|md(?:\.tmp)?|json)$/i.test(path) && !path.includes('/agents/'));
+  const legacyRoots = Object.values(processWorkspaces).flat();
+  const previewFiles = files.filter(path => /\.(kra|svg|png|jpe?g|webp|md(?:\.tmp)?|json)$/i.test(path)
+    && (!path.includes('/agents/') || legacyRoots.some(root => path.startsWith(root + '/'))));
   for (let index = 0; index < previewFiles.length; index += 16) {
     await Promise.all(previewFiles.slice(index, index + 16).map(async path => {
       try { const info = await lstat(await safePath(directory, path)); fileVersions[path] = `${info.mtimeMs}:${info.size}`; }
       catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(path + ': ' + String(error)); }
     }));
   }
-  return { ...record, files, fileVersions, pipelines, errors, logs: log.text,
+  return { ...record, files, fileVersions, processWorkspaces, pipelines, errors, logs: log.text,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
     canStop: !!(record.runnerAlive && record.lockHeld && worker?.runnerId === record.run?.runner?.id),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),

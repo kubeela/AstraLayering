@@ -8,6 +8,7 @@ import { kraContents, kraLayers, validateMaskStructure } from './delivery.ts';
 import { inspectNative, type NativeInspect } from './native.ts';
 import { within } from '../shared/raster/run-store.ts';
 import type { InputIndex } from './preparation.ts';
+import { referencesDirectory } from '../shared/agents/inputs.ts';
 
 const toolFiles = ['inspection.ts', 'native.ts', 'native_worker.py', 'delivery.ts'];
 async function signature(document: string, bindings: string, index: string) {
@@ -38,7 +39,12 @@ async function sheet(panels: {path:string;label:string}[], path: string, columns
 export async function inspectMask(output: string, krita: string, env: NodeJS.ProcessEnv, signal?: AbortSignal,
   native: NativeInspect = inspectNative) {
   const document = join(output,'character-shadowed.kra'), bindingsPath = join(output,'shadows.json');
-  const indexPath = join(output,'references/inputs.json');
+  const currentIndex = join(referencesDirectory(output), 'inputs.json');
+  const indexPath = await readFile(currentIndex).then(
+    () => currentIndex, error => {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+      return join(output,'references/inputs.json');
+    });
   const stamp = await signature(document,bindingsPath,indexPath), receipt = join(output,'inspection.json');
   try {
     const previous = JSON.parse(await readFile(receipt,'utf8'));

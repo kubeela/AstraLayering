@@ -102,7 +102,7 @@ test('interrupted drawing resumes saved thread and directly reads upstream', asy
 test('deleting step02 completion resets its directory and context, preserving step01 and upstream artifacts', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
-  const first = await readFile(join(f.output, 'step01/events.jsonl'));
+  const first = await readFile(join(f.output, 'agents/steps/step01/events.jsonl'));
   await writeFile(join(f.output, 'step02/old.png'), 'old');
   await rm(join(f.output, 'step02/.completed'));
   let calls = 0;
@@ -117,7 +117,7 @@ test('deleting step02 completion resets its directory and context, preserving st
   } });
   assert.equal(calls, 1);
   assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-new');
-  assert.deepEqual(await readFile(join(f.output, 'step01/events.jsonl')), first);
+  assert.deepEqual(await readFile(join(f.output, 'agents/steps/step01/events.jsonl')), first);
   await readFile(join(f.source, 'parts/front.svg'));
 });
 

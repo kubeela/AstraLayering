@@ -254,7 +254,7 @@ await writeFile(join(process.cwd(),'invocation.json'),JSON.stringify(meta));
 console.log(JSON.stringify(kind==='claude'?{type:'result',session_id:id,result:'完成'}:{event:'result',result:{conversation_id:id,status:'SUCCESS',response:'完成'}}));
 `;
 
-test('Claude and agv use isolated request workspaces, original MCP schemas and resumable local session data', async t => {
+test('Claude and agv use step workspaces, original MCP schemas and resumable local session data', async t => {
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli }, root);
@@ -265,13 +265,14 @@ test('Claude and agv use isolated request workspaces, original MCP schemas and r
     const task = { name: 'fixture', cwd, prompt: '完整任务提示词', tools: [{ name: 'fixture_echo', description: '原始工具说明',
       inputSchema: { type: 'object' }, async execute() { called++; return { success: true, contentItems: [] }; } }] };
     const first = await runCliTask(task, model, settings, options, new AbortController().signal);
+    const a = JSON.parse(await readFile(join(cwd, 'preparation/workspace/invocation.json'), 'utf8'));
     const second = await runCliTask(task, model, settings, options, new AbortController().signal, first.threadId!);
     assert.equal(second.threadId, first.threadId);
-    const a = JSON.parse(await readFile(join(first.logDirectory!, 'workspace/invocation.json'), 'utf8'));
-    const b = JSON.parse(await readFile(join(second.logDirectory!, 'workspace/invocation.json'), 'utf8'));
+    const b = JSON.parse(await readFile(join(cwd, 'preparation/workspace/invocation.json'), 'utf8'));
     assert.equal(await readFile(join(first.logDirectory!, 'prompt.md'), 'utf8'), a.input.message.content[0].text);
-    assert.notEqual(a.cwd, b.cwd); assert.equal(a.data, b.data);
-    for (const path of [a.cwd, a.data, a.agvData, b.cwd]) assert.ok(path.startsWith(join(cwd, 'agents')));
+    assert.equal(a.cwd, b.cwd); assert.equal(a.cwd, join(cwd, 'preparation/workspace')); assert.equal(a.data, b.data);
+    assert.notEqual(first.logDirectory, second.logDirectory);
+    for (const path of [a.data, a.agvData]) assert.ok(path.startsWith(join(cwd, 'agents')));
     assert.ok(a.input.message.content[0].text.startsWith(task.prompt));
     assert.equal(a.args[a.args.indexOf('--effort') + 1], model.effort);
     assert.equal(a.args[a.args.indexOf('--model') + 1], wireModel);
@@ -299,7 +300,7 @@ const meta=`);
     const result = await runCliTask({ name: 'env-node', cwd, prompt: 'fixture' }, parseAgentModel(id, 'fixture'), settings,
       { cwd, logDirectory: join(cwd, 'agents') }, new AbortController().signal);
     assert.equal(result.text, '完成');
-    const child = JSON.parse(await readFile(join(result.logDirectory!, 'workspace/child-node.json'), 'utf8'));
+    const child = JSON.parse(await readFile(join(cwd, 'preparation/workspace/child-node.json'), 'utf8'));
     assert.equal(child.childNode, process.execPath);
     assert.deepEqual(child.path.split(delimiter), [dirname(process.execPath), inheritedPath]);
   }

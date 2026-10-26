@@ -5,10 +5,11 @@ import sharp from 'sharp';
 import { stepId, type SectionStep } from '../shared/step-section.ts';
 import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
+import { preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
+export { preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
 
 export type StandardJudgment = { needsAdjustment: boolean; reason?: string };
 export type ReferenceJudgment = { needsSimplification: boolean; reason?: string };
-export type PreparationStage = typeof preparationStages[number];
 
 export function checkStandardJudgment(value: unknown): asserts value is StandardJudgment {
   if (!value || typeof value !== 'object' || typeof (value as StandardJudgment).needsAdjustment !== 'boolean'
@@ -64,9 +65,6 @@ export async function copyAsPng(source: string, output: string): Promise<void> {
 
 // Preparation is the section part-layering/preparation, with fixed step
 // numbers; pose keeps its number when a run does not standardize.
-export const preparationStages = ['original', 'options', 'pose', 'standard', 'judgment', 'simplified', 'base', 'ready'] as const;
-export const stageStep = (stage: PreparationStage) => stepId(preparationStages.indexOf(stage) + 1);
-export const stepStage = (id: string) => preparationStages[Number(id.slice(4)) - 1];
 export const sectionDirectory = (references: string) => join(dirname(references), 'preparation');
 export const poseJudgmentPath = (references: string) => join(sectionDirectory(references), stageStep('pose'), 'judgment.json');
 

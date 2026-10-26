@@ -52,7 +52,7 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 
 | 模板 | 动态位置与用途 |
 | --- | --- |
-| [CLI 请求](prompts/cli-turn.md) | `{task_prompt}`、`{workspace}`、`{working_directory}`。Claude／AGV 的请求临时目录说明。 |
+| [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{workspace}`、`{working_directory}`、`{output_directory}`。所有 CLI 共用工作区、输入与正式交付说明。 |
 | [图片说明](prompts/image-description.md)、[图片路径](prompts/image-reference.md) | `{image_description}` 来自本次附图用途，`{image_path}` 是本次图片路径；AGV 通过路径读取。图片说明作为独立消息发送，与任务正文一起保存在请求记录。 |
 | [中断继续](prompts/interrupted-task.md)、[续跑](prompts/continuation.md)、[已有图片](prompts/continuation-images.md) | `{interrupted_task}`、`{saved_images_context}`、`{saved_image_paths}`。没有已生成图片时对应位置为空。 |
 | [恢复返修](prompts/raster-repair-resume.md)、[交接返修](prompts/raster-handoff-repair.md)、[会话交接](prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
@@ -186,3 +186,11 @@ pnpm check
 - M4、M6 涉及的职责与工具说明已改为现行边界，见 [workflow-details.md](README.md#多深度与上游修正)。文件系统硬性写保护与 M5 的独立 part 恢复问题保持现状；文档已明确只保证 raster 续跑保留根结构修改。
 
 </details>
+
+## 工作区与产物
+
+各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。正文和注册工具的相对路径仍以管线目录为基准，执行时转成绝对路径。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`，旧记录保留读取兼容。
+
+输入准备由 `shared/agents/inputs.ts` 共用：直接传入上下文的正文和图片不额外落盘；已有原图、上游产物与参考路径直接读取；程序需要生成的索引、说明与变换参考图放在 `workspace/references/`。`agents/prompt.md` 是实际请求的审计副本。工作区和部件层级路径也由共享模块解析，前端与迁移复用同一规则。
+
+前端按工作区实际目录分组过程文件，最新 KRA 预览包含工作区保存的工程。报告引用的工作区图片随报告发布到步骤目录，链接一并更新；没有被报告引用的图片继续作为中间产物。旧任务搬迁必须先确认制作已完成并持有任务锁。

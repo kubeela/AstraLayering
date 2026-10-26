@@ -69,7 +69,8 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const initialize = protocol.find(item => item.method === 'initialize');
   assert.equal(initialize.params.capabilities.experimentalApi, true);
   const thread = protocol.find(item => item.method === 'thread/start');
-  assert.equal(thread.params.cwd, f.directory);
+  assert.equal(thread.params.cwd, join(f.directory, 'initial/step01/workspace'));
+  assert.match(thread.params.cwd, /workspace$/);
   assert.equal(thread.params.model, 'gpt-6.1-sol');
   assert.equal(thread.params.config['features.shell_tool'], true);
   assert.equal(thread.params.config['features.unified_exec'], true);
@@ -92,7 +93,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'observations', 'initial-groups') + sep), true);
+  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + sep), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
   assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();
@@ -280,7 +281,8 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.equal(turns.length, 3);
   assert.ok(turns.every(message => message.params.threadId === 'native-thread'));
-  assert.equal(turns[0].params.input[0].text, '原始任务');
+  assert.ok(turns[0].params.input[0].text.startsWith('原始任务\n'));
+  assert.match(turns[0].params.input[0].text, /当前工作区/);
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt)));
   assert.ok(turns[1].params.input[0].text.includes(savedPath));
   assert.equal((await readdir(f.logDirectory)).length, 3);

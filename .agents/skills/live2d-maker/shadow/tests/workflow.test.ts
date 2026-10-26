@@ -215,7 +215,7 @@ test('制作参考准备、原生检查、指纹复用与损坏重新检查', as
   const f=await fixture(t);let inspections=0;
   const native:NativeInspect=async (...args)=>{inspections++;return f.deps.inspectNative(...args);};
   const deps={...f.deps,inspectNative:native,agent:async(request:AgentRequest)=>{
-    const guide=await readFile(join(request.directory,'step01/references/production.md'),'utf8');assert.match(guide,/testOffsets/);
+    const guide=await readFile(join(request.directory,'step01/workspace/references/production.md'),'utf8');assert.match(guide,/testOffsets/);
     assert.match(request.prompt,/inspect.ts/);return f.deliver(request);
   }};
   await runWorkflow(f.options,deps);assert.equal(inspections,1);

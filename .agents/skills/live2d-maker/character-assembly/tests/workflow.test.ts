@@ -150,6 +150,6 @@ test('正常退出但缺 PNG 时显示最后消息，保留 running 和 thread',
   });
   await stat(join(f.output, 'step01/.running'));
   await assert.rejects(stat(join(f.output, 'step01/.completed')), { code: 'ENOENT' });
-  assert.match(await readFile(join(f.output, 'step01/error.txt'), 'utf8'), /PNG 导出失败/);
+  assert.match(await readFile(join(f.output, 'agents/steps/step01/error.txt'), 'utf8'), /PNG 导出失败/);
   assert.equal((await loadConfig(f.output, 'case', isAssemblyInput))?.threadId, 'missing-output');
 });

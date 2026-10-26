@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import type { ThreadEvent } from '@openai/codex-sdk';
 import { runAgent, type AgentRequest } from '../raster/agent.ts';
 import { AgentCallError, AgentRuntime, retryableAgentError } from '../codex/agent-runtime.ts';
+import { executionPaths, workspacePrompt } from '../agents/workspace.ts';
 
 const request = (): AgentRequest => ({ prompt: '按原图继续修边', directory: '/tmp', model: 'fixture', effort: 'xhigh', onEvent: async () => {} });
 const success: ThreadEvent[] = [
@@ -32,7 +33,7 @@ test('raster 等待 CLI 终态后在原 thread 继续，保留图片并记录退
   assert.equal(result.status, 'completed');
   assert.equal(starts, 1); assert.equal(resumes, 0); assert.equal(retries, 1);
   assert.deepEqual(waits, [5000]);
-  assert.equal(prompts[0], request().prompt);
+  assert.equal(prompts[0], workspacePrompt(request().prompt, executionPaths({ cwd: request().directory }, request().directory)));
   assert.match(String(prompts[1]), /原要求.*未完成处继续/);
   assert.match(String(prompts[1]), /existing.png/);
   assert.ok(events.includes('turn.failed'));

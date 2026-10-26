@@ -6,6 +6,7 @@ import type { StepResult } from './agent.ts';
 import type { KritaInstallation } from './krita.ts';
 import { fileInfo } from './run-store.ts';
 import type { StepDefinition } from './steps.ts';
+import { publishReportAssets } from '../report-assets.ts';
 
 const reports = ['review-01.md', 'repair-01.md', 'review-02.md', 'repair-02.md'] as const;
 export type ReviewTask = { kind: 'review' | 'repair'; filename: typeof reports[number]; index: number };
@@ -90,6 +91,7 @@ export async function runReviews(options: ReviewOptions): Promise<void> {
       continue;
     }
     await options.validate();
+    await publishReportAssets(join(options.directory, draft), join(options.directory, 'workspace'));
     options.signal?.throwIfAborted();
     await rename(join(options.directory, draft), join(options.directory, task.filename));
     options.progress?.(`${task.filename}：${conclusion}`);

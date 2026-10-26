@@ -1,3 +1,5 @@
+import { groupStepId } from './part-steps.ts';
+import { publishObservations, publishReportText } from '../report-assets.ts';
 import {renderPrompt,renderPromptFile} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
@@ -133,7 +135,7 @@ export async function drawGroupOutline(
   }
   const response = await agents.run({
     step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
-    name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory,
+    name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
     sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory, [input.parent, repair?.candidate, draft]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
       ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
@@ -178,8 +180,11 @@ async function reviewOnce(
         throw new Error('必须先用 preview_svg 实际对照候选与参考图');
       }
       if (hash(await readFile(candidate)) !== candidateHash) throw new Error('审查期间候选 SVG 被修改，不能提交');
-      const review: Review = { verdict: raw.verdict as Review['verdict'], feedback: raw.feedback,
-        candidateHash, observations: [...observations], updatedAt: new Date().toISOString() };
+      const evidence = await publishObservations(observations,
+        join(context.directory, groupStepId(context.group.id, 1), 'workspace'), dirname(reportPath));
+      const feedback = await publishReportText(raw.feedback, join(context.directory, groupStepId(context.group.id, 1), 'workspace'), dirname(reportPath));
+      const review: Review = { verdict: raw.verdict as Review['verdict'], feedback,
+        candidateHash, observations: evidence, updatedAt: new Date().toISOString() };
       const report = await readReviewReport(reportPath, context.group.id);
       report.reviews.push(review);
       signal.throwIfAborted();
@@ -189,7 +194,7 @@ async function reviewOnce(
     },
   };
   const response = await agents.run({
-    step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory,
+    step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
     sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory, [input.parent, candidate]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],

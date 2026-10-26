@@ -1,4 +1,4 @@
-import { appendFile, readFile, readdir, rm } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, readdir, rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { readStep, type StepStatus } from '../shared/step-chain.ts';
 import { saveConfig, within, type RunConfig } from '../shared/raster/run-store.ts';
@@ -19,7 +19,7 @@ import { acquireTaskLock, directoryFor, now, pipelineId, readRun, type TaskOptio
 //             continues them in a new session.
 //   retry:    reset the step (directory, declared outputs and session); the
 //             next run reruns it, and the steps built on it rerun with it.
-// Part steps keep their session in <step>/session.json; raster-style pipelines
+// Part steps keep their session in agents/steps/<step>/session.json; raster-style pipelines
 // share one drawing thread in run.json. Steps without a session (one-shot
 // agents) simply rerun when they have no product, so resume equals continue.
 // A part run of the earlier stages/ layout is converted first (legacy-layout.ts);
@@ -64,7 +64,8 @@ export async function listSteps(root: string, pipeline: PipelineId): Promise<Ste
   for (const id of [...ids].sort()) {
     const { status } = await readStep(join(root, id));
     if (status === 'absent') continue;
-    steps.push({ id, status, session: partPipelines.includes(pipeline) && await exists(join(root, id, 'session.json')) });
+    steps.push({ id, status, session: partPipelines.includes(pipeline) &&
+      (await exists(join(root, 'agents', 'steps', id, 'session.json')) || await exists(join(root, id, 'session.json'))) });
   }
   return steps;
 }
@@ -133,16 +134,20 @@ async function actOnStep(root: string, pipeline: PipelineId, step: string, actio
     if (status === 'completed') throw new Error(`步骤 ${step} 已完成；只能对中断或失败的步骤恢复。`);
     const reason = '网页恢复：清除会话，保留产物';
     if (part) {
-      const session = join(stepDirectory, 'session.json');
+      const session = await exists(join(root, 'agents', 'steps', step, 'session.json'))
+        ? join(root, 'agents', 'steps', step, 'session.json') : join(stepDirectory, 'session.json');
       if (!await exists(session)) return `${step} 没有保存的会话，恢复等同继续：下次运行沿用产物。`;
       const saved = JSON.parse(await readFile(session, 'utf8'));
       await appendFile(session + '.history.jsonl', JSON.stringify({ ...saved, replacedAt: now(), reason }) + '\n');
       await rm(session);
+      await rm(join(stepDirectory, 'session.json'), { force: true });
       return `${step}：已清除会话${saved.threadId ? ' ' + saved.threadId : ''}，保留产物；下次运行在新会话中继续。`;
     }
     const config = await readConfig(root);
     if (!config.threadId && !config.threadHandoff) return `${pipeline} 没有保存的绘制 thread，恢复等同继续：下次运行沿用产物。`;
-    await appendFile(join(stepDirectory, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
+    const records = join(root, 'agents', 'steps', step);
+    await mkdir(records, { recursive: true });
+    await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
       previousHarness: config.threadHarness || 'codex', ...(config.threadHandoff ? { previousHandoff: config.threadHandoff.id } : {}), reason, at: now() }) + '\n');
     config.threadId = null;
     delete config.threadHarness;
@@ -162,5 +167,6 @@ async function actOnStep(root: string, pipeline: PipelineId, step: string, actio
   if (outside.length) throw new Error(`${step} 的产物在管线目录之外（${outside.join('、')}），不能在此重试。`);
   for (const path of outputs) await rm(path, { force: true });
   await rm(stepDirectory, { recursive: true, force: true });
+  await rm(join(root, 'agents', 'steps', step), { recursive: true, force: true });
   return `${step}：已删除步骤产物和会话；下次运行重做该步骤，依赖它的后续步骤随之重跑。`;
 }

@@ -321,9 +321,17 @@ function processArtifacts(index, step) {
  if(!directory)return '';
  const prefix=directory+'/';
  const known=new Set([...Object.values(stepArtifacts[index]).flat(),...shadowInspectionArtifacts(data.files)].map(item=>item.path));
- const items=data.files.filter(path=>path.startsWith(prefix)&&!known.has(path));
- if(!items.length)return '';
- return `<details class="process-files" data-details="process:${index}:${step.id}"><summary>${items.length} 个过程文件</summary>${artifacts(items.map(path=>({path,label:path.slice(prefix.length),kind:/\.(png|jpe?g|webp|svg)$/i.test(path)?'image':'file'})),index,step.id,'process-artifacts')}</details>`;
+ const legacy=data.processWorkspaces?.[directory]||[];
+ const roots=[directory+'/workspace',...legacy];
+ const filtered=data.files.filter(path=>(path.startsWith(prefix)||legacy.some(root=>path.startsWith(root+'/')))&&!known.has(path)
+  && !/(?:^|\/)(?:prompt\.md|[^/]+\.prompt\.txt|(?:[^/]+\.)?result\.json|attempts\.jsonl|events\.jsonl|error\.txt|review-baseline\.json)$/.test(path));
+ const items=filtered.filter(path=>roots.some(root=>path.startsWith(root+'/')));
+ const deliveries=filtered.filter(path=>!items.includes(path));
+ const groups=new Map();
+ for(const path of items){const root=roots.find(root=>path.startsWith(root+'/')),local=path.slice(root.length+1),folder=local.includes('/')?local.slice(0,local.lastIndexOf('/')):'';(groups.get(folder)||groups.set(folder,[]).get(folder)).push(path);}
+ const render=paths=>artifacts(paths.map(path=>({path,label:path.split('/').at(-1),kind:/\.(png|jpe?g|webp|svg|kra)$/i.test(path)?'image':'file'})),index,step.id,'process-artifacts');
+ const extra=deliveries.length?`<details class="process-files delivery-files" data-details="delivery:${index}:${step.id}"><summary>${deliveries.length} 个补充产物</summary>${render(deliveries)}</details>`:'';
+ return extra+(items.length?`<details class="process-files" data-details="process:${index}:${step.id}"><summary>${items.length} 个过程文件</summary>${[...groups].sort(([a],[b])=>a.localeCompare(b)).map(([folder,paths])=>`<details class="process-group" data-details="process-folder:${index}:${step.id}:${esc(folder)}"><summary>${esc(folder||'workspace 根目录')} <small>${paths.length}</small></summary>${render(paths)}</details>`).join('')}</details>`:'');
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);

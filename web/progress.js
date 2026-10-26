@@ -1,5 +1,6 @@
 // Display-only definitions, matched to the existing preparation, part and raster runners.
 // Execution states are supplied by the read-only task snapshot; these are labels only.
+import { groupStepId, layerStepId } from './step-paths.js';
 export const groupPhases = [
   ['outline', '轮廓绘制'], ['review', '轮廓复核'], ['reduction', '同层去重'],
   ['completion', '遮挡补全'], ['completionCheck', '补全检查'], ['children', '直属结构拆分'],
@@ -38,9 +39,8 @@ export function groupStagePreviewArtifacts(phase, phaseFiles, files, versions = 
   return [];
 }
 
-// Mirrors shared/part/part-steps.ts: child groups nest under groups/<parent>/children/.
-const groupStepPath = (pipeline, id, step) => [pipeline, 'groups', ...id.split('/').flatMap((segment, index) => index ? ['children', segment] : [segment]), `step0${step}`].join('/');
-const layerPath = (pipeline, depth) => `${pipeline}/layers/depth${String(depth + 1).padStart(2, '0')}`;
+const groupStepPath = (pipeline, id, step) => `${pipeline}/${groupStepId(id, step)}`;
+const layerPath = (pipeline, depth) => `${pipeline}/${layerStepId(depth)}`;
 
 export function groupReviewSteps(group, pipeline, groupId) {
   return [1, 2].flatMap(number => ['review', 'repair'].map(mode => {
@@ -135,7 +135,7 @@ export const stepArtifacts = [
     base: [image('part-layering/references/base-subject.png', '素体参考')],
     initial: [file('part-layering/groups.json', '分组树')],
     merge: [image('part-layering/preview.draft.svg', '分块合成 · 中间产物'), image('part-layering/preview.svg', '分块合成 SVG')],
-    occlusion: [image('part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('part-layering/occlusion/workspace/candidate.svg', '深度规划 · 中间产物'), image('part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('raster-layering', 'step01', 'composite.png', 'character-depth.kra'),
@@ -146,7 +146,7 @@ export const stepArtifacts = [
     clothing: [image('clothing-part-layering/references/clothing.png', '纯衣服参考')],
     initial: [file('clothing-part-layering/groups.json', '分组树')],
     merge: [image('clothing-part-layering/preview.draft.svg', '衣服分块 · 中间产物'), image('clothing-part-layering/preview.svg', '衣服分块 SVG')],
-    occlusion: [image('clothing-part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('clothing-part-layering/occlusion/workspace/candidate.svg', '深度规划 · 中间产物'), image('clothing-part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),
@@ -176,16 +176,17 @@ for (const index of [1, 3]) {
 }
 
 export function groupArtifacts(pipeline, group, depth) {
- const svg = (path, label) => [
+ const svg = (path, label, draft) => [
   image(path.replace(/\.svg$/, '.draft.svg'), `${label} · 中间产物`),
+  image(draft, `${label} · 中间产物`),
   image(path, `${label}图`),
  ];
  const step = number => groupStepPath(pipeline, group.id, number);
  return {
-  outline: svg(`${step(1)}/outline.svg`, '轮廓'),
+  outline: svg(`${step(1)}/outline.svg`, '轮廓', `${step(1)}/workspace/outline.draft.svg`),
   review: [file(`${step(1)}/review.json`, '复核 / 返修记录')],
-  reduction: svg(`${layerPath(pipeline, depth)}/${group.id}.svg`, '去重'),
-  completion: svg(`${pipeline}/parts/${group.id}.svg`, '补全'),
+  reduction: svg(`${layerPath(pipeline, depth)}/${group.id}.svg`, '去重', `${layerPath(pipeline, depth)}/workspace/${group.id}.draft.svg`),
+  completion: svg(`${pipeline}/parts/${group.id}.svg`, '补全', `${step(2)}/workspace/completion.draft.svg`),
   completionCheck: [file(`${step(2)}/check.json`, '补全检查记录')],
   children: [file(`${step(3)}/children.json`, '子组分析记录')],
  };
