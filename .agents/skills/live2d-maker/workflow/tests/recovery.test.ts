@@ -71,8 +71,8 @@ test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之
   const before = await readdir(join(output, 'step01'));
   const archive = await replaceThread(f.recovery);
   assert.equal(JSON.parse(await readFile(join(archive, 'run-before.json'), 'utf8')).threadId, 'old-thread');
-  assert.equal(await readFile(join(archive, 'step01/prompt.md'), 'utf8'), await readFile(join(output, 'step01/prompt.md'), 'utf8'));
-  assert.match(await readFile(join(archive, 'step01/error.txt'), 'utf8'), /history damaged/);
+  assert.equal(await readFile(join(archive, 'agents/steps/step01/prompt.md'), 'utf8'), await readFile(join(output, 'agents/steps/step01/prompt.md'), 'utf8'));
+  assert.match(await readFile(join(archive, 'agents/steps/step01/error.txt'), 'utf8'), /history damaged/);
   assert.deepEqual(await readdir(join(output, 'step01')), before);
   assert.equal((await loadConfig(output, 'case', isAssemblyInput))!.threadId, null);
   await assert.rejects(assemble(f.options, { ...f.deps, agent: async request => {

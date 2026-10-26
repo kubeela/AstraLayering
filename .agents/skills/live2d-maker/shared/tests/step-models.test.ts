@@ -264,12 +264,12 @@ test('Claude and agv use step workspaces, original MCP schemas and resumable loc
     const task = { name: 'fixture', cwd, prompt: '完整任务提示词', tools: [{ name: 'fixture_echo', description: '原始工具说明',
       inputSchema: { type: 'object' }, async execute() { called++; return { success: true, contentItems: [] }; } }] };
     const first = await runCliTask(task, model, settings, options, new AbortController().signal);
-    const a = JSON.parse(await readFile(join(cwd, 'preparation/workspace/invocation.json'), 'utf8'));
+    const a = JSON.parse(await readFile(join(cwd, 'workspace/invocation.json'), 'utf8'));
     const second = await runCliTask(task, model, settings, options, new AbortController().signal, first.threadId!);
     assert.equal(second.threadId, first.threadId);
-    const b = JSON.parse(await readFile(join(cwd, 'preparation/workspace/invocation.json'), 'utf8'));
+    const b = JSON.parse(await readFile(join(cwd, 'workspace/invocation.json'), 'utf8'));
     assert.equal(await readFile(join(first.logDirectory!, 'prompt.md'), 'utf8'), a.input.message.content[0].text);
-    assert.equal(a.cwd, b.cwd); assert.equal(a.cwd, join(cwd, 'preparation/workspace')); assert.equal(a.data, b.data);
+    assert.equal(a.cwd, b.cwd); assert.equal(a.cwd, join(cwd, 'workspace')); assert.equal(a.data, b.data);
     assert.notEqual(first.logDirectory, second.logDirectory);
     for (const path of [a.data, a.agvData]) assert.ok(path.startsWith(join(cwd, 'agents')));
     assert.ok(a.input.message.content[0].text.startsWith(task.prompt));
@@ -299,7 +299,7 @@ const meta=`);
     const result = await runCliTask({ name: 'env-node', cwd, prompt: 'fixture' }, parseAgentModel(id, 'fixture'), settings,
       { cwd, logDirectory: join(cwd, 'agents') }, new AbortController().signal);
     assert.equal(result.text, '完成');
-    const child = JSON.parse(await readFile(join(cwd, 'preparation/workspace/child-node.json'), 'utf8'));
+    const child = JSON.parse(await readFile(join(cwd, 'workspace/child-node.json'), 'utf8'));
     assert.equal(child.childNode, process.execPath);
     assert.deepEqual(child.path.split(delimiter), [dirname(process.execPath), inheritedPath]);
   }

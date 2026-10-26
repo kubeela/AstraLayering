@@ -155,7 +155,8 @@ test('绘制会话多轮沿用一个 thread，回调按当前回合绑定；关�
     assert.equal(names.length, 2);
     const results = await Promise.all(names.map(name => readFile(join(f.logDirectory, name, 'result.json'), 'utf8')));
     assert.ok(results.every(value => JSON.parse(value).threadId === first.threadId));
-    await assert.rejects(session.run({ name: '换沙箱', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('no'))] }), /不能改变/);
+    const changed = await session.run({ name: '换沙箱', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('no'))] });
+    assert.equal(changed.threadId, first.threadId);
   } finally { await session.close(); }
   await assert.rejects(session.run({ name: '已关闭', prompt: 'test', tools: [] }), /已关闭/);
 });
@@ -198,8 +199,11 @@ test('绘制会话同时开放原生生图和函数工具，保存生图路径�
     const second = await session.run({ ...task, name: '返修' });
     assert.equal(second.threadId, first.threadId);
     assert.deepEqual(second.images, [{ savedPath }]);
-    await assert.rejects(session.run({ ...task, imageGeneration: false }), /不能改变.*生图开关/);
+    const changed = await session.run({ ...task, imageGeneration: false });
+    assert.equal(changed.threadId, first.threadId);
     const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+    const resumed = protocol.find(item => item.method === 'thread/resume');
+    assert.equal(resumed.params.config['features.image_generation'], false);
     const threads = protocol.filter(item => item.method === 'thread/start');
     assert.equal(threads.length, 1);
     assert.equal(threads[0].params.config['features.image_generation'], true);

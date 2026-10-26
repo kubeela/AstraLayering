@@ -1,7 +1,8 @@
+import { referencesDirectory } from '../agents/inputs.ts';
 import sharp from 'sharp';
 import { copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { keyReferencePixels } from './reference-key.ts';
@@ -25,8 +26,8 @@ export async function referenceNeedsGeneration(pipeline: PipelineId, name: strin
 }
 
 // Archives are write-only history, never preparation inputs or recovery checkpoints.
-export async function normalizeGeneratedReference(input: string, standard: string, references: string, name: string, options: ImageProcessingOptions = {}): Promise<void> {
-  const archive = join(references, 'archive', `${name}-${Date.now()}-${randomUUID()}`);
+export async function normalizeGeneratedReference(input: string, standard: string, outputDirectory: string, name: string, options: ImageProcessingOptions = {}): Promise<void> {
+  const archive = join(dirname(referencesDirectory(outputDirectory)), 'generation', `${name}-${Date.now()}-${randomUUID()}`);
   await mkdir(archive, { recursive: true });
   await copyFile(input, join(archive, 'original.png'));
   const report = await normalizeReference(input, standard, input, options);

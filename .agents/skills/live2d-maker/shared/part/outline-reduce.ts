@@ -19,7 +19,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
   const metadata = await sharp(reference).metadata();
   const canvas = { width: metadata.autoOrient.width, height: metadata.autoOrient.height };
   const palette = ['#ef476f', '#118ab2', '#ffd166', '#06d6a0', '#9b5de5', '#fb8500', '#4361ee', '#f15bb5'];
-  const merged = join(context.directory, 'observations', 'outline-reduce', String(context.depth), 'merged.draft.svg');
+  const merged = join(context.directory, layerStepId(context.depth), 'workspace', 'merged.draft.svg');
   const parts = await Promise.all(context.entries.map(async (entry, index) => {
     let text = (await readFile((entry.current ?? entry.outline).path)).toString();
     for (const node of svgSource(text).elements.reverse()) {

@@ -223,6 +223,10 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       const threadOptions = {
         model: selectedModel.model, cwd, sandbox, approvalPolicy: 'never',
         config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
+          ...(sandbox === 'workspace-write' ? { sandbox_workspace_write: {
+            ...options.config?.sandbox_workspace_write as Record<string, unknown>,
+            writable_roots: [paths.outputDirectory],
+          } } : {}),
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
           features: { image_generation: imageGeneration, shell_tool: true, unified_exec: true, multi_agent: false, memories: false } }),
         dynamicTools: definitions,

@@ -94,6 +94,7 @@ export class CodexAgents {
     let session: AgentSession | undefined;
     let route: Awaited<ReturnType<typeof createCodexImageRoute>> | undefined;
     let imageModel: string | undefined;
+    let transportKey: string | undefined;
     let id = resumeThreadId;
     const functionOptions = () => ({ ...sessionOptions,
       // Startup may select the cached patch after this session was constructed.
@@ -114,12 +115,19 @@ export class CodexAgents {
         try {
           const nextImage = usesPatchedImageTool(this.options.environment!, task.step)
             ? this.options.environment!.stepImages[task.step!] : undefined;
-          const routeKey = nextImage ? nextImage + ':' + executionPaths(task, this.options.cwd!).workspace : undefined;
-          if (routeKey !== imageModel) {
+          const paths = executionPaths(task, this.options.cwd ?? workflowsDirectory);
+          const routeKey = nextImage ? nextImage + ':' + paths.workspace : undefined;
+          const nextTransport = JSON.stringify({ paths, sandbox: task.sandboxMode ?? 'workspace-write',
+            imageGeneration: task.imageGeneration ?? false,
+            tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) ?? [] });
+          if (routeKey !== imageModel || nextTransport !== transportKey) {
             await session?.close(); session = undefined;
+            transportKey = nextTransport;
+          }
+          if (routeKey !== imageModel) {
             await route?.close(); route = undefined;
             if (nextImage) route = await createCodexImageRoute(this.options.environment!, task.step!,
-              join(executionPaths(task, this.options.cwd!).workspace, 'generated'), this.options, closing.signal, this.options.imageNormalization);
+              join(paths.workspace, 'generated'), this.options, closing.signal, this.options.imageNormalization);
             imageModel = routeKey;
           }
           session ||= createFunctionToolSession(functionOptions(), id);
@@ -280,6 +288,7 @@ export class CodexAgents {
       skipGitRepoCheck: true,
       model: selected?.model || environment!.models.medium.model, modelReasoningEffort: selected?.effort || environment!.models.medium.effort,
       workingDirectory,
+      additionalDirectories: [paths.outputDirectory] as string[],
       sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
     } as const;
     const thread = codex.startThread(threadOptions);

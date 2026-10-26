@@ -131,7 +131,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
       if (!await exists(temporary)) throw new Error(`Preparation output was not produced: ${target}`);
       if (!refs.standardImage) throw new Error('参考后处理缺少 standard.png');
       // Raw generation is retained outside the final reference filenames for diagnosis.
-      await normalizeGeneratedReference(temporary, refs.standardImage, refs.directory, stage, normalization);
+      await normalizeGeneratedReference(temporary, refs.standardImage, join(sectionDirectory(directory), stageStep(stage)), stage, normalization);
     });
   }
   async function run(id: PreparationStage, step: ChainStep, refs: PreparationReferences) {

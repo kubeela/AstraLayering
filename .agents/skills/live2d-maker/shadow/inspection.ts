@@ -67,7 +67,7 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
       }
     }
   }
-  const folder = join(output,'inspection','native-' + randomUUID());
+  const folder = join(output,'workspace','inspection','native-' + randomUUID());
   const result = await native(document,bindings.shadows,folder,krita,env,signal);
   if (!result.success || result.relations.length !== bindings.shadows.length
     || result.relations.some((r,i) => r.id !== bindings.shadows[i].id || JSON.stringify(r.frames.map(f => f.offset)) !== JSON.stringify(bindings.shadows[i].testOffsets))) throw new Error('原生检查结果与声明关系不一致');
@@ -97,6 +97,7 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
       panels.push({path,label:'Native offset ' + frame.offset.join(', ')});
     }
     const review = join(output,'inspection',`relation-${String(i).padStart(3,'0')}-review.png`);
+    await mkdir(join(output, 'inspection'), { recursive: true });
     await sheet(panels,review,3); files.push(review);
     relations.push({...r,rawAlphaPixels:painted,receiverIntersectionPixels:overlap,outsideReceiverPixels:painted-overlap,
       review:review.slice(output.length+1),nativeDirectory:folder.slice(output.length+1)});

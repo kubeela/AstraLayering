@@ -1,3 +1,4 @@
+import { executionPaths, workspacePrompt } from '../../shared/agents/workspace.ts';
 import assert from 'node:assert/strict';
 import { chmod, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -65,8 +66,8 @@ test('真实 SDK 流接口记录输入、摘要、工具与未知事件字段、
   assert.equal(result.text, finalResponse);
   assert.equal(result.threadId, 'test-thread');
   assert.equal(result.logDirectory, log.directory);
-  assert.deepEqual(result.images, [{ savedPath: join(f.directory, 'generated.png') }]);
-  assert.equal(log.request.prompt, '测试提示词\n\n图 1：测试图片');
+  assert.deepEqual(result.images, [{ savedPath: join(f.directory, 'workspace/generated.png') }]);
+  assert.equal(log.request.prompt, workspacePrompt('测试提示词', executionPaths({cwd:f.directory}, f.directory)) + '\n\n图 1：测试图片');
   assert.equal(log.request.input[2].path, join(f.directory, 'reference.png'));
   assert.equal(log.request.task.timeoutMs, null);
   assert.equal(log.events.length, 7);
@@ -141,7 +142,7 @@ test('同名并发调用写入不同目录', async t => {
   assert.equal((await readdir(f.logDirectory)).length, 2);
   const prompts = await Promise.all(results.map(async result =>
     JSON.parse(await readFile(join(result.logDirectory!, 'request.json'), 'utf8')).prompt));
-  assert.deepEqual(prompts, ['first', 'second']);
+  assert.deepEqual(prompts, ['first', 'second'].map(prompt => workspacePrompt(prompt, executionPaths({cwd:f.directory}, f.directory))));
 });
 
 test('SDK 内置重连的 error 通知不提前打断回合，不开启外层恢复', async t => {
@@ -172,7 +173,7 @@ if (!previous) {
   const result = await agents.run({name:'SDK恢复',prompt:'只调用一次生图',imageGeneration:true,
     images:[{path:join(f.directory,'reference.png'),description:'参考图'}]});
   assert.equal(result.threadId, 'test-thread');
-  assert.deepEqual(result.images, [{savedPath:join(f.directory,'generated.png')}]);
+  assert.deepEqual(result.images, [{savedPath:join(f.directory,'workspace/generated.png')}]);
   const calls = (await readFile(join(f.directory,'calls.jsonl'),'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(calls.length, 2);
   assert.ok(!calls[0].args.includes('resume'));
@@ -180,7 +181,7 @@ if (!previous) {
   assert.equal(calls[1].args[resumeIndex + 1], 'test-thread');
   assert.match(calls[0].prompt, /只调用一次生图/);
   assert.ok(calls[1].prompt.startsWith(interruptedTaskPrompt));
-  assert.ok(calls[1].prompt.includes(join(f.directory,'generated.png')));
+  assert.ok(calls[1].prompt.includes(join(f.directory,'workspace/generated.png')));
   assert.ok(!calls[1].args.includes('--image'));
   const names = await readdir(f.logDirectory);
   assert.equal(names.length, 2);

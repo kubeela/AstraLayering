@@ -170,7 +170,7 @@ test('衣服输出采用 standard 尺寸而非 simplified 尺寸，并记录自�
   assert.equal(m.width, 200); assert.equal(m.height, 200);
   const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
   assert.equal(record.normalization, undefined);
-  const archive = join(f.directory, 'archive');
+  const archive = join(dirname(f.directory), 'preparation/step01/workspace/generation');
   const entries = await readdir(archive);
   assert.equal(entries.length, 1);
   assert.deepEqual(await readFile(join(archive, entries[0], 'original.png')), await readFile(f.generated));
