@@ -7,6 +7,7 @@ import { CodexAgents } from '../../shared/codex/agents.ts';
 import { workflowLogPath } from '../../shared/codex/agent-log.ts';
 import { AgentRuntime, interruptedTaskPrompt } from '../../shared/codex/agent-runtime.ts';
 import { nodeExecutables } from './node-executables.ts';
+import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
 
 const started = { type: 'thread.started', thread_id: 'test-thread' };
 const reasoning = { type: 'item.completed', item: { id: 'reason', type: 'reasoning', text: '测试公开摘要' } };
@@ -18,7 +19,7 @@ async function fixture(t: TestContext, events: unknown[], extraCode = '') {
   t.after(() => rm(directory, { recursive: true, force: true }));
   const executable = join(directory, 'fake-codex.mjs');
   await writeFile(executable, `#!/usr/bin/env node
-if (process.argv[2] === 'debug') { console.log(JSON.stringify({ version: 1, failed_error_event_version: 1 })); process.exit(0); }
+if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
 if (!process.argv.includes('--skip-git-repo-check')) throw new Error('SDK must support tasks outside Git');
 let prompt = ''; for await (const chunk of process.stdin) prompt += chunk;
 for (const event of ${JSON.stringify(events)}) process.stdout.write(JSON.stringify(event) + '\\n');

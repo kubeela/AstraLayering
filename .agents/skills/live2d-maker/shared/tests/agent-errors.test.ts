@@ -13,6 +13,7 @@ import { parseAgentModel } from '../agents/models.ts';
 import { runAgent } from '../raster/agent.ts';
 import {AgentLog} from '../codex/agent-log.ts';
 import {setTimeout as delay} from 'node:timers/promises';
+import { patchedCodexCapabilities } from './fake-codex.ts';
 
 const payload = { message: 'Provider rejected this reference', code: 'bad_reference',
   type: 'invalid_request_error', param: 'input[0]', status: 400, request_id: 'provider-request-123' };
@@ -73,7 +74,7 @@ for (const mode of ['rpc', 'turn', 'eof', 'recovered']) test(`Codex App Server $
   const executable = join(f.root, 'codex.mjs');
   await writeFile(executable, `#!${process.execPath}
 import { createInterface } from 'node:readline';
-if(process.argv[2]==='debug'){console.log(JSON.stringify({version:1,failed_error_event_version:1}));process.exit(0);}
+if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
 const payload=${JSON.stringify(payload)}, mode=${JSON.stringify(mode)};
 const emit=value=>console.log(JSON.stringify(value));
 for await (const line of createInterface({input:process.stdin})) {
@@ -120,7 +121,7 @@ test('real Codex SDK adapter preserves turn.failed fields and last message in fa
   const f = await fixture(t);
   const executable = join(f.root, 'codex-sdk.mjs');
   await writeFile(executable, `#!${process.execPath}
-if(process.argv[2]==='debug'){console.log(JSON.stringify({version:1,failed_error_event_version:1}));process.exit(0);}
+if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
 for await(const chunk of process.stdin){}
 for(const event of ${JSON.stringify([
     { type: 'thread.started', thread_id: 'sdk-thread' },
