@@ -372,16 +372,34 @@ function connectFlow() {
  const box=selector=>{const r=world.querySelector(selector).getBoundingClientRect();return {x:(r.left-bounds.left)/state.zoom,y:(r.top-bounds.top)/state.zoom,w:r.width/state.zoom,h:r.height/state.zoom};};
  const input=box('.flow-input'),cards=stages.map((_,i)=>box(`[data-pipeline="${i}"] .pipeline-heading`));
  const svg=world.querySelector('.flow-connectors'),paths=[];
- const path=(d,label,x,y,status='done')=>paths.push(`<path class="${status}" d="${d}" marker-end="url(#flow-arrow-${status})"/>${label?`<text x="${x}" y="${y}">${label}</text>`:''}`);
+ // Labels sit on their line as pills; links that skip lanes run on tracks above
+ // the headings, one track per overlapping span, so no label covers a box.
+ const status=done=>done?'done':'pending',labels=[];
+ const textWidth=text=>[...text].reduce((sum,char)=>sum+(/[　-鿿]/.test(char)?11:6.4),0)+14;
+ const path=(d,state)=>paths.push(`<path class="${state}" d="${d}" marker-end="url(#flow-arrow-${state})"/>`);
+ const label=(text,x,y,state)=>{const w=textWidth(text);labels.push(`<g class="flow-label ${state}"><rect x="${x-w/2}" y="${y-8}" width="${w}" height="16" rx="8"/><text x="${x}" y="${y+4}">${text}</text></g>`);};
  const entryY=cards[0].y+cards[0].h/2;
- path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'',0,0);
- for(const [a,b,label,status] of [[cards[0],cards[1],'parts',stages[0].status==='done'?'done':'pending'],[cards[2],cards[3],'parts',stages[2].status==='done'?'done':'pending'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'?'done':'pending'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done'?'done':'pending']]){
-  const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,label,(a.x+a.w+b.x)/2,y-10,status);
+ path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'done');
+ for(const [a,b,text,done] of [[cards[0],cards[1],'parts',stages[0].status==='done'],[cards[2],cards[3],'parts',stages[2].status==='done'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done']]){
+  const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,status(done));label(text,(a.x+a.w+b.x-6)/2,y,status(done));
  }
- for(const [a,b,y,label,status] of [[cards[0],cards[2],40,'简化角色参考',data.reference?'done':'pending'],[cards[1],cards[4],24,'人物素体 KRA',stages[1].status==='done'?'done':'pending'],[cards[4],cards[6],56,'部件绑定',stages[4].status==='done'?'done':'pending']]){
-  const x1=a.x+a.w*.72,x2=b.x+b.w*.45;
-  path(`M${x1} ${a.y} V${y} H${x2} V${b.y-6}`,label,(x1+x2)/2,y-10,status);
+ const top=Math.min(...cards.map(card=>card.y)),tracks=[];
+ const links=[[cards[0],cards[2],'简化角色参考',!!data.reference],[cards[1],cards[4],'人物素体 KRA',stages[1].status==='done'],[cards[4],cards[6],'部件绑定',stages[4].status==='done']]
+  .map(([a,b,text,done])=>({x1:a.x+a.w*.72,x2:b.x+b.w*.45,text,state:status(done)}));
+ for(const link of links){
+  const track=tracks.findIndex(end=>end<link.x1-24);
+  link.track=track<0?tracks.length:track;tracks[link.track]=link.x2;
+  link.y=top-18-link.track*22;
+  path(`M${link.x1} ${top} V${link.y} H${link.x2} V${top-6}`,link.state);
  }
+ for(const link of links){
+  // Keep the pill off the risers of the other links.
+  const half=textWidth(link.text)/2+8,risers=links.filter(other=>other!==link).flatMap(other=>[other.x1,other.x2]);
+  let x=(link.x1+link.x2)/2;
+  for(const riser of risers)if(Math.abs(x-riser)<half)x=riser+(x<riser?-half:half);
+  label(link.text,Math.min(link.x2-half,Math.max(link.x1+half,x)),link.y,link.state);
+ }
+ paths.push(...labels);
  svg.setAttribute('viewBox',`0 0 ${world.offsetWidth} ${world.offsetHeight}`);
  svg.innerHTML=`<defs>${['done','pending'].map(status=>`<marker id="flow-arrow-${status}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 6 3 0 6" fill="${status==='done'?'#86b7a8':'#a7b3c0'}"/></marker>`).join('')}</defs>${paths.join('')}`;
 }
