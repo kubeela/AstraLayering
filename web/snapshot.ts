@@ -15,6 +15,7 @@ import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { projectDisplayName } from './project-metadata.ts';
 import { reportPreview, type ReportPreview } from './report.ts';
 import { legacyWorkspaces } from './workspaces.ts';
+import { taskStopMethod } from '../.agents/skills/live2d-maker/workflow/control.ts';
 import { copiedInput, inputKras } from './kra-inputs.ts';
 
 export { phases } from './part-progress.ts';
@@ -186,7 +187,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
   const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
   return { ...record, files: servedFiles, fileVersions: servedVersions, processWorkspaces, pipelines, errors, logs: log.text,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
-    canStop: !!(record.runnerAlive && record.lockHeld && worker?.runnerId === record.run?.runner?.id),
+    canStop: !!taskStopMethod(record.run?.runner, record.runnerAlive, record.lockHeld, worker),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),
     reference: files.find(path => /^part-layering\/references\/simplified-subject\.(png|jpe?g|webp)$/i.test(path)),
   };

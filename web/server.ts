@@ -17,6 +17,7 @@ import { snapshot, summary } from './snapshot.ts';
 import { SVGThumbnails } from './svg-thumbnail.ts';
 import { KRAPreviews } from './kra-preview.ts';
 import { launch } from './worker.ts';
+import { requestTaskStop } from '../.agents/skills/live2d-maker/workflow/control.ts';
 import { LayerCompositor } from './layer-compositor.ts';
 import { studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
@@ -192,10 +193,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           return;
         }
         if (path === '/api/stop') {
-          const run = await readRun(directory, opts.name), worker = await jsonFile(directory, '.web-worker.json');
-          const live = await taskStatus(opts);
-          if (!live.runnerAlive || !live.lockHeld || !worker || worker.runnerId !== run?.runner?.id) throw new Error('当前没有可由网页停止的运行任务');
-          await atomicJSON(join(directory, '.web-cancel.json'), { token: worker.token });
+          await requestTaskStop(opts);
           json({ message: '已请求停止，将保留产物和续跑记录' }); return;
         }
         json({ error: 'Not found' }, 404); return;

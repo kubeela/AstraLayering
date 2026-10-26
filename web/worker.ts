@@ -14,13 +14,7 @@ export async function runWebTask(options: TaskOptions, token: string, dependenci
   const directory = directoryFor(options), controller = new AbortController();
   const interrupt = () => controller.abort(new Error('已请求停止；保留已有产物与 thread，稍后可续跑。'));
   process.once('SIGTERM', interrupt); process.once('SIGINT', interrupt);
-  let polling = false, readyWrite: Promise<void> | undefined;
-  const timer = setInterval(async () => {
-    if (polling) return; polling = true;
-    try { if ((await jsonFile(directory, '.web-cancel.json'))?.token === token) interrupt(); }
-    catch (error) { console.error(error); }
-    finally { polling = false; }
-  }, 1000);
+  let readyWrite: Promise<void> | undefined;
   try {
     // The task lock is already held when either callback runs. A Codex build
     // confirms the start early, so launch does not time out while it builds.
@@ -31,7 +25,6 @@ export async function runWebTask(options: TaskOptions, token: string, dependenci
     };
     return await runTask(options, { ...dependencies, signal: controller.signal, preparing: confirm, ready: confirm });
   } finally {
-    clearInterval(timer);
     await readyWrite;
     process.removeListener('SIGTERM', interrupt); process.removeListener('SIGINT', interrupt);
     if ((await jsonFile(directory, '.web-worker.json'))?.token === token) {
