@@ -27,6 +27,12 @@ export async function atomicJSON(path: string, value: unknown) {
   await rename(temp, path);
 }
 export const artifactExtensions = /\.(png|jpe?g|webp|svg|kra|psd|ora|json|md(?:\.tmp)?|py|[cm]?js|ts|txt)$/i;
+// agents/ keeps requests, logs and CLI sessions/credentials; the server reads them,
+// the browser never does. Only a legacy agents/<request>/workspace is process output.
+export function agentRecord(path: string): boolean {
+  const parts = path.split('/'), index = parts.indexOf('agents'), workspace = parts.indexOf('workspace');
+  return index >= 0 && (workspace < 0 || workspace > index) && parts[index + 2] !== 'workspace';
+}
 export async function inventory(root: string, versions?: Record<string, string>) {
   const files: string[] = [];
   const excluded = new Set(['node_modules']);

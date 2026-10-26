@@ -327,7 +327,10 @@ function processArtifacts(index, step) {
  const filtered=data.files.filter(path=>(path.startsWith(prefix)||legacy.some(root=>path.startsWith(root+'/')))&&!known.has(path)
   && (roots.some(root=>path.startsWith(root+'/'))||!path.includes('/agents/')&&!/(?:^|\/)(?:prompt\.md|[^/]+\.prompt\.txt|(?:[^/]+\.)?result\.json|attempts\.jsonl|events\.jsonl|error\.txt|review-baseline\.json)$/.test(path)));
  const items=filtered.filter(path=>roots.some(root=>path.startsWith(root+'/')));
- const deliveries=filtered.filter(path=>!items.includes(path));
+ // Outside workspace only fixed results and report-cited evidence are shown; the step's own report already shows its images.
+ const reports=data.pipelines[index]?.reports||{}, own=reportEvidence(index,step.id)?reports[step.id].images.map(image=>image.path):[];
+ const cited=new Set(Object.values(reports).flatMap(report=>report.images.map(image=>image.path)).filter(path=>!own.includes(path)));
+ const deliveries=filtered.filter(path=>!items.includes(path)&&cited.has(path));
  const listing=processFileList(items,roots,data.fileVersions);
  const render=paths=>artifacts(paths.map(path=>({path,label:path.split('/').at(-1),kind:/\.(png|jpe?g|webp|svg|kra)$/i.test(path)?'image':'file'})),index,step.id,'process-artifacts');
  const extra=deliveries.length?`<details class="process-files delivery-files" data-details="delivery:${index}:${step.id}"><summary>${deliveries.length} 个补充产物</summary>${render(deliveries)}</details>`:'';

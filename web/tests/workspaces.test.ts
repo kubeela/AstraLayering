@@ -13,15 +13,18 @@ test('process folders reflect arbitrary workspace layouts and remain separate fr
   const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
   const component = source.slice(source.indexOf('function processArtifacts('), source.indexOf('function flowCard('));
   const files = ['raster-layering/step01/workspace/root.py', 'raster-layering/step01/workspace/inspect/01/a.png',
-    'raster-layering/step01/workspace/custom/02/b.png', 'raster-layering/step01/workspace/prompt.md', 'raster-layering/step01/workspace/archive/result.json', 'raster-layering/step01/evidence.png', 'raster-layering/step01/prompt.md'];
+    'raster-layering/step01/workspace/custom/02/b.png', 'raster-layering/step01/workspace/prompt.md', 'raster-layering/step01/workspace/archive/result.json', 'raster-layering/step01/evidence.png', 'raster-layering/step01/stray.png', 'raster-layering/step01/prompt.md'];
+  // Outside workspace, only report-cited evidence is a supplementary delivery; uncited leftovers stay hidden.
+  const reports = { review: { images: [{ path: 'raster-layering/step01/evidence.png' }] } };
   const html = runInNewContext(component + '\nprocessArtifacts(0,{id:"step01"});', {
-    processFileList, data: { files }, stages: [{ id: 'raster-layering' }], stepArtifacts: [{}], esc: String,
+    processFileList, data: { files, pipelines: [{ reports }] }, reportEvidence: () => '', stages: [{ id: 'raster-layering' }], stepArtifacts: [{}], esc: String,
     shadowInspectionArtifacts: () => [], artifacts: (items: unknown[]) => JSON.stringify(items),
   });
   assert.match(html, /5 个过程文件/); assert.match(html, /1 个补充产物/);
   for (const folder of ['workspace 根目录', 'inspect/01', 'custom/02', 'archive']) assert.ok(html.includes(folder));
   assert.ok(html.includes('workspace/prompt.md'));
   assert.ok(!html.includes('step01/prompt.md'));
+  assert.ok(html.includes('step01/evidence.png')); assert.ok(!html.includes('stray.png'));
   assert.ok(html.includes('workspace/archive/result.json'));
 });
 

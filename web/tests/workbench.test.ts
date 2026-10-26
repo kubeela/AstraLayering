@@ -117,6 +117,18 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
   const artifact = (path: string) => f.url + '/artifact?' + new URLSearchParams({ name: 'test', dir: f.dir, path });
   assert.equal((await fetch(artifact('../private.json'))).status, 400);
   assert.equal((await fetch(artifact('leak/private.json'))).status, 400);
+  // Agent records stay server-side; a legacy request workspace is process output.
+  await put(f.dir, 'test/part-layering/agents/draw/auth-settings.json', '{"env":{"ANTHROPIC_API_KEY":"secret"}}');
+  await put(f.dir, 'test/part-layering/agents/draw/request.json', '{}');
+  await put(f.dir, 'test/part-layering/agents/draw/workspace/draft.png');
+  await put(f.dir, 'test/part-layering/groups/body/step01/workspace/agents/note.txt');
+  assert.equal((await fetch(artifact('part-layering/agents/draw/auth-settings.json'))).status, 400);
+  assert.equal((await fetch(artifact('part-layering/agents/draw/request.json'))).status, 400);
+  assert.equal((await fetch(artifact('part-layering/agents/draw/workspace/draft.png'))).status, 200);
+  assert.equal((await fetch(artifact('part-layering/groups/body/step01/workspace/agents/note.txt'))).status, 200);
+  const listed = (await snapshot(join(f.dir, 'test'), 'test', f.dir)).files;
+  assert.ok(!listed.some(path => /agents\/draw\/(auth-settings|request)\.json$/.test(path)));
+  assert.ok(listed.includes('part-layering/agents/draw/workspace/draft.png'));
   const svg = await fetch(artifact('out.svg'));
   assert.equal(svg.status, 200); assert.match(svg.headers.get('content-security-policy')!, /sandbox/);
   const files = await (await fetch(f.url + '/api/config/files?ref=HEAD')).json() as any;
