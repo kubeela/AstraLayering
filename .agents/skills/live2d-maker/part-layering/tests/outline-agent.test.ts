@@ -20,7 +20,8 @@ function createLayeringSteps(agents: Parameters<typeof createDefaultLayeringStep
   return { ...createDefaultLayeringSteps(agents), completeOcclusion: async () =>
     ({ status: 'pending' as const, message: '轮廓测试结束，补全另行测试' }) };
 }
-type Runtime = { group: { id: string }; outputSvg?: string; candidate?: string; parentSvg: string | null };
+type Runtime = { group: { id: string }; outputSvg?: string; candidate?: string; parentSvg: string | null;
+  review?: { round: number; candidateHash: string } };
 function runtime(task: AgentTask): Runtime {
   const match = task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/);
   assert.ok(match);
@@ -189,10 +190,37 @@ test('revise 由原绘制会话返修，每次 review 新会话，报告保留�
   const report = JSON.parse(await readFile(join(f.directory, 'groups/face/step01/review.json'), 'utf8'));
   assert.deepEqual(report.reviews.map((review: { verdict: string }) => review.verdict), ['revise', 'pass']);
   assert.notEqual(report.reviews[0].candidateHash, report.reviews[1].candidateHash);
+  assert.deepEqual(runtime(mock.calls[1].task).review, { round: 1, candidateHash: report.reviews[0].candidateHash });
+  assert.deepEqual(runtime(mock.calls[3].task).review, { round: 2, candidateHash: report.reviews[1].candidateHash });
   const state = (await GroupStore.open(f.directory)).snapshot();
   assert.equal(state.groups[0].steps.review.output!.path, state.groups[0].steps.outline.output!.path);
   assert.equal(await readFile(state.groups[0].steps.review.output!.path, 'utf8'), svg('face', 11));
   assert.deepEqual((await readdir(join(f.directory, 'groups/face/step01'))).filter(name => name.endsWith('.svg')), ['outline.svg']);
+});
+
+test('第二轮缺少提交时拒绝旧报告，续跑只复核返修后的候选', async t => {
+  const f = await fixture(t), first = agents(['revise']);
+  let reviews = 0;
+  const interrupted = { ...first, async run(task: AgentTask) {
+    if (task.name.startsWith('组轮廓review') && ++reviews === 2) {
+      return { text: 'review.json 已提交第一轮 revise，只做收尾。', images: [] };
+    }
+    return first.run(task);
+  } };
+  await assert.rejects(runLayering({ ...f, groups: null, steps: createLayeringSteps(interrupted) }), /未通过 submit_review/);
+  const path = join(f.directory, 'groups/face/step01/review.json');
+  const before = JSON.parse(await readFile(path, 'utf8'));
+  assert.equal(before.reviews.length, 1);
+  assert.notEqual(before.reviews[0].candidateHash, before.reviews[0].repairedCandidateHash);
+  const resumed = agents(['pass']);
+  await runLayering({ ...f, groups: null, steps: createLayeringSteps(resumed) });
+  assert.deepEqual(resumed.calls.map(call => call.task.name), ['组轮廓review-face']);
+  assert.deepEqual(runtime(resumed.calls[0].task).review,
+    { round: 2, candidateHash: before.reviews[0].repairedCandidateHash });
+  const after = JSON.parse(await readFile(path, 'utf8'));
+  assert.deepEqual(after.reviews.map((review: { verdict: string }) => review.verdict), ['revise', 'pass']);
+  assert.equal(after.reviews[1].candidateHash, before.reviews[0].repairedCandidateHash);
+  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.review.status, 'completed');
 });
 
 test('并发组各自保留绘制会话和独立审查记录，返修不会串到另一组', async t => {
