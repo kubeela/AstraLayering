@@ -136,6 +136,22 @@ test('preparation activity is visible before an image, and matching published re
   assert.equal(value.part.states.base, 'available'); assert.equal(value.part.states.preparation, 'available');
 });
 
+test('人物参考仅凭图片与步骤完成记录展示完成，缺图时仍显示待制作', async t => {
+  const f = await fixture(t);
+  for (const [number, name] of [[4, 'standard'], [6, 'simplified-subject'], [7, 'base-subject']] as const) {
+    await f.put(`references/${name}.png`, svg);
+    await f.mark(`preparation/step0${number}`);
+  }
+  let value = await f.get();
+  assert.equal(value.part.states.preparation, 'done');
+  assert.deepEqual(['standard', 'simplified', 'base'].map(phase => value.part.states[phase]), ['done', 'done', 'done']);
+  assert.equal(value.files.some(file => file.endsWith('/judgment.json')), false);
+  await rm(join(f.task, 'part-layering/references/base-subject.png'));
+  value = await f.get();
+  assert.equal(value.part.states.base, 'pending');
+  assert.equal(value.part.states.preparation, 'available');
+});
+
 test('a completed merge step is complete before the whole part pipeline finishes', async t => {
   const f = await fixture(t), group = { id: 'body', kind: 'part', groups: [] };
   await f.put('groups.json', { groups: [group] });

@@ -12,7 +12,7 @@ const stepPhases: Record<string, string> = {
   part_occlusion: 'occlusion', clothing_occlusion: 'occlusion',
 };
 const namePhases: Record<string, string> = {
-  '姿态判断': 'standard', '标准姿态': 'standard', '参考判断': 'simplified', '简化图片': 'simplified',
+  '姿态判断': 'standard', '标准姿态': 'standard', '参考判断': 'simplified', '参考判断与简化': 'simplified', '简化图片': 'simplified',
   '素体换装': 'base', '纯衣服参考准备': 'clothing', '首次分组识别': 'initial', '最终遮挡层级规划': 'occlusion',
 };
 
@@ -33,13 +33,13 @@ export async function partStages(directory: string, pipeline: string, groups: an
   };
   states.initial = await step(initialStepId) === 'completed' ? 'done' : groups.length ? 'available' : 'pending';
   if (pipeline === 'part-layering') {
-    for (const [phase, name] of [['standard', 'standard'], ['simplified', 'simplified-subject'], ['base', 'base-subject']]) {
+    for (const [phase, name, number] of [['standard', 'standard', 4], ['simplified', 'simplified-subject', 6], ['base', 'base-subject', 7]] as const) {
       const path = reference(name);
-      states[phase] = await fingerprint(path, prep?.files?.[phase]?.outputHash) ? 'done' : path ? 'available' : 'pending';
+      states[phase] = path && (await step(`preparation/step0${number}`) === 'completed'
+        || await fingerprint(path, prep?.files?.[phase]?.outputHash)) ? 'done' : path ? 'available' : 'pending';
     }
-    const judgment = await fingerprint('references/judgment.json', prep?.files?.judgment?.outputHash);
-    states.preparation = judgment && ['standard', 'simplified', 'base'].every(phase => states[phase] === 'done') ? 'done'
-      : ['standard', 'simplified', 'base'].some(phase => states[phase] !== 'pending') || present('references/judgment.json') ? 'available' : 'pending';
+    states.preparation = ['standard', 'simplified', 'base'].every(phase => states[phase] === 'done') ? 'done'
+      : ['standard', 'simplified', 'base'].some(phase => states[phase] !== 'pending') ? 'available' : 'pending';
   } else {
     states.clothing = await fingerprint('references/clothing.png', prep?.clothingHash) ? 'done' : artifact('references/clothing.png');
     states.preparation = states.clothing;
