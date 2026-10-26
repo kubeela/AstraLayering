@@ -10,7 +10,7 @@ import { steps as clothingSteps } from '../.agents/skills/live2d-maker/clothing-
 import { steps as physicsSteps } from '../.agents/skills/live2d-maker/physics/steps.ts';
 import { steps as assemblySteps } from '../.agents/skills/live2d-maker/character-assembly/steps.ts';
 import { nextReviewTask } from '../.agents/skills/live2d-maker/shared/raster/review.ts';
-import { inventory, jsonFile, safePath } from './files.ts';
+import { agentRecord, inventory, jsonFile, safePath } from './files.ts';
 import { partProgress, phases } from './part-progress.ts';
 import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { projectDisplayName } from './project-metadata.ts';
@@ -183,7 +183,10 @@ export async function snapshot(directory: string, name: string, dir: string) {
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');
-  return { ...record, files, fileVersions, processWorkspaces, pipelines, errors, logs: log.text,
+  // Server-side readers above may use agent records; the page only gets readable artifacts.
+  const servedFiles = files.filter(path => !agentRecord(path));
+  const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
+  return { ...record, files: servedFiles, fileVersions: servedVersions, processWorkspaces, pipelines, errors, logs: log.text,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
     canStop: !!(record.runnerAlive && record.lockHeld && worker?.runnerId === record.run?.runner?.id),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),

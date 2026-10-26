@@ -12,7 +12,7 @@ import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selected
 import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
-import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
+import { atomicJSON, agentRecord, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
 import { SVGThumbnails } from './svg-thumbnail.ts';
 import { KRAPreviews } from './kra-preview.ts';
@@ -239,6 +239,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (path === '/api/task') { json(await snapshot(directory, name, requestDir)); return; }
         const selected = url.searchParams.get('path') ?? '';
         if (!artifactExtensions.test(selected) || selected.split('/').some(part => part.startsWith('.'))) throw new Error('不支持该产物类型');
+        if (agentRecord(selected)) throw new Error('agent 记录不对网页开放');
         const file = await safePath(directory, selected);
         const info = await lstat(file);
         if (!info.isFile()) throw new Error('产物不是文件');
