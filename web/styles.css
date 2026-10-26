@@ -37,7 +37,6 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .process-files{width:0;min-width:100%}
 .process-files .step-artifacts{flex-wrap:nowrap;flex-direction:column;padding:0}
 .process-files .artifact-images{padding-bottom:4px}
-.process-files[open]{flex:0 1 auto;min-height:0;overflow-y:auto}
 .process-files .artifact-images>.artifact-image{flex:0 0 150px}
 .process-files .artifact-image img{height:110px}
 .process-files .process-file-list{grid-template-rows:repeat(3,auto)}
