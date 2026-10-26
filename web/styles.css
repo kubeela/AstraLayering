@@ -33,7 +33,16 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .thread-id{display:block;overflow:hidden;text-overflow:ellipsis;color:#7a8697;font:10px monospace;white-space:nowrap;padding:4px}
 .empty-workspace{padding:100px 32px;text-align:center;border:1px dashed #cbd5df;border-radius:16px;background:#fff}.empty-workspace p{color:#718096;margin:18px}
 .run-notice{background:#fff;border:1px solid #dde5ea;border-radius:10px;margin:-6px 0 16px;font-size:12px;max-width:100%;overflow:hidden}.run-notice summary{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}.run-notice summary>span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1}.run-notice summary small{color:#718096;flex-shrink:0}.run-notice>div{padding:0 16px 16px}.run-notice pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:230px;overflow:auto;line-height:1.6;background:#f5f7fa;padding:12px}.run-notice.error{border-color:#e3b0b3}.status-error,.form-error{color:#b83445;white-space:pre-wrap;overflow-wrap:anywhere}.form-error{max-height:230px;overflow:auto;padding:0 24px;font-size:13px}.status-error{font-size:12px;padding:8px}
-.resume-reference{display:block;max-height:380px;max-width:100%;margin:auto}.task-form-fields>small{color:#6d7b8b;line-height:1.6}.input-note{overflow-wrap:anywhere}.process-files summary{font-size:11px;color:#6c798b;cursor:pointer;padding:9px 0}.process-files .step-artifacts{max-height:420px;overflow:auto}.all-files{max-height:65vh;overflow:auto;margin-top:12px}.all-files button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px;border:0;background:transparent;font-size:12px}.all-files button:hover{background:#edf5f3}.all-files span{overflow-wrap:anywhere}
+.resume-reference{display:block;max-height:380px;max-width:100%;margin:auto}.task-form-fields>small{color:#6d7b8b;line-height:1.6}.input-note{overflow-wrap:anywhere}.process-files summary{font-size:11px;color:#6c798b;cursor:pointer;padding:9px 0}/* Expanded process files never widen their step: images slide in their own row, file chips flow in columns. */
+.process-files{width:0;min-width:100%}
+.process-files .step-artifacts{flex-wrap:nowrap;flex-direction:column;padding:0}
+.process-files .artifact-images{padding-bottom:4px}
+.process-files .artifact-images>.artifact-image{flex:0 0 150px}
+.process-files .artifact-image img{height:110px}
+.process-files .process-file-list{grid-template-rows:repeat(3,auto)}
+.process-files .process-file-list{display:grid;grid-auto-flow:column;grid-auto-columns:max-content;gap:5px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.process-files .process-file-list .artifact-file{max-width:220px;white-space:nowrap}
+.process-files .process-file-list .artifact-file span{overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}.all-files{max-height:65vh;overflow:auto;margin-top:12px}.all-files button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px;border:0;background:transparent;font-size:12px}.all-files button:hover{background:#edf5f3}.all-files span{overflow-wrap:anywhere}
 
 /* A selected group opens across the same canvas; other lanes keep their place. */
 .flow-world{width:max-content}
