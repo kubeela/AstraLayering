@@ -32,8 +32,6 @@ async function fixture(t: TestContext) {
   await mkdir(join(input, 'references'), { recursive: true });
   await writeFile(join(input, 'parts/face.svg'), 'source part');
   await writeFile(join(input, 'references/source.png'), 'source image');
-  await writeFile(join(input, 'groups.json'), '{"subject":"fixture"}');
-  await writeFile(join(input, 'occlusion.json'), '{"layers":[]}');
   await writeFile(join(input, 'preview.svg'), 'preview');
   const definitions = steps.map((step: StepDefinition) => {
     const { review: _review, ...drawing } = step;
@@ -113,7 +111,7 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
       await writeFile(join(f.output, 'step01/review-01.md.tmp'), '结论：通过\n完整检查。');
       return complete;
     }
-    if (calls.length === 0) { calls.push('step01'); assert.equal(request.tools?.length, 0); return deliver(request, steps[0]); }
+    if (calls.length === 0) { calls.push('step01'); assert.deepEqual(request.tools?.map(tool => tool.name), ['edit_groups', 'edit_occlusion']); return deliver(request, steps[0]); }
     calls.push('step02'); assert.equal(request.threadId, 'thread-1'); assert.equal(request.tools?.[0].name, 'locate_pixel_differences');
     await readFile(join(f.output, 'step01/.completed'));
     await writeFile(join(f.output, 'step02/character-soft-edges.kra'), 'partially softened artwork');

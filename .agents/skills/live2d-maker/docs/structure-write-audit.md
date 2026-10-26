@@ -1,6 +1,6 @@
 # 结构写回与误导文案审计
 
-记录日期：2026-10-26。核对本机执行副本中的人物、衣服、组装、阴影及物理管线的提示词、工具回调、恢复与交付检查；物理 agent 工作流仅在执行副本中，当前主线没有 `physics/steps.ts`。本记录用于定位问题，不声明下列缺口已经修复，不修改运行中的模型会话、KRA 或结构文件。
+记录日期：2026-10-26。以下权限表及 M1–M6 记录受控编辑改造前的核查结果；改造进展见文末。核对本机执行副本中的人物、衣服、组装、阴影及物理管线的提示词、工具回调、恢复与交付检查；物理 agent 工作流仅在执行副本中，当前主线没有 `physics/steps.ts`。审计未修改运行中的模型会话、KRA 或结构文件。
 
 ## 谁能修改结构文件
 
@@ -48,3 +48,10 @@
 - 先统一根 groups.json 与步骤分组事实的写回／恢复机制，再声称结构编辑能够在所有恢复入口保留；不能靠修改提示词替代真实持久化。
 
 这些是待修复项。本次只记录职责、证据和误导点，不向运行中的 agent 注入新任务，也不清理产物或重跑管线。
+
+## 受控编辑改造进展
+
+- 人物／衣服 raster step01 绘制及返修改用 `edit_groups`、`edit_occlusion`；说明与 schema 分别落在 [edit_groups](../shared/tools/edit_groups/description.md) 和 [edit_occlusion](../shared/tools/edit_occlusion/description.md) 工具目录中，执行共用 [structure-tools.ts](../shared/raster/structure-tools.ts)。读取仍使用内置文件工具。reviewer、step02、step03 与组装不注册结构编辑工具。
+- 工具先校验结构、全部终止节点的深度覆盖和 SVG 引用，再保存。终止 ID 改变时同时提交分组树与深度表。M1、M2 的报错已区分具体字段路径与原因；图层名映射写在报告中。
+- 按用户确认，step01 结束时的额外诊断只记日志提示，不阻断完成或后续步骤，也不回交 agent 返修。工具调用失败仍直接返回当前 agent，非法参数不落盘。M3 不采用强制退出的交付门禁。
+- M4、M6 涉及的职责与工具说明已改为现行边界，见 [workflow-details.md](../references/workflow-details.md)。文件系统硬性写保护与 M5 的独立 part 恢复问题保持现状；文档已明确只保证 raster 续跑保留根结构修改。

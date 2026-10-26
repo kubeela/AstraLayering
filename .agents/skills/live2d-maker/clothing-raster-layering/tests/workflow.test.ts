@@ -27,7 +27,6 @@ async function fixture(t: TestContext) {
   await writeFile(join(source, 'parts/front.svg'), 'front');
   await writeFile(join(source, 'parts/back.svg'), 'back');
   await writeFile(join(source, 'references/clothing.png'), 'clothing fixture');
-  await writeFile(join(source, 'groups.json'), '{"groups":[]}');
   return { source, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options: { name: 'test', krita: process.execPath }, deps: { environment: loadWorkflowEnvironment({}, directory), runsDirectory, preflight } };
 }
 async function deliver(request: AgentRequest, thread = request.threadId ?? 'drawing-1'): Promise<StepResult> {
@@ -39,7 +38,7 @@ async function deliver(request: AgentRequest, thread = request.threadId ?? 'draw
   } else {
     await request.onEvent({ type: 'thread.started', thread_id: thread });
     const id = request.prompt.startsWith('在 step01/') ? 'step02' : 'step01';
-    assert.deepEqual(request.tools?.map(tool => tool.name), id === 'step02' ? ['locate_pixel_differences'] : []);
+    assert.deepEqual(request.tools?.map(tool => tool.name), id === 'step02' ? ['locate_pixel_differences'] : ['edit_groups', 'edit_occlusion']);
     const step = steps.find(step => step.id === id)!;
     for (const file of step.requiredFiles) await writeFile(join(request.directory, id, 'review' in step && step.review && file === 'report.md' ? 'report.md.tmp' : file), `${id} ${file}`);
   }
