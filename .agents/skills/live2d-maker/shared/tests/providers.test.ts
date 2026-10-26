@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import { parseEnv } from 'node:util';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { configurationReport } from '../codex/config-report.ts';
 import { parseProviderModels, validateProviderModel } from '../agents/providers.ts';
@@ -22,7 +23,12 @@ async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
 test('blank uniform connections preserve native login, cloud routing and code defaults', async t => {
   const root = await fixture(t);
   const shell = { CODEX_HOME: '/existing/codex', ANTHROPIC_AUTH_TOKEN: 'TOKEN_FIXTURE', CLAUDE_CODE_USE_BEDROCK: '1' };
-  await writeFile(join(root, '.env'), await readFile(new URL('../../example.env', import.meta.url)));
+  const template = await readFile(new URL('../../example.env', import.meta.url), 'utf8');
+  const variables = parseEnv(template);
+  for (const key of ['layering_codex_protocol', 'layering_claude_protocol', 'layering_openai_image_protocol']) assert.ok(!Object.hasOwn(variables, key));
+  assert.ok(Object.hasOwn(variables, 'layering_agv_protocol'));
+  assert.ok(Object.hasOwn(variables, 'layering_google_image_protocol'));
+  await writeFile(join(root, '.env'), template);
   const settings = loadWorkflowEnvironment(shell, root);
   assert.deepEqual(settings.codex.config, {});
   assert.equal(settings.codex.env!.CODEX_HOME, shell.CODEX_HOME);
@@ -41,9 +47,9 @@ test('uniform fields map to each CLI without modifying the caller or embedding k
   const root = await fixture(t);
   const shell = {
     layering_codex_api_key: 'CODEX_SECRET', layering_codex_base_url: 'https://codex.test/v1',
-    layering_codex_models: 'gpt-6.1-sol, gpt-6-astra,gpt-6.1-sol', layering_codex_protocol: 'responses',
+    layering_codex_models: 'gpt-6.1-sol, gpt-6-astra,gpt-6.1-sol',
     layering_claude_api_key: 'CLAUDE_SECRET', layering_claude_base_url: 'https://claude.test',
-    layering_claude_models: 'claude-sonnet-5-5,claude-opus-5-5', layering_claude_protocol: 'anthropic',
+    layering_claude_models: 'claude-sonnet-5-5,claude-opus-5-5',
     layering_agv_api_key: 'AGV_SECRET', layering_agv_base_url: 'https://agv.test/v1beta',
     layering_agv_models: 'gemini-4-argon,gemini-3-flash-preview', layering_agv_protocol: 'genai',
     ANTHROPIC_AUTH_TOKEN: 'INHERITED_TOKEN',
@@ -52,6 +58,8 @@ test('uniform fields map to each CLI without modifying the caller or embedding k
   const settings = loadWorkflowEnvironment(shell, root), env = settings.codex.env!;
   assert.deepEqual(settings.providers!.codex.models, ['gpt-6.1-sol', 'gpt-6-astra']);
   assert.equal(settings.codex.config!.model_provider, 'layering_custom');
+  assert.equal(settings.providers!.codex.protocol, 'responses');
+  assert.equal(settings.providers!.claude.protocol, 'anthropic');
   assert.equal((settings.codex.config!.model_providers as any).layering_custom.env_key, 'layering_codex_api_key');
   assert.equal(env.layering_codex_api_key, shell.layering_codex_api_key);
   assert.equal(env.ANTHROPIC_API_KEY, shell.layering_claude_api_key);
@@ -109,7 +117,6 @@ test('reject unsupported protocols, malformed lists and unusable explicit connec
   const root = await fixture(t);
   for (const harness of ['codex', 'claude', 'agv']) {
     const prefix = `layering_${harness}_`;
-    assert.throws(() => loadWorkflowEnvironment({ [prefix + 'protocol']: 'invalid' }, root), /protocol.*仅支持/);
     assert.throws(() => loadWorkflowEnvironment({ [prefix + 'base_url']: 'https://valid.test/v1' }, root), /缺少鉴权或地址/);
     for (const url of ['not-a-url', 'file:///tmp/api', 'https://user:secret@test/v1', 'https://test/v1?key=secret', 'https://test/#secret']) {
       assert.throws(() => loadWorkflowEnvironment({ [prefix + 'api_key']: 'fixture', [prefix + 'base_url']: url }, root), /HTTP\(S\)/);
@@ -118,8 +125,10 @@ test('reject unsupported protocols, malformed lists and unusable explicit connec
       assert.throws(() => loadWorkflowEnvironment({ [prefix + 'models']: models }, root), /逗号分隔/);
     }
   }
-  assert.throws(() => loadWorkflowEnvironment({ layering_codex_protocol: 'openai' }, root), /仅支持 responses/);
-  assert.throws(() => loadWorkflowEnvironment({ layering_claude_protocol: 'openai' }, root), /仅支持 anthropic/);
+  assert.throws(() => loadWorkflowEnvironment({ layering_agv_protocol: 'invalid' }, root), /仅支持 genai \/ openai/);
+  assert.throws(() => loadWorkflowEnvironment({ layering_google_image_protocol: 'invalid' }, root), /layering_google_image_protocol 无效/);
+  const image = loadWorkflowEnvironment({ layering_openai_image_base_url: 'https://image.test/v1', layering_openai_image_api_key: 'fixture' }, root);
+  assert.equal(image.imageApis.openai!.protocol, 'openai');
   assert.throws(() => loadWorkflowEnvironment({ layering_agv_api_key: 'fixture' }, root), /layering_agv_base_url/);
   assert.deepEqual(parseProviderModels('gemini-4-argon, vendors/model:version,gemini-4-argon', 'models'), ['gemini-4-argon', 'vendors/model:version']);
   for (const protocol of ['genai', 'openai']) assert.equal(loadWorkflowEnvironment({ layering_agv_api_key: 'fixture', layering_agv_base_url: 'https://agv.test/v1', layering_agv_protocol: protocol }, root).codex.env!.AGY_LLM_GATEWAY_WIRE_PROTOCOL, protocol);

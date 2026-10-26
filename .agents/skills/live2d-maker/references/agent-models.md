@@ -45,7 +45,7 @@ layering_agent_part_review_model=gemini-4-argon-high
 
 ## 主模型连接与模型列表
 
-三种 CLI 统一使用 `layering_<codex|claude|agv>_<api_key|base_url|models|protocol>`。连接字段留空时复用已有登录和 provider；主模型与生图各自鉴权，不共用 key。完整字段见 [example.env](../example.env)。
+三种 CLI 统一使用 `layering_<codex|claude|agv>_<api_key|base_url|models>`。只有 AGV 提供 `layering_agv_protocol` 协议选择；Codex 固定使用 Responses，Claude 自定义连接固定使用 Anthropic Messages。连接字段留空时复用已有登录和 provider；主模型与生图各自鉴权，不共用 key。完整字段见 [example.env](../example.env)。
 
 | CLI | 协议 | 自定义连接 | 模型列表的原生适配 |
 | --- | --- | --- | --- |
@@ -55,7 +55,7 @@ layering_agent_part_review_model=gemini-4-argon-high
 
 `models` 接受逗号分隔的模型 ID，自动去掉两侧空白和重复项，不写力度后缀或 JSON 数组。例如 `layering_codex_models=gpt-6.1-sol,gpt-6-astra`。留空不限制。列表声明可用模型，具体职责仍由 `layering_agent_<职责>_model` 选择，工作流模型枚举保持上表范围。启动前只核对本次所选步骤；模型不在列表时明确报错，不发起模型请求。列表不证明账号拥有该模型权限。
 
-统一键不会改变 CLI 本身支持的协议：Codex 不支持 Chat Completions，Claude 常规网关不支持 OpenAI 协议。Claude 的已有 Bedrock／Vertex／Foundry 路由在统一连接和协议均留空时继承；显式选择 Messages 与已启用的云平台路由冲突时明确报错。AGV 的 `openai` 模式可以透传，但本项目的 AGV 工具／原图转发及图片容量保护依赖 `genai`；配置保护却选 `openai` 时不会静默忽略。
+Claude 的已有 Bedrock／Vertex／Foundry 路由在统一连接留空时继承；填写统一连接与已启用的云平台路由冲突时明确报错。AGV 的 `openai` 模式可以透传，但本项目的 AGV 工具／原图转发及图片容量保护依赖 `genai`；配置保护却选 `openai` 时不会静默忽略。
 
 逐字段优先级为 shell 统一键、shell 旧别名、`.env` 统一键、`.env` 旧别名，最后继承 CLI 登录；空 shell 值屏蔽文件中的同名键。旧 Codex `layering_custom_provider=true` 与 `layering_provider_base_url/api_key`，Claude `ANTHROPIC_API_KEY/BASE_URL`，AGV `AGY_LLM_GATEWAY_API_KEY/URL/MODELS/WIRE_PROTOCOL` 继续兼容。统一 Codex 连接不再需要旧开关。CLI 接收转换后的原生字段，不修改 `process.env` 或全局配置；显式 Claude 连接的 key 优先于继承的 token／key helper，后者仅在本次私有配置中移除。
 
