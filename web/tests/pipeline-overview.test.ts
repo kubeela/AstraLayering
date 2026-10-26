@@ -1,3 +1,4 @@
+import { processFileList } from '../process-files.js';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
@@ -55,7 +56,7 @@ test('共用过程文件组件识别阴影分支目录，排除已展示文件�
   const component = source.slice(source.indexOf('function processArtifacts('), source.indexOf('function flowCard('));
   const mask = pipelineSteps[5][0].children[0], maps = pipelineSteps[5][0].children[1].children[0];
   const render = (pipeline: string, step: object, files: string[], known: typeof stepArtifacts[number]) => runInNewContext(component + '\nprocessArtifacts(0, step);', {
-    stages: [{ id: pipeline }], step, data: { files }, stepArtifacts: [known], shadowInspectionArtifacts,
+    processFileList, stages: [{ id: pipeline }], step, data: { files }, stepArtifacts: [known], shadowInspectionArtifacts,
     esc: String, artifacts: (items: { path: string; label: string }[]) => JSON.stringify(items),
   }) as string;
   const files = ['shadow/mask/step01/character-shadowed.kra', 'shadow/mask/step01/inspection/relation-001-review.png',

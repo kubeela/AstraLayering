@@ -51,6 +51,7 @@ export type KritaPipeline<Input> = {
   tools?(output: string, input: Input, step: StepDefinition, phase: string,
     runtime?: { krita: KritaInstallation; env: NodeJS.ProcessEnv }): NonNullable<AgentRequest['tools']>;
   fingerprintInput?(input: Input): Promise<string>;
+  compatibleInputFingerprint?(input: Input, recorded: string | undefined): Promise<boolean>;
   // The upstream pipeline's final step; step01 records its stamp and reruns when it changes.
   upstreamStep?(input: Input): ChainStep;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
@@ -93,7 +94,8 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   }
   const reference = await pipeline.resolveInput(options.name, root);
   const fingerprint = await pipeline.fingerprintInput?.(reference);
-  const inputChanged = !!saved && fingerprint !== undefined && saved.inputFingerprint !== fingerprint;
+  const inputChanged = !!saved && fingerprint !== undefined && saved.inputFingerprint !== fingerprint
+    && !(await pipeline.compatibleInputFingerprint?.(reference, saved.inputFingerprint));
   const inputDirectories = pipeline.inputDirectories(reference);
   const upstream = await upstreamSteps(pipeline.upstreamStep?.(reference));
   for (const source of inputDirectories) {

@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
-import { executionPaths } from '../.agents/skills/live2d-maker/shared/agents/workspace.ts';
+import { legacyOutputDirectory } from '../.agents/skills/live2d-maker/shared/agents/workspace.ts';
 import { inside, safePath } from './files.ts';
 
 // Compatibility for existing requests. New workspaces live directly in a step;
@@ -12,7 +12,7 @@ export async function legacyWorkspaces(directory: string, files: readonly string
     if (!files.some(path => path.startsWith(workspace + '/'))) continue;
     const value = JSON.parse(await readFile(await safePath(directory, request), 'utf8'));
     const pipeline = request.split('/agents/')[0];
-    const output = value.outputDirectory || executionPaths({ ...value.task, cwd: resolve(directory, pipeline) }, resolve(directory, pipeline)).outputDirectory;
+    const output = value.outputDirectory || legacyOutputDirectory({ ...value.task, cwd: resolve(directory, pipeline) }, resolve(directory, pipeline));
     if (!inside(resolve(directory), resolve(output))) continue;
     const key = relative(directory, output).split('\\').join('/');
     (result[key] ||= []).push(workspace);

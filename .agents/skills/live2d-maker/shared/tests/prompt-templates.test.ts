@@ -23,7 +23,7 @@ test('人物和衣服源 Markdown 都能直接看到生图规则占位符，展�
   }
 });
 test('外层 CLI、交接与背景适配也由 Markdown 声明替换位置',()=>{
-  const cli=renderPromptFile(new URL('../prompts/cli-turn.md',import.meta.url),{task_prompt:'task',workspace:'request dir',working_directory:'task dir'});
+  const cli=renderPromptFile(new URL('../prompts/agent-turn.md',import.meta.url),{task_prompt:'task',workspace:'request dir',working_directory:'task dir',output_directory:'output dir'});
   assert.match(cli,/task[\s\S]*request dir[\s\S]*task dir/);
   const image=renderPromptFile(new URL('../prompts/image-request.md',import.meta.url),{drawing_prompt:'原绘图要求',background_instructions:'背景要求'});
   assert.ok(image.startsWith('原绘图要求\n\n背景要求'));

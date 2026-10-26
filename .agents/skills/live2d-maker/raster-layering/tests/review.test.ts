@@ -73,7 +73,7 @@ test('旧第一步交付直接补 review；无问题时一次结束，reviewer I
   await absent(join(f.output, 'step01/repair-01.md'));
   await absent(join(f.output, 'step01/review-02.md'));
   await readFile(join(f.output, 'step01/.completed'));
-  assert.ok(!(await readFile(join(f.output, 'step01/events.jsonl'), 'utf8')).includes('disposable-reviewer'));
+  assert.ok(!(await readFile(join(f.output, 'agents/steps/step01/events.jsonl'), 'utf8')).includes('disposable-reviewer'));
   await runWorkflow(f.resume, { ...f.deps, agent: forbidden });
 });
 

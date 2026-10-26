@@ -119,7 +119,7 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     assert.match(formatAgentError(failure), /缺少有效交付/);
     assert.match(formatAgentError(failure), /没有 image_generation 工具/);
     assert.match(formatAgentError(failure), /persistent-thread/);
-    assert.match(await readFile(join(directory, 'step01/error.txt'), 'utf8'), /模型最后消息/);
+    assert.match(await readFile(join(directory, 'agents/steps/step01/error.txt'), 'utf8'), /模型最后消息/);
     await assert.rejects(readFile(join(directory, 'step01/.completed')), { code: 'ENOENT' });
     const changed = loadWorkflowEnvironment({ layering_high_model: 'gpt-6.1-sol-low' }, root);
     await runWorkflow(pipeline, { name: 'case' }, { ...deps, environment: changed, agent: async request => {
@@ -131,7 +131,7 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     const config = JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
     assert.equal(config.threadId, 'persistent-thread');
     assert.equal(config.models, undefined);
-    const attempts = (await readFile(join(directory,'step01/attempts.jsonl'),'utf8')).trim().split('\n').map(line=>JSON.parse(line));
+    const attempts = (await readFile(join(directory,'agents/steps/step01/attempts.jsonl'),'utf8')).trim().split('\n').map(line=>JSON.parse(line));
     const draw = attempts.filter(attempt=>attempt.phase==='draw').at(-1);
     assert.equal(draw.model,'gpt-6.1-sol'); assert.equal(draw.effort,'low');
   });

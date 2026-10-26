@@ -12,7 +12,7 @@ import { AgentLog } from '../codex/agent-log.ts';
 import { createCodexImageRoute } from '../agents/codex-images.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { validateProviderModel } from '../agents/providers.ts';
-import { prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
+import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 
 export type StepResult = { status: 'completed' | 'blocked'; summary: string };
 export type AgentRequest = {
@@ -40,12 +40,15 @@ type Client = {
 };
 
 export async function runAgent(request: AgentRequest, client?: Client, runtime = new AgentRuntime(1)): Promise<StepResult> {
-  const paths = await prepareWorkspace({ cwd: request.directory, outputDirectory: request.outputDirectory, step: request.step }, request.directory);
+  const task = { cwd: request.directory, outputDirectory: request.outputDirectory, step: request.step };
+  const paths = executionPaths(task, request.directory);
   // Keep the configured login and tool providers; enable the native image tool.
   const environment = request.environment ?? loadWorkflowEnvironment();
-  if (!client) {
-    const selected = parseAgentModel(`${request.model}-${request.effort}`, request.step || 'raster agent');
-    validateProviderModel(environment.providers, selected, request.step);
+  const selected = client ? undefined : parseAgentModel(`${request.model}-${request.effort}`, request.step || 'raster agent');
+  if (selected) validateProviderModel(environment.providers, selected, request.step);
+  // A rejected model leaves no directories behind.
+  await prepareWorkspace(task, request.directory);
+  if (selected) {
     const image = request.step && environment.stepImages[request.step];
     if (selected.harness === 'codex' && image && image !== 'codex-native' && !request.tools?.length) {
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {

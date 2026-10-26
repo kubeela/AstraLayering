@@ -3,13 +3,12 @@ import { test } from 'node:test';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
+import { executionPaths, legacyOutputDirectory, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { contextImages, prepareFileInputs, referencesDirectory } from '../agents/inputs.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { textResult } from '../codex/function-tools.ts';
 import { publishReportAssets } from '../report-assets.ts';
-import { planWorkspaceMigration, applyWorkspaceMigration } from '../workspace-migration.ts';
 import { fakeAppServer } from '../../part-layering/tests/fake-app-server.ts';
 
 async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
@@ -66,8 +65,10 @@ test('native Codex executes and resumes in the step workspace; tools keep their 
     assert.equal(request.prompt, workspacePrompt('draw', paths));
   }
   assert.equal(await readFile(join(paths.workspace, 'arbitrary/01/draft.py'), 'utf8'), 'intermediate');
-  assert.equal(executionPaths({ cwd: root, step: 'part_children', name: '直属结构拆分-face/eye' }, root).workspace,
-    join(root, 'groups/face/children/eye/step03/workspace'));
+  assert.equal(legacyOutputDirectory({ cwd: root, step: 'part_children', name: '直属结构拆分-face/eye' }, root),
+    join(root, 'groups/face/children/eye/step03'));
+  // Unknown work stays in its own directory instead of a guessed step.
+  assert.equal(executionPaths({ cwd: root }, root).workspace, join(root, 'workspace'));
   assert.equal(executionPaths({ cwd: root, step: 'part_base_subject' }, root).workspace, join(root, 'preparation/step07/workspace'));
 });
 
@@ -87,31 +88,28 @@ test('report publication preserves bytes and the chosen folder, and leaves unrel
   await assert.rejects(readFile(join(paths.outputDirectory, 'unrelated.py')), { code: 'ENOENT' });
 });
 
-test('completed task migration preserves deliveries and raw logs, moves scratch and metadata, and repairs report links', async t => {
-  const root = await fixture(t), pipeline = join(root, 'character-assembly'), step = join(pipeline, 'step01');
-  const request = join(pipeline, 'agents/request'), old = join(request, 'workspace');
-  await mkdir(join(old, 'inspect/01'), { recursive: true }); await mkdir(step);
-  const delivery = Buffer.from('original KRA'); await writeFile(join(step, 'character-assembled.kra'), delivery);
-  await writeFile(join(step, '.completed'), JSON.stringify({ stamp: 'keep', inputs: {}, outputs: { 'character-assembled.kra': 'before', 'report.md': 'before' } })); await writeFile(join(step, 'draft.py'), 'scratch');
-  await writeFile(join(step, 'events.jsonl'), 'scheduler events');
-  await writeFile(join(request, 'request.json'), JSON.stringify({ task: { name: 'assembly', step: 'assembly', cwd: pipeline } }));
-  await writeFile(join(request, 'events.jsonl'), 'original raw events');
-  const image = join(old, 'inspect/01/evidence.png'); await writeFile(image, 'evidence');
-  await writeFile(join(step, 'report.md'), `结论：通过\n\n![evidence](${image})`);
-  await writeFile(join(step, 'review.json'), JSON.stringify({ reviews: [{ observations: [{ savedPath: image, mode: 'blend' }] }] }));
-  const plan = await planWorkspaceMigration(root);
-  assert.ok(plan.some(move => move.source === join(step, 'draft.py')));
-  assert.ok(!plan.some(move => move.source === join(step, 'character-assembled.kra')));
-  await applyWorkspaceMigration(root, plan);
-  assert.deepEqual(await readFile(join(step, 'character-assembled.kra')), delivery);
-  const receipt = JSON.parse(await readFile(join(step, '.completed'), 'utf8'));
-  assert.equal(receipt.stamp, 'keep');
-  assert.notEqual(receipt.outputs['report.md'], 'before');
-  assert.equal(await readFile(join(request, 'events.jsonl'), 'utf8'), 'original raw events');
-  assert.equal(await readFile(join(step, 'workspace/draft.py'), 'utf8'), 'scratch');
-  assert.equal(await readFile(join(pipeline, 'agents/steps/step01/events.jsonl'), 'utf8'), 'scheduler events');
-  assert.equal(await readFile(join(step, 'inspect/01/evidence.png'), 'utf8'), 'evidence');
-  assert.ok(!(await readFile(join(step, 'report.md'), 'utf8')).includes('/agents/request/workspace/'));
-  const review = JSON.parse(await readFile(join(step, 'review.json'), 'utf8'));
-  assert.equal(review.reviews[0].observations[0].savedPath, join(step, 'inspect/01/evidence.png'));
+test('Codex changes workspace/tools by reconnecting to the same thread and keeps formal write access', async t => {
+  const root = await fixture(t), server = await fakeAppServer(root, [{ tool: 'deliver', arguments: {} }]);
+  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, root), cwd: root,
+    logDirectory: join(root, 'agents'), codexPathOverride: server.executable });
+  const session = agents.createSession();
+  try {
+    for (const step of ['step01', 'step02']) {
+      const outputDirectory = join(root, step);
+      const result = await session.run({ name: step, cwd: root, outputDirectory, prompt: 'deliver',
+        tools: [{ name: 'deliver', description: step, inputSchema: { type: 'object' },
+          async execute(_args, _signal, context) { await writeFile(join(context!.outputDirectory, 'formal.txt'), step); return textResult('done'); } }] });
+      assert.equal(result.threadId, 'native-thread');
+      assert.equal(await readFile(join(outputDirectory, 'formal.txt'), 'utf8'), step);
+    }
+  } finally { await session.close(); }
+  const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  const starts = protocol.filter(call => ['thread/start', 'thread/resume'].includes(call.method));
+  assert.deepEqual(starts.map(call => call.method), ['thread/start', 'thread/resume']);
+  assert.equal(starts[1].params.threadId, 'native-thread');
+  for (const [index, call] of starts.entries()) {
+    const output = join(root, `step0${index + 1}`);
+    assert.equal(call.params.cwd, join(output, 'workspace'));
+    assert.deepEqual(call.params.config['sandbox_workspace_write.writable_roots'], [output]);
+  }
 });

@@ -7,7 +7,7 @@ import { acquireTaskLock } from '../workflow/state.ts';
 import { pipelineDirectory, taskDirectory, resolveRunsDirectory } from '../shared/paths.ts';
 import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
 import { runWorkflow as runSharedWorkflow, type KritaPipeline, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
-import { inputDirectories, isShadowInput, resolveShadowInput, inputFingerprint, fileHash, type ShadowInput } from './input.ts';
+import { inputDirectories, isShadowInput, resolveShadowInput, shadowInputFingerprint, compatibleShadowFingerprint, fileHash, type ShadowInput } from './input.ts';
 import { buildPrompt, stepsFor } from './steps.ts';
 import { prepareMaps, validateDelivery } from './delivery.ts';
 import { loadWorkflowEnvironment } from '../shared/codex/environment.ts';
@@ -30,9 +30,8 @@ export function makePipeline(mode: ShadowMode, env: NodeJS.ProcessEnv = process.
   return { id: 'shadow', directorySuffix: mode, steps,
     resolveInput: (name, root) => resolveShadowInput(name, root, mode), validateInput: isShadowInput,
     inputDirectories, buildPrompt,
-    fingerprintInput: input => inputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? [
-      ...referenceNames.map(referenceUrl), ...['preparation.ts', 'steps.ts', 'delivery.ts', 'inspection.ts', 'native.ts', 'native_worker.py'].map(p => new URL(p, import.meta.url)),
-    ] : []),
+    fingerprintInput: input => shadowInputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
+    compatibleInputFingerprint: (input, saved) => compatibleShadowFingerprint(input, saved, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
     ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === 'step01') await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
     validateDelivery: async (output, input, step, krita, dryRun) => {
       await validateDelivery(output, input, mode);

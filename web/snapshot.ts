@@ -43,7 +43,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
   const record = await summary(directory, name, dir).catch(error => {
     errors.push(String(error)); return { name, status: 'failed', directory, run: undefined as TaskRun | undefined, runnerAlive: false, lockHeld: false };
   });
-  const files = await inventory(directory), fileSet = new Set(files);
+  const fileVersions: Record<string, string> = {};
+  const files = await inventory(directory, fileVersions), fileSet = new Set(files);
   const processWorkspaces = await legacyWorkspaces(directory, files);
   const optional = async (path: string) => jsonFile(directory, path).catch(error => { errors.push(String(error)); return undefined; });
   const exists = async (path: string) => {
@@ -182,17 +183,6 @@ export async function snapshot(directory: string, name: string, dir: string) {
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');
-  // The URL version changes when an existing draft is rewritten, even if no log or filename changes.
-  const fileVersions: Record<string, string> = {};
-  const legacyRoots = Object.values(processWorkspaces).flat();
-  const previewFiles = files.filter(path => /\.(kra|svg|png|jpe?g|webp|md(?:\.tmp)?|json)$/i.test(path)
-    && (!path.includes('/agents/') || legacyRoots.some(root => path.startsWith(root + '/'))));
-  for (let index = 0; index < previewFiles.length; index += 16) {
-    await Promise.all(previewFiles.slice(index, index + 16).map(async path => {
-      try { const info = await lstat(await safePath(directory, path)); fileVersions[path] = `${info.mtimeMs}:${info.size}`; }
-      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(path + ': ' + String(error)); }
-    }));
-  }
   return { ...record, files, fileVersions, processWorkspaces, pipelines, errors, logs: log.text,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
     canStop: !!(record.runnerAlive && record.lockHeld && worker?.runnerId === record.run?.runner?.id),

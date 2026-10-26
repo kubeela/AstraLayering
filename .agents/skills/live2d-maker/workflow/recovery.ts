@@ -41,12 +41,15 @@ export async function replaceThread(options: Pick<TaskOptions, 'name' | 'dir'> &
     // unfinished reports. Preserve these too; append-only event logs stay in place.
     for (const [step, status] of plan.statuses) {
       if (status !== 'running') continue;
-      const source = join(target, step), saved = join(archive, step);
-      await mkdir(saved);
-      for (const entry of await readdir(source, { withFileTypes: true })) {
-        if (entry.isFile() && (/^(prompt\.md|result\.json|error\.txt)$/.test(entry.name)
-          || /\.(prompt\.txt|result\.json|md\.tmp)$/.test(entry.name))) {
-          await copyFile(join(source, entry.name), join(saved, entry.name));
+      for (const location of [step, join('agents', 'steps', step)]) {
+        const source = join(target, location), saved = join(archive, location);
+        const entries = await readdir(source, { withFileTypes: true }).catch(error => { if (error.code !== 'ENOENT') throw error; return []; });
+        await mkdir(saved, { recursive: true });
+        for (const entry of entries) {
+          if (entry.isFile() && (/^(prompt\.md|result\.json|error\.txt)$/.test(entry.name)
+            || /\.(prompt\.txt|result\.json|md\.tmp)$/.test(entry.name))) {
+            await copyFile(join(source, entry.name), join(saved, entry.name));
+          }
         }
       }
     }

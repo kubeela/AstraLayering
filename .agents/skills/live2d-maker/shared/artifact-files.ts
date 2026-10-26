@@ -27,9 +27,9 @@ export async function atomicJSON(path: string, value: unknown) {
   await rename(temp, path);
 }
 export const artifactExtensions = /\.(png|jpe?g|webp|svg|kra|psd|ora|json|jsonl|jsonl.gz|md(?:\.tmp)?|py|[cm]?js|ts|txt)$/i;
-export async function inventory(root: string) {
+export async function inventory(root: string, versions?: Record<string, string>) {
   const files: string[] = [];
-  const excluded = new Set(['node_modules', 'supervision', 'sessions', 'archive', 'backups', 'cli-data']);
+  const excluded = new Set(['node_modules']);
   async function walk(path: string, depth: number) {
     if (depth > 40) throw new Error('任务目录嵌套超过 40 层');
     const entries = await readdir(join(root, path), { withFileTypes: true });
@@ -37,6 +37,7 @@ export async function inventory(root: string) {
     if (entries.some(entry => /^Krita_.*_Default_Resources\.bundle$/.test(entry.name))) return;
     for (const entry of entries) {
       if (entry.name.startsWith('.') || excluded.has(entry.name) || entry.isSymbolicLink()) continue;
+      if (path.split('/').includes('agents') && !path.split('/').includes('workspace') && entry.name === 'cli-data') continue;
       if (path.includes('agents/') && !path.split('/').includes('workspace') && ['tmp', 'bridge-results'].includes(entry.name)) continue;
       if (path.includes('agents/') && ['auth-settings.json', 'mcp.json', 'sessions.json', 'tool-log-forwarder.json'].includes(entry.name)) continue;
       const child = path ? path + '/' + entry.name : entry.name;
@@ -45,8 +46,10 @@ export async function inventory(root: string) {
         catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
         await walk(child, depth + 1);
       }
-      else if (entry.isFile() && artifactExtensions.test(entry.name)) files.push(child);
-      if (files.length > 50_000) throw new Error('任务产物超过 50000 个文件，请将旧备份移到 backups 目录');
+      else if (entry.isFile() && artifactExtensions.test(entry.name)) {
+        files.push(child);
+        if (versions) { const info = await lstat(join(root, child)); versions[child] = `${info.mtimeMs}:${info.size}`; }
+      }
     }
   }
   await walk('', 0);
