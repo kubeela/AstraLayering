@@ -6,7 +6,7 @@
 
 人物与衣服分别完成结构拆分、隐藏补全、栅格绘制和边缘修画，再组装成完整角色。新的 KRA 分层路线已完成多个完整案例，是当前成熟的素材制作方案。
 
-**每个案例从左到右：输入原图 → 完整穿戴合成 → 立体爆炸图。** 原图与合成图共占左半，爆炸图占右半，比例 **5:5**。真实 KRA 绘画层按结构组合为五组，人物姿态保持完整，头发与衣装沿统一纵深展开，通过透视和柔和投影呈现装配关系。点击图片可看大图。
+**每个案例从左到右：输入原图 → 完整穿戴合成 → 立体爆炸图。** 原图与合成图共占左半，爆炸图占右半，比例 **5:5**。真实 KRA 绘画层按案例结构组合为五组，沿统一纵深展开，通过透视和柔和投影呈现装配关系。脸部与前发随完整人物一起展示，让角色轮廓更连贯。点击图片可看大图。
 
 [![Jianma：原图、完整合成与 159 层立体拆解](showcase/jianma-reference-composite-exploded.png)](showcase/jianma-reference-composite-exploded.png)
 
@@ -19,6 +19,10 @@
 [![Pink Elf：原图、完整合成与 102 层立体拆解](showcase/pink-elf-reference-composite-exploded.png)](showcase/pink-elf-reference-composite-exploded.png)
 
 [Pink Elf](demos/pink-elf/README.md)：70 层人物与 32 层衣装，展示后拖裙、后发、完整人物、裙装袖片及蝴蝶结挂饰；案例保留人物、衣服、组装与投影蒙版的完整路线。
+
+[![Black White Doll：原图、完整合成与 100 层立体拆解](showcase/black-white-doll-reference-composite-exploded.png)](showcase/black-white-doll-reference-composite-exploded.png)
+
+[Black White Doll](demos/black-white-doll/README.md)：姿态标准化后，组装工程包含 81 层人物与 19 层衣装，分五组展示双马尾后发、完整人物、吊带上衣、百褶裙及胸前蝴蝶结；案例保留分层、换装及投影阴影成果。
 
 [全部成果与工程下载](demos/readme.md) · [Jianma 参考对照](demos/jianma/assembled/comparison.png) · [Pink Doll 标准化与组装对照](demos/pink-doll/character-assembly/step01/final-overall-comparison.jpg)
 
