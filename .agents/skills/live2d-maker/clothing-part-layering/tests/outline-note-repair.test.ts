@@ -7,6 +7,7 @@ import { findGroup, GroupStore, writeAtomic } from '../../shared/part/groups.ts'
 import { drawGroupOutline, reviewGroupOutline } from '../../shared/part/outline-agent.ts';
 import { fixture, seedInitialGroups, shape } from './layering-fixture.ts';
 import { nodeExecutables } from './node-executables.ts';
+import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
 
 const signal = new AbortController().signal;
 const inputs = (task: AgentTask) => JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
@@ -98,7 +99,7 @@ test('initial drawing and repair reuse one actual app-server session with stable
 import { createInterface } from 'node:readline';
 import { appendFileSync } from 'node:fs';
 const send = value => process.stdout.write(JSON.stringify(value) + '\\n');
-if (process.argv[2] === 'debug') { console.log(JSON.stringify({ version: 1, failed_error_event_version: 1 })); process.exit(0); }
+if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
 for await (const line of createInterface({ input: process.stdin })) {
   const message = JSON.parse(line);
   appendFileSync(${JSON.stringify(requests)}, JSON.stringify(message) + '\\n');
