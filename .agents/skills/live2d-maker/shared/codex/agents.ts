@@ -12,6 +12,7 @@ import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './bl
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
 import { parseAgentModel, type AgentStep, type AgentModel } from '../agents/models.ts';
+import { validateProviderModel } from '../agents/providers.ts';
 import { runCliTask, unavailableSession } from '../agents/cli.ts';
 import { imageGenerationTool, validateImageSelection } from '../agents/images.ts';
 import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-images.ts';
@@ -180,6 +181,7 @@ export class CodexAgents {
           const settings = this.options.environment!;
           const selected = this.options.selectedModel || (original.step ? settings.stepModels[original.step]
             : parseAgentModel(`${settings.models.medium.model}-${settings.models.medium.effort}`, '默认模型'));
+          validateProviderModel(settings.providers, selected, original.step ?? original.name);
           if (original.step) validateImageSelection(settings, original.step);
           if ((selection?.harness || this.options.resumeHarness) && (selection?.harness || this.options.resumeHarness) !== selected.harness) {
             if (id) await this.options.onThreadReplacement?.(id, '模型配置切换到其他 CLI');
@@ -248,6 +250,7 @@ export class CodexAgents {
 
   async run(task: AgentTask): Promise<AgentResult> {
     const selected = this.options.selectedModel || (task.step ? this.options.environment!.stepModels[task.step] : undefined);
+    validateProviderModel(this.options.environment!.providers, selected ?? { ...this.options.environment!.models.medium, harness: 'codex' }, task.step ?? task.name);
     if (task.step) validateImageSelection(this.options.environment!, task.step);
     if (task.tools?.length || selected?.harness !== undefined && selected.harness !== 'codex'
       || task.step && this.options.environment!.stepImages[task.step] && this.options.environment!.stepImages[task.step] !== 'codex-native') {
