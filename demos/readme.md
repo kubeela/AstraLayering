@@ -18,7 +18,7 @@
 
 当前 KRA 完整案例保留 **Jianma、Pink Doll、Pink Elf** 三个。历史 SVG 案例继续保留完整版本，便于回看当时的制作方式和成果；光照研究素材沿用原目录。
 
-README 展示图集中在仓库根目录 [showcase](../showcase/)，只保存正文实际引用的三张成图。Jianma 使用 `jianma/assembled/` 的合成图与 159 层归档；Pink Doll、Pink Elf 使用各自 `character-assembly/step01/` 的 KRA 和合成图。维护时，先在仓库根目录运行 `node scripts/export-showcase-layers.ts --krita <Krita可执行文件>`，将原生图层与来源摘要导出到已忽略的 `.web/showcase-layers/`，再运行 `node scripts/build-demo-showcase.mjs` 生成三张展示图。
+README 展示图集中在仓库根目录 [showcase](../showcase/)，只保存 README 实际引用的成图与演示录屏。Jianma 使用 `jianma/assembled/` 的合成图与 159 层归档；Pink Doll、Pink Elf 使用各自 `character-assembly/step01/` 的 KRA 和合成图。维护时，先在仓库根目录运行 `node scripts/export-showcase-layers.ts --krita <Krita可执行文件>`，将原生图层与来源摘要导出到已忽略的 `.web/showcase-layers/`，再运行 `node scripts/build-demo-showcase.mjs` 生成三张展示图。
 
 ## 细看制作过程
 
