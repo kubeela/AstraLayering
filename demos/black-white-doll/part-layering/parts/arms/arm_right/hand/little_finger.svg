@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1086" height="1448" viewBox="0 0 1086 1448" data-source-sha256="19dcffd7c54b40dd298239328b67672d4f8eb6096afec7dab1d17fc4f7ec5a46"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 361.3,722 C 361.3,719.4 363.4,717.6 366.2,717.6 C 369,717.6 371,719.4 371,722 C 371,729 370.7,736 371,742 C 371.4,748 373,752.5 373.8,757 C 374.1,759.5 374.5,761.5 374.4,763.4 C 374.1,765.8 372.8,767.3 371.2,767.3 C 369.6,767.3 368.3,765.8 368.1,763.7 C 367.8,762.5 367.1,761 366.4,759 C 365,755 363.2,750 362.2,745 C 361.6,741 361.3,737 361.3,731 C 361.3,727 361.3,724 361.3,722 Z" fill-rule="nonzero"/></g>
+  <!-- 小指无可独立确认的外露区域：指根被掌部遮住，指身及末端被无名指和相贴指区遮住。隐藏指形留给后续补全。 -->
+  <g id="arm-right-hand-little-finger-outline" data-group-path="arms/arm_right/hand/little_finger" fill="#58b8df" stroke="none"></g>
+</svg>

@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "signature": "032c0df07d79c9337164c865607fecd83b725ccd3c107743b5eb6cacc18608dd",
+  "passed": true,
+  "nativeVersion": "5.3.4.1 (git bd6e8d0)",
+  "width": 1086,
+  "height": 1448,
+  "relations": [
+    {
+      "id": "skirt-to-legs",
+      "bounds": [
+        386,
+        496,
+        318,
+        750
+      ],
+      "fullPaint": "relation-000/full-paint.png",
+      "receiver": "relation-000/receiver.png",
+      "clipBase": "relation-000/clip-base.png",
+      "frames": [
+        {
+          "offset": [
+            0,
+            0
+          ],
+          "file": "relation-000/offset-00.png",
+          "clipped": "relation-000/clip-offset-00.png"
+        },
+        {
+          "offset": [
+            -14,
+            0
+          ],
+          "file": "relation-000/offset-01.png",
+          "clipped": "relation-000/clip-offset-01.png"
+        },
+        {
+          "offset": [
+            14,
+            0
+          ],
+          "file": "relation-000/offset-02.png",
+          "clipped": "relation-000/clip-offset-02.png"
+        },
+        {
+          "offset": [
+            0,
+            -10
+          ],
+          "file": "relation-000/offset-03.png",
+          "clipped": "relation-000/clip-offset-03.png"
+        },
+        {
+          "offset": [
+            0,
+            14
+          ],
+          "file": "relation-000/offset-04.png",
+          "clipped": "relation-000/clip-offset-04.png"
+        }
+      ],
+      "rawAlphaPixels": 39364,
+      "receiverIntersectionPixels": 34196,
+      "outsideReceiverPixels": 5168,
+      "review": "inspection/relation-000-review.png",
+      "nativeDirectory": "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753"
+    }
+  ],
+  "warnings": [],
+  "fileHashes": {
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/without-shadows.png": "583554e4b0e36c2d662ba3912caec4cd507e428b0001dae93b16837277956b55",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/native-final.png": "696286c6f247dd5ac667f1892caa9fe210fd987be711f44424104abd1c5ab288",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/full-paint.png": "81a5a8435954833823fdcd3db2c3101de0ad7820cf0710f3a985991f9f56536c",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/receiver.png": "76771801da9f4c86b585aa925e3d78bb2f75b0244110557bf0abb398511a48b1",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/clip-base.png": "76771801da9f4c86b585aa925e3d78bb2f75b0244110557bf0abb398511a48b1",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/offset-00.png": "696286c6f247dd5ac667f1892caa9fe210fd987be711f44424104abd1c5ab288",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/clip-offset-00.png": "bad108a486ba483c3a33ecea26d63641fa3bb34fae89a04fbeda02abe395a7fb",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/offset-01.png": "ba88c1260c7913bd2bb1d5d26158733d76cf86d15eeadbf65d8c67ab26c0c4cc",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/clip-offset-01.png": "f820415ce8e5806dccdb73ce376557e24c1bdf949dc816a01e734b0d1f2dbb1d",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/offset-02.png": "e334968ead18a8e51ad0aecd62b3114da13fd50236377a596c21c9021faddf1f",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/clip-offset-02.png": "b431cd8219d33f1b665cff280084a392c0d511e09645fcda8842df5f2ed19e51",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/offset-03.png": "b3fcb2c1d45d7d76a3c5ebbb4f34231f96682258d9d4ba98cde4baf95feaeb90",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/clip-offset-03.png": "f3ada7b8a1e2c843514ce4e41bb6e3aa3a383ce0fd192b52d6923dde34b1575c",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/offset-04.png": "a3219c7f179e0928967b0a859830025fcd55af2f5bd31e97d2a6fe75ab9396b3",
+    "workspace/inspection/native-ea2ee570-1cf8-49ea-9a84-5f371d322753/relation-000/clip-offset-04.png": "cb519606aa2269af35ee2a9d779091db998a39f7557731003aaaf03cee0acba0",
+    "inspection/relation-000-review.png": "281572c2ed82cca3215bea6d4679358b2ac0eeb2d72d5252600365ea797299e2",
+    "inspection/overview.png": "413f840441dea24db1d0b2dd0ee757085c735e2d0cfeca4b9fe39b73417003da"
+  },
+  "scope": "Native clipping and declared relative offsets; not physics or deformer animation. Raw intersection is before ancestor masks and final occluders."
+}

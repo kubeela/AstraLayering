@@ -1,0 +1,48 @@
+{
+  "groupId": "chest_bow/left_tail",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成独立只读审查，未发现有图像依据且需要修改的问题。\n\n归属与完整性：先查看纯衣服参考全图及胸前结局部（crop=[470,428,171,189]，4 倍），确认本片为画面右侧、角色自身左侧的连续下垂带尾。可见实体从结心下缘约 (561,461) 延至约 (577,599)，外缘由同侧结环下方约 (578,469) 接出，弯曲至约 (606,584)，末端为连接两下端点的斜切边。候选完整覆盖这一带体，没有误包结环可见主体、另一条带尾、camisole 或人体；两尾间露出的上衣空隙保持在本片之外。参考中没有属于本片但遗漏的薄纱、真实孔洞或分离附件。\n\n形状及边缘：已查看全图 blend、整个带尾的 blend／edge／svg（crop=[548,442,68,166]，6 倍），覆盖全部可见内外缘、主体宽度及斜切末端；再以原图与 edge 分别检查接入处（crop=[544,439,52,57]，8 倍）和末端（crop=[570,550,47,59]，8 倍）。轮廓的位置、弯曲、逐段宽度、两端比例及斜边与参考贴合。末端外侧的浅灰投影是衣身上的阴影，不计入带体；未因固定褶纹或明暗没有内部路径判缺失。证据：observations/review/chest_bow/left_tail/2026-10-25T23-17-40-395Z-2.png、-6.png、-7.png。\n\n父范围与隐藏接缝：已读父完成 SVG 并查看其胸前结 blend。候选可见边界沿用父稿相应带尾边界；约 x559–578、y454–469 的上端保留在 knot 和 left_loop 之后的短距离隐藏搭接，与参考接入关系相容。四倍采样父范围检查 outsideSamples=0、outsidePixels=0；未发现需要扩大父稿才能解决的可见缺漏。\n\nnote 与控制：说明已明确实体范围、与 knot／left_loop／right_tail 的分界、根部前后关系、主体位于 camisole 与胸部之前、锚点共同随动及带尾独立摆动和隐藏搭接职责。整条连续带体保留一个终止 part 合理，未发现必须修正的说明或结构问题。无需重画当前 part 或返修。",
+      "candidateHash": "a0f1f0c0abd79b86229d57ce7a5df07f95e3aa7c9c57940fb9db1fe957afb36c",
+      "observations": [
+        {
+          "source": "outline.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-1.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "edge",
+          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-2.png"
+        },
+        {
+          "source": "../../../../../parts/chest_bow.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-3.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-4.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "svg",
+          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-5.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "edge",
+          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-6.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "edge",
+          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-7.png"
+        }
+      ],
+      "updatedAt": "2026-10-25T23:23:28.389Z"
+    }
+  ]
+}

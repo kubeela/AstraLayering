@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1086" height="1448" viewBox="0 0 1086 1448" data-source-sha256="0e28fee0f79f5c46848f494e2b7c024acbb7dcc9d2ca89e923204ee12c694fe8"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 390.8,364 L 405.8,364 C 405.8,376 405.9,386 406,394 L 391,394 C 390.9,386 390.8,376 390.8,364 Z" fill-rule="nonzero"/></g>
+  <g id="camisole-right-shoulder-strap-outline" data-group-path="camisole/right_shoulder_strap" fill="#32b8d2" stroke="none">
+    <path d="M 390,369
+      C 390,338 393,304 397,278
+      C 399,261 401,251 406,248
+      C 411,245 418,244 422,246
+      C 424,247 422,250 421,252
+      C 413,277 408,316 406,371 Z"/>
+    <path d="M 392,358 L 404,358 L 406,394 L 391,394 Z"/>
+  </g>
+</svg>
