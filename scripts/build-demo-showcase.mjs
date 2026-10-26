@@ -35,16 +35,10 @@ const cases = [
     } },
   { id: 'black-white-doll', title: 'Black White Doll', source: '.web/showcase-layers/black-white-doll', reference: 'demos/black-white-doll/input/original.png',
     composite: 'demos/black-white-doll/character-assembly/step01/character-assembled.png', counts: [81, 19],
-    titles: ['Rear hair', 'Body', 'Face', 'Front hair & clips', 'Camisole', 'Pleated skirt', 'Chest bow'],
-    depths: [-300, 0, 180, 500, 620, 830, 1020],
+    titles: ['Rear hair', 'Character', 'Camisole', 'Pleated skirt', 'Chest bow'],
     classify(layer, name) {
-      if (isBody(layer)) {
-        if (/^hair\/(back_hair|ponytail_)/.test(name)) return 0;
-        if (name.startsWith('face/')) return 2;
-        if (/^(hair|head_accessories)\//.test(name)) return 3;
-        return 1;
-      }
-      return name.startsWith('pleated_skirt/') ? 5 : name.startsWith('chest_bow/') ? 6 : 4;
+      if (isBody(layer)) return /^hair\/(back_hair|ponytail_)/.test(name) ? 0 : 1;
+      return name.startsWith('pleated_skirt/') ? 3 : name.startsWith('chest_bow/') ? 4 : 2;
     } },
 ];
 
