@@ -1,0 +1,188 @@
+# 共享运行时与维护
+
+默认配置统一维护在 skill 根目录的 [example.env](../example.env)，由 `shared/default-configuration.ts` 读取。模型职责与生图默认值由共享模型模块校验、解析；运行时回退、首次生成 `.env` 与 WebUI 使用同一模板。WebUI 依赖 skill，独立 skill 包含完整配置与解析能力。
+
+只有修改提示词／工具、接入 CLI 或诊断共享行为时读取本页；日常执行见 [SKILL.md](../SKILL.md)。
+
+## 工具与模型
+
+工具定义唯一来源是 `shared/tools/<name>/description.md` 与 `schema.json`，各 section 的 `tools/<name>/` 可覆盖。启动时加载并固定本次调用定义；schema 无效直接报错，真正的路径与写入校验在实现中。动态注册只管理工作流函数工具，宿主原生工具仍由宿主提供。模型、provider 与生图协议见[模型方案与配置](../references/model-presets.md)。
+
+所有操作 Krita 的提示词通过 `{krita_environment}` 注入共用 [environment.md](krita/environment.md)；它和 prompts、工具说明是运行输入，不是额外使用手册。
+
+## 多深度与上游修正
+
+`occlusion.json` v3 每个逻辑 part 只有一条：单深度使用 `level`，多深度使用 `levels: [{ level, region }]`，二者互斥。深度数值唯一，从后往前排序，可用小数插入；v2 单深度仍兼容。多深度表示同动整体跨层，不强制回 part 拆树，实际绘画分片由 raster step01 在 Krita 中实现，保持连接和归属。
+
+step01 绘制与返修对轮廓、隐藏补全、画风和结构负责。读取结构使用内置文件工具，修改分组使用 [edit_groups](tools/edit_groups/description.md)，修改深度使用 [edit_occlusion](tools/edit_occlusion/description.md)。工具校验分组、全部终止节点的深度覆盖及 SVG 引用后保存；终止部件 ID 改变时同时提交完整深度表。版本、方向及上游 sourceHash 由程序管理，图层名与部件的映射写在绘画报告中，并同步对应 SVG、当前 KRA 与预览。
+
+工具校验失败直接向当前 agent 返回具体字段路径与原因，保留原文件，修正参数后再次提交。step01 结束时的额外结构诊断记录为日志“结构检查提示”，供前端查看；这项诊断继续保留完成与后续执行，也保留原有视觉 review 轮数。完成标记表示已通过当前交付检查，结构诊断与视觉检查应分别核对。
+
+step01 reviewer 只读反馈并使用框选工具；step02 沿用已确认结构精修边缘，注册像素差异工具；人物 step03 做换装准备。reviewer、step02、step03、组装与阴影沿用各自职责，结构编辑工具仅提供给两套 raster step01 绘制／返修。各 CLI 沿用共用函数工具通道和原有会话恢复能力；这些职责约定与受控工具校验之外，文件系统权限仍由执行环境决定。
+
+raster 中断、主动重跑及已进入 raster 的总控续跑保留上游修正。独立重跑 part 会从首次分组与各步骤事实重建树；仅写在根 groups.json 的树结构调整需事先留档核对。来源与审计证据见本页文末。
+
+reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／工具等执行障碍，不消耗正式质量审核轮数。文件、像素统计与测试不能代替逐层视觉验收。
+
+## 参考图后处理
+
+新生成的 simplified、base-subject 和纯衣服参考以 `standard.png` 为统一画布。真实 alpha 直接保留，Nano 的透明请求由共享生图通道双背景差分恢复，不额外安装 Python 抠图环境；细节、失败留档与局限见 [生图配置](../references/model-presets.md#生图执行与透明处理)。
+
+旧式不透明参考只做 Node 颜色键与去溢色，边缘无可靠背景时保留并记录；它不承担语义分割。不同尺寸用 Sharp 等比缩放并居中透明补边，不裁紧角色；已合格且无需缩放时保留原字节。处理前原图与报告追加保存到 `references/archive/`，归档不参与恢复或完成判断，旧任务已有参考仅校验复用，不重新处理。
+
+## 提示词模板与动态位置
+
+工作流自己提供的任务文字以 Markdown 为来源。动态内容只能填入模板声明的 `{变量名}`；代码不能在阶段正文后临时拼接制作要求。实际顺序由 Markdown 中的位置决定。占位符采用单次替换：输入正文或 JSON 数据里的花括号不会再次求值；缺少变量时明确报错。分组自定义模板还必须保留对应通用模板的必要占位符，不会静默追加缺失的运行信息。
+
+### 各阶段源文件
+
+| 阶段 Markdown | 显式位置 | 内容来源 |
+| --- | --- | --- |
+| 人物 `0-标准姿态.md`、`2-简化图片.md`、`3-素体参考.md`，衣服 `preparation.md` | `{image_execution_rules}`；衣服另有 `{width}`、`{height}` | [人物生图规则](prompts/preparation-image-rules.md)、[标准化规则](prompts/preparation-standardize-rules.md)、[衣服生图规则](prompts/preparation-clothing-rules.md)；尺寸来自原图。只给绘制正文的 API 调用者使用[同样可见的外层模板](prompts/preparation-image-task.md)中的 `{drawing_prompt}`。 |
+| 两套 part 的 `4-初始分组.md` | `{run_directory}`、`{reference_label}`、`{reference_path}`、`{groups_path}` | 本次目录、人物／衣服参考类型及输入路径。 |
+| 两套 part 的 `5-组轮廓.md`、`6-轮廓review.md`、`8-同层轮廓去重.md`、`9-正面遮挡补全.md`、`10-直属结构拆分.md`、`11-遮挡层级规划.md`，及 `prompts/groups/**` 覆盖文件 | `{prompt_source}`、`{runtime_context}`；按职责声明 `{repair_context}`、`{note_repair_rule}`、`{report_path}`、`{fixed_rules}`、`{fixed_rules_source}` | `runtime_context` 是当前组、画布、绑定草稿／候选、父组、同级件和参考图等 JSON 数据；补全、拆分的固定规则来自各自 `9-补全操作约定.md`／`10-拆分操作约定.md`；返修见[返修上下文](prompts/outline-repair-context.md)与[说明修正](prompts/outline-note-repair.md)。 |
+| 两套 raster 的所有绘制、review、repair Markdown | `{drawing_responsibilities}`、`{krita_environment}`、`{runtime_context}`；首步另有 `{drawing_report_filename}`，检查／返修有 `{review_report_filename}`、`{repair_report_filename}` | [绘制职责](raster/drawing-responsibilities.md)按职责填入或留空；运行信息来自[绘制模板](prompts/raster-runtime.md)或[检查模板](prompts/raster-review-runtime.md)，内部路径、版本、交付文件等也逐项声明占位符。 |
+| [组装](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影蒙版](../shadow/prompts/mask.md)、[法线／深度](../shadow/prompts/normal-depth.md) | `{krita_environment}`、`{runtime_context}` | [组装运行信息](prompts/assembly-runtime.md)、[阴影运行信息](prompts/shadow-runtime.md)，蒙版检查命令由[检查说明模板](prompts/shadow-inspection.md)中的 `{inspection_command}` 声明。 |
+
+`{krita_environment}` 展开为[共用段落模板](krita/environment-section.md)，其中 `{source_path}` 指向[共用环境说明](krita/environment.md)，`{environment_rules}` 是该文件全文，Krita 绝对路径和版本分别填入 `{krita_executable}`、`{krita_version}`。段落保留明确的开始／结束标记和绝对来源路径。
+
+### 请求、恢复与生图适配
+
+这些是独立的外层模板，不改变阶段自己的绘制要求，也必须在 Markdown 中声明插入位置。
+
+| 模板 | 动态位置与用途 |
+| --- | --- |
+| [CLI 请求](prompts/cli-turn.md) | `{task_prompt}`、`{workspace}`、`{working_directory}`。Claude／AGV 的请求临时目录说明。 |
+| [图片说明](prompts/image-description.md)、[图片路径](prompts/image-reference.md) | `{image_description}` 来自本次附图用途，`{image_path}` 是本次图片路径；AGV 通过路径读取。图片说明作为独立消息发送，与任务正文一起保存在请求记录。 |
+| [中断继续](prompts/interrupted-task.md)、[续跑](prompts/continuation.md)、[已有图片](prompts/continuation-images.md) | `{interrupted_task}`、`{saved_images_context}`、`{saved_image_paths}`。没有已生成图片时对应位置为空。 |
+| [恢复返修](prompts/raster-repair-resume.md)、[交接返修](prompts/raster-handoff-repair.md)、[会话交接](prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
+| [生图请求](prompts/image-request.md)、[Nano 纯色背景](prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |
+| [Nano 仅换背景](prompts/nano-background-replacement.md) | `{background_hex}`、`{width}`、`{height}`。第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。 |
+
+工具说明和参数仍来自 `shared/tools/<工具名>/description.md`／`schema.json` 或各管线自己的工具定义；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
+
+### 查阅实际请求
+
+各请求目录的 `prompt.md` 保存展开后的正文，`request.json` 保存任务、附图说明和输入消息。CLI 的 `prompt.md` 保存经过 CLI 外层模板展开后的实际正文。raster 阶段既有 `prompt.md`、review／repair 提示词记录也继续保留。Nano 的 `image-processing/normalization.json` 同时保存原始提示词和 provider 实际提示词。模板和实际请求可以逐项对照；不改全局或隐藏的系统提示词。
+
+
+## 启动验证
+
+首次使用新的模型方案、CLI 或 provider，以及修改协议适配／工具 schema 后，按本次路线验证。记录版本、实际配置来源、检查结果与日志位置；不能把命令存在、一次 `OK` 或模拟服务器通过写成完整实测。用户要求停管线时不执行真实模型或生图检查。
+
+### 自动检查
+
+从 skill 根目录执行：
+
+```bash
+pnpm test:agents
+# 修改 TypeScript 后再检查类型；相同源码的通过记录可以复用。
+pnpm check
+```
+
+`test:agents` 不调用真实模型或生图服务，覆盖以下条件：
+
+| 条件 | 通过标准 |
+| --- | --- |
+| 方案 1 默认、方案 2 混合与自定义配置 | 全部 LLM 职责和独立生图选择完整；人物／衣服职责共享，但工具和提示词覆盖保留；shell 覆盖、默认回退与旧配置冲突有对应断言 |
+| 模型与生图组合 | 所有生图步骤拒绝非 Codex harness 配原生 imagegen；缺少所选生图 URL／key、CLI 或 Codex 生图补丁能力时，启动前明确报错；CLI 本地版本探测能识别文件存在但解释器／动态库缺失的情况 |
+| 真实工具目录 | 读取共享、人物、衣服的全部 description.md / schema.json，不以只含简单字符串的测试工具代替；可空类型、嵌套数组、枚举、数值约束、oneOf 和 additionalProperties 等逐字段保留 |
+| Gemini 请求 | 实际 HTTP 适配路径用 parametersJsonSchema 传完整 JSON Schema，不能把 type 数组塞进受限的 parameters；保留 CLI 原生工具；重复准备不重复注册；camelCase／snake_case 原生声明均可处理 |
+| 工具调用与返回 | 原参数、null 值、工具说明、文本、全部返回图片及 thought signature 不丢失；下一回合还能恢复上回合的工具结果 |
+| Codex 原生生图 | `codex-native` 不注入补丁生图配置；GPT／Nano 使用原生工具；不同请求的路由／模型隔离，保存图片事件与原 thread 续跑保留 |
+| 自定义生图协议 | Gemini 原生和 OpenAI 兼容的生图／编辑请求保留提示词与输入图片，输入文件不修改；输出落在请求目录，跨任务路径被拒绝 |
+| 会话恢复 | 同 CLI 修改模型／力度恢复原会话；切换 CLI 或会话失效创建替代会话并记录历史，已有产物保留 |
+| 故障与状态 | 临时通道错误沿用会话重试；正常退出却无产物展示最后消息；取消、失败及进程退出的总控状态明确，不把已退出进程展示为运行中 |
+
+这些是配置、传输和恢复的自动回归；它们不能证明上游当前授权、API 完整兼容或绘图质量。
+
+### 新环境的真实验证
+
+在实际 `.env`、任务目录及隔离请求环境中执行最小验证，记录哪些是实测，哪些仍是模拟覆盖。测试文件和请求记录放在 `<dir>/<name>/runtime/`，不写入用户全局配置。已通过的同版本、同配置检查不反复执行。
+
+1. **带真实工具测试所选 harness。** 用现有 `CodexAgents`／`runCliTask` 调用路径，载入 `ToolCatalog` 的实际共享及管线覆盖定义。请求必须携带真实 schema，尤其包含 write_groups 的可空 note 和 propose_occlusion 的单／多深度 oneOf；只询问模型是否能回复不算通过。工具回调使用测试数据，不能修改正式成果。
+2. **验证调用和续会话。** 让模型实际调用一个无副作用测试工具，核对参数与返回值，再以该 session/threadId 发第二回合。测试工具也包含可空字段，并返回小型测试图片，确认下一回合能读取。纯连通、注册、执行、带图返回、恢复是不同验证项，不能相互替代。
+3. **按所选生图方式验证。** 原生 Codex 要确认实际注册 imagegen；自定义服务要使用本次配置的协议、模型与输入图片。首次正式准备步骤产出合格图片后可作为该生图组合的实测证据，记录尺寸／透明通道与实际产物；不能据此宣称另外的模型或协议也通过。无必要不额外生图。
+4. **验证所需软件。** 在后台实际环境中确认辅助绘图的可用 Python，以及显式 Krita 入口的保存 KRA、重新打开和查看／导出图像能力；Linux 无显示配置应在绘图前明确报错；使用 Xvfb 时验证它能从工作流环境启动。Nano 双背景处理用已有 Node／Sharp，无 Krita 内嵌 Python 安装或抠图模型推理步骤；版本命令不是全部验收。
+5. **核对续跑和展示。** 检查总控进程、锁、真实阶段与工作台一致。恢复时核对准备图内容指纹，已完成的步骤不能重新生图。取消后检查任务所属的绘制子进程，不能只看总控 PID 消失。
+
+发现确定的请求格式错误时先修适配并补回归，不用重复重试掩盖。修复不更换用户选定模型、不删产物、不修改绘图提示词与审核轮次。缺少 CLI／凭据的处理和安装确认沿用[安装与前置](../references/setup.md)。
+
+### 验证记录
+
+任务 monitor.md 至少记录：代码／CLI 版本与配置位置、实际覆盖的步骤或工具集、模拟／真实验证区别、结果和请求日志、未测项。重用证据时说明适用范围。不能使用“所有情况都通过”代替这些记录；新的问题补具体回归和检查条件。
+
+
+## 自动化测试（维护用）
+
+```sh
+node --test shared/tests/*.test.ts
+# 只验证一个共享模块
+node --test shared/tests/step-models.test.ts
+pnpm check
+```
+
+自动回归使用本地模拟，不证明上游授权、实际绘图质量或全部协议兼容。临时服务退避、会话交接与宿主巡检见 [workflow](../workflow/README.md)。
+
+## 结构写回审计（2026-10-26）
+
+<details>
+<summary>历史证据与受控编辑改造记录</summary>
+
+记录日期：2026-10-26。以下权限表及 M1–M6 记录受控编辑改造前的核查结果；改造进展见文末。核对本机执行副本中的人物、衣服、组装、阴影及物理管线的提示词、工具回调、恢复与交付检查；物理 agent 工作流仅在执行副本中，当前主线没有 `physics/steps.ts`。审计未修改运行中的模型会话、KRA 或结构文件。
+
+### 谁能修改结构文件
+
+两套 part 共用实现；两套 raster 共用实现。这里区分任务授权、受控工具写入与程序落盘，不把提示词中的“只读”当作操作系统写保护。
+
+| agent | groups.json | occlusion.json | 实际入口与边界 |
+| --- | --- | --- | --- |
+| part 首次分组 | 创建初始分组，随后由调度器更新根树 | 无 | `write_groups` 校验并写 `initial/step01/groups.json`；调度器通过 GroupStore 写根文件。见 [initial-groups.ts](part/initial-groups.ts)、[layering.ts](part/layering.ts) |
+| part 轮廓绘制／返修 | 仅修改当前组 note | 无 | `update_group_note` 精确替换当前 note 中唯一匹配的文本，走 GroupStore 写入队列；不改父组、其他组或树结构。见 [outline-agent.ts](part/outline-agent.ts) |
+| part 细分组 | 改变直属子节点，程序保存分组树 | 无 | `submit_children` 返回并校验结构，调度器写对应 `children.json`，再更新根树；agent 不直接编辑事实文件。见 [children-agent.ts](part/children-agent.ts)、[layering.ts](part/layering.ts) |
+| part 最终遮挡层级规划 | 无；要求规划期间输入不变 | 生成深度表 | `propose_occlusion`、`check_occlusion_part`、`submit_occlusion` 校验，调度器原子写入最终文件。见 [occlusion-agent.ts](part/occlusion-agent.ts)、[occlusion-plan.ts](part/occlusion-plan.ts) |
+| raster step01 绘制及两轮返修 | 允许直接编辑并同步 SVG／记录 | 允许直接编辑深度与区域 | [drawing-responsibilities.md](raster/drawing-responsibilities.md) 在 step01 绘制及 repair 中注入；结构修改由当前绘制 agent 执行 |
+| raster step01 独立 reviewer | 只读检查与反馈 | 只读检查与反馈 | 不注入结构写回职责；框选工具只输出审查证据。见 [review.ts](raster/review.ts)、[part-pipeline.ts](raster/part-pipeline.ts) |
+| raster step02、人物 step03 | 当前任务没有授予新的结构编辑职责 | 同左 | 新提示词要求沿用结构；`buildPrompt` 仅在 step01 注入写回职责。与 step01 共用绘制会话，旧指令仍在历史中；文档还有与此冲突的措辞，见 M4 |
+| part 独立 reviewer、同层去重、遮挡补全 | 不编辑这两个结构文件；各自仅提交审查或 SVG 产物 | 同左 | 工具绑定对应产物；同层去重与补全不接管分组树或最终深度表 |
+| character-assembly、shadow | 上游结构作为输入，无修改授权 | 同左 | 各自修改本管线的工程／配置；不继承 raster step01 的结构写回提示词。见 [组装提示词](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影提示词](../shadow/prompts/mask.md) |
+| physics 的分析／制作／复核（本机执行副本） | 上游结构只读，无修改授权 | 同左 | 执行副本 `physics/steps.ts` 明确要求不改上游、另一管线、run.json 或完成标记；各角色只修改规定的本阶段配置与证据 |
+
+技术边界：raster agent 使用 `danger-full-access`；Claude／AGV 请求使用各 CLI 的执行能力。当前并没有对这两个文件统一设置阶段写保护。未授权角色在提示词上只读，不等于程序已经检测并阻止其越权写入。参见 [raster/agent.ts](raster/agent.ts)、[agents/cli.ts](agents/cli.ts)。
+
+### 当前案例的确定证据
+
+`black-white-doll/clothing-part-layering/occlusion.json` 经 raster step01 回写后，在 15 个多深度区域和 4 个单深度记录中加入了 `layer` 图层名字段，共 19 处。原 schema 只接受单行规定字段以及 `levels: [{ level, region }]`；图层名可记录在绘画报告中，现有 schema 不接受新增的 `layer` 属性。
+
+直接调用 `validateOcclusionDocument` 会报 `pleated_skirt/skirt_body 深度值重复、非法或缺少区域描述`。只在内存副本中移除这 19 处额外字段后，同一校验器通过，覆盖 10 个逻辑 part、19 个深度区域；未修改真实文件。因此本次已证实是额外字段违反协议，未发现深度值重复。此检查不代替视觉 review。
+
+本次观察时，step01 已完成两轮 review／必要返修，step02 在运行。错误来自 [web/part-stages.ts](../../../../web/part-stages.ts) 读取现有表时的校验；它会展示错误，未向当前绘制会话发送修正反馈。
+
+### 已确认的误导文案及程序缺口
+
+| 编号 | 文件与具体文案／行为 | 误导点及实际边界 |
+| --- | --- | --- |
+| M1 | [occlusion-plan.ts](part/occlusion-plan.ts)：`深度值重复、非法或缺少区域描述` | 同一条件同时检查区域是否为对象、额外字段、数值类型／范围、深度重复及 region 非空；额外 `layer` 字段也触发此句。应分别定位字段路径和失败原因，不能让 agent 按重复深度去改正确层序 |
+| M2 | 同文件：`层级表包含重复 ID 或不支持的字段` | 缺失／空 ID、重复 ID、行不是对象及额外字段被合并。此次多深度的 `layer` 移除后，单深度的 `layer` 会触发此句；不能据此认为 ID 重复 |
+| M3 | [drawing-responsibilities.md](raster/drawing-responsibilities.md)：`检查相关文件能够解析、引用完整且图像一致`；[workflow.ts](raster/workflow.ts) 的 `checkFiles` 与 `交付检查通过，写入 .completed` | 能解析 JSON 不证明符合 schema；当前 part raster 没有挂接结构交付校验，完成门槛主要检查要求的输出文件存在、非空且位于目录内。`.completed` 或视觉 review 通过不证明回写的结构文件合法 |
+| M4 | [workflow-details.md](README.md#多深度与上游修正)“多深度与上游修正”：`step01 绘画者…step02 沿用已确认结构精修柔边，使用现有文件工具直接修改 groups.json、occlusion.json 和对应 SVG。可以调整层序、归属或拆出…` | 同段将 step01 与 step02 连写，容易把结构编辑权限扩展到 step02；人物／衣服 step02 提示词实际要求沿用层序、归属，不新增拆层。step03 也要求保持结构。参见 [steps.ts](raster/steps.ts) 中仅为 step01 注入写回职责的条件 |
+| M5 | [drawing-responsibilities.md](raster/drawing-responsibilities.md)：`直接编辑上游 groups.json…`、`上游分层文件保存后即作为后续工作的有效输入`；[workflow-details.md](README.md#多深度与上游修正)：`上游结构修改在中断与主动重跑后继续使用` | 这不是所有恢复入口都成立的保证。`GroupStore.open` 从首次分组与各已完成的 `children.json` 重建树；根 groups.json 仅保留已有 ID 的 name／note／metadata。只改根树增加、删除或重排节点，独立 part 恢复时可能被旧步骤事实覆盖。总控在 raster 已启动时跳过 part 恢复只是保护一条入口。见 [groups.ts](part/groups.ts)、[part-steps.ts](part/part-steps.ts) |
+| M6 | [workflow-details.md](README.md#多深度与上游修正)“编辑工具说明与 schema”：`raster 各阶段按下文约定提供深度工具`、`实际执行与文件写入校验仍在 TS 中` | 当前 part raster 只注册 reviewer 框选及 step02 像素差异工具，没有深度修改／校验工具。工具回调中的 schema 校验不会覆盖 agent 用脚本直接改写上游 JSON 的路径，不能让 agent 误以为保存后已有同等保护 |
+
+### 后续修复边界
+
+- 将层级校验错误拆成准确的字段路径与原因；人物、衣服和前端使用同一校验器。
+- 让直接编辑结构的 agent 获得可执行的 schema／引用检查入口，在完成前收到具体错误并在原绘制会话修正；交付端也校验，不只由前端发现。技术校验返修不额外消费视觉 review 轮次。
+- 明确 step01 绘制／返修与后续步骤的写入范围，处理共享会话里的旧指令和相互冲突的说明。
+- 先统一根 groups.json 与步骤分组事实的写回／恢复机制，再声称结构编辑能够在所有恢复入口保留；不能靠修改提示词替代真实持久化。
+
+这些是待修复项。本次只记录职责、证据和误导点，不向运行中的 agent 注入新任务，也不清理产物或重跑管线。
+
+### 受控编辑改造进展
+
+- 人物／衣服 raster step01 绘制及返修改用 `edit_groups`、`edit_occlusion`；说明与 schema 分别落在 [edit_groups](tools/edit_groups/description.md) 和 [edit_occlusion](tools/edit_occlusion/description.md) 工具目录中，执行共用 [structure-tools.ts](raster/structure-tools.ts)。读取仍使用内置文件工具。reviewer、step02、step03 与组装不注册结构编辑工具。
+- 工具先校验结构、全部终止节点的深度覆盖和 SVG 引用，再保存。终止 ID 改变时同时提交分组树与深度表。M1、M2 的报错已区分具体字段路径与原因；图层名映射写在报告中。
+- 按用户确认，step01 结束时的额外诊断只记日志提示，不阻断完成或后续步骤，也不回交 agent 返修。工具调用失败仍直接返回当前 agent，非法参数不落盘。M3 不采用强制退出的交付门禁。
+- M4、M6 涉及的职责与工具说明已改为现行边界，见 [workflow-details.md](README.md#多深度与上游修正)。文件系统硬性写保护与 M5 的独立 part 恢复问题保持现状；文档已明确只保证 raster 续跑保留根结构修改。
+
+</details>

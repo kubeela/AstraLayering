@@ -1,19 +1,71 @@
 ---
 name: live2d-maker
-description: 从角色参考图制作适合 Live2D 后续绑定的人物与衣服分层素材，启动并恢复 Codex、Claude Code 或 Antigravity / Krita 制作管线、跟踪进度和处理异常，交付可编辑 KRA 与 PNG，并可制作 Live2D 投影蒙版或法线／深度贴图。用于让 agent 开始制作、接续已有任务或查看结果；当前不包含 Cubism 绑定与动画制作。
+description: 从角色参考图制作人物与衣服分层 KRA、透明 PNG、穿戴组装及阴影素材。用于启动或恢复制作、打开工作台、安排巡检和调试单个 section；交付范围为后续绑定使用的静态素材。
 ---
 
 # Live2D Maker
 
-负责从输入准备、启动管线、持续追踪到交付结果。遵循人物与衣服各自已有的绘图提示词、验收要求和审核轮次。阴影制作见 [shadow](shadow/README.md)：默认蒙版，也可选法线／深度；两分支独立恢复，输出素材与跟随／裁切关系，后续由 deformer 绑定。
+从实际安装的 skill 根目录执行命令。整条路线依次为：人物 part → 人物 raster → 衣服 part → 衣服 raster → 穿戴组装 → 阴影。
 
-1. **确定任务。** 区分新制作和续跑，询问缺失的参考图、任务名与工作路径；新任务还要确认是否用 `--standard` 标准化姿态，已说明或续跑有记录时不重复询问。未指定路径时，告知用户实际绝对路径并使用默认的 `<仓库>/.run/<name>/`（独立安装时为 `<skill上一级>/.run/<name>/`）；`--dir` 指定运行根目录，相对输入路径从 `<dir>/<name>/` 解析，数据不得放在 skill 内。
-2. **确认配置并检查启动条件。** skill 根目录 `.env` 不存在时，按[推荐模型方案](references/model-presets.md)使用方案 1 默认配置创建；用户已指定方案 2 或自定义时沿用所选方案；已有 `.env` 直接复用，未要求时不覆盖。在实际启动环境执行 `pnpm env:check`（配置预览），再按[安装与前置](references/setup.md)核对实际软件、登录及操作能力；总入口会先执行所选 CLI 的本地版本检查。按[生效配置核对](references/workflow-details.md#生效配置核对)检查模型、CLI、生图选择及各接口的图片数／请求体预算；主模型连接统一使用 `layering_<codex|claude|agv>_<api_key|base_url|models>`，只有 AGV 使用 `layering_agv_protocol` 选择协议，核对来源、协议和所选模型是否在可用列表中，见[模型与 harness](references/agent-models.md#主模型连接与模型列表)；容量保护和可选无损去重见 [图片容量保护](patches/README.md#图片容量保护)；安装补丁不等于开启保护，已确认的配置在换方案或升级时保留。使用 Codex 且未指定补丁入口时，启动会自动构建缓存（补丁修正失败流的错误读取，并承载自定义生图与 compact）；AGV 以 `layering_agv_unlimited_response_header_timeout=true` 开启自动准备。补丁源码和构建入口统一在 [patches](patches/README.md)。Codex 构建需要 Rust 1.95.0：缺少时明确提示，在临时目录隔离安装并在构建后清理，不改全局 Rust 或 shell 配置；Git 与平台 C/C++ 编译依赖仍须可用。读取[安装与前置](references/setup.md)，检查登录、生图和 Krita 操作能力。Nano 透明请求由共享生图通道先生成纯色背景图，再仅换背景生成第二张，由 Node／Sharp 差分恢复透明 PNG；无需抠图模型或 Python 包。所有操作 Krita 的 agent 共用[环境与恢复说明](shared/krita/environment.md)，由提示词构建器自动注入，不注册专用 Krita 执行工具。辅助绘图 Python 优先复用宿主，缺少时验证 Krita 内置脚本环境。已有依赖直接复用；缺少 CLI／凭据时说明并询问下一步，缺少 Krita 时先确认桌面或 headless 安装方案，有桌面优先官方原生安装包。
-3. **启动或续跑。** 按[总入口与配置](references/workflow-details.md#总入口)使用 `pnpm start`，确认后台启动与当前状态。总控记录在 `<dir>/<name>/run.json`；已有任务用相同名称和运行根目录恢复，活跃任务直接接管监听，避免重复启动。
-4. **展示工作台。** 按[工作台启动与连接](references/workbench.md)复用或启动真实前端，核对追踪的是同一任务目录，打开任务页并给用户可访问的链接。独立安装时按该文档补齐网页入口。
-5. **持续追踪。** 按[巡检与恢复](references/monitoring.md)创建宿主每 2 小时的检查，主动诊断、整理上下文并重试可恢复故障，直到完成或用户取消。必要时可换 thread，完整保留记录和产物。宿主无定时能力时明确告知，不安装替代定时器；不能只记录故障后等待用户。
-6. **交付结果。** 核对 KRA、PNG 和报告，查看合成图，给出实际文件入口及遗留问题，完成或取消后关闭定时检查。具体交付路径见[交付说明](references/workflow-details.md#交付)。
+## 执行流程
 
-按需读取：指定组、拆分限深或单阶段调试见[单管线操作与验收](references/individual-pipelines.md)；LLM 职责配置和独立生图选择见[模型与 harness](references/agent-models.md)；provider、图片压缩和工具配置见[配置与工作流细节](references/workflow-details.md#codex-环境配置)。
+1. **询问并确认参数。** 确定新建或续跑、参考图、任务名、运行根目录、制作范围、姿态标准化与阴影方式；只询问缺失或确需选择的项，已确认或已有记录的不重复问。说明实际保存路径。新安装缺少 `.env` 时读取[模型方案](references/model-presets.md)，默认使用方案 1；用户指定其他方案则沿用，已有 `.env` 不覆盖。
+2. **检查并启动。** 首次安装、换机器或依赖异常时读取[安装与前置](references/setup.md)，确认所选 CLI、登录、生图、Krita 及桌面／headless 操作能力。执行 `pnpm env:check` 核对配置（此命令不验证登录）。按下面示例后台启动，查询真实状态；已有活跃任务接管监听，避免重复启动。
+3. **安排定时检查。** 使用宿主的定时能力每 2 小时检查进展并主动恢复可恢复故障，直到所选路线完成或用户取消。记录定时 ID、实际 skill／任务路径、启动参数和操作环境到任务 `monitor.md`。没有定时能力时明确说明，不安装替代定时器。正常阶段由总调度自行推进。
+4. **打开 web。** 复用或启动真实工作台，核对其运行根目录与本次 `--dir` 一致，打开 `?name=<任务名>` 并提供可访问链接。独立安装缺少前端、远程连接或巡检／恢复细节，只读 [workflow/README.md](workflow/README.md) 的相应部分。
+5. **交付。** 查看合成图，核对实际 KRA、PNG 和报告，给出文件与网页入口及遗留问题；完成或取消后关闭本任务定时检查。
 
-动态提示词只在 Markdown 已声明的 `{变量名}` 位置展开，位置由模板决定。Krita 说明使用各阶段的 `{krita_environment}`；全文有来源路径与开始／结束标记。生图规则、运行信息、恢复与 CLI 说明等均有显式模板，见[提示词模板与动态位置](references/prompt-templates.md)。最终提示词在请求目录 `prompt.md` 和既有阶段记录中可直接审查，不新增执行工具，不修改全局或隐藏系统提示词。
+## 启动参数
+
+| 参数 | 含义 |
+| --- | --- |
+| `--name <任务名>` | 任务目录名；续跑沿用 |
+| `--image <参考图>` | 首次原图，推荐绝对路径 |
+| `--dir <运行根目录>` | 数据在 `<dir>/<name>/`；默认完整仓库 `.run/`，独立安装为 skill 上一级的 `.run/`，不放 skill 内 |
+| `--krita <可执行文件>` | 绘制、组装与阴影需要；续跑复用保存值 |
+| `--from / --to <section>` | 连续范围；默认完整六段，section ID 见下表 |
+| `--standard / --no-standard` | 是否标准化人物姿态；首次默认关闭，续跑沿用；已有参考改选项需按 workflow 规则重试 |
+| `--shadow-mode mask\|normal-depth` | 原生投影蒙版／法线深度；首次默认 `mask`，分支独立恢复 |
+| `--jobs <正整数>` | part 全局 agent 并发，默认 3 |
+| `--background` | 后台制作；省略则前台 |
+| `--status --json` | 只查询，不启动模型 |
+
+```sh
+pnpm start --name my-character --image /绝对路径/角色.png --krita /绝对路径/krita --background
+pnpm start --name my-character --status --json
+# 续跑：自定义运行根目录时，每次都加同一 --dir
+pnpm start --name my-character --background
+```
+
+相对输入路径均从 `<dir>/<name>/` 解析。已有记录保存范围与选项；续跑优先只给任务名和原运行根目录。普通中断保留完成标记与工程，按原参数续跑。
+
+## 单独运行一个 section
+
+单跑指使用真实输入制作某一段管线，会调用所选模型并保存该段成果。选择对应 README 检查上游，先停止同任务的总调度，再启动该 section。
+
+| section ID／pnpm 入口 | 何时读取 |
+| --- | --- |
+| [part-layering](part-layering/README.md) | 人物参考准备、拆分；指定组／限深调试 |
+| [raster-layering](raster-layering/README.md) | 人物逐层绘制、边缘精修、换装素体 |
+| [clothing-part-layering](clothing-part-layering/README.md) | 衣服提取与拆分 |
+| [clothing-raster-layering](clothing-raster-layering/README.md) | 衣服分层绘制与精修 |
+| [character-assembly](character-assembly/README.md) | 已有两份 KRA，仅做穿戴组装 |
+| [shadow](shadow/README.md) | 阴影蒙版或法线／深度 |
+
+```sh
+# 独立运行穿戴组装：读取已有的人物、衣服 KRA 与简化穿衣参考
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita
+# 同名续跑，沿用该段保存的 Krita 和绘制会话
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录
+# 通过总入口只运行一段，使用后台、状态查询和范围记录
+pnpm start --name my-character --dir /绝对路径/运行根目录 --from character-assembly --to character-assembly --krita /绝对路径/krita --background
+```
+
+两套 part 的独立入口支持 `--groups <JSON>`、`--max-depth <层数>`；两套 raster、组装、阴影的独立入口支持 `--dry-run` 检查输入和提示词而不调用模型。具体前置与重试见相应 README；代码维护的自动化测试见 [shared](shared/README.md#自动化测试维护用)。
+
+## 其他按需参考
+
+- **选择／切换模型方案、配置 LLM 或生图**：读 [model-presets.md](references/model-presets.md)；自定义 CLI、provider、生图协议或会话恢复时，按需阅读同页对应章节。保留未要求修改的配置、凭据和图片预算。
+- **启动、web 连接、巡检、交接或交付定位**：读 [workflow/README.md](workflow/README.md)。
+- **修改模板／工具定义、接入新 CLI 后验证**：读 [shared/README.md](shared/README.md)。绘制提示词、工具 schema 和运行参考是程序输入，保留各自职责与审核轮数。
+- **补丁构建、图片／请求体超限或网关错误**：读 [patches/README.md](patches/README.md)。安装补丁不等于启用容量保护。

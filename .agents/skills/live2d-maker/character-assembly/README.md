@@ -1,10 +1,15 @@
 # character-assembly
 
-在人物和衣服 raster 都完成后，用一个绘制 agent 将两份 KRA 组装成穿戴工程，尽可能贴近简化穿衣角色参考。默认模型为 `gpt-6.1-sol / xhigh`，读取 skill 根目录 `.env` 的 `layering_agent_assembly_model`；不设 reviewer。
+在人物和衣服 raster 都完成后，用一个绘制 agent 将两份 KRA 组装成穿戴工程，尽可能贴近简化穿衣角色参考。读取 skill 根目录 `.env` 的 `layering_agent_assembly_model`，默认值统一见 [模型方案](../references/model-presets.md)，组装后由绘制者自检。
 
-在 skill 根目录执行：
+## 单独运行本 section
+
+先准备下表中的人物 KRA、衣服 KRA 与简化穿衣参考，再从 skill 根目录执行。同任务的总调度先停止，保持单一执行入口。该命令调用组装模型并保存穿戴成果：
 
 ```bash
+# 先检查输入、Krita 和提示词
+pnpm character-assembly --name jianma --krita /绝对路径/krita --dry-run
+# 开始组装
 pnpm character-assembly --name jianma --krita /绝对路径/krita
 # 续跑
 pnpm character-assembly --name jianma
