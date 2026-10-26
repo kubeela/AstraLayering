@@ -1,0 +1,53 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "id": "face",
+      "name": "face",
+      "note": "脸部、五官和耳朵；后续只补被遮挡的脸型与耳朵，不补头顶与后脑。",
+      "kind": "group"
+    },
+    {
+      "id": "hair",
+      "name": "hair",
+      "note": "全部黑白头发，包括刘海、脸侧短发、双马尾及散开的长发丝。",
+      "kind": "group"
+    },
+    {
+      "id": "head_accessories",
+      "name": "head_accessories",
+      "note": "两侧蝴蝶结、褶边与心形装饰，刘海上的叉形和心形发饰，以及连接在头饰上的垂带。",
+      "kind": "group"
+    },
+    {
+      "id": "neck",
+      "name": "neck",
+      "note": "下颌以下至躯干连接处的颈部；锁骨归 body。",
+      "kind": "group"
+    },
+    {
+      "id": "body",
+      "name": "body",
+      "note": "锁骨、胸廓与腰腹躯干，向下至肚脐附近；临时连体服仅用于辨认身体范围。",
+      "kind": "group"
+    },
+    {
+      "id": "arms",
+      "name": "arms",
+      "note": "双侧上肢，从肩部至手指，包含双手。",
+      "kind": "group"
+    },
+    {
+      "id": "pelvis",
+      "name": "pelvis",
+      "note": "从肚脐附近延伸至骨盆、臀部与胯部，下接两侧大腿根。",
+      "kind": "group"
+    },
+    {
+      "id": "legs",
+      "name": "legs",
+      "note": "双腿与双脚，包含可见丝袜、鞋子及踝部交叉系带。",
+      "kind": "group"
+    }
+  ]
+}

@@ -1,7 +1,0 @@
-{
-  "groupId": "face/mouth/lower_lip",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，2 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "586e2ce59d8dc66e07b2f0d74c94d12619351888fda8b8690e42e55758dcf331",
-  "afterHash": "428b762aa4eefb1730125df28d803e56d3aa39d0253df15672042d8ceaf5290a"
-}

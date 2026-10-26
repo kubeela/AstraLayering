@@ -1,7 +1,0 @@
-{
-  "groupId": "halter_dress/short_outer_skirt/front_drape",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "f10c4b59fa8dfd7f4865a015b64b0bf0cfb16b876c2841e705a9f76dd544b067",
-  "afterHash": "9c806342681942ac110ebe35a6adb716e2409e87b505ac199dc1a66ea101992d"
-}

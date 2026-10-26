@@ -1,7 +1,0 @@
-{
-  "groupId": "waist_bow/knot_and_loops",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "f6af6f5876466c642cea3fdcce633ef0b3119fadf4b875dd39583df8327bcf5e",
-  "afterHash": "125601c60a1283ba44bed29cd7324a9ac829f1caf08e31c4e9fee8f4593c796b"
-}

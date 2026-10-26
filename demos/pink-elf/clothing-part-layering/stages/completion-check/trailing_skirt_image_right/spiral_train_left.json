@@ -1,7 +1,0 @@
-{
-  "groupId": "trailing_skirt_image_right/spiral_train_left",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "1aa3faf97fea211b0784fdca68edd6b55f90c446c0cf3b537f74654b93b64483",
-  "afterHash": "baf541ff1652a9455d8005d836e74c23f69ff6aec99ad7be14dff8280a49c47b"
-}

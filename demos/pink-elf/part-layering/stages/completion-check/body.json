@@ -1,7 +1,0 @@
-{
-  "groupId": "body",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "c5b0307cef6a2db0b002ce4a3b1904b70b8c8f318dd280b9d99dcafa9c257a0e",
-  "afterHash": "c3dc51c57505a5c2582bd46765b75b85b23f0eac73cb8f35a6785ab75d5e478d"
-}

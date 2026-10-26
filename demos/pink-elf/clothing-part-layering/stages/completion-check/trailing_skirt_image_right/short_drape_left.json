@@ -1,7 +1,0 @@
-{
-  "groupId": "trailing_skirt_image_right/short_drape_left",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "a847039ebcbf8323791b634e3747a1c3df422df18d6b4fdf7d637ec5e853d284",
-  "afterHash": "9fb9c1d66a1f0f71e6c6e05b57b6e2a4d800c9421ae980b06f8ef8793faefee8"
-}

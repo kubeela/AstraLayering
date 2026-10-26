@@ -1,0 +1,115 @@
+{
+  "version": 2,
+  "shadows": [
+    {
+      "id": "skirt-to-legs",
+      "casterPartId": "clothing:pleated_skirt/skirt_body",
+      "receiverPartIds": [
+        "character:legs/leg_left/leg",
+        "character:legs/leg_right/leg"
+      ],
+      "casterLayerUuids": [
+        "82ede469-3f66-4d1c-bb98-f6b2be7705b9"
+      ],
+      "receiverLayerUuids": [
+        "3b97b6c9-4f49-40dc-b0e7-b049db4deef5",
+        "0cd31741-7e60-4e9c-b426-e3669b18f71f"
+      ],
+      "shadowLayerUuid": "076ede28-711a-4f3a-b8f6-1ef2a819a328",
+      "clipBaseLayerUuid": "c3972a78-9952-4e0f-8243-e41aa9a06721",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -14,
+          0
+        ],
+        [
+          14,
+          0
+        ],
+        [
+          0,
+          -10
+        ],
+        [
+          0,
+          14
+        ]
+      ],
+      "notes": "前裙面（skirt_body L10）下摆向下约 18 px 的投影，落在两条大腿上端。形状取自 simplified 的阶梯形下缘，颜色为 multiply 的 #C4BBBB（亮部丝袜约乘 0.77/0.73/0.73，与参考 0.73/0.70/0.71 接近）；两腿外缘和内缘本已较暗，按亮度削弱，避免叠黑。完整影形保留到裙下被遮挡区域，左右各留约 22–26 px 余量，由两条腿联合裁切。"
+    }
+  ],
+  "excluded": [
+    {
+      "id": "hair-to-face",
+      "casterPartIds": [
+        "character:hair/bangs",
+        "character:hair/side_hair_left",
+        "character:hair/side_hair_right",
+        "character:hair/ponytail_left",
+        "character:hair/ponytail_right",
+        "character:hair/back_hair"
+      ],
+      "receiverPartIds": [
+        "character:face/face_base",
+        "character:face/ear_left",
+        "character:face/ear_right"
+      ],
+      "reason": "刘海、左右侧发、外伸细发和马尾卷尾在 simplified 与组装稿中，额头、太阳穴、脸颊的皮肤亮度均匀（拉伸对比后只有腮红），没有落在脸上的发影；外侧发丝轮廓也不能向脸内平移成影线。不画，不为可见度加深细线或强求左右对称。"
+    },
+    {
+      "id": "hair-bows-to-hair",
+      "casterPartIds": [
+        "character:head_accessories/left_hair_bow",
+        "character:head_accessories/right_hair_bow"
+      ],
+      "receiverPartIds": [
+        "character:hair/side_hair_left",
+        "character:hair/side_hair_right"
+      ],
+      "reason": "蝴蝶结与发束交界处的明暗已烘进发丝，与 simplified 一致，没有缺失，不重复加深。"
+    },
+    {
+      "id": "upper-eyelid-to-eyes",
+      "casterPartIds": [
+        "character:face/eye_left/upper_eyelid",
+        "character:face/eye_right/upper_eyelid"
+      ],
+      "receiverPartIds": [
+        "character:face/eye_left/sclera",
+        "character:face/eye_left/iris",
+        "character:face/eye_right/sclera",
+        "character:face/eye_right/iris"
+      ],
+      "reason": "上睫毛和上眼睑投在眼白与虹膜上缘的阴影已在原眼白、虹膜美术中，逐行亮度与 simplified 同量级或更暗（左右眼可见区域平均仅差 +6 灰度，且上缘各行原画不比参考亮），再叠加会双重压暗。不新增，不动虹膜线稿和高光。"
+    },
+    {
+      "id": "face-to-neck",
+      "casterPartIds": [
+        "character:face/face_base"
+      ],
+      "receiverPartIds": [
+        "character:neck"
+      ],
+      "reason": "下颌到颈部的投影在组装稿与 simplified 中一致地烘在颈部皮肤上，没有缺失。"
+    },
+    {
+      "id": "torso-to-arm-and-skirt-flank",
+      "casterPartIds": [
+        "character:body/torso",
+        "clothing:camisole/bodice"
+      ],
+      "receiverPartIds": [
+        "character:arms/arm_left/upper_arm",
+        "character:arms/arm_right/upper_arm",
+        "clothing:pleated_skirt/skirt_body"
+      ],
+      "reason": "上衣侧缘与上臂内侧、裙身侧缘的差异只是细线描边和左右对称的手臂自身边缘明暗，没有与裙下投影一致的光向依据，不增加影层。"
+    }
+  ]
+}
