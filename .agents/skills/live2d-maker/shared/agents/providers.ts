@@ -10,7 +10,7 @@ export type HarnessProvider = {
 };
 export type HarnessProviders = Record<Harness, HarnessProvider>;
 
-const protocols = { codex: ['responses'], claude: ['anthropic'], agv: ['genai', 'openai'] } as const;
+const agvProtocols = ['genai', 'openai'] as const;
 const aliases = {
   codex: { api_key: ['layering_provider_api_key'], base_url: ['layering_provider_base_url'], models: [], protocol: [] },
   claude: { api_key: ['ANTHROPIC_API_KEY'], base_url: ['ANTHROPIC_BASE_URL'], models: [], protocol: [] },
@@ -53,10 +53,11 @@ export function resolveHarnessProviders(file: NodeJS.ProcessEnv, shell: NodeJS.P
     const old = harness === 'codex' && !legacyCodex && !unifiedConnection
       ? { api_key: [], base_url: [], models: [], protocol: [] } : aliases[harness];
     const key = read(`${prefix}api_key`, old.api_key), url = read(`${prefix}base_url`, old.base_url);
-    const models = read(`${prefix}models`, old.models), protocol = read(`${prefix}protocol`, old.protocol);
+    const models = read(`${prefix}models`, old.models);
+    const protocol = harness === 'agv' ? read('layering_agv_protocol', aliases.agv.protocol) : undefined;
     if (url) validateApiUrl(url.value, url.key);
-    if (protocol && !(protocols[harness] as readonly string[]).includes(protocol.value)) {
-      throw new Error(`${prefix}protocol 仅支持 ${protocols[harness].join(' / ')}；该 CLI 不支持所选协议。`);
+    if (protocol && !(agvProtocols as readonly string[]).includes(protocol.value)) {
+      throw new Error(`layering_agv_protocol 仅支持 ${agvProtocols.join(' / ')}；该 CLI 不支持所选协议。`);
     }
     // Inherited native login variables retain their existing behavior. Explicit
     // unified gateway connections must be usable before any model is started.

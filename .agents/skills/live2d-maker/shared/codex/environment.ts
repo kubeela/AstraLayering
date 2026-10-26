@@ -108,8 +108,8 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   for (const provider of ['openai', 'google'] as const) {
     const baseUrl = get(`layering_${provider}_image_base_url`) || (provider === 'openai' ? imageUrl : undefined);
     const apiKey = get(`layering_${provider}_image_api_key`) || (provider === 'openai' ? imageKey : undefined);
-    const protocol = get(`layering_${provider}_image_protocol`) || (provider === 'google' ? 'gemini' : 'openai');
-    if (!['openai', 'gemini'].includes(protocol) || (provider === 'openai' && protocol !== 'openai')) throw new Error(`layering_${provider}_image_protocol 无效。`);
+    const protocol = provider === 'google' ? get('layering_google_image_protocol') || 'gemini' : 'openai';
+    if (!['openai', 'gemini'].includes(protocol)) throw new Error('layering_google_image_protocol 无效。');
     if (baseUrl || apiKey) {
       if (!baseUrl || !apiKey) throw new Error(`${provider} 生图需要同时填写 layering_${provider}_image_base_url 和 layering_${provider}_image_api_key。`);
       validateApiUrl(baseUrl, `layering_${provider}_image_base_url`);

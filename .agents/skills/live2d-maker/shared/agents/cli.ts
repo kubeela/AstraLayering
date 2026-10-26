@@ -138,7 +138,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       delete inherited.apiKeyHelper;
       delete inherited.env.ANTHROPIC_AUTH_TOKEN;
     }
-    if (model.harness === 'claude' && (settings.providers?.claude.connection === 'unified' || settings.providers?.claude.sources.protocol)) {
+    if (model.harness === 'claude' && settings.providers?.claude.connection === 'unified') {
       const nativeEnv: NodeJS.ProcessEnv = { ...inherited.env, ...env };
       if (['CLAUDE_CODE_USE_BEDROCK', 'CLAUDE_CODE_USE_VERTEX', 'CLAUDE_CODE_USE_FOUNDRY'].some(key => /^(true|1)$/.test(String(nativeEnv[key])))) {
         throw new Error('统一 Claude 网关使用 Anthropic Messages，与当前启用的云平台路由不兼容；请清空统一连接配置以复用原路由，或关闭对应云平台设置。');
