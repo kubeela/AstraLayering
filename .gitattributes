@@ -1,6 +1,11 @@
 # Keep the delivered options bytes consistent with its SHA-256 manifest.
 demos/jianma-svg-ver/body-run/options.json text eol=lf
 
+# Desktop launchers use their platform's expected line endings.
+start-workbench.command text eol=lf
+start-workbench.sh text eol=lf
+start-workbench.cmd text eol=crlf
+
 # Preserve recorded run artifacts byte-for-byte across platforms.
 demos/jianma-svg-ver/body-run/refinement/** -text
 demos/jianma-svg-ver/body-run/reviews/** -text

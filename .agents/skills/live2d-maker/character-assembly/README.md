@@ -1,6 +1,6 @@
 # character-assembly
 
-在人物和衣服 raster 都完成后，用一个绘制 agent 将两份 KRA 组装成穿戴工程，尽可能贴近简化穿衣角色参考。默认模型为 `gpt-6.1-sol / xhigh`，读取 skill 根目录 `.env` 的 `layering_agent_assembly_model`；不设 reviewer。
+在人物和衣服 raster 都完成后，用一个绘制 agent 将两份 KRA 组装成穿戴工程，尽可能贴近简化穿衣角色参考。读取 skill 根目录 `.env` 的 `layering_agent_assembly_model`，默认值统一见 [模型方案](../references/model-presets.md)，组装后由绘制者自检。
 
 在 skill 根目录执行：
 
@@ -41,3 +41,7 @@ character-assembly/
 复用 raster 的顺序调度、临时错误重试、日志和异常说明。这个入口新建自己的绘制 thread，中断保留 `.running` 并恢复原 thread；已完成时跳过。删除 `step01/.completed` 后重跑会清理组装步骤并重建 thread，保留上游工程。只有一个步骤，不调用第二个绘制者或 reviewer，也不提供上游深度修改工具。
 
 `--dry-run` 检查上游和指定的 Krita、显示本次完整提示词，不调用模型、不写文件。配置与安装见 [SKILL.md](../SKILL.md)。
+
+## 单测本 section
+
+从 skill 根目录运行 `node --test character-assembly/tests/*.test.ts`；单文件可直接指定文件名。测试使用本地模拟，不调用付费模型。

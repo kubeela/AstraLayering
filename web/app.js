@@ -4,6 +4,7 @@ import { pipelineSteps as stepTemplates, groupLayers, groupPhases, stepArtifacts
 import { selectedTask, rememberTask } from './task-selection.js';
 import { renderReport } from './report-markdown.js';
 import { morph } from './dom-morph.js';
+import { createEnvEditor } from './env-editor.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -32,7 +33,7 @@ let tasks = initial.tasks, data = { files:[], pipelines:[] }, pipelineSteps = st
 const state = {
  page:new URLSearchParams(location.search).get('page')||'project', name:selectedTask(initial.directory,tasks,new URLSearchParams(location.search).get('name')),
  stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, autoHeight:true, canvasLeft:0, canvasTop:0,
- directory:initial.directory, ref:'worktree', file:'', diff:false, configFilter:'', uploaded:null,
+ directory:initial.directory, ref:'worktree', file:'', diff:false, configFilter:'', uploaded:null, configMode:'env',
  collapsedPipelines:new Set(), collapsedSteps:new Set(), collapsedPhases:new Set(),
  details:new Map(),
 };
@@ -420,6 +421,7 @@ async function openAsset(item,index,stepId) {
  }
 }
 let versions, configFiles=[], configText='', schemaText='', diffText='', configBusy=false;
+const envEditor=createEnvEditor({get,post,toast,render});
 function setConfigBusy(busy) {
  configBusy=busy;
  document.querySelectorAll('.version-bar input,.version-bar select,.config-workspace button,.config-workspace input,[data-action=history]').forEach(node=>{node.disabled=busy;});
@@ -429,6 +431,7 @@ async function refreshConfigFile() {
  try {await loadConfigFile();render();} catch(error) {toast(error.message);} finally {setConfigBusy(false);}
 }
 async function loadConfig() {
+ if(state.configMode==='env'){await envEditor.load();return;}
  setConfigBusy(true);
  try {
   versions=await get('./api/config/versions?ref='+encodeURIComponent(state.ref));
@@ -478,6 +481,10 @@ function configTree() {
  }).join('');
 }
 function configPage() {
+ const tabs=`<nav class="config-mode-tabs" aria-label="配置内容"><button data-config-mode="env" class="${state.configMode==='env'?'active':''}">环境与模型</button><button data-config-mode="files" class="${state.configMode==='files'?'active':''}">提示词与工具</button></nav>`;
+ return state.configMode==='env'?`<div class="page-heading config-heading"><div><div class="breadcrumb">工作空间 ${icon('chevron')}<span>本地配置</span></div><h1>管线配置</h1><p>选择模型、连接服务，预览并保存这份仓库的运行配置。</p></div></div>${tabs}${envEditor.view()}`:tabs+promptConfigPage();
+}
+function promptConfigPage() {
  const isTool=state.file.includes('/tools/'), currentFile=state.file.split('/').at(-1)||'', toolName=isTool?state.file.split('/').at(-2):currentFile;
  const sourceRefs=['worktree',...new Set(['origin/main','upstream/main',...(versions?.branches||[])])];
  return `<div class="page-heading config-heading"><div><div class="breadcrumb">工作空间 ${icon('chevron')}<span>配置浏览</span></div><h1>管线配置 <span class="subtitle-tag">只读</span></h1><p>查看提示词与工具协议，沿 Git 版本回溯每一次变化。</p></div><button class="button" data-action="history">${icon('history')}提交历史</button></div>
@@ -499,6 +506,7 @@ function render() {
  flowObserver?.disconnect();
  morph(document.querySelector('#app'),header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`);
  bind();setConfigBusy(configBusy);
+ if(state.page==='config'&&state.configMode==='env')envEditor.bind();
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
  // A run that newly stops opens its notice once; closing it afterwards sticks.
  const stopped=data.status==='failed'||data.status==='interrupted';
@@ -647,6 +655,7 @@ function bind() {
   const end=()=>{drag=null;viewport.classList.remove('panning');};viewport.onpointerup=end;viewport.onpointercancel=end;
  }
  document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await refreshConfigFile();});
+ document.querySelectorAll('[data-config-mode]').forEach(b=>b.onclick=async()=>{state.configMode=b.dataset.configMode;await loadConfig();render();});
  const source=document.querySelector('#config-ref');if(source)source.onchange=async()=>{state.ref=source.value;state.base=undefined;await loadConfig();render();};
  const diff=document.querySelector('#config-diff');if(diff)diff.onchange=async()=>{state.diff=diff.checked;state.base=document.querySelector('#config-base').value;await refreshConfigFile();};
  const base=document.querySelector('#config-base');if(base)base.onchange=async()=>{state.base=base.value;if(state.diff){await refreshConfigFile();}};

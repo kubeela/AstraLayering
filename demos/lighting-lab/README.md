@@ -1,6 +1,6 @@
 # 人物光照验证素材
 
-三个生成测试角色已退出日常工作台入口；原图、提示词和验证记录留在此处作为研究归档。打开制作工作台顶部 **角色工作台**（`./studio`），以 KRA / PSD 文件开始；Jianma 快捷入口直接打开其 159 层 KRA。渲染基础为 Pixiv MToon 3.5.5 + Three.js 0.180.0；完整操作与选型依据见[静态光照工作流](../../tutorial/live2d-guidance/workflows/lighting-preview.md)。
+三个生成测试角色已退出日常工作台入口；原图、提示词和验证记录留在此处作为研究归档。打开制作工作台顶部 **角色工作台**（`./studio`），以 KRA / PSD 文件开始；Jianma 归档入口 `studio?name=jianma` 可打开其 159 层 KRA，普通任务从“从项目加载”选择。渲染基础为 Pixiv MToon 3.5.5 + Three.js 0.180.0；完整操作与选型依据见[静态光照工作流](../../tutorial/live2d-guidance/workflows/lighting-preview.md)。
 
 | 样例 | 原画 / 法线 / 深度 | 来源 | 适合观察 |
 | --- | --- | --- | --- |

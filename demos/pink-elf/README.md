@@ -2,6 +2,10 @@
 
 本例来自本地任务 `pink-elf`，本轮于 2026-10-24 04:51（北京时间）由总调度完成。此目录替换原先停在 step02 的阶段性快照，供查看与下载，不作为可直接续跑的运行目录。
 
+[![输入原图、完整穿戴合成与原生图层立体拆解](../showcase/pink-elf-reference-composite-exploded.png)](../showcase/pink-elf-reference-composite-exploded.png)
+
+左半展示原图与完整合成，右半将 70 层人物、32 层衣装组合为后拖裙、后发、完整人物、裙装袖片与蝴蝶结挂饰五组，沿纵深展示结构。
+
 | 阶段 | 产物入口 |
 | --- | --- |
 | 原图与人物分件 | [原图](input/original.png) · [参考](part-layering/references/base-subject.png) · [分组](part-layering/groups.json) · [深度](part-layering/occlusion.json) |

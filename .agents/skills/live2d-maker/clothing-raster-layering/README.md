@@ -4,7 +4,7 @@
 
 读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，完成最多两轮轮廓 review／修复，再精修柔边。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
 
-顺序调度、上游产物读取、会话及标记恢复使用 `../shared/raster/` 的公共实现；本目录保留衣服步骤定义和提示词。仅有两步，绘制与 reviewer 均使用 `gpt-6-astra / xhigh`。
+顺序调度、上游产物读取、会话及标记恢复使用 `../shared/raster/` 的公共实现；本目录保留衣服步骤定义和提示词。仅有两步，模型按职责读取 `.env`，默认值见 [模型方案](../references/model-presets.md)。
 
 ## 启动
 
@@ -23,7 +23,7 @@ pnpm clothing-raster-layering --name jianma
 
 `--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。已保存任务可显式更新 `--krita`；换输入应使用新名字。
 
-生图只调用 Codex 内置 `image_generation`。订阅或 API、provider、鉴权及工具实际可用性由外部 Codex 配置；工作流不接管它们、不注册替代生图工具。Krita 的显示环境及 computer use / Python 操作能力也沿用外部执行环境。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
+生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider、鉴权及工具实际可用性由外部 Codex 配置；按所选 harness 配置，Claude／AGV 可使用共享生图工具。Krita 的显示环境及 computer use / Python 操作能力也沿用外部执行环境。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
 
 ## 两步制作
 
@@ -88,10 +88,14 @@ node --test clothing-raster-layering/tests/*.test.ts
 
 自动测试模拟 SDK 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
 
-现已完成 [2026-10-19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能现已接入，需显式配置并使用补丁版 Codex，见 [配置说明](../references/workflow-details.md)。
+现已完成 [2026-10-19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能现已接入，需显式配置并使用补丁版 Codex，见 [配置说明](../workflow/README.md)。
 
 共享安装、路径规则、工具配置和临时错误恢复见 [live2d-maker 使用说明](../SKILL.md)。所有相对输入路径从 `<运行根目录>/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
 
-多深度与工具协议见 [共享说明](../references/workflow-details.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。
+多深度与工具协议见 [共享说明](../shared/README.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。
 
-step01 重点修轮廓缺口、错位和明显画风差异，可用本部件原图可见像素覆盖来拟合，不能串入其他部件；补绘和覆盖间接缝用画笔修自然。reviewer 看图确认形体、画风和衔接问题，用框选工具标记位置、相关图层并生成局部对照，绘制者按编号返修；step02 以像素差异候选框为细节检查入口，逐层扩展检查，广泛检查、局部小改，精修边缘、瑕疵、描边和部件细节。模型配置见 [模型与 harness](../references/agent-models.md)，各步骤预览为最新保存 KRA 的合成画面。
+step01 重点修轮廓缺口、错位和明显画风差异，可用本部件原图可见像素覆盖来拟合，不能串入其他部件；补绘和覆盖间接缝用画笔修自然。reviewer 看图确认形体、画风和衔接问题，用框选工具标记位置、相关图层并生成局部对照，绘制者按编号返修；step02 以像素差异候选框为细节检查入口，逐层扩展检查，广泛检查、局部小改，精修边缘、瑕疵、描边和部件细节。模型配置见 [模型与 harness](../references/model-presets.md)，各步骤预览为最新保存 KRA 的合成画面。
+
+## 单测本 section
+
+从 skill 根目录运行 `node --test clothing-raster-layering/tests/*.test.ts`；单文件可直接指定文件名。测试使用本地模拟，不调用付费模型。

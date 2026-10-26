@@ -11,6 +11,7 @@ import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skill
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI } from './config.ts';
+import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
 import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
 import { SVGThumbnails } from './svg-thumbnail.ts';
@@ -57,7 +58,7 @@ function options(value: any, dir: string): TaskOptions {
   return result;
 }
 export async function createWorkbench({ settingsPath = join(root, '.web/settings.json'), defaultDir = runsDirectory,
-  start = launch }: { settingsPath?: string; defaultDir?: string; start?: typeof launch } = {}) {
+  start = launch, environment = createEnvironmentConfig() }: { settingsPath?: string; defaultDir?: string; start?: typeof launch; environment?: ReturnType<typeof createEnvironmentConfig> } = {}) {
   async function validateDir(path: string) {
     if (typeof path !== 'string' || !isAbsolute(path)) throw new Error('运行目录必须是绝对路径');
     await mkdir(path, { recursive: true });
@@ -111,6 +112,11 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         }
         const value = await body(request);
         if (value.dir !== requestDir) { json({ error: '追踪目录已改变，请刷新页面后重试' }, 409); return; }
+        if (path === '/api/config/environment' || path === '/api/config/environment/preview') {
+          try { json(await (path.endsWith('/preview') ? environment.preview(value) : environment.save(value))); }
+          catch (error) { if (error instanceof EnvironmentConflict) json({ error: error.message }, 409); else throw error; }
+          return;
+        }
         if (path === '/api/settings') {
           const next = { directory: await validateDir(value.directory) };
           await atomicJSON(settingsPath, next); settings = next; json(settings); return;
@@ -196,6 +202,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       }
       if (path === '/healthz') { json({ status: 'ok', application: 'astra-layering', mode: 'workbench' }); return; }
       if (path === '/api/settings') { json(settings); return; }
+      if (path === '/api/config/environment') { json(await environment.read()); return; }
       if (path.startsWith('/api/config/')) { json(await configAPI(path, url.searchParams)); return; }
       if (path === '/api/tasks') {
         const entries = (await readdir(requestDir, { withFileTypes: true })).filter(entry => entry.isDirectory() && !entry.name.startsWith('.'));
@@ -280,7 +287,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         '/vendor/fflate.js': 'node_modules/fflate/umd/index.js',
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';

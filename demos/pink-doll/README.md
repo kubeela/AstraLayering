@@ -4,6 +4,10 @@
 
 人物有 **68 个节点、55 个叶子**，衣服有 **9 个节点、7 个叶子**。人物栅格工程有 58 个绘画层，衣服有 8 个；组装保留两者共 66 个原绘画层。阴影工程增加 4 条原生投影，保存后的检查通过且没有警告，详见各阶段报告。
 
+[![输入原图、完整穿戴合成与原生图层立体拆解](../showcase/pink-doll-reference-composite-exploded.png)](../showcase/pink-doll-reference-composite-exploded.png)
+
+左半展示原图与完整合成，右半将 66 个源绘画层组合为后发、完整人物、上衣、层叠裙和胸前蝴蝶结五组，沿纵深展示结构。
+
 | 阶段 | 成果入口 |
 | --- | --- |
 | 输入与标准化 | [原图](input/original.jpg) · [标准化图](part-layering/references/standard.png) · [简化穿衣角色](part-layering/references/simplified-subject.png) · [人物参考](part-layering/references/base-subject.png) |

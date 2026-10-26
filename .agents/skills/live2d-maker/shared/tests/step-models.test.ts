@@ -82,7 +82,7 @@ test('scheme 1 template and code defaults resolve all role efforts and native im
   assert.equal(Object.keys(modelSlotDefaults).length, 13);
   for (const role of Object.keys(modelSlotDefaults)) assert.ok(Object.hasOwn(variables, `layering_agent_${role}_model`));
   for (const step of imageSteps) assert.ok(Object.hasOwn(variables, `layering_${step}_image_model`));
-  assert.equal(Object.keys(variables).filter(key => key.endsWith('_image_model') && key !== 'layering_default_image_model').length, imageSteps.length);
+  assert.equal(Object.keys(variables).filter(key => key.endsWith('_image_model') && !['layering_default_image_model', 'layering_image_model'].includes(key)).length, imageSteps.length);
   const root = await fixture(t);
   await writeFile(join(root, '.env'), contents);
   const settings = loadWorkflowEnvironment({}, root);
