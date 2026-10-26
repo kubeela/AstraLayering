@@ -52,16 +52,38 @@ test('inventory ignores credentials and virtualenv assets; old workspace lookup 
   await writeFile(copy, 'edited'); assert.equal(await copiedInput(copy, [input]), false);
 });
 
-test('all process folders use newest 500 per folder and newest 1000 overall, with exact totals', () => {
+test('root and nested process folders share 1000 slots equally, each retaining its newest files', () => {
   const roots = ['raster-layering/step01/workspace'], versions: Record<string, string> = {}, files: string[] = [];
   for (const folder of ['inspect/01', 'review', 'observations', '']) for (let i = 0; i < 600; i++) {
-    const path = roots[0] + '/' + (folder ? folder + '/' : '') + `${i}.png`; files.push(path); versions[path] = `${i}:100`;
+    const path = roots[0] + '/' + (folder ? folder + '/' : '') + `${i}.png`; files.push(path); versions[path] = `${i + (folder === 'review' ? 10000 : 0)}:100`;
   }
   const formal = 'raster-layering/step01/report.md'; files.push(formal);
   const result = processFileList(files, roots, versions);
   assert.equal(result.total, 2400); assert.equal(result.shown, 1000);
   assert.equal(result.folders.length, 4);
-  assert.ok(result.folders.every(folder => folder.total === 600 && folder.files.length <= 500));
+  assert.ok(result.folders.every(folder => folder.total === 600 && folder.files.length === 250));
   assert.ok(result.folders.every(folder => folder.files.every(path => Number(path.split('/').at(-1)!.split('.')[0]) >= 350)));
   assert.ok(!result.folders.flatMap(folder => folder.files).includes(formal));
+});
+
+test('small folders release unused shares; remaining slots are split evenly and deterministically', () => {
+  const files = ['root-1.md', 'root-2.md', ...['inspect/01', 'review'].flatMap(folder =>
+    Array.from({ length: 10 }, (_, index) => `${folder}/${index}.png`))];
+  const versions = Object.fromEntries(files.map((file, index) => [file, `${index}:100`]));
+  const result = processFileList(files, [''], versions, 9);
+  assert.equal(result.total, 22); assert.equal(result.shown, 9);
+  assert.deepEqual(result.folders.map(folder => [folder.folder, folder.files.length]), [['', 2], ['inspect/01', 4], ['review', 3]]);
+  assert.deepEqual(result.folders[1].files, ['inspect/01/9.png', 'inspect/01/8.png', 'inspect/01/7.png', 'inspect/01/6.png']);
+  assert.deepEqual(processFileList([...files].reverse(), [''], versions, 9), result);
+});
+
+test('a single folder can use all 1000 slots; empty and small listings retain exact counts', () => {
+  const files = Array.from({ length: 1500 }, (_, index) => `inspect/${index}.png`);
+  const versions = Object.fromEntries(files.map((file, index) => [file, `${index}:100`]));
+  const result = processFileList(files, [''], versions);
+  assert.equal(result.total, 1500); assert.equal(result.shown, 1000);
+  assert.equal(result.folders[0].files[0], 'inspect/1499.png');
+  assert.equal(result.folders[0].files.at(-1), 'inspect/500.png');
+  assert.deepEqual(processFileList([], ['']), { total: 0, shown: 0, folders: [] });
+  assert.equal(processFileList(files.slice(0, 3), ['']).shown, 3);
 });
