@@ -37,7 +37,11 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .process-files{width:0;min-width:100%}
 .process-files .step-artifacts{flex-wrap:nowrap;flex-direction:column;padding:0}
 .process-files .artifact-images{padding-bottom:4px}
-.process-files .process-file-list{display:grid;grid-auto-flow:column;grid-template-rows:repeat(4,auto);gap:5px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.process-files[open]{flex:0 1 auto;min-height:0;overflow-y:auto}
+.process-files .artifact-images>.artifact-image{flex:0 0 150px}
+.process-files .artifact-image img{height:110px}
+.process-files .process-file-list{grid-template-rows:repeat(3,auto)}
+.process-files .process-file-list{display:grid;grid-auto-flow:column;gap:5px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
 .process-files .process-file-list .artifact-file{max-width:220px;white-space:nowrap}
 .process-files .process-file-list .artifact-file span{overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}.all-files{max-height:65vh;overflow:auto;margin-top:12px}.all-files button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px;border:0;background:transparent;font-size:12px}.all-files button:hover{background:#edf5f3}.all-files span{overflow-wrap:anywhere}
 
