@@ -1,7 +1,0 @@
-{
-  "groupId": "hair/ahoge",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "be13faba51d9d466866b63bd8cdfb8cdc7273331bcd47704f28693568950a50f",
-  "afterHash": "ae279815d00d32911e7c70338393dd0deff6b68961c662152d9558f508a5950a"
-}

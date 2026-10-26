@@ -11,7 +11,7 @@
 ```text
 jianma/
 ├── input/original.jpg
-├── part-layering/           # references、groups、parts、stages、occlusion、previews
+├── part-layering/           # references、initial、groups、layers、parts、occlusion、previews
 ├── raster-layering/
 │   ├── step01/              # 分层与补全
 │   ├── step02/              # 边缘修画
@@ -49,4 +49,4 @@ jianma/
 
 未被报告引用的过程文件移入对应步骤的 `workspace/`，可解析的图像引用与清单位置同步更新。正式 KRA、PNG 和 SVG 的路径与内容保持不变；清单的 `source` 仍记录归档当时的历史出处。
 
-part 的步骤记录由既有产物与报告机械重建，未重新调用模型；原 `stages/` 文件保留为历史快照，运行时仅使用当前步骤目录，不再自动转换旧目录。
+part 的步骤记录由既有产物与报告机械重建，未重新调用模型；旧版 `stages/` 已删除，步骤目录是唯一记录，运行时不再自动转换旧目录。

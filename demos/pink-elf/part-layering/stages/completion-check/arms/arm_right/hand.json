@@ -1,7 +1,0 @@
-{
-  "groupId": "arms/arm_right/hand",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "4013dfb954f5e420fd4395d1732cba536c74a89d196c3d629d1d9868f5bde50b",
-  "afterHash": "81ced5b26f0af22c452617d2aadf286cfd682dcf169173ef2ee2e8606c88556c"
-}

@@ -1,7 +1,0 @@
-{
-  "groupId": "face",
-  "passed": true,
-  "note": "程序核对：原 SVG 正文保留，3 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
-  "beforeHash": "97e4f244a2ddea41f0e47bf46474a4a0fce0dfa42b899da623cf135413ecce43",
-  "afterHash": "234c2141fe58a19a594f5bf63ca0b33f1e8dfcb23043bd42b54a93ebe2a3481e"
-}
