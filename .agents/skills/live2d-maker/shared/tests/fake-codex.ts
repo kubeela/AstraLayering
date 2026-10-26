@@ -4,7 +4,10 @@ import { join } from 'node:path';
 
 // Every Codex run requires the patched build. Tests that reach the startup check
 // without a fake app server point layering_codex_path here instead of building it.
-export const patchedCodexCapabilities = { version: 1, failed_error_event_version: 1 };
+// Every patched build reports the full set patches/codex/build.ts verifies, so the
+// fakes do too: what a run needs must not depend on the local .env.
+export const patchedCodexCapabilities = { version: 1, image_provider: true, image_provider_version: 2, image_compaction: true,
+  image_compaction_version: 2, request_compaction_version: 1, failed_error_event_version: 1 };
 
 export async function fakePatchedCodex(directory?: string): Promise<string> {
   const executable = join(directory ?? await mkdtemp(join(tmpdir(), 'fake-patched-codex-')), 'fake-patched-codex.mjs');
