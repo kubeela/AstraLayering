@@ -50,6 +50,7 @@ test('surface contact preserves fixed artwork and worker command delivery',()=>{
   const body=a.bodies.get('cloth');body.surfaceImpulse(50,15,20,0,2,.1);
   assert(body.velocity.every((v:number)=>v===0));
   const command=pointerCommand(body,[layer],[50,65],[50.1,65],1/120,2);
+  assert(command,'A visible free cloth contact must produce a worker command');
   assert.equal(command.type,'surface-impulse');
   body.surfaceImpulse(...command.args);a.step();
   advancePhysicsJob(b,{steps:1,elapsed:0,replayStep:0,playback:'',commands:[command]});

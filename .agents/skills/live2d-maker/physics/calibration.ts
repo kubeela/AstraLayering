@@ -13,7 +13,7 @@ import {compareMotionTarget,matchTargetComponent,motionTargetVersion} from './mo
 import {recoveryBudgetSteps,recoveryState,settlingVersion} from '../shared/physics-evidence/settling.js';
 import {pointerSource,pointerContext} from '../shared/physics-evidence/pointer-source.ts';
 
-export const calibrationVersion='astra-physics-calibration-5';
+export const calibrationVersion='astra-physics-calibration-6';
 export const quickTests=['airflow','light-brush','support-release','pointer-brush'] as const;
 export const recipes=[
   {id:'hair-bend',kind:'strand',purpose:'游离发束：固定贴头根部，宽片克制截面旋转，开放中段和末端',response:{frequencyHz:1.3,dampingRatio:.25,inputGain:.65,windGain:.5,outputGain:1.7},authoring:{swing:{parallel:.8}}},
@@ -26,6 +26,17 @@ const materialKeys=new Set(['stretchCompliance','shearCompliance','compressionCo
 export type Candidate={id:string;parameters:Record<string,{response?:Record<string,number>;material?:Record<string,number>}>};
 const componentHashes=(config:any,ids:string[])=>Object.fromEntries(config.components.filter((c:any)=>ids.includes(c.id)).map((c:any)=>[c.id,hash(JSON.stringify(c))]));
 const inputScale=(config:any)=>Math.max(1,...config.components.filter((c:any)=>c.enabled).map((c:any)=>c.authoring.freeLength));
+async function currentReviewRejection(config:any,directory:string,ids:string[]){
+  const [current,session]=await Promise.all([optional(join(directory,'../step03/feedback.json')),optional(join(directory,'../step03/review-session.json'))]);
+  const feedback=current??await optional(join(directory,'repair-request.json')),digest=configHash(config);
+  if(feedback?.status!=='repair-requested'||feedback.configHash!==digest||session?.configHash!==digest||feedback.reviewTurn!==session.id)return;
+  const items=(feedback.items||[]).filter((item:any)=>item.verdict==='rejected'&&ids.includes(item.component));
+  if(items.length)return {status:'rejected',configHash:digest,reviewTurn:session.id,items:structuredClone(items)};
+}
+function reviewEligibility(measured:any,rejection?:any){
+  return {...measured,numericallyEligible:measured.eligible,visualReview:rejection??{status:'unreviewed'},eligible:measured.eligible&&!rejection,
+    issues:[...measured.issues,...(rejection?.items||[]).map((item:any)=>'independent-review-rejected/'+item.component+'/'+item.criterion+': '+item.reason)]};
+}
 export function calibrationGeneration(config:any,ids:string[],solverHash:string){
   return hash(JSON.stringify({version:calibrationVersion,solverHash,inputVersion,inputScale:inputScale(config),source:config.source,components:config.components.filter((c:any)=>ids.includes(c.id)).map((c:any)=>{const {response,material,...geometry}=c;return geometry;}).sort((a:any,b:any)=>a.id.localeCompare(b.id))}));
 }
@@ -52,12 +63,12 @@ export function parameterCandidate(config:any,componentIds:string[],candidate:Ca
   }
   validatePhysicsConfig(next);return {config:next,changes};
 }
-function defaults(config:any,ids:string[],reference?:any,baseline?:any):Candidate[]{
+function defaults(config:any,ids:string[],reference?:any,baseline?:any,rejection?:any):Candidate[]{
   const parameters=(mode:string)=>Object.fromEntries(ids.map(id=>{
     const c=config.components.find((c:any)=>c.id===id),r=c.response,m=c.material,p:any={};
     if(mode!=='material')p.response={frequencyHz:Math.max(.15,r.frequencyHz*.9),dampingRatio:Math.max(.03,Math.min(1.5,r.dampingRatio*(mode==='response'?.9:1.1))),inputGain:Math.min(2,r.inputGain*(mode==='response'?1.2:1))};
     if(mode==='response'&&c.kind==='strand')p.response.outputGain=Math.min(8,(r.outputGain??1)*1.2);
-    if(mode!=='response'&&c.kind==='cloth')p.material={shearCompliance:Math.min(.01,Math.max(.0004,m.shearCompliance*1.5)),compressionCompliance:Math.min(.01,Math.max(.0002,(m.compressionCompliance??.0005)*1.5)),bendCompliance:Math.min(.01,m.bendCompliance*1.5),shapeCompliance:Math.min(.01,m.shapeCompliance*1.25)};
+    if(mode!=='response'&&c.kind==='cloth')p.material={shearCompliance:Math.min(.01,Math.max(.0004,m.shearCompliance*1.5)),compressionCompliance:Math.min(.01,Math.max(.0002,(m.compressionCompliance??.0005)*1.5)),bendCompliance:Math.min(.01,m.bendCompliance*1.5)};
     return [id,p];
   }));
   const candidates=[{id:'preserve-drive',parameters:parameters('response')},{id:'flexible-material',parameters:parameters('material')},{id:'smooth-response',parameters:parameters('both')}];
@@ -83,6 +94,19 @@ function defaults(config:any,ids:string[],reference?:any,baseline?:any):Candidat
         if(parent&&c.authoring.freeLength<parent.authoring.freeLength*.35&&c.limits.maxAngle<=6)response.outputGain=.15;
       }
       return [id,{response}];
+    }))};
+  }
+  const responseRejected=new Set((rejection?.items||[]).filter((item:any)=>item.criterion==='response').map((item:any)=>item.component));
+  if(ids.some(id=>responseRejected.has(id)&&config.components.find((c:any)=>c.id===id)?.kind==='cloth')){
+    // This is a bounded material experiment after an actual reviewer response
+    // rejection, not visual approval. Preserve the rest-shape spring, drive,
+    // attachment geometry and limits while exploring transverse flexibility.
+    candidates[1]={id:'review-soft-sheet',parameters:Object.fromEntries(ids.map(id=>{
+      const c=config.components.find((c:any)=>c.id===id),r=c.response,m=c.material;
+      return [id,c.kind==='cloth'&&responseRejected.has(id)?{
+        response:{frequencyHz:Math.min(r.frequencyHz,.9),dampingRatio:Math.min(r.dampingRatio,.32)},
+        material:{shearCompliance:Math.min(.1,Math.max(m.shearCompliance,.01)),compressionCompliance:Math.min(.1,Math.max(m.compressionCompliance??.0005,.02)),bendCompliance:Math.min(.1,Math.max(m.bendCompliance,.008))}
+      }:{}];
     }))};
   }
   return candidates;
@@ -127,6 +151,7 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
   validatePhysicsConfig(config);if(!reason?.trim())throw Error('标定必须记录要解决的实际问题');
   const assemblies=groupAssemblies(config),group=assemblies.find(a=>a.id===assemblyId);if(!group?.enabledComponentIds.length)throw Error('装配组不存在或已关闭');
   const runtime=await simulationHash(),digest=configHash(config),tuning:any=await optional(join(directory,'tuning.json'))||{version:1,calibrationVersion,status:'draft',groups:[]};
+  const rejection=await currentReviewRejection(config,directory,group.componentIds);
   const versionChanged=tuning.calibrationVersion!==calibrationVersion;tuning.calibrationVersion=calibrationVersion;
   let entry=tuning.groups.find((g:any)=>g.assemblyId===assemblyId);if(!entry){entry={assemblyId,componentIds:group.componentIds,rounds:[]};tuning.groups.push(entry);}
   const targetHash=reference?configHash(reference):null;
@@ -136,7 +161,7 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
   const baseComponents=componentHashes(config,group.componentIds),latest=entry.rounds.at(-1),selected=latest?.candidates.find((c:any)=>c.id===latest.selectedCandidate);
   // Exact current measurements can resume without spending another search
   // round. A solver, target, geometry or parameter change never takes this path.
-  if(options.preserveEligibleBaseline&&latest?.solverHash===runtime&&latest.targetHash===targetHash&&latest.motionTargetVersion===motionTargetVersion&&selected?.eligible&&Object.entries(baseComponents).every(([id,value])=>latest.selectedComponents?.[id]===value)){
+  if(!rejection&&options.preserveEligibleBaseline&&latest?.solverHash===runtime&&latest.targetHash===targetHash&&latest.motionTargetVersion===motionTargetVersion&&selected?.eligible&&Object.entries(baseComponents).every(([id,value])=>latest.selectedComponents?.[id]===value)){
     if(versionChanged)await put(join(directory,'tuning.json'),tuning);
     return {reused:true,baselinePreserved:true,selection:selected.id,round:latest};
   }
@@ -147,9 +172,9 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
     if(targetMeasurement)for(const test of quickTests)for(const c of next.components.filter((c:any)=>group.enabledComponentIds.includes(c.id))){const r=matchTargetComponent(c,reference);if(!r)continue;const m=measured.metrics[test][c.id],target=compareMotionTarget(c,m,r,{...targetMeasurement.metrics[test][r.id],referenceAssemblyIssues:targetMeasurement.issues});m.target=target;measured.score+=target.envelopeLoss*10;measured.issues.push(...target.issues.map(issue=>test+'/'+c.id+': '+issue));if(target.issues.length)measured.eligible=false;}
     return measured;
   };
-  const baseline=assess(structuredClone(baselineMeasured),config),baselinePreserved=!!options.preserveEligibleBaseline&&baseline.eligible;
-  const supplied=baselinePreserved?[]:candidates??defaults(config,group.enabledComponentIds,reference,baselineMeasured);if(!Array.isArray(supplied)||supplied.length>3||new Set(supplied.map(c=>c.id)).size!==supplied.length||supplied.some(c=>c.id==='baseline'))throw Error('一次最多三个不同候选，baseline 由工具保留');
-  const requestHash=hash(JSON.stringify({baseComponents,reason,candidates:supplied,preserveEligibleBaseline:!!options.preserveEligibleBaseline}));
+  const baseline=reviewEligibility(assess(structuredClone(baselineMeasured),config),rejection),baselinePreserved=!!options.preserveEligibleBaseline&&baseline.eligible;
+  const supplied=baselinePreserved?[]:candidates??defaults(config,group.enabledComponentIds,reference,baselineMeasured,rejection);if(!Array.isArray(supplied)||supplied.length>3||new Set(supplied.map(c=>c.id)).size!==supplied.length||supplied.some(c=>c.id==='baseline'))throw Error('一次最多三个不同候选，baseline 由工具保留');
+  const requestHash=hash(JSON.stringify({baseComponents,reason,candidates:supplied,preserveEligibleBaseline:!!options.preserveEligibleBaseline,...(rejection?{visualRejection:rejection}:{})}));
   const existing=entry.rounds.findLast((r:any)=>r.requestHash===requestHash);if(existing){if(versionChanged)await put(join(directory,'tuning.json'),tuning);return {reused:true,round:existing};}
   if(entry.rounds.length>=3)throw Error('该装配组已完成三轮标定；保留候选与失败原因，等待明确修正方案');
   const round:any={round:entry.rounds.length+1,reason,requestHash,generation,targetHash,motionTargetVersion,baselinePolicy:options.preserveEligibleBaseline?'preserve-eligible':'search',baseComponents,baseConfigHash:digest,solverHash:runtime,inputVersion,inputScale:inputScale(config),createdAt:new Date().toISOString(),candidates:[]};
@@ -158,7 +183,7 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
   const seen=new Set<string>();
   for(const candidate of [{id:'baseline',parameters:{}},...supplied]){
     signal?.throwIfAborted();const next=parameterCandidate(config,group.componentIds,candidate),nextHash=configHash(next.config);if(seen.has(nextHash))continue;seen.add(nextHash);
-    const measured=candidate.id==='baseline'?baseline:assess(await measureCandidate(next.config,group.componentIds,signal,brush),next.config),path=join(folder,candidate.id+'.json');await put(path,next.config);
+    const measured=candidate.id==='baseline'?baseline:reviewEligibility(assess(await measureCandidate(next.config,group.componentIds,signal,brush),next.config),nextHash===digest?rejection:undefined),path=join(folder,candidate.id+'.json');await put(path,next.config);
     round.candidates.push({id:candidate.id,changes:next.changes,configHash:nextHash,...measured,path:relative(directory,path)});
   }
   const best=round.candidates.filter((c:any)=>c.eligible).sort((a:any,b:any)=>a.score-b.score)[0];round.recommendedCandidate=best?.id??null;
@@ -167,6 +192,7 @@ export async function calibrate(config:any,directory:string,assemblyId:string,re
 }
 export async function selectCandidate(config:any,directory:string,assemblyId:string,candidateId:string,reason:string){
   if(!reason?.trim())throw Error('选择候选需要说明依据');const tuning:any=await optional(join(directory,'tuning.json')),entry=tuning?.groups.find((g:any)=>g.assemblyId===assemblyId),round=entry?.rounds.at(-1),candidate=round?.candidates.find((c:any)=>c.id===candidateId);
+  if(candidate?.visualReview?.status==='rejected')throw Error('当前独立复核已拒绝该配置：'+candidate.visualReview.items.map((item:any)=>item.reason).join('；'));
   if(!candidate?.eligible)throw Error('候选不存在或安全检查失败');if(tuning.solverHash!==await simulationHash())throw Error('求解器改变，请重新标定');
   if(hash(calibrationGeneration(config,entry.componentIds,tuning.solverHash)+(round.targetHash??''))!==round.generation)throw Error('来源、几何、约束或输入尺度改变，请重新标定');
   const current=componentHashes(config,entry.componentIds);if(![round.baseComponents,round.selectedComponents].some(h=>h&&Object.entries(current).every(([id,value])=>h[id]===value)))throw Error('装配组草稿改变，不能直接应用旧候选');
@@ -175,11 +201,13 @@ export async function selectCandidate(config:any,directory:string,assemblyId:str
   // Reapply only the measured assembly parameters so independent assemblies
   // selected after this run never get rolled back to a candidate snapshot.
   const next=structuredClone(config);for(const c of next.components.filter((c:any)=>entry.componentIds.includes(c.id))){const measured=selected.components.find((v:any)=>v.id===c.id);c.response=structuredClone(measured.response);c.material=structuredClone(measured.material);}validatePhysicsConfig(next);
+  const rejection=await currentReviewRejection(next,directory,entry.componentIds);if(rejection)throw Error('当前独立复核已拒绝该配置：'+rejection.items.map((item:any)=>item.reason).join('；'));
   round.selectedCandidate=candidate.id;round.selectionReason=reason;round.selectedConfigHash=configHash(next);round.selectedComponents=Object.fromEntries(next.components.filter((c:any)=>entry.componentIds.includes(c.id)).map((c:any)=>[c.id,hash(JSON.stringify(c))]));
   tuning.calibrationVersion=calibrationVersion;tuning.configHash=configHash(next);tuning.status=selectedMatches(next,tuning)?'calibrated':'draft';await put(join(directory,'physics.draft.json'),next);await put(join(directory,'tuning.json'),tuning);await put(join(directory,'assemblies.json'),{version:1,configHash:configHash(next),groups:groupAssemblies(next)});return next;
 }
 export async function validateCalibration(config:any,directory:string){
   const tuning:any=await optional(join(directory,'tuning.json'));if(tuning?.calibrationVersion!==calibrationVersion||tuning.solverHash!==await simulationHash())throw Error('制作需使用当前求解器完成装配组标定');
+  const rejection=await currentReviewRejection(config,directory,config.components.filter((c:any)=>c.enabled).map((c:any)=>c.id));if(rejection)throw Error('当前独立复核已拒绝该配置，需实际修正：'+rejection.items.map((item:any)=>item.reason).join('；'));
   for(const assembly of groupAssemblies(config).filter(a=>a.enabledComponentIds.length)){
     const round=tuning.groups.find((g:any)=>g.assemblyId===assembly.id)?.rounds.at(-1);if(!round?.selectedCandidate)throw Error('装配组尚未选择标定候选：'+assembly.id);
     if(hash(calibrationGeneration(config,assembly.componentIds,tuning.solverHash)+(round.targetHash??''))!==round.generation)throw Error('来源、几何、约束或输入尺度改变：'+assembly.id);
