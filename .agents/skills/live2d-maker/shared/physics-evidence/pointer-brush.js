@@ -1,8 +1,9 @@
 import {resolveComponentBindings} from '../physics-core/component-physics-binding.js';
 import {mobilityAt} from '../physics-core/component-physics-geometry.js';
 import {pointerCommand,pointerContactVersion} from './physics-pointer-contact.js';
-export const pointerBrushVersion='astra-pointer-brush-1';
+export const pointerBrushVersion='astra-pointer-brush-2';
 const alpha=(l,x,y)=>{const b=l.bounds,ix=Math.floor(x-b.x),iy=Math.floor(y-b.y);if(ix<0||iy<0||ix>=b.width||iy>=b.height)return 0;const i=iy*b.width+ix;return l.maskedAlpha?l.maskedAlpha[i]:l.maskedRgba[i*4+3];};
+const nearestSupport=(point,supports)=>supports.reduce((best,s)=>Math.hypot(point[0]-s.at[0],point[1]-s.at[1])<Math.hypot(point[0]-best.at[0],point[1]-best.at[1])?s:best,supports[0]);
 
 // Select a visible source pixel in a free region, after layer occlusion.
 // The path is fixed in canvas space: it never grabs/follows a moving vertex.
@@ -30,9 +31,9 @@ export function preparePointerBrush(scene,layers,sourceHash=null) {
       const b=l.bounds,visible=exposed.get(l.id);
       for(let y=0;y<b.height;y++)for(let x=0;x<b.width;x++) {
         const value=visible[y*b.width+x];if(value<=32)continue;
-        const p=[b.x+x+.5,b.y+y+.5],mobility=c.kind==='pendant'?Math.min(1,Math.hypot(p[0]-root[0],p[1]-root[1])/body.freeLength):mobilityAt(p,c.authoring);
+        const p=[b.x+x+.5,b.y+y+.5],pin=nearestSupport(p,c.supports).at,distance=Math.hypot(p[0]-pin[0],p[1]-pin[1]),mobility=c.kind==='pendant'?Math.min(1,distance/body.freeLength):mobilityAt(p,c.authoring);
         if(mobility<.15)continue;
-        const score=mobility*(value/255)+Math.min(1,Math.hypot(p[0]-root[0],p[1]-root[1])/body.freeLength)*.1;
+        const score=mobility*(value/255)+distance/body.freeLength*.1;
         if(score>best&&body.hit(...p,parts)){best=score;point=p;source={layerId:l.id,uuid:l.uuid,contentHash:l.contentHash,exposedAlpha:value,mobility};}
       }
     }
@@ -41,8 +42,8 @@ export function preparePointerBrush(scene,layers,sourceHash=null) {
       if(body.weights[i]>0&&score>best){best=score;point=p;}
     }
     if(!point){paths.push({id,status:'no-visible-free-pixel',reason:'当前合成中没有可见且可活动的源像素；通过支撑／微风检查联动，不凭空施加鼠标力',layerRefs:c.layerRefs});continue;}
-    const dx=point[0]-root[0],dy=point[1]-root[1],length=Math.max(1e-9,Math.hypot(dx,dy));
-    paths.push({id,status:'reachable',sourcePoint:point,start:point,velocity:[width*.01*dy/length,-width*.01*dx/length],radius:Math.max(2,height*.01),startStep:60,endStep:90,source});
+    const pin=nearestSupport(point,c.supports),dx=point[0]-pin.at[0],dy=point[1]-pin.at[1],length=Math.max(1e-9,Math.hypot(dx,dy));
+    paths.push({id,status:'reachable',sourcePoint:point,anchor:{id:pin.id,at:pin.at},start:point,velocity:[width*.01*dy/length,-width*.01*dx/length],radius:Math.max(2,height*.01),startStep:60,endStep:90,source});
   }
   return {version:pointerBrushVersion,contactVersion:pointerContactVersion,basis,sourceHash,stepHz:120,force:1,paths,contactLayers};
 }
