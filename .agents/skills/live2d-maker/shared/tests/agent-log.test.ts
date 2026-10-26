@@ -81,3 +81,47 @@ test('CLI image results and long tool output stay readable without discarding th
   assert.ok(text.length < 5000);
   assert.match(await readFile(join(log.directory, 'events.jsonl'), 'utf8'), new RegExp(data));
 });
+
+test('AGV native tool steps and step errors reach workflow.log without logging response token deltas', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'layering-agv-log-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const log = await AgentLog.create(join(root, 'character-assembly/agents'), 'assembly', {});
+  const tool = { step_index: 2, step_type: 'tool', tool_name: 'run_command',
+    tool_info: { name: 'run_command', parameters: { CommandLine: 'python fit.py' } } };
+  await log.recordProtocol({ event: 'step_update', step_update: { ...tool, state: 'ACTIVE' } });
+  await log.recordProtocol({ event: 'step_update', step_update: { step_index: 3, step_type: 'error_message', state: 'DONE', text_delta: 'upstream timeout' } });
+  await log.recordProtocol({ event: 'step_update', step_update: { ...tool, state: 'DONE', duration_seconds: 8.5,
+    tool_info: { ...tool.tool_info, output: 'fit complete' } } });
+  await log.recordProtocol({ event: 'step_update', step_update: { step_index: 4, step_type: 'agent_response', state: 'ACTIVE', text_delta: 'partial response' } });
+  const text = await readFile(join(root, 'workflow.log'), 'utf8');
+  assert.match(text, /工具开始：run_command（步骤 2）.*python fit.py/);
+  assert.match(text, /步骤错误：3；DONE/);
+  assert.match(text, /upstream timeout/);
+  assert.match(text, /工具完成：run_command（步骤 2）.*fit complete.*8.5 秒/);
+  assert.doesNotMatch(text, /partial response/);
+  assert.match(await readFile(join(log.directory, 'events.jsonl'), 'utf8'), /partial response/);
+  const latest = await readTaskLog(root);
+  assert.ok(latest.message);
+  assert.match(latest.message, /工具完成：run_command/);
+});
+
+test('Codex SDK and app-server command/tool events already share the same human log', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'layering-codex-log-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const log = await AgentLog.create(join(root, 'part-layering/agents'), 'face', {});
+  await log.record({ type: 'item.started', item: { type: 'command_execution', id: 'command', command: 'python inspect.py',
+    aggregated_output: '', status: 'in_progress' } });
+  await log.record({ type: 'item.completed', item: { type: 'command_execution', id: 'command', command: 'python inspect.py',
+    aggregated_output: 'inspection complete', exit_code: 0, status: 'completed' } });
+  await log.recordProtocol({ method: 'item/started', params: { item: { type: 'commandExecution', id: 'native-command', command: 'inspect native' } } });
+  await log.recordProtocol({ method: 'item/tool/call', params: { tool: 'preview_svg', arguments: { path: 'draft.svg' } } });
+  await log.recordProtocol({ result: { contentItems: [{ type: 'inputText', text: 'preview complete' }], success: true } }, 'out');
+  await log.recordProtocol({ method: 'item/completed', params: { item: { type: 'commandExecution', id: 'native-command', aggregatedOutput: 'native complete' } } });
+  await log.recordProtocol({ method: 'error', params: { error: { message: 'native error' }, willRetry: true } });
+  await log.record({ type: 'error', message: 'SDK error' });
+  const text = await readFile(join(root, 'workflow.log'), 'utf8');
+  for (const pattern of [/命令开始：python inspect.py/, /命令完成：python inspect.py/, /inspection complete/,
+    /item\/started/, /工具调用：preview_svg/, /工具结果：/, /preview complete/, /native complete/, /native error/, /SDK error/]) {
+    assert.match(text, pattern);
+  }
+});

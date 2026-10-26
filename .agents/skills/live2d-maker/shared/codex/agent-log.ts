@@ -41,6 +41,15 @@ export function describeCLIActivity(message: Record<string, any>): string {
     lines.push(`后台工具${message.status === 'completed' ? '完成' : String(message.status || '更新')}：${message.tool_use_id || message.task_id}；${message.summary || ''}`);
   } else if (message.type === 'system' && message.subtype === 'api_retry') {
     lines.push(`CLI 临时错误，正在退避重试${message.attempt ? `（第 ${message.attempt} 次）` : ''}：${compact(message.error)}`);
+  } else if (message.step_update?.step_type === 'tool') {
+    const step = message.step_update, info = step.tool_info || {}, parameters = info.parameters || {};
+    const phase = step.state === 'ACTIVE' ? '开始' : step.state === 'DONE' ? '完成' : String(step.state || '更新');
+    const hint = summary(info.output || parameters.Description || parameters.Path || parameters.CommandLine);
+    const duration = Number.isFinite(step.duration_seconds) ? `；${step.duration_seconds} 秒` : '';
+    lines.push(`工具${phase}：${step.tool_name || info.name || '未命名工具'}（步骤 ${step.step_index}）${hint ? `；${hint}` : ''}${duration}\n${compact(info)}`);
+  } else if (message.step_update?.step_type === 'error_message') {
+    const step = message.step_update;
+    lines.push(`步骤错误：${step.step_index}；${step.state || '未知状态'}\n${compact(step)}`);
   }
   return lines.join('\n');
 }
