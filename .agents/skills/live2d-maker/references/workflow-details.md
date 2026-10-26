@@ -145,6 +145,8 @@ clothing-part-layering/tools/write_groups/schema.json
 
 ## 多深度与上游修正
 
+当前写入职责、恢复边界与未解决的误导文案见 [结构写回审计](../docs/structure-write-audit.md)（2026-10-26）；该记录区分既有行为和待修复项。
+
 本节仅适用于人物／衣服 part 和 raster；后续 `character-assembly` 使用已完成的两份 KRA，不注册深度修改工具，也不继承 raster step01 的拆层提示词。
 
 `occlusion.json` v3 中每个逻辑 part 仍只有一条记录：单深度使用 `level`，多深度使用 `levels: [{ level, region }]`，二者互斥。深度在整份表中按数值从后到前排序，不再等于数组位置；数值唯一，可用小数插入现有层之间。每个多深度区域都必须有文本说明和检查依据。v2 单深度表仍可读取。
