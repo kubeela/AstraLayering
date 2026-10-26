@@ -115,7 +115,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   const run = runtime.run(async attempt => {
     let text = '', completed = false, lastError: unknown;
     try {
-      const { events } = await thread.runStreamed(workspacePrompt(attempt > 1 && threadId ? continuationPrompt([...savedImages]) : request.prompt, paths), {
+      const { events } = await thread.runStreamed(workspacePrompt(attempt > 1 && threadId ? continuationPrompt([...savedImages], request.prompt) : request.prompt, paths), {
         signal: request.signal,
         outputSchema: {
           type: 'object', additionalProperties: false,

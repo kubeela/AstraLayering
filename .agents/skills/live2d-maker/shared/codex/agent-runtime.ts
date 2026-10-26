@@ -128,9 +128,10 @@ export class AgentRuntime {
 
 export const interruptedTaskPrompt = renderPromptFile(new URL('../prompts/interrupted-task.md',import.meta.url)).trim();
 
-export function continuationPrompt(savedImagePaths: string[]): string {
+export function continuationPrompt(savedImagePaths: string[], taskPrompt: string): string {
   return renderPromptFile(new URL('../prompts/continuation.md',import.meta.url), {
     interrupted_task:interruptedTaskPrompt,
+    task_prompt:taskPrompt,
     saved_images_context:savedImagePaths.length?renderPromptFile(new URL('../prompts/continuation-images.md',import.meta.url),{saved_image_paths:savedImagePaths.join('\n')}):'',
   }).trimEnd();
 }

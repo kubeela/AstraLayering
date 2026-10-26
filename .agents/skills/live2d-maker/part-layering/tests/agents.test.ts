@@ -181,6 +181,7 @@ if (!previous) {
   assert.equal(calls[1].args[resumeIndex + 1], 'test-thread');
   assert.match(calls[0].prompt, /只调用一次生图/);
   assert.ok(calls[1].prompt.startsWith(interruptedTaskPrompt));
+  assert.match(calls[1].prompt, /只调用一次生图/);
   assert.ok(calls[1].prompt.includes(join(f.directory,'workspace/generated.png')));
   assert.ok(!calls[1].args.includes('--image'));
   const names = await readdir(f.logDirectory);
