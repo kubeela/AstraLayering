@@ -69,7 +69,6 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 3)), sandboxMode: 'read-only', imageGeneration: false,
-    submission: { tools: [submit.name], isSubmitted: () => submitted !== undefined },
     images: [{ path: reference, description: profile.references.children }, ...(profile.attachChildrenReferences ? references : [])],
     tools: [createBitmapTool(context.directory, directory, references.map(image => image.path)), createSvgPreviewTool({ directory: context.directory, reference, canvas,
       observationDirectory: directory, observed: entry => observations.push(entry) }), submit],

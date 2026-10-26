@@ -1,13 +1,13 @@
 import {renderPromptFile} from '../prompts/render.ts';
 import { checkCodexCapabilities, defaultModels, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment } from './environment.ts';
-import { agentCallError, agentOutcomeError, formatAgentError } from './diagnostics.ts';
+import { agentCallError, formatAgentError } from './diagnostics.ts';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { toolDefinition } from './tool-config.ts';
 import { workflowsDirectory } from '../paths.ts';
 import { Codex, type CodexOptions, type Usage, type UserInput } from '@openai/codex-sdk';
 import { join, resolve } from 'node:path';
 import { AgentLog } from './agent-log.ts';
-import { AgentCallError, AgentRuntime, blockedAgentError, continuationPrompt, pendingSubmissionPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
+import { AgentCallError, AgentRuntime, blockedAgentError, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
 import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './blocked-images.ts';
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
@@ -37,8 +37,6 @@ export type AgentTask = {
   cwd?: string;
   outputDirectory?: string;
   tools?: FunctionTool[];
-  // Bound to this invocation's tool commit, not the existence of a historical report.
-  submission?: { tools: readonly string[]; isSubmitted(): boolean };
   sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
 };
 
@@ -138,19 +136,12 @@ export class CodexAgents {
             for (;;) {
               try {
                 const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                  : interrupted ? { ...task, prompt: taskContinuation(task, [...savedImages]), images: undefined } : task, signal);
+                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt), images: undefined } : task, signal);
                 id = result.threadId || id;
                 for (const image of result.images) savedImages.add(image.savedPath);
                 return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
               } catch (error) {
                 const failure = error as AgentCallError;
-                const committed = submittedResult(task, error, signal);
-                if (committed) {
-                  id = committed.threadId || id;
-                  for (const image of committed.images) savedImages.add(image.savedPath);
-                  this.options.progress?.(`[${task.name}] 本轮工具提交已接收；收尾中断，复用提交结果。`);
-                  return { ...committed, images: [...savedImages].map(savedPath => ({ savedPath })) };
-                }
                 // 每次拦截都把本批图片换成文字，在新会话里引导 agent 换法读取；
                 // 没有图片可换时拦截与图片无关，按致命错误结束。
                 const replaced = !signal.aborted && blockedAgentError(error) && failure.threadPath
@@ -199,10 +190,6 @@ export class CodexAgents {
         if (busy) throw new Error('同一会话不能并发运行');
         busy = true;
         try {
-          const submissionTools = original.submission?.tools;
-          if (submissionTools && (!submissionTools.length || submissionTools.some(name => !original.tools?.some(tool => tool.name === name)))) {
-            throw new Error(`本次调用未注册完整的提交工具：${submissionTools.join('、')}`);
-          }
           const settings = this.options.environment!;
           const selected = this.options.selectedModel || (original.step ? settings.stepModels[original.step]
             : parseAgentModel(`${settings.models.medium.model}-${settings.models.medium.effort}`, '默认模型'));
@@ -233,7 +220,6 @@ export class CodexAgents {
           if (!id && original.recoveryPrompt) task = { ...task, prompt: original.recoveryPrompt };
           const signal = taskSignal(task, [closing.signal, ...(externalSignal ? [externalSignal] : [])]);
           let replaced = false;
-          let reminded = false;
           for (;;) {
             try {
               let result: AgentResult;
@@ -243,33 +229,18 @@ export class CodexAgents {
               } else {
                 let interrupted = false;
                 result = await this.invoke(task, signal, async () => {
-                  try { return await runCliTask(interrupted ? { ...task, prompt: taskContinuation(task, generated.map(i => i.savedPath)), images: undefined } : task,
+                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt), images: undefined } : task,
                     selected, settings, { ...this.options, onEvent: async event => {
                       if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
                       await this.options.onEvent?.(event);
                     } }, signal, id); }
                   catch (error) {
-                    const committed = submittedResult(task, error, signal);
-                    if (committed) {
-                      this.options.progress?.(`[${task.name}] 本轮工具提交已接收；收尾中断，复用提交结果。`);
-                      return committed;
-                    }
                     if (error instanceof AgentCallError && error.threadId) { id = error.threadId; interrupted = true; }
                     throw error;
                   }
                 });
               }
               id = result.threadId || id;
-              if (original.submission && !original.submission.isSubmitted()) {
-                const names = original.submission.tools.join(' 或 ');
-                if (reminded) throw agentOutcomeError(`本次调用仍未通过 ${names} 成功提交结果`, result);
-                reminded = true;
-                task = { ...task, images: undefined, prompt: renderPromptFile(new URL('../prompts/missing-submission.md', import.meta.url), {
-                  submission_context: pendingSubmissionPrompt(names), task_prompt: task.prompt,
-                }) };
-                this.options.progress?.(`[${task.name}] 本轮提交尚未完成；在原会话返回校验反馈。`);
-                continue;
-              }
               return { ...result, harness: selected.harness, images: [...result.images, ...generated] };
             } catch (error) {
               if (!replaced && id && unavailableSession(error)) {
@@ -293,7 +264,7 @@ export class CodexAgents {
     const selected = this.options.selectedModel || (task.step ? this.options.environment!.stepModels[task.step] : undefined);
     validateProviderModel(this.options.environment!.providers, selected ?? { ...this.options.environment!.models.medium, harness: 'codex' }, task.step ?? task.name);
     if (task.step) validateImageSelection(this.options.environment!, task.step);
-    if (task.submission || task.tools?.length || selected?.harness !== undefined && selected.harness !== 'codex'
+    if (task.tools?.length || selected?.harness !== undefined && selected.harness !== 'codex'
       || task.step && this.options.environment!.stepImages[task.step] && this.options.environment!.stepImages[task.step] !== 'codex-native') {
       const session = this.createSession();
       try { return await session.run(task); }
@@ -414,17 +385,6 @@ export class CodexAgents {
       }
     }
   }
-}
-
-function taskContinuation(task: AgentTask, savedImages: string[]): string {
-  const pending = task.submission && !task.submission.isSubmitted() ? task.submission.tools.join(' 或 ') : undefined;
-  return continuationPrompt(savedImages, task.prompt, pending);
-}
-
-function submittedResult(task: AgentTask, error: unknown, signal: AbortSignal): AgentResult | undefined {
-  if (signal.aborted || !(error instanceof AgentCallError) || !retryableAgentError(error) || !task.submission?.isSubmitted()) return;
-  return { text: error.finalResponse ?? '', threadId: error.threadId, logDirectory: error.logDirectory,
-    images: error.savedImagePaths.map(savedPath => ({ savedPath })) };
 }
 
 function taskSignal(task: AgentTask, signals: AbortSignal[] = []): AbortSignal {

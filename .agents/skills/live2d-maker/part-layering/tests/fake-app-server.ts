@@ -5,8 +5,7 @@ import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
 export type FakeToolCall = { tool: string; arguments: unknown; threadId?: string; namespace?: string | null };
 
 export async function fakeAppServer(directory: string, calls: FakeToolCall[], mode = 'completed', completedItems: unknown[] = [],
-  behavior: { failedTurns?: number; blockedTurns?: number; errorInfo?: unknown; nativeReconnect?: boolean; skipCallsAfterFailure?: boolean;
-    skipCallsThroughTurn?: number } = {}) {
+  behavior: { failedTurns?: number; blockedTurns?: number; errorInfo?: unknown; nativeReconnect?: boolean; skipCallsAfterFailure?: boolean } = {}) {
   const executable = join(directory, 'fake-app-server.mjs');
   const capture = join(directory, 'protocol.jsonl');
   await writeFile(executable, `#!${process.execPath}
@@ -72,7 +71,7 @@ for await (const line of createInterface({ input: process.stdin })) {
     await record([{ type: 'message', role: 'user', content: msg.params.input.flatMap(part => part.type === 'localImage'
       ? [{ type: 'input_text', text: '<image name=[Image #1] path="' + part.path + '">' }, { type: 'input_image', image_url: 'data:image/png;base64,AA' }, { type: 'input_text', text: '</image>' }]
       : [{ type: 'input_text', text: part.text }]) }]);
-    index = (behavior.skipCallsAfterFailure && turns > 1) || turns <= (behavior.skipCallsThroughTurn ?? 0) ? calls.length : 0;
+    index = behavior.skipCallsAfterFailure && turns > 1 ? calls.length : 0;
     write({ id: msg.id, result: { turn: { id: 'native-turn', status: 'inProgress' } } });
     if (behavior.nativeReconnect) write({method:'error',params:{threadId:'native-thread',willRetry:true,error:{message:'Reconnecting... 2/5',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:503}}}}});
     await advance();

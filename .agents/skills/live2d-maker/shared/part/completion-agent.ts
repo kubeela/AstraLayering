@@ -105,7 +105,6 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 2)), sandboxMode: 'read-only', imageGeneration: true,
-    submission: { tools: [submit.name], isSubmitted: () => submitted !== undefined },
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: [preview, set, submit, createSvgReadTool(context.directory,
       [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)]),

@@ -104,7 +104,6 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'occlusion'), name: '最终遮挡层级规划', cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
-    submission: { tools: [submit.name, problem.name], isSubmitted: () => result !== undefined },
     images: [{ path: reference, description: profile.references.occlusion }],
     tools: [createSvgPreviewTool({ directory: context.directory, reference,
       canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, observationDirectory: directory,
