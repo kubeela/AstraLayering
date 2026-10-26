@@ -1,0 +1,88 @@
+{
+  "groupId": "legs/leg_right/leg",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "通过。已读取本次组说明、候选与父组完成 SVG，先查看候选及父组整图叠加，再以互相重叠的选框完整核对本组：A=[305,590,175,230]（4倍，髋侧腿根、连体衣腿口和后发接缝）；B=[306,775,171,245]（4倍，大腿两侧）；C=[350,975,125,220]（4倍，膝部及向小腿转向）；D=[347,1145,125,225]（4倍，小腿两侧至收踝）；E=[359,1320,112,180]（5倍，踝部、靴口 V 形开口与伸入端）。各框均对照参考、blend 和 edge；另以 [431,757,35,65]（8倍）复核腿口内侧接点，并查看独立色块。可见皮肤范围连续完整，大腿外弧、内侧间隙、膝部收放、小腿弧度和靴口可见皮肤边缘贴合参考；腿口内侧的小转折保留，未将膝部明暗误当轮廓。上端沿父稿的圆弧补全及靴筒遮挡内的局部圆弧搭接符合职责，未发现父内可修缺口、真实孔洞被填平或所属分离组件漏画。轮廓为连续皮肤实体，无孤点、碎发丝、碎片堆砌或形体归属混乱。父范围检查通过：4倍采样 outsideSamples=0，outsidePixels=0。未发现需要单列的上游范围冲突。",
+      "candidateHash": "8ecd26c164e1de0aefe38203653f1bf1753cbb5cd424c4d94b505c17bd09ccbd",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\legs\\leg_right.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-14.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\leg.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\leg\\2026-10-20T17-36-13-916Z-15.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T18:00:26.786Z"
+    }
+  ]
+}

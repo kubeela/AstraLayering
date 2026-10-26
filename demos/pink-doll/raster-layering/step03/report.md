@@ -7,11 +7,11 @@
   - `step01/report.md`（`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/raster-layering/step01/report.md`）
   - `step02/report.md`（`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/raster-layering/step02/report.md`）
 - **上游结构与参考图**：
-  - 参考图：`../part-layering/references/base-subject.png`（`1254 × 1254`）
+  - 参考图：`../../part-layering/references/base-subject.png`（`1254 × 1254`）
   - 部件与层级记录：`../part-layering/groups.json`、`../part-layering/occlusion.json`、`../part-layering/parts/`
 - **本步交付产物（全部保存在 `step03/`）**：
   - 换装素体工程：`step03/character-dressup-base.kra`
-  - 重开核对后导出的合成 PNG：`step03/character-dressup-base.png`（`1254 × 1254` RGBA 透明背景）
+  - 重开核对后导出的合成 PNG：`character-dressup-base.png`（`1254 × 1254` RGBA 透明背景）
   - 重开核对校验记录：`step03/reopen-verification.json`
   - 独显、剥离头发及整图对比检查图：`step03/review/step03-dressup-inspection.png` 及 `step03/review/layers/`
 
@@ -71,12 +71,12 @@
   - `007 | legs/leg_right/leg`、`008 | legs/leg_left/leg`：从髋部顶端端帽至脚踝肤色连贯统一，原高叉泳衣投射阴影已彻底清除。
 - **剥离头发与上层遮挡检查（`007..013` 组合）**：
   - 颈部（`010`）、躯干（`013`）、左右上臂（`011/012`）、骨盆（`009`）与左右大腿（`007/008`）衔接严丝合缝，腰部（`y=580`）与腹股沟（`y=622..714`）无任何接缝、色差或轮廓折角。
-- **全图合成检查（`step03/character-dressup-base.png`）**：
+- **全图合成检查（`character-dressup-base.png`）**：
   - 人物身体构型自然协调、肤色统一柔和，完全去除了连体服内容，可直接作为后续叠加各类服装图层的换装素体基底。
 
 ### 4.2 Krita 保存后重开核对结果（详见 `step03/reopen-verification.json`）
 
-将修改后的图层写入 `step03/character-dressup-base.kra` 并保存、关闭文档后，在 Krita 中重新打开 `step03/character-dressup-base.kra` 进行逐层校验并导出 `step03/character-dressup-base.png`：
+将修改后的图层写入 `step03/character-dressup-base.kra` 并保存、关闭文档后，在 Krita 中重新打开 `step03/character-dressup-base.kra` 进行逐层校验并导出 `character-dressup-base.png`：
 
 - **画布尺寸**：`1254 × 1254`（RGBA 透明背景）
 - **图层总数与结构**：共 `58` 个顶层普通绘画层（`paintlayer`，`000`..`057`），保持原有部件位置、图层命名、归属与深度顺序，无蒙版、无子节点（`all_ordinary_paintlayers: true`）。

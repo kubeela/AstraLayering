@@ -1,0 +1,7 @@
+{
+  "groupId": "legs/leg_right/boot_flower_ornament",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "59e865155dfe31f2cab38707d8c7d26901a67168f9687c7ab6aa4a6ecf928caf",
+  "afterHash": "f50e43b44eab382cf6cb7abbf101716da8092863bce702ccc27600cc296c5c49"
+}

@@ -1,0 +1,105 @@
+{
+  "groupId": "legs/leg_left/boot_gem_chain",
+  "groups": [
+    {
+      "id": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+      "kind": "part",
+      "name": "large_diamond_gem",
+      "note": "角色左靴（画面右侧）正面、V形靴口下方的一枚完整粉紫色大菱形宝石，约 x498–523、y1461–1504。包含四边外轮廓、上下尖端、中央棱线、全部固定明暗切面与高光；各切面属于同一硬质实体，随宝石整体位移和转向即可，不按色面拆分，故为 part。与靴筒以宝石外轮廓分界，不领取靴面、靴口或上方暗色中缝。下尖端覆盖柔性连接的上端；连接仅从尖端下方局部伸入遮挡，不扩成宝石周边底片。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+          "motionIdentity": "legs/leg_left/boot_gem_chain/large_diamond_gem",
+          "layers": [
+            {
+              "name": "0630 legs/leg_left/boot_gem_chain/large_diamond_gem",
+              "level": 630
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/legs/leg_left/boot_gem_chain/large_diamond_gem/final.png"
+        }
+      }
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+      "kind": "part",
+      "name": "small_diamond_charm",
+      "note": "仅含大宝石下方、圆珠上方的一枚完整浅粉紫色小菱形坠，约 x507.7–513.1、y1506.1–1513.0，保留上下尖端、四边硬质轮廓及自身明暗。它处于两个短连接段之间，需要在连接弯曲时相对大宝石和圆珠单独位移、轻微转向而不被拉成长条，故作为一个硬质 part；内部没有更小的独立控制件。上下连接端分别局部藏入两尖端后方，暗色细连接归 flexible_connector，不领取圆珠或新增扣环。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+          "motionIdentity": "legs/leg_left/boot_gem_chain/small_diamond_charm",
+          "layers": [
+            {
+              "name": "0640 legs/leg_left/boot_gem_chain/small_diamond_charm",
+              "level": 640
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/legs/leg_left/boot_gem_chain/small_diamond_charm/final.png"
+        }
+      }
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain/round_bead",
+      "kind": "part",
+      "name": "round_bead",
+      "note": "仅含小菱形坠下方的一颗完整浅色圆珠，约 x508.7–512.5、y1516.7–1520.6，包括外轮廓与固定亮暗。圆珠须在上下连接弯曲时保持圆整，可相对小菱形坠及花朵顶部独立位移，作为完整硬质 part；珠面高光随本体，不另拆。上端连接和通向花朵的下端连接均由 flexible_connector 在圆珠遮挡下留局部接入余量，不把珠光误作额外珠粒。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "legs/leg_left/boot_gem_chain/round_bead",
+          "motionIdentity": "legs/leg_left/boot_gem_chain/round_bead",
+          "layers": [
+            {
+              "name": "0650 legs/leg_left/boot_gem_chain/round_bead",
+              "level": 650
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/legs/leg_left/boot_gem_chain/round_bead/final.png"
+        }
+      }
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain/flexible_connector",
+      "kind": "part",
+      "name": "flexible_connector",
+      "note": "负责本串现有的全部短暗色柔性连接：大宝石下尖端至小菱形上尖端（约 y1503–1507）、小菱形下尖端至圆珠上缘（约 y1512–1518），以及圆珠下缘至花朵簇顶部的微弯短尾（约 y1520–1529）。三段可用多个闭合路径归入同一连接 part，统一承担串件连接和弯曲，各段端点跟随相邻硬质件；参考没有可辨识的独立链节或不同材质连接件，不按每个间隙另造节点。沿当前细线宽度保留形体，伸入端仅在宝石、小坠、圆珠的遮挡下补局部圆弧余量；末端在既有花朵顶部遮挡下收束，不领取花瓣、叶片或花托。不得把连接延伸成绕踝链圈、贯穿整枚宝石的长链或新增扣环。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "legs/leg_left/boot_gem_chain/flexible_connector",
+          "motionIdentity": "legs/leg_left/boot_gem_chain/flexible_connector",
+          "layers": [
+            {
+              "name": "0599 legs/leg_left/boot_gem_chain/flexible_connector :: hidden_tip",
+              "level": 599
+            },
+            {
+              "name": "0620 legs/leg_left/boot_gem_chain/flexible_connector :: visible",
+              "level": 620
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/legs/leg_left/boot_gem_chain/flexible_connector/final.png",
+          "partition": [
+            {
+              "level": 599,
+              "mask": "parts/legs/leg_left/boot_gem_chain/flexible_connector/hidden-depth-mask.png",
+              "region": "原y>=1527末梢，在左靴固定花瓣后；本轮保持原像素。"
+            },
+            {
+              "level": 620,
+              "mask": "parts/legs/leg_left/boot_gem_chain/flexible_connector/upper-depth-mask.png",
+              "region": "原y<1527三段外露连接，在靴前/硬件后；本轮保持原像素。"
+            }
+          ],
+          "shapeRevision": "y>=1525尾端限于x509.8–511.0。仅收窄既有像素，未画链圈、花瓣或新增扣环。",
+          "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering",
+          "regionMaskBase": "../raster-layering/step01/"
+        }
+      }
+    }
+  ],
+  "note": "结合当前 SVG 独显、全图叠加及宝石链局部参考与边缘核对，本组直属结构拆为四个最终 part：大菱形宝石、小菱形坠、单颗圆珠和柔性连接。依据是三个硬质实体须各自保持轮廓并相对连接运动，连接则可弯曲；不是按颜色、宝石切面或 SVG 路径数量拆分。柔性连接覆盖三个既有可见短段和必要的局部隐藏接入端；全部宝石切面、高光及自身阴影分别随所属硬质本体。本组没有需要再包一层的复合组件，不设 group。范围止于花朵簇顶部，花朵、叶片、靴体仍归 foot，另一侧靴及其他附件不重复归属。"
+}

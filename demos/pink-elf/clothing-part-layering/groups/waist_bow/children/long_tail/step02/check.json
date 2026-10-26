@@ -1,0 +1,7 @@
+{
+  "groupId": "waist_bow/long_tail",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "cd6ea5a5effbd533dd1c6fa1dc151339d2d60578a50b630f5af9d2331e3e7587",
+  "afterHash": "74c306d49cd7d15f0951334d109b105f7a321dcc0377ed96d13e9c8defa80086"
+}

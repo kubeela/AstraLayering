@@ -1,0 +1,93 @@
+{
+  "groupId": "face/eye_right/iris",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成当前组 face/eye_right/iris 的全部可见区域核对：先查看整图 blend 定位，再按左上 [402,194,20,20]、右上 [416,194,20,20]、左下 [402,208,20,20]、右下 [416,208,20,20] 四个相互重叠选框，以 8 倍 blend、edge 对照参考；另以 [402,208,34,20] 同一局部比较父 SVG、候选与原图，复核下缘连续性。\n当前允许范围内检查通过：虹膜左右外弧与眼白交界、下侧可见弧段及上眼睑遮挡交接均未发现可明确指认的错位或遗漏。瞳孔范围已由连续实心色块覆盖，无须为内部组件另画 path；独立高光及最终渐变不属本轮轮廓要求。轮廓为单一连续实体，没有孤立像素、无依据碎片、刻意挖缝或形体归属混乱。父范围四倍采样检查 pass，outsideSamples=0，outsidePixels=0。\n上游范围限制（单独记录）：候选下部约 (415.28,224.62) 至 (425.18,223.51) 的闭合段与父 eye_right.svg 下边界重合。参考该处为下眼缘造成的虹膜截口；按两侧现有椭圆曲率补成完整虹膜，下部需继续延至约 y=225.3，而该延伸位于父范围之外。同局部父、候选 edge 叠加确认，候选已覆盖至父界，未留下该段父内可补区域。因此完整椭圆的下方补全仍受上游范围限制，不声称已补齐，不要求本子组越界，也不放宽父检查；除此限制外，本组当前允许范围内通过。",
+      "candidateHash": "1f1ca655d6d306648af02a61d0ecd9ffc0e6ffb6d91c4d48760cda39c4991a60",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\eye_right.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\eye_right.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-14.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_right\\iris.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-15.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\eye_right.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_right\\iris\\2026-10-20T17-43-40-005Z-16.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T18:06:21.246Z"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "groupId": "puff_sleeve_image_right",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，1 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "909bb1efecb96ff4a210c074f41f0cb8c7a69e0de418e0e320c78e0675bacb99",
+  "afterHash": "7aa5bd4cf51996698e06a657a8bc97ce357e207425f5dea5ca5240d3a25400a8"
+}

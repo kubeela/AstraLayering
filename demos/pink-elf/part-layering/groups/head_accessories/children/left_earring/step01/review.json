@@ -1,0 +1,78 @@
+{
+  "groupId": "head_accessories/left_earring",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成当前组 head_accessories/left_earring 的全范围核对。先看整图 blend 定位画面右侧耳下耳饰，再以 [495,218,48,61] 的 8 倍参考、父稿 blend、候选 blend 确认完整职责范围；用相互重叠的 [507,226,27,22] 与 [507,240,27,28] 两框，逐块核对参考、候选 blend 和 edge，并查看父稿相同位置的 blend/edge 及双方独显。覆盖了隐藏上端、露出的浅金色顶沿、脸缘一侧接缝、侧发遮挡侧、粉色坠体及下缘转折。候选承接父稿本侧两段形体，其联合色块连续，顶部饰边与垂坠主体均已覆盖；未见父范围内组件缺失、刻意挖缝、孔洞、孤点或碎片堆砌。隐藏上端为父稿已有合理连续补形，无需贴到覆盖头发边界。颜色、内部明暗及两条 path 的重叠不作为问题。父范围四倍采样检查通过：outsideSamples=0，outsidePixels=0。\n上游范围限制（单独记录，不要求当前子组越界返修）：耳饰下缘约 x516–521、y260–263，原图坠体下侧的深色外轮廓尚有细窄外侧未被色块完整容纳。相同下部选框的父稿 edge 与候选 edge 显示两者在这段下缘完全重合，候选已覆盖到父边界；父稿本侧原始路径与候选也一致。因此此处只有扩大父范围才能补足，不属于当前父内可修漏画，不能声称已补齐。该记录仅指坠体底缘本身，不包含其右下方继续下行的发线。当前允许范围内其余可见区域检查通过，故本轮 pass；未修改输入、父稿或候选。",
+      "candidateHash": "206b7db1a69b8e080742bd9e079ba3f83838d012d819bbeee52f5ca0af898453",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\head_accessories.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\head_accessories.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\head_accessories.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\head_accessories.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\head_accessories\\left_earring.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\head_accessories.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\head_accessories\\left_earring\\2026-10-20T16-17-49-381Z-13.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T16:39:10.773Z"
+    }
+  ]
+}

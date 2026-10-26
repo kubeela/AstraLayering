@@ -1,0 +1,126 @@
+{
+  "groupId": "face/eye_right",
+  "groups": [
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "kind": "part",
+      "name": "upper_eyelid",
+      "note": "角色自身右眼（画面左侧）的完整上眼睑：从画面左侧外眼角经上拱眼缘到画面右侧内眼角，包含深棕色粗上缘、贴边窄眼睑色带，以及与该线形融为一体的外眼角翘尾和短睫毛尖，不再重复创建 upper_eyelashes。保留上缘粗细与端部尖角，补齐外上侧被粉色刘海遮住的连续眼缘，发束仍在其前方。开闭时负责上边界下降、抬升和弧度变化，遮盖眼白、虹膜及高光；不纳入上方独立褶线、眉毛或周围大片脸皮，本轮只制作正面结构，不另画闭眼图。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eye_right/upper_eyelid",
+          "motionIdentity": "face/eye_right/upper_eyelid",
+          "layers": [
+            {
+              "name": "0480 face/eye_right/upper_eyelid",
+              "level": 480
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eye_right/upper_eyelid/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "kind": "part",
+      "name": "lower_eyelid",
+      "note": "完整下眼睑及细下眼缘，从画面左侧外眼角沿眼白下方浅暖棕粉弧线接到画面右侧内眼角；包含贴边窄色带及与下缘相接的短尖端，不把脸颊红晕或眼白色块并入，也不另设重复的 lower_eyelashes。保留下缘轻细、局部弱化的画风，补齐两眼角与上眼睑衔接处，外侧受发束遮挡处连续补足。开闭时控制眼眶开口的下边界，与上眼睑配合压缩开口并遮住内部组件，不随视线平移。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eye_right/lower_eyelid",
+          "motionIdentity": "face/eye_right/lower_eyelid",
+          "layers": [
+            {
+              "name": "0460 face/eye_right/lower_eyelid",
+              "level": 460
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eye_right/lower_eyelid/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "kind": "part",
+      "name": "sclera",
+      "note": "完整眼白及眼眶开口底形，覆盖内外眼角之间的整个白色眼球区域，保留上缘淡灰紫阴影与眼角轻微暖色过渡。必须在虹膜后方连成完整底面，补足当前被虹膜、高光以及上下眼缘挡住的白底，不能只制作虹膜两旁的可见白色月牙。上外侧被刘海遮住的真实开口连续补齐，边缘在眼睑下留局部衔接余量，不吞入外围脸皮。开闭时随上下眼睑形成的开口显露或被遮住，为虹膜和高光在眼白范围内活动提供完整承底。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eye_right/sclera",
+          "motionIdentity": "face/eye_right/sclera",
+          "layers": [
+            {
+              "name": "0400 face/eye_right/sclera",
+              "level": 400
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eye_right/sclera/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/eye_right/iris",
+      "kind": "part",
+      "name": "iris",
+      "note": "完整蓝紫至青蓝的虹膜眼黑主体，包含深蓝紫上半部、青蓝下半部、周缘深色轮廓和默认同动的深色竖椭圆瞳孔；保留原有渐变与内部层次，瞳孔无独立缩放需求，合在本 part。按现有曲率补成完整圆椭圆实体，补足上眼睑、下眼缘及发束后被遮住的部分，不把眼眶开口的截断线当作虹膜固有边界，也不烘入独立高光。位于完整眼白前、眼睑后；视线变化时连同瞳孔在眼白范围内活动，眨眼时由眼睑逐步遮住。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eye_right/iris",
+          "motionIdentity": "face/eye_right/iris",
+          "layers": [
+            {
+              "name": "0420 face/eye_right/iris",
+              "level": 420
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eye_right/iris/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "kind": "part",
+      "name": "highlight",
+      "note": "虹膜内独立反光：包含画面右上方的明亮白色圆斑与下方中央浅青白色弧椭圆反光斑，两处作为同动高光置于同一 part，保持相对位置、柔边和亮度差异；下部大片青蓝底色及渐变仍归 iris。高光下方由 iris 补回连续色面，贴近下眼缘而被截住的反光按原曲率补足，不将眼白亮区误并入。默认跟随虹膜在眼白范围内活动，位于虹膜前、眼睑后，开闭时与虹膜一同受开口遮挡，不越出眼白范围。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eye_right/highlight",
+          "motionIdentity": "face/eye_right/highlight",
+          "layers": [
+            {
+              "name": "0440 face/eye_right/highlight",
+              "level": 440
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eye_right/highlight/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "kind": "part",
+      "name": "eyelid_crease",
+      "note": "上眼缘上方独立的浅暖棕粉色弧形眼睑褶线，位于粗上睫毛线与更高的眉毛之间；保留细弧与渐细末端，不包含眉毛，也不连接为上眼线的粗色块。其外侧（画面左侧）接近刘海遮挡处，按现有走势补足局部隐段，保持与上眼缘的间隔。眨眼时随上眼睑抬降和形变调整弧度及间距，不参与眼白开口承底，不随虹膜视线移动；仅规划当前正面褶线结构。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eye_right/eyelid_crease",
+          "motionIdentity": "face/eye_right/eyelid_crease",
+          "layers": [
+            {
+              "name": "0500 face/eye_right/eyelid_crease",
+              "level": 500
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eye_right/eyelid_crease/final.png"
+        }
+      }
+    }
+  ],
+  "note": "已核对整眼 SVG 独显、与原图的整图及局部叠加、边缘叠加和参考放大。该右眼具有粗深棕上眼缘、细浅下眼缘、完整眼白、蓝紫至青蓝虹膜、独立反光及上方细眼睑褶线，直属拆为上述 6 个 part，均无须再包装为 group。上下睫毛尖与相应眼缘融合且无需独立控制，因此归入对应眼睑；瞳孔默认与虹膜同动，不另列 pupil。虹膜内部明暗归 iris，眼白上的淡阴影归 sclera，未见需要独立跟随或显隐的眼影、泪痣。眼睑控制开口，眼白在虹膜后保持完整，虹膜补齐遮挡部分，虹膜和高光受眼白开口约束；刘海、鬓发、眉毛及大片脸皮均不归此组。本轮只提交正面直属结构，不制作闭眼图、表情预设或多视角替换。"
+}

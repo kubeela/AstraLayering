@@ -1,0 +1,137 @@
+{
+  "groupId": "halter_dress/short_outer_skirt",
+  "groups": [
+    {
+      "id": "halter_dress/short_outer_skirt/front_drape",
+      "kind": "part",
+      "name": "front_drape",
+      "note": "实体范围：正前方从连续腰根中央约 x416–480/y500–540 垂下的搭覆裙布，向下展开至约 x380–578/y735–858，包含中央全部连续裙面、波浪下缘及其自身卷回反面；不含相邻两侧裙布、腰前蝴蝶结与带尾、花簇衬边或长垂裙。与角色右侧裙布（画面左）的控制交接从腰根向约 x390–380/y650–755 延伸，在 x380–418/y753–810 的真实自由边和露底缺口处分开：中央这一侧的卷边、约(399,760)—(416,769)—(397,794)再回到中央下缘的衣料归本片，缺口另一侧接右侧裙布。与角色左侧裙布（画面右）沿腰根向右下弯出的搭覆界面，至约(577,731)的翻起端，再沿 x540–565/y744–837 的折返自由边区分；中央垂布的正面、折返背面及下端归本片，相邻带蓝花的展开裙面归左侧裙布。上部无明确开口处只是连续布面的控制交接，不能补画成新衣缝；界面后方仅留支持翻动的窄幅隐藏搭接，不横封两个露底缺口。控制：根部与衣身、两侧裙根共同随腰髋，下部能相对两侧裙面独立弯曲、摆动和翻起；整片及卷回边构成一个连续运动单元，卷边用本片局部变形统一控制，没有可再独立悬挂的组件，终止为 part。穿插：主裙面位于腹下、髋前和大腿之前，搭覆在两侧裙布相邻区域之前；局部卷回面沿真实折返线连续转入本片正面的后侧，可在翻动时改变对邻片和花簇的遮挡，作为同一 part 的多个深度区域处理。垂下的前臂、手在本片之前。下缘盖住花簇衬边及长垂裙根部，花簇只由实际下缘和两个缺口露出；与花簇接触处保守搭接，不填中央腿部空域。固定珠饰、褶皱和同动边饰归本片，SVG 只表示纯色轮廓覆盖，不输出人体。 本步核实左右缺口的蓝紫卷回面归本片36，左侧约x394–417/y759–801、右侧约x540–565/y739–837；窗口花簇不移入本片。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "halter_dress/short_outer_skirt/front_drape",
+          "motionIdentity": "halter_dress/short_outer_skirt/front_drape",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0036 halter_dress/short_outer_skirt/front_drape :: depth_36",
+              "level": 36,
+              "region": "画面左缺口右侧自卷反面，沿真实折返与主面37连续，盖住邻接侧裙和花簇，保留缺口。；画面右自由端蓝紫反面和折返唇边，沿上端(550,739)向下连续转入37后侧；仍在两侧裙面和衬边之前。"
+            },
+            {
+              "name": "0037 halter_dress/short_outer_skirt/front_drape :: depth_37",
+              "level": 37,
+              "region": "中央腰根 x416–480/y500–540 向 x380–578/y735–858 展开的全部前向主垂面、波浪底缘及右下自由搭覆端；盖住两侧裙布相邻搭覆区域及花簇、长垂裙根，在腰结和两带尾之后，至真实自由边折返线接 level 36；上部连续交接不新增衣缝。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/halter_dress/short_outer_skirt/front_drape/final.png",
+          "sourceSvgAtGenerationSha256": "9c806342681942ac110ebe35a6adb716e2409e87b505ac199dc1a66ea101992d",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "bbb27d76d00aa4f00e13e1e3bca84a77c46332ec853138a6979a130cc07984af",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。",
+          "repair01": {
+            "issues": [
+              "R2",
+              "R3",
+              "R4"
+            ],
+            "currentPartPngSha256": "699354bc135b7c16b982ce997be38ec5acb5d9776b82fe7d020b7a344a021c4f",
+            "report": "../clothing-raster-layering/step01/repair-01.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-01原坐标修复并在当前KRA重开核对；R2各片腰根连续，R4隐藏窄折面已收顺；保留共同控制身份及普通深度分片；领瓣/裙卷面/花簇/短布青点翻面不迁入相邻部件。"
+          }
+        }
+      }
+    },
+    {
+      "id": "halter_dress/short_outer_skirt/right_skirt_panel",
+      "kind": "part",
+      "name": "right_skirt_panel",
+      "note": "实体范围：角色自身右侧、画面左侧的完整展开短裙布，约 x158–422/y496–838（含父稿补全的腰根隐藏搭接）；从父组腰根画面左端约(393,500)向中央垂布右侧根部衔接，下延至左外轮廓、波浪裙缘及靠中央的自由边。包含约(320,705)的固定蓝花、所在裙面的全部固定珠饰、外缘翻折以及约(251,790)的回卷边；这些是同一片连续布料的折返，不把斜向褶线或翻起小瓣另立组件。与中央垂布在上部沿连续控制交接相连，下部以约 x380–418/y753–810 的真实露底缺口相邻：本片持有缺口画面左侧、约(381,755)—(387,771)—(394,780)—(388,802)—(368,817)接回右侧裙布下缘的衣料；缺口画面右侧的中央卷边归 front_drape。不含中央垂布、腰前蝴蝶结及带尾、花簇或后侧长垂裙。控制：腰根和中央、另一侧裙根共同随腰髋，右侧裙摆可独立侧摆、弯曲及局部翻折；固定花饰与回卷衣边同本体变形，没有依据再划分独立悬挂或独立显隐组件，终止为 part。穿插：右前髋至右大腿前的主裙面位于身体之前，侧向裙根绕右髋转入髋后，前后区域以穿着状态下右髋侧的连续转折带为界；不能用原角色手臂遮挡边当衣缝，也不额外绘制背视裙布。转入髋后的根部与前侧展开裙面共同随动，保留为同一 part 的多个身体相对深度区域，供后续实际拆绘画层。中央搭覆布在相邻搭覆区之前，本片藏在其后的真实裙布只保守延伸，不封缺口；本片自己的翻边正反面沿真实折返线连续随动。原角色右前臂与右手处于本片之前。裙缘盖住右侧花簇衬边与长垂裙根部，只在实际波浪下缘、卷边和中央邻接缺口处露出下层；腰部交接、被搭覆的根部和花簇接触处留窄幅隐藏搭接，不扩填腿部空域。本片明确承接父完成稿新增的约 x394–422/y496–511 腰根窄幅衣料，上缘沿父稿从(396,496)至约(422,499)的连续曲线，左端接回既有侧缘，中央侧与 front_drape 根部保留窄幅搭接；此段藏在腰结及衣身交接之后，与本片及衣身共同随腰髋，不形成新的可见腰缝。SVG 仅纯色覆盖，不含人体，纹样、衣色及明暗留给栅格。 本步原尺寸核实：左缺口左侧约x377–402/y744–817的连续蓝紫回折衣料归本片32；不归花簇衬边。自由下缘按粉色真实边界收回混入蓝花的过量覆盖。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "halter_dress/short_outer_skirt/right_skirt_panel",
+          "motionIdentity": "halter_dress/short_outer_skirt/right_skirt_panel",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0014 halter_dress/short_outer_skirt/right_skirt_panel :: depth_14",
+              "level": 14,
+              "region": "画面左腰侧后绕裙根窄区，约x381–405/y494–557；沿髋侧回转接前面34，后于前衣身38和腰结，前于同侧长裙及衬边后绕13。"
+            },
+            {
+              "name": "0032 halter_dress/short_outer_skirt/right_skirt_panel :: depth_32",
+              "level": 32,
+              "region": "左侧自由下缘小翻边反面，沿真实卷回线接34后侧；仍在蓝花衬边31前。；中央左缺口左侧连续回折衣料；本步纠正原来落入花簇衬边的上段蓝紫反面，沿真实折返接34，不封花簇缺口。"
+            },
+            {
+              "name": "0034 halter_dress/short_outer_skirt/right_skirt_panel :: depth_34",
+              "level": 34,
+              "region": "画面左侧 x158–422/y496–838 的前向主展开裙面及蓝花、珠饰、腰根前段；从 level 14 髋侧转折连续向前展开，沿真实折返线接 level 32。主面在花簇及长垂裙之前，在中央 front_drape 搭覆区域及腰结带尾之后；上部控制交接不画衣缝。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/halter_dress/short_outer_skirt/right_skirt_panel/final.png",
+          "sourceSvgAtGenerationSha256": "2fec110b166719f0f36ca7ac5add9f5d204b158b2e7c4d1d48509025a94cb17b",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "6c08f8a5a7cd16671147ab5aa7bcef52a39dfdbb8bf1b7fded1f49657378ddbd",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。",
+          "repair01": {
+            "issues": [
+              "R2",
+              "R3"
+            ],
+            "currentPartPngSha256": "31e2981d87c3448287147dfb2cd696f758c498cefb0516bd1882c59d278bcf27",
+            "report": "../clothing-raster-layering/step01/repair-01.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-01原坐标修复并在当前KRA重开核对；R2各片腰根连续，R4隐藏窄折面已收顺；保留共同控制身份及普通深度分片；领瓣/裙卷面/花簇/短布青点翻面不迁入相邻部件。"
+          }
+        }
+      }
+    },
+    {
+      "id": "halter_dress/short_outer_skirt/left_skirt_panel",
+      "kind": "part",
+      "name": "left_skirt_panel",
+      "note": "实体范围：角色自身左侧、画面右侧的完整展开短裙布，约 x472–774/y495–865（含腰根隐藏搭接）；由父组腰根中央偏右至约(538,500)的连续根部向左髋外侧展开，延至画面右外轮廓及不规则波浪下缘。包括约(561,624)的固定蓝花、邻近珠饰、沿画面右侧斜向展开并折回的布面、下缘翻起衣料反面以及约 x598–645/y816–860 的下垂裙缘；褶线、花饰和边缘小瓣均属于整片，不另拆。与中央垂布相邻界面由上部连续控制交接向约(577,731)的搭覆端延伸，在 x540–605/y728–835 的真实卷边及露底缺口处分辨：中央向右下伸出的自由搭覆端及其回卷归 front_drape，本片为其后的带花展开面，并沿约(558,789)—(572,803)—(590,800)—(604,816)一带回接本片下缘；禁止把缺口内花簇或其他内层算作本片。上部控制交接不新造衣缝，不含腰前蝴蝶结与带尾、中央垂布、花簇或后侧长垂裙。控制：腰根承接父完成稿约 x472–537/y495–507 的新增窄幅隐藏搭接，与本片连成实体并随衣身及腰髋共同运动；该处为连续控制交接，不形成可见腰带或新衣缝。根部与衣身、中央和右侧裙根共同随腰髋，左侧裙摆可独立侧摆、弯曲和翻折；本片的外展面、折回面及下垂边是一个完整运动单元，无更小独立控制附件，终止为 part。穿插：左前髋、左大腿前的展开面在身体之前，根部沿左髋侧连续转向髋后；以实际绕髋的连续侧向转折带划分身体相对的前后区域，二者共同随动，后续以同一 part 的多个深度区域拆实际绘画层，不能因暂时没有人体而把后侧根部也固定排在身体之前。中央垂布在本片相邻搭覆区之前，衣料自身翻回面沿折返交界进入所属正面之后，保持连续。原角色左前臂与左手在本片之前。下缘盖住左侧花簇衬边和长垂裙根部，下层仅从实际裙缘和中央邻接缺口显露；只在腰根、真实被搭覆的区域和花簇接触处留保守隐藏搭接，不封自由边缺口、不填中央腿部空域。SVG 只表达纯色实体覆盖，固定纹样、衣色、明暗与质感后续栅格处理，不输出人体。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "halter_dress/short_outer_skirt/left_skirt_panel",
+          "motionIdentity": "halter_dress/short_outer_skirt/left_skirt_panel",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0015 halter_dress/short_outer_skirt/left_skirt_panel :: depth_15",
+              "level": 15,
+              "region": "画面右髋侧后绕裙根，约x524–542/y493–557；沿连续髋侧转折接前面35，在衬边后绕13和长裙根之前、前衣身38之后。"
+            },
+            {
+              "name": "0033 halter_dress/short_outer_skirt/left_skirt_panel :: depth_33",
+              "level": 33,
+              "region": "下缘回卷内面与下垂唇边背向区，沿实际折返线接35后侧；在花簇31前、中央垂布36/37后，不吸收缺口花簇。；右外摆薄窄回折边，沿外侧实际卷缘接35的后面，保留同一裙片连续运动。"
+            },
+            {
+              "name": "0035 halter_dress/short_outer_skirt/left_skirt_panel :: depth_35",
+              "level": 35,
+              "region": "约 x472–774/y495–865 的前向展开裙面、固定蓝花珠饰与腰根前侧；在花簇和长垂裙之前，在 front_drape 相邻搭覆面及腰结带尾之后，侧向以髋侧转折接 level 15，自由边以实际翻折线接 level 33，不新增腰缝。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/halter_dress/short_outer_skirt/left_skirt_panel/final.png",
+          "sourceSvgAtGenerationSha256": "1357530e38b7f18645e7951946e76bf26b2df17fcb057f967f7487ed0c4d35e8",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "c3e0ec0fcdbf19b73bd5719830c373a0fee00f68335c58cb346e3028eb867821",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。",
+          "repair01": {
+            "issues": [
+              "R2",
+              "R4"
+            ],
+            "currentPartPngSha256": "2ae949fe9d7cdb6ae818814d3767de55901203a90a7c8e5103886786252a781f",
+            "report": "../clothing-raster-layering/step01/repair-01.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-01原坐标修复并在当前KRA重开核对；R2各片腰根连续，R4隐藏窄折面已收顺；保留共同控制身份及普通深度分片；领瓣/裙卷面/花簇/短布青点翻面不迁入相邻部件。"
+          }
+        }
+      }
+    }
+  ],
+  "note": "已核对父组 SVG 独显、整图叠加、两侧与中央卷边放大及原穿衣角色。按两个实际露底缺口与中央搭覆自由边，将本层分为中央搭覆垂布和角色左右两侧完整展开裙布三个 part；三片根部沿父组约(393,500)—(464,508)—(538,500)的连续收腰交接共同随腰髋，父 SVG 上缘新增窄幅搭接也按各片根部范围承接，不另立腰带。每片下部可相对邻片摆动和弯曲，各片内部翻折、固定花饰、珠饰和褶皱没有更小独立组件依据，故均可终止；外侧斜线与翻起小瓣不机械拆分。全部父组外裙实体及其反面恰归三片，缺口的下层花簇、腰饰、长垂裙和人体均不归外裙。共同腰根不虚构新衣缝；中央搭覆和两侧绕髋的穿插职责已分别下传到三个终止 part，其中同动跨深度区域保留逻辑整体，由后续深度规划及 raster step01 拆实际绘画层。 本步子节点身份不变；当前父形状按已验收子片覆盖同步，卷边归属修正见各子节点rasterLayering记录。"
+}

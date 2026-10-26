@@ -1,0 +1,148 @@
+{
+  "groupId": "hair",
+  "groups": [
+    {
+      "id": "hair/bangs",
+      "kind": "part",
+      "name": "bangs",
+      "note": "完整额前刘海发面，发根汇于约(452,94)的前额分发区，包含画面左侧横扫额头、下缘落在右眼上方的宽发面，中央垂到两眼间约y212的尖束，以及向画面右侧额头展开、止于左眼上方的内侧额发。按额前流向与两侧沿太阳穴下落的前侧发分束线划界；脸颊旁的侧向发面和耳后长发另有所属。根部保留被头顶表层发面遮挡的连续连接，投影可与头盖及前侧发根部重叠；可见刘海覆盖额头和局部眉眼，侧缘与前侧发相搭接。多个发尖、分束纹理和高光随这一完整额前扇面共同变形，没有必须继续分别控制的额发组件，直接为一个part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/bangs",
+          "motionIdentity": "hair/bangs",
+          "layers": [
+            {
+              "name": "0550 hair/bangs",
+              "level": 550
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/bangs/final.png"
+        }
+      }
+    },
+    {
+      "id": "hair/front_side_hair_left",
+      "kind": "part",
+      "name": "front_side_hair_left",
+      "note": "角色左侧、画面右侧的完整前侧发面。根部从头顶分发区左侧扇出，沿约x490–548的太阳穴外侧弧面下落，形成左眼外侧至脸颊约y245的宽弯发片，并纳入同侧耳根旁下垂、末端向内弯至约(503,293)的附属细梢。不是仅取耳前短丝：须保留从头顶到脸侧的宽根和完整主体，补齐额发、表层发片及耳根遮挡下的连接。内界顺额前刘海的外侧分束线，外界顺贴头辫纹带及耳后长侧发的前缘；主体压住脸缘和内侧耳根，耳饰在侧发与脸缘之间露出，其金色和粉色形体仍属head_accessories。细梢与主体共用根部和控制，不单列。此发片长度、脸颊遮挡与耳后长发不同，需要相对刘海和长侧发独立摆动，整体为一个part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/front_side_hair_left",
+          "motionIdentity": "hair/front_side_hair_left",
+          "layers": [
+            {
+              "name": "0540 hair/front_side_hair_left",
+              "level": 540
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/front_side_hair_left/final.png"
+        }
+      }
+    },
+    {
+      "id": "hair/front_side_hair_right",
+      "kind": "part",
+      "name": "front_side_hair_right",
+      "note": "角色右侧、画面左侧的完整前侧发面。上部从右侧头顶前方分发区经太阳穴延续，宽根及部分上段被横扫刘海遮住；保留刘海外侧与贴头辫纹带内侧之间的前侧发面，再接耳根内侧、右眼外角旁向脸颊伸出的短尖，及沿脸颈外侧垂落到约(420,361)的细长分梢，颈旁回弯的小梢也随主体。不能将可见颈旁细丝截成无发根零件，须补成从合理头顶根部到各自尖端的同一完整控制单元。上段位于扫额刘海下方，脸侧段覆盖脸缘和内侧耳根，耳饰在其旁及下方显露，后方邻接长侧发与后发。其前置遮挡和较长自由末梢需相对额前刘海、耳后长发独立响应，故为part；内部细梢与短尖不再拆分。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/front_side_hair_right",
+          "motionIdentity": "hair/front_side_hair_right",
+          "layers": [
+            {
+              "name": "0530 hair/front_side_hair_right",
+              "level": 530
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/front_side_hair_right/final.png"
+        }
+      }
+    },
+    {
+      "id": "hair/side_hair_left",
+      "kind": "part",
+      "name": "side_hair_left",
+      "note": "角色左侧、画面右侧的完整长侧发主束：从左侧头顶部至耳后的合理隐藏发根开始，承接耳下外翘尖及耳后至肩外的较宽表层发面，沿向外展开的连续流向拉成长弧，绕至约x692、y500后向内回钩，止于约x635–665、y535–542的尖梢。必须保留上段宽发面与完整根部，不能只领取下方细弧。上根藏在前侧发、贴头发面和耳朵之后；可见主段在脸颈、肩臂的后方，外扬弧段与身体之间保留原有空隙，回钩在后方厚长发面前面显露。与back_hair的分界沿耳后斜向肩外、再通向外扬回钩的自然表层分束线；回钩下方延至髋腿的厚发扇面归back_hair。整束因悬空长弧与后方厚发有不同摆幅、会形成相对遮挡，需单独控制；各次弯曲、纹理和耳下小尖仍属同一个part，不沿长度分节。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/side_hair_left",
+          "motionIdentity": "hair/side_hair_left",
+          "layers": [
+            {
+              "name": "0040 hair/side_hair_left",
+              "level": 40
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/side_hair_left/final.png",
+          "repair02": {
+            "reviewId": "R4",
+            "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+            "report": "repair-02.md.tmp",
+            "result": "耳下方头亮条和横折接线已实画接顺，按本侧曲率延展，保留小翘梢和完整悬空弧。",
+            "logicalIdentityAndDepthsUnchanged": true,
+            "sourceSvgSha256": "78115f964835a9cef6ba3adee445b802212d53971e88bd25e9ff1639bbe40381"
+          }
+        }
+      }
+    },
+    {
+      "id": "hair/side_hair_right",
+      "kind": "part",
+      "name": "side_hair_right",
+      "note": "角色右侧、画面左侧的完整长侧发主束：隐藏根部延至右侧头顶与耳后，纳入耳下向外翘起的小尖及耳后至肩外的宽表层发面，顺外扬方向延伸为长弧，在约x213–230、y500处回转，尖端向内收至约x260–275、y540–545。上部宽发面、长弧与回钩是同一连续发束，不能只拆出轮廓上的细带。根部被额前及前侧发、头侧贴头发面和耳朵遮挡，主体位于脸颈与肩臂后方，长弧与身体间的空隙保持开放，末端叠在厚重后发前面。以从耳后经肩外通向此回钩的自然分束线与back_hair划界；下方约y550–770的厚发扇面另属后发。该束需相对左侧长侧发及后发产生独立摆动，整体作为一个part；耳下小尖、内部发纹及多个局部尖端随主体，不再机械拆段。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/side_hair_right",
+          "motionIdentity": "hair/side_hair_right",
+          "layers": [
+            {
+              "name": "0030 hair/side_hair_right",
+              "level": 30
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/side_hair_right/final.png",
+          "repair02": {
+            "reviewId": "R3",
+            "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+            "report": "repair-02.md.tmp",
+            "result": "y337内部横缝已跨界实画，亮暗发束向下自然收尖，完整圆端、长弧、回钩及开放空隙保留。",
+            "logicalIdentityAndDepthsUnchanged": true,
+            "sourceSvgSha256": "8677bdb322e9622d54b5d0fd7fbc7dfd590a18c5b7ea307c067c0d2b0deacd25"
+          }
+        }
+      }
+    },
+    {
+      "id": "hair/back_hair",
+      "kind": "group",
+      "name": "back_hair",
+      "note": "脸后、后脑及向下延伸的完整后发系统，承担除呆毛外的贴头头顶外轮廓、后脑底形和两侧贴头辫纹带；额前刘海及前侧发叠在其前，耳朵覆盖头侧根部。向下包含耳后内层、脸颈两旁的后方厚发面，及肩臂、躯干、髋腿后方延至约y785的整片厚长发；纳入画面两侧约y540–700的外弧卷尾、约y700–770的内侧多尖发梢和裆后约y778–803的中央露梢。与side_hair的界线沿通向y540附近悬空回钩的表层分束线，回钩及其上行宽侧发不在本组重复领取。按父SVG补齐脸后、颈后及身体遮挡下的连续发面，身体切出的可见碎片须恢复为完整后发，不能据其切口另分物体。贴头头盖随头部保持稳定，长发具有摆动，左右厚长发还需分别响应身体转向，因此本组确有多个后续控制组件，保留group，不能合成一件包揽头盖和全部长发的巨大base。贴头辫纹及各长发内部纹理、弯折、多尖端本身不构成继续拆分理由。"
+    },
+    {
+      "id": "hair/ahoge",
+      "kind": "part",
+      "name": "ahoge",
+      "note": "头顶唯一上翘弧形呆毛，从约(450,94)的发旋连接处向上回折，经约(433,62)弯向约(477,27)，到约(489,33)的细尖，包含从合理发根到尖端的完整弧片。保留其根部在头顶发面交叠处的局部连接余量；其余贴头头顶轮廓由back_hair中的头盖承担。外露弧段突出头顶并与背景形成开口，不填死弧内空隙。呆毛可相对贴头发面独立弯摆，但内部没有需分别控制的组件，直接为一个part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/ahoge",
+          "motionIdentity": "hair/ahoge",
+          "layers": [
+            {
+              "name": "0045 hair/ahoge",
+              "level": 45
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/ahoge/final.png"
+        }
+      }
+    }
+  ],
+  "note": "已查看hair.svg整图blend与svg独显，放大头部、双侧前侧发和长发核对原图，并用edge复核轮廓。左右均以角色自身为准，left在画面右侧。完整实体识别为统一额前刘海、左右从头顶到脸颊的前侧发、左右带宽上段和悬空回钩的完整长侧发、后脑头盖及厚长后发系统、单根呆毛。前侧发的细梢附于完整主体，长侧发也没有由两条耳前碎丝替代；后发的身体遮挡切片不作为天然分束。直属共七项，六项已有明确完整统一控制范围而为part；back_hair因贴头头盖与可摆长发、左右后发需要分别控制而为group，不创建单件包装组，也不在本轮预提交其子树。已核对groups.json：耳朵和脸归face，浅金色与粉色耳饰归head_accessories，本层不重复领取；辫状发纹为粉色贴头头发自身，随头盖留在back_hair。父稿青绿色大面积补全表示脸和身体遮挡下的头发延续范围，分配给相应发根、头盖和后发时允许投影重叠，不按颜色或人体投影切成新实体。参考采用Milly关于完整额发、前侧发、侧发与后发底形的区分原则，以及莉尔关于长发主束应保留完整宽发面和根部、细束不能替代主束的原则；不照搬示例数量、树深或图集位置。当前长弧可按原图追踪为完整侧发，无需另取卷发示例。若后续深度规划在耳根、耳饰附近或侧发回钩与后发交叠处需要分绘画层，维持这里同一根至梢的逻辑part身份，仅以对应遮挡边界分片交给深度规划与raster step01，不增添物理控制节点。"
+}

@@ -22,7 +22,7 @@
 
 ### 1. 问题 R1：底层裙摆中央内凹折槽底沿切线偏高导致前摆底边描边断裂缺失、后层搭接带出现深色纵向伪条纹
 - **定位范围**：`[608, 820, 42, 26]`（核心区 `x=612..646, y=822..843`），涉及 `002 | skirt/lower_tier::front` 与 `001 | skirt/lower_tier::back`。
-- **原因核实**：对照纯衣服参考 `../clothing-part-layering/references/clothing.png` 与穿衣辅助参考 `../part-layering/references/simplified-subject.png`，`x=613..645` 处仅有一条位于双腿内侧前方的正面裙摆底边深色弧线，并无向腿后翻折露出于底边下方的第二层翼片；原切分脚本在 `x=613..645` 设定 `y_cut=834..837`，错误切断了 `002 | skirt/lower_tier::front` 自身的底边深色描边并在 `001 | skirt/lower_tier::back` 中生成了带深色竖纹的多余残片。
+- **原因核实**：对照纯衣服参考 `../../clothing-part-layering/references/clothing.png` 与穿衣辅助参考 `../../part-layering/references/simplified-subject.png`，`x=613..645` 处仅有一条位于双腿内侧前方的正面裙摆底边深色弧线，并无向腿后翻折露出于底边下方的第二层翼片；原切分脚本在 `x=613..645` 设定 `y_cut=834..837`，错误切断了 `002 | skirt/lower_tier::front` 自身的底边深色描边并在 `001 | skirt/lower_tier::back` 中生成了带深色竖纹的多余残片。
 - **处理措施**：
   1. 将 `x=613..645, y=834..843` 处的正面底边深色描边及其抗锯齿下缘 100% 完整归还至 `002 | skirt/lower_tier::front`，彻底消除 `x=612->613` 与 `x=645->646` 两侧的 `3px` 垂直切割台阶。
   2. 移除 `001 | skirt/lower_tier::back` 在 `x=613..645` 处被错误切入的前片底边描边残片与纵向伪条纹，仅保留左右两处真实腿后回折翼片，并同步更新上游 `../clothing-part-layering/occlusion.json` 中 `skirt/lower_tier` 的 `bounds`（`[472, 813, 303, 34]`）与区域说明。

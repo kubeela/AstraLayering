@@ -1,0 +1,53 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "id": "face",
+      "name": "face",
+      "note": "脸部、五官和耳朵，范围为脸型与耳朵；后续只补被遮挡的脸型、耳朵，不补头顶与后脑。",
+      "kind": "group"
+    },
+    {
+      "id": "hair",
+      "kind": "group",
+      "name": "hair",
+      "note": "全部银白色头发，包含头顶发髻、额前与脸侧发束，以及身后向下延伸的长发。"
+    },
+    {
+      "id": "head_accessories",
+      "name": "head_accessories",
+      "note": "头冠、冠环、发髻前的莲花饰、额饰、耳饰及头冠两侧连接的长飘带；长飘带全部归本组。",
+      "kind": "group"
+    },
+    {
+      "id": "neck",
+      "name": "neck",
+      "note": "下颌至躯干之间的颈部；锁骨归 body。",
+      "kind": "group"
+    },
+    {
+      "id": "body",
+      "name": "body",
+      "note": "肩部、锁骨、胸部及腹部躯干，向下至肚脐附近；临时连体服仅用于辨认身体范围。",
+      "kind": "group"
+    },
+    {
+      "id": "arms",
+      "name": "arms",
+      "note": "左右上臂、前臂、手腕、双手和手指。",
+      "kind": "group"
+    },
+    {
+      "id": "pelvis",
+      "name": "pelvis",
+      "note": "从肚脐附近延伸至骨盆，包含下腹、髋部及胯部；与 body、legs 的衔接范围可重叠。",
+      "kind": "group"
+    },
+    {
+      "id": "legs",
+      "name": "legs",
+      "note": "左右大腿、膝部、小腿、脚踝、双脚和脚趾，包含脚踝与脚背上的链饰、宝石。",
+      "kind": "group"
+    }
+  ]
+}

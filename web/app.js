@@ -192,11 +192,10 @@ const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
 const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑'};
 function stepTargets() {
  return (data.pipelines||[]).flatMap((pipeline,index)=>[
-  ...(pipeline.legacy?[{index,id:'',status:'legacy'}]:[]),
   ...(pipeline.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session}))]);
 }
-const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running'||target.status==='legacy');
-const stepLabel=target=>`${stages[target.index].name} ${target.id||'（旧版目录）'}`;
+const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running');
+const stepLabel=target=>`${stages[target.index].name} ${target.id}`;
 function stepToolbar() {
  if(!state.name)return '';
  const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;

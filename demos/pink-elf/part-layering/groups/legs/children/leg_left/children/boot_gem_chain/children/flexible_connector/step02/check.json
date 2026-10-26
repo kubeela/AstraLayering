@@ -1,0 +1,7 @@
+{
+  "groupId": "legs/leg_left/boot_gem_chain/flexible_connector",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，0 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "28f4fc5c2cea330586e93690fba01fb0bb4add8b10ada0d80799b7ce8ddfa250",
+  "afterHash": "45387afbe5d1eacdcd2a43f13767e76eb2894a52ddf55e1a2a57ae4cbae9d7bd"
+}

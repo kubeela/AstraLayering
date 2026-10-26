@@ -14,7 +14,6 @@ import { assertCompletionPreserves } from './completion-svg.ts';
 import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from './occlusion-plan.ts';
 import { completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
 import { beginStep, checkStep, completeStep, readStep, resetStep, runningInputs, type ChainStep, type StepCheck } from '../step-chain.ts';
-import { migrateLegacyLayout } from './legacy-layout.ts';
 import { groupDirectory, groupStep, groupStepId, initialStepId, layerStep, parentGroupId, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
@@ -56,7 +55,6 @@ export async function runLayering(input: {
 }): Promise<LayeringResult> {
   validateWorkflowOptions(input);
   const directory = resolve(input.directory);
-  if (await migrateLegacyLayout(directory, input.profile?.promptsDirectory)) input.progress?.('旧版目录（stages/）已转换为步骤目录，原文件保留在 stages.legacy/');
   const store = await GroupStore.open(directory);
   // 即使本次没有新工作，也将由步骤记录重建的树落盘。
   await store.update(() => {});

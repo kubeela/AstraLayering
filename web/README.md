@@ -29,7 +29,7 @@ pnpm web --port 4387
 - **恢复**：清除该步骤的会话、保留产物，下次在新会话中继续。分块会话保存在 `<步骤>/session.json`，旧记录追加到 `session.json.history.jsonl`；raster 类管线清除共享绘制 thread 和待交接信息，记录写入 `<步骤>/attempts.jsonl`。没有会话的一次性步骤，恢复等同继续。
 - **重试**：删除这些步骤的目录（含会话）及其登记的产物与草稿，例如补全的 `parts/<id>.svg`、合并的 `preview.svg`、遮挡的 `occlusion.json`；依赖它的后续步骤由续跑校验自动重跑，无关步骤保留。已完成的步骤不受影响；重试需确认后执行。产物在管线目录之外的步骤（如输入原图）不能在此重试。
 
-标题栏的继续／恢复／重试调用 `POST /api/task-action {name, action}`，一次作用于任务里全部中断或失败的步骤（旧版目录先转换），随后重新运行任务；没有任何步骤记录时，继续打开运行对话框。
+标题栏的继续／恢复／重试调用 `POST /api/task-action {name, action}`，一次作用于任务里全部中断或失败的步骤，随后重新运行任务；没有任何步骤记录时，继续打开运行对话框。
 单个步骤仍可用 `POST /api/step-action {name, pipeline, step, action}`（CLI 等客户端），`step` 为管线目录下的步骤路径，如 `groups/head/children/eye/step02`、`layers/depth01`、`step02`。阴影按总控记录的方式定位 `shadow/<模式>/`。
 
 ## 任务执行与流程预览

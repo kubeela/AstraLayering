@@ -1,0 +1,38 @@
+{
+  "groupId": "face/mouth/mouth_interior",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已通过整图叠加定位及口部局部 8 倍放大（crop=[605,262,46,46]）对候选轮廓与参考图、父组完成稿（parts/face/mouth.svg）进行核对：\n1. 可见区域与接缝覆盖：口内位于 upper_teeth 下缘与 tongue 上缘之间的深暗红色口腔内壁可见区域（约 x=617..639, y=276..286）完整覆盖，左右两侧边缘伸入上下唇线（upper_lip / lower_lip）内侧中线处，衔接紧密无漏空。\n2. 完整底形与局部补形：作为口内最底层的完整口腔开口底形，候选轮廓在 upper_teeth 与 tongue 遮挡区域下方及上下唇线后方保持了平滑完整的椭圆形闭合底块（x=616.4..640.0, y=272.3..296.5），造型干净规整，无碎块或孤立噪点。\n3. 父组范围检查：四倍采样范围检查通过（outsideSamples=0, outsidePixels=0），完全收纳于父组 face/mouth.svg 轮廓之内。\n\n各项检查均符合要求，予以通过。",
+      "candidateHash": "305b402b68276a753da1e7f1b1441ef1888b176e3a5c261f226bfb2802162d98",
+      "observations": [
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/face/mouth/mouth_interior.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/face/mouth/mouth_interior/2026-10-22T08-28-27-834Z-1.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/face/mouth/mouth_interior.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/face/mouth/mouth_interior/2026-10-22T08-28-27-834Z-2.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/face/mouth/mouth_interior.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/face/mouth/mouth_interior/2026-10-22T08-28-27-834Z-3.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/face/mouth/mouth_interior.svg",
+          "mode": "svg",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/face/mouth/mouth_interior/2026-10-22T08-28-27-834Z-4.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/parts/face/mouth.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/face/mouth/mouth_interior/2026-10-22T08-28-27-834Z-5.png"
+        }
+      ],
+      "updatedAt": "2026-10-22T08:59:38.992Z"
+    }
+  ]
+}

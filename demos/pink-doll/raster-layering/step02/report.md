@@ -4,7 +4,7 @@
 
 - **输入 KRA（只读基线）**：`step01/character-depth.kra`（绝对路径：`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/raster-layering/step01/character-depth.kra`）
 - **第一步报告**：`step01/report.md`（绝对路径：`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/raster-layering/step01/report.md`）
-- **原图参考**：`../part-layering/references/base-subject.png`（绝对路径：`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/references/base-subject.png`，画布尺寸 `1254 × 1254`）
+- **原图参考**：`../../part-layering/references/base-subject.png`（绝对路径：`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/references/base-subject.png`，画布尺寸 `1254 × 1254`）
 - **上游结构与深度文件**：
   - `../part-layering/occlusion.json`
   - `../part-layering/groups.json`
@@ -12,7 +12,7 @@
   - 本步沿用 `step01` 已核实并落地的 55 个逻辑部件、58 个普通绘画层（`000`..`057`）的深度排序与分片结构，未发生新增拆分或深度变动，与上游 `occlusion.json` / `groups.json` 完全一致。
 - **本步交付文件**：
   - 柔化工程：`step02/character-soft-edges.kra`
-  - 重开核对后导出的全图合成 PNG：`step02/character-soft-edges.png`（`1254 × 1254` RGBA 透明背景）
+  - 重开核对后导出的全图合成 PNG：`character-soft-edges.png`（`1254 × 1254` RGBA 透明背景）
   - 重开核对校验记录：`step02/reopen-verification.json`
   - 逐层修画与边缘柔化统计记录：`step02/edge-polish-records.json`
   - 独显、剥离遮挡及 200–300% 局部放大对比图：`step02/review/`（含 `solo-sheet-01.png`..`15.png`、`occlusion-peel-check.png`、`composite-zoom-comparison.png` 及 `layers/` 下全部 58 层独显 PNG）
@@ -21,7 +21,7 @@
 
 ## 2. 总体问题诊断与处理方法
 
-对照原图 `../part-layering/references/base-subject.png` 在 200%–400% 放大下逐层检查 `step01/character-depth.kra` 的 58 个图层，定位并解决了以下四类问题：
+对照原图 `../../part-layering/references/base-subject.png` 在 200%–400% 放大下逐层检查 `step01/character-depth.kra` 的 58 个图层，定位并解决了以下四类问题：
 
 1. **部件外轮廓二值锯齿与硬切台阶**：
    - `step01` 中各部件通过色块掩膜裁剪和配准后，全部 58 个图层的外边缘存在 `alpha >= 200` 直接跳变到 `alpha = 0` 的二值硬边像素（如 `003 | hair/back_hair` 有 5,321 个硬边像素、`051 | hair/bangs` 有 2,922 个、`030 | face/face_base` 有 2,175 个），在 200–400% 放大下呈现明显像素台阶，且半透明边缘像素在 `step01` 叠加原图时混入了少量浅色背景残色。
@@ -75,7 +75,7 @@
 
 ## 4. 保存后重开核对结果（Krita 实测）
 
-已在 Krita 中将全部 58 个柔化后的图层写入 `step02/character-soft-edges.kra`，保存并关闭文档后重新打开 `step02/character-soft-edges.kra`，逐层核对图层顺序、图层名、节点类型、子节点数及像素 SHA256 哈希，并从重新打开的文档直接导出 `step02/character-soft-edges.png`（详见 `step02/reopen-verification.json`）：
+已在 Krita 中将全部 58 个柔化后的图层写入 `step02/character-soft-edges.kra`，保存并关闭文档后重新打开 `step02/character-soft-edges.kra`，逐层核对图层顺序、图层名、节点类型、子节点数及像素 SHA256 哈希，并从重新打开的文档直接导出 `character-soft-edges.png`（详见 `step02/reopen-verification.json`）：
 
 - **画布尺寸**：`1254 × 1254`（RGBA 8-bit，透明背景）
 - **顶层图层数量**：`58`（`000 | head_accessories::root` 至 `057 | face/eye_left/eyelash`，顺序与深度完全一致）
