@@ -44,9 +44,13 @@ KRA 可继续逐层编辑，案例保留分件结构、关键工程和验收记�
 
 当前运行时使用二维 XPBD，检查拉伸、剪切和防翻折；绑定草稿按 KRA 图层 UUID 保存，可导入／导出。人物部件需要手动启用物理。另有长飘带、裙摆布片、横向挂布三个独立示例，便于比较固定方式和受力效果。
 
-![当前物理编辑器：长飘带的固定区、网格与摆动约束](web/demo-screenshots/08-cloth-physics.png)
+**Jianma 环境风实录：** 2026-10-26 在在线研究工作台加载已有 46 个物理组件的 Jianma，选中“内裙前壁与侧后壁”，依次将风力从 **0% → 30% → 85%**，切换向左吹拂，再归零观察裙摆、袖片与飘带的回弹和衰减。画面为实际网页连续录制，鼠标轨迹、点击圈和步骤字幕为后期引导标注；风力百分比是预览控制量。
 
-上图为与角色共用运行时的长飘带测试项目。启动下方工作台后，打开 [Jianma 研究入口](http://127.0.0.1:4387/studio?name=jianma)，或在角色工作台“从项目加载”选择布料示例。当前可在工作台交互验证物理与保存绑定草稿，自动制作和 Cubism 导出作为后续阶段。方法、现有边界及后续组件方案见 [摆动物理](tutorial/live2d-guidance/workflows/physics-preview.md)。
+[![Jianma 实录：调节环境风，观察裙摆响应、换向与停风回弹](showcase/jianma-wind-skirt.gif)](showcase/jianma-wind-skirt.mp4)
+
+[观看完整 MP4](showcase/jianma-wind-skirt.mp4) · [打开本次在线研究项目](https://gameclaw.woa.com/ai-weapon-spirit/character-layering/studio?project=jianma-shadow-fresh-20261022&preview=mixed&workspace=physics) · [独立长飘带测试画面](web/demo-screenshots/08-cloth-physics.png)
+
+在线演示使用该研究项目已有的物理配置。本地启动下方工作台后，可打开 [Jianma 研究入口](http://127.0.0.1:4387/studio?name=jianma)，或在角色工作台“从项目加载”选择布料示例，按当前项目配置启用物理并保存绑定草稿。Cubism 导出作为后续阶段。方法、现有边界及后续组件方案见 [摆动物理](tutorial/live2d-guidance/workflows/physics-preview.md)。
 
 ## 启动方式 1：交给 agent（推荐）
 

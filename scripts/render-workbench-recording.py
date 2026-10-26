@@ -12,6 +12,8 @@ parser.add_argument('recording', type=Path)
 parser.add_argument('output', type=Path, help='Output path without extension')
 parser.add_argument('--ffmpeg', default='ffmpeg')
 parser.add_argument('--font', default='/System/Library/Fonts/STHeiti Light.ttc')
+parser.add_argument('--gif-width', type=int, default=1120)
+parser.add_argument('--gif-fps', type=int, default=12)
 args = parser.parse_args()
 record = json.loads(args.recording.read_text())
 assert not record.get('error'), record.get('error')
@@ -26,6 +28,9 @@ events = record['events']
 font = ImageFont.truetype(args.font, 20)
 source = Image.open(frames[0]['path']).convert('RGB')
 w, h = source.size
+# H.264 needs even dimensions; pad the native browser capture by at most one pixel.
+w += w % 2
+h += h % 2
 caption_height = 48
 fps = 24
 args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -91,6 +96,6 @@ if process.wait() != 0:
 # GIF is a compact README preview; the MP4 retains the full capture dimensions.
 gif = args.output.with_suffix('.gif')
 subprocess.run([args.ffmpeg, '-hide_banner', '-loglevel', 'error', '-y', '-i', str(mp4), '-filter_complex',
-    '[0:v]fps=12,scale=1120:-2:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3', '-loop','0',str(gif)], check=True)
+    f'[0:v]fps={args.gif_fps},scale={min(w, args.gif_width)}:-2:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3', '-loop','0',str(gif)], check=True)
 print(json.dumps({'recording': record['name'], 'source_frames': len(frames), 'duration_ms': record['duration'] - start_time,
                   'video': str(mp4), 'video_bytes': mp4.stat().st_size, 'gif': str(gif), 'gif_bytes': gif.stat().st_size}, ensure_ascii=False))
