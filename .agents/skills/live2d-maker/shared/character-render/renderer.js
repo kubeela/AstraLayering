@@ -152,6 +152,23 @@ ${smoothPointShadowGLSL}`,
       alphaTest: 0.01,
       toneMapped: false,
     });
+    // Lighting data fills the texture outside the artwork so filtering has a
+    // valid normal/depth fallback. Diagnostic views use the artwork's alpha,
+    // including its current deformation, rather than that opaque fallback.
+    this.previewAlpha = { value: null };
+    this.previewData = { value: false };
+    this.basic.onBeforeCompile = shader => {
+      shader.uniforms.studioPreviewAlpha = this.previewAlpha;
+      shader.uniforms.studioPreviewData = this.previewData;
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <common>',
+        '#include <common>\nuniform sampler2D studioPreviewAlpha;\nuniform bool studioPreviewData;',
+      ).replace(
+        '#include <map_fragment>',
+        '#include <map_fragment>\n#ifdef USE_MAP\nif(studioPreviewData)diffuseColor.a=opacity*texture2D(studioPreviewAlpha,vMapUv).a;\n#endif',
+      );
+    };
+    this.basic.customProgramCacheKey = () => 'astra-surface-preview-alpha-1';
     // A dedicated cut caster uses Three's standard depth material. colorWrite=false
     // keeps it absent from the beauty pass without disabling shadow participation.
     this.casterMaterial = new THREE.MeshBasicMaterial({
@@ -395,6 +412,8 @@ ${smoothPointShadowGLSL}`,
     // Keep its dirty flag so returning to lighting refreshes the current pose.
     this.renderer.shadowMap.enabled=this.lightingEnabled&&this.hasDepth&&this.settings.shadow&&['lit','split','shading'].includes(this.mode);
     this.deformation?.compose();
+    this.previewAlpha.value = this.color;
+    this.previewData.value = this.mode === 'normal' || this.mode === 'depth';
     const visibleSize=this.deformation?.outputSize||[this.source?.w||1,this.source?.h||1],sourceHeight=this.source?.h||1;
     const aspect = width / height,
       fit = exporting
@@ -506,6 +525,7 @@ ${smoothPointShadowGLSL}`,
     this.textures.forEach((t) => t.dispose());
     this.textures = [];
     this.source = this.grid = this.color = this.normal = this.depth = null;
+    this.previewAlpha.value = null;
     this.lightingSource=this.lightingNormal=null;
     this.material.map =
       this.material.shadeMultiplyTexture =
