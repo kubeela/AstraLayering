@@ -14,7 +14,7 @@ try {
   const cases = await Promise.all(['pink-doll', 'pink-elf'].map(async name => {
     const relativeKra = `demos/${name}/character-assembly/step01/character-assembled.kra`;
     const kra = join(root, relativeKra);
-    return { name, kra, relativeKra, output: join(root, 'demos/showcase', name),
+    return { name, kra, relativeKra, output: join(root, '.web/showcase-layers', name),
       sha256: createHash('sha256').update(await readFile(kra)).digest('hex') };
   }));
   const job = join(temporary, 'job.json');

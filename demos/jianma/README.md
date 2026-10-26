@@ -4,7 +4,7 @@
 
 人物 part 有 **115 个节点、90 个末端 part**；衣服 part 有 **93 个节点、68 个末端 part**。人物 KRA 为 **90 个绘画层**，衣服 KRA 为 **69 个绘画层**。衣服 preparation 使用的简化角色图与此人物任务的参考图字节一致。
 
-[![输入原图、完整穿戴合成与 159 层立体拆解](../showcase/jianma-reference-composite-exploded.png)](../showcase/jianma-reference-composite-exploded.png)
+[![输入原图、完整穿戴合成与 159 层立体拆解](../../showcase/jianma-reference-composite-exploded.png)](../../showcase/jianma-reference-composite-exploded.png)
 
 左半展示原图与 `assembled/` 的完整合成，右半将 159 个源绘画层组合为后发、完整人物、内裙、外袍与腰饰首饰五组，沿纵深展示结构。
 

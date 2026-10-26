@@ -10,13 +10,15 @@
 
 三组展示统一采用 **原图 + 完整合成图 : 立体爆炸图 = 5:5** 的版式。爆炸图将真实 KRA 绘画层组合为五组，人物保持完整姿态，发束与衣装沿纵深展开，保留组内坐标、比例与绘制顺序。完整分层像素保存在 KRA 与源图层 PNG 中。
 
-[![Jianma 原图、完整合成图与 159 层立体拆解](showcase/jianma-reference-composite-exploded.png)](showcase/jianma-reference-composite-exploded.png)
+[![Jianma 原图、完整合成图与 159 层立体拆解](../showcase/jianma-reference-composite-exploded.png)](../showcase/jianma-reference-composite-exploded.png)
 
-[![Pink Doll 原图、完整合成图与 66 层立体拆解](showcase/pink-doll-reference-composite-exploded.png)](showcase/pink-doll-reference-composite-exploded.png)
+[![Pink Doll 原图、完整合成图与 66 层立体拆解](../showcase/pink-doll-reference-composite-exploded.png)](../showcase/pink-doll-reference-composite-exploded.png)
 
-[![Pink Elf 原图、完整合成图与 102 层立体拆解](showcase/pink-elf-reference-composite-exploded.png)](showcase/pink-elf-reference-composite-exploded.png)
+[![Pink Elf 原图、完整合成图与 102 层立体拆解](../showcase/pink-elf-reference-composite-exploded.png)](../showcase/pink-elf-reference-composite-exploded.png)
 
-Jianma 使用 `jianma/assembled/` 的合成图与 159 层归档；Pink Doll、Pink Elf 使用各自 `character-assembly/step01/` 的 KRA 和合成图，导出的原生图层与来源摘要保存在 `showcase/<案例>/`。维护时在仓库根目录运行 `node scripts/build-demo-showcase.mjs` 可重新生成三张展示图；源 KRA 更新后，先用 `node scripts/export-showcase-layers.ts --krita <Krita可执行文件>` 重新导出对应图层。
+当前 KRA 完整案例保留 **Jianma、Pink Doll、Pink Elf** 三个。历史 SVG 案例继续保留完整版本，便于回看当时的制作方式和成果；光照研究素材沿用原目录。
+
+README 展示图集中在仓库根目录 [showcase](../showcase/)，只保存正文实际引用的三张成图。Jianma 使用 `jianma/assembled/` 的合成图与 159 层归档；Pink Doll、Pink Elf 使用各自 `character-assembly/step01/` 的 KRA 和合成图。维护时，先在仓库根目录运行 `node scripts/export-showcase-layers.ts --krita <Krita可执行文件>`，将原生图层与来源摘要导出到已忽略的 `.web/showcase-layers/`，再运行 `node scripts/build-demo-showcase.mjs` 生成三张展示图。
 
 ## 细看制作过程
 

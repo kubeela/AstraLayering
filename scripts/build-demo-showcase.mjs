@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const output = join(root, 'demos/showcase');
+const output = join(root, 'showcase');
 const width = 3000, height = 1780;
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c]));
 const text = (x, y, value, size = 22, fill = '#727a8c', attributes = '') => `<text x="${x}" y="${y}" font-family="sans-serif" font-size="${size}" fill="${fill}" ${attributes}>${escape(value)}</text>`;
@@ -20,13 +20,13 @@ const cases = [
       if (isBody(layer)) return /^hair\/(back_hair|bun|hair_cap)/.test(name) || /crown_ribbon\/(ribbon_tail|ribbon_body)$/.test(name) ? 0 : 1;
       return name.startsWith('inner_dress/') ? 2 : name.startsWith('outer_robe/') ? 3 : 4;
     } },
-  { id: 'pink-doll', title: 'Pink Doll', source: 'demos/showcase/pink-doll', reference: 'demos/pink-doll/input/original.jpg',
+  { id: 'pink-doll', title: 'Pink Doll', source: '.web/showcase-layers/pink-doll', reference: 'demos/pink-doll/input/original.jpg',
     composite: 'demos/pink-doll/character-assembly/step01/character-assembled.png', counts: [58, 8], titles: ['Rear hair', 'Character', 'Bodice', 'Tiered skirt', 'Chest bow'],
     classify(layer, name) {
       if (isBody(layer)) return /^hair\/(back_hair|bun)/.test(name) || name === 'head_accessories::root' ? 0 : 1;
       return name.startsWith('skirt/') ? 3 : name === 'chest_bow' ? 4 : 2;
     } },
-  { id: 'pink-elf', title: 'Pink Elf', source: 'demos/showcase/pink-elf', reference: 'demos/pink-elf/input/original.png',
+  { id: 'pink-elf', title: 'Pink Elf', source: '.web/showcase-layers/pink-elf', reference: 'demos/pink-elf/input/original.png',
     composite: 'demos/pink-elf/character-assembly/step01/character-assembled.png', counts: [70, 32], titles: ['Trailing skirt', 'Rear hair', 'Character', 'Dress & sleeves', 'Bow & pendant'],
     classify(layer, name) {
       if (isBody(layer)) return /^hair\/back_hair\/(long_|cap :: (nape|back))/.test(name) ? 1 : 2;
@@ -39,7 +39,12 @@ for (const [caseIndex, profile] of cases.entries()) await render(profile, caseIn
 
 async function render(profile, caseIndex) {
   const source = join(root, profile.source);
-  const manifest = JSON.parse(await readFile(join(source, 'layers.json'), 'utf8'));
+  let manifest;
+  try { manifest = JSON.parse(await readFile(join(source, 'layers.json'), 'utf8')); }
+  catch (error) {
+    if (error.code === 'ENOENT') throw new Error(`${profile.id}: run node scripts/export-showcase-layers.ts --krita <Krita executable> before rebuilding the README plates.`, { cause: error });
+    throw error;
+  }
   if (manifest.order !== 'back-to-front') throw new Error('Expected native back-to-front layer order.');
   if (manifest.sourceKra) {
     const hash = createHash('sha256').update(await readFile(join(root, manifest.sourceKra))).digest('hex');

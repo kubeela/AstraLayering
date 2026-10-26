@@ -8,15 +8,15 @@
 
 **每个案例从左到右：输入原图 → 完整穿戴合成 → 立体爆炸图。** 原图与合成图共占左半，爆炸图占右半，比例 **5:5**。真实 KRA 绘画层按结构组合为五组，人物姿态保持完整，头发与衣装沿统一纵深展开，通过透视和柔和投影呈现装配关系。点击图片可看大图。
 
-[![Jianma：原图、完整合成与 159 层立体拆解](demos/showcase/jianma-reference-composite-exploded.png)](demos/showcase/jianma-reference-composite-exploded.png)
+[![Jianma：原图、完整合成与 159 层立体拆解](showcase/jianma-reference-composite-exploded.png)](showcase/jianma-reference-composite-exploded.png)
 
 [Jianma](demos/jianma/README.md)：90 层人物、69 层衣装；展示后发、完整人物、内裙、外袍及腰饰首饰。
 
-[![Pink Doll：原图、完整合成与 66 层立体拆解](demos/showcase/pink-doll-reference-composite-exploded.png)](demos/showcase/pink-doll-reference-composite-exploded.png)
+[![Pink Doll：原图、完整合成与 66 层立体拆解](showcase/pink-doll-reference-composite-exploded.png)](showcase/pink-doll-reference-composite-exploded.png)
 
 [Pink Doll](demos/pink-doll/README.md)：姿态标准化后完成 58 层人物与 8 层衣装，展示后发、完整人物、上衣、层叠裙与胸前蝴蝶结；案例还保留 4 条原生投影的阴影成稿。
 
-[![Pink Elf：原图、完整合成与 102 层立体拆解](demos/showcase/pink-elf-reference-composite-exploded.png)](demos/showcase/pink-elf-reference-composite-exploded.png)
+[![Pink Elf：原图、完整合成与 102 层立体拆解](showcase/pink-elf-reference-composite-exploded.png)](showcase/pink-elf-reference-composite-exploded.png)
 
 [Pink Elf](demos/pink-elf/README.md)：70 层人物与 32 层衣装，展示后拖裙、后发、完整人物、裙装袖片及蝴蝶结挂饰；案例保留人物、衣服、组装与投影蒙版的完整路线。
 
