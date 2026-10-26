@@ -5,6 +5,7 @@ import type { KritaPipeline } from './workflow.ts';
 import { dirname, join } from 'node:path';
 import { createReviewAnnotationTool } from './review-annotation.ts';
 import { createPixelTool } from './pixel-tool.ts';
+import { createStructureTools, validateRasterStructure } from './structure-tools.ts';
 
 type PartRasterDefinition = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering'>;
@@ -21,10 +22,17 @@ export function partRasterPipeline<T extends PartRasterDefinition>(definition: T
     inputDirectories: input => [input.directory],
     // occlusion is the last part step, so its stamp changes whenever the parts are redone.
     upstreamStep: input => ({ id: `${definition.inputPipeline}/occlusion`, directory: join(input.directory, 'occlusion'), dependsOn: [] }),
-    tools: (output, _input, step, phase) => step.id === 'step01' && phase.startsWith('review-')
+    tools: (output, input, step, phase) => step.id === 'step01' && phase.startsWith('review-')
       ? [createReviewAnnotationTool(dirname(output), dirname(dirname(output)), join(output, 'review-evidence'))]
+      : step.id === 'step01' && (phase === 'draw' || phase.startsWith('repair-'))
+        ? createStructureTools(input)
       : step.id === 'step02' && phase === 'draw'
         ? [createPixelTool(dirname(output), dirname(dirname(output)), join(output, 'pixel-review'))] : [],
+    deliveryWarnings: async (input, step) => {
+      if (step.id !== 'step01') return [];
+      try { await validateRasterStructure(input); return []; }
+      catch (error) { return [error instanceof Error ? error.message : String(error)]; }
+    },
     buildPrompt,
   };
 }
