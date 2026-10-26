@@ -50,7 +50,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal,sou
       for(const [id,b]of scene.bodies) {
         const m=motionMetrics[id]||=( {peak:0,root:0,fallback:0,limited:0,maxStep:0,maxWorldStep:0,final:0,invalid:0} );
         if(test==='pointer-brush') {
-          const path=context.paths.find((p:any)=>p.id===id);m.pointerReachable=path?.status==='reachable';m.contacts=(m.contacts||0)+(scene.pointerCommands||[]).filter((p:any)=>p.id===id).length;
+          const path=context.paths.find((p:any)=>p.id===id);m.pointerReachable=path?.status==='reachable';m.pointerTravel=path?.velocity?Math.hypot(...path.velocity)*(path.endStep-path.startStep)/120:0;m.contacts=(m.contacts||0)+(scene.pointerCommands||[]).filter((p:any)=>p.id===id).length;
           if(path?.sourcePoint){const p=b.sample(path.sourcePoint),travel=Math.hypot(p[0]-path.sourcePoint[0],p[1]-path.sourcePoint[1]);if(travel>(m.sourcePixelPeak||0)){m.sourcePixelPeak=travel;m.sourcePixelPeakStep=step;}}
         }
         if(step<=960){m.peak=Math.max(m.peak,b.stats.travel);m.fallback+=+b.stats.fallback;m.limited+=+b.stats.limited;m.final=b.stats.travel;}

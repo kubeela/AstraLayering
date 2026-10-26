@@ -31,6 +31,10 @@ test('swept contact rejects transparent space and keeps elapsed-time force weigh
   const a=pointerCommand(body,[layer],[50,65],[50.1,65],1/120,2),b=pointerCommand(body,[layer],[50,65],[50.2,65],1/60,2);
   assert(a&&b);assert(Math.abs(a.args[2]-b.args[2])<1e-9);assert.equal(b.args[5],a.args[5]*2);assert.equal(pointerCommand(body,[layer],[50,65],[51,65],.2,2),null);
 });
+test('a multi-pin seam selects the free edge relative to the nearest pin and sweeps across the cloth',()=>{
+ const many=structuredClone(config);many.components[0].supports=[{id:'left',at:[25,15]},{id:'mid',at:[50,15]},{id:'right',at:[75,15]}];
+ const p=preparePointerBrush(new ComponentScene(many),[layer]).paths[0];assert(p.sourcePoint[1]>75);assert(Math.abs(p.velocity[0])>Math.abs(p.velocity[1])*2);assert(Math.abs(p.velocity[0]*(p.sourcePoint[0]-p.anchor.at[0])+p.velocity[1]*(p.sourcePoint[1]-p.anchor.at[1]))<1e-8);
+});
 test('worker replay preserves real alpha contacts, root constraints and all mesh positions',()=>{
   const a=new ComponentScene(config),b=new ComponentScene(config),context=preparePointerBrush(a,[layer]);a.pointerBrush=context;b.pointerBrush=structuredClone(context);
   let contacts=0;for(let step=1;step<=180;step++){applyTestInput(a,'pointer-brush',step);contacts+=a.pointerCommands.length;a.step();advancePhysicsJob(b,{steps:1,elapsed:(step-1)/120,replayStep:step-1,playback:'pointer-brush',commands:[]});assert.deepEqual(a.bodies.get('cloth').positions,b.bodies.get('cloth').positions);assert.equal(a.bodies.get('cloth').stats.root,0);}
