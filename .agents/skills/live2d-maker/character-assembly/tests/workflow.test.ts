@@ -69,6 +69,8 @@ test('dry-run 展开组装专用提示词与绝对路径，不混入拆层和深
   for (const input of Object.values(f.inputs)) assert.ok(prompt.includes(input));
   for (const file of steps[0].requiredFiles) assert.ok(prompt.includes(join(f.output, 'step01', file)));
   assert.match(prompt, /局部修画/);
+  assert.match(prompt, /parts 填入要检查的衣物部件路径/);
+  assert.match(prompt, /已有部件的发色、材质、笔触、细发丝和描边差异保留/);
   assert.match(prompt, /可关闭的透明度遮罩/);
   assert.match(prompt, /不要随意拆分现有部件或新增绘画层/);
   assert.ok(!prompt.includes('occlusion.json'));
@@ -84,6 +86,7 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
     assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'xhigh');
     assert.equal(request.threadId, undefined);
     assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences']);
+    assert.ok((request.tools?.[0].inputSchema.properties as any).parts);
 
     assert.equal('mcp_servers' in rasterCodexConfig(), false);
     await stat(join(f.output, 'step01/.running'));

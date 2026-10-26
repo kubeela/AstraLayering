@@ -46,7 +46,8 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
 export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow' | 'physics'>;
   directorySuffix?: string;
-  tools?(output: string, input: Input, step: StepDefinition, phase: string): NonNullable<AgentRequest['tools']>;
+  tools?(output: string, input: Input, step: StepDefinition, phase: string,
+    runtime?: { krita: KritaInstallation; env: NodeJS.ProcessEnv }): NonNullable<AgentRequest['tools']>;
   fingerprintInput?(input: Input): Promise<string>;
   // The upstream pipeline's final step; step01 records its stamp and reruns when it changes.
   upstreamStep?(input: Input): ChainStep;
@@ -203,7 +204,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: pipeline.tools?.(output, reference, step, phase),
+        tools: pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }),
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         imageRoots: [dirname(directory), ...inputDirectories],
         recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
