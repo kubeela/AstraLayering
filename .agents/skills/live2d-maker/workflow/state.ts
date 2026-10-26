@@ -23,7 +23,7 @@ export type TaskRun = {
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   activePipeline?: PipelineId;
-  runner?: { id: string; pid: number; childPid?: number; startedAt: string; finishedAt?: string };
+  runner?: { id: string; pid: number; childPid?: number; startedAt: string; finishedAt?: string; stopProtocol?: 'file-v1' };
   pipelines: Partial<Record<PipelineId, PipelineProgress>>;
   lastMessage?: string; error?: string; output?: string;
 };

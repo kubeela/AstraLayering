@@ -10,6 +10,7 @@ import type { PipelineResult } from './pipelines.ts';
 import { acquireTaskLock, configureRun, directoryFor, now, saveRun, selectedPipelines, type TaskOptions, type TaskRun } from './state.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/codex/environment.ts';
 import { pipelineAgentSteps, preflightAgentSteps } from '../shared/agents/preflight.ts';
+import { clearTaskStop, watchTaskStop } from './control.ts';
 
 export type PipelineExecution = (id: PipelineId, run: TaskRun, context: {
   signal: AbortSignal; progress(message: string): void; started(pid: number): Promise<void>;
@@ -70,7 +71,9 @@ export async function runTask(options: TaskOptions, dependencies: {
 } = {}): Promise<TaskRun> {
   const directory = directoryFor(options);
   const release = await acquireTaskLock(directory);
-  const signal = dependencies.signal ?? new AbortController().signal;
+  const stopController = new AbortController();
+  const signal = dependencies.signal ? AbortSignal.any([dependencies.signal, stopController.signal]) : stopController.signal;
+  let stopWatching: (() => void) | undefined;
   let run: TaskRun | undefined, pending = Promise.resolve();
   const log = createTaskLog(directory, dependencies.progress);
   const persist = () => {
@@ -89,8 +92,10 @@ export async function runTask(options: TaskOptions, dependencies: {
   try {
     run = await configureRun(options, directory);
     run.status = 'running'; delete run.error; delete run.output; delete run.activePipeline;
-    run.runner = { id: randomUUID(), pid: process.pid, startedAt: now() };
+    run.runner = { id: randomUUID(), pid: process.pid, startedAt: now(), stopProtocol: 'file-v1' };
     await persist();
+    stopWatching = watchTaskStop(directory, run.runner.id, stopController,
+      error => log.write('停止请求读取失败：' + formatAgentError(error)));
     const environment = !dependencies.execute || dependencies.environment ? dependencies.environment ?? loadWorkflowEnvironment() : undefined;
     const selected = selectedPipelines(run.from, run.to);
     // Krita is checked first: it is quick, while the agent preflight may build the patched Codex.
@@ -142,10 +147,14 @@ export async function runTask(options: TaskOptions, dependencies: {
     }
     throw error;
   } finally {
+    stopWatching?.();
     try {
       if (run?.runner) { delete run.runner.childPid; run.runner.finishedAt = now(); await persist(); }
       await pending;
-    } finally { try { await log.flush(); } finally { await release(); } }
+    } finally {
+      try { if (run?.runner) await clearTaskStop(directory, run.runner.id); }
+      finally { try { await log.flush(); } finally { await release(); } }
+    }
   }
 }
 
