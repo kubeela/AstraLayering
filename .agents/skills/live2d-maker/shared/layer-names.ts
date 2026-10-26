@@ -7,7 +7,7 @@ export function layerPartName(label: string) {
   const prefix = name.match(/^(人物|衣服|衣装)\s*\|\s*/);
   const namespace = prefix ? prefix[1] === '人物' ? 'character:' : 'clothing:' : undefined;
   if (prefix) { name = name.slice(prefix[0].length); stripDepth(); }
-  return { namespace, name: name.trim() };
+  return { namespace, name: name.trim().replace(/\s+L\d+$/, '') };
 }
 export function matchLayerPart(label: string, partIds: readonly string[]): string | null {
   const { namespace, name } = layerPartName(label);

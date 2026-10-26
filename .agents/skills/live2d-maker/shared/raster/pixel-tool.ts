@@ -1,10 +1,11 @@
 import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { extname, join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { canonicalPath, within } from './run-store.ts';
+import { exportKraLayers, partScope, type PartScopeOptions } from './pixel-part-scope.ts';
 
 type Box = [number, number, number, number];
 type Region = { kind: 'missing' | 'extra' | 'color'; bounds: Box; pixels: number };
@@ -13,7 +14,8 @@ const colors = ['#ff4040', '#00b8ff', '#ffbd00'];
 
 // Coordinates stay in the original canvas. These are candidate differences,
 // never an automatic acceptance verdict or a generated painting repair.
-export function createPixelTool(directory: string, taskRoot: string, output: string): FunctionTool {
+export function createPixelTool(directory: string, taskRoot: string, output: string,
+  options: PartScopeOptions & { namespace?: 'character' | 'clothing' } = {}): FunctionTool {
   const definition = toolDefinition('locate_pixel_differences');
   return {
     ...definition,
@@ -21,10 +23,11 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('参数须为对象');
       const args = value as Record<string, unknown>;
       const root = await realpath(taskRoot);
-      const source = async (key: string) => {
-        if (typeof args[key] !== 'string' || !args[key].trim()) throw new Error(`${key} 须为图片路径`);
-        const path = await realpath(resolve(directory, args[key]));
-        if (!within(root, path)) throw new Error('输入图片必须位于本次任务目录内');
+      const source = async (key: string, fallback?: string) => {
+        const requested = args[key] ?? fallback;
+        if (typeof requested !== 'string' || !requested.trim()) throw new Error(`${key} 须为任务内的文件路径`);
+        const path = await realpath(resolve(directory, requested));
+        if (!within(root, path)) throw new Error('输入文件必须位于本次任务目录内');
         return path;
       };
       const image = async (bytes: Buffer) => sharp(bytes, { limitInputPixels: 16_000_000 })
@@ -51,6 +54,30 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       const colorThreshold = setting('color_threshold', 80, 255), alphaThreshold = setting('alpha_threshold', 96, 255);
       const coarseThreshold = setting('coarse_color_threshold', 32, 255), gap = setting('region_gap_pixels', 1, 8, 0);
       const minPixels = setting('min_region_pixels', 64, 16_000_000), maxRegions = setting('max_regions', 40, 200);
+      if (args.parts !== undefined && (!Array.isArray(args.parts) || args.parts.length > 100
+        || args.parts.some(part => typeof part !== 'string' || !part.trim()) || new Set(args.parts).size !== args.parts.length)) {
+        throw new Error('parts 须为最多 100 个不重复的部件路径；不填或空数组表示全图');
+      }
+      const parts = (args.parts ?? []) as string[], padding = setting('part_padding', 8, 64, 0);
+      const destination = await canonicalPath(output);
+      if (!within(root, destination)) throw new Error('诊断输出必须位于本次任务目录内');
+      await mkdir(destination, { recursive: true });
+      const folder = join(await realpath(destination), randomUUID());
+      await mkdir(folder);
+      const currentKra = parts.length ? await source('current_kra', current.slice(0, current.length - extname(current).length) + '.kra') : undefined;
+      let selection: Awaited<ReturnType<typeof partScope>> | undefined;
+      if (currentKra) {
+        if (!options.krita) throw new Error('按部件检测需要当前工作流已配置的 Krita');
+        const sources = options.sources ?? (options.namespace ? [{ namespace: options.namespace, document: currentKra }] : []);
+        for (const source of sources) if (!within(root, await realpath(source.document))) throw new Error('部件来源 KRA 必须位于本次任务目录内');
+        const ora = await (options.exportLayers ?? exportKraLayers)(currentKra, folder, options.krita, options.env ?? process.env, signal);
+        selection = await partScope(ora, parts, padding, [width, height], sources, signal);
+        for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+          const pos = y * width + x, i = pos * 4;
+          if (x < left || x >= left + w || y < top || y >= top + h
+            || mask && Math.max(mask.data[i], mask.data[i + 1], mask.data[i + 2]) * mask.data[i + 3] / 255 < 128) selection.mask[pos] = 0;
+        }
+      }
       // Compare coherent local differences as well as sharp ones. Flattening
       // removes invisible RGB; this diagnostic smoothing never edits artwork.
       const coarse = async (bytes: Buffer) => sharp(bytes, { limitInputPixels: 16_000_000 })
@@ -61,6 +88,7 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
         if (y % 128 === 0) signal.throwIfAborted();
         for (let x = 0; x < w; x++) {
           const i = ((top + y) * width + left + x) * 4, j = y * w + x;
+          if (selection && !selection.mask[(top + y) * width + left + x]) continue;
           if (mask && Math.max(mask.data[i], mask.data[i + 1], mask.data[i + 2]) * mask.data[i + 3] / 255 < 128) continue;
           const ra = ref.data[i + 3], ca = cur.data[i + 3];
           let kind = 0;
@@ -89,7 +117,9 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
           if (labels[pos] !== kind) continue;
           const x = pos % w, y = Math.floor(pos / w);
           for (let yy = Math.max(0, y - gap); yy <= Math.min(h - 1, y + gap); yy++)
-            for (let xx = Math.max(0, x - gap); xx <= Math.min(w - 1, x + gap); xx++) expanded[yy * w + xx] = 1;
+            for (let xx = Math.max(0, x - gap); xx <= Math.min(w - 1, x + gap); xx++) {
+              if (!selection || selection.mask[(top + yy) * width + left + xx]) expanded[yy * w + xx] = 1;
+            }
         }
         for (let seed = 0; seed < expanded.length; seed++) {
           if (!expanded[seed]) continue;
@@ -114,17 +144,23 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       }
       regions.sort((a, b) => b.pixels - a.pixels);
       const selected = regions.slice(0, maxRegions);
-      const destination = await canonicalPath(output);
-      if (!within(root, destination)) throw new Error('诊断输出必须位于本次任务目录内');
-      await mkdir(destination, { recursive: true });
-      const folder = join(await realpath(destination), randomUUID());
-      await mkdir(folder);
       const files = { diagnostics: join(folder, 'differences.json'), heatmap: join(folder, 'heatmap.png'),
-        marked: join(folder, 'marked.png'), comparison: join(folder, 'comparison.png') };
+        marked: join(folder, 'marked.png'), comparison: join(folder, 'comparison.png'),
+        ...(selection ? { scope: join(folder, 'scope.png'), scopePreview: join(folder, 'scope-preview.png') } : {}) };
       const meta = { reference, current, visibleMask: maskPath, canvas: [width, height], crop,
+        ...(selection ? { partSelection: { parts, padding, currentKra, layers: selection.bounds } } : {}),
         thresholds: { color: colorThreshold, coarseColor: coarseThreshold, blurSigma: 2, regionGapPixels: gap, alpha: alphaThreshold, minRegionPixels: minPixels },
-        counts, regions, note: '以候选框为 step02 细节检查入口，对照参考确认后局部修画，并逐层扩展检查。候选不决定通过或内容归属。' };
+        counts, regions, note: '以候选框为局部检查入口，依据当前阶段职责和参考确认修复范围。候选不决定通过或内容归属；选择部件时只统计其当前范围及周边。' };
       await writeFile(files.diagnostics, JSON.stringify(meta, null, 2) + '\n');
+      if (selection) {
+        await sharp(selection.mask, { raw: { width, height, channels: 1 } }).png().toFile(files.scope!);
+        const tint = Buffer.alloc(width * height * 4);
+        for (let pos = 0; pos < selection.mask.length; pos++) {
+          if (selection.mask[pos]) { tint[pos * 4 + 1] = 190; tint[pos * 4 + 2] = 140; tint[pos * 4 + 3] = 70; }
+          else tint[pos * 4 + 3] = 110;
+        }
+        await sharp(currentBytes).composite([{ input: tint, raw: { width, height, channels: 4 } }]).png().toFile(files.scopePreview!);
+      }
       const raw = { width: w, height: h, channels: 4 as const };
       await sharp(heat, { raw }).png().toFile(files.heatmap);
       const rectangles = selected.map((r, i) => {

@@ -202,6 +202,10 @@ step01 reviewer 看图确认形体、画风和衔接过渡问题，使用 `annot
 
 旧的 step01 完成交付在新版本下补跑轮廓 review，保留绘制会话和工程。检查没有改变 KRA／必要 PNG 时保留后续成果；实际修复改变工程时，后续步骤移入本管线 `recovery/` 保留，随后从修正输入继续。主动删除 `.completed` 仍沿用原有全重跑规则。旧 step02 已发布初次绘制报告、完成结果与有效交付但停在已移除 review 时，继续启动会完成其标记，不重画已完成柔边。
 
+### 穿戴组装检查
+
+assemble 负责衣物配准、前后穿插、遮挡、贴合和接缝，保留已有部件的绘制细节差异。共用的 `locate_pixel_differences` 新增可选 `parts`：按当前已保存 KRA 的部件路径选择真实覆盖范围，包含多个深度分片及周边接缝，并输出范围预览。不选部件保持全图检测；人物、衣服 step02 的现有调用和职责不变。组装首次合成与最终重开后按衣物及连接部件检查，整体穿戴关系由目视核对。
+
 ### 各 CLI 请求大小预算
 
 `.env` 中 `layering_codex_request_compact_mib`、`layering_claude_request_compact_mib`、`layering_agv_request_compact_mib` 分别控制提前带图压缩的 MiB 预算；对应 `layering_<cli>_image_compact_threshold` 控制图片数，留空关闭。Codex 专用图片键优先于旧 `layering_image_compact_threshold`。完整机制、支持的协议、可选去重及失败恢复见 [图片容量保护](../patches/README.md#图片容量保护)。`env:check` 只预览生效配置；真正发包时再核查容量，不改上游硬上限。

@@ -49,5 +49,7 @@ test('actual raster depth labels and split depth regions resolve to the longest 
   assert.equal(matchLayerPart('001 | collar', parts), null);
   assert.equal(matchLayerPart('051 | hair/unknown', parts), 'character:hair');
   assert.equal(matchLayerPart('hairpin', parts), null);
+  assert.equal(matchLayerPart('12 | hair/bangs L12', parts), 'character:hair/bangs');
+  assert.equal(matchLayerPart('衣服 | 003 collar L3', parts), 'clothing:collar');
   assert.deepEqual(layerPartName('衣装 | 12 | skirt::back'), { namespace: 'clothing:', name: 'skirt::back' });
 });
