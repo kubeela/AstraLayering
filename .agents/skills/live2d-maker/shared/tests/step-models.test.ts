@@ -104,7 +104,7 @@ test('scheme 1 template and code defaults resolve all role efforts and native im
   assert.ok(imageSteps.every(step => settings.stepImages[step] === 'codex-native'));
 });
 
-test('mixed preset assigns shared GPT, Argon and Claude roles and uses Sunburst for simplification', async t => {
+test('mixed preset assigns shared GPT and Claude roles and uses Sunburst for simplification', async t => {
   const base = parseEnv(await readFile(new URL('../../example.env', import.meta.url), 'utf8'));
   const overrides = parseEnv(await readFile(new URL('../../presets/optimized.env', import.meta.url), 'utf8'));
   const variables = { ...base, ...overrides, layering_google_image_base_url: 'https://image.example/v1beta', layering_google_image_api_key: 'fixture',
@@ -115,11 +115,11 @@ test('mixed preset assigns shared GPT, Argon and Claude roles and uses Sunburst 
   const expected: Record<keyof typeof modelSlotDefaults, string> = {
     ...modelSlotDefaults,
     preparation: 'gpt-6.1-sol-low',
-    part_draw: 'gpt-6.1-sol-xhigh', part_review: 'gpt-6.1-sol-xhigh', part_completion: 'gemini-4-argon-high',
+    part_draw: 'gpt-6.1-sol-xhigh', part_review: 'gpt-6.1-sol-xhigh', part_completion: 'claude-sonnet-5-5-xhigh',
     part_groups: 'gpt-6.1-sol-xhigh', part_depth: 'gpt-6.1-sol-xhigh', part_reduce: 'gpt-6.1-sol-xhigh',
     raster_step01: 'claude-opus-5-5-xhigh', raster_step01_review: 'claude-sonnet-5-5-xhigh',
     raster_step02: 'claude-sonnet-5-5-xhigh', raster_step03: 'claude-sonnet-5-5-xhigh',
-    assembly: 'gemini-4-argon-high', shadow: 'claude-sonnet-5-5-xhigh',
+    assembly: 'claude-sonnet-5-5-xhigh', shadow: 'claude-sonnet-5-5-xhigh',
   };
   for (const [step, role] of Object.entries(stepModelSlots)) {
     assert.deepEqual(settings.stepModels[step as keyof typeof stepModelSlots], parseAgentModel(expected[role], 'fixture'), step);
