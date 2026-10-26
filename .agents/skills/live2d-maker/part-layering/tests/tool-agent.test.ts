@@ -275,7 +275,8 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   const messages: string[] = [];
   const agents = new CodexAgents({codexPathOverride:server.executable,cwd:f.directory,logDirectory:f.logDirectory,
     progress:message => messages.push(message),runtime:new AgentRuntime(3, async () => {})});
-  const result = await agents.run({name:'恢复',prompt:'原始任务',imageGeneration:true,
+  const originalPrompt = '复核第 2 轮，candidateHash=current-v2；报告中的第 1 轮属于旧候选。';
+  const result = await agents.run({name:'恢复',prompt:originalPrompt,imageGeneration:true,
     tools:[tool(async () => {submissions++;return textResult('已提交');})]});
   assert.equal(result.threadId, 'native-thread');
   assert.deepEqual(result.images,[{savedPath}]);
@@ -285,9 +286,10 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.equal(turns.length, 3);
   assert.ok(turns.every(message => message.params.threadId === 'native-thread'));
-  assert.ok(turns[0].params.input[0].text.startsWith('原始任务\n'));
+  assert.ok(turns[0].params.input[0].text.startsWith(originalPrompt+'\n'));
   assert.match(turns[0].params.input[0].text, /当前工作区/);
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt)));
+  assert.ok(turns.slice(1).every(message => message.params.input[0].text.split(originalPrompt).length === 2));
   assert.ok(turns[1].params.input[0].text.includes(savedPath));
   assert.equal((await readdir(f.logDirectory)).length, 3);
   assert.equal(messages.filter(message => message.includes('临时服务错误')).length, 2);

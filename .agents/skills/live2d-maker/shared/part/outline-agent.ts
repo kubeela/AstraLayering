@@ -50,7 +50,9 @@ async function inputs(context: GroupContext) {
   return { reference, canvas, parent };
 }
 
-function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: { outputSvg?: string; candidate?: string; resumedDraft?: string }) {
+function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: {
+  outputSvg?: string; candidate?: string; resumedDraft?: string; review?: { round: number; candidateHash: string };
+}) {
   return JSON.stringify({
     group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
     reference: input.reference, groups: join(context.directory, 'groups.json'),
@@ -162,6 +164,7 @@ async function reviewOnce(
   const prompt = await readGroupPrompt(context.group.id, 'review', profile.promptsDirectory);
   const bytes = await validateGroupSvg(candidate, context.group.id, input.canvas, undefined, true);
   const candidateHash = hash(bytes);
+  const round = completedReviewCount(await readReviewReport(reportPath, context.group.id)) + 1;
   const observations: SvgObservation[] = [];
   const preview = createSvgPreviewTool({ ...input, directory: context.directory,
     observationDirectory: join(context.directory, 'observations', 'review', context.group.id),
@@ -198,7 +201,7 @@ async function reviewOnce(
     sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory, [input.parent, candidate]),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],
-    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:runtime(context,input,{candidate}), report_path:reportPath},
+    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:runtime(context,input,{candidate,review:{round,candidateHash}}), report_path:reportPath},
       prompt.path, ['prompt_source','runtime_context','report_path']),
   });
   if (!submitted) throw agentOutcomeError('独立 review 未通过 submit_review 保存结论', response);

@@ -35,6 +35,7 @@ test('raster 等待 CLI 终态后在原 thread 继续，保留图片并记录退
   assert.deepEqual(waits, [5000]);
   assert.equal(prompts[0], workspacePrompt(request().prompt, executionPaths({ cwd: request().directory }, request().directory)));
   assert.match(String(prompts[1]), /原要求.*未完成处继续/);
+  assert.match(String(prompts[1]), /按原图继续修边/);
   assert.match(String(prompts[1]), /existing.png/);
   assert.ok(events.includes('turn.failed'));
 });

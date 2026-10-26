@@ -136,7 +136,7 @@ export class CodexAgents {
             for (;;) {
               try {
                 const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages]), images: undefined } : task, signal);
+                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt), images: undefined } : task, signal);
                 id = result.threadId || id;
                 for (const image of result.images) savedImages.add(image.savedPath);
                 return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
@@ -229,7 +229,7 @@ export class CodexAgents {
               } else {
                 let interrupted = false;
                 result = await this.invoke(task, signal, async () => {
-                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath)), images: undefined } : task,
+                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt), images: undefined } : task,
                     selected, settings, { ...this.options, onEvent: async event => {
                       if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
                       await this.options.onEvent?.(event);
@@ -297,7 +297,7 @@ export class CodexAgents {
     let interrupted = false;
     return this.invoke(task, signal, async () => {
       const attemptTask = interrupted && thread.id ? { ...task,
-        prompt: continuationPrompt([...savedImages]), images: undefined } : task;
+        prompt: continuationPrompt([...savedImages], task.prompt), images: undefined } : task;
       try { return await runSdkAttempt(attemptTask); }
       catch (error) {
         if (error instanceof AgentCallError) {
