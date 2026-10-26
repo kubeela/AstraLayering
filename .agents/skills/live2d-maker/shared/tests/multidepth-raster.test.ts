@@ -11,7 +11,7 @@ import { seedUpstream } from './upstream-fixture.ts';
 import { splitStructure } from './structure-fixture.ts';
 import { rasterCodexConfig, type AgentRequest } from '../raster/agent.ts';
 
-test('两套 raster 直接新增分组及 SVG 后，中断与主动重跑保留上游修改', async t => {
+test('两套 raster 经受控工具新增分组及 SVG 后，中断与主动重跑保留上游修改', async t => {
   for (const pipeline of [character, clothing]) await t.test(pipeline.id, async t => {
     const root = await realpath(await mkdtemp(join(tmpdir(), 'structure-resume-')));
     t.after(() => rm(root, { recursive: true, force: true }));

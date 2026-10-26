@@ -30,21 +30,27 @@ function nonempty(value: unknown): value is string { return typeof value === 'st
 function object(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
 }
-function keys(value: object, allowed: string[]): boolean { return Object.keys(value).every(key => allowed.includes(key)); }
+function checkKeys(value: object, allowed: string[], path: string): void {
+  const extra = Object.keys(value).find(key => !allowed.includes(key));
+  if (extra) throw new Error(`${path}.${extra}：不支持的字段`);
+}
 
 // Independent of the group scheduler: raster uses the same contract when updating the upstream table.
 export function validateOcclusionDocument(value: unknown): OcclusionPlan {
   if (!object(value)) throw new Error('层级表必须是对象');
   const plan = value as unknown as OcclusionPlan;
-  if (![2, 3].includes(plan.version) || plan.direction !== 'back-to-front' || !nonempty(plan.sourceHash) ||
-      !Array.isArray(plan.layers) || !plan.layers.length || !keys(plan, ['version', 'direction', 'sourceHash', 'layers'])) {
-    throw new Error('层级表版本、方向或输入指纹不符');
-  }
+  checkKeys(plan, ['version', 'direction', 'sourceHash', 'layers'], 'occlusion');
+  if (![2, 3].includes(plan.version)) throw new Error('occlusion.version：必须为 2 或 3');
+  if (plan.direction !== 'back-to-front') throw new Error('occlusion.direction：必须为 back-to-front');
+  if (!nonempty(plan.sourceHash)) throw new Error('occlusion.sourceHash：缺少输入指纹');
+  if (!Array.isArray(plan.layers) || !plan.layers.length) throw new Error('occlusion.layers：必须为非空数组');
   const ids = new Set<string>(), levels = new Set<number>();
   for (const [index, row] of plan.layers.entries()) {
-    if (!object(row) || !nonempty(row.id) || ids.has(row.id) || !keys(row, ['id', 'level', 'levels', 'note', 'check'])) {
-      throw new Error('层级表包含重复 ID 或不支持的字段');
-    }
+    const path = `occlusion.layers[${index}]`;
+    if (!object(row)) throw new Error(`${path}：必须为对象`);
+    checkKeys(row, ['id', 'level', 'levels', 'note', 'check'], path);
+    if (!nonempty(row.id)) throw new Error(`${path}.id：必须为非空字符串`);
+    if (ids.has(row.id)) throw new Error(`${path}.id：重复 ID ${row.id}`);
     ids.add(row.id);
     if (('level' in row) === ('levels' in row) || (plan.version === 2 && row.level !== index)) {
       throw new Error(`${row.id} 必须且只能提供 level 或 levels；旧版 level 必须对应数组位置`);
@@ -52,22 +58,28 @@ export function validateOcclusionDocument(value: unknown): OcclusionPlan {
     if (row.levels !== undefined && (!Array.isArray(row.levels) || row.levels.length < 2)) {
       throw new Error(`${row.id} 多深度 levels 至少包含两个区域`);
     }
-    for (const region of depthRegions(row)) {
-      if (!object(region) || !keys(region, ['level', 'region']) || !Number.isFinite(region.level) || region.level < 0 ||
-          levels.has(region.level) || !nonempty(region.region)) throw new Error(`${row.id} 深度值重复、非法或缺少区域描述`);
+    for (const [regionIndex, region] of depthRegions(row).entries()) {
+      const regionPath = row.levels ? `${path}.levels[${regionIndex}]` : path;
+      if (!object(region)) throw new Error(`${regionPath}：必须为对象（${row.id}）`);
+      checkKeys(region, ['level', 'region'], regionPath);
+      if (!Number.isFinite(region.level) || region.level < 0) throw new Error(`${regionPath}.level：深度必须为非负有限数值（${row.id}）`);
+      if (levels.has(region.level)) throw new Error(`${regionPath}.level：深度值重复 ${region.level}（${row.id}）`);
+      if (!nonempty(region.region)) throw new Error(`${regionPath}.region：缺少区域描述（${row.id}）`);
       levels.add(region.level);
     }
     const check = row.check;
-    if (!nonempty(row.note) || !object(check) || check.passed !== true || !nonempty(check.note) ||
-        !keys(check, ['passed', 'note', 'regions'])) throw new Error(`${row.id} 缺少深度依据或逐件检查`);
+    if (!nonempty(row.note)) throw new Error(`${path}.note：缺少深度依据（${row.id}）`);
+    if (!object(check) || check.passed !== true || !nonempty(check.note)) throw new Error(`${path}.check：缺少逐件检查（${row.id}）`);
+    checkKeys(check, ['passed', 'note', 'regions'], `${path}.check`);
     if (row.levels) {
       const checked = check.regions;
       if (!Array.isArray(checked) || checked.length !== row.levels.length ||
           new Set(checked.map(item => item?.level)).size !== checked.length ||
-          checked.some(item => !object(item) || !keys(item, ['level', 'note']) || !nonempty(item.note) ||
+          checked.some(item => !object(item) || !nonempty(item.note) ||
             !row.levels!.some(region => region.level === item.level))) {
         throw new Error(`${row.id} 必须逐个检查全部深度区域`);
       }
+      checked.forEach((item, regionIndex) => checkKeys(item, ['level', 'note'], `${path}.check.regions[${regionIndex}]`));
     } else if (check.regions !== undefined) throw new Error(`${row.id} 单深度不应附带多区域检查`);
   }
   return structuredClone(plan);

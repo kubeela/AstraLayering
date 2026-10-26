@@ -53,6 +53,7 @@ export type KritaPipeline<Input> = {
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
   validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean): Promise<void>;
+  deliveryWarnings?(input: Input, step: StepDefinition): Promise<readonly string[]>;
   steps: readonly StepDefinition[];
   resolveInput(name: string, root: string): Promise<Input>;
   validateInput(value: unknown): value is Input;
@@ -117,6 +118,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       try { await checkFiles(chainStep.directory, step.requiredFiles); }
       catch (error) { throw new Error(`${step.id} 已标记完成但交付缺失；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`, { cause: error }); }
       await pipeline.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun);
+      if (!options.dryRun) await logDeliveryWarnings(step);
     },
     async prepare(plan) {
       if (inputChanged) {
@@ -133,6 +135,12 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   });
   if (options.dryRun) return previews.join('\n\n') || '当前已定义步骤均已完成；无需调用模型。';
   return `已完成当前已定义步骤。交付目录：${previous.at(-1) ?? directory}`;
+
+  async function logDeliveryWarnings(step: StepDefinition) {
+    for (const warning of await pipeline.deliveryWarnings?.(reference, step) ?? []) {
+      options.progress?.(`${step.id} 结构检查提示：${warning}`);
+    }
+  }
 
   async function stepWork(step: StepDefinition, status: StepStatus, plan: SectionPlan): Promise<(() => Promise<void>) | undefined> {
     const output = join(directory, step.id);
@@ -258,6 +266,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await pipeline.prepareDelivery?.(output, reference, step);
       await checkFiles(output, step.requiredFiles);
       await pipeline.validateDelivery?.(output, reference, step, krita);
+      await logDeliveryWarnings(step);
       options.signal?.throwIfAborted();
       if (step.review) await finishReview(directory, step, plan, options.progress);
       options.progress?.(`${step.id}：交付检查通过，写入 .completed`);
