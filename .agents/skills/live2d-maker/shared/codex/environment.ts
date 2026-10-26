@@ -5,18 +5,23 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
+import { readDefaultConfiguration } from '../default-configuration.ts';
 import { withNodePath } from '../process-environment.ts';
 import { imageBudget, type ImageBudget } from '../../patches/shared/visual-context.ts';
-import { modelSlotDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
+import { resolveModelDefaults, resolveImageDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
 import { resolveHarnessProviders, validateApiUrl, type HarnessProviders } from '../agents/providers.ts';
 export { validateApiUrl } from '../agents/providers.ts';
 
 export type ModelTier = 'medium' | 'high';
 export type ModelSelection = { model: string; effort: NonNullable<ThreadOptions['modelReasoningEffort']> };
-export const defaultModels = {
-  medium: { model: 'gpt-6.1-sol', effort: 'medium' },
-  high: { model: 'gpt-6.1-sol', effort: 'xhigh' },
-} as const satisfies Record<ModelTier, ModelSelection>;
+function tierDefaults(roles: ReturnType<typeof resolveModelDefaults>): Record<ModelTier, ModelSelection> {
+  const selection = (value: string): ModelSelection => {
+    const { model, effort } = parseAgentModel(value, 'example.env');
+    return { model, effort };
+  };
+  return { medium: selection(roles.part_draw), high: selection(roles.raster_step01) };
+}
+export const defaultModels = tierDefaults(resolveModelDefaults(readDefaultConfiguration()));
 
 // Legacy tier overrides retain their historical roles when the default model changes.
 const legacyHighModelSlots: readonly ModelSlot[] = ['raster_step01', 'raster_step02', 'raster_step01_review'];
@@ -43,9 +48,19 @@ export function parseModel(value: string | undefined, fallback: ModelSelection, 
 // Never change process.env or ~/.codex. The captured environment belongs to this invocation.
 // Shell variables override .env; relative configuration paths are based on live2d-maker.
 export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, directory = workflowsDirectory): WorkflowEnvironment {
-  let file: NodeJS.ProcessEnv = {};
-  try { file = parseEnv(readFileSync(join(directory, '.env'), 'utf8')); }
+  let source = '';
+  try { source = readFileSync(join(directory, '.env'), 'utf8'); }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw new Error('无法读取 live2d-maker/.env', { cause: error }); }
+  return parseWorkflowEnvironment(source, env, directory);
+}
+
+// The workbench validates drafts with exactly the same resolver as new workers.
+export function parseWorkflowEnvironment(source: string, env: NodeJS.ProcessEnv = process.env,
+  directory = workflowsDirectory): WorkflowEnvironment {
+  const defaults = readDefaultConfiguration(directory);
+  const roleDefaults = resolveModelDefaults(defaults), imageDefaults = resolveImageDefaults(defaults);
+  const tiers = tierDefaults(roleDefaults);
+  const file = parseEnv(source);
   const effective = Object.fromEntries(Object.entries({ ...file, ...env }).filter((entry): entry is [string, string] => entry[1] !== undefined));
   const get = (name: string) => effective[name]?.trim();
   const flag = get('layering_custom_provider');
@@ -69,7 +84,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   if (home) effective.CODEX_HOME = path(home);
   const executable = get('layering_codex_path');
   const imageUrl = get('layering_image_base_url'), imageKey = get('layering_image_api_key');
-  const imageModel = get('layering_image_model') || 'gpt-image-2.5-sunburst';
+  const imageModel = get('layering_image_model') || imageDefaults.legacy;
   if (imageUrl || imageKey) {
     if (!imageUrl || !imageKey) throw new Error('自定义生图需要同时填写 layering_image_base_url 和 layering_image_api_key。');
     validateApiUrl(imageUrl, 'layering_image_base_url');
@@ -84,7 +99,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   if (imageBudgets.codex.bytes) effective.LAYERING_REQUEST_COMPACT_BYTES = String(imageBudgets.codex.bytes);
   else delete effective.LAYERING_REQUEST_COMPACT_BYTES;
   const slotModels = {} as Record<ModelSlot, AgentModel>;
-  for (const [slot, fallback] of Object.entries(modelSlotDefaults) as [ModelSlot, string][]) {
+  for (const [slot, fallback] of Object.entries(roleDefaults) as [ModelSlot, string][]) {
     const key = `layering_agent_${slot}_model`;
     let selection: string | undefined = get(key);
     if (!selection) {
@@ -108,7 +123,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   for (const provider of ['openai', 'google'] as const) {
     const baseUrl = get(`layering_${provider}_image_base_url`) || (provider === 'openai' ? imageUrl : undefined);
     const apiKey = get(`layering_${provider}_image_api_key`) || (provider === 'openai' ? imageKey : undefined);
-    const protocol = provider === 'google' ? get('layering_google_image_protocol') || 'gemini' : 'openai';
+    const protocol = provider === 'google' ? get('layering_google_image_protocol') || defaults.layering_google_image_protocol : 'openai';
     if (!['openai', 'gemini'].includes(protocol)) throw new Error('layering_google_image_protocol 无效。');
     if (baseUrl || apiKey) {
       if (!baseUrl || !apiKey) throw new Error(`${provider} 生图需要同时填写 layering_${provider}_image_base_url 和 layering_${provider}_image_api_key。`);
@@ -117,9 +132,13 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
     }
   }
   const stepImages: WorkflowEnvironment['stepImages'] = {};
-  const fallbackImage = get('layering_default_image_model') || (imageUrl ? imageModel : 'codex-native');
+  const fallbackImage = get('layering_default_image_model') || (imageUrl ? imageModel : imageDefaults.model);
   for (const step of imageSteps) {
-    const key = `layering_${step}_image_model`, value = get(key) || fallbackImage;
+    const key = `layering_${step}_image_model`;
+    // Explicit blank means inherit the chosen global model. Missing keys may
+    // inherit a step-specific template default, while legacy image routes stay intact.
+    const value = get(key) || (Object.hasOwn(effective, key) || get('layering_default_image_model') || imageUrl
+      ? fallbackImage : imageDefaults.steps[step]);
     if (!Object.hasOwn(imageModelProviders, value)) throw new Error(`${key} 必须为 ${Object.keys(imageModelProviders).join(', ')}。`);
     stepImages[step] = value as ImageModel;
   }
@@ -132,8 +151,8 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   return {
     stepModels, stepImages, imageApis, cliPaths, imageBudgets, providers,
     models: {
-      medium: parseModel(get('layering_medium_model'), defaultModels.medium, 'layering_medium_model'),
-      high: parseModel(get('layering_high_model'), defaultModels.high, 'layering_high_model'),
+      medium: parseModel(get('layering_medium_model'), tiers.medium, 'layering_medium_model'),
+      high: parseModel(get('layering_high_model'), tiers.high, 'layering_high_model'),
     },
     codex: { env: effective, config, ...(executable ? { codexPathOverride: path(executable) } : {}) },
     ...(threshold === undefined ? {} : { imageCompactThreshold: threshold }),

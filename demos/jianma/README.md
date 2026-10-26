@@ -4,6 +4,10 @@
 
 人物 part 有 **115 个节点、90 个末端 part**；衣服 part 有 **93 个节点、68 个末端 part**。人物 KRA 为 **90 个绘画层**，衣服 KRA 为 **69 个绘画层**。衣服 preparation 使用的简化角色图与此人物任务的参考图字节一致。
 
+[![输入原图、完整穿戴合成与 159 层立体拆解](../showcase/jianma-reference-composite-exploded.png)](../showcase/jianma-reference-composite-exploded.png)
+
+左半展示原图与 `assembled/` 的完整合成，右半将 159 个源绘画层组合为后发、完整人物、内裙、外袍与腰饰首饰五组，沿纵深展示结构。
+
 ```text
 jianma/
 ├── input/original.jpg
@@ -39,4 +43,4 @@ jianma/
 
 历史检查结论可能引用未收录的逐次观察图或当时机器路径；这些引用只用于追溯，不是当前可运行入口。归档不代表所有美术细节或动画变形已通过验收，既有问题以各阶段报告为准。
 
-本机续跑数据保存在 skill 外同级的任务目录，仓库内默认位置 `.agents/skills/jianma/` 被 Git 完全忽略；也可用 `--dir` 选择外部运行根目录。复制本归档可提供上游输入，但恢复原 raster 上下文仍需本机原有 `run.json`、标记及 Codex 会话；归档不冒充可移植的 agent 会话备份。
+当前本机任务默认保存在仓库根目录 `.run/<name>/`，独立 skill 安装时为 skill 上一级 `.run/<name>/`；也可用 `--dir` 选择外部运行根目录。复制本归档可提供上游输入，但恢复原 raster 上下文仍需本机原有 `run.json`、标记及 Codex 会话；归档不冒充可移植的 agent 会话备份。

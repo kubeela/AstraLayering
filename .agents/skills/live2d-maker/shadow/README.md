@@ -1,9 +1,13 @@
 # 阴影制作
 
+## 单独运行本 section
+
+先准备同名任务的组装成果及下表所需参考，停止同任务总调度，再从 skill 根目录运行。独立入口只制作所选阴影分支：
+
 ```sh
 pnpm shadow --name jianma --krita /path/to/krita
 pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita
-# 总流程透传；首次默认 mask
+# 总入口只运行阴影；首次默认 mask
 pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 ```
 
