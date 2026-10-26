@@ -58,6 +58,6 @@ export function applyPointerBrush(scene,step) {
     const dt=1/120,t=(step-path.startStep)/120,from=path.start.map((p,i)=>p+path.velocity[i]*t),to=from.map((p,i)=>p+path.velocity[i]*dt),body=scene.bodies.get(path.id);
     if(!body)continue;
     const command=context.basis==='source-alpha'?pointerCommand(body,context.contactLayers[path.id],from,to,dt,path.radius,context.force):{type:'impulse',id:path.id,args:[...from,...path.velocity,path.radius,dt*12]};
-    if(command){body.impulse(...command.args);scene.pointerCommands.push({...command,pathFrom:from,pathTo:to});}
+    if(command){if(command.type==='surface-impulse')body.surfaceImpulse(...command.args);else body.impulse(...command.args);scene.pointerCommands.push({...command,pathFrom:from,pathTo:to});}
   }
 }

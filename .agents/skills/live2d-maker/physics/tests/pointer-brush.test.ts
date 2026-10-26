@@ -31,6 +31,31 @@ test('swept contact rejects transparent space and keeps elapsed-time force weigh
   const a=pointerCommand(body,[layer],[50,65],[50.1,65],1/120,2),b=pointerCommand(body,[layer],[50,65],[50.2,65],1/60,2);
   assert(a&&b);assert(Math.abs(a.args[2]-b.args[2])<1e-9);assert.equal(b.args[5],a.args[5]*2);assert.equal(pointerCommand(body,[layer],[50,65],[51,65],.2,2),null);
 });
+test('a drawn cloth contact transfers continuous motion across coarse control faces',()=>{
+  const displacements:number[]=[];
+  for(const grid of [[3,6],[5,10]])for(const x of [49.9,50,50.1]){
+    const recipe=structuredClone(config);recipe.components[0].authoring.controlGrid=grid;
+    const body=new ComponentScene(recipe).bodies.get('cloth'),point=[x,65];
+    body.surfaceImpulse(...point,12,0,2,.1);
+    for(let q=0;q<body.p.length;q++)body.p[q]+=body.velocity[q]/120;
+    body.syncMesh();const now=body.sample(point);displacements.push(now[0]-point[0]);
+    assert(Math.abs(now[1]-point[1])<1e-9);
+    assert.equal(body.stats.root,0);
+  }
+  assert(Math.min(...displacements)>.005,'Artwork between controls must receive the local cursor load');
+  assert(Math.max(...displacements)-Math.min(...displacements)<1e-8,'Crossing a control or changing control density must not create a force discontinuity');
+});
+test('surface contact preserves fixed artwork and worker command delivery',()=>{
+  const a=new ComponentScene(config),b=new ComponentScene(config);
+  const body=a.bodies.get('cloth');body.surfaceImpulse(50,15,20,0,2,.1);
+  assert(body.velocity.every((v:number)=>v===0));
+  const command=pointerCommand(body,[layer],[50,65],[50.1,65],1/120,2);
+  assert.equal(command.type,'surface-impulse');
+  body.surfaceImpulse(...command.args);a.step();
+  advancePhysicsJob(b,{steps:1,elapsed:0,replayStep:0,playback:'',commands:[command]});
+  assert.deepEqual(body.positions,b.bodies.get('cloth').positions);
+  assert.deepEqual(body.velocity,b.bodies.get('cloth').velocity);
+});
 test('a multi-pin seam selects the free edge relative to the nearest pin and sweeps across the cloth',()=>{
  const many=structuredClone(config);many.components[0].supports=[{id:'left',at:[25,15]},{id:'mid',at:[50,15]},{id:'right',at:[75,15]}];
  const p=preparePointerBrush(new ComponentScene(many),[layer]).paths[0];assert(p.sourcePoint[1]>75);assert(Math.abs(p.velocity[0])>Math.abs(p.velocity[1])*2);assert(Math.abs(p.velocity[0]*(p.sourcePoint[0]-p.anchor.at[0])+p.velocity[1]*(p.sourcePoint[1]-p.anchor.at[1]))<1e-8);

@@ -6,6 +6,7 @@ export function advancePhysicsJob(scene, job) {
   let { elapsed, replayStep, playback } = job;
   for (const command of job.commands || []) {
     if (command.type === 'impulse') scene.bodies.get(command.id)?.impulse(...command.args);
+    else if(command.type==='surface-impulse')scene.bodies.get(command.id)?.surfaceImpulse(...command.args);
   }
   let paused = false;
   for (let k = 0; k < job.steps; k++) {

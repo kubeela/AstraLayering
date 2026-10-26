@@ -156,7 +156,7 @@ export class ComponentPhysicsPanel extends PhysicsPanel {
       const dt=(time-this.pointer.time)/1000,dx=x-this.pointer.x,dy=y-this.pointer.y;
       if(dt>0&&dt<.12)for(const[id,b]of this.bodies)if(this.scope==='all'||id===this.selected){
         const command=pointerCommand(b,this.contactLayers.get(id)||[],[this.pointer.x,this.pointer.y],[x,y],dt,this.radius,this.force);
-        if(command)b.impulse(...command.args);
+        if(command)b.surfaceImpulse(...command.args);
       }
     }
     this.pointer={x,y,time};this.overlay();

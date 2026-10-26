@@ -16,7 +16,10 @@ export class ComponentPhysicsRunner {
     this.worker.onerror = event => { event.preventDefault(); this.fail(event.message); };
     this.resetScene = panel.scene.reset.bind(panel.scene);
     panel.scene.reset = () => { this.resetScene(); this.reset(); };
-    for (const [id, body] of panel.bodies) body.impulse = (...args) => this.commands.push({ type: 'impulse', id, args });
+    for (const [id, body] of panel.bodies){
+      body.impulse = (...args) => this.commands.push({ type: 'impulse', id, args });
+      body.surfaceImpulse = (...args) => this.commands.push({ type: 'surface-impulse', id, args });
+    }
   }
   apply(data) {
     const panel = this.panel, values = new Float64Array(data.buffer);

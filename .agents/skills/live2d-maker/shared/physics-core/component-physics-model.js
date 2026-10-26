@@ -357,6 +357,30 @@ export class ComponentBody {
     }
     this.impulses++;
   }
+  surfaceImpulse(x,y,vx,vy,radius,weight=1){
+    if(this.kind!=='cloth')return this.impulse(x,y,vx,vy,radius,weight);
+    if(![x,y,vx,vy,radius,weight].every(Number.isFinite)||radius<=0||weight<=0)return;
+    // Cursor velocity is a bounded velocity budget at the drawn contact,
+    // not a radial kick at whichever control happens to lie nearby. Project
+    // it through the control face with its effective inverse mass. Include
+    // pinned mass in the denominator so attachment mobility attenuates input
+    // instead of amplifying it next to a fixed edge.
+    for(let k=0;k<this.controlIndices.length;k+=3){
+      const ids=Array.from(this.controlIndices.slice(k,k+3));
+      const w=barycentric([x,y],...ids.map(i=>[this.p[i*2],this.p[i*2+1]]));
+      if(!w)continue;
+      const effective=ids.reduce((sum,i,j)=>sum+w[j]*w[j]/this.mass[i],0);
+      if(effective<=1e-12)return;
+      const speed=Math.hypot(vx,vy),cap=this.freeLength*2;
+      const scale=speed?cap*Math.tanh(speed/cap)/speed*this.component.response.inputGain*weight:0;
+      for(let j=0;j<3;j++){
+        const i=ids[j],factor=w[j]*this.invMass(i)/effective;
+        this.velocity[i*2]+=vx*scale*factor;this.velocity[i*2+1]+=vy*scale*factor;
+      }
+      this.impulses++;return;
+    }
+    return this.impulse(x,y,vx,vy,radius,weight);
+  }
   sample(point){
     if(this.kind==='pendant'){
       // A connector may sit just outside the visible metal's contour. It
