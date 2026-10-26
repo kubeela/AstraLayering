@@ -47,8 +47,11 @@ export async function inventory(root: string, versions?: Record<string, string>)
         await walk(child, depth + 1);
       }
       else if (entry.isFile() && artifactExtensions.test(entry.name)) {
+        if (versions) {
+          try { const info = await lstat(join(root, child)); versions[child] = `${info.mtimeMs}:${info.size}`; }
+          catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue; throw error; }
+        }
         files.push(child);
-        if (versions) { const info = await lstat(join(root, child)); versions[child] = `${info.mtimeMs}:${info.size}`; }
       }
     }
   }
