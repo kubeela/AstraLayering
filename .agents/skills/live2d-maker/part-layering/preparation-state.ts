@@ -2,14 +2,13 @@ import { copyFile, lstat, readFile, readdir, rename, rm, writeFile } from 'node:
 import { randomUUID } from 'node:crypto';
 import { dirname, extname, join, relative } from 'node:path';
 import sharp from 'sharp';
-import { stepId, type SectionStep } from '../shared/step-section.ts';
+import { type SectionStep } from '../shared/step-section.ts';
 import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
-import { preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
+import { preparationNumbers, preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
 export { preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
 
 export type StandardJudgment = { needsAdjustment: boolean; reason?: string };
-export type ReferenceJudgment = { needsSimplification: boolean; reason?: string };
 
 export function checkStandardJudgment(value: unknown): asserts value is StandardJudgment {
   if (!value || typeof value !== 'object' || typeof (value as StandardJudgment).needsAdjustment !== 'boolean'
@@ -17,15 +16,6 @@ export function checkStandardJudgment(value: unknown): asserts value is Standard
     throw new Error('姿态判断须包含 boolean needsAdjustment，reason 须为字符串');
   }
 }
-export function checkJudgment(value: unknown): asserts value is ReferenceJudgment {
-  if (!value || typeof value !== 'object' || typeof (value as ReferenceJudgment).needsSimplification !== 'boolean') {
-    throw new Error('judgment must contain a boolean needsSimplification');
-  }
-  if ((value as ReferenceJudgment).reason !== undefined && typeof (value as ReferenceJudgment).reason !== 'string') {
-    throw new Error('judgment reason must be a string');
-  }
-}
-
 export async function present(path: string): Promise<boolean> {
   try { await lstat(path); return true; }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error; }
@@ -83,11 +73,11 @@ export async function preparationSteps(refs: PreparationReferences, standard: bo
   steps.push(['options', [], [preparationOptionsPath(refs.directory)]]);
   if (standard && original) steps.push(['pose', ['original'], [poseJudgmentPath(refs.directory)]]);
   if (withStandard) steps.push(['standard', ['original', 'options', 'pose'], [join(refs.directory, 'standard.png')]]);
-  steps.push(['judgment', ['standard'], [refs.judgment]], ['simplified', ['standard', 'judgment'], [refs.simplifiedSubject]],
+  steps.push(['simplified', ['standard'], [refs.simplifiedSubject]],
     ['base', ['simplified'], [refs.baseSubject]], ['ready', ['simplified', 'base']]);
   return steps.map(([stage, dependsOn, outputs]) => {
     const directory = join(root, stageStep(stage));
-    return { number: preparationStages.indexOf(stage) + 1, dependsOn: dependsOn.map(dependency => preparationStages.indexOf(dependency) + 1),
+    return { number: preparationNumbers[stage], dependsOn: dependsOn.map(dependency => preparationNumbers[dependency]),
       ...(outputs ? { outputs: outputs.map(path => relative(directory, path)) } : {}) };
   });
 }

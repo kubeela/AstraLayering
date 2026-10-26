@@ -129,7 +129,7 @@ const rasterDelivery = (pipeline, stepId, png, kra) => [
 ];
 export const stepArtifacts = [
   {
-    preparation: [file('part-layering/references/judgment.json', '参考判断记录')],
+    preparation: [image('part-layering/references/simplified-subject.png', '简化角色'), image('part-layering/references/base-subject.png', '素体参考')],
     standard: [image('part-layering/references/standard.png', '标准参考图')],
     simplified: [image('part-layering/references/simplified-subject.png', '简化角色')],
     base: [image('part-layering/references/base-subject.png', '素体参考')],
