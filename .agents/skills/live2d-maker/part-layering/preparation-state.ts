@@ -7,8 +7,7 @@ import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
 
 export type StandardJudgment = { needsAdjustment: boolean; reason?: string };
-export type ReferenceJudgment = { needsSimplification: boolean; reason?: string; preparedImageHash?: string };
-export type PreparationStage = typeof preparationStages[number];
+export type PreparationStage = keyof typeof preparationNumbers;
 
 export function checkStandardJudgment(value: unknown): asserts value is StandardJudgment {
   if (!value || typeof value !== 'object' || typeof (value as StandardJudgment).needsAdjustment !== 'boolean'
@@ -16,19 +15,6 @@ export function checkStandardJudgment(value: unknown): asserts value is Standard
     throw new Error('姿态判断须包含 boolean needsAdjustment，reason 须为字符串');
   }
 }
-export function checkJudgment(value: unknown): asserts value is ReferenceJudgment {
-  if (!value || typeof value !== 'object' || typeof (value as ReferenceJudgment).needsSimplification !== 'boolean') {
-    throw new Error('judgment must contain a boolean needsSimplification');
-  }
-  if ((value as ReferenceJudgment).reason !== undefined && typeof (value as ReferenceJudgment).reason !== 'string') {
-    throw new Error('judgment reason must be a string');
-  }
-  if ((value as ReferenceJudgment).preparedImageHash !== undefined
-    && (typeof (value as ReferenceJudgment).preparedImageHash !== 'string' || !/^[a-f0-9]{64}$/.test((value as ReferenceJudgment).preparedImageHash!))) {
-    throw new Error('preparedImageHash must be a SHA256 string');
-  }
-}
-
 export async function present(path: string): Promise<boolean> {
   try { await lstat(path); return true; }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false; throw error; }
@@ -68,9 +54,12 @@ export async function copyAsPng(source: string, output: string): Promise<void> {
 
 // Preparation is the section part-layering/preparation, with fixed step
 // numbers; pose keeps its number when a run does not standardize.
-export const preparationStages = ['original', 'options', 'pose', 'standard', 'judgment', 'simplified', 'base', 'ready'] as const;
-export const stageStep = (stage: PreparationStage) => stepId(preparationStages.indexOf(stage) + 1);
-export const stepStage = (id: string) => preparationStages[Number(id.slice(4)) - 1];
+// step05 belonged to the retired, separate style judgment. Keep other numbers
+// stable so completed images and downstream stamps remain usable.
+const preparationNumbers = { original: 1, options: 2, pose: 3, standard: 4, simplified: 6, base: 7, ready: 8 } as const;
+export const preparationStages = Object.keys(preparationNumbers) as PreparationStage[];
+export const stageStep = (stage: PreparationStage) => stepId(preparationNumbers[stage]);
+export const stepStage = (id: string) => preparationStages.find(stage => stageStep(stage) === id)!;
 export const sectionDirectory = (references: string) => join(dirname(references), 'preparation');
 export const poseJudgmentPath = (references: string) => join(sectionDirectory(references), stageStep('pose'), 'judgment.json');
 
@@ -89,11 +78,11 @@ export async function preparationSteps(refs: PreparationReferences, standard: bo
   steps.push(['options', [], [preparationOptionsPath(refs.directory)]]);
   if (standard && original) steps.push(['pose', ['original'], [poseJudgmentPath(refs.directory)]]);
   if (withStandard) steps.push(['standard', ['original', 'options', 'pose'], [join(refs.directory, 'standard.png')]]);
-  steps.push(['judgment', ['standard'], [refs.judgment]], ['simplified', ['standard', 'judgment'], [refs.simplifiedSubject]],
+  steps.push(['simplified', ['standard'], [refs.simplifiedSubject]],
     ['base', ['simplified'], [refs.baseSubject]], ['ready', ['simplified', 'base']]);
   return steps.map(([stage, dependsOn, outputs]) => {
     const directory = join(root, stageStep(stage));
-    return { number: preparationStages.indexOf(stage) + 1, dependsOn: dependsOn.map(dependency => preparationStages.indexOf(dependency) + 1),
+    return { number: preparationNumbers[stage], dependsOn: dependsOn.map(dependency => preparationNumbers[dependency]),
       ...(outputs ? { outputs: outputs.map(path => relative(directory, path)) } : {}) };
   });
 }

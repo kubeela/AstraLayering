@@ -33,7 +33,7 @@ export const modelSlotDefaults = resolveModelDefaults(readDefaultConfiguration()
 // Keep task identities for prompts, preflight, logs and session recovery.
 export const stepModelSlots = {
   part_pose_judgment: 'preparation', part_standardize: 'preparation',
-  part_reference_judgment: 'preparation', part_simplify: 'preparation', part_base_subject: 'preparation',
+  part_simplify: 'preparation', part_base_subject: 'preparation',
   part_initial_groups: 'part_groups', part_outline: 'part_draw', part_outline_review: 'part_review',
   part_outline_repair: 'part_draw', part_reduce: 'part_reduce', part_completion: 'part_completion',
   part_children: 'part_groups', part_occlusion: 'part_depth',

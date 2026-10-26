@@ -20,11 +20,11 @@ pnpm part-layering --name my-character --groups /绝对路径/selection.json
 
 ## 参考准备
 
-输出 `references/standard.png`、`judgment.json`、`simplified-subject.*`、`base-subject.png`。标准化选项默认关闭，开启后先判断姿态再按需调整；原图保留在任务 `input/`。素体保留手套、鞋袜和各自饰件，主体衣装以临时连体服替换。步骤目录按 preparation/step01～08 记录原图、选项、姿态、标准图、画风判断、简化、素体与就绪，未使用步骤保留编号。
+输出 `references/standard.png`、`simplified-subject.*`、`base-subject.png`。标准化选项默认关闭，开启后先判断姿态再按需调整；原图保留在任务 `input/`。素体保留手套、鞋袜和各自饰件，主体衣装以临时连体服替换。步骤目录按 preparation/step01～08 记录原图、选项、姿态、标准图、简化、素体与就绪；step05 为已退场的独立画风判断，其他步骤沿用原编号。
 
 简化与素体各由一个 preparation agent 完成“判断 → 复制或生图”。图1已符合目标画风时，简化 agent 直接复用；当前画幅没有主体衣装、角色已是素体或已有合适的临时连体服时，素体 agent 直接复用。复制工具绑定当前参考与输出位置，PNG 原样复制；需要转换或换装时调用本步骤配置的生图工具。两份完整提示词为 `prompts/2-简化图片.md`、`prompts/3-素体参考.md`。
 
-现有步骤编号保持不变：step05 在一次 agent 调用中保存画风判断与准备图，step06 发布简化参考，step07 准备素体。新准备图保存在 step05/reference.png，并由 judgment.json 中的哈希校验；已有完成结果与旧版分开的判断记录继续复用。
+step06 与 step07 各自直接保存最终图片及步骤完成记录，选择理由保存在 agent 调用日志。复制结果原样交付，生图结果在准备函数内部完成后处理；续跑依据已有图片与步骤记录复用。旧任务已完成的图片继续沿用，缺图时按当前单次 agent 流程制作。
 
 参考与选项按内容指纹复用；主动改变选项或重做参考的规则见 [workflow](../workflow/README.md#姿态与参考)。生成图后处理见 [shared](../shared/README.md#参考图后处理)。
 

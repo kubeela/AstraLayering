@@ -10,9 +10,10 @@ import { dirname, join } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../shared/codex/agents.ts';
 import { clearPreparedParts, preparationHash as hash } from '../shared/part/preparation-cache.ts';
-import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
+import type { PreparationInput, PreparationReferences as ImageReferences } from '../shared/part/preparation-types.ts';
 
-export type { PreparationInput, PreparationReferences };
+export type { PreparationInput };
+export type PreparationReferences = ImageReferences & { judgment: string };
 export type PreparationSteps = { extract(image: string, baseImage: string, output: string, prompt: string): Promise<void> };
 
 export function getPreparationDirectory(runName: string, root?: string): string {
