@@ -70,6 +70,8 @@ pnpm physics:evidence --name <任务名> --test tip-impulse --steps 0,60,96,180,
 
 刚性挂件可设置 `response.outputFrequencyHz`（0.15–6 Hz），在工作台显示为“角度过渡”：低值让显示角度更平缓，物理回弹仍由 `frequencyHz` 和阻尼控制。未设置时沿用原 `frequencyHz`，保留旧配置行为。它只调整现有有界输出的过渡，不覆盖 Inochi 物理状态、改变最大摆角或降低贴图精度；串联下游会读取这个真实显示挂点，必须重新验证整条链。配置和实现指纹变化后重跑九组及真实视觉，不能复用旧版通过结论。
 
+`--preview assembled` 明确使用装配底图复核物理，适用于现有投影 KRA 包含无法安全隔离的合成依赖。原投影文件保留，投影效果不计入本轮复核。选择存入 `physics/preview-selection.json` 并供续跑复用；改回 `--preview auto` 会重新检查可用投影。它只改变渲染范围，分析、绑定和数值轨迹保持原有校验；旧图像依据不会继承为新范围的通过。
+
 ## 三职责、有限标定与真正返修
 
 默认 A 为 Sol high，B／C 为 Sol xhigh，分别使用 `layering_agent_physics_analysis_model`、`layering_agent_physics_authoring_model`、`layering_agent_physics_review_model`；已有显式配置优先，见[推荐方案](../references/model-presets.md)。A 保存全部源部件的判断；B 制作并调参；C 使用独立上下文、只读 B 草稿，不能代改绑定或选择候选。越权改写会被检测并恢复，异常版本保留。

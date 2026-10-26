@@ -72,6 +72,16 @@ async function copySurfaceFiles(native:LayerCompositor,session:any,packet:any,so
 export async function prepareProjectionPreview(input:PhysicsInput,directory:string,krita:string){
   await prepareSource(input,directory,krita);
   const source=join(directory,'source'),preview=join(directory,'preview'),project=await studioProject(input.task,basename(input.task),dirname(input.task),'normal-depth');
+  const selection=await optional(join(directory,'preview-selection.json'));
+  if(selection?.mode==='assembled'){
+    await rm(preview,{recursive:true,force:true});
+    const catalog=await json(join(source,'catalog.json'));
+    await put(join(source,'catalog.json'),{...catalog,previewSelection:selection});
+    return;
+  }
+  if(selection&&selection.mode!=='auto')throw Error('未知的物理复核底图选择');
+  const sourceCatalog=await json(join(source,'catalog.json'));
+  if(sourceCatalog.previewSelection){delete sourceCatalog.previewSelection;await put(join(source,'catalog.json'),sourceCatalog);}
   if(!project.previewModes.mask){await rm(preview,{recursive:true,force:true});return;}
   const mask=await studioProject(input.task,basename(input.task),dirname(input.task),'mask'),document=join(input.task,mask.files.document.path),color=join(input.task,mask.files.color.path),bindings=await json(join(input.task,mask.files.bindings.path));
   const digest=hash(await readFile(document)),existing=await optional(join(preview,'catalog.json'));
@@ -88,4 +98,8 @@ export async function prepareProjectionPreview(input:PhysicsInput,directory:stri
     }
     await put(join(preview,'catalog.json'),{...base,extractorVersion:2,documentHash:digest,colorHash:hash(await readFile(color)),previewMode:'mask',layers:packet.layers});
   } finally { await native.dispose(); }
+}
+export async function selectPhysicsPreview(directory:string,mode:'auto'|'assembled'){
+  if(!['auto','assembled'].includes(mode))throw Error('物理复核底图只允许 auto 或 assembled');
+  await put(join(directory,'preview-selection.json'),{version:1,mode,scope:'render-review-only',projectionReviewRequested:mode!=='assembled',reason:mode==='assembled'?'Explicit assembled review; projection assets are preserved and excluded from this review.':'Use available projection input.'});
 }
