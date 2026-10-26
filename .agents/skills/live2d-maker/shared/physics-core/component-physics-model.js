@@ -357,6 +357,30 @@ export class ComponentBody {
     }
     this.impulses++;
   }
+  surfaceImpulse(x,y,vx,vy,radius,weight=1){
+    if(this.kind!=='cloth')return this.impulse(x,y,vx,vy,radius,weight);
+    if(![x,y,vx,vy,radius,weight].every(Number.isFinite)||radius<=0||weight<=0)return;
+    // Cursor velocity is a bounded velocity budget at the drawn contact,
+    // not a radial kick at whichever control happens to lie nearby. Project
+    // it through the control face with its effective inverse mass. Include
+    // pinned mass in the denominator so attachment mobility attenuates input
+    // instead of amplifying it next to a fixed edge.
+    for(let k=0;k<this.controlIndices.length;k+=3){
+      const ids=Array.from(this.controlIndices.slice(k,k+3));
+      const w=barycentric([x,y],...ids.map(i=>[this.p[i*2],this.p[i*2+1]]));
+      if(!w)continue;
+      const effective=ids.reduce((sum,i,j)=>sum+w[j]*w[j]/this.mass[i],0);
+      if(effective<=1e-12)return;
+      const speed=Math.hypot(vx,vy),cap=this.freeLength*2;
+      const scale=speed?cap*Math.tanh(speed/cap)/speed*this.component.response.inputGain*weight:0;
+      for(let j=0;j<3;j++){
+        const i=ids[j],factor=w[j]*this.invMass(i)/effective;
+        this.velocity[i*2]+=vx*scale*factor;this.velocity[i*2+1]+=vy*scale*factor;
+      }
+      this.impulses++;return;
+    }
+    return this.impulse(x,y,vx,vy,radius,weight);
+  }
   sample(point){
     if(this.kind==='pendant'){
       // A connector may sit just outside the visible metal's contour. It
@@ -384,7 +408,7 @@ export class ComponentBody {
       const d=(bx-ax)*(cy-ay)-(by-ay)*(cx-ax);if(Math.abs(d)<1e-12)continue;
       const u=((bx-x)*(cy-y)-(by-y)*(cx-x))/d,v=((x-ax)*(cy-ay)-(y-ay)*(cx-ax))/d,w=1-u-v;if(u< -1e-6||v< -1e-6||w< -1e-6)continue;
       const r=this.rest,rx=r[a]*u+r[b]*v+r[c]*w,ry=r[a+1]*u+r[b+1]*v+r[c+1]*w;
-      let value=0;for(const l of layers){if(!l)continue;const ix=Math.floor(rx-l.bounds.x),iy=Math.floor(ry-l.bounds.y);if(ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height)value=Math.max(value,l.maskedRgba[(iy*l.bounds.width+ix)*4+3]);}return value;
+      let value=0;for(const l of layers){if(!l)continue;const ix=Math.floor(rx-l.bounds.x),iy=Math.floor(ry-l.bounds.y);if(ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height){const pixel=iy*l.bounds.width+ix;value=Math.max(value,l.maskedAlpha?l.maskedAlpha[pixel]:l.maskedRgba[pixel*4+3]);}}return value;
     }return 0;
   }
   hit(x,y,layers){return this.sampleAlpha(x,y,layers)>32;}

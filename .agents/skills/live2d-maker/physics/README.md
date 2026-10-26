@@ -70,6 +70,8 @@ pnpm physics:evidence --name <任务名> --test tip-impulse --steps 0,60,96,180,
 
 刚性挂件可设置 `response.outputFrequencyHz`（0.15–6 Hz），在工作台显示为“角度过渡”：低值让显示角度更平缓，物理回弹仍由 `frequencyHz` 和阻尼控制。未设置时沿用原 `frequencyHz`，保留旧配置行为。它只调整现有有界输出的过渡，不覆盖 Inochi 物理状态、改变最大摆角或降低贴图精度；串联下游会读取这个真实显示挂点，必须重新验证整条链。配置和实现指纹变化后重跑九组及真实视觉，不能复用旧版通过结论。
 
+`--preview assembled` 明确使用装配底图复核物理，适用于现有投影 KRA 包含无法安全隔离的合成依赖。原投影文件保留，投影效果不计入本轮复核。选择存入 `physics/preview-selection.json` 并供续跑复用；改回 `--preview auto` 会重新检查可用投影。它只改变渲染范围，分析、绑定和数值轨迹保持原有校验；旧图像依据不会继承为新范围的通过。
+
 ## 三职责、有限标定与真正返修
 
 默认 A 为 Sol high，B／C 为 Sol xhigh，分别使用 `layering_agent_physics_analysis_model`、`layering_agent_physics_authoring_model`、`layering_agent_physics_review_model`；已有显式配置优先，见[推荐方案](../references/model-presets.md)。A 保存全部源部件的判断；B 制作并调参；C 使用独立上下文、只读 B 草稿，不能代改绑定或选择候选。越权改写会被检测并恢复，异常版本保留。
@@ -88,3 +90,7 @@ pnpm physics:probe --output /tmp/physics-probes-repair --cases long-ribbon-2,tas
 C 的失败通过 `physics_request_repair` 写 `step03/feedback.json`，包含版本指纹、reviewTurn、组件、准则、真实输入／整数步窗口与已查看图片。返回 blocked 后调度器将当前失败版本归档到 `step03/reviews/`，保存 `step02/repair-request.json`，恢复 B 的原 thread，B 修改后再新建 C 会话。每装配最多三轮制作／复核；普通异常、旧反馈、失败的工具调用均不自动触发返修。中断的交接可接续，不删除完整轨迹或重复增加轮次。
 
 `assemblies.json` 和 `tuning.json` 是独立结构化产物，可被前端展示为装配图、逐组状态、候选响应曲线和参数差异；`feedback.json` 展示当前返修及证据窗口。手动导入配置可以派生装配图，但没有真实工作流产物时不能显示为“自动标定已通过”。当前定向验证覆盖身份稳定、固定步可复现、参数边界、独立组选择、标定代次、角色权限与返修状态；它不等于无缓存重跑 Jianma 的视觉验收。
+
+独立物理复核只覆盖本轮现存素材。缺少真实法线/深度时，默认平面诊断不代表其内部信息已验证；报告明确记录范围，并以真实颜色、UV和已有投影检查形变一致性。缺失可选输入不交给物理制作 B 造图，现有输入的错误和实际图像查看要求照常保留。
+
+输入 v4 在原九组之外加入真实连续鼠标轻扫，详见 [formal 15](../../../../tutorial/live2d-guidance/formal/15-continuous-pointer-review.md)。路径来自当前层序/透明度下可见的自由像素，并保留 UUID、像素指纹、路径、速度、半径与逐步接触命令；路径固定在画布内，不抓住移动顶点。标定和工作台回放采用同一接触函数，Worker 接收相同的源 alpha；正常自由预览不提前扫描所有像素。原九组输入和全部安全约束保持不变。真正的规则升级归档旧反馈和返修预算，保留 A、作者草稿及 B 会话，重新标定并新建 C；同指纹续跑不能再次清空预算或继承旧通过。

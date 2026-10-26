@@ -7,7 +7,8 @@ export function summarizeEvidence(manifest: any, test?: string) {
       ...(test ? { windows: [...new Set(events.map((event: any) => event.component))].map(component => {
         const fallback = events.find((event: any) => event.component === component && event.type === 'fallback');
         const peak = events.find((event: any) => event.component === component && event.type === 'peak');
-        return { component, firstFallback: fallback?.step, peak: peak?.step, peakTravel: peak?.travel };
+        const visiblePeak=events.find((event:any)=>event.component===component&&event.type==='source-pixel-peak');
+        return { component, firstFallback: fallback?.step, peak: peak?.step, peakTravel: peak?.travel,...(visiblePeak?{sourcePixelPeak:visiblePeak.step,sourcePixelPeakTravel:visiblePeak.travel}:{}) };
       }) } : {}) };
   }) };
 }

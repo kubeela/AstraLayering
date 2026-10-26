@@ -12,6 +12,8 @@ import { applyTestInput, testNames, inputVersion } from './physics-test-input.js
 import { motionIssues, motionReviewVersion, motionStepBasis, MotionStepTracker } from './physics-motion-review.js';
 import { atomicJSON } from '../artifact-files.ts';
 import {recoveryBudgetSteps,recoveryState,settlingVersion} from './settling.js';
+import {pointerSource,pointerContext} from './pointer-source.ts';
+import {pointerBrushMetadata} from './pointer-brush.js';
 const hash=(value:Uint8Array|string)=>createHash('sha256').update(value).digest('hex');
 const json=async(path:string)=>JSON.parse(await readFile(path,'utf8'));
 const put=atomicJSON;
@@ -20,19 +22,22 @@ export const evidenceVersion='astra-physics-evidence-2';
 export async function simulationHash(){return hash((await Promise.all([
   readFile(new URL(import.meta.url)),
   ...['component-physics-model.js','component-physics-geometry.js','component-physics-schema.js','physics-airflow.js','vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js'].map(n=>readFile(new URL('../physics-core/'+n,import.meta.url))),
-  ...['component-physics-worker.js','physics-test-input.js','physics-motion-review.js','physics-recorded-frame.js','settling.js'].map(n=>readFile(new URL(n,import.meta.url)))
+  ...['component-physics-worker.js','physics-test-input.js','physics-motion-review.js','physics-recorded-frame.js','settling.js','physics-pointer-contact.js','pointer-brush.js','pointer-source.ts'].map(n=>readFile(new URL(n,import.meta.url))),
+  readFile(new URL('../physics-core/component-physics-binding.js',import.meta.url))
 ])).map(hash).join(':'));}
 export const configHash=(config:any)=>{const {review,...body}=config;return hash(JSON.stringify(body));};
-export async function simulate(config:any, output:string,signal?:AbortSignal) {
+export async function simulate(config:any, output:string,signal?:AbortSignal,source?:string) {
   const digest=configHash(config),runtimeHash=await simulationHash(),runs:any[]=[];
+  const context=pointerContext(new ComponentScene(config),source?await pointerSource(source):undefined);
   const prior=await optional(join(output,'manifest.json'));
-  if(prior?.configHash===digest&&prior.version===evidenceVersion&&prior.simulationHash===runtimeHash)return prior;
+  if(prior?.configHash===digest&&prior.version===evidenceVersion&&prior.simulationHash===runtimeHash&&prior.pointerBrush?.basis===context.basis&&prior.pointerBrush?.sourceHash===context.sourceHash)return prior;
   const partial=await readdir(output).then(files=>files.length>0,(e:NodeJS.ErrnoException)=>{if(e.code==='ENOENT')return false;throw e;});
   if(prior||partial){const backups=join(dirname(output),'backups');await mkdir(backups,{recursive:true});await rename(output,join(backups,'evidence-'+randomUUID()));}
   await mkdir(output,{recursive:true});
   await (await import('node:fs/promises')).rm(join(output,'failure.json'),{force:true});
   for(const test of testNames) {
     const scene=new ComponentScene(config),directory=join(output,test);await mkdir(directory,{recursive:true});
+    scene.pointerBrush=context;
     const frames:number[]=[0],events:any[]=[],previousStats=new Map(),curvePoints=new Map<string,number[][]>(),metrics:any={invalidSteps:0,fallbackSteps:0,limitedSteps:0,maxRoot:0,maxTravel:0,minArea:1,notSettled:[],simulationMs:0};
     const motionMetrics:any={};const stepTrackers=new Map<string,InstanceType<typeof MotionStepTracker>>();
     const peaks=new Map<string,{step:number;travel:number}>();const signs=new Map<string,number>();
@@ -44,6 +49,10 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
       const components:any={};
       for(const [id,b]of scene.bodies) {
         const m=motionMetrics[id]||=( {peak:0,root:0,fallback:0,limited:0,maxStep:0,maxWorldStep:0,final:0,invalid:0} );
+        if(test==='pointer-brush') {
+          const path=context.paths.find((p:any)=>p.id===id);m.pointerReachable=path?.status==='reachable';m.pointerTravel=path?.velocity?Math.hypot(...path.velocity)*(path.endStep-path.startStep)/120:0;m.contacts=(m.contacts||0)+(scene.pointerCommands||[]).filter((p:any)=>p.id===id).length;
+          if(path?.sourcePoint){const p=b.sample(path.sourcePoint),travel=Math.hypot(p[0]-path.sourcePoint[0],p[1]-path.sourcePoint[1]);if(travel>(m.sourcePixelPeak||0)){m.sourcePixelPeak=travel;m.sourcePixelPeakStep=step;}}
+        }
         if(step<=960){m.peak=Math.max(m.peak,b.stats.travel);m.fallback+=+b.stats.fallback;m.limited+=+b.stats.limited;m.final=b.stats.travel;}
         m.root=Math.max(m.root,b.stats.root);m.invalid+=+!b.stats.valid;
         let tracker=stepTrackers.get(id);if(!tracker){tracker=new MotionStepTracker(config.source.canvas,b.positions.length,b.maxDistance);stepTrackers.set(id,tracker);}
@@ -61,7 +70,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
         if(step%4===0){if(!curvePoints.has(id))curvePoints.set(id,[]);curvePoints.get(id)!.push([step/120,residual[tip*2]]);}
         if(step===960&&stats.travel>.1)metrics.notSettled.push(id);
       }
-      yield JSON.stringify({step,time:step/120,sourcePose:scene.sourcePose,airflow:scene.airflow,components})+'\n';if(step&&step%12===0)frames.push(step);
+      yield JSON.stringify({step,time:step/120,sourcePose:scene.sourcePose,airflow:scene.airflow,pointerCommands:scene.pointerCommands||[],components})+'\n';if(step&&step%12===0)frames.push(step);
       durationSteps=step;
       if(step>=960&&(!recovery.size||step>960&&[...recovery.values()].every(r=>r.quietSteps>=60)))break;
     }}
@@ -71,6 +80,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
     metrics.simulationMs=performance.now()-started;
     metrics.motionReview={version:motionReviewVersion,stepBasis:motionStepBasis,components:Object.fromEntries([...scene.bodies].map(([id,b])=>[id,{...motionMetrics[id],issues:motionIssues(test,b.component,motionMetrics[id])}]))};
     for(const[id,peak]of peaks)if(peak.travel>.1)events.push({type:'peak',component:id,...peak});
+    if(test==='pointer-brush')for(const path of context.paths.filter((p:any)=>p.status==='reachable')){const m=motionMetrics[path.id];events.push({type:'contact-start',component:path.id,step:path.startStep},{type:'contact-end',component:path.id,step:path.endStep});if(m.sourcePixelPeak>0)events.push({type:'source-pixel-peak',component:path.id,step:m.sourcePixelPeakStep,travel:m.sourcePixelPeak});}
     // The first sequence is uniform. Dense windows supplement it; they never
     // replace uninteresting frames or interpolate unrecorded peak positions.
     const dense=new Set([...frames,durationSteps]);for(const event of events)for(let step=Math.max(0,event.step-12);step<=Math.min(durationSteps,event.step+12);step+=event.type==='limit'?1:2)dense.add(step);
@@ -82,7 +92,7 @@ export async function simulate(config:any, output:string,signal?:AbortSignal) {
     await writeFile(join(directory,'curves.svg'),svg);
     runs.push({test,durationSteps,frameSteps,metrics,events,curves,trace:test+'/trace.jsonl.gz',plot:test+'/curves.svg'});
   }
-  const manifest={version:evidenceVersion,solver:config.solver,inputVersion,configHash:digest,simulationHash:runtimeHash,stepHz:120,steps:960,baselineRenderHz:10,diagnosticRenderHz:60,createdAt:new Date().toISOString(),runs,coverage:{numerical:'all-steps-all-meshes',render:'pending',aiVisual:'unreviewed',human:'unreviewed'}};
+  const manifest={version:evidenceVersion,solver:config.solver,inputVersion,pointerBrush:pointerBrushMetadata(context),configHash:digest,simulationHash:runtimeHash,stepHz:120,steps:960,baselineRenderHz:10,diagnosticRenderHz:60,createdAt:new Date().toISOString(),runs,coverage:{numerical:'all-steps-all-meshes',render:'pending',aiVisual:'unreviewed',human:'unreviewed'}};
   await put(join(output,'manifest.json'),manifest);return manifest;
 }
 export async function traceWindow(evidence:string,test:string,steps:number[],maxSteps=60) {
@@ -106,7 +116,8 @@ async function readTraceWindow(evidence:string,test:string,steps:number[],maxSte
       const end=line.indexOf(',"components":');if(end<0)throw Error('轨迹缺少组件数据');
       const row=JSON.parse(line.slice(0,end)+'}');
       if(row.step!==step||!row.sourcePose||!row.airflow||!['x','y','angle'].every(k=>Number.isFinite(row.sourcePose[k]))||!['x','y'].every(k=>Number.isFinite(row.airflow[k])))throw Error('轨迹缺少有效的逐步输入，请重新模拟');
-      inputs.push({sourcePose:row.sourcePose,airflow:row.airflow});
+      if(test==='pointer-brush'&&!Array.isArray(row.pointerCommands))throw Error('连续轻扫轨迹缺少逐步命令');
+      inputs.push({sourcePose:row.sourcePose,airflow:row.airflow,...(row.pointerCommands?{pointerCommands:row.pointerCommands}:{})});
     }
     if(wanted.has(step))result.set(step,JSON.parse(line));if(++step>Math.max(...steps))break;
   }if(result.size!==wanted.size)throw Error('轨迹不完整');return {rows:steps.map(n=>result.get(n)),inputs};}
