@@ -10,7 +10,7 @@ const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
  folder:'<path d="M3 7a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v9H3Z"/>',
  plus:'<path d="M12 5v14M5 12h14"/>', check:'<path d="m5 12 4 4L19 6"/>', chevron:'<path d="m9 5 7 7-7 7"/>', down:'<path d="m5 9 7 7 7-7"/>',
- play:'<path d="m8 4 12 8-12 8V4Z"/>', clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ play:'<path d="m8 4 12 8-12 8V4Z"/>', stop:'<rect x="6" y="6" width="12" height="12" rx="2"/>', clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
  arrow:'<path d="M4 12h16m-6-6 6 6-6 6"/>',
  image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/>',
  file:'<path d="M13 3H5v18h14V9l-6-6Z"/><path d="M13 3v6h6M8 13h8M8 17h5"/>',
@@ -66,7 +66,7 @@ function header() {
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
 function pageHeading() {
- return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${data.canStop?`<button class="button" data-action="stop">停止</button>`:''}${stepToolbar()}`:''}</div></div>`;
+ return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${stepToolbar()}`:''}</div></div>`;
 }
 let archivedFiles = new Set();
 const assetLookup = new Map();
@@ -185,7 +185,8 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
 // Task recovery: 继续 keeps products and sessions, 恢复 drops the sessions and keeps
 // products, 重试 deletes the step products and sessions; dependents rerun with them.
 // Each acts on every interrupted or failed step of the task at once, then runs the
-// task again. Without any step record 继续 opens the run dialog instead.
+// task again. Without any step record 继续 opens the run dialog instead. While the
+// task runs they cannot apply, so the toolbar holds the stop button in their place.
 const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
 const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑'};
 function stepTargets() {
@@ -198,11 +199,12 @@ const stepLabel=target=>`${stages[target.index].name} ${target.id||'（旧版目
 function stepToolbar() {
  if(!state.name)return '';
  const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;
+ if(busy)return `<div class="step-toolbar" role="group" aria-label="任务控制"><button class="button" data-action="stop" title="${data.canStop?'停止运行，保留产物与续跑记录':'该运行不是由网页启动，只能在启动它的终端中停止'}" ${data.canStop?'':'disabled'}>${icon('stop')}停止</button></div>`;
  const allowed=action=>action==='continue'||broken.length>0;
  const scope=broken.length?`（${broken.length} 个中断 / 失败步骤：${broken.map(stepLabel).join('、')}）`:'';
- const reason=action=>busy?'任务正在运行，结束或停止后可操作':!targets.length?'运行任务（可选择范围）':
+ const reason=action=>!targets.length?'运行任务（可选择范围）':
   !allowed(action)?'没有中断或失败的步骤':stepActionTitles[action]+scope;
- return `<div class="step-toolbar" role="group" aria-label="任务恢复">${Object.keys(stepActionNames).map(action=>`<button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" title="${esc(reason(action))}" ${busy||!allowed(action)?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
+ return `<div class="step-toolbar" role="group" aria-label="任务恢复">${Object.keys(stepActionNames).map(action=>`<button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" title="${esc(reason(action))}" ${!allowed(action)?'disabled':''}>${stepActionNames[action]}</button>`).join('')}</div>`;
 }
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
@@ -627,7 +629,7 @@ function bind() {
   if(action==='new')showNew();
   else if(action==='run')showNew(false,true);
   else if(action==='files')showFiles();
-  else if(action==='stop')post('stop',{name:state.name}).then(result=>toast(result.message)).catch(error=>toast(error.message));
+  else if(action==='stop'){b.disabled=true;post('stop',{name:state.name}).then(result=>{toast(result.message);return refreshTask(true);}).catch(error=>{toast(error.message);b.disabled=false;});}
   else if(action==='directory')showDirectory();
   else if(action==='history')showHistory();
   else if(action==='close-inspector'){state.inspect=false;render();}
