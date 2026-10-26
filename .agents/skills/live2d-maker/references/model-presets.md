@@ -5,7 +5,7 @@
 | 选择 | LLM | 生图 |
 | --- | --- | --- |
 | 方案 1（默认） | 全部 `gpt-6.1-sol`，按职责分配力度，见下表 | `codex-native`，继承宿主内置生图工具 |
-| 方案 2（混合） | GPT 准备、part 描线／review／去重及分析，Argon 遮挡补全与组装，Claude 栅格绘制与阴影，详见下表 | 简化图用 GPT Image Sunburst；素体图和两套 part 遮挡补全参考用 Nano Banana 2.1，其余用 GPT Image Sunburst |
+| 方案 2（混合） | GPT 准备、part 描线／review／去重及分析，Claude SVG 遮挡补全、栅格绘制、组装与阴影，详见下表 | 简化图用 GPT Image Sunburst；素体图和两套 part 遮挡补全参考用 Nano Banana 2.1，其余用 GPT Image Sunburst |
 | 自定义 | 在方案 1 或方案 2 上覆盖所需职责 | 按实际生图 agent 覆盖 |
 
 ## 方案 1：默认配置
@@ -47,21 +47,21 @@
 | part 轮廓绘制与返修 | `gpt-6.1-sol-xhigh` | `layering_agent_part_draw_model` |
 | part 轮廓 review | `gpt-6.1-sol-xhigh` | `layering_agent_part_review_model` |
 | 同层去重／重叠分析 | `gpt-6.1-sol-xhigh` | `layering_agent_part_reduce_model` |
-| SVG 遮挡补全 | `gemini-4-argon-high` | `layering_agent_part_completion_model` |
+| SVG 遮挡补全 | `claude-sonnet-5-5-xhigh` | `layering_agent_part_completion_model` |
 | 首次分组与后续细分组 | `gpt-6.1-sol-xhigh` | `layering_agent_part_groups_model` |
 | 最终深度分析 | `gpt-6.1-sol-xhigh` | `layering_agent_part_depth_model` |
 | raster step01 绘制与返修 | `claude-opus-5-5-xhigh` | `layering_agent_raster_step01_model` |
 | raster step01 review | `claude-sonnet-5-5-xhigh` | `layering_agent_raster_step01_review_model` |
 | raster step02 | `claude-sonnet-5-5-xhigh` | `layering_agent_raster_step02_model` |
 | raster step03（仅人物） | `claude-sonnet-5-5-xhigh` | `layering_agent_raster_step03_model` |
-| 穿戴组装 | `gemini-4-argon-high` | `layering_agent_assembly_model` |
+| 穿戴组装 | `claude-sonnet-5-5-xhigh` | `layering_agent_assembly_model` |
 | 阴影 | `claude-sonnet-5-5-xhigh` | `layering_agent_shadow_model` |
 
 SVG 合并由程序执行，不配置 LLM。步骤职责、绘图提示词、review 轮次和会话恢复规则保留原有实现。
 
 简化图使用 `gpt-image-2.5-sunburst`，保留模型返回的原生透明通道；素体图及人物／衣服遮挡补全参考使用 `gemini-nano-banana-2.1`。纯衣服参考准备通过 `layering_clothing_preparation_image_model=gpt-image-2.5-sunburst` 显式指定；标准化、两套 raster、组装及可选阴影贴图使用默认的 `gpt-image-2.5-sunburst`。选择具体模型与工具是否实际生图是两件事，原有任务仍决定使用范围，reviewer 仍只提交反馈。已有 `.env` 仅在用户要求切换相应步骤时更新。
 
-启动前检查已有 Codex、Antigravity 与 Claude CLI、各自登录／模型授权，以及两种生图服务。Sunburst 填写 `layering_openai_image_base_url` 和 `layering_openai_image_api_key`；Nano 填写 `layering_google_image_base_url`、`layering_google_image_api_key` 与 `layering_google_image_protocol`，Google 协议按实际服务选择 `gemini` 或 `openai`。复用已有凭据；缺失时请用户本地补充或确认自定义调整，不自行安装 CLI 或登录。
+启动前检查已有 Codex 与 Claude CLI、各自登录／模型授权，以及两种生图服务。Sunburst 填写 `layering_openai_image_base_url` 和 `layering_openai_image_api_key`；Nano 填写 `layering_google_image_base_url`、`layering_google_image_api_key` 与 `layering_google_image_protocol`，Google 协议按实际服务选择 `gemini` 或 `openai`。复用已有凭据；缺失时请用户本地补充或确认自定义调整，不自行安装 CLI 或登录。
 
 Codex 选择具体 GPT／Nano 生图模型时使用补丁版原生 imagegen，未指定 `layering_codex_path` 时按需自动构建补丁；Claude／Argon 注册共享生图函数工具。所有配置在启动前按实际角色和生图选择检查，`codex-native` 无法与 Claude／Argon 配对。本次不改变生图后处理、等比缩放或配准流程。
 

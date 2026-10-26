@@ -39,7 +39,7 @@ SVG 合并由程序执行，不配置 LLM。内部步骤名和人物／衣服的
 layering_agent_part_review_model=gemini-4-argon-high
 ```
 
-默认使用[方案 1](model-presets.md)：全部职责为 `gpt-6.1-sol`，preparation low，part 绘制／review medium，分组／去重／补全／深度 high，raster step01 绘制／返修／review 与组装 xhigh，raster step02、人物 step03 和阴影 medium；生图继承 `codex-native`。方案 2 保留 GPT、Argon 与 Claude 的混合配置。
+默认使用[方案 1](model-presets.md)：全部职责为 `gpt-6.1-sol`，preparation low，part 绘制／review medium，分组／去重／补全／深度 high，raster step01 绘制／返修／review 与组装 xhigh，raster step02、人物 step03 和阴影 medium；生图继承 `codex-native`。方案 2 使用 GPT 与 Claude 的混合配置，SVG 遮挡补全与组装均为 `claude-sonnet-5-5-xhigh`。
 
 统一职责配置优先；旧 `layering_<小步骤>_model` 在同一职责的已填写值一致时可以继续读取，冲突时明确指出旧键并要求填写对应统一键，不自动改写 `.env`。显式设置的旧 `layering_medium_model`／`layering_high_model` 仍作为最后的兼容覆盖：high 对应两套 raster 的 step01、review／返修和 step02，medium 对应其余职责；这一历史映射不随方案 1 的模型名称变化。
 
