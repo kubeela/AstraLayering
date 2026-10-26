@@ -1,0 +1,7 @@
+{
+  "groupId": "neck",
+  "passed": true,
+  "note": "程序核对：原 SVG 正文保留，2 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。",
+  "beforeHash": "8a5fb72c0fa36a3cfe5f35b5dc6bc9361b3f27c9f6f7efc835fac644bc9fb312",
+  "afterHash": "88428e22ac73ef346d20b673b5dceccd9e0b55225607fe232eacbffbb5ee3980"
+}

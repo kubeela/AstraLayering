@@ -1,0 +1,78 @@
+{
+  "groupId": "face/mouth/upper_teeth",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取本组及父组说明、候选与父组完成 SVG。先检查候选整图 blend，再以嘴部 [433,240,48,40] 的 8 倍原图、blend、edge 定位；以左端 [444,246,13,11]、中央 [451,246,12,11]、右端 [459,246,12,11] 三个相互重叠的 8 倍选框逐块核对，覆盖完整牙带及两端与上嘴缘、口腔的交界，并查看牙带独显和父组同局部 blend/edge。\n1. 左端约 x448–452、y250–252：候选圆滑收拢至连续牙带，参考中的白条左端及下缘已覆盖，未侵入外侧嘴角，未见可确认的缺口或碎片。\n2. 中央约 x452–463、y249–252：连续窄带及略带弧度的下缘与参考相符；上侧在上唇后的局部余量位于父范围内，不将内部明暗分界当作轮廓。没有刻意齿缝、孔洞或独立噪点。\n3. 右端约 x463–467、y249–252：参考白条平顺缩窄并在嘴角之前结束，候选相应收拢，和中央重叠区连续；未发现漏掉的独立所属组件、形体混乱或有明确图像依据的越出、缩入问题。\n父范围四倍采样检查通过：outsideSamples=0、outsidePixels=0。未发现需要单列的上游范围限制。当前组可见轮廓检查通过，无需修改。",
+      "candidateHash": "7f559ec3621daa046f4a3159c1f0905eed494125b1fa0fc9bfd0c093d59dcb78",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\mouth.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\mouth.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\mouth\\upper_teeth.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\mouth\\upper_teeth\\2026-10-20T17-45-59-001Z-13.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T18:07:50.486Z"
+    }
+  ]
+}

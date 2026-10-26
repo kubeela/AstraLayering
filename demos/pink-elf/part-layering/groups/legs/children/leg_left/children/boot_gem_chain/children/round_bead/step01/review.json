@@ -1,0 +1,53 @@
+{
+  "groupId": "legs/leg_left/boot_gem_chain/round_bead",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成当前 round_bead 全部可见区域核对。读取本组及父组说明、候选 SVG 和父组完成 SVG；先查看全图 blend 定位，再以 [498,1503,26,27] 的 8 倍原图、候选 blend、父组 blend 核对小菱形坠—圆珠—花朵顶部的结构归属，并以相互重叠的 [505,1514,12,6]、[505,1517,12,7] 选框逐块检查原图、blend 与 edge，复看放大图确认上下接缝连续。\n圆珠约 x508.8–512.5、y1516.7–1520.5 的顶部、左右弧缘及底部均覆盖完整，外缘贴合参考中浅色珠体与周围暗色的边界，未把珠面高光或内部亮暗误作孔洞或额外珠粒。珠体保持完整圆整单一实体，顶部与底部连接处未被挖缺口；相邻上下短连接段按组说明属于 flexible_connector，不构成本 part 组件缺失。未发现有图像依据的外扩、内缩、漏画、孤点、碎片或形体归属混乱。\n候选父范围检查 pass，4 倍采样 outsideSamples=0、outsidePixels=0；局部父稿与候选同位叠加核对后，未发现影响本圆珠可见轮廓的上游范围冲突。本轮通过。",
+      "candidateHash": "b7abe96c6b3b610f48932b4f73c19ef78267d45ab3342146c09e59a5cd6904b7",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\round_bead.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\round_bead.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\legs\\leg_left\\boot_gem_chain.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\round_bead.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\round_bead.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\round_bead.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\round_bead.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_left\\boot_gem_chain\\round_bead.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_left\\boot_gem_chain\\round_bead\\2026-10-20T19-03-09-506Z-8.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T19:15:08.485Z"
+    }
+  ]
+}

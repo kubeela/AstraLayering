@@ -1,0 +1,88 @@
+{
+  "groupId": "face/eye_left/upper_eyelid",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成当前组 face/eye_left/upper_eyelid 的全部可见区域核对。先查看候选与父组整图叠加，再以 8 倍查看眼部总框 [466,181,65,44]，并逐块对照参考、blend 与 edge：内眼角及前段 [468,185,28,28]、中央上缘与上翘睫毛尖 [486,184,28,27]、外眼角尖翼和下侧收尾 [505,188,25,32]；选框交叠覆盖整段，另复核内端 [469,193,17,17] 和中外段父边界 [494,186,34,34]。\n内端约 (472–477,197–206) 的细尖与折返、中央约 (477–508,190–202) 的上下缘和睫毛转折、外端约 (508–525,193–215) 的厚眼线、尖翼及收尾均与参考可见形体贴合；眼白/虹膜上侧开口连续，未见接缝漏画、真实孔隙被填平或所属独立组件遗漏。上方独立睑褶按本组说明归邻接组件，睑褶与上眼线间的真实肤色间隙保留。发丝附近的连续眼缘合理，未发现无依据的碎片、孤点、噪音或形体归属混乱。\n父组完成 SVG 已同时检查。候选父范围检查 pass：四倍采样 outsideSamples=0、outsidePixels=0。未发现需要扩大父范围才能恢复的已确认上游问题。当前组通过。",
+      "candidateHash": "569b56a63a191fdc3eb20ba6bcfc6d2a43ebebe7e35ffa768596dda6b47f6270",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\eye_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\eye_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\eye_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face\\eye_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-14.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\eye_left\\upper_eyelid.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\eye_left\\upper_eyelid\\2026-10-20T17-33-56-633Z-15.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T17:56:54.418Z"
+    }
+  ]
+}

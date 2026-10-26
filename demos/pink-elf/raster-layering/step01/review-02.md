@@ -9,7 +9,7 @@
 ## 检查依据、执行与只读核验
 
 - 工程：`step01/character-depth.kra`，932 × 1688；SHA-256：`9a01458380d4a0e8d1a03d13c0e18fb8d9d5ee9ebde144b3ae821412b18e71b4`。
-- 依据 `step01/report.md` 沿用实际参考 `../part-layering/references/base-subject.png`，SHA-256：`811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e`。未改用 standard / simplified-subject，未移动或缩放参考以消除偏差；局部只在同一原坐标共同放大。
+- 依据 `step01/report.md` 沿用实际参考 `../../part-layering/references/base-subject.png`，SHA-256：`811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e`。未改用 standard / simplified-subject，未移动或缩放参考以消除偏差；局部只在同一原坐标共同放大。
 - 已阅读正式 `step01/review-01.md`、`step01/repair-01.md`、当前 `step01/report.md`，并核对上游 `parts/`、`groups.json`、`occlusion.json` 与实际层映射。返修报告的“已修复”未作为通过依据，过程截图和暂存文件未代替当前工程。
 - 桌面工具连接 Krita 返回 `The Mac is locked and automatic unlock could not unlock it.`，已请求手动解锁。随后成功复用当前 Krita 进程的原生 Python bridge，由 **Krita 重新打开磁盘上的实际 KRA**，逐层临时切换可见性并导出。本轮证据是实际文档投影，不是桌面 UI 截图；未声称通过 UI 设置缩放或取得窗口截图。
 - 先看原尺寸全图，再将本轮导出的全部分片独显、同 part 联合图及区域对照放大到 200–400% 逐项观察。导出包含 70 层独显、65 件合看图、12 种隐藏状态。对疑点另做同坐标局部，核对单层、隐藏上层和全部叠加，排除合理遮挡及隐藏补全后才列入问题。

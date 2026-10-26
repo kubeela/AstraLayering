@@ -2,11 +2,11 @@
 
 ## 1. 任务概述与交付物核对
 
-本步骤在保持只读基线 `step01/clothing-depth.kra` 不变的前提下，将工程另存为 `step02/clothing-soft-edges.kra`（及工作副本 `step02/clothing-soft-edges-work.kra`），对照纯衣服参考图 `../clothing-part-layering/references/clothing.png`、上游结构标准 `../clothing-part-layering/parts/`、`../clothing-part-layering/groups.json` 与 `../clothing-part-layering/occlusion.json`，完成了全部 8 个普通绘画层（`paintlayer`）的外缘去锯齿、半透明边缘异色残点清理、层间描边粗细／浓淡过渡校准以及遮挡补全区接缝柔化。
+本步骤在保持只读基线 `step01/clothing-depth.kra` 不变的前提下，将工程另存为 `step02/clothing-soft-edges.kra`（及工作副本 `step02/clothing-soft-edges-work.kra`），对照纯衣服参考图 `../../clothing-part-layering/references/clothing.png`、上游结构标准 `../clothing-part-layering/parts/`、`../clothing-part-layering/groups.json` 与 `../clothing-part-layering/occlusion.json`，完成了全部 8 个普通绘画层（`paintlayer`）的外缘去锯齿、半透明边缘异色残点清理、层间描边粗细／浓淡过渡校准以及遮挡补全区接缝柔化。
 
 ### 核心交付物清单
 - **最终 KRA 工程**：`step02/clothing-soft-edges.kra`（`1254×1254` RGBA，8 个独立 `paintlayer`，无蒙版、无子节点，已执行保存、关闭并重开校验，像素 SHA256 100% 一致）
-- **重开导出的整图 PNG**：`step02/clothing-soft-edges.png`（及 `step02/review/assembly-final.png`）
+- **重开导出的整图 PNG**：`clothing-soft-edges.png`（及 `step02/review/assembly-final.png`）
 - **逐层与重开校验记录**：`step02/edge-polish-records.json`、`step02/reopen-verification.json`
 - **视觉检查证据图（100% 原尺寸及 300%–400% 放大）**：
   - 单层独显检查图：`step02/review/solo-sheet-01.png`
@@ -19,7 +19,7 @@
 
 ## 2. 像素差异工具（`locate_pixel_differences`）诊断入口与前后对比
 
-以 `locate_pixel_differences` 的候选框作为细节检查入口，逐处对照 `../clothing-part-layering/references/clothing.png` 核实原因后局部修画，再扩展检查全部 8 个衣片图层：
+以 `locate_pixel_differences` 的候选框作为细节检查入口，逐处对照 `../../clothing-part-layering/references/clothing.png` 核实原因后局部修画，再扩展检查全部 8 个衣片图层：
 
 | 诊断阶段与阈值配置 | `missing` | `extra` | `color` 差异像素数 | 候选框数量 (`totalRegions`) | 诊断产物路径 |
 | :--- | :---: | :---: | :---: | :---: | :--- |

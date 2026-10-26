@@ -1,0 +1,46 @@
+{
+  "groupId": "head_accessories",
+  "groups": [
+    {
+      "id": "head_accessories/left_earring",
+      "kind": "part",
+      "name": "left_earring",
+      "note": "角色左耳下的完整耳饰，位于画面右侧，承接当前 SVG 约 x514–526、y231–263 的全部底形与隐藏补全。包含浅金色顶部饰边、粉色垂坠主体及其固定高光阴影；参考中金色顶沿从侧发下露出，粉色下部位于脸颊外缘与侧发之间。上端接点藏在耳根侧发下，内侧与脸缘分界、外侧受侧发遮挡；沿现有完成轮廓保留这些遮挡下的连续形体，耳朵、脸和头发仍归各自对象。整件从上端悬挂点统一摆动、转动和显隐即可，未见可独立运动的链条、关节或悬挂附件，金色饰边随主体，不因颜色和明暗另拆。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "head_accessories/left_earring",
+          "motionIdentity": "head_accessories/left_earring",
+          "layers": [
+            {
+              "name": "0290 head_accessories/left_earring",
+              "level": 290
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/head_accessories/left_earring/final.png"
+        }
+      }
+    },
+    {
+      "id": "head_accessories/right_earring",
+      "kind": "part",
+      "name": "right_earring",
+      "note": "角色右耳下的完整耳饰，位于画面左侧，承接当前 SVG 约 x391–412、y226–265 的全部底形与隐藏补全。包含上部浅金色横向饰边和完整粉色垂坠主体，连同下缘现有轮廓及自身明暗一并归属。参考可见部分在侧发下、脸颊外侧，上部被耳根旁侧发覆盖，靠脸一侧的主体被脸缘遮挡；使用当前完成稿连接隐藏上端和靠脸区域，以脸缘、侧发轮廓作为遮挡边界，不领取脸、耳或发束。该耳饰需相对左侧耳饰独立摆动，但内部未见独立链节、分离吊坠或不同运动部件，整件统一控制即可，金色条纹与下缘形状不另拆。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "head_accessories/right_earring",
+          "motionIdentity": "head_accessories/right_earring",
+          "layers": [
+            {
+              "name": "0300 head_accessories/right_earring",
+              "level": 300
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/head_accessories/right_earring/final.png"
+        }
+      }
+    }
+  ],
+  "note": "已核对源 SVG 独显、全图叠加及双侧耳下参考放大和边缘叠加。当前范围由左右两件完整耳饰构成；两侧可分别产生摆动与遮挡变化，故各设一个 part。每件浅金色顶部饰边与粉色垂坠主体在当前正面参考中属于连续整体，没有明确独立连接机构或内部控制需要，不增设包装 group。现有补全色块按所在侧并入同一耳饰，仅表示遮挡下延续范围，不作为新附件或独立绘画效果。两项覆盖本节点全部形体，左右均按角色自身确定。"
+}

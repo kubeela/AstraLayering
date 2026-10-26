@@ -1,0 +1,168 @@
+{
+  "groupId": "face/ear_left",
+  "reviews": [
+    {
+      "verdict": "revise",
+      "feedback": "已读取当前组说明、候选 SVG 与父组完成 SVG，并先查看两者整图 blend。随后以三个重叠选框逐块核对本组全部区域：耳根 [513,193,48,53]、耳廓中段 [540,188,40,52]、耳尖 [568,188,38,35]，均查看 8 倍 blend 与 edge，并核对放大原图、候选独显。父范围检查 pass，outsideSamples=0、outsidePixels=0。\n\n1. 当前组可修：画面右侧耳尖末端，约 x592–597、y194–201。原图可靠的棕红耳尖外缘在约 x595–595.5 收住；候选二次曲线最右端约为 (596.7,195.9)，在尖端右侧白底上多伸出约 1 像素，且接入下缘的转弯略向右下拖出。耳尖局部 edge 中红线位于原图末端外侧，blend 中也能见到该凸出的色块。请在父范围内收回耳尖及其与下缘衔接的短段，调整相应控制点，使尖端位置、收束宽度与转向贴合原图；保留耳廓其余可靠边缘。父稿虽有同一外凸，但当前子组可以向内修正，因此该项仍须返修。这是连续主体轮廓外凸，不是噪音或碎片问题。\n\n2. 单列上游范围限制：约 x568–590、y195–198 的耳廓上缘，原图棕红外线有一条窄带落在候选上边界之外。已在同一耳尖局部对照父稿与候选 edge，两者使用相同上边界，候选已贴合父范围；该窄带只有扩大父范围才能覆盖，当前尚未补齐。此项应由上游复核并调整父稿，不要求本子组越界，也不放宽父范围检查。\n\n其余检查：耳根在鬓发下的局部连接连续，中段上下缘及与耳根的接缝无另外明确可修的缺漏；未发现孤点、无来源碎片或刻意挖缝。耳内浅凹面与线色位于联合实体内，不要求内部拆分。耳饰归其他组。完成全组核对后一次汇总以上问题。",
+      "candidateHash": "d89dd6cfc9f06155909a7bffbfa8b3189b97fbf24ed344d4e689573b960a2a91",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-22-54-628Z-12.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T16:44:52.410Z",
+      "repairedCandidateHash": "52af561453081d83f6127691d698757e0d6d8c3d7fda8336e4785c9c7ec5eca9"
+    },
+    {
+      "verdict": "revise",
+      "feedback": "已完成全组核对：先看候选与父稿整图 blend；再以相互重叠的耳根 [510,193,46,55]、耳身 [540,190,39,52]、耳尖 [568,187,39,40] 三个选框作 8 倍原图、blend、edge 对照，并查看候选独显。父稿在相同耳根、耳身、耳尖局部亦已核对。父范围检查 pass，outsideSamples=0、outsidePixels=0。\n\n1. 当前组可修：耳尖末端约 x594–597、y195–200 向内收窄，末端转弯及其接下缘的一小段未覆盖完整。耳尖 8 倍 edge 中，候选红边提前转向下左，原图实有的棕色外缘仍成连续窄带露在候选右侧；blend 也可见未覆盖的端帽。候选最右约 x595.44，父稿同处仍容纳至约 x596.71；对照父稿同选框的 blend/edge，可确认其中有参考支持、且处在父范围内的剩余面积，并非全由上游限制导致。请在父范围内补回耳尖右端和接下缘的连续小转弯，依原图保持长尖耳末端的形状与宽度，不以提前内收代替贴合。证据：候选耳尖观察图 2026-10-20T16-57-47-331Z-8.png、-9.png、-15.png；父稿同局部 -10.png、-11.png。这是局部轮廓缩入，不涉及噪音或碎片堆砌。\n\n2. 单独记录的上游范围限制：耳朵上缘约 x550–592、y195–201，原图外侧棕色轮廓有一条窄带位于现有父范围上方。候选与父稿此段使用相同上缘；耳身同选框的候选 edge/blend（-6.png、-7.png）与父稿 edge/blend（-16.png、-17.png）显示边界重合，不能要求当前子组越过父边界去恢复该外侧窄带。此处须由上游调整父范围后才可完整恢复，本轮未补齐，也不放宽父检查。\n\n其余可见区域已逐块核对：耳身上下缘走向连续，耳根在鬓发下的局部连接合理；未发现额外孔洞、无依据挖缝、孤点、碎片或属于本 part 而整段漏掉的独立组件。耳内普通明暗与线色已处于联合实体覆盖内，不要求内部拆分。完成第 1 项父内修正前，本轮结论为 revise。",
+      "candidateHash": "52af561453081d83f6127691d698757e0d6d8c3d7fda8336e4785c9c7ec5eca9",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-14.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\face\\ear_left.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-15.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-16.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\face.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\face\\ear_left\\2026-10-20T16-57-47-331Z-17.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T17:03:20.346Z",
+      "repairedCandidateHash": "0b38b799676db1ff34dc7ee70d9174a8859c09bc158ca6d97920188ae38ad23d"
+    }
+  ]
+}

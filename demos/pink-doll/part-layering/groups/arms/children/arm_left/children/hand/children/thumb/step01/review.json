@@ -1,0 +1,58 @@
+{
+  "groupId": "arms/arm_left/hand/thumb",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已通过整图叠加及局部 8 倍放大（覆盖指根与手掌搭接区 crop=[798,662,36,32]、指体与指尖区 crop=[802,686,36,34] 及全拇指范围 crop=[795,660,45,65]）结合 blend、edge、svg 模式与父组 hand.svg 对照核查：\n1. 可见外轮廓与接缝：拇指桡侧外缘（(802.34, 674.36) 至指尖 (824.5, 714.21)）及内侧指缝边缘（至 (825.44, 687.66)）与原图外轮廓及父组 hand.svg 边界精确贴合；虎口上方内侧暗线分界（(825.44, 687.66) 至 (825.35, 675.2)）准确对齐原图指根折线。\n2. 局部补形与父范围检查：指根向上伸入 palm 内部的圆弧余量（顶弧至 y=668.0）过渡自然平顺，父范围检查通过（outsideSamples=0）。\n3. 轮廓质量：单一闭合 path，无碎点、无毛刺或无依据缺口，结构完整清晰。予以通过。",
+      "candidateHash": "db61e31ab60bea911dcee41c17adc4cc541f037adc1a5dfc441282c1be30830d",
+      "observations": [
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-1.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-2.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-3.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "svg",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-4.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-5.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-6.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-7.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-8.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/thumb.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/thumb/2026-10-22T10-39-11-409Z-9.png"
+        }
+      ],
+      "updatedAt": "2026-10-22T11:08:16.332Z"
+    }
+  ]
+}

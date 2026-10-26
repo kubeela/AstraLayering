@@ -6,7 +6,7 @@
 
 从左到右为简化穿衣参考、[此前组装](../assembled/README.md)、本次 `character-assembly` 工作流的实际交付。
 
-本次使用 `gpt-6-astra / xhigh`，只有一个绘制 thread，无 reviewer。从人物 `raster-layering/step03/character-dressup-base.kra`、衣服 `clothing-raster-layering/step02/clothing-soft-edges.kra` 和 `part-layering/references/simplified-subject.png` 开始。没有把此前组装工程作为 agent 输入，也没有追加人工修画；首次短提示词直接完成，中间局部调整由同一 agent 自检执行。
+本次使用 `gpt-6-astra / xhigh`，只有一个绘制 thread，无 reviewer。从人物 `raster-layering/step03/character-dressup-base.kra`、衣服 `clothing-raster-layering/step02/clothing-soft-edges.kra` 和 `../part-layering/references/simplified-subject.png` 开始。没有把此前组装工程作为 agent 输入，也没有追加人工修画；首次短提示词直接完成，中间局部调整由同一 agent 自检执行。
 
 整体观感与此前结果接近，袖口中的手臂穿插、胸腰与大腿漏肤、发尾外露和透纱效果已处理。保留原有 159 个绘画层，添加 16 个可关闭的 Krita 原生透明度遮罩，没有拆分或新增绘画层。允许的局部修画发生在现有内裙领口层；脚链位置也作了调整。
 

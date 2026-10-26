@@ -9,7 +9,7 @@
 本文路径均相对任务根目录 `raster-layering/`，坐标均为原画布坐标；左右“画面左/右”与角色自身左右分开标明。
 
 - 实际检查工程：`step01/character-depth.kra`，932 × 1688。KRA SHA-256：`247db470667f6e6a78c3e52eed0b8dfa3aa07e1980b22d42498c63e22a2a39c6`。
-- 依据 `step01/report.md`，采用 `../part-layering/references/base-subject.png`，SHA-256：`811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e`。未更换参考，未移动、配准或缩放参考以掩盖位置偏差。局部放大仅用于观察。
+- 依据 `step01/report.md`，采用 `../../part-layering/references/base-subject.png`，SHA-256：`811756ae2389b7e51eee0c0b683c0ca60d8db6adb0e833a07f5118148f44946e`。未更换参考，未移动、配准或缩放参考以掩盖位置偏差。局部放大仅用于观察。
 - 已阅读 `step01/report.md`、当前 `groups.json`、`occlusion.json`、实际层映射及已有修画说明。`step01/` 没有此前正式的 `review-*.md` / `repair-*.md` 报告；制作报告中的“通过”和修画日志未作为本轮通过依据，旧截图也未替代本轮实际工程检查。
 - 桌面工具首次连接 Krita 返回：`The Mac is locked and automatic unlock could not unlock it.` 已尝试正常连接并请求解锁；随后复用了当前已运行的 Krita Python bridge，成功由 **Krita 重新打开磁盘上的实际 KRA**。本轮通过原生文档 API 临时切换可见性、导出合成、69 层独显、65 个同 part 合看图和 9 种隐藏状态，完成实际视觉检查。没有伪称取得桌面 UI 截图；检查图是本轮 Krita 的实际投影导出。
 - 先按原尺寸观察参考和本轮全图，再对全部部件的独显图按 200–400% 检查；头面、双手、肩胸、腰髋、双腿、双靴及两侧全部发束均有覆盖。所有比较采用相同原坐标裁切。疑似问题再看独显、同 part 合看及隐藏上层状态，只将已确认需要修改的内容列入下文。

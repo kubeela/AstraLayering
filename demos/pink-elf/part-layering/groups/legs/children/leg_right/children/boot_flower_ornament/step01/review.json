@@ -1,0 +1,83 @@
+{
+  "groupId": "legs/leg_right/boot_flower_ornament",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取当前组与父组说明、候选及父组完成 SVG；先查看候选与参考的整图叠加，再以 8 倍放大逐块检查。覆盖选框（原图坐标 x,y,w,h）为 [388,1521,34,31]、[412,1521,33,32]、[388,1542,35,33]、[412,1542,33,33]，各框均查看 blend 与 edge，相邻框重叠核对接缝；另以 [386,1519,60,57] 检查父组局部叠加、候选独显及整簇连续边缘。\n1. 上部花朵与顶端（约 x404–432,y1525–1546）：顶尖、左上花瓣弧度、左侧凹口及右侧花瓣回收处均贴合参考可见外缘；保留尖端和转折，无需修改。\n2. 左侧浅金叶片与下缘（约 x393–414,y1540–1563）：斜向外缘、最左叶片圆端、两片间凹口及下叶尖均与参考对应，连接处连续，未将内部明暗线当作外轮廓，无需修改。\n3. 下部花朵、右侧叶片和底尖（约 x409–439,y1545–1571）：右上凹口、花瓣外凸、右叶尖、右下花瓣收边及下方花瓣尖端贴合参考；靴头弧形镶边另属 foot，当前花叶边缘没有将其一并领取，也未留下属于饰件的缺口，无需修改。\n4. 联合色块完整覆盖本组上下花朵、可见花心花瓣与两侧叶片；内部已有实体覆盖的组件无需另拆 path。候选独显为连续整体，无孤立点、来源不明碎片、刻意挖缝或形体归属混乱。\n5. 父范围检查通过：四倍采样 outsideSamples=0、outsidePixels=0；局部父组叠加确认本饰簇完全容纳于父范围内，未发现上游范围限制。当前允许范围内各项检查通过。",
+      "candidateHash": "59e865155dfe31f2cab38707d8c7d26901a67168f9687c7ab6aa4a6ecf928caf",
+      "observations": [
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-1.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-2.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\legs\\leg_right.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-3.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-4.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-5.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-6.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-7.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-8.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-9.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-10.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-11.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\parts\\legs\\leg_right.svg",
+          "mode": "blend",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-12.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "svg",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-13.png"
+        },
+        {
+          "source": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\stages\\outline\\legs\\leg_right\\boot_flower_ornament.svg",
+          "mode": "edge",
+          "savedPath": "D:\\Resources\\workspace\\AstraLayering\\.run\\pink-elf-20261020\\part-layering\\observations\\review\\legs\\leg_right\\boot_flower_ornament\\2026-10-20T17-54-54-990Z-14.png"
+        }
+      ],
+      "updatedAt": "2026-10-20T18:17:48.130Z"
+    }
+  ]
+}

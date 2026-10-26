@@ -1,0 +1,73 @@
+{
+  "groupId": "arms/arm_left/hand/little_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已完成 arms/arm_left/hand/little_finger 候选轮廓的整图叠加与多选框 8 倍放大（[795,645,75,105]、[825,665,35,35]、[825,690,35,45]）blend、edge、svg 模式及父组 hand.svg 对照审查：\n1. 可见边缘与接缝贴合：右上尺侧指根背缘（(847.52, 674.91) 经 (849.47, 678.03)、(851.52, 683.83) 至 (852.32, 691.45)）精确复用父组 hand.svg 边界并与参考图指背外轮廓对齐；指根顶部（y≈673.52..684.50）向 palm 内部自然平滑收出圆弧搭接余量。\n2. 局部与遮挡形体合理性：在当前桡背侧斜向微张手姿下，小指中远节及指尖（y≈691.45..725.80，指尖位于 (839.00, 725.80)）在前方食指、中指、无名指后方顺应指列级联走势自然补全为完整闭合的单根手指轮廓，形态饱满连续。\n3. 轮廓干净度与父范围检查：单一闭合 path 轮廓干净，无碎块、孤立点或无依据缺口；四倍采样父范围检查完全通过（outsideSamples=0, outsidePixels=0）。予以通过（pass）。",
+      "candidateHash": "a262401a6627894febd12da5ae3a6a064892ca5ccac850be2788e5064357994c",
+      "observations": [
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-1.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-2.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-3.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-4.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "svg",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-5.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-6.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-7.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-8.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "blend",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-9.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/stages/outline/arms/arm_left/hand/little_finger.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-10.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-11.png"
+        },
+        {
+          "source": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/part-layering/observations/review/arms/arm_left/hand/little_finger/2026-10-22T10-56-43-214Z-12.png"
+        }
+      ],
+      "updatedAt": "2026-10-22T11:14:06.878Z"
+    }
+  ]
+}

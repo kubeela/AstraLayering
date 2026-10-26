@@ -1,0 +1,162 @@
+{
+  "groupId": "legs/leg_left",
+  "groups": [
+    {
+      "id": "legs/leg_left/leg",
+      "kind": "part",
+      "name": "leg",
+      "note": "角色自身左腿，位于画面右侧：从左髋及大腿根，经完整大腿、膝、小腿连续到脚踝的单一腿体，保留皮肤高光、膝部阴影及轮廓细节，不再拆大腿、膝或小腿。上端沿父轮廓补全为伸入连体衣左腿口下方的圆弧，连体衣为覆盖端；外侧邻接后发，内侧朝向两腿空隙，不并入另一条腿。下端为踝部伸入端，在本侧靴口和靴前V形边缘后方连续补全，以局部圆弧余量搭接 foot 的覆盖端；只补被靴遮住的连接区，不沿整段外扩，不新增踝关节件。靴体、靴面附件和足部不归本节点。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "legs/leg_left/leg",
+          "motionIdentity": "legs/leg_left/leg",
+          "layers": [
+            {
+              "name": "0070 legs/leg_left/leg",
+              "level": 70
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/legs/leg_left/leg/final.png"
+        }
+      }
+    },
+    {
+      "id": "legs/leg_left/foot",
+      "kind": "part",
+      "name": "foot",
+      "note": "角色自身左侧完整脚及包裹它的连续深紫短靴，位于画面右下：实体从踝部经脚跟、足背、脚掌到全部脚趾端，趾端止于本侧封闭靴尖；脚在靴内按完整足形补全，不拆脚趾、脚掌、脚跟或指甲。保留从两侧翻起靴口、蓝灰内衬、V形靴前边缘、靴筒、鞋面、包头到鞋底的连续靴体，包含固定滚边、反光及阴影。靴口为覆盖端，遮住 leg 下端的局部圆弧搭接，不让覆盖端再向腿体额外扩张。本侧靴内缘与画面左侧另一只靴接近但保持独立。鞋面下方贴附的粉杏色花朵簇及其叶片状装饰随靴面同动，作为固定花叶饰保留在本体，不逐花瓣或叶片拆分；上方菱晶及下接珠点短连饰另归 boot_gem_chain，靴面在其后补全，不重复绘入。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "legs/leg_left/foot",
+          "motionIdentity": "legs/leg_left/foot",
+          "layers": [
+            {
+              "name": "0055 legs/leg_left/foot :: rear",
+              "level": 55
+            },
+            {
+              "name": "0600 legs/leg_left/foot :: front",
+              "level": 600
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/legs/leg_left/foot/final.png",
+          "partition": [
+            {
+              "level": 55,
+              "mask": "parts/legs/leg_left/foot/rear-depth-mask.png",
+              "region": "蓝灰后衬/后唇保留在本腿后；扣除属于实际前翻边、暗轮廓和浅粉滚边的V前口像素。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。"
+            },
+            {
+              "level": 600,
+              "mask": "parts/legs/leg_left/foot/upper-depth-mask.png",
+              "region": "前V翻边、连续暗轮廓/浅粉滚边、靴筒鞋面鞋头鞋底及既有固定附件，在腿前。front = 旧前片(y >= 原V折线插值) ∪ 实际内V弧范围(y >= cubicY(x)-3*t(x))；t=clip((x-xmin)/2,0,1)*clip((xmax-x)/2,0,1)。仅分既有foot像素。",
+              "original_V_polyline": [
+                [
+                  468,
+                  1393
+                ],
+                [
+                  494,
+                  1414
+                ],
+                [
+                  505,
+                  1428
+                ],
+                [
+                  511,
+                  1449
+                ],
+                [
+                  523,
+                  1424
+                ],
+                [
+                  534,
+                  1417
+                ],
+                [
+                  566,
+                  1395
+                ]
+              ],
+              "actual_inner_V_beziers": [
+                [
+                  493.8,
+                  1414.3
+                ],
+                [
+                  499.7,
+                  1416.4
+                ],
+                [
+                  503.5,
+                  1421.7
+                ],
+                [
+                  505.4,
+                  1427.8
+                ],
+                [
+                  506.5,
+                  1433.9
+                ],
+                [
+                  508.5,
+                  1443.8
+                ],
+                [
+                  510.7,
+                  1448.7
+                ],
+                [
+                  514.1,
+                  1442
+                ],
+                [
+                  516.1,
+                  1430.1
+                ],
+                [
+                  522.7,
+                  1423.8
+                ],
+                [
+                  526.3,
+                  1420.3
+                ],
+                [
+                  530.1,
+                  1418.1
+                ],
+                [
+                  533.8,
+                  1417.2
+                ]
+              ]
+            }
+          ],
+          "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering",
+          "regionMaskBase": "../raster-layering/step01/",
+          "repair02": {
+            "reviewId": "R9",
+            "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+            "report": "repair-02.md.tmp",
+            "result": "在既有0600按本侧弧线补通V前口暗边/浅粉滚边；0055后衬在腿后，现有靴形、腿部范围及链串保持。",
+            "logicalIdentityAndDepthsUnchanged": true,
+            "sourceSvgSha256": "010780db6a60481ee657e5b298658a43f8b349000058d9abfe9625899607d773"
+          }
+        }
+      }
+    },
+    {
+      "id": "legs/leg_left/boot_gem_chain",
+      "kind": "group",
+      "name": "boot_gem_chain",
+      "note": "仅含画面右侧本靴正面、V形靴口下方的粉紫色立体菱形大宝石，以及沿其下方中线排列的小菱形坠、圆珠点和通向花朵簇顶部的短暗色连接段。大宝石覆盖靴筒正面，须保留尖端、完整四边轮廓及明暗切面；小菱形和圆珠也需保持各自硬质外形，短连接段则可随连接弯曲，故需在下一层区分硬质件与柔性连接，不能把整串当作随靴面拉伸的一张纹饰。各连接处仅在遮挡下补必要局部余量，不推断或新增环绕脚踝的链圈、链节或额外坠件。下端以当前参考中花朵簇顶部为止，花朵、叶片及靴体归 foot；不领取另一侧靴或其他组附件。本轮不提交本组更深层节点。"
+    }
+  ],
+  "note": "已核对当前父 SVG 独显、原图整图及髋部/靴部局部叠加、靴部边缘与放大参考。按固定精度拆为 leg 与 foot 两个终止 part：膝部不断开，脚趾不细拆；踝部由 leg 伸入 foot 靴口后方做局部圆弧搭接。菱晶与下方可见珠点短连饰构成一个确有硬软组件区别的 boot_gem_chain group，后续分别处理保形硬件与柔性连接。花叶为贴附靴面的固定饰件，保留在 foot；未见需要另列的环形踝链，不新增附件、关节件或包装组。"
+}

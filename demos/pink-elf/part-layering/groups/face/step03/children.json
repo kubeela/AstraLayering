@@ -1,0 +1,160 @@
+{
+  "groupId": "face",
+  "groups": [
+    {
+      "id": "face/face_base",
+      "kind": "part",
+      "name": "face_base",
+      "note": "完整干净脸底，包含刘海下的额头、两侧太阳穴与脸颊、下颌和下巴；沿父组已补全的脸型范围衔接，保留参考中收窄的下颌与圆尖下巴。补齐被刘海及鬓发遮挡的必要脸缘，五官下方保持连续实面，不挖眼洞或口洞。普通面部明暗与脸颊柔和粉色过渡并入本 part，轮廓线与肤色在后续绘制中落实；眉眼、鼻点、嘴、两耳另属独立节点，不并入头发、颈部，不向头顶或后脑扩张。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/face_base",
+          "motionIdentity": "face/face_base",
+          "layers": [
+            {
+              "name": "0310 face/face_base",
+              "level": 310
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/face_base/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/eye_left",
+      "kind": "group",
+      "name": "eye_left",
+      "note": "角色自身左眼，位于画面右侧；登记从内眼角到外眼角的完整眼睛及上下眼缘、睫毛所占范围，保留蓝紫至青蓝的眼睛造型。外眼角及上方局部邻接或受刘海、鬓发遮挡，按完整眼形补齐遮挡处，不把眉毛或周围大片脸皮纳入。眨眼和视线变化涉及组内不同组件独立变化，因此后续递归拆分，本轮只登记整眼。"
+    },
+    {
+      "id": "face/eye_right",
+      "kind": "group",
+      "name": "eye_right",
+      "note": "角色自身右眼，位于画面左侧；登记从内眼角到外眼角的完整眼睛及上下眼缘、睫毛所占范围，保留蓝紫至青蓝的眼睛造型。上缘、外眼角附近与刘海、鬓发相接，补全被发束遮住的真实眼形，不把眉毛或周围大片脸皮纳入。眨眼和视线变化涉及组内不同组件独立变化，因此后续递归拆分，本轮只登记整眼。"
+    },
+    {
+      "id": "face/eyebrow_left",
+      "kind": "part",
+      "name": "eyebrow_left",
+      "note": "角色自身左侧整条细浅棕眉，位于画面右眼上方，包含眉头、眉峰至眉尾；依参考可见弧度补齐被刘海遮挡的连续眉形。整眉独立位移和变形，只含眉毛本身，不带周围肤色、眼皮或头发。 raster step01 对照原尺寸参考修正：真实眉弧位于约x472–515、y166–178；旧轮廓误取y185–193的上睑褶，现已分开。",
+      "rasterRevision": {
+        "step": "raster-layering/step01",
+        "reason": "独立眉线在原画刘海上仍可辨，不能烘入头发；使用浅棕粉线色保持透发视觉。"
+      },
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eyebrow_left",
+          "motionIdentity": "face/eyebrow_left",
+          "layers": [
+            {
+              "name": "0570 face/eyebrow_left",
+              "level": 570
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eyebrow_left/final.png"
+        },
+        "rasterRevision": {
+          "step": "raster-layering/step01",
+          "reason": "独立眉线在原画刘海上仍可辨，不能烘入头发；使用浅棕粉线色保持透发视觉。"
+        }
+      }
+    },
+    {
+      "id": "face/eyebrow_right",
+      "kind": "part",
+      "name": "eyebrow_right",
+      "note": "角色自身右侧整条细浅棕眉，位于画面左眼上方，包含眉头、眉峰至眉尾；刘海遮挡较多，依据可见眉段和该侧眼眶位置补齐整眉，保留参考中的自然弧度。整眉独立位移和变形，只含眉毛本身，不带周围肤色、眼皮或头发。",
+      "rasterRevision": {
+        "step": "raster-layering/step01",
+        "reason": "独立眉线在原画刘海上仍可辨，不能烘入头发；使用浅棕粉线色保持透发视觉。"
+      },
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/eyebrow_right",
+          "motionIdentity": "face/eyebrow_right",
+          "layers": [
+            {
+              "name": "0580 face/eyebrow_right",
+              "level": 580
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/eyebrow_right/final.png"
+        },
+        "rasterRevision": {
+          "step": "raster-layering/step01",
+          "reason": "独立眉线在原画刘海上仍可辨，不能烘入头发；使用浅棕粉线色保持透发视觉。"
+        }
+      }
+    },
+    {
+      "id": "face/ear_left",
+      "kind": "part",
+      "name": "ear_left",
+      "note": "角色自身左侧完整尖耳，位于画面右侧，从被鬓发遮住的耳根延伸至向右上方伸出的长尖耳尖，包含可见耳廓、内耳浅凹面及其线色。补齐耳根在头发下的必要连接，耳根与脸侧邻接，连接余量仅局部伸入覆盖侧下方。当前造型可整体变形，耳内明暗不构成需独立透视的组件，作为一个 part；不并入脸底、头发、颈部或耳饰。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/ear_left",
+          "motionIdentity": "face/ear_left",
+          "layers": [
+            {
+              "name": "0270 face/ear_left",
+              "level": 270
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/ear_left/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/ear_right",
+      "kind": "part",
+      "name": "ear_right",
+      "note": "角色自身右侧完整尖耳，位于画面左侧，从被鬓发遮住的耳根延伸至向左伸出的长尖耳尖，包含可见耳廓、内耳浅凹面及其线色，保留该侧略低的耳尖方向。补齐耳根在头发下的必要连接，耳根与脸侧邻接，连接余量仅局部伸入覆盖侧下方。当前造型可整体变形，耳内明暗不构成需独立透视的组件，作为一个 part；不并入脸底、头发、颈部或耳饰。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/ear_right",
+          "motionIdentity": "face/ear_right",
+          "layers": [
+            {
+              "name": "0280 face/ear_right",
+              "level": 280
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/ear_right/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/nose",
+      "kind": "part",
+      "name": "nose",
+      "note": "两眼之间偏下、嘴上方的细小浅棕鼻点及其紧邻的简单鼻部笔触，按参考保持轻而小的造型。没有需分别位移或改变透视的独立鼻梁、鼻影结构，统一作为一个 part；周围普通肤色和柔和明暗留在脸底，不扩大成带肤色的鼻部面片。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/nose",
+          "motionIdentity": "face/nose",
+          "layers": [
+            {
+              "name": "0380 face/nose",
+              "level": 380
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/nose/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/mouth",
+      "kind": "group",
+      "name": "mouth",
+      "note": "脸部下方中央的完整张口嘴，包含连续口缘及其包围的开口范围，保留参考中上缘较平、下缘圆弧的开心口形、口内深色与舌部浅红形态。嘴上邻鼻点，下方与下巴间保留脸底；脸底在嘴下方保持完整。口缘与口内结构需随开合分别变形，因此保留为 group，后续递归拆分，本轮只登记整个嘴，不提前提交口内子节点。"
+    }
+  ],
+  "note": "已核对 face.svg 的独显、整图叠加及脸部放大的 blend、edge 与原图。直属共九项：完整脸底一个 part、双眼各一组、双眉各一个 part、双耳各一个 part、简单鼻点一个 part、整个嘴一组；左右均按角色自身。父组的额头及耳根补全只用于恢复遮挡下的脸型和尖耳，不扩大为头顶、后脑。两侧尖耳虽有内耳线色与明暗，但无明确需分面独立透视的组件；鼻子仅简单鼻点，均可整体变形。脸颊为柔和肤色过渡，没有明确需独立位移或显隐的腮红实体，因此留在脸底。耳饰不在此重复登记，眼内和口内更深层留待相应 group 后续拆分。"
+}

@@ -1,0 +1,68 @@
+{
+  "groupId": "trailing_skirt_image_right/spiral_train_left",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已只读核对纯衣服参考 clothing.png、groups.json 中当前 part 与父组 note、候选 spiral_train_left.svg 及父完成 trailing_skirt_image_right.svg。完成候选全图 blend、独显，以及三倍局部 blend/edge 覆盖 x600–860/y850–1120、x575–860/y1080–1330、x575–932/y1300–1530；另查看父稿上段叠加。核对结果：上段 x698–728/y879–938 的根部与短垂布交界、x671–690/y951–996 的回翻面避让和至 x630/y1045 的回卷交界归属正确；x750–844/y1009–1055 外伸短尖及其下方真实空域保持；x625–670/y1045–1091 内侧小卷边连续完整；x670–848/y1085–1307 宽卷层、内缘至 x582/y1363 的接续面、x734/y1307 以下拖尾及 x930/y1509 尾尖均覆盖参考可见实体，未将浅淡衣料删为空白。卷缘属于连续布片自交叠，纯色联合范围无需内部绘画路径；note 已记录两道连续卷缘、遮挡前后、共同附着与独立柔性摆动及必要隐藏搭接。父边界四倍采样检查 outsidePixels=0。未发现有图像依据的当前范围返修问题，也无须单列的明确上游范围限制；不以颜色、纹样、明暗、材质或透明度表现作为缺陷。",
+      "candidateHash": "1aa3faf97fea211b0784fdca68edd6b55f90c446c0cf3b537f74654b93b64483",
+      "observations": [
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-1.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-2.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-3.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-4.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-5.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-6.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-7.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "edge",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-8.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-9.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_right.svg",
+          "mode": "blend",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-10.png"
+        },
+        {
+          "source": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/stages/outline/trailing_skirt_image_right/spiral_train_left.svg",
+          "mode": "svg",
+          "savedPath": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/clothing-part-layering/observations/review/trailing_skirt_image_right/spiral_train_left/2026-10-23T02-43-47-355Z-11.png"
+        }
+      ],
+      "updatedAt": "2026-10-23T02:46:53.360Z"
+    }
+  ]
+}

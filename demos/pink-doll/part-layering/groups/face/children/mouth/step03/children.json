@@ -1,0 +1,36 @@
+{
+  "groupId": "face/mouth",
+  "groups": [
+    {
+      "id": "face/mouth/upper_lip",
+      "kind": "part",
+      "name": "upper_lip",
+      "note": "上唇轮廓（part）。包含口部上半圈深褐色唇线及紧贴外沿的必要过渡覆盖边，从角色右侧嘴角（画面左侧）经上唇顶弧延伸至角色左侧嘴角（画面右侧）。位于嘴部最前层，内侧遮挡 upper_teeth 上缘与 mouth_interior 上半外缘，左右嘴角与 lower_lip 平顺衔接。"
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "kind": "part",
+      "name": "lower_lip",
+      "note": "下唇轮廓（part）。包含口部下半圈深褐色唇线及紧贴外沿的必要过渡覆盖边，从角色右侧嘴角（画面左侧）经下唇底弧延伸至角色左侧嘴角（画面右侧）。位于嘴部最前层，内侧遮挡 tongue 下缘与 mouth_interior 下半外缘，左右嘴角与 upper_lip 平顺衔接。"
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "kind": "part",
+      "name": "mouth_interior",
+      "note": "完整口腔开口底形（part）。深暗红色完整椭圆形口腔内壁底块，位于口内最底层。当前可见范围主要在 upper_teeth 下缘与 tongue 上缘之间，完整底形需铺满整个口腔开口并向四周延伸至 upper_lip、lower_lip 后方，以及被 upper_teeth 和 tongue 覆盖的区域下方保留充足隐藏余量。"
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "kind": "part",
+      "name": "upper_teeth",
+      "note": "上排牙齿（part）。位于口腔内上沿、upper_lip 下方的乳白色整体牙列色块，不逐颗拆分。下缘呈平缓弧形覆盖于 mouth_interior 之上，上缘及左右两侧向 upper_lip 后方延伸保留隐藏余量。"
+    },
+    {
+      "id": "face/mouth/tongue",
+      "kind": "part",
+      "name": "tongue",
+      "note": "舌头（part）。位于口腔内中下部的粉红色椭圆形整体舌面，不分舌根与舌尖。上缘呈圆润上凸弧形覆盖在 mouth_interior 之上，左右两侧及下缘延伸至 lower_lip 与嘴角唇线后方保留隐藏余量。"
+    }
+  ],
+  "note": "嘴部（face/mouth）直属结构按轮廓与口内独立运动组件拆分为 5 个 part：外围上下唇轮廓拆为 upper_lip 与 lower_lip，在左右嘴角平顺衔接并遮挡口内边缘；口内结构结合微张口型参考，拆为完整铺底的深红色口腔内壁 mouth_interior、上沿整体白色牙列 upper_teeth 以及中下部整体粉红色舌头 tongue。参考图中无下排露牙、独立高光唇彩或虎牙饰物，故不额外增设 lower_teeth 或 lip_gloss。"
+}
