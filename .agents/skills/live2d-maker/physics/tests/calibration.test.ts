@@ -8,10 +8,19 @@ import {componentDefaults} from '../../shared/physics-core/component-physics-sch
 import {groupAssemblies} from '../../shared/physics-core/assemblies.js';
 import {calibrate,calibrationVersion,calibrationGeneration,measureCandidate,parameterCandidate,selectCandidate,validateCalibration} from '../calibration.ts';
 import {json,put,hash} from '../input.ts';
-import {simulationHash} from '../evidence.ts';
+import {simulationHash,configHash} from '../evidence.ts';
+import {rejectReview} from '../feedback.ts';
 import {toolsFor} from '../tools.ts';
 const strand=(id:string,x=60)=>({id,name:id,kind:'strand',priority:'primary',enabled:true,layerRefs:[{uuid:id,contentHash:'a'.repeat(64)}],sourcePartIds:[id],supports:[{id:'root',at:[x,20]}],...componentDefaults('strand'),authoring:{freeLength:130,transitionPixels:20,fixedRegions:[[[x-20,0],[x+20,0],[x+20,30],[x-20,30]]],centerline:[[x,20],[x,70],[x,140]],widths:[20,20,15]}});
 const config=(components:any[])=>({kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:300,height:200}},components});
+const cloth=()=>({...strand('cloth'),kind:'cloth',...componentDefaults('cloth'),authoring:{freeLength:130,transitionPixels:20,fixedRegions:[[[40,0],[80,0],[80,30],[40,30]]],contour:[[40,0],[80,0],[80,150],[40,150]],controlGrid:[3,6],subdivisions:1}});
+async function currentRejection(c:any,pipeline:string,component:string){
+  const digest=configHash(c);
+  await put(join(pipeline,'step03/review-session.json'),{id:'current-review',configHash:digest});
+  await put(join(pipeline,'step03/evidence/manifest.json'),{configHash:digest,renderHash:'current-render',runs:[{test:'pointer-brush'}]});
+  await put(join(pipeline,'roles.json'),{repairRounds:{['assembly:'+component]:2}});
+  return rejectReview(c,pipeline,[{component,criterion:'response',verdict:'rejected',reason:'连续轻扫缺乏可见柔软形变',test:'pointer-brush',steps:[72,90],images:[]}]);
+}
 
 test('有向挂点决定完整装配，独立源分组和重排序身份稳定',()=>{
   const a=strand('ribbon'),b=strand('ring'),c=strand('pendant'),d=strand('hair');b.supports[0]={id:'neck',at:[60,140],componentId:'ribbon'} as any;c.supports[0]={id:'hook',at:[60,150],componentId:'ring'} as any;
@@ -79,6 +88,70 @@ test('自动标定保留合格的当前参数，恢复已有选择而不追逐�
   try{const result=await calibrate(c,fresh,id,'原参数复测',undefined,undefined,c,{preserveEligibleBaseline:true});assert.equal(result.baselinePreserved,true);assert.deepEqual(result.round.candidates.map((v:any)=>v.id),['baseline']);const saved=await selectCandidate(c,fresh,id,'baseline','数值与参考目标均通过');assert.deepEqual(saved,c);await validateCalibration(saved,fresh);}
   finally{await rm(fresh,{recursive:true,force:true});}
  }finally{await rm(directory,{recursive:true,force:true});}
+});
+test('当前 C 否决阻止合格基线缓存与选择，保留数值、原理由和返修轮次',async()=>{
+ const pipeline=await mkdtemp(join(tmpdir(),'astra-calibration-review-')),directory=join(pipeline,'step02');
+ try{
+  const c=config([strand('a')]),id=groupAssemblies(c)[0].id,options={preserveEligibleBaseline:true};
+  await calibrate(c,directory,id,'原参数复测',[],undefined,undefined,options);
+  await selectCandidate(c,directory,id,'baseline','当前数值合格');await validateCalibration(c,directory);
+  const feedback=await currentRejection(c,pipeline,'a'),roles=await json(join(pipeline,'roles.json'));
+  await assert.rejects(selectCandidate(c,directory,id,'baseline','旧数值选择不可绕过新 C'),/独立复核.*连续轻扫/);
+  await assert.rejects(validateCalibration(c,directory),/独立复核.*连续轻扫/);
+  const result=await calibrate(c,directory,id,'原参数复测',[],undefined,undefined,options),baseline=result.round.candidates[0];
+  assert.equal(result.reused,false);assert.equal(result.baselinePreserved,false);assert.equal(result.round.recommendedCandidate,null);
+  assert.equal(baseline.numericallyEligible,true);assert.equal(baseline.eligible,false);assert.equal(baseline.visualReview.status,'rejected');assert.deepEqual(baseline.visualReview.items,feedback.items);
+  assert(baseline.issues.some((reason:string)=>reason.includes(feedback.items[0].reason)));assert.equal((await json(join(directory,baseline.path))).components[0].response.frequencyHz,c.components[0].response.frequencyHz);
+  const resumed=await calibrate(c,directory,id,'原参数复测',[],undefined,undefined,options);
+  assert.equal(resumed.reused,true);assert.equal(resumed.round.round,2);assert.equal(resumed.round.recommendedCandidate,null);
+  assert.equal((await json(join(directory,'tuning.json'))).groups[0].rounds.length,2);
+  assert.deepEqual(await json(join(pipeline,'step03/feedback.json')),feedback);assert.deepEqual(await json(join(pipeline,'roles.json')),roles);
+ }finally{await rm(pipeline,{recursive:true,force:true});}
+});
+test('旧配置、旧 C 会话、其他装配或补证据反馈不冒充当前视觉否决',async()=>{
+ for(const mode of ['config','session','other-assembly','needs-evidence']){
+  const pipeline=await mkdtemp(join(tmpdir(),'astra-calibration-review-scope-')),directory=join(pipeline,'step02');
+  try{
+   const c=config([strand('a'),strand('b',180)]),id=groupAssemblies(c).find(g=>g.componentIds.includes('a'))!.id;
+   const feedback=await currentRejection(c,pipeline,mode==='other-assembly'?'b':'a');
+   if(mode==='config')feedback.configHash='old-config';
+   if(mode==='session')feedback.reviewTurn='old-review';
+   if(mode==='needs-evidence')feedback.items[0].verdict='needs-evidence';
+   await put(join(pipeline,'step03/feedback.json'),feedback);
+   const result=await calibrate(c,directory,id,'当前组原参数复测',undefined,undefined,undefined,{preserveEligibleBaseline:true});
+   assert.equal(result.baselinePreserved,true,mode);assert.equal(result.round.recommendedCandidate,'baseline',mode);assert.equal(result.round.candidates[0].visualReview.status,'unreviewed',mode);
+  }finally{await rm(pipeline,{recursive:true,force:true});}
+ }
+});
+test('默认横向材质候选保留回形，C 响应否决可探索有界柔软材质而不改力度或约束',async()=>{
+ const pipeline=await mkdtemp(join(tmpdir(),'astra-calibration-cloth-review-')),directory=join(pipeline,'step02');
+ try{
+  const c=config([cloth()]),id=groupAssemblies(c)[0].id,original=structuredClone(c);
+  const regular=await calibrate(c,directory,id,'横向材质比较');
+  for(const candidate of regular.round.candidates){const saved=await json(join(directory,candidate.path));assert.equal(saved.components[0].material.shapeCompliance,c.components[0].material.shapeCompliance);assert(candidate.changes.every((change:any)=>change.key!=='shapeCompliance'));}
+  await currentRejection(c,pipeline,'cloth');
+  const reviewed=await calibrate(c,directory,id,'真实响应不足需要探索',undefined,undefined,undefined,{preserveEligibleBaseline:true}),soft=reviewed.round.candidates.find((candidate:any)=>candidate.id==='review-soft-sheet');
+  assert(soft);assert.equal(reviewed.baselinePreserved,false);assert.equal(reviewed.round.candidates[0].visualReview.status,'rejected');assert.notEqual(reviewed.round.recommendedCandidate,'baseline');
+  const saved=await json(join(directory,soft.path)),component=saved.components[0];
+  assert.equal(component.material.shapeCompliance,c.components[0].material.shapeCompliance);assert.equal(component.material.shearCompliance,.01);assert.equal(component.material.compressionCompliance,.02);assert.equal(component.material.bendCompliance,.008);
+  assert.equal(component.response.inputGain,c.components[0].response.inputGain);assert.deepEqual(component.authoring,c.components[0].authoring);assert.deepEqual(component.limits,c.components[0].limits);assert.equal(soft.visualReview.status,'unreviewed');assert.deepEqual(c,original);
+ }finally{await rm(pipeline,{recursive:true,force:true});}
+});
+test('实际 autotune 工具读取当前 C 反馈，不再次推荐被拒绝的原配置',async()=>{
+ const task=await mkdtemp(join(tmpdir(),'astra-autotune-review-')),pipeline=join(task,'physics'),directory=join(pipeline,'step02');
+ try{
+  const c=config([strand('a')]),source=join(pipeline,'source');await put(join(directory,'physics.draft.json'),c);await mkdir(source,{recursive:true});
+  await sharp({create:{width:30,height:115,channels:4,background:{r:255,g:255,b:255,alpha:1}}}).png().toFile(join(source,'a.png'));
+  await put(join(source,'catalog.json'),{canvas:c.source.canvas,layers:[{id:'a',uuid:'a',contentHash:'a'.repeat(64),visible:true,opacity:255,bounds:{x:45,y:25,width:30,height:115},masked:'a.png'}]});
+  const tool=toolsFor(directory,{task,profile:'all'} as any,{id:'step02'}).find(t=>t.name==='physics_autotune')!,signal=new AbortController().signal;
+  const first=await tool.execute({reason:'先复测原参数'},signal);assert.equal(first.success,true,JSON.stringify(first));
+  assert.equal((await json(join(directory,'tuning.json'))).groups[0].rounds.at(-1).selectedCandidate,'baseline');
+  const feedback=await currentRejection(c,pipeline,'a');
+  const next=await tool.execute({reason:'先复测原参数'},signal);assert.equal(next.success,true,JSON.stringify(next));
+  const round=(await json(join(directory,'tuning.json'))).groups[0].rounds.at(-1),baseline=round.candidates.find((candidate:any)=>candidate.id==='baseline');
+  assert.equal(baseline.numericallyEligible,true);assert.equal(baseline.visualReview.status,'rejected');assert.notEqual(round.recommendedCandidate,'baseline');assert.notEqual(round.selectedCandidate,'baseline');
+  assert.deepEqual(await json(join(pipeline,'step03/feedback.json')),feedback);
+ }finally{await rm(task,{recursive:true,force:true});}
 });
 test('求解器变化重测原参数并生成新指纹，保留来源、几何、力度和限幅',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'astra-preserve-solver-'));
