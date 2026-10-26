@@ -7,6 +7,7 @@ import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
 import { ComponentPhysicsPanel as PhysicsPanel } from './component-physics-panel.js';
 import { PhysicsWorkflowPanel } from './physics-workflow-panel.js';
+import { physicsProjectPreview } from './physics-workflow-model.js';
 import { physicsProjects, createPhysicsCase } from './physics-cases.js';
 import {
   defaults,
@@ -956,13 +957,15 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
   const id = begin("正在打开项目 " + name + "…", true);
   try {
     dir ??= (await get("./api/settings")).directory;
+    const projectWorkspace = workspace || (state.workspace === 'physics' ? 'physics' : undefined);
     let project = await get(
       "./api/studio/project?" + new URLSearchParams({ name, dir, ...(preview ? { preview } : {}) }),
     );
-    // Load the complete available document once. Shadow visibility is edited
-    // in its native graph, never by reopening another base from a selector.
-    if (project.previewMode === 'normal-depth' && project.previewModes.mask) {
-      project = await get('./api/studio/project?' + new URLSearchParams({ name, dir, preview: project.previewModes.mixed ? 'mixed' : 'mask' }));
+    // Resolve the producer's explicit physics review scope after its descriptor
+    // arrives. Explicit URL choices take precedence over automatic defaults.
+    const selectedPreview = physicsProjectPreview(project, projectWorkspace, preview);
+    if (project.previewMode !== selectedPreview) {
+      project = await get('./api/studio/project?' + new URLSearchParams({ name, dir, preview: selectedPreview }));
     }
     if (id !== state.generation) return;
     if (!project.files.document.available) {
@@ -1008,7 +1011,7 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
     if (id !== state.generation) return;
     const shadowBindings = bindings ? JSON.parse(await bindings.text()) : null;
     if (shadowBindings && (shadowBindings.version !== 2 || !Array.isArray(shadowBindings.shadows))) throw Error('投影关系产物无效');
-    state.workspace = workspace || (project.previewMode === 'mask' ? 'mask' : 'lighting');
+    state.workspace = projectWorkspace || (project.previewMode === 'mask' ? 'mask' : 'lighting');
     const preserve = sameDocument && !!preview;
     const maps = { normal, depth };
     if (preserve) {

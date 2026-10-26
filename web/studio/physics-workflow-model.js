@@ -7,6 +7,16 @@ export const workflowStages = [
 const stageAliases = { analyze: 'analysis', structure: 'analysis', author: 'calibration', authoring: 'calibration', tuning: 'calibration', make: 'calibration', verify: 'review' };
 const statusLabels = { pending: '待运行', missing: '待生成', running: '进行中', completed: '已完成', complete: '已完成', accepted: '已通过', approved: '已认可', calibrated: '已标定', draft: '待复核', failed: '失败', blocked: '待处理', stale: '需重跑', deferred: '暂缓', 'repair-requested': '需修复', 'manual-confirmation': '待人工确认', 'not-started': '待运行', 'not-applicable': '未参与' };
 export function statusLabel(status) { return statusLabels[status] || '待确认'; }
+// Review scope chooses the same native document as the standalone workflow.
+// Other editors still open their complete available shadow document by default.
+export function physicsProjectPreview(project, workspace, preview) {
+  if (preview) return preview;
+  const selection = project.physicsWorkflow?.previewSelection;
+  if (workspace === 'physics' && selection?.version === 1 && selection.scope === 'render-review-only'
+    && selection.mode === 'assembled' && selection.projectionReviewRequested === false) return 'normal-depth';
+  return project.previewMode === 'normal-depth' && project.previewModes?.mask
+    ? project.previewModes.mixed ? 'mixed' : 'mask' : project.previewMode;
+}
 export function normalizedStages(data) {
   const stages = list(data?.stages);
   return workflowStages.map((definition, index) => {

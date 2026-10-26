@@ -51,6 +51,22 @@ test('current review exposes only indexed artifacts and measured curves', async 
   await assert.rejects(studioPhysicsArtifact(f.root, undefined, 'breeze/curves.svg', f.digest), /符号链接/);
 });
 
+test('the project descriptor exposes only the producer explicit preview selection without changing acceptance', async t => {
+  const f = await fixture(t), selection = { version: 1, mode: 'assembled', scope: 'render-review-only', projectionReviewRequested: false };
+  await f.put('physics/preview-selection.json', selection);
+  let data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
+  assert.deepEqual(data?.previewSelection, selection);
+  assert.equal(data?.provenance.workflowAccepted, true);
+  await f.put('physics/preview-selection.json', { ...selection, scope: 'arbitrary-scope' });
+  data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
+  assert.equal(data?.previewSelection, null);
+  await f.put('physics/preview-selection.json', { ...selection, mode: 'auto', projectionReviewRequested: true });
+  data = await studioPhysicsWorkflow(f.root, 'project', '/runs');
+  assert.equal(data?.previewSelection?.mode, 'auto');
+  await f.put('physics/preview-selection.json', { ...selection, projectionReviewRequested: true });
+  assert.equal((await studioPhysicsWorkflow(f.root, 'project', '/runs'))?.previewSelection, null);
+});
+
 test('manual approval never masquerades as workflow acceptance and parameter edits stale evidence', async t => {
   const f = await fixture(t);
   await f.put('physics/manual-review.json', { status: 'approved', configHash: f.digest });

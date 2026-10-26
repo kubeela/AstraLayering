@@ -1,5 +1,6 @@
 export const workflowStages: { id: string; letter: string; title: string }[];
 export function statusLabel(status: string): string;
+export function physicsProjectPreview(project: any, workspace?: string, preview?: string | null): string;
 export function normalizedStages(data?: any): { id: string; letter: string; title: string; status: string; label: string; reason: string }[];
 export function provenanceSummary(data?: any, dirty?: boolean): { title: string; tone: string; detail: string; evidenceCurrent: boolean; workflowAccepted: boolean };
 export function coverageRows(coverage?: any): any[];
