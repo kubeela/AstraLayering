@@ -57,6 +57,7 @@ export async function recognizeInitialGroups(
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
+    submission: { tools: [writeGroups.name], isSubmitted: () => submitted },
     name: '首次分组识别', cwd: context.directory,
     images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...(profile.originalReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalReference }] : [])] : undefined,
     prompt: renderPrompt(prompt, {run_directory: context.directory,

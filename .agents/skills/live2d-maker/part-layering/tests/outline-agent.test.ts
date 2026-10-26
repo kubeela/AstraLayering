@@ -59,10 +59,14 @@ function agents(verdicts: string[], options: {
       assert.equal(task.sandboxMode, 'read-only');
       assert.equal(task.imageGeneration, false);
       assert.equal(input.outputSvg, undefined);
+      assert.ok(task.submission);
+      assert.deepEqual(task.submission.tools, ['submit_review']);
+      assert.equal(task.submission.isSubmitted(), false);
       await preview.execute({ path: input.candidate, mode: 'edge', crop: [5, 5, 90, 90], scale: 2 }, signal);
       if (!options.missingSubmission) await task.tools!.find(tool => tool.name === 'submit_review')!
         .execute({ verdict: verdicts[Math.min(reviews++, verdicts.length - 1)],
           feedback: `对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 ${reviews} 轮反馈。` }, signal);
+      assert.equal(task.submission.isSubmitted(), !options.missingSubmission);
       if (options.failAfterSubmission) throw new Error('审查提交后中断');
     } else {
       assert.equal(task.sandboxMode, 'workspace-write');

@@ -81,6 +81,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)), sandboxMode: 'workspace-write',
+    submission: { tools: [submit.name], isSubmitted: () => submitted !== undefined },
     imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory,
       [merged, ...context.entries.flatMap(entry => [entry.outline.path, entry.current?.path, entry.outputPath, entry.parent?.steps.completion.output?.path])])],
     prompt: renderPrompt(await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8'), {runtime_context: JSON.stringify({
