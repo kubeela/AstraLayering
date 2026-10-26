@@ -24,6 +24,8 @@ import { AgentLog } from '../codex/agent-log.ts';
 import { resolveRunsDirectory } from '../paths.ts';
 import { withNodePath } from '../process-environment.ts';
 import { claudeProviderSettings, validateProviderModel } from './providers.ts';
+import { prepareWorkspace, workspacePrompt, workspaceTools } from './workspace.ts';
+import { contextImages } from './inputs.ts';
 
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
@@ -75,7 +77,10 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   validateProviderModel(settings.providers, model, task.step ?? task.name);
   const executable = await cliExecutable(settings, model.harness, options.imageNormalization?.runsRoot);
   const root = resolve(options.logDirectory || join(task.cwd || options.cwd!, 'agents'));
+  const paths = await prepareWorkspace(task, options.cwd!);
+  task = { ...task, images: contextImages(task.images, paths.directory), tools: workspaceTools(task.tools || [], paths) };
   const log = await AgentLog.create(root, task.name, { task: { ...task, tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) },
+    workspace: paths.workspace, outputDirectory: paths.outputDirectory,
     prompt: task.prompt, sessionThreadId: resumed || null, threadOptions: { model: model.model, modelReasoningEffort: model.effort, harness: model.harness } });
   let mcpServer: Awaited<ReturnType<typeof createMcpBridge>> | undefined;
   const requestedSession = resumed;
@@ -93,7 +98,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       previous = undefined;
     }
     if (previous) try {
-      for (const path of [previous.data, previous.workspace]) {
+      for (const path of [previous.data]) {
         const lexical = relative(root, resolve(path));
         if (!lexical || lexical === '..' || lexical.startsWith('../') || isAbsolute(lexical)) throw new Error('CLI 会话目录不在当前任务记录目录内');
         const rel = relative(await realpath(root), await realpath(path));
@@ -104,7 +109,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       await options.onThreadReplacement?.(resumed!, '原 CLI 会话目录已不存在');
       resumed = undefined; threadId = undefined; previous = undefined;
     }
-    const workspace = join(log.directory, 'workspace'); await mkdir(workspace, { recursive: true });
+    const workspace = paths.workspace;
     const data = previous?.harness === model.harness ? previous.data : join(log.directory, 'cli-data');
     await mkdir(data, { recursive: true, mode: 0o700 });
     // Some CLI releases ignore their config-directory overrides for native history.
@@ -210,7 +215,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       child.stderr!.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(-16000); });
       child.stdin!.on('error', error => { spawnError ||= error; });
       const prompt = !resumed && requestedSession && task.recoveryPrompt ? task.recoveryPrompt : task.prompt;
-      const input: any[] = [{ type: 'text', text: renderPromptFile(new URL('../prompts/cli-turn.md',import.meta.url),{task_prompt:prompt,workspace:workspace,working_directory:task.cwd || options.cwd!}) }];
+      const input: any[] = [{ type: 'text', text: workspacePrompt(prompt, paths) }];
       await writeFile(join(log.directory,'prompt.md'),input[0].text);
       for (const image of task.images || []) {
         if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:resolve(image.path)}).trimEnd() }); continue; }

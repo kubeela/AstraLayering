@@ -264,9 +264,9 @@ test('补全子组必须在父完成范围内，即使原形保留也不能越�
   }), /超出父轮廓/);
 });
 
-test('补全 threadId 记在 step02：中断后续跑恢复同一会话，step02 重做时随目录一起重置', async t => {
+test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，step02 重做时一并重置', async t => {
   const f = await fixture(t), resumed: (string | undefined)[] = [];
-  const session = join(f.directory, groupStepId('head', 2), 'session.json');
+  const session = join(f.directory, 'agents/steps', groupStepId('head', 2), 'session.json');
   let fail = true;
   const agents = { async run(): Promise<AgentResult> { assert.fail('补全必须走可复用会话'); },
     createSession(id?: string, callbacks?: { onSessionStarted?: (id: string, harness: 'agv') => Promise<void> }): AgentSession {
@@ -287,7 +287,7 @@ test('补全 threadId 记在 step02：中断后续跑恢复同一会话，step02
   assert.deepEqual(JSON.parse(await readFile(session, 'utf8')), { threadId: 'completion-thread-1', harness: 'agv' });
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(resumed, [undefined, 'completion-thread-1']);
-  // 删掉补全产物后 step02 重做：旧会话随步骤目录删除，新一轮从新会话开始。
+  // 删掉补全产物后 step02 重做：同时清除 agents 中对应会话，新一轮从新会话开始。
   await rm(artifactPath(f.directory, 'head', 'completion'));
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(resumed, [undefined, 'completion-thread-1', undefined]);

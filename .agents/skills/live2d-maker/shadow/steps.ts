@@ -8,6 +8,7 @@ import type { StepDefinition } from '../shared/raster/steps.ts';
 import type { KritaInstallation } from '../shared/raster/krita.ts';
 import type { ShadowMode } from '../shared/shadow.ts';
 import type { ShadowInput } from './input.ts';
+import { referencesDirectory } from '../shared/agents/inputs.ts';
 
 export const maskSteps = [{ id: 'step01', title: '投影分析、阴影补全与原生裁切', ...defaultModels.medium,
   modelStep: 'shadow_mask', prompt: new URL('./prompts/mask.md', import.meta.url),
@@ -21,7 +22,7 @@ export const stepsFor = (mode: ShadowMode): readonly StepDefinition[] => mode ==
 export async function buildPrompt(step: StepDefinition, input: ShadowInput, output: string, krita: KritaInstallation): Promise<string> {
   const quote = (s: string) => "'" + s.replace(/'/g, "'\"'\"'") + "'";
   const inspection = step.modelStep === 'shadow_mask' ? renderPromptFile(new URL('../shared/prompts/shadow-inspection.md',import.meta.url), {
-    reference_files:['inputs.json', 'production.md', 'skirt.png', 'hair.png'].map(p=>JSON.stringify(join(output,'references',p))).join('、'),
+    reference_files:['inputs.json', 'production.md', 'skirt.png', 'hair.png'].map(p=>JSON.stringify(join(referencesDirectory(output),p))).join('、'),
     inspection_command:[process.execPath,fileURLToPath(new URL('./inspect.ts',import.meta.url)),'--output',output,'--krita',krita.executable].map(quote).join(' '),
   }) : '';
   return renderPrompt(await readFile(step.prompt, 'utf8'), {

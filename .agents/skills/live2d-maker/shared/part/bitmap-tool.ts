@@ -11,7 +11,7 @@ export function createBitmapTool(directory: string, observationDirectory: string
   const allowedReferences = new Set(references.map(path => normalize(resolve(directory, path))));
   return {
     ...toolDefinition('view_bitmap'),
-    async execute(value, signal) {
+    async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('位图参数须为对象');
       const args = value as { path?: unknown; crop?: unknown; scale?: unknown };
       if (typeof args.path !== 'string' || !args.path.trim()) throw new Error('path 须为图片路径');
@@ -38,8 +38,9 @@ export function createBitmapTool(directory: string, observationDirectory: string
         .resize(outputWidth, outputHeight, { fit: 'fill', kernel: 'lanczos3' }).png().toBuffer();
       if (data.length > 10 * 1024 * 1024) throw new Error('预览文件过大，请缩小选框或 scale');
       signal.throwIfAborted();
-      await mkdir(observationDirectory, { recursive: true });
-      const savedPath = join(observationDirectory, `${randomUUID()}.png`);
+      const destination = context ? join(context.workspace, 'bitmaps') : observationDirectory;
+      await mkdir(destination, { recursive: true });
+      const savedPath = join(destination, `${randomUUID()}.png`);
       await writeFile(savedPath, data);
       return { success: true, contentItems: [
         { type: 'inputText', text: JSON.stringify({ path: outside ? source : rel, source: { width, height }, crop, scale,

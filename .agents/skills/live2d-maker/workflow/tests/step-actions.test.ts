@@ -102,8 +102,8 @@ for (const pipeline of ['raster-layering', 'clothing-raster-layering', 'characte
     await f.act(pipeline, 'step02', 'resume');
     const config = JSON.parse(await text(join(root, 'run.json')));
     assert.equal(config.threadId, null); assert.equal(config.threadHarness, undefined);
-    assert.deepEqual(JSON.parse(await text(join(root, 'step02', 'attempts.jsonl'))), {
-      previousThreadId: 'thread-r', previousHarness: 'claude', reason: '网页恢复：清除会话，保留产物', at: JSON.parse(await text(join(root, 'step02', 'attempts.jsonl'))).at });
+    assert.deepEqual(JSON.parse(await text(join(root, 'agents/steps/step02', 'attempts.jsonl'))), {
+      previousThreadId: 'thread-r', previousHarness: 'claude', reason: '网页恢复：清除会话，保留产物', at: JSON.parse(await text(join(root, 'agents/steps/step02', 'attempts.jsonl'))).at });
     assert.equal(await text(join(root, 'step02', 'draft.kra')), 'draft');
     assert.match(await f.act(pipeline, 'step02', 'resume'), /恢复等同继续/);
     await f.act(pipeline, 'step02', 'retry');

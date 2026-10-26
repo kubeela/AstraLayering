@@ -1,5 +1,5 @@
-import { readFile, mkdir, copyFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { prepareFileInputs } from '../shared/agents/inputs.ts';
 import { fileURLToPath } from 'node:url';
 import { kraContents, kraLayers } from './delivery.ts';
 import { fileHash, type ShadowInput } from './input.ts';
@@ -32,7 +32,8 @@ export async function inputIndex(input: ShadowInput): Promise<InputIndex> {
   return { version: 1, sourceHash: await fileHash(input.characterKra), parts, layers };
 }
 export async function prepareMaskReferences(output: string, input: ShadowInput) {
-  const dir = join(output, 'references'); await mkdir(dir, { recursive: true });
-  for (const name of referenceNames) await copyFile(fileURLToPath(referenceUrl(name)), join(dir, name));
-  await writeFile(join(dir, 'inputs.json'), JSON.stringify(await inputIndex(input), null, 2) + '\n');
+  await prepareFileInputs(output, [
+    ...referenceNames.map(name => ({ name, source: fileURLToPath(referenceUrl(name)) })),
+    { name: 'inputs.json', content: JSON.stringify(await inputIndex(input), null, 2) + '\n' },
+  ]);
 }

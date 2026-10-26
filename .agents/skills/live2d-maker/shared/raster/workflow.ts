@@ -1,3 +1,5 @@
+import { prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
+import { publishReportAssets } from '../report-assets.ts';
 import {renderPromptFile} from '../prompts/render.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
@@ -145,6 +147,8 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
 
   async function stepWork(step: StepDefinition, status: StepStatus, plan: SectionPlan): Promise<(() => Promise<void>) | undefined> {
     const output = join(directory, step.id);
+    const records = join(directory, 'agents', 'steps', step.id);
+    if (!options.dryRun) await mkdir(records, { recursive: true });
     const drawingReady = status !== 'absent' && (step.review ? !!await fileInfo(join(output, 'report.md'))
       : status === 'running' && await legacyEdgeDrawingReady(output, step));
     const reviewTask = step.review && drawingReady ? await nextReviewTask(output) : undefined;
@@ -174,7 +178,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       const selected = key ? environment.stepModels[key] : fresh ? step.review! : model;
       const harness = 'harness' in selected ? selected.harness : modelHarnesses[selected.model as keyof typeof modelHarnesses] || 'codex';
       if (!fresh && config.threadId && (config.threadHarness || 'codex') !== harness) {
-        await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
+        await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
           previousHarness: config.threadHarness || 'codex', harness, reason: '模型配置切换 CLI', at: new Date().toISOString() }) + '\n');
         config.threadId = null; await saveConfig(directory, config);
       }
@@ -190,27 +194,28 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
           step_id:step.id, phase, notes,
         });
       }
-      await writeFile(join(output, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
-      await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
+      prompt = workspacePrompt(prompt, await prepareWorkspace({ cwd: directory, outputDirectory: output }, directory));
+      await writeFile(join(records, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
+      await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
         model: selected.model, effort: selected.effort, krita, ...(fresh ? {} : { threadId: config.threadId }) }) + '\n');
-      const resultFile = join(output, phase === 'draw' ? 'result.json' : `${phase}.result.json`);
+      const resultFile = join(records, phase === 'draw' ? 'result.json' : `${phase}.result.json`);
       await rm(resultFile, { force: true });
-      await rm(join(output, 'error.txt'), { force: true });
+      await rm(join(records, 'error.txt'), { force: true });
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
-        prompt, directory, model: selected.model, effort: selected.effort, environment, step: key,
+        prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
         tools: pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }),
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         imageRoots: [dirname(directory), ...inputDirectories],
         recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
-          await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');
+          await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');
           if (!fresh) { config.threadId = null; await saveConfig(directory, config); }
         },
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
-          await appendFile(join(output, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
+          await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
         },
         onEvent: async event => {
           if (event.type === 'item.completed' && event.item.type === 'agent_message') lastAgentMessage = event.item.text;
@@ -223,7 +228,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
             if (handoff) handoff.replacementThreadId = event.thread_id;
             await saveConfig(directory, config);
           }
-          await appendFile(join(output, 'events.jsonl'), JSON.stringify({ attempt, phase, event }) + '\n');
+          await appendFile(join(records, 'events.jsonl'), JSON.stringify({ attempt, phase, event }) + '\n');
           if (event.type === 'item.completed' && event.item.type === 'agent_message') options.progress?.(event.item.text);
           if (event.type === 'error') options.progress?.(`SDK：${event.message}`);
         },
@@ -260,6 +265,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       }
       if (fingerprint !== undefined && await pipeline.fingerprintInput?.(reference) !== fingerprint) throw new Error('制作期间上游输入改变，保留进度；续跑将重新制作本分支。');
       await pipeline.prepareDelivery?.(output, reference, step);
+      await publishReportAssets(join(output, 'report.md'), join(output, 'workspace'));
       await checkFiles(output, step.requiredFiles);
       await pipeline.validateDelivery?.(output, reference, step, krita);
       await logDeliveryWarnings(step);
@@ -271,7 +277,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       const failure = agentOutcomeError(error instanceof Error ? error.message : String(error),
         { text: lastAgentMessage, threadId: lastThreadId }, error);
       const message = formatAgentError(failure);
-      await writeFile(join(output, 'error.txt'), message + '\n');
+      await writeFile(join(records, 'error.txt'), message + '\n');
       options.progress?.(message);
       throw failure;
     } };

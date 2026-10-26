@@ -15,7 +15,7 @@ export function createReviewAnnotationTool(directory: string, taskRoot: string, 
   const definition = toolDefinition('annotate_review_regions');
   return {
     ...definition,
-    async execute(value, signal) {
+    async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('参数须为对象');
       const args = value as Record<string, unknown>, root = await realpath(taskRoot);
       const source = async (key: string) => {
@@ -49,7 +49,7 @@ export function createReviewAnnotationTool(directory: string, taskRoot: string, 
         if (typeof description !== 'string' || !description.trim()) throw new Error(`${id} 需要问题 description`);
         return { id, bounds: bounds as Box, layers: layers as string[], description };
       });
-      const destination = await canonicalPath(output);
+      const destination = await canonicalPath(context ? join(context.workspace, 'review-regions') : output);
       if (!within(root, destination)) throw new Error('标记证据输出必须位于本次任务目录内');
       await mkdir(destination, { recursive: true });
       const folder = join(await realpath(destination), randomUUID());

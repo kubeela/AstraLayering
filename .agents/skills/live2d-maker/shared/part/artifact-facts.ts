@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
-import { readFile, rename } from 'node:fs/promises';
-import { join } from 'node:path';
+import { mkdir, readFile, rename } from 'node:fs/promises';
+import { basename, dirname, join } from 'node:path';
 import { walkGroups, writeAtomic } from './groups.ts';
 import type { GroupsDocument, ReviewedSvgArtifact } from './layering-types.ts';
 import { groupDepth, groupDirectory, groupStepId, layerStepId } from './part-steps.ts';
@@ -17,7 +17,10 @@ export const artifactPath = (directory: string, id: string, stage: 'outline' | '
   stage === 'completion' ? join(directory, 'parts', `${id}.svg`)
     : stage === 'reduction' ? join(directory, layerStepId(groupDepth(id)), `${id}.svg`)
       : join(groupDirectory(directory, id), 'step01', 'outline.svg');
-export const draftPath = (path: string): string => path.replace(/\.svg$/, '.draft.svg');
+export const draftPath = (path: string): string => join(dirname(path), 'workspace', basename(path).replace(/\.svg$/, '.draft.svg'));
+export const stepDraftPath = (directory: string, id: string, stage: 'outline' | 'reduction' | 'completion'): string =>
+  stage === 'reduction' ? join(directory, layerStepId(groupDepth(id)), 'workspace', `${id}.draft.svg`)
+    : join(directory, groupStepId(id, stage === 'outline' ? 1 : 2), 'workspace', `${stage}.draft.svg`);
 export const reportPath = (directory: string, id: string, kind: 'review' | 'completion-check' | 'children'): string =>
   kind === 'review' ? join(directory, groupStepId(id, 1), 'review.json')
     : kind === 'completion-check' ? join(directory, groupStepId(id, 2), 'check.json')
@@ -51,6 +54,7 @@ export async function publishSvg(draft: string, output: string, sourceHash?: str
   if (sourceHash) {
     await writeAtomic(draft, stampedSvg(bytes, sourceHash));
   }
+  await mkdir(dirname(output), { recursive: true });
   await rename(draft, output);
 }
 

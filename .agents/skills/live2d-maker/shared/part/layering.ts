@@ -4,7 +4,7 @@ import { lstat, mkdir, readdir, readFile, rm, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { checkSubject, findGroup, groupCompleted, GroupStore, nodeSeed, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
-import { artifactPath, draftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact, svgHash } from './artifact-facts.ts';
+import { artifactPath, draftPath, stepDraftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact, svgHash } from './artifact-facts.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { groupStages, type GroupContext, type GroupInput, type GroupNode, type GroupSeed, type GroupStage, type GroupStageOutputs, type LayeringResult, type LayeringSteps, type StepResult, type SvgArtifact, type SvgMerger } from './layering-types.ts';
 import type { PreparationReferences } from './preparation-types.ts';
@@ -103,7 +103,10 @@ export async function runLayering(input: {
   }
   // Starts a step that is not kept; a rerun first removes its directory and outputs.
   async function begin(step: ChainStep, check: StepCheck) {
-    if (check.action === 'rerun') await resetStep(step);
+    if (check.action === 'rerun') {
+      await rm(join(directory, 'agents', 'steps', step.id), { recursive: true, force: true });
+      await resetStep(step);
+    }
     await beginStep(step.directory, check.inputs);
   }
   async function execute<S extends GroupStage>(id: string, stage: S, action: () => Promise<StepResult<GroupStageOutputs[S]>>): Promise<boolean> {
@@ -126,9 +129,13 @@ export async function runLayering(input: {
   async function drawing(id: string, stage: 'outline' | 'completion', continued: boolean,
     action: (draft: string, resumeDraft: boolean) => Promise<StepResult<SvgArtifact>>) {
     return execute(id, stage, async () => {
-      const output = artifactPath(directory, id, stage), draft = draftPath(output);
+      const output = artifactPath(directory, id, stage), draft = stepDraftPath(directory, id, stage);
       const before = stage === 'completion' ? (await readSvg(artifact(id, 'reduction').path))! : undefined;
       await mkdir(dirname(draft), { recursive: true });
+      if (continued && !await readSvg(draft)) {
+        const legacy = await readSvg(output.replace(/\.svg$/, '.draft.svg'));
+        if (legacy) await writeAtomic(draft, legacy);
+      }
       const resumeDraft = continued && !!await readSvg(draft);
       if (!resumeDraft) await rm(draft, { force: true });
       if (resumeDraft) report(`[${id}] ${labels[stage]}：沿用上次的草稿继续`);
@@ -196,7 +203,7 @@ export async function runLayering(input: {
     const inputs = await Promise.all(entries.map(async entry => {
       const id = entry.group.id, outline = groupStepId(id, 1);
       const bytes = (await readSvg(artifactPath(directory, id, 'outline')))!;
-      const output = artifactPath(directory, id, 'reduction'), draft = draftPath(output);
+      const output = artifactPath(directory, id, 'reduction'), draft = stepDraftPath(directory, id, 'reduction');
       await mkdir(dirname(draft), { recursive: true });
       await rm(draft, { force: true });
       const current = previous[outline] === check.inputs[outline] && await readSvg(output) ? { path: output } : undefined;

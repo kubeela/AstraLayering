@@ -19,7 +19,7 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
   const definition = toolDefinition('locate_pixel_differences');
   return {
     ...definition,
-    async execute(value, signal) {
+    async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('参数须为对象');
       const args = value as Record<string, unknown>;
       const root = await realpath(taskRoot);
@@ -59,7 +59,7 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
         throw new Error('parts 须为最多 100 个不重复的部件路径；不填或空数组表示全图');
       }
       const parts = (args.parts ?? []) as string[], padding = setting('part_padding', 8, 64, 0);
-      const destination = await canonicalPath(output);
+      const destination = await canonicalPath(context ? join(context.workspace, 'pixel-review') : output);
       if (!within(root, destination)) throw new Error('诊断输出必须位于本次任务目录内');
       await mkdir(destination, { recursive: true });
       const folder = join(await realpath(destination), randomUUID());

@@ -99,7 +99,7 @@ test('绘制 ID 在中断前落盘；重启调度后恢复同一会话，reviewe
     } };
   }
   await assert.rejects(runLayering({ ...f, groups: null, steps: createLayeringSteps(persisted(agents(['pass'], { failDrawingTurn: 1 }))) }), /执行失败/);
-  const path = join(f.directory, 'groups/face/step01/session.json');
+  const path = join(f.directory, 'agents/steps/groups/face/step01/session.json');
   assert.deepEqual(JSON.parse(await readFile(path, 'utf8')), { threadId: 'persistent-drawing-thread', harness: 'agv' });
   const second = agents(['pass']);
   await runLayering({ ...f, groups: null, steps: createLayeringSteps(persisted(second)) });

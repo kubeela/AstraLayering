@@ -1,3 +1,4 @@
+import { layerStepId } from './part-steps.ts';
 import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
@@ -30,7 +31,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
   await writeAtomic(merged, `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${canvas.width} ${canvas.height}">${parts.map(part => `<g opacity="0.65">${part}</g>`).join('')}</svg>`);
   const observations: SvgObservation[] = [];
   const preview = createSvgPreviewTool({ directory: context.directory, reference, canvas,
-    observationDirectory: join(context.directory, 'observations', 'outline-reduce', String(context.depth)),
+    observationDirectory: join(context.directory, layerStepId(context.depth), 'workspace'),
     observed: entry => observations.push(entry) });
   let submitted: OutlineReduction | undefined;
   const write: FunctionTool = {
@@ -79,7 +80,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       return textResult(submitted);
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, sandboxMode: 'workspace-write',
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)), sandboxMode: 'workspace-write',
     imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory,
       [merged, ...context.entries.flatMap(entry => [entry.outline.path, entry.current?.path, entry.outputPath, entry.parent?.steps.completion.output?.path])])],
     prompt: renderPrompt(await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8'), {runtime_context: JSON.stringify({
