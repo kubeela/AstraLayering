@@ -3,6 +3,7 @@ import { readFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -32,10 +33,20 @@ const cases = [
       if (isBody(layer)) return /^hair\/back_hair\/(long_|cap :: (nape|back))/.test(name) ? 1 : 2;
       return name.startsWith('trailing_skirt_') ? 0 : /^(waist_bow|chest_pendant)/.test(name) ? 4 : 3;
     } },
+  { id: 'black-white-doll', title: 'Black White Doll', source: '.web/showcase-layers/black-white-doll', reference: 'demos/black-white-doll/input/original.png',
+    composite: 'demos/black-white-doll/character-assembly/step01/character-assembled.png', counts: [81, 19], titles: ['Rear hair', 'Character', 'Camisole', 'Pleated skirt', 'Chest bow'],
+    classify(layer, name) {
+      if (isBody(layer)) return /^hair\/(back_hair|ponytail_)/.test(name) ? 0 : 1;
+      return name.startsWith('pleated_skirt/') ? 3 : name.startsWith('chest_bow/') ? 4 : 2;
+    } },
 ];
 
+const { values } = parseArgs({ options: { case: { type: 'string' } } });
+if (values.case && !cases.some(profile => profile.id === values.case)) throw new Error(`Unknown case: ${values.case}. Choose ${cases.map(profile => profile.id).join(', ')}.`);
 await mkdir(output, { recursive: true });
-for (const [caseIndex, profile] of cases.entries()) await render(profile, caseIndex);
+for (const [caseIndex, profile] of cases.entries()) {
+  if (!values.case || profile.id === values.case) await render(profile, caseIndex);
+}
 
 async function render(profile, caseIndex) {
   const source = join(root, profile.source);
