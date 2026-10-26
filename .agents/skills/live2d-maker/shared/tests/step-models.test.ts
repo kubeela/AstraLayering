@@ -215,7 +215,7 @@ test('custom image edit transports original prompts and images over both protoco
     expectedBackground = provider === 'google' ? 'opaque' : 'transparent';
     const settings = loadWorkflowEnvironment({ layering_part_simplify_image_model: model, PATH: process.env.PATH,
       [`layering_${provider}_image_base_url`]: base + (mode === 'gemini' ? '/v1beta' : '/v1'),
-      [`layering_${provider}_image_api_key`]: 'image-test-secret', [`layering_${provider}_image_protocol`]: mode }, root);
+      [`layering_${provider}_image_api_key`]: 'image-test-secret', ...(provider === 'google' ? { layering_google_image_protocol: mode } : {}) }, root);
     const outputDirectory = `${provider}-${mode}`;
     const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory), [root], { krita: process.execPath })!;
     const current = { name: tool.name, description: tool.description, inputSchema: tool.inputSchema };

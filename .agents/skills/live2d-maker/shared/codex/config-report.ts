@@ -35,6 +35,11 @@ export function configurationReport(env: NodeJS.ProcessEnv = process.env, direct
       return [provider, { configured: !!api, protocol: api?.protocol ?? null }];
     })),
     cliPaths: settings.cliPaths,
+    providers: Object.fromEntries(Object.entries(settings.providers ?? {}).map(([harness, provider]) => [harness, {
+      connection: provider.connection, credentialsConfigured: !!provider.apiKey,
+      baseUrl: provider.baseUrl ?? null, protocol: provider.protocol ?? null,
+      models: provider.models ?? null, sources: provider.sources,
+    }])),
     agvPatch: { enabled: settings.codex.env?.layering_agv_unlimited_response_header_timeout === 'true' },
     imageBudgets: Object.fromEntries(Object.entries(settings.imageBudgets ?? {}).map(([harness, budget]) => [harness, {
       enabled: budget.images !== undefined || budget.bytes !== undefined || budget.deduplicate === true,

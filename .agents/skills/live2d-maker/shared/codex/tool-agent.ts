@@ -12,6 +12,7 @@ import { AgentLog } from './agent-log.ts';
 import { AgentCallError } from './agent-runtime.ts';
 import { type AgentOptions, type AgentSession, type AgentTask, type GeneratedImage } from './agents.ts';
 import type { ToolResult } from './function-tools.ts';
+import { validateProviderModel } from '../agents/providers.ts';
 
 // Only the protocol subset used here is maintained. The CLI is pinned by codex-sdk.
 type Message = { id?: number | string; method?: string; params?: Record<string, any>;
@@ -192,6 +193,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
 
   return {
     async run(task, externalSignal) {
+      validateProviderModel(environment.providers, { ...selectedModel, harness: 'codex' }, task.step ?? task.name);
       if (closed) throw new Error('会话已关闭');
       if (busy) throw new Error('同一会话不能并发运行');
       checkFailure();

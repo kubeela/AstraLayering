@@ -21,6 +21,8 @@ test('effective configuration reports shell overrides and disabled/enabled compa
   assert.deepEqual(enabled.shellOverrides, ['layering_image_compact_threshold']);
   assert.equal(enabled.models.part_review.harness, 'agv');
   assert.deepEqual(enabled.imageApis.google, { configured: true, protocol: 'gemini' });
-  assert.doesNotMatch(JSON.stringify(enabled), /SECRET_PROVIDER|SECRET_IMAGE|apiKey|api_key|base_url/);
+  assert.doesNotMatch(JSON.stringify(enabled), /SECRET_PROVIDER|SECRET_IMAGE/);
+  assert.equal(enabled.providers.codex.credentialsConfigured, true);
+  assert.equal(enabled.providers.codex.sources.apiKey, 'layering_provider_api_key');
   assert.equal(await readFile(join(directory, '.env'), 'utf8'), source);
 });

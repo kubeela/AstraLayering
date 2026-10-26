@@ -8,6 +8,8 @@ import { workflowsDirectory } from '../paths.ts';
 import { withNodePath } from '../process-environment.ts';
 import { imageBudget, type ImageBudget } from '../../patches/shared/visual-context.ts';
 import { modelSlotDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
+import { resolveHarnessProviders, validateApiUrl, type HarnessProviders } from '../agents/providers.ts';
+export { validateApiUrl } from '../agents/providers.ts';
 
 export type ModelTier = 'medium' | 'high';
 export type ModelSelection = { model: string; effort: NonNullable<ThreadOptions['modelReasoningEffort']> };
@@ -28,6 +30,7 @@ export type WorkflowEnvironment = {
   codex: CodexOptions;
   imageCompactThreshold?: number;
   imageBudgets?: Record<Harness, ImageBudget>;
+  providers?: HarnessProviders;
 };
 
 export function parseModel(value: string | undefined, fallback: ModelSelection, name: string): ModelSelection {
@@ -52,13 +55,12 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   if (agvPatch && !['true', 'false'].includes(agvPatch)) throw new Error('layering_agv_unlimited_response_header_timeout 只能为 true 或 false。');
   if (agvPatch) effective.layering_agv_unlimited_response_header_timeout = agvPatch;
   const config: NonNullable<CodexOptions['config']> = {};
-  if (flag === 'true' || flag === '1') {
-    const baseUrl = get('layering_provider_base_url'), key = get('layering_provider_api_key');
-    if (!baseUrl || !key) throw new Error('启用自定义 provider 需要填写 layering_provider_base_url 和 layering_provider_api_key。');
-    validateApiUrl(baseUrl, 'layering_provider_base_url');
+  const providers = resolveHarnessProviders(file, env, effective, flag === 'true' || flag === '1');
+  const unifiedCodex = providers.codex.connection === 'unified';
+  if (unifiedCodex || flag === 'true' || flag === '1') {
     config.model_provider = 'layering_custom';
     config.model_providers = { layering_custom: {
-      name: 'Layering custom provider', base_url: baseUrl, env_key: 'layering_provider_api_key',
+      name: 'Layering custom provider', base_url: providers.codex.baseUrl!, env_key: unifiedCodex ? 'layering_codex_api_key' : 'layering_provider_api_key',
       wire_api: 'responses', requires_openai_auth: false,
     } };
   }
@@ -106,8 +108,8 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   for (const provider of ['openai', 'google'] as const) {
     const baseUrl = get(`layering_${provider}_image_base_url`) || (provider === 'openai' ? imageUrl : undefined);
     const apiKey = get(`layering_${provider}_image_api_key`) || (provider === 'openai' ? imageKey : undefined);
-    const protocol = get(`layering_${provider}_image_protocol`) || (provider === 'google' ? 'gemini' : 'openai');
-    if (!['openai', 'gemini'].includes(protocol) || (provider === 'openai' && protocol !== 'openai')) throw new Error(`layering_${provider}_image_protocol 无效。`);
+    const protocol = provider === 'google' ? get('layering_google_image_protocol') || 'gemini' : 'openai';
+    if (!['openai', 'gemini'].includes(protocol)) throw new Error('layering_google_image_protocol 无效。');
     if (baseUrl || apiKey) {
       if (!baseUrl || !apiKey) throw new Error(`${provider} 生图需要同时填写 layering_${provider}_image_base_url 和 layering_${provider}_image_api_key。`);
       validateApiUrl(baseUrl, `layering_${provider}_image_base_url`);
@@ -128,7 +130,7 @@ export function loadWorkflowEnvironment(env: NodeJS.ProcessEnv = process.env, di
   }
   if (executable) cliPaths.codex = path(executable);
   return {
-    stepModels, stepImages, imageApis, cliPaths, imageBudgets,
+    stepModels, stepImages, imageApis, cliPaths, imageBudgets, providers,
     models: {
       medium: parseModel(get('layering_medium_model'), defaultModels.medium, 'layering_medium_model'),
       high: parseModel(get('layering_high_model'), defaultModels.high, 'layering_high_model'),
@@ -170,14 +172,6 @@ export async function checkCodexCapabilities(settings: WorkflowEnvironment, opti
   await check;
   options.codexPathOverride = executable;
   settings.codex.codexPathOverride = executable;
-}
-
-export function validateApiUrl(value: string, name: string): void {
-  let url: URL;
-  try { url = new URL(value); } catch { throw new Error(`${name} 必须为完整的 HTTP(S) API 地址。`); }
-  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.hash || url.search) {
-    throw new Error(`${name} 必须为不含凭据、查询参数或片段的 HTTP(S) API 地址。`);
-  }
 }
 
 export function workflowCodexOptions(settings: WorkflowEnvironment, overrides: CodexOptions = {}): CodexOptions {

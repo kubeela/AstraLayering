@@ -23,6 +23,7 @@ import { resolvePatchedAgv } from './agv-patch.ts';
 import { AgentLog } from '../codex/agent-log.ts';
 import { resolveRunsDirectory } from '../paths.ts';
 import { withNodePath } from '../process-environment.ts';
+import { claudeProviderSettings, validateProviderModel } from './providers.ts';
 
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
@@ -71,6 +72,7 @@ async function copyCredential(source: string, target: string) {
 
 export async function runCliTask(task: AgentTask, model: AgentModel, settings: WorkflowEnvironment, options: AgentOptions,
   signal: AbortSignal, resumed?: string): Promise<AgentResult> {
+  validateProviderModel(settings.providers, model, task.step ?? task.name);
   const executable = await cliExecutable(settings, model.harness, options.imageNormalization?.runsRoot);
   const root = resolve(options.logDirectory || join(task.cwd || options.cwd!, 'agents'));
   const log = await AgentLog.create(root, task.name, { task: { ...task, tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) },
@@ -129,8 +131,19 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     try { if (model.harness === 'claude') userSettings = JSON.parse(await readFile(join(settings.codex.env?.CLAUDE_CONFIG_DIR || join(homedir(), '.claude'), 'settings.json'), 'utf8')); }
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
     const inherited = { ...(userSettings.apiKeyHelper ? { apiKeyHelper: userSettings.apiKeyHelper } : {}),
+      ...(model.harness === 'claude' ? claudeProviderSettings(settings.providers?.claude) : {}),
       env: Object.fromEntries(Object.entries(userSettings.env || {}).filter(([key]) => /^(ANTHROPIC_|CLAUDE_CODE_USE_|AWS_|AZURE_|GOOGLE_|VERTEX_)/.test(key))
         .map(([key, value]) => [key, settings.codex.env?.[key] ?? value])) };
+    if (model.harness === 'claude' && settings.providers?.claude.connection === 'unified') {
+      delete inherited.apiKeyHelper;
+      delete inherited.env.ANTHROPIC_AUTH_TOKEN;
+    }
+    if (model.harness === 'claude' && settings.providers?.claude.connection === 'unified') {
+      const nativeEnv: NodeJS.ProcessEnv = { ...inherited.env, ...env };
+      if (['CLAUDE_CODE_USE_BEDROCK', 'CLAUDE_CODE_USE_VERTEX', 'CLAUDE_CODE_USE_FOUNDRY'].some(key => /^(true|1)$/.test(String(nativeEnv[key])))) {
+        throw new Error('统一 Claude 网关使用 Anthropic Messages，与当前启用的云平台路由不兼容；请清空统一连接配置以复用原路由，或关闭对应云平台设置。');
+      }
+    }
     mcpServer = await createMcpBridge(task.tools || [], signal, event => log.recordProtocol(event));
     const mcp = { mcpServers: { layering: mcpServer.config } };
     const budget = imageBudget(env, model.harness);
