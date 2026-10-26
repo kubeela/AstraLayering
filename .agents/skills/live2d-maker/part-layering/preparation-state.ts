@@ -7,7 +7,7 @@ import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
 
 export type StandardJudgment = { needsAdjustment: boolean; reason?: string };
-export type ReferenceJudgment = { needsSimplification: boolean; reason?: string };
+export type ReferenceJudgment = { needsSimplification: boolean; reason?: string; preparedImageHash?: string };
 export type PreparationStage = typeof preparationStages[number];
 
 export function checkStandardJudgment(value: unknown): asserts value is StandardJudgment {
@@ -22,6 +22,10 @@ export function checkJudgment(value: unknown): asserts value is ReferenceJudgmen
   }
   if ((value as ReferenceJudgment).reason !== undefined && typeof (value as ReferenceJudgment).reason !== 'string') {
     throw new Error('judgment reason must be a string');
+  }
+  if ((value as ReferenceJudgment).preparedImageHash !== undefined
+    && (typeof (value as ReferenceJudgment).preparedImageHash !== 'string' || !/^[a-f0-9]{64}$/.test((value as ReferenceJudgment).preparedImageHash!))) {
+    throw new Error('preparedImageHash must be a SHA256 string');
   }
 }
 

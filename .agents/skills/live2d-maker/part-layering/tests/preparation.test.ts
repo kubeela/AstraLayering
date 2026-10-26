@@ -22,7 +22,7 @@ const optionsPath = (refs: { directory: string } | string) => join(section(refs)
 const styleReference = fileURLToPath(new URL('../resources/简化参考图片.png', import.meta.url));
 const outfitReference = fileURLToPath(new URL('../resources/连体服参考.jpg', import.meta.url));
 
-async function fixture(t: TestContext, needsSimplification: boolean, needsAdjustment = false) {
+async function fixture(t: TestContext, needsSimplification: boolean, needsAdjustment = false, reuseBase = false) {
   const temporary = await mkdtemp(join(tmpdir(), 'part-layering-preparation-'));
   const runName = `test-${randomUUID()}`;
   t.after(async () => {
@@ -38,11 +38,17 @@ async function fixture(t: TestContext, needsSimplification: boolean, needsAdjust
   const steps = createPreparationSteps({
     async run(task) {
       calls.push(task);
+      if ((task.name === '参考判断与简化' && !needsSimplification) || (task.name === '素体换装' && reuseBase)) {
+        const tool = task.tools!.find(tool => tool.name === 'reuse_reference')!;
+        const result = await tool.execute({ reason: task.name === '参考判断与简化' ? '测试画风判断' : '无需替换主体衣装' }, new AbortController().signal);
+        const saved = JSON.parse((result.contentItems[0] as { text: string }).text);
+        return { text: JSON.stringify({ savedPath: saved.savedPath, error: null, reason: saved.reason }), images: [] };
+      }
       if (!task.imageGeneration) {
         return { text: JSON.stringify(task.name === '姿态判断' ? { needsAdjustment, reason: '测试姿态判断' }
           : { needsSimplification, reason: '测试画风判断' }), images: [] };
       }
-      return { text: JSON.stringify({ savedPath: generated, error: null }), images: [{ savedPath: generated }] };
+      return { text: JSON.stringify({ savedPath: generated, error: null, reason: '测试转换依据' }), images: [{ savedPath: generated }] };
     },
   });
   return { original, generated, runName, calls, steps, bytes };
@@ -51,7 +57,7 @@ async function fixture(t: TestContext, needsSimplification: boolean, needsAdjust
 test('无需简化仍执行换装，判断和换装各收到正确的两张图片', async t => {
   const f = await fixture(t, false);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
-  assert.deepEqual(f.calls.map(task => task.name), ['参考判断', '素体换装']);
+  assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
   assert.deepEqual(f.calls[0].images?.map(image => image.path), [refs.standardImage, styleReference]);
   assert.deepEqual(f.calls[1].images?.map(image => image.path), [refs.simplifiedSubject, outfitReference]);
   assert.deepEqual(await readFile(refs.simplifiedSubject), f.bytes);
@@ -64,9 +70,9 @@ test('无需简化仍执行换装，判断和换装各收到正确的两张图�
 test('需要简化时先转换画风再换装，续跑不依赖外部原图', async t => {
   const f = await fixture(t, true);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
-  assert.deepEqual(f.calls.map(task => task.name), ['参考判断', '简化图片', '素体换装']);
-  assert.deepEqual(f.calls[1].images?.map(image => image.path), [refs.standardImage, styleReference]);
-  assert.deepEqual(f.calls[2].images?.map(image => image.path), [refs.simplifiedSubject, outfitReference]);
+  assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
+  assert.deepEqual(f.calls[0].images?.map(image => image.path), [refs.standardImage, styleReference]);
+  assert.deepEqual(f.calls[1].images?.map(image => image.path), [refs.simplifiedSubject, outfitReference]);
   await rm(f.original);
   f.calls.length = 0;
   const messages: string[] = [];
@@ -80,16 +86,117 @@ test('需要简化时先转换画风再换装，续跑不依赖外部原图', as
   assert.deepEqual(f.calls.map(task => task.name), ['素体换装']);
 });
 
+test('简化和素体各一次 agent 调用，复用分支保持参考字节且正常续跑零调用', async t => {
+  const f = await fixture(t, false, false, true);
+  const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
+  assert.deepEqual(f.calls.map(call => call.name), ['参考判断与简化', '素体换装']);
+  for (const task of f.calls) {
+    assert.equal(task.tools?.length, 1);
+    assert.equal(task.tools![0].name, 'reuse_reference');
+    assert.ok(!task.prompt.includes('{image_execution_rules}'));
+  }
+  assert.deepEqual(await readFile(refs.simplifiedSubject), await readFile(refs.standardImage!));
+  assert.deepEqual(await readFile(refs.baseSubject), await readFile(refs.simplifiedSubject));
+  assert.equal(JSON.parse(await readFile(refs.judgment, 'utf8')).needsSimplification, false);
+  await assert.rejects(readFile(join(section(refs), step('base'), 'judgment.json')), { code: 'ENOENT' });
+  f.calls.length = 0;
+  await prepareReferences({ runName: f.runName }, f.steps);
+  assert.equal(f.calls.length, 0);
+  assert.deepEqual(await loadPreparedReferences(f.runName), refs);
+});
+
+test('复用工具只接受理由，输入和输出路径固定且单次复制', async t => {
+  const f = await fixture(t, false);
+  const target = join(dirname(f.original), 'reused.png');
+  const steps = createPreparationSteps({ async run(task) {
+    const tool = task.tools!.find(tool => tool.name === 'reuse_reference')!;
+    const signal = new AbortController().signal;
+    await assert.rejects(tool.execute({ reason: '复用', output: f.original }, signal), /只接受非空 reason/);
+    const result = await tool.execute({ reason: '已满足要求' }, signal);
+    assert.equal(JSON.parse((result.contentItems[0] as { text: string }).text).savedPath, target);
+    await assert.rejects(tool.execute({ reason: '再次复制' }, signal), /已经复制完成/);
+    return { text: JSON.stringify({ savedPath: target, error: null, reason: '已满足要求' }), images: [] };
+  } });
+  assert.equal(await steps.baseSubject(f.original, target, 'test prompt'), 'reused');
+  assert.deepEqual(await readFile(target), f.bytes);
+  assert.deepEqual(await readFile(f.original), f.bytes);
+});
+
+test('模型仅返回已有路径而未执行工具时，拒绝冒充已完成的参考', async t => {
+  const f = await fixture(t, false);
+  const target = join(dirname(f.original), 'missing.png');
+  const steps = createPreparationSteps({ async run() {
+    return { text: JSON.stringify({ savedPath: f.original, error: null, reason: '声称复用' }), images: [] };
+  } });
+  await assert.rejects(steps.baseSubject(f.original, target, 'test prompt'), /did not produce an image/);
+  await assert.rejects(readFile(target), { code: 'ENOENT' });
+});
+
+test('复制与生图互斥，混合分支保留输入并阻止正式参考发布', async t => {
+  const f = await fixture(t, false);
+  const mixed = createPreparationSteps({ async run(task) {
+    await task.tools![0].execute({ reason: '先复用' }, new AbortController().signal);
+    return { text: JSON.stringify({ savedPath: f.generated, error: null, reason: '又生图' }), images: [{ savedPath: f.generated }] };
+  } });
+  await assert.rejects(prepareReferences({ runName: f.runName, image: f.original },
+    { ...f.steps, baseSubject: mixed.baseSubject }), /同时执行了复制与生图/);
+  const directory = getPreparationDirectory(f.runName);
+  await assert.rejects(readFile(join(directory, 'base-subject.png')), { code: 'ENOENT' });
+  assert.equal((await readdir(directory)).some(name => name.startsWith('base-subject.png.')), false);
+  assert.deepEqual(await readFile(f.original), f.bytes);
+});
+
+test('素体准备中断后只恢复素体 agent，复用前面已完成的判断和简化', async t => {
+  const f = await fixture(t, true, false, true);
+  await assert.rejects(prepareReferences({ runName: f.runName, image: f.original },
+    { ...f.steps, async baseSubject() { throw new Error('测试中断'); } }), /测试中断/);
+  const directory = getPreparationDirectory(f.runName);
+  const judgment = await readFile(join(directory, 'judgment.json'));
+  f.calls.length = 0;
+  await prepareReferences({ runName: f.runName }, f.steps);
+  assert.deepEqual(f.calls.map(call => call.name), ['素体换装']);
+  assert.deepEqual(await readFile(join(directory, 'judgment.json')), judgment);
+  assert.deepEqual(await readFile(join(directory, 'base-subject.png')), await readFile(join(directory, 'simplified-subject.png')));
+});
+
+test('旧版只有画风判断的未完成任务直接完成生图，完整结果继续复用', async t => {
+  const f = await fixture(t, true);
+  const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
+  await legacyRecord(refs);
+  f.calls.length = 0;
+  await prepareReferences({ runName: f.runName }, f.steps);
+  assert.deepEqual(f.calls.map(call => call.name), []);
+  await rm(refs.simplifiedSubject);
+  await prepareReferences({ runName: f.runName }, f.steps);
+  assert.deepEqual(f.calls.map(call => call.name), ['简化图片', '素体换装']);
+  assert.ok(!f.calls[0].prompt.includes('reuse_reference'));
+  assert.deepEqual(await loadPreparedReferences(f.runName), refs);
+});
+
+test('发布简化参考前核对缓存哈希，异常缓存停止发布且不新增模型调用', async t => {
+  const f = await fixture(t, true);
+  const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
+  const cached = join(section(refs), step('judgment'), 'reference.png');
+  await rm(refs.simplifiedSubject);
+  await writeFile(cached, 'changed cache');
+  f.calls.length = 0;
+  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /简化参考缓存缺失或内容改变/);
+  assert.equal(f.calls.length, 0);
+  await assert.rejects(readFile(refs.simplifiedSubject), { code: 'ENOENT' });
+});
+
 const legacyHash = (...inputs: (string | boolean)[]) => createHash('sha256').update(JSON.stringify(inputs)).digest('hex');
 const sha = async (path: string) => createHash('sha256').update(await readFile(path)).digest('hex');
 // Rebuild what earlier runs left behind: preparation.json and no step records.
 async function legacyRecord(refs: PreparationReferences, edit: (state: any) => void = () => {}) {
+  const { preparedImageHash: _cache, ...legacyDecision } = JSON.parse(await readFile(refs.judgment, 'utf8'));
+  await writeFile(refs.judgment, JSON.stringify(legacyDecision));
   const [original, standard, judgment, simplified, base] = await Promise.all(
     [refs.originalImage!, refs.standardImage!, refs.judgment, refs.simplifiedSubject, refs.baseSubject].map(sha));
   const state = { version: 1, standard: false, files: {
     standard: { inputHash: legacyHash(original, false), outputHash: standard },
     judgment: { inputHash: legacyHash(standard), outputHash: judgment },
-    simplified: { inputHash: legacyHash(standard, false), outputHash: simplified },
+    simplified: { inputHash: legacyHash(standard, legacyDecision.needsSimplification), outputHash: simplified },
     base: { inputHash: legacyHash(simplified), outputHash: base } }, partReferencesHash: legacyHash(simplified, base) };
   edit(state);
   await rm(section(refs), { recursive: true });
@@ -143,7 +250,7 @@ test('原图不是 PNG 时保留原始字节，standard 和不简化的参考都
   assert.deepEqual(await readFile(refs.originalImage!), bytes);
   assert.ok(refs.originalImage!.endsWith('.jpg'));
   for (const path of [refs.standardImage!, refs.simplifiedSubject]) assert.equal((await sharp(path).metadata()).format, 'png');
-  assert.deepEqual(f.calls.map(task => task.name), ['参考判断', '素体换装']);
+  assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
 });
 
 test('--standard 先判断；已标准仅复制，需要调整才传一张原图给原生生图，后续引用新图', async t => {
@@ -151,7 +258,7 @@ test('--standard 先判断；已标准仅复制，需要调整才传一张原图
     const f = await fixture(t, true, adjust);
     await sharp({ create: { width: 24, height: 32, channels: 4, background: '#b0907080' } }).png().toFile(f.generated);
     const refs = await prepareReferences({ runName: f.runName, image: f.original, standard: true }, f.steps);
-    assert.deepEqual(f.calls.map(task => task.name), ['姿态判断', ...(adjust ? ['标准姿态'] : []), '参考判断', '简化图片', '素体换装']);
+    assert.deepEqual(f.calls.map(task => task.name), ['姿态判断', ...(adjust ? ['标准姿态'] : []), '参考判断与简化', '素体换装']);
     const judge = f.calls[0];
     assert.equal(judge.images!.length, 1);
     assert.equal(judge.images![0].path, refs.originalImage);
@@ -162,7 +269,7 @@ test('--standard 先判断；已标准仅复制，需要调整才传一张原图
       assert.equal(generation!.images![0].path, refs.originalImage);
       assert.deepEqual(await readFile(refs.standardImage!), await readFile(f.generated));
     } else assert.deepEqual(await readFile(refs.standardImage!), f.bytes);
-    for (const name of ['参考判断', '简化图片']) assert.equal(f.calls.find(task => task.name === name)!.images![0].path, refs.standardImage);
+    assert.equal(f.calls.find(task => task.name === '参考判断与简化')!.images![0].path, refs.standardImage);
     assert.deepEqual(await readFile(refs.originalImage!), f.bytes);
     f.calls.length = 0;
     assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
@@ -187,7 +294,7 @@ test('标准生图异常保留选项和判断，续跑无需再次传 --standard
   assert.equal(JSON.parse(await readFile(join(section(directory), step('pose'), 'judgment.json'), 'utf8')).needsAdjustment, true);
   f.calls.length = 0;
   await prepareReferences({ runName: f.runName }, f.steps);
-  assert.deepEqual(f.calls.map(task => task.name), ['标准姿态', '参考判断', '素体换装']);
+  assert.deepEqual(f.calls.map(task => task.name), ['标准姿态', '参考判断与简化', '素体换装']);
 });
 
 test('无效姿态判断和无效生成图片明确报错，不回退原图', async t => {
@@ -236,7 +343,7 @@ test('删除参考即重试该步骤：依赖它的后续参考随之重做，�
   await sharp({ create: { width: 24, height: 32, channels: 4, background: '#a0708080' } }).png().toFile(f.generated);
   f.calls.length = 0;
   await prepareReferences({ runName: f.runName }, f.steps);
-  assert.deepEqual(f.calls.map(task => task.name), ['简化图片', '素体换装']);
+  assert.deepEqual(f.calls.map(task => task.name), ['素体换装']);
   await assert.rejects(readFile(group), { code: 'ENOENT' });
   await assert.rejects(readFile(join(parts, 'old.svg')), { code: 'ENOENT' });
   assert.equal(JSON.parse(await readFile(join(raster, 'run.json'), 'utf8')).threadId, 'kept-thread');
@@ -251,7 +358,7 @@ test('切换模式须对 options 显式重试，其后的参考随之重做', as
   await rm(join(section(refs), step('options'), '.completed'));
   const resumed = await prepareReferences({ runName: f.runName, standard: true }, f.steps);
   assert.deepEqual(resumed, refs);
-  assert.deepEqual(f.calls.map(task => task.name), ['姿态判断', '参考判断', '素体换装']);
+  assert.deepEqual(f.calls.map(task => task.name), ['姿态判断', '参考判断与简化', '素体换装']);
   assert.deepEqual(JSON.parse(await readFile(optionsPath(refs), 'utf8')), { standard: true });
 });
 

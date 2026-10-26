@@ -16,9 +16,10 @@ export type { PreparationInput, PreparationReferences, ReferenceJudgment, Standa
 export type PreparationSteps = {
   judgeStandard(image: string, prompt: string): Promise<StandardJudgment>;
   standardize(inputImage: string, outputImage: string, prompt: string): Promise<void>;
-  judge(image: string, prompt: string): Promise<ReferenceJudgment>;
+  prepareSimplified(inputImage: string, outputImage: string, prompt: string): Promise<ReferenceJudgment>;
+  // Finish an older interrupted run whose separate judgment already exists.
   simplify(inputImage: string, outputImage: string, prompt: string): Promise<void>;
-  baseSubject(inputImage: string, outputImage: string, prompt: string): Promise<void>;
+  baseSubject(inputImage: string, outputImage: string, prompt: string): Promise<'reused' | void>;
 };
 
 function readPrompt(name: string): Promise<string> {
@@ -125,10 +126,11 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     progress?.(`参考判断：${decision.needsSimplification ? '需要转换 Live2D 画风' : '沿用原图画风'}${decision.reason ? `；${decision.reason}` : ''}`);
     return decision;
   }
-  async function normalized(stage: 'simplified' | 'base', target: string, refs: PreparationReferences, generate: (output: string) => Promise<void>) {
+  async function normalized(stage: 'simplified' | 'base', target: string, refs: PreparationReferences, generate: (output: string) => Promise<'reused' | void>) {
     await produce(target, async temporary => {
-      await generate(temporary);
+      const result = await generate(temporary);
       if (!await exists(temporary)) throw new Error(`Preparation output was not produced: ${target}`);
+      if (result === 'reused') return;
       if (!refs.standardImage) throw new Error('参考后处理缺少 standard.png');
       // Raw generation is retained outside the final reference filenames for diagnosis.
       await normalizeGeneratedReference(temporary, refs.standardImage, refs.directory, stage, normalization);
@@ -164,9 +166,13 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         return;
       }
       case 'judgment': {
-        const decision = await steps.judge(refs.standardImage!, await readPrompt('1-参考判断.md'));
-        checkJudgment(decision);
-        await writeJson(output(step), decision);
+        let decision: ReferenceJudgment | undefined;
+        const prepared = join(step.directory, 'reference.png');
+        await produce(prepared, async temporary => {
+          decision = await steps.prepareSimplified(refs.standardImage!, temporary, await readPrompt('2-简化图片.md'));
+          checkJudgment(decision);
+        });
+        await writeJson(output(step), { ...decision!, preparedImageHash: await fileHash(prepared) });
         await reportJudgment(refs);
         return;
       }
@@ -174,9 +180,18 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         const decision = await readJson(refs.judgment);
         checkJudgment(decision);
         const image = refs.standardImage!, simplify = decision.needsSimplification;
+        if (!simplify) {
+          progress?.('简化图片：无需转换，复制 standard.png');
+          return produce(output(step), temporary => copyAsPng(image, temporary));
+        }
         return normalized('simplified', output(step), refs, async temporary => {
-          if (simplify) await steps.simplify(image, temporary, await readPrompt('2-简化图片.md'));
-          else { await copyFile(image, temporary); progress?.('简化图片：无需转换，复制 standard.png'); }
+          if (decision.preparedImageHash) {
+            const prepared = join(sectionDirectory(directory), stageStep('judgment'), 'reference.png');
+            if (!await exists(prepared) || await fileHash(prepared) !== decision.preparedImageHash) {
+              throw new Error('简化参考缓存缺失或内容改变，请重试 preparation/step05；已有文件已保留。');
+            }
+            await copyFile(prepared, temporary);
+          } else await steps.simplify(image, temporary, await readPrompt('2-简化图片.md'));
         });
       }
       case 'base':
