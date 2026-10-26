@@ -31,6 +31,16 @@ export function validateComponent(c, canvas, authoringRequired = true) {
   if(a.contour)polygon(a.contour,canvas);if(a.holes){if(!Array.isArray(a.holes)||a.holes.length>16)throw Error('孔洞数量超出范围');a.holes.forEach(p=>polygon(p,canvas));}
   if(a.simulationSubdivisions!==undefined&&(!Number.isInteger(a.simulationSubdivisions)||a.simulationSubdivisions<0||a.simulationSubdivisions>1))throw Error('控制网格细分必须为 0 或 1');
   if(a.controlGrid!==undefined&&(c.kind!=='cloth'||!Array.isArray(a.controlGrid)||a.controlGrid.length!==2||a.controlGrid.some(n=>!Number.isInteger(n)||n<2||n>16)))throw Error('布片控制格必须为 [列数,行数]，各为 2–16');
+  if(a.controlGridKnots!==undefined){
+    object(a.controlGridKnots,'控制格坐标必须为 {x:[],y:[]}');
+    if(c.kind!=='cloth'||!a.controlGrid||!a.contour||Object.keys(a.controlGridKnots).some(k=>!['x','y'].includes(k)))throw Error('明确控制格坐标仅用于有轮廓和 controlGrid 的布片');
+    for(const [axis,key]of ['x','y'].entries()){
+      const values=a.controlGridKnots[key],min=Math.min(...a.contour.map(p=>p[axis])),max=Math.max(...a.contour.map(p=>p[axis]));
+      if(!Array.isArray(values)||values.length!==a.controlGrid[axis]+1||values.some((v,i)=>!Number.isFinite(v)||i>0&&v<=values[i-1]+1e-6))throw Error('控制格 '+key+' 坐标需严格递增且对应行列数量');
+      if(values[0]>min+1e-6||values.at(-1)<max-1e-6)throw Error('控制格 '+key+' 坐标必须覆盖完整轮廓');
+      values.forEach(v=>number(v,-(axis?canvas.height:canvas.width),(axis?canvas.height:canvas.width)*2,'控制格 '+key));
+    }
+  }
   number(a.freeLength, 1, Math.hypot(canvas.width, canvas.height) * 3, '自由长度');
   if (c.kind === 'pendant') { validatePoint(a.pivot, canvas); polygon(a.contour, canvas); }
   else {

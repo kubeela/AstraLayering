@@ -162,6 +162,11 @@ export function gridControlGeometry(authoring,supports){
   const [columns,rows]=authoring.controlGrid,outer=authoring.contour;
   const min=[0,1].map(k=>Math.min(...outer.map(p=>p[k]))),max=[0,1].map(k=>Math.max(...outer.map(p=>p[k])));
   const axes=[columns,rows].map((count,k)=>{
+    // Explicit knots place controls at actual free faces and fixed boundaries.
+    // Supports remain authored pose ports; their pose is evaluated at every
+    // control. Inserting another row here would defeat the authored layout and
+    // create near-pinned slivers next to a seam.
+    if(authoring.controlGridKnots)return [...authoring.controlGridKnots[k?'y':'x']];
     const values=Array.from({length:count+1},(_,i)=>min[k]+(max[k]-min[k])*i/count);
     // An authored support must be a real control vertex, even on a small cuff.
     for(const s of supports){const value=clamp(s.at[k],min[k],max[k]),nearest=values.reduce((n,v,i)=>Math.abs(v-value)<Math.abs(values[n]-value)?i:n,0);if(nearest>0&&nearest<values.length-1&&Math.abs(values[nearest]-value)<(max[k]-min[k])/count*.2)values[nearest]=value;else if(!values.includes(value))values.push(value);}
