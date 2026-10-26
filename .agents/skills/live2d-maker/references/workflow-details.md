@@ -52,9 +52,10 @@ pnpm start --name jianma --status --json
 pnpm env:check
 ```
 
-此命令通过工作流同一个配置加载器只读展示生效的 LLM 职责模型与力度、逐步骤生图模型、API 是否已填写及协议、CLI 路径、Codex 配置目录和图片阈值。列出覆盖 `.env` 的 shell 键名，不输出密钥或 API URL，不启动模型、不验证登录，也不修改配置与任务。按[安装与前置](setup.md)另外检查所选路线的 CLI、权限和绘图能力。
+此命令通过工作流同一个配置加载器只读展示生效的 LLM 职责模型与力度、逐步骤生图模型、CLI 路径、Codex 配置目录和图片阈值。`providers` 列出各 CLI 的连接方式、地址、协议、可用模型列表、配置来源键名和凭据是否填写，不输出密钥／token 值；生图 API 只显示是否填写和协议。命令不启动模型、不验证登录，也不修改配置与任务。统一主模型字段见[主模型连接与模型列表](agent-models.md#主模型连接与模型列表)。按[安装与前置](setup.md)另外检查所选路线的 CLI、权限和绘图能力。
 
 - 确认 `skill` 和 `configuration` 指向实际运行的安装；从网页发起时检查工作台 checkout 内的 skill 及服务环境，从 CLI 发起时检查原 CLI 环境。仅在另一份 checkout 或交互终端核对，不能证明后台配置正确。
+- 核对 `providers` 中实际生效的来源、协议和模型列表；旧别名的 shell 值也优先于 `.env`。不在列表的步骤模型须调整模型选择或列表；无效协议、缺少统一连接的 key／URL 时按报错补齐或清空该连接，避免反复启动失败。列表和版本检查都不能替代登录验证。
 - `codex.imageCompaction.enabled: false`、`threshold: null` 表示未启用按图片数保护。**补丁存在或生图可用不能证明图片保护开启。** 已知上游拒绝含 50 张及以上图片的请求时，设置 `layering_image_compact_threshold=49`；报告须显示 `enabled: true`、`threshold: 49`、`childThreshold: "49"`，并用启动时选定的二进制检查 `debug layering-capabilities` 中 `image_compaction_version: 2`。没有此限制的环境保持用户选择，默认仍关闭。
 - 用户已有 Codex 的 `model_auto_compact_token_limit` 是 token 阈值，与图片数量是两种独立限制；调大 token 窗口不会解除每请求 50 张限制。工作流不通过此 `.env` 键设置 token 窗口或改写用户 Codex 配置。
 - 更新模型方案只改用户指定的差异键；保留 provider、API、CLI 路径、`CODEX_HOME`、图片阈值及显示环境，不用完整模板覆盖已有 `.env`。配置由进程启动时加载，修改后让停止的任务用原入口续跑；正在执行的请求不会热更新。

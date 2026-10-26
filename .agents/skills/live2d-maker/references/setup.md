@@ -33,7 +33,7 @@ Nano 生图与透明后处理只需要所选接口和已有 Node／Sharp，不�
 - 按 LLM 职责配置检查对应 CLI 与登录／provider，人物和衣服共用模型选择：Codex 默认继承当前 `CODEX_HOME` 或 `~/.codex`；Claude Code、Antigravity 使用显式配置的入口或全局 CLI，并复用已有登录。pnpm 不安装后两者。缺少 CLI 或登录凭据时，展示具体报错并询问用户是安装／登录还是改用已有模型，不自行安装。
 - 生图步骤选择 `codex-native` 时，绘制模型必须属于 Codex，并具备外部提供的原生 `image_generation`。选择自定义 OpenAI 或 Google 生图时，检查对应 API URL、key 和协议；Codex 需要通过补丁能力检查并使用原生 imagegen，Claude／AGV 注册本步骤的共享 `image_generation` 工具。纯 KRA 组装不以生图为前置。
 - Python 优先复用宿主已有解释器；没有独立解释器时，验证 Krita 内置 Python 插件／脚本环境，保证至少一种实际可用。CLI 本身不保证提供 Python；Krita 内置 Python 也不保证有独立 `python3` 或 `pip` 命令。固定调度、SVG、PNG 读写和缩放已由 Node／Sharp 承担，不统一安装 Pillow、NumPy、PyQt5 等包。辅助脚本确实需要某个包时，只检查该脚本使用的解释器与模块。
-- skill 根目录 `.env` 不存在时，先按[推荐模型方案](model-presets.md)让用户确认，再以 [example.env](../example.env) 为基础填写；已有 `.env` 直接复用，不因启动或升级覆盖。按最终配置检查依赖。shell 同名变量优先，密钥不写入报告或提交。
+- skill 根目录 `.env` 不存在时，先按[推荐模型方案](model-presets.md)让用户确认，再以 [example.env](../example.env) 为基础填写；已有 `.env` 直接复用，不因启动或升级覆盖。按最终配置检查依赖。主模型使用[统一连接字段](agent-models.md#主模型连接与模型列表)，shell 配置优先于文件，旧别名继续兼容；核对协议、key／URL 和所选模型列表，缺少凭据时询问用户下一步。密钥不写入报告或提交。
 
 **在实际任务环境里验证。** 后台 CLI 和网页发起的任务应复用同一环境，不能只检查交互终端。Claude Code／Antigravity 的每次请求有受控的配置与临时目录，使用隔离 HOME；宿主 `pip --user` 装的包可能不可见。已有虚拟环境或解释器可直接复用，不把凭据隔离改成共享用户 HOME。Krita 的 Python 插件在 Krita 进程内检查，不能用系统 Python 的 `import krita` 作为验收；Krita 自带的 PyQt5 也无需再为系统 Python 安装一份。
 

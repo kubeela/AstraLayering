@@ -43,6 +43,24 @@ layering_agent_part_review_model=gemini-4-argon-high
 
 统一职责配置优先；旧 `layering_<小步骤>_model` 在同一职责的已填写值一致时可以继续读取，冲突时明确指出旧键并要求填写对应统一键，不自动改写 `.env`。显式设置的旧 `layering_medium_model`／`layering_high_model` 仍作为最后的兼容覆盖：high 对应两套 raster 的 step01、review／返修和 step02，medium 对应其余职责；这一历史映射不随方案 1 的模型名称变化。
 
+## 主模型连接与模型列表
+
+三种 CLI 统一使用 `layering_<codex|claude|agv>_<api_key|base_url|models|protocol>`。连接字段留空时复用已有登录和 provider；主模型与生图各自鉴权，不共用 key。完整字段见 [example.env](../example.env)。
+
+| CLI | 协议 | 自定义连接 | 模型列表的原生适配 |
+| --- | --- | --- | --- |
+| Codex | `responses` | key 必填；URL 留空为 `https://api.openai.com/v1` | 启动前校验列表，SDK 传入步骤选定模型，保留宿主模型元数据 |
+| Claude Code | `anthropic`（Messages） | key 必填；URL 留空为 `https://api.anthropic.com` | 每次请求的私有 settings 中生成 `modelPicker` |
+| AGV | `genai` 或 `openai` | key 与 URL 都必填；协议留空默认 `genai` | 映射到原生 `AGY_LLM_GATEWAY_MODELS` |
+
+`models` 接受逗号分隔的模型 ID，自动去掉两侧空白和重复项，不写力度后缀或 JSON 数组。例如 `layering_codex_models=gpt-6.1-sol,gpt-6-astra`。留空不限制。列表声明可用模型，具体职责仍由 `layering_agent_<职责>_model` 选择，工作流模型枚举保持上表范围。启动前只核对本次所选步骤；模型不在列表时明确报错，不发起模型请求。列表不证明账号拥有该模型权限。
+
+统一键不会改变 CLI 本身支持的协议：Codex 不支持 Chat Completions，Claude 常规网关不支持 OpenAI 协议。Claude 的已有 Bedrock／Vertex／Foundry 路由在统一连接和协议均留空时继承；显式选择 Messages 与已启用的云平台路由冲突时明确报错。AGV 的 `openai` 模式可以透传，但本项目的 AGV 工具／原图转发及图片容量保护依赖 `genai`；配置保护却选 `openai` 时不会静默忽略。
+
+逐字段优先级为 shell 统一键、shell 旧别名、`.env` 统一键、`.env` 旧别名，最后继承 CLI 登录；空 shell 值屏蔽文件中的同名键。旧 Codex `layering_custom_provider=true` 与 `layering_provider_base_url/api_key`，Claude `ANTHROPIC_API_KEY/BASE_URL`，AGV `AGY_LLM_GATEWAY_API_KEY/URL/MODELS/WIRE_PROTOCOL` 继续兼容。统一 Codex 连接不再需要旧开关。CLI 接收转换后的原生字段，不修改 `process.env` 或全局配置；显式 Claude 连接的 key 优先于继承的 token／key helper，后者仅在本次私有配置中移除。
+
+`pnpm env:check` 展示每个 CLI 的连接来源、地址、协议、模型列表和凭据是否填写，不输出 key／token 值。与 CLI 登录权限和版本检查一起核对，见[生效配置核对](workflow-details.md#生效配置核对)。
+
 ## 生图选择
 
 每个拥有生图工具的 agent 使用 `layering_<步骤名>_image_model`，未填继承 `layering_default_image_model`，默认 `codex-native`。生图配置保留实际步骤粒度，人物和衣服分别选择：
@@ -76,7 +94,7 @@ OpenAI 兼容协议在 base URL 后追加 `/images/generations` 或 `/images/edi
 
 Nano 后处理不改变第一张生成图尺寸和比例；工作流仍负责后续等比缩放与配准。原始 RGB `original.png`、换背景图 `counterpart.png`、透明结果 `transparent.png`、alpha 和处理记录保存在本次请求的 `generated/image-processing/<id>/`。第二张分辨率变化或少量画布取整时，Sharp 等比适配到第一张画布，仅用于差分；适配图另存为 `counterpart-aligned.png`，尺寸变换写入 `counterpartAlignment`。第二次请求失败或取消、实际背景不可靠、画布比例明显不同都会明确报错并指出原图路径。两张图与请求记录完整保留，不回退到单图抠色或抠图模型，也不自动安装 Python 包。
 
-主模型网关与生图接口各自鉴权。Codex 默认继承当前用户配置；自定义 Codex provider 沿用 `layering_custom_provider` 和 provider URL／key。Claude／agv 可复用其已有登录，也可在 `.env` 填写 CLI 原生环境变量，例如 `ANTHROPIC_API_KEY`／`ANTHROPIC_BASE_URL`，或 `AGY_LLM_GATEWAY_API_KEY`／`AGY_LLM_GATEWAY_URL`／`AGY_LLM_GATEWAY_MODELS`／`AGY_LLM_GATEWAY_WIRE_PROTOCOL`。密钥不写入提示词、报告或 Git。
+主模型连接使用上面的统一字段，生图继续使用各 provider 的独立字段。密钥不写入提示词、报告或 Git。
 
 AGV 的 GenAI 网关 base URL 可以包含 `/v1beta`，转发会保留供应商前缀并避免重复追加 API 路径。请求日志记录实际图片数、请求字节数、上游响应头与首条内容时间，不记录正文或鉴权。
 
