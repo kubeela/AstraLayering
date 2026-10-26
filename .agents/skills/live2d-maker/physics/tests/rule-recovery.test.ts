@@ -5,6 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fingerprint,put,ruleBaseline,type PhysicsInput} from '../input.ts';
 import {resumeRuleUpdate} from '../rule-recovery.ts';
+import {inspectSection} from '../../shared/step-section.ts';
 
 async function fixture(){
   const root=await mkdtemp(join(tmpdir(),'astra-physics-rules-')),input:PhysicsInput={task:root,document:join(root,'source.kra'),color:join(root,'source.png'),structures:[join(root,'groups.json')],profile:'all',referencePhysics:join(root,'reference.json')};
@@ -51,9 +52,12 @@ test('a failed current binding validation cannot migrate the input fingerprint',
 test('a genuine rules generation preserves exhausted review history, resumes B and cannot reset the budget twice',async()=>{
  const f=await fixture();try{
   await put(join(f.root,'roles.json'),{authoring:{threadId:'preserved-b',threadHarness:'codex'},repairRounds:{hair:3}});
+  await put(join(f.root,'step01/.completed'),{stamp:'analysis-source-unchanged',inputs:{}});
   await writeFile(join(f.root,'step02/.completed'),'old binding approval');await put(join(f.root,'step03/feedback.json'),{status:'repair-requested',reason:'weak response',repairRounds:{hair:3}});
   const result=await resumeRuleUpdate(f.input,f.root,f.baseline,async()=>{}),run=JSON.parse(await readFile(join(f.root,'run.json'),'utf8'));
   assert.equal(run.threadId,'preserved-b');assert.equal(run.threadStep,'step02');assert.equal(await readFile(join(result.archive!,'step02-.completed'),'utf8'),'old binding approval');
+  assert.equal(await readFile(join(f.root,'step02/.running'),'utf8'),'old binding approval');
+  const plan=await inspectSection(f.root,[{number:1},{number:2},{number:3,allowsEarlyArtifacts:true}]);assert(!plan.reset.includes('step02'),'actual section scheduler must retain the draft and B thread');
   assert.equal(JSON.parse(await readFile(join(result.archive!,'step03-feedback.json'),'utf8')).reason,'weak response');
   const roles=JSON.parse(await readFile(join(f.root,'roles.json'),'utf8'));assert.deepEqual(roles.repairRounds,{});assert.deepEqual(roles.previousRepairRounds,{hair:3});
   await put(join(f.root,'roles.json'),{...roles,repairRounds:{hair:1}});assert.equal((await resumeRuleUpdate(f.input,f.root,f.baseline,async()=>assert.fail())).status,'current');assert.deepEqual(JSON.parse(await readFile(join(f.root,'roles.json'),'utf8')).repairRounds,{hair:1});
