@@ -1,6 +1,23 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizedStages, provenanceSummary, coverageRows, selectedAssemblies, tuningRounds, candidateMetrics, candidateMotionTarget, candidateResponseCurves, selectedFindings, selectedEvents, recordedCurve, curveGeometry, responseProbes, sampleResponse } from '../studio/physics-workflow-model.js';
+import { physicsProjectPreview, normalizedStages, provenanceSummary, coverageRows, selectedAssemblies, tuningRounds, candidateMetrics, candidateMotionTarget, candidateResponseCurves, selectedFindings, selectedEvents, recordedCurve, curveGeometry, responseProbes, sampleResponse } from '../studio/physics-workflow-model.js';
+
+test('physics project opening uses explicit producer scope while preserving explicit queries and other editor defaults', () => {
+  const selection = { version: 1, mode: 'assembled', scope: 'render-review-only', projectionReviewRequested: false };
+  const project = { previewMode: 'mask', previewModes: { mask: true, mixed: false }, physicsWorkflow: { previewSelection: selection } };
+  assert.equal(physicsProjectPreview(project, 'physics'), 'normal-depth');
+  assert.equal(physicsProjectPreview(project, 'physics', 'mask'), 'mask');
+  assert.equal(physicsProjectPreview(project, 'physics', 'normal-depth'), 'normal-depth');
+  assert.equal(physicsProjectPreview(project, 'lighting'), 'mask');
+  assert.equal(physicsProjectPreview(project, 'mask'), 'mask');
+  const assembled = { ...project, previewMode: 'normal-depth' };
+  assert.equal(physicsProjectPreview(assembled, 'lighting'), 'mask');
+  assert.equal(physicsProjectPreview({ ...assembled, previewModes: { mask: true, mixed: true } }, 'lighting'), 'mixed');
+  assert.equal(physicsProjectPreview(assembled, 'lighting', 'normal-depth'), 'normal-depth');
+  assert.equal(physicsProjectPreview({ ...project, physicsWorkflow: { previewSelection: { ...selection, scope: 'invalid' } } }, 'physics'), 'mask');
+  assert.equal(physicsProjectPreview({ ...project, physicsWorkflow: { previewSelection: { ...selection, mode: 'auto', projectionReviewRequested: true } } }, 'physics'), 'mask');
+  assert.equal(physicsProjectPreview({ ...project, physicsWorkflow: null }, 'physics'), 'mask');
+});
 
 test('current manual approval never becomes workflow acceptance through archived production records', () => {
   const data = { source: 'manual', stages: [{ id: 'review', status: 'accepted' }], provenance: { configHash: 'current', workflowAccepted: true, manualReview: { status: 'approved', configHash: 'current' } }, evidence: { configHash: 'older' } };

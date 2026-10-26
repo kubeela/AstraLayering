@@ -16,7 +16,7 @@ const readableArtifact = (path: unknown): path is string => typeof path === 'str
 async function readRecords(directory: string, artifactsOnly = false) {
   const paths = artifactsOnly ? ['step03/evidence/manifest.json', 'step03/evidence/frames.json']
     : ['physics.json', 'manual-review.json', 'run.json', 'step01/analysis.json', 'step01/coverage.json',
-    'step02/coverage.json', 'step02/assemblies.json', 'step02/tuning.json', 'step02/result.json', 'step02/initialization.json', 'step03/findings.json',
+    'preview-selection.json', 'step02/coverage.json', 'step02/assemblies.json', 'step02/tuning.json', 'step02/result.json', 'step02/initialization.json', 'step03/findings.json',
     'step03/feedback.json', 'step03/evidence/manifest.json', 'step03/evidence/frames.json'];
   const records = await Promise.all(paths.map(path => jsonFile(directory, 'physics/' + path)));
   return Object.fromEntries(paths.map((path, i) => [path, records[i]]));
@@ -81,8 +81,14 @@ export async function studioPhysicsWorkflow(directory: string, name: string, dir
   const feedback = records['step03/feedback.json'];
   const linkedFeedback = feedback ? { ...feedback, items: list(feedback.items).map(item => ({ ...item,
     images: list(item.images).map(ref => feedback.configHash === provenance.configHash ? image(ref) : { path: typeof ref === 'string' ? ref : ref?.path }) })) } : null;
+  const selection = records['preview-selection.json'];
+  const previewSelection = selection?.version === 1 && selection.scope === 'render-review-only'
+    && ['assembled', 'auto'].includes(selection.mode)
+    && selection.projectionReviewRequested === (selection.mode !== 'assembled')
+    ? { version: 1, mode: selection.mode, scope: selection.scope, projectionReviewRequested: selection.projectionReviewRequested } : null;
   return {
     version: 1, source: manual ? 'manual' : 'workflow', profile: config?.profile || records['run.json']?.sourceInput?.profile,
+    previewSelection,
     provenance: { ...provenance, manualReview: manualReview?.configHash === provenance.configHash ? manualReview : null, workflowAccepted },
     stages: [
       { id: 'analysis', status: markers[0] ? 'completed' : records['step01/analysis.json'] ? 'draft' : 'pending' },
