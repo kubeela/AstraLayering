@@ -26,3 +26,5 @@ C 只读取、模拟和复核。六项结论 attachment/shape/response/limits/la
 `physics_reference` 返回显式参考的匹配来源和完整绑定。同 UUID／像素／实际支撑匹配时，用 `physics_initialize_reference` 初始化，不重猜已经验证的自由段；不匹配则从当前源图建立几何，用 `physics_initialize_parameters` 取得类型／长度相关参数。参考初始化必须记录来源，不能写成无参考从零制作。
 
 `physics_autotune` 是程序有界搜索，模型修正具体失败组并检查连续帧。认可参考的运动峰值与活动 RMS 是目标，通常保留 80%–130%；自由段严重缩水直接修几何。弱响应或持续回退候选不能被选择；不能为了“平滑”压掉全部运动。详情见 formal 14，几何、限幅、原图精度及独立复核照常保留。
+
+连续轻扫验收见 [formal 15](../../../../tutorial/live2d-guidance/formal/15-continuous-pointer-review.md)。输入 v4 保留原九组，添加真实源像素的 pointer-brush；所有测试仍完整 120 Hz 推进并回落。角色配置的标定也加入该测试；独立无图探针明确为 geometry-only，不能签发角色视觉通过。看 72/90 步及可见源像素峰值邻帧，区分单次微弱脉冲与连续接触，不用网格峰或放大图代替真实画面。

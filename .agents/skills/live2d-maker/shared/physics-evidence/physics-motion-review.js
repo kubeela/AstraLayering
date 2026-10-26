@@ -50,6 +50,7 @@ export function motionIssues(test, component, metric, steps=960){
   if(ordinary&&metric.fallback/steps>.05)issues.push('persistent-retreat');
   if(ordinary&&metric.limited/steps>.35)issues.push('persistent-limit');
   if(['light-brush','tip-impulse','airflow'].includes(test)&&(metric.visiblePeak??metric.peak)<Math.max(.05,maximum*.005))issues.push('weak-response');
+  if(test==='pointer-brush'&&metric.pointerReachable){if(!metric.contacts)issues.push('pointer-miss');if((metric.sourcePixelPeak??0)<Math.max(.05,maximum*.005))issues.push('weak-visible-response');}
   // Speed alone is not a jump. Keep inherited physical motion, and reject a
   // large step when its source-relative acceleration also changes abruptly.
   if(ordinary&&(metric.discontinuityRatio!==undefined?metric.discontinuityRatio>1:metric.maxStep>Math.max(2,maximum*.2)&&(metric.maxAcceleration===undefined||metric.maxAcceleration>Math.max(.5,maximum*.03))))issues.push('discontinuous-motion');

@@ -384,7 +384,7 @@ export class ComponentBody {
       const d=(bx-ax)*(cy-ay)-(by-ay)*(cx-ax);if(Math.abs(d)<1e-12)continue;
       const u=((bx-x)*(cy-y)-(by-y)*(cx-x))/d,v=((x-ax)*(cy-ay)-(y-ay)*(cx-ax))/d,w=1-u-v;if(u< -1e-6||v< -1e-6||w< -1e-6)continue;
       const r=this.rest,rx=r[a]*u+r[b]*v+r[c]*w,ry=r[a+1]*u+r[b+1]*v+r[c+1]*w;
-      let value=0;for(const l of layers){if(!l)continue;const ix=Math.floor(rx-l.bounds.x),iy=Math.floor(ry-l.bounds.y);if(ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height)value=Math.max(value,l.maskedRgba[(iy*l.bounds.width+ix)*4+3]);}return value;
+      let value=0;for(const l of layers){if(!l)continue;const ix=Math.floor(rx-l.bounds.x),iy=Math.floor(ry-l.bounds.y);if(ix>=0&&iy>=0&&ix<l.bounds.width&&iy<l.bounds.height){const pixel=iy*l.bounds.width+ix;value=Math.max(value,l.maskedAlpha?l.maskedAlpha[pixel]:l.maskedRgba[pixel*4+3]);}}return value;
     }return 0;
   }
   hit(x,y,layers){return this.sampleAlpha(x,y,layers)>32;}

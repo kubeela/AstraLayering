@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,rm} from 'node:fs/promises';
+import {mkdtemp,rm,mkdir} from 'node:fs/promises';
+import sharp from 'sharp';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {componentDefaults} from '../../shared/physics-core/component-physics-schema.js';
@@ -95,6 +96,8 @@ test('autotune 只搜索运动目标失败组，保留已合格组并严格恢�
  try{
   const reference=config([strand('a'),strand('b',180)]);for(const component of reference.components)component.response.outputGain=1;const c=structuredClone(reference);c.components[1].response.outputGain=.55;
   const referencePhysics=join(task,'reference.json');await put(referencePhysics,reference);await put(join(directory,'physics.draft.json'),c);
+  const source=join(task,'physics/source');await mkdir(source,{recursive:true});const layers=[];
+  for(const component of c.components){const masked=component.id+'.png',x=component.supports[0].at[0]-15;await sharp({create:{width:30,height:115,channels:4,background:{r:255,g:255,b:255,alpha:1}}}).png().toFile(join(source,masked));layers.push({id:component.id,uuid:component.id,contentHash:'a'.repeat(64),visible:true,opacity:255,bounds:{x,y:25,width:30,height:115},masked});}await put(join(source,'catalog.json'),{canvas:c.source.canvas,layers});
   const tool=toolsFor(directory,{task,referencePhysics,profile:'all'} as any,{id:'step02'}).find(t=>t.name==='physics_autotune')!,result=await tool.execute({reason:'保持当前好参数，只修参考运动退化'},new AbortController().signal);assert.equal(result.success,true,JSON.stringify(result));
   const tuning=await json(join(directory,'tuning.json')),good=tuning.groups.find((g:any)=>g.componentIds.includes('a')).rounds.at(-1),failed=tuning.groups.find((g:any)=>g.componentIds.includes('b')).rounds.at(-1);
   assert.deepEqual(good.candidates.map((v:any)=>v.id),['baseline']);assert.equal(good.selectedCandidate,'baseline');assert(failed.candidates.length>1&&failed.candidates.length<=4);assert.equal(failed.candidates[0].eligible,false);assert(failed.candidates[0].issues.some((v:string)=>v.includes('reference-amplitude')||v.includes('reference-activity')));
