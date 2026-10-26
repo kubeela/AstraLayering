@@ -17,10 +17,9 @@ export function shape(id: string, left = 10, right = 90, empty = false) {
 export async function fixture(t: TestContext) {
   const directory = await realpath(await mkdtemp(join(tmpdir(), 'part-layering-bfs-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  const references = { directory: join(directory, 'references'), judgment: join(directory, 'references/judgment.json'),
+  const references = { directory: join(directory, 'references'),
     simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png') };
   await mkdir(references.directory);
-  await writeAtomic(references.judgment, '{"needsSimplification":false}');
   const png = await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toBuffer();
   await writeAtomic(references.baseSubject, png);
   await writeAtomic(references.simplifiedSubject, png);

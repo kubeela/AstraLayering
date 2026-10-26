@@ -348,7 +348,7 @@ export async function runLayering(input: {
           parent = context(parent.id).parent;
         }
       }
-      for (const path of [input.references.judgment, input.references.simplifiedSubject, input.references.baseSubject]) {
+      for (const path of [input.references.simplifiedSubject, input.references.baseSubject]) {
         if (!(await stat(resolve(directory, path))).isFile()) throw new Error(`显式 groups 缺少前置参考：${path}`);
       }
     } else {

@@ -5,7 +5,7 @@ import { fileHash, preparationHash, preparationOptionsPath } from '../shared/par
 import { completeStep, startStep, type StepRecord } from '../shared/step-chain.ts';
 import { sectionChain } from '../shared/step-section.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
-import { checkJudgment, checkStandardJudgment, copyAsPng, exists, poseJudgmentPath, preparationStages, preparationSteps, present, produce,
+import { checkStandardJudgment, copyAsPng, exists, poseJudgmentPath, preparationStages, preparationSteps, present, produce,
   sectionDirectory, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
 
 // Earlier step records lived in references/.steps/<stage>, with the options in
@@ -43,7 +43,7 @@ export async function migrateStepLayout(references: string): Promise<void> {
       entry.record = { ...record, stamp, ...(outputs ? { outputs } : {}) };
     }
     for (const { path, record } of records) {
-      const inputs = Object.fromEntries(Object.entries(record.inputs).map(([dependency, stamp]) =>
+      const inputs = Object.fromEntries(Object.entries(record.inputs).filter(([dependency]) => dependency !== 'judgment').map(([dependency, stamp]) =>
         [stageStep(dependency as PreparationStage), stamps.get(stamp) ?? stamp]));
       await writeFile(path, JSON.stringify({ ...record, inputs }) + '\n');
     }
@@ -62,7 +62,7 @@ export async function migrateStepLayout(references: string): Promise<void> {
 // Valid steps are marked completed in chain order; the first stale or missing
 // one and everything after it are left to rerun. preparation.json is deleted
 // last, so an interrupted conversion simply starts over.
-type LegacyStage = 'standard' | 'judgment' | 'simplified' | 'base';
+type LegacyStage = 'standard' | 'simplified' | 'base';
 type LegacyState = {
   version: 1; standard: boolean;
   files: Partial<Record<LegacyStage, { inputHash?: string; outputHash: string }>>;
@@ -89,8 +89,12 @@ export async function migratePreparation(refs: PreparationReferences, inputDirec
   progress?: (message: string) => void): Promise<void> {
   const record = join(refs.directory, 'preparation.json'), state = await readLegacyState(record);
   if (!state) {
-    if (await present(sectionDirectory(refs.directory))) return;
-    if (!(await Promise.all([refs.judgment, refs.simplifiedSubject, refs.baseSubject].map(exists))).some(Boolean)) return;
+    if (await present(sectionDirectory(refs.directory))) {
+      // New preparation has no independent judgment step or intermediate image.
+      await rm(join(sectionDirectory(refs.directory), 'step05'), { recursive: true, force: true });
+      return;
+    }
+    if (!(await Promise.all([refs.simplifiedSubject, refs.baseSubject].map(exists))).some(Boolean)) return;
     // Adopt bare references without redrawing them. A PNG copy of the raw input keeps their pose unchanged.
     if (refs.originalImage && !refs.standardImage) {
       const standard = join(refs.directory, 'standard.png');
@@ -99,11 +103,11 @@ export async function migratePreparation(refs: PreparationReferences, inputDirec
     }
   } else await rm(sectionDirectory(refs.directory), { recursive: true, force: true });
 
-  const paths = { original: refs.originalImage, standard: refs.standardImage, judgment: refs.judgment,
+  const paths = { original: refs.originalImage, standard: refs.standardImage,
     simplified: refs.simplifiedSubject, base: refs.baseSubject };
   const hashes: Partial<Record<keyof typeof paths, string>> = {};
   for (const [stage, path] of Object.entries(paths)) if (path && await exists(path)) hashes[stage as keyof typeof paths] = await fileHash(path);
-  for (const stage of ['standard', 'judgment', 'simplified', 'base'] as const) {
+  for (const stage of ['standard', 'simplified', 'base'] as const) {
     if (state && hashes[stage] && state.files[stage]?.outputHash !== hashes[stage]) {
       throw new Error(`preparation 参考与记录不一致，不能续跑：${paths[stage]}\n请删除该文件后重做，依赖它的后续参考会随之重做。已有文件已保留。`);
     }
@@ -111,16 +115,15 @@ export async function migratePreparation(refs: PreparationReferences, inputDirec
   // A recorded input hash must still match the current upstream output.
   const follows = (stage: LegacyStage, expected: string | undefined) => !!hashes[stage]
     && (!state || state.files[stage]!.inputHash === undefined || expected === undefined || state.files[stage]!.inputHash === expected);
-  const decision = hashes.judgment ? JSON.parse(await readFile(refs.judgment, 'utf8')) : undefined;
-  if (decision !== undefined) checkJudgment(decision);
   const standard = state?.standard ?? false;
+  // Old simplified receipts hashed either the copy or generation choice. Both
+  // are valid when built from the current standard; images are now authoritative.
   const valid: Record<PreparationStage, () => boolean> = {
     original: () => !!hashes.original,
     options: () => true,
     pose: () => state?.standardJudgment?.inputHash === hashes.original,
     standard: () => follows('standard', legacyHash(hashes.original, standard)),
-    judgment: () => follows('judgment', legacyHash(hashes.standard)),
-    simplified: () => follows('simplified', legacyHash(hashes.standard, decision?.needsSimplification)),
+    simplified: () => [false, true].some(mode => follows('simplified', legacyHash(hashes.standard, mode))),
     base: () => follows('base', legacyHash(hashes.simplified)),
     ready: () => !state || state.partReferencesHash === legacyHash(hashes.simplified, hashes.base),
   };

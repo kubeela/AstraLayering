@@ -24,7 +24,7 @@ async function fixture(t: TestContext): Promise<InitialContext> {
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-initial-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   return { profile, directory, references: {
-    directory: join(directory, 'references'), judgment: join(directory, 'references/judgment.json'),
+    directory: join(directory, 'references'),
     simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png'),
   } };
 }

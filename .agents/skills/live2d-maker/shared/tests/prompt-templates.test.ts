@@ -9,11 +9,9 @@ test('模板明确要求变量和必要插入位置，填入的数据不进行�
   assert.throws(()=>renderPrompt('自定义正文',{runtime_context:'data'},'custom',['runtime_context']),/缺少显式提示词占位符/);
   assert.equal(renderPrompt('{task_prompt} / {runtime_context}',{task_prompt:'原文 {runtime_context}',runtime_context:'本次数据'}),'原文 {runtime_context} / 本次数据');
 });
-test('人物和衣服源 Markdown 都能直接看到生图规则占位符，展开后没有遗漏或重复规则',async()=>{
+test('姿态与衣服提示词明确声明共享规则位置，展开后没有遗漏或重复规则',async()=>{
   for(const [path,kind] of [
     ['../../part-layering/prompts/0-标准姿态.md','standardize'],
-    ['../../part-layering/prompts/2-简化图片.md','image'],
-    ['../../part-layering/prompts/3-素体参考.md','image'],
     ['../../clothing-part-layering/prompts/preparation.md','clothing'],
   ] as const){
     const source=await readFile(new URL(path,import.meta.url),'utf8');assert.ok(source.includes('{image_execution_rules}'));
