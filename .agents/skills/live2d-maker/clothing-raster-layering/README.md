@@ -90,7 +90,7 @@ node --test clothing-raster-layering/tests/*.test.ts
 
 现已完成 [2026-10-19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能现已接入，需显式配置并使用补丁版 Codex，见 [配置说明](../workflow/README.md)。
 
-共享安装、路径规则、工具配置和临时错误恢复见 [live2d-maker 使用说明](../SKILL.md)。所有相对输入路径从 `<运行根目录>/<name>/` 解析；本管线管理自身步骤目录，step01 额外通过工具精准修正对应上游的 occlusion.json。
+共享安装、路径规则、工具配置和临时错误恢复见 [live2d-maker 使用说明](../SKILL.md)。所有相对输入路径从 `<运行根目录>/<name>/` 解析；本管线管理自身步骤目录，step01 绘制／返修通过 `edit_groups`、`edit_occlusion` 校验并保存对应上游结构，工具失败会直接反馈到当前绘制会话。
 
 多深度与工具协议见 [共享说明](../shared/README.md#多深度与上游修正)。step01 既处理已标注区域，也处理组装中新发现的跨深度；自行拆 KRA 层并记录映射，必要时局部补画，通常只需切分现有像素。后续步骤与 reviewer 保留这些分片，不将同一 part 的多层当作重复。
 

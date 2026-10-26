@@ -26,7 +26,7 @@ node --test raster-layering/tests/*.test.ts
 | step02 | [边缘精修](prompts/02-边缘柔化与去锯齿.md)，逐层自检 | `character-soft-edges.kra`、同名 PNG、`report.md` |
 | step03 | [去除临时连体服](prompts/03-去除连体服.md)，补全换装身体底层并自检 | `character-dressup-base.kra`、同名 PNG、`report.md` |
 
-每步从上一步成果另存到自己的 stepNN 目录，保留原尺寸、各阶段工程和报告。step01 按完整轮廓逐件生图、配准、补全和修画，对可见形体、画风、隐藏结构及接缝负责；可修正分组、归属与深度并写回对应上游。一个逻辑 part 可有多个绘画深度，实际拆层与指纹同步见 [shared](../shared/README.md#多深度与上游修正)。
+每步从上一步成果另存到自己的 stepNN 目录，保留原尺寸、各阶段工程和报告。step01 按完整轮廓逐件生图、配准、补全和修画，对可见形体、画风、隐藏结构及接缝负责；通过 `edit_groups`、`edit_occlusion` 校验并保存分组、归属与深度修正，同步对应上游和当前工程。一个逻辑 part 可有多个绘画深度，实际拆层与指纹同步见 [shared](../shared/README.md#多深度与上游修正)。
 
 step01 reviewer 看图确认确定问题，通过 `annotate_review_regions` 生成带编号框、图层说明与同坐标局部对照。可使用本部件自己的原图可见像素覆盖，补绘与覆盖区靠画笔修自然，其他部件的像素各自保留归属。
 
