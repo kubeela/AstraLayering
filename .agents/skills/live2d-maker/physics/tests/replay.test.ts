@@ -10,6 +10,8 @@ async function fixture(records:any[], run:(directory:string)=>Promise<void>) {
   const directory=await mkdtemp(join(tmpdir(),'astra-replay-input-'));
   try {
     await mkdir(join(directory,'support-reverse'));
+    // No recorded run: the window is bounded by the default 960-step duration.
+    await writeFile(join(directory,'manifest.json'),JSON.stringify({runs:[]}));
     await writeFile(join(directory,'support-reverse/trace.jsonl.gz'),gzipSync(records.map(row=>JSON.stringify(row)+'\n').join('')));
     await run(directory);
   } finally { await rm(directory,{recursive:true,force:true}); }

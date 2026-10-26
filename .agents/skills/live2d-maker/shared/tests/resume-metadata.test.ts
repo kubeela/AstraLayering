@@ -6,6 +6,7 @@ import test from 'node:test';
 import { CodexAgents } from '../codex/agents.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { textResult } from '../codex/function-tools.ts';
+import { patchedCodexCapabilities } from './fake-codex.ts';
 
 test('resuming image-bearing history requests metadata only and retains tools on the same thread', async t => {
   const directory = await mkdtemp(join(tmpdir(), 'astra-resume-metadata-'));
@@ -15,6 +16,7 @@ test('resuming image-bearing history requests metadata only and retains tools on
 import { createInterface } from 'node:readline';
 import { appendFile } from 'node:fs/promises';
 const send = value => process.stdout.write(JSON.stringify(value) + '\\n');
+if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
 for await (const line of createInterface({input:process.stdin})) {
   const message = JSON.parse(line);
   await appendFile(${JSON.stringify(capture)}, line + '\\n');
