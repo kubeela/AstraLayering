@@ -11,7 +11,7 @@
 ```text
 jianma/
 ├── input/original.jpg
-├── part-layering/           # references、groups、parts、stages、occlusion、previews
+├── part-layering/           # references、initial、groups、layers、parts、occlusion、previews
 ├── raster-layering/
 │   ├── step01/              # 分层与补全
 │   ├── step02/              # 边缘修画
@@ -44,3 +44,9 @@ jianma/
 历史检查结论可能引用未收录的逐次观察图或当时机器路径；这些引用只用于追溯，不是当前可运行入口。归档不代表所有美术细节或动画变形已通过验收，既有问题以各阶段报告为准。
 
 当前本机任务默认保存在仓库根目录 `.run/<name>/`，独立 skill 安装时为 skill 上一级 `.run/<name>/`；也可用 `--dir` 选择外部运行根目录。复制本归档可提供上游输入，但恢复原 raster 上下文仍需本机原有 `run.json`、标记及 Codex 会话；归档不冒充可移植的 agent 会话备份。
+
+## 2026-10-26 目录整理
+
+未被报告引用的过程文件移入对应步骤的 `workspace/`，可解析的图像引用与清单位置同步更新。正式 KRA、PNG 和 SVG 的路径与内容保持不变；清单的 `source` 仍记录归档当时的历史出处。
+
+part 的步骤记录由既有产物与报告机械重建，未重新调用模型；旧版 `stages/` 已删除，步骤目录是唯一记录，运行时不再自动转换旧目录。

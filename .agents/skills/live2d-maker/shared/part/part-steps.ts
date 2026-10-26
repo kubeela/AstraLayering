@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { readStep, type ChainStep } from '../step-chain.ts';
 import type { GroupProgress, GroupSeed, Subject } from './layering-types.ts';
+import { initialStepId, groupDepth, groupSegments, groupStepId, layerStepId, parentGroupId } from './step-paths.js';
+export { initialStepId, groupDepth, groupStepId, layerStepId, parentGroupId } from './step-paths.js';
 
 // Part pipeline step graph. Every node is a step directory with the shared
 // .running/.completed markers (see step-chain.ts):
@@ -15,13 +17,7 @@ import type { GroupProgress, GroupSeed, Subject } from './layering-types.ts';
 //   occlusion                          -> ../occlusion.json (not hashed; raster edits depths)
 // Child groups nest as groups/<parent>/children/<name>. Step ids are these
 // relative directory paths; groups.json is only the tree with editable notes.
-export const initialStepId = 'initial/step01';
-export const groupDepth = (id: string): number => id.split('/').length - 1;
-const groupSegments = (id: string) => id.split('/').flatMap((segment, index) => index ? ['children', segment] : [segment]);
-export const groupStepId = (id: string, step: 1 | 2 | 3): string => ['groups', ...groupSegments(id), `step0${step}`].join('/');
-export const layerStepId = (depth: number): string => `layers/depth${String(depth + 1).padStart(2, '0')}`;
 export const groupDirectory = (directory: string, id: string): string => join(directory, 'groups', ...groupSegments(id));
-export const parentGroupId = (id: string): string | undefined => id.includes('/') ? id.slice(0, id.lastIndexOf('/')) : undefined;
 
 export function groupStep(directory: string, id: string, step: 1 | 2 | 3, references: readonly string[] = []): ChainStep {
   const stepId = groupStepId(id, step), stepDirectory = join(directory, stepId), parent = parentGroupId(id);

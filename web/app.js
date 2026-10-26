@@ -1,3 +1,4 @@
+import { processFileList } from './process-files.js';
 import { pipelineSteps as stepTemplates, groupLayers, groupPhases, stepArtifacts, groupArtifacts, shadowInspectionArtifacts,
  groupSummary, groupPreviewArtifacts, groupStagePreviewArtifacts, groupReviewSteps, reviewReportText,
  latestKraPreview, statusNames, displayStatus, statusLabel } from './progress.js';
@@ -191,11 +192,10 @@ const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
 const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑'};
 function stepTargets() {
  return (data.pipelines||[]).flatMap((pipeline,index)=>[
-  ...(pipeline.legacy?[{index,id:'',status:'legacy'}]:[]),
   ...(pipeline.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session}))]);
 }
-const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running'||target.status==='legacy');
-const stepLabel=target=>`${stages[target.index].name} ${target.id||'（旧版目录）'}`;
+const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running');
+const stepLabel=target=>`${stages[target.index].name} ${target.id}`;
 function stepToolbar() {
  if(!state.name)return '';
  const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;
@@ -321,9 +321,19 @@ function processArtifacts(index, step) {
  if(!directory)return '';
  const prefix=directory+'/';
  const known=new Set([...Object.values(stepArtifacts[index]).flat(),...shadowInspectionArtifacts(data.files)].map(item=>item.path));
- const items=data.files.filter(path=>path.startsWith(prefix)&&!known.has(path));
- if(!items.length)return '';
- return `<details class="process-files" data-details="process:${index}:${step.id}"><summary>${items.length} 个过程文件</summary>${artifacts(items.map(path=>({path,label:path.slice(prefix.length),kind:/\.(png|jpe?g|webp|svg)$/i.test(path)?'image':'file'})),index,step.id,'process-artifacts')}</details>`;
+ const legacy=data.processWorkspaces?.[directory]||[];
+ const roots=[directory+'/workspace',...legacy];
+ const filtered=data.files.filter(path=>(path.startsWith(prefix)||legacy.some(root=>path.startsWith(root+'/')))&&!known.has(path)
+  && (roots.some(root=>path.startsWith(root+'/'))||!path.includes('/agents/')&&!/(?:^|\/)(?:prompt\.md|[^/]+\.prompt\.txt|(?:[^/]+\.)?result\.json|attempts\.jsonl|events\.jsonl|error\.txt|review-baseline\.json)$/.test(path)));
+ const items=filtered.filter(path=>roots.some(root=>path.startsWith(root+'/')));
+ // Outside workspace only fixed results and report-cited evidence are shown; the step's own report already shows its images.
+ const reports=data.pipelines[index]?.reports||{}, own=reportEvidence(index,step.id)?reports[step.id].images.map(image=>image.path):[];
+ const cited=new Set(Object.values(reports).flatMap(report=>report.images.map(image=>image.path)).filter(path=>!own.includes(path)));
+ const deliveries=filtered.filter(path=>!items.includes(path)&&cited.has(path));
+ const listing=processFileList(items,roots,data.fileVersions);
+ const render=paths=>artifacts(paths.map(path=>({path,label:path.split('/').at(-1),kind:/\.(png|jpe?g|webp|svg|kra)$/i.test(path)?'image':'file'})),index,step.id,'process-artifacts');
+ const extra=deliveries.length?`<details class="process-files delivery-files" data-details="delivery:${index}:${step.id}"><summary>${deliveries.length} 个补充产物</summary>${render(deliveries)}</details>`:'';
+ return extra+(items.length?`<details class="process-files" data-details="process:${index}:${step.id}"><summary>${listing.total} 个过程文件${listing.shown<listing.total?` · 显示 ${listing.shown} 个（按目录平分）`:''}</summary>${listing.folders.map(({folder,total,files})=>`<details class="process-group" data-details="process-folder:${index}:${step.id}:${esc(folder)}"><summary>${esc(folder||'workspace 根目录')} <small>${total} 个${files.length<total?` · 显示最新 ${files.length} 个`:''}</small></summary>${render(files)}</details>`).join('')}</details>`:'');
 }
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
@@ -568,7 +578,10 @@ function showDirectory() {
 function showFiles() {
  const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>${esc(state.name)} · 全部产物</h2><p>按任务实际目录浏览、预览或下载。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><input id="file-filter" placeholder="筛选路径" aria-label="筛选产物"><div class="all-files"></div>`;
  const listing=filter=>{
-  dialog.querySelector('.all-files').innerHTML=data.files.filter(path=>path.toLowerCase().includes(filter.toLowerCase())).map(path=>`<button data-open-file="${esc(path)}">${icon(path.endsWith('.kra')?'layers':'file')}<span>${esc(path)}</span></button>`).join('')||'<p>尚无产物</p>';
+  const matched=data.files.filter(path=>path.toLowerCase().includes(filter.toLowerCase()));
+  const listing=processFileList(matched,[''],data.fileVersions);
+  const shown=listing.folders.flatMap(folder=>folder.files);
+  dialog.querySelector('.all-files').innerHTML=`<p>${matched.length} 个文件 · 显示 ${shown.length} 个</p>`+shown.map(path=>`<button data-open-file="${esc(path)}">${icon(path.endsWith('.kra')?'layers':'file')}<span>${esc(path)}</span></button>`).join('');
   dialog.querySelectorAll('[data-open-file]').forEach(button=>button.onclick=()=>{const path=button.dataset.openFile,index=Math.max(0,stages.findIndex(stage=>path.startsWith(stage.id+'/')));dialog.close();if(path.endsWith('.kra'))window.open(artifact(path),'_blank','noopener');else openAsset({path,label:path.split('/').at(-1),kind:/\.(png|jpe?g|webp|svg)$/i.test(path)?'image':'file'},index,'step01');});
  };
  dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelector('#file-filter').oninput=e=>listing(e.target.value);listing('');

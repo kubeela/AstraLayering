@@ -26,6 +26,15 @@ async function fixture(t: any, start?: NonNullable<Parameters<typeof createWorkb
 const upload = async () => (await sharp({ create: { width: 8, height: 8, channels: 3, background: '#cbbbaa' } }).png().toBuffer()).toString('base64');
 async function put(root: string, path: string, value = 'content') { const file = join(root, path); await mkdir(join(file, '..'), { recursive: true }); await writeFile(file, value); }
 
+test('workspace text artifacts can be viewed and shared path/report modules load in the browser', async t => {
+  const f = await fixture(t), path = 'character-assembly/step01/workspace/scripts/check.py';
+  await put(join(f.dir, 'test'), path, 'print("draft")');
+  const response = await fetch(f.url + '/artifact?' + new URLSearchParams({ name: 'test', dir: f.dir, path }));
+  assert.equal(response.status, 200); assert.match(response.headers.get('content-type')!, /text\/plain/);
+  assert.equal(await response.text(), 'print("draft")');
+  for (const module of ['step-paths.js', 'report-links.js']) assert.equal((await fetch(f.url + '/' + module)).status, 200);
+});
+
 test('页面与状态查询读取同一份最新日志，不被旧 run.json 摘要遮盖', async t => {
   const f = await fixture(t), task = join(f.dir, 'test');
   await mkdir(task);
@@ -108,6 +117,18 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
   const artifact = (path: string) => f.url + '/artifact?' + new URLSearchParams({ name: 'test', dir: f.dir, path });
   assert.equal((await fetch(artifact('../private.json'))).status, 400);
   assert.equal((await fetch(artifact('leak/private.json'))).status, 400);
+  // Agent records stay server-side; a legacy request workspace is process output.
+  await put(f.dir, 'test/part-layering/agents/draw/auth-settings.json', '{"env":{"ANTHROPIC_API_KEY":"secret"}}');
+  await put(f.dir, 'test/part-layering/agents/draw/request.json', '{}');
+  await put(f.dir, 'test/part-layering/agents/draw/workspace/draft.png');
+  await put(f.dir, 'test/part-layering/groups/body/step01/workspace/agents/note.txt');
+  assert.equal((await fetch(artifact('part-layering/agents/draw/auth-settings.json'))).status, 400);
+  assert.equal((await fetch(artifact('part-layering/agents/draw/request.json'))).status, 400);
+  assert.equal((await fetch(artifact('part-layering/agents/draw/workspace/draft.png'))).status, 200);
+  assert.equal((await fetch(artifact('part-layering/groups/body/step01/workspace/agents/note.txt'))).status, 200);
+  const listed = (await snapshot(join(f.dir, 'test'), 'test', f.dir)).files;
+  assert.ok(!listed.some(path => /agents\/draw\/(auth-settings|request)\.json$/.test(path)));
+  assert.ok(listed.includes('part-layering/agents/draw/workspace/draft.png'));
   const svg = await fetch(artifact('out.svg'));
   assert.equal(svg.status, 200); assert.match(svg.headers.get('content-security-policy')!, /sandbox/);
   const files = await (await fetch(f.url + '/api/config/files?ref=HEAD')).json() as any;

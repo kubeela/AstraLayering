@@ -182,7 +182,7 @@ test('直接读取上游；中断保留 .running、产物和 thread；只用 nam
   await readFile(join(f.output, 'step01/.completed'));
   await absent(join(f.output, 'step01/.running'));
   await runWorkflow(f.resume, { ...f.deps, agent: forbidden });
-  assert.equal((await readFile(join(f.output, 'step01/attempts.jsonl'), 'utf8')).trim().split('\n').length, 2);
+  assert.equal((await readFile(join(f.output, 'agents/steps/step01/attempts.jsonl'), 'utf8')).trim().split('\n').length, 2);
   await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
 });
 
@@ -227,7 +227,7 @@ test('旧 models 快照不影响续跑；使用当前环境模型，保留会话
   const current = await readConfig(f.output);
   assert.ok(!('models' in current));
   assert.equal(current.threadId, old.threadId); assert.equal(current.threadHarness, old.threadHarness);
-  const attempts = (await readFile(join(f.output, 'step01/attempts.jsonl'), 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  const attempts = (await readFile(join(f.output, 'agents/steps/step01/attempts.jsonl'), 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(attempts.length, 2);
   assert.equal(attempts[0].model, 'gpt-6.1-sol');
   assert.equal(attempts[1].model, 'gpt-6.1-sol'); assert.equal(attempts[1].effort, 'low');
@@ -237,7 +237,7 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
   const f = await fixture(t);
   let index = 0;
   await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
-  const first = await readFile(join(f.output, 'step01/events.jsonl'));
+  const first = await readFile(join(f.output, 'agents/steps/step01/events.jsonl'));
   const snapshot = await readFile(join(f.input, 'parts/face.svg'));
   await writeFile(join(f.output, 'step02/old.png'), 'old artwork');
   await mkdir(join(f.output, 'step04'));
@@ -264,7 +264,7 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
     return deliver(request, step, 'thread-new');
   } });
   assert.equal(index, 3);
-  assert.deepEqual(await readFile(join(f.output, 'step01/events.jsonl')), first);
+  assert.deepEqual(await readFile(join(f.output, 'agents/steps/step01/events.jsonl')), first);
   assert.deepEqual(await readFile(join(f.input, 'parts/face.svg')), snapshot);
   assert.equal((await readConfig(f.output)).threadId, 'thread-new');
 });
@@ -351,7 +351,7 @@ test('模型受阻、缺交付或取消均保留 .running；即使 result.json �
   } }), /缺少有效交付/);
   await readFile(join(f.output, 'step01/.running'));
   await absent(join(f.output, 'step01/.completed'));
-  assert.equal(JSON.parse(await readFile(join(f.output, 'step01/result.json'), 'utf8')).status, 'completed');
+  assert.equal(JSON.parse(await readFile(join(f.output, 'agents/steps/step01/result.json'), 'utf8')).status, 'completed');
   const controller = new AbortController();
   await assert.rejects(runWorkflow({ ...f.resume, signal: controller.signal }, { ...f.deps, agent: async request => {
     await deliver(request);

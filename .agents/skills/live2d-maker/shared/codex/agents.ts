@@ -19,6 +19,8 @@ import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-ima
 import { randomUUID } from 'node:crypto';
 import type { ThreadEvent } from '@openai/codex-sdk';
 import type { ImageProcessingOptions } from '../image-processing.ts';
+import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
+import { contextImages } from '../agents/inputs.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -33,6 +35,7 @@ export type AgentTask = {
   outputSchema?: Record<string, unknown>;
   timeoutMs?: number;
   cwd?: string;
+  outputDirectory?: string;
   tools?: FunctionTool[];
   sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
 };
@@ -91,6 +94,7 @@ export class CodexAgents {
     let session: AgentSession | undefined;
     let route: Awaited<ReturnType<typeof createCodexImageRoute>> | undefined;
     let imageModel: string | undefined;
+    let transportKey: string | undefined;
     let id = resumeThreadId;
     const functionOptions = () => ({ ...sessionOptions,
       // Startup may select the cached patch after this session was constructed.
@@ -111,12 +115,20 @@ export class CodexAgents {
         try {
           const nextImage = usesPatchedImageTool(this.options.environment!, task.step)
             ? this.options.environment!.stepImages[task.step!] : undefined;
-          if (nextImage !== imageModel) {
+          const paths = executionPaths(task, this.options.cwd ?? workflowsDirectory);
+          const routeKey = nextImage ? nextImage + ':' + paths.workspace : undefined;
+          const nextTransport = JSON.stringify({ paths, sandbox: task.sandboxMode ?? 'workspace-write',
+            imageGeneration: task.imageGeneration ?? false,
+            tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) ?? [] });
+          if (routeKey !== imageModel || nextTransport !== transportKey) {
             await session?.close(); session = undefined;
+            transportKey = nextTransport;
+          }
+          if (routeKey !== imageModel) {
             await route?.close(); route = undefined;
             if (nextImage) route = await createCodexImageRoute(this.options.environment!, task.step!,
-              join(this.options.logDirectory || join(task.cwd || this.options.cwd!, 'agents'), 'generated'), this.options, closing.signal, this.options.imageNormalization);
-            imageModel = nextImage;
+              join(paths.workspace, 'generated'), this.options, closing.signal, this.options.imageNormalization);
+            imageModel = routeKey;
           }
           session ||= createFunctionToolSession(functionOptions(), id);
           let blocked: BlockedImages | undefined;
@@ -191,7 +203,7 @@ export class CodexAgents {
           selection = selected;
           const generated: GeneratedImage[] = [];
           const image = original.step && selected.harness !== 'codex' ? imageGenerationTool(settings, original.step,
-            join(this.options.logDirectory || join(original.cwd || this.options.cwd!, 'agents'), 'generated', randomUUID()),
+            join(executionPaths(original, this.options.cwd!).workspace, 'generated', randomUUID()),
             [original.cwd || this.options.cwd!, ...(original.imageRoots || []), ...(original.images || []).map(i => i.path)], this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
@@ -260,7 +272,8 @@ export class CodexAgents {
     }
     await checkCodexCapabilities(this.options.environment!, this.options);
     const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, environment, ...options } = this.options;
-    const workingDirectory = resolve(task.cwd ?? cwd ?? workflowsDirectory);
+    const paths = await prepareWorkspace(task, cwd ?? workflowsDirectory);
+    const workingDirectory = paths.workspace;
     const codex = new Codex({
       ...options,
       config: {
@@ -275,6 +288,7 @@ export class CodexAgents {
       skipGitRepoCheck: true,
       model: selected?.model || environment!.models.medium.model, modelReasoningEffort: selected?.effort || environment!.models.medium.effort,
       workingDirectory,
+      additionalDirectories: [paths.outputDirectory] as string[],
       sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
     } as const;
     const thread = codex.startThread(threadOptions);
@@ -295,13 +309,14 @@ export class CodexAgents {
     });
 
     async function runSdkAttempt(task: AgentTask): Promise<AgentResult> {
-      const input: UserInput[] = [{ type: 'text', text: task.prompt }];
-      for (const image of task.images ?? []) {
+      const input: UserInput[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths) }];
+      for (const image of contextImages(task.images, paths.directory) ?? []) {
         input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() });
         input.push({ type: 'local_image', path: resolve(image.path) });
       }
       const timeoutMs = task.timeoutMs;
-      const log = await AgentLog.create(resolve(logDirectory ?? join(workingDirectory, '.run/agents')), task.name, {
+      const log = await AgentLog.create(resolve(logDirectory ?? join(paths.directory, 'agents')), task.name, {
+        workspace: paths.workspace, outputDirectory: paths.outputDirectory,
         task: { ...task, timeoutMs: timeoutMs ?? null }, input,
         // Persist the exact prompt sent by the SDK, without credentials or environment variables.
         prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),

@@ -102,12 +102,11 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   const meta = await sharp(standard).metadata();
   const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
     .replaceAll('{width}', String(meta.autoOrient.width)).replaceAll('{height}', String(meta.autoOrient.height));
-  await writeFile(join(directory, 'preparation-prompt.md'), prompt);
   progress?.('preparation：使用已配置生图工具生成纯衣服参考。');
   const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
   try {
     await steps.extract(image, baseImage, temporary, prompt);
-    await normalizeGeneratedReference(temporary, standard, directory, 'clothing', normalization);
+    await normalizeGeneratedReference(temporary, standard, join(dirname(directory), 'preparation/step01'), 'clothing', normalization);
     await checkImage(temporary, standard);
     const record = { version: 2, inputHash: hash(await readFile(image)), baseInputHash, clothingHash: hash(await readFile(temporary)),
       standardHash, tool: 'image_generation', promptHash: hash(Buffer.from(prompt)) };

@@ -264,7 +264,7 @@ test('异常后当前批次已派发任务收尾，保留成功事实且不进�
   assert.ok(await readFile(artifactPath(f.directory, 'c', 'outline')));
 });
 
-test('jianma 成果归档恢复现有 115 节点；制作中的缺失稿不能放行最终预览', async t => {
+test('jianma 成果归档恢复 115 节点的完整结构与复核事实', async t => {
   const directory = new URL('../../../../../demos/jianma/part-layering/', import.meta.url);
   try { await stat(directory); }
   catch (error) {
@@ -272,12 +272,7 @@ test('jianma 成果归档恢复现有 115 节点；制作中的缺失稿不能�
     t.skip('仅仓库验收：独立安装的 skill 不携带 demos/jianma 成果归档');
     return;
   }
-  try { await stat(new URL('initial/step01', directory)); }
-  catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-    t.skip('归档仍是旧 stages/ 布局，未迁移到步骤目录');
-    return;
-  }
+  await stat(new URL('initial/step01/.completed', directory));
   const store = await GroupStore.open(fileURLToPath(directory));
   const groups = store.snapshot().groups;
   assert.equal(groups.length, 8);
@@ -297,9 +292,6 @@ test('jianma 成果归档恢复现有 115 节点；制作中的缺失稿不能�
     assert.equal(store.snapshot().merge.status, 'completed');
     assert.equal(store.snapshot().merge.output!.path, join(fileURLToPath(directory), 'preview.svg'));
   } else assert.equal(store.snapshot().merge.status, 'pending');
-  await assert.rejects(readFile(new URL('stages/children/hair.json', directory)), { code: 'ENOENT' });
-  assert.equal(await readJson(join(fileURLToPath(directory), 'progress.json')), undefined);
-  await assert.rejects(readFile(new URL('hair-latest/groups.json', directory)), { code: 'ENOENT' });
 });
 
 test('显式选第二层也不能绕过第一层未完成的其他分支', async t => {

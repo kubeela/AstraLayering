@@ -1,0 +1,89 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "id": "face",
+      "name": "face",
+      "note": "脸部、五官与两侧尖耳；后续只补被遮挡的脸型、耳朵，不补头顶与后脑。",
+      "kind": "group"
+    },
+    {
+      "id": "hair",
+      "name": "hair",
+      "note": "全部粉色头发，包括头顶翘发、刘海、两侧发束及延伸至髋腿旁的后方长发。",
+      "kind": "group"
+    },
+    {
+      "id": "head_accessories",
+      "name": "head_accessories",
+      "note": "两侧耳下的浅金色饰边、粉色垂坠耳饰；装饰内部留待后续拆分。",
+      "kind": "group"
+    },
+    {
+      "id": "neck",
+      "name": "neck",
+      "note": "下颌以下至颈根的颈部；锁骨归 body。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "neck",
+          "motionIdentity": "neck",
+          "layers": [
+            {
+              "name": "0240 neck",
+              "level": 240
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/neck/final.png",
+          "repair02": {
+            "reviewId": "R6",
+            "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+            "report": "repair-02.md.tmp",
+            "result": "隐藏下端横向肤色界和三角色面已在本层跨界实画接顺，上方形体及完整上下圆端保持，不再画锁骨。",
+            "logicalIdentityAndDepthsUnchanged": true,
+            "sourceSvgSha256": "88428e22ac73ef346d20b673b5dceccd9e0b55225607fe232eacbffbb5ee3980"
+          }
+        }
+      },
+      "kind": "group"
+    },
+    {
+      "id": "body",
+      "name": "body",
+      "note": "肩部、锁骨、胸部与腰腹至肚脐附近的躯干范围；临时连体服仅作姿态参考，不单独分组。",
+      "kind": "group"
+    },
+    {
+      "id": "arms",
+      "name": "arms",
+      "note": "两侧手臂，从肩关节经上臂、前臂至手腕、手掌和全部手指。",
+      "kind": "group"
+    },
+    {
+      "id": "pelvis",
+      "name": "pelvis",
+      "note": "从肚脐附近延伸至骨盆、双髋及裆部的范围。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "pelvis",
+          "motionIdentity": "pelvis",
+          "layers": [
+            {
+              "name": "0080 pelvis",
+              "level": 80
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/pelvis/final.png"
+        }
+      },
+      "kind": "group"
+    },
+    {
+      "id": "legs",
+      "name": "legs",
+      "note": "双腿及双脚，包括大腿、膝部、小腿和脚上靴子及其装饰。",
+      "kind": "group"
+    }
+  ]
+}

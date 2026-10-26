@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1086" height="1448" viewBox="0 0 1086 1448" data-source-sha256="a0f1f0c0abd79b86229d57ce7a5df07f95e3aa7c9c57940fb9db1fe957afb36c"><g data-completion-additions="v1" fill="#58b8a9" stroke="none"><path d="M 557.5,446.0 L 567.8,446.0 L 578.0,468.6 L 572.0,470.2 L 563.6,468.2 L 561.8,462.0 L 560.3,457.5 L 559.2,454.0 Z" fill-rule="nonzero"/></g>
+  <g id="chest_bow_left_tail_outline" data-group-path="chest_bow/left_tail" fill="#00a6b8" stroke="none">
+    <path d="M 559.2,454.0
+      L 565.8,454.0
+      C 569.0,458.0 574.3,463.4 578.4,469.4
+      C 592.6,500.5 601.2,546.8 605.7,583.4
+      Q 605.8,584.0 605.0,584.6
+      L 578.3,598.4
+      Q 577.4,598.9 577.1,598.0
+      C 573.8,565.7 569.1,521.8 565.0,486.0
+      C 563.9,476.4 562.5,467.2 561.0,461.3
+      C 560.5,459.3 559.8,456.7 559.2,454.0 Z"/>
+  </g>
+</svg>

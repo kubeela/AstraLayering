@@ -1,0 +1,81 @@
+{
+  "groupId": "waist_bow",
+  "groups": [
+    {
+      "id": "waist_bow/knot_and_loops",
+      "kind": "part",
+      "name": "knot_and_loops",
+      "note": "实体范围：腰结上部的中央结及角色自身左右两只结耳，整体约 x384–466/y489–527；中央结约 x416–431/y489–505，角色右结耳在画面左侧、左结耳在画面右侧。两耳内部折返、脊线及褶皱均随耳本体，不另拆。相邻分界：以两耳自由外缘和中央结下缘为界，与下方两条带尾分属不同实体；带尾自中央结下方约 x418–432/y499–510 接出，根部允许藏入本 part 下方的短搭接。穿插：整个上部系结位于腰腹身体及连衣裙腰面之前，中央结压住两耳根部和两尾根部；两耳在结根附近的内折及被结遮住部分仍归本 part，不包含带尾、腰面或皮肤，不补画整圈腰带。控制：根部约 x420/y503 附着腰部，与腰面共同随动；中央结与两耳构成紧凑系结整体，可统一移动和变形，现有结构无须独立控制的更小悬挂件，终止为 part。中央结与耳根的搭压在本 part 内保留，需要时以共同随动的局部深度区域表达；不因自折继续拆组。未来 SVG 仅纯色轮廓，布色和褶痕留待栅格。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "waist_bow/knot_and_loops",
+          "motionIdentity": "waist_bow/knot_and_loops",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0043 waist_bow/knot_and_loops",
+              "level": 43,
+              "region": "整个部件"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/waist_bow/knot_and_loops/final.png",
+          "sourceSvgAtGenerationSha256": "125601c60a1283ba44bed29cd7324a9ac829f1caf08e31c4e9fee8f4593c796b",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "b3227f5cd4b277c45bf3ec42d049d0e34a5f5f75acc6c1e3c302e16f2e7d3a2a",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。"
+        }
+      }
+    },
+    {
+      "id": "waist_bow/short_tail",
+      "kind": "part",
+      "name": "short_tail",
+      "note": "实体范围：从结下向画面左下垂落的短带尾（角色右侧），约 x390–424/y499–637，包含约 x399/y546 的外缘折角、下段起伏和尖端；所有固定折痕与明暗归该尾，不切成多段。相邻分界：上端在约 x418–424/y499–510 接入中央结下方，与 knot_and_loops 以真实根部遮挡线分界，保留短的隐藏搭接；右侧与 long_tail 是两条独立实体，中间露出的裙面不属于带尾。穿插：整条带尾位于腰腹身体及连衣裙腰面、外裙之前，根部位于中央结及接出处结耳遮挡区域之后；出结后沿自身连续轮廓向左下垂落，参考未显示与长尾在自由下垂段交叉，不增设交叉或绕身后片。控制：上端共同跟随约 x420/y503 的腰结连接点，下段可相对腰结和长尾独立弯曲、摆动；整条连续带尾是一完整柔性运动单元，无更小独立组件，终止为 part。根部随动和裙前关系须保持，隐藏搭接只补至结下，不扩大为腰带或人体。未来 SVG 仅纯色轮廓，颜色与折痕由栅格处理。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "waist_bow/short_tail",
+          "motionIdentity": "waist_bow/short_tail",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0041 waist_bow/short_tail",
+              "level": 41,
+              "region": "整个部件"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/waist_bow/short_tail/final.png",
+          "sourceSvgAtGenerationSha256": "98108461a975f09074e460baf3519a66c685dc113180da0a33be68f1974f96ef",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。"
+        }
+      }
+    },
+    {
+      "id": "waist_bow/long_tail",
+      "kind": "part",
+      "name": "long_tail",
+      "note": "实体范围：从结下近乎竖直垂落后向画面右下弯出的长带尾（角色左侧），约 x424–449/y499–695，包含上段窄条、中下段渐宽扭折和末端尖角；折面、脊线及颜色变化均属同一连续带尾。相邻分界：上端约 x424–432/y499–511 接入中央结下方，与 knot_and_loops 按实际遮挡分界并保留短的隐藏搭接；画面左邻 short_tail，二者下垂段间的裙面保持空出，不互相并入。穿插：整尾在腰腹身体及连衣裙腰面、外裙之前，起根处在中央结及局部结耳之后；可见自由段未与短尾交叉，不人为设置整段互盖，不延伸成绕躯干带。带尾自身扭折属于同一运动单元，必要的折返区域共同随动，不据折痕拆件。控制：根部共同跟随约 x420/y503 的腰结，长尾具有相对短尾独立的柔性弯曲、下垂与摆动需要；整条作为一个 part 统一连续变形，无需更深子组件。隐藏搭接限于中央结遮住的接头，不包含裙面或人体。未来 SVG 仅纯色轮廓，颜色、阴影与折痕留待栅格。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "waist_bow/long_tail",
+          "motionIdentity": "waist_bow/long_tail",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0042 waist_bow/long_tail",
+              "level": 42,
+              "region": "整个部件"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/waist_bow/long_tail/final.png",
+          "sourceSvgAtGenerationSha256": "74c306d49cd7d15f0951334d109b105f7a321dcc0377ed96d13e9c8defa80086",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "1e46095663bc14f5cbad66203ddfd79c0023a3ba88bbc15020a80fa14f0b1c2e",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。"
+        }
+      }
+    }
+  ],
+  "note": "依据纯衣服局部、父组 SVG 独显及叠加、原穿衣角色的腰前位置，将本节点完整划分为三个直属终止 part：上部中央结连两耳、短带尾、长带尾。独立控制需求来自两条长度和走向不同的自由带尾；上部结与两耳按紧凑共同随动整体统一控制，不按固定褶皱、折面或颜色碎拆。所有可见系结实体均有归属，各尾根部仅登记结下必要隐藏搭接。逐处检查后，本组件均在腰腹及裙面前，不包住人体，没有需身体插入的环绕区域；实际搭压集中在中央结覆盖耳根、尾根的位置，已传至各 part。两尾自由段在参考中分离，不臆造相交覆盖或整圈腰带。坐标及轮廓以纯衣服参考和当前 SVG 为准，人体、皮肤和裙面均不纳入；不提交更深子树。 本步子节点身份不变；当前父形状按已验收子片覆盖同步，卷边归属修正见各子节点rasterLayering记录。"
+}

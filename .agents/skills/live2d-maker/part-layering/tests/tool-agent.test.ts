@@ -69,7 +69,8 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const initialize = protocol.find(item => item.method === 'initialize');
   assert.equal(initialize.params.capabilities.experimentalApi, true);
   const thread = protocol.find(item => item.method === 'thread/start');
-  assert.equal(thread.params.cwd, f.directory);
+  assert.equal(thread.params.cwd, join(f.directory, 'initial/step01/workspace'));
+  assert.match(thread.params.cwd, /workspace$/);
   assert.equal(thread.params.model, 'gpt-6.1-sol');
   assert.equal(thread.params.config['features.shell_tool'], true);
   assert.equal(thread.params.config['features.unified_exec'], true);
@@ -92,7 +93,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'observations', 'initial-groups') + sep), true);
+  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + sep), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
   assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();
@@ -154,7 +155,8 @@ test('绘制会话多轮沿用一个 thread，回调按当前回合绑定；关�
     assert.equal(names.length, 2);
     const results = await Promise.all(names.map(name => readFile(join(f.logDirectory, name, 'result.json'), 'utf8')));
     assert.ok(results.every(value => JSON.parse(value).threadId === first.threadId));
-    await assert.rejects(session.run({ name: '换沙箱', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('no'))] }), /不能改变/);
+    const changed = await session.run({ name: '换沙箱', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('no'))] });
+    assert.equal(changed.threadId, first.threadId);
   } finally { await session.close(); }
   await assert.rejects(session.run({ name: '已关闭', prompt: 'test', tools: [] }), /已关闭/);
 });
@@ -197,8 +199,11 @@ test('绘制会话同时开放原生生图和函数工具，保存生图路径�
     const second = await session.run({ ...task, name: '返修' });
     assert.equal(second.threadId, first.threadId);
     assert.deepEqual(second.images, [{ savedPath }]);
-    await assert.rejects(session.run({ ...task, imageGeneration: false }), /不能改变.*生图开关/);
+    const changed = await session.run({ ...task, imageGeneration: false });
+    assert.equal(changed.threadId, first.threadId);
     const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+    const resumed = protocol.find(item => item.method === 'thread/resume');
+    assert.equal(resumed.params.config['features.image_generation'], false);
     const threads = protocol.filter(item => item.method === 'thread/start');
     assert.equal(threads.length, 1);
     assert.equal(threads[0].params.config['features.image_generation'], true);
@@ -280,7 +285,8 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.equal(turns.length, 3);
   assert.ok(turns.every(message => message.params.threadId === 'native-thread'));
-  assert.equal(turns[0].params.input[0].text, '原始任务');
+  assert.ok(turns[0].params.input[0].text.startsWith('原始任务\n'));
+  assert.match(turns[0].params.input[0].text, /当前工作区/);
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt)));
   assert.ok(turns[1].params.input[0].text.includes(savedPath));
   assert.equal((await readdir(f.logDirectory)).length, 3);

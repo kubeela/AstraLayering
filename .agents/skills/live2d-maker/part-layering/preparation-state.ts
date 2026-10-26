@@ -2,12 +2,13 @@ import { copyFile, lstat, readFile, readdir, rename, rm, writeFile } from 'node:
 import { randomUUID } from 'node:crypto';
 import { dirname, extname, join, relative } from 'node:path';
 import sharp from 'sharp';
-import { stepId, type SectionStep } from '../shared/step-section.ts';
+import { type SectionStep } from '../shared/step-section.ts';
 import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
+import { preparationNumbers, preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
+export { preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
 
 export type StandardJudgment = { needsAdjustment: boolean; reason?: string };
-export type PreparationStage = keyof typeof preparationNumbers;
 
 export function checkStandardJudgment(value: unknown): asserts value is StandardJudgment {
   if (!value || typeof value !== 'object' || typeof (value as StandardJudgment).needsAdjustment !== 'boolean'
@@ -54,12 +55,6 @@ export async function copyAsPng(source: string, output: string): Promise<void> {
 
 // Preparation is the section part-layering/preparation, with fixed step
 // numbers; pose keeps its number when a run does not standardize.
-// step05 belonged to the retired, separate style judgment. Keep other numbers
-// stable so completed images and downstream stamps remain usable.
-const preparationNumbers = { original: 1, options: 2, pose: 3, standard: 4, simplified: 6, base: 7, ready: 8 } as const;
-export const preparationStages = Object.keys(preparationNumbers) as PreparationStage[];
-export const stageStep = (stage: PreparationStage) => stepId(preparationNumbers[stage]);
-export const stepStage = (id: string) => preparationStages.find(stage => stageStep(stage) === id)!;
 export const sectionDirectory = (references: string) => join(dirname(references), 'preparation');
 export const poseJudgmentPath = (references: string) => join(sectionDirectory(references), stageStep('pose'), 'judgment.json');
 

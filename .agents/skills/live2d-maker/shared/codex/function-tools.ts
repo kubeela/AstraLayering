@@ -8,7 +8,8 @@ export type FunctionTool = {
   name: string;
   description: string;
   inputSchema: Record<string, unknown>;
-  execute(argumentsValue: unknown, signal: AbortSignal): Promise<ToolResult>;
+  execute(argumentsValue: unknown, signal: AbortSignal,
+    context?: { directory: string; outputDirectory: string; workspace: string }): Promise<ToolResult>;
 };
 
 export function textResult(value: unknown): ToolResult {

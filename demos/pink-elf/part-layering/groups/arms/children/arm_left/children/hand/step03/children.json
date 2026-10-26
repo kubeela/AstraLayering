@@ -1,0 +1,131 @@
+{
+  "groupId": "arms/arm_left/hand",
+  "groups": [
+    {
+      "id": "arms/arm_left/hand/palm",
+      "kind": "part",
+      "name": "palm",
+      "note": "角色自身左手的完整掌部，承接腕根至五指根部，包含掌心、掌侧厚度、虎口掌侧软组织及被屈指遮住的掌面。沿当前手形由画面右侧大腿外的腕端斜向右下展开；上接 forearm，腕根向肘侧伸入前臂覆盖之下，保留父轮廓已有的局部圆弧搭接。下端形成连续的真实掌缘：拇指接靠身体的画面左侧，食指接虎口邻侧，其余指根沿掌远端向尺侧排列，侧转投影中互相重叠。补全被拇指及屈曲四指遮住的掌面，但不把掌部延成长指，也不为每个指根分别外扩；各指由自己的根部伸入掌下，保留虎口和实际指缝。完整掌部为单一 part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_left/hand/palm",
+          "motionIdentity": "arms/arm_left/hand/palm",
+          "layers": [
+            {
+              "name": "0140 arms/arm_left/hand/palm",
+              "level": 140
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_left/hand/palm/final.png"
+        },
+        "rasterRepair01": {
+          "review": "R2",
+          "shapeRevision": "去除旧completion-additions三角延伸。该延伸进入参考透明虎口空隙(如699,833)，原掌体闭合路径、腕根圆端和所有独立指根保留。",
+          "motionIdentity": "arms/arm_left/hand/palm"
+        }
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/thumb",
+      "kind": "part",
+      "name": "thumb",
+      "note": "角色左手完整拇指，自掌部靠身体的画面左侧根部连至带浅色指甲的圆钝指尖，保留当前约 x=681–699、y=803–855 的可见下垂弧形。根部接虎口旁的掌侧，向画面左下伸出，再略向右下弯收至指尖；其右侧与后方屈指之间保留参考中狭长的真实虎口空隙。近端部分埋在 palm 下，补足连续指根和被掌面遮住的侧缘，仅在伸入端留局部圆弧余量；当前拇指处于靠近视者的一侧，遮住虎口后方部分指根，不能把其右侧暗边另算手指。整根指体连同指甲、指腹及纹理均归本 part，不继续拆分。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_left/hand/thumb",
+          "motionIdentity": "arms/arm_left/hand/thumb",
+          "layers": [
+            {
+              "name": "0130 arms/arm_left/hand/thumb",
+              "level": 130
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_left/hand/thumb/final.png"
+        }
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/index_finger",
+      "kind": "part",
+      "name": "index_finger",
+      "note": "角色左手完整食指，根部接虎口旁的掌远端；当前手掌侧转且四指微屈，食指的投影形成画面右侧较浅、较完整的长指轮廓，不能机械地按画面左右次序排列五指。自被 palm 覆盖的指根向右下伸出，沿约 x=720–729 的外缘下降，在 y≈848 附近微屈后向左下收至约 x=719、y=885 的指尖。根部内侧部分受拇指与掌部遮挡，内缘覆盖后方中指、无名指及小指的部分指体；补全完整根部和内侧体积，根端以小圆弧伸入掌下。保留它与中央屈指末端间的可见凹口，整根手指为一个 part，指节、甲面及纹理不另拆。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_left/hand/index_finger",
+          "motionIdentity": "arms/arm_left/hand/index_finger",
+          "layers": [
+            {
+              "name": "0120 arms/arm_left/hand/index_finger",
+              "level": 120
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_left/hand/index_finger/final.png"
+        }
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/middle_finger",
+      "kind": "part",
+      "name": "middle_finger",
+      "note": "角色左手完整中指，连接掌远端、位于食指与无名指之间的指根；根部大部分藏在 palm 和前方食指之下，需按当前屈曲方向补全，不能从可见暗线处截断。可见指体位于掌下中央偏左，约从 x=708–714、y=831–846 的重叠区向下，微屈后转向画面左下，形成约 x=700、y=891 的中央最低指尖。画面右侧的部分侧缘被食指遮挡，中指自身覆盖更后方无名指及小指的部分体积；沿相邻指的实际接触边保留窄指缝，不以整条阴影扩大间隙。指根局部圆弧伸入掌下，补足完整指体，整根为一个 part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_left/hand/middle_finger",
+          "motionIdentity": "arms/arm_left/hand/middle_finger",
+          "layers": [
+            {
+              "name": "0110 arms/arm_left/hand/middle_finger",
+              "level": 110
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_left/hand/middle_finger/final.png"
+        }
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/ring_finger",
+      "kind": "part",
+      "name": "ring_finger",
+      "note": "角色左手完整无名指，指根接掌远端的中指与小指之间，当前根部隐藏在 palm 及中指之后。随手势向下微屈再向画面左下收拢，主要可辨为中央长中指左侧较短的粉色指体及约 x=693–696、y=877–883 的圆钝末端；不把沿指体的暗线或屈曲纹另立为一根指。其根部和画面右侧较多被中指、前方食指遮住，自身又覆盖尺侧后方的小指；补全遮挡内的根部、两侧缘与完整末端，保持自然较中指短的关系。仅根端局部圆弧伸入掌部，不让补全形体越过现有可见指尖外轮廓。整根指甲、指腹与纹理随指体归同一个 part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_left/hand/ring_finger",
+          "motionIdentity": "arms/arm_left/hand/ring_finger",
+          "layers": [
+            {
+              "name": "0100 arms/arm_left/hand/ring_finger",
+              "level": 100
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_left/hand/ring_finger/final.png"
+        }
+      }
+    },
+    {
+      "id": "arms/arm_left/hand/little_finger",
+      "kind": "part",
+      "name": "little_finger",
+      "note": "角色左手完整小指，指根接掌远端尺侧、位于无名指外侧；当前手部侧转并拢，不能把画面最右侧的浅色长指直接当成小指。小指随当前手势向下并向掌内微屈，投影收在掌下的屈指束后方：根部被 palm 覆盖，主体及短指尖主要被无名指和中指遮住，食指亦遮住其画面右侧投影，独立可辨轮廓很少。依据无名指后方的结构位置补成连续、较短的整根指体，使其末端留在既有重叠指束轮廓内，不凭暗线新增可见指尖或撑开指缝。根端只留伸入掌下的局部圆弧余量；所有指节、甲面及细纹均包含于此单一 part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_left/hand/little_finger",
+          "motionIdentity": "arms/arm_left/hand/little_finger",
+          "layers": [
+            {
+              "name": "0090 arms/arm_left/hand/little_finger",
+              "level": 90
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_left/hand/little_finger/final.png"
+        }
+      }
+    }
+  ],
+  "note": "已对 hand.svg 作整图叠加、局部独显及边缘叠加，并放大核对本次正面参考。直属结构固定为完整掌部与五根完整手指，共六个 part；四指依据当前自然下垂、侧转微屈的真实连接与前后遮挡识别，掌下阴影及指间暗线不计为额外手指，小指等隐蔽部分在现有指束内补全。各指根允许在掌部覆盖之下留局部圆弧搭接，掌部不逐指外扩，保持参考虎口及真实指缝；腕端沿父组既定搭接连接前臂。仅服务当前正面姿势，不制作翻掌背面或替换手势；不拆指节、指甲、指腹或纹理，不提交更深层节点。"
+}

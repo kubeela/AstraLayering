@@ -1,0 +1,73 @@
+{
+  "groupId": "face/mouth/mouth_interior",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已独立读取 mouth_interior 与 mouth 说明、候选及父组 SVG，先查看整图 blend 定位，再以 8 倍放大核对完整口部 [529,198,35,33]，并用上半 [531,201,31,16]、下半 [531,211,31,18] 两个重叠选框逐块对照参考、blend 与 edge，覆盖上弧、两侧口缘、下弧及接缝。\n参考约 x=535–558、y=204–226 的可见口内区域均由连续底形覆盖；向上牙浅色带及下部舌面后方延伸符合本组说明，内部明暗和遮挡边界不需挖孔或切成碎片。位置、比例与整圈圆弧合理，局部口缘后的余量未形成无依据的外伸；未发现所属可见组件遗漏、误包相邻结构、孤点、碎片或人为裂缝，无需重画或返修。\n候选与 mouth 父 SVG 的轮廓一致；完整口部的父组 blend/edge 已同位置对照，父范围检查 pass，outsideSamples=0、outsidePixels=0。未发现需要单独报告的明确上游范围冲突。",
+      "candidateHash": "bf3adafff33a3593067ec37d0d19561e5428c9fb118c695a98411de4852aeb00",
+      "observations": [
+        {
+          "source": "outline.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-1.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-2.png"
+        },
+        {
+          "source": "../../../../../../../parts/face/mouth.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-3.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-4.png"
+        },
+        {
+          "source": "../../../../../../../parts/face/mouth.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-5.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "edge",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-6.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-7.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "edge",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-8.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "blend",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-9.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "edge",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-10.png"
+        },
+        {
+          "source": "outline.svg",
+          "mode": "svg",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-11.png"
+        },
+        {
+          "source": "../../../../../../../parts/face/mouth.svg",
+          "mode": "edge",
+          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/mouth_interior/step01/observations/face/mouth/mouth_interior/2026-10-25T08-54-03-396Z-12.png"
+        }
+      ],
+      "updatedAt": "2026-10-25T09:49:54.730Z"
+    }
+  ]
+}

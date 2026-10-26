@@ -15,18 +15,22 @@ import { groupStepId } from './part-steps.ts';
 
 // 补形与子组分析使用只读 agent，经工具提交后由程序验证并发布事实。
 export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<Pick<CodexAgents, 'createSession'>>): LayeringSteps {
-  // Agents that iterate on a draft keep their thread in the step directory, so
-  // continuing a step resumes it and resetting the step drops it.
+  // Request/session data is separate from artwork. Resetting a step clears
+  // its saved session too; continuation retains both session and workspace.
   const sessions = new Map<string, AgentSession>();
   async function stepSession(context: GroupContext, step: 1 | 2): Promise<AgentSession> {
     const key = groupStepId(context.group.id, step);
     let session = sessions.get(key);
     if (!session) {
       if (!agents.createSession) throw new Error('轮廓绘制和补全需要可复用的 agent 会话');
-      const path = join(context.directory, key, 'session.json');
+      const path = join(context.directory, 'agents', 'steps', key, 'session.json');
       let saved: { threadId?: string; harness?: Harness } = {};
       try { saved = JSON.parse(await readFile(path, 'utf8')); }
-      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+      catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+        try { saved = JSON.parse(await readFile(join(context.directory, key, 'session.json'), 'utf8')); }
+        catch (legacy) { if ((legacy as NodeJS.ErrnoException).code !== 'ENOENT') throw legacy; }
+      }
       await mkdir(dirname(path), { recursive: true });
       const persist = async (threadId: string | null, harness?: Harness) => {
         if (saved.threadId && saved.threadId !== threadId) await appendFile(path + '.history.jsonl', JSON.stringify({

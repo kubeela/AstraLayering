@@ -41,3 +41,25 @@ export async function inputFingerprint(input: ShadowInput, mode: ShadowMode, pro
   return createHash('sha256').update(JSON.stringify({ version: 1, mode, hashes,
     prompt: await readFile(prompt, 'utf8'), ...(rules.length ? { rules: await Promise.all(rules.map(p => fileHash(fileURLToPath(p)))) } : {}) })).digest('hex');
 }
+
+// Code/path-only upgrades keep completed art. Change recipe deliberately when
+// drawing behavior changes; inputs, instructions and visual guides stay hashed.
+export async function shadowInputFingerprint(input: ShadowInput, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<string> {
+  const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter, ...input.structureFiles].map(fileHash));
+  return createHash('sha256').update(JSON.stringify({ version: 2, recipe: 1, mode, hashes,
+    prompt: await readFile(prompt, 'utf8'), rules: await Promise.all(rules.map(p => fileHash(fileURLToPath(p)))) })).digest('hex');
+}
+export async function compatibleShadowFingerprint(input: ShadowInput, recorded: string | undefined, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<boolean> {
+  if (!recorded) return false;
+  if (recorded === await shadowInputFingerprint(input, mode, prompt, rules)) return true;
+  const currentPrompt = await readFile(prompt, 'utf8');
+  const oldPrompt = currentPrompt.replace('先读运行信息中列出的 inputs.json、production.md', '先读 references/inputs.json、production.md');
+  const promptHash = createHash('sha256').update(oldPrompt).digest('hex');
+  const currentRules = await Promise.all(rules.map(p => fileHash(fileURLToPath(p))));
+  const recipes: { mode: ShadowMode; promptHash: string; rules: string[] }[] = JSON.parse(await readFile(new URL('./legacy-recipes.json', import.meta.url), 'utf8'));
+  const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter, ...input.structureFiles].map(fileHash));
+  return recipes.some(recipe => recipe.mode === mode && recipe.promptHash === promptHash
+    && JSON.stringify(recipe.rules.slice(0, currentRules.length)) === JSON.stringify(currentRules)
+    && recorded === createHash('sha256').update(JSON.stringify({ version: 1, mode, hashes, prompt: oldPrompt,
+      ...(recipe.rules.length ? { rules: recipe.rules } : {}) })).digest('hex'));
+}

@@ -26,7 +26,7 @@
 
 ## 3. 多深度拆层与上游文件同步记录（区分已有标注与组装新发现）
 
-对照纯衣服参考 `../clothing-part-layering/references/clothing.png` 与简化穿衣角色辅助参考 `../part-layering/references/simplified-subject.png` 核实分层结构：上游已标注 `skirt/lower_tier` 存在环绕双腿的多深度需求（`level 1` 与 `level 2`），本次在 Krita 中完成了实际绘画分片层切分与搭接补绘；实际拼装中未发现新的未标注穿插或逻辑部件拆分需求（组装新发现拆层：0 项）。全部拆层与图层映射已同步写回上游 `../clothing-part-layering/occlusion.json` 与 `preview.svg`（见 `step01/structure-changes.json` 与 `step01/upstream-sync.json`）：
+对照纯衣服参考 `../../clothing-part-layering/references/clothing.png` 与简化穿衣角色辅助参考 `../../part-layering/references/simplified-subject.png` 核实分层结构：上游已标注 `skirt/lower_tier` 存在环绕双腿的多深度需求（`level 1` 与 `level 2`），本次在 Krita 中完成了实际绘画分片层切分与搭接补绘；实际拼装中未发现新的未标注穿插或逻辑部件拆分需求（组装新发现拆层：0 项）。全部拆层与图层映射已同步写回上游 `../clothing-part-layering/occlusion.json` 与 `preview.svg`（见 `step01/structure-changes.json` 与 `step01/upstream-sync.json`）：
 
 | 原逻辑 part ID | 拆层类别（已有标注 / 组装新发现） | 实际 KRA 图层名 | 最终深度 | 区域范围与连续分界 | 拆层原因与搭接处理 |
 | :--- | :--- | :--- | :---: | :--- | :--- |
@@ -73,7 +73,7 @@
    - 图层数量与结构：保存前 `8` 层，关闭后重新打开 `8` 层；全部满足 `all_paintlayers = True`、`no_masks_or_children = True`、`layer_mismatches = []`。
    - 像素一致性：保存前与重开后的整图合成投影 SHA256 均为 `451d9e6252015a3b9e3539d88abe633c568be7384a6b2cc1694df3cac1cdb8f5`（`projection_identical = True`，`all_8_layers_identical = True`）。
 2. **整图组合比对与偏差记录（`step01/review/final-vs-reference.png`）**：
-   - 对照纯衣服参考 `../clothing-part-layering/references/clothing.png` 与重开后的 KRA 合成图 `step01/review/assembly-reopened.png`：整体造型、粉嫩色调、荷叶边抽褶走向、蝴蝶结与肩带细节高度还原，无轮廓缺口、无错位、无明显画风差异，也无归属或层级冲突。
+   - 对照纯衣服参考 `../../clothing-part-layering/references/clothing.png` 与重开后的 KRA 合成图 `step01/review/assembly-reopened.png`：整体造型、粉嫩色调、荷叶边抽褶走向、蝴蝶结与肩带细节高度还原，无轮廓缺口、无错位、无明显画风差异，也无归属或层级冲突。
    - **细微偏差说明**：部件边界基于上游矢量 SVG 栅格化配准，在整衣外轮廓及部件接缝的 `1px` 抗锯齿半透明边缘处存在微小的亚像素抗锯齿过渡差异（按本步规范，“细微抗锯齿与半透明柔边留给第二步”处理）。
 3. **上游文件解析与一致性验证（`step01/upstream-sync.json`）**：
-   - `../clothing-part-layering/groups.json`（SHA256 `ad0fc79b61f78c6b9378b95b25786a9e7174b4bf0174b9610a36845901825b0b`）、`../clothing-part-layering/occlusion.json`（sourceHash `b71352b6e16462bbedc05ae0a26a7a341ef3418405013752dac030e722795f32`）及 `../clothing-part-layering/preview.svg`（mergeSourceHash `6e8be9567ea655ef61f22ff69a71a22efcf35ad366b4ca5fdc7c2e1700e9dc64`）均通过解析与引用完整性校验，7 个终止 part、9 个分组树节点与 8 个 Krita 绘画层完全一致，无未解决问题。
+   - `../clothing-part-layering/groups.json`（SHA256 `ad0fc79b61f78c6b9378b95b25786a9e7174b4bf0174b9610a36845901825b0b`）、`../clothing-part-layering/occlusion.json`（sourceHash `b71352b6e16462bbedc05ae0a26a7a341ef3418405013752dac030e722795f32`）及 `../../clothing-part-layering/preview.svg`（mergeSourceHash `6e8be9567ea655ef61f22ff69a71a22efcf35ad366b4ca5fdc7c2e1700e9dc64`）均通过解析与引用完整性校验，7 个终止 part、9 个分组树节点与 8 个 Krita 绘画层完全一致，无未解决问题。

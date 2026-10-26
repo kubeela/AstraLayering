@@ -1,3 +1,5 @@
+import { groupStepId } from './part-steps.ts';
+import { prepareFileInputs } from '../agents/inputs.ts';
 import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
@@ -29,8 +31,10 @@ export async function readCompletionReferences(groupDirectory: string, context?:
     const rel = relative(root, sourceSvg);
     if (rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)) throw new Error('补全同级参考必须位于本次运行目录内');
     const bytes = await readFile(sourceSvg);
-    const path = join(root, 'observations', 'completion', context.group.id, 'references', `${name}.png`);
-    await writeAtomic(path, await sharp(bytes, { limitInputPixels: 100_000_000 }).png().toBuffer());
+    const filename = `${name}.png`;
+    const inputFiles = await prepareFileInputs(join(root, groupStepId(context.group.id, 2)),
+      [{ name: filename, content: await sharp(bytes, { limitInputPixels: 100_000_000 }).png().toBuffer() }]);
+    const path = inputFiles[filename];
     return { path, description, groupId: sibling.id, sourceSvg, sourceHash: svgHash(bytes), sourceStage: 'reduction' };
   } : undefined);
 }
@@ -100,7 +104,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       return textResult(submitted);
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: true,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 2)), sandboxMode: 'read-only', imageGeneration: true,
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: [preview, set, submit, createSvgReadTool(context.directory,
       [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)]),

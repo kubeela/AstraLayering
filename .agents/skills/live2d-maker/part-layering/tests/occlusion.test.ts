@@ -106,7 +106,7 @@ test('真实适配器强制候选后逐件独显/叠加检查，修订清空检�
     await propose.execute({ layers }, signal);
     await assert.rejects(submit.execute({}, signal), /未检查/);
     await assert.rejects(check.execute({ id: ids[0], note: 'checked' }, signal), /须先查看/);
-    const candidate = join(f.directory, 'occlusion/candidate.svg');
+    const candidate = join(f.directory, 'occlusion/workspace/candidate.svg');
     await preview.execute({ path: candidate, mode: 'blend' }, signal);
     for (const id of ids) {
       await preview.execute({ path: artifactPath(f.directory, id, 'completion'), mode: 'svg' }, signal);
@@ -151,7 +151,7 @@ test('多深度保留逻辑 part；必须检查全部区域，完成后可恢复
       { id: ids[1], note: '中间部件', level: 1 }, { id: ids[2], note: '最前方部件', level: 3 },
     ] }, signal);
     assert.match(JSON.stringify(proposal), /未按文本切片/);
-    await preview.execute({ path: join(f.directory, 'occlusion/candidate.svg'), mode: 'blend' }, signal);
+    await preview.execute({ path: join(f.directory, 'occlusion/workspace/candidate.svg'), mode: 'blend' }, signal);
     for (const id of ids) await preview.execute({ path: artifactPath(f.directory, id, 'completion'), mode: 'blend' }, signal);
     await assert.rejects(check.execute({ id: ids[0], note: '只看整件' }, signal), /全部深度区域/);
     await assert.rejects(check.execute({ id: ids[0], note: '漏检', regions: [{ level: 0, note: '已看后方' }] }, signal), /全部深度区域/);

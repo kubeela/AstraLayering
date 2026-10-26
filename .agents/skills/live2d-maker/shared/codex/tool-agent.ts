@@ -13,6 +13,8 @@ import { AgentCallError } from './agent-runtime.ts';
 import { type AgentOptions, type AgentSession, type AgentTask, type GeneratedImage } from './agents.ts';
 import type { ToolResult } from './function-tools.ts';
 import { validateProviderModel } from '../agents/providers.ts';
+import { prepareWorkspace, workspacePrompt, workspaceTools } from '../agents/workspace.ts';
+import { contextImages } from '../agents/inputs.ts';
 
 // Only the protocol subset used here is maintained. The CLI is pinned by codex-sdk.
 type Message = { id?: number | string; method?: string; params?: Record<string, any>;
@@ -197,12 +199,14 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       if (closed) throw new Error('会话已关闭');
       if (busy) throw new Error('同一会话不能并发运行');
       checkFailure();
-      const tools = task.tools ?? [];
+      const paths = await prepareWorkspace(task, options.cwd ?? workflowsDirectory);
+      task = { ...task, images: contextImages(task.images, paths.directory) };
+      const tools = workspaceTools(task.tools ?? [], paths);
       const byName = new Map(tools.map(tool => [tool.name, tool]));
       if (byName.size !== tools.length || tools.some(tool => !/^[a-zA-Z0-9_-]+$/.test(tool.name))) {
         throw new Error('function tool 名称无效或重复');
       }
-      const workingDirectory = resolve(task.cwd ?? options.cwd ?? workflowsDirectory);
+      const workingDirectory = paths.workspace;
       const definitions = tools.map(({ name, description, inputSchema }) => ({ type: 'function', name, description, inputSchema }));
       const sandboxMode = task.sandboxMode ?? 'workspace-write';
       const enableImageGeneration = task.imageGeneration ?? false;
@@ -219,16 +223,21 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       const threadOptions = {
         model: selectedModel.model, cwd, sandbox, approvalPolicy: 'never',
         config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
+          ...(sandbox === 'workspace-write' ? { sandbox_workspace_write: {
+            ...options.config?.sandbox_workspace_write as Record<string, unknown>,
+            writable_roots: [paths.outputDirectory],
+          } } : {}),
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
           features: { image_generation: imageGeneration, shell_tool: true, unified_exec: true, multi_agent: false, memories: false } }),
         dynamicTools: definitions,
       };
-      const input: Record<string, unknown>[] = [{ type: 'text', text: task.prompt, text_elements: [] }];
+      const input: Record<string, unknown>[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths), text_elements: [] }];
       for (const image of task.images ?? []) {
         input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd(), text_elements: [] });
         input.push({ type: 'localImage', path: resolve(image.path) });
       }
-      const log = await AgentLog.create(resolve(options.logDirectory ?? join(cwd, '.run/agents')), task.name, {
+      const log = await AgentLog.create(resolve(options.logDirectory ?? join(paths.directory, 'agents')), task.name, {
+        workspace: paths.workspace, outputDirectory: paths.outputDirectory,
         transport: 'app-server', task: { ...task, tools: definitions, timeoutMs: timeoutMs ?? null }, input,
         prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),
         sessionThreadId: threadId ?? null,

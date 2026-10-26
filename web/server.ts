@@ -12,7 +12,7 @@ import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selected
 import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
-import { atomicJSON, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
+import { atomicJSON, agentRecord, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
 import { snapshot, summary } from './snapshot.ts';
 import { SVGThumbnails } from './svg-thumbnail.ts';
 import { KRAPreviews } from './kra-preview.ts';
@@ -219,6 +219,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (path === '/api/task') { json(await snapshot(directory, name, requestDir)); return; }
         const selected = url.searchParams.get('path') ?? '';
         if (!artifactExtensions.test(selected) || selected.split('/').some(part => part.startsWith('.'))) throw new Error('不支持该产物类型');
+        if (agentRecord(selected)) throw new Error('agent 记录不对网页开放');
         const file = await safePath(directory, selected);
         const info = await lstat(file);
         if (!info.isFile()) throw new Error('产物不是文件');
@@ -237,7 +238,8 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream', '.psd': 'application/octet-stream' };
         // SVG may be authored by an agent. Keep it inert even when opened in a new tab.
         response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
-        response.writeHead(200, { 'Content-Type': types[selected.endsWith('.md.tmp') ? '.md' : extname(file).toLowerCase()] });
+        response.writeHead(200, { 'Content-Type': types[selected.endsWith('.md.tmp') ? '.md' : extname(file).toLowerCase()]
+          || (/\.(py|[cm]?js|ts|txt)$/i.test(file) ? 'text/plain; charset=utf-8' : 'application/octet-stream') });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
       if (path === '/api/studio/layers') { json({ available: compositor.available, engine: 'Krita' }); return; }
@@ -287,7 +289,9 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         '/vendor/fflate.js': 'node_modules/fflate/umd/index.js',
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/process-files.js': 'process-files.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      staticFiles['/report-links.js'] = '../.agents/skills/live2d-maker/shared/report-links.js';
+      staticFiles['/step-paths.js'] = '../.agents/skills/live2d-maker/shared/part/step-paths.js';
       for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';

@@ -1,0 +1,94 @@
+{
+  "groupId": "trailing_skirt_image_right",
+  "groups": [
+    {
+      "id": "trailing_skirt_image_right/short_drape_left",
+      "kind": "part",
+      "name": "short_drape_left",
+      "note": "实体范围：角色左髋后、画面右侧花簇下方的短垂布，约 x560–735/y851–1049；包含上段深蓝紫垂面、下方收尖的紫红回卷布舌、约 x617–690/y950–996 的浅色回翻面，以及固定星点、水滴状纹饰和贴边金色缘饰。浅色回翻面按连续折边归本短垂布，不因颜色归入长尾；金色贴边未见独立悬挂支点，随本体。父 SVG 顶端约 x587–735/y837–911 的补全范围承接本片被外裙和花簇遮住的根部，不含花簇实体。相邻分界：内侧沿 x560/y1001 附近至回卷尖端的实际自由边；外侧沿金色缘饰所在弧边与浅色长裙尾交叠，回卷处以真实折边和自由边为界，不能用水平线或颜色界切开。穿插：本片根部在外裙及花簇衬边之后，全部在角色左腿、左下垂手臂和手之后；上段垂面覆盖长尾上段，浅色回翻面沿约 x617–690/y950–996 的连续翻折边转到深色面的前方，紫红卷舌再沿其下沿回压，局部前后区域保持同片连续。它们是同一短垂布的自翻叠区域，后续可用多个深度区域和实际绘画层表达，不拆独立控制件。控制：根部随左髋及同侧后裙根，与长裙尾共享附着运动，但短布自由下缘和卷舌允许相对长尾独立摆动、弯曲和翻卷；各回翻面、固定装饰统一随本片变形，作为完整运动单元终止为 part。根部、金缘压住长尾的边和自回翻接合处保留必要隐藏搭接；不补入腿侧空域，不含两腿间中央布、另一侧长尾及花簇。 本步新增核实：外侧金缘上方约x690–729/y881–913带青色圆点的浅色上沿翻面与本短布连续，同归本片level10，随短布运动；不能归后方浅色长尾。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "trailing_skirt_image_right/short_drape_left",
+          "motionIdentity": "trailing_skirt_image_right/short_drape_left",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0008 trailing_skirt_image_right/short_drape_left :: depth_08",
+              "level": 8,
+              "region": "右侧约 x560–735/y837–1005 的深蓝紫上垂面及金缘，根部在花簇与外裙之后；沿外侧实际金缘弧边盖住 spiral_train_left level 6 上段浅色长尾，下方按真实翻折边接 level 10。"
+            },
+            {
+              "name": "0010 trailing_skirt_image_right/short_drape_left :: depth_10",
+              "level": 10,
+              "region": "下部浅色回翻面约x617–691/y948–991，连续由深色主面8翻到其前，随后被紫红舌12回压。；新增核实：金缘上方带青色圆点的浅色上沿翻面，约x690–729/y881–913，沿弧形卷缘与深色面8及固定缘饰连续；在8前、花簇31后，不归后方浅色长尾。"
+            },
+            {
+              "name": "0012 trailing_skirt_image_right/short_drape_left :: depth_12",
+              "level": 12,
+              "region": "下方紫红收尖回压舌，在浅色回翻10和主面8前；沿同一连续布料下缘回卷，保留腿后职责。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/trailing_skirt_image_right/short_drape_left/final.png",
+          "sourceSvgAtGenerationSha256": "9fb9c1d66a1f0f71e6c6e05b57b6e2a4d800c9421ae980b06f8ef8793faefee8",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "4cbdb6a7858424008c22b69cd54d6801a8d21ae4c766b2deb8f68455aafc485a",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。",
+          "repair01": {
+            "issues": [
+              "R8"
+            ],
+            "currentPartPngSha256": "edbccc0294b4eddf2a9614b7053e8642d598038dee01ace3cc5f289958a365ab",
+            "report": "../clothing-raster-layering/step01/repair-01.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-01原坐标修复并在当前KRA重开核对；R2各片腰根连续，R4隐藏窄折面已收顺；保留共同控制身份及普通深度分片；领瓣/裙卷面/花簇/短布青点翻面不迁入相邻部件。"
+          },
+          "repair02": {
+            "issues": [
+              "R2"
+            ],
+            "currentPartPngSha256": "94d413f8383c42feb89a8d0b1bd29ba923a6f5a2f3bb93df92e75748a60d167a",
+            "report": "../clothing-raster-layering/step01/repair-02.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-02原坐标局部修复。花瓣/浅色翻面/深色星点布归属保持；收回8的右上外扩，10自有窄根接续，6长尾不改绘画。"
+          }
+        }
+      }
+    },
+    {
+      "id": "trailing_skirt_image_right/spiral_train_left",
+      "kind": "part",
+      "name": "spiral_train_left",
+      "note": "实体范围：角色左髋后、画面右侧浅粉白色连续盘卷长裙尾；上段从花簇及短垂布后显露，外缘沿约 x728/y879 下伸至 x844/y1055 的外伸短尖，内侧含约 x625–670/y1045–1091 的小卷边；向下包含约 x670–848/y1085–1307 的宽大卷层、约 x582–734/y1198–1397 的内折接续区，以及到 x930/y1509、最低约 y1515 的窄拖尾，全部以父 SVG 与纯衣服实际轮廓为准。连续的正反翻面、固定褶皱及微小纹饰都归本片，不按明暗、颜色或每条波浪边拆分。相邻分界：上端藏于同侧外裙、花簇衬边及 short_drape_left 后，沿短垂布的实际金缘弧边和回卷自由边分开；短垂布自身约 x617–690/y950–996 的浅色回翻面不归本片。内缘保留腿侧空域；其余外伸尖、内侧小卷边、宽卷层和最下方拖尾均属本片，无遗漏。穿插：全片位于角色左腿及左下垂手臂、手之后；上段在短垂布之后，短垂布回翻区域另随短垂布控制。长尾内部沿从内侧小卷边约 x670/y1085 向右下延展至 x848/y1228 的连续卷缘，以及从 x582/y1363 延向 x734/y1307 的下一道卷缘换叠；翻向观者的宽卷面盖住内折和接续窄尾，约 x734/y1307 以下的后续尾面从覆盖边后接出。上述为连续布片自交叠，无需把开口机械分成前后两片；后续用多个深度区域并在 raster step01 拆实际绘画层。控制：根部与短垂布共同随左髋及后裙根，本长尾相对短垂布独立摆动，沿长度保留柔性延迟，卷面可在统一网格及变形控制中展开、弯曲；现有参考没有支持各卷层独立悬挂或单独显隐的结构，故作为完整运动单元终止为 part。补足被短垂布、外裙和花簇盖住的保守根部及各卷层接合处隐藏搭接，保持长尾连续；所有补全限于父组所支持的布料范围，不向腿部空域填皮肤或任意补布，不含中央布和另一侧长尾。 本步明确排除：约x690–729/y881–913带青色圆点的浅色上沿翻面属于short_drape_left；本片在该翻面之后保留实际生成的浅粉衣料补全。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "trailing_skirt_image_right/spiral_train_left",
+          "motionIdentity": "trailing_skirt_image_right/spiral_train_left",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0002 trailing_skirt_image_right/spiral_train_left :: depth_02",
+              "level": 2,
+              "region": "画面右长尾后续面及内折接续，约 x582–734/y1198–1397 并延至 x930/y1509–1515 的最低窄尾；在 level 4 朝前宽卷面之后，沿 x582/y1363 至 x734/y1307 的连续卷缘从覆盖唇边后接出。"
+            },
+            {
+              "name": "0004 trailing_skirt_image_right/spiral_train_left :: depth_04",
+              "level": 4,
+              "region": "朝前浅色宽卷面：上接内侧小卷，下沿沿(582,1364)—(661,1325)—(735,1307)连续卷缘盖住后续窄尾2。"
+            },
+            {
+              "name": "0006 trailing_skirt_image_right/spiral_train_left :: depth_06",
+              "level": 6,
+              "region": "根部与上段浅色连续卷面：在短垂布及花簇之后，沿内侧小卷缘接宽面4，中央腿侧空域不填布。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/trailing_skirt_image_right/spiral_train_left/final.png",
+          "sourceSvgAtGenerationSha256": "baf541ff1652a9455d8005d836e74c23f69ff6aec99ad7be14dff8280a49c47b",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。"
+        }
+      }
+    }
+  ],
+  "note": "已查看父 SVG 独显、全图叠加及上段局部 blend/edge，并核对纯衣服局部与原穿衣角色。直属结构按实际自由边、相互覆盖及运动长度划分为两件完整运动单元：同侧短垂布和连续盘卷长裙尾，均为终止 part。两者共用左髋后附着运动，但短垂布自由卷舌与长尾可分别摆动、弯曲；区分依据是布片结构和独立控制，不是深浅颜色。短垂布的浅色回翻面、固定缘饰随短垂布；长尾各卷层为同一连续柔性单元，未见更小独立挂接组件，不按卷层数量继续拆。父组关于腿后、手臂及手后、根部遮挡、短布与长尾交叠、自翻叠连续分界及隐藏搭接的职责已分别写入两个 part；跨深度由后续多个区域和绘画层表达。花簇、两腿间中央布、另一侧长尾和人体均不在本节点输出范围。 本步子节点身份不变；当前父形状按已验收子片覆盖同步，卷边归属修正见各子节点rasterLayering记录。"
+}

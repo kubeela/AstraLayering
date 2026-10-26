@@ -1,0 +1,226 @@
+{
+  "subject": "other",
+  "groups": [
+    {
+      "id": "halter_dress",
+      "name": "halter_dress",
+      "note": "实体范围：以 clothing.png 的 932×1688 坐标为准，包含约 x373–566/y244–516 的挂脖衣身，以及从收腰连续展开至约 x158–774/y855 的整片短外裙；领口浅色花瓣状布边、固定包边、裙面两枚蓝色花形缀饰和零星小珠状固定装饰均归本组。腰处没有可据以另立衣物的断缝，本轮保留上身与外裙的完整衣物身份；不按粉白色差、纵褶、斜向折线或裙瓣数量拆组。相邻分界：左右以衣身外缘与两泡袖分开；腰前蝴蝶结、胸前独立金色垂饰另归对应组；短裙自由波浪边是与下方花簇衬边、后侧长垂裙的分界，翻起边沿的衣料反面仍归本组。穿插：胸腹衣料在胸腹和髋部之前，短裙前缘在大腿之前，侧后腰裙根可延续到髋部之后；挂脖布料沿颈侧向后接合，前领缘在颈前，后绕接合区在颈后，以两侧转折为连续深度分界，属于同一挂脖衣物而非另绘背视图。领口实际镂空及肩臂开口保持透明，不补皮肤或臆造封口。外裙盖住花簇衬边和长垂裙根部，花簇在翻边间露出的窄区按实际边界穿出；原角色垂下的前臂、手在裙面之前。控制：衣身随胸腰，裙根随腰髋、自由下摆可柔性摆动；固定蓝色缀饰随所在裙布变形，固定纹样不设独立控制组。后续必要搭接只在领后连接、袖身接触及裙根/花簇被盖处补足衣料，不填中央腿部空域。后续子节点直至终止 part 必须逐项继承其实际区域的范围、分界、随动及前后职责；跨深度本身不是拆逻辑 part 的理由，未来 SVG 仅表达纯色覆盖，纹样明暗留给栅格。",
+      "kind": "group"
+    },
+    {
+      "id": "puff_sleeve_image_left",
+      "name": "puff_sleeve_image_left",
+      "note": "实体范围：画面左侧、角色右上臂的独立短泡袖，约 x270–389/y333–464；含整团花瓣状膨起袖料、下沿紫灰色波浪袖口及固定细边。花瓣/圆斑是同一袖面装饰与体积表现，不逐花分组。相邻分界：内侧止于与挂脖衣身相接或被其遮挡的弧边，外侧为泡袖轮廓，下方袖口止于上臂出口；不包含任何肩臂皮肤，也不把后方头发归入。穿插：这是围住同侧上臂的一个袖筒，外鼓前袖面及可见袖口前缘位于上臂之前；内侧/后侧回绕面及袖口后弧位于上臂之后，以开口两侧回转处连续衔接。原图上臂从下方开口伸出，不能用整块袖口面封住出口；并非机械把整个泡袖上下或前后对半拆组。衣身压住袖根接触处时只保留必要隐藏搭接；后绕袖口按原有袖筒连续结构补少量被臂遮住的布，不补人体。控制：全袖和袖口属于同一个上臂随动单元，以角色右上臂为主，袖根与胸侧连接协调，袖体允许鼓胀及轻摆；与另一侧泡袖独立。后续子节点直至终止 part 要携带本袖实际区域的环绕分界、上臂前后关系及共同控制身份，若仍是同一运动单元以多深度区域表达，不能仅为跨深度拆组；固定花色、阴影在后续栅格处理。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "puff_sleeve_image_left",
+          "motionIdentity": "puff_sleeve_image_left",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0017 puff_sleeve_image_left :: depth_17",
+              "level": 17,
+              "region": "袖筒内侧被衣身盖住的后绕窄接合；沿袖出口内侧回转接前鼓袖29，不补人体或封底。；下袖口后侧暗窄弧，沿出口两端回转接29的前波浪边；后弧在前弧之后，实际开口透明。"
+            },
+            {
+              "name": "0029 puff_sleeve_image_left :: depth_29",
+              "level": 29,
+              "region": "左袖外鼓花瓣主袖面及下方紫灰袖口前缘，约 x270–389/y333–464 的可见前向区域；沿出口两侧回转带连续接 level 17，前弧压住后绕袖弧，内侧接触处仍在 halter_bodice 前衣面之后；花纹随本袖。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/puff_sleeve_image_left/final.png",
+          "sourceSvgAtGenerationSha256": "2e5e9f9b3e401c04ded7167c6225fc033b955de64b3181790749b7ceec6570a9",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "01ebe953b72d27d7a972328a03a83032dfd855c22ed320284c49f850168fba0d",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。"
+        }
+      },
+      "kind": "group"
+    },
+    {
+      "id": "puff_sleeve_image_right",
+      "name": "puff_sleeve_image_right",
+      "note": "实体范围：画面右侧、角色左上臂的独立短泡袖，约 x548–663/y334–463；含花瓣状膨起袖料、下沿紫灰色波浪袖口和固定包边，全部按此侧真实轮廓建立，不镜像替代。花瓣色块、褶皱及固定点状花纹均不另分组。相邻分界：内侧与挂脖衣身的接触弧分开，外侧止于泡袖边缘，下沿止于上臂出口；肩部裸露与手臂不属于输出。穿插：膨起前袖面和可见下袖口前弧在角色左上臂之前，后绕袖面及袖口后弧在上臂之后；两侧开口转折是连续前后分界，共同构成一个完整袖筒。保留臂从袖口下方伸出的开口，不能填皮肤，也不因环绕而机械拆两个组。袖根被衣身遮住处只补足接合所需隐藏布料，袖筒后弧也只作维持完整性的隐藏搭接。控制：整袖随角色左上臂运动和变形，根部与胸侧协调，袖口与袖体共同随动，允许袖体轻摆和体积变化；不与画面左袖绑成一个左右同步单元。后续子节点直至终止 part 必须继续记录所辖区域的实体范围、连续分界、臂前后关系和同袖控制身份；同一运动单元跨深度使用多个深度区域，固定色彩和质感留到栅格绘制。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "puff_sleeve_image_right",
+          "motionIdentity": "puff_sleeve_image_right",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0018 puff_sleeve_image_right :: depth_18",
+              "level": 18,
+              "region": "右袖内侧后绕窄接合，沿本侧出口回转接前袖30，形状按右袖实际不对称轮廓。；右袖口后侧暗窄弧，连回内侧后绕区；在前波浪袖缘30之后，开口不封死。"
+            },
+            {
+              "name": "0030 puff_sleeve_image_right :: depth_30",
+              "level": 30,
+              "region": "右袖膨起主袖面、固定花瓣及紫灰波浪袖口前弧，约 x548–663/y334–463；与 level 18 在开口两侧连续换向，前弧盖住后绕弧、根部由 halter_bodice 前衣面压住，保留出口真实空隙。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/puff_sleeve_image_right/final.png",
+          "sourceSvgAtGenerationSha256": "7aa5bd4cf51996698e06a657a8bc97ce357e207425f5dea5ca5240d3a25400a8",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "30566d1a32c041220902db3e055c00e723d410d82d4ee957dddd5ec04bf18255",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。"
+        }
+      },
+      "kind": "group"
+    },
+    {
+      "id": "waist_bow",
+      "name": "waist_bow",
+      "note": "实体范围：画面偏左腰前的绿色系结组件，约 x384–466/y489–696，包含中央结、左右结耳和自结下垂的两条长短不等带尾；这些是同一系带附件的不同区域，不把带尾颜色、脊线或褶皱当成新实体。不臆造图中未见的整圈腰带。相邻分界：组件外缘与挂脖连衣裙腰面及裙面分开，根部附着约 x420/y503；结耳/带尾内部相接处按真实搭压继续保留。穿插：整个可见结位于腰腹衣料之前，带尾沿裙面向下，均在外裙之前，中央结压住结耳根及带尾根部；两尾仅按现有相交处安排局部覆盖，不扩展成绕躯干结构。控制：结根随腰部，结耳与结基本共同随动，两条带尾有独立柔性摆动需要，后续可按控制需要在本组内细化；当前只提交一个附件归属组。带尾/结耳接入中央结的被遮区域需保留短搭接，不能将腰面或皮肤并入。后续每个子节点直至终止 part 须继承其具体连接点、相邻分界、位于裙前及与腰结共同随动的职责；未来 SVG 仅纯色轮廓覆盖，绿色和折痕由栅格处理。",
+      "kind": "group"
+    },
+    {
+      "id": "chest_pendant",
+      "name": "chest_pendant",
+      "note": "实体范围：颈前领尖下方到胸前的金色卷曲花叶垂饰，主体约 x437–499/y286–383，包括上端连接、两侧卷曲枝条、中央镂空框及底部花形坠端，作为一个附着衣领的独立装饰附件。领口浅色布瓣及其固定金色细包边归 halter_dress；不把金色的每一枝、每个孔或亮斑再建立组。相邻分界：上端接领口中央，轮廓沿金饰实体边缘，与后方胸前布料分开；镂空仅留饰件孔洞，让后方已有布料或真实空隙透出，不填皮肤、也不把孔内浅色布认作金饰。穿插：可见饰件在衣领前缘和胸前衣料之前；根部被领缘扣住处仅作必要短搭接，没有可见证据要求添加后颈项链或背后结构。控制：上端随挂脖领口及胸部，整件维持连贯装饰身份，可绕上端轻微摆动，细枝随整体而非逐枝独立控制。此附件与腰结和裙面固定蓝色缀饰无归属重叠。后续细化直至终止 part 应继续标明所辖金饰范围、镂空边界、胸布之前的深度、领口附着与共同控制身份；不以路径数量拆组，颜色光泽由栅格绘制。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "chest_pendant",
+          "motionIdentity": "chest_pendant",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0040 chest_pendant",
+              "level": 40,
+              "region": "整个部件"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/chest_pendant/final.png",
+          "sourceSvgAtGenerationSha256": "eaeb100230d1c00abbae41d9ed2affe3ade6744a04e4a7d88ec4dd0734d562f3",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "dc7124c9d936dc5d44e8781f325e5deaabd3a8d112f81ff749dcffb6bea04ca1",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。"
+        }
+      },
+      "kind": "group"
+    },
+    {
+      "id": "floral_skirt_undertrim",
+      "name": "floral_skirt_undertrim",
+      "note": "实体范围：短外裙下缘露出的整圈蓝紫/青蓝花簇衬边，主要约 x154–783/y744–902，包括短裙两个内凹翻边中露出的窄花簇、下缘成串花瓣/叶瓣和穗状布饰；这是同一裙底花簇衬边组件，不能按蓝紫/青色、每朵花或每个小瓣拆组。它与泡袖花团不相连，归属独立；不凭遮挡把它列为短外裙的子衣物，本轮与其他衣组并列。相邻分界：上沿在短裙自由边后隐藏接入，前方仍由外裙粉色翻边盖住；下沿止于各花瓣/穗状自由轮廓，下面深色垂布和浅色长尾全归同侧长垂裙组。穿插：前侧花簇在髋腿之前、短外裙之后；侧后回绕区域随裙围转到髋/大腿外后侧，在手臂及手之后；短裙内凹处花簇露出只是同一衬边的可见窗口。以裙围侧面回转处区分前后深度，共同控制身份保持完整，不另造背视图。控制：附着根随腰髋及短裙下摆，花簇/穗状边允许较短幅度的柔性颤动，和长垂裙的长幅摆动分开。短裙遮住的接合区、侧后回绕及花瓣互压处只作维持衬边连续性的隐藏搭接，不向中央腿部空隙填布或皮肤。后续子节点直至终止 part 必须携带相应区域的边界、裙/腿前后关系、随裙根控制和隐藏搭接职责；固定花色明暗由栅格处理。 本步纠正：裙缘缺口上段的连续蓝紫回折衣料不属于花簇，留在对应裙片；本片被盖接合区只补全同一花瓣纹理。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "floral_skirt_undertrim",
+          "motionIdentity": "floral_skirt_undertrim",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0013 floral_skirt_undertrim :: depth_13",
+              "level": 13,
+              "region": "画面左外端侧后回绕窄幅及隐藏接合，沿侧向回转带接前花串31；在长垂裙根前、裙侧后根14之后。；画面右外端侧后回绕窄幅及隐藏接合，沿实际侧向转折接前花串31；在长尾根前、右侧裙后根15之后。"
+            },
+            {
+              "name": "0031 floral_skirt_undertrim :: depth_31",
+              "level": 31,
+              "region": "前侧连续蓝紫/青蓝花簇、叶瓣和穗边，约 x154–783/y744–902 中面向前方的下缘串及两个内凹缺口内露出的小簇；在长垂裙及 level 13 后绕区之前、三片短外裙含其翻边之后。以两端侧向回转带衔接后绕区，上界沿真实裙缘和缺口，不封中央腿侧空域。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/floral_skirt_undertrim/final.png",
+          "sourceSvgAtGenerationSha256": "d47cdce278b896abdfa145ba0513fa3672fda73619e3d1d2dfdce226f1c41b7f",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "3f29d2df6e3a33d0e5b48c0a23d6d0969d95e365568433b9b8ee9cce55311861",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。",
+          "repair01": {
+            "issues": [
+              "R5",
+              "R6"
+            ],
+            "currentPartPngSha256": "06fa6b991e4e65f5fcb64851d11547550ba41a1ef85c33d0209fd55c3842175b",
+            "report": "../clothing-raster-layering/step01/repair-01.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-01原坐标修复并在当前KRA重开核对；R2各片腰根连续，R4隐藏窄折面已收顺；保留共同控制身份及普通深度分片；领瓣/裙卷面/花簇/短布青点翻面不迁入相邻部件。"
+          },
+          "repair02": {
+            "issues": [
+              "R1",
+              "R2-contact"
+            ],
+            "currentPartPngSha256": "4f56db4482de09a376a9adfba2c8f8f17719d8bdbdafdf5aea247f67f6e833fe",
+            "report": "../clothing-raster-layering/step01/repair-02.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-02原坐标局部修复。花瓣/浅色翻面/深色星点布归属保持；收回8的右上外扩，10自有窄根接续，6长尾不改绘画。"
+          }
+        }
+      },
+      "kind": "group"
+    },
+    {
+      "id": "trailing_skirt_image_left",
+      "name": "trailing_skirt_image_left",
+      "note": "实体范围：画面左侧、角色右髋后下垂的整套长垂裙区域：花簇下方约 x200–371/y852–1048 的深蓝紫至紫红垂布、其固定星点/水滴形纹饰及金色缘饰，以及与其交叠翻卷、延续到约 x0–354/y1514 的浅粉白色层叠长裙尾，含外伸短尖、内侧卷边和最下方拖尾。浅深面在上段沿卷边前后换面，不因颜色或卷曲弧线建立额外衣物；本轮将同侧裙根支撑的垂布与长尾归一个控制组，组内若后续发现确切独立运动再按结构细化。相邻分界：上根藏在短外裙和花簇衬边之后，花簇不归本组；内侧止于纯衣服图的腿侧空域边缘，不依据原角色补出横跨两腿的深色中央裙片；右侧长垂裙另属一组。穿插：裙根在右髋后，整条长垂裙在角色右腿之后，原角色前臂/手也在本组之前；上段深色露面在大部分浅色长尾之前，浅色上翻小舌又局部压回深色面，沿实际卷边转折连续换层；下段大幅浅色卷边依次盖住自身内折及下段窄尾。前后指同一垂裙相对腿或相邻衣片的关系，不画背视图。控制：根部共同随右髋/后裙根，整侧独立于另一侧长尾摆动，沿垂落方向允许柔性延迟及卷边形变；固定星点、金色缘饰随所附衣料，无独立运动证据时不另分组。需在花簇及外裙遮住的根部、深浅面互翻压边及相接卷层留必要隐藏搭接，保持连续不露缝，不封闭中央空隙。后续子节点直至终止 part 须继承各自实体范围、卷边连续分界、腿后和自交叠深度、同侧裙根控制职责；同一运动单元用多个深度区域表达，纹样与渐变留给栅格。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "clothing-raster-layering/step01",
+          "logicalPartId": "trailing_skirt_image_left",
+          "motionIdentity": "trailing_skirt_image_left",
+          "ordinaryPaintLayers": [
+            {
+              "name": "0001 trailing_skirt_image_left :: depth_01",
+              "level": 1,
+              "region": "画面左长垂裙后续窄尾与内折接续面：约 x0–354/y1198–1514，包含最低拖尾及大卷层后接出的布面；在本片朝前宽卷层之后，沿约 x198/y1307 至 x350/y1363 的连续卷缘及内折回转线衔接，中央腿侧空域不填布。"
+            },
+            {
+              "name": "0003 trailing_skirt_image_left :: depth_03",
+              "level": 3,
+              "region": "下段前向宽卷面：在下道从(197,1307)经(271,1325)至(350,1364)的真实卷缘之上、上道斜向卷缘之下；在后续尾面1前、上翻面5后。"
+            },
+            {
+              "name": "0005 trailing_skirt_image_left :: depth_05",
+              "level": 5,
+              "region": "上段浅色连续翻卷：沿(269,1085)—(219,1136)—(160,1164)—(82,1230)的连续斜向卷缘接下段宽面3并覆盖其起段；后方窄尾为1。"
+            },
+            {
+              "name": "0007 trailing_skirt_image_left :: depth_07",
+              "level": 7,
+              "region": "上段深色星点面及固定缘饰，在浅色长尾5前、回翻小舌9和紫红舌11后；根部在花簇和外裙之后。；金缘与其连续窄接面随上段深色布，按实际金缘外弧补入7，避免将固定金缘割成5中的零碎孤片。"
+            },
+            {
+              "name": "0009 trailing_skirt_image_left :: depth_09",
+              "level": 9,
+              "region": "上段浅色回翻舌，沿深色自由弧连续翻到7前、在紫红回压舌11后，不移交其他衣片。"
+            },
+            {
+              "name": "0011 trailing_skirt_image_left :: depth_11",
+              "level": 11,
+              "region": "紫红回压卷舌与前压唇边，沿浅色小舌9下缘连续回转；全部仍属于左侧长垂裙。"
+            }
+          ],
+          "finalPng": "../clothing-raster-layering/step01/parts/trailing_skirt_image_left/final.png",
+          "sourceSvgAtGenerationSha256": "d7b3dc0722a1588d672c5e2349337a961bfd4fef43828327f955892b334b4cb6",
+          "shapeRevision": "按固定原坐标实际可见轮廓、隐藏接合及已核实卷边归属同步；未按整图差异迁入其他部件内容",
+          "sourceSvgCurrentSha256": "257d161f1c8aa1ce583075d9430e298dfd91799d83699a93745b0b6818feb9e2",
+          "visibleHemCorrection": "已按真实粉色自由边、两处蓝紫反面和花瓣归属核对可见参考覆盖。",
+          "repair01": {
+            "issues": [
+              "R7"
+            ],
+            "currentPartPngSha256": "6ee5212f8bf0dfa09bed771802b3a50110922cafa9c6811c12c3cb7a5de315c4",
+            "report": "../clothing-raster-layering/step01/repair-01.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-01原坐标修复并在当前KRA重开核对；R2各片腰根连续，R4隐藏窄折面已收顺；保留共同控制身份及普通深度分片；领瓣/裙卷面/花簇/短布青点翻面不迁入相邻部件。"
+          },
+          "repair02": {
+            "issues": [
+              "R1"
+            ],
+            "currentPartPngSha256": "d930a251528b1c4f3aedd86637759178c77e393d6b943a195c37ecf4139cb0ca",
+            "report": "../clothing-raster-layering/step01/repair-02.md.tmp",
+            "paintingStatus": "self_checked_this_repair",
+            "note": "按review-02原坐标局部修复。花瓣/浅色翻面/深色星点布归属保持；收回8的右上外扩，10自有窄根接续，6长尾不改绘画。"
+          }
+        }
+      },
+      "kind": "group"
+    },
+    {
+      "id": "trailing_skirt_image_right",
+      "name": "trailing_skirt_image_right",
+      "note": "实体范围：画面右侧、角色左髋后下垂的整套长垂裙区域：花簇下方约 x560–735/y851–1049 的深蓝紫至紫红垂布、固定星点/水滴状纹饰和金色缘饰，以及与其交叠翻卷、向下延续到约 x579–930/y1515 的浅粉白色层叠长裙尾，含外伸短尖、内侧小卷边和最下方拖尾。以此侧纯衣服实际轮廓为准；深浅颜色、明暗、卷边数量不构成独立组依据。同侧根部支撑的上段垂布和长尾在本轮共同归属，后续仅按真实独立运动需要细化。相邻分界：上端藏于外裙及花簇衬边下方，花簇另归衬边组；内侧止于纯衣服图中的腿侧空域，不从原角色移入两腿间深色中央布；画面左侧长尾不归本组。穿插：裙根位于左髋后，全侧长垂裙在角色左腿之后，也在下垂手臂和手之后；上段深色面压住大部分浅色长尾，其边缘的浅色翻起小片局部又盖在深色面之前，沿实际翻折边连续换层；下方浅色大卷层盖住内折及后续窄尾。相对前后不是衣服背面视图，不能把所有开口机械劈成两半。控制：共同根部随左髋/后裙根，整侧与另一侧长尾独立摆动，长度方向保留柔性延迟及卷层变形；固定星点及缘饰随所附布料共同变形，不单独漂浮。被外裙和花簇盖住的根部、上段互翻压边及下部卷层接合处需补足必要隐藏搭接，保持同一垂裙连续，不向腿部空域填皮肤或任意补布。后续每个子节点直至终止 part 应保留实际范围、连续折边、自交叠及腿后深度、同侧附着控制职责；跨深度可用多个区域表达而不强制拆逻辑 part，颜色质感由后续栅格处理。",
+      "kind": "group"
+    }
+  ]
+}

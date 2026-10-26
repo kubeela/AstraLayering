@@ -23,7 +23,7 @@
 
 ## 3. 深度穿插、拆层与色块归属修正（区分预先标注与组装新发现）
 
-在实际配准与拼装核对中，落实了上游已标注的穿插区域，并处理了组装中新发现的层序、色块归属与多深度分片问题，所有修改均已同步写回 `../part-layering/occlusion.json`、`../part-layering/groups.json`、`../part-layering/preview.svg` 及对应部件 SVG/回执（详见 `step01/structure-changes.json` 与 `step01/upstream-sync.json`）：
+在实际配准与拼装核对中，落实了上游已标注的穿插区域，并处理了组装中新发现的层序、色块归属与多深度分片问题，所有修改均已同步写回 `../part-layering/occlusion.json`、`../part-layering/groups.json`、`../../part-layering/preview.svg` 及对应部件 SVG/回执（详见 `step01/structure-changes.json` 与 `step01/upstream-sync.json`）：
 
 | 原逻辑部件 ID | 类型（预先标注 / 组装新发现） | 调整前深度 | 调整后图层名与深度 | 区域说明与修改依据 |
 | :--- | :--- | :---: | :--- | :--- |
@@ -123,4 +123,4 @@
    - 图层规范检查：`all_paintlayers = True`，`no_masks_or_children = True`，`layer_mismatches = []`。
    - 整图投影像素 SHA256：保存前与重开后均为 `b2a65d9f48aa1f4c8c77cd1ab9495343ef20c0d0f690eff66852dcdd26f597ea`（`projection_identical = True`，`all_58_layers_identical = True`）。
 2. **上游分层结构文件同步校验（`step01/upstream-sync.json`）**：
-   - `../part-layering/groups.json`（SHA256 `249d33122ebbcba07d134eae35021d5f858f3c9c1f304dd63a630d27b17468e7`）、`../part-layering/occlusion.json`（SHA256 `e92a0e5dc3a65dd061dcbd5dd0052b9e12087f6bc6c7460a2685fe533ae05b09`）与 `../part-layering/preview.svg` 均解析正常，55 个逻辑部件、68 个树节点与 58 个深度层序完整对应，无未决问题。
+   - `../part-layering/groups.json`（SHA256 `249d33122ebbcba07d134eae35021d5f858f3c9c1f304dd63a630d27b17468e7`）、`../part-layering/occlusion.json`（SHA256 `e92a0e5dc3a65dd061dcbd5dd0052b9e12087f6bc6c7460a2685fe533ae05b09`）与 `../../part-layering/preview.svg` 均解析正常，55 个逻辑部件、68 个树节点与 58 个深度层序完整对应，无未决问题。

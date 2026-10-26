@@ -1,19 +1,21 @@
 import { lstat, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
-import { legacyLayout, listSteps } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
+import { listSteps } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { readRun, taskStatus, type TaskRun } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { steps as personSteps } from '../.agents/skills/live2d-maker/raster-layering/steps.ts';
 import { steps as clothingSteps } from '../.agents/skills/live2d-maker/clothing-raster-layering/steps.ts';
 import { steps as assemblySteps } from '../.agents/skills/live2d-maker/character-assembly/steps.ts';
 import { nextReviewTask } from '../.agents/skills/live2d-maker/shared/raster/review.ts';
-import { inventory, jsonFile, safePath } from './files.ts';
+import { agentRecord, inventory, jsonFile, safePath } from './files.ts';
 import { partProgress, phases } from './part-progress.ts';
 import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { projectDisplayName } from './project-metadata.ts';
 import { reportPreview, type ReportPreview } from './report.ts';
+import { legacyWorkspaces } from './workspaces.ts';
+import { copiedInput, inputKras } from './kra-inputs.ts';
 
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
@@ -40,7 +42,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
   const record = await summary(directory, name, dir).catch(error => {
     errors.push(String(error)); return { name, status: 'failed', directory, run: undefined as TaskRun | undefined, runnerAlive: false, lockHeld: false };
   });
-  const files = await inventory(directory), fileSet = new Set(files);
+  const fileVersions: Record<string, string> = {};
+  const files = await inventory(directory, fileVersions), fileSet = new Set(files);
+  const processWorkspaces = await legacyWorkspaces(directory, files);
   const optional = async (path: string) => jsonFile(directory, path).catch(error => { errors.push(String(error)); return undefined; });
   const exists = async (path: string) => {
     try { return (await lstat(await safePath(directory, path))).isFile(); }
@@ -95,9 +99,16 @@ export async function snapshot(directory: string, name: string, dir: string) {
       for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
         const prefix = branch + '/' + step.id;
         await loadReport(step.id, prefix + '/report.md');
-        const candidates = await Promise.all(files.filter(path => path.startsWith(prefix + '/') && /\.kra$/i.test(path)
-          && !path.split('/').some(segment => segment.startsWith('.') || ['agents', 'recovery', 'archive'].includes(segment)))
-          .map(async path => ({ path, info: await lstat(await safePath(directory, path)) })));
+        const legacy = processWorkspaces[prefix] || [];
+        const previewInputs = [...inputKras(config?.sourceInput), ...files
+          .filter(path => path.startsWith(prefix + '/') && !path.includes('/workspace/') && /\.kra$/i.test(path))
+          .map(path => resolve(directory, path))];
+        const candidates = await Promise.all(files.filter(path => /\.kra$/i.test(path) &&
+          (path.startsWith(prefix + '/') || legacy.some(root => path.startsWith(root + '/')))
+          && !path.split('/').some(segment => segment.startsWith('.') || ['recovery', 'archive'].includes(segment)))
+          .map(async path => ({ path, info: await lstat(await safePath(directory, path)),
+            inputCopy: await copiedInput(await safePath(directory, path), previewInputs) })));
+        for (let index = candidates.length - 1; index >= 0; index--) if (candidates[index].inputCopy) candidates.splice(index, 1);
         candidates.sort((a, b) => b.info.mtimeMs - a.info.mtimeMs || a.path.localeCompare(b.path));
         if (candidates[0]) previews[step.id] = { path: candidates[0].path, savedAt: candidates[0].info.mtime.toISOString() };
         const completed = await exists(prefix + '/.completed'), running = await exists(prefix + '/.running');
@@ -165,22 +176,15 @@ export async function snapshot(directory: string, name: string, dir: string) {
     }
     // Every marked step, for the continue / resume / retry actions.
     const steps = await listSteps(join(directory, branch), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
-    const legacy = await legacyLayout(join(directory, branch), id).catch(() => false);
-    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps, legacy,
+    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
       threadId: config?.threadId ?? null, summary: saved?.summary });
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');
-  // The URL version changes when an existing draft is rewritten, even if no log or filename changes.
-  const fileVersions: Record<string, string> = {};
-  const previewFiles = files.filter(path => /\.(kra|svg|png|jpe?g|webp|md(?:\.tmp)?|json)$/i.test(path) && !path.includes('/agents/'));
-  for (let index = 0; index < previewFiles.length; index += 16) {
-    await Promise.all(previewFiles.slice(index, index + 16).map(async path => {
-      try { const info = await lstat(await safePath(directory, path)); fileVersions[path] = `${info.mtimeMs}:${info.size}`; }
-      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(path + ': ' + String(error)); }
-    }));
-  }
-  return { ...record, files, fileVersions, pipelines, errors, logs: log.text,
+  // Server-side readers above may use agent records; the page only gets readable artifacts.
+  const servedFiles = files.filter(path => !agentRecord(path));
+  const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
+  return { ...record, files: servedFiles, fileVersions: servedVersions, processWorkspaces, pipelines, errors, logs: log.text,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
     canStop: !!(record.runnerAlive && record.lockHeld && worker?.runnerId === record.run?.runner?.id),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),

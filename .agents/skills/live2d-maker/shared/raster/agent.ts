@@ -12,6 +12,7 @@ import { AgentLog } from '../codex/agent-log.ts';
 import { createCodexImageRoute } from '../agents/codex-images.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { validateProviderModel } from '../agents/providers.ts';
+import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 
 export type StepResult = { status: 'completed' | 'blocked'; summary: string };
 export type AgentRequest = {
@@ -21,6 +22,7 @@ export type AgentRequest = {
   prompt: string;
   recoveryPrompt?: string;
   directory: string;
+  outputDirectory?: string;
   model: string;
   effort: ModelSelection['effort'];
   environment?: WorkflowEnvironment;
@@ -38,16 +40,21 @@ type Client = {
 };
 
 export async function runAgent(request: AgentRequest, client?: Client, runtime = new AgentRuntime(1)): Promise<StepResult> {
+  const task = { cwd: request.directory, outputDirectory: request.outputDirectory, step: request.step };
+  const paths = executionPaths(task, request.directory);
   // Keep the configured login and tool providers; enable the native image tool.
   const environment = request.environment ?? loadWorkflowEnvironment();
-  if (!client) {
-    const selected = parseAgentModel(`${request.model}-${request.effort}`, request.step || 'raster agent');
-    validateProviderModel(environment.providers, selected, request.step);
+  const selected = client ? undefined : parseAgentModel(`${request.model}-${request.effort}`, request.step || 'raster agent');
+  if (selected) validateProviderModel(environment.providers, selected, request.step);
+  // A rejected model leaves no directories behind.
+  await prepareWorkspace(task, request.directory);
+  if (selected) {
     const image = request.step && environment.stepImages[request.step];
     if (selected.harness === 'codex' && image && image !== 'codex-native' && !request.tools?.length) {
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
-        prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
-      const route = await createCodexImageRoute(environment, request.step!, join(request.directory, 'agents/generated'), environment.codex, request.signal, request.imageNormalization);
+        task: { name: request.step, step: request.step }, workspace: paths.workspace, outputDirectory: paths.outputDirectory,
+        prompt: workspacePrompt(request.prompt, paths), sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
+      const route = await createCodexImageRoute(environment, request.step!, join(paths.workspace, 'generated'), environment.codex, request.signal, request.imageNormalization);
       const codex = new Codex(workflowCodexOptions(environment, { env: route.env, config: rasterCodexConfig(request.step) }));
       let lastMessage = '', threadId = request.threadId;
       try {
@@ -76,7 +83,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       try {
         const result = await session.run({ step: request.step, name: request.step || 'raster', prompt: request.prompt, recoveryPrompt: request.recoveryPrompt,
           imageGeneration: selected.harness === 'codex' && !!image,
-          cwd: request.directory, sandboxMode: 'danger-full-access', tools: request.tools, imageRoots: request.imageRoots ?? [dirname(request.directory)],
+          cwd: request.directory, outputDirectory: paths.outputDirectory, sandboxMode: 'danger-full-access', tools: request.tools, imageRoots: request.imageRoots ?? [dirname(request.directory)],
           outputSchema: { type: 'object', additionalProperties: false, properties: {
             status: { type: 'string', enum: ['completed', 'blocked'] }, summary: { type: 'string' } }, required: ['status', 'summary'] } }, request.signal);
         return validateAgentOutcome(result, () => {
@@ -94,20 +101,21 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   const options: ThreadOptions = {
     model: request.model,
     modelReasoningEffort: request.effort,
-    workingDirectory: request.directory,
+    workingDirectory: paths.workspace,
     skipGitRepoCheck: true,
     sandboxMode: 'danger-full-access',
     approvalPolicy: 'never',
   };
   const log = !client ? await AgentLog.create(join(request.directory, 'agents'), request.step || 'raster', {
-    prompt: request.prompt, sessionThreadId: request.threadId || null, threadOptions: options }) : undefined;
+    prompt: workspacePrompt(request.prompt, paths), workspace: paths.workspace, outputDirectory: paths.outputDirectory,
+    sessionThreadId: request.threadId || null, threadOptions: options }) : undefined;
   let thread = request.threadId ? codex.resumeThread(request.threadId, options) : codex.startThread(options);
   let threadId = request.threadId;
   const savedImages = new Set<string>();
   const run = runtime.run(async attempt => {
     let text = '', completed = false, lastError: unknown;
     try {
-      const { events } = await thread.runStreamed(attempt > 1 && threadId ? continuationPrompt([...savedImages]) : request.prompt, {
+      const { events } = await thread.runStreamed(workspacePrompt(attempt > 1 && threadId ? continuationPrompt([...savedImages]) : request.prompt, paths), {
         signal: request.signal,
         outputSchema: {
           type: 'object', additionalProperties: false,

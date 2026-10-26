@@ -1,0 +1,54 @@
+{
+  "groupId": "body",
+  "groups": [
+    {
+      "id": "body/torso",
+      "kind": "part",
+      "name": "torso",
+      "note": "肩部、锁骨、胸廓至腰腹及肚脐附近的完整承接躯干。上沿承接颈根，两侧包含当前父轮廓内的肩部并邻接上臂，经腋下、胸廓侧面连续收至腰线，下沿与骨盆范围衔接；不再按肩、锁骨、胸廓或腹部分层。breast 覆盖的前胸后方仍须补全连续、实心的胸廓底形，与肩部和腹部连成完整实体，不沿乳房轮廓挖空或截断。临时白色连体服的肩带、领口、拼缝和衣身不作为本体结构边界。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "body/torso",
+          "motionIdentity": "body/torso",
+          "layers": [
+            {
+              "name": "0250 body/torso",
+              "level": 250
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/body/torso/final.png",
+          "repair02": {
+            "reviewId": "R5",
+            "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+            "report": "repair-02.md.tmp",
+            "result": "清除误带入的0530粉发及线色；用本torso已有生成承底恢复皮肤/衣料并原生修接，锁骨与肩带保留；正确发梢只在0530。",
+            "logicalIdentityAndDepthsUnchanged": true,
+            "sourceSvgSha256": "453cb31d6257b21a9204eaed78a1637359353fd20019706a855af8a6c051c8d7"
+          }
+        }
+      }
+    },
+    {
+      "id": "body/breast",
+      "kind": "part",
+      "name": "breast",
+      "note": "左右乳房作为一个完整部件，承担相对胸廓的独立物理摆动与体积变化，不分左右。参考中领口内可见双侧上缘及中央乳沟，连体服覆盖处的双侧外凸轮廓和下方体积转折共同表明独立乳房形体；制作应包含两侧完整体积、上部与胸廓的过渡、外侧弧面及下缘，而非仅截取领口内皮肤或服装胸片。整体位于 torso 前方，上方邻接锁骨下胸廓，两侧在腋前结束，下缘自然过渡至上腹；附着过渡处留由覆盖关系所需的局部余量，torso 在其后保持连续完整。临时连体服仅用于判断形体，不拆成乳房附件。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "body/breast",
+          "motionIdentity": "body/breast",
+          "layers": [
+            {
+              "name": "0260 body/breast",
+              "level": 260
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/body/breast/final.png"
+        }
+      }
+    }
+  ],
+  "note": "已核对 body.svg 独显、整图叠加及胸腹局部放大。当前范围为肩部至肚脐附近躯干，双侧乳房有明确前凸体积，适合独立于胸廓进行物理与体积控制，因此直属拆为 torso 与 breast 两个 part；左右乳房合为 breast。当前范围未见真实附着的翅膀或独立饰物，临时连体服不作结构。torso 包含 breast 后方完整连续的承接底形，不挖空。"
+}

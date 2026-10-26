@@ -112,7 +112,7 @@ export function createSvgPreviewTool(options: {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   return {
     ...toolDefinition('preview_svg'),
-    async execute(value, signal) {
+    async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('SVG 预览参数须为对象');
       const args = value as { path?: unknown; mode?: unknown; crop?: unknown; scale?: unknown };
       if (typeof args.path !== 'string' || !args.path.trim()) throw new Error('path 须为 SVG 路径');
@@ -159,8 +159,9 @@ export function createSvgPreviewTool(options: {
       const bounds = options.parent && source !== resolve(options.parent)
         ? await checkParentBounds(source, options.parent, options.canvas) : undefined;
       signal.throwIfAborted();
-      await mkdir(options.observationDirectory, { recursive: true });
-      const savedPath = join(options.observationDirectory, `${stamp}-${++count}.png`);
+      const destination = context ? join(context.workspace, 'previews') : options.observationDirectory;
+      await mkdir(destination, { recursive: true });
+      const savedPath = join(destination, `${stamp}-${++count}.png`);
       await writeFile(savedPath, data);
       options.observed?.({ source, mode: mode as SvgObservation['mode'], savedPath });
       return { success: true, contentItems: [

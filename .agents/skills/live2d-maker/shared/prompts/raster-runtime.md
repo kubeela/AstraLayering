@@ -5,7 +5,7 @@
 - 上游产物目录：{upstream_directory}。直接读取，不建立输入副本。
 - 主要产物路径：{parts_path}。以现有 part 为绘制起点，对照参考完成部件形状与补全。
 - 参考图目录：{references_directory}。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。{original_character_reference}
-- 输出目录：{output_directory}。已有合格成果应继续使用；中间文件、每件生成记录和最终交付均放在这里。
+- 输出目录：{output_directory}。已有合格成果应继续使用；完整产物及报告放在这里；草稿、中间图片、临时脚本等放在本步 workspace 内，目录自由组织。
 - 建立 KRA 后及每完成一批实际修改，保存当前工程；检查时以 KRA 的最新保存画面为准，不要只在最后一次保存。继续同一工程，不为进度预览另建不同内容的工程。
 - 前序已完成步骤：{previous_steps}。需要时读取这些交付和报告，不修改前序成果；即使本次是新会话，也从这些文件接续任务。
 - Krita 已检查：{krita_executable}，版本 {krita_version}；沿用当前显示环境。

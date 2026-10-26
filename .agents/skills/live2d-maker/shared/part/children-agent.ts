@@ -1,3 +1,4 @@
+import { groupStepId } from './part-steps.ts';
 import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
@@ -67,7 +68,7 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
       return textResult({ ids: result.groups.map(group => group.id), terminal: result.groups.length === 0, note: result.note });
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 3)), sandboxMode: 'read-only', imageGeneration: false,
     images: [{ path: reference, description: profile.references.children }, ...(profile.attachChildrenReferences ? references : [])],
     tools: [createBitmapTool(context.directory, directory, references.map(image => image.path)), createSvgPreviewTool({ directory: context.directory, reference, canvas,
       observationDirectory: directory, observed: entry => observations.push(entry) }), submit],

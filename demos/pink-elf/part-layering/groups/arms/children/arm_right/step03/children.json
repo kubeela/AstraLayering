@@ -1,0 +1,52 @@
+{
+  "groupId": "arms/arm_right",
+  "groups": [
+    {
+      "id": "arms/arm_right/upper_arm",
+      "kind": "part",
+      "name": "upper_arm",
+      "note": "角色自身右上臂，位于画面左侧；负责肩关节、完整肩头至肘部的连续实体，包含外露上臂及肩根、腋侧被遮挡的补全，不另拆三角肌或肘帽。可见部分从约 y=340 的肩弧向左下延伸至约 x=320、y=565–580 的轻弯肘区；内侧邻接白色肩带、衣身边缘，粉色长发处于臂后且不归本节点。肩端为伸入侧，躯干为覆盖侧：沿父轮廓已有的肩端圆弧向躯干内部保留局部搭接，肩带及衣物继续覆盖相应肩根、腋侧区域，不把隐藏余量裁成可见衣口形状。肘部由本上臂末端作为覆盖侧，覆盖 forearm 的近肘圆弧伸入端；保持肘外缘与内侧转折自然连续，本节点肘端不再向前臂额外外扩。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_right/upper_arm",
+          "motionIdentity": "arms/arm_right/upper_arm",
+          "layers": [
+            {
+              "name": "0230 arms/arm_right/upper_arm",
+              "level": 230
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_right/upper_arm/final.png"
+        }
+      }
+    },
+    {
+      "id": "arms/arm_right/forearm",
+      "kind": "part",
+      "name": "forearm",
+      "note": "角色自身右前臂，负责轻弯肘部至窄腕过渡的完整前臂实体，沿画面左下方向延伸，大致位于 x=212–348、y=550–795；保留现有自然垂落的弯曲、肘下体积及向腕部收窄的轮廓。上端与 upper_arm 相邻：前臂近肘端为伸入侧，补足局部圆弧并藏于上臂肘端覆盖侧下，搭接仅集中在肘关节附近。下端至约 y=775–790 的掌根上方窄腕区，作为覆盖侧盖住 hand 向上伸入的腕端圆弧；前臂腕端不再同时向手内扩张。前臂在粉色长发之前，与衣身、大腿保持当前空间关系；发丝、衣料及皮肤明暗纹理均不另作为本节点附件。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "arms/arm_right/forearm",
+          "motionIdentity": "arms/arm_right/forearm",
+          "layers": [
+            {
+              "name": "0210 arms/arm_right/forearm",
+              "level": 210
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/arms/arm_right/forearm/final.png"
+        }
+      }
+    },
+    {
+      "id": "arms/arm_right/hand",
+      "kind": "group",
+      "name": "hand",
+      "note": "角色自身右手，位于画面左下、大腿外侧，负责从腕接掌根至掌部、拇指及其余四根完整手指的全部实体，大致位于 x=192–253、y=775–890。保留当前正面参考中的自然下垂、微屈和手指相互遮挡姿态，不设计替换手势；拇指处在靠身体的画面右侧，沿现有指甲、指缝及外轮廓辨认各指，补足被邻指、掌部遮住的指根和侧缘，保证完整五指，不把可见的合并轮廓当作缺指。腕端为伸入侧，向上补局部圆弧并藏于 forearm 腕端覆盖侧下，仅此伸入端留腕部搭接余量。保留为 group，是因为下一层需分别承担掌部和各完整手指的独立控制：后续按 palm、thumb、index_finger、middle_finger、ring_finger、little_finger 拆分，各指不拆指节，指甲和皮肤纹理随所属手指保留；本轮不登记这些下层节点。"
+    }
+  ],
+  "note": "已核对 arm_right 父 SVG 独显、整图叠加、肩肘腕手局部放大及原参考。本层按肩至肘、肘至腕、腕至全部手指登记 upper_arm（part）、forearm（part）、hand（group）三个直属结构。连接统一为上臂肩端伸入躯干、前臂肘端伸入上臂、手腕端伸入前臂，各连接仅伸入侧补局部圆弧。当前本侧未见需独立变形或控制的手环、链坠、戒指等实际附件，因此无附件节点；头发与白色衣物仍归各自原有结构，皮肤纹理不另拆。"
+}

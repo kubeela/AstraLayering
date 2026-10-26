@@ -117,11 +117,13 @@ test('生图分支在准备函数内完成尺寸处理，两步直接交付 PNG 
     assert.deepEqual([metadata.width, metadata.height], [standard.width, standard.height]);
     assert.equal(metadata.format, 'png');
   }
-  const archives = await readdir(join(refs.directory, 'archive'));
-  assert.equal(archives.length, 2);
-  for (const archive of archives) {
-    assert.deepEqual(await readFile(join(refs.directory, 'archive', archive, 'original.png')), await readFile(f.generated));
+  for (const step of ['step06', 'step07']) {
+    const directory = join(refs.directory, '../preparation', step, 'workspace/generation');
+    const archives = await readdir(directory);
+    assert.equal(archives.length, 1);
+    assert.deepEqual(await readFile(join(directory, archives[0], 'original.png')), await readFile(f.generated));
   }
+  await assert.rejects(readdir(join(refs.directory, 'archive')), { code: 'ENOENT' });
   await assert.rejects(readFile(join(refs.directory, 'judgment.json')), { code: 'ENOENT' });
 });
 

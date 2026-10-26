@@ -7,7 +7,7 @@ import { artifactPath, draftPath } from '../../shared/part/artifact-facts.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
 import { readStep } from '../../shared/step-chain.ts';
 import { acquireTaskLock } from '../state.ts';
-import { applyStepAction, applyTaskAction, legacyLayout, listSteps, validStepId } from '../step-actions.ts';
+import { applyStepAction, applyTaskAction, listSteps, validStepId } from '../step-actions.ts';
 
 async function fixture(t: TestContext) {
   const dir = await mkdtemp(join(tmpdir(), 'step-actions-')), task = join(dir, 'case');
@@ -102,8 +102,8 @@ for (const pipeline of ['raster-layering', 'clothing-raster-layering', 'characte
     await f.act(pipeline, 'step02', 'resume');
     const config = JSON.parse(await text(join(root, 'run.json')));
     assert.equal(config.threadId, null); assert.equal(config.threadHarness, undefined);
-    assert.deepEqual(JSON.parse(await text(join(root, 'step02', 'attempts.jsonl'))), {
-      previousThreadId: 'thread-r', previousHarness: 'claude', reason: '网页恢复：清除会话，保留产物', at: JSON.parse(await text(join(root, 'step02', 'attempts.jsonl'))).at });
+    assert.deepEqual(JSON.parse(await text(join(root, 'agents/steps/step02', 'attempts.jsonl'))), {
+      previousThreadId: 'thread-r', previousHarness: 'claude', reason: '网页恢复：清除会话，保留产物', at: JSON.parse(await text(join(root, 'agents/steps/step02', 'attempts.jsonl'))).at });
     assert.equal(await text(join(root, 'step02', 'draft.kra')), 'draft');
     assert.match(await f.act(pipeline, 'step02', 'resume'), /恢复等同继续/);
     await f.act(pipeline, 'step02', 'retry');
@@ -125,17 +125,15 @@ test('阴影步骤按总控记录的方式定位分支，另一分支不受影�
   assert.equal((await readStep(join(other, 'step01'))).status, 'running');
 });
 
-test('旧 stages/ 目录在步骤操作时先转换；空步骤 id 只能继续整条管线', async t => {
+test('空步骤 id 只能继续整条管线，保留工作区与步骤记录', async t => {
   const f = await fixture(t), root = join(f.task, 'part-layering');
-  await put(join(root, 'groups.json'), JSON.stringify({ subject: 'character', groups: [{ id: 'face', name: 'face' }] }));
-  await put(join(root, 'stages', 'outline', 'face.svg'), '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h1v1z"/></svg>');
-  assert.equal(await legacyLayout(root, 'part-layering'), true);
-  assert.equal(await legacyLayout(join(f.task, 'raster-layering'), 'raster-layering'), false);
+  const step = join(root, groupStepId('face', 1));
+  await put(join(step, '.running'), JSON.stringify({ inputs: {} }));
+  await put(join(step, 'workspace', 'draft.svg'), 'working draft');
   await assert.rejects(f.act('part-layering', '', 'retry'), /没有步骤/);
-  assert.match(await f.act('part-layering', '', 'continue'), /旧版目录已转换/);
-  assert.equal(await legacyLayout(root, 'part-layering'), false);
-  assert.equal((await readStep(join(root, groupStepId('face', 1)))).status, 'completed');
-  assert.match(await f.act('part-layering', '', 'continue'), /下次运行续跑/);
+  assert.match(await f.act('part-layering', '', 'continue'), /保留全部产物/);
+  assert.equal((await readStep(step)).status, 'running');
+  assert.equal(await text(join(step, 'workspace', 'draft.svg')), 'working draft');
 });
 
 test('运行中的任务持有锁时拒绝步骤操作', async t => {

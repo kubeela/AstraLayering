@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { artifactPath, matchesHash, reportPath, reviewedArtifact } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
+import { artifactPath, matchesHash, reportPath, reviewedArtifact, stepDraftPath } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
 import { groupStepId, layerStepId } from '../.agents/skills/live2d-maker/shared/part/part-steps.ts';
 import { readStep, type StepStatus } from '../.agents/skills/live2d-maker/shared/step-chain.ts';
 import { safePath } from './files.ts';
@@ -40,7 +40,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
   };
   for (const { node, depth } of entries) {
     const path = (stage: 'outline' | 'reduction' | 'completion') => artifactPath(pipeline, node.id, stage);
-    const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
+    const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(stepDraftPath(pipeline, node.id, stage)) || files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
     node.webMessages = {};
     node.webDetails = {};

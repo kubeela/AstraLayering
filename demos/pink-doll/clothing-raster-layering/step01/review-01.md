@@ -4,10 +4,10 @@
 
 1. **检查对象与输入核对**：
    - **当前工程**：`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/clothing-raster-layering/step01/clothing-depth.kra`（SHA256 `00b0401c7935a33d1548a66b8e9e983f665d74a9b663e6c6fb21ef11fe5c8186`，只读未修改；画布尺寸 `1254 × 1254` RGBA，共 8 个普通绘画层 `paintlayer`，无透明蒙版、无分组或子节点，全部可见且不透明度为 `255`）。
-   - **纯衣服绘画参考**：`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/clothing-part-layering/references/clothing.png`（穿衣穿插辅助参考：`../part-layering/references/simplified-subject.png`）。
+   - **纯衣服绘画参考**：`/data/home/lockliu/workspaces/AstraLayering-step-models/.run/pink-doll/clothing-part-layering/references/clothing.png`（穿衣穿插辅助参考：`../../part-layering/references/simplified-subject.png`）。
    - **分层结构标准**：`../clothing-part-layering/parts/`、`../clothing-part-layering/groups.json`、`../clothing-part-layering/occlusion.json` 及 `step01/report.md`。
 2. **Krita 独立只读检视与分区域放大检查**：
-   - 使用 Krita `5.3.4.1 (git bd6e8d0)` 打开 `step01/clothing-depth.kra`，独立导出全部图层叠加投影（`step01/review-01-evidence/krita-full-composite.png`）、8 个图层逐层独显视图（`step01/review-01-evidence/solo/solo-001.png` .. `solo-008.png`）及逐级隐藏上层视图（`step01/review-01-evidence/progressive/prog-001-to-001.png` .. `prog-001-to-008.png`）。
+   - 使用 Krita `5.3.4.1 (git bd6e8d0)` 打开 `step01/clothing-depth.kra`，独立导出全部图层叠加投影（`review-01-evidence/krita-full-composite.png`）、8 个图层逐层独显视图（`review-01-evidence/solo/solo-001.png` .. `solo-008.png`）及逐级隐藏上层视图（`review-01-evidence/progressive/prog-001-to-001.png` .. `prog-001-to-008.png`）。
    - 先按 `100%` 原尺寸比对整体造型、比例与色调，再按 `200%–600%` 分区域放大覆盖全部 7 个逻辑部件（8 个绘画层），逐一核查可见区还原度、遮挡补全区连续性、接缝过渡及多深度分片切分质量。
 
 ---
@@ -52,7 +52,7 @@
   1. 在 `002 | skirt/lower_tier::front` 独显时，中央内凹折槽（`x=613..645`）的分界切线 `y_cut(x)` 被设在 `y=834..837`，比原图该处底边深色描边的实际下缘（`y=837..842`）偏高 `3–4px`。这导致 `002 | skirt/lower_tier::front` 在 `x=612->613` 与 `x=645->646` 两侧出现明显的 `3px` 垂直切割台阶，且在 `x=635..645, y=837..841` 处前裙面底边的深色描边被完全剥离缺失，只剩裸露的浅粉色布面下缘（`s2` 底缘像素为 `[221, 156, 161]` 至 `[249, 200, 206]`）。
   2. 在 `001 | skirt/lower_tier::back` 独显时，本属于 `002 | skirt/lower_tier::front` 的前裙底边深色描边下半截残片（`x=613..645, y=835..840`）被错误切入后层，且其 `12px` 上延搭接带右侧（`x=638..645, y=823..837`）因采样到了深色描边与右侧亮粉像素，形成了深棕与浅粉相间的纵向伪条纹。
 - **参考依据**：
-  - 对照原图 `../clothing-part-layering/references/clothing.png` 及穿衣辅助参考 `../part-layering/references/simplified-subject.png`，`x=613..645` 处仅有一条位于双腿内侧前方的正面裙摆底边深色弧线，并无向腿后翻折露出于底边下方的第二层翼片；且上游 `../clothing-part-layering/occlusion.json` 明确规定 `002 | skirt/lower_tier::front`“下界精确止于底摆正面波浪下沿深色描边下缘连续分界线 `y_cut(x)`（完整保留正面波浪下沿深色描边于本层）”。
+  - 对照原图 `../../clothing-part-layering/references/clothing.png` 及穿衣辅助参考 `../../part-layering/references/simplified-subject.png`，`x=613..645` 处仅有一条位于双腿内侧前方的正面裙摆底边深色弧线，并无向腿后翻折露出于底边下方的第二层翼片；且上游 `../clothing-part-layering/occlusion.json` 明确规定 `002 | skirt/lower_tier::front`“下界精确止于底摆正面波浪下沿深色描边下缘连续分界线 `y_cut(x)`（完整保留正面波浪下沿深色描边于本层）”。
 - **对还原度或完整性的影响**：
   - `002 | skirt/lower_tier::front` 单层底边轮廓在中央折槽处断裂缺边；当与角色双腿（右腿内侧 `x=544..616`、左腿内侧 `x=640..712`）按前后层级叠放或发生轻微相对变形时，大腿内侧会遮挡 `001 | skirt/lower_tier::back`，直接暴露出 `002 | skirt/lower_tier::front` 在 `x=613..616` 与 `x=635..645` 处的描边缺失和 `3–4px` 阶梯缺口（见 `zoom-07-center-fold-defect-600x.png`）。
 - **建议修复方向与需保留内容**：
@@ -72,7 +72,7 @@
   1. 在 `001 | skirt/lower_tier::back` 独显时，左侧回折翼片向 `y_cut(x)` 上方延伸的 `12px` 隐藏搭接带（`y=813..825`）在左缘（`x=472..476`）和右缘（`x=527..530`）采样到了下方斜向折线与侧边深色描边，形成纵向深浅跳变条纹，且在 `y=824..825` 处与下方回折片原有的明暗表面形成横向硬接缝。
   2. 在 `002 | skirt/lower_tier::front` 独显时，左侧切线在 `x=471..472, y=826..840` 处直接从左侧外折裥粉面中间垂直硬切，未顺应 `(472, 840) -> (475, 824)` 的内折边走向自然过渡，且在右端 `x=527, y=825..826` 处残留 `1–2px` 属于后折片右竖边的垂落黑点。
 - **参考依据**：
-  - 对照原图 `../clothing-part-layering/references/clothing.png` 及 `../clothing-part-layering/occlusion.json` 中“用不含前摆深色描边的里侧折面纯粉色平滑补绘”的要求，后层隐藏搭接带应与里侧折面自然衔接、无深色描边串色，前层下沿应干净止于正面波浪底边深色描边下缘。
+  - 对照原图 `../../clothing-part-layering/references/clothing.png` 及 `../clothing-part-layering/occlusion.json` 中“用不含前摆深色描边的里侧折面纯粉色平滑补绘”的要求，后层隐藏搭接带应与里侧折面自然衔接、无深色描边串色，前层下沿应干净止于正面波浪底边深色描边下缘。
 - **对还原度或完整性的影响**：
   - 单层独显或前后裙片随腿部摆动发生相对位移时，`001 | skirt/lower_tier::back` 搭接带两侧的深色竖纹与横向硬接缝，以及 `002 | skirt/lower_tier::front` 在 `x=527` 的残留黑点和 `x=471..472` 的垂直硬切边会露底穿帮。
 - **建议修复方向与需保留内容**：
@@ -92,7 +92,7 @@
   1. 在 `001 | skirt/lower_tier::back` 独显时，右侧回折翼片向 `y_cut(x)` 上方延伸的 `12px` 隐藏搭接带在左侧缘（`x=721..724, y=818..831`）采样到了下方回折翼片左侧的深色竖描边，形成一条宽 `3–4px`、贯穿搭接带全高的深棕色伪竖条纹；同时在 `y=825..833` 处存在按列常数填色与下方回折片折面明暗之间的横向硬接缝。
   2. 在 `002 | skirt/lower_tier::front` 独显时，前摆波浪底边在进入右侧回折口起点 `x=720..722, y=829..832` 处深色描边下缘有 `2px` 阶梯缺口，并在右端 `x=773..774, y=827..842` 处从右侧外折裥粉面中间垂直硬切。
 - **参考依据**：
-  - 对照原图 `../clothing-part-layering/references/clothing.png` 及 `../clothing-part-layering/occlusion.json`，`001 | skirt/lower_tier::back` 的隐藏搭接区应为平滑连续的里侧折面纯粉色（左侧外缘可延续干净收边，但不应把描边采样成粗糙的多列棕色条带），`002 | skirt/lower_tier::front` 在 `x=720..725` 的波浪底边描边应平顺连续。
+  - 对照原图 `../../clothing-part-layering/references/clothing.png` 及 `../clothing-part-layering/occlusion.json`，`001 | skirt/lower_tier::back` 的隐藏搭接区应为平滑连续的里侧折面纯粉色（左侧外缘可延续干净收边，但不应把描边采样成粗糙的多列棕色条带），`002 | skirt/lower_tier::front` 在 `x=720..725` 的波浪底边描边应平顺连续。
 - **对还原度或完整性的影响**：
   - 单层独显或裙摆变形时，`001 | skirt/lower_tier::back` 左侧 `x=721..724` 的粗重深棕竖条纹、横向硬接缝以及 `002 | skirt/lower_tier::front` 在 `x=720..722` 的描边台阶缺口会造成局部质感断层与边缘瑕疵。
 - **建议修复方向与需保留内容**：

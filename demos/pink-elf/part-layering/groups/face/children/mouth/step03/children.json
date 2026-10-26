@@ -1,0 +1,126 @@
+{
+  "groupId": "face/mouth",
+  "groups": [
+    {
+      "id": "face/mouth/upper_lip",
+      "kind": "part",
+      "name": "upper_lip",
+      "note": "完整上嘴缘及其必要的局部肤色覆盖边，从角色右嘴角经较平、微弧的上缘连续延伸至角色左嘴角；保留参考轻薄自然的口缘，不把窄白上牙带画作唇彩或厚唇。位于口腔底形和上牙前方，上侧邻鼻下脸底但不包含鼻点。两端与下唇平顺衔接，端部交接的伸入侧仅在另一唇覆盖下留少量圆弧余量，避免双重嘴角、接缝和闭嘴漏色；肤色覆盖仅限遮住口内结构所需的窄边，不代替完整脸底。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/mouth/upper_lip",
+          "motionIdentity": "face/mouth/upper_lip",
+          "layers": [
+            {
+              "name": "0370 face/mouth/upper_lip",
+              "level": 370
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/mouth/upper_lip/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "kind": "part",
+      "name": "lower_lip",
+      "note": "完整下嘴缘及其必要的局部肤色覆盖边，从一侧嘴角沿两侧下行并绕过圆弧形口底连至另一侧嘴角，保持参考开心张口的圆润下缘和轻薄口缘。前方遮盖口腔、舌头及下牙的下侧隐藏部分，上端与上唇两嘴角自然衔接，不另拆嘴角。闭合与普通张嘴变形时覆盖边需能遮住口内边界，交接伸入端在覆盖侧下方保留局部圆弧余量；下方脸底至下巴继续完整，不把下巴或大片脸肤色并入本 part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/mouth/lower_lip",
+          "motionIdentity": "face/mouth/lower_lip",
+          "layers": [
+            {
+              "name": "0360 face/mouth/lower_lip",
+              "level": 360
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/mouth/lower_lip/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "kind": "part",
+      "name": "mouth_interior",
+      "note": "完整且连续的口腔开口深色底形，覆盖上下口缘围成的全部内部区域；以参考上半部偏暗的砖红色延续到被牙齿及舌头遮挡的区域，不能仅制作当前可见的深色月牙或挖掉舌头位置。整体处于双唇、上下牙和舌头后方，四周适度延伸至唇的覆盖边后，嘴角亦保留局部隐藏余量，以支持正常开合且不漏出脸底。对外显露范围受口缘约束，不延伸为脸部或下巴色块。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/mouth/mouth_interior",
+          "motionIdentity": "face/mouth/mouth_interior",
+          "layers": [
+            {
+              "name": "0320 face/mouth/mouth_interior",
+              "level": 320
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/mouth/mouth_interior/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "kind": "part",
+      "name": "upper_teeth",
+      "note": "完整上排牙齿作为一整块连续浅白牙带；参考可见部分是紧贴较平上嘴缘中央的窄白条，两端圆滑收拢并退入嘴角之前。保留简洁柔和的牙列轮廓，不逐颗拆分、不刻明显齿缝、不添加虎牙。牙体在上唇后补足被遮挡的上部与侧端，位于深色口腔前方，由上唇遮住牙根及多余范围；正常开合可独立控制显露量，维持参考的窄带尺度。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/mouth/upper_teeth",
+          "motionIdentity": "face/mouth/upper_teeth",
+          "layers": [
+            {
+              "name": "0350 face/mouth/upper_teeth",
+              "level": 350
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/mouth/upper_teeth/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "kind": "part",
+      "name": "lower_teeth",
+      "note": "为正常开合补全的一整块连续下排牙齿，使用与上牙一致的柔和浅白色与简洁牙列轮廓，不逐颗拆分，也不加入无依据的尖牙。参考当前张口未显露独立下牙带，基础状态应藏于下唇与舌面之后，不能改变参考舌头占据口腔下半部的外观。补足下唇后方的完整牙体及局部侧端隐藏余量，处于深色口腔前；普通开合确需露出时仅显露自然薄带，并始终限制在口缘以内。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/mouth/lower_teeth",
+          "motionIdentity": "face/mouth/lower_teeth",
+          "layers": [
+            {
+              "name": "0330 face/mouth/lower_teeth",
+              "level": 330
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/mouth/lower_teeth/final.png"
+        }
+      }
+    },
+    {
+      "id": "face/mouth/tongue",
+      "kind": "part",
+      "name": "tongue",
+      "note": "完整舌体作为单一部件，包含当前位于口腔下半部的浅红舌面及退入口腔、被遮挡的根部；保持参考宽圆、柔和的舌面，上边缘向上拱起，与后方较深口腔形成自然色差，下缘受下唇遮挡。舌体位于口腔底形前，当前覆盖下牙的可见方向；侧缘和下缘伸入唇后留足局部隐藏余量，根部补至口腔深处但不外露。舌根和舌尖不拆分，不添加伸舌预设、夸张舌形或额外装饰。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "face/mouth/tongue",
+          "motionIdentity": "face/mouth/tongue",
+          "layers": [
+            {
+              "name": "0340 face/mouth/tongue",
+              "level": 340
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/face/mouth/tongue/final.png"
+        }
+      }
+    }
+  ],
+  "note": "已查看 sourceSvg 整图参考叠加、嘴部独显、8 倍局部 blend/edge 与原图局部。父 SVG 是约 x441.5–473.2、y248.5–275.1 的单一结构范围，实际参考为上缘较平、下缘圆弧的开心张口，能辨认上缘窄白上牙带、深红口腔和下半部浅红舌面。按开合时的独立变形与遮挡职责提交 upper_lip、lower_lip、mouth_interior、upper_teeth、lower_teeth、tongue 六个直属 part；每个都是完整实体，已无须递归的独立子组件。下牙依正常开合需求补全但在当前口形保持隐藏。口内底形完整延续到牙舌后，内结构在唇后保留局部隐藏余量，上下嘴角连续平顺，脸底在嘴下保持完整。无独立唇彩控制依据，不另列 lip_gloss；不添加特殊虎牙、口内饰物或表情口型预设。"
+}

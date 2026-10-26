@@ -1,0 +1,109 @@
+{
+  "groupId": "hair/back_hair",
+  "groups": [
+    {
+      "id": "hair/back_hair/cap",
+      "kind": "part",
+      "name": "cap",
+      "note": "贴头头盖与后脑底形，随头部稳定控制。独自承担除呆毛外约x342–566、y64起的完整头顶及两侧贴头外轮廓，包含两侧贴头辫纹带；补成刘海、前侧发和脸后连续的圆整头盖，向下包到耳后及约y270–300的后枕、颈后隐藏接合区。刘海和前侧发盖住额前与太阳穴，耳朵盖住头侧根部，脸与颈部盖住中央底形；这些遮挡不能切出脸形空洞。下缘与两片长发在后枕隐藏区衔接，由cap遮住长发伸入的发根，重合只用于同一接合处的补全。头顶轮廓不交给下垂长发，cap也不向躯干后方延成长发base。辫纹随头盖统一控制，不再拆独立辫节；不含呆毛、刘海、前侧发和通向y540回钩的表层side_hair。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/back_hair/cap",
+          "motionIdentity": "hair/back_hair/cap",
+          "layers": [
+            {
+              "name": "0005 hair/back_hair/cap :: nape_under_roots",
+              "level": 5
+            },
+            {
+              "name": "0050 hair/back_hair/cap :: back",
+              "level": 50
+            },
+            {
+              "name": "0560 hair/back_hair/cap :: crown",
+              "level": 560
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/back_hair/cap/final.png",
+          "partition": [
+            {
+              "level": 5,
+              "mask": "parts/hair/back_hair/cap/nape-depth-mask.png",
+              "region": "颈旁后脑承底与长/侧发根的交叠：y>=235，x在375–447或476–546，且原cap back像素与long_right/long_left/side_hair_right/side_hair_left的alpha>=128根面重叠。仅该交叠后置至5，位于10/20/30/40根面后。"
+            },
+            {
+              "level": 50,
+              "mask": "parts/hair/back_hair/cap/back-depth-mask.png",
+              "region": "原完整cap后脑承底扣除5颈旁交叠与560冠顶的其余部分；保留头侧、耳根与后脑接合，位于脸耳和前发后。"
+            },
+            {
+              "level": 560,
+              "mask": "parts/hair/back_hair/cap/upper-depth-mask.png",
+              "region": "y < 94+0.0033*(x-453)^2 且 y<151的原冠顶弧形覆盖区。三分片互补，联合为同一完整cap，运动身份不变。"
+            }
+          ],
+          "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/part-layering",
+          "regionMaskBase": "../raster-layering/step01/"
+        }
+      }
+    },
+    {
+      "id": "hair/back_hair/long_left",
+      "kind": "part",
+      "name": "long_left",
+      "note": "角色左侧、画面右侧的完整厚长后发面，承担这一半长发的整体摆动及身体转向响应。由左后枕和耳后隐藏发根贯穿脸颈旁、肩臂后，连续延至躯干及左髋腿后约y785；画面外缘约从x550、y235向下展开，纳入约y540–700、最外至x739的外弧卷尾，及约x610–659、y700–766的内侧多尖末端。不可仅描手臂两旁的露出窄片：须补齐左肩、上臂、前臂、泳衣躯干、髋和大腿所遮住的整片宽发面，内缘延到背部中央。根部向上伸入约y180–260的cap下方、脸与耳后，顺发流接回后脑，不能在耳缘或肩缘截断。与long_right的主接缝藏在脸颈、脊背及身体中央后方，中央裆后露梢中画面右侧约x462–476、y783–803的回卷主尖连入本片内缘，不另列中央尾束；与另一片保持连续遮盖。上方受cap、耳朵、脸与邻近前侧发遮挡，表层side_hair宽侧发及y540悬空回钩仍由邻组承担，本片补在其后，不重复领取回钩。外弧卷尾、内侧多尖和内部发纹均随这片大束共同运动，直接为part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/back_hair/long_left",
+          "motionIdentity": "hair/back_hair/long_left",
+          "layers": [
+            {
+              "name": "0020 hair/back_hair/long_left",
+              "level": 20
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/back_hair/long_left/final.png",
+          "repair02": {
+            "reviewId": "R2",
+            "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+            "report": "repair-02.md.tmp",
+            "result": "本侧单独补绘根至中段，长而渐收尖的亮暗带连续；不镜像另一侧，多尖尾/主尖及585以下合格原像素保留。",
+            "logicalIdentityAndDepthsUnchanged": true,
+            "sourceSvgSha256": "19f76533dd0c786e4e83cc602914cf32a84c6ba08c1edf19cd22acbd1291d9b0"
+          }
+        }
+      }
+    },
+    {
+      "id": "hair/back_hair/long_right",
+      "kind": "part",
+      "name": "long_right",
+      "note": "角色右侧、画面左侧的完整厚长后发面，与long_left分别控制整体摆动及身体转向。由右后枕、耳后隐藏发根连续经过脸颈旁、右肩臂后，铺到躯干、右髋腿后约y785；画面外缘约从x365、y240向下展开，包含约y540–700、最外至x163的外弧卷尾和其中自然空隙，及约x263–319、y700–766的内侧多尖发梢。须恢复右肩、上臂、前臂、泳衣躯干、髋腿遮住的完整宽后发，不能按身体切出的外侧发片、腰旁窄条和腿旁末端分别拆物。根部向上伸入约y180–260的cap下、脸与耳后，补到合理后脑根区，肩线不是根部终点。内缘在身体后方延至背部中央，与long_left相接；中央裆后露梢中画面左侧约x451–461、y785–795的小尖归本片内缘，中央较长回卷主尖归long_left，两片沿自然尖间凹口衔接，不切成独立末端节点。cap覆盖上端发根，耳朵、脸颈和身体依实际关系覆盖本片；前侧发与通向y540回钩的表层side_hair保持父轮归属，本片只承担其后的厚发面。全部外弧、内部弯折、纹理及多尖末端共同控制，直接为part。",
+      "metadata": {
+        "rasterLayering": {
+          "step": "raster-layering/step01",
+          "logicalPartId": "hair/back_hair/long_right",
+          "motionIdentity": "hair/back_hair/long_right",
+          "layers": [
+            {
+              "name": "0010 hair/back_hair/long_right",
+              "level": 10
+            }
+          ],
+          "partPng": "../raster-layering/step01/parts/hair/back_hair/long_right/final.png",
+          "repair02": {
+            "reviewId": "R1",
+            "pathBase": "/Users/wutian/Desktop/coding/AstraLayering/.run/pink-elf/raster-layering/step01",
+            "report": "repair-02.md.tmp",
+            "result": "本轮上部RGB控制补绘并平滑配准，原生渐收尖笔触接通中段；无拱形换色/圆头亮条，585以下合格原发尾逐字节保留。",
+            "logicalIdentityAndDepthsUnchanged": true,
+            "sourceSvgSha256": "1f11d382d6a6f9d0772d73e222c9a24c53bfd6268108520475d79bb970bab7e0"
+          }
+        }
+      }
+    }
+  ],
+  "note": "已查看当前back_hair完成SVG独显、整图blend，以及头盖耳后、脸颈根区和下半长发的局部blend/edge，并核对原图放大。当前系统确有稳定贴头头盖与左右分别响应身体的两片完整厚长发，故提交cap、long_left、long_right三个直属part；不采用包揽头盖和全部长发的巨大base，也不为卷曲、纹理、身体遮挡碎片或多尖端创建额外层级。左右以角色自身为准。两片长发的分界置于身体后的中央隐藏区，中央露梢按自然尖间凹口并入相应内缘，不另造中央发束；头盖和长发根的合理投影重合属于衔接补全。三件均无本轮证据支持更小独立控制组件，因此不设包装group；相邻刘海、前侧发、side_hair回钩不重新领取。"
+}
