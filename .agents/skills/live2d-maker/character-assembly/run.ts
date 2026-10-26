@@ -28,8 +28,11 @@ export const help = `character-assembly — 单 agent 组装人物与衣服 KRA
 
 export const pipeline: KritaPipeline<AssemblyInput> = {
   id: 'character-assembly', steps,
-  tools: (output, _input, _step, phase) => phase === 'draw'
-    ? [createPixelTool(dirname(output), dirname(dirname(output)), join(output, 'pixel-review'))] : [],
+  tools: (output, input, _step, phase, runtime) => phase === 'draw'
+    ? [createPixelTool(dirname(output), dirname(dirname(output)), join(output, 'pixel-review'), {
+      krita: runtime?.krita.executable, env: runtime?.env,
+      sources: [{ namespace: 'character', document: input.characterKra }, { namespace: 'clothing', document: input.clothingKra }],
+    })] : [],
   resolveInput: resolveAssemblyInput, validateInput: isAssemblyInput, inputDirectories, buildPrompt,
 };
 
