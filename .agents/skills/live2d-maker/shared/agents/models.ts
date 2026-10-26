@@ -1,3 +1,5 @@
+import { readDefaultConfiguration, requiredDefault, type DefaultConfiguration } from '../default-configuration.ts';
+
 export const modelHarnesses = {
   'gpt-6.1-sol': 'codex',
   'gpt-6-astra': 'codex',
@@ -12,17 +14,21 @@ export const reasoningEfforts = ['low', 'medium', 'high', 'xhigh'] as const;
 export type ReasoningEffort = typeof reasoningEfforts[number];
 export type AgentModel = { model: ModelId; effort: ReasoningEffort; harness: Harness };
 
-const medium = 'gpt-6.1-sol-medium', high = 'gpt-6.1-sol-high', xhigh = 'gpt-6.1-sol-xhigh';
-// User-facing model settings describe roles shared by character and clothing pipelines.
-export const modelSlotDefaults = {
-  preparation: 'gpt-6.1-sol-low',
-  part_draw: medium, part_review: medium, part_reduce: high, part_completion: high,
-  part_groups: high, part_depth: high,
-  raster_step01: xhigh, raster_step02: medium, raster_step01_review: xhigh,
-  raster_step03: medium,
-  assembly: xhigh, shadow: medium, physics_analysis: high, physics_authoring: xhigh, physics_review: xhigh,
-} as const;
-export type ModelSlot = keyof typeof modelSlotDefaults;
+// Roles and model capabilities are structural; values come from the skill template.
+export const modelSlots = [
+  'preparation', 'part_draw', 'part_review', 'part_reduce', 'part_completion',
+  'part_groups', 'part_depth', 'raster_step01', 'raster_step02', 'raster_step01_review',
+  'raster_step03', 'assembly', 'shadow', 'physics_analysis', 'physics_authoring', 'physics_review',
+] as const;
+export type ModelSlot = typeof modelSlots[number];
+export function resolveModelDefaults(configuration: DefaultConfiguration): Readonly<Record<ModelSlot, string>> {
+  return Object.freeze(Object.fromEntries(modelSlots.map(slot => {
+    const key = `layering_agent_${slot}_model`, value = requiredDefault(configuration, key);
+    parseAgentModel(value, `example.env:${key}`);
+    return [slot, value];
+  })) as Record<ModelSlot, string>);
+}
+export const modelSlotDefaults = resolveModelDefaults(readDefaultConfiguration());
 
 // Keep task identities for prompts, preflight, logs and session recovery.
 export const stepModelSlots = {
@@ -72,3 +78,17 @@ export const imageModelProviders = {
 } as const;
 export type ImageModel = keyof typeof imageModelProviders;
 export type ImageApi = { baseUrl: string; apiKey: string; protocol: 'openai' | 'gemini' };
+
+export function resolveImageDefaults(configuration: DefaultConfiguration) {
+  const parse = (value: string, key: string): ImageModel => {
+    if (!Object.hasOwn(imageModelProviders, value)) throw new Error(`example.env:${key} 需要选择支持的生图模型`);
+    return value as ImageModel;
+  };
+  const model = parse(requiredDefault(configuration, 'layering_default_image_model'), 'layering_default_image_model');
+  const legacy = parse(requiredDefault(configuration, 'layering_image_model'), 'layering_image_model');
+  const steps = Object.fromEntries(imageSteps.map(step => {
+    const key = `layering_${step}_image_model`, value = configuration[key]?.trim();
+    return [step, value ? parse(value, key) : model];
+  })) as Record<AgentStep, ImageModel>;
+  return { model, legacy, steps };
+}

@@ -9,7 +9,7 @@ const configRoots = ['.agents/skills/live2d-maker', 'workflow-next'];
 const isConfig = (path: string) => /(^|\/)(prompts|templates)\/.*\.md$/.test(path)
   || /(^|\/)tools\/.*\/(description\.md|schema\.json)$/.test(path)
   || /^presets\/[^/]+\.env$/.test(path)
-  || ['SKILL.md', 'example.env', 'references/agent-models.md', 'references/model-presets.md'].includes(path);
+  || ['SKILL.md', 'example.env', 'references/model-presets.md'].includes(path);
 async function revision(ref: string): Promise<string> {
   if (!ref || ref.startsWith('-') || ref.includes('\0')) throw new Error('无效的版本');
   return (await git('rev-parse', '--verify', ref + '^{commit}')).trim();
