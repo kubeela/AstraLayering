@@ -11,9 +11,38 @@ function readable(value: unknown): string {
     if ((key === 'imageUrl' || key === 'audioUrl') && typeof item === 'string' && item.startsWith('data:')) {
       return `[图片/音频数据，${item.length} 字符；完整内容见 events.jsonl]`;
     }
-    if (key === 'data' && typeof item === 'string' && item.length > 1000) return `[二进制数据，${item.length} 字符]`;
+    if (key === 'data' && typeof item === 'string' && (this?.type === 'base64' || item.length > 1000)) return `[二进制数据，${item.length} 字符]`;
     return item;
   }, 2);
+}
+
+// CLI tool-only replies are activity too. Keep raw protocol/media in the
+// request record and mirror bounded, readable tool activity into workflow.log.
+export function describeCLIActivity(message: Record<string, any>): string {
+  const compact = (value: unknown) => {
+    const text = readable(value) || '';
+    return text.length > 4000 ? text.slice(0, 4000) + '\n[内容较长，完整记录见 events.jsonl]' : text;
+  };
+  const summary = (text: unknown) => typeof text === 'string' ? text.replace(/\s+/g, ' ').slice(0, 240) : '';
+  const lines: string[] = [];
+  const content = Array.isArray(message.message?.content) ? message.message.content : [];
+  if (message.type === 'assistant') {
+    for (const item of content) if (item?.type === 'tool_use') {
+      const hint = summary(item.input?.description || item.input?.file_path || item.input?.command);
+      lines.push(`工具开始：${item.name}（${item.id}）${hint ? `；${hint}` : ''}\n${compact(item.input)}`);
+    }
+  } else if (message.type === 'user') {
+    for (const item of content) if (item?.type === 'tool_result') {
+      const hint = summary(typeof item.content === 'string' ? item.content :
+        Array.isArray(item.content) ? item.content.filter((part: any) => part?.type === 'text').map((part: any) => part.text).join(' ') : '');
+      lines.push(`工具${item.is_error ? '失败' : '完成'}：${item.tool_use_id}${hint ? `；${hint}` : ''}\n${compact(item.content)}`);
+    }
+  } else if (message.type === 'system' && message.subtype === 'task_notification') {
+    lines.push(`后台工具${message.status === 'completed' ? '完成' : String(message.status || '更新')}：${message.tool_use_id || message.task_id}；${message.summary || ''}`);
+  } else if (message.type === 'system' && message.subtype === 'api_retry') {
+    lines.push(`CLI 临时错误，正在退避重试${message.attempt ? `（第 ${message.attempt} 次）` : ''}：${compact(message.error)}`);
+  }
+  return lines.join('\n');
 }
 
 function describeEvent(event: ThreadEvent): string {
@@ -118,6 +147,7 @@ export class AgentLog {
         + (message.errorName ? '；' + message.errorName : '');
     }
     if (!method && message.text && message.type !== 'agv.gateway') description = String(message.text);
+    description = describeCLIActivity(message) || description;
     await this.write(description, timestamp);
     return description;
   }
