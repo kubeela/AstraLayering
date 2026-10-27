@@ -137,7 +137,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       if (!saved || inputChanged) await initializeRun(directory, config);
       else await saveConfig(directory, config);
       // The drawing thread carries the work of the steps being redone.
-      if (plan.reset.length) { config.threadId = null; delete config.threadHandoff; await saveConfig(directory, config); }
+      if (plan.reset.length) { config.threadId = null; delete config.threadStep; delete config.threadHandoff; await saveConfig(directory, config); }
     },
     step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
   });
@@ -182,6 +182,18 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       const key = fresh ? step.review?.modelStep : phase.startsWith('repair') ? step.review?.repairModelStep : step.modelStep;
       const selected = key ? environment.stepModels[key] : fresh ? step.review! : model;
       const harness = 'harness' in selected ? selected.harness : modelHarnesses[selected.model as keyof typeof modelHarnesses] || 'codex';
+      // Each step draws in its own thread; its draw and repairs share it. A thread
+      // keeps the tools it started with (Codex ignores tools sent on resume), and a
+      // later step needs its own. Records from before threadStep came from the
+      // first step; a handoff without a thread targets the running step.
+      const owner = config.threadStep ?? (config.threadId ? definitions[0]!.id : step.id);
+      if (!fresh && (config.threadId || config.threadHandoff) && owner !== step.id) {
+        await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
+          previousHarness: config.threadHarness || 'codex', previousStep: owner, ...(config.threadHandoff ? { previousHandoff: config.threadHandoff.id } : {}),
+          reason: '新步骤使用独立 thread', at: new Date().toISOString() }) + '\n');
+        config.threadId = null; delete config.threadHarness; delete config.threadStep; delete config.threadHandoff;
+        await saveConfig(directory, config);
+      }
       if (!fresh && config.threadId && (config.threadHarness || 'codex') !== harness) {
         await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
           previousHarness: config.threadHarness || 'codex', harness, reason: '模型配置切换 CLI', at: new Date().toISOString() }) + '\n');
@@ -229,6 +241,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
             if (!event.thread_id.trim() || (config.threadId && config.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
             config.threadId = event.thread_id;
             config.threadHarness = harness;
+            config.threadStep = step.id;
             if (handoff) handoff.replacementThreadId = event.thread_id;
             await saveConfig(directory, config);
           }

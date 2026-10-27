@@ -17,7 +17,7 @@ import { acquireTaskLock, directoryFor, now, pipelineId, readRun, type TaskOptio
 //   retry:    reset the step (directory, declared outputs and session); the
 //             next run reruns it, and the steps built on it rerun with it.
 // Part steps keep their session in agents/steps/<step>/session.json; raster-style pipelines
-// share one drawing thread in run.json. Steps without a session (one-shot
+// keep the current step's drawing thread in run.json (threadStep names its step). Steps without a session (one-shot
 // agents) simply rerun when they have no product, so resume equals continue.
 // The empty step id continues the whole pipeline.
 export const stepActions = ['continue', 'resume', 'retry'] as const;
@@ -127,12 +127,15 @@ async function actOnStep(root: string, pipeline: PipelineId, step: string, actio
     }
     const config = await readConfig(root);
     if (!config.threadId && !config.threadHandoff) return `${pipeline} 没有保存的绘制 thread，恢复等同继续：下次运行沿用产物。`;
+    // Another step's thread is left alone; this step starts its own anyway.
+    if (config.threadStep && config.threadStep !== step) return `${step} 没有保存的绘制 thread，恢复等同继续：下次运行沿用产物。`;
     const records = join(root, 'agents', 'steps', step);
     await mkdir(records, { recursive: true });
     await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
       previousHarness: config.threadHarness || 'codex', ...(config.threadHandoff ? { previousHandoff: config.threadHandoff.id } : {}), reason, at: now() }) + '\n');
     config.threadId = null;
     delete config.threadHarness;
+    delete config.threadStep;
     delete config.threadHandoff;
     await saveConfig(root, config);
     return `${step}：已清除绘制 thread，保留产物；下次运行在新 thread 中继续。`;
