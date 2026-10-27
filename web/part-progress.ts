@@ -33,6 +33,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
   const visit = (nodes: any[], depth: number) => nodes.forEach(node => { entries.push({ node, depth }); visit(node.groups ?? [], depth + 1); });
   visit(groups, 0);
   const reviewInputs = new Map<any, { report: any; outline: Buffer | undefined }>();
+  const skippedReviews = new Set<any>();
   const steps = new Map<string, Promise<StepStatus>>();
   const step = (id: string) => {
     if (!steps.has(id)) steps.set(id, stepStatus(directory, pipeline, id).catch(error => { errors.push(`${pipeline}/${id}: ${String(error)}`); return 'absent' as const; }));
@@ -54,14 +55,17 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     const completed = await read(path('completion'));
     const [prepared, layer, finished, split] = await Promise.all([step(groupStepId(node.id, 1)), step(layerStepId(depth)),
       step(groupStepId(node.id, 2)), step(groupStepId(node.id, 3))]);
-    mark('outline', !!outline, !!outline || draft('outline'), outline ? '已落稿' : '草稿 · 未落稿');
+    const skipped = node.hiddenInReference === true && prepared === 'completed' && !!outline;
+    const skipDetail = '原图不可见，已跳过描边和轮廓复核';
+    if (skipped) skippedReviews.add(node);
+    mark('outline', !!outline, !!outline || draft('outline'), skipped ? skipDetail : outline ? '已落稿' : '草稿 · 未落稿');
 
     const report = await json(reportPath(pipeline, node.id, 'review'));
     const validReport = report?.groupId === node.id && Array.isArray(report.reviews);
     reviewInputs.set(node, { report: validReport ? report : undefined, outline });
     const reviewed = outline && validReport ? reviewedArtifact(outline, path('outline'), report) : undefined;
     const last = validReport ? report.reviews.at(-1) : undefined;
-    mark('review', !!reviewed && prepared === 'completed', !!report, reviewed ? reviewed.note ?? '复核通过'
+    mark('review', skipped || !!reviewed && prepared === 'completed', skipped || !!report, skipped ? skipDetail : reviewed ? reviewed.note ?? '复核通过'
       : last && outline && matchesHash(outline, last.candidateHash)
         ? last.verdict === 'revise' ? '需要返修' : last.verdict === 'blocked' ? '复核受阻' : '记录待确认'
         : '复核记录与当前稿未匹配');
@@ -84,6 +88,10 @@ export async function partProgress(directory: string, pipeline: string, groups: 
   for (const { node } of entries) {
     const { report, outline } = reviewInputs.get(node)!;
     node.webReviewRounds = partReviewRounds(node.id, report, outline, calls, !!activeSince);
+    if (skippedReviews.has(node)) for (const round of node.webReviewRounds) {
+      round.review = { status: 'skipped', detail: '原图不可见，已跳过轮廓复核' };
+      round.repair = { status: 'skipped', detail: '轮廓复核已跳过，无需返修' };
+    }
   }
   const latest = new Map<string, { call: AgentCall; phase: Phase; targets: any[] }>();
   for (const call of calls) {
