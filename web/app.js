@@ -34,7 +34,7 @@ let tasks = initial.tasks, data = { files:[], pipelines:[] }, pipelineSteps = st
 const state = {
  page:new URLSearchParams(location.search).get('page')||'project', name:selectedTask(initial.directory,tasks,new URLSearchParams(location.search).get('name')),
  stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, autoHeight:true, canvasLeft:0, canvasTop:0, lane:0, mergeShift:0,
- directory:initial.directory, ref:'worktree', file:'', diff:false, configFilter:'', uploaded:null, configMode:'env',
+ directory:initial.directory, ref:'worktree', file:'', diff:false, configFilter:'', configFolders:new Map(), uploaded:null, configMode:'env',
  collapsedPipelines:new Set(), collapsedSteps:new Set(), collapsedPhases:new Set(),
  details:new Map(),
 };
@@ -552,24 +552,41 @@ function markdown(text) {
 function jsonLines(text) {
  return text.split('\n').map((line,i)=>`<div class="code-line"><span class="line-number">${i+1}</span><code>${esc(line).replace(/(&quot;.*?&quot;)(\s*:)?/g,(_,str,colon)=>`<span class="${colon?'json-key':'json-string'}">${str}</span>${colon||''}`).replace(/\b(false|true|null)\b/g,'<span class="json-value">$1</span>')}</code></div>`).join('');
 }
+// The configuration files as folders, the way they sit in the skill. A folder whose only
+// content is one folder shares its row (prompts / groups). Folders around the selected file
+// open by themselves; one the user opened or closed stays so until the page reloads.
 function configTree() {
- const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共配置']];
+ const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共配置'],['','技能根目录']];
+ const query=state.configFilter.toLowerCase();
+ const owned=file=>families.some(([prefix])=>prefix&&file.startsWith(prefix+'/'));
+ const count=node=>node.files.length+[...node.folders.values()].reduce((sum,child)=>sum+count(child),0);
+ const isOpen=(path,fallback)=>query?true:state.configFolders.get(path)??fallback;
+ const fileRow=(file,depth)=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" style="--depth:${depth}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(file.split('/').at(-1))}</span></button>`;
+ const folderRows=(node,depth)=>[...[...node.folders].sort(([a],[b])=>a.localeCompare(b)).map(([name,child])=>{
+  let label=name;
+  while(!child.files.length&&child.folders.size===1){const [[next,inner]]=child.folders;label+=' / '+next;child=inner;}
+  return `<details class="config-folder" data-config-folder="${esc(child.path)}" style="--depth:${depth}" ${isOpen(child.path,state.file.startsWith(child.path+'/'))?'open':''}><summary title="${esc(child.path)}">${icon('chevron')}${icon('folder')}<span>${esc(label)}</span><small>${count(child)}</small></summary>${folderRows(child,depth+1)}</details>`;
+ }),...node.files.sort().map(file=>fileRow(file,depth))].join('');
  return families.map(([prefix,label])=> {
-  const files=configFiles.filter(file=>file.startsWith(prefix+'/')&&(!state.configFilter||file.toLowerCase().includes(state.configFilter.toLowerCase())));
+  const files=configFiles.filter(file=>(prefix?file.startsWith(prefix+'/'):!owned(file))&&(!query||file.toLowerCase().includes(query)));
   if(!files.length)return '';
-  const active=state.file.startsWith(prefix+'/');
-  // Tool definitions sit in <dir>/tools/<name>/ of their owner, shared or a pipeline:
-  // each tool shows as one entry and expands to both files when selected.
-  const toolOf=file=>file.match(/^(.*\/tools\/[^/]+)\//)?.[1];
-  let content=files;
-  if(!state.configFilter) {
-   const toolFiles=files.filter(toolOf);
-   const activeTool=toolOf(state.file)??null;
-   const tools=[...new Set(toolFiles.map(toolOf))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
-   content=[...files.filter(file=>!toolOf(file)),...tools.flatMap(tool=>tool===activeTool?toolFiles.filter(f=>f.startsWith(tool+'/')):[toolFiles.find(f=>f===`${tool}/description.md`)||toolFiles.find(f=>f.startsWith(tool+'/'))])];
+  const root={path:prefix,folders:new Map(),files:[]};
+  for(const file of files){
+   let node=root;
+   for(const part of file.split('/').slice(prefix?1:0,-1)){
+    if(!node.folders.has(part))node.folders.set(part,{path:(node.path?node.path+'/':'')+part,folders:new Map(),files:[]});
+    node=node.folders.get(part);
+   }
+   node.files.push(file);
   }
-  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(toolOf(file)?(toolOf(file)===toolOf(state.file)?file.split('/').at(-2)+' / '+file.split('/').at(-1):file.split('/').at(-2)):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
+  const key=prefix||'.',active=prefix?state.file.startsWith(prefix+'/'):!!state.file&&!owned(state.file);
+  return `<details class="config-family" data-config-folder="${key}" ${isOpen(key,active)?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${folderRows(root,0)}</div></details>`;
  }).join('');
+}
+// Selecting a file, and remembering a folder the user opened or closed for the next render.
+function bindConfigTree() {
+ document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await refreshConfigFile();});
+ document.querySelectorAll('[data-config-folder]>summary').forEach(summary=>summary.onclick=()=>{if(!state.configFilter)state.configFolders.set(summary.parentElement.dataset.configFolder,!summary.parentElement.open);});
 }
 function configPage() {
  const tabs=`<nav class="config-mode-tabs" aria-label="配置内容"><button data-config-mode="env" class="${state.configMode==='env'?'active':''}">环境与模型</button><button data-config-mode="files" class="${state.configMode==='files'?'active':''}">提示词与工具</button></nav>`;
@@ -800,12 +817,12 @@ function bind() {
   const end=()=>{drag=null;viewport.classList.remove('panning');};viewport.onpointerup=end;viewport.onpointercancel=end;
  }
  document.querySelectorAll('[data-lane]').forEach(b=>b.onclick=()=>switchLane(Number(b.dataset.lane)));
- document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await refreshConfigFile();});
+ bindConfigTree();
  document.querySelectorAll('[data-config-mode]').forEach(b=>b.onclick=async()=>{state.configMode=b.dataset.configMode;await loadConfig();render();});
  const source=document.querySelector('#config-ref');if(source)source.onchange=async()=>{state.ref=source.value;state.base=undefined;await loadConfig();render();};
  const diff=document.querySelector('#config-diff');if(diff)diff.onchange=async()=>{state.diff=diff.checked;state.base=document.querySelector('#config-base').value;await refreshConfigFile();};
  const base=document.querySelector('#config-base');if(base)base.onchange=async()=>{state.base=base.value;if(state.diff){await refreshConfigFile();}};
- const filter=document.querySelector('#config-search');if(filter)filter.oninput=()=>{state.configFilter=filter.value;document.querySelector('.config-tree-scroll').innerHTML=configTree();document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await refreshConfigFile();});};
+ const filter=document.querySelector('#config-search');if(filter)filter.oninput=()=>{state.configFilter=filter.value;document.querySelector('.config-tree-scroll').innerHTML=configTree();bindConfigTree();};
 }
 await refreshTask(true);
 if(state.page==='config')await loadConfig();
