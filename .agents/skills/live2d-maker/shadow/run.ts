@@ -32,9 +32,9 @@ export function makePipeline(mode: ShadowMode): KritaPipeline<ShadowInput> {
     fingerprintInput: input => shadowInputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
     compatibleInputFingerprint: (input, saved) => compatibleShadowFingerprint(input, saved, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
     ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === 'step01') await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
-    validateDelivery: async (output, input, _step, _krita, dryRun) => {
+    validateDelivery: async (output, input, _step, _krita, dryRun, retained) => {
       await validateDelivery(output, input, mode);
-      if (mode === 'mask' && !dryRun) await verifyInspection(output);
+      if (mode === 'mask' && !dryRun) await verifyInspection(output, retained);
     } };
 }
 async function atomicFile(path: string, bytes: Uint8Array | string) {

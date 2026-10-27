@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test, type TestContext } from 'node:test';
-import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, utimes, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import sharp from 'sharp';
@@ -255,8 +255,17 @@ test('制作参考准备、agent 运行原生检查、交付只核对检查结�
   await writeFile(join(output,'shadows.json'),JSON.stringify(bindings));
   await assert.rejects(verifyInspection(output),/请先运行检查/);
   await inspectMask(output,'fixture-bridge',undefined,native);assert.equal(inspections,3);await verifyInspection(output);
+  // A receipt from older inspection code still counts for the completed step
+  // (no agent can rerun it there), unless its KRA or shadows.json changed later.
+  const older={...JSON.parse(await readFile(join(output,'inspection.json'),'utf8')),signature:'older-code'};
+  await writeFile(join(output,'inspection.json'),JSON.stringify(older));
+  await assert.rejects(verifyInspection(output),/请先运行检查/);await verifyInspection(output,true);
+  await runWorkflow(f.options,{...f.deps,agent:async()=>{throw new Error('completed step must not rerun');}});
+  const later=new Date(Date.now()+60_000);await utimes(join(output,'shadows.json'),later,later);
+  await assert.rejects(verifyInspection(output,true),/请先运行检查/);
+  await inspectMask(output,'fixture-bridge',undefined,native);assert.equal(inspections,4);
   // A dry run never checks or writes a receipt.
-  await rm(join(output,'inspection/overview.png'));await runWorkflow({...f.options,dryRun:true},deps);assert.equal(inspections,3);
+  await rm(join(output,'inspection/overview.png'));await runWorkflow({...f.options,dryRun:true},deps);assert.equal(inspections,4);
 });
 
 test('原生组内越界与空影层不能登记完成',async t=>{

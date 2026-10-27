@@ -60,7 +60,8 @@ export type KritaPipeline<Input> = {
   upstreamStep?(input: Input): ChainStep;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
-  validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean): Promise<void>;
+  // `retained`: checking a step completed before this run, which no agent can redo now.
+  validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean, retained?: boolean): Promise<void>;
   deliveryWarnings?(input: Input, step: StepDefinition): Promise<readonly string[]>;
   // A step this input needs no agent for: deliver() writes its required files
   // itself, e.g. copies the upstream result when there is no dress-up to strip.
@@ -138,7 +139,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       const step = byId.get(chainStep.id)!;
       try { await checkFiles(chainStep.directory, step.requiredFiles); }
       catch (error) { throw new Error(`${step.id} 已标记完成但交付缺失；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`, { cause: error }); }
-      await pipeline.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun);
+      await pipeline.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun, true);
       if (!options.dryRun) await logDeliveryWarnings(step);
     },
     async prepare(plan) {

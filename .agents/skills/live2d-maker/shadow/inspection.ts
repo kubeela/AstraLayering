@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { readFile, writeFile, mkdir, realpath } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, realpath, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -49,13 +49,20 @@ async function inspectionFiles(output: string) {
 }
 
 // The passed receipt for the saved KRA, shadows.json and inputs as they are
-// now, with every listed file unchanged; undefined otherwise.
-async function currentReceipt(output: string, receipt: string, stamp: string) {
+// now, with every listed file unchanged; undefined otherwise. The signature
+// also covers the inspection code, so a receipt from older code only counts
+// for a step already completed (`retained`), and only while the KRA and
+// shadows.json are no newer than it.
+async function currentReceipt(output: string, receipt: string, stamp: string, retained?: { document: string; bindings: string }) {
   // Receipt v2 writes task-root paths; v1 paths were relative to this step.
   const root = taskRootOf(dirname(output));
   try {
     const previous = JSON.parse(await readFile(receipt,'utf8'));
-    if (previous.signature === stamp && previous.passed === true) {
+    const unchangedSince = async () => {
+      const [made, ...sources] = await Promise.all([receipt, retained!.document, retained!.bindings].map(p => stat(p).then(info => info.mtimeMs)));
+      return sources.every(time => time <= made);
+    };
+    if (previous.passed === true && (previous.signature === stamp || retained && await unchangedSince())) {
       // within() below rejects any key that leaves this step.
       const path = (p: string) => previous.version === 2 ? resolve(root, p) : join(output, p);
       const files = Object.entries(previous.fileHashes ?? {});
@@ -65,9 +72,10 @@ async function currentReceipt(output: string, receipt: string, stamp: string) {
 }
 
 // Delivery only checks that the agent ran the inspection on what it delivers.
-export async function verifyInspection(output: string) {
-  const { receipt, stamp } = await inspectionFiles(output);
-  const current = await currentReceipt(output, receipt, stamp);
+// `retained`: the step was completed before this run.
+export async function verifyInspection(output: string, retained = false) {
+  const { document, bindingsPath, receipt, stamp } = await inspectionFiles(output);
+  const current = await currentReceipt(output, receipt, stamp, retained ? { document, bindings: bindingsPath } : undefined);
   if (!current) throw new Error('请先运行检查：inspection.json 缺失、未通过，或保存的 KRA、shadows.json、检查图在检查后有改动。用运行提示中的检查命令重新检查。');
   return current;
 }
