@@ -92,10 +92,12 @@ test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 
     await stat(join(output, 'step01/.running'));
     await run({ name: 'case', dir }, { ...deps, agent: async request => {
       if (!isRasterReview(request)) assert.equal(request.threadId, 'kept-thread');
-      if (!isRasterReview(request)) assert.ok(request.prompt.includes(pipelineDirectory('case', input, dir)));
+      // The upstream located under --dir is shown to the agent as an absolute path.
+      if (!isRasterReview(request)) assert.ok(request.prompt.includes(JSON.stringify(pipelineDirectory('case', input, dir))));
       return deliverRasterStep(request, definitions[0], 'kept-thread');
     } });
     await stat(join(output, 'step01/.completed'));
-    assert.equal(JSON.parse(await readFile(join(output, 'run.json'), 'utf8')).threadId, 'kept-thread');
+    const config = JSON.parse(await readFile(join(output, 'run.json'), 'utf8'));
+    assert.equal(config.threadId, 'kept-thread'); assert.equal(config.sourceInput.directory, input);
   }
 });

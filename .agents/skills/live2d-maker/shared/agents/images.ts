@@ -1,5 +1,5 @@
 import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import type { WorkflowEnvironment } from '../codex/environment.ts';
@@ -9,6 +9,7 @@ import { toolDefinition } from '../codex/tool-config.ts';
 import { needsSolidBackground, providerImageArguments, transparentGeneratedImage } from './image-background.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
+import { imagePath } from '../task-paths.ts';
 
 export function validateImageSelection(settings: WorkflowEnvironment, step: AgentStep): void {
   const image = settings.stepImages[step];
@@ -30,8 +31,8 @@ export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentSt
   const provider = imageModelProviders[model] as 'openai' | 'google';
   const api = settings.imageApis[provider]!;
   return {
-    ...toolDefinition('image_generation'),
-    async execute(raw, signal, context) {
+    ...toolDefinition('imagegen'),
+    async execute(raw, signal) {
       const args = raw as { prompt?: unknown; input_images?: unknown; background?: string; size?: string; output_path?: unknown };
       if (!args || typeof args.prompt !== 'string' || !args.prompt.trim() || !Array.isArray(args.input_images)
         || args.input_images.some(x => typeof x !== 'string') || Object.keys(args).some(key => !['prompt', 'input_images', 'background', 'size', 'output_path'].includes(key))
@@ -39,17 +40,17 @@ export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentSt
         || args.background !== undefined && !['transparent', 'auto'].includes(args.background) || args.size !== undefined && typeof args.size !== 'string') {
         throw new Error('生图参数必须包含 prompt 和 input_images，并遵循工具 schema。');
       }
-      const directory = context?.directory ?? process.cwd();
+      // Paths are checked before the paid generation call.
+      const savedPath = args.output_path === undefined ? join(output, 'images', `${randomUUID()}.png`) : imagePath(args.output_path as string, 'output_path');
       const inputs = [];
       for (const path of args.input_images as string[]) {
-        const actual = await realpath(resolve(directory, path));
+        const actual = await realpath(imagePath(path, 'input_images 中的路径'));
         const bytes = await readFile(actual), meta = await sharp(bytes).metadata();
         inputs.push({ bytes, mime: meta.format === 'jpeg' ? 'image/jpeg' : meta.format === 'webp' ? 'image/webp' : 'image/png' });
       }
       const png = await generateImage(api, model, step === 'shadow_maps' ? { ...args, background: 'opaque' } as ImageArguments : args as ImageArguments, inputs, signal,
         { ...normalization, env: normalization.env ?? settings.codex.env, directory: output });
       const meta = await sharp(png).metadata();
-      const savedPath = args.output_path === undefined ? join(output, 'images', `${randomUUID()}.png`) : resolve(directory, args.output_path as string);
       await mkdir(dirname(savedPath), { recursive: true });
       await writeFile(savedPath, png, { mode: 0o600 });
       return { success: true, contentItems: [{ type: 'inputText', text: JSON.stringify({ savedPath, model,

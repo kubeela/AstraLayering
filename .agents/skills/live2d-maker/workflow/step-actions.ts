@@ -1,6 +1,7 @@
 import { appendFile, mkdir, readFile, readdir, rm } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { readStep, type StepStatus } from '../shared/step-chain.ts';
+import { taskRootOf } from '../shared/task-paths.ts';
 import { saveConfig, within, type RunConfig } from '../shared/raster/run-store.ts';
 import { occlusionPath } from '../shared/part/occlusion-plan.ts';
 import { artifactPath, draftPath } from '../shared/part/artifact-facts.ts';
@@ -50,7 +51,7 @@ export async function listSteps(root: string, pipeline: PipelineId): Promise<Ste
   const ids = new Set(names.map(name => name.split(/[\\/]/).join('/')).filter(name => validStepId(pipeline, name)));
   const steps: StepEntry[] = [];
   for (const id of [...ids].sort()) {
-    const { status } = await readStep(join(root, id));
+    const { status } = await readStep(join(root, id), taskRootOf(root));
     if (status === 'absent') continue;
     steps.push({ id, status, session: partPipelines.includes(pipeline) &&
       (await exists(join(root, 'agents', 'steps', id, 'session.json')) || await exists(join(root, id, 'session.json'))) });
@@ -104,7 +105,7 @@ export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'>
 
 async function actOnStep(root: string, pipeline: PipelineId, step: string, action: StepAction): Promise<string> {
   const stepDirectory = join(root, step);
-  const { status, record } = await readStep(stepDirectory);
+  const { status, record } = await readStep(stepDirectory, taskRootOf(root));
   if (status === 'absent') throw new Error(`步骤 ${pipeline}/${step} 不存在，下次运行会直接执行。`);
   const part = partPipelines.includes(pipeline);
   if (action === 'continue') {

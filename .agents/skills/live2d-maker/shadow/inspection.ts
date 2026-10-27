@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import { readFile, writeFile, mkdir, realpath } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { fileHash } from './input.ts';
@@ -9,6 +9,7 @@ import { inspectNative, type NativeInspect } from './native.ts';
 import { within } from '../shared/raster/run-store.ts';
 import type { InputIndex } from './preparation.ts';
 import { referencesDirectory } from '../shared/agents/inputs.ts';
+import { taskRootOf, toTaskPath } from '../shared/task-paths.ts';
 
 const toolFiles = ['inspection.ts', 'native.ts', 'native_worker.py', 'delivery.ts'];
 async function signature(document: string, bindings: string, index: string) {
@@ -46,11 +47,15 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
       return join(output,'references/inputs.json');
     });
   const stamp = await signature(document,bindingsPath,indexPath), receipt = join(output,'inspection.json');
+  // Receipt v2 writes task-root paths; v1 paths were relative to this step.
+  const root = taskRootOf(dirname(output)), at = (p: string) => toTaskPath(root, p);
   try {
     const previous = JSON.parse(await readFile(receipt,'utf8'));
     if (previous.signature === stamp && previous.passed === true) {
+      // within() below rejects any key that leaves this step.
+      const path = (p: string) => previous.version === 2 ? resolve(root, p) : join(output, p);
       const files = Object.entries(previous.fileHashes ?? {});
-      if (files.length && (await Promise.all(files.map(async ([p,h]) => within(output,await realpath(join(output,p))) && await fileHash(join(output,p)) === h))).every(Boolean)) return previous;
+      if (files.length && (await Promise.all(files.map(async ([p,h]) => { const file = path(p); return within(output,await realpath(file)) && await fileHash(file) === h; }))).every(Boolean)) return previous;
     }
   } catch (e) { if (!(e instanceof SyntaxError) && !['ENOENT','ENOTDIR'].includes((e as NodeJS.ErrnoException).code ?? '')) throw e; }
   const bindings = JSON.parse(await readFile(bindingsPath,'utf8'));
@@ -99,15 +104,17 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
     const review = join(output,'inspection',`relation-${String(i).padStart(3,'0')}-review.png`);
     await mkdir(join(output, 'inspection'), { recursive: true });
     await sheet(panels,review,3); files.push(review);
-    relations.push({...r,rawAlphaPixels:painted,receiverIntersectionPixels:overlap,outsideReceiverPixels:painted-overlap,
-      review:review.slice(output.length+1),nativeDirectory:folder.slice(output.length+1)});
+    const own = (name: string) => at(join(folder, name));
+    relations.push({...r,fullPaint:own(r.fullPaint),receiver:own(r.receiver),clipBase:own(r.clipBase),
+      frames:r.frames.map(f => ({...f,file:own(f.file),clipped:own(f.clipped)})),
+      rawAlphaPixels:painted,receiverIntersectionPixels:overlap,outsideReceiverPixels:painted-overlap,review:at(review),nativeDirectory:at(folder)});
   }
   const overview = join(output,'inspection/overview.png');
   await mkdir(join(output,'inspection'),{recursive:true});
   await sheet([{path:join(folder,'without-shadows.png'),label:'Without cast shadows'},{path:finalPath,label:'Native final'}],overview,2); files.push(overview);
   if (await signature(document,bindingsPath,indexPath) !== stamp) throw new Error('检查期间工程变化，请重跑检查');
-  const fileHashes = Object.fromEntries(await Promise.all(files.map(async p => [p.slice(output.length+1),await fileHash(p)])));
-  const report = {version:1,signature:stamp,passed:true,nativeVersion:result.nativeVersion,width:result.width,height:result.height,
+  const fileHashes = Object.fromEntries(await Promise.all(files.map(async p => [at(p),await fileHash(p)])));
+  const report = {version:2,signature:stamp,passed:true,nativeVersion:result.nativeVersion,width:result.width,height:result.height,
     relations,warnings,fileHashes,scope:'Native clipping and declared relative offsets; not physics or deformer animation. Raw intersection is before ancestor masks and final occluders.'};
   await writeFile(receipt,JSON.stringify(report,null,2)+'\n');
   return report;

@@ -7,6 +7,7 @@ import { pipeline as assembly } from '../character-assembly/run.ts';
 import { makePipeline as shadowPipeline } from '../shadow/run.ts';
 import { inspectRun, loadConfig, saveConfig } from '../shared/raster/run-store.ts';
 import { resolveInput, type PipelineId } from '../shared/paths.ts';
+import { toTaskPath } from '../shared/task-paths.ts';
 import { acquireTaskLock, directoryFor, now, readRun, type TaskOptions } from './state.ts';
 
 export async function replaceThread(options: Pick<TaskOptions, 'name' | 'dir'> & {
@@ -50,7 +51,7 @@ export async function replaceThread(options: Pick<TaskOptions, 'name' | 'dir'> &
       }
     }
     config.threadHandoff = {
-      id, previousThreadId: config.threadId, notes: join(archive, 'handoff.md'),
+      id, previousThreadId: config.threadId, notes: toTaskPath(directoryFor(options), join(archive, 'handoff.md')),
       reason: options.reason.trim(), createdAt: now(),
     };
     config.threadId = null;

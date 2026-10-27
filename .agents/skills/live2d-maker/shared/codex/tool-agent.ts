@@ -15,6 +15,7 @@ import type { ToolResult } from './function-tools.ts';
 import { validateProviderModel } from '../agents/providers.ts';
 import { prepareWorkspace, workspacePrompt, workspaceTools } from '../agents/workspace.ts';
 import { contextImages } from '../agents/inputs.ts';
+import { imagePath } from '../task-paths.ts';
 
 // Only the protocol subset used here is maintained. The CLI is pinned by codex-sdk.
 type Message = { id?: number | string; method?: string; params?: Record<string, any>;
@@ -57,7 +58,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
   let reader: Promise<void> | undefined;
   let threadId: string | undefined, threadPath: string | undefined, cwd: string | undefined, toolDefinitions: string | undefined;
   let imageGeneration: boolean | undefined;
-  let sandbox: string | undefined, nextId = 0, closed = false, busy = false, stderr = '';
+  let nextId = 0, closed = false, busy = false, stderr = '';
   let failure: { error: unknown } | undefined;
   const closing = new AbortController();
   const transportEnded = new AbortController();
@@ -160,7 +161,10 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
           }
           else if (item?.type === 'imageGeneration' && current.task.imageGeneration && item.status === 'completed' &&
               typeof item.savedPath === 'string' && item.savedPath.trim()) {
-            const savedPath = resolve(cwd!, item.savedPath);
+            // Codex saves native images under its cwd and reports absolute paths; anything else is a protocol change.
+            let savedPath: string;
+            try { savedPath = imagePath(item.savedPath, 'Codex 原生生图 savedPath'); }
+            catch (error) { failTurn(error); continue; }
             if (!current.images.some(image => image.savedPath === savedPath)) current.images.push({ savedPath });
           }
         } else if (message.method === 'thread/tokenUsage/updated' && current) {
@@ -200,7 +204,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       if (busy) throw new Error('同一会话不能并发运行');
       checkFailure();
       const paths = await prepareWorkspace(task, options.cwd ?? workflowsDirectory);
-      task = { ...task, images: contextImages(task.images, paths.directory) };
+      task = { ...task, images: contextImages(task.images, paths.root) };
       const tools = workspaceTools(task.tools ?? [], paths);
       const byName = new Map(tools.map(tool => [tool.name, tool]));
       if (byName.size !== tools.length || tools.some(tool => !/^[a-zA-Z0-9_-]+$/.test(tool.name))) {
@@ -208,25 +212,21 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       }
       const workingDirectory = paths.workspace;
       const definitions = tools.map(({ name, description, inputSchema }) => ({ type: 'function', name, description, inputSchema }));
-      const sandboxMode = task.sandboxMode ?? 'workspace-write';
       const enableImageGeneration = task.imageGeneration ?? false;
-      if (threadId && (cwd !== workingDirectory || sandbox !== sandboxMode || imageGeneration !== enableImageGeneration ||
+      if (threadId && (cwd !== workingDirectory || imageGeneration !== enableImageGeneration ||
           toolDefinitions !== JSON.stringify(definitions))) {
-        throw new Error('延续会话不能改变工作目录、沙箱、工具定义或生图开关');
+        throw new Error('延续会话不能改变工作目录、工具定义或生图开关');
       }
-      cwd = workingDirectory; sandbox = sandboxMode; toolDefinitions = JSON.stringify(definitions);
+      cwd = workingDirectory; toolDefinitions = JSON.stringify(definitions);
       imageGeneration = enableImageGeneration;
       busy = true;
       const timeoutMs = task.timeoutMs;
       const signal = AbortSignal.any([closing.signal, ...(externalSignal ? [externalSignal]
         : timeoutMs === undefined ? [] : [AbortSignal.timeout(timeoutMs)])]);
       const threadOptions = {
-        model: selectedModel.model, cwd, sandbox, approvalPolicy: 'never',
+        // No sandbox for now: paths are managed by the prompt and tools, not by write limits.
+        model: selectedModel.model, cwd, sandbox: 'danger-full-access', approvalPolicy: 'never',
         config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
-          ...(sandbox === 'workspace-write' ? { sandbox_workspace_write: {
-            ...options.config?.sandbox_workspace_write as Record<string, unknown>,
-            writable_roots: [paths.outputDirectory],
-          } } : {}),
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
           features: { image_generation: imageGeneration, shell_tool: true, unified_exec: true, multi_agent: false, memories: false } }),
         dynamicTools: definitions,
@@ -242,7 +242,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),
         sessionThreadId: threadId ?? null,
         threadOptions: { ...threadOptions, config: undefined, modelReasoningEffort: selectedModel.effort },
-      });
+      }, paths.root);
       const completion = Promise.withResolvers<void>();
       void completion.promise.catch(() => {});
       current = { task, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [], errors: [] };

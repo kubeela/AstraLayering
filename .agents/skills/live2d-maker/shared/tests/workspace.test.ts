@@ -60,7 +60,8 @@ test('native Codex executes and resumes in the step workspace; tools keep their 
   }
   for (const result of [first, second]) {
     const request = JSON.parse(await readFile(join(result.logDirectory!, 'request.json'), 'utf8'));
-    assert.equal(request.workspace, paths.workspace); assert.equal(request.outputDirectory, output);
+    // Request records are task-relative.
+    assert.equal(request.workspace, 'step01/workspace'); assert.equal(request.outputDirectory, 'step01');
     assert.ok(result.logDirectory!.startsWith(join(root, 'agents/')));
     assert.equal(request.prompt, workspacePrompt('draw', paths));
   }
@@ -88,7 +89,7 @@ test('report publication preserves bytes and the chosen folder, and leaves unrel
   await assert.rejects(readFile(join(paths.outputDirectory, 'unrelated.py')), { code: 'ENOENT' });
 });
 
-test('Codex changes workspace/tools by reconnecting to the same thread and keeps formal write access', async t => {
+test('Codex changes tools by reconnecting to the same thread and keeps formal write access', async t => {
   const root = await fixture(t), server = await fakeAppServer(root, [{ tool: 'deliver', arguments: {} }]);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, root), cwd: root,
     logDirectory: join(root, 'agents'), codexPathOverride: server.executable });
@@ -108,8 +109,8 @@ test('Codex changes workspace/tools by reconnecting to the same thread and keeps
   assert.deepEqual(starts.map(call => call.method), ['thread/start', 'thread/resume']);
   assert.equal(starts[1].params.threadId, 'native-thread');
   for (const [index, call] of starts.entries()) {
-    const output = join(root, `step0${index + 1}`);
-    assert.equal(call.params.cwd, join(output, 'workspace'));
-    assert.deepEqual(call.params.config['sandbox_workspace_write.writable_roots'], [output]);
+    assert.equal(call.params.cwd, join(root, ['step01', 'step02'][index], 'workspace'));
+    assert.equal(call.params.sandbox, 'danger-full-access');
+    assert.equal(call.params.config['sandbox_workspace_write.writable_roots'], undefined);
   }
 });

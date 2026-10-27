@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, realpath, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative, dirname, delimiter } from 'node:path';
+import { join, relative, dirname, delimiter, isAbsolute } from 'node:path';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { parseEnv } from 'node:util';
@@ -224,14 +224,17 @@ test('custom image edit transports original prompts and images over both protoco
     assert.ok(!Object.hasOwn((tool.inputSchema as { properties: Record<string, unknown> }).properties, 'model'));
     const result = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source] }, new AbortController().signal);
     const output = JSON.parse((result.contentItems[0] as { text: string }).text);
-    assert.ok(relative(root, output.savedPath).startsWith(outputDirectory));
+    assert.ok(isAbsolute(output.savedPath) && output.savedPath.startsWith(join(root, outputDirectory) + '/'));
     assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
     const custom = join(await fixture(t), `${provider}-${mode}.png`);
-    const requested = await tool.execute({ prompt: '原样的绘制提示词', input_images: [relative(root, source)], output_path: custom },
-      new AbortController().signal, { directory: root, outputDirectory: root, workspace: root });
+    const requested = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source], output_path: custom },
+      new AbortController().signal, { root, directory: root, outputDirectory: root, workspace: root });
     assert.equal(JSON.parse((requested.contentItems[0] as { text: string }).text).savedPath, custom);
     assert.equal((await sharp(custom).metadata()).format, 'png');
+    // Like Codex native imagegen, the tool takes absolute paths only.
+    await assert.rejects(tool.execute({ prompt: 'test', input_images: [relative(root, source)] }, new AbortController().signal), /input_images 中的路径 必须是绝对路径/);
+    await assert.rejects(tool.execute({ prompt: 'test', input_images: [source], output_path: 'relative.png' }, new AbortController().signal), /output_path 必须是绝对路径/);
     await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);
   }
   assert.equal(called, 6);
@@ -258,7 +261,7 @@ await writeFile(join(process.cwd(),'invocation.json'),JSON.stringify(meta));
 console.log(JSON.stringify(kind==='claude'?{type:'result',session_id:id,result:'完成'}:{event:'result',result:{conversation_id:id,status:'SUCCESS',response:'完成'}}));
 `;
 
-test('Claude and agv use step workspaces, original MCP schemas and resumable local session data', async t => {
+test('Claude and agv run in the step workspace with original MCP schemas and resumable local session data', async t => {
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli }, root);
@@ -269,10 +272,10 @@ test('Claude and agv use step workspaces, original MCP schemas and resumable loc
     const task = { name: 'fixture', cwd, prompt: '完整任务提示词', tools: [{ name: 'fixture_echo', description: '原始工具说明',
       inputSchema: { type: 'object' }, async execute() { called++; return { success: true, contentItems: [] }; } }] };
     const first = await runCliTask(task, model, settings, options, new AbortController().signal);
-    const a = JSON.parse(await readFile(join(cwd, 'workspace/invocation.json'), 'utf8'));
+    const a = JSON.parse(await readFile(join(cwd, 'workspace', 'invocation.json'), 'utf8'));
     const second = await runCliTask(task, model, settings, options, new AbortController().signal, first.threadId!);
     assert.equal(second.threadId, first.threadId);
-    const b = JSON.parse(await readFile(join(cwd, 'workspace/invocation.json'), 'utf8'));
+    const b = JSON.parse(await readFile(join(cwd, 'workspace', 'invocation.json'), 'utf8'));
     assert.equal(await readFile(join(first.logDirectory!, 'prompt.md'), 'utf8'), a.input.message.content[0].text);
     assert.equal(a.cwd, b.cwd); assert.equal(a.cwd, join(cwd, 'workspace')); assert.equal(a.data, b.data);
     assert.notEqual(first.logDirectory, second.logDirectory);
@@ -304,7 +307,7 @@ const meta=`);
     const result = await runCliTask({ name: 'env-node', cwd, prompt: 'fixture' }, parseAgentModel(id, 'fixture'), settings,
       { cwd, logDirectory: join(cwd, 'agents') }, new AbortController().signal);
     assert.equal(result.text, '完成');
-    const child = JSON.parse(await readFile(join(cwd, 'workspace/child-node.json'), 'utf8'));
+    const child = JSON.parse(await readFile(join(cwd, 'workspace', 'child-node.json'), 'utf8'));
     assert.equal(child.childNode, process.execPath);
     assert.deepEqual(child.path.split(delimiter), [dirname(process.execPath), inheritedPath]);
   }
@@ -411,7 +414,7 @@ test('raster custom image tools accept upstream and other local reference paths'
   t.after(() => new Promise<void>(done => server.close(() => done())));
   const cli = join(root, 'image-cli.mjs');
   const script = fakeCli.replace('const id=resumed||randomUUID();', `
-const imageTool=list.tools.find(tool=>tool.name==='image_generation');
+const imageTool=list.tools.find(tool=>tool.name==='imagegen');
 if(!imageTool)throw new Error('missing image tool');
 const generated=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fixture',input_images:[process.env.LAYERING_TEST_REFERENCE]}});
 if(generated.isError)throw new Error(generated.content[0].text);

@@ -97,7 +97,6 @@ test('真实适配器强制候选后逐件独显/叠加检查，修订清空检�
   const sourceBefore = await readFile(artifactPath(f.directory, ids[1], 'completion'));
   const result = await planPartOcclusion(f.context, { async run(task) {
     assert.equal(task.imageGeneration, false);
-    assert.equal(task.sandboxMode, 'read-only');
     const tool = (name: string) => task.tools!.find(tool => tool.name === name)!;
     const preview = tool('preview_svg'), propose = tool('propose_occlusion'), check = tool('check_occlusion_part'), submit = tool('submit_occlusion');
     const layers = ids.map((id, level) => ({ id, level, note: '依原图确认整件固定深度' }));

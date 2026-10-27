@@ -53,7 +53,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     });
     await validateAgentOutcome(result, async () => {
     const imageResult = result.images.at(-1);
-    if (!imageResult) throw new Error('内置 image_generation 未返回生成图片。');
+    if (!imageResult) throw new Error('imagegen 未返回生成图片。');
     await sharp(imageResult.savedPath).metadata();
     await copyFile(imageResult.savedPath, output);
     });
@@ -109,7 +109,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     await normalizeGeneratedReference(temporary, standard, join(dirname(directory), 'preparation/step01'), 'clothing', normalization);
     await checkImage(temporary, standard);
     const record = { version: 2, inputHash: hash(await readFile(image)), baseInputHash, clothingHash: hash(await readFile(temporary)),
-      standardHash, tool: 'image_generation', promptHash: hash(Buffer.from(prompt)) };
+      standardHash, tool: 'imagegen', promptHash: hash(Buffer.from(prompt)) };
     await clearPreparedParts(dirname(directory));
     await rename(temporary, refs.baseSubject);
     await writeFile(`${refs.judgment}.tmp`, JSON.stringify(record, null, 2) + '\n');

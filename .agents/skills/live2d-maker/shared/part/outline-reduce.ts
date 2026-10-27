@@ -11,7 +11,8 @@ import type { CodexAgents } from '../codex/agents.ts';
 import { writeAtomic } from './groups.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { OutlineReduction, OutlineReductionContext } from './layering-types.ts';
-import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, observedPath, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
+import { fromTaskPath, taskRootOf, toAgentPath } from '../task-paths.ts';
 import { editXmlAttributes, svgBody, svgSource } from '../xml.ts';
 
 export async function reduceGroupOutlines(context: OutlineReductionContext, agents: Pick<CodexAgents, 'run'>): Promise<OutlineReduction> {
@@ -29,6 +30,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
     return svgBody(text);
   }));
   await writeAtomic(merged, `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${canvas.width} ${canvas.height}">${parts.map(part => `<g opacity="0.65">${part}</g>`).join('')}</svg>`);
+  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   const observations: SvgObservation[] = [];
   const preview = createSvgPreviewTool({ directory: context.directory, reference, canvas,
     observationDirectory: join(context.directory, layerStepId(context.depth), 'workspace'),
@@ -47,12 +49,13 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       if (!entry || typeof raw.svg !== 'string' || !raw.svg.trim()) {
         throw new Error('须指定本层组及非空 SVG');
       }
+      const observedOutput = await observedPath(entry.outputPath);
       for (let i = observations.length - 1; i >= 0; i--) {
-        if (observations[i].source === resolve(entry.outputPath)) observations.splice(i, 1);
+        if (observations[i].source === observedOutput) observations.splice(i, 1);
       }
       await writeAtomic(entry.outputPath, raw.svg);
       const bytes = await validateGroupSvg(entry.outputPath, entry.group.id, canvas, parentBoundsSource(entry.group, entry.parent?.steps.completion.output?.path), true);
-      return textResult({ path: entry.outputPath, bytes: bytes.length, note: '草稿检查通过，仍须预览自检' });
+      return textResult({ path: await task(entry.outputPath), bytes: bytes.length, note: '草稿检查通过，仍须预览自检' });
     },
   };
   const submit: FunctionTool = {
@@ -62,8 +65,9 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       if (submitted) throw new Error('本层去重已提交');
       const result = value as OutlineReduction;
       if (!result || !Array.isArray(result.changed) || typeof result.note !== 'string') throw new Error('无效去重结果');
-      if (!observations.some(entry => entry.source === merged && entry.mode === 'blend')) throw new Error('先查看整层合成 blend');
-      const seen = new Set<string>();
+      const observedMerged = await observedPath(merged);
+      if (!observations.some(entry => entry.source === observedMerged && entry.mode === 'blend')) throw new Error('先查看整层合成 blend');
+      const seen = new Set<string>(), changed = [];
       for (const change of result.changed) {
         const entry = context.entries.find(entry => entry.group.id === change.groupId);
         if (!entry || seen.has(change.groupId) || typeof change.path !== 'string') {
@@ -71,24 +75,28 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
         }
         seen.add(change.groupId);
         const parent = parentBoundsSource(entry.group, entry.parent?.steps.completion.output?.path);
-        const path = resolve(context.directory, change.path);
+        const path = fromTaskPath(root, change.path);
         await validateGroupSvg(path, change.groupId, canvas, parent, true);
-        if (!observations.some(item => item.source === path && ['blend', 'edge'].includes(item.mode))) {
+        const observed = await observedPath(path);
+        if (!observations.some(item => item.source === observed && ['blend', 'edge'].includes(item.mode))) {
           throw new Error(`${change.groupId}: 修改后须用 blend 或 edge 查看`);
         }
+        changed.push({ ...change, path });
       }
-      submitted = structuredClone(result);
-      return textResult(submitted);
+      // Kept absolute for layering; the agent sees task paths.
+      submitted = structuredClone({ ...result, changed });
+      return textResult({ ...submitted, changed: await Promise.all(changed.map(async change => ({ ...change, path: await task(change.path) }))) });
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)), sandboxMode: 'workspace-write',
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)),
     imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory)],
     prompt: renderPrompt(await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8'), {runtime_context: JSON.stringify({
-      depth: context.depth, reference, canvas, mergedPreview: merged,
-      groups: context.entries.map(entry => ({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
+      depth: context.depth, reference: await task(reference), canvas, mergedPreview: await task(merged),
+      groups: await Promise.all(context.entries.map(async entry => ({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
         ...(entry.group.allowOutsideParent ? { allowOutsideParent: true } : {}),
-        sourceSvg: (entry.current ?? entry.outline).path, originalOutline: entry.outline.path,
-        reusedReduction: !!entry.current, outputDraft: entry.outputPath, parentSvg: entry.parent?.steps.completion.output?.path ?? null })),
+        sourceSvg: await task((entry.current ?? entry.outline).path), originalOutline: await task(entry.outline.path),
+        reusedReduction: !!entry.current, outputDraft: await task(entry.outputPath),
+        parentSvg: entry.parent?.steps.completion.output?.path ? await task(entry.parent.steps.completion.output.path) : null }))),
     }, null, 2)}, join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), ["runtime_context"]),
   });
   if (!submitted) throw agentOutcomeError('同层去重未通过 submit_reduction 提交', response);

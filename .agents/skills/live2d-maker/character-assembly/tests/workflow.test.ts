@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { runWorkflow, pipeline, parseRunArguments } from '../run.ts';
@@ -66,7 +66,8 @@ test('dry-run 展开组装专用提示词与绝对路径，不混入拆层和深
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps,
     agent: async () => assert.fail('dry run must not call agent'),
   });
-  for (const input of Object.values(f.inputs)) assert.ok(prompt.includes(input));
+  // Agents are shown absolute task paths.
+  for (const input of Object.values(f.inputs)) assert.ok(prompt.includes(JSON.stringify(input)));
   for (const file of steps[0].requiredFiles) assert.ok(prompt.includes(join(f.output, 'step01', file)));
   assert.match(prompt, /局部修画/);
   assert.match(prompt, /parts 填入要检查的衣物部件路径/);
@@ -100,7 +101,9 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
   assert.equal(calls, 1);
   const config = await loadConfig(f.output, 'case', isAssemblyInput);
   assert.equal(config?.threadId, 'assembly-thread');
-  assert.deepEqual(config?.sourceInput, f.inputs);
+  // run.json records task-root paths.
+  assert.deepEqual(config?.sourceInput, { characterKra: 'raster-layering/step03/character-dressup-base.kra',
+    clothingKra: 'clothing-raster-layering/step02/clothing-soft-edges.kra', simplifiedCharacter: 'part-layering/references/simplified-subject.webp' });
   assert.ok(!(await readdir(join(f.output, 'step01'))).some(name => /review|repair/.test(name)));
   for (const [kind, file] of Object.entries(f.inputs)) assert.equal(await readFile(file, 'utf8'), kind);
 });

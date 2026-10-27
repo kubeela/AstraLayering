@@ -4,12 +4,12 @@ import { test } from 'node:test';
 import { artifactPath } from '../../shared/part/artifact-facts.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { reduceGroupOutlines } from '../../shared/part/outline-reduce.ts';
-import { fixture, shape, workingSteps } from './layering-fixture.ts';
+import { fixture, linkedFixture, shape, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;
-for (const mode of ['changed', 'unchanged', 'empty', 'selected-source', 'no-preview', 'missing-submit'] as const) {
+for (const mode of ['changed', 'unchanged', 'empty', 'selected-source', 'no-preview', 'missing-submit', 'symlinked-root'] as const) {
   test(`真实去重适配器的工具交付与校验：${mode}`, async t => {
-    const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'hair' }, { id: 'accessories' }]);
+    const base = await fixture(t), f = mode === 'symlinked-root' ? await linkedFixture(t, base) : base, events: string[] = [], steps = workingSteps(events, [{ id: 'hair' }, { id: 'accessories' }]);
     const input = { ...f, groups: null, steps: { ...steps, async reduceOutlines(context: Parameters<typeof reduceGroupOutlines>[0]) {
       return { status: 'completed' as const, output: await reduceGroupOutlines(context, { async run(task) {
         assert.equal(task.imageGeneration, false);
@@ -20,7 +20,7 @@ for (const mode of ['changed', 'unchanged', 'empty', 'selected-source', 'no-prev
         if (mode !== 'no-preview') await preview.execute({ path: runtime.mergedPreview, mode: 'blend' }, signal);
         const group = runtime.groups.find((group: { id: string }) => group.id === 'accessories');
         const changed = [];
-        if (mode === 'changed' || mode === 'empty') {
+        if (mode === 'changed' || mode === 'empty' || mode === 'symlinked-root') {
           await assert.rejects(write.execute({ groupId: 'accessories', svg: shape('accessories'), path: group.sourceSvg }, signal), /路径由程序绑定/);
           await assert.rejects(write.execute({ groupId: 'unknown', svg: shape('unknown') }, signal), /本层组/);
           await assert.rejects(write.execute({ groupId: 'accessories', svg: shape('hair') }, signal));

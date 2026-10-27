@@ -4,7 +4,7 @@ import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import assert from 'node:assert/strict';
 import { mkdtemp, realpath, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import type { AgentRequest, StepResult } from '../../shared/raster/agent.ts';
 import { steps, type StepDefinition } from '../steps.ts';
@@ -273,7 +273,7 @@ test('缺失、不完整、无法检查的报告以及取消均不发布正式 r
 test('step01 返修修改分层文件后中断，续跑保留结构且保留未改动的 KRA', async t => {
   const f = await fixture(t);
   const configBefore = await config(f.output);
-  const source = configBefore.sourceInput.directory;
+  const source = join(dirname(f.output), configBefore.sourceInput.directory);
   const baseline = await readFile(join(f.output, 'step01/clothing-depth.kra'));
   let changed: Record<string, string> = {};
   await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: async request => {

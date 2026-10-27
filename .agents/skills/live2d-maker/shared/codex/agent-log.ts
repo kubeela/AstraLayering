@@ -1,6 +1,7 @@
 import { appendFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { pipelineIds } from '../paths.ts';
+import { toTaskPath, toTaskPaths } from '../task-paths.ts';
 import type { ThreadEvent } from '@openai/codex-sdk';
 
 function readable(value: unknown): string {
@@ -91,26 +92,31 @@ export class AgentLog {
 
   private readonly workflowLog: string;
   private readonly name: string;
-  private constructor(directory: string, name: string, root: string) {
+  private readonly taskRoot?: string;
+  private constructor(directory: string, name: string, root: string, taskRoot?: string) {
     this.directory = directory;
     this.name = name;
     this.workflowLog = workflowLogPath(root);
+    this.taskRoot = taskRoot;
   }
 
   private async write(description: string, timestamp = new Date().toISOString()) {
     if (description) await appendFile(this.workflowLog, '[' + timestamp + '] [' + this.name + '] ' + description + '\n');
   }
 
-  static async create(root: string, name: string, request: unknown): Promise<AgentLog> {
+  // With taskRoot, paths inside the task are recorded relative to it; events.jsonl
+  // stays the verbatim protocol stream.
+  static async create(root: string, name: string, request: unknown, taskRoot?: string): Promise<AgentLog> {
     await mkdir(root, { recursive: true });
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const safeName = name.replace(/[^\p{L}\p{N}_-]/gu, '_').slice(0, 48) || 'agent';
-    const log = new AgentLog(await mkdtemp(join(root, `${timestamp}-${safeName}-`)), name, root);
+    const log = new AgentLog(await mkdtemp(join(root, `${timestamp}-${safeName}-`)), name, root, taskRoot);
+    if (taskRoot) request = toTaskPaths(taskRoot, request);
     await writeFile(join(log.directory, 'request.json'), JSON.stringify(request, null, 2) + '\n', 'utf8');
     if (request && typeof request === 'object' && 'prompt' in request && typeof request.prompt === 'string')
       await writeFile(join(log.directory, 'prompt.md'), request.prompt, 'utf8');
     await writeFile(join(log.directory, 'events.jsonl'), '', 'utf8');
-    await log.write('请求记录：' + log.directory, log.startedAt);
+    await log.write('请求记录：' + (taskRoot ? toTaskPath(taskRoot, log.directory) : log.directory), log.startedAt);
     return log;
   }
 
@@ -163,6 +169,7 @@ export class AgentLog {
 
   async finish(result: Record<string, unknown>): Promise<void> {
     const finishedAt = new Date().toISOString();
+    if (this.taskRoot && Array.isArray(result.images)) result = { ...result, images: toTaskPaths(this.taskRoot, result.images) };
     await writeFile(join(this.directory, 'result.json'), JSON.stringify({
       startedAt: this.startedAt, finishedAt, elapsedMs: Date.now() - this.startedMs, ...result,
     }, null, 2) + '\n', 'utf8');

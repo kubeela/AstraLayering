@@ -7,6 +7,7 @@ import { exportCompletedRun } from '../export.ts';
 import { parseExportArguments } from '../export-run.ts';
 import { configureRun, acquireTaskLock } from '../state.ts';
 import { exportFixture } from './export-fixture.ts';
+import { reportPath } from '../../shared/part/artifact-facts.ts';
 
 test('directory/ZIP exports retain artwork, completion facts and cited workspace images, without runtime files', async t => {
   const f = await exportFixture(t), destination = join(f.base, 'result');
@@ -37,6 +38,21 @@ test('directory/ZIP exports retain artwork, completion facts and cited workspace
   assert.match(await readFile(join(f.root, 'raster-layering/step01/report.md'), 'utf8'), /workspace/);
   await assert.rejects(configureRun({ name: f.name, dir: f.base }, destination), /成果归档/);
   await assert.rejects(exportCompletedRun({ name: f.name, dir: f.dir, output: zipPath }), /已存在/);
+});
+
+test('records naming the task through a symlinked runs root still export task-relative', async t => {
+  const f = await exportFixture(t), link = join(f.base, 'linked-runs'), destination = join(f.base, 'result');
+  await symlink(f.dir, link);
+  const lexical = join(link, f.name), cited = 'raster-layering/step01/workspace/inspect/cited.png';
+  const review = reportPath('part-layering', 'front', 'review');
+  const value = JSON.parse(await readFile(join(f.root, review), 'utf8'));
+  value.reviews[0].observations = [join(lexical, cited), join(f.root, cited), '/outside/resource.png'];
+  await f.put(review, JSON.stringify(value));
+  await f.put('raster-layering/step01/report.md', '结论：已完成\n![检查图](' + join(lexical, cited) + ')\n');
+  await exportCompletedRun({ name: f.name, dir: link, output: destination });
+  const exported = JSON.parse(await readFile(join(destination, review), 'utf8'));
+  assert.deepEqual(exported.reviews[0].observations, [cited, cited, '/outside/resource.png']);
+  assert.match(await readFile(join(destination, 'raster-layering/step01/report.md'), 'utf8'), /\]\(report-assets\/inspect\/cited.png\)/);
 });
 
 test('incomplete, active, missing-delivery and missing-marker exports fail without leaving partial outputs', async t => {

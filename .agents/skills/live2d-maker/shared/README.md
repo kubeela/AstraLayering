@@ -8,7 +8,7 @@
 
 工具定义唯一来源是 `shared/tools/<name>/description.md` 与 `schema.json`，各 section 的 `tools/<name>/` 可覆盖。启动时加载并固定本次调用定义；schema 无效直接报错，真正的路径与写入校验在实现中。动态注册只管理工作流函数工具，宿主原生工具仍由宿主提供。模型、provider 与生图协议见[模型方案与配置](../references/model-presets.md)。
 
-`preview_svg` 的生成图对照参数只在补全阶段开放，section 定义覆盖后仍保留阶段限制。`referenceRegion` 使用生成图坐标选取对应部件，工具将裁片等比居中到 SVG 实际内容范围；`referenceOffset` 使用原图像素微调，各轴上限为部件尺寸的 10%。生成图用 `edge` 检查形状，省略 reference 参数后用默认参考图 `blend` 检查定位；`crop` 仅控制最终查看窗口。生成图对照默认聚焦部件，普通对照默认全画布，输入文件保持原样。读取与预览接受可读本地路径及符号链接，参考图沿用生图工具返回的位置。自定义 `image_generation` 支持可选 `output_path`，省略时使用默认生图目录；原生 Codex 生图保留自身保存位置。
+`preview_svg` 的生成图对照参数只在补全阶段开放，section 定义覆盖后仍保留阶段限制。`referenceRegion` 使用生成图坐标选取对应部件，工具将裁片等比居中到 SVG 实际内容范围；`referenceOffset` 使用原图像素微调，各轴上限为部件尺寸的 10%。生成图用 `edge` 检查形状，省略 reference 参数后用默认参考图 `blend` 检查定位；`crop` 仅控制最终查看窗口。生成图对照默认聚焦部件，普通对照默认全画布，输入文件保持原样。读取与预览接受可读本地路径及符号链接，参考图沿用生图工具返回的位置。自定义生图工具 `imagegen` 的 `input_images` 与可选 `output_path` 只接受绝对路径，`output_path` 省略时使用默认生图目录；原生 Codex 生图保留自身保存位置并返回绝对 `savedPath`。两类生图返回或 agent 回复的相对 `savedPath` 直接报错，不按任何目录猜测。
 
 所有操作 Krita 的提示词通过 `{krita_environment}` 注入共用 [environment.md](krita/environment.md)；它和 prompts、工具说明是运行输入，不是额外使用手册。
 
@@ -191,7 +191,7 @@ pnpm check
 
 ## 工作区与产物
 
-各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。正文和注册工具的相对路径仍以管线目录为基准，执行时转成绝对路径。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`，旧记录保留读取兼容。
+各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。CLI 当前目录为 `<步骤>/workspace/`；正文和工具结果给出绝对路径，工具参数及程序读取记录中的相对路径以任务根目录为基准。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`，旧记录保留读取兼容。
 
 输入准备由 `shared/agents/inputs.ts` 共用：直接传入上下文的正文和图片不额外落盘；已有原图、上游产物与参考路径直接读取；程序需要生成的索引、说明与变换参考图放在 `workspace/references/`。`agents/prompt.md` 是实际请求的审计副本。工作区和部件层级路径也由共享模块解析，前端与迁移复用同一规则。
 

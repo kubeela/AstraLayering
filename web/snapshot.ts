@@ -106,7 +106,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
         const prefix = branch + '/' + step.id;
         await loadReport(step.id, prefix + '/report.md');
         const legacy = processWorkspaces[prefix] || [];
-        const previewInputs = [...inputKras(config?.sourceInput), ...files
+        const previewInputs = [...inputKras(config?.sourceInput, directory), ...files
           .filter(path => path.startsWith(prefix + '/') && !path.includes('/workspace/') && /\.kra$/i.test(path))
           .map(path => resolve(directory, path))];
         const candidates = await Promise.all(files.filter(path => /\.kra$/i.test(path) &&

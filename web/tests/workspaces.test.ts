@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { inventory } from '../files.ts';
 import { legacyWorkspaces } from '../workspaces.ts';
-import { copiedInput } from '../kra-inputs.ts';
+import { copiedInput, inputKras } from '../kra-inputs.ts';
 
 test('process folders reflect arbitrary workspace layouts and remain separate from deliveries', async () => {
   const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
@@ -53,6 +53,17 @@ test('inventory ignores credentials and virtualenv assets; old workspace lookup 
   await writeFile(input, 'input'); await writeFile(copy, 'input');
   assert.equal(await copiedInput(copy, [input]), true);
   await writeFile(copy, 'edited'); assert.equal(await copiedInput(copy, [input]), false);
+});
+
+test('task-relative records: request outputDirectory and input .kra paths resolve against the task root', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'astra-web-relative-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const request = join(root, 'part-layering/agents/request');
+  await mkdir(join(request, 'workspace'), { recursive: true }); await writeFile(join(request, 'workspace/draft.png'), 'draft');
+  await writeFile(join(request, 'request.json'), JSON.stringify({ outputDirectory: 'part-layering/groups/face/step01', task: { step: 'part_outline' } }));
+  assert.deepEqual(await legacyWorkspaces(root, await inventory(root)), { 'part-layering/groups/face/step01': ['part-layering/agents/request/workspace'] });
+  assert.deepEqual(inputKras({ a: 'raster-layering/step01/character-depth.kra', b: '/old/run/input.kra', c: '../outside.kra', d: 'note.png' }, root),
+    [join(root, 'raster-layering/step01/character-depth.kra'), '/old/run/input.kra']);
 });
 
 test('root and nested process folders share 1000 slots equally, each retaining its newest files', () => {

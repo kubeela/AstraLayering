@@ -1,5 +1,6 @@
 import { mkdir, copyFile, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, resolve } from 'node:path';
+import { fromTaskPath } from '../task-paths.ts';
 
 export const referencesDirectory = (outputDirectory: string) => join(outputDirectory, 'workspace', 'references');
 export type FileInput = { name: string } & ({ source: string } | { content: string | Uint8Array });
@@ -25,6 +26,7 @@ export async function prepareFileInputs(outputDirectory: string, inputs: readonl
   return paths;
 }
 
-export function contextImages(images: readonly { path: string; description: string }[] | undefined, directory: string) {
-  return images?.map(image => ({ ...image, path: resolve(directory, image.path) }));
+// Program-supplied images: absolute, or relative to the task root.
+export function contextImages(images: readonly { path: string; description: string }[] | undefined, root: string) {
+  return images?.map(image => ({ ...image, path: fromTaskPath(root, image.path) }));
 }

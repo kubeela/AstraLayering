@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
-import { join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
+import { taskRootOf } from '../shared/task-paths.ts';
 import { fileHash, preparationHash, preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import { completeStep, startStep, type StepRecord } from '../shared/step-chain.ts';
 import { sectionChain } from '../shared/step-section.ts';
@@ -127,7 +128,7 @@ export async function migratePreparation(refs: PreparationReferences, inputDirec
     base: () => follows('base', legacyHash(hashes.simplified)),
     ready: () => !state || state.partReferencesHash === legacyHash(hashes.simplified, hashes.base),
   };
-  const chain = await sectionChain(sectionDirectory(refs.directory), await preparationSteps(refs, standard, inputDirectory), false);
+  const chain = await sectionChain(sectionDirectory(refs.directory), taskRootOf(dirname(refs.directory)), await preparationSteps(refs, standard, inputDirectory), false);
   let kept = 0;
   for (const step of chain) {
     const id = stepStage(step.id);

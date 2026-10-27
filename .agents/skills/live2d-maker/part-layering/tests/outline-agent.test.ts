@@ -3,7 +3,7 @@ import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import type { AgentSession, AgentTask } from '../../shared/codex/agents.ts';
@@ -13,6 +13,7 @@ import { runLayering } from '../../shared/part/layering.ts';
 import { seedInitialGroups } from './layering-fixture.ts';
 import { readGroupPrompt } from '../../shared/part/group-prompts.ts';
 import { drawGroupOutline } from '../../shared/part/outline-agent.ts';
+import { fromTaskPath, taskRootOf } from '../../shared/task-paths.ts';
 
 const signal = new AbortController().signal;
 // 本文件仅测试轮廓/review；后续补全由 completion-agent.test.ts 验证。
@@ -56,7 +57,6 @@ function agents(verdicts: string[], options: {
     const input = runtime(task);
     const preview = task.tools!.find(tool => tool.name === 'preview_svg')!;
     if (task.name.startsWith('组轮廓review')) {
-      assert.equal(task.sandboxMode, 'read-only');
       assert.equal(task.imageGeneration, false);
       assert.equal(input.outputSvg, undefined);
       await preview.execute({ path: input.candidate, mode: 'edge', crop: [5, 5, 90, 90], scale: 2 }, signal);
@@ -65,10 +65,9 @@ function agents(verdicts: string[], options: {
           feedback: `对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 ${reviews} 轮反馈。` }, signal);
       if (options.failAfterSubmission) throw new Error('审查提交后中断');
     } else {
-      assert.equal(task.sandboxMode, 'workspace-write');
       assert.equal(task.imageGeneration, false);
       assert.ok(input.outputSvg);
-      await writeFile(input.outputSvg, svg(input.group.id, 10 + drawingTurns++));
+      await writeFile(fromTaskPath(taskRootOf(task.cwd!), input.outputSvg), svg(input.group.id, 10 + drawingTurns++));
       if ((options.failRepair && drawingTurns > 1) || options.failDrawingTurn === drawingTurns) throw new Error('返修执行失败');
       if (!options.missingSelfCheck) await preview.execute({ path: input.outputSvg, mode: 'blend' }, signal);
     }
@@ -169,6 +168,9 @@ test('真实默认适配器接入绘制、自检和独立 review，之后停在�
   const report = JSON.parse(await readFile(join(f.directory, 'groups/face/step01/review.json'), 'utf8'));
   assert.equal(report.reviews[0].verdict, 'pass');
   assert.equal(report.reviews[0].observations.length, 1);
+  const [observation] = report.reviews[0].observations;
+  for (const path of [observation.source, observation.savedPath]) assert.ok(!isAbsolute(path) && !path.startsWith('..'), path);
+  await readFile(join(f.directory, observation.savedPath));
   await assert.rejects(readFile(join(f.directory, 'parts/face.svg')), { code: 'ENOENT' });
   await runLayering({ ...f, groups: null, steps: createLayeringSteps({ async run() { assert.fail('已完成的两步不能重复'); } }) });
 });
@@ -181,7 +183,7 @@ test('revise 由原绘制会话返修，每次 review 新会话，报告保留�
   assert.equal(mock.calls[0].session, mock.calls[2].session);
   assert.notEqual(mock.calls[1].session, mock.calls[3].session);
   assert.match(mock.calls[2].task.prompt, /左侧可见边界 x=10/);
-  assert.doesNotMatch(mock.calls[2].task.prompt, /image_generation|生成.*辅助图/);
+  assert.doesNotMatch(mock.calls[2].task.prompt, /imagegen|生成.*辅助图/);
   assert.equal(await readFile(join(f.directory, 'groups/face/step01/outline.repairs/1/feedback.txt'), 'utf8'),
     '对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。\n');
   assert.equal(await readFile(join(f.directory, 'groups/face/step01/outline.repairs/1/prompt.txt'), 'utf8'), mock.calls[2].task.prompt);

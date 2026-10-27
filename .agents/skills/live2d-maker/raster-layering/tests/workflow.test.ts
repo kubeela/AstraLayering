@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, realpath, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+// Prompt paths are relative to the task root.
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
 import type { ThreadEvent, ThreadOptions } from '@openai/codex-sdk';

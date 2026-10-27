@@ -8,10 +8,10 @@
 
 输入（均相对本次任务根目录）：
 
-- 当前工程：step01/character-depth.kra。
-- 原图：../part-layering/references/ 中第一步实际采用的对应参考图，依据 step01/report.md 确认，保持同一参考标准。
-- 当前分层结构：../part-layering/parts/、../part-layering/groups.json、../part-layering/occlusion.json。
-- 阅读 step01/ 中已有的正式 review 和 repair 报告，了解已知问题与处理情况；暂存文件不代表完成。
+- 当前工程：raster-layering/step01/character-depth.kra。
+- 原图：part-layering/references/ 中第一步实际采用的对应参考图，依据 raster-layering/step01/report.md 确认，保持同一参考标准。
+- 当前分层结构：part-layering/parts/、part-layering/groups.json、part-layering/occlusion.json。
+- 阅读 raster-layering/step01/ 中已有的正式 review 和 repair 报告，了解已知问题与处理情况；暂存文件不代表完成。
 
 检查范围：
 
@@ -41,11 +41,11 @@
 
 交付：
 
-- 将本次完整 review 报告写入 step01/{review_report_filename}，报告引用的检查截图和局部对比证据保存在 step01/，位置自行选择；其余检查图、草稿和临时脚本放在当前 workspace 内。
+- 将本次完整 review 报告写入 raster-layering/step01/{review_report_filename}，报告引用的检查截图和局部对比证据保存在 raster-layering/step01/，位置自行选择；其余检查图、草稿和临时脚本放在当前 workspace 内。
 - 报告第一行写“结论：通过”“结论：需要修复”或“结论：无法完成检查”，正文附确定的问题清单和证据路径。“无法完成检查”仅用于必要输入缺失、损坏或工具故障导致实际检查无法执行，须记录具体路径或工具错误、受影响区域及已尝试的恢复操作；视觉判断犹豫、已有标准与参考不符不属于执行故障。不能将未检查视为通过。
 - 只有完成全部检查，且没有确定需要修复的问题时，才能写“结论：通过”。
 
-沿用 step01/report.md 与上游 occlusion.json 中已落实的深度分片：一个逻辑 part 可以对应多个普通绘画层。按各片独显及同 part 合看检查连续性，保留共同归属；层序确有错误时明确要求修正，不因同一 part 多层就判重复、要求合层或退回拆组。
+沿用 raster-layering/step01/report.md 与上游 occlusion.json 中已落实的深度分片：一个逻辑 part 可以对应多个普通绘画层。按各片独显及同 part 合看检查连续性，保留共同归属；层序确有错误时明确要求修正，不因同一 part 多层就判重复、要求合层或退回拆组。
 
 使用参考覆盖不得改变内容归属。只能使用参考中本部件自己的可见像素，不能为缩小整图差异把其他部件或遮挡物的像素归入当前层，也不能靠错误覆盖掩盖缺口。逐层独显核对归属，隐藏上层核对补全；整图相似不代表分件正确。
 

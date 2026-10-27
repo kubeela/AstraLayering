@@ -6,6 +6,7 @@ import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import type { StepStatus } from '../step-chain.ts';
 import { inspectSection, stepId, type SectionPlan, type SectionStep } from '../step-section.ts';
+import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
 export type ThreadHandoff = {
   id: string;
@@ -48,6 +49,27 @@ export async function canonicalPath(path: string): Promise<string> {
     if (parent === path) throw error;
     return join(await canonicalPath(parent), relative(parent, path));
   }
+}
+
+// Task path of a file that may sit behind a symlinked runs root on either side.
+export async function taskPath(root: string, path: string): Promise<string> {
+  return isAbsolute(path) ? toTaskPathReal(await canonicalPath(root), await canonicalPath(path)) : toTaskPathReal(root, path);
+}
+// Absolute path shown to an agent, spelled under root when inside the task.
+export async function agentPath(root: string, path: string): Promise<string> {
+  return fromTaskPath(root, await taskPath(root, path));
+}
+// Deep taskPath of the absolute strings in a record, such as run.json sourceInput.
+export const taskPaths = <T>(root: string, value: T): Promise<T> => mapPaths(value, path => taskPath(root, path));
+// Deep agentPath of the absolute strings in a tool result.
+export const agentPaths = <T>(root: string, value: T): Promise<T> => mapPaths(value, path => agentPath(root, path));
+async function mapPaths<T>(value: T, at: (path: string) => Promise<string>): Promise<T> {
+  if (typeof value === 'string') return (isAbsolute(value) ? await at(value) : value) as T;
+  if (Array.isArray(value)) return await Promise.all(value.map(item => mapPaths(item, at))) as T;
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(await Promise.all(Object.entries(value).map(async ([key, item]) => [key, await mapPaths(item, at)]))) as T;
+  }
+  return value;
 }
 
 export async function loadConfig<Input = PartLayeringInput>(directory: string, name: string,
@@ -112,4 +134,4 @@ export function rasterSteps(steps: readonly StepDefinition[], upstream: readonly
 }
 
 export const inspectRun = (directory: string, steps: readonly StepDefinition[]): Promise<SectionPlan> =>
-  inspectSection(directory, rasterSteps(steps));
+  inspectSection(directory, taskRootOf(directory), rasterSteps(steps));

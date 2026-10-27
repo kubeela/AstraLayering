@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { cp, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
@@ -12,6 +13,7 @@ import { createPreparationSteps } from '../run.ts';
 import { taskDirectory } from '../../shared/paths.ts';
 import sharp from 'sharp';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
+import { readStep } from '../../shared/step-chain.ts';
 
 // The preparation section and its fixed step numbers.
 const section = (refs: { directory: string } | string) => join(dirname(typeof refs === 'string' ? refs : refs.directory), 'preparation');
@@ -436,7 +438,7 @@ async function oldStepLayout(refs: PreparationReferences) {
     : path.startsWith(join(root, step('pose')) + '/') ? join(old, 'pose', relative(join(root, step('pose')), path)) : path;
   const records = [];
   for (const name of (await readdir(root)).sort()) {
-    const stage = legacyStages[Number(name.slice(4)) - 1], record = JSON.parse(await readFile(join(root, name, '.completed'), 'utf8'));
+    const stage = legacyStages[Number(name.slice(4)) - 1], record = (await readStep(join(root, name), taskRootOf(dirname(refs.directory)))).record!;
     const outputs = record.outputs && Object.fromEntries(Object.entries(record.outputs)
       .map(([output, hash]) => [relative(join(old, stage), back(resolve(root, name, output))), hash]));
     const stamp = outputs ? createHash('sha256').update(JSON.stringify(outputs)).digest('hex') : record.stamp;
@@ -457,13 +459,13 @@ async function oldStepLayout(refs: PreparationReferences) {
 test('旧 references/.steps 步骤记录原样迁入 preparation/stepNN，不重做任何步骤', async t => {
   const f = await fixture(t, false, true);
   const refs = await prepareReferences({ runName: f.runName, image: f.original, standard: true }, f.steps);
-  const records = await Promise.all(stages.map(stage => readFile(join(section(refs), step(stage), '.completed'), 'utf8')));
+  const records = await Promise.all(stages.map(async stage => (await readStep(join(section(refs), step(stage)), taskRootOf(dirname(refs.directory)))).record));
   await oldStepLayout(refs);
   await assert.rejects(loadPreparedReferences(f.runName), /尚未转换/);
   f.calls.length = 0;
   assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
   assert.equal(f.calls.length, 0);
-  assert.deepEqual(await Promise.all(stages.map(stage => readFile(join(section(refs), step(stage), '.completed'), 'utf8'))), records);
+  assert.deepEqual(await Promise.all(stages.map(async stage => (await readStep(join(section(refs), step(stage)), taskRootOf(dirname(refs.directory)))).record)), records);
   await assert.rejects(readFile(join(refs.directory, 'options.json')), { code: 'ENOENT' });
   await assert.rejects(readdir(join(refs.directory, '.steps')), { code: 'ENOENT' });
   assert.deepEqual(await loadPreparedReferences(f.runName), refs);

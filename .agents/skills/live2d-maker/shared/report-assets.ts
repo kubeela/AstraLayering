@@ -3,6 +3,7 @@ import { copyFile, mkdir, readFile, realpath, writeFile } from 'node:fs/promises
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { reportReferences } from './report-links.js';
+import { taskRootOf, toTaskPathReal } from './task-paths.ts';
 
 const inside = (root: string, path: string) => path === root || path.startsWith(root + sep);
 
@@ -30,8 +31,11 @@ export async function publishEvidence(path: string, workspace: string, output: s
   return target;
 }
 
-export async function publishObservations<T extends { savedPath: string }>(entries: readonly T[], workspace: string, output: string): Promise<T[]> {
-  return Promise.all(entries.map(async entry => ({ ...entry, savedPath: await publishEvidence(entry.savedPath, workspace, output) })));
+// Persisted savedPath is task-relative; old absolute records are read as is.
+export async function publishObservations<T extends { savedPath: string }>(entries: readonly T[], workspace: string, output: string,
+  root = taskRootOf(dirname(output))): Promise<T[]> {
+  return Promise.all(entries.map(async entry => ({ ...entry,
+    savedPath: await toTaskPathReal(root, await publishEvidence(entry.savedPath, workspace, output)) })));
 }
 
 export async function publishReportText(text: string, workspace: string, output: string): Promise<string> {

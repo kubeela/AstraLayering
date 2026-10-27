@@ -35,15 +35,15 @@ const list=await rpc('tools/list',{}),names=list.tools.map(tool=>tool.name);
 const call=(name,arguments_)=>rpc('tools/call',{name,arguments:arguments_});
 const id=randomUUID();console.log(JSON.stringify(claude?{type:'system',subtype:'init',session_id:id}:{event:'init',conversation_id:id}));
 if(input.outputSvg){
- assert.ok(!names.includes('image_generation'));assert.ok(!prompt.includes('image_generation'));
+ assert.ok(!names.includes('imagegen'));assert.ok(!prompt.includes('imagegen'));
  await call('write_outline_svg',{svg:'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="'+input.group.id+'"><path fill="#55b9ad" d="M10 10H90V90H10Z"/></g></svg>'});
  await call('preview_svg',{path:input.outputSvg,mode:'blend'});
 }else{
- assert.ok(names.includes('image_generation'));assert.ok(names.includes('view_bitmap'));
+ assert.ok(names.includes('imagegen'));assert.ok(names.includes('view_bitmap'));
  assert.ok(prompt.includes('必须先基于本次参考生成露出该'+(input.group.id==='face'?'部件':'衣片')+'的局部结构辅助图并查看'));
  const crop=await call('view_bitmap',{path:input.reference,crop:[10,10,20,20],scale:2});
  const cropPath=JSON.parse(crop.content.find(item=>item.type==='text').text).savedPath;
- const generated=await call('image_generation',{prompt:'Reveal the hidden structure while retaining visible shapes.',input_images:[cropPath],background:'auto'});
+ const generated=await call('imagegen',{prompt:'Reveal the hidden structure while retaining visible shapes.',input_images:[cropPath],background:'auto'});
  const imagePath=JSON.parse(generated.content.find(item=>item.type==='text').text).savedPath;
  const viewed=await call('view_bitmap',{path:imagePath});assert.ok(viewed.content.some(item=>item.type==='image'));
  await call('set_completion_paths',{paths:[{d:'M5 40H20V60H5Z'}]});

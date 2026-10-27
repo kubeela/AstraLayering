@@ -3,6 +3,8 @@ import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { randomUUID } from 'node:crypto';
 import { readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import { taskRootOf, toAgentPath } from '../shared/task-paths.ts';
 import type { AgentTask, CodexAgents, GeneratedImage } from '../shared/codex/agents.ts';
 import { textResult } from '../shared/codex/function-tools.ts';
 import { toolDefinition } from '../shared/codex/tool-config.ts';
@@ -10,10 +12,10 @@ import type { PreparationSteps, ProcessGenerated } from './preparation.ts';
 import { checkStandardJudgment, copyAsPng } from './preparation-state.ts';
 
 async function saveImage(image: GeneratedImage | undefined, output: string): Promise<void> {
-  if (!image) throw new Error('image_generation did not produce an image');
+  if (!image) throw new Error('imagegen did not produce an image');
   const bytes = await readFile(image.savedPath);
   if (!bytes.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex'))) {
-    throw new Error('image_generation did not produce a PNG image');
+    throw new Error('imagegen did not produce a PNG image');
   }
   const temporary = `${output}.${randomUUID()}.tmp`;
   try {
@@ -26,9 +28,9 @@ async function saveImage(image: GeneratedImage | undefined, output: string): Pro
 
 async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, input: string, output: string, processGenerated?: ProcessGenerated): Promise<void> {
   let reusedReason: string | undefined;
-  const result = await agents.run({ ...task, sandboxMode: 'read-only', tools: [{
+  const result = await agents.run({ ...task, tools: [{
     ...toolDefinition('reuse_reference'),
-    async execute(value, signal) {
+    async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)
         || Object.keys(value).some(key => key !== 'reason')
         || typeof (value as { reason?: unknown }).reason !== 'string' || !(value as { reason: string }).reason.trim()) {
@@ -39,7 +41,7 @@ async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, i
       await copyAsPng(input, output);
       signal.throwIfAborted();
       reusedReason = (value as { reason: string }).reason;
-      return textResult({ savedPath: output, reason: reusedReason });
+      return textResult({ savedPath: await toAgentPath(context?.root ?? taskRootOf(dirname(output)), output), reason: reusedReason });
     },
   }] });
   await validateAgentOutcome(result, async () => {

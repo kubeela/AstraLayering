@@ -21,6 +21,7 @@ import type { ThreadEvent } from '@openai/codex-sdk';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { contextImages } from '../agents/inputs.ts';
+import { fromTaskPath, imagePath } from '../task-paths.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -36,7 +37,6 @@ export type AgentTask = {
   cwd?: string;
   outputDirectory?: string;
   tools?: FunctionTool[];
-  sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
 };
 
 export type GeneratedImage = { savedPath: string };
@@ -116,7 +116,7 @@ export class CodexAgents {
             ? this.options.environment!.stepImages[task.step!] : undefined;
           const paths = executionPaths(task, this.options.cwd ?? workflowsDirectory);
           const routeKey = nextImage ? nextImage + ':' + paths.workspace : undefined;
-          const nextTransport = JSON.stringify({ paths, sandbox: task.sandboxMode ?? 'workspace-write',
+          const nextTransport = JSON.stringify({ paths,
             imageGeneration: task.imageGeneration ?? false,
             tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) ?? [] });
           if (routeKey !== imageModel || nextTransport !== transportKey) {
@@ -135,7 +135,7 @@ export class CodexAgents {
             for (;;) {
               try {
                 const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt), images: undefined } : task, signal);
+                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined } : task, signal);
                 id = result.threadId || id;
                 for (const image of result.images) savedImages.add(image.savedPath);
                 return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
@@ -201,13 +201,15 @@ export class CodexAgents {
           if (selection && JSON.stringify(selection) !== JSON.stringify(selected)) { await inner?.close(); inner = undefined; }
           selection = selected;
           const generated: GeneratedImage[] = [];
+          const paths = executionPaths(original, this.options.cwd!);
           const image = original.step && selected.harness !== 'codex' ? imageGenerationTool(settings, original.step,
-            join(executionPaths(original, this.options.cwd!).workspace, 'generated', randomUUID()),
+            join(paths.workspace, 'generated', randomUUID()),
             this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
-            image.execute = async (args, signal) => {
-              const result = await execute(args, signal);
+            // The tool reports the absolute savedPath it wrote.
+            image.execute = async (args, signal, context) => {
+              const result = await execute(args, signal, context);
               for (const item of result.contentItems) if (item.type === 'inputText') {
                 const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: value.savedPath });
               }
@@ -228,7 +230,7 @@ export class CodexAgents {
               } else {
                 let interrupted = false;
                 result = await this.invoke(task, signal, async () => {
-                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt), images: undefined } : task,
+                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt, paths.root), images: undefined } : task,
                     selected, settings, { ...this.options, onEvent: async event => {
                       if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
                       await this.options.onEvent?.(event);
@@ -287,8 +289,8 @@ export class CodexAgents {
       skipGitRepoCheck: true,
       model: selected?.model || environment!.models.medium.model, modelReasoningEffort: selected?.effort || environment!.models.medium.effort,
       workingDirectory,
-      additionalDirectories: [paths.outputDirectory] as string[],
-      sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
+      // No sandbox for now: paths are managed by the prompt and tools, not by write limits.
+      sandboxMode: 'danger-full-access', approvalPolicy: 'never', webSearchMode: 'disabled',
     } as const;
     const thread = codex.startThread(threadOptions);
     const signal = taskSignal(task);
@@ -296,7 +298,7 @@ export class CodexAgents {
     let interrupted = false;
     return this.invoke(task, signal, async () => {
       const attemptTask = interrupted && thread.id ? { ...task,
-        prompt: continuationPrompt([...savedImages], task.prompt), images: undefined } : task;
+        prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined } : task;
       try { return await runSdkAttempt(attemptTask); }
       catch (error) {
         if (error instanceof AgentCallError) {
@@ -309,7 +311,7 @@ export class CodexAgents {
 
     async function runSdkAttempt(task: AgentTask): Promise<AgentResult> {
       const input: UserInput[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths) }];
-      for (const image of contextImages(task.images, paths.directory) ?? []) {
+      for (const image of contextImages(task.images, paths.root) ?? []) {
         input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() });
         input.push({ type: 'local_image', path: resolve(image.path) });
       }
@@ -320,7 +322,7 @@ export class CodexAgents {
         // Persist the exact prompt sent by the SDK, without credentials or environment variables.
         prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),
         threadOptions, sessionThreadId: thread.id,
-      });
+      }, paths.root);
       progress?.(`开始：${task.name}；记录：${log.directory}`);
       let finalResponse = '';
       let usage: Usage | null = null;
@@ -339,7 +341,7 @@ export class CodexAgents {
           } else if (event.type === 'item.completed') {
             const item = event.item as unknown as Record<string, unknown>;
             if (['image_generation', 'imageGeneration'].includes(String(item.type)) && typeof item.savedPath === 'string') {
-              savedImages.add(resolve(workingDirectory, item.savedPath));
+              savedImages.add(imagePath(item.savedPath, 'Codex 原生生图 savedPath'));
             }
           } else if (event.type === 'turn.completed') {
             completed = true;
@@ -359,7 +361,8 @@ export class CodexAgents {
           if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) {
             throw new Error(`${task.name} 没有返回生成图片的 savedPath`);
           }
-          images.push({ savedPath: resolve(workingDirectory, output.savedPath) });
+          // The agent copies the tool's absolute savedPath.
+          images.push({ savedPath: imagePath(output.savedPath, `${task.name} 返回的 savedPath`) });
         }
         for (const image of images) savedImages.add(image.savedPath);
         await log.finish({ status: 'completed', threadId: thread.id, usage, finalResponse, images });

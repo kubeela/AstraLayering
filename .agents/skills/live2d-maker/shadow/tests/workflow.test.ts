@@ -98,7 +98,7 @@ test('dry-run 与缺上游不调用模型、不写分支，提示词包含精度
   for (const mode of ['mask', 'normal-depth'] as const) {
     const prompt = await runWorkflow({ ...f.options, shadowMode: mode, dryRun: true }, { ...f.deps,
       agent: async () => assert.fail('dry run must not call models') });
-    assert.ok(prompt.includes(f.source)); assert.match(prompt, mode === 'mask' ? /deformer/ : /白近黑远/);
+    assert.ok(prompt.includes(f.source + '/')); assert.match(prompt, mode === 'mask' ? /deformer/ : /白近黑远/);
   }
   await assert.rejects(readFile(join(f.task, 'shadow/selection.json')), { code: 'ENOENT' });
   await rm(join(f.source, 'character-assembled.kra'));
@@ -222,6 +222,11 @@ test('制作参考准备、原生检查、指纹复用与损坏重新检查', as
   await runWorkflow(f.options,deps);assert.equal(inspections,1);
   const output=join(f.task,'shadow/mask/step01');
   const receipt=JSON.parse(await readFile(join(output,'inspection.json'),'utf8'));assert.equal(receipt.passed,true);
+  // v2 receipts record task-root paths; a v1 receipt keyed by step-relative paths is still reused.
+  assert.equal(receipt.version,2);assert.ok(Object.keys(receipt.fileHashes).every(p=>p.startsWith('shadow/mask/step01/')));
+  assert.ok(receipt.relations[0].review.startsWith('shadow/mask/step01/inspection/'));await readFile(join(f.task,receipt.relations[0].frames[0].clipped));
+  const legacy={...receipt,version:1,fileHashes:Object.fromEntries(Object.entries(receipt.fileHashes).map(([p,h])=>[p.slice('shadow/mask/step01/'.length),h]))};
+  await writeFile(join(output,'inspection.json'),JSON.stringify(legacy));await runWorkflow(f.options,deps);assert.equal(inspections,1);
   await writeFile(join(output,'inspection/overview.png'),'broken');
   await runWorkflow(f.options,deps);assert.equal(inspections,2);
   const bindings=JSON.parse(await readFile(join(output,'shadows.json'),'utf8'));bindings.shadows[0].notes='new note';

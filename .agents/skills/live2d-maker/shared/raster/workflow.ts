@@ -12,7 +12,8 @@ import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
-import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSteps, saveConfig, within } from './run-store.ts';
+import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSteps, saveConfig, taskPaths, within } from './run-store.ts';
+import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { modelHarnesses } from '../agents/models.ts';
 import { cliExecutable } from '../agents/cli.ts';
@@ -69,7 +70,7 @@ export type KritaPipeline<Input> = {
 // are read as they are. An unfinished upstream step must finish first.
 async function upstreamSteps(step: ChainStep | undefined): Promise<ChainStep[]> {
   if (!step) return [];
-  const { status } = await readStep(step.directory);
+  const { status } = await readStep(step.directory, step.root);
   if (status === 'absent') return [];
   if (status !== 'completed') throw new Error(`上游步骤 ${step.id} 尚未完成（${step.directory}），请先完成上游再运行本管线。`);
   return [step];
@@ -107,7 +108,9 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, undefined, environment.codex.env));
   const config = !saved || inputChanged ? newConfig(options.name, reference, krita) : saved;
   if (fingerprint !== undefined) config.inputFingerprint = fingerprint;
-  config.sourceInput = reference;
+  // run.json records inputs relative to the task root; the absolute reference stays in memory.
+  const taskRoot = taskRootOf(directory);
+  config.sourceInput = await taskPaths(taskRoot, reference);
   config.krita = krita;
   options.progress?.(`前置检查通过：Krita ${krita.version} (${krita.executable})`);
   options.progress?.(`任务目录：${directory}；直接读取上游：${inputDirectories.join('、')}`);
@@ -115,7 +118,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const previous: string[] = [];
   const previews: string[] = [];
   const byId = new Map(definitions.map(step => [step.id, step]));
-  await runSection({ directory, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
+  await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
     progress: options.progress, fresh: inputChanged, resetNote: '，并清除旧 threadId',
     // Validate retained deliveries before making any reset destructive.
     async keep(chainStep) {
@@ -187,7 +190,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       const handoff = !fresh && !config.threadId ? config.threadHandoff : undefined;
       if (!fresh && phase !== 'draw' && !config.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});
       if (handoff) {
-        const notes = await readFile(handoff.notes, 'utf8');
+        const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
         // A new repair thread also needs the original drawing task and inputs.
         if (phase !== 'draw') prompt = renderPromptFile(new URL('../prompts/raster-handoff-repair.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});

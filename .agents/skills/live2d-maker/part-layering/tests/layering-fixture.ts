@@ -1,7 +1,8 @@
 import { profile } from '../profile.ts';
-import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, realpath, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import type { TestContext } from 'node:test';
 import sharp from 'sharp';
 import { svgHash } from '../../shared/part/artifact-facts.ts';
@@ -24,6 +25,15 @@ export async function fixture(t: TestContext) {
   await writeAtomic(references.baseSubject, png);
   await writeAtomic(references.simplifiedSubject, png);
   return { profile, directory, references };
+}
+// A task reached through a symlink: previews record realpaths, the program holds the linked path.
+export async function linkedFixture(t: TestContext, f: Awaited<ReturnType<typeof fixture>>) {
+  const parent = await mkdtemp(join(tmpdir(), 'part-layering-link-')), directory = join(parent, 'part-layering');
+  t.after(() => rm(parent, { recursive: true, force: true }));
+  await symlink(f.directory, directory);
+  const at = (path: string) => join(directory, path.slice(f.directory.length + 1));
+  return { ...f, directory, references: { directory: at(f.references.directory),
+    simplifiedSubject: at(f.references.simplifiedSubject), baseSubject: at(f.references.baseSubject) } };
 }
 export function workingSteps(events: string[], roots: GroupSeed[] = [{ id: 'head' }], children: Record<string, GroupSeed[]> = {}): LayeringSteps {
   return {
@@ -51,8 +61,8 @@ export function workingMerger(events: string[]): SvgMerger {
 }
 // Records a finished first grouping, as if initial/step01 had run.
 export async function seedInitialGroups(directory: string, groups: GroupSeed[], subject?: Subject) {
-  const step = { id: initialStepId, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
+  const root = taskRootOf(directory), step = { id: initialStepId, root, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
   await beginStep(step.directory, {});
   await writeAtomic(join(step.directory, 'groups.json'), JSON.stringify({ ...(subject !== undefined ? { subject } : {}), groups }, null, 2) + '\n');
-  await completeStep(step, id => ({ id, directory: join(directory, id), dependsOn: [] }));
+  await completeStep(step, id => ({ id, root, directory: join(directory, id), dependsOn: [] }));
 }

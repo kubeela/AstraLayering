@@ -3,7 +3,7 @@ import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, sep } from 'node:path';
+import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { CodexAgents } from '../../shared/codex/agents.ts';
@@ -70,11 +70,10 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(initialize.params.capabilities.experimentalApi, true);
   const thread = protocol.find(item => item.method === 'thread/start');
   assert.equal(thread.params.cwd, join(f.directory, 'initial/step01/workspace'));
-  assert.match(thread.params.cwd, /workspace$/);
   assert.equal(thread.params.model, 'gpt-6.1-sol');
   assert.equal(thread.params.config['features.shell_tool'], true);
   assert.equal(thread.params.config['features.unified_exec'], true);
-  assert.equal(thread.params.sandbox, 'workspace-write');
+  assert.equal(thread.params.sandbox, 'danger-full-access');
   assert.equal(thread.params.config['features.multi_agent'], false);
   assert.equal(thread.params.config['features.image_generation'], false);
   assert.equal(thread.params.config.custom_auth, 'test-secret-must-not-log');
@@ -93,7 +92,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + sep), true);
+  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + '/'), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
   assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();
@@ -155,19 +154,19 @@ test('绘制会话多轮沿用一个 thread，回调按当前回合绑定；关�
     assert.equal(names.length, 2);
     const results = await Promise.all(names.map(name => readFile(join(f.logDirectory, name, 'result.json'), 'utf8')));
     assert.ok(results.every(value => JSON.parse(value).threadId === first.threadId));
-    const changed = await session.run({ name: '换沙箱', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('no'))] });
+    const changed = await session.run({ name: '再次', prompt: 'test', tools: [tool(async () => textResult('no'))] });
     assert.equal(changed.threadId, first.threadId);
   } finally { await session.close(); }
   await assert.rejects(session.run({ name: '已关闭', prompt: 'test', tools: [] }), /已关闭/);
 });
 
-test('独立 review 会话使用只读沙箱，原生工具仍可由程序保存报告', async t => {
+test('独立 review 会话不设沙箱，原生工具仍可由程序保存报告', async t => {
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory, [{ tool: 'probe', arguments: {} }]);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
-  await agents.run({ name: 'review', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('report'))] });
+  await agents.run({ name: 'review', prompt: 'test', tools: [tool(async () => textResult('report'))] });
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
-  assert.equal(protocol.find(message => message.method === 'thread/start').params.sandbox, 'read-only');
+  assert.equal(protocol.find(message => message.method === 'thread/start').params.sandbox, 'danger-full-access');
   assert.equal(protocol.find(message => message.method === 'thread/start').params.config['features.image_generation'], false);
   assert.equal(protocol.find(message => message.id === 'call-1').result.success, true);
 });
@@ -190,7 +189,7 @@ test('绘制会话同时开放原生生图和函数工具，保存生图路径�
     const first = await session.run(task);
     assert.deepEqual(first.images, [{ savedPath }]);
     const logged = await log(f.logDirectory);
-    assert.deepEqual(logged.result.images, [{ savedPath }]);
+    assert.deepEqual(logged.result.images, [{ savedPath: 'detail-reference.png' }]);
     assert.match(logged.events, /imageGeneration/);
     assert.ok(logged.events.includes(resultData));
     assert.match(logged.transcript, /结构清晰优先/);
@@ -269,6 +268,18 @@ test('原生重连通知交给 CLI 完成，仅运行一个 turn', async t => {
   assert.equal((await log(f.logDirectory)).result.status, 'completed');
 });
 
+test('原生生图事件的相对 savedPath 是协议异常：本回合失败，不按当前目录或任务根猜测', async t => {
+  const f = await fixture(t);
+  const server = await fakeAppServer(f.directory, [{tool:'probe',arguments:{}}], 'completed',
+    [{type:'imageGeneration',status:'completed',savedPath:'generated.png'}]);
+  const agents = new CodexAgents({codexPathOverride:server.executable,cwd:f.directory,logDirectory:f.logDirectory,
+    runtime:new AgentRuntime(3, async () => {})});
+  await assert.rejects(agents.run({name:'相对生图',prompt:'test',imageGeneration:true,tools:[tool(async () => textResult('已提交'))]}),
+    /Codex 原生生图 savedPath 必须是绝对路径：generated\.png/);
+  const protocol = (await readFile(server.capture,'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(protocol.filter(message => message.method === 'turn/start').length, 1);
+});
+
 test('原生容量失败恢复同一 thread，继续提示词保留已提交结果和生图路径，每次尝试都留日志', async t => {
   const f = await fixture(t);
   const savedPath = join(f.directory,'existing-image.png');
@@ -293,7 +304,7 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   assert.match(turns[0].params.input[0].text, /当前工作区/);
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt)));
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.split(originalPrompt).length === 2));
-  assert.ok(turns[1].params.input[0].text.includes(savedPath));
+  assert.ok(turns[1].params.input[0].text.includes('existing-image.png'));
   assert.equal((await readdir(f.logDirectory)).length, 3);
   assert.equal(messages.filter(message => message.includes('临时服务错误')).length, 2);
   const names = await readdir(f.logDirectory);
@@ -357,7 +368,7 @@ test('图片被内容策略拦截：本批图片换成文字后在新会话继�
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   const [injected] = protocol.filter(message => message.method === 'thread/inject_items');
   const history = JSON.stringify(injected.params.items);
-  assert.ok(!history.includes('input_image') && !history.includes('instructions'));
+  assert.ok(!history.includes('"type":"input_image"') && !history.includes('"instructions"'));
   for (const image of images) assert.ok(history.includes(`输入图片 ${image.path}`));
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.deepEqual(turns.map(message => message.params.threadId), ['native-thread-1', 'native-thread-2']);
