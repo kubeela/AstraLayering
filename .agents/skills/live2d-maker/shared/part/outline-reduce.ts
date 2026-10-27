@@ -11,7 +11,7 @@ import type { CodexAgents } from '../codex/agents.ts';
 import { writeAtomic } from './groups.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { OutlineReduction, OutlineReductionContext } from './layering-types.ts';
-import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, observedPath, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 import { fromTaskPath, taskRootOf, toAgentPath } from '../task-paths.ts';
 import { editXmlAttributes, svgBody, svgSource } from '../xml.ts';
 
@@ -49,8 +49,9 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       if (!entry || typeof raw.svg !== 'string' || !raw.svg.trim()) {
         throw new Error('须指定本层组及非空 SVG');
       }
+      const observedOutput = await observedPath(entry.outputPath);
       for (let i = observations.length - 1; i >= 0; i--) {
-        if (observations[i].source === resolve(entry.outputPath)) observations.splice(i, 1);
+        if (observations[i].source === observedOutput) observations.splice(i, 1);
       }
       await writeAtomic(entry.outputPath, raw.svg);
       const bytes = await validateGroupSvg(entry.outputPath, entry.group.id, canvas, parentBoundsSource(entry.group, entry.parent?.steps.completion.output?.path), true);
@@ -64,7 +65,8 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       if (submitted) throw new Error('本层去重已提交');
       const result = value as OutlineReduction;
       if (!result || !Array.isArray(result.changed) || typeof result.note !== 'string') throw new Error('无效去重结果');
-      if (!observations.some(entry => entry.source === merged && entry.mode === 'blend')) throw new Error('先查看整层合成 blend');
+      const observedMerged = await observedPath(merged);
+      if (!observations.some(entry => entry.source === observedMerged && entry.mode === 'blend')) throw new Error('先查看整层合成 blend');
       const seen = new Set<string>(), changed = [];
       for (const change of result.changed) {
         const entry = context.entries.find(entry => entry.group.id === change.groupId);
@@ -75,7 +77,8 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
         const parent = parentBoundsSource(entry.group, entry.parent?.steps.completion.output?.path);
         const path = fromTaskPath(root, change.path);
         await validateGroupSvg(path, change.groupId, canvas, parent, true);
-        if (!observations.some(item => item.source === path && ['blend', 'edge'].includes(item.mode))) {
+        const observed = await observedPath(path);
+        if (!observations.some(item => item.source === observed && ['blend', 'edge'].includes(item.mode))) {
           throw new Error(`${change.groupId}: 修改后须用 blend 或 edge 查看`);
         }
         changed.push({ ...change, path });

@@ -13,7 +13,7 @@ import { readGroupPrompt, readGroupReferences } from '../../shared/part/group-pr
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
-import { fixture, shape, workingSteps } from './layering-fixture.ts';
+import { fixture, linkedFixture, shape, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;
 const paths = [{ d: 'M 5 40 H 20 V 60 H 5 Z' }];
@@ -118,6 +118,18 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
   // 即使版本标记仍匹配，篡改过原形的正式文件也不能构成完成事实。
   await writeFile(artifactPath(f.directory, 'head', 'completion'), after.replace('M10 10', 'M11 10'));
   assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completion.status, 'pending');
+});
+
+test('任务根经软链接打开时，预览记录的真实路径仍认作当前补全草稿', async t => {
+  const f = await linkedFixture(t, await fixture(t)), events: string[] = [];
+  const adapter = createLayeringSteps(sessioned(async task => {
+    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    await tool(task, 'set_completion_paths').execute({ paths }, signal);
+    await submit(task, input.outputDraft);
+    return { text: 'done', images: [] };
+  }));
+  await runLayering({ ...f, groups: null, steps: { ...workingSteps(events), completeOcclusion: adapter.completeOcclusion, checkCompletion: adapter.checkCompletion } });
+  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completion.status, 'completed');
 });
 
 test('自定义补全实现也受调度器保留原形约束，不发布重画候选', async t => {

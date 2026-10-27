@@ -18,7 +18,7 @@ import { nodeSeed, writeAtomic } from './groups.ts';
 import { dependenciesMatch, fileDependency } from './completion-inputs.ts';
 import type { DrawingContext, GroupContext, SvgArtifact, CompletionCheck } from './layering-types.ts';
 import { taskRootOf, toAgentPath } from '../task-paths.ts';
-import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, observedPath, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 
 
 // 同级参考只取本层已审查、去重的只读底形，避免依赖并发补全的完成顺序。
@@ -46,7 +46,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const canvas = { width: meta.autoOrient.width, height: meta.autoOrient.height };
   const sourcePath = await realpath(context.reviewed.path), source = await readFile(sourcePath);
   const draft = resolve(context.outputPath);
-  if (draft === sourcePath) throw new Error('补全输出与输入 SVG 须使用不同路径，保留原形作为补全基准');
+  if (await observedPath(draft) === sourcePath) throw new Error('补全输出与输入 SVG 须使用不同路径，保留原形作为补全基准');
   const parent = context.parent?.steps.completion.output?.path;
   const boundsParent = parentBoundsSource(context.group, parent);
   const prompt = await readGroupPrompt(context.group.id, 'completion', profile.promptsDirectory);
@@ -96,10 +96,11 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       await verifySource();
       const bytes = await validateGroupSvg(draft, context.group.id, canvas, boundsParent, !context.group.hiddenInReference);
       assertCompletionPreserves(source.toString(), bytes.toString());
-      if (!observations.some(entry => entry.source === draft && entry.mode === 'blend' && !entry.reference) ||
-          !observations.some(entry => entry.source === draft && entry.mode === 'svg')) throw new Error('须预览当前补全草稿与人物/衣服参考图的默认 blend 和 SVG 独显');
+      const observedDraft = await observedPath(draft);
+      if (!observations.some(entry => entry.source === observedDraft && entry.mode === 'blend' && !entry.reference) ||
+          !observations.some(entry => entry.source === observedDraft && entry.mode === 'svg')) throw new Error('须预览当前补全草稿与人物/衣服参考图的默认 blend 和 SVG 独显');
       const original = await realpath(reference);
-      const referenceViews = observations.filter(entry => entry.source === draft && entry.reference && entry.reference !== original);
+      const referenceViews = observations.filter(entry => entry.source === observedDraft && entry.reference && entry.reference !== original);
       if (context.group.hiddenInReference || referenceViews.length) {
         const shapeReferences = new Map(referenceViews.filter(entry => entry.mode === 'edge').map(entry => [entry.reference!, entry]));
         if (!shapeReferences.size) throw new Error('须用 preview_svg 的 edge、reference 与 referenceRegion 对照生成图，检查边缘一致性');

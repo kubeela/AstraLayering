@@ -1,7 +1,7 @@
 import { toolDefinition } from '../codex/tool-config.ts';
 import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { svgSource, updateSvgRoot } from '../xml.ts';
@@ -15,6 +15,13 @@ export type SvgObservation = { source: string; mode: 'svg' | 'blend' | 'edge'; s
 export async function taskObservation<T extends SvgObservation>(root: string, entry: T, at = toTaskPathReal): Promise<T> {
   return { ...entry, source: await at(root, entry.source), savedPath: await at(root, entry.savedPath),
     ...(entry.reference === undefined ? {} : { reference: await at(root, entry.reference) }) };
+}
+// Observation sources are realpaths; compare other paths through this so a symlinked task root still matches.
+// A file not written yet resolves through its directory.
+export async function observedPath(path: string): Promise<string> {
+  const absolute = resolve(path);
+  try { return await realpath(absolute); }
+  catch { return join(await realpath(dirname(absolute)).catch(() => dirname(absolute)), basename(absolute)); }
 }
 export const parentBoundsSource = (group: GroupSeed, parent?: string): string | undefined => group.allowOutsideParent ? undefined : parent;
 const boundsScale = 4;
@@ -213,7 +220,7 @@ export function createSvgPreviewTool(options: {
           .flatten({ background: 'white' }).png().toBuffer();
       }
       if (data.length > 10 * 1024 * 1024) throw new Error('预览文件过大，请缩小选框或 scale');
-      const bounds = options.parent && source !== resolve(options.parent)
+      const bounds = options.parent && source !== await observedPath(options.parent)
         ? await checkParentBounds(source, options.parent, options.canvas) : undefined;
       signal.throwIfAborted();
       const destination = context ? join(context.workspace, 'previews') : options.observationDirectory;
