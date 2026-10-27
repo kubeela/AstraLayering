@@ -106,7 +106,7 @@ C/C++ 编译工具链选择本机对应的一行即可：
 | **Rust 1.95.0** | 构建补丁时复用已有版本，缺少时临时隔离安装，构建后清理 |
 | **本仓库的 Codex 补丁版** | 首次实际制作时自动构建，后续复用缓存；指定已有入口时检查能力 |
 
-**Krita 操作环境：** Codex agent 在制作过程中可能通过 **computer use 操作 Krita 窗口、鼠标与键盘**，请准备可用的桌面操作能力和对应权限，让 agent 能查看画面、操作文档和保存工程。Linux 无桌面的配置见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
+**Krita 操作环境：** 需要自行安装 Krita，并在首次制作时提供其可执行文件路径。agent 只通过 Python 脚本操作工作流为每个 section 单独启动的私有 Krita，不需要桌面操作权限；Linux 无桌面时需安装 Xvfb，由工作流自动启动。详见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
 
 软件准备好后，用图形 Git 客户端克隆本仓库：macOS／Windows 可在 [GitHub Desktop](https://desktop.github.com/) 的“File → Clone repository → URL”填入 `https://github.com/wu-tian807/AstraLayering.git`，Linux 可使用已有图形 Git 客户端的克隆功能。完整检出包含 `web/`、`.agents/skills/live2d-maker/` 和 demos；带有 Git LFS 指针的成果文件需拉取实际内容。
 

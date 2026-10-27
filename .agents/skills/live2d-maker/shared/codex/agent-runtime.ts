@@ -114,7 +114,8 @@ export class AgentRuntime {
     for (let attempt = 1; ; attempt++) {
       const local = await this.acquire(options.signal);
       let shared: (() => void) | undefined;
-      try { shared = await sharedSlots?.(options.signal); }
+      // Without a shared pool the operation starts in the same turn as before.
+      try { if (sharedSlots) shared = await sharedSlots(options.signal); }
       catch (error) { local(); throw error; }
       const release = () => { shared?.(); local(); };
       let error: unknown;

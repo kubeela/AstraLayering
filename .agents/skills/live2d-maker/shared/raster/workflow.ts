@@ -20,6 +20,8 @@ import { modelHarnesses } from '../agents/models.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { validateImageSelection } from '../agents/images.ts';
 import { beginReview, finishReview, legacyEdgeDrawingReady } from './review-baseline.ts';
+import { SectionKrita, kritaRecordFile } from '../krita/section-krita.ts';
+import { createKritaTool } from '../krita/tool.ts';
 
 export type WorkflowOptions = {
   name: string;
@@ -123,7 +125,12 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const previous: string[] = [];
   const previews: string[] = [];
   const byId = new Map(definitions.map(step => [step.id, step]));
-  await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
+  // The section's own Krita: started by an agent through the krita tool when
+  // needed, released when the section ends however it ends.
+  const sectionKrita = new SectionKrita({ section: directory, krita: krita.executable, env: environment.codex.env,
+    record: join(directory, kritaRecordFile) });
+  const kritaTool = createKritaTool(sectionKrita, taskRoot);
+  try { await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
     progress: options.progress, fresh: inputChanged, resetNote: '，并清除这些步骤的 thread',
     // Validate retained deliveries before making any reset destructive.
     async keep(chainStep) {
@@ -143,7 +150,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       else { await migrateRunSession(directory, config); await saveConfig(directory, config); }
     },
     step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
-  });
+  }); } finally { await sectionKrita.release(); }
   if (options.dryRun) return previews.join('\n\n') || '当前已定义步骤均已完成；无需调用模型。';
   return `已完成当前已定义步骤。交付目录：${previous.at(-1) ?? directory}`;
 
@@ -233,7 +240,9 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : session.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }),
+        tools: [...pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }) ?? [],
+          // Reviewers only inspect deliveries; drawing and repairs operate Krita.
+          ...(fresh || step.krita === false ? [] : [kritaTool])],
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : session.threadId, signal: options.signal,

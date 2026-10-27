@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "action": {"type": "string", "enum": ["status", "start", "restart", "run"], "default": "status", "description": "status 查看本 section 的 Krita；start 启动（已运行则不变）；restart 关闭并重新启动；run 在其中执行 script"},
+    "script": {"type": "string", "description": "action=run 时要执行的 Python 文件；尽量传绝对路径，相对路径以任务根目录为基准"},
+    "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600, "default": 600, "description": "action=run 时等待结果的秒数"}
+  }
+}

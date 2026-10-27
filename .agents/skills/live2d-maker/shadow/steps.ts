@@ -19,7 +19,7 @@ export const maskSteps = [{ id: 'step01', title: '投影分析、阴影补全与
 }] as const satisfies readonly StepDefinition[];
 export const mapSteps = [{ id: 'step01', title: '生成配准的整图法线与深度', ...defaultModels.medium,
   modelStep: 'shadow_maps', prompt: new URL('./prompts/normal-depth.md', import.meta.url),
-  requiredFiles: ['normal.png', 'depth.png', 'report.md'],
+  requiredFiles: ['normal.png', 'depth.png', 'report.md'], krita: false,
 }] as const satisfies readonly StepDefinition[];
 export const stepsFor = (mode: ShadowMode): readonly StepDefinition[] => mode === 'mask' ? maskSteps : mapSteps;
 export async function buildPrompt(step: StepDefinition, input: ShadowInput, output: string, krita: KritaInstallation): Promise<string> {

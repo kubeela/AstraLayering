@@ -8,11 +8,16 @@ type SlotMessage = { type: 'slot-request' | 'slot-release' | 'slot-cancel' | 'sl
 const slotMessage = (value: unknown): value is SlotMessage => !!value && typeof value === 'object'
   && typeof (value as SlotMessage).type === 'string' && (value as SlotMessage).type.startsWith('slot-') && Number.isSafeInteger((value as SlotMessage).id);
 
+// Set in a worker's environment when its scheduler grants slots over IPC.
+export const agentSlotsVariable = 'ASTRA_AGENT_SLOTS';
+
 export class AgentSlotPool {
   private used = 0;
   private queue: { child: ChildProcess; id: number }[] = [];
   private held = new Map<ChildProcess, Set<number>>();
-  constructor(readonly limit: number) {
+  readonly limit: number;
+  constructor(limit: number) {
+    this.limit = limit;
     if (!Number.isSafeInteger(limit) || limit < 1) throw new Error('agent 并发必须是正整数');
   }
   get active() { return this.used; }

@@ -115,7 +115,7 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
       await writeFile(join(f.output, 'step01/review-01.md.tmp'), '结论：通过\n完整检查。');
       return complete;
     }
-    if (calls.length === 0) { calls.push('step01'); assert.deepEqual(request.tools?.map(tool => tool.name), ['edit_groups', 'edit_occlusion']); return deliver(request, steps[0]); }
+    if (calls.length === 0) { calls.push('step01'); assert.deepEqual(request.tools?.map(tool => tool.name), ['edit_groups', 'edit_occlusion', 'krita']); return deliver(request, steps[0]); }
     calls.push('step02'); assert.equal(request.threadId, undefined); assert.equal(request.tools?.[0].name, 'locate_pixel_differences');
     await request.onEvent({ type: 'thread.started', thread_id: 'thread-step02' });
     await readFile(join(f.output, 'step01/.completed'));

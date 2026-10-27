@@ -88,7 +88,7 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
     assert.equal(request.directory, f.output);
     assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'xhigh');
     assert.equal(request.threadId, undefined);
-    assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences']);
+    assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences', 'krita']);
     assert.ok((request.tools?.[0].inputSchema.properties as any).parts);
 
     await stat(join(f.output, 'step01/.running'));

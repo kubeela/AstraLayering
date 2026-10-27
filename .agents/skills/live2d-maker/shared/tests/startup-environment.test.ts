@@ -66,7 +66,7 @@ test('preflight checks only selected harnesses once, and reports missing interpr
 test('Krita preflight preserves a missing library diagnostic and rejects a missing installation', { skip: process.platform === 'win32' }, async t => {
   const root = await fixture(t), executable = join(root, 'krita');
   await writeFile(executable, '#!/bin/sh\nprintf "error: libxcb.so missing\\n" >&2\nexit 127\n', { mode: 0o700 });
-  await assert.rejects(checkKrita(executable, undefined, { PATH: '' }), error => {
+  await assert.rejects(checkKrita(executable, undefined, { PATH: '', DISPLAY: ':1' }), error => {
     assert.match(String(error), /Krita 无法启动/);
     assert.match(String((error as Error).cause), /libxcb/);
     return true;

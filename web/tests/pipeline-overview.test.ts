@@ -9,10 +9,10 @@ const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
 const renderer = source.slice(source.indexOf('function overviewCard('), source.indexOf('function graph('));
 const visibleStage = source.match(/^const visibleStage=.*$/m)![0];
 const observed = source.slice(source.indexOf('function observedDisplayStatus('), source.indexOf('function rasterItems('));
-function render(statuses: string[], files: string[] = [], running = false, locked = false, archive?: { pipelines: Record<string, unknown> }) {
+function render(statuses: string[], files: string[] = [], running = false, locked = false, archive?: { pipelines: Record<string, unknown> }, pipelines?: unknown[]) {
   return runInNewContext(visibleStage + '\n' + observed + renderer + '\nprojectPage();', {
     stages: statuses.map((status, i) => ({ name: '管线 ' + i, id: 'pipeline-' + i, status })),
-    state: { name: 'case', stage: 0 }, data: { files, runnerAlive: running, lockHeld: locked, ...(archive ? { archived: true, run: archive } : {}) },
+    state: { name: 'case', stage: 0 }, data: { files, runnerAlive: running, lockHeld: locked, ...(pipelines ? { pipelines } : {}), ...(archive ? { archived: true, run: archive } : {}) },
     stepArtifacts: {}, available: () => [], pageHeading: () => '', runNotice: () => '',
     esc: String, icon: () => '', displayStatus, statusLabel,
     statusMark: (status: string) => `<i data-status="${status}"></i>`,
@@ -26,6 +26,15 @@ test('执行面板逐管线展示真实状态，完成与失败不再显示为�
     assert.ok(card.includes(label), card);
   }
   assert.doesNotMatch(html, /未运行/);
+});
+
+test('section 的 Krita 运行时管线卡片显示徽标，结束后不再显示', () => {
+  const krita = { pid: 4242, version: '5.3.4', startedAt: '2026-10-27T08:00:00.000Z' };
+  const html = render(['running', 'pending'], [], true, true, undefined, [{ krita }, { krita: null }]);
+  const card = (i: number) => html.match(new RegExp(`data-overview="${i}"[\\s\\S]*?</article>`))![0];
+  assert.match(card(0), /krita-badge[^>]*pid 4242[^>]*>Krita 运行中/);
+  assert.doesNotMatch(card(1), /krita-badge/);
+  assert.doesNotMatch(render(['running']), /krita-badge/);
 });
 
 test('归档任务只展示实际运行过的管线', () => {
