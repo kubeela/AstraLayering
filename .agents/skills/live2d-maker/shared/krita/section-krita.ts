@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process';
-import { mkdir, mkdtemp, open, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, open, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,8 +27,12 @@ export type KritaStatus = {
   // How the previous process ended, with the end of its log, after a crash.
   lastExit?: { code: number | null; signal: string | null; at: string; log: string };
 };
-// Written to `record` while the Krita runs, for other processes (web status).
-export type KritaRecord = { section: string; pid: number; owner: number; bridge: string; version: string; startedAt: string };
+// Written to `record` while the section queues for or holds a machine-wide
+// slot, for other processes (web status): `waiting` for a slot, `reserved`
+// with no Krita running, `running` with the Krita's process.
+export type KritaRecord = { section: string; owner: number; limit: number; since: string } & (
+  | { state: 'waiting' | 'reserved' }
+  | { state: 'running'; pid: number; bridge: string; version: string; startedAt: string });
 
 // ---- Shared virtual display (Linux, no DISPLAY/WAYLAND_DISPLAY) ----------
 
@@ -161,6 +165,13 @@ async function acquireKritaSlot(directory: string, limit: number, signal: AbortS
   }
 }
 
+// Slots held by live processes, machine-wide (web status).
+export async function kritaSlotsInUse(directory = defaultSlotsDirectory()): Promise<number> {
+  const names = (await readdir(directory).catch(() => [] as string[])).filter(name => /^\d+\.lock$/.test(name));
+  const owners = await Promise.all(names.map(name => readFile(join(directory, name), 'utf8').then(Number, () => 0)));
+  return owners.filter(owner => owner && alive(owner)).length;
+}
+
 type Running = { child: ChildProcess; root: string; bridge: string; display?: string; pid: number; version: string;
   startedAt: string; closed: Promise<void>; exited: boolean; stopping: boolean; log: string };
 
@@ -185,6 +196,8 @@ export class SectionKrita {
   private slot?: () => Promise<void>;
   // Aborts a start still waiting for a slot or for the bridge once the section ends.
   private readonly ending = new AbortController();
+  // Record writes, in order; the last one wins.
+  private recording: Promise<void> = Promise.resolve();
 
   constructor(options: SectionKritaOptions) {
     this.options = options; this.section = options.section; this.executable = options.krita;
@@ -212,12 +225,17 @@ export class SectionKrita {
     if (this.slot) return;
     const combined = signal ? AbortSignal.any([signal, this.ending.signal]) : this.ending.signal;
     this.reservation ??= acquireKritaSlot(this.options.slotsDirectory ?? defaultSlotsDirectory(), kritaLimit(this.options.env ?? process.env), combined,
-      () => { this.queued = true; waiting?.(this.status().waiting!); }).finally(() => { this.queued = false; this.reservation = undefined; });
+      () => { this.queued = true; this.record('waiting'); waiting?.(this.status().waiting!); }).finally(() => { this.queued = false; this.reservation = undefined; });
     const ended = () => new Error('这个 section 已结束，不能再占用 Krita。');
-    const slot = await this.reservation.catch(error => { throw this.released ? ended() : error; });
+    const slot = await this.reservation.catch(async error => {
+      // A wait given up (aborted) leaves no waiting record behind.
+      if (!this.slot && !this.released) await this.record(undefined);
+      throw this.released ? ended() : error;
+    });
     // release() may have run while the slot was being taken.
     if (this.released) { await slot(); throw ended(); }
     this.slot ??= slot;
+    if (!this.bridge) await this.record('reserved');
   }
 
   // Starts Krita unless it already runs; resolves once its bridge is ready.
@@ -250,12 +268,32 @@ export class SectionKrita {
     this.current = undefined;
     const slot = this.slot;
     this.slot = undefined;
+    await this.record(undefined);
     await slot?.().catch(() => {});
     live.delete(this);
   }
 
   // Last resort on process exit: synchronous kill, files stay behind.
   kill() { if (this.current && !this.current.exited) try { this.current.child.kill('SIGKILL'); } catch {} }
+
+  // Replaces the record with the given state, or removes it (undefined).
+  private record(state: KritaRecord['state'] | undefined, running?: Running): Promise<void> {
+    const path = this.options.record;
+    if (!path) return Promise.resolve();
+    let limit = 0;
+    try { limit = kritaLimit(this.options.env ?? process.env); } catch {}
+    const base = { section: this.section, owner: process.pid, limit, since: new Date().toISOString() };
+    const value: KritaRecord | undefined = state === 'running'
+      ? { ...base, state, pid: running!.pid, bridge: running!.bridge, version: running!.version, startedAt: running!.startedAt }
+      : state && { ...base, state };
+    this.recording = this.recording.then(async () => {
+      if (!value) return rm(path, { force: true });
+      const temporary = `${path}.${process.pid}.tmp`;
+      await writeFile(temporary, JSON.stringify(value, null, 2) + '\n');
+      await rename(temporary, path);
+    }).catch(() => {});
+    return this.recording;
+  }
 
   private async launch(signal?: AbortSignal): Promise<Running> {
     signal?.throwIfAborted();
@@ -305,8 +343,7 @@ export class SectionKrita {
         await delay(150);
       }
       this.lastExit = undefined;
-      if (this.options.record) await writeFile(this.options.record, JSON.stringify({ section: this.section, pid: state.pid, owner: process.pid,
-        bridge, version: state.version, startedAt: state.startedAt } satisfies KritaRecord, null, 2) + '\n');
+      await this.record('running', state);
       return state;
     } catch (error) {
       if (running) await this.stop(running);
@@ -334,7 +371,8 @@ export class SectionKrita {
     const root = state.root;
     state.root = '';
     releaseDisplay(state.display);
-    if (this.options.record) await rm(this.options.record, { force: true }).catch(() => {});
+    // The section still holds its slot until it ends.
+    if (!this.released) await this.record(this.slot ? 'reserved' : undefined);
     await rm(root, { recursive: true, force: true }).catch(() => {});
   }
 }
@@ -349,10 +387,12 @@ export async function releaseAllSectionKrita(): Promise<void> {
   await Promise.all([...live].map(krita => krita.release()));
 }
 
-// A section's record while its Krita still runs, for other processes.
+// A section's record while its process (and, when running, its Krita) is alive,
+// for other processes. Records written before states existed are running ones.
 export async function readKritaRecord(path: string): Promise<KritaRecord | undefined> {
   try {
-    const record = JSON.parse(await readFile(path, 'utf8')) as KritaRecord;
-    return alive(record.pid) ? record : undefined;
+    const record = JSON.parse(await readFile(path, 'utf8'));
+    if (!record.state) record.state = 'running';
+    return alive(record.state === 'running' ? record.pid : record.owner) ? record as KritaRecord : undefined;
   } catch { return; }
 }

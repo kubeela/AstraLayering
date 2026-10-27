@@ -9,10 +9,10 @@ const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
 const renderer = source.slice(source.indexOf('function overviewCard('), source.indexOf('function graph('));
 const visibleStage = source.match(/^const visibleStage=.*$/m)![0];
 const observed = source.slice(source.indexOf('function observedDisplayStatus('), source.indexOf('function rasterItems('));
-function render(statuses: string[], files: string[] = [], running = false, locked = false, archive?: { pipelines: Record<string, unknown> }, pipelines?: unknown[]) {
+function render(statuses: string[], files: string[] = [], running = false, locked = false, archive?: { pipelines: Record<string, unknown> }, pipelines?: unknown[], kritaInUse?: number) {
   return runInNewContext(visibleStage + '\n' + observed + renderer + '\nprojectPage();', {
     stages: statuses.map((status, i) => ({ name: '管线 ' + i, id: 'pipeline-' + i, status })),
-    state: { name: 'case', stage: 0 }, data: { files, runnerAlive: running, lockHeld: locked, ...(pipelines ? { pipelines } : {}), ...(archive ? { archived: true, run: archive } : {}) },
+    state: { name: 'case', stage: 0 }, data: { files, runnerAlive: running, lockHeld: locked, ...(pipelines ? { pipelines } : {}), kritaInUse, ...(archive ? { archived: true, run: archive } : {}) },
     stepArtifacts: {}, available: () => [], pageHeading: () => '', runNotice: () => '',
     esc: String, icon: () => '', displayStatus, statusLabel,
     statusMark: (status: string) => `<i data-status="${status}"></i>`,
@@ -28,12 +28,19 @@ test('执行面板逐管线展示真实状态，完成与失败不再显示为�
   assert.doesNotMatch(html, /未运行/);
 });
 
-test('section 的 Krita 运行时管线卡片显示徽标，结束后不再显示', () => {
-  const krita = { pid: 4242, version: '5.3.4', startedAt: '2026-10-27T08:00:00.000Z' };
-  const html = render(['running', 'pending'], [], true, true, undefined, [{ krita }, { krita: null }]);
+test('section 占用或排队等 Krita 时，在原有执行状态旁加标识', () => {
+  const running = { state: 'running', since: '2026-10-27T08:00:00.000Z', limit: 3, pid: 4242, version: '5.3.4', startedAt: '2026-10-27T08:00:00.000Z' };
+  const reserved = { state: 'reserved', since: '2026-10-27T08:00:00.000Z', limit: 3 };
+  const waiting = { state: 'waiting', since: '2026-10-27T08:00:00.000Z', limit: 3 };
+  const html = render(['running', 'running', 'running', 'pending'], [], true, true, undefined,
+    [{ krita: running }, { krita: reserved }, { krita: waiting }, { krita: null }], 3);
   const card = (i: number) => html.match(new RegExp(`data-overview="${i}"[\\s\\S]*?</article>`))![0];
-  assert.match(card(0), /krita-badge[^>]*pid 4242[^>]*>Krita 运行中/);
-  assert.doesNotMatch(card(1), /krita-badge/);
+  assert.match(card(0), /krita-badge running[^>]*pid 4242[^>]*本机 Krita 名额 3 \/ 3[^>]*>占用 Krita<small>3\/3<\/small>/);
+  assert.match(card(1), /krita-badge reserved[^>]*尚未启动[^>]*>占用 Krita/);
+  assert.match(card(2), /krita-badge waiting[^>]*已满[^>]*>Krita 排队中<small>3\/3<\/small>/);
+  // The badge sits beside the section's own state, which stays as it is.
+  for (const i of [0, 1, 2]) assert.ok(card(i).includes('进行中'));
+  assert.doesNotMatch(card(3), /krita-badge/);
   assert.doesNotMatch(render(['running']), /krita-badge/);
 });
 

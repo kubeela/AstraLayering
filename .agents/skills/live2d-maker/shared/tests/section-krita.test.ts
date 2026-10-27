@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { chmod, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { SectionKrita, kritaLimit, readKritaRecord } from '../krita/section-krita.ts';
+import { SectionKrita, kritaLimit, kritaSlotsInUse, readKritaRecord } from '../krita/section-krita.ts';
 import { createKritaTool } from '../krita/tool.ts';
 
 // Speaks the bridge protocol without Krita: a job whose source is "crash"
@@ -44,7 +44,8 @@ test('section Krita: lazy start through the tool, crash and restart, release on 
   await section.reserve();
   assert.equal(section.reserved, true);
   assert.equal(parse(await tool.execute({}, signal)).state, 'stopped');
-  assert.equal(await exists(record), false);
+  // The record shows the held slot before Krita starts.
+  assert.equal((await readKritaRecord(record))?.state, 'reserved');
 
   await writeFile(join(root, 'ok.py'), 'hello');
   const first = await tool.execute({ action: 'run', script: 'ok.py' }, signal);
@@ -53,7 +54,9 @@ test('section Krita: lazy start through the tool, crash and restart, release on 
   const running = parse(await tool.execute({ action: 'status' }, signal));
   assert.equal(running.state, 'running');
   assert.equal(running.version, '0.fake');
-  assert.equal((await readKritaRecord(record))?.pid, running.pid);
+  const runningRecord = await readKritaRecord(record);
+  assert.equal(runningRecord?.state, 'running');
+  assert.equal(runningRecord?.state === 'running' && runningRecord.pid, running.pid);
   const profile = join(running.bridge, '..');
 
   // A script that kills Krita: the agent learns it and restarts it itself.
@@ -62,7 +65,8 @@ test('section Krita: lazy start through the tool, crash and restart, release on 
   const crashed = parse(await tool.execute({}, signal));
   assert.equal(crashed.state, 'crashed');
   assert.equal(crashed.lastExit.code, 3);
-  assert.equal(await exists(record), false);
+  // The slot stays with the section after a crash.
+  assert.equal((await readKritaRecord(record))?.state, 'reserved');
   assert.equal(await exists(profile), false);
   const restarted = parse(await tool.execute({ action: 'restart' }, signal));
   assert.equal(restarted.state, 'running');
@@ -88,7 +92,8 @@ test('section Krita: machine-wide cap queues sections until a slot is free', asy
   await writeFile(join(slots, '0.lock'), '999999999');
   const env = { ...process.env, DISPLAY: ':fixture', layering_krita_max_instances: '1' };
   const first = new SectionKrita({ section: 'a', krita, env, slotsDirectory: slots });
-  const second = new SectionKrita({ section: 'b', krita, env, slotsDirectory: slots });
+  const secondRecord = join(root, 'b.json');
+  const second = new SectionKrita({ section: 'b', krita, env, slotsDirectory: slots, record: secondRecord });
   t.after(() => Promise.all([first.release(), second.release()]));
   await first.reserve();
   // The slot belongs to the section: a restart keeps it.
@@ -101,18 +106,34 @@ test('section Krita: machine-wide cap queues sections until a slot is free', asy
   assert.equal(second.reserved, false);
   assert.match(second.status().waiting ?? '', /layering_krita_max_instances/);
   assert.equal(messages.length, 1);
+  const waiting = await readKritaRecord(secondRecord);
+  assert.deepEqual([waiting?.state, waiting?.limit, await kritaSlotsInUse(slots)], ['waiting', 1, 1]);
   await first.release();
   await queued;
   assert.equal(second.reserved, true);
+  assert.equal((await readKritaRecord(secondRecord))?.state, 'reserved');
   assert.equal(second.status().waiting, undefined);
   assert.equal((await second.start()).state, 'running');
 
   // A section that ends while queued gives up its place.
-  const third = new SectionKrita({ section: 'c', krita, env, slotsDirectory: slots });
-  const abandoned = third.reserve();
+  const thirdRecord = join(root, 'c.json');
+  const third = new SectionKrita({ section: 'c', krita, env, slotsDirectory: slots, record: thirdRecord });
+  const abandoned = assert.rejects(third.reserve(), /已结束/);
   await new Promise(resolve => setTimeout(resolve, 100));
+  assert.equal((await readKritaRecord(thirdRecord))?.state, 'waiting');
   await third.release();
-  await assert.rejects(abandoned, /已结束/);
+  await abandoned;
+  assert.equal(await exists(thirdRecord), false);
+  // So does a wait given up through its signal.
+  const fourthRecord = join(root, 'd.json'), stop = new AbortController();
+  const fourth = new SectionKrita({ section: 'd', krita, env, slotsDirectory: slots, record: fourthRecord });
+  const aborted = assert.rejects(fourth.reserve(stop.signal), { name: 'AbortError' });
+  await new Promise(resolve => setTimeout(resolve, 100));
+  stop.abort(new Error('stopped'));
+  await aborted;
+  assert.equal(await exists(fourthRecord), false);
+  await second.release();
+  assert.equal(await exists(secondRecord), false);
 
   assert.throws(() => kritaLimit({ layering_krita_max_instances: '0' }), /正整数/);
   assert.throws(() => kritaLimit({ layering_krita_max_instances: '2.5' }), /正整数/);

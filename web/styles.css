@@ -32,6 +32,10 @@ dialog{border:1px solid #e1e5ec;box-shadow:0 25px 110px #142a4366;border-radius:
 button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupted{color:#bc3945;background:#fff0f1}.phase-mark.available{color:#647598;background:#eef1f7}.phase-mark.unconfirmed{color:#9a7331;background:#fff7e7}.phase-mark.skipped{color:#84909c;background:#f3f5f7}
 .krita-badge{flex:none;margin-left:6px;padding:1px 6px;border-radius:9px;background:#e8f1ff;color:#2f6fd6;border:1px solid #9fc0f2;font-size:11px;font-weight:600;white-space:nowrap}
 .krita-badge::before{content:'';display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%;background:#2f6fd6;vertical-align:1px;animation:krita-pulse 1.6s ease-in-out infinite}
+.krita-badge small{margin-left:5px;font-size:10px;font-weight:500;opacity:.75}
+.krita-badge.reserved::before{animation:none;background:transparent;box-shadow:inset 0 0 0 1.5px currentColor}
+.krita-badge.waiting{background:#fff6e5;color:#9a6a12;border-color:#ebcb8b}
+.krita-badge.waiting::before{animation:none;background:transparent;box-shadow:inset 0 0 0 1.5px currentColor}
 @keyframes krita-pulse{50%{opacity:.3}}
 @media (prefers-reduced-motion:reduce){.krita-badge::before{animation:none}}
 .thread-id{display:block;overflow:hidden;text-overflow:ellipsis;color:#7a8697;font:10px monospace;white-space:nowrap;padding:4px}
