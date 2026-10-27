@@ -385,7 +385,7 @@ function kritaBadge(index) {
  const time=value=>esc(new Date(value).toLocaleTimeString());
  const usage=krita.limit?`本机 Krita 名额 ${esc(data.kritaInUse??'?')} / ${esc(krita.limit)}`:'';
  const count=krita.limit?`<small>${esc(data.kritaInUse??'?')}/${esc(krita.limit)}</small>`:'';
- if(krita.state==='waiting')return `<span class="krita-badge waiting" title="${usage||'本机 Krita 名额'}已满，等待其他 section 释放 · 自 ${time(krita.since)} 起排队">Krita 排队中${count}</span>`;
+ if(krita.state==='waiting')return `<span class="krita-badge waiting" title="${usage?usage+'，':'本机 Krita 名额'}已满，等待其他 section 释放 · 自 ${time(krita.since)} 起排队">Krita 排队中${count}</span>`;
  const detail=krita.state==='running'?`Krita ${esc(krita.version)} · pid ${esc(krita.pid)} · 启动于 ${time(krita.startedAt)}`:'已占名额，Krita 尚未启动或正在重启';
  return `<span class="krita-badge ${krita.state==='running'?'running':'reserved'}" title="${detail}${usage?' · '+usage:''}">占用 Krita${count}</span>`;
 }
