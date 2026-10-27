@@ -73,7 +73,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(thread.params.model, 'gpt-6.1-sol');
   assert.equal(thread.params.config['features.shell_tool'], true);
   assert.equal(thread.params.config['features.unified_exec'], true);
-  assert.equal(thread.params.sandbox, 'workspace-write');
+  assert.equal(thread.params.sandbox, 'danger-full-access');
   assert.equal(thread.params.config['features.multi_agent'], false);
   assert.equal(thread.params.config['features.image_generation'], false);
   assert.equal(thread.params.config.custom_auth, 'test-secret-must-not-log');
@@ -84,7 +84,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const turn = protocol.find(item => item.method === 'turn/start');
   assert.equal(turn.params.effort, 'high');
   assert.deepEqual(turn.params.input.map((item: { type: string }) => item.type), ['text']);
-  assert.ok(turn.params.input[0].text.includes('素体参考图：references/本次目标.png'));
+  assert.ok(turn.params.input[0].text.includes(`素体参考图：${references.baseSubject}`));
   const observation = protocol.find(item => item.id === 'call-1').result;
   assert.equal(observation.success, true);
   const preview = JSON.parse(observation.contentItems[0].text);
@@ -92,17 +92,17 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith('initial/step01/workspace/bitmaps/'), true);
+  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + '/'), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
-  assert.deepEqual(await readFile(join(f.directory, preview.savedPath)), image);
+  assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();
   assert.equal(imageMetadata.width, 40);
   assert.equal(imageMetadata.height, 60);
   const submission = protocol.find(item => item.id === 'call-2').result;
   assert.equal(submission.success, true);
   const saved = JSON.parse(submission.contentItems[0].text).path;
-  assert.equal(saved, 'initial/step01/groups.json');
-  assert.deepEqual(JSON.parse(await readFile(join(f.directory, saved), 'utf8')), {
+  assert.equal(saved, join(f.directory, 'initial/step01/groups.json'));
+  assert.deepEqual(JSON.parse(await readFile(saved, 'utf8')), {
     subject: 'character', groups: [{ id: 'head', kind: 'group', name: 'head', note: '头部' }],
   });
   const logged = await log(f.logDirectory);
@@ -154,19 +154,19 @@ test('绘制会话多轮沿用一个 thread，回调按当前回合绑定；关�
     assert.equal(names.length, 2);
     const results = await Promise.all(names.map(name => readFile(join(f.logDirectory, name, 'result.json'), 'utf8')));
     assert.ok(results.every(value => JSON.parse(value).threadId === first.threadId));
-    const changed = await session.run({ name: '换沙箱', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('no'))] });
+    const changed = await session.run({ name: '再次', prompt: 'test', tools: [tool(async () => textResult('no'))] });
     assert.equal(changed.threadId, first.threadId);
   } finally { await session.close(); }
   await assert.rejects(session.run({ name: '已关闭', prompt: 'test', tools: [] }), /已关闭/);
 });
 
-test('独立 review 会话使用只读沙箱，原生工具仍可由程序保存报告', async t => {
+test('独立 review 会话不设沙箱，原生工具仍可由程序保存报告', async t => {
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory, [{ tool: 'probe', arguments: {} }]);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
-  await agents.run({ name: 'review', prompt: 'test', sandboxMode: 'read-only', tools: [tool(async () => textResult('report'))] });
+  await agents.run({ name: 'review', prompt: 'test', tools: [tool(async () => textResult('report'))] });
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
-  assert.equal(protocol.find(message => message.method === 'thread/start').params.sandbox, 'read-only');
+  assert.equal(protocol.find(message => message.method === 'thread/start').params.sandbox, 'danger-full-access');
   assert.equal(protocol.find(message => message.method === 'thread/start').params.config['features.image_generation'], false);
   assert.equal(protocol.find(message => message.id === 'call-1').result.success, true);
 });

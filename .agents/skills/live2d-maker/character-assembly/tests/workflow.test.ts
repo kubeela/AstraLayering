@@ -61,15 +61,14 @@ test('每个缺失上游明确给出具体文件和对应管线，不启动 agen
   }
 });
 
-test('dry-run 展开组装专用提示词与任务内路径，不混入拆层和深度写回协议', async t => {
+test('dry-run 展开组装专用提示词与绝对路径，不混入拆层和深度写回协议', async t => {
   const f = await fixture(t);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps,
     agent: async () => assert.fail('dry run must not call agent'),
   });
-  // Task paths are relative to the task root.
-  for (const input of Object.values(f.inputs)) assert.ok(prompt.includes(JSON.stringify(relative(f.task, input))));
-  for (const file of steps[0].requiredFiles) assert.ok(prompt.includes('character-assembly/step01/' + file));
-  assert.ok(!prompt.includes(JSON.stringify(f.inputs.characterKra)));
+  // Agents are shown absolute task paths.
+  for (const input of Object.values(f.inputs)) assert.ok(prompt.includes(JSON.stringify(input)));
+  for (const file of steps[0].requiredFiles) assert.ok(prompt.includes(join(f.output, 'step01', file)));
   assert.match(prompt, /局部修画/);
   assert.match(prompt, /parts 填入要检查的衣物部件路径/);
   assert.match(prompt, /已有部件的发色、材质、笔触、细发丝和描边差异保留/);

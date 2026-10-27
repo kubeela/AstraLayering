@@ -36,7 +36,6 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
   let calls = 0;
   const adapter = createLayeringSteps({ async run(task) {
     calls++;
-    assert.equal(task.sandboxMode, 'read-only');
     assert.equal(task.imageGeneration, false);
     assert.match(task.prompt, /face_base/);
     assert.match(task.prompt, /10-拆分操作约定/);

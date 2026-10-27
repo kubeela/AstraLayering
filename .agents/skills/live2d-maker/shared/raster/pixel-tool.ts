@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { canonicalPath, taskPath, taskPaths } from './run-store.ts';
+import { agentPaths, canonicalPath, taskPaths } from './run-store.ts';
 import { fromTaskPath } from '../task-paths.ts';
 import { exportKraLayers, partScope, type PartScopeOptions } from './pixel-part-scope.ts';
 
@@ -145,12 +145,12 @@ export function createPixelTool(_directory: string, taskRoot: string, output: st
       const files = { diagnostics: join(folder, 'differences.json'), heatmap: join(folder, 'heatmap.png'),
         marked: join(folder, 'marked.png'), comparison: join(folder, 'comparison.png'),
         ...(selection ? { scope: join(folder, 'scope.png'), scopePreview: join(folder, 'scope-preview.png') } : {}) };
-      const meta = { reference: await taskPath(root, reference), current: await taskPath(root, current),
-        visibleMask: maskPath && await taskPath(root, maskPath), canvas: [width, height], crop,
-        ...(selection ? { partSelection: { parts, padding, currentKra: await taskPath(root, currentKra!), layers: selection.bounds } } : {}),
+      // differences.json keeps task-relative paths; the agent sees absolute ones.
+      const meta = { reference, current, visibleMask: maskPath, canvas: [width, height], crop,
+        ...(selection ? { partSelection: { parts, padding, currentKra: currentKra!, layers: selection.bounds } } : {}),
         thresholds: { color: colorThreshold, coarseColor: coarseThreshold, blurSigma: 2, regionGapPixels: gap, alpha: alphaThreshold, minRegionPixels: minPixels },
         counts, regions, note: '以候选框为局部检查入口，依据当前阶段职责和参考确认修复范围。候选不决定通过或内容归属；选择部件时只统计其当前范围及周边。' };
-      await writeFile(files.diagnostics, JSON.stringify(meta, null, 2) + '\n');
+      await writeFile(files.diagnostics, JSON.stringify(await taskPaths(root, meta), null, 2) + '\n');
       if (selection) {
         await sharp(selection.mask, { raw: { width, height, channels: 1 } }).png().toFile(files.scope!);
         const tint = Buffer.alloc(width * height * 4);
@@ -174,7 +174,7 @@ export function createPixelTool(_directory: string, taskRoot: string, output: st
       await sharp({ create: { width: w * 2, height: h, channels: 4, background: '#888888' } })
         .composite([{ input: original, left: 0, top: 0 }, { input: marked, left: w, top: 0 }]).png().toFile(files.comparison);
       signal.throwIfAborted();
-      return textResult({ ...meta, regions: selected, totalRegions: regions.length, files: await taskPaths(root, files),
+      return textResult({ ...await agentPaths(root, meta), regions: selected, totalRegions: regions.length, files: await agentPaths(root, files),
         comparisonLayout: '左参考、右当前标记；两侧同尺寸，坐标为原画布坐标；热图是 crop 区域。' });
     },
   };

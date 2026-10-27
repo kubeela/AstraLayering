@@ -5,14 +5,14 @@ import type { FunctionTool } from '../codex/function-tools.ts';
 import { renderPromptFile } from '../prompts/render.ts';
 import { stageStep, type PreparationStage } from '../part/preparation-steps.ts';
 import { groupStepId, initialStepId } from '../part/step-paths.js';
-import { taskRootOf, toTaskPath } from '../task-paths.ts';
+import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 
 // root is the single base of every relative path an agent reads or writes.
 export type ExecutionPaths = { root: string; directory: string; outputDirectory: string; workspace: string };
 type WorkspaceTask = Pick<AgentTask, 'cwd' | 'outputDirectory'> & { step?: string };
 
-// The CLI works in the task root, the base of every relative path; drafts go to
-// the step's workspace. Callers name their step directory; the step id covers those with a
+// The CLI works in the pipeline directory and drafts go to the step's workspace;
+// relative task/tool paths still use the task root. Callers name their step directory; the step id covers those with a
 // fixed one, and anything else works in its own directory rather than a guessed step.
 export function executionPaths(task: WorkspaceTask, fallback: string): ExecutionPaths {
   const directory = resolve(task.cwd || fallback);
@@ -48,11 +48,12 @@ export async function prepareWorkspace(task: Pick<AgentTask, 'cwd' | 'outputDire
 }
 
 export function workspacePrompt(prompt: string, paths: ExecutionPaths): string {
-  const workspace = toTaskPath(paths.root, paths.workspace);
-  if (prompt.includes(`- 任务根目录：${paths.root}。`) && prompt.includes(`- 当前工作区：${workspace}。`)) return prompt;
+  // Directories are shown absolute; relative paths still mean the task root.
+  const at = (path: string) => fromTaskPath(paths.root, path);
+  if (prompt.includes(`- 任务根目录：${paths.root}。`) && prompt.includes(`- 当前工作区：${at(paths.workspace)}。`)) return prompt;
   return renderPromptFile(new URL('../prompts/agent-turn.md', import.meta.url), {
-    task_prompt: prompt, task_root: paths.root, workspace, workspace_absolute: paths.workspace,
-    pipeline_directory: toTaskPath(paths.root, paths.directory), output_directory: toTaskPath(paths.root, paths.outputDirectory),
+    task_prompt: prompt, task_root: paths.root, workspace: at(paths.workspace),
+    pipeline_directory: at(paths.directory), output_directory: at(paths.outputDirectory),
   });
 }
 

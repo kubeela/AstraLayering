@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { cp, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
@@ -136,7 +137,7 @@ test('复用工具只接受理由，输入和输出路径固定且单次复制',
     const signal = new AbortController().signal;
     await assert.rejects(tool.execute({ reason: '复用', output: f.original }, signal), /只接受非空 reason/);
     const result = await tool.execute({ reason: '已满足要求' }, signal);
-    assert.equal(JSON.parse((result.contentItems[0] as { text: string }).text).savedPath, 'reused.png');
+    assert.equal(JSON.parse((result.contentItems[0] as { text: string }).text).savedPath, target);
     await assert.rejects(tool.execute({ reason: '再次复制' }, signal), /已经复制完成/);
     return { text: JSON.stringify({ savedPath: target, error: null, reason: '已满足要求' }), images: [] };
   } });
@@ -437,7 +438,7 @@ async function oldStepLayout(refs: PreparationReferences) {
     : path.startsWith(join(root, step('pose')) + '/') ? join(old, 'pose', relative(join(root, step('pose')), path)) : path;
   const records = [];
   for (const name of (await readdir(root)).sort()) {
-    const stage = legacyStages[Number(name.slice(4)) - 1], record = (await readStep(join(root, name))).record!;
+    const stage = legacyStages[Number(name.slice(4)) - 1], record = (await readStep(join(root, name), taskRootOf(dirname(refs.directory)))).record!;
     const outputs = record.outputs && Object.fromEntries(Object.entries(record.outputs)
       .map(([output, hash]) => [relative(join(old, stage), back(resolve(root, name, output))), hash]));
     const stamp = outputs ? createHash('sha256').update(JSON.stringify(outputs)).digest('hex') : record.stamp;
@@ -458,13 +459,13 @@ async function oldStepLayout(refs: PreparationReferences) {
 test('旧 references/.steps 步骤记录原样迁入 preparation/stepNN，不重做任何步骤', async t => {
   const f = await fixture(t, false, true);
   const refs = await prepareReferences({ runName: f.runName, image: f.original, standard: true }, f.steps);
-  const records = await Promise.all(stages.map(async stage => (await readStep(join(section(refs), step(stage)))).record));
+  const records = await Promise.all(stages.map(async stage => (await readStep(join(section(refs), step(stage)), taskRootOf(dirname(refs.directory)))).record));
   await oldStepLayout(refs);
   await assert.rejects(loadPreparedReferences(f.runName), /尚未转换/);
   f.calls.length = 0;
   assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
   assert.equal(f.calls.length, 0);
-  assert.deepEqual(await Promise.all(stages.map(async stage => (await readStep(join(section(refs), step(stage)))).record)), records);
+  assert.deepEqual(await Promise.all(stages.map(async stage => (await readStep(join(section(refs), step(stage)), taskRootOf(dirname(refs.directory)))).record)), records);
   await assert.rejects(readFile(join(refs.directory, 'options.json')), { code: 'ENOENT' });
   await assert.rejects(readdir(join(refs.directory, '.steps')), { code: 'ENOENT' });
   assert.deepEqual(await loadPreparedReferences(f.runName), refs);

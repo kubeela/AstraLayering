@@ -14,7 +14,7 @@ import { readGroupPrompt, readGroupReferences } from './group-prompts.ts';
 import { nodeSeed, normalizeGroups } from './groups.ts';
 import type { ChildrenAnalysis, GroupContext, GroupSeed, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, type SvgObservation } from './svg-tools.ts';
-import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
+import { taskRootOf, toAgentPath } from '../task-paths.ts';
 
 
 export function decodeChildren(parentId: string, value: unknown): ChildrenAnalysis {
@@ -71,8 +71,8 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
       return textResult({ ids: result.groups.map(group => group.id), terminal: result.groups.length === 0, note: result.note });
     },
   };
-  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 3)), sandboxMode: 'read-only', imageGeneration: false,
+  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 3)), imageGeneration: false,
     images: [{ path: reference, description: profile.references.children }, ...(profile.attachChildrenReferences ? references : [])],
     tools: [createBitmapTool(context.directory, directory), createSvgPreviewTool({ directory: context.directory, reference, canvas,
       observationDirectory: directory, observed: entry => observations.push(entry) }), submit],

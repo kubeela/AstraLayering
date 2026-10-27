@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import { test, type TestContext } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
@@ -57,7 +58,7 @@ test('首次识别一次调用，绑定 view_bitmap 和 write_groups；直接保
   assert.equal(calls[0].imageGeneration, undefined);
   assert.ok(calls[0].prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/4-初始分组.md', import.meta.url), 'utf8'))));
   assert.match(calls[0].prompt, /本次运行目录/);
-  assert.ok(calls[0].prompt.includes('素体参考图：references/base.png'));
+  assert.ok(calls[0].prompt.includes(`素体参考图：${join(taskRootOf(context.directory), 'references/base.png')}`));
   assert.doesNotMatch(calls[0].prompt, /自行寻找|优先根据/);
   assert.equal(calls[0].images, undefined);
   assert.equal(calls[0].outputSchema, undefined);
@@ -191,7 +192,7 @@ test('工具已保存分组后回合失败，续跑仍跳过已完成识别', as
     throw new Error('回合中断');
   } });
   await assert.rejects(runLayering({ ...context, groups: null, steps }), /回合中断/);
-  assert.equal((await readStep(join(context.directory, initialStepId))).status, 'running');
+  assert.equal((await readStep(join(context.directory, initialStepId), taskRootOf(context.directory))).status, 'running');
   assert.equal((await readInitialGroups(context.directory)).groups.length, 2);
   await runLayering({ ...context, groups: null, steps: initialSteps({ async run() { assert.fail('不应重做首次识别'); } }) });
 });

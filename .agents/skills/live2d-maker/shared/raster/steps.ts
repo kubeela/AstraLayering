@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import type { PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
-import { taskPath } from './run-store.ts';
+import { agentPath } from './run-store.ts';
 import { taskRootOf } from '../task-paths.ts';
 
 export type StepDefinition = {
@@ -30,8 +30,8 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
   const responsibilities = step.id === 'step01' ? await readFile(new URL('./drawing-responsibilities.md', import.meta.url), 'utf8') : '';
   const body = await readFile(step.prompt, 'utf8');
   const requiredFiles = step.requiredFiles.map(file => file === 'report.md' ? report : file);
-  // Every task path shown to the agent is relative to the task root.
-  const root = taskRootOf(output), at = (path: string) => taskPath(root, path);
+  // Every task path shown to the agent is absolute under the task root.
+  const root = taskRootOf(dirname(output)), at = (path: string) => agentPath(root, path);
   const json = async (path: string) => JSON.stringify(await at(path));
   const list = async (paths: readonly string[]) => JSON.stringify(await Promise.all(paths.map(at)));
   return renderPrompt(body, {

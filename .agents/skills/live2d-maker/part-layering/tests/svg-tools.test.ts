@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, isAbsolute, join } from 'node:path';
+import { dirname, isAbsolute, join, relative } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { checkParentBounds, createSvgPreviewTool, createSvgReadTool, taskObservation, validateGroupSvg, type SvgObservation } from '../../shared/part/svg-tools.ts';
@@ -92,10 +92,10 @@ test('SVG 裁剪直接放大矢量，混合和边缘叠加与参考共用坐标�
     assert.deepEqual([metadata.width, metadata.height], [160, 160]);
     const image = result.contentItems[1];
     assert.equal(image.type, 'inputImage');
-    assert.equal(metadata.source, 'candidate.svg');
-    assert.match(metadata.savedPath, /^observations\/[^/]+\.png$/);
-    assert.deepEqual(await readFile(join(f.directory, metadata.savedPath)), Buffer.from(image.imageUrl.split(',')[1], 'base64'));
-    const raw = await sharp(join(f.directory, metadata.savedPath)).ensureAlpha().raw().toBuffer();
+    assert.equal(metadata.source, f.path);
+    assert.ok(metadata.savedPath.startsWith(join(f.directory, 'observations') + '/'));
+    assert.deepEqual(await readFile(metadata.savedPath), Buffer.from(image.imageUrl.split(',')[1], 'base64'));
+    const raw = await sharp(metadata.savedPath).ensureAlpha().raw().toBuffer();
     const center = [...raw.subarray((80 * 160 + 80) * 4, (80 * 160 + 80) * 4 + 4)];
     assert.deepEqual(center, mode === 'svg' ? [255, 0, 0, 255] : mode === 'blend' ? [128, 0, 126, 255] : [0, 0, 255, 255]);
   }
@@ -185,7 +185,7 @@ test('原分辨率漏掉的四分之一像素越界被识别，报告位置和�
   await assert.rejects(validateGroupSvg(f.path, 'face', canvas, parent), /超出父轮廓/);
   const tool = createSvgPreviewTool({ ...f, canvas, parent });
   const preview = info(await tool.execute({ path: f.path, mode: 'edge', crop: [70, 10, 25, 50], scale: 2 }, signal));
-  assert.deepEqual(preview.bounds, { ...bounds, parent: 'parent.svg' }, '预览倍率和裁剪不改变父范围判断');
+  assert.deepEqual(preview.bounds, { ...bounds, parent }, '预览倍率和裁剪不改变父范围判断');
   await writeFile(f.path, svg('face', '<rect x="20" y="20" width="30" height="30"/><rect x="20" y="20" width="60.25" height=".25"/>'));
   const tip = await checkParentBounds(f.path, parent, canvas);
   assert.equal(tip.status, 'fail');
@@ -236,8 +236,8 @@ test('生成图选区对齐 SVG 实际内容，保留宽高比例；crop 和 sca
   const zoom = info(await tool.execute({ ...args, crop: [10, 20, 80, 40], scale: 2 }, signal));
   assert.deepEqual(zoom.alignment, automatic.alignment, '查看选框和倍率保持对齐变换');
   assert.deepEqual([zoom.width, zoom.height], [160, 80]);
-  assert.equal(zoom.reference, 'generated.png');
-  const raw = await sharp(join(f.directory, zoom.savedPath)).ensureAlpha().raw().toBuffer();
+  assert.equal(zoom.reference, generated);
+  const raw = await sharp(zoom.savedPath).ensureAlpha().raw().toBuffer();
   const pixel = (x: number, y: number) => [...raw.subarray(((y - 20) * 2 * 160 + (x - 10) * 2) * 4, ((y - 20) * 2 * 160 + (x - 10) * 2) * 4 + 4)];
   assert.deepEqual(pixel(25, 40), [255, 255, 255, 255], '长宽比差异保留为留白，生成图没有被横向拉满');
   assert.deepEqual(pixel(35, 40), [0, 0, 255, 255], '只对齐所选生成图区域');
@@ -280,7 +280,7 @@ test('生成图参数仅向补全开放，定义快照互不影响；错误坐�
   for (const reference of [join(outside, 'outside.png'), 'escape-reference/outside.png']) assert.equal((await tool.execute({ ...base, reference }, signal)).success, true);
 });
 
-test('工具参数和结果以任务根目录为基准：相对路径不按管线目录解析，越出任务根被拒绝', async t => {
+test('工具相对参数以任务根目录为基准、结果为绝对路径、记录相对任务根：相对路径不按管线目录解析，越出任务根被拒绝', async t => {
   const root = await mkdtemp(join(tmpdir(), 'part-layering-task-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const directory = join(root, 'part-layering'), groupDirectory = join(directory, 'groups', 'face');
@@ -292,15 +292,15 @@ test('工具参数和结果以任务根目录为基准：相对路径不按管�
   const observed: SvgObservation[] = [];
   const tool = createSvgPreviewTool({ directory, reference, canvas, observationDirectory: join(directory, 'observations'), observed: entry => observed.push(entry) });
   const preview = info(await tool.execute({ path: 'part-layering/groups/face/outline.svg', mode: 'blend' }, signal));
-  assert.equal(preview.source, 'part-layering/groups/face/outline.svg');
-  assert.match(preview.savedPath, /^part-layering\/observations\/[^/]+\.png$/);
+  assert.equal(preview.source, join(groupDirectory, 'outline.svg'));
+  assert.ok(preview.savedPath.startsWith(join(directory, 'observations') + '/'));
   assert.ok(isAbsolute(observed[0].source), '内部观察记录保持绝对路径供比对');
-  assert.deepEqual(await taskObservation(root, observed[0]), { ...observed[0], source: preview.source, savedPath: preview.savedPath });
+  assert.deepEqual(await taskObservation(root, observed[0]), { ...observed[0], source: 'part-layering/groups/face/outline.svg', savedPath: relative(root, preview.savedPath) });
   await assert.rejects(tool.execute({ path: 'groups/face/outline.svg' }, signal), /ENOENT/);
   await assert.rejects(tool.execute({ path: '../outside.svg' }, signal), /任务根/);
   const read = info(await createSvgReadTool(directory).execute({ path: 'part-layering/groups/face/outline.svg' }, signal));
-  assert.equal(read.source, 'part-layering/groups/face/outline.svg');
+  assert.equal(read.source, join(groupDirectory, 'outline.svg'));
   const viewed = info(await createBitmapTool(directory, join(directory, 'bitmaps')).execute({ path: 'part-layering/references/base.png' }, signal));
-  assert.equal(viewed.path, 'part-layering/references/base.png');
-  assert.match(viewed.savedPath, /^part-layering\/bitmaps\/[^/]+\.png$/);
+  assert.equal(viewed.path, reference);
+  assert.ok(viewed.savedPath.startsWith(join(directory, 'bitmaps') + '/'));
 });

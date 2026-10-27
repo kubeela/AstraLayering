@@ -9,7 +9,7 @@ import { toolDefinition } from '../codex/tool-config.ts';
 import { needsSolidBackground, providerImageArguments, transparentGeneratedImage } from './image-background.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
-import { fromTaskPath, taskRootOf, toTaskPath } from '../task-paths.ts';
+import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 
 export function validateImageSelection(settings: WorkflowEnvironment, step: AgentStep): void {
   const image = settings.stepImages[step];
@@ -40,7 +40,7 @@ export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentSt
         || args.background !== undefined && !['transparent', 'auto'].includes(args.background) || args.size !== undefined && typeof args.size !== 'string') {
         throw new Error('生图参数必须包含 prompt 和 input_images，并遵循工具 schema。');
       }
-      // Path arguments and the returned savedPath use the task root.
+      // Relative path arguments use the task root; savedPath is shown absolute.
       const root = context?.root ?? taskRootOf(output);
       const inputs = [];
       for (const path of args.input_images as string[]) {
@@ -54,7 +54,7 @@ export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentSt
       const savedPath = args.output_path === undefined ? join(output, 'images', `${randomUUID()}.png`) : fromTaskPath(root, args.output_path as string);
       await mkdir(dirname(savedPath), { recursive: true });
       await writeFile(savedPath, png, { mode: 0o600 });
-      return { success: true, contentItems: [{ type: 'inputText', text: JSON.stringify({ savedPath: toTaskPath(root, savedPath), model,
+      return { success: true, contentItems: [{ type: 'inputText', text: JSON.stringify({ savedPath, model,
         width: meta.width, height: meta.height, hasAlpha: meta.hasAlpha }) }] };
     },
   };

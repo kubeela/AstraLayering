@@ -7,7 +7,6 @@ import { mkdtemp, realpath, mkdir, readFile, readdir, rm, symlink, writeFile } f
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 // Prompt paths are relative to the task root.
-const rel = (path: string) => path.slice(path.indexOf('/runs/test/') + '/runs/test/'.length);
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
 import type { ThreadEvent, ThreadOptions } from '@openai/codex-sdk';
@@ -88,8 +87,8 @@ test('dry-run 按 name 定位上游，保留完整提示词，不写文件、不
   assert.deepEqual(await resolvePartInput('test', 'part-layering', f.deps.runsDirectory), expected);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: forbidden });
   assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(steps[0].prompt, 'utf8'))));
-  assert.ok(prompt.includes(JSON.stringify(rel(join(f.input, 'parts')))));
-  assert.ok(prompt.includes(JSON.stringify(rel(join(f.output, 'step01')))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.input, 'parts'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01'))));
   await assert.rejects(readdir(f.output), { code: 'ENOENT' });
 });
 
@@ -145,10 +144,10 @@ test('已完成第一步的任务可按 name 预览第二步，显示实际输�
   const before = await readFile(join(f.output, 'run.json'));
   const prompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...deps, agent: forbidden });
   assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(steps[1].prompt, 'utf8'))));
-  assert.ok(prompt.includes(JSON.stringify(rel(join(f.input, 'references')))));
-  assert.ok(prompt.includes(JSON.stringify(rel(join(f.output, 'step01/character-depth.kra')))));
-  assert.ok(prompt.includes(JSON.stringify(rel(join(f.output, 'step02/character-soft-edges.kra')))));
-  assert.ok(prompt.includes(JSON.stringify(rel(join(f.output, 'step02/character-soft-edges.png')))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.input, 'references'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01/character-depth.kra'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.kra'))));
+  assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.png'))));
   assert.ok(prompt.includes(JSON.stringify(process.execPath)), '当前显式 Krita 路径必须保留');
   assert.ok(!prompt.includes('demos/soft-edge-krita'), '不引用历史示例工程');
   assert.deepEqual(await readFile(join(f.output, 'run.json')), before);
@@ -197,7 +196,7 @@ test('已完成第一步的任务接续后两步，共用 thread 并使用各步
     assert.equal(request.threadId, 'thread-1');
     assert.equal(request.model, step.model);
     assert.equal(request.effort, 'medium');
-    assert.ok(request.prompt.includes(JSON.stringify(rel(join(f.output, 'step01/report.md')))));
+    assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step01/report.md'))));
     return deliver(request, step);
   } });
   assert.equal(index, 3);
@@ -262,7 +261,7 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
       await absent(join(f.output, 'step03/.completed'));
       await assert.rejects(readdir(join(f.output, 'step04')), { code: 'ENOENT' });
     } else assert.equal(request.threadId, 'thread-new');
-    assert.ok(request.prompt.includes(JSON.stringify(rel(join(f.output, 'step01/report.md')))));
+    assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step01/report.md'))));
     return deliver(request, step, 'thread-new');
   } });
   assert.equal(index, 3);

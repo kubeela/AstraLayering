@@ -57,7 +57,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
   let reader: Promise<void> | undefined;
   let threadId: string | undefined, threadPath: string | undefined, cwd: string | undefined, toolDefinitions: string | undefined;
   let imageGeneration: boolean | undefined;
-  let sandbox: string | undefined, nextId = 0, closed = false, busy = false, stderr = '';
+  let nextId = 0, closed = false, busy = false, stderr = '';
   let failure: { error: unknown } | undefined;
   const closing = new AbortController();
   const transportEnded = new AbortController();
@@ -206,28 +206,23 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       if (byName.size !== tools.length || tools.some(tool => !/^[a-zA-Z0-9_-]+$/.test(tool.name))) {
         throw new Error('function tool 名称无效或重复');
       }
-      // The task root is the working directory and the one base for relative paths.
-      const workingDirectory = paths.root;
+      const workingDirectory = paths.directory;
       const definitions = tools.map(({ name, description, inputSchema }) => ({ type: 'function', name, description, inputSchema }));
-      const sandboxMode = task.sandboxMode ?? 'workspace-write';
       const enableImageGeneration = task.imageGeneration ?? false;
-      if (threadId && (cwd !== workingDirectory || sandbox !== sandboxMode || imageGeneration !== enableImageGeneration ||
+      if (threadId && (cwd !== workingDirectory || imageGeneration !== enableImageGeneration ||
           toolDefinitions !== JSON.stringify(definitions))) {
-        throw new Error('延续会话不能改变工作目录、沙箱、工具定义或生图开关');
+        throw new Error('延续会话不能改变工作目录、工具定义或生图开关');
       }
-      cwd = workingDirectory; sandbox = sandboxMode; toolDefinitions = JSON.stringify(definitions);
+      cwd = workingDirectory; toolDefinitions = JSON.stringify(definitions);
       imageGeneration = enableImageGeneration;
       busy = true;
       const timeoutMs = task.timeoutMs;
       const signal = AbortSignal.any([closing.signal, ...(externalSignal ? [externalSignal]
         : timeoutMs === undefined ? [] : [AbortSignal.timeout(timeoutMs)])]);
       const threadOptions = {
-        model: selectedModel.model, cwd, sandbox, approvalPolicy: 'never',
+        // No sandbox for now: paths are managed by the prompt and tools, not by write limits.
+        model: selectedModel.model, cwd, sandbox: 'danger-full-access', approvalPolicy: 'never',
         config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
-          ...(sandbox === 'workspace-write' ? { sandbox_workspace_write: {
-            ...options.config?.sandbox_workspace_write as Record<string, unknown>,
-            writable_roots: [paths.workspace, paths.outputDirectory],
-          } } : {}),
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
           features: { image_generation: imageGeneration, shell_tool: true, unified_exec: true, multi_agent: false, memories: false } }),
         dynamicTools: definitions,

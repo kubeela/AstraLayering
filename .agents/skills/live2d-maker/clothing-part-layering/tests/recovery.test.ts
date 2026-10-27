@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import { test, type TestContext } from 'node:test';
 import { artifactPath, readJson, reportPath } from '../../shared/part/artifact-facts.ts';
 import { GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
@@ -105,7 +106,7 @@ test('复核中断后续跑沿用同一轮廓与复核记录，不重画也不�
   await assert.rejects(runLayering({ ...f, groups: null, steps: { ...steps, async reviewOutline(context) {
     await writeAtomic(context.reportPath, JSON.stringify(report)); throw new Error('review interrupted');
   } } }), /review interrupted/);
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 1)))).status, 'running');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 1)), taskRootOf(f.directory))).status, 'running');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps: { ...steps, async reviewOutline(context) {
     assert.deepEqual(await readJson(context.reportPath), report);

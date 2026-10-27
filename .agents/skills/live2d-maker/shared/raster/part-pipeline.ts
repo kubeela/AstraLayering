@@ -3,6 +3,7 @@ import { isPartLayeringInput, resolvePartInput, type PartLayeringInput } from '.
 import { buildPrompt, type StepDefinition } from './steps.ts';
 import type { KritaPipeline } from './workflow.ts';
 import { dirname, join } from 'node:path';
+import { taskRootOf } from '../task-paths.ts';
 import { createReviewAnnotationTool } from './review-annotation.ts';
 import { createPixelTool } from './pixel-tool.ts';
 import { createStructureTools, validateRasterStructure } from './structure-tools.ts';
@@ -21,7 +22,7 @@ export function partRasterPipeline<T extends PartRasterDefinition>(definition: T
     validateInput: isPartLayeringInput,
     inputDirectories: input => [input.directory],
     // occlusion is the last part step, so its stamp changes whenever the parts are redone.
-    upstreamStep: input => ({ id: `${definition.inputPipeline}/occlusion`, directory: join(input.directory, 'occlusion'), dependsOn: [] }),
+    upstreamStep: input => ({ id: `${definition.inputPipeline}/occlusion`, root: taskRootOf(input.directory), directory: join(input.directory, 'occlusion'), dependsOn: [] }),
     tools: (output, input, step, phase, runtime) => step.id === 'step01' && phase.startsWith('review-')
       ? [createReviewAnnotationTool(dirname(output), dirname(dirname(output)), join(output, 'review-evidence'))]
       : step.id === 'step01' && (phase === 'draw' || phase.startsWith('repair-'))

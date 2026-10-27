@@ -13,7 +13,7 @@ export const stepId = (number: number) => `step${String(number).padStart(2, '0')
 export type SectionStep = { number: number; dependsOn?: readonly number[]; upstream?: readonly string[]; outputs?: readonly string[] };
 export type SectionPlan = ChainPlan & { chain: ChainStep[]; defined: Set<string>; resetFrom?: number };
 
-export async function sectionChain(directory: string, steps: readonly SectionStep[], scan = true, upstream: readonly ChainStep[] = []): Promise<ChainStep[]> {
+export async function sectionChain(directory: string, root: string, steps: readonly SectionStep[], scan = true, upstream: readonly ChainStep[] = []): Promise<ChainStep[]> {
   const defined = new Map<number, SectionStep>();
   for (const step of steps) {
     if (!Number.isInteger(step.number) || step.number < 1 || step.number > 99 || defined.has(step.number)
@@ -34,15 +34,15 @@ export async function sectionChain(directory: string, steps: readonly SectionSte
   for (const number of [...numbers].sort((a, b) => a - b)) {
     const step = defined.get(number), previous = chain.length > upstream.length ? chain.at(-1) : undefined;
     const local = step?.dependsOn ? step.dependsOn.filter(dependency => defined.has(dependency)).map(stepId) : previous ? [previous.id] : [];
-    chain.push({ id: stepId(number), directory: join(directory, stepId(number)),
+    chain.push({ id: stepId(number), root, directory: join(directory, stepId(number)),
       dependsOn: [...(step?.upstream ?? []).filter(id => external.has(id)), ...local],
       ...(step?.outputs ? { outputs: step.outputs } : {}) });
   }
   return chain;
 }
 
-export async function inspectSection(directory: string, steps: readonly SectionStep[], scan = true, upstream: readonly ChainStep[] = []): Promise<SectionPlan> {
-  const chain = await sectionChain(directory, steps, scan, upstream);
+export async function inspectSection(directory: string, root: string, steps: readonly SectionStep[], scan = true, upstream: readonly ChainStep[] = []): Promise<SectionPlan> {
+  const chain = await sectionChain(directory, root, steps, scan, upstream);
   const plan = { ...await inspectChain(chain), chain, defined: new Set(steps.map(step => stepId(step.number))) };
   if (!plan.reset.length) return plan;
   // Report the break from the first missing step before it, as the gap caused it.
@@ -53,6 +53,8 @@ export async function inspectSection(directory: string, steps: readonly SectionS
 
 export type SectionRun = {
   directory: string;
+  // The task root, for the task-relative paths in step records.
+  root: string;
   steps: readonly SectionStep[];
   dryRun?: boolean;
   signal?: AbortSignal;
@@ -75,7 +77,7 @@ export type SectionRun = {
 // The one run loop: refuse modified outputs, retry what broke, then run each
 // unfinished step under a .running marker and complete it with its record.
 export async function runSection(run: SectionRun): Promise<SectionPlan> {
-  const plan = await inspectSection(run.directory, run.steps, !run.fresh, run.upstream);
+  const plan = await inspectSection(run.directory, run.root, run.steps, !run.fresh, run.upstream);
   const modified = modifiedError(plan, plan.chain);
   if (modified) throw modified;
   await run.check?.(plan);

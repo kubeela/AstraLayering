@@ -6,14 +6,15 @@ import sharp from 'sharp';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { svgSource, updateSvgRoot } from '../xml.ts';
 import type { GroupSeed } from './layering-types.ts';
-import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
+import { fromTaskPath, taskRootOf, toAgentPath, toTaskPathReal } from '../task-paths.ts';
 
 export type Canvas = { width: number; height: number };
 export type SvgObservation = { source: string; mode: 'svg' | 'blend' | 'edge'; savedPath: string; reference?: string; referenceHash?: string };
 // review.json and tool results record observation paths task-relative.
-export async function taskObservation<T extends SvgObservation>(root: string, entry: T): Promise<T> {
-  return { ...entry, source: await toTaskPathReal(root, entry.source), savedPath: await toTaskPathReal(root, entry.savedPath),
-    ...(entry.reference === undefined ? {} : { reference: await toTaskPathReal(root, entry.reference) }) };
+// Task-relative for records; tool results pass toAgentPath to show absolute paths.
+export async function taskObservation<T extends SvgObservation>(root: string, entry: T, at = toTaskPathReal): Promise<T> {
+  return { ...entry, source: await at(root, entry.source), savedPath: await at(root, entry.savedPath),
+    ...(entry.reference === undefined ? {} : { reference: await at(root, entry.reference) }) };
 }
 export const parentBoundsSource = (group: GroupSeed, parent?: string): string | undefined => group.allowOutsideParent ? undefined : parent;
 const boundsScale = 4;
@@ -36,7 +37,7 @@ export function createSvgReadTool(directory: string): FunctionTool {
       if (offset > text.length) throw new Error('offset 超出 SVG 源码长度');
       const end = Math.min(offset + limit, text.length);
       signal.throwIfAborted();
-      return textResult({ source: await toTaskPathReal(root, source), bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex'),
+      return textResult({ source: await toAgentPath(root, source), bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex'),
         offset, totalCharacters: text.length, nextOffset: end < text.length ? end : null,
         complete: offset === 0 && end === text.length, svg: text.slice(offset, end) });
     },
@@ -223,8 +224,8 @@ export function createSvgPreviewTool(options: {
         referenceHash: createHash('sha256').update(referenceBytes!).digest('hex') };
       const observation = { source, mode: mode as SvgObservation['mode'], savedPath, ...comparison };
       options.observed?.(observation);
-      const shown = await taskObservation(root, observation);
-      const shownBounds = bounds && { ...bounds, parent: await toTaskPathReal(root, bounds.parent) };
+      const shown = await taskObservation(root, observation, toAgentPath);
+      const shownBounds = bounds && { ...bounds, parent: await toAgentPath(root, bounds.parent) };
       return { success: true, contentItems: [
         { type: 'inputText', text: JSON.stringify({ source: shown.source, mode, crop, scale, width: outWidth, height: outHeight, savedPath: shown.savedPath, bounds: shownBounds,
           ...(args.reference === undefined ? {} : { reference: shown.reference, referenceHash: shown.referenceHash, referenceRegion, alignment }) }) },

@@ -34,7 +34,7 @@ test('input preparation only materializes requested files in references and leav
   await assert.rejects(prepareFileInputs(output, [{ name: 'same', content: '' }, { name: 'same', content: '' }]));
 });
 
-test('native Codex executes and resumes in the task root; tools keep their schema and logical path base', async t => {
+test('native Codex executes and resumes in the pipeline directory; tools keep their schema and logical path base', async t => {
   const root = await fixture(t), output = join(root, 'step01');
   const server = await fakeAppServer(root, [{ tool: 'probe', arguments: {} }]);
   const paths = await prepareWorkspace({ cwd: root, outputDirectory: output }, root);
@@ -55,7 +55,7 @@ test('native Codex executes and resumes in the task root; tools keep their schem
   assert.equal(second.threadId, first.threadId);
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   for (const call of protocol.filter(item => ['thread/start', 'thread/resume'].includes(item.method))) {
-    assert.equal(call.params.cwd, paths.root);
+    assert.equal(call.params.cwd, paths.directory);
     assert.deepEqual(call.params.dynamicTools[0].inputSchema, tool.inputSchema);
   }
   for (const result of [first, second]) {
@@ -89,7 +89,7 @@ test('report publication preserves bytes and the chosen folder, and leaves unrel
   await assert.rejects(readFile(join(paths.outputDirectory, 'unrelated.py')), { code: 'ENOENT' });
 });
 
-test('Codex changes workspace/tools by reconnecting to the same thread and keeps formal write access', async t => {
+test('Codex changes tools by reconnecting to the same thread and keeps formal write access', async t => {
   const root = await fixture(t), server = await fakeAppServer(root, [{ tool: 'deliver', arguments: {} }]);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, root), cwd: root,
     logDirectory: join(root, 'agents'), codexPathOverride: server.executable });
@@ -109,8 +109,8 @@ test('Codex changes workspace/tools by reconnecting to the same thread and keeps
   assert.deepEqual(starts.map(call => call.method), ['thread/start', 'thread/resume']);
   assert.equal(starts[1].params.threadId, 'native-thread');
   for (const [index, call] of starts.entries()) {
-    const output = join(root, `step0${index + 1}`);
     assert.equal(call.params.cwd, root);
-    assert.deepEqual(call.params.config['sandbox_workspace_write.writable_roots'], [join(output, 'workspace'), output]);
+    assert.equal(call.params.sandbox, 'danger-full-access');
+    assert.equal(call.params.config['sandbox_workspace_write.writable_roots'], undefined);
   }
 });

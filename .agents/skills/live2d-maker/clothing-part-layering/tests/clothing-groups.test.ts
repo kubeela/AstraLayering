@@ -42,7 +42,7 @@ test('wrapping garments can become distinct front/back parts even when they move
     assert.equal(task.imageGeneration, false);
     assert.equal(task.images!.length, 2);
     const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
-    assert.equal(join(f.directory, input.additionalReferences[0].path), refs.originalImage);
+    assert.equal(input.additionalReferences[0].path, refs.originalImage);
     const preview = task.tools!.find(tool => tool.name === 'preview_svg')!;
     await preview.execute({ path: input.sourceSvg, mode: 'svg' }, signal);
     await preview.execute({ path: input.sourceSvg, mode: 'blend' }, signal);

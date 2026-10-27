@@ -1,5 +1,5 @@
 ---
-本次运行（任务内路径均相对任务根目录，Krita 与检查程序为绝对路径）：
+本次运行（以下均为绝对路径）：
 - 管线分支目录：{pipeline_directory}。
 - 已组装、分层的角色 KRA（只读）：{character_kra}。
 - 对应原尺寸合成 PNG（几何配准基准，只读）：{character_color}。

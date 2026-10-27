@@ -113,6 +113,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       resumed = undefined; threadId = undefined; previous = undefined;
     }
     const workspace = paths.workspace;
+    // The CLI works in the pipeline directory; a resumed session keeps the directory it started in.
+    const cwd = previous?.workspace ? fromTaskPath(paths.root, previous.workspace) : paths.directory;
     const data = previous?.harness === model.harness ? previous.data : join(log.directory, 'cli-data');
     await mkdir(data, { recursive: true, mode: 0o700 });
     // Some CLI releases ignore their config-directory overrides for native history.
@@ -194,12 +196,12 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     const reportId = async (id: string) => {
       if (!id || id === threadId) return;
       if (threadId) throw new Error('CLI 返回了不同的原会话 ID');
-      threadId = id; await remember(root, id, { harness: model.harness, data: toTaskPath(paths.root, data), workspace: toTaskPath(paths.root, workspace) });
+      threadId = id; await remember(root, id, { harness: model.harness, data: toTaskPath(paths.root, data), workspace: toTaskPath(paths.root, cwd) });
       await options.onEvent?.({ type: 'thread.started', thread_id: id });
     };
     options.progress?.(`开始：${task.name}；${model.harness} / ${model.model} / ${model.effort}；记录：${log.directory}`);
     signal.throwIfAborted();
-    const child = spawn(executable, args, { cwd: paths.root, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn(executable, args, { cwd, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
     let spawnError: Error | undefined;
     child.on('error', error => { spawnError = error; });
     let childClosed = false;
@@ -221,7 +223,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const input: any[] = [{ type: 'text', text: workspacePrompt(prompt, paths) }];
       await writeFile(join(log.directory,'prompt.md'),input[0].text);
       for (const image of task.images || []) {
-        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:toTaskPath(paths.root, image.path)}).trimEnd() }); continue; }
+        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:fromTaskPath(paths.root, image.path)}).trimEnd() }); continue; }
         const bytes = await readFile(image.path);
         input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() }, { type: 'image', source: {
           type: 'base64', media_type: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } });

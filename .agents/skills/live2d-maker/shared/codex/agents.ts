@@ -37,7 +37,6 @@ export type AgentTask = {
   cwd?: string;
   outputDirectory?: string;
   tools?: FunctionTool[];
-  sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
 };
 
 export type GeneratedImage = { savedPath: string };
@@ -117,7 +116,7 @@ export class CodexAgents {
             ? this.options.environment!.stepImages[task.step!] : undefined;
           const paths = executionPaths(task, this.options.cwd ?? workflowsDirectory);
           const routeKey = nextImage ? nextImage + ':' + paths.workspace : undefined;
-          const nextTransport = JSON.stringify({ paths, sandbox: task.sandboxMode ?? 'workspace-write',
+          const nextTransport = JSON.stringify({ paths,
             imageGeneration: task.imageGeneration ?? false,
             tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) ?? [] });
           if (routeKey !== imageModel || nextTransport !== transportKey) {
@@ -275,7 +274,7 @@ export class CodexAgents {
     await checkCodexCapabilities(this.options.environment!, this.options);
     const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, environment, ...options } = this.options;
     const paths = await prepareWorkspace(task, cwd ?? workflowsDirectory);
-    const workingDirectory = paths.root;
+    const workingDirectory = paths.directory;
     const codex = new Codex({
       ...options,
       config: {
@@ -290,8 +289,8 @@ export class CodexAgents {
       skipGitRepoCheck: true,
       model: selected?.model || environment!.models.medium.model, modelReasoningEffort: selected?.effort || environment!.models.medium.effort,
       workingDirectory,
-      additionalDirectories: [paths.workspace, paths.outputDirectory] as string[],
-      sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
+      // No sandbox for now: paths are managed by the prompt and tools, not by write limits.
+      sandboxMode: 'danger-full-access', approvalPolicy: 'never', webSearchMode: 'disabled',
     } as const;
     const thread = codex.startThread(threadOptions);
     const signal = taskSignal(task);
@@ -362,7 +361,7 @@ export class CodexAgents {
           if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) {
             throw new Error(`${task.name} 没有返回生成图片的 savedPath`);
           }
-          // The agent returns a task-relative (or, outside the task, absolute) path.
+          // The agent copies the tool's absolute savedPath; a relative one means the task root.
           images.push({ savedPath: fromTaskPath(paths.root, output.savedPath) });
         }
         for (const image of images) savedImages.add(image.savedPath);

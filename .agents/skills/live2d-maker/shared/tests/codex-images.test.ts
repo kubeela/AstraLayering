@@ -73,7 +73,7 @@ test('normal/depth use opaque data transport in both tools and native routes wit
   const tool = imageGenerationTool(settings, 'shadow_maps', join(root, 'output'))!;
   const result = await tool.execute({ prompt: 'normal data', input_images: [input] }, new AbortController().signal);
   const saved = JSON.parse((result.contentItems[0] as { text: string }).text).savedPath;
-  assert.deepEqual(await readFile(join(root, 'output', saved)), png); // task-relative to the tool directory
+  assert.deepEqual(await readFile(saved), png); // absolute for the agent
   const route = await createCodexImageRoute(settings, 'shadow_maps', root);
   try {
     const response = await fetch(route.env.LAYERING_IMAGE_BASE_URL + '/images/generations', {

@@ -98,7 +98,7 @@ test('dry-run 与缺上游不调用模型、不写分支，提示词包含精度
   for (const mode of ['mask', 'normal-depth'] as const) {
     const prompt = await runWorkflow({ ...f.options, shadowMode: mode, dryRun: true }, { ...f.deps,
       agent: async () => assert.fail('dry run must not call models') });
-    assert.ok(prompt.includes('character-assembly/step01/') && !prompt.includes(f.source + '/')); assert.match(prompt, mode === 'mask' ? /deformer/ : /白近黑远/);
+    assert.ok(prompt.includes(f.source + '/')); assert.match(prompt, mode === 'mask' ? /deformer/ : /白近黑远/);
   }
   await assert.rejects(readFile(join(f.task, 'shadow/selection.json')), { code: 'ENOENT' });
   await rm(join(f.source, 'character-assembled.kra'));
