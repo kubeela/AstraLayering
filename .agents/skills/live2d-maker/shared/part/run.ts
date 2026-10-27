@@ -24,7 +24,8 @@ export type PartPipeline = {
   prepare(input: PreparationInput, agents: Pick<CodexAgents, 'run'>, progress?: (message: string) => void, normalization?: ImageProcessingOptions): Promise<PreparationReferences>;
 };
 export type PartInput = { reference: PreparationInput; groups: GroupInput | GroupInput[] | null; maxDepth?: number };
-export type PartAdapters = { steps?: LayeringSteps; mergeSvg?: SvgMerger };
+// prepared() is called once the references are ready, before layering starts.
+export type PartAdapters = { steps?: LayeringSteps; mergeSvg?: SvgMerger; prepared?(): void };
 
 export async function runPartPipeline(
   pipeline: PartPipeline, input: PartInput, adapters: PartAdapters = {},
@@ -53,6 +54,7 @@ export async function runPartPipeline(
   const references = input.groups === null
     ? await pipeline.prepare(input.reference, agents, agentOptions.progress, normalization)
     : await pipeline.loadPreparedReferences(input.reference.runName, input.reference.dir, input.reference.standard);
+  adapters.prepared?.();
   const layering = await runLayering({
     profile: pipeline.profile, directory: dirname(directory), references, groups: input.groups,
     steps: adapters.steps ?? createLayeringSteps(agents), mergeSvg: adapters.mergeSvg,
