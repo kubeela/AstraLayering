@@ -5,7 +5,7 @@ description: 从角色参考图制作人物与衣服分层 KRA、透明 PNG、�
 
 # Live2D Maker
 
-从实际安装的 skill 根目录执行命令。整条路线依次为：人物 part → 人物 raster → 衣服 part → 衣服 raster → 穿戴组装 → 阴影。
+从实际安装的 skill 根目录执行命令。整条路线为：人物 part 准备完成后，人物 raster 与衣服 part → 衣服 raster 两条线并行，均完成后进入穿戴组装 → 阴影；两条线共用 `--jobs` 个 agent 名额。
 
 ## 执行流程
 

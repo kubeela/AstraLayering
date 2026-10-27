@@ -51,7 +51,10 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 
 /* A selected group opens across the same canvas; other lanes keep their place. */
 .flow-world{width:max-content}
-.flow-grid{display:flex;gap:52px;align-items:flex-start}
+.flow-grid{display:flex;--card-gap:52px;gap:var(--card-gap);align-items:flex-start}
+/* The character lane above the clothing lane; the merge column beside both slides to the focused one. */
+.flow-lanes{display:flex;flex-direction:column;gap:72px}
+.flow-lane,.flow-merge{display:flex;gap:var(--card-gap);align-items:flex-start}
 .pipeline-lane{width:292px;flex:0 0 auto}
 .pipeline-lane.collapsed{width:224px}
 .pipeline-lane.group-expanded{width:1460px}
@@ -163,7 +166,6 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .overview-heading{display:flex;align-items:center;gap:16px;padding:12px 0 24px}
 .overview-heading h2{font-size:18px;font-weight:600}
 .overview-heading p{margin-top:8px;color:var(--muted);font-size:12px}
-.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;padding-bottom:16px;min-width:0}
 .overview-card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--line);border-radius:10px;background:white}
 .overview-card.selected{border-color:var(--accent)}
 .overview-card.done{border-color:#c8dfd7;background:#fbfdfc}
@@ -185,7 +187,7 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .preview-main .flow-toolbar{padding:8px 12px;gap:12px}
 .preview-main .preview-back{height:28px;font-size:11px}
 .preview-world{padding:72px 12px 12px;--step-height:max(320px,calc(100dvh - 274px))}
-.preview-world .pipeline-heading{padding:4px 7px}.preview-world .flow-grid{gap:88px}
+.preview-world .pipeline-heading{padding:4px 7px}.preview-world .flow-grid{--card-gap:88px}
 .preview-world .thread-id{display:none}
 .preview-world .pipeline-steps{padding-top:14px;padding-bottom:0}
 .preview-world .inline-tree{margin-top:0;padding-top:0;border-top:0}
@@ -248,3 +250,25 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 @media(max-width:900px){.env-fields{grid-template-columns:1fr}.env-intro{flex-direction:column}.env-main{max-height:65dvh}.env-layout{grid-template-columns:145px minmax(0,1fr)}.env-savebar{flex-wrap:wrap}.env-savebar>div{flex-basis:100%}}
 @media(max-width:620px){.env-layout{display:block}.env-nav{flex-direction:row;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}.env-nav button{white-space:nowrap;gap:8px;padding:8px}.env-intro,.env-main,.env-savebar{padding:16px}}
 #app:has(.env-editor){height:100dvh;display:flex;flex-direction:column;overflow:hidden}#app:has(.env-editor)>.app-header{flex-shrink:0}.config-page:has(.env-editor){display:flex;flex-direction:column;flex:1;min-height:0;max-width:none;width:100%;padding:0 18px 12px}.config-page:has(.env-editor)>.config-heading{min-height:108px;flex-shrink:0}.config-page:has(.env-editor)>.config-mode-tabs{margin-bottom:12px;flex-shrink:0}.env-editor{display:flex;flex-direction:column;flex:1;min-height:0}.env-intro{flex-shrink:0;padding:16px 22px}.env-layout{flex:1;min-height:0}.env-main{max-height:none;min-height:0}.env-nav{overflow:auto}.env-savebar{flex-shrink:0}
+
+/* Vertical movement goes lane to lane, never free: the scrollbar is horizontal only and touch pans sideways natively. */
+.flow-area{position:relative}
+.flow-scroll{overflow-x:auto;overflow-y:hidden;touch-action:pan-x}
+.lane-switch{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;padding:6px;border:1px solid var(--line);border-radius:999px;background:#ffffffe6;box-shadow:0 2px 10px #29485718;z-index:3}
+.lane-switch button{position:relative;display:grid;place-items:center;width:22px;height:22px;border-radius:50%}
+.lane-switch span{width:8px;height:8px;border-radius:50%;background:#c3ced6;transition:transform .2s,background .2s}
+.lane-switch button:hover span{background:#8fa4b0}
+.lane-switch button.active span{background:var(--accent);transform:scale(1.35)}
+.lane-switch button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.lane-switch small{position:absolute;right:30px;white-space:nowrap;font-size:11px;padding:2px 7px;border-radius:6px;background:#29485ee0;color:white;opacity:0;pointer-events:none;transition:opacity .15s}
+.lane-switch button:hover small,.lane-switch button:focus-visible small{opacity:1}
+/* Overview: shared preparation, the two lanes side by side in time, then the merge. */
+.overview-flow{display:grid;grid-template-columns:minmax(200px,1fr) minmax(0,2.4fr) minmax(200px,1fr);gap:28px;align-items:center;padding-bottom:16px}
+.overview-column,.overview-lane{display:flex;flex-direction:column;gap:10px;min-width:0;position:relative}
+.overview-lanes{display:flex;flex-direction:column;gap:14px;min-width:0;padding:12px;border:1px dashed #cfdbe0;border-radius:12px;position:relative}
+.overview-lane-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.overview-column-title{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.overview-start:after,.overview-merge:before{content:'→';position:absolute;top:50%;transform:translateY(-50%);color:#9fb4bd;font-size:16px}
+.overview-start:after{right:-21px}.overview-merge:before{left:-21px}
+@media(max-width:900px){.overview-flow{grid-template-columns:minmax(0,1fr)}.overview-start:after,.overview-merge:before{content:'↓';top:auto;right:auto;left:50%;transform:translateX(-50%)}.overview-start:after{bottom:-24px}.overview-merge:before{top:-24px}}
+.flow-scroll :is(.inline-tree-rows,.step-content,.group-compact,.cycle-phase,.review-feedback,.group-note,.phase-state,.step-summary){touch-action:pan-y}

@@ -111,7 +111,7 @@ test('取消总调度会终止实际管线子进程及其工具进程，保留�
   const stopped = assert.rejects(running, /cancel test/);
   await until(() => readFile(join(f.task, 'probe.pid')).then(() => true, () => false));
   const probePid = Number(await readFile(join(f.task, 'probe.pid'), 'utf8'));
-  const workerPid = (await taskStatus(f.options)).runner!.childPid!;
+  const workerPid = (await taskStatus(f.options)).runner!.childPids!['character-assembly']!;
   controller.abort(new Error('cancel test'));
   await stopped;
   await until(async () => !processAlive(workerPid));

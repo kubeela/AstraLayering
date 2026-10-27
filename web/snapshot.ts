@@ -57,7 +57,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
   const pipelines = [];
   for (const id of pipelineIds) {
     if (record.run?.archive && !record.run.pipelines[id]) continue;
-    const active = record.runnerAlive && record.lockHeld && record.run?.activePipeline === id;
+    // The character and clothing lanes run side by side: several pipelines can be active at once.
+    const current = !!record.run?.activePipelines?.includes(id);
+    const active = record.runnerAlive && record.lockHeld && current;
     const saved = record.run?.pipelines[id];
     const mode = shadowMode(record.run?.shadowMode);
     const branch = id === 'shadow' ? id + '/' + mode : id;
@@ -82,7 +84,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
       try { validateGroups(document?.groups ?? []); groups = document?.groups ?? []; }
       catch (error) { errors.push(id + ': ' + String(error)); }
       const all = flatten(groups);
-      const failedSince = !active && record.status === 'failed' && record.run?.activePipeline === id ? record.run.runner?.startedAt : undefined;
+      const failedSince = !active && record.status === 'failed' && current ? record.run?.runner?.startedAt : undefined;
       const progress = await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined, failedSince);
       Object.assign(states, progress.states); Object.assign(messages, progress.messages);
       for (const phase of phases) {
