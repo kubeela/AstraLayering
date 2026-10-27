@@ -12,7 +12,7 @@ pnpm start --name jianma --background
 
 自定义运行根目录时，每次追加 `--dir /绝对路径/运行根目录`。完整仓库默认 `<仓库>/.run`，独立安装默认 `<skill上一级>/.run`。任务是根目录下一层的 `<name>/`；所有相对输入（包括 image、groups、krita 和 handoff）从任务目录解析。数据不得放在 skill 内。
 
-总控按人物 part、人物 raster、衣服 part、衣服 raster、组装、阴影顺序执行；`--from`／`--to` 选择连续范围并保存，后续阶段自动推进。`--jobs` 仅控制 part 实际 agent 并发，默认 3。已有两份 KRA 与简化参考时可从组装开始，不伪造上游完成记录。
+总控按依赖调度：人物 part 完成准备（简化参考）后，人物 raster 与衣服线（衣服 part → 衣服 raster）同时进行；两条线都完成后执行组装和阴影。`--from`／`--to` 选择连续范围并保存，范围内未选的上游视为已就绪，后续阶段自动推进。`--jobs` 是整次运行所有并行管线共用的 agent 名额，默认 3，并行不会增加总并发。运行状态的 `activePipelines` 列出正在执行的管线（旧任务的 `activePipeline` 读入时自动转换）。已有两份 KRA 与简化参考时可从组装开始，不伪造上游完成记录。
 
 后台返回启动确认后仍需查询状态与日志，Codex 补丁可能仍在准备。新任务或只有成果的旧任务没有总控 `run.json` 时，`--status` 报缺记录；按实际输入和范围首次启动即可。先核实活跃进程与锁，不能同时从 CLI、网页或独立 section 启动同一任务。
 
@@ -21,6 +21,8 @@ pnpm start --name jianma --background
 新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项保存在总控与 `part-layering/preparation/step02/options.json`，续跑省略则沿用；`--no-standard` 显式关闭。已完成的参考改变选项前，需要对 preparation 的 options 步骤重试，后续依赖参考随之重做。
 
 默认换装范围是主体衣装；手套、袜类、鞋靴和其自身装饰随人物保留。人物素体使用临时连体服，raster step03 去除；衣服 preparation 同时读取简化穿衣图和素体图，提取互补衣装。整套衣装的大小与位置由组装适配。
+
+素体 agent 的选择写入 `part-layering/preparation/step07/decision.json`（`dressed`）。没有换装时，总控把 clothing-part-layering 与 clothing-raster-layering 记为“完成（跳过）”且不调用 agent；raster step03 直接复制 step02 成果作为素体，character-assembly 直接复制人物 KRA，阴影照常运行。之后重做素体并换装，两条衣服管线会正常执行。旧任务没有 decision.json 时按简化图与素体像素是否相同判断；已画出衣服的旧任务继续使用这些衣服，已完成的输入保持不变。
 
 参考和产物按内容指纹复用，提示词更新不会自动重绘。旧任务只有已合格参考时可沿用；若旧记录含尺寸／摘要则须匹配。已完成步骤的产物被替换时拒绝直接续跑并保留文件，不用归档副本猜补。生成参考的透明处理、等比缩放和留档规则见 [shared](../shared/README.md#参考图后处理)。
 

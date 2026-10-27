@@ -17,7 +17,7 @@ import { steps } from '../steps.ts';
 import { runWorkflow } from '../run.ts';
 
 const completed: StepResult = { status: 'completed', summary: 'fixture' };
-const preflight = async (executable: string) => ({ executable, version: 'fixture' });
+const preflight = async (executable: string) => ({ executable });
 async function fixture(t: TestContext) {
   const directory = await realpath(await mkdtemp(join(tmpdir(), 'clothing-raster-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -39,7 +39,7 @@ async function deliver(request: AgentRequest, thread = request.threadId ?? 'draw
   } else {
     await request.onEvent({ type: 'thread.started', thread_id: thread });
     const id = request.prompt.startsWith('在 clothing-raster-layering/step01/') ? 'step02' : 'step01';
-    assert.deepEqual(request.tools?.map(tool => tool.name), id === 'step02' ? ['locate_pixel_differences'] : ['edit_groups', 'edit_occlusion']);
+    assert.deepEqual(request.tools?.map(tool => tool.name), id === 'step02' ? ['locate_pixel_differences', 'krita'] : ['edit_groups', 'edit_occlusion', 'krita']);
     const step = steps.find(step => step.id === id)!;
     for (const file of step.requiredFiles) await writeFile(join(request.directory, id, 'review' in step && step.review && file === 'report.md' ? 'report.md.tmp' : file), `${id} ${file}`);
   }

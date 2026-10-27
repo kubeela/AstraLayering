@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, symlink, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { strToU8, zipSync } from 'fflate';
 import { createPixelTool } from '../raster/pixel-tool.ts';
-import { partScope, type PartScopeOptions } from '../raster/pixel-part-scope.ts';
+import { partScope, type PartSource } from '../raster/pixel-part-scope.ts';
 
-async function fixture(t: any, options: PartScopeOptions = {}) {
+async function fixture(t: any, options: { sources?: PartSource[] } = {}) {
   const base = await mkdtemp(join(tmpdir(), 'pixel-localization-')), task = join(base, 'case'), cwd = join(task, 'raster-layering');
   await mkdir(cwd, { recursive: true }); t.after(() => rm(base, { recursive: true, force: true }));
   const make = async (name: string, rectangles: [number, number, number, number, number[]][]) => {
@@ -51,23 +51,24 @@ async function ora(layers: { name: string; x: number; y: number; width: number; 
   return zipSync(files);
 }
 
-test('按部件实际范围检查多个深度分片及周边缺口，排除头发；不选仍为全图且不调用 Krita', async t => {
-  let exports = 0;
+test('按导出图层的实际范围检查多个深度分片及周边缺口，排除头发；不选仍为全图且不需要 layers', async t => {
   const layers = await ora([
     { name: '05 camisole/bodice L5', x: 12, y: 8, width: 6, height: 4 },
     { name: '09 camisole/bodice L9', x: 12, y: 12, width: 6, height: 4 },
     { name: '13 hair/main', x: 0, y: 0, width: 4, height: 4 },
   ]);
-  const f = await fixture(t, { krita: 'fixture-krita', exportLayers: async () => { exports++; return layers; } });
+  const f = await fixture(t);
   const red = [180, 80, 80, 255], blue = [80, 80, 180, 255];
   await f.make('reference.png', [[0, 0, 4, 4, red], [10, 8, 8, 8, red]]);
   await f.make('current.png', [[0, 0, 4, 4, blue], [12, 8, 6, 8, blue]]);
   await writeFile(join(f.cwd, 'current.kra'), 'fixture');
+  await writeFile(join(f.cwd, 'layers.ora'), layers);
   const all = await f.call({ reference: 'reference.png', current: 'current.png' });
   const empty = await f.call({ reference: 'reference.png', current: 'current.png', parts: [] });
-  assert.deepEqual(empty.counts, all.counts); assert.deepEqual(empty.regions, all.regions); assert.equal(exports, 0);
-  const selected = await f.call({ reference: 'reference.png', current: 'current.png', parts: ['camisole/bodice'], part_padding: 2, min_region_pixels: 1 });
-  assert.equal(exports, 1);
+  assert.deepEqual(empty.counts, all.counts); assert.deepEqual(empty.regions, all.regions);
+  await assert.rejects(f.call({ reference: 'reference.png', current: 'current.png', parts: ['camisole/bodice'] }), /layers 须为文件路径/);
+  const selected = await f.call({ reference: 'reference.png', current: 'current.png', layers: 'layers.ora', parts: ['camisole/bodice'], part_padding: 2, min_region_pixels: 1 });
+  assert.equal(selected.partSelection.layersFile, join(f.cwd, 'layers.ora'));
   assert.deepEqual(selected.partSelection.layers.map((row: any) => row.bounds), [[12, 8, 6, 4], [12, 12, 6, 4]]);
   assert.deepEqual(selected.regions.find((row: any) => row.kind === 'missing').bounds, [10, 8, 2, 8]);
   assert.deepEqual(selected.regions.find((row: any) => row.kind === 'color').bounds, [12, 8, 6, 8]);
@@ -76,7 +77,7 @@ test('按部件实际范围检查多个深度分片及周边缺口，排除头�
   assert.ok(selected.regions.every((row: any) => row.bounds[0] >= 10));
   assert.deepEqual((await sharp(selected.files.scopePreview).metadata()).width, 32);
   await f.make('visible.png', [[10, 8, 4, 8, [255, 255, 255, 255]]]);
-  const limited = await f.call({ reference: 'reference.png', current: 'current.png', parts: ['camisole'],
+  const limited = await f.call({ reference: 'reference.png', current: 'current.png', layers: 'layers.ora', parts: ['camisole'],
     visible_mask: 'visible.png', crop: [10, 8, 3, 8], part_padding: 2, min_region_pixels: 1 });
   const limitedMask = await sharp(limited.files.scope).greyscale().raw().toBuffer();
   assert.equal(limitedMask[8 * 32 + 10], 255); assert.equal(limitedMask[8 * 32 + 13], 0);
@@ -97,7 +98,7 @@ test('父分组包含后代，重叠选择不重复计数，检测内部缺口�
   assert.deepEqual(a.bounds[0].bounds, [10, 10, 8, 8]);
 });
 
-test('未知部件、歧义归属、隐藏部件、KRA 尺寸不符和越界 KRA 均报错，不回退全图', async t => {
+test('未知部件、歧义归属、隐藏部件、画布尺寸不符、非 .ora 和早于 KRA 的导出均报错，不回退全图', async t => {
   const layers = await ora([
     { name: '人物 | 01 collar', x: 1, y: 1, width: 2, height: 2 },
     { name: '衣服 | 02 collar', x: 10, y: 10, width: 2, height: 2 },
@@ -109,13 +110,20 @@ test('未知部件、歧义归属、隐藏部件、KRA 尺寸不符和越界 KRA
   await assert.rejects(partScope(layers, ['clothing:collar'], 0, [40, 32]), /画布尺寸不同/);
   const selected = await partScope(layers, ['clothing:collar'], 0, [32, 32]);
   assert.deepEqual(selected.bounds[0].bounds, [10, 10, 2, 2]);
-  let exported = '';
-  const f = await fixture(t, { krita: 'fixture', exportLayers: async path => { exported = path; throw new Error('export called'); } });
+  const f = await fixture(t);
   await f.make('reference.png', []); await f.make('current.png', []);
-  await writeFile(join(f.base, 'outside.kra'), 'outside');
-  await symlink(join(f.base, 'outside.kra'), join(f.cwd, 'escaped.kra'));
-  await assert.rejects(f.call({ reference: 'reference.png', current: 'current.png', parts: ['collar'], current_kra: 'escaped.kra' }), /export called/);
-  assert.ok(exported.endsWith('outside.kra'));
+  await writeFile(join(f.cwd, 'current.kra'), 'fixture');
+  await writeFile(join(f.cwd, 'layers.ora'), layers);
+  await writeFile(join(f.cwd, 'layers.png'), 'png');
+  await assert.rejects(f.call({ reference: 'reference.png', current: 'current.png', layers: 'layers.png', parts: ['clothing:collar'] }), /\.ora/);
+  // An export older than the last KRA save no longer shows the saved layers.
+  const past = new Date(Date.now() - 60_000);
+  await utimes(join(f.cwd, 'layers.ora'), past, past);
+  await assert.rejects(f.call({ reference: 'reference.png', current: 'current.png', layers: 'layers.ora', parts: ['clothing:collar'] }), /重新导出/);
+  await writeFile(join(f.cwd, 'layers.ora'), layers);
+  const fresh = await f.call({ reference: 'reference.png', current: 'current.png', layers: 'layers.ora', parts: ['clothing:collar'] });
+  assert.deepEqual(fresh.partSelection.layers[0].bounds, [10, 10, 2, 2]);
+  await assert.rejects(f.call({ reference: 'reference.png', current: 'current.png', layers: 'layers.ora', parts: ['collar'], current_kra: 'missing.kra' }), /ENOENT/);
 });
 test('单层可见 mask 保留缺口检测，同时排除合理补全；默认忽略细微颜色差', async t => {
   const f = await fixture(t), skin = [180, 100, 90, 255];

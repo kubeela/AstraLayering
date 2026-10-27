@@ -91,7 +91,7 @@ test('续跑时显式传空 Krita 路径仍报错，不静默沿用旧配置', a
     [runClothingRaster, 'clothing-raster-layering']] as const) {
     await seedUpstream('saved', id === 'raster-layering' ? 'part-layering' : 'clothing-part-layering', runsDirectory);
     const directory = pipelineDirectory('saved', id, runsDirectory);
-    await initializeRun(directory, newConfig('saved', input, { executable: process.execPath, version: 'fixture' }));
+    await initializeRun(directory, newConfig('saved', input, { executable: process.execPath }));
     for (const krita of ['', '   ']) {
       await assert.rejects(run({ name: 'saved', krita, dryRun: true }, { runsDirectory,
         preflight: async () => { throw new Error('preflight must not run'); },

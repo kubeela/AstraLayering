@@ -24,7 +24,7 @@ Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最
 
 复用现有 raster runner 的模型调用、日志、thread 与完成标记。两分支有独立 `run.json` 和 `step01/.running` / `.completed`。切换模式只检查对应分支；另一分支不被清空。源 KRA、PNG、simplified、所需结构、提示词或该分支制作参考／检查代码改变时，旧分支原样保留到 `<模式>.previous-*`，新建本分支会话。删除某分支 `step01/.completed` 可按既有规则重做该分支。
 
-仅文件存在不代表检查通过：检查原尺寸、KRA 合成与 PNG 一致、真实图层与 part 引用、原生裁切和模式；地图检查原尺寸、深度灰度、原画 alpha。每次新制作和续跑都会校验原生检查指纹；工程、关系或检查图改变时，重新在独立 Krita 进程中检查。绘制 agent 仍需逐图评估画法和余量，不能用像素计数替代艺术验收。
+仅文件存在不代表检查通过：检查原尺寸、KRA 合成与 PNG 一致、真实图层与 part 引用、原生裁切和模式；地图检查原尺寸、深度灰度、原画 alpha。原生检查由 agent 通过 `inspect_shadow_mask` 工具在本 section 的 Krita 中运行；交付不核对检查结果。绘制 agent 仍需逐图评估画法和余量，不能用像素计数替代艺术验收。
 
 只有完整交付后更新 `shadow/selection.json`，角色工作台默认载入最近完成的路线。两套产物共存时，可显式选择混合预览：蒙版 KRA 加原组装生成的法线／深度。工作台分别核对两分支的 `step01/source.json` 与当前源工程，不把不匹配的旧结果混合；预览选择不改变制作参数。源输入变化时暂停旧结果，等待对应分支续跑生成。
 
@@ -42,16 +42,12 @@ Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最
 
 开工前生成 `references/inputs.json`：真实 part、单深度／多深度区域、KRA UUID 和明确的名称归属。未匹配的层仍需查看像素确认。随后复制 [制作格式](references/production.md)、[裙影示意](references/skirt.png) 与 [发影示意](references/hair.png)。两图是依据原模型结构绘制的原创示意，不再分发模型原画。
 
-保存后使用运行提示提供的命令，或在 skill 根目录执行：
+保存后，agent 调用本 section 专属的 `inspect_shadow_mask` 工具检查，检查时机和次数由 agent 决定。工具使用本 section 的 Krita，未启动时自动启动，并把问题、提示和检查图路径直接返回给 agent。
 
-```sh
-node shadow/inspect.ts --output /path/to/shadow/mask/step01 --krita /path/to/krita
-```
+`shadows.json` v2 必须为每处影层声明 `testOffsets`（原画像素，含复位与非零偏移）与依据。完整影层没有裁切外像素只提示复核，不按固定面积倍率拒绝；空影层、错误归属与越界新增 alpha 作为 problems 返回给 agent 处理；原生结构错误由交付结构检查拒绝。
 
-`shadows.json` v2 必须为每处影层声明 `testOffsets`（原画像素，含复位与非零偏移）与依据。完整影层没有裁切外像素只提示复核，不按固定面积倍率拒绝；空影层、错误归属、错误原生结构与越界新增 alpha 阻止完成。
+检查作为桥接任务在该 Krita 中打开保存工程的副本，不保存修改，结束后关闭副本；导出去影对照、完整影层、联合接收面和全部相对偏移。不转换工程色深，目前原始像素检查支持 RGBA U8。其他色深明确报错，不压缩素材以绕过检查。
 
-固定检查程序在独立设置与临时目录中打开保存工程，不保存修改；导出去影对照、完整影层、联合接收面和全部相对偏移。Linux 沿用可用显示环境，没有 DISPLAY 时启动并清理自己的 Xvfb；需安装 Krita Python 插件和 Xvfb。不转换工程色深，目前原始像素检查支持 RGBA U8。其他色深明确报错，不压缩素材以绕过检查。
-
-私有运行目录使用短系统临时路径和 `0700` 权限；Krita 退出通过 `file_quit` 动作请求。启动警告、插件执行结果与进程退出是不同检查项；`Krita.instance().quit()` 不属于本次实测 Krita 5.3.4.1 的 Python API。Jianma 从头测试及环境问题见仓库 `tutorial/live2d-guidance/formal/sources/jianma-shadow-fresh-run.md`。
+Jianma 从头测试及环境问题见仓库 `tutorial/live2d-guidance/formal/sources/jianma-shadow-fresh-run.md`。
 
 工作台阴影栏目提供参考图、去影对照、逐处余量拼图和检查记录；拼图只供比较，记录中的完整 PNG 保持原分辨率。此检查覆盖素材与原生裁切，尚不验证实际 deformer／物理动画或 Cubism 导出。

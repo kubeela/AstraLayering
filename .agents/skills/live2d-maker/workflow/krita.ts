@@ -14,7 +14,7 @@ export class KritaUnavailable extends Error {
 
 export type KritaCheck = (path: string) => Promise<KritaInstallation>;
 // Krita starts under the same display environment as the workflow's agents.
-export const workflowKrita: KritaCheck = path => checkKrita(path, undefined, loadWorkflowEnvironment().codex.env);
+export const workflowKrita: KritaCheck = path => checkKrita(path, loadWorkflowEnvironment().codex.env);
 
 // Checks the Krita this run would use: the one given now, else the recorded one.
 // Routes without a Krita pipeline need none.

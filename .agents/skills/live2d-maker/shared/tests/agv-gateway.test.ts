@@ -15,6 +15,7 @@ import { gatewayRequestUrl, genaiGateway, prepareGenaiThinking, prepareGenaiTool
 import { ToolCatalog, toolDefinition, toolsDirectory } from '../codex/tool-config.ts';
 import { profile as character } from '../../part-layering/profile.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
+const shadowTools = fileURLToPath(new URL('../../shadow/tools/', import.meta.url));
 
 test('AGV gateway forwards headers before delayed SSE content and records phases without request secrets', async t => {
   const root = await mkdtemp(join(tmpdir(), 'agv-headers-'));
@@ -226,10 +227,10 @@ test('agv HTTP gateway sends the real grouping union schema as JSON Schema and r
 test('all real shared, character and clothing tool schemas retain every constraint in Gemini and MCP registration', async t => {
   const root = await mkdtemp(join(tmpdir(), 'agv-catalog-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const names = (await readdir(toolsDirectory, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name);
-  assert.ok(names.includes('write_groups') && names.includes('propose_occlusion') && names.includes('imagegen'));
-  for (const [label, overrides] of [['shared', undefined], ['character', character.toolsDirectory], ['clothing', clothing.toolsDirectory]] as const) {
-    const catalog = new ToolCatalog(toolsDirectory, overrides);
+  const shared = (await readdir(toolsDirectory, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name);
+  assert.ok(shared.includes('write_groups') && shared.includes('propose_occlusion') && shared.includes('imagegen'));
+  for (const [label, overrides] of [['shared', undefined], ['character', character.toolsDirectory], ['clothing', clothing.toolsDirectory], ['shadow', shadowTools]] as const) {
+    const catalog = new ToolCatalog(toolsDirectory, overrides), names = catalog.names();
     const definitions = names.map(name => catalog.get(name));
     const snapshot = structuredClone(definitions);
     const tools = definitions.map(definition => ({ ...definition, async execute() { throw new Error('registration only'); } }));

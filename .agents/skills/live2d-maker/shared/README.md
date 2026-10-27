@@ -6,11 +6,11 @@
 
 ## 工具与模型
 
-工具定义唯一来源是 `shared/tools/<name>/description.md` 与 `schema.json`，各 section 的 `tools/<name>/` 可覆盖。启动时加载并固定本次调用定义；schema 无效直接报错，真正的路径与写入校验在实现中。动态注册只管理工作流函数工具，宿主原生工具仍由宿主提供。模型、provider 与生图协议见[模型方案与配置](../references/model-presets.md)。
+工具定义由 `tools/<name>/description.md` 与 `schema.json` 组成，按归属存放：两条及以上管线共用的工具放 `shared/tools/<name>/`；只属于一条管线的工具放该管线的 `tools/<name>/`（如 `shadow/tools/inspect_shadow_mask`、`part-layering/tools/reuse_reference`），只在该管线的工具目录中可见。管线的 `tools/<name>/` 也可逐文件覆盖同名共享定义（如衣服的 `write_groups`）。启动时加载并固定本次调用定义；schema 无效直接报错，真正的路径与写入校验在实现中。动态注册只管理工作流函数工具，宿主原生工具仍由宿主提供。模型、provider 与生图协议见[模型方案与配置](../references/model-presets.md)。
 
 `preview_svg` 的生成图对照参数只在补全阶段开放，section 定义覆盖后仍保留阶段限制。`referenceRegion` 使用生成图坐标选取对应部件，工具将裁片等比居中到 SVG 实际内容范围；`referenceOffset` 使用原图像素微调，各轴上限为部件尺寸的 10%。生成图用 `edge` 检查形状，省略 reference 参数后用默认参考图 `blend` 检查定位；`crop` 仅控制最终查看窗口。生成图对照默认聚焦部件，普通对照默认全画布，输入文件保持原样。读取与预览接受可读本地路径及符号链接，参考图沿用生图工具返回的位置。自定义生图工具 `imagegen` 的 `input_images` 与可选 `output_path` 只接受绝对路径，`output_path` 省略时使用默认生图目录；原生 Codex 生图保留自身保存位置并返回绝对 `savedPath`。两类生图返回或 agent 回复的相对 `savedPath` 直接报错，不按任何目录猜测。
 
-所有操作 Krita 的提示词通过 `{krita_environment}` 注入共用 [environment.md](krita/environment.md)；它和 prompts、工具说明是运行输入，不是额外使用手册。
+Krita 的用法只写在 [krita 工具说明](tools/krita/description.md)，仅随需要 Krita 的 section 的工具提供，提示词不注入共用环境段落；prompts 与工具说明是运行输入，不是额外使用手册。
 
 ## 多深度与上游修正
 
@@ -43,10 +43,8 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 | 人物 `0-标准姿态.md`、`2-简化图片.md`、`3-素体参考.md`，衣服 `preparation.md` | `{image_execution_rules}`；衣服另有 `{width}`、`{height}` | [人物生图规则](prompts/preparation-image-rules.md)、[标准化规则](prompts/preparation-standardize-rules.md)、[衣服生图规则](prompts/preparation-clothing-rules.md)；尺寸来自原图。只给绘制正文的 API 调用者使用[同样可见的外层模板](prompts/preparation-image-task.md)中的 `{drawing_prompt}`。 |
 | 两套 part 的 `4-初始分组.md` | `{run_directory}`、`{reference_label}`、`{reference_path}`、`{groups_path}` | 本次目录、人物／衣服参考类型及输入路径。 |
 | 两套 part 的 `5-组轮廓.md`、`6-轮廓review.md`、`8-同层轮廓去重.md`、`9-正面遮挡补全.md`、`10-直属结构拆分.md`、`11-遮挡层级规划.md`，及 `prompts/groups/**` 覆盖文件 | `{prompt_source}`、`{runtime_context}`；按职责声明 `{repair_context}`、`{note_repair_rule}`、`{report_path}`、`{fixed_rules}`、`{fixed_rules_source}` | `runtime_context` 是当前组、画布、绑定草稿／候选、父组、同级件和参考图等 JSON 数据；补全、拆分的固定规则来自各自 `9-补全操作约定.md`／`10-拆分操作约定.md`；返修见[返修上下文](prompts/outline-repair-context.md)与[说明修正](prompts/outline-note-repair.md)。 |
-| 两套 raster 的所有绘制、review、repair Markdown | `{drawing_responsibilities}`、`{krita_environment}`、`{runtime_context}`；首步另有 `{drawing_report_filename}`，检查／返修有 `{review_report_filename}`、`{repair_report_filename}` | [绘制职责](raster/drawing-responsibilities.md)按职责填入或留空；运行信息来自[绘制模板](prompts/raster-runtime.md)或[检查模板](prompts/raster-review-runtime.md)，内部路径、版本、交付文件等也逐项声明占位符。 |
-| [组装](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影蒙版](../shadow/prompts/mask.md)、[法线／深度](../shadow/prompts/normal-depth.md) | `{krita_environment}`、`{runtime_context}` | [组装运行信息](prompts/assembly-runtime.md)、[阴影运行信息](prompts/shadow-runtime.md)，蒙版检查命令由[检查说明模板](prompts/shadow-inspection.md)中的 `{inspection_command}` 声明。 |
-
-`{krita_environment}` 展开为[共用段落模板](krita/environment-section.md)，其中 `{source_path}` 指向[共用环境说明](krita/environment.md)，`{environment_rules}` 是该文件全文，Krita 绝对路径和版本分别填入 `{krita_executable}`、`{krita_version}`。段落保留明确的开始／结束标记和绝对来源路径。
+| 两套 raster 的所有绘制、review、repair Markdown | `{drawing_responsibilities}`、`{runtime_context}`；首步另有 `{drawing_report_filename}`，检查／返修有 `{review_report_filename}`、`{repair_report_filename}` | [绘制职责](raster/drawing-responsibilities.md)按职责填入或留空；运行信息来自[绘制模板](prompts/raster-runtime.md)或[检查模板](prompts/raster-review-runtime.md)，内部路径、版本、交付文件等也逐项声明占位符。 |
+| [组装](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影蒙版](../shadow/prompts/mask.md)、[法线／深度](../shadow/prompts/normal-depth.md) | `{runtime_context}` | [组装运行信息](prompts/assembly-runtime.md)、[阴影运行信息](prompts/shadow-runtime.md)，蒙版检查命令由[检查说明模板](prompts/shadow-inspection.md)中的 `{inspection_command}` 声明。 |
 
 ### 请求、恢复与生图适配
 
@@ -61,12 +59,11 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 | [生图请求](prompts/image-request.md)、[Nano 纯色背景](prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |
 | [Nano 仅换背景](prompts/nano-background-replacement.md) | `{background_hex}`、`{width}`、`{height}`。第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。 |
 
-工具说明和参数仍来自 `shared/tools/<工具名>/description.md`／`schema.json` 或各管线自己的工具定义；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
+工具说明和参数仍来自 共享的 `shared/tools/<工具名>/` 或所属管线的 `tools/<工具名>/`（`description.md`／`schema.json`）；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
 
 ### 查阅实际请求
 
 各请求目录的 `prompt.md` 保存展开后的正文，`request.json` 保存任务、附图说明和输入消息。CLI 的 `prompt.md` 保存经过 CLI 外层模板展开后的实际正文。raster 阶段既有 `prompt.md`、review／repair 提示词记录也继续保留。Nano 的 `image-processing/normalization.json` 同时保存原始提示词和 provider 实际提示词。模板和实际请求可以逐项对照；不改全局或隐藏的系统提示词。
-
 
 ## 启动验证
 
@@ -113,7 +110,6 @@ pnpm check
 ### 验证记录
 
 任务 monitor.md 至少记录：代码／CLI 版本与配置位置、实际覆盖的步骤或工具集、模拟／真实验证区别、结果和请求日志、未测项。重用证据时说明适用范围。不能使用“所有情况都通过”代替这些记录；新的问题补具体回归和检查条件。
-
 
 ## 自动化测试（维护用）
 

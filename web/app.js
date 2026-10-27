@@ -33,7 +33,7 @@ const initial = await get('./api/tasks');
 let tasks = initial.tasks, data = { files:[], pipelines:[] }, pipelineSteps = structuredClone(stepTemplates);
 const state = {
  page:new URLSearchParams(location.search).get('page')||'project', name:selectedTask(initial.directory,tasks,new URLSearchParams(location.search).get('name')),
- stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, autoHeight:true, canvasLeft:0, canvasTop:0,
+ stage:0, selectedStep:'preparation', inspect:false, compare:false, asset:null, zoom:null, autoHeight:true, canvasLeft:0, canvasTop:0, lane:0, mergeShift:0,
  directory:initial.directory, ref:'worktree', file:'', diff:false, configFilter:'', uploaded:null, configMode:'env',
  collapsedPipelines:new Set(), collapsedSteps:new Set(), collapsedPhases:new Set(),
  details:new Map(),
@@ -43,6 +43,9 @@ const stages = [
  {name:'衣服分块',id:'clothing-part-layering'}, {name:'衣服绘制',id:'clothing-raster-layering'},
  {name:'穿戴组装',id:'character-assembly'}, {name:'阴影制作',id:'shadow'},
 ];
+// After the character preparation the character and clothing lanes run side by side; both merge into the assembly.
+const flowLanes = [{name:'人物线',stages:[0,1]}, {name:'衣服线',stages:[2,3]}], mergeStages = [4,5];
+const laneOf = index => flowLanes.findIndex(lane=>lane.stages.includes(index));
 const isRasterPipeline = index => ['raster-layering','clothing-raster-layering'].includes(stages[index]?.id);
 const hasKraPreview = index => isRasterPipeline(index)||stages[index]?.id==='character-assembly'
  ||stages[index]?.id==='shadow'&&data.pipelines[index]?.mode==='mask';
@@ -350,9 +353,12 @@ function processArtifacts(index, step) {
  const extra=deliveries.length?`<details class="process-files delivery-files" data-details="delivery:${index}:${step.id}"><summary>${deliveries.length} 个补充产物</summary>${render(deliveries)}</details>`:'';
  return extra+(items.length?`<details class="process-files" data-details="process:${index}:${step.id}"><summary>${listing.total} 个过程文件${listing.shown<listing.total?` · 显示 ${listing.shown} 个（按目录平分）`:''}</summary>${listing.folders.map(({folder,total,files})=>`<details class="process-group" data-details="process-folder:${index}:${step.id}:${esc(folder)}"><summary>${esc(folder||'workspace 根目录')} <small>${total} 个${files.length<total?` · 显示最新 ${files.length} 个`:''}</small></summary>${render(files)}</details>`).join('')}</details>`:'');
 }
+// Shown while the section's private Krita process is running.
+// A skipped lane (no dress-up, nothing to make) counts as complete.
+const finished=stage=>stage.status==='done'||stage.status==='skipped';
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
- return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
+ return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}${kritaBadge(index)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${stage.status==='skipped'?`<p class="lane-summary skipped-lane">${esc(data.pipelines[index]?.summary||'无需执行')}</p>`:''}${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
 }
 function inspector() {
  const stage=stages[state.stage],step=selectedStep(),item=state.asset;
@@ -365,21 +371,32 @@ function inspector() {
 function overviewCard(stage,index) {
  const status=observedDisplayStatus(index,stage.status);
  return `<article class="overview-card ${status} ${state.stage===index?'selected':''}" data-overview="${index}">
- <button class="overview-stage" data-stage="${index}" aria-label="查看${esc(stage.name)}进展"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h3>${esc(stage.name)}</h3></button>
+ <button class="overview-stage" data-stage="${index}" aria-label="查看${esc(stage.name)}进展"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h3>${esc(stage.name)}</h3>${kritaBadge(index)}</button>
  <div class="overview-footer"><span class="execution-state ${status}">${statusMark(status)}${esc(statusLabel(status))}</span><div class="overview-actions"><button class="button" data-stage="${index}">${icon('eye')}预览</button></div></div>
  </article>`;
 }
 function projectPage() {
  if(!state.name)return `${pageHeading()}<section class="empty-workspace"><h2>开始一次角色制作</h2><p>新建任务并提供一张角色图，或选择已有任务所在的运行目录。</p><p>${esc(state.directory)}</p><button class="primary" data-action="new">新建任务</button></section>`;
+ // The character preparation is shared; then the character and clothing lanes run in parallel and merge.
+ const cards=indexes=>indexes.filter(index=>stages[index]&&visibleStage(index)).map(index=>overviewCard(stages[index],index)).join('');
+ const column=(kind,title,html)=>html?`<div class="overview-column ${kind}"><small class="overview-column-title">${title}</small>${html}</div>`:'';
+ const lanes=[{name:'人物线',stages:[1]},{name:'衣服线',stages:[2,3]}].map(lane=>({...lane,html:cards(lane.stages)})).filter(lane=>lane.html);
  return `${pageHeading()}${runNotice()}<section class="pipeline-overview">
- <div class="overview-heading"><div><h2>管线执行</h2><p>选择管线，打开完整进展图。</p></div></div>
- <div class="overview-grid">${stages.map((stage,index)=>visibleStage(index)?overviewCard(stage,index):'').join('')}</div></section>`;
+ <div class="overview-heading"><div><h2>管线执行</h2><p>人物分块准备完成后，人物线与衣服线并行执行，共用同一组 agent 名额，在穿戴组装合流。选择管线，打开完整进展图。</p></div></div>
+ <div class="overview-flow">${column('overview-start','共同准备',cards([0]))}${lanes.length?`<div class="overview-lanes">${lanes.map(lane=>`<div class="overview-lane"><small class="overview-column-title">${lane.name}</small><div class="overview-lane-cards">${lane.html}</div></div>`).join('')}</div>`:''}${column('overview-merge','合流',cards([4,5]))}</div></section>`;
+}
+function kritaBadge(index) {
+ const krita=data.pipelines?.[index]?.krita;
+ return krita?`<span class="krita-badge" title="Krita ${esc(krita.version)} · pid ${esc(krita.pid)} · 启动于 ${esc(new Date(krita.startedAt).toLocaleTimeString())}">Krita 运行中</span>`:'';
 }
 function graph() {
  if(!state.name)return '<section class="empty-workspace"><h2>尚未选择任务</h2><button class="button" data-page="project">选择任务</button></section>';
+ const cards=indexes=>indexes.filter(visibleStage).map(flowCard).join('');
+ const lanes=flowLanes.map((lane,i)=>({...lane,html:cards(lane.stages),i})).filter(lane=>lane.html),merge=cards(mergeStages);
+ const switcher=lanes.length>1?`<nav class="lane-switch" aria-label="切换关注的管线">${lanes.map(lane=>`<button data-lane="${lane.i}" class="${state.lane===lane.i?'active':''}" aria-label="查看${lane.name}" aria-pressed="${state.lane===lane.i}" title="${lane.name}"><span></span><small>${lane.name}</small></button>`).join('')}</nav>`:'';
  return `<section class="workflow-shell"><div class="flow-area"><div class="flow-toolbar"><button class="button preview-back" data-page="project">${icon('branch')}执行控制</button><span>${esc(state.name)} · 完整流程</span><div class="flow-legend">${Object.keys(statusNames).map(status=>`<span>${statusMark(status)}${statusNames[status]}</span>`).join('')}</div><div class="canvas-tools"><button data-action="zoom-out" aria-label="缩小画布">−</button><button data-action="zoom-reset" id="zoom-label">100%</button><button data-action="zoom-in" aria-label="放大画布">＋</button><button data-action="zoom-fit">适合高度</button></div>${stepToolbar()}</div>
- <div class="flow-scroll" tabindex="0" aria-label="完整流程画布，横向滚动或拖动浏览"><div class="flow-size"><div class="flow-world preview-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid">${stages.map((_,index)=>visibleStage(index)?flowCard(index):'').join('')}</div></div></div></div>
- <footer class="flow-footnote">横向浏览 · 点击部件切换预览 · 部件详情手动展开 · 点击产物放大查看</footer></div>${state.inspect?inspector():''}</section>`;
+ <div class="flow-scroll" tabindex="0" aria-label="完整流程画布：横向滚动或拖动浏览，上下拖动或 Ctrl/⌘ + 滚轮切换人物线与衣服线"><div class="flow-size"><div class="flow-world preview-world"><svg class="flow-connectors" aria-hidden="true"></svg><div class="flow-input">${data.original?`<a href="${artifact(data.original)}" target="_blank" rel="noopener"><img src="${artifact(data.original)}" alt="原始输入图"></a>`:icon('image')}<span><b>输入角色图</b><small>original → standard</small></span></div><div class="flow-grid"><div class="flow-lanes">${lanes.map(lane=>`<div class="flow-lane" data-lane-row="${lane.i}">${lane.html}</div>`).join('')}</div>${merge?`<div class="flow-merge" style="margin-top:${state.mergeShift}px">${merge}</div>`:''}</div></div></div></div>${switcher}
+ <footer class="flow-footnote">人物分块准备完成后，人物线与衣服线并行，在穿戴组装合流 · 滚轮或左右拖动横向浏览 · 上下拖动、上下滑动或 Ctrl/⌘ + 滚轮切换两条线 · 点击产物放大查看</footer></div>${state.inspect?inspector():''}</section>`;
 }
 function runNotice() {
  const message=data.run?.error||data.lastLogMessage||data.run?.lastMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
@@ -387,59 +404,100 @@ function runNotice() {
  return `<details data-details="run-notice" class="run-notice ${data.status==='failed'?'error':''}" ${stopped?'open':''}><summary>${icon(data.status==='failed'?'info':'clock')}<span>${stopped?esc(taskStatusNames[data.status])+' · ':''}${esc(message.split('\n')[0])}</span><small>运行记录与日志</small></summary><div>${data.errors.length?`<pre class="status-error">${esc(data.errors.join('\n'))}</pre>`:''}<pre>${esc(message)}</pre><pre class="live-log">${esc(data.logs||'暂无日志')}</pre><small>日志：${esc(data.logPath||data.directory)}${data.logUpdatedAt?' · 日志更新：'+esc(new Date(data.logUpdatedAt).toLocaleString()):''}${data.run?.updatedAt?' · 状态保存：'+esc(new Date(data.run.updatedAt).toLocaleString()):''}</small></div></details>`;
 }
 let flowObserver;
+// Lane geometry from the last layout, in world units: where each lane's view starts and how tall it is.
+let laneMetrics={tops:[0],heights:[0]},laneAnimation=null;
+const laneCount=()=>laneMetrics.tops.length;
+const laneScrollTop=(lane=state.lane)=>(laneMetrics.tops[lane]??0)*state.zoom;
+// The vertical scroll range inside a lane: empty when the lane fits the viewport.
+function laneRange(lane=state.lane) {
+ const viewport=document.querySelector('.flow-scroll'),top=laneScrollTop(lane);
+ return [top,top+Math.max(0,(laneMetrics.heights[lane]??0)*state.zoom-viewport.clientHeight)];
+}
 function connectFlow() {
  const world=document.querySelector('.flow-world');
  if(!world)return;
- const viewport=document.querySelector('.flow-scroll');
- if(state.autoHeight||state.zoom===null)state.zoom=Math.min(1,Math.max(.05,(viewport.clientHeight-8)/world.offsetHeight));
+ const viewport=document.querySelector('.flow-scroll'),merge=world.querySelector('.flow-merge'),grid=world.querySelector('.flow-grid');
+ // Layout in world units, independent of the current zoom and merge shift.
+ const rows=[...world.querySelectorAll('[data-lane-row]')];
+ const gridTop=grid.offsetTop,mergeHeight=merge?.offsetHeight||0,pad=12;
+ // Each lane is framed like the first: its row sits where the first row sits in the first lane.
+ const tops=rows.map(row=>row.offsetTop-rows[0].offsetTop);
+ const heights=rows.map((row,i)=>Math.max(gridTop+row.offsetTop+row.offsetHeight,gridTop+tops[i]+mergeHeight)+pad-tops[i]);
+ laneMetrics=rows.length?{tops,heights}:{tops:[0],heights:[world.offsetHeight]};
+ if(state.lane>=laneCount())state.lane=0;
+ if(!laneAnimation)state.mergeShift=laneMetrics.tops[state.lane];
+ if(merge)merge.style.marginTop=`${state.mergeShift}px`;
+ if(state.autoHeight||state.zoom===null)state.zoom=Math.min(1,Math.max(.05,(viewport.clientHeight-8)/Math.max(...laneMetrics.heights)));
  world.style.transform=`scale(${state.zoom})`;
  const size=document.querySelector('.flow-size');
- size.style.width=`${world.offsetWidth*state.zoom}px`;size.style.height=`${world.offsetHeight*state.zoom}px`;
+ // The last lane can always scroll to the top of the viewport.
+ size.style.width=`${world.offsetWidth*state.zoom}px`;size.style.height=`${Math.max(world.offsetHeight*state.zoom,laneScrollTop(laneCount()-1)+viewport.clientHeight)}px`;
  document.querySelector('#zoom-label').textContent=Math.round(state.zoom*100)+'%';
  const bounds=world.getBoundingClientRect();
  const box=selector=>{const element=world.querySelector(selector);if(!element)return null;const r=element.getBoundingClientRect();return {x:(r.left-bounds.left)/state.zoom,y:(r.top-bounds.top)/state.zoom,w:r.width/state.zoom,h:r.height/state.zoom};};
  const input=box('.flow-input'),cards=stages.map((_,i)=>box(`[data-pipeline="${i}"] .pipeline-heading`));
  const svg=world.querySelector('.flow-connectors'),paths=[];
- // Labels sit on their line as pills; links that skip lanes run on tracks above
- // the headings, one track per overlapping span, so no label covers a box.
+ // Labels sit on their line as pills, turned upright on a vertical run that is long enough.
  const status=done=>done?'done':'pending',labels=[];
  const textWidth=text=>[...text].reduce((sum,char)=>sum+(/[　-鿿]/.test(char)?11:6.4),0)+14;
  const path=(d,state)=>paths.push(`<path class="${state}" d="${d}" marker-end="url(#flow-arrow-${state})"/>`);
- const label=(text,x,y,state)=>{const w=textWidth(text);labels.push(`<g class="flow-label ${state}"><rect x="${x-w/2}" y="${y-8}" width="${w}" height="16" rx="8"/><text x="${x}" y="${y+4}">${text}</text></g>`);};
+ const label=(text,x,y,state,upright=false)=>{const w=textWidth(text);labels.push(`<g class="flow-label ${state}"${upright?` transform="rotate(90 ${x} ${y})"`:''}><rect x="${x-w/2}" y="${y-8}" width="${w}" height="16" rx="8"/><text x="${x}" y="${y+4}">${text}</text></g>`);};
+ // From the right of `a` to the left of `b`, turning at `turn` when they are not level.
+ const link=(a,b,text,done,turn,from=a.y+a.h/2,to=b.y+b.h/2)=>{
+  const state=status(done);
+  if(Math.abs(from-to)<2){path(`M${a.x+a.w} ${from} H${b.x-6}`,state);label(text,(a.x+a.w+b.x-6)/2,from,state);return;}
+  path(`M${a.x+a.w} ${from} H${turn} V${to} H${b.x-6}`,state);
+  if(Math.abs(from-to)>=textWidth(text)+24)label(text,turn,(from+to)/2,state,true);
+  // Starts right of the source card: a pill wider than its run must not slide under that card.
+  else label(text,Math.max((a.x+a.w+turn)/2,a.x+a.w+textWidth(text)/2+6),from,state);
+ };
  if(input&&cards[0]){
   const entryY=cards[0].y+cards[0].h/2;
   path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'done');
  }
- for(const [a,b,text,done] of [[cards[0],cards[1],'parts',stages[0].status==='done'],[cards[2],cards[3],'parts',stages[2].status==='done'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done']]){
-  if(!a||!b)continue;
-  const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,status(done));label(text,(a.x+a.w+b.x-6)/2,y,status(done));
+ for(const [a,b,text,done] of [[cards[0],cards[1],'parts',finished(stages[0])],[cards[2],cards[3],'parts',finished(stages[2])],[cards[4],cards[5],'组装 KRA',finished(stages[4])]])
+  if(a&&b)link(a,b,text,done);
+ // The clothing lane hangs off the character preparation, down the left gutter.
+ if(cards[0]&&cards[2]){
+  const preparation=box('[data-node="0:preparation"]'),from=preparation?preparation.y+40:cards[0].y+cards[0].h+20,x=cards[0].x-34,to=cards[2].y+cards[2].h/2,state=status(!!data.reference);
+  path(`M${cards[0].x} ${from} H${x} V${to} H${cards[2].x-6}`,state);
+  label('简化角色参考',x,(from+to)/2,state,to-from>=textWidth('简化角色参考')+24);
  }
- const top=Math.min(...cards.filter(Boolean).map(card=>card.y)),tracks=[];
- const links=[[cards[0],cards[2],'简化角色参考',!!data.reference],[cards[1],cards[4],'人物素体 KRA',stages[1].status==='done']]
-  .filter(([a,b])=>a&&b).map(([a,b,text,done])=>({x1:a.x+a.w*.72,x2:b.x+b.w*.45,text,state:status(done)}));
- for(const link of links){
-  const track=tracks.findIndex(end=>end<link.x1-24);
-  link.track=track<0?tracks.length:track;tracks[link.track]=link.x2;
-  link.y=top-18-link.track*22;
-  path(`M${link.x1} ${top} V${link.y} H${link.x2} V${top-6}`,link.state);
- }
- for(const link of links){
-  // Keep the pill off the risers of the other links.
-  const half=textWidth(link.text)/2+8,risers=links.filter(other=>other!==link).flatMap(other=>[other.x1,other.x2]);
-  let x=(link.x1+link.x2)/2;
-  for(const riser of risers)if(Math.abs(x-riser)<half)x=riser+(x<riser?-half:half);
-  label(link.text,Math.min(link.x2-half,Math.max(link.x1+half,x)),link.y,link.state);
+ // Both lanes merge into the assembly, entering its heading side by side.
+ if(cards[4]){
+  const middle=cards[4].y+cards[4].h/2;
+  if(cards[1])link(cards[1],cards[4],'人物素体 KRA',finished(stages[1]),cards[4].x-30,undefined,middle-(cards[3]?7:0));
+  if(cards[3])link(cards[3],cards[4],'衣服 KRA',finished(stages[3]),cards[4].x-56,undefined,middle+(cards[1]?7:0));
  }
  paths.push(...labels);
  svg.setAttribute('viewBox',`0 0 ${world.offsetWidth} ${world.offsetHeight}`);
  svg.innerHTML=`<defs>${['done','pending'].map(status=>`<marker id="flow-arrow-${status}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 6 3 0 6" fill="${status==='done'?'#86b7a8':'#a7b3c0'}"/></marker>`).join('')}</defs>${paths.join('')}`;
+}
+// Slides the canvas to another lane; the merge column travels along so it stays in view.
+function switchLane(lane) {
+ const viewport=document.querySelector('.flow-scroll');
+ if(!viewport||lane<0||lane>=laneCount()||lane===state.lane&&!laneAnimation)return;
+ const fromTop=viewport.scrollTop,fromShift=state.mergeShift,started=performance.now(),duration=380;
+ state.lane=lane;state.canvasTop=0;
+ document.querySelectorAll('[data-lane]').forEach(button=>{const active=Number(button.dataset.lane)===lane;button.classList.toggle('active',active);button.setAttribute('aria-pressed',active);});
+ const animation=laneAnimation={};
+ const frame=now=>{
+  if(laneAnimation!==animation)return;
+  const t=Math.min(1,(now-started)/duration),ease=t<.5?4*t*t*t:1-(-2*t+2)**3/2;
+  state.mergeShift=fromShift+(laneMetrics.tops[lane]-fromShift)*ease;
+  connectFlow();
+  viewport.scrollTop=fromTop+(laneScrollTop(lane)-fromTop)*ease;
+  if(t<1)requestAnimationFrame(frame);else{laneAnimation=null;connectFlow();viewport.scrollTop=laneScrollTop(lane);state.canvasLeft=viewport.scrollLeft;}
+ };
+ requestAnimationFrame(frame);
 }
 function zoomCanvas(value,fit=false) {
  const viewport=document.querySelector('.flow-scroll'),previous=state.zoom;
  const centerX=viewport.scrollLeft+viewport.clientWidth/2,centerY=viewport.scrollTop+viewport.clientHeight/2;
  state.autoHeight=fit;state.zoom=Math.min(1.5,Math.max(.2,value));connectFlow();
  viewport.scrollLeft=fit?0:centerX*state.zoom/previous-viewport.clientWidth/2;
- viewport.scrollTop=fit?0:centerY*state.zoom/previous-viewport.clientHeight/2;
+ const [min,max]=laneRange();
+ viewport.scrollTop=fit?min:Math.min(max,Math.max(min,centerY*state.zoom/previous-viewport.clientHeight/2));
 }
 async function openAsset(item,index,stepId) {
  state.stage=index;state.selectedStep=stepId;state.inspect=true;state.asset={...item};
@@ -500,14 +558,17 @@ function configTree() {
   const files=configFiles.filter(file=>file.startsWith(prefix+'/')&&(!state.configFilter||file.toLowerCase().includes(state.configFilter.toLowerCase())));
   if(!files.length)return '';
   const active=state.file.startsWith(prefix+'/');
+  // Tool definitions sit in <dir>/tools/<name>/ of their owner, shared or a pipeline:
+  // each tool shows as one entry and expands to both files when selected.
+  const toolOf=file=>file.match(/^(.*\/tools\/[^/]+)\//)?.[1];
   let content=files;
-  if(prefix==='shared'&&!state.configFilter) {
-   const toolFiles=files.filter(file=>file.startsWith('shared/tools/'));
-   const activeTool=state.file.startsWith('shared/tools/')?state.file.split('/')[2]:null;
-   const tools=[...new Set(toolFiles.map(f=>f.split('/')[2]))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
-   content=[...files.filter(file=>!file.startsWith('shared/tools/')),...tools.flatMap(tool=>tool===activeTool?toolFiles.filter(f=>f.startsWith(`shared/tools/${tool}/`)):[toolFiles.find(f=>f===`shared/tools/${tool}/description.md`)||toolFiles.find(f=>f.startsWith(`shared/tools/${tool}/`))])];
+  if(!state.configFilter) {
+   const toolFiles=files.filter(toolOf);
+   const activeTool=toolOf(state.file)??null;
+   const tools=[...new Set(toolFiles.map(toolOf))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
+   content=[...files.filter(file=>!toolOf(file)),...tools.flatMap(tool=>tool===activeTool?toolFiles.filter(f=>f.startsWith(tool+'/')):[toolFiles.find(f=>f===`${tool}/description.md`)||toolFiles.find(f=>f.startsWith(tool+'/'))])];
   }
-  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(file.startsWith('shared/tools/')?(file.split('/')[2]===state.file.split('/')[2]?file.split('/')[2]+' / '+file.split('/').at(-1):file.split('/')[2]):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
+  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(toolOf(file)?(toolOf(file)===toolOf(state.file)?file.split('/').at(-2)+' / '+file.split('/').at(-1):file.split('/').at(-2)):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
  }).join('');
 }
 function configPage() {
@@ -529,7 +590,8 @@ function render() {
  const focusId=focused?.id;
  const selection=focused?.tagName==='INPUT'&&focused.type==='text'?[focused.selectionStart,focused.selectionEnd]:null;
  const previous=document.querySelector('.flow-scroll');
- if(previous){state.canvasLeft=previous.scrollLeft;state.canvasTop=previous.scrollTop;}
+ // The vertical position is kept relative to the focused lane, which may move as cards change.
+ if(previous){state.canvasLeft=previous.scrollLeft;state.canvasTop=previous.scrollTop-laneScrollTop();}
  const treeScroll=Object.fromEntries([...document.querySelectorAll('[data-tree-scroll]')].map(node=>[node.dataset.treeScroll,node.scrollTop]));
  const outputScroll=document.querySelector('.output-scroll')?.scrollTop||0;
  document.querySelectorAll('[data-details]').forEach(node=>state.details.set(node.dataset.details,node.open));
@@ -547,7 +609,8 @@ function render() {
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
  if(state.page==='preview'&&state.name) {
   connectFlow();
-  const viewport=document.querySelector('.flow-scroll');viewport.scrollLeft=state.canvasLeft;viewport.scrollTop=state.canvasTop;
+  const viewport=document.querySelector('.flow-scroll');viewport.scrollLeft=state.canvasLeft;
+  const [min,max]=laneRange();viewport.scrollTop=laneAnimation?viewport.scrollTop:Math.min(max,Math.max(min,min+state.canvasTop));
   document.querySelectorAll('[data-tree-scroll]').forEach(node=>{node.scrollTop=treeScroll[node.dataset.treeScroll]||0;});
   flowObserver=new ResizeObserver(connectFlow);flowObserver.observe(document.querySelector('.flow-world'));flowObserver.observe(viewport);
  }
@@ -610,6 +673,8 @@ function showHistory() {
 function selectStage(index) {
  state.stage=index;state.selectedStep=index===0||index===2?'layers':'step01';
  state.asset=null;state.inspect=false;state.page='preview';state.autoHeight=true;
+ // A lane stage brings its lane into focus; the merge stages keep the current one.
+ if(laneOf(index)>=0){state.lane=laneOf(index);laneAnimation=null;}
  updateViewURL();render();
  focusPreviewStep();
 }
@@ -617,7 +682,7 @@ function focusPreviewStep() {
  const viewport=document.querySelector('.flow-scroll'),node=document.querySelector(`[data-kra-preview="${state.stage}"]`)||document.querySelector(`[data-node="${state.stage}:${state.selectedStep}"]`);
  if(!viewport||!node)return;
  viewport.scrollLeft+=node.getBoundingClientRect().left-viewport.getBoundingClientRect().left-12;
- viewport.scrollTop=0;state.canvasLeft=viewport.scrollLeft;state.canvasTop=0;
+ viewport.scrollTop=laneScrollTop();state.canvasLeft=viewport.scrollLeft;state.canvasTop=0;
 }
 function updateViewURL() {
  const url=new URL(location.href);
@@ -626,6 +691,12 @@ function updateViewURL() {
  history.replaceState(null,'',url);
 }
 const wheelBound=new WeakSet();
+// The inner list that scrolls vertically under `target`, if any: it keeps its own vertical gestures.
+function innerScroller(target,viewport) {
+ for(let node=target;node&&node!==viewport;node=node.parentElement)
+  if(node.matches('.inline-tree-rows')||(node.scrollHeight>node.clientHeight+1&&/auto|scroll/.test(getComputedStyle(node).overflowY)))return node;
+ return null;
+}
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
@@ -647,7 +718,8 @@ function bind() {
  const revealGroup=index=>{
   const viewport=document.querySelector('.flow-scroll'),node=document.querySelector(`[data-node="${index}:layers"]`);
   const bounds=node.getBoundingClientRect(),view=viewport.getBoundingClientRect();
-  viewport.scrollLeft+=bounds.left-view.left-20;viewport.scrollTop+=bounds.top-view.top-20;
+  viewport.scrollLeft+=bounds.left-view.left-20;
+  const [min,max]=laneRange();viewport.scrollTop=Math.min(max,Math.max(min,viewport.scrollTop+bounds.top-view.top-20));
  };
  document.querySelectorAll('[data-tree-group]').forEach(b=>b.onclick=()=>{const index=b.dataset.treeStage;groupViews[index].selected=b.dataset.treeGroup;state.inspect=false;render();revealGroup(index);});
  document.querySelectorAll('[data-group-toggle]').forEach(b=>b.onclick=()=>{const index=b.dataset.groupToggle;groupViews[index].open=!groupViews[index].open;render();if(groupViews[index].open)revealGroup(index);});
@@ -671,22 +743,63 @@ function bind() {
  });
  const compare=document.querySelector('#compare-reference');if(compare)compare.onchange=()=>{state.compare=compare.checked;render();};
  const viewport=document.querySelector('.flow-scroll');if(viewport){
-  // The viewport survives refreshes (dom-morph), so its listener is added once.
-  if(!wheelBound.has(viewport))wheelBound.add(viewport),viewport.addEventListener('wheel',event=>{
-   if(event.ctrlKey||event.metaKey||Math.abs(event.deltaX)>=Math.abs(event.deltaY))return;
-   for(let node=event.target;node&&node!==viewport;node=node.parentElement){
-    // Inner lists keep their wheel gestures even at a boundary or with few rows.
-    if(node.matches('.inline-tree-rows')||
-      (node.scrollHeight>node.clientHeight+1&&/auto|scroll/.test(getComputedStyle(node).overflowY)))return;
-   }
-   if(viewport.scrollWidth<=viewport.clientWidth)return;
-   event.preventDefault();viewport.scrollLeft+=event.deltaY*(event.deltaMode===1?20:event.deltaMode===2?viewport.clientWidth:1);
-  },{passive:false});
+  // Plain wheel browses sideways (the usual direction); Ctrl/⌘ + wheel moves between the lanes.
+  // An inner list under the pointer keeps its own plain wheel. The viewport survives refreshes (dom-morph), so its listeners are added once.
+  if(!wheelBound.has(viewport)){
+   wheelBound.add(viewport);
+   let wheelTotal=0,wheelAt=0,wheelRest=0;
+   viewport.addEventListener('wheel',event=>{
+    const delta=event.deltaY*(event.deltaMode===1?20:event.deltaMode===2?viewport.clientHeight:1);
+    if(event.ctrlKey||event.metaKey){
+     // Also keeps the browser from zooming the page.
+     event.preventDefault();
+     const dy=delta,[min,max]=laneRange();
+     // A lane taller than the viewport scrolls through first, then hands over to the next lane.
+     if(!laneAnimation&&(dy>0?viewport.scrollTop<max-1:viewport.scrollTop>min+1)){viewport.scrollTop=Math.min(max,Math.max(min,viewport.scrollTop+dy));wheelTotal=0;return;}
+     const now=performance.now();
+     if(now-wheelAt>250)wheelTotal=0;
+     wheelAt=now;wheelTotal+=dy;
+     // One switch per gesture: a trackpad keeps sending events after the slide starts.
+     if(laneAnimation||now<wheelRest||Math.abs(wheelTotal)<40)return;
+     wheelTotal=0;wheelRest=now+600;switchLane(state.lane+Math.sign(dy));
+     return;
+    }
+    if(Math.abs(event.deltaX)>=Math.abs(event.deltaY)||innerScroller(event.target,viewport))return;
+    if(viewport.scrollWidth<=viewport.clientWidth)return;
+    event.preventDefault();viewport.scrollLeft+=delta;
+   },{passive:false});
+   viewport.addEventListener('keydown',event=>{
+    if(event.target!==viewport)return;
+    const step={ArrowUp:-1,PageUp:-1,ArrowDown:1,PageDown:1}[event.key];
+    if(step&&laneCount()>1){event.preventDefault();switchLane(state.lane+step);}
+   });
+  }
+  // Drags and swipes: sideways pans; up or down slides to the other lane once past the lane's own range.
+  // Touch leaves sideways swipes to the browser (touch-action: pan-x) and vertical ones on inner lists to the list.
   let drag;
-  viewport.onpointerdown=e=>{if(e.button!==0||e.pointerType==='touch'||e.target.closest('button,a,input,select,summary,.inline-tree-rows'))return;drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop};viewport.setPointerCapture(e.pointerId);viewport.classList.add('panning');};
-  viewport.onpointermove=e=>{if(drag){viewport.scrollLeft=drag.left+drag.x-e.clientX;viewport.scrollTop=drag.top+drag.y-e.clientY;}};
+  viewport.onpointerdown=e=>{
+   const touch=e.pointerType!=='mouse';
+   if(e.button!==0||e.target.closest('button,a,input,select,summary,.inline-tree-rows')||touch&&innerScroller(e.target,viewport))return;
+   drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop,axis:null,touch,id:e.pointerId};
+  };
+  viewport.onpointermove=e=>{
+   if(!drag||drag.id!==e.pointerId||drag.axis==='done')return;
+   const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+   if(!drag.axis){
+    if(Math.max(Math.abs(dx),Math.abs(dy))<6)return;
+    drag.axis=Math.abs(dx)>=Math.abs(dy)?'x':'y';
+    if(drag.axis==='x'&&drag.touch){drag=null;return;}
+    viewport.setPointerCapture(e.pointerId);viewport.classList.add('panning');
+   }
+   if(drag.axis==='x'){viewport.scrollLeft=drag.left-dx;return;}
+   const [min,max]=laneRange(),wanted=drag.top-dy;
+   if(!laneAnimation)viewport.scrollTop=Math.min(max,Math.max(min,wanted));
+   const over=wanted<min?wanted-min:wanted>max?wanted-max:0;
+   if(Math.abs(over)>48&&laneCount()>1){const next=state.lane+Math.sign(over);if(next>=0&&next<laneCount()){drag.axis='done';switchLane(next);}}
+  };
   const end=()=>{drag=null;viewport.classList.remove('panning');};viewport.onpointerup=end;viewport.onpointercancel=end;
  }
+ document.querySelectorAll('[data-lane]').forEach(b=>b.onclick=()=>switchLane(Number(b.dataset.lane)));
  document.querySelectorAll('[data-config-file]').forEach(b=>b.onclick=async()=>{state.file=b.dataset.configFile;await refreshConfigFile();});
  document.querySelectorAll('[data-config-mode]').forEach(b=>b.onclick=async()=>{state.configMode=b.dataset.configMode;await loadConfig();render();});
  const source=document.querySelector('#config-ref');if(source)source.onchange=async()=>{state.ref=source.value;state.base=undefined;await loadConfig();render();};

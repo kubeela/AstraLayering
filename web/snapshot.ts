@@ -19,6 +19,7 @@ import { legacyWorkspaces } from './workspaces.ts';
 import { taskStopMethod } from '../.agents/skills/live2d-maker/workflow/control.ts';
 import { completeRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { copiedInput, inputKras } from './kra-inputs.ts';
+import { kritaRecordFile, readKritaRecord } from '../.agents/skills/live2d-maker/shared/krita/section-krita.ts';
 
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
@@ -56,7 +57,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
   const pipelines = [];
   for (const id of pipelineIds) {
     if (record.run?.archive && !record.run.pipelines[id]) continue;
-    const active = record.runnerAlive && record.lockHeld && record.run?.activePipeline === id;
+    // The character and clothing lanes run side by side: several pipelines can be active at once.
+    const current = !!record.run?.activePipelines?.includes(id);
+    const active = record.runnerAlive && record.lockHeld && current;
     const saved = record.run?.pipelines[id];
     const mode = shadowMode(record.run?.shadowMode);
     const branch = id === 'shadow' ? id + '/' + mode : id;
@@ -81,7 +84,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
       try { validateGroups(document?.groups ?? []); groups = document?.groups ?? []; }
       catch (error) { errors.push(id + ': ' + String(error)); }
       const all = flatten(groups);
-      const failedSince = !active && record.status === 'failed' && record.run?.activePipeline === id ? record.run.runner?.startedAt : undefined;
+      const failedSince = !active && record.status === 'failed' && current ? record.run?.runner?.startedAt : undefined;
       const progress = await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined, failedSince);
       Object.assign(states, progress.states); Object.assign(messages, progress.messages);
       for (const phase of phases) {
@@ -187,12 +190,20 @@ export async function snapshot(directory: string, name: string, dir: string) {
     if ((id in rasterDefinitions || id === 'shadow') && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
       status = 'interrupted'; // Root coordinator history must not hide a removed step marker.
     }
+    // A clothing lane skipped for lack of a dress-up is complete with nothing to make.
+    if (saved?.skipped && !active) {
+      status = 'skipped';
+      for (const key of Object.keys(states)) if (states[key] === 'pending' || states[key] === 'available') states[key] = 'skipped';
+    }
     // Every marked step, for the continue / resume / retry actions.
     const steps = await listSteps(join(directory, branch), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
     // The thread of the running step, else of the last step that kept one.
     const threadId = (await currentSession(join(directory, branch), steps).catch(() => undefined))?.threadId ?? null;
+    // The section's own Krita while its process is alive.
+    const kritaRecord = await readKritaRecord(join(directory, branch, kritaRecordFile));
+    const krita = kritaRecord ? { pid: kritaRecord.pid, version: kritaRecord.version, startedAt: kritaRecord.startedAt } : null;
     pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
-      threadId, summary: saved?.summary });
+      threadId, krita, summary: saved?.summary, ...(saved?.skipped ? { skipped: true } : {}) });
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');

@@ -25,6 +25,8 @@ pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krit
 | 衣服终稿 | `clothing-raster-layering/step02/clothing-soft-edges.kra` |
 | 简化穿衣参考 | `part-layering/references/simplified-subject.*`，自动定位 PNG/JPEG/WebP |
 
+素体未换装时不需要衣服终稿：step01 不调用 agent，直接复制人物 KRA 与 PNG 为 `character-assembled.*`；旧任务若已画出衣服，仍按原输入组装。
+
 缺少文件时，终端给出对应上游命令与手动放置的具体路径。可用完整成果归档作为输入，不要求搬入上游的 agent 会话或状态标记。
 
 [完整绘制提示词](prompts/01-人物与衣服组装.md) 先对照简化穿衣参考，将整套衣装等比缩放、平移到人物的对应位置，再调整穿插与局部贴合。局部修画解决组装产生的边界和接缝问题；漏肤可用原生可关闭的透明度遮罩处理，保留透纱效果。已有部件的发色、材质、笔触和描边差异保留并记录。不随意拆分现有部件或新增绘画层，不覆盖两份输入工程。

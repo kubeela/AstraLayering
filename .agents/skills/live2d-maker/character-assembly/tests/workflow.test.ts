@@ -5,12 +5,13 @@ import { dirname, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { runWorkflow, pipeline, parseRunArguments } from '../run.ts';
-import { resolveAssemblyInput, isAssemblyInput } from '../input.ts';
+import { resolveAssemblyInput, isAssemblyInput, type AssemblyInput } from '../input.ts';
 import { steps } from '../steps.ts';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { loadConfig } from '../../shared/raster/run-store.ts';
 import { type AgentRequest } from '../../shared/raster/agent.ts';
+import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
 async function fixture(t: TestContext) {
   const root = await realpath(await mkdtemp(join(tmpdir(), 'character-assembly-')));
@@ -27,7 +28,7 @@ async function fixture(t: TestContext) {
   const output = join(task, 'character-assembly');
   const options = { name: 'case', dir: root, krita: process.execPath };
   const environment = loadWorkflowEnvironment({}, root);
-  const deps = { environment, preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+  const deps = { environment, preflight: async (executable: string) => ({ executable }) };
   return { root, task, inputs, output, options, deps };
 }
 async function deliver(request: AgentRequest) {
@@ -87,7 +88,7 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
     assert.equal(request.directory, f.output);
     assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'xhigh');
     assert.equal(request.threadId, undefined);
-    assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences']);
+    assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences', 'krita']);
     assert.ok((request.tools?.[0].inputSchema.properties as any).parts);
 
     await stat(join(f.output, 'step01/.running'));
@@ -155,4 +156,28 @@ test('正常退出但缺 PNG 时显示最后消息，保留 running 和 thread',
   await assert.rejects(stat(join(f.output, 'step01/.completed')), { code: 'ENOENT' });
   assert.match(await readFile(join(f.output, 'agents/steps/step01/error.txt'), 'utf8'), /PNG 导出失败/);
   assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'missing-output');
+});
+
+test('素体未换装时不需要衣服 KRA，不调用 agent，直接复制人物结果作为组装交付', async t => {
+  const f = await fixture(t);
+  await markBaseStep(f.task, false);
+  await rm(dirname(dirname(f.inputs.clothingKra)), { recursive: true });
+  await writeFile(f.inputs.characterKra.replace(/\.kra$/, '.png'), 'character png');
+  const agent = async () => assert.fail('no clothing: assembly must not call agent');
+  await runWorkflow(f.options, { ...f.deps, agent });
+  assert.equal(await readFile(join(f.output, 'step01/character-assembled.kra'), 'utf8'), 'characterKra');
+  assert.equal(await readFile(join(f.output, 'step01/character-assembled.png'), 'utf8'), 'character png');
+  assert.match(await readFile(join(f.output, 'step01/report.md'), 'utf8'), /没有衣服需要组装/);
+  await stat(join(f.output, 'step01/.completed'));
+  assert.equal((await loadConfig<AssemblyInput>(f.output, 'case', isAssemblyInput))?.sourceInput.clothingKra, null);
+  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent });
+});
+
+test('旧任务未换装但已画出衣服 KRA 时继续按原输入组装，不改变已完成的输入', async t => {
+  const f = await fixture(t);
+  await markBaseStep(f.task, false);
+  assert.deepEqual(await resolveAssemblyInput('case', f.root), f.inputs);
+  await markBaseStep(f.task, true);
+  await rm(f.inputs.clothingKra);
+  await assert.rejects(resolveAssemblyInput('case', f.root), /clothing-raster-layering/);
 });

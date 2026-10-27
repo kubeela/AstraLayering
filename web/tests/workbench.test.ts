@@ -69,7 +69,8 @@ test('页面与状态查询读取同一份最新日志，不被旧 run.json 摘�
 
 test('网页后台启动同样只使用 workflow.log，失败时等待日志完成写入', async t => {
   const f = await fixture(t);
-  await assert.rejects(launch({ name: 'test', dir: f.dir, krita: process.execPath,
+  // A missing executable fails the Krita check whatever the host's display setup.
+  await assert.rejects(launch({ name: 'test', dir: f.dir, krita: join(f.dir, 'missing-krita'),
     from: 'raster-layering', to: 'raster-layering' }), /Krita|krita/);
   assert.match(await readFile(join(f.dir, 'test/workflow.log'), 'utf8'), /Krita|krita/);
   assert.equal(await readFile(join(f.dir, 'test/service.log')).then(() => true, () => false), false);

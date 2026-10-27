@@ -54,6 +54,4 @@
 
 {drawing_responsibilities}
 
-{krita_environment}
-
 {runtime_context}

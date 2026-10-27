@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { syncBuiltinESMExports } from 'node:module';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { workflowsDirectory } from '../paths.ts';
@@ -24,3 +25,9 @@ process.execArgv.forEach((arg, index) => {
   if (arg.startsWith('--import=') && resolve(arg.slice('--import='.length)) === self) process.execArgv[index] = `--import=${import.meta.url}`;
   else if (process.execArgv[index - 1] === '--import' && resolve(arg) === self) process.execArgv[index] = import.meta.url;
 });
+
+// Workflows under test take Krita slots of their own, not the machine-wide ones
+// that real sections share; each test process gets its own set.
+const slots = join(tmpdir(), `astra-krita-test-slots-${process.pid}`);
+process.env.ASTRA_STUDIO_KRITA_SLOTS = slots;
+process.once('exit', () => fs.rmSync(slots, { recursive: true, force: true }));

@@ -278,3 +278,19 @@ test('unsafe group paths and symlinked drafts cannot expose outside files', asyn
   assert.equal(value.part.groups[0].webPhases.outline, 'pending');
   assert.ok(!value.files.includes('part-layering/groups/body/step01/outline.svg'));
 });
+
+test('lanes skipped because the subject was not dressed show as skipped with their reason, not pending', async t => {
+  const f = await fixture(t);
+  const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'shadow' }, f.task);
+  const summary = '素体换装沿用了简化参考，没有衣服需要拆分和绘制，跳过';
+  for (const id of ['clothing-part-layering', 'clothing-raster-layering'] as const)
+    run.pipelines[id] = { status: 'completed', skipped: true, updatedAt: new Date().toISOString(), summary };
+  await saveRun(f.task, run);
+  const { pipelines } = await f.get();
+  for (const id of ['clothing-part-layering', 'clothing-raster-layering']) {
+    const lane = pipelines.find(item => item.id === id)!;
+    assert.equal(lane.status, 'skipped'); assert.equal(lane.skipped, true);
+    assert.ok(Object.values(lane.states).every(state => state === 'skipped'), id);
+  }
+  assert.notEqual(pipelines.find(item => item.id === 'raster-layering')!.status, 'skipped');
+});

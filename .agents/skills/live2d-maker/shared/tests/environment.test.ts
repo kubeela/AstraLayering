@@ -36,6 +36,16 @@ test('默认继承 Codex 配置，.env 模型后缀是力度，shell 优先且�
   assert.equal(process.env.layering_high_model, undefined);
 });
 
+test('本机 Krita 并发上限来自 .env，默认取 example.env，非正整数直接报错', async t => {
+  const root = await fixture(t);
+  assert.equal(loadWorkflowEnvironment({}, root).codex.env!.layering_krita_max_instances, '4');
+  await writeFile(join(root, '.env'), 'layering_krita_max_instances=2\n');
+  assert.equal(loadWorkflowEnvironment({}, root).codex.env!.layering_krita_max_instances, '2');
+  assert.equal(loadWorkflowEnvironment({ layering_krita_max_instances: '6' }, root).codex.env!.layering_krita_max_instances, '6');
+  await writeFile(join(root, '.env'), 'layering_krita_max_instances=0\n');
+  assert.throws(() => loadWorkflowEnvironment({}, root), /layering_krita_max_instances 须为正整数/);
+});
+
 test('主模型与生图分别鉴权；只填生图模型不启用，按需准备补丁失败时保留原因', async t => {
   const root = await fixture(t);
   const onlyModel = loadWorkflowEnvironment({ layering_image_model: 'another-image-model' }, root);
@@ -106,7 +116,7 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     const environment = loadWorkflowEnvironment({ layering_high_model: 'gpt-6-astra-high' }, root);
     const directory = join(root, 'case', pipeline.id);
     const deps = { runsDirectory: root, steps: [pipeline.steps[0]], environment,
-      preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+      preflight: async (executable: string) => ({ executable }) };
     let failure: unknown;
     try {
       await runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {

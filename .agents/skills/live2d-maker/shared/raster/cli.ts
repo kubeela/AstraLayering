@@ -22,7 +22,7 @@ export async function runCli<Input>(pipeline: KritaPipeline<Input>, help: string
   const args = parseRunArguments(process.argv.slice(2));
   if (args.help) { console.log(help); return; }
   if (args['check-krita']) {
-    console.log(JSON.stringify(await checkKrita(args.krita!, undefined, loadWorkflowEnvironment().codex.env), null, 2));
+    console.log(JSON.stringify(await checkKrita(args.krita!, loadWorkflowEnvironment().codex.env), null, 2));
     return;
   }
   const controller = new AbortController();
