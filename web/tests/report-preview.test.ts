@@ -10,6 +10,17 @@ import { reportPreview } from '../report.ts';
 import { reportTargets } from '../../.agents/skills/live2d-maker/shared/report-paths.ts';
 import { renderReport, reportReferences } from '../report-markdown.js';
 
+test('任务目录经软链接打开时，按真实路径书写的绝对图片链接仍可解析', async t => {
+  const base = await realpath(await mkdtemp(join(tmpdir(), 'report-alias-'))), real = join(base, 'real-case'), root = join(base, 'case');
+  t.after(() => rm(base, { recursive: true, force: true }));
+  const image = 'part-layering/step01/evidence/marked.png';
+  await mkdir(join(real, 'part-layering/step01/evidence'), { recursive: true });
+  await writeFile(join(real, image), 'image');
+  await symlink(real, root);
+  const report = await reportPreview(root, 'part-layering/step01/review.md', '`' + join(real, image) + '`', new Set([image]));
+  assert.deepEqual(report.images.map(item => item.path), [image]);
+});
+
 test('报告图片兼容 Markdown、行内代码与纯路径，代码块不被当作证据', () => {
   const text = '![标注](<evidence/有 空格.png>)\n[对照](evidence/fold(1).png)\n`/run/case/zoom.png`\nevidence/plain.webp\n```python\nopen("not-evidence.png")\n```';
   const refs = reportReferences(text);

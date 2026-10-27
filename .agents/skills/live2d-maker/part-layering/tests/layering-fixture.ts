@@ -1,5 +1,5 @@
 import { profile } from '../profile.ts';
-import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, realpath, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { taskRootOf } from '../../shared/task-paths.ts';
@@ -25,6 +25,15 @@ export async function fixture(t: TestContext) {
   await writeAtomic(references.baseSubject, png);
   await writeAtomic(references.simplifiedSubject, png);
   return { profile, directory, references };
+}
+// A task reached through a symlink: previews record realpaths, the program holds the linked path.
+export async function linkedFixture(t: TestContext, f: Awaited<ReturnType<typeof fixture>>) {
+  const parent = await mkdtemp(join(tmpdir(), 'part-layering-link-')), directory = join(parent, 'part-layering');
+  t.after(() => rm(parent, { recursive: true, force: true }));
+  await symlink(f.directory, directory);
+  const at = (path: string) => join(directory, path.slice(f.directory.length + 1));
+  return { ...f, directory, references: { directory: at(f.references.directory),
+    simplifiedSubject: at(f.references.simplifiedSubject), baseSubject: at(f.references.baseSubject) } };
 }
 export function workingSteps(events: string[], roots: GroupSeed[] = [{ id: 'head' }], children: Record<string, GroupSeed[]> = {}): LayeringSteps {
   return {
