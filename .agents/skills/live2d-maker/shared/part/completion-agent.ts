@@ -53,10 +53,10 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const rules = await readFile(rulesPath, 'utf8');
   if (!rules.trim()) throw new Error(`补全操作约定提示词为空：${rulesPath}`);
   const references = await readCompletionReferences(prompt.groupDirectory, context);
-  const dependencies = await Promise.all([fileDependency(context.directory, reference),
-    ...references.map(ref => 'sourceSvg' in ref ? fileDependency(context.directory, ref.sourceSvg,
-      { groupId: ref.groupId, stage: 'reduction' }) : fileDependency(context.directory, ref.path))]);
   const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
+  const dependencies = await Promise.all([fileDependency(root, reference),
+    ...references.map(ref => 'sourceSvg' in ref ? fileDependency(root, ref.sourceSvg,
+      { groupId: ref.groupId, stage: 'reduction' }) : fileDependency(root, ref.path))]);
   const observations: SvgObservation[] = [];
   let submitted: SvgArtifact | undefined, submittedHash: string | undefined;
   // A continued step keeps the additions drawn so far when they still sit on the
@@ -106,7 +106,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
         if (!shapeReferences.size) throw new Error('须用 preview_svg 的 edge、reference 与 referenceRegion 对照生成图，检查边缘一致性');
         const checkedDependencies = [];
         for (const entry of shapeReferences.values()) {
-          const dependency = await fileDependency(context.directory, entry.reference!);
+          const dependency = await fileDependency(root, entry.reference!);
           if (dependency.hash !== entry.referenceHash) throw new Error('生成参考图在预览后被修改，请重新查看');
           checkedDependencies.push(dependency);
         }
@@ -134,7 +134,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   if (!submitted) throw agentOutcomeError('补全未通过 submit_completion 提交', response);
   await verifySource();
   if (svgHash(await readFile(draft)) !== submittedHash) throw agentOutcomeError('补全提交后草稿被修改', response);
-  if (!await dependenciesMatch(context.directory, dependencies)) throw agentOutcomeError('补全过程参考输入发生变化', response);
+  if (!await dependenciesMatch(root, dependencies)) throw agentOutcomeError('补全过程参考输入发生变化', response);
   return { ...submitted, dependencies };
 }
 
