@@ -7,11 +7,12 @@ import { displayStatus, pipelineSteps, shadowInspectionArtifacts, statusLabel, s
 
 const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
 const renderer = source.slice(source.indexOf('function overviewCard('), source.indexOf('function graph('));
+const visibleStage = source.match(/^const visibleStage=.*$/m)![0];
 const observed = source.slice(source.indexOf('function observedDisplayStatus('), source.indexOf('function rasterItems('));
-function render(statuses: string[], files: string[] = [], running = false, locked = false) {
-  return runInNewContext(observed + renderer + '\nprojectPage();', {
+function render(statuses: string[], files: string[] = [], running = false, locked = false, archive?: { pipelines: Record<string, unknown> }) {
+  return runInNewContext(visibleStage + '\n' + observed + renderer + '\nprojectPage();', {
     stages: statuses.map((status, i) => ({ name: '管线 ' + i, id: 'pipeline-' + i, status })),
-    state: { name: 'case', stage: 0 }, data: { files, runnerAlive: running, lockHeld: locked },
+    state: { name: 'case', stage: 0 }, data: { files, runnerAlive: running, lockHeld: locked, ...(archive ? { archived: true, run: archive } : {}) },
     stepArtifacts: {}, available: () => [], pageHeading: () => '', runNotice: () => '',
     esc: String, icon: () => '', displayStatus, statusLabel,
     statusMark: (status: string) => `<i data-status="${status}"></i>`,
@@ -25,6 +26,11 @@ test('执行面板逐管线展示真实状态，完成与失败不再显示为�
     assert.ok(card.includes(label), card);
   }
   assert.doesNotMatch(html, /未运行/);
+});
+
+test('归档任务只展示实际运行过的管线', () => {
+  const html = render(['done', 'pending', 'done'], [], false, false, { pipelines: { 'pipeline-0': {}, 'pipeline-2': {} } });
+  assert.deepEqual([...html.matchAll(/data-overview="(\d+)"/g)].map(match => match[1]), ['0', '2']);
 });
 
 test('停止后已有绘画仍是已有产物，不能误报完成或进行中', () => {
