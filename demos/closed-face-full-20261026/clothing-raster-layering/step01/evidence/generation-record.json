@@ -1,0 +1,86 @@
+[
+  {
+    "id": "tshirt_body",
+    "tool": "image_gen.imagegen (built-in)",
+    "transparent_background": true,
+    "prompt": "Use-case: precise-object-edit. Produce a single transparent PNG garment animation asset. Image 1 is the isolated visible fabric of the BLUE TSHIRT BODY, on neutral gray; image 2 is its exact corresponding geometric control. Preserve the exact silhouette, placement, pose, blue colour, cel-shaded anime folds, fine dark outlines, double stitched bottom hem, and dark inner hem return of image 1. RED control = retain this part's visible fabric unchanged. YELLOW = reconstruct only the narrow hidden seam allowances continuing this SAME body fabric naturally: along the shoulder-to-armpit sleeve-root seams and under the U-shaped neckline seam. It is still the same current front-view cloth, not a new back-view garment. GREEN = completely transparent, including the large neckline aperture and all sleeve-side areas. No sleeves, no collar binding, no human, no skin, no hanger, no labels, no extra garment, no accessories. Keep the body complete down to its curved hem and dark inner return. Gray is input clearing and must become real transparency. Output only this one complete shirt BODY piece, not an assembled shirt. Keep coordinates and aspect ratio as closely as possible to the two inputs. Do not print red/yellow/green controls or a checkerboard.",
+    "original_referenced_image_paths": [
+      "clothing-raster-layering/step01/workspace/controls/tshirt_body/input.png",
+      "clothing-raster-layering/step01/workspace/controls/tshirt_body/control.png"
+    ],
+    "archived_actual_inputs": [
+      "clothing-raster-layering/step01/evidence/generation/tshirt_body/input.png",
+      "clothing-raster-layering/step01/evidence/generation/tshirt_body/control.png"
+    ],
+    "original_saved_path": "/Users/wutian/.codex/generated_images/01a17dd3-4d20-79b3-ae1f-0d5e359cd8d8/exec-efab25cc-cf4c-48d0-bb2e-57346e8b4290.png",
+    "retained_generated_path": "clothing-raster-layering/step01/evidence/generation/tshirt_body/generated.png",
+    "generated_sha256": "ac40c43583b162c99991b55818fd28878c93ad8fcc704e90739c26427e2ec32f",
+    "attempts": 1,
+    "failed_or_refused": false,
+    "reuse_source": null,
+    "result": "Original-size visual inspection; isolated own cloth and generated seam extension retained. Aspect drift registered to SVG; own visible reference overlaid. Final native brush repairs reside in KRA."
+  },
+  {
+    "id": "sleeve_image_left",
+    "tool": "image_gen.imagegen (built-in)",
+    "transparent_background": true,
+    "prompt": "Use-case precise-object-edit. Output ONE isolated blue short sleeve as a transparent PNG animation asset. Image 1 contains ONLY the visible cloth of the image-left sleeve, on neutral gray. Image 2 is exact coordinate-corresponding control: RED retain the visible blue fabric colours, angular cel-shaded anime folds, dark fine outlines, twin stitching and the dark blue return fabric at the diagonal elliptical cuff. YELLOW reconstruct the narrow hidden cloth seam allowance at the right/inner root edge of this very same sleeve. Continue the adjacent blue folds and material naturally without copying any other garment. GREEN must be completely transparent. Keep original sleeve silhouette, orientation, slanted elliptical cuff, proportions, exact placement and framing. The dark lower cuff interior is fabric and must remain; do not erase it as background. Keep any true aperture transparent. No arm, skin, torso, collar, extra sleeve, hanger, label, text, or gray background. Do not turn into a back-view sleeve. Only this complete current-pose sleeve cloth, naturally extended into the yellow target. No printed controls or checkerboard.",
+    "original_referenced_image_paths": [
+      "clothing-raster-layering/step01/workspace/controls/sleeve_image_left/input.png",
+      "clothing-raster-layering/step01/workspace/controls/sleeve_image_left/control.png"
+    ],
+    "archived_actual_inputs": [
+      "clothing-raster-layering/step01/evidence/generation/sleeve_image_left/input.png",
+      "clothing-raster-layering/step01/evidence/generation/sleeve_image_left/control.png"
+    ],
+    "original_saved_path": "/Users/wutian/.codex/generated_images/01a17dd3-4d20-79b3-ae1f-0d5e359cd8d8/exec-25ac3d73-5cf3-4799-8dcb-dd03eeac549b.png",
+    "retained_generated_path": "clothing-raster-layering/step01/evidence/generation/sleeve_image_left/generated.png",
+    "generated_sha256": "0e0414548aae19f5a82859b26b2113ae376acfcc458594c34d40eb37d371333b",
+    "attempts": 1,
+    "failed_or_refused": false,
+    "reuse_source": null,
+    "result": "Original-size visual inspection; isolated own cloth and generated seam extension retained. Aspect drift registered to SVG; own visible reference overlaid. Final native brush repairs reside in KRA."
+  },
+  {
+    "id": "sleeve_image_right",
+    "tool": "image_gen.imagegen (built-in)",
+    "transparent_background": true,
+    "prompt": "Use-case precise-object-edit. Output ONE isolated blue short sleeve transparent PNG animation asset. Image 1 is the image-RIGHT sleeve's own visible cloth on neutral gray. Image 2 is matching coordinate control. RED retain the blue cloth colours, original angular anime cel shading, long triangular creases, dark fine lines and double cuff stitching. Keep the DARK BLUE returning cuff interior fabric; it is not background. YELLOW reconstruct only the thin hidden seam-allowance on the LEFT/INNER sleeve root, naturally continuing the same nearby blue fabric and folds. GREEN completely transparent. Keep exactly this sleeve orientation, silhouette, slim pointed shoulder top, slanted elliptical cuff opening rising towards image right, proportions, placement and framing. No mirrored left sleeve, no new folds or changes to the red area. No arm, human, skin, torso, collar, extra garment, label, hanger, text, controls or checkerboard. Real holes remain transparent, but do not remove blue cuff lining. Only this complete same-pose sleeve piece. Gray clearing becomes real transparency.",
+    "original_referenced_image_paths": [
+      "clothing-raster-layering/step01/workspace/controls/sleeve_image_right/input.png",
+      "clothing-raster-layering/step01/workspace/controls/sleeve_image_right/control.png"
+    ],
+    "archived_actual_inputs": [
+      "clothing-raster-layering/step01/evidence/generation/sleeve_image_right/input.png",
+      "clothing-raster-layering/step01/evidence/generation/sleeve_image_right/control.png"
+    ],
+    "original_saved_path": "/Users/wutian/.codex/generated_images/01a17dd3-4d20-79b3-ae1f-0d5e359cd8d8/exec-b1eacc34-e465-48f4-8ed4-1c282312dd3d.png",
+    "retained_generated_path": "clothing-raster-layering/step01/evidence/generation/sleeve_image_right/generated.png",
+    "generated_sha256": "bd274cbd0b1591867420371036d1ea0d1f594990014de2830895638ce5370d9a",
+    "attempts": 1,
+    "failed_or_refused": false,
+    "reuse_source": null,
+    "result": "Original-size visual inspection; isolated own cloth and generated seam extension retained. Aspect drift registered to SVG; own visible reference overlaid. Final native brush repairs reside in KRA."
+  },
+  {
+    "id": "neckline_band",
+    "tool": "image_gen.imagegen (built-in)",
+    "transparent_background": true,
+    "prompt": "Use-case precise-object-edit / background-extraction. Produce ONE isolated blue neckline binding band as a transparent PNG garment animation asset. Image 1 is this band's own visible fabric only on neutral gray. Image 2 gives exact coordinates: RED retain existing blue cloth with subtle anime cel shading and thin dark stitched outline, any tiny YELLOW edge areas continue the same band, GREEN fully transparent. The band forms one continuous ring with a narrow upper concave BACK arc, broad lower U-shaped FRONT arc and smoothly turning left/right sides. Preserve exact ring shape, aspect ratio, position, thickness, inner and outer edges and shading; no geometric simplification or new design. The middle is a real OPEN HOLE and must be fully transparent. Output only this ring, with no torso cloth, skin, neck, person, sleeves, label, hanger, accessories, red/green graphics, gray or checkerboard. No invented neck tag. Retain both back arc and front U arc of the current-pose ring, not a back-view garment. Real alpha outside AND inside.",
+    "original_referenced_image_paths": [
+      "clothing-raster-layering/step01/workspace/controls/neckline_band/input.png",
+      "clothing-raster-layering/step01/workspace/controls/neckline_band/control.png"
+    ],
+    "archived_actual_inputs": [
+      "clothing-raster-layering/step01/evidence/generation/neckline_band/input.png",
+      "clothing-raster-layering/step01/evidence/generation/neckline_band/control.png"
+    ],
+    "original_saved_path": "/Users/wutian/.codex/generated_images/01a17dd3-4d20-79b3-ae1f-0d5e359cd8d8/exec-2cc35dc6-c308-4fb4-a76c-f0b2fe5faf56.png",
+    "retained_generated_path": "clothing-raster-layering/step01/evidence/generation/neckline_band/generated.png",
+    "generated_sha256": "52161c24f48a3345a539b5ae553b041a094b9fc6ef1374fe089297abc48ec262",
+    "attempts": 1,
+    "failed_or_refused": false,
+    "reuse_source": null,
+    "result": "Original-size visual inspection; isolated own cloth and generated seam extension retained. Aspect drift registered to SVG; own visible reference overlaid. Final native brush repairs reside in KRA."
+  }
+]

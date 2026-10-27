@@ -1,0 +1,103 @@
+{
+  "groupId": "face/face_base",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "本轮 round 1，候选 SHA-256 ffcdadd91f2d66b1d13ea338aa0fafeeab76de375d5ee7c032c8d0ddd1ad8a72。已读取组说明、参考、候选及父组完成 SVG，完成整图 blend 定位，以及额头左右（x285–595 / x570–875，y195–580）、双侧太阳穴至脸颊下颌（x280–590 / x570–880，y530–810）、下颌下巴（x365–785，y760–935）的重叠分区 blend、edge 放大核对，并对下巴 x440–720、y835–925 以候选和父稿同框进一步核对。脸底可见范围连续完整，五官与腮红下方没有孔洞；耳朵与颈部未并入，额头及鬓发下连续范围沿用父组合理补全，未扩至头顶或后脑。双颊至下巴的可见外缘和连接处贴合参考；未发现需返修的组件遗漏、孤点碎片或形体归属混乱。父范围四倍采样检查通过，outsideSamples=0、outsidePixels=0。当前组通过，无需重画。",
+      "candidateHash": "ffcdadd91f2d66b1d13ea338aa0fafeeab76de375d5ee7c032c8d0ddd1ad8a72",
+      "observations": [
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-1.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-2.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-3.png"
+        },
+        {
+          "source": "part-layering/parts/face.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-4.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-5.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-6.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-7.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-8.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-9.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-10.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-11.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-12.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-13.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-14.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-15.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/face_base/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-16.png"
+        },
+        {
+          "source": "part-layering/parts/face.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-17.png"
+        },
+        {
+          "source": "part-layering/parts/face.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/face_base/step01/previews/2026-10-26T16-58-50-955Z-18.png"
+        }
+      ],
+      "updatedAt": "2026-10-26T17:11:11.093Z"
+    }
+  ]
+}

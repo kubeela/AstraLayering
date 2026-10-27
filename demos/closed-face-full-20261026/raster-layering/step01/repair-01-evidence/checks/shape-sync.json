@@ -1,0 +1,27 @@
+{
+  "updated_svgs": [
+    "hair/bangs",
+    "hair/side_hair_right",
+    "hair/side_hair_left",
+    "hair/back_hair",
+    "hair"
+  ],
+  "reasons": {
+    "hair/bangs": "R1：依固定参考恢复额前分叉、束尾和露额间隙；仅保留刘海自身可见内容，眉线交叉处作独立归属清理。",
+    "hair/side_hair_right": "R2：依本侧参考修复外缘游离弧束、下缘内弯尖梢和束间空隙，去除粗浅棕边带及异常连桥；6/21/151 分片身份不变。",
+    "hair/side_hair_left": "R3：依本侧参考修复外弧、内弯尖梢、发面宽度和间隙；保留实际非对称及5/20/150分片，不把宽帘提到耳前。",
+    "hair/back_hair": "R2/R3：同步后发自身实际外露尖梢与间隙；R12/R13保留完整耳下承接形体，在本层重接材质、色阶和发流。",
+    "hair": "父组完整轮廓按四个完整终止发件的并集同步；保留后脑、顶根和耳下补全，不以参考遮挡物代替隐藏内容。"
+  },
+  "terminal_ids_changed": false,
+  "depth_values_changed": false,
+  "native_paint_layers": 41,
+  "native_masks": 21,
+  "note": "Only accepted, visually inspected native part contours are exported to SVG. Original input fingerprint attributes are preserved.",
+  "continuation_updated_svgs": [
+    "hair/side_hair_right",
+    "hair"
+  ],
+  "continuation_reason": "R2续修完成：将约x245–360、y760–906同一侧发弯束的连续表面及两枚收尖完整归入21后区，纠正旧SVG在末梢中段的截断。此处以本条实际发流归属修正前文笼统的y885/910分界；更靠脸、下颌与颈旁的内后短梢仍归back_hair。6/21/151及各自UUID不变。侧发只覆盖其自身可见参考像素；新增隐藏在侧发后的back_hair区域已用灰底RGB控制重新生成后发纹理并在Krita修接，未把侧发参考像素留在后发补全中。",
+  "back_alpha_unchanged": true
+}

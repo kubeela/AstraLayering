@@ -1,0 +1,70 @@
+{
+  "layers": [
+    {
+      "name": "0010 tshirt_body :: hem_return",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    },
+    {
+      "name": "0020 sleeve_image_left :: cuff_return",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    },
+    {
+      "name": "0030 sleeve_image_right :: cuff_return",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    },
+    {
+      "name": "0040 neckline_band :: back_arc",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    },
+    {
+      "name": "0050 sleeve_image_left :: front_tube",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    },
+    {
+      "name": "0060 sleeve_image_right :: front_tube",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    },
+    {
+      "name": "0070 tshirt_body :: front_body",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    },
+    {
+      "name": "0080 neckline_band :: front_U",
+      "same_name": true,
+      "same_uuid": true,
+      "same_type": true,
+      "default_visible": true,
+      "same_mask_names_uuid_visibility": true
+    }
+  ],
+  "default_projection_alpha128_changed": 287,
+  "maximum_distance_to_original_alpha128_boundary": 1
+}

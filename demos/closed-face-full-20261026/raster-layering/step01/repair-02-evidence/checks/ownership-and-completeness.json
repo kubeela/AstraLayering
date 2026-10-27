@@ -1,0 +1,24 @@
+{
+  "source_masks_disjoint": true,
+  "neck_source_mask": "raster-layering/step01/repair-02-evidence/neck-own-reference-mask.png",
+  "torso_source_mask": "raster-layering/step01/repair-02-evidence/torso-own-reference-mask.png",
+  "geometry": {
+    "neck": {
+      "alpha_unchanged": false,
+      "original_complete_support_retained": true
+    },
+    "body/torso": {
+      "alpha_unchanged": false,
+      "original_complete_support_retained": true
+    },
+    "hair/back_hair": {
+      "alpha_unchanged": true,
+      "original_complete_support_retained": true
+    },
+    "body/breast": {
+      "alpha_unchanged": true,
+      "original_complete_support_retained": true
+    }
+  },
+  "note": "Source coverage masks record disjoint own visible skin; hidden reserve is generated own material. Geometry checks complement, not replace, original-size visual inspection."
+}

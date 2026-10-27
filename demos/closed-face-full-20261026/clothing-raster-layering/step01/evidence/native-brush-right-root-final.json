@@ -1,0 +1,138 @@
+{
+  "preset": "b) Airbrush Soft",
+  "strokes": [
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        1014,
+        361
+      ],
+      "to": [
+        990,
+        413
+      ],
+      "sample_own_cloth": [
+        1015,
+        387
+      ],
+      "colour": "#3667c1",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        990,
+        413
+      ],
+      "to": [
+        969,
+        467
+      ],
+      "sample_own_cloth": [
+        992,
+        440
+      ],
+      "colour": "#2d57aa",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        969,
+        467
+      ],
+      "to": [
+        948,
+        535
+      ],
+      "sample_own_cloth": [
+        972,
+        501
+      ],
+      "colour": "#2e57a8",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        948,
+        535
+      ],
+      "to": [
+        931,
+        592
+      ],
+      "sample_own_cloth": [
+        952,
+        564
+      ],
+      "colour": "#2a53a4",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        931,
+        592
+      ],
+      "to": [
+        928,
+        645
+      ],
+      "sample_own_cloth": [
+        942,
+        618
+      ],
+      "colour": "#213f84",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        928,
+        645
+      ],
+      "to": [
+        925,
+        702
+      ],
+      "sample_own_cloth": [
+        940,
+        674
+      ],
+      "colour": "#2a52a4",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        925,
+        702
+      ],
+      "to": [
+        916,
+        754
+      ],
+      "sample_own_cloth": [
+        934,
+        728
+      ],
+      "colour": "#254791",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "groupId": "tshirt_body",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对纯衣服参考、note、候选源码、整体 blend、上下区域 2 倍 edge、原参考局部放大及 SVG 独显。通过，无确定需要修改的问题，无需重画。领圈外接缝（x334至816，y268至442）与候选上内界吻合，领圈及领口中空未纳入衣身。左右肩袖接合线至腋下（左 x134至248，y350至796；右 x910至1017，y351至803）与衣身职责一致，未误包袖筒、袖口内壁。两侧腰线及完整下摆（x193至972，y800至1250）轮廓连续，覆盖左右折返点和可见内返衣料；未将深色返折误删为空洞。中央躯干覆盖完整，无可见组件、分离附件或薄纱遗漏。note 已说明相邻分界、躯干前后区域、共同控制及隐藏搭接。本组无父 SVG，父范围检查不适用。候选保持只读。图像核对依据为工具生成的整体叠加、肩胸及肩袖分界边缘放大、腰部及下摆边缘放大与独显预览。",
+      "candidateHash": "55e072c8f3266c80e2476c7be1ef63bef230bf9409b37d8da08069fcc75cd11e",
+      "observations": [
+        {
+          "source": "clothing-part-layering/groups/tshirt_body/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/tshirt_body/step01/previews/2026-10-27T14-30-32-038Z-1.png"
+        },
+        {
+          "source": "clothing-part-layering/groups/tshirt_body/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/tshirt_body/step01/previews/2026-10-27T14-30-32-038Z-2.png"
+        },
+        {
+          "source": "clothing-part-layering/groups/tshirt_body/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/tshirt_body/step01/previews/2026-10-27T14-30-32-038Z-3.png"
+        },
+        {
+          "source": "clothing-part-layering/groups/tshirt_body/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/tshirt_body/step01/previews/2026-10-27T14-30-32-038Z-4.png"
+        },
+        {
+          "source": "clothing-part-layering/groups/tshirt_body/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/tshirt_body/step01/previews/2026-10-27T14-30-32-038Z-5.png"
+        },
+        {
+          "source": "clothing-part-layering/groups/tshirt_body/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/tshirt_body/step01/previews/2026-10-27T14-30-32-038Z-6.png"
+        },
+        {
+          "source": "clothing-part-layering/groups/tshirt_body/step01/outline.svg",
+          "mode": "svg",
+          "savedPath": "clothing-part-layering/groups/tshirt_body/step01/previews/2026-10-27T14-30-32-038Z-7.png"
+        }
+      ],
+      "updatedAt": "2026-10-27T14:33:12.007Z"
+    }
+  ]
+}

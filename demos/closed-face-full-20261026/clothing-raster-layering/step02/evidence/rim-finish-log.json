@@ -1,0 +1,57 @@
+[
+  {
+    "layer": "0060 sleeve_image_right :: front_tube",
+    "label": "right sleeve dark rim joining",
+    "size": 3.2,
+    "opacity": 0.42,
+    "path": [
+      [
+        1061,
+        470
+      ],
+      [
+        "C",
+        1077,
+        531,
+        1089,
+        579,
+        1108,
+        628
+      ],
+      [
+        "C",
+        1122,
+        665,
+        1136,
+        699,
+        1142,
+        721
+      ]
+    ],
+    "operation": "native paintPath",
+    "alphaLocked": true
+  },
+  {
+    "layer": "0070 tshirt_body :: front_body",
+    "label": "right shoulder dark rim joining",
+    "size": 2.8,
+    "opacity": 0.32,
+    "path": [
+      [
+        920,
+        295
+      ],
+      [
+        "C",
+        965,
+        302,
+        995,
+        323,
+        1015,
+        351
+      ]
+    ],
+    "operation": "native paintPath",
+    "alphaLocked": true
+  }
+]

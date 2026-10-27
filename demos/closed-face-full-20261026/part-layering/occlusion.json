@@ -1,0 +1,394 @@
+{
+  "version": 3,
+  "direction": "back-to-front",
+  "sourceHash": "6e4c076232891b6f8175a304cba82b0114ec12ec9e3f428bb846595779e0f8cb",
+  "layers": [
+    {
+      "id": "hair/back_hair",
+      "level": 10,
+      "note": "完整头盖、后脑与颈旁内后短梢，在 hair/side_hair_left、hair/side_hair_right 的全部区域以及 face/ear_left、face/ear_right、face/face_base、neck 后方。默认显示；脸后及颈后补全实体保留，不挖洞。顶部按画布裁切；绿色仅为补形标识，raster step01 落实正常发色。 Raster step01 已补入耳根后至内后梢的连接范围，实际原生补笔修复生成 alpha 缺口；头盖及后脑材质保持完整，单深度10。\n返修01：R2/R3：同步后发自身实际外露尖梢与间隙；R12/R13保留完整耳下承接形体，在本层重接材质、色阶和发流。 原深度保持。\n返修01续修：R13续修完成：右外弧约x940–950/y620–700短硬色块已用同层连续发色、顺向原生笔触修净。R2归属修正后，后发完整alpha及耳下承接范围不删减；约x230–360/y746–910新增被侧发覆盖区以专用RGB控制生图和Krita修画恢复本后发自己的底纹，区别于上方侧发参考。另在完整后发独显发现并修复旧头盖与下部y470–590横向接带，使用灰底RGB控制专用生成材质、流线配准、局部透明度衔接与原生逐束接色，不改完整alpha。原单深度10与UUID保持。\nReview02 R5：保留完整alpha、耳下承接和内后短梢。在x215–390/y720–900灰底RGB控制重生本后发连续宽面，清除浅片、短折笔及上方21侧发样游离弯束残影，配准后原生接色；21真实弯束和两枚末梢不改。 原深度和共同运动身份保持。",
+      "check": {
+        "passed": true,
+        "note": "实际 KRA 独显检查完整头盖、脸后连续底面和双侧耳下承接；隐藏脸耳上层可见完整后发纹理。耳下透底已按更新 SVG 补笔，无耳/脸归属污染。默认在侧发后区、耳、脸与颈之后，根部新5/6在它之后。；返修01已按参考和原尺寸独显/隐藏上层/默认叠加再次核对，原层序及运动身份不变。；续修独显、隐藏上层、默认叠加均已检查，既定深度不变。；续修独显、隐藏上层、默认叠加均已检查，既定深度不变。；Review02已按原尺寸独显、隐藏上层和默认叠加核对上述修复，原深度正确。"
+      }
+    },
+    {
+      "id": "hair/side_hair_left",
+      "levels": [
+        {
+          "level": 5,
+          "region": "原有顶部隐藏根部分片，仍位于后发10之后；返修01不重分其像素，与同part耳后宽帘和耳前细束保持共同运动身份。"
+        },
+        {
+          "level": 20,
+          "region": "画面右侧完整侧顶根部、耳外宽发帘与下部内弯发梢及外缘游离弧束。位于 hair/back_hair 前、face/ear_left 与 face/face_base 后；顶根位于 hair/bangs 后。沿耳上约 x850–905、y480–535 的发流和耳根遮挡带，连续转接至前层细鬓发；不要把耳廓形状挖成永久洞。宽帘下缘约 y790–885 覆盖内后短梢。 返修01按固定参考修正本区外弧和发梢的真实轮廓及间隙。"
+        },
+        {
+          "level": 150,
+          "region": "画面右侧约 x830–880、y490–680 的耳前细鬓发、压在耳根/耳面前的细弧和内缘窄发束，位于 face/ear_left、face/face_base 及其局部五官前，仍在 hair/bangs 后。分界藏于耳上发流与耳根搭接，向耳垂方向的细线连续保留；除确实跨耳细丝外让耳廓主体露出，不将整个耳后宽帘放到耳前。"
+        }
+      ],
+      "note": "已在 KRA 落实5/20/150三个普通绘画分片：__hidden_root、__rear、__front；根部新增后置，原预注耳后/耳前关系继续保留。各区以互斥像素分配，合起来为完整同一侧发；不把整体隐藏根部强行提到头盖前。\n返修01：R3：依本侧参考修复外弧、内弯尖梢、发面宽度和间隙；保留实际非对称及5/20/150分片，不把宽帘提到耳前。 原深度保持。",
+      "check": {
+        "passed": true,
+        "note": "已在同一 KRA 原尺寸检查全逻辑侧发、单独分片与默认组装：耳廓主体露出，窄鬓发在耳前，顶根不压乱头盖。内部切片边界采用互斥分区避免 alpha 重叠衰减；真实生成纹理和 Krita 补笔保留。；返修01已按参考和原尺寸独显/隐藏上层/默认叠加再次核对，原层序及运动身份不变。",
+        "regions": [
+          {
+            "level": 5,
+            "note": "组装新增；完整补全根部的 source 轮廓外延伸在10头盖之后，独显有完整材质，默认由头盖自然遮住。；返修01此分片的深度与身份不变。"
+          },
+          {
+            "level": 20,
+            "note": "上游预注；侧顶可见主体、耳后宽帘和内弯发梢在耳、脸后，耳后材质连续，不把耳朵像素贴入本片。；返修01此分片的深度与身份不变。"
+          },
+          {
+            "level": 150,
+            "note": "上游预注；只分原 source 中耳根前细尖和跨耳细丝，位于耳60/61、脸70前，仍由刘海160覆盖顶部，宽面不整体抬前。；返修01此分片的深度与身份不变。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hair/side_hair_right",
+      "levels": [
+        {
+          "level": 6,
+          "region": "原有顶部隐藏根部分片，仍位于后发10之后；返修01不重分其像素，与同part耳后宽帘和耳前细束保持共同运动身份。"
+        },
+        {
+          "level": 21,
+          "region": "画面左侧从侧顶汇聚根部到 x90–290、y250–760 的耳外宽帘及 y790–885 内弯发梢、x73 附近游离弧束；在 hair/back_hair 前、face/ear_right 与 face/face_base 后、hair/bangs 后。沿耳上约 x240–300、y480–535 的发流和耳根遮挡带转接前层，不按耳洞切断完整发面；下部表层覆盖后发内后短梢。 返修01按固定参考修正本区外弧和发梢的真实轮廓及间隙。 R2续修将约x245–360/y760–906同一弯束及两枚完整末梢归入本区，旧轮廓截断已修正；未抬至耳前。"
+        },
+        {
+          "level": 151,
+          "region": "画面左侧约 x275–330、y490–680 的耳前细鬓发、跨耳细线和脸侧窄尖束；在 face/ear_right、face/face_base 及邻接局部五官前，在 hair/bangs 后。沿耳上及耳根遮挡带与后区连续搭接，向脸颊方向细尖保留原走势；耳廓主体应外露，不能把整片耳后宽帘搬至前层。"
+        }
+      ],
+      "note": "已在 KRA 落实6/21/151三个普通绘画分片：__hidden_root、__rear、__front；根部新增后置，原预注耳后/耳前关系继续保留。各区以互斥像素分配，合起来为完整同一侧发；不把整体隐藏根部强行提到头盖前。\n返修01：R2：依本侧参考修复外缘游离弧束、下缘内弯尖梢和束间空隙，去除粗浅棕边带及异常连桥；6/21/151 分片身份不变。 原深度保持。\n返修01续修：R2续修完成：将约x245–360、y760–906同一侧发弯束的连续表面及两枚收尖完整归入21后区，纠正旧SVG在末梢中段的截断。此处以本条实际发流归属修正前文笼统的y885/910分界；更靠脸、下颌与颈旁的内后短梢仍归back_hair。6/21/151及各自UUID不变。侧发只覆盖其自身可见参考像素；新增隐藏在侧发后的back_hair区域已用灰底RGB控制重新生成后发纹理并在Krita修接，未把侧发参考像素留在后发补全中。",
+      "check": {
+        "passed": true,
+        "note": "已在同一 KRA 原尺寸检查全逻辑侧发、单独分片与默认组装：耳廓主体露出，窄鬓发在耳前，顶根不压乱头盖。内部切片边界采用互斥分区避免 alpha 重叠衰减；真实生成纹理和 Krita 补笔保留。；返修01已按参考和原尺寸独显/隐藏上层/默认叠加再次核对，原层序及运动身份不变。；续修独显、隐藏上层、默认叠加均已检查，既定深度不变。；续修独显、隐藏上层、默认叠加均已检查，既定深度不变。",
+        "regions": [
+          {
+            "level": 6,
+            "note": "组装新增；完整补全根部的 source 轮廓外延伸在10头盖之后，独显有完整材质，默认由头盖自然遮住。；返修01此分片的深度与身份不变。"
+          },
+          {
+            "level": 21,
+            "note": "上游预注；侧顶可见主体、耳后宽帘和内弯发梢在耳、脸后，耳后材质连续，不把耳朵像素贴入本片。；返修01此分片的深度与身份不变。；R2续修末梢连续完整，参考只覆盖本侧束面，独显与默认叠加通过自检。；R2续修末梢连续完整，参考只覆盖本侧束面，独显与默认叠加通过自检。"
+          },
+          {
+            "level": 151,
+            "note": "上游预注；只分原 source 中耳根前细尖和跨耳细丝，位于耳60/61、脸70前，仍由刘海160覆盖顶部，宽面不整体抬前。；返修01此分片的深度与身份不变。"
+          }
+        ]
+      }
+    },
+    {
+      "id": "arms/arm_left",
+      "level": 30,
+      "note": "终止 group 按实际绘画 part 覆盖。画面右肩臂在 body/torso、body/breast 之后，肩根完整余量由躯干边缘搭接；当前没有手、前臂可见，不推造画外。默认显示，画布裁切；白色背心仅参考，不作人体蒙版。连接宽度、腋侧接缝在 raster step01 校核。",
+      "check": {
+        "passed": true,
+        "note": "画面右臂完整 blend 在肩峰到右下裁切处连续，向内的斜向接形伸到肩带后。候选中 torso 盖内延接区而外侧肩臂保持原位置，30 在 torso/breast 后合理，无肢体交叉需跨深度。默认显示，服装线不参与裁人体，step01 检查肩根无断缝。"
+      }
+    },
+    {
+      "id": "arms/arm_right",
+      "level": 31,
+      "note": "终止 group 按实际绘画 part 覆盖。画面左肩臂在 body/torso、body/breast 后，肩根内延余量藏于躯干承接处。默认显示，保留画布边界，不以白背心裁人体；raster step01 校核腋侧连接，不增加画外肢体。",
+      "check": {
+        "passed": true,
+        "note": "画面左臂完整 blend 显示肩峰与上臂外弧，内延斜接形位于肩带后且前臂手不在画布内；候选 torso 覆盖接形，31 在 torso/breast 后与参考相容。默认显示，不用背心裁切；左右臂空间分离，31 与30仅排序无实体互遮。"
+      }
+    },
+    {
+      "id": "neck",
+      "level": 35,
+      "note": "终止 group 作为实际颈部绘画 part。位于 hair/back_hair 及侧发后区之前、face/face_base 与 body/torso 后，颈顶余量藏于下颌，颈根藏于 torso 连接区。默认显示，不套嘴部蒙版；颈顶当前补形延至下巴内属隐藏余量，按层序遮住。\nReview02 R3/R4：原完整颈部余量保留；在实际可见颈侧补回与参考一致的数像素外弧。新增原生joint contour透明度蒙版，由body/torso肩根连续外弧控制默认外露范围，只处理两侧R3/R4交接；底纹可停用蒙版完整检查。 原深度和共同运动身份保持。 续核：torso原生接色蒙版在颈侧完整实底上藏起高于肩根的AA预留；真实颈侧明暗由neck显示，肩根外弧由torso承接。参考覆盖按当前可见归属互斥分配，隐藏原纹理恢复为各自生成素材；原生画笔处理自身接区，不含邻件像素。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 显示颈顶圆形补形约 y726 起伸入下巴、下端到颈根；候选中由 face/face_base 遮住上余量，body/torso 遮住根部，符合原图下颌压颈及后发止于颈旁的关系。35 在后发之后、脸和躯干之前可行。默认可见且不受口开口蒙版控制，颈根接色留 step01 校核。；Review02已按原尺寸独显、隐藏上层和默认叠加核对上述修复，原深度正确。"
+      }
+    },
+    {
+      "id": "body/torso",
+      "level": 40,
+      "note": "肩根、锁骨至躯干连续底形，在 arms/arm_left、arms/arm_right 和 neck 连接余量前，在 body/breast 后。默认显示，不挖乳房空洞；不以参考背心领口或肩带裁切，画布 y1374 截断。raster step01 在颈根及肩根重叠区调接缝，避免重复轮廓。 Raster step01 已建立原生局部接色透明度蒙版，底层纹理完整保留；默认启用，控制依据为颈/肩臂或同级躯干，不以服装裁切人体。\n返修01：R10/R11/R14/R15：原生接色蒙版仅在颈、肩臂具备可靠实底的内部重叠区淡出；颈根和腋侧默认连续覆盖，不删除完整躯干底纹。 原深度保持。\nReview02 R3/R4：补齐本件实际可见肩根外弧，修正默认接色蒙版和真实重叠覆盖，以本件可见皮肤和原生画笔接顺肤色；保留胸廓、锁骨、双腋实底，未加入neck或衣服细节。 原深度和共同运动身份保持。 续核：torso原生接色蒙版在颈侧完整实底上藏起高于肩根的AA预留；真实颈侧明暗由neck显示，肩根外弧由torso承接。参考覆盖按当前可见归属互斥分配，隐藏原纹理恢复为各自生成素材；原生画笔处理自身接区，不含邻件像素。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 覆盖锁骨和胸廓连续到画布底，颈根呈弧形接区，两侧与肩臂内延重叠；候选胸前由 breast 覆盖，躯干在肩根余量前可隐藏斜接边。原图背心不是人体遮挡依据，默认显示完整底形、不按衣领裁切。颈胸和腋侧接缝需 step01 调色与余量检查。 实际原尺寸组装已用画笔接色及原生局部蒙版消除硬拼接，单层完整材质与蒙版停用检查分别留证。；返修01已按参考和原尺寸独显/隐藏上层/默认叠加再次核对，原层序及运动身份不变。；Review02已按原尺寸独显、隐藏上层和默认叠加核对上述修复，原深度正确。"
+      }
+    },
+    {
+      "id": "body/breast",
+      "level": 50,
+      "note": "左右乳房整体覆盖 body/torso 的胸廓前方，上缘在锁骨下自然衔接，外侧与肩臂邻接。默认显示，完整肤色形体保留画布内范围，不使用临时白背心作显隐蒙版；上缘需渐隐/接色时附着本层局部蒙版，控制依据 body/torso，不切成服装领口。 Raster step01 已建立原生局部接色透明度蒙版，底层纹理完整保留；默认启用，控制依据为颈/肩臂或同级躯干，不以服装裁切人体。\nReview02 R6：同层将已有生成的本体曲面材质局部续至y1374裁切边，并原生修接色阶，消除y1366起横带；自身中央形体明暗不转入torso，原生蒙版、alpha及深度50保持。 原深度和共同运动身份保持。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 上缘在锁骨下方呈双侧圆隆、中部下凹，外缘延续到画布底；候选覆盖 torso 的胸前且不碰颈头发。50 的单深度合理，默认完整显示，临时衣服不做蒙版。上缘硬分界后续以本层局部接色/alpha 衔接 torso，不能把参考领口当边界。 实际原尺寸组装已用画笔接色及原生局部蒙版消除硬拼接，单层完整材质与蒙版停用检查分别留证。；Review02已按原尺寸独显、隐藏上层和默认叠加核对上述修复，原深度正确。"
+      }
+    },
+    {
+      "id": "face/ear_left",
+      "level": 60,
+      "note": "画面右耳在 hair/back_hair、hair/side_hair_left 的20后区前，耳根在 face/face_base 后，hair/side_hair_left 的150前区细丝覆盖耳根和局部耳面。默认显示，保留完整耳根；不将头发抠洞固化进耳层。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 显示画面右侧完整耳廓与绿色耳根补形，耳根向脸内延；候选耳位于侧发后区前、脸底后。参考细鬓发从耳上沿耳根及耳面前经过，需侧发150区覆盖此耳，20区仍在耳后。单深度60配合侧发分区合理，默认显示。"
+      }
+    },
+    {
+      "id": "face/ear_right",
+      "level": 61,
+      "note": "画面左耳在 hair/back_hair、hair/side_hair_right 的21后区前，在 face/face_base 和侧发151耳前细丝后。默认显示，耳根藏于脸缘及细鬓发，耳廓主体外露，整耳不需跨深度。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 的画面左耳根补形向脸侧连续延伸，外耳和耳垂保留；候选中61在侧发21后区前、脸底后，参考耳前细发由侧发151区覆盖局部耳根，耳廓主体仍露出。无需将耳拆深度，不对耳套眼口显隐。"
+      }
+    },
+    {
+      "id": "face/face_base",
+      "level": 70,
+      "note": "完整脸底在双耳 face/ear_left、face/ear_right、neck 和耳后头发前；在所有脸部五官、腮红、hair/bangs 及侧发150/151耳前区域后。默认显示，肤色底不挖眼口洞；眼口内容通过其自身开口蒙版显示在本层前，不以脸底擦除实现。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 是从约 y202 的额头到 y914 下巴的连续面形，没有眼口洞；候选中脸盖住颈顶、耳根和后发而五官在其前。70 满足实体顺序。默认显示；眼口自身前置内容通过开口蒙版归零隐藏，不需给脸底打洞。"
+      }
+    },
+    {
+      "id": "face/blush_left",
+      "level": 72,
+      "note": "覆于 face/face_base 的画面右颊，在 hair/side_hair_left 前区后。默认显示、允许独立强度显隐；将本层 alpha 剪贴/蒙版限制到 face/face_base 的面部皮肤，不含耳与头发，不受眼口开口控制。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 为画面右眼下、鼻与鬓发之间的椭圆局部晕染覆盖范围，原图斜线留在此区域；候选72贴脸而不碰耳廓，位于侧发150区后合理。默认显示且可调强度，剪贴 face/face_base 防脸缘外溢；硬椭圆边为轮廓提示，step01 落实柔边透明晕染。"
+      }
+    },
+    {
+      "id": "face/blush_right",
+      "level": 73,
+      "note": "覆于 face/face_base 的画面左颊，在 hair/side_hair_right 前区后。默认显示，可独立强度显隐；本层 alpha 由 face/face_base 限制到脸部皮肤，不能溢出脸缘。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 的画面左腮红位于眼下与鼻外侧，未带眼睫头发；候选73在脸底前，侧发151区后，左右颊互不相交。默认显示，可独立强度显隐，以 face/face_base 裁到皮肤，step01 将轮廓提示落实渐隐晕染，不接受眼口开口裁切。"
+      }
+    },
+    {
+      "id": "face/nose/volume_shadow",
+      "level": 74,
+      "note": "脸底 face/face_base 前的连续粉色鼻影，在 face/nose/tip_mark 后，邻接 face/nose/tip_highlight 留肤色缝。默认显示、可独立调浓淡，若需裁切以 face/face_base 为范围。",
+      "check": {
+        "passed": true,
+        "note": "放大完整 blend 显示画面左侧自细尖到外鼓鼻尖的连续粉影，右邻高光留窄肤色缝，画面左鼻点在底部内。候选74在脸底前、tip_mark76后，完全支持该底点覆盖阴影；默认显示、独立浓淡，不需多深度或开口蒙版。"
+      }
+    },
+    {
+      "id": "face/nose/tip_highlight",
+      "level": 75,
+      "note": "在 face/face_base 和鼻影层前，与 face/nose/volume_shadow 以窄肤色间隔相邻，不并入阴影；与 face/nose/tip_mark 分离。默认显示、可独立亮度显隐，本层限于 face/face_base。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 白色水滴状亮斑位于鼻影右侧，底端离开两短鼻点，未扩成鼻梁长线。候选75在脸底前，与阴影留肤色缝，无实体穿插；默认显示可独立淡出，本层范围限于脸底，层序和显隐相容。"
+      }
+    },
+    {
+      "id": "face/nose/tip_mark",
+      "level": 76,
+      "note": "两个鼻底短点在 face/face_base 及 face/nose/volume_shadow 前，画面左点覆盖粉影底端。默认显示，同一 part 整体调节，不连接为鼻孔长线。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 两个斜向短点位于鼻影底端及右侧肤色处，画面左点加深而未连成鼻底线。候选76在鼻影74前可保留左点覆盖关系，与高光分离；默认显示，无眼口蒙版，不需给两点再分深度。"
+      }
+    },
+    {
+      "id": "face/mouth/mouth_interior",
+      "level": 80,
+      "note": "口腔连续底色在 face/face_base 前，在 face/mouth/tongue、face/mouth/upper_teeth、face/mouth/lower_teeth、face/mouth/lower_lip、face/mouth/upper_lip 后。本层及 tongue/upper_teeth/lower_teeth 四层共享口开口 alpha 蒙版，控制件完整 ID 为 face/mouth/upper_lip 与 face/mouth/lower_lip，范围由两唇自由缘和两嘴角共同闭合；默认闭嘴开口面积为零，四层完整保留但全部不可见。蒙版附着四个口内绘画层或仅含四层的渲染子组，不套到上下唇或整个 face/mouth；不另设蒙版深度。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 为横向圆润内腔底形，向唇上下延伸，宽于闭口粉色轮廓，是正常张口余量；80位于脸前、牙舌与两唇后。当前候选在嘴周露补形色，不能单靠上下唇窄实体遮全。由 face/mouth/upper_lip 与 face/mouth/lower_lip 共同口开口蒙版控制本件及牙舌，默认闭嘴开口零，全部隐藏；允许父外范围合理，不改成闭口细缝。"
+      }
+    },
+    {
+      "id": "face/mouth/tongue",
+      "level": 81,
+      "note": "位于 face/mouth/mouth_interior 前，face/mouth/upper_teeth、face/mouth/lower_teeth 及两唇后。与 mouth_interior/upper_teeth/lower_teeth 共享由 face/mouth/upper_lip、face/mouth/lower_lip 自由缘及嘴角定义的口开口蒙版；本层再限制在 face/mouth/mouth_interior 完整内腔范围。默认闭嘴完全不可见，开口才按遮挡显露；前下部由 lower_teeth 和 lower_lip 遮住。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 圆舌面自唇缝附近向下延至约 y847，下部超出当前内腔底形；属于隐藏余量，需口腔范围裁切并在 step01 校核正常张口后的比例和藏根量。81在内腔80前、牙列82/83和两唇后符合参考结构职责；共享上下唇共同开口蒙版，默认全隐藏，不能让候选中嘴下补形露出当实际舌尖。"
+      }
+    },
+    {
+      "id": "face/mouth/lower_teeth",
+      "level": 82,
+      "note": "在 face/mouth/mouth_interior、face/mouth/tongue 前，两唇后；与 face/mouth/upper_teeth 分处上下牙列，未形成需分区的穿插。与其余口内三层共享 face/mouth/upper_lip 和 face/mouth/lower_lip 控制的口开口蒙版，并限制在 face/mouth/mouth_interior 内；默认闭嘴全隐藏，开口后由下唇挡住基部与侧端。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 窄弧位于闭口线下方，牙弧实体两端和下缘连续；82在舌81前、两唇后，符合前下牙列遮舌。默认闭嘴全隐藏，接受 face/mouth/upper_lip 和 face/mouth/lower_lip 的共同口开口蒙版及 mouth_interior 范围限制。step01 校核下牙根在下唇后，而非照现有闭口位置直接显示。"
+      }
+    },
+    {
+      "id": "face/mouth/upper_teeth",
+      "level": 83,
+      "note": "在 face/mouth/mouth_interior、face/mouth/tongue 前和 face/mouth/upper_lip、face/mouth/lower_lip 后；上牙冠自由缘在口腔上部，默认闭嘴全隐藏。与其余口内三层共享 face/mouth/upper_lip、face/mouth/lower_lip 控制的共同开口蒙版，再限于 face/mouth/mouth_interior 内，牙根及侧端藏于上唇嘴角。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 浅色补形上牙弧位于闭唇线上侧，约嘴宽内连续圆润，没有逐颗拆分；83在内腔/舌前和两唇后。参考全隐藏，必须共享 upper_lip/lower_lip 定义的零面积闭口蒙版并限于 mouth_interior，开口时牙根藏上唇后，不能因候选补形露到唇外而改置唇前。"
+      }
+    },
+    {
+      "id": "face/mouth/lower_lip",
+      "level": 84,
+      "note": "在 face/face_base 及全部四个口内 part 前，在 face/mouth/upper_lip 嘴角/闭合唇缝后；默认显示。与 face/mouth/upper_lip 共同控制 mouth_interior、tongue、upper_teeth、lower_teeth 的同一口开口蒙版，四者完整 ID 均为 face/mouth/ 对应后缀；闭嘴开口为零。蒙版仅附口内四层，不裁掉本层唇面高光及唇下贴附阴影。raster step01 校核嘴角圆弧搭接，不能重复描闭唇深线。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 下唇从左右嘴角连续收至圆润下缘，覆盖局部唇下阴影，宽度与原唇面邻接；84在四个口内层前、85上唇闭缝后合理。默认唇面高光阴影显示，不能把共享口开口蒙版套到整个 mouth 组而消去本层。与 upper_lip 共同零面积闭口，牙舌口腔全部隐藏；step01 校核下缘接色与两嘴角无双线。"
+      }
+    },
+    {
+      "id": "face/mouth/upper_lip",
+      "level": 85,
+      "note": "在 face/mouth/lower_lip 和全部口内层前，闭合深色唇缝及嘴角由本层承担，默认显示。和 face/mouth/lower_lip 共同定义口开口，控制 face/mouth/mouth_interior、face/mouth/tongue、face/mouth/upper_teeth、face/mouth/lower_teeth 四层 alpha；默认闭嘴四层全隐藏。口内共享蒙版不作用于本层；窄肤色覆盖边可附本层，避免带入大片脸皮。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 的双峰粉色唇面、闭合深唇线和两侧嘴角与原图一致；候选在 lower_lip 及口内四层前，85使闭唇深线统一压住下唇不重复。默认显示；与 face/mouth/lower_lip 共同定义口开口，face/mouth/mouth_interior、face/mouth/tongue、face/mouth/upper_teeth、face/mouth/lower_teeth 默认闭嘴全隐藏，本层不接内腔蒙版。需 step01 检查窄覆盖边与嘴角搭接。"
+      }
+    },
+    {
+      "id": "face/eye_left/sclera",
+      "level": 90,
+      "note": "完整眼白在 face/face_base 前、face/eye_left/iris 与 face/eye_left/highlight 后、face/eye_left/lower_eyelid 和 face/eye_left/upper_eyelid 后。本层与这两个眼球内容层共享眼开口 alpha 蒙版；控制部件完整 ID 为 face/eye_left/upper_eyelid 和 face/eye_left/lower_eyelid，由上下睑自由缘及内外眼角共同构成闭合开口，默认闭眼开口为零，三层完整保留但全隐藏。蒙版附着三层或只含三层的渲染子组，不应用到整个 face/eye_left、两眼睑或褶线；眼白自身完整 alpha 再供 iris/highlight 剪贴，不能以静态眼白外形代替动态开口。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 是杏仁底形，覆盖约 x656–812、y541–600 的眼球范围，明显宽于参考闭眼线，未挖虹膜中心；90在脸前、虹膜和两睑后正确。候选出现补形色仅因开口蒙版未应用；由 face/eye_left/upper_eyelid 与 face/eye_left/lower_eyelid 共同开口限制本件及 iris/highlight，默认闭眼全隐藏；睁眼时提供二者剪贴范围，允许父外形体合理。"
+      }
+    },
+    {
+      "id": "face/eye_left/iris",
+      "level": 92,
+      "note": "完整虹膜与瞳孔在 face/eye_left/sclera 前、face/eye_left/highlight 及上下眼睑后。由 face/eye_left/sclera 的完整 alpha 限定眼球活动范围，并共享 face/eye_left/upper_eyelid 与 face/eye_left/lower_eyelid 自由缘共同控制的动态眼开口蒙版，包含眼角侧界；默认闭眼完全隐藏。蒙版仅附眼内三层，不裁两睑；完整圆形隐藏区域保留。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 近圆眼黑位于眼白中央，约 x696–776、y526–606，下缘超眼白边与睫毛带，需保留完整圆而非剪成弧片。候选92在90眼白前、94高光与两睑后合理；以 sclera 完整 alpha 及 upper_eyelid/lower_eyelid 动态开口双重限制，默认闭眼不应露出，候选未蒙版不能证明默认效果。"
+      }
+    },
+    {
+      "id": "face/eye_left/highlight",
+      "level": 94,
+      "note": "在 face/eye_left/iris 前、face/eye_left/lower_eyelid 和 face/eye_left/upper_eyelid 后，默认随虹膜移动。以 face/eye_left/sclera 完整 alpha 剪贴并共享 face/eye_left/upper_eyelid、face/eye_left/lower_eyelid 所控制的动态开口蒙版，始终不露到眼角外、皮肤或睫毛；默认闭眼完全隐藏，可另独立调强度。不是上睫毛表面亮斑。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 两个浅色补形点位于虹膜上侧附近，区别于闭眼睫毛带的表面亮笔。94在虹膜92前、眼睑98/100后合理；与眼内共享上下眼睑开口和眼白范围裁切，默认全部隐藏，不能因候选显示在褶线附近就把高光放到睑前。"
+      }
+    },
+    {
+      "id": "face/eye_left/eyelid_crease",
+      "level": 96,
+      "note": "在 face/face_base 和眼内层前，face/eye_left/upper_eyelid 后，贴于上睑上方皮肤。默认显示，可独立弱化；不承担或接受眼内三层的开口裁切，避免闭眼褶线消失，端部由侧发/刘海自然遮挡。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 的细长暖桃弧在闭眼主带上方，端部同参考收尖，未包含 y491 局部明暗。96在脸和眼内前、upper_eyelid100后可保留衔接；本件默认显示且独立强弱，不接受眼球开口蒙版，与闭眼隐藏眼内同时成立。"
+      }
+    },
+    {
+      "id": "face/eye_left/lower_eyelid",
+      "level": 98,
+      "note": "在 face/eye_left/sclera、face/eye_left/iris、face/eye_left/highlight 前，face/eye_left/upper_eyelid 后。默认闭眼下缘变形至与上睑接触并藏在浓密上睑后，参考无独立可见下睑；若补设计的睁眼形状仍外露，附本层闭眼姿势 alpha 蒙版/显隐控制（控制件 face/eye_left/upper_eyelid 与本层 face/eye_left/lower_eyelid），默认隐藏补设计下缘，睁眼恢复。两睑共同控制眼内三层动态开口、闭合时面积零；本层不直接接受眼内开口蒙版，不把睫毛尖当下睫毛。允许超出父窄轮廓，raster step01 校核眼角接触余量。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 为从鼻侧眼角到外眼角的下弯细缘，形体超出闭眼父窄带；候选中98在眼内层前、上睑后，原图却无独立下缘可见。必须在闭眼姿势把此缘压至上睑后，必要本层 alpha 默认隐藏补设计下缘，开眼恢复；同时与 upper_eyelid 共同定义眼内三层零面积开口，不能依赖候选目前露出的弧线当作正确默认显隐。"
+      }
+    },
+    {
+      "id": "face/eye_left/upper_eyelid",
+      "level": 100,
+      "note": "在 face/eye_left/lower_eyelid 和全部眼内层前，含上睫毛、贴睑细边和局部肤色明暗，默认显示。和 face/eye_left/lower_eyelid 共同定义动态眼开口，控制 face/eye_left/sclera、face/eye_left/iris、face/eye_left/highlight 三层共享 alpha；默认闭眼开口零，三层全部隐藏。蒙版只附眼内层，不裁本层及 face/eye_left/eyelid_crease。闭合压住下睑两端；两眼角与侧发邻接，raster step01 核对闭合无漏白。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 的深色闭合主带、下垂尖簇睫毛与约 y491 的局部皮肤明暗均同属本件，位于眼白和虹膜范围之前；候选中100覆盖98下睑的接触端但无法单靠现有窄实体遮住整个补设计眼球。故必须使用 upper_eyelid 与 lower_eyelid 共同开口蒙版使 sclera/iris/highlight 默认闭眼归零；本件与 crease 默认显示，不套内眼蒙版，层序相容。"
+      }
+    },
+    {
+      "id": "face/eye_right/sclera",
+      "level": 91,
+      "note": "完整眼白在 face/face_base 前、face/eye_right/iris 与 face/eye_right/highlight 后、face/eye_right/lower_eyelid 和 face/eye_right/upper_eyelid 后。本层与这两个眼球内容层共享眼开口 alpha 蒙版；控制部件完整 ID 为 face/eye_right/upper_eyelid 和 face/eye_right/lower_eyelid，由上下睑自由缘及内外眼角共同构成闭合开口，默认闭眼开口为零，三层完整保留但全隐藏。蒙版附着三层或只含三层的渲染子组，不应用到整个 face/eye_right、两眼睑或褶线；眼白自身完整 alpha 再供 iris/highlight 剪贴，不能以静态眼白外形代替动态开口。 Raster step01 已按左眼同名形体镜像修正完整 SVG 与实际像素，x=1157−x，y一致；独立图层与现有深度不变。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 的杏仁底形覆盖现有闭眼带上下，外端在画面左、内端在右，中心连续完整；91在脸前、93虹膜和两睑后。允许超出父闭眼轮廓属于结构需要；候选露色应在 step01 由 face/eye_right/upper_eyelid 和 face/eye_right/lower_eyelid 动态开口归零，三层眼内默认全隐藏。完整眼白作为虹膜高光的二级范围裁切，层序相容。 实际制作已检查修正后的完整纹理和原生蒙版：下睑不再被误裁成平带，虹膜大小及纵向位置与左眼协调。参考默认闭眼由启用的开口/接触蒙版完全隐藏，眼白完整裁切蒙版仅约束眼内内容。"
+      }
+    },
+    {
+      "id": "face/eye_right/iris",
+      "level": 93,
+      "note": "完整虹膜与瞳孔在 face/eye_right/sclera 前、face/eye_right/highlight 及上下眼睑后。由 face/eye_right/sclera 的完整 alpha 限定眼球活动范围，并共享 face/eye_right/upper_eyelid 与 face/eye_right/lower_eyelid 自由缘共同控制的动态眼开口蒙版，包含眼角侧界；默认闭眼完全隐藏。蒙版仅附眼内三层，不裁两睑；完整圆形隐藏区域保留。 Raster step01 已按左眼同名形体镜像修正完整 SVG 与实际像素，x=1157−x，y一致；独立图层与现有深度不变。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 近圆眼黑位于眼白中部，向上伸至褶线以上且下缘藏入睫毛带；原图没有开眼纹样依据，保留补设计身份。93在91眼白前、95高光与两睑后合理；需眼白 alpha 和上下睑共同动态开口裁切，默认闭眼完全不显，不能因完整圆露到皮肤就提高到睑前。 实际制作已检查修正后的完整纹理和原生蒙版：下睑不再被误裁成平带，虹膜大小及纵向位置与左眼协调。参考默认闭眼由启用的开口/接触蒙版完全隐藏，眼白完整裁切蒙版仅约束眼内内容。"
+      }
+    },
+    {
+      "id": "face/eye_right/highlight",
+      "level": 95,
+      "note": "在 face/eye_right/iris 前、face/eye_right/lower_eyelid 和 face/eye_right/upper_eyelid 后，默认随虹膜移动。以 face/eye_right/sclera 完整 alpha 剪贴并共享 face/eye_right/upper_eyelid、face/eye_right/lower_eyelid 所控制的动态开口蒙版，始终不露到眼角外、皮肤或睫毛；默认闭眼完全隐藏，可另独立调强度。不是上睫毛表面亮斑。 Raster step01 已按左眼同名形体镜像修正完整 SVG 与实际像素，x=1157−x，y一致；独立图层与现有深度不变。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 为虹膜上侧的两点反光，独立于睫毛表面原有亮笔；95位于虹膜93前、两睑99/101后。受 sclera 范围及 upper_eyelid/lower_eyelid 共同眼开口限制，默认闭眼完全隐藏；候选尚未应用蒙版，不能将此时皮肤上的补形当实际外露。 实际制作已检查修正后的完整纹理和原生蒙版：下睑不再被误裁成平带，虹膜大小及纵向位置与左眼协调。参考默认闭眼由启用的开口/接触蒙版完全隐藏，眼白完整裁切蒙版仅约束眼内内容。"
+      }
+    },
+    {
+      "id": "face/eye_right/eyelid_crease",
+      "level": 97,
+      "note": "在 face/face_base 和眼内层前，face/eye_right/upper_eyelid 后，贴于上睑上方皮肤。默认显示，可独立弱化；不承担或接受眼内三层的开口裁切，避免闭眼褶线消失，端部由侧发/刘海自然遮挡。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 暖桃长弧在主睑带上方，画面左端细、鼻侧较厚，同参考褶皱走势；97在眼内前、upper_eyelid101后可衔接。默认显示且独立强弱，与眼内全隐藏不冲突，本件不接眼开口蒙版，不含上睑 y491 的明暗。"
+      }
+    },
+    {
+      "id": "face/eye_right/lower_eyelid",
+      "level": 99,
+      "note": "在 face/eye_right/sclera、face/eye_right/iris、face/eye_right/highlight 前，face/eye_right/upper_eyelid 后。默认闭眼下缘变形至与上睑接触并藏在浓密上睑后，参考无独立可见下睑；若补设计的睁眼形状仍外露，附本层闭眼姿势 alpha 蒙版/显隐控制（控制件 face/eye_right/upper_eyelid 与本层 face/eye_right/lower_eyelid），默认隐藏补设计下缘，睁眼恢复。两睑共同控制眼内三层动态开口、闭合时面积零；本层不直接接受眼内开口蒙版，不把睫毛尖当下睫毛。允许超出父窄轮廓，raster step01 校核眼角接触余量。 Raster step01 已按左眼同名形体镜像修正完整 SVG 与实际像素，x=1157−x，y一致；独立图层与现有深度不变。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 下弯细带贴在现有睫毛主带内下侧，两端邻外/内眼角，不是独立下睫毛；99位于眼内前、101上睑后可在闭眼接触时被主带覆盖。默认参考不可见，step01 需校核两端和整弧压到上睑后，必要本层闭眼 alpha 隐藏补设计下缘。与 upper_eyelid 共控眼内零开口、开眼恢复；不把眼内开口蒙版裁到本睑。 实际制作已检查修正后的完整纹理和原生蒙版：下睑不再被误裁成平带，虹膜大小及纵向位置与左眼协调。参考默认闭眼由启用的开口/接触蒙版完全隐藏，眼白完整裁切蒙版仅约束眼内内容。"
+      }
+    },
+    {
+      "id": "face/eye_right/upper_eyelid",
+      "level": 101,
+      "note": "在 face/eye_right/lower_eyelid 和全部眼内层前，含上睫毛、贴睑细边和局部肤色明暗，默认显示。和 face/eye_right/lower_eyelid 共同定义动态眼开口，控制 face/eye_right/sclera、face/eye_right/iris、face/eye_right/highlight 三层共享 alpha；默认闭眼开口零，三层全部隐藏。蒙版只附眼内层，不裁本层及 face/eye_right/eyelid_crease。闭合压住下睑两端；两眼角与侧发邻接，raster step01 核对闭合无漏白。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 显示画面左眼深色闭合带、连续尖簇睫毛、细桃色睑边和鼻侧 y491 局部明暗，未拆成独立睫毛；候选101在99下睑和眼内三层前，符合原图主线压住下缘。眼球补形在窄主线外仍可见，需本件 face/eye_right/upper_eyelid 与 face/eye_right/lower_eyelid 共同开口蒙版控制 sclera/iris/highlight 默认全隐藏，不能只靠物理覆线；本件与褶线保持默认可见。"
+      }
+    },
+    {
+      "id": "face/eyebrow_left",
+      "level": 102,
+      "note": "完整画面右眉在 face/face_base 前、hair/bangs 和 hair/side_hair_left 前区后，默认显示，借头发实体遮住发下眉体，不用眼开口蒙版。现 note 与完整 SVG 是否已补齐眉下连续区由图检查，若仍有发下间断记为 raster step01 补接，不更改逻辑身份。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 可见一条完整眉弧，绿色发下补段贯穿各刘海遮挡缝，眉头眉尾与参考相接，并非仅可见碎段。候选中102在脸底前、刘海160后，满足眉随动而由发遮挡；默认显示，发下完整体保留，不用眼球蒙版。与输入 note 的“发下后补”措辞相比，现 SVG 已有连接形体，step01 按完整弧落实。"
+      }
+    },
+    {
+      "id": "face/eyebrow_right",
+      "level": 103,
+      "note": "完整画面左眉在 face/face_base 前、hair/bangs 和 hair/side_hair_right 前区后，默认显示。保留发下完整眉弧以供运动，使用头发自然遮挡，勿把遮发间隙永久切入眉体，不接受眼开口蒙版。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 的画面左眉从眉头至细眉尾连续跨越刘海遮挡区，候选103由 bangs160局部覆盖，原图露出的段与位置一致。默认显示，脸底前头发后单深度足够；开闭眼蒙版只控眼内层、不影响眉毛。"
+      }
+    },
+    {
+      "id": "hair/bangs",
+      "level": 160,
+      "note": "完整额前扇面根部在 hair/back_hair 和两侧 side_hair 的侧顶隐藏根部前；发尖在 face/face_base、face/eyebrow_left、face/eyebrow_right 及太阳穴前，耳前侧发连接处自然搭接。默认显示，不施眼口蒙版；露额缝隙保留。与侧发分界沿前顶至太阳穴斜向发流，非把宽侧帘并入刘海。\n返修01：R1：依固定参考恢复额前分叉、束尾和露额间隙；仅保留刘海自身可见内容，眉线交叉处作独立归属清理。 原深度保持。\nReview02 R1/R2：逐束补回眉线交叉处本件alpha、发色与细丝，真实露额缝和内部叉缝保留；眉102/103本体、层序和位置不改，刘海仍160。 原深度和共同运动身份保持。",
+      "check": {
+        "passed": true,
+        "note": "完整 blend 顶部汇聚根部到眉线多尖扇面连续，太阳穴端比中央略长，未领取耳外宽帘；候选160覆盖眉毛102/103、额头70及侧发隐藏根部，露额缝隙保留。原图耳前长细鬓发另属侧发，不能并进本件；默认显示、不受眼口蒙版影响，单深度足够。；返修01已按参考和原尺寸独显/隐藏上层/默认叠加再次核对，原层序及运动身份不变。；Review02已按原尺寸独显、隐藏上层和默认叠加核对上述修复，原深度正确。"
+      }
+    }
+  ]
+}

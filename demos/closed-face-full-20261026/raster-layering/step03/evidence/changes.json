@@ -1,0 +1,18 @@
+{
+  "torso_rgb_bounds": [
+    239,
+    1048,
+    916,
+    1088
+  ],
+  "alpha_equal": true,
+  "masks_unchanged": true,
+  "modified_paintlayers": [
+    "0040 body/torso"
+  ],
+  "unchanged_paintlayers": 40,
+  "sha256": {
+    "character-dressup-base.kra": "36f9a05259d168a9045d12e2c7b9709ec4e192c06304e33eeafdbb52e5758565",
+    "character-dressup-base.png": "9a21dda0f1b97c7d78543ea75f4eef358688c00db3e88679b1d4108c7265d227"
+  }
+}

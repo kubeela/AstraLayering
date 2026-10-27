@@ -1,0 +1,106 @@
+[
+  {
+    "layer": "0010",
+    "changed_pixels": 3499,
+    "bounds_xywh": [
+      193,
+      1173,
+      779,
+      77
+    ],
+    "alpha128_changed_pixels": 54,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 2.8284271247461903
+  },
+  {
+    "layer": "0020",
+    "changed_pixels": 1436,
+    "bounds_xywh": [
+      1,
+      702,
+      247,
+      114
+    ],
+    "alpha128_changed_pixels": 11,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 3.605551275463989
+  },
+  {
+    "layer": "0030",
+    "changed_pixels": 1219,
+    "bounds_xywh": [
+      912,
+      711,
+      233,
+      107
+    ],
+    "alpha128_changed_pixels": 24,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 5
+  },
+  {
+    "layer": "0040",
+    "changed_pixels": 1797,
+    "bounds_xywh": [
+      378,
+      247,
+      392,
+      82
+    ],
+    "alpha128_changed_pixels": 25,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 2.23606797749979
+  },
+  {
+    "layer": "0050",
+    "changed_pixels": 1941,
+    "bounds_xywh": [
+      1,
+      348,
+      253,
+      450
+    ],
+    "alpha128_changed_pixels": 24,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 6.082762530298219
+  },
+  {
+    "layer": "0060",
+    "changed_pixels": 2272,
+    "bounds_xywh": [
+      914,
+      347,
+      231,
+      457
+    ],
+    "alpha128_changed_pixels": 29,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 3
+  },
+  {
+    "layer": "0070",
+    "changed_pixels": 7489,
+    "bounds_xywh": [
+      134,
+      267,
+      884,
+      973
+    ],
+    "alpha128_changed_pixels": 100,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 3.605551275463989
+  },
+  {
+    "layer": "0080",
+    "changed_pixels": 2381,
+    "bounds_xywh": [
+      331,
+      268,
+      488,
+      176
+    ],
+    "alpha128_changed_pixels": 21,
+    "max_alpha128_change_distance_from_old_boundary": 1,
+    "max_paint_change_distance_from_alpha_boundary": 4.47213595499958
+  }
+]

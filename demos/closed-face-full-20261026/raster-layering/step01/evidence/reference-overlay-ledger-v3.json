@@ -1,0 +1,37 @@
+[
+  {
+    "name": "0010 hair/back_hair",
+    "file": "reference-overlays-v3/0010-hair-back_hair.png",
+    "scope": "verified topmost own-part visible hair pixels; only overall hair silhouette/skin boundary eroded 2px; hidden material preserved"
+  },
+  {
+    "name": "0020 hair/side_hair_left__rear",
+    "file": "reference-overlays-v3/0020-hair-side_hair_left__rear.png",
+    "scope": "verified topmost own-part visible hair pixels; only overall hair silhouette/skin boundary eroded 2px; hidden material preserved"
+  },
+  {
+    "name": "0021 hair/side_hair_right__rear",
+    "file": "reference-overlays-v3/0021-hair-side_hair_right__rear.png",
+    "scope": "verified topmost own-part visible hair pixels; only overall hair silhouette/skin boundary eroded 2px; hidden material preserved"
+  },
+  {
+    "name": "0150 hair/side_hair_left__front",
+    "file": "reference-overlays-v3/0150-hair-side_hair_left__front.png",
+    "scope": "verified topmost own-part visible hair pixels; only overall hair silhouette/skin boundary eroded 2px; hidden material preserved"
+  },
+  {
+    "name": "0151 hair/side_hair_right__front",
+    "file": "reference-overlays-v3/0151-hair-side_hair_right__front.png",
+    "scope": "verified topmost own-part visible hair pixels; only overall hair silhouette/skin boundary eroded 2px; hidden material preserved"
+  },
+  {
+    "name": "0160 hair/bangs",
+    "file": "reference-overlays-v3/0160-hair-bangs.png",
+    "scope": "verified topmost own-part visible hair pixels; only overall hair silhouette/skin boundary eroded 2px; hidden material preserved"
+  },
+  {
+    "name": "0070 face/face_base",
+    "file": "reference-overlays-v3/0070-face-face_base.png",
+    "scope": "own visible lower-face skin only; feature/occluder exclusions retained; 3px safety edge + 3px inward blend; original reference never used in hidden completion"
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "R1": "repaired",
+  "required_report_first_line": "结论：已修复",
+  "report_links_resolved": true,
+  "kra_integrity": true,
+  "native_node_types": {
+    "paintlayer": 8,
+    "transparencymask": 7
+  },
+  "paint_layers_preserved_without_pixel_change": 7,
+  "changed_masks": [
+    [
+      "0020 sleeve_image_left :: cuff_return",
+      "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body"
+    ],
+    [
+      "0050 sleeve_image_left :: front_tube",
+      "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body"
+    ]
+  ],
+  "all_layer_and_mask_uuids_preserved": true,
+  "reopen_verified": true,
+  "history_kra_sha256": "2da2ea9c004a381e4f6728155143e143a68c374b38514c5ceaab9551ecb50d8d",
+  "current_kra_sha256": "0e81355f9f21a8cff7697c5175b99a5f06648bf8971647dfdfd075054517185d",
+  "repair_report_publication_left_to_scheduler": true
+}

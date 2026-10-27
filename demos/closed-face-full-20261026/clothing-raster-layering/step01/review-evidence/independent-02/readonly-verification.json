@@ -1,0 +1,29 @@
+{
+  "input_sha256_before": {
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-raster-layering/step01/clothing-depth.kra": "0e81355f9f21a8cff7697c5175b99a5f06648bf8971647dfdfd075054517185d",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/groups.json": "7d6abcc149b27374cf841bf985035081ea490a0095e80e0d46f0e74ee8c971a3",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/occlusion.json": "891338fac35d50b362e591fd91cf913b9c0857e4c25c6ca31942cdf78b8c1b03",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/references/clothing.png": "9a1289cb00fdc79292c759fe7c018c083a9820e8ef994034b9c0f2838674e4c3",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/sleeve_image_left.svg": "44a85f8dfe2e144679ddfa6d2a9db004f04e30f1c75f4b817f6386579264cb16",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/neckline_band.svg": "ebd52e0c748b74f659202cec621d91b4cf5cae7535175e5a261776ef586a60b6",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/sleeve_image_right.svg": "b3a60e028976e341ec8d76e78308bce2bb03917db16818a86af80a3d2622c61c",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/tshirt_body.svg": "bae7aa229e3e72b741cc876e1008275e12c6675db00e825b21b060183d12e019"
+  },
+  "input_sha256_after": {
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-raster-layering/step01/clothing-depth.kra": "0e81355f9f21a8cff7697c5175b99a5f06648bf8971647dfdfd075054517185d",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/groups.json": "7d6abcc149b27374cf841bf985035081ea490a0095e80e0d46f0e74ee8c971a3",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/occlusion.json": "891338fac35d50b362e591fd91cf913b9c0857e4c25c6ca31942cdf78b8c1b03",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/references/clothing.png": "9a1289cb00fdc79292c759fe7c018c083a9820e8ef994034b9c0f2838674e4c3",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/sleeve_image_left.svg": "44a85f8dfe2e144679ddfa6d2a9db004f04e30f1c75f4b817f6386579264cb16",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/neckline_band.svg": "ebd52e0c748b74f659202cec621d91b4cf5cae7535175e5a261776ef586a60b6",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/sleeve_image_right.svg": "b3a60e028976e341ec8d76e78308bce2bb03917db16818a86af80a3d2622c61c",
+    "/Users/wutian/Desktop/coding/AstraLayering/.run/closed-face-full-20261026/clothing-part-layering/parts/tshirt_body.svg": "bae7aa229e3e72b741cc876e1008275e12c6675db00e825b21b060183d12e019"
+  },
+  "all_inputs_unchanged": true,
+  "default_projection_restored": true,
+  "native_projection_matches_saved_kra_mergedimage": true,
+  "note": "Hashes and projection identity verify read-only state and inspected saved version only; not visual acceptance metrics.",
+  "native_initial_modified": false,
+  "native_final_modified": false,
+  "all_visibility_restored": true
+}

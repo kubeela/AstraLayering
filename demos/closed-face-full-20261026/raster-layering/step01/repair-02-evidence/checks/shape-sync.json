@@ -1,0 +1,26 @@
+{
+  "saved_svgs": [
+    "part-layering/parts/hair/bangs.svg",
+    "part-layering/parts/neck.svg",
+    "part-layering/parts/body/torso.svg",
+    "part-layering/parts/hair.svg",
+    "part-layering/parts/body.svg"
+  ],
+  "terminal_ids_changed": false,
+  "depth_values_changed": false,
+  "paint_layers": 41,
+  "masks": 22,
+  "new_mask_owner": "neck",
+  "new_mask_controller": "body/torso",
+  "reason": {
+    "hair/bangs": "Review02 R1/R2：逐束补回眉线交叉处本件alpha、发色与细丝，真实露额缝和内部叉缝保留；眉102/103本体、层序和位置不改，刘海仍160。",
+    "hair/back_hair": "Review02 R5：保留完整alpha、耳下承接和内后短梢。在x215–390/y720–900灰底RGB控制重生本后发连续宽面，清除浅片、短折笔及上方21侧发样游离弯束残影，配准后原生接色；21真实弯束和两枚末梢不改。",
+    "neck": "Review02 R3/R4：原完整颈部余量保留；在实际可见颈侧补回与参考一致的数像素外弧。新增原生joint contour透明度蒙版，由body/torso肩根连续外弧控制默认外露范围，只处理两侧R3/R4交接；底纹可停用蒙版完整检查。",
+    "body/torso": "Review02 R3/R4：补齐本件实际可见肩根外弧，修正默认接色蒙版和真实重叠覆盖，以本件可见皮肤和原生画笔接顺肤色；保留胸廓、锁骨、双腋实底，未加入neck或衣服细节。",
+    "body/breast": "Review02 R6：同层将已有生成的本体曲面材质局部续至y1374裁切边，并原生修接色阶，消除y1366起横带；自身中央形体明暗不转入torso，原生蒙版、alpha及深度50保持。",
+    "hair": "Review02：父完整轮廓随修复后的完整刘海及其他发件并集同步，所有逻辑身份保持。",
+    "body": "Review02：父完整轮廓随修复后的完整torso与breast并集同步，不改变两件独立控制。"
+  },
+  "back_alpha_unchanged": true,
+  "breast_alpha_unchanged": true
+}

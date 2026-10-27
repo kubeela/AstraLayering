@@ -1,0 +1,16 @@
+{
+  "updated": [
+    "../../part-layering/preview.svg",
+    "../../part-layering/occlusion/preview.svg"
+  ],
+  "affected_part_svgs": [
+    "hair/back_hair",
+    "hair/bangs",
+    "hair/side_hair_left",
+    "hair/side_hair_right"
+  ],
+  "parts": 37,
+  "depth_regions": 41,
+  "preview_depth_uses_native_projection_alpha": true,
+  "backups": "workspace/repair-01/preview-before/"
+}

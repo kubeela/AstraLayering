@@ -1,0 +1,28 @@
+{
+  "conclusion": "已修复",
+  "issues": {
+    "R1": "passed original-size visual self-check",
+    "R2": "passed original-size visual self-check",
+    "R3": "passed original-size visual self-check",
+    "R4": "passed original-size visual self-check",
+    "R5": "passed original-size visual self-check",
+    "R6": "passed original-size visual self-check"
+  },
+  "pending": [],
+  "logical_parts": 37,
+  "paint_layers": 41,
+  "masks": 22,
+  "original_masks_retained": 21,
+  "unchanged_mask_data": 20,
+  "unchanged_paint_layers": 36,
+  "all_paint_uuids_unchanged": true,
+  "native_state_equal_after_reopen": true,
+  "default_projection_equal_after_reopen": true,
+  "all_masks_enabled": true,
+  "structure_tools_validated": true,
+  "depth_values_changed": false,
+  "groups_sha256": "c7d83bb7325e68b390c6fd392d0b17ba2a19291c1b5bdafa245042f48c4ba343",
+  "occlusion_sha256": "a109bc788ca71fe6a098fd0729ac1fd59bd8b4924a384461f5728c6fdd9e20df",
+  "report": "raster-layering/step01/report.md",
+  "repair_report": "raster-layering/step01/repair-02.md.tmp"
+}

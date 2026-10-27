@@ -1,0 +1,11 @@
+{
+  "source": "face/eye_left",
+  "targets": [
+    "face/eye_right/sclera",
+    "face/eye_right/iris",
+    "face/eye_right/highlight",
+    "face/eye_right/lower_eyelid"
+  ],
+  "transform": "x = 1157 - x, y unchanged",
+  "reason": "Frontal closed-eye reference has no supported inner-eye asymmetry; original right completion SVGs shifted iris vertically and flattened lower eyelid, causing inappropriate crop on mirror reuse."
+}

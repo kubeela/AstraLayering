@@ -1,0 +1,34 @@
+{
+  "outputs": [
+    {
+      "path": "character-assembly/step01/character-assembled.kra",
+      "bytes": 28074966,
+      "sha256": "06ba51d2de66f0a0c64294c07e796ec7076372e2a3f291c5efc116e21b075627"
+    },
+    {
+      "path": "character-assembly/step01/character-assembled.png",
+      "bytes": 1376790,
+      "sha256": "a48d42e5ea2ea218d024886b4427a5d273d87915694dd300cc89770729461de0"
+    },
+    {
+      "path": "character-assembly/step01/report.md",
+      "bytes": 8272,
+      "sha256": "c5fac4195845511902f21a8c2a74ba64497c9e82a0aa304b4582f7e092eed2c5"
+    }
+  ],
+  "png_size": [
+    1145,
+    1374
+  ],
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "export_matches_kra_saved_mergedimage": true,
+  "report_links_resolve": true,
+  "input_files": [
+    "raster-layering/step03/character-dressup-base.kra",
+    "clothing-raster-layering/step02/clothing-soft-edges.kra"
+  ],
+  "export_matches_kra_saved_mergedimage_exact_rgba": true
+}
