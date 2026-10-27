@@ -28,7 +28,7 @@ async function fixture(t: TestContext) {
   const output = join(task, 'character-assembly');
   const options = { name: 'case', dir: root, krita: process.execPath };
   const environment = loadWorkflowEnvironment({}, root);
-  const deps = { environment, preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+  const deps = { environment, preflight: async (executable: string) => ({ executable }) };
   return { root, task, inputs, output, options, deps };
 }
 async function deliver(request: AgentRequest) {

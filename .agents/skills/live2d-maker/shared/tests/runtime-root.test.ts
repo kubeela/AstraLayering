@@ -83,7 +83,7 @@ test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 
     const output = pipelineDirectory('case', pipeline, dir);
     const deps = { runsDirectory: join(dir, 'unused'), steps: [definitions[0]],
       preflight: async (executable: string) => {
-        assert.equal(executable, join(dir, 'case/krita')); return { executable, version: 'fixture' };
+        assert.equal(executable, join(dir, 'case/krita')); return { executable };
       } };
     await assert.rejects(run({ name: 'case', dir, krita: 'krita' }, { ...deps, agent: async request => {
       assert.equal(request.directory, output);

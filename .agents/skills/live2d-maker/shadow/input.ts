@@ -57,17 +57,21 @@ export async function shadowInputFingerprint(input: ShadowInput, mode: ShadowMod
   return createHash('sha256').update(JSON.stringify({ version: 2, recipe: 1, mode, hashes,
     prompt: await readFile(prompt, 'utf8'), rules: await Promise.all(rules.map(p => fileHash(fileURLToPath(p)))) })).digest('hex');
 }
+// Prompt texts a completed branch may have been recorded with: the current one
+// and the one before the shared Krita environment line was removed.
+const earlierPrompts = (prompt: string) => [prompt, prompt.replace('{runtime_context}', '{krita_environment}\n\n{runtime_context}')];
 export async function compatibleShadowFingerprint(input: ShadowInput, recorded: string | undefined, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<boolean> {
   if (!recorded) return false;
-  if (recorded === await shadowInputFingerprint(input, mode, prompt, rules)) return true;
-  const currentPrompt = await readFile(prompt, 'utf8');
-  const oldPrompt = currentPrompt.replace('先读运行信息中列出的 inputs.json、production.md', '先读 references/inputs.json、production.md');
-  const promptHash = createHash('sha256').update(oldPrompt).digest('hex');
   const currentRules = await Promise.all(rules.map(p => fileHash(fileURLToPath(p))));
-  const recipes: { mode: ShadowMode; promptHash: string; rules: string[] }[] = JSON.parse(await readFile(new URL('./legacy-recipes.json', import.meta.url), 'utf8'));
   const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter, ...input.structureFiles].map(fileHash));
-  return recipes.some(recipe => recipe.mode === mode && recipe.promptHash === promptHash
-    && JSON.stringify(recipe.rules.slice(0, currentRules.length)) === JSON.stringify(currentRules)
-    && recorded === createHash('sha256').update(JSON.stringify({ version: 1, mode, hashes, prompt: oldPrompt,
-      ...(recipe.rules.length ? { rules: recipe.rules } : {}) })).digest('hex'));
+  const recipes: { mode: ShadowMode; promptHash: string; rules: string[] }[] = JSON.parse(await readFile(new URL('./legacy-recipes.json', import.meta.url), 'utf8'));
+  const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+  return earlierPrompts(await readFile(prompt, 'utf8')).some(currentPrompt => {
+    if (recorded === digest({ version: 2, recipe: 1, mode, hashes, prompt: currentPrompt, rules: currentRules })) return true;
+    const oldPrompt = currentPrompt.replace('先读运行信息中列出的 inputs.json、production.md', '先读 references/inputs.json、production.md');
+    const promptHash = createHash('sha256').update(oldPrompt).digest('hex');
+    return recipes.some(recipe => recipe.mode === mode && recipe.promptHash === promptHash
+      && JSON.stringify(recipe.rules.slice(0, currentRules.length)) === JSON.stringify(currentRules)
+      && recorded === digest({ version: 1, mode, hashes, prompt: oldPrompt, ...(recipe.rules.length ? { rules: recipe.rules } : {}) }));
+  });
 }

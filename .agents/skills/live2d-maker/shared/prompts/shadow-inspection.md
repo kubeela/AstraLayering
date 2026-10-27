@@ -1,2 +1,2 @@
 - 制作参考：{reference_files}。
-- 原生检查：{inspection_command}。结果写入 {inspection_receipt} 与 {inspection_directory}/；查看其中 overview.png 与每处 relation-*-review.png，必要时打开其中原尺寸 PNG。
+- 原生检查：保存工程后，用 krita 工具 start 或 status 取得本 section Krita 的 bridge，运行 {inspection_command}。检查在这个 Krita 中打开保存工程的独立副本，不改动已打开的文档。结果写入 {inspection_receipt} 与 {inspection_directory}/；查看其中 overview.png 与每处 relation-*-review.png，必要时打开其中原尺寸 PNG。交付时只核对这份结果与当前保存的工程、shadows.json 一致，修改后需重新检查。

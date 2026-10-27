@@ -41,8 +41,7 @@ export async function runPartPipeline(
   const directory = pipeline.getPreparationDirectory(input.reference.runName, input.reference.dir);
   toolCatalog(pipeline.profile.toolsDirectory);
   const environment = agentOptions.environment ?? loadWorkflowEnvironment(agentOptions.env);
-  const normalization = { ...agentOptions.imageNormalization, runsRoot: input.reference.dir ?? agentOptions.imageNormalization?.runsRoot, progress: agentOptions.progress, env: agentOptions.imageNormalization?.env ?? environment.codex.env,
-    krita: input.reference.krita ? resolveInput(input.reference.runName, input.reference.krita, input.reference.dir) : agentOptions.imageNormalization?.krita };
+  const normalization = { ...agentOptions.imageNormalization, runsRoot: input.reference.dir ?? agentOptions.imageNormalization?.runsRoot, progress: agentOptions.progress, env: agentOptions.imageNormalization?.env ?? environment.codex.env };
   if (!adapters.steps) {
     let standard = input.reference.standard;
     if (standard === undefined && pipeline.profile.id === 'part-layering') standard = await readPreparationOptions(directory);
@@ -75,7 +74,7 @@ export async function readGroupInput(path: string): Promise<GroupInput | GroupIn
 
 export function parseRunArguments(args: string[] = process.argv.slice(2)) {
   const { values } = parseArgs({ args, options: {
-    image: { type: 'string' }, name: { type: 'string' }, dir: { type: 'string' }, help: { type: 'boolean' }, krita: { type: 'string' },
+    image: { type: 'string' }, name: { type: 'string' }, dir: { type: 'string' }, help: { type: 'boolean' },
     groups: { type: 'string' },
     standard: { type: 'boolean' }, 'no-standard': { type: 'boolean' },
     jobs: { type: 'string', short: 'j' },
@@ -126,9 +125,9 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
   try {
     const values = parseRunArguments(args);
     if (values.help) {
-      console.log(`pnpm ${pipeline.profile.id} --name <运行名> ${pipeline.profile.id === 'part-layering' ? `[--image <${pipeline.imageHelp}>] [--standard | --no-standard] ` : ''} [--dir <运行根目录绝对路径>] [--krita <可执行文件>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
+      console.log(`pnpm ${pipeline.profile.id} --name <运行名> ${pipeline.profile.id === 'part-layering' ? `[--image <${pipeline.imageHelp}>] [--standard | --no-standard] ` : ''} [--dir <运行根目录绝对路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
       console.log(pipeline.preparationHelp);
-      console.log('Nano 透明后处理需要 --krita；Python 模块首次实际使用时自动安装到运行根目录 .runtime 并复用。');
+      console.log('Python 模块首次实际使用时自动安装到运行根目录 .runtime 并复用。');
       console.log('各小步骤的模型、CLI 与生图配置见 skill 根目录 example.env。默认任务目录在外部 .run/<name>/；--dir 指定运行根目录，输入相对路径以该根目录下的 <name>/ 为基准。');
       console.log('--groups 选择已有组及其子组；祖先须完成，可查看同层有效底稿复核去重，仅实际变化的部件及真实引用者扩入后续制作。省略时按层自动准备或续跑。');
       console.log(`--jobs / -j 设置所有步骤共享的 agent 调用并发上限，默认 ${defaultAgentConcurrency}；组任务不另设数量限制，按树的层级依赖进入队列。`);
@@ -137,7 +136,7 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
     } else {
       if (!values.name) throw new Error('需要 --name <运行名>');
       const { references, layering } = await runPartPipeline(pipeline, {
-        reference: { image: values.image, runName: values.name, dir: values.dir, standard: values.standard, krita: values.krita },
+        reference: { image: values.image, runName: values.name, dir: values.dir, standard: values.standard },
         groups: values.groups ? await readGroupInput(resolveInput(values.name, values.groups, values.dir)) : null, maxDepth: values.maxDepth,
       }, {}, { progress: console.log, agentConcurrency: values.agentConcurrency });
       console.log(`参考输出：${references.directory}`);

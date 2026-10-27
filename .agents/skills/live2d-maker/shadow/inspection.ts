@@ -11,7 +11,7 @@ import type { InputIndex } from './preparation.ts';
 import { referencesDirectory } from '../shared/agents/inputs.ts';
 import { taskRootOf, toTaskPath } from '../shared/task-paths.ts';
 
-const toolFiles = ['inspection.ts', 'native.ts', 'native_worker.py', 'delivery.ts'];
+const toolFiles = ['inspection.ts', 'native.ts', 'native_job.py', 'delivery.ts'];
 async function signature(document: string, bindings: string, index: string) {
   const hashes = await Promise.all([document, bindings, index, ...toolFiles.map(p => fileURLToPath(new URL(p, import.meta.url)))].map(fileHash));
   return createHash('sha256').update(JSON.stringify(hashes)).digest('hex');
@@ -37,8 +37,7 @@ async function sheet(panels: {path:string;label:string}[], path: string, columns
   await sharp({create:{width:w*columns,height:h*rows,channels:4,background:'#f7f9fb'}}).composite(tiles).png().toFile(path);
 }
 
-export async function inspectMask(output: string, krita: string, env: NodeJS.ProcessEnv, signal?: AbortSignal,
-  native: NativeInspect = inspectNative) {
+async function inspectionFiles(output: string) {
   const document = join(output,'character-shadowed.kra'), bindingsPath = join(output,'shadows.json');
   const currentIndex = join(referencesDirectory(output), 'inputs.json');
   const indexPath = await readFile(currentIndex).then(
@@ -46,9 +45,14 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
       if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
       return join(output,'references/inputs.json');
     });
-  const stamp = await signature(document,bindingsPath,indexPath), receipt = join(output,'inspection.json');
+  return { document, bindingsPath, indexPath, receipt: join(output,'inspection.json'), stamp: await signature(document,bindingsPath,indexPath) };
+}
+
+// The passed receipt for the saved KRA, shadows.json and inputs as they are
+// now, with every listed file unchanged; undefined otherwise.
+async function currentReceipt(output: string, receipt: string, stamp: string) {
   // Receipt v2 writes task-root paths; v1 paths were relative to this step.
-  const root = taskRootOf(dirname(output)), at = (p: string) => toTaskPath(root, p);
+  const root = taskRootOf(dirname(output));
   try {
     const previous = JSON.parse(await readFile(receipt,'utf8'));
     if (previous.signature === stamp && previous.passed === true) {
@@ -58,6 +62,23 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
       if (files.length && (await Promise.all(files.map(async ([p,h]) => { const file = path(p); return within(output,await realpath(file)) && await fileHash(file) === h; }))).every(Boolean)) return previous;
     }
   } catch (e) { if (!(e instanceof SyntaxError) && !['ENOENT','ENOTDIR'].includes((e as NodeJS.ErrnoException).code ?? '')) throw e; }
+}
+
+// Delivery only checks that the agent ran the inspection on what it delivers.
+export async function verifyInspection(output: string) {
+  const { receipt, stamp } = await inspectionFiles(output);
+  const current = await currentReceipt(output, receipt, stamp);
+  if (!current) throw new Error('请先运行检查：inspection.json 缺失、未通过，或保存的 KRA、shadows.json、检查图在检查后有改动。用运行提示中的检查命令重新检查。');
+  return current;
+}
+
+// Runs the inspection in the section's Krita through its bridge; the agent
+// starts that Krita with the krita tool first.
+export async function inspectMask(output: string, bridge: string, signal?: AbortSignal, native: NativeInspect = inspectNative) {
+  const { document, bindingsPath, indexPath, receipt, stamp } = await inspectionFiles(output);
+  const root = taskRootOf(dirname(output)), at = (p: string) => toTaskPath(root, p);
+  const previous = await currentReceipt(output, receipt, stamp);
+  if (previous) return previous;
   const bindings = JSON.parse(await readFile(bindingsPath,'utf8'));
   if (bindings.version !== 2 || !Array.isArray(bindings.shadows) || !Array.isArray(bindings.excluded)) throw new Error('素材检查需要 shadows.json v2，记录 testOffsets；详见 references/production.md');
   const layers = kraLayers(kraContents(await readFile(document)).xml);
@@ -73,7 +94,7 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
     }
   }
   const folder = join(output,'workspace','inspection','native-' + randomUUID());
-  const result = await native(document,bindings.shadows,folder,krita,env,signal);
+  const result = await native(document,bindings.shadows,folder,bridge,signal);
   if (!result.success || result.relations.length !== bindings.shadows.length
     || result.relations.some((r,i) => r.id !== bindings.shadows[i].id || JSON.stringify(r.frames.map(f => f.offset)) !== JSON.stringify(bindings.shadows[i].testOffsets))) throw new Error('原生检查结果与声明关系不一致');
   const files: string[] = [], relations = [], warnings: string[] = [];

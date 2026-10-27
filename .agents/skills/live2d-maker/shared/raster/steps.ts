@@ -1,11 +1,9 @@
 import {renderPrompt, renderPromptFile} from '../prompts/render.ts';
-import {kritaEnvironmentPrompt} from '../krita/environment.ts';
 import type { ModelSelection, ModelTier } from '../codex/environment.ts';
 import type { AgentStep } from '../agents/models.ts';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import type { PartLayeringInput } from './input.ts';
-import type { KritaInstallation } from './krita.ts';
 import { agentPath } from './run-store.ts';
 import { taskRootOf } from '../task-paths.ts';
 
@@ -24,7 +22,7 @@ export type StepDefinition = {
   review?: { prompt: URL; repairPrompt: URL; model: string; effort: ModelSelection['effort']; modelTier?: ModelTier; modelStep?: AgentStep; repairModelStep?: AgentStep };
 };
 
-export async function buildPrompt(step: StepDefinition, input: PartLayeringInput, output: string, krita: KritaInstallation, previous: readonly string[] = []): Promise<string> {
+export async function buildPrompt(step: StepDefinition, input: PartLayeringInput, output: string, previous: readonly string[] = []): Promise<string> {
   // The final report also checkpoints the initial drawing before review begins.
   // Publish it only after the agent turn and all delivery checks have succeeded.
   const report = step.review ? 'report.md.tmp' : 'report.md';
@@ -37,7 +35,6 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
   const list = async (paths: readonly string[]) => JSON.stringify(await Promise.all(paths.map(at)));
   return renderPrompt(body, {
     drawing_report_filename: report, drawing_responsibilities: responsibilities,
-    krita_environment: await kritaEnvironmentPrompt(krita),
     runtime_context: renderPromptFile(new URL('../prompts/raster-runtime.md', import.meta.url), {
       pipeline_directory: await json(dirname(output)),
       input_files: await list((step.inputFiles ?? []).map(file => join(dirname(output), file))),
@@ -47,11 +44,9 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
       original_character_reference: input.originalCharacter ? renderPromptFile(new URL('../prompts/raster-original-reference.md',import.meta.url),{original_character_path:await json(input.originalCharacter)}).trim() : '',
       output_directory: await json(output),
       previous_steps: JSON.stringify(await Promise.all(previous.map(async directory => ({ directory: await at(directory), report: await at(join(directory, 'report.md')) })))),
-      krita_executable: JSON.stringify(krita.executable),
-      krita_version: krita.version,
       required_files: await list(requiredFiles.map(file => join(output, file))),
       report_path: await json(join(output, report)),
       report_publish_rule: step.review ? renderPromptFile(new URL('../prompts/raster-report-publish.md',import.meta.url)).trim() : ''
     })
-  }, String(step.prompt), ['drawing_responsibilities','krita_environment','runtime_context',...(step.review?['drawing_report_filename']:[])]);
+  }, String(step.prompt), ['drawing_responsibilities','runtime_context',...(step.review?['drawing_report_filename']:[])]);
 }

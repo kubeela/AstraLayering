@@ -1,4 +1,4 @@
-管理并使用本 section 专属的 Krita。每个 section 最多一个，由框架在 section 结束时关闭；进入 section 时不会自动启动，需要时先 start。Krita 只通过 Python 脚本操作，没有鼠标和可见界面。
+管理并使用本 section 专属的 Krita。每个 section 最多一个，由框架在 section 结束时关闭；进入 section 时不会自动启动，需要时先 start。Krita 只通过 Python 脚本操作，没有鼠标和可见界面。不要另起其他 Krita 进程，不修改用户的 Krita 配置。
 
 - status：返回 state（stopped / starting / running / crashed）、pid、版本、桥接目录、启动次数；crashed 时附上次退出码和日志末尾。
 - start：启动并等到桥接就绪（通常 20–60 秒），已运行时直接返回。

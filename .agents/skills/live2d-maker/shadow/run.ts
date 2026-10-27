@@ -12,8 +12,7 @@ import { buildPrompt, stepsFor } from './steps.ts';
 import { prepareMaps, validateDelivery } from './delivery.ts';
 import { loadWorkflowEnvironment } from '../shared/codex/environment.ts';
 import { prepareMaskReferences, referenceNames, referenceUrl } from './preparation.ts';
-import { inspectMask } from './inspection.ts';
-import type { NativeInspect } from './native.ts';
+import { verifyInspection } from './inspection.ts';
 
 export const help = `shadow — Live2D 投影阴影或整图法线＋深度
 pnpm shadow --name <任务名> --krita <可执行文件> [--dir <绝对运行根目录>]
@@ -25,7 +24,7 @@ mask 另读取两套 part 的分组和遮挡顺序；产物位于 shadow/<模式
 输入改变时保留旧分支到 .previous-* 后重新制作，不覆盖上游或另一分支。
 总入口：pnpm start --name <任务名> --from shadow --to shadow --shadow-mode <模式>。
 `;
-export function makePipeline(mode: ShadowMode, env: NodeJS.ProcessEnv = process.env, signal?: AbortSignal, native?: NativeInspect): KritaPipeline<ShadowInput> {
+export function makePipeline(mode: ShadowMode): KritaPipeline<ShadowInput> {
   const steps = stepsFor(mode);
   return { id: 'shadow', directorySuffix: mode, steps,
     resolveInput: (name, root) => resolveShadowInput(name, root, mode), validateInput: isShadowInput,
@@ -33,9 +32,9 @@ export function makePipeline(mode: ShadowMode, env: NodeJS.ProcessEnv = process.
     fingerprintInput: input => shadowInputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
     compatibleInputFingerprint: (input, saved) => compatibleShadowFingerprint(input, saved, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
     ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === 'step01') await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
-    validateDelivery: async (output, input, step, krita, dryRun) => {
+    validateDelivery: async (output, input, _step, _krita, dryRun) => {
       await validateDelivery(output, input, mode);
-      if (mode === 'mask' && !dryRun) await inspectMask(output, krita.executable, env, signal, native);
+      if (mode === 'mask' && !dryRun) await verifyInspection(output);
     } };
 }
 async function atomicFile(path: string, bytes: Uint8Array | string) {
@@ -43,7 +42,7 @@ async function atomicFile(path: string, bytes: Uint8Array | string) {
   const tmp = path + '.' + randomUUID() + '.tmp';
   await writeFile(tmp, bytes); await rename(tmp, path);
 }
-export async function runWorkflow(options: WorkflowOptions & { shadowMode?: ShadowMode }, dependencies: Dependencies & { inspectNative?: NativeInspect } = {}) {
+export async function runWorkflow(options: WorkflowOptions & { shadowMode?: ShadowMode }, dependencies: Dependencies = {}) {
   const mode = shadowMode(options.shadowMode), root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
   if (mode === 'normal-depth' && !options.dryRun) {
@@ -62,7 +61,7 @@ export async function runWorkflow(options: WorkflowOptions & { shadowMode?: Shad
       options.progress?.('旧光照调校步骤已保留到 ' + archive + '；后续仅检查法线与深度。');
     }
   }
-  const result = await runSharedWorkflow(makePipeline(mode, environment.codex.env, options.signal, dependencies.inspectNative), options, { ...dependencies, environment });
+  const result = await runSharedWorkflow(makePipeline(mode), options, { ...dependencies, environment });
   if (options.dryRun) return result;
   const input = await resolveShadowInput(options.name, root, mode), output = join(pipelineDirectory(options.name, 'shadow', root), mode, 'step01');
   const selection = { version: 1, mode, sourceKraHash: await fileHash(input.characterKra),

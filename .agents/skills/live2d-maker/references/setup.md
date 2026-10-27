@@ -53,7 +53,7 @@ Linux 有 DISPLAY 或 WAYLAND_DISPLAY 时在该显示上运行；没有时工作
 
 缺少 Krita 时，由 agent 准备本机安装方案。**安装前向用户说明实际需要安装、配置的软件，确认所选方案后执行。** 已有针对该机器和方案的授权直接沿用；方案或范围改变时再确认。
 
-所有操作 Krita 的提示词自动附上同一份 [environment.md](../shared/krita/environment.md)，工具用法见 [krita 工具说明](../shared/tools/krita/description.md)。
+Krita 用法只写在 [krita 工具说明](../shared/tools/krita/description.md)，随需要 Krita 的步骤提供；框架不替 agent 启动 Krita，只在 section 结束时清理。
 
 ## 按需功能
 

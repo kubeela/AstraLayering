@@ -105,7 +105,7 @@ export async function runTask(options: TaskOptions, dependencies: {
     // preflight: it is quick, while that may build the patched Codex. A refusal
     // leaves run.json as it was.
     const configured = await configureRun(options, directory);
-    await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, undefined, environment?.codex.env)));
+    await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, environment?.codex.env)));
     run = configured;
     run.status = 'running'; delete run.error; delete run.output; delete run.activePipeline;
     run.runner = { id: randomUUID(), pid: process.pid, startedAt: now(), stopProtocol: 'file-v1' };
@@ -116,7 +116,7 @@ export async function runTask(options: TaskOptions, dependencies: {
     const selected = selectedPipelines(run.from, run.to);
     if (environment) {
       const standard = run.standard;
-      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { krita: run.krita, runsRoot: dirname(directory), progress,
+      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { runsRoot: dirname(directory), progress,
         building: () => { progress('准备中：构建补丁版 Codex，完成后自动开始；构建期间的停止请求在构建结束后生效。'); dependencies.preparing?.(run!); } });
     }
     signal.throwIfAborted();

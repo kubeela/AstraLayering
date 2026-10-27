@@ -17,7 +17,7 @@ import { steps } from '../steps.ts';
 import { runWorkflow } from '../run.ts';
 
 const completed: StepResult = { status: 'completed', summary: 'fixture' };
-const preflight = async (executable: string) => ({ executable, version: 'fixture' });
+const preflight = async (executable: string) => ({ executable });
 async function fixture(t: TestContext) {
   const directory = await realpath(await mkdtemp(join(tmpdir(), 'clothing-raster-')));
   t.after(() => rm(directory, { recursive: true, force: true }));

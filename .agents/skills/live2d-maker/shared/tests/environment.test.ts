@@ -116,7 +116,7 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     const environment = loadWorkflowEnvironment({ layering_high_model: 'gpt-6-astra-high' }, root);
     const directory = join(root, 'case', pipeline.id);
     const deps = { runsDirectory: root, steps: [pipeline.steps[0]], environment,
-      preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+      preflight: async (executable: string) => ({ executable }) };
     let failure: unknown;
     try {
       await runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {

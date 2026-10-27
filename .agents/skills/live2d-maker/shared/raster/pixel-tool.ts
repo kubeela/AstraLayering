@@ -1,4 +1,4 @@
-import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, realpath, stat, writeFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
@@ -6,7 +6,7 @@ import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { agentPaths, canonicalPath, taskPaths } from './run-store.ts';
 import { fromTaskPath } from '../task-paths.ts';
-import { exportKraLayers, partScope, type PartScopeOptions } from './pixel-part-scope.ts';
+import { partScope, type PartSource } from './pixel-part-scope.ts';
 
 type Box = [number, number, number, number];
 type Region = { kind: 'missing' | 'extra' | 'color'; bounds: Box; pixels: number };
@@ -17,7 +17,7 @@ const colors = ['#ff4040', '#00b8ff', '#ffbd00'];
 // never an automatic acceptance verdict or a generated painting repair.
 // Path arguments, results and differences.json use the task root as their base.
 export function createPixelTool(_directory: string, taskRoot: string, output: string,
-  options: PartScopeOptions & { namespace?: 'character' | 'clothing' } = {}): FunctionTool {
+  options: { sources?: PartSource[]; namespace?: 'character' | 'clothing' } = {}): FunctionTool {
   const definition = toolDefinition('locate_pixel_differences');
   return {
     ...definition,
@@ -63,12 +63,18 @@ export function createPixelTool(_directory: string, taskRoot: string, output: st
       await mkdir(destination, { recursive: true });
       const folder = join(await realpath(destination), randomUUID());
       await mkdir(folder);
-      const currentKra = parts.length ? await source('current_kra', current.slice(0, current.length - extname(current).length) + '.kra') : undefined;
+      // Part ranges come from the layers the agent exported from the saved
+      // KRA (OpenRaster keeps each layer's transformed, masked pixels); the
+      // tool itself never runs Krita.
+      const layers = parts.length ? await source('layers') : undefined;
+      const currentKra = layers ? await source('current_kra', current.slice(0, current.length - extname(current).length) + '.kra') : undefined;
       let selection: Awaited<ReturnType<typeof partScope>> | undefined;
-      if (currentKra) {
-        if (!options.krita) throw new Error('按部件检测需要当前工作流已配置的 Krita');
+      if (layers && currentKra) {
+        if (extname(layers).toLowerCase() !== '.ora') throw new Error('layers 须为从当前 KRA 导出的 .ora 文件');
+        if ((await stat(layers)).mtimeMs < (await stat(currentKra)).mtimeMs)
+          throw new Error(`layers 早于 ${currentKra} 的最后保存；请保存 KRA 后重新导出 .ora 再检测`);
         const sources = options.sources ?? (options.namespace ? [{ namespace: options.namespace, document: currentKra }] : []);
-        const ora = await (options.exportLayers ?? exportKraLayers)(currentKra, folder, options.krita, options.env ?? process.env, signal);
+        const ora = await readFile(layers);
         selection = await partScope(ora, parts, padding, [width, height], sources, signal);
         for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
           const pos = y * width + x, i = pos * 4;
@@ -147,7 +153,7 @@ export function createPixelTool(_directory: string, taskRoot: string, output: st
         ...(selection ? { scope: join(folder, 'scope.png'), scopePreview: join(folder, 'scope-preview.png') } : {}) };
       // differences.json keeps task-relative paths; the agent sees absolute ones.
       const meta = { reference, current, visibleMask: maskPath, canvas: [width, height], crop,
-        ...(selection ? { partSelection: { parts, padding, currentKra: currentKra!, layers: selection.bounds } } : {}),
+        ...(selection ? { partSelection: { parts, padding, currentKra: currentKra!, layersFile: layers!, layers: selection.bounds } } : {}),
         thresholds: { color: colorThreshold, coarseColor: coarseThreshold, blurSigma: 2, regionGapPixels: gap, alpha: alphaThreshold, minRegionPixels: minPixels },
         counts, regions, note: '以候选框为局部检查入口，依据当前阶段职责和参考确认修复范围。候选不决定通过或内容归属；选择部件时只统计其当前范围及周边。' };
       await writeFile(files.diagnostics, JSON.stringify(await taskPaths(root, meta), null, 2) + '\n');

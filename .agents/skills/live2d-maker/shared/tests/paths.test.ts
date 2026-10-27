@@ -26,7 +26,7 @@ test('同名任务的管线互为输入；raster 直接读取且重跑仅清理�
   await mkdir(clothing, { recursive: true });
   await writeFile(join(clothing, '.completed'), 'another pipeline');
   let calls = 0;
-  const deps = { runsDirectory: root, steps: [steps[0]], preflight: async (executable: string) => ({ executable, version: 'fixture' }),
+  const deps = { runsDirectory: root, steps: [steps[0]], preflight: async (executable: string) => ({ executable }),
     agent: async (request: import('../raster/agent.ts').AgentRequest) => {
       if (!isRasterReview(request)) calls++;
       assert.equal(request.threadId, undefined);

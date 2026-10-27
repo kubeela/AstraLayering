@@ -29,9 +29,8 @@ export const help = `character-assembly — 单 agent 组装人物与衣服 KRA
 
 export const pipeline: KritaPipeline<AssemblyInput> = {
   id: 'character-assembly', steps,
-  tools: (output, input, _step, phase, runtime) => phase === 'draw'
+  tools: (output, input, _step, phase) => phase === 'draw'
     ? [createPixelTool(dirname(output), dirname(dirname(output)), join(output, 'pixel-review'), {
-      krita: runtime?.krita.executable, env: runtime?.env,
       sources: [{ namespace: 'character' as const, document: input.characterKra }, ...input.clothingKra ? [{ namespace: 'clothing' as const, document: input.clothingKra }] : []],
     })] : [],
   // No clothing lane ran: the character KRA is the assembled result.

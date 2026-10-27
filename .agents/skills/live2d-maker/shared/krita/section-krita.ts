@@ -96,17 +96,6 @@ async function kritaEnvironment(krita: string, env: NodeJS.ProcessEnv, inherited
   await bundleEnvironment(krita, env, inherited);
 }
 
-// Runs a short Krita command (e.g. --version) in the environment a section
-// Krita gets, including the shared virtual display when there is none.
-export async function withKritaEnvironment<T>(krita: string, inherited: NodeJS.ProcessEnv, work: (env: NodeJS.ProcessEnv) => Promise<T>): Promise<T> {
-  const displayName = await acquireDisplay(inherited);
-  try {
-    const env = { ...inherited };
-    await kritaEnvironment(krita, env, inherited, displayName);
-    return await work(env);
-  } finally { releaseDisplay(displayName); }
-}
-
 const alive = (pid: number) => {
   try { process.kill(pid, 0); return true; }
   catch (error) { return (error as NodeJS.ErrnoException).code === 'EPERM'; }
