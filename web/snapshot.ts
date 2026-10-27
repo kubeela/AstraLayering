@@ -55,6 +55,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
   };
   const pipelines = [];
   for (const id of pipelineIds) {
+    if (record.run?.archive && !record.run.pipelines[id]) continue;
     const active = record.runnerAlive && record.lockHeld && record.run?.activePipeline === id;
     const saved = record.run?.pipelines[id];
     const mode = shadowMode(record.run?.shadowMode);
