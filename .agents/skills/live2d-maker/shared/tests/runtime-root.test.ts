@@ -1,3 +1,4 @@
+import { readStepSession } from '../agents/step-session.ts';
 import {deliverRasterStep, isRasterReview} from './raster-delivery.ts';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
@@ -98,6 +99,6 @@ test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 
     } });
     await stat(join(output, 'step01/.completed'));
     const config = JSON.parse(await readFile(join(output, 'run.json'), 'utf8'));
-    assert.equal(config.threadId, 'kept-thread'); assert.equal(config.sourceInput.directory, input);
+    assert.equal((await readStepSession(output, 'step01'))?.threadId, 'kept-thread'); assert.equal(config.sourceInput.directory, input);
   }
 });

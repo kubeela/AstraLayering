@@ -8,6 +8,7 @@ import { pipelineIds, resolveInput, resolveRunsDirectory, taskDirectory, type Pi
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
 import { readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { readTaskLog } from './log.ts';
+import { currentSession } from '../shared/agents/step-session.ts';
 
 export type TaskOptions = {
   name: string; dir?: string; image?: string; krita?: string;
@@ -166,13 +167,14 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
     const path = join(directory, id, id === 'shadow' ? shadowMode(run.shadowMode) : '');
     let threadId: string | null | undefined, steps: { name: string; status: string }[] = [];
     try {
-      const config = JSON.parse(await readFile(join(path, 'run.json'), 'utf8'));
-      threadId = config.threadId;
+      await stat(join(path, 'run.json'));
       const entries = await readdir(path);
       steps = await Promise.all(entries.filter(name => /^step\d{2}$/.test(name)).sort().map(async name => ({
         name, status: await stat(join(path, name, '.completed')).then(() => 'completed', () =>
           stat(join(path, name, '.running')).then(() => 'running', () => 'unmarked')),
       })));
+      // The thread of the running step, else of the last step that kept one.
+      threadId = (await currentSession(path, steps.map(step => ({ id: step.name, status: step.status }))))?.threadId ?? null;
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
     return { id, ...(id === 'shadow' ? { mode: shadowMode(run.shadowMode) } : {}), ...run.pipelines[id], directory: path, ...(threadId === undefined ? {} : { threadId }), steps };
   }));

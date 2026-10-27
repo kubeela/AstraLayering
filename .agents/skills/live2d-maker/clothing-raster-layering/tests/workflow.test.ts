@@ -1,3 +1,4 @@
+import { readStepSession } from '../../shared/agents/step-session.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import { pipelineDirectory } from '../../shared/paths.ts';
@@ -72,9 +73,9 @@ test('each drawing stage starts its own thread; review completes before step01 m
   } });
   assert.equal(requests.length, 3);
   const config = JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8'));
-  assert.equal(config.threadId, 'drawing-step02'); assert.equal(config.threadStep, 'step02');
+  assert.equal((await readStepSession(f.output, 'step02'))?.threadId, 'drawing-step02'); assert.ok(!('threadId' in config));
   assert.ok(!('models' in config));
-  assert.match(await readFile(join(f.output, 'agents/steps/step02/attempts.jsonl'), 'utf8'), /"previousThreadId":"drawing-1".*"previousStep":"step01".*新步骤使用独立 thread/);
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-1');
   for (const step of steps) { await readFile(join(f.output, step.id, '.completed')); for (const file of step.requiredFiles) await readFile(join(f.output, step.id, file)); }
   await assert.rejects(readdir(join(f.output, 'step03')), { code: 'ENOENT' });
   await runWorkflow({ name: 'test' }, { ...f.deps, agent: async () => assert.fail('completed run must not invoke Codex') });
@@ -100,7 +101,8 @@ test('interrupted drawing resumes saved thread and directly reads upstream', asy
     return deliver(request);
   } });
   // step02 starts its own thread after step01 resumed the saved one.
-  assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-1');
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-resume');
+  assert.equal((await readStepSession(f.output, 'step02'))?.threadId, 'drawing-1');
 });
 
 test('deleting step02 completion resets its directory and context, preserving step01 and upstream artifacts', async t => {
@@ -120,7 +122,8 @@ test('deleting step02 completion resets its directory and context, preserving st
     return deliver(request, 'drawing-new');
   } });
   assert.equal(calls, 1);
-  assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-new');
+  assert.equal((await readStepSession(f.output, 'step02'))?.threadId, 'drawing-new');
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-1');
   assert.deepEqual(await readFile(join(f.output, 'agents/steps/step01/events.jsonl')), first);
   await readFile(join(f.source, 'parts/front.svg'));
 });
@@ -139,5 +142,5 @@ test('clothing-part-layering occlusion 重做后 step01 及后续重跑并换新
     return deliver(request, request.threadId ?? 'drawing-2');
   } });
   assert.deepEqual(drawn, [undefined, undefined]);
-  assert.equal(JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8')).threadId, 'drawing-2');
+  for (const step of ['step01', 'step02']) assert.equal((await readStepSession(f.output, step))?.threadId, 'drawing-2');
 });

@@ -4,6 +4,7 @@ import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/s
 import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { listSteps } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
+import { currentSession } from '../.agents/skills/live2d-maker/shared/agents/step-session.ts';
 import { readRun, taskStatus, type TaskRun } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { steps as personSteps } from '../.agents/skills/live2d-maker/raster-layering/steps.ts';
 import { steps as clothingSteps } from '../.agents/skills/live2d-maker/clothing-raster-layering/steps.ts';
@@ -188,8 +189,10 @@ export async function snapshot(directory: string, name: string, dir: string) {
     }
     // Every marked step, for the continue / resume / retry actions.
     const steps = await listSteps(join(directory, branch), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
+    // The thread of the running step, else of the last step that kept one.
+    const threadId = (await currentSession(join(directory, branch), steps).catch(() => undefined))?.threadId ?? null;
     pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
-      threadId: config?.threadId ?? null, summary: saved?.summary });
+      threadId, summary: saved?.summary });
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');

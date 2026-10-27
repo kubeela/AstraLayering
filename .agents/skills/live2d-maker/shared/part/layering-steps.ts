@@ -6,10 +6,8 @@ import { completeGroupOcclusion, checkGroupCompletion } from './completion-agent
 import { analyzeChildren } from './children-agent.ts';
 import { planPartOcclusion } from './occlusion-agent.ts';
 import type { LayeringSteps } from './layering-types.ts';
-import { readFile, mkdir, appendFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
 import type { GroupContext } from './layering-types.ts';
-import { writeAtomic } from './groups.ts';
+import { readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
 import type { Harness } from '../agents/models.ts';
 import { groupStepId } from './part-steps.ts';
 
@@ -23,20 +21,13 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     let session = sessions.get(key);
     if (!session) {
       if (!agents.createSession) throw new Error('轮廓绘制和补全需要可复用的 agent 会话');
-      const path = join(context.directory, 'agents', 'steps', key, 'session.json');
-      let saved: { threadId?: string; harness?: Harness } = {};
-      try { saved = JSON.parse(await readFile(path, 'utf8')); }
-      catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-        try { saved = JSON.parse(await readFile(join(context.directory, key, 'session.json'), 'utf8')); }
-        catch (legacy) { if ((legacy as NodeJS.ErrnoException).code !== 'ENOENT') throw legacy; }
-      }
-      await mkdir(dirname(path), { recursive: true });
+      // The same per-step session store as raster steps (step-session.ts).
+      let saved: StepSession = await readStepSession(context.directory, key) ?? {};
       const persist = async (threadId: string | null, harness?: Harness) => {
-        if (saved.threadId && saved.threadId !== threadId) await appendFile(path + '.history.jsonl', JSON.stringify({
-          ...saved, replacedAt: new Date().toISOString() }) + '\n');
-        saved = { threadId: threadId || undefined, harness: harness || saved.harness };
-        await writeAtomic(path, JSON.stringify(saved, null, 2) + '\n');
+        const next = { threadId: threadId || undefined, harness: harness || saved.harness };
+        if (next.threadId === saved.threadId && next.harness === saved.harness) return;
+        await writeStepSession(context.directory, key, next);
+        saved = next;
       };
       const inner = agents.createSession(saved.threadId, {
         resumeHarness: saved.harness,
