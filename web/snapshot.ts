@@ -59,8 +59,10 @@ export async function snapshot(directory: string, name: string, dir: string) {
     if (record.run?.archive && !record.run.pipelines[id]) continue;
     // The character and clothing lanes run side by side: several pipelines can be active at once.
     const current = !!record.run?.activePipelines?.includes(id);
-    const active = record.runnerAlive && record.lockHeld && current;
     const saved = record.run?.pipelines[id];
+    // A lane that failed stays listed as the one that stopped the run, while the other lane may still be running.
+    const active = record.runnerAlive && record.lockHeld && current && saved?.status !== 'failed';
+    const failed = record.status === 'failed' || saved?.status === 'failed';
     const mode = shadowMode(record.run?.shadowMode);
     const branch = id === 'shadow' ? id + '/' + mode : id;
     const config = await optional(branch + '/run.json');
@@ -77,14 +79,14 @@ export async function snapshot(directory: string, name: string, dir: string) {
         reports[key] = await reportPreview(directory, source, text, fileSet);
       } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(source + ': ' + String(error)); }
     };
-    const observed = (value?: string): Status => value === 'running' ? (active ? 'running' : record.status === 'failed' ? 'failed' : 'unconfirmed') : statusOf(value);
+    const observed = (value?: string): Status => value === 'running' ? (active ? 'running' : failed ? 'failed' : 'unconfirmed') : statusOf(value);
     let groups: any[] = [];
     if (id === 'part-layering' || id === 'clothing-part-layering') {
       const document = await optional(id + '/groups.json');
       try { validateGroups(document?.groups ?? []); groups = document?.groups ?? []; }
       catch (error) { errors.push(id + ': ' + String(error)); }
       const all = flatten(groups);
-      const failedSince = !active && record.status === 'failed' && current ? record.run?.runner?.startedAt : undefined;
+      const failedSince = !active && failed && current ? record.run?.runner?.startedAt : undefined;
       const progress = await partProgress(directory, id, groups, fileSet, optional, errors, active ? record.run?.runner?.startedAt : undefined, failedSince);
       Object.assign(states, progress.states); Object.assign(messages, progress.messages);
       for (const phase of phases) {
