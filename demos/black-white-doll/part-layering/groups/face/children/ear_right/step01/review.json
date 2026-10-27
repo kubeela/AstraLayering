@@ -7,54 +7,54 @@
       "candidateHash": "cd0c82430263f76f1da22bd9c235f18cb3cc595e5bd5ac5885cd3c05bd7ce963",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/ear_right/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-1.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-1.png"
         },
         {
-          "source": "../../../../../parts/face.svg",
+          "source": "part-layering/parts/face.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-2.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/ear_right/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-3.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-3.png"
         },
         {
-          "source": "../../../../../parts/face.svg",
+          "source": "part-layering/parts/face.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-4.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/ear_right/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-5.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-5.png"
         },
         {
-          "source": "../../../../../parts/face.svg",
+          "source": "part-layering/parts/face.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-6.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/ear_right/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-7.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/ear_right/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-8.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/ear_right/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-9.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-9.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/ear_right/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-10.png"
+          "savedPath": "part-layering/groups/face/children/ear_right/step01/observations/face/ear_right/2026-10-25T05-42-58-311Z-10.png"
         }
       ],
       "updatedAt": "2026-10-25T06:11:05.101Z"

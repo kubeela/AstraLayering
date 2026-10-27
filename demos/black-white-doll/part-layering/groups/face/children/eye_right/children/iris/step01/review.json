@@ -7,94 +7,94 @@
       "candidateHash": "802ccc4c0a25f172558cecc190e83ebc65a96b0781cb6052c94c4856b73cbe09",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-1.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-2.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-2.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-3.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-4.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-5.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-6.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-7.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-8.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-9.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-9.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-10.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-10.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-11.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-11.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-12.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-12.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-13.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-13.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-14.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-14.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-15.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-15.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-16.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-16.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-17.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-17.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-18.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T08-45-50-060Z-18.png"
         }
       ],
       "updatedAt": "2026-10-25T09:40:36.727Z",
@@ -106,89 +106,89 @@
       "candidateHash": "367a54ecde556afee18d9851ea512aa8e03f11a49325a021043dac49c23d97de",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-1.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-1.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-2.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-3.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-4.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-5.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-6.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-7.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-8.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-8.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-9.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-9.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_right.svg",
+          "source": "part-layering/parts/face/eye_right.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-10.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-10.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-11.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-11.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-12.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-12.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-13.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-13.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-14.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-14.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-15.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-15.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-16.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-16.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-17.png"
+          "savedPath": "part-layering/groups/face/children/eye_right/children/iris/step01/observations/face/eye_right/iris/2026-10-25T10-25-35-569Z-17.png"
         }
       ],
       "updatedAt": "2026-10-25T10:43:26.792Z",

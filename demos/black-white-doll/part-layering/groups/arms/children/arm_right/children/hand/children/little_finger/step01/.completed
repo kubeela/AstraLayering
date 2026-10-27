@@ -1,0 +1,9 @@
+{
+  "stamp": "b1788f35147559570476d353d42aa4cd2d8d67bd2e4b30342abf3f444137c35f",
+  "inputs": {
+    "groups/arms/children/arm_right/children/hand/step02": "e57a2a246c22f27e693c682b62b62afd3eb37f21c2f5706c18402085379dd491"
+  },
+  "outputs": {
+    "outline.svg": "19dcffd7c54b40dd298239328b67672d4f8eb6096afec7dab1d17fc4f7ec5a46"
+  }
+}

@@ -6,6 +6,11 @@
   "workflowCompletedAt": "2026-10-23T20:51:30.508Z",
   "files": [
     {
+      "bytes": 3998,
+      "sha256": "e2abe910ade9504f90243d16e7795ee639f984c304e4b0de4a4a2961a1c13e68",
+      "path": "README.md"
+    },
+    {
       "path": "character-assembly/step01/candidate-review.md",
       "source": ".run/pink-elf/character-assembly/step01/candidate-review.md",
       "bytes": 29165,
@@ -34,6 +39,66 @@
       "source": ".run/pink-elf/character-assembly/step01/drawing-strokes.json",
       "bytes": 19975,
       "sha256": "0fefd44a198b7ef76ec1cdf31bb9d660cf6e8dec1ec9cf9978ca7937976cceda"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/ankles.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/ankles.png",
+      "bytes": 99644,
+      "sha256": "1f89ebc5f652edb32fc64090f0194a8aff7ef6c34ccfe3fb1c7ceaa8a9c8a8db"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/bodice-waist.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/bodice-waist.png",
+      "bytes": 226833,
+      "sha256": "762a320e082ec1914160f3d2edabcaea6f70efb481bf11c8191cf83a407eca6d"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/collar.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/collar.png",
+      "bytes": 130097,
+      "sha256": "fa90dd7bd249f64555c4bc8e5682a23c2874bce40f9a7bb1aeeccd5a6cce0c9b"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/hands.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/hands.png",
+      "bytes": 351940,
+      "sha256": "73733c06de5c8f7c1043f752566d7d656707fc3afb3eca9f7841debedf41e41a"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/hem-thigh.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/hem-thigh.png",
+      "bytes": 434831,
+      "sha256": "dd80ef8bccb6aa412e579cd3a385ef59e5ccd0cd79e10999d19fe5c16beeb941"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/knees.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/knees.png",
+      "bytes": 59182,
+      "sha256": "70943616a271042e4f695b2e577bf142acabb56972eb5abb73cbeb1ce4b11676"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/left-side.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/left-side.png",
+      "bytes": 123772,
+      "sha256": "c75e5a5425871d73435f3221f44b6b3e5e743a481da5695e803761b1f7408bce"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/left-sleeve.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/left-sleeve.png",
+      "bytes": 99226,
+      "sha256": "69205644311a597e2c3aeb40fb2ebb4c362c78a378d997e4c05e6129ad11a977"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/right-side.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/right-side.png",
+      "bytes": 123367,
+      "sha256": "07815df665235115350bc856b07c4e58e70d0408b87f942bd14100741bd64e51"
+    },
+    {
+      "path": "character-assembly/step01/inspection/final/right-sleeve.png",
+      "source": ".run/pink-elf/character-assembly/step01/inspection/final/right-sleeve.png",
+      "bytes": 95033,
+      "sha256": "a7c1b87cfd3bf245ad9da2fe4ac74d7473a7bb0b15f39fd0114d3c8e9738ee60"
     },
     {
       "path": "character-assembly/step01/inspection/final-candidates/candidate-001.png",
@@ -678,66 +743,6 @@
       "sha256": "8a559c3f7f014b34abaa482d0686005f4bf4260a0d0821fa8602790a24775a75"
     },
     {
-      "path": "character-assembly/step01/inspection/final/ankles.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/ankles.png",
-      "bytes": 99644,
-      "sha256": "1f89ebc5f652edb32fc64090f0194a8aff7ef6c34ccfe3fb1c7ceaa8a9c8a8db"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/bodice-waist.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/bodice-waist.png",
-      "bytes": 226833,
-      "sha256": "762a320e082ec1914160f3d2edabcaea6f70efb481bf11c8191cf83a407eca6d"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/collar.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/collar.png",
-      "bytes": 130097,
-      "sha256": "fa90dd7bd249f64555c4bc8e5682a23c2874bce40f9a7bb1aeeccd5a6cce0c9b"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/hands.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/hands.png",
-      "bytes": 351940,
-      "sha256": "73733c06de5c8f7c1043f752566d7d656707fc3afb3eca9f7841debedf41e41a"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/hem-thigh.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/hem-thigh.png",
-      "bytes": 434831,
-      "sha256": "dd80ef8bccb6aa412e579cd3a385ef59e5ccd0cd79e10999d19fe5c16beeb941"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/knees.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/knees.png",
-      "bytes": 59182,
-      "sha256": "70943616a271042e4f695b2e577bf142acabb56972eb5abb73cbeb1ce4b11676"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/left-side.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/left-side.png",
-      "bytes": 123772,
-      "sha256": "c75e5a5425871d73435f3221f44b6b3e5e743a481da5695e803761b1f7408bce"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/left-sleeve.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/left-sleeve.png",
-      "bytes": 99226,
-      "sha256": "69205644311a597e2c3aeb40fb2ebb4c362c78a378d997e4c05e6129ad11a977"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/right-side.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/right-side.png",
-      "bytes": 123367,
-      "sha256": "07815df665235115350bc856b07c4e58e70d0408b87f942bd14100741bd64e51"
-    },
-    {
-      "path": "character-assembly/step01/inspection/final/right-sleeve.png",
-      "source": ".run/pink-elf/character-assembly/step01/inspection/final/right-sleeve.png",
-      "bytes": 95033,
-      "sha256": "a7c1b87cfd3bf245ad9da2fe4ac74d7473a7bb0b15f39fd0114d3c8e9738ee60"
-    },
-    {
       "path": "character-assembly/step01/inspection/reopened/250-toggle.png",
       "source": ".run/pink-elf/character-assembly/step01/inspection/reopened/250-toggle.png",
       "bytes": 44312,
@@ -826,12 +831,6 @@
       "source": ".run/pink-elf/character-assembly/step01/transform-log.json",
       "bytes": 3664,
       "sha256": "b366e8bbf74884e18dd8c6b26e5e8463fe71c185f9379119b25375ea3533ecdf"
-    },
-    {
-      "path": "clothing-part-layering/groups.json",
-      "source": ".run/pink-elf/clothing-part-layering/groups.json",
-      "bytes": 80372,
-      "sha256": "9432e021972c0448621ea308cf71d972a75ee405ffaab1e1ed4354a9665ffa9a"
     },
     {
       "path": "clothing-part-layering/groups/chest_pendant/step01/.completed",
@@ -1590,6 +1589,12 @@
       "sha256": "3926f1985e783400585cee98043ff13f77196606ef02ef4664c25079ffb7d326"
     },
     {
+      "path": "clothing-part-layering/groups.json",
+      "source": ".run/pink-elf/clothing-part-layering/groups.json",
+      "bytes": 80372,
+      "sha256": "9432e021972c0448621ea308cf71d972a75ee405ffaab1e1ed4354a9665ffa9a"
+    },
+    {
       "path": "clothing-part-layering/initial/step01/.completed",
       "source": "mechanical step-layout projection",
       "bytes": 182,
@@ -1734,16 +1739,21 @@
       "sha256": "9cdbace7ac62684a6d4880b715848e30ec54a07f2ecc8276e153f88a225fc7a6"
     },
     {
-      "path": "clothing-part-layering/occlusion.json",
-      "source": ".run/pink-elf/clothing-part-layering/occlusion.json",
-      "bytes": 33455,
-      "sha256": "06e65044b452d0335b24fd3996294ef117021eaa7f6f70ce3d6bc6e8e95a3dc1"
-    },
-    {
       "path": "clothing-part-layering/occlusion/.completed",
       "source": "mechanical step-layout projection",
       "bytes": 135,
       "sha256": "937d26785a39ed0ca82d7a622a47894286df27cec6c8681cc345f9c022372aa0"
+    },
+    {
+      "bytes": 106129,
+      "sha256": "65455b572dba124a61cd6344442cfd620dc1a8eabbbde9de4db4e99d20a84a3f",
+      "path": "clothing-part-layering/occlusion/preview.svg"
+    },
+    {
+      "path": "clothing-part-layering/occlusion.json",
+      "source": ".run/pink-elf/clothing-part-layering/occlusion.json",
+      "bytes": 33455,
+      "sha256": "06e65044b452d0335b24fd3996294ef117021eaa7f6f70ce3d6bc6e8e95a3dc1"
     },
     {
       "path": "clothing-part-layering/parts/chest_pendant.svg",
@@ -1758,22 +1768,10 @@
       "sha256": "3f29d2df6e3a33d0e5b48c0a23d6d0969d95e365568433b9b8ee9cce55311861"
     },
     {
-      "path": "clothing-part-layering/parts/halter_dress.svg",
-      "source": ".run/pink-elf/clothing-part-layering/parts/halter_dress.svg",
-      "bytes": 13724,
-      "sha256": "bc6f5820afd4e8c509c2f98720344ba343f26cec7c4d386a4ebf0f8a25feab76"
-    },
-    {
       "path": "clothing-part-layering/parts/halter_dress/halter_bodice.svg",
       "source": ".run/pink-elf/clothing-part-layering/parts/halter_dress/halter_bodice.svg",
       "bytes": 7238,
       "sha256": "a04539f56d2bcca8197c45810d5c2c73aca9e14c845f262adc6368bac053897b"
-    },
-    {
-      "path": "clothing-part-layering/parts/halter_dress/short_outer_skirt.svg",
-      "source": ".run/pink-elf/clothing-part-layering/parts/halter_dress/short_outer_skirt.svg",
-      "bytes": 10533,
-      "sha256": "9e2a3f41457d277d4e953792aa60e4357efd23116d413e4bcd2b0c61ae59f654"
     },
     {
       "path": "clothing-part-layering/parts/halter_dress/short_outer_skirt/front_drape.svg",
@@ -1794,6 +1792,18 @@
       "sha256": "6c08f8a5a7cd16671147ab5aa7bcef52a39dfdbb8bf1b7fded1f49657378ddbd"
     },
     {
+      "path": "clothing-part-layering/parts/halter_dress/short_outer_skirt.svg",
+      "source": ".run/pink-elf/clothing-part-layering/parts/halter_dress/short_outer_skirt.svg",
+      "bytes": 10533,
+      "sha256": "9e2a3f41457d277d4e953792aa60e4357efd23116d413e4bcd2b0c61ae59f654"
+    },
+    {
+      "path": "clothing-part-layering/parts/halter_dress.svg",
+      "source": ".run/pink-elf/clothing-part-layering/parts/halter_dress.svg",
+      "bytes": 13724,
+      "sha256": "bc6f5820afd4e8c509c2f98720344ba343f26cec7c4d386a4ebf0f8a25feab76"
+    },
+    {
       "path": "clothing-part-layering/parts/puff_sleeve_image_left.svg",
       "source": ".run/pink-elf/clothing-part-layering/parts/puff_sleeve_image_left.svg",
       "bytes": 3959,
@@ -1812,12 +1822,6 @@
       "sha256": "257d161f1c8aa1ce583075d9430e298dfd91799d83699a93745b0b6818feb9e2"
     },
     {
-      "path": "clothing-part-layering/parts/trailing_skirt_image_right.svg",
-      "source": ".run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_right.svg",
-      "bytes": 14349,
-      "sha256": "1ed686690a06a03431c9bb7d34056f1c4abd7e449b987d581c3f718dde2d6875"
-    },
-    {
       "path": "clothing-part-layering/parts/trailing_skirt_image_right/short_drape_left.svg",
       "source": ".run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_right/short_drape_left.svg",
       "bytes": 7812,
@@ -1830,10 +1834,10 @@
       "sha256": "fd4c8448c3d4a091a6ee7db1a3fa65b8834716f09c489da475737c13e9e7ca50"
     },
     {
-      "path": "clothing-part-layering/parts/waist_bow.svg",
-      "source": ".run/pink-elf/clothing-part-layering/parts/waist_bow.svg",
-      "bytes": 3966,
-      "sha256": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d"
+      "path": "clothing-part-layering/parts/trailing_skirt_image_right.svg",
+      "source": ".run/pink-elf/clothing-part-layering/parts/trailing_skirt_image_right.svg",
+      "bytes": 14349,
+      "sha256": "1ed686690a06a03431c9bb7d34056f1c4abd7e449b987d581c3f718dde2d6875"
     },
     {
       "path": "clothing-part-layering/parts/waist_bow/knot_and_loops.svg",
@@ -1854,11 +1858,10 @@
       "sha256": "f48184bf2ed80dc8c8307d6f783093ae9fd6f9bb06866f1cf1060cb817535b0f"
     },
     {
-      "path": "clothing-part-layering/preparation/step01/workspace/references/preparation-prompt.md",
-      "source": ".run/pink-elf/clothing-part-layering/references/preparation-prompt.md",
-      "bytes": 2303,
-      "sha256": "1b4530ace0d11c47cd863c39eec203ee0d8a8bad4516b7aecca7f502be685c22",
-      "previousPath": "clothing-part-layering/references/preparation-prompt.md"
+      "path": "clothing-part-layering/parts/waist_bow.svg",
+      "source": ".run/pink-elf/clothing-part-layering/parts/waist_bow.svg",
+      "bytes": 3966,
+      "sha256": "45ebc1c62d69e60998e00fd47a901b346c29e257c85896f4619ff49a4a7eea6d"
     },
     {
       "path": "clothing-part-layering/preview.svg",
@@ -1889,6 +1892,11 @@
       "source": ".run/pink-elf/clothing-raster-layering/step01/clothing-depth.png",
       "bytes": 828883,
       "sha256": "324182b673bb291b9199b4d1e1844c1eecca35ef12bdf15537c8821cc3e19d1b"
+    },
+    {
+      "bytes": 828883,
+      "sha256": "324182b673bb291b9199b4d1e1844c1eecca35ef12bdf15537c8821cc3e19d1b",
+      "path": "clothing-raster-layering/step01/composite.png"
     },
     {
       "path": "clothing-raster-layering/step01/current-structure-verification.json",
@@ -1937,42 +1945,6 @@
       "source": ".run/pink-elf/clothing-raster-layering/step01/repair-02.md",
       "bytes": 12317,
       "sha256": "ebdf0880030bd01459232fc3c17a9c43469ab95ed108566a5acc671451a498b8"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/continuation/explicit-view-reopen.json",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/continuation/explicit-view-reopen.json",
-      "bytes": 491,
-      "sha256": "c8f24f0bc068b669447c160db23320ddb0c024f51e3c52139b821efedfb028f8"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/continuation/merged-image-verification.json",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/continuation/merged-image-verification.json",
-      "bytes": 174,
-      "sha256": "5858dd88b5f84176d319fa3c3d65d34dbb887045b63f6f3032c59cb40259d5f8"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/continuity-and-artifact-checks.json",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/continuity-and-artifact-checks.json",
-      "bytes": 5321,
-      "sha256": "49898f62408af66b5c17470564df7904374b6e7bd6f384bbb163dfd01124d610"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/delivery-checks.json",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/delivery-checks.json",
-      "bytes": 8653,
-      "sha256": "868d4d7b29c92bc8e68f464ac788c05a6f7eb19e5d70fb0b439975cd57fe343d"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/full-reference-vs-current.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/full-reference-vs-current.png",
-      "bytes": 774019,
-      "sha256": "eae22d6f064f51e348079087eb8ccfb742db67d2466e42e3fce0902ced1f7e66"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/generation.json",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/generation.json",
-      "bytes": 19678,
-      "sha256": "9fe20d48a2682a57c34ea1c9879fb5bfc1f69c924d1524f8fcac5670f6cf5cf7"
     },
     {
       "path": "clothing-raster-layering/step01/repair-evidence/repair-01/R1-final-1x.png",
@@ -2071,6 +2043,42 @@
       "sha256": "09bd9e5f4dc81844efe129310645667fc2bb77a67882bf04e86efe6d1361e9fc"
     },
     {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/continuation/explicit-view-reopen.json",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/continuation/explicit-view-reopen.json",
+      "bytes": 491,
+      "sha256": "c8f24f0bc068b669447c160db23320ddb0c024f51e3c52139b821efedfb028f8"
+    },
+    {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/continuation/merged-image-verification.json",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/continuation/merged-image-verification.json",
+      "bytes": 174,
+      "sha256": "5858dd88b5f84176d319fa3c3d65d34dbb887045b63f6f3032c59cb40259d5f8"
+    },
+    {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/continuity-and-artifact-checks.json",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/continuity-and-artifact-checks.json",
+      "bytes": 5321,
+      "sha256": "49898f62408af66b5c17470564df7904374b6e7bd6f384bbb163dfd01124d610"
+    },
+    {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/delivery-checks.json",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/delivery-checks.json",
+      "bytes": 8653,
+      "sha256": "868d4d7b29c92bc8e68f464ac788c05a6f7eb19e5d70fb0b439975cd57fe343d"
+    },
+    {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/full-reference-vs-current.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/full-reference-vs-current.png",
+      "bytes": 774019,
+      "sha256": "eae22d6f064f51e348079087eb8ccfb742db67d2466e42e3fce0902ced1f7e66"
+    },
+    {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-01/generation.json",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/generation.json",
+      "bytes": 19678,
+      "sha256": "9fe20d48a2682a57c34ea1c9879fb5bfc1f69c924d1524f8fcac5670f6cf5cf7"
+    },
+    {
       "path": "clothing-raster-layering/step01/repair-evidence/repair-01/reopen-verification.json",
       "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/reopen-verification.json",
       "bytes": 628,
@@ -2087,18 +2095,6 @@
       "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-01/upstream-repair-records.json",
       "bytes": 5171,
       "sha256": "ded795eb5caa3816308fc1ee95a0acb42cd4ba8cc7240811b91701975853f20e"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-02/delivery-checks.json",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-02/delivery-checks.json",
-      "bytes": 12741,
-      "sha256": "a8128cec317b5ce71655b291b0544c87c7e96f1a8de9563ff58344226e8d1d0f"
-    },
-    {
-      "path": "clothing-raster-layering/step01/repair-evidence/repair-02/full-reference-vs-current.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-02/full-reference-vs-current.png",
-      "bytes": 773934,
-      "sha256": "d0cfbba547e56205a074a6ea10e5e86ebce7c0c228e1b0a9af6e3d4e58518813"
     },
     {
       "path": "clothing-raster-layering/step01/repair-evidence/repair-02/R1-context-1x.png",
@@ -2135,6 +2131,18 @@
       "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-02/R2-final-4x.png",
       "bytes": 23337,
       "sha256": "a996deab2f3ee907c662dea6e08b8652638eb92f22e277a020ff5b2f3acd6f78"
+    },
+    {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-02/delivery-checks.json",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-02/delivery-checks.json",
+      "bytes": 12741,
+      "sha256": "a8128cec317b5ce71655b291b0544c87c7e96f1a8de9563ff58344226e8d1d0f"
+    },
+    {
+      "path": "clothing-raster-layering/step01/repair-evidence/repair-02/full-reference-vs-current.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/repair-evidence/repair-02/full-reference-vs-current.png",
+      "bytes": 773934,
+      "sha256": "d0cfbba547e56205a074a6ea10e5e86ebce7c0c228e1b0a9af6e3d4e58518813"
     },
     {
       "path": "clothing-raster-layering/step01/repair-evidence/repair-02/reopen-verification.json",
@@ -2185,12 +2193,6 @@
       "sha256": "0ededbaf81b68775f0833acf9aee021dd97385ffe8af953bd4341aacf6386f4a"
     },
     {
-      "path": "clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/marked.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/marked.png",
-      "bytes": 920841,
-      "sha256": "c7a98ef5470e96fc6358111857bd3f993f94e75ca3d253f39301997c9656a5b8"
-    },
-    {
       "path": "clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R1-comparison.png",
       "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R1-comparison.png",
       "bytes": 30086,
@@ -2201,6 +2203,12 @@
       "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/R2-comparison.png",
       "bytes": 29380,
       "sha256": "1b041a75a712fceb33df67c1f06bd68bebd0e069494c0779dec5e57defa6063c"
+    },
+    {
+      "path": "clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/marked.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/marked.png",
+      "bytes": 920841,
+      "sha256": "c7a98ef5470e96fc6358111857bd3f993f94e75ca3d253f39301997c9656a5b8"
     },
     {
       "path": "clothing-raster-layering/step01/review-evidence/31bc0a3f-4690-47f5-a8c4-4ea3f3af4854/regions.json",
@@ -2233,12 +2241,6 @@
       "sha256": "ac25a4a433bb5a42a192877a6d529b4ac6fdf523885da19847f9bbefa16ab896"
     },
     {
-      "path": "clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/marked.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/marked.png",
-      "bytes": 911326,
-      "sha256": "8378182bf6ccb705b78b69ecccdf336693a2df75bce9b3bd043dc0f264c09f23"
-    },
-    {
       "path": "clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R1-comparison.png",
       "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R1-comparison.png",
       "bytes": 23474,
@@ -2255,6 +2257,12 @@
       "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/R4-comparison.png",
       "bytes": 76492,
       "sha256": "db9dfa5229ec3d89f696c65bdca3d2ab13bce55ff7b51a9533f33cb75645a998"
+    },
+    {
+      "path": "clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/marked.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/marked.png",
+      "bytes": 911326,
+      "sha256": "8378182bf6ccb705b78b69ecccdf336693a2df75bce9b3bd043dc0f264c09f23"
     },
     {
       "path": "clothing-raster-layering/step01/review-evidence/cd1bdf6d-da34-426f-9994-3f392090f074/regions.json",
@@ -2653,6 +2661,11 @@
       "sha256": "9fe2367533cab3197e9eaa43de9974d142e7da478bb08d46d0e402052bfa2b4c"
     },
     {
+      "bytes": 829012,
+      "sha256": "9fe2367533cab3197e9eaa43de9974d142e7da478bb08d46d0e402052bfa2b4c",
+      "path": "clothing-raster-layering/step02/composite.png"
+    },
+    {
       "path": "clothing-raster-layering/step02/delivery-checks.json",
       "source": ".run/pink-elf/clothing-raster-layering/step02/delivery-checks.json",
       "bytes": 11419,
@@ -2693,90 +2706,6 @@
       "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/detail-08.png",
       "bytes": 93407,
       "sha256": "1bed7ee3678d9e7e49b9321c14f9b162443263652561848a028b6e566e7e6b16"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-detail-bow.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-bow.png",
-      "bytes": 53161,
-      "sha256": "b1407ade42e5ec4618be9847e21c1ad4d8281caac2ea02fb9ff9598a9fb674ac"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-detail-hem.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-hem.png",
-      "bytes": 6643,
-      "sha256": "b497134600dd9195ea7cf7b0575d6845b3595a0a26782aab613fc5928d33a0a8"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-detail-leftjoin.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-leftjoin.png",
-      "bytes": 18638,
-      "sha256": "56230199c76e1a4862cb4083ddfc4701f3074610b6e31e1b788cda93e93bacc5"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-detail-pendant.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-pendant.png",
-      "bytes": 38724,
-      "sha256": "c0052904d2ab8bc91d733936abe74cc31df865c218f99375a89371c590f78cd6"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-detail-rightjoin.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-rightjoin.png",
-      "bytes": 24838,
-      "sha256": "bb2443b37d1794da69740fa7b9172a6e8926faa7e143c0db28766077bd35b61d"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-detail-sleeve.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-sleeve.png",
-      "bytes": 17149,
-      "sha256": "4679b9d85c0b663360c768094589e1bba5259cc29603883c4e73ceef2801a2a0"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-reference-100.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-reference-100.png",
-      "bytes": 779496,
-      "sha256": "d44434b93a8d77dff550aa5198ee7d99007c1a1754932cf5dfa5ffcc0439b5b5"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-same-part-native-01.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-same-part-native-01.png",
-      "bytes": 752818,
-      "sha256": "ccafa34984e067e1cc9452f79bb6a7d5903a6ba26579342ea402a87b4ef0f6ba"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-solos200-01.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-solos200-01.png",
-      "bytes": 450174,
-      "sha256": "906294db50331301ee8c6248a2f3290089109e879300060c0f7581fa2bdb9f9e"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-solos200-02.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-solos200-02.png",
-      "bytes": 465059,
-      "sha256": "1ad0ebb0cfcb74db5e90695422cb433381cde4a3e437ef483ac8548b1d37b45b"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-solos200-03.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-solos200-03.png",
-      "bytes": 193658,
-      "sha256": "14309492844dad5069d63438d9045a6cc187dc9c5f3e1864a06ada0a71dcfc01"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-upper-hidden200-01.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-upper-hidden200-01.png",
-      "bytes": 598881,
-      "sha256": "3a810d5bc16ac9ef2c22fd9e3ee5233b47b30f00c38199dd582158bc32ac5e38"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-upper-hidden200-02.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-upper-hidden200-02.png",
-      "bytes": 541970,
-      "sha256": "a882d1b3394f173b3a8e2898f7cd721d75858b3819f219ebc22ce71e052c82b4"
-    },
-    {
-      "path": "clothing-raster-layering/step02/inspection/final-upper-hidden200-03.png",
-      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-upper-hidden200-03.png",
-      "bytes": 350232,
-      "sha256": "1ab8b19cf87d08f89176a6ac2222315a6369f04075ad5271c475e0ac7200dddc"
     },
     {
       "path": "clothing-raster-layering/step02/inspection/final/upper-hidden/0001.png",
@@ -2969,6 +2898,90 @@
       "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final/upper-hidden/0043.png",
       "bytes": 738390,
       "sha256": "18e4ccad6a747650cf1d90b89a7575cb67c5ef4a33e23af40ccf017fa0821198"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-detail-bow.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-bow.png",
+      "bytes": 53161,
+      "sha256": "b1407ade42e5ec4618be9847e21c1ad4d8281caac2ea02fb9ff9598a9fb674ac"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-detail-hem.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-hem.png",
+      "bytes": 6643,
+      "sha256": "b497134600dd9195ea7cf7b0575d6845b3595a0a26782aab613fc5928d33a0a8"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-detail-leftjoin.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-leftjoin.png",
+      "bytes": 18638,
+      "sha256": "56230199c76e1a4862cb4083ddfc4701f3074610b6e31e1b788cda93e93bacc5"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-detail-pendant.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-pendant.png",
+      "bytes": 38724,
+      "sha256": "c0052904d2ab8bc91d733936abe74cc31df865c218f99375a89371c590f78cd6"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-detail-rightjoin.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-rightjoin.png",
+      "bytes": 24838,
+      "sha256": "bb2443b37d1794da69740fa7b9172a6e8926faa7e143c0db28766077bd35b61d"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-detail-sleeve.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-detail-sleeve.png",
+      "bytes": 17149,
+      "sha256": "4679b9d85c0b663360c768094589e1bba5259cc29603883c4e73ceef2801a2a0"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-reference-100.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-reference-100.png",
+      "bytes": 779496,
+      "sha256": "d44434b93a8d77dff550aa5198ee7d99007c1a1754932cf5dfa5ffcc0439b5b5"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-same-part-native-01.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-same-part-native-01.png",
+      "bytes": 752818,
+      "sha256": "ccafa34984e067e1cc9452f79bb6a7d5903a6ba26579342ea402a87b4ef0f6ba"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-solos200-01.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-solos200-01.png",
+      "bytes": 450174,
+      "sha256": "906294db50331301ee8c6248a2f3290089109e879300060c0f7581fa2bdb9f9e"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-solos200-02.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-solos200-02.png",
+      "bytes": 465059,
+      "sha256": "1ad0ebb0cfcb74db5e90695422cb433381cde4a3e437ef483ac8548b1d37b45b"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-solos200-03.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-solos200-03.png",
+      "bytes": 193658,
+      "sha256": "14309492844dad5069d63438d9045a6cc187dc9c5f3e1864a06ada0a71dcfc01"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-upper-hidden200-01.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-upper-hidden200-01.png",
+      "bytes": 598881,
+      "sha256": "3a810d5bc16ac9ef2c22fd9e3ee5233b47b30f00c38199dd582158bc32ac5e38"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-upper-hidden200-02.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-upper-hidden200-02.png",
+      "bytes": 541970,
+      "sha256": "a882d1b3394f173b3a8e2898f7cd721d75858b3819f219ebc22ce71e052c82b4"
+    },
+    {
+      "path": "clothing-raster-layering/step02/inspection/final-upper-hidden200-03.png",
+      "source": ".run/pink-elf/clothing-raster-layering/step02/inspection/final-upper-hidden200-03.png",
+      "bytes": 350232,
+      "sha256": "1ab8b19cf87d08f89176a6ac2222315a6369f04075ad5271c475e0ac7200dddc"
     },
     {
       "path": "clothing-raster-layering/step02/inspection/reopened/all.png",
@@ -3281,12 +3294,6 @@
       "source": ".run/pink-elf/input/original.png",
       "bytes": 9207472,
       "sha256": "1add57f641c8914cab6bc8da9bbeeeb78087c045fd3864b21417494571d12cbe"
-    },
-    {
-      "path": "part-layering/groups.json",
-      "source": ".run/pink-elf/part-layering/groups.json",
-      "bytes": 133791,
-      "sha256": "4915150a395a6ce91ea6ea46b1623458fb669b57c707ab46c76d4cf22396f18c"
     },
     {
       "path": "part-layering/groups/arms/children/arm_left/children/forearm/step01/.completed",
@@ -6733,6 +6740,12 @@
       "sha256": "77a7d2802f6795f076b9cabfec10b15540f69c8578bfcde83f0f41a0fabc7136"
     },
     {
+      "path": "part-layering/groups.json",
+      "source": ".run/pink-elf/part-layering/groups.json",
+      "bytes": 133791,
+      "sha256": "4915150a395a6ce91ea6ea46b1623458fb669b57c707ab46c76d4cf22396f18c"
+    },
+    {
       "path": "part-layering/initial/step01/.completed",
       "source": "mechanical step-layout projection",
       "bytes": 182,
@@ -7267,34 +7280,21 @@
       "sha256": "99b9fefff2565dc0de7b831c5df339707ab897e0a0f22c74f94e77acbf032e3b"
     },
     {
+      "bytes": 113779,
+      "sha256": "4dc0af374e29736eff55788bcd4df9d15ad03ee4f2d5215050a814a155425b4f",
+      "path": "part-layering/occlusion/preview.svg"
+    },
+    {
       "path": "part-layering/occlusion.json",
       "source": ".run/pink-elf/part-layering/occlusion.json",
       "bytes": 36493,
       "sha256": "47e2451ed37955f26c2b8cf04e022586403109e201f6fe7b1fe2d2f75116bb54"
     },
     {
-      "path": "part-layering/parts/arms.svg",
-      "source": ".run/pink-elf/part-layering/parts/arms.svg",
-      "bytes": 3566,
-      "sha256": "ffc980431da67c1ee35077fb57ebc06fe45fa631c0b180b71db139a900a248c9"
-    },
-    {
-      "path": "part-layering/parts/arms/arm_left.svg",
-      "source": ".run/pink-elf/part-layering/parts/arms/arm_left.svg",
-      "bytes": 2014,
-      "sha256": "c18b853fee323bc62fc512ce80d16df4c3fcc237567ae123095f66d45626072b"
-    },
-    {
       "path": "part-layering/parts/arms/arm_left/forearm.svg",
       "source": ".run/pink-elf/part-layering/parts/arms/arm_left/forearm.svg",
       "bytes": 1174,
       "sha256": "9970ae133a2ff4a04d57376658733f02dc0d0389b99b7934086432309127b6bd"
-    },
-    {
-      "path": "part-layering/parts/arms/arm_left/hand.svg",
-      "source": ".run/pink-elf/part-layering/parts/arms/arm_left/hand.svg",
-      "bytes": 1566,
-      "sha256": "ec0a988191d83c69e8f8f77e9be7255bf80cad5eaee5351e56337d75b923718f"
     },
     {
       "path": "part-layering/parts/arms/arm_left/hand/index_finger.svg",
@@ -7333,28 +7333,28 @@
       "sha256": "6746ca928a630fc714f9b09c61a36b3f2e6a610b2d5aea398912b455689777de"
     },
     {
+      "path": "part-layering/parts/arms/arm_left/hand.svg",
+      "source": ".run/pink-elf/part-layering/parts/arms/arm_left/hand.svg",
+      "bytes": 1566,
+      "sha256": "ec0a988191d83c69e8f8f77e9be7255bf80cad5eaee5351e56337d75b923718f"
+    },
+    {
       "path": "part-layering/parts/arms/arm_left/upper_arm.svg",
       "source": ".run/pink-elf/part-layering/parts/arms/arm_left/upper_arm.svg",
       "bytes": 908,
       "sha256": "03992d98105361cefe5f55e4f0935e9cfa3914a520782d74745f460ab10ccaa0"
     },
     {
-      "path": "part-layering/parts/arms/arm_right.svg",
-      "source": ".run/pink-elf/part-layering/parts/arms/arm_right.svg",
-      "bytes": 2069,
-      "sha256": "5b58323f8df6f7e79de50e41b16b457a000a639f986e83dde8973177c48523fa"
+      "path": "part-layering/parts/arms/arm_left.svg",
+      "source": ".run/pink-elf/part-layering/parts/arms/arm_left.svg",
+      "bytes": 2014,
+      "sha256": "c18b853fee323bc62fc512ce80d16df4c3fcc237567ae123095f66d45626072b"
     },
     {
       "path": "part-layering/parts/arms/arm_right/forearm.svg",
       "source": ".run/pink-elf/part-layering/parts/arms/arm_right/forearm.svg",
       "bytes": 1079,
       "sha256": "222e716942d5fc30a04b0fa3118b06781051f30c8788ed3b912dd8a79af38130"
-    },
-    {
-      "path": "part-layering/parts/arms/arm_right/hand.svg",
-      "source": ".run/pink-elf/part-layering/parts/arms/arm_right/hand.svg",
-      "bytes": 1728,
-      "sha256": "81ced5b26f0af22c452617d2aadf286cfd682dcf169173ef2ee2e8606c88556c"
     },
     {
       "path": "part-layering/parts/arms/arm_right/hand/index_finger.svg",
@@ -7393,16 +7393,28 @@
       "sha256": "93c022c2a39d94d78a00ee79052ee91eb45342e58469c7ecb759f3e36bc2882a"
     },
     {
+      "path": "part-layering/parts/arms/arm_right/hand.svg",
+      "source": ".run/pink-elf/part-layering/parts/arms/arm_right/hand.svg",
+      "bytes": 1728,
+      "sha256": "81ced5b26f0af22c452617d2aadf286cfd682dcf169173ef2ee2e8606c88556c"
+    },
+    {
       "path": "part-layering/parts/arms/arm_right/upper_arm.svg",
       "source": ".run/pink-elf/part-layering/parts/arms/arm_right/upper_arm.svg",
       "bytes": 902,
       "sha256": "235a354816c3a6d16ad07ea9c0ffff421ed2f55f637d18ecea4b0e5d1e7ae0bf"
     },
     {
-      "path": "part-layering/parts/body.svg",
-      "source": ".run/pink-elf/part-layering/parts/body.svg",
-      "bytes": 1107,
-      "sha256": "c3dc51c57505a5c2582bd46765b75b85b23f0eac73cb8f35a6785ab75d5e478d"
+      "path": "part-layering/parts/arms/arm_right.svg",
+      "source": ".run/pink-elf/part-layering/parts/arms/arm_right.svg",
+      "bytes": 2069,
+      "sha256": "5b58323f8df6f7e79de50e41b16b457a000a639f986e83dde8973177c48523fa"
+    },
+    {
+      "path": "part-layering/parts/arms.svg",
+      "source": ".run/pink-elf/part-layering/parts/arms.svg",
+      "bytes": 3566,
+      "sha256": "ffc980431da67c1ee35077fb57ebc06fe45fa631c0b180b71db139a900a248c9"
     },
     {
       "path": "part-layering/parts/body/breast.svg",
@@ -7417,10 +7429,10 @@
       "sha256": "453cb31d6257b21a9204eaed78a1637359353fd20019706a855af8a6c051c8d7"
     },
     {
-      "path": "part-layering/parts/face.svg",
-      "source": ".run/pink-elf/part-layering/parts/face.svg",
-      "bytes": 3211,
-      "sha256": "234c2141fe58a19a594f5bf63ca0b33f1e8dfcb23043bd42b54a93ebe2a3481e"
+      "path": "part-layering/parts/body.svg",
+      "source": ".run/pink-elf/part-layering/parts/body.svg",
+      "bytes": 1107,
+      "sha256": "c3dc51c57505a5c2582bd46765b75b85b23f0eac73cb8f35a6785ab75d5e478d"
     },
     {
       "path": "part-layering/parts/face/ear_left.svg",
@@ -7433,12 +7445,6 @@
       "source": ".run/pink-elf/part-layering/parts/face/ear_right.svg",
       "bytes": 1073,
       "sha256": "7e639309464b81454fa4467733599bb819b47548f2dd4d9ecb1dae27b9f6fe1f"
-    },
-    {
-      "path": "part-layering/parts/face/eye_left.svg",
-      "source": ".run/pink-elf/part-layering/parts/face/eye_left.svg",
-      "bytes": 1539,
-      "sha256": "c2b9f8eb6cc2e1038d72e0fe87331acaa3c204fdf96651e00ba1e4781fc07a18"
     },
     {
       "path": "part-layering/parts/face/eye_left/eyelid_crease.svg",
@@ -7477,10 +7483,10 @@
       "sha256": "7441f7f5fdd95c4417322c6eff706759e930c48f725c72f97bd784260520035b"
     },
     {
-      "path": "part-layering/parts/face/eye_right.svg",
-      "source": ".run/pink-elf/part-layering/parts/face/eye_right.svg",
-      "bytes": 1677,
-      "sha256": "fcb12d43404e69da17354b818387d765f117ab08f3b1566145d0733d7bb9da86"
+      "path": "part-layering/parts/face/eye_left.svg",
+      "source": ".run/pink-elf/part-layering/parts/face/eye_left.svg",
+      "bytes": 1539,
+      "sha256": "c2b9f8eb6cc2e1038d72e0fe87331acaa3c204fdf96651e00ba1e4781fc07a18"
     },
     {
       "path": "part-layering/parts/face/eye_right/eyelid_crease.svg",
@@ -7519,6 +7525,12 @@
       "sha256": "04cea17ceca571d874a49a7920b69267090b3feb994ab6b3e7d79e3189889a47"
     },
     {
+      "path": "part-layering/parts/face/eye_right.svg",
+      "source": ".run/pink-elf/part-layering/parts/face/eye_right.svg",
+      "bytes": 1677,
+      "sha256": "fcb12d43404e69da17354b818387d765f117ab08f3b1566145d0733d7bb9da86"
+    },
+    {
       "path": "part-layering/parts/face/eyebrow_left.svg",
       "source": ".run/pink-elf/part-layering/parts/face/eyebrow_left.svg",
       "bytes": 559,
@@ -7535,12 +7547,6 @@
       "source": ".run/pink-elf/part-layering/parts/face/face_base.svg",
       "bytes": 897,
       "sha256": "6f636503cf1db0e63f2a40f948c9311bf274e65ad371ed08c2f0eaef90387195"
-    },
-    {
-      "path": "part-layering/parts/face/mouth.svg",
-      "source": ".run/pink-elf/part-layering/parts/face/mouth.svg",
-      "bytes": 645,
-      "sha256": "f6bbff0eca796cb54e8a18c300630d3f23e9fb350fe121208446b894024986d9"
     },
     {
       "path": "part-layering/parts/face/mouth/lower_lip.svg",
@@ -7579,28 +7585,28 @@
       "sha256": "bc2cfb1e99715d9b41f3b5e64a5dabfb8e43a3e905792b2a6183731dfc3f0f6e"
     },
     {
+      "path": "part-layering/parts/face/mouth.svg",
+      "source": ".run/pink-elf/part-layering/parts/face/mouth.svg",
+      "bytes": 645,
+      "sha256": "f6bbff0eca796cb54e8a18c300630d3f23e9fb350fe121208446b894024986d9"
+    },
+    {
       "path": "part-layering/parts/face/nose.svg",
       "source": ".run/pink-elf/part-layering/parts/face/nose.svg",
       "bytes": 580,
       "sha256": "d8abef7a6c797d47f648adfb24decb0f08c845955377a9e2ee5214becb38efde"
     },
     {
-      "path": "part-layering/parts/hair.svg",
-      "source": ".run/pink-elf/part-layering/parts/hair.svg",
-      "bytes": 20150,
-      "sha256": "6ed18b8c0eeb8461afd9b8a9c57a7ee9ef724f11d72af871812839dfb3765dc5"
+      "path": "part-layering/parts/face.svg",
+      "source": ".run/pink-elf/part-layering/parts/face.svg",
+      "bytes": 3211,
+      "sha256": "234c2141fe58a19a594f5bf63ca0b33f1e8dfcb23043bd42b54a93ebe2a3481e"
     },
     {
       "path": "part-layering/parts/hair/ahoge.svg",
       "source": ".run/pink-elf/part-layering/parts/hair/ahoge.svg",
       "bytes": 2300,
       "sha256": "ae279815d00d32911e7c70338393dd0deff6b68961c662152d9558f508a5950a"
-    },
-    {
-      "path": "part-layering/parts/hair/back_hair.svg",
-      "source": ".run/pink-elf/part-layering/parts/hair/back_hair.svg",
-      "bytes": 12274,
-      "sha256": "627b5fc233ae3ca4b93781881ca4b0b31472b104349fac7ee007ac3a357f257c"
     },
     {
       "path": "part-layering/parts/hair/back_hair/cap.svg",
@@ -7619,6 +7625,12 @@
       "source": ".run/pink-elf/part-layering/parts/hair/back_hair/long_right.svg",
       "bytes": 5943,
       "sha256": "1f11d382d6a6f9d0772d73e222c9a24c53bfd6268108520475d79bb970bab7e0"
+    },
+    {
+      "path": "part-layering/parts/hair/back_hair.svg",
+      "source": ".run/pink-elf/part-layering/parts/hair/back_hair.svg",
+      "bytes": 12274,
+      "sha256": "627b5fc233ae3ca4b93781881ca4b0b31472b104349fac7ee007ac3a357f257c"
     },
     {
       "path": "part-layering/parts/hair/bangs.svg",
@@ -7651,10 +7663,10 @@
       "sha256": "8677bdb322e9622d54b5d0fd7fbc7dfd590a18c5b7ea307c067c0d2b0deacd25"
     },
     {
-      "path": "part-layering/parts/head_accessories.svg",
-      "source": ".run/pink-elf/part-layering/parts/head_accessories.svg",
-      "bytes": 1492,
-      "sha256": "8bb94981cae13ca6e03502c95e584314b84e17aee95b99ba670efcb26e614718"
+      "path": "part-layering/parts/hair.svg",
+      "source": ".run/pink-elf/part-layering/parts/hair.svg",
+      "bytes": 20150,
+      "sha256": "6ed18b8c0eeb8461afd9b8a9c57a7ee9ef724f11d72af871812839dfb3765dc5"
     },
     {
       "path": "part-layering/parts/head_accessories/left_earring.svg",
@@ -7669,22 +7681,10 @@
       "sha256": "de3f424d10dd0833f20decb235ea5f9b5b0b76d0079c4084fc0c027e5d14e8c3"
     },
     {
-      "path": "part-layering/parts/legs.svg",
-      "source": ".run/pink-elf/part-layering/parts/legs.svg",
-      "bytes": 12496,
-      "sha256": "a61c4e0d47abd691bd4f22185a1134acbb6cc3d71b9bec8bb30fa2564dbf8bf9"
-    },
-    {
-      "path": "part-layering/parts/legs/leg_left.svg",
-      "source": ".run/pink-elf/part-layering/parts/legs/leg_left.svg",
-      "bytes": 5920,
-      "sha256": "8ba34c0e60e48a6901cc370f62444f495d8b72406234d262e1b70c6b7b48db6b"
-    },
-    {
-      "path": "part-layering/parts/legs/leg_left/boot_gem_chain.svg",
-      "source": ".run/pink-elf/part-layering/parts/legs/leg_left/boot_gem_chain.svg",
-      "bytes": 2689,
-      "sha256": "f980d0f2b7156b21076a98653400e7291b0488ec76a9996b6eade8d88364b1c7"
+      "path": "part-layering/parts/head_accessories.svg",
+      "source": ".run/pink-elf/part-layering/parts/head_accessories.svg",
+      "bytes": 1492,
+      "sha256": "8bb94981cae13ca6e03502c95e584314b84e17aee95b99ba670efcb26e614718"
     },
     {
       "path": "part-layering/parts/legs/leg_left/boot_gem_chain/flexible_connector.svg",
@@ -7711,6 +7711,12 @@
       "sha256": "83fb7b6936122289561ba54a118afa6c276cb87319cc33b07d5f7a6d2c17337b"
     },
     {
+      "path": "part-layering/parts/legs/leg_left/boot_gem_chain.svg",
+      "source": ".run/pink-elf/part-layering/parts/legs/leg_left/boot_gem_chain.svg",
+      "bytes": 2689,
+      "sha256": "f980d0f2b7156b21076a98653400e7291b0488ec76a9996b6eade8d88364b1c7"
+    },
+    {
       "path": "part-layering/parts/legs/leg_left/foot.svg",
       "source": ".run/pink-elf/part-layering/parts/legs/leg_left/foot.svg",
       "bytes": 5121,
@@ -7723,10 +7729,10 @@
       "sha256": "6dbaf1c034e66449d3fd44f9b47b3b07528e15fd1c9e5563aa26f9dbc6d009f8"
     },
     {
-      "path": "part-layering/parts/legs/leg_right.svg",
-      "source": ".run/pink-elf/part-layering/parts/legs/leg_right.svg",
-      "bytes": 6156,
-      "sha256": "f4310b4edd8edce232a6dc226261b0be79c412d624e3ad6d456030ea9a50e727"
+      "path": "part-layering/parts/legs/leg_left.svg",
+      "source": ".run/pink-elf/part-layering/parts/legs/leg_left.svg",
+      "bytes": 5920,
+      "sha256": "8ba34c0e60e48a6901cc370f62444f495d8b72406234d262e1b70c6b7b48db6b"
     },
     {
       "path": "part-layering/parts/legs/leg_right/boot_flower_ornament.svg",
@@ -7751,6 +7757,18 @@
       "source": ".run/pink-elf/part-layering/parts/legs/leg_right/leg.svg",
       "bytes": 2958,
       "sha256": "6067ea769fc24c12565ee483e2a2c6e218f5c6a3151dbd75be3574de12ebcdc6"
+    },
+    {
+      "path": "part-layering/parts/legs/leg_right.svg",
+      "source": ".run/pink-elf/part-layering/parts/legs/leg_right.svg",
+      "bytes": 6156,
+      "sha256": "f4310b4edd8edce232a6dc226261b0be79c412d624e3ad6d456030ea9a50e727"
+    },
+    {
+      "path": "part-layering/parts/legs.svg",
+      "source": ".run/pink-elf/part-layering/parts/legs.svg",
+      "bytes": 12496,
+      "sha256": "a61c4e0d47abd691bd4f22185a1134acbb6cc3d71b9bec8bb30fa2564dbf8bf9"
     },
     {
       "path": "part-layering/parts/neck.svg",
@@ -7831,6 +7849,11 @@
       "sha256": "bf2f6be1856590a51d100bf4c739898ba17384a10c0eadea9286931f66cf3899"
     },
     {
+      "bytes": 656821,
+      "sha256": "bf2f6be1856590a51d100bf4c739898ba17384a10c0eadea9286931f66cf3899",
+      "path": "raster-layering/step01/composite.png"
+    },
+    {
       "path": "raster-layering/step01/delivery-integrity.json",
       "source": ".run/pink-elf/raster-layering/step01/delivery-integrity.json",
       "bytes": 600,
@@ -7889,36 +7912,6 @@
       "source": ".run/pink-elf/raster-layering/step01/reopen-verification.json",
       "bytes": 36717,
       "sha256": "1bf57dbbcf1cb83f058309fda9b207e37acee4bc52771a9086984fb0cdcbe98c"
-    },
-    {
-      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/ankles.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/ankles.png",
-      "bytes": 57664,
-      "sha256": "7f73a7a539f40882a141b41ef524d32d4f32aa7fbcce240a0a56fc902267921f"
-    },
-    {
-      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/hands-left.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/hands-left.png",
-      "bytes": 31724,
-      "sha256": "255f2831f8a3e89cb5d7d0bdc93f514e83dca132b377cf08e96b439a7144e79c"
-    },
-    {
-      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/hands-right.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/hands-right.png",
-      "bytes": 31373,
-      "sha256": "840d040c89f8f78aad712aef127957d7aa835e3349e13b0048bf98812e4567c4"
-    },
-    {
-      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/head.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/head.png",
-      "bytes": 77256,
-      "sha256": "76f10c100e179eb80e3a731f0c1dec3219ca4944115605535b8bf90915305483"
-    },
-    {
-      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/neck.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/neck.png",
-      "bytes": 17896,
-      "sha256": "4dde92fbe2290a604ba5fd96d46f8c475699eb8b74f0191aaff18a30a15ffda7"
     },
     {
       "path": "raster-layering/step01/repair-01-evidence/11-final/checks/R1.png",
@@ -8009,6 +8002,36 @@
       "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/R9.png",
       "bytes": 31735,
       "sha256": "81a935e60dfec0ebb21e2fa987e6919c89282c6606380e4202bba08d212d8533"
+    },
+    {
+      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/ankles.png",
+      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/ankles.png",
+      "bytes": 57664,
+      "sha256": "7f73a7a539f40882a141b41ef524d32d4f32aa7fbcce240a0a56fc902267921f"
+    },
+    {
+      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/hands-left.png",
+      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/hands-left.png",
+      "bytes": 31724,
+      "sha256": "255f2831f8a3e89cb5d7d0bdc93f514e83dca132b377cf08e96b439a7144e79c"
+    },
+    {
+      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/hands-right.png",
+      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/hands-right.png",
+      "bytes": 31373,
+      "sha256": "840d040c89f8f78aad712aef127957d7aa835e3349e13b0048bf98812e4567c4"
+    },
+    {
+      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/head.png",
+      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/head.png",
+      "bytes": 77256,
+      "sha256": "76f10c100e179eb80e3a731f0c1dec3219ca4944115605535b8bf90915305483"
+    },
+    {
+      "path": "raster-layering/step01/repair-01-evidence/11-final/checks/neck.png",
+      "source": ".run/pink-elf/raster-layering/step01/repair-01-evidence/11-final/checks/neck.png",
+      "bytes": 17896,
+      "sha256": "4dde92fbe2290a604ba5fd96d46f8c475699eb8b74f0191aaff18a30a15ffda7"
     },
     {
       "path": "raster-layering/step01/repair-01-evidence/11-final/checks/shoulder.png",
@@ -8717,12 +8740,6 @@
       "archivedBytes": 19994
     },
     {
-      "path": "raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/marked.png",
-      "source": ".run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/marked.png",
-      "bytes": 681172,
-      "sha256": "3826ed5186de989884b92536c25bb11f83fe5d68745619f440b8ced1e48f5e37"
-    },
-    {
       "path": "raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R1-comparison.png",
       "source": ".run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/R1-comparison.png",
       "bytes": 378680,
@@ -8777,6 +8794,12 @@
       "sha256": "f0146f6f6fa46bfea9b1f9f90635620c6631233b0cf65691ae665c5141c71baf"
     },
     {
+      "path": "raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/marked.png",
+      "source": ".run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/marked.png",
+      "bytes": 681172,
+      "sha256": "3826ed5186de989884b92536c25bb11f83fe5d68745619f440b8ced1e48f5e37"
+    },
+    {
       "path": "raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/regions.json",
       "source": ".run/pink-elf/raster-layering/step01/review-evidence/0edaed15-fd38-4d31-aa66-4cd1ffea7a7f/regions.json",
       "bytes": 9774,
@@ -8799,573 +8822,6 @@
       "source": ".run/pink-elf/raster-layering/step01/structure-layer-map.json",
       "bytes": 14156,
       "sha256": "9a49739be7463ba381313f9105402c0bd6c0eb84a2dd61cce814b38a4b7c691b"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/forearm.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/forearm.png",
-      "bytes": 25673,
-      "sha256": "6ea7e0423d6b457a09b92aeeec62faef910263b2627132a6d4d56265a97c7cf0",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/forearm.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/hand/index_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/index_finger.png",
-      "bytes": 10236,
-      "sha256": "054a22add5735766e5fef25ba4904d704e1f761154dc8599064893754d11d49e",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/index_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/hand/little_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/little_finger.png",
-      "bytes": 8061,
-      "sha256": "7780ca99f1f9d739ff9a73441806647ba71f4d2351b3b8a41a424b38eb199b5f",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/little_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/hand/middle_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/middle_finger.png",
-      "bytes": 9153,
-      "sha256": "6b001e3318f97726ffb0ff3462ceec4ef593bd8759342f91445d4cd484036595",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/middle_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/hand/palm.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/palm.png",
-      "bytes": 11692,
-      "sha256": "0efcaaa59f493234146c9a674a9bee0760a25352092cb3c1f214925197d9c586",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/palm.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/hand/ring_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/ring_finger.png",
-      "bytes": 8730,
-      "sha256": "408d142654928345e915cc0b7d6ea400b5653f4540572351985941d904ca2cbf",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/ring_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/hand/thumb.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/thumb.png",
-      "bytes": 8724,
-      "sha256": "eb58c6906443c26eeec34c269780366b7db874a7cbc7f007db3563b503854a32",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/hand/thumb.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_left/upper_arm.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/upper_arm.png",
-      "bytes": 31915,
-      "sha256": "c619649260b8f1bff7a61aa2dbadb8caec717b26976dbee2ca8f6c855d3ec6dc",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_left/upper_arm.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/forearm.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/forearm.png",
-      "bytes": 26620,
-      "sha256": "82c542cdb056194aeedfa143538f7a341e75e503aa5eb739f7fd65f86704c077",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/forearm.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/hand/index_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/index_finger.png",
-      "bytes": 9660,
-      "sha256": "aef5b4910d9a36b0bb2b48b8b648572d91827513feb03debf2b32573b91d7b95",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/index_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/hand/little_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/little_finger.png",
-      "bytes": 9101,
-      "sha256": "c480416561a52a37f8e678a313d075836c49e3f9a0fb165ed8630c05cfcbcf5b",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/little_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/hand/middle_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/middle_finger.png",
-      "bytes": 9355,
-      "sha256": "b86cb6b007c74fe344dbc295a1401acbeff1f4623558ba2bf62730beff78dc59",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/middle_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/hand/palm.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/palm.png",
-      "bytes": 11567,
-      "sha256": "9cabe141253751381587dd1294ed4734462b51b241bee420c8e284177123db03",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/palm.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/hand/ring_finger.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/ring_finger.png",
-      "bytes": 10366,
-      "sha256": "1da5f8b52238ac67c8beaca80e9a68918c74bf8851e872f8a60a6c12c66a4f9c",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/ring_finger.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/hand/thumb.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/thumb.png",
-      "bytes": 8361,
-      "sha256": "395b7c0706a91ad05ef64f7ec748d60d1ff6285e2a800957c1914fe0eed7a6b7",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/hand/thumb.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/arms/arm_right/upper_arm.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/upper_arm.png",
-      "bytes": 30316,
-      "sha256": "a98159db8674626f7c20fa6ed9bca8ec2b97dcdda3d6e46adb46ef87a43e34ed",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/arms/arm_right/upper_arm.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/body/breast.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/body/breast.png",
-      "bytes": 44277,
-      "sha256": "bc5f8cb6c2a31b9658b79a6ef554c93a7eb1d51bc74cc7541988008da5cb29c7",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/body/breast.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/body/torso.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/body/torso.png",
-      "bytes": 74403,
-      "sha256": "b26a4ab4b83a62ecd284a3f14e023361c6862bce4e1224e170fc6def01d8fb42",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/body/torso.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/ear_left.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/ear_left.png",
-      "bytes": 11844,
-      "sha256": "352bb78532c86240ae043d0a85b165ec5c5deb8d7a01ed4b7ff5df8a465fcef5",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/ear_left.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/ear_right.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/ear_right.png",
-      "bytes": 12350,
-      "sha256": "5600aa7f59dad8951fa8b5e6b18a74f303709ef8aab0f0a8f8bc7a77f364ad57",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/ear_right.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_left/eyelid_crease.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/eyelid_crease.png",
-      "bytes": 6620,
-      "sha256": "540da7aa61225437571aab91f62226768f85c7d2632d447c4e36ebbb8390721f",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/eyelid_crease.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_left/highlight.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/highlight.png",
-      "bytes": 6591,
-      "sha256": "1520ca18bea9e896db164ef03e5277126eed7ec933c695cd23ec72af29f21210",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/highlight.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_left/iris.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/iris.png",
-      "bytes": 8545,
-      "sha256": "71d0515fe63c8b605b489e5f16f41741364c951456d16b4e7077b4ede266d00f",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/iris.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_left/lower_eyelid.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/lower_eyelid.png",
-      "bytes": 6908,
-      "sha256": "a11e3cffe70bec971c7838741e82cbc56f41a7e40e8705c2959d1e32210d9542",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/lower_eyelid.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_left/sclera.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/sclera.png",
-      "bytes": 8512,
-      "sha256": "2372b5af17591784a0c1275a4f103a9aca4377d2d15244eb1f80bebbb6166221",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/sclera.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_left/upper_eyelid.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/upper_eyelid.png",
-      "bytes": 7801,
-      "sha256": "4927428da78a19a9f7efe3ded7007f85167bfc5abff65ccb9b7bdd7adcb143c2",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_left/upper_eyelid.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_right/eyelid_crease.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/eyelid_crease.png",
-      "bytes": 6513,
-      "sha256": "c24fdc8e14188b79bb6885f4b61993fca36702375af50d25d192a41108082770",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/eyelid_crease.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_right/highlight.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/highlight.png",
-      "bytes": 6624,
-      "sha256": "108ac7be7a4b97dd3fa72a3d2ed2005e38d1e6a82fc723d50fab6001477fa302",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/highlight.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_right/iris.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/iris.png",
-      "bytes": 8458,
-      "sha256": "9a04b4aa2f497fb9690b2361ae0d7223c2b9f4ec2c962d38ac818ce6167e7523",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/iris.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_right/lower_eyelid.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/lower_eyelid.png",
-      "bytes": 6957,
-      "sha256": "0aa41a05e4f7fba7e968abf373786cb7e09c61b24b26cecbcf8ba292a2929065",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/lower_eyelid.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_right/sclera.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/sclera.png",
-      "bytes": 8377,
-      "sha256": "d69ae0ade722d32c7d5bfab134c8a673f2cf0e82e0b1ebc0667220ed6224a914",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/sclera.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eye_right/upper_eyelid.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/upper_eyelid.png",
-      "bytes": 7968,
-      "sha256": "bdcc8c39449978464873a65ccabc0ee7842ab044755c3813822dade2f25302cf",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eye_right/upper_eyelid.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eyebrow_left.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eyebrow_left.png",
-      "bytes": 6836,
-      "sha256": "d602edf11a5df72f5497f5f1e64075935d6c554694eaf5cd57f7bb553c762127",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eyebrow_left.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/eyebrow_right.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/eyebrow_right.png",
-      "bytes": 6756,
-      "sha256": "7f0247a40e6f6d44ed2340173a6904d61fd142044049843bb7f30e55fc87d6ab",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/eyebrow_right.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/face_base.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/face_base.png",
-      "bytes": 36134,
-      "sha256": "cb48b1ac5257ff42e7a5e4ff37a8a6e09e56e43dd1663da4a46bab12ac6336d0",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/face_base.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/mouth/lower_lip.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/lower_lip.png",
-      "bytes": 7277,
-      "sha256": "b8e72669d5b936eeddd3371e3ca3b75c84add11b438d87f50b4152dd3faf2bc3",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/lower_lip.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/mouth/lower_teeth.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/lower_teeth.png",
-      "bytes": 6656,
-      "sha256": "332d71d5689ffbc81d4edbcd53cd3abb0b30286e160ac9219cd964797c02c613",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/lower_teeth.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/mouth/mouth_interior.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/mouth_interior.png",
-      "bytes": 7325,
-      "sha256": "4de64c493a35259f96854051a265fbb113983b82e28e69ae96e1b22ffb145ea8",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/mouth_interior.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/mouth/tongue.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/tongue.png",
-      "bytes": 7286,
-      "sha256": "c37cca04a635e60962baa658b10d76bac42a2e05916612647292aaf56a1e38b7",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/tongue.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/mouth/upper_lip.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/upper_lip.png",
-      "bytes": 6874,
-      "sha256": "5b72c9b5b540b3b14d1b88201aef4907135ade8ee6321ee5056337e3d3a2b6c8",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/upper_lip.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/mouth/upper_teeth.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/upper_teeth.png",
-      "bytes": 6467,
-      "sha256": "cf230375133ee239020473aafdea94c458f535a3deea010646d29b6bb08f8f17",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/mouth/upper_teeth.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/face/nose.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/face/nose.png",
-      "bytes": 6356,
-      "sha256": "dc61a75cf86aa7955cb442b530ed8463acf6495bd38f7268100b4eb3ccec7fc9",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/face/nose.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/ahoge.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/ahoge.png",
-      "bytes": 9674,
-      "sha256": "eadabb043c86f39f4522925a228452f14b5532a6b23f2608e8253d45b4d6619c",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/ahoge.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/back_hair/cap.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/back_hair/cap.png",
-      "bytes": 78718,
-      "sha256": "b74e9c4e408e48031f8722c90a52a471c71585f651483b091177282c7722eb0b",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/back_hair/cap.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/back_hair/long_left.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/back_hair/long_left.png",
-      "bytes": 162174,
-      "sha256": "48e189381330898d2529517b17093f0ecfe2d386830b0ac63cb049a966e6a138",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/back_hair/long_left.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/back_hair/long_right.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/back_hair/long_right.png",
-      "bytes": 158463,
-      "sha256": "7a20445526edb0cd72f7e86b15f949d59d0b53f52391ab08da7befbb1ee1c31d",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/back_hair/long_right.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/bangs.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/bangs.png",
-      "bytes": 33699,
-      "sha256": "87aceb07cbe4d5072282e7472953120836ccaeecfc6faad6a41c0d9021b83748",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/bangs.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/front_side_hair_left.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/front_side_hair_left.png",
-      "bytes": 21998,
-      "sha256": "f68298fa44be99522a3db6a826c99cc65539f8bf487ee0ea480370f19621b94e",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/front_side_hair_left.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/front_side_hair_right.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/front_side_hair_right.png",
-      "bytes": 22518,
-      "sha256": "a3d8f2c556f2d0620dbc8f4865f93ac57a8bbcd53c352a6828a0dc21ddb83ca6",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/front_side_hair_right.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/side_hair_left.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/side_hair_left.png",
-      "bytes": 37374,
-      "sha256": "34dc8fbc1eebeddc710c16b960da364a5d6560e278609330ee403504236a03ad",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/side_hair_left.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/hair/side_hair_right.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/hair/side_hair_right.png",
-      "bytes": 47501,
-      "sha256": "f75d582e9e4838932488a3b00eff7da51c1a12649b27fe4c087ba78059cf7e1d",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/hair/side_hair_right.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/head_accessories/left_earring.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/head_accessories/left_earring.png",
-      "bytes": 7429,
-      "sha256": "4068b03e196dc59a67d92d647375eea6e58f6b380331d9f01164d595ff4709f6",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/head_accessories/left_earring.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/head_accessories/right_earring.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/head_accessories/right_earring.png",
-      "bytes": 8190,
-      "sha256": "854206a927409275b9a02ccd72837cb39cfb998a0be6d8cfda992ef56261cdfe",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/head_accessories/right_earring.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/flexible_connector.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/flexible_connector.png",
-      "bytes": 6638,
-      "sha256": "a6d32f6466c93c4b9bd4ca540fa6f41a9bbc556a2d676c130db3480b84ac18af",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/flexible_connector.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/large_diamond_gem.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/large_diamond_gem.png",
-      "bytes": 8397,
-      "sha256": "ece9692602a307e0f8719f336f8e2278edff9444b402794f4479adcabb90cabb",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/large_diamond_gem.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/round_bead.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/round_bead.png",
-      "bytes": 6354,
-      "sha256": "aaabe1c9b1e0d9bf3e6d2a0925df2097f42a7574abeb445fdc129b9a05aed24e",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/round_bead.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/small_diamond_charm.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/small_diamond_charm.png",
-      "bytes": 6404,
-      "sha256": "007da78663461d2a94391bced486dd792e36ed79d9bdc3b17f951d1c33417a66",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/boot_gem_chain/small_diamond_charm.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_left/foot.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/foot.png",
-      "bytes": 44089,
-      "sha256": "6b206ff8ce4920634abe319ecc576bc4c1e51bcc42d895f5dad1c9de02e67eab",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/foot.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_left/leg.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/leg.png",
-      "bytes": 91683,
-      "sha256": "e073020c969c7ff564d0d99ebffa1a5ec0802f6f35a9f287681eee2e016ef4a0",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_left/leg.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_right/boot_flower_ornament.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/boot_flower_ornament.png",
-      "bytes": 10300,
-      "sha256": "0fa03bc33044c358b74b9dfaf595379a550559ed9f00f5f9967ad587b4d5c5da",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/boot_flower_ornament.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_right/boot_gem.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/boot_gem.png",
-      "bytes": 8520,
-      "sha256": "f9e56fcbd024ab8100c17675e90e1d010081bcecd73c623cfddea636e7eee8c1",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/boot_gem.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_right/foot.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/foot.png",
-      "bytes": 42931,
-      "sha256": "b9a04356ce23718852f6b7c07eaa9c9482da96f78e84471471591ec465698f72",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/foot.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/legs/leg_right/leg.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/leg.png",
-      "bytes": 92481,
-      "sha256": "2f3dab7aaa7b9a84e5162ee1b6cc45d7506e4f88ded41f2f7db67b5ad866e1dc",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/legs/leg_right/leg.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/neck.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/neck.png",
-      "bytes": 17587,
-      "sha256": "da4ecf66d37d0bc31e14bb80c8271449dea4f0408147f9974fa4798cb2c145fc",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/neck.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-evidence/05-final/parts/pelvis.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-evidence/05-final/parts/pelvis.png",
-      "bytes": 63947,
-      "sha256": "bfaf8888ef29efabb24494feb35e4a0f7daefa87acb6bc209e0e7440773d7980",
-      "previousPath": "raster-layering/step01/repair-02-evidence/05-final/parts/pelvis.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/adopted-underpaint.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/adopted-underpaint.png",
-      "bytes": 167793,
-      "sha256": "e49574aabe35a6f404263f2ec2880efe7baa161381d9f61db40cdbd0ac82c2be",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/adopted-underpaint.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/adoption-mask.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/adoption-mask.png",
-      "bytes": 12370,
-      "sha256": "2267ef01045d9f8c5d986b2aab62969d917323b3626684fa2bfbd3b8f82c21f7",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/adoption-mask.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/completion-mask.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/completion-mask.png",
-      "bytes": 2827,
-      "sha256": "bac190fc8f57794eb4d6cd556f3db437f54973799ba7dfea64d99c7bc29d9d60",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/completion-mask.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/control.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/control.png",
-      "bytes": 6209,
-      "sha256": "a4ec48ebda5db2e3d06a7ed7f847cb57f2b404eb1dee5aaba8f25402954cc036",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/control.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/generated-01.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/generated-01.png",
-      "bytes": 1056250,
-      "sha256": "dcbbeffd1df532039c8f848de4073d151ecb55e306450903367246e8a55477b8",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/generated-01.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/part-before.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/part-before.png",
-      "bytes": 305848,
-      "sha256": "f829813dc1642f1fa6339c152b9db48e778f63735d5d7384ba6acf31e60f27cc",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/part-before.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/registered-generation.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/registered-generation.png",
-      "bytes": 178780,
-      "sha256": "66f45773828ede441ff602511d08ea9740fcc8eaa2a08ebe4b59488a7ed3ae91",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/registered-generation.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_left/source-gray.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/source-gray.png",
-      "bytes": 176190,
-      "sha256": "dcc1fa96cb861c1dc99fbd53eff4e4432bf37f5d3e605a7907d1061acd4478be",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_left/source-gray.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/adopted-underpaint.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/adopted-underpaint.png",
-      "bytes": 164613,
-      "sha256": "49687552c15b3199f9b8275e2f032e69696a9b439feed524a4cded49e8d3160f",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/adopted-underpaint.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/adoption-mask.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/adoption-mask.png",
-      "bytes": 12370,
-      "sha256": "2267ef01045d9f8c5d986b2aab62969d917323b3626684fa2bfbd3b8f82c21f7",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/adoption-mask.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/completion-mask.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/completion-mask.png",
-      "bytes": 2659,
-      "sha256": "5ec64d77933775b4db303c94069a7698cdf1d28a386ad2c01f8502065dc6cd8c",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/completion-mask.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/control.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/control.png",
-      "bytes": 6363,
-      "sha256": "2df4b757ec27862c1458233c0b7f908410f1194becebabfd4bad60356754cc53",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/control.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/generated-01.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/generated-01.png",
-      "bytes": 1092680,
-      "sha256": "c00ba8ef5d7ccbd1497242de944d3b77ac9396a9df88727aecf255ee6a9cda49",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/generated-01.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/part-before.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/part-before.png",
-      "bytes": 316624,
-      "sha256": "941600b2111f80c30508f783ddcb634b5b6707c4eeafac3b63362ae06721da2d",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/part-before.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/registered-generation.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/registered-generation.png",
-      "bytes": 172846,
-      "sha256": "15cc7427d70c08742e519ed0bcc8c15db1e165760b7a9bdc3593263425a248b1",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/registered-generation.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/repair-02-work/generation/hair/back_hair/long_right/source-gray.png",
-      "source": ".run/pink-elf/raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/source-gray.png",
-      "bytes": 192732,
-      "sha256": "fa1640e9adef919af7acc7f81e5ec64d09946e4bf0093af9872f2ddeb90ad02d",
-      "previousPath": "raster-layering/step01/repair-02-work/generation/hair/back_hair/long_right/source-gray.png"
     },
     {
       "path": "raster-layering/step02/bootstrap-complete.json",
@@ -10112,62 +9568,6 @@
       "sha256": "91e6033f40a11892570222d886965da4b887a3588d1cd4fb5d0bca317ba57802"
     },
     {
-      "path": "raster-layering/step02/workspace/brush-probes/before.png",
-      "source": ".run/pink-elf/raster-layering/step02/brush-probes/before.png",
-      "bytes": 63653,
-      "sha256": "c6723f587c1e2ca8d0bf7cc856ffd3f1885589be3835b974989821a068902c8e",
-      "previousPath": "raster-layering/step02/brush-probes/before.png"
-    },
-    {
-      "path": "raster-layering/step02/workspace/brush-probes/comparison.png",
-      "source": ".run/pink-elf/raster-layering/step02/brush-probes/comparison.png",
-      "bytes": 6441,
-      "sha256": "f156697b8d562d415c7bdd82fba53661e35135eed8f42ea9a6318a73bd050df8",
-      "previousPath": "raster-layering/step02/brush-probes/comparison.png"
-    },
-    {
-      "path": "raster-layering/step02/workspace/brush-probes/k-Blender-Basic.png",
-      "source": ".run/pink-elf/raster-layering/step02/brush-probes/k-Blender-Basic.png",
-      "bytes": 63711,
-      "sha256": "68f2052dc7fa3ba7ce213a49b31d53787a44dc0d9ce73130687774534d921935",
-      "previousPath": "raster-layering/step02/brush-probes/k-Blender-Basic.png"
-    },
-    {
-      "path": "raster-layering/step02/workspace/brush-probes/k-Blender-Blur.png",
-      "source": ".run/pink-elf/raster-layering/step02/brush-probes/k-Blender-Blur.png",
-      "bytes": 63766,
-      "sha256": "039fe2e068d1a833c66a95050212d28908a72fcf2430d1f199ffa4b27884a914",
-      "previousPath": "raster-layering/step02/brush-probes/k-Blender-Blur.png"
-    },
-    {
-      "path": "raster-layering/step02/workspace/brush-probes/x-Filter-Blur.png",
-      "source": ".run/pink-elf/raster-layering/step02/brush-probes/x-Filter-Blur.png",
-      "bytes": 63726,
-      "sha256": "ea8d14252e6c84a556f5fc97dc63a2a15ba97b7dff9993f56a26ca9d322ad109",
-      "previousPath": "raster-layering/step02/brush-probes/x-Filter-Blur.png"
-    },
-    {
-      "path": "raster-layering/step02/workspace/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/comparison.png",
-      "source": ".run/pink-elf/raster-layering/step02/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/comparison.png",
-      "bytes": 1461216,
-      "sha256": "d202d2eae34136bf2a79aef6f1e3188211f4bb426c4ddaebd4479fb086e6c97f",
-      "previousPath": "raster-layering/step02/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/comparison.png"
-    },
-    {
-      "path": "raster-layering/step02/workspace/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/heatmap.png",
-      "source": ".run/pink-elf/raster-layering/step02/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/heatmap.png",
-      "bytes": 31734,
-      "sha256": "07010416ec179c717523dfe2ce78575c22e31872c554b451ca8ee7aeb83ab211",
-      "previousPath": "raster-layering/step02/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/heatmap.png"
-    },
-    {
-      "path": "raster-layering/step02/workspace/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/marked.png",
-      "source": ".run/pink-elf/raster-layering/step02/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/marked.png",
-      "bytes": 672115,
-      "sha256": "d64355f85250b0264f72b0330c86d4567a14e0b81ad08fbe844b15175efaf07c",
-      "previousPath": "raster-layering/step02/difference-candidates/033273dd-ff34-4426-98f8-c39374845a7f/marked.png"
-    },
-    {
       "path": "raster-layering/step03/character-dressup-base.kra",
       "source": ".run/pink-elf/raster-layering/step03/character-dressup-base.kra",
       "bytes": 11935674,
@@ -10246,6 +9646,11 @@
       "sha256": "771df0b73934dd1837bb922c4f6cae0fc03b14b113926d4588dbad32ba02f07a"
     },
     {
+      "bytes": 926,
+      "sha256": "5cc9614fb96ea10c46ac06ad924477e796d2910f3f25faea10bea36f3cb21775",
+      "path": "run.json"
+    },
+    {
       "path": "shadow/mask/step01/character-shadowed.kra",
       "source": ".run/pink-elf/shadow/mask/step01/character-shadowed.kra",
       "bytes": 7916702,
@@ -10321,5 +9726,14 @@
     "stepRecords": "mechanically reconstructed from existing artifacts and reports",
     "sourceFields": "historical archive sources",
     "legacyStages": "removed; current step directories are the only record"
-  }
+  },
+  "previewUpdatedAt": "2026-10-27T04:20:19.731Z",
+  "exportScope": [
+    "part-layering",
+    "raster-layering",
+    "clothing-part-layering",
+    "clothing-raster-layering",
+    "character-assembly",
+    "shadow"
+  ]
 }

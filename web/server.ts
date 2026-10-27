@@ -1,5 +1,6 @@
 import { createServer, type IncomingMessage } from 'node:http';
-import { readFile, readdir, mkdir, lstat, rm, writeFile, realpath } from 'node:fs/promises';
+import { readFile, readdir, mkdir, mkdtemp, lstat, rm, writeFile, realpath } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { createReadStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
@@ -19,6 +20,7 @@ import { KRAPreviews } from './kra-preview.ts';
 import { launch } from './worker.ts';
 import { validatePhysicsConfig } from './studio/component-physics-schema.js';
 import { requestTaskStop } from '../.agents/skills/live2d-maker/workflow/control.ts';
+import { exportCompletedRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { LayerCompositor } from './layer-compositor.ts';
 import { studioProject } from './studio-project.ts';
 import { studioPhysicsWorkflow, studioPhysicsArtifact } from './studio-physics-workflow.ts';
@@ -181,6 +183,9 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           return;
         }
         await task(opts.name, requestDir);
+        if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory, opts.name))?.archive) {
+          json({ error: '这是成果归档；请在原运行目录继续制作。' }, 409); return;
+        }
         if (path === '/api/project-name') {
           await saveProjectDisplayName(directory, value.displayName);
           json({ name: opts.name, displayName: await projectDisplayName(directory, opts.name) }); return;
@@ -231,10 +236,20 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         }
         json({ directory: requestDir, tasks }); return;
       }
-      if (path === '/api/task' || path === '/artifact') {
+      if (path === '/api/task' || path === '/artifact' || path === '/api/export') {
         if (url.searchParams.get('dir') !== requestDir) { json({ error: '追踪目录已改变，请刷新页面' }, 409); return; }
         const name = url.searchParams.get('name') ?? '', directory = await task(name, requestDir);
         if (path === '/api/task') { json(await snapshot(directory, name, requestDir)); return; }
+        if (path === '/api/export') {
+          const temporary = await mkdtemp(join(tmpdir(), 'live2d-download-'));
+          const archive = join(temporary, name + '.zip');
+          try { await exportCompletedRun({ name, dir: requestDir, output: archive }); }
+          catch (error) { await rm(temporary, { recursive: true, force: true }); throw error; }
+          response.writeHead(200, { 'Content-Type': 'application/zip', 'Content-Length': (await lstat(archive)).size,
+            'Content-Disposition': "attachment; filename*=UTF-8''" + encodeURIComponent(name + '.zip') });
+          response.once('close', () => { void rm(temporary, { recursive: true, force: true }); });
+          createReadStream(archive).on('error', () => response.destroy()).pipe(response); return;
+        }
         const selected = url.searchParams.get('path') ?? '';
         if (!artifactExtensions.test(selected) || selected.split('/').some(part => part.startsWith('.'))) throw new Error('不支持该产物类型');
         if (agentRecord(selected)) throw new Error('agent 记录不对网页开放');

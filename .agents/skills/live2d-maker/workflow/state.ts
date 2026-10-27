@@ -18,6 +18,7 @@ export type PipelineProgress = {
   updatedAt: string; summary?: string;
 };
 export type TaskRun = {
+  archive?: true;
   version: 1; name: string; dir: string; from: PipelineId; to: PipelineId;
   image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode; physicsProfile?: 'primary' | 'all'; physicsEnabled?: boolean; physicsReference?:string;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
@@ -119,6 +120,7 @@ async function originalImage(directory: string, input?: string): Promise<string 
 }
 export async function configureRun(options: TaskOptions, directory: string): Promise<TaskRun> {
   const saved = await readRun(directory, options.name);
+  if (saved?.archive) throw new Error('这是导出的成果归档；请在原运行目录继续制作。');
   const from = options.from ?? saved?.from ?? 'part-layering';
   const to = options.to ?? (options.physicsEnabled === true ? 'physics' : options.physicsEnabled === false && saved?.to === 'physics' && from !== 'physics' ? 'shadow' : saved?.to ?? 'shadow');
   const selected = selectedPipelines(from, to);

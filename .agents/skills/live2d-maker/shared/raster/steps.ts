@@ -21,6 +21,7 @@ export type StepDefinition = {
   prompt: URL;
   inputFiles?: readonly string[]; // Relative to the named run root; previous deliveries are read-only.
   requiredFiles: readonly string[];
+  previewFiles?: readonly string[]; // Published optional previews; * matches within this step.
   review?: { prompt: URL; repairPrompt: URL; model: string; effort: ModelSelection['effort']; modelTier?: ModelTier; modelStep?: AgentStep; repairModelStep?: AgentStep };
 };
 

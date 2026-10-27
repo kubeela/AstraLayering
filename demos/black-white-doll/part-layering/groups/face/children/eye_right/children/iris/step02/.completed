@@ -1,0 +1,9 @@
+{
+  "stamp": "34ce2914ccea1d2d78bc01ef8fbc5e3a7b7a959f370147fd085cb35d4e2f2944",
+  "inputs": {
+    "layers/depth03#face/eye_right/iris.svg": "a9ccd00081d7d4caad9f5b5a0b03f781c9bd3d7cfa8a280c20bea07de1a4380a"
+  },
+  "outputs": {
+    "../../../../../../../parts/face/eye_right/iris.svg": "fb3269db13e07039b275cb804e3cbd87b374787f7399c5cf42a06390fae4231e"
+  }
+}

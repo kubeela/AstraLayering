@@ -48,7 +48,7 @@ export async function partStages(directory: string, pipeline: string, groups: an
   const all = (nodes: any[]): any[] => nodes.flatMap(node => [node, ...all(node.groups ?? [])]);
   if (present('preview.svg') && groups.length && await step('merge') === 'completed' &&
       all(groups).every(node => Object.values(node.webPhases).every(value => value === 'done'))) states.merge = 'done';
-  states.occlusion = artifact('occlusion.json', 'occlusion/candidate.svg');
+  states.occlusion = artifact('occlusion.json', 'occlusion/preview.svg', 'occlusion/workspace/candidate.svg');
   if (present('occlusion.json') && await step('occlusion') === 'completed') {
     try {
       const plan = validateOcclusionDocument(await json(pipeline + '/occlusion.json'));

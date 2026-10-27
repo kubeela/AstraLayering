@@ -7,49 +7,49 @@
       "candidateHash": "4d525ad209757582bf91acb3431278cc80dfec5dc2c3a5b36daf06345bdf7be2",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-1.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-1.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-2.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-3.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-4.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-5.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-6.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-7.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-7.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-8.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-8.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-9.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/lower_eyelashes/step01/observations/face/eye_left/lower_eyelashes/2026-10-25T08-47-22-845Z-9.png"
         }
       ],
       "updatedAt": "2026-10-25T09:41:56.849Z"

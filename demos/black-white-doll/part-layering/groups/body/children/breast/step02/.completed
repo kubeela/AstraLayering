@@ -1,0 +1,9 @@
+{
+  "stamp": "a66dc9472ad57c8c190c00628fa2d68a94807992a6c578b1fd2830a599fa1e5d",
+  "inputs": {
+    "layers/depth02#body/breast.svg": "1e57bc48ac4d50ee0dc2aaec77c70408a33722375136e2e3ec5efbcc06182936"
+  },
+  "outputs": {
+    "../../../../../parts/body/breast.svg": "fa03d097012b74a9a2d66a0a23e4f3e8344abb0c798adf95c8f8ab4f53ce00ef"
+  }
+}

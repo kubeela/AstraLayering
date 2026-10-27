@@ -1,0 +1,9 @@
+{
+  "stamp": "628f64c2756e38af04c39caf5718b28d01b30b9b1927581511e4337d7614d90c",
+  "inputs": {
+    "groups/face/children/mouth/step02": "e815c8bd6a59ea63bca829a6c494f8c19b69be0c10671788caad3ededb00fbcd"
+  },
+  "outputs": {
+    "outline.svg": "f8c8f416ddaf96e503252e752468c2a651580cbb84725a7663eda66eb5cd5740"
+  }
+}

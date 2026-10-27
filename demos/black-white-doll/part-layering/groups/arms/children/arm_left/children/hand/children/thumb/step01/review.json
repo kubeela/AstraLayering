@@ -7,79 +7,79 @@
       "candidateHash": "69a6f9841c576a3d2a08b8b5d1ade5ee259e5f1cc8f544d087fdb0eacb33eeee",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-1.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-1.png"
         },
         {
-          "source": "../../../../../../../../../parts/arms/arm_left/hand.svg",
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-2.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-3.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-4.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-5.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-6.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-7.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-7.png"
         },
         {
-          "source": "../../../../../../../../../parts/arms/arm_left/hand.svg",
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-8.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-8.png"
         },
         {
-          "source": "../../../../../../../../../parts/arms/arm_left/hand.svg",
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-9.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-9.png"
         },
         {
-          "source": "../../../../../../../../../parts/arms/arm_left/hand.svg",
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-10.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-10.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-11.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-11.png"
         },
         {
-          "source": "../../../../../../../../../parts/arms/arm_left/hand.svg",
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-12.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-12.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-13.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-13.png"
         },
         {
-          "source": "../../../../../../../../../parts/arms/arm_left/hand.svg",
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-14.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-14.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-15.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/children/hand/children/thumb/step01/observations/arms/arm_left/hand/thumb/2026-10-25T12-14-09-071Z-15.png"
         }
       ],
       "updatedAt": "2026-10-25T12:36:13.648Z"

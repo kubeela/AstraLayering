@@ -7,39 +7,39 @@
       "candidateHash": "a0f1f0c0abd79b86229d57ce7a5df07f95e3aa7c9c57940fb9db1fe957afb36c",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-1.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-2.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-2.png"
         },
         {
-          "source": "../../../../../parts/chest_bow.svg",
+          "source": "clothing-part-layering/parts/chest_bow.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-3.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-4.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-5.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-6.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-7.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/left_tail/step01/observations/chest_bow/left_tail/2026-10-25T23-17-40-395Z-7.png"
         }
       ],
       "updatedAt": "2026-10-25T23:23:28.389Z"

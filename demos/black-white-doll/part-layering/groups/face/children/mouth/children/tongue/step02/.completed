@@ -1,0 +1,9 @@
+{
+  "stamp": "ef8dc28b650616cb42af287abc3cc2714729ee26769da4fe1cc40afedb2131cb",
+  "inputs": {
+    "layers/depth03#face/mouth/tongue.svg": "f8c8f416ddaf96e503252e752468c2a651580cbb84725a7663eda66eb5cd5740"
+  },
+  "outputs": {
+    "../../../../../../../parts/face/mouth/tongue.svg": "f7ee410f5e5468e5bbeceb2d81f320c63b1d3fb0b6a7a4ac6ee5ea0c999aa323"
+  }
+}

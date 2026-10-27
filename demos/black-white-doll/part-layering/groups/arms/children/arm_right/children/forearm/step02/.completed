@@ -1,0 +1,9 @@
+{
+  "stamp": "9fcd11213a1fc0e84dfedbe6eedef5b26c58d402c4c180a737c75541c7d98dce",
+  "inputs": {
+    "layers/depth03#arms/arm_right/forearm.svg": "32ecfd6f14fd742cae2b49c5847f7f59c69d96794d814638d375fc87e3a5a7ef"
+  },
+  "outputs": {
+    "../../../../../../../parts/arms/arm_right/forearm.svg": "a228e4b040d6cfbefe0f1c67ee3913bf58ca71058e33a4b67c23c1acc80d6465"
+  }
+}

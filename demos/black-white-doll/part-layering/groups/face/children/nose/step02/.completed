@@ -1,0 +1,9 @@
+{
+  "stamp": "b216457b5c35f74298a18a3cb153a6fc740865a7c1901fd1e99f6c66bd1371c8",
+  "inputs": {
+    "layers/depth02#face/nose.svg": "41756f98761b22182343c735dd78cc755a66ca1aab18addaafd7eb32dedffeb4"
+  },
+  "outputs": {
+    "../../../../../parts/face/nose.svg": "7f6dc3ed337cd818706a6b900483185bc3ed6db6f22275e2a144608fb05d7911"
+  }
+}

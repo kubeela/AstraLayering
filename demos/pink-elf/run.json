@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "archive": true,
+  "name": "pink-elf",
+  "dir": ".",
+  "jobs": 3,
+  "from": "part-layering",
+  "to": "shadow",
+  "standard": true,
+  "shadowMode": "mask",
+  "status": "completed",
+  "createdAt": "2026-10-26T00:00:00Z",
+  "updatedAt": "2026-10-26T00:00:00Z",
+  "pipelines": {
+    "part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T00:00:00Z"
+    },
+    "raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T00:00:00Z"
+    },
+    "clothing-part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T00:00:00Z"
+    },
+    "clothing-raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T00:00:00Z"
+    },
+    "character-assembly": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T00:00:00Z"
+    },
+    "shadow": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T00:00:00Z"
+    }
+  }
+}

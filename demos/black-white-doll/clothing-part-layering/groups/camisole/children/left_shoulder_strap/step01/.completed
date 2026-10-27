@@ -1,0 +1,9 @@
+{
+  "stamp": "728779e84d6b425ce18618f455dbd2878bdbedb5c81ce01d96a3fcbdfc68f8fc",
+  "inputs": {
+    "groups/camisole/step02": "4fd09ea73ed21bad66e302c21f29ff97ebb4539a9b384c7ab8aefd07aa795dc4"
+  },
+  "outputs": {
+    "outline.svg": "4e4cbdd03f1ca18e2a6453892d86ddcb5b4ebf73596752ca1550eac885a7baf8"
+  }
+}

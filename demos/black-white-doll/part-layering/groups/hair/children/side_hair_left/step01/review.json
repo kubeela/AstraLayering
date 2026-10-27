@@ -7,169 +7,169 @@
       "candidateHash": "ff3626adc4614449c4dcefce216a2715a03a6070eec70f503ae631a469982d01",
       "observations": [
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-1.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-2.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-3.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-3.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-4.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-5.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-6.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-7.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-8.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-9.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-9.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-10.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-10.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-11.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-11.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-12.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-12.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-13.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-13.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-14.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-14.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-15.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-15.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-16.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-16.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-17.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-17.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-18.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-18.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-19.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-19.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-20.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-20.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-21.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-21.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-22.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-22.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-23.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-23.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-24.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-24.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-25.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-25.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-26.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-26.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-27.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-27.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-28.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-28.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-29.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-29.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-30.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-30.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-31.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-31.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-32.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-32.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-33.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T05-54-39-956Z-33.png"
         }
       ],
       "updatedAt": "2026-10-25T06:30:47.600Z",
@@ -181,109 +181,109 @@
       "candidateHash": "4b913060ed5a07e68f568bf282ead124dba78dcaf74ecdd6a57cc6a07f6a3632",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-1.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-2.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-2.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-3.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-4.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-5.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-6.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-7.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-8.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-9.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-9.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-10.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-10.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-11.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-11.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-12.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-12.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-13.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-13.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-14.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-14.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-15.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-15.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-16.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-16.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-17.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-17.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-18.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-18.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-19.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-19.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/hair/children/side_hair_left/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-20.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-20.png"
         },
         {
-          "source": "../../../../../parts/hair.svg",
+          "source": "part-layering/parts/hair.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-21.png"
+          "savedPath": "part-layering/groups/hair/children/side_hair_left/step01/observations/hair/side_hair_left/2026-10-25T06-55-36-774Z-21.png"
         }
       ],
       "updatedAt": "2026-10-25T07:17:56.506Z",

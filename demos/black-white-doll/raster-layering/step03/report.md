@@ -6,7 +6,7 @@
 
 | 项目 | 路径 / 内容 |
 |---|---|
-| 输入 KRA（实际使用） | `.run/black-white-doll/raster-layering/step02/character-soft-edges.kra`，12,969,933 B，sha256 `4c79448c6288b0e4309d940c3571b7cda30e6e37f6a795aec7b70e70543654d8`（复制到 step03 后在副本上工作，原件未动） |
+| 输入 KRA（实际使用） | `/data/home/lockliu/workspaces/AstraLayering-step-models/.run/black-white-doll/raster-layering/step02/character-soft-edges.kra`，12,969,933 B，sha256 `4c79448c6288b0e4309d940c3571b7cda30e6e37f6a795aec7b70e70543654d8`（复制到 step03 后在副本上工作，原件未动） |
 | 输入说明 | `step02/report.md`、`step01/report.md` |
 | 对照用输入 PNG | `../step02/character-soft-edges.png`，650,722 B，sha256 `eb5cdaa19c8614172e273c87eed62f36831f19de64e15b777293038350c7e609` |
 | 参考图（只用于对位和定位） | `../../part-layering/references/base-subject.png`，1086×1448 RGBA，sha256 `567c5ff7a2d012496bc8fc5d97b04832ccd0646da35cd27fea4f67f30fbc0dd0`。图上带有预处理阶段给角色穿上的白色高开衩连体泳衣（内为棕色连裤袜） |
@@ -226,7 +226,7 @@
 3. 没有在补色区里额外画渐变或阴影（躯干 / 胸 std 0）；只在原有轮廓处补线和很淡的侧腹阴影、裆缝暗部。
 4. 参考图与 step02 合成只用于对位和定位，没有贴进图层。
 5. 骨盆层的楔形 / 侧缘轮廓本来是被连体服和躯干遮住的“补全区”，躯干收回到裸体轮廓以后露出来了，所以在骨盆层上补了髋部轮廓和 α 修整。
-6. 运行环境：Krita 5.3.4.1（`Krita（由 --krita 指定）`），仅给 Krita 子进程用独立的 XDG 目录、私有 Xvfb :197；没有改动本进程的 HOME、登录环境、用户插件和全局 Krita 设置，没有碰机器上其他 Krita / Xvfb 实例。
+6. 运行环境：Krita 5.3.4.1（`/data/home/lockliu/.local/share/astra-layering-codex/krita`），仅给 Krita 子进程用独立的 XDG 目录、私有 Xvfb :197；没有改动本进程的 HOME、登录环境、用户插件和全局 Krita 设置，没有碰机器上其他 Krita / Xvfb 实例。
 7. 哈希检查、零差异、层数与复开检查（§4）只用于证明工程没被破坏，不替代 §5 的目测验收。
 
 ## 8. 文件索引

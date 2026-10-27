@@ -1,0 +1,9 @@
+{
+  "stamp": "50a2087d669ff44404df390adfbc7adae824b0190570766298f9e08e972b1e31",
+  "inputs": {
+    "layers/depth03#hair/ponytail_right/outer_loop_strand.svg": "c64356d5938ed9f1fb7178bf52a597fd4ef086ff68b333226721e960a5c81901"
+  },
+  "outputs": {
+    "../../../../../../../parts/hair/ponytail_right/outer_loop_strand.svg": "08ced4c7a878795f94f9843132cafc5934b9f1e07b9749171e628e012cdca780"
+  }
+}
