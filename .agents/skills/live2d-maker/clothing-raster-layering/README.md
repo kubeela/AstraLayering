@@ -53,7 +53,7 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
     report.md
 ```
 
-各步还会保存实际提示词、请求事件、结果、错误及绘制中间文件。`run.json` 只保存输入来源、Krita、当前步骤的绘制 `threadId`、`threadHarness` 和所属步骤 `threadStep`，不保存模型配置或步骤完成状态。模型配置从 `.env`、环境变量及代码默认值读取；旧 `models` 字段在续跑保存时移除。每步新建自己的绘制 thread，本步的绘制与所有修复在同一 harness 中持续使用它。
+各步还会保存实际提示词、请求事件、结果、错误及绘制中间文件。`run.json` 只保存输入来源与 Krita，不保存会话、模型配置或步骤完成状态；各步绘制 threadId 与 harness 记在 `agents/steps/<stepNN>/session.json`。模型配置从 `.env`、环境变量及代码默认值读取；旧 `models` 字段在续跑保存时移除。每步新建自己的绘制 thread，本步的绘制与所有修复在同一 harness 中持续使用它。
 
 | 文件情况 | 下次同名启动 |
 | --- | --- |

@@ -1,3 +1,4 @@
+import { readStepSession } from '../agents/step-session.ts';
 import { rasterAppServer } from './raster-app-server.ts';
 import {deliverRasterStep, isRasterReview} from './raster-delivery.ts';
 import assert from 'node:assert/strict';
@@ -129,7 +130,7 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
       return deliverRasterStep(request, pipeline.steps[0], 'persistent-thread');
     } });
     const config = JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
-    assert.equal(config.threadId, 'persistent-thread');
+    assert.equal((await readStepSession(directory, 'step01'))?.threadId, 'persistent-thread');
     assert.equal(config.models, undefined);
     const attempts = (await readFile(join(directory,'agents/steps/step01/attempts.jsonl'),'utf8')).trim().split('\n').map(line=>JSON.parse(line));
     const draw = attempts.filter(attempt=>attempt.phase==='draw').at(-1);

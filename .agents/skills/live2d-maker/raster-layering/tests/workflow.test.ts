@@ -15,6 +15,7 @@ import { checkKrita } from '../../shared/raster/krita.ts';
 import { resolvePartInput } from '../../shared/raster/input.ts';
 import { parseRunArguments } from '../run.ts';
 import { inspectRun, type RunConfig } from '../../shared/raster/run-store.ts';
+import { readStepSession } from '../../shared/agents/step-session.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { steps, stepModels, type StepDefinition } from '../steps.ts';
 import { runWorkflow } from '../run.ts';
@@ -24,6 +25,7 @@ const complete: StepResult = { status: 'completed', summary: 'Fixture delivery' 
 const forbidden = async (): Promise<never> => { assert.fail('must not call agent/preflight'); };
 async function absent(path: string) { await assert.rejects(readFile(path), { code: 'ENOENT' }); }
 async function readConfig(directory: string): Promise<RunConfig> { return JSON.parse(await readFile(join(directory, 'run.json'), 'utf8')); }
+const threadOf = async (directory: string, step = 'step01') => (await readStepSession(directory, step))?.threadId;
 async function fixture(t: TestContext) {
   const directory = await realpath(await mkdtemp(join(tmpdir(), 'raster-workflow-')));
   t.after(() => rm(directory, { recursive: true, force: true }));
@@ -44,7 +46,7 @@ async function fixture(t: TestContext) {
 async function deliver(request: AgentRequest, step: StepDefinition = { ...steps[0], review: undefined }, thread = request.threadId ?? 'thread-1') {
   await readFile(join(request.directory, step.id, '.running'));
   await request.onEvent({ type: 'thread.started', thread_id: thread });
-  assert.equal((await readConfig(request.directory)).threadId, thread, 'thread must be persisted during the event');
+  assert.equal(await threadOf(request.directory, step.id), thread, 'thread must be persisted during the event');
   for (const file of step.requiredFiles) await writeFile(join(request.directory, step.id, step.review && file === 'report.md' ? 'report.md.tmp' : file), `fixture ${step.id}/${file}`);
   return complete;
 }
@@ -161,12 +163,13 @@ test('直接读取上游；中断保留 .running、产物和 thread；只用 nam
     assert.equal(request.effort, 'xhigh');
     await readFile(join(f.output, 'step01/.running'));
     await request.onEvent({ type: 'thread.started', thread_id: 'thread-1' });
-    assert.equal((await readConfig(f.output)).threadId, 'thread-1');
+    assert.equal(await threadOf(f.output), 'thread-1');
     await writeFile(join(f.output, 'step01/accepted-part.png'), 'keep this work');
     throw new Error('connection lost');
   } }), /connection lost/);
   const config = await readConfig(f.output);
-  assert.equal(config.threadId, 'thread-1');
+  assert.ok(!('threadId' in config), 'sessions live per step, not in run.json');
+  assert.equal(await threadOf(f.output), 'thread-1');
   assert.ok(!('steps' in config) && !('status' in config));
   assert.ok(!('models' in config));
   await assert.rejects(readdir(join(f.output, 'input')), { code: 'ENOENT' });
@@ -214,9 +217,10 @@ test('旧记录的共享 thread 只属于第一步：中断的 step02 新建 thr
     if (step.id === 'step02') { await request.onEvent({ type: 'thread.started', thread_id: 'thread-1' }); throw new Error('interrupted'); }
     return deliver(request, step);
   } }).catch(error => assert.match(String(error), /interrupted/));
-  // Before threadStep existed, step02 continued step01's thread.
-  const legacy = await readConfig(f.output); delete legacy.threadStep;
-  await writeFile(join(f.output, 'run.json'), JSON.stringify(legacy));
+  // Before per-step sessions, run.json held one thread, and before threadStep
+  // it belonged to step01; step02 must not continue it.
+  await rm(join(f.output, 'agents/steps/step02/session.json'));
+  await writeFile(join(f.output, 'run.json'), JSON.stringify({ ...await readConfig(f.output), threadId: 'thread-1', threadHarness: 'codex' }));
   index = 1;
   await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: async request => {
     const step = f.definitions[index++];
@@ -225,7 +229,9 @@ test('旧记录的共享 thread 只属于第一步：中断的 step02 新建 thr
   } });
   assert.equal(index, 3);
   const config = await readConfig(f.output);
-  assert.equal(config.threadId, 'thread-step03'); assert.equal(config.threadStep, 'step03');
+  assert.ok(!('threadId' in config), 'the legacy thread moves out of run.json');
+  assert.equal(await threadOf(f.output), 'thread-1');
+  assert.equal(await threadOf(f.output, 'step02'), 'thread-step02'); assert.equal(await threadOf(f.output, 'step03'), 'thread-step03');
 });
 
 test('旧 models 快照不影响续跑；使用当前环境模型，保留会话、产物与请求历史', async t => {
@@ -249,7 +255,7 @@ test('旧 models 快照不影响续跑；使用当前环境模型，保留会话
   } });
   const current = await readConfig(f.output);
   assert.ok(!('models' in current));
-  assert.equal(current.threadId, old.threadId); assert.equal(current.threadHarness, old.threadHarness);
+  assert.equal(await threadOf(f.output), 'thread-1');
   const attempts = (await readFile(join(f.output, 'agents/steps/step01/attempts.jsonl'), 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(attempts.length, 2);
   assert.equal(attempts[0].model, 'gpt-6.1-sol');
@@ -278,7 +284,7 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
     const step = f.definitions[index++];
     if (step.id === 'step02') {
       assert.equal(request.threadId, undefined);
-      assert.equal((await readConfig(f.output)).threadId, null);
+      assert.equal(await threadOf(f.output, 'step02'), undefined);
       await absent(join(f.output, 'step02/old.png'));
       await absent(join(f.output, 'step03/.completed'));
       await assert.rejects(readdir(join(f.output, 'step04')), { code: 'ENOENT' });
@@ -289,7 +295,7 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
   assert.equal(index, 3);
   assert.deepEqual(await readFile(join(f.output, 'agents/steps/step01/events.jsonl')), first);
   assert.deepEqual(await readFile(join(f.input, 'parts/face.svg')), snapshot);
-  assert.equal((await readConfig(f.output)).threadId, 'thread-new');
+  assert.equal(await threadOf(f.output, 'step03'), 'thread-new');
 });
 
 test('part 终止步骤 occlusion 重做后 step01 及后续重跑并换新 thread；上游未完成时拒绝且不动本管线', async t => {
@@ -344,9 +350,7 @@ test('重置清理中断后可恢复；前序目录整个缺失时也清理后�
   await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
   await rm(join(f.output, 'step01/.completed'));
   // Simulate a crash after clearing the thread and deleting the furthest descendant.
-  const config = await readConfig(f.output);
-  config.threadId = null;
-  await writeFile(join(f.output, 'run.json'), JSON.stringify(config));
+  await rm(join(f.output, 'agents/steps/step01/session.json'));
   await rm(join(f.output, 'step03'), { recursive: true });
   assert.equal((await inspectRun(f.output, steps)).resetFrom, 1);
   await runWorkflow(f.resume, { ...f.deps, agent: request => deliver(request, f.definitions[0], 'after-cleanup-crash') });
@@ -416,7 +420,7 @@ test('续跑失败或 SDK 返回不同 thread ID 时保留原会话，不静默�
     await request.onEvent({ type: 'thread.started', thread_id: 'unexpected' });
     return complete;
   } }), /拒绝替换/);
-  assert.equal((await readConfig(f.output)).threadId, 'original');
+  assert.equal(await threadOf(f.output), 'original');
   await readFile(join(f.output, 'step01/.running'));
 });
 
@@ -465,5 +469,5 @@ test('旧 step02 已完成绘制但停在移除的 review，新版本补 step01 
   } });
   assert.equal(calls, 1);
   await readFile(join(f.output, 'step02/.completed'));
-  assert.equal((await readConfig(f.output)).threadId, 'thread-1');
+  assert.equal(await threadOf(f.output), 'thread-1');
 });

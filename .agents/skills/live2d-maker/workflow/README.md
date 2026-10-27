@@ -122,7 +122,7 @@ pnpm start --name jianma --dir /绝对路径/运行根目录 --replace-thread cl
 pnpm start --name jianma --dir /绝对路径/运行根目录 --background
 ```
 
-替换命令只准备交接，在该 section 的 `recovery/<id>/` 归档旧配置、交接和将覆盖的提示词／报告，保留 KRA、日志、完成与未完成标记及审核进度；之后另行续跑，新会话同时接收原任务、交接及当前反馈。part 不使用此接口。阴影需总控明确保存的 shadowMode，只替换该分支。
+替换命令只准备交接，在该 section 的 `recovery/<id>/` 归档当前步骤的旧会话（`session-before.json`）、交接和将覆盖的提示词／报告，保留 KRA、日志、完成与未完成标记及审核进度；之后另行续跑，新会话同时接收原任务、交接及当前反馈。part 不使用此接口。阴影需总控明确保存的 shadowMode，只替换该分支。
 
 网页“恢复”直接清除会话、保留产物，不写交接；“重试”会删除该步骤及依赖产物，需按 UI 确认。主动重做和保留产物换会话是不同操作。
 

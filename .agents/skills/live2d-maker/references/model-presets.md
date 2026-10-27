@@ -205,7 +205,7 @@ part 遮挡补全分别使用 `layering_part_completion_image_model` 和 `layeri
 
 Codex、Claude／agv 共用 `<步骤>/workspace/` 工作区，中间文件在其内部自由组织。请求配置、日志和 CLI 私有会话数据在管线的 `agents/` 下；鉴权复用用户环境，不修改全局配置。同一步骤续跑复用工作区；恢复同一 session 时复用原私有会话数据，切换 CLI 或重建会话仍保留已有产物。Antigravity 的 GenAI 自定义网关会转发原始工具定义，并保留工具返回的图片。
 
-part 绘制 ID 和 harness 记录在各管线 `agents/steps/groups/<完整groupID>/step01/session.json`（子组嵌套为 `groups/<父>/children/<名>`），绘制与返修共用，重跑轮廓步骤时同步重置会话记录；补全会反复修改草稿，同样把 ID 记在对应 `agents/steps/<组步骤>/step02/session.json`，中断续跑时恢复同一会话，重跑补全步骤时同步重置会话记录。独立 reviewer、去重和子组分析等一次性 agent 每次新建，不记录 ID。换线程时旧记录追加到 `session.json.history.jsonl`。raster 的绘制 ID 仍记录在本管线 `run.json`，每个步骤新建自己的 thread，`threadStep` 记录其所属步骤；`.running`／`.completed`、两轮 review 和产物检查规则不变。
+part 绘制 ID 和 harness 记录在各管线 `agents/steps/groups/<完整groupID>/step01/session.json`（子组嵌套为 `groups/<父>/children/<名>`），绘制与返修共用，重跑轮廓步骤时同步重置会话记录；补全会反复修改草稿，同样把 ID 记在对应 `agents/steps/<组步骤>/step02/session.json`，中断续跑时恢复同一会话，重跑补全步骤时同步重置会话记录。独立 reviewer、去重和子组分析等一次性 agent 每次新建，不记录 ID。换线程时旧记录追加到 `session.json.history.jsonl`。raster、组装与阴影的 stepNN 使用同一套记录：绘制 ID、harness 和待交接信息记在 `agents/steps/<stepNN>/session.json`，每个步骤新建自己的 thread，步骤从未运行状态开始（重试或删除目录）时清除会话。旧任务 `run.json` 中的 `threadId`／`threadHarness`／`threadStep`／`threadHandoff` 在下次运行或网页／恢复操作时迁入所属步骤（`threadStep`，缺省为 step01）并从 `run.json` 移除；`.running`／`.completed`、两轮 review 和产物检查规则不变。
 
 同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
 

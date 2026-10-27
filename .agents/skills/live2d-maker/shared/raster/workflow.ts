@@ -12,6 +12,7 @@ import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
+import { clearStepSession, migrateRunSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
 import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSteps, saveConfig, taskPaths, within } from './run-store.ts';
 import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
@@ -119,7 +120,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const previews: string[] = [];
   const byId = new Map(definitions.map(step => [step.id, step]));
   await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
-    progress: options.progress, fresh: inputChanged, resetNote: '，并清除旧 threadId',
+    progress: options.progress, fresh: inputChanged, resetNote: '，并清除这些步骤的 thread',
     // Validate retained deliveries before making any reset destructive.
     async keep(chainStep) {
       const step = byId.get(chainStep.id)!;
@@ -135,9 +136,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         options.progress?.(`输入或制作规则已变化；旧分支已保留到 ${archive}，重新制作本分支。`);
       }
       if (!saved || inputChanged) await initializeRun(directory, config);
-      else await saveConfig(directory, config);
-      // The drawing thread carries the work of the steps being redone.
-      if (plan.reset.length) { config.threadId = null; delete config.threadStep; delete config.threadHandoff; await saveConfig(directory, config); }
+      else { await migrateRunSession(directory, config); await saveConfig(directory, config); }
     },
     step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
   });
@@ -154,6 +153,9 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     const output = join(directory, step.id);
     const records = join(directory, 'agents', 'steps', step.id);
     if (!options.dryRun) await mkdir(records, { recursive: true });
+    // A step's thread carries that step's work; a step starting over (reset,
+    // or its directory removed) starts a new one.
+    if (status === 'absent' && !options.dryRun) await clearStepSession(directory, step.id, '步骤重新开始');
     const drawingReady = status !== 'absent' && (step.review ? !!await fileInfo(join(output, 'report.md'))
       : status === 'running' && await legacyEdgeDrawingReady(output, step));
     const reviewTask = step.review && drawingReady ? await nextReviewTask(output) : undefined;
@@ -175,32 +177,26 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     }
     let lastAgentMessage = '';
     let lastThreadId: string | undefined;
+    // The step's own drawing session (agents/steps/<step>/session.json).
+    let session: StepSession = {};
+    const saveSession = async (next: StepSession, reason?: string) => { await writeStepSession(directory, step.id, next, reason); session = next; };
     const invoke = async (prompt: string, phase: string, fresh = false) => {
       lastAgentMessage = '';
-      lastThreadId = fresh ? undefined : config.threadId ?? undefined;
+      if (!fresh) session = await readStepSession(directory, step.id) ?? {};
+      lastThreadId = fresh ? undefined : session.threadId;
       const attempt = randomUUID();
       const key = fresh ? step.review?.modelStep : phase.startsWith('repair') ? step.review?.repairModelStep : step.modelStep;
       const selected = key ? environment.stepModels[key] : fresh ? step.review! : model;
       const harness = 'harness' in selected ? selected.harness : modelHarnesses[selected.model as keyof typeof modelHarnesses] || 'codex';
       // Each step draws in its own thread; its draw and repairs share it. A thread
-      // keeps the tools it started with (Codex ignores tools sent on resume), and a
-      // later step needs its own. Records from before threadStep came from the
-      // first step; a handoff without a thread targets the running step.
-      const owner = config.threadStep ?? (config.threadId ? definitions[0]!.id : step.id);
-      if (!fresh && (config.threadId || config.threadHandoff) && owner !== step.id) {
-        await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
-          previousHarness: config.threadHarness || 'codex', previousStep: owner, ...(config.threadHandoff ? { previousHandoff: config.threadHandoff.id } : {}),
-          reason: '新步骤使用独立 thread', at: new Date().toISOString() }) + '\n');
-        config.threadId = null; delete config.threadHarness; delete config.threadStep; delete config.threadHandoff;
-        await saveConfig(directory, config);
+      // keeps the tools it started with (Codex ignores tools sent on resume).
+      if (!fresh && session.threadId && (session.harness || 'codex') !== harness) {
+        await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: session.threadId,
+          previousHarness: session.harness || 'codex', harness, reason: '模型配置切换 CLI', at: new Date().toISOString() }) + '\n');
+        await saveSession({ handoff: session.handoff }, '模型配置切换 CLI');
       }
-      if (!fresh && config.threadId && (config.threadHarness || 'codex') !== harness) {
-        await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: config.threadId,
-          previousHarness: config.threadHarness || 'codex', harness, reason: '模型配置切换 CLI', at: new Date().toISOString() }) + '\n');
-        config.threadId = null; await saveConfig(directory, config);
-      }
-      const handoff = !fresh && !config.threadId ? config.threadHandoff : undefined;
-      if (!fresh && phase !== 'draw' && !config.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});
+      const handoff = !fresh && !session.threadId ? session.handoff : undefined;
+      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});
       if (handoff) {
         const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
@@ -214,20 +210,20 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       prompt = workspacePrompt(prompt, await prepareWorkspace({ cwd: directory, outputDirectory: output }, directory));
       await writeFile(join(records, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
       await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
-        model: selected.model, effort: selected.effort, krita, ...(fresh ? {} : { threadId: config.threadId }) }) + '\n');
+        model: selected.model, effort: selected.effort, krita, ...(fresh ? {} : { threadId: session.threadId ?? null }) }) + '\n');
       const resultFile = join(records, phase === 'draw' ? 'result.json' : `${phase}.result.json`);
       await rm(resultFile, { force: true });
       await rm(join(records, 'error.txt'), { force: true });
-      options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : config.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
+      options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : session.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
         tools: pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }),
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
-        recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
-        threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
+        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
+        threadId: fresh ? undefined : session.threadId, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');
-          if (!fresh) { config.threadId = null; await saveConfig(directory, config); }
+          if (!fresh) await saveSession({ handoff: session.handoff }, reason);
         },
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
@@ -238,12 +234,9 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
           if (event.type === 'thread.started') {
             lastThreadId = event.thread_id;
             if (fresh) return; // Reviewer sessions are never saved or resumed.
-            if (!event.thread_id.trim() || (config.threadId && config.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
-            config.threadId = event.thread_id;
-            config.threadHarness = harness;
-            config.threadStep = step.id;
-            if (handoff) handoff.replacementThreadId = event.thread_id;
-            await saveConfig(directory, config);
+            if (!event.thread_id.trim() || (session.threadId && session.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
+            if (session.threadId !== event.thread_id) await saveSession({ threadId: event.thread_id, harness,
+              ...(handoff ? { handoff: { ...handoff, replacementThreadId: event.thread_id } } : session.handoff ? { handoff: session.handoff } : {}) });
           }
           await appendFile(join(records, 'events.jsonl'), JSON.stringify({ attempt, phase, event }) + '\n');
           if (event.type === 'item.completed' && event.item.type === 'agent_message') options.progress?.(event.item.text);
@@ -263,7 +256,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         }
         const result = await invoke(await pipeline.buildPrompt(step, reference, output, krita, previous), 'draw');
         if (result.status !== 'completed') throw new Error(`步骤未完成：${result.summary}`);
-        if (!config.threadId) throw new Error('SDK 未返回 threadId，不能完成步骤。');
+        if (!session.threadId) throw new Error('SDK 未返回 threadId，不能完成步骤。');
         const required = step.requiredFiles.map(file => step.review && file === 'report.md' ? 'report.md.tmp' : file);
         await checkFiles(output, required);
         options.signal?.throwIfAborted();

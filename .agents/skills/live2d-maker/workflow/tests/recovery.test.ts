@@ -5,19 +5,18 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { runWorkflow as assemble } from '../../character-assembly/run.ts';
-import { isAssemblyInput } from '../../character-assembly/input.ts';
 import { steps as assemblySteps } from '../../character-assembly/steps.ts';
 import { runWorkflow as raster } from '../../raster-layering/run.ts';
 import { steps as rasterSteps } from '../../raster-layering/steps.ts';
 import { runWorkflow as clothing } from '../../clothing-raster-layering/run.ts';
 import { steps as clothingSteps } from '../../clothing-raster-layering/steps.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
-import { loadConfig } from '../../shared/raster/run-store.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import type { AgentRequest } from '../../shared/raster/agent.ts';
 import type { StepDefinition } from '../../shared/raster/steps.ts';
 import { acquireTaskLock } from '../state.ts';
 import { replaceThread } from '../recovery.ts';
+import { readStepSession } from '../../shared/agents/step-session.ts';
 
 test('阴影恢复按保存模式替换当前会话，保留另一分支与已生成贴图', async t => {
   for (const mode of ['normal-depth', 'mask'] as const) {
@@ -34,7 +33,10 @@ test('阴影恢复按保存模式替换当前会话，保留另一分支与已�
     await writeFile(join(other, 'step01/.completed'), 'completed');
     const archive = await replaceThread({ ...f.recovery, pipeline: 'shadow' });
     assert.ok(archive.startsWith(join(target, 'recovery')));
-    assert.equal(JSON.parse(await readFile(join(target, 'run.json'), 'utf8')).threadId, null);
+    assert.ok(!('threadId' in JSON.parse(await readFile(join(target, 'run.json'), 'utf8'))));
+    const session = await readStepSession(target, 'step01');
+    assert.equal(session?.threadId, undefined); assert.equal(session?.handoff?.previousThreadId, 'old-shadow');
+    assert.equal(JSON.parse(await readFile(join(archive, 'session-before.json'), 'utf8')).threadId, 'old-shadow');
     assert.equal(await readFile(join(target, 'step01/normal.png'), 'utf8'), 'existing map');
     assert.equal(await readFile(join(other, 'run.json'), 'utf8'), 'other branch unchanged');
     assert.equal(await readFile(join(other, 'step01/.completed'), 'utf8'), 'completed');
@@ -70,11 +72,11 @@ test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之
   } }), /history damaged/);
   const before = await readdir(join(output, 'step01'));
   const archive = await replaceThread(f.recovery);
-  assert.equal(JSON.parse(await readFile(join(archive, 'run-before.json'), 'utf8')).threadId, 'old-thread');
+  assert.equal(JSON.parse(await readFile(join(archive, 'session-before.json'), 'utf8')).threadId, 'old-thread');
   assert.equal(await readFile(join(archive, 'agents/steps/step01/prompt.md'), 'utf8'), await readFile(join(output, 'agents/steps/step01/prompt.md'), 'utf8'));
   assert.match(await readFile(join(archive, 'agents/steps/step01/error.txt'), 'utf8'), /history damaged/);
   assert.deepEqual(await readdir(join(output, 'step01')), before);
-  assert.equal((await loadConfig(output, 'case', isAssemblyInput))!.threadId, null);
+  assert.equal((await readStepSession(output, 'step01'))!.threadId, undefined);
   await assert.rejects(assemble(f.options, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, undefined);
     assert.match(request.prompt, /旧 threadId：old-thread/);
@@ -83,8 +85,8 @@ test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之
     await request.onEvent({ type: 'thread.started', thread_id: 'new-thread' });
     throw new Error('interrupted again');
   } }), /interrupted again/);
-  const config = (await loadConfig(output, 'case', isAssemblyInput))!;
-  assert.equal(config.threadId, 'new-thread'); assert.equal(config.threadHandoff!.replacementThreadId, 'new-thread');
+  const session = (await readStepSession(output, 'step01'))!;
+  assert.equal(session.threadId, 'new-thread'); assert.equal(session.handoff!.replacementThreadId, 'new-thread');
   await assemble(f.options, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, 'new-thread');
     assert.ok(!request.prompt.includes('会话恢复交接'));
@@ -100,8 +102,8 @@ test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之
     await assert.rejects(readFile(join(output, 'step01/draft.kra')), { code: 'ENOENT' });
     return deliver(request, assemblySteps[0], 'reset-thread');
   } });
-  assert.equal((await loadConfig(output, 'case', isAssemblyInput))!.threadHandoff, undefined);
-  await readFile(join(archive, 'run-before.json'));
+  assert.equal((await readStepSession(output, 'step01'))!.handoff, undefined);
+  await readFile(join(archive, 'session-before.json'));
 });
 
 test('锁定时不允许换 thread，空交接和 part 也被拒绝', async t => {
@@ -165,6 +167,6 @@ for (const [pipeline, execute, definitions, upstream] of [
     } });
     assert.equal(resumed, 4); assert.deepEqual(await readFile(join(output, 'step01/review-01.md')), report);
     await readFile(join(output, 'step01/.completed'));
-    assert.equal((await loadConfig(output, name))!.threadId, 'replacement-draw');
+    assert.equal((await readStepSession(output, 'step01'))!.threadId, 'replacement-draw');
   });
 }

@@ -8,23 +8,18 @@ import type { StepStatus } from '../step-chain.ts';
 import { inspectSection, stepId, type SectionPlan, type SectionStep } from '../step-section.ts';
 import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
-export type ThreadHandoff = {
-  id: string;
-  previousThreadId: string;
-  notes: string;
-  reason: string;
-  createdAt: string;
-  replacementThreadId?: string;
-};
+import type { ThreadHandoff } from '../agents/step-session.ts';
+export type { ThreadHandoff };
 export type RunConfig<Input = PartLayeringInput> = {
   version: 2;
   name: string;
   sourceInput: Input;
   inputFingerprint?: string;
   krita: KritaInstallation;
-  threadId: string | null;
+  // Legacy: sessions live per step in agents/steps/<step>/session.json
+  // (see step-session.ts); a run migrates these fields there and drops them.
+  threadId?: string | null;
   threadHarness?: Harness;
-  // The step that owns threadId; each step draws in its own thread.
   threadStep?: string;
   threadHandoff?: ThreadHandoff;
 };
@@ -91,9 +86,8 @@ export async function loadConfig<Input = PartLayeringInput>(directory: string, n
     throw new Error(`无效的任务配置：${file}`);
   }
   // Old snapshots are ignored and removed on the next save. Model selection
-  // belongs to the current environment; session identity stays in this file.
+  // belongs to the current environment; sessions belong to their steps.
   delete config.models;
-  config.threadId ??= null;
   return config;
 }
 
@@ -104,7 +98,7 @@ function validHandoff(value: ThreadHandoff): boolean {
 }
 
 export function newConfig<Input>(name: string, input: Input, krita: KritaInstallation): RunConfig<Input> {
-  return { version: 2, name, sourceInput: input, krita, threadId: null };
+  return { version: 2, name, sourceInput: input, krita };
 }
 
 export async function saveConfig(directory: string, config: RunConfig<unknown>): Promise<void> {

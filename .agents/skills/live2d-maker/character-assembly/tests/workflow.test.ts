@@ -1,3 +1,4 @@
+import { readStepSession } from '../../shared/agents/step-session.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
@@ -99,7 +100,7 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
   await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent });
   assert.equal(calls, 1);
   const config = await loadConfig(f.output, 'case', isAssemblyInput);
-  assert.equal(config?.threadId, 'assembly-thread');
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'assembly-thread');
   // run.json records task-root paths.
   assert.deepEqual(config?.sourceInput, { characterKra: 'raster-layering/step03/character-dressup-base.kra',
     clothingKra: 'clothing-raster-layering/step02/clothing-soft-edges.kra', simplifiedCharacter: 'part-layering/references/simplified-subject.webp' });
@@ -153,5 +154,5 @@ test('正常退出但缺 PNG 时显示最后消息，保留 running 和 thread',
   await stat(join(f.output, 'step01/.running'));
   await assert.rejects(stat(join(f.output, 'step01/.completed')), { code: 'ENOENT' });
   assert.match(await readFile(join(f.output, 'agents/steps/step01/error.txt'), 'utf8'), /PNG 导出失败/);
-  assert.equal((await loadConfig(f.output, 'case', isAssemblyInput))?.threadId, 'missing-output');
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'missing-output');
 });

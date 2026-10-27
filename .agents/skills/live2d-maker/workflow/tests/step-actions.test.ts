@@ -6,6 +6,7 @@ import { test, type TestContext } from 'node:test';
 import { artifactPath, draftPath } from '../../shared/part/artifact-facts.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
 import { readStep } from '../../shared/step-chain.ts';
+import { sessionPath } from '../../shared/agents/step-session.ts';
 import { acquireTaskLock } from '../state.ts';
 import { applyStepAction, applyTaskAction, listSteps, validStepId } from '../step-actions.ts';
 
@@ -36,7 +37,8 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) {
 
     assert.match(await f.act(pipeline, groupStepId('head/eye', 2), 'resume'), /thread-1/);
     await gone(join(step, 'session.json'));
-    assert.equal(JSON.parse(await text(join(step, 'session.json.history.jsonl'))).threadId, 'thread-1');
+    // The legacy in-step session is cleared into the unified store's history.
+    assert.equal(JSON.parse(await text(sessionPath(root, groupStepId('head/eye', 2)) + '.history.jsonl')).threadId, 'thread-1');
     assert.equal(await text(part), 'part');
     assert.equal(await text(draftPath(part)), 'draft');
     assert.match(await f.act(pipeline, groupStepId('head/eye', 2), 'resume'), /恢复等同继续/);
@@ -90,20 +92,20 @@ test('part 合并与遮挡重试删除步骤外的产物；已完成步骤只能
   await assert.rejects(f.act('part-layering', 'initial/step01', 'retry'), /不存在/);
 });
 
-const rasterConfig = (threadId: string | null) => JSON.stringify({ version: 2, name: 'case', threadId, threadHarness: 'claude',
+const rasterConfig = (thread: Record<string, unknown> = {}) => JSON.stringify({ version: 2, name: 'case', ...thread,
   sourceInput: {}, krita: { executable: process.execPath, version: 'test' } });
 for (const pipeline of ['raster-layering', 'clothing-raster-layering', 'character-assembly']) {
-  test(`${pipeline} 步骤：恢复清除共享 thread 并记录，重试只删除该步骤`, async t => {
+  test(`${pipeline} 步骤：恢复清除本步骤会话并记录，重试只删除该步骤`, async t => {
     const f = await fixture(t), root = join(f.task, pipeline);
-    await put(join(root, 'run.json'), rasterConfig('thread-r'));
+    await put(join(root, 'run.json'), rasterConfig());
+    await put(sessionPath(root, 'step02'), JSON.stringify({ threadId: 'thread-r', harness: 'claude' }));
     await put(join(root, 'step01', '.completed'), 'legacy'); await put(join(root, 'step01', 'kept.kra'), 'kra');
     await put(join(root, 'step02', '.running'), JSON.stringify({ inputs: {} })); await put(join(root, 'step02', 'draft.kra'), 'draft');
     assert.deepEqual((await listSteps(root, pipeline as any)).map(entry => entry.id), ['step01', 'step02']);
     await f.act(pipeline, 'step02', 'resume');
-    const config = JSON.parse(await text(join(root, 'run.json')));
-    assert.equal(config.threadId, null); assert.equal(config.threadHarness, undefined);
-    assert.deepEqual(JSON.parse(await text(join(root, 'agents/steps/step02', 'attempts.jsonl'))), {
-      previousThreadId: 'thread-r', previousHarness: 'claude', reason: '网页恢复：清除会话，保留产物', at: JSON.parse(await text(join(root, 'agents/steps/step02', 'attempts.jsonl'))).at });
+    await gone(sessionPath(root, 'step02'));
+    const history = JSON.parse(await text(sessionPath(root, 'step02') + '.history.jsonl'));
+    assert.deepEqual({ ...history, replacedAt: undefined }, { threadId: 'thread-r', harness: 'claude', reason: '网页恢复：清除会话，保留产物', replacedAt: undefined });
     assert.equal(await text(join(root, 'step02', 'draft.kra')), 'draft');
     assert.match(await f.act(pipeline, 'step02', 'resume'), /恢复等同继续/);
     await f.act(pipeline, 'step02', 'retry');
@@ -113,23 +115,24 @@ for (const pipeline of ['raster-layering', 'clothing-raster-layering', 'characte
   });
 }
 
-test('raster 步骤恢复只清除本步骤的 thread', async t => {
+test('raster 旧 run.json thread 迁入所属步骤；恢复只清除本步骤的 thread', async t => {
   const f = await fixture(t), root = join(f.task, 'raster-layering');
-  await put(join(root, 'run.json'), JSON.stringify({ ...JSON.parse(rasterConfig('thread-01')), threadStep: 'step01' }));
+  await put(join(root, 'run.json'), rasterConfig({ threadId: 'thread-01', threadHarness: 'claude', threadStep: 'step01' }));
   await put(join(root, 'step01', '.running'), JSON.stringify({ inputs: {} }));
   await put(join(root, 'step02', '.running'), JSON.stringify({ inputs: {} }));
   assert.match(await f.act('raster-layering', 'step02', 'resume'), /恢复等同继续/);
-  assert.equal(JSON.parse(await text(join(root, 'run.json'))).threadId, 'thread-01');
-  await f.act('raster-layering', 'step01', 'resume');
   const config = JSON.parse(await text(join(root, 'run.json')));
-  assert.equal(config.threadId, null); assert.equal(config.threadStep, undefined);
+  assert.ok(!('threadId' in config) && !('threadStep' in config) && !('threadHarness' in config));
+  assert.deepEqual(JSON.parse(await text(sessionPath(root, 'step01'))), { threadId: 'thread-01', harness: 'claude' });
+  assert.match(await f.act('raster-layering', 'step01', 'resume'), /thread-01/);
+  await gone(sessionPath(root, 'step01'));
 });
 
 test('阴影步骤按总控记录的方式定位分支，另一分支不受影响', async t => {
   const f = await fixture(t);
   await put(join(f.task, 'run.json'), JSON.stringify({ version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', pipelines: {}, shadowMode: 'normal-depth' }));
   const target = join(f.task, 'shadow', 'normal-depth'), other = join(f.task, 'shadow', 'mask');
-  await put(join(target, 'run.json'), rasterConfig('thread-s'));
+  await put(join(target, 'run.json'), rasterConfig({ threadId: 'thread-s' }));
   await put(join(target, 'step01', '.running'), JSON.stringify({ inputs: {} }));
   await put(join(other, 'step01', '.running'), JSON.stringify({ inputs: {} }));
   await f.act('shadow', 'step01', 'retry');
