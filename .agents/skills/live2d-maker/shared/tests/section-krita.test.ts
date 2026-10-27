@@ -130,7 +130,7 @@ test('krita tool: argument errors', async () => {
 });
 
 // The bridge plugin inside a real Krita: ASTRA_TEST_KRITA=<krita executable>.
-test('bridge plugin in real Krita: dismisses export dialogs and hints', { skip: !process.env.ASTRA_TEST_KRITA && 'ASTRA_TEST_KRITA 未设置' }, async t => {
+test('bridge plugin in real Krita: keeps exports in batch mode, cancels dialogs, hints', { skip: !process.env.ASTRA_TEST_KRITA && 'ASTRA_TEST_KRITA 未设置' }, async t => {
   const root = await mkdtemp(join(tmpdir(), 'section-krita-real-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const section = new SectionKrita({ section: root, krita: process.env.ASTRA_TEST_KRITA!, slotsDirectory: join(root, 'slots') });
@@ -150,15 +150,16 @@ result = doc.rootNode() is not None
   const exported = parse(await tool.execute({ action: 'run', script: 'fresh.py', timeout_seconds: 120 }, signal));
   assert.deepEqual([exported.ok, exported.result, exported.dialogs], [true, true, []]);
   await stat(fresh); await stat(reopened);
-  // Leaving batch mode opens Krita's PNG options dialog on export.
-  await writeFile(join(root, 'dialog.py'), `doc = Krita.instance().createDocument(64, 64, 'd', 'RGBA', 'U8', '', 72.0)\ndoc.setBatchmode(False)\nKrita.instance().setBatchmode(False)\ndoc.exportImage(${JSON.stringify(png)}, krita.InfoObject())\n`);
+  // Leaving batch mode would open Krita's PNG options dialog; the bridge keeps exports in it.
+  await writeFile(join(root, 'unbatched.py'), `doc = Krita.instance().createDocument(64, 64, 'd', 'RGBA', 'U8', '', 72.0)\ndoc.setBatchmode(False)\nKrita.instance().setBatchmode(False)\nresult = doc.exportImage(${JSON.stringify(png)}, krita.InfoObject())\n`);
+  const unbatched = parse(await tool.execute({ action: 'run', script: 'unbatched.py', timeout_seconds: 120 }, signal));
+  assert.deepEqual([unbatched.ok, unbatched.result, unbatched.dialogs], [true, true, []]);
+  await stat(png);
+  // Any other dialog is cancelled; the job reports it and Krita keeps running.
+  await writeFile(join(root, 'dialog.py'), `from PyQt5.QtWidgets import QMessageBox\nQMessageBox.information(None, 'Hello', 'needs a human')\nresult = 'after'\n`);
   const blocked = parse(await tool.execute({ action: 'run', script: 'dialog.py', timeout_seconds: 120 }, signal));
-  assert.equal(blocked.ok, false);
-  assert.ok(blocked.dialogs.length > 0);
-  assert.match(blocked.hints.join('\n'), /setBatchmode/);
-  // Krita sometimes crashes tearing down the cancelled export (about one run
-  // in five); start the rest from a fresh one.
-  assert.equal(parse(await tool.execute({ action: 'restart' }, signal)).state, 'running');
+  assert.deepEqual([blocked.ok, blocked.result, blocked.dialogs.map((dialog: { title: string }) => dialog.title)], [false, 'after', ['Hello']]);
+  assert.match(blocked.hints.join('\n'), /对话框“Hello”/);
   await writeFile(join(root, 'none.py'), `missing = None\nmissing.name()\n`);
   const failed = parse(await tool.execute({ action: 'run', script: 'none.py' }, signal));
   assert.equal(failed.ok, false);

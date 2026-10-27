@@ -37,8 +37,13 @@ ROOT = os.environ.get('ASTRA_KRITA_BRIDGE', '')
 JOBS = os.path.join(ROOT, 'jobs')
 
 DIALOG_HINT = ('Krita 弹出了对话框“{title}”，无人操作的界面会因此卡住，桥接已自动取消它，'
-               '对应操作没有完成。对每个文档先调用 doc.setBatchmode(True)，再 exportImage / saveAs / close；'
-               '导出参数通过 InfoObject 传入。取消后 Krita 偶尔会随即崩溃，此时用 krita 工具 restart。')
+               '对应操作没有完成。不要在脚本里打开需要人操作的对话框；导出和保存的参数通过 InfoObject 传入。')
+# How long a dialog stays up before it is cancelled. Qt finishes showing a
+# dialog on later event loop turns (QDialog::adjustPosition from a timer);
+# cancelling it before then lets Krita delete the dialog under that pending
+# call, which crashed Krita in about a third of the export dialogs cancelled
+# at once. Waiting this long crashed none.
+DIALOG_GRACE = 0.5
 # Common mistakes, matched against the traceback text.
 ERROR_HINTS = [
     (re.compile(r"paint\w*\(.*unexpected type 'QPointF'|argument \d+ has unexpected type 'QPointF'"),
@@ -67,6 +72,18 @@ def _batch_documents(method):
     return wrapper
 
 
+def _batch_first(method):
+    # A script that left batch mode (Krita's or the document's) would get
+    # an export options or file dialog nobody can answer.
+    def wrapper(self, *args):
+        Krita.instance().setBatchmode(True)
+        self.setBatchmode(True)
+        return method(self, *args)
+    return wrapper
+
+
+for _name in ('exportImage', 'saveAs', 'save'):
+    setattr(krita.Document, _name, _batch_first(getattr(krita.Document, _name)))
 Krita.createDocument = _batch_documents(Krita.createDocument)
 Krita.openDocument = _batch_documents(Krita.openDocument)
 
@@ -85,6 +102,8 @@ class Bridge(Extension):
         self.guard = None
         self.running = None
         self.dialogs = []
+        # Visible dialogs (C++ address) and when the guard first saw them.
+        self.shown = {}
         self.session = {}
         self.settle_until = 0.0
 
@@ -112,25 +131,28 @@ class Bridge(Extension):
         # A modal dialog runs a nested event loop, so this timer still fires
         # while the job that opened it is blocked. Krita's export options
         # dialog is not always reported by activeModalWidget(), so every
-        # visible top-level dialog counts.
+        # visible top-level dialog counts. Each is recorded when first seen
+        # and cancelled once it has been up for DIALOG_GRACE.
         # Python wrappers are recreated per call, so compare the C++ objects.
-        seen = set()
-        for _ in range(20):
-            widgets = [QApplication.activeModalWidget()] + QApplication.topLevelWidgets()
-            widget = next((w for w in widgets if w is not None and sip.unwrapinstance(w) not in seen and w.isVisible()
-                           and (isinstance(w, QDialog) or w.isModal())), None)
-            if widget is None:
-                return
-            seen.add(sip.unwrapinstance(widget))
-            title = widget.windowTitle() or type(widget).__name__
-            self.dialogs.append({'title': title, 'class': type(widget).__name__})
-            if hasattr(widget, 'reject'):
-                widget.reject()
-            else:
-                widget.close()
+        now, shown = time.monotonic(), {}
+        widgets = [QApplication.activeModalWidget()] + QApplication.topLevelWidgets()
+        for widget in widgets:
+            if widget is None or not widget.isVisible() or not (isinstance(widget, QDialog) or widget.isModal()):
+                continue
+            key = sip.unwrapinstance(widget)
+            if key in shown:
+                continue
+            if key not in self.shown:
+                self.dialogs.append({'title': widget.windowTitle() or type(widget).__name__, 'class': type(widget).__name__})
+            shown[key] = self.shown.get(key, now)
+            if now - shown[key] >= DIALOG_GRACE:
+                widget.reject() if hasattr(widget, 'reject') else widget.close()
+        self.shown = shown
 
     def poll(self):
-        if self.running or time.monotonic() < self.settle_until:
+        # The next job waits until every dialog is gone and the cancelled
+        # operation has settled.
+        if self.running or self.shown or time.monotonic() < self.settle_until:
             return
         if os.path.exists(os.path.join(ROOT, 'quit')):
             self.timer.stop()
@@ -174,9 +196,7 @@ class Bridge(Extension):
         # A job that hit a dialog did not do what it asked, even without an exception.
         if self.dialogs:
             outcome['ok'] = False
-            # A cancelled export or save finishes tearing down on later event
-            # loop turns; a job started in between makes a crash more likely.
-            # Krita can still crash from the cancellation itself.
+            # A cancelled operation finishes tearing down on later event loop turns.
             self.settle_until = time.monotonic() + 1.5
         os.replace(source, source + '.done')
         _write_json(os.path.join(JOBS, job + '.json'), outcome)
