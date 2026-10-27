@@ -16,7 +16,7 @@ test('姿态与衣服提示词明确声明共享规则位置，展开后没有�
   ] as const){
     const source=await readFile(new URL(path,import.meta.url),'utf8');assert.ok(source.includes('{image_execution_rules}'));
     const prompt=preparationImagePrompt(source.replaceAll('{width}','24').replaceAll('{height}','32'),kind);
-    assert.ok(!prompt.includes('{image_execution_rules}'));assert.match(prompt,/image_generation 是生图工具的概念总称/);
+    assert.ok(!prompt.includes('{image_execution_rules}'));assert.match(prompt,/生图工具 imagegen（Codex 为内置 image_gen\.imagegen/);
     assert.equal(prompt.split('【执行规则】').length,2);
   }
 });

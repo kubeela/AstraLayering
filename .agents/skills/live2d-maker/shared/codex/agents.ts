@@ -17,7 +17,7 @@ import { randomUUID } from 'node:crypto';
 import type { ThreadEvent } from '@openai/codex-sdk';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { executionPaths } from '../agents/workspace.ts';
-import { fromTaskPath } from '../task-paths.ts';
+import { imagePath } from '../task-paths.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -37,7 +37,7 @@ export type AgentTask = {
   shell?: boolean;
   // Checked by the Codex app-server turn before it counts as completed, so a
   // rejected reply is logged as failed; returns the turn's images.
-  checkResult?: (text: string, images: GeneratedImage[], root: string) => GeneratedImage[];
+  checkResult?: (text: string, images: GeneratedImage[]) => GeneratedImage[];
 };
 
 export type GeneratedImage = { savedPath: string };
@@ -208,11 +208,11 @@ export class CodexAgents {
             this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
-            // The tool reports task-relative paths; results carry absolute ones.
+            // The tool reports the absolute savedPath it wrote.
             image.execute = async (args, signal, context) => {
               const result = await execute(args, signal, context);
               for (const item of result.contentItems) if (item.type === 'inputText') {
-                const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: fromTaskPath(paths.root, value.savedPath) });
+                const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: value.savedPath });
               }
               return result;
             };
@@ -275,12 +275,12 @@ export class CodexAgents {
 
 // A native image turn replies with the tool's savedPath, or an error.
 function nativeImageResult(name: string) {
-  return (text: string, images: GeneratedImage[], root: string): GeneratedImage[] => {
+  return (text: string, images: GeneratedImage[]): GeneratedImage[] => {
     const output = JSON.parse(text) as { savedPath?: unknown; error?: unknown };
     if (typeof output.error === 'string' && output.error) throw new Error(`${name}：${output.error}`);
     if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) throw new Error(`${name} 没有返回生成图片的 savedPath`);
-    // The agent copies the tool's absolute savedPath; a relative one means the task root.
-    const savedPath = fromTaskPath(root, output.savedPath);
+    // The agent copies the tool's absolute savedPath, as Codex native imagegen reports it.
+    const savedPath = imagePath(output.savedPath, `${name} 返回的 savedPath`);
     return images.some(image => image.savedPath === savedPath) ? images : [...images, { savedPath }];
   };
 }

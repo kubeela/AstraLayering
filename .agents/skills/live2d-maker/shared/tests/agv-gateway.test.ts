@@ -227,7 +227,7 @@ test('all real shared, character and clothing tool schemas retain every constrai
   const root = await mkdtemp(join(tmpdir(), 'agv-catalog-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const names = (await readdir(toolsDirectory, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name);
-  assert.ok(names.includes('write_groups') && names.includes('propose_occlusion') && names.includes('image_generation'));
+  assert.ok(names.includes('write_groups') && names.includes('propose_occlusion') && names.includes('imagegen'));
   for (const [label, overrides] of [['shared', undefined], ['character', character.toolsDirectory], ['clothing', clothing.toolsDirectory]] as const) {
     const catalog = new ToolCatalog(toolsDirectory, overrides);
     const definitions = names.map(name => catalog.get(name));

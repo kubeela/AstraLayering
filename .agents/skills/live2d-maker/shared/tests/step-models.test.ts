@@ -228,10 +228,13 @@ test('custom image edit transports original prompts and images over both protoco
     assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
     const custom = join(await fixture(t), `${provider}-${mode}.png`);
-    const requested = await tool.execute({ prompt: '原样的绘制提示词', input_images: [relative(root, source)], output_path: custom },
+    const requested = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source], output_path: custom },
       new AbortController().signal, { root, directory: root, outputDirectory: root, workspace: root });
     assert.equal(JSON.parse((requested.contentItems[0] as { text: string }).text).savedPath, custom);
     assert.equal((await sharp(custom).metadata()).format, 'png');
+    // Like Codex native imagegen, the tool takes absolute paths only.
+    await assert.rejects(tool.execute({ prompt: 'test', input_images: [relative(root, source)] }, new AbortController().signal), /input_images 中的路径 必须是绝对路径/);
+    await assert.rejects(tool.execute({ prompt: 'test', input_images: [source], output_path: 'relative.png' }, new AbortController().signal), /output_path 必须是绝对路径/);
     await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);
   }
   assert.equal(called, 6);
@@ -411,7 +414,7 @@ test('raster custom image tools accept upstream and other local reference paths'
   t.after(() => new Promise<void>(done => server.close(() => done())));
   const cli = join(root, 'image-cli.mjs');
   const script = fakeCli.replace('const id=resumed||randomUUID();', `
-const imageTool=list.tools.find(tool=>tool.name==='image_generation');
+const imageTool=list.tools.find(tool=>tool.name==='imagegen');
 if(!imageTool)throw new Error('missing image tool');
 const generated=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fixture',input_images:[process.env.LAYERING_TEST_REFERENCE]}});
 if(generated.isError)throw new Error(generated.content[0].text);

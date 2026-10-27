@@ -39,17 +39,19 @@ async function readLog(root: string) {
 }
 
 const saved = (savedPath: string | null, error: string | null = null) => JSON.stringify({ savedPath, error });
+// Codex native imagegen reports absolute savedPath values.
+const generatedPath = '/case/step01/workspace/generated/image.png';
 
-test('无工具一次性回合走 app-server：只读、关闭 shell，记录输入与结果，相对 savedPath 以任务根解析', async t => {
-  const finalText = saved('workspace/generated.png');
-  const f = await fixture(t, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath: 'workspace/generated.png' }], { finalText });
+test('无工具一次性回合走 app-server：只读、关闭 shell，记录输入与结果和绝对 savedPath', async t => {
+  const finalText = saved(generatedPath);
+  const f = await fixture(t, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath: generatedPath }], { finalText });
   const result = await f.agents.run({ name: '生成', prompt: '测试提示词', imageGeneration: true,
     images: [{ path: join(f.directory, 'reference.png'), description: '图 1：测试图片' }] });
   const log = await readLog(f.logDirectory);
   assert.equal(result.text, finalText);
   assert.equal(result.threadId, 'native-thread');
   assert.equal(result.logDirectory, log.directory);
-  assert.deepEqual(result.images, [{ savedPath: join(f.directory, 'workspace/generated.png') }]);
+  assert.deepEqual(result.images, [{ savedPath: generatedPath }]);
   assert.ok(log.request.prompt.startsWith(workspacePrompt('测试提示词', executionPaths({ cwd: f.directory }, f.directory))));
   assert.match(log.request.prompt, /图 1：测试图片/);
   assert.equal(log.request.task.timeoutMs, null);
@@ -91,6 +93,13 @@ test('生图回合缺少 savedPath 不能记为成功', async t => {
   const f = await fixture(t, [], 'completed', [], { finalText: saved('') });
   await assert.rejects(f.agents.run({ name: '缺路径', prompt: 'test', imageGeneration: true }), /没有返回生成图片的 savedPath/);
   assert.equal((await readLog(f.logDirectory)).result.status, 'failed');
+});
+
+test('生图回合回复相对 savedPath 时报错，不按当前目录或任务根猜测', async t => {
+  const f = await fixture(t, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath: generatedPath }], { finalText: saved('workspace/generated.png') });
+  await assert.rejects(f.agents.run({ name: '相对路径', prompt: 'test', imageGeneration: true }), /返回的 savedPath 必须是绝对路径/);
+  assert.equal((await readLog(f.logDirectory)).result.status, 'failed');
+  assert.equal((await f.protocol()).filter(message => message.method === 'turn/start').length, 1);
 });
 
 test('回合失败与提前 EOF 都记为失败', async t => {

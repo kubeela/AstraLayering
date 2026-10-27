@@ -195,7 +195,7 @@ test('Codex completion uses native image events, resumes after changing image mo
     assert.deepEqual(starts.map(r => r.method), ['thread/start', 'thread/resume']);
     for (const r of starts) {
       assert.equal(r.params.config['features.image_generation'], true);
-      assert.ok(!r.params.dynamicTools.some((tool: any) => tool.name === 'image_generation'));
+      assert.ok(!r.params.dynamicTools.some((tool: any) => tool.name === 'imagegen'));
     }
   } finally { await session.close(); }
 });

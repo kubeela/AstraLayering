@@ -19,7 +19,7 @@ export const help = `clothing-raster-layering — 按顺序执行 Krita 栅格�
 不复制上游输入；run.json 保存配置和共用 threadId，步骤状态由 .running / .completed 决定。
 中断保留 .running 并继续原 thread；删除某步 .completed 后，下次启动清空该步及后续目录，开启新 thread；上游 occlusion.json 的修正保留。
 step01 依赖上游 part 的最后一步 occlusion：part 重做后 step01 及后续重跑、开启新 thread；上游该步未完成时拒绝运行。
-两步绘制及 reviewer 使用 gpt-6-astra / xhigh。provider、鉴权和内置 image_generation 由外部 Codex 配置，脚本不接管。
+两步绘制及 reviewer 使用 gpt-6-astra / xhigh。provider、鉴权和内置 imagegen 由外部 Codex 配置，脚本不接管。
 第一步 reviewer 使用 gpt-6-astra / xhigh，每次新会话；反馈由原 thread 全部修完。最多检查两次，无问题即结束，第二次修完不再检查。
 第二步边缘精修和自检后结束，交付 step02/clothing-soft-edges.kra 和验收记录，不制作身体装配或身体插层说明。
 `;

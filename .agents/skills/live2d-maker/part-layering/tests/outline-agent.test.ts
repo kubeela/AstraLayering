@@ -183,7 +183,7 @@ test('revise 由原绘制会话返修，每次 review 新会话，报告保留�
   assert.equal(mock.calls[0].session, mock.calls[2].session);
   assert.notEqual(mock.calls[1].session, mock.calls[3].session);
   assert.match(mock.calls[2].task.prompt, /左侧可见边界 x=10/);
-  assert.doesNotMatch(mock.calls[2].task.prompt, /image_generation|生成.*辅助图/);
+  assert.doesNotMatch(mock.calls[2].task.prompt, /imagegen|生成.*辅助图/);
   assert.equal(await readFile(join(f.directory, 'groups/face/step01/outline.repairs/1/feedback.txt'), 'utf8'),
     '对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。\n');
   assert.equal(await readFile(join(f.directory, 'groups/face/step01/outline.repairs/1/prompt.txt'), 'utf8'), mock.calls[2].task.prompt);

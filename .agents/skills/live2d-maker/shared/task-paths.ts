@@ -68,3 +68,10 @@ export function toTaskPaths<T>(root: string, value: T): T {
   }
   return value;
 }
+
+// Image paths follow Codex native imagegen: inputs and saved results are
+// absolute, so they are never resolved against a guessed base.
+export function imagePath(path: string, label: string): string {
+  if (!isAbsolute(path)) throw new Error(`${label} 必须是绝对路径：${path}`);
+  return resolve(path);
+}
