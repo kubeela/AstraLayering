@@ -4,8 +4,8 @@
   "required": ["prompt", "input_images"],
   "properties": {
     "prompt": { "type": "string", "minLength": 1 },
-    "input_images": { "type": "array", "items": { "type": "string" }, "description": "参考图片路径，相对任务根目录；任务外的文件可用绝对路径。" },
-    "output_path": { "type": "string", "minLength": 1, "description": "可选的 PNG 保存路径，相对任务根目录。省略时使用本步骤默认生图目录。" },
+    "input_images": { "type": "array", "items": { "type": "string" }, "description": "参考图片的绝对路径。" },
+    "output_path": { "type": "string", "minLength": 1, "description": "可选的 PNG 保存绝对路径。省略时使用本步骤默认生图目录。" },
     "background": { "type": "string", "enum": ["transparent", "auto"] },
     "size": { "type": "string" }
   }

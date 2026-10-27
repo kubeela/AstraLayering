@@ -21,7 +21,7 @@ import type { ThreadEvent } from '@openai/codex-sdk';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { contextImages } from '../agents/inputs.ts';
-import { fromTaskPath } from '../task-paths.ts';
+import { fromTaskPath, imagePath } from '../task-paths.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -207,11 +207,11 @@ export class CodexAgents {
             this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
-            // The tool reports task-relative paths; results carry absolute ones.
+            // The tool reports the absolute savedPath it wrote.
             image.execute = async (args, signal, context) => {
               const result = await execute(args, signal, context);
               for (const item of result.contentItems) if (item.type === 'inputText') {
-                const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: fromTaskPath(paths.root, value.savedPath) });
+                const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: value.savedPath });
               }
               return result;
             };
@@ -341,7 +341,7 @@ export class CodexAgents {
           } else if (event.type === 'item.completed') {
             const item = event.item as unknown as Record<string, unknown>;
             if (['image_generation', 'imageGeneration'].includes(String(item.type)) && typeof item.savedPath === 'string') {
-              savedImages.add(fromTaskPath(paths.root, item.savedPath));
+              savedImages.add(imagePath(item.savedPath, 'Codex 原生生图 savedPath'));
             }
           } else if (event.type === 'turn.completed') {
             completed = true;
@@ -361,8 +361,8 @@ export class CodexAgents {
           if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) {
             throw new Error(`${task.name} 没有返回生成图片的 savedPath`);
           }
-          // The agent copies the tool's absolute savedPath; a relative one means the task root.
-          images.push({ savedPath: fromTaskPath(paths.root, output.savedPath) });
+          // The agent copies the tool's absolute savedPath.
+          images.push({ savedPath: imagePath(output.savedPath, `${task.name} 返回的 savedPath`) });
         }
         for (const image of images) savedImages.add(image.savedPath);
         await log.finish({ status: 'completed', threadId: thread.id, usage, finalResponse, images });

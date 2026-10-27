@@ -268,6 +268,18 @@ test('原生重连通知交给 CLI 完成，仅运行一个 turn', async t => {
   assert.equal((await log(f.logDirectory)).result.status, 'completed');
 });
 
+test('原生生图事件的相对 savedPath 是协议异常：本回合失败，不按当前目录或任务根猜测', async t => {
+  const f = await fixture(t);
+  const server = await fakeAppServer(f.directory, [{tool:'probe',arguments:{}}], 'completed',
+    [{type:'imageGeneration',status:'completed',savedPath:'generated.png'}]);
+  const agents = new CodexAgents({codexPathOverride:server.executable,cwd:f.directory,logDirectory:f.logDirectory,
+    runtime:new AgentRuntime(3, async () => {})});
+  await assert.rejects(agents.run({name:'相对生图',prompt:'test',imageGeneration:true,tools:[tool(async () => textResult('已提交'))]}),
+    /Codex 原生生图 savedPath 必须是绝对路径：generated\.png/);
+  const protocol = (await readFile(server.capture,'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  assert.equal(protocol.filter(message => message.method === 'turn/start').length, 1);
+});
+
 test('原生容量失败恢复同一 thread，继续提示词保留已提交结果和生图路径，每次尝试都留日志', async t => {
   const f = await fixture(t);
   const savedPath = join(f.directory,'existing-image.png');
@@ -356,7 +368,7 @@ test('图片被内容策略拦截：本批图片换成文字后在新会话继�
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   const [injected] = protocol.filter(message => message.method === 'thread/inject_items');
   const history = JSON.stringify(injected.params.items);
-  assert.ok(!history.includes('input_image') && !history.includes('instructions'));
+  assert.ok(!history.includes('"type":"input_image"') && !history.includes('"instructions"'));
   for (const image of images) assert.ok(history.includes(`输入图片 ${image.path}`));
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.deepEqual(turns.map(message => message.params.threadId), ['native-thread-1', 'native-thread-2']);

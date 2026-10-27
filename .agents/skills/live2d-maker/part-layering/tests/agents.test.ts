@@ -14,6 +14,9 @@ const started = { type: 'thread.started', thread_id: 'test-thread' };
 const reasoning = { type: 'item.completed', item: { id: 'reason', type: 'reasoning', text: '测试公开摘要' } };
 const completed = { type: 'turn.completed', usage: { input_tokens: 12, cached_input_tokens: 4, output_tokens: 3, reasoning_output_tokens: 1 } };
 
+// Codex native imagegen reports absolute savedPath values.
+const generatedPath = '/case/step01/workspace/generated/image.png';
+
 async function fixture(t: TestContext, events: unknown[], extraCode = '') {
   nodeExecutables(t);
   const directory = await mkdtemp(join(tmpdir(), 'part-layering-agents-'));
@@ -50,7 +53,7 @@ async function readLog(root: string) {
 }
 
 test('真实 SDK 流接口记录输入、摘要、工具与未知事件字段、结果和用量', async t => {
-  const finalResponse = JSON.stringify({ savedPath: 'workspace/generated.png', error: null });
+  const finalResponse = JSON.stringify({ savedPath: generatedPath, error: null });
   const nativeImageEvent = { type: 'item.started', item: { id: 'image', type: 'image_generation', detail: { prompt: '测试生图要求' } } };
   const toolEvent = { type: 'item.completed', item: {
     id: 'tool', type: 'mcp_tool_call', server: 'test', tool: 'inspect', arguments: { input: 'test' },
@@ -66,7 +69,7 @@ test('真实 SDK 流接口记录输入、摘要、工具与未知事件字段、
   assert.equal(result.text, finalResponse);
   assert.equal(result.threadId, 'test-thread');
   assert.equal(result.logDirectory, log.directory);
-  assert.deepEqual(result.images, [{ savedPath: join(f.directory, 'workspace/generated.png') }]);
+  assert.deepEqual(result.images, [{ savedPath: generatedPath }]);
   assert.equal(log.request.prompt, workspacePrompt('测试提示词', executionPaths({cwd:f.directory}, f.directory)) + '\n\n图 1：测试图片');
   assert.equal(log.request.input[2].path, 'reference.png');
   assert.equal(log.request.task.timeoutMs, null);
@@ -116,6 +119,15 @@ test('超时保留已收到的记录，不自动重试', async t => {
   assert.match(log.transcript, /测试公开摘要/);
 });
 
+test('生图 savedPath 与 Codex 原生生图一致，只接受绝对路径，相对路径不按任何目录猜测', async t => {
+  const native = await fixture(t, [started, { type: 'item.completed', item: { id: 'image', type: 'image_generation', savedPath: 'generated.png' } },
+    { type: 'item.completed', item: { id: 'final', type: 'agent_message', text: JSON.stringify({ savedPath: generatedPath, error: null }) } }, completed]);
+  await assert.rejects(native.agents.run({ name: '原生相对路径', prompt: 'test', imageGeneration: true }), /Codex 原生生图 savedPath 必须是绝对路径：generated\.png/);
+  const reply = await fixture(t, [started,
+    { type: 'item.completed', item: { id: 'final', type: 'agent_message', text: JSON.stringify({ savedPath: 'workspace/generated.png', error: null }) } }, completed]);
+  await assert.rejects(reply.agents.run({ name: '回复相对路径', prompt: 'test', imageGeneration: true }), /回复相对路径 返回的 savedPath 必须是绝对路径/);
+});
+
 test('未完成的事件流不能记为成功', async t => {
   const f = await fixture(t, [started, reasoning]);
   await assert.rejects(f.agents.run({ name: '中断测试', prompt: 'test' }), /未收到 turn.completed/);
@@ -162,10 +174,10 @@ await appendFile(capture, JSON.stringify({args:process.argv.slice(2),prompt})+'\
 const write = event => process.stdout.write(JSON.stringify(event)+'\\n');
 write(${JSON.stringify(started)});
 if (!previous) {
-  write({type:'item.completed',item:{id:'image',type:'image_generation',savedPath:'workspace/generated.png'}});
+  write({type:'item.completed',item:{id:'image',type:'image_generation',savedPath:${JSON.stringify(generatedPath)}}});
   write({type:'turn.failed',error:{message:'Selected model is at capacity. Please try a different model.'}});
 } else {
-  write({type:'item.completed',item:{id:'message',type:'agent_message',text:JSON.stringify({savedPath:'workspace/generated.png',error:null})}});
+  write({type:'item.completed',item:{id:'message',type:'agent_message',text:JSON.stringify({savedPath:${JSON.stringify(generatedPath)},error:null})}});
   write(${JSON.stringify(completed)});
 }`);
   const agents = new CodexAgents({codexPathOverride:f.executable,cwd:f.directory,logDirectory:f.logDirectory,
@@ -173,7 +185,7 @@ if (!previous) {
   const result = await agents.run({name:'SDK恢复',prompt:'只调用一次生图',imageGeneration:true,
     images:[{path:join(f.directory,'reference.png'),description:'参考图'}]});
   assert.equal(result.threadId, 'test-thread');
-  assert.deepEqual(result.images, [{savedPath:join(f.directory,'workspace/generated.png')}]);
+  assert.deepEqual(result.images, [{savedPath:generatedPath}]);
   const calls = (await readFile(join(f.directory,'calls.jsonl'),'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(calls.length, 2);
   assert.ok(!calls[0].args.includes('resume'));
@@ -182,7 +194,7 @@ if (!previous) {
   assert.match(calls[0].prompt, /只调用一次生图/);
   assert.ok(calls[1].prompt.startsWith(interruptedTaskPrompt));
   assert.match(calls[1].prompt, /只调用一次生图/);
-  assert.ok(calls[1].prompt.includes('workspace/generated.png'));
+  assert.ok(calls[1].prompt.includes(generatedPath));
   assert.ok(!calls[1].args.includes('--image'));
   const names = await readdir(f.logDirectory);
   assert.equal(names.length, 2);
