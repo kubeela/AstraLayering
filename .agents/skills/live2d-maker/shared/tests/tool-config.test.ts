@@ -62,7 +62,7 @@ test('本地工具定义实际注册到 App Server，续轮保留定义并使用
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   const starts = protocol.filter(message => message.method === 'thread/start');
   assert.equal(starts.length, 1);
-  assert.equal(starts[0].params.cwd, root);
+  assert.equal(starts[0].params.cwd, join(root, 'workspace'));
   assert.deepEqual(starts[0].params.dynamicTools, [{ type: 'function', name: 'update_group_note', description: '本地编辑的说明', inputSchema: schema }]);
   assert.equal(protocol.filter(message => message.method === 'turn/start').length, 2);
   assert.deepEqual(calls, ['draw', 'repair']);

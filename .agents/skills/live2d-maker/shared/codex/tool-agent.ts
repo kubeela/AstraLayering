@@ -15,6 +15,7 @@ import type { ToolResult } from './function-tools.ts';
 import { validateProviderModel } from '../agents/providers.ts';
 import { prepareWorkspace, workspacePrompt, workspaceTools } from '../agents/workspace.ts';
 import { contextImages } from '../agents/inputs.ts';
+import { fromTaskPath } from '../task-paths.ts';
 
 // Only the protocol subset used here is maintained. The CLI is pinned by codex-sdk.
 type Message = { id?: number | string; method?: string; params?: Record<string, any>;
@@ -64,7 +65,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
   const pending = new Map<number | string, ReturnType<typeof Promise.withResolvers<Record<string, any>>>>();
   const exited = Promise.withResolvers<void>();
   let current: {
-    task: AgentTask; log: AgentLog; signal: AbortSignal;
+    task: AgentTask; root: string; log: AgentLog; signal: AbortSignal;
     completion: ReturnType<typeof Promise.withResolvers<void>>;
     tools: Map<string, NonNullable<AgentTask['tools']>[number]>;
     done: boolean; finalResponse: string; usage: unknown; images: GeneratedImage[]; errors: unknown[];
@@ -160,7 +161,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
           }
           else if (item?.type === 'imageGeneration' && current.task.imageGeneration && item.status === 'completed' &&
               typeof item.savedPath === 'string' && item.savedPath.trim()) {
-            const savedPath = resolve(cwd!, item.savedPath);
+            // Native image paths are absolute; a relative one means the task root, as in agent replies.
+            const savedPath = fromTaskPath(current.root, item.savedPath);
             if (!current.images.some(image => image.savedPath === savedPath)) current.images.push({ savedPath });
           }
         } else if (message.method === 'thread/tokenUsage/updated' && current) {
@@ -206,7 +208,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       if (byName.size !== tools.length || tools.some(tool => !/^[a-zA-Z0-9_-]+$/.test(tool.name))) {
         throw new Error('function tool 名称无效或重复');
       }
-      const workingDirectory = paths.directory;
+      const workingDirectory = paths.workspace;
       const definitions = tools.map(({ name, description, inputSchema }) => ({ type: 'function', name, description, inputSchema }));
       const enableImageGeneration = task.imageGeneration ?? false;
       if (threadId && (cwd !== workingDirectory || imageGeneration !== enableImageGeneration ||
@@ -241,7 +243,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       }, paths.root);
       const completion = Promise.withResolvers<void>();
       void completion.promise.catch(() => {});
-      current = { task, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [], errors: [] };
+      current = { task, root: paths.root, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [], errors: [] };
       const state = current;
       options.progress?.(`开始：${task.name}；原生 function tools${threadId ? `；沿用会话 ${threadId}` : ''}；记录：${log.directory}`);
       const abort = () => {

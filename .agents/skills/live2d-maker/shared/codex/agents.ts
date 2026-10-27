@@ -274,7 +274,7 @@ export class CodexAgents {
     await checkCodexCapabilities(this.options.environment!, this.options);
     const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, environment, ...options } = this.options;
     const paths = await prepareWorkspace(task, cwd ?? workflowsDirectory);
-    const workingDirectory = paths.directory;
+    const workingDirectory = paths.workspace;
     const codex = new Codex({
       ...options,
       config: {
@@ -341,7 +341,7 @@ export class CodexAgents {
           } else if (event.type === 'item.completed') {
             const item = event.item as unknown as Record<string, unknown>;
             if (['image_generation', 'imageGeneration'].includes(String(item.type)) && typeof item.savedPath === 'string') {
-              savedImages.add(resolve(workingDirectory, item.savedPath));
+              savedImages.add(fromTaskPath(paths.root, item.savedPath));
             }
           } else if (event.type === 'turn.completed') {
             completed = true;
