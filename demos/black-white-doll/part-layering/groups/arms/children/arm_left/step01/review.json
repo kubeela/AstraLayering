@@ -7,124 +7,124 @@
       "candidateHash": "d34aec5fe048d2217f56c3b5791bf26a8cf91356876cfdbc5de1a7468b489141",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-1.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-2.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-2.png"
         },
         {
-          "source": "../../../../../parts/arms.svg",
+          "source": "part-layering/parts/arms.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-3.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-4.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-5.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-6.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-7.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-8.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-9.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-9.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-10.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-10.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-11.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-11.png"
         },
         {
-          "source": "../../../../../parts/arms.svg",
+          "source": "part-layering/parts/arms.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-12.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-12.png"
         },
         {
-          "source": "../../../../../parts/arms.svg",
+          "source": "part-layering/parts/arms.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-13.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-13.png"
         },
         {
-          "source": "../../../../../parts/arms.svg",
+          "source": "part-layering/parts/arms.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-14.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-14.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-15.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-15.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-16.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-16.png"
         },
         {
-          "source": "../../../../../parts/arms.svg",
+          "source": "part-layering/parts/arms.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-17.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-17.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-18.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-18.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-19.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-19.png"
         },
         {
-          "source": "../../../../../parts/arms.svg",
+          "source": "part-layering/parts/arms.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-20.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-20.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-21.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-21.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-22.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-22.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-23.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-23.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/arms/children/arm_left/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-24.png"
+          "savedPath": "part-layering/groups/arms/children/arm_left/step01/observations/arms/arm_left/2026-10-25T06-05-02-701Z-24.png"
         }
       ],
       "updatedAt": "2026-10-25T06:42:32.744Z"

@@ -1,10 +1,11 @@
-import { readFile, realpath, stat } from 'node:fs/promises';
+import { readFile, realpath, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { checkSubject, normalizeGroups, walkGroups, writeAtomic } from '../part/groups.ts';
 import type { GroupInput, Subject } from '../part/layering-types.ts';
 import { validateOcclusionDocument, type OcclusionPlan } from '../part/occlusion-plan.ts';
+import { depthPreviewPath, publishDepthPreview } from '../part/depth-preview.ts';
 import type { PartLayeringInput } from './input.ts';
 
 type StructureGroups = { version?: 1; subject?: Subject; groups: GroupInput[] };
@@ -113,16 +114,27 @@ export function createStructureTools(input: PartLayeringInput): FunctionTool[] {
         signal.throwIfAborted();
         const groupsPath = join(input.directory, 'groups.json'), planPath = join(input.directory, 'occlusion.json');
         const planChanged = serialize(plan) !== serialize(oldPlan);
+        const groupsChanged = name === 'edit_groups' && serialize(groups) !== serialize(current);
         if (planChanged) await writeAtomic(planPath, serialize(plan));
         try {
-          if (name === 'edit_groups' && serialize(groups) !== serialize(current)) await writeAtomic(groupsPath, serialize(groups));
+          if (groupsChanged) await writeAtomic(groupsPath, serialize(groups));
         } catch (error) {
           // A filesystem error in the second save must not leave a new depth
           // table attached to the old tree. No artwork or step facts are reset.
           if (planChanged) await writeAtomic(planPath, serialize(oldPlan));
           throw error;
         }
-        return textResult({ groupsPath, occlusionPath: planPath, terminalParts: plan.layers.map(row => row.id),
+        let previewWarning: string | undefined;
+        if (planChanged || groupsChanged) {
+          try { await publishDepthPreview(input.directory, normalizeGroups(groups.groups), plan); }
+          catch (error) {
+            // A newly split group may not have SVG geometry yet. Do not show the
+            // previous table's picture or roll back a valid structural edit.
+            await rm(depthPreviewPath(input.directory), { force: true });
+            previewWarning = '深度预览尚未生成：' + (error as Error).message;
+          }
+        }
+        return textResult({ groupsPath, occlusionPath: planPath, ...(previewWarning ? { previewWarning } : {}), terminalParts: plan.layers.map(row => row.id),
           depthRegions: plan.layers.reduce((count, row) => count + (row.levels?.length ?? 1), 0), validated: true });
       });
     },

@@ -1,0 +1,9 @@
+{
+  "stamp": "fdf217fa85169e829f8aca9376a18603c8d1223b44041a57447127aff10e5099",
+  "inputs": {
+    "groups/face/children/eye_left/children/lower_eyelashes/step02": "dd59a8abe3281ec49d622203302ac70673f227de87a017da1795562e8c704f83"
+  },
+  "outputs": {
+    "children.json": "7125e2af8da8ba1c6995d4f469d3dd70264e363ff2953340e709bd12faa73586"
+  }
+}

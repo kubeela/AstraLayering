@@ -1,0 +1,9 @@
+{
+  "stamp": "3a996f54cef14243f121d0b09a08d368400ff587c803b5f29a4c6eaa0e52c400",
+  "inputs": {
+    "groups/face/children/mouth/children/upper_teeth/step02": "2cf3a19ae6c0ee42a62d25166b577990c02b4267804320da6643a4a522a0c2b6"
+  },
+  "outputs": {
+    "children.json": "855e8956da3838e92c7ce79a09a7fe884bdc77f3a8f8eaa4ee56fdcf51d9c662"
+  }
+}

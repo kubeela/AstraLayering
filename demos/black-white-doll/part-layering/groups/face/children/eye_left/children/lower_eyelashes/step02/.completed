@@ -1,0 +1,9 @@
+{
+  "stamp": "dd59a8abe3281ec49d622203302ac70673f227de87a017da1795562e8c704f83",
+  "inputs": {
+    "layers/depth03#face/eye_left/lower_eyelashes.svg": "4d525ad209757582bf91acb3431278cc80dfec5dc2c3a5b36daf06345bdf7be2"
+  },
+  "outputs": {
+    "../../../../../../../parts/face/eye_left/lower_eyelashes.svg": "7ff73e7a57a5c3e6f4b876e0fc37f4c6b58eac976102cea2085705aea504572c"
+  }
+}

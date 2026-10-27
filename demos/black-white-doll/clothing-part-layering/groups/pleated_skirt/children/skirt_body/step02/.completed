@@ -1,0 +1,9 @@
+{
+  "stamp": "b10db49ebe0b36ffda015bd5436397b25ade95e004eb9570f9e4d418a66abf33",
+  "inputs": {
+    "layers/depth02#pleated_skirt/skirt_body.svg": "6a2ac91a5d15906bb28e5b61b1364a06550f993da23d8d293991a59e24012ed6"
+  },
+  "outputs": {
+    "../../../../../parts/pleated_skirt/skirt_body.svg": "8f26dc75764ea87a617658900445772766b0404c75705239ea6e86e96dd34a7c"
+  }
+}

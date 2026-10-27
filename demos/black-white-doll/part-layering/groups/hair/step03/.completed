@@ -1,0 +1,9 @@
+{
+  "stamp": "c47ee46891d10f5f82893d77e38a5cc8b2c0fe9a377195679d08f5204f318e38",
+  "inputs": {
+    "groups/hair/step02": "860f38a216436b235ff9f1d3c991867fd26cd4f032bce8a62458a1abcc0341f6"
+  },
+  "outputs": {
+    "children.json": "6a65ed85b0b0f3ae0b2d14242f250835bb49c60816dd71fb36636f711db5b885"
+  }
+}

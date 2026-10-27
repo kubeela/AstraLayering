@@ -1,0 +1,9 @@
+{
+  "stamp": "96dc6a2d7b0c17907e25af6876abe5ea77f6c0b21b5f5278def8489d0a888f8f",
+  "inputs": {
+    "groups/hair/children/back_hair/step02": "ff6f1a5e791d309b8e06362143e807f3f8d42fe05cbd4e6ad766d9e692413a04"
+  },
+  "outputs": {
+    "children.json": "6ae34dc36168a5c80981dc63434e8355c97954f63f243766522f983de48df1c5"
+  }
+}

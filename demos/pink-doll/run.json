@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "archive": true,
+  "name": "pink-doll",
+  "dir": ".",
+  "from": "part-layering",
+  "to": "shadow",
+  "jobs": 3,
+  "standard": true,
+  "shadowMode": "mask",
+  "status": "completed",
+  "createdAt": "2026-10-21T16:12:25.867Z",
+  "updatedAt": "2026-10-23T19:15:38.393Z",
+  "pipelines": {
+    "part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-22T12:28:13.772Z"
+    },
+    "raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-23T01:43:11.599Z"
+    },
+    "clothing-part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-22T20:16:01.810Z"
+    },
+    "clothing-raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-23T03:03:20.100Z"
+    },
+    "character-assembly": {
+      "status": "completed",
+      "updatedAt": "2026-10-23T04:21:23.572Z"
+    },
+    "shadow": {
+      "status": "completed",
+      "updatedAt": "2026-10-23T19:15:38.391Z"
+    }
+  }
+}

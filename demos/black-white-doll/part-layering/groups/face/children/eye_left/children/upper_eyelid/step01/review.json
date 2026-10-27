@@ -7,84 +7,84 @@
       "candidateHash": "c9909bf87a180632bd5de831e052edabf8873fbc3b4e155fdb16dc5693ee5676",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-1.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-1.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-2.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-3.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-4.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-5.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-6.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-7.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-8.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-9.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-9.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-10.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-10.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-11.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-11.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-12.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-12.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-13.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-13.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-14.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-14.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-15.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-15.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-16.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T08-29-59-499Z-16.png"
         }
       ],
       "updatedAt": "2026-10-25T09:27:12.981Z",
@@ -96,79 +96,79 @@
       "candidateHash": "4f0188981e59f88669324296a4d2d0c8c561b13be31e82a8dea80d237eb5ce39",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-1.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-1.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-2.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-3.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-4.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-5.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-6.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-7.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-8.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-9.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-9.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-10.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-10.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-11.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-11.png"
         },
         {
-          "source": "../../../../../../../parts/face/eye_left.svg",
+          "source": "part-layering/parts/face/eye_left.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-12.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-12.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-13.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-13.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-14.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-14.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-15.png"
+          "savedPath": "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/observations/face/eye_left/upper_eyelid/2026-10-25T10-19-47-751Z-15.png"
         }
       ],
       "updatedAt": "2026-10-25T10:36:33.445Z"

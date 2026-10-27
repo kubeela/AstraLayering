@@ -1,0 +1,9 @@
+{
+  "stamp": "8bbbce4e2945305b799ec2332f58c57033f8ed86f2eb59475df3f07046d8c271",
+  "inputs": {
+    "layers/depth02#camisole/right_shoulder_strap.svg": "0e28fee0f79f5c46848f494e2b7c024acbb7dcc9d2ca89e923204ee12c694fe8"
+  },
+  "outputs": {
+    "../../../../../parts/camisole/right_shoulder_strap.svg": "4c3cbda6d69dc1518abdbfc6e6f82b86a6e23c3deefd192438b3cc33cfbb7a18"
+  }
+}

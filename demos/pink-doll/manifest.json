@@ -11,6 +11,11 @@
   },
   "files": [
     {
+      "bytes": 5603,
+      "sha256": "91ab20abc8ac8c9a7b7bf0075d200188d37fcc2d130f524ec08639dbc283b0bd",
+      "path": "README.md"
+    },
+    {
       "path": "character-assembly/step01/character-assembled.kra",
       "source": ".run/pink-doll/character-assembly/step01/character-assembled.kra",
       "bytes": 11304201,
@@ -57,12 +62,6 @@
       "source": ".run/pink-doll/character-assembly/step01/verification.json",
       "bytes": 2208,
       "sha256": "27d6513ed0defc89df19a7d8bfa8489464cd7f76ab72440bd8c781f7a4e48272"
-    },
-    {
-      "path": "clothing-part-layering/groups.json",
-      "source": ".run/pink-doll/clothing-part-layering/groups.json",
-      "bytes": 27955,
-      "sha256": "ad0fc79b61f78c6b9378b95b25786a9e7174b4bf0174b9610a36845901825b0b"
     },
     {
       "path": "clothing-part-layering/groups/bodice/step01/.completed",
@@ -443,6 +442,12 @@
       "sha256": "5e9475b75e742d16ce55421d075458159566c9e29de93825b877c41f7fc6d299"
     },
     {
+      "path": "clothing-part-layering/groups.json",
+      "source": ".run/pink-doll/clothing-part-layering/groups.json",
+      "bytes": 27955,
+      "sha256": "ad0fc79b61f78c6b9378b95b25786a9e7174b4bf0174b9610a36845901825b0b"
+    },
+    {
       "path": "clothing-part-layering/initial/step01/.completed",
       "source": "mechanical step-layout projection",
       "bytes": 182,
@@ -527,16 +532,21 @@
       "sha256": "dad8e1f0fbfbdc0a6f505e0a27bbcea76ac8b15663944370623277957a37ef0d"
     },
     {
-      "path": "clothing-part-layering/occlusion.json",
-      "source": ".run/pink-doll/clothing-part-layering/occlusion.json",
-      "bytes": 10967,
-      "sha256": "cab24bf613bd4e0d410ab827c39362633b4e99ba16b1361816e7437945f4fa16"
-    },
-    {
       "path": "clothing-part-layering/occlusion/.completed",
       "source": "mechanical step-layout projection",
       "bytes": 135,
       "sha256": "2f7c282bc12740d878d5d84a775a96c8e1f9f05225bc2b3a9f104bb75f90c55b"
+    },
+    {
+      "bytes": 34611,
+      "sha256": "e81b0de0cc1cf78f6b0164b20efb98ee7f19a49589a2e28dd5fb25de14dc99e1",
+      "path": "clothing-part-layering/occlusion/preview.svg"
+    },
+    {
+      "path": "clothing-part-layering/occlusion.json",
+      "source": ".run/pink-doll/clothing-part-layering/occlusion.json",
+      "bytes": 10967,
+      "sha256": "cab24bf613bd4e0d410ab827c39362633b4e99ba16b1361816e7437945f4fa16"
     },
     {
       "path": "clothing-part-layering/parts/bodice.svg",
@@ -551,12 +561,6 @@
       "sha256": "fd56f1e38d84b65ab77947d23f485e256466f670b746a1b35b9d796aa9bc9d9c"
     },
     {
-      "path": "clothing-part-layering/parts/shoulder_straps.svg",
-      "source": ".run/pink-doll/clothing-part-layering/parts/shoulder_straps.svg",
-      "bytes": 8664,
-      "sha256": "423c3bee370011e70dd83275a1283520fb730df620788f2b9b16d1d5d62a12a2"
-    },
-    {
       "path": "clothing-part-layering/parts/shoulder_straps/left_shoulder_strap.svg",
       "source": ".run/pink-doll/clothing-part-layering/parts/shoulder_straps/left_shoulder_strap.svg",
       "bytes": 4569,
@@ -569,10 +573,10 @@
       "sha256": "d323b6bab2013c8440e5a97cc8bd9a6eef69910fa2c96ffa304392171e3c796d"
     },
     {
-      "path": "clothing-part-layering/parts/skirt.svg",
-      "source": ".run/pink-doll/clothing-part-layering/parts/skirt.svg",
-      "bytes": 7007,
-      "sha256": "3dc26fd517c83a9258c48a9553983ebca22ba4594ddaaac812bd10658f04ea86"
+      "path": "clothing-part-layering/parts/shoulder_straps.svg",
+      "source": ".run/pink-doll/clothing-part-layering/parts/shoulder_straps.svg",
+      "bytes": 8664,
+      "sha256": "423c3bee370011e70dd83275a1283520fb730df620788f2b9b16d1d5d62a12a2"
     },
     {
       "path": "clothing-part-layering/parts/skirt/lower_tier.svg",
@@ -591,6 +595,12 @@
       "source": ".run/pink-doll/clothing-part-layering/parts/skirt/upper_tier.svg",
       "bytes": 3545,
       "sha256": "8a9380f4fd7ad52d6a4280543dea2be64de7fdbececa9d2b079c6c93a19a38d3"
+    },
+    {
+      "path": "clothing-part-layering/parts/skirt.svg",
+      "source": ".run/pink-doll/clothing-part-layering/parts/skirt.svg",
+      "bytes": 7007,
+      "sha256": "3dc26fd517c83a9258c48a9553983ebca22ba4594ddaaac812bd10658f04ea86"
     },
     {
       "path": "clothing-part-layering/preview.svg",
@@ -622,6 +632,11 @@
       "source": ".run/pink-doll/clothing-raster-layering/step01/clothing-depth.kra",
       "bytes": 6750270,
       "sha256": "9b4a65d326cb94023e4555127c4921ff17ef83d08d4a5ead5aa642649e227b98"
+    },
+    {
+      "bytes": 262343,
+      "sha256": "0bf65defc2e87ee5d292f5f8d3cb0887a4c46178de68bedfcf33927c0ccf2135",
+      "path": "clothing-raster-layering/step01/composite.png"
     },
     {
       "path": "clothing-raster-layering/step01/layer-manifest.json",
@@ -728,573 +743,6 @@
       "sha256": "fd304a48f1a086f506fb5b73b222d7ca9baedf90aaf6384d9fdf8474695f9af2"
     },
     {
-      "path": "clothing-raster-layering/step01/workspace/parts/bodice/complete-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/bodice/complete-shape.svg",
-      "bytes": 3251,
-      "sha256": "2a89d214b9038caedfc1f63813d4ba1541cde114fc7b7bcfd8ce27682e3a1f9c",
-      "previousPath": "clothing-raster-layering/step01/parts/bodice/complete-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/bodice/registered-fit.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/bodice/registered-fit.png",
-      "bytes": 32995,
-      "sha256": "4e007da737c4fb5ae03e14e065baa520e25463b53241ed42681ea49a8750a5da",
-      "previousPath": "clothing-raster-layering/step01/parts/bodice/registered-fit.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/bodice/visible-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/bodice/visible-shape.svg",
-      "bytes": 3251,
-      "sha256": "2a89d214b9038caedfc1f63813d4ba1541cde114fc7b7bcfd8ce27682e3a1f9c",
-      "previousPath": "clothing-raster-layering/step01/parts/bodice/visible-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/chest_bow/complete-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/chest_bow/complete-shape.svg",
-      "bytes": 1627,
-      "sha256": "ebc1c8bd9e44686197e245ef31269a73f9460bb7b09d229f74a415726b3254a4",
-      "previousPath": "clothing-raster-layering/step01/parts/chest_bow/complete-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/chest_bow/registered-fit.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/chest_bow/registered-fit.png",
-      "bytes": 17660,
-      "sha256": "0f989c9312376c3c0cb447efbd44cc3e242accd957fd19d4ce950151c2e088ee",
-      "previousPath": "clothing-raster-layering/step01/parts/chest_bow/registered-fit.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/chest_bow/visible-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/chest_bow/visible-shape.svg",
-      "bytes": 1627,
-      "sha256": "ebc1c8bd9e44686197e245ef31269a73f9460bb7b09d229f74a415726b3254a4",
-      "previousPath": "clothing-raster-layering/step01/parts/chest_bow/visible-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/shoulder_straps/left_shoulder_strap/complete-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/shoulder_straps/left_shoulder_strap/complete-shape.svg",
-      "bytes": 4570,
-      "sha256": "3a155e9df804be456f83ddcd6cce0db05c2b3dbfbc807060128d5f2f3b4504ec",
-      "previousPath": "clothing-raster-layering/step01/parts/shoulder_straps/left_shoulder_strap/complete-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/shoulder_straps/left_shoulder_strap/registered-fit.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/shoulder_straps/left_shoulder_strap/registered-fit.png",
-      "bytes": 16701,
-      "sha256": "afdc743989ccec8155bf34b48a138c6f136daa2cb1054e0a948c17856fdc34ef",
-      "previousPath": "clothing-raster-layering/step01/parts/shoulder_straps/left_shoulder_strap/registered-fit.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/shoulder_straps/left_shoulder_strap/visible-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/shoulder_straps/left_shoulder_strap/visible-shape.svg",
-      "bytes": 4238,
-      "sha256": "631d279dd09a3961b2e5604b9730cbf574b80fffeb7795fbcc9f2f6a0696f551",
-      "previousPath": "clothing-raster-layering/step01/parts/shoulder_straps/left_shoulder_strap/visible-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/shoulder_straps/right_shoulder_strap/complete-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/shoulder_straps/right_shoulder_strap/complete-shape.svg",
-      "bytes": 4539,
-      "sha256": "1f9cb9de91ae5ea8b27b3f580c3af05c1655c6a8820de1455a2c24f3214398a9",
-      "previousPath": "clothing-raster-layering/step01/parts/shoulder_straps/right_shoulder_strap/complete-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/shoulder_straps/right_shoulder_strap/registered-fit.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/shoulder_straps/right_shoulder_strap/registered-fit.png",
-      "bytes": 17500,
-      "sha256": "5c0e247e72517bd6c4a3cf5fc61599c89edb677463bbd971493be766feb0323d",
-      "previousPath": "clothing-raster-layering/step01/parts/shoulder_straps/right_shoulder_strap/registered-fit.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/shoulder_straps/right_shoulder_strap/visible-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/shoulder_straps/right_shoulder_strap/visible-shape.svg",
-      "bytes": 4207,
-      "sha256": "e918c6169d5bd6d8628c47a7537a621e9d032edc8b56b9dfecc2181808cbee3d",
-      "previousPath": "clothing-raster-layering/step01/parts/shoulder_straps/right_shoulder_strap/visible-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/lower_tier/complete-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/lower_tier/complete-shape.svg",
-      "bytes": 7468,
-      "sha256": "fee2c53136c0142c497b044139eafc48dd8377d1c12f56704d86ffbe503c9c83",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/lower_tier/complete-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/lower_tier/fragment-back.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/lower_tier/fragment-back.png",
-      "bytes": 11611,
-      "sha256": "31b8b8604c47955b6b4a6812cb733646e2ef55253b302cc081f6b9cac52500bc",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/lower_tier/fragment-back.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/lower_tier/fragment-front.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/lower_tier/fragment-front.png",
-      "bytes": 98954,
-      "sha256": "d29bb91ba8976f6b5e1443e25e3dd2f66260260fcea17924dd206c4d4c8b0753",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/lower_tier/fragment-front.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/lower_tier/registered-fit.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/lower_tier/registered-fit.png",
-      "bytes": 105375,
-      "sha256": "0bce25b8d6947548b601b451e479e888600e3693d256e02f3b206f3682b7a244",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/lower_tier/registered-fit.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/lower_tier/visible-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/lower_tier/visible-shape.svg",
-      "bytes": 6856,
-      "sha256": "64315e54cf04bce328d764f30a2fae68c1cb41a3d937087a01175791530f02d3",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/lower_tier/visible-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/middle_tier/complete-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/middle_tier/complete-shape.svg",
-      "bytes": 7367,
-      "sha256": "b4b3bfbad11bb1bb856c90d0bce7e492f0ee75fa889e0c0dfd93cb1b0953f8df",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/middle_tier/complete-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/middle_tier/registered-fit.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/middle_tier/registered-fit.png",
-      "bytes": 76216,
-      "sha256": "323d716338e0223dde227e90c03f4d058619eca6e5df5d65dcb0d3e296c3fa4b",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/middle_tier/registered-fit.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/middle_tier/visible-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/middle_tier/visible-shape.svg",
-      "bytes": 6863,
-      "sha256": "905a705e11e4ff4100e0ad6ae4996941fbc44d03e9485093e92af1233fad23ac",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/middle_tier/visible-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/upper_tier/complete-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/upper_tier/complete-shape.svg",
-      "bytes": 3546,
-      "sha256": "e84d77c240ae896dafa6f82ddd94bb3618f4747a7e6d1034561955a0b8c3d677",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/upper_tier/complete-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/upper_tier/registered-fit.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/upper_tier/registered-fit.png",
-      "bytes": 66747,
-      "sha256": "86890a27e54ed910ef7e722e0568ae0caf6b95a5ab31b69957d9f4a57e541636",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/upper_tier/registered-fit.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/parts/skirt/upper_tier/visible-shape.svg",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/parts/skirt/upper_tier/visible-shape.svg",
-      "bytes": 3164,
-      "sha256": "3e102bd6c15120a69be6f743ce7d38d31496a4828968ffb4a783b0b944c33d95",
-      "previousPath": "clothing-raster-layering/step01/parts/skirt/upper_tier/visible-shape.svg"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/progressive/prog-001-to-002.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-002.png",
-      "bytes": 88323,
-      "sha256": "0a1b3628dd8518f55c299db5ddb66cb9dc72e3cc841996416c7e3ed541e0d55a",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-002.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/progressive/prog-001-to-003.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-003.png",
-      "bytes": 137638,
-      "sha256": "21c64469fe0f42a8be0d4a9d53d2d874a33470e12b43b7a0ff3cc383547e8433",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-003.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/progressive/prog-001-to-004.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-004.png",
-      "bytes": 180945,
-      "sha256": "9b7a828b452836ff7edc199bf438a1421d9aecef383bf01b4bbdcd0fb8d1f0e8",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-004.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/progressive/prog-001-to-005.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-005.png",
-      "bytes": 194092,
-      "sha256": "c0dd13f17dd083cd3807eb3733eadeaead86dd6f984f4cd220b842b5fb06059c",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-005.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/progressive/prog-001-to-006.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-006.png",
-      "bytes": 205058,
-      "sha256": "db7571809b410eef615fa94fd8fd19e1381d5135ea6beee0b6da9bcfb210a8e5",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-006.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/progressive/prog-001-to-007.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-007.png",
-      "bytes": 216325,
-      "sha256": "0c0833f7ed9765bb42a43e52fc248eeb590bca897ed4374c77d32126f594d8c6",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-007.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/progressive/prog-001-to-008.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-008.png",
-      "bytes": 221751,
-      "sha256": "3ff51597e662e6cd70481db54ebc3f8d23edc163a91419c5a485149e2bcc542a",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/progressive/prog-001-to-008.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/solo/solo-002.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/solo/solo-002.png",
-      "bytes": 83392,
-      "sha256": "55b13f567b74f02c2694fe8b17698229ff260b902a62e9a625bd844b6e10bbb7",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/solo/solo-002.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/solo/solo-003.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/solo/solo-003.png",
-      "bytes": 69304,
-      "sha256": "49093d156fabe8716d62de94d82d84d391ace371ca68d8bb1aa0a44b09843345",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/solo/solo-003.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/solo/solo-004.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/solo/solo-004.png",
-      "bytes": 59694,
-      "sha256": "9d714d3f3c4656e133fba33806e94502c090125a7d7139d07d1f4fc15e9d9f20",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/solo/solo-004.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/solo/solo-005.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/solo/solo-005.png",
-      "bytes": 20026,
-      "sha256": "3576c298c1e32ea4fbd1d270785f5076cd16a7e5f683982e323591e1c92e5734",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/solo/solo-005.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/solo/solo-006.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/solo/solo-006.png",
-      "bytes": 19610,
-      "sha256": "ecb11e1eabfd4072cbc3ca38a5d348c807e2a6932f8e041b9690e823b61809b5",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/solo/solo-006.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/solo/solo-007.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/solo/solo-007.png",
-      "bytes": 28953,
-      "sha256": "659088be1056b36bd07be4bdfa75ab4a1ab7cc3066c58b50a554ad711427c8a7",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/solo/solo-007.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/solo/solo-008.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/solo/solo-008.png",
-      "bytes": 16519,
-      "sha256": "6cc54fbef984b7695a607dc9233d8a6611c2266c00f8132686e3db70fd6654d2",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/solo/solo-008.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-01-bodice-and-chest-bow-300x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-01-bodice-and-chest-bow-300x.png",
-      "bytes": 163599,
-      "sha256": "b774e2e95dce80d5a0cdc359a6d7b58f23bc823e36c5eb16cc965f4270e9b733",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-01-bodice-and-chest-bow-300x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-02-shoulder-straps-300x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-02-shoulder-straps-300x.png",
-      "bytes": 72527,
-      "sha256": "9e1ac048a866f6e9a5f1456805c5a3a322f5565a4d19a9d4d381ec8820bd4f74",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-02-shoulder-straps-300x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-03-skirt-upper-tier-300x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-03-skirt-upper-tier-300x.png",
-      "bytes": 199534,
-      "sha256": "6802bbc8a4f728c10386dc1282c3b9b65ce8bbe1f077d71a91aa8e689217d125",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-03-skirt-upper-tier-300x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-04-skirt-middle-tier-200x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-04-skirt-middle-tier-200x.png",
-      "bytes": 219747,
-      "sha256": "3f060c5ffedc15d9cdd02a39bbf87a5e65bebc0f2d3810d3c4ec994b1285ba47",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-04-skirt-middle-tier-200x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-05a-skirt-lower-tier-200x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-05a-skirt-lower-tier-200x.png",
-      "bytes": 259545,
-      "sha256": "e43373bf9d1aff3f1df5f183c8fe5b4185fbc9e461ca4cd62f8573e779777a99",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-05a-skirt-lower-tier-200x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-05b-lower-tier-hem-split-400x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-05b-lower-tier-hem-split-400x.png",
-      "bytes": 87403,
-      "sha256": "7c33bda5e040f79349106e48f48669b5ad6f041502bb985318b44b806c2e529d",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-05b-lower-tier-hem-split-400x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-05c-three-folds-detail-500x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-05c-three-folds-detail-500x.png",
-      "bytes": 71675,
-      "sha256": "719fbba4e1e96270bc055606bca5d0122ac681c1067c5df0668e59e5e4147bd1",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-05c-three-folds-detail-500x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-06-lower-tier-seam-400x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-06-lower-tier-seam-400x.png",
-      "bytes": 95708,
-      "sha256": "409a1336d55b777cf7912f3e67d87abd8a1a4dde39dbce30677580fa4d8bcd28",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-06-lower-tier-seam-400x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-07-center-fold-defect-600x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-07-center-fold-defect-600x.png",
-      "bytes": 27088,
-      "sha256": "97fd75d026a76e0106d18d4d92e56cf7a42fc3833770fdd30bc4d3a16332bcf4",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-07-center-fold-defect-600x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-08-left-right-folds-sandwich-500x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-08-left-right-folds-sandwich-500x.png",
-      "bytes": 37717,
-      "sha256": "dfd91c751f972fd457f6fa6f157c5a9ad9826229bd275aa3d6c88778fe4857d0",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-08-left-right-folds-sandwich-500x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-09-hem-vs-legs-400x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-09-hem-vs-legs-400x.png",
-      "bytes": 95757,
-      "sha256": "615684b14b35b491a6d4348f6f95f85af3fc080d8d68c4cff0e26e4be796cfb3",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-09-hem-vs-legs-400x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-01-evidence/zoom-10-straps-bottom-600x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-01-evidence/zoom-10-straps-bottom-600x.png",
-      "bytes": 87374,
-      "sha256": "409a318f3cfdb1ca9523db50cea43e0ab300c2f097e80ddfe8e30f12bdf2b4e9",
-      "previousPath": "clothing-raster-layering/step01/review-01-evidence/zoom-10-straps-bottom-600x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/krita-full-composite.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/krita-full-composite.png",
-      "bytes": 222566,
-      "sha256": "0cd479171a11fb1e02a50eaa9294a5a79a5373fac91139c8190728fba5ef2aa1",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/krita-full-composite.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/progressive/prog-001-to-002.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-002.png",
-      "bytes": 89133,
-      "sha256": "b3efdf9aeff6b70b539c4b02cde0b99b01f3108b2ca9aed0a12feccced328ad8",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-002.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/progressive/prog-001-to-003.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-003.png",
-      "bytes": 138449,
-      "sha256": "055771ff6bd2b54d3cfbb8dc899db47975d80e7440fd3dc868d6417bb541bb79",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-003.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/progressive/prog-001-to-004.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-004.png",
-      "bytes": 181616,
-      "sha256": "88a6505fdc8c496266075a6dbffa7ee183c302b9dc457865a8b70438b1a88fb7",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-004.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/progressive/prog-001-to-005.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-005.png",
-      "bytes": 194741,
-      "sha256": "898ebf522181bc84bcbe4124ed6d5c7aaad6c0e3c17fd689d72d710c418ecc95",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-005.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/progressive/prog-001-to-006.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-006.png",
-      "bytes": 205878,
-      "sha256": "3036311d37f3c9f71fddfec90e35e04ed1b897cffba6f20e4f0fb078471faa2e",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-006.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/progressive/prog-001-to-007.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-007.png",
-      "bytes": 216875,
-      "sha256": "dcb9ff3b259c79532e5b2a8ee1cdfc988218c79d6dacc5b88de872c019dde65d",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-007.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/progressive/prog-001-to-008.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-008.png",
-      "bytes": 222566,
-      "sha256": "0cd479171a11fb1e02a50eaa9294a5a79a5373fac91139c8190728fba5ef2aa1",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/progressive/prog-001-to-008.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/solo/solo-002.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/solo/solo-002.png",
-      "bytes": 96270,
-      "sha256": "891f343c4d071dd793a5d3646a5bd7933bd1043b277d10ab80f7d1b2a5d9cfb4",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/solo/solo-002.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/solo/solo-003.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/solo/solo-003.png",
-      "bytes": 336664,
-      "sha256": "f8861737d36c19ffafe46936785f5ee320087f28b2c4d8cc859431d5927251f2",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/solo/solo-003.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/solo/solo-004.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/solo/solo-004.png",
-      "bytes": 337098,
-      "sha256": "ee079dfabb732a060339818d5a85f4fdab46fa65c1ed4e97c9e92e90055e9622",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/solo/solo-004.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/solo/solo-005.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/solo/solo-005.png",
-      "bytes": 336184,
-      "sha256": "07cbf80dab24fa45a0a442da38e2f83710fb20dd772de9bf6b450dbf00f663b5",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/solo/solo-005.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/solo/solo-006.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/solo/solo-006.png",
-      "bytes": 336025,
-      "sha256": "788a687ec0d171c3947aa21b97266dfb26de8d439afdef65d5b43e8c8d5e81be",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/solo/solo-006.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/solo/solo-007.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/solo/solo-007.png",
-      "bytes": 327800,
-      "sha256": "e0d073e595d62e25bba8c91f2bd8725cadf28b5ae4c3848af00d6a7939c00d8f",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/solo/solo-007.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/solo/solo-008.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/solo/solo-008.png",
-      "bytes": 213788,
-      "sha256": "ac274b174cc6e347217df4307d22e96dc8c950c73e62b9abeb3452d93b60ae93",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/solo/solo-008.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/zoom-01-bodice-and-chest-bow-300x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/zoom-01-bodice-and-chest-bow-300x.png",
-      "bytes": 129019,
-      "sha256": "620902ff6f1b2fd81bcff327c247e96be4898e96425c43e020943e153a0e2953",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/zoom-01-bodice-and-chest-bow-300x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/zoom-02-shoulder-straps-400x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/zoom-02-shoulder-straps-400x.png",
-      "bytes": 71491,
-      "sha256": "5aa56698f7c66decaf956703ce32d7aab635abd5832e89074fe4193077eb12e3",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/zoom-02-shoulder-straps-400x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/zoom-03-skirt-upper-tier-300x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/zoom-03-skirt-upper-tier-300x.png",
-      "bytes": 217428,
-      "sha256": "0e3b3a0cea679a9c97477ddd65a6b0fc07ed5e303f8a1009cfe21babc7ceeb78",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/zoom-03-skirt-upper-tier-300x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/zoom-04-skirt-middle-tier-250x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/zoom-04-skirt-middle-tier-250x.png",
-      "bytes": 264750,
-      "sha256": "1e534ab57fd8adeab8ff32430b95f1e514cc5c02beb69abe83732d870ecf44a4",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/zoom-04-skirt-middle-tier-250x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/zoom-05-skirt-lower-tier-200x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/zoom-05-skirt-lower-tier-200x.png",
-      "bytes": 264850,
-      "sha256": "750e591a0889ab431cbf31949174bd8c6aaf48f135b1f08dda26eefa3733ca06",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/zoom-05-skirt-lower-tier-200x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/zoom-06-r1-center-fold-600x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/zoom-06-r1-center-fold-600x.png",
-      "bytes": 15318,
-      "sha256": "2faf82fafbf403baad88e209cd0b0e52bf5e0808ea8407624f32b10eedffa745",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/zoom-06-r1-center-fold-600x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-02-evidence/zoom-07-r2-r3-left-right-folds-500x.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-02-evidence/zoom-07-r2-r3-left-right-folds-500x.png",
-      "bytes": 47426,
-      "sha256": "9054dc8213e96cd92bd4a70eec3a6efb1b7bfd027fbfc3cb8612989cbd887fb3",
-      "previousPath": "clothing-raster-layering/step01/review-02-evidence/zoom-07-r2-r3-left-right-folds-500x.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/marked.png",
-      "bytes": 271870,
-      "sha256": "3e0a775eb44bad3dd006f9d5259378f79ea587a754f38ed11596b5570fd6fb85",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/marked.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-comparison.png",
-      "bytes": 9616,
-      "sha256": "50be54002a464003b891dfdfb109d8c8b4f97b9fef907d740653a261f580a1f5",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-current.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-current.png",
-      "bytes": 4935,
-      "sha256": "66cfbc4fe7955505435ed4e51ea846885d41aa23863784fcf16b58881683015f",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-current.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-reference.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-reference.png",
-      "bytes": 6420,
-      "sha256": "7051d00cdba71034c80c4335494b4f292e2b3691a9acd3f43c0c5eebc4984369",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R1-reference.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-comparison.png",
-      "bytes": 21110,
-      "sha256": "0f7b440fd198ceccad35b316a5f54968a145aa6acc4a83d667c73ddf168accc1",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-current.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-current.png",
-      "bytes": 11122,
-      "sha256": "6644ebcccc17cbffccad5cd011d0dac9095ea2d7589b1410d5a929ca89c18768",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-current.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-reference.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-reference.png",
-      "bytes": 14183,
-      "sha256": "ea4a8414198f58c379be124edfd7710dc44bc3a803ccf7bdbd4c396b057aa4d1",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R2-reference.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-comparison.png",
-      "bytes": 19172,
-      "sha256": "df08b9c10b09189303b4702ca95dfc4f4577cd5d3a628f844b8155c2130c8deb",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-current.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-current.png",
-      "bytes": 10120,
-      "sha256": "88324f54c0f15e171c10e046be1e376ad459c514b5c873808116e02c9a9a6601",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-current.png"
-    },
-    {
-      "path": "clothing-raster-layering/step01/workspace/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-reference.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-reference.png",
-      "bytes": 12917,
-      "sha256": "9ed86789288834cb239efa7f6dbe3f688dce49b04cfb4d78303b0e79b05c2750",
-      "previousPath": "clothing-raster-layering/step01/review-evidence/4c755be0-b471-448a-b984-37047741e72b/R3-reference.png"
-    },
-    {
       "path": "clothing-raster-layering/step02/clothing-soft-edges.kra",
       "source": ".run/pink-doll/clothing-raster-layering/step02/clothing-soft-edges.kra",
       "bytes": 1717046,
@@ -1305,6 +753,11 @@
       "source": ".run/pink-doll/clothing-raster-layering/step02/clothing-soft-edges.png",
       "bytes": 257561,
       "sha256": "1c96f66edfcbbd96abed60ecae33a93ca91915ea25d190c3e206a1a555270226"
+    },
+    {
+      "bytes": 257561,
+      "sha256": "1c96f66edfcbbd96abed60ecae33a93ca91915ea25d190c3e206a1a555270226",
+      "path": "clothing-raster-layering/step02/composite.png"
     },
     {
       "path": "clothing-raster-layering/step02/edge-polish-records.json",
@@ -1369,163 +822,10 @@
       "archivedBytes": 12870
     },
     {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/comparison.png",
-      "bytes": 595603,
-      "sha256": "eda0a8bc1611e7f49e10005c3bd622ae69ed33b3dfef11e9d86f9f29e9332337",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/heatmap.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/heatmap.png",
-      "bytes": 6416,
-      "sha256": "423c7d74874c81005e86ef67b023221b7d738aacc745756f793ff94e0ad44d4b",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/heatmap.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/marked.png",
-      "bytes": 276789,
-      "sha256": "b893d64ad3ed84bd4b71fde6008af796354c3135c9676296c218b8427692ed9e",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/2a5a3bf7-29ba-4821-b2ce-f0845761aa90/marked.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/comparison.png",
-      "bytes": 585038,
-      "sha256": "f1c17a736bd0fea4dafea3b7865ac12a3b63be5595dad3a271cd7b99b4bcf255",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/heatmap.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/heatmap.png",
-      "bytes": 7586,
-      "sha256": "f93f98317f253d5c44af2871a0bf5898603cf5feb742c304a14a2b98bb36ce3e",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/heatmap.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/marked.png",
-      "bytes": 266508,
-      "sha256": "de31badf537dd9d7b97d80bfe57e84668b3926ed4ca07053e148760156575014",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/81c4385e-6b26-47f1-b5e7-787b59063799/marked.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/comparison.png",
-      "bytes": 594330,
-      "sha256": "adf8e8439729c04f23ff406df08a2e07b52e1fb016fe830695ae50e1be6d9b36",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/heatmap.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/heatmap.png",
-      "bytes": 7062,
-      "sha256": "a8cc0b28802a75fe9ef982231e13e53b368424a7be981b7822d61bb9dfc71497",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/heatmap.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/marked.png",
-      "bytes": 276189,
-      "sha256": "f3fc46fae08f3e426a7b37c7eed9470ea724f13846b4469582554c3cf15cb5bf",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/9e06a921-82ec-4931-883d-db5804dcce10/marked.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/comparison.png",
-      "bytes": 588682,
-      "sha256": "826bab7195337b1bb64ca4cbff0f24183f246140620b72f20e83f674d2d69456",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/heatmap.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/heatmap.png",
-      "bytes": 6986,
-      "sha256": "65ff0a4790934c2ea4507f94131083cdd3c8c506eacf9acb1cec32a5e25f3850",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/heatmap.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/marked.png",
-      "bytes": 271826,
-      "sha256": "f4e7241d16948feea8b17d73edc580b813be7fe0dd18e4f31701e21d7b0fb930",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/abeac2ad-b02b-4c01-93ce-eb4d8f482396/marked.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/comparison.png",
-      "bytes": 594227,
-      "sha256": "0abbda8691c2513f43565f736fc7f814a3ff93a2a60787c007769c023f2037da",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/heatmap.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/heatmap.png",
-      "bytes": 7071,
-      "sha256": "40f577f542310d018e4644a0f8966b93b064ef2c5c88f634d9b88e438eedc7ad",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/heatmap.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/marked.png",
-      "bytes": 276087,
-      "sha256": "11c0fa194657ac7b8d11f18f51717b70bc9e078345cf78b7a117ef19cbf644e6",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/c3100e87-454b-446f-a713-e4a7e351252f/marked.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/comparison.png",
-      "bytes": 595208,
-      "sha256": "ed9c1bb489585f637683ddd1d6c437e78f65b56a5295891491d39b6761ba299f",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/heatmap.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/heatmap.png",
-      "bytes": 6377,
-      "sha256": "49a8ca6547e6d074549acbfc531dc3ffb5b11ebb40d84fa91d96c591a8c7d5a4",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/heatmap.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/marked.png",
-      "bytes": 276883,
-      "sha256": "9af2b8f3f3d4c229b3774a970d2f75ad43a79fd38050ff0faed58b1d55ca871f",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/ca2bdbd3-c778-485f-b356-99dc9a6d2550/marked.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/comparison.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/comparison.png",
-      "bytes": 595214,
-      "sha256": "0ce825cfc33d6ed47cabaa8490fb47070744fe17fbf7bde7ff06f44cc7938e87",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/comparison.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/heatmap.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/heatmap.png",
-      "bytes": 6387,
-      "sha256": "9b19a174b466761600f4624b74809dfb7ac9983837e346182acba483f8805baf",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/heatmap.png"
-    },
-    {
-      "path": "clothing-raster-layering/step02/workspace/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/marked.png",
-      "source": ".run/pink-doll/clothing-raster-layering/step02/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/marked.png",
-      "bytes": 276930,
-      "sha256": "5a9226c4a763836ba5cf9394defe693a81f417a715a48e49fdbb29eb200079d3",
-      "previousPath": "clothing-raster-layering/step02/pixel-review/f7ece902-4175-43a6-9aa3-c65170965899/marked.png"
-    },
-    {
       "path": "input/original.jpg",
       "source": ".run/pink-doll/input/original.jpg",
       "bytes": 71670,
       "sha256": "ceaac51bec95a0dc06320088a64aeb00005451ab5f52317426e82b458d2c1b54"
-    },
-    {
-      "path": "part-layering/groups.json",
-      "source": ".run/pink-doll/part-layering/groups.json",
-      "bytes": 64951,
-      "sha256": "249d33122ebbcba07d134eae35021d5f858f3c9c1f304dd63a630d27b17468e7"
     },
     {
       "path": "part-layering/groups/arms/children/arm_left/children/forearm/step01/.completed",
@@ -4384,6 +3684,12 @@
       "sha256": "16e993e659f5ead2118bb463a43ceddc5f23b783c8534d56395cf9943dbfffe0"
     },
     {
+      "path": "part-layering/groups.json",
+      "source": ".run/pink-doll/part-layering/groups.json",
+      "bytes": 64951,
+      "sha256": "249d33122ebbcba07d134eae35021d5f858f3c9c1f304dd63a630d27b17468e7"
+    },
+    {
       "path": "part-layering/initial/step01/.completed",
       "source": "mechanical step-layout projection",
       "bytes": 182,
@@ -4834,40 +4140,27 @@
       "sha256": "566e1e5fb3837b6918d66701e8f30c68143bab3dd83374829011a808ac1dfcbc"
     },
     {
-      "path": "part-layering/occlusion.json",
-      "source": ".run/pink-doll/part-layering/occlusion.json",
-      "bytes": 37993,
-      "sha256": "0cf7d8c107c51bbbfa73f38a6a134f338c9639ff24065aa72cba114a46d527e3"
-    },
-    {
       "path": "part-layering/occlusion/.completed",
       "source": "mechanical step-layout projection",
       "bytes": 135,
       "sha256": "783a3c4f6aeaf702fb5c09b043844718870395ca91399110759dd4a4353f9a97"
     },
     {
-      "path": "part-layering/parts/arms.svg",
-      "source": ".run/pink-doll/part-layering/parts/arms.svg",
-      "bytes": 4831,
-      "sha256": "b9047579149a3f55d9330a7831e2e6a15970702ca1cf0e97d2f5c7b3707e093e"
+      "bytes": 92068,
+      "sha256": "6c4b6353339c9f957b066b76040a139686d18fce9278ee761a794b9d09441f6b",
+      "path": "part-layering/occlusion/preview.svg"
     },
     {
-      "path": "part-layering/parts/arms/arm_left.svg",
-      "source": ".run/pink-doll/part-layering/parts/arms/arm_left.svg",
-      "bytes": 2584,
-      "sha256": "e61e60e452adcdb43299e0e53bc15bfc7518fb114963da403d9c0aeda4651344"
+      "path": "part-layering/occlusion.json",
+      "source": ".run/pink-doll/part-layering/occlusion.json",
+      "bytes": 37993,
+      "sha256": "0cf7d8c107c51bbbfa73f38a6a134f338c9639ff24065aa72cba114a46d527e3"
     },
     {
       "path": "part-layering/parts/arms/arm_left/forearm.svg",
       "source": ".run/pink-doll/part-layering/parts/arms/arm_left/forearm.svg",
       "bytes": 1052,
       "sha256": "d884654781cfdc27d5b4fa6b1a94b8d76bc141fab14a5fee3c34dd3ef9aef4db"
-    },
-    {
-      "path": "part-layering/parts/arms/arm_left/hand.svg",
-      "source": ".run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
-      "bytes": 1461,
-      "sha256": "e6529c0f9391f1ae26828388fe405693367d586fb0a296d22e556b5401715a74"
     },
     {
       "path": "part-layering/parts/arms/arm_left/hand/index_finger.svg",
@@ -4906,28 +4199,28 @@
       "sha256": "dfeeb1facc3fbd45eee1dadaf007a03cca7db6b4d3b8bd3ade06a42e65319de1"
     },
     {
+      "path": "part-layering/parts/arms/arm_left/hand.svg",
+      "source": ".run/pink-doll/part-layering/parts/arms/arm_left/hand.svg",
+      "bytes": 1461,
+      "sha256": "e6529c0f9391f1ae26828388fe405693367d586fb0a296d22e556b5401715a74"
+    },
+    {
       "path": "part-layering/parts/arms/arm_left/upper_arm.svg",
       "source": ".run/pink-doll/part-layering/parts/arms/arm_left/upper_arm.svg",
       "bytes": 808,
       "sha256": "4f7ddbabf5000d136d51d8013e5cc68c0c93915a23c4a56f52f55eb508fbc9b4"
     },
     {
-      "path": "part-layering/parts/arms/arm_right.svg",
-      "source": ".run/pink-doll/part-layering/parts/arms/arm_right.svg",
-      "bytes": 2610,
-      "sha256": "3d7cc883c8b9fb15a7ceb8caf708a1236eb53b59c82d21d66becb32a3bddb7c7"
+      "path": "part-layering/parts/arms/arm_left.svg",
+      "source": ".run/pink-doll/part-layering/parts/arms/arm_left.svg",
+      "bytes": 2584,
+      "sha256": "e61e60e452adcdb43299e0e53bc15bfc7518fb114963da403d9c0aeda4651344"
     },
     {
       "path": "part-layering/parts/arms/arm_right/forearm.svg",
       "source": ".run/pink-doll/part-layering/parts/arms/arm_right/forearm.svg",
       "bytes": 1001,
       "sha256": "20030e2ac7a253f2af75c84586536eb9b7a02ea10e6ebf77b415aa5369ddb96a"
-    },
-    {
-      "path": "part-layering/parts/arms/arm_right/hand.svg",
-      "source": ".run/pink-doll/part-layering/parts/arms/arm_right/hand.svg",
-      "bytes": 1534,
-      "sha256": "21dc2602149bc4127f3d23d039906b89a42c58787791ee3d1031ca6723f61f4c"
     },
     {
       "path": "part-layering/parts/arms/arm_right/hand/index_finger.svg",
@@ -4966,28 +4259,34 @@
       "sha256": "75d6c76175413d59ae97c953f05cccf9f757f91642964bc8f6e42eda3233ae0c"
     },
     {
+      "path": "part-layering/parts/arms/arm_right/hand.svg",
+      "source": ".run/pink-doll/part-layering/parts/arms/arm_right/hand.svg",
+      "bytes": 1534,
+      "sha256": "21dc2602149bc4127f3d23d039906b89a42c58787791ee3d1031ca6723f61f4c"
+    },
+    {
       "path": "part-layering/parts/arms/arm_right/upper_arm.svg",
       "source": ".run/pink-doll/part-layering/parts/arms/arm_right/upper_arm.svg",
       "bytes": 1412,
       "sha256": "aec66c36396ea6ff08a6b54e5e0d6b887d9f58105582216aa6c951753ac94b1f"
     },
     {
+      "path": "part-layering/parts/arms/arm_right.svg",
+      "source": ".run/pink-doll/part-layering/parts/arms/arm_right.svg",
+      "bytes": 2610,
+      "sha256": "3d7cc883c8b9fb15a7ceb8caf708a1236eb53b59c82d21d66becb32a3bddb7c7"
+    },
+    {
+      "path": "part-layering/parts/arms.svg",
+      "source": ".run/pink-doll/part-layering/parts/arms.svg",
+      "bytes": 4831,
+      "sha256": "b9047579149a3f55d9330a7831e2e6a15970702ca1cf0e97d2f5c7b3707e093e"
+    },
+    {
       "path": "part-layering/parts/body.svg",
       "source": ".run/pink-doll/part-layering/parts/body.svg",
       "bytes": 2087,
       "sha256": "9a82acbccd827095d678f17a5a438014dbab4b9d141e4c24f30429bcbaea14cc"
-    },
-    {
-      "path": "part-layering/parts/face.svg",
-      "source": ".run/pink-doll/part-layering/parts/face.svg",
-      "bytes": 3453,
-      "sha256": "f82d5905cb0984059eb76d5b4d5936bda6f85583c966483ddf4e728f9f5c881f"
-    },
-    {
-      "path": "part-layering/parts/face/eye_left.svg",
-      "source": ".run/pink-doll/part-layering/parts/face/eye_left.svg",
-      "bytes": 2201,
-      "sha256": "96fdd53676dcee3c141d2bf525759040f4c6cd7d440fe0f59be2e58d4e6363ea"
     },
     {
       "path": "part-layering/parts/face/eye_left/eyelid_crease.svg",
@@ -5032,10 +4331,10 @@
       "sha256": "f3caf38f8ba112c26ea3438d60bcc8ad42128590ae41986702cba4c609e5458b"
     },
     {
-      "path": "part-layering/parts/face/eye_right.svg",
-      "source": ".run/pink-doll/part-layering/parts/face/eye_right.svg",
-      "bytes": 2171,
-      "sha256": "ba1a93170ce55f23b0a4bf4485eec0e2f7e11de9d35128ec6ed94c4f6934391f"
+      "path": "part-layering/parts/face/eye_left.svg",
+      "source": ".run/pink-doll/part-layering/parts/face/eye_left.svg",
+      "bytes": 2201,
+      "sha256": "96fdd53676dcee3c141d2bf525759040f4c6cd7d440fe0f59be2e58d4e6363ea"
     },
     {
       "path": "part-layering/parts/face/eye_right/eyelid_crease.svg",
@@ -5080,6 +4379,12 @@
       "sha256": "34d376494c86dcc7f93ae9635f20418e1f24c220f05e3f0593c4ec003b295fb7"
     },
     {
+      "path": "part-layering/parts/face/eye_right.svg",
+      "source": ".run/pink-doll/part-layering/parts/face/eye_right.svg",
+      "bytes": 2171,
+      "sha256": "ba1a93170ce55f23b0a4bf4485eec0e2f7e11de9d35128ec6ed94c4f6934391f"
+    },
+    {
       "path": "part-layering/parts/face/eyebrow_left.svg",
       "source": ".run/pink-doll/part-layering/parts/face/eyebrow_left.svg",
       "bytes": 828,
@@ -5096,12 +4401,6 @@
       "source": ".run/pink-doll/part-layering/parts/face/face_base.svg",
       "bytes": 2875,
       "sha256": "0ebc719f6ff63d7f43f56f3765f98b0ad277be90472b5f5b66e59884d8fd0d00"
-    },
-    {
-      "path": "part-layering/parts/face/mouth.svg",
-      "source": ".run/pink-doll/part-layering/parts/face/mouth.svg",
-      "bytes": 621,
-      "sha256": "121e76e700947015ffa17b889a4a75e1b339cb78aee4d43df65d5e6658bc59c8"
     },
     {
       "path": "part-layering/parts/face/mouth/lower_lip.svg",
@@ -5134,16 +4433,22 @@
       "sha256": "7a35079a69111b1d6116c029f1129c24d441f052b6cadcfd8c8e8347a7130b82"
     },
     {
+      "path": "part-layering/parts/face/mouth.svg",
+      "source": ".run/pink-doll/part-layering/parts/face/mouth.svg",
+      "bytes": 621,
+      "sha256": "121e76e700947015ffa17b889a4a75e1b339cb78aee4d43df65d5e6658bc59c8"
+    },
+    {
       "path": "part-layering/parts/face/nose.svg",
       "source": ".run/pink-doll/part-layering/parts/face/nose.svg",
       "bytes": 720,
       "sha256": "611715b5d874a411ec779b396104473b84b425bf68254e457c9412368c2e844f"
     },
     {
-      "path": "part-layering/parts/hair.svg",
-      "source": ".run/pink-doll/part-layering/parts/hair.svg",
-      "bytes": 13439,
-      "sha256": "e8a4f8f9abf7cdcccef3c6b8361c1956ffa1666fe05197ac8d68ea2dd7e34a61"
+      "path": "part-layering/parts/face.svg",
+      "source": ".run/pink-doll/part-layering/parts/face.svg",
+      "bytes": 3453,
+      "sha256": "f82d5905cb0984059eb76d5b4d5936bda6f85583c966483ddf4e728f9f5c881f"
     },
     {
       "path": "part-layering/parts/hair/back_hair.svg",
@@ -5194,22 +4499,16 @@
       "sha256": "48a2924b8645ba73553563a3c6e7a377e521e860596a5531bb47fdd990bcb093"
     },
     {
+      "path": "part-layering/parts/hair.svg",
+      "source": ".run/pink-doll/part-layering/parts/hair.svg",
+      "bytes": 13439,
+      "sha256": "e8a4f8f9abf7cdcccef3c6b8361c1956ffa1666fe05197ac8d68ea2dd7e34a61"
+    },
+    {
       "path": "part-layering/parts/head_accessories.svg",
       "source": ".run/pink-doll/part-layering/parts/head_accessories.svg",
       "bytes": 2659,
       "sha256": "0cb17f7f36166262cb923ebffc4f905077d1cd13abc9d99df656a5c09ef2a939"
-    },
-    {
-      "path": "part-layering/parts/legs.svg",
-      "source": ".run/pink-doll/part-layering/parts/legs.svg",
-      "bytes": 6728,
-      "sha256": "0dd96abb280ab7b917d737912bbcb05a5a3961a94cfd19d0079cf4ebc4091996"
-    },
-    {
-      "path": "part-layering/parts/legs/leg_left.svg",
-      "source": ".run/pink-doll/part-layering/parts/legs/leg_left.svg",
-      "bytes": 3681,
-      "sha256": "94671d81072a1f4fbd37318190f1349b473feb81286b6f872553c0805ed3bed8"
     },
     {
       "path": "part-layering/parts/legs/leg_left/foot.svg",
@@ -5224,10 +4523,10 @@
       "sha256": "f4395a6b28e495f73da984f08684ff27af1fe1291099977070ad0087652b8ae0"
     },
     {
-      "path": "part-layering/parts/legs/leg_right.svg",
-      "source": ".run/pink-doll/part-layering/parts/legs/leg_right.svg",
-      "bytes": 3025,
-      "sha256": "3349f36277520f18f654c11302c42d2c92c2240890531beefdb6c51575436394"
+      "path": "part-layering/parts/legs/leg_left.svg",
+      "source": ".run/pink-doll/part-layering/parts/legs/leg_left.svg",
+      "bytes": 3681,
+      "sha256": "94671d81072a1f4fbd37318190f1349b473feb81286b6f872553c0805ed3bed8"
     },
     {
       "path": "part-layering/parts/legs/leg_right/foot.svg",
@@ -5240,6 +4539,18 @@
       "source": ".run/pink-doll/part-layering/parts/legs/leg_right/leg.svg",
       "bytes": 2311,
       "sha256": "56ebc9fd56d59fbef5caf86259cd5310946b0ec7816dd0515fdc8a40e0aab613"
+    },
+    {
+      "path": "part-layering/parts/legs/leg_right.svg",
+      "source": ".run/pink-doll/part-layering/parts/legs/leg_right.svg",
+      "bytes": 3025,
+      "sha256": "3349f36277520f18f654c11302c42d2c92c2240890531beefdb6c51575436394"
+    },
+    {
+      "path": "part-layering/parts/legs.svg",
+      "source": ".run/pink-doll/part-layering/parts/legs.svg",
+      "bytes": 6728,
+      "sha256": "0dd96abb280ab7b917d737912bbcb05a5a3961a94cfd19d0079cf4ebc4091996"
     },
     {
       "path": "part-layering/parts/neck.svg",
@@ -5303,6 +4614,11 @@
       "sha256": "f898ab0b9e26c11bcf809c329510959df802aae797ae30870646762f7412e057"
     },
     {
+      "bytes": 513692,
+      "sha256": "5b991a1fd779653075fe8ac53822cabc5847e7a72db2a26736a04164f3c51bbe",
+      "path": "raster-layering/step01/composite.png"
+    },
+    {
       "path": "raster-layering/step01/layer-manifest.json",
       "source": ".run/pink-doll/raster-layering/step01/layer-manifest.json",
       "bytes": 19760,
@@ -5345,1182 +4661,6 @@
       "source": ".run/pink-doll/raster-layering/step01/upstream-sync.json",
       "bytes": 522,
       "sha256": "44e6ad12034f70603a6cc3d04c82a40bb4476ffc473a6369e604e9cde2cce07c"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/forearm/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/forearm/complete-shape.svg",
-      "bytes": 1052,
-      "sha256": "3ba6060b2c75a5faf78ce6bf1c70b03f44974fa105d291c2880d47e6b528dbf8",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/forearm/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/forearm/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/forearm/painted-layer.png",
-      "bytes": 21591,
-      "sha256": "46b78ab66651655b3c9de1608b5e0fe733181f37cef6fce0b166d3102914743b",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/forearm/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/forearm/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/forearm/visible-shape.svg",
-      "bytes": 818,
-      "sha256": "427042e30ece6cf3f5fdc285390a52399786501eaf9949cdfc8f14dfc5d4eb97",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/forearm/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/index_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/index_finger/complete-shape.svg",
-      "bytes": 1078,
-      "sha256": "2767c39dd04cf17903cb55bb87ce4ee20868861a8414f145ad216e12d9959dbf",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/index_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/index_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/index_finger/painted-layer.png",
-      "bytes": 10201,
-      "sha256": "8e8a679677b55d6ca9b9d977e5130d2f1a8047d0ae8e5ae037a32f91b9e41bd1",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/index_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/index_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/index_finger/visible-shape.svg",
-      "bytes": 1078,
-      "sha256": "2767c39dd04cf17903cb55bb87ce4ee20868861a8414f145ad216e12d9959dbf",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/index_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/little_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/little_finger/complete-shape.svg",
-      "bytes": 690,
-      "sha256": "1eccb4b9512c7a8b383a64754e5dbb68eed6ab0ed3b174a6ce4ff09508da7f3c",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/little_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/little_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/little_finger/painted-layer.png",
-      "bytes": 8251,
-      "sha256": "f4c34a908a8ad6fd54bd5568d5f40dfa8b4d6aaa3bab98ab9f727664124032f0",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/little_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/little_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/little_finger/visible-shape.svg",
-      "bytes": 690,
-      "sha256": "1eccb4b9512c7a8b383a64754e5dbb68eed6ab0ed3b174a6ce4ff09508da7f3c",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/little_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/middle_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/middle_finger/complete-shape.svg",
-      "bytes": 907,
-      "sha256": "2ec458b07491bd52115ce1af2fac379080b7416dcbee892c4d1859534905c291",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/middle_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/middle_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/middle_finger/painted-layer.png",
-      "bytes": 8559,
-      "sha256": "213f770e0b060c5a16d2389ce15fe98fa9d5f6e63b6423b1a7f12a951aa8c098",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/middle_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/middle_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/middle_finger/visible-shape.svg",
-      "bytes": 907,
-      "sha256": "2ec458b07491bd52115ce1af2fac379080b7416dcbee892c4d1859534905c291",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/middle_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/palm/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/palm/complete-shape.svg",
-      "bytes": 727,
-      "sha256": "1ba913beea2ad06da2ffb307bb7b8191b9ea3ae86fb79c375460207131e6285e",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/palm/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/palm/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/palm/painted-layer.png",
-      "bytes": 10475,
-      "sha256": "cfa234ea654fced9565ad294520159227b4c3d0f0d58b3b4341e902b00d41f2c",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/palm/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/palm/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/palm/visible-shape.svg",
-      "bytes": 727,
-      "sha256": "1ba913beea2ad06da2ffb307bb7b8191b9ea3ae86fb79c375460207131e6285e",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/palm/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/ring_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/ring_finger/complete-shape.svg",
-      "bytes": 981,
-      "sha256": "e00d39c00f3c9674a1c88de080657ceb32bb85bcc91c5d3ff5ed1e8be3391344",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/ring_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/ring_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/ring_finger/painted-layer.png",
-      "bytes": 7753,
-      "sha256": "688a991d4ea05fd6614ab65dd322e1a628beb7102fe8c2cfa5145cbe69cd28bb",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/ring_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/ring_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/ring_finger/visible-shape.svg",
-      "bytes": 650,
-      "sha256": "80b5a19bcc6996fcef6ca73aa65904afc987685e223fd3c555e513bab28e57b6",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/ring_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/thumb/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/thumb/complete-shape.svg",
-      "bytes": 779,
-      "sha256": "dfeeb1facc3fbd45eee1dadaf007a03cca7db6b4d3b8bd3ade06a42e65319de1",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/thumb/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/thumb/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/thumb/painted-layer.png",
-      "bytes": 8995,
-      "sha256": "8bc366146489edaa9c3d00b3215b2e52ba5371de9c24a25b60936d945fb92dad",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/thumb/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/hand/thumb/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/hand/thumb/visible-shape.svg",
-      "bytes": 779,
-      "sha256": "dfeeb1facc3fbd45eee1dadaf007a03cca7db6b4d3b8bd3ade06a42e65319de1",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/hand/thumb/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/upper_arm/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/upper_arm/complete-shape.svg",
-      "bytes": 808,
-      "sha256": "4f7ddbabf5000d136d51d8013e5cc68c0c93915a23c4a56f52f55eb508fbc9b4",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/upper_arm/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/upper_arm/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/upper_arm/painted-layer.png",
-      "bytes": 22987,
-      "sha256": "cda906b040784065ac4395cd18e0fc2bb4aef38ceb67bf71fa1988ff3cafee22",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/upper_arm/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_left/upper_arm/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_left/upper_arm/visible-shape.svg",
-      "bytes": 808,
-      "sha256": "4f7ddbabf5000d136d51d8013e5cc68c0c93915a23c4a56f52f55eb508fbc9b4",
-      "previousPath": "raster-layering/step01/parts/arms/arm_left/upper_arm/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/forearm/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/forearm/complete-shape.svg",
-      "bytes": 1002,
-      "sha256": "6730c7e5c016581a18ab8d8d86a80962a5791d46a6fe82f9aade83091c57f4cc",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/forearm/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/forearm/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/forearm/painted-layer.png",
-      "bytes": 19910,
-      "sha256": "30c6f381c1c9a7cb9c1d58dace63d71a53b6ed20c4a39921118712c74e10581b",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/forearm/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/forearm/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/forearm/visible-shape.svg",
-      "bytes": 761,
-      "sha256": "f3e2345f300cd4e613a0a3974e1daeaaf8eed9346877db55b8bfe1582129ef21",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/forearm/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/index_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/index_finger/complete-shape.svg",
-      "bytes": 970,
-      "sha256": "cb2b362a8dbf20b0ca9401792eb13446eb6c7487fddf31de9229a3007fa918a9",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/index_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/index_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/index_finger/painted-layer.png",
-      "bytes": 10001,
-      "sha256": "43307202d7bf80bdb5b312036e2d4e1c5f14963d50aef8ff336224d6dd65b3c4",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/index_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/index_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/index_finger/visible-shape.svg",
-      "bytes": 970,
-      "sha256": "cb2b362a8dbf20b0ca9401792eb13446eb6c7487fddf31de9229a3007fa918a9",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/index_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/little_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/little_finger/complete-shape.svg",
-      "bytes": 1301,
-      "sha256": "56e9d6e2a8b4430435b8539833a6eb0d72cab80074488657bab73f93e8abd362",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/little_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/little_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/little_finger/painted-layer.png",
-      "bytes": 7603,
-      "sha256": "67d4b5961b0edb58dea520f8876dc8cd7cba6677f1cc8d72afacd1c8ce2ad766",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/little_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/little_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/little_finger/visible-shape.svg",
-      "bytes": 791,
-      "sha256": "5ca80235ab5c1083ae4142e9de26fea850dfd3bf8b7c11024c58f100434b696f",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/little_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/middle_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/middle_finger/complete-shape.svg",
-      "bytes": 834,
-      "sha256": "30ac019f8121b0a2bbc654c494a012d6490bcf728196bba2a33fd89225d32d47",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/middle_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/middle_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/middle_finger/painted-layer.png",
-      "bytes": 8550,
-      "sha256": "1166f8126b3ce56f14dde283f8077f3bd695fa9e9bd40194d4759096683275ce",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/middle_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/middle_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/middle_finger/visible-shape.svg",
-      "bytes": 834,
-      "sha256": "30ac019f8121b0a2bbc654c494a012d6490bcf728196bba2a33fd89225d32d47",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/middle_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/palm/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/palm/complete-shape.svg",
-      "bytes": 647,
-      "sha256": "1d056fc4bd3e02709e7c1e5e261733510ba412e299ef17605617991294180363",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/palm/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/palm/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/palm/painted-layer.png",
-      "bytes": 10433,
-      "sha256": "4e049d3e7cb0c50311e78af0cd51c8a2109584938d1ab886f11525d689276f96",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/palm/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/palm/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/palm/visible-shape.svg",
-      "bytes": 647,
-      "sha256": "1d056fc4bd3e02709e7c1e5e261733510ba412e299ef17605617991294180363",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/palm/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/ring_finger/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/ring_finger/complete-shape.svg",
-      "bytes": 1179,
-      "sha256": "8e84f840b02af426e084a78742a0359c0634640724e5d7db1351494c9fada098",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/ring_finger/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/ring_finger/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/ring_finger/painted-layer.png",
-      "bytes": 7966,
-      "sha256": "e56dfc73ee9456d4203189e0629695bcbde8a1d4d663c96e232fd438b7b64637",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/ring_finger/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/ring_finger/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/ring_finger/visible-shape.svg",
-      "bytes": 719,
-      "sha256": "06721d094b14f165c160d72915e46f8ad9779067989ceb30c9ec208ed1e75c79",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/ring_finger/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/thumb/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/thumb/complete-shape.svg",
-      "bytes": 792,
-      "sha256": "bc9d8efeac8a6ffbef26b42949f8c12c492138d113d4de991f901e603863feeb",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/thumb/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/thumb/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/thumb/painted-layer.png",
-      "bytes": 8924,
-      "sha256": "0a51a5ec78b1aad521ea6b49fa2b1fcbe7f4451cdb8fa5ca1aef24495ae04ee6",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/thumb/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/hand/thumb/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/hand/thumb/visible-shape.svg",
-      "bytes": 792,
-      "sha256": "bc9d8efeac8a6ffbef26b42949f8c12c492138d113d4de991f901e603863feeb",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/hand/thumb/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/upper_arm/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/upper_arm/complete-shape.svg",
-      "bytes": 1412,
-      "sha256": "838964abd6cb843407d621f58785d5e04ecfd705eda6dcba6ffbd4c1f5b79039",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/upper_arm/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/upper_arm/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/upper_arm/painted-layer.png",
-      "bytes": 23302,
-      "sha256": "f59cd8de60d742d65ece3769c325ceb02606e437da6053b2db1f39ddbbca47ae",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/upper_arm/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/arms/arm_right/upper_arm/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/arms/arm_right/upper_arm/visible-shape.svg",
-      "bytes": 908,
-      "sha256": "21ed61f73983af8b3fa7307d8f3a13464d9d69ffa63120e176557dad39a17a3d",
-      "previousPath": "raster-layering/step01/parts/arms/arm_right/upper_arm/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/body/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/body/complete-shape.svg",
-      "bytes": 2089,
-      "sha256": "d1001a224775c7600ac5ce853388e12956634b338d04b464c694f9fb983c2c25",
-      "previousPath": "raster-layering/step01/parts/body/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/body/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/body/painted-layer.png",
-      "bytes": 68502,
-      "sha256": "8d890c56788dbecb56e5b86b4de12f596cff9e0fd989abb4c81cb2e78f85cda0",
-      "previousPath": "raster-layering/step01/parts/body/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/body/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/body/visible-shape.svg",
-      "bytes": 1563,
-      "sha256": "2592c21891c7c13486aede9b4958c84b37d9ec36f7ee6d70411fb1d967519aef",
-      "previousPath": "raster-layering/step01/parts/body/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/eyelid_crease/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/eyelid_crease/complete-shape.svg",
-      "bytes": 655,
-      "sha256": "f75e03798b9c561a95db6e1d4d3259511ea7e8b6993c56f56f9b62c3ceb2f3ae",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/eyelid_crease/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/eyelid_crease/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/eyelid_crease/painted-layer.png",
-      "bytes": 6719,
-      "sha256": "8c2c6ed3762209dac6efcd992b4619117129247b8c2bc9dc520a35f969268dd7",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/eyelid_crease/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/eyelid_crease/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/eyelid_crease/visible-shape.svg",
-      "bytes": 655,
-      "sha256": "f75e03798b9c561a95db6e1d4d3259511ea7e8b6993c56f56f9b62c3ceb2f3ae",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/eyelid_crease/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/highlight/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/highlight/complete-shape.svg",
-      "bytes": 1047,
-      "sha256": "a4cd4f414354599c5b67fccd345d1c5d965a6efd26d66b5edeea76ebb5469924",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/highlight/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/highlight/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/highlight/painted-layer.png",
-      "bytes": 6724,
-      "sha256": "546b735dba4eab02d71605748e23c288597c4a9e6d017dd99f055ed8dcb87417",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/highlight/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/highlight/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/highlight/visible-shape.svg",
-      "bytes": 1047,
-      "sha256": "a4cd4f414354599c5b67fccd345d1c5d965a6efd26d66b5edeea76ebb5469924",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/highlight/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/iris/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/iris/complete-shape.svg",
-      "bytes": 545,
-      "sha256": "414b225ed12d8398cd1e059ed9c045e45765cd2fd5aead2a24a27500d345cdc6",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/iris/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/iris/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/iris/painted-layer.png",
-      "bytes": 9570,
-      "sha256": "1d12f6742db1ea6b55c5cda56e2153fdd0bc9fbcaa584972cdbbbd6f84cf17fe",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/iris/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/iris/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/iris/visible-shape.svg",
-      "bytes": 545,
-      "sha256": "414b225ed12d8398cd1e059ed9c045e45765cd2fd5aead2a24a27500d345cdc6",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/iris/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/lower_eyelashes/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/lower_eyelashes/complete-shape.svg",
-      "bytes": 807,
-      "sha256": "a04300ea2621aefbe8a5854ee0307f3bcb05958a83e4ef4e7fa8ccfa6d209d91",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/lower_eyelashes/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/lower_eyelashes/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/lower_eyelashes/painted-layer.png",
-      "bytes": 6371,
-      "sha256": "235296f45ad88a4c0dc48b55e84c2a9e32ed8426a464676c644d07426f9d67e7",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/lower_eyelashes/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/lower_eyelashes/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/lower_eyelashes/visible-shape.svg",
-      "bytes": 807,
-      "sha256": "a04300ea2621aefbe8a5854ee0307f3bcb05958a83e4ef4e7fa8ccfa6d209d91",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/lower_eyelashes/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/lower_eyelid/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/lower_eyelid/complete-shape.svg",
-      "bytes": 587,
-      "sha256": "86eb6fa0f3a197f03543f1338c53d7345528d017d163889bab633aff92532725",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/lower_eyelid/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/lower_eyelid/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/lower_eyelid/painted-layer.png",
-      "bytes": 6376,
-      "sha256": "06ab65546e89c82c0776585700cd83d754e958a3283de3bcf1e557b084018f19",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/lower_eyelid/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/lower_eyelid/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/lower_eyelid/visible-shape.svg",
-      "bytes": 587,
-      "sha256": "86eb6fa0f3a197f03543f1338c53d7345528d017d163889bab633aff92532725",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/lower_eyelid/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/sclera/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/sclera/complete-shape.svg",
-      "bytes": 779,
-      "sha256": "3ccf783fbbeeec1e6b77879cf0b76989577af5c02d5d1f4d70af7b9787ec88be",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/sclera/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/sclera/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/sclera/painted-layer.png",
-      "bytes": 9493,
-      "sha256": "d6e30e4d4cf94a9bc66bdd3592e5709a44ad03b173eaef9b2a4e52dbb2642f9a",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/sclera/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/sclera/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/sclera/visible-shape.svg",
-      "bytes": 779,
-      "sha256": "3ccf783fbbeeec1e6b77879cf0b76989577af5c02d5d1f4d70af7b9787ec88be",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/sclera/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/upper_eyelid/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/upper_eyelid/complete-shape.svg",
-      "bytes": 1239,
-      "sha256": "e5fa6ae66cc41ffac8869dfff0724195af5ed2361777398490456c0ddcec3636",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/upper_eyelid/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/upper_eyelid/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/upper_eyelid/painted-layer.png",
-      "bytes": 8478,
-      "sha256": "b18d0615629b20a0568335717d2a573e3f3fb11e00d245fec43f3962e7b08251",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/upper_eyelid/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_left/upper_eyelid/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_left/upper_eyelid/visible-shape.svg",
-      "bytes": 1239,
-      "sha256": "e5fa6ae66cc41ffac8869dfff0724195af5ed2361777398490456c0ddcec3636",
-      "previousPath": "raster-layering/step01/parts/face/eye_left/upper_eyelid/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/eyelid_crease/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/eyelid_crease/complete-shape.svg",
-      "bytes": 657,
-      "sha256": "fc2d7237e94b193e04bb4d52c5a3cb5d3c5db5b98a71fd4ce6bcde0139d1e076",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/eyelid_crease/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/eyelid_crease/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/eyelid_crease/painted-layer.png",
-      "bytes": 6748,
-      "sha256": "0b51ce66ef6d9814c4fb4ac5fa58b5e1237b48cf1e225a4d12505781ed5c580b",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/eyelid_crease/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/eyelid_crease/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/eyelid_crease/visible-shape.svg",
-      "bytes": 657,
-      "sha256": "fc2d7237e94b193e04bb4d52c5a3cb5d3c5db5b98a71fd4ce6bcde0139d1e076",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/eyelid_crease/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/highlight/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/highlight/complete-shape.svg",
-      "bytes": 1032,
-      "sha256": "52d24459f535fd7e5b9df15c72e501bf96e962146d1973aac234e48a139f51fa",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/highlight/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/highlight/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/highlight/painted-layer.png",
-      "bytes": 6633,
-      "sha256": "5fe224d25454b57e32f9a12c278abdb6af1219fc0b375960fabf5c51fc882470",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/highlight/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/highlight/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/highlight/visible-shape.svg",
-      "bytes": 1032,
-      "sha256": "52d24459f535fd7e5b9df15c72e501bf96e962146d1973aac234e48a139f51fa",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/highlight/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/iris/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/iris/complete-shape.svg",
-      "bytes": 547,
-      "sha256": "827ff0db33b4bb10f5b95fca04576342e1f012f91f3ab8a5fa046d960ec51a56",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/iris/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/iris/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/iris/painted-layer.png",
-      "bytes": 9559,
-      "sha256": "976a44f52080e6f25f28883b8352ca2a542185245fd3501c56e8a42005e75c23",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/iris/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/iris/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/iris/visible-shape.svg",
-      "bytes": 547,
-      "sha256": "827ff0db33b4bb10f5b95fca04576342e1f012f91f3ab8a5fa046d960ec51a56",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/iris/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/lower_eyelashes/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/lower_eyelashes/complete-shape.svg",
-      "bytes": 809,
-      "sha256": "9f62dc25f9e9c158e4e236b508b8b6a67839411d7b5a29a12926a2de34a9be59",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/lower_eyelashes/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/lower_eyelashes/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/lower_eyelashes/painted-layer.png",
-      "bytes": 6388,
-      "sha256": "68289e95444c94bcb15fea0f3da5758cf2da9d28ee823718653e784a7d1502a7",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/lower_eyelashes/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/lower_eyelashes/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/lower_eyelashes/visible-shape.svg",
-      "bytes": 809,
-      "sha256": "9f62dc25f9e9c158e4e236b508b8b6a67839411d7b5a29a12926a2de34a9be59",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/lower_eyelashes/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/lower_eyelid/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/lower_eyelid/complete-shape.svg",
-      "bytes": 719,
-      "sha256": "546b912f295cad88902bce72131f6698b139279bec96d70c6a95d4b223950d64",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/lower_eyelid/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/lower_eyelid/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/lower_eyelid/painted-layer.png",
-      "bytes": 6478,
-      "sha256": "2d885ab21c39bdb9b82afc9e087dd6960fa4d3a888beb6e7b1d6bc715f9d9c9b",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/lower_eyelid/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/lower_eyelid/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/lower_eyelid/visible-shape.svg",
-      "bytes": 719,
-      "sha256": "546b912f295cad88902bce72131f6698b139279bec96d70c6a95d4b223950d64",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/lower_eyelid/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/sclera/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/sclera/complete-shape.svg",
-      "bytes": 781,
-      "sha256": "3cc2a122b2c2da5b9d6d7c453fbcb53baf4fb5ec48377021f4e59570913a1438",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/sclera/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/sclera/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/sclera/painted-layer.png",
-      "bytes": 9563,
-      "sha256": "c2fbc217f1e1a1eb0a270d2fd5a9907314a3119af8bac890ad87d997ac7f9124",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/sclera/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/sclera/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/sclera/visible-shape.svg",
-      "bytes": 781,
-      "sha256": "3cc2a122b2c2da5b9d6d7c453fbcb53baf4fb5ec48377021f4e59570913a1438",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/sclera/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/upper_eyelid/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/upper_eyelid/complete-shape.svg",
-      "bytes": 1227,
-      "sha256": "9592f63f781e396ec539bace0143ebc28a2a20094019527621171185a96bc36a",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/upper_eyelid/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/upper_eyelid/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/upper_eyelid/painted-layer.png",
-      "bytes": 8392,
-      "sha256": "ab73a55e2b57778e15a3281b35a09e2c57211017594b7219a25bd0bc5f275db7",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/upper_eyelid/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eye_right/upper_eyelid/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eye_right/upper_eyelid/visible-shape.svg",
-      "bytes": 1227,
-      "sha256": "9592f63f781e396ec539bace0143ebc28a2a20094019527621171185a96bc36a",
-      "previousPath": "raster-layering/step01/parts/face/eye_right/upper_eyelid/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eyebrow_left/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eyebrow_left/complete-shape.svg",
-      "bytes": 750,
-      "sha256": "2b5c6f71a919f47f35b87febd00a97fca421dc26e19baa6a60a1d5271e22e820",
-      "previousPath": "raster-layering/step01/parts/face/eyebrow_left/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eyebrow_left/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eyebrow_left/painted-layer.png",
-      "bytes": 6951,
-      "sha256": "534ef685fc060219e2ae625179fb3ecdc31d36b02bdb705afc8f361ebaf25f6f",
-      "previousPath": "raster-layering/step01/parts/face/eyebrow_left/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eyebrow_left/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eyebrow_left/visible-shape.svg",
-      "bytes": 750,
-      "sha256": "2b5c6f71a919f47f35b87febd00a97fca421dc26e19baa6a60a1d5271e22e820",
-      "previousPath": "raster-layering/step01/parts/face/eyebrow_left/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eyebrow_right/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eyebrow_right/complete-shape.svg",
-      "bytes": 660,
-      "sha256": "8b8d3f9faad53459e89c153ea984c8d7f6ad34bddaa9c5f2ccbac3f2028fc23d",
-      "previousPath": "raster-layering/step01/parts/face/eyebrow_right/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eyebrow_right/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eyebrow_right/painted-layer.png",
-      "bytes": 6907,
-      "sha256": "ab9fcfc18fb35fa3281f30c72b3898b4e413968488bf721422be3d76ff6b81d0",
-      "previousPath": "raster-layering/step01/parts/face/eyebrow_right/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/eyebrow_right/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/eyebrow_right/visible-shape.svg",
-      "bytes": 660,
-      "sha256": "8b8d3f9faad53459e89c153ea984c8d7f6ad34bddaa9c5f2ccbac3f2028fc23d",
-      "previousPath": "raster-layering/step01/parts/face/eyebrow_right/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/face_base/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/face_base/complete-shape.svg",
-      "bytes": 2876,
-      "sha256": "84aa0c228ff8f0fd49110819bd567f8ebfe8c673a51d535cc8a3c79ecd2315e6",
-      "previousPath": "raster-layering/step01/parts/face/face_base/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/face_base/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/face_base/painted-layer.png",
-      "bytes": 38077,
-      "sha256": "1b150cf6c10e55c7db7ac128e7d077ed165e4ec70ebb578c9e1f0628501d5f6c",
-      "previousPath": "raster-layering/step01/parts/face/face_base/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/face_base/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/face_base/visible-shape.svg",
-      "bytes": 2396,
-      "sha256": "2d5abd591e1cb34ecb4084cf939dc5a2ae332b24e56541e1c5fb404af20362dd",
-      "previousPath": "raster-layering/step01/parts/face/face_base/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/lower_lip/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/lower_lip/complete-shape.svg",
-      "bytes": 825,
-      "sha256": "17394b2b71fc12e09bcf33724a89243d47dcdc57fdd11677293070753719103d",
-      "previousPath": "raster-layering/step01/parts/face/mouth/lower_lip/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/lower_lip/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/lower_lip/painted-layer.png",
-      "bytes": 6893,
-      "sha256": "e71725223cb22e39196050cf52f182baa76e146a1e75237793b29043b5dacb78",
-      "previousPath": "raster-layering/step01/parts/face/mouth/lower_lip/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/lower_lip/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/lower_lip/visible-shape.svg",
-      "bytes": 825,
-      "sha256": "17394b2b71fc12e09bcf33724a89243d47dcdc57fdd11677293070753719103d",
-      "previousPath": "raster-layering/step01/parts/face/mouth/lower_lip/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/mouth_interior/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/mouth_interior/complete-shape.svg",
-      "bytes": 651,
-      "sha256": "af3e024bf87c5ef295713e155a1943ccdafb393aa46c9eed1c8b2f6bf057b79a",
-      "previousPath": "raster-layering/step01/parts/face/mouth/mouth_interior/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/mouth_interior/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/mouth_interior/painted-layer.png",
-      "bytes": 7711,
-      "sha256": "77e66acacfa5f1cbe135156b0d92dd398e3084853072af67d410fb3d322094fb",
-      "previousPath": "raster-layering/step01/parts/face/mouth/mouth_interior/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/mouth_interior/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/mouth_interior/visible-shape.svg",
-      "bytes": 651,
-      "sha256": "af3e024bf87c5ef295713e155a1943ccdafb393aa46c9eed1c8b2f6bf057b79a",
-      "previousPath": "raster-layering/step01/parts/face/mouth/mouth_interior/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/tongue/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/tongue/complete-shape.svg",
-      "bytes": 818,
-      "sha256": "7b9335ddc858e3d519c9977ec947a932912f8799be539221dd90517dcc586d68",
-      "previousPath": "raster-layering/step01/parts/face/mouth/tongue/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/tongue/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/tongue/painted-layer.png",
-      "bytes": 7238,
-      "sha256": "d5ab4f34b4fe6518e3b9736a374c86587193a86b71285e14200762dbdb71e4ca",
-      "previousPath": "raster-layering/step01/parts/face/mouth/tongue/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/tongue/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/tongue/visible-shape.svg",
-      "bytes": 540,
-      "sha256": "b364be9117db325ca08677bb51f1d69f14396aeea7e245c8b5770d8722d05d13",
-      "previousPath": "raster-layering/step01/parts/face/mouth/tongue/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/upper_lip/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/upper_lip/complete-shape.svg",
-      "bytes": 845,
-      "sha256": "91e5fef59f030abf309aacb1bab0d77a144881b01aedd72d8539ac85b3e6e96e",
-      "previousPath": "raster-layering/step01/parts/face/mouth/upper_lip/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/upper_lip/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/upper_lip/painted-layer.png",
-      "bytes": 6894,
-      "sha256": "3ae9eb5ce4ac52f28e90b13319fe3ead7b6c2f67d192e3f7d00932ce733fff81",
-      "previousPath": "raster-layering/step01/parts/face/mouth/upper_lip/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/upper_lip/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/upper_lip/visible-shape.svg",
-      "bytes": 845,
-      "sha256": "91e5fef59f030abf309aacb1bab0d77a144881b01aedd72d8539ac85b3e6e96e",
-      "previousPath": "raster-layering/step01/parts/face/mouth/upper_lip/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/upper_teeth/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/upper_teeth/complete-shape.svg",
-      "bytes": 944,
-      "sha256": "11bf3344094bb5535f9a1e9d6f2cc4357715c783268c44f87eb383ffc2057005",
-      "previousPath": "raster-layering/step01/parts/face/mouth/upper_teeth/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/upper_teeth/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/upper_teeth/painted-layer.png",
-      "bytes": 6353,
-      "sha256": "0ebc04d1da44c06c7b298ee2229d3381b52d4ef65a0b742274f7446ace61071a",
-      "previousPath": "raster-layering/step01/parts/face/mouth/upper_teeth/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/mouth/upper_teeth/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/mouth/upper_teeth/visible-shape.svg",
-      "bytes": 608,
-      "sha256": "4d78bd10e8a4250a279ca966ff092f34da47a6dd12561494f6796b096cbd6da8",
-      "previousPath": "raster-layering/step01/parts/face/mouth/upper_teeth/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/nose/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/nose/complete-shape.svg",
-      "bytes": 720,
-      "sha256": "75bcf5c28905933123818aded55bf594beb93c565f2ec389b015e48b9f07e983",
-      "previousPath": "raster-layering/step01/parts/face/nose/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/nose/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/nose/painted-layer.png",
-      "bytes": 6607,
-      "sha256": "2c0924ee4c253c21ff2b824bba2d1c4528d1a63624b643d0c0851ecbb586fe14",
-      "previousPath": "raster-layering/step01/parts/face/nose/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/face/nose/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/face/nose/visible-shape.svg",
-      "bytes": 720,
-      "sha256": "75bcf5c28905933123818aded55bf594beb93c565f2ec389b015e48b9f07e983",
-      "previousPath": "raster-layering/step01/parts/face/nose/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/back_hair/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/back_hair/complete-shape.svg",
-      "bytes": 5536,
-      "sha256": "cf2eca35e93e695ed95ea734be5c84753ea3f95640d5da3fea481e96e4124a13",
-      "previousPath": "raster-layering/step01/parts/hair/back_hair/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/back_hair/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/back_hair/painted-layer.png",
-      "bytes": 218087,
-      "sha256": "18352d20c2f8c6759013ba3bb86efa864c4b33bd86f82604f6b0ba08a512bf68",
-      "previousPath": "raster-layering/step01/parts/hair/back_hair/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/back_hair/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/back_hair/visible-shape.svg",
-      "bytes": 5536,
-      "sha256": "cf2eca35e93e695ed95ea734be5c84753ea3f95640d5da3fea481e96e4124a13",
-      "previousPath": "raster-layering/step01/parts/hair/back_hair/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bangs/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bangs/complete-shape.svg",
-      "bytes": 3482,
-      "sha256": "8bb79f85485c3222c3e0336efba7bdcd0e771770f4e67233fec982f9f35ad884",
-      "previousPath": "raster-layering/step01/parts/hair/bangs/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bangs/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bangs/painted-layer.png",
-      "bytes": 44215,
-      "sha256": "6077a45c4a7f4e6199cac8d8a4803734eae949aea75415267372c3670cdcc47d",
-      "previousPath": "raster-layering/step01/parts/hair/bangs/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bangs/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bangs/visible-shape.svg",
-      "bytes": 2846,
-      "sha256": "747cf50387d8dba9a946d4722fbdcf6666113e5bb6aaa9a97cf738f337fb04a0",
-      "previousPath": "raster-layering/step01/parts/hair/bangs/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bun_left/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bun_left/complete-shape.svg",
-      "bytes": 1703,
-      "sha256": "583bd2435cf34d8c56f7d368fbec9cc067d87b3d5639ac8a2256008ea14e6f65",
-      "previousPath": "raster-layering/step01/parts/hair/bun_left/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bun_left/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bun_left/painted-layer.png",
-      "bytes": 23465,
-      "sha256": "1649e80f2a56acffbc6c7ad723855f0f0d5b1d1aa9981c177c00f3319afaadb9",
-      "previousPath": "raster-layering/step01/parts/hair/bun_left/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bun_left/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bun_left/visible-shape.svg",
-      "bytes": 1457,
-      "sha256": "5ef5114c608b6dff208ea634fe91bc6689b03f3c6df177b9b90baa63527a0865",
-      "previousPath": "raster-layering/step01/parts/hair/bun_left/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bun_right/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bun_right/complete-shape.svg",
-      "bytes": 1239,
-      "sha256": "c9089be9ebea309e595b784b3d1ea0badbff0f92c3776f8efa5df2765c2e1b09",
-      "previousPath": "raster-layering/step01/parts/hair/bun_right/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bun_right/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bun_right/painted-layer.png",
-      "bytes": 20942,
-      "sha256": "1faaf42c80686be417c84274117ab968b5ccb4989db251f07fdaa14e5587dff9",
-      "previousPath": "raster-layering/step01/parts/hair/bun_right/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/bun_right/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/bun_right/visible-shape.svg",
-      "bytes": 917,
-      "sha256": "f0769c7689a200f781dc59ce6662008ee2a064d77bd1e3b205fac8a0c54209fd",
-      "previousPath": "raster-layering/step01/parts/hair/bun_right/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_left/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_left/complete-shape.svg",
-      "bytes": 3576,
-      "sha256": "eaccd189ece8d9385b571ae2ca9a8feafeb20c25abb298cca515c6d68d7f4301",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_left/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_left/fragment-front.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_left/fragment-front.png",
-      "bytes": 24926,
-      "sha256": "fa89f0c679df40179a4254da4d3ae4d445f37b9837ecdf55fb7488824ca54f9d",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_left/fragment-front.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_left/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_left/painted-layer.png",
-      "bytes": 25094,
-      "sha256": "6115e6913a78006cfbc5c0e25be5dd58173afd0fd622a26f7a8bcecad76035ca",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_left/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_left/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_left/visible-shape.svg",
-      "bytes": 3311,
-      "sha256": "527a979c43646a27ae26b4ac7aff483cedad97d8b83e12fda340132acf2fbc11",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_left/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_right/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_right/complete-shape.svg",
-      "bytes": 3053,
-      "sha256": "b1d68a87500dc59bdbfa3cf9fc58b5c241b4ecf432be1d07bf844ea83963f1e6",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_right/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_right/fragment-front.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_right/fragment-front.png",
-      "bytes": 26929,
-      "sha256": "c9149ae01c6a5bc30278d51dcbd54437cc88c4edfdbd9a93c92affd4601c3d1c",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_right/fragment-front.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_right/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_right/painted-layer.png",
-      "bytes": 27076,
-      "sha256": "b899b4d684d0fc1103e4393a46403e864332af304c9a9d7f9f980d28766eb378",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_right/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/front_side_hair_right/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/front_side_hair_right/visible-shape.svg",
-      "bytes": 2743,
-      "sha256": "9aaa575dbfcb6e10c586843683c32fff81fa33ea278da06e5b9133c245bcb4e2",
-      "previousPath": "raster-layering/step01/parts/hair/front_side_hair_right/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/side_hair_left/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/side_hair_left/complete-shape.svg",
-      "bytes": 2851,
-      "sha256": "2ebdd8d4cec1f4d61808d7282b067856c3e60798f38a6e6d325985a2f1312d57",
-      "previousPath": "raster-layering/step01/parts/hair/side_hair_left/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/side_hair_left/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/side_hair_left/painted-layer.png",
-      "bytes": 43174,
-      "sha256": "469bc6892758a679c976fbc60ef3b74856b7511b28e8a8405f42a849d715db17",
-      "previousPath": "raster-layering/step01/parts/hair/side_hair_left/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/side_hair_left/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/side_hair_left/visible-shape.svg",
-      "bytes": 2851,
-      "sha256": "2ebdd8d4cec1f4d61808d7282b067856c3e60798f38a6e6d325985a2f1312d57",
-      "previousPath": "raster-layering/step01/parts/hair/side_hair_left/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/side_hair_right/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/side_hair_right/complete-shape.svg",
-      "bytes": 2576,
-      "sha256": "48a2924b8645ba73553563a3c6e7a377e521e860596a5531bb47fdd990bcb093",
-      "previousPath": "raster-layering/step01/parts/hair/side_hair_right/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/side_hair_right/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/side_hair_right/painted-layer.png",
-      "bytes": 43855,
-      "sha256": "ea18b878eb68e3973d218bc45241bbec7ee7397ab180e76fea14c0cfab218142",
-      "previousPath": "raster-layering/step01/parts/hair/side_hair_right/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/hair/side_hair_right/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/hair/side_hair_right/visible-shape.svg",
-      "bytes": 2576,
-      "sha256": "48a2924b8645ba73553563a3c6e7a377e521e860596a5531bb47fdd990bcb093",
-      "previousPath": "raster-layering/step01/parts/hair/side_hair_right/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/head_accessories/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/head_accessories/complete-shape.svg",
-      "bytes": 2508,
-      "sha256": "3ed8bf8781779b240755b585e3f69f6e1cab0701bbba192c9c5f4794cf399cac",
-      "previousPath": "raster-layering/step01/parts/head_accessories/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/head_accessories/fragment-front.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/head_accessories/fragment-front.png",
-      "bytes": 16962,
-      "sha256": "72ea1fa4d4fe159b81bc4caa9300477e419fee10d1de82c05230b481879e2219",
-      "previousPath": "raster-layering/step01/parts/head_accessories/fragment-front.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/head_accessories/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/head_accessories/painted-layer.png",
-      "bytes": 18000,
-      "sha256": "96b11b2ece047fc2806bde325b026943daf9232ac37a663804e0f40cb548ffd7",
-      "previousPath": "raster-layering/step01/parts/head_accessories/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/head_accessories/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/head_accessories/visible-shape.svg",
-      "bytes": 2162,
-      "sha256": "b005d3e80a4d40567c57634ebf408be13279d6e9769ca919cab3e55c0e4b4b2e",
-      "previousPath": "raster-layering/step01/parts/head_accessories/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_left/foot/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_left/foot/complete-shape.svg",
-      "bytes": 1446,
-      "sha256": "8b7d3d0c741a6dde6d6714f55cc15d18e7806052187b000ac1ebb943968f0238",
-      "previousPath": "raster-layering/step01/parts/legs/leg_left/foot/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_left/foot/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_left/foot/painted-layer.png",
-      "bytes": 16624,
-      "sha256": "1dfef3c2d3b8bb78aaa6e7a08d1a00555aa73d07c2678ccd7f3f391ed1e17ce5",
-      "previousPath": "raster-layering/step01/parts/legs/leg_left/foot/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_left/foot/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_left/foot/visible-shape.svg",
-      "bytes": 1446,
-      "sha256": "8b7d3d0c741a6dde6d6714f55cc15d18e7806052187b000ac1ebb943968f0238",
-      "previousPath": "raster-layering/step01/parts/legs/leg_left/foot/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_left/leg/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_left/leg/complete-shape.svg",
-      "bytes": 2895,
-      "sha256": "69b822ae92a1e9aacf2c3657cfd626d1644be62dfe94c947e01520f82b4dbfe4",
-      "previousPath": "raster-layering/step01/parts/legs/leg_left/leg/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_left/leg/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_left/leg/painted-layer.png",
-      "bytes": 58920,
-      "sha256": "3ae88733d4a878dca13281c84cf2f778bea969c18c5aff09a260b0259c56c140",
-      "previousPath": "raster-layering/step01/parts/legs/leg_left/leg/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_left/leg/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_left/leg/visible-shape.svg",
-      "bytes": 2623,
-      "sha256": "7aa526b8feebecfe214bb90c6c58cadb65cfc0ede6e064acac424073ead90b44",
-      "previousPath": "raster-layering/step01/parts/legs/leg_left/leg/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_right/foot/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_right/foot/complete-shape.svg",
-      "bytes": 1280,
-      "sha256": "7d25663858f9dc8f0c8222050e40ca5b705107e011547a3d78c76b4fca050d30",
-      "previousPath": "raster-layering/step01/parts/legs/leg_right/foot/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_right/foot/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_right/foot/painted-layer.png",
-      "bytes": 16500,
-      "sha256": "66390471e3576046d2d468a029196190bfb7f9d340a6e85ba341b99d1ec513b0",
-      "previousPath": "raster-layering/step01/parts/legs/leg_right/foot/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_right/foot/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_right/foot/visible-shape.svg",
-      "bytes": 1280,
-      "sha256": "7d25663858f9dc8f0c8222050e40ca5b705107e011547a3d78c76b4fca050d30",
-      "previousPath": "raster-layering/step01/parts/legs/leg_right/foot/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_right/leg/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_right/leg/complete-shape.svg",
-      "bytes": 2311,
-      "sha256": "56ebc9fd56d59fbef5caf86259cd5310946b0ec7816dd0515fdc8a40e0aab613",
-      "previousPath": "raster-layering/step01/parts/legs/leg_right/leg/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_right/leg/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_right/leg/painted-layer.png",
-      "bytes": 58686,
-      "sha256": "d62b9e4bd9a88686e2fbef089485b1586a13eefc231ad4ff84d632c6c65d44c1",
-      "previousPath": "raster-layering/step01/parts/legs/leg_right/leg/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/legs/leg_right/leg/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/legs/leg_right/leg/visible-shape.svg",
-      "bytes": 2311,
-      "sha256": "56ebc9fd56d59fbef5caf86259cd5310946b0ec7816dd0515fdc8a40e0aab613",
-      "previousPath": "raster-layering/step01/parts/legs/leg_right/leg/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/neck/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/neck/complete-shape.svg",
-      "bytes": 1931,
-      "sha256": "178a4121adb2d4804874ded102b7136fb1aaf40f29b71fed1d4e983a31bcb8b6",
-      "previousPath": "raster-layering/step01/parts/neck/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/neck/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/neck/painted-layer.png",
-      "bytes": 12186,
-      "sha256": "85b42d5963612757a9575f7554e6112eb9140e8886a9d2490eaf78573c6259c0",
-      "previousPath": "raster-layering/step01/parts/neck/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/neck/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/neck/visible-shape.svg",
-      "bytes": 1232,
-      "sha256": "b7f93ef63a70ea5446bd75a9db948a67976ca23cdf89a1f8409dfb038e365999",
-      "previousPath": "raster-layering/step01/parts/neck/visible-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/pelvis/complete-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/pelvis/complete-shape.svg",
-      "bytes": 1448,
-      "sha256": "5e8db924f2dbab9b4bca8801c7a7c09360b94f60dea04c49a5a939b39d1dd80a",
-      "previousPath": "raster-layering/step01/parts/pelvis/complete-shape.svg"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/pelvis/painted-layer.png",
-      "source": ".run/pink-doll/raster-layering/step01/parts/pelvis/painted-layer.png",
-      "bytes": 44220,
-      "sha256": "bfb5475865d0813e80836e8ed2c14e87068c981208747aa0a44e5a776efa6f53",
-      "previousPath": "raster-layering/step01/parts/pelvis/painted-layer.png"
-    },
-    {
-      "path": "raster-layering/step01/workspace/parts/pelvis/visible-shape.svg",
-      "source": ".run/pink-doll/raster-layering/step01/parts/pelvis/visible-shape.svg",
-      "bytes": 1169,
-      "sha256": "3c441a162e693aa3fd56ec4c4b7712c675d1d452bf13123e6d73c225afe80af3",
-      "previousPath": "raster-layering/step01/parts/pelvis/visible-shape.svg"
     },
     {
       "path": "raster-layering/step02/character-soft-edges.kra",
@@ -6581,6 +4721,11 @@
       "archivedBytes": 10229
     },
     {
+      "bytes": 959,
+      "sha256": "991c6af7f21ad3d46e2c953d187e1f8a829f6c4fc6953e5c4ef18573e081e98d",
+      "path": "run.json"
+    },
+    {
       "path": "shadow/mask/step01/character-shadowed.kra",
       "source": ".run/pink-doll/shadow/mask/step01/character-shadowed.kra",
       "bytes": 11971222,
@@ -6597,12 +4742,6 @@
       "source": ".run/pink-doll/shadow/mask/step01/face-review.png",
       "bytes": 582739,
       "sha256": "22f367c4c633018cbef0c7a36b435e1ac7a0409ea33d7acb5c73f4f108a9b9f8"
-    },
-    {
-      "path": "shadow/mask/step01/inspection.json",
-      "source": ".run/pink-doll/shadow/mask/step01/inspection.json",
-      "bytes": 14450,
-      "sha256": "8f3ccd35bc19aef99e04861a24402a12af224d3616578e0fcb7cf05605df43a7"
     },
     {
       "path": "shadow/mask/step01/inspection/native-a9498b03-0250-4349-8c5c-442284cb9a1a/native-final.png",
@@ -6900,13 +5039,6 @@
     },
     {
       "path": "shadow/mask/step01/inspection/native-a9498b03-0250-4349-8c5c-442284cb9a1a/result.json",
-      "source": ".run/pink-doll/shadow/mask/step01/inspection/native-a9498b03-0250-4349-8c5c-442284cb9a1a/result.json",
-      "bytes": 2799,
-      "sha256": "aa1a8ed6331b806a3f6dc0cc92ee0e8c56890d2c327be01da2d450684a3b2975",
-      "previousPath": "shadow/mask/step01/inspection/native-a9498b03-0250-4349-8c5c-442284cb9a1a/result.json"
-    },
-    {
-      "path": "shadow/mask/step01/inspection/native-a9498b03-0250-4349-8c5c-442284cb9a1a/result.json",
       "source": "existing archive file",
       "bytes": 2799,
       "sha256": "aa1a8ed6331b806a3f6dc0cc92ee0e8c56890d2c327be01da2d450684a3b2975"
@@ -6948,6 +5080,12 @@
       "sha256": "3a4d1af59b5b66de240c2774334cbe8ef831ccea4ecdd013859d4b695c661f5b"
     },
     {
+      "path": "shadow/mask/step01/inspection.json",
+      "source": ".run/pink-doll/shadow/mask/step01/inspection.json",
+      "bytes": 14450,
+      "sha256": "8f3ccd35bc19aef99e04861a24402a12af224d3616578e0fcb7cf05605df43a7"
+    },
+    {
       "path": "shadow/mask/step01/report.md",
       "source": ".run/pink-doll/shadow/mask/step01/report.md",
       "bytes": 8015,
@@ -6966,36 +5104,6 @@
       "sha256": "d01abc6fcea612b6c0c97fb185d9ad8490e5fc99571e415a31a94fcffe31c08c"
     },
     {
-      "path": "shadow/mask/step01/workspace/references/hair.png",
-      "source": ".run/pink-doll/shadow/mask/step01/references/hair.png",
-      "bytes": 252016,
-      "sha256": "bf25a6b52a11e4b7b9844bc09d09b3deb627fe0ba6cf9ba477b03f5638c3676c",
-      "previousPath": "shadow/mask/step01/references/hair.png"
-    },
-    {
-      "path": "shadow/mask/step01/workspace/references/inputs.json",
-      "source": ".run/pink-doll/shadow/mask/step01/references/inputs.json",
-      "bytes": 79510,
-      "sha256": "ae60521b76723243feb3c38ab0c3a966df46bc12b4ddd094ac575ad5ed1d9073",
-      "previousPath": "shadow/mask/step01/references/inputs.json"
-    },
-    {
-      "path": "shadow/mask/step01/workspace/references/production.md",
-      "source": ".run/pink-doll/shadow/mask/step01/references/production.md",
-      "bytes": 4203,
-      "sha256": "d851e72082b8f976c9084bca21db085a6f59638501c1c696e6cf09653548033a",
-      "previousPath": "shadow/mask/step01/references/production.md",
-      "archivedSha256": "9cba676ae45eaa742aebc6f17118ae89c5424170afd9de1d5a171f313acaeb28",
-      "archivedBytes": 4197
-    },
-    {
-      "path": "shadow/mask/step01/workspace/references/skirt.png",
-      "source": ".run/pink-doll/shadow/mask/step01/references/skirt.png",
-      "bytes": 240534,
-      "sha256": "3adfa7db311d8c97c2e2f62c3666048eee22c429457d296fdb6e5ed262bb7765",
-      "previousPath": "shadow/mask/step01/references/skirt.png"
-    },
-    {
       "path": "shadow/selection.json",
       "source": ".run/pink-doll/shadow/selection.json",
       "bytes": 256,
@@ -7008,5 +5116,14 @@
     "stepRecords": "mechanically reconstructed from existing artifacts and reports",
     "sourceFields": "historical archive sources",
     "legacyStages": "removed; current step directories are the only record"
-  }
+  },
+  "previewUpdatedAt": "2026-10-27T04:20:15.662Z",
+  "exportScope": [
+    "part-layering",
+    "raster-layering",
+    "clothing-part-layering",
+    "clothing-raster-layering",
+    "character-assembly",
+    "shadow"
+  ]
 }

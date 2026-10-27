@@ -1,0 +1,9 @@
+{
+  "stamp": "c0af102e83a26c65411bf0a8a47aecc4b547b3c80c82df09aea015d6df2cb9f0",
+  "inputs": {
+    "layers/depth01#face.svg": "5fb4dfd7d5e8a8e3c87a37825c423980c0b58faf9f4a1bebdd458887c017aca1"
+  },
+  "outputs": {
+    "../../../parts/face.svg": "812d14341906e42fd401d72e2ee0e657f7ff009b41a08282b90d43b4ae907b97"
+  }
+}

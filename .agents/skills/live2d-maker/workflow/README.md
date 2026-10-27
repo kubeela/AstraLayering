@@ -135,3 +135,19 @@ node --test workflow/tests/*.test.ts
 ```
 
 使用本地模拟与临时文件，覆盖后台、锁、范围、状态、步骤操作及会话交接；不调用付费模型。
+## 导出成果
+
+全流程六段已完成、任务停止后，工作台提供“导出成果”，下载 `<name>.zip`。
+
+```sh
+pnpm export --name my-character --dir /绝对路径/运行根目录
+pnpm export --name my-character --dir /绝对路径/运行根目录 --output /绝对路径/my-character.zip
+# 写成文件夹，可直接放进 demos 或交给工作台查看
+pnpm export --name my-character --dir /绝对路径/运行根目录 --output /绝对路径/demos/my-character
+```
+
+`--dir` 默认值与制作命令一致；`--output` 相对当前终端目录解析，省略时为 `<name>.zip`。`--json` 返回文件数、文件总字节数及未找到的历史图片引用。目标已存在时拒绝覆盖。文件夹输出就是任务目录；ZIP 内包含一层 `<name>/`。
+
+网页与命令行共用同一导出程序：由完成记录和步骤交付契约收集正式结果，再保留报告引用的图片。被报告引用的 workspace 图片会复制到报告旁并改写链接，其他过程文件不导出。CLI 会话、凭据、环境配置、缓存和恢复备份留在原运行目录。导出失败会清理暂存内容，原任务不被搬动或删除。
+
+归档保留各步骤的完成事实，因此导入工作台后仍显示完整的步骤、review、分块预览、深度预览和 Krita 保存画面；不再提供制作恢复操作。未找到的历史报告截图列在 `manifest.json` 的 `warnings`，不伪造图片。KRA 及原有美术文件按原字节复制；缺少固定 PNG 预览的步骤从 KRA 的 `mergedimage.png` 提取，深度 SVG 按当前 `occlusion.json` 重新合成。多深度部件仍以 KRA 中的真实拆层为准。

@@ -7,129 +7,129 @@
       "candidateHash": "a7ddfc1c1b85eda021175e95469c35634b2a9267834542f6f139b4e9aff6c1e3",
       "observations": [
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-1.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-2.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-3.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-3.png"
         },
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-4.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-5.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-6.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-7.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-8.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-9.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-9.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-10.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-10.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-11.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-11.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-12.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-12.png"
         },
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-13.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-13.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-14.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-14.png"
         },
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-15.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-15.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-16.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-16.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-17.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-17.png"
         },
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-18.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-18.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-19.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-19.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-20.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-20.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-21.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-21.png"
         },
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-22.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-22.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/body/children/torso/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-23.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-23.png"
         },
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-24.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-24.png"
         },
         {
-          "source": "../../../../../parts/body.svg",
+          "source": "part-layering/parts/body.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-25.png"
+          "savedPath": "part-layering/groups/body/children/torso/step01/observations/body/torso/2026-10-25T05-47-18-400Z-25.png"
         }
       ],
       "updatedAt": "2026-10-25T06:19:00.568Z"

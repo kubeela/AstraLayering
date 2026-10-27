@@ -1,0 +1,9 @@
+{
+  "stamp": "2ce130b886fae552239a6d00047ca78b33d048b4246136902921e4568a0ebcad",
+  "inputs": {
+    "layers/depth02#body/torso.svg": "a7ddfc1c1b85eda021175e95469c35634b2a9267834542f6f139b4e9aff6c1e3"
+  },
+  "outputs": {
+    "../../../../../parts/body/torso.svg": "0f8f9bfca2d26a91aac9284055061e892f193983b56aa466bbc46b749c26ce1f"
+  }
+}

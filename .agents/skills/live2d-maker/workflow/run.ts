@@ -16,6 +16,7 @@ export const help = [
   '首次：pnpm start --name <任务名> --image <参考图> --krita <可执行文件> --background',
   '续跑：pnpm start --name <任务名> --background',
   '进度：pnpm start --name <任务名> --status [--json]',
+  '导出：pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]',
   '--dir <绝对路径> 指定运行根目录，任务记录在 <dir>/<name>/run.json。',
   '--from / --to <管线> 选择连续范围，默认从人物 part 到阴影制作。',
   '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow',
