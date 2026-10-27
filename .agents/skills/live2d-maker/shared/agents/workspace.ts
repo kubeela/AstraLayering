@@ -11,7 +11,7 @@ import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 export type ExecutionPaths = { root: string; directory: string; outputDirectory: string; workspace: string };
 type WorkspaceTask = Pick<AgentTask, 'cwd' | 'outputDirectory'> & { step?: string };
 
-// The CLI works in the pipeline directory and drafts go to the step's workspace;
+// The CLI works in the step's workspace, where drafts go;
 // relative task/tool paths still use the task root. Callers name their step directory; the step id covers those with a
 // fixed one, and anything else works in its own directory rather than a guessed step.
 export function executionPaths(task: WorkspaceTask, fallback: string): ExecutionPaths {

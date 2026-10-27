@@ -1,6 +1,6 @@
 生成或编辑 PNG 图像。具体模型、服务和鉴权由工作流配置，调用者无需选择或传入。
 
-prompt 传入完整绘图要求，保持任务给出的绘图提示词。input_images 按顺序传入参考图片路径，尽量用绝对路径，相对路径以任务根目录为基准；没有参考图时传空数组。background 可为 transparent 或 auto，size 为接口支持的尺寸参数。
+prompt 传入完整绘图要求，保持任务给出的绘图提示词。input_images 按顺序传入参考图片的绝对路径；没有参考图时传空数组。background 可为 transparent 或 auto，size 为接口支持的尺寸参数。
 
 transparent 请求的模型适配与背景处理由工具统一完成，调用者仍按任务要求请求透明 PNG，无需选择背景色或自行抠图。auto 保留模型生成的背景。
 

@@ -12,7 +12,7 @@ type Phase = typeof phases[number];
 
 // Step markers are dotfiles, which the file inventory skips; read them directly.
 export async function stepStatus(directory: string, pipeline: string, id: string): Promise<StepStatus> {
-  try { return (await readStep(await safePath(directory, `${pipeline}/${id}`))).status; }
+  try { return (await readStep(await safePath(directory, `${pipeline}/${id}`), directory)).status; }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return 'absent'; throw error; }
 }
 

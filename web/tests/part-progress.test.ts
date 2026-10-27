@@ -205,6 +205,11 @@ test('a completed merge step is complete before the whole part pipeline finishes
   assert.equal((await f.get()).part.states.merge, 'available');
   await f.mark('merge');
   assert.equal((await f.get()).part.states.merge, 'done');
+  // Current step records store task-relative output keys; the view reads them against the task root.
+  await f.put('merge/.completed', { stamp: 'stamp', inputs: {}, outputs: { 'part-layering/preview.svg': svgHash(svg) }, paths: 'task' });
+  const current = await f.get();
+  assert.equal(current.part.states.merge, 'done');
+  assert.deepEqual(current.errors ?? [], []);
   await rm(join(f.task, 'part-layering/merge/.completed'));
   assert.equal((await f.get()).part.states.merge, 'available');
 });
