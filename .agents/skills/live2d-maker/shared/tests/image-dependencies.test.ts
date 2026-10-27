@@ -63,5 +63,6 @@ test('Nano-only preparation starts without Krita/Python; missing image credentia
   const raster = { ...options, name: 'raster', from: 'raster-layering' as const, to: 'raster-layering' as const };
   await assert.rejects(runTask(raster, { ready() { ready = true; }, execute: async () => assert.fail('Krita is required for raster') }), /--krita/);
   assert.equal(ready, false);
-  assert.equal((await taskStatus(raster)).status, 'failed');
+  // Refused before the task record is written; --krita gives the path again.
+  await assert.rejects(taskStatus(raster), /缺少总控记录/);
 });

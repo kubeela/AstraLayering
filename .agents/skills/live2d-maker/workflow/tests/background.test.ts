@@ -70,8 +70,8 @@ test('真实后台父进程退出后任务继续，已完成组装跳过模型�
 
 test('后台前置错误不假报启动；子管线错误完整进入总控', { skip: process.platform === 'win32' }, async t => {
   const f = await fixture(t);
-  await assert.rejects(startBackground({ ...f.options, krita: join(f.task, 'missing') }), /不存在或不可执行/);
-  assert.equal((await taskStatus(f.options)).status, 'failed');
+  await assert.rejects(startBackground({ ...f.options, krita: join(f.task, 'missing') }), /不存在或不可执行[\s\S]*--krita/);
+  await assert.rejects(taskStatus(f.options), /缺少总控记录/);
   await rm(f.inputs.clothingKra);
   await startFixtureBackground(f, f.options.krita);
   await until(async () => !(await taskStatus(f.options)).lockHeld);

@@ -12,6 +12,7 @@ import { acquireTaskLock, configureRun, directoryFor, now, saveRun, selectedPipe
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/codex/environment.ts';
 import { pipelineAgentSteps, preflightAgentSteps } from '../shared/agents/preflight.ts';
 import { clearTaskStop, watchTaskStop } from './control.ts';
+import { requireKrita } from './krita.ts';
 
 export type PipelineExecution = (id: PipelineId, run: TaskRun, context: {
   signal: AbortSignal; progress(message: string): void; started(pid: number): Promise<void>;
@@ -91,19 +92,19 @@ export async function runTask(options: TaskOptions, dependencies: {
     void persist().catch(error => log.write('状态保存失败，将在后续更新重试：' + formatAgentError(error)));
   };
   try {
-    run = await configureRun(options, directory);
+    const environment = !dependencies.execute || dependencies.environment ? dependencies.environment ?? loadWorkflowEnvironment() : undefined;
+    // Krita is checked before the run is recorded as running, and before the agent
+    // preflight: it is quick, while that may build the patched Codex. A refusal
+    // leaves run.json as it was.
+    const configured = await configureRun(options, directory);
+    await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, undefined, environment?.codex.env)));
+    run = configured;
     run.status = 'running'; delete run.error; delete run.output; delete run.activePipeline;
     run.runner = { id: randomUUID(), pid: process.pid, startedAt: now(), stopProtocol: 'file-v1' };
     await persist();
     stopWatching = watchTaskStop(directory, run.runner.id, stopController,
       error => log.write('停止请求读取失败：' + formatAgentError(error)));
-    const environment = !dependencies.execute || dependencies.environment ? dependencies.environment ?? loadWorkflowEnvironment() : undefined;
     const selected = selectedPipelines(run.from, run.to);
-    // Krita is checked first: it is quick, while the agent preflight may build the patched Codex.
-    if (selectedPipelines(run.from, run.to).some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow')) {
-      if (!run.krita) throw new Error('本次路线包含 Krita 步骤，请用 --krita 指定已安装的可执行文件；不会自动下载或搜索。');
-      await (dependencies.preflight ? dependencies.preflight(run.krita) : checkKrita(run.krita, undefined, environment?.codex.env));
-    }
     if (environment) {
       const standard = run.standard;
       await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { krita: run.krita, runsRoot: dirname(directory), progress,
@@ -145,7 +146,7 @@ export async function runTask(options: TaskOptions, dependencies: {
       run.error = formatAgentError(error);
       if (run.activePipeline) run.pipelines[run.activePipeline] = { status: 'failed', updatedAt: now(), summary: run.error };
       progress(run.error);
-    }
+    } else log.write(formatAgentError(error));
     throw error;
   } finally {
     stopWatching?.();

@@ -48,7 +48,18 @@ const hasKraPreview = index => isRasterPipeline(index)||stages[index]?.id==='cha
  ||stages[index]?.id==='shadow'&&data.pipelines[index]?.mode==='mask';
 async function post(path, value) {
  const response = await fetch('./api/'+path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dir:state.directory,...value})});
- const result = await response.json(); if(!response.ok)throw new Error(result.error); return result;
+ const result = await response.json(); if(!response.ok)throw Object.assign(new Error(result.error),{krita:result.krita}); return result;
+}
+// Start, continue, resume and retry refuse an unusable Krita before changing any step,
+// like pnpm start; the path is given again here as with --krita.
+async function postWithKrita(path, value) {
+ try{return await post(path,value);}
+ catch(error){
+  if(!error.krita)throw error;
+  const krita=prompt(error.message+'\n\nKrita 可执行文件路径：',error.krita.path||'');
+  if(!krita?.trim())throw error;
+  return postWithKrita(path,{...value,krita:krita.trim()});
+ }
 }
 const requestedStage = Number(new URLSearchParams(location.search).get('stage') ?? 0);
 if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < stages.length) {
@@ -189,7 +200,8 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
 // task again. Without any step record 继续 opens the run dialog instead. While the
 // task runs they cannot apply, so the toolbar holds the stop button in their place.
 const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
-const stepActionTitles={continue:'保留产物与会话，从中断处继续运行',resume:'清除会话、保留产物，在新会话中继续运行',retry:'删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑'};
+// The titles name the matching pnpm start option; the help of workflow/run.ts lists the same commands.
+const stepActionTitles={continue:'保留产物与会话，从中断处继续运行（命令行 --continue）',resume:'清除会话、保留产物，在新会话中继续运行（命令行 --resume）',retry:'删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑（命令行 --retry）'};
 function stepTargets() {
  return (data.pipelines||[]).flatMap((pipeline,index)=>[
   ...(pipeline.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session}))]);
@@ -202,7 +214,7 @@ function stepToolbar() {
  const exportButton=data.canExport?`<a class="button" data-export href="./api/export?${taskParams()}" title="下载正式产物、完整流程预览与报告；不包含过程文件">导出成果</a>`:'';
  if(data.archived)return `<div class="step-toolbar" role="group" aria-label="成果归档">${exportButton}<span>成果归档</span></div>`;
  const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;
- if(busy)return `<div class="step-toolbar" role="group" aria-label="任务控制"><button class="button" data-action="stop" title="${data.canStop?'停止运行，保留产物与续跑记录':'当前运行未提供可用的停止入口'}" ${data.canStop?'':'disabled'}>${icon('stop')}停止</button></div>`;
+ if(busy)return `<div class="step-toolbar" role="group" aria-label="任务控制"><button class="button" data-action="stop" title="${data.canStop?'停止运行，保留产物与续跑记录（命令行 --stop）':'当前运行未提供可用的停止入口'}" ${data.canStop?'':'disabled'}>${icon('stop')}停止</button></div>`;
  const allowed=action=>action==='continue'||broken.length>0;
  const scope=broken.length?`（${broken.length} 个中断 / 失败步骤：${broken.map(stepLabel).join('、')}）`:'';
  const reason=action=>!targets.length?'运行任务（可选择范围）':
@@ -573,7 +585,7 @@ function showNew(single=false, existing=false) {
    }
    if(existing)await post('project-name',{name:payload.name,displayName:payload.displayName});
    state.name=payload.name;button.textContent='正在启动…';await post('start',payload);dialog.close();await refreshTask(true);toast('任务已在后台启动');
-  } catch(error){form.querySelector('.form-error').textContent=error.message;if(created){button.textContent='重新启动';await refreshTask(true);}}
+  } catch(error){form.querySelector('.form-error').textContent=error.message;if(error.krita)form.elements.krita.focus();if(created){button.textContent='重新启动';await refreshTask(true);}}
   finally{button.disabled=false;}
  };
 }
@@ -621,7 +633,7 @@ function bind() {
   if(!targets.length){if(action==='continue')showNew(false,true);return;}
   if(action==='retry'&&!confirm(`重试：删除以下步骤的产物与会话并重新运行，依赖它们的后续步骤会随之重跑。\n${broken.map(stepLabel).join('\n')}\n确定吗？`))return;
   b.disabled=true;
-  try{const result=await post('task-action',{name:state.name,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
+  try{const result=await postWithKrita('task-action',{name:state.name,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
   catch(error){toast(error.message);b.disabled=false;}
  });
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});

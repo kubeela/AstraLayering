@@ -30,19 +30,25 @@ raster 各步骤使用各自的绘制 thread，同一步骤的绘制与返修共
 | `--name <任务名>` | 任务目录名；续跑沿用 |
 | `--image <参考图>` | 首次原图，推荐绝对路径 |
 | `--dir <运行根目录>` | 数据在 `<dir>/<name>/`；默认完整仓库 `.run/`，独立安装为 skill 上一级的 `.run/`，不放 skill 内 |
-| `--krita <可执行文件>` | 绘制、组装与阴影需要；续跑复用保存值 |
+| `--krita <可执行文件>` | 绘制、组装与阴影需要；续跑复用保存值。路线含 Krita 时每次启动先检查，不可用即拒绝且不改动任务，用 `--krita` 重新指定 |
 | `--from / --to <section>` | 连续范围；默认完整六段，section ID 见下表 |
 | `--standard / --no-standard` | 是否标准化人物姿态；首次默认关闭，续跑沿用；已有参考改选项需按 workflow 规则重试 |
 | `--shadow-mode mask\|normal-depth` | 原生投影蒙版／法线深度；首次默认 `mask`，分支独立恢复 |
 | `--jobs <正整数>` | part 全局 agent 并发，默认 3 |
 | `--background` | 后台制作；省略则前台 |
 | `--status --json` | 只查询，不启动模型 |
+| `--continue` / `--resume` / `--retry` | 对应网页的继续／恢复／重试，作用于中断或失败的步骤；加 `--pipeline <section> [--step <步骤>]` 只处理一个步骤 |
+| `--stop` | 对应网页的停止，保留产物与续跑记录 |
 
 ```sh
 pnpm start --name my-character --image /绝对路径/角色.png --krita /绝对路径/krita --background
 pnpm start --name my-character --status --json
 # 续跑：自定义运行根目录时，每次都加同一 --dir
 pnpm start --name my-character --background
+# 恢复（新会话、保留产物）/ 重试（重做失败步骤）/ 停止
+pnpm start --name my-character --resume --background
+pnpm start --name my-character --retry --pipeline raster-layering --step step02 --background
+pnpm start --name my-character --stop
 ```
 
 相对输入路径均从 `<dir>/<name>/` 解析。已有记录保存范围与选项；续跑优先只给任务名和原运行根目录。普通中断保留完成标记与工程，按原参数续跑。

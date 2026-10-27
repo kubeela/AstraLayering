@@ -28,7 +28,7 @@ export async function requestTaskStop(options: Pick<TaskOptions, 'name' | 'dir'>
   const directory = directoryFor(options), live = await taskStatus(options);
   const worker: LegacyWorker | undefined = await optionalJSON(join(directory, '.web-worker.json'));
   const method = taskStopMethod(live.runner, live.runnerAlive, live.lockHeld, worker);
-  if (!method) throw new Error('当前没有可由网页停止的运行任务');
+  if (!method) throw new Error('当前没有可停止的运行任务');
   if (method === 'request') await writeJSON(stopRequestPath(directory), { runnerId: live.runner!.id });
   else if (method === 'web-request') await writeJSON(join(directory, '.web-cancel.json'), { token: worker!.token });
   else {

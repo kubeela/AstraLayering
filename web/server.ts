@@ -19,6 +19,7 @@ import { SVGThumbnails } from './svg-thumbnail.ts';
 import { KRAPreviews } from './kra-preview.ts';
 import { launch } from './worker.ts';
 import { requestTaskStop } from '../.agents/skills/live2d-maker/workflow/control.ts';
+import { KritaUnavailable, preflightKrita, workflowKrita } from '../.agents/skills/live2d-maker/workflow/krita.ts';
 import { exportCompletedRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { LayerCompositor } from './layer-compositor.ts';
 import { studioProject } from './studio-project.ts';
@@ -61,7 +62,9 @@ function options(value: any, dir: string): TaskOptions {
   return result;
 }
 export async function createWorkbench({ settingsPath = join(root, '.web/settings.json'), defaultDir = runsDirectory,
-  start = launch, environment = createEnvironmentConfig() }: { settingsPath?: string; defaultDir?: string; start?: typeof launch; environment?: ReturnType<typeof createEnvironmentConfig> } = {}) {
+  start = launch, environment = createEnvironmentConfig(), preflight = (options: TaskOptions) => preflightKrita(options, workflowKrita) }: {
+  settingsPath?: string; defaultDir?: string; start?: typeof launch; environment?: ReturnType<typeof createEnvironmentConfig>;
+  preflight?: (options: TaskOptions) => Promise<unknown> } = {}) {
   async function validateDir(path: string) {
     if (typeof path !== 'string' || !isAbsolute(path)) throw new Error('运行目录必须是绝对路径');
     await mkdir(path, { recursive: true });
@@ -170,30 +173,22 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           await saveProjectDisplayName(directory, value.displayName);
           json({ name: opts.name, displayName: await projectDisplayName(directory, opts.name) }); return;
         }
-        if (path === '/api/start') {
-          if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
-          starts.add(directory);
-          try { json({ pid: await start(opts), name: opts.name }, 202); }
-          finally { starts.delete(directory); }
-          return;
-        }
-        if (path === '/api/step-action') {
-          // Recover one interrupted, failed or redone step, then run the saved route again.
+        if (path === '/api/start' || path === '/api/step-action' || path === '/api/task-action') {
+          // The same commands as pnpm start: plain start / continue, or --continue / --resume / --retry
+          // for every interrupted or failed step (task-action) or for one step (step-action).
           if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
           starts.add(directory);
           try {
-            const message = await applyStepAction({ name: opts.name, dir: opts.dir, pipeline: value.pipeline, step: value.step, action: value.action });
-            json({ message, pid: await start(opts), name: opts.name }, 202);
-          } finally { starts.delete(directory); }
-          return;
-        }
-        if (path === '/api/task-action') {
-          // The toolbar form: recover every interrupted or failed step, then run the saved route again.
-          if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
-          starts.add(directory);
-          try {
-            const message = await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action });
-            json({ message, pid: await start(opts), name: opts.name }, 202);
+            // Krita is checked before an action changes any step.
+            try { await preflight(opts); }
+            catch (error) {
+              if (!(error instanceof KritaUnavailable)) throw error;
+              json({ error: error.reason + '\n请重新填写 Krita 可执行文件路径（命令行：--krita <路径>）。', krita: { path: error.path ?? null } }, 409); return;
+            }
+            const message = path === '/api/step-action'
+              ? await applyStepAction({ name: opts.name, dir: opts.dir, pipeline: value.pipeline, step: value.step, action: value.action })
+              : path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action }) : undefined;
+            json({ ...(message === undefined ? {} : { message }), pid: await start(opts), name: opts.name }, 202);
           } finally { starts.delete(directory); }
           return;
         }

@@ -117,6 +117,20 @@ async function originalImage(directory: string, input?: string): Promise<string 
   }
   return retained ? relative(directory, retained) : undefined;
 }
+export const usesKrita = (selected: PipelineId[]) => selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow');
+// The Krita executable for this run: the one given now, else the one recorded by
+// the task or, for older tasks, by one of its Krita pipelines.
+export async function taskKrita(options: Pick<TaskOptions, 'name' | 'dir' | 'krita'>, directory: string,
+  saved: Pick<TaskRun, 'krita'> | undefined, selected: PipelineId[]): Promise<string | undefined> {
+  if (options.krita) return resolveInput(options.name, options.krita, options.dir);
+  if (saved?.krita || !usesKrita(selected)) return saved?.krita;
+  for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow/mask', 'shadow/normal-depth']) {
+    try {
+      const config = JSON.parse(await readFile(join(directory, id, 'run.json'), 'utf8'));
+      if (typeof config.krita?.executable === 'string') return config.krita.executable;
+    } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+  }
+}
 export async function configureRun(options: TaskOptions, directory: string): Promise<TaskRun> {
   const saved = await readRun(directory, options.name);
   if (saved?.archive) throw new Error('这是导出的成果归档；请在原运行目录继续制作。');
@@ -138,15 +152,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs, standard,
     shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
   run.image = image ?? saved?.image;
-  if (options.krita) run.krita = resolveInput(options.name, options.krita, options.dir);
-  if (!run.krita && selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow')) {
-    for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow/mask', 'shadow/normal-depth']) {
-      try {
-        const config = JSON.parse(await readFile(join(directory, id, 'run.json'), 'utf8'));
-        if (typeof config.krita?.executable === 'string') { run.krita = config.krita.executable; break; }
-      } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-    }
-  }
+  run.krita = await taskKrita(options, directory, run, selected);
   for (const id of selected) run.pipelines[id] ??= { status: 'pending', updatedAt: now() };
   return run;
 }
