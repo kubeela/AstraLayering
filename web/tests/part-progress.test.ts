@@ -76,6 +76,46 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.equal((await f.get()).part.groups[0].webPhases.completionCheck, 'available');
 });
 
+for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: hidden outlines and reviews finish together once the skip step completes`, async t => {
+  const f = await fixture(t, pipeline);
+  const group = { id: 'iris', kind: 'part', hiddenInReference: true, groups: [] };
+  await f.put('groups.json', { groups: [group] });
+  const original = await readFile(join(f.task, pipeline, 'groups.json'));
+  const hiddenSource = '<svg xmlns="http://www.w3.org/2000/svg" data-hidden-in-reference="true"><g data-group-path="iris"/></svg>';
+  assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'the flag alone is not a completed skip');
+  await f.mark('groups/iris/step01', 'running');
+  await f.put('groups/iris/step01/outline.svg', hiddenSource);
+  assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'an interrupted skip still needs its completed marker');
+  await rm(join(f.task, pipeline, 'groups/iris/step01/.running'));
+  await f.mark('groups/iris/step01');
+  let value = await f.get(), node = value.part.groups[0];
+  assert.equal(node.webPhases.outline, 'done');
+  assert.equal(node.webPhases.review, 'done');
+  assert.match(node.webDetails.outline, /原图不可见.*已跳过/);
+  assert.match(node.webDetails.review, /原图不可见.*已跳过/);
+  assert.deepEqual(node.webReviewRounds.map((round: any) => [round.review.status, round.repair.status]),
+    [['skipped', 'skipped'], ['skipped', 'skipped']]);
+  assert.ok(node.webReviewRounds.every((round: any) => round.review.reportIndex === undefined && round.repair.reportIndex === undefined));
+  assert.equal(value.files.some(file => file.endsWith('/review.json')), false, 'skipped reviews have no invented report');
+  await f.put('layers/depth01/iris.svg', hiddenSource);
+  await f.put('parts/iris.svg', svg);
+  await f.put('groups/iris/step02/check.json', { groupId: 'iris', passed: true });
+  for (const step of ['layers/depth01', 'groups/iris/step02', 'groups/iris/step03', 'merge']) await f.mark(step);
+  await f.put('preview.svg', svg);
+  value = await f.get();
+  assert.ok(Object.values(value.part.groups[0].webPhases).every(status => status === 'done'));
+  assert.equal(value.part.states.layers, 'done');
+  assert.equal(value.part.states.merge, 'done');
+  assert.deepEqual(await readFile(join(f.task, pipeline, 'groups.json')), original, 'display does not rewrite scheduler facts');
+  await f.put('groups.json', { groups: [{ ...group, hiddenInReference: false }] });
+  assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'ordinary parts still require their review report');
+  await f.put('groups.json', { groups: [group] });
+  await rm(join(f.task, pipeline, 'groups/iris/step01/outline.svg'));
+  value = await f.get();
+  assert.equal(value.part.groups[0].webPhases.outline, 'pending');
+  assert.equal(value.part.groups[0].webPhases.review, 'pending', 'missing skip output is not a completed review');
+});
+
 for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: initial and depth requests show running without outputs, and candidates remain previewable`, async t => {
   const f = await fixture(t, pipeline);
   const run = await configureRun({ name: 'test', dir: f.dir, from: pipeline as any, to: pipeline as any }, f.task);
@@ -93,10 +133,10 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.equal((await f.get()).part.states.initial, 'done');
   await f.put('agents/depth/request.json', { task: { name: '最终遮挡层级规划' } });
   assert.equal((await f.get()).part.states.occlusion, 'running');
-  await f.put('occlusion/candidate.svg', svg);
+  await f.put('occlusion/workspace/candidate.svg', svg);
   let value = await f.get();
   assert.equal(value.part.states.occlusion, 'running');
-  assert.ok(value.files.includes(pipeline + '/occlusion/candidate.svg'));
+  assert.ok(value.files.includes(pipeline + '/occlusion/workspace/candidate.svg'));
   await f.put('agents/depth/result.json', { status: 'completed' });
   assert.equal((await f.get()).part.states.occlusion, 'available');
   await f.put('occlusion.json', { version: 3, direction: 'back-to-front', sourceHash: 'input',

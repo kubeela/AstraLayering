@@ -39,7 +39,7 @@
           },
           "hiddenInReference": {
             "type": "boolean",
-            "description": "本节点整体在原图中不可见、需要补设计时为 true；跳过描边和轮廓 review，直接补全。省略为 false。"
+            "description": "本节点在当前画布内需要制作，但因遮挡或闭合而整体不可见、需要补设计时为 true；跳过描边和轮廓 review，直接补全。完全位于画外且无需画内制作的实体不属于本标签场景。省略为 false。"
           }
         }
       }
