@@ -56,7 +56,7 @@ test('无工具一次性回合走 app-server：只读、关闭 shell，记录输
   assert.equal(log.result.status, 'completed');
   assert.match(log.transcript, /测试工具选择摘要/);
   const thread = (await f.protocol()).find(message => message.method === 'thread/start').params;
-  assert.equal(thread.cwd, f.directory);
+  assert.equal(thread.cwd, join(f.directory, 'workspace'));
   assert.equal(thread.sandbox, 'danger-full-access');
   assert.deepEqual(thread.dynamicTools, []);
   assert.equal(thread.config['features.image_generation'], true);

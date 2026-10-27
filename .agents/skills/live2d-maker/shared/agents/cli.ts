@@ -116,8 +116,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       resumed = undefined; threadId = undefined; previous = undefined;
     }
     const workspace = paths.workspace;
-    // The CLI works in the pipeline directory; a resumed session keeps the directory it started in.
-    const cwd = previous?.workspace ? fromTaskPath(paths.root, previous.workspace) : paths.directory;
+    // The CLI works in the step workspace; a resumed session keeps the directory it started in.
+    const cwd = previous?.workspace ? fromTaskPath(paths.root, previous.workspace) : workspace;
     const data = previous?.harness === model.harness ? previous.data : join(log.directory, 'cli-data');
     await mkdir(data, { recursive: true, mode: 0o700 });
     // Some CLI releases ignore their config-directory overrides for native history.

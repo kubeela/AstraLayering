@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { test, type TestContext } from 'node:test';
+import { join } from 'node:path';
 import { runAgent, type AgentRequest } from '../raster/agent.ts';
 import { AgentCallError, AgentRuntime, retryableAgentError } from '../codex/agent-runtime.ts';
 import { executionPaths, workspacePrompt } from '../agents/workspace.ts';
@@ -24,7 +25,7 @@ test('raster 等待 CLI 终态后在原 thread 继续并记录退避', async t =
   const protocol = await f.protocol();
   assert.equal(protocol.filter(message => message.method === 'thread/start').length, 1);
   const thread = protocol.find(message => message.method === 'thread/start').params;
-  assert.equal(thread.cwd, f.directory);
+  assert.equal(thread.cwd, join(f.directory, 'workspace'));
   assert.equal(thread.sandbox, 'danger-full-access');
   const prompts = protocol.filter(message => message.method === 'turn/start').map(message => message.params.input[0].text);
   assert.equal(prompts.length, 2);
