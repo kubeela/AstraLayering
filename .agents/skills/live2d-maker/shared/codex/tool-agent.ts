@@ -206,7 +206,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       if (byName.size !== tools.length || tools.some(tool => !/^[a-zA-Z0-9_-]+$/.test(tool.name))) {
         throw new Error('function tool 名称无效或重复');
       }
-      const workingDirectory = paths.workspace;
+      // The task root is the working directory and the one base for relative paths.
+      const workingDirectory = paths.root;
       const definitions = tools.map(({ name, description, inputSchema }) => ({ type: 'function', name, description, inputSchema }));
       const sandboxMode = task.sandboxMode ?? 'workspace-write';
       const enableImageGeneration = task.imageGeneration ?? false;
@@ -225,7 +226,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
           ...(sandbox === 'workspace-write' ? { sandbox_workspace_write: {
             ...options.config?.sandbox_workspace_write as Record<string, unknown>,
-            writable_roots: [paths.outputDirectory],
+            writable_roots: [paths.workspace, paths.outputDirectory],
           } } : {}),
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
           features: { image_generation: imageGeneration, shell_tool: true, unified_exec: true, multi_agent: false, memories: false } }),

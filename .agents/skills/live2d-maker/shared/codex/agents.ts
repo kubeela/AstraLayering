@@ -275,7 +275,7 @@ export class CodexAgents {
     await checkCodexCapabilities(this.options.environment!, this.options);
     const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, environment, ...options } = this.options;
     const paths = await prepareWorkspace(task, cwd ?? workflowsDirectory);
-    const workingDirectory = paths.workspace;
+    const workingDirectory = paths.root;
     const codex = new Codex({
       ...options,
       config: {
@@ -290,7 +290,7 @@ export class CodexAgents {
       skipGitRepoCheck: true,
       model: selected?.model || environment!.models.medium.model, modelReasoningEffort: selected?.effort || environment!.models.medium.effort,
       workingDirectory,
-      additionalDirectories: [paths.outputDirectory] as string[],
+      additionalDirectories: [paths.workspace, paths.outputDirectory] as string[],
       sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
     } as const;
     const thread = codex.startThread(threadOptions);

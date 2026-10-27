@@ -199,7 +199,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     };
     options.progress?.(`开始：${task.name}；${model.harness} / ${model.model} / ${model.effort}；记录：${log.directory}`);
     signal.throwIfAborted();
-    const child = spawn(executable, args, { cwd: workspace, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn(executable, args, { cwd: paths.root, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
     let spawnError: Error | undefined;
     child.on('error', error => { spawnError = error; });
     let childClosed = false;

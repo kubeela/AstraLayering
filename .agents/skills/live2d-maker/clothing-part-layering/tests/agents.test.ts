@@ -162,7 +162,7 @@ await appendFile(capture, JSON.stringify({args:process.argv.slice(2),prompt})+'\
 const write = event => process.stdout.write(JSON.stringify(event)+'\\n');
 write(${JSON.stringify(started)});
 if (!previous) {
-  write({type:'item.completed',item:{id:'image',type:'image_generation',savedPath:'generated.png'}});
+  write({type:'item.completed',item:{id:'image',type:'image_generation',savedPath:'workspace/generated.png'}});
   write({type:'turn.failed',error:{message:'Selected model is at capacity. Please try a different model.'}});
 } else {
   write({type:'item.completed',item:{id:'message',type:'agent_message',text:JSON.stringify({savedPath:'workspace/generated.png',error:null})}});

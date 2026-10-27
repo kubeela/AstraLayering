@@ -11,8 +11,8 @@ import { taskRootOf, toTaskPath } from '../task-paths.ts';
 export type ExecutionPaths = { root: string; directory: string; outputDirectory: string; workspace: string };
 type WorkspaceTask = Pick<AgentTask, 'cwd' | 'outputDirectory'> & { step?: string };
 
-// Relative task/tool paths use the task root; the CLI works in the step's
-// workspace. Callers name their step directory; the step id covers those with a
+// The CLI works in the task root, the base of every relative path; drafts go to
+// the step's workspace. Callers name their step directory; the step id covers those with a
 // fixed one, and anything else works in its own directory rather than a guessed step.
 export function executionPaths(task: WorkspaceTask, fallback: string): ExecutionPaths {
   const directory = resolve(task.cwd || fallback);
