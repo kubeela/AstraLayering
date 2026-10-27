@@ -49,7 +49,8 @@ export async function publishReportText(text: string, workspace: string, output:
     for (const candidate of candidates) {
       if (!inside(root, candidate)) continue;
       try { source = await realpath(candidate); break; }
-      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+      // A target that names no file (prose taken for a path, a too-long name) is left as written.
+      catch (error) { if (!['ENOENT', 'ENOTDIR', 'ENAMETOOLONG'].includes((error as NodeJS.ErrnoException).code ?? '')) throw error; }
     }
     if (!source) continue;
     const published = await publishEvidence(source, workspace, output);

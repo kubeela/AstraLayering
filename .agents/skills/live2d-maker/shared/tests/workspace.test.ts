@@ -89,6 +89,15 @@ test('report publication preserves bytes and the chosen folder, and leaves unrel
   await assert.rejects(readFile(join(paths.outputDirectory, 'unrelated.py')), { code: 'ENOENT' });
 });
 
+test('report publication leaves a cited path that names no file as written', async t => {
+  const root = await fixture(t), paths = await prepareWorkspace({ cwd: root, outputDirectory: 'step01' }, root);
+  const report = join(paths.outputDirectory, 'review-01.md.tmp');
+  const text = `结论：通过\n\n\`${'很长的说明'.repeat(60)}.png\` 与 \`missing/zoom.png\`\n`;
+  await writeFile(report, text);
+  await publishReportAssets(report, paths.workspace);
+  assert.equal(await readFile(report, 'utf8'), text);
+});
+
 test('Codex changes tools by reconnecting to the same thread and keeps formal write access', async t => {
   const root = await fixture(t), server = await fakeAppServer(root, [{ tool: 'deliver', arguments: {} }]);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, root), cwd: root,

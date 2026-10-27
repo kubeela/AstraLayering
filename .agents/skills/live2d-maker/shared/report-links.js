@@ -11,6 +11,6 @@ export function reportReferences(text) {
   };
   for (const match of prose.matchAll(/!?\[([^\]\n]*)\]\(\s*(?:<([^>\n]+)>|((?:[^\s()]|\([^()\n]*\))+))(?:\s+"[^"\n]*")?\s*\)/g)) add(match, match[2] ?? match[3], match[1]);
   for (const match of prose.matchAll(/`([^`\n]+)`/g)) add(match, match[1]);
-  for (const match of prose.matchAll(/[^\s`"'<>()[\]，；。]+\.(?:png|jpe?g|webp|svg)\b/gi)) add(match, match[0]);
+  for (const match of prose.matchAll(/[^\s`"'<>()[\]，；。、：！？]+\.(?:png|jpe?g|webp|svg)\b/gi)) add(match, match[0]);
   return refs.sort((a, b) => a.start - b.start);
 }

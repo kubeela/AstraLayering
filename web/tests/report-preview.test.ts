@@ -28,6 +28,11 @@ test('报告图片兼容 Markdown、行内代码与纯路径，代码块不被�
   for (const ref of refs) assert.ok(text.slice(ref.start, ref.end).includes(ref.target));
 });
 
+test('中文顿号、冒号分隔的图片名各自成为一个引用', () => {
+  const text = '链接均相对本报告：a.png、b_zoom.png、c.webp！见 d.png？';
+  assert.deepEqual(reportReferences(text).map(ref => ref.target), ['a.png', 'b_zoom.png', 'c.webp', 'd.png']);
+});
+
 test('报告图片只解析实际任务内的文件，拒绝外部路径与符号链接', async t => {
   const base = await realpath(await mkdtemp(join(tmpdir(), 'report-paths-'))), root = join(base, 'case');
   t.after(() => rm(base, { recursive: true, force: true }));
