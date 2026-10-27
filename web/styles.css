@@ -55,6 +55,8 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 /* The character lane above the clothing lane; the merge column beside both slides to the focused one. */
 .flow-lanes{display:flex;flex-direction:column;gap:72px}
 .flow-lane,.flow-merge{display:flex;gap:var(--card-gap);align-items:flex-start}
+/* Both lanes turn into the merge column within this gutter, room for their labels. */
+.flow-grid>.flow-merge{margin-left:72px}
 .pipeline-lane{width:292px;flex:0 0 auto}
 .pipeline-lane.collapsed{width:224px}
 .pipeline-lane.group-expanded{width:1460px}

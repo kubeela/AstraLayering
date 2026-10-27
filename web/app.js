@@ -448,7 +448,8 @@ function connectFlow() {
   if(Math.abs(from-to)<2){path(`M${a.x+a.w} ${from} H${b.x-6}`,state);label(text,(a.x+a.w+b.x-6)/2,from,state);return;}
   path(`M${a.x+a.w} ${from} H${turn} V${to} H${b.x-6}`,state);
   if(Math.abs(from-to)>=textWidth(text)+24)label(text,turn,(from+to)/2,state,true);
-  else label(text,(a.x+a.w+turn)/2,from,state);
+  // Starts right of the source card: a pill wider than its run must not slide under that card.
+  else label(text,Math.max((a.x+a.w+turn)/2,a.x+a.w+textWidth(text)/2+6),from,state);
  };
  if(input&&cards[0]){
   const entryY=cards[0].y+cards[0].h/2;
