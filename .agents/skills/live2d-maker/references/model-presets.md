@@ -159,7 +159,7 @@ layering_agent_part_review_model=gemini-4-argon-high
 
 | CLI | 协议 | 自定义连接 | 模型列表的原生适配 |
 | --- | --- | --- | --- |
-| Codex | `responses` | key 必填；URL 留空为 `https://api.openai.com/v1` | 启动前校验列表，SDK 传入步骤选定模型，保留宿主模型元数据 |
+| Codex | `responses` | key 必填；URL 留空为 `https://api.openai.com/v1` | 启动前校验列表，App Server 传入步骤选定模型，保留宿主模型元数据 |
 | Claude Code | `anthropic`（Messages） | key 必填；URL 留空为 `https://api.anthropic.com` | 每次请求的私有 settings 中生成 `modelPicker` |
 | AGV | `genai` 或 `openai` | key 与 URL 都必填；协议留空默认 `genai` | 映射到原生 `AGY_LLM_GATEWAY_MODELS` |
 

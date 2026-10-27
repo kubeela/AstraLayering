@@ -9,7 +9,7 @@ import { steps } from '../steps.ts';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { loadConfig } from '../../shared/raster/run-store.ts';
-import { rasterCodexConfig, type AgentRequest } from '../../shared/raster/agent.ts';
+import { type AgentRequest } from '../../shared/raster/agent.ts';
 
 async function fixture(t: TestContext) {
   const root = await realpath(await mkdtemp(join(tmpdir(), 'character-assembly-')));
@@ -90,7 +90,6 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
     assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences']);
     assert.ok((request.tools?.[0].inputSchema.properties as any).parts);
 
-    assert.equal('mcp_servers' in rasterCodexConfig(), false);
     await stat(join(f.output, 'step01/.running'));
     return deliver(request);
   };

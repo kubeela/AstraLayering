@@ -10,7 +10,7 @@ import { join } from 'node:path';
 const rel = (path: string) => path.slice(path.indexOf('/runs/test/') + '/runs/test/'.length);
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
-import type { ThreadEvent, ThreadOptions } from '@openai/codex-sdk';
+import { rasterAppServer } from '../../shared/tests/raster-app-server.ts';
 import { runAgent, type AgentRequest, type StepResult } from '../../shared/raster/agent.ts';
 import { checkKrita } from '../../shared/raster/krita.ts';
 import { resolvePartInput } from '../../shared/raster/input.ts';
@@ -385,10 +385,12 @@ test('续跑失败或 SDK 返回不同 thread ID 时保留原会话，不静默�
     await request.onEvent({ type: 'thread.started', thread_id: 'original' });
     throw new Error('offline');
   } }), /offline/);
-  await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: request => runAgent(request, {
-    startThread: () => assert.fail('must not start a replacement'),
-    resumeThread: id => { assert.equal(id, 'original'); throw new Error('thread unavailable'); },
-  }) }), /thread unavailable/);
+  // A resumed session that comes back as another thread is refused, not silently replaced.
+  const server = await rasterAppServer(t, JSON.stringify(complete));
+  await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: request => runAgent({ ...request, environment: server.environment }) }), /拒绝替换/);
+  const protocol = await server.protocol();
+  assert.equal(protocol.filter(message => message.method === 'thread/start').length, 0);
+  assert.equal(protocol.find(message => message.method === 'thread/resume').params.threadId, 'original');
   await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: async request => {
     await request.onEvent({ type: 'thread.started', thread_id: 'unexpected' });
     return complete;
@@ -410,29 +412,21 @@ test('入口不接受额外输入；符号链接步骤不被递归清理', async
   assert.deepEqual(await readdir(other), ['parts']);
 });
 
-test('SDK 使用指定模型与 reasoning；临时 error 等待 CLI 终态，失败流不冒充成功', async () => {
-  const events: ThreadEvent[] = [
-    { type: 'thread.started', thread_id: 'thread-2' },
-    { type: 'error', message: 'reconnecting' },
-    { type: 'item.completed', item: { id: 'answer', type: 'agent_message', text: JSON.stringify(complete) } },
-    { type: 'turn.completed', usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, cache_write_input_tokens: 0, reasoning_output_tokens: 0 } },
-  ];
-  const received: ThreadEvent[] = [];
-  const options: ThreadOptions[] = [];
-  const thread = { runStreamed: async () => ({ events: (async function* () { yield* events; })() }) };
-  const client = {
-    startThread: (value: ThreadOptions) => { options.push(value); return thread; },
-    resumeThread: (id: string, value: ThreadOptions) => { assert.equal(id, 'thread-2'); options.push(value); return thread; },
-  };
-  const request: AgentRequest = { prompt: 'test', directory: tmpdir(), ...stepModels[1], onEvent: async e => { received.push(e); } };
-  assert.deepEqual(await runAgent(request, client), complete);
-  assert.equal(options[0].model, 'gpt-6.1-sol');
-  assert.equal(options[0].modelReasoningEffort, 'xhigh');
-  assert.equal(received.length, 4);
-  events.splice(0, events.length, { type: 'turn.failed', error: { message: 'image policy error' } });
-  await assert.rejects(runAgent({ ...request, threadId: 'thread-2' }, client), /image policy error/);
-  events.splice(0, events.length, { type: 'error', message: 'stream closed' });
-  await assert.rejects(runAgent(request, client), /stream closed/);
+test('raster 使用指定模型与 reasoning；临时 error 等待 CLI 终态，失败流不冒充成功', async t => {
+  const server = await rasterAppServer(t, JSON.stringify(complete), { nativeReconnect: true });
+  const received: string[] = [];
+  const request: AgentRequest = { prompt: 'test', directory: server.directory, ...stepModels[1], environment: server.environment,
+    onEvent: async e => { received.push(e.type); } };
+  assert.deepEqual(await runAgent(request), complete);
+  const protocol = await server.protocol();
+  assert.equal(protocol.find(message => message.method === 'thread/start').params.model, 'gpt-6.1-sol');
+  assert.equal(protocol.find(message => message.method === 'turn/start').params.effort, 'xhigh');
+  assert.deepEqual(received, ['thread.started', 'item.completed']);
+  const failed = await rasterAppServer(t, '', {}, 'failed');
+  await assert.rejects(runAgent({ ...request, environment: failed.environment, threadId: 'thread-2' }), /测试回合失败/);
+  assert.equal((await failed.protocol()).find(message => message.method === 'thread/resume').params.threadId, 'thread-2');
+  const ended = await rasterAppServer(t, '', {}, 'eof');
+  await assert.rejects(runAgent({ ...request, environment: ended.environment }), /事件流结束/);
 });
 
 test('旧 step02 已完成绘制但停在移除的 review，新版本补 step01 检查后直接结束 step02', async t => {

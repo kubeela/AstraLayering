@@ -62,4 +62,4 @@ step02 沿用已确认结构，用 `locate_pixel_differences` 候选框引导细
 
 旧任务若已完成 step01 绘制而缺轮廓审核，会保留工程补跑审核；修复确实改变工程时，后续产物归档到 recovery 并按新输入接续。旧 step02 完成绘制而停在已移除审核时，可保留精修结果完成标记。
 
-入口是 [run.ts](run.ts)，步骤与交付定义为 [steps.ts](steps.ts)；共享 runner、输入、会话与审核位于 `shared/raster/`。本 section 单测使用模拟 SDK、真实提示词和临时文件，真实绘图在任务流程中验收。
+入口是 [run.ts](run.ts)，步骤与交付定义为 [steps.ts](steps.ts)；共享 runner、输入、会话与审核位于 `shared/raster/`。本 section 单测使用模拟 App Server、真实提示词和临时文件，真实绘图在任务流程中验收。

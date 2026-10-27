@@ -6,7 +6,7 @@
 
 从**简化穿衣图和同一角色的素体图**提取互补的主体衣装，再生成可独立控制的衣服 part 色块及深度表，交给 [clothing-raster-layering](../clothing-raster-layering/README.md) 绘制分层 KRA。衣装保留原款式、局部比例与结构；整套衣装的大小和位置由后续组装适配人物。
 
-调度、Codex SDK / App Server 适配及文件恢复使用 `../shared/` 的公共实现。本目录保留衣服 preparation、提示词和专项配置，不加载人物先验。各职责默认值与覆盖键以 [模型方案](../references/model-presets.md) 为准。
+调度、Codex App Server 适配及文件恢复使用 `../shared/` 的公共实现。本目录保留衣服 preparation、提示词和专项配置，不加载人物先验。各职责默认值与覆盖键以 [模型方案](../references/model-presets.md) 为准。
 
 ## 单独运行本 section
 
@@ -74,7 +74,7 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
 pnpm check
 ```
 
-[run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 使用同版本 Codex SDK / App Server。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
+[run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 统一通过 Codex App Server 运行（CLI 版本由 `@openai/codex-sdk` 依赖固定）。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
 
 自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。
 

@@ -318,7 +318,7 @@ test('关闭会话能取消退避等待，不再开启下一次尝试', {timeout
   assert.equal(protocol.filter(message => message.method === 'turn/start').length, 1);
 });
 
-test('SDK、一次性原生任务和保留会话共享同一个并发限制', {timeout:5000}, async t => {
+test('无工具一次性回合、原生任务和保留会话共享同一个并发限制', {timeout:5000}, async t => {
   const f = await fixture(t);
   const server = await fakeAppServer(f.directory,[{tool:'probe',arguments:{}}]);
   const agents = new CodexAgents({codexPathOverride:server.executable,cwd:f.directory,logDirectory:f.logDirectory,agentConcurrency:1});
@@ -329,12 +329,12 @@ test('SDK、一次性原生任务和保留会话共享同一个并发限制', {t
   })]});
   try {
     await entered.promise;
-    const sdk = agents.run({name:'SDK排队',prompt:'test'});
+    const plain = agents.run({name:'无工具排队',prompt:'test'});
     const native = agents.run({name:'原生排队',prompt:'test',tools:[tool(async () => textResult('ok'))]});
     await new Promise(setImmediate);
     assert.equal((await readdir(f.logDirectory)).length, 1);
     release.resolve();
-    await Promise.all([first,sdk,native]);
+    await Promise.all([first,plain,native]);
     assert.equal((await readdir(f.logDirectory)).length, 3);
   } finally {release.resolve();await session.close();}
 });

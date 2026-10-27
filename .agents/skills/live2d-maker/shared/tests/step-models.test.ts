@@ -388,7 +388,7 @@ const meta=`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"su
   const result = await runAgent({ directory: cwd, step: 'raster_step02', model: 'claude-sonnet-5-5', effort: 'high',
     environment: settings, prompt: 'continue', async onEvent(event) {
       if (event.type === 'thread.started') ids.push(event.thread_id);
-    }, onRetry: retry => { retries.push(retry.nextAttempt); } }, undefined, new AgentRuntime(1, async () => {}));
+    }, onRetry: retry => { retries.push(retry.nextAttempt); } }, new AgentRuntime(1, async () => {}));
   assert.equal(result.summary, 'recovered');
   assert.deepEqual(retries, [2]);
   assert.equal(ids.length, 1);
@@ -424,7 +424,7 @@ const id=resumed||randomUUID();`).replace("result:'完成'", "result:'{\"status\
     layering_raster_step01_image_model: 'gpt-image-2.5-flare', layering_openai_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}/v1`,
     layering_openai_image_api_key: 'fixture', LAYERING_TEST_REFERENCE: source, LAYERING_TEST_OTHER_REFERENCE: other }, root);
   const result = await runAgent({ directory: cwd, step: 'raster_step01', model: 'claude-sonnet-5-5', effort: 'high',
-    environment: settings, prompt: 'generate', onEvent: async () => {} }, undefined, new AgentRuntime(1));
+    environment: settings, prompt: 'generate', onEvent: async () => {} }, new AgentRuntime(1));
   assert.equal(result.summary, 'generated'); assert.equal(called, 2);
   assert.deepEqual(await readFile(source), png);
 });

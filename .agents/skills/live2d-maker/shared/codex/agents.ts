@@ -1,11 +1,8 @@
-import {renderPromptFile} from '../prompts/render.ts';
 import { checkCodexCapabilities, defaultModels, loadWorkflowEnvironment, workflowCodexOptions, type WorkflowEnvironment } from './environment.ts';
-import { agentCallError, formatAgentError } from './diagnostics.ts';
-import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { toolDefinition } from './tool-config.ts';
 import { workflowsDirectory } from '../paths.ts';
-import { Codex, type CodexOptions, type Usage, type UserInput } from '@openai/codex-sdk';
-import { join, resolve } from 'node:path';
+import type { CodexOptions } from '@openai/codex-sdk';
+import { join } from 'node:path';
 import { AgentLog } from './agent-log.ts';
 import { AgentCallError, AgentRuntime, blockedAgentError, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
 import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './blocked-images.ts';
@@ -19,8 +16,7 @@ import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-ima
 import { randomUUID } from 'node:crypto';
 import type { ThreadEvent } from '@openai/codex-sdk';
 import type { ImageProcessingOptions } from '../image-processing.ts';
-import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
-import { contextImages } from '../agents/inputs.ts';
+import { executionPaths } from '../agents/workspace.ts';
 import { fromTaskPath } from '../task-paths.ts';
 
 export const agentDefaults = defaultModels.medium;
@@ -38,6 +34,8 @@ export type AgentTask = {
   outputDirectory?: string;
   tools?: FunctionTool[];
   sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
+  // Off keeps a tool-less turn to the model and its image tool.
+  shell?: boolean;
 };
 
 export type GeneratedImage = { savedPath: string };
@@ -118,7 +116,7 @@ export class CodexAgents {
           const paths = executionPaths(task, this.options.cwd ?? workflowsDirectory);
           const routeKey = nextImage ? nextImage + ':' + paths.workspace : undefined;
           const nextTransport = JSON.stringify({ paths, sandbox: task.sandboxMode ?? 'workspace-write',
-            imageGeneration: task.imageGeneration ?? false,
+            imageGeneration: task.imageGeneration ?? false, shell: task.shell ?? true,
             tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) ?? [] });
           if (routeKey !== imageModel || nextTransport !== transportKey) {
             await session?.close(); session = undefined;
@@ -262,131 +260,21 @@ export class CodexAgents {
     };
   }
 
+  // One-shot turns share the app-server session path. A turn without function
+  // tools stays read-only and shell-free unless the task asks otherwise.
   async run(task: AgentTask): Promise<AgentResult> {
-    const selected = this.options.selectedModel || (task.step ? this.options.environment!.stepModels[task.step] : undefined);
-    validateProviderModel(this.options.environment!.providers, selected ?? { ...this.options.environment!.models.medium, harness: 'codex' }, task.step ?? task.name);
-    if (task.step) validateImageSelection(this.options.environment!, task.step);
-    if (task.tools?.length || selected?.harness !== undefined && selected.harness !== 'codex'
-      || task.step && this.options.environment!.stepImages[task.step] && this.options.environment!.stepImages[task.step] !== 'codex-native') {
-      const session = this.createSession();
-      try { return await session.run(task); }
-      finally { await session.close(); }
-    }
-    await checkCodexCapabilities(this.options.environment!, this.options);
-    const { cwd, progress, logDirectory, config, agentConcurrency: _concurrency, runtime: _runtime, toolsDirectory: _tools, environment, ...options } = this.options;
-    const paths = await prepareWorkspace(task, cwd ?? workflowsDirectory);
-    const workingDirectory = paths.root;
-    const codex = new Codex({
-      ...options,
-      config: {
-        ...config,
-        features: {
-          image_generation: task.imageGeneration ?? false,
-          shell_tool: false, unified_exec: false, multi_agent: false, memories: false,
-        },
-      },
-    });
-    const threadOptions = {
-      skipGitRepoCheck: true,
-      model: selected?.model || environment!.models.medium.model, modelReasoningEffort: selected?.effort || environment!.models.medium.effort,
-      workingDirectory,
-      additionalDirectories: [paths.workspace, paths.outputDirectory] as string[],
-      sandboxMode: task.sandboxMode ?? 'read-only', approvalPolicy: 'never', webSearchMode: 'disabled',
-    } as const;
-    const thread = codex.startThread(threadOptions);
-    const signal = taskSignal(task);
-    const savedImages = new Set<string>();
-    let interrupted = false;
-    return this.invoke(task, signal, async () => {
-      const attemptTask = interrupted && thread.id ? { ...task,
-        prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined } : task;
-      try { return await runSdkAttempt(attemptTask); }
-      catch (error) {
-        if (error instanceof AgentCallError) {
-          interrupted = true;
-          for (const path of error.savedImagePaths) savedImages.add(path);
-        }
-        throw error;
-      }
-    });
-
-    async function runSdkAttempt(task: AgentTask): Promise<AgentResult> {
-      const input: UserInput[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths) }];
-      for (const image of contextImages(task.images, paths.root) ?? []) {
-        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() });
-        input.push({ type: 'local_image', path: resolve(image.path) });
-      }
-      const timeoutMs = task.timeoutMs;
-      const log = await AgentLog.create(resolve(logDirectory ?? join(paths.directory, 'agents')), task.name, {
-        workspace: paths.workspace, outputDirectory: paths.outputDirectory,
-        task: { ...task, timeoutMs: timeoutMs ?? null }, input,
-        // Persist the exact prompt sent by the SDK, without credentials or environment variables.
-        prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),
-        threadOptions, sessionThreadId: thread.id,
-      }, paths.root);
-      progress?.(`开始：${task.name}；记录：${log.directory}`);
-      let finalResponse = '';
-      let usage: Usage | null = null;
-      let completed = false;
-      let lastError: unknown;
-      try {
-        const { events } = await thread.runStreamed(input, {
-          outputSchema: task.outputSchema,
-          signal,
-        });
-        for await (const event of events) {
-          const description = await log.record(event);
-          if (description) progress?.(`[${task.name}] ${description}`);
-          if (event.type === 'item.completed' && event.item.type === 'agent_message') {
-            finalResponse = event.item.text;
-          } else if (event.type === 'item.completed') {
-            const item = event.item as unknown as Record<string, unknown>;
-            if (['image_generation', 'imageGeneration'].includes(String(item.type)) && typeof item.savedPath === 'string') {
-              savedImages.add(resolve(workingDirectory, item.savedPath));
-            }
-          } else if (event.type === 'turn.completed') {
-            completed = true;
-            usage = event.usage;
-          } else if (event.type === 'turn.failed') {
-            throw agentCallError(event.error, 'Codex 回合失败');
-          } else if (event.type === 'error') {
-            // CLI 的内置重连也会发出 error。等待终态，不能提前切断它的重试。
-            lastError = event;
-          }
-        }
-        if (!completed) throw lastError ? agentCallError(lastError, 'Codex 事件流未完成') : new Error(`${task.name} 的事件流结束，但未收到 turn.completed`);
-        const images: GeneratedImage[] = [];
-        if (task.imageGeneration) {
-          const output = JSON.parse(finalResponse) as { savedPath?: unknown; error?: unknown };
-          if (typeof output.error === 'string' && output.error) throw new Error(`${task.name}：${output.error}`);
-          if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) {
-            throw new Error(`${task.name} 没有返回生成图片的 savedPath`);
-          }
-          // The agent returns a task-relative (or, outside the task, absolute) path.
-          images.push({ savedPath: fromTaskPath(paths.root, output.savedPath) });
-        }
-        for (const image of images) savedImages.add(image.savedPath);
-        await log.finish({ status: 'completed', threadId: thread.id, usage, finalResponse, images });
-        progress?.(`agent 回合结束：${task.name}`);
-        return { text: finalResponse, images: [...savedImages].map(savedPath => ({ savedPath })), threadId: thread.id, logDirectory: log.directory };
-      } catch (error) {
-        const message = errorMessage(error, String(error));
-        const reported = error instanceof AgentCallError ? error : new AgentCallError(message,
-          completed || signal.aborted ? 'localError' : undefined, { cause: error });
-        reported.details ??= errorDetails(error);
-        if (lastError) reported.details = { terminal: reported.details, notification: errorDetails(lastError) };
-        await log.finish({ status: 'failed', threadId: thread.id, usage, finalResponse, error: message,
-          errorDetails: reported.details,
-          images: [...savedImages].map(savedPath => ({ savedPath })) });
-        progress?.(`失败：${task.name}；${message}；记录：${log.directory}`);
-        reported.logDirectory = log.directory;
-        reported.threadId = thread.id ?? undefined;
-        reported.finalResponse = finalResponse;
-        reported.savedImagePaths = [...savedImages];
-        progress?.(formatAgentError(reported));
-        throw reported;
-      }
-    }
+    const plain = !task.tools?.length;
+    const session = this.createSession();
+    let result: AgentResult;
+    try { result = await session.run(plain ? { ...task, sandboxMode: task.sandboxMode ?? 'read-only', shell: task.shell ?? false } : task); }
+    finally { await session.close(); }
+    if (!plain || !task.imageGeneration || result.harness !== 'codex') return result;
+    const output = JSON.parse(result.text) as { savedPath?: unknown; error?: unknown };
+    if (typeof output.error === 'string' && output.error) throw new Error(`${task.name}：${output.error}`);
+    if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) throw new Error(`${task.name} 没有返回生成图片的 savedPath`);
+    // The agent returns a task-relative (or, outside the task, absolute) path.
+    const savedPath = fromTaskPath(executionPaths(task, this.options.cwd ?? workflowsDirectory).root, output.savedPath);
+    return result.images.some(image => image.savedPath === savedPath) ? result : { ...result, images: [...result.images, { savedPath }] };
   }
 }
 
