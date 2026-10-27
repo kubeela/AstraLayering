@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { ToolCatalog, toolsDirectory } from '../codex/tool-config.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
@@ -18,6 +19,18 @@ test('工具配置逐文件覆盖；衣服的 subject 限制不会污染共享�
   assert.deepEqual(subjects(specialized), ['other']);
   assert.equal(shared.get('write_groups').description, specialized.get('write_groups').description);
   assert.deepEqual(shared.get('preview_svg'), specialized.get('preview_svg'));
+});
+
+test('管线自有工具只出现在该管线的 catalog；缺文件明确报错', async t => {
+  const own = fileURLToPath(new URL('../../shadow/tools/', import.meta.url));
+  assert.ok(new ToolCatalog(toolsDirectory, own).names().includes('inspect_shadow_mask'));
+  assert.ok(!new ToolCatalog().names().includes('inspect_shadow_mask'));
+  assert.ok(!new ToolCatalog(toolsDirectory, clothing.toolsDirectory).names().includes('reuse_reference'));
+  const root = await mkdtemp(join(tmpdir(), 'tool-own-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(join(root, 'only_description'));
+  await writeFile(join(root, 'only_description/description.md'), '说明');
+  assert.throws(() => new ToolCatalog(toolsDirectory, root), /only_description 缺少 schema.json/);
 });
 
 test('修改本地配置在新 catalog 生效；已加载定义不被文件或调用者修改', async t => {

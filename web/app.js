@@ -507,14 +507,17 @@ function configTree() {
   const files=configFiles.filter(file=>file.startsWith(prefix+'/')&&(!state.configFilter||file.toLowerCase().includes(state.configFilter.toLowerCase())));
   if(!files.length)return '';
   const active=state.file.startsWith(prefix+'/');
+  // Tool definitions sit in <dir>/tools/<name>/ of their owner, shared or a pipeline:
+  // each tool shows as one entry and expands to both files when selected.
+  const toolOf=file=>file.match(/^(.*\/tools\/[^/]+)\//)?.[1];
   let content=files;
-  if(prefix==='shared'&&!state.configFilter) {
-   const toolFiles=files.filter(file=>file.startsWith('shared/tools/'));
-   const activeTool=state.file.startsWith('shared/tools/')?state.file.split('/')[2]:null;
-   const tools=[...new Set(toolFiles.map(f=>f.split('/')[2]))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
-   content=[...files.filter(file=>!file.startsWith('shared/tools/')),...tools.flatMap(tool=>tool===activeTool?toolFiles.filter(f=>f.startsWith(`shared/tools/${tool}/`)):[toolFiles.find(f=>f===`shared/tools/${tool}/description.md`)||toolFiles.find(f=>f.startsWith(`shared/tools/${tool}/`))])];
+  if(!state.configFilter) {
+   const toolFiles=files.filter(toolOf);
+   const activeTool=toolOf(state.file)??null;
+   const tools=[...new Set(toolFiles.map(toolOf))].sort((a,b)=>a===activeTool?-1:b===activeTool?1:a.localeCompare(b));
+   content=[...files.filter(file=>!toolOf(file)),...tools.flatMap(tool=>tool===activeTool?toolFiles.filter(f=>f.startsWith(tool+'/')):[toolFiles.find(f=>f===`${tool}/description.md`)||toolFiles.find(f=>f.startsWith(tool+'/'))])];
   }
-  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(file.startsWith('shared/tools/')?(file.split('/')[2]===state.file.split('/')[2]?file.split('/')[2]+' / '+file.split('/').at(-1):file.split('/')[2]):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
+  return `<details class="config-family" ${active||state.configFilter?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${content.map(file=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(toolOf(file)?(toolOf(file)===toolOf(state.file)?file.split('/').at(-2)+' / '+file.split('/').at(-1):file.split('/').at(-2)):file.split('/').at(-1))}</span></button>`).join('')}</div></details>`;
  }).join('');
 }
 function configPage() {

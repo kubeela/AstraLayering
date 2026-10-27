@@ -10,6 +10,9 @@ const files = [
   'shared/tools/submit_review/description.md',
   'shared/tools/submit_review/schema.json',
   'shared/tools/schema_only/schema.json',
+  'shadow/prompts/mask.md',
+  'shadow/tools/inspect_shadow_mask/description.md',
+  'shadow/tools/inspect_shadow_mask/schema.json',
 ];
 function render(file: string, configFilter = ''): string {
   return runInNewContext(tree + '\nconfigTree();', {
@@ -32,4 +35,15 @@ test('selected tools and search results retain access to both definition files',
     assert.ok(html.includes('data-config-file="shared/tools/submit_review/description.md"'));
     assert.ok(html.includes('data-config-file="shared/tools/submit_review/schema.json"'));
   }
+});
+
+test('pipeline-owned tools group by tool name like shared ones', () => {
+  const closed = render('SKILL.md');
+  assert.ok(closed.includes('data-config-file="shadow/tools/inspect_shadow_mask/description.md"'));
+  assert.ok(!closed.includes('data-config-file="shadow/tools/inspect_shadow_mask/schema.json"'));
+  assert.match(closed, /<span>inspect_shadow_mask<\/span>/);
+  const open = render('shadow/tools/inspect_shadow_mask/schema.json');
+  assert.ok(open.includes('data-config-file="shadow/tools/inspect_shadow_mask/description.md"'));
+  assert.match(open, /<span>inspect_shadow_mask \/ schema.json<\/span>/);
+  assert.match(open, /<span>mask.md<\/span>/);
 });

@@ -6,7 +6,7 @@
 
 ## 工具与模型
 
-工具定义唯一来源是 `shared/tools/<name>/description.md` 与 `schema.json`，各 section 的 `tools/<name>/` 可覆盖。启动时加载并固定本次调用定义；schema 无效直接报错，真正的路径与写入校验在实现中。动态注册只管理工作流函数工具，宿主原生工具仍由宿主提供。模型、provider 与生图协议见[模型方案与配置](../references/model-presets.md)。
+工具定义由 `tools/<name>/description.md` 与 `schema.json` 组成，按归属存放：两条及以上管线共用的工具放 `shared/tools/<name>/`；只属于一条管线的工具放该管线的 `tools/<name>/`（如 `shadow/tools/inspect_shadow_mask`、`part-layering/tools/reuse_reference`），只在该管线的工具目录中可见。管线的 `tools/<name>/` 也可逐文件覆盖同名共享定义（如衣服的 `write_groups`）。启动时加载并固定本次调用定义；schema 无效直接报错，真正的路径与写入校验在实现中。动态注册只管理工作流函数工具，宿主原生工具仍由宿主提供。模型、provider 与生图协议见[模型方案与配置](../references/model-presets.md)。
 
 `preview_svg` 的生成图对照参数只在补全阶段开放，section 定义覆盖后仍保留阶段限制。`referenceRegion` 使用生成图坐标选取对应部件，工具将裁片等比居中到 SVG 实际内容范围；`referenceOffset` 使用原图像素微调，各轴上限为部件尺寸的 10%。生成图用 `edge` 检查形状，省略 reference 参数后用默认参考图 `blend` 检查定位；`crop` 仅控制最终查看窗口。生成图对照默认聚焦部件，普通对照默认全画布，输入文件保持原样。读取与预览接受可读本地路径及符号链接，参考图沿用生图工具返回的位置。自定义生图工具 `imagegen` 的 `input_images` 与可选 `output_path` 只接受绝对路径，`output_path` 省略时使用默认生图目录；原生 Codex 生图保留自身保存位置并返回绝对 `savedPath`。两类生图返回或 agent 回复的相对 `savedPath` 直接报错，不按任何目录猜测。
 
@@ -59,7 +59,7 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 | [生图请求](prompts/image-request.md)、[Nano 纯色背景](prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |
 | [Nano 仅换背景](prompts/nano-background-replacement.md) | `{background_hex}`、`{width}`、`{height}`。第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。 |
 
-工具说明和参数仍来自 `shared/tools/<工具名>/description.md`／`schema.json` 或各管线自己的工具定义；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
+工具说明和参数仍来自 共享的 `shared/tools/<工具名>/` 或所属管线的 `tools/<工具名>/`（`description.md`／`schema.json`）；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
 
 ### 查阅实际请求
 

@@ -144,7 +144,7 @@ export async function inspectMask(output: string, bridge: string, signal?: Abort
 // Krita, starting it like the krita tool's run, and returns what to look at.
 export function createInspectionTool(output: string, krita: SectionKrita, native: NativeInspect = inspectNative): FunctionTool {
   return {
-    ...toolDefinition('inspect_shadow_mask'),
+    ...toolDefinition('inspect_shadow_mask', fileURLToPath(new URL('./tools/', import.meta.url))),
     async execute(_value, signal) {
       await krita.start(signal);
       const report = await inspectMask(output, krita.bridge!, signal, native);
