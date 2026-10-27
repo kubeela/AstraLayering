@@ -377,7 +377,7 @@ test('raster CLI service retries retain the session and report retry progress', 
   const script = fakeCli.replace("const meta=", `const flag=join(process.env.CLAUDE_CONFIG_DIR,'retried');
 try { await readFile(flag); } catch {
   await writeFile(flag,'yes');
-  console.log(JSON.stringify({type:'result',session_id:id,is_error:true,error:'503 service unavailable'}));process.exit(1);
+  console.log(JSON.stringify({type:'result',session_id:id,is_error:true,api_error_status:503,error:'503 service unavailable'}));process.exit(1);
 }
 const meta=`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"summary\":\"recovered\"}'");
   await writeFile(cli, script, { mode: 0o700 });

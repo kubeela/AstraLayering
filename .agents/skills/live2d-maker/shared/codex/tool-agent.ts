@@ -77,11 +77,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     current?.completion.reject(error);
   };
   const checkFailure = () => { if (failure) throw failure.error; };
-  // A failing local event handler (e.g. a disk write) is not a service error and is never retried.
-  const emit = async (event: Parameters<NonNullable<AgentOptions['onEvent']>>[0]) => {
-    try { await options.onEvent?.(event); }
-    catch (error) { throw new AgentCallError(errorMessage(error, String(error)), 'localEvent', { cause: error }); }
-  };
+  const emit = async (event: Parameters<NonNullable<AgentOptions['onEvent']>>[0]) => { await options.onEvent?.(event); };
   const failTurn = (error: unknown) => {
     for (const waiter of pending.values()) waiter.reject(error);
     pending.clear();
@@ -261,9 +257,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         await request('turn/start', { threadId, input, effort: selectedModel.effort,
           ...(task.outputSchema ? { outputSchema: task.outputSchema } : {}) });
         await completion.promise;
-        // A rejected reply is the model's own answer, not a transport failure, so it is never retried.
-        if (task.checkResult) try { state.images = task.checkResult(state.finalResponse, state.images, paths.root); }
-        catch (error) { throw new AgentCallError(errorMessage(error, String(error)), 'invalidResult', { cause: error }); }
+        if (task.checkResult) state.images = task.checkResult(state.finalResponse, state.images, paths.root);
         await log.finish({ status: 'completed', threadId, usage: state.usage, finalResponse: state.finalResponse, images: state.images });
         options.progress?.(`agent 回合结束：${task.name}`);
         return { text: state.finalResponse, images: state.images, threadId, logDirectory: log.directory };
