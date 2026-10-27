@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 import { createWorkbench } from '../server.ts';
+import { preflightKrita } from '../../.agents/skills/live2d-maker/workflow/krita.ts';
 import { snapshot } from '../snapshot.ts';
 import { launch, runWebTask } from '../worker.ts';
 import { atomicJSON, jsonFile } from '../files.ts';
@@ -12,10 +13,11 @@ import { acquireTaskLock, configureRun, saveRun, readRun } from '../../.agents/s
 import { runTask } from '../../.agents/skills/live2d-maker/workflow/runner.ts';
 import { stopRequestPath } from '../../.agents/skills/live2d-maker/workflow/control.ts';
 
-async function fixture(t: any, start?: NonNullable<Parameters<typeof createWorkbench>[0]>['start']) {
+type WorkbenchOptions = NonNullable<Parameters<typeof createWorkbench>[0]>;
+async function fixture(t: any, start?: WorkbenchOptions['start'], preflight: WorkbenchOptions['preflight'] = async () => {}) {
   const base = await realpath(await mkdtemp(join(tmpdir(), 'layering-web-')));
   const dir = join(base, 'runs'), settingsPath = join(base, 'settings.json');
-  const server = await createWorkbench({ defaultDir: dir, settingsPath, start });
+  const server = await createWorkbench({ defaultDir: dir, settingsPath, start, preflight });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(async () => { await new Promise<void>(resolve => server.close(() => resolve())); await rm(base, { recursive: true, force: true }); });
   const port = (server.address() as any).port, url = 'http://127.0.0.1:' + port;
@@ -255,6 +257,27 @@ test('shadow reference routes serve only bundled guides, and inspection previews
   const {shadowInspectionArtifacts}=await import(new URL('../progress.js',import.meta.url).href);
   const path='shadow/mask/step01/inspection/relation-001-review.png';
   assert.deepEqual(shadowInspectionArtifacts([path,'shadow/mask/step01/inspection/native-123/offset.png','shadow/normal-depth/step01/inspection/relation-000-review.png']).map((a:any)=>a.path),[path]);
+});
+
+test('开始、继续、恢复、重试先检查 Krita：不可用则 409 且不改动步骤，填写新路径后按同一操作运行', async t => {
+  const started: any[] = [];
+  const check = async (path: string) => { if (!path.endsWith('good-krita')) throw new Error('不存在或不可执行'); return { executable: path, version: 'test' }; };
+  const f = await fixture(t, async options => { started.push(options); return 456; }, options => preflightKrita(options, check)), task = join(f.dir, 'case');
+  await mkdir(task);
+  await saveRun(task, await configureRun({ name: 'case', dir: f.dir, krita: '/opt/old-krita' }, task));
+  await put(task, 'part-layering/groups/head/step02/.running', JSON.stringify({ inputs: {} }));
+  await put(task, 'part-layering/agents/steps/groups/head/step02/session.json', JSON.stringify({ threadId: 'thread-1' }));
+  for (const [path, value] of [['start', {}], ['task-action', { action: 'retry' }], ['task-action', { action: 'resume' }],
+    ['step-action', { pipeline: 'part-layering', step: 'groups/head/step02', action: 'retry' }]] as const) {
+    const refused = await f.post(path, { name: 'case', ...value });
+    assert.equal(refused.status, 409, path); assert.deepEqual(refused.value.krita, { path: '/opt/old-krita' });
+    assert.match(refused.value.error, /记录的 Krita 不可用：\/opt\/old-krita[\s\S]*Krita 可执行文件路径[\s\S]*--krita/);
+  }
+  assert.equal(started.length, 0);
+  assert.equal(JSON.parse(await readFile(join(task, 'part-layering/agents/steps/groups/head/step02/session.json'), 'utf8')).threadId, 'thread-1');
+  const resumed = await f.post('task-action', { name: 'case', action: 'resume', krita: '/opt/good-krita' });
+  assert.equal(resumed.status, 202); assert.match(resumed.value.message, /thread-1/);
+  assert.equal(started.length, 1); assert.equal(started[0].krita, '/opt/good-krita');
 });
 
 test('步骤操作接口：重试人物与衣服分块的步骤后按保存的路线重新运行，快照列出未完成步骤', async t => {

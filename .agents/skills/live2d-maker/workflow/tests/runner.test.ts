@@ -6,7 +6,7 @@ import { test, type TestContext } from 'node:test';
 import { pipelineIds, type PipelineId } from '../../shared/paths.ts';
 import { runTask } from '../runner.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, taskStatus } from '../state.ts';
-import { parseArguments, startBackground } from '../run.ts';
+import { main, parseArguments, startBackground } from '../run.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
 
 // Real background workers inherit this and pass the Codex startup check without a build.
@@ -130,17 +130,21 @@ test('手动上游可从组装开始，不伪造此前进度；更换原图不�
   assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
 });
 
-test('Krita 预检先于任何制作且错误可查询；用户可补路径恢复', async t => {
+test('Krita 不可用时拒绝启动且不改动任务记录；用 --krita 重新指定后继续', async t => {
   const f = await fixture(t);
-  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, image: 'reference.png' }, {
-    execute: async () => assert.fail('preflight must stop production'),
-  }), /--krita/);
-  const state = await taskStatus(f.options);
-  assert.equal(state.status, 'failed'); assert.match(state.error!, /不会自动下载或搜索/);
-  await assert.rejects(runTask(f.options, { preflight: async () => { throw new Error('Krita无法启动'); },
-    execute: async () => assert.fail('preflight must stop production'),
-  }), /Krita无法启动/);
-  await runTask(f.options, { preflight, execute: async () => ({ summary: 'ok' }) });
+  const refuse = { execute: async () => assert.fail('preflight must stop production') };
+  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, image: 'reference.png' }, refuse), /没有记录 Krita 路径[\s\S]*--krita/);
+  await assert.rejects(readFile(join(f.directory, 'run.json')), { code: 'ENOENT' });
+  assert.match(await readFile(join(f.directory, 'workflow.log'), 'utf8'), /--krita/);
+  await runTask({ ...f.options, image: 'reference.png', to: 'part-layering' }, { ...refuse, execute: async () => ({ summary: 'ok' }) });
+  const before = await readFile(join(f.directory, 'run.json'), 'utf8');
+  const broken = async () => { throw new Error('Krita无法启动'); };
+  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { ...refuse, preflight: broken }),
+    error => /记录的 Krita 不可用：/.test(String(error)) && /Krita无法启动/.test(String(error)) && /--krita/.test(String(error)));
+  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'shadow', krita: 'other-krita' }, { ...refuse, preflight: broken }), /指定的 Krita 不可用：.*other-krita/);
+  assert.equal(await readFile(join(f.directory, 'run.json'), 'utf8'), before, '拒绝启动不能记录失败状态或错误路径');
+  await runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { preflight, execute: async () => ({ summary: 'ok' }) });
+  assert.equal((await readRun(f.directory, 'case'))!.krita, process.execPath);
 });
 
 test('同名任务锁阻止重复启动，取消保留状态并释放锁', async t => {
@@ -167,6 +171,39 @@ test('CLI 区分只读查询、后台启动和恢复，拒绝冲突参数', () =
     ['--name', 'case', '--status', '--no-standard'] ]) {
     assert.throws(() => parseArguments(args));
   }
+});
+
+test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定单个步骤', () => {
+  const parse = (...args: string[]) => parseArguments(['--name', 'case', ...args]) as any;
+  assert.deepEqual(parse('--retry').action, { action: 'retry', pipeline: undefined, step: '' });
+  assert.equal(parse('--retry').mode, 'run');
+  assert.deepEqual([parse('--resume', '--background').mode, parse('--resume', '--background').action.action], ['background', 'resume']);
+  assert.equal(parse('--continue', '--krita', '/opt/krita').options.krita, '/opt/krita');
+  assert.deepEqual(parse('--retry', '--pipeline', 'part-layering', '--step', 'groups/head/step02').action,
+    { action: 'retry', pipeline: 'part-layering', step: 'groups/head/step02' });
+  assert.deepEqual(parse('--continue', '--pipeline', 'shadow').action, { action: 'continue', pipeline: 'shadow', step: '' });
+  assert.equal(parse('--stop').mode, 'stop');
+  assert.equal(parse().action, undefined);
+  for (const args of [['--resume', '--retry'], ['--pipeline', 'shadow'], ['--retry', '--step', 'step01'],
+    ['--retry', '--pipeline', 'shadow'], ['--retry', '--pipeline', 'unknown', '--step', 'step01'],
+    ['--stop', '--krita', 'x'], ['--stop', '--background'], ['--stop', '--retry'], ['--status', '--retry']]) {
+    assert.throws(() => parse(...args), Error, args.join(' '));
+  }
+});
+
+test('CLI 恢复与重试先检查 Krita，不可用则拒绝且不改动步骤', async t => {
+  const f = await fixture(t), dir = f.options.dir!;
+  const session = join(f.directory, 'part-layering/agents/steps/groups/head/step02/session.json');
+  await mkdir(join(f.directory, 'part-layering/groups/head/step02'), { recursive: true });
+  await writeFile(join(f.directory, 'part-layering/groups/head/step02/.running'), JSON.stringify({ inputs: {} }));
+  await mkdir(join(session, '..'), { recursive: true }); await writeFile(session, JSON.stringify({ threadId: 'thread-1' }));
+  for (const action of ['--resume', '--retry']) {
+    await assert.rejects(main(['--name', 'case', '--dir', dir, action]), /没有记录 Krita 路径[\s\S]*--krita/);
+    await assert.rejects(main(['--name', 'case', '--dir', dir, action, '--krita', join(f.directory, 'missing-krita')]), /指定的 Krita 不可用[\s\S]*不存在或不可执行[\s\S]*--krita/);
+  }
+  assert.equal(JSON.parse(await readFile(session, 'utf8')).threadId, 'thread-1');
+  assert.equal(await readFile(join(f.directory, 'part-layering/groups/head/step02/.running'), 'utf8'), JSON.stringify({ inputs: {} }));
+  await assert.rejects(main(['--name', 'case', '--dir', dir, '--stop']), /缺少总控记录/);
 });
 
 test('标准化选项保持未指定、开启和关闭的区别，并继承独立 part 的已存选项', async t => {
