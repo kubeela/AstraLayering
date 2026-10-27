@@ -3,6 +3,8 @@ import { executePipeline } from './pipelines.ts';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { GroupExecutionError } from '../shared/part/layering.ts';
 import { formatLayeringSummary } from '../shared/part/run.ts';
+import { shareAgentSlots } from '../shared/codex/agent-runtime.ts';
+import { ipcAgentSlots } from './agent-slots.ts';
 
 // An orphan must not continue drawing after its supervisor has exited.
 process.on('disconnect', () => {
@@ -14,7 +16,10 @@ try {
   const [directory, name, requested, execution] = process.argv.slice(2);
   const run = await readRun(directory, name);
   if (!run || run.runner?.id !== execution) throw new Error('总控执行记录已改变，拒绝启动过期子进程。');
-  const result = await executePipeline(pipelineId(requested), run, message => console.log(message));
+  // Agents of all concurrent pipelines share the scheduler's slots.
+  if (process.send) shareAgentSlots(ipcAgentSlots(process));
+  const result = await executePipeline(pipelineId(requested), run, message => console.log(message),
+    { prepared: () => process.send?.({ type: 'prepared' }) });
   process.send?.({ type: 'result', result });
 } catch (error) {
   let message = formatAgentError(error);

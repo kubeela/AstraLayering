@@ -55,6 +55,13 @@ export function retryableAgentError(error: unknown): boolean {
 export type AgentRetry = { attempt: number; nextAttempt: number; delayMs: number; error: unknown };
 type Waiter = { start(): void; cancel(): void };
 
+// Agent slots shared by every pipeline process of one task. The total scheduler
+// installs them in its pipeline workers, so concurrent pipelines together run at
+// most jobs agents; each AgentRuntime still applies its own limit first.
+export type AgentSlots = (signal?: AbortSignal) => Promise<() => void>;
+let sharedSlots: AgentSlots | undefined;
+export function shareAgentSlots(slots: AgentSlots | undefined) { sharedSlots = slots; }
+
 // 只管理 agent 调用与临时错误，不依赖 group、步骤、树或 progress.json。
 export class AgentRuntime {
   private active = 0;
@@ -105,7 +112,11 @@ export class AgentRuntime {
     options: { signal?: AbortSignal; onRetry?(retry: AgentRetry): Promise<void> | void } = {},
   ): Promise<T> {
     for (let attempt = 1; ; attempt++) {
-      const release = await this.acquire(options.signal);
+      const local = await this.acquire(options.signal);
+      let shared: (() => void) | undefined;
+      try { shared = await sharedSlots?.(options.signal); }
+      catch (error) { local(); throw error; }
+      const release = () => { shared?.(); local(); };
       let error: unknown;
       try {
         options.signal?.throwIfAborted();
