@@ -32,6 +32,16 @@ export type KritaRecord = { section: string; pid: number; owner: number; bridge:
 
 // ---- Shared virtual display (Linux, no DISPLAY/WAYLAND_DISPLAY) ----------
 
+// -noreset is required, not tuning. Every Xvfb started with -displayfd tries
+// display numbers from 0 up and, for each one in use, unlinks that server's
+// /tmp/.X11-unix/X<n> before finding the number taken. A server whose socket
+// file is gone and that then resets (by default when its last client leaves,
+// e.g. Krita's OpenGL probe at startup) re-creates the listener and stops
+// serving the next client: Krita blocks forever in XOpenDisplay before it
+// logs anything. Sections in separate processes starting together hit this
+// for every display but the newest (Xvfb 21.1.8).
+const xvfbArguments = ['-displayfd', '1', '-screen', '0', '1920x1080x24', '-nolisten', 'tcp', '-noreset'];
+
 let display: { process: ChildProcess; name: string; users: number } | undefined;
 let displayStarting: Promise<string> | undefined;
 
@@ -41,7 +51,7 @@ async function acquireDisplay(inherited: NodeJS.ProcessEnv): Promise<string | un
   if (display) { display.users++; return display.name; }
   displayStarting ??= (async () => {
     // Not detached: a stop that kills the worker's process group takes it too.
-    const child = spawn(inherited.ASTRA_STUDIO_XVFB || 'Xvfb', ['-displayfd', '1', '-screen', '0', '1920x1080x24', '-nolisten', 'tcp'],
+    const child = spawn(inherited.ASTRA_STUDIO_XVFB || 'Xvfb', xvfbArguments,
       { stdio: ['ignore', 'pipe', 'ignore'] });
     try {
       const name = ':' + await new Promise<string>((accept, reject) => {

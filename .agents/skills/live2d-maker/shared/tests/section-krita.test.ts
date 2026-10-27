@@ -121,6 +121,23 @@ test('section Krita: machine-wide cap queues sections until a slot is free', asy
   assert.equal(kritaLimit({}), 4);
 });
 
+// Without -noreset, an Xvfb whose socket file another starting Xvfb unlinked
+// stops serving clients once its first one leaves: concurrent sections hung.
+test('section Krita: the shared Xvfb never resets between clients', { skip: process.platform !== 'linux' }, async t => {
+  const root = await mkdtemp(join(tmpdir(), 'section-krita-test-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const krita = join(root, 'krita'), xvfb = join(root, 'Xvfb'), argv = join(root, 'argv');
+  await writeFile(krita, fakeKrita); await chmod(krita, 0o755);
+  await writeFile(xvfb, `#!/bin/sh\nprintf '%s\\n' "$@" > '${argv}'\nprintf '93\\n'\nexec sleep 30\n`, { mode: 0o700 });
+  const env: NodeJS.ProcessEnv = { ...process.env, ASTRA_STUDIO_XVFB: xvfb };
+  delete env.DISPLAY; delete env.WAYLAND_DISPLAY; delete env.QT_QPA_PLATFORM;
+  const section = new SectionKrita({ section: root, krita, env, slotsDirectory: join(root, 'slots') });
+  t.after(() => section.release());
+  await section.reserve();
+  assert.equal((await section.start()).state, 'running');
+  assert.ok((await readFile(argv, 'utf8')).split('\n').includes('-noreset'));
+});
+
 test('krita tool: argument errors', async () => {
   const tool = createKritaTool(new SectionKrita({ section: '/fixture', krita: '/fixture/krita' }), '/fixture');
   const signal = new AbortController().signal;
