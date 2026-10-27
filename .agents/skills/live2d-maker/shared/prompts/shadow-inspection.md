@@ -1,2 +1,2 @@
 - 制作参考：{reference_files}。
-- 原生检查：保存工程后，用 krita 工具 start 或 status 取得本 section Krita 的 bridge，运行 {inspection_command}。检查在这个 Krita 中打开保存工程的独立副本，不改动已打开的文档。结果写入 {inspection_receipt} 与 {inspection_directory}/；查看其中 overview.png 与每处 relation-*-review.png，必要时打开其中原尺寸 PNG。交付时只核对这份结果与当前保存的工程、shadows.json 一致，修改后需重新检查。
+- 原生检查：保存工程后调用 inspect_shadow_mask 工具。它在本 section 的 Krita 中打开保存工程的独立副本检查，不改动已打开的文档，Krita 未启动时自动启动。工具直接返回 problems（越界新增 alpha、空影层、图层归属矛盾等）、warnings 与检查图路径，同时写入 {inspection_receipt} 与 {inspection_directory}/。查看 overview.png 与每处 relation-*-review.png，必要时打开原尺寸 PNG；修改后再检查。何时检查、检查几次由你决定；交付时框架不再核对这份结果，problems 是否处理好由你负责并写进 report.md。

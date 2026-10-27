@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { readFile, writeFile, mkdir, realpath, stat } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, realpath } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -10,6 +10,9 @@ import { within } from '../shared/raster/run-store.ts';
 import type { InputIndex } from './preparation.ts';
 import { referencesDirectory } from '../shared/agents/inputs.ts';
 import { taskRootOf, toTaskPath } from '../shared/task-paths.ts';
+import { toolDefinition } from '../shared/codex/tool-config.ts';
+import { textResult, type FunctionTool } from '../shared/codex/function-tools.ts';
+import type { SectionKrita } from '../shared/krita/section-krita.ts';
 
 const toolFiles = ['inspection.ts', 'native.ts', 'native_job.py', 'delivery.ts'];
 async function signature(document: string, bindings: string, index: string) {
@@ -48,21 +51,14 @@ async function inspectionFiles(output: string) {
   return { document, bindingsPath, indexPath, receipt: join(output,'inspection.json'), stamp: await signature(document,bindingsPath,indexPath) };
 }
 
-// The passed receipt for the saved KRA, shadows.json and inputs as they are
-// now, with every listed file unchanged; undefined otherwise. The signature
-// also covers the inspection code, so a receipt from older code only counts
-// for a step already completed (`retained`), and only while the KRA and
-// shadows.json are no newer than it.
-async function currentReceipt(output: string, receipt: string, stamp: string, retained?: { document: string; bindings: string }) {
+// The passed receipt for the saved KRA, shadows.json, inputs and inspection
+// code as they are now, with every listed file unchanged; undefined otherwise.
+async function currentReceipt(output: string, receipt: string, stamp: string) {
   // Receipt v2 writes task-root paths; v1 paths were relative to this step.
   const root = taskRootOf(dirname(output));
   try {
     const previous = JSON.parse(await readFile(receipt,'utf8'));
-    const unchangedSince = async () => {
-      const [made, ...sources] = await Promise.all([receipt, retained!.document, retained!.bindings].map(p => stat(p).then(info => info.mtimeMs)));
-      return sources.every(time => time <= made);
-    };
-    if (previous.passed === true && (previous.signature === stamp || retained && await unchangedSince())) {
+    if (previous.passed === true && previous.signature === stamp) {
       // within() below rejects any key that leaves this step.
       const path = (p: string) => previous.version === 2 ? resolve(root, p) : join(output, p);
       const files = Object.entries(previous.fileHashes ?? {});
@@ -71,17 +67,9 @@ async function currentReceipt(output: string, receipt: string, stamp: string, re
   } catch (e) { if (!(e instanceof SyntaxError) && !['ENOENT','ENOTDIR'].includes((e as NodeJS.ErrnoException).code ?? '')) throw e; }
 }
 
-// Delivery only checks that the agent ran the inspection on what it delivers.
-// `retained`: the step was completed before this run.
-export async function verifyInspection(output: string, retained = false) {
-  const { document, bindingsPath, receipt, stamp } = await inspectionFiles(output);
-  const current = await currentReceipt(output, receipt, stamp, retained ? { document, bindings: bindingsPath } : undefined);
-  if (!current) throw new Error('请先运行检查：inspection.json 缺失、未通过，或保存的 KRA、shadows.json、检查图在检查后有改动。用运行提示中的检查命令重新检查。');
-  return current;
-}
-
-// Runs the inspection in the section's Krita through its bridge; the agent
-// starts that Krita with the krita tool first.
+// Runs the inspection in the section's Krita through its bridge. Rule
+// violations come back as `problems` for the agent to fix; only a check that
+// cannot run (missing files, invalid structure, Krita failure) throws.
 export async function inspectMask(output: string, bridge: string, signal?: AbortSignal, native: NativeInspect = inspectNative) {
   const { document, bindingsPath, indexPath, receipt, stamp } = await inspectionFiles(output);
   const root = taskRootOf(dirname(output)), at = (p: string) => toTaskPath(root, p);
@@ -92,12 +80,13 @@ export async function inspectMask(output: string, bridge: string, signal?: Abort
   const layers = kraLayers(kraContents(await readFile(document)).xml);
   const index = JSON.parse(await readFile(indexPath,'utf8')) as InputIndex;
   validateMaskStructure(layers, new Map(index.layers.map(l => [l.uuid,{nodetype:l.type,name:l.name,parent:l.parent,...l.maskState}])), new Set(index.parts.map(p => p.id)), bindings);
+  const problems: string[] = [];
   for (const r of bindings.shadows) {
     if (!r.testOffsets || !r.notes?.trim()) throw new Error('请记录本部件的像素偏移检查与画法依据：' + r.id);
     for (const [ids, declared] of [[r.casterLayerUuids,[r.casterPartId]], [r.receiverLayerUuids,r.receiverPartIds ?? [r.receiverPartId]]] as [string[],string[]][]) {
       for (const id of ids) {
         const matched = index.layers.find(l => l.uuid === id.replace(/[{}]/g,'').toLowerCase())?.nameMatch;
-        if (matched && !declared.some(p => matched === p || matched.startsWith(p + '/'))) throw new Error('图层名称已匹配到其他 part，请核对归属：' + id);
+        if (matched && !declared.some(p => matched === p || matched.startsWith(p + '/'))) problems.push(r.id + '：图层名称已匹配到其他 part，请核对归属：' + id);
       }
     }
   }
@@ -113,21 +102,23 @@ export async function inspectMask(output: string, bridge: string, signal?: Abort
   };
   const base = await raster(await owned('without-shadows.png'));
   const finalPath = await owned('native-final.png'), final = await raster(finalPath);
-  if (base.info.width !== result.width || base.info.height !== result.height || final.info.width !== result.width || final.info.height !== result.height || alphaGain(base.data, final.data)) throw new Error('阴影在受影裁切范围外新增 alpha，请检查原生裁切');
+  if (base.info.width !== result.width || base.info.height !== result.height || final.info.width !== result.width || final.info.height !== result.height) throw new Error('原生检查画布改变');
+  if (alphaGain(base.data, final.data)) problems.push('阴影在受影裁切范围外新增 alpha，请检查原生裁切');
   for (const [i,r] of result.relations.entries()) {
     const rawPath = await owned(r.fullPaint), raw = await raster(rawPath), receiverPath = await owned(r.receiver), receiver = await raster(receiverPath);
     const clipBase = await raster(await owned(r.clipBase));
     if (raw.info.width !== receiver.info.width || raw.info.height !== receiver.info.height) throw new Error('阴影与受影采样未配准');
     let painted = 0, overlap = 0;
     for (let p = 3; p < raw.data.length; p += 4) if (raw.data[p]) { painted++; if (receiver.data[p]) overlap++; }
-    if (!painted) throw new Error('完整影层为空：' + r.id);
-    if (overlap === painted) warnings.push(r.id + '：完整影层没有裁切外像素，请检查是否预裁死或确实适用');
+    if (!painted) problems.push(r.id + '：完整影层为空');
+    else if (overlap === painted) warnings.push(r.id + '：完整影层没有裁切外像素，请检查是否预裁死或确实适用');
     const panels = [{path:rawPath,label:'Full shadow paint'},{path:receiverPath,label:'Receiver coverage'}];
     for (const frame of r.frames) {
       const path = await owned(frame.file), pixels = await raster(path);
       const clipped = await raster(await owned(frame.clipped));
-      if (clipped.info.width !== clipBase.info.width || clipped.info.height !== clipBase.info.height || alphaGain(clipBase.data, clipped.data)) throw new Error('隔离组内阴影越过受影裁切：' + r.id);
-      if (pixels.info.width !== result.width || pixels.info.height !== result.height || alphaGain(base.data,pixels.data)) throw new Error('相对偏移后阴影越过原生裁切：' + r.id);
+      if (clipped.info.width !== clipBase.info.width || clipped.info.height !== clipBase.info.height || pixels.info.width !== result.width || pixels.info.height !== result.height) throw new Error('原生检查画布改变');
+      if (alphaGain(clipBase.data, clipped.data)) problems.push(`${r.id}：偏移 ${frame.offset.join(', ')} 时隔离组内阴影越过受影裁切`);
+      if (alphaGain(base.data,pixels.data)) problems.push(`${r.id}：偏移 ${frame.offset.join(', ')} 时阴影越过原生裁切`);
       panels.push({path,label:'Native offset ' + frame.offset.join(', ')});
     }
     const review = join(output,'inspection',`relation-${String(i).padStart(3,'0')}-review.png`);
@@ -143,8 +134,26 @@ export async function inspectMask(output: string, bridge: string, signal?: Abort
   await sheet([{path:join(folder,'without-shadows.png'),label:'Without cast shadows'},{path:finalPath,label:'Native final'}],overview,2); files.push(overview);
   if (await signature(document,bindingsPath,indexPath) !== stamp) throw new Error('检查期间工程变化，请重跑检查');
   const fileHashes = Object.fromEntries(await Promise.all(files.map(async p => [at(p),await fileHash(p)])));
-  const report = {version:2,signature:stamp,passed:true,nativeVersion:result.nativeVersion,width:result.width,height:result.height,
-    relations,warnings,fileHashes,scope:'Native clipping and declared relative offsets; not physics or deformer animation. Raw intersection is before ancestor masks and final occluders.'};
+  const report = {version:2,signature:stamp,passed:problems.length === 0,nativeVersion:result.nativeVersion,width:result.width,height:result.height,
+    relations,problems,warnings,fileHashes,scope:'Native clipping and declared relative offsets; not physics or deformer animation. Raw intersection is before ancestor masks and final occluders.'};
   await writeFile(receipt,JSON.stringify(report,null,2)+'\n');
   return report;
+}
+
+// The agent's inspection tool in the mask section: renders in the section's
+// Krita, starting it like the krita tool's run, and returns what to look at.
+export function createInspectionTool(output: string, krita: SectionKrita, native: NativeInspect = inspectNative): FunctionTool {
+  return {
+    ...toolDefinition('inspect_shadow_mask'),
+    async execute(_value, signal) {
+      await krita.start(signal);
+      const report = await inspectMask(output, krita.bridge!, signal, native);
+      const root = taskRootOf(dirname(output)), from = (p: string) => resolve(root, p);
+      return { ...textResult({ passed: report.passed, problems: report.problems ?? [], warnings: report.warnings ?? [],
+        receipt: join(output, 'inspection.json'), overview: join(output, 'inspection/overview.png'),
+        relations: report.relations.map((r: { id: string; review: string; nativeDirectory: string; outsideReceiverPixels: number }) => ({
+          id: r.id, review: from(r.review), nativeDirectory: from(r.nativeDirectory), outsideReceiverPixels: r.outsideReceiverPixels })) }),
+        success: report.passed };
+    },
+  };
 }

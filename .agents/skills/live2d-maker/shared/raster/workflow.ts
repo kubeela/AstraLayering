@@ -53,15 +53,15 @@ export type Passthrough = { reason: string; deliver(): Promise<void> };
 export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
   directorySuffix?: string;
-  tools?(output: string, input: Input, step: StepDefinition, phase: string): NonNullable<AgentRequest['tools']>;
+  // `krita`: the section's Krita, reserved when the step uses Krita.
+  tools?(output: string, input: Input, step: StepDefinition, phase: string, krita?: SectionKrita): NonNullable<AgentRequest['tools']>;
   fingerprintInput?(input: Input): Promise<string>;
   compatibleInputFingerprint?(input: Input, recorded: string | undefined): Promise<boolean>;
   // The upstream pipeline's final step; step01 records its stamp and reruns when it changes.
   upstreamStep?(input: Input): ChainStep;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
-  // `retained`: checking a step completed before this run, which no agent can redo now.
-  validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean, retained?: boolean): Promise<void>;
+  validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean): Promise<void>;
   deliveryWarnings?(input: Input, step: StepDefinition): Promise<readonly string[]>;
   // A step this input needs no agent for: deliver() writes its required files
   // itself, e.g. copies the upstream result when there is no dress-up to strip.
@@ -139,7 +139,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       const step = byId.get(chainStep.id)!;
       try { await checkFiles(chainStep.directory, step.requiredFiles); }
       catch (error) { throw new Error(`${step.id} 已标记完成但交付缺失；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`, { cause: error }); }
-      await pipeline.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun, true);
+      await pipeline.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun);
       if (!options.dryRun) await logDeliveryWarnings(step);
     },
     async prepare(plan) {
@@ -242,7 +242,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : session.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: [...pipeline.tools?.(output, reference, step, phase) ?? [],
+        tools: [...pipeline.tools?.(output, reference, step, phase, sectionKrita) ?? [],
           // Drawing, review and repairs run one after another in this section
           // and share its Krita; a fresh reviewer thread is still the same section.
           ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])],

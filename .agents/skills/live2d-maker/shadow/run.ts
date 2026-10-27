@@ -12,7 +12,7 @@ import { buildPrompt, stepsFor } from './steps.ts';
 import { prepareMaps, validateDelivery } from './delivery.ts';
 import { loadWorkflowEnvironment } from '../shared/codex/environment.ts';
 import { prepareMaskReferences, referenceNames, referenceUrl } from './preparation.ts';
-import { verifyInspection } from './inspection.ts';
+import { createInspectionTool } from './inspection.ts';
 
 export const help = `shadow — Live2D 投影阴影或整图法线＋深度
 pnpm shadow --name <任务名> --krita <可执行文件> [--dir <绝对运行根目录>]
@@ -32,10 +32,9 @@ export function makePipeline(mode: ShadowMode): KritaPipeline<ShadowInput> {
     fingerprintInput: input => shadowInputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
     compatibleInputFingerprint: (input, saved) => compatibleShadowFingerprint(input, saved, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
     ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === 'step01') await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
-    validateDelivery: async (output, input, _step, _krita, dryRun, retained) => {
-      await validateDelivery(output, input, mode);
-      if (mode === 'mask' && !dryRun) await verifyInspection(output, retained);
-    } };
+    // The mask agent inspects its own work in the section's Krita whenever it chooses.
+    ...(mode === 'mask' ? { tools: (output, _input, _step, _phase, krita) => krita?.reserved ? [createInspectionTool(output, krita)] : [] } : {}),
+    validateDelivery: (output, input) => validateDelivery(output, input, mode) };
 }
 async function atomicFile(path: string, bytes: Uint8Array | string) {
   await mkdir(dirname(path), { recursive: true });
