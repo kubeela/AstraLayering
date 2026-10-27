@@ -29,3 +29,5 @@
 
 审查报告：{report_path}
 候选只读；完成全部检查后一次提交反馈。
+
+父范围条件：当前 group.allowOutsideParent=true 时，以其 note 的完整结构职责为准，允许伸出直接父完成轮廓；该范围检查免除不改变实体归属、画布坐标或只读父稿的要求。标签省略时沿用父范围规则。hiddenInReference=true 的节点由调度直接进入补全，不执行描边与轮廓 review。

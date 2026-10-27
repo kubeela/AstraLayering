@@ -6,7 +6,7 @@ import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
 import { readFile, realpath } from 'node:fs/promises';
-import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { join, resolve } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
@@ -14,10 +14,10 @@ import { svgHash } from './artifact-facts.ts';
 import { assertCompletionPreserves, composeCompletion, completionPaths } from './completion-svg.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { readGroupPrompt, readGroupReferences } from './group-prompts.ts';
-import { writeAtomic } from './groups.ts';
+import { nodeSeed, writeAtomic } from './groups.ts';
 import { dependenciesMatch, fileDependency } from './completion-inputs.ts';
 import type { DrawingContext, GroupContext, SvgArtifact, CompletionCheck } from './layering-types.ts';
-import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 
 
 // 同级参考只取本层已审查、去重的只读底形，避免依赖并发补全的完成顺序。
@@ -27,12 +27,10 @@ export async function readCompletionReferences(groupDirectory: string, context?:
     if (!sibling || sibling.id === context.group.id) throw new Error(`补全参考不是当前节点的其他直属同级：${name}`);
     const reduced = sibling.steps.reduction;
     if (reduced.status !== 'completed' || !reduced.output) throw new Error(`补全同级参考尚未完成整层去重：${sibling.id}`);
-    const root = await realpath(context.directory), sourceSvg = await realpath(reduced.output.path);
-    const rel = relative(root, sourceSvg);
-    if (rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)) throw new Error('补全同级参考必须位于本次运行目录内');
+    const sourceSvg = await realpath(reduced.output.path);
     const bytes = await readFile(sourceSvg);
     const filename = `${name}.png`;
-    const inputFiles = await prepareFileInputs(join(root, groupStepId(context.group.id, 2)),
+    const inputFiles = await prepareFileInputs(join(context.directory, groupStepId(context.group.id, 2)),
       [{ name: filename, content: await sharp(bytes, { limitInputPixels: 100_000_000 }).png().toBuffer() }]);
     const path = inputFiles[filename];
     return { path, description, groupId: sibling.id, sourceSvg, sourceHash: svgHash(bytes), sourceStage: 'reduction' };
@@ -47,11 +45,9 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const canvas = { width: meta.autoOrient.width, height: meta.autoOrient.height };
   const sourcePath = await realpath(context.reviewed.path), source = await readFile(sourcePath);
   const draft = resolve(context.outputPath);
-  const root = await realpath(context.directory), rel = relative(root, draft);
-  if (!draft.endsWith('.draft.svg') || rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel) || draft === sourcePath) {
-    throw new Error('补全只写本次运行内指定的 .draft.svg');
-  }
+  if (draft === sourcePath) throw new Error('补全输出与输入 SVG 须使用不同路径，保留原形作为补全基准');
   const parent = context.parent?.steps.completion.output?.path;
+  const boundsParent = parentBoundsSource(context.group, parent);
   const prompt = await readGroupPrompt(context.group.id, 'completion', profile.promptsDirectory);
   const rules = await readFile(rulesPath, 'utf8');
   if (!rules.trim()) throw new Error(`补全操作约定提示词为空：${rulesPath}`);
@@ -67,7 +63,8 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
     try { assertCompletionPreserves(source.toString(), bytes.toString()); return true; } catch { return false; }
   }, () => false);
   if (!resumed) await writeAtomic(draft, source);
-  const preview = createSvgPreviewTool({ directory: context.directory, reference, canvas, parent,
+  const preview = createSvgPreviewTool({ directory: context.directory, reference, canvas, parent: boundsParent,
+    allowGeneratedReference: true,
     observationDirectory: join(context.directory, 'observations', 'completion', context.group.id),
     observed: entry => observations.push(entry) });
   async function verifySource() {
@@ -83,7 +80,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       const paths = completionPaths((value as { paths: unknown }).paths);
       await writeAtomic(draft, composeCompletion(source.toString(), paths));
       observations.length = 0; // 改过新增形状后，必须重新观察当前候选。
-      await validateGroupSvg(draft, context.group.id, canvas, parent, true);
+      await validateGroupSvg(draft, context.group.id, canvas, boundsParent, !context.group.hiddenInReference);
       return textResult({ path: draft, additions: paths.length });
     },
   };
@@ -95,10 +92,23 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       const raw = value as { note?: unknown };
       if (!raw || typeof raw.note !== 'string' || !raw.note.trim() || Object.keys(raw).some(key => key !== 'note')) throw new Error('须提交补全依据');
       await verifySource();
-      const bytes = await validateGroupSvg(draft, context.group.id, canvas, parent, true);
+      const bytes = await validateGroupSvg(draft, context.group.id, canvas, boundsParent, !context.group.hiddenInReference);
       assertCompletionPreserves(source.toString(), bytes.toString());
-      if (!observations.some(entry => entry.source === draft && entry.mode === 'blend') ||
-          !observations.some(entry => entry.source === draft && entry.mode === 'svg')) throw new Error('须预览当前补全草稿的 blend 和独显');
+      if (!observations.some(entry => entry.source === draft && entry.mode === 'blend' && !entry.reference) ||
+          !observations.some(entry => entry.source === draft && entry.mode === 'svg')) throw new Error('须预览当前补全草稿与人物/衣服参考图的默认 blend 和 SVG 独显');
+      const original = await realpath(reference);
+      const referenceViews = observations.filter(entry => entry.source === draft && entry.reference && entry.reference !== original);
+      if (context.group.hiddenInReference || referenceViews.length) {
+        const shapeReferences = new Map(referenceViews.filter(entry => entry.mode === 'edge').map(entry => [entry.reference!, entry]));
+        if (!shapeReferences.size) throw new Error('须用 preview_svg 的 edge、reference 与 referenceRegion 对照生成图，检查边缘一致性');
+        const checkedDependencies = [];
+        for (const entry of shapeReferences.values()) {
+          const dependency = await fileDependency(context.directory, entry.reference!);
+          if (dependency.hash !== entry.referenceHash) throw new Error('生成参考图在预览后被修改，请重新查看');
+          checkedDependencies.push(dependency);
+        }
+        for (const dependency of checkedDependencies) if (!dependencies.some(item => item.path === dependency.path)) dependencies.push(dependency);
+      }
       submitted = { path: draft, note: raw.note };
       submittedHash = svgHash(bytes);
       return textResult(submitted);
@@ -106,12 +116,10 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 2)), sandboxMode: 'read-only', imageGeneration: true,
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
-    tools: [preview, set, submit, createSvgReadTool(context.directory,
-      [sourcePath, parent, draft, ...references.map(ref => 'sourceSvg' in ref ? ref.sourceSvg : undefined)]),
-      createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'),
-        [reference, ...references.map(ref => ref.path)])], prompt: renderPrompt(prompt.text, {prompt_source: prompt.path,
+    tools: [preview, set, submit, createSvgReadTool(context.directory),
+      createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'))], prompt: renderPrompt(prompt.text, {prompt_source: prompt.path,
       runtime_context: JSON.stringify({
-      group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
+      group: nodeSeed(context.group),
       reference, additionalReferences: references, canvas, sourceSvg: sourcePath, outputDraft: draft, parentSvg: parent ?? null,
       ...(resumed ? { resumedDraft: 'outputDraft 已含上次中断前补上的形状：先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。' } : {}),
     }, null, 2),
@@ -128,6 +136,7 @@ export async function checkGroupCompletion(context: GroupContext & { before: Svg
   const [before, after, meta] = await Promise.all([readFile(context.before.path), readFile(context.after.path),
     sharp(resolve(context.directory, context.references.baseSubject)).metadata()]);
   const count = assertCompletionPreserves(before.toString(), after.toString());
-  await validateGroupSvg(context.after.path, context.group.id, { width: meta.autoOrient.width, height: meta.autoOrient.height }, undefined, true);
+  await validateGroupSvg(context.after.path, context.group.id, { width: meta.autoOrient.width, height: meta.autoOrient.height },
+    undefined, !context.group.hiddenInReference);
   return { passed: true, note: `程序核对：原 SVG 正文保留，${count} 条新增闭合路径位于原形下方；补形视觉自检在提交前完成。` };
 }

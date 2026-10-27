@@ -9,7 +9,7 @@ import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
 import { artifactPath } from './artifact-facts.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { walkGroups } from './groups.ts';
+import { nodeSeed, walkGroups } from './groups.ts';
 import type { OcclusionContext, StepResult } from './layering-types.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { depthRegions, occlusionSourceHash, terminalParts, validateOcclusionPlan, type DepthCheck, type OcclusionPlan } from './occlusion-plan.ts';
@@ -27,7 +27,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
   const previewPath = await realpath(context.preview.path);
   const candidatePath = join(await realpath(context.directory), 'occlusion', 'workspace', 'candidate.svg');
   const parts = await Promise.all(terminalParts(context).map(async ({ group, parent }) => ({
-    id: group.id, name: group.name, note: group.note, parent: parent?.id,
+    ...nodeSeed(group), parent: parent?.id,
     full: await realpath(artifactPath(context.directory, group.id, 'completion')),
     outline: await realpath(artifactPath(context.directory, group.id, 'reduction')),
   })));
@@ -111,7 +111,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     prompt: renderPrompt(prompt, {prompt_source: occlusionPromptPath,
       runtime_context: JSON.stringify({
       preview: previewPath, reference, canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, parts, groups: walkGroups(context.groups).filter(({ group }) => group.groups.length)
-        .map(({ group, parent }) => ({ id: group.id, parent: parent?.id, name: group.name, note: group.note })),
+        .map(({ group, parent }) => ({ ...nodeSeed(group), parent: parent?.id })),
     }, null, 2)}, occlusionPromptPath, ["prompt_source","runtime_context"]),
   });
   await verify();

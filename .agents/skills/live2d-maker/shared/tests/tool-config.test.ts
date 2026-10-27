@@ -9,6 +9,7 @@ import { CodexAgents } from '../codex/agents.ts';
 import { textResult } from '../codex/function-tools.ts';
 import { fakeAppServer } from '../../part-layering/tests/fake-app-server.ts';
 import { nodeExecutables } from '../../part-layering/tests/node-executables.ts';
+import { createSvgPreviewTool } from '../part/svg-tools.ts';
 
 test('工具配置逐文件覆盖；衣服的 subject 限制不会污染共享定义', () => {
   const shared = new ToolCatalog(), specialized = new ToolCatalog(toolsDirectory, clothing.toolsDirectory);
@@ -65,4 +66,26 @@ test('本地工具定义实际注册到 App Server，续轮保留定义并使用
   assert.deepEqual(starts[0].params.dynamicTools, [{ type: 'function', name: 'update_group_note', description: '本地编辑的说明', inputSchema: schema }]);
   assert.equal(protocol.filter(message => message.method === 'turn/start').length, 2);
   assert.deepEqual(calls, ['draw', 'repair']);
+});
+
+test('阶段限制在加载 section 工具配置后仍保留，普通预览只注册原图参数', async t => {
+  nodeExecutables(t);
+  const root = await mkdtemp(join(tmpdir(), 'preview-tool-registration-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const server = await fakeAppServer(root, []);
+  const tool = createSvgPreviewTool({ directory: root, reference: join(root, 'reference.png'),
+    canvas: { width: 100, height: 100 }, observationDirectory: join(root, 'observations') });
+  const agents = new CodexAgents({ cwd: root, toolsDirectory: clothing.toolsDirectory,
+    codexPathOverride: server.executable, logDirectory: join(root, 'logs') });
+  await agents.run({ name: 'ordinary-preview', prompt: 'fixture', tools: [tool] });
+  const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+  const start = protocol.find(message => message.method === 'thread/start');
+  const properties = start.params.dynamicTools[0].inputSchema.properties;
+  assert.ok(properties.crop);
+  assert.equal(properties.reference, undefined);
+  assert.equal(properties.referenceRegion, undefined);
+  assert.equal(properties.referenceOffset, undefined);
+  const completion = createSvgPreviewTool({ directory: root, reference: join(root, 'reference.png'),
+    canvas: { width: 100, height: 100 }, observationDirectory: root, allowGeneratedReference: true });
+  assert.ok((completion.inputSchema.properties as Record<string, unknown>).referenceRegion);
 });

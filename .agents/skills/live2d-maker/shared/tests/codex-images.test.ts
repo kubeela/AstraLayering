@@ -70,7 +70,7 @@ test('normal/depth use opaque data transport in both tools and native routes wit
     layering_shadow_maps_image_model: 'gemini-nano-banana-2.1',
     layering_google_image_base_url: `http://127.0.0.1:${(server.address() as any).port}/v1`,
     layering_google_image_api_key: 'fixture', layering_google_image_protocol: 'openai' }, root);
-  const tool = imageGenerationTool(settings, 'shadow_maps', join(root, 'output'), [root])!;
+  const tool = imageGenerationTool(settings, 'shadow_maps', join(root, 'output'))!;
   const result = await tool.execute({ prompt: 'normal data', input_images: [input] }, new AbortController().signal);
   const saved = JSON.parse((result.contentItems[0] as { text: string }).text).savedPath;
   assert.deepEqual(await readFile(saved), png);

@@ -88,7 +88,7 @@ test('拆分收到可选图片用途，按需调用能看到 prompts 外部参�
       const view = task.tools!.find(tool => tool.name === 'view_bitmap')!;
       const observed = await view.execute({ path: input.additionalReferences[0].path, crop: [0, 0, 30, 30], scale: 2 }, signal);
       assert.equal(observed.contentItems[1].type, 'inputImage');
-      await assert.rejects(view.execute({ path: external.references.simplifiedSubject }, signal), /明确配置/);
+      assert.equal((await view.execute({ path: external.references.simplifiedSubject }, signal)).success, true);
       await observe(task, source);
       await task.tools!.find(tool => tool.name === 'submit_children')!.execute({
         children: [child('main'), child('side')], note: '参考完整发片，按当前独立控制需求拆分',

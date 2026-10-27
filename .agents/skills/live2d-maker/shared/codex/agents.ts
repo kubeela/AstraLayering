@@ -30,7 +30,6 @@ export type AgentTask = {
   prompt: string;
   recoveryPrompt?: string;
   images?: { path: string; description: string }[];
-  imageRoots?: readonly string[];
   imageGeneration?: boolean;
   outputSchema?: Record<string, unknown>;
   timeoutMs?: number;
@@ -104,7 +103,7 @@ export class CodexAgents {
     let closed = false, busy = false;
     return {
       run: async (task, externalSignal) => {
-        if (this.options.toolsDirectory && task.tools) task = { ...task, tools: task.tools.map(tool => ({ ...tool, ...toolDefinition(tool.name, this.options.toolsDirectory) })) };
+        if (this.options.toolsDirectory && task.tools) task = { ...task, tools: task.tools.map(tool => ({ ...tool, ...toolDefinition(tool.name, this.options.toolsDirectory, tool.omitParameters) })) };
         await checkCodexCapabilities(this.options.environment!, this.options);
         if (closed) throw new Error('会话已关闭');
         if (busy) throw new Error('同一会话不能并发运行');
@@ -204,7 +203,7 @@ export class CodexAgents {
           const generated: GeneratedImage[] = [];
           const image = original.step && selected.harness !== 'codex' ? imageGenerationTool(settings, original.step,
             join(executionPaths(original, this.options.cwd!).workspace, 'generated', randomUUID()),
-            [original.cwd || this.options.cwd!, ...(original.imageRoots || []), ...(original.images || []).map(i => i.path)], this.options.imageNormalization) : undefined;
+            this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
             image.execute = async (args, signal) => {

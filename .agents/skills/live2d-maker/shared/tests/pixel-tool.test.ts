@@ -106,11 +106,13 @@ test('未知部件、歧义归属、隐藏部件、KRA 尺寸不符和越界 KRA
   await assert.rejects(partScope(layers, ['clothing:collar'], 0, [40, 32]), /画布尺寸不同/);
   const selected = await partScope(layers, ['clothing:collar'], 0, [32, 32]);
   assert.deepEqual(selected.bounds[0].bounds, [10, 10, 2, 2]);
-  const f = await fixture(t, { krita: 'fixture', exportLayers: async () => assert.fail('must not export escaped input') });
+  let exported = '';
+  const f = await fixture(t, { krita: 'fixture', exportLayers: async path => { exported = path; throw new Error('export called'); } });
   await f.make('reference.png', []); await f.make('current.png', []);
   await writeFile(join(f.base, 'outside.kra'), 'outside');
   await symlink(join(f.base, 'outside.kra'), join(f.cwd, 'escaped.kra'));
-  await assert.rejects(f.call({ reference: 'reference.png', current: 'current.png', parts: ['collar'], current_kra: 'escaped.kra' }), /本次任务/);
+  await assert.rejects(f.call({ reference: 'reference.png', current: 'current.png', parts: ['collar'], current_kra: 'escaped.kra' }), /export called/);
+  assert.ok(exported.endsWith('outside.kra'));
 });
 test('单层可见 mask 保留缺口检测，同时排除合理补全；默认忽略细微颜色差', async t => {
   const f = await fixture(t), skin = [180, 100, 90, 255];
@@ -133,14 +135,14 @@ test('连贯的中等色差成为细节候选，分组只统计真实差异像�
   const precise = await f.call({ reference: 'reference.png', current: 'current.png', min_region_pixels: 1 });
   assert.deepEqual(precise.regions[0].bounds, [15, 15, 1, 1]); assert.equal(precise.regions[0].pixels, 1);
 });
-test('不同尺寸、越界输入/输出和 symlink 逃逸均明确拒绝', async t => {
+test('不同画布仍返回错误，输入与输出支持外部路径及符号链接', async t => {
   const f = await fixture(t);
   await f.make('reference.png', []); await f.make('current.png', []);
   await sharp({ create: { width: 4, height: 4, channels: 4, background: '#ffffff' } }).png().toFile(join(f.cwd, 'small.png'));
   await assert.rejects(f.call({ reference: 'reference.png', current: 'small.png' }), /画布尺寸不同/);
   const outside = join(f.base, 'outside.png'); await writeFile(outside, await readFile(join(f.cwd, 'reference.png')));
   await symlink(outside, join(f.cwd, 'escaped.png'));
-  await assert.rejects(f.call({ reference: 'escaped.png', current: 'current.png' }), /本次任务/);
+  await f.call({ reference: 'escaped.png', current: 'current.png' });
   const tool = createPixelTool(f.cwd, f.task, join(f.base, 'outside-output'));
-  await assert.rejects(tool.execute({ reference: 'reference.png', current: 'current.png' }, new AbortController().signal), /诊断输出/);
+  assert.equal((await tool.execute({ reference: 'reference.png', current: 'current.png' }, new AbortController().signal)).success, true);
 });

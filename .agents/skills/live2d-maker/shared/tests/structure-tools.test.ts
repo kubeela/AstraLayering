@@ -111,6 +111,19 @@ test('分组工具保留 subject、metadata 和未调整节点，终止 group �
   }
 });
 
+test('raster 结构写回保留可选显隐标签，错误类型返回当前 agent 且原文件保持完整', async t => {
+  const f = await fixture(t);
+  const group = { id: 'fixture', kind: 'part', hiddenInReference: true, allowOutsideParent: true, groups: [] };
+  await f.tool('edit_groups').execute({ groups: [group] }, signal);
+  assert.deepEqual((await f.json('groups.json')).groups, [group]);
+  await validateRasterStructure(f.input);
+  const before = await f.snapshot();
+  for (const field of ['hiddenInReference', 'allowOutsideParent']) {
+    await assert.rejects(f.tool('edit_groups').execute({ groups: [{ ...group, [field]: 'true' }] }, signal), /must be a boolean/);
+    assert.deepEqual(await f.snapshot(), before);
+  }
+});
+
 test('拆分必须联动完整深度表与已有 SVG；所有校验通过后才保存两个文件', async t => {
   const f = await fixture(t), before = await f.snapshot();
   const groups = [{ id: 'fixture', kind: 'group', groups: [{ id: 'fixture/left', kind: 'part', groups: [] }, { id: 'fixture/right', kind: 'part', groups: [] }] }];
@@ -132,15 +145,17 @@ test('拆分必须联动完整深度表与已有 SVG；所有校验通过后才�
   await validateRasterStructure(f.input);
 });
 
-test('取消和指向任务外的 SVG 不改变结构文件', async t => {
+test('取消保留结构文件；SVG 支持指向外部文件的符号链接', async t => {
   const f = await fixture(t), before = await f.snapshot();
   const canceled = AbortSignal.abort(new Error('用户取消'));
   await assert.rejects(f.tool('edit_occlusion').execute({ layers: [row('fixture', 0)] }, canceled), /用户取消/);
+  assert.deepEqual(await f.snapshot(), before);
   await writeFile(join(f.root, 'outside.svg'), 'other task');
   await rm(join(f.input.parts, 'fixture.svg'));
   await symlink(join(f.root, 'outside.svg'), join(f.input.parts, 'fixture.svg'));
-  await assert.rejects(f.tool('edit_occlusion').execute({ layers: [row('fixture', 0)] }, signal), /缺少有效 SVG/);
-  assert.deepEqual((await f.snapshot()).slice(0, 2), before.slice(0, 2));
+  await f.tool('edit_occlusion').execute({ layers: [row('fixture', 0)] }, signal);
+  assert.deepEqual((await f.snapshot())[0], before[0]);
+  assert.deepEqual((await f.json('occlusion.json')).layers, [row('fixture', 0)]);
 });
 
 test('两套 step01 结束时结构诊断仅记日志，保留完成状态并推进下一步', async t => {

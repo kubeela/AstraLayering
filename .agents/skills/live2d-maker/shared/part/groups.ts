@@ -64,6 +64,9 @@ export function normalizeGroups(values: unknown, seen = new Set<string>()): Grou
       if (input[field] !== undefined && typeof input[field] !== 'string') throw new Error(`group.${field} must be a string`);
     }
     if (input.metadata !== undefined) record(input.metadata, 'group.metadata');
+    for (const field of ['allowOutsideParent', 'hiddenInReference']) {
+      if (input[field] !== undefined && typeof input[field] !== 'boolean') throw new Error(`group.${field} must be a boolean`);
+    }
     if (input.kind !== undefined && input.kind !== 'group' && input.kind !== 'part') throw new Error('节点 kind 必须为 group 或 part');
     if (input.kind === 'part' && Array.isArray(input.groups) && input.groups.length) throw new Error('part 不能包含子节点');
     const rawSteps = input.steps === undefined ? {} : record(input.steps, 'group.steps');
@@ -78,6 +81,8 @@ export function normalizeGroups(values: unknown, seen = new Set<string>()): Grou
       ...(input.name !== undefined ? { name: input.name as string } : {}),
       ...(input.note !== undefined ? { note: input.note as string } : {}),
       ...(input.metadata !== undefined ? { metadata: structuredClone(input.metadata) as Record<string, unknown> } : {}),
+      ...(input.allowOutsideParent !== undefined ? { allowOutsideParent: input.allowOutsideParent as boolean } : {}),
+      ...(input.hiddenInReference !== undefined ? { hiddenInReference: input.hiddenInReference as boolean } : {}),
       groups: normalizeGroups(input.groups ?? [], seen), steps,
     };
     if (group.groups.length && rawSteps.children === undefined) {

@@ -49,6 +49,12 @@ export function toolCatalog(overrides?: string): ToolCatalog {
   return catalog;
 }
 
-export function toolDefinition(name: string, overrides?: string): Definition {
-  return toolCatalog(overrides).get(name);
+export function toolDefinition(name: string, overrides?: string, omitParameters: readonly string[] = []): Definition {
+  const definition = toolCatalog(overrides).get(name);
+  const properties = definition.inputSchema.properties as Record<string, unknown> | undefined;
+  for (const key of omitParameters) if (properties) delete properties[key];
+  if (Array.isArray(definition.inputSchema.required)) {
+    definition.inputSchema.required = definition.inputSchema.required.filter(key => !omitParameters.includes(key));
+  }
+  return definition;
 }

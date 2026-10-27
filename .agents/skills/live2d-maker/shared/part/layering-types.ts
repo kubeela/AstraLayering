@@ -37,6 +37,8 @@ export type GroupSeed = {
   name?: string;
   note?: string;
   metadata?: Record<string, unknown>;
+  allowOutsideParent?: boolean;
+  hiddenInReference?: boolean;
 };
 export type GroupInput = GroupSeed & { groups?: GroupInput[]; steps?: Partial<GroupProgress> };
 export type GroupNode = GroupSeed & { groups: GroupNode[]; steps: GroupProgress };
@@ -55,7 +57,7 @@ export type GroupContext = InitialContext & {
   group: GroupNode;
   parent?: GroupNode;
 };
-// 所有 SVG 生产接口只写 .draft.svg；正式路径由调度器验证后发布。
+// outputPath 提供默认草稿位置；也可返回其他 SVG 路径，由调度器验证后保存正式产物。
 // resumeDraft：继续中断的步骤（继续或恢复）时，outputPath 上的草稿是上次画到的进度，
 // 应在其上接着画而不是从头开始。
 export type DrawingContext = GroupContext & { outputPath: string; resumeDraft?: boolean };
