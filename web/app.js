@@ -199,7 +199,7 @@ const stepLabel=target=>`${stages[target.index].name} ${target.id}`;
 function stepToolbar() {
  if(!state.name)return '';
  const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;
- if(busy)return `<div class="step-toolbar" role="group" aria-label="任务控制"><button class="button" data-action="stop" title="${data.canStop?'停止运行，保留产物与续跑记录':'该运行不是由网页启动，只能在启动它的终端中停止'}" ${data.canStop?'':'disabled'}>${icon('stop')}停止</button></div>`;
+ if(busy)return `<div class="step-toolbar" role="group" aria-label="任务控制"><button class="button" data-action="stop" title="${data.canStop?'停止运行，保留产物与续跑记录':'当前运行未提供可用的停止入口'}" ${data.canStop?'':'disabled'}>${icon('stop')}停止</button></div>`;
  const allowed=action=>action==='continue'||broken.length>0;
  const scope=broken.length?`（${broken.length} 个中断 / 失败步骤：${broken.map(stepLabel).join('、')}）`:'';
  const reason=action=>!targets.length?'运行任务（可选择范围）':
