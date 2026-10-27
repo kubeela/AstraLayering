@@ -153,7 +153,7 @@ export async function runLayering(input: {
         if (!(await readFile(source!)).equals(before)) throw new Error('补全过程修改了原轮廓');
         assertCompletionPreserves(before.toString(), (await readFile(candidate)).toString());
       }
-      if (stage === 'completion' && !await dependenciesMatch(directory, result.output.dependencies ?? [])) {
+      if (stage === 'completion' && !await dependenciesMatch(root, result.output.dependencies ?? [])) {
         throw new Error('补全输入已变化，不能发布');
       }
       if (candidate !== draft) await writeAtomic(draft, await readFile(candidate));
