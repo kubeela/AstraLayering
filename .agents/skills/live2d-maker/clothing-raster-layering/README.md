@@ -83,7 +83,7 @@ pnpm check
 
 [steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
 
-自动测试模拟 SDK 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
+自动测试模拟 App Server 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
 
 现已完成 [2026-10-19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能现已接入，需显式配置并使用补丁版 Codex，见 [配置说明](../workflow/README.md)。
 

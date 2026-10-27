@@ -9,7 +9,7 @@ import { pipeline as character } from '../../raster-layering/run.ts';
 import { pipeline as clothing } from '../../clothing-raster-layering/run.ts';
 import { seedUpstream } from './upstream-fixture.ts';
 import { splitStructure } from './structure-fixture.ts';
-import { rasterCodexConfig, type AgentRequest } from '../raster/agent.ts';
+import { type AgentRequest } from '../raster/agent.ts';
 
 test('两套 raster 经受控工具新增分组及 SVG 后，中断与主动重跑保留上游修改', async t => {
   for (const pipeline of [character, clothing]) await t.test(pipeline.id, async t => {
@@ -37,8 +37,4 @@ test('两套 raster 经受控工具新增分组及 SVG 后，中断与主动重�
     } });
     for (const [file, bytes] of Object.entries(changed)) assert.equal(await readFile(join(source, file), 'utf8'), bytes);
   });
-});
-
-test('栅格调用不注册分层专用 MCP，使用宿主现有工具', () => {
-  assert.deepEqual(rasterCodexConfig(), { features: { image_generation: true } });
 });

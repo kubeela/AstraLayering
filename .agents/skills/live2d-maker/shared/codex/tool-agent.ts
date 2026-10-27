@@ -57,7 +57,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
   let lines: ReturnType<typeof createInterface> | undefined;
   let reader: Promise<void> | undefined;
   let threadId: string | undefined, threadPath: string | undefined, cwd: string | undefined, toolDefinitions: string | undefined;
-  let imageGeneration: boolean | undefined;
+  let imageGeneration: boolean | undefined, shell: boolean | undefined;
   let nextId = 0, closed = false, busy = false, stderr = '';
   let failure: { error: unknown } | undefined;
   const closing = new AbortController();
@@ -78,6 +78,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     current?.completion.reject(error);
   };
   const checkFailure = () => { if (failure) throw failure.error; };
+  const emit = async (event: Parameters<NonNullable<AgentOptions['onEvent']>>[0]) => { await options.onEvent?.(event); };
   const failTurn = (error: unknown) => {
     for (const waiter of pending.values()) waiter.reject(error);
     pending.clear();
@@ -157,7 +158,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
           const item = message.params?.item;
           if (item?.type === 'agentMessage') {
             current.finalResponse = item.text;
-            await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: item.id || 'message', text: item.text } });
+            await emit({ type: 'item.completed', item: { type: 'agent_message', id: item.id || 'message', text: item.text } });
           }
           else if (item?.type === 'imageGeneration' && current.task.imageGeneration && item.status === 'completed' &&
               typeof item.savedPath === 'string' && item.savedPath.trim()) {
@@ -194,7 +195,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     if (typeof threadId !== 'string') throw new Error('App Server 未返回会话 ID');
     threadPath = typeof started.thread?.path === 'string' ? started.thread.path : undefined;
     if (history?.length && !resumeThreadId) await request('thread/inject_items', { threadId, items: history });
-    await options.onEvent?.({ type: 'thread.started', thread_id: threadId });
+    await emit({ type: 'thread.started', thread_id: threadId });
   }
 
   return {
@@ -212,13 +213,13 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       }
       const workingDirectory = paths.workspace;
       const definitions = tools.map(({ name, description, inputSchema }) => ({ type: 'function', name, description, inputSchema }));
-      const enableImageGeneration = task.imageGeneration ?? false;
-      if (threadId && (cwd !== workingDirectory || imageGeneration !== enableImageGeneration ||
+      const enableImageGeneration = task.imageGeneration ?? false, enableShell = task.shell ?? true;
+      if (threadId && (cwd !== workingDirectory || imageGeneration !== enableImageGeneration || shell !== enableShell ||
           toolDefinitions !== JSON.stringify(definitions))) {
-        throw new Error('延续会话不能改变工作目录、工具定义或生图开关');
+        throw new Error('延续会话不能改变工作目录、工具定义、shell 或生图开关');
       }
       cwd = workingDirectory; toolDefinitions = JSON.stringify(definitions);
-      imageGeneration = enableImageGeneration;
+      imageGeneration = enableImageGeneration; shell = enableShell;
       busy = true;
       const timeoutMs = task.timeoutMs;
       const signal = AbortSignal.any([closing.signal, ...(externalSignal ? [externalSignal]
@@ -228,7 +229,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         model: selectedModel.model, cwd, sandbox: 'danger-full-access', approvalPolicy: 'never',
         config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
-          features: { image_generation: imageGeneration, shell_tool: true, unified_exec: true, multi_agent: false, memories: false } }),
+          features: { image_generation: imageGeneration, shell_tool: shell, unified_exec: shell, multi_agent: false, memories: false } }),
         dynamicTools: definitions,
       };
       const input: Record<string, unknown>[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths), text_elements: [] }];
@@ -260,6 +261,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         await request('turn/start', { threadId, input, effort: selectedModel.effort,
           ...(task.outputSchema ? { outputSchema: task.outputSchema } : {}) });
         await completion.promise;
+        if (task.checkResult) state.images = task.checkResult(state.finalResponse, state.images);
         await log.finish({ status: 'completed', threadId, usage: state.usage, finalResponse: state.finalResponse, images: state.images });
         options.progress?.(`agent 回合结束：${task.name}`);
         return { text: state.finalResponse, images: state.images, threadId, logDirectory: log.directory };

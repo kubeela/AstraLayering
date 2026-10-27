@@ -10,7 +10,6 @@ import type { NativeInspect } from '../native.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
 import type { AgentRequest } from '../../shared/raster/agent.ts';
-import { rasterCodexConfig } from '../../shared/raster/agent.ts';
 import { pipelineAgentSteps } from '../../shared/agents/preflight.ts';
 import { parseArguments } from '../../workflow/run.ts';
 import { runTask } from '../../workflow/runner.ts';
@@ -80,8 +79,8 @@ test('默认蒙版；全局保存、透传并仅预检所选分支', async t => 
   assert.deepEqual(pipelineAgentSteps('shadow', false, 'normal-depth'), ['shadow_maps']);
   const f = await fixture(t);
   assert.equal(f.deps.environment.stepImages.shadow_mask, undefined);
-  assert.equal(rasterCodexConfig('shadow_mask').features.image_generation, false);
-  assert.equal(rasterCodexConfig('shadow_maps').features.image_generation, true);
+  // Raster image generation follows the step's image model: the mask step has none.
+  assert.ok(f.deps.environment.stepImages.shadow_maps);
   await runTask({ ...f.options, from: 'shadow', to: 'shadow', shadowMode: 'normal-depth' }, {
     ...f.deps, execute: async (id, run) => {
       assert.equal(id, 'shadow'); assert.equal(run.shadowMode, 'normal-depth'); return { summary: 'maps' };

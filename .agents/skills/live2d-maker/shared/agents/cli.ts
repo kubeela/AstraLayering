@@ -28,6 +28,9 @@ import { prepareWorkspace, workspacePrompt, workspaceTools } from './workspace.t
 import { contextImages } from './inputs.ts';
 import { fromTaskPath, toTaskPath } from '../task-paths.ts';
 
+// AGV reports its Go transport timeouts only as text; these two exact forms are tagged where the CLI ends.
+const agvTransportTimeout = /net\/http: timeout awaiting response headers|stream idle timeout \(\w+\): context deadline exceeded/;
+
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
   const names = harness === 'claude' ? ['claude'] : harness === 'agv' ? ['agy', 'agv', 'antigravity'] : ['codex'];
@@ -261,7 +264,13 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
       if (code !== 0 || !final || final.is_error || !successfulStatus) {
-        const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态');
+        // Retry only on structured signals: the API status Claude reports, a CLI killed before any result,
+        // or one of AGV's two Go transport timeouts, which it reports only as the terminal error string.
+        const status = final?.api_error_status;
+        const info = typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final.api_error_code ?? null } }
+          : code === null && !final ? 'processKilled'
+          : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout' : undefined;
+        const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态', info);
         error.details = errorDetails({ error: final?.error, errors: final?.errors, events: eventErrors,
           stderr, processExitCode, cliStatus: final?.status, subtype: final?.subtype });
         throw error;

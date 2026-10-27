@@ -40,6 +40,31 @@ async function savedFailure(error: AgentCallError, cwd: string) {
   return result;
 }
 
+// An app server that fails the turn in the given mode after a saved draft message.
+async function errorServer(root: string, mode: string) {
+  const executable = join(root, 'codex.mjs');
+  await writeFile(executable, `#!${process.execPath}
+import { createInterface } from 'node:readline';
+if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
+const payload=${JSON.stringify(payload)}, mode=${JSON.stringify(mode)};
+const emit=value=>console.log(JSON.stringify(value));
+for await (const line of createInterface({input:process.stdin})) {
+ const message=JSON.parse(line);
+ if(message.method==='initialize')emit({id:message.id,result:{}});
+ if(message.method==='thread/start')emit({id:message.id,result:{thread:{id:'app-server-thread'}}});
+ if(message.method==='turn/start') {
+  if(mode==='rpc'){emit({id:message.id,error:{code:-32603,message:'RPC failed',data:{error:payload}}});continue;}
+  emit({id:message.id,result:{turn:{id:'turn'}}});
+  emit({method:'item/completed',params:{item:{type:'agentMessage',text:'当前草稿已保存'}}});
+  emit({method:'error',params:{threadId:'app-server-thread',willRetry:true,error:payload}});
+  if(mode==='eof')process.exit(0);
+  emit({method:'turn/completed',params:{turn:{status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
+ }
+}
+`, { mode: 0o700 });
+  return executable;
+}
+
 test('error snapshots retain nested provider details and causes without serializing SDK request credentials', () => {
   const transport = Object.assign(new Error('connection failed'), { code: 'ECONNRESET',
     config: { headers: { Authorization: 'secret-test-token' } }, request: { apiKey: 'secret-test-token' },
@@ -71,26 +96,7 @@ for (const mode of ['rpc', 'turn', 'eof', 'recovered']) test(`Codex App Server $
     });
   }
   const f = await fixture(t);
-  const executable = join(f.root, 'codex.mjs');
-  await writeFile(executable, `#!${process.execPath}
-import { createInterface } from 'node:readline';
-if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
-const payload=${JSON.stringify(payload)}, mode=${JSON.stringify(mode)};
-const emit=value=>console.log(JSON.stringify(value));
-for await (const line of createInterface({input:process.stdin})) {
- const message=JSON.parse(line);
- if(message.method==='initialize')emit({id:message.id,result:{}});
- if(message.method==='thread/start')emit({id:message.id,result:{thread:{id:'app-server-thread'}}});
- if(message.method==='turn/start') {
-  if(mode==='rpc'){emit({id:message.id,error:{code:-32603,message:'RPC failed',data:{error:payload}}});continue;}
-  emit({id:message.id,result:{turn:{id:'turn'}}});
-  emit({method:'item/completed',params:{item:{type:'agentMessage',text:'当前草稿已保存'}}});
-  emit({method:'error',params:{threadId:'app-server-thread',willRetry:true,error:payload}});
-  if(mode==='eof')process.exit(0);
-  emit({method:'turn/completed',params:{turn:{status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
- }
-}
-`, { mode: 0o700 });
+  const executable = await errorServer(f.root, mode);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.root), codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
   const session = agents.createSession();
   try {
@@ -117,39 +123,14 @@ for await (const line of createInterface({input:process.stdin})) {
   } finally { await session.close(); }
 });
 
-test('real Codex SDK adapter preserves turn.failed fields and last message in failure records', async t => {
+test('raster steps keep turn failure details without retrying', async t => {
   const f = await fixture(t);
-  const executable = join(f.root, 'codex-sdk.mjs');
-  await writeFile(executable, `#!${process.execPath}
-if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
-for await(const chunk of process.stdin){}
-for(const event of ${JSON.stringify([
-    { type: 'thread.started', thread_id: 'sdk-thread' },
-    { type: 'item.completed', item: { type: 'agent_message', id: 'msg', text: '当前草稿已保存' } },
-    { type: 'turn.failed', error: payload },
-  ])})console.log(JSON.stringify(event));
-`, { mode: 0o700 });
-  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.root), codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
-  let failure: AgentCallError | undefined;
-  await assert.rejects(agents.run({ name: 'sdk-error', prompt: 'same task' }), error => {
-    assert.ok(error instanceof AgentCallError); failure = error;
-    assert.deepEqual(error.details, payload); return true;
-  });
-  const record = await savedFailure(failure!, f.cwd);
-  assert.equal(record.finalResponse, '当前草稿已保存');
-});
-
-test('raw raster SDK path keeps turn.failed details without retrying or replacing its thread', async () => {
-  const client = { startThread() { return { async runStreamed() { return { events: (async function* () {
-    yield { type: 'thread.started', thread_id: 'raster-thread' };
-    yield { type: 'item.completed', item: { id: 'msg', type: 'agent_message', text: '草稿已保存' } };
-    yield { type: 'turn.failed', error: payload };
-  })() }; } }; }, resumeThread() { assert.fail('unexpected replacement'); } };
-  await assert.rejects(runAgent({ prompt: 'same task', directory: '/tmp', model: 'fixture', effort: 'low', onEvent: async () => {} },
-    client as Parameters<typeof runAgent>[1], new AgentRuntime(1, async () => assert.fail('must not retry'))), error => {
+  const environment = loadWorkflowEnvironment({ layering_codex_path: await errorServer(f.root, 'turn') }, f.root);
+  await assert.rejects(runAgent({ prompt: 'same task', directory: f.cwd, model: 'gpt-6.1-sol', effort: 'low', environment, onEvent: async () => {} },
+    new AgentRuntime(1, async () => assert.fail('must not retry'))), error => {
     assert.ok(error instanceof AgentCallError);
-    assert.deepEqual(error.details, payload); assert.equal(error.threadId, 'raster-thread');
-    assert.match(formatAgentError(error), /草稿已保存/); return true;
+    assert.match(JSON.stringify(error.details), /bad_reference/); assert.equal(error.threadId, 'app-server-thread');
+    assert.match(formatAgentError(error), /当前草稿已保存/); return true;
   });
 });
 

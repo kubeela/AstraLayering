@@ -32,29 +32,24 @@ export function blockedAgentError(error: unknown): boolean {
   return false;
 }
 
+// Structured codes whose meaning is a temporary channel or capacity failure.
+const retryableCodes = new Set(['serverOverloaded', 'internalServerError', 'rateLimitExceeded', 'responseStreamDisconnected',
+  'responseStreamConnectionFailed', 'httpConnectionFailed', 'responseTooManyFailedAttempts', 'apiError', 'processKilled', 'transportTimeout']);
+
 export function retryableAgentError(error: unknown): boolean {
-  // 只处理调用通道报告的错误，不能把绘图/工具/文件校验异常当成服务过载。
+  // 只按调用通道给出的结构化错误码判断；没有错误码的错误（本地校验、工具、文件、模型回复）一律不重试。
   if (!(error instanceof AgentCallError) || blockedAgentError(error)) return false;
-  // Even a structured 429 can describe exhausted credit or an input image cap.
+  const info = error.info;
+  const code = typeof info === 'string' ? info : info && typeof info === 'object' ? Object.keys(info)[0] : undefined;
+  if (!code || !retryableCodes.has(code)) return false;
+  // 文本只能否决重试、不能触发重试：结构化 429 也可能是额度耗尽或单次输入图数上限，重试循环不设上限。
   if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i.test(error.message)) return false;
   const imageCountLimit = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i.test(error.message);
   const throughputLimit = /\brate[\s_-]*limit\b|\bper\s+(?:second|minute|hour|day)\b/i.test(error.message);
-  // A service's image rate limit is temporary; a per-request input cap is not.
   if (imageCountLimit && (!throughputLimit || /\bper\s+request\b/i.test(error.message))) return false;
-  const info = error.info;
-  const code = typeof info === 'string' ? info : info && typeof info === 'object' ? Object.keys(info)[0] : undefined;
-  if (code) {
-    if (['serverOverloaded', 'server_overloaded', 'server_is_overloaded', 'serverError', 'internalServerError',
-      'responseStreamDisconnected', 'responseStreamConnectionFailed', 'httpConnectionFailed', 'responseTooManyFailedAttempts', 'rateLimitExceeded'].includes(code)) {
-      const detail = info && typeof info === 'object' ? (info as Record<string, any>)[code] : undefined;
-      const status = detail?.httpStatusCode;
-      // 401/403/400 等不是重连就能解决的问题；429、5xx 和无 HTTP 状态的断流才重试。
-      return status == null || status === 429 || (status >= 500 && status <= 599);
-    }
-    if (code !== 'other') return false;
-  }
-  // SDK 流错误只提供 message；先排除需要用户处理的认证、额度和输入错误。
-  return /selected model is at capacity|server.*overload|currently experiencing high demand|service unavailable|\b50[0234]\b|stream disconnected|stream idle timeout|websocket.*closed|ECONNRESET|ETIMEDOUT|timeout awaiting response headers|EAI_AGAIN|fetch failed|too many requests|rate limit exceeded/i.test(error.message);
+  const status = info && typeof info === 'object' ? (info as Record<string, any>)[code]?.httpStatusCode : undefined;
+  // 401/403/400 等不是重连就能解决的问题；429、5xx 和无 HTTP 状态的断流才重试。
+  return status == null ? code !== 'apiError' : status === 429 || (status >= 500 && status <= 599);
 }
 
 export type AgentRetry = { attempt: number; nextAttempt: number; delayMs: number; error: unknown };

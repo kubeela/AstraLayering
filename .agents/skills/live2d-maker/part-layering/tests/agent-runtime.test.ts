@@ -71,12 +71,16 @@ test('退避等待释放并发位置，排队和等待都可以取消', async ()
 
 test('只恢复可重试的通道错误，不重试认证、额度、参数、校验错误和主动取消', () => {
   for (const info of ['serverOverloaded', 'internalServerError', 'responseStreamDisconnected',
-    { httpConnectionFailed: { httpStatusCode: 503 } }, { responseTooManyFailedAttempts: { httpStatusCode: 429 } }]) {
+    { httpConnectionFailed: { httpStatusCode: 503 } }, { responseTooManyFailedAttempts: { httpStatusCode: 429 } },
+    { apiError: { httpStatusCode: 529 } }, { apiError: { httpStatusCode: 429 } }, 'processKilled']) {
     assert.equal(retryableAgentError(new AgentCallError('test', info)), true);
   }
-  assert.equal(retryableAgentError(new AgentCallError('Selected model is at capacity. Please try a different model.')), true);
-  for (const info of ['usageLimitExceeded', 'contextWindowExceeded', 'badRequest', 'localError',
-    { httpConnectionFailed: { httpStatusCode: 401 } }, { httpConnectionFailed: { httpStatusCode: 400 } }]) {
+  // Without a structured code the text never triggers a retry, whatever it says.
+  for (const message of ['Selected model is at capacity. Please try a different model.', 'server overloaded', '503 service unavailable'])
+    assert.equal(retryableAgentError(new AgentCallError(message)), false, message);
+  for (const info of ['usageLimitExceeded', 'contextWindowExceeded', 'badRequest', 'localError', 'other',
+    { httpConnectionFailed: { httpStatusCode: 401 } }, { httpConnectionFailed: { httpStatusCode: 400 } },
+    { apiError: { httpStatusCode: 400 } }, { apiError: { httpStatusCode: null } }]) {
     assert.equal(retryableAgentError(new AgentCallError('test', info)), false);
   }
   assert.equal(retryableAgentError(new AgentCallError('quota exceeded 503')), false);

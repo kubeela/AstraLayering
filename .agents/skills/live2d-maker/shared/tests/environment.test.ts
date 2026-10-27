@@ -1,3 +1,4 @@
+import { rasterAppServer } from './raster-app-server.ts';
 import {deliverRasterStep, isRasterReview} from './raster-delivery.ts';
 import assert from 'node:assert/strict';
 import { chmod, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
@@ -136,15 +137,12 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
   });
 });
 
-test('raster 正常退出却只返回自然语言时报告原文，不变成晦涩 JSON 错误或重试', async () => {
-  const client = { startThread() { return { async runStreamed() { return { events: (async function* () {
-    yield { type: 'thread.started' as const, thread_id: 'diagnostic-thread' };
-    yield { type: 'item.completed' as const, item: { type: 'agent_message' as const, id: 'm', text: '没有可用的 image_generation。' } };
-    yield { type: 'turn.completed' as const, usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, cache_write_input_tokens: 0, reasoning_output_tokens: 0 } };
-  })() }; } }; }, resumeThread() { throw new Error('unexpected'); } };
-  await assert.rejects(runAgent({ prompt: 'test', directory: '/tmp', model: 'fixture', effort: 'xhigh', onEvent: async () => {} }, client), error => {
+test('raster 正常退出却只返回自然语言时报告原文，不变成晦涩 JSON 错误或重试', async t => {
+  const server = await rasterAppServer(t, '没有可用的 image_generation。');
+  await assert.rejects(runAgent({ prompt: 'test', directory: server.directory, model: 'gpt-6.1-sol', effort: 'xhigh',
+    environment: server.environment, onEvent: async () => {} }), error => {
     assert.match(formatAgentError(error), /没有返回有效的步骤结果 JSON/);
     assert.match(formatAgentError(error), /没有可用的 image_generation/);
-    assert.match(formatAgentError(error), /diagnostic-thread/); return true;
+    assert.match(formatAgentError(error), /native-thread/); return true;
   });
 });
