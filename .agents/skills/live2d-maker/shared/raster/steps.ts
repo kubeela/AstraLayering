@@ -20,7 +20,7 @@ export type StepDefinition = {
   inputFiles?: readonly string[]; // Relative to this pipeline directory; previous deliveries are read-only.
   requiredFiles: readonly string[];
   previewFiles?: readonly string[]; // Published optional previews; * matches within this step.
-  krita?: false; // The step does not operate Krita, so its agent gets no krita tool.
+  krita?: false; // The step does not operate Krita: it takes no Krita slot and its agents get no krita tool.
   review?: { prompt: URL; repairPrompt: URL; model: string; effort: ModelSelection['effort']; modelTier?: ModelTier; modelStep?: AgentStep; repairModelStep?: AgentStep };
 };
 

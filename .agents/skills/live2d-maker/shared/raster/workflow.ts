@@ -125,8 +125,10 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const previous: string[] = [];
   const previews: string[] = [];
   const byId = new Map(definitions.map(step => [step.id, step]));
-  // The section's own Krita: started by an agent through the krita tool when
-  // needed, released when the section ends however it ends.
+  // The section's own Krita. A step whose definition does not opt out with
+  // `krita: false` reserves a machine-wide Krita slot before it starts (queueing
+  // while all are taken) and its drawing and repair agents get the krita tool;
+  // other steps get neither. The slot and Krita are released when the section ends.
   const sectionKrita = new SectionKrita({ section: directory, krita: krita.executable, env: environment.codex.env,
     record: join(directory, kritaRecordFile) });
   const kritaTool = createKritaTool(sectionKrita, taskRoot);
@@ -242,7 +244,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
         tools: [...pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }) ?? [],
           // Reviewers only inspect deliveries; drawing and repairs operate Krita.
-          ...(fresh || step.krita === false ? [] : [kritaTool])],
+          ...(fresh || step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])],
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
         recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : session.threadId, signal: options.signal,
@@ -272,6 +274,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await writeFile(resultFile, JSON.stringify(result, null, 2) + '\n');
       return result;
     };
+    if (step.krita !== false) await sectionKrita.reserve(options.signal, waiting => options.progress?.(`${step.id}：${waiting}`));
     return async () => { try {
       await pipeline.prepareStep?.(output, reference, step, krita);
       if (!drawingReady) {

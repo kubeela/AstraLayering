@@ -49,7 +49,7 @@ pnpm install --frozen-lockfile
 
 Krita 本身由外部提供，其余由工作流准备：每个 section 一个私有 Krita 进程，使用临时的独立配置和随附的桥接插件，不改用户的 Krita 目录。agent 通过 `krita` 工具按需启动、查看状态与 pid、执行 Python 脚本，崩溃或卡死时自行重启；section 结束（完成、失败或停止）时由工作流关闭并清理。网页在 section 的 Krita 运行时显示“Krita 运行中”。桥接插件会自动取消会卡住无人值守界面的对话框（例如导出参数框），并在工具结果中给出提示。
 
-Linux 有 DISPLAY 或 WAYLAND_DISPLAY 时在该显示上运行；没有时工作流启动一个共享的 Xvfb（`apt install xvfb` 等，或用 `ASTRA_STUDIO_XVFB` 指定路径），多个 section 的 Krita 共用它。本机同时运行的 Krita 最多 4 个（跨任务计算，可用 `ASTRA_STUDIO_KRITA_MAX` 调整），超出时 start 排队等待。解包的 AppImage 会自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
+Linux 有 DISPLAY 或 WAYLAND_DISPLAY 时在该显示上运行；没有时工作流启动一个共享的 Xvfb（`apt install xvfb` 等，或用 `ASTRA_STUDIO_XVFB` 指定路径），多个 section 的 Krita 共用它。本机同时运行的 Krita 上限由 `.env` 的 `layering_krita_max_instances` 配置（默认 4，跨任务计算）：需要 Krita 的 section 在开始步骤前占一个名额、持有到 section 结束，名额用满时排队等待；声明 `krita: false` 的步骤不占名额，其 agent 也没有 krita 工具。解包的 AppImage 会自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
 
 缺少 Krita 时，由 agent 准备本机安装方案。**安装前向用户说明实际需要安装、配置的软件，确认所选方案后执行。** 已有针对该机器和方案的授权直接沿用；方案或范围改变时再确认。
 

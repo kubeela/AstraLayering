@@ -15,6 +15,8 @@ import { parseArguments } from '../../workflow/run.ts';
 import { runTask } from '../../workflow/runner.ts';
 import { readRun, taskStatus } from '../../workflow/state.ts';
 
+const kritaSlots = () => readdir(process.env.ASTRA_STUDIO_KRITA_SLOTS!).catch(() => [] as string[]);
+
 const xml = `<DOC><IMAGE width="2" height="2"><layers>
 <layer name="Caster" uuid="caster" nodetype="paintlayer" compositeop="normal"/>
 <layer name="Receiver group" uuid="group" nodetype="grouplayer" passthrough="0"><layers>
@@ -111,13 +113,19 @@ test('中断保留同分支 thread；两套产物共存，重跑只检查选择�
   } }), /interrupted/);
   await runWorkflow(f.options, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, 'retained-mask'); assert.equal(await readFile(join(request.directory, 'step01/work.kra'), 'utf8'), 'progress');
+    // The mask step operates Krita: the section holds a slot and the agent gets the tool.
+    assert.ok(request.tools?.some(tool => tool.name === 'krita')); assert.equal((await kritaSlots()).length, 1);
     calls++; return f.deliver(request);
   } });
   const mask = await readFile(join(f.task, 'shadow/mask/step01/character-shadowed.kra'));
   await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async request => {
-    assert.equal(request.threadId, undefined); assert.equal(request.step, 'shadow_maps'); calls++; return f.deliver(request);
+    assert.equal(request.threadId, undefined); assert.equal(request.step, 'shadow_maps');
+    // The maps step does not use Krita: no slot, no tool.
+    assert.ok(!request.tools?.some(tool => tool.name === 'krita')); assert.deepEqual(await kritaSlots(), []);
+    calls++; return f.deliver(request);
   } });
   assert.equal(calls, 2);
+  assert.deepEqual(await kritaSlots(), []);
   assert.deepEqual(await readFile(join(f.task, 'shadow/mask/step01/character-shadowed.kra')), mask);
   const normal = await sharp(join(f.task, 'lighting/normal.png')).raw().toBuffer();
   assert.deepEqual([...normal.filter((_value, i) => i % 4 === 3)], [255, 128, 0, 255]);

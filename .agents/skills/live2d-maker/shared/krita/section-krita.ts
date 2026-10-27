@@ -5,10 +5,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { preparePrivateKrita } from './private-environment.ts';
+import { readDefaultConfiguration } from '../default-configuration.ts';
 
-// One private Krita per section. The agent starts it through the krita tool
-// when it needs it and restarts it itself after a crash; the section releases
-// it when the section ends, however it ends. Krita itself is the user's
+// One private Krita per section. A section that needs Krita first reserves a
+// machine-wide slot (queueing while all are taken) and holds it until it ends;
+// only then can its agents start Krita through the krita tool, restarting it
+// themselves after a crash. The section releases both when it ends, however it ends. Krita itself is the user's
 // executable; the framework provides the private profile, the bridge plugin
 // and, on Linux without a display, a shared Xvfb.
 
@@ -20,7 +22,7 @@ export type KritaState = 'stopped' | 'starting' | 'running' | 'crashed';
 export type KritaStatus = {
   state: KritaState; section: string; executable: string; restarts: number;
   pid?: number; version?: string; bridge?: string; startedAt?: string;
-  // Set while a start waits for a free machine-wide slot.
+  // Set while the section waits for a free machine-wide slot.
   waiting?: string;
   // How the previous process ended, with the end of its log, after a crash.
   lastExit?: { code: number | null; signal: string | null; at: string; log: string };
@@ -125,16 +127,17 @@ async function removeStaleProfiles() {
 // ---- Machine-wide cap ------------------------------------------------------
 
 // Each Krita takes several hundred MB, and separate tasks each run their own
-// sections, so all of them share ASTRA_STUDIO_KRITA_MAX slots (default 4): one
-// lock file per slot, holding its owner's pid. A slot whose owner died is free.
-export const defaultKritaLimit = 4;
-const defaultSlotsDirectory = join(tmpdir(), 'astra-krita.slots');
+// sections, so all of them share layering_krita_max_instances slots (.env,
+// default in example.env): one lock file per slot, holding its owner's pid.
+// A slot whose owner died is free.
+export const kritaLimitKey = 'layering_krita_max_instances';
+// ASTRA_STUDIO_KRITA_SLOTS moves the locks elsewhere (tests keep their own).
+const defaultSlotsDirectory = () => process.env.ASTRA_STUDIO_KRITA_SLOTS || join(tmpdir(), 'astra-krita.slots');
 
-export function kritaLimit(env: NodeJS.ProcessEnv): number {
-  const value = env.ASTRA_STUDIO_KRITA_MAX;
-  if (value === undefined || value === '') return defaultKritaLimit;
+export function kritaLimit(env: NodeJS.ProcessEnv, defaults: Readonly<Record<string, string>> = readDefaultConfiguration()): number {
+  const value = env[kritaLimitKey]?.trim() || defaults[kritaLimitKey]?.trim() || '';
   const limit = Number(value);
-  if (!Number.isSafeInteger(limit) || limit < 1) throw new Error(`ASTRA_STUDIO_KRITA_MAX 须为正整数：${value}`);
+  if (!/^\d+$/.test(value) || !Number.isSafeInteger(limit) || limit < 1) throw new Error(`${kritaLimitKey} 须为正整数：${value || '（空）'}`);
   return limit;
 }
 
@@ -160,7 +163,7 @@ async function acquireKritaSlot(directory: string, limit: number, signal: AbortS
 }
 
 type Running = { child: ChildProcess; root: string; bridge: string; display?: string; pid: number; version: string;
-  startedAt: string; closed: Promise<void>; exited: boolean; stopping: boolean; log: string; slot: () => Promise<void> };
+  startedAt: string; closed: Promise<void>; exited: boolean; stopping: boolean; log: string };
 
 const live = new Set<SectionKrita>();
 export const kritaRecordFile = 'krita.json';
@@ -179,6 +182,8 @@ export class SectionKrita {
   private lastExit?: KritaStatus['lastExit'];
   private released = false;
   private queued = false;
+  private reservation?: Promise<() => Promise<void>>;
+  private slot?: () => Promise<void>;
   // Aborts a start still waiting for a slot or for the bridge once the section ends.
   private readonly ending = new AbortController();
 
@@ -190,7 +195,7 @@ export class SectionKrita {
     const running = this.current && !this.current.exited ? this.current : undefined;
     return { state: running ? 'running' : this.pending ? 'starting' : this.lastExit ? 'crashed' : 'stopped',
       section: this.section, executable: this.executable, restarts: this.restarts,
-      ...(this.pending && this.queued ? { waiting: `本机 Krita 已达上限 ${kritaLimit(this.options.env ?? process.env)} 个（ASTRA_STUDIO_KRITA_MAX），等待其他 section 释放` } : {}),
+      ...(this.queued ? { waiting: `本机 Krita 已达上限 ${kritaLimit(this.options.env ?? process.env)} 个（${kritaLimitKey}），等待其他 section 释放` } : {}),
       ...(running ? { pid: running.pid, version: running.version, bridge: running.bridge, startedAt: running.startedAt } : {}),
       ...(this.lastExit && !running ? { lastExit: this.lastExit } : {}) };
   }
@@ -198,9 +203,28 @@ export class SectionKrita {
   // The bridge directory of the running Krita, if any.
   get bridge(): string | undefined { return this.current && !this.current.exited ? this.current.bridge : undefined; }
 
+  // True once the section holds a machine-wide slot.
+  get reserved(): boolean { return !!this.slot; }
+
+  // Takes a machine-wide slot for the rest of the section, waiting while all
+  // are taken; `waiting` is called once if it has to wait. Idempotent.
+  async reserve(signal?: AbortSignal, waiting?: (message: string) => void): Promise<void> {
+    if (this.released) throw new Error('这个 section 已结束，不能再占用 Krita。');
+    if (this.slot) return;
+    const combined = signal ? AbortSignal.any([signal, this.ending.signal]) : this.ending.signal;
+    this.reservation ??= acquireKritaSlot(this.options.slotsDirectory ?? defaultSlotsDirectory(), kritaLimit(this.options.env ?? process.env), combined,
+      () => { this.queued = true; waiting?.(this.status().waiting!); }).finally(() => { this.queued = false; this.reservation = undefined; });
+    const ended = () => new Error('这个 section 已结束，不能再占用 Krita。');
+    const slot = await this.reservation.catch(error => { throw this.released ? ended() : error; });
+    // release() may have run while the slot was being taken.
+    if (this.released) { await slot(); throw ended(); }
+    this.slot ??= slot;
+  }
+
   // Starts Krita unless it already runs; resolves once its bridge is ready.
   async start(signal?: AbortSignal): Promise<KritaStatus> {
     if (this.released) throw new Error('这个 section 已结束，它的 Krita 不能再启动。');
+    if (!this.slot) throw new Error('这个 section 没有占用 Krita 名额，不能启动 Krita。');
     if (!this.current || this.current.exited) {
       if (this.current) await this.discard(this.current);
       this.pending ??= this.launch(signal ? AbortSignal.any([signal, this.ending.signal]) : this.ending.signal).finally(() => { this.pending = undefined; });
@@ -222,8 +246,12 @@ export class SectionKrita {
     this.released = true;
     this.ending.abort(new Error('section 已结束'));
     await this.pending?.catch(() => {});
+    await this.reservation?.catch(() => {});
     if (this.current) await this.stop(this.current);
     this.current = undefined;
+    const slot = this.slot;
+    this.slot = undefined;
+    await slot?.().catch(() => {});
     live.delete(this);
   }
 
@@ -234,11 +262,7 @@ export class SectionKrita {
     signal?.throwIfAborted();
     await removeStaleProfiles();
     const inherited = this.options.env ?? process.env, krita = this.executable;
-    const slot = await acquireKritaSlot(this.options.slotsDirectory ?? defaultSlotsDirectory, kritaLimit(inherited), signal,
-      () => { this.queued = true; }).finally(() => { this.queued = false; });
-    let root: string;
-    try { root = await mkdtemp(join(tmpdir(), tempPrefix)); }
-    catch (error) { await slot(); throw error; }
+    const root = await mkdtemp(join(tmpdir(), tempPrefix));
     const bridge = join(root, 'bridge');
     let displayName: string | undefined, running: Running | undefined;
     try {
@@ -253,7 +277,7 @@ export class SectionKrita {
       let launchError: Error | undefined;
       child.once('error', error => { launchError = error; });
       const state: Running = running = { child, root, bridge, display: displayName, pid: child.pid ?? 0, version: '', startedAt: '',
-        exited: false, stopping: false, log: '', closed: Promise.resolve(), slot };
+        exited: false, stopping: false, log: '', closed: Promise.resolve() };
       displayName = undefined; // Owned by the process state from here on.
       const append = (data: Buffer) => { state.log = (state.log + data).slice(-12_000); };
       child.stdout!.on('data', append); child.stderr!.on('data', append);
@@ -287,7 +311,7 @@ export class SectionKrita {
       return state;
     } catch (error) {
       if (running) await this.stop(running);
-      else { releaseDisplay(displayName); await rm(root, { recursive: true, force: true }).catch(() => {}); await slot(); }
+      else { releaseDisplay(displayName); await rm(root, { recursive: true, force: true }).catch(() => {}); }
       throw error;
     }
   }
@@ -313,7 +337,6 @@ export class SectionKrita {
     releaseDisplay(state.display);
     if (this.options.record) await rm(this.options.record, { force: true }).catch(() => {});
     await rm(root, { recursive: true, force: true }).catch(() => {});
-    await state.slot().catch(() => {});
   }
 }
 

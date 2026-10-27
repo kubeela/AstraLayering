@@ -39,7 +39,10 @@ test('section Krita: lazy start through the tool, crash and restart, release on 
   t.after(() => section.release());
   const tool = createKritaTool(section, root), signal = new AbortController().signal;
 
-  // Nothing starts with the section.
+  // Without the section's slot nothing can start; with it, nothing starts yet.
+  await assert.rejects(tool.execute({ action: 'start' }, signal), /名额/);
+  await section.reserve();
+  assert.equal(section.reserved, true);
   assert.equal(parse(await tool.execute({}, signal)).state, 'stopped');
   assert.equal(await exists(record), false);
 
@@ -75,7 +78,7 @@ test('section Krita: lazy start through the tool, crash and restart, release on 
   await assert.rejects(tool.execute({ action: 'start' }, signal), /已结束/);
 });
 
-test('section Krita: machine-wide cap queues starts until a slot is free', async t => {
+test('section Krita: machine-wide cap queues sections until a slot is free', async t => {
   const root = await mkdtemp(join(tmpdir(), 'section-krita-test-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const krita = join(root, 'krita'), slots = join(root, 'slots');
@@ -83,22 +86,38 @@ test('section Krita: machine-wide cap queues starts until a slot is free', async
   // A slot left by a process that died is reclaimed.
   await mkdir(slots);
   await writeFile(join(slots, '0.lock'), '999999999');
-  const env = { ...process.env, DISPLAY: ':fixture', ASTRA_STUDIO_KRITA_MAX: '1' };
+  const env = { ...process.env, DISPLAY: ':fixture', layering_krita_max_instances: '1' };
   const first = new SectionKrita({ section: 'a', krita, env, slotsDirectory: slots });
   const second = new SectionKrita({ section: 'b', krita, env, slotsDirectory: slots });
   t.after(() => Promise.all([first.release(), second.release()]));
+  await first.reserve();
+  // The slot belongs to the section: a restart keeps it.
   assert.equal((await first.start()).state, 'running');
+  assert.equal((await first.restart()).state, 'running');
 
-  const queued = second.start();
+  const messages: string[] = [];
+  const queued = second.reserve(undefined, message => messages.push(message));
   await new Promise(resolve => setTimeout(resolve, 300));
-  const waiting = second.status();
-  assert.equal(waiting.state, 'starting');
-  assert.match(waiting.waiting ?? '', /ASTRA_STUDIO_KRITA_MAX/);
+  assert.equal(second.reserved, false);
+  assert.match(second.status().waiting ?? '', /layering_krita_max_instances/);
+  assert.equal(messages.length, 1);
   await first.release();
-  assert.equal((await queued).state, 'running');
+  await queued;
+  assert.equal(second.reserved, true);
   assert.equal(second.status().waiting, undefined);
+  assert.equal((await second.start()).state, 'running');
 
-  assert.throws(() => kritaLimit({ ASTRA_STUDIO_KRITA_MAX: '0' }), /正整数/);
+  // A section that ends while queued gives up its place.
+  const third = new SectionKrita({ section: 'c', krita, env, slotsDirectory: slots });
+  const abandoned = third.reserve();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  await third.release();
+  await assert.rejects(abandoned, /已结束/);
+
+  assert.throws(() => kritaLimit({ layering_krita_max_instances: '0' }), /正整数/);
+  assert.throws(() => kritaLimit({ layering_krita_max_instances: '2.5' }), /正整数/);
+  assert.equal(kritaLimit({ layering_krita_max_instances: ' 3 ' }), 3);
+  // The default comes from example.env.
   assert.equal(kritaLimit({}), 4);
 });
 
@@ -114,8 +133,9 @@ test('krita tool: argument errors', async () => {
 test('bridge plugin in real Krita: dismisses export dialogs and hints', { skip: !process.env.ASTRA_TEST_KRITA && 'ASTRA_TEST_KRITA 未设置' }, async t => {
   const root = await mkdtemp(join(tmpdir(), 'section-krita-real-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const section = new SectionKrita({ section: root, krita: process.env.ASTRA_TEST_KRITA! });
+  const section = new SectionKrita({ section: root, krita: process.env.ASTRA_TEST_KRITA!, slotsDirectory: join(root, 'slots') });
   t.after(() => section.release());
+  await section.reserve();
   const tool = createKritaTool(section, root), signal = new AbortController().signal;
   const png = join(root, 'out.png'), fresh = join(root, 'fresh.png'), reopened = join(root, 'reopened.png');
   // New and opened documents export without any setup by the script.
