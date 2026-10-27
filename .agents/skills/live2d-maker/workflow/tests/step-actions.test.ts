@@ -113,6 +113,18 @@ for (const pipeline of ['raster-layering', 'clothing-raster-layering', 'characte
   });
 }
 
+test('raster 步骤恢复只清除本步骤的 thread', async t => {
+  const f = await fixture(t), root = join(f.task, 'raster-layering');
+  await put(join(root, 'run.json'), JSON.stringify({ ...JSON.parse(rasterConfig('thread-01')), threadStep: 'step01' }));
+  await put(join(root, 'step01', '.running'), JSON.stringify({ inputs: {} }));
+  await put(join(root, 'step02', '.running'), JSON.stringify({ inputs: {} }));
+  assert.match(await f.act('raster-layering', 'step02', 'resume'), /恢复等同继续/);
+  assert.equal(JSON.parse(await text(join(root, 'run.json'))).threadId, 'thread-01');
+  await f.act('raster-layering', 'step01', 'resume');
+  const config = JSON.parse(await text(join(root, 'run.json')));
+  assert.equal(config.threadId, null); assert.equal(config.threadStep, undefined);
+});
+
 test('阴影步骤按总控记录的方式定位分支，另一分支不受影响', async t => {
   const f = await fixture(t);
   await put(join(f.task, 'run.json'), JSON.stringify({ version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', pipelines: {}, shadowMode: 'normal-depth' }));

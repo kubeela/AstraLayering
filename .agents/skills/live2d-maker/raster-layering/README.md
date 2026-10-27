@@ -35,7 +35,7 @@ step02 沿用已确认结构，用 `locate_pixel_differences` 候选框引导细
 
 ## step01 审核与修复
 
-绘制与返修共用 `run.json.threadId`；reviewer 使用 `layering_agent_raster_step01_review_model` 和独立新上下文。
+同一步骤的绘制与返修共用 `run.json.threadId`，进入下一步骤时新建 thread；reviewer 使用 `layering_agent_raster_step01_review_model` 和独立新上下文。
 
 1. 初次绘制交付后生成 `review-01.md`。通过则完成，有问题则由原绘制会话处理全部反馈，自检后发布 `repair-01.md`。
 2. 首轮修复完成后执行 `review-02.md`。通过则完成，有问题则修复并发布 `repair-02.md`，随后进入 step02。
@@ -46,7 +46,7 @@ step02 沿用已确认结构，用 `locate_pixel_differences` 候选框引导细
 
 ## 会话与恢复
 
-`run.json` 保存任务、Krita 路径／版本、绘制 threadId 与 harness；每步 `.running`／`.completed` 记录交付状态。模型从本次启动的 `.env`／环境读取，正常跨步沿用绘制会话并切换职责模型。各 CLI 的历史与隔离请求目录保留，恢复规则见 [模型与会话](../references/model-presets.md#会话与记录)。
+`run.json` 保存任务、Krita 路径／版本、当前步骤的绘制 threadId、harness 及所属步骤 `threadStep`；每步 `.running`／`.completed` 记录交付状态。模型从本次启动的 `.env`／环境读取，每个步骤新建自己的绘制会话，从文件读取上一步的工程与报告。各 CLI 的历史与隔离请求目录保留，恢复规则见 [模型与会话](../references/model-presets.md#会话与记录)。
 
 `prompt.md` 保留完整展开提示词，`attempts.jsonl`、`events.jsonl`、`result.json` 和 `error.txt` 记录调用与故障；总日志在任务根 `workflow.log`。模板维护见 [shared](../shared/README.md#提示词模板与动态位置)。
 

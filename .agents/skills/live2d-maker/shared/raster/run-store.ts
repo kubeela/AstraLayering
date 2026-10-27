@@ -24,6 +24,8 @@ export type RunConfig<Input = PartLayeringInput> = {
   krita: KritaInstallation;
   threadId: string | null;
   threadHarness?: Harness;
+  // The step that owns threadId; each step draws in its own thread.
+  threadStep?: string;
   threadHandoff?: ThreadHandoff;
 };
 export type { StepStatus };
@@ -84,6 +86,7 @@ export async function loadConfig<Input = PartLayeringInput>(directory: string, n
     || !validateInput(config.sourceInput)
     || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim() || typeof config.krita.version !== 'string'
     || !(config.threadId === undefined || config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))
+    || (config.threadStep !== undefined && (typeof config.threadStep !== 'string' || !config.threadStep.trim()))
     || (config.threadHandoff !== undefined && !validHandoff(config.threadHandoff))) {
     throw new Error(`无效的任务配置：${file}`);
   }

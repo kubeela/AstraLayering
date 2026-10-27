@@ -99,7 +99,7 @@ test('缺少 parts 时在前置检查和模型调用前报错', async t => {
   await absent(join(f.output, 'run.json'));
 });
 
-test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断，step03 恢复原绘制会话', async t => {
+test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断，各步骤各自新建绘制会话，续跑恢复本步骤会话', async t => {
   const f = await fixture(t), deps = { ...f.deps, steps };
   const calls: string[] = [];
   await assert.rejects(runWorkflow(f.options, { ...deps, agent: async request => {
@@ -113,7 +113,8 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
       return complete;
     }
     if (calls.length === 0) { calls.push('step01'); assert.deepEqual(request.tools?.map(tool => tool.name), ['edit_groups', 'edit_occlusion']); return deliver(request, steps[0]); }
-    calls.push('step02'); assert.equal(request.threadId, 'thread-1'); assert.equal(request.tools?.[0].name, 'locate_pixel_differences');
+    calls.push('step02'); assert.equal(request.threadId, undefined); assert.equal(request.tools?.[0].name, 'locate_pixel_differences');
+    await request.onEvent({ type: 'thread.started', thread_id: 'thread-step02' });
     await readFile(join(f.output, 'step01/.completed'));
     await writeFile(join(f.output, 'step02/character-soft-edges.kra'), 'partially softened artwork');
     await writeFile(join(f.output, 'step02/report.md'), 'PNG missing'); return complete;
@@ -121,13 +122,12 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
   assert.deepEqual(calls, ['step01', 'review', 'step02']);
   await readFile(join(f.output, 'step02/.running'));
   await runWorkflow(f.resume, { ...deps, agent: async request => {
-    assert.equal(request.threadId, 'thread-1');
     if (request.step === 'raster_step03') {
-      calls.push('step03'); await readFile(join(f.output, 'step02/.completed'));
+      calls.push('step03'); assert.equal(request.threadId, undefined); await readFile(join(f.output, 'step02/.completed'));
       assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(steps[2].prompt, 'utf8'))));
       return deliver(request, steps[2]);
     }
-    calls.push('resume-step02');
+    calls.push('resume-step02'); assert.equal(request.threadId, 'thread-step02');
     assert.equal(await readFile(join(f.output, 'step02/character-soft-edges.kra'), 'utf8'), 'partially softened artwork');
     return deliver(request, steps[1]);
   } });
@@ -187,13 +187,13 @@ test('直接读取上游；中断保留 .running、产物和 thread；只用 nam
   await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
 });
 
-test('已完成第一步的任务接续后两步，共用 thread 并使用各步模型配置', async t => {
+test('已完成第一步的任务接续后两步，各步新建 thread 并使用各步模型配置', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
   let index = 1;
   await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: async request => {
     const step = f.definitions[index++];
-    assert.equal(request.threadId, 'thread-1');
+    assert.equal(request.threadId, undefined);
     assert.equal(request.model, step.model);
     assert.equal(request.effort, 'medium');
     assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step01/report.md'))));
@@ -204,6 +204,28 @@ test('已完成第一步的任务接续后两步，共用 thread 并使用各步
     await readFile(join(f.output, step.id, '.completed'));
     await absent(join(f.output, step.id, '.running'));
   }
+});
+
+test('旧记录的共享 thread 只属于第一步：中断的 step02 新建 thread 并保留其产物', async t => {
+  const f = await fixture(t);
+  let index = 0;
+  await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: async request => {
+    const step = f.definitions[index++];
+    if (step.id === 'step02') { await request.onEvent({ type: 'thread.started', thread_id: 'thread-1' }); throw new Error('interrupted'); }
+    return deliver(request, step);
+  } }).catch(error => assert.match(String(error), /interrupted/));
+  // Before threadStep existed, step02 continued step01's thread.
+  const legacy = await readConfig(f.output); delete legacy.threadStep;
+  await writeFile(join(f.output, 'run.json'), JSON.stringify(legacy));
+  index = 1;
+  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: async request => {
+    const step = f.definitions[index++];
+    assert.equal(request.threadId, undefined);
+    return deliver(request, step, 'thread-' + step.id);
+  } });
+  assert.equal(index, 3);
+  const config = await readConfig(f.output);
+  assert.equal(config.threadId, 'thread-step03'); assert.equal(config.threadStep, 'step03');
 });
 
 test('旧 models 快照不影响续跑；使用当前环境模型，保留会话、产物与请求历史', async t => {
@@ -234,7 +256,7 @@ test('旧 models 快照不影响续跑；使用当前环境模型，保留会话
   assert.equal(attempts[1].model, 'gpt-6.1-sol'); assert.equal(attempts[1].effort, 'low');
 });
 
-test('删 step02 完成标记后保留 step01/上游产物，清理后续目录，换新 thread 后共用', async t => {
+test('删 step02 完成标记后保留 step01/上游产物，清理后续目录，后续各步新建 thread', async t => {
   const f = await fixture(t);
   let index = 0;
   await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
@@ -260,7 +282,7 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
       await absent(join(f.output, 'step02/old.png'));
       await absent(join(f.output, 'step03/.completed'));
       await assert.rejects(readdir(join(f.output, 'step04')), { code: 'ENOENT' });
-    } else assert.equal(request.threadId, 'thread-new');
+    } else assert.equal(request.threadId, undefined);
     assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step01/report.md'))));
     return deliver(request, step, 'thread-new');
   } });
@@ -293,7 +315,7 @@ test('part 终止步骤 occlusion 重做后 step01 及后续重跑并换新 thre
     if (step.id === 'step01') {
       assert.equal(request.threadId, undefined);
       for (const id of ['step02', 'step03']) await assert.rejects(readdir(join(f.output, id)), { code: 'ENOENT' });
-    } else assert.equal(request.threadId, 'thread-part-b');
+    } else assert.equal(request.threadId, undefined);
     return deliver(request, step, 'thread-part-b');
   } });
   assert.equal(index, 3);
