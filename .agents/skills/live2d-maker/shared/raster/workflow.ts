@@ -47,6 +47,7 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
   }
 }
 
+export type Passthrough = { reason: string; deliver(): Promise<void> };
 export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
   directorySuffix?: string;
@@ -60,6 +61,9 @@ export type KritaPipeline<Input> = {
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
   validateDelivery?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation, dryRun?: boolean): Promise<void>;
   deliveryWarnings?(input: Input, step: StepDefinition): Promise<readonly string[]>;
+  // A step this input needs no agent for: deliver() writes its required files
+  // itself, e.g. copies the upstream result when there is no dress-up to strip.
+  passthrough?(output: string, input: Input, step: StepDefinition): Promise<Passthrough | undefined>;
   steps: readonly StepDefinition[];
   resolveInput(name: string, root: string): Promise<Input>;
   validateInput(value: unknown): value is Input;
@@ -163,6 +167,18 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id}：.completed 已存在，跳过`);
       previous.push(output);
       return;
+    }
+    const passthrough = await pipeline.passthrough?.(output, reference, step);
+    if (passthrough) {
+      options.progress?.(`${step.id}：${passthrough.reason}，不调用 agent`);
+      previous.push(output);
+      return async () => {
+        if (options.dryRun) return;
+        await mkdir(output, { recursive: true });
+        await passthrough.deliver();
+        await checkFiles(output, step.requiredFiles);
+        options.signal?.throwIfAborted();
+      };
     }
     const model = step;
     if (options.dryRun) {

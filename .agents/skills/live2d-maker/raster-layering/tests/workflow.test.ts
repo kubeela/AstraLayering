@@ -19,6 +19,7 @@ import { readStepSession } from '../../shared/agents/step-session.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { steps, stepModels, type StepDefinition } from '../steps.ts';
 import { runWorkflow } from '../run.ts';
+import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
 const preflight = async (executable: string) => ({ executable, version: '5.3.4' });
 const complete: StepResult = { status: 'completed', summary: 'Fixture delivery' };
@@ -470,4 +471,19 @@ test('旧 step02 已完成绘制但停在移除的 review，新版本补 step01 
   assert.equal(calls, 1);
   await readFile(join(f.output, 'step02/.completed'));
   assert.equal(await threadOf(f.output), 'thread-1');
+});
+
+test('素体未换装时 step03 不调用 agent，直接沿用 step02 交付并标记完成', async t => {
+  const f = await fixture(t), deps = { ...f.deps, steps: f.definitions }, calls: string[] = [];
+  await markBaseStep(join(f.directory, 'runs', 'test'), false);
+  await runWorkflow(f.options, { ...deps, agent: async request => {
+    const step = f.definitions.find(step => request.step === 'raster_' + step.id)!;
+    calls.push(step.id); return deliver(request, step);
+  } });
+  assert.deepEqual(calls, ['step01', 'step02']);
+  for (const extension of ['kra', 'png']) assert.equal(await readFile(join(f.output, `step03/character-dressup-base.${extension}`), 'utf8'),
+    `fixture step02/character-soft-edges.${extension}`);
+  assert.match(await readFile(join(f.output, 'step03/report.md'), 'utf8'), /直接沿用上游结果[\s\S]*raster-layering\/step02\/character-soft-edges\.kra/);
+  await readFile(join(f.output, 'step03/.completed'));
+  await runWorkflow(f.resume, { ...deps, agent: forbidden });
 });

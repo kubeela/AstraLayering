@@ -66,6 +66,8 @@ pnpm start --name my-character --stop
 | [character-assembly](character-assembly/README.md) | 已有两份 KRA，仅做穿戴组装 |
 | [shadow](shadow/README.md) | 阴影蒙版或法线／深度 |
 
+素体未换装时总调度跳过两条衣服管线，换装素体与组装直接复制人物成果，见 [总控](workflow/README.md#姿态与参考)。
+
 ```sh
 # 独立运行穿戴组装：读取已有的人物、衣服 KRA 与简化穿衣参考
 pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita

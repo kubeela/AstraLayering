@@ -14,6 +14,7 @@ import { taskDirectory } from '../../shared/paths.ts';
 import sharp from 'sharp';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { readStep } from '../../shared/step-chain.ts';
+import { readDressup } from '../../shared/part/dressup.ts';
 
 // The preparation section and its fixed step numbers.
 const section = (refs: { directory: string } | string) => join(dirname(typeof refs === 'string' ? refs : refs.directory), 'preparation');
@@ -68,6 +69,7 @@ test('无需简化仍执行换装，判断和换装各收到正确的两张图�
   assert.deepEqual(await readFile(refs.standardImage!), f.bytes);
   assert.deepEqual(await readFile(refs.originalImage!), f.bytes);
   await assert.rejects(readFile(join(refs.directory, 'judgment.json')), { code: 'ENOENT' });
+  assert.equal(await readDressup(taskDirectory(f.runName)), true);
 });
 
 test('需要简化时先转换画风再换装，续跑不依赖外部原图', async t => {
@@ -107,6 +109,9 @@ test('简化和素体各一次 agent 调用，复用分支保持参考字节且�
   await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 0);
   assert.deepEqual(await loadPreparedReferences(f.runName), refs);
+  const decision = JSON.parse(await readFile(join(section(refs), step('base'), 'decision.json'), 'utf8'));
+  assert.deepEqual(decision, { version: 1, dressed: false, reason: '无需替换主体衣装' });
+  assert.equal(await readDressup(taskDirectory(f.runName)), false);
 });
 
 test('生图分支在准备函数内完成尺寸处理，两步直接交付 PNG 并保留生图原件', async t => {
@@ -141,7 +146,7 @@ test('复用工具只接受理由，输入和输出路径固定且单次复制',
     await assert.rejects(tool.execute({ reason: '再次复制' }, signal), /已经复制完成/);
     return { text: JSON.stringify({ savedPath: target, error: null, reason: '已满足要求' }), images: [] };
   } });
-  assert.equal(await steps.baseSubject(f.original, target, 'test prompt', async () => assert.fail('复制分支跳过生图后处理')), undefined);
+  assert.deepEqual(await steps.baseSubject(f.original, target, 'test prompt', async () => assert.fail('复制分支跳过生图后处理')), { generated: false, reason: '已满足要求' });
   assert.deepEqual(await readFile(target), f.bytes);
   assert.deepEqual(await readFile(f.original), f.bytes);
 });

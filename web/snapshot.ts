@@ -187,12 +187,17 @@ export async function snapshot(directory: string, name: string, dir: string) {
     if ((id in rasterDefinitions || id === 'shadow') && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
       status = 'interrupted'; // Root coordinator history must not hide a removed step marker.
     }
+    // A clothing lane skipped for lack of a dress-up is complete with nothing to make.
+    if (saved?.skipped && !active) {
+      status = 'skipped';
+      for (const key of Object.keys(states)) if (states[key] === 'pending' || states[key] === 'available') states[key] = 'skipped';
+    }
     // Every marked step, for the continue / resume / retry actions.
     const steps = await listSteps(join(directory, branch), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
     // The thread of the running step, else of the last step that kept one.
     const threadId = (await currentSession(join(directory, branch), steps).catch(() => undefined))?.threadId ?? null;
     pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
-      threadId, summary: saved?.summary });
+      threadId, summary: saved?.summary, ...(saved?.skipped ? { skipped: true } : {}) });
   }
   const log = await readTaskLog(directory);
   const worker = await optional('.web-worker.json');

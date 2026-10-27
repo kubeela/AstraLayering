@@ -8,6 +8,7 @@ import { runTask } from '../runner.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, taskStatus } from '../state.ts';
 import { main, parseArguments, startBackground } from '../run.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
+import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
 // Real background workers inherit this and pass the Codex startup check without a build.
 process.env.layering_codex_path = await fakePatchedCodex();
@@ -242,4 +243,27 @@ test('绘画中断后总控不重进已完成 part 管线，沿用新增结构',
     } });
     assert.deepEqual(calls, [raster]);
   }
+});
+
+test('素体未换装时跳过衣服拆分与衣服绘制，记为已完成后继续组装和阴影', async t => {
+  const f = await fixture(t), executed: PipelineId[] = [];
+  const execute = async (id: PipelineId) => {
+    executed.push(id);
+    if (id === 'part-layering') await markBaseStep(f.directory, false);
+    return { summary: id };
+  };
+  const run = await runTask({ ...f.options, image: 'reference.png' }, { preflight, execute });
+  assert.deepEqual(executed, ['part-layering', 'raster-layering', 'character-assembly', 'shadow']);
+  for (const id of ['clothing-part-layering', 'clothing-raster-layering'] as const) {
+    assert.equal(run.pipelines[id]?.status, 'completed'); assert.equal(run.pipelines[id]?.skipped, true);
+    assert.match(run.pipelines[id]!.summary!, /没有衣服需要拆分和绘制/);
+  }
+  assert.equal(run.status, 'completed');
+  // A rerun of the base step that dresses the subject runs the clothing lane again.
+  executed.length = 0;
+  await markBaseStep(f.directory, true);
+  const dressed = await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async id => { executed.push(id); return { summary: id }; } });
+  // part-layering stays as drawn: its raster stage has started.
+  assert.deepEqual(executed, pipelineIds.slice(1));
+  assert.equal(dressed.pipelines['clothing-part-layering']?.skipped, undefined);
 });

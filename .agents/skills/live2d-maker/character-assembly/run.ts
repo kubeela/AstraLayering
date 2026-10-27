@@ -5,6 +5,7 @@ import { runCli } from '../shared/raster/cli.ts';
 import { runWorkflow as runSharedWorkflow, type KritaPipeline, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { inputDirectories, isAssemblyInput, resolveAssemblyInput, type AssemblyInput } from './input.ts';
 import { buildPrompt, steps } from './steps.ts';
+import { copyDelivery } from '../shared/raster/passthrough.ts';
 export { parseRunArguments } from '../shared/raster/cli.ts';
 
 export const help = `character-assembly — 单 agent 组装人物与衣服 KRA
@@ -31,8 +32,14 @@ export const pipeline: KritaPipeline<AssemblyInput> = {
   tools: (output, input, _step, phase, runtime) => phase === 'draw'
     ? [createPixelTool(dirname(output), dirname(dirname(output)), join(output, 'pixel-review'), {
       krita: runtime?.krita.executable, env: runtime?.env,
-      sources: [{ namespace: 'character', document: input.characterKra }, { namespace: 'clothing', document: input.clothingKra }],
+      sources: [{ namespace: 'character' as const, document: input.characterKra }, ...input.clothingKra ? [{ namespace: 'clothing' as const, document: input.clothingKra }] : []],
     })] : [],
+  // No clothing lane ran: the character KRA is the assembled result.
+  passthrough: async (output, input) => input.clothingKra !== null ? undefined
+    : copyDelivery(output, '素体换装沿用了简化参考，没有衣服需要组装', [
+      [input.characterKra, 'character-assembled.kra'],
+      [input.characterKra.replace(/\.kra$/, '.png'), 'character-assembled.png'],
+    ]),
   resolveInput: resolveAssemblyInput, validateInput: isAssemblyInput, inputDirectories, buildPrompt,
 };
 

@@ -17,6 +17,7 @@ export const steps = [{
 }] as const satisfies readonly StepDefinition[];
 
 export async function buildPrompt(step: StepDefinition, input: AssemblyInput, output: string, krita: KritaInstallation): Promise<string> {
+  if (!input.clothingKra) throw new Error('没有衣服 KRA 时组装直接复制人物结果，不需要提示词。');
   const root = taskRootOf(dirname(output)), json = async (path: string) => JSON.stringify(await agentPath(root, path));
   return renderPrompt(await readFile(step.prompt, 'utf8'), {
     krita_environment: await kritaEnvironmentPrompt(krita),

@@ -7,6 +7,8 @@ import { taskRootOf } from '../task-paths.ts';
 import { createReviewAnnotationTool } from './review-annotation.ts';
 import { createPixelTool } from './pixel-tool.ts';
 import { createStructureTools, validateRasterStructure } from './structure-tools.ts';
+import { readDressup } from '../part/dressup.ts';
+import { copyDelivery } from './passthrough.ts';
 
 type PartRasterDefinition = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering'>;
@@ -36,6 +38,16 @@ export function partRasterPipeline<T extends PartRasterDefinition>(definition: T
       if (step.id !== 'step01') return [];
       try { await validateRasterStructure(input); return []; }
       catch (error) { return [error instanceof Error ? error.message : String(error)]; }
+    },
+    // Without a dress-up base body there is no bodysuit to remove: step03
+    // delivers the soft-edged character as it is.
+    passthrough: async (output, input, step) => {
+      if (definition.id !== 'raster-layering' || step.id !== 'step03' || await readDressup(taskRootOf(input.directory)) !== false) return;
+      const previous = join(dirname(output), 'step02');
+      return copyDelivery(output, '素体换装沿用了简化参考，没有连体服需要去除', [
+        [join(previous, 'character-soft-edges.kra'), 'character-dressup-base.kra'],
+        [join(previous, 'character-soft-edges.png'), 'character-dressup-base.png'],
+      ]);
     },
     buildPrompt,
   };

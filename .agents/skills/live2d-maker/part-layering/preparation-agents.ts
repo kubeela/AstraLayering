@@ -8,7 +8,7 @@ import { taskRootOf, toAgentPath } from '../shared/task-paths.ts';
 import type { AgentTask, CodexAgents, GeneratedImage } from '../shared/codex/agents.ts';
 import { textResult } from '../shared/codex/function-tools.ts';
 import { toolDefinition } from '../shared/codex/tool-config.ts';
-import type { PreparationSteps, ProcessGenerated } from './preparation.ts';
+import type { PreparationSteps, ProcessGenerated, ReferenceChoice } from './preparation.ts';
 import { checkStandardJudgment, copyAsPng } from './preparation-state.ts';
 
 async function saveImage(image: GeneratedImage | undefined, output: string): Promise<void> {
@@ -26,7 +26,7 @@ async function saveImage(image: GeneratedImage | undefined, output: string): Pro
   }
 }
 
-async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, input: string, output: string, processGenerated?: ProcessGenerated): Promise<void> {
+async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, input: string, output: string, processGenerated?: ProcessGenerated): Promise<ReferenceChoice> {
   let reusedReason: string | undefined;
   const result = await agents.run({ ...task, tools: [{
     ...toolDefinition('reuse_reference'),
@@ -44,7 +44,7 @@ async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, i
       return textResult({ savedPath: await toAgentPath(context?.root ?? taskRootOf(dirname(output)), output), reason: reusedReason });
     },
   }] });
-  await validateAgentOutcome(result, async () => {
+  return validateAgentOutcome(result, async () => {
     if (reusedReason !== undefined && result.images.length) throw new Error('本次参考同时执行了复制与生图，请只选择一种交付方式。');
     const reason: unknown = reusedReason ?? JSON.parse(result.text).reason;
     if (typeof reason !== 'string' || !reason.trim()) throw new Error('参考准备须说明复制或生图的判断依据。');
@@ -52,6 +52,7 @@ async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, i
       await saveImage(result.images.at(-1), output);
       await processGenerated?.(output);
     }
+    return { generated: reusedReason === undefined, reason };
   });
 }
 
@@ -99,7 +100,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
       }, image, output, processGenerated);
     },
     baseSubject: async (image, output, prompt, processGenerated) => {
-      await prepareImage(agents, {
+      return prepareImage(agents, {
         step: 'part_base_subject', name: '素体换装', prompt, imageGeneration: true, outputSchema: referenceOutputSchema,
         images: [
           { path: image, description: '图 1：已准备的角色参考图。' },
