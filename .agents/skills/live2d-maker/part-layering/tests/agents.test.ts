@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import { CodexAgents } from '../../shared/codex/agents.ts';
 import { workflowLogPath } from '../../shared/codex/agent-log.ts';
-import { AgentRuntime } from '../../shared/codex/agent-runtime.ts';
+import { AgentCallError, AgentRuntime } from '../../shared/codex/agent-runtime.ts';
 import { fakeAppServer } from './fake-app-server.ts';
 import { nodeExecutables } from './node-executables.ts';
 
@@ -57,26 +57,32 @@ test('无工具一次性回合走 app-server：只读、关闭 shell，记录输
   assert.match(log.transcript, /测试工具选择摘要/);
   const thread = (await f.protocol()).find(message => message.method === 'thread/start').params;
   assert.equal(thread.cwd, f.directory);
-  assert.equal(thread.sandbox, 'read-only');
+  assert.equal(thread.sandbox, 'danger-full-access');
   assert.deepEqual(thread.dynamicTools, []);
   assert.equal(thread.config['features.image_generation'], true);
   assert.equal(thread.config['features.shell_tool'], false);
   assert.equal(thread.config['features.unified_exec'], false);
 });
 
-test('任务显式要求时一次性回合可放开沙箱与 shell', async t => {
+test('任务显式要求时一次性回合可开放 shell', async t => {
   const f = await fixture(t, []);
-  await f.agents.run({ name: '可写', prompt: 'test', sandboxMode: 'workspace-write', shell: true });
+  await f.agents.run({ name: '可写', prompt: 'test', shell: true });
   const thread = (await f.protocol()).find(message => message.method === 'thread/start').params;
-  assert.equal(thread.sandbox, 'workspace-write');
+  assert.equal(thread.sandbox, 'danger-full-access');
   assert.equal(thread.config['features.shell_tool'], true);
 });
 
 test('模型返回生图错误时报错并保留最终回复；文本含 overloaded 也不自动重新生成', async t => {
   const finalText = saved(null, 'server overloaded');
   const f = await fixture(t, [], 'completed', [], { finalText });
-  await assert.rejects(f.agents.run({ name: '生图工具失败', prompt: 'test', imageGeneration: true }), /server overloaded/);
+  await assert.rejects(f.agents.run({ name: '生图工具失败', prompt: 'test', imageGeneration: true }), (error: AgentCallError) => {
+    assert.ok(error instanceof AgentCallError); assert.match(error.message, /server overloaded/);
+    assert.equal(error.threadId, 'native-thread'); assert.equal(error.finalResponse, finalText);
+    assert.ok(error.logDirectory?.startsWith(f.logDirectory + '/'));
+    return true;
+  });
   const log = await readLog(f.logDirectory);
+  assert.equal(log.result.status, 'failed');
   assert.equal(log.result.finalResponse, finalText);
   assert.equal((await f.protocol()).filter(message => message.method === 'turn/start').length, 1);
 });
@@ -84,6 +90,7 @@ test('模型返回生图错误时报错并保留最终回复；文本含 overloa
 test('生图回合缺少 savedPath 不能记为成功', async t => {
   const f = await fixture(t, [], 'completed', [], { finalText: saved('') });
   await assert.rejects(f.agents.run({ name: '缺路径', prompt: 'test', imageGeneration: true }), /没有返回生成图片的 savedPath/);
+  assert.equal((await readLog(f.logDirectory)).result.status, 'failed');
 });
 
 test('回合失败与提前 EOF 都记为失败', async t => {

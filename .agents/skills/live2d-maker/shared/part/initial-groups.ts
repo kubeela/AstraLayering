@@ -11,7 +11,7 @@ import { normalizeGroups, writeAtomic } from './groups.ts';
 import { initialStepId, readInitialGroups } from './part-steps.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { InitialContext, InitialGrouping } from './layering-types.ts';
-import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
+import { taskRootOf, toAgentPath } from '../task-paths.ts';
 
 function decodeInitialGrouping(value: unknown, subjects: readonly string[]): InitialGrouping {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('首次分组 JSON 须为对象');
@@ -43,7 +43,7 @@ export async function recognizeInitialGroups(
   // continues from the saved grouping instead of asking again.
   const path = join(context.directory, initialStepId, 'groups.json');
   const reference = resolve(context.directory, context.references.baseSubject);
-  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
+  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   let submitted = false;
   const writeGroups: FunctionTool = {
     ...toolDefinition('write_groups', profile.toolsDirectory),

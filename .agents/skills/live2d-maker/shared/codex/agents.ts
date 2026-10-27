@@ -33,9 +33,11 @@ export type AgentTask = {
   cwd?: string;
   outputDirectory?: string;
   tools?: FunctionTool[];
-  sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
   // Off keeps a tool-less turn to the model and its image tool.
   shell?: boolean;
+  // Checked by the Codex app-server turn before it counts as completed, so a
+  // rejected reply is logged as failed; returns the turn's images.
+  checkResult?: (text: string, images: GeneratedImage[], root: string) => GeneratedImage[];
 };
 
 export type GeneratedImage = { savedPath: string };
@@ -115,7 +117,7 @@ export class CodexAgents {
             ? this.options.environment!.stepImages[task.step!] : undefined;
           const paths = executionPaths(task, this.options.cwd ?? workflowsDirectory);
           const routeKey = nextImage ? nextImage + ':' + paths.workspace : undefined;
-          const nextTransport = JSON.stringify({ paths, sandbox: task.sandboxMode ?? 'workspace-write',
+          const nextTransport = JSON.stringify({ paths,
             imageGeneration: task.imageGeneration ?? false, shell: task.shell ?? true,
             tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) ?? [] });
           if (routeKey !== imageModel || nextTransport !== transportKey) {
@@ -261,21 +263,26 @@ export class CodexAgents {
   }
 
   // One-shot turns share the app-server session path. A turn without function
-  // tools stays read-only and shell-free unless the task asks otherwise.
+  // tools stays shell-free unless the task asks otherwise.
   async run(task: AgentTask): Promise<AgentResult> {
     const plain = !task.tools?.length;
     const session = this.createSession();
     let result: AgentResult;
-    try { result = await session.run(plain ? { ...task, sandboxMode: task.sandboxMode ?? 'read-only', shell: task.shell ?? false } : task); }
+    try { return await session.run(plain ? { ...task, shell: task.shell ?? false, ...(task.imageGeneration ? { checkResult: nativeImageResult(task.name) } : {}) } : task); }
     finally { await session.close(); }
-    if (!plain || !task.imageGeneration || result.harness !== 'codex') return result;
-    const output = JSON.parse(result.text) as { savedPath?: unknown; error?: unknown };
-    if (typeof output.error === 'string' && output.error) throw new Error(`${task.name}：${output.error}`);
-    if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) throw new Error(`${task.name} 没有返回生成图片的 savedPath`);
-    // The agent returns a task-relative (or, outside the task, absolute) path.
-    const savedPath = fromTaskPath(executionPaths(task, this.options.cwd ?? workflowsDirectory).root, output.savedPath);
-    return result.images.some(image => image.savedPath === savedPath) ? result : { ...result, images: [...result.images, { savedPath }] };
   }
+}
+
+// A native image turn replies with the tool's savedPath, or an error.
+function nativeImageResult(name: string) {
+  return (text: string, images: GeneratedImage[], root: string): GeneratedImage[] => {
+    const output = JSON.parse(text) as { savedPath?: unknown; error?: unknown };
+    if (typeof output.error === 'string' && output.error) throw new Error(`${name}：${output.error}`);
+    if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) throw new Error(`${name} 没有返回生成图片的 savedPath`);
+    // The agent copies the tool's absolute savedPath; a relative one means the task root.
+    const savedPath = fromTaskPath(root, output.savedPath);
+    return images.some(image => image.savedPath === savedPath) ? images : [...images, { savedPath }];
+  };
 }
 
 function taskSignal(task: AgentTask, signals: AbortSignal[] = []): AbortSignal {

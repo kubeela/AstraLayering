@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { readStep, type ChainStep } from '../step-chain.ts';
+import { taskRootOf } from '../task-paths.ts';
 import type { GroupProgress, GroupSeed, Subject } from './layering-types.ts';
 import { initialStepId, groupDepth, groupSegments, groupStepId, layerStepId, parentGroupId } from './step-paths.js';
 export { initialStepId, groupDepth, groupStepId, layerStepId, parentGroupId } from './step-paths.js';
@@ -17,19 +18,21 @@ export { initialStepId, groupDepth, groupStepId, layerStepId, parentGroupId } fr
 //   occlusion                          -> ../occlusion.json (not hashed; raster edits depths)
 // Child groups nest as groups/<parent>/children/<name>. Step ids are these
 // relative directory paths; groups.json is only the tree with editable notes.
+// directory is the part pipeline directory, which sits in the task root.
+const readPartStep = (directory: string, id: string) => readStep(join(directory, id), taskRootOf(directory));
 export const groupDirectory = (directory: string, id: string): string => join(directory, 'groups', ...groupSegments(id));
 
 export function groupStep(directory: string, id: string, step: 1 | 2 | 3, references: readonly string[] = []): ChainStep {
-  const stepId = groupStepId(id, step), stepDirectory = join(directory, stepId), parent = parentGroupId(id);
-  if (step === 1) return { id: stepId, directory: stepDirectory, dependsOn: [parent ? groupStepId(parent, 2) : initialStepId], outputs: ['outline.svg'] };
-  if (step === 3) return { id: stepId, directory: stepDirectory, dependsOn: [groupStepId(id, 2)], outputs: ['children.json'] };
+  const stepId = groupStepId(id, step), stepDirectory = join(directory, stepId), parent = parentGroupId(id), root = taskRootOf(directory);
+  if (step === 1) return { id: stepId, root, directory: stepDirectory, dependsOn: [parent ? groupStepId(parent, 2) : initialStepId], outputs: ['outline.svg'] };
+  if (step === 3) return { id: stepId, root, directory: stepDirectory, dependsOn: [groupStepId(id, 2)], outputs: ['children.json'] };
   const layer = layerStepId(groupDepth(id));
-  return { id: stepId, directory: stepDirectory, dependsOn: [id, ...references].map(group => `${layer}#${group}.svg`),
+  return { id: stepId, root, directory: stepDirectory, dependsOn: [id, ...references].map(group => `${layer}#${group}.svg`),
     outputs: [relative(stepDirectory, join(directory, 'parts', `${id}.svg`))] };
 }
 export function layerStep(directory: string, depth: number, ids: readonly string[]): ChainStep {
   const id = layerStepId(depth);
-  return { id, directory: join(directory, id), dependsOn: ids.map(group => groupStepId(group, 1)), outputs: ids.map(group => `${group}.svg`) };
+  return { id, root: taskRootOf(directory), directory: join(directory, id), dependsOn: ids.map(group => groupStepId(group, 1)), outputs: ids.map(group => `${group}.svg`) };
 }
 
 type ChildrenFile = { groupId: string; groups: GroupSeed[]; note?: string };
@@ -59,10 +62,10 @@ export async function readGroupTree(directory: string, seed: GroupSeed, saved: M
   const steps: Partial<GroupProgress> = {};
   let groups: unknown[] = [];
   if (!layers.has(depth)) {
-    const { status, record } = await readStep(join(directory, layerStepId(depth)));
+    const { status, record } = await readPartStep(directory, layerStepId(depth));
     layers.set(depth, status === 'completed' ? record?.outputs ?? {} : undefined);
   }
-  const prepared = await readStep(join(directory, groupStepId(id, 1)));
+  const prepared = await readPartStep(directory, groupStepId(id, 1));
   const outline = artifactPath(directory, id, 'outline');
   if (prepared.status === 'completed' && await intact(outline, prepared.record?.outputs?.['outline.svg'])) {
     const path = outline, bytes = await readSvg(path);
@@ -74,7 +77,7 @@ export async function readGroupTree(directory: string, seed: GroupSeed, saved: M
     const reduced = artifactPath(directory, id, 'reduction');
     if (outputs && `${id}.svg` in outputs && await intact(reduced, outputs[`${id}.svg`])) steps.reduction = { status: 'completed', output: { path: artifactPath(directory, id, 'reduction') } };
   }
-  const finished = await readStep(join(directory, groupStepId(id, 2))), part = artifactPath(directory, id, 'completion');
+  const finished = await readPartStep(directory, groupStepId(id, 2)), part = artifactPath(directory, id, 'completion');
   if (steps.reduction && finished.status === 'completed' && await intact(part, Object.values(finished.record?.outputs ?? {})[0])) {
     const check = await readJson(reportPath(directory, id, 'completion-check'));
     steps.completion = { status: 'completed', output: { path: artifactPath(directory, id, 'completion') } };
@@ -82,7 +85,7 @@ export async function readGroupTree(directory: string, seed: GroupSeed, saved: M
   }
   // The tree keeps the last split even while upstream steps rerun, so a new split
   // can still tell which children it drops.
-  if ((await readStep(join(directory, groupStepId(id, 3)))).status === 'completed') {
+  if ((await readPartStep(directory, groupStepId(id, 3))).status === 'completed') {
     groups = await Promise.all((await readChildren(directory, id)).groups.map(child => readGroupTree(directory, child, saved, layers)));
     if (steps.completion) steps.children = { status: 'completed', output: { ids: groups.map(child => (child as GroupSeed).id) } };
   }
@@ -92,9 +95,9 @@ export async function readGroupTree(directory: string, seed: GroupSeed, saved: M
 
 // Rebuilds the whole tree: the initial seeds, then each completed children split.
 export async function readStepTree(directory: string, saved: Map<string, GroupSeed>): Promise<{ subject?: Subject; groups: unknown[]; merged: boolean }> {
-  if ((await readStep(join(directory, initialStepId))).status !== 'completed') return { groups: [], merged: false };
+  if ((await readPartStep(directory, initialStepId)).status !== 'completed') return { groups: [], merged: false };
   const initial = await readInitialGroups(directory), layers: LayerCache = new Map();
   const groups = await Promise.all(initial.groups.map(seed => readGroupTree(directory, seed, saved, layers)));
-  const merged = (await readStep(join(directory, 'merge'))).status === 'completed';
+  const merged = (await readPartStep(directory, 'merge')).status === 'completed';
   return { ...(initial.subject !== undefined ? { subject: initial.subject } : {}), groups, merged };
 }

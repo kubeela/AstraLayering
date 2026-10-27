@@ -1,6 +1,6 @@
 ---
 本次运行信息（上方为完整步骤提示词）：
-- 本管线目录：{pipeline_directory}。正文与本段的路径均相对任务根目录；part-layering/ 或 clothing-part-layering/ 指同名任务的上游管线。
+- 本管线目录：{pipeline_directory}。本段路径为绝对路径，正文中的相对路径以任务根目录为基准；part-layering/ 或 clothing-part-layering/ 指同名任务的上游管线。
 - 本步输入文件（只读）：{input_files}。
 - 上游产物目录：{upstream_directory}。直接读取，不建立输入副本。
 - 主要产物路径：{parts_path}。以现有 part 为绘制起点，对照参考完成部件形状与补全。

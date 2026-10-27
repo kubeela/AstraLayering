@@ -14,7 +14,7 @@ import type { OcclusionContext, StepResult } from './layering-types.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { depthRegions, occlusionSourceHash, terminalParts, validateOcclusionPlan, type DepthCheck, type OcclusionPlan } from './occlusion-plan.ts';
 import { createSvgPreviewTool, type SvgObservation } from './svg-tools.ts';
-import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
+import { taskRootOf, toAgentPath } from '../task-paths.ts';
 
 export async function planPartOcclusion(context: OcclusionContext, agents: Pick<CodexAgents, 'run'>): Promise<StepResult<OcclusionPlan>> {
   const profile = partProfile(context);
@@ -32,7 +32,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     full: await realpath(artifactPath(context.directory, group.id, 'completion')),
     outline: await realpath(artifactPath(context.directory, group.id, 'reduction')),
   })));
-  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
+  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   const observations: SvgObservation[] = [];
   let candidate: OcclusionPlan | undefined;
   let result: StepResult<OcclusionPlan> | undefined;
@@ -105,7 +105,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
       return textResult({ completed: false, message });
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'occlusion'), name: '最终遮挡层级规划', cwd: context.directory, sandboxMode: 'read-only', imageGeneration: false,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'occlusion'), name: '最终遮挡层级规划', cwd: context.directory, imageGeneration: false,
     images: [{ path: reference, description: profile.references.occlusion }],
     tools: [createSvgPreviewTool({ directory: context.directory, reference,
       canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, observationDirectory: directory,

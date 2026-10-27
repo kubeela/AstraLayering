@@ -224,9 +224,8 @@ test('custom image edit transports original prompts and images over both protoco
     assert.ok(!Object.hasOwn((tool.inputSchema as { properties: Record<string, unknown> }).properties, 'model'));
     const result = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source] }, new AbortController().signal);
     const output = JSON.parse((result.contentItems[0] as { text: string }).text);
-    // Without a context the tool's own directory (outside a task layout) is the task root.
-    assert.ok(!isAbsolute(output.savedPath));
-    assert.equal((await sharp(join(root, outputDirectory, output.savedPath)).metadata()).format, 'png');
+    assert.ok(isAbsolute(output.savedPath) && output.savedPath.startsWith(join(root, outputDirectory) + '/'));
+    assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
     const custom = join(await fixture(t), `${provider}-${mode}.png`);
     const requested = await tool.execute({ prompt: '原样的绘制提示词', input_images: [relative(root, source)], output_path: custom },
@@ -259,7 +258,7 @@ await writeFile(join(process.cwd(),'invocation.json'),JSON.stringify(meta));
 console.log(JSON.stringify(kind==='claude'?{type:'result',session_id:id,result:'完成'}:{event:'result',result:{conversation_id:id,status:'SUCCESS',response:'完成'}}));
 `;
 
-test('Claude and agv work in the task root, keep original MCP schemas and resumable local session data', async t => {
+test('Claude and agv run in the pipeline directory with original MCP schemas and resumable local session data', async t => {
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli }, root);
@@ -270,12 +269,12 @@ test('Claude and agv work in the task root, keep original MCP schemas and resuma
     const task = { name: 'fixture', cwd, prompt: '完整任务提示词', tools: [{ name: 'fixture_echo', description: '原始工具说明',
       inputSchema: { type: 'object' }, async execute() { called++; return { success: true, contentItems: [] }; } }] };
     const first = await runCliTask(task, model, settings, options, new AbortController().signal);
-    const a = JSON.parse(await readFile(join(cwd, '../invocation.json'), 'utf8'));
+    const a = JSON.parse(await readFile(join(cwd, 'invocation.json'), 'utf8'));
     const second = await runCliTask(task, model, settings, options, new AbortController().signal, first.threadId!);
     assert.equal(second.threadId, first.threadId);
-    const b = JSON.parse(await readFile(join(cwd, '../invocation.json'), 'utf8'));
+    const b = JSON.parse(await readFile(join(cwd, 'invocation.json'), 'utf8'));
     assert.equal(await readFile(join(first.logDirectory!, 'prompt.md'), 'utf8'), a.input.message.content[0].text);
-    assert.equal(a.cwd, b.cwd); assert.equal(a.cwd, join(cwd, '..')); assert.equal(a.data, b.data);
+    assert.equal(a.cwd, b.cwd); assert.equal(a.cwd, cwd); assert.equal(a.data, b.data);
     assert.notEqual(first.logDirectory, second.logDirectory);
     for (const path of [a.data, a.agvData]) assert.ok(path.startsWith(join(cwd, 'agents')));
     assert.ok(a.input.message.content[0].text.startsWith(task.prompt));
@@ -305,7 +304,7 @@ const meta=`);
     const result = await runCliTask({ name: 'env-node', cwd, prompt: 'fixture' }, parseAgentModel(id, 'fixture'), settings,
       { cwd, logDirectory: join(cwd, 'agents') }, new AbortController().signal);
     assert.equal(result.text, '完成');
-    const child = JSON.parse(await readFile(join(cwd, '../child-node.json'), 'utf8'));
+    const child = JSON.parse(await readFile(join(cwd, 'child-node.json'), 'utf8'));
     assert.equal(child.childNode, process.execPath);
     assert.deepEqual(child.path.split(delimiter), [dirname(process.execPath), inheritedPath]);
   }

@@ -17,7 +17,7 @@ import { readGroupPrompt, readGroupReferences } from './group-prompts.ts';
 import { nodeSeed, writeAtomic } from './groups.ts';
 import { dependenciesMatch, fileDependency } from './completion-inputs.ts';
 import type { DrawingContext, GroupContext, SvgArtifact, CompletionCheck } from './layering-types.ts';
-import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
+import { taskRootOf, toAgentPath } from '../task-paths.ts';
 import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 
 
@@ -56,7 +56,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const dependencies = await Promise.all([fileDependency(context.directory, reference),
     ...references.map(ref => 'sourceSvg' in ref ? fileDependency(context.directory, ref.sourceSvg,
       { groupId: ref.groupId, stage: 'reduction' }) : fileDependency(context.directory, ref.path))]);
-  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
+  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   const observations: SvgObservation[] = [];
   let submitted: SvgArtifact | undefined, submittedHash: string | undefined;
   // A continued step keeps the additions drawn so far when they still sit on the
@@ -116,7 +116,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       return textResult({ ...submitted, path: await task(draft) });
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 2)), sandboxMode: 'read-only', imageGeneration: true,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 2)), imageGeneration: true,
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: [preview, set, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'))], prompt: renderPrompt(prompt.text, {prompt_source: prompt.path,

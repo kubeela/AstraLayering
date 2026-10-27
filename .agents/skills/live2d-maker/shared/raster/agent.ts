@@ -48,7 +48,7 @@ export async function runAgent(request: AgentRequest, runtime = new AgentRuntime
   try {
     const result = await session.run({ step: request.step, name: request.step || 'raster', prompt: request.prompt, recoveryPrompt: request.recoveryPrompt,
       imageGeneration: selected.harness === 'codex' && !!image,
-      cwd: request.directory, outputDirectory: paths.outputDirectory, sandboxMode: 'danger-full-access', tools: request.tools,
+      cwd: request.directory, outputDirectory: paths.outputDirectory, tools: request.tools,
       outputSchema: { type: 'object', additionalProperties: false, properties: {
         status: { type: 'string', enum: ['completed', 'blocked'] }, summary: { type: 'string' } }, required: ['status', 'summary'] } }, request.signal);
     return await validateAgentOutcome(result, () => {

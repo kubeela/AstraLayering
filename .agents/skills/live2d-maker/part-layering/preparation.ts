@@ -60,7 +60,7 @@ export async function loadPreparedReferences(runName: string, root?: string, sta
   }
   const saved = await readPreparationOptions(directory);
   if (standard !== undefined && saved !== undefined && standard !== saved) throw modeError(directory, saved);
-  const plan = await inspectSection(sectionDirectory(directory), await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), false);
+  const plan = await inspectSection(sectionDirectory(directory), taskDirectory(runName, root), await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), false);
   const modified = modifiedError(plan, plan.chain);
   if (modified) throw modified;
   const missing = plan.chain.filter(step => plan.defined.has(step.id) && unfinished(plan, step.id))
@@ -91,7 +91,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   const initial = await references(input.runName, input.dir);
   let partsBuilt = false;
   await runSection({
-    directory: sectionDirectory(directory), steps: await preparationSteps(initial, standard, inputs, source), progress,
+    directory: sectionDirectory(directory), root: taskDirectory(input.runName, input.dir), steps: await preparationSteps(initial, standard, inputs, source), progress,
     async check(plan) {
       const saved = await readPreparationOptions(directory);
       if (saved !== undefined && saved !== standard && !unfinished(plan, stageStep('options'))) throw modeError(directory, saved);

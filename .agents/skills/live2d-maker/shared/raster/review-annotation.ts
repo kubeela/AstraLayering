@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { canonicalPath, taskPath, taskPaths } from './run-store.ts';
+import { agentPaths, canonicalPath, taskPaths } from './run-store.ts';
 import { fromTaskPath } from '../task-paths.ts';
 
 type Box = [number, number, number, number];
@@ -80,12 +80,12 @@ export function createReviewAnnotationTool(_directory: string, taskRoot: string,
         }
         evidence.push({ ...region, crop: [crop.left, crop.top, crop.width, crop.height], files: { current, reference: ref, comparison } });
       }
-      const result = { image: await taskPath(root, image.path), reference: reference && await taskPath(root, reference.path), canvas: [width, height],
-        marked: await taskPath(root, marked), manifest: await taskPath(root, manifest), regions: await taskPaths(root, evidence),
+      // The manifest keeps task-relative paths; the agent sees absolute ones.
+      const result = { image: image.path, reference: reference?.path, canvas: [width, height], marked, manifest, regions: evidence,
         note: '问题及坐标由 reviewer 看图确认后提供；左参考、右当前，局部图含上下文，不改变问题 bounds。' };
-      await writeFile(manifest, JSON.stringify(result, null, 2) + '\n');
+      await writeFile(manifest, JSON.stringify(await taskPaths(root, result), null, 2) + '\n');
       signal.throwIfAborted();
-      return textResult(result);
+      return textResult(await agentPaths(root, result));
     },
   };
 }

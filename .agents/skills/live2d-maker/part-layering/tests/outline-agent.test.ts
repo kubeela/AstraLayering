@@ -57,7 +57,6 @@ function agents(verdicts: string[], options: {
     const input = runtime(task);
     const preview = task.tools!.find(tool => tool.name === 'preview_svg')!;
     if (task.name.startsWith('组轮廓review')) {
-      assert.equal(task.sandboxMode, 'read-only');
       assert.equal(task.imageGeneration, false);
       assert.equal(input.outputSvg, undefined);
       await preview.execute({ path: input.candidate, mode: 'edge', crop: [5, 5, 90, 90], scale: 2 }, signal);
@@ -66,7 +65,6 @@ function agents(verdicts: string[], options: {
           feedback: `对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 ${reviews} 轮反馈。` }, signal);
       if (options.failAfterSubmission) throw new Error('审查提交后中断');
     } else {
-      assert.equal(task.sandboxMode, 'workspace-write');
       assert.equal(task.imageGeneration, false);
       assert.ok(input.outputSvg);
       await writeFile(fromTaskPath(taskRootOf(task.cwd!), input.outputSvg), svg(input.group.id, 10 + drawingTurns++));

@@ -7,7 +7,7 @@ import type { GroupInput, Subject } from '../part/layering-types.ts';
 import { validateOcclusionDocument, type OcclusionPlan } from '../part/occlusion-plan.ts';
 import { depthPreviewPath, publishDepthPreview } from '../part/depth-preview.ts';
 import type { PartLayeringInput } from './input.ts';
-import { taskRootOf, toTaskPath } from '../task-paths.ts';
+import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 
 type StructureGroups = { version?: 1; subject?: Subject; groups: GroupInput[] };
 function object(value: unknown, path: string): Record<string, unknown> {
@@ -71,7 +71,7 @@ async function checkReferences(input: PartLayeringInput, groups: StructureGroups
   for (const { group } of leaves) {
     const path = join(input.parts, `${group.id}.svg`);
     await readStructureFile(path).catch(error => {
-      throw new Error(`groups：终止部件 ${group.id} 缺少有效 SVG ${toTaskPath(taskRootOf(input.directory), path)}`, { cause: error });
+      throw new Error(`groups：终止部件 ${group.id} 缺少有效 SVG ${fromTaskPath(taskRootOf(input.directory), path)}`, { cause: error });
     });
   }
 }
@@ -136,7 +136,7 @@ export function createStructureTools(input: PartLayeringInput): FunctionTool[] {
           }
         }
         const root = taskRootOf(input.directory);
-        return textResult({ groupsPath: toTaskPath(root, groupsPath), occlusionPath: toTaskPath(root, planPath), ...(previewWarning ? { previewWarning } : {}), terminalParts: plan.layers.map(row => row.id),
+        return textResult({ groupsPath: fromTaskPath(root, groupsPath), occlusionPath: fromTaskPath(root, planPath), ...(previewWarning ? { previewWarning } : {}), terminalParts: plan.layers.map(row => row.id),
           depthRegions: plan.layers.reduce((count, row) => count + (row.levels?.length ?? 1), 0), validated: true });
       });
     },

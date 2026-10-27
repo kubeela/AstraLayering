@@ -1,5 +1,5 @@
 ---
-本次运行信息（任务内路径均相对任务根目录，Krita 为绝对路径）：
+本次运行信息（以下均为绝对路径）：
 - 工作目录：{pipeline_directory}。
 - 人物素体 KRA：{character_kra}。
 - 衣服 KRA：{clothing_kra}。

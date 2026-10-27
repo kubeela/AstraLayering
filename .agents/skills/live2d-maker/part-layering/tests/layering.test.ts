@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { artifactPath, draftPath, readJson, reportPath, reviewedArtifact, svgHash } from '../../shared/part/artifact-facts.ts';
@@ -152,7 +153,7 @@ test('自检失败不分析子组；有效 SVG 不等于自检完成，续跑只
     return { status: 'completed', output: { passed: false as true } };
   } } }), /completion check did not pass/);
   assert.ok(!events.includes('head:children'));
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 2)))).status, 'running');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 2)), taskRootOf(f.directory))).status, 'running');
   assert.ok(await readFile(artifactPath(f.directory, 'head', 'completion')));
   assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completionCheck.status, 'pending');
   events.length = 0;
@@ -180,7 +181,7 @@ test('分析提交后中断，子组记录已完成；续跑直接进入下一�
     if (message === '[head] 子组分析：完成') throw new Error('interrupt after atomic commit');
   } }), /interrupt after atomic commit/);
   assert.equal((await readJson(reportPath(f.directory, 'head', 'children'))).groups[0].id, 'head/eye');
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 3)))).status, 'completed');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 3)), taskRootOf(f.directory))).status, 'completed');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.ok(!events.includes('head:children'));

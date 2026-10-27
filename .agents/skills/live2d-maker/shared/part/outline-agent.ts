@@ -15,7 +15,7 @@ import { readGroupPrompt } from './group-prompts.ts';
 import { findGroup, nodeSeed, writeAtomic } from './groups.ts';
 import type { DrawingContext, GroupContext, ReviewContext, ReviewedSvgArtifact, StepResult, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, taskObservation, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
-import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
+import { taskRootOf, toAgentPath } from '../task-paths.ts';
 import { completedReviewCount, draftPath, matchesHash, publishSvg, readReviewReport, svgHash as hash, type Review } from './artifact-facts.ts';
 
 const maxOutlineReviews = 2;
@@ -55,7 +55,7 @@ async function inputs(context: GroupContext) {
 async function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: {
   outputSvg?: string; candidate?: string; resumedDraft?: string; review?: { round: number; candidateHash: string };
 }) {
-  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
+  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   return JSON.stringify({
     group: nodeSeed(context.group),
     reference: await task(input.reference), groups: await task(join(context.directory, 'groups.json')),
@@ -127,7 +127,7 @@ export async function drawGroupOutline(
           typeof (value as { svg?: unknown }).svg !== 'string' || !(value as { svg: string }).svg.trim()) throw new Error('仅提交非空 svg 文本，草稿路径由程序绑定');
       await writeAtomic(draft, (value as { svg: string }).svg);
       const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, parentBoundsSource(context.group, input.parent), true);
-      return textResult({ path: await toTaskPathReal(taskRootOf(context.directory), draft), bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
+      return textResult({ path: await toAgentPath(taskRootOf(context.directory), draft), bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
     },
   };
   const taskPrompt = renderPrompt(prompt.text, {
@@ -143,7 +143,7 @@ export async function drawGroupOutline(
   const response = await agents.run({
     step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
-    sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory),
+    tools: [preview, write, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
       ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.outline }],
@@ -199,15 +199,15 @@ async function reviewOnce(
       signal.throwIfAborted();
       await writeAtomic(reportPath, JSON.stringify(report, null, 2) + '\n');
       submitted = review;
-      return textResult({ path: await toTaskPathReal(taskRootOf(context.directory), reportPath), verdict: review.verdict });
+      return textResult({ path: await toAgentPath(taskRootOf(context.directory), reportPath), verdict: review.verdict });
     },
   };
   const response = await agents.run({
     step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
-    sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory),
+    tools: [preview, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],
-    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:await runtime(context,input,{candidate,review:{round,candidateHash}}), report_path:await toTaskPathReal(taskRootOf(context.directory), reportPath)},
+    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:await runtime(context,input,{candidate,review:{round,candidateHash}}), report_path:await toAgentPath(taskRootOf(context.directory), reportPath)},
       prompt.path, ['prompt_source','runtime_context','report_path']),
   });
   if (!submitted) throw agentOutcomeError('独立 review 未通过 submit_review 保存结论', response);

@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import { readFile, writeFile, mkdir, realpath } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { fileHash } from './input.ts';
@@ -48,7 +48,7 @@ export async function inspectMask(output: string, krita: string, env: NodeJS.Pro
     });
   const stamp = await signature(document,bindingsPath,indexPath), receipt = join(output,'inspection.json');
   // Receipt v2 writes task-root paths; v1 paths were relative to this step.
-  const root = taskRootOf(output), at = (p: string) => toTaskPath(root, p);
+  const root = taskRootOf(dirname(output)), at = (p: string) => toTaskPath(root, p);
   try {
     const previous = JSON.parse(await readFile(receipt,'utf8'));
     if (previous.signature === stamp && previous.passed === true) {

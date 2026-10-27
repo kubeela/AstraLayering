@@ -9,7 +9,7 @@ import type { KritaInstallation } from '../shared/raster/krita.ts';
 import type { ShadowMode } from '../shared/shadow.ts';
 import type { ShadowInput } from './input.ts';
 import { referencesDirectory } from '../shared/agents/inputs.ts';
-import { taskPath } from '../shared/raster/run-store.ts';
+import { agentPath } from '../shared/raster/run-store.ts';
 import { taskRootOf } from '../shared/task-paths.ts';
 
 export const maskSteps = [{ id: 'step01', title: '投影分析、阴影补全与原生裁切', ...defaultModels.medium,
@@ -24,8 +24,8 @@ export const mapSteps = [{ id: 'step01', title: '生成配准的整图法线与�
 export const stepsFor = (mode: ShadowMode): readonly StepDefinition[] => mode === 'mask' ? maskSteps : mapSteps;
 export async function buildPrompt(step: StepDefinition, input: ShadowInput, output: string, krita: KritaInstallation): Promise<string> {
   const quote = (s: string) => "'" + s.replace(/'/g, "'\"'\"'") + "'";
-  // Task paths are relative to the task root; the command runs from there.
-  const root = taskRootOf(output), at = (path: string) => taskPath(root, path), json = async (path: string) => JSON.stringify(await at(path));
+  // Task paths are shown absolute under the task root; the command runs from there.
+  const root = taskRootOf(dirname(output)), at = (path: string) => agentPath(root, path), json = async (path: string) => JSON.stringify(await at(path));
   const inspection = step.modelStep === 'shadow_mask' ? renderPromptFile(new URL('../shared/prompts/shadow-inspection.md',import.meta.url), {
     reference_files:(await Promise.all(['inputs.json', 'production.md', 'skirt.png', 'hair.png'].map(p=>json(join(referencesDirectory(output),p))))).join('、'),
     inspection_command:'cd ' + quote(root) + ' && ' + [process.execPath,fileURLToPath(new URL('./inspect.ts',import.meta.url)),'--output',await at(output),'--krita',krita.executable].map(quote).join(' '),

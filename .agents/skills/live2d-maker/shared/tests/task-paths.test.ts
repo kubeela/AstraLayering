@@ -5,13 +5,16 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { fromTaskPath, taskRootOf, toTaskPath, toTaskPathReal, toTaskPaths } from '../task-paths.ts';
 
-test('任务根：从管线、步骤或工作区目录找到 <runs>/<name>；同名部件组不误判', () => {
+test('任务根按结构取管线目录的父目录；更深的目录不按名字向上猜', () => {
   const root = '/runs/case';
-  for (const directory of ['part-layering', 'raster-layering/step01/workspace', 'shadow', 'shadow/mask/step01',
-    'part-layering/steps/shadow/step01', 'clothing-part-layering/groups/a'])
+  for (const directory of ['part-layering', 'raster-layering', 'clothing-part-layering', 'shadow', 'shadow/mask', 'shadow/normal-depth'])
     assert.equal(taskRootOf(join(root, directory)), root);
   // A task named after a pipeline still resolves to its own root.
-  assert.equal(taskRootOf('/runs/shadow/shadow/normal-depth/step01'), '/runs/shadow');
+  assert.equal(taskRootOf('/runs/shadow/shadow/normal-depth'), '/runs/shadow');
+  // Step and workspace directories are not pipeline directories, and a group may be named after a pipeline:
+  // callers below the pipeline directory pass the root explicitly.
+  for (const directory of ['raster-layering/step01', 'raster-layering/step01/workspace', 'shadow/mask/step01'])
+    assert.equal(taskRootOf(join(root, directory)), join(root, directory));
   assert.equal(taskRootOf('/tmp/other'), '/tmp/other');
 });
 

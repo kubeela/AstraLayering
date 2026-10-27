@@ -33,7 +33,7 @@ export async function publishEvidence(path: string, workspace: string, output: s
 
 // Persisted savedPath is task-relative; old absolute records are read as is.
 export async function publishObservations<T extends { savedPath: string }>(entries: readonly T[], workspace: string, output: string,
-  root = taskRootOf(output)): Promise<T[]> {
+  root = taskRootOf(dirname(output))): Promise<T[]> {
   return Promise.all(entries.map(async entry => ({ ...entry,
     savedPath: await toTaskPathReal(root, await publishEvidence(entry.savedPath, workspace, output)) })));
 }

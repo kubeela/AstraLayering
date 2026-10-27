@@ -2,6 +2,7 @@ import { profile } from '../profile.ts';
 import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import type { TestContext } from 'node:test';
 import sharp from 'sharp';
 import { svgHash } from '../../shared/part/artifact-facts.ts';
@@ -52,8 +53,8 @@ export function workingMerger(events: string[]): SvgMerger {
 }
 // Records a finished first grouping, as if initial/step01 had run.
 export async function seedInitialGroups(directory: string, groups: GroupSeed[], subject?: Subject) {
-  const step = { id: initialStepId, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
+  const root = taskRootOf(directory), step = { id: initialStepId, root, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
   await beginStep(step.directory, {});
   await writeAtomic(join(step.directory, 'groups.json'), JSON.stringify({ ...(subject !== undefined ? { subject } : {}), groups }, null, 2) + '\n');
-  await completeStep(step, id => ({ id, directory: join(directory, id), dependsOn: [] }));
+  await completeStep(step, id => ({ id, root, directory: join(directory, id), dependsOn: [] }));
 }

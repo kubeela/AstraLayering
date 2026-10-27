@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { lstat, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { join, relative, resolve, sep } from 'node:path';
-import { fromTaskPath, taskRootOf, toTaskPath } from './task-paths.ts';
+import { fromTaskPath, toTaskPath } from './task-paths.ts';
 
 // One rerun rule for every pipeline. A step owns a directory with a .running
 // or .completed marker. .completed records a fresh stamp and the stamps its
@@ -21,7 +21,8 @@ import { fromTaskPath, taskRootOf, toTaskPath } from './task-paths.ts';
 // A dependency is a step id, or `id#output` to depend on one declared output's
 // hash only, so a step that rewrites several files reruns just the dependents of
 // the files that actually changed.
-export type ChainStep = { id: string; directory: string; dependsOn: readonly string[]; outputs?: readonly string[] };
+// root is the task root, given by the pipeline that owns the step.
+export type ChainStep = { id: string; root: string; directory: string; dependsOn: readonly string[]; outputs?: readonly string[] };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
 export type StepRecord = { stamp: string; inputs: Record<string, string>; outputs?: Record<string, string>; paths?: 'task' };
 export type ChainPlan = {
@@ -48,7 +49,7 @@ function parseRecord(text: string): StepRecord | undefined {
   } catch { /* legacy marker */ }
 }
 
-export async function readStep(directory: string): Promise<{ status: StepStatus; record?: StepRecord }> {
+export async function readStep(directory: string, root: string): Promise<{ status: StepStatus; record?: StepRecord }> {
   const folder = await info(directory);
   if (!folder) return { status: 'absent' };
   if (!folder.isDirectory() || folder.isSymbolicLink()) throw new Error(`步骤路径必须是普通目录：${directory}`);
@@ -58,7 +59,6 @@ export async function readStep(directory: string): Promise<{ status: StepStatus;
     if (!file.isFile() || file.isSymbolicLink()) throw new Error(`步骤标记必须是普通文件：${directory}/.${marker}`);
     const record = parseRecord(await readFile(path, 'utf8'));
     if (record?.paths === 'task' && record.outputs) {
-      const root = taskRootOf(directory);
       record.outputs = Object.fromEntries(Object.entries(record.outputs)
         .map(([key, hash]) => [stepName(directory, fromTaskPath(root, key)), hash]));
       delete record.paths;
@@ -71,9 +71,9 @@ export async function readStep(directory: string): Promise<{ status: StepStatus;
 // Persisted output keys are task-relative; in memory they are relative to the
 // step directory, as the step declares them.
 const stepName = (directory: string, path: string) => relative(directory, path).split(sep).join('/');
-const outputKey = (step: ChainStep, name: string) => toTaskPath(taskRootOf(step.directory), resolve(step.directory, name));
+const outputKey = (step: ChainStep, name: string) => toTaskPath(step.root, resolve(step.directory, name));
 async function readChainStep(step: ChainStep): Promise<{ status: StepStatus; record?: StepRecord }> {
-  const read = await readStep(step.directory);
+  const read = await readStep(step.directory, step.root);
   if (!read.record?.outputs) return read;
   // readStep keys by normalized step-relative names; rename them to the names
   // the step declares, which may be spelled differently.

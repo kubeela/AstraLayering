@@ -70,7 +70,7 @@ export type KritaPipeline<Input> = {
 // are read as they are. An unfinished upstream step must finish first.
 async function upstreamSteps(step: ChainStep | undefined): Promise<ChainStep[]> {
   if (!step) return [];
-  const { status } = await readStep(step.directory);
+  const { status } = await readStep(step.directory, step.root);
   if (status === 'absent') return [];
   if (status !== 'completed') throw new Error(`上游步骤 ${step.id} 尚未完成（${step.directory}），请先完成上游再运行本管线。`);
   return [step];
@@ -118,7 +118,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const previous: string[] = [];
   const previews: string[] = [];
   const byId = new Map(definitions.map(step => [step.id, step]));
-  await runSection({ directory, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
+  await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
     progress: options.progress, fresh: inputChanged, resetNote: '，并清除旧 threadId',
     // Validate retained deliveries before making any reset destructive.
     async keep(chainStep) {

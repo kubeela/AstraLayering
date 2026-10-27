@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { createReviewAnnotationTool } from '../raster/review-annotation.ts';
+import { toTaskPaths } from '../task-paths.ts';
 
 async function fixture(t: any) {
   const base = await mkdtemp(join(tmpdir(), 'review-annotation-')), task = join(base, 'case'), cwd = join(task, 'raster-layering');
@@ -26,18 +27,19 @@ const region = { id: 'R1', bounds: [8, 9, 5, 6], layers: ['side_hair'], descript
 test('框选完全保留 reviewer 的问题与坐标；同图仍可标记，局部对照保留上下文与原像素', async t => {
   const f = await fixture(t);
   const result = await f.call({ image: 'current.png', reference: 'reference.png', regions: [region], padding: 2 });
-  assert.equal(result.image, 'raster-layering/current.png'); assert.match(result.manifest, /^raster-layering\/step01\/review-evidence\/[^/]+\/regions\.json$/);
+  assert.equal(result.image, join(f.cwd, 'current.png')); assert.ok(result.manifest.startsWith(join(f.output) + '/') && result.manifest.endsWith('/regions.json'));
   assert.deepEqual(result.regions[0].bounds, region.bounds);
   assert.deepEqual(result.regions[0].layers, region.layers); assert.equal(result.regions[0].description, region.description);
   assert.deepEqual(result.regions[0].crop, [6, 7, 9, 10]);
   const expected = await sharp(f.png).extract({ left: 6, top: 7, width: 9, height: 10 }).raw().toBuffer();
-  assert.deepEqual(await sharp(join(f.task, result.regions[0].files.current)).raw().toBuffer(), expected);
-  assert.deepEqual(await sharp(join(f.task, result.regions[0].files.reference)).raw().toBuffer(), expected);
-  assert.equal((await sharp(join(f.task, result.regions[0].files.comparison)).metadata()).width, 18);
+  assert.deepEqual(await sharp(result.regions[0].files.current).raw().toBuffer(), expected);
+  assert.deepEqual(await sharp(result.regions[0].files.reference).raw().toBuffer(), expected);
+  assert.equal((await sharp(result.regions[0].files.comparison).metadata()).width, 18);
   assert.deepEqual(await readFile(join(f.cwd, 'current.png')), f.png);
   assert.deepEqual(await readFile(join(f.cwd, 'reference.png')), f.png);
-  assert.notDeepEqual(await readFile(join(f.task, result.marked)), f.png);
-  assert.deepEqual(JSON.parse(await readFile(join(f.task, result.manifest), 'utf8')), result);
+  assert.notDeepEqual(await readFile(result.marked), f.png);
+  // The manifest keeps task-relative paths; the agent sees them absolute.
+  assert.deepEqual(JSON.parse(await readFile(result.manifest, 'utf8')), toTaskPaths(f.task, result));
   const second = await f.call({ image: 'current.png', regions: [{ ...region, bounds: [0, 0, 1, 2] }], padding: 16 });
   assert.deepEqual(second.regions[0].bounds, [0, 0, 1, 2]);
   assert.deepEqual(second.regions[0].crop, [0, 0, 17, 18]);

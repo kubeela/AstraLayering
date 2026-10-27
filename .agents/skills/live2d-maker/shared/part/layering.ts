@@ -15,6 +15,7 @@ import { assertCompletionPreserves } from './completion-svg.ts';
 import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from './occlusion-plan.ts';
 import { completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
 import { beginStep, checkStep, completeStep, readStep, resetStep, runningInputs, type ChainStep, type StepCheck } from '../step-chain.ts';
+import { taskRootOf } from '../task-paths.ts';
 import { groupDirectory, groupStep, groupStepId, initialStepId, layerStep, parentGroupId, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
@@ -65,7 +66,9 @@ export async function runLayering(input: {
   const statePath = directory;
   let selected: Set<string> | undefined;
   let completedOcclusion: string | undefined;
-  const lookup = (id: string): ChainStep => ({ id, directory: join(directory, id), dependsOn: [] });
+  // directory is the part pipeline directory, which sits in the task root.
+  const root = taskRootOf(directory);
+  const lookup = (id: string): ChainStep => ({ id, root, directory: join(directory, id), dependsOn: [] });
 
   function context(id: string): GroupContext {
     const entry = walkGroups(store.snapshot().groups).find(entry => entry.group.id === id);
@@ -373,7 +376,7 @@ export async function runLayering(input: {
         if (!(await stat(resolve(directory, path))).isFile()) throw new Error(`显式 groups 缺少前置参考：${path}`);
       }
     } else {
-      const step: ChainStep = { id: initialStepId, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
+      const step: ChainStep = { id: initialStepId, root, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
       const check = await checkStep(step, lookup);
       if (check.action === 'keep') report('首次分组：沿用已有结果');
       else {
@@ -421,7 +424,7 @@ export async function runLayering(input: {
         const id = entry.group.id;
         if (scope()!.has(id)) continue;
         const step = groupStep(directory, id, 2, await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
-        if ((await readStep(step.directory)).status === 'absent') continue;
+        if ((await readStep(step.directory, root)).status === 'absent') continue;
         // Only completions whose inputs changed; an unfinished one is not a change.
         if ((await checkStep(step, lookup).catch(() => undefined))?.action === 'rerun') selected.add(id);
       }
@@ -437,7 +440,7 @@ export async function runLayering(input: {
     }
     const document = store.snapshot(), all = walkGroups(document.groups);
     if (all.length && all.every(entry => groupCompleted(entry.group))) {
-      const step: ChainStep = { id: 'merge', directory: join(directory, 'merge'), outputs: ['../preview.svg'],
+      const step: ChainStep = { id: 'merge', root, directory: join(directory, 'merge'), outputs: ['../preview.svg'],
         dependsOn: [...all.map(entry => groupStepId(entry.group.id, 3)),
           ...all.filter(entry => !entry.group.groups.length).map(entry => groupStepId(entry.group.id, 2))] };
       const output = join(directory, 'preview.svg');
@@ -458,7 +461,7 @@ export async function runLayering(input: {
           report(`最终预览合并：完成 ${output}`);
         } else report(result.message);
       }
-      const merged = (await readStep(step.directory)).status === 'completed';
+      const merged = (await readStep(step.directory, root)).status === 'completed';
       await store.update(draft => { draft.merge = merged ? { status: 'completed', output: { path: output } } : { status: 'pending' }; });
     } else if (document.merge.status !== 'pending') await store.update(draft => { draft.merge = { status: 'pending' }; });
     // 独立的最后一步。raster 会改写层级表中的深度，因此不登记产物哈希，
@@ -466,7 +469,7 @@ export async function runLayering(input: {
     const merged = store.snapshot();
     if (merged.merge.status === 'completed') {
       const context = { ...initial, groups: merged.groups, preview: merged.merge.output! };
-      const step: ChainStep = { id: 'occlusion', directory: join(directory, 'occlusion'), dependsOn: ['merge'] };
+      const step: ChainStep = { id: 'occlusion', root, directory: join(directory, 'occlusion'), dependsOn: ['merge'] };
       const check = await checkStep(step, lookup);
       if (check.action === 'keep' && await restoreOcclusionPlan(context)) {
         completedOcclusion = occlusionPath(directory);
