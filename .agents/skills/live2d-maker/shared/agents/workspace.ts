@@ -5,17 +5,19 @@ import type { FunctionTool } from '../codex/function-tools.ts';
 import { renderPromptFile } from '../prompts/render.ts';
 import { stageStep, type PreparationStage } from '../part/preparation-steps.ts';
 import { groupStepId, initialStepId } from '../part/step-paths.js';
+import { taskRootOf, toTaskPath } from '../task-paths.ts';
 
-export type ExecutionPaths = { directory: string; outputDirectory: string; workspace: string };
+// root is the single base of every relative path an agent reads or writes.
+export type ExecutionPaths = { root: string; directory: string; outputDirectory: string; workspace: string };
 type WorkspaceTask = Pick<AgentTask, 'cwd' | 'outputDirectory'> & { step?: string };
 
-// The pipeline remains the base for task/tool paths; the CLI works in the step's
+// Relative task/tool paths use the task root; the CLI works in the step's
 // workspace. Callers name their step directory; the step id covers those with a
 // fixed one, and anything else works in its own directory rather than a guessed step.
 export function executionPaths(task: WorkspaceTask, fallback: string): ExecutionPaths {
   const directory = resolve(task.cwd || fallback);
   const outputDirectory = resolve(directory, task.outputDirectory || stepDirectory(task.step) || '.');
-  return { directory, outputDirectory, workspace: join(outputDirectory, 'workspace') };
+  return { root: taskRootOf(directory), directory, outputDirectory, workspace: join(outputDirectory, 'workspace') };
 }
 
 export function stepDirectory(step: string | undefined): string | undefined {
@@ -46,10 +48,11 @@ export async function prepareWorkspace(task: Pick<AgentTask, 'cwd' | 'outputDire
 }
 
 export function workspacePrompt(prompt: string, paths: ExecutionPaths): string {
-  if (prompt.includes(`- 当前工作区：${paths.workspace}。`)) return prompt;
+  const workspace = toTaskPath(paths.root, paths.workspace);
+  if (prompt.includes(`- 任务根目录：${paths.root}。`) && prompt.includes(`- 当前工作区：${workspace}。`)) return prompt;
   return renderPromptFile(new URL('../prompts/agent-turn.md', import.meta.url), {
-    task_prompt: prompt, workspace: paths.workspace, working_directory: paths.directory,
-    output_directory: paths.outputDirectory,
+    task_prompt: prompt, task_root: paths.root, workspace, workspace_absolute: paths.workspace,
+    pipeline_directory: toTaskPath(paths.root, paths.directory), output_directory: toTaskPath(paths.root, paths.outputDirectory),
   });
 }
 

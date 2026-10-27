@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createTaskLog, readTaskLog } from './log.ts';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
+import { fromTaskPath, toTaskPath } from '../shared/task-paths.ts';
 import type { PipelineId } from '../shared/paths.ts';
 import { checkKrita, type KritaInstallation } from '../shared/raster/krita.ts';
 import type { PipelineResult } from './pipelines.ts';
@@ -131,12 +132,12 @@ export async function runTask(options: TaskOptions, dependencies: {
       });
       delete run.runner.childPid;
       run.pipelines[id] = { status: 'completed', updatedAt: now(), summary: result.summary };
-      run.output = result.output;
+      run.output = result.output && toTaskPath(directory, result.output);
       await persist();
       progress(id + '：已完成');
     }
     run.status = 'completed'; delete run.activePipeline;
-    progress('所选路线已完成。交付：' + (run.output ?? directory));
+    progress('所选路线已完成。交付：' + (run.output ? fromTaskPath(directory, run.output) : directory));
     return run;
   } catch (error) {
     if (run) {

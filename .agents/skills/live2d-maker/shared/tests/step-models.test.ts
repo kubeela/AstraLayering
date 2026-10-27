@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, realpath, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative, dirname, delimiter } from 'node:path';
+import { join, relative, dirname, delimiter, isAbsolute } from 'node:path';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { parseEnv } from 'node:util';
@@ -224,12 +224,13 @@ test('custom image edit transports original prompts and images over both protoco
     assert.ok(!Object.hasOwn((tool.inputSchema as { properties: Record<string, unknown> }).properties, 'model'));
     const result = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source] }, new AbortController().signal);
     const output = JSON.parse((result.contentItems[0] as { text: string }).text);
-    assert.ok(relative(root, output.savedPath).startsWith(outputDirectory));
-    assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
+    // Without a context the tool's own directory (outside a task layout) is the task root.
+    assert.ok(!isAbsolute(output.savedPath));
+    assert.equal((await sharp(join(root, outputDirectory, output.savedPath)).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
     const custom = join(await fixture(t), `${provider}-${mode}.png`);
     const requested = await tool.execute({ prompt: '原样的绘制提示词', input_images: [relative(root, source)], output_path: custom },
-      new AbortController().signal, { directory: root, outputDirectory: root, workspace: root });
+      new AbortController().signal, { root, directory: root, outputDirectory: root, workspace: root });
     assert.equal(JSON.parse((requested.contentItems[0] as { text: string }).text).savedPath, custom);
     assert.equal((await sharp(custom).metadata()).format, 'png');
     await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);

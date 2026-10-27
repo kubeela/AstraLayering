@@ -60,7 +60,8 @@ test('真实后台父进程退出后任务继续，已完成组装跳过模型�
   await until(async () => !(await taskStatus(f.options)).lockHeld);
   const status = await taskStatus(f.options);
   assert.equal(status.status, 'completed'); assert.equal(status.pipelines[0].threadId, 'completed-fixture');
-  assert.equal(status.output, join(f.output, 'step01/character-assembled.kra'));
+  // The delivery is recorded relative to the task root.
+  assert.equal(status.output, 'character-assembly/step01/character-assembled.kra');
   const before = await readFile(join(f.task, 'run.json'));
   const result = await promisify(execFile)(process.execPath, [cli, '--name', f.name, '--dir', f.dir, '--status', '--json']);
   assert.equal(JSON.parse(result.stdout).status, 'completed');

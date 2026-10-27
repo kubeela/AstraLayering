@@ -14,6 +14,7 @@ import type { OcclusionContext, StepResult } from './layering-types.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { depthRegions, occlusionSourceHash, terminalParts, validateOcclusionPlan, type DepthCheck, type OcclusionPlan } from './occlusion-plan.ts';
 import { createSvgPreviewTool, type SvgObservation } from './svg-tools.ts';
+import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
 export async function planPartOcclusion(context: OcclusionContext, agents: Pick<CodexAgents, 'run'>): Promise<StepResult<OcclusionPlan>> {
   const profile = partProfile(context);
@@ -31,6 +32,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     full: await realpath(artifactPath(context.directory, group.id, 'completion')),
     outline: await realpath(artifactPath(context.directory, group.id, 'reduction')),
   })));
+  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
   const observations: SvgObservation[] = [];
   let candidate: OcclusionPlan | undefined;
   let result: StepResult<OcclusionPlan> | undefined;
@@ -61,7 +63,7 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
       checked.clear();
       // 输入 SVG 未变，可复用其观察；新候选须重新查看，所有层级结论须重新检查。
       observations.splice(0, observations.length, ...observations.filter(entry => entry.source !== candidatePath));
-      return textResult({ candidate: candidatePath, ids: proposal.layers.map(row => row.id), remainingChecks: parts.length,
+      return textResult({ candidate: await task(candidatePath), ids: proposal.layers.map(row => row.id), remainingChecks: parts.length,
         multiDepthParts: proposal.layers.filter(row => row.levels).map(row => row.id),
         previewNote: '整件 SVG 仅按各件最靠后的深度叠放；多深度部件未按文本切片，此预览不能证明其实际穿插效果。逐区域对照原图核对，实际拆层在 raster step01 完成。' });
     },
@@ -110,7 +112,8 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
       observed: entry => observations.push(entry) }), propose, check, submit, problem],
     prompt: renderPrompt(prompt, {prompt_source: occlusionPromptPath,
       runtime_context: JSON.stringify({
-      preview: previewPath, reference, canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, parts, groups: walkGroups(context.groups).filter(({ group }) => group.groups.length)
+      preview: await task(previewPath), reference: await task(reference), canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height },
+      parts: await Promise.all(parts.map(async part => ({ ...part, full: await task(part.full), outline: await task(part.outline) }))), groups: walkGroups(context.groups).filter(({ group }) => group.groups.length)
         .map(({ group, parent }) => ({ ...nodeSeed(group), parent: parent?.id })),
     }, null, 2)}, occlusionPromptPath, ["prompt_source","runtime_context"]),
   });

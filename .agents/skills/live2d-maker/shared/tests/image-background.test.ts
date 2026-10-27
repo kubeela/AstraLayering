@@ -118,7 +118,7 @@ test('both routes recover dual backgrounds over Gemini/OpenAI protocols without 
       } else {
         const tool = imageGenerationTool(settings, 'part_simplify', directory)!;
         const result = await tool.execute({ prompt, input_images: edit ? [reference] : [] }, new AbortController().signal);
-        output = await readFile(JSON.parse((result.contentItems[0] as { text: string }).text).savedPath);
+        output = await readFile(join(directory, JSON.parse((result.contentItems[0] as { text: string }).text).savedPath));
       }
       const image = await sharp(output).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
       assert.deepEqual([image.info.width, image.info.height], [48, 64]);

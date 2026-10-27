@@ -1,5 +1,6 @@
 import {renderPromptFile} from '../prompts/render.ts';
 import { setTimeout as delay } from 'node:timers/promises';
+import { toTaskPath } from '../task-paths.ts';
 
 export const defaultAgentConcurrency = 3;
 export const retryDelays = { initial: 5_000, maximum: 60_000 } as const;
@@ -128,7 +129,9 @@ export class AgentRuntime {
 
 export const interruptedTaskPrompt = renderPromptFile(new URL('../prompts/interrupted-task.md',import.meta.url)).trim();
 
-export function continuationPrompt(savedImagePaths: string[], taskPrompt: string): string {
+// With the task root, saved images are shown task-relative like every other path.
+export function continuationPrompt(savedImagePaths: string[], taskPrompt: string, root?: string): string {
+  if (root) savedImagePaths = savedImagePaths.map(path => toTaskPath(root, path));
   return renderPromptFile(new URL('../prompts/continuation.md',import.meta.url), {
     interrupted_task:interruptedTaskPrompt,
     task_prompt:taskPrompt,

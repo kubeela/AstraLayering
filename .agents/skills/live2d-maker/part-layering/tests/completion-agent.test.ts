@@ -173,12 +173,12 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     const ref = input.additionalReferences[0];
     assert.equal(ref.groupId, palm);
     assert.equal(ref.sourceStage, 'reduction');
-    assert.equal(ref.sourceSvg, artifactPath(f.directory, palm, 'reduction'));
-    assert.equal(ref.sourceHash, svgHash(await readFile(ref.sourceSvg)));
+    assert.equal(join(f.directory, ref.sourceSvg), artifactPath(f.directory, palm, 'reduction'));
+    assert.equal(ref.sourceHash, svgHash(await readFile(join(f.directory, ref.sourceSvg))));
     const prior = input.additionalReferences[1];
     assert.ok(prior.path.endsWith('/prompts/groups/arms/references/fingers/complete-fingers.png'));
     assert.match(prior.description, /不照搬姿势、宽度、肤色/);
-    assert.deepEqual(task.images!.map(image => image.path), [f.references.baseSubject, ref.path, prior.path]);
+    assert.deepEqual(task.images!.map(image => image.path), [f.references.baseSubject, join(f.directory, ref.path), prior.path]);
     const result = await tool(task, 'read_svg').execute({ path: ref.sourceSvg }, signal);
     assert.ok(JSON.stringify(result).includes(palm));
     const otherPalm = ref.sourceSvg.replace(id.includes('/arm_left/') ? '/arm_left/' : '/arm_right/', id.includes('/arm_left/') ? '/arm_right/' : '/arm_left/');

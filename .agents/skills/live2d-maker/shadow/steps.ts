@@ -9,6 +9,8 @@ import type { KritaInstallation } from '../shared/raster/krita.ts';
 import type { ShadowMode } from '../shared/shadow.ts';
 import type { ShadowInput } from './input.ts';
 import { referencesDirectory } from '../shared/agents/inputs.ts';
+import { taskPath } from '../shared/raster/run-store.ts';
+import { taskRootOf } from '../shared/task-paths.ts';
 
 export const maskSteps = [{ id: 'step01', title: '投影分析、阴影补全与原生裁切', ...defaultModels.medium,
   modelStep: 'shadow_mask', prompt: new URL('./prompts/mask.md', import.meta.url),
@@ -22,23 +24,26 @@ export const mapSteps = [{ id: 'step01', title: '生成配准的整图法线与�
 export const stepsFor = (mode: ShadowMode): readonly StepDefinition[] => mode === 'mask' ? maskSteps : mapSteps;
 export async function buildPrompt(step: StepDefinition, input: ShadowInput, output: string, krita: KritaInstallation): Promise<string> {
   const quote = (s: string) => "'" + s.replace(/'/g, "'\"'\"'") + "'";
+  // Task paths are relative to the task root; the command runs from there.
+  const root = taskRootOf(output), at = (path: string) => taskPath(root, path), json = async (path: string) => JSON.stringify(await at(path));
   const inspection = step.modelStep === 'shadow_mask' ? renderPromptFile(new URL('../shared/prompts/shadow-inspection.md',import.meta.url), {
-    reference_files:['inputs.json', 'production.md', 'skirt.png', 'hair.png'].map(p=>JSON.stringify(join(referencesDirectory(output),p))).join('、'),
-    inspection_command:[process.execPath,fileURLToPath(new URL('./inspect.ts',import.meta.url)),'--output',output,'--krita',krita.executable].map(quote).join(' '),
+    reference_files:(await Promise.all(['inputs.json', 'production.md', 'skirt.png', 'hair.png'].map(p=>json(join(referencesDirectory(output),p))))).join('、'),
+    inspection_command:'cd ' + quote(root) + ' && ' + [process.execPath,fileURLToPath(new URL('./inspect.ts',import.meta.url)),'--output',await at(output),'--krita',krita.executable].map(quote).join(' '),
+    inspection_receipt:await at(join(output,'inspection.json')), inspection_directory:await at(join(output,'inspection')),
   }) : '';
   return renderPrompt(await readFile(step.prompt, 'utf8'), {
     krita_environment: await kritaEnvironmentPrompt(krita),
     runtime_context: renderPromptFile(new URL('../shared/prompts/shadow-runtime.md', import.meta.url), {
-      pipeline_directory: JSON.stringify(dirname(output)),
-      character_kra: JSON.stringify(input.characterKra),
-      character_color: JSON.stringify(input.characterColor),
-      simplified_character: JSON.stringify(input.simplifiedCharacter),
-      structure_files: JSON.stringify(input.structureFiles),
+      pipeline_directory: await json(dirname(output)),
+      character_kra: await json(input.characterKra),
+      character_color: await json(input.characterColor),
+      simplified_character: await json(input.simplifiedCharacter),
+      structure_files: JSON.stringify(await Promise.all(input.structureFiles.map(at))),
       krita_executable: JSON.stringify(krita.executable),
       krita_version: krita.version,
       inspection_instructions: inspection,
-      output_directory: JSON.stringify(output),
-      required_files: JSON.stringify(step.requiredFiles.map(file => join(output, file)))
+      output_directory: await json(output),
+      required_files: JSON.stringify(await Promise.all(step.requiredFiles.map(file => at(join(output, file)))))
     })
   }, String(step.prompt), ['krita_environment','runtime_context']);
 }

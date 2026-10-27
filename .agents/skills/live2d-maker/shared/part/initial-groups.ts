@@ -11,6 +11,7 @@ import { normalizeGroups, writeAtomic } from './groups.ts';
 import { initialStepId, readInitialGroups } from './part-steps.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { InitialContext, InitialGrouping } from './layering-types.ts';
+import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
 function decodeInitialGrouping(value: unknown, subjects: readonly string[]): InitialGrouping {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('首次分组 JSON 须为对象');
@@ -42,6 +43,7 @@ export async function recognizeInitialGroups(
   // continues from the saved grouping instead of asking again.
   const path = join(context.directory, initialStepId, 'groups.json');
   const reference = resolve(context.directory, context.references.baseSubject);
+  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
   let submitted = false;
   const writeGroups: FunctionTool = {
     ...toolDefinition('write_groups', profile.toolsDirectory),
@@ -53,16 +55,16 @@ export async function recognizeInitialGroups(
       signal.throwIfAborted();
       await writeAtomic(path, JSON.stringify(result, null, 2) + '\n');
       submitted = true;
-      return textResult({ path, ids: result.groups.map(group => group.id) });
+      return textResult({ path: await task(path), ids: result.groups.map(group => group.id) });
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
     name: '首次分组识别', cwd: context.directory,
     images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...(profile.originalReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalReference }] : [])] : undefined,
-    prompt: renderPrompt(prompt, {run_directory: context.directory,
+    prompt: renderPrompt(prompt, {run_directory: await task(context.directory),
       reference_label: profile.referenceLabel,
-      reference_path: reference,
-      groups_path: path}, join(profile.promptsDirectory, '4-初始分组.md'), ["run_directory","reference_label","reference_path","groups_path"]),
+      reference_path: await task(reference),
+      groups_path: await task(path)}, join(profile.promptsDirectory, '4-初始分组.md'), ["run_directory","reference_label","reference_path","groups_path"]),
     tools: [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups],
   });
   if (!submitted) throw agentOutcomeError('首次分组未通过 write_groups 保存', response);

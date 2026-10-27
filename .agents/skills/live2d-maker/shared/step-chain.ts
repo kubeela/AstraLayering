@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { lstat, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
+import { fromTaskPath, taskRootOf, toTaskPath } from './task-paths.ts';
 
 // One rerun rule for every pipeline. A step owns a directory with a .running
 // or .completed marker. .completed records a fresh stamp and the stamps its
@@ -14,14 +15,15 @@ import { join, resolve } from 'node:path';
 // run was interrupted are reported as modified, so continuing refuses until the
 // step is explicitly retried. Output paths are relative to the step directory
 // and may point outside it; a missing output reruns the step, and resetting a
-// step deletes its outputs.
+// step deletes its outputs. Records key the hashes by task-root-relative path
+// (paths: 'task'); records without the marker use the declared names.
 //
 // A dependency is a step id, or `id#output` to depend on one declared output's
 // hash only, so a step that rewrites several files reruns just the dependents of
 // the files that actually changed.
 export type ChainStep = { id: string; directory: string; dependsOn: readonly string[]; outputs?: readonly string[] };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
-export type StepRecord = { stamp: string; inputs: Record<string, string>; outputs?: Record<string, string> };
+export type StepRecord = { stamp: string; inputs: Record<string, string>; outputs?: Record<string, string>; paths?: 'task' };
 export type ChainPlan = {
   statuses: Map<string, StepStatus>;
   // Steps to rerun, in chain order; the first entries are the breaks.
@@ -54,10 +56,36 @@ export async function readStep(directory: string): Promise<{ status: StepStatus;
     const path = join(directory, `.${marker}`), file = await info(path);
     if (!file) continue;
     if (!file.isFile() || file.isSymbolicLink()) throw new Error(`步骤标记必须是普通文件：${directory}/.${marker}`);
-    return { status: marker, record: parseRecord(await readFile(path, 'utf8')) };
+    const record = parseRecord(await readFile(path, 'utf8'));
+    if (record?.paths === 'task' && record.outputs) {
+      const root = taskRootOf(directory);
+      record.outputs = Object.fromEntries(Object.entries(record.outputs)
+        .map(([key, hash]) => [stepName(directory, fromTaskPath(root, key)), hash]));
+      delete record.paths;
+    }
+    return { status: marker, record };
   }
   return { status: 'unmarked' };
 }
+
+// Persisted output keys are task-relative; in memory they are relative to the
+// step directory, as the step declares them.
+const stepName = (directory: string, path: string) => relative(directory, path).split(sep).join('/');
+const outputKey = (step: ChainStep, name: string) => toTaskPath(taskRootOf(step.directory), resolve(step.directory, name));
+async function readChainStep(step: ChainStep): Promise<{ status: StepStatus; record?: StepRecord }> {
+  const read = await readStep(step.directory);
+  if (!read.record?.outputs) return read;
+  // readStep keys by normalized step-relative names; rename them to the names
+  // the step declares, which may be spelled differently.
+  const outputs = { ...read.record.outputs };
+  for (const name of step.outputs ?? []) {
+    const normal = stepName(step.directory, resolve(step.directory, name));
+    if (name !== normal && normal in outputs && !(name in outputs)) { outputs[name] = outputs[normal]; delete outputs[normal]; }
+  }
+  return { ...read, record: { ...read.record, outputs } };
+}
+const storedOutputs = (step: ChainStep, outputs: Record<string, string>) =>
+  Object.fromEntries(Object.entries(outputs).map(([name, hash]) => [outputKey(step, name), hash]));
 
 async function outputHashes(step: ChainStep): Promise<Record<string, string>> {
   const hashes: Record<string, string> = {};
@@ -87,7 +115,7 @@ export async function inspectChain(steps: readonly ChainStep[]): Promise<ChainPl
   const statuses = new Map<string, StepStatus>(), records = new Map<string, StepRecord | undefined>();
   const unusable = new Set<string>(), reset: string[] = [], modified: string[] = [];
   for (const step of steps) {
-    const { status, record } = await readStep(step.directory);
+    const { status, record } = await readChainStep(step);
     statuses.set(step.id, status);
     // A completed step reopened for more work keeps its stamp while running.
     records.set(step.id, record);
@@ -137,7 +165,7 @@ export async function stepInputs(step: ChainStep, steps: StepLookup): Promise<Re
     const id = dependencyStep(dependency);
     const upstream = typeof steps === 'function' ? steps(id) : steps.find(candidate => candidate.id === id);
     if (!upstream) throw new Error(`${step.id} 的依赖 ${dependency} 不在链上`);
-    const { status, record } = await readStep(upstream.directory);
+    const { status, record } = await readChainStep(upstream);
     if (status !== 'completed') throw new Error(`${step.id} 的依赖 ${dependency} 尚未完成`);
     const stamp = dependencyStamp(dependency, record);
     if (record && stamp === undefined) throw new Error(`${step.id} 的依赖 ${dependency} 没有该产物`);
@@ -154,7 +182,7 @@ const sameInputs = (a: Record<string, string>, b: Record<string, string>) => sam
 // caller resets the step (and with it the session) before starting it again.
 export type StepCheck = { action: 'keep' | 'continue' | 'rerun'; status: StepStatus; record?: StepRecord; inputs: Record<string, string> };
 export async function checkStep(step: ChainStep, steps: StepLookup): Promise<StepCheck> {
-  const { status, record } = await readStep(step.directory);
+  const { status, record } = await readChainStep(step);
   const inputs = await stepInputs(step, steps);
   const started = status === 'running' ? await runningInputs(step.directory) : undefined;
   if (status === 'running' && started && sameInputs(started, inputs)) return { action: 'continue', status, record, inputs };
@@ -208,7 +236,8 @@ export async function completeStep(step: ChainStep, steps: StepLookup): Promise<
     const missing = step.outputs.filter(name => !(name in outputs));
     if (missing.length) throw new Error(`${step.id} 缺少产物：${missing.join('、')}`);
     // A reopened step keeps its original inputs: it continued the same work.
-    record = { stamp: createHash('sha256').update(JSON.stringify(outputs)).digest('hex'), inputs: reopened?.inputs ?? inputs, outputs };
+    record = { stamp: createHash('sha256').update(JSON.stringify(outputs)).digest('hex'), inputs: reopened?.inputs ?? inputs,
+      outputs: storedOutputs(step, outputs), paths: 'task' };
   } else record = { stamp: randomUUID(), inputs };
   const temporary = join(step.directory, `.completed.${randomUUID()}.tmp`);
   try {

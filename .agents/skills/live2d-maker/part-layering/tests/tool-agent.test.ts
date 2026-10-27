@@ -3,7 +3,7 @@ import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, sep } from 'node:path';
+import { join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { CodexAgents } from '../../shared/codex/agents.ts';
@@ -85,7 +85,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const turn = protocol.find(item => item.method === 'turn/start');
   assert.equal(turn.params.effort, 'high');
   assert.deepEqual(turn.params.input.map((item: { type: string }) => item.type), ['text']);
-  assert.ok(turn.params.input[0].text.includes(`素体参考图：${references.baseSubject}`));
+  assert.ok(turn.params.input[0].text.includes('素体参考图：references/本次目标.png'));
   const observation = protocol.find(item => item.id === 'call-1').result;
   assert.equal(observation.success, true);
   const preview = JSON.parse(observation.contentItems[0].text);
@@ -93,17 +93,17 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + sep), true);
+  assert.equal(preview.savedPath.startsWith('initial/step01/workspace/bitmaps/'), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
-  assert.deepEqual(await readFile(preview.savedPath), image);
+  assert.deepEqual(await readFile(join(f.directory, preview.savedPath)), image);
   const imageMetadata = await sharp(image).metadata();
   assert.equal(imageMetadata.width, 40);
   assert.equal(imageMetadata.height, 60);
   const submission = protocol.find(item => item.id === 'call-2').result;
   assert.equal(submission.success, true);
   const saved = JSON.parse(submission.contentItems[0].text).path;
-  assert.equal(saved, join(f.directory, 'initial/step01/groups.json'));
-  assert.deepEqual(JSON.parse(await readFile(saved, 'utf8')), {
+  assert.equal(saved, 'initial/step01/groups.json');
+  assert.deepEqual(JSON.parse(await readFile(join(f.directory, saved), 'utf8')), {
     subject: 'character', groups: [{ id: 'head', kind: 'group', name: 'head', note: '头部' }],
   });
   const logged = await log(f.logDirectory);
@@ -190,7 +190,7 @@ test('绘制会话同时开放原生生图和函数工具，保存生图路径�
     const first = await session.run(task);
     assert.deepEqual(first.images, [{ savedPath }]);
     const logged = await log(f.logDirectory);
-    assert.deepEqual(logged.result.images, [{ savedPath }]);
+    assert.deepEqual(logged.result.images, [{ savedPath: 'detail-reference.png' }]);
     assert.match(logged.events, /imageGeneration/);
     assert.ok(logged.events.includes(resultData));
     assert.match(logged.transcript, /结构清晰优先/);
@@ -293,7 +293,7 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   assert.match(turns[0].params.input[0].text, /当前工作区/);
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt)));
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.split(originalPrompt).length === 2));
-  assert.ok(turns[1].params.input[0].text.includes(savedPath));
+  assert.ok(turns[1].params.input[0].text.includes('existing-image.png'));
   assert.equal((await readdir(f.logDirectory)).length, 3);
   assert.equal(messages.filter(message => message.includes('临时服务错误')).length, 2);
   const names = await readdir(f.logDirectory);

@@ -7,6 +7,7 @@ import sharp from 'sharp';
 import { createWorkbench } from '../server.ts';
 import { snapshot } from '../snapshot.ts';
 import { reportPreview } from '../report.ts';
+import { reportTargets } from '../../.agents/skills/live2d-maker/shared/report-paths.ts';
 import { renderReport, reportReferences } from '../report-markdown.js';
 
 test('报告图片兼容 Markdown、行内代码与纯路径，代码块不被当作证据', () => {
@@ -25,14 +26,15 @@ test('报告图片只解析实际任务内的文件，拒绝外部路径与符�
   await writeFile(join(base, 'outside.png'), 'private');
   const alias = 'clothing-raster-layering/step01/alias.png';
   await symlink(join(base, 'outside.png'), join(root, alias));
-  const text = ['结论：需要修复', '![标注](evidence/marked.png)', '`step01/evidence/marked.png`', '`' + join(root, image) + '`',
+  const text = ['结论：需要修复', '![标注](evidence/marked.png)', '`' + image + '`', '`step01/evidence/marked.png`', '`' + join(root, image) + '`',
     '`' + join(base, 'outside.png') + '`', '`../../../outside.png`', '`alias.png`', '![remote](https://example.com/image.png)', '`missing.png`'].join('\n');
   const report = await reportPreview(root, 'clothing-raster-layering/step01/review-01.md', text, new Set([image, alias]));
   assert.equal(report.summary, '结论：需要修复');
-  assert.equal(report.images.length, 3);
+  // Report-relative, task-root-relative, legacy pipeline-relative (last-resort ancestor) and absolute all resolve.
+  assert.equal(report.images.length, 4);
   assert.ok(report.images.every(item => item.path === image));
   const html = renderReport(text + '\n<script>alert(1)</script>', report.images, path => '/artifact?' + new URLSearchParams({ path }));
-  assert.equal((html.match(/<img /g) ?? []).length, 3);
+  assert.equal((html.match(/<img /g) ?? []).length, 4);
   assert.match(html, /alt="标注"/);
   assert.match(html, /&lt;script&gt;/);
   assert.doesNotMatch(html, /<script|src="https:|src="[^"]*outside/);
@@ -65,4 +67,11 @@ test('review 草稿展示引用图片，经 HTTP 可读，发布后采用正式�
   value = await snapshot(root, 'case', base); report = value.pipelines[3].reports['review-01'];
   assert.equal(report.draft, false); assert.equal(report.summary, '结论：通过');
   assert.equal(value.pipelines[3].states['review-01'], 'done');
+});
+
+test('report links try the report directory, then the task root, and only then legacy ancestors', () => {
+  const root = '/task', report = 'part-layering/groups/face/step01/review.md';
+  assert.deepEqual(reportTargets(root, report, 'evidence/a.png'), ['/task/part-layering/groups/face/step01/evidence/a.png',
+    '/task/evidence/a.png', '/task/part-layering/groups/face/evidence/a.png', '/task/part-layering/groups/evidence/a.png', '/task/part-layering/evidence/a.png']);
+  assert.deepEqual(reportTargets(root, 'report.md', '../x.png'), []);
 });

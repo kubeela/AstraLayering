@@ -3,6 +3,8 @@ import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { randomUUID } from 'node:crypto';
 import { readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import { taskRootOf, toTaskPathReal } from '../shared/task-paths.ts';
 import type { AgentTask, CodexAgents, GeneratedImage } from '../shared/codex/agents.ts';
 import { textResult } from '../shared/codex/function-tools.ts';
 import { toolDefinition } from '../shared/codex/tool-config.ts';
@@ -28,7 +30,7 @@ async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, i
   let reusedReason: string | undefined;
   const result = await agents.run({ ...task, sandboxMode: 'read-only', tools: [{
     ...toolDefinition('reuse_reference'),
-    async execute(value, signal) {
+    async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)
         || Object.keys(value).some(key => key !== 'reason')
         || typeof (value as { reason?: unknown }).reason !== 'string' || !(value as { reason: string }).reason.trim()) {
@@ -39,7 +41,7 @@ async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, i
       await copyAsPng(input, output);
       signal.throwIfAborted();
       reusedReason = (value as { reason: string }).reason;
-      return textResult({ savedPath: output, reason: reusedReason });
+      return textResult({ savedPath: await toTaskPathReal(context?.root ?? taskRootOf(dirname(output)), output), reason: reusedReason });
     },
   }] });
   await validateAgentOutcome(result, async () => {

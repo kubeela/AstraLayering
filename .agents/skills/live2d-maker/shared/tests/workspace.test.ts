@@ -60,7 +60,8 @@ test('native Codex executes and resumes in the step workspace; tools keep their 
   }
   for (const result of [first, second]) {
     const request = JSON.parse(await readFile(join(result.logDirectory!, 'request.json'), 'utf8'));
-    assert.equal(request.workspace, paths.workspace); assert.equal(request.outputDirectory, output);
+    // Request records are task-relative.
+    assert.equal(request.workspace, 'step01/workspace'); assert.equal(request.outputDirectory, 'step01');
     assert.ok(result.logDirectory!.startsWith(join(root, 'agents/')));
     assert.equal(request.prompt, workspacePrompt('draw', paths));
   }

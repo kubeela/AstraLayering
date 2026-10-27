@@ -14,7 +14,8 @@ import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { readGroupPrompt } from './group-prompts.ts';
 import { findGroup, nodeSeed, writeAtomic } from './groups.ts';
 import type { DrawingContext, GroupContext, ReviewContext, ReviewedSvgArtifact, StepResult, SvgArtifact } from './layering-types.ts';
-import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, taskObservation, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
+import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
 import { completedReviewCount, draftPath, matchesHash, publishSvg, readReviewReport, svgHash as hash, type Review } from './artifact-facts.ts';
 
 const maxOutlineReviews = 2;
@@ -50,14 +51,18 @@ async function inputs(context: GroupContext) {
   return { reference, canvas, parent };
 }
 
-function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: {
+// Paths shown to the agent are task-relative.
+async function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: {
   outputSvg?: string; candidate?: string; resumedDraft?: string; review?: { round: number; candidateHash: string };
 }) {
+  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
   return JSON.stringify({
     group: nodeSeed(context.group),
-    reference: input.reference, groups: join(context.directory, 'groups.json'),
-    parentGroup: context.parent?.id ?? null, parentSvg: input.parent ?? null,
+    reference: await task(input.reference), groups: await task(join(context.directory, 'groups.json')),
+    parentGroup: context.parent?.id ?? null, parentSvg: input.parent ? await task(input.parent) : null,
     canvas: input.canvas, ...paths,
+    ...(paths.outputSvg ? { outputSvg: await task(paths.outputSvg) } : {}),
+    ...(paths.candidate ? { candidate: await task(paths.candidate) } : {}),
   }, null, 2);
 }
 
@@ -122,11 +127,11 @@ export async function drawGroupOutline(
           typeof (value as { svg?: unknown }).svg !== 'string' || !(value as { svg: string }).svg.trim()) throw new Error('仅提交非空 svg 文本，草稿路径由程序绑定');
       await writeAtomic(draft, (value as { svg: string }).svg);
       const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, parentBoundsSource(context.group, input.parent), true);
-      return textResult({ path: draft, bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
+      return textResult({ path: await toTaskPathReal(taskRootOf(context.directory), draft), bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
     },
   };
   const taskPrompt = renderPrompt(prompt.text, {
-    prompt_source: prompt.path, runtime_context: runtime(context, input, {outputSvg: draft, ...(resumed ? { resumedDraft: resumedDraftNote } : {})}),
+    prompt_source: prompt.path, runtime_context: await runtime(context, input, {outputSvg: draft, ...(resumed ? { resumedDraft: resumedDraftNote } : {})}),
     repair_context: repair ? renderPromptFile(new URL('../prompts/outline-repair-context.md',import.meta.url), {
       feedback:repair.feedback, repair_rules:await readFile(repairPromptPath,'utf8'), repair_source:repairPromptPath,
     }) : '',
@@ -183,8 +188,9 @@ async function reviewOnce(
         throw new Error('必须先用 preview_svg 实际对照候选与参考图');
       }
       if (hash(await readFile(candidate)) !== candidateHash) throw new Error('审查期间候选 SVG 被修改，不能提交');
-      const evidence = await publishObservations(observations,
-        join(context.directory, groupStepId(context.group.id, 1), 'workspace'), dirname(reportPath));
+      const root = taskRootOf(context.directory);
+      const evidence = await Promise.all((await publishObservations(observations,
+        join(context.directory, groupStepId(context.group.id, 1), 'workspace'), dirname(reportPath), root)).map(entry => taskObservation(root, entry)));
       const feedback = await publishReportText(raw.feedback, join(context.directory, groupStepId(context.group.id, 1), 'workspace'), dirname(reportPath));
       const review: Review = { verdict: raw.verdict as Review['verdict'], feedback,
         candidateHash, observations: evidence, updatedAt: new Date().toISOString() };
@@ -193,7 +199,7 @@ async function reviewOnce(
       signal.throwIfAborted();
       await writeAtomic(reportPath, JSON.stringify(report, null, 2) + '\n');
       submitted = review;
-      return textResult({ path: reportPath, verdict: review.verdict });
+      return textResult({ path: await toTaskPathReal(taskRootOf(context.directory), reportPath), verdict: review.verdict });
     },
   };
   const response = await agents.run({
@@ -201,7 +207,7 @@ async function reviewOnce(
     sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],
-    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:runtime(context,input,{candidate,review:{round,candidateHash}}), report_path:reportPath},
+    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:await runtime(context,input,{candidate,review:{round,candidateHash}}), report_path:await toTaskPathReal(taskRootOf(context.directory), reportPath)},
       prompt.path, ['prompt_source','runtime_context','report_path']),
   });
   if (!submitted) throw agentOutcomeError('独立 review 未通过 submit_review 保存结论', response);

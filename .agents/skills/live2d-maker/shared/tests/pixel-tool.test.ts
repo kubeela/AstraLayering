@@ -18,8 +18,10 @@ async function fixture(t: any, options: PartScopeOptions = {}) {
     await sharp(data, { raw: { width: 32, height: 32, channels: 4 } }).png().toFile(join(cwd, name));
   };
   const tool = createPixelTool(cwd, task, join(cwd, 'step01/pixel-review'), options);
-  const call = async (args: any) => JSON.parse(((await tool.execute(args, new AbortController().signal)).contentItems[0] as { text: string }).text);
-  return { base, task, cwd, make, call };
+  // Agents name files relative to the task root.
+  const at = (args: any) => Object.fromEntries(Object.entries(args).map(([k, v]) => [k, typeof v === 'string' ? 'raster-layering/' + v : v]));
+  const call = async (args: any) => JSON.parse(((await tool.execute(at(args), new AbortController().signal)).contentItems[0] as { text: string }).text);
+  return { base, task, cwd, make, call, at };
 }
 test('像素定位准确指出缺口、外伸、色差，并保留原坐标和原始文件', async t => {
   const f = await fixture(t), red = [180, 80, 80, 255], blue = [80, 80, 180, 255];
@@ -31,7 +33,8 @@ test('像素定位准确指出缺口、外伸、色差，并保留原坐标和�
   assert.deepEqual(result.regions.find((r: any) => r.kind === 'extra').bounds, [12, 4, 2, 8]);
   assert.deepEqual(result.regions.find((r: any) => r.kind === 'color').bounds, [20, 20, 4, 4]);
   assert.deepEqual(await readFile(join(f.cwd, 'current.png')), before);
-  assert.equal((await sharp(result.files.comparison).metadata()).width, 64);
+  assert.match(result.files.comparison, /^raster-layering\/step01\/pixel-review\//);
+  assert.equal((await sharp(join(f.task, result.files.comparison)).metadata()).width, 64);
   const cropped = await f.call({ reference: 'reference.png', current: 'current.png', crop: [3, 3, 12, 12], min_region_pixels: 1 });
   assert.deepEqual(cropped.regions.find((r: any) => r.kind === 'missing').bounds, [4, 4, 2, 8]);
 });
@@ -68,14 +71,14 @@ test('按部件实际范围检查多个深度分片及周边缺口，排除头�
   assert.deepEqual(selected.partSelection.layers.map((row: any) => row.bounds), [[12, 8, 6, 4], [12, 12, 6, 4]]);
   assert.deepEqual(selected.regions.find((row: any) => row.kind === 'missing').bounds, [10, 8, 2, 8]);
   assert.deepEqual(selected.regions.find((row: any) => row.kind === 'color').bounds, [12, 8, 6, 8]);
-  const mask = await sharp(selected.files.scope).greyscale().raw().toBuffer();
+  const mask = await sharp(join(f.task, selected.files.scope)).greyscale().raw().toBuffer();
   assert.equal(mask[0], 0); assert.equal(mask[8 * 32 + 10], 255);
   assert.ok(selected.regions.every((row: any) => row.bounds[0] >= 10));
-  assert.deepEqual((await sharp(selected.files.scopePreview).metadata()).width, 32);
+  assert.deepEqual((await sharp(join(f.task, selected.files.scopePreview)).metadata()).width, 32);
   await f.make('visible.png', [[10, 8, 4, 8, [255, 255, 255, 255]]]);
   const limited = await f.call({ reference: 'reference.png', current: 'current.png', parts: ['camisole'],
     visible_mask: 'visible.png', crop: [10, 8, 3, 8], part_padding: 2, min_region_pixels: 1 });
-  const limitedMask = await sharp(limited.files.scope).greyscale().raw().toBuffer();
+  const limitedMask = await sharp(join(f.task, limited.files.scope)).greyscale().raw().toBuffer();
   assert.equal(limitedMask[8 * 32 + 10], 255); assert.equal(limitedMask[8 * 32 + 13], 0);
   assert.equal(limitedMask[7 * 32 + 10], 0);
   assert.ok(limited.regions.every((row: any) => row.bounds[0] + row.bounds[2] <= 13));
@@ -144,5 +147,5 @@ test('不同画布仍返回错误，输入与输出支持外部路径及符号�
   await symlink(outside, join(f.cwd, 'escaped.png'));
   await f.call({ reference: 'escaped.png', current: 'current.png' });
   const tool = createPixelTool(f.cwd, f.task, join(f.base, 'outside-output'));
-  assert.equal((await tool.execute({ reference: 'reference.png', current: 'current.png' }, new AbortController().signal)).success, true);
+  assert.equal((await tool.execute(f.at({ reference: 'reference.png', current: 'current.png' }), new AbortController().signal)).success, true);
 });

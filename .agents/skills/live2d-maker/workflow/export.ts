@@ -8,6 +8,7 @@ import { Zip, ZipPassThrough, unzipSync } from 'fflate';
 import { pipelineIds } from '../shared/paths.ts';
 import { reportReferences } from '../shared/report-links.js';
 import { reportTargets } from '../shared/report-paths.ts';
+import { toTaskPath } from '../shared/task-paths.ts';
 import { artifactPath, reportPath } from '../shared/part/artifact-facts.ts';
 import { normalizeGroups, walkGroups } from '../shared/part/groups.ts';
 import { publishDepthPreview } from '../shared/part/depth-preview.ts';
@@ -58,8 +59,17 @@ async function sourceFile(root: string, path: string): Promise<string | undefine
 
 // Collect formal deliveries from receipts/contracts, then close over report
 // image references. A workspace image is published beside its citing report.
-export async function exportFiles(root: string, run: TaskRun): Promise<{ entries: Map<string, Entry>; warnings: string[] }> {
+// root is the real task directory. Records may name it through another prefix
+// (a symlinked runs root, or the run's recorded dir); those aliases map onto root.
+export async function exportFiles(root: string, run: TaskRun, aliases: readonly string[] = []): Promise<{ entries: Map<string, Entry>; warnings: string[] }> {
   const entries = new Map<string, Entry>(), files: string[] = [], steps = new Set<string>(), warnings: string[] = [];
+  const roots = [...new Set([...aliases, ...(run.dir && isAbsolute(run.dir) ? [join(run.dir, run.name)] : [])]
+    .map(path => resolve(path)))].filter(path => path !== root);
+  // Same conversion as toTaskPath, also accepting the aliases; an outside path stays absolute.
+  const taskPath = (path: string) => {
+    for (const base of [root, ...roots]) { const local = toTaskPath(base, path); if (!isAbsolute(local)) return local; }
+    return path;
+  };
   async function walk(path = '') {
     for (const item of await readdir(join(root, path), { withFileTypes: true })) {
       const child = slash(join(path, item.name));
@@ -87,7 +97,8 @@ export async function exportFiles(root: string, run: TaskRun): Promise<{ entries
     let receipt: any;
     try { receipt = JSON.parse(await readFile(join(root, marker), 'utf8')); } catch { /* older empty completion marker */ }
     for (const output of Object.keys(receipt?.outputs ?? {})) {
-      const path = resolve(root, step, output);
+      // Output keys are task-relative with paths: 'task', else relative to the step.
+      const path = receipt.paths === 'task' ? resolve(root, output) : resolve(root, step, output);
       if (!inside(root, path)) throw new Error('完成记录的交付越过任务目录：' + marker);
       await add(relative(root, path), true);
     }
@@ -128,7 +139,7 @@ export async function exportFiles(root: string, run: TaskRun): Promise<{ entries
   }
   async function rewriteReport(text: string, path: string): Promise<string> {
     for (const ref of reportReferences(text).reverse()) {
-      const candidates = reportTargets(root, path, ref.target);
+      const candidates = reportTargets(root, path, ref.target, roots);
       if (!candidates.length) continue;
       let source: string | undefined;
       for (const candidate of candidates) { source = await sourceFile(root, relative(root, candidate)); if (source) break; }
@@ -155,8 +166,7 @@ export async function exportFiles(root: string, run: TaskRun): Promise<{ entries
   async function rewriteJSON(value: any, path: string, key = ''): Promise<any> {
     if (typeof value === 'string') {
       if (key === 'feedback') return rewriteReport(value, path);
-      if (isAbsolute(value) && inside(root, value)) return slash(relative(root, value));
-      return value;
+      return isAbsolute(value) ? taskPath(value) : value;
     }
     if (Array.isArray(value)) return Promise.all(value.map(item => rewriteJSON(item, path, key)));
     if (value && typeof value === 'object') return Object.fromEntries(await Promise.all(Object.entries(value)
@@ -209,7 +219,7 @@ export async function exportCompletedRun(options: { name: string; dir?: string; 
   try {
     const run = await readRun(root, options.name);
     if (!completeRun(run)) throw new Error('任务状态已改变，请刷新后再导出');
-    const { entries, warnings } = await exportFiles(root, run!);
+    const { entries, warnings } = await exportFiles(root, run!, [source]);
     await mkdir(dirname(output), { recursive: true });
     staging = await mkdtemp(join(dirname(output), '.live2d-export-'));
     const content = join(staging, options.name);

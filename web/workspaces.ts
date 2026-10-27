@@ -12,8 +12,9 @@ export async function legacyWorkspaces(directory: string, files: readonly string
     if (!files.some(path => path.startsWith(workspace + '/'))) continue;
     const value = JSON.parse(await readFile(await safePath(directory, request), 'utf8'));
     const pipeline = request.split('/agents/')[0];
-    const output = value.outputDirectory || legacyOutputDirectory({ ...value.task, cwd: resolve(directory, pipeline) }, resolve(directory, pipeline));
-    if (!inside(resolve(directory), resolve(output))) continue;
+    // New requests record outputDirectory task-relative; old ones hold it absolute.
+    const output = value.outputDirectory ? resolve(directory, value.outputDirectory) : legacyOutputDirectory({ ...value.task, cwd: resolve(directory, pipeline) }, resolve(directory, pipeline));
+    if (!inside(resolve(directory), output)) continue;
     const key = relative(directory, output).split('\\').join('/');
     (result[key] ||= []).push(workspace);
   }

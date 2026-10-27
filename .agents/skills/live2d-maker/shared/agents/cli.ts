@@ -26,6 +26,7 @@ import { withNodePath } from '../process-environment.ts';
 import { claudeProviderSettings, validateProviderModel } from './providers.ts';
 import { prepareWorkspace, workspacePrompt, workspaceTools } from './workspace.ts';
 import { contextImages } from './inputs.ts';
+import { fromTaskPath, toTaskPath } from '../task-paths.ts';
 
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
@@ -78,10 +79,10 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   const executable = await cliExecutable(settings, model.harness, options.imageNormalization?.runsRoot);
   const root = resolve(options.logDirectory || join(task.cwd || options.cwd!, 'agents'));
   const paths = await prepareWorkspace(task, options.cwd!);
-  task = { ...task, images: contextImages(task.images, paths.directory), tools: workspaceTools(task.tools || [], paths) };
+  task = { ...task, images: contextImages(task.images, paths.root), tools: workspaceTools(task.tools || [], paths) };
   const log = await AgentLog.create(root, task.name, { task: { ...task, tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) },
     workspace: paths.workspace, outputDirectory: paths.outputDirectory,
-    prompt: task.prompt, sessionThreadId: resumed || null, threadOptions: { model: model.model, modelReasoningEffort: model.effort, harness: model.harness } });
+    prompt: task.prompt, sessionThreadId: resumed || null, threadOptions: { model: model.model, modelReasoningEffort: model.effort, harness: model.harness } }, paths.root);
   let mcpServer: Awaited<ReturnType<typeof createMcpBridge>> | undefined;
   const requestedSession = resumed;
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
@@ -92,6 +93,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   try {
     const records = await readSessions(root);
     let previous = resumed ? records[resumed] : undefined;
+    // The registry records task-relative directories; older entries hold absolute ones.
+    if (previous) previous = { ...previous, data: fromTaskPath(paths.root, previous.data) };
     if (resumed && previous?.harness !== model.harness) {
       await options.onThreadReplacement?.(resumed, 'CLI 已改变或原会话记录不可用'); resumed = undefined;
       threadId = undefined;
@@ -191,7 +194,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     const reportId = async (id: string) => {
       if (!id || id === threadId) return;
       if (threadId) throw new Error('CLI 返回了不同的原会话 ID');
-      threadId = id; await remember(root, id, { harness: model.harness, data, workspace });
+      threadId = id; await remember(root, id, { harness: model.harness, data: toTaskPath(paths.root, data), workspace: toTaskPath(paths.root, workspace) });
       await options.onEvent?.({ type: 'thread.started', thread_id: id });
     };
     options.progress?.(`开始：${task.name}；${model.harness} / ${model.model} / ${model.effort}；记录：${log.directory}`);
@@ -218,7 +221,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const input: any[] = [{ type: 'text', text: workspacePrompt(prompt, paths) }];
       await writeFile(join(log.directory,'prompt.md'),input[0].text);
       for (const image of task.images || []) {
-        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:resolve(image.path)}).trimEnd() }); continue; }
+        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:toTaskPath(paths.root, image.path)}).trimEnd() }); continue; }
         const bytes = await readFile(image.path);
         input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() }, { type: 'image', source: {
           type: 'base64', media_type: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } });

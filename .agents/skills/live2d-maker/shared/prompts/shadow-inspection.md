@@ -1,2 +1,2 @@
 - 制作参考：{reference_files}。
-- 原生检查：{inspection_command}。查看 inspection/overview.png 与每处 relation-*-review.png，必要时打开其中原尺寸 PNG。
+- 原生检查：{inspection_command}。结果写入 {inspection_receipt} 与 {inspection_directory}/；查看其中 overview.png 与每处 relation-*-review.png，必要时打开其中原尺寸 PNG。

@@ -82,20 +82,26 @@ test('声明产物的步骤：续跑发现产物被换则报告改动；重试�
 test('产物可在步骤目录外：删除产物即重试该步骤，重置会一并删除后代的产物', async t => {
   const root = await mkdtemp(join(tmpdir(), 'step-chain-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const steps: ChainStep[] = [{ id: 'a', directory: join(root, '.steps/a'), dependsOn: [], outputs: ['../../a.png'] },
-    { id: 'b', directory: join(root, '.steps/b'), dependsOn: ['a'], outputs: ['../../b.png'] }];
+  const steps: ChainStep[] = [{ id: 'a', directory: join(root, 'raster-layering/a'), dependsOn: [], outputs: ['../a.png'] },
+    { id: 'b', directory: join(root, 'raster-layering/b'), dependsOn: ['a'], outputs: ['../b.png'] }];
   for (const step of steps) {
     await mkdir(step.directory, { recursive: true });
-    await writeFile(join(root, `${step.id}.png`), step.id);
+    await writeFile(join(root, `raster-layering/${step.id}.png`), step.id);
     await startStep(step.directory, 'absent');
     await completeStep(step, steps);
   }
-  assert.deepEqual(Object.keys(JSON.parse(await readFile(join(root, '.steps/b/.completed'), 'utf8')).outputs), ['../../b.png']);
-  await rm(join(root, 'a.png'));
+  // Recorded output paths are task-root-relative.
+  const record = JSON.parse(await readFile(join(root, 'raster-layering/b/.completed'), 'utf8'));
+  assert.deepEqual([Object.keys(record.outputs), record.paths], [['raster-layering/b.png'], 'task']);
+  assert.deepEqual((await inspectChain(steps)).reset, []);
+  // Older records keyed by the declared step-relative name still match.
+  await writeFile(join(root, 'raster-layering/b/.completed'), JSON.stringify({ ...record, paths: undefined, outputs: { '../b.png': record.outputs['raster-layering/b.png'] } }));
+  assert.deepEqual([(await inspectChain(steps)).reset, (await inspectChain(steps)).modified], [[], []]);
+  await rm(join(root, 'raster-layering/a.png'));
   const plan = await inspectChain(steps);
   assert.deepEqual([plan.reset, plan.modified], [['a', 'b'], []]);
   await resetChain(steps, plan);
-  for (const path of ['b.png', '.steps/a', '.steps/b']) await assert.rejects(stat(join(root, path)), { code: 'ENOENT' });
+  for (const path of ['raster-layering/b.png', 'raster-layering/a', 'raster-layering/b']) await assert.rejects(stat(join(root, path)), { code: 'ENOENT' });
 });
 
 test('按产物依赖（id#output）：只有所依赖的产物变化才重跑；中断时同输入续跑，输入变了重跑', async t => {

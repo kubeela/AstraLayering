@@ -6,9 +6,15 @@ import sharp from 'sharp';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { svgSource, updateSvgRoot } from '../xml.ts';
 import type { GroupSeed } from './layering-types.ts';
+import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
 export type Canvas = { width: number; height: number };
 export type SvgObservation = { source: string; mode: 'svg' | 'blend' | 'edge'; savedPath: string; reference?: string; referenceHash?: string };
+// review.json and tool results record observation paths task-relative.
+export async function taskObservation<T extends SvgObservation>(root: string, entry: T): Promise<T> {
+  return { ...entry, source: await toTaskPathReal(root, entry.source), savedPath: await toTaskPathReal(root, entry.savedPath),
+    ...(entry.reference === undefined ? {} : { reference: await toTaskPathReal(root, entry.reference) }) };
+}
 export const parentBoundsSource = (group: GroupSeed, parent?: string): string | undefined => group.allowOutsideParent ? undefined : parent;
 const boundsScale = 4;
 const alphaThreshold = 128;
@@ -16,20 +22,21 @@ const alphaThreshold = 128;
 export function createSvgReadTool(directory: string): FunctionTool {
   return {
     ...toolDefinition('read_svg'),
-    async execute(value, signal) {
+    async execute(value, signal, context) {
       signal.throwIfAborted();
       if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => !['path', 'offset', 'limit'].includes(key)) ||
           typeof (value as { path?: unknown }).path !== 'string') throw new Error('提交 SVG 的 path、offset 和 limit');
       const args = value as { path: string; offset?: number; limit?: number };
       const offset = args.offset ?? 0, limit = args.limit ?? 16000;
       if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(limit) || limit < 1 || limit > 65536) throw new Error('无效源码分页 offset 或 limit');
-      const source = await realpath(resolve(directory, args.path));
+      const root = context?.root ?? taskRootOf(directory);
+      const source = await realpath(fromTaskPath(root, args.path));
       const bytes = await readFile(source);
       const text = bytes.toString('utf8');
       if (offset > text.length) throw new Error('offset 超出 SVG 源码长度');
       const end = Math.min(offset + limit, text.length);
       signal.throwIfAborted();
-      return textResult({ source, bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex'),
+      return textResult({ source: await toTaskPathReal(root, source), bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex'),
         offset, totalCharacters: text.length, nextOffset: end < text.length ? end : null,
         complete: offset === 0 && end === text.length, svg: text.slice(offset, end) });
     },
@@ -117,7 +124,8 @@ export function createSvgPreviewTool(options: {
       if (Object.keys(value).some(key => !(key in (definition.inputSchema.properties as object)))) throw new Error('仅使用本工具 schema 中列出的参数');
       const args = value as { path?: unknown; mode?: unknown; crop?: unknown; scale?: unknown; reference?: unknown; referenceRegion?: unknown; referenceOffset?: unknown };
       if (typeof args.path !== 'string' || !args.path.trim()) throw new Error('path 须为 SVG 路径');
-      const source = await realpath(resolve(options.directory, args.path));
+      const root = context?.root ?? taskRootOf(options.directory);
+      const source = await realpath(fromTaskPath(root, args.path));
       const mode = args.mode ?? 'svg', scale = args.scale ?? 1;
       if (typeof mode !== 'string' || !['svg', 'blend', 'edge'].includes(mode) || typeof scale !== 'number' || !Number.isFinite(scale) || scale < 1 || scale > 8) {
         throw new Error('无效 mode 或 scale');
@@ -130,7 +138,7 @@ export function createSvgPreviewTool(options: {
       let defaultCrop = [0, 0, options.canvas.width, options.canvas.height];
       if (args.reference !== undefined) {
         if (typeof args.reference !== 'string' || !args.reference.trim() || mode === 'svg') throw new Error('reference 须为 blend/edge 对照的图片路径');
-        referencePath = await realpath(resolve(options.directory, args.reference));
+        referencePath = await realpath(fromTaskPath(root, args.reference));
         referenceBytes = await readFile(referencePath);
         const meta = await sharp(referenceBytes, { limitInputPixels: 100_000_000 }).metadata();
         if (!['png', 'jpeg', 'webp'].includes(meta.format ?? '')) throw new Error('对照图片须为 PNG、JPEG 或 WebP');
@@ -213,10 +221,13 @@ export function createSvgPreviewTool(options: {
       await writeFile(savedPath, data);
       const comparison = args.reference === undefined ? {} : { reference: referencePath,
         referenceHash: createHash('sha256').update(referenceBytes!).digest('hex') };
-      options.observed?.({ source, mode: mode as SvgObservation['mode'], savedPath, ...comparison });
+      const observation = { source, mode: mode as SvgObservation['mode'], savedPath, ...comparison };
+      options.observed?.(observation);
+      const shown = await taskObservation(root, observation);
+      const shownBounds = bounds && { ...bounds, parent: await toTaskPathReal(root, bounds.parent) };
       return { success: true, contentItems: [
-        { type: 'inputText', text: JSON.stringify({ source, mode, crop, scale, width: outWidth, height: outHeight, savedPath, bounds,
-          ...(args.reference === undefined ? {} : { ...comparison, referenceRegion, alignment }) }) },
+        { type: 'inputText', text: JSON.stringify({ source: shown.source, mode, crop, scale, width: outWidth, height: outHeight, savedPath: shown.savedPath, bounds: shownBounds,
+          ...(args.reference === undefined ? {} : { reference: shown.reference, referenceHash: shown.referenceHash, referenceRegion, alignment }) }) },
         { type: 'inputImage', imageUrl: `data:image/png;base64,${data.toString('base64')}` },
       ] };
     },

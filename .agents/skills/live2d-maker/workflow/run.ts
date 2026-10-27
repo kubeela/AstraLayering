@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
+import { fromTaskPath } from '../shared/task-paths.ts';
 import { directoryFor, pipelineId, taskStatus, type TaskOptions } from './state.ts';
 import { lastLog, runTask } from './runner.ts';
 import { replaceThread } from './recovery.ts';
@@ -120,7 +121,7 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
       if (status.error) console.log('错误：' + status.error);
       if (status.lastMessage) console.log('最近消息：' + status.lastMessage);
       console.log('日志：' + status.log);
-      if (status.output) console.log('交付：' + status.output);
+      if (status.output) console.log('交付：' + fromTaskPath(status.directory, status.output));
     }
   } else if (parsed.mode === 'replace') {
     console.log('交接已保存：' + await replaceThread({ ...options, pipeline: parsed.pipeline, handoff: parsed.handoff, reason: parsed.reason })

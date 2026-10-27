@@ -41,7 +41,8 @@ test('选框使用原图坐标且先裁剪再放大；图片回传与落盘一�
   assert.equal(metadata.height, 6);
   assert.deepEqual(metadata.crop, [2, 0, 2, 2]);
   const data = bitmap(result);
-  assert.deepEqual(await readFile(metadata.savedPath), data);
+  assert.equal(metadata.path, 'references/自选目标.png');
+  assert.deepEqual(await readFile(join(f.directory, metadata.savedPath)), data);
   const raw = await sharp(data).raw().toBuffer({ resolveWithObject: true });
   for (let i = 0; i < raw.data.length; i += 4) assert.deepEqual([...raw.data.subarray(i, i + 4)], [0, 0, 255, 255]);
   assert.deepEqual(await readFile(f.reference), before);

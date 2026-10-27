@@ -50,7 +50,7 @@ async function readLog(root: string) {
 }
 
 test('真实 SDK 流接口记录输入、摘要、工具与未知事件字段、结果和用量', async t => {
-  const finalResponse = JSON.stringify({ savedPath: 'generated.png', error: null });
+  const finalResponse = JSON.stringify({ savedPath: 'workspace/generated.png', error: null });
   const nativeImageEvent = { type: 'item.started', item: { id: 'image', type: 'image_generation', detail: { prompt: '测试生图要求' } } };
   const toolEvent = { type: 'item.completed', item: {
     id: 'tool', type: 'mcp_tool_call', server: 'test', tool: 'inspect', arguments: { input: 'test' },
@@ -68,7 +68,7 @@ test('真实 SDK 流接口记录输入、摘要、工具与未知事件字段、
   assert.equal(result.logDirectory, log.directory);
   assert.deepEqual(result.images, [{ savedPath: join(f.directory, 'workspace/generated.png') }]);
   assert.equal(log.request.prompt, workspacePrompt('测试提示词', executionPaths({cwd:f.directory}, f.directory)) + '\n\n图 1：测试图片');
-  assert.equal(log.request.input[2].path, join(f.directory, 'reference.png'));
+  assert.equal(log.request.input[2].path, 'reference.png');
   assert.equal(log.request.task.timeoutMs, null);
   assert.equal(log.events.length, 7);
   assert.deepEqual(log.events[2].event, nativeImageEvent);
@@ -165,7 +165,7 @@ if (!previous) {
   write({type:'item.completed',item:{id:'image',type:'image_generation',savedPath:'generated.png'}});
   write({type:'turn.failed',error:{message:'Selected model is at capacity. Please try a different model.'}});
 } else {
-  write({type:'item.completed',item:{id:'message',type:'agent_message',text:JSON.stringify({savedPath:'generated.png',error:null})}});
+  write({type:'item.completed',item:{id:'message',type:'agent_message',text:JSON.stringify({savedPath:'workspace/generated.png',error:null})}});
   write(${JSON.stringify(completed)});
 }`);
   const agents = new CodexAgents({codexPathOverride:f.executable,cwd:f.directory,logDirectory:f.logDirectory,
@@ -182,7 +182,7 @@ if (!previous) {
   assert.match(calls[0].prompt, /只调用一次生图/);
   assert.ok(calls[1].prompt.startsWith(interruptedTaskPrompt));
   assert.match(calls[1].prompt, /只调用一次生图/);
-  assert.ok(calls[1].prompt.includes(join(f.directory,'workspace/generated.png')));
+  assert.ok(calls[1].prompt.includes('workspace/generated.png'));
   assert.ok(!calls[1].args.includes('--image'));
   const names = await readdir(f.logDirectory);
   assert.equal(names.length, 2);

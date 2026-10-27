@@ -17,6 +17,7 @@ import { readGroupPrompt, readGroupReferences } from './group-prompts.ts';
 import { nodeSeed, writeAtomic } from './groups.ts';
 import { dependenciesMatch, fileDependency } from './completion-inputs.ts';
 import type { DrawingContext, GroupContext, SvgArtifact, CompletionCheck } from './layering-types.ts';
+import { taskRootOf, toTaskPathReal } from '../task-paths.ts';
 import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 
 
@@ -55,6 +56,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const dependencies = await Promise.all([fileDependency(context.directory, reference),
     ...references.map(ref => 'sourceSvg' in ref ? fileDependency(context.directory, ref.sourceSvg,
       { groupId: ref.groupId, stage: 'reduction' }) : fileDependency(context.directory, ref.path))]);
+  const root = taskRootOf(context.directory), task = (path: string) => toTaskPathReal(root, path);
   const observations: SvgObservation[] = [];
   let submitted: SvgArtifact | undefined, submittedHash: string | undefined;
   // A continued step keeps the additions drawn so far when they still sit on the
@@ -81,7 +83,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       await writeAtomic(draft, composeCompletion(source.toString(), paths));
       observations.length = 0; // 改过新增形状后，必须重新观察当前候选。
       await validateGroupSvg(draft, context.group.id, canvas, boundsParent, !context.group.hiddenInReference);
-      return textResult({ path: draft, additions: paths.length });
+      return textResult({ path: await task(draft), additions: paths.length });
     },
   };
   const submit: FunctionTool = {
@@ -111,7 +113,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       }
       submitted = { path: draft, note: raw.note };
       submittedHash = svgHash(bytes);
-      return textResult(submitted);
+      return textResult({ ...submitted, path: await task(draft) });
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 2)), sandboxMode: 'read-only', imageGeneration: true,
@@ -120,7 +122,10 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'))], prompt: renderPrompt(prompt.text, {prompt_source: prompt.path,
       runtime_context: JSON.stringify({
       group: nodeSeed(context.group),
-      reference, additionalReferences: references, canvas, sourceSvg: sourcePath, outputDraft: draft, parentSvg: parent ?? null,
+      reference: await task(reference), canvas, sourceSvg: await task(sourcePath), outputDraft: await task(draft),
+      additionalReferences: await Promise.all(references.map(async ref => ({ ...ref, path: await task(ref.path),
+        ...('sourceSvg' in ref ? { sourceSvg: await task(ref.sourceSvg) } : {}) }))),
+      parentSvg: parent ? await task(parent) : null,
       ...(resumed ? { resumedDraft: 'outputDraft 已含上次中断前补上的形状：先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。' } : {}),
     }, null, 2),
       fixed_rules: rules,

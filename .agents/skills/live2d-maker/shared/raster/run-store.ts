@@ -6,6 +6,7 @@ import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import type { StepStatus } from '../step-chain.ts';
 import { inspectSection, stepId, type SectionPlan, type SectionStep } from '../step-section.ts';
+import { toTaskPathReal } from '../task-paths.ts';
 
 export type ThreadHandoff = {
   id: string;
@@ -48,6 +49,20 @@ export async function canonicalPath(path: string): Promise<string> {
     if (parent === path) throw error;
     return join(await canonicalPath(parent), relative(parent, path));
   }
+}
+
+// Task path of a file that may sit behind a symlinked runs root on either side.
+export async function taskPath(root: string, path: string): Promise<string> {
+  return isAbsolute(path) ? toTaskPathReal(await canonicalPath(root), await canonicalPath(path)) : toTaskPathReal(root, path);
+}
+// Deep taskPath of the absolute strings in a record, such as run.json sourceInput.
+export async function taskPaths<T>(root: string, value: T): Promise<T> {
+  if (typeof value === 'string') return (isAbsolute(value) ? await taskPath(root, value) : value) as T;
+  if (Array.isArray(value)) return await Promise.all(value.map(item => taskPaths(root, item))) as T;
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(await Promise.all(Object.entries(value).map(async ([key, item]) => [key, await taskPaths(root, item)]))) as T;
+  }
+  return value;
 }
 
 export async function loadConfig<Input = PartLayeringInput>(directory: string, name: string,

@@ -52,7 +52,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
     if (selected.harness === 'codex' && image && image !== 'codex-native' && !request.tools?.length) {
       const log = await AgentLog.create(join(request.directory, 'agents'), request.step!, {
         task: { name: request.step, step: request.step }, workspace: paths.workspace, outputDirectory: paths.outputDirectory,
-        prompt: workspacePrompt(request.prompt, paths), sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } });
+        prompt: workspacePrompt(request.prompt, paths), sessionThreadId: request.threadId || null, threadOptions: { model: request.model, effort: request.effort } }, paths.root);
       const route = await createCodexImageRoute(environment, request.step!, join(paths.workspace, 'generated'), environment.codex, request.signal, request.imageNormalization);
       const codex = new Codex(workflowCodexOptions(environment, { env: route.env, config: rasterCodexConfig(request.step) }));
       let lastMessage = '', threadId = request.threadId;
@@ -107,14 +107,14 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   };
   const log = !client ? await AgentLog.create(join(request.directory, 'agents'), request.step || 'raster', {
     prompt: workspacePrompt(request.prompt, paths), workspace: paths.workspace, outputDirectory: paths.outputDirectory,
-    sessionThreadId: request.threadId || null, threadOptions: options }) : undefined;
+    sessionThreadId: request.threadId || null, threadOptions: options }, paths.root) : undefined;
   let thread = request.threadId ? codex.resumeThread(request.threadId, options) : codex.startThread(options);
   let threadId = request.threadId;
   const savedImages = new Set<string>();
   const run = runtime.run(async attempt => {
     let text = '', completed = false, lastError: unknown;
     try {
-      const { events } = await thread.runStreamed(workspacePrompt(attempt > 1 && threadId ? continuationPrompt([...savedImages], request.prompt) : request.prompt, paths), {
+      const { events } = await thread.runStreamed(workspacePrompt(attempt > 1 && threadId ? continuationPrompt([...savedImages], request.prompt, paths.root) : request.prompt, paths), {
         signal: request.signal,
         outputSchema: {
           type: 'object', additionalProperties: false,

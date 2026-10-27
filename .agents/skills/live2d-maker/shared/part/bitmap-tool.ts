@@ -1,9 +1,10 @@
 import { toolDefinition } from '../codex/tool-config.ts';
 import { mkdir, realpath, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import sharp from 'sharp';
 import type { FunctionTool } from '../codex/function-tools.ts';
+import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
 export function createBitmapTool(directory: string, observationDirectory: string): FunctionTool {
   return {
@@ -14,7 +15,8 @@ export function createBitmapTool(directory: string, observationDirectory: string
       if (typeof args.path !== 'string' || !args.path.trim()) throw new Error('path 须为图片路径');
       const scale = args.scale ?? 1;
       if (typeof scale !== 'number' || !Number.isFinite(scale) || scale < 1 || scale > 8) throw new Error('scale 须为 1 至 8');
-      const source = await realpath(resolve(directory, args.path));
+      const root = context?.root ?? taskRootOf(directory);
+      const source = await realpath(fromTaskPath(root, args.path));
       const meta = await sharp(source, { limitInputPixels: 100_000_000 }).metadata();
       const width = meta.autoOrient.width, height = meta.autoOrient.height;
       const crop = args.crop ?? [0, 0, width, height];
@@ -36,8 +38,8 @@ export function createBitmapTool(directory: string, observationDirectory: string
       const savedPath = join(destination, `${randomUUID()}.png`);
       await writeFile(savedPath, data);
       return { success: true, contentItems: [
-        { type: 'inputText', text: JSON.stringify({ path: source, source: { width, height }, crop, scale,
-          width: outputWidth, height: outputHeight, savedPath }) },
+        { type: 'inputText', text: JSON.stringify({ path: await toTaskPathReal(root, source), source: { width, height }, crop, scale,
+          width: outputWidth, height: outputHeight, savedPath: await toTaskPathReal(root, savedPath) }) },
         { type: 'inputImage', imageUrl: `data:image/png;base64,${data.toString('base64')}` },
       ] };
     },

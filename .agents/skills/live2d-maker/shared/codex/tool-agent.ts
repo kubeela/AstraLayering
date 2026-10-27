@@ -200,7 +200,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       if (busy) throw new Error('同一会话不能并发运行');
       checkFailure();
       const paths = await prepareWorkspace(task, options.cwd ?? workflowsDirectory);
-      task = { ...task, images: contextImages(task.images, paths.directory) };
+      task = { ...task, images: contextImages(task.images, paths.root) };
       const tools = workspaceTools(task.tools ?? [], paths);
       const byName = new Map(tools.map(tool => [tool.name, tool]));
       if (byName.size !== tools.length || tools.some(tool => !/^[a-zA-Z0-9_-]+$/.test(tool.name))) {
@@ -242,7 +242,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),
         sessionThreadId: threadId ?? null,
         threadOptions: { ...threadOptions, config: undefined, modelReasoningEffort: selectedModel.effort },
-      });
+      }, paths.root);
       const completion = Promise.withResolvers<void>();
       void completion.promise.catch(() => {});
       current = { task, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [], errors: [] };

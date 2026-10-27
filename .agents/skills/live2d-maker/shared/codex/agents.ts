@@ -21,6 +21,7 @@ import type { ThreadEvent } from '@openai/codex-sdk';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { contextImages } from '../agents/inputs.ts';
+import { fromTaskPath } from '../task-paths.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -135,7 +136,7 @@ export class CodexAgents {
             for (;;) {
               try {
                 const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt), images: undefined } : task, signal);
+                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined } : task, signal);
                 id = result.threadId || id;
                 for (const image of result.images) savedImages.add(image.savedPath);
                 return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
@@ -201,15 +202,17 @@ export class CodexAgents {
           if (selection && JSON.stringify(selection) !== JSON.stringify(selected)) { await inner?.close(); inner = undefined; }
           selection = selected;
           const generated: GeneratedImage[] = [];
+          const paths = executionPaths(original, this.options.cwd!);
           const image = original.step && selected.harness !== 'codex' ? imageGenerationTool(settings, original.step,
-            join(executionPaths(original, this.options.cwd!).workspace, 'generated', randomUUID()),
+            join(paths.workspace, 'generated', randomUUID()),
             this.options.imageNormalization) : undefined;
           if (image) {
             const execute = image.execute;
-            image.execute = async (args, signal) => {
-              const result = await execute(args, signal);
+            // The tool reports task-relative paths; results carry absolute ones.
+            image.execute = async (args, signal, context) => {
+              const result = await execute(args, signal, context);
               for (const item of result.contentItems) if (item.type === 'inputText') {
-                const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: value.savedPath });
+                const value = JSON.parse(item.text); if (value.savedPath) generated.push({ savedPath: fromTaskPath(paths.root, value.savedPath) });
               }
               return result;
             };
@@ -228,7 +231,7 @@ export class CodexAgents {
               } else {
                 let interrupted = false;
                 result = await this.invoke(task, signal, async () => {
-                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt), images: undefined } : task,
+                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt, paths.root), images: undefined } : task,
                     selected, settings, { ...this.options, onEvent: async event => {
                       if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
                       await this.options.onEvent?.(event);
@@ -296,7 +299,7 @@ export class CodexAgents {
     let interrupted = false;
     return this.invoke(task, signal, async () => {
       const attemptTask = interrupted && thread.id ? { ...task,
-        prompt: continuationPrompt([...savedImages], task.prompt), images: undefined } : task;
+        prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined } : task;
       try { return await runSdkAttempt(attemptTask); }
       catch (error) {
         if (error instanceof AgentCallError) {
@@ -309,7 +312,7 @@ export class CodexAgents {
 
     async function runSdkAttempt(task: AgentTask): Promise<AgentResult> {
       const input: UserInput[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths) }];
-      for (const image of contextImages(task.images, paths.directory) ?? []) {
+      for (const image of contextImages(task.images, paths.root) ?? []) {
         input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() });
         input.push({ type: 'local_image', path: resolve(image.path) });
       }
@@ -320,7 +323,7 @@ export class CodexAgents {
         // Persist the exact prompt sent by the SDK, without credentials or environment variables.
         prompt: input.filter(item => item.type === 'text').map(item => item.text).join('\n\n'),
         threadOptions, sessionThreadId: thread.id,
-      });
+      }, paths.root);
       progress?.(`开始：${task.name}；记录：${log.directory}`);
       let finalResponse = '';
       let usage: Usage | null = null;
@@ -359,7 +362,8 @@ export class CodexAgents {
           if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) {
             throw new Error(`${task.name} 没有返回生成图片的 savedPath`);
           }
-          images.push({ savedPath: resolve(workingDirectory, output.savedPath) });
+          // The agent returns a task-relative (or, outside the task, absolute) path.
+          images.push({ savedPath: fromTaskPath(paths.root, output.savedPath) });
         }
         for (const image of images) savedImages.add(image.savedPath);
         await log.finish({ status: 'completed', threadId: thread.id, usage, finalResponse, images });

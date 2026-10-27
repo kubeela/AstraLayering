@@ -1,10 +1,11 @@
 import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
-import { extname, join, resolve } from 'node:path';
+import { extname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { canonicalPath } from './run-store.ts';
+import { canonicalPath, taskPath, taskPaths } from './run-store.ts';
+import { fromTaskPath } from '../task-paths.ts';
 import { exportKraLayers, partScope, type PartScopeOptions } from './pixel-part-scope.ts';
 
 type Box = [number, number, number, number];
@@ -14,18 +15,19 @@ const colors = ['#ff4040', '#00b8ff', '#ffbd00'];
 
 // Coordinates stay in the original canvas. These are candidate differences,
 // never an automatic acceptance verdict or a generated painting repair.
-export function createPixelTool(directory: string, _taskRoot: string, output: string,
+// Path arguments, results and differences.json use the task root as their base.
+export function createPixelTool(_directory: string, taskRoot: string, output: string,
   options: PartScopeOptions & { namespace?: 'character' | 'clothing' } = {}): FunctionTool {
   const definition = toolDefinition('locate_pixel_differences');
   return {
     ...definition,
     async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('参数须为对象');
-      const args = value as Record<string, unknown>;
+      const args = value as Record<string, unknown>, root = context?.root ?? taskRoot;
       const source = async (key: string, fallback?: string) => {
         const requested = args[key] ?? fallback;
         if (typeof requested !== 'string' || !requested.trim()) throw new Error(`${key} 须为文件路径`);
-        const path = await realpath(resolve(directory, requested));
+        const path = await realpath(fromTaskPath(root, requested));
         return path;
       };
       const image = async (bytes: Buffer) => sharp(bytes, { limitInputPixels: 16_000_000 })
@@ -143,8 +145,9 @@ export function createPixelTool(directory: string, _taskRoot: string, output: st
       const files = { diagnostics: join(folder, 'differences.json'), heatmap: join(folder, 'heatmap.png'),
         marked: join(folder, 'marked.png'), comparison: join(folder, 'comparison.png'),
         ...(selection ? { scope: join(folder, 'scope.png'), scopePreview: join(folder, 'scope-preview.png') } : {}) };
-      const meta = { reference, current, visibleMask: maskPath, canvas: [width, height], crop,
-        ...(selection ? { partSelection: { parts, padding, currentKra, layers: selection.bounds } } : {}),
+      const meta = { reference: await taskPath(root, reference), current: await taskPath(root, current),
+        visibleMask: maskPath && await taskPath(root, maskPath), canvas: [width, height], crop,
+        ...(selection ? { partSelection: { parts, padding, currentKra: await taskPath(root, currentKra!), layers: selection.bounds } } : {}),
         thresholds: { color: colorThreshold, coarseColor: coarseThreshold, blurSigma: 2, regionGapPixels: gap, alpha: alphaThreshold, minRegionPixels: minPixels },
         counts, regions, note: '以候选框为局部检查入口，依据当前阶段职责和参考确认修复范围。候选不决定通过或内容归属；选择部件时只统计其当前范围及周边。' };
       await writeFile(files.diagnostics, JSON.stringify(meta, null, 2) + '\n');
@@ -171,7 +174,7 @@ export function createPixelTool(directory: string, _taskRoot: string, output: st
       await sharp({ create: { width: w * 2, height: h, channels: 4, background: '#888888' } })
         .composite([{ input: original, left: 0, top: 0 }, { input: marked, left: w, top: 0 }]).png().toFile(files.comparison);
       signal.throwIfAborted();
-      return textResult({ ...meta, regions: selected, totalRegions: regions.length, files,
+      return textResult({ ...meta, regions: selected, totalRegions: regions.length, files: await taskPaths(root, files),
         comparisonLayout: '左参考、右当前标记；两侧同尺寸，坐标为原画布坐标；热图是 crop 区域。' });
     },
   };
