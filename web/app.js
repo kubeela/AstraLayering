@@ -385,7 +385,7 @@ function connectFlow() {
  size.style.width=`${world.offsetWidth*state.zoom}px`;size.style.height=`${world.offsetHeight*state.zoom}px`;
  document.querySelector('#zoom-label').textContent=Math.round(state.zoom*100)+'%';
  const bounds=world.getBoundingClientRect();
- const box=selector=>{const r=world.querySelector(selector).getBoundingClientRect();return {x:(r.left-bounds.left)/state.zoom,y:(r.top-bounds.top)/state.zoom,w:r.width/state.zoom,h:r.height/state.zoom};};
+ const box=selector=>{const element=world.querySelector(selector);if(!element)return null;const r=element.getBoundingClientRect();return {x:(r.left-bounds.left)/state.zoom,y:(r.top-bounds.top)/state.zoom,w:r.width/state.zoom,h:r.height/state.zoom};};
  const input=box('.flow-input'),cards=stages.map((_,i)=>box(`[data-pipeline="${i}"] .pipeline-heading`));
  const svg=world.querySelector('.flow-connectors'),paths=[];
  // Labels sit on their line as pills; links that skip lanes run on tracks above
@@ -394,14 +394,17 @@ function connectFlow() {
  const textWidth=text=>[...text].reduce((sum,char)=>sum+(/[　-鿿]/.test(char)?11:6.4),0)+14;
  const path=(d,state)=>paths.push(`<path class="${state}" d="${d}" marker-end="url(#flow-arrow-${state})"/>`);
  const label=(text,x,y,state)=>{const w=textWidth(text);labels.push(`<g class="flow-label ${state}"><rect x="${x-w/2}" y="${y-8}" width="${w}" height="16" rx="8"/><text x="${x}" y="${y+4}">${text}</text></g>`);};
- const entryY=cards[0].y+cards[0].h/2;
- path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'done');
+ if(input&&cards[0]){
+  const entryY=cards[0].y+cards[0].h/2;
+  path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'done');
+ }
  for(const [a,b,text,done] of [[cards[0],cards[1],'parts',stages[0].status==='done'],[cards[2],cards[3],'parts',stages[2].status==='done'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done']]){
+  if(!a||!b)continue;
   const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,status(done));label(text,(a.x+a.w+b.x-6)/2,y,status(done));
  }
- const top=Math.min(...cards.map(card=>card.y)),tracks=[];
+ const top=Math.min(...cards.filter(Boolean).map(card=>card.y)),tracks=[];
  const links=[[cards[0],cards[2],'简化角色参考',!!data.reference],[cards[1],cards[4],'人物素体 KRA',stages[1].status==='done'],[cards[4],cards[6],'部件绑定',stages[4].status==='done']]
-  .map(([a,b,text,done])=>({x1:a.x+a.w*.72,x2:b.x+b.w*.45,text,state:status(done)}));
+  .filter(([a,b])=>a&&b).map(([a,b,text,done])=>({x1:a.x+a.w*.72,x2:b.x+b.w*.45,text,state:status(done)}));
  for(const link of links){
   const track=tracks.findIndex(end=>end<link.x1-24);
   link.track=track<0?tracks.length:track;tracks[link.track]=link.x2;
