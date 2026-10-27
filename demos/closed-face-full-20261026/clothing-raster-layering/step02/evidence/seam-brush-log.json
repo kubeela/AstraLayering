@@ -1,0 +1,423 @@
+{
+  "preset": "k) Blender Blur",
+  "operations": [
+    {
+      "layer": "0010 tshirt_body :: hem_return",
+      "target": "0010 tshirt_body :: hem_return",
+      "label": "upper hidden hem overlap",
+      "size": 2.4,
+      "opacity": 0.28,
+      "path": [
+        [
+          193,
+          1205
+        ],
+        [
+          "C",
+          235,
+          1191,
+          274,
+          1166,
+          306,
+          1178
+        ],
+        [
+          "C",
+          351,
+          1192,
+          388,
+          1202,
+          429,
+          1216
+        ],
+        [
+          "C",
+          470,
+          1228,
+          520,
+          1232,
+          565,
+          1234
+        ],
+        [
+          "C",
+          651,
+          1240,
+          714,
+          1226,
+          767,
+          1213
+        ],
+        [
+          "C",
+          810,
+          1200,
+          851,
+          1191,
+          883,
+          1204
+        ],
+        [
+          "C",
+          916,
+          1227,
+          943,
+          1237,
+          971,
+          1208
+        ]
+      ]
+    },
+    {
+      "layer": "0020 sleeve_image_left :: cuff_return",
+      "target": "0020 sleeve_image_left :: cuff_return",
+      "label": "upper hidden left cuff overlap",
+      "size": 2.3,
+      "opacity": 0.26,
+      "path": [
+        [
+          0,
+          718
+        ],
+        [
+          "C",
+          54,
+          678,
+          112,
+          734,
+          171,
+          765
+        ],
+        [
+          "C",
+          197,
+          778,
+          224,
+          785,
+          244,
+          793
+        ]
+      ]
+    },
+    {
+      "layer": "0030 sleeve_image_right :: cuff_return",
+      "target": "0030 sleeve_image_right :: cuff_return",
+      "label": "upper hidden right cuff overlap",
+      "size": 2.3,
+      "opacity": 0.26,
+      "path": [
+        [
+          914,
+          800
+        ],
+        [
+          "C",
+          961,
+          778,
+          1029,
+          729,
+          1073,
+          715
+        ],
+        [
+          "C",
+          1095,
+          708,
+          1120,
+          717,
+          1145,
+          723
+        ]
+      ]
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "target": "0050 sleeve_image_left :: front_tube",
+      "label": "front cuff true division",
+      "size": 2.2,
+      "opacity": 0.26,
+      "path": [
+        [
+          0,
+          722
+        ],
+        [
+          "C",
+          54,
+          682,
+          112,
+          738,
+          171,
+          769
+        ],
+        [
+          "C",
+          197,
+          782,
+          224,
+          789,
+          244,
+          797
+        ]
+      ]
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "target": "0060 sleeve_image_right :: front_tube",
+      "label": "front cuff true division",
+      "size": 2.2,
+      "opacity": 0.26,
+      "path": [
+        [
+          914,
+          804
+        ],
+        [
+          "C",
+          961,
+          782,
+          1029,
+          733,
+          1073,
+          719
+        ],
+        [
+          "C",
+          1095,
+          712,
+          1120,
+          721,
+          1145,
+          727
+        ]
+      ]
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "front hem true division",
+      "size": 2.3,
+      "opacity": 0.27,
+      "path": [
+        [
+          193,
+          1209
+        ],
+        [
+          "C",
+          235,
+          1195,
+          274,
+          1170,
+          306,
+          1182
+        ],
+        [
+          "C",
+          351,
+          1196,
+          388,
+          1206,
+          429,
+          1220
+        ],
+        [
+          "C",
+          470,
+          1232,
+          520,
+          1236,
+          565,
+          1238
+        ],
+        [
+          "C",
+          651,
+          1244,
+          714,
+          1230,
+          767,
+          1217
+        ],
+        [
+          "C",
+          810,
+          1204,
+          851,
+          1195,
+          883,
+          1208
+        ],
+        [
+          "C",
+          916,
+          1231,
+          943,
+          1241,
+          971,
+          1212
+        ]
+      ]
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "left root seam narrow transition",
+      "size": 2.3,
+      "opacity": 0.25,
+      "path": [
+        [
+          134,
+          350
+        ],
+        [
+          "C",
+          170,
+          412,
+          202,
+          514,
+          220,
+          583
+        ],
+        [
+          "C",
+          226,
+          604,
+          222,
+          621,
+          222,
+          652
+        ],
+        [
+          "C",
+          221,
+          692,
+          233,
+          739,
+          244,
+          777
+        ]
+      ]
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "left root seam narrow transition",
+      "size": 2.3,
+      "opacity": 0.25,
+      "path": [
+        [
+          134,
+          350
+        ],
+        [
+          "C",
+          170,
+          412,
+          202,
+          514,
+          220,
+          583
+        ],
+        [
+          "C",
+          226,
+          604,
+          222,
+          621,
+          222,
+          652
+        ],
+        [
+          "C",
+          221,
+          692,
+          233,
+          739,
+          244,
+          777
+        ]
+      ]
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "right root seam narrow transition",
+      "size": 2.3,
+      "opacity": 0.25,
+      "path": [
+        [
+          1017,
+          351
+        ],
+        [
+          "C",
+          993,
+          409,
+          970,
+          476,
+          949,
+          546
+        ],
+        [
+          "C",
+          938,
+          580,
+          933,
+          612,
+          936,
+          646
+        ],
+        [
+          "C",
+          937,
+          700,
+          924,
+          751,
+          916,
+          785
+        ]
+      ]
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "right root seam narrow transition",
+      "size": 2.3,
+      "opacity": 0.25,
+      "path": [
+        [
+          1017,
+          351
+        ],
+        [
+          "C",
+          993,
+          409,
+          970,
+          476,
+          949,
+          546
+        ],
+        [
+          "C",
+          938,
+          580,
+          933,
+          612,
+          936,
+          646
+        ],
+        [
+          "C",
+          937,
+          700,
+          924,
+          751,
+          916,
+          785
+        ]
+      ]
+    }
+  ]
+}

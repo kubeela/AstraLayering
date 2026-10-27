@@ -1,0 +1,465 @@
+[
+  {
+    "id": "R1",
+    "bounds": [
+      292,
+      350,
+      570,
+      207
+    ],
+    "layers": [
+      "0160 hair/bangs"
+    ],
+    "description": "刘海下缘多处发尖、分叉和露额缝被简化或改变宽度，整束端部呈较宽直切/圆钝的几何轮廓；按固定参考修回尖束与间隙，保留本件发流和高光，不复制眉/额头。",
+    "crop": [
+      280,
+      338,
+      594,
+      231
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R1-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R1-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R1-comparison.png"
+    },
+    "evidence_crop": [
+      280,
+      338,
+      594,
+      231
+    ]
+  },
+  {
+    "id": "R2",
+    "bounds": [
+      68,
+      300,
+      405,
+      623
+    ],
+    "layers": [
+      "0006 hair/side_hair_right__hidden_root",
+      "0021 hair/side_hair_right__rear",
+      "0151 hair/side_hair_right__front",
+      "0010 hair/back_hair"
+    ],
+    "description": "画面左侧外缘游离弧束及下部发梢形状偏离参考：粗浅棕边带、异常连桥与缺刻改变发束间隙和尖端走势。按同part三片合看定位，分别修侧发与后发各自可见像素。",
+    "crop": [
+      56,
+      288,
+      429,
+      647
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R2-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R2-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R2-comparison.png"
+    },
+    "evidence_crop": [
+      56,
+      288,
+      429,
+      647
+    ]
+  },
+  {
+    "id": "R3",
+    "bounds": [
+      705,
+      300,
+      360,
+      623
+    ],
+    "layers": [
+      "0005 hair/side_hair_left__hidden_root",
+      "0020 hair/side_hair_left__rear",
+      "0150 hair/side_hair_left__front",
+      "0010 hair/back_hair"
+    ],
+    "description": "画面右侧外缘和发梢出现粗浅棕边带、突兀连桥及扩大缺口，弧束/下缘尖束与参考不符。修正确认的轮廓偏差和粗色带，保留自然发丝间隙、侧发三片及耳前后层序。",
+    "crop": [
+      693,
+      288,
+      384,
+      647
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R3-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R3-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R3-comparison.png"
+    },
+    "evidence_crop": [
+      693,
+      288,
+      384,
+      647
+    ]
+  },
+  {
+    "id": "R4",
+    "bounds": [
+      343,
+      428,
+      177,
+      40
+    ],
+    "layers": [
+      "0103 face/eyebrow_right"
+    ],
+    "description": "画面左眉可见段中部出现平顶矩形棕色补丁，接向右端有垂直台阶和色阶跳变；独显仍存在。用本眉颜色和笔触接顺弧度、厚度与色阶，保留左右眉自身差异。",
+    "crop": [
+      331,
+      416,
+      201,
+      64
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R4-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R4-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R4-comparison.png"
+    },
+    "evidence_crop": [
+      331,
+      416,
+      201,
+      64
+    ]
+  },
+  {
+    "id": "R5",
+    "bounds": [
+      330,
+      539,
+      190,
+      69
+    ],
+    "layers": [
+      "0101 face/eye_right/upper_eyelid",
+      "0097 face/eye_right/eyelid_crease"
+    ],
+    "description": "画面左闭眼的贴睑亮缘/暖色细边缺失，睫毛带变窄且尖簇简化，褶线偏细淡；不是眼白应露出。恢复参考中的闭眼睑缘与睫毛体量，眼内蒙版仍闭合。",
+    "crop": [
+      318,
+      527,
+      214,
+      93
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R5-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R5-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R5-comparison.png"
+    },
+    "evidence_crop": [
+      318,
+      527,
+      214,
+      93
+    ]
+  },
+  {
+    "id": "R6",
+    "bounds": [
+      645,
+      539,
+      182,
+      69
+    ],
+    "layers": [
+      "0100 face/eye_left/upper_eyelid",
+      "0096 face/eye_left/eyelid_crease"
+    ],
+    "description": "画面右闭眼同样缺少参考的贴睑亮缘/暖色细边，睫毛带及褶线绘画内容变薄简化。按本侧参考补回闭眼睑缘与睫毛体量，不用隐藏眼白或高光冒充。",
+    "crop": [
+      633,
+      527,
+      206,
+      93
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R6-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R6-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R6-comparison.png"
+    },
+    "evidence_crop": [
+      633,
+      527,
+      206,
+      93
+    ]
+  },
+  {
+    "id": "R7",
+    "bounds": [
+      346,
+      610,
+      134,
+      90
+    ],
+    "layers": [
+      "0073 face/blush_right"
+    ],
+    "description": "画面左颊腮红只剩平滑粉色晕染，参考成组淡斜线未保留；单层确认缺失。补回同方向和疏密的低透明度粉色斜线，保持独立透明色素，不带基础肤色。",
+    "crop": [
+      334,
+      598,
+      158,
+      114
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R7-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R7-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R7-comparison.png"
+    },
+    "evidence_crop": [
+      334,
+      598,
+      158,
+      114
+    ]
+  },
+  {
+    "id": "R8",
+    "bounds": [
+      678,
+      610,
+      134,
+      90
+    ],
+    "layers": [
+      "0072 face/blush_left"
+    ],
+    "description": "画面右颊参考成组淡斜线同样缺失。恢复本侧自然淡线与晕染关系，保留左右实际差异及透明覆盖职责。",
+    "crop": [
+      666,
+      598,
+      158,
+      114
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R8-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R8-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R8-comparison.png"
+    },
+    "evidence_crop": [
+      666,
+      598,
+      158,
+      114
+    ]
+  },
+  {
+    "id": "R9",
+    "bounds": [
+      510,
+      754,
+      137,
+      61
+    ],
+    "layers": [
+      "0085 face/mouth/upper_lip",
+      "0084 face/mouth/lower_lip"
+    ],
+    "description": "闭合唇缝与嘴角被削成等细尖线，参考两端深色圆润收笔丢失，唇面边缘更几何化；恢复闭唇曲线、嘴角和柔和唇面造型，保留双点高光及口内闭合控制。",
+    "crop": [
+      498,
+      742,
+      161,
+      85
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R9-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R9-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R9-comparison.png"
+    },
+    "evidence_crop": [
+      498,
+      742,
+      161,
+      85
+    ]
+  },
+  {
+    "id": "R10",
+    "bounds": [
+      391,
+      984,
+      91,
+      88
+    ],
+    "layers": [
+      "0035 neck",
+      "0040 body/torso",
+      "blend • neck and shoulder roots • controller neck + arms"
+    ],
+    "description": "画面左颈根接区存在明显内部半透明缺口，蒙版启用时透出背景形成斜直三角接缝；不是外轮廓柔边。保留完整颈/躯干底纹，让接区始终有一层实底，将躯干蒙版淡出限制在实际重叠内，再用画笔接色。",
+    "crop": [
+      379,
+      972,
+      115,
+      112
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R10-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R10-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R10-comparison.png"
+    },
+    "evidence_crop": [
+      379,
+      972,
+      115,
+      112
+    ]
+  },
+  {
+    "id": "R11",
+    "bounds": [
+      681,
+      984,
+      91,
+      88
+    ],
+    "layers": [
+      "0035 neck",
+      "0040 body/torso",
+      "blend • neck and shoulder roots • controller neck + arms"
+    ],
+    "description": "画面右颈根同样存在内部半透明三角缺口，默认合成可见背景渗入；修正颈/躯干接区覆盖余量及局部透明度蒙版，再接顺肤色，保留独立分层和锁骨绘画内容。",
+    "crop": [
+      669,
+      972,
+      115,
+      112
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R11-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R11-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R11-comparison.png"
+    },
+    "evidence_crop": [
+      669,
+      972,
+      115,
+      112
+    ]
+  },
+  {
+    "id": "R12",
+    "bounds": [
+      195,
+      565,
+      200,
+      280
+    ],
+    "layers": [
+      "0010 hair/back_hair"
+    ],
+    "description": "后发画面左耳下承接补全面与主体材质衔接生硬：沿外弧出现宽厚的平涂棕色边带，内部线纹和发束明暗在接区突然转折、截断；独显300%已确认。保留新增承接形体和深度10，用同层画笔延续发流并接顺色块，不把耳或侧发参考像素贴到本层。",
+    "crop": [
+      179,
+      549,
+      232,
+      312
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-back-solo/R12-current.png"
+    },
+    "evidence_crop": [
+      183,
+      553,
+      224,
+      304
+    ]
+  },
+  {
+    "id": "R13",
+    "bounds": [
+      775,
+      565,
+      190,
+      280
+    ],
+    "layers": [
+      "0010 hair/back_hair"
+    ],
+    "description": "后发画面右耳下补全面同样有宽厚平涂边带和材质断层，与主体细线及渐变发束不连续。保留补形职责、连续底面及原有后发归属，重画局部发纹和色阶衔接。",
+    "crop": [
+      759,
+      549,
+      222,
+      312
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-back-solo/R13-current.png"
+    },
+    "evidence_crop": [
+      763,
+      553,
+      214,
+      304
+    ]
+  },
+  {
+    "id": "R14",
+    "bounds": [
+      126,
+      1255,
+      106,
+      119
+    ],
+    "layers": [
+      "0031 arms/arm_right",
+      "0040 body/torso",
+      "blend • neck and shoulder roots • controller neck + arms"
+    ],
+    "description": "画面左腋部至底边出现宽三角半透明缺口，灰背景可透入皮肤接区。临时停用躯干接色蒙版后缺口消失，确认蒙版在无上臂实底处过度淡出。修蒙版与重叠覆盖并用画笔衔接，不复制原参考服装。",
+    "crop": [
+      114,
+      1243,
+      130,
+      131
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R14-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R14-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R14-comparison.png"
+    },
+    "evidence_crop": [
+      114,
+      1243,
+      130,
+      131
+    ]
+  },
+  {
+    "id": "R15",
+    "bounds": [
+      920,
+      1255,
+      106,
+      119
+    ],
+    "layers": [
+      "0030 arms/arm_left",
+      "0040 body/torso",
+      "blend • neck and shoulder roots • controller neck + arms"
+    ],
+    "description": "画面右腋部至底边同样存在宽三角半透明缺口，停用躯干接色蒙版即消失。保证肩臂与躯干接区至少一层连续实底，在有效重叠内渐变并重画必要接色，保留腋侧形体与画布裁切。",
+    "crop": [
+      908,
+      1243,
+      130,
+      131
+    ],
+    "files": {
+      "current": "raster-layering/step01/review-01-evidence/marks-default/R15-current.png",
+      "reference": "raster-layering/step01/review-01-evidence/marks-default/R15-reference.png",
+      "comparison": "raster-layering/step01/review-01-evidence/marks-default/R15-comparison.png"
+    },
+    "evidence_crop": [
+      908,
+      1243,
+      130,
+      131
+    ]
+  }
+]

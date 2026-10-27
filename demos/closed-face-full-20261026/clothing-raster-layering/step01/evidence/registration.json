@@ -1,0 +1,74 @@
+[
+  {
+    "id": "neckline_band",
+    "generated_solid_bbox": [
+      39,
+      83,
+      1792,
+      787
+    ],
+    "target_bbox": [
+      331,
+      248,
+      819,
+      443
+    ],
+    "registration": "vertical bbox alignment and horizontal matching material-span resampling; aperture excluded",
+    "visible_overlay": "own visible-shape intersect clothing.png alpha only",
+    "completion_source": "imagegen pixels, no original hidden fill"
+  },
+  {
+    "id": "sleeve_image_left",
+    "generated_solid_bbox": [
+      5,
+      79,
+      900,
+      1605
+    ],
+    "target_bbox": [
+      1,
+      348,
+      260,
+      815
+    ],
+    "registration": "vertical bbox alignment and horizontal matching material-span resampling; aperture excluded",
+    "visible_overlay": "own visible-shape intersect clothing.png alpha only",
+    "completion_source": "imagegen pixels, no original hidden fill"
+  },
+  {
+    "id": "sleeve_image_right",
+    "generated_solid_bbox": [
+      99,
+      98,
+      887,
+      1652
+    ],
+    "target_bbox": [
+      906,
+      347,
+      1145,
+      817
+    ],
+    "registration": "vertical bbox alignment and horizontal matching material-span resampling; aperture excluded",
+    "visible_overlay": "own visible-shape intersect clothing.png alpha only",
+    "completion_source": "imagegen pixels, no original hidden fill"
+  },
+  {
+    "id": "tshirt_body",
+    "generated_solid_bbox": [
+      40,
+      40,
+      1153,
+      1270
+    ],
+    "target_bbox": [
+      134,
+      268,
+      1017,
+      1250
+    ],
+    "registration": "vertical bbox alignment and horizontal matching material-span resampling; aperture excluded",
+    "visible_overlay": "own visible-shape intersect clothing.png alpha only",
+    "completion_source": "imagegen pixels, no original hidden fill"
+  }
+]

@@ -1,0 +1,212 @@
+{
+  "layers": [
+    {
+      "name": "0005 hair/side_hair_left__hidden_root",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0006 hair/side_hair_right__hidden_root",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0010 hair/back_hair",
+      "uuid_unchanged": true,
+      "pixels_unchanged": false
+    },
+    {
+      "name": "0020 hair/side_hair_left__rear",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0021 hair/side_hair_right__rear",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0030 arms/arm_left",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0031 arms/arm_right",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0035 neck",
+      "uuid_unchanged": true,
+      "pixels_unchanged": false
+    },
+    {
+      "name": "0040 body/torso",
+      "uuid_unchanged": true,
+      "pixels_unchanged": false
+    },
+    {
+      "name": "0050 body/breast",
+      "uuid_unchanged": true,
+      "pixels_unchanged": false
+    },
+    {
+      "name": "0060 face/ear_left",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0061 face/ear_right",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0070 face/face_base",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0072 face/blush_left",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0073 face/blush_right",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0074 face/nose/volume_shadow",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0075 face/nose/tip_highlight",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0076 face/nose/tip_mark",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0080 face/mouth/mouth_interior",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0081 face/mouth/tongue",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0082 face/mouth/lower_teeth",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0083 face/mouth/upper_teeth",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0084 face/mouth/lower_lip",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0085 face/mouth/upper_lip",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0090 face/eye_left/sclera",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0091 face/eye_right/sclera",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0092 face/eye_left/iris",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0093 face/eye_right/iris",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0094 face/eye_left/highlight",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0095 face/eye_right/highlight",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0096 face/eye_left/eyelid_crease",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0097 face/eye_right/eyelid_crease",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0098 face/eye_left/lower_eyelid",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0099 face/eye_right/lower_eyelid",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0100 face/eye_left/upper_eyelid",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0101 face/eye_right/upper_eyelid",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0102 face/eyebrow_left",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0103 face/eyebrow_right",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0150 hair/side_hair_left__front",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0151 hair/side_hair_right__front",
+      "uuid_unchanged": true,
+      "pixels_unchanged": true
+    },
+    {
+      "name": "0160 hair/bangs",
+      "uuid_unchanged": true,
+      "pixels_unchanged": false
+    }
+  ],
+  "all_uuids_unchanged": true,
+  "unchanged_paint_layers": 36,
+  "all_masks_restored": true
+}

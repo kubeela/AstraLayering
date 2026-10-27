@@ -1,0 +1,19 @@
+{
+  "0050_paint_change_bbox": [
+    245,
+    788,
+    248,
+    795
+  ],
+  "paint_changed_pixels": 9,
+  "mask_change_bbox": [
+    247,
+    768,
+    260,
+    801
+  ],
+  "whole_layer_replaced": false,
+  "reference_pixel_overlay_used": false,
+  "texture_source": "existing own cloth; 2 native brush strokes sampled from own visible reference",
+  "hidden_completion_not_erased": true
+}

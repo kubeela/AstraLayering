@@ -1,0 +1,92 @@
+[
+  {
+    "layer": "0010 tshirt_body :: hem_return",
+    "uuid_unchanged": true,
+    "paint_unchanged": true,
+    "masks": []
+  },
+  {
+    "layer": "0020 sleeve_image_left :: cuff_return",
+    "uuid_unchanged": true,
+    "paint_unchanged": true,
+    "masks": [
+      {
+        "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+        "uuid_unchanged": true,
+        "pixels_unchanged": false
+      }
+    ]
+  },
+  {
+    "layer": "0030 sleeve_image_right :: cuff_return",
+    "uuid_unchanged": true,
+    "paint_unchanged": true,
+    "masks": [
+      {
+        "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+        "uuid_unchanged": true,
+        "pixels_unchanged": true
+      }
+    ]
+  },
+  {
+    "layer": "0040 neckline_band :: back_arc",
+    "uuid_unchanged": true,
+    "paint_unchanged": true,
+    "masks": [
+      {
+        "name": "M neckline_band own_inner_aperture",
+        "uuid_unchanged": true,
+        "pixels_unchanged": true
+      }
+    ]
+  },
+  {
+    "layer": "0050 sleeve_image_left :: front_tube",
+    "uuid_unchanged": true,
+    "paint_unchanged": false,
+    "masks": [
+      {
+        "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+        "uuid_unchanged": true,
+        "pixels_unchanged": false
+      }
+    ]
+  },
+  {
+    "layer": "0060 sleeve_image_right :: front_tube",
+    "uuid_unchanged": true,
+    "paint_unchanged": true,
+    "masks": [
+      {
+        "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+        "uuid_unchanged": true,
+        "pixels_unchanged": true
+      }
+    ]
+  },
+  {
+    "layer": "0070 tshirt_body :: front_body",
+    "uuid_unchanged": true,
+    "paint_unchanged": true,
+    "masks": [
+      {
+        "name": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+        "uuid_unchanged": true,
+        "pixels_unchanged": true
+      }
+    ]
+  },
+  {
+    "layer": "0080 neckline_band :: front_U",
+    "uuid_unchanged": true,
+    "paint_unchanged": true,
+    "masks": [
+      {
+        "name": "M neckline_band own_inner_aperture",
+        "uuid_unchanged": true,
+        "pixels_unchanged": true
+      }
+    ]
+  }
+]

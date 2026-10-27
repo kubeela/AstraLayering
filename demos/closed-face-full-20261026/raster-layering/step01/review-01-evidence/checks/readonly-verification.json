@@ -1,0 +1,12 @@
+{
+  "path": "raster-layering/step01/character-depth.kra",
+  "paint_layers": 41,
+  "masks": 21,
+  "projection_equal": true,
+  "layer_pixels_equal": true,
+  "visibility_equal": true,
+  "modified": false,
+  "saved_during_review": false,
+  "reference_standard": "base-subject.png; auxiliary standard.png and simplified-subject.png",
+  "inspection": "41 native layer solos at 200 or 300 percent, full default and regional composites; temporary mask disabling and upper-occluder hiding restored"
+}

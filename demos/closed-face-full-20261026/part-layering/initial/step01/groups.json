@@ -1,0 +1,35 @@
+{
+  "subject": "character",
+  "groups": [
+    {
+      "id": "face",
+      "name": "face",
+      "note": "包含脸部、五官和双耳；后续只补被头发遮挡的脸型、耳朵，不补头顶与后脑。",
+      "kind": "group"
+    },
+    {
+      "id": "hair",
+      "name": "hair",
+      "note": "包含刘海、两侧短发及后部全部头发。",
+      "kind": "group"
+    },
+    {
+      "id": "neck",
+      "name": "neck",
+      "note": "下颌下方至颈根的颈部；锁骨归 body。",
+      "kind": "group"
+    },
+    {
+      "id": "body",
+      "name": "body",
+      "note": "包含可见胸部、锁骨及躯干范围；临时服装仅用于辨认身体范围，不单独建组。",
+      "kind": "group"
+    },
+    {
+      "id": "arms",
+      "name": "arms",
+      "note": "包含左右肩部及画面两侧可见的上臂，延伸至画面下缘。",
+      "kind": "group"
+    }
+  ]
+}

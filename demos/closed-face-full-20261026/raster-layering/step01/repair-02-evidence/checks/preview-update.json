@@ -1,0 +1,17 @@
+{
+  "updated": [
+    "part-layering/preview.svg",
+    "part-layering/occlusion/preview.svg"
+  ],
+  "affected_part_svgs": [
+    "hair/back_hair",
+    "hair/bangs",
+    "neck",
+    "body/torso",
+    "body/breast"
+  ],
+  "parts": 37,
+  "depth_regions": 41,
+  "preview_depth_uses_native_projection_alpha": true,
+  "backups": "raster-layering/step01/workspace/repair-02/preview-before"
+}

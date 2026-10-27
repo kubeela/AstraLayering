@@ -1,0 +1,10 @@
+{
+  "reference": "clothing-part-layering/references/clothing.png",
+  "current": "clothing-raster-layering/step01/review-evidence/independent-01/default.png",
+  "restored": "clothing-raster-layering/step01/review-evidence/independent-01/default-restored.png",
+  "R1_hidden_layer_sources": [
+    "clothing-raster-layering/step01/review-evidence/independent-01/left-notch-hide-0050.png",
+    "clothing-raster-layering/step01/review-evidence/independent-01/left-notch-hide-0020.png"
+  ],
+  "annotation_manifest": "clothing-raster-layering/step01/review-evidence/independent-01/annotations/regions.json"
+}

@@ -1,0 +1,47 @@
+{
+  "layer": "0050 sleeve_image_left :: front_tube",
+  "uuid": "{77df1e21-6b5d-4629-928d-4c3c4b99b201}",
+  "preset": "b) Airbrush Soft",
+  "selection": [
+    243,
+    781,
+    7,
+    18
+  ],
+  "strokes": [
+    {
+      "from": [
+        246,
+        785
+      ],
+      "to": [
+        246,
+        792
+      ],
+      "sample_own_visible_sleeve": [
+        246,
+        788
+      ],
+      "colour": "#22478e",
+      "size": 2.5,
+      "opacity": 0.2
+    },
+    {
+      "from": [
+        247,
+        788
+      ],
+      "to": [
+        247,
+        795
+      ],
+      "sample_own_visible_sleeve": [
+        247,
+        790
+      ],
+      "colour": "#163571",
+      "size": 1.6,
+      "opacity": 0.28
+    }
+  ]
+}

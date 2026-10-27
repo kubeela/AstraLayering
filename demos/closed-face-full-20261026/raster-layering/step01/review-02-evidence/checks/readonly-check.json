@@ -1,0 +1,298 @@
+{
+  "document": "raster-layering/step01/character-depth.kra",
+  "paint_layers": 41,
+  "all_pixels_unchanged": true,
+  "all_masks_and_visibility_restored": true,
+  "default_projection_unchanged": true,
+  "layers": [
+    {
+      "name": "0005 hair/side_hair_left__hidden_root",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0006 hair/side_hair_right__hidden_root",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0010 hair/back_hair",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0020 hair/side_hair_left__rear",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0021 hair/side_hair_right__rear",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0030 arms/arm_left",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0031 arms/arm_right",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0035 neck",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0040 body/torso",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0050 body/breast",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0060 face/ear_left",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0061 face/ear_right",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0070 face/face_base",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0072 face/blush_left",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0073 face/blush_right",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0074 face/nose/volume_shadow",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0075 face/nose/tip_highlight",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0076 face/nose/tip_mark",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0080 face/mouth/mouth_interior",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0081 face/mouth/tongue",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0082 face/mouth/lower_teeth",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0083 face/mouth/upper_teeth",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0084 face/mouth/lower_lip",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0085 face/mouth/upper_lip",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0090 face/eye_left/sclera",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0091 face/eye_right/sclera",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0092 face/eye_left/iris",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0093 face/eye_right/iris",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0094 face/eye_left/highlight",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0095 face/eye_right/highlight",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0096 face/eye_left/eyelid_crease",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0097 face/eye_right/eyelid_crease",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0098 face/eye_left/lower_eyelid",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0099 face/eye_right/lower_eyelid",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0100 face/eye_left/upper_eyelid",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0101 face/eye_right/upper_eyelid",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0102 face/eyebrow_left",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0103 face/eyebrow_right",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0150 hair/side_hair_left__front",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0151 hair/side_hair_right__front",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    },
+    {
+      "name": "0160 hair/bangs",
+      "pixels_unchanged": true,
+      "uuid_unchanged": true,
+      "visible_restored": true,
+      "masks_unchanged_and_restored": true
+    }
+  ],
+  "separate_saved_document_opened_for_review": true,
+  "saved": false
+}

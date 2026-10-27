@@ -1,0 +1,43 @@
+{
+  "groupId": "face/blush_left",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取本组说明、候选及父组完成 SVG，并查看整图叠加；以原图坐标 [650,595,185,120]、4 倍放大完整核对腮红全部可见范围的原图、候选叠加、边缘图及父组叠加。画面右颊眼下局部粉红晕染与成组淡斜线均处于候选联合色块内，归属、位置及比例合理，未混入眼睫、鬓发或鼻部；未发现可确定的组件遗漏、孔洞、碎片或轮廓噪音。参考腮红为自然渐隐区域，无清晰硬边，候选纯色色块用于表达其结构范围，渐隐与淡斜线的最终画法不属于本轮缺陷。父范围检查通过，outsidePixels=0；本组未发现父范围限制。",
+      "candidateHash": "094c85cd7fb5e108da3e4a7faac41a923dde38d7cff36d1f9e78c5af6d26393a",
+      "observations": [
+        {
+          "source": "part-layering/groups/face/children/blush_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/blush_left/step01/previews/2026-10-26T17-12-27-218Z-1.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/blush_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/blush_left/step01/previews/2026-10-26T17-12-27-218Z-2.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/blush_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/blush_left/step01/previews/2026-10-26T17-12-27-218Z-3.png"
+        },
+        {
+          "source": "part-layering/parts/face.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/blush_left/step01/previews/2026-10-26T17-12-27-218Z-4.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/blush_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/blush_left/step01/previews/2026-10-26T17-12-27-218Z-5.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/blush_left/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/blush_left/step01/previews/2026-10-26T17-12-27-218Z-6.png"
+        }
+      ],
+      "updatedAt": "2026-10-26T17:22:49.993Z"
+    }
+  ]
+}
