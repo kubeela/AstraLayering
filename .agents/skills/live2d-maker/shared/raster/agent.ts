@@ -100,7 +100,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
   const options: ThreadOptions = {
     model: request.model,
     modelReasoningEffort: request.effort,
-    workingDirectory: paths.workspace,
+    workingDirectory: paths.root,
     skipGitRepoCheck: true,
     sandboxMode: 'danger-full-access',
     approvalPolicy: 'never',
