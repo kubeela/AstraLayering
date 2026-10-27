@@ -7,44 +7,44 @@
       "candidateHash": "139d35fbe8ac59ad4fe177da93e8a50ffc9ee7ae17f081e165173bea43146bb4",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/knot/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-1.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/knot/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-2.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-2.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/knot/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-3.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/knot/step01/outline.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-4.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-4.png"
         },
         {
-          "source": "../../../../../parts/chest_bow.svg",
+          "source": "clothing-part-layering/parts/chest_bow.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-5.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "clothing-part-layering/groups/chest_bow/children/knot/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-6.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-6.png"
         },
         {
-          "source": "../../../../../parts/chest_bow.svg",
+          "source": "clothing-part-layering/parts/chest_bow.svg",
           "mode": "svg",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-7.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-7.png"
         },
         {
-          "source": "../../../../../parts/chest_bow.svg",
+          "source": "clothing-part-layering/parts/chest_bow.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-8.png"
+          "savedPath": "clothing-part-layering/groups/chest_bow/children/knot/step01/observations/chest_bow/knot/2026-10-25T23-14-20-033Z-8.png"
         }
       ],
       "updatedAt": "2026-10-25T23:20:43.959Z"

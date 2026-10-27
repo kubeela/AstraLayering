@@ -7,49 +7,49 @@
       "candidateHash": "f8c8f416ddaf96e503252e752468c2a651580cbb84725a7663eda66eb5cd5740",
       "observations": [
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-1.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-1.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-2.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-2.png"
         },
         {
-          "source": "../../../../../../../parts/face/mouth.svg",
+          "source": "part-layering/parts/face/mouth.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-3.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-3.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-4.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-4.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-5.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-5.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-6.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-6.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "blend",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-7.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-7.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-8.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-8.png"
         },
         {
-          "source": "outline.svg",
+          "source": "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg",
           "mode": "edge",
-          "savedPath": ".run/black-white-doll/part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-9.png"
+          "savedPath": "part-layering/groups/face/children/mouth/children/tongue/step01/observations/face/mouth/tongue/2026-10-25T08-57-14-751Z-9.png"
         }
       ],
       "updatedAt": "2026-10-25T09:52:49.606Z"

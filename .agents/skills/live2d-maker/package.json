@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "node workflow/run.ts",
+    "export": "node workflow/export-run.ts",
     "part-layering": "node part-layering/run.ts",
     "raster-layering": "node raster-layering/run.ts",
     "clothing-part-layering": "node clothing-part-layering/run.ts",

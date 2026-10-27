@@ -11,6 +11,7 @@ export const steps = [{
   id: 'step01', title: '人物与衣服 KRA 组装', ...defaultModels.high, modelStep: 'assembly',
   prompt: new URL('./prompts/01-人物与衣服组装.md', import.meta.url),
   requiredFiles: ['character-assembled.kra', 'character-assembled.png', 'report.md'],
+  previewFiles: ['final-overall-comparison.jpg'],
 }] as const satisfies readonly StepDefinition[];
 
 export async function buildPrompt(step: StepDefinition, input: AssemblyInput, output: string, krita: KritaInstallation): Promise<string> {

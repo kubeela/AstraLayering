@@ -1,0 +1,9 @@
+{
+  "stamp": "3dc3cddbab92cf19aa776428807433cbc233fd4f6233fff62413ffa4e9a8665a",
+  "inputs": {
+    "groups/chest_bow/step02": "ee5336bd21bce40d0d0315732158a76acbd0005d3adfe063078e8f1a08eac60e"
+  },
+  "outputs": {
+    "outline.svg": "139d35fbe8ac59ad4fe177da93e8a50ffc9ee7ae17f081e165173bea43146bb4"
+  }
+}

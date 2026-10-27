@@ -1,0 +1,9 @@
+{
+  "stamp": "89e3adff19c7b29e5e45a8a5844aae76224c85e24efb55fd9e6fcf94de570601",
+  "inputs": {
+    "layers/depth03#hair/ponytail_right/main_strand.svg": "7b2d1f105af08928d2134a42ed435b92a3b7a23ed70c5405f4d3a932f3445782"
+  },
+  "outputs": {
+    "../../../../../../../parts/hair/ponytail_right/main_strand.svg": "55d36ce05d63b47e6b382eac2b1d0e0d372b9d5ca47370285af68d86db948381"
+  }
+}

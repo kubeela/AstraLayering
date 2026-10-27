@@ -212,7 +212,7 @@ tone 4 个：
 
 ## 9. Krita 交付与复核
 - **工程**：`step01/character-depth.kra`，md5 `94b16614aa654a9b1e2f45a224588eac`。
-- **运行环境**：Krita `Krita（由 --krita 指定）`，版本 5.3.4.1（git bd6e8d0），DISPLAY=:121。
+- **运行环境**：Krita `/data/home/lockliu/.local/share/astra-layering-codex/krita`，版本 5.3.4.1（git bd6e8d0），DISPLAY=:121。
   - 只给 kritarunner 子进程设置隔离的 XDG_CONFIG_HOME / XDG_DATA_HOME / XDG_CACHE_HOME（workspace/kr/）。
   - HOME、登录环境、用户插件和全局 Krita 设置未改。
   - 先用最小操作探测通道（kr/probe-ok.json）确认可用。

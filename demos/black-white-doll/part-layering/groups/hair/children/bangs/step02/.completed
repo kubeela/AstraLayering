@@ -1,0 +1,9 @@
+{
+  "stamp": "ceb60737f78eee7a5ae186c30e130d1ab773681fa55000c771d6b7de2857e776",
+  "inputs": {
+    "layers/depth02#hair/bangs.svg": "ca430f3755d15f0ff47ed3b27c67c2dde3991729570ef968bc5cb667796b09f3"
+  },
+  "outputs": {
+    "../../../../../parts/hair/bangs.svg": "65efd98467bfcc710ddf3d71309548eba75c5e389b693a6c4a3218b380da3ca0"
+  }
+}

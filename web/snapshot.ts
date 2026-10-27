@@ -16,6 +16,7 @@ import { projectDisplayName } from './project-metadata.ts';
 import { reportPreview, type ReportPreview } from './report.ts';
 import { legacyWorkspaces } from './workspaces.ts';
 import { taskStopMethod } from '../.agents/skills/live2d-maker/workflow/control.ts';
+import { completeRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { copiedInput, inputKras } from './kra-inputs.ts';
 
 export { phases } from './part-progress.ts';
@@ -95,6 +96,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
         for (const key of ['initial', 'preparation', 'standard', 'simplified', 'base', 'clothing']) {
           if (states[key] === 'available') states[key] = 'done';
         }
+        if (record.run?.archive) for (const key of ['merge', 'occlusion']) {
+          if (states[key] === 'available') states[key] = 'done';
+        }
       }
     } else {
       for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
@@ -112,11 +116,16 @@ export async function snapshot(directory: string, name: string, dir: string) {
         for (let index = candidates.length - 1; index >= 0; index--) if (candidates[index].inputCopy) candidates.splice(index, 1);
         candidates.sort((a, b) => b.info.mtimeMs - a.info.mtimeMs || a.path.localeCompare(b.path));
         if (candidates[0]) previews[step.id] = { path: candidates[0].path, savedAt: candidates[0].info.mtime.toISOString() };
-        const completed = await exists(prefix + '/.completed'), running = await exists(prefix + '/.running');
+        let completed = await exists(prefix + '/.completed');
+        const running = await exists(prefix + '/.running');
         const missing = [];
         for (const path of step.requiredFiles) {
           if (!await exists(prefix + '/' + path)) missing.push(path);
         }
+        // A portable archive records historical completion, not a resumable
+        // scheduler. Earlier exports omitted receipts; require intact deliveries
+        // before displaying their archived pipeline completion at each step.
+        if (record.run?.archive && saved?.status === 'completed' && !missing.length) completed = true;
         states[step.id] = completed ? (missing.length ? 'failed' : 'done') : running ? observed('running')
           : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
         if (completed && missing.length) messages[step.id] = '.completed 存在但缺少交付：' + missing.join('、');
@@ -141,9 +150,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
             }
             states[phase] = fileSet.has(prefix + '/' + phase + '.md') ? 'done'
               : next?.filename === phase + '.md' && states.draw === 'done' && running ? observed('running')
-                : !next && fileSet.has(prefix + '/review-01.md') && states[step.id] !== 'failed' ? 'skipped' : 'pending';
+              : ((!next && fileSet.has(prefix + '/review-01.md')) || (record.run?.archive && completed)) && states[step.id] !== 'failed' ? 'skipped' : 'pending';
           }
-          if (completed && next) {
+          if (completed && next && !record.run?.archive) {
             states[step.id] = 'failed'; messages[step.id] = '.completed 存在但 review / repair 尚未结束：' + next.filename;
           }
         }
@@ -154,8 +163,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
         const branchStates: Status[] = [];
         for (const step of stepsFor(variant)) {
           const prefix = id + '/' + variant + '/' + step.id;
-          const complete = await exists(prefix + '/.completed');
+          let complete = await exists(prefix + '/.completed');
           const delivered = await Promise.all(step.requiredFiles.map(path => exists(prefix + '/' + path)));
+          if (record.run?.archive && saved?.status === 'completed' && variant === mode && delivered.every(Boolean)) complete = true;
           const state: Status = complete ? delivered.every(Boolean) ? 'done' : 'failed'
             : await exists(prefix + '/.running') ? variant === mode ? observed('running') : 'unconfirmed'
               : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
@@ -186,6 +196,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
   const servedFiles = files.filter(path => !agentRecord(path));
   const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
   return { ...record, files: servedFiles, fileVersions: servedVersions, processWorkspaces, pipelines, errors, logs: log.text,
+    archived: !!record.run?.archive,
+    canExport: completeRun(record.run) && !record.runnerAlive && !record.lockHeld,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
     canStop: !!taskStopMethod(record.run?.runner, record.runnerAlive, record.lockHeld, worker),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),

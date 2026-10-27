@@ -1,0 +1,9 @@
+{
+  "stamp": "92b35b06634fffed01d813d173689c46244bb5c5c1ff9a8e92d767d70edbbed0",
+  "inputs": {
+    "groups/face/children/eye_left/step02": "2f1fb339abb256d3ad7fefc382c0213ad18aa6d983e7546786c0e46500fcd17e"
+  },
+  "outputs": {
+    "outline.svg": "4f0188981e59f88669324296a4d2d0c8c561b13be31e82a8dea80d237eb5ce39"
+  }
+}

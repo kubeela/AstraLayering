@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { checkSubject, findGroup, groupCompleted, GroupStore, nodeSeed, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
 import { artifactPath, draftPath, stepDraftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact, svgHash } from './artifact-facts.ts';
 import { mergePartSvgs } from './merge-svg.ts';
+import { publishDepthPreview } from './depth-preview.ts';
 import { groupStages, type GroupContext, type GroupInput, type GroupNode, type GroupSeed, type GroupStage, type GroupStageOutputs, type LayeringResult, type LayeringSteps, type StepResult, type SvgArtifact, type SvgMerger } from './layering-types.ts';
 import type { PreparationReferences } from './preparation-types.ts';
 import { runWorkflow, validateWorkflowOptions } from './workflow.ts';
@@ -462,6 +463,10 @@ export async function runLayering(input: {
           await completeStep(step, lookup);
           report(`遮挡层级规划：完成 ${completedOcclusion}`);
         } else report(`遮挡层级规划：${result.message}`);
+      }
+      if (completedOcclusion) {
+        const plan = JSON.parse(await readFile(completedOcclusion, 'utf8'));
+        await publishDepthPreview(directory, merged.groups, plan);
       }
     }
   } catch (error) {

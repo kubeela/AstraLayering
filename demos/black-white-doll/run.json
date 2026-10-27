@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "archive": true,
+  "name": "black-white-doll",
+  "dir": ".",
+  "from": "part-layering",
+  "to": "shadow",
+  "jobs": 3,
+  "standard": true,
+  "shadowMode": "mask",
+  "status": "completed",
+  "createdAt": "2026-10-25T03:31:49.121Z",
+  "updatedAt": "2026-10-26T10:36:37.660Z",
+  "pipelines": {
+    "part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-25T14:03:25.705Z"
+    },
+    "raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-25T22:56:28.045Z"
+    },
+    "clothing-part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-25T23:56:13.174Z"
+    },
+    "clothing-raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T05:11:16.566Z"
+    },
+    "character-assembly": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T09:44:32.192Z"
+    },
+    "shadow": {
+      "status": "completed",
+      "updatedAt": "2026-10-26T10:36:37.658Z"
+    }
+  }
+}

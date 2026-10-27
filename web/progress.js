@@ -134,7 +134,7 @@ export const stepArtifacts = [
     base: [image('part-layering/references/base-subject.png', '素体参考')],
     initial: [file('part-layering/groups.json', '分组树')],
     merge: [image('part-layering/preview.draft.svg', '分块合成 · 中间产物'), image('part-layering/preview.svg', '分块合成 SVG')],
-    occlusion: [image('part-layering/occlusion/workspace/candidate.svg', '深度规划 · 中间产物'), image('part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('part-layering/occlusion/preview.svg', '遮挡深度预览'), file('part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('raster-layering', 'step01', 'composite.png', 'character-depth.kra'),
@@ -145,7 +145,7 @@ export const stepArtifacts = [
     clothing: [image('clothing-part-layering/references/clothing.png', '纯衣服参考')],
     initial: [file('clothing-part-layering/groups.json', '分组树')],
     merge: [image('clothing-part-layering/preview.draft.svg', '衣服分块 · 中间产物'), image('clothing-part-layering/preview.svg', '衣服分块 SVG')],
-    occlusion: [image('clothing-part-layering/occlusion/workspace/candidate.svg', '深度规划 · 中间产物'), image('clothing-part-layering/occlusion/candidate.svg', '深度规划 · 中间产物'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('clothing-part-layering/occlusion/preview.svg', '遮挡深度预览'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),

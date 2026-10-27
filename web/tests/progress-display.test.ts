@@ -54,6 +54,6 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   files.delete(final); assert.equal(preview(), outline, 'deleted artwork cannot remain selected');
 });
 
-test('both part pipelines expose their saved depth candidate at the depth step', () => {
-  for (const index of [0, 2]) assert.ok(stepArtifacts[index].occlusion.some(item => item.path.endsWith('/occlusion/candidate.svg') && item.kind === 'image'));
+test('both part pipelines expose the formal depth preview outside workspace', () => {
+  for (const index of [0, 2]) assert.ok(stepArtifacts[index].occlusion.some(item => item.path.endsWith('/occlusion/preview.svg') && item.kind === 'image'));
 });

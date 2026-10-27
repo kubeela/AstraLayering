@@ -1,0 +1,9 @@
+{
+  "stamp": "7928fb91d5b972f0889c56022de8b5a462a276ca413dc8fb0ffec29b74bbe998",
+  "inputs": {
+    "layers/depth03#face/mouth/lower_lip.svg": "76e2fdbb287ccc549999c53c146ea98fa96313c924778bee977b768639edfe1b"
+  },
+  "outputs": {
+    "../../../../../../../parts/face/mouth/lower_lip.svg": "edd09b6fbac2fda722bb5344872ceaf3b299587df6977394fbb97d961f55ccda"
+  }
+}

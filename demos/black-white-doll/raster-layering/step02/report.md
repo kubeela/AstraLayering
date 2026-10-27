@@ -6,8 +6,8 @@
 
 | 项目 | 路径 / 内容 |
 |---|---|
-| 输入 KRA（实际使用） | `.run/black-white-doll/raster-layering/step01/character-depth.kra`，sha256 `c929fe13b9cb21fb9b89bc2ab4ca3d67a4b28d477b916ca8185b3064779e8287` |
-| 输入说明 | `.run/black-white-doll/raster-layering/step01/report.md` |
+| 输入 KRA（实际使用） | `/data/home/lockliu/workspaces/AstraLayering-step-models/.run/black-white-doll/raster-layering/step01/character-depth.kra`，sha256 `c929fe13b9cb21fb9b89bc2ab4ca3d67a4b28d477b916ca8185b3064779e8287` |
+| 输入说明 | `/data/home/lockliu/workspaces/AstraLayering-step-models/.run/black-white-doll/raster-layering/step01/report.md` |
 | 参考图（实际使用） | `../../part-layering/references/base-subject.png`，1086×1448 RGBA，sha256 `567c5ff7a2d012496bc8fc5d97b04832ccd0646da35cd27fea4f67f30fbc0dd0` |
 | 上游结构（沿用，未改动） | `part-layering/parts/`、`part-layering/groups.json`、`part-layering/occlusion.json` |
 | 交付 KRA | `step02/character-soft-edges.kra`，12,969,933 B，sha256 `4c79448c6288b0e4309d940c3571b7cda30e6e37f6a795aec7b70e70543654d8`。1086×1448，81 个普通绘画层，层名、顺序、位置与 step01 一致，无蒙版、无子节点 |
@@ -193,7 +193,7 @@
 2. 外缘重抠（M）里，**参考图被数值使用**：用来解每个边缘带像素的过渡 α，并在本层自己的几种颜色之间取舍。写入图层的颜色都来自该层自身，没有粘贴任何参考像素；但这一步是公式式批量处理，不是逐点手绘。
 3. 柔化是逐层、逐边缘带进行的，没有整层模糊，也没有全局羽化；隐藏区算子（A / S / T / H）只改被上层覆盖的像素，合成逐位不变。
 4. 没有改动部件形状、层级、顺序、名称和归属；没有画阴影 / AO / 投影；没有混入邻居内容。轮廓只在过渡带内移动约 0.5–2 px。
-5. 运行环境：Krita 5.3.4.1（`Krita（由 --krita 指定）`），仅给 Krita 子进程使用独立的 XDG 目录，DISPLAY=:121；没有改动本进程的 HOME、登录环境、用户插件和全局 Krita 设置，没有碰机器上其他 Krita / Xvfb 实例。日志里的 “QtSingleCoreApplication listen failed”、“tiles leaked” 警告无害。
+5. 运行环境：Krita 5.3.4.1（`/data/home/lockliu/.local/share/astra-layering-codex/krita`），仅给 Krita 子进程使用独立的 XDG 目录，DISPLAY=:121；没有改动本进程的 HOME、登录环境、用户插件和全局 Krita 设置，没有碰机器上其他 Krita / Xvfb 实例。日志里的 “QtSingleCoreApplication listen failed”、“tiles leaked” 警告无害。
 
 ## 8. 文件索引
 
