@@ -33,7 +33,7 @@ pnpm install --frozen-lockfile
 ### 模型与生图环境
 
 - `.env` 缺少时以 `example.env` 创建默认方案，已有选择沿用。职责、CLI 路径、provider 与各生图协议的自定义见[模型方案与配置](model-presets.md)。主模型使用[统一连接字段](model-presets.md#主模型连接与模型列表)，shell 统一键或旧别名优先于文件；API 密钥保存在本地配置。
-- Codex 复用 `CODEX_HOME`／`~/.codex` 的登录与授权。`codex-native` 使用宿主内置 image_generation；拥有生图工具的步骤选择此项时，需要 Codex harness。自定义 GPT／Nano 需对应 API URL、key 与协议，Claude／AGV 使用共享生图工具。
+- Codex 复用 `CODEX_HOME`／`~/.codex` 的登录与授权。`codex-native` 使用宿主内置 imagegen；拥有生图工具的步骤选择此项时，需要 Codex harness。自定义 GPT／Nano 需对应 API URL、key 与协议，Claude／AGV 使用同名共享生图工具 imagegen。
 - CLI、凭据或模型授权缺失时，说明具体问题，并按用户已有授权处理安装、登录或改选模型。pnpm 负责项目依赖，Claude Code／Antigravity 使用已有 CLI 或用户确认的安装方案。
 - 在实际后台启动环境执行 `pnpm env:check`，核对实际 skill、配置文件、模型、生图、CLI、图片预算与 shell 覆盖。此命令预览配置；真实工具调用与恢复验证见 [shared](../shared/README.md#启动验证)。首次正式准备产生合格图片后，可记录为该生图组合的实际证据。
 

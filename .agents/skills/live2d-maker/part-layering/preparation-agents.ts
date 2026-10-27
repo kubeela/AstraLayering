@@ -12,10 +12,10 @@ import type { PreparationSteps, ProcessGenerated } from './preparation.ts';
 import { checkStandardJudgment, copyAsPng } from './preparation-state.ts';
 
 async function saveImage(image: GeneratedImage | undefined, output: string): Promise<void> {
-  if (!image) throw new Error('image_generation did not produce an image');
+  if (!image) throw new Error('imagegen did not produce an image');
   const bytes = await readFile(image.savedPath);
   if (!bytes.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex'))) {
-    throw new Error('image_generation did not produce a PNG image');
+    throw new Error('imagegen did not produce a PNG image');
   }
   const temporary = `${output}.${randomUUID()}.tmp`;
   try {

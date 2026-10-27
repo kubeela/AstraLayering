@@ -31,7 +31,7 @@ export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentSt
   const provider = imageModelProviders[model] as 'openai' | 'google';
   const api = settings.imageApis[provider]!;
   return {
-    ...toolDefinition('image_generation'),
+    ...toolDefinition('imagegen'),
     async execute(raw, signal) {
       const args = raw as { prompt?: unknown; input_images?: unknown; background?: string; size?: string; output_path?: unknown };
       if (!args || typeof args.prompt !== 'string' || !args.prompt.trim() || !Array.isArray(args.input_images)

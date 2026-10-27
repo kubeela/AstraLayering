@@ -414,7 +414,7 @@ test('raster custom image tools accept upstream and other local reference paths'
   t.after(() => new Promise<void>(done => server.close(() => done())));
   const cli = join(root, 'image-cli.mjs');
   const script = fakeCli.replace('const id=resumed||randomUUID();', `
-const imageTool=list.tools.find(tool=>tool.name==='image_generation');
+const imageTool=list.tools.find(tool=>tool.name==='imagegen');
 if(!imageTool)throw new Error('missing image tool');
 const generated=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fixture',input_images:[process.env.LAYERING_TEST_REFERENCE]}});
 if(generated.isError)throw new Error(generated.content[0].text);

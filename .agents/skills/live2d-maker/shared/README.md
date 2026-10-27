@@ -8,7 +8,7 @@
 
 工具定义唯一来源是 `shared/tools/<name>/description.md` 与 `schema.json`，各 section 的 `tools/<name>/` 可覆盖。启动时加载并固定本次调用定义；schema 无效直接报错，真正的路径与写入校验在实现中。动态注册只管理工作流函数工具，宿主原生工具仍由宿主提供。模型、provider 与生图协议见[模型方案与配置](../references/model-presets.md)。
 
-`preview_svg` 的生成图对照参数只在补全阶段开放，section 定义覆盖后仍保留阶段限制。`referenceRegion` 使用生成图坐标选取对应部件，工具将裁片等比居中到 SVG 实际内容范围；`referenceOffset` 使用原图像素微调，各轴上限为部件尺寸的 10%。生成图用 `edge` 检查形状，省略 reference 参数后用默认参考图 `blend` 检查定位；`crop` 仅控制最终查看窗口。生成图对照默认聚焦部件，普通对照默认全画布，输入文件保持原样。读取与预览接受可读本地路径及符号链接，参考图沿用生图工具返回的位置。自定义 `image_generation` 的 `input_images` 与可选 `output_path` 只接受绝对路径，`output_path` 省略时使用默认生图目录；原生 Codex 生图保留自身保存位置并返回绝对 `savedPath`。两类生图返回或 agent 回复的相对 `savedPath` 直接报错，不按任何目录猜测。
+`preview_svg` 的生成图对照参数只在补全阶段开放，section 定义覆盖后仍保留阶段限制。`referenceRegion` 使用生成图坐标选取对应部件，工具将裁片等比居中到 SVG 实际内容范围；`referenceOffset` 使用原图像素微调，各轴上限为部件尺寸的 10%。生成图用 `edge` 检查形状，省略 reference 参数后用默认参考图 `blend` 检查定位；`crop` 仅控制最终查看窗口。生成图对照默认聚焦部件，普通对照默认全画布，输入文件保持原样。读取与预览接受可读本地路径及符号链接，参考图沿用生图工具返回的位置。自定义生图工具 `imagegen` 的 `input_images` 与可选 `output_path` 只接受绝对路径，`output_path` 省略时使用默认生图目录；原生 Codex 生图保留自身保存位置并返回绝对 `savedPath`。两类生图返回或 agent 回复的相对 `savedPath` 直接报错，不按任何目录猜测。
 
 所有操作 Krita 的提示词通过 `{krita_environment}` 注入共用 [environment.md](krita/environment.md)；它和 prompts、工具说明是运行输入，不是额外使用手册。
 
