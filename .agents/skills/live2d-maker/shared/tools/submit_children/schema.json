@@ -31,7 +31,8 @@
           },
           "note": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "简述实体范围、可见或遮挡依据、邻接及控制关系。外观只记录参考中可确认的事实，未知外观设计留给后续补全与绘制。"
           },
           "allowOutsideParent": {
             "type": "boolean",
