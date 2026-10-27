@@ -217,7 +217,7 @@ test('custom image edit transports original prompts and images over both protoco
       [`layering_${provider}_image_base_url`]: base + (mode === 'gemini' ? '/v1beta' : '/v1'),
       [`layering_${provider}_image_api_key`]: 'image-test-secret', ...(provider === 'google' ? { layering_google_image_protocol: mode } : {}) }, root);
     const outputDirectory = `${provider}-${mode}`;
-    const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory), [root], { krita: process.execPath })!;
+    const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory), { krita: process.execPath })!;
     const current = { name: tool.name, description: tool.description, inputSchema: tool.inputSchema };
     if (definition) assert.deepEqual(current, definition);
     else definition = current;
@@ -227,9 +227,14 @@ test('custom image edit transports original prompts and images over both protoco
     assert.ok(relative(root, output.savedPath).startsWith(outputDirectory));
     assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
-    await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /允许范围/);
+    const custom = join(await fixture(t), `${provider}-${mode}.png`);
+    const requested = await tool.execute({ prompt: '原样的绘制提示词', input_images: [relative(root, source)], output_path: custom },
+      new AbortController().signal, { directory: root, outputDirectory: root, workspace: root });
+    assert.equal(JSON.parse((requested.contentItems[0] as { text: string }).text).savedPath, custom);
+    assert.equal((await sharp(custom).metadata()).format, 'png');
+    await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);
   }
-  assert.equal(called, 3);
+  assert.equal(called, 6);
 });
 
 const fakeCli = `#!${process.execPath}
@@ -390,7 +395,7 @@ const meta=`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"su
   assert.deepEqual(Object.keys(records), ids);
 });
 
-test('raster custom image tools read sibling upstream references inside the task and reject other tasks', async t => {
+test('raster custom image tools accept upstream and other local reference paths', async t => {
   const root = await fixture(t), task = join(root, 'case'), cwd = join(task, 'raster-layering/step01');
   const upstream = join(task, 'part-layering/references'), source = join(upstream, 'base-subject.png'), other = join(root, 'other.png');
   await mkdir(cwd, { recursive: true }); await mkdir(upstream, { recursive: true });
@@ -411,14 +416,14 @@ if(!imageTool)throw new Error('missing image tool');
 const generated=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fixture',input_images:[process.env.LAYERING_TEST_REFERENCE]}});
 if(generated.isError)throw new Error(generated.content[0].text);
 const outside=await rpc('tools/call',{name:imageTool.name,arguments:{prompt:'fixture',input_images:[process.env.LAYERING_TEST_OTHER_REFERENCE]}});
-if(!outside.isError)throw new Error('outside task was accepted');
+if(outside.isError)throw new Error(outside.content[0].text);
 const id=resumed||randomUUID();`).replace("result:'完成'", "result:'{\"status\":\"completed\",\"summary\":\"generated\"}'");
   await writeFile(cli, script, { mode: 0o700 });
   const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_raster_step01_model: 'claude-sonnet-5-5-high',
     layering_raster_step01_image_model: 'gpt-image-2.5-flare', layering_openai_image_base_url: `http://127.0.0.1:${(server.address() as { port: number }).port}/v1`,
     layering_openai_image_api_key: 'fixture', LAYERING_TEST_REFERENCE: source, LAYERING_TEST_OTHER_REFERENCE: other }, root);
-  const result = await runAgent({ directory: cwd, imageRoots: [task], step: 'raster_step01', model: 'claude-sonnet-5-5', effort: 'high',
+  const result = await runAgent({ directory: cwd, step: 'raster_step01', model: 'claude-sonnet-5-5', effort: 'high',
     environment: settings, prompt: 'generate', onEvent: async () => {} }, undefined, new AgentRuntime(1));
-  assert.equal(result.summary, 'generated'); assert.equal(called, 1);
+  assert.equal(result.summary, 'generated'); assert.equal(called, 2);
   assert.deepEqual(await readFile(source), png);
 });

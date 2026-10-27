@@ -1,4 +1,4 @@
-import {loadWorkflowEnvironment} from '../../shared/codex/environment.ts';
+import {checkCodexCapabilities, loadWorkflowEnvironment} from '../../shared/codex/environment.ts';
 import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, readFile, readdir, rm } from 'node:fs/promises';
@@ -247,7 +247,10 @@ test('原生回合超时、提前 EOF 与函数内部挂起都终止并保存失
     const f = await fixture(t);
     const server = await fakeAppServer(f.directory, mode === 'tool-hang' ? [{ tool: 'probe', arguments: {} }] : [],
       mode === 'tool-hang' ? 'completed' : mode);
-    const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.directory), codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
+    const environment = loadWorkflowEnvironment({}, f.directory);
+    // Measure the turn deadline after local CLI capability startup has completed.
+    await checkCodexCapabilities(environment, { codexPathOverride: server.executable });
+    const agents = new CodexAgents({ environment, codexPathOverride: server.executable, cwd: f.directory, logDirectory: f.logDirectory });
     const started = Date.now();
     await assert.rejects(agents.run({ name: mode, prompt: 'test', timeoutMs: 500,
       tools: [tool(async () => new Promise(() => {}))] }));

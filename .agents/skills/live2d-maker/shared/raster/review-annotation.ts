@@ -4,24 +4,23 @@ import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { canonicalPath, within } from './run-store.ts';
+import { canonicalPath } from './run-store.ts';
 
 type Box = [number, number, number, number];
 type Annotation = { id: string; bounds: Box; layers: string[]; description: string };
 
 // The reviewer supplies the findings and coordinates. This tool only publishes
 // evidence; it never searches for differences or changes source artwork.
-export function createReviewAnnotationTool(directory: string, taskRoot: string, output: string): FunctionTool {
+export function createReviewAnnotationTool(directory: string, _taskRoot: string, output: string): FunctionTool {
   const definition = toolDefinition('annotate_review_regions');
   return {
     ...definition,
     async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('参数须为对象');
-      const args = value as Record<string, unknown>, root = await realpath(taskRoot);
+      const args = value as Record<string, unknown>;
       const source = async (key: string) => {
         if (typeof args[key] !== 'string' || !args[key].trim()) throw new Error(`${key} 须为图片路径`);
         const path = await realpath(resolve(directory, args[key]));
-        if (!within(root, path)) throw new Error('输入图片必须位于本次任务目录内');
         return { path, bytes: await readFile(path) };
       };
       signal.throwIfAborted();
@@ -50,7 +49,6 @@ export function createReviewAnnotationTool(directory: string, taskRoot: string, 
         return { id, bounds: bounds as Box, layers: layers as string[], description };
       });
       const destination = await canonicalPath(context ? join(context.workspace, 'review-regions') : output);
-      if (!within(root, destination)) throw new Error('标记证据输出必须位于本次任务目录内');
       await mkdir(destination, { recursive: true });
       const folder = join(await realpath(destination), randomUUID());
       await mkdir(folder);

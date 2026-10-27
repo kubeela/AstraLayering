@@ -66,9 +66,10 @@ export async function readGroupTree(directory: string, seed: GroupSeed, saved: M
   const outline = artifactPath(directory, id, 'outline');
   if (prepared.status === 'completed' && await intact(outline, prepared.record?.outputs?.['outline.svg'])) {
     const path = outline, bytes = await readSvg(path);
-    steps.outline = { status: 'completed', output: { path } };
+    const skipped = seed.hiddenInReference ? { note: '原图不可见：跳过描边和轮廓 review' } : {};
+    steps.outline = { status: 'completed', output: { path, ...skipped } };
     steps.review = { status: 'completed', output: (bytes && reviewedArtifact(bytes, path,
-      await readReviewReport(reportPath(directory, id, 'review'), id))) || { path } };
+      await readReviewReport(reportPath(directory, id, 'review'), id))) || { path, ...skipped } };
     const outputs = layers.get(depth);
     const reduced = artifactPath(directory, id, 'reduction');
     if (outputs && `${id}.svg` in outputs && await intact(reduced, outputs[`${id}.svg`])) steps.reduction = { status: 'completed', output: { path: artifactPath(directory, id, 'reduction') } };
@@ -85,7 +86,7 @@ export async function readGroupTree(directory: string, seed: GroupSeed, saved: M
     groups = await Promise.all((await readChildren(directory, id)).groups.map(child => readGroupTree(directory, child, saved, layers)));
     if (steps.completion) steps.children = { status: 'completed', output: { ids: groups.map(child => (child as GroupSeed).id) } };
   }
-  const edited = kept ? Object.fromEntries((['name', 'note', 'metadata'] as const).filter(key => key in kept).map(key => [key, kept[key]])) : {};
+  const edited = kept ? Object.fromEntries((['name', 'note', 'metadata', 'allowOutsideParent', 'hiddenInReference'] as const).filter(key => key in kept).map(key => [key, kept[key]])) : {};
   return { ...seed, ...edited, groups, steps };
 }
 

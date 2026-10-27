@@ -54,6 +54,14 @@
           "items": {
             "$ref": "#/$defs/group"
           }
+        },
+        "allowOutsideParent": {
+          "type": "boolean",
+          "description": "本节点的完整结构需要超出直接父组完成轮廓时为 true；仅跳过父轮廓包含检查。省略为 false。"
+        },
+        "hiddenInReference": {
+          "type": "boolean",
+          "description": "本节点整体在原图中不可见、需要补设计时为 true；跳过描边和轮廓 review，直接补全。省略为 false。"
         }
       }
     },

@@ -5,7 +5,7 @@ import type { FunctionTool } from '../codex/function-tools.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { parseAgentModel, type AgentStep } from '../agents/models.ts';
 import { unavailableSession } from '../agents/cli.ts';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { AgentCallError, AgentRuntime, continuationPrompt, type AgentRetry } from '../codex/agent-runtime.ts';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { AgentLog } from '../codex/agent-log.ts';
@@ -28,7 +28,6 @@ export type AgentRequest = {
   environment?: WorkflowEnvironment;
   threadId?: string;
   tools?: FunctionTool[];
-  imageRoots?: readonly string[];
   signal?: AbortSignal;
   onEvent: (event: ThreadEvent) => Promise<void>;
   onRetry?: (retry: AgentRetry) => Promise<void> | void;
@@ -83,7 +82,7 @@ export async function runAgent(request: AgentRequest, client?: Client, runtime =
       try {
         const result = await session.run({ step: request.step, name: request.step || 'raster', prompt: request.prompt, recoveryPrompt: request.recoveryPrompt,
           imageGeneration: selected.harness === 'codex' && !!image,
-          cwd: request.directory, outputDirectory: paths.outputDirectory, sandboxMode: 'danger-full-access', tools: request.tools, imageRoots: request.imageRoots ?? [dirname(request.directory)],
+          cwd: request.directory, outputDirectory: paths.outputDirectory, sandboxMode: 'danger-full-access', tools: request.tools,
           outputSchema: { type: 'object', additionalProperties: false, properties: {
             status: { type: 'string', enum: ['completed', 'blocked'] }, summary: { type: 'string' } }, required: ['status', 'summary'] } }, request.signal);
         return validateAgentOutcome(result, () => {

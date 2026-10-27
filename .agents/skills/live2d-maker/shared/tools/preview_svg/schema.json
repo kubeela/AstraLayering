@@ -6,7 +6,8 @@
   ],
   "properties": {
     "path": {
-      "type": "string"
+      "type": "string",
+      "description": "要预览的本地 SVG；保持原画布和部件坐标。"
     },
     "mode": {
       "type": "string",
@@ -14,12 +15,14 @@
         "svg",
         "blend",
         "edge"
-      ]
+      ],
+      "description": "svg 白底独显；edge 用红色 SVG 边缘对照底图；blend 半透明叠加。生成图形状检查用 edge，人物参考图定位用默认底图的 blend。"
     },
     "crop": {
       "type": "array",
       "minItems": 4,
       "maxItems": 4,
+      "description": "最终预览的查看窗口 [x,y,width,height]，使用人物/衣服原图坐标；只裁剪显示范围，保持对齐结果。普通对照默认全画布，生成图对照默认聚焦 SVG 部件。",
       "items": {
         "type": "integer",
         "minimum": 0
@@ -29,6 +32,27 @@
       "type": "number",
       "minimum": 1,
       "maximum": 8
+    },
+    "reference": {
+      "type": "string",
+      "description": "补全阶段可选的本地参考图路径，支持 PNG/JPEG/WebP；指定后将其对应部件等比缩放、居中对齐到 SVG 可见内容范围。省略时按原图坐标叠加人物/衣服参考图。"
+    },
+    "referenceRegion": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "description": "生成参考图中对应部件的选区 [x,y,width,height]，使用生成图自身像素坐标，默认整张生成图。尽量贴合部件边缘，用于等比缩放和居中对齐；crop 仅控制最终查看窗口。"
+    },
+    "referenceOffset": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" },
+      "description": "生成图居中对齐后的可选偏移 [dx,dy]，使用原图像素，默认 [0,0]；正值向右/向下。各轴偏移上限为 SVG 部件宽/高的 10%，用于微调生成图的对齐位置。"
     }
   }
 }

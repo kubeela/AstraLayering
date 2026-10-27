@@ -139,18 +139,20 @@ export async function runLayering(input: {
       if (resumeDraft) report(`[${id}] ${labels[stage]}：沿用上次的草稿继续`);
       const result = await action(draft, resumeDraft);
       if (result.status === 'pending') return result;
-      if (resolve(directory, result.output.path) !== draft) throw new Error('SVG 步骤只能交付指定的 .draft.svg');
+      const candidate = resolve(directory, result.output.path);
       const meta = await sharp(resolve(directory, input.references.baseSubject)).metadata();
-      await validateGroupSvg(draft, id, { width: meta.autoOrient.width, height: meta.autoOrient.height }, undefined, true);
+      await validateGroupSvg(candidate, id, { width: meta.autoOrient.width, height: meta.autoOrient.height }, undefined,
+        stage !== 'completion' || !context(id).group.hiddenInReference);
       const parent = context(id).parent?.steps.completion.output?.path;
       const source = stage === 'completion' ? artifact(id, 'reduction').path : parent;
       if (before) {
         if (!(await readFile(source!)).equals(before)) throw new Error('补全过程修改了原轮廓');
-        assertCompletionPreserves(before.toString(), (await readFile(draft)).toString());
+        assertCompletionPreserves(before.toString(), (await readFile(candidate)).toString());
       }
       if (stage === 'completion' && !await dependenciesMatch(directory, result.output.dependencies ?? [])) {
         throw new Error('补全输入已变化，不能发布');
       }
+      if (candidate !== draft) await writeAtomic(draft, await readFile(candidate));
       await publishSvg(draft, output, source ? svgHash((await readSvg(source))!) : undefined);
       return { status: 'completed', output: { ...result.output, path: output } };
     });
@@ -158,12 +160,29 @@ export async function runLayering(input: {
   // step01: outline + review.
   async function prepare(id: string, run: boolean) {
     const step = groupStep(directory, id, 1);
-    const check = await guard(id, 'outline', () => checkStep(step, lookup));
+    let check = await guard(id, 'outline', () => checkStep(step, lookup));
+    const outline = artifactPath(directory, id, 'outline');
+    const hidden = context(id).group.hiddenInReference === true;
+    const previousOutline = await readSvg(outline);
+    // A visibility change switches between observed outlines and an empty source.
+    // Old untagged steps keep their existing markers and review history.
+    if (previousOutline && hidden !== previousOutline.toString().includes('data-hidden-in-reference="true"')) check = { ...check, action: 'rerun' };
     if (check.action === 'keep') return;
     await resetProgress(id, 'outline');
     if (!run) return;
     await begin(step, check);
-    const outline = artifactPath(directory, id, 'outline');
+    if (hidden) {
+      const meta = await sharp(resolve(directory, input.references.baseSubject)).metadata();
+      const width = meta.autoOrient.width, height = meta.autoOrient.height;
+      // This is an empty input for completion, not a fabricated drawing or review.
+      await writeAtomic(outline, `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" data-hidden-in-reference="true"><g id="source" data-group-path="${id}"/></svg>\n`);
+      const output = { path: outline, note: '原图不可见：跳过描边和轮廓 review，以空底稿直接补全' };
+      await completed(id, 'outline', output);
+      await completed(id, 'review', output);
+      await completeStep(step, lookup);
+      report(`[${id}] 原图不可见：跳过描边和轮廓 review，直接补全`);
+      return;
+    }
     if (check.action === 'continue' && await readSvg(outline)) await completed(id, 'outline', { path: outline });
     else if (!await drawing(id, 'outline', check.action === 'continue',
       (outputPath, resumeDraft) => input.steps.drawOutline({ ...context(id), outputPath, resumeDraft }))) return;
@@ -207,9 +226,10 @@ export async function runLayering(input: {
       const current = previous[outline] === check.inputs[outline] && await readSvg(output) ? { path: output } : undefined;
       return { ...entry, bytes, output, draft, current };
     }));
-    const result = inputs.length === 1 ? { status: 'completed' as const, output: { changed: [], note: '本层只有一个组，无跨组重复' } }
+    const visible = inputs.filter(entry => !entry.group.hiddenInReference);
+    const result = visible.length <= 1 ? { status: 'completed' as const, output: { changed: [], note: '本层可见组不足两个，无跨组轮廓去重' } }
       : input.steps.reduceOutlines ? await input.steps.reduceOutlines({ ...initial, depth,
-        entries: inputs.map(entry => ({ group: context(entry.group.id).group, parent: context(entry.group.id).parent,
+        entries: visible.map(entry => ({ group: context(entry.group.id).group, parent: context(entry.group.id).parent,
           outline: artifact(entry.group.id, 'outline'), current: entry.current, outputPath: entry.draft })) })
         : { status: 'pending' as const, message: '同层轮廓去重：待接入' };
     if (result.status === 'pending') { report(result.message); return false; }
@@ -217,15 +237,17 @@ export async function runLayering(input: {
     const changes = new Map<string, string>();
     for (const change of result.output.changed) {
       const entry = inputs.find(entry => entry.group.id === change.groupId);
-      if (!entry || changes.has(change.groupId) || resolve(change.path) !== entry.draft) throw new Error('去重结果只能引用本层组的指定 .draft.svg');
-      changes.set(change.groupId, change.path);
+      if (!entry || entry.group.hiddenInReference || changes.has(change.groupId) || typeof change.path !== 'string') throw new Error('去重结果须指定本层可见组及其 SVG，同一组提交一次');
+      changes.set(change.groupId, resolve(directory, change.path));
     }
     // 整批检查后再发布；完成标记最后落盘，部分输出不构成完成。
     const meta = changes.size ? await sharp(resolve(directory, input.references.baseSubject)).metadata() : undefined;
     for (const entry of inputs) {
       if (!(await readFile(artifactPath(directory, entry.group.id, 'outline'))).equals(entry.bytes)) throw new Error('去重修改了原轮廓');
       if (changes.has(entry.group.id)) {
-        await validateGroupSvg(entry.draft, entry.group.id, { width: meta!.autoOrient.width, height: meta!.autoOrient.height }, undefined, true);
+        const candidate = changes.get(entry.group.id)!;
+        await validateGroupSvg(candidate, entry.group.id, { width: meta!.autoOrient.width, height: meta!.autoOrient.height }, undefined, true);
+        if (candidate !== entry.draft) await writeAtomic(entry.draft, await readFile(candidate));
       }
       else await writeAtomic(entry.draft, entry.current ? await readFile(entry.current.path) : entry.bytes);
     }
@@ -428,7 +450,8 @@ export async function runLayering(input: {
         const result = await (input.mergeSvg ?? mergePartSvgs)({ directory, outputPath: draft, groups: document.groups,
           parts: all.filter(({ group }) => !group.groups.length).map(({ group }) => ({ groupId: group.id, svg: artifact(group.id, 'completion') })) });
         if (result.status === 'completed') {
-          if (resolve(result.output.path) !== draft) throw new Error('合并只能交付 preview.draft.svg');
+          const candidate = resolve(directory, result.output.path);
+          if (candidate !== draft) await writeAtomic(draft, await readFile(candidate));
           await publishSvg(draft, output, await mergeSourceHash(directory, document));
           await completeStep(step, lookup);
           report(`最终预览合并：完成 ${output}`);

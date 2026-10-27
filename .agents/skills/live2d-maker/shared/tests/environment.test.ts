@@ -109,7 +109,6 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     try {
       await runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
         assert.equal(request.model, 'gpt-6-astra'); assert.equal(request.effort, 'high');
-        assert.ok(request.imageRoots?.includes(await realpath(join(root, 'case'))));
         await request.onEvent({ type: 'thread.started', thread_id: 'persistent-thread' });
         await request.onEvent({ type: 'item.completed', item: { type: 'agent_message', id: 'message', text: '当前没有 image_generation 工具，无法绘制。' } });
         return { status: 'completed', summary: '回合已结束' };

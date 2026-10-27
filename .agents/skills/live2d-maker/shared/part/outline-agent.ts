@@ -12,9 +12,9 @@ import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { readGroupPrompt } from './group-prompts.ts';
-import { findGroup, writeAtomic } from './groups.ts';
+import { findGroup, nodeSeed, writeAtomic } from './groups.ts';
 import type { DrawingContext, GroupContext, ReviewContext, ReviewedSvgArtifact, StepResult, SvgArtifact } from './layering-types.ts';
-import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
 import { completedReviewCount, draftPath, matchesHash, publishSvg, readReviewReport, svgHash as hash, type Review } from './artifact-facts.ts';
 
 const maxOutlineReviews = 2;
@@ -54,7 +54,7 @@ function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>
   outputSvg?: string; candidate?: string; resumedDraft?: string; review?: { round: number; candidateHash: string };
 }) {
   return JSON.stringify({
-    group: { id: context.group.id, kind: context.group.kind ?? 'group', name: context.group.name, note: context.group.note, metadata: context.group.metadata },
+    group: nodeSeed(context.group),
     reference: input.reference, groups: join(context.directory, 'groups.json'),
     parentGroup: context.parent?.id ?? null, parentSvg: input.parent ?? null,
     canvas: input.canvas, ...paths,
@@ -111,7 +111,7 @@ export async function drawGroupOutline(
   const observations: SvgObservation[] = [];
   // 首次绘制和返修使用同一组工具，均允许修正本组 note。
   const noteRepair = groupNoteTool(context);
-  const preview = createSvgPreviewTool({ ...input, directory: context.directory,
+  const preview = createSvgPreviewTool({ ...input, parent: parentBoundsSource(context.group, input.parent), directory: context.directory,
     observationDirectory: join(context.directory, 'observations', 'outline', context.group.id),
     observed: entry => observations.push(entry) });
   const write: FunctionTool = {
@@ -121,7 +121,7 @@ export async function drawGroupOutline(
       if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => key !== 'svg') ||
           typeof (value as { svg?: unknown }).svg !== 'string' || !(value as { svg: string }).svg.trim()) throw new Error('仅提交非空 svg 文本，草稿路径由程序绑定');
       await writeAtomic(draft, (value as { svg: string }).svg);
-      const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, input.parent, true);
+      const bytes = await validateGroupSvg(draft, context.group.id, input.canvas, parentBoundsSource(context.group, input.parent), true);
       return textResult({ path: draft, bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
     },
   };
@@ -138,7 +138,7 @@ export async function drawGroupOutline(
   const response = await agents.run({
     step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
-    sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory, [input.parent, repair?.candidate, draft]),
+    sandboxMode: 'workspace-write', tools: [preview, write, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
       ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.outline }],
@@ -166,7 +166,7 @@ async function reviewOnce(
   const candidateHash = hash(bytes);
   const round = completedReviewCount(await readReviewReport(reportPath, context.group.id)) + 1;
   const observations: SvgObservation[] = [];
-  const preview = createSvgPreviewTool({ ...input, directory: context.directory,
+  const preview = createSvgPreviewTool({ ...input, parent: parentBoundsSource(context.group, input.parent), directory: context.directory,
     observationDirectory: join(context.directory, 'observations', 'review', context.group.id),
     observed: entry => observations.push(entry) });
   let submitted: Review | undefined;
@@ -198,7 +198,7 @@ async function reviewOnce(
   };
   const response = await agents.run({
     step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
-    sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory, [input.parent, candidate]),
+    sandboxMode: 'read-only', tools: [preview, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],
     prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:runtime(context,input,{candidate,review:{round,candidateHash}}), report_path:reportPath},

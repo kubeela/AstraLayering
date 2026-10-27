@@ -7,7 +7,7 @@ import { reduceGroupOutlines } from '../../shared/part/outline-reduce.ts';
 import { fixture, shape, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;
-for (const mode of ['changed', 'unchanged', 'empty', 'wrong-path', 'no-preview', 'missing-submit'] as const) {
+for (const mode of ['changed', 'unchanged', 'empty', 'selected-source', 'no-preview', 'missing-submit'] as const) {
   test(`真实去重适配器的工具交付与校验：${mode}`, async t => {
     const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'hair' }, { id: 'accessories' }]);
     const input = { ...f, groups: null, steps: { ...steps, async reduceOutlines(context: Parameters<typeof reduceGroupOutlines>[0]) {
@@ -31,12 +31,15 @@ for (const mode of ['changed', 'unchanged', 'empty', 'wrong-path', 'no-preview',
           await preview.execute({ path: group.outputDraft, mode: 'blend' }, signal);
           changed.push({ groupId: 'accessories', path: group.outputDraft });
         }
-        if (mode === 'wrong-path') changed.push({ groupId: 'accessories', path: group.sourceSvg });
+        if (mode === 'selected-source') {
+          await preview.execute({ path: group.sourceSvg, mode: 'edge' }, signal);
+          changed.push({ groupId: 'accessories', path: group.sourceSvg });
+        }
         if (mode !== 'missing-submit') await submit.execute({ changed, note: 'checked all groups' }, signal);
         return { text: 'ordinary final reply', images: [] };
       } }) };
     } } };
-    if (['wrong-path', 'no-preview', 'missing-submit'].includes(mode)) {
+    if (['no-preview', 'missing-submit'].includes(mode)) {
       await assert.rejects(runLayering(input), /指定|.draft.svg|整层合成|submit_reduction/);
       assert.ok(!events.includes('hair:completion'));
     } else {

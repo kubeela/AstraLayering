@@ -53,12 +53,12 @@ test('无效框、重复编号或缺少图层说明先报错，不发布证据�
   await assert.rejects(readdir(f.output), { code: 'ENOENT' });
 });
 
-test('框选证据的输入与输出均限制于同一任务，拒绝 symlink 逃逸和取消后的写入', async t => {
+test('框选证据支持外部输入、输出及符号链接，取消仍停止执行', async t => {
   const f = await fixture(t), outside = join(f.base, 'outside.png');
   await writeFile(outside, f.png); await symlink(outside, join(f.cwd, 'escaped.png'));
-  await assert.rejects(f.call({ image: 'escaped.png', regions: [region] }), /本次任务/);
+  await f.call({ image: 'escaped.png', regions: [region] });
   const tool = createReviewAnnotationTool(f.cwd, f.task, join(f.base, 'outside-output'));
-  await assert.rejects(tool.execute({ image: 'current.png', regions: [region] }, new AbortController().signal), /本次任务/);
+  assert.equal((await tool.execute({ image: 'current.png', regions: [region] }, new AbortController().signal)).success, true);
   const controller = new AbortController(); controller.abort(new Error('cancelled'));
   await assert.rejects(tool.execute({ image: 'current.png', regions: [region] }, controller.signal), /cancelled/);
 });

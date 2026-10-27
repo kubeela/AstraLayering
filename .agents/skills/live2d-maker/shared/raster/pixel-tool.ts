@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { canonicalPath, within } from './run-store.ts';
+import { canonicalPath } from './run-store.ts';
 import { exportKraLayers, partScope, type PartScopeOptions } from './pixel-part-scope.ts';
 
 type Box = [number, number, number, number];
@@ -14,7 +14,7 @@ const colors = ['#ff4040', '#00b8ff', '#ffbd00'];
 
 // Coordinates stay in the original canvas. These are candidate differences,
 // never an automatic acceptance verdict or a generated painting repair.
-export function createPixelTool(directory: string, taskRoot: string, output: string,
+export function createPixelTool(directory: string, _taskRoot: string, output: string,
   options: PartScopeOptions & { namespace?: 'character' | 'clothing' } = {}): FunctionTool {
   const definition = toolDefinition('locate_pixel_differences');
   return {
@@ -22,12 +22,10 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
     async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('参数须为对象');
       const args = value as Record<string, unknown>;
-      const root = await realpath(taskRoot);
       const source = async (key: string, fallback?: string) => {
         const requested = args[key] ?? fallback;
-        if (typeof requested !== 'string' || !requested.trim()) throw new Error(`${key} 须为任务内的文件路径`);
+        if (typeof requested !== 'string' || !requested.trim()) throw new Error(`${key} 须为文件路径`);
         const path = await realpath(resolve(directory, requested));
-        if (!within(root, path)) throw new Error('输入文件必须位于本次任务目录内');
         return path;
       };
       const image = async (bytes: Buffer) => sharp(bytes, { limitInputPixels: 16_000_000 })
@@ -60,7 +58,6 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       }
       const parts = (args.parts ?? []) as string[], padding = setting('part_padding', 8, 64, 0);
       const destination = await canonicalPath(context ? join(context.workspace, 'pixel-review') : output);
-      if (!within(root, destination)) throw new Error('诊断输出必须位于本次任务目录内');
       await mkdir(destination, { recursive: true });
       const folder = join(await realpath(destination), randomUUID());
       await mkdir(folder);
@@ -69,7 +66,6 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       if (currentKra) {
         if (!options.krita) throw new Error('按部件检测需要当前工作流已配置的 Krita');
         const sources = options.sources ?? (options.namespace ? [{ namespace: options.namespace, document: currentKra }] : []);
-        for (const source of sources) if (!within(root, await realpath(source.document))) throw new Error('部件来源 KRA 必须位于本次任务目录内');
         const ora = await (options.exportLayers ?? exportKraLayers)(currentKra, folder, options.krita, options.env ?? process.env, signal);
         selection = await partScope(ora, parts, padding, [width, height], sources, signal);
         for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {

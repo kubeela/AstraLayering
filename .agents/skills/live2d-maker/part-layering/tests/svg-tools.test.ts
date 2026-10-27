@@ -42,9 +42,9 @@ test('真实 root 和 g 属性中的 > 不影响绑定、范围检查和裁剪�
   await assert.rejects(validateGroupSvg(f.path, 'hair/axb', canvas), /仅绑定当前组/);
 });
 
-test('SVG 源码读取仅限本轮绑定文件，保持原文，拒绝额外路径、目录逃逸及超大文件', async t => {
+test('SVG 源码可按本地路径读取、跨目录及符号链接访问，分页保留原文', async t => {
   const f = await fixture(t), before = await readFile(f.path);
-  const tool = createSvgReadTool(f.directory, [f.path, undefined]);
+  const tool = createSvgReadTool(f.directory);
   const result = info(await tool.execute({ path: 'candidate.svg' }, signal));
   assert.equal(result.svg, before.toString('utf8'));
   assert.equal(result.bytes, before.length);
@@ -54,14 +54,14 @@ test('SVG 源码读取仅限本轮绑定文件，保持原文，拒绝额外路�
   assert.ok(!(await readdir(f.directory)).includes('observations'));
   const other = join(f.directory, 'other.svg');
   await writeFile(other, before);
-  await assert.rejects(tool.execute({ path: other }, signal), /明确提供/);
-  await assert.rejects(tool.execute({ path: f.path, output: other }, signal), /仅提交/);
+  assert.equal(info(await tool.execute({ path: other }, signal)).svg, before.toString());
+  await assert.rejects(tool.execute({ path: f.path, output: other }, signal), /提交 SVG/);
   const outside = await mkdtemp(join(tmpdir(), 'part-layering-read-outside-'));
   t.after(() => rm(outside, { recursive: true, force: true }));
   await writeFile(join(outside, 'outside.svg'), before);
   await symlink(outside, join(f.directory, 'escape'), process.platform === 'win32' ? 'junction' : 'dir');
   const escaped = join(f.directory, 'escape', 'outside.svg');
-  await assert.rejects(createSvgReadTool(f.directory, [escaped]).execute({ path: escaped }, signal), /运行目录内/);
+  assert.equal(info(await tool.execute({ path: escaped }, signal)).svg, before.toString());
   const large = before.toString() + ' '.repeat(300000);
   await writeFile(f.path, large);
   let offset: number | null = 0, reconstructed = '', version: string | undefined;
@@ -79,7 +79,7 @@ test('SVG 源码读取仅限本轮绑定文件，保持原文，拒绝额外路�
     await assert.rejects(tool.execute({ path: f.path, ...args }, signal));
   }
   await writeFile(f.path, ' '.repeat(8 * 1024 * 1024 + 1));
-  await assert.rejects(tool.execute({ path: f.path }, signal), /超过 8 MiB/);
+  assert.equal(info(await tool.execute({ path: f.path, limit: 100 }, signal)).svg.length, 100);
 });
 
 test('SVG 裁剪直接放大矢量，混合和边缘叠加与参考共用坐标；预览落盘且输入不变', async t => {
@@ -205,15 +205,73 @@ test('父轮廓孔洞与分离区域继续约束子组，不用扩边或填洞�
   assert.equal((await checkParentBounds(f.path, parent, canvas)).status, 'fail');
 });
 
-test('预览拒绝越界选框、无效倍率、外部路径和逃逸 symlink，不写预览', async t => {
+test('预览校验选框和倍率，并支持外部 SVG 与符号链接', async t => {
   const f = await fixture(t);
   const outside = await mkdtemp(join(tmpdir(), 'part-layering-svg-outside-'));
   t.after(() => rm(outside, { recursive: true, force: true }));
   const path = join(outside, 'outside.svg');
   await writeFile(path, await readFile(f.path));
   await symlink(outside, join(f.directory, 'escape'), process.platform === 'win32' ? 'junction' : 'dir');
-  for (const args of [{ path: f.path, crop: [99, 0, 2, 2] }, { path: f.path, scale: 9 }, { path }, { path: 'escape/outside.svg' }]) {
+  for (const args of [{ path: f.path, crop: [99, 0, 2, 2] }, { path: f.path, scale: 9 }]) {
     await assert.rejects(f.tool.execute(args, signal));
   }
   assert.ok(!(await readdir(f.directory)).includes('observations'));
+  for (const path of [join(outside, 'outside.svg'), 'escape/outside.svg']) assert.equal((await f.tool.execute({ path }, signal)).success, true);
+});
+
+test('生成图选区对齐 SVG 实际内容，保留宽高比例；crop 和 scale 只影响显示', async t => {
+  const f = await fixture(t);
+  await writeFile(f.path, svg('face', '<rect x="20" y="30" width="60" height="20" fill="red"/>'));
+  const generated = join(f.directory, 'generated.png');
+  await sharp({ create: { width: 200, height: 100, channels: 4, background: 'blue' } }).png().toFile(generated);
+  const before = await Promise.all([readFile(f.path), readFile(f.reference), readFile(generated)]);
+  const tool = createSvgPreviewTool({ ...f, canvas, allowGeneratedReference: true });
+  const args = { path: f.path, mode: 'edge', reference: generated, referenceRegion: [100, 20, 80, 40] };
+  const automatic = info(await tool.execute(args, signal));
+  assert.deepEqual(automatic.alignment, { svgBounds: [20, 30, 60, 20], scale: .5, offset: [0, 0], translation: [30, 30] });
+  assert.deepEqual(automatic.crop, [8, 26, 84, 28]);
+  const zoom = info(await tool.execute({ ...args, crop: [10, 20, 80, 40], scale: 2 }, signal));
+  assert.deepEqual(zoom.alignment, automatic.alignment, '查看选框和倍率保持对齐变换');
+  assert.deepEqual([zoom.width, zoom.height], [160, 80]);
+  const raw = await sharp(zoom.savedPath).ensureAlpha().raw().toBuffer();
+  const pixel = (x: number, y: number) => [...raw.subarray(((y - 20) * 2 * 160 + (x - 10) * 2) * 4, ((y - 20) * 2 * 160 + (x - 10) * 2) * 4 + 4)];
+  assert.deepEqual(pixel(25, 40), [255, 255, 255, 255], '长宽比差异保留为留白，生成图没有被横向拉满');
+  assert.deepEqual(pixel(35, 40), [0, 0, 255, 255], '只对齐所选生成图区域');
+  assert.deepEqual(pixel(20, 40), [235, 35, 55, 255], 'SVG 红色轮廓仍位于原图坐标');
+  const shifted = info(await tool.execute({ ...args, referenceOffset: [3, -1] }, signal));
+  assert.deepEqual(shifted.alignment.translation, [33, 29]);
+  assert.deepEqual(shifted.alignment.offset, [3, -1]);
+  const original = info(await tool.execute({ path: f.path, mode: 'blend' }, signal));
+  assert.deepEqual(original.crop, [0, 0, 100, 100]);
+  assert.equal(original.reference, undefined);
+  assert.equal(original.alignment, undefined);
+  assert.deepEqual(await Promise.all([readFile(f.path), readFile(f.reference), readFile(generated)]), before);
+});
+
+test('生成图参数仅向补全开放，定义快照互不影响；错误坐标和偏移返回校验错误，外部参考可直接对照', async t => {
+  const f = await fixture(t);
+  const generated = join(f.directory, 'generated.png');
+  await sharp({ create: { width: 200, height: 100, channels: 4, background: 'blue' } }).png().toFile(generated);
+  assert.equal((f.tool.inputSchema.properties as object).hasOwnProperty('reference'), false);
+  await assert.rejects(f.tool.execute({ path: f.path, mode: 'edge', reference: generated }, signal), /schema/);
+  const tool = createSvgPreviewTool({ ...f, canvas, allowGeneratedReference: true });
+  assert.ok((tool.inputSchema.properties as object).hasOwnProperty('referenceRegion'));
+  const base = { path: f.path, mode: 'edge', reference: generated };
+  const outside = await mkdtemp(join(tmpdir(), 'part-layering-reference-outside-'));
+  t.after(() => rm(outside, { recursive: true, force: true }));
+  await writeFile(join(outside, 'outside.png'), await readFile(generated));
+  await symlink(outside, join(f.directory, 'escape-reference'), process.platform === 'win32' ? 'junction' : 'dir');
+  for (const args of [
+    { ...base, referenceRegion: [190, 0, 20, 20] }, { ...base, referenceRegion: [0, 0, 0, 20] },
+    { ...base, referenceRegion: [.5, 0, 20, 20] }, { ...base, referenceOffset: [7, 0] },
+    { ...base, referenceOffset: [0, NaN] }, { ...base, referenceOffset: [0] },
+    { path: f.path, mode: 'edge', referenceRegion: [0, 0, 20, 20] },
+    { path: f.path, mode: 'edge', referenceOffset: [0, 0] }, { ...base, mode: 'svg' },
+    { ...base, referenceCrop: [0, 0, 20, 20] },
+  ]) await assert.rejects(tool.execute(args, signal));
+  assert.ok(!(await readdir(f.directory)).includes('observations'));
+  await writeFile(f.path, svg('face', ''));
+  await assert.rejects(tool.execute(base, signal), /没有可见部件/);
+  await writeFile(f.path, svg('face', '<rect x="20" y="20" width="60" height="60"/>'));
+  for (const reference of [join(outside, 'outside.png'), 'escape-reference/outside.png']) assert.equal((await tool.execute({ ...base, reference }, signal)).success, true);
 });

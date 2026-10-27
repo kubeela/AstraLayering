@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
+import sharp from 'sharp';
 import type { AgentResult, AgentSession, AgentTask } from '../../shared/codex/agents.ts';
 import { artifactPath, publishSvg, svgHash } from '../../shared/part/artifact-facts.ts';
 import { completeGroupOcclusion, checkGroupCompletion, readCompletionReferences } from '../../shared/part/completion-agent.ts';
@@ -181,7 +182,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     const result = await tool(task, 'read_svg').execute({ path: ref.sourceSvg }, signal);
     assert.ok(JSON.stringify(result).includes(palm));
     const otherPalm = ref.sourceSvg.replace(id.includes('/arm_left/') ? '/arm_left/' : '/arm_right/', id.includes('/arm_left/') ? '/arm_right/' : '/arm_left/');
-    await assert.rejects(tool(task, 'read_svg').execute({ path: otherPalm }, signal), /只能读取本次明确提供/);
+    assert.equal((await tool(task, 'read_svg').execute({ path: otherPalm }, signal)).success, true);
     await submit(task, input.outputDraft);
     return { text: 'done', images: [] };
   }));
@@ -315,4 +316,59 @@ test('续跑补全沿用保留原形的草稿并提示 agent；原形已变的�
   assert.deepEqual(await seen(false), { draft: shape('face'), resumed: false });
   await writeFile(outputPath, shape('face', 20, 80));
   assert.deepEqual(await seen(true), { draft: shape('face'), resumed: false });
+});
+
+test('不可见部件直接绘制非空 SVG，分别完成生成图 edge、原图 blend 和独显后提交', async t => {
+  const f = await fixture(t), group = normalizeGroups([{ id: 'face/eye_left/iris', kind: 'part',
+    allowOutsideParent: true, hiddenInReference: true }])[0];
+  const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'iris.draft.svg');
+  const generated = join(f.directory, 'generated.png');
+  await writeFile(source, shape(group.id, 10, 90, true));
+  await sharp({ create: { width: 40, height: 20, channels: 4, background: 'blue' } }).png().toFile(generated);
+  const result = await completeGroupOcclusion({ ...f, group, reviewed: { path: source }, outputPath }, { async run(task) {
+    assert.equal(task.imageGeneration, true);
+    assert.match(task.prompt, /referenceRegion.*框选生成图/);
+    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    assert.equal(input.group.hiddenInReference, true);
+    assert.equal(input.group.allowOutsideParent, true);
+    await assert.rejects(tool(task, 'set_completion_paths').execute({ paths: [] }, signal), /没有可见/);
+    await tool(task, 'set_completion_paths').execute({ paths }, signal);
+    const preview = tool(task, 'preview_svg');
+    const compare = { path: outputPath, reference: generated, referenceRegion: [0, 0, 40, 20] };
+    await preview.execute({ ...compare, mode: 'blend' }, signal);
+    await preview.execute({ path: outputPath, mode: 'svg' }, signal);
+    await assert.rejects(tool(task, 'submit_completion').execute({ note: 'test' }, signal), /默认 blend/);
+    await preview.execute({ path: outputPath, mode: 'blend' }, signal);
+    await assert.rejects(tool(task, 'submit_completion').execute({ note: 'test' }, signal), /edge/);
+    await preview.execute({ ...compare, mode: 'edge', referenceOffset: [0, 1] }, signal);
+    // 重新绘制会清除当前草稿的全部旧检查。
+    await tool(task, 'set_completion_paths').execute({ paths }, signal);
+    await assert.rejects(tool(task, 'submit_completion').execute({ note: 'test' }, signal), /默认 blend/);
+    await preview.execute({ ...compare, mode: 'edge' }, signal);
+    await submit(task, outputPath);
+    return { text: 'done', images: [{ savedPath: generated }] };
+  } });
+  assert.equal(assertCompletionPreserves(await readFile(source, 'utf8'), await readFile(outputPath, 'utf8')), 1);
+  assert.ok(result.dependencies?.some(dep => dep.path === 'generated.png'));
+  assert.equal((await checkGroupCompletion({ ...f, group, before: { path: source }, after: result })).passed, true);
+});
+
+test('生成图在检查后变化须重新 edge 查看，更新的观察可正常提交', async t => {
+  const f = await fixture(t), group = normalizeGroups([{ id: 'face', hiddenInReference: true }])[0];
+  const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'face.draft.svg'), generated = join(f.directory, 'generated.png');
+  await writeFile(source, shape('face', 10, 90, true));
+  const image = (background: string) => sharp({ create: { width: 40, height: 20, channels: 4, background } }).png().toFile(generated);
+  await image('blue');
+  await completeGroupOcclusion({ ...f, group, reviewed: { path: source }, outputPath }, { async run(task) {
+    await tool(task, 'set_completion_paths').execute({ paths }, signal);
+    const compare = { path: outputPath, mode: 'edge', reference: generated };
+    await tool(task, 'preview_svg').execute(compare, signal);
+    await tool(task, 'preview_svg').execute({ path: outputPath, mode: 'blend' }, signal);
+    await tool(task, 'preview_svg').execute({ path: outputPath, mode: 'svg' }, signal);
+    await image('green');
+    await assert.rejects(tool(task, 'submit_completion').execute({ note: 'test' }, signal), /预览后被修改/);
+    await tool(task, 'preview_svg').execute(compare, signal);
+    await tool(task, 'submit_completion').execute({ note: '已重新核对生成图边缘与人物位置' }, signal);
+    return { text: 'done', images: [] };
+  } });
 });

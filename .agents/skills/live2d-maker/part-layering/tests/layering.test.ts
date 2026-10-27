@@ -82,16 +82,21 @@ test('只有 .draft.svg 不能跳过绘制；异常草稿不发布正式 SVG，�
   assert.ok(events.includes('head:outline'));
 });
 
-test('所有绘制、去重、补形及最终合并接口只允许交付指定草稿路径', async t => {
-  const f = await fixture(t), events: string[] = [], steps = workingSteps(events);
-  await assert.rejects(runLayering({ ...f, groups: null, steps: { ...steps, async drawOutline(context) {
-    const other = join(f.directory, 'other.svg'); await writeAtomic(other, shape('head'));
-    return { status: 'completed', output: { path: other } };
-  } } }), /指定的 .draft.svg/);
-  await runLayering({ ...f, groups: null, steps: { ...steps, async completeOcclusion(context) {
-    assert.ok(context.outputPath.endsWith('.draft.svg')); return steps.completeOcclusion(context);
-  } }, mergeSvg: async context => { assert.ok(context.outputPath.endsWith('preview.draft.svg')); return workingMerger(events)(context); } });
-  await assert.rejects(readFile(join(f.directory, 'preview.draft.svg')), { code: 'ENOENT' });
+test('绘制、补全、去重和合并可交付自选 SVG 路径，程序保存正式产物且保留原文件', async t => {
+  const f = await fixture(t), external = await fixture(t), events: string[] = [];
+  const steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
+  const paths: string[] = [];
+  const save = async (file: string, content: string | Buffer) => {
+    const path = join(external.directory, file); await writeAtomic(path, content); paths.push(path); return path;
+  };
+  await runLayering({ ...f, groups: null, steps: { ...steps,
+    async drawOutline(context) { return { status: 'completed', output: { path: await save(`${context.group.id}-outline.svg`, shape(context.group.id)) } }; },
+    async reduceOutlines(context) { return { status: 'completed', output: { changed: [{ groupId: 'a', path: await save('a-reduced.svg', shape('a', 15, 85)) }] } }; },
+    async completeOcclusion(context) { return { status: 'completed', output: { path: await save(`${context.group.id}-completed.svg`, await readFile(context.reviewed.path)) } }; },
+  }, mergeSvg: async () => ({ status: 'completed', output: { path: await save('preview.svg', shape('character')) } }) });
+  for (const path of paths) assert.ok((await readFile(path)).length);
+  for (const id of ['a', 'b']) assert.ok((await readFile(artifactPath(f.directory, id, 'completion'))).length);
+  assert.ok((await readFile(join(f.directory, 'preview.svg'))).length);
 });
 
 test('去重输出没有整批提交记录或只有部分输出时，不消费它们，不提前补形', async t => {

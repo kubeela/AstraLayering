@@ -11,7 +11,7 @@ import type { CodexAgents } from '../codex/agents.ts';
 import { writeAtomic } from './groups.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { OutlineReduction, OutlineReductionContext } from './layering-types.ts';
-import { createSvgPreviewTool, createSvgReadTool, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
+import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 import { editXmlAttributes, svgBody, svgSource } from '../xml.ts';
 
 export async function reduceGroupOutlines(context: OutlineReductionContext, agents: Pick<CodexAgents, 'run'>): Promise<OutlineReduction> {
@@ -44,14 +44,14 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       }
       const raw = value as { groupId?: unknown; svg?: unknown };
       const entry = context.entries.find(item => item.group.id === raw.groupId);
-      if (!entry || typeof raw.svg !== 'string' || !raw.svg.trim() || !entry.outputPath.endsWith('.draft.svg')) {
+      if (!entry || typeof raw.svg !== 'string' || !raw.svg.trim()) {
         throw new Error('须指定本层组及非空 SVG');
       }
       for (let i = observations.length - 1; i >= 0; i--) {
         if (observations[i].source === resolve(entry.outputPath)) observations.splice(i, 1);
       }
       await writeAtomic(entry.outputPath, raw.svg);
-      const bytes = await validateGroupSvg(entry.outputPath, entry.group.id, canvas, entry.parent?.steps.completion.output?.path, true);
+      const bytes = await validateGroupSvg(entry.outputPath, entry.group.id, canvas, parentBoundsSource(entry.group, entry.parent?.steps.completion.output?.path), true);
       return textResult({ path: entry.outputPath, bytes: bytes.length, note: '草稿检查通过，仍须预览自检' });
     },
   };
@@ -66,13 +66,14 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       const seen = new Set<string>();
       for (const change of result.changed) {
         const entry = context.entries.find(entry => entry.group.id === change.groupId);
-        if (!entry || seen.has(change.groupId) || typeof change.path !== 'string' || resolve(change.path) !== entry.outputPath) {
-          throw new Error('去重只能提交本层组对应的 .draft.svg，不能重复提交组或修改原轮廓');
+        if (!entry || seen.has(change.groupId) || typeof change.path !== 'string') {
+          throw new Error('去重须提交本层组及对应 SVG，同一组提交一次');
         }
         seen.add(change.groupId);
-        const parent = entry.parent?.steps.completion.output?.path;
-        await validateGroupSvg(change.path, change.groupId, canvas, parent, true);
-        if (!observations.some(item => item.source === resolve(change.path) && ['blend', 'edge'].includes(item.mode))) {
+        const parent = parentBoundsSource(entry.group, entry.parent?.steps.completion.output?.path);
+        const path = resolve(context.directory, change.path);
+        await validateGroupSvg(path, change.groupId, canvas, parent, true);
+        if (!observations.some(item => item.source === path && ['blend', 'edge'].includes(item.mode))) {
           throw new Error(`${change.groupId}: 修改后须用 blend 或 edge 查看`);
         }
       }
@@ -81,11 +82,11 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)), sandboxMode: 'workspace-write',
-    imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory,
-      [merged, ...context.entries.flatMap(entry => [entry.outline.path, entry.current?.path, entry.outputPath, entry.parent?.steps.completion.output?.path])])],
+    imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory)],
     prompt: renderPrompt(await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8'), {runtime_context: JSON.stringify({
       depth: context.depth, reference, canvas, mergedPreview: merged,
       groups: context.entries.map(entry => ({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
+        ...(entry.group.allowOutsideParent ? { allowOutsideParent: true } : {}),
         sourceSvg: (entry.current ?? entry.outline).path, originalOutline: entry.outline.path,
         reusedReduction: !!entry.current, outputDraft: entry.outputPath, parentSvg: entry.parent?.steps.completion.output?.path ?? null })),
     }, null, 2)}, join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), ["runtime_context"]),

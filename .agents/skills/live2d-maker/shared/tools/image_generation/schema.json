@@ -4,7 +4,8 @@
   "required": ["prompt", "input_images"],
   "properties": {
     "prompt": { "type": "string", "minLength": 1 },
-    "input_images": { "type": "array", "items": { "type": "string" } },
+    "input_images": { "type": "array", "items": { "type": "string" }, "description": "参考图片路径，支持绝对路径；相对路径从本次管线目录解析。" },
+    "output_path": { "type": "string", "minLength": 1, "description": "可选的 PNG 保存路径，支持绝对路径；相对路径从本次管线目录解析。省略时使用本步骤默认生图目录。" },
     "background": { "type": "string", "enum": ["transparent", "auto"] },
     "size": { "type": "string" }
   }

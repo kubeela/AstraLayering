@@ -4,7 +4,7 @@ import {renderPromptFile} from '../prompts/render.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { pipelineDirectory, resolveInput, resolveRunsDirectory, type PipelineId } from '../paths.ts';
-import { appendFile, mkdir, readFile, realpath, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { runAgent, type Agent, type AgentRequest } from './agent.ts';
@@ -40,7 +40,7 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
     const path = join(directory, file);
     try {
       const info = await stat(path);
-      if (!info.isFile() || info.size === 0 || !within(directory, await realpath(path))) throw new Error('交付文件为空或位于输出目录以外');
+      if (!info.isFile() || info.size === 0) throw new Error('交付文件为空或不是普通文件');
     } catch (error) { throw new Error(`步骤尚不能完成，缺少有效交付：${file}`, { cause: error }); }
   }
 }
@@ -208,7 +208,6 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
         tools: pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }),
         imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
-        imageRoots: [dirname(directory), ...inputDirectories],
         recoveryPrompt: config.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : config.threadId ?? undefined, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
