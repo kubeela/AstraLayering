@@ -310,4 +310,10 @@ test('a lane that failed shows as failed while the other lane runs on', async t 
   const lane = pipelines.find(item => item.id === 'clothing-raster-layering')!;
   assert.equal(lane.status, 'failed'); assert.equal(lane.states.step01, 'failed');
   assert.equal(pipelines.find(item => item.id === 'part-layering')!.status, 'running');
+  // The step it left mid-way says why; a review it was on carries the reason instead of the draw step.
+  assert.equal(lane.messages.step01, 'ENAMETOOLONG');
+  await f.put('step01/report.md', 'drawn');
+  const review = (await f.get()).pipelines.find(item => item.id === 'clothing-raster-layering')!;
+  assert.equal(review.states['review-01'], 'failed');
+  assert.deepEqual(review.messages, { 'review-01': 'ENAMETOOLONG' });
 });

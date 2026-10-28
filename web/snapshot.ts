@@ -80,6 +80,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
       } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(source + ': ' + String(error)); }
     };
     const observed = (value?: string): Status => value === 'running' ? (active ? 'running' : failed ? 'failed' : 'unconfirmed') : statusOf(value);
+    // Why the lane failed, for the step it left mid-way.
+    const reason = !active && saved?.status === 'failed' && saved.summary ? saved.summary.split('\n')[0].slice(0, 400) : undefined;
     let groups: any[] = [];
     if (id === 'part-layering' || id === 'clothing-part-layering') {
       const document = await optional(id + '/groups.json');
@@ -162,6 +164,10 @@ export async function snapshot(directory: string, name: string, dir: string) {
           if (completed && next && !record.run?.archive) {
             states[step.id] = 'failed'; messages[step.id] = '.completed 存在但 review / repair 尚未结束：' + next.filename;
           }
+        }
+        if (reason && running && !completed) {
+          const phase = ['review-01', 'repair-01', 'review-02', 'repair-02'].find(key => states[key] === 'failed');
+          messages[phase ?? step.id] ??= reason;
         }
       }
     }
