@@ -77,6 +77,11 @@ test('export refuses symlink evidence, existing output and destinations inside t
   await f.put('raster-layering/step01/report.md', '![private](workspace/inspect/link.png)');
   await symlink(join(f.root, 'input/original.png'), join(f.root, 'raster-layering/step01/workspace/inspect/link.png'));
   await assert.rejects(exportCompletedRun({ name: f.name, dir: f.dir, output }), /符号链接/);
+  // Prose the file system cannot resolve is a warning, not a failed export.
+  await f.put('raster-layering/step01/report.md', `\`${'很长的说明'.repeat(60)}.png\` 与 \`input/original.png/zoom.png\``);
+  const exported = await exportCompletedRun({ name: f.name, dir: f.dir, output });
+  assert.deepEqual(exported.warnings.map(warning => warning.match(/（(\w+)）/)?.[1]), ['ENOTDIR', 'ENAMETOOLONG']);
+  await rm(output, { recursive: true, force: true });
   await assert.rejects(exportCompletedRun({ name: f.name, dir: f.dir, output: join(f.root, 'out') }), /原任务目录/);
   await assert.rejects(exportCompletedRun({ name: f.name, dir: f.dir, output: join(f.root, 'input/original.png') }), /原任务目录/);
 });

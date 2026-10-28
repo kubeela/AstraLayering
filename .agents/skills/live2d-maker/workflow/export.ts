@@ -141,10 +141,20 @@ export async function exportFiles(root: string, run: TaskRun, aliases: readonly 
     for (const ref of reportReferences(text).reverse()) {
       const candidates = reportTargets(root, path, ref.target, roots);
       if (!candidates.length) continue;
-      let source: string | undefined;
-      for (const candidate of candidates) { source = await sourceFile(root, relative(root, candidate)); if (source) break; }
+      let source: string | undefined, skipped = false;
+      // Report text is free prose: a cited path the file system cannot read is reported, not fatal.
+      // A symlinked image stays refused.
+      for (const candidate of candidates) {
+        try { source = await sourceFile(root, relative(root, candidate)); }
+        catch (error) {
+          const code = (error as NodeJS.ErrnoException).code;
+          if (!code) throw error;
+          skipped = true; warnings.push(path + '：跳过图片 ' + ref.target + '（' + code + '）');
+        }
+        if (source) break;
+      }
       if (!source) {
-        warnings.push(path + '：未找到图片 ' + (isAbsolute(ref.target) ? basename(ref.target) : ref.target));
+        if (!skipped) warnings.push(path + '：未找到图片 ' + (isAbsolute(ref.target) ? basename(ref.target) : ref.target));
         continue;
       }
       const local = slash(relative(root, source)), segments = local.split('/'), workspace = segments.indexOf('workspace');
@@ -158,8 +168,7 @@ export async function exportFiles(root: string, run: TaskRun, aliases: readonly 
       }
       entries.set(target, { source });
       const link = slash(relative(dirname(path), target)).split('/').map(encodeURIComponent).join('/');
-      const fragment = text.slice(ref.start, ref.end).replace(ref.target, link);
-      text = text.slice(0, ref.start) + fragment + text.slice(ref.end);
+      text = text.slice(0, ref.targetStart) + link + text.slice(ref.targetEnd);
     }
     return text;
   }

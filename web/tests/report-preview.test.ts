@@ -21,11 +21,24 @@ test('任务目录经软链接打开时，按真实路径书写的绝对图片�
   assert.deepEqual(report.images.map(item => item.path), [image]);
 });
 
+test('报告图片定位路径本身：标签同名、行中反引号与全角括号不影响解析', () => {
+  const text = '[a.png](a.png) 行中 ``` 不是代码块 b.png\n见（evidence/c.png）与《d.png》';
+  const refs = reportReferences(text);
+  assert.deepEqual(refs.map(ref => ref.target), ['a.png', 'b.png', 'evidence/c.png', 'd.png']);
+  for (const ref of refs) assert.equal(text.slice(ref.targetStart, ref.targetEnd), ref.target);
+  assert.equal(refs[0].targetStart, '[a.png]('.length);
+});
+
 test('报告图片兼容 Markdown、行内代码与纯路径，代码块不被当作证据', () => {
   const text = '![标注](<evidence/有 空格.png>)\n[对照](evidence/fold(1).png)\n`/run/case/zoom.png`\nevidence/plain.webp\n```python\nopen("not-evidence.png")\n```';
   const refs = reportReferences(text);
   assert.deepEqual(refs.map(ref => ref.target), ['evidence/有 空格.png', 'evidence/fold(1).png', '/run/case/zoom.png', 'evidence/plain.webp']);
   for (const ref of refs) assert.ok(text.slice(ref.start, ref.end).includes(ref.target));
+});
+
+test('中文顿号、冒号分隔的图片名各自成为一个引用', () => {
+  const text = '链接均相对本报告：a.png、b_zoom.png、c.webp！见 d.png？';
+  assert.deepEqual(reportReferences(text).map(ref => ref.target), ['a.png', 'b_zoom.png', 'c.webp', 'd.png']);
 });
 
 test('报告图片只解析实际任务内的文件，拒绝外部路径与符号链接', async t => {
