@@ -5,7 +5,8 @@ export const groupPhases = [
   ['outline', '轮廓绘制'], ['review', '轮廓复核'], ['reduction', '同层去重'],
   ['completion', '遮挡补全'], ['completionCheck', '补全检查'], ['children', '直属结构拆分'],
 ];
-// throttled: a 429 backoff; the agent keeps its slot and resumes on its own.
+// throttled: waiting to retry after a 429 or other temporary error; the agent keeps its slot and resumes on its own.
+// A summary stays running or throttled while any part still is, and only then shows a failure.
 export const statusNames = {pending:'待执行', running:'进行中', throttled:'限流等待', available:'已有产物', done:'已完成', failed:'执行失败'};
 export const displayStatus = (status, hasArtifacts = false) => status === 'skipped' ? 'done'
   : Object.hasOwn(statusNames, status) ? status : hasArtifacts ? 'available' : 'pending';
@@ -13,7 +14,7 @@ export const statusLabel = status => statusNames[displayStatus(status)];
 
 export function groupSummary(group) {
   const values = groupPhases.map(([id]) => group.webPhases?.[id]);
-  const status = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.every(value => value === 'done') ? 'done'
+  const status = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed' : values.every(value => value === 'done') ? 'done'
     : values.some(value => value === 'done' || value === 'available') ? 'available' : 'pending';
   return { status, text: statusNames[status] };
 }

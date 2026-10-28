@@ -3,7 +3,7 @@ import { artifactPath, matchesHash, reportPath, reviewedArtifact, stepDraftPath 
 import { groupStepId, layerStepId } from '../.agents/skills/live2d-maker/shared/part/part-steps.ts';
 import { readStep, type StepStatus } from '../.agents/skills/live2d-maker/shared/step-chain.ts';
 import { safePath } from './files.ts';
-import { currentAgentCalls, throttled, type AgentCall } from './agent-progress.ts';
+import { currentAgentCalls, retryReason, throttled, type AgentCall } from './agent-progress.ts';
 import { partStages } from './part-stages.ts';
 import { partReviewRounds } from './part-review.ts';
 
@@ -118,7 +118,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     if (throttled(call)) {
       for (const node of targets) {
         node.webPhases[phase] = 'throttled'; node.webMessages[phase] = '限流等待';
-        node.webDetails[phase] = `服务返回 429，保留并发位置，${new Date(call.throttledUntil!).toLocaleTimeString('zh-CN', { hour12: false })} 后重试`;
+        node.webDetails[phase] = `${retryReason(call)}，保留并发位置，${new Date(call.throttledUntil!).toLocaleTimeString('zh-CN', { hour12: false })} 后重试`;
       }
       continue;
     }

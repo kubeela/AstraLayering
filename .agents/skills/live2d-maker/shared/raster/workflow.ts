@@ -3,6 +3,7 @@ import { publishReportAssets } from '../report-assets.ts';
 import {renderPromptFile} from '../prompts/render.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
+import { retryDelays } from '../codex/agent-runtime.ts';
 import { pipelineDirectory, resolveInput, resolveRunsDirectory, type PipelineId } from '../paths.ts';
 import { appendFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -254,7 +255,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
           if (!fresh) await saveSession({ handoff: session.handoff }, reason);
         },
         onRetry: async retry => {
-          options.progress?.(`${step.id} ${phase}：${retry.rateLimited ? '限流等待（429），保留并发位置' : '临时服务错误'}，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
+          options.progress?.(`${step.id} ${phase}：限流等待（${retry.rateLimited ? '429' : '临时错误'}），保留并发位置，${retry.delayMs / 1000} 秒后第 ${retry.attempt}/${retryDelays.retries} 次重试，沿用原 thread 与产物。`);
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, rateLimited: retry.rateLimited, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
         },
         onEvent: async event => {

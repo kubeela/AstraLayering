@@ -96,12 +96,12 @@ export async function snapshot(directory: string, name: string, dir: string) {
       Object.assign(states, progress.states); Object.assign(messages, progress.messages);
       for (const phase of phases) {
         const values = all.map(node => node.webPhases[phase]);
-        states[phase] = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled'
+        states[phase] = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed'
           : values.includes('unconfirmed') ? 'unconfirmed' : values.length && values.every(v => v === 'done') ? 'done'
             : values.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
       }
       const values = phases.map(phase => states[phase]);
-      states.layers = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('unconfirmed') ? 'unconfirmed'
+      states.layers = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed' : values.includes('unconfirmed') ? 'unconfirmed'
         : values.every(v => v === 'done') ? 'done' : all.length ? 'available' : 'pending';
       // Legacy completed pipelines can lack individual reference fingerprints.
       if (saved?.status === 'completed') {
@@ -188,7 +188,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
           branchStates.push(state);
           if (variant === 'normal-depth') states['normal-depth-maps'] = state;
         }
-        states[variant] = branchStates.includes('failed') ? 'failed' : branchStates.includes('running') ? 'running' : branchStates.includes('throttled') ? 'throttled'
+        states[variant] = branchStates.includes('running') ? 'running' : branchStates.includes('throttled') ? 'throttled' : branchStates.includes('failed') ? 'failed'
           : branchStates.includes('unconfirmed') ? 'unconfirmed' : branchStates.every(v => v === 'done') ? 'done'
             : branchStates.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
       }

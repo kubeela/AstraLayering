@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { pipelineDirectory, pipelineIds } from '../paths.ts';
 import { AgentCallError, AgentRuntime, rateLimitedAgentError, retryableAgentError, type AgentRetry } from '../codex/agent-runtime.ts';
-import { AgentLog, rateLimitWaitFile } from '../codex/agent-log.ts';
+import { AgentLog, retryWaitFile } from '../codex/agent-log.ts';
 import { recognizeInitialGroups } from '../part/initial-groups.ts';
 import { runWorkflow as runRaster } from '../../raster-layering/run.ts';
 import { runWorkflow as runClothingRaster } from '../../clothing-raster-layering/run.ts';
@@ -49,7 +49,7 @@ test('生图服务的速率限制会重试，单次输入图片上限仍直接�
   }
 });
 
-test('429 以限流等待通知调用方并记录等待截止时间；5xx 和断流仍是普通临时错误', async t => {
+test('每次临时错误都记录等待截止时间供限流等待显示，429 与 5xx、断流只区分原因', async t => {
   const errors = [new AgentCallError('Rate limit exceeded', { rateLimitExceeded: { httpStatusCode: 429 } }),
     new AgentCallError('Too Many Requests', { apiError: { httpStatusCode: 429 } }),
     new AgentCallError('overloaded', { serverOverloaded: { httpStatusCode: 503 } }), new AgentCallError('disconnected', 'responseStreamDisconnected')];
@@ -66,11 +66,11 @@ test('429 以限流等待通知调用方并记录等待截止时间；5xx 和断
   const log = await AgentLog.create(join(root, 'agents'), 'call', {});
   const now = new Date('2026-10-28T15:00:00.000Z');
   await AgentLog.retry(log.directory, { attempt: 1, nextAttempt: 2, delayMs: 2500, error: 'Rate limit exceeded', rateLimited: true }, now);
-  assert.deepEqual(JSON.parse(await readFile(join(log.directory, rateLimitWaitFile), 'utf8')), { reason: 'rate-limit', attempt: 1, nextAttempt: 2,
+  assert.deepEqual(JSON.parse(await readFile(join(log.directory, retryWaitFile), 'utf8')), { reason: 'rate-limit', attempt: 1, nextAttempt: 2,
     since: '2026-10-28T15:00:00.000Z', until: '2026-10-28T15:00:02.500Z', error: 'Rate limit exceeded' });
   const other = await AgentLog.create(join(root, 'agents'), 'other', {});
-  await AgentLog.retry(other.directory, { attempt: 1, nextAttempt: 2, delayMs: 2500, error: 'overloaded', rateLimited: false });
-  await assert.rejects(readFile(join(other.directory, rateLimitWaitFile)), { code: 'ENOENT' });
+  await AgentLog.retry(other.directory, { attempt: 1, nextAttempt: 2, delayMs: 2500, error: 'overloaded', rateLimited: false }, now);
+  assert.equal(JSON.parse(await readFile(join(other.directory, retryWaitFile), 'utf8')).reason, 'transient');
 });
 
 test('首次分组拒绝非字符串 subject，错误参数不能写坏首次分组记录', async t => {

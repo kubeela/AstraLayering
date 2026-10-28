@@ -1,11 +1,12 @@
 import { appendFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { pipelineIds } from '../paths.ts';
+import { retryDelays } from './agent-runtime.ts';
 import { toTaskPath, toTaskPaths } from '../task-paths.ts';
 import type { ThreadEvent } from '@openai/codex-sdk';
 
-// Written into a call's record directory while it waits out a 429; see AgentLog.retry.
-export const rateLimitWaitFile = 'rate-limit-wait.json';
+// Written into a call's record directory while it waits to retry; see AgentLog.retry.
+export const retryWaitFile = 'retry-wait.json';
 
 function readable(value: unknown): string {
   return JSON.stringify(value, function (key, item) {
@@ -127,11 +128,11 @@ export class AgentLog {
     now = new Date()) {
     const timestamp = now.toISOString();
     await appendFile(join(directory, 'events.jsonl'), JSON.stringify({ timestamp, event: { type: 'retry.scheduled', ...event } }) + '\n');
-    // The page reads this to show 限流等待 until the next attempt; a later 429 overwrites it, and the
+    // The page reads this to show 限流等待 until the next attempt; a later retry overwrites it, and the
     // wait ends on its own when `until` passes, so nothing removes it.
-    if (event.rateLimited) await writeFile(join(directory, rateLimitWaitFile), JSON.stringify({ reason: 'rate-limit', attempt: event.attempt,
+    await writeFile(join(directory, retryWaitFile), JSON.stringify({ reason: event.rateLimited ? 'rate-limit' : 'transient', attempt: event.attempt,
       nextAttempt: event.nextAttempt, since: timestamp, until: new Date(now.getTime() + event.delayMs).toISOString(), error: event.error }, null, 2) + '\n');
-    await appendFile(workflowLogPath(directory), `[${timestamp}] [${basename(directory)}] ${event.rateLimited ? '限流等待（429），保留并发位置' : '临时错误'}，${event.delayMs / 1000} 秒后第 ${event.nextAttempt} 次尝试：${event.error}\n`);
+    await appendFile(workflowLogPath(directory), `[${timestamp}] [${basename(directory)}] 限流等待（${event.rateLimited ? '429' : '临时错误'}），保留并发位置，${event.delayMs / 1000} 秒后第 ${event.attempt}/${retryDelays.retries} 次重试：${event.error}\n`);
   }
 
   async record(event: ThreadEvent): Promise<string> {

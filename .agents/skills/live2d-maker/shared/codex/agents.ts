@@ -4,7 +4,7 @@ import { workflowsDirectory } from '../paths.ts';
 import type { CodexOptions } from '@openai/codex-sdk';
 import { join } from 'node:path';
 import { AgentLog } from './agent-log.ts';
-import { AgentCallError, AgentRuntime, blockedAgentError, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
+import { AgentCallError, AgentRuntime, retryDelays, blockedAgentError, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
 import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './blocked-images.ts';
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
@@ -78,7 +78,7 @@ export class CodexAgents {
   private async invoke<T>(task: AgentTask, signal: AbortSignal, operation: () => Promise<T>): Promise<T> {
     return this.runtime.run(operation, { signal, onRetry: async ({ attempt, nextAttempt, delayMs, error, rateLimited }) => {
       const failure = error as AgentCallError;
-      this.options.progress?.(`[${task.name}] ${rateLimited ? '限流等待（429），保留并发位置' : '临时服务错误'}；${delayMs / 1000} 秒后第 ${nextAttempt} 次尝试，沿用会话与已有产物：${failure.message}`);
+      this.options.progress?.(`[${task.name}] 限流等待（${rateLimited ? '429' : '临时错误'}），保留并发位置；${delayMs / 1000} 秒后第 ${attempt}/${retryDelays.retries} 次重试，沿用会话与已有产物：${failure.message}`);
       if (failure.logDirectory) await AgentLog.retry(failure.logDirectory,
         { attempt, nextAttempt, delayMs, error: failure.message, rateLimited });
       await this.options.onRetry?.({ attempt, nextAttempt, delayMs, error, rateLimited });

@@ -21,7 +21,8 @@ test('concurrent agents and raster steps write the same task log, retaining inde
   assert.match(log, /HTTP503/);
   for (const agent of [a, b]) {
     const files = await readdir(agent.directory);
-    assert.deepEqual(files.sort(), ['events.jsonl', 'prompt.md', 'request.json', 'result.json']);
+    // The retry left its wait deadline next to the record.
+    assert.deepEqual(files.sort(), ['events.jsonl', 'prompt.md', 'request.json', 'result.json', ...(agent === a ? ['retry-wait.json'] : [])]);
     assert.equal(await readFile(join(agent.directory, 'prompt.md'), 'utf8'), agent === a ? 'draw' : 'repair');
   }
 });

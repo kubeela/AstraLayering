@@ -252,7 +252,7 @@ test('a call waiting out a 429 shows 限流等待 until its wait ends, apart fro
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
   await f.put('agents/body/request.json', { task: { name: '组轮廓绘制-body' } });
   await f.put('agents/hair/request.json', { task: { name: '组轮廓绘制-hair' } });
-  const wait = (ms: number) => f.put('agents/body/rate-limit-wait.json', { reason: 'rate-limit', until: new Date(Date.now() + ms).toISOString() });
+  const wait = (ms: number) => f.put('agents/body/retry-wait.json', { reason: 'rate-limit', until: new Date(Date.now() + ms).toISOString() });
   await wait(60_000);
   let value = await f.get();
   assert.deepEqual(value.part.groups.map(node => node.webPhases.outline), ['throttled', 'running']);
@@ -261,15 +261,17 @@ test('a call waiting out a 429 shows 限流等待 until its wait ends, apart fro
   await f.put('agents/hair/result.json', { status: 'completed' });
   assert.equal((await f.get()).part.states.outline, 'throttled');
   await f.put('agents/review/request.json', { task: { name: '组轮廓review-hair' } });
-  await f.put('agents/review/rate-limit-wait.json', { until: new Date(Date.now() + 60_000).toISOString() });
+  await f.put('agents/review/retry-wait.json', { until: new Date(Date.now() + 60_000).toISOString() });
   value = await f.get();
   assert.equal(value.part.groups[1].webPhases.review, 'throttled');
   assert.equal(value.part.groups[1].webReviewRounds[0].review.status, 'throttled');
+  assert.match(value.part.groups[1].webReviewRounds[0].review.detail, /^服务临时错误/);
+  assert.match(value.part.groups[0].webDetails.outline, /^服务返回 429/);
   // The wait has passed: the next attempt is running.
   await wait(-1);
   assert.equal((await f.get()).part.groups[0].webPhases.outline, 'running');
   // The wait file is a server-side record; the page never receives it.
-  assert.ok(!value.files.some(path => path.endsWith('rate-limit-wait.json')));
+  assert.ok(!value.files.some(path => path.endsWith('retry-wait.json')));
 });
 
 test('a failed current group and initial request are marked failed while their drafts remain visible; recovery clears old failures', async t => {

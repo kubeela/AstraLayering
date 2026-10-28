@@ -11,6 +11,10 @@ test('normal progress labels, with 限流等待 apart from running; a partly fin
   group.webPhases.completion = 'running'; assert.equal(groupSummary(group).text, '进行中');
   group.webPhases = Object.fromEntries(groupPhases.map(([id]) => [id, 'done']));
   assert.equal(groupSummary(group).text, '已完成');
+  // A failure shows once nothing in the group runs or waits any more.
+  group.webPhases.outline = 'failed'; group.webPhases.review = 'running'; assert.equal(groupSummary(group).text, '进行中');
+  group.webPhases.review = 'throttled'; assert.equal(groupSummary(group).text, '限流等待');
+  group.webPhases.review = 'done'; assert.equal(groupSummary(group).text, '执行失败');
 });
 
 test('failure is explicit, while interrupted execution keeps its intermediate artifacts', () => {

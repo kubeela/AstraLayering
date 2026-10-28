@@ -3,7 +3,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { fromTaskPath } from '../task-paths.ts';
 
 export const defaultAgentConcurrency = 3;
-export const retryDelays = { initial: 5_000, maximum: 60_000 } as const;
+// Retry n waits about initial * 2^(n-1): 5 s doubling up to 2560 s on the tenth; after that the call fails.
+export const retryDelays = { initial: 5_000, retries: 10 } as const;
 
 export class AgentCallError extends Error {
   readonly info?: unknown;
@@ -45,7 +46,7 @@ export function retryableAgentError(error: unknown): boolean {
   const info = error.info;
   const code = errorCode(info);
   if (!code || !retryableCodes.has(code)) return false;
-  // 文本只能否决重试、不能触发重试：结构化 429 也可能是额度耗尽或单次输入图数上限，重试循环不设上限。
+  // 文本只能否决重试、不能触发重试：结构化 429 也可能是额度耗尽或单次输入图数上限，重试要等很久。
   if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i.test(error.message)) return false;
   const imageCountLimit = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i.test(error.message);
   const throughputLimit = /\brate[\s_-]*limit\b|\bper\s+(?:second|minute|hour|day)\b/i.test(error.message);
@@ -55,7 +56,8 @@ export function retryableAgentError(error: unknown): boolean {
   return status == null ? code !== 'apiError' : status === 429 || (status >= 500 && status <= 599);
 }
 
-// A retryable 429: the service is throttling, the call itself is fine. The page shows it as 限流等待.
+// A retryable 429: the service is throttling. Every retryable error waits the same way and the page shows
+// 限流等待; this only names the reason.
 export function rateLimitedAgentError(error: unknown): boolean {
   if (!(error instanceof AgentCallError)) return false;
   const code = errorCode(error.info);
@@ -130,7 +132,7 @@ export class AgentRuntime {
     // Without a shared pool the operation starts in the same turn as before.
     try { if (sharedSlots) shared = await sharedSlots(options.signal); }
     catch (error) { local(); throw error; }
-    // The slots stay held through backoff. Handing them back let a queued call start in the gap, so
+    // The slots stay held through backoff until the call succeeds, fails or is cancelled. Handing them back let a queued call start in the gap, so
     // under 429 the groups of one layer took turns instead of finishing one by one.
     try {
       for (let attempt = 1; ; attempt++) {
@@ -140,11 +142,11 @@ export class AgentRuntime {
           return await operation(attempt);
         } catch (caught) {
           options.signal?.throwIfAborted();
-          if (!retryableAgentError(caught)) throw caught;
+          if (!retryableAgentError(caught) || attempt > retryDelays.retries) throw caught;
           error = caught;
         }
         // Equal jitter: half the step is fixed, half random, so calls that failed together do not retry together.
-        const step = Math.min(retryDelays.initial * 2 ** Math.min(attempt - 1, 4), retryDelays.maximum);
+        const step = retryDelays.initial * 2 ** (attempt - 1);
         const delayMs = Math.round(step / 2 + this.random() * step / 2);
         await options.onRetry?.({ attempt, nextAttempt: attempt + 1, delayMs, error, rateLimited: rateLimitedAgentError(error) });
         await this.wait(delayMs, options.signal);
