@@ -22,7 +22,7 @@ pnpm part-layering --name my-character --groups /绝对路径/selection.json
 
 输出 `references/standard.png`、`simplified-subject.*`、`base-subject.png`。标准化选项默认关闭，开启后先判断姿态再按需调整；原图保留在任务 `input/`。素体保留手套、鞋袜和各自饰件，主体衣装以临时连体服替换。步骤目录按 preparation/step01～08 记录原图、选项、姿态、标准图、简化、素体与就绪；step05 为已退场的独立画风判断，其他步骤沿用原编号。
 
-简化与素体各由一个 preparation agent 完成“判断 → 复制或生图”。图1已符合目标画风时，简化 agent 直接复用；当前画幅没有主体衣装、角色已是素体或已有合适的临时连体服时，素体 agent 直接复用。该选择写入 `preparation/step07/decision.json`（`dressed: false` 时总控跳过衣服管线）。复制工具绑定当前参考与输出位置，PNG 原样复制；需要转换或换装时调用本步骤配置的生图工具。两份完整提示词为 `prompts/2-简化图片.md`、`prompts/3-素体参考.md`。
+简化与素体各由一个 preparation agent 完成“判断 → 复制或生图”。图1画法已足够简单（平涂色块、边界清楚、细节概括，有无线稿均可）时，简化 agent 直接复用，只在半写实、厚涂或晕染明显时转换；当前画幅没有主体衣装、角色已是素体或已有合适的临时连体服时，素体 agent 直接复用。该选择写入 `preparation/step07/decision.json`（`dressed: false` 时总控跳过衣服管线）。复制工具绑定当前参考与输出位置，PNG 原样复制；需要转换或换装时调用本步骤配置的生图工具。两份完整提示词为 `prompts/2-简化图片.md`、`prompts/3-素体参考.md`。
 
 step06 与 step07 各自直接保存最终图片及步骤完成记录，选择理由保存在 agent 调用日志。复制结果原样交付，生图结果在准备函数内部完成后处理；续跑依据已有图片与步骤记录复用。旧任务已完成的图片继续沿用，缺图时按当前单次 agent 流程制作。
 
