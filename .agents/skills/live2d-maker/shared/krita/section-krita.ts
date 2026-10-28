@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { preparePrivateKrita } from './private-environment.ts';
+import { ensureWindowsKritaPlugin, prepareWindowsKritaApplication, windowsKritaConfigDirectory } from './windows-launch.ts';
 import { readDefaultConfiguration } from '../default-configuration.ts';
 
 // One private Krita per section. A section that needs Krita first reserves a
@@ -305,11 +306,20 @@ export class SectionKrita {
     try {
       const { resource, env: privateEnv } = await preparePrivateKrita(root, 'astra_bridge', bridgePlugin, inherited);
       const env: NodeJS.ProcessEnv = { ...privateEnv, ASTRA_KRITA_BRIDGE: bridge };
+      let executable = krita;
+      if (process.platform === 'win32') {
+        await ensureWindowsKritaPlugin(await windowsKritaConfigDirectory(), 'astra_bridge');
+        executable = await prepareWindowsKritaApplication(root, krita, resource);
+        // Windows Qt reads native Known Folders. Keep the real user preferences;
+        // plugin code, resources and bridge jobs remain section-private.
+        env.APPDATA = inherited.APPDATA;
+        env.LOCALAPPDATA = inherited.LOCALAPPDATA;
+      }
       displayName = await acquireDisplay(inherited);
       await kritaEnvironment(krita, env, inherited, displayName);
       // Not detached, for the same reason as Xvfb: the worker's group kill
       // must reach Krita even when no cleanup code gets to run.
-      const child = spawn(krita, ['--nosplash', '--resource-location', resource],
+      const child = spawn(executable, ['--nosplash', '--resource-location', resource],
         { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
       let launchError: Error | undefined;
       child.once('error', error => { launchError = error; });

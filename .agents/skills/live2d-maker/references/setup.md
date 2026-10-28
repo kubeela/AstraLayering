@@ -80,7 +80,8 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 
 **Krita 本体需提前安装，可由 agent 按已确认的方案协助安装。** 工作流自动准备其私有配置和桥接插件；其他基础依赖仍须按上方[依赖一览](#依赖一览)准备。先检查已有安装、用户路径和任务记录；`--krita` 传实际可执行文件，后台与恢复进程复用同一路径。Linux 解包的 AppImage 可传 `AppRun` 或 `usr/bin/krita`，自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
 
-- **私有进程：** 每个 section 一个私有 Krita，使用临时的独立配置和随附的桥接插件，不改用户的 Krita 目录。agent 通过 `krita` 工具按需启动、查看状态与 pid、执行 Python 脚本，崩溃或卡死时自行重启；section 结束（完成、失败或停止）时由工作流关闭并清理。框架不替 agent 启动 Krita。
+- **私有进程：** 每个 section 一个私有 Krita，使用临时资源目录和随附的桥接插件；Linux／macOS 使用独立配置，Windows 共享偏好的边界见下条。agent 通过 `krita` 工具按需启动、查看状态与 pid、执行 Python 脚本，崩溃或卡死时自行重启；section 结束（完成、失败或停止）时由工作流关闭并清理。框架不替 agent 启动 Krita。
+- **Windows 用户偏好：** Windows 的 Qt 使用系统已知文件夹定位配置，不受 APPDATA／LOCALAPPDATA／XDG 环境变量重定向影响。工作流共享用户的 kritarc、kritadisplayrc、窗口布局与最近文件；只确保 `[python] enable_astra_bridge=true`，保留其他配置，不恢复旧文件覆盖新偏好，也不修改全局 ResourceDirectory。每个 section 建立临时启动目录，通过目录联接复用已安装的 Krita 二进制、库和内置资源，让嵌入式 Python 能找到本 section 的私有桥接。插件、资源数据库和通信文件留在私有目录，不安装到用户 pykrita 目录；section 结束后清理启动目录，不删除原安装。
 - **对话框：** 桥接插件自动取消会卡住无人值守界面的对话框（例如导出参数框），并在工具结果中给出提示。
 - **并发上限：** 本机同时运行的 Krita 数量由 `.env` 的 `layering_krita_max_instances` 限制（默认 4，跨任务计算；名额锁位于系统临时目录的 `astra-krita.slots`，可用 `ASTRA_STUDIO_KRITA_SLOTS` 改位置）。需要 Krita 的 section 在开始步骤前占一个名额，持有到 section 结束；名额用满时排队等待。声明 `krita: false` 的步骤不占名额，其 agent 也没有 krita 工具。网页在 section 占用或排队等待 Krita 时显示标识。
 - **显示：** Linux 已设置 `DISPLAY`、`WAYLAND_DISPLAY` 或 `QT_QPA_PLATFORM` 时直接沿用，不启动 Xvfb；都没有时工作流启动一个共享的 Xvfb（以 `-noreset` 运行），多个 section 的 Krita 共用它。Xvfb 需要本机安装（`apt install xvfb` 等），不在 PATH 时用 `ASTRA_STUDIO_XVFB` 指定路径。macOS 与 Windows 使用当前桌面。
