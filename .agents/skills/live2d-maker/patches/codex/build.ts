@@ -7,6 +7,7 @@ import { parseArgs } from 'node:util';
 import { setTimeout as delay } from 'node:timers/promises';
 import lockfile from 'proper-lockfile';
 import { workflowsDirectory } from '../../shared/paths.ts';
+import { MissingDependencyError } from '../../shared/missing-dependency.ts';
 import { runCommand, watchOutput, type Command } from './process.ts';
 import { withRust } from './rust.ts';
 
@@ -16,10 +17,9 @@ type Options = { source?: string; jobs?: number; root?: string; env?: NodeJS.Pro
 type Services = { run?: Command; rust?: typeof withRust; companion?: () => string; platform?: NodeJS.Platform };
 
 // Missing C/C++ build tools: the user installs them and continues the task, which checks again and builds.
-export class MissingToolchainError extends Error {
+export class MissingToolchainError extends MissingDependencyError {
   constructor(found: string, platform: NodeJS.Platform, log?: string) {
-    super(`缺少 C/C++ 编译工具链（${found}），无法构建 Codex 补丁。${toolchainHints[platform] ?? toolchainHints.linux}`
-      + `安装完成后在网页点「继续」（命令行 --continue），会重新检查并自动构建；已有会话和产物保留。${log ? `构建日志：${log}` : ''}`);
+    super(`缺少 C/C++ 编译工具链（${found}），无法构建 Codex 补丁。`, toolchainHints[platform] ?? toolchainHints.linux!, log ? `构建日志：${log}` : '');
     this.name = 'MissingToolchainError';
   }
 }

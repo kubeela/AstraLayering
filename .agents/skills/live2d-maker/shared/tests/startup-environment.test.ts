@@ -74,7 +74,11 @@ test('Krita preflight rejects a missing installation without starting Krita', { 
 test('Linux Krita routes reject missing display configuration before drawing and accept explicit desktop/headless settings', { skip: process.platform !== 'linux' }, async t => {
   const root = await fixture(t), executable = join(root, 'krita');
   await writeFile(executable, '#!/bin/sh\n', { mode: 0o700 });
-  await assert.rejects(checkKrita(executable, { PATH: '' }), /没有显示配置.*headless/);
+  await assert.rejects(checkKrita(executable, { PATH: '' }), /找不到虚拟桌面 Xvfb（Xvfb）.*apt install xvfb.*「继续」/);
+  const xvfb = join(root, 'Xvfb');
+  await writeFile(xvfb, '#!/bin/sh\n', { mode: 0o700 });
+  assert.equal((await checkKrita(executable, { PATH: root })).executable, executable);
+  await assert.rejects(checkKrita(executable, { PATH: root, ASTRA_STUDIO_XVFB: join(root, 'missing-xvfb') }), /missing-xvfb/);
   for (const display of [{ DISPLAY: ':1' }, { WAYLAND_DISPLAY: 'wayland-0' }, { QT_QPA_PLATFORM: 'offscreen' }]) {
     assert.equal((await checkKrita(executable, { PATH: '', ...display })).executable, executable);
   }
