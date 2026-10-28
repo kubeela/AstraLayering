@@ -1,10 +1,15 @@
 import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { parseEnv } from 'node:util';
 import { atomicJSON } from './files.ts';
+import { workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { compareVersions, installedVersion, releaseTag, type InstalledVersion } from '../.agents/skills/live2d-maker/shared/version.ts';
 
 // Looks up the newest release tag on GitHub at most once a day and only reports it; nothing is
-// downloaded or replaced. Offline or failed lookups stay silent. ASTRA_LAYERING_UPDATE_CHECK=off disables it.
+// downloaded or replaced. Offline or failed lookups stay silent. layering_update_check=false in the skill
+// .env (the file people already carry over when updating) or in the shell disables it; the shell wins.
 export const repository = 'wu-tian807/AstraLayering';
+export const updateCheckKey = 'layering_update_check';
 const day = 24 * 60 * 60 * 1000, retry = 60 * 60 * 1000;
 export type UpdateState = InstalledVersion & {
   check: 'off' | 'ok' | 'unavailable';
@@ -17,9 +22,16 @@ export function newestTag(tags: unknown): string | undefined {
     .sort(compareVersions).at(-1);
 }
 
-export function createUpdateCheck({ cachePath, enabled = !/^(off|false|0|no)$/i.test(process.env.ASTRA_LAYERING_UPDATE_CHECK ?? ''),
+// Read on every request, so switching it on the configuration page needs no restart.
+export async function updateCheckEnabled(env: NodeJS.ProcessEnv = process.env, envFile = join(workflowsDirectory, '.env')) {
+  let value = env[updateCheckKey];
+  if (value === undefined) try { value = (parseEnv(await readFile(envFile, 'utf8')) as Record<string, string>)[updateCheckKey]; } catch { /* No .env yet. */ }
+  return !/^(off|false|0|no)$/i.test(value?.trim() ?? '');
+}
+
+export function createUpdateCheck({ cachePath, enabled = () => updateCheckEnabled(),
   fetchTags = defaultFetch, installed = installedVersion, clock = Date.now }: {
-  cachePath: string; enabled?: boolean; fetchTags?: () => Promise<unknown>; installed?: () => Promise<InstalledVersion>; clock?: () => number;
+  cachePath: string; enabled?: () => Promise<boolean>; fetchTags?: () => Promise<unknown>; installed?: () => Promise<InstalledVersion>; clock?: () => number;
 }) {
   let pending: Promise<string | undefined> | undefined, failedAt = -Infinity;
   async function latest() {
@@ -35,7 +47,7 @@ export function createUpdateCheck({ cachePath, enabled = !/^(off|false|0|no)$/i.
   }
   return async function state(): Promise<UpdateState> {
     const local = await installed();
-    if (!enabled) return { ...local, check: 'off' };
+    if (!await enabled()) return { ...local, check: 'off' };
     const found = await (pending ??= latest().finally(() => { pending = undefined; }));
     if (!found) return { ...local, check: 'unavailable' };
     // Commits after a tag count as that tag: a newer tag is still an update.

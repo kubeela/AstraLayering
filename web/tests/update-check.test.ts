@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { createUpdateCheck, newestTag } from '../update-check.ts';
+import { createUpdateCheck, newestTag, updateCheckEnabled } from '../update-check.ts';
 import { compareVersions, parseDescribe, type InstalledVersion } from '../../.agents/skills/live2d-maker/shared/version.ts';
 
 const local = (version: string, source: InstalledVersion['source'] = 'git'): InstalledVersion =>
@@ -23,7 +23,7 @@ test('the newest tag is looked up at most once a day, failures stay silent, and 
   try {
     let calls = 0, now = 1_000_000, tags: unknown = [{ name: 'v0.2.0' }];
     const fetchTags = async () => { calls++; if (tags instanceof Error) throw tags; return tags; };
-    const check = createUpdateCheck({ cachePath, enabled: true, fetchTags, installed: async () => local('0.1.0'), clock: () => now });
+    const check = createUpdateCheck({ cachePath, enabled: async () => true, fetchTags, installed: async () => local('0.1.0'), clock: () => now });
     const first = await check();
     assert.equal(first.updateAvailable, true);
     assert.equal(first.releaseUrl, 'https://github.com/wu-tian807/AstraLayering/releases/tag/v0.2.0');
@@ -31,7 +31,7 @@ test('the newest tag is looked up at most once a day, failures stay silent, and 
     assert.equal(calls, 1);
     assert.equal(JSON.parse(await readFile(cachePath, 'utf8')).latest, '0.2.0');
     // A restarted workbench reuses the saved result within the day.
-    await createUpdateCheck({ cachePath, enabled: true, fetchTags, installed: async () => local('0.2.0'), clock: () => now })()
+    await createUpdateCheck({ cachePath, enabled: async () => true, fetchTags, installed: async () => local('0.2.0'), clock: () => now })()
       .then(state => assert.equal(state.updateAvailable, false));
     assert.equal(calls, 1);
     now += 25 * 60 * 60 * 1000; tags = new Error('offline');
@@ -40,10 +40,23 @@ test('the newest tag is looked up at most once a day, failures stay silent, and 
     assert.equal(offline.latest, '0.2.0');
     await check();
     assert.equal(calls, 2, 'a failed lookup waits before retrying');
-    const off = await createUpdateCheck({ cachePath, enabled: false, fetchTags, installed: async () => local('0.1.0') })();
+    const off = await createUpdateCheck({ cachePath, enabled: async () => false, fetchTags, installed: async () => local('0.1.0') })();
     assert.equal(off.check, 'off');
     assert.equal(calls, 2);
-    const unknown = await createUpdateCheck({ cachePath, enabled: true, fetchTags, installed: async () => local('0.0.0', 'unknown'), clock: () => now })();
+    const unknown = await createUpdateCheck({ cachePath, enabled: async () => true, fetchTags, installed: async () => local('0.0.0', 'unknown'), clock: () => now })();
     assert.equal(unknown.updateAvailable, false);
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('the switch lives in the skill .env and the shell overrides it', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'update-switch-')), envFile = join(dir, '.env');
+  try {
+    assert.equal(await updateCheckEnabled({}, envFile), true, 'on without a .env');
+    await writeFile(envFile, 'layering_update_check=false\n');
+    assert.equal(await updateCheckEnabled({}, envFile), false);
+    assert.equal(await updateCheckEnabled({ layering_update_check: 'true' }, envFile), true);
+    await writeFile(envFile, 'layering_update_check=\n');
+    assert.equal(await updateCheckEnabled({}, envFile), true, 'empty keeps the default');
+    assert.equal(await updateCheckEnabled({ layering_update_check: 'off' }, envFile), false);
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
