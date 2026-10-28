@@ -80,15 +80,26 @@ KRA 可继续逐层编辑，案例保留分件结构、关键工程和验收记�
 
 ### 1. 准备软件与仓库
 
-默认 Codex 方案按下表逐项准备 **5 项基础软件**，已有安装直接复用。
+先按下表准备依赖：**始终需要** 的必须安装；**默认方案** 对应开箱的 Codex 配置；**按需** 的只在启用对应功能时准备。已有安装直接复用。
 
-| 序号 | 依赖 | 用途与要求 | 安装／准备入口 |
+| 依赖 | 何时需要 | 用途与说明 | 安装／准备入口 |
 | --- | --- | --- | --- |
-| 1 | **Node.js 24.12+** | 运行工作台与制作管线，安装器同时提供 npm | [Node.js 官方安装器](https://nodejs.org/en/download) |
-| 2 | **Git** | 获取仓库、读取配置版本，以及构建 Codex 补丁时获取源码 | [Git 官方安装器](https://git-scm.com/downloads) |
-| 3 | **Krita** | 绘制、组装和阴影制作，保存与导出 KRA | [Krita 官方安装器](https://krita.org/en/download/) |
-| 4 | **Codex CLI 与登录环境** | 执行模型任务；默认方案需要账号具备宿主内置生图能力 | 准备已登录的本机 CLI，入口与 provider 见 [CLI 接入说明](.agents/skills/live2d-maker/references/model-presets.md#cli-与-provider) |
-| 5 | **C/C++ 编译工具链** | 首次从源码构建 Codex 补丁时使用；已有合格补丁入口可直接通过能力检查 | 按下方系统表安装 |
+| **Node.js 24.12+** | 始终需要 | 运行工作台与制作管线，同时提供 npm；`engines` 要求 `>=24.12.0` | [Node.js 官方安装器](https://nodejs.org/en/download) |
+| **Git** | 始终需要 | 克隆仓库、读取提示词版本；构建 Codex 补丁时获取源码 | [Git 官方安装器](https://git-scm.com/downloads) |
+| **Krita**（带 Python 脚本支持） | 绘制、组装、阴影需要；只跑人物／衣服分块时不需要 | agent 通过脚本操作每个 section 私有启动的 Krita，保存与导出 KRA；官方安装包自带 Python | [Krita 官方安装器](https://krita.org/en/download/)，首次制作时填写可执行文件路径（见[第 3 步](#3-在网页中启动任务)） |
+| **至少一种模型 CLI 并已登录** | 始终需要 | 执行各职责的语言模型任务；默认是 Codex，下方三行按所选模型准备 | 见下方各行 |
+| **Codex CLI 与登录** | 默认方案；任一步骤选用 `gpt-*` 模型时 | 默认全部职责使用 `gpt-6.1-sol`；默认生图 `codex-native` 复用宿主内置生图，账号需具备该能力 | 已登录的本机 CLI，见 [CLI 与 provider](.agents/skills/live2d-maker/references/model-presets.md#cli-与-provider) |
+| **C/C++ 编译工具链** | 使用 Codex 时，首次构建补丁 | 构建本仓库的 Codex 补丁版；之后复用缓存，已有合格补丁入口可跳过。只用 Claude／Gemini 时不需要 | 按下方系统表安装 |
+| **Claude Code CLI 与登录** | 按需：想用 Claude 模型（`claude-*`） | 混合方案中的遮挡补全、栅格绘制、组装与阴影；也可填写 `layering_claude_api_key` 使用自定义连接 | 已登录的 `claude`，或在 `.env` 填写 `layering_claude_path` |
+| **Antigravity CLI 与登录** | 按需：想用 Gemini 语言模型（`gemini-4-argon`） | 以 AGV harness 执行所选职责；遇到 CLI 60 秒响应头期限时可开启[兼容补丁](.agents/skills/live2d-maker/patches/README.md)，无需 Rust | 已登录的 `agy`／`agv`／`antigravity`，或填写 `layering_agv_path` |
+| **GPT Image 生图服务** | 按需：生图选 `gpt-image-2.5-sunburst`／`flare` | 独立的 OpenAI Images 接口；不用 Codex 时，生图步骤需改选此项或 Nano | `.env` 填写 `layering_openai_image_base_url`、`layering_openai_image_api_key` |
+| **Nano Banana 生图服务** | 按需：想用 Gemini 生图（`gemini-nano-banana-2.1`） | 素体图与遮挡补全参考等；透明度由共享的双背景差分恢复 | `.env` 填写 `layering_google_image_base_url`、`layering_google_image_api_key`，协议选 `gemini` 或 `openai` |
+| **Xvfb** | 按需：Linux 无桌面（没有 `DISPLAY`／`WAYLAND_DISPLAY`） | 工作流自动启动一个共享虚拟显示，供各 section 的 Krita 使用；有桌面时直接用现有显示 | `apt install xvfb` 或发行版对应包；不在 PATH 时设置 `ASTRA_STUDIO_XVFB` |
+| **解包的 Krita AppImage** | 按需：Linux 使用 AppImage | 解包后无需 FUSE，自动使用其内置 Python 与库；传 `AppRun` 或 `usr/bin/krita` | `krita.appimage --appimage-extract` |
+| **Krita 合成服务配置** | 按需：网页里原生编辑 KRA 图层 | 角色工作台的显隐、不透明度等原生编辑；未配置时仍可查看保存的合成图 | 配置 `ASTRA_STUDIO_KRITA` 等，见 [工作台说明](web/README.md#原生合成服务配置linux) |
+| **Playwright Chromium** | 按需：浏览器自动验证 | 截图与界面检查；`playwright` 包随项目依赖安装，浏览器需另行下载 | `pnpm exec playwright install chromium` |
+
+模型和生图的组合方式见 [模型方案](.agents/skills/live2d-maker/references/model-presets.md)；启动前可执行 `pnpm env:check` 核对实际生效的模型、CLI 与生图配置（不验证登录）。
 
 C/C++ 编译工具链选择本机对应的一行即可：
 
@@ -98,17 +109,17 @@ C/C++ 编译工具链选择本机对应的一行即可：
 | Windows | 按 [Microsoft 安装说明](https://learn.microsoft.com/en-us/cpp/overview/acquire-msvc)打开 Visual Studio Build Tools 安装器，选择 **“使用 C++ 的桌面开发”**，包含与本机 Rust 目标架构匹配的 MSVC 工具和 Windows SDK |
 | Linux | 在发行版的图形软件包管理器中安装 C/C++ 编译工具包；Ubuntu／Debian 常用 **build-essential**，其他发行版选择对应开发工具包，见 [Ubuntu 软件包说明](https://packages.ubuntu.com/build-essential) |
 
-以下项目由程序自动准备：
+以下项目由程序自动准备，无需手动安装：
 
-| 自动准备项 | 程序的处理方式 |
-| --- | --- |
-| **pnpm 10.33.0 与项目依赖** | 双击启动文件后，通过 npm 准备固定版本 pnpm 并安装依赖 |
-| **Rust 1.95.0** | 构建补丁时复用已有版本，缺少时临时隔离安装，构建后清理 |
-| **本仓库的 Codex 补丁版** | 首次实际制作时自动构建，后续复用缓存；指定已有入口时检查能力 |
+| 自动准备项 | 何时 | 程序的处理方式 |
+| --- | --- | --- |
+| **pnpm 10.33.0 与项目依赖** | 双击启动文件时 | 通过 npm 准备固定版本 pnpm 并安装依赖 |
+| **默认 `.env`** | 缺少 `.env` 时 | 以 `example.env` 创建默认方案；已有 `.env` 原样保留 |
+| **Rust 1.95.0** | 构建 Codex 补丁时 | 复用已有版本，缺少时临时隔离安装，构建后清理 |
+| **本仓库的 Codex 补丁版** | 首次实际使用 Codex 制作时 | 自动构建并缓存；指定已有入口时检查能力后复用 |
+| **私有 Krita 环境** | 需要 Krita 的 section 开始时 | 每个 section 一个 Krita 进程，使用独立临时配置和随附桥接插件，不改用户的 Krita 目录；本机同时最多 4 个（`layering_krita_max_instances`），超出时排队 |
 
-**Krita 操作环境：** 需要自行安装 Krita，并在首次制作时提供其可执行文件路径。agent 只通过 Python 脚本操作工作流为每个 section 单独启动的私有 Krita，不需要桌面操作权限；Linux 无桌面时需安装 Xvfb，由工作流自动启动。详见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
-
-软件准备好后，用图形 Git 客户端克隆本仓库：macOS／Windows 可在 [GitHub Desktop](https://desktop.github.com/) 的“File → Clone repository → URL”填入 `https://github.com/wu-tian807/AstraLayering.git`，Linux 可使用已有图形 Git 客户端的克隆功能。完整检出包含 `web/`、`.agents/skills/live2d-maker/` 和 demos；带有 Git LFS 指针的成果文件需拉取实际内容。
+软件准备好后，用图形 Git 客户端克隆本仓库：macOS／Windows 可在 [GitHub Desktop](https://desktop.github.com/) 的“File → Clone repository → URL”填入 `https://github.com/wu-tian807/AstraLayering.git`，Linux 可使用已有图形 Git 客户端的克隆功能。完整检出包含 `web/`、`.agents/skills/live2d-maker/` 和 demos。更细的安装检查见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
 
 ### 2. 双击启动文件
 
@@ -118,7 +129,7 @@ C/C++ 编译工具链选择本机对应的一行即可：
 | Linux | [start-workbench.sh](start-workbench.sh) | 在文件管理器选择“作为程序运行”；必要时在文件属性中允许执行 |
 | Windows | [start-workbench.cmd](start-workbench.cmd) | 在资源管理器双击 |
 
-脚本会检查 Node，使用固定版本 pnpm 自动安装项目依赖，在缺少 `.env` 时创建默认配置，启动工作台并打开浏览器。pnpm 由脚本自动准备，Git 和 C/C++ 工具链请按上表提前安装。首次需要联网；Codex 补丁在首次实际制作时构建或复用。已有 `.env` 保持原样。
+脚本会检查 Node，使用固定版本 pnpm 自动安装项目依赖，在缺少 `.env` 时创建默认配置，启动工作台并打开浏览器。其余依赖请按上表提前准备。首次需要联网；Codex 补丁在首次实际制作时构建或复用。已有 `.env` 保持原样。
 
 默认打开 [本机工作台](http://127.0.0.1:4387/)。同一仓库通过脚本启动的服务可直接复用；端口被其他程序占用时自动选择空闲端口，以启动窗口显示的地址为准。保留启动窗口，关闭会停止本次网页服务；后台制作任务的停止请使用网页按钮。远程服务器访问与部署见 [工作台说明](web/README.md)。
 
