@@ -516,6 +516,8 @@ function zoomCanvas(value,fit=false) {
  viewport.scrollTop=fit?min:Math.min(max,Math.max(min,centerY*state.zoom/previous-viewport.clientHeight/2));
 }
 async function openAsset(item,index,stepId) {
+ // A KRA is binary: the drawer shows its saved composite, never its bytes as text.
+ if(item.kind==='file'&&/\.kra$/i.test(item.path))item={...item,kind:'image'};
  state.stage=index;state.selectedStep=stepId;state.inspect=true;state.asset={...item};
  const selected=state.asset;render();
  if(item.kind==='file') {
