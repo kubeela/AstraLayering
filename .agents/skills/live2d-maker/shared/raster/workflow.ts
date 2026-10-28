@@ -20,6 +20,8 @@ import { modelHarnesses } from '../agents/models.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { validateImageSelection } from '../agents/images.ts';
 import { beginReview, finishReview, legacyEdgeDrawingReady } from './review-baseline.ts';
+import { SectionKrita, kritaRecordFile } from '../krita/section-krita.ts';
+import { createKritaTool } from '../krita/tool.ts';
 
 export type WorkflowOptions = {
   name: string;
@@ -51,8 +53,8 @@ export type Passthrough = { reason: string; deliver(): Promise<void> };
 export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
   directorySuffix?: string;
-  tools?(output: string, input: Input, step: StepDefinition, phase: string,
-    runtime?: { krita: KritaInstallation; env: NodeJS.ProcessEnv }): NonNullable<AgentRequest['tools']>;
+  // `krita`: the section's Krita, reserved when the step uses Krita.
+  tools?(output: string, input: Input, step: StepDefinition, phase: string, krita?: SectionKrita): NonNullable<AgentRequest['tools']>;
   fingerprintInput?(input: Input): Promise<string>;
   compatibleInputFingerprint?(input: Input, recorded: string | undefined): Promise<boolean>;
   // The upstream pipeline's final step; step01 records its stamp and reruns when it changes.
@@ -68,7 +70,7 @@ export type KritaPipeline<Input> = {
   resolveInput(name: string, root: string): Promise<Input>;
   validateInput(value: unknown): value is Input;
   inputDirectories(input: Input): readonly string[];
-  buildPrompt(step: StepDefinition, input: Input, output: string, krita: KritaInstallation, previous: readonly string[]): Promise<string>;
+  buildPrompt(step: StepDefinition, input: Input, output: string, previous: readonly string[]): Promise<string>;
 };
 
 // Upstream runs from before the step was recorded have no step directory; they
@@ -110,20 +112,27 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   const configuredKrita = options.krita ?? saved?.krita.executable;
   if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
   const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
-  const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, undefined, environment.codex.env));
+  const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, environment.codex.env));
   const config = !saved || inputChanged ? newConfig(options.name, reference, krita) : saved;
   if (fingerprint !== undefined) config.inputFingerprint = fingerprint;
   // run.json records inputs relative to the task root; the absolute reference stays in memory.
   const taskRoot = taskRootOf(directory);
   config.sourceInput = await taskPaths(taskRoot, reference);
   config.krita = krita;
-  options.progress?.(`前置检查通过：Krita ${krita.version} (${krita.executable})`);
+  options.progress?.(`前置检查通过：Krita ${krita.executable}`);
   options.progress?.(`任务目录：${directory}；直接读取上游：${inputDirectories.join('、')}`);
 
   const previous: string[] = [];
   const previews: string[] = [];
   const byId = new Map(definitions.map(step => [step.id, step]));
-  await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
+  // The section's own Krita. A step whose definition does not opt out with
+  // `krita: false` reserves a machine-wide Krita slot before it starts (queueing
+  // while all are taken) and its drawing, review and repair agents get the krita tool;
+  // other steps get neither. The slot and Krita are released when the section ends.
+  const sectionKrita = new SectionKrita({ section: directory, krita: krita.executable, env: environment.codex.env,
+    record: join(directory, kritaRecordFile) });
+  const kritaTool = createKritaTool(sectionKrita, taskRoot);
+  try { await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
     progress: options.progress, fresh: inputChanged, resetNote: '，并清除这些步骤的 thread',
     // Validate retained deliveries before making any reset destructive.
     async keep(chainStep) {
@@ -143,7 +152,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       else { await migrateRunSession(directory, config); await saveConfig(directory, config); }
     },
     step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
-  });
+  }); } finally { await sectionKrita.release(); }
   if (options.dryRun) return previews.join('\n\n') || '当前已定义步骤均已完成；无需调用模型。';
   return `已完成当前已定义步骤。交付目录：${previous.at(-1) ?? directory}`;
 
@@ -182,10 +191,10 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     }
     const model = step;
     if (options.dryRun) {
-      if (!drawingReady) previews.push(await pipeline.buildPrompt(step, reference, output, krita, previous));
+      if (!drawingReady) previews.push(await pipeline.buildPrompt(step, reference, output, previous));
       if (step.review) {
         const task = drawingReady ? reviewTask : { kind: 'review' as const, filename: 'review-01.md' as const, index: 0 };
-        if (task) previews.push(await buildReviewPrompt(step, task, krita));
+        if (task) previews.push(await buildReviewPrompt(step, task));
       }
       options.progress?.(`${step.id}：${drawingReady ? '接续 review / 修复' : status === 'running' ? '恢复未完成步骤' : '开始步骤'} (${model.model} / ${model.effort})`);
       previous.push(output);
@@ -212,12 +221,12 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         await saveSession({ handoff: session.handoff }, '模型配置切换 CLI');
       }
       const handoff = !fresh && !session.threadId ? session.handoff : undefined;
-      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});
+      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
       if (handoff) {
         const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
         // A new repair thread also needs the original drawing task and inputs.
-        if (phase !== 'draw') prompt = renderPromptFile(new URL('../prompts/raster-handoff-repair.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt});
+        if (phase !== 'draw') prompt = renderPromptFile(new URL('../prompts/raster-handoff-repair.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
         prompt = renderPromptFile(new URL('../prompts/raster-handoff.md',import.meta.url),{
           task_prompt:prompt, previous_thread_id:handoff.previousThreadId, reason:handoff.reason,
           step_id:step.id, phase, notes,
@@ -233,9 +242,12 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : session.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: pipeline.tools?.(output, reference, step, phase, { krita, env: environment.codex.env ?? process.env }),
-        imageNormalization: { env: environment.codex.env, krita: krita.executable, runsRoot: root, progress: options.progress },
-        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, krita, previous),repair_prompt:prompt}) : undefined,
+        tools: [...pipeline.tools?.(output, reference, step, phase, sectionKrita) ?? [],
+          // Drawing, review and repairs run one after another in this section
+          // and share its Krita; a fresh reviewer thread is still the same section.
+          ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])],
+        imageNormalization: { env: environment.codex.env, runsRoot: root, progress: options.progress },
+        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await pipeline.buildPrompt(step, reference, output, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : session.threadId, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');
@@ -263,6 +275,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       await writeFile(resultFile, JSON.stringify(result, null, 2) + '\n');
       return result;
     };
+    if (step.krita !== false) await sectionKrita.reserve(options.signal, waiting => options.progress?.(`${step.id}：${waiting}`));
     return async () => { try {
       await pipeline.prepareStep?.(output, reference, step, krita);
       if (!drawingReady) {
@@ -270,7 +283,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
           await discardReviewReports(output);
           await rm(join(output, 'report.md.tmp'), { force: true });
         }
-        const result = await invoke(await pipeline.buildPrompt(step, reference, output, krita, previous), 'draw');
+        const result = await invoke(await pipeline.buildPrompt(step, reference, output, previous), 'draw');
         if (result.status !== 'completed') throw new Error(`步骤未完成：${result.summary}`);
         if (!session.threadId) throw new Error('SDK 未返回 threadId，不能完成步骤。');
         const required = step.requiredFiles.map(file => step.review && file === 'report.md' ? 'report.md.tmp' : file);
@@ -284,7 +297,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
         if (!await fileInfo(join(output, 'review-baseline.json'))) await beginReview(output, step);
         // An interrupted repair may still need to regenerate a deliverable.
         if (!drawingReady || reviewTask?.kind !== 'repair') await checkFiles(output, step.requiredFiles);
-        await runReviews({ step, directory: output, krita, signal: options.signal, progress: options.progress,
+        await runReviews({ step, directory: output, signal: options.signal, progress: options.progress,
           invoke: (prompt, task) => invoke(prompt, task.filename.slice(0, -3), task.kind === 'review'),
           validate: () => checkFiles(output, step.requiredFiles),
         });

@@ -14,9 +14,12 @@ import { pipelineAgentSteps, preflightAgentSteps } from '../shared/agents/prefli
 import { clearTaskStop, watchTaskStop } from './control.ts';
 import { requireKrita } from './krita.ts';
 import { readDressup } from '../shared/part/dressup.ts';
+import { AgentSlotPool, agentSlotsVariable } from './agent-slots.ts';
 
 export type PipelineExecution = (id: PipelineId, run: TaskRun, context: {
   signal: AbortSignal; progress(message: string): void; started(pid: number): Promise<void>;
+  // The task's agent slots, shared by every pipeline worker it starts.
+  slots?: AgentSlotPool;
 }) => Promise<PipelineResult>;
 
 function terminate(child: ChildProcess, force = false) {
@@ -36,7 +39,9 @@ export const executeChild: PipelineExecution = async (id, run, context) => {
   return new Promise<PipelineResult>((resolve, reject) => {
     const child = fork(fileURLToPath(new URL('./pipeline-worker.ts', import.meta.url)), [directory, run.name, id, run.runner!.id], {
       cwd: directory, detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
+      env: context.slots ? { ...process.env, [agentSlotsVariable]: 'ipc' } : process.env,
     });
+    context.slots?.attach(child);
     let result: PipelineResult | undefined, failure = '', output = '', killTimer: NodeJS.Timeout | undefined;
     const abort = () => { terminate(child); killTimer = setTimeout(() => terminate(child, true), 10_000); killTimer.unref(); };
     context.signal.addEventListener('abort', abort, { once: true });
@@ -100,17 +105,18 @@ export async function runTask(options: TaskOptions, dependencies: {
     // preflight: it is quick, while that may build the patched Codex. A refusal
     // leaves run.json as it was.
     const configured = await configureRun(options, directory);
-    await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, undefined, environment?.codex.env)));
+    await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, environment?.codex.env)));
     run = configured;
     run.status = 'running'; delete run.error; delete run.output; delete run.activePipeline;
     run.runner = { id: randomUUID(), pid: process.pid, startedAt: now(), stopProtocol: 'file-v1' };
+    const slots = new AgentSlotPool(run.jobs);
     await persist();
     stopWatching = watchTaskStop(directory, run.runner.id, stopController,
       error => log.write('停止请求读取失败：' + formatAgentError(error)));
     const selected = selectedPipelines(run.from, run.to);
     if (environment) {
       const standard = run.standard;
-      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { krita: run.krita, runsRoot: dirname(directory), progress,
+      await preflightAgentSteps(environment, selected.flatMap(id => pipelineAgentSteps(id, standard, run!.shadowMode)), { runsRoot: dirname(directory), progress,
         building: () => { progress('准备中：构建补丁版 Codex，完成后自动开始；构建期间的停止请求在构建结束后生效。'); dependencies.preparing?.(run!); } });
     }
     signal.throwIfAborted();
@@ -141,7 +147,7 @@ export async function runTask(options: TaskOptions, dependencies: {
       await persist();
       progress('启动或恢复：' + id + '；由该管线校验已有产物和完成标记。');
       const result = await (dependencies.execute ?? executeChild)(id, run, {
-        signal, progress, started: async pid => { run!.runner!.childPid = pid; await persist(); },
+        signal, progress, slots, started: async pid => { run!.runner!.childPid = pid; await persist(); },
       });
       delete run.runner.childPid;
       run.pipelines[id] = { status: 'completed', updatedAt: now(), summary: result.summary };

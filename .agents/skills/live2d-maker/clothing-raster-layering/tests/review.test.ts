@@ -13,7 +13,7 @@ import { runWorkflow } from '../run.ts';
 
 const completed: StepResult = { status: 'completed', summary: 'fixture completed' };
 const forbidden = async (): Promise<never> => assert.fail('unexpected model call');
-const preflight = async (executable: string) => ({ executable, version: 'fixture' });
+const preflight = async (executable: string) => ({ executable });
 const config = async (directory: string) => JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
 async function absent(path: string) { await assert.rejects(readFile(path), { code: 'ENOENT' }); }
 const isReview = (request: AgentRequest) => request.prompt.startsWith('你负责对第一步交付');

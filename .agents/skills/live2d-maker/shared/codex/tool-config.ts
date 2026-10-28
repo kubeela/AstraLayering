@@ -11,20 +11,29 @@ function optional(path: string): string | undefined {
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
 }
 
-// A catalog is a snapshot. Running sessions keep their registered definitions;
-// editing the files takes effect on the next workflow launch.
+// Shared tools live in shared/tools/<name>/; a pipeline's own tools live in
+// its tools/<name>/ (`overrides`), which may also replace a shared tool's
+// description.md or schema.json file by file. A catalog is a snapshot.
+// Running sessions keep their registered definitions; editing the files
+// takes effect on the next workflow launch.
 export class ToolCatalog {
   private definitions = new Map<string, Definition>();
 
   constructor(directory = toolsDirectory, overrides?: string) {
-    const names = readdirSync(directory, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => entry.name);
-    for (const name of names) {
+    const directories = (path: string) => readdirSync(path, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => entry.name);
+    const shared = new Set(directories(directory));
+    for (const name of new Set([...shared, ...overrides ? directories(overrides) : []])) {
       if (!/^[a-z][a-z0-9_]*$/.test(name)) throw new Error(`无效工具目录：${name}`);
-      const read = (file: string) => (overrides ? optional(join(overrides, name, file)) : undefined)
-        ?? readFileSync(join(directory, name, file), 'utf8');
+      const read = (file: string) => {
+        const own = overrides ? optional(join(overrides, name, file)) : undefined;
+        if (own !== undefined) return own;
+        if (!shared.has(name)) throw new Error(`工具 ${name} 缺少 ${file}：${join(overrides!, name)}`);
+        return readFileSync(join(directory, name, file), 'utf8');
+      };
       const description = read('description.md').trim();
+      const schema = read('schema.json');
       let inputSchema: unknown;
-      try { inputSchema = JSON.parse(read('schema.json')); }
+      try { inputSchema = JSON.parse(schema); }
       catch (error) { throw new Error(`工具 ${name} 的 schema.json 无效`, { cause: error }); }
       if (!description || !inputSchema || typeof inputSchema !== 'object' || Array.isArray(inputSchema)
         || (inputSchema as Record<string, unknown>).type !== 'object') {
@@ -33,6 +42,8 @@ export class ToolCatalog {
       this.definitions.set(name, { name, description, inputSchema: inputSchema as Record<string, unknown> });
     }
   }
+
+  names(): string[] { return [...this.definitions.keys()].sort(); }
 
   get(name: string): Definition {
     const definition = this.definitions.get(name);

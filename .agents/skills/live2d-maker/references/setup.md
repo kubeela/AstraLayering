@@ -43,22 +43,17 @@ pnpm install --frozen-lockfile
 
 需要 AGV 期限兼容时，设置 `layering_agv_unlimited_response_header_timeout=true`，适用构建与验证见 patches。图片数和请求体预算按服务限制配置，通过 `env:check` 核对，切换模型或升级时沿用已有预算。
 
-## Krita 与 computer use
+## Krita
 
-**Krita 是人物／衣服绘制、组装和阴影操作 KRA 的前置软件。** 先检查已有安装、用户路径和任务记录；`--krita` 传实际可执行文件，后台与恢复进程复用同一路径及显示环境。
+**Krita 是人物／衣服绘制、组装和阴影操作 KRA 的前置软件。** 先检查已有安装、用户路径和任务记录；`--krita` 传实际可执行文件（Linux 解包的 AppImage 可传 `AppRun` 或 `usr/bin/krita`），后台与恢复进程复用同一路径。
 
-桌面方案中的 agent 可能通过 computer use 操作真实 Krita 窗口、鼠标和键盘，需要截图、交互能力及相应系统权限。同时验证能够打开文档、查看画面、保存 KRA、重新打开和导出图片，版本检查只是其中一项。
+Krita 本身由外部提供，其余由工作流准备：每个 section 一个私有 Krita 进程，使用临时的独立配置和随附的桥接插件，不改用户的 Krita 目录。agent 通过 `krita` 工具按需启动、查看状态与 pid、执行 Python 脚本，崩溃或卡死时自行重启；section 结束（完成、失败或停止）时由工作流关闭并清理。网页在 section 的 Krita 运行时显示“Krita 运行中”。桥接插件会自动取消会卡住无人值守界面的对话框（例如导出参数框），并在工具结果中给出提示。
 
-缺少 Krita 或必要操作组件时，由 agent 准备本机安装方案。**安装前向用户说明实际需要安装、配置的软件和权限，确认所选方案后执行。** 已有针对该机器和方案的授权直接沿用；方案或范围改变时再确认。这项确认沿用用户对 Krita 安装的既有要求。
+Linux 有 DISPLAY 或 WAYLAND_DISPLAY 时在该显示上运行；没有时工作流启动一个共享的 Xvfb（`apt install xvfb` 等，或用 `ASTRA_STUDIO_XVFB` 指定路径），多个 section 的 Krita 共用它。本机同时运行的 Krita 上限由 `.env` 的 `layering_krita_max_instances` 配置（默认 4，跨任务计算）：需要 Krita 的 section 在开始步骤前占一个名额、持有到 section 结束，名额用满时排队等待；声明 `krita: false` 的步骤不占名额，其 agent 也没有 krita 工具。解包的 AppImage 会自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
 
-| 方案 | 使用条件与检查 |
-| --- | --- |
-| 桌面 Krita + computer use（有桌面时优先） | 使用当前系统的 Krita 官方原生安装包，验证真实窗口与截图／鼠标／键盘能力 |
-| Headless Krita | 用于无桌面环境或明确选择时；按实际平台准备显示和脚本路径，Linux 可用 Xvfb，仍完成逐层观察、保存与重开验收 |
+缺少 Krita 时，由 agent 准备本机安装方案。**安装前向用户说明实际需要安装、配置的软件，确认所选方案后执行。** 已有针对该机器和方案的授权直接沿用；方案或范围改变时再确认。
 
-Linux 后台需要有效 DISPLAY、WAYLAND_DISPLAY 或显式 Qt 显示配置，工作流会传递 `.env` 中的相关环境。Xvfb 是对应方案的外部组件。Krita 和显示环境的实际路径、启动方式及授权方案记录在任务 `monitor.md`，用于后续巡检恢复。
-
-所有操作 Krita 的提示词自动注入同一份 [environment.md](../shared/krita/environment.md)，复用现有 shell、computer use 或已验证 bridge。Python 优先使用宿主已有解释器，缺少时验证 Krita 内置插件／脚本；辅助绘图包按实际脚本需要检查。Krita 模块在 Krita 进程内验证，私有进程的 HOME、Python 资源和 macOS 配置保持一致。
+Krita 用法只写在 [krita 工具说明](../shared/tools/krita/description.md)，随需要 Krita 的步骤提供；框架不替 agent 启动 Krita，只在 section 结束时清理。
 
 ## 按需功能
 

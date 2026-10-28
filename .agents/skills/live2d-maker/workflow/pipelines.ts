@@ -13,7 +13,9 @@ import type { TaskRun } from './state.ts';
 
 // output is the delivered file relative to the task root.
 export type PipelineResult = { summary: string; output?: string };
-export async function executePipeline(id: PipelineId, run: TaskRun, progress: (message: string) => void): Promise<PipelineResult> {
+// prepared(): part-layering has its references; the clothing lane may start.
+export async function executePipeline(id: PipelineId, run: TaskRun, progress: (message: string) => void,
+  events: { prepared?(): void } = {}): Promise<PipelineResult> {
   if (id === 'shadow') {
     const mode = shadowMode(run.shadowMode);
     const summary = await shadow({ name: run.name, dir: run.dir, krita: run.krita, shadowMode: mode, progress });
@@ -22,9 +24,9 @@ export async function executePipeline(id: PipelineId, run: TaskRun, progress: (m
   if (id === 'part-layering' || id === 'clothing-part-layering') {
     const execute = id === 'part-layering' ? runPartLayering : runClothingPartLayering;
     const result = await execute({
-      reference: { runName: run.name, dir: run.dir, krita: run.krita, ...(id === 'part-layering' ? { image: run.image, standard: run.standard } : {}) },
+      reference: { runName: run.name, dir: run.dir, ...(id === 'part-layering' ? { image: run.image, standard: run.standard } : {}) },
       groups: null,
-    }, {}, { agentConcurrency: run.jobs, progress });
+    }, { prepared: events.prepared }, { agentConcurrency: run.jobs, progress });
     if (result.layering.status !== 'completed') {
       throw new Error('管线尚未完成：' + id + '\n' + formatLayeringSummary(result.layering.groups).join('\n')
         + '\n进度目录：' + join(run.dir, run.name, id));

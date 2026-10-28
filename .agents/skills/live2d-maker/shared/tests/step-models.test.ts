@@ -217,7 +217,7 @@ test('custom image edit transports original prompts and images over both protoco
       [`layering_${provider}_image_base_url`]: base + (mode === 'gemini' ? '/v1beta' : '/v1'),
       [`layering_${provider}_image_api_key`]: 'image-test-secret', ...(provider === 'google' ? { layering_google_image_protocol: mode } : {}) }, root);
     const outputDirectory = `${provider}-${mode}`;
-    const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory), { krita: process.execPath })!;
+    const tool = imageGenerationTool(settings, 'part_simplify', join(root, outputDirectory))!;
     const current = { name: tool.name, description: tool.description, inputSchema: tool.inputSchema };
     if (definition) assert.deepEqual(current, definition);
     else definition = current;

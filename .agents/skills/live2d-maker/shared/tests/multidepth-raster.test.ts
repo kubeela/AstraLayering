@@ -17,7 +17,7 @@ test('两套 raster 经受控工具新增分组及 SVG 后，中断与主动重�
     t.after(() => rm(root, { recursive: true, force: true }));
     const source = await seedUpstream('case', pipeline.inputPipeline, root);
     const output = join(root, 'case', pipeline.id);
-    const deps = { runsDirectory: root, steps: [pipeline.steps[0]], preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+    const deps = { runsDirectory: root, steps: [pipeline.steps[0]], preflight: async (executable: string) => ({ executable }) };
     let changed: Record<string, string> = {};
     await assert.rejects(runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
       await request.onEvent({ type: 'thread.started', thread_id: 'fixed-thread' });

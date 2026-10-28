@@ -29,7 +29,7 @@ async function saveImage(image: GeneratedImage | undefined, output: string): Pro
 async function prepareImage(agents: Pick<CodexAgents, 'run'>, task: AgentTask, input: string, output: string, processGenerated?: ProcessGenerated): Promise<ReferenceChoice> {
   let reusedReason: string | undefined;
   const result = await agents.run({ ...task, tools: [{
-    ...toolDefinition('reuse_reference'),
+    ...toolDefinition('reuse_reference', fileURLToPath(new URL('./tools/', import.meta.url))),
     async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)
         || Object.keys(value).some(key => key !== 'reason')

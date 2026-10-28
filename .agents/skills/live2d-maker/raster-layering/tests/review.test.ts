@@ -13,12 +13,12 @@ import { runWorkflow } from '../run.ts';
 
 const completed: StepResult = { status: 'completed', summary: 'fixture completed' };
 const forbidden = async (): Promise<never> => assert.fail('unexpected model call');
-const preflight = async (executable: string) => ({ executable, version: 'fixture' });
+const preflight = async (executable: string) => ({ executable });
 const config = async (directory: string) => JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
 async function absent(path: string) { await assert.rejects(readFile(path), { code: 'ENOENT' }); }
 const isReview = (request: AgentRequest) => request.prompt.startsWith('你负责对第一步交付');
 function reportName(request: AgentRequest): string {
-  assert.deepEqual(request.tools?.map(tool => tool.name), isReview(request) ? ['annotate_review_regions'] : ['edit_groups', 'edit_occlusion']);
+  assert.deepEqual(request.tools?.map(tool => tool.name), isReview(request) ? ['annotate_review_regions', 'krita'] : ['edit_groups', 'edit_occlusion', 'krita']);
   const name = request.prompt.match(/step01\/((?:review|repair)-\d{2}\.md\.tmp)/)?.[1];
   assert.ok(name, 'a single concrete output filename must be injected');
   return name;

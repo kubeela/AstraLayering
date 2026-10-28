@@ -79,7 +79,7 @@ export async function loadConfig<Input = PartLayeringInput>(directory: string, n
   const config = JSON.parse(await readFile(file, 'utf8')) as RunConfig<Input> & { models?: unknown };
   if (config?.version !== 2 || config.name !== name
     || !validateInput(config.sourceInput)
-    || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim() || typeof config.krita.version !== 'string'
+    || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim()
     || !(config.threadId === undefined || config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))
     || (config.threadStep !== undefined && (typeof config.threadStep !== 'string' || !config.threadStep.trim()))
     || (config.threadHandoff !== undefined && !validHandoff(config.threadHandoff))) {

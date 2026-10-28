@@ -21,7 +21,7 @@ pnpm clothing-raster-layering --name jianma
 
 `--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。已保存任务可显式更新 `--krita`；换输入应使用新名字。
 
-生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider、鉴权及工具实际可用性由外部 Codex 配置；按所选 harness 配置，Claude／AGV 可使用共享生图工具。Krita 的显示环境及 computer use / Python 操作能力也沿用外部执行环境。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
+生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider、鉴权及工具实际可用性由外部 Codex 配置；按所选 harness 配置，Claude／AGV 可使用共享生图工具。Krita 可执行文件由外部提供，私有进程、桥接插件和 Linux 无桌面时的 Xvfb 由工作流准备，agent 通过 krita 工具以 Python 操作。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
 
 ## 两步制作
 

@@ -44,9 +44,8 @@ test('两套 step01 绘制与两轮返修提供编辑工具；reviewer 和后续
     }
     assert.deepEqual(pipeline.tools!(output, f.input, pipeline.steps[1], 'draw').map(tool => tool.name), ['locate_pixel_differences']);
     if (pipeline.id === character.id) assert.deepEqual(pipeline.tools!(output, f.input, pipeline.steps[2], 'draw'), []);
-    const krita = { executable: process.execPath, version: 'fixture' };
-    const draw = await pipeline.buildPrompt(step, f.input, output, krita, []);
-    const repair = await buildReviewPrompt(step, { kind: 'repair', filename: 'repair-01.md', index: 1 }, krita);
+    const draw = await pipeline.buildPrompt(step, f.input, output, []);
+    const repair = await buildReviewPrompt(step, { kind: 'repair', filename: 'repair-01.md', index: 1 });
     for (const prompt of [draw, repair]) {
       assert.ok(prompt.includes('修改 groups.json 使用 edit_groups，修改 occlusion.json 使用 edit_occlusion'));
       assert.ok(!prompt.includes('直接编辑上游 groups.json'));
@@ -164,7 +163,7 @@ test('两套 step01 结束时结构诊断仅记日志，保留完成状态并推
     const original = await f.json('occlusion.json');
     const next = pipeline.steps[1];
     const deps = { runsDirectory: f.root, environment: loadWorkflowEnvironment({}, f.root), steps: [step, next],
-      preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+      preflight: async (executable: string) => ({ executable }) };
     const output = join(f.root, 'case', pipeline.id, 'step01');
     const messages: string[] = [], calls: string[] = [];
     await runWorkflow(pipeline, { name: 'case', krita: process.execPath, progress: message => messages.push(message) }, { ...deps, agent: async request => {

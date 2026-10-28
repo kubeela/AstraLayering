@@ -12,7 +12,7 @@ import { steps } from '../../character-assembly/steps.ts';
 import { startBackground } from '../run.ts';
 import { runTask } from '../runner.ts';
 import { processAlive, taskStatus } from '../state.ts';
-import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
+import { fakePatchedCodex, patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
 
 // Real background workers inherit this and pass the Codex startup check without a build.
 process.env.layering_codex_path = await fakePatchedCodex();
@@ -28,15 +28,28 @@ async function fixture(t: TestContext, slow = false) {
   };
   for (const path of Object.values(inputs)) { await mkdir(dirname(path), { recursive: true }); await writeFile(path, 'upstream'); }
   const krita = join(task, 'krita-fixture');
-  const script = '#!' + process.execPath + '\n'
-    + (slow ? 'require("node:fs").writeFileSync(' + JSON.stringify(join(task, 'probe.pid')) + ', String(process.pid)); setTimeout(() => console.log("krita 5.3.4"), 6000);' : 'console.log("krita 5.3.4");');
-  await writeFile(krita, script, { mode: 0o755 });
+  // The light Krita check only needs an executable file; Krita itself is never started here.
+  await writeFile(krita, '#!' + process.execPath + '\n', { mode: 0o755 });
+  // The worker's Codex startup check stands in for a tool process of its agent
+  // call: the parent's capability check (the first) answers, the worker's hangs.
+  if (slow) {
+    const codex = join(task, 'slow-codex.cjs'), seen = join(task, 'codex-checked');
+    await writeFile(codex, '#!' + process.execPath + '\nconst fs = require("node:fs");\n'
+      + 'if (process.argv[2] !== "debug") console.log("codex-cli 0.161.0");\n'
+      + 'else if (!fs.existsSync(' + JSON.stringify(seen) + ')) { fs.writeFileSync(' + JSON.stringify(seen) + ', ""); '
+      + 'console.log(' + JSON.stringify(JSON.stringify(patchedCodexCapabilities)) + '); }\n'
+      + 'else { fs.writeFileSync(' + JSON.stringify(join(task, 'probe.pid')) + ', String(process.pid)); setTimeout(() => {}, 60000); }\n', { mode: 0o755 });
+    const previous = process.env.layering_codex_path;
+    process.env.layering_codex_path = codex;
+    t.after(() => { process.env.layering_codex_path = previous; });
+  }
   const output = join(task, 'character-assembly');
-  const config = newConfig(name, inputs, { executable: krita, version: '5.3.4' });
+  const config = newConfig(name, inputs, { executable: krita });
   config.threadId = 'completed-fixture';
   await initializeRun(output, config);
   await mkdir(join(output, 'step01'));
-  for (const file of [...steps[0].requiredFiles, '.completed']) await writeFile(join(output, 'step01', file), 'retained');
+  // A slow fixture leaves the step unfinished, so the worker calls the agent.
+  for (const file of [...steps[0].requiredFiles, ...(slow ? [] : ['.completed'])]) await writeFile(join(output, 'step01', file), 'retained');
   return { dir, name, task, inputs, output, options: { dir, name, krita, from: 'character-assembly' as const, to: 'character-assembly' as const } };
 }
 async function until(check: () => Promise<boolean>, timeout = 10_000) {
@@ -44,8 +57,8 @@ async function until(check: () => Promise<boolean>, timeout = 10_000) {
   while (!await check()) { if (Date.now() > end) assert.fail('timed out'); await delay(30); }
 }
 async function startFixtureBackground(f: Awaited<ReturnType<typeof fixture>>, krita?: string) {
-  // The fixture only prints a version; give its worker an explicit Qt platform
-  // without depending on the test host's desktop or launching a real Krita.
+  // Give the worker an explicit Qt platform so the light Krita check does not
+  // depend on the test host's desktop.
   return promisify(execFile)(process.execPath, [cli, '--name', f.name, '--dir', f.dir,
     '--from', 'character-assembly', '--to', 'character-assembly', '--background',
     ...(krita === undefined ? [] : ['--krita', krita])], {
@@ -91,8 +104,8 @@ test('后台启动转发标准化的显式开启和关闭，不悄悄忽略选�
 test('取消总调度会终止实际管线子进程及其工具进程，保留已有工程', { skip: process.platform === 'win32' }, async t => {
   const f = await fixture(t, true), controller = new AbortController();
   const running = runTask(f.options, { signal: controller.signal,
-    // Skip just the parent's probe, so cancellation targets the actual worker and its probe child.
-    preflight: async executable => ({ executable, version: 'fixture' }),
+    // Skip just the parent's check, so cancellation targets the actual worker and its tool child.
+    preflight: async executable => ({ executable }),
   });
   // Attach a rejection handler immediately while waiting for the child to initialize.
   const stopped = assert.rejects(running, /cancel test/);
@@ -107,5 +120,6 @@ test('取消总调度会终止实际管线子进程及其工具进程，保留�
     assert.match(await readFile('/proc/' + probePid + '/status', 'utf8').catch(() => 'State: Z'), /State:\s+Z/);
   } else assert.equal(processAlive(probePid), false);
   assert.equal((await taskStatus(f.options)).status, 'interrupted');
-  assert.equal(await readFile(join(f.output, 'step01/character-assembled.kra'), 'utf8'), 'retained');
+  // Cancelling keeps the existing upstream projects untouched.
+  for (const path of Object.values(f.inputs)) assert.equal(await readFile(path, 'utf8'), 'upstream');
 });

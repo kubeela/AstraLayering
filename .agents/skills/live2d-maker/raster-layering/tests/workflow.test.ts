@@ -21,7 +21,7 @@ import { steps, stepModels, type StepDefinition } from '../steps.ts';
 import { runWorkflow } from '../run.ts';
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
-const preflight = async (executable: string) => ({ executable, version: '5.3.4' });
+const preflight = async (executable: string) => ({ executable });
 const complete: StepResult = { status: 'completed', summary: 'Fixture delivery' };
 const forbidden = async (): Promise<never> => { assert.fail('must not call agent/preflight'); };
 async function absent(path: string) { await assert.rejects(readFile(path), { code: 'ENOENT' }); }
@@ -68,17 +68,9 @@ test('任务名限制为单个目录；默认仓库 .run 任务目录与 cwd 无
 
 test('Krita 只检查显式路径，失败不探索安装或创建任务', async t => {
   const f = await fixture(t);
-  let calls = 0;
-  const installation = await checkKrita(process.execPath, async (command, args) => {
-    calls++;
-    assert.equal(command, process.execPath);
-    assert.deepEqual(args, ['--version']);
-    return 'krita 5.3.4.1 (test)\n';
-  });
-  assert.equal(installation.version, '5.3.4.1 (test)');
-  await assert.rejects(checkKrita(join(f.input, 'missing-krita'), async () => { calls++; return ''; }), /不存在或不可执行/);
-  await assert.rejects(checkKrita('', async () => { calls++; return ''; }), /明确指定/);
-  assert.equal(calls, 1);
+  assert.deepEqual(await checkKrita(process.execPath, { DISPLAY: ':1' }), { executable: process.execPath });
+  await assert.rejects(checkKrita(join(f.input, 'missing-krita')), /不存在或不可执行/);
+  await assert.rejects(checkKrita(''), /明确指定/);
   await assert.rejects(runWorkflow(f.options, { ...f.deps, preflight: async () => { throw new Error('Krita unavailable'); }, agent: forbidden }), /Krita unavailable/);
   await absent(join(f.output, 'run.json'));
   await assert.rejects(runWorkflow({ name: 'test' }, f.deps), /首次运行必须提供 --krita/);
@@ -115,7 +107,7 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
       await writeFile(join(f.output, 'step01/review-01.md.tmp'), '结论：通过\n完整检查。');
       return complete;
     }
-    if (calls.length === 0) { calls.push('step01'); assert.deepEqual(request.tools?.map(tool => tool.name), ['edit_groups', 'edit_occlusion']); return deliver(request, steps[0]); }
+    if (calls.length === 0) { calls.push('step01'); assert.deepEqual(request.tools?.map(tool => tool.name), ['edit_groups', 'edit_occlusion', 'krita']); return deliver(request, steps[0]); }
     calls.push('step02'); assert.equal(request.threadId, undefined); assert.equal(request.tools?.[0].name, 'locate_pixel_differences');
     await request.onEvent({ type: 'thread.started', thread_id: 'thread-step02' });
     await readFile(join(f.output, 'step01/.completed'));
@@ -151,7 +143,7 @@ test('已完成第一步的任务可按 name 预览第二步，显示实际输�
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01/character-depth.kra'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.kra'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.png'))));
-  assert.ok(prompt.includes(JSON.stringify(process.execPath)), '当前显式 Krita 路径必须保留');
+  assert.ok(!prompt.includes(process.execPath), 'Krita 只经 krita 工具使用，路径不进提示词');
   assert.ok(!prompt.includes('demos/soft-edge-krita'), '不引用历史示例工程');
   assert.deepEqual(await readFile(join(f.output, 'run.json')), before);
   await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
