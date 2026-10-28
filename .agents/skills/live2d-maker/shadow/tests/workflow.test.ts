@@ -1,3 +1,6 @@
+// First, so a direct `node --test` of this file also keeps its own Krita slots and
+// ignores the local .env, as `pnpm test` does through --import.
+import '../../shared/tests/ignore-local-env.ts';
 import assert from 'node:assert/strict';
 import { test, type TestContext } from 'node:test';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -17,7 +20,9 @@ import { parseArguments } from '../../workflow/run.ts';
 import { runTask } from '../../workflow/runner.ts';
 import { readRun, taskStatus } from '../../workflow/state.ts';
 
-const kritaSlots = () => readdir(process.env.ASTRA_STUDIO_KRITA_SLOTS!).catch(() => [] as string[]);
+const kritaSlots = () => readdir(process.env.ASTRA_STUDIO_KRITA_SLOTS!).catch(error => {
+  if ((error as NodeJS.ErrnoException).code === 'ENOENT') return [] as string[]; throw error;
+});
 
 const xml = `<DOC><IMAGE width="2" height="2"><layers>
 <layer name="Caster" uuid="caster" nodetype="paintlayer" compositeop="normal"/>
