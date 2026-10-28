@@ -13,6 +13,7 @@ import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/cod
 import { pipelineAgentSteps, preflightAgentSteps } from '../shared/agents/preflight.ts';
 import { clearTaskStop, watchTaskStop } from './control.ts';
 import { requireKrita } from './krita.ts';
+import { MissingDependencyError } from '../shared/missing-dependency.ts';
 import { readDressup } from '../shared/part/dressup.ts';
 import { AgentSlotPool, agentSlotsVariable } from './agent-slots.ts';
 
@@ -129,12 +130,15 @@ export async function runTask(options: TaskOptions, dependencies: {
     // preflight: it is quick, while that may build the patched Codex. A refusal
     // leaves run.json as it was.
     const configured = await configureRun(options, directory);
-    await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, environment?.codex.env)));
+    // A missing system dependency such as Xvfb is the exception: the run is recorded as failed with its install hint.
+    const missing = await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, environment?.codex.env)))
+      .then(() => undefined, error => { if (error instanceof MissingDependencyError) return error; throw error; });
     run = configured;
     run.status = 'running'; delete run.error; delete run.output; delete run.activePipelines;
     run.runner = { id: randomUUID(), pid: process.pid, startedAt: now(), stopProtocol: 'file-v1' };
     const slots = new AgentSlotPool(run.jobs);
     await persist();
+    if (missing) throw missing;
     stopWatching = watchTaskStop(directory, run.runner.id, stopController,
       error => log.write('停止请求读取失败：' + formatAgentError(error)));
     const selected = selectedPipelines(run.from, run.to);

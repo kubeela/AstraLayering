@@ -1,19 +1,57 @@
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
-import { copyFile, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { setTimeout as delay } from 'node:timers/promises';
 import lockfile from 'proper-lockfile';
 import { workflowsDirectory } from '../../shared/paths.ts';
+import { MissingDependencyError } from '../../shared/missing-dependency.ts';
 import { runCommand, watchOutput, type Command } from './process.ts';
 import { withRust } from './rust.ts';
 
 export const codexCommit = '979011409de0a60b52f179721948e65531d26144';
 // building: called once before waiting for or running a build, which can take many minutes.
 type Options = { source?: string; jobs?: number; root?: string; env?: NodeJS.ProcessEnv; progress?: (message: string) => void; building?: () => void };
-type Services = { run?: Command; rust?: typeof withRust; companion?: () => string };
+type Services = { run?: Command; rust?: typeof withRust; companion?: () => string; platform?: NodeJS.Platform };
+
+// Missing C/C++ build tools: the user installs them and continues the task, which checks again and builds.
+export class MissingToolchainError extends MissingDependencyError {
+  constructor(found: string, platform: NodeJS.Platform, log?: string) {
+    super(`缺少 C/C++ 编译工具链（${found}），无法构建 Codex 补丁。`, toolchainHints[platform] ?? toolchainHints.linux!, log ? `构建日志：${log}` : '');
+    this.name = 'MissingToolchainError';
+  }
+}
+const toolchainHints: Partial<Record<NodeJS.Platform, string>> = {
+  linux: '请安装：Debian/Ubuntu 运行 sudo apt install build-essential；Fedora/RHEL 运行 sudo dnf install gcc gcc-c++ make；Arch 运行 sudo pacman -S base-devel。',
+  darwin: '请在终端运行 xcode-select --install 安装 Xcode Command Line Tools。',
+  win32: '请安装 Visual Studio Build Tools 2022，并勾选「使用 C++ 的桌面开发」（含 MSVC 与 Windows SDK）。',
+};
+// Linker and cc-crate failures that mean the tools are absent, not that the code failed to compile.
+const missingToolText = /linker `[^`]+` not found|failed to find tool\. Is `[^`]+` installed|(?:cc|c\+\+|gcc|g\+\+|clang)(?:\.exe)?: (?:command )?not found|link\.exe` not found|could not find (?:native static library|`?link\.exe)|Microsoft C\+\+ Build Tools|xcrun: error: invalid active developer path/i;
+
+async function missingToolchain(run: Command, env: NodeJS.ProcessEnv, platform: NodeJS.Platform): Promise<string | undefined> {
+  const works = (command: string, args: string[]) => run(command, args, { env }).then(() => true, () => false);
+  if (platform === 'win32') {
+    // Cargo finds MSVC through the Visual Studio installer even when cl.exe is not on PATH.
+    const vswhere = join(env['ProgramFiles(x86)'] ?? 'C:\\Program Files (x86)', 'Microsoft Visual Studio', 'Installer', 'vswhere.exe');
+    const installed = await run(vswhere, ['-latest', '-products', '*', '-requires', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-property', 'installationPath'], { env })
+      .then(path => !!path.trim(), () => false);
+    return installed || await works('cl', []) ? undefined : '未找到 MSVC（cl.exe）';
+  }
+  const missing = [];
+  for (const [variable, fallback] of [['CC', 'cc'], ['CXX', 'c++']] as const) {
+    const command = env[variable]?.trim() || fallback;
+    if (!await works(command, ['--version'])) missing.push(env[variable]?.trim() ? `${variable}=${command}` : command);
+  }
+  return missing.length ? `未找到 ${missing.join('、')}` : undefined;
+}
+// Reads only what this build appended, so an earlier failure in the same log is not reported again.
+async function missingToolInLog(log: string, start: number): Promise<string | undefined> {
+  const added = (await readFile(log).catch(() => Buffer.alloc(0))).subarray(start);
+  return added.subarray(-256 * 1024).toString('utf8').match(missingToolText)?.[0];
+}
 const platforms: Record<string, string> = { 'linux-x64': 'x86_64-unknown-linux-musl', 'linux-arm64': 'aarch64-unknown-linux-musl',
   'darwin-x64': 'x86_64-apple-darwin', 'darwin-arm64': 'aarch64-apple-darwin', 'win32-x64': 'x86_64-pc-windows-msvc', 'win32-arm64': 'aarch64-pc-windows-msvc' };
 const sha256 = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
@@ -54,7 +92,7 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
   const output = join(root, 'bin'), executable = join(output, binary), receipt = join(root, 'ready.json');
   const progress = options.progress ?? (message => console.error(message));
   const env = options.env ?? process.env, log = join(root, 'build.log');
-  const run = services.run ?? runCommand;
+  const run = services.run ?? runCommand, platform = services.platform ?? process.platform;
   const gitEnv = pinnedGit(env);
   async function cached() {
     try {
@@ -75,6 +113,8 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
   }
   try {
     if (await cached()) return executable;
+    const missing = await missingToolchain(run, env, platform);
+    if (missing) throw new MissingToolchainError(missing, platform);
     if (!waiting) options.building?.();
     progress(`已开启 Codex 补丁功能，正在自动构建并缓存；日志：${log}`);
     const source = join(root, 'source');
@@ -117,9 +157,14 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
       await writeFile(stamp, bytes);
     } else if (!(await readFile(stamp)).equals(bytes)) throw new Error('补丁缓存不一致；未覆盖现有源码。');
     await (services.rust ?? withRust)(env, async toolchain => {
+      const start = await stat(log).then(info => info.size, () => 0);
       await run(toolchain.cargo, [...toolchain.prefix, 'build', '-p', 'codex-cli', '--bin', 'codex', '--profile', 'dev-small',
         '--jobs', String(jobs), '--target-dir', join(root, 'target')], { cwd: join(source, 'codex-rs'), env: toolchain.env, log,
-        ...watchOutput('编译 Codex 补丁', progress, log, { every: 30_000 }) }).catch(error => { throw new Error(`编译失败；${compilers[process.platform] ?? '需要平台 C/C++ 编译工具'}。`, { cause: error }); });
+        ...watchOutput('编译 Codex 补丁', progress, log, { every: 30_000 }) })
+        .catch(async error => {
+          const found = await missingToolInLog(log, start);
+          throw found ? new MissingToolchainError(`构建日志中：${found}`, platform, log) : new Error(`编译失败；${compilers[platform] ?? '需要平台 C/C++ 编译工具'}。`, { cause: error });
+        });
     }, progress, {log});
     if (compromised) throw compromised;
     await mkdir(output, { recursive: true });
@@ -135,6 +180,8 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
     progress(`Codex 补丁已准备：${executable}`);
     return executable;
   } catch (error) {
+    // Shown as is, so workflow.log and the page lead with what to install.
+    if (error instanceof MissingToolchainError) throw error;
     throw new Error(`Codex 补丁自动构建失败：${(error as Error).message}\n保留会话和产物，修复依赖后可直接续跑。日志：${log}`, { cause: error });
   }
   finally { await release(); }

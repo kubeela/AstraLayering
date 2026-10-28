@@ -6,9 +6,10 @@ import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { setTimeout as delay } from 'node:timers/promises';
 import { execFileSync } from 'node:child_process';
-import { ensurePatchedCodex, codexCommit, pinnedGit } from '../../patches/codex/build.ts';
+import { ensurePatchedCodex, codexCommit, pinnedGit, MissingToolchainError } from '../../patches/codex/build.ts';
 import { withRust, rustVersion } from '../../patches/codex/rust.ts';
 import { runCommand, watchOutput, type Command } from '../../patches/codex/process.ts';
+import { formatAgentError } from '../codex/diagnostics.ts';
 
 async function fixture(t: TestContext) {
   const root = await mkdtemp(join(tmpdir(), 'patch-startup-'));
@@ -147,4 +148,57 @@ test('长命令按行汇报进度，节流并统计编译数；静默时提示�
   assert.deepEqual(messages, ['编译 Codex 补丁：Updating crates.io index（已用 0 秒）', '编译 Codex 补丁：已编译 2 个 crate，最近 Compiling b v1（已用 2 秒）']);
   watch.quiet!.notify(180_000);
   assert.match(messages[2], /已 3 分 0 秒没有新输出.*网络受阻.*HTTPS_PROXY.*layering_codex_path.*\/logs\/build\.log/);
+});
+test('缺 C/C++ 工具链时先检查后报清楚的安装提示，不克隆；构建日志里的缺工具也同样提示；装好后继续即构建', async t => {
+  const root = await fixture(t), sdkHost = join(root, 'sdk-host'); await writeFile(sdkHost, 'companion');
+  let compilers = false, linker = false; const commands: string[] = [];
+  const run: Command = async (command, args, options) => {
+    commands.push(command);
+    if (command === 'cc' || command === 'c++') { if (!compilers) throw new Error('spawn ENOENT'); return 'cc 1.0'; }
+    if (command === '/opt/gcc') return 'gcc 14';
+    if (command === '/opt/missing-cc') throw new Error('spawn ENOENT');
+    if (command.endsWith('vswhere.exe')) { if (!compilers) throw new Error('spawn ENOENT'); return 'C:\\BuildTools'; }
+    if (command === 'cl') throw new Error('spawn ENOENT');
+    if (command === 'git') {
+      if (args[0] === 'clone') await mkdir(args.at(-1)!, {recursive: true});
+      if (args[0] === 'rev-parse') return codexCommit;
+      if (args.includes('--reverse')) throw new Error('not applied');
+    } else if (command === 'cargo') {
+      if (!linker) { await writeFile(options.log!, 'error: linker `cc` not found\n  = note: No such file or directory', {flag: 'a'}); throw new Error('cargo 退出码 101'); }
+      const target = join(args[args.indexOf('--target-dir') + 1], 'dev-small');
+      await mkdir(target, {recursive: true});
+      await writeFile(join(target, process.platform === 'win32' ? 'codex.exe' : 'codex'), 'binary');
+    } else return JSON.stringify(capabilities);
+    return '';
+  };
+  const services = {run, companion: () => sdkHost, rust: (async (env, action) => action({cargo: 'cargo', prefix: [], env})) as typeof withRust};
+  const opts = {root: join(root, 'cache'), env: {PATH: 'fixture'}, progress() {}};
+  for (const [platform, hint] of [['linux', /build-essential/], ['darwin', /xcode-select --install/], ['win32', /Visual Studio Build Tools/]] as const) {
+    commands.length = 0;
+    const error = await ensurePatchedCodex(opts, {...services, platform}).catch(error => error);
+    assert.ok(error instanceof MissingToolchainError); assert.match(error.message, hint);
+    assert.match(error.message, platform === 'win32' ? /MSVC/ : /未找到 cc、c\+\+/);
+    // Shown first in workflow.log and on the page, with what to do next.
+    assert.match(formatAgentError(error).split('\n')[0], /缺少 C\/C\+\+ 编译工具链.*安装完成后在网页点「继续」（命令行 --continue）/);
+    assert.ok(!commands.includes('git'), 'no clone before the tools exist');
+  }
+  // CC/CXX are respected.
+  const named = await ensurePatchedCodex({...opts, env: {PATH: 'fixture', CC: '/opt/missing-cc', CXX: '/opt/gcc'}}, {...services, platform: 'linux'}).catch(error => error);
+  assert.match(named.message, /未找到 CC=\/opt\/missing-cc）/);
+  // The tools answer --version yet the linker is missing at build time: the log names it.
+  compilers = true;
+  const failed = await ensurePatchedCodex(opts, {...services, platform: 'linux'}).catch(error => error);
+  assert.ok(failed instanceof MissingToolchainError); assert.match(failed.message, /linker `cc` not found/);
+  // After installing, continuing checks again and builds; the earlier failure in the log is not reported again.
+  linker = true;
+  assert.match(await ensurePatchedCodex(opts, {...services, platform: 'linux'}), /codex(\.exe)?$/);
+  // Other build failures keep the general message.
+  const other = await ensurePatchedCodex({...opts, root: join(root, 'other')}, {...services, platform: 'linux',
+    run: async (command, args, options) => command === 'cargo' ? Promise.reject(new Error('cargo 退出码 101')) : run(command, args, options)}).catch(error => error);
+  assert.ok(!(other instanceof MissingToolchainError)); assert.match(other.message, /自动构建失败/);
+});
+test('真实进程：PATH 里没有编译器时直接报缺少工具链', { skip: process.platform === 'win32' }, async t => {
+  const root = await fixture(t);
+  const error = await ensurePatchedCodex({root, env: {PATH: join(root, 'empty')}, progress() {}}, {run: runCommand}).catch(error => error);
+  assert.ok(error instanceof MissingToolchainError); assert.match(error.message, /未找到 cc、c\+\+/);
 });

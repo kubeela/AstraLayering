@@ -5,6 +5,9 @@ import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { pipelineIds, type PipelineId } from '../../shared/paths.ts';
 import { runTask } from '../runner.ts';
+import { preflightKrita } from '../krita.ts';
+import { checkKrita } from '../../shared/raster/krita.ts';
+import { MissingDependencyError } from '../../shared/missing-dependency.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, taskStatus } from '../state.ts';
 import { main, parseArguments, startBackground } from '../run.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
@@ -207,6 +210,24 @@ test('Krita 不可用时拒绝启动且不改动任务记录；用 --krita 重�
   assert.equal(await readFile(join(f.directory, 'run.json'), 'utf8'), before, '拒绝启动不能记录失败状态或错误路径');
   await runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { preflight, execute: async () => ({ summary: 'ok' }) });
   assert.equal((await readRun(f.directory, 'case'))!.krita, process.execPath);
+});
+
+test('Linux 无桌面且缺 Xvfb：不当成 Krita 路径问题，任务记为失败，workflow.log 首行给安装和继续提示；装好后继续即运行', { skip: process.platform !== 'linux' }, async t => {
+  const f = await fixture(t);
+  await runTask({ ...f.options, image: 'reference.png', to: 'part-layering' }, { preflight, execute: async () => ({ summary: 'ok' }) });
+  const headless = (path: string) => checkKrita(path, { PATH: '' });
+  // The workbench and CLI pre-start check let it through, so the run records it.
+  assert.equal(await preflightKrita({ name: 'case', dir: f.options.dir, to: 'shadow' }, headless), undefined);
+  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { preflight: headless, execute: async () => assert.fail('缺依赖时不能开始生产') }),
+    error => error instanceof MissingDependencyError);
+  const failed = (await readRun(f.directory, 'case'))!;
+  assert.equal(failed.status, 'failed'); assert.equal(failed.krita, process.execPath);
+  assert.match(failed.error!.split('\n')[0], /找不到虚拟桌面 Xvfb.*apt install xvfb.*ASTRA_STUDIO_XVFB.*在网页点「继续」（命令行 --continue）/);
+  assert.doesNotMatch(failed.error!, /重新指定 Krita/);
+  const log = await readFile(join(f.directory, 'workflow.log'), 'utf8');
+  assert.match(log, /找不到虚拟桌面 Xvfb[^\n]*在网页点「继续」/);
+  await runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { preflight: path => checkKrita(path, { PATH: '', DISPLAY: ':1' }), execute: async () => ({ summary: 'ok' }) });
+  assert.equal((await readRun(f.directory, 'case'))!.status, 'completed');
 });
 
 test('同名任务锁阻止重复启动，取消保留状态并释放锁', async t => {
