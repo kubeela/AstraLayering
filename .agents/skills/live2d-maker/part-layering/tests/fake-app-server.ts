@@ -47,7 +47,7 @@ async function advance() {
     const blocked = turns === 1 && threads > 0 && threads <= (behavior.blockedTurns ?? 0);
     const failed = blocked || mode === 'failed' || turns <= (behavior.failedTurns ?? 0);
     const error = blocked ? {message:'Image processing blocked due to content policy violation.',codexErrorInfo:'other'}
-      : mode === 'failed' ? {message:'测试回合失败'} : {message:'Selected model is at capacity. Please try a different model.',codexErrorInfo:behavior.errorInfo ?? 'serverOverloaded'};
+      : mode === 'failed' ? {message:'测试回合失败',codexErrorInfo:'badRequest'} : {message:'Selected model is at capacity. Please try a different model.',codexErrorInfo:behavior.errorInfo ?? 'serverOverloaded'};
     if (!blocked) await record([{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: finalText }] }]);
     if (failed) write({method:'error',params:{threadId:'native-thread',error,willRetry:false}});
     write({ method: 'turn/completed', params: { threadId: 'native-thread', turn: {

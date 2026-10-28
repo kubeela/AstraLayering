@@ -173,7 +173,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         } else if (message.method === 'turn/completed' && current) {
           const turn = message.params?.turn;
           if (turn?.status !== 'completed') {
-            failTurn(agentCallError(turn?.error, `回合状态：${turn?.status}`, turn?.error?.codexErrorInfo));
+            // A failed turn without a code is still a channel failure, unlike a local error.
+            failTurn(agentCallError(turn?.error, `回合状态：${turn?.status}`, turn?.error?.codexErrorInfo ?? 'turnFailed'));
           }
           else { current.done = true; current.completion.resolve(); }
         } else if (message.method === 'error' && current) {

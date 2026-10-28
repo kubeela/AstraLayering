@@ -4,13 +4,13 @@ import { workflowsDirectory } from '../paths.ts';
 import type { CodexOptions } from '@openai/codex-sdk';
 import { join } from 'node:path';
 import { AgentLog } from './agent-log.ts';
-import { AgentCallError, AgentRuntime, retryDelays, blockedAgentError, continuationPrompt, retryableAgentError, type AgentRetry } from './agent-runtime.ts';
+import { AgentCallError, AgentRuntime, retryDelays, continuationPrompt, recoverableAgentError, retryableAgentError, type AgentRetry, type RecoverableAgentError } from './agent-runtime.ts';
 import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './blocked-images.ts';
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
 import { parseAgentModel, type AgentStep, type AgentModel } from '../agents/models.ts';
 import { validateProviderModel } from '../agents/providers.ts';
-import { runCliTask, unavailableSession } from '../agents/cli.ts';
+import { runCliTask } from '../agents/cli.ts';
 import { imageGenerationTool, validateImageSelection } from '../agents/images.ts';
 import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-images.ts';
 import { randomUUID } from 'node:crypto';
@@ -65,6 +65,13 @@ export type AgentOptions = CodexOptions & {
   runtime?: AgentRuntime;
 };
 
+// Known errors fixed by a new session; each is tried once per run, and only when there is a session to replace.
+const sessionReplacements: Partial<Record<RecoverableAgentError, { reason: string; progress: string }>> = {
+  unavailableSession: { reason: '原 thread/session 不可用', progress: '原会话不可用' },
+  contextWindow: { reason: '上下文超出模型窗口', progress: '上下文超出模型窗口' },
+  imageOverflow: { reason: '单次请求的图片数量或体积超限', progress: '单次请求的图片数量或体积超限' },
+};
+
 export class CodexAgents {
   private options: AgentOptions;
   private runtime: AgentRuntime;
@@ -75,14 +82,28 @@ export class CodexAgents {
     this.runtime = options.runtime ?? new AgentRuntime(options.agentConcurrency);
   }
 
-  private async invoke<T>(task: AgentTask, signal: AbortSignal, operation: () => Promise<T>): Promise<T> {
-    return this.runtime.run(operation, { signal, onRetry: async ({ attempt, nextAttempt, delayMs, error, rateLimited }) => {
+  private async invoke<T>(task: AgentTask, signal: AbortSignal, operation: () => Promise<T>,
+    recover?: (error: unknown) => Promise<boolean>): Promise<T> {
+    return this.runtime.run(operation, { signal, recover, onRetry: async ({ attempt, nextAttempt, delayMs, error, rateLimited }) => {
       const failure = error as AgentCallError;
       this.options.progress?.(`[${task.name}] 限流等待（${rateLimited ? '429' : '临时错误'}），保留并发位置；${delayMs / 1000} 秒后第 ${attempt}/${retryDelays.retries} 次重试，沿用会话与已有产物：${failure.message}`);
       if (failure.logDirectory) await AgentLog.retry(failure.logDirectory,
         { attempt, nextAttempt, delayMs, error: failure.message, rateLimited });
       await this.options.onRetry?.({ attempt, nextAttempt, delayMs, error, rateLimited });
     } });
+  }
+
+  // Starts a new session for a known error that one fixes, once per kind per run; the old records and files stay.
+  private replacement(task: AgentTask) {
+    const used = new Set<RecoverableAgentError>();
+    return async (error: unknown, oldId: string | undefined): Promise<boolean> => {
+      const kind = recoverableAgentError(error), replacement = kind && sessionReplacements[kind];
+      if (!replacement || !oldId || used.has(kind)) return false;
+      used.add(kind);
+      await this.options.onThreadReplacement?.(oldId, replacement.reason);
+      this.options.progress?.(`[${task.name}] ${replacement.progress}，保留旧记录与产物并新建会话。`);
+      return true;
+    };
   }
 
   // 延续原生 function tools 会话；每次 run 是同一 thread 的一个新 turn。
@@ -131,43 +152,50 @@ export class CodexAgents {
             imageModel = routeKey;
           }
           session ||= createFunctionToolSession(functionOptions(), id);
-          let blocked: BlockedImages | undefined;
+          let blocked: BlockedImages | undefined, fresh = false;
+          const replace = this.replacement(task);
           return await this.invoke(task, signal, async () => {
-            for (;;) {
-              try {
-                const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                  : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined } : task, signal);
-                id = result.threadId || id;
-                for (const image of result.images) savedImages.add(image.savedPath);
-                return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
-              } catch (error) {
-                const failure = error as AgentCallError;
-                // 每次拦截都把本批图片换成文字，在新会话里引导 agent 换法读取；
-                // 没有图片可换时拦截与图片无关，按致命错误结束。
-                const replaced = !signal.aborted && blockedAgentError(error) && failure.threadPath
-                  ? await readBlockedImages(failure.threadPath) : undefined;
-                if (replaced) {
-                  for (const path of failure.savedImagePaths) savedImages.add(path);
+            try {
+              const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
+                : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined }
+                : fresh ? { ...task, prompt: task.recoveryPrompt || task.prompt } : task, signal);
+              id = result.threadId || id;
+              for (const image of result.images) savedImages.add(image.savedPath);
+              return { ...result, images: [...savedImages].map(savedPath => ({ savedPath })) };
+            } catch (error) {
+              const failure = error as AgentCallError;
+              if (retryableAgentError(error) && !signal.aborted) {
+                id = failure.threadId || id;
+                for (const path of failure.savedImagePaths) savedImages.add(path);
+                interrupted = !!failure.threadId; blocked = undefined;
+                if (failure.sessionBroken) {
                   await session!.close();
-                  const old = failure.threadId || id;
-                  if (old) await this.options.onThreadReplacement?.(old, '图片被内容策略拦截，历史图片已换成文字');
-                  this.options.progress?.(`[${task.name}] 图片被内容策略拦截；${replaced.origins.length} 张图片已换成文字，新会话继续。`);
-                  session = createFunctionToolSession(functionOptions(), undefined, replaced.items);
-                  id = undefined; blocked = replaced; interrupted = false;
-                  continue;
+                  session = createFunctionToolSession(functionOptions(), failure.threadId);
                 }
-                if (retryableAgentError(error) && !signal.aborted) {
-                  id = failure.threadId || id;
-                  for (const path of failure.savedImagePaths) savedImages.add(path);
-                  interrupted = !!failure.threadId; blocked = undefined;
-                  if (failure.sessionBroken) {
-                    await session!.close();
-                    session = createFunctionToolSession(functionOptions(), failure.threadId);
-                  }
-                }
-                throw error;
               }
+              throw error;
             }
+          }, async error => {
+            const failure = error as AgentCallError;
+            if (recoverableAgentError(error) === 'blockedImages') {
+              // 每次拦截都把本批图片换成文字，在新会话里引导 agent 换法读取；
+              // 没有图片可换时拦截与图片无关，按致命错误结束。
+              const replaced = failure.threadPath ? await readBlockedImages(failure.threadPath) : undefined;
+              if (!replaced) return false;
+              for (const path of failure.savedImagePaths) savedImages.add(path);
+              await session!.close();
+              const old = failure.threadId || id;
+              if (old) await this.options.onThreadReplacement?.(old, '图片被内容策略拦截，历史图片已换成文字');
+              this.options.progress?.(`[${task.name}] 图片被内容策略拦截；${replaced.origins.length} 张图片已换成文字，新会话继续。`);
+              session = createFunctionToolSession(functionOptions(), undefined, replaced.items);
+              id = undefined; blocked = replaced; interrupted = false;
+              return true;
+            }
+            if (!await replace(error, failure.threadId || id)) return false;
+            await session!.close();
+            session = createFunctionToolSession(functionOptions(), undefined);
+            id = undefined; blocked = undefined; interrupted = false; fresh = true;
+            return true;
           });
         } finally { busy = false; }
       },
@@ -221,41 +249,38 @@ export class CodexAgents {
             : usesPatchedImageTool(settings, original.step) ? { ...original, imageGeneration: true } : original;
           if (!id && original.recoveryPrompt) task = { ...task, prompt: original.recoveryPrompt };
           const signal = taskSignal(task, [closing.signal, ...(externalSignal ? [externalSignal] : [])]);
-          let replaced = false;
-          for (;;) {
-            try {
-              let result: AgentResult;
-              if (selected.harness === 'codex') {
-                inner ||= this.createCodexSession(selected, id);
-                result = await inner.run(task, signal);
-              } else {
-                let interrupted = false;
-                result = await this.invoke(task, signal, async () => {
-                  try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt, paths.root), images: undefined } : task,
-                    selected, settings, { ...this.options, onEvent: async event => {
-                      if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
-                      await this.options.onEvent?.(event);
-                    } }, signal, id); }
-                  catch (error) {
-                    if (error instanceof AgentCallError && error.threadId) { id = error.threadId; interrupted = true; }
-                    throw error;
-                  }
-                });
-              }
-              id = result.threadId || id;
-              return { ...result, harness: selected.harness, images: [...result.images, ...generated] };
-            } catch (error) {
-              if (!replaced && id && unavailableSession(error)) {
-                await this.options.onThreadReplacement?.(id, '原 thread/session 不可用');
-                this.options.progress?.(`[${task.name}] 原会话不可用，保留旧记录与产物并新建会话。`);
-                id = undefined; await inner?.close(); inner = undefined; replaced = true;
+          let result: AgentResult;
+          try {
+            if (selected.harness === 'codex') {
+              inner ||= this.createCodexSession(selected, id);
+              result = await inner.run(task, signal);
+            } else {
+              let interrupted = false;
+              const replace = this.replacement(task);
+              result = await this.invoke(task, signal, async () => {
+                try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt, paths.root), images: undefined } : task,
+                  selected, settings, { ...this.options, onEvent: async event => {
+                    if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
+                    await this.options.onEvent?.(event);
+                  } }, signal, id); }
+                catch (error) {
+                  if (error instanceof AgentCallError && error.threadId) { id = error.threadId; interrupted = true; }
+                  throw error;
+                }
+              }, async error => {
+                // CLI 会话里被拦截的图片无法替换，只能按致命错误结束。
+                if (recoverableAgentError(error) === 'blockedImages' || !await replace(error, id)) return false;
+                id = undefined; interrupted = false;
                 if (original.recoveryPrompt) task = { ...task, prompt: original.recoveryPrompt };
-                continue;
-              }
-              if (error instanceof AgentCallError && error.threadId) id = error.threadId;
-              throw error;
+                return true;
+              });
             }
+          } catch (error) {
+            if (error instanceof AgentCallError && error.threadId) id = error.threadId;
+            throw error;
           }
+          id = result.threadId || id;
+          return { ...result, harness: selected.harness, images: [...result.images, ...generated] };
         } finally { busy = false; }
       },
       close: async () => { closed = true; closing.abort(new Error('会话已结束')); await inner?.close(); },

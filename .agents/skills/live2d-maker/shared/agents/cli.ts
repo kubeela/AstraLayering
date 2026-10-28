@@ -60,9 +60,6 @@ export async function cliExecutable(settings: WorkflowEnvironment, harness: Harn
   }
   throw new Error(`所选步骤需要 ${harness} CLI，但没有可用的全局入口${explicit ? `：${explicit}` : ''}。工作流不会自动安装；请安装并登录，或设置 layering_${harness}_path / 改用已有模型。`);
 }
-export function unavailableSession(error: unknown): boolean {
-  return /(?:thread|session|conversation).{0,80}(?:not found|does not exist|unavailable|invalid|不存在|不可用)|no (?:conversation|session|rollout) found|rollout path.{0,40}not found/i.test(String(error instanceof Error ? error.message : error));
-}
 type StoredSession = { harness: Harness; data: string; workspace: string };
 async function readSessions(root: string): Promise<Record<string, StoredSession>> {
   try { return JSON.parse(await readFile(join(root, 'sessions.json'), 'utf8')); }
@@ -213,7 +210,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     if (model.harness === 'agv') args.push('--print=');
     const reportId = async (id: string) => {
       if (!id || id === threadId) return;
-      if (threadId) throw new Error('CLI 返回了不同的原会话 ID');
+      // AGV opens a new conversation when the one asked for is gone, so the old session is unavailable and gets replaced.
+      if (threadId) throw new Error(threadId === resumed ? `原 session 不可用：CLI 未恢复 ${resumed}，返回了新的会话 ID ${id}` : 'CLI 返回了不同的原会话 ID');
       threadId = id; await remember(root, id, { harness: model.harness, data: toTaskPath(paths.root, data), workspace: toTaskPath(paths.root, cwd) });
       await options.onEvent?.({ type: 'thread.started', thread_id: id });
     };
@@ -280,14 +278,18 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
       if (code !== 0 || !final || final.is_error || !successfulStatus) {
-        // Retry only on structured signals: the API status Claude reports, the upstream status AGV's
+        // Name the failure from structured signals: the API status Claude reports, the upstream status AGV's
         // response carried through our gateway, a CLI killed before any result, or one of AGV's two Go
         // transport timeouts, which it reports only as the terminal error string.
         const status = final?.api_error_status ?? (model.harness === 'agv' ? upstreamStatus : undefined);
         const info = typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final?.api_error_code ?? null } }
           : code === null && !final ? 'processKilled'
-          : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout' : undefined;
-        const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态', info);
+          : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout'
+          // Any other terminal failure the CLI reported: unknown, so it waits and retries unless the text or subtype says otherwise.
+          : { cliFailed: { subtype: final?.subtype ?? null, cliStatus: final?.status ?? null, exitCode: code } };
+        // Claude puts the upstream error ("API Error: …") in result and leaves stderr with an unrelated line.
+        const reported = final?.is_error && typeof final.result === 'string' && final.result.trim() ? final.result : undefined;
+        const error = agentCallError(final?.error || final?.errors || reported || stderr || eventErrors, 'CLI 未返回成功终态', info);
         error.details = errorDetails({ error: final?.error, errors: final?.errors, events: eventErrors,
           stderr, processExitCode, cliStatus: final?.status, subtype: final?.subtype });
         throw error;

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { agentCallError, agentOutcomeError, formatAgentError } from '../codex/diagnostics.ts';
-import { AgentCallError, AgentRuntime, retryableAgentError } from '../codex/agent-runtime.ts';
+import { AgentCallError, AgentRuntime, recoverableAgentError, retryableAgentError } from '../codex/agent-runtime.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { runCliTask } from '../agents/cli.ts';
@@ -158,4 +158,43 @@ process.exit(3);
   const record = await savedFailure(failure!, f.cwd);
   assert.equal(record.processExitCode, 3);
   assert.equal(record.finalResponse, '当前草稿已保存');
+});
+
+test('known errors with a remedy are recovered at once without the retry budget; without one they fail fast', async () => {
+  assert.equal(recoverableAgentError(new AgentCallError('content_policy_violation', 'other')), 'blockedImages');
+  assert.equal(recoverableAgentError(new AgentCallError('thread not found: 019a', undefined)), 'unavailableSession');
+  assert.equal(recoverableAgentError(new AgentCallError('原 session 不可用：CLI 未恢复 a，返回了新的会话 ID b')), 'unavailableSession');
+  assert.equal(recoverableAgentError(new AgentCallError('x', 'contextWindowExceeded')), 'contextWindow');
+  assert.equal(recoverableAgentError(new AgentCallError('prompt is too long: 210000 tokens', { cliFailed: {} })), 'contextWindow');
+  assert.equal(recoverableAgentError(new AgentCallError('The input token count (1200000) exceeds the maximum number of tokens allowed (1048576).', { apiError: { httpStatusCode: 400 } })), 'contextWindow');
+  assert.equal(recoverableAgentError(new AgentCallError('x', { apiError: { httpStatusCode: 413 } })), 'imageOverflow');
+  assert.equal(recoverableAgentError(new AgentCallError('too many images per request', { apiError: { httpStatusCode: 429 } })), 'imageOverflow');
+  assert.equal(recoverableAgentError(new AgentCallError('too many images per minute, rate limit', { apiError: { httpStatusCode: 429 } })), undefined);
+  for (const kind of ['contextWindowExceeded', { apiError: { httpStatusCode: 413 } }])
+    assert.equal(retryableAgentError(new AgentCallError('x', kind)), false);
+  // Local failures have nothing to do with the channel.
+  assert.equal(retryableAgentError(new AgentCallError('App Server RPC 调用失败')), false);
+  assert.equal(retryableAgentError(new AgentCallError('invalid api key · please run /login', { cliFailed: {} })), false);
+  // A failed turn without a code came from the channel; Gemini's throttle mentions quota but waits.
+  assert.equal(retryableAgentError(new AgentCallError('回合状态：failed', 'turnFailed')), true);
+  for (const text of ['Resource has been exhausted (e.g. check quota).', 'Quota exceeded for metric: generate_content_requests_per_minute. Please retry in 30s.'])
+    assert.equal(retryableAgentError(new AgentCallError(text, { apiError: { httpStatusCode: 429 } })), true);
+  for (const text of ['You exceeded your current quota, please check your plan and billing details.', 'insufficient_quota', 'Quota exceeded for metric generate_requests_per_day'])
+    assert.equal(retryableAgentError(new AgentCallError(text, { apiError: { httpStatusCode: 429 } })), false);
+
+  const waits: number[] = [];
+  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); }, () => 0);
+  const attempts: number[] = [];
+  let recovered = 0;
+  const result = await runtime.run(async attempt => {
+    attempts.push(attempt);
+    if (attempts.length === 1) throw new AgentCallError('x', 'contextWindowExceeded');
+    if (attempts.length === 2) throw new AgentCallError('overloaded', 'serverOverloaded');
+    return 'done';
+  }, { recover: async error => recoverableAgentError(error) === 'contextWindow' && ++recovered === 1 });
+  assert.equal(result, 'done'); assert.equal(recovered, 1);
+  assert.deepEqual(attempts, [1, 1, 2]); assert.deepEqual(waits, [2_500]);
+  await assert.rejects(runtime.run(async () => { throw new AgentCallError('x', 'contextWindowExceeded'); },
+    { recover: async () => false }), /x/);
+  assert.equal(waits.length, 1);
 });

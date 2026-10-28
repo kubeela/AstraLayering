@@ -248,6 +248,7 @@ const args=process.argv.slice(2), kind=args.includes('--mcp-config')?'claude':'a
 const resumeFlag=kind==='claude'?'--resume':'--conversation';
 const resumed=args.includes(resumeFlag)?args[args.indexOf(resumeFlag)+1]:undefined;
 if(resumed==='missing'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'session not found'}));process.exit(1);}
+if(resumed==='full'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'Prompt is too long'}));process.exit(1);}
 let input='';for await(const chunk of process.stdin)input+=chunk;
 const config=kind==='claude'?args[args.indexOf('--mcp-config')+1]:join(process.env.ANTIGRAVITY_GEMINI_DIR,'config/mcp_config.json');
 const registry=JSON.parse(await readFile(config,'utf8')).mcpServers.layering.env;
@@ -332,6 +333,26 @@ test('unavailable CLI sessions are replaced once without deleting existing deliv
     const result = await session.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '继续任务' });
     assert.notEqual(result.threadId, 'missing'); assert.equal(replacements, 1);
     assert.equal(await readFile(join(cwd, 'keep.svg'), 'utf8'), 'existing');
+  } finally { await session.close(); }
+});
+
+test('a CLI session over its context window is replaced once from the recovery prompt', async t => {
+  const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
+  await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_part_review_model: 'claude-sonnet-5-5-high' }, root);
+  await mkdir(join(cwd, 'agents/old-data'), { recursive: true });
+  await mkdir(join(cwd, 'agents/old-workspace'), { recursive: true });
+  await writeFile(join(cwd, 'agents/sessions.json'), JSON.stringify({ full: { harness: 'claude', data: join(cwd, 'agents/old-data'), workspace: join(cwd, 'agents/old-workspace') } }));
+  const reasons: string[] = [];
+  const agents = new CodexAgents({ environment: settings, cwd, logDirectory: join(cwd, 'agents'),
+    runtime: new AgentRuntime(1, async () => assert.fail('a known error must not wait')),
+    onThreadReplacement: async (_id, reason) => { reasons.push(reason); } });
+  const session = agents.createSession('full');
+  try {
+    const result = await session.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '继续任务', recoveryPrompt: '从头完成任务' });
+    assert.notEqual(result.threadId, 'full'); assert.deepEqual(reasons, ['上下文超出模型窗口']);
+    const invocation = JSON.parse(await readFile(join(cwd, 'workspace', 'invocation.json'), 'utf8'));
+    assert.match(JSON.stringify(invocation.input), /从头完成任务/);
   } finally { await session.close(); }
 });
 
