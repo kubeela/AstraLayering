@@ -4,6 +4,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import type { ShadowMode } from '../shared/shadow.ts';
+import { readDressup } from '../shared/part/dressup.ts';
+import { taskDirectory } from '../shared/paths.ts';
 
 export type ShadowInput = {
   characterKra: string; characterColor: string; simplifiedCharacter: string;
@@ -20,7 +22,11 @@ export async function resolveShadowInput(name: string, root: string, mode: Shado
     { path: 'step01/character-assembled.kra' }, { path: 'step01/character-assembled.png' },
   ], root);
   const structureFiles: string[] = [];
-  if (mode === 'mask') for (const id of ['part-layering', 'clothing-part-layering'] as const) {
+  // Without a dress-up the clothing lane is skipped and only the character has
+  // structure; older runs that made clothing parts anyway keep them.
+  const clothing = mode === 'mask' && (await readDressup(taskDirectory(name, root)) !== false
+    || await present(name, 'clothing-part-layering', root));
+  if (mode === 'mask') for (const id of clothing ? ['part-layering', 'clothing-part-layering'] as const : ['part-layering'] as const) {
     const directory = await requireUpstream(name, id, [{ path: 'groups.json' }, { path: 'occlusion.json' }], root);
     structureFiles.push(join(directory, 'groups.json'), join(directory, 'occlusion.json'));
   }
@@ -28,6 +34,8 @@ export async function resolveShadowInput(name: string, root: string, mode: Shado
     characterColor: join(assembly, 'step01/character-assembled.png'),
     simplifiedCharacter: await simplifiedCharacter(name, root), structureFiles };
 }
+const present = (name: string, id: 'clothing-part-layering', root: string) =>
+  requireUpstream(name, id, [{ path: 'groups.json' }, { path: 'occlusion.json' }], root).then(() => true, () => false);
 export function inputDirectories(input: ShadowInput): string[] {
   return [...new Set([dirname(dirname(input.characterKra)), dirname(dirname(input.simplifiedCharacter)),
     ...input.structureFiles.map(dirname)])];

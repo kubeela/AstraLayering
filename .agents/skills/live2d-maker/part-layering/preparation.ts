@@ -11,14 +11,18 @@ import type { PreparationInput, PreparationReferences } from '../shared/part/pre
 import { checkStandardJudgment, copyAsPng, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
   sectionDirectory, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
 import { migratePreparation, migrateStepLayout } from './preparation-migration.ts';
+import type { DressupDecision } from '../shared/part/dressup.ts';
 
 export type { PreparationInput, PreparationReferences, StandardJudgment };
 export type ProcessGenerated = (image: string) => Promise<void>;
+// A reference step either generated its image or copied its input.
+export type ReferenceChoice = { generated: boolean; reason: string };
 export type PreparationSteps = {
   judgeStandard(image: string, prompt: string): Promise<StandardJudgment>;
   standardize(inputImage: string, outputImage: string, prompt: string): Promise<void>;
   simplify(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<void>;
-  baseSubject(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<void>;
+  // Returns whether a dress-up base body was drawn (false: the reference was copied).
+  baseSubject(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<ReferenceChoice | void>;
 };
 
 function readPrompt(name: string): Promise<string> {
@@ -158,9 +162,18 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
       case 'simplified':
         return prepared('simplified', output(step), refs, async (temporary, processGenerated) =>
           steps.simplify(refs.standardImage!, temporary, await readPrompt('2-简化图片.md'), processGenerated));
-      case 'base':
-        return prepared('base', output(step), refs, async (temporary, processGenerated) =>
-          steps.baseSubject(refs.simplifiedSubject, temporary, await readPrompt('3-素体参考.md'), processGenerated));
+      case 'base': {
+        let choice: ReferenceChoice | undefined;
+        await prepared('base', output(step), refs, async (temporary, processGenerated) => {
+          choice = await steps.baseSubject(refs.simplifiedSubject, temporary, await readPrompt('3-素体参考.md'), processGenerated) || undefined;
+        });
+        // Read by the scheduler to decide whether the clothing lane runs.
+        const records = join(sectionDirectory(directory), stageStep('base'));
+        const made = choice as ReferenceChoice | undefined;
+        if (made) await mkdir(records, { recursive: true }).then(() => writeJson(join(records, 'decision.json'),
+          { version: 1, dressed: made.generated, reason: made.reason } satisfies DressupDecision));
+        return;
+      }
       case 'ready':
         await clearPreparedParts(dirname(directory));
         if (partsBuilt) progress?.('preparation：参考内容已重新生成，已重置本人物 part 的拆分缓存。');

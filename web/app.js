@@ -350,9 +350,11 @@ function processArtifacts(index, step) {
  const extra=deliveries.length?`<details class="process-files delivery-files" data-details="delivery:${index}:${step.id}"><summary>${deliveries.length} 个补充产物</summary>${render(deliveries)}</details>`:'';
  return extra+(items.length?`<details class="process-files" data-details="process:${index}:${step.id}"><summary>${listing.total} 个过程文件${listing.shown<listing.total?` · 显示 ${listing.shown} 个（按目录平分）`:''}</summary>${listing.folders.map(({folder,total,files})=>`<details class="process-group" data-details="process-folder:${index}:${step.id}:${esc(folder)}"><summary>${esc(folder||'workspace 根目录')} <small>${total} 个${files.length<total?` · 显示最新 ${files.length} 个`:''}</small></summary>${render(files)}</details>`).join('')}</details>`:'');
 }
+// A skipped lane (no dress-up, nothing to make) counts as complete.
+const finished=stage=>stage.status==='done'||stage.status==='skipped';
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
- return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
+ return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${stage.status==='skipped'?`<p class="lane-summary skipped-lane">${esc(data.pipelines[index]?.summary||'无需执行')}</p>`:''}${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
 }
 function inspector() {
  const stage=stages[state.stage],step=selectedStep(),item=state.asset;
@@ -410,12 +412,12 @@ function connectFlow() {
   const entryY=cards[0].y+cards[0].h/2;
   path(`M${input.x+input.w} ${input.y+input.h/2} H${cards[0].x-20} V${entryY} H${cards[0].x-6}`,'done');
  }
- for(const [a,b,text,done] of [[cards[0],cards[1],'parts',stages[0].status==='done'],[cards[2],cards[3],'parts',stages[2].status==='done'],[cards[3],cards[4],'衣服 KRA',stages[3].status==='done'],[cards[4],cards[5],'组装 KRA',stages[4].status==='done']]){
+ for(const [a,b,text,done] of [[cards[0],cards[1],'parts',finished(stages[0])],[cards[2],cards[3],'parts',finished(stages[2])],[cards[3],cards[4],'衣服 KRA',finished(stages[3])],[cards[4],cards[5],'组装 KRA',finished(stages[4])]]){
   if(!a||!b)continue;
   const y=a.y+a.h/2;path(`M${a.x+a.w} ${y} H${b.x-6}`,status(done));label(text,(a.x+a.w+b.x-6)/2,y,status(done));
  }
  const top=Math.min(...cards.filter(Boolean).map(card=>card.y)),tracks=[];
- const links=[[cards[0],cards[2],'简化角色参考',!!data.reference],[cards[1],cards[4],'人物素体 KRA',stages[1].status==='done']]
+ const links=[[cards[0],cards[2],'简化角色参考',!!data.reference],[cards[1],cards[4],'人物素体 KRA',finished(stages[1])]]
   .filter(([a,b])=>a&&b).map(([a,b,text,done])=>({x1:a.x+a.w*.72,x2:b.x+b.w*.45,text,state:status(done)}));
  for(const link of links){
   const track=tracks.findIndex(end=>end<link.x1-24);

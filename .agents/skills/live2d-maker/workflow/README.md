@@ -22,6 +22,8 @@ pnpm start --name jianma --background
 
 默认换装范围是主体衣装；手套、袜类、鞋靴和其自身装饰随人物保留。人物素体使用临时连体服，raster step03 去除；衣服 preparation 同时读取简化穿衣图和素体图，提取互补衣装。整套衣装的大小与位置由组装适配。
 
+素体 agent 的选择写入 `part-layering/preparation/step07/decision.json`（`dressed`）。没有换装时，总控把 clothing-part-layering 与 clothing-raster-layering 记为“完成（跳过）”且不调用 agent；raster step03 直接复制 step02 成果作为素体，character-assembly 直接复制人物 KRA，阴影照常运行。之后重做素体并换装，两条衣服管线会正常执行。旧任务没有 decision.json 时按简化图与素体像素是否相同判断；已画出衣服的旧任务继续使用这些衣服，已完成的输入保持不变。
+
 参考和产物按内容指纹复用，提示词更新不会自动重绘。旧任务只有已合格参考时可沿用；若旧记录含尺寸／摘要则须匹配。已完成步骤的产物被替换时拒绝直接续跑并保留文件，不用归档副本猜补。生成参考的透明处理、等比缩放和留档规则见 [shared](../shared/README.md#参考图后处理)。
 
 ## 生效配置核对

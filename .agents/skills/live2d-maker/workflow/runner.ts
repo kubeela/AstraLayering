@@ -13,6 +13,7 @@ import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/cod
 import { pipelineAgentSteps, preflightAgentSteps } from '../shared/agents/preflight.ts';
 import { clearTaskStop, watchTaskStop } from './control.ts';
 import { requireKrita } from './krita.ts';
+import { readDressup } from '../shared/part/dressup.ts';
 
 export type PipelineExecution = (id: PipelineId, run: TaskRun, context: {
   signal: AbortSignal; progress(message: string): void; started(pid: number): Promise<void>;
@@ -59,6 +60,8 @@ export const executeChild: PipelineExecution = async (id, run, context) => {
     if (context.signal.aborted) abort();
   });
 };
+
+const clothingSkipped = '素体换装沿用了简化参考，没有衣服需要拆分和绘制，跳过';
 
 export async function runTask(options: TaskOptions, dependencies: {
   execute?: PipelineExecution; signal?: AbortSignal; progress?: (message: string) => void;
@@ -119,9 +122,18 @@ export async function runTask(options: TaskOptions, dependencies: {
       const downstream = id === 'part-layering' ? 'raster-layering'
         : id === 'clothing-part-layering' ? 'clothing-raster-layering' : undefined;
       if (downstream && selectedPipelines(run.from, run.to).includes(downstream)
-        && run.pipelines[id]?.status === 'completed' && run.pipelines[downstream]
+        && run.pipelines[id]?.status === 'completed' && !run.pipelines[id]!.skipped && run.pipelines[downstream]
         && run.pipelines[downstream]!.status !== 'pending') {
         progress('沿用已完成的分层产物及绘画阶段保存的结构修正：' + id);
+        continue;
+      }
+      // Without a dress-up nothing is worn to separate. A clothing lane that
+      // had already completed is kept as it is.
+      if ((id === 'clothing-part-layering' || id === 'clothing-raster-layering') && await readDressup(directory) === false
+        && !(run.pipelines[id]?.status === 'completed' && !run.pipelines[id]!.skipped)) {
+        run.pipelines[id] = { status: 'completed', skipped: true, updatedAt: now(), summary: clothingSkipped };
+        await persist();
+        progress(id + '：' + clothingSkipped);
         continue;
       }
       run.activePipeline = id;

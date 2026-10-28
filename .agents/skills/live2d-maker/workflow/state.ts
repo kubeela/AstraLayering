@@ -17,6 +17,8 @@ export type TaskOptions = {
 export type PipelineProgress = {
   status: 'pending' | 'running' | 'completed' | 'failed';
   updatedAt: string; summary?: string;
+  // Completed without running: the base subject has no dress-up, so there is no clothing to make.
+  skipped?: true;
 };
 export type TaskRun = {
   archive?: true;
