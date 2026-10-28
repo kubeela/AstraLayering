@@ -23,6 +23,28 @@ function runCli(args: string[]) {
   ], { timeout: 10000, env: { ...process.env, layering_codex_path: process.execPath } });
 }
 
+test('CLI 隔离模拟本机版本查询，模型调用及其他外部进程仍被拒绝', async () => {
+  const source = `
+    import assert from 'node:assert/strict';
+    import { once } from 'node:events';
+    import { spawn, spawnSync, execFile, execFileSync, exec, execSync } from 'node:child_process';
+    const child = spawn(process.execPath, ['--version']);
+    let stdout = '', stderr = '';
+    child.stdout.on('data', data => stdout += data);
+    child.stderr.on('data', data => stderr += data);
+    const [status] = await once(child, 'close');
+    assert.equal(status, 0); assert.equal(stdout, 'fixture CLI 1.2.3'); assert.equal(stderr, '');
+    const forbidden = /CLI 测试禁止启动模型或其他外部进程/;
+    assert.throws(() => spawn(process.execPath, ['app-server']), forbidden);
+    assert.throws(() => spawn(process.execPath, ['--version', 'app-server']), forbidden);
+    assert.throws(() => spawn('claude', ['--version']), forbidden);
+    for (const launch of [spawnSync, execFile, execFileSync, exec, execSync])
+      assert.throws(() => launch(process.execPath, ['app-server']), forbidden);
+  `;
+  await promisify(execFile)(process.execPath, ['--import', new URL('./forbid-model-processes.ts', import.meta.url).href,
+    '--input-type=module', '-e', source], { timeout: 10000 });
+});
+
 test('--jobs / -j 只设置 agent 并发上限，默认 3，不产生组调度上限', () => {
   assert.equal(parseRunArguments(['--name', 'test']).agentConcurrency, 3);
   assert.equal(parseRunArguments(['--name', 'test', '--jobs', '2']).agentConcurrency, 2);

@@ -67,6 +67,9 @@ test('section Krita: lazy start through the tool, crash and restart, release on 
   assert.equal(crashed.lastExit.code, 3);
   // The slot stays with the section after a crash.
   assert.equal((await readKritaRecord(record))?.state, 'reserved');
+  // Crash status is immediate; removing the private profile is asynchronous.
+  const cleanupDeadline = Date.now() + 5_000;
+  while (await exists(profile) && Date.now() < cleanupDeadline) await new Promise(resolve => setTimeout(resolve, 20));
   assert.equal(await exists(profile), false);
   const restarted = parse(await tool.execute({ action: 'restart' }, signal));
   assert.equal(restarted.state, 'running');
