@@ -149,9 +149,21 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       startEvents.push(message);
       return;
     }
+    // A missing identity cannot safely be attributed to the current turn.
+    // Completion uses the nested turn.id; other turn-scoped events use turnId.
+    const turnScoped = ['item/tool/call', 'item/completed', 'turn/completed', 'thread/tokenUsage/updated', 'error'].includes(message.method ?? '');
+    const eventTurnId = message.method === 'turn/completed' ? message.params?.turn?.id : message.params?.turnId;
+    if (sameThread && current?.turnId && turnScoped && (typeof eventTurnId !== 'string' || !eventTurnId.trim())) {
+      const reason = 'Codex App Server 的 ' + message.method + ' 缺少有效回合 ID';
+      if (message.method === 'item/tool/call' && message.id !== undefined) {
+        await send({ id: message.id, result: { success: false, contentItems: [{ type: 'inputText', text: reason }] } });
+      }
+      failTurn(new AgentCallError(reason, 'localError'));
+      child?.kill();
+      return;
+    }
     // Resumed/automatic turns must not run this task's tools or finish it.
-    const ownTurn = sameThread && !!current?.turnId &&
-      (!message.params?.turnId || message.params.turnId === current.turnId);
+    const ownTurn = sameThread && !!current?.turnId && eventTurnId === current.turnId;
     if (message.method && message.id !== undefined) {
       if (message.method !== 'item/tool/call') {
         await send({ id: message.id, error: { code: -32601, message: `未注册的请求：${message.method}` } });
@@ -211,8 +223,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       }
     } else if (message.method === 'thread/tokenUsage/updated' && current && ownTurn) {
       current.usage = message.params?.tokenUsage;
-    } else if (message.method === 'turn/completed' && current && ownTurn &&
-        (!message.params?.turn?.id || message.params.turn.id === current.turnId)) {
+    } else if (message.method === 'turn/completed' && current && ownTurn) {
       const turn = message.params?.turn;
       if (turn?.status !== 'completed') {
         // A failed turn without a code is still a channel failure, unlike a local error.

@@ -57,10 +57,10 @@ for await (const line of createInterface({input:process.stdin})) {
  if(message.method==='turn/start') {
   if(mode==='rpc'){emit({id:message.id,error:{code:-32603,message:'RPC failed',data:{error:payload}}});continue;}
   emit({id:message.id,result:{turn:{id:'turn'}}});
-  emit({method:'item/completed',params:{item:{type:'agentMessage',text:'当前草稿已保存'}}});
-  emit({method:'error',params:{threadId:'app-server-thread',willRetry:true,error:payload}});
+  emit({method:'item/completed',params:{threadId:'app-server-thread',turnId:'turn',item:{type:'agentMessage',text:'当前草稿已保存'}}});
+  emit({method:'error',params:{threadId:'app-server-thread',turnId:'turn',willRetry:true,error:payload}});
   if(mode==='eof')process.exit(0);
-  emit({method:'turn/completed',params:{turn:{status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
+  emit({method:'turn/completed',params:{threadId:'app-server-thread',turn:{id:'turn',status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
  }
 }
 `, { mode: 0o700 });

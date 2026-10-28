@@ -14,7 +14,7 @@ Krita 的用法只写在 [krita 工具说明](tools/krita/description.md)，仅�
 
 Codex 的每个回合都经 App Server（`codex app-server`）执行；延续已有 thread 时不能改变工作目录、工具定义、shell 或生图开关，需要改变时新建 thread。Claude／AGV 的工具活动按长度截断后镜像到 `workflow.log`，完整记录在请求目录的 `events.jsonl`。总控并发运行的管线各在独立 worker 进程中，agent 名额由总调度统一按 `--jobs` 分配，跨进程共享。
 
-会话恢复由 CLI 适配层处理。Codex 的 `shared/codex/tool-agent.ts` 为工作流子会话关闭 `features.goals`，防止原生 goal 自动续跑抢先启动回合；恢复时若仍有活动回合，先请求 `turn/interrupt` 并等待该回合的 `turn/completed`（最多 30 秒），再提交原始输入和 outputSchema。若提交仍遇到 `ActiveTurnOutputSchemaMismatch`，重新查询活动回合、中断后立即重试一次；仍不能安全恢复时，由共享的有界会话替换机制保留记录与产物新建 thread，不占用网络退避次数。旧回合的工具与结果不能执行或结束新任务。Claude 使用一次性 `--print --resume` 且禁用定时唤醒工具；AGV 使用 `--conversation`，按当前 user_input 边界核对终态，两者均校验恢复后的会话 ID。共享层只负责错误分类、重试预算与会话替换，不实现某个 CLI 的中断协议。
+会话恢复由 CLI 适配层处理。Codex 的 `shared/codex/tool-agent.ts` 为工作流子会话关闭 `features.goals`，防止原生 goal 自动续跑抢先启动回合；恢复时若仍有活动回合，先请求 `turn/interrupt` 并等待该回合的 `turn/completed`（最多 30 秒），再提交原始输入和 outputSchema。若提交仍遇到 `ActiveTurnOutputSchemaMismatch`，重新查询活动回合、中断后立即重试一次；仍不能安全恢复时，由共享的有界会话替换机制保留记录与产物新建 thread，不占用网络退避次数。工具、消息、用量、错误和完成事件必须携带与当前回合匹配的 ID；缺少 ID 时明确报协议错误并结束连接，旧回合的工具与结果不能执行或结束新任务。Claude 使用一次性 `--print --resume` 且禁用定时唤醒工具；AGV 使用 `--conversation`，按当前 user_input 边界核对终态，两者均校验恢复后的会话 ID。共享层只负责错误分类、重试预算与会话替换，不实现某个 CLI 的中断协议。
 
 ## 多深度与上游修正
 

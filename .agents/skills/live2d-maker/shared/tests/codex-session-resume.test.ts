@@ -58,6 +58,18 @@ for await(const line of createInterface({input:process.stdin})) {
   }
   if(mode==='active'&&!ended)throw Error('started before old turn ended');
   emit({id:m.id,result:{turn:{id:'our-turn',status:'inProgress'}}});
+  if(mode==='missing-tool')emit({id:'bad-tool',method:'item/tool/call',params:{threadId,tool:'probe',arguments:{}}});
+  if(mode==='missing-item')emit({method:'item/completed',params:{threadId,item:{type:'agentMessage',text:'bad'}}});
+  if(mode==='missing-completed')emit({method:'turn/completed',params:{threadId,turn:{status:'completed'}}});
+  if(mode==='missing-usage')emit({method:'thread/tokenUsage/updated',params:{threadId,tokenUsage:{}}});
+  if(mode==='missing-error')emit({method:'error',params:{threadId,error:{message:'bad'},willRetry:false}});
+  if(mode==='foreign') {
+   emit({id:'foreign-tool',method:'item/tool/call',params:{threadId,turnId:'foreign-turn',tool:'probe',arguments:{}}});
+   emit({method:'item/completed',params:{threadId,turnId:'foreign-turn',item:{type:'agentMessage',text:'wrong reply'}}});
+   emit({method:'turn/completed',params:{threadId,turn:{id:'foreign-turn',status:'failed',error:{message:'wrong failure'}}}});
+   emit({method:'thread/tokenUsage/updated',params:{threadId,turnId:'foreign-turn',tokenUsage:{total:{inputTokens:999}}}});
+   emit({method:'error',params:{threadId,turnId:'foreign-turn',error:{message:'wrong error'},willRetry:false}});
+  }
   emit({method:'item/completed',params:{threadId,turnId:'our-turn',item:{type:'agentMessage',text:'{"status":"completed"}'}}});
   done('our-turn','completed');
  }
@@ -163,5 +175,25 @@ test('an error processing a buffered event rejects the pending start instead of 
   try {
     await assert.rejects(session.run({ name: 'early-error', prompt: 'continue', outputSchema: schema,
       tools: [{ name: 'probe', description: 'probe', inputSchema: { type: 'object' }, execute: async () => ({ success: true, contentItems: [] }) }] }), /event callback failed/);
+  } finally { await session.close(); }
+});
+
+for (const mode of ['missing-tool','missing-item','missing-completed','missing-usage','missing-error']) {
+  test(mode + ': missing turn identity fails explicitly', { timeout: 10_000 }, async t => {
+    const f = await fixture(t, mode), session = createFunctionToolSession(f.options, 'old-thread'); let calls = 0;
+    try {
+      await assert.rejects(session.run({ name: mode, prompt: 'continue', outputSchema: schema,
+        tools: [{ name: 'probe', description: 'probe', inputSchema: { type: 'object' }, execute: async () => { calls++; return { success:true, contentItems:[] }; } }] }), /缺少有效回合 ID/);
+      assert.equal(calls, 0);
+    } finally { await session.close(); }
+  });
+}
+
+test('events with another turn ID cannot execute tools or complete the current turn', { timeout: 10_000 }, async t => {
+  const f = await fixture(t, 'foreign'), session = createFunctionToolSession(f.options, 'old-thread'); let calls = 0;
+  try {
+    const result = await session.run({ name: 'foreign', prompt: 'continue', outputSchema: schema,
+      tools: [{ name: 'probe', description: 'probe', inputSchema: { type: 'object' }, execute: async () => { calls++; return { success:true, contentItems:[] }; } }] });
+    assert.equal(result.text, '{"status":"completed"}'); assert.equal(calls, 0);
   } finally { await session.close(); }
 });
