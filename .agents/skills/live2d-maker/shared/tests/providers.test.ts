@@ -189,6 +189,7 @@ test('Claude private settings apply model lists and explicit credentials, preser
   const first = await runCliTask(task, parseAgentModel('claude-sonnet-5-5-xhigh', 'fixture'), settings, options, new AbortController().signal);
   const a = JSON.parse(await readFile(join(cwd, 'workspace', 'fixture.json'), 'utf8'));
   assert.equal(a.env.ANTHROPIC_API_KEY, 'EXPLICIT_FIXTURE_KEY');
+  assert.equal(a.args[a.args.indexOf('--disallowedTools') + 1], 'ScheduleWakeup,CronCreate,CronDelete,CronList', 'a one-turn run cannot be woken later');
   assert.equal(a.env.ANTHROPIC_BASE_URL, 'https://claude.test');
   assert.equal(a.env.ANTHROPIC_AUTH_TOKEN, undefined);
   assert.equal(a.settings.apiKeyHelper, undefined);
