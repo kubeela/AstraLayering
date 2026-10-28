@@ -81,7 +81,7 @@ SVG 合并由程序执行，不配置 LLM。步骤职责、绘图提示词、rev
 
 OpenAI 兼容服务的 base URL 通常包含 `/v1`，程序追加 `/images/generations` 或 `/images/edits`；Gemini 原生服务的 base URL 通常包含 `/v1beta`，程序追加 `/models/<模型>:generateContent`。按服务提供的地址和协议填写，API 密钥在本机保存。
 
-所有 Codex 步骤都使用补丁版 Codex（`layering_codex_path` 留空即自动准备，构建见 [setup](setup.md#补丁)）；Codex 步骤选具体 GPT／Nano 生图模型时，补丁还须具备原生 image provider v2。Claude／AGV 使用共享生图函数工具。为 Claude／AGV 步骤选择上述 GPT／Nano 服务，并准备对应 API；`codex-native` 对应 Codex 步骤。
+所有 Codex 步骤都使用补丁版 Codex（`layering_codex_path` 留空即自动准备，构建见 [setup](setup.md#codex-补丁构建与恢复)）；Codex 步骤选具体 GPT／Nano 生图模型时，补丁还须具备原生 image provider v2。Claude／AGV 使用共享生图函数工具。为 Claude／AGV 步骤选择上述 GPT／Nano 服务，并准备对应 API；`codex-native` 对应 Codex 步骤。
 
 ### 全局默认与逐步骤覆盖
 
