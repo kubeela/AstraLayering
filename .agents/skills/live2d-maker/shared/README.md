@@ -16,7 +16,6 @@ Codex 的每个回合都经 App Server（`codex app-server`）执行；延续已
 
 会话恢复由 CLI 适配层处理。Codex 的 `shared/codex/tool-agent.ts` 为工作流子会话关闭 `features.goals`，防止原生 goal 自动续跑抢先启动回合；恢复时若仍有活动回合，先请求 `turn/interrupt` 并等待该回合的 `turn/completed`（最多 30 秒），再提交原始输入和 outputSchema。若提交仍遇到 `ActiveTurnOutputSchemaMismatch`，重新查询活动回合、中断后立即重试一次；仍不能安全恢复时，由共享的有界会话替换机制保留记录与产物新建 thread，不占用网络退避次数。旧回合的工具与结果不能执行或结束新任务。Claude 使用一次性 `--print --resume` 且禁用定时唤醒工具；AGV 使用 `--conversation`，按当前 user_input 边界核对终态，两者均校验恢复后的会话 ID。共享层只负责错误分类、重试预算与会话替换，不实现某个 CLI 的中断协议。
 
-
 ## 多深度与上游修正
 
 `occlusion.json` v3 每个逻辑 part 只有一条：单深度使用 `level`，多深度使用 `levels: [{ level, region }]`，二者互斥。深度数值唯一，从后往前排序，可用小数插入；v2 单深度仍兼容。多深度表示同动整体跨层，不强制回 part 拆树，实际绘画分片由 raster step01 在 Krita 中实现，保持连接和归属。

@@ -48,6 +48,14 @@ for await(const line of createInterface({input:process.stdin})) {
    active='auto-'+starts;emit({method:'turn/started',params:{threadId,turn:{id:active,status:'inProgress'}}});
    emit({id:m.id,error:{code:-32603,message:mode==='unknown'?'other RPC failure':'failed to submit turn input: ActiveTurnOutputSchemaMismatch'}});continue;
   }
+  if(mode==='early'||mode==='missing-id') {
+   emit({method:'turn/started',params:{threadId,turn:{id:'our-turn',status:'inProgress'}}});
+   emit({id:'old-early',method:'item/tool/call',params:{threadId,turnId:'old-turn',tool:'probe',arguments:{origin:'old'}}});
+   emit({id:'our-early',method:'item/tool/call',params:{threadId,turnId:'our-turn',tool:'probe',arguments:{origin:'our'}}});
+   emit({method:'item/completed',params:{threadId,turnId:'our-turn',item:{type:'agentMessage',text:'early reply'}}});
+   done('our-turn','completed');
+   emit({id:m.id,result:{turn:mode==='missing-id'?{status:'inProgress'}:{id:'our-turn',status:'inProgress'}}});continue;
+  }
   if(mode==='active'&&!ended)throw Error('started before old turn ended');
   emit({id:m.id,result:{turn:{id:'our-turn',status:'inProgress'}}});
   emit({method:'item/completed',params:{threadId,turnId:'our-turn',item:{type:'agentMessage',text:'{"status":"completed"}'}}});
@@ -61,7 +69,8 @@ for await(const line of createInterface({input:process.stdin})) {
 }
 
 for (const mode of ['active', 'race']) test('resume: interrupts and waits for the old turn (' + mode + ')', { timeout: 10_000 }, async t => {
-  const f = await fixture(t, mode), session = createFunctionToolSession(f.options, 'old-thread');
+  const f = await fixture(t, mode), progress: string[] = [];
+  const session = createFunctionToolSession({ ...f.options, progress: line => progress.push(line) }, 'old-thread');
   let tools = 0;
   await writeFile(join(f.root, 'keep.kra'), 'existing artifact');
   try {
@@ -78,6 +87,7 @@ for (const mode of ['active', 'race']) test('resume: interrupts and waits for th
     assert.deepEqual(turns[0].params, turns.at(-1).params, 'retry preserves input and output schema');
     assert.ok(messages.findIndex(m => m.event === 'old-turn-ended') < messages.findLastIndex(m => m.method === 'turn/start'));
     assert.equal(messages.filter(m => m.method === 'turn/interrupt').length, 1);
+    if (mode === 'race') assert.ok(progress.some(line => line.startsWith('[resume] Codex 自动续跑')));
     assert.equal(messages.find(m => m.id === 'stale-tool').result.success, false);
   } finally { await session.close(); }
 });
@@ -123,5 +133,35 @@ test('a stuck interrupted turn has a bounded wait and never accepts the new inpu
       assert.equal(recoverableAgentError(error), 'sessionProtocol'); return true;
     });
     assert.equal((await f.messages()).filter(m => m.method === 'turn/start').length, 0);
+  } finally { await session.close(); }
+});
+
+test('events before turn/start reply are buffered and routed only to the returned turn', { timeout: 10_000 }, async t => {
+  const f = await fixture(t, 'early'), calls: unknown[] = [];
+  const session = createFunctionToolSession(f.options, 'old-thread');
+  try {
+    const result = await session.run({ name: 'early', prompt: 'continue', outputSchema: schema, tools: [{ name: 'probe', description: 'probe', inputSchema: { type: 'object' }, execute: async args => { calls.push(args); return { success: true, contentItems: [] }; } }] });
+    assert.equal(result.text, 'early reply');
+    assert.deepEqual(calls, [{origin:'our'}]);
+  } finally { await session.close(); }
+});
+
+test('turn/start without a valid turn ID fails promptly and does not execute buffered tools', { timeout: 10_000 }, async t => {
+  const f = await fixture(t, 'missing-id'); let calls = 0;
+  const session = createFunctionToolSession(f.options, 'old-thread');
+  try {
+    await assert.rejects(session.run({ name: 'missing-id', prompt: 'continue', outputSchema: schema, tools: [{ name: 'probe', description: 'probe', inputSchema: { type: 'object' }, execute: async () => { calls++; return { success: true, contentItems: [] }; } }] }), /turn\/start 返回缺少有效 turn.id/);
+    assert.equal(calls, 0);
+  } finally { await session.close(); }
+});
+
+test('an error processing a buffered event rejects the pending start instead of hanging', { timeout: 10_000 }, async t => {
+  const f = await fixture(t, 'early');
+  const session = createFunctionToolSession({ ...f.options, onEvent: async event => {
+    if (event.type === 'item.completed') throw new Error('event callback failed');
+  } }, 'old-thread');
+  try {
+    await assert.rejects(session.run({ name: 'early-error', prompt: 'continue', outputSchema: schema,
+      tools: [{ name: 'probe', description: 'probe', inputSchema: { type: 'object' }, execute: async () => ({ success: true, contentItems: [] }) }] }), /event callback failed/);
   } finally { await session.close(); }
 });
