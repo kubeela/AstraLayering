@@ -20,7 +20,7 @@ export const help = [
   '开始制作：pnpm start --name <任务名> --image <参考图> --krita <可执行文件> [--background]',
   '继续：    pnpm start --name <任务名> [--continue] [--background]   保留产物与会话，从中断处继续运行',
   '恢复：    pnpm start --name <任务名> --resume [--background]       清除会话、保留产物，在新会话中继续运行',
-  '重试：    pnpm start --name <任务名> --retry [--background]        删除这些步骤的产物与会话后重做；依赖它们的后续步骤自动重跑',
+  '重试：    pnpm start --name <任务名> --retry [--background]        删除这些步骤的产物、会话与 agent 尝试记录后重做；依赖它们的后续步骤自动重跑',
   '停止：    pnpm start --name <任务名> --stop                        停止运行，保留产物与续跑记录',
   '进度：    pnpm start --name <任务名> --status [--json]',
   '导出成果：pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]',
