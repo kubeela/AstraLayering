@@ -26,11 +26,16 @@ export async function currentAgentCalls(directory: string, pipeline: string, fil
           if (requests.size >= 2048) requests.delete(requests.keys().next().value!);
           requests.set(path, cached);
         }
-        const result = request.replace(/request.json$/, 'result.json'), finished = files.has(result);
+        // A CLI attempt writes its failed result and then the retry wait; the call goes on in the next attempt's record.
+        // A result written after the wait (Codex keeps one record across retries) ends the call.
+        const result = request.replace(/request.json$/, 'result.json'), waitPath = request.replace(/request.json$/, retryWaitFile);
+        const [resultTime, waitTime] = await Promise.all([result, waitPath].map(path => files.has(path)
+          ? safePath(directory, path).then(lstat).then(info => info.mtimeMs, () => undefined) : undefined));
+        const pending = waitTime !== undefined && (resultTime === undefined || waitTime >= resultTime);
+        const finished = resultTime !== undefined && !pending;
         const failed = readFailures && finished
           ? JSON.parse(await readFile(await safePath(directory, result), 'utf8')).status === 'failed' : false;
-        const waitPath = request.replace(/request.json$/, retryWaitFile);
-        const wait = !finished && files.has(waitPath) ? JSON.parse(await readFile(await safePath(directory, waitPath), 'utf8')) : undefined;
+        const wait = pending ? JSON.parse(await readFile(await safePath(directory, waitPath), 'utf8')) : undefined;
         const throttledUntil = Date.parse(wait?.until) || undefined;
         calls.push({ name: cached.name, step: cached.step, request, mtime: info.mtimeMs, finished, failed,
           ...(throttledUntil ? { throttledUntil, retryError: String(wait.error ?? '') } : {}) });
