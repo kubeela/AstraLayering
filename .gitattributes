@@ -48,7 +48,7 @@ sam_veirfy/outputs/** -text whitespace=blank-at-eol,blank-at-eof,space-before-ta
 # showcase images and one example task. History, research and the other archives stay on GitHub.
 # Directory patterns drop the whole tree, so only the example directory is re-included.
 /archive export-ignore
-/loading export-ignore
+/svg-previewer export-ignore
 /rigging export-ignore
 /sam_veirfy export-ignore
 /tutorial export-ignore

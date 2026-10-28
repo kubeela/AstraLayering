@@ -10,6 +10,7 @@
   "scripts": {
     "web": "node web/server.ts",
     "test:web": "node --test web/tests/*.test.ts",
+    "test:release": "node --test scripts/tests/*.test.mjs",
     "check:web": "tsc -p web/tsconfig.json",
     "release:pack": "node scripts/release-pack.mjs"
   },

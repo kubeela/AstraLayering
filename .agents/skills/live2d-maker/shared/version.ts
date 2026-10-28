@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import { readFile, realpath } from 'node:fs/promises';
+import { access, readFile, realpath } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { workflowsDirectory } from './paths.ts';
@@ -31,18 +31,29 @@ export function parseDescribe(text: string): InstalledVersion | undefined {
 const run = promisify(execFile);
 export async function installedVersion(skill = workflowsDirectory): Promise<InstalledVersion> {
   const repository = resolve(skill, '../../..');
+  const unknown: InstalledVersion = { version: '0.0.0', label: '未知版本', exact: false, source: 'unknown' };
+  let application: { name?: string; version?: string };
+  try {
+    application = JSON.parse(await readFile(join(repository, 'package.json'), 'utf8'));
+    if (application.name !== 'astra-layering-web') return unknown;
+    await Promise.all([access(join(repository, 'web/server.ts')), access(join(repository, 'pnpm-workspace.yaml'))]);
+  } catch { return unknown; }
   try {
     // Only this application's checkout counts, not an unrelated repository the skill was copied into.
     const { stdout: top } = await run('git', ['rev-parse', '--show-toplevel'], { cwd: skill, timeout: 3000 });
     if (await realpath(top.trim()) === await realpath(repository)) {
-      const { stdout } = await run('git', ['describe', '--tags', '--match', 'v[0-9]*.[0-9]*.[0-9]*'], { cwd: skill, timeout: 3000 });
-      const described = parseDescribe(stdout);
-      if (described) return described;
+      // Git's --match accepts globs, so its digit wildcard also matches suffixes such as -rc1.
+      // Select exact release names first, then let describe find the nearest reachable one.
+      const { stdout: tags } = await run('git', ['tag', '--list', 'v*'], { cwd: skill, timeout: 3000 });
+      const stable = tags.split(/\r?\n/).filter(tag => releaseTag.test(tag));
+      if (stable.length) {
+        const { stdout } = await run('git', ['describe', '--tags', ...stable.flatMap(tag => ['--match', tag])], { cwd: skill, timeout: 3000 });
+        const described = parseDescribe(stdout);
+        if (described) return described;
+      }
     }
   } catch { /* No Git, no checkout, or no release tag yet. */ }
-  try {
-    const { version } = JSON.parse(await readFile(join(repository, 'package.json'), 'utf8'));
-    if (typeof version === 'string' && releaseTag.test('v' + version)) return { version, label: 'v' + version, exact: true, source: 'package' };
-  } catch { /* A standalone skill copy has no application package.json. */ }
-  return { version: '0.0.0', label: '未知版本', exact: false, source: 'unknown' };
+  const { version } = application;
+  if (typeof version === 'string' && releaseTag.test('v' + version)) return { version, label: 'v' + version, exact: true, source: 'package' };
+  return unknown;
 }
