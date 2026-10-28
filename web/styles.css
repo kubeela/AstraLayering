@@ -279,3 +279,15 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .overview-start:after{right:-21px}.overview-merge:before{left:-21px}
 @media(max-width:900px){.overview-flow{grid-template-columns:minmax(0,1fr)}.overview-start:after,.overview-merge:before{content:'↓';top:auto;right:auto;left:50%;transform:translateX(-50%)}.overview-start:after{bottom:-24px}.overview-merge:before{top:-24px}}
 .flow-scroll :is(.inline-tree-rows,.step-content,.group-compact,.cycle-phase,.review-feedback,.group-note,.phase-state,.step-summary){touch-action:pan-y}
+/* Configuration folders nest like the skill's directories; depth sets the indent and a faint guide. */
+.config-folder{position:relative}
+.config-folder summary{list-style:none;display:flex;gap:6px;align-items:center;min-height:30px;cursor:pointer;font-size:9.5px;color:#6f7f8f;padding:0 4px 0 calc(8px + var(--depth,0) * 13px);border-radius:5px}
+.config-folder summary::-webkit-details-marker,.config-family summary::-webkit-details-marker{display:none}
+.config-folder summary:hover{background:#f3f7f8}
+.config-folder summary>svg{width:12px;height:12px;flex-shrink:0;color:#9aa8b5}
+.config-folder summary>svg:first-child{width:9px;height:9px;transition:transform .15s}
+.config-folder[open]>summary>svg:first-child{transform:rotate(90deg)}
+.config-folder summary span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.config-folder summary small{margin-left:auto;font-size:8px;color:#b4bcc6;padding-right:3px}
+.config-folder[open]::before{content:'';position:absolute;left:calc(12px + var(--depth,0) * 13px);top:30px;bottom:4px;border-left:1px solid #e6ecef}
+.config-tree .config-file{padding-left:calc(23px + var(--depth,0) * 13px)}
