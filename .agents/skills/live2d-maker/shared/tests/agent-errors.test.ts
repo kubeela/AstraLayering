@@ -13,12 +13,14 @@ import { parseAgentModel } from '../agents/models.ts';
 import { runAgent } from '../raster/agent.ts';
 import {AgentLog} from '../codex/agent-log.ts';
 import {setTimeout as delay} from 'node:timers/promises';
+import { nodeExecutables } from '../../part-layering/tests/node-executables.ts';
 import { patchedCodexCapabilities } from './fake-codex.ts';
 
 const payload = { message: 'Provider rejected this reference', code: 'bad_reference',
   type: 'invalid_request_error', param: 'input[0]', status: 400, request_id: 'provider-request-123' };
 
 async function fixture(t: TestContext) {
+  nodeExecutables(t);
   const root = await mkdtemp(join(tmpdir(), 'layering-errors-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const cwd = join(root, 'case'); await mkdir(cwd);
@@ -55,10 +57,10 @@ for await (const line of createInterface({input:process.stdin})) {
  if(message.method==='turn/start') {
   if(mode==='rpc'){emit({id:message.id,error:{code:-32603,message:'RPC failed',data:{error:payload}}});continue;}
   emit({id:message.id,result:{turn:{id:'turn'}}});
-  emit({method:'item/completed',params:{item:{type:'agentMessage',text:'当前草稿已保存'}}});
-  emit({method:'error',params:{threadId:'app-server-thread',willRetry:true,error:payload}});
+  emit({method:'item/completed',params:{threadId:'app-server-thread',turnId:'turn',item:{type:'agentMessage',text:'当前草稿已保存'}}});
+  emit({method:'error',params:{threadId:'app-server-thread',turnId:'turn',willRetry:true,error:payload}});
   if(mode==='eof')process.exit(0);
-  emit({method:'turn/completed',params:{turn:{status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
+  emit({method:'turn/completed',params:{threadId:'app-server-thread',turn:{id:'turn',status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
  }
 }
 `, { mode: 0o700 });

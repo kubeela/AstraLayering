@@ -62,13 +62,14 @@ function imageCountLimit(message: string): boolean {
 // Known errors with a remedy: the caller fixes the session and calls again at once, without waiting.
 // blockedImages swaps blocked images for text; the others start a new session from the recovery prompt.
 // A model refusal can come from anything in the history, its own reasoning included, so it gets a new session too.
-export type RecoverableAgentError = 'blockedImages' | 'modelRefusal' | 'unavailableSession' | 'contextWindow' | 'imageOverflow';
+export type RecoverableAgentError = 'blockedImages' | 'modelRefusal' | 'unavailableSession' | 'contextWindow' | 'imageOverflow' | 'sessionProtocol';
 export function recoverableAgentError(error: unknown): RecoverableAgentError | undefined {
   if (blockedAgentError(error)) return 'blockedImages';
   if (error instanceof AgentCallError && errorCode(error.info) === 'refusal') return 'modelRefusal';
   if (unavailableSessionText.test(String(error instanceof Error ? error.message : error))) return 'unavailableSession';
   if (!(error instanceof AgentCallError)) return undefined;
   const code = errorCode(error.info);
+  if (code === 'sessionProtocol') return 'sessionProtocol';
   if (code === 'contextWindowExceeded' || contextWindowText.test(error.message)) return 'contextWindow';
   if ((code && httpStatus(error.info, code) === 413) || imageCountLimit(error.message) || payloadTooLarge.test(error.message)) return 'imageOverflow';
   return undefined;
