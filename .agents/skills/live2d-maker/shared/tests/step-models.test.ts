@@ -240,7 +240,7 @@ test('custom image edit transports original prompts and images over both protoco
   assert.equal(called, 6);
 });
 
-const fakeCli = `#!${process.execPath}
+const fakeCli = `#!/usr/bin/env node
 import { readFile, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { join } from 'node:path';
@@ -291,7 +291,7 @@ test('Claude and agv run in the step workspace with original MCP schemas and res
     assert.equal(b.args[b.args.indexOf('--model') + 1], wireModel);
     const request = JSON.parse(await readFile(join(first.logDirectory!, 'request.json'), 'utf8'));
     assert.equal(request.threadOptions.model, model.model);
-    assert.equal((await stat(join(first.logDirectory!, 'mcp.json'))).mode & 0o777, 0o600);
+    if (process.platform !== 'win32') assert.equal((await stat(join(first.logDirectory!, 'mcp.json'))).mode & 0o777, 0o600);
   }
   assert.equal(called, 8);
 });
@@ -299,8 +299,7 @@ test('Claude and agv run in the step workspace with original MCP schemas and res
 test('Claude and AGV env-node launchers work when the service PATH has no Node, including child tools', async t => {
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'env-node.mjs');
   await mkdir(cwd, { recursive: true });
-  const script = fakeCli.replace(`#!${process.execPath}`, '#!/usr/bin/env node')
-    .replace('const meta=', `const {execFileSync}=await import('node:child_process');
+  const script = fakeCli.replace('const meta=', `const {execFileSync}=await import('node:child_process');
 const childNode=execFileSync('/usr/bin/env',['node','-p','process.execPath'],{encoding:'utf8'}).trim();
 await writeFile(join(process.cwd(),'child-node.json'),JSON.stringify({path:process.env.PATH,childNode}));
 const meta=`);
