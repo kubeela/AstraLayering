@@ -119,7 +119,7 @@ C/C++ 编译工具链选择本机对应的一行即可：
 
 软件准备好后，获取本项目：**只想使用**时，从 [Releases](https://github.com/wu-tian807/AstraLayering/releases) 下载最新的 `AstraLayering-vX.Y.Z.zip` 并解压，包内含工作台、skill 和 Pink Doll 示例，不含其他案例与教程；**需要完整资料或参与开发**时，用图形 Git 客户端克隆本仓库：macOS／Windows 可在 [GitHub Desktop](https://desktop.github.com/) 的“File → Clone repository → URL”填入 `https://github.com/wu-tian807/AstraLayering.git`，Linux 可使用已有图形 Git 客户端的克隆功能。完整检出包含 `web/`、`.agents/skills/live2d-maker/` 和 demos。更细的安装检查见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
 
-发布包附带的 Pink Doll 示例是只读成果归档：在网页“工作目录”切换到 `<解压目录>/demos`，即可浏览它的完整流程与成果。
+发布包附带的 Pink Doll 示例位于默认运行目录 `<解压目录>/.run/pink-doll`。首次打开工作台即可选择它，浏览完整流程与成果；示例保持只读归档状态。
 
 ### 2. 双击启动文件
 
