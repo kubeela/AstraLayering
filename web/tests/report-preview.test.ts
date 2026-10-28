@@ -21,6 +21,14 @@ test('任务目录经软链接打开时，按真实路径书写的绝对图片�
   assert.deepEqual(report.images.map(item => item.path), [image]);
 });
 
+test('报告图片定位路径本身：标签同名、行中反引号与全角括号不影响解析', () => {
+  const text = '[a.png](a.png) 行中 ``` 不是代码块 b.png\n见（evidence/c.png）与《d.png》';
+  const refs = reportReferences(text);
+  assert.deepEqual(refs.map(ref => ref.target), ['a.png', 'b.png', 'evidence/c.png', 'd.png']);
+  for (const ref of refs) assert.equal(text.slice(ref.targetStart, ref.targetEnd), ref.target);
+  assert.equal(refs[0].targetStart, '[a.png]('.length);
+});
+
 test('报告图片兼容 Markdown、行内代码与纯路径，代码块不被当作证据', () => {
   const text = '![标注](<evidence/有 空格.png>)\n[对照](evidence/fold(1).png)\n`/run/case/zoom.png`\nevidence/plain.webp\n```python\nopen("not-evidence.png")\n```';
   const refs = reportReferences(text);

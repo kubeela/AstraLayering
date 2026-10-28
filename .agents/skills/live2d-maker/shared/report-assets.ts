@@ -1,5 +1,5 @@
 import { constants } from 'node:fs';
-import { copyFile, mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, realpath, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { reportReferences } from './report-links.js';
@@ -48,15 +48,14 @@ export async function publishReportText(text: string, workspace: string, output:
     let source: string | undefined;
     for (const candidate of candidates) {
       if (!inside(root, candidate)) continue;
-      try { source = await realpath(candidate); break; }
-      // A target that names no file (prose taken for a path, a too-long name) is left as written.
-      catch (error) { if (!['ENOENT', 'ENOTDIR', 'ENAMETOOLONG'].includes((error as NodeJS.ErrnoException).code ?? '')) throw error; }
+      // Report text is free prose: a target that names no readable file is left as written.
+      try { const path = await realpath(candidate); if ((await stat(path)).isFile()) { source = path; break; } }
+      catch {}
     }
     if (!source) continue;
     const published = await publishEvidence(source, workspace, output);
     const newTarget = relative(output, published).split(sep).map(encodeURIComponent).join('/');
-    const reference = text.slice(ref.start, ref.end).replace(ref.target, newTarget);
-    text = text.slice(0, ref.start) + reference + text.slice(ref.end);
+    text = text.slice(0, ref.targetStart) + newTarget + text.slice(ref.targetEnd);
   }
   return text;
 }

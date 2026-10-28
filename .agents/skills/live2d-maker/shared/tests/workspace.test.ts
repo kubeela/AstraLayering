@@ -98,6 +98,18 @@ test('report publication leaves a cited path that names no file as written', asy
   assert.equal(await readFile(report, 'utf8'), text);
 });
 
+test('report publication rewrites the link target even when the label repeats it, and skips non-files', async t => {
+  const root = await fixture(t), paths = await prepareWorkspace({ cwd: root, outputDirectory: 'step01' }, root);
+  await mkdir(join(paths.workspace, 'zoom'), { recursive: true });
+  await writeFile(join(paths.workspace, 'zoom/a.png'), 'image');
+  await mkdir(join(paths.workspace, 'folder.png'));
+  const report = join(paths.outputDirectory, 'review-01.md.tmp');
+  await writeFile(report, '结论：通过\n\n[zoom/a.png](workspace/zoom/a.png) [workspace/zoom/a.png](workspace/zoom/a.png) `workspace/folder.png`\n');
+  await publishReportAssets(report, paths.workspace);
+  assert.equal(await readFile(report, 'utf8'), '结论：通过\n\n[zoom/a.png](zoom/a.png) [workspace/zoom/a.png](zoom/a.png) `workspace/folder.png`\n');
+  assert.equal(await readFile(join(paths.outputDirectory, 'zoom/a.png'), 'utf8'), 'image');
+});
+
 test('Codex changes tools by reconnecting to the same thread and keeps formal write access', async t => {
   const root = await fixture(t), server = await fakeAppServer(root, [{ tool: 'deliver', arguments: {} }]);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, root), cwd: root,
