@@ -46,12 +46,11 @@ sam_veirfy/outputs/** -text whitespace=blank-at-eol,blank-at-eof,space-before-ta
 
 # Release ZIP (git archive of a vX.Y.Z tag, see scripts/release-pack.mjs): the workbench, the skill,
 # showcase images and one example task. History, research and the other archives stay on GitHub.
-# Directory patterns drop the whole tree, so only the example directory is re-included.
+# scripts/release-pack.mjs maps the tagged Pink Doll tree into .run/pink-doll.
 /archive export-ignore
 /svg-previewer export-ignore
 /rigging export-ignore
 /sam_veirfy export-ignore
 /tutorial export-ignore
 /prompt.txt export-ignore
-/demos/* export-ignore
-/demos/pink-doll -export-ignore
+/demos export-ignore

@@ -1,6 +1,7 @@
 // Packs one release tag into .release/AstraLayering-vX.Y.Z.zip.
 // The tag is the version: package.json at that tag must carry the same number, and the archive
 // is taken from the tagged commit (not the working tree), with .gitattributes export-ignore applied.
+// The tagged Pink Doll archive is placed in .run/pink-doll for the default workbench directory.
 //   pnpm release:pack            -> tag v<package.json version>
 //   pnpm release:pack v0.1.0
 import { execFileSync } from 'node:child_process';
@@ -21,13 +22,23 @@ export function packRelease({ root = dirname(dirname(fileURLToPath(import.meta.u
 
   const name = `AstraLayering-${tag}`, output = join(root, '.release', name + '.zip');
   mkdirSync(dirname(output), { recursive: true });
-  git('archive', '--format=zip', `--prefix=${name}/`, '-o', output, tag);
+  // Build an unreferenced tree from tagged objects: preserve file bytes and modes,
+  // and leave both the checkout's demos and any local .run tasks untouched.
+  const writeTree = entries => execFileSync(gitCommand, ['mktree', '-z'], {
+    cwd: root, encoding: 'utf8', input: entries.join('\0') + '\0',
+  }).trim();
+  const example = git('rev-parse', `${tag}:demos/pink-doll`);
+  const runs = writeTree([`040000 tree ${example}\tpink-doll`]);
+  const entries = git('ls-tree', '-z', tag).split('\0').filter(Boolean)
+    .filter(entry => !['demos', '.run'].includes(entry.slice(entry.indexOf('\t') + 1)));
+  const tree = writeTree([...entries, `040000 tree ${runs}\t.run`]);
+  git('archive', '--format=zip', `--prefix=${name}/`, '-o', output, tree);
   const files = [];
   // Inspect ZIP entries without decompressing the artwork or requiring a platform unzip command.
   unzipSync(readFileSync(output), { filter: entry => { files.push(entry.name); return false; } });
-  for (const required of ['start-workbench.sh', 'web/server.ts', '.agents/skills/live2d-maker/SKILL.md', 'demos/pink-doll/run.json', 'LICENSE', 'COPYING'])
+  for (const required of ['start-workbench.sh', 'web/server.ts', '.agents/skills/live2d-maker/SKILL.md', '.run/pink-doll/run.json', 'LICENSE', 'COPYING'])
     if (!files.includes(`${name}/${required}`)) throw new Error(`发布包缺少 ${required}`);
-  const stray = files.find(file => /^[^/]+\/(tutorial|rigging|sam_veirfy|archive|svg-previewer)\//.test(file) || /^[^/]+\/demos\/(?!pink-doll\/)./.test(file));
+  const stray = files.find(file => /^[^/]+\/(tutorial|rigging|sam_veirfy|archive|svg-previewer|demos)\//.test(file) || /^[^/]+\/\.run\/(?!pink-doll\/)./.test(file));
   if (stray) throw new Error(`发布包含有应排除的文件：${stray}`);
   return { output, files: files.filter(file => !file.endsWith('/')).length, bytes: statSync(output).size };
 }
