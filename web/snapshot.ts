@@ -12,6 +12,7 @@ import { steps as assemblySteps } from '../.agents/skills/live2d-maker/character
 import { nextReviewTask } from '../.agents/skills/live2d-maker/shared/raster/review.ts';
 import { agentRecord, inventory, jsonFile, safePath } from './files.ts';
 import { partProgress, phases } from './part-progress.ts';
+import { currentAgentCalls, throttled } from './agent-progress.ts';
 import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { projectDisplayName } from './project-metadata.ts';
 import { reportPreview, type ReportPreview } from './report.ts';
@@ -23,7 +24,7 @@ import { kritaRecordFile, kritaSlotsInUse, readKritaRecord } from '../.agents/sk
 
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
-export type Status = 'done' | 'running' | 'pending' | 'failed' | 'interrupted' | 'available' | 'skipped' | 'unconfirmed';
+export type Status = 'done' | 'running' | 'throttled' | 'pending' | 'failed' | 'interrupted' | 'available' | 'skipped' | 'unconfirmed';
 export const statusOf = (value?: string): Status => value === 'completed' ? 'done' : value === 'ready' ? 'pending' : ['running', 'failed', 'interrupted'].includes(value ?? '') ? value as Status : 'pending';
 const flatten = (nodes: any[]): any[] => nodes.flatMap(node => [node, ...flatten(node.groups ?? [])]);
 function validateGroups(nodes: any[], depth = 0) {
@@ -95,12 +96,12 @@ export async function snapshot(directory: string, name: string, dir: string) {
       Object.assign(states, progress.states); Object.assign(messages, progress.messages);
       for (const phase of phases) {
         const values = all.map(node => node.webPhases[phase]);
-        states[phase] = values.includes('failed') ? 'failed' : values.includes('running') ? 'running'
+        states[phase] = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed'
           : values.includes('unconfirmed') ? 'unconfirmed' : values.length && values.every(v => v === 'done') ? 'done'
             : values.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
       }
       const values = phases.map(phase => states[phase]);
-      states.layers = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.includes('unconfirmed') ? 'unconfirmed'
+      states.layers = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed' : values.includes('unconfirmed') ? 'unconfirmed'
         : values.every(v => v === 'done') ? 'done' : all.length ? 'available' : 'pending';
       // Legacy completed pipelines can lack individual reference fingerprints.
       if (saved?.status === 'completed') {
@@ -187,12 +188,16 @@ export async function snapshot(directory: string, name: string, dir: string) {
           branchStates.push(state);
           if (variant === 'normal-depth') states['normal-depth-maps'] = state;
         }
-        states[variant] = branchStates.includes('failed') ? 'failed' : branchStates.includes('running') ? 'running'
+        states[variant] = branchStates.includes('running') ? 'running' : branchStates.includes('throttled') ? 'throttled' : branchStates.includes('failed') ? 'failed'
           : branchStates.includes('unconfirmed') ? 'unconfirmed' : branchStates.every(v => v === 'done') ? 'done'
             : branchStates.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
       }
       states.step01 = states[mode];
     }
+    // One agent runs a raster or shadow section at a time: while it waits out a 429, its running steps wait too.
+    const waiting = active && id !== 'part-layering' && id !== 'clothing-part-layering'
+      ? (await currentAgentCalls(directory, branch, fileSet, errors, record.run?.runner?.startedAt)).find(call => throttled(call)) : undefined;
+    if (waiting) for (const key of Object.keys(states)) if (states[key] === 'running') { states[key] = 'throttled'; messages[key] = waiting.retryError!; }
     let status: Status = active ? 'running' : observed(saved?.status);
     if (!saved) status = Object.values(states).includes('failed') ? 'failed' : Object.values(states).includes('unconfirmed') ? 'unconfirmed'
       : files.some(path => path.startsWith(id + '/')) ? 'available' : 'pending';

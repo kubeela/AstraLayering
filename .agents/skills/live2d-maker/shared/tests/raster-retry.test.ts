@@ -18,7 +18,7 @@ test('raster 等待 CLI 终态后在原 thread 继续并记录退避', async t =
   const waits: number[] = [], events: string[] = [];
   let retries = 0;
   const result = await runAgent({ ...f.request(), onEvent: async event => { events.push(event.type); }, onRetry: () => { retries++; } },
-    new AgentRuntime(1, async ms => { waits.push(ms); }));
+    new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1));
   assert.equal(result.status, 'completed');
   assert.equal(retries, 1);
   assert.deepEqual(waits, [5000]);
@@ -50,7 +50,7 @@ test('AGV response-header timeouts retry in the same runtime; a recovered respon
   assert.equal(retryableAgentError(new Error(timeout)), false);
   assert.equal(retryableAgentError(new AgentCallError('authentication failed; ' + timeout, 'transportTimeout')), false);
   const waits: number[] = [], errors: string[] = [];
-  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); });
+  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1);
   let calls = 0;
   const result = await runtime.run(async () => {
     calls++;

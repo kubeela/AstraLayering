@@ -26,21 +26,25 @@ test('独立运行层默认限制 3 个调用，失败也释放位置', async ()
   assert.deepEqual(entered, [0, 1, 2, 3, 4, 5, 6]);
 });
 
-test('临时容量错误持续重试，不设轮次上限；等待按 5/10/20/40/60 秒增长', async () => {
+test('临时错误最多重试 10 次，等待从 5 秒逐次翻倍、封顶 120 秒，且随机落在每档后一半；第 10 次重试仍失败就报错并释放位置', async () => {
+  const lowest: number[] = [];
+  let failures = 0;
+  await new AgentRuntime(1, async ms => { lowest.push(ms); }, () => 0).run(async () => {
+    if (++failures <= 10) throw new AgentCallError('capacity', { rateLimitExceeded: { httpStatusCode: 429 } });
+  });
+  assert.deepEqual(lowest, [2500, 5000, 10000, 20000, 40000, 60000, 60000, 60000, 60000, 60000]);
   const waits: number[] = [], retries: number[] = [];
-  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); });
+  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1);
   let attempts = 0;
-  const result = await runtime.run(async () => {
-    if (++attempts <= 7) throw new AgentCallError('capacity', 'serverOverloaded');
-    return 'ok';
-  }, { onRetry: retry => { retries.push(retry.nextAttempt); } });
-  assert.equal(result, 'ok');
-  assert.equal(attempts, 8);
-  assert.deepEqual(waits, [5000, 10000, 20000, 40000, 60000, 60000, 60000]);
-  assert.deepEqual(retries, [2, 3, 4, 5, 6, 7, 8]);
+  await assert.rejects(runtime.run(async () => { ++attempts; throw new AgentCallError('capacity', 'serverOverloaded'); },
+    { onRetry: retry => { retries.push(retry.attempt); } }), /capacity/);
+  assert.equal(attempts, 11);
+  assert.deepEqual(waits, [5000, 10000, 20000, 40000, 80000, 120000, 120000, 120000, 120000, 120000]);
+  assert.deepEqual(retries, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  assert.equal(await runtime.run(async () => 'next'), 'next', 'the failed call released its slot');
 });
 
-test('退避等待释放并发位置，排队和等待都可以取消', async () => {
+test('退避等待期间保留并发位置，排队的调用不插入；排队和等待都可以取消', async () => {
   const waiting = Promise.withResolvers<void>(), resume = Promise.withResolvers<void>();
   const controller = new AbortController();
   const runtime = new AgentRuntime(1, async (_ms, signal) => {
@@ -53,9 +57,13 @@ test('退避等待释放并发位置，排队和等待都可以取消', async ()
   const failed = runtime.run(async () => { throw new AgentCallError('capacity', 'serverOverloaded'); }, { signal: controller.signal });
   const rejected = assert.rejects(failed, /取消等待/);
   await waiting.promise;
-  assert.equal(await runtime.run(async () => '其他调用已执行'), '其他调用已执行');
+  let other = false;
+  const queuedDuringBackoff = runtime.run(async () => { other = true; return '其他调用已执行'; });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(other, false, 'a call queued during backoff waits for the retrying call');
   controller.abort(new Error('取消等待'));
   await rejected;
+  assert.equal(await queuedDuringBackoff, '其他调用已执行');
   resume.resolve();
   const held = Promise.withResolvers<void>();
   const first = runtime.run(async () => { await held.promise; });
@@ -69,21 +77,28 @@ test('退避等待释放并发位置，排队和等待都可以取消', async ()
   assert.equal(executed, false);
 });
 
-test('只恢复可重试的通道错误，不重试认证、额度、参数、校验错误和主动取消', () => {
+test('未知通道错误退避重试；本地错误、认证、额度、参数和主动取消立即失败', () => {
   for (const info of ['serverOverloaded', 'internalServerError', 'responseStreamDisconnected',
     { httpConnectionFailed: { httpStatusCode: 503 } }, { responseTooManyFailedAttempts: { httpStatusCode: 429 } },
-    { apiError: { httpStatusCode: 529 } }, { apiError: { httpStatusCode: 429 } }, 'processKilled']) {
+    { apiError: { httpStatusCode: 529 } }, { apiError: { httpStatusCode: 429 } }, 'processKilled',
+    // Unknown channel failures wait too; only local errors and known fatal ones fail at once.
+    'turnFailed', { apiError: { httpStatusCode: null } }, { apiError: { httpStatusCode: 408 } },
+    { cliFailed: { subtype: 'error_during_execution', cliStatus: null, exitCode: 1 } }]) {
     assert.equal(retryableAgentError(new AgentCallError('test', info)), true);
   }
   // Without a structured code the text never triggers a retry, whatever it says.
   for (const message of ['Selected model is at capacity. Please try a different model.', 'server overloaded', '503 service unavailable'])
     assert.equal(retryableAgentError(new AgentCallError(message)), false, message);
-  for (const info of ['usageLimitExceeded', 'contextWindowExceeded', 'badRequest', 'localError', 'other',
+  for (const info of ['usageLimitExceeded', 'contextWindowExceeded', 'badRequest', 'localError', 'sandboxError', 'other',
     { httpConnectionFailed: { httpStatusCode: 401 } }, { httpConnectionFailed: { httpStatusCode: 400 } },
-    { apiError: { httpStatusCode: 400 } }, { apiError: { httpStatusCode: null } }]) {
+    { apiError: { httpStatusCode: 400 } }, { apiError: { httpStatusCode: 413 } },
+    { cliFailed: { subtype: 'error_max_turns', cliStatus: null, exitCode: 1 } }]) {
     assert.equal(retryableAgentError(new AgentCallError('test', info)), false);
   }
   assert.equal(retryableAgentError(new AgentCallError('quota exceeded 503')), false);
+  // Codex's "other" mixes local failures with its stream and timeout failures; only those wait.
+  assert.equal(retryableAgentError(new AgentCallError('stream disconnected before completion: eof', 'other')), true);
+  assert.equal(retryableAgentError(new AgentCallError('request timed out', 'other')), true);
   assert.equal(retryableAgentError(new Error('server overloaded')), false);
   assert.equal(retryableAgentError(new DOMException('cancelled', 'AbortError')), false);
   for (const value of [0, -1, 1.2, NaN]) assert.throws(() => new AgentRuntime(value), /正整数/);

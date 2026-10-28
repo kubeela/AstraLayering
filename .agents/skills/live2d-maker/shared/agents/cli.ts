@@ -60,9 +60,6 @@ export async function cliExecutable(settings: WorkflowEnvironment, harness: Harn
   }
   throw new Error(`所选步骤需要 ${harness} CLI，但没有可用的全局入口${explicit ? `：${explicit}` : ''}。工作流不会自动安装；请安装并登录，或设置 layering_${harness}_path / 改用已有模型。`);
 }
-export function unavailableSession(error: unknown): boolean {
-  return /(?:thread|session|conversation).{0,80}(?:not found|does not exist|unavailable|invalid|不存在|不可用)|no (?:conversation|session|rollout) found|rollout path.{0,40}not found/i.test(String(error instanceof Error ? error.message : error));
-}
 type StoredSession = { harness: Harness; data: string; workspace: string };
 async function readSessions(root: string): Promise<Record<string, StoredSession>> {
   try { return JSON.parse(await readFile(join(root, 'sessions.json'), 'utf8')); }
@@ -98,7 +95,9 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
   let threadId = resumed, text = '', final: any, stderr = '';
   let processExitCode: number | null | undefined;
+  let upstreamStatus: number | undefined;
   const eventErrors: unknown[] = [];
+  let refusal: string | undefined;
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
@@ -175,7 +174,11 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       } });
     if (model.harness === 'agv') {
       bridge = await genaiGateway(env, task.tools || [], root, signal, task.images, workspace,
-        event => log.recordProtocol(event).then(() => {}), visual);
+        event => {
+          // AGV reports upstream failures only as text; the gateway sees the real status. A later success clears it.
+          if (event.phase === 'headers' && event.status) upstreamStatus = event.status >= 400 ? event.status : undefined;
+          return log.recordProtocol(event).then(() => {});
+        }, visual);
       if (bridge) Object.assign(env, { AGY_LLM_GATEWAY_URL: bridge.url });
     } else if (budget.images || budget.bytes || budget.deduplicate) {
       const nativeEnv: NodeJS.ProcessEnv = { ...inherited.env, ...env };
@@ -208,7 +211,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     if (model.harness === 'agv') args.push('--print=');
     const reportId = async (id: string) => {
       if (!id || id === threadId) return;
-      if (threadId) throw new Error('CLI 返回了不同的原会话 ID');
+      // AGV opens a new conversation when the one asked for is gone, so the old session is unavailable and gets replaced.
+      if (threadId) throw new Error(threadId === resumed ? `原 session 不可用：CLI 未恢复 ${resumed}，返回了新的会话 ID ${id}` : 'CLI 返回了不同的原会话 ID');
       threadId = id; await remember(root, id, { harness: model.harness, data: toTaskPath(paths.root, data), workspace: toTaskPath(paths.root, cwd) });
       await options.onEvent?.({ type: 'thread.started', thread_id: id });
     };
@@ -248,6 +252,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         let event: any; try { event = JSON.parse(line); } catch { await log.recordProtocol({ text: line }); continue; }
         await log.recordProtocol(event);
         if (event.type === 'error' || event.event === 'error') eventErrors.push(errorDetails(event));
+        if (event.type === 'system' && /^model_refusal/.test(event.subtype ?? '')) refusal = event.api_refusal_category ?? 'unknown';
         const completedText = agvTurn?.record(event);
         const id = event.session_id || event.conversation_id || event.step_update?.conversation_id;
         if (id) await reportId(id);
@@ -275,13 +280,21 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
       if (code !== 0 || !final || final.is_error || !successfulStatus) {
-        // Retry only on structured signals: the API status Claude reports, a CLI killed before any result,
-        // or one of AGV's two Go transport timeouts, which it reports only as the terminal error string.
-        const status = final?.api_error_status;
-        const info = typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final.api_error_code ?? null } }
+        // Name the failure from structured signals: the API status Claude reports, the upstream status AGV's
+        // response carried through our gateway, a CLI killed before any result, or one of AGV's two Go
+        // transport timeouts, which it reports only as the terminal error string.
+        const status = final?.api_error_status ?? (model.harness === 'agv' ? upstreamStatus : undefined);
+        // Claude's safeguards refused the turn (stop_reason refusal), often a false flag on its own compacted history.
+        if (final?.stop_reason === 'refusal') refusal ??= final.stop_details?.category ?? 'unknown';
+        const info = refusal ? { refusal: { category: refusal, turns: final?.num_turns ?? null } }
+          : typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final?.api_error_code ?? null } }
           : code === null && !final ? 'processKilled'
-          : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout' : undefined;
-        const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态', info);
+          : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout'
+          // Any other terminal failure the CLI reported: unknown, so it waits and retries unless the text or subtype says otherwise.
+          : { cliFailed: { subtype: final?.subtype ?? null, cliStatus: final?.status ?? null, exitCode: code } };
+        // Claude puts the upstream error ("API Error: …") in result and leaves stderr with an unrelated line.
+        const reported = final?.is_error && typeof final.result === 'string' && final.result.trim() ? final.result : undefined;
+        const error = agentCallError(final?.error || final?.errors || reported || stderr || eventErrors, 'CLI 未返回成功终态', info);
         error.details = errorDetails({ error: final?.error, errors: final?.errors, events: eventErrors,
           stderr, processExitCode, cliStatus: final?.status, subtype: final?.subtype });
         throw error;

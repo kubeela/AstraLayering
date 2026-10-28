@@ -8,7 +8,9 @@ import { runCliTask } from '../agents/cli.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { parseAgentModel } from '../agents/models.ts';
 import { CodexAgents } from '../codex/agents.ts';
-import { AgentRuntime } from '../codex/agent-runtime.ts';
+import { AgentCallError, AgentRuntime, retryableAgentError } from '../codex/agent-runtime.ts';
+import { createServer } from 'node:http';
+import { once } from 'node:events';
 
 const step = (step_index: number, step_type: string, state = 'DONE', text_delta = '') => ({
   event: 'step_update', step_update: { step_index, step_type, state, text_delta },
@@ -158,7 +160,7 @@ for (const failure of ['retry-header-timeout', 'retry-idle-timeout']) test(`${fa
   const settings = loadWorkflowEnvironment({ layering_agv_path: executable }, root);
   const waits: number[] = [], ids: string[] = [], retries: string[] = [];
   const agents = new CodexAgents({ environment: settings, selectedModel: parseAgentModel('gemini-4-argon-high', 'test'),
-    cwd, logDirectory: join(cwd, 'agents'), runtime: new AgentRuntime(1, async ms => { waits.push(ms); }),
+    cwd, logDirectory: join(cwd, 'agents'), runtime: new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1),
     onSessionStarted: async id => { ids.push(id); }, onRetry: retry => { retries.push(String(retry.error)); },
     onThreadReplacement: async () => assert.fail('a network timeout must not replace the session') });
   const session = agents.createSession();
@@ -168,4 +170,36 @@ for (const failure of ['retry-header-timeout', 'retry-idle-timeout']) test(`${fa
   assert.equal(ids.length, 1); assert.equal(result.threadId, ids[0]);
   assert.equal(retries.length, 1); assert.match(retries[0], /timeout awaiting response headers|stream idle timeout/);
   assert.equal(await readFile(join(cwd, 'keep.svg'), 'utf8'), 'existing draft');
+});
+
+test('an AGV failure after an upstream 429 through the gateway carries that status and shares the retry policy', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'agv-status-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  let requests = 0;
+  const upstream = createServer((req, res) => { req.resume(); req.on('end', () => {
+    requests++; res.writeHead(requests === 1 ? 200 : 429, { 'content-type': 'application/json' });
+    res.end(requests === 1 ? '{"candidates":[]}' : '{"error":{"code":429,"message":"Resource has been exhausted"}}');
+  }); });
+  upstream.listen(0, '127.0.0.1'); await once(upstream, 'listening'); t.after(() => upstream.close());
+  // A fake agy: one successful request, then a throttled one, then AGV's text-only error.
+  const executable = join(root, 'agy.mjs');
+  await writeFile(executable, `#!${process.execPath}
+for await(const _ of process.stdin);
+const emit=event=>console.log(JSON.stringify(event)), id='status-session';
+emit({event:'init',conversation_id:id});
+emit({event:'step_update',step_update:{conversation_id:id,step_index:2,step_type:'user_input',state:'DONE'}});
+for(let i=0;i<2;i++)await (await fetch(process.env.AGY_LLM_GATEWAY_URL+'/v1beta/models/m:generateContent',{method:'POST',body:'{}'})).text();
+emit({event:'result',result:{conversation_id:id,status:'ERROR',error:'API error (attempt 3): Resource has been exhausted',response:''}});process.exit(3);
+`, { mode: 0o700 });
+  const cwd = join(root, 'case'); await mkdir(cwd);
+  const settings = loadWorkflowEnvironment({ layering_agv_path: executable, layering_agv_api_key: 'fixture',
+    layering_agv_base_url: `http://127.0.0.1:${(upstream.address() as { port: number }).port}`, layering_agv_protocol: 'genai' }, root);
+  const model = parseAgentModel('gemini-4-argon-high', 'test');
+  await assert.rejects(runCliTask({ name: 'throttled', cwd, prompt: 'go' }, model, settings, { cwd, logDirectory: join(cwd, 'agents') },
+    new AbortController().signal), error => {
+    assert.deepEqual((error as AgentCallError).info, { apiError: { httpStatusCode: 429, code: null } });
+    assert.equal(retryableAgentError(error), true);
+    return true;
+  });
+  assert.equal(requests, 2);
 });

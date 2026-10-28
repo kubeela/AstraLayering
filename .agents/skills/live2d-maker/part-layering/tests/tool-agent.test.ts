@@ -306,7 +306,7 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.split(originalPrompt).length === 2));
   assert.ok(turns[1].params.input[0].text.includes('existing-image.png'));
   assert.equal((await readdir(f.logDirectory)).length, 3);
-  assert.equal(messages.filter(message => message.includes('临时服务错误')).length, 2);
+  assert.equal(messages.filter(message => message.includes('限流等待（临时错误）')).length, 2);
   const names = await readdir(f.logDirectory);
   const statuses = await Promise.all(names.map(async name => JSON.parse(await readFile(join(f.logDirectory,name,'result.json'),'utf8')).status));
   assert.deepEqual(statuses.sort(), ['completed','failed','failed']);

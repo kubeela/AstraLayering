@@ -5,7 +5,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { pipelineDirectory, pipelineIds } from '../paths.ts';
-import { AgentCallError, AgentRuntime, retryableAgentError } from '../codex/agent-runtime.ts';
+import { AgentCallError, AgentRuntime, rateLimitedAgentError, retryableAgentError, type AgentRetry } from '../codex/agent-runtime.ts';
+import { AgentLog, retryWaitFile } from '../codex/agent-log.ts';
 import { recognizeInitialGroups } from '../part/initial-groups.ts';
 import { runWorkflow as runRaster } from '../../raster-layering/run.ts';
 import { runWorkflow as runClothingRaster } from '../../clothing-raster-layering/run.ts';
@@ -35,7 +36,7 @@ test('生图服务的速率限制会重试，单次输入图片上限仍直接�
   for (const message of ['image_generation rate limit exceeded', 'Rate limit exceeded: maximum 10 images per minute']) {
     let attempts = 0;
     const waits: number[] = [];
-    assert.equal(await new AgentRuntime(1, async ms => { waits.push(ms); }).run(async () => {
+    assert.equal(await new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1).run(async () => {
       if (++attempts === 1) throw new AgentCallError(message, info);
       return 'continued';
     }), 'continued');
@@ -46,6 +47,30 @@ test('生图服务的速率限制会重试，单次输入图片上限仍直接�
     'Rate limit exceeded: maximum 50 images per request', 'input image count limit exceeded']) {
     assert.equal(retryableAgentError(new AgentCallError(message, info)), false, message);
   }
+});
+
+test('每次临时错误都记录等待截止时间供限流等待显示，429 与 5xx、断流只区分原因', async t => {
+  const errors = [new AgentCallError('Rate limit exceeded', { rateLimitExceeded: { httpStatusCode: 429 } }),
+    new AgentCallError('Too Many Requests', { apiError: { httpStatusCode: 429 } }),
+    new AgentCallError('overloaded', { serverOverloaded: { httpStatusCode: 503 } }), new AgentCallError('disconnected', 'responseStreamDisconnected')];
+  assert.deepEqual(errors.map(rateLimitedAgentError), [true, true, false, false]);
+  const retries: AgentRetry[] = [];
+  let attempts = 0;
+  assert.equal(await new AgentRuntime(1, async () => {}, () => 1).run(async () => {
+    if (attempts < errors.length) throw errors[attempts++];
+    return 'done';
+  }, { onRetry: retry => { retries.push(retry); } }), 'done');
+  assert.deepEqual(retries.map(retry => retry.rateLimited), [true, true, false, false]);
+
+  const root = await mkdtemp(join(tmpdir(), 'rate-limit-wait-')); t.after(() => rm(root, { recursive: true, force: true }));
+  const log = await AgentLog.create(join(root, 'agents'), 'call', {});
+  const now = new Date('2026-10-28T15:00:00.000Z');
+  await AgentLog.retry(log.directory, { attempt: 1, nextAttempt: 2, delayMs: 2500, error: 'Rate limit exceeded', rateLimited: true }, now);
+  assert.deepEqual(JSON.parse(await readFile(join(log.directory, retryWaitFile), 'utf8')), { reason: 'rate-limit', attempt: 1, nextAttempt: 2,
+    since: '2026-10-28T15:00:00.000Z', until: '2026-10-28T15:00:02.500Z', error: 'Rate limit exceeded' });
+  const other = await AgentLog.create(join(root, 'agents'), 'other', {});
+  await AgentLog.retry(other.directory, { attempt: 1, nextAttempt: 2, delayMs: 2500, error: 'overloaded', rateLimited: false }, now);
+  assert.equal(JSON.parse(await readFile(join(other.directory, retryWaitFile), 'utf8')).reason, 'transient');
 });
 
 test('首次分组拒绝非字符串 subject，错误参数不能写坏首次分组记录', async t => {
