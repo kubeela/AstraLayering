@@ -1,6 +1,6 @@
 # clothing-raster-layering
 
-运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
+运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型在 skill 根目录的 `.env` 配置，默认值见 [example.env](../example.env) 与[模型方案](../references/model-presets.md)。
 
 读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，完成最多两轮轮廓 review／修复，再精修柔边。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
 
@@ -8,7 +8,7 @@
 
 ## 单独运行本 section
 
-需要 Node 24.12+、pnpm、已安装的 Krita，以及能提供绘制所需工具的外部 Codex 环境。先准备同名衣服 part 的轮廓、参考、分组与深度，停止同任务总调度，再从 skill 根目录执行本 section：
+需要 Node 24.12+、pnpm、已安装的 Krita，以及所配置模型对应 harness（Codex、Claude Code 或 AGV）的 CLI 与登录；`krita` 等流程工具由工作流注册。先准备同名衣服 part 的轮廓、参考、分组与深度，停止同任务总调度，再从 skill 根目录执行本 section：
 
 ```bash
 pnpm clothing-raster-layering --name jianma --krita /path/to/krita
@@ -17,11 +17,13 @@ pnpm clothing-raster-layering --name jianma --krita /path/to/krita
 pnpm clothing-raster-layering --name jianma
 ```
 
+素体未换装（`dressed: false`）时总控把本管线记为“完成（跳过）”，见 [总控](../workflow/README.md#姿态与参考)；此时上游衣服 part 没有产物，单独运行会因缺少输入而失败。
+
 按 `--name` 直接读取 `<运行根目录>/<name>/clothing-part-layering/` 的 parts、参考、groups.json 与 occlusion.json，不接受额外输入路径、不复制上游产物。缺失时列出具体路径，提示先执行对应上游管线或手动放置产物。
 
 `--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。已保存任务可显式更新 `--krita`；换输入应使用新名字。
 
-生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider、鉴权及工具实际可用性由外部 Codex 配置；按所选 harness 配置，Claude／AGV 可使用共享生图工具。Krita 可执行文件由外部提供，私有进程、桥接插件和 Linux 无桌面时的 Xvfb 由工作流准备，agent 通过 krita 工具以 Python 操作。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
+生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider 与鉴权由所选 harness 的 CLI 配置，Claude／AGV 使用共享生图工具 `imagegen`。Krita 可执行文件由外部提供；工作流不启动 Krita，只准备私有配置、桥接插件与（Linux 无显示时）共享 Xvfb 并占用名额，agent 通过 `krita` 工具自行启动并以 Python 操作，section 结束时由工作流关闭，详见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
 
 ## 两步制作
 

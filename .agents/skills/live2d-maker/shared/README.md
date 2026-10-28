@@ -10,7 +10,9 @@
 
 `preview_svg` 的生成图对照参数只在补全阶段开放，section 定义覆盖后仍保留阶段限制。`referenceRegion` 使用生成图坐标选取对应部件，工具将裁片等比居中到 SVG 实际内容范围；`referenceOffset` 使用原图像素微调，各轴上限为部件尺寸的 10%。生成图用 `edge` 检查形状，省略 reference 参数后用默认参考图 `blend` 检查定位；`crop` 仅控制最终查看窗口。生成图对照默认聚焦部件，普通对照默认全画布，输入文件保持原样。读取与预览接受可读本地路径及符号链接，参考图沿用生图工具返回的位置。自定义生图工具 `imagegen` 的 `input_images` 与可选 `output_path` 只接受绝对路径，`output_path` 省略时使用默认生图目录；原生 Codex 生图保留自身保存位置并返回绝对 `savedPath`。两类生图返回或 agent 回复的相对 `savedPath` 直接报错，不按任何目录猜测。
 
-Krita 的用法只写在 [krita 工具说明](tools/krita/description.md)，仅随需要 Krita 的 section 的工具提供，提示词不注入共用环境段落；prompts 与工具说明是运行输入，不是额外使用手册。
+Krita 的用法只写在 [krita 工具说明](tools/krita/description.md)，仅随需要 Krita 的 section 的工具提供，提示词不注入共用环境段落；prompts 与工具说明是运行输入，不是额外使用手册。私有进程、并发名额（`layering_krita_max_instances`，`krita: false` 的步骤不占名额也没有该工具）与显示环境见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。
+
+Codex 的每个回合都经 App Server（`codex app-server`）执行；延续已有 thread 时不能改变工作目录、工具定义、shell 或生图开关，需要改变时新建 thread。Claude／AGV 的工具活动按长度截断后镜像到 `workflow.log`，完整记录在请求目录的 `events.jsonl`。总控并发运行的管线各在独立 worker 进程中，agent 名额由总调度统一按 `--jobs` 分配，跨进程共享。
 
 ## 多深度与上游修正
 
@@ -20,7 +22,7 @@ step01 绘制与返修对轮廓、隐藏补全、画风和结构负责。读取�
 
 工具校验失败直接向当前 agent 返回具体字段路径与原因，保留原文件，修正参数后再次提交。step01 结束时的额外结构诊断记录为日志“结构检查提示”，供前端查看；这项诊断继续保留完成与后续执行，也保留原有视觉 review 轮数。完成标记表示已通过当前交付检查，结构诊断与视觉检查应分别核对。
 
-step01 reviewer 只读反馈并使用框选工具；step02 沿用已确认结构精修边缘，注册像素差异工具；人物 step03 做换装准备。reviewer、step02、step03、组装与阴影沿用各自职责，结构编辑工具仅提供给两套 raster step01 绘制／返修。各 CLI 沿用共用函数工具通道和原有会话恢复能力；这些职责约定与受控工具校验之外，文件系统权限仍由执行环境决定。
+各环节的流程工具见 [raster 工具表](../raster-layering/README.md#三步交付)：结构编辑工具仅提供给两套 raster step01 绘制／返修，reviewer 只用框选工具，step02 使用像素差异工具；需要 Krita 的步骤中，绘制、review 与返修 agent 都另有 `krita` 工具。各 CLI 沿用共用函数工具通道和原有会话恢复能力。职责约定与受控工具校验之外没有写入沙箱：Codex 使用 `danger-full-access`，Claude／AGV 使用 `--dangerously-skip-permissions`。
 
 raster 中断、主动重跑及已进入 raster 的总控续跑保留上游修正。独立重跑 part 会从首次分组与各步骤事实重建树；仅写在根 groups.json 的树结构调整需事先留档核对。来源与审计证据见本页文末。
 
@@ -43,8 +45,8 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 | 人物 `0-标准姿态.md`、`2-简化图片.md`、`3-素体参考.md`，衣服 `preparation.md` | `{image_execution_rules}`；衣服另有 `{width}`、`{height}` | [人物生图规则](prompts/preparation-image-rules.md)、[标准化规则](prompts/preparation-standardize-rules.md)、[衣服生图规则](prompts/preparation-clothing-rules.md)；尺寸来自原图。只给绘制正文的 API 调用者使用[同样可见的外层模板](prompts/preparation-image-task.md)中的 `{drawing_prompt}`。 |
 | 两套 part 的 `4-初始分组.md` | `{run_directory}`、`{reference_label}`、`{reference_path}`、`{groups_path}` | 本次目录、人物／衣服参考类型及输入路径。 |
 | 两套 part 的 `5-组轮廓.md`、`6-轮廓review.md`、`8-同层轮廓去重.md`、`9-正面遮挡补全.md`、`10-直属结构拆分.md`、`11-遮挡层级规划.md`，及 `prompts/groups/**` 覆盖文件 | `{prompt_source}`、`{runtime_context}`；按职责声明 `{repair_context}`、`{note_repair_rule}`、`{report_path}`、`{fixed_rules}`、`{fixed_rules_source}` | `runtime_context` 是当前组、画布、绑定草稿／候选、父组、同级件和参考图等 JSON 数据；补全、拆分的固定规则来自各自 `9-补全操作约定.md`／`10-拆分操作约定.md`；返修见[返修上下文](prompts/outline-repair-context.md)与[说明修正](prompts/outline-note-repair.md)。 |
-| 两套 raster 的所有绘制、review、repair Markdown | `{drawing_responsibilities}`、`{runtime_context}`；首步另有 `{drawing_report_filename}`，检查／返修有 `{review_report_filename}`、`{repair_report_filename}` | [绘制职责](raster/drawing-responsibilities.md)按职责填入或留空；运行信息来自[绘制模板](prompts/raster-runtime.md)或[检查模板](prompts/raster-review-runtime.md)，内部路径、版本、交付文件等也逐项声明占位符。 |
-| [组装](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影蒙版](../shadow/prompts/mask.md)、[法线／深度](../shadow/prompts/normal-depth.md) | `{runtime_context}` | [组装运行信息](prompts/assembly-runtime.md)、[阴影运行信息](prompts/shadow-runtime.md)，蒙版检查命令由[检查说明模板](prompts/shadow-inspection.md)中的 `{inspection_command}` 声明。 |
+| 两套 raster 的所有绘制、review、repair Markdown | `{drawing_responsibilities}`、`{runtime_context}`；首步另有 `{drawing_report_filename}`，检查／返修有 `{review_report_filename}`、`{repair_report_filename}` | [绘制职责](raster/drawing-responsibilities.md)按职责填入或留空；运行信息来自[绘制模板](prompts/raster-runtime.md)或[检查模板](prompts/raster-review-runtime.md)，内部路径、版本、交付文件等也逐项声明占位符；绘制模板的 `{original_character_reference}` 在衣服 raster 填入[原图参考](prompts/raster-original-reference.md)，`{report_publish_rule}` 在带 review 的步骤填入[报告发布规则](prompts/raster-report-publish.md)，否则为空。 |
+| [组装](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影蒙版](../shadow/prompts/mask.md)、[法线／深度](../shadow/prompts/normal-depth.md) | `{runtime_context}` | [组装运行信息](prompts/assembly-runtime.md)、[阴影运行信息](prompts/shadow-runtime.md)；蒙版分支在阴影运行信息的 `{inspection_instructions}` 处插入[检查说明模板](prompts/shadow-inspection.md)（`{reference_files}`、`{inspection_receipt}`、`{inspection_directory}`），要求调用 `inspect_shadow_mask` 工具检查，交付不核对检查回执；normal-depth 此处为空。 |
 
 ### 请求、恢复与生图适配
 
@@ -52,11 +54,12 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 
 | 模板 | 动态位置与用途 |
 | --- | --- |
-| [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{workspace}`、`{working_directory}`、`{output_directory}`。所有 CLI 共用工作区、输入与正式交付说明。 |
+| [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{task_root}`、`{workspace}`、`{pipeline_directory}`、`{output_directory}`。所有 CLI 共用路径约定、工作区、输入与正式交付说明。 |
 | [图片说明](prompts/image-description.md)、[图片路径](prompts/image-reference.md) | `{image_description}` 来自本次附图用途，`{image_path}` 是本次图片路径；AGV 通过路径读取。图片说明作为独立消息发送，与任务正文一起保存在请求记录。 |
 | [中断继续](prompts/interrupted-task.md)、[续跑](prompts/continuation.md)、[已有图片](prompts/continuation-images.md) | `{interrupted_task}`、`{saved_images_context}`、`{saved_image_paths}`。没有已生成图片时对应位置为空。 |
 | [恢复返修](prompts/raster-repair-resume.md)、[交接返修](prompts/raster-handoff-repair.md)、[会话交接](prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
 | [生图请求](prompts/image-request.md)、[Nano 纯色背景](prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |
+| [单张图片被拦截](prompts/image-blocked-single.md)、[多张图片被拦截](prompts/image-blocked-multiple.md)、[无法继续](prompts/image-blocked-stop.md)、[移除占位](prompts/image-blocked-placeholder.md) | `{images}`、`{count}`、`{stop}`、`{origin}`。图片被内容策略拦截时，从会话历史移除该图并以占位文字替代，提示换方式读取或说明后结束回合。 |
 | [Nano 仅换背景](prompts/nano-background-replacement.md) | `{background_hex}`、`{width}`、`{height}`。第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。 |
 
 工具说明和参数仍来自 共享的 `shared/tools/<工具名>/` 或所属管线的 `tools/<工具名>/`（`description.md`／`schema.json`）；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
@@ -85,13 +88,13 @@ pnpm check
 | --- | --- |
 | 方案 1 默认、方案 2 混合与自定义配置 | 全部 LLM 职责和独立生图选择完整；人物／衣服职责共享，但工具和提示词覆盖保留；shell 覆盖、默认回退与旧配置冲突有对应断言 |
 | 模型与生图组合 | 所有生图步骤拒绝非 Codex harness 配原生 imagegen；缺少所选生图 URL／key、CLI 或 Codex 生图补丁能力时，启动前明确报错；CLI 本地版本探测能识别文件存在但解释器／动态库缺失的情况 |
-| 真实工具目录 | 读取共享、人物、衣服的全部 description.md / schema.json，不以只含简单字符串的测试工具代替；可空类型、嵌套数组、枚举、数值约束、oneOf 和 additionalProperties 等逐字段保留 |
+| 真实工具目录 | 读取共享及各管线 `tools/`（含 shadow、part-layering）的全部 description.md / schema.json，管线自有工具只出现在该管线的 catalog；不以只含简单字符串的测试工具代替；可空类型、嵌套数组、枚举、数值约束、oneOf 和 additionalProperties 等逐字段保留 |
 | Gemini 请求 | 实际 HTTP 适配路径用 parametersJsonSchema 传完整 JSON Schema，不能把 type 数组塞进受限的 parameters；保留 CLI 原生工具；重复准备不重复注册；camelCase／snake_case 原生声明均可处理 |
 | 工具调用与返回 | 原参数、null 值、工具说明、文本、全部返回图片及 thought signature 不丢失；下一回合还能恢复上回合的工具结果 |
 | Codex 原生生图 | `codex-native` 不注入补丁生图配置；GPT／Nano 使用原生工具；不同请求的路由／模型隔离，保存图片事件与原 thread 续跑保留 |
 | 自定义生图协议 | Gemini 原生和 OpenAI 兼容的生图／编辑请求保留提示词与输入图片，输入文件不修改；输出落在请求目录，跨任务路径被拒绝 |
 | 会话恢复 | 同 CLI 修改模型／力度恢复原会话；切换 CLI 或会话失效创建替代会话并记录历史，已有产物保留 |
-| 故障与状态 | 临时通道错误沿用会话重试；正常退出却无产物展示最后消息；取消、失败及进程退出的总控状态明确，不把已退出进程展示为运行中 |
+| 故障与状态 | 只按通道给出的结构化错误码判断临时错误并沿用会话重试，错误文本只能否决、不能触发重试；正常退出却无产物展示最后消息；取消、失败及进程退出的总控状态明确，不把已退出进程展示为运行中 |
 
 这些是配置、传输和恢复的自动回归；它们不能证明上游当前授权、API 完整兼容或绘图质量。
 
@@ -102,7 +105,7 @@ pnpm check
 1. **带真实工具测试所选 harness。** 用现有 `CodexAgents`／`runCliTask` 调用路径，载入 `ToolCatalog` 的实际共享及管线覆盖定义。请求必须携带真实 schema，尤其包含 write_groups 的可空 note 和 propose_occlusion 的单／多深度 oneOf；只询问模型是否能回复不算通过。工具回调使用测试数据，不能修改正式成果。
 2. **验证调用和续会话。** 让模型实际调用一个无副作用测试工具，核对参数与返回值，再以该 session/threadId 发第二回合。测试工具也包含可空字段，并返回小型测试图片，确认下一回合能读取。纯连通、注册、执行、带图返回、恢复是不同验证项，不能相互替代。
 3. **按所选生图方式验证。** 原生 Codex 要确认实际注册 imagegen；自定义服务要使用本次配置的协议、模型与输入图片。首次正式准备步骤产出合格图片后可作为该生图组合的实测证据，记录尺寸／透明通道与实际产物；不能据此宣称另外的模型或协议也通过。无必要不额外生图。
-4. **验证所需软件。** 在后台实际环境中确认辅助绘图的可用 Python，以及显式 Krita 入口的保存 KRA、重新打开和查看／导出图像能力；Linux 无显示配置应在绘图前明确报错；使用 Xvfb 时验证它能从工作流环境启动。Nano 双背景处理用已有 Node／Sharp，无 Krita 内嵌 Python 安装或抠图模型推理步骤；版本命令不是全部验收。
+4. **验证所需软件。** 每次启动都对显式 Krita 入口做不启动 Krita 的轻量检查；真实验证由 agent 经本 section 私有 Krita 的 `krita` 工具完成保存 KRA、重新打开和查看／导出图像，脚本运行在 Krita 自带的 Python 中。Linux 无显示时框架启动共享 Xvfb（`-noreset`），已设 `QT_QPA_PLATFORM` 时沿用该设置；使用 Xvfb 时验证它能从工作流环境启动。Nano 双背景处理用已有 Node／Sharp，无抠图模型推理步骤；版本命令不是全部验收。
 5. **核对续跑和展示。** 检查总控进程、锁、真实阶段与工作台一致。恢复时核对准备图内容指纹，已完成的步骤不能重新生图。取消后检查任务所属的绘制子进程，不能只看总控 PID 消失。
 
 发现确定的请求格式错误时先修适配并补回归，不用重复重试掩盖。修复不更换用户选定模型、不删产物、不修改绘图提示词与审核轮次。缺少 CLI／凭据的处理和安装确认沿用[安装与前置](../references/setup.md)。
@@ -114,9 +117,9 @@ pnpm check
 ## 自动化测试（维护用）
 
 ```sh
-node --test shared/tests/*.test.ts
+pnpm test
 # 只验证一个共享模块
-node --test shared/tests/step-models.test.ts
+node --import ./shared/tests/ignore-local-env.ts --test shared/tests/step-models.test.ts
 pnpm check
 ```
 
@@ -187,8 +190,8 @@ pnpm check
 
 ## 工作区与产物
 
-各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。CLI 当前目录为 `<步骤>/workspace/`；正文和工具结果给出绝对路径，工具参数及程序读取记录中的相对路径以任务根目录为基准。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`，旧记录保留读取兼容。
+各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。CLI 当前目录为 `<步骤>/workspace/`；正文和工具结果给出绝对路径，工具参数及程序读取记录中的相对路径以任务根目录为基准。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`；各管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`，被替换或清除的会话追加到同目录 `session.json.history.jsonl`。reviewer 每次新建、不保存；配置切换 harness 时丢弃原 thread、保留交接记录。旧的步骤目录 `session.json` 与 raster `run.json` 会话字段仍可读取，并在下次运行时迁移。
 
-输入准备由 `shared/agents/inputs.ts` 共用：直接传入上下文的正文和图片不额外落盘；已有原图、上游产物与参考路径直接读取；程序需要生成的索引、说明与变换参考图放在 `workspace/references/`。`agents/prompt.md` 是实际请求的审计副本。工作区和部件层级路径也由共享模块解析，前端与迁移复用同一规则。
+输入准备由 `shared/agents/inputs.ts` 共用：直接传入上下文的正文和图片不额外落盘；已有原图、上游产物与参考路径直接读取；程序需要生成的索引、说明与变换参考图放在 `workspace/references/`。`agents/` 下每个请求目录的 `prompt.md` 是实际请求的审计副本。工作区和部件层级路径也由共享模块解析，前端与迁移复用同一规则。
 
 前端按工作区实际目录分组过程文件，最新 KRA 预览包含工作区保存的工程。报告引用的工作区图片随报告发布到步骤目录，链接一并更新；没有被报告引用的图片继续作为中间产物。旧任务搬迁必须先确认制作已完成并持有任务锁。

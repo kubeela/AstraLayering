@@ -17,6 +17,8 @@ pnpm raster-layering --check-krita --krita /绝对路径/krita
 
 数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。首次明确传 Krita 的实际可执行文件，续跑复用保存值；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。
 
+三步都在本 section 的私有 Krita 中操作：工作流只准备环境并占名额，agent 通过 `krita` 工具自行启动，section 结束时关闭；私有进程、并发名额与显示见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。
+
 ## 三步交付
 
 | 步骤 | 职责与提示词 | 必需成果 |
@@ -24,6 +26,17 @@ pnpm raster-layering --check-krita --krita /绝对路径/krita
 | step01 | [分层与补全](prompts/01-分层与补全.md)，[review](prompts/01-review.md) 与[返修](prompts/01-repair.md) | `character-depth.kra`、`report.md` 与实际执行的 review／repair 报告 |
 | step02 | [边缘精修](prompts/02-边缘柔化与去锯齿.md)，逐层自检 | `character-soft-edges.kra`、同名 PNG、`report.md` |
 | step03 | [去除临时连体服](prompts/03-去除连体服.md)，补全换装身体底层并自检 | `character-dressup-base.kra`、同名 PNG、`report.md` |
+
+三步的 agent 都有 `krita` 工具；此外按环节注册的流程工具如下（生图工具按 harness 另行提供）：
+
+| 环节 | 工具 |
+| --- | --- |
+| step01 绘制与返修 | `edit_groups`、`edit_occlusion` |
+| step01 review | `annotate_review_regions` |
+| step02 绘制 | `locate_pixel_differences` |
+| step03 | 无 |
+
+`locate_pixel_differences` 传 `parts` 时须同时给 `layers`：保存当前 KRA 后用 `krita` 工具导出的 `.ora`，早于 KRA 最后保存会报错。step01 交付时的结构诊断失败只记为“结构检查提示”，不阻止完成，见 [shared](../shared/README.md#多深度与上游修正)。
 
 素体未换装（见 [总控](../workflow/README.md#姿态与参考)）时，step03 不调用 agent，直接把 step02 的 KRA 与 PNG 复制为 step03 成果，并标记为已完成。
 
@@ -48,9 +61,9 @@ step02 沿用已确认结构，用 `locate_pixel_differences` 候选框引导细
 
 ## 会话与恢复
 
-`run.json` 保存任务与 Krita 路径／版本；各步骤的绘制 threadId 与 harness 记在 `agents/steps/<stepNN>/session.json`；每步 `.running`／`.completed` 记录交付状态。模型从本次启动的 `.env`／环境读取，每个步骤新建自己的绘制会话，从文件读取上一步的工程与报告。各 CLI 的历史与隔离请求目录保留，恢复规则见 [模型与会话](../references/model-presets.md#会话与记录)。
+`run.json` 保存任务输入与 Krita 可执行文件路径（不记版本；运行中的版本见 `krita` 工具状态与 section 的 `krita.json`）；各步骤的绘制 threadId 与 harness 记在 `agents/steps/<stepNN>/session.json`；每步 `.running`／`.completed` 记录交付状态。模型从本次启动的 `.env`／环境读取，每个步骤新建自己的绘制会话，从文件读取上一步的工程与报告。各 CLI 的历史与隔离请求目录保留，恢复规则见 [模型与会话](../references/model-presets.md#会话与记录)。
 
-`prompt.md` 保留完整展开提示词，`attempts.jsonl`、`events.jsonl`、`result.json` 和 `error.txt` 记录调用与故障；总日志在任务根 `workflow.log`。模板维护见 [shared](../shared/README.md#提示词模板与动态位置)。
+调用记录位于 `agents/steps/<stepNN>/`：绘制的完整展开提示词为 `prompt.md`、结果为 `result.json`，review／repair 按环节名保存 `review-01.prompt.txt`、`review-01.result.json`、`repair-01.prompt.txt`、`repair-01.result.json` 等；`attempts.jsonl`、`events.jsonl` 和 `error.txt` 记录调用与故障；总日志在任务根 `workflow.log`。 CLI 在 `stepNN/workspace/` 中运行，绝对／相对路径约定见 [工作区与产物](../shared/README.md#工作区与产物)。模板维护见 [shared](../shared/README.md#提示词模板与动态位置)。
 
 | 情况 | 恢复行为 |
 | --- | --- |

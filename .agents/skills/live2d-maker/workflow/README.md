@@ -10,15 +10,19 @@ pnpm start --name jianma --status --json
 pnpm start --name jianma --background
 ```
 
-自定义运行根目录时，每次追加 `--dir /绝对路径/运行根目录`。完整仓库默认 `<仓库>/.run`，独立安装默认 `<skill上一级>/.run`。任务是根目录下一层的 `<name>/`；所有相对输入（包括 image、groups、krita 和 handoff）从任务目录解析。数据不得放在 skill 内。
+参数含义（含 `--dir` 默认值、`--jobs`、`--step` 写法）只在 [SKILL.md](../SKILL.md#启动参数) 说明。自定义运行根目录时每次追加同一 `--dir`；所有相对输入（包括 image、groups、krita 和 handoff）从任务目录 `<dir>/<name>/` 解析。
 
-总控按依赖调度：人物 part 完成准备（简化参考）后，人物 raster 与衣服线（衣服 part → 衣服 raster）同时进行；两条线都完成后执行组装和阴影。`--from`／`--to` 选择连续范围并保存，范围内未选的上游视为已就绪，后续阶段自动推进。`--jobs` 是整次运行所有并行管线共用的 agent 名额，默认 3，并行不会增加总并发。运行状态的 `activePipelines` 列出正在执行的管线（旧任务的 `activePipeline` 读入时自动转换）。已有两份 KRA 与简化参考时可从组装开始，不伪造上游完成记录。
+总控按依赖调度：人物 part 完成准备（简化参考）后，人物 raster 与衣服线（衣服 part → 衣服 raster）同时进行；两条线都完成后执行组装和阴影。`--from`／`--to` 选择连续范围并保存，路线范围之外的上游视为已就绪，后续阶段自动推进。一条线失败只阻塞依赖它的管线，另一条线继续跑完，随后整次运行记为 failed。素体未换装时两条衣服管线记为 `completed` 且 `skipped: true`，见[姿态与参考](#姿态与参考)。运行状态的 `activePipelines` 列出正在执行的管线（旧任务的 `activePipeline` 读入时自动转换）。已有两份 KRA 与简化参考时可从组装开始，不伪造上游完成记录。
 
-后台返回启动确认后仍需查询状态与日志，Codex 补丁可能仍在准备。新任务或只有成果的旧任务没有总控 `run.json` 时，`--status` 报缺记录；按实际输入和范围首次启动即可。先核实活跃进程与锁，不能同时从 CLI、网页或独立 section 启动同一任务。
+后台返回启动确认后仍需查询状态与日志，Codex 补丁可能仍在准备。新任务或只有成果的旧任务没有总控 `run.json` 时，`--status` 报缺记录；按实际输入和范围首次启动即可。先核实活跃进程与锁，不能同时从 CLI、网页或独立 section 启动同一任务。总调度和恢复操作持有任务锁 `<dir>/<name>/.runner.lock`（每 10 秒刷新，30 秒无刷新即过期）。
 
 ### 姿态与参考
 
-新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项保存在总控与 `part-layering/preparation/step02/options.json`，续跑省略则沿用；`--no-standard` 显式关闭。已完成的参考改变选项前，需要对 preparation 的 options 步骤重试，后续依赖参考随之重做。
+新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项保存在总控与 `part-layering/preparation/step02/options.json`，续跑省略则沿用；`--no-standard` 显式关闭。`--standard`／`--no-standard` 要求本次路线包含 part-layering。已完成的参考改变选项时，对 preparation 的 options 步骤重试，后续依赖参考随之重做：
+
+```sh
+pnpm start --name jianma [--dir …] [--from part-layering] --standard --retry --pipeline part-layering --step preparation/step02 --background
+```
 
 默认换装范围是主体衣装；手套、袜类、鞋靴和其自身装饰随人物保留。人物素体使用临时连体服，raster step03 去除；衣服 preparation 同时读取简化穿衣图和素体图，提取互补衣装。整套衣装的大小与位置由组装适配。
 
@@ -56,7 +60,9 @@ pnpm env:check
 
 请求目录继续保留 `prompt.md`、`request.json`、`events.jsonl`、`result.json` 和会话记录。旧后台可能仍写 `service.log`，按状态返回的真实日志路径查看；新请求统一进 `workflow.log`，不新增永久 native/transcript 日志。
 
-section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。**删除 `.completed` 是主动重做，会清空该步及依赖步骤并重建会话**，不要把它当成普通续跑。
+section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --pipeline <section> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、其声明的产物和会话；依赖它的后续步骤按指纹重跑。
+
+raster、组装与阴影分段的输入或制作规则改变时，旧分段整体保留为 `<分段>.previous-<uuid>` 后重新制作，不覆盖。
 
 part 逐层进行轮廓与复核、同层去重、补全和直属拆分；每层全部结束再进下一层。raster step01 的结构修正持久写回上游，已进入 raster 的总控续跑不会再用旧 part 事实覆盖它；明确只选 part 会按首次分组与各步骤事实重建树；续跑前应留档核对仅在根 groups.json 中调整的结构。现行工具职责与诊断边界见 [共享说明](../shared/README.md#多深度与上游修正)。
 
@@ -66,7 +72,7 @@ part 逐层进行轮廓与复核、同层去重、补全和直属拆分；每层
 
 CLI、HTTP 服务和宿主巡检独立运行。先读 `monitor.md` 复用服务，核对 `GET <根URL>/healthz` 返回 `status: ok`、`application: astra-layering`、`mode: workbench`，再核对 `api/settings` 的运行根目录。
 
-完整仓库可双击根目录的 `start-workbench.command`／`.sh`／`.cmd`；agent 也可在仓库根目录以持续后台方式运行 `pnpm web`，默认 4387，`--port 4388` 可换端口。`pnpm web` 不接受任务的 `--name`／`--dir`。
+完整仓库可双击根目录的 `start-workbench.command`／`.sh`／`.cmd`；启动文件在 4387–4406 中选第一个空闲端口，并复用本 checkout 已在运行的服务。agent 也可在仓库根目录以持续后台方式运行 `pnpm web`，默认 4387，`--port 4388` 可换端口。`pnpm web` 不接受任务的 `--name`／`--dir`。
 
 独立 skill 不包含网页；没有已有服务时，在 skill 外准备匹配版本的工作台，避免下载 demos/archive：
 
@@ -84,7 +90,7 @@ pnpm web
 
 打开 `<根URL>/?name=<编码后的name>` 并检查实际选中任务与目录；再打开一项真实产物，或展示真实等待状态。流程定位 `?name=<name>&page=preview&stage=0`，stage 为 0..5。角色预览是 `studio?project=<name>`，只消费该任务的组装、阴影与 lighting 输出，不从其他案例猜贴图。
 
-服务只监听本机，远程需使用已有转发／部署入口，不能把远端 localhost 当作用户地址。浏览器能力可用时打开并核对页面；不可用时给链接并说明。页面故障不重置绘图。关闭网页不停止制作；网页“停止”可控制网页或 CLI 总入口启动的任务，按当前运行 ID 请求总调度取消并保留产物及 thread。停止请求不会影响下一次续跑。旧版网页 worker 仍用原入口，旧版终端调度在 macOS／Linux 上可通过原终止信号停止；Windows 旧终端任务仍需从原终端停止。独立 section 需停止原进程及子进程。完整 UI、原生合成器的 Krita／Xvfb 环境与部署见工作台 checkout 的 `web/README.md`。
+服务只监听本机，远程需使用已有转发／部署入口，不能把远端 localhost 当作用户地址。浏览器能力可用时打开并核对页面；不可用时给链接并说明。页面故障不重置绘图。关闭网页不停止制作；网页“停止”或 CLI `pnpm start --name <name> [--dir …] --stop` 可控制网页或 CLI 总入口启动的任务，按当前运行 ID 请求总调度取消并保留产物及 thread。停止请求不会影响下一次续跑。旧版网页 worker 仍用原入口，旧版终端调度在 macOS／Linux 上可通过原终止信号停止；Windows 旧终端任务仍需从原终端停止。独立 section 需停止原进程及子进程。完整 UI、原生合成器的 Krita／Xvfb 环境与部署见工作台 checkout 的 `web/README.md`。
 
 ## 定时巡检
 
@@ -95,8 +101,8 @@ pnpm web
 每次检查：
 
 1. 运行 `--status --json`，结合 `run.json`、`workflow.log`、当前报告和错误判断阶段；独立 section 无总控时沿用独立进程和事实记录。
-2. 核对实际进程身份、子进程和日志；固定沉默时长、`.running` 或仅 PID 存活均不足以认定卡死。正常或自动退避中的任务不重复启动。
-3. 失败时检查最后消息、会话与已保存产物，修复可恢复的环境／输入问题后以原入口、范围、name、dir 续跑。不能只记录故障后等待。
+2. 核对实际进程身份、子进程和日志；固定沉默时长、`.running` 或仅 PID 存活均不足以认定卡死。正常或自动退避中的任务不重复启动。`<section>/krita.json` 的 `state: waiting` 表示在排队等本机 Krita 名额（`layering_krita_max_instances`，默认 4），不是卡死；`krita: false` 的步骤不占名额。
+3. 失败时检查最后消息、会话与已保存产物，修复可恢复的环境／输入问题后以原入口、范围、name、dir 续跑。不能只记录故障后等待。按情况选择：原会话可继续用 `--continue`（默认）；会话损坏但产物可用用 `--resume`；raster／组装／阴影需要把旧会话的上下文交给新会话时用 `--replace-thread`（见[下文](#保留产物地换绘制会话)）；产物本身不合格才用 `--retry`。
 4. 追加发现、动作与结果到 `monitor.md`；只在有实质变化、故障、完成或需用户操作时通知，正常无变化保持安静。另检查网页仍连接同一任务。
 5. 完成时核对文件并交付，取消时核实身份后停止本任务及子进程；关闭本任务定时检查，保留产物和共享工作台。
 
@@ -106,9 +112,10 @@ pnpm web
 
 | 情况 | 操作 |
 | --- | --- |
-| 网络断流、服务过载、临时限流 | CLI 自身重试结束后，工作流按 5、10、20、40、60 秒退避，随后每 60 秒重试直到成功或取消；保留原会话与文件 |
-| 鉴权、额度、上下文／图片／字节超限、输入校验 | 查看实际错误后修复；不重复发送原请求。容量保护与本地模拟见 [patches](../patches/README.md#图片容量保护) |
-| Krita 或操作能力不可用 | 复用记录环境，按 [setup](../references/setup.md) 修复；已有安装确认沿用，缺少必要确认时不擅自改方案 |
+| 网络断流、服务过载、临时限流 | 只重试调用通道给出结构化错误码的错误：`serverOverloaded`、`internalServerError`、`rateLimitExceeded`、`responseStreamDisconnected`、`responseStreamConnectionFailed`、`httpConnectionFailed`、`responseTooManyFailedAttempts`、`apiError`（仅 429／5xx）、`processKilled`、`transportTimeout`。CLI 自身重试结束后按 5、10、20、40、60 秒退避，随后每 60 秒重试直到成功或取消；等待期间不占 agent 名额，保留原会话与文件 |
+| 无错误码的错误；鉴权、额度、上下文、无效输入、单次图片数或字节超限 | 不自动重试；查看实际错误后修复，不重复发送原请求。容量保护与本地模拟见 [patches](../patches/README.md#图片容量保护) |
+| 启动报“记录的 Krita 不可用” | 按 [setup](../references/setup.md#krita-与显示环境) 修复路径或显示环境后，加 `--krita <可执行文件>` 重新启动；已有安装确认沿用，缺少必要确认时不擅自改方案 |
+| 运行中 Krita 崩溃或卡死 | 由 agent 通过 `krita` 工具自行重启；框架不替 agent 启动 Krita |
 | 模型正常退出却无交付 | 查看最后消息、threadId、步骤 `error.txt`；保留 `.running`，修正工具／输入后续跑 |
 | 需要重做正式 review／repair | 先归档原报告和原因，再让原调度接续；不增加第三轮 review |
 | 网页断开 | 单独恢复网页，保持绘图记录；不能因此重置工程 |
@@ -126,20 +133,23 @@ pnpm start --name jianma --dir /绝对路径/运行根目录 --background
 
 替换命令只准备交接，在该 section 的 `recovery/<id>/` 归档当前步骤的旧会话（`session-before.json`）、交接和将覆盖的提示词／报告，保留 KRA、日志、完成与未完成标记及审核进度；之后另行续跑，新会话同时接收原任务、交接及当前反馈。part 不使用此接口。阴影需总控明确保存的 shadowMode，只替换该分支。
 
-网页“恢复”直接清除会话、保留产物，不写交接；“重试”会删除该步骤及依赖产物，需按 UI 确认。主动重做和保留产物换会话是不同操作。
+`--resume`（网页“恢复”）适用于所有管线：清除会话、保留产物，不写交接，新会话读取已有输入、产物及反馈。`--replace-thread` 仅用于 raster-layering、clothing-raster-layering、character-assembly 和 shadow，额外归档旧会话并把交接说明交给新会话。`--retry`（网页“重试”）删除该步骤目录、声明的产物和会话，依赖步骤按指纹重跑。三者是不同操作。
 
 ## 交付与自动化测试
 
 最终文件位置由各 section README 约定，核对实际文件，特别是衣服 PNG 按实际导出位置提供。阴影默认交付 `shadow/mask/step01/character-shadowed.kra` 与 PNG；normal-depth 交付贴图并发布 `lighting/`。成果是静态素材，不能声称已完成绑定。
 
 ```sh
-node --test workflow/tests/*.test.ts
+node --import ./shared/tests/ignore-local-env.ts --test workflow/tests/*.test.ts
+# 或全部：pnpm test
 ```
+
+必须预加载 `ignore-local-env.ts`（`pnpm test` 已包含），否则 skill 本机 `.env` 会改变测试所用的 harness、模型与能力；测试只读 `example.env`。
 
 使用本地模拟与临时文件，覆盖后台、锁、范围、状态、步骤操作及会话交接；不调用付费模型。
 ## 导出成果
 
-全流程六段已完成、任务停止后，工作台提供“导出成果”，下载 `<name>.zip`。
+仅当全部导出管线已完成、总调度已停止（无活跃进程和任务锁）时可导出；工作台提供“导出成果”，下载 `<name>.zip`。
 
 ```sh
 pnpm export --name my-character --dir /绝对路径/运行根目录
@@ -148,7 +158,7 @@ pnpm export --name my-character --dir /绝对路径/运行根目录 --output /�
 pnpm export --name my-character --dir /绝对路径/运行根目录 --output /绝对路径/demos/my-character
 ```
 
-`--dir` 默认值与制作命令一致；`--output` 相对当前终端目录解析，省略时为 `<name>.zip`。`--json` 返回文件数、文件总字节数及未找到的历史图片引用。目标已存在时拒绝覆盖。文件夹输出就是任务目录；ZIP 内包含一层 `<name>/`。
+`--dir` 默认值与制作命令一致；`--output` 相对当前终端目录解析，省略时为 `<name>.zip`。`--json` 输出 JSON：文件数、文件总字节数及未找到的历史图片引用。目标已存在时拒绝覆盖；输出位置不能在任务目录内或包含任务目录。文件夹输出就是任务目录；ZIP 内包含一层 `<name>/`。
 
 网页与命令行共用同一导出程序：由完成记录和步骤交付契约收集正式结果，再保留报告引用的图片。被报告引用的 workspace 图片会复制到报告旁并改写链接，其他过程文件不导出。CLI 会话、凭据、环境配置、缓存和恢复备份留在原运行目录。导出失败会清理暂存内容，原任务不被搬动或删除。
 

@@ -11,18 +11,18 @@ pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita
 pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 ```
 
-`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。首次需要 Krita；续跑复用该分支记录的路径。`--dry-run` 检查输入与提示词，不写任务或调用模型。
+`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。两分支首次都需传 `--krita`，续跑复用该分支记录的路径，每次启动都做不启动 Krita 的轻量检查。只有 mask 分支占用 Krita 名额并获得 `krita` 与 `inspect_shadow_mask` 工具；normal-depth 声明 `krita: false`，不占名额也没有 krita 工具。私有 Krita 见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。`--dry-run` 检查输入与提示词，不写任务或调用模型。
 
 | 分支 | 输入 | 交付 |
 | --- | --- | --- |
-| `mask`（默认） | 组装 KRA / PNG、simplified、人物与衣服分组和遮挡顺序 | `shadow/mask/step01/character-shadowed.kra`、同名 PNG、`shadows.json`、`report.md`、`inspection.json` 与检查图 |
+| `mask`（默认） | 组装 KRA / PNG、simplified、人物与衣服分组和遮挡顺序 | `shadow/mask/step01/character-shadowed.kra`、同名 PNG、`shadows.json`、`face-review.png`、`report.md`；agent 调用检查工具时另写 `inspection.json` 与 `inspection/` 检查图，不作为交付门槛 |
 | `normal-depth` | 组装 KRA / PNG、simplified | 生成 `shadow/normal-depth/step01/normal.png`、`depth.png`、`report.md`；验收后发布贴图至 `lighting/` |
 
 只制作随部件运动的投影，褶皱等固有明暗保留。用 simplified 判断实际投影范围，以组装图的位置和尺寸制作。优先复用分件绘制已经去掉投影的底色；残留旧影时仅局部补画新工程。蒙版直接在 Krita 绘制，完整面积一般远大于静帧可见投影，并包含充分运动延伸，按投影物运动设计形变、由受影面裁切；后续可独立修正阴影形状与相位，不强制同一 deformer；本工作流不制作动作关键形。
 
 Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最终图层 UUID、跟随／裁切关系。重叠发束优先正常阴影色层，避免叠底重复压暗。KRA 是可编辑素材，`shadows.json` 是供后续绑定消费的关系；它们不是 cmo3/moc3，也不代表已经绑定 deformer。
 
-复用现有 raster runner 的模型调用、日志、thread 与完成标记。两分支有独立 `run.json` 和 `step01/.running` / `.completed`。切换模式只检查对应分支；另一分支不被清空。源 KRA、PNG、simplified、所需结构、提示词或该分支制作参考／检查代码改变时，旧分支原样保留到 `<模式>.previous-*`，新建本分支会话。删除某分支 `step01/.completed` 可按既有规则重做该分支。
+复用现有 raster runner 的模型调用、日志、thread 与完成标记。两分支有独立 `run.json` 和 `step01/.running` / `.completed`。切换模式只检查对应分支；另一分支不被清空。源 KRA、PNG、simplified、所需结构、提示词或 mask 分支的制作参考（`production.md`、`skirt.png`、`hair.png`）改变时，旧分支原样保留到 `<模式>.previous-*`，新建本分支会话；只改代码或路径不触发重做。删除某分支 `step01/.completed` 可按既有规则重做该分支。
 
 仅文件存在不代表检查通过：检查原尺寸、KRA 合成与 PNG 一致、真实图层与 part 引用、原生裁切和模式；地图检查原尺寸、深度灰度、原画 alpha。原生检查由 agent 通过 `inspect_shadow_mask` 工具在本 section 的 Krita 中运行；交付不核对检查结果。绘制 agent 仍需逐图评估画法和余量，不能用像素计数替代艺术验收。
 
@@ -40,7 +40,7 @@ Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最
 
 ## 制作参考与原生检查
 
-开工前生成 `references/inputs.json`：真实 part、单深度／多深度区域、KRA UUID 和明确的名称归属。未匹配的层仍需查看像素确认。随后复制 [制作格式](references/production.md)、[裙影示意](references/skirt.png) 与 [发影示意](references/hair.png)。两图是依据原模型结构绘制的原创示意，不再分发模型原画。
+开工前在 `step01/workspace/references/` 生成 `inputs.json`：真实 part、单深度／多深度区域、KRA UUID 和明确的名称归属。未匹配的层仍需查看像素确认。随后把 [制作格式](references/production.md)、[裙影示意](references/skirt.png) 与 [发影示意](references/hair.png) 复制到同一目录。两图是依据原模型结构绘制的原创示意，不再分发模型原画。
 
 保存后，agent 调用本 section 专属的 `inspect_shadow_mask` 工具检查，检查时机和次数由 agent 决定。工具使用本 section 的 Krita，未启动时自动启动，并把问题、提示和检查图路径直接返回给 agent。
 
