@@ -18,7 +18,7 @@ async function fixture(t: TestContext, mode: string) {
   const capture = join(root, 'protocol.jsonl'), executable = join(root, 'server.mjs');
   await writeFile(executable, `#!${process.execPath}
 import {createInterface} from 'node:readline';
-import {appendFile} from 'node:fs/promises';
+import {appendFile, readFile} from 'node:fs/promises';
 const mode=${JSON.stringify(mode)}, capture=${JSON.stringify(capture)};
 if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
 const emit=v=>console.log(JSON.stringify(v)), record=v=>appendFile(capture,JSON.stringify(v)+'\\n');
@@ -55,6 +55,13 @@ for await(const line of createInterface({input:process.stdin})) {
    emit({method:'item/completed',params:{threadId,turnId:'our-turn',item:{type:'agentMessage',text:'early reply'}}});
    done('our-turn','completed');
    emit({id:m.id,result:{turn:mode==='missing-id'?{status:'inProgress'}:{id:'our-turn',status:'inProgress'}}});continue;
+  }
+  // A replaced session is a new process, so count this test's turns from the capture.
+  const allStarts=((await readFile(capture,'utf8')).match(/"method":"turn.start"/g)||[]).length;
+  if(mode==='overflow'||mode==='overflow-always'||(mode==='overflow-work'&&allStarts<=2)) {
+   emit({id:m.id,result:{turn:{id:'our-turn',status:'inProgress'}}});
+   if(mode!=='overflow')emit({method:'item/completed',params:{threadId,turnId:'our-turn',item:{type:'commandExecution',status:'completed'}}});
+   emit({method:'turn/completed',params:{threadId,turn:{id:'our-turn',status:'failed',error:{message:'context window exceeded',codexErrorInfo:'contextWindowExceeded'}}}});continue;
   }
   if(mode==='active'&&!ended)throw Error('started before old turn ended');
   emit({id:m.id,result:{turn:{id:'our-turn',status:'inProgress'}}});
@@ -121,6 +128,23 @@ test('a repeated conflict replaces the session once without backoff or deleting 
     assert.equal(messages.filter(m => m.method === 'thread/start').length, 1);
     assert.equal(messages.filter(m => m.method === 'turn/start').length, 3);
   } finally { await session.close(); }
+});
+
+test('a new session over its context window fails unless it did work first, up to the retry limit', { timeout: 10_000 }, async t => {
+  // Sessions that always work and then overflow stop at the retry limit.
+  for (const [mode, starts, replaced] of [['overflow', 2, 1], ['overflow-work', 3, 2], ['overflow-always', 11, 10]] as const) {
+    const f = await fixture(t, mode), replacements: string[] = [];
+    const agents = new CodexAgents({ ...f.options, onThreadReplacement: async id => { replacements.push(id); },
+      runtime: new AgentRuntime(1, async () => assert.fail('a known error must not wait')) });
+    const session = agents.createSession('old-thread');
+    try {
+      const run = session.run({ name: 'resume', prompt: 'continue', recoveryPrompt: 'start over', outputSchema: schema });
+      if (mode !== 'overflow-work') await assert.rejects(run, error => recoverableAgentError(error) === 'contextWindow');
+      else assert.equal((await run).threadId, 'new-thread');
+      assert.equal(replacements.length, replaced, mode);
+      assert.equal((await f.messages()).filter(m => m.method === 'turn/start').length, starts, mode);
+    } finally { await session.close(); }
+  }
 });
 
 test('an unrelated RPC failure is not treated as a schema race', { timeout: 10_000 }, async t => {

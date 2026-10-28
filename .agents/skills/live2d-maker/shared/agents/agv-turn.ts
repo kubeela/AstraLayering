@@ -48,6 +48,11 @@ export class AgvTurn {
     if (last?.type === 'agent_response' && last.text.trim()) return last.text;
   }
 
+  // Steps of this turn other than replies, errors and the finish marker: the tool calls it made.
+  get toolSteps(): number {
+    return [...this.steps.values()].filter(step => !['agent_response', 'error_message', 'finish'].includes(step.type)).length;
+  }
+
   get userStepIndex(): number | undefined { return this.boundary; }
   get recoveredErrorStepIndices(): number[] {
     return [...this.steps].filter(([, step]) => step.type === 'error_message').map(([index]) => index);

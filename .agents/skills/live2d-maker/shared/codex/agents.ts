@@ -65,7 +65,7 @@ export type AgentOptions = CodexOptions & {
   runtime?: AgentRuntime;
 };
 
-// Known errors fixed by a new session; each is tried once per run, and only when there is a session to replace.
+// Known errors fixed by a new session, only when there is a session to replace; see replacement for how often.
 const sessionReplacements: Partial<Record<RecoverableAgentError, { reason: string; progress: string }>> = {
   modelRefusal: { reason: '模型安全过滤拒绝了本会话', progress: '模型安全过滤拒绝了本会话（常为误判）' },
   sessionProtocol: { reason: 'CLI 活动回合无法安全恢复', progress: 'CLI 活动回合恢复失败' },
@@ -95,16 +95,21 @@ export class CodexAgents {
     } });
   }
 
-  // Starts a new session for a known error that one fixes, once per kind per run; the old records and files stay.
-  // A refusal after the session worked for several turns is another one-off flag, so that session is replaced too;
-  // a refusal on its first turn means the prompt itself is refused, and it fails.
+  // Starts a new session for a known error that one fixes; the old records and files stay. The session replaced must be
+  // the original one or a new one that made progress (a tool call): a new session that fails its first work with the
+  // same kind of error would fail the same way again, so the call fails. Called with every error of the run, it adds up
+  // the progress of the current session across retries. Progress is any tool call, which an agent re-reading its inputs
+  // also makes, so a call replaces at most as many sessions as it retries.
   private replacement(task: AgentTask) {
-    const used = new Set<RecoverableAgentError>();
+    const sinceProgress = new Set<RecoverableAgentError>();
+    let progress = 0, replaced = 0;
     return async (error: unknown, oldId: string | undefined): Promise<boolean> => {
+      if (error instanceof AgentCallError) progress += error.progress;
       const kind = recoverableAgentError(error), replacement = kind && sessionReplacements[kind];
-      const progressed = kind === 'modelRefusal' && ((error as AgentCallError).info as { refusal: { turns: number | null } }).refusal.turns! > 1;
-      if (!replacement || !oldId || used.has(kind) && !progressed) return false;
-      used.add(kind);
+      if (!replacement || !oldId) return false;
+      if (progress) sinceProgress.clear();
+      if (sinceProgress.has(kind) || replaced >= retryDelays.retries) return false;
+      sinceProgress.add(kind); progress = 0; replaced++;
       await this.options.onThreadReplacement?.(oldId, replacement.reason);
       this.options.progress?.(`[${task.name}] ${replacement.progress}，保留旧记录与产物并新建会话。`);
       return true;
@@ -182,6 +187,12 @@ export class CodexAgents {
             }
           }, async error => {
             const failure = error as AgentCallError;
+            if (await replace(error, failure.threadId || id)) {
+              await session!.close();
+              session = createFunctionToolSession(functionOptions(), undefined);
+              id = undefined; blocked = undefined; interrupted = false; fresh = true;
+              return true;
+            }
             if (recoverableAgentError(error) === 'blockedImages') {
               // 每次拦截都把本批图片换成文字，在新会话里引导 agent 换法读取；
               // 没有图片可换时拦截与图片无关，按致命错误结束。
@@ -196,11 +207,7 @@ export class CodexAgents {
               id = undefined; blocked = replaced; interrupted = false;
               return true;
             }
-            if (!await replace(error, failure.threadId || id)) return false;
-            await session!.close();
-            session = createFunctionToolSession(functionOptions(), undefined);
-            id = undefined; blocked = undefined; interrupted = false; fresh = true;
-            return true;
+            return false;
           });
         } finally { busy = false; }
       },
@@ -273,8 +280,8 @@ export class CodexAgents {
                   throw error;
                 }
               }, async error => {
-                // CLI 会话里被拦截的图片无法替换，只能按致命错误结束。
-                if (recoverableAgentError(error) === 'blockedImages' || !await replace(error, id)) return false;
+                // CLI 会话里被拦截的图片无法替换，只能按致命错误结束；replace 对它返回 false。
+                if (!await replace(error, id)) return false;
                 id = undefined; interrupted = false;
                 if (original.recoveryPrompt) task = { ...task, prompt: original.recoveryPrompt };
                 return true;

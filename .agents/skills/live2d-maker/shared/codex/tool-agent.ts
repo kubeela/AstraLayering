@@ -74,6 +74,8 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     completion: ReturnType<typeof Promise.withResolvers<void>>;
     tools: Map<string, NonNullable<AgentTask['tools']>[number]>;
     done: boolean; finalResponse: string; usage: unknown; images: GeneratedImage[]; errors: unknown[];
+    // Tool calls and other work items this turn completed; messages and reasoning are not work.
+    progress: number;
   } | undefined;
 
   const fail = (error: unknown) => {
@@ -180,6 +182,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         const tool = current.tools.get(params.tool);
         if (!tool) throw new Error(`未注册的工具：${params.tool}`);
         const signal = AbortSignal.any([current.signal, transportEnded.signal]);
+        current.progress++;
         result = await abortable(tool.execute(params.arguments, signal), signal);
       } catch (error) {
         result = { success: false, contentItems: [{ type: 'inputText',
@@ -209,6 +212,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       }
     } else if (message.method === 'item/completed' && current && ownTurn) {
       const item = message.params?.item;
+      if (item?.type && !['userMessage', 'agentMessage', 'reasoning'].includes(item.type)) current.progress++;
       if (item?.type === 'agentMessage') {
         current.finalResponse = item.text;
         await emit({ type: 'item.completed', item: { type: 'agent_message', id: item.id || 'message', text: item.text } });
@@ -332,7 +336,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       }, paths.root);
       const completion = Promise.withResolvers<void>();
       void completion.promise.catch(() => {});
-      current = { task, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [], errors: [] };
+      current = { task, log, signal, completion, tools: byName, done: false, finalResponse: '', usage: null, images: [], errors: [], progress: 0 };
       const state = current;
       options.progress?.(`开始：${task.name}；原生 function tools${threadId ? `；沿用会话 ${threadId}` : ''}；记录：${log.directory}`);
       const abort = () => {
@@ -378,6 +382,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         reported.threadId = threadId;
         reported.threadPath = threadPath;
         reported.finalResponse = state.finalResponse;
+        reported.progress = state.progress;
         reported.sessionBroken = !!failure || !threadId;
         reported.savedImagePaths = state.images.map(image => image.savedPath);
         options.progress?.(formatAgentError(reported));

@@ -253,6 +253,9 @@ if(resumed==='refused')refuse();
 if(resumed==='full'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'Prompt is too long'}));process.exit(1);}
 let input='';for await(const chunk of process.stdin)input+=chunk;
 if(input.includes('总是拒绝'))refuse();
+const overflow=tools=>{const id=randomUUID();for(let i=0;i<tools;i++)console.log(JSON.stringify({type:'assistant',session_id:id,message:{content:[{type:'tool_use',id:'t'+i,name:'Read',input:{}}]}}));console.log(JSON.stringify({type:'result',is_error:true,session_id:id,error:'Prompt is too long'}));process.exit(1);};
+if(input.includes('总是超窗'))overflow(0);
+if(input.includes('用工具后超窗')){const count=join(process.cwd(),'overflows');let n=0;try{n=Number(await readFile(count,'utf8'));}catch{}if(n<2){await writeFile(count,String(n+1));overflow(3);}}
 if(input.includes('跑一阵被拒')){const count=join(process.cwd(),'refusals');let n=0;try{n=Number(await readFile(count,'utf8'));}catch{}if(n<2){await writeFile(count,String(n+1));refuse(40);}}
 const config=kind==='claude'?args[args.indexOf('--mcp-config')+1]:join(process.env.ANTIGRAVITY_GEMINI_DIR,'config/mcp_config.json');
 const registry=JSON.parse(await readFile(config,'utf8')).mcpServers.layering.env;
@@ -356,6 +359,34 @@ test('a CLI session over its context window is replaced once from the recovery p
     assert.notEqual(result.threadId, 'full'); assert.deepEqual(reasons, ['上下文超出模型窗口']);
     const invocation = JSON.parse(await readFile(join(cwd, 'workspace', 'invocation.json'), 'utf8'));
     assert.match(JSON.stringify(invocation.input), /从头完成任务/);
+  } finally { await session.close(); }
+});
+
+test('a new session over its context window on its first turn fails; one that called tools is replaced again', async t => {
+  const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
+  await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_part_review_model: 'claude-sonnet-5-5-high' }, root);
+  await mkdir(join(cwd, 'agents/old-data'), { recursive: true });
+  await mkdir(join(cwd, 'agents/old-workspace'), { recursive: true });
+  await writeFile(join(cwd, 'agents/sessions.json'), JSON.stringify({ full: { harness: 'claude', data: join(cwd, 'agents/old-data'), workspace: join(cwd, 'agents/old-workspace') } }));
+  const reasons: string[] = [];
+  const agents = new CodexAgents({ environment: settings, cwd, logDirectory: join(cwd, 'agents'),
+    runtime: new AgentRuntime(1, async () => assert.fail('a known error must not wait')),
+    onThreadReplacement: async (_id, reason) => { reasons.push(reason); } });
+  // The original session is replaced; the new one overflows before any tool call, so the call fails.
+  const failing = agents.createSession('full');
+  try {
+    await assert.rejects(failing.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '继续任务', recoveryPrompt: '从头完成任务，总是超窗' }),
+      /Prompt is too long/);
+    assert.deepEqual(reasons, ['上下文超出模型窗口']);
+  } finally { await failing.close(); }
+  // Sessions that overflow after tool calls accumulated history; each is replaced and the third finishes.
+  reasons.length = 0;
+  const session = agents.createSession();
+  try {
+    const result = await session.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '用工具后超窗', recoveryPrompt: '从头完成任务，用工具后超窗' });
+    assert.equal(result.text, '完成');
+    assert.deepEqual(reasons, ['上下文超出模型窗口', '上下文超出模型窗口']);
   } finally { await session.close(); }
 });
 
