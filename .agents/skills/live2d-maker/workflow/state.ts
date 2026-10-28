@@ -26,8 +26,12 @@ export type TaskRun = {
   image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
+  // Pipelines running now; after a failed or stopped run, the ones that ended it.
+  activePipelines?: PipelineId[];
+  // Written before the lanes ran concurrently; readRun moves it into activePipelines.
   activePipeline?: PipelineId;
-  runner?: { id: string; pid: number; childPid?: number; startedAt: string; finishedAt?: string; stopProtocol?: 'file-v1' };
+  // childPids: the worker process of each running pipeline.
+  runner?: { id: string; pid: number; childPids?: Partial<Record<PipelineId, number>>; startedAt: string; finishedAt?: string; stopProtocol?: 'file-v1' };
   pipelines: Partial<Record<PipelineId, PipelineProgress>>;
   lastMessage?: string; error?: string; output?: string;
 };
@@ -59,6 +63,7 @@ export async function readRun(directory: string, name: string): Promise<TaskRun 
   }
   selectedPipelines(pipelineId(run.from), pipelineId(run.to));
   if (run.shadowMode !== undefined) shadowMode(run.shadowMode);
+  if (run.activePipeline) { run.activePipelines ??= [pipelineId(run.activePipeline)]; delete run.activePipeline; }
   return run;
 }
 export async function saveRun(directory: string, run: TaskRun, replace = rename): Promise<void> {

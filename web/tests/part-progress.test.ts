@@ -294,3 +294,26 @@ test('lanes skipped because the subject was not dressed show as skipped with the
   }
   assert.notEqual(pipelines.find(item => item.id === 'raster-layering')!.status, 'skipped');
 });
+
+test('a lane that failed shows as failed while the other lane runs on', async t => {
+  const f = await fixture(t, 'clothing-raster-layering');
+  const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'shadow' }, f.task);
+  run.status = 'running'; run.activePipelines = ['part-layering', 'clothing-raster-layering'];
+  run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
+  run.pipelines['part-layering']!.status = 'running';
+  run.pipelines['clothing-raster-layering'] = { status: 'failed', updatedAt: new Date().toISOString(), summary: 'ENAMETOOLONG' };
+  await saveRun(f.task, run);
+  const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
+  // The failed section never cleared its running marker.
+  await f.mark('step01', 'running');
+  const { pipelines } = await f.get();
+  const lane = pipelines.find(item => item.id === 'clothing-raster-layering')!;
+  assert.equal(lane.status, 'failed'); assert.equal(lane.states.step01, 'failed');
+  assert.equal(pipelines.find(item => item.id === 'part-layering')!.status, 'running');
+  // The step it left mid-way says why; a review it was on carries the reason instead of the draw step.
+  assert.equal(lane.messages.step01, 'ENAMETOOLONG');
+  await f.put('step01/report.md', 'drawn');
+  const review = (await f.get()).pipelines.find(item => item.id === 'clothing-raster-layering')!;
+  assert.equal(review.states['review-01'], 'failed');
+  assert.deepEqual(review.messages, { 'review-01': 'ENAMETOOLONG' });
+});
