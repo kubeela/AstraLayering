@@ -115,6 +115,28 @@ for (const pipeline of ['raster-layering', 'clothing-raster-layering', 'characte
   });
 }
 
+test('重试清除输出写在该步骤的 agent 尝试记录，其他步骤与无输出记录的保留', async t => {
+  const f = await fixture(t), root = join(f.task, 'raster-layering'), agents = join(root, 'agents');
+  await put(join(root, 'run.json'), rasterConfig());
+  await put(join(root, 'step01', '.running'), JSON.stringify({ inputs: {} }));
+  await put(join(root, 'step02', '.running'), JSON.stringify({ inputs: {} }));
+  const attempt = (name: string, request: unknown) => put(join(agents, name, 'request.json'), JSON.stringify(request));
+  await attempt('t1-raster_step01-a', { outputDirectory: 'raster-layering/step01', task: { step: 'raster_step01' } });
+  await attempt('t2-raster_step01_review-b', { task: { outputDirectory: join(root, 'step01', 'review') } });
+  await attempt('t3-raster_step02-c', { outputDirectory: 'raster-layering/step02' });
+  await attempt('t4-legacy-d', { task: {} });
+  await put(join(agents, 't1-raster_step01-a', 'cli-data', 'x'), 'x');
+  await put(join(agents, 'sessions.json'), JSON.stringify({
+    s1: { harness: 'claude', data: 'raster-layering/agents/t1-raster_step01-a/cli-data', workspace: 'raster-layering/step01/workspace' },
+    s2: { harness: 'claude', data: 'raster-layering/agents/t3-raster_step02-c/cli-data', workspace: 'raster-layering/step02/workspace' } }));
+  assert.match(await f.act('raster-layering', 'step01', 'retry'), /2 次 agent 尝试记录/);
+  await gone(join(agents, 't1-raster_step01-a', 'request.json'));
+  await gone(join(agents, 't2-raster_step01_review-b', 'request.json'));
+  assert.ok(await text(join(agents, 't3-raster_step02-c', 'request.json')));
+  assert.ok(await text(join(agents, 't4-legacy-d', 'request.json')));
+  assert.deepEqual(Object.keys(JSON.parse(await text(join(agents, 'sessions.json')))), ['s2']);
+});
+
 test('raster 旧 run.json thread 迁入所属步骤；恢复只清除本步骤的 thread', async t => {
   const f = await fixture(t), root = join(f.task, 'raster-layering');
   await put(join(root, 'run.json'), rasterConfig({ threadId: 'thread-01', threadHarness: 'claude', threadStep: 'step01' }));

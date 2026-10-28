@@ -1,7 +1,7 @@
-import { readdir, rm } from 'node:fs/promises';
+import { readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { readStep, type StepStatus } from '../shared/step-chain.ts';
-import { taskRootOf } from '../shared/task-paths.ts';
+import { fromTaskPath, taskRootOf } from '../shared/task-paths.ts';
 import { within } from '../shared/raster/run-store.ts';
 import { clearStepSession, migrateRunFile, readStepSession } from '../shared/agents/step-session.ts';
 import { occlusionPath } from '../shared/part/occlusion-plan.ts';
@@ -15,8 +15,9 @@ import { acquireTaskLock, directoryFor, pipelineId, readRun, type TaskOptions } 
 //             products and session.
 //   resume:   drop the step's session and keep its products, so the next run
 //             continues them in a new session.
-//   retry:    reset the step (directory, declared outputs and session); the
-//             next run reruns it, and the steps built on it rerun with it.
+//   retry:    reset the step (directory, declared outputs, session and the
+//             agent attempts that worked in it); the next run reruns it from a
+//             clean step, and the steps built on it rerun with it.
 // Every pipeline keeps a step's session in agents/steps/<step>/session.json
 // (shared/agents/step-session.ts). Steps without a session (one-shot agents)
 // simply rerun when they have no product, so resume equals continue.
@@ -124,5 +125,41 @@ async function actOnStep(root: string, pipeline: PipelineId, step: string, actio
   for (const path of outputs) await rm(path, { force: true });
   await rm(stepDirectory, { recursive: true, force: true });
   await rm(join(root, 'agents', 'steps', step), { recursive: true, force: true });
-  return `${step}：已删除步骤产物和会话；下次运行重做该步骤，依赖它的后续步骤随之重跑。`;
+  const attempts = await clearAgentAttempts(root, stepDirectory);
+  return `${step}：已删除步骤产物、会话${attempts ? `和 ${attempts} 次 agent 尝试记录` : ''}；下次运行重做该步骤，依赖它的后续步骤随之重跑。`;
+}
+
+// Each agent call leaves agents/<time>-<name>-*/ (request, events, CLI data) and a
+// sessions.json entry. A retried step drops the ones whose output went to that step,
+// so its new agent does not find and repeat the earlier attempts. Attempts with no
+// recorded output directory are kept: their step is unknown.
+async function clearAgentAttempts(root: string, stepDirectory: string): Promise<number> {
+  const agents = join(root, 'agents'), taskRoot = taskRootOf(root);
+  const inside = (directory: string, path: unknown) => {
+    if (typeof path !== 'string') return false;
+    try { return within(directory, fromTaskPath(taskRoot, path)); } catch { return false; }
+  };
+  const inStep = (path: unknown) => inside(stepDirectory, path);
+  let entries;
+  try { entries = await readdir(agents, { withFileTypes: true }); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return 0; throw error; }
+  const removed: string[] = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory() || entry.name === 'steps') continue;
+    let request;
+    try { request = JSON.parse(await readFile(join(agents, entry.name, 'request.json'), 'utf8')); } catch { continue; }
+    if (!inStep(request?.outputDirectory ?? request?.task?.outputDirectory)) continue;
+    await rm(join(agents, entry.name), { recursive: true, force: true });
+    removed.push(join(agents, entry.name));
+  }
+  const file = join(agents, 'sessions.json');
+  let sessions: Record<string, { data?: string; workspace?: string }>;
+  try { sessions = JSON.parse(await readFile(file, 'utf8')); } catch { return removed.length; }
+  const kept = Object.fromEntries(Object.entries(sessions).filter(([, session]) =>
+    !inStep(session?.workspace) && !removed.some(directory => inside(directory, session?.data))));
+  if (Object.keys(kept).length !== Object.keys(sessions).length) {
+    const temporary = `${file}.retry.tmp`;
+    await writeFile(temporary, JSON.stringify(kept, null, 2), { mode: 0o600 }); await rename(temporary, file);
+  }
+  return removed.length;
 }

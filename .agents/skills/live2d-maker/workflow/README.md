@@ -60,7 +60,7 @@ pnpm env:check
 
 请求目录继续保留 `prompt.md`、`request.json`、`events.jsonl`、`result.json` 和会话记录。旧后台可能仍写 `service.log`，按状态返回的真实日志路径查看；新请求统一进 `workflow.log`，不新增永久 native/transcript 日志。
 
-section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --pipeline <section> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、其声明的产物和会话；依赖它的后续步骤按指纹重跑。
+section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --pipeline <section> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、其声明的产物、会话，以及输出写在该步骤的 agent 尝试记录（`agents/<时间>-<名称>-*/` 与 `sessions.json` 中的对应条目），新 agent 不会读到旧尝试；依赖它的后续步骤按指纹重跑。
 
 raster、组装与阴影分段的输入或制作规则改变时，旧分段整体保留为 `<分段>.previous-<uuid>` 后重新制作，不覆盖。
 
@@ -133,7 +133,7 @@ pnpm start --name jianma --dir /绝对路径/运行根目录 --background
 
 替换命令只准备交接，在该 section 的 `recovery/<id>/` 归档当前步骤的旧会话（`session-before.json`）、交接和将覆盖的提示词／报告，保留 KRA、日志、完成与未完成标记及审核进度；之后另行续跑，新会话同时接收原任务、交接及当前反馈。part 不使用此接口。阴影需总控明确保存的 shadowMode，只替换该分支。
 
-`--resume`（网页“恢复”）适用于所有管线：清除会话、保留产物，不写交接，新会话读取已有输入、产物及反馈。`--replace-thread` 仅用于 raster-layering、clothing-raster-layering、character-assembly 和 shadow，额外归档旧会话并把交接说明交给新会话。`--retry`（网页“重试”）删除该步骤目录、声明的产物和会话，依赖步骤按指纹重跑。三者是不同操作。
+`--resume`（网页“恢复”）适用于所有管线：清除会话、保留产物，不写交接，新会话读取已有输入、产物及反馈。`--replace-thread` 仅用于 raster-layering、clothing-raster-layering、character-assembly 和 shadow，额外归档旧会话并把交接说明交给新会话。`--retry`（网页“重试”）删除该步骤目录、声明的产物、会话和该步骤的 agent 尝试记录，依赖步骤按指纹重跑。三者是不同操作。
 
 ## 交付与自动化测试
 
