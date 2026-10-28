@@ -62,7 +62,7 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 /* Both lanes turn into the merge column within this gutter, room for their labels. */
 .flow-grid>.flow-merge{margin-left:72px}
 .pipeline-lane{width:292px;flex:0 0 auto}
-.pipeline-lane.collapsed{width:224px}
+.pipeline-lane.collapsed{width:max-content;min-width:224px}
 .pipeline-lane.group-expanded{width:1460px}
 .pipeline-heading{padding:7px;gap:3px}
 .pipeline-heading>button:first-child{display:flex;align-items:center;gap:8px;flex:1;min-width:0;text-align:left;padding:6px 3px}
@@ -132,7 +132,7 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .pipeline-heading>button:first-child{flex:0 1 auto}
 .pipeline-heading>.icon-button{margin-left:10px}
 .pipeline-steps{display:flex;flex-direction:row;align-items:flex-start;gap:22px;padding-top:18px;position:relative;padding-bottom:52px}
-.pipeline-lane.collapsed{width:224px}
+.pipeline-lane.collapsed{width:max-content;min-width:224px}
 .pipeline-steps>.thread-id{position:absolute;left:244px;bottom:8px;max-width:300px}
 .step-node{width:250px;flex:0 0 auto;height:var(--step-height);display:flex;flex-direction:column}
 .step-node.step-container{width:max-content}
