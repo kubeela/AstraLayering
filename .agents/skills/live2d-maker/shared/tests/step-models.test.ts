@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, realpath, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative, dirname, delimiter, isAbsolute } from 'node:path';
+import { join, relative, dirname, delimiter, isAbsolute, sep } from 'node:path';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { parseEnv } from 'node:util';
@@ -181,6 +181,7 @@ test('custom image edit transports original prompts and images over both protoco
   const root = await fixture(t), source = join(root, 'input.png');
   const png = await sharp({ create: { width: 4, height: 4, channels: 4, background: '#ff000080' } }).png().toBuffer();
   await writeFile(source, png);
+  const notImage = join(root, 'not-image.txt'); await writeFile(notImage, 'not an image');
   let protocol = 'openai', expectedBackground = 'transparent', called = 0;
   const server = createServer(async (req, res) => {
     const chunks = []; for await (const chunk of req) chunks.push(chunk); const bytes = Buffer.concat(chunks); called++;
@@ -188,7 +189,7 @@ test('custom image edit transports original prompts and images over both protoco
       assert.equal(req.url, '/v1beta/models/gemini-nano-banana-2.1:generateContent');
       assert.equal(req.headers['x-goog-api-key'], 'image-test-secret');
       const body = JSON.parse(bytes.toString());
-      assert.ok(body.contents[0].parts[0].text.startsWith('原样的绘制提示词\n\n'));
+      assert.ok(body.contents[0].parts[0].text.replace(/\r\n/g, '\n').startsWith('原样的绘制提示词\n\n'));
       assert.match(body.contents[0].parts[0].text, /背景使用高纯度纯色 #[0-9A-F]{6}/);
       assert.deepEqual(Buffer.from(body.contents[0].parts[1].inlineData.data, 'base64'), png);
       res.end(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: png.toString('base64') } }] } }] }));
@@ -224,7 +225,7 @@ test('custom image edit transports original prompts and images over both protoco
     assert.ok(!Object.hasOwn((tool.inputSchema as { properties: Record<string, unknown> }).properties, 'model'));
     const result = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source] }, new AbortController().signal);
     const output = JSON.parse((result.contentItems[0] as { text: string }).text);
-    assert.ok(isAbsolute(output.savedPath) && output.savedPath.startsWith(join(root, outputDirectory) + '/'));
+    assert.ok(isAbsolute(output.savedPath) && output.savedPath.startsWith(join(root, outputDirectory) + sep));
     assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
     const custom = join(await fixture(t), `${provider}-${mode}.png`);
@@ -235,7 +236,7 @@ test('custom image edit transports original prompts and images over both protoco
     // Like Codex native imagegen, the tool takes absolute paths only.
     await assert.rejects(tool.execute({ prompt: 'test', input_images: [relative(root, source)] }, new AbortController().signal), /input_images 中的路径 必须是绝对路径/);
     await assert.rejects(tool.execute({ prompt: 'test', input_images: [source], output_path: 'relative.png' }, new AbortController().signal), /output_path 必须是绝对路径/);
-    await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);
+    await assert.rejects(tool.execute({ prompt: 'test', input_images: [notImage] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);
   }
   assert.equal(called, 6);
 });
@@ -303,7 +304,9 @@ test('Claude and AGV env-node launchers work when the service PATH has no Node, 
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'env-node.mjs');
   await mkdir(cwd, { recursive: true });
   const script = fakeCli.replace('const meta=', `const {execFileSync}=await import('node:child_process');
-const childNode=execFileSync('/usr/bin/env',['node','-p','process.execPath'],{encoding:'utf8'}).trim();
+const childNode=process.platform==='win32'
+  ? execFileSync('node',['-p','process.execPath'],{encoding:'utf8'}).trim()
+  : execFileSync('/usr/bin/env',['node','-p','process.execPath'],{encoding:'utf8'}).trim();
 await writeFile(join(process.cwd(),'child-node.json'),JSON.stringify({path:process.env.PATH,childNode}));
 const meta=`);
   await writeFile(cli, script, { mode: 0o700 });
