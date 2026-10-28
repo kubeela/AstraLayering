@@ -16,18 +16,26 @@ test('known legacy recipe accepts unchanged inputs and rejects unknown fingerpri
   for (const path of paths) await writeFile(path, path);
   const input = { characterKra: paths[0], characterColor: paths[1], simplifiedCharacter: paths[2], structureFiles: paths.slice(3) };
   const recipes = JSON.parse(await readFile(new URL('../legacy-recipes.json', import.meta.url), 'utf8'));
-  const prompt = (await readFile(maskSteps[0].prompt, 'utf8')).replace('{runtime_context}', '{krita_environment}\n\n{runtime_context}').replace('先读运行信息中列出的 inputs.json、production.md', '先读 references/inputs.json、production.md');
+  // Texts as they were before the inspection-tool wording correction.
+  const revisions = JSON.parse(await readFile(new URL('../text-revisions.json', import.meta.url), 'utf8'));
+  const earlierPrompt = (await readFile(maskSteps[0].prompt, 'utf8')).replace(...revisions['mask.md'][0] as [string, string]);
+  const production = (await readFile(referenceUrl('production.md'), 'utf8')).replace(...revisions['production.md'][0] as [string, string]);
+  const prompt = earlierPrompt.replace('{runtime_context}', '{krita_environment}\n\n{runtime_context}').replace('先读运行信息中列出的 inputs.json、production.md', '先读 references/inputs.json、production.md');
   const hashes = await Promise.all(paths.map(fileHash));
   const recorded = createHash('sha256').update(JSON.stringify({ version: 1, mode: 'mask', hashes, prompt, rules: recipes[0].rules })).digest('hex');
   const pipeline = makePipeline('mask');
   assert.equal(await pipeline.compatibleInputFingerprint!(input, recorded), true);
   const current = await pipeline.fingerprintInput!(input);
   assert.equal(await pipeline.compatibleInputFingerprint!(input, current), true);
-  // Recorded before the shared Krita environment line left the prompt.
-  const withKrita = (await readFile(maskSteps[0].prompt, 'utf8')).replace('{runtime_context}', '{krita_environment}\n\n{runtime_context}');
-  const rules = await Promise.all(referenceNames.map(name => fileHash(fileURLToPath(referenceUrl(name)))));
-  const before = createHash('sha256').update(JSON.stringify({ version: 2, recipe: 1, mode: 'mask', hashes, prompt: withKrita, rules })).digest('hex');
-  assert.equal(await pipeline.compatibleInputFingerprint!(input, before), true);
+  // Recorded before the shared Krita environment line left the prompt, and
+  // just before the wording correction.
+  const withKrita = earlierPrompt.replace('{runtime_context}', '{krita_environment}\n\n{runtime_context}');
+  const rules = await Promise.all(referenceNames.map(name => name === 'production.md'
+    ? createHash('sha256').update(production).digest('hex') : fileHash(fileURLToPath(referenceUrl(name)))));
+  for (const recordedPrompt of [withKrita, earlierPrompt]) {
+    const before = createHash('sha256').update(JSON.stringify({ version: 2, recipe: 1, mode: 'mask', hashes, prompt: recordedPrompt, rules })).digest('hex');
+    assert.equal(await pipeline.compatibleInputFingerprint!(input, before), true);
+  }
   assert.equal(await pipeline.compatibleInputFingerprint!(input, 'unknown-old-code'), false);
   for (const path of paths) {
     const before = await readFile(path); await writeFile(path, 'changed');
