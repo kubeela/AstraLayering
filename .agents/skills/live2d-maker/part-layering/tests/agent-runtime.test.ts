@@ -26,20 +26,20 @@ test('独立运行层默认限制 3 个调用，失败也释放位置', async ()
   assert.deepEqual(entered, [0, 1, 2, 3, 4, 5, 6]);
 });
 
-test('临时错误最多重试 10 次，等待从 5 秒逐次翻倍且随机落在每档后一半；第 10 次重试仍失败就报错并释放位置', async () => {
+test('临时错误最多重试 10 次，等待从 5 秒逐次翻倍、封顶 120 秒，且随机落在每档后一半；第 10 次重试仍失败就报错并释放位置', async () => {
   const lowest: number[] = [];
   let failures = 0;
   await new AgentRuntime(1, async ms => { lowest.push(ms); }, () => 0).run(async () => {
     if (++failures <= 10) throw new AgentCallError('capacity', { rateLimitExceeded: { httpStatusCode: 429 } });
   });
-  assert.deepEqual(lowest, [2500, 5000, 10000, 20000, 40000, 80000, 160000, 320000, 640000, 1280000]);
+  assert.deepEqual(lowest, [2500, 5000, 10000, 20000, 40000, 60000, 60000, 60000, 60000, 60000]);
   const waits: number[] = [], retries: number[] = [];
   const runtime = new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1);
   let attempts = 0;
   await assert.rejects(runtime.run(async () => { ++attempts; throw new AgentCallError('capacity', 'serverOverloaded'); },
     { onRetry: retry => { retries.push(retry.attempt); } }), /capacity/);
   assert.equal(attempts, 11);
-  assert.deepEqual(waits, [5000, 10000, 20000, 40000, 80000, 160000, 320000, 640000, 1280000, 2560000]);
+  assert.deepEqual(waits, [5000, 10000, 20000, 40000, 80000, 120000, 120000, 120000, 120000, 120000]);
   assert.deepEqual(retries, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   assert.equal(await runtime.run(async () => 'next'), 'next', 'the failed call released its slot');
 });

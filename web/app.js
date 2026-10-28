@@ -30,7 +30,9 @@ const icons = {
 const icon = (name, cls='') => `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]||icons.file}</svg>`;
 const esc = value => String(value??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // An error on one line; the full text shows on hover and the button copies it.
-const errorBox = (message, cls='') => `<div class="error-box ${cls}"><p class="status-error" title="${esc(message)}">${esc(message)}</p><button class="icon-button" data-copy-error="${esc(message)}" title="复制错误" aria-label="复制错误">${icon('copy')}</button></div>`;
+const errorBox = (message, cls='', copy='复制错误') => `<div class="error-box ${cls}"><p class="status-error" title="${esc(message)}">${esc(message)}</p><button class="icon-button" data-copy-error="${esc(message)}" title="${copy}" aria-label="${copy}">${icon('copy')}</button></div>`;
+// The error a 限流等待 call will retry after, verbatim as in workflow.log, on one copyable line.
+const waitBox = message => message ? errorBox(message, 'wait-box', '复制原文') : '';
 async function get(path) { const response = await fetch(path); const value = await response.json(); if(!response.ok) throw new Error(value.error); return value; }
 const initial = await get('./api/tasks');
 let tasks = initial.tasks, data = { files:[], pipelines:[] }, pipelineSteps = structuredClone(stepTemplates);
@@ -246,7 +248,7 @@ function stepToolbar() {
 }
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
- return `<section class="cycle-phase ${status==='skipped'?'skipped-node':''} ${closed?'collapsed':''}" data-phase="${key}"><button data-phase-toggle="${key}" aria-expanded="${!closed}" aria-label="${closed?'展开':'收起'}${label}"><span class="cycle-number">${number}</span><b>${esc(label)}</b>${statusMark(status)}${icon(closed?'chevron':'down')}</button>${closed?'':`<p class="phase-state ${displayStatus(status)}" title="${esc(detail)}">${status==='skipped'?'无需执行':esc(statusLabel(status))}</p>${artifacts(items,index,id,'phase-artifacts')}${status==='skipped'?'':hasPreview?'<span class="phase-explanation">SVG 见左侧预览</span>':!available(items).length?'<span class="phase-explanation">尚无本步骤产物</span>':''}`}</section>`;
+ return `<section class="cycle-phase ${status==='skipped'?'skipped-node':''} ${closed?'collapsed':''}" data-phase="${key}"><button data-phase-toggle="${key}" aria-expanded="${!closed}" aria-label="${closed?'展开':'收起'}${label}"><span class="cycle-number">${number}</span><b>${esc(label)}</b>${statusMark(status)}${icon(closed?'chevron':'down')}</button>${closed?'':`<p class="phase-state ${displayStatus(status)}" title="${esc(detail)}">${status==='skipped'?'无需执行':esc(statusLabel(status))}</p>${status==='throttled'?waitBox(detail):''}${artifacts(items,index,id,'phase-artifacts')}${status==='skipped'?'':hasPreview?'<span class="phase-explanation">SVG 见左侧预览</span>':!available(items).length?'<span class="phase-explanation">尚无本步骤产物</span>':''}`}</section>`;
 }
 function groupDetailPhases(index,group,phaseFiles) {
  const steps=groupPhases.flatMap(([id,label])=>id==='review'
@@ -348,7 +350,7 @@ function stepNode(index,step,nested=false) {
  ${context}
  ${reportEvidence(index,step.id)}
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
- ${data.pipelines[index]?.messages[step.id]?(['running','throttled'].includes(step.status)?`<p class="step-activity">${esc(data.pipelines[index].messages[step.id])}</p>`:errorBox(data.pipelines[index].messages[step.id])):''}
+ ${data.pipelines[index]?.messages[step.id]?(step.status==='throttled'?waitBox(data.pipelines[index].messages[step.id]):step.status==='running'?`<p class="step-activity">${esc(data.pipelines[index].messages[step.id])}</p>`:errorBox(data.pipelines[index].messages[step.id])):''}
  ${processArtifacts(index,step)}
  </div>
  `}
@@ -769,7 +771,7 @@ function bind() {
   try{await navigator.clipboard.writeText(b.dataset.copyError);}
   // The clipboard API needs a secure origin; a LAN address falls back to a hidden textarea.
   catch{const area=Object.assign(document.createElement('textarea'),{value:b.dataset.copyError});document.body.append(area);area.select();document.execCommand('copy');area.remove();}
-  b.innerHTML=icon('check');b.title='已复制';setTimeout(()=>{b.innerHTML=icon('copy');b.title='复制错误';},1200);
+  const title=b.title;b.innerHTML=icon('check');b.title='已复制';setTimeout(()=>{b.innerHTML=icon('copy');b.title=title;},1200);
  });
  document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const [index,step]=b.dataset.step.split(':'),i=Number(index);const item=available(stepArtifacts[i][step])[0];if(item)openAsset(item,i,step);else{state.stage=i;state.selectedStep=step;state.asset=null;state.inspect=true;render();}});
  document.querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>openAsset(assetLookup.get(b.dataset.asset),Number(b.dataset.assetStage),b.dataset.assetStep));

@@ -1,5 +1,5 @@
 import { matchesHash, type ReviewReport } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
-import { retryReason, throttled, type AgentCall } from './agent-progress.ts';
+import { throttled, type AgentCall } from './agent-progress.ts';
 import type { PartReviewRound, ReviewPhase } from './progress.js';
 
 // Read-only observations of the existing two-round review chain. Retries and
@@ -64,7 +64,7 @@ export function partReviewRounds(groupId: string, report: ReviewReport | undefin
     const [mode, number] = key.split('-') as ['review' | 'repair', string];
     const observation = rounds[Number(number) - 1][mode];
     if (call.failed) { observation.status = 'failed'; observation.detail = '调用失败，请查看运行记录'; }
-    else if (active && throttled(call)) { observation.status = 'throttled'; observation.detail = retryReason(call) + '，保留并发位置，等待后重试'; }
+    else if (active && throttled(call)) { observation.status = 'throttled'; observation.detail = call.retryError!; }
     else if (active && !call.finished) {
       observation.status = 'running'; observation.detail = mode === 'review' ? '正在复核轮廓' : '正在按本轮意见返修';
     }

@@ -70,9 +70,10 @@ export async function partStages(directory: string, pipeline: string, groups: an
     if (!active) continue;
     if (call.finished) continue;
     const status = throttled(call) ? 'throttled' : 'running';
-    states[phase] = status; messages[phase] = call.name;
+    const message = status === 'throttled' ? call.retryError! : call.name;
+    states[phase] = status; messages[phase] = message;
     if (['standard', 'simplified', 'base', 'clothing'].includes(phase)) {
-      states.preparation = status; messages.preparation = call.name;
+      states.preparation = status; messages.preparation = message;
     }
   }
   return { states, messages };

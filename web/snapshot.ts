@@ -195,9 +195,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
       states.step01 = states[mode];
     }
     // One agent runs a raster or shadow section at a time: while it waits out a 429, its running steps wait too.
-    if (active && id !== 'part-layering' && id !== 'clothing-part-layering'
-      && (await currentAgentCalls(directory, branch, fileSet, errors, record.run?.runner?.startedAt)).some(call => throttled(call)))
-      for (const key of Object.keys(states)) if (states[key] === 'running') states[key] = 'throttled';
+    const waiting = active && id !== 'part-layering' && id !== 'clothing-part-layering'
+      ? (await currentAgentCalls(directory, branch, fileSet, errors, record.run?.runner?.startedAt)).find(call => throttled(call)) : undefined;
+    if (waiting) for (const key of Object.keys(states)) if (states[key] === 'running') { states[key] = 'throttled'; messages[key] = waiting.retryError!; }
     let status: Status = active ? 'running' : observed(saved?.status);
     if (!saved) status = Object.values(states).includes('failed') ? 'failed' : Object.values(states).includes('unconfirmed') ? 'unconfirmed'
       : files.some(path => path.startsWith(id + '/')) ? 'available' : 'pending';

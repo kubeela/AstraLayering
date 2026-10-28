@@ -2,10 +2,9 @@ import { lstat, readFile } from 'node:fs/promises';
 import { safePath } from './files.ts';
 import { retryWaitFile } from '../.agents/skills/live2d-maker/shared/codex/agent-log.ts';
 
-// throttledUntil: the call holds its slot while waiting to retry until then; rateLimited when the service returned 429.
-export type AgentCall = { name: string; step: string; request: string; mtime: number; finished: boolean; failed: boolean; throttledUntil?: number; rateLimited?: boolean };
+// throttledUntil: the call holds its slot while waiting to retry until then; retryError is the error as logged, verbatim.
+export type AgentCall = { name: string; step: string; request: string; mtime: number; finished: boolean; failed: boolean; throttledUntil?: number; retryError?: string };
 export const throttled = (call: AgentCall, now = Date.now()) => !call.finished && (call.throttledUntil ?? 0) > now;
-export const retryReason = (call: AgentCall) => call.rateLimited ? '服务返回 429' : '服务临时错误';
 const requests = new Map<string, { version: string; name: string; step: string }>();
 
 // A request is recorded after acquiring a slot. Read these records, never infer activity from a draft.
@@ -34,7 +33,7 @@ export async function currentAgentCalls(directory: string, pipeline: string, fil
         const wait = !finished && files.has(waitPath) ? JSON.parse(await readFile(await safePath(directory, waitPath), 'utf8')) : undefined;
         const throttledUntil = Date.parse(wait?.until) || undefined;
         calls.push({ name: cached.name, step: cached.step, request, mtime: info.mtimeMs, finished, failed,
-          ...(throttledUntil ? { throttledUntil, rateLimited: wait.reason === 'rate-limit' } : {}) });
+          ...(throttledUntil ? { throttledUntil, retryError: String(wait.error ?? '') } : {}) });
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(request + ': ' + String(error));
       }

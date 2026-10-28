@@ -3,8 +3,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { fromTaskPath } from '../task-paths.ts';
 
 export const defaultAgentConcurrency = 3;
-// Retry n waits about initial * 2^(n-1): 5 s doubling up to 2560 s on the tenth; after that the call fails.
-export const retryDelays = { initial: 5_000, retries: 10 } as const;
+// Retry n waits about initial * 2^(n-1), at most maximum: 5, 10, 20, 40, 80, then 120 s; after the tenth the call fails.
+export const retryDelays = { initial: 5_000, maximum: 120_000, retries: 10 } as const;
 
 export class AgentCallError extends Error {
   readonly info?: unknown;
@@ -146,7 +146,7 @@ export class AgentRuntime {
           error = caught;
         }
         // Equal jitter: half the step is fixed, half random, so calls that failed together do not retry together.
-        const step = retryDelays.initial * 2 ** (attempt - 1);
+        const step = Math.min(retryDelays.initial * 2 ** (attempt - 1), retryDelays.maximum);
         const delayMs = Math.round(step / 2 + this.random() * step / 2);
         await options.onRetry?.({ attempt, nextAttempt: attempt + 1, delayMs, error, rateLimited: rateLimitedAgentError(error) });
         await this.wait(delayMs, options.signal);
