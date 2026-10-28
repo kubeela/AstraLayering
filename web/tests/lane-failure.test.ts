@@ -13,5 +13,6 @@ test('a failed lane shows its reason unless a step already shows it', () => {
   // Shadow and other lanes without any step message.
   assert.equal(laneFailure({ summary: 'Krita 桥接就绪前退出', messages: {} }), 'Krita 桥接就绪前退出');
   assert.equal(laneFailure({ summary: 'ENAMETOOLONG', messages: { 'review-01': 'ENAMETOOLONG' } }), '');
+  assert.equal(laneFailure({ summary: 'E'.repeat(500), messages: { step01: 'E'.repeat(400) } }), '');
   assert.equal(laneFailure({ messages: {} }), '');
 });

@@ -79,10 +79,10 @@ function header() {
  <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}任务与执行</button><button data-page="preview" class="${state.page==='preview'?'active':''}">${icon('layers')}流程预览</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
  <a class="button" href="./studio?${new URLSearchParams({project:state.name})}">${icon('eye')}角色工作台</a><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
 }
-// Why a failed lane stopped, unless one of its steps already says so.
+// Why a failed lane stopped, unless one of its steps already says so (a step keeps a shortened copy).
 function laneFailure(pipeline){
  const reason=String(pipeline?.summary||'').split('\n')[0].trim();
- return reason&&!Object.values(pipeline.messages||{}).some(message=>String(message).includes(reason))?reason:'';
+ return reason&&!Object.values(pipeline.messages||{}).some(message=>String(message).includes(reason)||reason.startsWith(String(message)))?reason:'';
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
 function pageHeading() {
