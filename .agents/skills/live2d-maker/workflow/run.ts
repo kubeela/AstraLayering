@@ -34,13 +34,13 @@ export const help = [
   '--from / --to <管线> 选择连续范围，默认从人物 part 到阴影制作；只制作一个管线时两者相同。',
   '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow',
   '--shadow-mode mask|normal-depth 选择阴影路线，首次默认 mask；续跑省略沿用保存值。',
-  '--jobs <正整数> part 的 agent 并发，默认 3。',
+  '--jobs <正整数> 整次运行所有管线（含 raster、组装、阴影）共用的 agent 名额，默认 3；并行管线不增加总并发。',
   '--standard 在人物 preparation 中先判断姿态，必要时生成 standard.png；默认关闭，仅复制原图。',
   '续跑省略选项则沿用已保存配置；--no-standard 显式关闭。切换选项须通过 preparation 指纹检查。',
   '省略 --background 则在前台执行；总入口不会自行创建定时任务。',
   '',
   '仅命令行：恢复损坏的绘制会话（先确认任务已停止，保留产物和标记）：',
-  'pnpm start --name <任务名> --replace-thread <raster管线或character-assembly> --handoff <交接.md> --reason <原因>',
+  'pnpm start --name <任务名> --replace-thread <raster管线、character-assembly 或 shadow> --handoff <交接.md> --reason <原因>',
   '此命令只准备恢复；之后用继续命令启动。相对输入路径均以 <dir>/<name> 为基准。',
 ].join('\n');
 
