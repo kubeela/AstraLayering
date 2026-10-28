@@ -25,9 +25,12 @@ const icons = {
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
  history:'<path d="M3 3v6h6M4 8a9 9 0 1 1-1 7M12 7v5l4 2"/>',
  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-11v1"/>',
+ copy:'<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
  };
 const icon = (name, cls='') => `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]||icons.file}</svg>`;
 const esc = value => String(value??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// An error on one line; the full text shows on hover and the button copies it.
+const errorBox = (message, cls='') => `<div class="error-box ${cls}"><p class="status-error" title="${esc(message)}">${esc(message)}</p><button class="icon-button" data-copy-error="${esc(message)}" title="复制错误" aria-label="复制错误">${icon('copy')}</button></div>`;
 async function get(path) { const response = await fetch(path); const value = await response.json(); if(!response.ok) throw new Error(value.error); return value; }
 const initial = await get('./api/tasks');
 let tasks = initial.tasks, data = { files:[], pipelines:[] }, pipelineSteps = structuredClone(stepTemplates);
@@ -333,7 +336,7 @@ function stepNode(index,step,nested=false) {
  ${context}
  ${reportEvidence(index,step.id)}
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
- ${data.pipelines[index]?.messages[step.id]?`<p class="${step.status==='running'?'step-activity':'status-error'}">${esc(data.pipelines[index].messages[step.id])}</p>`:''}
+ ${data.pipelines[index]?.messages[step.id]?(step.status==='running'?`<p class="step-activity">${esc(data.pipelines[index].messages[step.id])}</p>`:errorBox(data.pipelines[index].messages[step.id])):''}
  ${processArtifacts(index,step)}
  </div>
  `}
@@ -362,7 +365,7 @@ function processArtifacts(index, step) {
 const finished=stage=>stage.status==='done'||stage.status==='skipped';
 function flowCard(index) {
  const stage=stages[index],status=observedDisplayStatus(index,stage.status),closed=state.collapsedPipelines.has(index),wide=!closed&&groupViews[index]?.open&&!state.collapsedSteps.has(`${index}:layers`);
- return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}${kritaBadge(index)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${stage.status==='skipped'?`<p class="lane-summary skipped-lane">${esc(data.pipelines[index]?.summary||'无需执行')}</p>`:''}${stage.status==='failed'&&laneFailure(data.pipelines[index])?`<p class="lane-summary status-error">${esc(laneFailure(data.pipelines[index]))}</p>`:''}${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
+ return `<section class="pipeline-lane ${stage.status} ${closed?'collapsed':''} ${wide?'group-expanded':''} ${stage.id==='shadow'?'branch-lane':''}" data-pipeline="${index}"><div class="pipeline-heading"><button data-stage="${index}" aria-label="查看${stage.name}交付"><span class="node-number">${String(index+1).padStart(2,'0')}</span><h2>${stage.name}</h2>${statusMark(status)}${kritaBadge(index)}</button><button class="icon-button" data-pipeline-toggle="${index}" aria-label="${closed?'展开':'收起'}${stage.name}栏目" aria-expanded="${!closed}">${icon(closed?'chevron':'down')}</button></div>${stage.status==='skipped'?`<p class="lane-summary skipped-lane">${esc(data.pipelines[index]?.summary||'无需执行')}</p>`:''}${stage.status==='failed'&&laneFailure(data.pipelines[index])?errorBox(laneFailure(data.pipelines[index]),'lane-error'):''}${closed?`<p class="lane-summary">${esc(statusLabel(status))}</p>`:`<div class="pipeline-steps">${kraPreviewPanel(index)}${stage.id==='shadow'?'<div class="shadow-references"><a href="./shadow-reference/skirt.png" target="_blank" rel="noopener">裙影参考 ↗</a><a href="./shadow-reference/hair.png" target="_blank" rel="noopener">发影参考 ↗</a></div>':''}${pipelineSteps[index].map(step=>stepNode(index,step)).join('')}${data.pipelines[index]?.threadId?`<small class="thread-id" title="${esc(data.pipelines[index].threadId)}">thread · ${esc(data.pipelines[index].threadId)}</small>`:''}</div>`}</section>`;
 }
 function inspector() {
  const stage=stages[state.stage],step=selectedStep(),item=state.asset;
@@ -739,6 +742,12 @@ function bind() {
  });
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
  document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>selectStage(Number(b.dataset.stage)));
+ document.querySelectorAll('[data-copy-error]').forEach(b=>b.onclick=async()=>{
+  try{await navigator.clipboard.writeText(b.dataset.copyError);}
+  // The clipboard API needs a secure origin; a LAN address falls back to a hidden textarea.
+  catch{const area=Object.assign(document.createElement('textarea'),{value:b.dataset.copyError});document.body.append(area);area.select();document.execCommand('copy');area.remove();}
+  b.innerHTML=icon('check');b.title='已复制';setTimeout(()=>{b.innerHTML=icon('copy');b.title='复制错误';},1200);
+ });
  document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const [index,step]=b.dataset.step.split(':'),i=Number(index);const item=available(stepArtifacts[i][step])[0];if(item)openAsset(item,i,step);else{state.stage=i;state.selectedStep=step;state.asset=null;state.inspect=true;render();}});
  document.querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>openAsset(assetLookup.get(b.dataset.asset),Number(b.dataset.assetStage),b.dataset.assetStep));
  const toggle=(set,key)=>{set.has(key)?set.delete(key):set.add(key);render();};
