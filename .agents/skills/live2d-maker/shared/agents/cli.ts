@@ -97,6 +97,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   let processExitCode: number | null | undefined;
   let upstreamStatus: number | undefined;
   const eventErrors: unknown[] = [];
+  let refusal: string | undefined;
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
@@ -251,6 +252,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         let event: any; try { event = JSON.parse(line); } catch { await log.recordProtocol({ text: line }); continue; }
         await log.recordProtocol(event);
         if (event.type === 'error' || event.event === 'error') eventErrors.push(errorDetails(event));
+        if (event.type === 'system' && /^model_refusal/.test(event.subtype ?? '')) refusal = event.api_refusal_category ?? 'unknown';
         const completedText = agvTurn?.record(event);
         const id = event.session_id || event.conversation_id || event.step_update?.conversation_id;
         if (id) await reportId(id);
@@ -282,7 +284,10 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         // response carried through our gateway, a CLI killed before any result, or one of AGV's two Go
         // transport timeouts, which it reports only as the terminal error string.
         const status = final?.api_error_status ?? (model.harness === 'agv' ? upstreamStatus : undefined);
-        const info = typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final?.api_error_code ?? null } }
+        // Claude's safeguards refused the turn (stop_reason refusal), often a false flag on its own compacted history.
+        if (final?.stop_reason === 'refusal') refusal ??= final.stop_details?.category ?? 'unknown';
+        const info = refusal ? { refusal: { category: refusal } }
+          : typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final?.api_error_code ?? null } }
           : code === null && !final ? 'processKilled'
           : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout'
           // Any other terminal failure the CLI reported: unknown, so it waits and retries unless the text or subtype says otherwise.

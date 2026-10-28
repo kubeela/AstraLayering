@@ -67,6 +67,7 @@ export type AgentOptions = CodexOptions & {
 
 // Known errors fixed by a new session; each is tried once per run, and only when there is a session to replace.
 const sessionReplacements: Partial<Record<RecoverableAgentError, { reason: string; progress: string }>> = {
+  modelRefusal: { reason: '模型安全过滤拒绝了本会话', progress: '模型安全过滤拒绝了本会话（常为误判）' },
   unavailableSession: { reason: '原 thread/session 不可用', progress: '原会话不可用' },
   contextWindow: { reason: '上下文超出模型窗口', progress: '上下文超出模型窗口' },
   imageOverflow: { reason: '单次请求的图片数量或体积超限', progress: '单次请求的图片数量或体积超限' },
