@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import type { ShadowMode } from '../shared/shadow.ts';
@@ -57,21 +57,40 @@ export async function shadowInputFingerprint(input: ShadowInput, mode: ShadowMod
   return createHash('sha256').update(JSON.stringify({ version: 2, recipe: 1, mode, hashes,
     prompt: await readFile(prompt, 'utf8'), rules: await Promise.all(rules.map(p => fileHash(fileURLToPath(p)))) })).digest('hex');
 }
-// Prompt texts a completed branch may have been recorded with: the current one
-// and the one before the shared Krita environment line was removed.
-const earlierPrompts = (prompt: string) => [prompt, prompt.replace('{runtime_context}', '{krita_environment}\n\n{runtime_context}')];
+// Wording corrections that keep completed branches valid. Per file, newest
+// first: [current text, text before the correction], undone cumulatively.
+async function earlierTexts(file: URL, text: string): Promise<string[]> {
+  const revisions: Record<string, [string, string][]> = JSON.parse(await readFile(new URL('./text-revisions.json', import.meta.url), 'utf8'));
+  const texts = [text];
+  for (const [current, before] of revisions[basename(fileURLToPath(file))] ?? []) texts.push(texts.at(-1)!.replace(current, before));
+  return texts;
+}
+// Prompt texts a completed branch may have been recorded with: each wording
+// revision, with and without the shared Krita environment line removed since.
+const earlierPrompts = async (file: URL) => (await earlierTexts(file, await readFile(file, 'utf8')))
+  .flatMap(prompt => [prompt, prompt.replace('{runtime_context}', '{krita_environment}\n\n{runtime_context}')]);
+// Rule-file hash lists a completed branch may have been recorded with.
+async function earlierRules(rules: URL[]): Promise<string[][]> {
+  const sha = (text: string) => createHash('sha256').update(text).digest('hex');
+  const options = await Promise.all(rules.map(async file => {
+    const bytes = await readFile(file), text = bytes.toString('utf8');
+    const earlier = (await earlierTexts(file, text)).slice(1).map(sha);
+    return [createHash('sha256').update(bytes).digest('hex'), ...earlier];
+  }));
+  return options.reduce<string[][]>((lists, hashes) => lists.flatMap(list => hashes.map(hash => [...list, hash])), [[]]);
+}
 export async function compatibleShadowFingerprint(input: ShadowInput, recorded: string | undefined, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<boolean> {
   if (!recorded) return false;
-  const currentRules = await Promise.all(rules.map(p => fileHash(fileURLToPath(p))));
+  const ruleLists = await earlierRules(rules);
   const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter, ...input.structureFiles].map(fileHash));
   const recipes: { mode: ShadowMode; promptHash: string; rules: string[] }[] = JSON.parse(await readFile(new URL('./legacy-recipes.json', import.meta.url), 'utf8'));
   const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
-  return earlierPrompts(await readFile(prompt, 'utf8')).some(currentPrompt => {
+  return (await earlierPrompts(prompt)).some(currentPrompt => ruleLists.some(currentRules => {
     if (recorded === digest({ version: 2, recipe: 1, mode, hashes, prompt: currentPrompt, rules: currentRules })) return true;
     const oldPrompt = currentPrompt.replace('先读运行信息中列出的 inputs.json、production.md', '先读 references/inputs.json、production.md');
     const promptHash = createHash('sha256').update(oldPrompt).digest('hex');
     return recipes.some(recipe => recipe.mode === mode && recipe.promptHash === promptHash
       && JSON.stringify(recipe.rules.slice(0, currentRules.length)) === JSON.stringify(currentRules)
       && recorded === digest({ version: 1, mode, hashes, prompt: oldPrompt, ...(recipe.rules.length ? { rules: recipe.rules } : {}) }));
-  });
+  }));
 }
