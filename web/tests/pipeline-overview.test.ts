@@ -28,6 +28,13 @@ test('执行面板逐管线展示真实状态，完成与失败不再显示为�
   assert.doesNotMatch(html, /未运行/);
 });
 
+test('失败的管线卡片在概览上直接给出失败原因', () => {
+  const html = render(['done', 'failed'], [], false, false, undefined, [{ status: 'done' }, { status: 'failed', summary: 'ENAMETOOLONG\nstack' }]);
+  const card = (i: number) => html.match(new RegExp(`data-overview="${i}"[\\s\\S]*?</article>`))![0];
+  assert.match(card(1), /class="overview-reason status-error"[^>]*>ENAMETOOLONG<\/p>/);
+  assert.doesNotMatch(card(0), /overview-reason/);
+});
+
 test('section 的 Krita 运行时管线卡片显示徽标，结束后不再显示', () => {
   const krita = { pid: 4242, version: '5.3.4', startedAt: '2026-10-27T08:00:00.000Z' };
   const html = render(['running', 'pending'], [], true, true, undefined, [{ krita }, { krita: null }]);

@@ -176,6 +176,7 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .overview-card.selected{box-shadow:0 0 0 1px var(--accent)}
 .overview-stage{display:flex;align-items:center;gap:8px;text-align:left;padding:12px}
 .overview-stage h3{flex:1;font-size:14px;font-weight:600}
+.overview-reason{margin:0 12px 10px;padding:0;font-size:12px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
 .overview-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 12px 12px}
 .execution-state{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap;color:var(--muted)}
 .execution-state.done{color:#287c63}.execution-state.running{color:var(--purple)}.execution-state.failed{color:#b34b45}.execution-state.available{color:#598086}
