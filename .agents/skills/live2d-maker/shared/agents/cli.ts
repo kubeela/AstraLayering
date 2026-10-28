@@ -3,7 +3,8 @@ import { access, mkdir, readFile, writeFile, copyFile, rename, chmod, realpath, 
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve, delimiter, relative, isAbsolute } from 'node:path';
-import { spawn } from 'node:child_process';
+import spawn from 'cross-spawn';
+import { stopCliProcess } from './process.ts';
 import { createInterface } from 'node:readline';
 import { once } from 'node:events';
 import { randomUUID } from 'node:crypto';
@@ -33,9 +34,9 @@ const agvTransportTimeout = /net\/http: timeout awaiting response headers|stream
 
 // Agent CLIs run in their own process groups, so a signal to the worker's group misses them; a worker
 // stopping on a signal exits before each call's abort can follow up, and ends them here instead.
-const agentGroups = new Set<number>();
+const agentGroups = new Map<number, import('node:child_process').ChildProcess>();
 export function signalAgentProcesses(signal: NodeJS.Signals) {
-  for (const pid of agentGroups) try { process.kill(process.platform === 'win32' ? pid : -pid, signal); } catch {}
+  for (const child of agentGroups.values()) stopCliProcess(child, signal === 'SIGKILL');
 }
 
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
@@ -219,7 +220,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     options.progress?.(`开始：${task.name}；${model.harness} / ${model.model} / ${model.effort}；记录：${log.directory}`);
     signal.throwIfAborted();
     const child = spawn(executable, args, { cwd, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
-    if (child.pid) agentGroups.add(child.pid);
+    if (child.pid) agentGroups.set(child.pid, child);
     let spawnError: Error | undefined;
     child.on('error', error => { spawnError = error; });
     let childClosed = false;
@@ -227,9 +228,9 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     let killTimer: ReturnType<typeof setTimeout> | undefined;
     const abort = () => {
       if (childClosed) return;
-      try { if (process.platform === 'win32') child.kill('SIGTERM'); else if (child.pid) process.kill(-child.pid, 'SIGTERM'); } catch {}
+      stopCliProcess(child);
       if (!killTimer) { killTimer = setTimeout(() => {
-        try { if (process.platform === 'win32') child.kill('SIGKILL'); else if (child.pid) process.kill(-child.pid, 'SIGKILL'); } catch {}
+        stopCliProcess(child, true);
       }, 5000); killTimer.unref(); }
     };
     const nativeLog = model.harness === 'agv' ? followNativeLog(join(env.TMPDIR, 'native.log'), log, message => { spawnError = new Error(message); abort(); }) : undefined;
