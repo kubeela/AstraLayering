@@ -75,6 +75,8 @@ SVG 小图预览按实际可见内容居中取景，等比放大并保留边距�
 
 ![提示词与工具版本浏览](demo-screenshots/15-config-tools.png)
 
+**软件版本：** 标题栏显示发布标签版本（`.agents/skills/live2d-maker/shared/version.ts`：本仓库检出用 `git describe` 的 `vX.Y.Z` 标签，标签后的提交显示为 `+N`；无 `.git` 时用根 `package.json` 的 `version`）。`GET /api/version` 返回当前版本与最新标签，`/healthz` 也带 `version`。最新标签每天最多查询一次 GitHub tags API，结果缓存在 `.web/update-check.json`，失败一小时后再试且不提示；`ASTRA_LAYERING_UPDATE_CHECK=off` 关闭查询。任务 `run.json` 的 `createdWith`／`lastRunWith` 记录创建与最近一次配置运行的版本。发布流程：更新 `package.json` 版本与 `CHANGELOG.md`，合入 main 后打 `vX.Y.Z` 标签并推送，再用 `pnpm release:pack` 从该标签生成 `.release/AstraLayering-vX.Y.Z.zip`（按 `.gitattributes` 的 `export-ignore` 只带工作台、skill、展示图与 Pink Doll 示例）。
+
 ## 部署
 
 静态资源、API 和产物 URL 使用相对路径，可放在同源子路径中。例如反向代理将 `/ai-weapon-spirit/character-layering/*` 去掉前缀后转到 `127.0.0.1:4387`。宿主 workbench iframe 使用该入口即可，运行与上传沿用宿主访问范围。跨站写入拒绝，任务产物限制在所选目录内，符号链接不跟随，SVG 使用 sandbox 响应头。

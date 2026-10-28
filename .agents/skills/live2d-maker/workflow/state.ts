@@ -9,6 +9,7 @@ import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
 import { readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { readTaskLog } from './log.ts';
 import { currentSession } from '../shared/agents/step-session.ts';
+import { installedVersion } from '../shared/version.ts';
 
 export type TaskOptions = {
   name: string; dir?: string; image?: string; krita?: string;
@@ -26,6 +27,8 @@ export type TaskRun = {
   image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
+  // Release labels (shared/version.ts) of the version that created the task and that last configured a run.
+  createdWith?: string; lastRunWith?: string;
   // Pipelines running now; after a failed or stopped run, the ones that ended it.
   activePipelines?: PipelineId[];
   // Written before the lanes ran concurrently; readRun moves it into activePipelines.
@@ -160,6 +163,9 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs, standard,
     shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
   run.image = image ?? saved?.image;
+  const { label } = await installedVersion();
+  if (!saved) run.createdWith = label;
+  run.lastRunWith = label;
   run.krita = await taskKrita(options, directory, run, selected);
   for (const id of selected) run.pipelines[id] ??= { status: 'pending', updatedAt: now() };
   return run;

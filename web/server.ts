@@ -24,6 +24,8 @@ import { exportCompletedRun } from '../.agents/skills/live2d-maker/workflow/expo
 import { LayerCompositor } from './layer-compositor.ts';
 import { studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
+import { createUpdateCheck } from './update-check.ts';
+import { installedVersion } from '../.agents/skills/live2d-maker/shared/version.ts';
 import { projectDisplayName, saveProjectDisplayName, validateDisplayName } from './project-metadata.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -62,9 +64,10 @@ function options(value: any, dir: string): TaskOptions {
   return result;
 }
 export async function createWorkbench({ settingsPath = join(root, '.web/settings.json'), defaultDir = runsDirectory,
-  start = launch, environment = createEnvironmentConfig(), preflight = (options: TaskOptions) => preflightKrita(options, workflowKrita) }: {
+  start = launch, environment = createEnvironmentConfig(), preflight = (options: TaskOptions) => preflightKrita(options, workflowKrita),
+  updates = createUpdateCheck({ cachePath: join(dirname(settingsPath), 'update-check.json') }) }: {
   settingsPath?: string; defaultDir?: string; start?: typeof launch; environment?: ReturnType<typeof createEnvironmentConfig>;
-  preflight?: (options: TaskOptions) => Promise<unknown> } = {}) {
+  preflight?: (options: TaskOptions) => Promise<unknown>; updates?: ReturnType<typeof createUpdateCheck> } = {}) {
   async function validateDir(path: string) {
     if (typeof path !== 'string' || !isAbsolute(path)) throw new Error('运行目录必须是绝对路径');
     await mkdir(path, { recursive: true });
@@ -198,7 +201,8 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         }
         json({ error: 'Not found' }, 404); return;
       }
-      if (path === '/healthz') { json({ status: 'ok', application: 'astra-layering', mode: 'workbench' }); return; }
+      if (path === '/healthz') { json({ status: 'ok', application: 'astra-layering', mode: 'workbench', version: (await installedVersion()).label }); return; }
+      if (path === '/api/version') { json(await updates()); return; }
       if (path === '/api/settings') { json(settings); return; }
       if (path === '/api/config/environment') { json(await environment.read()); return; }
       if (path.startsWith('/api/config/')) { json(await configAPI(path, url.searchParams)); return; }
