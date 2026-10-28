@@ -286,7 +286,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         const status = final?.api_error_status ?? (model.harness === 'agv' ? upstreamStatus : undefined);
         // Claude's safeguards refused the turn (stop_reason refusal), often a false flag on its own compacted history.
         if (final?.stop_reason === 'refusal') refusal ??= final.stop_details?.category ?? 'unknown';
-        const info = refusal ? { refusal: { category: refusal } }
+        const info = refusal ? { refusal: { category: refusal, turns: final?.num_turns ?? null } }
           : typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final?.api_error_code ?? null } }
           : code === null && !final ? 'processKilled'
           : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout'

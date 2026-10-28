@@ -95,11 +95,14 @@ export class CodexAgents {
   }
 
   // Starts a new session for a known error that one fixes, once per kind per run; the old records and files stay.
+  // A refusal after the session worked for several turns is another one-off flag, so that session is replaced too;
+  // a refusal on its first turn means the prompt itself is refused, and it fails.
   private replacement(task: AgentTask) {
     const used = new Set<RecoverableAgentError>();
     return async (error: unknown, oldId: string | undefined): Promise<boolean> => {
       const kind = recoverableAgentError(error), replacement = kind && sessionReplacements[kind];
-      if (!replacement || !oldId || used.has(kind)) return false;
+      const progressed = kind === 'modelRefusal' && ((error as AgentCallError).info as { refusal: { turns: number | null } }).refusal.turns! > 1;
+      if (!replacement || !oldId || used.has(kind) && !progressed) return false;
       used.add(kind);
       await this.options.onThreadReplacement?.(oldId, replacement.reason);
       this.options.progress?.(`[${task.name}] ${replacement.progress}，保留旧记录与产物并新建会话。`);

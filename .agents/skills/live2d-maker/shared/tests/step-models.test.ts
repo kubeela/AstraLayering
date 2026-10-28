@@ -248,11 +248,12 @@ const args=process.argv.slice(2), kind=args.includes('--mcp-config')?'claude':'a
 const resumeFlag=kind==='claude'?'--resume':'--conversation';
 const resumed=args.includes(resumeFlag)?args[args.indexOf(resumeFlag)+1]:undefined;
 if(resumed==='missing'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'session not found'}));process.exit(1);}
-const refuse=()=>{console.log(JSON.stringify({type:'system',subtype:'model_refusal_no_fallback',session_id:resumed||'r',api_refusal_category:'reasoning_extraction'}));console.log(JSON.stringify({type:'result',subtype:'success',is_error:true,stop_reason:'refusal',stop_details:{type:'refusal',category:'reasoning_extraction'},api_error_status:null,session_id:resumed||'r',result:"API Error: Opus 5.5's safeguards flagged this message. Try rephrasing the request in a new session or change your model."}));process.exit(1);}
+const refuse=(turns=1)=>{console.log(JSON.stringify({type:'system',subtype:'model_refusal_no_fallback',session_id:resumed||'r',api_refusal_category:'reasoning_extraction'}));console.log(JSON.stringify({type:'result',subtype:'success',is_error:true,stop_reason:'refusal',stop_details:{type:'refusal',category:'reasoning_extraction'},api_error_status:null,num_turns:turns,session_id:resumed||'r',result:"API Error: Opus 5.5's safeguards flagged this message. Try rephrasing the request in a new session or change your model."}));process.exit(1);}
 if(resumed==='refused')refuse();
 if(resumed==='full'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'Prompt is too long'}));process.exit(1);}
 let input='';for await(const chunk of process.stdin)input+=chunk;
 if(input.includes('总是拒绝'))refuse();
+if(input.includes('跑一阵被拒')){const count=join(process.cwd(),'refusals');let n=0;try{n=Number(await readFile(count,'utf8'));}catch{}if(n<2){await writeFile(count,String(n+1));refuse(40);}}
 const config=kind==='claude'?args[args.indexOf('--mcp-config')+1]:join(process.env.ANTIGRAVITY_GEMINI_DIR,'config/mcp_config.json');
 const registry=JSON.parse(await readFile(config,'utf8')).mcpServers.layering.env;
 const rpc=async(method,params)=>{const response=await fetch(registry.LAYERING_MCP_URL,{method:'POST',headers:{authorization:'Bearer '+registry.LAYERING_MCP_TOKEN},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});return (await response.json()).result;};
@@ -380,16 +381,33 @@ test('a CLI session refused by model safeguards is replaced once from the recove
     assert.equal(await readFile(join(cwd, 'keep.svg'), 'utf8'), 'existing');
   } finally { await session.close(); }
 
-  // Refused again in the new session: not a one-off false flag, so it fails at once with the CLI's own text.
+  // The new session is refused on its first turn: the recovery prompt itself is refused, so it fails at once with the CLI's own text.
   const again: string[] = [];
   const retrying = new CodexAgents({ environment: settings, cwd, logDirectory: join(cwd, 'agents'),
     runtime: new AgentRuntime(1, async () => assert.fail('a refusal must not wait')),
     onThreadReplacement: async (_id, reason) => { again.push(reason); } }).createSession('refused');
   try {
     await assert.rejects(retrying.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '继续任务', recoveryPrompt: '从头完成任务，总是拒绝' }),
-      (error: AgentCallError) => /safeguards flagged/.test(error.message) && JSON.stringify(error.info) === JSON.stringify({ refusal: { category: 'reasoning_extraction' } }));
+      (error: AgentCallError) => /safeguards flagged/.test(error.message) && JSON.stringify(error.info) === JSON.stringify({ refusal: { category: 'reasoning_extraction', turns: 1 } }));
     assert.deepEqual(again, ['模型安全过滤拒绝了本会话']);
   } finally { await retrying.close(); }
+});
+
+test('a new session refused after working for a while is replaced again', async t => {
+  const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
+  await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_part_review_model: 'claude-sonnet-5-5-high' }, root);
+  const reasons: string[] = [];
+  const agents = new CodexAgents({ environment: settings, cwd, logDirectory: join(cwd, 'agents'),
+    runtime: new AgentRuntime(1, async () => assert.fail('a refusal must not wait')),
+    onThreadReplacement: async (_id, reason) => { reasons.push(reason); } });
+  const session = agents.createSession();
+  try {
+    // The first two sessions each run 40 turns before a refusal; the third finishes.
+    const result = await session.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '跑一阵被拒', recoveryPrompt: '从头完成任务，跑一阵被拒' });
+    assert.equal(result.text, '完成');
+    assert.deepEqual(reasons, ['模型安全过滤拒绝了本会话', '模型安全过滤拒绝了本会话']);
+  } finally { await session.close(); }
 });
 
 test('model/effort changes resume within a harness, switching harness creates a recorded session and retains files', async t => {
