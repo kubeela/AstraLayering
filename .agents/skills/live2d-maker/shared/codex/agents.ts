@@ -76,12 +76,12 @@ export class CodexAgents {
   }
 
   private async invoke<T>(task: AgentTask, signal: AbortSignal, operation: () => Promise<T>): Promise<T> {
-    return this.runtime.run(operation, { signal, onRetry: async ({ attempt, nextAttempt, delayMs, error }) => {
+    return this.runtime.run(operation, { signal, onRetry: async ({ attempt, nextAttempt, delayMs, error, rateLimited }) => {
       const failure = error as AgentCallError;
-      this.options.progress?.(`[${task.name}] 临时服务错误；${delayMs / 1000} 秒后第 ${nextAttempt} 次尝试，沿用会话与已有产物：${failure.message}`);
+      this.options.progress?.(`[${task.name}] ${rateLimited ? '限流等待（429），保留并发位置' : '临时服务错误'}；${delayMs / 1000} 秒后第 ${nextAttempt} 次尝试，沿用会话与已有产物：${failure.message}`);
       if (failure.logDirectory) await AgentLog.retry(failure.logDirectory,
-        { attempt, nextAttempt, delayMs, error: failure.message });
-      await this.options.onRetry?.({ attempt, nextAttempt, delayMs, error });
+        { attempt, nextAttempt, delayMs, error: failure.message, rateLimited });
+      await this.options.onRetry?.({ attempt, nextAttempt, delayMs, error, rateLimited });
     } });
   }
 

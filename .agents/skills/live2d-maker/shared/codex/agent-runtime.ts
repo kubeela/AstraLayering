@@ -36,23 +36,33 @@ export function blockedAgentError(error: unknown): boolean {
 const retryableCodes = new Set(['serverOverloaded', 'internalServerError', 'rateLimitExceeded', 'responseStreamDisconnected',
   'responseStreamConnectionFailed', 'httpConnectionFailed', 'responseTooManyFailedAttempts', 'apiError', 'processKilled', 'transportTimeout']);
 
+const errorCode = (info: unknown) => typeof info === 'string' ? info : info && typeof info === 'object' ? Object.keys(info)[0] : undefined;
+const httpStatus = (info: unknown, code: string) => info && typeof info === 'object' ? (info as Record<string, any>)[code]?.httpStatusCode : undefined;
+
 export function retryableAgentError(error: unknown): boolean {
   // 只按调用通道给出的结构化错误码判断；没有错误码的错误（本地校验、工具、文件、模型回复）一律不重试。
   if (!(error instanceof AgentCallError) || blockedAgentError(error)) return false;
   const info = error.info;
-  const code = typeof info === 'string' ? info : info && typeof info === 'object' ? Object.keys(info)[0] : undefined;
+  const code = errorCode(info);
   if (!code || !retryableCodes.has(code)) return false;
   // 文本只能否决重试、不能触发重试：结构化 429 也可能是额度耗尽或单次输入图数上限，重试循环不设上限。
   if (/quota|usage limit|credits|billing|spend limit|unauthori[sz]ed|authentication|context.*(?:length|window)|invalid.*(?:request|input)/i.test(error.message)) return false;
   const imageCountLimit = /too many (?:input )?images|(?:maximum|max|limit).{0,30}\b\d+\b.{0,12}images|\bimages?\b.{0,20}(?:limit|maximum)/i.test(error.message);
   const throughputLimit = /\brate[\s_-]*limit\b|\bper\s+(?:second|minute|hour|day)\b/i.test(error.message);
   if (imageCountLimit && (!throughputLimit || /\bper\s+request\b/i.test(error.message))) return false;
-  const status = info && typeof info === 'object' ? (info as Record<string, any>)[code]?.httpStatusCode : undefined;
+  const status = httpStatus(info, code);
   // 401/403/400 等不是重连就能解决的问题；429、5xx 和无 HTTP 状态的断流才重试。
   return status == null ? code !== 'apiError' : status === 429 || (status >= 500 && status <= 599);
 }
 
-export type AgentRetry = { attempt: number; nextAttempt: number; delayMs: number; error: unknown };
+// A retryable 429: the service is throttling, the call itself is fine. The page shows it as 限流等待.
+export function rateLimitedAgentError(error: unknown): boolean {
+  if (!(error instanceof AgentCallError)) return false;
+  const code = errorCode(error.info);
+  return code === 'rateLimitExceeded' || !!code && httpStatus(error.info, code) === 429;
+}
+
+export type AgentRetry = { attempt: number; nextAttempt: number; delayMs: number; error: unknown; rateLimited: boolean };
 type Waiter = { start(): void; cancel(): void };
 
 // Agent slots shared by every pipeline process of one task. The total scheduler
@@ -136,7 +146,7 @@ export class AgentRuntime {
         // Equal jitter: half the step is fixed, half random, so calls that failed together do not retry together.
         const step = Math.min(retryDelays.initial * 2 ** Math.min(attempt - 1, 4), retryDelays.maximum);
         const delayMs = Math.round(step / 2 + this.random() * step / 2);
-        await options.onRetry?.({ attempt, nextAttempt: attempt + 1, delayMs, error });
+        await options.onRetry?.({ attempt, nextAttempt: attempt + 1, delayMs, error, rateLimited: rateLimitedAgentError(error) });
         await this.wait(delayMs, options.signal);
       }
     } finally { shared?.(); local(); }

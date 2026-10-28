@@ -4,6 +4,9 @@ import { pipelineIds } from '../paths.ts';
 import { toTaskPath, toTaskPaths } from '../task-paths.ts';
 import type { ThreadEvent } from '@openai/codex-sdk';
 
+// Written into a call's record directory while it waits out a 429; see AgentLog.retry.
+export const rateLimitWaitFile = 'rate-limit-wait.json';
+
 function readable(value: unknown): string {
   return JSON.stringify(value, function (key, item) {
     if (key === 'result' && this?.type === 'imageGeneration' && typeof item === 'string' && item) {
@@ -120,10 +123,15 @@ export class AgentLog {
     return log;
   }
 
-  static async retry(directory: string, event: { attempt: number; nextAttempt: number; delayMs: number; error: string }) {
-    const timestamp = new Date().toISOString();
+  static async retry(directory: string, event: { attempt: number; nextAttempt: number; delayMs: number; error: string; rateLimited?: boolean },
+    now = new Date()) {
+    const timestamp = now.toISOString();
     await appendFile(join(directory, 'events.jsonl'), JSON.stringify({ timestamp, event: { type: 'retry.scheduled', ...event } }) + '\n');
-    await appendFile(workflowLogPath(directory), `[${timestamp}] [${basename(directory)}] 临时错误，${event.delayMs / 1000} 秒后第 ${event.nextAttempt} 次尝试：${event.error}\n`);
+    // The page reads this to show 限流等待 until the next attempt; a later 429 overwrites it, and the
+    // wait ends on its own when `until` passes, so nothing removes it.
+    if (event.rateLimited) await writeFile(join(directory, rateLimitWaitFile), JSON.stringify({ reason: 'rate-limit', attempt: event.attempt,
+      nextAttempt: event.nextAttempt, since: timestamp, until: new Date(now.getTime() + event.delayMs).toISOString(), error: event.error }, null, 2) + '\n');
+    await appendFile(workflowLogPath(directory), `[${timestamp}] [${basename(directory)}] ${event.rateLimited ? '限流等待（429），保留并发位置' : '临时错误'}，${event.delayMs / 1000} 秒后第 ${event.nextAttempt} 次尝试：${event.error}\n`);
   }
 
   async record(event: ThreadEvent): Promise<string> {

@@ -254,8 +254,8 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
           if (!fresh) await saveSession({ handoff: session.handoff }, reason);
         },
         onRetry: async retry => {
-          options.progress?.(`${step.id} ${phase}：临时服务错误，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
-          await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
+          options.progress?.(`${step.id} ${phase}：${retry.rateLimited ? '限流等待（429），保留并发位置' : '临时服务错误'}，${retry.delayMs / 1000} 秒后重试，沿用原 thread 与产物。`);
+          await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, retry: retry.nextAttempt, delayMs: retry.delayMs, rateLimited: retry.rateLimited, error: retry.error instanceof Error ? retry.error.message : String(retry.error) }) + '\n');
         },
         onEvent: async event => {
           if (event.type === 'item.completed' && event.item.type === 'agent_message') lastAgentMessage = event.item.text;

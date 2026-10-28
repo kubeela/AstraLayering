@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { displayStatus, groupArtifacts, groupPhases, groupPreviewArtifacts, groupSummary, statusNames, stepArtifacts } from '../progress.js';
 
-test('normal progress has four labels; a partly finished group remains available', () => {
-  assert.deepEqual(Object.values(statusNames), ['待执行', '进行中', '已有产物', '已完成', '执行失败']);
+test('normal progress labels, with 限流等待 apart from running; a partly finished group remains available', () => {
+  assert.deepEqual(Object.values(statusNames), ['待执行', '进行中', '限流等待', '已有产物', '已完成', '执行失败']);
   const group = { webPhases: Object.fromEntries(groupPhases.map(([id]) => [id, 'pending'])) };
   assert.equal(groupSummary(group).text, '待执行');
   group.webPhases.outline = 'done'; assert.equal(groupSummary(group).text, '已有产物');
-  group.webPhases.review = 'running'; assert.equal(groupSummary(group).text, '进行中');
+  group.webPhases.review = 'throttled'; assert.equal(groupSummary(group).text, '限流等待');
+  group.webPhases.completion = 'running'; assert.equal(groupSummary(group).text, '进行中');
   group.webPhases = Object.fromEntries(groupPhases.map(([id]) => [id, 'done']));
   assert.equal(groupSummary(group).text, '已完成');
 });

@@ -1,7 +1,10 @@
 import { lstat, readFile } from 'node:fs/promises';
 import { safePath } from './files.ts';
+import { rateLimitWaitFile } from '../.agents/skills/live2d-maker/shared/codex/agent-log.ts';
 
-export type AgentCall = { name: string; step: string; request: string; mtime: number; finished: boolean; failed: boolean };
+// throttledUntil: the call holds its slot while waiting out a 429 until then.
+export type AgentCall = { name: string; step: string; request: string; mtime: number; finished: boolean; failed: boolean; throttledUntil?: number };
+export const throttled = (call: AgentCall, now = Date.now()) => !call.finished && (call.throttledUntil ?? 0) > now;
 const requests = new Map<string, { version: string; name: string; step: string }>();
 
 // A request is recorded after acquiring a slot. Read these records, never infer activity from a draft.
@@ -26,7 +29,10 @@ export async function currentAgentCalls(directory: string, pipeline: string, fil
         const result = request.replace(/request.json$/, 'result.json'), finished = files.has(result);
         const failed = readFailures && finished
           ? JSON.parse(await readFile(await safePath(directory, result), 'utf8')).status === 'failed' : false;
-        calls.push({ name: cached.name, step: cached.step, request, mtime: info.mtimeMs, finished, failed });
+        const wait = request.replace(/request.json$/, rateLimitWaitFile);
+        const throttledUntil = !finished && files.has(wait)
+          ? Date.parse(JSON.parse(await readFile(await safePath(directory, wait), 'utf8')).until) || undefined : undefined;
+        calls.push({ name: cached.name, step: cached.step, request, mtime: info.mtimeMs, finished, failed, ...(throttledUntil ? { throttledUntil } : {}) });
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(request + ': ' + String(error));
       }

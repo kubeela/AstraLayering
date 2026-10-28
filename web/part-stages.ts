@@ -2,9 +2,9 @@ import { createHash } from 'node:crypto';
 import { initialStepId } from '../.agents/skills/live2d-maker/shared/part/part-steps.ts';
 import type { StepStatus } from '../.agents/skills/live2d-maker/shared/step-chain.ts';
 import { validateOcclusionDocument } from '../.agents/skills/live2d-maker/shared/part/occlusion-plan.ts';
-import type { AgentCall } from './agent-progress.ts';
+import { throttled, type AgentCall } from './agent-progress.ts';
 
-type Status = 'pending' | 'running' | 'available' | 'done' | 'failed';
+type Status = 'pending' | 'running' | 'throttled' | 'available' | 'done' | 'failed';
 const stepPhases: Record<string, string> = {
   part_pose_judgment: 'standard', part_standardize: 'standard', part_reference_judgment: 'simplified',
   part_simplify: 'simplified', part_base_subject: 'base', clothing_preparation: 'clothing',
@@ -69,9 +69,10 @@ export async function partStages(directory: string, pipeline: string, groups: an
     }
     if (!active) continue;
     if (call.finished) continue;
-    states[phase] = 'running'; messages[phase] = call.name;
+    const status = throttled(call) ? 'throttled' : 'running';
+    states[phase] = status; messages[phase] = call.name;
     if (['standard', 'simplified', 'base', 'clothing'].includes(phase)) {
-      states.preparation = 'running'; messages.preparation = call.name;
+      states.preparation = status; messages.preparation = call.name;
     }
   }
   return { states, messages };

@@ -282,7 +282,7 @@ function groupCycle(index) {
 }
 function statusMark(status) {
  const value=displayStatus(status);
- return `<span class="phase-mark ${value}" title="${statusLabel(status)}" aria-label="${statusLabel(status)}">${value==='done'?icon('check'):value==='running'?'<i></i>':value==='failed'?'<b class="failure-exclamation" aria-hidden="true">!</b>':icon(value==='available'?'image':'clock')}</span>`;
+ return `<span class="phase-mark ${value}" title="${statusLabel(status)}" aria-label="${statusLabel(status)}">${value==='done'?icon('check'):value==='running'||value==='throttled'?'<i></i>':value==='failed'?'<b class="failure-exclamation" aria-hidden="true">!</b>':icon(value==='available'?'image':'clock')}</span>`;
 }
 function selectedStep() {
  const all=nodes=>nodes.flatMap(node=>[node,...all(node.children)]);
@@ -348,7 +348,7 @@ function stepNode(index,step,nested=false) {
  ${context}
  ${reportEvidence(index,step.id)}
  ${artifacts(step.id==='mask'&&stages[index].id==='shadow'?[...rasterItems(index,step.id),...shadowInspectionArtifacts(data.files)]:rasterItems(index,step.id),index,step.id)}
- ${data.pipelines[index]?.messages[step.id]?(step.status==='running'?`<p class="step-activity">${esc(data.pipelines[index].messages[step.id])}</p>`:errorBox(data.pipelines[index].messages[step.id])):''}
+ ${data.pipelines[index]?.messages[step.id]?(['running','throttled'].includes(step.status)?`<p class="step-activity">${esc(data.pipelines[index].messages[step.id])}</p>`:errorBox(data.pipelines[index].messages[step.id])):''}
  ${processArtifacts(index,step)}
  </div>
  `}
