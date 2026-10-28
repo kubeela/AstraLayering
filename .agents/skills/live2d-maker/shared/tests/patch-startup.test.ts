@@ -5,7 +5,8 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { setTimeout as delay } from 'node:timers/promises';
-import { ensurePatchedCodex, codexCommit } from '../../patches/codex/build.ts';
+import { execFileSync } from 'node:child_process';
+import { ensurePatchedCodex, codexCommit, pinnedGit } from '../../patches/codex/build.ts';
 import { withRust, rustVersion } from '../../patches/codex/rust.ts';
 import { runCommand, watchOutput, type Command } from '../../patches/codex/process.ts';
 
@@ -46,6 +47,41 @@ test('并发自动构建只运行一次，校验缓存，损坏后重建，失�
   assert.equal(await readFile(results[0], 'utf8'), 'binary');
   assert.equal(await readFile(join(cache, 'bin', process.platform === 'win32' ? 'codex-code-mode-host.exe' : 'codex-code-mode-host'), 'utf8'), 'companion');
 });
+test('源码按固定 git 设置检出，不受用户换行与长路径配置影响；无法打补丁的旧缓存重新获取一次', async t => {
+  const root = await fixture(t), sdkHost = join(root, 'sdk-host'); await writeFile(sdkHost, 'companion');
+  // The user's own settings lose to the pinned ones; earlier GIT_CONFIG_* entries are kept.
+  const global = join(root, 'gitconfig');
+  await writeFile(global, '[core]\n\tautocrlf = true\n\teol = crlf\n\tlongpaths = false\n\tattributesFile = ' + join(root, 'attrs') + '\n');
+  const env = pinnedGit({...process.env, GIT_CONFIG_GLOBAL: global, GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'http.proxy', GIT_CONFIG_VALUE_0: 'http://proxy'});
+  const read = (key: string) => execFileSync('git', ['config', '--get', key], {env, encoding: 'utf8'}).trim();
+  assert.deepEqual(['core.autocrlf', 'core.eol', 'core.longpaths', 'core.attributesFile', 'http.proxy'].map(read), ['false', 'lf', 'true', '', 'http://proxy']);
+  const fetched: string[] = []; let checks = 0;
+  const run: Command = async (command, args, options) => {
+    if (command === 'git') {
+      assert.equal(options.env?.GIT_CONFIG_KEY_0, 'core.autocrlf');
+      if (args[0] === 'clone') { fetched.push(args.at(-1)!); await mkdir(args.at(-1)!, {recursive: true}); }
+      if (args[0] === 'rev-parse') return codexCommit;
+      if (args.includes('--reverse')) throw new Error('not applied');
+      if (args.includes('--check') && checks++ < 2) throw new Error('patch does not apply');
+    } else if (command === 'cargo') {
+      const target = join(args[args.indexOf('--target-dir') + 1], 'dev-small');
+      await mkdir(target, {recursive: true});
+      await writeFile(join(target, process.platform === 'win32' ? 'codex.exe' : 'codex'), 'binary');
+    } else return JSON.stringify(capabilities);
+    return '';
+  };
+  const services = {run, companion: () => sdkHost, rust: (async (env, action) => action({cargo: 'cargo', prefix: [], env})) as typeof withRust};
+  const opts = {root: join(root, 'cache'), env: {PATH: 'fixture'}, progress() {}};
+  // A fresh checkout that rejects the patch is a real failure; its source stays, and the next run that finds it
+  // unpatchable fetches it again.
+  await assert.rejects(ensurePatchedCodex(opts, services), /自动构建失败/);
+  assert.equal(fetched.length, 1);
+  const messages: string[] = [];
+  await ensurePatchedCodex({...opts, progress: message => messages.push(message)}, services);
+  assert.equal(fetched.length, 2); assert.ok(messages.some(message => message.includes('重新获取')));
+  await ensurePatchedCodex(opts, services); assert.equal(fetched.length, 2);
+});
+
 test('匹配 Rust 时复用；构建失败不额外下载且不改原环境', async () => {
   const env = {PATH: '/fixture', CARGO_HOME: '/user/cargo'}, before = {...env}; let downloads = 0, runs = 0;
   await assert.rejects(withRust(env, async tc => { assert.equal(tc.env, env); throw new Error('build failed'); }, () => {},

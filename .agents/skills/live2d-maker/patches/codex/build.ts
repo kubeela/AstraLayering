@@ -21,6 +21,20 @@ const compilers: Partial<Record<NodeJS.Platform, string>> = {
   win32: 'Windows 需要安装 Visual Studio Build Tools 并勾选「使用 C++ 的桌面开发」（MSVC 与 Windows SDK），装好后续跑；路径过长时可把项目放到更短的目录',
   darwin: 'macOS 需要 Xcode 命令行工具（xcode-select --install）',
   linux: 'Linux 需要 gcc 或 clang 等 C/C++ 编译工具' };
+// The build must not depend on the user's git setup. These settings decide what lands on disk, so they are
+// pinned for our git commands only (GIT_CONFIG_COUNT, git 2.31+; no config file is written): LF as committed,
+// which the patch and the sources compiled into the binary expect, whatever autocrlf, eol or a global
+// attributes file say; and paths past Windows' 260 characters, since Codex nests deep. Proxy, certificate and
+// credential settings stay the user's, because the network may need them. A dead connection (below 1 KB/s
+// for 10 minutes) ends a clone instead of hanging.
+export const gitSettings: [string, string][] = [['core.autocrlf', 'false'], ['core.eol', 'lf'], ['core.safecrlf', 'false'],
+  ['core.attributesFile', ''], ['core.longpaths', 'true'], ['http.lowSpeedLimit', '1000'], ['http.lowSpeedTime', '600']];
+export function pinnedGit(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  const start = Number.parseInt(env.GIT_CONFIG_COUNT ?? '', 10) || 0;
+  const pinned: NodeJS.ProcessEnv = { ...env, GIT_CONFIG_COUNT: String(start + gitSettings.length) };
+  gitSettings.forEach(([key, value], index) => { pinned[`GIT_CONFIG_KEY_${start + index}`] = key; pinned[`GIT_CONFIG_VALUE_${start + index}`] = value; });
+  return pinned;
+}
 function companion(): string {
   const platform = `${process.platform}-${process.arch}`, triple = platforms[platform];
   if (!triple) throw new Error(`未支持的 SDK 平台：${platform}`);
@@ -41,6 +55,7 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
   const progress = options.progress ?? (message => console.error(message));
   const env = options.env ?? process.env, log = join(root, 'build.log');
   const run = services.run ?? runCommand;
+  const gitEnv = pinnedGit(env);
   async function cached() {
     try {
       const hashes = JSON.parse(await readFile(receipt, 'utf8'));
@@ -63,29 +78,42 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
     if (!waiting) options.building?.();
     progress(`已开启 Codex 补丁功能，正在自动构建并缓存；日志：${log}`);
     const source = join(root, 'source');
-    const exec = (command: string, args: string[], cwd = root, watch = {}) => run(command, args, { cwd, env, log, ...watch });
-    // The patch has LF context, and Codex sources nest deeper than Windows' 260-character default.
-    const git = ['-c', 'core.autocrlf=false', '-c', 'core.longpaths=true'];
-    if (!existsSync(source)) {
-      if (options.source) await exec('git', [...git, '-C', resolve(options.source), 'worktree', 'add', '--detach', source, codexCommit],
+    const exec = (command: string, args: string[], cwd = root, watch = {}) =>
+      run(command, args, { cwd, env: command === 'git' ? gitEnv : env, log, ...watch });
+    async function checkout() {
+      if (options.source) await exec('git', ['-C', resolve(options.source), 'worktree', 'add', '--detach', source, codexCommit],
         root, watchOutput('检出 Codex 源码', progress, log));
       else {
         const stage = join(root, 'source-clone');
         await rm(stage, { recursive: true, force: true });
-        // A dead connection (below 1 KB/s for 10 minutes) ends the clone instead of hanging forever.
-        await exec('git', ['clone', ...git, '-c', 'http.lowSpeedLimit=1000', '-c', 'http.lowSpeedTime=600', '--progress', '--no-checkout',
-          '--depth', '1', '--branch', 'rust-v0.161.0', 'https://github.com/openai/codex.git', stage], root, watchOutput('下载 Codex 源码', progress, log));
+        await exec('git', ['clone', '--progress', '--no-checkout', '--depth', '1', '--branch', 'rust-v0.161.0',
+          'https://github.com/openai/codex.git', stage], root, watchOutput('下载 Codex 源码', progress, log));
         await exec('git', ['checkout', '--progress', '--detach', codexCommit], stage, watchOutput('检出 Codex 源码', progress, log));
         await rename(stage, source);
       }
     }
+    let fresh = !existsSync(source);
+    if (fresh) await checkout();
     if (await exec('git', ['rev-parse', 'HEAD'], source) !== codexCommit) throw new Error('补丁缓存的源码版本不符；未覆盖现有目录。');
     const stamp = join(root, 'applied.patch');
     if (!existsSync(stamp)) {
       // Recover an interruption after git apply and before writing its receipt.
       let applied = false;
       try { await exec('git', ['apply', '--reverse', '--check', patch], source); applied = true; } catch {}
-      if (!applied) { await exec('git', ['apply', '--check', patch], source); await exec('git', ['apply', patch], source); }
+      if (!applied) {
+        try { await exec('git', ['apply', '--check', patch], source); }
+        catch (error) {
+          // An unpatched source left by an earlier run (say, checked out with other line endings) is fetched
+          // again once; a fresh checkout that still rejects the patch is a real failure.
+          if (fresh) throw error;
+          progress('缓存中的 Codex 源码无法应用补丁，正在重新获取。');
+          if (options.source) await exec('git', ['-C', resolve(options.source), 'worktree', 'remove', '--force', source]);
+          else await rm(source, { recursive: true, force: true });
+          await checkout();
+          await exec('git', ['apply', '--check', patch], source);
+        }
+        await exec('git', ['apply', patch], source);
+      }
       await writeFile(stamp, bytes);
     } else if (!(await readFile(stamp)).equals(bytes)) throw new Error('补丁缓存不一致；未覆盖现有源码。');
     await (services.rust ?? withRust)(env, async toolchain => {
