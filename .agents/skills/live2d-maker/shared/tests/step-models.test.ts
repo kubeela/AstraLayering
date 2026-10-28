@@ -251,10 +251,13 @@ const resumed=args.includes(resumeFlag)?args[args.indexOf(resumeFlag)+1]:undefin
 if(resumed==='missing'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'session not found'}));process.exit(1);}
 const refuse=(turns=1)=>{console.log(JSON.stringify({type:'system',subtype:'model_refusal_no_fallback',session_id:resumed||'r',api_refusal_category:'reasoning_extraction'}));console.log(JSON.stringify({type:'result',subtype:'success',is_error:true,stop_reason:'refusal',stop_details:{type:'refusal',category:'reasoning_extraction'},api_error_status:null,num_turns:turns,session_id:resumed||'r',result:"API Error: Opus 5.5's safeguards flagged this message. Try rephrasing the request in a new session or change your model."}));process.exit(1);}
 if(resumed==='refused')refuse();
-if(resumed==='full'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'Prompt is too long'}));process.exit(1);}
+// Claude reports tool_use items and "Prompt is too long"; AGV reports tool steps after its user input and Gemini's token count text.
+const overflow=(tools,id=randomUUID())=>{if(kind==='claude'){for(let i=0;i<tools;i++)console.log(JSON.stringify({type:'assistant',session_id:id,message:{content:[{type:'tool_use',id:'t'+i,name:'Read',input:{}}]}}));console.log(JSON.stringify({type:'result',is_error:true,session_id:id,error:'Prompt is too long'}));}
+else{const step=(i,type)=>console.log(JSON.stringify({event:'step_update',step_update:{conversation_id:id,step_index:i,step_type:type,state:'DONE',text_delta:''}}));step(0,'user_input');step(1,'system_message');step(2,'checkpoint');for(let i=0;i<tools;i++)step(i+3,'tool');console.log(JSON.stringify({event:'result',result:{conversation_id:id,status:'ERROR',error:'The input token count (1200000) exceeds the maximum number of tokens allowed (1048576)'}}));}
+process.exit(1);};
+if(resumed==='full')overflow(0,resumed);
 let input='';for await(const chunk of process.stdin)input+=chunk;
 if(input.includes('总是拒绝'))refuse();
-const overflow=tools=>{const id=randomUUID();for(let i=0;i<tools;i++)console.log(JSON.stringify({type:'assistant',session_id:id,message:{content:[{type:'tool_use',id:'t'+i,name:'Read',input:{}}]}}));console.log(JSON.stringify({type:'result',is_error:true,session_id:id,error:'Prompt is too long'}));process.exit(1);};
 if(input.includes('总是超窗'))overflow(0);
 if(input.includes('用工具后超窗')){const count=join(process.cwd(),'overflows');let n=0;try{n=Number(await readFile(count,'utf8'));}catch{}if(n<2){await writeFile(count,String(n+1));overflow(3);}}
 if(input.includes('跑一阵被拒')){const count=join(process.cwd(),'refusals');let n=0;try{n=Number(await readFile(count,'utf8'));}catch{}if(n<2){await writeFile(count,String(n+1));refuse(40);}}
@@ -365,13 +368,14 @@ test('a CLI session over its context window is replaced once from the recovery p
   } finally { await session.close(); }
 });
 
-test('a new session over its context window on its first turn fails; one that called tools is replaced again', async t => {
+for (const [harness, model, overflowed] of [['claude', 'claude-sonnet-5-5-high', /Prompt is too long/], ['agv', 'gemini-4-argon-high', /input token count/]] as const)
+test(`a new ${harness} session over its context window on its first turn fails; one that called tools is replaced again`, async t => {
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
   await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
-  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agent_part_review_model: 'claude-sonnet-5-5-high' }, root);
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli, layering_agent_part_review_model: model }, root);
   await mkdir(join(cwd, 'agents/old-data'), { recursive: true });
   await mkdir(join(cwd, 'agents/old-workspace'), { recursive: true });
-  await writeFile(join(cwd, 'agents/sessions.json'), JSON.stringify({ full: { harness: 'claude', data: join(cwd, 'agents/old-data'), workspace: join(cwd, 'agents/old-workspace') } }));
+  await writeFile(join(cwd, 'agents/sessions.json'), JSON.stringify({ full: { harness, data: join(cwd, 'agents/old-data'), workspace: join(cwd, 'agents/old-workspace') } }));
   const reasons: string[] = [];
   const agents = new CodexAgents({ environment: settings, cwd, logDirectory: join(cwd, 'agents'),
     runtime: new AgentRuntime(1, async () => assert.fail('a known error must not wait')),
@@ -380,7 +384,7 @@ test('a new session over its context window on its first turn fails; one that ca
   const failing = agents.createSession('full');
   try {
     await assert.rejects(failing.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '继续任务', recoveryPrompt: '从头完成任务，总是超窗' }),
-      /Prompt is too long/);
+      overflowed);
     assert.deepEqual(reasons, ['上下文超出模型窗口']);
   } finally { await failing.close(); }
   // Sessions that overflow after tool calls accumulated history; each is replaced and the third finishes.

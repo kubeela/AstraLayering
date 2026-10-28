@@ -48,9 +48,9 @@ export class AgvTurn {
     if (last?.type === 'agent_response' && last.text.trim()) return last.text;
   }
 
-  // Steps of this turn other than replies, errors and the finish marker: the tool calls it made.
+  // The tool calls of this turn; system messages, checkpoints, replies and errors are not work done.
   get toolSteps(): number {
-    return [...this.steps.values()].filter(step => !['agent_response', 'error_message', 'finish'].includes(step.type)).length;
+    return [...this.steps.values()].filter(step => step.type === 'tool').length;
   }
 
   get userStepIndex(): number | undefined { return this.boundary; }
