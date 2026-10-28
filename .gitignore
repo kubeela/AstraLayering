@@ -46,3 +46,4 @@ node_modules/
 
 # Persistent web directory selection.
 /.web/
+/.release/

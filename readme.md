@@ -117,7 +117,9 @@ C/C++ 编译工具链选择本机对应的一行即可：
 | **本仓库的 Codex 补丁版** | 首次实际使用 Codex 制作时自动构建并缓存；指定已有入口时检查能力后复用 |
 | **私有 Krita 环境** | 每个 section 启动一个独立配置的 Krita，不改用户的 Krita 目录；本机同时最多 4 个，超出时排队 |
 
-软件准备好后，用图形 Git 客户端克隆本仓库：macOS／Windows 可在 [GitHub Desktop](https://desktop.github.com/) 的“File → Clone repository → URL”填入 `https://github.com/wu-tian807/AstraLayering.git`，Linux 可使用已有图形 Git 客户端的克隆功能。完整检出包含 `web/`、`.agents/skills/live2d-maker/` 和 demos。更细的安装检查见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
+软件准备好后，获取本项目：**只想使用**时，从 [Releases](https://github.com/wu-tian807/AstraLayering/releases) 下载最新的 `AstraLayering-vX.Y.Z.zip` 并解压，包内含工作台、skill 和 Pink Doll 示例，不含其他案例与教程；**需要完整资料或参与开发**时，用图形 Git 客户端克隆本仓库：macOS／Windows 可在 [GitHub Desktop](https://desktop.github.com/) 的“File → Clone repository → URL”填入 `https://github.com/wu-tian807/AstraLayering.git`，Linux 可使用已有图形 Git 客户端的克隆功能。完整检出包含 `web/`、`.agents/skills/live2d-maker/` 和 demos。更细的安装检查见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
+
+发布包附带的 Pink Doll 示例是只读成果归档：在网页“工作目录”切换到 `<解压目录>/demos`，即可浏览它的完整流程与成果。
 
 ### 2. 双击启动文件
 
@@ -199,6 +201,19 @@ Krita 安装和 agent 定时巡检由启动方式 1 的 agent 协助处理；网
 ![提示词与工具：生图工具说明与参数定义并排查看](web/demo-screenshots/15-config-tools.png)
 
 可选的混合模型方案使用 GPT、Claude 和独立生图服务，差异、模板与授权要求见同一份 [模型方案](.agents/skills/live2d-maker/references/model-presets.md)。
+
+## 版本与更新
+
+版本以 Git 标签 `vX.Y.Z` 为准，标题栏左侧显示当前版本；在标签之后还有新提交时显示为 `v0.1.0+3`（标签后第 3 个提交）。各版本的变化与升级影响见 [CHANGELOG](CHANGELOG.md)。
+
+工作台每天最多访问一次 GitHub（`api.github.com`）查询最新发布标签，发现新版本时在标题栏提示并链接更新说明，可点 × 不再提示该版本。它只提示，不下载、不替换文件；离线或查询失败时不显示任何提示。完全关闭：在“管线配置”页把“检查新版本”设为关闭，即写入 `.agents/skills/live2d-maker/.env` 的 `layering_update_check=false`，无需重启。
+
+| 获取方式 | 更新方法 |
+| --- | --- |
+| 克隆的仓库 | 停止制作任务、关闭启动窗口，执行 `git pull`（或在图形 Git 客户端拉取），再双击 start-workbench；依赖会自动补齐 |
+| 发布包 ZIP | 下载并解压新版到新目录，从旧目录复制 `.agents/skills/live2d-maker/.env`（模型配置）和 `.run/`（任务），再从新目录启动。在网页改过工作目录的，不必复制 `.run/`，在新版的“工作目录”里重新选一次原目录即可 |
+
+已完成的任务在升级后可直接浏览；续跑时各步骤按指纹决定是否重做，会让已完成步骤重做的变化在 CHANGELOG 的“升级影响”中写明。
 
 ## 文档入口
 

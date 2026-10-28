@@ -77,8 +77,18 @@ const artifact = (path, thumbnail=false) => './artifact?'+new URLSearchParams({n
 function flat(nodes) { return nodes.flatMap(node=>[node,...flat(node.groups||[])]); }
 function toast(message) { const el=document.querySelector('#toast'); el.textContent=message; el.classList.add('visible'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('visible'),4000); }
 
+// Release version and the newest tag on GitHub; the notice only links to the release page.
+let appVersion=null;
+const dismissedKey='astra-layering:dismissed-update';
+function dismissedUpdate(){try{return localStorage.getItem(dismissedKey);}catch{return null;}}
+function versionBadge() {
+ if(!appVersion)return '';
+ const update=appVersion.updateAvailable&&dismissedUpdate()!==appVersion.latest;
+ return `<span class="app-version" title="${appVersion.source==='git'?'按 Git 发布标签确定':'按 package.json 确定'}">${esc(appVersion.label)}</span>${update?`<span class="update-notice"><a href="${esc(appVersion.releaseUrl)}" target="_blank" rel="noopener">有新版本 v${esc(appVersion.latest)} · 查看更新说明</a><button class="icon-button" data-action="dismiss-update" aria-label="不再提示此版本">${icon('close')}</button></span>`:''}`;
+}
+
 function header() {
- return `<header class="app-header"><a class="brand" href="./"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span></span></a>
+ return `<header class="app-header"><a class="brand" href="./"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span></span></a>${versionBadge()}
  <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}任务与执行</button><button data-page="preview" class="${state.page==='preview'?'active':''}">${icon('layers')}流程预览</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
  <a class="button" href="./studio?${new URLSearchParams({project:state.name})}">${icon('eye')}角色工作台</a><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
 }
@@ -787,6 +797,7 @@ function bind() {
   else if(action==='stop'){b.disabled=true;post('stop',{name:state.name}).then(result=>{toast(result.message);return refreshTask(true);}).catch(error=>{toast(error.message);b.disabled=false;});}
   else if(action==='directory')showDirectory();
   else if(action==='history')showHistory();
+  else if(action==='dismiss-update'){try{localStorage.setItem(dismissedKey,appVersion.latest);}catch{}render();}
   else if(action==='close-inspector'){state.inspect=false;render();}
   else if(action==='zoom-in')zoomCanvas(state.zoom+.1);
   else if(action==='zoom-out')zoomCanvas(state.zoom-.1);
@@ -872,5 +883,6 @@ await refreshTask(true);
 if(state.page==='config')await loadConfig();
 render();
 if(state.page==='preview')focusPreviewStep();
+fetch('./api/version').then(r=>r.ok?r.json():null).then(value=>{if(value){appVersion=value;render();}}).catch(()=>{});
 setInterval(()=>refreshTask().catch(error=>toast('同步失败：'+error.message)),4000);
 if(new URLSearchParams(location.search).get('dialog')==='new')showNew();
