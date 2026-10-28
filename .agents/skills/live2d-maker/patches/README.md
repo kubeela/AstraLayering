@@ -1,18 +1,17 @@
-# 可选兼容补丁
+# CLI 补丁与兼容行为
 
-补丁源码、结构检查、构建与模拟验证统一存放在这里；容量控制和视觉压缩共用实现位于 `shared/visual-context.ts`，Claude Messages 接入位于 `claude/gateway.ts`；工作流桥接只调用补丁模块。Krita 进程环境在 `../shared/krita/`。这些不是给制作 agent 新注册的执行工具。
+本页说明 CLI 补丁、请求兼容层和会话恢复行为；并非每项都修改 CLI 本体。补丁源码、结构检查与模拟验证存放在这里，容量控制和视觉压缩共用实现位于 `shared/visual-context.ts`，Claude Messages 接入位于 `claude/gateway.ts`；会话恢复由工作流共享调用层实现。这些不是给制作 agent 新注册的执行工具。依赖安装、构建准备及缺少依赖时的处理统一见 [安装与前置](../references/setup.md)。
 
 | 功能 | .env 开关／选择 | 启动行为 |
 | --- | --- | --- |
 | Codex 失败流错误读取 | 使用 Codex 即生效，无开关 | 未指定 `layering_codex_path` 时自动构建并复用缓存；读取 LiteLLM 在空 `response.failed` 后单独发送的 `error` 事件 |
 | Codex 图片数 compact | `layering_image_compact_threshold=<正整数>` | 未指定 `layering_codex_path` 时自动构建并复用缓存 |
 | 三种 CLI 图片／请求体预算 | `layering_<codex/claude/agv>_image_compact_threshold` / `layering_<codex/claude/agv>_request_compact_mib` | 留空关闭；按实际发送内容检查，带图分批压缩，保留最新图与恢复记录 |
+| Claude 拒绝后的会话恢复 | 自动处理结构化 refusal，无开关 | 保留记录与产物，从恢复提示词新建会话；边界见下文 |
 | Codex 自定义生图 | 对应步骤选择 GPT／Nano，并填写对应 API | 与 compact 共用同一补丁，按所选路线实际需要准备 |
 | AGV 响应头期限兼容 | `layering_agv_unlimited_response_header_timeout=true` | 自动检查已安装 CLI，准备独立受控副本，不需要 Rust |
 
-Codex 的 Git、C/C++ 及平台编译依赖仍须可用。Rust 1.95.0 缺失时，启动器明确提示并在临时目录安装，构建后清理，不改用户环境。使用 Codex harness 时始终准备 Codex 补丁；只用 Claude／AGV 时不构建。
-
-详细行为与验证见下方 Codex、AGV 与 LiteLLM 小节。显式指定已有补丁路径仍兼容，但必须通过能力／完整性检查。所有失败保留制作产物和会话，可修复依赖后用原总入口续跑。
+使用 Codex harness 时始终准备补丁；只用 Claude／AGV 时不构建 Codex。显式指定已有 Codex 补丁路径时，必须通过能力／完整性检查。详细行为与验证见下方各节；安装与构建操作见 [setup · CLI 准备与补丁构建](../references/setup.md#cli-准备与补丁构建)。
 
 ## 图片容量保护
 
@@ -34,34 +33,25 @@ node patches/shared/cli-visual-smoke.ts --harness agv
 node patches/shared/cli-visual-smoke.ts --harness claude
 ```
 
+## Claude Code 拒绝后的会话恢复
+
+这项兼容行为在工作流调用层实现，不修改或重新编译 Claude Code CLI。收到 Claude 的结构化 `model_refusal*` 事件或结果中的 `stop_reason: refusal` 时，记录拒绝类别与回合数；普通错误文案中的“拦截”字样本身不触发这项恢复，也不能据此认定一定是误判。
+
+- **首次恢复：** 有可替换的会话时，保留旧会话记录与制作产物，记录替换原因并新建会话；步骤提供 `recoveryPrompt` 时用它重新接手任务，否则沿用原任务提示词。不在已拒绝的会话中按网络错误反复等待重试。
+- **再次拒绝：** 替代会话在首轮又被拒时，停止并报告 CLI 原始错误；如果该会话已执行多轮（`num_turns > 1`）后才被拒，允许再次替换会话。因此不是对所有拒绝固定重试一次，也不保证恢复成功。
+- **适用边界：** 明确的图片内容策略拦截在 Claude／AGV CLI 路径中直接失败，不套用 Codex 专用的历史图片替换逻辑；鉴权、额度及其他明确不可重试错误也分别处理。恢复不关闭 CLI 安全检查，不自动改写请求来规避拒绝。无法恢复时，查看 `workflow.log` 中的原始原因，再核对请求或服务配置后从原入口继续。
+
+步骤会话的替换历史追加到 `session.json.history.jsonl`，已有文件保留；记录位置见 [shared · 工作区与产物](../shared/README.md#工作区与产物)。事件读取见 [shared/agents/cli.ts](../shared/agents/cli.ts)，恢复与边界见 [shared/codex/agents.ts](../shared/codex/agents.ts) 和 [agent-runtime.ts](../shared/codex/agent-runtime.ts)。[step-models.test.ts](../shared/tests/step-models.test.ts) 用模拟 CLI 覆盖首次替换、首轮再次拒绝后停止、多轮执行后再次替换和产物保留；不调用真实模型。
+
 ## 原生 Codex 补丁
 
 固定官方 `rust-v0.161.0`，提交 `979011409de0a60b52f179721948e65531d26144`。`layering-runtime.patch` 修正 Responses 失败流的错误读取，并增加独立 Images API 路由、模型选择及按图片数量／请求字节触发的原 thread compact；正常订阅或已有 provider 在未启用后几项选项时沿用原路径。
 
-### 构建
+### 补丁入口与缓存校验
 
-使用 Codex harness 时始终需要补丁版：错误读取修正对所有请求生效。`layering_codex_path` 留空时，启动预检自动准备并复用缓存；显式指定入口时只检查该入口，不自动替换。
-
-需要 Git、C/C++ 编译工具及该版 Codex 的平台依赖。Rust 1.95.0 可用时复用；不可用时提示并从官方 Rust 站点下载、校验安装器，在临时目录使用独立 `RUSTUP_HOME` / `CARGO_HOME` 和 `--no-modify-path` 安装。构建成功或失败均清理，不改系统命令、用户 Rust、shell 设置或 Codex 全局配置；安装和构建日志保存在缓存内。
+使用 Codex harness 时始终需要补丁版：错误读取修正对所有请求生效。`layering_codex_path` 留空时，启动预检自动准备并复用缓存；显式指定入口时只检查该入口，不自动替换。构建命令、平台依赖与恢复办法见 [setup · Codex 补丁构建与恢复](../references/setup.md#codex-补丁构建与恢复)。
 
 缓存为 `.codex-build/<平台-架构>/<源码与补丁指纹>/`。进程锁防止并发重复构建，产物和官方 Code Mode companion 的 SHA-256 校验通过后才复用；失败不写成功标记，中断后可直接续跑。补丁更新使用新指纹目录，旧文件保留。所有入口要求 `failed_error_event_version: 1`；生图要求 `image_provider_version: 2`，按图片数压缩要求 `image_compaction_version: 2`，请求体预算另外要求 `request_compaction_version: 1`。
-
-也可在 `live2d-maker` 下提前准备，命令输出实际二进制路径：
-
-```bash
-pnpm build:codex
-## 已有对应官方源码时可创建独立 worktree：
-pnpm build:codex --source /absolute/codex-source --jobs 4
-```
-
-使用 `--source` 时应保留该源码仓库，worktree 共享它的 Git 对象。手工测试可把输出路径传给下方验证脚本，无需修改 `.env`。
-
-### 构建进度与恢复
-
-- **查看进度：** 源码下载、检出和 Rust 准备有新输出时，按约 20 秒的间隔汇报最近一行；编译阶段按约 30 秒的间隔汇报，并显示已编译的 crate 数与耗时。完整输出持续写入缓存目录的 `build.log`，工作流日志显示阶段进度和日志路径。
-- **长时间无输出：** 连续 3 分钟无新输出会提示检查网络，也可能是在链接大文件；提示本身不会终止命令。可继续等待，或停止任务、配置 `HTTPS_PROXY` 等代理后继续，也可指定已构建且通过能力检查的 `layering_codex_path`。另有 Git HTTP 低速保护：传输持续 10 分钟低于 1000 字节／秒时，Git 会结束该下载；这与 3 分钟无输出提示分别处理。
-- **缺少系统依赖：** 首次构建前检查 C/C++ 工具链。Windows 检查 Visual Studio 的 MSVC 组件或 `cl`，macOS／Linux 检查 `CC`／`CXX` 指定的命令或 `cc`／`c++`；构建日志中的缺少链接器等错误也会给出安装指引。网页与 `workflow.log` 直接显示缺什么、如何安装；补齐后点「继续」（命令行 `--continue`），会重新检查并构建，保留已有会话和制作产物。Linux 无桌面环境缺少 Xvfb 时也使用这套依赖提示与继续机制，显示环境要求见 [安装与前置](../references/setup.md#krita-与显示环境)。
-- **Windows 检出与缓存：** 构建用 Git 子进程固定 LF 换行、启用长路径并设置下载低速保护，保留用户的代理、证书和凭据设置，不修改用户 Git 配置。已有缓存中尚未应用补丁的源码无法通过补丁检查时，重新获取一次；新检出的源码仍不兼容时明确失败。已应用补丁的源码和通过哈希校验的可执行缓存继续复用，无需手动清空整个缓存。
 
 ### 行为
 
