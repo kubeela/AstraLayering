@@ -31,6 +31,13 @@ import { fromTaskPath, toTaskPath } from '../task-paths.ts';
 // AGV reports its Go transport timeouts only as text; these two exact forms are tagged where the CLI ends.
 const agvTransportTimeout = /net\/http: timeout awaiting response headers|stream idle timeout \(\w+\): context deadline exceeded/;
 
+// Agent CLIs run in their own process groups, so a signal to the worker's group misses them; a worker
+// stopping on a signal exits before each call's abort can follow up, and ends them here instead.
+const agentGroups = new Set<number>();
+export function signalAgentProcesses(signal: NodeJS.Signals) {
+  for (const pid of agentGroups) try { process.kill(process.platform === 'win32' ? pid : -pid, signal); } catch {}
+}
+
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
   const names = harness === 'claude' ? ['claude'] : harness === 'agv' ? ['agy', 'agv', 'antigravity'] : ['codex'];
@@ -208,10 +215,11 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     options.progress?.(`开始：${task.name}；${model.harness} / ${model.model} / ${model.effort}；记录：${log.directory}`);
     signal.throwIfAborted();
     const child = spawn(executable, args, { cwd, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
+    if (child.pid) agentGroups.add(child.pid);
     let spawnError: Error | undefined;
     child.on('error', error => { spawnError = error; });
     let childClosed = false;
-    const close = new Promise<number | null>(done => child.once('close', code => { childClosed = true; done(code); }));
+    const close = new Promise<number | null>(done => child.once('close', code => { childClosed = true; agentGroups.delete(child.pid!); done(code); }));
     let killTimer: ReturnType<typeof setTimeout> | undefined;
     const abort = () => {
       if (childClosed) return;

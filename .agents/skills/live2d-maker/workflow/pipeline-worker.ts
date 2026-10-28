@@ -6,6 +6,7 @@ import { formatLayeringSummary } from '../shared/part/run.ts';
 import { shareAgentSlots } from '../shared/codex/agent-runtime.ts';
 import { agentSlotsVariable, ipcAgentSlots } from './agent-slots.ts';
 import { releaseAllSectionKrita } from '../shared/krita/section-krita.ts';
+import { signalAgentProcesses } from '../shared/agents/cli.ts';
 
 // An orphan must not continue drawing after its supervisor has exited.
 process.on('disconnect', () => {
@@ -14,9 +15,11 @@ process.on('disconnect', () => {
 });
 
 // A stop signals the whole process group; close the sections' Krita
-// normally first so their profiles and records do not stay behind.
+// normally first so their profiles and records do not stay behind. Agent
+// CLIs sit in groups of their own and are ended explicitly.
 for (const signal of ['SIGTERM', 'SIGINT'] as const) process.once(signal, () => {
-  void releaseAllSectionKrita().finally(() => process.exit(signal === 'SIGINT' ? 130 : 143));
+  signalAgentProcesses('SIGTERM');
+  void releaseAllSectionKrita().finally(() => { signalAgentProcesses('SIGKILL'); process.exit(signal === 'SIGINT' ? 130 : 143); });
 });
 
 try {
