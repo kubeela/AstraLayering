@@ -4,11 +4,12 @@
 
 ## 依赖一览
 
-完整依赖表（每项何时需要：始终需要、默认方案、按需）在[项目首页 · 准备软件与仓库](../../../../readme.md#1-准备软件与仓库)；独立安装 skill 时见 [GitHub 上的首页](https://github.com/wu-tian807/AstraLayering#1-准备软件与仓库)。概括如下：
+完整启动依赖表（每项一行，注明必选／可选与何时需要）在[项目首页 · 准备软件与仓库](../../../../readme.md#1-准备软件与仓库)；独立安装 skill 时见 [GitHub 上的首页](https://github.com/wu-tian807/AstraLayering#1-准备软件与仓库)。概括如下：
 
-- **始终需要：** Node.js 24.12+、Git，以及至少一种已登录的模型 CLI。绘制、组装和阴影还需要 Krita。
-- **默认方案（Codex）：** Codex CLI 与登录；首次构建补丁需要 C/C++ 工具链，Rust 自动准备。
-- **按需：** Claude Code CLI（`claude-*` 模型）、Antigravity CLI（`gemini-4-argon`）、GPT Image 或 Nano Banana 生图服务、Linux 无桌面时的 Xvfb、浏览器验证用的 Playwright Chromium。
+- **必选：** Node.js 24.12+、Git、Krita（只跑分块时可不装）。
+- **默认必选：** Codex CLI 与登录；使用 Codex 时还需要 C/C++ 工具链，Rust 自动准备。
+- **可选：** Claude Code CLI（`claude-*` 模型）、Antigravity CLI（`gemini-4-argon`）、GPT Image 生图服务、Nano Banana 生图服务。
+- **Linux 无桌面时必选：** Xvfb。
 
 缺少依赖时，说明实际需要安装、配置的软件，**确认所选方案后再执行**。已有针对该机器和方案的授权直接沿用，方案或范围改变时再确认。
 
@@ -55,7 +56,7 @@ pnpm install --frozen-lockfile
 
 ## Krita 与显示环境
 
-**Krita 由外部提供，其余由工作流准备。** 先检查已有安装、用户路径和任务记录；`--krita` 传实际可执行文件，后台与恢复进程复用同一路径。Linux 的 AppImage 先用 `--appimage-extract` 解包，再传 `AppRun` 或 `usr/bin/krita`；解包版自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
+**Krita 由外部提供，其余由工作流准备。** 先检查已有安装、用户路径和任务记录；`--krita` 传实际可执行文件，后台与恢复进程复用同一路径。Linux 解包的 AppImage 可传 `AppRun` 或 `usr/bin/krita`，自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
 
 - **私有进程：** 每个 section 一个私有 Krita，使用临时的独立配置和随附的桥接插件，不改用户的 Krita 目录。agent 通过 `krita` 工具按需启动、查看状态与 pid、执行 Python 脚本，崩溃或卡死时自行重启；section 结束（完成、失败或停止）时由工作流关闭并清理。框架不替 agent 启动 Krita。
 - **对话框：** 桥接插件自动取消会卡住无人值守界面的对话框（例如导出参数框），并在工具结果中给出提示。
@@ -68,6 +69,6 @@ Krita 用法只写在 [krita 工具说明](../shared/tools/krita/description.md)
 
 - **Nano 透明图：** 使用共享 Node／Sharp 双背景差分，第一张纯色背景 RGB 加第二张仅换背景的图恢复 alpha；原图、alpha 和处理报告保存在请求的 generated/image-processing/。两次串行生图会增加一次调用；第一张已有真实 alpha 时直接保留。失败时保留原图供诊断，透明边缘与半透明材质仍按制作流程复核。完整协议见[生图执行与透明处理](model-presets.md#生图执行与透明处理)。
 - **网页原生图层编辑与阴影检查：** 使用 Krita Python 插件，Linux 上的独立合成服务和原生检查需要 Xvfb；平台配置见工作台 checkout 的 web/README.md 与 [shadow](../shadow/README.md)。普通流程浏览与独立布料示例可直接在现代浏览器查看。
-- **浏览器自动验证：** `playwright` 包随项目依赖安装，浏览器另行执行 `pnpm exec playwright install chromium`。资料重建、历史案例与归档脚本的 Python 包按实际执行范围准备；日常运行 Node 管线只需上述基础依赖。
+- **浏览器自动验证：** 按需要安装 Playwright／Chromium。资料重建、历史案例与归档脚本的 Python 包按实际执行范围准备；日常运行 Node 管线只需上述基础依赖。
 
 操作记录区分本地版本、配置预览、真实工具调用、会话恢复和绘画验收，并保留各自适用范围。完成检查后按 [SKILL.md](../SKILL.md) 启动、安排巡检并展示工作台。
