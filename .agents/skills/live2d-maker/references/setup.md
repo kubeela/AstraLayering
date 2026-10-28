@@ -50,13 +50,15 @@ pnpm install --frozen-lockfile
 
 **Codex 补丁：** 所有 Codex 步骤都使用补丁版，程序自动构建并缓存；只用 Claude／AGV 时不构建。`layering_codex_path` 留空即可启用，指定已有入口时检查补丁能力后复用（生图能力要求见[模型方案](model-presets.md#可选模型与服务连接)）。Rust 1.95.0 自动复用或临时安装，构建后清理；Git 和平台 C/C++ 编译工具需要本机提供。依赖缺失或构建失败时查 [patches](../patches/README.md)。
 
+**Claude Code 兼容层：** 复用已安装的 Claude Code CLI，无需修改或重新编译 CLI，也不需要 Rust 或 C/C++ 工具链。配置 `layering_claude_image_compact_threshold`／`layering_claude_request_compact_mib` 可启用图片数／请求体大小保护，`layering_claude_image_deduplicate=true` 可启用图片去重；这些保护默认关闭。启用后自动准备本地 Messages 转发层，保留原鉴权和原生自动压缩。支持 Anthropic Messages 路由（含自定义 base URL）；Bedrock／Vertex／Foundry 路由启用保护时明确报错。行为与验证见 [patches · 图片容量保护](../patches/README.md#图片容量保护)。
+
 **AGV 兼容补丁：** 需要绕过 CLI 的 60 秒响应头期限时，设置 `layering_agv_unlimited_response_header_timeout=true`；程序准备独立的受控副本，不需要 Rust。适用构建与验证见 patches。
 
 图片数和请求体预算按服务限制配置，通过 `env:check` 核对；切换模型或升级时沿用已有预算。
 
 ## Krita 与显示环境
 
-**Krita 由外部提供，其余由工作流准备。** 先检查已有安装、用户路径和任务记录；`--krita` 传实际可执行文件，后台与恢复进程复用同一路径。Linux 解包的 AppImage 可传 `AppRun` 或 `usr/bin/krita`，自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
+**Krita 本体需提前安装，可由 agent 按已确认的方案协助安装。** 工作流自动准备其私有配置和桥接插件；其他基础依赖仍须按上方[依赖一览](#依赖一览)准备。先检查已有安装、用户路径和任务记录；`--krita` 传实际可执行文件，后台与恢复进程复用同一路径。Linux 解包的 AppImage 可传 `AppRun` 或 `usr/bin/krita`，自动使用其内置 Python 与 `libstdcpp-fallback`，必要时用 `ASTRA_STUDIO_KRITA_PYTHONHOME`／`ASTRA_STUDIO_KRITA_PYTHONPATH` 覆盖。
 
 - **私有进程：** 每个 section 一个私有 Krita，使用临时的独立配置和随附的桥接插件，不改用户的 Krita 目录。agent 通过 `krita` 工具按需启动、查看状态与 pid、执行 Python 脚本，崩溃或卡死时自行重启；section 结束（完成、失败或停止）时由工作流关闭并清理。框架不替 agent 启动 Krita。
 - **对话框：** 桥接插件自动取消会卡住无人值守界面的对话框（例如导出参数框），并在工具结果中给出提示。
