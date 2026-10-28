@@ -4,6 +4,7 @@ import { fromTaskPath } from '../task-paths.ts';
 
 export const defaultAgentConcurrency = 3;
 // Retry n waits about initial * 2^(n-1), at most maximum: 5, 10, 20, 40, 80, then 120 s; after the tenth the call fails.
+// retries also caps the new sessions one call starts for known errors.
 export const retryDelays = { initial: 5_000, maximum: 120_000, retries: 10 } as const;
 
 export class AgentCallError extends Error {
@@ -13,6 +14,8 @@ export class AgentCallError extends Error {
   threadId?: string;
   threadPath?: string;
   finalResponse?: string;
+  // Work the failed attempt got done (tool calls), counted by the harness; 0 when it did none.
+  progress = 0;
   savedImagePaths: string[] = [];
   sessionBroken = false;
   constructor(message: string, info?: unknown, options?: ErrorOptions) {

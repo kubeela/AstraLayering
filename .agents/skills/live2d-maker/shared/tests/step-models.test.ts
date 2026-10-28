@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, realpath, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative, dirname, delimiter, isAbsolute } from 'node:path';
+import { join, relative, dirname, delimiter, isAbsolute, sep } from 'node:path';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { parseEnv } from 'node:util';
@@ -181,6 +181,7 @@ test('custom image edit transports original prompts and images over both protoco
   const root = await fixture(t), source = join(root, 'input.png');
   const png = await sharp({ create: { width: 4, height: 4, channels: 4, background: '#ff000080' } }).png().toBuffer();
   await writeFile(source, png);
+  const notImage = join(root, 'not-image.txt'); await writeFile(notImage, 'not an image');
   let protocol = 'openai', expectedBackground = 'transparent', called = 0;
   const server = createServer(async (req, res) => {
     const chunks = []; for await (const chunk of req) chunks.push(chunk); const bytes = Buffer.concat(chunks); called++;
@@ -188,7 +189,7 @@ test('custom image edit transports original prompts and images over both protoco
       assert.equal(req.url, '/v1beta/models/gemini-nano-banana-2.1:generateContent');
       assert.equal(req.headers['x-goog-api-key'], 'image-test-secret');
       const body = JSON.parse(bytes.toString());
-      assert.ok(body.contents[0].parts[0].text.startsWith('原样的绘制提示词\n\n'));
+      assert.ok(body.contents[0].parts[0].text.replace(/\r\n/g, '\n').startsWith('原样的绘制提示词\n\n'));
       assert.match(body.contents[0].parts[0].text, /背景使用高纯度纯色 #[0-9A-F]{6}/);
       assert.deepEqual(Buffer.from(body.contents[0].parts[1].inlineData.data, 'base64'), png);
       res.end(JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { data: png.toString('base64') } }] } }] }));
@@ -224,7 +225,7 @@ test('custom image edit transports original prompts and images over both protoco
     assert.ok(!Object.hasOwn((tool.inputSchema as { properties: Record<string, unknown> }).properties, 'model'));
     const result = await tool.execute({ prompt: '原样的绘制提示词', input_images: [source] }, new AbortController().signal);
     const output = JSON.parse((result.contentItems[0] as { text: string }).text);
-    assert.ok(isAbsolute(output.savedPath) && output.savedPath.startsWith(join(root, outputDirectory) + '/'));
+    assert.ok(isAbsolute(output.savedPath) && output.savedPath.startsWith(join(root, outputDirectory) + sep));
     assert.equal((await sharp(output.savedPath).metadata()).format, 'png');
     assert.deepEqual(await readFile(source), png);
     const custom = join(await fixture(t), `${provider}-${mode}.png`);
@@ -235,7 +236,7 @@ test('custom image edit transports original prompts and images over both protoco
     // Like Codex native imagegen, the tool takes absolute paths only.
     await assert.rejects(tool.execute({ prompt: 'test', input_images: [relative(root, source)] }, new AbortController().signal), /input_images 中的路径 必须是绝对路径/);
     await assert.rejects(tool.execute({ prompt: 'test', input_images: [source], output_path: 'relative.png' }, new AbortController().signal), /output_path 必须是绝对路径/);
-    await assert.rejects(tool.execute({ prompt: 'test', input_images: ['/etc/passwd'] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);
+    await assert.rejects(tool.execute({ prompt: 'test', input_images: [notImage] }, new AbortController().signal), /unsupported image|Input buffer|Unsupported image/i);
   }
   assert.equal(called, 6);
 });
@@ -250,9 +251,15 @@ const resumed=args.includes(resumeFlag)?args[args.indexOf(resumeFlag)+1]:undefin
 if(resumed==='missing'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'session not found'}));process.exit(1);}
 const refuse=(turns=1)=>{console.log(JSON.stringify({type:'system',subtype:'model_refusal_no_fallback',session_id:resumed||'r',api_refusal_category:'reasoning_extraction'}));console.log(JSON.stringify({type:'result',subtype:'success',is_error:true,stop_reason:'refusal',stop_details:{type:'refusal',category:'reasoning_extraction'},api_error_status:null,num_turns:turns,session_id:resumed||'r',result:"API Error: Opus 5.5's safeguards flagged this message. Try rephrasing the request in a new session or change your model."}));process.exit(1);}
 if(resumed==='refused')refuse();
-if(resumed==='full'){console.log(JSON.stringify({type:'result',is_error:true,session_id:resumed,error:'Prompt is too long'}));process.exit(1);}
+// Claude reports tool_use items and "Prompt is too long"; AGV reports tool steps after its user input and Gemini's token count text.
+const overflow=(tools,id=randomUUID())=>{if(kind==='claude'){for(let i=0;i<tools;i++)console.log(JSON.stringify({type:'assistant',session_id:id,message:{content:[{type:'tool_use',id:'t'+i,name:'Read',input:{}}]}}));console.log(JSON.stringify({type:'result',is_error:true,session_id:id,error:'Prompt is too long'}));}
+else{const step=(i,type)=>console.log(JSON.stringify({event:'step_update',step_update:{conversation_id:id,step_index:i,step_type:type,state:'DONE',text_delta:''}}));step(0,'user_input');step(1,'system_message');step(2,'checkpoint');for(let i=0;i<tools;i++)step(i+3,'tool');console.log(JSON.stringify({event:'result',result:{conversation_id:id,status:'ERROR',error:'The input token count (1200000) exceeds the maximum number of tokens allowed (1048576)'}}));}
+process.exit(1);};
+if(resumed==='full')overflow(0,resumed);
 let input='';for await(const chunk of process.stdin)input+=chunk;
 if(input.includes('总是拒绝'))refuse();
+if(input.includes('总是超窗'))overflow(0);
+if(input.includes('用工具后超窗')){const count=join(process.cwd(),'overflows');let n=0;try{n=Number(await readFile(count,'utf8'));}catch{}if(n<2){await writeFile(count,String(n+1));overflow(3);}}
 if(input.includes('跑一阵被拒')){const count=join(process.cwd(),'refusals');let n=0;try{n=Number(await readFile(count,'utf8'));}catch{}if(n<2){await writeFile(count,String(n+1));refuse(40);}}
 const config=kind==='claude'?args[args.indexOf('--mcp-config')+1]:join(process.env.ANTIGRAVITY_GEMINI_DIR,'config/mcp_config.json');
 const registry=JSON.parse(await readFile(config,'utf8')).mcpServers.layering.env;
@@ -300,7 +307,9 @@ test('Claude and AGV env-node launchers work when the service PATH has no Node, 
   const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'env-node.mjs');
   await mkdir(cwd, { recursive: true });
   const script = fakeCli.replace('const meta=', `const {execFileSync}=await import('node:child_process');
-const childNode=execFileSync('/usr/bin/env',['node','-p','process.execPath'],{encoding:'utf8'}).trim();
+const childNode=process.platform==='win32'
+  ? execFileSync('node',['-p','process.execPath'],{encoding:'utf8'}).trim()
+  : execFileSync('/usr/bin/env',['node','-p','process.execPath'],{encoding:'utf8'}).trim();
 await writeFile(join(process.cwd(),'child-node.json'),JSON.stringify({path:process.env.PATH,childNode}));
 const meta=`);
   await writeFile(cli, script, { mode: 0o700 });
@@ -356,6 +365,35 @@ test('a CLI session over its context window is replaced once from the recovery p
     assert.notEqual(result.threadId, 'full'); assert.deepEqual(reasons, ['上下文超出模型窗口']);
     const invocation = JSON.parse(await readFile(join(cwd, 'workspace', 'invocation.json'), 'utf8'));
     assert.match(JSON.stringify(invocation.input), /从头完成任务/);
+  } finally { await session.close(); }
+});
+
+for (const [harness, model, overflowed] of [['claude', 'claude-sonnet-5-5-high', /Prompt is too long/], ['agv', 'gemini-4-argon-high', /input token count/]] as const)
+test(`a new ${harness} session over its context window on its first turn fails; one that called tools is replaced again`, async t => {
+  const root = await fixture(t), cwd = join(root, '.run/case/part-layering'), cli = join(root, 'fake-cli.mjs');
+  await mkdir(cwd, { recursive: true }); await writeFile(cli, fakeCli, { mode: 0o700 });
+  const settings = loadWorkflowEnvironment({ layering_claude_path: cli, layering_agv_path: cli, layering_agent_part_review_model: model }, root);
+  await mkdir(join(cwd, 'agents/old-data'), { recursive: true });
+  await mkdir(join(cwd, 'agents/old-workspace'), { recursive: true });
+  await writeFile(join(cwd, 'agents/sessions.json'), JSON.stringify({ full: { harness, data: join(cwd, 'agents/old-data'), workspace: join(cwd, 'agents/old-workspace') } }));
+  const reasons: string[] = [];
+  const agents = new CodexAgents({ environment: settings, cwd, logDirectory: join(cwd, 'agents'),
+    runtime: new AgentRuntime(1, async () => assert.fail('a known error must not wait')),
+    onThreadReplacement: async (_id, reason) => { reasons.push(reason); } });
+  // The original session is replaced; the new one overflows before any tool call, so the call fails.
+  const failing = agents.createSession('full');
+  try {
+    await assert.rejects(failing.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '继续任务', recoveryPrompt: '从头完成任务，总是超窗' }),
+      overflowed);
+    assert.deepEqual(reasons, ['上下文超出模型窗口']);
+  } finally { await failing.close(); }
+  // Sessions that overflow after tool calls accumulated history; each is replaced and the third finishes.
+  reasons.length = 0;
+  const session = agents.createSession();
+  try {
+    const result = await session.run({ step: 'part_outline_review', name: 'review', cwd, prompt: '用工具后超窗', recoveryPrompt: '从头完成任务，用工具后超窗' });
+    assert.equal(result.text, '完成');
+    assert.deepEqual(reasons, ['上下文超出模型窗口', '上下文超出模型窗口']);
   } finally { await session.close(); }
 });
 

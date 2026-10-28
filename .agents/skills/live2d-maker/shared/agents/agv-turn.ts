@@ -48,6 +48,11 @@ export class AgvTurn {
     if (last?.type === 'agent_response' && last.text.trim()) return last.text;
   }
 
+  // The tool calls of this turn; system messages, checkpoints, replies and errors are not work done.
+  get toolSteps(): number {
+    return [...this.steps.values()].filter(step => step.type === 'tool').length;
+  }
+
   get userStepIndex(): number | undefined { return this.boundary; }
   get recoveredErrorStepIndices(): number[] {
     return [...this.steps].filter(([, step]) => step.type === 'error_message').map(([index]) => index);

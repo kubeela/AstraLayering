@@ -99,6 +99,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   let upstreamStatus: number | undefined;
   const eventErrors: unknown[] = [];
   let refusal: string | undefined;
+  // Tool calls this turn made: Claude's tool_use items, AGV's tool steps.
+  let toolCalls = 0;
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
@@ -258,6 +260,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
         const id = event.session_id || event.conversation_id || event.step_update?.conversation_id;
         if (id) await reportId(id);
         if (event.type === 'assistant') {
+          for (const item of event.message?.content || []) if (item.type === 'tool_use') toolCalls++;
           for (const item of event.message?.content || []) if (item.type === 'text') {
             text = item.text; options.progress?.(`[${task.name}] 消息：${text}`);
             await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: event.uuid || randomUUID(), text } });
@@ -316,6 +319,9 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     reported.details ??= errorDetails(error);
     await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: reported.message,
       errorDetails: reported.details, stderr, processExitCode, cliStatus: final?.status });
-    reported.threadId = threadId; reported.finalResponse = text; reported.logDirectory = log.directory; throw reported;
+    reported.threadId = threadId; reported.finalResponse = text; reported.logDirectory = log.directory;
+    // Claude counts an API turn per tool round, so more than one turn is progress even if the stream missed the calls.
+    reported.progress = Math.max(toolCalls, agvTurn?.toolSteps ?? 0, typeof final?.num_turns === 'number' ? final.num_turns - 1 : 0);
+    throw reported;
   } finally { await bridge?.close(); await mcpServer?.close(); }
 }
