@@ -26,9 +26,15 @@ test('独立运行层默认限制 3 个调用，失败也释放位置', async ()
   assert.deepEqual(entered, [0, 1, 2, 3, 4, 5, 6]);
 });
 
-test('临时容量错误持续重试，不设轮次上限；等待按 5/10/20/40/60 秒增长', async () => {
+test('临时容量错误持续重试，不设轮次上限；等待按 5/10/20/40/60 秒增长，随机落在每档的后一半', async () => {
+  const lowest: number[] = [];
+  let failures = 0;
+  await new AgentRuntime(1, async ms => { lowest.push(ms); }, () => 0).run(async () => {
+    if (++failures <= 6) throw new AgentCallError('capacity', { rateLimitExceeded: { httpStatusCode: 429 } });
+  });
+  assert.deepEqual(lowest, [2500, 5000, 10000, 20000, 30000, 30000]);
   const waits: number[] = [], retries: number[] = [];
-  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); });
+  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1);
   let attempts = 0;
   const result = await runtime.run(async () => {
     if (++attempts <= 7) throw new AgentCallError('capacity', 'serverOverloaded');
@@ -40,7 +46,7 @@ test('临时容量错误持续重试，不设轮次上限；等待按 5/10/20/40
   assert.deepEqual(retries, [2, 3, 4, 5, 6, 7, 8]);
 });
 
-test('退避等待释放并发位置，排队和等待都可以取消', async () => {
+test('退避等待期间保留并发位置，排队的调用不插入；排队和等待都可以取消', async () => {
   const waiting = Promise.withResolvers<void>(), resume = Promise.withResolvers<void>();
   const controller = new AbortController();
   const runtime = new AgentRuntime(1, async (_ms, signal) => {
@@ -53,9 +59,13 @@ test('退避等待释放并发位置，排队和等待都可以取消', async ()
   const failed = runtime.run(async () => { throw new AgentCallError('capacity', 'serverOverloaded'); }, { signal: controller.signal });
   const rejected = assert.rejects(failed, /取消等待/);
   await waiting.promise;
-  assert.equal(await runtime.run(async () => '其他调用已执行'), '其他调用已执行');
+  let other = false;
+  const queuedDuringBackoff = runtime.run(async () => { other = true; return '其他调用已执行'; });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(other, false, 'a call queued during backoff waits for the retrying call');
   controller.abort(new Error('取消等待'));
   await rejected;
+  assert.equal(await queuedDuringBackoff, '其他调用已执行');
   resume.resolve();
   const held = Promise.withResolvers<void>();
   const first = runtime.run(async () => { await held.promise; });

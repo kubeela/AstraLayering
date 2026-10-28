@@ -35,7 +35,7 @@ test('生图服务的速率限制会重试，单次输入图片上限仍直接�
   for (const message of ['image_generation rate limit exceeded', 'Rate limit exceeded: maximum 10 images per minute']) {
     let attempts = 0;
     const waits: number[] = [];
-    assert.equal(await new AgentRuntime(1, async ms => { waits.push(ms); }).run(async () => {
+    assert.equal(await new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1).run(async () => {
       if (++attempts === 1) throw new AgentCallError(message, info);
       return 'continued';
     }), 'continued');

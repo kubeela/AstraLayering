@@ -68,13 +68,17 @@ export class AgentRuntime {
   private waiting: Waiter[] = [];
   readonly concurrency: number;
   private wait: (ms: number, signal?: AbortSignal) => Promise<void>;
+  private random: () => number;
   constructor(
     concurrency = defaultAgentConcurrency,
     wait: (ms: number, signal?: AbortSignal) => Promise<void> = async (ms, signal) => { await delay(ms, undefined, { signal }); },
+    // Jitter source, 0 to 1; tests pin it.
+    random: () => number = Math.random,
   ) {
     if (!Number.isSafeInteger(concurrency) || concurrency < 1) throw new Error('agentConcurrency 必须是正整数');
     this.concurrency = concurrency;
     this.wait = wait;
+    this.random = random;
   }
 
   private acquire(signal?: AbortSignal): Promise<() => void> {
@@ -111,26 +115,31 @@ export class AgentRuntime {
     operation: (attempt: number) => Promise<T>,
     options: { signal?: AbortSignal; onRetry?(retry: AgentRetry): Promise<void> | void } = {},
   ): Promise<T> {
-    for (let attempt = 1; ; attempt++) {
-      const local = await this.acquire(options.signal);
-      let shared: (() => void) | undefined;
-      // Without a shared pool the operation starts in the same turn as before.
-      try { if (sharedSlots) shared = await sharedSlots(options.signal); }
-      catch (error) { local(); throw error; }
-      const release = () => { shared?.(); local(); };
-      let error: unknown;
-      try {
-        options.signal?.throwIfAborted();
-        return await operation(attempt);
-      } catch (caught) {
-        options.signal?.throwIfAborted();
-        if (!retryableAgentError(caught)) throw caught;
-        error = caught;
-      } finally { release(); }
-      const delayMs = Math.min(retryDelays.initial * 2 ** Math.min(attempt - 1, 4), retryDelays.maximum);
-      await options.onRetry?.({ attempt, nextAttempt: attempt + 1, delayMs, error });
-      await this.wait(delayMs, options.signal);
-    }
+    const local = await this.acquire(options.signal);
+    let shared: (() => void) | undefined;
+    // Without a shared pool the operation starts in the same turn as before.
+    try { if (sharedSlots) shared = await sharedSlots(options.signal); }
+    catch (error) { local(); throw error; }
+    // The slots stay held through backoff. Handing them back let a queued call start in the gap, so
+    // under 429 the groups of one layer took turns instead of finishing one by one.
+    try {
+      for (let attempt = 1; ; attempt++) {
+        let error: unknown;
+        try {
+          options.signal?.throwIfAborted();
+          return await operation(attempt);
+        } catch (caught) {
+          options.signal?.throwIfAborted();
+          if (!retryableAgentError(caught)) throw caught;
+          error = caught;
+        }
+        // Equal jitter: half the step is fixed, half random, so calls that failed together do not retry together.
+        const step = Math.min(retryDelays.initial * 2 ** Math.min(attempt - 1, 4), retryDelays.maximum);
+        const delayMs = Math.round(step / 2 + this.random() * step / 2);
+        await options.onRetry?.({ attempt, nextAttempt: attempt + 1, delayMs, error });
+        await this.wait(delayMs, options.signal);
+      }
+    } finally { shared?.(); local(); }
   }
 }
 

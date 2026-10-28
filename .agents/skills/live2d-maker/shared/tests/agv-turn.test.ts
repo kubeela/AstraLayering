@@ -158,7 +158,7 @@ for (const failure of ['retry-header-timeout', 'retry-idle-timeout']) test(`${fa
   const settings = loadWorkflowEnvironment({ layering_agv_path: executable }, root);
   const waits: number[] = [], ids: string[] = [], retries: string[] = [];
   const agents = new CodexAgents({ environment: settings, selectedModel: parseAgentModel('gemini-4-argon-high', 'test'),
-    cwd, logDirectory: join(cwd, 'agents'), runtime: new AgentRuntime(1, async ms => { waits.push(ms); }),
+    cwd, logDirectory: join(cwd, 'agents'), runtime: new AgentRuntime(1, async ms => { waits.push(ms); }, () => 1),
     onSessionStarted: async id => { ids.push(id); }, onRetry: retry => { retries.push(String(retry.error)); },
     onThreadReplacement: async () => assert.fail('a network timeout must not replace the session') });
   const session = agents.createSession();
