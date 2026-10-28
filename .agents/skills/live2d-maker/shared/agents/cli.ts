@@ -186,9 +186,12 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     const configPath = join(log.directory, 'mcp.json'); await writeFile(configPath, JSON.stringify(mcp), { mode: 0o600 });
     await mkdir(join(env.GEMINI_DIR, 'config'), { recursive: true, mode: 0o700 });
     await writeFile(join(env.GEMINI_DIR, 'config/mcp_config.json'), JSON.stringify(mcp), { mode: 0o600 });
+    // A --print run ends with its turn: nothing re-invokes a session that scheduled a wakeup, so the
+    // CLI forces the structured result early and the step stops as unfinished.
     const args = model.harness === 'claude'
       ? ['--print', '--verbose', '--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
-        '--strict-mcp-config', '--mcp-config', configPath, '--settings', authSettings, '--setting-sources', '', '--disable-slash-commands', '--dangerously-skip-permissions', '--add-dir', task.cwd || options.cwd!]
+        '--strict-mcp-config', '--mcp-config', configPath, '--settings', authSettings, '--setting-sources', '', '--disable-slash-commands', '--dangerously-skip-permissions',
+        '--disallowedTools', 'ScheduleWakeup,CronCreate,CronDelete,CronList', '--add-dir', task.cwd || options.cwd!]
       : ['--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
         '--disable-slash-commands', '--dangerously-skip-permissions', '--log-file', join(env.TMPDIR, 'native.log'), '--add-dir', task.cwd || options.cwd!];
     if (resumed) args.push(model.harness === 'claude' ? '--resume' : '--conversation', resumed);
