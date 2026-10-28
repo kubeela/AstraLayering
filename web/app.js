@@ -158,7 +158,7 @@ async function refreshTask(force=false) {
  const executionChanged=next.status!==data.status||next.runnerAlive!==data.runnerAlive||next.lockHeld!==data.lockHeld;
  const focused=document.activeElement;
  const treeControl=focused?.dataset?.treeSearch!==undefined?'data-tree-search':focused?.dataset?.treeDepth!==undefined?'data-tree-depth':null;
- if(!force&&!executionChanged&&(document.querySelector('dialog[open]')||(!treeControl&&focused?.matches('input,select'))||document.querySelector('.panning')))return;
+ if(!force&&!executionChanged&&(document.querySelector('dialog[open]')||(!treeControl&&focused?.matches('input,select'))||document.querySelector('.panning,.selecting')))return;
  const focus=treeControl?{selector:`[${treeControl}="${focused.getAttribute(treeControl)}"]`,start:focused.selectionStart,end:focused.selectionEnd}:null;
  if(fingerprint!==lastSnapshot||force){
   const selected=state.asset;
@@ -493,14 +493,14 @@ function switchLane(lane) {
  const fromTop=viewport.scrollTop,fromShift=state.mergeShift,started=performance.now(),duration=380;
  state.lane=lane;state.canvasTop=0;
  document.querySelectorAll('[data-lane]').forEach(button=>{const active=Number(button.dataset.lane)===lane;button.classList.toggle('active',active);button.setAttribute('aria-pressed',active);});
- const animation=laneAnimation={};
+ const animation=laneAnimation={};viewport.classList.add('animating');
  const frame=now=>{
   if(laneAnimation!==animation)return;
   const t=Math.min(1,(now-started)/duration),ease=t<.5?4*t*t*t:1-(-2*t+2)**3/2;
   state.mergeShift=fromShift+(laneMetrics.tops[lane]-fromShift)*ease;
   connectFlow();
   viewport.scrollTop=fromTop+(laneScrollTop(lane)-fromTop)*ease;
-  if(t<1)requestAnimationFrame(frame);else{laneAnimation=null;connectFlow();viewport.scrollTop=laneScrollTop(lane);state.canvasLeft=viewport.scrollLeft;}
+  if(t<1)requestAnimationFrame(frame);else{laneAnimation=null;viewport.classList.remove('animating');connectFlow();viewport.scrollTop=laneScrollTop(lane);state.canvasLeft=viewport.scrollLeft;}
  };
  requestAnimationFrame(frame);
 }
@@ -727,6 +727,15 @@ function innerScroller(target,viewport) {
   if(node.matches('.inline-tree-rows')||(node.scrollHeight>node.clientHeight+1&&/auto|scroll/.test(getComputedStyle(node).overflowY)))return node;
  return null;
 }
+// Whether (x, y) lies on rendered text: a drag that starts there selects the text instead of panning.
+function onText(x,y) {
+ let node=document.caretRangeFromPoint?.(x,y)?.startContainer;
+ if(!node&&document.caretPositionFromPoint)node=document.caretPositionFromPoint(x,y)?.offsetNode;
+ if(node?.nodeType!==Node.TEXT_NODE||!node.textContent.trim())return false;
+ // The caret APIs return the nearest text even beside it, so require the point inside the text's own boxes.
+ const range=document.createRange();range.selectNodeContents(node);
+ return [...range.getClientRects()].some(box=>x>=box.left&&x<=box.right&&y>=box.top&&y<=box.bottom);
+}
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
@@ -806,12 +815,21 @@ function bind() {
   }
   // Drags and swipes: sideways pans; up or down slides to the other lane once past the lane's own range.
   // Touch leaves sideways swipes to the browser (touch-action: pan-x) and vertical ones on inner lists to the list.
+  // A mouse drag that starts on text selects it and never pans; one that starts elsewhere pans and never selects.
   let drag;
   viewport.onpointerdown=e=>{
    const touch=e.pointerType!=='mouse';
    if(e.button!==0||e.target.closest('button,a,input,select,summary,.inline-tree-rows')||touch&&innerScroller(e.target,viewport))return;
+   if(!touch&&onText(e.clientX,e.clientY)){
+    viewport.classList.add('selecting');
+    addEventListener('pointerup',()=>viewport.classList.remove('selecting'),{once:true});
+    return;
+   }
+   // A touch on selected text adjusts the selection.
+   if(touch&&!getSelection().isCollapsed&&viewport.contains(getSelection().anchorNode))return;
    drag={x:e.clientX,y:e.clientY,left:viewport.scrollLeft,top:viewport.scrollTop,axis:null,touch,id:e.pointerId};
   };
+  viewport.onselectstart=e=>{if(drag||laneAnimation)e.preventDefault();};
   viewport.onpointermove=e=>{
    if(!drag||drag.id!==e.pointerId||drag.axis==='done')return;
    const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
@@ -819,7 +837,7 @@ function bind() {
     if(Math.max(Math.abs(dx),Math.abs(dy))<6)return;
     drag.axis=Math.abs(dx)>=Math.abs(dy)?'x':'y';
     if(drag.axis==='x'&&drag.touch){drag=null;return;}
-    viewport.setPointerCapture(e.pointerId);viewport.classList.add('panning');
+    viewport.setPointerCapture(e.pointerId);viewport.classList.add('panning');getSelection().removeAllRanges();
    }
    if(drag.axis==='x'){viewport.scrollLeft=drag.left-dx;return;}
    const [min,max]=laneRange(),wanted=drag.top-dy;
