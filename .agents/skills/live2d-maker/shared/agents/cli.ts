@@ -98,6 +98,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
   let threadId = resumed, text = '', final: any, stderr = '';
   let processExitCode: number | null | undefined;
+  let upstreamStatus: number | undefined;
   const eventErrors: unknown[] = [];
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
@@ -175,7 +176,11 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       } });
     if (model.harness === 'agv') {
       bridge = await genaiGateway(env, task.tools || [], root, signal, task.images, workspace,
-        event => log.recordProtocol(event).then(() => {}), visual);
+        event => {
+          // AGV reports upstream failures only as text; the gateway sees the real status. A later success clears it.
+          if (event.phase === 'headers' && event.status) upstreamStatus = event.status >= 400 ? event.status : undefined;
+          return log.recordProtocol(event).then(() => {});
+        }, visual);
       if (bridge) Object.assign(env, { AGY_LLM_GATEWAY_URL: bridge.url });
     } else if (budget.images || budget.bytes || budget.deduplicate) {
       const nativeEnv: NodeJS.ProcessEnv = { ...inherited.env, ...env };
@@ -275,10 +280,11 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
       if (code !== 0 || !final || final.is_error || !successfulStatus) {
-        // Retry only on structured signals: the API status Claude reports, a CLI killed before any result,
-        // or one of AGV's two Go transport timeouts, which it reports only as the terminal error string.
-        const status = final?.api_error_status;
-        const info = typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final.api_error_code ?? null } }
+        // Retry only on structured signals: the API status Claude reports, the upstream status AGV's
+        // response carried through our gateway, a CLI killed before any result, or one of AGV's two Go
+        // transport timeouts, which it reports only as the terminal error string.
+        const status = final?.api_error_status ?? (model.harness === 'agv' ? upstreamStatus : undefined);
+        const info = typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final?.api_error_code ?? null } }
           : code === null && !final ? 'processKilled'
           : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout' : undefined;
         const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态', info);
