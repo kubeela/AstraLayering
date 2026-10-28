@@ -291,3 +291,4 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .config-folder summary small{margin-left:auto;font-size:8px;color:#b4bcc6;padding-right:3px}
 .config-folder[open]::before{content:'';position:absolute;left:calc(12px + var(--depth,0) * 13px);top:30px;bottom:4px;border-left:1px solid #e6ecef}
 .config-tree .config-file{padding-left:calc(23px + var(--depth,0) * 13px)}
+.error-box{display:flex;align-items:center;gap:4px;min-width:0;margin:6px 0;border:1px solid #e3b0b3;border-radius:8px;background:#fdf3f4}.error-box .status-error{flex:1;min-width:0;margin:0;padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.error-box .icon-button{flex-shrink:0;color:#b83445}.error-box.lane-error{margin:0 14px 10px}
