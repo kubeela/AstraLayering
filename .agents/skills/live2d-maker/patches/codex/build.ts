@@ -33,9 +33,7 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
   const jobs = options.jobs ?? 4;
   if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error('--jobs 必须为正整数');
   const patch = join(workflowsDirectory, 'patches/codex/layering-runtime.patch'), bytes = await readFile(patch);
-  // Windows checkouts made before LF and long paths were forced could not take the patch; start them over.
-  const layout = process.platform === 'win32' ? ':v2:' : ':v1:';
-  const key = sha256(Buffer.concat([Buffer.from(codexCommit + layout + process.platform + ':' + process.arch), bytes])).slice(0, 20);
+  const key = sha256(Buffer.concat([Buffer.from(codexCommit + ':v1:' + process.platform + ':' + process.arch), bytes])).slice(0, 20);
   const root = join(options.root ?? join(workflowsDirectory, '.codex-build'), `${process.platform}-${process.arch}`, key);
   const binary = process.platform === 'win32' ? 'codex.exe' : 'codex';
   const host = process.platform === 'win32' ? 'codex-code-mode-host.exe' : 'codex-code-mode-host';
@@ -66,8 +64,6 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
     progress(`已开启 Codex 补丁功能，正在自动构建并缓存；日志：${log}`);
     const source = join(root, 'source');
     const exec = (command: string, args: string[], cwd = root, watch = {}) => run(command, args, { cwd, env, log, ...watch });
-    // Silence stops a download after 10 minutes; git itself gives up below 1 KB/s for 2 minutes.
-    const fetching = (stage: string) => watchOutput(stage, progress, log, { killAfter: 600_000 });
     // The patch has LF context, and Codex sources nest deeper than Windows' 260-character default.
     const git = ['-c', 'core.autocrlf=false', '-c', 'core.longpaths=true'];
     if (!existsSync(source)) {
@@ -76,8 +72,9 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
       else {
         const stage = join(root, 'source-clone');
         await rm(stage, { recursive: true, force: true });
-        await exec('git', ['clone', ...git, '-c', 'http.lowSpeedLimit=1000', '-c', 'http.lowSpeedTime=120', '--progress', '--no-checkout',
-          '--depth', '1', '--branch', 'rust-v0.161.0', 'https://github.com/openai/codex.git', stage], root, fetching('下载 Codex 源码'));
+        // A dead connection (below 1 KB/s for 10 minutes) ends the clone instead of hanging forever.
+        await exec('git', ['clone', ...git, '-c', 'http.lowSpeedLimit=1000', '-c', 'http.lowSpeedTime=600', '--progress', '--no-checkout',
+          '--depth', '1', '--branch', 'rust-v0.161.0', 'https://github.com/openai/codex.git', stage], root, watchOutput('下载 Codex 源码', progress, log));
         await exec('git', ['checkout', '--progress', '--detach', codexCommit], stage, watchOutput('检出 Codex 源码', progress, log));
         await rename(stage, source);
       }

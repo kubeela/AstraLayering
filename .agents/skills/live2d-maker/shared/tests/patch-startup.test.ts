@@ -98,15 +98,13 @@ test('Linux、Windows、macOS 均使用传入的系统临时根和对应官方�
     assert.deepEqual(await readdir(root), []);
   }
 });
-test('长命令按行汇报进度，节流并统计编译数；静默时提示，卡住时停止', async () => {
+test('长命令按行汇报进度，节流并统计编译数；静默时提示但不中止', async () => {
   const lines: string[] = [], warnings: number[] = [];
   const script = "process.stderr.write('Receiving 10%\\rReceiving 50%\\r'); setTimeout(() => console.log('   Compiling a v1\\n   Compiling b v1'), 400)";
   assert.equal(await runCommand(process.execPath, ['-e', script], {env: process.env, line: text => lines.push(text),
     quiet: {after: 200, notify: silent => warnings.push(silent)}}), 'Compiling a v1\n   Compiling b v1');
   assert.deepEqual(lines, ['Receiving 10%', 'Receiving 50%', 'Compiling a v1', 'Compiling b v1']);
   assert.ok(warnings.length >= 1 && warnings[0] >= 200, 'silence between the two bursts is reported');
-  await assert.rejects(runCommand(process.execPath, ['-e', 'setTimeout(() => {}, 60_000)'], {env: process.env,
-    quiet: {after: 100, killAfter: 300, notify() {}}}), /没有任何输出，判定为卡住并已停止/);
   let clock = 0; const messages: string[] = [];
   const watch = watchOutput('编译 Codex 补丁', message => messages.push(message), '/logs/build.log', {every: 1000, now: () => clock});
   watch.line!('Updating crates.io index'); clock = 500; watch.line!('Compiling a v1'); clock = 1500; watch.line!('Compiling b v1');

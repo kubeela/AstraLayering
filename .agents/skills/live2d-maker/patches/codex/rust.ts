@@ -46,7 +46,7 @@ export async function withRust<T>(env: NodeJS.ProcessEnv, action: (toolchain: Ru
     await writeFile(installer, bytes, { mode: 0o700 }); await chmod(installer, 0o700);
     const log = services.log ?? join(root, 'install.log');
     await run(installer, ['-y', '--no-modify-path', '--profile', 'minimal', '--default-toolchain', rustVersion],
-      { env: rustEnv, log, ...watchOutput('安装临时 Rust', progress, log, { killAfter: 600_000 }) }).catch(async error => {
+      { env: rustEnv, log, ...watchOutput('安装临时 Rust', progress, log) }).catch(async error => {
         const detail = await readFile(log, 'utf8').catch(() => '');
         throw new Error(`临时 Rust 安装失败；需要可访问官方 Rust 下载站点。${detail ? '\n' + detail.slice(-8000) : ''}`, { cause: error });
       });
