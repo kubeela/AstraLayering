@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { inventory } from '../files.ts';
 import { legacyWorkspaces } from '../workspaces.ts';
@@ -63,7 +63,7 @@ test('task-relative records: request outputDirectory and input .kra paths resolv
   await writeFile(join(request, 'request.json'), JSON.stringify({ outputDirectory: 'part-layering/groups/face/step01', task: { step: 'part_outline' } }));
   assert.deepEqual(await legacyWorkspaces(root, await inventory(root)), { 'part-layering/groups/face/step01': ['part-layering/agents/request/workspace'] });
   assert.deepEqual(inputKras({ a: 'raster-layering/step01/character-depth.kra', b: '/old/run/input.kra', c: '../outside.kra', d: 'note.png' }, root),
-    [join(root, 'raster-layering/step01/character-depth.kra'), '/old/run/input.kra']);
+    [join(root, 'raster-layering/step01/character-depth.kra'), resolve('/old/run/input.kra')]);
 });
 
 test('root and nested process folders share 1000 slots equally, each retaining its newest files', () => {

@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { artifactPath, matchesHash, reportPath, reviewedArtifact, stepDraftPath } from '../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
 import { groupStepId, layerStepId } from '../.agents/skills/live2d-maker/shared/part/part-steps.ts';
 import { readStep, type StepStatus } from '../.agents/skills/live2d-maker/shared/step-chain.ts';
-import { safePath } from './files.ts';
+import { safePath, webFilePath } from './files.ts';
 import { currentAgentCalls, throttled, type AgentCall } from './agent-progress.ts';
 import { partStages } from './part-stages.ts';
 import { partReviewRounds } from './part-review.ts';
@@ -40,8 +40,8 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     return steps.get(id)!;
   };
   for (const { node, depth } of entries) {
-    const path = (stage: 'outline' | 'reduction' | 'completion') => artifactPath(pipeline, node.id, stage);
-    const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(stepDraftPath(pipeline, node.id, stage)) || files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
+    const path = (stage: 'outline' | 'reduction' | 'completion') => webFilePath(artifactPath(pipeline, node.id, stage));
+    const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(webFilePath(stepDraftPath(pipeline, node.id, stage))) || files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
     node.webMessages = {};
     node.webDetails = {};
@@ -60,7 +60,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     if (skipped) skippedReviews.add(node);
     mark('outline', !!outline, !!outline || draft('outline'), skipped ? skipDetail : outline ? '已落稿' : '草稿 · 未落稿');
 
-    const report = await json(reportPath(pipeline, node.id, 'review'));
+    const report = await json(webFilePath(reportPath(pipeline, node.id, 'review')));
     const validReport = report?.groupId === node.id && Array.isArray(report.reviews);
     reviewInputs.set(node, { report: validReport ? report : undefined, outline });
     const reviewed = outline && validReport ? reviewedArtifact(outline, path('outline'), report) : undefined;
@@ -74,7 +74,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     mark('reduction', reductionDone, !!reduced || draft('reduction'), reductionDone ? '已落稿 · 本层去重完成' : reduced ? '已有正式稿 · 本层去重未完成' : '草稿 · 未落稿');
     const completionDone = !!completed && finished !== 'absent';
     mark('completion', completionDone, !!completed || draft('completion'), completionDone ? '已落稿' : completed ? '已有正式稿 · 步骤待重做' : '草稿 · 未落稿');
-    const check = await json(reportPath(pipeline, node.id, 'completion-check'));
+    const check = await json(webFilePath(reportPath(pipeline, node.id, 'completion-check')));
     const checked = !!check && finished === 'completed';
     mark('completionCheck', checked, !!check, checked ? '补全检查通过' : '检查记录待确认');
     const childrenDone = split === 'completed';

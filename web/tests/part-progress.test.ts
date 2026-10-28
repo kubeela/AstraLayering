@@ -76,6 +76,25 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.equal((await f.get()).part.groups[0].webPhases.completionCheck, 'available');
 });
 
+for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: completed nested parts show every phase from native artifact paths`, async t => {
+  const f = await fixture(t, pipeline), id = 'face/eye_left/iris';
+  await f.put('groups.json', { groups: [{ id: 'face', groups: [{ id: 'face/eye_left', groups: [{ id, kind: 'part', groups: [] }] }] }] });
+  const prefix = 'groups/face/children/eye_left/children/iris';
+  await f.put(`${prefix}/step01/outline.svg`, svg);
+  await f.put(`${prefix}/step01/review.json`, { groupId: id, reviews: [
+    { verdict: 'pass', candidateHash: svgHash(svg), feedback: '通过', observations: [] },
+  ] });
+  await f.put(`layers/depth03/${id}.svg`, svg);
+  await f.put(`parts/${id}.svg`, stampedSvg(svg, svgHash(svg)));
+  await f.put(`${prefix}/step02/check.json`, { groupId: id, passed: true });
+  for (const step of [`${prefix}/step01`, 'layers/depth03', `${prefix}/step02`, `${prefix}/step03`]) await f.mark(step);
+  const value = await f.get(), node = value.part.groups[0].groups[0].groups[0];
+  assert.deepEqual(node.webPhases, Object.fromEntries(['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'].map(phase => [phase, 'done'])));
+  assert.equal(node.webReviewRounds[0].review.status, 'done');
+  assert.ok(value.files.includes(`${pipeline}/${prefix}/step01/outline.svg`));
+  assert.deepEqual(value.errors ?? [], []);
+});
+
 for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: hidden outlines and reviews finish together once the skip step completes`, async t => {
   const f = await fixture(t, pipeline);
   const group = { id: 'iris', kind: 'part', hiddenInReference: true, groups: [] };
@@ -304,9 +323,12 @@ test('unsafe group paths and symlinked drafts cannot expose outside files', asyn
   await f.put('groups.json', { groups: [{ id: '../../../private', groups: [] }] });
   assert.match((await f.get()).errors.join(), /group id 无效/);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
-  await mkdir(join(f.task, 'part-layering/groups/body/step01'), { recursive: true });
-  await writeFile(join(f.dir, 'private.svg'), svg);
-  await symlink(join(f.dir, 'private.svg'), join(f.task, 'part-layering/groups/body/step01/outline.svg'));
+  await mkdir(join(f.task, 'part-layering/groups/body'), { recursive: true });
+  await mkdir(join(f.dir, 'private'));
+  await writeFile(join(f.dir, 'private/outline.svg'), svg);
+  // A directory junction covers symlinked parents without requiring Windows'
+  // file-symlink privilege (or enabling Developer Mode on the user's machine).
+  await symlink(join(f.dir, 'private'), join(f.task, 'part-layering/groups/body/step01'), process.platform === 'win32' ? 'junction' : 'dir');
   const value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'pending');
   assert.ok(!value.files.includes('part-layering/groups/body/step01/outline.svg'));
