@@ -56,6 +56,13 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 
 使用 `--source` 时应保留该源码仓库，worktree 共享它的 Git 对象。手工测试可把输出路径传给下方验证脚本，无需修改 `.env`。
 
+### 构建进度与恢复
+
+- **查看进度：** 源码下载、检出和 Rust 准备有新输出时，按约 20 秒的间隔汇报最近一行；编译阶段按约 30 秒的间隔汇报，并显示已编译的 crate 数与耗时。完整输出持续写入缓存目录的 `build.log`，工作流日志显示阶段进度和日志路径。
+- **长时间无输出：** 连续 3 分钟无新输出会提示检查网络，也可能是在链接大文件；提示本身不会终止命令。可继续等待，或停止任务、配置 `HTTPS_PROXY` 等代理后继续，也可指定已构建且通过能力检查的 `layering_codex_path`。另有 Git HTTP 低速保护：传输持续 10 分钟低于 1000 字节／秒时，Git 会结束该下载；这与 3 分钟无输出提示分别处理。
+- **缺少系统依赖：** 首次构建前检查 C/C++ 工具链。Windows 检查 Visual Studio 的 MSVC 组件或 `cl`，macOS／Linux 检查 `CC`／`CXX` 指定的命令或 `cc`／`c++`；构建日志中的缺少链接器等错误也会给出安装指引。网页与 `workflow.log` 直接显示缺什么、如何安装；补齐后点「继续」（命令行 `--continue`），会重新检查并构建，保留已有会话和制作产物。Linux 无桌面环境缺少 Xvfb 时也使用这套依赖提示与继续机制，显示环境要求见 [安装与前置](../references/setup.md#krita-与显示环境)。
+- **Windows 检出与缓存：** 构建用 Git 子进程固定 LF 换行、启用长路径并设置下载低速保护，保留用户的代理、证书和凭据设置，不修改用户 Git 配置。已有缓存中尚未应用补丁的源码无法通过补丁检查时，重新获取一次；新检出的源码仍不兼容时明确失败。已应用补丁的源码和通过哈希校验的可执行缓存继续复用，无需手动清空整个缓存。
+
 ### 行为
 
 - 标准 Responses 流在 `response.failed.error` 中给出失败原因，读取方式不变。LiteLLM 的流式失败先发 `error: null` 的 `response.failed`，再以独立 `error` 事件给出原因；补丁用后者替换空失败的通用提示，按同一错误码映射，不会让通用提示覆盖已有原因。`content_policy_violation`（如图片审查拒绝）报告为不可重试的请求错误并保留原文，不再以“stream disconnected… response.failed event received”重连 5 次。WebSocket 路径不变。工作流只按结构化错误码决定是否重试（见 [shared](../shared/README.md#自动检查)），因此这项修正与下文 [Responses 错误透传](#responses-错误透传) 直接决定失败是否被当作可重试错误。

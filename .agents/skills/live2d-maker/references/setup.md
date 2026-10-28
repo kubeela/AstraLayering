@@ -50,6 +50,10 @@ pnpm install --frozen-lockfile
 
 **Codex 补丁：** 所有 Codex 步骤都使用补丁版，程序自动构建并缓存；只用 Claude／AGV 时不构建。`layering_codex_path` 留空即可启用，指定已有入口时检查补丁能力后复用（生图能力要求见[模型方案](model-presets.md#可选模型与服务连接)）。Rust 1.95.0 自动复用或临时安装，构建后清理；Git 和平台 C/C++ 编译工具需要本机提供。依赖缺失或构建失败时查 [patches](../patches/README.md)。
 
+首次需要构建时，程序先检查平台 C/C++ 编译工具链；缺少时会在网页与 `workflow.log` 中直接说明需要安装的软件和处理方法。安装完成后点网页「继续」（命令行 `--continue`），程序重新检查后接着构建，已有会话和制作产物保留。
+
+源码下载、检出、Rust 准备和编译期间，有新输出时会按约 20～30 秒的间隔汇报最近进度，完整输出写入 `build.log`。连续 3 分钟没有新输出时会提示检查网络或继续等待，这个提示本身不会中止构建；可停止任务后配置代理再继续，或指定已构建且通过能力检查的 `layering_codex_path`。Windows 检出与缓存恢复规则见 [patches · 构建进度与恢复](../patches/README.md#构建进度与恢复)。
+
 **Claude Code 兼容层：** 复用已安装的 Claude Code CLI，无需修改或重新编译 CLI，也不需要 Rust 或 C/C++ 工具链。配置 `layering_claude_image_compact_threshold`／`layering_claude_request_compact_mib` 可启用图片数／请求体大小保护，`layering_claude_image_deduplicate=true` 可启用图片去重；这些保护默认关闭。启用后自动准备本地 Messages 转发层，保留原鉴权和原生自动压缩。支持 Anthropic Messages 路由（含自定义 base URL）；Bedrock／Vertex／Foundry 路由启用保护时明确报错。行为与验证见 [patches · 图片容量保护](../patches/README.md#图片容量保护)。
 
 **AGV 兼容补丁：** 需要绕过 CLI 的 60 秒响应头期限时，设置 `layering_agv_unlimited_response_header_timeout=true`；程序准备独立的受控副本，不需要 Rust。适用构建与验证见 patches。
@@ -64,6 +68,8 @@ pnpm install --frozen-lockfile
 - **对话框：** 桥接插件自动取消会卡住无人值守界面的对话框（例如导出参数框），并在工具结果中给出提示。
 - **并发上限：** 本机同时运行的 Krita 数量由 `.env` 的 `layering_krita_max_instances` 限制（默认 4，跨任务计算；名额锁位于系统临时目录的 `astra-krita.slots`，可用 `ASTRA_STUDIO_KRITA_SLOTS` 改位置）。需要 Krita 的 section 在开始步骤前占一个名额，持有到 section 结束；名额用满时排队等待。声明 `krita: false` 的步骤不占名额，其 agent 也没有 krita 工具。网页在 section 占用或排队等待 Krita 时显示标识。
 - **显示：** Linux 已设置 `DISPLAY`、`WAYLAND_DISPLAY` 或 `QT_QPA_PLATFORM` 时直接沿用，不启动 Xvfb；都没有时工作流启动一个共享的 Xvfb（以 `-noreset` 运行），多个 section 的 Krita 共用它。Xvfb 需要本机安装（`apt install xvfb` 等），不在 PATH 时用 `ASTRA_STUDIO_XVFB` 指定路径。macOS 与 Windows 使用当前桌面。
+
+缺少 Xvfb 时，任务会记录为失败，并在网页与 `workflow.log` 中显示具体依赖、安装方法和显示环境配置提示。补齐后点「继续」（命令行 `--continue`），会重新检查并沿用已有会话和产物接着运行。
 
 Krita 用法只写在 [krita 工具说明](../shared/tools/krita/description.md)，随需要 Krita 的步骤提供。
 
