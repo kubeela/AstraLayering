@@ -39,18 +39,18 @@ async function advance() {
   } else if (mode === 'eof') process.exit(0);
   else {
     if (!(behavior.skipCallsAfterFailure && turns > 1)) {
-      for (const item of completedItems) write({ method: 'item/completed', params: { threadId: 'native-thread', item } });
+      for (const item of completedItems) write({ method: 'item/completed', params: { threadId, item } });
     }
-    write({ method: 'item/completed', params: { threadId: 'native-thread', item: { type: 'reasoning', summary: ['测试工具选择摘要'] } } });
-    write({ method: 'item/completed', params: { threadId: 'native-thread', item: { type: 'agentMessage', text: finalText } } });
-    write({ method: 'thread/tokenUsage/updated', params: { threadId: 'native-thread', tokenUsage: { total: { inputTokens: 12, outputTokens: 3 } } } });
+    write({ method: 'item/completed', params: { threadId, item: { type: 'reasoning', summary: ['测试工具选择摘要'] } } });
+    write({ method: 'item/completed', params: { threadId, item: { type: 'agentMessage', text: finalText } } });
+    write({ method: 'thread/tokenUsage/updated', params: { threadId, tokenUsage: { total: { inputTokens: 12, outputTokens: 3 } } } });
     const blocked = turns === 1 && threads > 0 && threads <= (behavior.blockedTurns ?? 0);
     const failed = blocked || mode === 'failed' || turns <= (behavior.failedTurns ?? 0);
     const error = blocked ? {message:'Image processing blocked due to content policy violation.',codexErrorInfo:'other'}
       : mode === 'failed' ? {message:'测试回合失败',codexErrorInfo:'badRequest'} : {message:'Selected model is at capacity. Please try a different model.',codexErrorInfo:behavior.errorInfo ?? 'serverOverloaded'};
     if (!blocked) await record([{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: finalText }] }]);
-    if (failed) write({method:'error',params:{threadId:'native-thread',error,willRetry:false}});
-    write({ method: 'turn/completed', params: { threadId: 'native-thread', turn: {
+    if (failed) write({method:'error',params:{threadId,error,willRetry:false}});
+    write({ method: 'turn/completed', params: { threadId, turn: {
       id: 'native-turn', status: failed ? 'failed' : 'completed', error: failed ? error : null } } });
   }
 }
@@ -74,7 +74,7 @@ for await (const line of createInterface({ input: process.stdin })) {
       : [{ type: 'input_text', text: part.text }]) }]);
     index = behavior.skipCallsAfterFailure && turns > 1 ? calls.length : 0;
     write({ id: msg.id, result: { turn: { id: 'native-turn', status: 'inProgress' } } });
-    if (behavior.nativeReconnect) write({method:'error',params:{threadId:'native-thread',willRetry:true,error:{message:'Reconnecting... 2/5',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:503}}}}});
+    if (behavior.nativeReconnect) write({method:'error',params:{threadId,willRetry:true,error:{message:'Reconnecting... 2/5',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:503}}}}});
     await advance();
   } else if (typeof msg.id === 'string') await advance();
 }

@@ -83,7 +83,7 @@ test('a completed finish and aggregated progress replies recover a stale stream 
 const cli = `#!${process.execPath}
 import { randomUUID } from 'node:crypto';
 let input='';for await(const chunk of process.stdin)input+=chunk;
-const mode=JSON.parse(input).message.content[0].text.split('\\n')[0];
+const mode=JSON.parse(input).message.content[0].text.split('\\n')[0].trim();
 const args=process.argv.slice(2), id=args.includes('--conversation')?args[args.indexOf('--conversation')+1]:randomUUID();
 const emit=event=>console.log(JSON.stringify(event));
 const step=(index,type,state='DONE',text='')=>emit({event:'step_update',step_update:{conversation_id:id,step_index:index,step_type:type,state,text_delta:text}});

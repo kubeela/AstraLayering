@@ -3,7 +3,7 @@ import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { CodexAgents } from '../../shared/codex/agents.ts';
@@ -92,7 +92,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + '/'), true);
+  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + sep), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
   assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();
@@ -300,7 +300,7 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.equal(turns.length, 3);
   assert.ok(turns.every(message => message.params.threadId === 'native-thread'));
-  assert.ok(turns[0].params.input[0].text.startsWith(originalPrompt+'\n'));
+  assert.ok(turns[0].params.input[0].text.replace(/\r\n/g, '\n').startsWith(originalPrompt+'\n'));
   assert.match(turns[0].params.input[0].text, /当前工作区/);
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt)));
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.split(originalPrompt).length === 2));
@@ -362,6 +362,7 @@ test('图片被内容策略拦截：本批图片换成文字后在新会话继�
   t.after(() => session.close());
   const images = ['a.png', 'b.png'].map(name => ({ path: join(f.directory, name), description: name }));
   const result = await session.run({ name: '拦截', prompt: '原始任务', images, tools: [tool(async () => textResult('已提交'))] });
+  await session.close();
   assert.equal(result.threadId, 'native-thread-2');
   assert.deepEqual(replaced, ['native-thread-1']);
   assert.deepEqual(started, ['native-thread-1', 'native-thread-2']);
@@ -369,7 +370,7 @@ test('图片被内容策略拦截：本批图片换成文字后在新会话继�
   const [injected] = protocol.filter(message => message.method === 'thread/inject_items');
   const history = JSON.stringify(injected.params.items);
   assert.ok(!history.includes('"type":"input_image"') && !history.includes('"instructions"'));
-  for (const image of images) assert.ok(history.includes(`输入图片 ${image.path}`));
+  for (const image of images) assert.ok(history.includes(JSON.stringify(`输入图片 ${image.path}`).slice(1, -1)));
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.deepEqual(turns.map(message => message.params.threadId), ['native-thread-1', 'native-thread-2']);
   assert.equal(turns[1].params.input.length, 1);

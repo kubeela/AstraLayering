@@ -13,12 +13,14 @@ import { parseAgentModel } from '../agents/models.ts';
 import { runAgent } from '../raster/agent.ts';
 import {AgentLog} from '../codex/agent-log.ts';
 import {setTimeout as delay} from 'node:timers/promises';
+import { nodeExecutables } from '../../part-layering/tests/node-executables.ts';
 import { patchedCodexCapabilities } from './fake-codex.ts';
 
 const payload = { message: 'Provider rejected this reference', code: 'bad_reference',
   type: 'invalid_request_error', param: 'input[0]', status: 400, request_id: 'provider-request-123' };
 
 async function fixture(t: TestContext) {
+  nodeExecutables(t);
   const root = await mkdtemp(join(tmpdir(), 'layering-errors-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const cwd = join(root, 'case'); await mkdir(cwd);

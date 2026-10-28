@@ -59,13 +59,16 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
   let threadId: string | undefined, threadPath: string | undefined, cwd: string | undefined, toolDefinitions: string | undefined;
   let imageGeneration: boolean | undefined, shell: boolean | undefined;
   let nextId = 0, closed = false, busy = false, stderr = '';
+  let activeTurnId: string | undefined;
+  const endedTurns = new Set<string>();
+  const turnEndWaiters = new Map<string, ReturnType<typeof Promise.withResolvers<void>>>();
   let failure: { error: unknown } | undefined;
   const closing = new AbortController();
   const transportEnded = new AbortController();
   const pending = new Map<number | string, ReturnType<typeof Promise.withResolvers<Record<string, any>>>>();
   const exited = Promise.withResolvers<void>();
   let current: {
-    task: AgentTask; log: AgentLog; signal: AbortSignal;
+    task: AgentTask; log: AgentLog; signal: AbortSignal; turnId?: string;
     completion: ReturnType<typeof Promise.withResolvers<void>>;
     tools: Map<string, NonNullable<AgentTask['tools']>[number]>;
     done: boolean; finalResponse: string; usage: unknown; images: GeneratedImage[]; errors: unknown[];
@@ -101,6 +104,32 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     return waiter.promise;
   };
 
+  const rememberActiveTurn = (thread: Record<string, any> | undefined) => {
+    const turn = thread?.turns?.findLast((turn: any) => turn.status === 'inProgress');
+    if (typeof turn?.id === 'string' && !endedTurns.has(turn.id)) activeTurnId = turn.id;
+  };
+  // The interrupt RPC only acknowledges the request. Wait for the terminal event
+  // before submitting our input, and bound the wait if the old turn is stuck.
+  async function interruptActiveTurn(signal: AbortSignal, refresh = false): Promise<boolean> {
+    const waiting = AbortSignal.any([signal, transportEnded.signal, AbortSignal.timeout(30_000)]);
+    if (refresh) rememberActiveTurn((await abortable(request('thread/read', { threadId, includeTurns: true }), waiting)).thread);
+    const id = activeTurnId;
+    if (!id) return false;
+    const ended = Promise.withResolvers<void>();
+    turnEndWaiters.set(id, ended);
+    try {
+      try { await abortable(request('turn/interrupt', { threadId, turnId: id }), waiting); }
+      catch (error) { if (!endedTurns.has(id)) throw error; }
+      if (!endedTurns.has(id)) await abortable(ended.promise, waiting);
+      return true;
+    } finally { turnEndWaiters.delete(id); }
+  }
+  const schemaMismatch = (error: unknown) => error instanceof AgentCallError &&
+    (error.details as { code?: number } | undefined)?.code === -32603 &&
+    /\bActiveTurnOutputSchemaMismatch\b/.test(error.message);
+  const protocolFailure = (cause: unknown) => new AgentCallError(
+    'Codex 活动回合未能恢复到可提交状态', 'sessionProtocol', { cause });
+
   async function start(threadOptions: Record<string, unknown>) {
     const executable = appServerCommand(options.codexPathOverride);
     const args = [...executable.args];
@@ -125,6 +154,18 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         const message = JSON.parse(line) as Message;
         const description = await current?.log.recordProtocol(message);
         if (description && current) options.progress?.(`[${current.task.name}] ${description}`);
+        const sameThread = !message.params?.threadId || message.params.threadId === (threadId ?? resumeThreadId);
+        if (sameThread && message.method === 'turn/started' && typeof message.params?.turn?.id === 'string') {
+          activeTurnId = message.params.turn.id;
+        } else if (sameThread && message.method === 'turn/completed' && typeof message.params?.turn?.id === 'string') {
+          const id = message.params.turn.id;
+          endedTurns.add(id);
+          if (activeTurnId === id) activeTurnId = undefined;
+          turnEndWaiters.get(id)?.resolve();
+        }
+        // Resumed/automatic turns must not run this task's tools or finish it.
+        const ownTurn = sameThread && !!current?.turnId &&
+          (!message.params?.turnId || message.params.turnId === current.turnId);
         if (message.method && message.id !== undefined) {
           if (message.method !== 'item/tool/call') {
             await send({ id: message.id, error: { code: -32601, message: `未注册的请求：${message.method}` } });
@@ -133,7 +174,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
           const params = message.params;
           let result: ToolResult;
           try {
-            if (!busy || !current || current.done) throw new Error('当前没有可调用工具的回合');
+            if (!busy || !current || current.done || !ownTurn) throw new Error('当前没有可调用工具的回合');
             current.signal.throwIfAborted();
             if (!params || params.threadId !== threadId || (params.namespace != null && params.namespace !== 'functions')) {
               throw new Error('工具请求不属于当前会话或注册命名空间');
@@ -154,7 +195,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
             if (message.error) waiter.reject(agentCallError(message.error, 'App Server RPC 调用失败'));
             else waiter.resolve(message.result ?? {});
           }
-        } else if (message.method === 'item/completed' && current) {
+        } else if (message.method === 'item/completed' && current && ownTurn) {
           const item = message.params?.item;
           if (item?.type === 'agentMessage') {
             current.finalResponse = item.text;
@@ -168,16 +209,17 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
             catch (error) { failTurn(error); continue; }
             if (!current.images.some(image => image.savedPath === savedPath)) current.images.push({ savedPath });
           }
-        } else if (message.method === 'thread/tokenUsage/updated' && current) {
+        } else if (message.method === 'thread/tokenUsage/updated' && current && ownTurn) {
           current.usage = message.params?.tokenUsage;
-        } else if (message.method === 'turn/completed' && current) {
+        } else if (message.method === 'turn/completed' && current && ownTurn &&
+            (!message.params?.turn?.id || message.params.turn.id === current.turnId)) {
           const turn = message.params?.turn;
           if (turn?.status !== 'completed') {
             // A failed turn without a code is still a channel failure, unlike a local error.
             failTurn(agentCallError(turn?.error, `回合状态：${turn?.status}`, turn?.error?.codexErrorInfo ?? 'turnFailed'));
           }
           else { current.done = true; current.completion.resolve(); }
-        } else if (message.method === 'error' && current) {
+        } else if (message.method === 'error' && current && ownTurn) {
           current.errors.push(errorDetails(message.params));
         }
         // error(willRetry=true/false) 都是通知。等 turn/completed 的终态后才决定恢复，
@@ -195,6 +237,11 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
     threadId = started.thread?.id;
     if (typeof threadId !== 'string') throw new Error('App Server 未返回会话 ID');
     threadPath = typeof started.thread?.path === 'string' ? started.thread.path : undefined;
+    rememberActiveTurn(started.thread);
+    if (resumeThreadId) {
+      try { await interruptActiveTurn(current!.signal, !activeTurnId && started.thread?.status?.type === 'active'); }
+      catch (error) { current!.signal.throwIfAborted(); throw protocolFailure(error); }
+    }
     if (history?.length && !resumeThreadId) await request('thread/inject_items', { threadId, items: history });
     await emit({ type: 'thread.started', thread_id: threadId });
   }
@@ -230,7 +277,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         model: selectedModel.model, cwd, sandbox: 'danger-full-access', approvalPolicy: 'never',
         config: flattenConfig({ ...options.config, model_reasoning_effort: selectedModel.effort, web_search: 'disabled',
           ...(options.baseUrl ? { openai_base_url: options.baseUrl } : {}),
-          features: { image_generation: imageGeneration, shell_tool: shell, unified_exec: shell, multi_agent: false, memories: false } }),
+          features: { image_generation: imageGeneration, shell_tool: shell, unified_exec: shell, multi_agent: false, memories: false, goals: false } }),
         dynamicTools: definitions,
       };
       const input: Record<string, unknown>[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths), text_elements: [] }];
@@ -259,8 +306,22 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         signal.throwIfAborted();
         if (!threadId) await start(threadOptions);
         checkFailure();
-        await request('turn/start', { threadId, input, effort: selectedModel.effort,
-          ...(task.outputSchema ? { outputSchema: task.outputSchema } : {}) });
+        // The workflow owns turn scheduling, including resumed threads. goals:false
+        // prevents native goal continuation racing this explicit schema-bound turn.
+        const params = { threadId, input, effort: selectedModel.effort,
+          ...(task.outputSchema ? { outputSchema: task.outputSchema } : {}) };
+        let started;
+        try { started = await request('turn/start', params); }
+        catch (error) {
+          if (!schemaMismatch(error)) throw error;
+          options.progress?.('Codex 自动续跑回合与输出格式冲突；中断后沿用原会话立即重试一次。');
+          try {
+            if (!await interruptActiveTurn(signal, true)) throw error;
+          } catch (cause) { signal.throwIfAborted(); throw protocolFailure(cause); }
+          try { started = await request('turn/start', params); }
+          catch (cause) { if (schemaMismatch(cause)) throw protocolFailure(cause); throw cause; }
+        }
+        state.turnId = started.turn?.id;
         await completion.promise;
         if (task.checkResult) state.images = task.checkResult(state.finalResponse, state.images);
         await log.finish({ status: 'completed', threadId, usage: state.usage, finalResponse: state.finalResponse, images: state.images });
