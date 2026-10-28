@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
 import { legacyOutputDirectory } from '../.agents/skills/live2d-maker/shared/agents/workspace.ts';
-import { inside, safePath } from './files.ts';
+import { inside, safePath, webFilePath } from './files.ts';
 
 // Compatibility for existing requests. New workspaces live directly in a step;
 // old ones are associated through the request, rather than guessed UI layouts.
@@ -15,7 +15,7 @@ export async function legacyWorkspaces(directory: string, files: readonly string
     // New requests record outputDirectory task-relative; old ones hold it absolute.
     const output = value.outputDirectory ? resolve(directory, value.outputDirectory) : legacyOutputDirectory({ ...value.task, cwd: resolve(directory, pipeline) }, resolve(directory, pipeline));
     if (!inside(resolve(directory), output)) continue;
-    const key = relative(directory, output).split('\\').join('/');
+    const key = webFilePath(relative(directory, output));
     (result[key] ||= []).push(workspace);
   }
   return result;

@@ -1,6 +1,6 @@
 import { realpath } from 'node:fs/promises';
 import { relative, resolve } from 'node:path';
-import { safePath } from './files.ts';
+import { safePath, webFilePath } from './files.ts';
 import { reportTargets } from '../.agents/skills/live2d-maker/shared/report-paths.ts';
 import { reportReferences, reportSummary, type ReportImage } from './report-markdown.js';
 
@@ -13,7 +13,7 @@ export async function reportPreview(directory: string, path: string, text: strin
     if (seen.has(ref.target)) continue;
     seen.add(ref.target);
     for (const candidate of reportTargets(root, path, ref.target, aliases)) {
-      const local = relative(root, candidate).split('\\').join('/');
+      const local = webFilePath(relative(root, candidate));
       if (!files.has(local)) continue;
       try { await safePath(root, local); }
       catch { continue; }

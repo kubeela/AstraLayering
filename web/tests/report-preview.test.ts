@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { test } from 'node:test';
 import sharp from 'sharp';
 import { createWorkbench } from '../server.ts';
@@ -16,7 +16,7 @@ test('任务目录经软链接打开时，按真实路径书写的绝对图片�
   const image = 'part-layering/step01/evidence/marked.png';
   await mkdir(join(real, 'part-layering/step01/evidence'), { recursive: true });
   await writeFile(join(real, image), 'image');
-  await symlink(real, root);
+  await symlink(real, root, process.platform === 'win32' ? 'junction' : 'dir');
   const report = await reportPreview(root, 'part-layering/step01/review.md', '`' + join(real, image) + '`', new Set([image]));
   assert.deepEqual(report.images.map(item => item.path), [image]);
 });
@@ -48,10 +48,10 @@ test('报告图片只解析实际任务内的文件，拒绝外部路径与符�
   await mkdir(join(root, 'clothing-raster-layering/step01/evidence'), { recursive: true });
   await writeFile(join(root, image), 'image');
   await writeFile(join(base, 'outside.png'), 'private');
-  const alias = 'clothing-raster-layering/step01/alias.png';
-  await symlink(join(base, 'outside.png'), join(root, alias));
+  const alias = 'clothing-raster-layering/step01/linked/outside.png';
+  await symlink(base, join(root, 'clothing-raster-layering/step01/linked'), process.platform === 'win32' ? 'junction' : 'dir');
   const text = ['结论：需要修复', '![标注](evidence/marked.png)', '`' + image + '`', '`step01/evidence/marked.png`', '`' + join(root, image) + '`',
-    '`' + join(base, 'outside.png') + '`', '`../../../outside.png`', '`alias.png`', '![remote](https://example.com/image.png)', '`missing.png`'].join('\n');
+    '`' + join(base, 'outside.png') + '`', '`../../../outside.png`', '`linked/outside.png`', '![remote](https://example.com/image.png)', '`missing.png`'].join('\n');
   const report = await reportPreview(root, 'clothing-raster-layering/step01/review-01.md', text, new Set([image, alias]));
   assert.equal(report.summary, '结论：需要修复');
   // Report-relative, task-root-relative, legacy pipeline-relative (last-resort ancestor) and absolute all resolve.
@@ -94,8 +94,8 @@ test('review 草稿展示引用图片，经 HTTP 可读，发布后采用正式�
 });
 
 test('report links try the report directory, then the task root, and only then legacy ancestors', () => {
-  const root = '/task', report = 'part-layering/groups/face/step01/review.md';
-  assert.deepEqual(reportTargets(root, report, 'evidence/a.png'), ['/task/part-layering/groups/face/step01/evidence/a.png',
-    '/task/evidence/a.png', '/task/part-layering/groups/face/evidence/a.png', '/task/part-layering/groups/evidence/a.png', '/task/part-layering/evidence/a.png']);
+  const root = resolve('/task'), report = 'part-layering/groups/face/step01/review.md';
+  assert.deepEqual(reportTargets(root, report, 'evidence/a.png'), ['part-layering/groups/face/step01/evidence/a.png',
+    'evidence/a.png', 'part-layering/groups/face/evidence/a.png', 'part-layering/groups/evidence/a.png', 'part-layering/evidence/a.png'].map(path => join(root, path)));
   assert.deepEqual(reportTargets(root, 'report.md', '../x.png'), []);
 });

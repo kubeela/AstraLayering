@@ -2,6 +2,10 @@ import { lstat, mkdir, open, readdir, readFile, realpath, rename, writeFile } fr
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { randomUUID } from 'node:crypto';
 
+// Task-relative keys exchanged with the browser always use '/', independent of
+// the native paths used by filesystem and workflow helpers.
+export const webFilePath = (path: string): string => path.replaceAll('\\', '/');
+
 export const inside = (root: string, path: string) => path === root || path.startsWith(root + sep);
 export async function safePath(root: string, path = ''): Promise<string> {
   if (isAbsolute(path) || path.split(/[\\/]/).some(p => p === '..') || path.includes('\0')) throw new Error('无效的任务文件路径');
