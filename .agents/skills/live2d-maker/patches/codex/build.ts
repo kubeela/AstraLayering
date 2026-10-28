@@ -7,7 +7,7 @@ import { parseArgs } from 'node:util';
 import { setTimeout as delay } from 'node:timers/promises';
 import lockfile from 'proper-lockfile';
 import { workflowsDirectory } from '../../shared/paths.ts';
-import { runCommand, type Command } from './process.ts';
+import { runCommand, watchOutput, type Command } from './process.ts';
 import { withRust } from './rust.ts';
 
 export const codexCommit = '979011409de0a60b52f179721948e65531d26144';
@@ -17,6 +17,10 @@ type Services = { run?: Command; rust?: typeof withRust; companion?: () => strin
 const platforms: Record<string, string> = { 'linux-x64': 'x86_64-unknown-linux-musl', 'linux-arm64': 'aarch64-unknown-linux-musl',
   'darwin-x64': 'x86_64-apple-darwin', 'darwin-arm64': 'aarch64-apple-darwin', 'win32-x64': 'x86_64-pc-windows-msvc', 'win32-arm64': 'aarch64-pc-windows-msvc' };
 const sha256 = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
+const compilers: Partial<Record<NodeJS.Platform, string>> = {
+  win32: 'Windows 需要安装 Visual Studio Build Tools 并勾选「使用 C++ 的桌面开发」（MSVC 与 Windows SDK），装好后续跑；路径过长时可把项目放到更短的目录',
+  darwin: 'macOS 需要 Xcode 命令行工具（xcode-select --install）',
+  linux: 'Linux 需要 gcc 或 clang 等 C/C++ 编译工具' };
 function companion(): string {
   const platform = `${process.platform}-${process.arch}`, triple = platforms[platform];
   if (!triple) throw new Error(`未支持的 SDK 平台：${platform}`);
@@ -29,7 +33,9 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
   const jobs = options.jobs ?? 4;
   if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error('--jobs 必须为正整数');
   const patch = join(workflowsDirectory, 'patches/codex/layering-runtime.patch'), bytes = await readFile(patch);
-  const key = sha256(Buffer.concat([Buffer.from(codexCommit + ':v1:' + process.platform + ':' + process.arch), bytes])).slice(0, 20);
+  // Windows checkouts made before LF and long paths were forced could not take the patch; start them over.
+  const layout = process.platform === 'win32' ? ':v2:' : ':v1:';
+  const key = sha256(Buffer.concat([Buffer.from(codexCommit + layout + process.platform + ':' + process.arch), bytes])).slice(0, 20);
   const root = join(options.root ?? join(workflowsDirectory, '.codex-build'), `${process.platform}-${process.arch}`, key);
   const binary = process.platform === 'win32' ? 'codex.exe' : 'codex';
   const host = process.platform === 'win32' ? 'codex-code-mode-host.exe' : 'codex-code-mode-host';
@@ -59,14 +65,20 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
     if (!waiting) options.building?.();
     progress(`已开启 Codex 补丁功能，正在自动构建并缓存；日志：${log}`);
     const source = join(root, 'source');
-    const exec = (command: string, args: string[], cwd = root) => run(command, args, { cwd, env, log });
+    const exec = (command: string, args: string[], cwd = root, watch = {}) => run(command, args, { cwd, env, log, ...watch });
+    // Silence stops a download after 10 minutes; git itself gives up below 1 KB/s for 2 minutes.
+    const fetching = (stage: string) => watchOutput(stage, progress, log, { killAfter: 600_000 });
+    // The patch has LF context, and Codex sources nest deeper than Windows' 260-character default.
+    const git = ['-c', 'core.autocrlf=false', '-c', 'core.longpaths=true'];
     if (!existsSync(source)) {
-      if (options.source) await exec('git', ['-C', resolve(options.source), 'worktree', 'add', '--detach', source, codexCommit]);
+      if (options.source) await exec('git', [...git, '-C', resolve(options.source), 'worktree', 'add', '--detach', source, codexCommit],
+        root, watchOutput('检出 Codex 源码', progress, log));
       else {
         const stage = join(root, 'source-clone');
         await rm(stage, { recursive: true, force: true });
-        await exec('git', ['clone', '--no-checkout', '--depth', '1', '--branch', 'rust-v0.161.0', 'https://github.com/openai/codex.git', stage]);
-        await exec('git', ['checkout', '--detach', codexCommit], stage);
+        await exec('git', ['clone', ...git, '-c', 'http.lowSpeedLimit=1000', '-c', 'http.lowSpeedTime=120', '--progress', '--no-checkout',
+          '--depth', '1', '--branch', 'rust-v0.161.0', 'https://github.com/openai/codex.git', stage], root, fetching('下载 Codex 源码'));
+        await exec('git', ['checkout', '--progress', '--detach', codexCommit], stage, watchOutput('检出 Codex 源码', progress, log));
         await rename(stage, source);
       }
     }
@@ -81,7 +93,8 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
     } else if (!(await readFile(stamp)).equals(bytes)) throw new Error('补丁缓存不一致；未覆盖现有源码。');
     await (services.rust ?? withRust)(env, async toolchain => {
       await run(toolchain.cargo, [...toolchain.prefix, 'build', '-p', 'codex-cli', '--bin', 'codex', '--profile', 'dev-small',
-        '--jobs', String(jobs), '--target-dir', join(root, 'target')], { cwd: join(source, 'codex-rs'), env: toolchain.env, log });
+        '--jobs', String(jobs), '--target-dir', join(root, 'target')], { cwd: join(source, 'codex-rs'), env: toolchain.env, log,
+        ...watchOutput('编译 Codex 补丁', progress, log, { every: 30_000 }) }).catch(error => { throw new Error(`编译失败；${compilers[process.platform] ?? '需要平台 C/C++ 编译工具'}。`, { cause: error }); });
     }, progress, {log});
     if (compromised) throw compromised;
     await mkdir(output, { recursive: true });
@@ -96,7 +109,9 @@ export async function ensurePatchedCodex(options: Options = {}, services: Servic
     await rename(receipt + '.tmp', receipt);
     progress(`Codex 补丁已准备：${executable}`);
     return executable;
-  } catch (error) { throw new Error(`Codex 补丁自动构建失败；保留会话和产物，修复依赖后可直接续跑。日志：${log}`, { cause: error }); }
+  } catch (error) {
+    throw new Error(`Codex 补丁自动构建失败：${(error as Error).message}\n保留会话和产物，修复依赖后可直接续跑。日志：${log}`, { cause: error });
+  }
   finally { await release(); }
 }
 

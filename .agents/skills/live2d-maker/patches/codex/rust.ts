@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { chmod, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { runCommand, type Command } from './process.ts';
+import { runCommand, watchOutput, type Command } from './process.ts';
 
 export const rustVersion = '1.95.0';
 export type RustToolchain = { cargo: string; prefix: string[]; env: NodeJS.ProcessEnv };
@@ -46,7 +46,7 @@ export async function withRust<T>(env: NodeJS.ProcessEnv, action: (toolchain: Ru
     await writeFile(installer, bytes, { mode: 0o700 }); await chmod(installer, 0o700);
     const log = services.log ?? join(root, 'install.log');
     await run(installer, ['-y', '--no-modify-path', '--profile', 'minimal', '--default-toolchain', rustVersion],
-      { env: rustEnv, log }).catch(async error => {
+      { env: rustEnv, log, ...watchOutput('安装临时 Rust', progress, log, { killAfter: 600_000 }) }).catch(async error => {
         const detail = await readFile(log, 'utf8').catch(() => '');
         throw new Error(`临时 Rust 安装失败；需要可访问官方 Rust 下载站点。${detail ? '\n' + detail.slice(-8000) : ''}`, { cause: error });
       });
