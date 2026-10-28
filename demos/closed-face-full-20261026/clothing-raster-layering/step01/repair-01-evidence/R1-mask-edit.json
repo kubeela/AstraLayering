@@ -1,0 +1,16 @@
+{
+  "layer": "0050 sleeve_image_left :: front_tube",
+  "layer_uuid": "{77df1e21-6b5d-4629-928d-4c3c4b99b201}",
+  "mask": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+  "mask_uuid": "{fc9452e9-d136-4d85-a255-daa65cae0b24}",
+  "roi": [
+    240,
+    772,
+    30,
+    42
+  ],
+  "control": "sleeve own inner cuff turn, relative to tshirt_body visible edge",
+  "curve_svg": "M251.8 768 C251.2 773 250.3 777 250.1 782 C249.9 785 249.4 787 249.2 790 C249 793 249.8 796 248 800 C246.3 803 243.7 804 240.5 806",
+  "raw_paint_unchanged": true,
+  "default_enabled": true
+}

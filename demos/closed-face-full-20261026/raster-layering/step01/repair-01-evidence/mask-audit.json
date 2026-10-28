@@ -1,0 +1,285 @@
+[
+  {
+    "part": "body/torso",
+    "layer": "0040 body/torso",
+    "layer_uuid": "{90c56c5d-2d89-4563-a1e9-2918f8f05207}",
+    "default_masks": [
+      {
+        "name": "blend • neck and shoulder roots • controller neck + arms",
+        "uuid": "{079b4443-1b3c-422c-8135-d402a78ccf44}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/body-torso.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/body-torso.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/body-torso.png",
+    "default_alpha_bbox": [
+      126,
+      997,
+      1026,
+      1374
+    ]
+  },
+  {
+    "part": "body/breast",
+    "layer": "0050 body/breast",
+    "layer_uuid": "{8c772161-d068-47e6-adcf-44ee74724c9e}",
+    "default_masks": [
+      {
+        "name": "blend • upper surface into torso • controller body/torso",
+        "uuid": "{8527e030-0762-4e7f-9168-50c3d5a884bf}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/body-breast.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/body-breast.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/body-breast.png",
+    "default_alpha_bbox": [
+      228,
+      1178,
+      925,
+      1374
+    ]
+  },
+  {
+    "part": "face/mouth/mouth_interior",
+    "layer": "0080 face/mouth/mouth_interior",
+    "layer_uuid": "{a6714c71-ef89-4ea5-8912-8b63190b0bda}",
+    "default_masks": [
+      {
+        "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+        "uuid": "{43af3811-c18a-48f3-8152-6031b79153e4}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-mouth-mouth_interior.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-mouth-mouth_interior.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-mouth-mouth_interior.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/mouth/tongue",
+    "layer": "0081 face/mouth/tongue",
+    "layer_uuid": "{58c28208-a656-45cb-8a62-77d12d3cc400}",
+    "default_masks": [
+      {
+        "name": "clip • full mouth_interior",
+        "uuid": "{48e12ed9-bee4-408d-bbd6-9140e359c43f}",
+        "enabled": true
+      },
+      {
+        "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+        "uuid": "{155871c1-abfe-41f3-8a51-140a1d16ec6f}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-mouth-tongue.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-mouth-tongue.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-mouth-tongue.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/mouth/lower_teeth",
+    "layer": "0082 face/mouth/lower_teeth",
+    "layer_uuid": "{3016c5b5-1c3b-46f2-a582-4e76f1cbb2cf}",
+    "default_masks": [
+      {
+        "name": "clip • full mouth_interior",
+        "uuid": "{11b527ac-a02f-4002-871d-88f90e83e405}",
+        "enabled": true
+      },
+      {
+        "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+        "uuid": "{57e3410e-65ef-4d48-9e77-9c04c50498f3}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-mouth-lower_teeth.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-mouth-lower_teeth.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-mouth-lower_teeth.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/mouth/upper_teeth",
+    "layer": "0083 face/mouth/upper_teeth",
+    "layer_uuid": "{e09b96ee-1087-4dd6-906c-c3f9c2db68e3}",
+    "default_masks": [
+      {
+        "name": "clip • full mouth_interior",
+        "uuid": "{150b821c-c16e-4fc5-bcbd-7969fedc53b3}",
+        "enabled": true
+      },
+      {
+        "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+        "uuid": "{e6509547-793f-45f6-86ac-2045c99cc2da}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-mouth-upper_teeth.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-mouth-upper_teeth.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-mouth-upper_teeth.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_left/sclera",
+    "layer": "0090 face/eye_left/sclera",
+    "layer_uuid": "{ec25b6cd-3e6b-496a-b42b-3ceb934dfc6f}",
+    "default_masks": [
+      {
+        "name": "aperture • eye_left • upper_eyelid + lower_eyelid • CLOSED",
+        "uuid": "{fa38857b-eef9-42d7-8b1b-8350489e4668}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_left-sclera.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_left-sclera.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_left-sclera.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_right/sclera",
+    "layer": "0091 face/eye_right/sclera",
+    "layer_uuid": "{94f8669c-1049-42fa-ac3e-2e99b1993caa}",
+    "default_masks": [
+      {
+        "name": "aperture • eye_right • upper_eyelid + lower_eyelid • CLOSED",
+        "uuid": "{82ff287e-f5be-435c-9f6b-4f19df2c99a5}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_right-sclera.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_right-sclera.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_right-sclera.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_left/iris",
+    "layer": "0092 face/eye_left/iris",
+    "layer_uuid": "{77cfdad5-814b-412f-8662-9f7e1fa1d524}",
+    "default_masks": [
+      {
+        "name": "clip • full eye_left sclera",
+        "uuid": "{700765c5-e08d-4c9a-9c83-39600d60ce1c}",
+        "enabled": true
+      },
+      {
+        "name": "aperture • eye_left • upper_eyelid + lower_eyelid • CLOSED",
+        "uuid": "{423cd416-4126-4c5f-a275-96596c184644}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_left-iris.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_left-iris.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_left-iris.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_right/iris",
+    "layer": "0093 face/eye_right/iris",
+    "layer_uuid": "{27ebce59-aae6-458b-942f-32c6b34be388}",
+    "default_masks": [
+      {
+        "name": "clip • full eye_right sclera",
+        "uuid": "{27d5394b-2a8b-47a5-990d-1ab30faebd6a}",
+        "enabled": true
+      },
+      {
+        "name": "aperture • eye_right • upper_eyelid + lower_eyelid • CLOSED",
+        "uuid": "{b3421a72-604f-400e-9d74-4e44ed5760fd}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_right-iris.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_right-iris.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_right-iris.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_left/highlight",
+    "layer": "0094 face/eye_left/highlight",
+    "layer_uuid": "{9c9556bd-359d-4b20-b838-eeb8e5773c68}",
+    "default_masks": [
+      {
+        "name": "clip • full eye_left sclera",
+        "uuid": "{ea3e662d-80d1-4d03-bdb7-b8c4103bd6b9}",
+        "enabled": true
+      },
+      {
+        "name": "aperture • eye_left • upper_eyelid + lower_eyelid • CLOSED",
+        "uuid": "{a0d9020c-8b1f-460e-89de-3891fef95b53}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_left-highlight.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_left-highlight.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_left-highlight.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_right/highlight",
+    "layer": "0095 face/eye_right/highlight",
+    "layer_uuid": "{37ec8df4-7543-4092-b33c-c16987262f4a}",
+    "default_masks": [
+      {
+        "name": "clip • full eye_right sclera",
+        "uuid": "{b4f6f33f-c77c-4c20-9220-9006abf26183}",
+        "enabled": true
+      },
+      {
+        "name": "aperture • eye_right • upper_eyelid + lower_eyelid • CLOSED",
+        "uuid": "{c5b2d787-8707-4189-a9e5-6ad44a284e9c}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_right-highlight.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_right-highlight.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_right-highlight.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_left/lower_eyelid",
+    "layer": "0098 face/eye_left/lower_eyelid",
+    "layer_uuid": "{58739c35-1b04-4e02-a7c1-105293d2a0fe}",
+    "default_masks": [
+      {
+        "name": "closed contact • upper_eyelid occludes lower_eyelid",
+        "uuid": "{f5d68f91-380a-4775-9969-2f5f49835984}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_left-lower_eyelid.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_left-lower_eyelid.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_left-lower_eyelid.png",
+    "default_alpha_bbox": null
+  },
+  {
+    "part": "face/eye_right/lower_eyelid",
+    "layer": "0099 face/eye_right/lower_eyelid",
+    "layer_uuid": "{755fbc9e-690c-4e31-9fba-f0cfc3eca24e}",
+    "default_masks": [
+      {
+        "name": "closed contact • upper_eyelid occludes lower_eyelid",
+        "uuid": "{c8c844c7-ee6c-47af-8cfd-15d86445163e}",
+        "enabled": true
+      }
+    ],
+    "disabled_evidence": "repair-01-evidence/mask-disabled-solo/face-eye_right-lower_eyelid.png",
+    "enabled_evidence": "repair-01-evidence/mask-enabled-solo/face-eye_right-lower_eyelid.png",
+    "check": "Native solo projection exported with masks enabled, then temporarily disabled; complete underlying material remains in the same paint layer.",
+    "pair_evidence": "repair-01-evidence/mask-checks/face-eye_right-lower_eyelid.png",
+    "default_alpha_bbox": null
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "required_files": {
+    "clothing-depth.kra": 6069021,
+    "report.md.tmp": 14373
+  },
+  "report_links_resolved": true,
+  "kra_zip_integrity": true,
+  "native_kra_node_types": {
+    "paintlayer": 8,
+    "transparencymask": 7
+  },
+  "logical_parts": [
+    "neckline_band",
+    "sleeve_image_left",
+    "sleeve_image_right",
+    "tshirt_body"
+  ],
+  "depths": [
+    10,
+    20,
+    30,
+    40,
+    50,
+    60,
+    70,
+    80
+  ],
+  "reopen_verified": true,
+  "formal_report_left_to_scheduler": true
+}

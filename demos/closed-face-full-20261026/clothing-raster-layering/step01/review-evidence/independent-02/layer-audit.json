@@ -1,0 +1,192 @@
+{
+  "document": "clothing-raster-layering/step01/clothing-depth.kra",
+  "size": [
+    1145,
+    1374
+  ],
+  "before_modified": false,
+  "after_modified": false,
+  "layers_bottom_to_top": [
+    {
+      "layer": "0010 tshirt_body :: hem_return",
+      "type": "paintlayer",
+      "uuid": "{42bccb78-bfdc-497f-851a-308fd7dc3272}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(193, 1174, 778, 76)",
+      "children": [],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0010-tshirt_body-hem_return.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0010-tshirt_body-hem_return.png"
+      }
+    },
+    {
+      "layer": "0020 sleeve_image_left :: cuff_return",
+      "type": "paintlayer",
+      "uuid": "{4650a7bc-e69c-40d0-bc45-1889e42d7b21}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(1, 704, 252, 111)",
+      "children": [
+        {
+          "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+          "type": "transparencymask",
+          "visible": true,
+          "uuid": "{da6bcf63-8bf5-42b0-bd31-5d63d2738258}"
+        }
+      ],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0020-sleeve_image_left-cuff_return.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0020-sleeve_image_left-cuff_return.png"
+      }
+    },
+    {
+      "layer": "0030 sleeve_image_right :: cuff_return",
+      "type": "paintlayer",
+      "uuid": "{ccdd6631-ab19-4b44-bd85-a3b5299cd5d6}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(906, 712, 239, 105)",
+      "children": [
+        {
+          "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+          "type": "transparencymask",
+          "visible": true,
+          "uuid": "{7e888928-acb5-4619-9d5f-88590b32f153}"
+        }
+      ],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0030-sleeve_image_right-cuff_return.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0030-sleeve_image_right-cuff_return.png"
+      }
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "type": "paintlayer",
+      "uuid": "{d5dac9e9-f93e-4ea9-ba04-deb70f721b6a}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(372, 248, 405, 80)",
+      "children": [
+        {
+          "name": "M neckline_band own_inner_aperture",
+          "type": "transparencymask",
+          "visible": true,
+          "uuid": "{aea5b287-d8a2-4100-a50b-0cf72e81d3b0}"
+        }
+      ],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0040-neckline_band-back_arc.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0040-neckline_band-back_arc.png"
+      }
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "type": "paintlayer",
+      "uuid": "{77df1e21-6b5d-4629-928d-4c3c4b99b201}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(1, 348, 259, 453)",
+      "children": [
+        {
+          "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+          "type": "transparencymask",
+          "visible": true,
+          "uuid": "{fc9452e9-d136-4d85-a255-daa65cae0b24}"
+        }
+      ],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0050-sleeve_image_left-front_tube.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0050-sleeve_image_left-front_tube.png"
+      }
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "type": "paintlayer",
+      "uuid": "{9ec693b3-e14c-4b8f-bd6e-a68e2207bd17}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(906, 347, 238, 462)",
+      "children": [
+        {
+          "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+          "type": "transparencymask",
+          "visible": true,
+          "uuid": "{ae3ad7c0-42f1-4c53-bef2-c188c7d6e25b}"
+        }
+      ],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0060-sleeve_image_right-front_tube.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0060-sleeve_image_right-front_tube.png"
+      }
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "type": "paintlayer",
+      "uuid": "{df7c9d8e-1b0e-469b-9acf-db276719b189}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(134, 268, 883, 972)",
+      "children": [
+        {
+          "name": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+          "type": "transparencymask",
+          "visible": true,
+          "uuid": "{d16c7490-ef04-4df7-ac0d-d3138e2f711a}"
+        }
+      ],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0070-tshirt_body-front_body.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0070-tshirt_body-front_body.png"
+      }
+    },
+    {
+      "layer": "0080 neckline_band :: front_U",
+      "type": "paintlayer",
+      "uuid": "{556b20f5-7763-40b0-aa83-d1aa7c96c6c0}",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "bounds": "PyQt5.QtCore.QRect(331, 251, 488, 192)",
+      "children": [
+        {
+          "name": "M neckline_band own_inner_aperture",
+          "type": "transparencymask",
+          "visible": true,
+          "uuid": "{41eddef2-ea10-4ed2-aa7f-99e4c13f346f}"
+        }
+      ],
+      "solo_evidence": {
+        "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-enabled/0080-neckline_band-front_U.png",
+        "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/solo-disabled/0080-neckline_band-front_U.png"
+      }
+    }
+  ],
+  "visibility_record": "restored original document defaults, after all temporary inspections",
+  "part_evidence": {
+    "tshirt_body": {
+      "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/tshirt_body-enabled.png",
+      "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/tshirt_body-disabled.png"
+    },
+    "neckline_band": {
+      "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/neckline_band-enabled.png",
+      "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/neckline_band-disabled.png"
+    },
+    "sleeve_image_left": {
+      "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/sleeve_image_left-enabled.png",
+      "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/sleeve_image_left-disabled.png"
+    },
+    "sleeve_image_right": {
+      "enabled": "clothing-raster-layering/step01/review-evidence/independent-02/sleeve_image_right-enabled.png",
+      "disabled": "clothing-raster-layering/step01/review-evidence/independent-02/sleeve_image_right-disabled.png"
+    }
+  },
+  "structure_note": "8 ordinary paint layers, 7 attached native transparency masks; inheritAlpha is false; no clipping group; all default visible."
+}

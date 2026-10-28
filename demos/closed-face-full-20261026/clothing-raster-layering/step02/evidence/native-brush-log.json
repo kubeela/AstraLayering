@@ -1,0 +1,1634 @@
+{
+  "preset": "k) Blender Blur",
+  "operations": [
+    {
+      "layer": "0040",
+      "target": "existing mask",
+      "label": "initial tested short middle opening",
+      "size": 4,
+      "opacity": 0.5,
+      "from": [
+        540,
+        327
+      ],
+      "to": [
+        610,
+        327
+      ]
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "0040 neckline_band :: back_arc",
+      "label": "back collar opening left",
+      "size": 3,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          381,
+          287
+        ],
+        [
+          "C",
+          429,
+          315,
+          493,
+          328,
+          540,
+          328
+        ]
+      ],
+      "nativeSegments": 17
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "M neckline_band own_inner_aperture",
+      "label": "back collar opening left",
+      "size": 3,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          381,
+          287
+        ],
+        [
+          "C",
+          429,
+          315,
+          493,
+          328,
+          540,
+          328
+        ]
+      ],
+      "nativeSegments": 17
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "0040 neckline_band :: back_arc",
+      "label": "back collar opening right",
+      "size": 3.2,
+      "opacity": 0.4,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          610,
+          327
+        ],
+        [
+          "C",
+          670,
+          324,
+          725,
+          308,
+          769,
+          283
+        ]
+      ],
+      "nativeSegments": 17
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "M neckline_band own_inner_aperture",
+      "label": "back collar opening right",
+      "size": 3.2,
+      "opacity": 0.4,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          610,
+          327
+        ],
+        [
+          "C",
+          670,
+          324,
+          725,
+          308,
+          769,
+          283
+        ]
+      ],
+      "nativeSegments": 17
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "0040 neckline_band :: back_arc",
+      "label": "back collar upper left",
+      "size": 2.6,
+      "opacity": 0.28,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          378,
+          250
+        ],
+        [
+          "C",
+          386,
+          246,
+          395,
+          253,
+          409,
+          260
+        ],
+        [
+          "C",
+          453,
+          285,
+          502,
+          299,
+          574,
+          299
+        ]
+      ],
+      "nativeSegments": 21
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "M neckline_band own_inner_aperture",
+      "label": "back collar upper left",
+      "size": 2.6,
+      "opacity": 0.28,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          378,
+          250
+        ],
+        [
+          "C",
+          386,
+          246,
+          395,
+          253,
+          409,
+          260
+        ],
+        [
+          "C",
+          453,
+          285,
+          502,
+          299,
+          574,
+          299
+        ]
+      ],
+      "nativeSegments": 21
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "0040 neckline_band :: back_arc",
+      "label": "back collar upper right",
+      "size": 2.6,
+      "opacity": 0.28,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          574,
+          299
+        ],
+        [
+          "C",
+          649,
+          300,
+          703,
+          286,
+          742,
+          261
+        ],
+        [
+          "C",
+          755,
+          253,
+          762,
+          247,
+          770,
+          250
+        ]
+      ],
+      "nativeSegments": 21
+    },
+    {
+      "layer": "0040 neckline_band :: back_arc",
+      "target": "M neckline_band own_inner_aperture",
+      "label": "back collar upper right",
+      "size": 2.6,
+      "opacity": 0.28,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          574,
+          299
+        ],
+        [
+          "C",
+          649,
+          300,
+          703,
+          286,
+          742,
+          261
+        ],
+        [
+          "C",
+          755,
+          253,
+          762,
+          247,
+          770,
+          250
+        ]
+      ],
+      "nativeSegments": 21
+    },
+    {
+      "layer": "0080 neckline_band :: front_U",
+      "target": "0080 neckline_band :: front_U",
+      "label": "front opening left",
+      "size": 3.3,
+      "opacity": 0.42,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          381,
+          287
+        ],
+        [
+          "C",
+          392,
+          315,
+          412,
+          343,
+          442,
+          361
+        ],
+        [
+          "C",
+          479,
+          383,
+          525,
+          395,
+          576,
+          395
+        ]
+      ],
+      "nativeSegments": 24
+    },
+    {
+      "layer": "0080 neckline_band :: front_U",
+      "target": "M neckline_band own_inner_aperture",
+      "label": "front opening left",
+      "size": 3.3,
+      "opacity": 0.42,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          381,
+          287
+        ],
+        [
+          "C",
+          392,
+          315,
+          412,
+          343,
+          442,
+          361
+        ],
+        [
+          "C",
+          479,
+          383,
+          525,
+          395,
+          576,
+          395
+        ]
+      ],
+      "nativeSegments": 24
+    },
+    {
+      "layer": "0080 neckline_band :: front_U",
+      "target": "0080 neckline_band :: front_U",
+      "label": "front opening right",
+      "size": 3,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          576,
+          395
+        ],
+        [
+          "C",
+          615,
+          395,
+          663,
+          382,
+          697,
+          362
+        ],
+        [
+          "C",
+          732,
+          343,
+          759,
+          316,
+          769,
+          283
+        ]
+      ],
+      "nativeSegments": 24
+    },
+    {
+      "layer": "0080 neckline_band :: front_U",
+      "target": "M neckline_band own_inner_aperture",
+      "label": "front opening right",
+      "size": 3,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          576,
+          395
+        ],
+        [
+          "C",
+          615,
+          395,
+          663,
+          382,
+          697,
+          362
+        ],
+        [
+          "C",
+          732,
+          343,
+          759,
+          316,
+          769,
+          283
+        ]
+      ],
+      "nativeSegments": 24
+    },
+    {
+      "layer": "0080 neckline_band :: front_U",
+      "target": "0080 neckline_band :: front_U",
+      "label": "front collar outer seam",
+      "size": 2.1,
+      "opacity": 0.23,
+      "alphaLockedDuringStroke": true,
+      "path": [
+        [
+          340,
+          268
+        ],
+        [
+          "C",
+          330,
+          279,
+          330,
+          297,
+          341,
+          320
+        ],
+        [
+          "C",
+          352,
+          347,
+          371,
+          369,
+          398,
+          389
+        ],
+        [
+          "C",
+          450,
+          426,
+          514,
+          444,
+          579,
+          443
+        ],
+        [
+          "C",
+          636,
+          442,
+          700,
+          424,
+          750,
+          386
+        ],
+        [
+          "C",
+          788,
+          358,
+          815,
+          320,
+          818,
+          284
+        ]
+      ],
+      "nativeSegments": 65
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "left shoulder silhouette",
+      "size": 3.2,
+      "opacity": 0.34,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          134,
+          350
+        ],
+        [
+          "C",
+          164,
+          304,
+          216,
+          294,
+          278,
+          287
+        ],
+        [
+          "C",
+          302,
+          284,
+          319,
+          273,
+          336,
+          268
+        ]
+      ],
+      "nativeSegments": 23
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "left shoulder silhouette",
+      "size": 3.2,
+      "opacity": 0.34,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          134,
+          350
+        ],
+        [
+          "C",
+          164,
+          304,
+          216,
+          294,
+          278,
+          287
+        ],
+        [
+          "C",
+          302,
+          284,
+          319,
+          273,
+          336,
+          268
+        ]
+      ],
+      "nativeSegments": 23
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "right shoulder silhouette",
+      "size": 3.5,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          815,
+          270
+        ],
+        [
+          "C",
+          833,
+          274,
+          850,
+          284,
+          872,
+          287
+        ],
+        [
+          "C",
+          930,
+          293,
+          989,
+          307,
+          1017,
+          351
+        ]
+      ],
+      "nativeSegments": 23
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "right shoulder silhouette",
+      "size": 3.5,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          815,
+          270
+        ],
+        [
+          "C",
+          833,
+          274,
+          850,
+          284,
+          872,
+          287
+        ],
+        [
+          "C",
+          930,
+          293,
+          989,
+          307,
+          1017,
+          351
+        ]
+      ],
+      "nativeSegments": 23
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "left waist contour",
+      "size": 3,
+      "opacity": 0.36,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          268,
+          830
+        ],
+        [
+          "C",
+          276,
+          847,
+          276,
+          863,
+          272,
+          884
+        ],
+        [
+          "C",
+          265,
+          933,
+          254,
+          990,
+          246,
+          1038
+        ],
+        [
+          "C",
+          238,
+          1052,
+          215,
+          1065,
+          214,
+          1076
+        ],
+        [
+          "C",
+          211,
+          1091,
+          222,
+          1110,
+          228,
+          1126
+        ]
+      ],
+      "nativeSegments": 32
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "left waist contour",
+      "size": 3,
+      "opacity": 0.36,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          268,
+          830
+        ],
+        [
+          "C",
+          276,
+          847,
+          276,
+          863,
+          272,
+          884
+        ],
+        [
+          "C",
+          265,
+          933,
+          254,
+          990,
+          246,
+          1038
+        ],
+        [
+          "C",
+          238,
+          1052,
+          215,
+          1065,
+          214,
+          1076
+        ],
+        [
+          "C",
+          211,
+          1091,
+          222,
+          1110,
+          228,
+          1126
+        ]
+      ],
+      "nativeSegments": 32
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "right waist contour",
+      "size": 3.4,
+      "opacity": 0.37,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          910,
+          790
+        ],
+        [
+          "C",
+          899,
+          832,
+          881,
+          884,
+          873,
+          931
+        ],
+        [
+          "C",
+          868,
+          951,
+          878,
+          974,
+          887,
+          995
+        ],
+        [
+          "C",
+          910,
+          1046,
+          924,
+          1086,
+          936,
+          1119
+        ],
+        [
+          "C",
+          942,
+          1134,
+          960,
+          1139,
+          963,
+          1150
+        ]
+      ],
+      "nativeSegments": 39
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "right waist contour",
+      "size": 3.4,
+      "opacity": 0.37,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          910,
+          790
+        ],
+        [
+          "C",
+          899,
+          832,
+          881,
+          884,
+          873,
+          931
+        ],
+        [
+          "C",
+          868,
+          951,
+          878,
+          974,
+          887,
+          995
+        ],
+        [
+          "C",
+          910,
+          1046,
+          924,
+          1086,
+          936,
+          1119
+        ],
+        [
+          "C",
+          942,
+          1134,
+          960,
+          1139,
+          963,
+          1150
+        ]
+      ],
+      "nativeSegments": 39
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "left hem turning end",
+      "size": 2.8,
+      "opacity": 0.32,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          228,
+          1126
+        ],
+        [
+          "C",
+          222,
+          1136,
+          211,
+          1149,
+          206,
+          1160
+        ],
+        [
+          "C",
+          201,
+          1174,
+          195,
+          1192,
+          193,
+          1209
+        ]
+      ],
+      "nativeSegments": 10
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "left hem turning end",
+      "size": 2.8,
+      "opacity": 0.32,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          228,
+          1126
+        ],
+        [
+          "C",
+          222,
+          1136,
+          211,
+          1149,
+          206,
+          1160
+        ],
+        [
+          "C",
+          201,
+          1174,
+          195,
+          1192,
+          193,
+          1209
+        ]
+      ],
+      "nativeSegments": 10
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "0070 tshirt_body :: front_body",
+      "label": "right hem turning end",
+      "size": 2.7,
+      "opacity": 0.32,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          963,
+          1150
+        ],
+        [
+          "C",
+          966,
+          1159,
+          955,
+          1173,
+          955,
+          1180
+        ],
+        [
+          "C",
+          962,
+          1191,
+          968,
+          1203,
+          971,
+          1212
+        ]
+      ],
+      "nativeSegments": 7
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "target": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+      "label": "right hem turning end",
+      "size": 2.7,
+      "opacity": 0.32,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          963,
+          1150
+        ],
+        [
+          "C",
+          966,
+          1159,
+          955,
+          1173,
+          955,
+          1180
+        ],
+        [
+          "C",
+          962,
+          1191,
+          968,
+          1203,
+          971,
+          1212
+        ]
+      ],
+      "nativeSegments": 7
+    },
+    {
+      "layer": "0010 tshirt_body :: hem_return",
+      "target": "0010 tshirt_body :: hem_return",
+      "label": "left lower hem outline",
+      "size": 3.4,
+      "opacity": 0.4,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          193,
+          1209
+        ],
+        [
+          "C",
+          193,
+          1219,
+          209,
+          1223,
+          228,
+          1224
+        ],
+        [
+          "C",
+          266,
+          1228,
+          299,
+          1219,
+          329,
+          1221
+        ],
+        [
+          "C",
+          354,
+          1221,
+          386,
+          1239,
+          428,
+          1243
+        ]
+      ],
+      "nativeSegments": 25
+    },
+    {
+      "layer": "0010 tshirt_body :: hem_return",
+      "target": "0010 tshirt_body :: hem_return",
+      "label": "middle lower hem shallow steps",
+      "size": 3.1,
+      "opacity": 0.37,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          428,
+          1243
+        ],
+        [
+          "C",
+          467,
+          1247,
+          506,
+          1246,
+          565,
+          1246
+        ],
+        [
+          "C",
+          606,
+          1246,
+          646,
+          1251,
+          689,
+          1249
+        ],
+        [
+          "C",
+          727,
+          1248,
+          761,
+          1230,
+          798,
+          1229
+        ]
+      ],
+      "nativeSegments": 38
+    },
+    {
+      "layer": "0010 tshirt_body :: hem_return",
+      "target": "0010 tshirt_body :: hem_return",
+      "label": "right lower hem return",
+      "size": 3.5,
+      "opacity": 0.4,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          798,
+          1229
+        ],
+        [
+          "C",
+          827,
+          1227,
+          866,
+          1236,
+          902,
+          1236
+        ],
+        [
+          "C",
+          933,
+          1234,
+          972,
+          1224,
+          971,
+          1212
+        ]
+      ],
+      "nativeSegments": 19
+    },
+    {
+      "layer": "0020 sleeve_image_left :: cuff_return",
+      "target": "0020 sleeve_image_left :: cuff_return",
+      "label": "left cuff lower far wall",
+      "size": 3,
+      "opacity": 0.36,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          2,
+          726
+        ],
+        [
+          "C",
+          5,
+          734,
+          22,
+          745,
+          43,
+          757
+        ],
+        [
+          "C",
+          74,
+          776,
+          111,
+          794,
+          147,
+          806
+        ],
+        [
+          "C",
+          174,
+          815,
+          205,
+          819,
+          230,
+          809
+        ],
+        [
+          "C",
+          240,
+          805,
+          246,
+          801,
+          247,
+          797
+        ]
+      ],
+      "nativeSegments": 28
+    },
+    {
+      "layer": "0020 sleeve_image_left :: cuff_return",
+      "target": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+      "label": "left cuff lower far wall",
+      "size": 3,
+      "opacity": 0.36,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          2,
+          726
+        ],
+        [
+          "C",
+          5,
+          734,
+          22,
+          745,
+          43,
+          757
+        ],
+        [
+          "C",
+          74,
+          776,
+          111,
+          794,
+          147,
+          806
+        ],
+        [
+          "C",
+          174,
+          815,
+          205,
+          819,
+          230,
+          809
+        ],
+        [
+          "C",
+          240,
+          805,
+          246,
+          801,
+          247,
+          797
+        ]
+      ],
+      "nativeSegments": 28
+    },
+    {
+      "layer": "0030 sleeve_image_right :: cuff_return",
+      "target": "0030 sleeve_image_right :: cuff_return",
+      "label": "right cuff lower far wall",
+      "size": 3.2,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          914,
+          808
+        ],
+        [
+          "C",
+          918,
+          818,
+          932,
+          819,
+          946,
+          814
+        ],
+        [
+          "C",
+          963,
+          810,
+          980,
+          804,
+          997,
+          798
+        ],
+        [
+          "C",
+          1025,
+          788,
+          1055,
+          784,
+          1082,
+          771
+        ],
+        [
+          "C",
+          1104,
+          760,
+          1123,
+          751,
+          1136,
+          740
+        ],
+        [
+          "C",
+          1142,
+          735,
+          1146,
+          730,
+          1143,
+          721
+        ]
+      ],
+      "nativeSegments": 27
+    },
+    {
+      "layer": "0030 sleeve_image_right :: cuff_return",
+      "target": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+      "label": "right cuff lower far wall",
+      "size": 3.2,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          914,
+          808
+        ],
+        [
+          "C",
+          918,
+          818,
+          932,
+          819,
+          946,
+          814
+        ],
+        [
+          "C",
+          963,
+          810,
+          980,
+          804,
+          997,
+          798
+        ],
+        [
+          "C",
+          1025,
+          788,
+          1055,
+          784,
+          1082,
+          771
+        ],
+        [
+          "C",
+          1104,
+          760,
+          1123,
+          751,
+          1136,
+          740
+        ],
+        [
+          "C",
+          1142,
+          735,
+          1146,
+          730,
+          1143,
+          721
+        ]
+      ],
+      "nativeSegments": 27
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "target": "0050 sleeve_image_left :: front_tube",
+      "label": "left sleeve exterior upper",
+      "size": 3.2,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          132,
+          348
+        ],
+        [
+          "C",
+          121,
+          360,
+          113,
+          382,
+          103,
+          415
+        ],
+        [
+          "C",
+          86,
+          469,
+          69,
+          527,
+          51,
+          583
+        ]
+      ],
+      "nativeSegments": 25
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "target": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+      "label": "left sleeve exterior upper",
+      "size": 3.2,
+      "opacity": 0.38,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          132,
+          348
+        ],
+        [
+          "C",
+          121,
+          360,
+          113,
+          382,
+          103,
+          415
+        ],
+        [
+          "C",
+          86,
+          469,
+          69,
+          527,
+          51,
+          583
+        ]
+      ],
+      "nativeSegments": 25
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "target": "0050 sleeve_image_left :: front_tube",
+      "label": "left sleeve exterior lower",
+      "size": 3,
+      "opacity": 0.34,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          51,
+          583
+        ],
+        [
+          "C",
+          38,
+          625,
+          21,
+          669,
+          6,
+          707
+        ],
+        [
+          "C",
+          3,
+          715,
+          0,
+          722,
+          2,
+          726
+        ]
+      ],
+      "nativeSegments": 16
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "target": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+      "label": "left sleeve exterior lower",
+      "size": 3,
+      "opacity": 0.34,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          51,
+          583
+        ],
+        [
+          "C",
+          38,
+          625,
+          21,
+          669,
+          6,
+          707
+        ],
+        [
+          "C",
+          3,
+          715,
+          0,
+          722,
+          2,
+          726
+        ]
+      ],
+      "nativeSegments": 16
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "target": "0050 sleeve_image_left :: front_tube",
+      "label": "left cuff front fold",
+      "size": 2.2,
+      "opacity": 0.27,
+      "alphaLockedDuringStroke": true,
+      "path": [
+        [
+          2,
+          722
+        ],
+        [
+          "C",
+          32,
+          704,
+          53,
+          704,
+          74,
+          714
+        ],
+        [
+          "C",
+          115,
+          735,
+          171,
+          769,
+          221,
+          786
+        ],
+        [
+          "C",
+          237,
+          791,
+          245,
+          793,
+          247,
+          797
+        ]
+      ],
+      "nativeSegments": 27
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "target": "0060 sleeve_image_right :: front_tube",
+      "label": "right sleeve exterior upper",
+      "size": 3.7,
+      "opacity": 0.4,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          1016,
+          347
+        ],
+        [
+          "C",
+          1035,
+          377,
+          1049,
+          421,
+          1062,
+          470
+        ]
+      ],
+      "nativeSegments": 14
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "target": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+      "label": "right sleeve exterior upper",
+      "size": 3.7,
+      "opacity": 0.4,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          1016,
+          347
+        ],
+        [
+          "C",
+          1035,
+          377,
+          1049,
+          421,
+          1062,
+          470
+        ]
+      ],
+      "nativeSegments": 14
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "target": "0060 sleeve_image_right :: front_tube",
+      "label": "right sleeve exterior lower",
+      "size": 3.6,
+      "opacity": 0.42,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          1062,
+          470
+        ],
+        [
+          "C",
+          1078,
+          531,
+          1090,
+          579,
+          1109,
+          628
+        ],
+        [
+          "C",
+          1123,
+          665,
+          1137,
+          699,
+          1143,
+          721
+        ]
+      ],
+      "nativeSegments": 27
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "target": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+      "label": "right sleeve exterior lower",
+      "size": 3.6,
+      "opacity": 0.42,
+      "alphaLockedDuringStroke": false,
+      "path": [
+        [
+          1062,
+          470
+        ],
+        [
+          "C",
+          1078,
+          531,
+          1090,
+          579,
+          1109,
+          628
+        ],
+        [
+          "C",
+          1123,
+          665,
+          1137,
+          699,
+          1143,
+          721
+        ]
+      ],
+      "nativeSegments": 27
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "target": "0060 sleeve_image_right :: front_tube",
+      "label": "right cuff front fold",
+      "size": 2.2,
+      "opacity": 0.25,
+      "alphaLockedDuringStroke": true,
+      "path": [
+        [
+          914,
+          804
+        ],
+        [
+          "C",
+          935,
+          789,
+          966,
+          774,
+          1000,
+          756
+        ],
+        [
+          "C",
+          1034,
+          738,
+          1067,
+          713,
+          1086,
+          717
+        ],
+        [
+          "C",
+          1107,
+          716,
+          1127,
+          722,
+          1142,
+          727
+        ]
+      ],
+      "nativeSegments": 26
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "target": "0050 sleeve_image_left :: front_tube",
+      "label": "hidden left root transition",
+      "size": 2.6,
+      "opacity": 0.22,
+      "alphaLockedDuringStroke": true,
+      "path": [
+        [
+          238,
+          615
+        ],
+        [
+          "C",
+          235,
+          642,
+          236,
+          659,
+          241,
+          684
+        ],
+        [
+          "C",
+          244,
+          711,
+          250,
+          740,
+          254,
+          762
+        ]
+      ],
+      "nativeSegments": 15
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "target": "0060 sleeve_image_right :: front_tube",
+      "label": "hidden right root transition",
+      "size": 2.8,
+      "opacity": 0.24,
+      "alphaLockedDuringStroke": true,
+      "path": [
+        [
+          968,
+          455
+        ],
+        [
+          "C",
+          952,
+          500,
+          939,
+          540,
+          933,
+          574
+        ]
+      ],
+      "nativeSegments": 13
+    }
+  ]
+}

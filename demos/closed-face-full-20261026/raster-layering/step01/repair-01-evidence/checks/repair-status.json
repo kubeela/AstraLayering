@@ -1,0 +1,38 @@
+{
+  "conclusion": "已修复",
+  "handled_issues": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R9",
+    "R10",
+    "R11",
+    "R12",
+    "R13",
+    "R14",
+    "R15"
+  ],
+  "pending": [],
+  "logical_parts": 37,
+  "paint_layers": 41,
+  "masks": 21,
+  "unchanged_paint_layers": 27,
+  "unchanged_masks": 20,
+  "native_state_equal_after_reopen": true,
+  "default_projection_equal_after_reopen": true,
+  "all_masks_enabled": true,
+  "structure_tools_validated": true,
+  "depth_values_changed": false,
+  "groups_sha256": "a164594ab168bd6c11932e0d62e47ff734bb7304425b65f205e1fe305e7484fd",
+  "occlusion_sha256": "ef311bb13a7140b504b52308f632b48ddb9ee7616fcb448331279414b064811e",
+  "additional_self_check": [
+    "S1: back-cap/body horizontal material seam, repaired"
+  ],
+  "all_layers_visually_inspected": true,
+  "all_original_size": true
+}

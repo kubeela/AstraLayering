@@ -1,0 +1,47 @@
+{
+  "at": "2026-10-27T18:17:39.534Z",
+  "status": "completed-static-deliverables",
+  "completedAt": "2026-10-27T17:19:12.147Z",
+  "sourceHash": "cb8987761f3a9385d2e5b06a133993784c92a8bad1e6181d706e7d6b590e79b9",
+  "completedOutputsVerified": 12,
+  "allSavedHashesMatch": true,
+  "canvas": [
+    1145,
+    1374
+  ],
+  "assembly": {
+    "paintLayers": 49,
+    "transparencyMasks": 32,
+    "savedPngMatchesKra": true
+  },
+  "shadow": {
+    "paintLayers": 55,
+    "transparencyMasks": 32,
+    "groups": 9,
+    "relations": 6,
+    "testOffsetFrames": 24,
+    "nativeInspectionPassed": true,
+    "warnings": [],
+    "inspectionEvidenceHashesVerified": 75,
+    "savedPngMatchesKra": true,
+    "originalAssemblyUuidsRetained": 82
+  },
+  "hiddenPartCount": 12,
+  "deliveries": {
+    "assembledKra": "character-assembly/step01/character-assembled.kra",
+    "shadowedKra": "shadow/mask/step01/character-shadowed.kra",
+    "shadowedPng": "shadow/mask/step01/character-shadowed.png",
+    "shadowRelations": "shadow/mask/step01/shadows.json",
+    "shadowReport": "shadow/mask/step01/report.md",
+    "inspection": "shadow/mask/step01/inspection.json"
+  },
+  "limitations": [
+    "完成静态素材制作和原生裁切/声明偏移检查，未完成Cubism绑定、deformer或物理动画验收。",
+    "自然全睁眼独立验证仍有眼白偏扁、睫毛/眼睑/虹膜细节与全局协调问题；本次默认闭眼闭嘴交付未重做其设计。",
+    "组装保留衣领中心约比穿衣参考深27px及部分上游画风/轮廓差异，详见组装报告。",
+    "两条侧发阴影casterPartId兼容使用character:hair父组，精确来源保存在sourcePartId和casterLayerUuids；后续绑定消费者需按精确来源理解，当前未做动态跟随验收。",
+    "本次真实执行包含computer use处理PNG弹窗和重开异常，尚非完全禁用computer use的回归。"
+  ],
+  "sourceCommit": "41391252970faa8ffa8c2e6530f2c106e99b40f4",
+  "scope": "原任务最终验收记录；本归档保留静态素材与验收证据。"
+}

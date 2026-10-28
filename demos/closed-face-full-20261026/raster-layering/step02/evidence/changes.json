@@ -1,0 +1,515 @@
+[
+  {
+    "name": "0005 hair/side_hair_left__hidden_root",
+    "changed": true,
+    "changed_pixels": 1368,
+    "bounds": [
+      579,
+      12,
+      720,
+      119
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0006 hair/side_hair_right__hidden_root",
+    "changed": true,
+    "changed_pixels": 1173,
+    "bounds": [
+      454,
+      5,
+      592,
+      100
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0010 hair/back_hair",
+    "changed": true,
+    "changed_pixels": 1711,
+    "bounds": [
+      201,
+      1,
+      775,
+      914
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0020 hair/side_hair_left__rear",
+    "changed": true,
+    "changed_pixels": 2912,
+    "bounds": [
+      803,
+      291,
+      1072,
+      902
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0021 hair/side_hair_right__rear",
+    "changed": true,
+    "changed_pixels": 3851,
+    "bounds": [
+      69,
+      250,
+      338,
+      904
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0030 arms/arm_left",
+    "changed": true,
+    "changed_pixels": 856,
+    "bounds": [
+      916,
+      1056,
+      1145,
+      1187
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0031 arms/arm_right",
+    "changed": true,
+    "changed_pixels": 1285,
+    "bounds": [
+      0,
+      1051,
+      228,
+      1185
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0035 neck",
+    "changed": true,
+    "changed_pixels": 1176,
+    "bounds": [
+      413,
+      908,
+      761,
+      1017
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0040 body/torso",
+    "changed": true,
+    "changed_pixels": 188,
+    "bounds": [
+      396,
+      1005,
+      761,
+      1017
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0050 body/breast",
+    "changed": true,
+    "changed_pixels": 1080,
+    "bounds": [
+      226,
+      1150,
+      926,
+      1374
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0060 face/ear_left",
+    "changed": true,
+    "changed_pixels": 524,
+    "bounds": [
+      835,
+      508,
+      942,
+      705
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0061 face/ear_right",
+    "changed": true,
+    "changed_pixels": 476,
+    "bounds": [
+      211,
+      508,
+      321,
+      707
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0070 face/face_base",
+    "changed": true,
+    "changed_pixels": 3151,
+    "bounds": [
+      328,
+      694,
+      825,
+      916
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0072 face/blush_left",
+    "changed": false,
+    "changed_pixels": 0,
+    "bounds": null,
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0073 face/blush_right",
+    "changed": false,
+    "changed_pixels": 0,
+    "bounds": null,
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0074 face/nose/volume_shadow",
+    "changed": true,
+    "changed_pixels": 241,
+    "bounds": [
+      546,
+      649,
+      570,
+      702
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0075 face/nose/tip_highlight",
+    "changed": true,
+    "changed_pixels": 297,
+    "bounds": [
+      572,
+      647,
+      590,
+      678
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0076 face/nose/tip_mark",
+    "changed": true,
+    "changed_pixels": 62,
+    "bounds": [
+      564,
+      696,
+      595,
+      702
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0080 face/mouth/mouth_interior",
+    "changed": true,
+    "changed_pixels": 1066,
+    "bounds": [
+      508,
+      751,
+      648,
+      816
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0081 face/mouth/tongue",
+    "changed": false,
+    "changed_pixels": 0,
+    "bounds": null,
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0082 face/mouth/lower_teeth",
+    "changed": false,
+    "changed_pixels": 0,
+    "bounds": null,
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0083 face/mouth/upper_teeth",
+    "changed": true,
+    "changed_pixels": 444,
+    "bounds": [
+      527,
+      751,
+      629,
+      771
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0084 face/mouth/lower_lip",
+    "changed": true,
+    "changed_pixels": 454,
+    "bounds": [
+      519,
+      775,
+      637,
+      812
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0085 face/mouth/upper_lip",
+    "changed": true,
+    "changed_pixels": 347,
+    "bounds": [
+      519,
+      770,
+      637,
+      775
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0090 face/eye_left/sclera",
+    "changed": true,
+    "changed_pixels": 1117,
+    "bounds": [
+      660,
+      542,
+      810,
+      600
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0091 face/eye_right/sclera",
+    "changed": true,
+    "changed_pixels": 1147,
+    "bounds": [
+      349,
+      542,
+      498,
+      600
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0092 face/eye_left/iris",
+    "changed": true,
+    "changed_pixels": 842,
+    "bounds": [
+      694,
+      525,
+      776,
+      607
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0093 face/eye_right/iris",
+    "changed": true,
+    "changed_pixels": 886,
+    "bounds": [
+      382,
+      525,
+      463,
+      607
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0094 face/eye_left/highlight",
+    "changed": true,
+    "changed_pixels": 110,
+    "bounds": [
+      704,
+      549,
+      717,
+      569
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0095 face/eye_right/highlight",
+    "changed": true,
+    "changed_pixels": 115,
+    "bounds": [
+      439,
+      549,
+      452,
+      569
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0096 face/eye_left/eyelid_crease",
+    "changed": true,
+    "changed_pixels": 444,
+    "bounds": [
+      653,
+      548,
+      813,
+      563
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0097 face/eye_right/eyelid_crease",
+    "changed": true,
+    "changed_pixels": 422,
+    "bounds": [
+      348,
+      550,
+      506,
+      564
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0098 face/eye_left/lower_eyelid",
+    "changed": true,
+    "changed_pixels": 582,
+    "bounds": [
+      655,
+      577,
+      813,
+      608
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0099 face/eye_right/lower_eyelid",
+    "changed": true,
+    "changed_pixels": 601,
+    "bounds": [
+      344,
+      577,
+      503,
+      608
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0100 face/eye_left/upper_eyelid",
+    "changed": true,
+    "changed_pixels": 930,
+    "bounds": [
+      650,
+      491,
+      822,
+      600
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0101 face/eye_right/upper_eyelid",
+    "changed": true,
+    "changed_pixels": 721,
+    "bounds": [
+      343,
+      491,
+      511,
+      600
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0102 face/eyebrow_left",
+    "changed": true,
+    "changed_pixels": 450,
+    "bounds": [
+      638,
+      437,
+      790,
+      456
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0103 face/eyebrow_right",
+    "changed": true,
+    "changed_pixels": 422,
+    "bounds": [
+      342,
+      439,
+      511,
+      462
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0150 hair/side_hair_left__front",
+    "changed": true,
+    "changed_pixels": 529,
+    "bounds": [
+      828,
+      556,
+      876,
+      681
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0151 hair/side_hair_right__front",
+    "changed": true,
+    "changed_pixels": 514,
+    "bounds": [
+      277,
+      560,
+      332,
+      681
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  },
+  {
+    "name": "0160 hair/bangs",
+    "changed": true,
+    "changed_pixels": 9185,
+    "bounds": [
+      308,
+      218,
+      840,
+      558
+    ],
+    "children_equal": true,
+    "uuid_equal": true
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "structure_tools_validated": true,
+  "edit_groups_used": true,
+  "edit_occlusion_used": true,
+  "logical_parts": 37,
+  "native_paint_layers": 41,
+  "native_transparency_masks": 21,
+  "logical_ids_match_effective_upstream": true,
+  "depth_regions_match_effective_upstream": true,
+  "default_closed_masks_enabled": true,
+  "reopen_native_state_equal": true,
+  "reopen_default_projection_equal": true,
+  "width": 1145,
+  "height": 1374,
+  "png_exported_by_krita": true,
+  "groups_file_sha256": "9daf622087399738d437614a9b915e52d0209f43948cb681a0eae71c61581418",
+  "occlusion_file_sha256": "8c089a18ddb232b3647b45b5c358f1ccaa20aa7e5b4d26c2f4f8294960584109",
+  "note": "结构和保存检查辅助验收；绘画质量另以原尺寸图像检查。"
+}

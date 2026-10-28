@@ -1,0 +1,784 @@
+{
+  "preset": "b) Airbrush Soft",
+  "strokes": [
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        136,
+        355
+      ],
+      "to": [
+        157,
+        399
+      ],
+      "sample_own_cloth": [
+        154,
+        377
+      ],
+      "colour": "#3465bf",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        157,
+        399
+      ],
+      "to": [
+        181,
+        458
+      ],
+      "sample_own_cloth": [
+        177,
+        428
+      ],
+      "colour": "#3464bc",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        181,
+        458
+      ],
+      "to": [
+        206,
+        532
+      ],
+      "sample_own_cloth": [
+        202,
+        495
+      ],
+      "colour": "#204184",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        206,
+        532
+      ],
+      "to": [
+        223,
+        586
+      ],
+      "sample_own_cloth": [
+        222,
+        559
+      ],
+      "colour": "#284d9c",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        223,
+        586
+      ],
+      "to": [
+        224,
+        639
+      ],
+      "sample_own_cloth": [
+        232,
+        612
+      ],
+      "colour": "#214084",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        224,
+        639
+      ],
+      "to": [
+        229,
+        691
+      ],
+      "sample_own_cloth": [
+        234,
+        665
+      ],
+      "colour": "#3666c0",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        229,
+        691
+      ],
+      "to": [
+        243,
+        755
+      ],
+      "sample_own_cloth": [
+        244,
+        723
+      ],
+      "colour": "#2c54a7",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        243,
+        755
+      ],
+      "to": [
+        250,
+        783
+      ],
+      "sample_own_cloth": [
+        254,
+        769
+      ],
+      "colour": "#274794",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        1015,
+        355
+      ],
+      "to": [
+        992,
+        410
+      ],
+      "sample_own_cloth": [
+        996,
+        382
+      ],
+      "colour": "#2d56ab",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        992,
+        410
+      ],
+      "to": [
+        972,
+        468
+      ],
+      "sample_own_cloth": [
+        974,
+        439
+      ],
+      "colour": "#2d54a8",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        972,
+        468
+      ],
+      "to": [
+        951,
+        540
+      ],
+      "sample_own_cloth": [
+        954,
+        504
+      ],
+      "colour": "#2c54a6",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        951,
+        540
+      ],
+      "to": [
+        933,
+        593
+      ],
+      "sample_own_cloth": [
+        934,
+        566
+      ],
+      "colour": "#213f7b",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        933,
+        593
+      ],
+      "to": [
+        932,
+        644
+      ],
+      "sample_own_cloth": [
+        924,
+        618
+      ],
+      "colour": "#3566bf",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        932,
+        644
+      ],
+      "to": [
+        929,
+        700
+      ],
+      "sample_own_cloth": [
+        922,
+        672
+      ],
+      "colour": "#3667bf",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        929,
+        700
+      ],
+      "to": [
+        916,
+        762
+      ],
+      "sample_own_cloth": [
+        914,
+        731
+      ],
+      "colour": "#2b55a8",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        916,
+        762
+      ],
+      "to": [
+        910,
+        785
+      ],
+      "sample_own_cloth": [
+        905,
+        774
+      ],
+      "colour": "#2a53a9",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        338,
+        273
+      ],
+      "to": [
+        339,
+        304
+      ],
+      "sample_own_cloth": [
+        338,
+        296
+      ],
+      "colour": "#2b54aa",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        339,
+        304
+      ],
+      "to": [
+        356,
+        341
+      ],
+      "sample_own_cloth": [
+        348,
+        330
+      ],
+      "colour": "#2b539f",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        356,
+        341
+      ],
+      "to": [
+        382,
+        370
+      ],
+      "sample_own_cloth": [
+        369,
+        362
+      ],
+      "colour": "#2d56a6",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        382,
+        370
+      ],
+      "to": [
+        432,
+        405
+      ],
+      "sample_own_cloth": [
+        407,
+        394
+      ],
+      "colour": "#386ac3",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        432,
+        405
+      ],
+      "to": [
+        492,
+        428
+      ],
+      "sample_own_cloth": [
+        462,
+        424
+      ],
+      "colour": "#2e57a8",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        492,
+        428
+      ],
+      "to": [
+        568,
+        438
+      ],
+      "sample_own_cloth": [
+        530,
+        440
+      ],
+      "colour": "#376eca",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        568,
+        438
+      ],
+      "to": [
+        649,
+        432
+      ],
+      "sample_own_cloth": [
+        608,
+        442
+      ],
+      "colour": "#3767c0",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        649,
+        432
+      ],
+      "to": [
+        720,
+        407
+      ],
+      "sample_own_cloth": [
+        684,
+        426
+      ],
+      "colour": "#2f5aaf",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        720,
+        407
+      ],
+      "to": [
+        765,
+        370
+      ],
+      "sample_own_cloth": [
+        742,
+        396
+      ],
+      "colour": "#3568bf",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        765,
+        370
+      ],
+      "to": [
+        795,
+        330
+      ],
+      "sample_own_cloth": [
+        780,
+        357
+      ],
+      "colour": "#284f9b",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0070 tshirt_body :: front_body",
+      "from": [
+        795,
+        330
+      ],
+      "to": [
+        814,
+        280
+      ],
+      "sample_own_cloth": [
+        804,
+        312
+      ],
+      "colour": "#305baf",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "from": [
+        140,
+        361
+      ],
+      "to": [
+        166,
+        416
+      ],
+      "sample_own_cloth": [
+        140,
+        388
+      ],
+      "colour": "#3567c1",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "from": [
+        166,
+        416
+      ],
+      "to": [
+        191,
+        468
+      ],
+      "sample_own_cloth": [
+        166,
+        442
+      ],
+      "colour": "#2a53a5",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "from": [
+        191,
+        468
+      ],
+      "to": [
+        217,
+        540
+      ],
+      "sample_own_cloth": [
+        191,
+        504
+      ],
+      "colour": "#2b54a5",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "from": [
+        217,
+        540
+      ],
+      "to": [
+        240,
+        602
+      ],
+      "sample_own_cloth": [
+        216,
+        571
+      ],
+      "colour": "#2952a2",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "from": [
+        240,
+        602
+      ],
+      "to": [
+        235,
+        651
+      ],
+      "sample_own_cloth": [
+        224,
+        626
+      ],
+      "colour": "#284993",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "from": [
+        235,
+        651
+      ],
+      "to": [
+        243,
+        710
+      ],
+      "sample_own_cloth": [
+        226,
+        680
+      ],
+      "colour": "#284c97",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0050 sleeve_image_left :: front_tube",
+      "from": [
+        243,
+        710
+      ],
+      "to": [
+        255,
+        780
+      ],
+      "sample_own_cloth": [
+        236,
+        745
+      ],
+      "colour": "#1e3a7a",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        1014,
+        361
+      ],
+      "to": [
+        990,
+        413
+      ],
+      "sample_own_cloth": [
+        1015,
+        387
+      ],
+      "colour": "#3667c1",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        990,
+        413
+      ],
+      "to": [
+        969,
+        467
+      ],
+      "sample_own_cloth": [
+        992,
+        440
+      ],
+      "colour": "#2d57aa",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        969,
+        467
+      ],
+      "to": [
+        948,
+        535
+      ],
+      "sample_own_cloth": [
+        972,
+        501
+      ],
+      "colour": "#2e57a8",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        948,
+        535
+      ],
+      "to": [
+        931,
+        592
+      ],
+      "sample_own_cloth": [
+        952,
+        564
+      ],
+      "colour": "#2a53a4",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        931,
+        592
+      ],
+      "to": [
+        928,
+        645
+      ],
+      "sample_own_cloth": [
+        942,
+        618
+      ],
+      "colour": "#213f84",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        928,
+        645
+      ],
+      "to": [
+        925,
+        702
+      ],
+      "sample_own_cloth": [
+        940,
+        674
+      ],
+      "colour": "#2a52a4",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    },
+    {
+      "layer": "0060 sleeve_image_right :: front_tube",
+      "from": [
+        925,
+        702
+      ],
+      "to": [
+        916,
+        754
+      ],
+      "sample_own_cloth": [
+        934,
+        728
+      ],
+      "colour": "#254791",
+      "size": 13,
+      "opacity": 0.58,
+      "selection": "generated completion only"
+    }
+  ]
+}

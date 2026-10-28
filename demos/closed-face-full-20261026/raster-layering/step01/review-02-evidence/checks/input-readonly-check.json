@@ -1,0 +1,306 @@
+{
+  "all_inputs_unchanged": true,
+  "input_files": 50,
+  "files": [
+    {
+      "path": "raster-layering/step01/character-depth.kra",
+      "before": "dfbb4d78e32ed73b93c8b1eaa7d5d9d35f2488bb5a94293f703ec74192fb6087",
+      "after": "dfbb4d78e32ed73b93c8b1eaa7d5d9d35f2488bb5a94293f703ec74192fb6087",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/groups.json",
+      "before": "a164594ab168bd6c11932e0d62e47ff734bb7304425b65f205e1fe305e7484fd",
+      "after": "a164594ab168bd6c11932e0d62e47ff734bb7304425b65f205e1fe305e7484fd",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/occlusion.json",
+      "before": "ef311bb13a7140b504b52308f632b48ddb9ee7616fcb448331279414b064811e",
+      "after": "ef311bb13a7140b504b52308f632b48ddb9ee7616fcb448331279414b064811e",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face.svg",
+      "before": "b8289d73e36ed07998525dd77667cc9f5635b198bd28708d7b9b89882a9c2575",
+      "after": "b8289d73e36ed07998525dd77667cc9f5635b198bd28708d7b9b89882a9c2575",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/body.svg",
+      "before": "e1ede8cedaf45a3357dbf06bb1ac6d304d32188a3b37ce2a59377d1cb4ae4c47",
+      "after": "e1ede8cedaf45a3357dbf06bb1ac6d304d32188a3b37ce2a59377d1cb4ae4c47",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/hair.svg",
+      "before": "2ae94b16e7b3dd5dace7057bcce28f2285777386575a2ef0f9616c03978f9380",
+      "after": "2ae94b16e7b3dd5dace7057bcce28f2285777386575a2ef0f9616c03978f9380",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/neck.svg",
+      "before": "ab1a47f036221c52fe016ad32f7bd386a76d6c509f6d2466231d79b9f9d82887",
+      "after": "ab1a47f036221c52fe016ad32f7bd386a76d6c509f6d2466231d79b9f9d82887",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/arms.svg",
+      "before": "b8c74348223efedb24c965118b917d4ee3ba94d231919d185e84cad03e7ce671",
+      "after": "b8c74348223efedb24c965118b917d4ee3ba94d231919d185e84cad03e7ce671",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/ear_right.svg",
+      "before": "2a605b7ffb9f453602ae8433c1b8fd38b8123c72e11014aa1cb20793b7be9ed1",
+      "after": "2a605b7ffb9f453602ae8433c1b8fd38b8123c72e11014aa1cb20793b7be9ed1",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/nose.svg",
+      "before": "443ef9cf01d36472f2f033ab2c1281337f2bcc574ed988d0b97340a7ea569232",
+      "after": "443ef9cf01d36472f2f033ab2c1281337f2bcc574ed988d0b97340a7ea569232",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/face_base.svg",
+      "before": "9f727c1e1d3d2d47556485e5e52e46148d4141db02d81d97b485da18e7baec4b",
+      "after": "9f727c1e1d3d2d47556485e5e52e46148d4141db02d81d97b485da18e7baec4b",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_right.svg",
+      "before": "7726cb4d58a9237d3f9f80bc91e4c597c865532dec46220b734e7eee6aebf860",
+      "after": "7726cb4d58a9237d3f9f80bc91e4c597c865532dec46220b734e7eee6aebf860",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/ear_left.svg",
+      "before": "0b4e31c954908b9a2624c65c28df922f6910af3ff422278694d4368e1d565530",
+      "after": "0b4e31c954908b9a2624c65c28df922f6910af3ff422278694d4368e1d565530",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/mouth.svg",
+      "before": "ece632df5cfd8e1d6b004fc52fea39c218134c074e68342550e7cfd6458407f6",
+      "after": "ece632df5cfd8e1d6b004fc52fea39c218134c074e68342550e7cfd6458407f6",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/blush_right.svg",
+      "before": "a5e9f51e1bdf1fb3f25c65924ee48be2ad45a415f623842c77c0411690369246",
+      "after": "a5e9f51e1bdf1fb3f25c65924ee48be2ad45a415f623842c77c0411690369246",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eyebrow_right.svg",
+      "before": "dcac72fa6688ab3d6bb7a095a36710e43e651a0eb35bd0ed8662759c05d70caa",
+      "after": "dcac72fa6688ab3d6bb7a095a36710e43e651a0eb35bd0ed8662759c05d70caa",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/blush_left.svg",
+      "before": "6f1984f38306def93d1ff962f567c5a9261cd81fef8956ca76b77efa36089d15",
+      "after": "6f1984f38306def93d1ff962f567c5a9261cd81fef8956ca76b77efa36089d15",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eyebrow_left.svg",
+      "before": "31840e4c1cb16d492d1021f7b33400b12f99aaec30eaaacd8872876feec36941",
+      "after": "31840e4c1cb16d492d1021f7b33400b12f99aaec30eaaacd8872876feec36941",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_left.svg",
+      "before": "12752772ab9380c0f6e04d7a9d7a628859d3fc9722842831a57060a873bc29f3",
+      "after": "12752772ab9380c0f6e04d7a9d7a628859d3fc9722842831a57060a873bc29f3",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_right/highlight.svg",
+      "before": "c545f60cbbffe188cd16d463076ced034ffbba8f5c2b523acbc3361e3aef454d",
+      "after": "c545f60cbbffe188cd16d463076ced034ffbba8f5c2b523acbc3361e3aef454d",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_right/upper_eyelid.svg",
+      "before": "0039d031f3322bf25889dabdde74d006b240ff8721a03e8ddea826ed47480a89",
+      "after": "0039d031f3322bf25889dabdde74d006b240ff8721a03e8ddea826ed47480a89",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_right/iris.svg",
+      "before": "4df2fa45ed5ea31c63210422b2ecc4f1a3bf959c4af6917108fc2955f409578a",
+      "after": "4df2fa45ed5ea31c63210422b2ecc4f1a3bf959c4af6917108fc2955f409578a",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_right/eyelid_crease.svg",
+      "before": "3fa23e4fca24f4d4570ac1ae630bd27ad3ebb1ca56b948ab625c4ebe8dd61f4d",
+      "after": "3fa23e4fca24f4d4570ac1ae630bd27ad3ebb1ca56b948ab625c4ebe8dd61f4d",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_right/sclera.svg",
+      "before": "b2e04f87a1b42ea2019954b73d784f16b1340024c20ef44d7658074e4319853f",
+      "after": "b2e04f87a1b42ea2019954b73d784f16b1340024c20ef44d7658074e4319853f",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_right/lower_eyelid.svg",
+      "before": "09b1b7ebc143a60cfa80c7bc2a7308f8d95610dda92642c5cf8d728129501cd2",
+      "after": "09b1b7ebc143a60cfa80c7bc2a7308f8d95610dda92642c5cf8d728129501cd2",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_left/highlight.svg",
+      "before": "1a718a8d91687e3bbba47daca8522a08b6c90ccbac5aa9b475afaa1c678b92ea",
+      "after": "1a718a8d91687e3bbba47daca8522a08b6c90ccbac5aa9b475afaa1c678b92ea",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_left/upper_eyelid.svg",
+      "before": "617604cd6eb39374b840089a7e43ea2f2620d41b2cddc6a1261d20949d0538b5",
+      "after": "617604cd6eb39374b840089a7e43ea2f2620d41b2cddc6a1261d20949d0538b5",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_left/iris.svg",
+      "before": "2ed52d7a3f8ca04b8911b1d73502891a49846158c47a0ae9528f7ef055e271f5",
+      "after": "2ed52d7a3f8ca04b8911b1d73502891a49846158c47a0ae9528f7ef055e271f5",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_left/eyelid_crease.svg",
+      "before": "f826fe5cef223a4352931bc7f155854ffc4efbb280639a74fc0e52c9ced0a8a9",
+      "after": "f826fe5cef223a4352931bc7f155854ffc4efbb280639a74fc0e52c9ced0a8a9",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_left/sclera.svg",
+      "before": "d833d29a910951ae7d92f86c741ee2bc33350053798bcac70628d34b38cd9f65",
+      "after": "d833d29a910951ae7d92f86c741ee2bc33350053798bcac70628d34b38cd9f65",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/eye_left/lower_eyelid.svg",
+      "before": "2ef6a3a508ee9d626cea3f684a6f372dca143d7fd747073dc4e103b76e0fcecf",
+      "after": "2ef6a3a508ee9d626cea3f684a6f372dca143d7fd747073dc4e103b76e0fcecf",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/nose/tip_mark.svg",
+      "before": "d3457ca3a7fdd7494bc977e2b08291a7e2118d6dfd969de552f30375d06be469",
+      "after": "d3457ca3a7fdd7494bc977e2b08291a7e2118d6dfd969de552f30375d06be469",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/nose/volume_shadow.svg",
+      "before": "ec29a4f5f35e69dea33c09b2bc77b95c07e5837fc42762ede4835364951d3ba1",
+      "after": "ec29a4f5f35e69dea33c09b2bc77b95c07e5837fc42762ede4835364951d3ba1",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/nose/tip_highlight.svg",
+      "before": "4531c09534818c2a99625d40b5ca510bf76bb38466f71e120387ad5a4eada5e8",
+      "after": "4531c09534818c2a99625d40b5ca510bf76bb38466f71e120387ad5a4eada5e8",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/mouth/tongue.svg",
+      "before": "c12981c5138f9ab19dba0c51c3cf4f8d5202dac48ad475deeea22bc7dd2fb9a4",
+      "after": "c12981c5138f9ab19dba0c51c3cf4f8d5202dac48ad475deeea22bc7dd2fb9a4",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/mouth/lower_lip.svg",
+      "before": "237507d1a2a44b3929fb91b7bde6e9234eb7e815e1b01b30b2dd0db216518c36",
+      "after": "237507d1a2a44b3929fb91b7bde6e9234eb7e815e1b01b30b2dd0db216518c36",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/mouth/lower_teeth.svg",
+      "before": "8dbb224237a7bbbed6b9e51d78377fbc89f88a398887fb76a127c2a337cc37b6",
+      "after": "8dbb224237a7bbbed6b9e51d78377fbc89f88a398887fb76a127c2a337cc37b6",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/mouth/mouth_interior.svg",
+      "before": "92dea4604969c3e93044c2341906e58b4db5af938eb8ee1d42e449ed41c90e5a",
+      "after": "92dea4604969c3e93044c2341906e58b4db5af938eb8ee1d42e449ed41c90e5a",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/mouth/upper_teeth.svg",
+      "before": "ad79d1df3b7572aa97355981df15f4f8b11ec0fe8aa0c438f849ac6d624c5187",
+      "after": "ad79d1df3b7572aa97355981df15f4f8b11ec0fe8aa0c438f849ac6d624c5187",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/face/mouth/upper_lip.svg",
+      "before": "b28bc5212c2ea9e52d0afe98be3a2d3af26605a03a9598891030f2ccadcefc9d",
+      "after": "b28bc5212c2ea9e52d0afe98be3a2d3af26605a03a9598891030f2ccadcefc9d",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/body/breast.svg",
+      "before": "be2c06e26113fe3fbe6429078f9e64cd456a853b3d3b8e565009e2fb3d9ff0d8",
+      "after": "be2c06e26113fe3fbe6429078f9e64cd456a853b3d3b8e565009e2fb3d9ff0d8",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/body/torso.svg",
+      "before": "05d21ca0d97cf62ec43c2ccb2034143025bebc9c65feff0bf05472096b0de5cf",
+      "after": "05d21ca0d97cf62ec43c2ccb2034143025bebc9c65feff0bf05472096b0de5cf",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/arms/arm_left.svg",
+      "before": "11c92938c0138f3ca234e179e6306ac033d5b45f0a8bda797970b288504efce5",
+      "after": "11c92938c0138f3ca234e179e6306ac033d5b45f0a8bda797970b288504efce5",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/arms/arm_right.svg",
+      "before": "f4609e2d736d96436a805804cc194454385c7b0d36f535bdb8e207ad93d7a780",
+      "after": "f4609e2d736d96436a805804cc194454385c7b0d36f535bdb8e207ad93d7a780",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/arms/arm_left/upper_arm.svg",
+      "before": "cf6a1130c692e3fee20dcf1affb05a01a560a264da0656e0198b964c6f02820c",
+      "after": "cf6a1130c692e3fee20dcf1affb05a01a560a264da0656e0198b964c6f02820c",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/arms/arm_right/upper_arm.svg",
+      "before": "17e19c1d68d819b224385614463632f2ea324526c9bde6b34395b061aa6b9f78",
+      "after": "17e19c1d68d819b224385614463632f2ea324526c9bde6b34395b061aa6b9f78",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/hair/side_hair_left.svg",
+      "before": "9a14d1420cc97c06c2b3b0bb85bc6134acf1a06f2f4ded989a44dea0e9e8b088",
+      "after": "9a14d1420cc97c06c2b3b0bb85bc6134acf1a06f2f4ded989a44dea0e9e8b088",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/hair/bangs.svg",
+      "before": "8ff6016c14a2020395101e867202c53b2a0783755fa7024de52f23e1e34398e0",
+      "after": "8ff6016c14a2020395101e867202c53b2a0783755fa7024de52f23e1e34398e0",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/hair/side_hair_right.svg",
+      "before": "a8a23e0c5f684505c79c1f2bca6ad4d302f8b529a74b61f5a338a5395f56a367",
+      "after": "a8a23e0c5f684505c79c1f2bca6ad4d302f8b529a74b61f5a338a5395f56a367",
+      "unchanged": true
+    },
+    {
+      "path": "part-layering/parts/hair/back_hair.svg",
+      "before": "9cbf1a4feb860b0ca5b60d76e3119e9979cfba7675820b0f490074b836969b91",
+      "after": "9cbf1a4feb860b0ca5b60d76e3119e9979cfba7675820b0f490074b836969b91",
+      "unchanged": true
+    }
+  ]
+}

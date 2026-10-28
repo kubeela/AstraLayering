@@ -1,0 +1,27 @@
+{
+  "native_operation": "shared group scaleNode about compensating origin",
+  "scale_requested": 1.44,
+  "scale_actual_xy": [
+    1.4400699912510937,
+    1.4396809571286142
+  ],
+  "translation": [
+    -247,
+    687
+  ],
+  "source_bounds": [
+    1,
+    247,
+    1143,
+    1003
+  ],
+  "registered_group_bounds": [
+    0,
+    1048,
+    1145,
+    326
+  ],
+  "character_layers": 41,
+  "clothing_layers": 8,
+  "rear_collar_position": "between rear hair and arms, beneath neck/torso"
+}

@@ -1,0 +1,151 @@
+[
+  {
+    "layer": "0070 tshirt_body :: front_body",
+    "label": "right shoulder missing fine dark rim",
+    "preset": "b) Airbrush Soft",
+    "size": 2.8,
+    "opacity": 0.72,
+    "own_reference_colour_sample": [
+      989,
+      320
+    ],
+    "color": "#0f2f73",
+    "path": [
+      [
+        920,
+        295
+      ],
+      [
+        "C",
+        965,
+        302,
+        995,
+        323,
+        1015,
+        351
+      ]
+    ],
+    "alphaLocked": true
+  },
+  {
+    "layer": "0060 sleeve_image_right :: front_tube",
+    "label": "right sleeve middle cut rim",
+    "preset": "b) Airbrush Soft",
+    "size": 3.2,
+    "opacity": 0.78,
+    "own_reference_colour_sample": [
+      1070,
+      500
+    ],
+    "color": "#143175",
+    "path": [
+      [
+        1061,
+        470
+      ],
+      [
+        "C",
+        1077,
+        531,
+        1089,
+        579,
+        1108,
+        628
+      ]
+    ],
+    "alphaLocked": true
+  },
+  {
+    "layer": "0060 sleeve_image_right :: front_tube",
+    "label": "right sleeve lower cut rim",
+    "preset": "b) Airbrush Soft",
+    "size": 2.8,
+    "opacity": 0.75,
+    "own_reference_colour_sample": [
+      1120,
+      650
+    ],
+    "color": "#1c3c84",
+    "path": [
+      [
+        1108,
+        628
+      ],
+      [
+        "C",
+        1122,
+        665,
+        1136,
+        699,
+        1142,
+        721
+      ]
+    ],
+    "alphaLocked": true
+  },
+  {
+    "layer": "0070 tshirt_body :: front_body",
+    "label": "left waist pale cut rim",
+    "preset": "b) Airbrush Soft",
+    "size": 2.6,
+    "opacity": 0.66,
+    "own_reference_colour_sample": [
+      260,
+      950
+    ],
+    "color": "#142b67",
+    "path": [
+      [
+        271,
+        884
+      ],
+      [
+        "C",
+        264,
+        933,
+        253,
+        990,
+        245,
+        1038
+      ]
+    ],
+    "alphaLocked": true
+  },
+  {
+    "layer": "0070 tshirt_body :: front_body",
+    "label": "right lower waist pale cut rim",
+    "preset": "b) Airbrush Soft",
+    "size": 2.5,
+    "opacity": 0.58,
+    "own_reference_colour_sample": [
+      891,
+      1000
+    ],
+    "color": "#112b6b",
+    "path": [
+      [
+        876,
+        970
+      ],
+      [
+        "C",
+        880,
+        983,
+        884,
+        990,
+        886,
+        995
+      ],
+      [
+        "C",
+        909,
+        1046,
+        923,
+        1086,
+        935,
+        1119
+      ]
+    ],
+    "alphaLocked": true
+  }
+]

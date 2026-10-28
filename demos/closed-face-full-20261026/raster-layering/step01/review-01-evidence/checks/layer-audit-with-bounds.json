@@ -1,0 +1,929 @@
+{
+  "path": "raster-layering/step01/character-depth.kra",
+  "width": 1145,
+  "height": 1374,
+  "layers": [
+    {
+      "name": "0005 hair/side_hair_left__hidden_root",
+      "uuid": "{ba109cee-df06-4530-9f49-95bf6d283203}",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0005-hair-side_hair_left__hidden_root-raw.png",
+      "masked": "0005-hair-side_hair_left__hidden_root-masked.png",
+      "masks": [],
+      "raw_sha256": "0b87361a9b7365eff8552a077fcc8caef38571b66254564aebd7d9a74299df3c",
+      "alpha_bbox": [
+        580,
+        13,
+        720,
+        119
+      ]
+    },
+    {
+      "name": "0006 hair/side_hair_right__hidden_root",
+      "uuid": "{0d681884-b1c3-4e8b-86b0-fbea47ec59ba}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0006-hair-side_hair_right__hidden_root-raw.png",
+      "masked": "0006-hair-side_hair_right__hidden_root-masked.png",
+      "masks": [],
+      "raw_sha256": "872fc0baec5d0bceb2aa10ad884338fe6ab3b10ca74f08c46c20e80d96b8f622",
+      "alpha_bbox": [
+        455,
+        7,
+        590,
+        98
+      ]
+    },
+    {
+      "name": "0010 hair/back_hair",
+      "uuid": "{828fce76-68bd-44a5-95a5-1c9cc25c322e}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0010-hair-back_hair-raw.png",
+      "masked": "0010-hair-back_hair-masked.png",
+      "masks": [],
+      "raw_sha256": "30b142adad612c32bff785f19e76cffcf819c809915ae4329775fef138d37302",
+      "alpha_bbox": [
+        190,
+        0,
+        961,
+        911
+      ]
+    },
+    {
+      "name": "0020 hair/side_hair_left__rear",
+      "uuid": "{cbfc3f39-64b2-4eab-bd15-0769e040dd4b}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0020-hair-side_hair_left__rear-raw.png",
+      "masked": "0020-hair-side_hair_left__rear-masked.png",
+      "masks": [],
+      "raw_sha256": "fe8c48bf442ddd60cb189d569202bac61b152b6ef8d043c4d6f77c55d30c9f14",
+      "alpha_bbox": [
+        579,
+        0,
+        1063,
+        910
+      ]
+    },
+    {
+      "name": "0021 hair/side_hair_right__rear",
+      "uuid": "{7156ca97-323f-4615-b4bd-f1d623ff542d}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0021-hair-side_hair_right__rear-raw.png",
+      "masked": "0021-hair-side_hair_right__rear-masked.png",
+      "masks": [],
+      "raw_sha256": "931a6f9dc64408f188cf224290567784173f2604bd08695ee21c337f4a839057",
+      "alpha_bbox": [
+        73,
+        6,
+        591,
+        895
+      ]
+    },
+    {
+      "name": "0030 arms/arm_left",
+      "uuid": "{e971b32b-a4d5-44f6-9a0a-2a3701928f09}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0030-arms-arm_left-raw.png",
+      "masked": "0030-arms-arm_left-masked.png",
+      "masks": [],
+      "raw_sha256": "ec5dc93428a443cca0e56045cac2f08214ca9a4837011bbe71af01770ddc036d",
+      "alpha_bbox": [
+        785,
+        1044,
+        1145,
+        1374
+      ]
+    },
+    {
+      "name": "0031 arms/arm_right",
+      "uuid": "{299f5cdb-52eb-40e4-94b8-3a2f028c95b9}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0031-arms-arm_right-raw.png",
+      "masked": "0031-arms-arm_right-masked.png",
+      "masks": [],
+      "raw_sha256": "627c6023e2639b7b24c1e94a7ddc802099042bdc07cbedd29b2f223e9b77d83f",
+      "alpha_bbox": [
+        0,
+        1042,
+        362,
+        1374
+      ]
+    },
+    {
+      "name": "0035 neck",
+      "uuid": "{28285caf-fec2-47a1-8607-58813906b82d}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0035-neck-raw.png",
+      "masked": "0035-neck-masked.png",
+      "masks": [],
+      "raw_sha256": "d60ae496ba63e9a8762f91675f19226a3007483e83df5e2f39541dea0d802798",
+      "alpha_bbox": [
+        423,
+        726,
+        740,
+        1148
+      ]
+    },
+    {
+      "name": "0040 body/torso",
+      "uuid": "{90c56c5d-2d89-4563-a1e9-2918f8f05207}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0040-body-torso-raw.png",
+      "masked": "0040-body-torso-masked.png",
+      "masks": [
+        {
+          "name": "blend • neck and shoulder roots • controller neck + arms",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "5399e2d79a3a21d97d348cdf4dea8dc7a2fb3aad0af2f533c189a6c384b2d3ac",
+      "alpha_bbox": [
+        126,
+        997,
+        1026,
+        1374
+      ]
+    },
+    {
+      "name": "0050 body/breast",
+      "uuid": "{8c772161-d068-47e6-adcf-44ee74724c9e}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0050-body-breast-raw.png",
+      "masked": "0050-body-breast-masked.png",
+      "masks": [
+        {
+          "name": "blend • upper surface into torso • controller body/torso",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "173ce8705e84049cbc6424188bb935f7321efcfced760e7792150aee5880da4e",
+      "alpha_bbox": [
+        228,
+        1152,
+        925,
+        1374
+      ]
+    },
+    {
+      "name": "0060 face/ear_left",
+      "uuid": "{ce7e5ed3-0d26-4f64-8397-2012ccc093af}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0060-face-ear_left-raw.png",
+      "masked": "0060-face-ear_left-masked.png",
+      "masks": [],
+      "raw_sha256": "ceb079f25cfc7302002e8380810b6760cd8380705b72db3d9afded0279f9822b",
+      "alpha_bbox": [
+        803,
+        509,
+        943,
+        708
+      ]
+    },
+    {
+      "name": "0061 face/ear_right",
+      "uuid": "{7a70b6b4-fc54-43b3-ac55-84ba99b2de3c}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0061-face-ear_right-raw.png",
+      "masked": "0061-face-ear_right-masked.png",
+      "masks": [],
+      "raw_sha256": "af25f3dd7085946614068869a5482b27fab9c5a6ff31b67f7cbc8907f345fe58",
+      "alpha_bbox": [
+        210,
+        509,
+        341,
+        709
+      ]
+    },
+    {
+      "name": "0070 face/face_base",
+      "uuid": "{aef3e0d1-b12b-49b3-a99f-f18141a36488}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0070-face-face_base-raw.png",
+      "masked": "0070-face-face_base-masked.png",
+      "masks": [],
+      "raw_sha256": "2e6e0c71bfe6fdf078d226d6c79e7bb4e648d51588bf4695bc82c891ec2cd3cd",
+      "alpha_bbox": [
+        289,
+        202,
+        866,
+        915
+      ]
+    },
+    {
+      "name": "0072 face/blush_left",
+      "uuid": "{6b47a8a3-9eef-4fa1-8a67-09805094edb6}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0072-face-blush_left-raw.png",
+      "masked": "0072-face-blush_left-masked.png",
+      "masks": [],
+      "raw_sha256": "1061eda023d1ca468475bddfac70ae15f22e9dc47acbf6ebb7bca3a0dc26049a",
+      "alpha_bbox": [
+        681,
+        615,
+        804,
+        694
+      ]
+    },
+    {
+      "name": "0073 face/blush_right",
+      "uuid": "{ca46a4b0-fc0d-47b8-9ece-c28387534b69}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0073-face-blush_right-raw.png",
+      "masked": "0073-face-blush_right-masked.png",
+      "masks": [],
+      "raw_sha256": "9fa1bd4062bd5bf876718d35c91bdb53f595dddeb2eb5fecb60fff78e7d35c71",
+      "alpha_bbox": [
+        351,
+        615,
+        472,
+        694
+      ]
+    },
+    {
+      "name": "0074 face/nose/volume_shadow",
+      "uuid": "{ca51f878-5c67-4b62-a57e-ee69ff47fa4f}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0074-face-nose-volume_shadow-raw.png",
+      "masked": "0074-face-nose-volume_shadow-masked.png",
+      "masks": [],
+      "raw_sha256": "6cef59bdabbf714df74d51d3c018ec0d17ec4fc049f52646de7e87011d2f1e28",
+      "alpha_bbox": [
+        546,
+        649,
+        573,
+        704
+      ]
+    },
+    {
+      "name": "0075 face/nose/tip_highlight",
+      "uuid": "{03708806-48b7-4a96-bf78-69a9c31f0676}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0075-face-nose-tip_highlight-raw.png",
+      "masked": "0075-face-nose-tip_highlight-masked.png",
+      "masks": [],
+      "raw_sha256": "a6c18ccc109a0298a845c13707779dfb21d88ffa1d0a03ed107e4d0760a83c37",
+      "alpha_bbox": [
+        573,
+        648,
+        590,
+        676
+      ]
+    },
+    {
+      "name": "0076 face/nose/tip_mark",
+      "uuid": "{e2e57431-6b4e-482a-9cc6-f51aa6363f6b}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0076-face-nose-tip_mark-raw.png",
+      "masked": "0076-face-nose-tip_mark-masked.png",
+      "masks": [],
+      "raw_sha256": "855a8512ab9d64d05d56119db36bba9c379061a9e9bd7711dff9c027eeeb3878",
+      "alpha_bbox": [
+        565,
+        696,
+        594,
+        703
+      ]
+    },
+    {
+      "name": "0080 face/mouth/mouth_interior",
+      "uuid": "{a6714c71-ef89-4ea5-8912-8b63190b0bda}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0080-face-mouth-mouth_interior-raw.png",
+      "masked": "0080-face-mouth-mouth_interior-masked.png",
+      "masks": [
+        {
+          "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "e96287745530bc250c9087566be641fa2154c1ede2d31c4637fded0939f90e1b",
+      "alpha_bbox": [
+        508,
+        752,
+        648,
+        815
+      ]
+    },
+    {
+      "name": "0081 face/mouth/tongue",
+      "uuid": "{58c28208-a656-45cb-8a62-77d12d3cc400}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0081-face-mouth-tongue-raw.png",
+      "masked": "0081-face-mouth-tongue-masked.png",
+      "masks": [
+        {
+          "name": "clip • full mouth_interior",
+          "visible": true,
+          "type": "transparencymask"
+        },
+        {
+          "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "c089fc89cf2e46c1c644d6626599e27915ba900be0a77d4d5b6f285287ada4a8",
+      "alpha_bbox": [
+        535,
+        769,
+        621,
+        849
+      ]
+    },
+    {
+      "name": "0082 face/mouth/lower_teeth",
+      "uuid": "{3016c5b5-1c3b-46f2-a582-4e76f1cbb2cf}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0082-face-mouth-lower_teeth-raw.png",
+      "masked": "0082-face-mouth-lower_teeth-masked.png",
+      "masks": [
+        {
+          "name": "clip • full mouth_interior",
+          "visible": true,
+          "type": "transparencymask"
+        },
+        {
+          "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "c119edaf4b7a3ba27326725e09811513eeacc8f495e8d9ca7991ac4b0b49679f",
+      "alpha_bbox": [
+        525,
+        781,
+        632,
+        807
+      ]
+    },
+    {
+      "name": "0083 face/mouth/upper_teeth",
+      "uuid": "{e09b96ee-1087-4dd6-906c-c3f9c2db68e3}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0083-face-mouth-upper_teeth-raw.png",
+      "masked": "0083-face-mouth-upper_teeth-masked.png",
+      "masks": [
+        {
+          "name": "clip • full mouth_interior",
+          "visible": true,
+          "type": "transparencymask"
+        },
+        {
+          "name": "aperture • mouth • upper_lip + lower_lip • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "5f89ddef1a0a37b169965f7169e3314d6c8fa6f5f796f8c8ce80307fcd9d8203",
+      "alpha_bbox": [
+        526,
+        751,
+        630,
+        771
+      ]
+    },
+    {
+      "name": "0084 face/mouth/lower_lip",
+      "uuid": "{887a247f-0a52-4009-8bdb-1b88877d4557}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0084-face-mouth-lower_lip-raw.png",
+      "masked": "0084-face-mouth-lower_lip-masked.png",
+      "masks": [],
+      "raw_sha256": "f25e250c79bb07c44da0e1c3114414adc1eaed3bc98f55302e237b2b68ef24a2",
+      "alpha_bbox": [
+        518,
+        770,
+        639,
+        813
+      ]
+    },
+    {
+      "name": "0085 face/mouth/upper_lip",
+      "uuid": "{ce791675-e46f-4c63-860b-eea06d5dc610}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0085-face-mouth-upper_lip-raw.png",
+      "masked": "0085-face-mouth-upper_lip-masked.png",
+      "masks": [],
+      "raw_sha256": "a2efc0b6edb55f0cc58f306e07d4c9a6e36a53704c3fba0be414c11544e62a2d",
+      "alpha_bbox": [
+        516,
+        760,
+        640,
+        777
+      ]
+    },
+    {
+      "name": "0090 face/eye_left/sclera",
+      "uuid": "{ec25b6cd-3e6b-496a-b42b-3ceb934dfc6f}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0090-face-eye_left-sclera-raw.png",
+      "masked": "0090-face-eye_left-sclera-masked.png",
+      "masks": [
+        {
+          "name": "aperture • eye_left • upper_eyelid + lower_eyelid • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "0b6695533d27634131c4c0b1ff961d232d43655158bb40b56420780328471fd3",
+      "alpha_bbox": [
+        661,
+        542,
+        809,
+        599
+      ]
+    },
+    {
+      "name": "0091 face/eye_right/sclera",
+      "uuid": "{94f8669c-1049-42fa-ac3e-2e99b1993caa}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0091-face-eye_right-sclera-raw.png",
+      "masked": "0091-face-eye_right-sclera-masked.png",
+      "masks": [
+        {
+          "name": "aperture • eye_right • upper_eyelid + lower_eyelid • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "4e46afb6e03c92f5d90f631b91eea4a4428574791183264232551e5e6fa96374",
+      "alpha_bbox": [
+        349,
+        542,
+        497,
+        599
+      ]
+    },
+    {
+      "name": "0092 face/eye_left/iris",
+      "uuid": "{77cfdad5-814b-412f-8662-9f7e1fa1d524}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0092-face-eye_left-iris-raw.png",
+      "masked": "0092-face-eye_left-iris-masked.png",
+      "masks": [
+        {
+          "name": "clip • full eye_left sclera",
+          "visible": true,
+          "type": "transparencymask"
+        },
+        {
+          "name": "aperture • eye_left • upper_eyelid + lower_eyelid • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "31b8d64a98f7c2316d35f192ac82e86c2c174162cb677b6b2b0f78346043b323",
+      "alpha_bbox": [
+        695,
+        526,
+        775,
+        606
+      ]
+    },
+    {
+      "name": "0093 face/eye_right/iris",
+      "uuid": "{27ebce59-aae6-458b-942f-32c6b34be388}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0093-face-eye_right-iris-raw.png",
+      "masked": "0093-face-eye_right-iris-masked.png",
+      "masks": [
+        {
+          "name": "clip • full eye_right sclera",
+          "visible": true,
+          "type": "transparencymask"
+        },
+        {
+          "name": "aperture • eye_right • upper_eyelid + lower_eyelid • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "b2dc607de6afbaa546ce9542bbb033c3fbed17fe5aa804ee446c912cbedcf04d",
+      "alpha_bbox": [
+        383,
+        526,
+        462,
+        606
+      ]
+    },
+    {
+      "name": "0094 face/eye_left/highlight",
+      "uuid": "{9c9556bd-359d-4b20-b838-eeb8e5773c68}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0094-face-eye_left-highlight-raw.png",
+      "masked": "0094-face-eye_left-highlight-masked.png",
+      "masks": [
+        {
+          "name": "clip • full eye_left sclera",
+          "visible": true,
+          "type": "transparencymask"
+        },
+        {
+          "name": "aperture • eye_left • upper_eyelid + lower_eyelid • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "bd70487ae7296d2e7b54d51156c5e45b0e697fdb2e8b64929c33170051054234",
+      "alpha_bbox": [
+        704,
+        549,
+        721,
+        571
+      ]
+    },
+    {
+      "name": "0095 face/eye_right/highlight",
+      "uuid": "{37ec8df4-7543-4092-b33c-c16987262f4a}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0095-face-eye_right-highlight-raw.png",
+      "masked": "0095-face-eye_right-highlight-masked.png",
+      "masks": [
+        {
+          "name": "clip • full eye_right sclera",
+          "visible": true,
+          "type": "transparencymask"
+        },
+        {
+          "name": "aperture • eye_right • upper_eyelid + lower_eyelid • CLOSED",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "0bf50466b9dc9afd1fb61874582b98bbbf69bdfd236597acaf892affd11ef5c0",
+      "alpha_bbox": [
+        437,
+        549,
+        453,
+        571
+      ]
+    },
+    {
+      "name": "0096 face/eye_left/eyelid_crease",
+      "uuid": "{13e413d1-bebd-4556-aef2-74dfcc6cb30b}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0096-face-eye_left-eyelid_crease-raw.png",
+      "masked": "0096-face-eye_left-eyelid_crease-masked.png",
+      "masks": [],
+      "raw_sha256": "c45c4fcb3c9570c5d812b0242214c9bc70da0e023aa2ed105867d789649f5cb5",
+      "alpha_bbox": [
+        653,
+        548,
+        810,
+        565
+      ]
+    },
+    {
+      "name": "0097 face/eye_right/eyelid_crease",
+      "uuid": "{99b3cf10-413f-4da7-b9fa-bb688ed51b87}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0097-face-eye_right-eyelid_crease-raw.png",
+      "masked": "0097-face-eye_right-eyelid_crease-masked.png",
+      "masks": [],
+      "raw_sha256": "6fa5c2ebc7295b5853f6382d8cf786664d86c98fd9f5493a285e50fba4e3a752",
+      "alpha_bbox": [
+        351,
+        549,
+        508,
+        565
+      ]
+    },
+    {
+      "name": "0098 face/eye_left/lower_eyelid",
+      "uuid": "{58739c35-1b04-4e02-a7c1-105293d2a0fe}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0098-face-eye_left-lower_eyelid-raw.png",
+      "masked": "0098-face-eye_left-lower_eyelid-masked.png",
+      "masks": [
+        {
+          "name": "closed contact • upper_eyelid occludes lower_eyelid",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "237aad7739c8391f66e7c6b053870c38a8371264f64e00a1f42851a720dee311",
+      "alpha_bbox": [
+        655,
+        565,
+        814,
+        606
+      ]
+    },
+    {
+      "name": "0099 face/eye_right/lower_eyelid",
+      "uuid": "{755fbc9e-690c-4e31-9fba-f0cfc3eca24e}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0099-face-eye_right-lower_eyelid-raw.png",
+      "masked": "0099-face-eye_right-lower_eyelid-masked.png",
+      "masks": [
+        {
+          "name": "closed contact • upper_eyelid occludes lower_eyelid",
+          "visible": true,
+          "type": "transparencymask"
+        }
+      ],
+      "raw_sha256": "88a9ccb3a5fe275da957852786b2d6ac211368c9ccb1fcd820ee3540efacba30",
+      "alpha_bbox": [
+        344,
+        565,
+        502,
+        606
+      ]
+    },
+    {
+      "name": "0100 face/eye_left/upper_eyelid",
+      "uuid": "{59562826-f0d7-42b7-83f9-b1d5e81fb643}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0100-face-eye_left-upper_eyelid-raw.png",
+      "masked": "0100-face-eye_left-upper_eyelid-masked.png",
+      "masks": [],
+      "raw_sha256": "366b93efbff389db6ca8cf560d298660121efd4e0081d301711c0d46a051884b",
+      "alpha_bbox": [
+        650,
+        491,
+        822,
+        601
+      ]
+    },
+    {
+      "name": "0101 face/eye_right/upper_eyelid",
+      "uuid": "{57d1cce4-8056-4486-ada7-d60560aad693}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0101-face-eye_right-upper_eyelid-raw.png",
+      "masked": "0101-face-eye_right-upper_eyelid-masked.png",
+      "masks": [],
+      "raw_sha256": "b66369ecb81d29e322409391bc38960a408d09a41678196d5fc42ce8a890592c",
+      "alpha_bbox": [
+        336,
+        490,
+        512,
+        602
+      ]
+    },
+    {
+      "name": "0102 face/eyebrow_left",
+      "uuid": "{69d20734-2629-4e46-a76f-675535f2e685}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0102-face-eyebrow_left-raw.png",
+      "masked": "0102-face-eyebrow_left-masked.png",
+      "masks": [],
+      "raw_sha256": "bba5a9cc3c5226af848ac6e624684a2a4cf05316ac4d9f7cca4ded38d5914c72",
+      "alpha_bbox": [
+        640,
+        437,
+        817,
+        456
+      ]
+    },
+    {
+      "name": "0103 face/eyebrow_right",
+      "uuid": "{2dd08a5b-aa4d-4e8b-b164-90d579dd5021}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0103-face-eyebrow_right-raw.png",
+      "masked": "0103-face-eyebrow_right-masked.png",
+      "masks": [],
+      "raw_sha256": "d2b6faa33d965110f769e37d4facd6bf5fda843f161d85d3de6b3ad63134b7b5",
+      "alpha_bbox": [
+        344,
+        437,
+        515,
+        463
+      ]
+    },
+    {
+      "name": "0150 hair/side_hair_left__front",
+      "uuid": "{f0fcb119-ffaa-4167-bd8a-d2bfbead549a}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0150-hair-side_hair_left__front-raw.png",
+      "masked": "0150-hair-side_hair_left__front-masked.png",
+      "masks": [],
+      "raw_sha256": "31f78ba6c5263e66f7beaecc78d4225343d298140c425f15dc2ee55b8d976db9",
+      "alpha_bbox": [
+        826,
+        466,
+        882,
+        711
+      ]
+    },
+    {
+      "name": "0151 hair/side_hair_right__front",
+      "uuid": "{83cd096a-f7f1-4950-a041-10a058bf7ead}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0151-hair-side_hair_right__front-raw.png",
+      "masked": "0151-hair-side_hair_right__front-masked.png",
+      "masks": [],
+      "raw_sha256": "70cf68242447ac2ba7ba8a3db21be0aa7cbe4f0134d9684caa92ade76e3dfddc",
+      "alpha_bbox": [
+        275,
+        466,
+        333,
+        679
+      ]
+    },
+    {
+      "name": "0160 hair/bangs",
+      "uuid": "{d848dc1b-56e6-4e7d-ad60-6e51e8ad4df6}",
+      "type": "paintlayer",
+      "visible": false,
+      "opacity": 255,
+      "inheritAlpha": false,
+      "raw": "0160-hair-bangs-raw.png",
+      "masked": "0160-hair-bangs-masked.png",
+      "masks": [],
+      "raw_sha256": "0197d23b36248bb715921a14f8674fa30960f7ae2fec45a29705a7f837b0dd31",
+      "alpha_bbox": [
+        297,
+        52,
+        856,
+        551
+      ]
+    }
+  ],
+  "default_before": "814fbc8fe8588e7459f6df228e469c0d8691fd0d38b8f8d78489eb96134c6d3f",
+  "default_after": "814fbc8fe8588e7459f6df228e469c0d8691fd0d38b8f8d78489eb96134c6d3f",
+  "restored": true,
+  "modified_before": false,
+  "modified_after": false,
+  "canvas_methods": [
+    "blockSignals",
+    "childEvent",
+    "children",
+    "connectNotify",
+    "customEvent",
+    "deleteLater",
+    "destroyed",
+    "disconnect",
+    "disconnectNotify",
+    "dumpObjectInfo",
+    "dumpObjectTree",
+    "dynamicPropertyNames",
+    "event",
+    "eventFilter",
+    "findChild",
+    "findChildren",
+    "inherits",
+    "installEventFilter",
+    "isSignalConnected",
+    "isWidgetType",
+    "isWindowType",
+    "killTimer",
+    "levelOfDetailMode",
+    "metaObject",
+    "mirror",
+    "moveToThread",
+    "objectName",
+    "objectNameChanged",
+    "pan",
+    "parent",
+    "preferredCenter",
+    "property",
+    "pyqtConfigure",
+    "receivers",
+    "removeEventFilter",
+    "resetRotation",
+    "resetZoom",
+    "rotation",
+    "sender",
+    "senderSignalIndex",
+    "setLevelOfDetailMode",
+    "setMirror",
+    "setObjectName",
+    "setParent",
+    "setPreferredCenter",
+    "setProperty",
+    "setRotation",
+    "setWrapAroundMode",
+    "setZoomLevel",
+    "signalsBlocked",
+    "startTimer",
+    "staticMetaObject",
+    "thread",
+    "timerEvent",
+    "tr",
+    "view",
+    "wrapAroundMode",
+    "zoomLevel"
+  ]
+}

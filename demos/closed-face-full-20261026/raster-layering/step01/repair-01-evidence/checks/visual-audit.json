@@ -1,0 +1,388 @@
+{
+  "basis": "Visual inspection, not pixel metrics. Actual native raw pixels composited on gray; all 41 ordinary paint layers and 37 complete logical parts checked.",
+  "layers": [
+    {
+      "part": "hair/side_hair_left",
+      "name": "0005 hair/side_hair_left__hidden_root",
+      "uuid": "{ba109cee-df06-4530-9f49-95bf6d283203}",
+      "evidence": "repair-01-evidence/layers/0005-hair-side_hair_left__hidden_root-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "hair/side_hair_right",
+      "name": "0006 hair/side_hair_right__hidden_root",
+      "uuid": "{0d681884-b1c3-4e8b-86b0-fbea47ec59ba}",
+      "evidence": "repair-01-evidence/layers/0006-hair-side_hair_right__hidden_root-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "hair/back_hair",
+      "name": "0010 hair/back_hair",
+      "uuid": "{828fce76-68bd-44a5-95a5-1c9cc25c322e}",
+      "evidence": "repair-01-evidence/layers/0010-hair-back_hair-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "hair/side_hair_left",
+      "name": "0020 hair/side_hair_left__rear",
+      "uuid": "{cbfc3f39-64b2-4eab-bd15-0769e040dd4b}",
+      "evidence": "repair-01-evidence/layers/0020-hair-side_hair_left__rear-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "hair/side_hair_right",
+      "name": "0021 hair/side_hair_right__rear",
+      "uuid": "{7156ca97-323f-4615-b4bd-f1d623ff542d}",
+      "evidence": "repair-01-evidence/layers/0021-hair-side_hair_right__rear-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "arms/arm_left",
+      "name": "0030 arms/arm_left",
+      "uuid": "{e971b32b-a4d5-44f6-9a0a-2a3701928f09}",
+      "evidence": "repair-01-evidence/layers/0030-arms-arm_left-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "arms/arm_right",
+      "name": "0031 arms/arm_right",
+      "uuid": "{299f5cdb-52eb-40e4-94b8-3a2f028c95b9}",
+      "evidence": "repair-01-evidence/layers/0031-arms-arm_right-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "neck",
+      "name": "0035 neck",
+      "uuid": "{28285caf-fec2-47a1-8607-58813906b82d}",
+      "evidence": "repair-01-evidence/layers/0035-neck-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "body/torso",
+      "name": "0040 body/torso",
+      "uuid": "{90c56c5d-2d89-4563-a1e9-2918f8f05207}",
+      "evidence": "repair-01-evidence/layers/0040-body-torso-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "body/breast",
+      "name": "0050 body/breast",
+      "uuid": "{8c772161-d068-47e6-adcf-44ee74724c9e}",
+      "evidence": "repair-01-evidence/layers/0050-body-breast-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/ear_left",
+      "name": "0060 face/ear_left",
+      "uuid": "{ce7e5ed3-0d26-4f64-8397-2012ccc093af}",
+      "evidence": "repair-01-evidence/layers/0060-face-ear_left-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/ear_right",
+      "name": "0061 face/ear_right",
+      "uuid": "{7a70b6b4-fc54-43b3-ac55-84ba99b2de3c}",
+      "evidence": "repair-01-evidence/layers/0061-face-ear_right-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/face_base",
+      "name": "0070 face/face_base",
+      "uuid": "{aef3e0d1-b12b-49b3-a99f-f18141a36488}",
+      "evidence": "repair-01-evidence/layers/0070-face-face_base-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/blush_left",
+      "name": "0072 face/blush_left",
+      "uuid": "{6b47a8a3-9eef-4fa1-8a67-09805094edb6}",
+      "evidence": "repair-01-evidence/layers/0072-face-blush_left-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/blush_right",
+      "name": "0073 face/blush_right",
+      "uuid": "{ca46a4b0-fc0d-47b8-9ece-c28387534b69}",
+      "evidence": "repair-01-evidence/layers/0073-face-blush_right-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/nose/volume_shadow",
+      "name": "0074 face/nose/volume_shadow",
+      "uuid": "{ca51f878-5c67-4b62-a57e-ee69ff47fa4f}",
+      "evidence": "repair-01-evidence/layers/0074-face-nose-volume_shadow-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/nose/tip_highlight",
+      "name": "0075 face/nose/tip_highlight",
+      "uuid": "{03708806-48b7-4a96-bf78-69a9c31f0676}",
+      "evidence": "repair-01-evidence/layers/0075-face-nose-tip_highlight-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/nose/tip_mark",
+      "name": "0076 face/nose/tip_mark",
+      "uuid": "{e2e57431-6b4e-482a-9cc6-f51aa6363f6b}",
+      "evidence": "repair-01-evidence/layers/0076-face-nose-tip_mark-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/mouth/mouth_interior",
+      "name": "0080 face/mouth/mouth_interior",
+      "uuid": "{a6714c71-ef89-4ea5-8912-8b63190b0bda}",
+      "evidence": "repair-01-evidence/layers/0080-face-mouth-mouth_interior-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/mouth/tongue",
+      "name": "0081 face/mouth/tongue",
+      "uuid": "{58c28208-a656-45cb-8a62-77d12d3cc400}",
+      "evidence": "repair-01-evidence/layers/0081-face-mouth-tongue-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/mouth/lower_teeth",
+      "name": "0082 face/mouth/lower_teeth",
+      "uuid": "{3016c5b5-1c3b-46f2-a582-4e76f1cbb2cf}",
+      "evidence": "repair-01-evidence/layers/0082-face-mouth-lower_teeth-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/mouth/upper_teeth",
+      "name": "0083 face/mouth/upper_teeth",
+      "uuid": "{e09b96ee-1087-4dd6-906c-c3f9c2db68e3}",
+      "evidence": "repair-01-evidence/layers/0083-face-mouth-upper_teeth-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/mouth/lower_lip",
+      "name": "0084 face/mouth/lower_lip",
+      "uuid": "{887a247f-0a52-4009-8bdb-1b88877d4557}",
+      "evidence": "repair-01-evidence/layers/0084-face-mouth-lower_lip-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/mouth/upper_lip",
+      "name": "0085 face/mouth/upper_lip",
+      "uuid": "{ce791675-e46f-4c63-860b-eea06d5dc610}",
+      "evidence": "repair-01-evidence/layers/0085-face-mouth-upper_lip-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_left/sclera",
+      "name": "0090 face/eye_left/sclera",
+      "uuid": "{ec25b6cd-3e6b-496a-b42b-3ceb934dfc6f}",
+      "evidence": "repair-01-evidence/layers/0090-face-eye_left-sclera-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_right/sclera",
+      "name": "0091 face/eye_right/sclera",
+      "uuid": "{94f8669c-1049-42fa-ac3e-2e99b1993caa}",
+      "evidence": "repair-01-evidence/layers/0091-face-eye_right-sclera-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_left/iris",
+      "name": "0092 face/eye_left/iris",
+      "uuid": "{77cfdad5-814b-412f-8662-9f7e1fa1d524}",
+      "evidence": "repair-01-evidence/layers/0092-face-eye_left-iris-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_right/iris",
+      "name": "0093 face/eye_right/iris",
+      "uuid": "{27ebce59-aae6-458b-942f-32c6b34be388}",
+      "evidence": "repair-01-evidence/layers/0093-face-eye_right-iris-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_left/highlight",
+      "name": "0094 face/eye_left/highlight",
+      "uuid": "{9c9556bd-359d-4b20-b838-eeb8e5773c68}",
+      "evidence": "repair-01-evidence/layers/0094-face-eye_left-highlight-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_right/highlight",
+      "name": "0095 face/eye_right/highlight",
+      "uuid": "{37ec8df4-7543-4092-b33c-c16987262f4a}",
+      "evidence": "repair-01-evidence/layers/0095-face-eye_right-highlight-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_left/eyelid_crease",
+      "name": "0096 face/eye_left/eyelid_crease",
+      "uuid": "{13e413d1-bebd-4556-aef2-74dfcc6cb30b}",
+      "evidence": "repair-01-evidence/layers/0096-face-eye_left-eyelid_crease-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_right/eyelid_crease",
+      "name": "0097 face/eye_right/eyelid_crease",
+      "uuid": "{99b3cf10-413f-4da7-b9fa-bb688ed51b87}",
+      "evidence": "repair-01-evidence/layers/0097-face-eye_right-eyelid_crease-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_left/lower_eyelid",
+      "name": "0098 face/eye_left/lower_eyelid",
+      "uuid": "{58739c35-1b04-4e02-a7c1-105293d2a0fe}",
+      "evidence": "repair-01-evidence/layers/0098-face-eye_left-lower_eyelid-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_right/lower_eyelid",
+      "name": "0099 face/eye_right/lower_eyelid",
+      "uuid": "{755fbc9e-690c-4e31-9fba-f0cfc3eca24e}",
+      "evidence": "repair-01-evidence/layers/0099-face-eye_right-lower_eyelid-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_left/upper_eyelid",
+      "name": "0100 face/eye_left/upper_eyelid",
+      "uuid": "{59562826-f0d7-42b7-83f9-b1d5e81fb643}",
+      "evidence": "repair-01-evidence/layers/0100-face-eye_left-upper_eyelid-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eye_right/upper_eyelid",
+      "name": "0101 face/eye_right/upper_eyelid",
+      "uuid": "{57d1cce4-8056-4486-ada7-d60560aad693}",
+      "evidence": "repair-01-evidence/layers/0101-face-eye_right-upper_eyelid-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eyebrow_left",
+      "name": "0102 face/eyebrow_left",
+      "uuid": "{69d20734-2629-4e46-a76f-675535f2e685}",
+      "evidence": "repair-01-evidence/layers/0102-face-eyebrow_left-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "face/eyebrow_right",
+      "name": "0103 face/eyebrow_right",
+      "uuid": "{2dd08a5b-aa4d-4e8b-b164-90d579dd5021}",
+      "evidence": "repair-01-evidence/layers/0103-face-eyebrow_right-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "hair/side_hair_left",
+      "name": "0150 hair/side_hair_left__front",
+      "uuid": "{f0fcb119-ffaa-4167-bd8a-d2bfbead549a}",
+      "evidence": "repair-01-evidence/layers/0150-hair-side_hair_left__front-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "hair/side_hair_right",
+      "name": "0151 hair/side_hair_right__front",
+      "uuid": "{83cd096a-f7f1-4950-a041-10a058bf7ead}",
+      "evidence": "repair-01-evidence/layers/0151-hair-side_hair_right__front-gray-crop.png",
+      "solo_visual_check": "passed"
+    },
+    {
+      "part": "hair/bangs",
+      "name": "0160 hair/bangs",
+      "uuid": "{d848dc1b-56e6-4e7d-ad60-6e51e8ad4df6}",
+      "evidence": "repair-01-evidence/layers/0160-hair-bangs-gray-crop.png",
+      "solo_visual_check": "passed"
+    }
+  ],
+  "issues": [
+    {
+      "id": "R1",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R2",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R3",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R4",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R5",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R6",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R7",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R8",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R9",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R10",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R11",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R12",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R13",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R14",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    },
+    {
+      "id": "R15",
+      "solo": "passed",
+      "upper_hidden": "passed",
+      "default": "passed"
+    }
+  ],
+  "additional_S1": "passed",
+  "mask_pairs": 14,
+  "default_masks_enabled": 21,
+  "reference_registration": "unchanged"
+}

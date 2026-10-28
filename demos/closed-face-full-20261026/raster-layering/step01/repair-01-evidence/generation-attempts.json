@@ -1,0 +1,66 @@
+{
+  "part": "hair/back_hair",
+  "mode": "built-in image_gen",
+  "attempts": [
+    {
+      "id": "exec-acaae6c9-18e8-4c98-a4bd-cb3d19a4943f",
+      "status": "completed",
+      "revisedPrompt": "Use case: precise-object-edit. Asset: a local crop of one isolated BACK HAIR part for a soft Japanese anime character. Input image 1 is the edit target; image 2 is a registered RGB operation map. Coordinates match exactly. RED means preserve the existing warm chestnut back-hair texture and fine flowing lines of image 1. YELLOW means restore this same back-hair material where image 1 has been cleared to neutral gray; it is an UNDERLAP, not another overlapping strand or another object. Continue the neighboring hair plane and fine long curved flow lines smoothly downward and inward through this narrow curved area, with subtle continuous brown tonal variation. No abrupt patch border, no wide flat outline band, no short hatch marks, no black blocks. GREEN is outside this part; make it fully transparent. Keep exact crop framing, scale, registration, silhouette, gaps and slender pointed ends shown by the non-green shape in image 2. No ears, skin, face, clothing or side-hair occluders. Match image 1's soft, quiet, low-detail anime coloring: thin soft brown lines, restrained diffuse shading, no photorealism, no glossy hard highlights, no new shadows or AO, no new colors or added detail. Output only one genuinely transparent PNG containing this back-hair crop, including the red preserved texture and the completed yellow area; the RGB control colors must never appear in the output.",
+      "savedPath": "/Users/wutian/.codex/generated_images/01a17bc7-85c7-7f42-9ed9-87dcb5dcc887/exec-acaae6c9-18e8-4c98-a4bd-cb3d19a4943f.png",
+      "transparentBackground": true,
+      "failure": null,
+      "prompt": "Use case: precise-object-edit. Asset: a local crop of one isolated BACK HAIR part for a soft Japanese anime character. Input image 1 is the edit target; image 2 is a registered RGB operation map. Coordinates match exactly. RED means preserve the existing warm chestnut back-hair texture and fine flowing lines of image 1. YELLOW means restore this same back-hair material where image 1 has been cleared to neutral gray; it is an UNDERLAP, not another overlapping strand or another object. Continue the neighboring hair plane and fine long curved flow lines smoothly downward and inward through this narrow curved area, with subtle continuous brown tonal variation. No abrupt patch border, no wide flat outline band, no short hatch marks, no black blocks. GREEN is outside this part; make it fully transparent. Keep exact crop framing, scale, registration, silhouette, gaps and slender pointed ends shown by the non-green shape in image 2. No ears, skin, face, clothing or side-hair occluders. Match image 1's soft, quiet, low-detail anime coloring: thin soft brown lines, restrained diffuse shading, no photorealism, no glossy hard highlights, no new shadows or AO, no new colors or added detail. Output only one genuinely transparent PNG containing this back-hair crop, including the red preserved texture and the completed yellow area; the RGB control colors must never appear in the output.",
+      "assessment": "Rejected: yellow strip omitted; not used."
+    },
+    {
+      "id": "exec-609f0f91-d19a-419d-a76b-3e590d7c6611",
+      "status": "completed",
+      "revisedPrompt": "请严格根据图2的RGB控制图修复图1中这一个棕色后发部件。两图坐标一一对应。图2红色和黄色的并集才是输出头发的完整范围，只有绿色应透明。\n最重要：图1左下斜向长条灰色区域不是背景！它对应图2黄色长弯带，是缺失的头发，必须画满棕色连续发面。从图中部偏左的缺口向右下延伸到最下面两枚纤细发尖，这整条黄色范围都必须恢复，绝不能保持透明或只描边。请延续红色区域邻近的暖棕发色、细软纵向弯曲发线和柔和渐变，画成同一块完整后发。灰底中的遮挡物已经清除，不要画任何耳朵、脸、皮肤、衣服或额外侧发。\n红色：尽量保留图1本部件已有的棕色头发和纹理。黄色：完全重新补上该部件头发，保证色阶自然连贯，没有补片接缝、粗平边带、短横纹或色块。绿色：完全透明。\n保留图2红黄并集的形状、斜向左外轮廓、下端尖束、所有间隙、画布比例、位置，不要缩小红黄并集，不要把黄色当成背景裁掉。画风和图1完全一致，柔和浅淡低对比日系动漫，细线很少；不要写实厚涂、硬高光、新阴影、AO或新颜色。只输出一张真实透明背景PNG，无文字。",
+      "savedPath": "/Users/wutian/.codex/generated_images/01a17bc7-85c7-7f42-9ed9-87dcb5dcc887/exec-609f0f91-d19a-419d-a76b-3e590d7c6611.png",
+      "transparentBackground": true,
+      "failure": null,
+      "prompt": "请严格根据图2的RGB控制图修复图1中这一个棕色后发部件。两图坐标一一对应。图2红色和黄色的并集才是输出头发的完整范围，只有绿色应透明。\n最重要：图1左下斜向长条灰色区域不是背景！它对应图2黄色长弯带，是缺失的头发，必须画满棕色连续发面。从图中部偏左的缺口向右下延伸到最下面两枚纤细发尖，这整条黄色范围都必须恢复，绝不能保持透明或只描边。请延续红色区域邻近的暖棕发色、细软纵向弯曲发线和柔和渐变，画成同一块完整后发。灰底中的遮挡物已经清除，不要画任何耳朵、脸、皮肤、衣服或额外侧发。\n红色：尽量保留图1本部件已有的棕色头发和纹理。黄色：完全重新补上该部件头发，保证色阶自然连贯，没有补片接缝、粗平边带、短横纹或色块。绿色：完全透明。\n保留图2红黄并集的形状、斜向左外轮廓、下端尖束、所有间隙、画布比例、位置，不要缩小红黄并集，不要把黄色当成背景裁掉。画风和图1完全一致，柔和浅淡低对比日系动漫，细线很少；不要写实厚涂、硬高光、新阴影、AO或新颜色。只输出一张真实透明背景PNG，无文字。",
+      "assessment": "Accepted as generated back underlap material after registration and native brush finish."
+    },
+    {
+      "id": "exec-6996b4e5-723a-4930-97ec-248511d61416",
+      "status": "completed",
+      "revisedPrompt": "请根据图2 RGB操作图精确修复图1这一个完整后发部件。图1与图2坐标完全对应。红色：保留图1已有棕色头发的结构、材质、长曲线和色阶。黄色：图1这一横向灰色缺失区域必须补满同一后发，让顶部头盖和下部头发自然连续地接成完整一体，逐束连接上下已有长发线和宽窄发面，不能留下横向切线、横带、锯齿拼贴、平涂补片或突然转折。绿色：完全透明，不属于头发。黄色绝不是背景，必须恢复头发，包括两侧外缘细窄连接处。\n保持图2红黄并集的完整外形、全画幅比例、位置和大小，不移动、缩小或新增发束。保持图1已经合格的左右耳下发面与下端所有尖梢。后发没有脸、耳朵、皮肤、服装或额外侧发遮挡物。补绘风格必须与现有同件一致：柔和低对比的日系动漫上色，细软少量棕线，克制渐变暖棕发色；不要写实、厚涂、硬高光、新颜色、AO、新投影或新纹理。不画RGB操作色。最终只输出这一完整后发的真实透明PNG。",
+      "savedPath": "/Users/wutian/.codex/generated_images/01a17bc7-85c7-7f42-9ed9-87dcb5dcc887/exec-6996b4e5-723a-4930-97ec-248511d61416.png",
+      "transparentBackground": true,
+      "failure": null,
+      "prompt": "请根据图2 RGB操作图精确修复图1这一个完整后发部件。图1与图2坐标完全对应。红色：保留图1已有棕色头发的结构、材质、长曲线和色阶。黄色：图1这一横向灰色缺失区域必须补满同一后发，让顶部头盖和下部头发自然连续地接成完整一体，逐束连接上下已有长发线和宽窄发面，不能留下横向切线、横带、锯齿拼贴、平涂补片或突然转折。绿色：完全透明，不属于头发。黄色绝不是背景，必须恢复头发，包括两侧外缘细窄连接处。\n保持图2红黄并集的完整外形、全画幅比例、位置和大小，不移动、缩小或新增发束。保持图1已经合格的左右耳下发面与下端所有尖梢。后发没有脸、耳朵、皮肤、服装或额外侧发遮挡物。补绘风格必须与现有同件一致：柔和低对比的日系动漫上色，细软少量棕线，克制渐变暖棕发色；不要写实、厚涂、硬高光、新颜色、AO、新投影或新纹理。不画RGB操作色。最终只输出这一完整后发的真实透明PNG。",
+      "assessment": "Accepted local cap-body seam material after registration, local opacity transition and native strand-join brush finish."
+    },
+    {
+      "id": "exec-a5c83053-e6f8-4130-b59f-83aeb28faf58",
+      "status": "completed",
+      "revisedPrompt": "精确修复一张已分离的日系动漫短棕色后发底层 hair/back_hair。图1只有该后发自己的材质，目标修复区已经抹为中性灰；图2是坐标对应RGB控制图。红色是保留不动的现有后发，黄色是两侧耳下到后颈的后发承接面，绿色是不属于本件的透明区域。黄色必须补成与紧邻红区连续的同一片后发，不画耳朵、脸、脖子、侧发遮挡物或任何皮肤。两侧外弧不应出现额外宽平涂色带、贴片轮廓或边框；让红区的柔和棕色块面和细软发线自然向下、向内弯曲延续，发流从上方对应束面过来，不要横向截断，不要在红黄交界画分割线。严格保留图2的完整外轮廓及天然发梢间隙，黄色范围不裁掉、不留灰色。材质服从图1已有的简单棕色动漫发束：柔和低对比渐变、少量细深棕发线、平淡柔光，禁止写实细发丝、金属感、硬亮边、宝石、发光或新颜色。左右非对称发流可以不同，但要是同一件完整连续的后发。输出一张透明背景PNG，保持1145x1374原画布坐标比例，仅完整后发，无文字、无RGB控制色。",
+      "savedPath": "/Users/wutian/.codex/generated_images/01a17bc7-85c7-7f42-9ed9-87dcb5dcc887/exec-a5c83053-e6f8-4130-b59f-83aeb28faf58.png",
+      "transparentBackground": true,
+      "failure": null,
+      "assessment": "Rejected: material transition did not pass solo inspection."
+    },
+    {
+      "id": "exec-500228f2-42c3-4e26-bd52-b7f1d6bc18fa",
+      "status": "completed",
+      "revisedPrompt": "精确修复已分离的二维动漫棕色后发 hair/back_hair。本次不是绘制人物，只有一件完整后发。图1只有本件自己的可靠发面；黄色待恢复区域已擦成中性灰，没有耳、脸、颈或侧发遮挡物。图2为同坐标RGB控制：红色必须保留本件现有发面像素，黄色恢复本件隐藏发面，绿色完全透明。特别注意：左右下部黄色里的红色深棕弧形区域是后发自己的真实外露发束，必须以这些深色发面的颜色、细线和流向为主要依据，向黄色的上方和外侧自然延长，接成连续的同一片后发。红黄交界不是发束边界，绝不能顺着红黄交界画出M形或横向截断的色区，不要留下补片轮廓、粗平涂边带、涂抹状软色块或不连续细线。让上方红色主后发的纵向发束和下方红色深棕发面通过黄色连接，发线顺外弧向下内弯，使用少量狭长、自然收尖的棕色束面和细软深棕发线。与图1一致的简洁柔和日系动漫材质，低对比但发流清晰，不加写实发丝、金属光、强亮边、额外光照或新颜色。严格服从图2完整外轮廓和原有尖梢间隙，包括两侧耳下承接形体；不把绿色凹口填实。只输出1145x1374透明PNG，完整后发，不含任何其他部件、文字或控制色。",
+      "savedPath": "/Users/wutian/.codex/generated_images/01a17bc7-85c7-7f42-9ed9-87dcb5dcc887/exec-500228f2-42c3-4e26-bd52-b7f1d6bc18fa.png",
+      "transparentBackground": true,
+      "failure": null,
+      "assessment": "Used for ear-underlap texture, then native color and flow repair."
+    }
+  ],
+  "accepted_materials": [
+    "exec-500228f2-42c3-4e26-bd52-b7f1d6bc18fa",
+    "exec-609f0f91-d19a-419d-a76b-3e590d7c6611",
+    "exec-6996b4e5-723a-4930-97ec-248511d61416"
+  ],
+  "rejected": [
+    "exec-a5c83053-e6f8-4130-b59f-83aeb28faf58",
+    "exec-acaae6c9-18e8-4c98-a4bd-cb3d19a4943f"
+  ],
+  "painting_status": "Qualified after original-size solo, upper-hidden and default inspection plus native brush repair.",
+  "all_feedback_fixed": true,
+  "note": "Generated material is registered only into its own yellow regions. Complete native alpha remains; red context and other accepted parts are retained. Rejected attempts are not completion substitutes."
+}

@@ -1,0 +1,330 @@
+{
+  "reference": "part-layering/references/simplified-subject.png",
+  "current": "character-assembly/step01/character-assembled.png",
+  "canvas": [
+    1145,
+    1374
+  ],
+  "crop": [
+    0,
+    0,
+    1145,
+    1374
+  ],
+  "partSelection": {
+    "parts": [
+      "clothing:neckline_band :: front_U",
+      "clothing:tshirt_body :: front_body"
+    ],
+    "padding": 8,
+    "currentKra": "character-assembly/step01/character-assembled.kra",
+    "layers": [
+      {
+        "part": "clothing:neckline_band :: front_U",
+        "layer": "0080 neckline_band :: front_U",
+        "bounds": [
+          230,
+          1048,
+          702,
+          277
+        ]
+      },
+      {
+        "part": "clothing:tshirt_body :: front_body",
+        "layer": "0070 tshirt_body :: front_body",
+        "bounds": [
+          0,
+          1062,
+          1145,
+          312
+        ]
+      }
+    ]
+  },
+  "thresholds": {
+    "color": 80,
+    "coarseColor": 32,
+    "blurSigma": 2,
+    "regionGapPixels": 1,
+    "alpha": 96,
+    "minRegionPixels": 64
+  },
+  "counts": {
+    "missing": 1079,
+    "extra": 100,
+    "color": 29997
+  },
+  "regions": [
+    {
+      "kind": "color",
+      "bounds": [
+        290,
+        1049,
+        580,
+        209
+      ],
+      "pixels": 9437
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        253,
+        1132,
+        657,
+        176
+      ],
+      "pixels": 5280
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        1094,
+        1227,
+        51,
+        147
+      ],
+      "pixels": 2249
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        1013,
+        1226,
+        52,
+        138
+      ],
+      "pixels": 2210
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        35,
+        1238,
+        28,
+        136
+      ],
+      "pixels": 1850
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        775,
+        1246,
+        63,
+        114
+      ],
+      "pixels": 1691
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        109,
+        1225,
+        49,
+        109
+      ],
+      "pixels": 1221
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        474,
+        1315,
+        99,
+        48
+      ],
+      "pixels": 1188
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        308,
+        1227,
+        42,
+        99
+      ],
+      "pixels": 688
+    },
+    {
+      "kind": "missing",
+      "bounds": [
+        110,
+        1044,
+        192,
+        55
+      ],
+      "pixels": 606
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        959,
+        1089,
+        136,
+        30
+      ],
+      "pixels": 557
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        156,
+        1078,
+        62,
+        37
+      ],
+      "pixels": 474
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        26,
+        1109,
+        109,
+        33
+      ],
+      "pixels": 441
+    },
+    {
+      "kind": "missing",
+      "bounds": [
+        861,
+        1046,
+        182,
+        59
+      ],
+      "pixels": 428
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        593,
+        1326,
+        43,
+        14
+      ],
+      "pixels": 320
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        156,
+        1346,
+        25,
+        28
+      ],
+      "pixels": 305
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        826,
+        1153,
+        80,
+        91
+      ],
+      "pixels": 219
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        386,
+        1268,
+        76,
+        33
+      ],
+      "pixels": 186
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        267,
+        1168,
+        42,
+        48
+      ],
+      "pixels": 163
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        978,
+        1355,
+        13,
+        19
+      ],
+      "pixels": 154
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        7,
+        1308,
+        24,
+        42
+      ],
+      "pixels": 145
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        955,
+        1127,
+        11,
+        41
+      ],
+      "pixels": 122
+    },
+    {
+      "kind": "extra",
+      "bounds": [
+        1085,
+        1113,
+        60,
+        22
+      ],
+      "pixels": 100
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        1062,
+        1123,
+        35,
+        10
+      ],
+      "pixels": 100
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        0,
+        1252,
+        18,
+        39
+      ],
+      "pixels": 89
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        1120,
+        1338,
+        9,
+        36
+      ],
+      "pixels": 79
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        105,
+        1095,
+        37,
+        8
+      ],
+      "pixels": 69
+    }
+  ],
+  "note": "以候选框为局部检查入口，依据当前阶段职责和参考确认修复范围。候选不决定通过或内容归属；选择部件时只统计其当前范围及周边。"
+}

@@ -358,7 +358,6 @@ function processArtifacts(index, step) {
  const extra=deliveries.length?`<details class="process-files delivery-files" data-details="delivery:${index}:${step.id}"><summary>${deliveries.length} 个补充产物</summary>${render(deliveries)}</details>`:'';
  return extra+(items.length?`<details class="process-files" data-details="process:${index}:${step.id}"><summary>${listing.total} 个过程文件${listing.shown<listing.total?` · 显示 ${listing.shown} 个（按目录平分）`:''}</summary>${listing.folders.map(({folder,total,files})=>`<details class="process-group" data-details="process-folder:${index}:${step.id}:${esc(folder)}"><summary>${esc(folder||'workspace 根目录')} <small>${total} 个${files.length<total?` · 显示最新 ${files.length} 个`:''}</small></summary>${render(files)}</details>`).join('')}</details>`:'');
 }
-// Shown while the section's private Krita process is running.
 // A skipped lane (no dress-up, nothing to make) counts as complete.
 const finished=stage=>stage.status==='done'||stage.status==='skipped';
 function flowCard(index) {
@@ -391,9 +390,17 @@ function projectPage() {
  <div class="overview-heading"><div><h2>管线执行</h2><p>人物分块准备完成后，人物线与衣服线并行执行，共用同一组 agent 名额，在穿戴组装合流。选择管线，打开完整进展图。</p></div></div>
  <div class="overview-flow">${column('overview-start','共同准备',cards([0]))}${lanes.length?`<div class="overview-lanes">${lanes.map(lane=>`<div class="overview-lane"><small class="overview-column-title">${lane.name}</small><div class="overview-lane-cards">${lane.html}</div></div>`).join('')}</div>`:''}${column('overview-merge','合流',cards([4,5]))}</div></section>`;
 }
+// The section's machine-wide Krita slot, beside its own execution state:
+// queued for a slot, or holding one (with Krita running or not yet started).
 function kritaBadge(index) {
  const krita=data.pipelines?.[index]?.krita;
- return krita?`<span class="krita-badge" title="Krita ${esc(krita.version)} · pid ${esc(krita.pid)} · 启动于 ${esc(new Date(krita.startedAt).toLocaleTimeString())}">Krita 运行中</span>`:'';
+ if(!krita)return '';
+ const time=value=>esc(new Date(value).toLocaleTimeString());
+ const usage=krita.limit?`本机 Krita 名额 ${esc(data.kritaInUse??'?')} / ${esc(krita.limit)}`:'';
+ const count=krita.limit?`<small>${esc(data.kritaInUse??'?')}/${esc(krita.limit)}</small>`:'';
+ if(krita.state==='waiting')return `<span class="krita-badge waiting" title="${usage?usage+'，':'本机 Krita 名额'}已满，等待其他 section 释放 · 自 ${time(krita.since)} 起排队">Krita 排队中${count}</span>`;
+ const detail=krita.state==='running'?`Krita ${esc(krita.version)} · pid ${esc(krita.pid)} · 启动于 ${time(krita.startedAt)}`:'已占名额，Krita 尚未启动或正在重启';
+ return `<span class="krita-badge ${krita.state==='running'?'running':'reserved'}" title="${detail}${usage?' · '+usage:''}">占用 Krita${count}</span>`;
 }
 function graph() {
  if(!state.name)return '<section class="empty-workspace"><h2>尚未选择任务</h2><button class="button" data-page="project">选择任务</button></section>';

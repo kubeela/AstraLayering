@@ -1,0 +1,378 @@
+{
+  "file": "clothing-raster-layering/step02/clothing-soft-edges.kra",
+  "size": [
+    1145,
+    1374
+  ],
+  "layer_and_mask_pixel_hashes_identical": true,
+  "projection_identical": true,
+  "projection_sha256": "07e70de5a79d8987990a83a026e4a61c91d5c83480749124035466ec18fc6e1d",
+  "layers": [
+    {
+      "index_back_to_front": 0,
+      "name": "0010 tshirt_body :: hem_return",
+      "uuid": "{42bccb78-bfdc-497f-851a-308fd7dc3272}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 0,
+      "same_source_uuid": true,
+      "same_source_order": true
+    },
+    {
+      "index_back_to_front": 1,
+      "name": "0020 sleeve_image_left :: cuff_return",
+      "uuid": "{4650a7bc-e69c-40d0-bc45-1889e42d7b21}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 1,
+      "same_source_uuid": true,
+      "same_source_order": true
+    },
+    {
+      "index_back_to_front": 2,
+      "name": "0030 sleeve_image_right :: cuff_return",
+      "uuid": "{ccdd6631-ab19-4b44-bd85-a3b5299cd5d6}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 1,
+      "same_source_uuid": true,
+      "same_source_order": true
+    },
+    {
+      "index_back_to_front": 3,
+      "name": "0040 neckline_band :: back_arc",
+      "uuid": "{d5dac9e9-f93e-4ea9-ba04-deb70f721b6a}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 1,
+      "same_source_uuid": true,
+      "same_source_order": true
+    },
+    {
+      "index_back_to_front": 4,
+      "name": "0050 sleeve_image_left :: front_tube",
+      "uuid": "{77df1e21-6b5d-4629-928d-4c3c4b99b201}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 1,
+      "same_source_uuid": true,
+      "same_source_order": true
+    },
+    {
+      "index_back_to_front": 5,
+      "name": "0060 sleeve_image_right :: front_tube",
+      "uuid": "{9ec693b3-e14c-4b8f-bd6e-a68e2207bd17}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 1,
+      "same_source_uuid": true,
+      "same_source_order": true
+    },
+    {
+      "index_back_to_front": 6,
+      "name": "0070 tshirt_body :: front_body",
+      "uuid": "{df7c9d8e-1b0e-469b-9acf-db276719b189}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 1,
+      "same_source_uuid": true,
+      "same_source_order": true
+    },
+    {
+      "index_back_to_front": 7,
+      "name": "0080 neckline_band :: front_U",
+      "uuid": "{556b20f5-7763-40b0-aa83-d1aa7c96c6c0}",
+      "parent": "root",
+      "type": "paintlayer",
+      "visible": true,
+      "opacity": 255,
+      "blend": "normal",
+      "inheritAlpha": false,
+      "alphaLocked": false,
+      "mask_count": 1,
+      "same_source_uuid": true,
+      "same_source_order": true
+    }
+  ],
+  "before": [
+    {
+      "name": "0010 tshirt_body :: hem_return",
+      "uuid": "{42bccb78-bfdc-497f-851a-308fd7dc3272}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "2314952112f1f11839857f6917ae17000582b9cd03026fd6508d6c147e02b355",
+      "masks": []
+    },
+    {
+      "name": "0020 sleeve_image_left :: cuff_return",
+      "uuid": "{4650a7bc-e69c-40d0-bc45-1889e42d7b21}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "17e12f1e4c82336acd22bd8f36ba2ba9050d2006d3e2361378e9f6928a7400c4",
+      "masks": [
+        {
+          "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{da6bcf63-8bf5-42b0-bd31-5d63d2738258}",
+          "visible": true,
+          "hash": "8ef98f533cc7c7e33eeb24dfe596a40b65649eb558b99455fce23c2864bc2753"
+        }
+      ]
+    },
+    {
+      "name": "0030 sleeve_image_right :: cuff_return",
+      "uuid": "{ccdd6631-ab19-4b44-bd85-a3b5299cd5d6}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "f170fda39d931fa903758e034bef930913945f60866aa7aa5e7280d8d4afd9c0",
+      "masks": [
+        {
+          "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{7e888928-acb5-4619-9d5f-88590b32f153}",
+          "visible": true,
+          "hash": "634ec49f387703ff46647f06c2683a78be3072b637ce5b5092cad127bbdfc08a"
+        }
+      ]
+    },
+    {
+      "name": "0040 neckline_band :: back_arc",
+      "uuid": "{d5dac9e9-f93e-4ea9-ba04-deb70f721b6a}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "40a86be8933bc05a1eac3acb734d5087c1cb02b9a0e3e9ee6f0761d459bd72c4",
+      "masks": [
+        {
+          "name": "M neckline_band own_inner_aperture",
+          "uuid": "{aea5b287-d8a2-4100-a50b-0cf72e81d3b0}",
+          "visible": true,
+          "hash": "e15b719976f5e2bb334508faf2ed7ecec700425cc94110f13e6a30a13bc3d527"
+        }
+      ]
+    },
+    {
+      "name": "0050 sleeve_image_left :: front_tube",
+      "uuid": "{77df1e21-6b5d-4629-928d-4c3c4b99b201}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "1a5bba182297df46f8305f7ba252fb5a2028f123c8fd60558fa1ab7769856103",
+      "masks": [
+        {
+          "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{fc9452e9-d136-4d85-a255-daa65cae0b24}",
+          "visible": true,
+          "hash": "4b86c802863c2b049068e4cfb0e9e38db9ea4019a58b64a92325c97ee72bd0aa"
+        }
+      ]
+    },
+    {
+      "name": "0060 sleeve_image_right :: front_tube",
+      "uuid": "{9ec693b3-e14c-4b8f-bd6e-a68e2207bd17}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "5e88aee9f3cc2c2698a6f9d29336ba62312a6b58d24084d2915348473c5bee84",
+      "masks": [
+        {
+          "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{ae3ad7c0-42f1-4c53-bef2-c188c7d6e25b}",
+          "visible": true,
+          "hash": "9059dcc32909d8536ab3fc89f3126b5f8228233bbdb4af3192ccce9d834d030a"
+        }
+      ]
+    },
+    {
+      "name": "0070 tshirt_body :: front_body",
+      "uuid": "{df7c9d8e-1b0e-469b-9acf-db276719b189}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "d6799cbb46faad4e4c4fea42c1e0f49b3caf057fba10022c213cee33c8aea5ae",
+      "masks": [
+        {
+          "name": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+          "uuid": "{d16c7490-ef04-4df7-ac0d-d3138e2f711a}",
+          "visible": true,
+          "hash": "ea1912537be8b7ce21ddc624e1dce6dbaba243a07359abd5657818d039d7930f"
+        }
+      ]
+    },
+    {
+      "name": "0080 neckline_band :: front_U",
+      "uuid": "{556b20f5-7763-40b0-aa83-d1aa7c96c6c0}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "c39c3e211781c7b4333a0dd9306d5fe1b951f6ff0dbd4a2a529aafc7e939dcad",
+      "masks": [
+        {
+          "name": "M neckline_band own_inner_aperture",
+          "uuid": "{41eddef2-ea10-4ed2-aa7f-99e4c13f346f}",
+          "visible": true,
+          "hash": "62c4d4dfa603ad8d3b4259a6be38c6c3c6c3f2179e3fc6c392078e8d72c1c4d0"
+        }
+      ]
+    }
+  ],
+  "after": [
+    {
+      "name": "0010 tshirt_body :: hem_return",
+      "uuid": "{42bccb78-bfdc-497f-851a-308fd7dc3272}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "2314952112f1f11839857f6917ae17000582b9cd03026fd6508d6c147e02b355",
+      "masks": []
+    },
+    {
+      "name": "0020 sleeve_image_left :: cuff_return",
+      "uuid": "{4650a7bc-e69c-40d0-bc45-1889e42d7b21}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "17e12f1e4c82336acd22bd8f36ba2ba9050d2006d3e2361378e9f6928a7400c4",
+      "masks": [
+        {
+          "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{da6bcf63-8bf5-42b0-bd31-5d63d2738258}",
+          "visible": true,
+          "hash": "8ef98f533cc7c7e33eeb24dfe596a40b65649eb558b99455fce23c2864bc2753"
+        }
+      ]
+    },
+    {
+      "name": "0030 sleeve_image_right :: cuff_return",
+      "uuid": "{ccdd6631-ab19-4b44-bd85-a3b5299cd5d6}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "f170fda39d931fa903758e034bef930913945f60866aa7aa5e7280d8d4afd9c0",
+      "masks": [
+        {
+          "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{7e888928-acb5-4619-9d5f-88590b32f153}",
+          "visible": true,
+          "hash": "634ec49f387703ff46647f06c2683a78be3072b637ce5b5092cad127bbdfc08a"
+        }
+      ]
+    },
+    {
+      "name": "0040 neckline_band :: back_arc",
+      "uuid": "{d5dac9e9-f93e-4ea9-ba04-deb70f721b6a}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "40a86be8933bc05a1eac3acb734d5087c1cb02b9a0e3e9ee6f0761d459bd72c4",
+      "masks": [
+        {
+          "name": "M neckline_band own_inner_aperture",
+          "uuid": "{aea5b287-d8a2-4100-a50b-0cf72e81d3b0}",
+          "visible": true,
+          "hash": "e15b719976f5e2bb334508faf2ed7ecec700425cc94110f13e6a30a13bc3d527"
+        }
+      ]
+    },
+    {
+      "name": "0050 sleeve_image_left :: front_tube",
+      "uuid": "{77df1e21-6b5d-4629-928d-4c3c4b99b201}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "1a5bba182297df46f8305f7ba252fb5a2028f123c8fd60558fa1ab7769856103",
+      "masks": [
+        {
+          "name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{fc9452e9-d136-4d85-a255-daa65cae0b24}",
+          "visible": true,
+          "hash": "4b86c802863c2b049068e4cfb0e9e38db9ea4019a58b64a92325c97ee72bd0aa"
+        }
+      ]
+    },
+    {
+      "name": "0060 sleeve_image_right :: front_tube",
+      "uuid": "{9ec693b3-e14c-4b8f-bd6e-a68e2207bd17}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "5e88aee9f3cc2c2698a6f9d29336ba62312a6b58d24084d2915348473c5bee84",
+      "masks": [
+        {
+          "name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+          "uuid": "{ae3ad7c0-42f1-4c53-bef2-c188c7d6e25b}",
+          "visible": true,
+          "hash": "9059dcc32909d8536ab3fc89f3126b5f8228233bbdb4af3192ccce9d834d030a"
+        }
+      ]
+    },
+    {
+      "name": "0070 tshirt_body :: front_body",
+      "uuid": "{df7c9d8e-1b0e-469b-9acf-db276719b189}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "d6799cbb46faad4e4c4fea42c1e0f49b3caf057fba10022c213cee33c8aea5ae",
+      "masks": [
+        {
+          "name": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+          "uuid": "{d16c7490-ef04-4df7-ac0d-d3138e2f711a}",
+          "visible": true,
+          "hash": "ea1912537be8b7ce21ddc624e1dce6dbaba243a07359abd5657818d039d7930f"
+        }
+      ]
+    },
+    {
+      "name": "0080 neckline_band :: front_U",
+      "uuid": "{556b20f5-7763-40b0-aa83-d1aa7c96c6c0}",
+      "type": "paintlayer",
+      "visible": true,
+      "alphaLocked": false,
+      "raw": "c39c3e211781c7b4333a0dd9306d5fe1b951f6ff0dbd4a2a529aafc7e939dcad",
+      "masks": [
+        {
+          "name": "M neckline_band own_inner_aperture",
+          "uuid": "{41eddef2-ea10-4ed2-aa7f-99e4c13f346f}",
+          "visible": true,
+          "hash": "62c4d4dfa603ad8d3b4259a6be38c6c3c6c3f2179e3fc6c392078e8d72c1c4d0"
+        }
+      ]
+    }
+  ]
+}

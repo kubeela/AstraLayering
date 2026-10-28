@@ -1,0 +1,275 @@
+{
+  "version": 2,
+  "shadows": [
+    {
+      "id": "bangs-face",
+      "casterPartId": "character:hair/bangs",
+      "receiverPartIds": [
+        "character:face/face_base",
+        "character:face/ear_right",
+        "character:face/ear_left"
+      ],
+      "casterLayerUuids": [
+        "d848dc1b-56e6-4e7d-ad60-6e51e8ad4df6"
+      ],
+      "receiverLayerUuids": [
+        "ce7e5ed3-0d26-4f64-8397-2012ccc093af",
+        "7a70b6b4-fc54-43b3-ac55-84ba99b2de3c",
+        "aef3e0d1-b12b-49b3-a99f-f18141a36488"
+      ],
+      "shadowLayerUuid": "887ce704-7948-4b9d-a3bc-e9983aa6b1e3",
+      "clipBaseLayerUuid": "1febbf29-d5ac-43d8-b51e-3975f711eaf4",
+      "follow": "caster",
+      "blendMode": "normal",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -4,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          5
+        ]
+      ],
+      "colour": "#edc4b1",
+      "notes": "柔和上前方光；依据刘海贴脸下缘保留窄暖桃影，基准偏左2/下5px；根部完整保留，不按深度数值推距离。重叠正常不透明色避免叠黑。"
+    },
+    {
+      "id": "side-right-contact",
+      "casterPartId": "character:hair",
+      "receiverPartIds": [
+        "character:face/face_base",
+        "character:face/ear_right",
+        "character:face/ear_left"
+      ],
+      "casterLayerUuids": [
+        "83cd096a-f7f1-4950-a041-10a058bf7ead"
+      ],
+      "receiverLayerUuids": [
+        "ce7e5ed3-0d26-4f64-8397-2012ccc093af",
+        "7a70b6b4-fc54-43b3-ac55-84ba99b2de3c",
+        "aef3e0d1-b12b-49b3-a99f-f18141a36488"
+      ],
+      "shadowLayerUuid": "8efec350-004c-49bb-bee8-809087bc311a",
+      "clipBaseLayerUuid": "1febbf29-d5ac-43d8-b51e-3975f711eaf4",
+      "follow": "caster",
+      "blendMode": "normal",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -3,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "colour": "#edc4b1",
+      "notes": "仅耳前内侧贴肤窄束及耳根搭接有受影依据，手绘完整根部与隐藏衔接；不将外伸细丝/耳后卷尾轮廓移入脸内。余量测试±3px横向、下4px。 inputs索引把__front识别为hair父组，因此casterPartId使用真实hair组；sourcePartId记精确侧发part，casterLayerUuids唯一定位该独立来源。",
+      "sourcePartId": "character:hair/side_hair_right"
+    },
+    {
+      "id": "side-left-contact",
+      "casterPartId": "character:hair",
+      "receiverPartIds": [
+        "character:face/face_base",
+        "character:face/ear_right",
+        "character:face/ear_left"
+      ],
+      "casterLayerUuids": [
+        "f0fcb119-ffaa-4167-bd8a-d2bfbead549a"
+      ],
+      "receiverLayerUuids": [
+        "ce7e5ed3-0d26-4f64-8397-2012ccc093af",
+        "7a70b6b4-fc54-43b3-ac55-84ba99b2de3c",
+        "aef3e0d1-b12b-49b3-a99f-f18141a36488"
+      ],
+      "shadowLayerUuid": "3516d7f5-493e-4117-97c4-63b5594035cc",
+      "clipBaseLayerUuid": "1febbf29-d5ac-43d8-b51e-3975f711eaf4",
+      "follow": "caster",
+      "blendMode": "normal",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -3,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "colour": "#edc4b1",
+      "notes": "仅耳前内侧贴肤窄束及耳根搭接有受影依据，手绘完整根部与隐藏衔接；不将外伸细丝/耳后卷尾轮廓移入脸内。余量测试±3px横向、下4px。 inputs索引把__front识别为hair父组，因此casterPartId使用真实hair组；sourcePartId记精确侧发part，casterLayerUuids唯一定位该独立来源。",
+      "sourcePartId": "character:hair/side_hair_left"
+    },
+    {
+      "id": "upper-lid-left",
+      "casterPartId": "character:face/eye_left/upper_eyelid",
+      "receiverPartIds": [
+        "character:face/eye_left/sclera",
+        "character:face/eye_left/iris"
+      ],
+      "casterLayerUuids": [
+        "59562826-f0d7-42b7-83f9-b1d5e81fb643"
+      ],
+      "receiverLayerUuids": [
+        "ec25b6cd-3e6b-496a-b42b-3ceb934dfc6f",
+        "77cfdad5-814b-412f-8662-9f7e1fa1d524"
+      ],
+      "shadowLayerUuid": "94a4ce34-bba7-4a0a-9bbf-85d11ebbbc05",
+      "clipBaseLayerUuid": "6f3f1e38-5302-419b-aa34-21f61274feea",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -3,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "colour": "#cfafa4 @55%",
+      "notes": "闭眼参考不显示眼球；为完整补设计眼球补独立上睑/睫毛投影，随对应上睑、不随虹膜。暖棕灰叠底55%，含上方隐藏区；原 CLOSED 开口蒙版全部保留，故静帧完全隐藏。 接收底组内虹膜启用原生透明度继承，严格限于完整眼白；保留虹膜原clip与CLOSED蒙版。"
+    },
+    {
+      "id": "upper-lid-right",
+      "casterPartId": "character:face/eye_right/upper_eyelid",
+      "receiverPartIds": [
+        "character:face/eye_right/sclera",
+        "character:face/eye_right/iris"
+      ],
+      "casterLayerUuids": [
+        "57d1cce4-8056-4486-ada7-d60560aad693"
+      ],
+      "receiverLayerUuids": [
+        "94f8669c-1049-42fa-ac3e-2e99b1993caa",
+        "27ebce59-aae6-458b-942f-32c6b34be388"
+      ],
+      "shadowLayerUuid": "1dd8fc17-c533-4eee-a7f9-c285046a6fe6",
+      "clipBaseLayerUuid": "a797ad9a-d40c-4d16-b065-ffa384275986",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -3,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "colour": "#cfafa4 @55%",
+      "notes": "闭眼参考不显示眼球；为完整补设计眼球补独立上睑/睫毛投影，随对应上睑、不随虹膜。暖棕灰叠底55%，含上方隐藏区；原 CLOSED 开口蒙版全部保留，故静帧完全隐藏。 接收底组内虹膜启用原生透明度继承，严格限于完整眼白；保留虹膜原clip与CLOSED蒙版。"
+    },
+    {
+      "id": "head-neck",
+      "casterPartId": "character:face/face_base",
+      "receiverPartIds": [
+        "character:neck"
+      ],
+      "casterLayerUuids": [
+        "aef3e0d1-b12b-49b3-a99f-f18141a36488"
+      ],
+      "receiverLayerUuids": [
+        "28285caf-fec2-47a1-8607-58813906b82d"
+      ],
+      "shadowLayerUuid": "0803c30b-63c9-4b70-9008-492268b8dcd9",
+      "clipBaseLayerUuid": "bdc62509-2d5c-4cd1-b911-6a96003d42e5",
+      "follow": "caster",
+      "blendMode": "multiply",
+      "testOffsets": [
+        [
+          0,
+          0
+        ],
+        [
+          -6,
+          0
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          0,
+          8
+        ]
+      ],
+      "colour": "以原颈部投影/补回肤色的逐像素比值，主体约#ebcdc4叠底",
+      "notes": "依据simplified的下颌暖色投影；局部以颈下相邻未受影肤色约RGB252/228/214补回接收底色，投影原有浓淡转入独立叠底因子，颈部alpha、边缘轮廓与原蒙版保留。完整影层上延y705、左右出颈面；±6px横向、下8px为素材余量检查。"
+    }
+  ],
+  "excluded": [
+    {
+      "casterPartId": "character:hair/side_hair_right",
+      "reason": "外伸游离细丝在脸外/耳外，耳后宽帘与y760–906卷尾位于脸后，simplified无跨颊投影依据；不移入脸内，不补平行或对称线。耳前内束已单独处理。"
+    },
+    {
+      "casterPartId": "character:hair/side_hair_left",
+      "reason": "外弧游丝和下部卷尾位于侧外或脸后，无落脸依据；跨耳细线不自动等于可见脸影，未为显影加深。仅耳前内束接触投影。"
+    },
+    {
+      "casterPartId": "character:hair/back_hair",
+      "reason": "在脸耳之后，不向正面脸部投影；保留头发自身材质阴影与高光。"
+    },
+    {
+      "casterPartId": "clothing:tshirt_body",
+      "reason": "本角色为半身T恤，无裙摆与腿部接收面；下摆离开画布。胸前褶皱、缝线、内返壁为固有衣料明暗，保持原样。"
+    },
+    {
+      "casterPartId": "clothing:neckline_band",
+      "reason": "参考领圈边界以材质/缝线表现，胸前无明确独立落影带，不额外加深。"
+    },
+    {
+      "casterPartId": "clothing:sleeve_image_left",
+      "reason": "袖口及上臂相接区在本组装裁切外，画内蓝色袖面为本体明暗，无可见皮肤接收面。"
+    },
+    {
+      "casterPartId": "clothing:sleeve_image_right",
+      "reason": "袖口及上臂接触区在本组装裁切外，无依据新增皮肤投影。"
+    }
+  ]
+}

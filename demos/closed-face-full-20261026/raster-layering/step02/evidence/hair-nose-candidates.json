@@ -1,0 +1,450 @@
+{
+  "reference": "part-layering/references/base-subject.png",
+  "current": "raster-layering/step02/character-soft-edges.png",
+  "canvas": [
+    1145,
+    1374
+  ],
+  "crop": [
+    0,
+    0,
+    1145,
+    1374
+  ],
+  "partSelection": {
+    "parts": [
+      "hair/bangs",
+      "face/nose"
+    ],
+    "padding": 8,
+    "currentKra": "raster-layering/step02/character-soft-edges.kra",
+    "layers": [
+      {
+        "part": "hair/bangs",
+        "layer": "0160 hair/bangs",
+        "bounds": [
+          297,
+          52,
+          559,
+          506
+        ]
+      },
+      {
+        "part": "face/nose",
+        "layer": "0076 face/nose/tip_mark",
+        "bounds": [
+          565,
+          696,
+          29,
+          7
+        ]
+      },
+      {
+        "part": "face/nose",
+        "layer": "0075 face/nose/tip_highlight",
+        "bounds": [
+          573,
+          648,
+          17,
+          29
+        ]
+      },
+      {
+        "part": "face/nose",
+        "layer": "0074 face/nose/volume_shadow",
+        "bounds": [
+          546,
+          649,
+          27,
+          55
+        ]
+      }
+    ]
+  },
+  "thresholds": {
+    "color": 80,
+    "coarseColor": 32,
+    "blurSigma": 2,
+    "regionGapPixels": 1,
+    "alpha": 96,
+    "minRegionPixels": 8
+  },
+  "counts": {
+    "missing": 0,
+    "extra": 0,
+    "color": 8116
+  },
+  "regions": [
+    {
+      "kind": "color",
+      "bounds": [
+        635,
+        222,
+        72,
+        207
+      ],
+      "pixels": 2245
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        422,
+        254,
+        54,
+        160
+      ],
+      "pixels": 1826
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        746,
+        360,
+        28,
+        91
+      ],
+      "pixels": 574
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        792,
+        382,
+        28,
+        92
+      ],
+      "pixels": 506
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        346,
+        387,
+        31,
+        81
+      ],
+      "pixels": 451
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        303,
+        514,
+        18,
+        44
+      ],
+      "pixels": 432
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        554,
+        377,
+        36,
+        88
+      ],
+      "pixels": 421
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        711,
+        378,
+        23,
+        55
+      ],
+      "pixels": 214
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        333,
+        471,
+        11,
+        48
+      ],
+      "pixels": 175
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        478,
+        451,
+        17,
+        19
+      ],
+      "pixels": 158
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        496,
+        387,
+        12,
+        42
+      ],
+      "pixels": 119
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        728,
+        443,
+        26,
+        25
+      ],
+      "pixels": 118
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        703,
+        444,
+        23,
+        18
+      ],
+      "pixels": 106
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        854,
+        455,
+        7,
+        15
+      ],
+      "pixels": 84
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        836,
+        541,
+        13,
+        22
+      ],
+      "pixels": 66
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        662,
+        448,
+        14,
+        9
+      ],
+      "pixels": 56
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        598,
+        453,
+        15,
+        20
+      ],
+      "pixels": 51
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        421,
+        449,
+        10,
+        17
+      ],
+      "pixels": 44
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        643,
+        448,
+        14,
+        13
+      ],
+      "pixels": 42
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        622,
+        479,
+        11,
+        5
+      ],
+      "pixels": 41
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        775,
+        454,
+        6,
+        12
+      ],
+      "pixels": 29
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        635,
+        409,
+        7,
+        7
+      ],
+      "pixels": 28
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        525,
+        443,
+        8,
+        12
+      ],
+      "pixels": 28
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        756,
+        470,
+        9,
+        9
+      ],
+      "pixels": 25
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        642,
+        423,
+        4,
+        10
+      ],
+      "pixels": 22
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        518,
+        461,
+        4,
+        6
+      ],
+      "pixels": 17
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        411,
+        437,
+        6,
+        6
+      ],
+      "pixels": 16
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        299,
+        487,
+        4,
+        6
+      ],
+      "pixels": 16
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        708,
+        436,
+        5,
+        3
+      ],
+      "pixels": 13
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        369,
+        455,
+        7,
+        4
+      ],
+      "pixels": 13
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        832,
+        489,
+        3,
+        9
+      ],
+      "pixels": 12
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        380,
+        484,
+        3,
+        6
+      ],
+      "pixels": 11
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        737,
+        474,
+        7,
+        7
+      ],
+      "pixels": 10
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        834,
+        502,
+        3,
+        7
+      ],
+      "pixels": 10
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        422,
+        439,
+        8,
+        2
+      ],
+      "pixels": 9
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        784,
+        455,
+        9,
+        17
+      ],
+      "pixels": 9
+    },
+    {
+      "kind": "color",
+      "bounds": [
+        766,
+        454,
+        3,
+        9
+      ],
+      "pixels": 8
+    }
+  ],
+  "note": "以候选框为局部检查入口，依据当前阶段职责和参考确认修复范围。候选不决定通过或内容归属；选择部件时只统计其当前范围及周边。"
+}

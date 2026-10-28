@@ -1,0 +1,63 @@
+{
+  "groupId": "face/nose/tip_mark",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取本组说明、候选及父组完成 SVG，并完成整图 blend 定位、原图局部放大、两处短点逐块 8 倍 blend/edge 对照及 SVG 独显检查。画面左 x565–571、y696–703 的深色斜短点与画面右 x587–594、y698–703 的短点均有参考依据，候选分别覆盖，长度、倾斜、尖端及外缘与参考相符；两点之间保留真实肤色间隔，未误包鼻影或高光，无可见组件遗漏、碎片噪音或需重画的归属问题。父范围检查 pass，outsidePixels=0。核对证据：workspace/bitmaps/e8baf36a-6735-4813-bca9-fad6fce373b2.png（原图局部），previews/2026-10-27T04-07-49-860Z-3.png（父组局部），workspace/previews/2026-10-27T04-07-49-860Z-7.png、workspace/previews/2026-10-27T04-07-49-860Z-8.png（左短点），workspace/previews/2026-10-27T04-07-49-860Z-9.png、workspace/previews/2026-10-27T04-07-49-860Z-10.png（右短点）。未发现有明确图像依据的返修问题。",
+      "candidateHash": "1c76295d096a0591a334317a1c59d620d23333c38b35ecead7aefbea0ba84d10",
+      "observations": [
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-1.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-2.png"
+        },
+        {
+          "source": "part-layering/parts/face/nose.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-3.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-4.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-5.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-6.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-7.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-8.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-9.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-10.png"
+        }
+      ],
+      "updatedAt": "2026-10-27T04:13:19.595Z"
+    }
+  ]
+}

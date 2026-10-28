@@ -1,0 +1,17 @@
+{
+  "updated": [
+    "../../part-layering/preview.svg",
+    "../../part-layering/occlusion/preview.svg"
+  ],
+  "affected_part_svgs": [
+    "hair/back_hair",
+    "face/eye_right/sclera",
+    "face/eye_right/iris",
+    "face/eye_right/highlight",
+    "face/eye_right/lower_eyelid"
+  ],
+  "parts": 37,
+  "depth_regions": 41,
+  "preview_depth_uses_native_projection_alpha": true,
+  "backups": "workspace/preview-before-raster-repairs/"
+}

@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "part": "hair/back_hair",
+  "id": "exec-66b13cb4-611c-439e-aeb8-b681d403e450",
+  "prompt": "请严格按图2的RGB操作图修复图1这一个棕色后发部件。两图坐标一一对应。红色为保留的本后发真实材质；黄色是被清成中性灰的本后发缺失表面，必须全部画成连续暖深棕后发，不能保留灰色或透明；绿色才应完全透明。输出完整红黄并集的形体，保留位置、大小、画幅比例、外缘和下端尖梢。\n黄色区域应当是安静、连续的宽后发表面，发流从上方顺长弧向右下延伸。消除旧的浅金棕锯齿碎片、孤立亮条、突兀短折笔，并且绝对不要画出一条横向向右翘起的游离侧发细束或它的高光/暗影残像。这里上方独立侧发已经全部抹掉；需要恢复的是其下面自己的后发宽面，不是重复那条侧发。只画纵向长而柔和的棕色发流，少量低对比渐变，接到周围本件长线与束面。不要横向小钩、短横纹、V形亮片、粗平色带、新阴影、AO或投影。\n严格匹配图1现有柔和低对比日系动漫画法、暖深棕色、细软少量线条，保持下方裁切形状。没有耳、脸、皮肤、衣服或其他发件。只输出真实透明背景PNG，只有这个完成的后发局部，不能出现RGB操作色或文字。",
+  "savedPath": "/Users/wutian/.codex/generated_images/01a17bc7-85c7-7f42-9ed9-87dcb5dcc887/exec-66b13cb4-611c-439e-aeb8-b681d403e450.png",
+  "projectCopy": "raster-layering/step01/workspace/repair-02/back-generated.png",
+  "input": "raster-layering/step01/workspace/repair-02/back-input.png",
+  "control": "raster-layering/step01/workspace/repair-02/back-control.png",
+  "assessment": "New material used only inside cleared own back-hair yellow region; registered then repaired with native brushes. Side-hair hook is absent.",
+  "accepted": true,
+  "final_material_source": "raster-layering/step01/repair-02-evidence/back-generated.png",
+  "native_finish": "Local colour joins on the same paint layer; own complete alpha retained. No side-hair hook in back raw or synchronized native solo."
+}

@@ -19,7 +19,7 @@ import { legacyWorkspaces } from './workspaces.ts';
 import { taskStopMethod } from '../.agents/skills/live2d-maker/workflow/control.ts';
 import { completeRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { copiedInput, inputKras } from './kra-inputs.ts';
-import { kritaRecordFile, readKritaRecord } from '../.agents/skills/live2d-maker/shared/krita/section-krita.ts';
+import { kritaRecordFile, kritaSlotsInUse, readKritaRecord } from '../.agents/skills/live2d-maker/shared/krita/section-krita.ts';
 
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
@@ -55,6 +55,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(String(error)); return false; }
   };
   const pipelines = [];
+  // Slots held machine-wide, read once a section of this task holds or awaits one.
+  let kritaInUse: number | undefined;
   for (const id of pipelineIds) {
     if (record.run?.archive && !record.run.pipelines[id]) continue;
     // The character and clothing lanes run side by side: several pipelines can be active at once.
@@ -207,9 +209,11 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const steps = await listSteps(join(directory, branch), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
     // The thread of the running step, else of the last step that kept one.
     const threadId = (await currentSession(join(directory, branch), steps).catch(() => undefined))?.threadId ?? null;
-    // The section's own Krita while its process is alive.
+    // The section's machine-wide Krita slot: queued for, held, or held with Krita running.
     const kritaRecord = await readKritaRecord(join(directory, branch, kritaRecordFile));
-    const krita = kritaRecord ? { pid: kritaRecord.pid, version: kritaRecord.version, startedAt: kritaRecord.startedAt } : null;
+    const krita = !kritaRecord ? null : { state: kritaRecord.state, since: kritaRecord.since, limit: kritaRecord.limit,
+      ...(kritaRecord.state === 'running' ? { pid: kritaRecord.pid, version: kritaRecord.version, startedAt: kritaRecord.startedAt } : {}) };
+    if (krita) kritaInUse ??= await kritaSlotsInUse();
     pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
       threadId, krita, summary: saved?.summary, ...(saved?.skipped ? { skipped: true } : {}) });
   }
@@ -218,7 +222,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
   // Server-side readers above may use agent records; the page only gets readable artifacts.
   const servedFiles = files.filter(path => !agentRecord(path));
   const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
-  return { ...record, files: servedFiles, fileVersions: servedVersions, processWorkspaces, pipelines, errors, logs: log.text,
+  return { ...record, files: servedFiles, ...(kritaInUse !== undefined ? { kritaInUse } : {}), fileVersions: servedVersions, processWorkspaces, pipelines, errors, logs: log.text,
     archived: !!record.run?.archive,
     canExport: completeRun(record.run) && !record.runnerAlive && !record.lockHeld,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,

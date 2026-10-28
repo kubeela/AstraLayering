@@ -1,0 +1,164 @@
+{
+  "image": "raster-layering/step01/review-02-evidence/default.png",
+  "reference": "part-layering/references/base-subject.png",
+  "canvas": [
+    1145,
+    1374
+  ],
+  "marked": "raster-layering/step01/review-02-evidence/marks-default/marked.png",
+  "manifest": "raster-layering/step01/review-02-evidence/marks-default/regions.json",
+  "regions": [
+    {
+      "id": "R1",
+      "bounds": [
+        367,
+        428,
+        151,
+        49
+      ],
+      "layers": [
+        "0160 hair/bangs",
+        "0103 face/eyebrow_right"
+      ],
+      "description": "画面左眉高度的刘海边缘有矩形切口，约x414处细束被截断；隐藏眉层与刘海独显均确认缺失在刘海本体。应补回连续发束，由刘海自然遮挡眉毛，保留原有露额缝。",
+      "crop": [
+        349,
+        410,
+        187,
+        85
+      ],
+      "files": {
+        "current": "raster-layering/step01/review-02-evidence/marks-default/R1-current.png",
+        "reference": "raster-layering/step01/review-02-evidence/marks-default/R1-reference.png",
+        "comparison": "raster-layering/step01/review-02-evidence/marks-default/R1-comparison.png"
+      }
+    },
+    {
+      "id": "R2",
+      "bounds": [
+        644,
+        428,
+        181,
+        49
+      ],
+      "layers": [
+        "0160 hair/bangs",
+        "0102 face/eyebrow_left"
+      ],
+      "description": "画面右眉高度多束刘海出现同高台阶/矩形缺刻，眉色从缺刻处露出。按本侧参考恢复各束自身连续轮廓与发纹，保留眉在发后的关系和真实不对称。",
+      "crop": [
+        626,
+        410,
+        217,
+        85
+      ],
+      "files": {
+        "current": "raster-layering/step01/review-02-evidence/marks-default/R2-current.png",
+        "reference": "raster-layering/step01/review-02-evidence/marks-default/R2-reference.png",
+        "comparison": "raster-layering/step01/review-02-evidence/marks-default/R2-comparison.png"
+      }
+    },
+    {
+      "id": "R3",
+      "bounds": [
+        402,
+        972,
+        101,
+        105
+      ],
+      "layers": [
+        "0035 neck",
+        "0040 body/torso",
+        "blend • neck and shoulder roots • controller neck + arms"
+      ],
+      "description": "画面左颈根的尖角突出于颈肩外弧，连接处有斜向硬色界；内部透底虽已消除，轮廓与接色仍不连续。调整本件接形/重叠范围并画顺，保留完整底纹和自身形体明暗。",
+      "crop": [
+        384,
+        954,
+        137,
+        141
+      ],
+      "files": {
+        "current": "raster-layering/step01/review-02-evidence/marks-default/R3-current.png",
+        "reference": "raster-layering/step01/review-02-evidence/marks-default/R3-reference.png",
+        "comparison": "raster-layering/step01/review-02-evidence/marks-default/R3-comparison.png"
+      }
+    },
+    {
+      "id": "R4",
+      "bounds": [
+        651,
+        972,
+        102,
+        105
+      ],
+      "layers": [
+        "0035 neck",
+        "0040 body/torso",
+        "blend • neck and shoulder roots • controller neck + arms"
+      ],
+      "description": "画面右颈根外弧出现向外的小尖片和回折台阶，向锁骨有斜向拼接色界。按本侧连续颈肩弧修形并接色，保留当前实底覆盖及左右差异。",
+      "crop": [
+        633,
+        954,
+        138,
+        141
+      ],
+      "files": {
+        "current": "raster-layering/step01/review-02-evidence/marks-default/R4-current.png",
+        "reference": "raster-layering/step01/review-02-evidence/marks-default/R4-reference.png",
+        "comparison": "raster-layering/step01/review-02-evidence/marks-default/R4-comparison.png"
+      }
+    },
+    {
+      "id": "R5",
+      "bounds": [
+        242,
+        744,
+        125,
+        136
+      ],
+      "layers": [
+        "0010 hair/back_hair",
+        "0021 hair/side_hair_right__rear"
+      ],
+      "description": "画面左下后发有浅金棕锯齿碎片及断续亮条，与参考可见的平顺深棕发面和周围发流不协调；后发独显确认材质痕在0010。只在后发本体重接发流/色阶，保留上方侧发归属和本件完整补全。",
+      "crop": [
+        224,
+        726,
+        161,
+        172
+      ],
+      "files": {
+        "current": "raster-layering/step01/review-02-evidence/marks-default/R5-current.png",
+        "reference": "raster-layering/step01/review-02-evidence/marks-default/R5-reference.png",
+        "comparison": "raster-layering/step01/review-02-evidence/marks-default/R5-comparison.png"
+      }
+    },
+    {
+      "id": "R6",
+      "bounds": [
+        219,
+        1355,
+        714,
+        19
+      ],
+      "layers": [
+        "0050 body/breast"
+      ],
+      "description": "胸前层约y1366到底边出现贯穿本件宽度的平直浅色色带，乳沟/肤色渐变在横界处截断；无蒙版独显仍有。延续本件曲面渐变和中央明暗至画布裁切，不复制参考服装，不加阴影遮缝。",
+      "crop": [
+        201,
+        1337,
+        750,
+        37
+      ],
+      "files": {
+        "current": "raster-layering/step01/review-02-evidence/marks-default/R6-current.png",
+        "reference": "raster-layering/step01/review-02-evidence/marks-default/R6-reference.png",
+        "comparison": "raster-layering/step01/review-02-evidence/marks-default/R6-comparison.png"
+      }
+    }
+  ],
+  "note": "问题及坐标由 reviewer 看图确认后提供；左参考、右当前，局部图含上下文，不改变问题 bounds。"
+}

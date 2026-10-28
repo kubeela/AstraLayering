@@ -1,0 +1,412 @@
+[
+  {
+    "name": "0005 hair/side_hair_left__hidden_root",
+    "zoom": 3,
+    "center": [
+      649,
+      65
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0005-hair-side_hair_left__hidden_root-solo.png"
+  },
+  {
+    "name": "0006 hair/side_hair_right__hidden_root",
+    "zoom": 3,
+    "center": [
+      522,
+      52
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0006-hair-side_hair_right__hidden_root-solo.png"
+  },
+  {
+    "name": "0010 hair/back_hair",
+    "zoom": 2,
+    "center": [
+      575,
+      469
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0010-hair-back_hair-solo.png"
+  },
+  {
+    "name": "0020 hair/side_hair_left__rear",
+    "zoom": 2,
+    "center": [
+      841,
+      469
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0020-hair-side_hair_left__rear-solo.png"
+  },
+  {
+    "name": "0021 hair/side_hair_right__rear",
+    "zoom": 2,
+    "center": [
+      317,
+      472
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0021-hair-side_hair_right__rear-solo.png"
+  },
+  {
+    "name": "0030 arms/arm_left",
+    "zoom": 2,
+    "center": [
+      971,
+      1227
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0030-arms-arm_left-solo.png"
+  },
+  {
+    "name": "0031 arms/arm_right",
+    "zoom": 2,
+    "center": [
+      170,
+      1226
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0031-arms-arm_right-solo.png"
+  },
+  {
+    "name": "0035 neck",
+    "zoom": 2,
+    "center": [
+      581,
+      936
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0035-neck-solo.png"
+  },
+  {
+    "name": "0040 body/torso",
+    "zoom": 2,
+    "center": [
+      572,
+      1203
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0040-body-torso-solo.png"
+  },
+  {
+    "name": "0050 body/breast",
+    "zoom": 2,
+    "center": [
+      569,
+      1281
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0050-body-breast-solo.png"
+  },
+  {
+    "name": "0060 face/ear_left",
+    "zoom": 3,
+    "center": [
+      872,
+      608
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0060-face-ear_left-solo.png"
+  },
+  {
+    "name": "0061 face/ear_right",
+    "zoom": 3,
+    "center": [
+      275,
+      608
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0061-face-ear_right-solo.png"
+  },
+  {
+    "name": "0070 face/face_base",
+    "zoom": 2,
+    "center": [
+      577,
+      558
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0070-face-face_base-solo.png"
+  },
+  {
+    "name": "0072 face/blush_left",
+    "zoom": 3,
+    "center": [
+      742,
+      654
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0072-face-blush_left-solo.png"
+  },
+  {
+    "name": "0073 face/blush_right",
+    "zoom": 3,
+    "center": [
+      411,
+      654
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0073-face-blush_right-solo.png"
+  },
+  {
+    "name": "0074 face/nose/volume_shadow",
+    "zoom": 3,
+    "center": [
+      559,
+      676
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0074-face-nose-volume_shadow-solo.png"
+  },
+  {
+    "name": "0075 face/nose/tip_highlight",
+    "zoom": 3,
+    "center": [
+      581,
+      661
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0075-face-nose-tip_highlight-solo.png"
+  },
+  {
+    "name": "0076 face/nose/tip_mark",
+    "zoom": 3,
+    "center": [
+      579,
+      699
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0076-face-nose-tip_mark-solo.png"
+  },
+  {
+    "name": "0080 face/mouth/mouth_interior",
+    "zoom": 3,
+    "center": [
+      577,
+      783
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0080-face-mouth-mouth_interior-solo.png"
+  },
+  {
+    "name": "0081 face/mouth/tongue",
+    "zoom": 3,
+    "center": [
+      577,
+      808
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0081-face-mouth-tongue-solo.png"
+  },
+  {
+    "name": "0082 face/mouth/lower_teeth",
+    "zoom": 3,
+    "center": [
+      578,
+      793
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0082-face-mouth-lower_teeth-solo.png"
+  },
+  {
+    "name": "0083 face/mouth/upper_teeth",
+    "zoom": 3,
+    "center": [
+      577,
+      760
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0083-face-mouth-upper_teeth-solo.png"
+  },
+  {
+    "name": "0084 face/mouth/lower_lip",
+    "zoom": 3,
+    "center": [
+      578,
+      791
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0084-face-mouth-lower_lip-solo.png"
+  },
+  {
+    "name": "0085 face/mouth/upper_lip",
+    "zoom": 3,
+    "center": [
+      577,
+      768
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0085-face-mouth-upper_lip-solo.png"
+  },
+  {
+    "name": "0090 face/eye_left/sclera",
+    "zoom": 3,
+    "center": [
+      734,
+      570
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0090-face-eye_left-sclera-solo.png"
+  },
+  {
+    "name": "0091 face/eye_right/sclera",
+    "zoom": 3,
+    "center": [
+      422,
+      570
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0091-face-eye_right-sclera-solo.png"
+  },
+  {
+    "name": "0092 face/eye_left/iris",
+    "zoom": 3,
+    "center": [
+      734,
+      565
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0092-face-eye_left-iris-solo.png"
+  },
+  {
+    "name": "0093 face/eye_right/iris",
+    "zoom": 3,
+    "center": [
+      422,
+      565
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0093-face-eye_right-iris-solo.png"
+  },
+  {
+    "name": "0094 face/eye_left/highlight",
+    "zoom": 3,
+    "center": [
+      712,
+      559
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0094-face-eye_left-highlight-solo.png"
+  },
+  {
+    "name": "0095 face/eye_right/highlight",
+    "zoom": 3,
+    "center": [
+      444,
+      559
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0095-face-eye_right-highlight-solo.png"
+  },
+  {
+    "name": "0096 face/eye_left/eyelid_crease",
+    "zoom": 3,
+    "center": [
+      732,
+      556
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0096-face-eye_left-eyelid_crease-solo.png"
+  },
+  {
+    "name": "0097 face/eye_right/eyelid_crease",
+    "zoom": 3,
+    "center": [
+      429,
+      556
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0097-face-eye_right-eyelid_crease-solo.png"
+  },
+  {
+    "name": "0098 face/eye_left/lower_eyelid",
+    "zoom": 3,
+    "center": [
+      734,
+      585
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0098-face-eye_left-lower_eyelid-solo.png"
+  },
+  {
+    "name": "0099 face/eye_right/lower_eyelid",
+    "zoom": 3,
+    "center": [
+      422,
+      585
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0099-face-eye_right-lower_eyelid-solo.png"
+  },
+  {
+    "name": "0100 face/eye_left/upper_eyelid",
+    "zoom": 3,
+    "center": [
+      737,
+      546
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0100-face-eye_left-upper_eyelid-solo.png"
+  },
+  {
+    "name": "0101 face/eye_right/upper_eyelid",
+    "zoom": 3,
+    "center": [
+      422,
+      547
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0101-face-eye_right-upper_eyelid-solo.png"
+  },
+  {
+    "name": "0102 face/eyebrow_left",
+    "zoom": 3,
+    "center": [
+      728,
+      446
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0102-face-eyebrow_left-solo.png"
+  },
+  {
+    "name": "0103 face/eyebrow_right",
+    "zoom": 3,
+    "center": [
+      426,
+      451
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0103-face-eyebrow_right-solo.png"
+  },
+  {
+    "name": "0150 hair/side_hair_left__front",
+    "zoom": 3,
+    "center": [
+      853,
+      588
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0150-hair-side_hair_left__front-solo.png"
+  },
+  {
+    "name": "0151 hair/side_hair_right__front",
+    "zoom": 3,
+    "center": [
+      303,
+      572
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0151-hair-side_hair_right__front-solo.png"
+  },
+  {
+    "name": "0160 hair/bangs",
+    "zoom": 2,
+    "center": [
+      576,
+      304
+    ],
+    "masks": "temporarily disabled",
+    "screenshot": "native/0160-hair-bangs-solo.png"
+  }
+]

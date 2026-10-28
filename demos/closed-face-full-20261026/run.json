@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "archive": true,
+  "name": "closed-face-full-20261026",
+  "dir": ".",
+  "from": "part-layering",
+  "to": "shadow",
+  "jobs": 3,
+  "standard": false,
+  "shadowMode": "mask",
+  "status": "completed",
+  "createdAt": "2026-10-26T14:57:35.016Z",
+  "updatedAt": "2026-10-27T17:19:12.152Z",
+  "pipelines": {
+    "part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-27T05:13:51.728Z"
+    },
+    "raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-27T14:24:53.342Z"
+    },
+    "clothing-part-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-27T14:45:59.617Z"
+    },
+    "clothing-raster-layering": {
+      "status": "completed",
+      "updatedAt": "2026-10-27T16:36:56.580Z"
+    },
+    "character-assembly": {
+      "status": "completed",
+      "updatedAt": "2026-10-27T17:00:37.649Z"
+    },
+    "shadow": {
+      "status": "completed",
+      "updatedAt": "2026-10-27T17:19:12.145Z"
+    }
+  }
+}

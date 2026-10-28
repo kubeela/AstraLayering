@@ -1,0 +1,53 @@
+{
+  "groupId": "face/eyebrow_left",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对本组说明、参考图、候选及父组完成 SVG；先查看整图叠加，再以相互重叠的选框 [630,425,115,45]（6 倍）与 [730,430,100,40]（8 倍）分别检查 blend、edge，并查看 [630,425,200,45] 的 8 倍原图，覆盖全部五段外露眉体、两端及各刘海接缝。五段均有参考依据，眉体上、下缘及遮挡断点贴合，未见误包刘海、肤色或眼睑阴影，未发现可见组件遗漏、无依据碎片或需重画的形体问题；遮挡间隔保留合理。父范围检查通过（outsideSamples=0，outsidePixels=0），无已确认的上游范围限制。",
+      "candidateHash": "2fc3ed359acebe45e374dcf93ed7257fa1b0e244e119f879d77ea7c855fc3653",
+      "observations": [
+        {
+          "source": "part-layering/groups/face/children/eyebrow_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-1.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/eyebrow_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-2.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/eyebrow_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-3.png"
+        },
+        {
+          "source": "part-layering/parts/face.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-4.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/eyebrow_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-5.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/eyebrow_left/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-6.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/eyebrow_left/step01/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-7.png"
+        },
+        {
+          "source": "part-layering/groups/face/children/eyebrow_left/step01/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/eyebrow_left/step01/previews/2026-10-26T17-05-20-336Z-8.png"
+        }
+      ],
+      "updatedAt": "2026-10-26T17:18:49.608Z"
+    }
+  ]
+}

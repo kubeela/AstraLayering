@@ -1,0 +1,171 @@
+{
+  "screens": [
+    {
+      "file": "krita-200-part-neckline_band-enabled.png",
+      "zoom": 2,
+      "center": [
+        575,
+        340
+      ],
+      "visible": [
+        "0040 neckline_band :: back_arc",
+        "0080 neckline_band :: front_U"
+      ]
+    },
+    {
+      "file": "krita-200-part-neckline_band-disabled.png",
+      "zoom": 2,
+      "center": [
+        575,
+        340
+      ],
+      "visible": [
+        "0040 neckline_band :: back_arc",
+        "0080 neckline_band :: front_U"
+      ]
+    },
+    {
+      "file": "krita-200-part-sleeve_image_left-enabled.png",
+      "zoom": 2,
+      "center": [
+        220,
+        590
+      ],
+      "visible": [
+        "0020 sleeve_image_left :: cuff_return",
+        "0050 sleeve_image_left :: front_tube"
+      ]
+    },
+    {
+      "file": "krita-200-part-sleeve_image_left-disabled.png",
+      "zoom": 2,
+      "center": [
+        220,
+        590
+      ],
+      "visible": [
+        "0020 sleeve_image_left :: cuff_return",
+        "0050 sleeve_image_left :: front_tube"
+      ]
+    },
+    {
+      "file": "krita-200-part-sleeve_image_right-enabled.png",
+      "zoom": 2,
+      "center": [
+        945,
+        590
+      ],
+      "visible": [
+        "0030 sleeve_image_right :: cuff_return",
+        "0060 sleeve_image_right :: front_tube"
+      ]
+    },
+    {
+      "file": "krita-200-part-sleeve_image_right-disabled.png",
+      "zoom": 2,
+      "center": [
+        945,
+        590
+      ],
+      "visible": [
+        "0030 sleeve_image_right :: cuff_return",
+        "0060 sleeve_image_right :: front_tube"
+      ]
+    },
+    {
+      "file": "krita-200-part-tshirt_body-enabled.png",
+      "zoom": 2,
+      "center": [
+        400,
+        430
+      ],
+      "visible": [
+        "0010 tshirt_body :: hem_return",
+        "0070 tshirt_body :: front_body"
+      ]
+    },
+    {
+      "file": "krita-200-part-tshirt_body-disabled.png",
+      "zoom": 2,
+      "center": [
+        400,
+        430
+      ],
+      "visible": [
+        "0010 tshirt_body :: hem_return",
+        "0070 tshirt_body :: front_body"
+      ]
+    },
+    {
+      "file": "krita-200-left-root-hide-0070.png",
+      "zoom": 2,
+      "center": [
+        225,
+        590
+      ],
+      "visible": [
+        "0010 tshirt_body :: hem_return",
+        "0020 sleeve_image_left :: cuff_return",
+        "0030 sleeve_image_right :: cuff_return",
+        "0040 neckline_band :: back_arc",
+        "0050 sleeve_image_left :: front_tube",
+        "0060 sleeve_image_right :: front_tube",
+        "0080 neckline_band :: front_U"
+      ]
+    },
+    {
+      "file": "krita-200-right-root-hide-0070.png",
+      "zoom": 2,
+      "center": [
+        935,
+        590
+      ],
+      "visible": [
+        "0010 tshirt_body :: hem_return",
+        "0020 sleeve_image_left :: cuff_return",
+        "0030 sleeve_image_right :: cuff_return",
+        "0040 neckline_band :: back_arc",
+        "0050 sleeve_image_left :: front_tube",
+        "0060 sleeve_image_right :: front_tube",
+        "0080 neckline_band :: front_U"
+      ]
+    },
+    {
+      "file": "krita-200-hem-hide-0070.png",
+      "zoom": 2,
+      "center": [
+        570,
+        1200
+      ],
+      "visible": [
+        "0010 tshirt_body :: hem_return",
+        "0020 sleeve_image_left :: cuff_return",
+        "0030 sleeve_image_right :: cuff_return",
+        "0040 neckline_band :: back_arc",
+        "0050 sleeve_image_left :: front_tube",
+        "0060 sleeve_image_right :: front_tube",
+        "0080 neckline_band :: front_U"
+      ]
+    },
+    {
+      "file": "krita-200-neck-hide-0080.png",
+      "zoom": 2,
+      "center": [
+        575,
+        340
+      ],
+      "visible": [
+        "0010 tshirt_body :: hem_return",
+        "0020 sleeve_image_left :: cuff_return",
+        "0030 sleeve_image_right :: cuff_return",
+        "0040 neckline_band :: back_arc",
+        "0050 sleeve_image_left :: front_tube",
+        "0060 sleeve_image_right :: front_tube",
+        "0070 tshirt_body :: front_body"
+      ]
+    }
+  ],
+  "restored": true,
+  "modified": false,
+  "no_save": true
+}

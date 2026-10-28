@@ -1,0 +1,74 @@
+[
+  {
+    "id": "tshirt_body",
+    "level": 10,
+    "name": "0010 tshirt_body :: hem_return",
+    "path": "clothing-raster-layering/step01/workspace/slices/0010_tshirt_body_hem_return.png",
+    "mask_path": null,
+    "mask_name": null,
+    "slice": "back"
+  },
+  {
+    "id": "sleeve_image_left",
+    "level": 20,
+    "name": "0020 sleeve_image_left :: cuff_return",
+    "path": "clothing-raster-layering/step01/workspace/slices/0020_sleeve_image_left_cuff_return.png",
+    "mask_path": "clothing-raster-layering/step01/workspace/masks/sleeve_image_left.png",
+    "mask_name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+    "slice": "back"
+  },
+  {
+    "id": "sleeve_image_right",
+    "level": 30,
+    "name": "0030 sleeve_image_right :: cuff_return",
+    "path": "clothing-raster-layering/step01/workspace/slices/0030_sleeve_image_right_cuff_return.png",
+    "mask_path": "clothing-raster-layering/step01/workspace/masks/sleeve_image_right.png",
+    "mask_name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+    "slice": "back"
+  },
+  {
+    "id": "neckline_band",
+    "level": 40,
+    "name": "0040 neckline_band :: back_arc",
+    "path": "clothing-raster-layering/step01/workspace/slices/0040_neckline_band_back_arc.png",
+    "mask_path": "clothing-raster-layering/step01/workspace/masks/neckline_band.png",
+    "mask_name": "M neckline_band own_inner_aperture",
+    "slice": "back"
+  },
+  {
+    "id": "sleeve_image_left",
+    "level": 50,
+    "name": "0050 sleeve_image_left :: front_tube",
+    "path": "clothing-raster-layering/step01/workspace/slices/0050_sleeve_image_left_front_tube.png",
+    "mask_path": "clothing-raster-layering/step01/workspace/masks/sleeve_image_left.png",
+    "mask_name": "M sleeve_image_left own_cuff_aperture; root_occluded_by_tshirt_body",
+    "slice": "front"
+  },
+  {
+    "id": "sleeve_image_right",
+    "level": 60,
+    "name": "0060 sleeve_image_right :: front_tube",
+    "path": "clothing-raster-layering/step01/workspace/slices/0060_sleeve_image_right_front_tube.png",
+    "mask_path": "clothing-raster-layering/step01/workspace/masks/sleeve_image_right.png",
+    "mask_name": "M sleeve_image_right own_cuff_aperture; root_occluded_by_tshirt_body",
+    "slice": "front"
+  },
+  {
+    "id": "tshirt_body",
+    "level": 70,
+    "name": "0070 tshirt_body :: front_body",
+    "path": "clothing-raster-layering/step01/workspace/slices/0070_tshirt_body_front_body.png",
+    "mask_path": "clothing-raster-layering/step01/workspace/masks/tshirt_body.png",
+    "mask_name": "M tshirt_body root_seams by sleeve_image_left+sleeve_image_right",
+    "slice": "front"
+  },
+  {
+    "id": "neckline_band",
+    "level": 80,
+    "name": "0080 neckline_band :: front_U",
+    "path": "clothing-raster-layering/step01/workspace/slices/0080_neckline_band_front_U.png",
+    "mask_path": "clothing-raster-layering/step01/workspace/masks/neckline_band.png",
+    "mask_name": "M neckline_band own_inner_aperture",
+    "slice": "front"
+  }
+]
