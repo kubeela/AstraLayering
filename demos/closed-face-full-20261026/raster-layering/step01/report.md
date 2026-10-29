@@ -37,7 +37,7 @@ Basic-5 Size与Airbrush Soft等原生画笔用于发束边、接色及曲面接�
 
 逻辑ID、普通绘画层UUID、层序和深度数值均保持。两侧发仍为5/20/150与6/21/151，同part共同运动；后发10、neck35、torso40、breast50、刘海160不变。本轮没有新拆分逻辑部件或绘画深度，没有重启上游。
 
-[形体同步记录](repair-02-evidence/checks/shape-sync.json) · [预览记录](repair-02-evidence/checks/preview-update.json) · [分组预览](../../part-layering/preview.svg) · [深度预览](../../part-layering/occlusion/preview.svg)。深度预览按实际普通层和启用蒙版投影更新，隐藏眼口保持默认关闭。
+[形体同步记录](repair-02-evidence/checks/shape-sync.json) · [预览记录](repair-02-evidence/checks/preview-update.json) · [分组预览](../../part-layering/preview.svg) · [深度预览](../../part-layering/step14_occlusion/preview.svg)。深度预览按实际普通层和启用蒙版投影更新，隐藏眼口保持默认关闭。
 
 ## 逻辑part与实际KRA绘画层
 

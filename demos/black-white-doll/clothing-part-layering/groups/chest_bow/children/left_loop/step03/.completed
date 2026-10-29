@@ -1,9 +1,0 @@
-{
-  "stamp": "1706de6bbaa9ecc8c30bfdb47350857f21a5103b4315ae7d9444e434f42f686d",
-  "inputs": {
-    "groups/chest_bow/children/left_loop/step02": "0169b8455bf4679e95bf35e4f068b7b560a977262bc14459fa36eb1a49a50e90"
-  },
-  "outputs": {
-    "children.json": "f3c6e5b63ed1d4fed97ab459fe12a4869b9dc3b0e85664ad7e293db92974c96a"
-  }
-}

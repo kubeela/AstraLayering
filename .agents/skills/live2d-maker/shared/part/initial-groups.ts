@@ -8,7 +8,8 @@ import { join, resolve } from 'node:path';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { normalizeGroups, writeAtomic } from './groups.ts';
-import { initialStepId, readInitialGroups } from './part-steps.ts';
+import { readInitialGroups } from './part-steps.ts';
+import { partSteps } from '../step-paths.js';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import type { InitialContext, InitialGrouping } from './layering-types.ts';
 import { taskRootOf, toAgentPath } from '../task-paths.ts';
@@ -41,7 +42,7 @@ export async function recognizeInitialGroups(
   const prompt = await readFile(join(profile.promptsDirectory, '4-初始分组.md'), 'utf8');
   // The tool writes the step output directly, so a turn that fails after saving
   // continues from the saved grouping instead of asking again.
-  const path = join(context.directory, initialStepId, 'groups.json');
+  const path = join(context.directory, partSteps.initial, 'groups.json');
   const reference = resolve(context.directory, context.references.baseSubject);
   const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   let submitted = false;

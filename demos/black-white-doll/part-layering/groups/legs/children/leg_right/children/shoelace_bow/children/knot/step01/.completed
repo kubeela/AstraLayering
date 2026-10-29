@@ -1,9 +1,0 @@
-{
-  "stamp": "1b9a805355bb4e383a638cc2e63ee4f097896a2384ea6d041265fa29bd5ca839",
-  "inputs": {
-    "groups/legs/children/leg_right/children/shoelace_bow/step02": "f347d7ddf0a804689bcc3edea38c822cef42f490759db84695f51dac10f171c1"
-  },
-  "outputs": {
-    "outline.svg": "bf402d984f1ed7b1af85c74f4d978bea05179283f5462ccdd83b45653425d069"
-  }
-}

@@ -1,9 +1,0 @@
-{
-  "stamp": "520d7bc3894e8fc29a1edd4fbd6494f54849f3ebfc696a018091e73863e7842f",
-  "inputs": {
-    "groups/face/children/eye_right/children/lower_eyelid/step02": "8bd8ca687e4d6d862cca0570e92d82c881f6e763800bb96021ff3b1c7db2dc51"
-  },
-  "outputs": {
-    "children.json": "666f17d693d4fc9ca2597e9f10df55d5a94a01ef0929f85e142c6b1d05f9a652"
-  }
-}

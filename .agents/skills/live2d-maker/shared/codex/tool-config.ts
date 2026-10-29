@@ -11,7 +11,7 @@ function optional(path: string): string | undefined {
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
 }
 
-// Shared tools live in shared/tools/<name>/; a pipeline's own tools live in
+// Shared tools live in shared/tools/<name>/; a section's own tools live in
 // its tools/<name>/ (`overrides`), which may also replace a shared tool's
 // description.md or schema.json file by file. A catalog is a snapshot.
 // Running sessions keep their registered definitions; editing the files

@@ -278,7 +278,7 @@ test('补全子组必须在父完成范围内，即使原形保留也不能越�
 
 test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，step02 重做时一并重置', async t => {
   const f = await fixture(t), resumed: (string | undefined)[] = [];
-  const session = join(f.directory, 'agents/steps', groupStepId('head', 2), 'session.json');
+  const session = join(f.directory, 'agents/steps', groupStepId('head', 'completion'), 'session.json');
   let fail = true;
   const agents = { async run(): Promise<AgentResult> { assert.fail('补全必须走可复用会话'); },
     createSession(id?: string, callbacks?: { onSessionStarted?: (id: string, harness: 'agv') => Promise<void> }): AgentSession {

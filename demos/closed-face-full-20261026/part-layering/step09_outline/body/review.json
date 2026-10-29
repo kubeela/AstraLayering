@@ -1,0 +1,177 @@
+{
+  "groupId": "body",
+  "reviews": [
+    {
+      "verdict": "revise",
+      "feedback": "已完成整图 blend 及三个重叠分区（左 x110–460、中央 x420–760、右 x720–1040，均覆盖 y980–1374）的 3 倍 blend/edge 核对，并对肩带顶部与两侧外缘作 6 倍复核。本组无父组。body 的胸部、锁骨和临时服装所示躯干范围归属基本正确，肩部和上臂归 arms；未发现需整体重画的主要形体错误、明确组件缺失、孤立碎片或噪点。当前需要局部修正轮廓，不能直接通过：\n1. 左肩带顶部及其与颈根外缘衔接（约 x250–355、y1029–1050）：参考顶部有肩带外端的小转折、中段斜边及靠胸侧的凸起后回落；候选以近直线抬高连接，尤其 x265–307 段红边落在参考实际边缘上方背景内，形成无依据的薄楔。请沿实际顶部边缘重描，保留端部转折和内端凸起，不用直线跨过。\n2. 右颈根至肩带顶部（约 x780–900、y1026–1056）：参考颈根外缘先下落到肩带内端，再有肩带凸起、回落及斜向外端的边缘；候选在 x790–880 一带整体高于参考，抹平内端衔接的凹转，向背景多包一条带状区域。请按可见外缘重新贴合，恢复凹转及肩带顶部起伏。\n3. 两侧躯干与肩臂交界的外侧接缝连续缩入。左侧约 x196–239、y1070–1250，6 倍图中候选红边位于参考深色外缘内侧，二者之间仍有连续白色肩带/衣边未覆盖，明显段约缩入 3–5 原图像素；右侧约 x908–944、y1065–1220 也有类似连续漏带，上段较明显。请将两边轮廓移至参考实际外缘并重新调整弧度，连贯接回腋下至下缘的原有轮廓，不能仅以跨组可能重叠来保留漏画。以上是外部覆盖边缘问题，不要求按领口或衣服纹理增加内部 path。",
+      "candidateHash": "ac0cbc58297b78d248a11a5877cc7726c4739e5a2f7032875b9dcdc31c848b87",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-1.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-9.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-10.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-11.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-12.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T15-06-06-728Z-13.png"
+        }
+      ],
+      "updatedAt": "2026-10-26T15:15:40.309Z",
+      "repairedCandidateHash": "9263ff02dcbfb5a7db9d67d7d1172375cc652c5e93385e683e372e1d47020169"
+    },
+    {
+      "verdict": "pass",
+      "feedback": "已读取 groups.json、参考图及本轮候选 SVG（sha256: 9263ff02dcbfb5a7db9d67d7d1172375cc652c5e93385e683e372e1d47020169）。本组无父组。先核对整图 blend，再以 3 倍 blend/edge 分块检查 [210,970,300,240]、[480,970,300,240]、[750,970,200,240]、[110,1170,330,204]、[410,1170,340,204]、[720,1170,330,204]，选框相互重叠；另以 5 倍 edge 复核左右颈根过渡及两侧躯干与上臂接缝。胸部、锁骨及延伸至画面底部的躯干联合范围覆盖完整，临时服装范围的纳入符合组说明，肩部与上臂归 arms；领口和锁骨内部明暗不应挖成孔洞。与 neck 的内部交接及相邻 arms 的合理重叠未构成缺漏。可见边缘与接缝连续，未发现需要修改的形体归属错误、组件遗漏、无依据孔洞或碎片噪音。当前组无需重画，通过。",
+      "candidateHash": "9263ff02dcbfb5a7db9d67d7d1172375cc652c5e93385e683e372e1d47020169",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-1.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-9.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-10.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-11.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-12.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-13.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-14.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-15.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-16.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-17.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/body/step01/previews/2026-10-26T16-31-05-295Z-18.png"
+        }
+      ],
+      "updatedAt": "2026-10-26T16:32:20.696Z"
+    }
+  ]
+}

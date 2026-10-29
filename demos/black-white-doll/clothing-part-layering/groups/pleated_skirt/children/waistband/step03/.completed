@@ -1,9 +1,0 @@
-{
-  "stamp": "8ddc3b164322c6caf183363a24b306319fd15b44a7e7bffaff328c4a9d467fa8",
-  "inputs": {
-    "groups/pleated_skirt/children/waistband/step02": "8c28de3186c0ffad4cf818c20417b16040fdfe986a14930132ef3d4edae447cf"
-  },
-  "outputs": {
-    "children.json": "7d3ea72f99a181edcd18ca690f47a47a58ac145e9fe87c750a48ca140d280495"
-  }
-}

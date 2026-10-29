@@ -1,9 +1,0 @@
-{
-  "stamp": "33e0e07bce3ae6a874fbde2ea7c8a5e998990b97ffe0559ab164af76130e40f8",
-  "inputs": {
-    "layers/depth04#legs/leg_right/shoelace_bow/knot.svg": "bf402d984f1ed7b1af85c74f4d978bea05179283f5462ccdd83b45653425d069"
-  },
-  "outputs": {
-    "../../../../../../../../../parts/legs/leg_right/shoelace_bow/knot.svg": "1f30c9f743bdddd46d3e75e271ea020c030655fd3947120990228288438fc4ad"
-  }
-}

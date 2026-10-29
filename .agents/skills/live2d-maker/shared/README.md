@@ -56,7 +56,7 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 
 | 模板 | 动态位置与用途 |
 | --- | --- |
-| [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{task_root}`、`{workspace}`、`{pipeline_directory}`、`{output_directory}`。所有 CLI 共用路径约定、工作区、输入与正式交付说明。 |
+| [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{task_root}`、`{workspace}`、`{section_directory}`、`{output_directory}`。所有 CLI 共用路径约定、工作区、输入与正式交付说明。 |
 | [图片说明](prompts/image-description.md)、[图片路径](prompts/image-reference.md) | `{image_description}` 来自本次附图用途，`{image_path}` 是本次图片路径；AGV 通过路径读取。图片说明作为独立消息发送，与任务正文一起保存在请求记录。 |
 | [中断继续](prompts/interrupted-task.md)、[续跑](prompts/continuation.md)、[已有图片](prompts/continuation-images.md) | `{interrupted_task}`、`{saved_images_context}`、`{saved_image_paths}`。没有已生成图片时对应位置为空。 |
 | [恢复返修](prompts/raster-repair-resume.md)、[交接返修](prompts/raster-handoff-repair.md)、[会话交接](prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
@@ -140,12 +140,12 @@ pnpm check
 
 | agent | groups.json | occlusion.json | 实际入口与边界 |
 | --- | --- | --- | --- |
-| part 首次分组 | 创建初始分组，随后由调度器更新根树 | 无 | `write_groups` 校验并写 `initial/step01/groups.json`；调度器通过 GroupStore 写根文件。见 [initial-groups.ts](part/initial-groups.ts)、[layering.ts](part/layering.ts) |
+| part 首次分组 | 创建初始分组，随后由调度器更新根树 | 无 | `write_groups` 校验并写 `step08_initial/groups.json`；调度器通过 GroupStore 写根文件。见 [initial-groups.ts](part/initial-groups.ts)、[layering.ts](part/layering.ts) |
 | part 轮廓绘制／返修 | 仅修改当前组 note | 无 | `update_group_note` 精确替换当前 note 中唯一匹配的文本，走 GroupStore 写入队列；不改父组、其他组或树结构。见 [outline-agent.ts](part/outline-agent.ts) |
 | part 细分组 | 改变直属子节点，程序保存分组树 | 无 | `submit_children` 返回并校验结构，调度器写对应 `children.json`，再更新根树；agent 不直接编辑事实文件。见 [children-agent.ts](part/children-agent.ts)、[layering.ts](part/layering.ts) |
 | part 最终遮挡层级规划 | 无；要求规划期间输入不变 | 生成深度表 | `propose_occlusion`、`check_occlusion_part`、`submit_occlusion` 校验，调度器原子写入最终文件。见 [occlusion-agent.ts](part/occlusion-agent.ts)、[occlusion-plan.ts](part/occlusion-plan.ts) |
 | raster step01 绘制及两轮返修 | 允许直接编辑并同步 SVG／记录 | 允许直接编辑深度与区域 | [drawing-responsibilities.md](raster/drawing-responsibilities.md) 在 step01 绘制及 repair 中注入；结构修改由当前绘制 agent 执行 |
-| raster step01 独立 reviewer | 只读检查与反馈 | 只读检查与反馈 | 不注入结构写回职责；框选工具只输出审查证据。见 [review.ts](raster/review.ts)、[part-pipeline.ts](raster/part-pipeline.ts) |
+| raster step01 独立 reviewer | 只读检查与反馈 | 只读检查与反馈 | 不注入结构写回职责；框选工具只输出审查证据。见 [review.ts](raster/review.ts)、[part-section.ts](raster/part-section.ts) |
 | raster step02、人物 step03 | 当前任务没有授予新的结构编辑职责 | 同左 | 新提示词要求沿用结构；`buildPrompt` 仅在 step01 注入写回职责。与 step01 共用绘制会话，旧指令仍在历史中；文档还有与此冲突的措辞，见 M4 |
 | part 独立 reviewer、同层去重、遮挡补全 | 不编辑这两个结构文件；各自仅提交审查或 SVG 产物 | 同左 | 工具绑定对应产物；同层去重与补全不接管分组树或最终深度表 |
 | character-assembly、shadow | 上游结构作为输入，无修改授权 | 同左 | 各自修改本管线的工程／配置；不继承 raster step01 的结构写回提示词。见 [组装提示词](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影提示词](../shadow/prompts/mask.md) |
@@ -192,7 +192,7 @@ pnpm check
 
 ## 工作区与产物
 
-各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。CLI 当前目录为 `<步骤>/workspace/`；正文和工具结果给出绝对路径，工具参数及程序读取记录中的相对路径以任务根目录为基准。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`；各管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`，被替换或清除的会话追加到同目录 `session.json.history.jsonl`。reviewer 每次新建、不保存；配置切换 harness 时丢弃原 thread、保留交接记录。旧的步骤目录 `session.json` 与 raster `run.json` 会话字段仍可读取，并在下次运行时迁移。
+各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。CLI 当前目录为 `<步骤>/workspace/`；正文和工具结果给出绝对路径，工具参数及程序读取记录中的相对路径以任务根目录为基准。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`；各管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`，被替换或清除的会话追加到同目录 `session.json.history.jsonl`。reviewer 每次新建、不保存；配置切换 harness 时丢弃原 thread、保留交接记录。布局转换不改写 `agents/`，转换前的会话不再续接。
 
 输入准备由 `shared/agents/inputs.ts` 共用：直接传入上下文的正文和图片不额外落盘；已有原图、上游产物与参考路径直接读取；程序需要生成的索引、说明与变换参考图放在 `workspace/references/`。`agents/` 下每个请求目录的 `prompt.md` 是实际请求的审计副本。工作区和部件层级路径也由共享模块解析，前端与迁移复用同一规则。
 

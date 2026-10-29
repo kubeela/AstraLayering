@@ -3,7 +3,7 @@ import { mkdir, readFile, rename } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { walkGroups, writeAtomic } from './groups.ts';
 import type { GroupsDocument, ReviewedSvgArtifact } from './layering-types.ts';
-import { groupDepth, groupDirectory, groupStepId, layerStepId } from './part-steps.ts';
+import { groupDepth, groupStepId, layerStepId } from './part-steps.ts';
 import { svgSource, updateSvgRoot } from '../xml.ts';
 
 export const svgHash = (bytes: Buffer | string): string => createHash('sha256')
@@ -16,15 +16,15 @@ export function matchesHash(bytes: Buffer, value: unknown): boolean {
 export const artifactPath = (directory: string, id: string, stage: 'outline' | 'reduction' | 'completion'): string =>
   stage === 'completion' ? join(directory, 'parts', `${id}.svg`)
     : stage === 'reduction' ? join(directory, layerStepId(groupDepth(id)), `${id}.svg`)
-      : join(groupDirectory(directory, id), 'step01', 'outline.svg');
+      : join(directory, groupStepId(id, 'outline'), 'outline.svg');
 export const draftPath = (path: string): string => join(dirname(path), 'workspace', basename(path).replace(/\.svg$/, '.draft.svg'));
 export const stepDraftPath = (directory: string, id: string, stage: 'outline' | 'reduction' | 'completion'): string =>
   stage === 'reduction' ? join(directory, layerStepId(groupDepth(id)), 'workspace', `${id}.draft.svg`)
-    : join(directory, groupStepId(id, stage === 'outline' ? 1 : 2), 'workspace', `${stage}.draft.svg`);
+    : join(directory, groupStepId(id, stage === 'outline' ? 'outline' : 'completion'), 'workspace', `${stage}.draft.svg`);
 export const reportPath = (directory: string, id: string, kind: 'review' | 'completion-check' | 'children'): string =>
-  kind === 'review' ? join(directory, groupStepId(id, 1), 'review.json')
-    : kind === 'completion-check' ? join(directory, groupStepId(id, 2), 'check.json')
-      : join(directory, groupStepId(id, 3), 'children.json');
+  kind === 'review' ? join(directory, groupStepId(id, 'outline'), 'review.json')
+    : kind === 'completion-check' ? join(directory, groupStepId(id, 'completion'), 'check.json')
+      : join(directory, groupStepId(id, 'children'), 'children.json');
 
 export async function readOptional(path: string): Promise<Buffer | undefined> {
   try { return await readFile(path); }

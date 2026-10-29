@@ -1,9 +1,0 @@
-{
-  "stamp": "e960af7872ce104db28867e08655b6e9d000c05defa49e5a81fc77f3b2071f43",
-  "inputs": {
-    "layers/depth03#head_accessories/right_hair_bow/bow_body.svg": "ba0003e158a6f756081230cf505ab21a3573918ab69ccc95b78bafa586f3d844"
-  },
-  "outputs": {
-    "../../../../../../../parts/head_accessories/right_hair_bow/bow_body.svg": "952e73272f8cf1217fe585c0945470dac7ac46549de07064ad729d4056f2d8a2"
-  }
-}

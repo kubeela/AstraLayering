@@ -9,7 +9,7 @@ import { directoryFor, type TaskOptions } from '../.agents/skills/live2d-maker/w
 import { atomicJSON, jsonFile, tail } from './files.ts';
 
 // Only the process host is web-specific. Scheduling, locking, retries, markers and threads
-// remain owned by the existing coordinator and pipeline entrypoints.
+// remain owned by the existing coordinator and section entrypoints.
 export async function runWebTask(options: TaskOptions, token: string, dependencies: Parameters<typeof runTask>[1] = {}) {
   const directory = directoryFor(options), controller = new AbortController();
   const interrupt = () => controller.abort(new Error('已请求停止；保留已有产物与 thread，稍后可续跑。'));

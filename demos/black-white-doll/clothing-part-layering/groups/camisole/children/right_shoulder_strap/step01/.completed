@@ -1,9 +1,0 @@
-{
-  "stamp": "01130e5cf113cba691a9e95fa0b4c2a8d370137b03dcfe02404dbd998b602220",
-  "inputs": {
-    "groups/camisole/step02": "4fd09ea73ed21bad66e302c21f29ff97ebb4539a9b384c7ab8aefd07aa795dc4"
-  },
-  "outputs": {
-    "outline.svg": "0e28fee0f79f5c46848f494e2b7c024acbb7dcc9d2ca89e923204ee12c694fe8"
-  }
-}

@@ -1,7 +1,7 @@
 import { resolveRunsDirectory } from '../paths.ts';
 import { checkKrita } from './krita.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
-import { runWorkflow, type KritaPipeline } from './workflow.ts';
+import { runWorkflow, type KritaSection } from './workflow.ts';
 import { parseArgs } from 'node:util';
 
 export function parseRunArguments(args: string[]) {
@@ -18,7 +18,7 @@ export function parseRunArguments(args: string[]) {
   return values;
 }
 
-export async function runCli<Input>(pipeline: KritaPipeline<Input>, help: string): Promise<void> {
+export async function runCli<Input>(section: KritaSection<Input>, help: string): Promise<void> {
   const args = parseRunArguments(process.argv.slice(2));
   if (args.help) { console.log(help); return; }
   if (args['check-krita']) {
@@ -30,7 +30,7 @@ export async function runCli<Input>(pipeline: KritaPipeline<Input>, help: string
   process.once('SIGINT', stop);
   process.once('SIGTERM', stop);
   try {
-    console.log(await runWorkflow(pipeline, {
+    console.log(await runWorkflow(section, {
       name: args.name!, dir: args.dir, krita: args.krita,
       dryRun: args['dry-run'], signal: controller.signal, progress: message => console.log(message),
     }));

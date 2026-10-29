@@ -1,3 +1,4 @@
+import { writeStepSession } from '../../shared/agents/step-session.ts';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -45,8 +46,8 @@ async function fixture(t: TestContext, slow = false) {
   }
   const output = join(task, 'character-assembly');
   const config = newConfig(name, inputs, { executable: krita });
-  config.threadId = 'completed-fixture';
   await initializeRun(output, config);
+  await writeStepSession(output, 'step01', { threadId: 'completed-fixture', harness: 'codex' });
   await mkdir(join(output, 'step01'));
   // A slow fixture leaves the step unfinished, so the worker calls the agent.
   for (const file of [...steps[0].requiredFiles, ...(slow ? [] : ['.completed'])]) await writeFile(join(output, 'step01', file), 'retained');
@@ -72,7 +73,7 @@ test('真实后台父进程退出后任务继续，已完成组装跳过模型�
   assert.match(stdout, /后台总调度已启动/);
   await until(async () => !(await taskStatus(f.options)).lockHeld);
   const status = await taskStatus(f.options);
-  assert.equal(status.status, 'completed'); assert.equal(status.pipelines[0].threadId, 'completed-fixture');
+  assert.equal(status.status, 'completed'); assert.equal(status.sections[0].threadId, 'completed-fixture');
   // The delivery is recorded relative to the task root.
   assert.equal(status.output, 'character-assembly/step01/character-assembled.kra');
   const before = await readFile(join(f.task, 'run.json'));

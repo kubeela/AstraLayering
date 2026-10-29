@@ -9,8 +9,6 @@ import { studioArtifacts } from "../../.agents/skills/live2d-maker/shared/studio
 import { steps } from "../../.agents/skills/live2d-maker/character-assembly/steps.ts";
 import { shadowArtifacts } from '../../.agents/skills/live2d-maker/shared/shadow.ts';
 import sharp from 'sharp';
-import { inputFingerprint, resolveShadowInput } from '../../.agents/skills/live2d-maker/shadow/input.ts';
-import { stepsFor } from '../../.agents/skills/live2d-maker/shadow/steps.ts';
 
 async function fixture(t: any) {
   const root = await realpath(await mkdtemp(join(tmpdir(), "astra-project-"))),
@@ -112,16 +110,16 @@ test('Two shadow routes coexist: last complete selection chooses its document an
   data = await (await f.get()).json() as any;
   assert.equal(data.shadowStale, true); assert.equal(data.files.normal.available, false);
 });
-test('Explicit mixed preview requires matching branch provenance and preserves production selection', async t => {
+test('Explicit mixed preview requires matching mode provenance and preserves production selection', async t => {
   const f = await fixture(t), hash = (value: string) => createHash('sha256').update(value).digest('hex');
   await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
   for (const path of [studioArtifacts.normal, studioArtifacts.depth, shadowArtifacts.maskDocument, shadowArtifacts.maskColor, shadowArtifacts.bindings]) await f.put(path);
   const record = { version: 1, mode: 'mask', sourceKraHash: hash('source'), sourceColorHash: hash('color') };
-  await f.put('shadow/mask/step01/source.json', JSON.stringify(record));
+  await f.put('shadow/step01_mask/source.json', JSON.stringify(record));
   await f.put(shadowArtifacts.selection, JSON.stringify(record));
   // Loose maps from an old run are never silently mixed into the current mask.
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
-  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
+  await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   let data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.shadowMode, 'mask'); assert.equal(data.previewMode, 'mixed');
   const unified = await (await f.get()).json() as any;
@@ -136,16 +134,16 @@ test('Explicit mixed preview requires matching branch provenance and preserves p
   data = await (await f.get({ preview: 'normal-depth' })).json() as any;
   assert.equal(data.files.document.path, studioArtifacts.document); assert.equal(data.files.bindings.available, false);
   assert.equal((await f.get({ preview: '../private' })).status, 400);
-  // Only the new maps branch matches the updated source. The mask remains stale.
+  // Only the new maps match the updated source. The mask remains stale.
   await f.put(studioArtifacts.color, 'new color');
-  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
+  await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
   await f.put(shadowArtifacts.selection, JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
   data = await (await f.get()).json() as any;
   assert.equal(data.maskStale, true); assert.equal(data.mapsStale, false);
   assert.equal(data.previewModes.mixed, false); assert.equal(data.files.normal.available, true);
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
 });
-test('Unified studio discovers pending maps, ignores legacy light files and prefers formal delivery', async t => {
+test('Unified studio discovers pending maps and prefers formal delivery', async t => {
   const f = await fixture(t), hash = (v: string | Uint8Array) => createHash('sha256').update(v).digest('hex');
   const color = await sharp({ create: { width: 2, height: 2, channels: 4, background: '#cbaa99' } }).png().toBuffer();
   const normal = await sharp({ create: { width: 2, height: 2, channels: 3, background: { r: 128, g: 128, b: 255 } } }).png().toBuffer();
@@ -156,9 +154,12 @@ test('Unified studio discovers pending maps, ignores legacy light files and pref
   const record = { version: 1, mode: 'mask', sourceKraHash: hash('source'), sourceColorHash: hash(color) };
   await f.put(shadowArtifacts.selection, JSON.stringify(record));
   await f.put(shadowArtifacts.draftNormal, normal); await f.put(shadowArtifacts.draftDepth, depth);
-  const input = await resolveShadowInput(f.name, f.dir, 'normal-depth');
-  await f.put('shadow/normal-depth/run.json', JSON.stringify({ inputFingerprint: await inputFingerprint(input, 'normal-depth', stepsFor('normal-depth')[0].prompt) }));
-  await f.put('shadow/normal-depth/step02/light.json', '{"settings":{"lightingMix":0}}');
+  for (const section of ['part-layering', 'clothing-part-layering']) {
+    await f.put(section + '/groups.json', '{"groups":[]}'); await f.put(section + '/occlusion.json', '{"layers":[]}');
+  }
+  const maps = JSON.stringify({ stamp: 'maps', inputs: { 'character-assembly/step01': 'assembly' } });
+  await f.put('character-assembly/step01/.completed', JSON.stringify({ stamp: 'assembly', inputs: {} }));
+  await f.put('shadow/run.json', '{}'); await f.put('shadow/step01_normal-depth/.running', maps);
   let data = await (await f.get()).json() as any;
   assert.equal(data.previewMode, 'mixed'); assert.equal(data.previewDraft, true); assert.equal(data.files.normal.available, true);
   data = await (await f.get({ preview: 'mixed' })).json() as any;
@@ -170,18 +171,20 @@ test('Unified studio discovers pending maps, ignores legacy light files and pref
   await rm(join(f.project, shadowArtifacts.selection));
   data = await (await f.get()).json() as any;
   assert.equal(data.previewDraft, true); assert.equal(data.files.normal.available, true);
-  await f.put('shadow/normal-depth/step01/.completed', '');
+  await rm(join(f.project, 'shadow/step01_normal-depth/.running')); await f.put('shadow/step01_normal-depth/.completed', maps);
   assert.equal((await (await f.get()).json() as any).previewReview, 'awaiting-publication');
   await f.put(shadowArtifacts.selection, JSON.stringify(record));
   await f.put(shadowArtifacts.draftNormal, 'changed');
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
   await f.put(shadowArtifacts.draftNormal, normal);
+  // A redone assembly retires the maps made from the previous one.
   await f.put(studioArtifacts.color, 'changed color');
+  await f.put('character-assembly/step01/.completed', JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
   data = await (await f.get({ preview: 'normal-depth' })).json() as any;
   assert.equal(data.files.normal.available, false);
   await f.put(studioArtifacts.color, color);
   for (const path of [studioArtifacts.normal, studioArtifacts.depth]) await f.put(path);
-  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
+  await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, false); assert.equal(data.files.normal.path, studioArtifacts.normal);
 });

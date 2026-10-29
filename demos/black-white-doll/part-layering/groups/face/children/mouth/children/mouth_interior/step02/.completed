@@ -1,9 +1,0 @@
-{
-  "stamp": "aa7a390a927e49c62588b23d616e42c10c90d1b17f616b8285a07557b51f4e0e",
-  "inputs": {
-    "layers/depth03#face/mouth/mouth_interior.svg": "bf3adafff33a3593067ec37d0d19561e5428c9fb118c695a98411de4852aeb00"
-  },
-  "outputs": {
-    "../../../../../../../parts/face/mouth/mouth_interior.svg": "e12c94a529f079e0461a5df14b366569ec0e4f54bd8cdde8c78e94fd3921aa4c"
-  }
-}

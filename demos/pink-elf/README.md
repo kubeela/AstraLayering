@@ -16,9 +16,9 @@
 | 衣服 step01 | [KRA](clothing-raster-layering/step01/clothing-depth.kra) · [报告](clothing-raster-layering/step01/report.md) |
 | 衣服 step02 | [KRA](clothing-raster-layering/step02/clothing-soft-edges.kra) · [PNG](clothing-raster-layering/step02/clothing-soft-edges.png) · [报告](clothing-raster-layering/step02/report.md) |
 | 穿戴组装 | [KRA](character-assembly/step01/character-assembled.kra) · [PNG](character-assembly/step01/character-assembled.png) · [报告](character-assembly/step01/report.md) |
-| 投影阴影蒙版 | [最终 KRA](shadow/mask/step01/character-shadowed.kra) · [最终 PNG](shadow/mask/step01/character-shadowed.png) · [关系表](shadow/mask/step01/shadows.json) · [报告](shadow/mask/step01/report.md) |
+| 投影阴影蒙版 | [最终 KRA](shadow/step01_mask/character-shadowed.kra) · [最终 PNG](shadow/step01_mask/character-shadowed.png) · [关系表](shadow/step01_mask/shadows.json) · [报告](shadow/step01_mask/report.md) |
 
-![本轮最终合成](shadow/mask/step01/character-shadowed.png)
+![本轮最终合成](shadow/step01_mask/character-shadowed.png)
 
 ## 验证与保留问题
 

@@ -1,8 +1,8 @@
 import { readStepSession } from '../../shared/agents/step-session.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
-import { pipelineDirectory } from '../../shared/paths.ts';
-const runDirectory = (name: string) => pipelineDirectory(name, 'clothing-raster-layering');
+import { sectionDirectory } from '../../shared/paths.ts';
+const runDirectory = (name: string) => sectionDirectory(name, 'clothing-raster-layering');
 import assert from 'node:assert/strict';
 import { mkdtemp, realpath, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -129,12 +129,12 @@ test('deleting step02 completion resets its directory and context, preserving st
 });
 
 test('clothing-part-layering occlusion 重做后 step01 及后续重跑并换新 thread', async t => {
-  const f = await fixture(t), occlusion = join(f.source, 'occlusion');
+  const f = await fixture(t), occlusion = join(f.source, 'step14_occlusion');
   const mark = (stamp: string) => writeFile(join(occlusion, '.completed'), JSON.stringify({ stamp, inputs: {} }));
   await mkdir(occlusion);
   await mark('clothing-a');
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
-  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'clothing-part-layering/occlusion': 'clothing-a' });
+  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'clothing-part-layering/step14_occlusion': 'clothing-a' });
   await mark('clothing-b');
   const drawn: (string | undefined)[] = [];
   await runWorkflow({ name: 'test' }, { ...f.deps, agent: async request => {

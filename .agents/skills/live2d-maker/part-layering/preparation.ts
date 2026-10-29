@@ -1,6 +1,6 @@
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import type { ImageProcessingOptions } from '../shared/image-processing.ts';
-import { pipelineDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
+import { sectionDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
 import { copyFile, mkdir, readFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
@@ -9,8 +9,7 @@ import { modifiedError, type ChainPlan, type ChainStep } from '../shared/step-ch
 import { inspectSection, runSection } from '../shared/step-section.ts';
 import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
 import { checkStandardJudgment, copyAsPng, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
-  sectionDirectory, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
-import { migratePreparation, migrateStepLayout } from './preparation-migration.ts';
+  sectionOf, stageNumber, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
 import type { DressupDecision } from '../shared/part/dressup.ts';
 
 export type { PreparationInput, PreparationReferences, StandardJudgment };
@@ -30,7 +29,7 @@ function readPrompt(name: string): Promise<string> {
 }
 const readJson = async (path: string): Promise<unknown> => JSON.parse(await readFile(path, 'utf8'));
 export function getPreparationDirectory(runName: string, root?: string): string {
-  return join(pipelineDirectory(runName, 'part-layering', root), 'references');
+  return join(sectionDirectory(runName, 'part-layering', root), 'references');
 }
 const inputDirectory = (runName: string, root?: string) => join(taskDirectory(runName, root), 'input');
 async function references(runName: string, root?: string): Promise<PreparationReferences> {
@@ -45,26 +44,15 @@ const output = (step: ChainStep) => resolve(step.directory, step.outputs![0]);
 const unfinished = (plan: ChainPlan, id: string) => plan.reset.includes(id) || plan.statuses.get(id) !== 'completed';
 
 function modeError(directory: string, saved: boolean): Error {
-  return new Error(`preparation 已按 --${saved ? '' : 'no-'}standard 制作，不能直接切换。需要切换时请对 options 步骤执行重试：删除 ${join(sectionDirectory(directory), stageStep('options'), '.completed')} 后带新选项重跑，之后的参考会随之重做；或使用新的 --name。已有文件已保留。`);
+  return new Error(`preparation 已按 --${saved ? '' : 'no-'}standard 制作，不能直接切换。需要切换时请对 options 步骤执行重试：删除 ${join(sectionOf(directory), stageStep('options'), '.completed')} 后带新选项重跑，之后的参考会随之重做；或使用新的 --name。已有文件已保留。`);
 }
 
 // Explicit groups only read prepared inputs; no conversion, model call, copying or cache reset.
 export async function loadPreparedReferences(runName: string, root?: string, standard?: boolean): Promise<PreparationReferences> {
   const refs = await references(runName, root), directory = refs.directory;
-  if (!await present(sectionDirectory(directory))) {
-    if (await present(join(directory, '.steps')) || await present(join(directory, 'preparation.json'))) {
-      throw new Error('preparation 记录尚未转换为步骤记录；请先不带 --groups 运行一次默认流程。');
-    }
-    // Bare references of tasks older than any record are read as they are.
-    const missing = [];
-    for (const path of [refs.simplifiedSubject, refs.baseSubject]) if (!await exists(path)) missing.push(path);
-    if (standard && !missing.length) throw modeError(directory, false);
-    if (missing.length) throw new Error(`显式 groups 的前置参考未完成：\n${missing.join('\n')}\n请先使用默认流程完成参考准备。`);
-    return refs;
-  }
   const saved = await readPreparationOptions(directory);
   if (standard !== undefined && saved !== undefined && standard !== saved) throw modeError(directory, saved);
-  const plan = await inspectSection(sectionDirectory(directory), taskDirectory(runName, root), await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), false);
+  const plan = await inspectSection(sectionOf(directory), taskDirectory(runName, root), await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), { scan: false });
   const modified = modifiedError(plan, plan.chain);
   if (modified) throw modified;
   const missing = plan.chain.filter(step => plan.defined.has(step.id) && unfinished(plan, step.id))
@@ -89,13 +77,13 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     }
   }
   await mkdir(directory, { recursive: true });
-  await migrateStepLayout(directory);
-  await migratePreparation(await references(input.runName, input.dir), inputs, progress);
   const standard = input.standard ?? await readPreparationOptions(directory) ?? false;
   const initial = await references(input.runName, input.dir);
   let partsBuilt = false;
   await runSection({
-    directory: sectionDirectory(directory), root: taskDirectory(input.runName, input.dir), steps: await preparationSteps(initial, standard, inputs, source), progress,
+    directory: sectionOf(directory), root: taskDirectory(input.runName, input.dir), steps: await preparationSteps(initial, standard, inputs, source), progress,
+    // The layering steps after ready check themselves; resetting ready clears them.
+    last: stageNumber('ready'),
     async check(plan) {
       const saved = await readPreparationOptions(directory);
       if (saved !== undefined && saved !== standard && !unfinished(plan, stageStep('options'))) throw modeError(directory, saved);
@@ -127,7 +115,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     await produce(target, temporary => generate(temporary, async image => {
       if (!refs.standardImage) throw new Error('参考后处理缺少 standard.png');
       // Raw generation is retained outside the final reference filenames for diagnosis.
-      await normalizeGeneratedReference(image, refs.standardImage, join(sectionDirectory(directory), stageStep(stage)), stage, normalization);
+      await normalizeGeneratedReference(image, refs.standardImage, join(sectionOf(directory), stageStep(stage)), stage, normalization);
     }));
   }
   async function run(id: PreparationStage, step: ChainStep, refs: PreparationReferences) {
@@ -168,7 +156,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
           choice = await steps.baseSubject(refs.simplifiedSubject, temporary, await readPrompt('3-素体参考.md'), processGenerated) || undefined;
         });
         // Read by the scheduler to decide whether the clothing lane runs.
-        const records = join(sectionDirectory(directory), stageStep('base'));
+        const records = join(sectionOf(directory), stageStep('base'));
         const made = choice as ReferenceChoice | undefined;
         if (made) await mkdir(records, { recursive: true }).then(() => writeJson(join(records, 'decision.json'),
           { version: 1, dressed: made.generated, reason: made.reason } satisfies DressupDecision));

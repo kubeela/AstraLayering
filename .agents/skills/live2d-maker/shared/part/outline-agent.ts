@@ -142,7 +142,7 @@ export async function drawGroupOutline(
   }
   const response = await agents.run({
     step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
-    name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
+    name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'outline')),
     tools: [preview, write, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
       ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
@@ -190,8 +190,8 @@ async function reviewOnce(
       if (hash(await readFile(candidate)) !== candidateHash) throw new Error('审查期间候选 SVG 被修改，不能提交');
       const root = taskRootOf(context.directory);
       const evidence = await Promise.all((await publishObservations(observations,
-        join(context.directory, groupStepId(context.group.id, 1), 'workspace'), dirname(reportPath), root)).map(entry => taskObservation(root, entry)));
-      const feedback = await publishReportText(raw.feedback, join(context.directory, groupStepId(context.group.id, 1), 'workspace'), dirname(reportPath));
+        join(context.directory, groupStepId(context.group.id, 'outline'), 'workspace'), dirname(reportPath), root)).map(entry => taskObservation(root, entry)));
+      const feedback = await publishReportText(raw.feedback, join(context.directory, groupStepId(context.group.id, 'outline'), 'workspace'), dirname(reportPath));
       const review: Review = { verdict: raw.verdict as Review['verdict'], feedback,
         candidateHash, observations: evidence, updatedAt: new Date().toISOString() };
       const report = await readReviewReport(reportPath, context.group.id);
@@ -203,7 +203,7 @@ async function reviewOnce(
     },
   };
   const response = await agents.run({
-    step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 1)),
+    step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'outline')),
     tools: [preview, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.review }],

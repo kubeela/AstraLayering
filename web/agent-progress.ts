@@ -8,11 +8,11 @@ export const throttled = (call: AgentCall, now = Date.now()) => !call.finished &
 const requests = new Map<string, { version: string; name: string; step: string }>();
 
 // A request is recorded after acquiring a slot. Read these records, never infer activity from a draft.
-export async function currentAgentCalls(directory: string, pipeline: string, files: Set<string>,
+export async function currentAgentCalls(directory: string, section: string, files: Set<string>,
   errors: string[], activeSince?: string, readFailures = false): Promise<AgentCall[]> {
   if (!activeSince) return [];
   const since = Date.parse(activeSince), calls: AgentCall[] = [];
-  const paths = [...files].filter(path => path.startsWith(pipeline + '/agents/') && path.endsWith('/request.json'));
+  const paths = [...files].filter(path => path.startsWith(section + '/agents/') && path.endsWith('/request.json'));
   for (let offset = 0; offset < paths.length; offset += 16) {
     await Promise.all(paths.slice(offset, offset + 16).map(async request => {
       try {

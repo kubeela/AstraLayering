@@ -72,9 +72,9 @@ test('retries stay within their round; current failures and replacement calls af
   assert.equal(observe(reviews, repaired1, calls, true).length, 2);
 });
 
-for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: expanded cards expose separate round reports and stage previews follow drafts`, () => {
+for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: expanded cards expose separate round reports and stage previews follow drafts`, () => {
   const rounds = observe([review(initial, 'revise', 20, repaired1), review(repaired1, 'pass', 50)], repaired1);
-  const steps = groupReviewSteps({ webReviewRounds: rounds }, pipeline, 'face');
+  const steps = groupReviewSteps({ webReviewRounds: rounds }, section, 'face');
   assert.deepEqual(steps.map(step => step.id), ['review-1', 'repair-1', 'review-2', 'repair-2']);
   assert.deepEqual(steps.slice(0, 3).map(step => step.artifacts[0].reviewIndex), [0, 0, 1]);
   assert.equal(steps[3].status, 'skipped');
@@ -82,8 +82,8 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.match(reviewReportText(JSON.stringify(report), steps[0].artifacts[0]), /意见 20/);
   assert.doesNotMatch(reviewReportText(JSON.stringify(report), steps[0].artifacts[0]), /意见 50/);
   assert.match(reviewReportText(JSON.stringify(report), steps[2].artifacts[0]), /意见 50/);
-  const artifacts = groupArtifacts(pipeline, { id: 'face' }, 0);
-  const outline = `${pipeline}/groups/face/step01/outline.svg`, draft = `${pipeline}/parts/face.draft.svg`, final = `${pipeline}/parts/face.svg`;
+  const artifacts = groupArtifacts(section, { id: 'face' }, 0);
+  const outline = `${section}/step09_outline/face/outline.svg`, draft = `${section}/parts/face.draft.svg`, final = `${section}/parts/face.svg`;
   const files = new Set([outline, draft, final]);
   const versions = { [outline]: '10:1', [draft]: '30:1', [final]: '20:1' };
   assert.equal(groupStagePreviewArtifacts('outline', artifacts, files, versions)[0].path, outline);
@@ -91,7 +91,7 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   files.delete(draft);
   assert.equal(groupStagePreviewArtifacts('completion', artifacts, files, versions)[0].path, final);
   // A reduction rewritten after the part does not replace it in the completion panel.
-  const reduced = `${pipeline}/layers/depth01/face.svg`;
+  const reduced = `${section}/step10_reduce/depth01/face.svg`;
   files.add(reduced); Object.assign(versions, { [reduced]: '40:1' });
   assert.equal(groupStagePreviewArtifacts('completion', artifacts, files, versions)[0].path, final);
   files.delete(final);

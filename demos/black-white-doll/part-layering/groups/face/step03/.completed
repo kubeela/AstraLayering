@@ -1,9 +1,0 @@
-{
-  "stamp": "ebfda888ae6cee4fac09b905b2f311bfc750497f943a287a98e8457c8a303968",
-  "inputs": {
-    "groups/face/step02": "c0af102e83a26c65411bf0a8a47aecc4b547b3c80c82df09aea015d6df2cb9f0"
-  },
-  "outputs": {
-    "children.json": "4942f9509503638ddc6a65fb17c6b25fb41b368561b8aba7d26bd933b10b452c"
-  }
-}

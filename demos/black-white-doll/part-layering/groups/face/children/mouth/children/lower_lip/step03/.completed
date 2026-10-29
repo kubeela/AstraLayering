@@ -1,9 +1,0 @@
-{
-  "stamp": "7cfe834f601cca395ce530110df8d05d5880aa138aa5cd8bde77fb0c18c29259",
-  "inputs": {
-    "groups/face/children/mouth/children/lower_lip/step02": "7928fb91d5b972f0889c56022de8b5a462a276ca413dc8fb0ffec29b74bbe998"
-  },
-  "outputs": {
-    "children.json": "f9a50187e3cd89d864d34e8600e1f8f0f70fe0d7b98af58685462709bb3b9725"
-  }
-}

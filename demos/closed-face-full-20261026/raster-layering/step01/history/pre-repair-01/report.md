@@ -39,7 +39,7 @@
 
 侧发三片从已完成的同件纹理分配现有像素：隐藏根部取顶部补全相对原 source 的外延，耳前片仅取跨耳窄束/细丝，余下为耳后宽帘。内部采用互斥分配避免重叠 alpha 衰减；三片合起来仍是连续完整的同一逻辑部件。宽帘没有整体搬到耳前。完整侧发检查见 [左侧](../../evidence/solo-gray/hair-side_hair_left-logical-complete.png)、[右侧](../../evidence/solo-gray/hair-side_hair_right-logical-complete.png)。
 
-除上述 5 个已同步的 SVG，未另外改变终止部件 ID 或内容归属。修改前 SVG 保存在 `report-assets/back_hair-upstream-before.svg`、`workspace/upstream-before-eye-symmetry/`。受影响的 [分组预览](../../../../part-layering/preview.svg) 与 [深度预览](../../../../part-layering/occlusion/preview.svg) 已更新；深度预览以当前 41 片的 alpha 和默认显隐表现实际分区，逻辑轮廓仍在各 `parts/*.svg`。记录见 [preview-update.json](evidence/preview-update.json)。
+除上述 5 个已同步的 SVG，未另外改变终止部件 ID 或内容归属。修改前 SVG 保存在 `report-assets/back_hair-upstream-before.svg`、`workspace/upstream-before-eye-symmetry/`。受影响的 [分组预览](../../../../part-layering/preview.svg) 与 [深度预览](../../../../part-layering/step14_occlusion/preview.svg) 已更新；深度预览以当前 41 片的 alpha 和默认显隐表现实际分区，逻辑轮廓仍在各 `parts/*.svg`。记录见 [preview-update.json](evidence/preview-update.json)。
 
 ## 实际图层、UUID、深度和检查
 

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { fromTaskPath } from '../shared/task-paths.ts';
-import { directoryFor, pipelineId, taskStatus, type TaskOptions } from './state.ts';
+import { directoryFor, sectionId, taskStatus, type TaskOptions } from './state.ts';
 import { lastLog, runTask } from './runner.ts';
 import { replaceThread } from './recovery.ts';
 import { requestTaskStop } from './control.ts';
@@ -26,7 +26,7 @@ export const help = [
   '导出成果：pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]',
   '',
   '继续、恢复、重试作用于所有中断或失败的步骤，然后按保存的路线运行；没有这类步骤时继续即从未完成处续跑。',
-  '--pipeline <管线> --step <步骤> 只处理一个步骤（如 step02、groups/head/step02）；只给 --pipeline 时仅可继续。',
+  '--section <管线> --step <步骤> 只处理一个步骤（如 step02、step11_completion/head）；只给 --section 时仅可继续。',
   '路线含 Krita（raster、character-assembly、shadow）时，启动前先检查记录的 Krita 路径；不可用则拒绝运行，',
   '  请加 --krita <可执行文件> 重新指定。继续、恢复、重试同样先检查，检查通过后才改动步骤。',
   '',
@@ -53,7 +53,7 @@ export function parseArguments(args: string[]) {
     status: { type: 'boolean' }, json: { type: 'boolean' }, help: { type: 'boolean', short: 'h' },
     'replace-thread': { type: 'string' }, handoff: { type: 'string' }, reason: { type: 'string' },
     continue: { type: 'boolean' }, resume: { type: 'boolean' }, retry: { type: 'boolean' },
-    pipeline: { type: 'string' }, step: { type: 'string' }, stop: { type: 'boolean' },
+    section: { type: 'string' }, step: { type: 'string' }, stop: { type: 'boolean' },
   }, strict: true, allowPositionals: false });
   if (values.help) return { mode: 'help' as const };
   if (!values.name) throw new Error('请提供 --name <任务名>。');
@@ -61,15 +61,15 @@ export function parseArguments(args: string[]) {
   const options: TaskOptions = { name: values.name, dir: values.dir, image: values.image, krita: values.krita,
     standard: values['no-standard'] ? false : values.standard,
     shadowMode: values['shadow-mode'] === undefined ? undefined : shadowMode(values['shadow-mode']),
-    from: values.from ? pipelineId(values.from) : undefined, to: values.to ? pipelineId(values.to) : undefined,
+    from: values.from ? sectionId(values.from) : undefined, to: values.to ? sectionId(values.to) : undefined,
     jobs: values.jobs === undefined ? undefined : Number(values.jobs) };
   directoryFor(options);
   if (options.jobs !== undefined && (!Number.isSafeInteger(options.jobs) || options.jobs < 1)) throw new Error('--jobs 必须为正整数。');
   const actions = (['continue', 'resume', 'retry'] as const).filter(action => values[action]);
   if (actions.length > 1) throw new Error('--continue、--resume 和 --retry 只能选一个。');
-  if ((values.pipeline !== undefined || values.step !== undefined) && !actions.length) throw new Error('--pipeline / --step 需与 --continue、--resume 或 --retry 一起使用。');
-  if (values.step !== undefined && values.pipeline === undefined) throw new Error('--step 需同时提供 --pipeline。');
-  if (values.pipeline !== undefined && values.step === undefined && actions[0] !== 'continue') throw new Error('只给 --pipeline 时仅可 --continue；恢复或重试请用 --step 指定步骤。');
+  if ((values.section !== undefined || values.step !== undefined) && !actions.length) throw new Error('--section / --step 需与 --continue、--resume 或 --retry 一起使用。');
+  if (values.step !== undefined && values.section === undefined) throw new Error('--step 需同时提供 --section。');
+  if (values.section !== undefined && values.step === undefined && actions[0] !== 'continue') throw new Error('只给 --section 时仅可 --continue；恢复或重试请用 --step 指定步骤。');
   if ([values.background, values['background-worker'], values.status, values['replace-thread'] !== undefined, values.stop].filter(Boolean).length > 1) {
     throw new Error('--background、--status、--stop 和 --replace-thread 不能同时使用。');
   }
@@ -84,10 +84,10 @@ export function parseArguments(args: string[]) {
   if (values.stop) return { mode: 'stop' as const, options };
   if (values['replace-thread']) {
     if (!values.handoff || !values.reason?.trim()) throw new Error('请提供 --handoff <交接.md> 和 --reason <原因>。');
-    return { mode: 'replace' as const, options, pipeline: pipelineId(values['replace-thread']), handoff: values.handoff, reason: values.reason };
+    return { mode: 'replace' as const, options, section: sectionId(values['replace-thread']), handoff: values.handoff, reason: values.reason };
   }
-  // Without --pipeline the action applies to the whole task; with it and no --step, to that pipeline.
-  const action = actions[0] && { action: actions[0], pipeline: values.pipeline === undefined ? undefined : pipelineId(values.pipeline), step: values.step ?? '' };
+  // Without --section the action applies to the whole task; with it and no --step, to that section.
+  const action = actions[0] && { action: actions[0], section: values.section === undefined ? undefined : sectionId(values.section), step: values.step ?? '' };
   return { mode: values.status ? 'status' as const : values.background ? 'background' as const : 'run' as const,
     options, json: values.json, worker: values['background-worker'], action };
 }
@@ -141,7 +141,7 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
     if (parsed.json) console.log(JSON.stringify(status, null, 2));
     else {
       console.log('任务：' + status.directory + '\n状态：' + status.status + '；进程存活：' + status.runnerAlive + '；任务锁：' + status.lockHeld);
-      for (const stage of status.pipelines) console.log(stage.id + '：' + (stage.status ?? 'pending')
+      for (const stage of status.sections) console.log(stage.id + '：' + (stage.status ?? 'pending')
         + (stage.threadId ? '；threadId=' + stage.threadId : '') + '\n  ' + stage.steps.map(step => step.name + '=' + step.status).join(' '));
       if (status.error) console.log('错误：' + status.error);
       if (status.lastMessage) console.log('最近消息：' + status.lastMessage);
@@ -151,7 +151,7 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
     return;
   }
   if (parsed.mode === 'replace') {
-    console.log('交接已保存：' + await replaceThread({ ...options, pipeline: parsed.pipeline, handoff: parsed.handoff, reason: parsed.reason })
+    console.log('交接已保存：' + await replaceThread({ ...options, section: parsed.section, handoff: parsed.handoff, reason: parsed.reason })
       + '\n产物和标记已保留；请用继续命令运行。');
     return;
   }
@@ -163,8 +163,8 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
   if (parsed.action) {
     // The same order as the workbench: Krita first, so a refused start changes no step.
     await preflightKrita(options);
-    console.log(parsed.action.pipeline === undefined ? await applyTaskAction({ ...options, action: parsed.action.action })
-      : await applyStepAction({ ...options, pipeline: parsed.action.pipeline, step: parsed.action.step, action: parsed.action.action }));
+    console.log(parsed.action.section === undefined ? await applyTaskAction({ ...options, action: parsed.action.action })
+      : await applyStepAction({ ...options, section: parsed.action.section, step: parsed.action.step, action: parsed.action.action }));
   }
   if (parsed.mode === 'background') {
     const pid = await startBackground(options);

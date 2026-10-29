@@ -12,21 +12,21 @@ pnpm start --name jianma --background
 
 参数含义（含 `--dir` 默认值、`--jobs`、`--step` 写法）只在 [SKILL.md](../SKILL.md#启动参数) 说明。自定义运行根目录时每次追加同一 `--dir`；所有相对输入（包括 image、groups、krita 和 handoff）从任务目录 `<dir>/<name>/` 解析。
 
-总控按依赖调度：人物 part 完成准备（简化参考）后，人物 raster 与衣服线（衣服 part → 衣服 raster）同时进行；两条线都完成后执行组装和阴影。`--from`／`--to` 选择连续范围并保存，路线范围之外的上游视为已就绪，后续阶段自动推进。一条线失败只阻塞依赖它的管线，另一条线继续跑完，随后整次运行记为 failed。素体未换装时两条衣服管线记为 `completed` 且 `skipped: true`，见[姿态与参考](#姿态与参考)。运行状态的 `activePipelines` 列出正在执行的管线（旧任务的 `activePipeline` 读入时自动转换）。已有两份 KRA 与简化参考时可从组装开始，不伪造上游完成记录。
+总控按依赖调度：人物 part 完成准备（简化参考）后，人物 raster 与衣服线（衣服 part → 衣服 raster）同时进行；两条线都完成后执行组装和阴影。`--from`／`--to` 选择连续范围并保存，路线范围之外的上游视为已就绪，后续阶段自动推进。一条线失败只阻塞依赖它的管线，另一条线继续跑完，随后整次运行记为 failed。素体未换装时两条衣服管线记为 `completed` 且 `skipped: true`，见[姿态与参考](#姿态与参考)。运行状态的 `activeSections` 列出正在执行的 section。已有两份 KRA 与简化参考时可从组装开始，不伪造上游完成记录。
 
 后台返回启动确认后仍需查询状态与日志，Codex 补丁可能仍在准备。新任务或只有成果的旧任务没有总控 `run.json` 时，`--status` 报缺记录；按实际输入和范围首次启动即可。先核实活跃进程与锁，不能同时从 CLI、网页或独立 section 启动同一任务。总调度和恢复操作持有任务锁 `<dir>/<name>/.runner.lock`（每 10 秒刷新，30 秒无刷新即过期）。
 
 ### 姿态与参考
 
-新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项保存在总控与 `part-layering/preparation/step02/options.json`，续跑省略则沿用；`--no-standard` 显式关闭。`--standard`／`--no-standard` 要求本次路线包含 part-layering。已完成的参考改变选项时，对 preparation 的 options 步骤重试，后续依赖参考随之重做：
+新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项保存在总控与 `part-layering/step02_options/options.json`，续跑省略则沿用；`--no-standard` 显式关闭。`--standard`／`--no-standard` 要求本次路线包含 part-layering。已完成的参考改变选项时，对 part-layering 的 options 步骤重试，后续依赖参考随之重做：
 
 ```sh
-pnpm start --name jianma [--dir …] [--from part-layering] --standard --retry --pipeline part-layering --step preparation/step02 --background
+pnpm start --name jianma [--dir …] [--from part-layering] --standard --retry --section part-layering --step step02_options --background
 ```
 
 默认换装范围是主体衣装；手套、袜类、鞋靴和其自身装饰随人物保留。人物素体使用临时连体服，raster step03 去除；衣服 preparation 同时读取简化穿衣图和素体图，提取互补衣装。整套衣装的大小与位置由组装适配。
 
-素体 agent 的选择写入 `part-layering/preparation/step07/decision.json`（`dressed`）。没有换装时，总控把 clothing-part-layering 与 clothing-raster-layering 记为“完成（跳过）”且不调用 agent；raster step03 直接复制 step02 成果作为素体，character-assembly 直接复制人物 KRA，阴影照常运行。之后重做素体并换装，两条衣服管线会正常执行。旧任务没有 decision.json 时按简化图与素体像素是否相同判断；已画出衣服的旧任务继续使用这些衣服，已完成的输入保持不变。
+素体 agent 的选择写入 `part-layering/step06_base/decision.json`（`dressed`）。没有换装时，总控把 clothing-part-layering 与 clothing-raster-layering 记为“完成（跳过）”且不调用 agent；raster step03 直接复制 step02 成果作为素体，character-assembly 直接复制人物 KRA，阴影照常运行。之后重做素体并换装，两条衣服管线会正常执行。旧任务没有 decision.json 时按简化图与素体像素是否相同判断；已画出衣服的旧任务继续使用这些衣服，已完成的输入保持不变。
 
 参考和产物按内容指纹复用，提示词更新不会自动重绘。旧任务只有已合格参考时可沿用；若旧记录含尺寸／摘要则须匹配。已完成步骤的产物被替换时拒绝直接续跑并保留文件，不用归档副本猜补。生成参考的透明处理、等比缩放和留档规则见 [shared](../shared/README.md#参考图后处理)。
 
@@ -60,9 +60,9 @@ pnpm env:check
 
 请求目录继续保留 `prompt.md`、`request.json`、`events.jsonl`、`result.json` 和会话记录。旧后台可能仍写 `service.log`，按状态返回的真实日志路径查看；新请求统一进 `workflow.log`，不新增永久 native/transcript 日志。
 
-section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --pipeline <section> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、其声明的产物、会话，以及输出写在该步骤的 agent 尝试记录（`agents/<时间>-<名称>-*/` 与 `sessions.json` 中的对应条目），新 agent 不会读到旧尝试；依赖它的后续步骤按指纹重跑。
+section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --section <管线> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、其声明的产物、会话，以及输出写在该步骤的 agent 尝试记录（`agents/<时间>-<名称>-*/` 与 `sessions.json` 中的对应条目），新 agent 不会读到旧尝试；依赖它的后续步骤按指纹重跑。
 
-raster、组装与阴影分段的输入或制作规则改变时，旧分段整体保留为 `<分段>.previous-<uuid>` 后重新制作，不覆盖。
+raster、组装与阴影的上游步骤重做后，依赖它的步骤按指纹重做并清除其会话，不另存旧目录。
 
 part 逐层进行轮廓与复核、同层去重、补全和直属拆分；每层全部结束再进下一层。raster step01 的结构修正持久写回上游，已进入 raster 的总控续跑不会再用旧 part 事实覆盖它；明确只选 part 会按首次分组与各步骤事实重建树；续跑前应留档核对仅在根 groups.json 中调整的结构。现行工具职责与诊断边界见 [共享说明](../shared/README.md#多深度与上游修正)。
 
@@ -137,7 +137,7 @@ pnpm start --name jianma --dir /绝对路径/运行根目录 --background
 
 ## 交付与自动化测试
 
-最终文件位置由各 section README 约定，核对实际文件，特别是衣服 PNG 按实际导出位置提供。阴影默认交付 `shadow/mask/step01/character-shadowed.kra` 与 PNG；normal-depth 交付贴图并发布 `lighting/`。成果是静态素材，不能声称已完成绑定。
+最终文件位置由各 section README 约定，核对实际文件，特别是衣服 PNG 按实际导出位置提供。阴影默认交付 `shadow/step01_mask/character-shadowed.kra` 与 PNG；normal-depth 交付贴图并发布 `lighting/`。成果是静态素材，不能声称已完成绑定。
 
 ```sh
 node --import ./shared/tests/ignore-local-env.ts --test workflow/tests/*.test.ts

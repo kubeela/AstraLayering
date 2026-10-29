@@ -2,7 +2,7 @@ import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { runCli } from '../shared/raster/cli.ts';
 import { runWorkflow as runSharedWorkflow, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { steps } from './steps.ts';
-import { partRasterPipeline } from '../shared/raster/part-pipeline.ts';
+import { partRasterSection } from '../shared/raster/part-section.ts';
 export { parseRunArguments } from '../shared/raster/cli.ts';
 
 export const help = `clothing-raster-layering — 按顺序执行 Krita 栅格分层流程
@@ -24,14 +24,14 @@ step01 依赖上游 part 的最后一步 occlusion：part 重做后 step01 及�
 第二步边缘精修和自检后结束，交付 step02/clothing-soft-edges.kra 和验收记录，不制作身体装配或身体插层说明。
 `;
 
-export const pipeline = partRasterPipeline({ id: 'clothing-raster-layering', inputPipeline: 'clothing-part-layering', steps });
+export const section = partRasterSection({ id: 'clothing-raster-layering', inputSection: 'clothing-part-layering', steps });
 
 export function runWorkflow(options: WorkflowOptions, dependencies: Dependencies = {}) {
-  return runSharedWorkflow(pipeline, options, dependencies);
+  return runSharedWorkflow(section, options, dependencies);
 }
 
 if (import.meta.main) {
-  runCli(pipeline, help).catch(error => {
+  runCli(section, help).catch(error => {
     console.error(formatAgentError(error));
     process.exitCode = 1;
   });

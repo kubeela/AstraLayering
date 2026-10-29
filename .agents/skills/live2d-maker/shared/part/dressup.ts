@@ -10,7 +10,7 @@ import { stageStep } from './preparation-steps.ts';
 // The decision sits beside the step's records, outside its fingerprinted outputs.
 export type DressupDecision = { version: 1; dressed: boolean; reason: string };
 
-const baseStep = (taskRoot: string) => join(taskRoot, 'part-layering', 'preparation', stageStep('base'));
+const baseStep = (taskRoot: string) => join(taskRoot, 'part-layering', stageStep('base'));
 export const dressupDecisionPath = (taskRoot: string) => join(baseStep(taskRoot), 'decision.json');
 
 export function checkDressupDecision(value: unknown): asserts value is DressupDecision {

@@ -16,30 +16,32 @@ import type { AgentRequest } from '../../shared/raster/agent.ts';
 import type { StepDefinition } from '../../shared/raster/steps.ts';
 import { acquireTaskLock } from '../state.ts';
 import { replaceThread } from '../recovery.ts';
-import { readStepSession } from '../../shared/agents/step-session.ts';
+import { readStepSession, writeStepSession } from '../../shared/agents/step-session.ts';
 
-test('阴影恢复按保存模式替换当前会话，保留另一分支与已生成贴图', async t => {
+test('阴影恢复按保存模式替换所选 step01 的会话，另一模式与已生成贴图不动', async t => {
   for (const mode of ['normal-depth', 'mask'] as const) {
-    const f = await fixture(t), target = join(f.task, 'shadow', mode), other = join(f.task, 'shadow', mode === 'mask' ? 'normal-depth' : 'mask');
-    await mkdir(join(target, 'step01'), { recursive: true }); await mkdir(join(other, 'step01'), { recursive: true });
-    const rootRun = { version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', pipelines: {}, shadowMode: mode };
+    const f = await fixture(t), target = join(f.task, 'shadow');
+    const step = `step01_${mode}`, other = `step01_${mode === 'mask' ? 'normal-depth' : 'mask'}`;
+    await mkdir(join(target, step), { recursive: true }); await mkdir(join(target, other), { recursive: true });
+    const rootRun = { version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', sections: {}, shadowMode: mode };
     await writeFile(join(f.task, 'run.json'), JSON.stringify(rootRun));
-    await writeFile(join(target, 'run.json'), JSON.stringify({ version: 2, name: 'case', threadId: 'old-shadow',
+    const run = JSON.stringify({ version: 2, name: 'case',
       sourceInput: { characterKra: 'source.kra', characterColor: 'source.png', simplifiedCharacter: 'simplified.png', structureFiles: [] },
-      krita: { executable: process.execPath, version: 'test' }, models: { step01: { model: 'gpt-6.1-sol', effort: 'xhigh' } } }));
-    await writeFile(join(target, 'step01/.running'), 'running');
-    await writeFile(join(target, 'step01/normal.png'), 'existing map');
-    await writeFile(join(other, 'run.json'), 'other branch unchanged');
-    await writeFile(join(other, 'step01/.completed'), 'completed');
-    const archive = await replaceThread({ ...f.recovery, pipeline: 'shadow' });
+      krita: { executable: process.execPath, version: 'test' } });
+    await writeFile(join(target, 'run.json'), run);
+    await writeStepSession(target, step, { threadId: 'old-shadow' });
+    await writeFile(join(target, step, '.running'), '');
+    await writeFile(join(target, step, 'normal.png'), 'existing map');
+    await writeFile(join(target, other, '.completed'), 'completed');
+    const archive = await replaceThread({ ...f.recovery, section: 'shadow' });
     assert.ok(archive.startsWith(join(target, 'recovery')));
-    assert.ok(!('threadId' in JSON.parse(await readFile(join(target, 'run.json'), 'utf8'))));
-    const session = await readStepSession(target, 'step01');
+    assert.equal(await readFile(join(target, 'run.json'), 'utf8'), run);
+    const session = await readStepSession(target, step);
     assert.equal(session?.threadId, undefined); assert.equal(session?.handoff?.previousThreadId, 'old-shadow');
     assert.equal(JSON.parse(await readFile(join(archive, 'session-before.json'), 'utf8')).threadId, 'old-shadow');
-    assert.equal(await readFile(join(target, 'step01/normal.png'), 'utf8'), 'existing map');
-    assert.equal(await readFile(join(other, 'run.json'), 'utf8'), 'other branch unchanged');
-    assert.equal(await readFile(join(other, 'step01/.completed'), 'utf8'), 'completed');
+    assert.equal(await readFile(join(target, step, 'normal.png'), 'utf8'), 'existing map');
+    assert.equal(await readStepSession(target, other), undefined);
+    assert.equal(await readFile(join(target, other, '.completed'), 'utf8'), 'completed');
     assert.equal(await readFile(join(f.task, 'run.json'), 'utf8'), JSON.stringify(rootRun));
   }
 });
@@ -54,7 +56,7 @@ async function fixture(t: TestContext) {
   await writeFile(join(task, 'handoff.md'), '保留 draft.kra 中完成的衣领，继续导出 PNG 并核对图层。');
   return { dir, task, options: { name, dir, krita: process.execPath },
     deps: { environment: loadWorkflowEnvironment({}, dir), preflight: async (executable: string) => ({ executable, version: 'test' }) },
-    recovery: { name, dir, pipeline: 'character-assembly' as const, handoff: 'handoff.md', reason: '会话历史损坏' } };
+    recovery: { name, dir, section: 'character-assembly' as const, handoff: 'handoff.md', reason: '会话历史损坏' } };
 }
 async function deliver(request: AgentRequest, step: StepDefinition, thread = request.threadId ?? 'replacement') {
   await request.onEvent({ type: 'thread.started', thread_id: thread });
@@ -110,7 +112,7 @@ test('锁定时不允许换 thread，空交接和 part 也被拒绝', async t =>
   const f = await fixture(t), unlock = await acquireTaskLock(f.task);
   await assert.rejects(replaceThread(f.recovery), /不能重复启动/);
   await unlock();
-  await assert.rejects(replaceThread({ ...f.recovery, pipeline: 'part-layering' }), /仅适用于/);
+  await assert.rejects(replaceThread({ ...f.recovery, section: 'part-layering' }), /仅适用于/);
   await assert.rejects(replaceThread({ ...f.recovery, reason: ' ' }), /非空/);
   await assert.rejects(assemble(f.options, { ...f.deps, agent: async request => {
     await request.onEvent({ type: 'thread.started', thread_id: 'old-thread' }); throw new Error('stop');
@@ -119,15 +121,15 @@ test('锁定时不允许换 thread，空交接和 part 也被拒绝', async t =>
   await assert.rejects(replaceThread(f.recovery), /不能为空/);
 });
 
-for (const [pipeline, execute, definitions, upstream] of [
+for (const [section, execute, definitions, upstream] of [
   ['raster-layering', raster, rasterSteps, 'part-layering'],
   ['clothing-raster-layering', clothing, clothingSteps, 'clothing-part-layering'],
 ] as const) {
-  test(pipeline + ' 换 thread 接续修复包含原任务，reviewer 仍全新且第二轮修完结束', async t => {
+  test(section + ' 换 thread 接续修复包含原任务，reviewer 仍全新且第二轮修完结束', async t => {
     const dir = await mkdtemp(join(tmpdir(), 'review-recovery-')), name = 'case', task = join(dir, name);
     t.after(() => rm(dir, { recursive: true, force: true }));
     await seedUpstream(name, upstream, dir);
-    const options = { name, dir, krita: process.execPath }, output = join(task, pipeline);
+    const options = { name, dir, krita: process.execPath }, output = join(task, section);
     const deps = { environment: loadWorkflowEnvironment({}, dir), steps: definitions.slice(0, 2),
       preflight: async (executable: string) => ({ executable, version: 'test' }) };
     let call = 0;
@@ -143,7 +145,7 @@ for (const [pipeline, execute, definitions, upstream] of [
     } }), /broken context/);
     await writeFile(join(task, 'handoff.md'), '当前在修复 review-01 的袖口残色；保留绘制。');
     const report = await readFile(join(output, 'step01/review-01.md'));
-    await replaceThread({ name, dir, pipeline, handoff: 'handoff.md', reason: 'broken context' });
+    await replaceThread({ name, dir, section, handoff: 'handoff.md', reason: 'broken context' });
     let resumed = 0;
     await execute(options, { ...deps, agent: async request => {
       resumed++;

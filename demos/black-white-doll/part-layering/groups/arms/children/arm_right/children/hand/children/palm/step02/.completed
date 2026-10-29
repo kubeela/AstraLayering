@@ -1,9 +1,0 @@
-{
-  "stamp": "031d0b2134095860ba81044ccc291b67d4953bdc6a204867809a79be357cfb81",
-  "inputs": {
-    "layers/depth04#arms/arm_right/hand/palm.svg": "a63e5f17b07fca2ffe7d393143f771e86a6302999e22af4f87fd98c7cfcc22b2"
-  },
-  "outputs": {
-    "../../../../../../../../../parts/arms/arm_right/hand/palm.svg": "99dc1eeefd2420a421df3398d5fbfcc8e97274cc114618c798bb3208a044270f"
-  }
-}

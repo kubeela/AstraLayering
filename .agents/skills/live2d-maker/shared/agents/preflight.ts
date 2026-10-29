@@ -1,5 +1,5 @@
 import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
-import type { PipelineId } from '../paths.ts';
+import type { SectionId } from '../paths.ts';
 import { stepDefaults, type AgentStep } from './models.ts';
 import { cliExecutable } from './cli.ts';
 import { validateImageSelection } from './images.ts';
@@ -48,13 +48,13 @@ export async function checkAgentCli(settings: WorkflowEnvironment, harness: Harn
   }
 }
 
-export function pipelineAgentSteps(pipeline: PipelineId, standard = false, shadowMode: 'mask' | 'normal-depth' = 'mask'): AgentStep[] {
+export function sectionAgentSteps(section: SectionId, standard = false, shadowMode: 'mask' | 'normal-depth' = 'mask'): AgentStep[] {
   return (Object.keys(stepDefaults) as AgentStep[]).filter(step => {
-    if (pipeline === 'part-layering') return step.startsWith('part_') && (standard || !['part_pose_judgment', 'part_standardize'].includes(step));
-    if (pipeline === 'clothing-part-layering') return step.startsWith('clothing_') && !step.startsWith('clothing_raster_');
-    if (pipeline === 'raster-layering') return step.startsWith('raster_');
-    if (pipeline === 'clothing-raster-layering') return step.startsWith('clothing_raster_');
-    if (pipeline === 'shadow') return step === (shadowMode === 'mask' ? 'shadow_mask' : 'shadow_maps');
+    if (section === 'part-layering') return step.startsWith('part_') && (standard || !['part_pose_judgment', 'part_standardize'].includes(step));
+    if (section === 'clothing-part-layering') return step.startsWith('clothing_') && !step.startsWith('clothing_raster_');
+    if (section === 'raster-layering') return step.startsWith('raster_');
+    if (section === 'clothing-raster-layering') return step.startsWith('clothing_raster_');
+    if (section === 'shadow') return step === (shadowMode === 'mask' ? 'shadow_mask' : 'shadow_maps');
     return step === 'assembly';
   });
 }

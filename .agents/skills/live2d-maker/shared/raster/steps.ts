@@ -15,7 +15,7 @@ export type StepDefinition = {
   modelTier?: ModelTier;
   modelStep?: AgentStep;
   prompt: URL;
-  inputFiles?: readonly string[]; // Relative to this pipeline directory; previous deliveries are read-only.
+  inputFiles?: readonly string[]; // Relative to this section directory; previous deliveries are read-only.
   requiredFiles: readonly string[];
   previewFiles?: readonly string[]; // Published optional previews; * matches within this step.
   krita?: false; // The step does not operate Krita: it takes no Krita slot and its agents get no krita tool.
@@ -36,7 +36,7 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
   return renderPrompt(body, {
     drawing_report_filename: report, drawing_responsibilities: responsibilities,
     runtime_context: renderPromptFile(new URL('../prompts/raster-runtime.md', import.meta.url), {
-      pipeline_directory: await json(dirname(output)),
+      section_directory: await json(dirname(output)),
       input_files: await list((step.inputFiles ?? []).map(file => join(dirname(output), file))),
       upstream_directory: await json(input.directory),
       parts_path: await json(input.parts),

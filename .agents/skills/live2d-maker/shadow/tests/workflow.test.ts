@@ -15,7 +15,7 @@ import type { SectionKrita } from '../../shared/krita/section-krita.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
 import type { AgentRequest } from '../../shared/raster/agent.ts';
-import { pipelineAgentSteps } from '../../shared/agents/preflight.ts';
+import { sectionAgentSteps } from '../../shared/agents/preflight.ts';
 import { parseArguments } from '../../workflow/run.ts';
 import { runTask } from '../../workflow/runner.ts';
 import { readRun, taskStatus } from '../../workflow/state.ts';
@@ -40,6 +40,7 @@ async function fixture(t: TestContext) {
   await mkdir(source, { recursive: true });
   await writeFile(join(source, 'character-assembled.kra'), kra);
   await writeFile(join(source, 'character-assembled.png'), color);
+  await writeFile(join(source, '.completed'), JSON.stringify({ stamp: 'assembly-1', inputs: {} }));
   for (const id of ['part-layering', 'clothing-part-layering']) {
     const path = join(task, id); await mkdir(join(path, 'references'), { recursive: true });
     await writeFile(join(path, 'groups.json'), JSON.stringify({ groups: [{ id: 'hair' }, { id: 'face' }] }));
@@ -61,7 +62,7 @@ async function fixture(t: TestContext) {
   // A mask agent saves its work, then may inspect it (null: delivers without inspecting).
   const deliver = async (request: AgentRequest, native: NativeInspect | null = inspectNative) => {
     await request.onEvent({ type: 'thread.started', thread_id: request.threadId ?? (request.step + '-thread') });
-    const path = join(request.directory, 'step01');
+    const path = request.outputDirectory!;
     if (request.step === 'shadow_mask') {
       await writeFile(join(path, 'character-shadowed.kra'), kra);
       await writeFile(join(path, 'character-shadowed.png'), color);
@@ -82,13 +83,13 @@ async function fixture(t: TestContext) {
   };
   return { root, task, source, color, kra, options, deps, deliver, inspectNative };
 }
-test('默认蒙版；全局保存、透传并仅预检所选分支', async t => {
+test('默认蒙版；全局保存、透传并仅预检所选 step01', async t => {
   assert.equal(parseRunArguments(['--name', 'case']).shadowMode, 'mask');
   assert.throws(() => parseRunArguments(['--name', 'case', '--shadow-mode', 'unknown']));
   const parsed = parseArguments(['--name', 'case', '--shadow-mode', 'normal-depth']);
   assert.ok(parsed.mode !== 'help'); assert.equal(parsed.options.shadowMode, 'normal-depth');
-  assert.deepEqual(pipelineAgentSteps('shadow', false, 'mask'), ['shadow_mask']);
-  assert.deepEqual(pipelineAgentSteps('shadow', false, 'normal-depth'), ['shadow_maps']);
+  assert.deepEqual(sectionAgentSteps('shadow', false, 'mask'), ['shadow_mask']);
+  assert.deepEqual(sectionAgentSteps('shadow', false, 'normal-depth'), ['shadow_maps']);
   const f = await fixture(t);
   assert.equal(f.deps.environment.stepImages.shadow_mask, undefined);
   // Raster image generation follows the step's image model: the mask step has none.
@@ -102,9 +103,9 @@ test('默认蒙版；全局保存、透传并仅预检所选分支', async t => 
   await runTask({ name: 'case', dir: f.root }, { ...f.deps, execute: async (_id, run) => {
     assert.equal(run.shadowMode, 'normal-depth'); return { summary: 'resumed' };
   } });
-  assert.equal((await taskStatus(f.options)).pipelines[0].mode, 'normal-depth');
+  assert.equal((await taskStatus(f.options)).sections[0].mode, 'normal-depth');
 });
-test('dry-run 与缺上游不调用模型、不写分支，提示词包含精度与投影规则', async t => {
+test('dry-run 与缺上游不调用模型、不写文件，提示词包含精度与投影规则', async t => {
   const f = await fixture(t);
   for (const mode of ['mask', 'normal-depth'] as const) {
     const prompt = await runWorkflow({ ...f.options, shadowMode: mode, dryRun: true }, { ...f.deps,
@@ -115,19 +116,19 @@ test('dry-run 与缺上游不调用模型、不写分支，提示词包含精度
   await rm(join(f.source, 'character-assembled.kra'));
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async () => assert.fail('missing upstream') }), /缺少上游/);
 });
-test('中断保留同分支 thread；两套产物共存，重跑只检查选择的产物', async t => {
+test('中断保留同模式 thread；两种 step01 产物共存，重跑只检查选择的产物', async t => {
   const f = await fixture(t); let calls = 0;
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
     await request.onEvent({ type: 'thread.started', thread_id: 'retained-mask' });
-    await writeFile(join(request.directory, 'step01/work.kra'), 'progress'); throw new Error('interrupted');
+    await writeFile(join(request.outputDirectory!, 'work.kra'), 'progress'); throw new Error('interrupted');
   } }), /interrupted/);
   await runWorkflow(f.options, { ...f.deps, agent: async request => {
-    assert.equal(request.threadId, 'retained-mask'); assert.equal(await readFile(join(request.directory, 'step01/work.kra'), 'utf8'), 'progress');
+    assert.equal(request.threadId, 'retained-mask'); assert.equal(await readFile(join(request.outputDirectory!, 'work.kra'), 'utf8'), 'progress');
     // The mask step operates Krita: the section holds a slot and the agent gets the tool.
     assert.ok(request.tools?.some(tool => tool.name === 'krita')); assert.equal((await kritaSlots()).length, 1);
     calls++; return f.deliver(request);
   } });
-  const mask = await readFile(join(f.task, 'shadow/mask/step01/character-shadowed.kra'));
+  const mask = await readFile(join(f.task, 'shadow/step01_mask/character-shadowed.kra'));
   await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, undefined); assert.equal(request.step, 'shadow_maps');
     // The maps step does not use Krita: no slot, no tool.
@@ -136,33 +137,38 @@ test('中断保留同分支 thread；两套产物共存，重跑只检查选择�
   } });
   assert.equal(calls, 2);
   assert.deepEqual(await kritaSlots(), []);
-  assert.deepEqual(await readFile(join(f.task, 'shadow/mask/step01/character-shadowed.kra')), mask);
+  assert.deepEqual(await readFile(join(f.task, 'shadow/step01_mask/character-shadowed.kra')), mask);
   const normal = await sharp(join(f.task, 'lighting/normal.png')).raw().toBuffer();
   assert.deepEqual([...normal.filter((_value, i) => i % 4 === 3)], [255, 128, 0, 255]);
-  await rm(join(f.task, 'shadow/mask/step01/character-shadowed.png'));
+  await rm(join(f.task, 'shadow/step01_mask/character-shadowed.png'));
   await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async () => assert.fail('maps retained') });
   // Deleting a recorded delivery retries that step.
   await runWorkflow(f.options, { ...f.deps, agent: async request => { assert.equal(request.threadId, undefined); calls++; return f.deliver(request); } });
   assert.equal(calls, 3);
   await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async () => assert.fail('maps retained') });
-  await rm(join(f.task, 'shadow/mask/step01/report.md'));
+  await rm(join(f.task, 'shadow/step01_mask/report.md'));
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async () => assert.fail('missing completed file') }), /交付缺失/);
   assert.equal(JSON.parse(await readFile(join(f.task, 'shadow/selection.json'), 'utf8')).mode, 'normal-depth');
   assert.deepEqual(await readFile(join(f.source, 'character-assembled.kra')), Buffer.from(f.kra));
 });
-test('输入变化保留旧分支，新建 thread，只更新本次路线', async t => {
+test('character-assembly 重做后所选 step01 删除旧产物、新建 thread 重做；另一模式产物不动', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: f.deliver });
   await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: f.deliver });
-  const previousMaps = await readFile(join(f.task, 'shadow/normal-depth/run.json'));
-  await writeFile(join(f.task, 'part-layering/occlusion.json'), '{"changed":true}');
+  const run = await readFile(join(f.task, 'shadow/run.json'));
+  const maps = await readFile(join(f.task, 'shadow/step01_normal-depth/.completed'));
+  await writeFile(join(f.task, 'shadow/step01_mask/work.kra'), 'stale');
+  await writeFile(join(f.source, '.completed'), JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
   await runWorkflow(f.options, { ...f.deps, agent: async request => {
-    assert.equal(request.threadId, undefined); return f.deliver(request);
+    assert.equal(request.threadId, undefined);
+    await assert.rejects(readFile(join(request.outputDirectory!, 'work.kra')), { code: 'ENOENT' });
+    return f.deliver(request);
   } });
-  assert.equal((await readdir(join(f.task, 'shadow'))).filter(name => name.startsWith('mask.previous-')).length, 1);
-  assert.deepEqual(await readFile(join(f.task, 'shadow/normal-depth/run.json')), previousMaps);
+  assert.ok(!(await readdir(join(f.task, 'shadow'))).some(name => name.includes('.previous-')));
+  assert.deepEqual(await readFile(join(f.task, 'shadow/run.json')), run);
+  assert.deepEqual(await readFile(join(f.task, 'shadow/step01_normal-depth/.completed')), maps);
 });
-test('法线深度只生成一步；旧调校目录不阻止贴图恢复与发布', async t => {
+test('法线深度只生成一步；删除的发布贴图从已完成步骤恢复', async t => {
   const f = await fixture(t);
   const options = { ...f.options, shadowMode: 'normal-depth' as const };
   await runWorkflow(options, { ...f.deps, agent: async request => {
@@ -170,63 +176,50 @@ test('法线深度只生成一步；旧调校目录不阻止贴图恢复与发�
     assert.equal(request.tools?.length ?? 0, 0);
     return f.deliver(request);
   } });
-  const output = join(f.task, 'shadow/normal-depth');
-  const normal = await readFile(join(output, 'step01/normal.png'));
-  await assert.rejects(readFile(join(output, 'step02/light.json')), { code: 'ENOENT' });
-  await mkdir(join(output, 'step02'));
-  await writeFile(join(output, 'step02/light.json'), '{"settings":{"lightingMix":0}}');
-  await rm(join(output, 'step01/source.json'));
+  const output = join(f.task, 'shadow/step01_normal-depth');
+  const normal = await readFile(join(output, 'normal.png'));
+  assert.deepEqual((await readdir(join(f.task, 'shadow'))).filter(name => name.startsWith('step')), ['step01_normal-depth']);
+  await rm(join(output, 'source.json'));
   await rm(join(f.task, 'lighting'), { recursive: true });
   await runWorkflow(options, { ...f.deps, agent: async () => assert.fail('completed maps must be reused') });
-  assert.deepEqual(await readFile(join(output, 'step01/normal.png')), normal);
+  assert.deepEqual(await readFile(join(output, 'normal.png')), normal);
   assert.deepEqual(await readFile(join(f.task, 'lighting/normal.png')), normal);
-  assert.equal(JSON.parse(await readFile(join(output, 'step01/source.json'), 'utf8')).mode, 'normal-depth');
-  const archive = (await readdir(output)).find(path => path.startsWith('lighting.previous-'));
-  assert.ok(archive);
-  assert.equal(await readFile(join(output, archive, 'light.json'), 'utf8'), '{"settings":{"lightingMix":0}}');
+  assert.equal(JSON.parse(await readFile(join(output, 'source.json'), 'utf8')).mode, 'normal-depth');
 });
 test('错误裁切引用与错误尺寸不能标记完成或切换预览方式', async t => {
   const f = await fixture(t);
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
     const result = await f.deliver(request, null);
-    const path = join(request.directory, 'step01/shadows.json'), data = JSON.parse(await readFile(path, 'utf8'));
+    const path = join(request.outputDirectory!, 'shadows.json'), data = JSON.parse(await readFile(path, 'utf8'));
     data.shadows[0].clipBaseLayerUuid = 'missing'; await writeFile(path, JSON.stringify(data)); return result;
   } }), /裁切/);
-  await assert.rejects(readFile(join(f.task, 'shadow/mask/step01/.completed')), { code: 'ENOENT' });
+  await assert.rejects(readFile(join(f.task, 'shadow/step01_mask/.completed')), { code: 'ENOENT' });
   await assert.rejects(runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async request => {
     const result = await f.deliver(request);
-    await sharp({ create: { width: 1, height: 1, channels: 3, background: 'white' } }).png().toFile(join(request.directory, 'step01/depth.png'));
+    await sharp({ create: { width: 1, height: 1, channels: 3, background: 'white' } }).png().toFile(join(request.outputDirectory!, 'depth.png'));
     return result;
   } }), /原尺寸/);
   await assert.rejects(readFile(join(f.task, 'shadow/selection.json')), { code: 'ENOENT' });
-});
-test('制作中输入变化不把旧贴图绑定到新原画', async t => {
-  const f = await fixture(t);
-  await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
-    const result = await f.deliver(request);
-    await writeFile(join(f.task, 'part-layering/occlusion.json'), '{"changed":true}'); return result;
-  } }), /制作期间上游输入改变/);
-  await assert.rejects(readFile(join(f.task, 'shadow/mask/step01/.completed')), { code: 'ENOENT' });
 });
 test('一张完整阴影支持多个真实受影 part；未知部件不能登记完成', async t => {
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: async request => {
     const result = await f.deliver(request, null);
-    const path = join(request.directory, 'step01/shadows.json'), data = JSON.parse(await readFile(path, 'utf8'));
+    const path = join(request.outputDirectory!, 'shadows.json'), data = JSON.parse(await readFile(path, 'utf8'));
     delete data.shadows[0].receiverPartId;
     data.shadows[0].receiverPartIds = ['character:face', 'character:hair'];
     await writeFile(path, JSON.stringify(data));
-    await inspectMask(join(request.directory, 'step01'), 'fixture-bridge', undefined, f.inspectNative); return result;
+    await inspectMask(request.outputDirectory!, 'fixture-bridge', undefined, f.inspectNative); return result;
   } });
-  await rm(join(f.task, 'shadow/mask/step01/.completed'));
+  await rm(join(f.task, 'shadow/step01_mask/.completed'));
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
     const result = await f.deliver(request, null);
-    const path = join(request.directory, 'step01/shadows.json'), data = JSON.parse(await readFile(path, 'utf8'));
+    const path = join(request.outputDirectory!, 'shadows.json'), data = JSON.parse(await readFile(path, 'utf8'));
     delete data.shadows[0].receiverPartId;
     data.shadows[0].receiverPartIds = ['character:face', 'character:missing'];
     await writeFile(path, JSON.stringify(data)); return result;
   } }), /全部受影部件/);
-  await assert.rejects(readFile(join(f.task, 'shadow/mask/step01/.completed')), { code: 'ENOENT' });
+  await assert.rejects(readFile(join(f.task, 'shadow/step01_mask/.completed')), { code: 'ENOENT' });
 });
 
 // The inspection tool with a stand-in for the section's Krita.
@@ -244,9 +237,9 @@ function inspectionTool(output: string, native: NativeInspect) {
 test('制作参考准备、agent 用检查工具自查，交付不核对检查结果', async t => {
   const f=await fixture(t);let inspections=0;
   const native:NativeInspect=async (...args)=>{inspections++;return f.inspectNative(...args);};
-  const output=join(f.task,'shadow/mask/step01');
+  const output=join(f.task,'shadow/step01_mask');
   await runWorkflow(f.options,{...f.deps,agent:async(request:AgentRequest)=>{
-    const guide=await readFile(join(request.directory,'step01/workspace/references/production.md'),'utf8');assert.match(guide,/testOffsets/);
+    const guide=await readFile(join(request.outputDirectory!,'workspace/references/production.md'),'utf8');assert.match(guide,/testOffsets/);
     // The mask section offers the inspection tool next to its krita tool.
     assert.deepEqual(request.tools?.map(tool=>tool.name).sort(),['inspect_shadow_mask','krita']);
     assert.match(request.prompt,/inspect_shadow_mask/);assert.doesNotMatch(request.prompt,/inspect\.ts|--bridge/);
@@ -259,11 +252,11 @@ test('制作参考准备、agent 用检查工具自查，交付不核对检查�
   assert.deepEqual([first.passed,first.success,first.problems],[true,true,[]]);
   assert.equal(first.relations[0].id,'hair-face');await readFile(first.relations[0].review);await readFile(first.overview);
   const receipt=JSON.parse(await readFile(join(output,'inspection.json'),'utf8'));assert.equal(receipt.passed,true);
-  assert.equal(receipt.version,2);assert.ok(Object.keys(receipt.fileHashes).every(p=>p.startsWith('shadow/mask/step01/')));
-  assert.ok(receipt.relations[0].review.startsWith('shadow/mask/step01/inspection/'));await readFile(join(f.task,receipt.relations[0].frames[0].clipped));
+  assert.equal(receipt.version,2);assert.ok(Object.keys(receipt.fileHashes).every(p=>p.startsWith('shadow/step01_mask/')));
+  assert.ok(receipt.relations[0].review.startsWith('shadow/step01_mask/inspection/'));await readFile(join(f.task,receipt.relations[0].frames[0].clipped));
   // Inspecting again reuses a result that still matches, including a v1 receipt keyed by step-relative paths.
   await inspect();assert.equal(inspections,1);
-  const legacy={...receipt,version:1,fileHashes:Object.fromEntries(Object.entries(receipt.fileHashes).map(([p,h])=>[p.slice('shadow/mask/step01/'.length),h]))};
+  const legacy={...receipt,version:1,fileHashes:Object.fromEntries(Object.entries(receipt.fileHashes).map(([p,h])=>[p.slice('shadow/step01_mask/'.length),h]))};
   await writeFile(join(output,'inspection.json'),JSON.stringify(legacy));
   await inspect();assert.equal(inspections,1);
   // A changed diagnostic or shadows.json is inspected anew.
@@ -279,7 +272,7 @@ test('制作参考准备、agent 用检查工具自查，交付不核对检查�
 test('原生组内越界与空影层作为问题返回给 agent',async t=>{
  const f=await fixture(t);
  await runWorkflow(f.options,{...f.deps,agent:(request:AgentRequest)=>f.deliver(request,null)});
- const output=join(f.task,'shadow/mask/step01');
+ const output=join(f.task,'shadow/step01_mask');
  for(const problem of ['spill','empty']){
   let inspections=0;
   const native:NativeInspect=async(...args)=>{

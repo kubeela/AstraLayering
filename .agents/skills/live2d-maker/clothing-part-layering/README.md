@@ -46,16 +46,17 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
 
 ```text
 <运行根目录>/jianma/clothing-part-layering/
-  preparation/step01/          # 生图原始结果
+  step01_preparation/          # 生图原始结果与步骤记录
   references/
     clothing.png
-    preparation.json           # 来源、standard、生成图和提示词指纹；不保存鉴权
   groups.json                  # 归属树视图，可编辑名称与 part 职责说明
-  initial/step01/              # 首次分组
-  groups/<id>/step01..03/      # 轮廓与复核、补全与检查、子组拆分；子组嵌套在 children/ 下
-  layers/depthNN/              # 同层去重
+  step08_initial/              # 首次分组
+  step09_outline/<id>/         # 轮廓与复核；子组嵌套为 <id>/children/<名>
+  step10_reduce/depthNN/       # 同层去重
+  step11_completion/<id>/      # 补全与检查
+  step12_children/<id>/        # 子组拆分
   parts/                       # 完整的分件 SVG，主要交接产物
-  merge/  occlusion/           # 合并与遮挡规划的步骤记录
+  step13_merge/  step14_occlusion/  # 合并与遮挡规划的步骤记录
   observations/
   agents/                      # 请求、结果和恢复日志；绘制会话在 steps/<步骤>/session.json
   preview.svg

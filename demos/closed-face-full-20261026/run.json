@@ -11,7 +11,7 @@
   "status": "completed",
   "createdAt": "2026-10-26T14:57:35.016Z",
   "updatedAt": "2026-10-27T17:19:12.152Z",
-  "pipelines": {
+  "sections": {
     "part-layering": {
       "status": "completed",
       "updatedAt": "2026-10-27T05:13:51.728Z"

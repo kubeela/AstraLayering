@@ -1,9 +1,0 @@
-{
-  "stamp": "d59cc534cc2045c80b1d6f95e05c4a672899e8b7c336da641c39ebda90673630",
-  "inputs": {
-    "groups/pelvis/step02": "ca9c9b12079e406676d80a5be035ee8c488f2e89c6fe6437af0b820cd2a5ed3c"
-  },
-  "outputs": {
-    "children.json": "f8113d727cfd40f5baec81ebcfc8535fc5450c7c6791f91893fd67f0b4f7952a"
-  }
-}

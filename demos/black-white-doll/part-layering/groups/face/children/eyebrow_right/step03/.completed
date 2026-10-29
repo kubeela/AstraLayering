@@ -1,9 +1,0 @@
-{
-  "stamp": "beb7fb70e5a3b82ed69a1841fefbf7398380a761f75201f891c1bd3512a1a837",
-  "inputs": {
-    "groups/face/children/eyebrow_right/step02": "1175ec0069966b2d4ad3b10e1d5811595bed2b5945dd1bda9523fd87677240dc"
-  },
-  "outputs": {
-    "children.json": "90a5b3751cf73aa8e204168de62ef27e418cdae67a3523affb0541aaba2b9075"
-  }
-}

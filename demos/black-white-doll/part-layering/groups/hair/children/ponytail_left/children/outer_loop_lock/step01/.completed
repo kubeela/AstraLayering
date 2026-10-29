@@ -1,9 +1,0 @@
-{
-  "stamp": "9ed9d91d45014336ad5744a14b40989693d1835931de1e494cb9ec8ed40cd28e",
-  "inputs": {
-    "groups/hair/children/ponytail_left/step02": "07c42c144d373d06bf5a9186014af09d0a96253d59e032e90ae428d58e48b3bd"
-  },
-  "outputs": {
-    "outline.svg": "e25244069934c9da6c7d36df4b8f90fb2841eb912cdddbc9ec820b109f16bec3"
-  }
-}

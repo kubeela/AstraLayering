@@ -45,7 +45,7 @@ test('未换装时阴影只读取人物结构；旧任务已有衣服结构则�
     await mkdir(join(f.task, path, '..'), { recursive: true }); await writeFile(join(f.task, path), 'x');
   }
   await markBaseStep(f.task, false);
-  const files = async () => (await resolveShadowInput('case', f.root, 'mask')).structureFiles.map(path => path.slice(f.task.length + 1));
+  const files = async () => (await resolveShadowInput('case', f.root)).structureFiles.map(path => path.slice(f.task.length + 1));
   assert.deepEqual(await files(), ['part-layering/groups.json', 'part-layering/occlusion.json']);
   for (const name of ['groups.json', 'occlusion.json']) {
     await mkdir(join(f.task, 'clothing-part-layering'), { recursive: true }); await writeFile(join(f.task, 'clothing-part-layering', name), 'x');

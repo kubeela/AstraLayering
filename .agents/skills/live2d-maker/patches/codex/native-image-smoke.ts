@@ -83,7 +83,7 @@ try {
         imageGeneration: true, timeoutMs: 90_000 });
       assert.equal(generation, 2); assert.equal(result.images.length, 2);
       for (const image of result.images) {
-        assert.ok(image.savedPath.startsWith(join(directory, 'preparation/step06/workspace/generated') + '/'));
+        assert.ok(image.savedPath.startsWith(join(directory, 'step05_simplified/workspace/generated') + '/'));
         assert.equal((await sharp(image.savedPath).metadata()).hasAlpha, true);
         if (protocol === 'openai') assert.deepEqual(await sharp(image.savedPath).raw().toBuffer(), await sharp(png).raw().toBuffer());
         else {

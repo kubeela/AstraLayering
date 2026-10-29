@@ -1,9 +1,0 @@
-{
-  "stamp": "9b2109694b50d4299295c728d03b4d6b1e3362dcd33e45dc8a7fe9e622e85ada",
-  "inputs": {
-    "groups/camisole/children/bodice/step02": "d8499fd4a155115c91cc151fcffda7650045921d71c973b7268a6eb37d018abb"
-  },
-  "outputs": {
-    "children.json": "d7928157c905372a55982a0c77067618d7d94c90fa16b5989a6fee2c342a2ffe"
-  }
-}

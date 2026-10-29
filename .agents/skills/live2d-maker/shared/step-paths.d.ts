@@ -1,0 +1,20 @@
+export const stepPattern: RegExp;
+export function stepNumber(name: string): number | undefined;
+export function stepName(number: number, note?: string): string;
+export function stepPath(name: string, ...items: string[]): string;
+export const partSteps: {
+  readonly original: 'step01_original'; readonly options: 'step02_options'; readonly pose: 'step03_pose';
+  readonly standard: 'step04_standard'; readonly simplified: 'step05_simplified'; readonly base: 'step06_base';
+  readonly ready: 'step07_ready'; readonly initial: 'step08_initial'; readonly outline: 'step09_outline';
+  readonly reduce: 'step10_reduce'; readonly completion: 'step11_completion'; readonly children: 'step12_children';
+  readonly merge: 'step13_merge'; readonly occlusion: 'step14_occlusion';
+};
+export type PartStep = keyof typeof partSteps;
+export const clothingPreparationStep: 'step01_preparation';
+export function shadowStep(mode: string): string;
+export function groupDepth(id: string): number;
+export function groupItem(id: string): string;
+export function layerItem(depth: number): string;
+export function parentGroupId(id: string): string | undefined;
+export function groupStepId(id: string, step: 'outline' | 'completion' | 'children'): string;
+export function layerStepId(depth: number): string;

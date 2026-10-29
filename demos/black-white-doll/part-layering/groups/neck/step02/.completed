@@ -1,9 +1,0 @@
-{
-  "stamp": "f88fb8cac09893df0bd070511d412d759ec13bc235df69b0ebb1a838ddb58a4a",
-  "inputs": {
-    "layers/depth01#neck.svg": "ba549fb46c0b2ae34ea8ee9b46760795a0549ea4f86795c3cd23fc16939b6ffd"
-  },
-  "outputs": {
-    "../../../parts/neck.svg": "455c3a581d471bf86b3a6d88be5dbe830c175cb8134f2b8274884d1ead5b92f4"
-  }
-}

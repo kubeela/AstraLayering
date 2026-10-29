@@ -3,7 +3,7 @@ import { lstat, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { join, relative, resolve, sep } from 'node:path';
 import { fromTaskPath, toTaskPath } from './task-paths.ts';
 
-// One rerun rule for every pipeline. A step owns a directory with a .running
+// One rerun rule for every section. A step owns a directory with a .running
 // or .completed marker. .completed records a fresh stamp and the stamps its
 // dependencies had when it finished; a step whose marker is missing, or whose
 // recorded dependency stamps no longer match, reruns with everything after it.
@@ -21,7 +21,7 @@ import { fromTaskPath, toTaskPath } from './task-paths.ts';
 // A dependency is a step id, or `id#output` to depend on one declared output's
 // hash only, so a step that rewrites several files reruns just the dependents of
 // the files that actually changed.
-// root is the task root, given by the pipeline that owns the step.
+// root is the task root, given by the section that owns the step.
 export type ChainStep = { id: string; root: string; directory: string; dependsOn: readonly string[]; outputs?: readonly string[] };
 export type StepStatus = 'absent' | 'unmarked' | 'running' | 'completed';
 export type StepRecord = { stamp: string; inputs: Record<string, string>; outputs?: Record<string, string>; paths?: 'task' };

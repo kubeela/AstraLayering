@@ -5,14 +5,15 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'nod
 import { once } from 'node:events';
 import { finished } from 'node:stream/promises';
 import { Zip, ZipPassThrough, unzipSync } from 'fflate';
-import { pipelineIds } from '../shared/paths.ts';
+import { sectionIds } from '../shared/paths.ts';
 import { reportReferences } from '../shared/report-links.js';
 import { reportTargets } from '../shared/report-paths.ts';
 import { toTaskPath } from '../shared/task-paths.ts';
 import { artifactPath, reportPath } from '../shared/part/artifact-facts.ts';
 import { normalizeGroups, walkGroups } from '../shared/part/groups.ts';
 import { publishDepthPreview } from '../shared/part/depth-preview.ts';
-import { groupStepId, groupDepth, initialStepId, layerStepId } from '../shared/part/part-steps.ts';
+import { groupStepId, groupDepth, groupSteps, layerStepId } from '../shared/part/part-steps.ts';
+import { partSteps } from '../shared/step-paths.js';
 import { steps as personSteps } from '../raster-layering/steps.ts';
 import { steps as clothingSteps } from '../clothing-raster-layering/steps.ts';
 import { steps as assemblySteps } from '../character-assembly/steps.ts';
@@ -21,13 +22,13 @@ import { shadowMode } from '../shared/shadow.ts';
 import { acquireTaskLock, directoryFor, readRun, taskStatus, type TaskRun } from './state.ts';
 
 const slash = (path: string) => path.split(sep).join('/');
-// Export stops at shadow even when an installation adds a physics pipeline.
-const exportPipelineIds = pipelineIds.slice(0, pipelineIds.indexOf('shadow') + 1);
+// Export stops at shadow even when an installation adds a physics section.
+const exportSectionIds = sectionIds.slice(0, sectionIds.indexOf('shadow') + 1);
 const inside = (root: string, path: string) => path === root || path.startsWith(root + sep);
 const excluded = (path: string) => path.split(/[\\/]/).some(name =>
   ['workspace', 'agents', 'recovery', 'archive', 'node_modules'].includes(name) || name.startsWith('.'));
 export const completeRun = (run?: TaskRun) => !!run && run.status === 'completed'
-  && exportPipelineIds.every(id => run.pipelines[id]?.status === 'completed');
+  && exportSectionIds.every(id => run.sections[id]?.status === 'completed');
 
 // Completion facts are portable. CLI configuration, model selection and thread
 // records stay at the source; an export cannot accidentally resume old sessions.
@@ -35,7 +36,7 @@ export function archiveRun(run: TaskRun): TaskRun {
   return { version: 1, archive: true, name: run.name, dir: '.', from: 'part-layering', to: 'shadow',
     jobs: run.jobs, standard: run.standard, shadowMode: run.shadowMode, status: run.status,
     createdAt: run.createdAt, updatedAt: run.updatedAt,
-    pipelines: Object.fromEntries(Object.entries(run.pipelines).filter(([id]) => (exportPipelineIds as readonly string[]).includes(id)).map(([id, value]) => [id,
+    sections: Object.fromEntries(Object.entries(run.sections).filter(([id]) => (exportSectionIds as readonly string[]).includes(id)).map(([id, value]) => [id,
       { status: value!.status, updatedAt: value!.updatedAt }])) };
 }
 
@@ -75,7 +76,7 @@ export async function exportFiles(root: string, run: TaskRun, aliases: readonly 
       const child = slash(join(path, item.name));
       if (item.name === '.completed' && item.isFile()) { files.push(child); steps.add(path); }
       else if (!excluded(child) && !item.isSymbolicLink()) {
-        if (item.isDirectory() && (path || ['input', ...exportPipelineIds].includes(item.name))) await walk(child);
+        if (item.isDirectory() && (path || ['input', ...exportSectionIds].includes(item.name))) await walk(child);
         else if (item.isFile()) files.push(child);
       }
     }
@@ -111,27 +112,27 @@ export async function exportFiles(root: string, run: TaskRun, aliases: readonly 
       || /^(?:part-layering|clothing-part-layering)\/references\/[^/]+\.(png|jpe?g|webp)$/i.test(path)) await add(path);
   }
   await add('.web-project.json');
-  for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-    for (const step of [initialStepId, 'merge', 'occlusion']) await add(join(pipeline, step, '.completed'), !run.archive);
-    for (const path of ['groups.json', 'occlusion.json', 'preview.svg']) await add(join(pipeline, path), true);
-    const groups = normalizeGroups(JSON.parse(await readFile(join(root, pipeline, 'groups.json'), 'utf8')).groups);
+  for (const section of ['part-layering', 'clothing-part-layering']) {
+    for (const step of [partSteps.initial, partSteps.merge, partSteps.occlusion]) await add(join(section, step, '.completed'), !run.archive);
+    for (const path of ['groups.json', 'occlusion.json', 'preview.svg']) await add(join(section, path), true);
+    const groups = normalizeGroups(JSON.parse(await readFile(join(root, section, 'groups.json'), 'utf8')).groups);
     for (const { group } of walkGroups(groups)) {
-      for (const step of [1, 2, 3] as const) await add(join(pipeline, groupStepId(group.id, step), '.completed'), !run.archive);
-      await add(join(pipeline, layerStepId(groupDepth(group.id)), '.completed'), !run.archive);
-      for (const stage of ['outline', 'reduction', 'completion'] as const) await add(artifactPath(pipeline, group.id, stage), true);
-      for (const kind of ['review', 'completion-check', 'children'] as const) await add(reportPath(pipeline, group.id, kind));
+      for (const step of groupSteps) await add(join(section, groupStepId(group.id, step), '.completed'), !run.archive);
+      await add(join(section, layerStepId(groupDepth(group.id)), '.completed'), !run.archive);
+      for (const stage of ['outline', 'reduction', 'completion'] as const) await add(artifactPath(section, group.id, stage), true);
+      for (const kind of ['review', 'completion-check', 'children'] as const) await add(reportPath(section, group.id, kind));
     }
   }
   const definitions = [
     ['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps],
-    ['character-assembly', assemblySteps], ['shadow/' + shadowMode(run.shadowMode), stepsFor(shadowMode(run.shadowMode))],
+    ['character-assembly', assemblySteps], ['shadow', stepsFor(shadowMode(run.shadowMode))],
   ] as const;
-  for (const [pipeline, definitionsForPipeline] of definitions) {
-    for (const step of definitionsForPipeline) {
-      await add(join(pipeline, step.id, '.completed'), !run.archive);
-      for (const path of step.requiredFiles) await add(join(pipeline, step.id, path), true);
+  for (const [section, definitionsForSection] of definitions) {
+    for (const step of definitionsForSection) {
+      await add(join(section, step.id, '.completed'), !run.archive);
+      for (const path of step.requiredFiles) await add(join(section, step.id, path), true);
       for (const pattern of ('previewFiles' in step ? step.previewFiles ?? [] : []) as readonly string[]) {
-        const full = slash(join(pipeline, step.id, pattern));
+        const full = slash(join(section, step.id, pattern));
         const matcher = new RegExp('^' + full.split('*').map(piece => piece.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]*') + '$');
         for (const path of files.filter(path => matcher.test(path))) await add(path);
       }
@@ -245,22 +246,22 @@ export async function exportCompletedRun(options: { name: string; dir?: string; 
         await utimes(target, before.atime, before.mtime);
       }
     }
-    for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-      const directory = join(content, pipeline);
+    for (const section of ['part-layering', 'clothing-part-layering']) {
+      const directory = join(content, section);
       const document = JSON.parse(await readFile(join(directory, 'groups.json'), 'utf8'));
       await publishDepthPreview(directory, document.groups, JSON.parse(await readFile(join(directory, 'occlusion.json'), 'utf8')));
-      entries.set(pipeline + '/occlusion/preview.svg', {});
+      entries.set(`${section}/${partSteps.occlusion}/preview.svg`, {});
     }
     // Fill the fixed PNG card from Krita's saved projection, without rendering or
     // modifying the document. KRA remains the authoritative saved artwork.
-    for (const [pipeline, steps] of [['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps]] as const) {
+    for (const [section, steps] of [['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps]] as const) {
       for (const step of steps) {
         if (step.requiredFiles.some(path => path.endsWith('.png'))) continue;
-        const path = pipeline + '/' + step.id + '/composite.png';
+        const path = section + '/' + step.id + '/composite.png';
         if (entries.has(path)) continue;
         const kra = step.requiredFiles.find(path => path.endsWith('.kra'))!;
-        const png = unzipSync(await readFile(join(content, pipeline, step.id, kra)), { filter: entry => entry.name === 'mergedimage.png' })['mergedimage.png'];
-        if (!png) throw new Error('KRA 缺少已保存的合成预览：' + pipeline + '/' + step.id);
+        const png = unzipSync(await readFile(join(content, section, step.id, kra)), { filter: entry => entry.name === 'mergedimage.png' })['mergedimage.png'];
+        if (!png) throw new Error('KRA 缺少已保存的合成预览：' + section + '/' + step.id);
         await writeFile(join(content, path), png); entries.set(path, {});
       }
     }

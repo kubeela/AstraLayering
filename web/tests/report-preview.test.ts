@@ -54,7 +54,7 @@ test('报告图片只解析实际任务内的文件，拒绝外部路径与符�
     '`' + join(base, 'outside.png') + '`', '`../../../outside.png`', '`linked/outside.png`', '![remote](https://example.com/image.png)', '`missing.png`'].join('\n');
   const report = await reportPreview(root, 'clothing-raster-layering/step01/review-01.md', text, new Set([image, alias]));
   assert.equal(report.summary, '结论：需要修复');
-  // Report-relative, task-root-relative, legacy pipeline-relative (last-resort ancestor) and absolute all resolve.
+  // Report-relative, task-root-relative, legacy section-relative (last-resort ancestor) and absolute all resolve.
   assert.equal(report.images.length, 4);
   assert.ok(report.images.every(item => item.path === image));
   const html = renderReport(text + '\n<script>alert(1)</script>', report.images, path => '/artifact?' + new URLSearchParams({ path }));
@@ -72,10 +72,10 @@ test('review 草稿展示引用图片，经 HTTP 可读，发布后采用正式�
   await writeFile(join(root, image), await sharp({ create: { width: 20, height: 20, channels: 4, background: '#ff0088' } }).png().toBuffer());
   await writeFile(join(root, step, 'report.md'), '结论：完成绘制');
   await writeFile(join(root, draft), '结论：需要修复\n![标注](evidence/marked.png)');
-  let value = await snapshot(root, 'case', base), report = value.pipelines[3].reports['review-01'];
+  let value = await snapshot(root, 'case', base), report = value.sections[3].reports['review-01'];
   assert.equal(report.path, draft); assert.equal(report.draft, true);
   assert.equal(report.images[0].path, image); assert.ok(value.fileVersions[draft]);
-  assert.notEqual(value.pipelines[3].states['review-01'], 'done');
+  assert.notEqual(value.sections[3].states['review-01'], 'done');
   const server = await createWorkbench({ defaultDir: base, settingsPath: join(base, 'settings.json') });
   await new Promise<void>(done => server.listen(0, '127.0.0.1', done));
   t.after(() => new Promise<void>(done => server.close(() => done())));
@@ -88,14 +88,14 @@ test('review 草稿展示引用图片，经 HTTP 可读，发布后采用正式�
   const picture = await fetch(url + new URLSearchParams({ name: 'case', dir: base, path: image }));
   assert.equal(picture.status, 200); assert.equal((await sharp(Buffer.from(await picture.arrayBuffer())).metadata()).width, 20);
   await writeFile(join(root, draft.replace('.tmp', '')), '结论：通过\n![标注](evidence/marked.png)');
-  value = await snapshot(root, 'case', base); report = value.pipelines[3].reports['review-01'];
+  value = await snapshot(root, 'case', base); report = value.sections[3].reports['review-01'];
   assert.equal(report.draft, false); assert.equal(report.summary, '结论：通过');
-  assert.equal(value.pipelines[3].states['review-01'], 'done');
+  assert.equal(value.sections[3].states['review-01'], 'done');
 });
 
 test('report links try the report directory, then the task root, and only then legacy ancestors', () => {
-  const root = resolve('/task'), report = 'part-layering/groups/face/step01/review.md';
-  assert.deepEqual(reportTargets(root, report, 'evidence/a.png'), ['part-layering/groups/face/step01/evidence/a.png',
-    'evidence/a.png', 'part-layering/groups/face/evidence/a.png', 'part-layering/groups/evidence/a.png', 'part-layering/evidence/a.png'].map(path => join(root, path)));
+  const root = resolve('/task'), report = 'part-layering/step09_outline/face/review.md';
+  assert.deepEqual(reportTargets(root, report, 'evidence/a.png'), ['part-layering/step09_outline/face/evidence/a.png',
+    'evidence/a.png', 'part-layering/step09_outline/evidence/a.png', 'part-layering/evidence/a.png'].map(path => join(root, path)));
   assert.deepEqual(reportTargets(root, 'report.md', '../x.png'), []);
 });

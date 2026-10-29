@@ -1,9 +1,0 @@
-{
-  "stamp": "112cb0eb19501a3e4a0d1993407d650d4881004c96eb9e302b2f31aace58a4cf",
-  "inputs": {
-    "groups/arms/children/arm_left/children/upper_arm/step02": "1df0121da5804cd80c2d1554e9be284a1bc8c4f1c9c4851abe540b6e1459e960"
-  },
-  "outputs": {
-    "children.json": "d2f4a3721aa9fb12f0bc5ed77b421ad86268a479e5e455e50a2552bcf3dfb9a5"
-  }
-}

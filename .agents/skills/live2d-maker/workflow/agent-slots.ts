@@ -1,7 +1,7 @@
 import type { ChildProcess } from 'node:child_process';
 import type { AgentSlots } from '../shared/codex/agent-runtime.ts';
 
-// Concurrent pipelines run in separate worker processes; the scheduler holds
+// Concurrent sections run in separate worker processes; the scheduler holds
 // one pool of agent slots and grants them over IPC, so the task as a whole runs
 // at most jobs agents. Requests are served first come, first served.
 type SlotMessage = { type: 'slot-request' | 'slot-release' | 'slot-cancel' | 'slot-granted'; id: number };

@@ -29,11 +29,11 @@
   "hiddenPartCount": 12,
   "deliveries": {
     "assembledKra": "character-assembly/step01/character-assembled.kra",
-    "shadowedKra": "shadow/mask/step01/character-shadowed.kra",
-    "shadowedPng": "shadow/mask/step01/character-shadowed.png",
-    "shadowRelations": "shadow/mask/step01/shadows.json",
-    "shadowReport": "shadow/mask/step01/report.md",
-    "inspection": "shadow/mask/step01/inspection.json"
+    "shadowedKra": "shadow/step01_mask/character-shadowed.kra",
+    "shadowedPng": "shadow/step01_mask/character-shadowed.png",
+    "shadowRelations": "shadow/step01_mask/shadows.json",
+    "shadowReport": "shadow/step01_mask/report.md",
+    "inspection": "shadow/step01_mask/inspection.json"
   },
   "limitations": [
     "完成静态素材制作和原生裁切/声明偏移检查，未完成Cubism绑定、deformer或物理动画验收。",

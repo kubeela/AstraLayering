@@ -33,7 +33,7 @@ description: 从角色参考图制作人物与衣服分层 KRA、透明 PNG、�
 | `--jobs <正整数>` | 整次运行所有管线（含 part、raster、组装、阴影）共用的 agent 名额，默认 3；两条并行线不增加总并发 |
 | `--background` | 后台制作；省略则前台 |
 | `--status --json` | 只查询，不启动模型 |
-| `--continue` / `--resume` / `--retry` | 三者互斥，对应网页的继续／恢复／重试。不加 `--pipeline` 时作用于全部 `.running`（中断或失败）步骤；`--pipeline <section> --step <步骤>` 只处理一个步骤，`--step` 相对该管线目录（如 `step02`、`preparation/step02`、`groups/head/step02`、`initial/step01`、`merge`、`occlusion`、`layers/depth01`）且必须同时给 `--pipeline`；只给 `--pipeline` 仅可用于 `--continue` |
+| `--continue` / `--resume` / `--retry` | 三者互斥，对应网页的继续／恢复／重试。不加 `--section` 时作用于全部 `.running`（中断或失败）步骤；`--section <管线> --step <步骤>` 只处理一个步骤，`--step` 相对该管线目录（如 `step02`、`step02_options`、`step11_completion/head`、`step08_initial`、`step13_merge`、`step14_occlusion`、`step10_reduce/depth01`）且必须同时给 `--section`；只给 `--section` 仅可用于 `--continue` |
 | `--stop` | 对应网页的停止，保留产物与续跑记录 |
 
 ```sh
@@ -43,7 +43,7 @@ pnpm start --name my-character --status --json
 pnpm start --name my-character --background
 # 恢复（新会话、保留产物）/ 重试（删除该步骤产物与会话后重做，可指定已完成步骤；依赖它的后续步骤按指纹重跑）/ 停止
 pnpm start --name my-character --resume --background
-pnpm start --name my-character --retry --pipeline raster-layering --step step02 --background
+pnpm start --name my-character --retry --section raster-layering --step step02 --background
 pnpm start --name my-character --stop
 ```
 

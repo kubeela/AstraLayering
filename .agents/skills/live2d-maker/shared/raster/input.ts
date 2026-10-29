@@ -7,11 +7,11 @@ export function isPartLayeringInput(value: unknown): value is PartLayeringInput 
   return !!input && typeof input.directory === 'string' && typeof input.parts === 'string';
 }
 
-export async function resolvePartInput(name: string, pipeline: 'part-layering' | 'clothing-part-layering', root?: string): Promise<PartLayeringInput> {
-  const directory = await requireUpstream(name, pipeline, [
+export async function resolvePartInput(name: string, section: 'part-layering' | 'clothing-part-layering', root?: string): Promise<PartLayeringInput> {
+  const directory = await requireUpstream(name, section, [
     { path: 'parts', directory: true }, { path: 'groups.json' }, { path: 'occlusion.json' },
-    { path: pipeline === 'part-layering' ? 'references/base-subject.png' : 'references/clothing.png' },
+    { path: section === 'part-layering' ? 'references/base-subject.png' : 'references/clothing.png' },
   ], root);
-  return { directory, parts: join(directory, 'parts'), ...(pipeline === 'clothing-part-layering'
+  return { directory, parts: join(directory, 'parts'), ...(section === 'clothing-part-layering'
     ? { originalCharacter: await simplifiedCharacter(name, root) } : {}) };
 }

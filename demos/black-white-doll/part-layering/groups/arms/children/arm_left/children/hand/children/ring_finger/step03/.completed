@@ -1,9 +1,0 @@
-{
-  "stamp": "8ea24b0fa347f55a59b02642212aa82153ee901d309af469625d4d941afc061e",
-  "inputs": {
-    "groups/arms/children/arm_left/children/hand/children/ring_finger/step02": "c631940206074966409122ee91be4fe9098a2f30163d6d19e4b30f826bb1af09"
-  },
-  "outputs": {
-    "children.json": "7dd414572a6c548693d4c70a03ac1611a53753620e501fb9e5239b14dc25cd86"
-  }
-}

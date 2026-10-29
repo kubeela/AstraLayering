@@ -8,8 +8,9 @@ import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { referenceUrl } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
-import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
-import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
+import { runsDirectory, sectionIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
+import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedSections, sectionId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
+import { convertLayout } from '../.agents/skills/live2d-maker/workflow/layout.ts';
 import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
@@ -49,9 +50,9 @@ function options(value: any, dir: string): TaskOptions {
       if (value[key].trim()) result[key] = value[key].trim();
     }
   }
-  if (value.from) result.from = pipelineId(value.from);
-  if (value.to) result.to = pipelineId(value.to);
-  if (result.from || result.to) selectedPipelines(result.from ?? pipelineIds[0], result.to ?? pipelineIds.at(-1)!);
+  if (value.from) result.from = sectionId(value.from);
+  if (value.to) result.to = sectionId(value.to);
+  if (result.from || result.to) selectedSections(result.from ?? sectionIds[0], result.to ?? sectionIds.at(-1)!);
   if (value.shadowMode !== undefined) result.shadowMode = shadowMode(value.shadowMode);
   if (value.standard !== undefined) {
     if (typeof value.standard !== 'boolean') throw new Error('standard 必须是布尔值');
@@ -169,6 +170,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           return;
         }
         await task(opts.name, requestDir);
+        if (path === '/api/convert-layout') { json(await convertLayout(directory)); return; }
         if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory, opts.name))?.archive) {
           json({ error: '这是成果归档；请在原运行目录继续制作。' }, 409); return;
         }
@@ -189,7 +191,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
               json({ error: error.reason + '\n请重新填写 Krita 可执行文件路径（命令行：--krita <路径>）。', krita: { path: error.path ?? null } }, 409); return;
             }
             const message = path === '/api/step-action'
-              ? await applyStepAction({ name: opts.name, dir: opts.dir, pipeline: value.pipeline, step: value.step, action: value.action })
+              ? await applyStepAction({ name: opts.name, dir: opts.dir, section: value.section, step: value.step, action: value.action })
               : path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action }) : undefined;
             json({ ...(message === undefined ? {} : { message }), pid: await start(opts), name: opts.name }, 202);
           } finally { starts.delete(directory); }
@@ -303,7 +305,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
       const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/process-files.js': 'process-files.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       staticFiles['/report-links.js'] = '../.agents/skills/live2d-maker/shared/report-links.js';
-      staticFiles['/step-paths.js'] = '../.agents/skills/live2d-maker/shared/part/step-paths.js';
+      staticFiles['/step-paths.js'] = '../.agents/skills/live2d-maker/shared/step-paths.js';
       for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';

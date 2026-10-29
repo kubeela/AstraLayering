@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { executionPaths, legacyOutputDirectory, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
+import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { contextImages, prepareFileInputs, referencesDirectory } from '../agents/inputs.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
@@ -66,11 +66,9 @@ test('native Codex executes and resumes in the step workspace; tools keep their 
     assert.equal(request.prompt, workspacePrompt('draw', paths));
   }
   assert.equal(await readFile(join(paths.workspace, 'arbitrary/01/draft.py'), 'utf8'), 'intermediate');
-  assert.equal(legacyOutputDirectory({ cwd: root, step: 'part_children', name: '直属结构拆分-face/eye' }, root),
-    join(root, 'groups/face/children/eye/step03'));
   // Unknown work stays in its own directory instead of a guessed step.
   assert.equal(executionPaths({ cwd: root }, root).workspace, join(root, 'workspace'));
-  assert.equal(executionPaths({ cwd: root, step: 'part_base_subject' }, root).workspace, join(root, 'preparation/step07/workspace'));
+  assert.equal(executionPaths({ cwd: root, step: 'part_base_subject' }, root).workspace, join(root, 'step06_base/workspace'));
 });
 
 test('report publication preserves bytes and the chosen folder, and leaves unrelated intermediates in workspace', async t => {

@@ -2,7 +2,7 @@ import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { runCli } from '../shared/raster/cli.ts';
 import { runWorkflow as runSharedWorkflow, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { steps } from './steps.ts';
-import { partRasterPipeline } from '../shared/raster/part-pipeline.ts';
+import { partRasterSection } from '../shared/raster/part-section.ts';
 export { parseRunArguments } from '../shared/raster/cli.ts';
 
 export const help = `raster-layering — 按顺序执行 Krita 栅格分层流程
@@ -24,14 +24,14 @@ step01 依赖上游 part 的最后一步 occlusion：part 重做后 step01 及�
 每步新建自己的绘制 thread，本步绘制与返修共用；第三步去除连体服，交付 character-dressup-base.kra、同名 PNG 和 report.md，不设 reviewer；素体未换装时直接复制第二步成果。
 `;
 
-export const pipeline = partRasterPipeline({ id: 'raster-layering', inputPipeline: 'part-layering', steps });
+export const section = partRasterSection({ id: 'raster-layering', inputSection: 'part-layering', steps });
 
 export function runWorkflow(options: WorkflowOptions, dependencies: Dependencies = {}) {
-  return runSharedWorkflow(pipeline, options, dependencies);
+  return runSharedWorkflow(section, options, dependencies);
 }
 
 if (import.meta.main) {
-  runCli(pipeline, help).catch(error => {
+  runCli(section, help).catch(error => {
     console.error(formatAgentError(error));
     process.exitCode = 1;
   });

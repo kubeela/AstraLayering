@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, realpath, readFile, readdir, rm, stat, writeFile } from
 import { dirname, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
-import { runWorkflow, pipeline, parseRunArguments } from '../run.ts';
+import { runWorkflow, section, parseRunArguments } from '../run.ts';
 import { resolveAssemblyInput, isAssemblyInput, type AssemblyInput } from '../input.ts';
 import { steps } from '../steps.ts';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
@@ -94,7 +94,7 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
     await stat(join(f.output, 'step01/.running'));
     return deliver(request);
   };
-  assert.equal(pipeline.steps.length, 1); assert.equal(pipeline.steps[0].review, undefined);
+  assert.equal(section.steps.length, 1); assert.equal(section.steps[0].review, undefined);
   await runWorkflow(f.options, { ...f.deps, agent });
   await stat(join(f.output, 'step01/.completed'));
   await assert.rejects(stat(join(f.output, 'step01/.running')), { code: 'ENOENT' });

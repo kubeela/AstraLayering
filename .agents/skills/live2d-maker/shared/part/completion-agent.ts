@@ -31,7 +31,7 @@ export async function readCompletionReferences(groupDirectory: string, context?:
     const sourceSvg = await realpath(reduced.output.path);
     const bytes = await readFile(sourceSvg);
     const filename = `${name}.png`;
-    const inputFiles = await prepareFileInputs(join(context.directory, groupStepId(context.group.id, 2)),
+    const inputFiles = await prepareFileInputs(join(context.directory, groupStepId(context.group.id, 'completion')),
       [{ name: filename, content: await sharp(bytes, { limitInputPixels: 100_000_000 }).png().toBuffer() }]);
     const path = inputFiles[filename];
     return { path, description, groupId: sibling.id, sourceSvg, sourceHash: svgHash(bytes), sourceStage: 'reduction' };
@@ -117,7 +117,7 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       return textResult({ ...submitted, path: await task(draft) });
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 2)), imageGeneration: true,
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'completion')), imageGeneration: true,
     images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: [preview, set, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'))], prompt: renderPrompt(prompt.text, {prompt_source: prompt.path,

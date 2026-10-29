@@ -1,9 +1,0 @@
-{
-  "stamp": "4fd09ea73ed21bad66e302c21f29ff97ebb4539a9b384c7ab8aefd07aa795dc4",
-  "inputs": {
-    "layers/depth01#camisole.svg": "77cd557507d779088a0eab16eb78fffa429bc5054aca62450b7abbe9ad4c786f"
-  },
-  "outputs": {
-    "../../../parts/camisole.svg": "e4b808d5ffb6dd1ebc14c222175d35619322205ae36d8f0a47e6711431ae084a"
-  }
-}

@@ -11,7 +11,7 @@ import { test } from 'node:test';
 import { getPreparationDirectory, loadPreparedReferences } from '../preparation.ts';
 import { formatLayeringSummary, parseRunArguments, readGroupInput } from '../run.ts';
 import { GroupStore, normalizeGroups } from '../../shared/part/groups.ts';
-import sharp from 'sharp';
+import { seedPreparedReferences } from './preparation-fixture.ts';
 import { seedInitialGroups, shape, workingSteps } from './layering-fixture.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { taskDirectory } from '../../shared/paths.ts';
@@ -77,10 +77,7 @@ test('预览缺失时用模拟步骤重建；实际入口复用完整事实且�
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
   t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
-  await mkdir(references, { recursive: true });
-  await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
-  await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
-  await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toFile(join(references, 'base-subject.png'));
+  await seedPreparedReferences(runName);
   await seedInitialGroups(directory, [{ id: 'head', note: '已有识别的组' }]);
   // 缺预览只重做合并；重建字节不变时层级规划沿用。
   await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null, steps: workingSteps([]) });
@@ -150,10 +147,7 @@ test('实际入口遇到组产物问题时报告组名、步骤和停止派发�
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
   t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
-  await mkdir(references, { recursive: true });
-  await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
-  await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
-  await writeFile(join(references, 'base-subject.png'), 'cached base');
+  await seedPreparedReferences(runName);
   await seedInitialGroups(directory, [{ id: 'head_accessories' }]);
   await assert.rejects(runCli(['--name', runName]), error => {
     const failure = error as Error & { code: number; stderr: string };

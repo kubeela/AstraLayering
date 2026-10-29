@@ -1,13 +1,14 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { partSteps } from '../step-paths.js';
 import { normalizeGroups, walkGroups, writeAtomic } from './groups.ts';
 import { artifactPath } from './artifact-facts.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { depthRegions, type OcclusionPlan } from './occlusion-plan.ts';
 import type { GroupNode } from './layering-types.ts';
 
-export const depthPreviewPath = (directory: string) => join(directory, 'occlusion', 'preview.svg');
+export const depthPreviewPath = (directory: string) => join(directory, partSteps.occlusion, 'preview.svg');
 
 // This is the planning preview, not raster's geometric depth slices. Each whole
 // SVG appears once at its rearmost depth, just as in propose_occlusion.

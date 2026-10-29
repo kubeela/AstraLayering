@@ -1,9 +1,0 @@
-{
-  "stamp": "cdb6ca9a4cdbba79c86441f481b4c75a448c1f4a91af82b64348594f702ce6f5",
-  "inputs": {
-    "groups/head_accessories/children/heart_hair_clip/step02": "0d6649d4b58a7cd90fb70c9e813663f4858031c83511927ab35ffd143392c405"
-  },
-  "outputs": {
-    "children.json": "3c42fd1f0c25049fb1b11a03a72ffd85a89e9ee9282374b90cd8ddbf5ae1c7ab"
-  }
-}

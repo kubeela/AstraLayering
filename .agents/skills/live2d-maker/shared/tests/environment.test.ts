@@ -10,8 +10,8 @@ import { loadWorkflowEnvironment, checkCodexCapabilities } from '../codex/enviro
 import { formatAgentError } from '../codex/diagnostics.ts';
 import { runAgent } from '../raster/agent.ts';
 import { runWorkflow } from '../raster/workflow.ts';
-import { pipeline as character } from '../../raster-layering/run.ts';
-import { pipeline as clothing } from '../../clothing-raster-layering/run.ts';
+import { section as character } from '../../raster-layering/run.ts';
+import { section as clothing } from '../../clothing-raster-layering/run.ts';
 import { seedUpstream } from './upstream-fixture.ts';
 
 async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
@@ -111,15 +111,15 @@ test('独立字节预算保留 env 控制权，Codex 明确拒绝缺少字节保
 });
 
 test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺产物诊断带最后消息', async t => {
-  for (const pipeline of [character, clothing]) await t.test(pipeline.id, async t => {
-    const root = await fixture(t); await seedUpstream('case', pipeline.inputPipeline, root);
+  for (const section of [character, clothing]) await t.test(section.id, async t => {
+    const root = await fixture(t); await seedUpstream('case', section.inputSection, root);
     const environment = loadWorkflowEnvironment({ layering_high_model: 'gpt-6-astra-high' }, root);
-    const directory = join(root, 'case', pipeline.id);
-    const deps = { runsDirectory: root, steps: [pipeline.steps[0]], environment,
+    const directory = join(root, 'case', section.id);
+    const deps = { runsDirectory: root, steps: [section.steps[0]], environment,
       preflight: async (executable: string) => ({ executable }) };
     let failure: unknown;
     try {
-      await runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
+      await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
         assert.equal(request.model, 'gpt-6-astra'); assert.equal(request.effort, 'high');
         await request.onEvent({ type: 'thread.started', thread_id: 'persistent-thread' });
         await request.onEvent({ type: 'item.completed', item: { type: 'agent_message', id: 'message', text: '当前没有 image_generation 工具，无法绘制。' } });
@@ -133,11 +133,11 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     assert.match(await readFile(join(directory, 'agents/steps/step01/error.txt'), 'utf8'), /模型最后消息/);
     await assert.rejects(readFile(join(directory, 'step01/.completed')), { code: 'ENOENT' });
     const changed = loadWorkflowEnvironment({ layering_high_model: 'gpt-6.1-sol-low' }, root);
-    await runWorkflow(pipeline, { name: 'case' }, { ...deps, environment: changed, agent: async request => {
-      if (isRasterReview(request)) return deliverRasterStep(request, pipeline.steps[0]);
+    await runWorkflow(section, { name: 'case' }, { ...deps, environment: changed, agent: async request => {
+      if (isRasterReview(request)) return deliverRasterStep(request, section.steps[0]);
       assert.equal(request.threadId, 'persistent-thread');
       assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'low');
-      return deliverRasterStep(request, pipeline.steps[0], 'persistent-thread');
+      return deliverRasterStep(request, section.steps[0], 'persistent-thread');
     } });
     const config = JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
     assert.equal((await readStepSession(directory, 'step01'))?.threadId, 'persistent-thread');

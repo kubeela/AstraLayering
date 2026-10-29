@@ -64,8 +64,8 @@ export function parseAgentModel(value: string, key: string): AgentModel {
   const model = match[1] as ModelId;
   return { model, effort: match[2] as ReasoningEffort, harness: modelHarnesses[model] };
 }
-export function partStep(pipeline: 'part-layering' | 'clothing-part-layering', kind: string): AgentStep {
-  const key = `${pipeline === 'part-layering' ? 'part' : 'clothing'}_${kind}`;
+export function partStep(section: 'part-layering' | 'clothing-part-layering', kind: string): AgentStep {
+  const key = `${section === 'part-layering' ? 'part' : 'clothing'}_${kind}`;
   if (!Object.hasOwn(stepDefaults, key)) throw new Error(`未知 agent 小步骤：${key}`);
   return key as AgentStep;
 }

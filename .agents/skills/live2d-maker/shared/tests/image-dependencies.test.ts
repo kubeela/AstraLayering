@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
@@ -28,12 +28,15 @@ test('透明图后处理与已完成参考不要求 外部图片程序，缺参�
   assert.equal(report.method, null); assert.deepEqual(await readFile(output), await readFile(input));
   for (const [id, names] of [
     ['part-layering', ['base-subject.png', 'judgment.json', 'simplified-subject.jpg']],
-    ['clothing-part-layering', ['clothing.png', 'preparation.json']],
+    ['clothing-part-layering', ['clothing.png', '../step01_preparation/.completed']],
   ] as const) {
     const references = join(f.directory, 'case', id, 'references');
     assert.equal(await referenceNeedsGeneration(id, 'case', f.directory), true);
     await mkdir(references, { recursive: true });
-    for (const name of names) await writeFile(join(references, name), 'retained');
+    for (const name of names) {
+      await mkdir(dirname(join(references, name)), { recursive: true });
+      await writeFile(join(references, name), 'retained');
+    }
     assert.equal(await referenceNeedsGeneration(id, 'case', f.directory), false);
     if (id === 'part-layering') {
       await rm(join(references, 'judgment.json'));

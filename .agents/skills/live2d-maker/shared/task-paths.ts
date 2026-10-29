@@ -1,6 +1,6 @@
 import { realpath } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, posix, relative, resolve, sep } from 'node:path';
-import { pipelineIds } from './paths.ts';
+import { sectionIds } from './paths.ts';
 
 // One base for every task path: the task root <runs>/<name> (after export,
 // demos/<name>). Persisted paths inside the task are relative to that root in
@@ -10,21 +10,18 @@ import { pipelineIds } from './paths.ts';
 // Reading is lenient: absolute paths are accepted as is, and a relative path
 // always means the task root.
 
-const pipelines = new Set<string>(pipelineIds);
+const sections = new Set<string>(sectionIds);
 const inside = (root: string, path: string) => path === root || path.startsWith(root.endsWith(sep) ? root : root + sep);
 
-const shadowModes = new Set(['mask', 'normal-depth']);
-
-// The task root of a pipeline directory. Every pipeline directory is created
-// directly in the task root (shadow keeps one per mode, shadow/<mode>), so the
+// The task root of a section directory. Every section directory is created
+// directly in the task root, so the
 // root comes from the structure rather than from searching ancestors by name: a
-// part group may be named after a pipeline. Deeper directories must be given
+// part group may be named after a section. Deeper directories must be given
 // their root explicitly. A directory outside the layout (tests, ad hoc tools) is
 // its own root.
 export function taskRootOf(directory: string): string {
   const start = resolve(directory), parent = dirname(start);
-  if (pipelines.has(basename(start))) return parent;
-  if (basename(parent) === 'shadow' && shadowModes.has(basename(start))) return dirname(parent);
+  if (sections.has(basename(start))) return parent;
   return start;
 }
 

@@ -69,7 +69,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const initialize = protocol.find(item => item.method === 'initialize');
   assert.equal(initialize.params.capabilities.experimentalApi, true);
   const thread = protocol.find(item => item.method === 'thread/start');
-  assert.equal(thread.params.cwd, join(f.directory, 'initial/step01/workspace'));
+  assert.equal(thread.params.cwd, join(f.directory, 'step08_initial/workspace'));
   assert.equal(thread.params.model, 'gpt-6.1-sol');
   assert.equal(thread.params.config['features.shell_tool'], true);
   assert.equal(thread.params.config['features.unified_exec'], true);
@@ -92,7 +92,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'initial/step01/workspace/bitmaps') + sep), true);
+  assert.equal(preview.savedPath.startsWith(join(f.directory, 'step08_initial/workspace/bitmaps') + sep), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
   assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();
@@ -101,7 +101,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const submission = protocol.find(item => item.id === 'call-2').result;
   assert.equal(submission.success, true);
   const saved = JSON.parse(submission.contentItems[0].text).path;
-  assert.equal(saved, join(f.directory, 'initial/step01/groups.json'));
+  assert.equal(saved, join(f.directory, 'step08_initial/groups.json'));
   assert.deepEqual(JSON.parse(await readFile(saved, 'utf8')), {
     subject: 'character', groups: [{ id: 'head', kind: 'group', name: 'head', note: '头部' }],
   });

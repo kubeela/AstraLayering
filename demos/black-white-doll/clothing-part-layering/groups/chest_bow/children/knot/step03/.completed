@@ -1,9 +1,0 @@
-{
-  "stamp": "f2c2bbbd0d071a8e1cd06494c7586a8a1893ae95c4473ce908e5344c3cf0b821",
-  "inputs": {
-    "groups/chest_bow/children/knot/step02": "0c73d60e06cb4e9b66b6acd847154e02adc7018f1a3c49c1d724f3c60ae1b1e0"
-  },
-  "outputs": {
-    "children.json": "7b5b454ba90be354dab535cc77b5de27cecdaa46d2617cded297e2ffeac4a449"
-  }
-}

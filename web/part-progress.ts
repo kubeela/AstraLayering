@@ -11,14 +11,14 @@ export const phases = ['outline', 'review', 'reduction', 'completion', 'completi
 type Phase = typeof phases[number];
 
 // Step markers are dotfiles, which the file inventory skips; read them directly.
-export async function stepStatus(directory: string, pipeline: string, id: string): Promise<StepStatus> {
-  try { return (await readStep(await safePath(directory, `${pipeline}/${id}`), directory)).status; }
+export async function stepStatus(directory: string, section: string, id: string): Promise<StepStatus> {
+  try { return (await readStep(await safePath(directory, `${section}/${id}`), directory)).status; }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return 'absent'; throw error; }
 }
 
 // These are file observations for display, not a second scheduler or a resume check:
 // a completed marker is shown as done without checking it against its inputs.
-export async function partProgress(directory: string, pipeline: string, groups: any[], files: Set<string>,
+export async function partProgress(directory: string, section: string, groups: any[], files: Set<string>,
   json: (path: string) => Promise<any>, errors: string[], activeSince?: string, failedSince?: string) {
   const bytes = new Map<string, Promise<Buffer | undefined>>();
   const read = (path: string) => {
@@ -36,12 +36,12 @@ export async function partProgress(directory: string, pipeline: string, groups: 
   const skippedReviews = new Set<any>();
   const steps = new Map<string, Promise<StepStatus>>();
   const step = (id: string) => {
-    if (!steps.has(id)) steps.set(id, stepStatus(directory, pipeline, id).catch(error => { errors.push(`${pipeline}/${id}: ${String(error)}`); return 'absent' as const; }));
+    if (!steps.has(id)) steps.set(id, stepStatus(directory, section, id).catch(error => { errors.push(`${section}/${id}: ${String(error)}`); return 'absent' as const; }));
     return steps.get(id)!;
   };
   for (const { node, depth } of entries) {
-    const path = (stage: 'outline' | 'reduction' | 'completion') => webFilePath(artifactPath(pipeline, node.id, stage));
-    const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(webFilePath(stepDraftPath(pipeline, node.id, stage))) || files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
+    const path = (stage: 'outline' | 'reduction' | 'completion') => webFilePath(artifactPath(section, node.id, stage));
+    const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(webFilePath(stepDraftPath(section, node.id, stage))) || files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
     node.webMessages = {};
     node.webDetails = {};
@@ -53,14 +53,14 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     const outline = await read(path('outline'));
     const reduced = await read(path('reduction'));
     const completed = await read(path('completion'));
-    const [prepared, layer, finished, split] = await Promise.all([step(groupStepId(node.id, 1)), step(layerStepId(depth)),
-      step(groupStepId(node.id, 2)), step(groupStepId(node.id, 3))]);
+    const [prepared, layer, finished, split] = await Promise.all([step(groupStepId(node.id, 'outline')), step(layerStepId(depth)),
+      step(groupStepId(node.id, 'completion')), step(groupStepId(node.id, 'children'))]);
     const skipped = node.hiddenInReference === true && prepared === 'completed' && !!outline;
     const skipDetail = '原图不可见，已跳过描边和轮廓复核';
     if (skipped) skippedReviews.add(node);
     mark('outline', !!outline, !!outline || draft('outline'), skipped ? skipDetail : outline ? '已落稿' : '草稿 · 未落稿');
 
-    const report = await json(webFilePath(reportPath(pipeline, node.id, 'review')));
+    const report = await json(webFilePath(reportPath(section, node.id, 'review')));
     const validReport = report?.groupId === node.id && Array.isArray(report.reviews);
     reviewInputs.set(node, { report: validReport ? report : undefined, outline });
     const reviewed = outline && validReport ? reviewedArtifact(outline, path('outline'), report) : undefined;
@@ -74,7 +74,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     mark('reduction', reductionDone, !!reduced || draft('reduction'), reductionDone ? '已落稿 · 本层去重完成' : reduced ? '已有正式稿 · 本层去重未完成' : '草稿 · 未落稿');
     const completionDone = !!completed && finished !== 'absent';
     mark('completion', completionDone, !!completed || draft('completion'), completionDone ? '已落稿' : completed ? '已有正式稿 · 步骤待重做' : '草稿 · 未落稿');
-    const check = await json(webFilePath(reportPath(pipeline, node.id, 'completion-check')));
+    const check = await json(webFilePath(reportPath(section, node.id, 'completion-check')));
     const checked = !!check && finished === 'completed';
     mark('completionCheck', checked, !!check, checked ? '补全检查通过' : '检查记录待确认');
     const childrenDone = split === 'completed';
@@ -84,7 +84,7 @@ export async function partProgress(directory: string, pipeline: string, groups: 
 
   // request.json is created only after the agent obtains a concurrency slot.
   // A leftover draft or a queued group is not evidence that an agent is drawing.
-  const calls = await currentAgentCalls(directory, pipeline, files, errors, activeSince ?? failedSince, !!failedSince);
+  const calls = await currentAgentCalls(directory, section, files, errors, activeSince ?? failedSince, !!failedSince);
   for (const { node } of entries) {
     const { report, outline } = reviewInputs.get(node)!;
     node.webReviewRounds = partReviewRounds(node.id, report, outline, calls, !!activeSince);
@@ -129,5 +129,5 @@ export async function partProgress(directory: string, pipeline: string, groups: 
         : ({ outline: '正在绘制 / 自检', review: '正在复核', reduction: '正在同层去重', completion: '正在补全 / 自检', children: '正在分析直属结构' } as any)[phase];
     }
   }
-  return partStages(directory, pipeline, groups, files, json, read, calls, errors, !!activeSince, step);
+  return partStages(directory, section, groups, files, json, calls, errors, !!activeSince, step);
 }
