@@ -15,7 +15,7 @@ import type { SectionKrita } from '../../shared/krita/section-krita.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
 import type { AgentRequest } from '../../shared/raster/agent.ts';
-import { pipelineAgentSteps } from '../../shared/agents/preflight.ts';
+import { sectionAgentSteps } from '../../shared/agents/preflight.ts';
 import { parseArguments } from '../../workflow/run.ts';
 import { runTask } from '../../workflow/runner.ts';
 import { readRun, taskStatus } from '../../workflow/state.ts';
@@ -88,8 +88,8 @@ test('默认蒙版；全局保存、透传并仅预检所选 step01', async t =>
   assert.throws(() => parseRunArguments(['--name', 'case', '--shadow-mode', 'unknown']));
   const parsed = parseArguments(['--name', 'case', '--shadow-mode', 'normal-depth']);
   assert.ok(parsed.mode !== 'help'); assert.equal(parsed.options.shadowMode, 'normal-depth');
-  assert.deepEqual(pipelineAgentSteps('shadow', false, 'mask'), ['shadow_mask']);
-  assert.deepEqual(pipelineAgentSteps('shadow', false, 'normal-depth'), ['shadow_maps']);
+  assert.deepEqual(sectionAgentSteps('shadow', false, 'mask'), ['shadow_mask']);
+  assert.deepEqual(sectionAgentSteps('shadow', false, 'normal-depth'), ['shadow_maps']);
   const f = await fixture(t);
   assert.equal(f.deps.environment.stepImages.shadow_mask, undefined);
   // Raster image generation follows the step's image model: the mask step has none.
@@ -103,7 +103,7 @@ test('默认蒙版；全局保存、透传并仅预检所选 step01', async t =>
   await runTask({ name: 'case', dir: f.root }, { ...f.deps, execute: async (_id, run) => {
     assert.equal(run.shadowMode, 'normal-depth'); return { summary: 'resumed' };
   } });
-  assert.equal((await taskStatus(f.options)).pipelines[0].mode, 'normal-depth');
+  assert.equal((await taskStatus(f.options)).sections[0].mode, 'normal-depth');
 });
 test('dry-run 与缺上游不调用模型、不写文件，提示词包含精度与投影规则', async t => {
   const f = await fixture(t);

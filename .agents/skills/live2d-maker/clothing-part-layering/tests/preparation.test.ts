@@ -7,13 +7,13 @@ import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { createPreparationSteps, getPreparationDirectory, loadPreparedReferences, prepareReferences } from '../preparation.ts';
-import { taskDirectory, pipelineDirectory } from '../../shared/paths.ts';
+import { taskDirectory, sectionDirectory } from '../../shared/paths.ts';
 import { clothingPreparationStep, partSteps } from '../../shared/step-paths.js';
 
 // The person part steps the clothing preparation is built on; a new stamp stands for a redone step.
 const personSteps = [partSteps.standard, partSteps.simplified, partSteps.base];
 async function markPerson(runName: string, step: string, stamp: string) {
-  const directory = join(pipelineDirectory(runName, 'part-layering'), step);
+  const directory = join(sectionDirectory(runName, 'part-layering'), step);
   await mkdir(directory, { recursive: true });
   await writeFile(join(directory, '.completed'), JSON.stringify({ stamp, inputs: {} }));
 }
@@ -25,7 +25,7 @@ async function fixture(t: TestContext) {
   const input = join(temporary, 'simplified-character.png'), generated = join(temporary, 'generated.png');
   await sharp({ create: { width: 96, height: 128, channels: 4, background: '#c0c0c0' } }).png().toFile(input);
   await sharp({ create: { width: 96, height: 128, channels: 4, background: '#80a0c080' } }).png().toFile(generated);
-  const upstream = join(pipelineDirectory(runName, 'part-layering'), 'references/simplified-subject.png');
+  const upstream = join(sectionDirectory(runName, 'part-layering'), 'references/simplified-subject.png');
   await mkdir(dirname(upstream), { recursive: true });
   await copyFile(input, upstream);
   await copyFile(input, join(dirname(upstream), 'standard.png'));
@@ -149,7 +149,7 @@ test('上游 base 重做后衣服 preparation 删除旧参考与拆分并重新�
 
 test('上游人物 preparation 未完成时不生成衣服参考', async t => {
   const f = await fixture(t);
-  await rm(join(pipelineDirectory(f.runName, 'part-layering'), partSteps.base, '.completed'));
+  await rm(join(sectionDirectory(f.runName, 'part-layering'), partSteps.base, '.completed'));
   await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /part-layering\/step06_base 尚未完成/);
   assert.equal(f.calls.length, 0);
 });

@@ -68,7 +68,7 @@ export async function runLayering(input: {
   const statePath = directory;
   let selected: Set<string> | undefined;
   let completedOcclusion: string | undefined;
-  // directory is the part pipeline directory, which sits in the task root.
+  // directory is the part section directory, which sits in the task root.
   const root = taskRootOf(directory);
   const lookup = (id: string): ChainStep => ({ id, root, directory: join(directory, id), dependsOn: [] });
 

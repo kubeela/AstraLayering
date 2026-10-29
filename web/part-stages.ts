@@ -16,15 +16,15 @@ const namePhases: Record<string, string> = {
 };
 
 // Observe published files and existing receipts. This function never restores or writes scheduler state.
-export async function partStages(directory: string, pipeline: string, groups: any[], files: Set<string>,
+export async function partStages(directory: string, section: string, groups: any[], files: Set<string>,
   json: (path: string) => Promise<any>, calls: AgentCall[], errors: string[], active = true,
   step: (id: string) => Promise<StepStatus> = async () => 'absent') {
   const states: Record<string, Status> = {}, messages: Record<string, string> = {};
-  const present = (path: string) => files.has(pipeline + '/' + path);
+  const present = (path: string) => files.has(section + '/' + path);
   const artifact = (...paths: string[]): Status => paths.some(present) ? 'available' : 'pending';
   const reference = (name: string) => ['png', 'jpg', 'jpeg', 'webp'].map(ext => `references/${name}.${ext}`).find(present);
   states.initial = await step(partSteps.initial) === 'completed' ? 'done' : groups.length ? 'available' : 'pending';
-  if (pipeline === 'part-layering') {
+  if (section === 'part-layering') {
     for (const [phase, name] of [['standard', 'standard'], ['simplified', 'simplified-subject'], ['base', 'base-subject']] as const) {
       const path = reference(name);
       states[phase] = path && await step(partSteps[phase]) === 'completed' ? 'done' : path ? 'available' : 'pending';
@@ -42,10 +42,10 @@ export async function partStages(directory: string, pipeline: string, groups: an
   states.occlusion = artifact('occlusion.json', `${partSteps.occlusion}/preview.svg`, `${partSteps.occlusion}/workspace/candidate.svg`);
   if (present('occlusion.json') && await step(partSteps.occlusion) === 'completed') {
     try {
-      const plan = validateOcclusionDocument(await json(pipeline + '/occlusion.json'));
+      const plan = validateOcclusionDocument(await json(section + '/occlusion.json'));
       const leaves = all(groups).filter(node => !node.groups?.length);
       if (plan.layers.length === leaves.length && leaves.every(node => plan.layers.some(row => row.id === node.id))) states.occlusion = 'done';
-    } catch (error) { errors.push(pipeline + '/occlusion.json: ' + String(error)); }
+    } catch (error) { errors.push(section + '/occlusion.json: ' + String(error)); }
   }
   const latest = new Map<string, AgentCall>();
   for (const call of calls) {

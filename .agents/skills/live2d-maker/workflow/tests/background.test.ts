@@ -73,7 +73,7 @@ test('真实后台父进程退出后任务继续，已完成组装跳过模型�
   assert.match(stdout, /后台总调度已启动/);
   await until(async () => !(await taskStatus(f.options)).lockHeld);
   const status = await taskStatus(f.options);
-  assert.equal(status.status, 'completed'); assert.equal(status.pipelines[0].threadId, 'completed-fixture');
+  assert.equal(status.status, 'completed'); assert.equal(status.sections[0].threadId, 'completed-fixture');
   // The delivery is recorded relative to the task root.
   assert.equal(status.output, 'character-assembly/step01/character-assembled.kra');
   const before = await readFile(join(f.task, 'run.json'));

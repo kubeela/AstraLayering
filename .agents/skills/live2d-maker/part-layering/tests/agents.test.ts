@@ -11,14 +11,14 @@ import { fakeAppServer } from './fake-app-server.ts';
 import { nodeExecutables } from './node-executables.ts';
 
 // One-shot turns without function tools run through the same app-server session as every other turn.
-const pipeline = 'part-layering';
+const section = 'part-layering';
 
 async function fixture(t: TestContext, ...server: Parameters<typeof fakeAppServer> extends [string, ...infer Rest] ? Rest : never) {
   nodeExecutables(t);
-  const directory = await realpath(await mkdtemp(join(tmpdir(), `${pipeline}-agents-`)));
+  const directory = await realpath(await mkdtemp(join(tmpdir(), `${section}-agents-`)));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const { executable, capture } = await fakeAppServer(directory, ...server);
-  const logDirectory = join(directory, `${pipeline}/agents`);
+  const logDirectory = join(directory, `${section}/agents`);
   const messages: string[] = [];
   const agents = new CodexAgents({ codexPathOverride: executable, cwd: directory, logDirectory,
     runtime: new AgentRuntime(3, async () => {}), progress: message => messages.push(message) });

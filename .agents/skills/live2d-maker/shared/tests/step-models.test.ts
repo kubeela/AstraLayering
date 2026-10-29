@@ -14,7 +14,7 @@ import { cliExecutable, runCliTask } from '../agents/cli.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { AgentCallError, AgentRuntime } from '../codex/agent-runtime.ts';
 import { runAgent } from '../raster/agent.ts';
-import { pipelineAgentSteps } from '../agents/preflight.ts';
+import { sectionAgentSteps } from '../agents/preflight.ts';
 
 async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
   const root = await realpath(await mkdtemp(join(tmpdir(), 'step-models-')));
@@ -53,9 +53,9 @@ test('model roles are shared by character/clothing, repairs use drawing roles, g
   }
   assert.deepEqual(settings.stepModels.raster_step02, parseAgentModel('gpt-6.1-sol-medium', 'fixture'));
   assert.equal(Object.keys(settings.stepModels).length, Object.keys(stepDefaults).length);
-  assert.ok(!pipelineAgentSteps('clothing-part-layering').some(step => step.startsWith('clothing_raster_')));
-  assert.ok(!pipelineAgentSteps('part-layering').includes('part_standardize'));
-  assert.ok(pipelineAgentSteps('part-layering', true).includes('part_standardize'));
+  assert.ok(!sectionAgentSteps('clothing-part-layering').some(step => step.startsWith('clothing_raster_')));
+  assert.ok(!sectionAgentSteps('part-layering').includes('part_standardize'));
+  assert.ok(sectionAgentSteps('part-layering', true).includes('part_standardize'));
 });
 
 test('every image-capable agent rejects native imagegen with a different harness; part review stays text-only', async t => {

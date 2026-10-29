@@ -10,14 +10,14 @@ import { createLayeringSteps } from './layering-steps.ts';
 import { groupStages, type GroupInput, type GroupNode, type LayeringResult, type LayeringSteps, type SvgMerger } from './layering-types.ts';
 import type { PreparationInput, PreparationReferences } from './preparation-types.ts';
 import type { PartProfile } from './profile.ts';
-import { pipelineDirectory, resolveInput, resolveRunsDirectory } from '../paths.ts';
+import { sectionDirectory, resolveInput, resolveRunsDirectory } from '../paths.ts';
 import { toolCatalog } from '../codex/tool-config.ts';
-import { pipelineAgentSteps, preflightAgentSteps } from '../agents/preflight.ts';
+import { sectionAgentSteps, preflightAgentSteps } from '../agents/preflight.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { validateWorkflowOptions } from './workflow.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { readPreparationOptions } from './preparation-cache.ts';
-export type PartPipeline = {
+export type PartSection = {
   profile: PartProfile; imageHelp: string; preparationHelp: string;
   getPreparationDirectory(name: string, root?: string): string;
   loadPreparedReferences(name: string, root?: string, standard?: boolean): Promise<PreparationReferences>;
@@ -27,35 +27,35 @@ export type PartInput = { reference: PreparationInput; groups: GroupInput | Grou
 // prepared() is called once the references are ready, before layering starts.
 export type PartAdapters = { steps?: LayeringSteps; mergeSvg?: SvgMerger; prepared?(): void };
 
-export async function runPartPipeline(
-  pipeline: PartPipeline, input: PartInput, adapters: PartAdapters = {},
+export async function runPartSection(
+  section: PartSection, input: PartInput, adapters: PartAdapters = {},
   agentOptions: AgentOptions = {},
 ): Promise<{ references: PreparationReferences; layering: LayeringResult }> {
   validateWorkflowOptions({ maxDepth: input.maxDepth });
-  if (pipeline.profile.id === 'clothing-part-layering' && input.reference.image !== undefined) {
-    throw new Error(`衣服 part 按 --name 读取上游，不接受 --image。请将简化穿衣角色图放到 ${join(pipelineDirectory(input.reference.runName, 'part-layering', input.reference.dir), 'references/simplified-subject.png')}，或先执行同名 part-layering。`);
+  if (section.profile.id === 'clothing-part-layering' && input.reference.image !== undefined) {
+    throw new Error(`衣服 part 按 --name 读取上游，不接受 --image。请将简化穿衣角色图放到 ${join(sectionDirectory(input.reference.runName, 'part-layering', input.reference.dir), 'references/simplified-subject.png')}，或先执行同名 part-layering。`);
   }
-  if (pipeline.profile.id === 'clothing-part-layering' && input.reference.standard !== undefined) {
+  if (section.profile.id === 'clothing-part-layering' && input.reference.standard !== undefined) {
     throw new Error('--standard / --no-standard 只适用于人物 part 的 preparation；衣服按 --name 读取上游简化角色。');
   }
-  const directory = pipeline.getPreparationDirectory(input.reference.runName, input.reference.dir);
-  toolCatalog(pipeline.profile.toolsDirectory);
+  const directory = section.getPreparationDirectory(input.reference.runName, input.reference.dir);
+  toolCatalog(section.profile.toolsDirectory);
   const environment = agentOptions.environment ?? loadWorkflowEnvironment(agentOptions.env);
   const normalization = { ...agentOptions.imageNormalization, runsRoot: input.reference.dir ?? agentOptions.imageNormalization?.runsRoot, progress: agentOptions.progress, env: agentOptions.imageNormalization?.env ?? environment.codex.env };
   if (!adapters.steps) {
     let standard = input.reference.standard;
-    if (standard === undefined && pipeline.profile.id === 'part-layering') standard = await readPreparationOptions(directory);
-    await preflightAgentSteps(environment, pipelineAgentSteps(pipeline.profile.id, standard), normalization);
+    if (standard === undefined && section.profile.id === 'part-layering') standard = await readPreparationOptions(directory);
+    await preflightAgentSteps(environment, sectionAgentSteps(section.profile.id, standard), normalization);
   }
   const agents = new CodexAgents({
-    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), toolsDirectory: pipeline.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
+    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), toolsDirectory: section.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
   });
   const references = input.groups === null
-    ? await pipeline.prepare(input.reference, agents, agentOptions.progress, normalization)
-    : await pipeline.loadPreparedReferences(input.reference.runName, input.reference.dir, input.reference.standard);
+    ? await section.prepare(input.reference, agents, agentOptions.progress, normalization)
+    : await section.loadPreparedReferences(input.reference.runName, input.reference.dir, input.reference.standard);
   adapters.prepared?.();
   const layering = await runLayering({
-    profile: pipeline.profile, directory: dirname(directory), references, groups: input.groups,
+    profile: section.profile, directory: dirname(directory), references, groups: input.groups,
     steps: adapters.steps ?? createLayeringSteps(agents), mergeSvg: adapters.mergeSvg,
     maxDepth: input.maxDepth, progress: agentOptions.progress,
   });
@@ -121,12 +121,12 @@ export function formatLayeringSummary(groups: GroupNode[]): string[] {
   });
 }
 
-export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2)): Promise<void> {
+export async function runCli(section: PartSection, args = process.argv.slice(2)): Promise<void> {
   try {
     const values = parseRunArguments(args);
     if (values.help) {
-      console.log(`pnpm ${pipeline.profile.id} --name <运行名> ${pipeline.profile.id === 'part-layering' ? `[--image <${pipeline.imageHelp}>] [--standard | --no-standard] ` : ''} [--dir <运行根目录绝对路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
-      console.log(pipeline.preparationHelp);
+      console.log(`pnpm ${section.profile.id} --name <运行名> ${section.profile.id === 'part-layering' ? `[--image <${section.imageHelp}>] [--standard | --no-standard] ` : ''} [--dir <运行根目录绝对路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
+      console.log(section.preparationHelp);
       console.log('Python 模块首次实际使用时自动安装到运行根目录 .runtime 并复用。');
       console.log('各小步骤的模型、CLI 与生图配置见 skill 根目录 example.env。默认任务目录在外部 .run/<name>/；--dir 指定运行根目录，输入相对路径以该根目录下的 <name>/ 为基准。');
       console.log('--groups 选择已有组及其子组；祖先须完成，可查看同层有效底稿复核去重，仅实际变化的部件及真实引用者扩入后续制作。省略时按层自动准备或续跑。');
@@ -135,7 +135,7 @@ export async function runCli(pipeline: PartPipeline, args = process.argv.slice(2
       console.log('--agents / -a 为 --jobs / -j 的兼容别名，控制同一上限。临时服务错误等待后沿用会话恢复，次数不设上限，过程写入 agent 日志。');
     } else {
       if (!values.name) throw new Error('需要 --name <运行名>');
-      const { references, layering } = await runPartPipeline(pipeline, {
+      const { references, layering } = await runPartSection(section, {
         reference: { image: values.image, runName: values.name, dir: values.dir, standard: values.standard },
         groups: values.groups ? await readGroupInput(resolveInput(values.name, values.groups, values.dir)) : null, maxDepth: values.maxDepth,
       }, {}, { progress: console.log, agentConcurrency: values.agentConcurrency });

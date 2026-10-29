@@ -21,7 +21,7 @@ test('姿态与衣服提示词明确声明共享规则位置，展开后没有�
   }
 });
 test('外层 CLI、交接与背景适配也由 Markdown 声明替换位置',()=>{
-  const cli=renderPromptFile(new URL('../prompts/agent-turn.md',import.meta.url),{task_prompt:'task',task_root:'/runs/case',workspace:'request dir',workspace_absolute:'/runs/case/request dir',pipeline_directory:'task dir',output_directory:'output dir'});
+  const cli=renderPromptFile(new URL('../prompts/agent-turn.md',import.meta.url),{task_prompt:'task',task_root:'/runs/case',workspace:'request dir',workspace_absolute:'/runs/case/request dir',section_directory:'task dir',output_directory:'output dir'});
   assert.match(cli,/task[\s\S]*\/runs\/case[\s\S]*request dir[\s\S]*task dir/);
   const image=renderPromptFile(new URL('../prompts/image-request.md',import.meta.url),{drawing_prompt:'原绘图要求',background_instructions:'背景要求'});
   assert.ok(image.startsWith('原绘图要求\n\n背景要求'));

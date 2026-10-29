@@ -15,16 +15,16 @@ async function fixture(t: TestContext) {
   const dir = await mkdtemp(join(tmpdir(), 'step-actions-')), task = join(dir, 'case');
   t.after(() => rm(dir, { recursive: true, force: true }));
   await mkdir(task);
-  return { dir, task, act: (pipeline: string, step: string, action: string) => applyStepAction({ name: 'case', dir, pipeline, step, action }) };
+  return { dir, task, act: (section: string, step: string, action: string) => applyStepAction({ name: 'case', dir, section, step, action }) };
 }
 async function put(path: string, value: string) { await mkdir(dirname(path), { recursive: true }); await writeFile(path, value); }
 const text = (path: string) => readFile(path, 'utf8');
 const gone = (path: string) => assert.rejects(readFile(path), { code: 'ENOENT' }, path);
 const completed = (outputs: Record<string, string>) => JSON.stringify({ stamp: 's', inputs: {}, outputs });
 
-for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-  test(`${pipeline} 补全步骤：继续不动，恢复只清会话，重试删除本步产物与草稿且不碰别组`, async t => {
-    const f = await fixture(t), root = join(f.task, pipeline), step = join(root, groupStepId('head/eye', 'completion'));
+for (const section of ['part-layering', 'clothing-part-layering']) {
+  test(`${section} 补全步骤：继续不动，恢复只清会话，重试删除本步产物与草稿且不碰别组`, async t => {
+    const f = await fixture(t), root = join(f.task, section), step = join(root, groupStepId('head/eye', 'completion'));
     const part = artifactPath(root, 'head/eye', 'completion'), other = artifactPath(root, 'body', 'completion');
     await put(join(step, '.running'), JSON.stringify({ inputs: {} }));
     const session = sessionPath(root, groupStepId('head/eye', 'completion'));
@@ -33,21 +33,21 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) {
     await put(join(root, groupStepId('body', 'completion'), '.completed'), completed({ '../../parts/body.svg': 'h' }));
     // A child group's step nests in its completed parent's directory.
     await put(join(root, groupStepId('head', 'completion'), '.completed'), completed({}));
-    assert.deepEqual((await listSteps(root, pipeline as any)).map(entry => [entry.id, entry.status, entry.session]),
+    assert.deepEqual((await listSteps(root, section as any)).map(entry => [entry.id, entry.status, entry.session]),
       [[groupStepId('body', 'completion'), 'completed', false], [groupStepId('head', 'completion'), 'completed', false],
         [groupStepId('head/eye', 'completion'), 'running', true]]);
 
-    assert.match(await f.act(pipeline, groupStepId('head/eye', 'completion'), 'continue'), /继续/);
+    assert.match(await f.act(section, groupStepId('head/eye', 'completion'), 'continue'), /继续/);
     assert.equal(JSON.parse(await text(session)).threadId, 'thread-1');
 
-    assert.match(await f.act(pipeline, groupStepId('head/eye', 'completion'), 'resume'), /thread-1/);
+    assert.match(await f.act(section, groupStepId('head/eye', 'completion'), 'resume'), /thread-1/);
     await gone(session);
     assert.equal(JSON.parse(await text(session + '.history.jsonl')).threadId, 'thread-1');
     assert.equal(await text(part), 'part');
     assert.equal(await text(draftPath(part)), 'draft');
-    assert.match(await f.act(pipeline, groupStepId('head/eye', 'completion'), 'resume'), /恢复等同继续/);
+    assert.match(await f.act(section, groupStepId('head/eye', 'completion'), 'resume'), /恢复等同继续/);
 
-    await f.act(pipeline, groupStepId('head/eye', 'completion'), 'retry');
+    await f.act(section, groupStepId('head/eye', 'completion'), 'retry');
     assert.equal((await readStep(step, f.task)).status, 'absent');
     await gone(part); await gone(draftPath(part));
     assert.equal(await text(other), 'body');
@@ -101,24 +101,24 @@ test('part 合并与遮挡重试删除步骤外的产物；已完成步骤只能
 
 const rasterConfig = (thread: Record<string, unknown> = {}) => JSON.stringify({ version: 2, name: 'case', ...thread,
   sourceInput: {}, krita: { executable: process.execPath, version: 'test' } });
-for (const pipeline of ['raster-layering', 'clothing-raster-layering', 'character-assembly']) {
-  test(`${pipeline} 步骤：恢复清除本步骤会话并记录，重试只删除该步骤`, async t => {
-    const f = await fixture(t), root = join(f.task, pipeline);
+for (const section of ['raster-layering', 'clothing-raster-layering', 'character-assembly']) {
+  test(`${section} 步骤：恢复清除本步骤会话并记录，重试只删除该步骤`, async t => {
+    const f = await fixture(t), root = join(f.task, section);
     await put(join(root, 'run.json'), rasterConfig());
     await put(sessionPath(root, 'step02'), JSON.stringify({ threadId: 'thread-r', harness: 'claude' }));
     await put(join(root, 'step01', '.completed'), 'legacy'); await put(join(root, 'step01', 'kept.kra'), 'kra');
     await put(join(root, 'step02', '.running'), JSON.stringify({ inputs: {} })); await put(join(root, 'step02', 'draft.kra'), 'draft');
-    assert.deepEqual((await listSteps(root, pipeline as any)).map(entry => entry.id), ['step01', 'step02']);
-    await f.act(pipeline, 'step02', 'resume');
+    assert.deepEqual((await listSteps(root, section as any)).map(entry => entry.id), ['step01', 'step02']);
+    await f.act(section, 'step02', 'resume');
     await gone(sessionPath(root, 'step02'));
     const history = JSON.parse(await text(sessionPath(root, 'step02') + '.history.jsonl'));
     assert.deepEqual({ ...history, replacedAt: undefined }, { threadId: 'thread-r', harness: 'claude', reason: '网页恢复：清除会话，保留产物', replacedAt: undefined });
     assert.equal(await text(join(root, 'step02', 'draft.kra')), 'draft');
-    assert.match(await f.act(pipeline, 'step02', 'resume'), /恢复等同继续/);
-    await f.act(pipeline, 'step02', 'retry');
+    assert.match(await f.act(section, 'step02', 'resume'), /恢复等同继续/);
+    await f.act(section, 'step02', 'retry');
     assert.equal((await readStep(join(root, 'step02'), f.task)).status, 'absent');
     assert.equal(await text(join(root, 'step01', 'kept.kra')), 'kra');
-    await assert.rejects(f.act(pipeline, 'merge', 'retry'), /没有步骤/);
+    await assert.rejects(f.act(section, 'merge', 'retry'), /没有步骤/);
   });
 }
 

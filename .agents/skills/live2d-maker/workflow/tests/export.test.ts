@@ -58,7 +58,7 @@ test('records naming the task through a symlinked runs root still export task-re
 test('incomplete, active, missing-delivery and missing-marker exports fail without leaving partial outputs', async t => {
   const f = await exportFixture(t), output = join(f.base, 'refused');
   const tryExport = () => exportCompletedRun({ name: f.name, dir: f.dir, output });
-  const run = structuredClone(f.run); run.pipelines.shadow!.status = 'pending';
+  const run = structuredClone(f.run); run.sections.shadow!.status = 'pending';
   await f.put('run.json', JSON.stringify(run)); await assert.rejects(tryExport(), /全流程/);
   await f.put('run.json', JSON.stringify(f.run));
   const release = await acquireTaskLock(f.root);

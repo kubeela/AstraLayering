@@ -1,6 +1,6 @@
 ---
 本次运行（以下均为绝对路径）：
-- 管线分支目录：{pipeline_directory}。
+- 管线目录：{section_directory}。
 - 已组装、分层的角色 KRA（只读）：{character_kra}。
 - 对应原尺寸合成 PNG（几何配准基准，只读）：{character_color}。
 - simplified 参考（分析画法与投影范围，只读）：{simplified_character}。

@@ -9,7 +9,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { test } from 'node:test';
 import sharp from 'sharp';
-import { defaultRunsDirectory, pipelineDirectory, resolveInput, runsDirectory, taskDirectory, workflowsDirectory } from '../paths.ts';
+import { defaultRunsDirectory, sectionDirectory, resolveInput, runsDirectory, taskDirectory, workflowsDirectory } from '../paths.ts';
 import { prepareReferences as preparePerson, loadPreparedReferences as loadPerson } from '../../part-layering/preparation.ts';
 import { prepareReferences as prepareClothing, loadPreparedReferences as loadClothing } from '../../clothing-part-layering/preparation.ts';
 import { parseRunArguments as parsePart } from '../part/run.ts';
@@ -61,8 +61,8 @@ test('同名任务可在不同 root 独立准备、读取上游、按 name 续�
     assert.deepEqual(await prepareClothing({ runName: name, dir }, clothing), clothes);
     assert.deepEqual(await loadClothing(name, dir), clothes);
     assert.equal(clothingCalls, 1);
-    for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-      await assert.rejects(promisify(execFile)(process.execPath, [join(workflowsDirectory, pipeline, 'run.ts'),
+    for (const section of ['part-layering', 'clothing-part-layering']) {
+      await assert.rejects(promisify(execFile)(process.execPath, [join(workflowsDirectory, section, 'run.ts'),
         '--name', name, '--dir', dir, '--groups', 'missing-groups.json'], { cwd: temporary }), error => {
         assert.match(String(error), /ENOENT/);
         assert.ok(String(error).includes(join(task, 'missing-groups.json')));
@@ -75,12 +75,12 @@ test('同名任务可在不同 root 独立准备、读取上游、按 name 续�
 test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 root', async t => {
   const dir = await realpath(await mkdtemp(join(tmpdir(), 'skill-raster-root-')));
   t.after(() => rm(dir, { recursive: true, force: true }));
-  for (const [run, input, pipeline, definitions] of [
+  for (const [run, input, section, definitions] of [
     [runPersonRaster, 'part-layering', 'raster-layering', personSteps],
     [runClothingRaster, 'clothing-part-layering', 'clothing-raster-layering', clothingSteps],
   ] as const) {
     await seedUpstream('case', input, dir);
-    const output = pipelineDirectory('case', pipeline, dir);
+    const output = sectionDirectory('case', section, dir);
     const deps = { runsDirectory: join(dir, 'unused'), steps: [definitions[0]],
       preflight: async (executable: string) => {
         assert.equal(executable, join(dir, 'case/krita')); return { executable };
@@ -94,7 +94,7 @@ test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 
     await run({ name: 'case', dir }, { ...deps, agent: async request => {
       if (!isRasterReview(request)) assert.equal(request.threadId, 'kept-thread');
       // The upstream located under --dir is shown to the agent as an absolute path.
-      if (!isRasterReview(request)) assert.ok(request.prompt.includes(JSON.stringify(pipelineDirectory('case', input, dir))));
+      if (!isRasterReview(request)) assert.ok(request.prompt.includes(JSON.stringify(sectionDirectory('case', input, dir))));
       return deliverRasterStep(request, definitions[0], 'kept-thread');
     } });
     await stat(join(output, 'step01/.completed'));

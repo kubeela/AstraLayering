@@ -105,8 +105,8 @@ export function rateLimitedAgentError(error: unknown): boolean {
 export type AgentRetry = { attempt: number; nextAttempt: number; delayMs: number; error: unknown; rateLimited: boolean };
 type Waiter = { start(): void; cancel(): void };
 
-// Agent slots shared by every pipeline process of one task. The total scheduler
-// installs them in its pipeline workers, so concurrent pipelines together run at
+// Agent slots shared by every section process of one task. The total scheduler
+// installs them in its section workers, so concurrent sections together run at
 // most jobs agents; each AgentRuntime still applies its own limit first.
 export type AgentSlots = (signal?: AbortSignal) => Promise<() => void>;
 let sharedSlots: AgentSlots | undefined;

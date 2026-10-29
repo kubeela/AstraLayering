@@ -1,6 +1,6 @@
 import { appendFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
-import { pipelineIds } from '../paths.ts';
+import { sectionIds } from '../paths.ts';
 import { retryDelays } from './agent-runtime.ts';
 import { toTaskPath, toTaskPaths } from '../task-paths.ts';
 import type { ThreadEvent } from '@openai/codex-sdk';
@@ -187,11 +187,11 @@ export class AgentLog {
   }
 }
 
-// All six pipelines, including independent CLI entrypoints, share the task log.
+// All six sections, including independent CLI entrypoints, share the task log.
 // Unstructured/test callers keep their log inside their own supplied log root.
 export function workflowLogPath(root: string): string {
   for (let path = resolve(root); dirname(path) !== path; path = dirname(path)) {
-    if ((pipelineIds as readonly string[]).includes(basename(path))) return join(dirname(path), 'workflow.log');
+    if ((sectionIds as readonly string[]).includes(basename(path))) return join(dirname(path), 'workflow.log');
   }
   return join(resolve(root), 'workflow.log');
 }

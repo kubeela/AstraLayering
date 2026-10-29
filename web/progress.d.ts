@@ -32,11 +32,11 @@ export function groupPreviewArtifacts(group: ProgressGroup, phaseFiles: Record<G
   files: Set<string>, versions?: Record<string, string>): Artifact[];
 export function groupStagePreviewArtifacts(phase: 'outline' | 'completion', phaseFiles: Record<GroupPhase, Artifact[]>,
   files: Set<string>, versions?: Record<string, string>): Artifact[];
-export function groupReviewSteps(group: ProgressGroup, pipeline: string, groupId: string):
+export function groupReviewSteps(group: ProgressGroup, section: string, groupId: string):
   { id: ReviewPhase; title: string; status: string; detail: string; artifacts: Artifact[] }[];
 export function reviewReportText(text: string, item: Artifact): string;
 export function groupLayers<T extends { groups?: T[] }>(groups: T[]): T[][];
-export function groupArtifacts(pipeline: string, group: { id: string }, depth: number): Record<GroupPhase, Artifact[]>;
-export const pipelineSteps: ProgressStep[][];
+export function groupArtifacts(section: string, group: { id: string }, depth: number): Record<GroupPhase, Artifact[]>;
+export const sectionSteps: ProgressStep[][];
 export const stepArtifacts: Record<string, Artifact[]>[];
 export function shadowInspectionArtifacts(files: string[]): Artifact[];

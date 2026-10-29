@@ -94,7 +94,7 @@ export async function initializeRun(directory: string, config: RunConfig<unknown
   const staging = await mkdtemp(join(dirname(directory), '.init-'));
   try {
     await saveConfig(staging, config);
-    // Upstream artifacts remain in their owning pipeline; initialize configuration only.
+    // Upstream artifacts remain in their owning section; initialize configuration only.
     await rename(staging, directory);
   } finally { await rm(staging, { recursive: true, force: true }); }
 }
@@ -102,7 +102,7 @@ export async function initializeRun(directory: string, config: RunConfig<unknown
 // Raster steps form one linear section. Each records the hashes of its
 // artwork (the .kra/.png deliveries), so edits made while a run was stopped are
 // refused instead of silently built upon.
-// step01 also depends on the upstream pipeline's final step, so redoing the
+// step01 also depends on the upstream section's final step, so redoing the
 // parts reruns the artwork built on them.
 export function rasterSteps(steps: readonly StepDefinition[], upstream: readonly string[] = []): SectionStep[] {
   return steps.map((step, index) => {

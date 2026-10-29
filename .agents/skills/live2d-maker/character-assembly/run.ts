@@ -2,7 +2,7 @@ import { dirname, join } from 'node:path';
 import { createPixelTool } from '../shared/raster/pixel-tool.ts';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { runCli } from '../shared/raster/cli.ts';
-import { runWorkflow as runSharedWorkflow, type KritaPipeline, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
+import { runWorkflow as runSharedWorkflow, type KritaSection, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
 import { inputDirectories, isAssemblyInput, resolveAssemblyInput, type AssemblyInput } from './input.ts';
 import { buildPrompt, steps } from './steps.ts';
 import { copyDelivery } from '../shared/raster/passthrough.ts';
@@ -27,7 +27,7 @@ export const help = `character-assembly — 单 agent 组装人物与衣服 KRA
 删除 step01/.completed 会重置本步和 thread，不修改上游产物。
 `;
 
-export const pipeline: KritaPipeline<AssemblyInput> = {
+export const section: KritaSection<AssemblyInput> = {
   id: 'character-assembly', steps,
   tools: (output, input, _step, phase) => phase === 'draw'
     ? [createPixelTool(dirname(output), dirname(dirname(output)), join(output, 'pixel-review'), {
@@ -43,11 +43,11 @@ export const pipeline: KritaPipeline<AssemblyInput> = {
 };
 
 export function runWorkflow(options: WorkflowOptions, dependencies: Dependencies = {}) {
-  return runSharedWorkflow(pipeline, options, dependencies);
+  return runSharedWorkflow(section, options, dependencies);
 }
 
 if (import.meta.main) {
-  runCli(pipeline, help).catch(error => {
+  runCli(section, help).catch(error => {
     console.error(formatAgentError(error));
     process.exitCode = 1;
   });

@@ -7,8 +7,8 @@ import { clearStepSession, readStepSession } from '../shared/agents/step-session
 import { occlusionPath } from '../shared/part/occlusion-plan.ts';
 import { artifactPath, draftPath } from '../shared/part/artifact-facts.ts';
 import { partSteps, stepPattern } from '../shared/step-paths.js';
-import { pipelineIds, type PipelineId } from '../shared/paths.ts';
-import { acquireTaskLock, directoryFor, pipelineId, type TaskOptions } from './state.ts';
+import { sectionIds, type SectionId } from '../shared/paths.ts';
+import { acquireTaskLock, directoryFor, sectionId, type TaskOptions } from './state.ts';
 
 // Per-step recovery for an interrupted or failed step, by any client (web, CLI):
 //   continue: change nothing; the next run continues the step with its
@@ -18,36 +18,36 @@ import { acquireTaskLock, directoryFor, pipelineId, type TaskOptions } from './s
 //   retry:    reset the step (directory, declared outputs, session and the
 //             agent attempts that worked in it); the next run reruns it from a
 //             clean step, and the steps built on it rerun with it.
-// Every pipeline keeps a step's session in agents/steps/<step>/session.json
+// Every section keeps a step's session in agents/steps/<step>/session.json
 // (shared/agents/step-session.ts). Steps without a session (one-shot agents)
 // simply rerun when they have no product, so resume equals continue.
-// The empty step id continues the whole pipeline.
+// The empty step id continues the whole section.
 export const stepActions = ['continue', 'resume', 'retry'] as const;
 export type StepAction = typeof stepActions[number];
 export type StepEntry = { id: string; status: Exclude<StepStatus, 'absent'>; session: boolean };
 
-const partPipelines: readonly PipelineId[] = ['part-layering', 'clothing-part-layering'];
+const partSections: readonly SectionId[] = ['part-layering', 'clothing-part-layering'];
 const safeSegment = (segment: string) => !!segment && segment !== '.' && segment !== '..' && !/[\\\0]/.test(segment);
 // Step ids are the step directories relative to the section (see part-steps.ts and step-section.ts).
 const itemSteps: readonly string[] = [partSteps.outline, partSteps.completion, partSteps.children];
-export function validStepId(pipeline: PipelineId, id: string): boolean {
+export function validStepId(section: SectionId, id: string): boolean {
   if (typeof id !== 'string' || !id.split('/').every(safeSegment)) return false;
   const [step, ...items] = id.split('/'), item = items.join('/');
   if (!stepPattern.test(step)) return false;
-  if (!partPipelines.includes(pipeline)) return !items.length;
+  if (!partSections.includes(section)) return !items.length;
   if (itemSteps.includes(step)) return /^[^/]+(\/children\/[^/]+)*$/.test(item);
   if (step === partSteps.reduce) return /^depth\d{2}$/.test(item);
   return !items.length;
 }
 
-export const pipelineRoot = (directory: string, pipeline: PipelineId): string => join(directory, pipeline);
+export const sectionRoot = (directory: string, section: SectionId): string => join(directory, section);
 
-// Every marked or unmarked step directory of a pipeline, in path order.
-export async function listSteps(root: string, pipeline: PipelineId): Promise<StepEntry[]> {
+// Every marked or unmarked step directory of a section, in path order.
+export async function listSteps(root: string, section: SectionId): Promise<StepEntry[]> {
   let names: string[];
   try { names = await readdir(root, { recursive: true }); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return []; throw error; }
-  const ids = new Set(names.map(name => name.split(/[\\/]/).join('/')).filter(name => validStepId(pipeline, name)));
+  const ids = new Set(names.map(name => name.split(/[\\/]/).join('/')).filter(name => validStepId(section, name)));
   const steps: StepEntry[] = [];
   for (const id of [...ids].sort()) {
     const { status } = await readStep(join(root, id), taskRootOf(root));
@@ -58,23 +58,23 @@ export async function listSteps(root: string, pipeline: PipelineId): Promise<Ste
   return steps;
 }
 
-export async function applyStepAction(options: Pick<TaskOptions, 'name' | 'dir'> & { pipeline: string; step: string; action: string }): Promise<string> {
-  const pipeline = pipelineId(options.pipeline);
+export async function applyStepAction(options: Pick<TaskOptions, 'name' | 'dir'> & { section: string; step: string; action: string }): Promise<string> {
+  const section = sectionId(options.section);
   if (!(stepActions as readonly string[]).includes(options.action)) throw new Error('未知操作：' + options.action + '；可选：' + stepActions.join(', '));
   const whole = options.step === '';
-  if (whole ? options.action !== 'continue' : !validStepId(pipeline, options.step)) throw new Error(`${pipeline} 没有步骤 ${options.step}`);
+  if (whole ? options.action !== 'continue' : !validStepId(section, options.step)) throw new Error(`${section} 没有步骤 ${options.step}`);
   const directory = directoryFor(options);
   // The task lock keeps a running coordinator and a second recovery out.
   const release = await acquireTaskLock(directory);
   try {
-    const root = pipelineRoot(directory, pipeline);
-    if (whole) return `${pipeline}：保留全部产物，下次运行续跑。`;
-    return await actOnStep(root, pipeline, options.step, options.action as StepAction);
+    const root = sectionRoot(directory, section);
+    if (whole) return `${section}：保留全部产物，下次运行续跑。`;
+    return await actOnStep(root, section, options.step, options.action as StepAction);
   } finally { await release(); }
 }
 
 // The task-wide form the web toolbar uses: the action applies to every
-// interrupted or failed step of every pipeline. Continue with no such step
+// interrupted or failed step of every section. Continue with no such step
 // just runs the task on from where it stopped.
 export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'> & { action: string }): Promise<string> {
   if (!(stepActions as readonly string[]).includes(options.action)) throw new Error('未知操作：' + options.action + '；可选：' + stepActions.join(', '));
@@ -82,10 +82,10 @@ export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'>
   const release = await acquireTaskLock(directory);
   try {
     const messages: string[] = [];
-    for (const pipeline of pipelineIds) {
-      const root = pipelineRoot(directory, pipeline);
-      for (const step of await listSteps(root, pipeline)) {
-        if (step.status === 'running') messages.push(`${pipeline}/` + await actOnStep(root, pipeline, step.id, action));
+    for (const section of sectionIds) {
+      const root = sectionRoot(directory, section);
+      for (const step of await listSteps(root, section)) {
+        if (step.status === 'running') messages.push(`${section}/` + await actOnStep(root, section, step.id, action));
       }
     }
     if (!messages.length) {
@@ -96,11 +96,11 @@ export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'>
   } finally { await release(); }
 }
 
-async function actOnStep(root: string, pipeline: PipelineId, step: string, action: StepAction): Promise<string> {
+async function actOnStep(root: string, section: SectionId, step: string, action: StepAction): Promise<string> {
   const stepDirectory = join(root, step);
   const { status, record } = await readStep(stepDirectory, taskRootOf(root));
-  if (status === 'absent') throw new Error(`步骤 ${pipeline}/${step} 不存在，下次运行会直接执行。`);
-  const part = partPipelines.includes(pipeline);
+  if (status === 'absent') throw new Error(`步骤 ${section}/${step} 不存在，下次运行会直接执行。`);
+  const part = partSections.includes(section);
   if (action === 'continue') {
     if (status === 'completed') throw new Error(`步骤 ${step} 已完成；需要重做请选择重试。`);
     return `${step}：保留产物和会话，下次运行继续。`;

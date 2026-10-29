@@ -46,7 +46,7 @@ export function validateStructureGroups(value: unknown): StructureGroups {
     });
   }
   visit(document.groups, 'groups.groups');
-  normalizeGroups(document.groups); // Share the part pipeline's node/type contract.
+  normalizeGroups(document.groups); // Share the part section's node/type contract.
   return structuredClone(document) as StructureGroups;
 }
 

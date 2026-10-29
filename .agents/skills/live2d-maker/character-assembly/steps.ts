@@ -19,7 +19,7 @@ export async function buildPrompt(step: StepDefinition, input: AssemblyInput, ou
   const root = taskRootOf(dirname(output)), json = async (path: string) => JSON.stringify(await agentPath(root, path));
   return renderPrompt(await readFile(step.prompt, 'utf8'), {
     runtime_context: renderPromptFile(new URL('../shared/prompts/assembly-runtime.md', import.meta.url), {
-      pipeline_directory: await json(dirname(output)),
+      section_directory: await json(dirname(output)),
       character_kra: await json(input.characterKra),
       clothing_kra: await json(input.clothingKra),
       simplified_character: await json(input.simplifiedCharacter),

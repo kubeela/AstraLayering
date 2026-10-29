@@ -4,7 +4,7 @@ import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 // candidate that exists. A relative link is relative to the report file (Markdown
 // convention); next comes the task root, which older reports also used
 // (e.g. raster-layering/step01/x.png). Legacy only: older runs and demos also
-// rooted links at an intermediate ancestor of the report (a pipeline or sub-run
+// rooted links at an intermediate ancestor of the report (a section or sub-run
 // directory), so those ancestors come last, nearest first, and are reached only
 // when neither the report directory nor the task root yields an existing file.
 // Absolute links are accepted inside the task root, or inside an alias of it

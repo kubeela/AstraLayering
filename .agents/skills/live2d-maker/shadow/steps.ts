@@ -28,7 +28,7 @@ export async function buildPrompt(step: StepDefinition, input: ShadowInput, outp
   }) : '';
   return renderPrompt(await readFile(step.prompt, 'utf8'), {
     runtime_context: renderPromptFile(new URL('../shared/prompts/shadow-runtime.md', import.meta.url), {
-      pipeline_directory: await json(dirname(output)),
+      section_directory: await json(dirname(output)),
       character_kra: await json(input.characterKra),
       character_color: await json(input.characterColor),
       simplified_character: await json(input.simplifiedCharacter),

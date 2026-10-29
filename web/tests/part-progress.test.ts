@@ -8,40 +8,40 @@ import { acquireTaskLock, configureRun, saveRun } from '../../.agents/skills/liv
 import { stampedSvg, svgHash } from '../../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
 
 const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0L10 10Z"/></svg>');
-async function fixture(t: any, pipeline = 'part-layering') {
+async function fixture(t: any, section = 'part-layering') {
   const dir = await realpath(await mkdtemp(join(tmpdir(), 'part-progress-'))), task = join(dir, 'test');
   await mkdir(task);
   t.after(() => rm(dir, { recursive: true, force: true }));
   const put = async (path: string, value: any) => {
-    const target = join(task, pipeline, path); await mkdir(join(target, '..'), { recursive: true });
+    const target = join(task, section, path); await mkdir(join(target, '..'), { recursive: true });
     await writeFile(target, typeof value === 'string' || Buffer.isBuffer(value) ? value : JSON.stringify(value));
   };
   const get = async () => {
     const value = await snapshot(task, 'test', dir);
-    return { ...value, part: value.pipelines.find(item => item.id === pipeline)! };
+    return { ...value, part: value.sections.find(item => item.id === section)! };
   };
   // Step markers as the scheduler leaves them (see shared/step-chain.ts).
   const mark = (step: string, status: 'completed' | 'running' = 'completed') => put(`${step}/.${status}`, '');
   return { dir, task, put, get, mark };
 }
 
-for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: drafts, publication, hash-matched reviews, reduction, completion and child analysis`, async t => {
-  const f = await fixture(t, pipeline);
+for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: drafts, publication, hash-matched reviews, reduction, completion and child analysis`, async t => {
+  const f = await fixture(t, section);
   const group = { id: 'body', kind: 'group', groups: [] };
   await f.put('groups.json', { groups: [group] });
-  const original = await readFile(join(f.task, pipeline, 'groups.json'));
+  const original = await readFile(join(f.task, section, 'groups.json'));
   await f.put('step09_outline/body/outline.draft.svg', svg);
   let value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'available');
   assert.equal(value.part.groups[0].webMessages.outline, '已有产物');
   assert.match(value.part.groups[0].webDetails.outline, /草稿/);
-  const version = value.fileVersions[pipeline + '/step09_outline/body/outline.draft.svg'];
+  const version = value.fileVersions[section + '/step09_outline/body/outline.draft.svg'];
   await f.put('step09_outline/body/outline.draft.svg', svg + '\n');
   value = await f.get();
-  assert.notEqual(value.fileVersions[pipeline + '/step09_outline/body/outline.draft.svg'], version);
+  assert.notEqual(value.fileVersions[section + '/step09_outline/body/outline.draft.svg'], version);
   assert.equal(value.part.groups[0].webPhases.outline, 'available', 'an inactive draft is never running');
   await f.put('step09_outline/body/outline.svg', svg);
-  await rm(join(f.task, pipeline, 'step09_outline/body/outline.draft.svg'));
+  await rm(join(f.task, section, 'step09_outline/body/outline.draft.svg'));
   assert.equal((await f.get()).part.groups[0].webPhases.outline, 'done');
   const review = { verdict: 'pass', candidateHash: svgHash(svg), feedback: '通过', observations: [] };
   await f.put('step09_outline/body/review.json', { groupId: 'body', reviews: [{ ...review, candidateHash: 'stale' }] });
@@ -64,20 +64,20 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   await f.mark('step11_completion/body');
   value = await f.get();
   assert.deepEqual(value.part.groups[0].webPhases, { outline: 'done', review: 'done', reduction: 'done', completion: 'done', completionCheck: 'done', children: 'pending' });
-  assert.deepEqual(await readFile(join(f.task, pipeline, 'groups.json')), original, 'display must not save restored steps');
+  assert.deepEqual(await readFile(join(f.task, section, 'groups.json')), original, 'display must not save restored steps');
   await f.put('groups.json', { groups: [{ ...group, groups: [{ id: 'body/torso', kind: 'part', groups: [] }] }] });
   await f.mark('step12_children/body');
   value = await f.get();
   assert.equal(value.part.groups[0].webPhases.children, 'done');
   assert.equal(value.part.groups[0].groups[0].webPhases.outline, 'pending');
   // Rerunning the step clears its completed marker: the old check is only a record.
-  await rm(join(f.task, pipeline, 'step11_completion/body/.completed'));
+  await rm(join(f.task, section, 'step11_completion/body/.completed'));
   await f.mark('step11_completion/body', 'running');
   assert.equal((await f.get()).part.groups[0].webPhases.completionCheck, 'available');
 });
 
-for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: completed nested parts show every phase from native artifact paths`, async t => {
-  const f = await fixture(t, pipeline), id = 'face/eye_left/iris';
+for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: completed nested parts show every phase from native artifact paths`, async t => {
+  const f = await fixture(t, section), id = 'face/eye_left/iris';
   await f.put('groups.json', { groups: [{ id: 'face', groups: [{ id: 'face/eye_left', groups: [{ id, kind: 'part', groups: [] }] }] }] });
   const item = 'face/children/eye_left/children/iris';
   await f.put(`step09_outline/${item}/outline.svg`, svg);
@@ -91,21 +91,21 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   const value = await f.get(), node = value.part.groups[0].groups[0].groups[0];
   assert.deepEqual(node.webPhases, Object.fromEntries(['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'].map(phase => [phase, 'done'])));
   assert.equal(node.webReviewRounds[0].review.status, 'done');
-  assert.ok(value.files.includes(`${pipeline}/step09_outline/${item}/outline.svg`));
+  assert.ok(value.files.includes(`${section}/step09_outline/${item}/outline.svg`));
   assert.deepEqual(value.errors ?? [], []);
 });
 
-for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: hidden outlines and reviews finish together once the skip step completes`, async t => {
-  const f = await fixture(t, pipeline);
+for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: hidden outlines and reviews finish together once the skip step completes`, async t => {
+  const f = await fixture(t, section);
   const group = { id: 'iris', kind: 'part', hiddenInReference: true, groups: [] };
   await f.put('groups.json', { groups: [group] });
-  const original = await readFile(join(f.task, pipeline, 'groups.json'));
+  const original = await readFile(join(f.task, section, 'groups.json'));
   const hiddenSource = '<svg xmlns="http://www.w3.org/2000/svg" data-hidden-in-reference="true"><g data-group-path="iris"/></svg>';
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'the flag alone is not a completed skip');
   await f.mark('step09_outline/iris', 'running');
   await f.put('step09_outline/iris/outline.svg', hiddenSource);
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'an interrupted skip still needs its completed marker');
-  await rm(join(f.task, pipeline, 'step09_outline/iris/.running'));
+  await rm(join(f.task, section, 'step09_outline/iris/.running'));
   await f.mark('step09_outline/iris');
   let value = await f.get(), node = value.part.groups[0];
   assert.equal(node.webPhases.outline, 'done');
@@ -125,22 +125,22 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.ok(Object.values(value.part.groups[0].webPhases).every(status => status === 'done'));
   assert.equal(value.part.states.layers, 'done');
   assert.equal(value.part.states.merge, 'done');
-  assert.deepEqual(await readFile(join(f.task, pipeline, 'groups.json')), original, 'display does not rewrite scheduler facts');
+  assert.deepEqual(await readFile(join(f.task, section, 'groups.json')), original, 'display does not rewrite scheduler facts');
   await f.put('groups.json', { groups: [{ ...group, hiddenInReference: false }] });
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'ordinary parts still require their review report');
   await f.put('groups.json', { groups: [group] });
-  await rm(join(f.task, pipeline, 'step09_outline/iris/outline.svg'));
+  await rm(join(f.task, section, 'step09_outline/iris/outline.svg'));
   value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'pending');
   assert.equal(value.part.groups[0].webPhases.review, 'pending', 'missing skip output is not a completed review');
 });
 
-for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: initial and depth requests show running without outputs, and candidates remain previewable`, async t => {
-  const f = await fixture(t, pipeline);
-  const run = await configureRun({ name: 'test', dir: f.dir, from: pipeline as any, to: pipeline as any }, f.task);
-  run.status = 'running'; run.activePipeline = pipeline as any;
+for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: initial and depth requests show running without outputs, and candidates remain previewable`, async t => {
+  const f = await fixture(t, section);
+  const run = await configureRun({ name: 'test', dir: f.dir, from: section as any, to: section as any }, f.task);
+  run.status = 'running'; run.activeSection = section as any;
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
-  run.pipelines[pipeline as 'part-layering']!.status = 'running';
+  run.sections[section as 'part-layering']!.status = 'running';
   await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
   await f.put('agents/initial/request.json', { task: { name: '首次分组识别' } });
@@ -155,7 +155,7 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   await f.put('step14_occlusion/workspace/candidate.svg', svg);
   let value = await f.get();
   assert.equal(value.part.states.occlusion, 'running');
-  assert.ok(value.files.includes(pipeline + '/step14_occlusion/workspace/candidate.svg'));
+  assert.ok(value.files.includes(section + '/step14_occlusion/workspace/candidate.svg'));
   await f.put('agents/depth/result.json', { status: 'completed' });
   assert.equal((await f.get()).part.states.occlusion, 'available');
   await f.put('occlusion.json', { version: 3, direction: 'back-to-front', sourceHash: 'input',
@@ -163,7 +163,7 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   assert.equal((await f.get()).part.states.occlusion, 'available', 'the table counts once its step is completed');
   await f.mark('step14_occlusion');
   assert.equal((await f.get()).part.states.occlusion, 'done');
-  await rm(join(f.task, pipeline, 'occlusion.json'));
+  await rm(join(f.task, section, 'occlusion.json'));
   run.runner.finishedAt = new Date().toISOString(); await saveRun(f.task, run);
   assert.equal((await f.get()).part.states.occlusion, 'available', 'a stopped request cannot keep a candidate running');
 });
@@ -171,7 +171,7 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
 test('preparation activity is visible before an image, and matching published references complete independently', async t => {
   const f = await fixture(t);
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activePipeline = 'part-layering';
+  run.status = 'running'; run.activeSection = 'part-layering';
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
   await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
@@ -210,7 +210,7 @@ test('人物参考仅凭图片与步骤完成记录展示完成，缺图时仍�
   assert.equal(value.part.states.preparation, 'available');
 });
 
-test('a completed merge step is complete before the whole part pipeline finishes', async t => {
+test('a completed merge step is complete before the whole part section finishes', async t => {
   const f = await fixture(t), group = { id: 'body', kind: 'part', groups: [] };
   await f.put('groups.json', { groups: [group] });
   await f.put('step09_outline/body/outline.svg', svg);
@@ -236,9 +236,9 @@ test('running phases require current agent requests; queued groups, old calls an
   const f = await fixture(t);
   await f.put('groups.json', { groups: ['body', 'hair', 'neck'].map(id => ({ id, groups: [] })) });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activePipeline = 'part-layering';
+  run.status = 'running'; run.activeSection = 'part-layering';
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
-  run.pipelines['part-layering']!.status = 'running';
+  run.sections['part-layering']!.status = 'running';
   await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
   await f.put('agents/current/request.json', { task: { name: '组轮廓绘制-body' } });
@@ -263,9 +263,9 @@ test('a call waiting to retry shows 限流等待 with the logged error verbatim 
   const f = await fixture(t);
   await f.put('groups.json', { groups: ['body', 'hair'].map(id => ({ id, groups: [] })) });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activePipeline = 'part-layering';
+  run.status = 'running'; run.activeSection = 'part-layering';
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
-  run.pipelines['part-layering']!.status = 'running';
+  run.sections['part-layering']!.status = 'running';
   await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
   await f.put('agents/body/request.json', { task: { name: '组轮廓绘制-body' } });
@@ -296,9 +296,9 @@ test('a CLI attempt that failed and scheduled a retry stays 限流等待; a resu
   const f = await fixture(t);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activePipeline = 'part-layering';
+  run.status = 'running'; run.activeSection = 'part-layering';
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 10_000).toISOString() };
-  run.pipelines['part-layering']!.status = 'running';
+  run.sections['part-layering']!.status = 'running';
   await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
   const at = (path: string, seconds: number) => utimes(join(f.task, 'part-layering', path), new Date(), new Date(Date.now() - seconds * 1000));
@@ -320,9 +320,9 @@ test('a CLI attempt that failed and scheduled a retry stays 限流等待; a resu
 test('a failed current group and initial request are marked failed while their drafts remain visible; recovery clears old failures', async t => {
   const f = await fixture(t);
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'failed'; run.activePipeline = 'part-layering';
+  run.status = 'failed'; run.activeSection = 'part-layering';
   run.runner = { id: 'failed-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString(), finishedAt: new Date().toISOString() };
-  run.pipelines['part-layering']!.status = 'failed'; await saveRun(f.task, run);
+  run.sections['part-layering']!.status = 'failed'; await saveRun(f.task, run);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
   await f.mark('step08_initial');
   await f.put('step09_outline/body/outline.draft.svg', svg);
@@ -334,7 +334,7 @@ test('a failed current group and initial request are marked failed while their d
   assert.equal(value.part.groups[0].webPhases.outline, 'failed');
   assert.equal(value.part.states.initial, 'failed');
   assert.ok(value.files.includes('part-layering/step09_outline/body/outline.draft.svg'));
-  run.status = 'running'; run.pipelines['part-layering']!.status = 'running';
+  run.status = 'running'; run.sections['part-layering']!.status = 'running';
   run.runner = { id: 'new-runner', pid: process.pid, startedAt: new Date().toISOString() }; await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
   value = await f.get();
@@ -363,36 +363,36 @@ test('lanes skipped because the subject was not dressed show as skipped with the
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'shadow' }, f.task);
   const summary = '素体换装沿用了简化参考，没有衣服需要拆分和绘制，跳过';
   for (const id of ['clothing-part-layering', 'clothing-raster-layering'] as const)
-    run.pipelines[id] = { status: 'completed', skipped: true, updatedAt: new Date().toISOString(), summary };
+    run.sections[id] = { status: 'completed', skipped: true, updatedAt: new Date().toISOString(), summary };
   await saveRun(f.task, run);
-  const { pipelines } = await f.get();
+  const { sections } = await f.get();
   for (const id of ['clothing-part-layering', 'clothing-raster-layering']) {
-    const lane = pipelines.find(item => item.id === id)!;
+    const lane = sections.find(item => item.id === id)!;
     assert.equal(lane.status, 'skipped'); assert.equal(lane.skipped, true);
     assert.ok(Object.values(lane.states).every(state => state === 'skipped'), id);
   }
-  assert.notEqual(pipelines.find(item => item.id === 'raster-layering')!.status, 'skipped');
+  assert.notEqual(sections.find(item => item.id === 'raster-layering')!.status, 'skipped');
 });
 
 test('a lane that failed shows as failed while the other lane runs on', async t => {
   const f = await fixture(t, 'clothing-raster-layering');
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'shadow' }, f.task);
-  run.status = 'running'; run.activePipelines = ['part-layering', 'clothing-raster-layering'];
+  run.status = 'running'; run.activeSections = ['part-layering', 'clothing-raster-layering'];
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
-  run.pipelines['part-layering']!.status = 'running';
-  run.pipelines['clothing-raster-layering'] = { status: 'failed', updatedAt: new Date().toISOString(), summary: 'ENAMETOOLONG' };
+  run.sections['part-layering']!.status = 'running';
+  run.sections['clothing-raster-layering'] = { status: 'failed', updatedAt: new Date().toISOString(), summary: 'ENAMETOOLONG' };
   await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
   // The failed section never cleared its running marker.
   await f.mark('step01', 'running');
-  const { pipelines } = await f.get();
-  const lane = pipelines.find(item => item.id === 'clothing-raster-layering')!;
+  const { sections } = await f.get();
+  const lane = sections.find(item => item.id === 'clothing-raster-layering')!;
   assert.equal(lane.status, 'failed'); assert.equal(lane.states.step01, 'failed');
-  assert.equal(pipelines.find(item => item.id === 'part-layering')!.status, 'running');
+  assert.equal(sections.find(item => item.id === 'part-layering')!.status, 'running');
   // The step it left mid-way says why; a review it was on carries the reason instead of the draw step.
   assert.equal(lane.messages.step01, 'ENAMETOOLONG');
   await f.put('step01/report.md', 'drawn');
-  const review = (await f.get()).pipelines.find(item => item.id === 'clothing-raster-layering')!;
+  const review = (await f.get()).sections.find(item => item.id === 'clothing-raster-layering')!;
   assert.equal(review.states['review-01'], 'failed');
   assert.deepEqual(review.messages, { 'review-01': 'ENAMETOOLONG' });
 });

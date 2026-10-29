@@ -104,10 +104,10 @@ test('web forwards shadow mode to the existing coordinator and shows artifacts o
   assert.equal((await f.post('start', { name: 'shadow-case', shadowMode: '../mask' })).status, 400);
   const root = join(f.dir, 'shadow-case');
   await put(root, 'shadow/step01_mask/character-shadowed.png');
-  const value = await snapshot(root, 'shadow-case', f.dir), stage = value.pipelines.find(stage => stage.id === 'shadow')!;
+  const value = await snapshot(root, 'shadow-case', f.dir), stage = value.sections.find(stage => stage.id === 'shadow')!;
   assert.equal(stage.states.mask, 'available'); assert.equal(stage.states['normal-depth'], 'pending');
   for (const path of ['normal.png', 'depth.png', 'report.md', '.completed']) await put(root, 'shadow/step01_normal-depth/' + path);
-  const finished = (await snapshot(root, 'shadow-case', f.dir)).pipelines.find(stage => stage.id === 'shadow')!;
+  const finished = (await snapshot(root, 'shadow-case', f.dir)).sections.find(stage => stage.id === 'shadow')!;
   assert.equal(finished.states['normal-depth'], 'done');
   assert.equal(Object.hasOwn(finished.states, 'normal-depth-lighting'), false);
 });
@@ -154,30 +154,30 @@ test('snapshots distinguish artifacts, real group states, missing outputs, revie
   await put(task, 'part-layering/preview.svg');
   let value = await snapshot(task, 'test', f.dir);
   assert.equal(value.status, 'untracked');
-  assert.equal(value.pipelines[0].states.standard, 'pending');
-  assert.equal(value.pipelines[0].states.merge, 'available');
-  assert.equal(value.pipelines[0].groups[0].webPhases.outline, 'done');
-  assert.equal(value.pipelines[0].groups[0].webPhases.review, 'pending');
+  assert.equal(value.sections[0].states.standard, 'pending');
+  assert.equal(value.sections[0].states.merge, 'available');
+  assert.equal(value.sections[0].groups[0].webPhases.outline, 'done');
+  assert.equal(value.sections[0].groups[0].webPhases.review, 'pending');
   const prefix = 'clothing-raster-layering/step01/';
   for (const path of ['.completed', 'clothing-depth.kra', 'report.md']) await put(task, prefix + path);
   await put(task, prefix + 'review-01.md', '结论：通过\n逐层核对完毕。');
   value = await snapshot(task, 'test', f.dir);
-  assert.equal(value.pipelines[3].states.step01, 'done');
-  assert.equal(value.pipelines[3].states['review-02'], 'skipped');
+  assert.equal(value.sections[3].states.step01, 'done');
+  assert.equal(value.sections[3].states['review-02'], 'skipped');
   await rm(join(task, prefix, 'clothing-depth.kra'));
   value = await snapshot(task, 'test', f.dir);
-  assert.equal(value.pipelines[3].states.step01, 'failed');
-  assert.match(value.pipelines[3].messages.step01, /缺少交付/);
+  assert.equal(value.sections[3].states.step01, 'failed');
+  assert.match(value.sections[3].messages.step01, /缺少交付/);
   await put(task, prefix + 'clothing-depth.kra');
   await put(task, prefix + 'review-01.md', '结论：需要修复\n修复轮廓。');
   value = await snapshot(task, 'test', f.dir);
-  assert.equal(value.pipelines[3].states.step01, 'failed');
+  assert.equal(value.sections[3].states.step01, 'failed');
   for (const phase of ['01', '02']) {
     await put(task, prefix + 'review-' + phase + '.md', '结论：需要修复\n修复轮廓。');
     await put(task, prefix + 'repair-' + phase + '.md', '结论：已修复\n完成逐层检查。');
   }
   value = await snapshot(task, 'test', f.dir);
-  assert.equal(value.pipelines[3].states.step01, 'done');
+  assert.equal(value.sections[3].states.step01, 'done');
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'clothing-raster-layering', to: 'clothing-raster-layering' }, task);
   run.status = 'running'; run.runner = { id: 'dead', pid: 2147483647, startedAt: new Date().toISOString() };
   await saveRun(task, run);
@@ -268,7 +268,7 @@ test('开始、继续、恢复、重试先检查 Krita：不可用则 409 且不
   await put(task, 'part-layering/step11_completion/head/.running', JSON.stringify({ inputs: {} }));
   await put(task, 'part-layering/agents/steps/step11_completion/head/session.json', JSON.stringify({ threadId: 'thread-1' }));
   for (const [path, value] of [['start', {}], ['task-action', { action: 'retry' }], ['task-action', { action: 'resume' }],
-    ['step-action', { pipeline: 'part-layering', step: 'step11_completion/head', action: 'retry' }]] as const) {
+    ['step-action', { section: 'part-layering', step: 'step11_completion/head', action: 'retry' }]] as const) {
     const refused = await f.post(path, { name: 'case', ...value });
     assert.equal(refused.status, 409, path); assert.deepEqual(refused.value.krita, { path: '/opt/old-krita' });
     assert.match(refused.value.error, /记录的 Krita 不可用：\/opt\/old-krita[\s\S]*Krita 可执行文件路径[\s\S]*--krita/);
@@ -285,22 +285,22 @@ test('步骤操作接口：重试人物与衣服分块的步骤后按保存的�
   const f = await fixture(t, async options => { started.push(options); return 456; }), task = join(f.dir, 'case');
   await mkdir(task);
   await saveRun(task, await configureRun({ name: 'case', dir: f.dir }, task));
-  for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-    await put(task, `${pipeline}/step11_completion/head/.running`, JSON.stringify({ inputs: {} }));
-    await put(task, `${pipeline}/agents/steps/step11_completion/head/session.json`, JSON.stringify({ threadId: 'thread-' + pipeline }));
+  for (const section of ['part-layering', 'clothing-part-layering']) {
+    await put(task, `${section}/step11_completion/head/.running`, JSON.stringify({ inputs: {} }));
+    await put(task, `${section}/agents/steps/step11_completion/head/session.json`, JSON.stringify({ threadId: 'thread-' + section }));
   }
-  const pipelines = (await snapshot(task, 'case', f.dir)).pipelines;
+  const sections = (await snapshot(task, 'case', f.dir)).sections;
   for (const id of ['part-layering', 'clothing-part-layering']) {
-    assert.deepEqual(pipelines.find(pipeline => pipeline.id === id)!.steps, [{ id: 'step11_completion/head', status: 'running', session: true }]);
+    assert.deepEqual(sections.find(section => section.id === id)!.steps, [{ id: 'step11_completion/head', status: 'running', session: true }]);
   }
-  const resumed = await f.post('step-action', { name: 'case', pipeline: 'clothing-part-layering', step: 'step11_completion/head', action: 'resume' });
+  const resumed = await f.post('step-action', { name: 'case', section: 'clothing-part-layering', step: 'step11_completion/head', action: 'resume' });
   assert.equal(resumed.status, 202); assert.equal(resumed.value.pid, 456); assert.match(resumed.value.message, /thread-clothing-part-layering/);
   await assert.rejects(readFile(join(task, 'clothing-part-layering/step11_completion/head/session.json')), { code: 'ENOENT' });
-  const retried = await f.post('step-action', { name: 'case', pipeline: 'part-layering', step: 'step11_completion/head', action: 'retry' });
+  const retried = await f.post('step-action', { name: 'case', section: 'part-layering', step: 'step11_completion/head', action: 'retry' });
   assert.equal(retried.status, 202);
   await assert.rejects(readFile(join(task, 'part-layering/step11_completion/head/.running')), { code: 'ENOENT' });
   assert.equal(started.length, 2); assert.equal(started[0].name, 'case'); assert.equal(started[0].from, undefined);
-  const refused = await f.post('step-action', { name: 'case', pipeline: 'part-layering', step: 'step11_completion/head', action: 'retry' });
+  const refused = await f.post('step-action', { name: 'case', section: 'part-layering', step: 'step11_completion/head', action: 'retry' });
   assert.equal(refused.status >= 400, true); assert.match(refused.value.error, /不存在/);
   assert.equal(started.length, 2);
 });

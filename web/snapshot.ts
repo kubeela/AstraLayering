@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path';
 import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
 import { shadowStep } from '../.agents/skills/live2d-maker/shared/step-paths.js';
-import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
+import { sectionIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { listSteps } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { currentSession } from '../.agents/skills/live2d-maker/shared/agents/step-session.ts';
 import { readRun, taskStatus, type TaskRun } from '../.agents/skills/live2d-maker/workflow/state.ts';
@@ -54,14 +54,14 @@ export async function snapshot(directory: string, name: string, dir: string) {
     try { return (await lstat(await safePath(directory, path))).isFile(); }
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(String(error)); return false; }
   };
-  const pipelines = [];
+  const sections = [];
   // Slots held machine-wide, read once a section of this task holds or awaits one.
   let kritaInUse: number | undefined;
-  for (const id of pipelineIds) {
-    if (record.run?.archive && !record.run.pipelines[id]) continue;
-    // The character and clothing lanes run side by side: several pipelines can be active at once.
-    const current = !!record.run?.activePipelines?.includes(id);
-    const saved = record.run?.pipelines[id];
+  for (const id of sectionIds) {
+    if (record.run?.archive && !record.run.sections[id]) continue;
+    // The character and clothing lanes run side by side: several sections can be active at once.
+    const current = !!record.run?.activeSections?.includes(id);
+    const saved = record.run?.sections[id];
     // A lane that failed stays listed as the one that stopped the run, while the other lane may still be running.
     const active = record.runnerAlive && record.lockHeld && current && saved?.status !== 'failed';
     const failed = record.status === 'failed' || saved?.status === 'failed';
@@ -101,7 +101,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
       const values = phases.map(phase => states[phase]);
       states.layers = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed' : values.includes('unconfirmed') ? 'unconfirmed'
         : values.every(v => v === 'done') ? 'done' : all.length ? 'available' : 'pending';
-      // Legacy completed pipelines can lack individual reference fingerprints.
+      // Legacy completed sections can lack individual reference fingerprints.
       if (saved?.status === 'completed') {
         for (const key of ['initial', 'preparation', 'standard', 'simplified', 'base', 'clothing']) {
           if (states[key] === 'available') states[key] = 'done';
@@ -133,7 +133,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
         }
         // A portable archive records historical completion, not a resumable
         // scheduler. Earlier exports omitted receipts; require intact deliveries
-        // before displaying their archived pipeline completion at each step.
+        // before displaying their archived section completion at each step.
         if (record.run?.archive && saved?.status === 'completed' && !missing.length) completed = true;
         states[step.id] = completed ? (missing.length ? 'failed' : 'done') : running ? observed('running')
           : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
@@ -223,7 +223,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const krita = !kritaRecord ? null : { state: kritaRecord.state, since: kritaRecord.since, limit: kritaRecord.limit,
       ...(kritaRecord.state === 'running' ? { pid: kritaRecord.pid, version: kritaRecord.version, startedAt: kritaRecord.startedAt } : {}) };
     if (krita) kritaInUse ??= await kritaSlotsInUse();
-    pipelines.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
+    sections.push({ id, ...(id === 'shadow' ? { mode } : {}), status, states, messages, previews, feedback, reports, groups, steps,
       threadId, krita, summary: saved?.summary, ...(saved?.skipped ? { skipped: true } : {}) });
   }
   const log = await readTaskLog(directory);
@@ -231,7 +231,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
   // Server-side readers above may use agent records; the page only gets readable artifacts.
   const servedFiles = files.filter(path => !agentRecord(path));
   const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
-  return { ...record, files: servedFiles, ...(kritaInUse !== undefined ? { kritaInUse } : {}), fileVersions: servedVersions, pipelines, errors, logs: log.text,
+  return { ...record, files: servedFiles, ...(kritaInUse !== undefined ? { kritaInUse } : {}), fileVersions: servedVersions, sections, errors, logs: log.text,
     archived: !!record.run?.archive,
     canExport: completeRun(record.run) && !record.runnerAlive && !record.lockHeld,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,

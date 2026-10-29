@@ -8,8 +8,8 @@ import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { referenceUrl } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
-import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
-import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
+import { runsDirectory, sectionIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
+import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedSections, sectionId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
@@ -49,9 +49,9 @@ function options(value: any, dir: string): TaskOptions {
       if (value[key].trim()) result[key] = value[key].trim();
     }
   }
-  if (value.from) result.from = pipelineId(value.from);
-  if (value.to) result.to = pipelineId(value.to);
-  if (result.from || result.to) selectedPipelines(result.from ?? pipelineIds[0], result.to ?? pipelineIds.at(-1)!);
+  if (value.from) result.from = sectionId(value.from);
+  if (value.to) result.to = sectionId(value.to);
+  if (result.from || result.to) selectedSections(result.from ?? sectionIds[0], result.to ?? sectionIds.at(-1)!);
   if (value.shadowMode !== undefined) result.shadowMode = shadowMode(value.shadowMode);
   if (value.standard !== undefined) {
     if (typeof value.standard !== 'boolean') throw new Error('standard 必须是布尔值');
@@ -189,7 +189,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
               json({ error: error.reason + '\n请重新填写 Krita 可执行文件路径（命令行：--krita <路径>）。', krita: { path: error.path ?? null } }, 409); return;
             }
             const message = path === '/api/step-action'
-              ? await applyStepAction({ name: opts.name, dir: opts.dir, pipeline: value.pipeline, step: value.step, action: value.action })
+              ? await applyStepAction({ name: opts.name, dir: opts.dir, section: value.section, step: value.step, action: value.action })
               : path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action }) : undefined;
             json({ ...(message === undefined ? {} : { message }), pid: await start(opts), name: opts.name }, 202);
           } finally { starts.delete(directory); }

@@ -4,7 +4,7 @@
 // typed input values and already decoded images. Children pair up by position
 // and tag (and by identity attributes where lists can shift); anything that no
 // longer matches is replaced, so the result is the same DOM innerHTML would give.
-const identities = ['id', 'data-details', 'data-pipeline', 'data-overview', 'data-node', 'data-phase', 'data-svg-preview', 'data-tree-scroll', 'data-kra-preview'];
+const identities = ['id', 'data-details', 'data-section', 'data-overview', 'data-node', 'data-phase', 'data-svg-preview', 'data-tree-scroll', 'data-kra-preview'];
 const identity = node => {
   if (node.nodeType !== 1) return node.nodeType;
   for (const name of identities) if (node.hasAttribute(name)) return node.tagName + '|' + name + '=' + node.getAttribute(name);

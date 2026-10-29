@@ -55,8 +55,8 @@ export async function copyAsPng(source: string, output: string): Promise<void> {
 
 // Preparation is the first stage of the part section, with fixed step
 // numbers; pose keeps its number when a run does not standardize.
-export const sectionDirectory = (references: string) => dirname(references);
-export const poseJudgmentPath = (references: string) => join(sectionDirectory(references), stageStep('pose'), 'judgment.json');
+export const sectionOf = (references: string) => dirname(references);
+export const poseJudgmentPath = (references: string) => join(sectionOf(references), stageStep('pose'), 'judgment.json');
 
 // Each step's output stays at its existing reference path; the options and
 // the pose judgment live in their own step directories. The input original and
@@ -64,7 +64,7 @@ export const poseJudgmentPath = (references: string) => join(sectionDirectory(re
 // the original was kept go on from their references alone. `ready` marks that
 // the prepared parts were split from the current references.
 export async function preparationSteps(refs: PreparationReferences, standard: boolean, inputDirectory: string, source?: string): Promise<SectionStep[]> {
-  const root = sectionDirectory(refs.directory);
+  const root = sectionOf(refs.directory);
   const original = refs.originalImage ?? (source || await present(join(root, stageStep('original')))
     ? join(inputDirectory, `original${extname(source ?? '') || '.png'}`) : undefined);
   const withStandard = !!original || !!refs.standardImage || await present(join(root, stageStep('standard')));

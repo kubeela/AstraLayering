@@ -9,10 +9,10 @@ test('任务根按结构取管线目录的父目录；更深的目录不按名�
   const root = '/runs/case';
   for (const directory of ['part-layering', 'raster-layering', 'clothing-part-layering', 'shadow'])
     assert.equal(taskRootOf(join(root, directory)), root);
-  // A task named after a pipeline still resolves to its own root.
+  // A task named after a section still resolves to its own root.
   assert.equal(taskRootOf('/runs/shadow/shadow'), '/runs/shadow');
-  // Step and workspace directories are not pipeline directories, and a group may be named after a pipeline:
-  // callers below the pipeline directory pass the root explicitly.
+  // Step and workspace directories are not section directories, and a group may be named after a section:
+  // callers below the section directory pass the root explicitly.
   for (const directory of ['raster-layering/step01', 'raster-layering/step01/workspace', 'shadow/step01_mask'])
     assert.equal(taskRootOf(join(root, directory)), join(root, directory));
   assert.equal(taskRootOf('/tmp/other'), '/tmp/other');

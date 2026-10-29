@@ -1,7 +1,7 @@
 import {staticPromptPrefix} from '../../shared/tests/prompt-prefix.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
-import { pipelineDirectory } from '../../shared/paths.ts';
-const runDirectory = (name: string) => pipelineDirectory(name, 'raster-layering');
+import { sectionDirectory } from '../../shared/paths.ts';
+const runDirectory = (name: string) => sectionDirectory(name, 'raster-layering');
 import assert from 'node:assert/strict';
 import { mkdtemp, realpath, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

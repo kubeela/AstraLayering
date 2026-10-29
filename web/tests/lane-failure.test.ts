@@ -5,7 +5,7 @@ import { runInNewContext } from 'node:vm';
 
 const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
 const helper = source.slice(source.indexOf('function laneFailure('), source.indexOf('const taskStatusNames'));
-const laneFailure = (pipeline: unknown) => runInNewContext(helper + '\nlaneFailure(pipeline);', { pipeline });
+const laneFailure = (section: unknown) => runInNewContext(helper + '\nlaneFailure(section);', { section });
 
 test('a failed lane shows its reason unless a step already shows it', () => {
   // Part lanes mark failed calls with a generic message; the lane still says why it stopped.

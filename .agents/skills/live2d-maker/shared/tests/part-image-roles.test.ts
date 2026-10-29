@@ -55,8 +55,8 @@ await writeFile(join(process.cwd(),'registered-tools.json'),JSON.stringify(names
 console.log(JSON.stringify(claude?{type:'result',session_id:id,result:'完成'}:{event:'result',result:{conversation_id:id,status:'SUCCESS',response:'完成'}}));
 `;
 
-for (const harness of ['claude', 'agv'] as const) for (const pipeline of ['character', 'clothing'] as const) {
-  test(`${harness} ${pipeline}: only completion can generate and view references, original SVG remains intact`, async t => {
+for (const harness of ['claude', 'agv'] as const) for (const section of ['character', 'clothing'] as const) {
+  test(`${harness} ${section}: only completion can generate and view references, original SVG remains intact`, async t => {
     const f = await fixture(t), executable = join(f.directory, 'fixture-cli.mjs');
     await writeFile(executable, cli, { mode: 0o700 });
     const png = await sharp({ create: { width: 40, height: 40, channels: 4, background: '#ffccaa' } }).png().toBuffer();
@@ -81,10 +81,10 @@ for (const harness of ['claude', 'agv'] as const) for (const pipeline of ['chara
       layering_google_image_api_key: 'fixture', layering_google_image_protocol: 'openai' }, f.directory);
     const agents = new CodexAgents({ environment: settings, cwd: f.directory, logDirectory: join(f.directory, 'agents') });
     // face deliberately uses a specialized completion prompt; clothing uses its
-    // own generic prompt. Both must receive the shared per-pipeline reference rule.
-    const id = pipeline === 'character' ? 'face' : 'outerwear';
+    // own generic prompt. Both must receive the shared per-section reference rule.
+    const id = section === 'character' ? 'face' : 'outerwear';
     const group = normalizeGroups([{ id }])[0];
-    const context = { ...f, ...(pipeline === 'clothing' ? { profile: clothingProfile } : {}), group };
+    const context = { ...f, ...(section === 'clothing' ? { profile: clothingProfile } : {}), group };
     await mkdir(join(f.directory, 'stages'), { recursive: true });
     const outline = await drawGroupOutline({ ...context, outputPath: join(f.directory, 'stages/outline.svg') }, agents);
     assert.equal(imageCalls, 0);

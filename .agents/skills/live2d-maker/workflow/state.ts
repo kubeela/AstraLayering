@@ -5,7 +5,7 @@ import { copyFile, mkdir, readFile, readdir, rename, stat, unlink, writeFile } f
 import { setTimeout as delay } from 'node:timers/promises';
 import { extname, join, relative } from 'node:path';
 import lockfile from 'proper-lockfile';
-import { pipelineIds, resolveInput, resolveRunsDirectory, taskDirectory, type PipelineId } from '../shared/paths.ts';
+import { sectionIds, resolveInput, resolveRunsDirectory, taskDirectory, type SectionId } from '../shared/paths.ts';
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
 import { readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { readTaskLog } from './log.ts';
@@ -14,9 +14,9 @@ import { installedVersion } from '../shared/version.ts';
 
 export type TaskOptions = {
   name: string; dir?: string; image?: string; krita?: string;
-  from?: PipelineId; to?: PipelineId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode;
+  from?: SectionId; to?: SectionId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode;
 };
-export type PipelineProgress = {
+export type SectionProgress = {
   status: 'pending' | 'running' | 'completed' | 'failed';
   updatedAt: string; summary?: string;
   // Completed without running: the base subject has no dress-up, so there is no clothing to make.
@@ -24,31 +24,31 @@ export type PipelineProgress = {
 };
 export type TaskRun = {
   archive?: true;
-  version: 1; name: string; dir: string; from: PipelineId; to: PipelineId;
+  version: 1; name: string; dir: string; from: SectionId; to: SectionId;
   image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   // Release labels (shared/version.ts) of the version that created the task and that last configured a run.
   createdWith?: string; lastRunWith?: string;
-  // Pipelines running now; after a failed or stopped run, the ones that ended it.
-  activePipelines?: PipelineId[];
-  // Written before the lanes ran concurrently; readRun moves it into activePipelines.
-  activePipeline?: PipelineId;
-  // childPids: the worker process of each running pipeline.
-  runner?: { id: string; pid: number; childPids?: Partial<Record<PipelineId, number>>; startedAt: string; finishedAt?: string; stopProtocol?: 'file-v1' };
-  pipelines: Partial<Record<PipelineId, PipelineProgress>>;
+  // Sections running now; after a failed or stopped run, the ones that ended it.
+  activeSections?: SectionId[];
+  // Written before the lanes ran concurrently; readRun moves it into activeSections.
+  activeSection?: SectionId;
+  // childPids: the worker process of each running section.
+  runner?: { id: string; pid: number; childPids?: Partial<Record<SectionId, number>>; startedAt: string; finishedAt?: string; stopProtocol?: 'file-v1' };
+  sections: Partial<Record<SectionId, SectionProgress>>;
   lastMessage?: string; error?: string; output?: string;
 };
 
 export const now = () => new Date().toISOString();
-export function pipelineId(value: string): PipelineId {
-  if (!(pipelineIds as readonly string[]).includes(value)) throw new Error('未知管线：' + value + '；可选：' + pipelineIds.join(', '));
-  return value as PipelineId;
+export function sectionId(value: string): SectionId {
+  if (!(sectionIds as readonly string[]).includes(value)) throw new Error('未知管线：' + value + '；可选：' + sectionIds.join(', '));
+  return value as SectionId;
 }
-export function selectedPipelines(from: PipelineId, to: PipelineId): PipelineId[] {
-  const start = pipelineIds.indexOf(from), end = pipelineIds.indexOf(to);
+export function selectedSections(from: SectionId, to: SectionId): SectionId[] {
+  const start = sectionIds.indexOf(from), end = sectionIds.indexOf(to);
   if (start < 0 || end < start) throw new Error('--from 必须位于 --to 之前或与其相同。');
-  return pipelineIds.slice(start, end + 1);
+  return sectionIds.slice(start, end + 1);
 }
 export function directoryFor(options: Pick<TaskOptions, 'name' | 'dir'>): string {
   // A total run may reach raster even when it starts with part.
@@ -60,14 +60,14 @@ export async function readRun(directory: string, name: string): Promise<TaskRun 
   try { contents = await readFile(join(directory, 'run.json'), 'utf8'); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
   const run = JSON.parse(contents) as TaskRun;
-  if (run.version !== 1 || run.name !== name || !run.pipelines || typeof run.pipelines !== 'object'
+  if (run.version !== 1 || run.name !== name || !run.sections || typeof run.sections !== 'object'
     || !Number.isSafeInteger(run.jobs) || run.jobs < 1 || (run.standard !== undefined && typeof run.standard !== 'boolean')
     || !['ready', 'running', 'completed', 'failed', 'interrupted'].includes(run.status)) {
     throw new Error('无效的总控记录：' + join(directory, 'run.json'));
   }
-  selectedPipelines(pipelineId(run.from), pipelineId(run.to));
+  selectedSections(sectionId(run.from), sectionId(run.to));
   if (run.shadowMode !== undefined) shadowMode(run.shadowMode);
-  if (run.activePipeline) { run.activePipelines ??= [pipelineId(run.activePipeline)]; delete run.activePipeline; }
+  if (run.activeSection) { run.activeSections ??= [sectionId(run.activeSection)]; delete run.activeSection; }
   return run;
 }
 export async function saveRun(directory: string, run: TaskRun, replace = rename): Promise<void> {
@@ -129,11 +129,11 @@ async function originalImage(directory: string, input?: string): Promise<string 
   }
   return retained ? relative(directory, retained) : undefined;
 }
-export const usesKrita = (selected: PipelineId[]) => selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow');
+export const usesKrita = (selected: SectionId[]) => selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow');
 // The Krita executable for this run: the one given now, else the one recorded by
-// the task or, for older tasks, by one of its Krita pipelines.
+// the task or, for older tasks, by one of its Krita sections.
 export async function taskKrita(options: Pick<TaskOptions, 'name' | 'dir' | 'krita'>, directory: string,
-  saved: Pick<TaskRun, 'krita'> | undefined, selected: PipelineId[]): Promise<string | undefined> {
+  saved: Pick<TaskRun, 'krita'> | undefined, selected: SectionId[]): Promise<string | undefined> {
   if (options.krita) return resolveInput(options.name, options.krita, options.dir);
   if (saved?.krita || !usesKrita(selected)) return saved?.krita;
   for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow']) {
@@ -148,7 +148,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   if (saved?.archive) throw new Error('这是导出的成果归档；请在原运行目录继续制作。');
   const from = options.from ?? saved?.from ?? 'part-layering';
   const to = options.to ?? saved?.to ?? 'shadow';
-  const selected = selectedPipelines(from, to);
+  const selected = selectedSections(from, to);
   if (options.standard !== undefined && !selected.includes('part-layering')) {
     throw new Error('--standard / --no-standard 需要本次路线包含 part-layering；请用 --from part-layering 运行人物 preparation。');
   }
@@ -159,7 +159,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   const image = await originalImage(directory, options.image && resolveInput(options.name, options.image, options.dir));
   const run: TaskRun = saved ?? {
     version: 1, name: options.name, dir: resolveRunsDirectory(options.dir), from, to, jobs,
-    status: 'ready', createdAt: now(), updatedAt: now(), pipelines: {},
+    status: 'ready', createdAt: now(), updatedAt: now(), sections: {},
   };
   Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs, standard,
     shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
@@ -168,7 +168,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   if (!saved) run.createdWith = label;
   run.lastRunWith = label;
   run.krita = await taskKrita(options, directory, run, selected);
-  for (const id of selected) run.pipelines[id] ??= { status: 'pending', updatedAt: now() };
+  for (const id of selected) run.sections[id] ??= { status: 'pending', updatedAt: now() };
   return run;
 }
 export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
@@ -177,7 +177,7 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
   if (!run) throw new Error('缺少总控记录：' + join(directory, 'run.json') + '。先用总入口启动；已有上游产物可指定 --from。');
   const runnerAlive = !run.runner?.finishedAt && processAlive(run.runner?.pid);
   const lockHeld = await lockfile.check(directory, { lockfilePath: join(directory, '.runner.lock'), stale: 30_000 });
-  const pipelines = await Promise.all(selectedPipelines(run.from, run.to).map(async id => {
+  const sections = await Promise.all(selectedSections(run.from, run.to).map(async id => {
     const path = join(directory, id);
     let threadId: string | null | undefined, steps: { name: string; status: string }[] = [];
     try {
@@ -190,12 +190,12 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
       // The thread of the running step, else of the last step that kept one.
       threadId = (await currentSession(path, steps.map(step => ({ id: step.name, status: step.status }))))?.threadId ?? null;
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-    return { id, ...(id === 'shadow' ? { mode: shadowMode(run.shadowMode) } : {}), ...run.pipelines[id], directory: path, ...(threadId === undefined ? {} : { threadId }), steps };
+    return { id, ...(id === 'shadow' ? { mode: shadowMode(run.shadowMode) } : {}), ...run.sections[id], directory: path, ...(threadId === undefined ? {} : { threadId }), steps };
   }));
   const log = await readTaskLog(directory);
   return {
     ...run, status: run.status === 'running' && !runnerAlive ? 'interrupted' : run.status,
-    directory, runnerAlive: !!runnerAlive, lockHeld, pipelines,
+    directory, runnerAlive: !!runnerAlive, lockHeld, sections,
     lastMessage: log.message ?? run.lastMessage, log: log.path, logUpdatedAt: log.updatedAt,
     monitor: join(directory, 'monitor.md'),
   };

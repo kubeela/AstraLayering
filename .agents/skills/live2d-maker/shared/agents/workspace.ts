@@ -44,7 +44,7 @@ export function workspacePrompt(prompt: string, paths: ExecutionPaths): string {
   if (prompt.includes(`- 任务根目录：${paths.root}。`) && prompt.includes(`- 当前工作区：${at(paths.workspace)}。`)) return prompt;
   return renderPromptFile(new URL('../prompts/agent-turn.md', import.meta.url), {
     task_prompt: prompt, task_root: paths.root, workspace: at(paths.workspace),
-    pipeline_directory: at(paths.directory), output_directory: at(paths.outputDirectory),
+    section_directory: at(paths.directory), output_directory: at(paths.outputDirectory),
   });
 }
 

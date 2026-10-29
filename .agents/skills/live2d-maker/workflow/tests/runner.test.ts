@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:f
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
-import { pipelineIds, type PipelineId } from '../../shared/paths.ts';
+import { sectionIds, type SectionId } from '../../shared/paths.ts';
 import { runTask } from '../runner.ts';
 import { preflightKrita } from '../krita.ts';
 import { checkKrita } from '../../shared/raster/krita.ts';
@@ -79,22 +79,22 @@ test('真实后台启动失败只写主日志，不另建 service.log', async t 
 });
 
 test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 恢复', async t => {
-  const f = await fixture(t), first: PipelineId[] = [], second: PipelineId[] = [];
+  const f = await fixture(t), first: SectionId[] = [], second: SectionId[] = [];
   await runTask({ ...f.options, image: 'reference.png', jobs: 2, standard: true }, { preflight, execute: async (id, run) => {
     first.push(id);
     const disk = (await readRun(f.directory, 'case'))!;
-    assert.ok(disk.activePipelines?.includes(id));
+    assert.ok(disk.activeSections?.includes(id));
     assert.equal(disk.status, 'running');
     assert.equal(run.jobs, 2);
     assert.equal(run.image, join('input', 'original.png'));
     assert.equal(run.standard, true); assert.equal(disk.standard, true);
     return { summary: id, output: join(f.directory, id, 'output') };
   } });
-  assert.deepEqual([...first].sort(), [...pipelineIds].sort());
+  assert.deepEqual([...first].sort(), [...sectionIds].sort());
   for (const [before, after] of [['part-layering', 'raster-layering'], ['part-layering', 'clothing-part-layering'],
     ['clothing-part-layering', 'clothing-raster-layering'], ['raster-layering', 'character-assembly'],
     ['clothing-raster-layering', 'character-assembly'], ['character-assembly', 'shadow']] as const) assert.ok(first.indexOf(before) < first.indexOf(after), before + ' → ' + after);
-  // The delivery is the furthest pipeline's, whichever lane finished last.
+  // The delivery is the furthest section's, whichever lane finished last.
   assert.equal((await readRun(f.directory, 'case'))!.output, 'shadow/output');
   assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
   await rm(join(f.directory, 'reference.png'));
@@ -103,15 +103,15 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
     assert.equal(run.standard, true);
     return { summary: '管线自身检查并跳过', output: 'retained' };
   } });
-  // Re-enter the pipeline's own authoritative checks, never trust a stale top-level completion alone.
-  assert.deepEqual([...second].sort(), pipelineIds.filter(id => !['part-layering', 'clothing-part-layering'].includes(id)).sort());
+  // Re-enter the section's own authoritative checks, never trust a stale top-level completion alone.
+  assert.deepEqual([...second].sort(), sectionIds.filter(id => !['part-layering', 'clothing-part-layering'].includes(id)).sort());
   const status = await taskStatus(f.options);
   assert.equal(status.status, 'completed'); assert.equal(status.runnerAlive, false); assert.equal(status.lockHeld, false);
   assert.equal(status.output, 'retained');
 });
 
 test('一条线异常只阻断汇合后的管线，另一条线做完；展示模型原因，续跑沿用原始配置', async t => {
-  const f = await fixture(t), calls: PipelineId[] = [];
+  const f = await fixture(t), calls: SectionId[] = [];
   await assert.rejects(runTask({ ...f.options, image: 'reference.png' }, { preflight, execute: async id => {
     calls.push(id);
     if (id === 'raster-layering') throw new Error('thread=draw-1\n模型最后消息：没有 image_generation 工具');
@@ -119,11 +119,11 @@ test('一条线异常只阻断汇合后的管线，另一条线做完；展示�
   } }), /没有 image_generation/);
   assert.deepEqual([...calls].sort(), ['clothing-part-layering', 'clothing-raster-layering', 'part-layering', 'raster-layering']);
   const run = (await readRun(f.directory, 'case'))!;
-  assert.equal(run.status, 'failed'); assert.deepEqual(run.activePipelines, ['raster-layering']);
-  assert.equal(run.pipelines['raster-layering']!.status, 'failed');
+  assert.equal(run.status, 'failed'); assert.deepEqual(run.activeSections, ['raster-layering']);
+  assert.equal(run.sections['raster-layering']!.status, 'failed');
   assert.match(run.error!, /thread=draw-1/);
-  assert.equal(run.pipelines['clothing-raster-layering']!.status, 'completed');
-  assert.equal(run.pipelines['character-assembly']!.status, 'pending');
+  assert.equal(run.sections['clothing-raster-layering']!.status, 'completed');
+  assert.equal(run.sections['character-assembly']!.status, 'pending');
   assert.match(await readFile(join(f.directory, 'workflow.log'), 'utf8'), /模型最后消息/);
   await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async () => ({ summary: 'resumed' }) });
   assert.equal((await readRun(f.directory, 'case'))!.status, 'completed');
@@ -141,7 +141,7 @@ test('人物准备完成即并发启动衣服线，两条线共用 agent 名额�
       context.prepared?.(); context.prepared?.();
       await clothing;
       const disk = (await readRun(f.directory, 'case'))!;
-      assert.deepEqual(disk.activePipelines, ['part-layering', 'clothing-part-layering']);
+      assert.deepEqual(disk.activeSections, ['part-layering', 'clothing-part-layering']);
     }
     if (id === 'clothing-part-layering') clothingStarted();
     order.push('end ' + id);
@@ -155,7 +155,7 @@ test('人物准备完成即并发启动衣服线，两条线共用 agent 名额�
 });
 
 test('停止时两条并发管线一起中断，记录各自状态，汇合处不再启动', async t => {
-  const f = await fixture(t), controller = new AbortController(), calls: PipelineId[] = [];
+  const f = await fixture(t), controller = new AbortController(), calls: SectionId[] = [];
   let started = 0;
   await assert.rejects(runTask({ ...f.options, image: 'reference.png' }, { preflight, signal: controller.signal, execute: async (id, _run, context) => {
     calls.push(id);
@@ -170,25 +170,25 @@ test('停止时两条并发管线一起中断，记录各自状态，汇合处�
   assert.deepEqual([...calls].sort(), ['clothing-part-layering', 'part-layering', 'raster-layering']);
   const run = (await readRun(f.directory, 'case'))!;
   assert.equal(run.status, 'interrupted');
-  assert.deepEqual(run.activePipelines, ['raster-layering', 'clothing-part-layering']);
-  assert.equal(run.pipelines['clothing-raster-layering']!.status, 'pending');
+  assert.deepEqual(run.activeSections, ['raster-layering', 'clothing-part-layering']);
+  assert.equal(run.sections['clothing-raster-layering']!.status, 'pending');
   assert.equal(run.runner!.childPids, undefined);
 });
 
-test('旧记录的单个 activePipeline 读作 activePipelines', async t => {
+test('旧记录的单个 activeSection 读作 activeSections', async t => {
   const f = await fixture(t), run = await configureRun(f.options, f.directory);
-  await saveRun(f.directory, { ...run, status: 'failed', activePipeline: 'raster-layering' });
+  await saveRun(f.directory, { ...run, status: 'failed', activeSection: 'raster-layering' });
   const read = (await readRun(f.directory, 'case'))!;
-  assert.deepEqual(read.activePipelines, ['raster-layering']); assert.equal(read.activePipeline, undefined);
+  assert.deepEqual(read.activeSections, ['raster-layering']); assert.equal(read.activeSection, undefined);
 });
 
 test('手动上游可从组装开始，不伪造此前进度；更换原图不会覆盖已有输入', async t => {
-  const f = await fixture(t), calls: PipelineId[] = [];
+  const f = await fixture(t), calls: SectionId[] = [];
   await runTask({ ...f.options, from: 'character-assembly' }, { preflight, execute: async id => {
     calls.push(id); return { summary: 'assembled' };
   } });
   assert.deepEqual(calls, ['character-assembly', 'shadow']);
-  assert.deepEqual(Object.keys((await readRun(f.directory, 'case'))!.pipelines), ['character-assembly', 'shadow']);
+  assert.deepEqual(Object.keys((await readRun(f.directory, 'case'))!.sections), ['character-assembly', 'shadow']);
   await runTask({ ...f.options, image: 'reference.png' }, { preflight, execute: async () => ({ summary: 'ok' }) });
   await writeFile(join(f.directory, 'different.png'), 'different image');
   await assert.rejects(runTask({ ...f.options, image: 'different.png' }), /已有不同的原图/);
@@ -258,17 +258,17 @@ test('CLI 区分只读查询、后台启动和恢复，拒绝冲突参数', () =
 
 test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定单个步骤', () => {
   const parse = (...args: string[]) => parseArguments(['--name', 'case', ...args]) as any;
-  assert.deepEqual(parse('--retry').action, { action: 'retry', pipeline: undefined, step: '' });
+  assert.deepEqual(parse('--retry').action, { action: 'retry', section: undefined, step: '' });
   assert.equal(parse('--retry').mode, 'run');
   assert.deepEqual([parse('--resume', '--background').mode, parse('--resume', '--background').action.action], ['background', 'resume']);
   assert.equal(parse('--continue', '--krita', '/opt/krita').options.krita, '/opt/krita');
-  assert.deepEqual(parse('--retry', '--pipeline', 'part-layering', '--step', 'step11_completion/head').action,
-    { action: 'retry', pipeline: 'part-layering', step: 'step11_completion/head' });
-  assert.deepEqual(parse('--continue', '--pipeline', 'shadow').action, { action: 'continue', pipeline: 'shadow', step: '' });
+  assert.deepEqual(parse('--retry', '--section', 'part-layering', '--step', 'step11_completion/head').action,
+    { action: 'retry', section: 'part-layering', step: 'step11_completion/head' });
+  assert.deepEqual(parse('--continue', '--section', 'shadow').action, { action: 'continue', section: 'shadow', step: '' });
   assert.equal(parse('--stop').mode, 'stop');
   assert.equal(parse().action, undefined);
-  for (const args of [['--resume', '--retry'], ['--pipeline', 'shadow'], ['--retry', '--step', 'step01'],
-    ['--retry', '--pipeline', 'shadow'], ['--retry', '--pipeline', 'unknown', '--step', 'step01'],
+  for (const args of [['--resume', '--retry'], ['--section', 'shadow'], ['--retry', '--step', 'step01'],
+    ['--retry', '--section', 'shadow'], ['--retry', '--section', 'unknown', '--step', 'step01'],
     ['--stop', '--krita', 'x'], ['--stop', '--background'], ['--stop', '--retry'], ['--status', '--retry']]) {
     assert.throws(() => parse(...args), Error, args.join(' '));
   }
@@ -328,8 +328,8 @@ test('绘画中断后总控不重进已完成 part 管线，沿用新增结构',
 });
 
 test('素体未换装时跳过衣服拆分与衣服绘制，记为已完成后继续组装和阴影', async t => {
-  const f = await fixture(t), executed: PipelineId[] = [];
-  const execute = async (id: PipelineId) => {
+  const f = await fixture(t), executed: SectionId[] = [];
+  const execute = async (id: SectionId) => {
     executed.push(id);
     if (id === 'part-layering') await markBaseStep(f.directory, false);
     return { summary: id };
@@ -337,8 +337,8 @@ test('素体未换装时跳过衣服拆分与衣服绘制，记为已完成后�
   const run = await runTask({ ...f.options, image: 'reference.png' }, { preflight, execute });
   assert.deepEqual(executed, ['part-layering', 'raster-layering', 'character-assembly', 'shadow']);
   for (const id of ['clothing-part-layering', 'clothing-raster-layering'] as const) {
-    assert.equal(run.pipelines[id]?.status, 'completed'); assert.equal(run.pipelines[id]?.skipped, true);
-    assert.match(run.pipelines[id]!.summary!, /没有衣服需要拆分和绘制/);
+    assert.equal(run.sections[id]?.status, 'completed'); assert.equal(run.sections[id]?.skipped, true);
+    assert.match(run.sections[id]!.summary!, /没有衣服需要拆分和绘制/);
   }
   assert.equal(run.status, 'completed');
   // A rerun of the base step that dresses the subject runs the clothing lane again.
@@ -346,6 +346,6 @@ test('素体未换装时跳过衣服拆分与衣服绘制，记为已完成后�
   await markBaseStep(f.directory, true);
   const dressed = await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async id => { executed.push(id); return { summary: id }; } });
   // part-layering stays as drawn: its raster stage has started.
-  assert.deepEqual(executed, pipelineIds.slice(1));
-  assert.equal(dressed.pipelines['clothing-part-layering']?.skipped, undefined);
+  assert.deepEqual(executed, sectionIds.slice(1));
+  assert.equal(dressed.sections['clothing-part-layering']?.skipped, undefined);
 });

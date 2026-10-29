@@ -1,6 +1,7 @@
 import { runWorkflow as shadow } from '../shadow/run.ts';
 import { shadowMode } from '../shared/shadow.ts';
 import { join } from 'node:path';
+import { shadowStep } from '../shared/step-paths.js';
 import { toTaskPath } from '../shared/task-paths.ts';
 import { runPartLayering } from '../part-layering/run.ts';
 import { runClothingPartLayering } from '../clothing-part-layering/run.ts';
@@ -8,18 +9,18 @@ import { formatLayeringSummary } from '../shared/part/run.ts';
 import { runWorkflow as characterRaster } from '../raster-layering/run.ts';
 import { runWorkflow as clothingRaster } from '../clothing-raster-layering/run.ts';
 import { runWorkflow as assemble } from '../character-assembly/run.ts';
-import type { PipelineId } from '../shared/paths.ts';
+import type { SectionId } from '../shared/paths.ts';
 import type { TaskRun } from './state.ts';
 
 // output is the delivered file relative to the task root.
-export type PipelineResult = { summary: string; output?: string };
+export type SectionResult = { summary: string; output?: string };
 // prepared(): part-layering has its references; the clothing lane may start.
-export async function executePipeline(id: PipelineId, run: TaskRun, progress: (message: string) => void,
-  events: { prepared?(): void } = {}): Promise<PipelineResult> {
+export async function executeSection(id: SectionId, run: TaskRun, progress: (message: string) => void,
+  events: { prepared?(): void } = {}): Promise<SectionResult> {
   if (id === 'shadow') {
     const mode = shadowMode(run.shadowMode);
     const summary = await shadow({ name: run.name, dir: run.dir, krita: run.krita, shadowMode: mode, progress });
-    return { summary, output: `shadow/${mode}/step01/${mode === 'mask' ? 'character-shadowed.kra' : 'normal.png'}` };
+    return { summary, output: `shadow/${shadowStep(mode)}/${mode === 'mask' ? 'character-shadowed.kra' : 'normal.png'}` };
   }
   if (id === 'part-layering' || id === 'clothing-part-layering') {
     const execute = id === 'part-layering' ? runPartLayering : runClothingPartLayering;

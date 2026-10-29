@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { pipelineDirectory, pipelineIds } from '../paths.ts';
+import { sectionDirectory, sectionIds } from '../paths.ts';
 import { AgentCallError, AgentRuntime, rateLimitedAgentError, retryableAgentError, type AgentRetry } from '../codex/agent-runtime.ts';
 import { AgentLog, retryWaitFile } from '../codex/agent-log.ts';
 import { recognizeInitialGroups } from '../part/initial-groups.ts';
@@ -18,15 +18,15 @@ import { fixture } from '../../part-layering/tests/layering-fixture.ts';
 test('共享目录保留 part 原有任务名范围，raster 仍执行自己的命名限制', () => {
   for (const name of ['demo 2', '_demo', '.draft', '衣服👕']) {
     for (const id of ['part-layering', 'clothing-part-layering'] as const) {
-      assert.equal(pipelineDirectory(name, id, '/tmp/runs'), join('/tmp/runs', name, id));
+      assert.equal(sectionDirectory(name, id, '/tmp/runs'), join('/tmp/runs', name, id));
     }
     for (const id of ['raster-layering', 'clothing-raster-layering'] as const) {
-      assert.throws(() => pipelineDirectory(name, id, '/tmp/runs'), /--name/);
+      assert.throws(() => sectionDirectory(name, id, '/tmp/runs'), /--name/);
     }
   }
-  for (const id of pipelineIds) {
+  for (const id of sectionIds) {
     for (const name of ['', '.', '..', '../other', 'a/b', 'a\\b', 'a:b']) {
-      assert.throws(() => pipelineDirectory(name, id, '/tmp/runs'));
+      assert.throws(() => sectionDirectory(name, id, '/tmp/runs'));
     }
   }
 });
@@ -90,7 +90,7 @@ test('首次分组拒绝非字符串 subject，错误参数不能写坏首次分
 });
 
 test('两套 raster 的缺失输入提示各自指向对应的 part 管线', async t => {
-  const root = await mkdtemp(join(tmpdir(), 'pipeline-input-errors-'));
+  const root = await mkdtemp(join(tmpdir(), 'section-input-errors-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const empty = join(root, 'empty');
   await mkdir(empty);
@@ -115,7 +115,7 @@ test('续跑时显式传空 Krita 路径仍报错，不静默沿用旧配置', a
   for (const [run, id] of [[runRaster, 'raster-layering'],
     [runClothingRaster, 'clothing-raster-layering']] as const) {
     await seedUpstream('saved', id === 'raster-layering' ? 'part-layering' : 'clothing-part-layering', runsDirectory);
-    const directory = pipelineDirectory('saved', id, runsDirectory);
+    const directory = sectionDirectory('saved', id, runsDirectory);
     await initializeRun(directory, newConfig('saved', input, { executable: process.execPath }));
     for (const krita of ['', '   ']) {
       await assert.rejects(run({ name: 'saved', krita, dryRun: true }, { runsDirectory,

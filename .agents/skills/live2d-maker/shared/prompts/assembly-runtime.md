@@ -1,6 +1,6 @@
 ---
 本次运行信息（以下均为绝对路径）：
-- 管线目录：{pipeline_directory}。
+- 管线目录：{section_directory}。
 - 人物素体 KRA：{character_kra}。
 - 衣服 KRA：{clothing_kra}。
 - 简化穿衣角色参考图：{simplified_character}。

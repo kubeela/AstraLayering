@@ -2,7 +2,7 @@ import {preparationImagePrompt} from '../shared/prompts/preparation.ts';
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import type { ImageProcessingOptions } from '../shared/image-processing.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
-import { pipelineDirectory, taskDirectory } from '../shared/paths.ts';
+import { sectionDirectory, taskDirectory } from '../shared/paths.ts';
 import { inspectSection, runSection } from '../shared/step-section.ts';
 import { readStep, type ChainStep } from '../shared/step-chain.ts';
 import { clothingPreparationStep, partSteps, stepNumber } from '../shared/step-paths.js';
@@ -20,7 +20,7 @@ export type PreparationReferences = ImageReferences;
 export type PreparationSteps = { extract(image: string, baseImage: string, output: string, prompt: string): Promise<void> };
 
 export function getPreparationDirectory(runName: string, root?: string): string {
-  return join(pipelineDirectory(runName, 'clothing-part-layering', root), 'references');
+  return join(sectionDirectory(runName, 'clothing-part-layering', root), 'references');
 }
 function references(directory: string, originalImage: string): PreparationReferences {
   return { directory, originalImage,
@@ -66,7 +66,7 @@ const personSteps = [partSteps.standard, partSteps.simplified, partSteps.base];
 const step = { number: stepNumber(clothingPreparationStep)!, note: 'preparation', outputs: ['../references/clothing.png'],
   upstream: personSteps.map(id => `part-layering/${id}`) };
 async function upstream(runName: string, root?: string): Promise<ChainStep[]> {
-  const person = pipelineDirectory(runName, 'part-layering', root), task = taskDirectory(runName, root), steps: ChainStep[] = [];
+  const person = sectionDirectory(runName, 'part-layering', root), task = taskDirectory(runName, root), steps: ChainStep[] = [];
   for (const id of personSteps) {
     const upstreamStep = { id: `part-layering/${id}`, root: task, directory: join(person, id), dependsOn: [] };
     if ((await readStep(upstreamStep.directory, task)).status !== 'completed') {
@@ -86,7 +86,7 @@ export async function loadPreparedReferences(runName: string, root?: string): Pr
   if (plan.statuses.get(clothingPreparationStep) !== 'completed' || plan.reset.length) {
     throw new Error('纯衣服参考尚未完成或上游参考已变化，请先不带 --groups 运行 preparation。');
   }
-  await checkImage(refs.baseSubject, join(pipelineDirectory(runName, 'part-layering', root), 'references/standard.png'));
+  await checkImage(refs.baseSubject, join(sectionDirectory(runName, 'part-layering', root), 'references/standard.png'));
   return refs;
 }
 
@@ -99,7 +99,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   const image = await simplifiedCharacter(input.runName, input.dir);
   await mkdir(directory, { recursive: true });
   const refs = references(directory, image);
-  const standard = join(pipelineDirectory(input.runName, 'part-layering', input.dir), 'references/standard.png');
+  const standard = join(sectionDirectory(input.runName, 'part-layering', input.dir), 'references/standard.png');
   await runSection({
     directory: sectionOf(directory), root: taskDirectory(input.runName, input.dir), steps: [step], progress, ...await sectionScan(input.runName, input.dir),
     async step(_step, status) {
