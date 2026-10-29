@@ -293,6 +293,31 @@ test('a call waiting to retry shows 限流等待 with the logged error verbatim 
   assert.ok(!value.files.some(path => path.endsWith('retry-wait.json')));
 });
 
+test('a CLI attempt that failed and scheduled a retry stays 限流等待; a result after the wait ends the call', async t => {
+  const f = await fixture(t);
+  await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
+  const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
+  run.status = 'running'; run.activePipeline = 'part-layering';
+  run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 10_000).toISOString() };
+  run.pipelines['part-layering']!.status = 'running';
+  await saveRun(f.task, run);
+  const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
+  const at = (path: string, seconds: number) => utimes(join(f.task, 'part-layering', path), new Date(), new Date(Date.now() - seconds * 1000));
+  // Claude and AGV CLI: each attempt has its own record, finished as failed before the retry wait is written.
+  await f.put('agents/body/request.json', { task: { name: '组轮廓绘制-body' } });
+  await f.put('agents/body/result.json', { status: 'failed' });
+  await f.put('agents/body/retry-wait.json', { reason: 'rate-limit', error: 'API Error: 429 rate_limit_error', until: new Date(Date.now() + 60_000).toISOString() });
+  await at('agents/body/result.json', 2); await at('agents/body/retry-wait.json', 1);
+  let value = await f.get();
+  assert.equal(value.part.groups[0].webPhases.outline, 'throttled');
+  assert.equal(value.part.groups[0].webDetails.outline, 'API Error: 429 rate_limit_error');
+  // Codex keeps one record across retries: its later result ends the call.
+  await f.put('agents/body/result.json', { status: 'completed' });
+  value = await f.get();
+  assert.notEqual(value.part.groups[0].webPhases.outline, 'throttled');
+  assert.notEqual(value.part.groups[0].webPhases.outline, 'running');
+});
+
 test('a failed current group and initial request are marked failed while their drafts remain visible; recovery clears old failures', async t => {
   const f = await fixture(t);
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
